@@ -47,7 +47,7 @@ template<class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//   <linkto class=IPosition>IPosition</linkto>
+//  <li> <linkto class=IPosition>IPosition</linkto>
 // </prerequisite>
 
 // <etymology>

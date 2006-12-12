@@ -133,10 +133,10 @@ template<class T> class ROScalarColumn;
 // </example>
 
 // <templating arg=VirtualType>
-//  only suited for built-in numerics data types
+//  <li> only suited for built-in numerics data types
 // </templating>
 // <templating arg=StoredType>
-//  only suited for built-in numerics data types
+//  <li> only suited for built-in numerics data types
 // </templating>
 
 template<class VirtualType, class StoredType> class ScaledArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>

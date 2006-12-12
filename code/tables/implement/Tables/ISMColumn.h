@@ -83,7 +83,7 @@ class ISMBucket;
 // In this way a get does not need to access the data in the bucket.
 // <p>
 // ISMColumn use the static conversion functions in the
-// </linkto class=Conversion>Conversion</linkto> framework to
+// <linkto class=Conversion>Conversion</linkto> framework to
 // get/put the data in external format (be it canonical or local).
 // Most data types are fixed length, but some are variable length
 // (e.g. String). In external format variable length data is preceeded
@@ -95,7 +95,7 @@ class ISMBucket;
 // ISMColumn also acts as the base class for more specialized ISM
 // column classes (i.e. <linkto class=ISMIndColumn>ISMIndColumn</linkto>
 // for indirect columns).
-// In this way </linkto class=ISMBase>ISMBase</linkto> can hold a
+// In this way <linkto class=ISMBase>ISMBase</linkto> can hold a
 // block of <src>ISMColumn*</src> for any column. Furthermore
 // <src>ISMColumn</src> contains the hooks to allow a derived class
 // to use other ISMColumn functions (e.g. there are "action" functions

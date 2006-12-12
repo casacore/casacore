@@ -84,16 +84,6 @@
 // class. The TablePlot manipulates the TPPlotter objects.
 // </motivation>
 
-// <templating arg=T>
-//    <li>
-// </templating>
-
-// <thrown>
-//    <li>
-//    <li>
-// </thrown>
-
-
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //   <li> Add additional plotting window interaction commands/calls accessible
@@ -124,6 +114,7 @@ template<class T> class TPPlotter
 		// Set Plotting options from an input record of plot options.
 		// 
 		// Record field names and default values : 
+		// <ul>
 		// <li> nxpanels = 1
 		// <li> nypanels = 1
 		// <li> windowsize = nxpanels * 5.0 (inches)
@@ -132,6 +123,7 @@ template<class T> class TPPlotter
 		// <li> plotcolour = 2 (start with red and change for each overlay plot)
 		// <li> fontsize = 2.0 * nxpanels * nypanels (font size needs to increase
 		//            for multiple panel plots.
+		// </ul>
 		Int setPlotOptions(Record &plotoptions);
 		
 		// Set Title, X-axis Label,Y-axis Label for the plot.
@@ -176,8 +168,10 @@ template<class T> class TPPlotter
 		// This function grabs two mouse click events via the plotting
 		// package, and modifies a panel-wise list of zoom plot ranges
 		// which come into effect when SetPlotRange is next called.
+		// <ul>
 		// <li> direction = 1 : zoom
 		// <li> direction = 0 : unzoom. 
+		// </ul>
 		// Note : successive zooming can be done. Flagging can be done
 		// while zoomed. Unzooming at any stage returns to the 
 		// original full plot range.

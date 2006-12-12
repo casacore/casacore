@@ -53,9 +53,9 @@ class TableColumn;
 
 // <use visibility=export>
 
-// <prerequisites>
+// <prerequisite>
 //  <li> <linkto class="Table:description">Table</linkto>
-// <prerequisites>
+// </prerequisite>
 
 // <synopsis>
 // Global functions to fill a table from an Ascii file.

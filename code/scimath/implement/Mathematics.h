@@ -44,11 +44,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> Mathematical types, constants, operations </summary>
 
-// <prerequisite> At least high school (and preferably undergraduate
-// level) understanding of mathematics. </prerequisite>
+// <prerequisite>
+// <li> At least high school (and preferably undergraduate
+// level) understanding of mathematics.
+// </prerequisite>
 
-//# // <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
-//# // </reviewed>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
+// </reviewed>
 
 // <etymology> 
 // Mathematicians may argue that everything is mathematics, and hence all of
@@ -77,14 +79,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      mathematical functions. It is required that you always include this
 //      file rather than the system math.h file as deficiencies in the system
 //      math.h file will be implemented here.
-// <li> <linkto file="Complex.h">Complex</linkto> numbers. It is expected that
-//      we will, in a future release of AIPS++, replace this with the complex
-//      number classes in the standard template library.
-// <li> Mathematical &  numerical 
-//      <linkto file="Constants.h">constants</linkto> like pi &
-//      FLT_MAX. Physical constants have units and hence are available in the
-//      <linkto class="QC">QC</linkto> class in the 
-//      <linkto module="Quanta">Quanta</linkto> module.
 // <li> <linkto file=NumericTraits.h>Relationships</linkto>
 //      between different numerical data types.
 // <li> Multi-dimensional Fourier transforms are done in the 

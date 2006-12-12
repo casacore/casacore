@@ -223,7 +223,7 @@ public:
   // Get a scalar in the given type.
   // This might involve converting for Double and DComplex.
   // Most default implementations throws an "not possible" exception.
-  // The default <src>getDComplex</src> invokes </src>getDouble</src>.
+  // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
   virtual Bool     getBool     (const Block<Int>& fieldNrs) const;
   virtual Double   getDouble   (const Block<Int>& fieldNrs) const;
@@ -235,7 +235,7 @@ public:
   // This might involve converting for Double and DComplex.
   // Most default implementations throws an "not possible" exception.
   // The default <src>getArrayDComplex</src> invokes
-  // </src>getArrayDouble</src>.
+  // <src>getArrayDouble</src>.
   // <group>
   virtual Array<Bool>     getArrayBool     (const Block<Int>& fieldNrs) const;
   virtual Array<Double>   getArrayDouble   (const Block<Int>& fieldNrs) const;

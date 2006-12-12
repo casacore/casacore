@@ -92,12 +92,12 @@ class LatticeRegion;
 // making it possible to iterate tile by tile (which is optimal).
 // An example is the calculation of the minimum, maximum, mean of
 // a line, plane, etc..
-// For this purpose the function <stc>tiledApply</src> can be used.
+// For this purpose the function <src>tiledApply</src> can be used.
 // This function is faster and uses less memory than <src>lineApply</src>,
 // so whenever possible this one should be used. Another advantage of
 // this function is that it is possible to operate per line, plane, etc.
 // or even for the entire lattice.
-// <ol>
+// </ol>
 // The user has to supply a function object derived from the abstract base
 // class <linkto class=LineCollapser>LineCollapser</linkto> or 
 // <linkto class=TiledCollapser>TiledCollapser</linkto>, resp..

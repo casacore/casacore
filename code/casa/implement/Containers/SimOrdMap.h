@@ -108,6 +108,7 @@ public:
     // <note> With a constant map in the case where the key is not
     //        defined, the mapping between key and default value is 
     //        not created, but rather an exception is thrown.
+    // </note>
     //+grp
     V &operator()(const K &ky);
     // <thrown>

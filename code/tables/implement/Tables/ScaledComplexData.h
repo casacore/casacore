@@ -137,10 +137,10 @@ template<class T> class ROScalarColumn;
 // </example>
 
 // <templating arg=VirtualType>
-//  only complex data types
+//  <li> only complex data types
 // </templating>
 // <templating arg=StoredType>
-//  only built-in numerics data types
+//  <li> only built-in numerics data types
 // </templating>
 
 template<class VirtualType, class StoredType>

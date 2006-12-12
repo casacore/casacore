@@ -104,14 +104,14 @@ public:
 // Chebyshev series, a linear combination of so-called Chebyshev
 // polynomials.  Users do not instantiate this abstract class directly; 
 // instead they instantiate the child class 
-// <linkto class="Chebyshev">Chebyshev</linto>.  This class holds the part 
+// <linkto class="Chebyshev">Chebyshev</linkto>.  This class holds the part 
 // of the implementation used by the 
-// <linkto class="Chebyshev">Chebyshev</linto> class that manages the "fixed" 
+// <linkto class="Chebyshev">Chebyshev</linkto> class that manages the "fixed" 
 // parameters of the function (e.g. the polynomial coefficients, interval of
 // interest, etc.)
 // 
 // For a full description, see the 
-// <linkto class="Chebyshev">Chebyshev</linto> class.
+// <linkto class="Chebyshev">Chebyshev</linkto> class.
 // 
 // </synopsis>
 //
@@ -142,7 +142,7 @@ public:
 //
 // The Chebyshev implementation is split between this class, 
 // <src>ChebyshevParam</src> and its child 
-// <linkto class="Chebyshev">Chebyshev</linto> to better support the 
+// <linkto class="Chebyshev">Chebyshev</linkto> to better support the 
 // <linkto class="AutoDiff">AutoDiff framework</linkto> for evaluating 
 // derivatives.
 // </motivation>
@@ -436,6 +436,7 @@ public:
 // <synopsis>
 // <note role=warning> The name <src>ChebyshevParamModeImpl_PS</src> is only 
 // for cxx2html limitations.  
+// </note>
 // </synopsis>
 template <class T>
 class ChebyshevParamModeImpl_PS<AutoDiff<T> > 
@@ -490,6 +491,7 @@ public:
 // <synopsis>
 // <note role=warning> The name <src>ChebyshevParamModeImpl_PS</src> is only 
 // for cxx2html limitations.  
+// </note>
 // </synopsis>
 template <class T>
 class ChebyshevParamModeImpl_PSA<AutoDiffA<T> > 

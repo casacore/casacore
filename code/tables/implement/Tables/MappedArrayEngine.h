@@ -112,10 +112,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <templating arg=VirtualType>
-//  only suited for built-in numerics data types
+//  <li> only suited for built-in numerics data types
 // </templating>
 // <templating arg=StoredType>
-//  only suited for built-in numerics data types
+//  <li> only suited for built-in numerics data types
 // </templating>
 
 template<class VirtualType, class StoredType> class MappedArrayEngine : public BaseMappedArrayEngine<VirtualType, StoredType>

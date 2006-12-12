@@ -38,10 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="Gareth Hunt" date="94/08/19" tests="tPrimes">
 //
 // <prerequisite>
-// Classes you should understand before using this one.
-// <list>
-//   <item>Understanding Block is only peripherally important.
-// </list>
+//   <li>Understanding Block is only peripherally important.
 // </prerequisite>
 //
 // <etymology>
@@ -123,15 +120,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 //
 // <todo asof="$DATE:$">
-// A List of bugs, limitations, extensions or planned refinements.
-// <enum>
-//   <item> This class should not be used to generate large sets of prime
-//          numbers - it is not designed for efficiency at this.
-//          The algorithm checks 2, 3, and (6n +/- 1) up to the square
-//          root of the candidate prime.
-//   <item> The size of the prime numbers are restricted by the size of an
-//          unsigned integer (2^31-1 on 32 bit machines).
-// </enum>
+//   <li> This class should not be used to generate large sets of prime
+//        numbers - it is not designed for efficiency at this.
+//        The algorithm checks 2, 3, and (6n +/- 1) up to the square
+//        root of the candidate prime.
+//   <li> The size of the prime numbers are restricted by the size of an
+//        unsigned integer (2^31-1 on 32 bit machines).
+// </todo>
 
 class Primes {
 public:

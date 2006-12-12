@@ -169,7 +169,6 @@ private:
 //   list.step(-4);                             //  89 10 8 2 | 12
 //   list.removeRight();                        //  89 10 8 2 |
 //   cout << list << endl;
-//// iterate(list);
 //   return 0;
 // }
 //     </srcblock>

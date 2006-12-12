@@ -82,7 +82,7 @@ template <class T> class LatticeIterInterface;
 //    <li> how to apply a function to all elements
 //    <li> various shape related functions.
 // </ul>
-// The base class <linkto class=LatticeBase</linkto> contains
+// The base class <linkto class=LatticeBase>LatticeBase</linkto> contains
 // several functions not dependent on the template parameter.
 // <note role=tip> Lattices always have a zero origin. </note>
 // </synopsis> 

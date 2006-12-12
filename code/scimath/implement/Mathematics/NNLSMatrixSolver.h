@@ -65,7 +65,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </synopsis> 
 //
 // <todo asof="">
-// <ol>
 // <li> Add list of operators
 // </todo>
 

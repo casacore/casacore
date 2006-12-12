@@ -85,6 +85,7 @@ class String;
 //
 // <note role=tip> This Timer class is based on the TI COOL library 
 //        Timer class
+// </note>
 // </synopsis>
 
 // <example>

@@ -112,7 +112,7 @@ class ColumnSet;
 // </motivation>
 
 // <todo asof="$DATE:$">
-// A List of bugs, limitations, extensions or planned refinements.
+//# A List of bugs, limitations, extensions or planned refinements.
 //  <li> Introduce a class ArrayRecordColumnDesc to support arrays of records.
 // </todo>
 

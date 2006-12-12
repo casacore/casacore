@@ -249,10 +249,11 @@ private:
 
 
 // <summary>
+// Global functions to get or put data of a virtual column
 // </summary>
 // <synopsis>
 // </synopsis>
-// <group>
+// <group name=getVirtualScalarColumn>
 inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
 				    Bool* dataPtr, const Bool*)
     { col->get (rownr, dataPtr); }

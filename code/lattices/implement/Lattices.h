@@ -395,8 +395,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // LatticeLocker is useful when finer locking control is needed for a
 // disk-based lattice.
 // 
-// </ol>
-//
 // <note role=warning> The following are listed for low-level programmers.  
 // Lattice users need not understand them.</note>  The Lattice directory
 // contains several files relevant only to implementation.

@@ -45,10 +45,8 @@ namespace casa { //# begin namespace casa
 // </reviewed>
 //
 // <prerequisite>
-// <ol>
 //   <li> <linkto class="NonLinearFit">NonLinearFit</linkto>
 //   <li> <linkto module="Fitting">Fitting</linkto>
-// </ol>
 // </prerequisite>
 //
 // <etymology>
@@ -68,16 +66,14 @@ namespace casa { //# begin namespace casa
 //
 // See Numerical Recipes for more information
 // on the Levenberg-Marquardt method.
+// </synopsis>
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the NonLinearFit 
-// templated class:
 // <li> Float
 // <li> Double
 // <li> Complex
 // <li> DComplex   
 // </templating>
-// </synopsis>
 //
 // <motivation>
 // Levenberg-Marquardt method is a standard method for non-linear

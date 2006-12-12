@@ -132,7 +132,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    for the C++ preprocessor
 //  </ul>
 // </ul>
-//  </ul>
 //
 // <note role=tip> You may want to look at the individual header files
 // to see whether you might not prefer to include only the header

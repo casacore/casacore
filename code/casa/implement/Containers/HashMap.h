@@ -49,10 +49,10 @@ extern void throw_hashmapiter_init_error();
 // These are the declarations for the standard hash functions
 // used by <linkto class=HashMap>HashMap</linkto>. In general, a function
 // such as these is defined for each type that is to be used as
-// a key in <lineto class=HashMap>HashMap</linkto>.
+// a key in <linkto class=HashMap>HashMap</linkto>.
 //
 // These hash functions map the key type to any integer. This
-// integer is then used by <lineto class=HashMap</linkto> to
+// integer is then used by <linkto class=HashMap>HashMap</linkto> to
 // select a bucket in the hash table.
 // </synopsis>
 //
@@ -107,7 +107,7 @@ const lDouble &defaultHashValue(const lDouble *);
 //      <linkto class=HashMap>HashMap</linkto>.
 //
 //      The hash function maps the key type to any integer. This
-//      integer is then used by <lineto class=HashMap</linkto> to
+//      integer is then used by <linkto class=HashMap>HashMap</linkto> to
 //      select a bucket in the hash table.
 // </synopsis>
 //
@@ -136,7 +136,7 @@ template<class key> class HashClass {
 public:
     //
     // This function maps elements of <src>key</src> type to any integer.
-    // This integer is then used by <lineto class=HashMap</linkto> to
+    // This integer is then used by <linkto class=HashMap>HashMap</linkto> to
     // select a bucket in the hash table.
     //
     virtual uInt hash(const key &) = 0;

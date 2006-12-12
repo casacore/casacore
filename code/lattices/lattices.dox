@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# lattices.dox: doxygen description of lattices package
+//# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,11 @@
 //#
 //# $Id$
 
-
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
-
-// <module>
+// \defgroup lattices lattices package (liblattices)
 //
-// <summary>
-// Logging in AIPS++ tables
-// </summary>
-
-// <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
-// </prerequisite>
+// The lattices package is a generalization of n-dimensional 
+// <linkto module=Arrays>arrays</linkto>.
+// It can hold arrays in memory, on disk, or as a virtual lattice using
+// expressions, subsets, masking, etc.
 //
-
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
-// </reviewed>
-
-// <etymology>
-// </etymology>
-//
-// <synopsis>
-// </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-
-// </module>
-
-#endif
-
+// The <linkto module=images>images</linkto> module is built on top of lattices.

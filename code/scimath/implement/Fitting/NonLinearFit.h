@@ -42,11 +42,9 @@ namespace casa { //# begin namesapce casa
 // </reviewed>
 //
 // <prerequisite>
-// <ol>
 //   <li> <linkto class="Functional">Functional</linkto> 
 //   <li> <linkto class="Function">Function</linkto> 
 //   <li> <linkto module="Fitting">Fitting</linkto>
-// </ol>
 // </prerequisite>
 //
 // <etymology>
@@ -120,8 +118,6 @@ namespace casa { //# begin namesapce casa
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the NonLinearFit 
-// templated class:
 // <li> Float
 // <li> Double
 // <li> Complex

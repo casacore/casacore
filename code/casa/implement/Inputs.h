@@ -36,7 +36,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <module> 
 //
 // <summary> 
-// Inputs.h: a module for simple command line user interface classes
+// A module for simple command line user interface classes
 // </summary>
 
 // <prerequisite>

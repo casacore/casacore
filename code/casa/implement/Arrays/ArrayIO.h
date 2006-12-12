@@ -242,9 +242,9 @@ template<class T> AipsIO &operator>> (AipsIO &, Array<T> &);
 // to a canonical format as
 // <linkto class="AipsIO:description">AipsIO</linkto>
 // does.
-// <warn>
+// <note role=warning>
 // This function is only suitable for built-in data types.
-// </warn>
+// </note>
 // <group>
 template <class T>
 void write_array (const Array<T>& the_array, const String& fileName);
@@ -258,9 +258,9 @@ inline void write_array (const Array<T>& the_array, const Char* fileName)
 // the given name.
 // The number of values read is the size of the Array, thus the file
 // should at least contain that number of values.
-// <warn>
+// <note role=warning>
 // This function is only suitable for built-in data types.
-// </warn>
+// </note>
 // <group>
 template <class T>
 void read_array (Array<T>& the_array, const String& fileName);

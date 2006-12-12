@@ -554,7 +554,7 @@ public:
     // <br>When making a deep copy, it is possible to specify the data managers
     // using the <src>dataManagerInfo</src> argument.
     // See <src>getDataManagerInfo</src> for more info about that record.
-    // <br>If <src/noRows=True</src> no rows are copied. Also no rows are
+    // <br>If <src>noRows=True</src> no rows are copied. Also no rows are
     // copied in all subtables. It is useful if one wants to make a copy
     // of only the Table structure.
     void copy (const String& newName, TableOption, Bool noRows=False) const;

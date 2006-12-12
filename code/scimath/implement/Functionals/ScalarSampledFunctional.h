@@ -109,12 +109,12 @@ template<class T> class Block;
 // </motivation>
 
 // <templating arg=Range>
-// Very few assumptions are made on the templating type. So this class
+// <li> Very few assumptions are made on the templating type. So this class
 // should work for a wide variety of templates types. 
 // </templating>
 
 // <thrown>
-// Exceptions are not thrown directly by this class.
+// <li> Exceptions are not thrown directly by this class.
 // </thrown>
 
 // <todo asof="1996/10/28">

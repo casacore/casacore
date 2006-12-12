@@ -718,8 +718,8 @@ public:
     // as the source.
     // <br>Note that there exist TableExprNodeSet constructors to
     // convert an <src>IPosition</src> or <src>Slicer</src> object
-    // automatically to a <src/TableExprNodeSet</src>.
-    // An <src>IPosition<src> addresses a single element and results in
+    // automatically to a <src>TableExprNodeSet</src>.
+    // An <src>IPosition</src> addresses a single element and results in
     // a scalar node, while a <src>Slicer</src> can address multiple
     // elements and always results in an array node.
     TableExprNode operator() (const TableExprNodeSet& indices);

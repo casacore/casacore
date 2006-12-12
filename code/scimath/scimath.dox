@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# scimath.dox: doxygen description of scimath package
+//# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,12 @@
 //#
 //# $Id$
 
-
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
-
-// <module>
+// \defgroup scimath scimath package (libscimath)
 //
-// <summary>
-// Logging in AIPS++ tables
-// </summary>
-
-// <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
-// </prerequisite>
-//
-
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
-// </reviewed>
-
-// <etymology>
-// </etymology>
-//
-// <synopsis>
-// </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-
-// </module>
-
-#endif
+// The scimath package contains the basic mathematical modules of AIPS++.
+// <ul>
+//  <li> Functionals: n-dimensional functions with automatic differentation.
+//  <li> Fitting: linear and non-linear fitting to parameters or Functionals.
+//  <li> Mathematics: FFT, convolution, 2-dim interpolation, random numbers.
+// </ul>
 

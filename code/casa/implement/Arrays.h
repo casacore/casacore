@@ -207,6 +207,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // cout << shp << blc << trc << inc << endl;
 // </srcblock>
 //   </ul>
+// </ul>
 
 // The <linkto module=Arrays:classes>detailed discussions</linkto> for the
 // classes and global functions will describe how to use them.

@@ -45,11 +45,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-// <ol>
 //   <li> <linkto class="Functional">Functional</linkto> 
 //   <li> <linkto class="Function">Function</linkto> 
 //   <li> <linkto module="Fitting">Fitting</linkto>
-// </ol>
 // </prerequisite>
 //
 // <etymology>
@@ -135,8 +133,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// The following data types can be used to instantiate the LinearFit 
-// templated class:
 // <li> Float
 // <li> Double
 // <li> Complex
@@ -154,7 +150,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // the minimum angle allowed.
 //
 // Singular Value Decomposition is supported by the
-// <limkto class=LinearFitSVD>LinearFitSVD</linkto> class,
+// <linkto class=LinearFitSVD>LinearFitSVD</linkto> class,
 // which has a behaviour completely identical to this class (apart from a
 // default collinearity of 1e-8). 
 //

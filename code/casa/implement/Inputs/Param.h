@@ -130,7 +130,8 @@ public:
   // assignment operator
   Param& operator= (const Param&);
   
-  // Equality comparitor <note role=warning> This function ALWAYS returns 
+  // Equality comparitor.
+  // <note role=warning> This function ALWAYS returns 
   // false.  I have no idea why it was designed to do this. </note>
   Bool operator== (const Param&) const;
   

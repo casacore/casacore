@@ -57,7 +57,7 @@ class String;
 // </etymology>
 //
 // <templating arg=T>
-// The accepted input types are real, i.e. Int, uInt, Float, Double, 
+// <li> The accepted input types are real, i.e. Int, uInt, Float, Double, 
 // but not Complex. 
 // </templating>
 

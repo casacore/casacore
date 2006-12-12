@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# mainpage.dox: doxygen description of casa package
+//# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,27 @@
 //#
 //# $Id$
 
-
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
-
-// <module>
+// \mainpage AIPS++/CASA
 //
-// <summary>
-// Logging in AIPS++ tables
-// </summary>
-
-// <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
-// </prerequisite>
+// AIPS++/CASA is an astronomical data processing system developed by a
+// consortium of (radio-)astronomical institutes.
+// See the <a href="http://aips2.nrao.edu">AIPS++ pages</a> for more
+// information on AIPS++/CASA.
 //
-
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
-// </reviewed>
-
-// <etymology>
-// </etymology>
+// The system consists of a set of layered libraries (packages) which can 
+// be seen on Doxygen's Modules page.
+// <br>
+// Bindings to the libraries have been created for
+// <a href="http://www.python.org">Python</a> and
+// <a href="http://aips2.nrao.edu/docs/glish/glish.html">Glish</a>.
 //
-// <synopsis>
-// </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-
-// </module>
-
-#endif
-
+// The main features of AIPS++/CASA are:
+// <ul>
+//  <li>N-dim functions with auto-differentiation and linear or non-linear
+//      fitting.
+//  <li>Table data system supporting N-dim arrays with advanced querying.
+//  <li>Values with physical units (Quanta) and astronomical reference frames
+//      (Measures).
+//  <li>MeasurementSets for storing data in the UV-domain.
+//  <li>N-dim images in world coordinates with various analysis operations.
+// </ul>

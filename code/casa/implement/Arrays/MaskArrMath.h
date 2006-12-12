@@ -440,10 +440,10 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 // <example>
 // Determine for each element in the array the median of a box
 // with size [51,51] around that element:
-// <verbatim>
+// <srcblock>
 //    Array<Float> medians = boxedArrayMath(in, IPosition(2,25,25),
 //                                          casa::median);
-// </verbatim>
+// </srcblock>
 // This is a potentially expensive operation. On a high-end PC it took
 // appr. 27 seconds to get the medians for an array of [1000,1000] using
 // a halfBoxSize of [50,50].
@@ -456,6 +456,7 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 // all kinds of smart implementations. For a vector it is about as fast
 // as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
 // it is much, much faster.
+// </note>
 template <typename T>
 Array<T> slidingArrayMath (const MaskedArray<T>& array,
 			   const IPosition& halfBoxSize,

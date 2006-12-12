@@ -118,8 +118,8 @@ class Table;
 // </motivation>
 
 // <templating arg=T>
-// Any type that can be used by the Lattices can also be used by
-// this class.
+//  <li> Any type that can be used by the Lattices can also be used by
+//       this class.
 // </templating>
 
 //# <todo asof="yyyy/mm/dd">

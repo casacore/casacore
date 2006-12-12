@@ -54,7 +54,7 @@ template<class T> class MaskedLattice;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=></linkto>
+//   <li> <linkto class=Lattice>Lattice</linkto>
 // </prerequisite>
 
 // <synopsis> 

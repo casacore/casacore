@@ -67,7 +67,9 @@ public:
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeCleaner">
 // </reviewed>
 
-// <prerequisite> The mathematical concept of deconvolution </prerequisite>
+// <prerequisite>
+//  <li> The mathematical concept of deconvolution
+// </prerequisite>
 //
 // <etymology>
 

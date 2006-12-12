@@ -238,7 +238,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      original table are changed.
 //      The <linkto class=Table>Table::deepCopy</linkto> function can be
 //      used to turn a reference table into a plain table.
-// <ul>
+// </ul>
 // Concurrent access from different processes to the same plain table is
 // fully supported by means of a <A HREF="#Tables:LockSync">
 // locking/synchronization</A> mechanism. Concurrent access over NFS is also
@@ -748,7 +748,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <br>Such a command can be executed with the static function
 // <src>TableParse::tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
-// </note>
 
 // <A NAME="Tables:iterate">
 // <h3>Table Iterators</h3></A>

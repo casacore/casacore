@@ -23,7 +23,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//#! ========================================================================
 //# $Id$
 
 #ifndef SCIMATH_SIMBUTTERWORTHBANDPASS_H
@@ -235,6 +234,7 @@ public:
     // maxOrder   TpInt   the order of the Butterworth function for the 
     //                    maximum (low-pass) portion of the bandpass
     // An exception is thrown if either value is less than zero
+    // </pre>
     // <group>
     virtual void setMode(const RecordInterface& mode);
     virtual void getMode(RecordInterface& mode) const;

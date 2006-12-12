@@ -255,6 +255,7 @@ template<class T> class TablePlot
 		// input parameters are used. 
 		//
                 // Record field names and default values :
+		// <ul>
                 // <li> nxpanels = 1
                 // <li> nypanels = 1
                 // <li> windowsize = nxpanels * 5.0 (inches)
@@ -274,7 +275,7 @@ template<class T> class TablePlot
 		//                  data ranges if they lie within it.
 		// <li> useflags = 0 (0:plot only unflagged data, 1:plot only flagged data
 		//		       2:plot both flagged and unflagged data in diff colours)
-		//
+		// </ul>
 		// The 'labels' parameter is a vector of strings with any of or all
 		// three of the strings 'title','xlabel','ylabel' in this order.
                 // In multiple panel plots, the same labels are applied to
@@ -290,21 +291,24 @@ template<class T> class TablePlot
 		// 
 		// Valid TaQL strings must satisfy the following conditions.
 		// Each TaQL string must result in a Double scalar or array.
+		// <ul>
 		// <li> 'AMPLITUDE(DATA[1,1])' results in a Double scalar (valid).
 		// <li> 'AMPLITUDE(DATA[1:2,1])' results in a Double array (valid).
 		// <li> 'MEAN(AMPLITUDE(DATA[1:2,1]))' results in a Double scalar (valid).
 		// <li> 'DATA[1,1]' results in a Complex scalar (NOT valid).
 		// <li> 'AMPLITUDE(DATA[1,1])<10' results in a Bool scalar (NOT valid).
-                //
+                // </ul>
 		// All TaQL functions resulting in Double Scalars/Arrays are allowed,
                 // except for those involving an explicit collapse axis (means,sums,etc..).
 		// Note that these functions are different from mean,sum,etc.. which are supported.
                 //
 		// TaQL strings must be provided as pairs of strings, with the
 		// X-TaQL first, followed by the Y-TaQL. There are 3 cases.
+		// <ol>
 		// <li> X-TaQL - Scalar, Y-TaQL - Scalar (one-to-one single plot)
 		// <li> X-TaQL - Scalar, Y-TaQL - Array (one-to-many overlay plot)
 		// <li> X-TaQL - Array, Y-TaQL - Array (if the shapes are
+		// </ol>
 		// the same, then a one-to-one mapping is done, otherwise only the first 
 		// X-TaQL result is used for a one-to-many mapping with the Y-TaQL Array.)
 		//

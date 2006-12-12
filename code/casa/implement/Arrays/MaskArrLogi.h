@@ -284,7 +284,7 @@ MaskedLogicalArray operator ! (const MaskedArray<T> &marray);
 // behaves as if it were a conformant array filled with the value "val."
 // The result is true only if the comparison is true for every element
 // for which the mask of the MaskedArray is True.
-//// <thrown>
+// <thrown>
 //   <li> ArrayError
 // </thrown>
 //

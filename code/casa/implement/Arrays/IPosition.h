@@ -429,7 +429,7 @@ uInt toOffsetInArray (const IPosition& iposition, const IPosition& shape);
 // require that type T have shape and origin members which return
 // IPositions.
 // <thrown>
-//   <item> ArrayConformanceError: If all the IPositions are not the same length
+//   <li> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>
 // <group>
 Bool isInsideArray (const uInt offset, const IPosition& shape);

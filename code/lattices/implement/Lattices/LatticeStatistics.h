@@ -110,12 +110,13 @@ class IPosition;
 // you with a little more information when displaying/logging the 
 // statistics (such as world coordinates)
 // The virtual functions are
-//
+// <ul>
 // <li> <src>getBeamArea</src> can be used to return the synthesized beam
 //    area so that the FLUX statistic can be computed
 // <li> <src>listStats</src> is used to list the statistics to the logger
 // <li> <src>getLabelsM</src> find the X-axis label and the title label
 //     for the plotting.   
+// </ul>
 // </note>
 //
 // <note role=tip>

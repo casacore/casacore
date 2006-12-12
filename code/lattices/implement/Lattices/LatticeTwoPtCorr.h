@@ -72,10 +72,10 @@ class String;
 // </example>
 
 
-//# <todo asof="yyyy/mm/dd">
+// <todo asof="yyyy/mm/dd">
 // <li> Add additional algorithms other than the structure function
 // <li> Allow cross correlation algorithms as well as autocorrelation
-//# </todo>
+// </todo>
 
 
 template <class T> class LatticeTwoPtCorr

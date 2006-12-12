@@ -53,7 +53,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <prerequisite>
 //#! Classes or concepts you should understand before using this class.
-// BasePlot
+//  <li> BasePlot
 // </prerequisite>
 
 // <etymology>

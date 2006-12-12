@@ -55,7 +55,9 @@ typedef Convolver<Double> DoubleConvolver;
 // tests="tConvolution">
 // </reviewed>
 
-// <prerequisite> The mathematical concept of convolution </prerequisite>
+// <prerequisite>
+// <li> The mathematical concept of convolution
+// </prerequisite>
 //
 // <etymology>
 // The convolver class performs convolution!

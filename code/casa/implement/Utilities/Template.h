@@ -50,7 +50,7 @@ template <class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//   Knowledge about the aips++ DYO template system
+//  <li> Knowledge about the aips++ DYO template system
 // </prerequisite>
 
 // <synopsis>

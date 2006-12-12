@@ -105,8 +105,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
 // </ul>
 
-// </note>
-
 // </synopsis>
 
 // <example>

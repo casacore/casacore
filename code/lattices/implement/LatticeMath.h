@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# LatticeMath.h: Mathematical operations (fitting) on lattices
+//# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,36 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEMATH_H
+#define LATTICES_LATTICEMATH_H
 
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
+#include <lattices/LatticeMath/LatticeFit.h>
+#include <lattices/LatticeMath/Fit2D.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <module>
-//
+
 // <summary>
-// Logging in AIPS++ tables
+// Mathematical operations (fitting) on lattices.
 // </summary>
 
 // <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
+//   <li> module <linkto module=Lattices>Lattices</linkto>
+//   <li> module <linkto module=Fitting>Fitting</linkto>
+//   <li> module <linkto module=Functionals>Functionals</linkto>
 // </prerequisite>
-//
 
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
+// <reviewed reviewer="Peter Barnes" date="1999/10/30" demos="">
 // </reviewed>
 
-// <etymology>
-// </etymology>
-//
 // <synopsis>
+// LatticeMath contains a few classes to do fitting of a 1-dim or 2-dim
+// functional to the data in a lattice.
 // </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
 
 // </module>
 
-#endif
+} //# NAMESPACE CASA - END
 
+#endif

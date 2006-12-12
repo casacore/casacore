@@ -84,12 +84,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 
 // <templating arg=Range>
-// Templating restrictions will depend on the actual derived class that is
+// <li> Templating restrictions will depend on the actual derived class that is
 // used. 
 // </templating>
 
 // <thrown>
-// Exceptions will depend on derived classes and the templating
+// <li> Exceptions will depend on derived classes and the templating
 // arguements. This abstract class only defines an interface and does not
 // throw any exceptions. 
 // </thrown>

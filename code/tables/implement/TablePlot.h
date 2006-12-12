@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# TablePlot.h: The TablePlot module - Plotting AIPS++ table data
+//# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,23 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TABLEPLOT_MOD_H
+#define TABLES_TABLEPLOT_MOD_H
 
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
+//# Includes
+//#   table description
+#include <tables/TablePlot/TablePlot.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <module>
-//
+
 // <summary>
-// Logging in AIPS++ tables
+// TablePlot can plot the data from AIPS++ tables using TaQL commands.
 // </summary>
-
-// <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
-// </prerequisite>
-//
-
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
-// </reviewed>
-
-// <etymology>
-// </etymology>
-//
-// <synopsis>
-// </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
 
 // </module>
 
-#endif
+} //# NAMESPACE CASA - END
 
+#endif

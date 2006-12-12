@@ -101,19 +101,17 @@ typedef Quantum<Double> Quantity;
 // 
 //
 //  <h3> Manipulating quantities </h3>
-// <linkto group="QMath.h#Quantum mathematical operations">Mathematical
-// operators and functions</linkto> and
-//  <linkto group="QLogical.h#Quantum logical operations">logical
-// operations</linkto> (comparisons) are defined on Quantums. They are,
+// <linkto group="QMath.h#Quantum mathematical operations">Mathematical operators and functions</linkto> and
+//  <linkto group="QLogical.h#Quantum logical operations">logical operations</linkto> (comparisons)
+// are defined on Quantums. They are,
 // of course, only available if the template Type supports them.
 // <ul>
 // <li> <src>=		assignment of identical <type></src>
 // <li> <src>* *=	multiple two Quantums of same <type>, or Quantum and type</src>
 // <li> <src>/ /=	divide two Quantums of same <type>, or Quantum and type</src>
-// <note role=tip>
+// note:
 // In multiplication and division, and if <src><type></src> is scalar, the left or
 // right-hand side can be of type <src><type></src> (e.g 2.*Quantity is allowed)
-// </note>
 // <li> <src>+ +=	add two Quantums of same <type> or Quantum and type</src>
 //		and same unit dimensions (else exception)
 // <li> - -=	subtract (same as +)
@@ -247,12 +245,6 @@ typedef Quantum<Double> Quantity;
 // </motivation>
 
 // <templating arg=Qtype>
-//   <note role=caution>
-//	It is assumed that all the following functions return either Bool or
-//	the same data type as inputted (i.e. QType). Special functions are
-//	provided in this module to convert Int and LogicalArray to Bool;
-//	and to convert were necessary to Complex (e.g. abs(Complex)).
-//   </note>
 //   <li> prefix +,-
 //   <li> + - * / and += -= *= /=
 //   <li> <src>< <= == != >= ></src>
@@ -266,6 +258,12 @@ typedef Quantum<Double> Quantity;
 //   <li> abs 
 //   <li> ceil 
 //   <li> floor
+//   <li> <note role=caution>
+//	It is assumed that all these functions return either Bool or
+//	the same data type as inputted (i.e. QType). Special functions are
+//	provided in this module to convert Int and LogicalArray to Bool;
+//	and to convert were necessary to Complex (e.g. abs(Complex)).
+//   </note>
 // </templating>
 
 // <todo asof="941123">

@@ -327,7 +327,7 @@ public:
   // </group>
 
   // Return the axis path.
-  // See <class linkto=LatticeStepper>LatticeStepper</linkto> for a
+  // See <linkto class=LatticeStepper>LatticeStepper</linkto> for a
   // description and examples.
   virtual const IPosition& axisPath() const = 0;
 

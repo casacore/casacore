@@ -88,7 +88,7 @@ template<class T> class Vector;
 // </synopsis>
 
 // <todo asof="$DATE:$">
-// A List of bugs, limitations, extensions or planned refinements.
+//# A List of bugs, limitations, extensions or planned refinements.
 //  <li> Introduce a class ArrayRecordColumnData to support arrays of records.
 // </todo>
 

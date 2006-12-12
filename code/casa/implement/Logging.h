@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <module> 
 //
 // <summary> 
-// Logging.h: Send, record, and filter informational messages.
+// Send, record, and filter informational messages.
 // </summary>
 
 // <prerequisite>
@@ -48,6 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <reviewed reviewer="wbrouw" date="1996/08/21" demos="dLogging.cc" tests="tLogging.cc">
+// </reviewed>
 
 // <etymology>
 // Logging, as in "log book", or "processing log."
@@ -103,7 +104,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // classes to use <src>String</src>s or <src>ostream</src>s, since the
 // caller of that class will have the opportunity to put the text in a log
 // message if he decides that's the most appropriate thing to do. Note that
-// it is always wrong to write directly to <src>cout</src> or </cerr> (other
+// it is always wrong to write directly to <src>cout</src> or
+// <src>cerr</src> (other
 // then for debugging) - use an <src>ostream</src>, so the caller can replace
 // it with, for example, an <src>ostringstream</src>.
 //

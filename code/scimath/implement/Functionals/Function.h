@@ -81,7 +81,7 @@ class RecordInterface;
 // <li> <src>operator()(const T &x, const T &y, const T &z)</src> (for 3D)
 // </ul>
 // The <src>T</src> in the above is the <src>Function::ArgType</src>
-// as derived from the <linkto class="FunctionTraits">FunctionTraits</a>
+// as derived from the <linkto class="FunctionTraits">FunctionTraits</linkto>
 // class.
 // These calls are (in debug mode) tested for the correct number of arguments,
 // after which they call a <src>T eval(FunctionArg x) const = 0</src> to

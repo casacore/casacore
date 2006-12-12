@@ -94,7 +94,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 
 // <templating arg=T>
-// The template type MUST be an Array of some arbitrary type. This is
+// <li> The template type MUST be an Array of some arbitrary type. This is
 // because this class will return a slice of this Array. The Array template
 // type cannot be subsumed into the class definition because the definition
 // of the inherited operator() function means that the return type must be
@@ -102,7 +102,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </templating>
 
 // <thrown>
-// Exceptions are not thrown directly by this class.
+// <li> Exceptions are not thrown directly by this class.
 // </thrown>
 
 // <todo asof="1996/10/19">

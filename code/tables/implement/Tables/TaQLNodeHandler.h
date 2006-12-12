@@ -85,6 +85,7 @@ class TaQLNodeHRValue;
 //  <li> It is possible to use expressions in the column list.
 //       That could not be done before, because the column list was
 //       parsed/processed before the table list.
+// </ul>
 // </motivation>
 
 class TaQLNodeHandler : public TaQLNodeVisitor

@@ -274,8 +274,9 @@ inline TableExprNodeRep* TableExprNodeSetElem::increment() const
 //      All set elements must be scalars of any type.
 // </ol>
 // The type of all set elements has to be the same.
-// The set consists of <linkto class=TableExprNodeSetElem>TableExprNodeSetElem
-// <linkto> elements. The <src>add</src> function has to be used to
+// The set consists of
+// <linkto class=TableExprNodeSetElem>TableExprNodeSetElem</linkto>
+// elements. The <src>add</src> function has to be used to
 // add an element to the set.
 // <p>
 // It is possible to construct the object directly from an

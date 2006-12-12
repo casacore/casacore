@@ -363,7 +363,7 @@ private:
   // Construct the cache object (if not constructed yet).
   void makeCache();
   
-  // Read the header..
+  // Read the header.
   void readHeader();
   
   // Read the index from its buckets.

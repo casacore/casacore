@@ -1,5 +1,5 @@
-//# LogTables.h:  a module for log tables
-//# Copyright (C) 2003
+//# tables.dox: doxygen description of tables package
+//# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,38 +25,12 @@
 //#
 //# $Id$
 
-
-#if !defined (AIPS_MODULE_LOGTABLES_H)
-#define AIPS_MODULE_LOGTABLES_H
-
-// <module>
+// \defgroup tables tables package (libtables)
 //
-// <summary>
-// Logging in AIPS++ tables
-// </summary>
-
-// <prerequisite>
-//   <li> <linkto module=Logging>Logging</linkto>
-//   <li> <linkto module=Tables>Tables</linkto>
-// </prerequisite>
-//
-
-// <reviewed reviewer="" date="yyyy/mm/dd" demos="">
-// </reviewed>
-
-// <etymology>
-// </etymology>
-//
-// <synopsis>
-// </synopsis>
-//
-// <example>
-// </example>
-//
-// <motivation>
-// </motivation>
-
-// </module>
-
-#endif
+// The tables package contains the core modules for the AIPS++ Table System:
+// <ul>
+//  <li> Tables: data base like tables
+//  <li> TablePlot: table plotting facilities
+//  <li> LogTables: logging tables
+// </ul>
 

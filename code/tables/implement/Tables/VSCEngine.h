@@ -73,10 +73,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // of an engine AVSCEngine handling a data type A.
 //
 // In principle the name of the engine class is free, but it is strongly
-// recommended to use the name <dataTypeId>VSCEngine, where VSC stands
-// for Virtual Scalar Column (e.g. AVSCEngine for class A). In this way
-// the default data manager name supplied by the class and by class
-// ScalarColumnDesc can be used.
+// recommended to use the name <src><dataTypeId>VSCEngine</src>, where VSC
+// stands for Virtual Scalar Column (e.g. <src>AVSCEngine</src> for class A).
+// In this way the default data manager name supplied by the class and by
+// class ScalarColumnDesc can be used.
 // </synopsis> 
 
 // <example>

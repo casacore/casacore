@@ -75,8 +75,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <templating arg=T>
-// Any type that can be used by the Tables System can also be used by
-// this class.
+//  <li> Any type that can be used by the Tables System can also be used by
+//       this class.
 // </templating>
 
 //# <todo asof="yyyy/mm/dd">

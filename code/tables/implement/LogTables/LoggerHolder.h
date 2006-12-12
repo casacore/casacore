@@ -76,7 +76,8 @@ class TableLogSink;
 // be used. This is an STL-style const_iterator object.
 //
 // LoggerHolder uses reference counting
-// (of class <linkto class=LoggerHolderRep</linkto>) to be able to retain
+// (of class <linkto class=LoggerHolderRep>LoggerHolderRep</linkto>)
+// to be able to retain
 // the object after the (ImageInterface) object containing it is gone.
 // Otherwise classes like SubImage would lose their log info.
 // </synopsis>

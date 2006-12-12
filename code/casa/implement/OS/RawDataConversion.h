@@ -170,7 +170,7 @@ public:
     // </group>
 
     // Get the external size of the data type.
-    // This returns the </src>sizeof</src>.
+    // This returns the <src>sizeof</src>.
     // <group>
     virtual unsigned int externalSize (const char*) const;
     virtual unsigned int externalSize (const unsigned char*) const;

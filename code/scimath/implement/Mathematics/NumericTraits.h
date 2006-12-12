@@ -111,6 +111,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <note role=warning> The specialized instantiations seem to have a name with
 // an appended code. This is only for cxx2html reasons. The name is in all
 // cases <src>NumericTraits</src>
+// </note>
+//
+// This class is implemented as a number of specialisations for the
+// following data types.
+// <ul> 
+// <li> Float
+// <li> Double
+// <li> Complex
+// <li> DComplex
+// </ul>
+// This class should not be used with other template types and does nothing
+// except return its template type if it is used. ie. <br>
+// <src>NumericTraits<ArbitraryType>::ConjugateType</src> returns 
+//   <src>Char</src> and <br>
+// <src>NumericTraits<ArbitraryType>::PrecisionType</src> returns 
+//   <src>Char</src><br>
+// <src>NumericTraits<ArbitraryType>::epsilon</src> is undefined<br>
+// <src>NumericTraits<ArbitraryType>::minimum</src> is undefined<br>
+// <src>NumericTraits<ArbitraryType>::maximum</src> is undefined
 // </synopsis>
 //
 // <example>
@@ -192,32 +211,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // should be), even though the FFTServer it contains is doubly templated. 
 // </motivation>
 //
-// <templating arg=T>
-// This class is implemented as a number of specialisations for the
-// following data types.
-// <ul> 
-// <li> Float
-// <li> Double
-// <li> Complex
-// <li> DComplex
-// </ul>
-// This class should not be used with other template types and does nothing
-// except return its template type if it is used. ie. <br>
-// <src>NumericTraits<ArbitraryType>::ConjugateType</src> returns 
-//   <src>Char</src> and <br>
-// <src>NumericTraits<ArbitraryType>::PrecisionType</src> returns 
-//   <src>Char</src><br>
-// <src>NumericTraits<ArbitraryType>::epsilon</src> is undefined<br>
-// <src>NumericTraits<ArbitraryType>::minimum</src> is undefined<br>
-// <src>NumericTraits<ArbitraryType>::maximum</src> is undefined
-// </templating>
-//
 // <thrown>
-// This class does not throw any exceptions
+// <li> This class does not throw any exceptions
 // </thrown>
 //
 // <todo asof="2002/06/25">
-// Nothing (I hope!)
+// <li> Nothing (I hope!)
 // </todo>
 //
 

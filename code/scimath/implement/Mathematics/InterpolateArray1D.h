@@ -64,10 +64,12 @@ template <class T> class Vector;
 // abscissa should have a unique value. 
 //
 // Interpolation can be done using the following methods:
+// <ul>
 //   <li> Nearest Neighbour 
 //   <li> Linear (default unless there is only one data point)
 //   <li> Cubic Polynomial
 //   <li> Natural Cubic Spline
+// </ul>
 //
 // The abscissa must be a simple type (scalar value) that
 // can be ordered. ie. an uInt, Int, Float or Double (not Complex). The
@@ -111,12 +113,12 @@ template <class T> class Vector;
 // </motivation>
  
 // <templating arg=Domain>
-// The Domain class must be a type that can be ordered in a mathematical
+// <li> The Domain class must be a type that can be ordered in a mathematical
 // sense. This includes uInt, Int, Float, Double, but not Complex. 
 // </templating>
  
 // <templating arg=Range>
-// The Range class must have addition and subtraction of Range objects with
+// <li> The Range class must have addition and subtraction of Range objects with
 // each other as well as multiplication by a scalar defined. Besides the
 // scalar types listed above this includes Complex, DComplex, and Arrays of
 // any of these types. Use of Arrays is discouraged however.

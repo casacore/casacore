@@ -48,6 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tUnit tQuantum"
 //	 demos="dMUString">
+// </reviewed>
 
 // <prerequisite>
 // </prerequisite>
@@ -68,8 +69,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // (<linkto class=Euler>Euler</linkto> angles,
 // <linkto class=RotMatrix>rotation matrix</linkto>,
 // <linkto class=MUString>pointed string</linkto>), formatting for
-// <linkto class=MVTime>time</linkto> and <linkto class=MVAngle>angle classes
-// and classes containing information for
+// <linkto class=MVTime>time</linkto> and <linkto class=MVAngle>angle</linkto>
+// classes and classes containing information for
 // Measures (<linkto class=MeasValue>MeasValue</linkto> and the derived MV
 // classes like <linkto class=MVEpoch>MVEpoch</linkto>). See the
 // <a href="#MeasValue">MeasValue</a> section.
@@ -129,7 +130,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // defined names can be added by the UnitMap::putUser() function (see
 // <linkto class="UnitMap">UnitMap</linkto>). A special set of FITS related 
 // units can be added by the <src>UnitMap::addFITS()</src> function. For 
-// details, see  linkto class="UnitMap">UnitMap</linkto>.
+// details, see <linkto class="UnitMap">UnitMap</linkto>.
 //
 // Example:
 // <srcblock>
@@ -374,15 +375,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //	MV(Quantity, Quantity)
 // </srcblock>
 // The actual interpretation is class dependent: see the individual MV classes
-// like </linkto class=MVEpoch>MVEpoch</linkto>,
-// </linkto class=MVDirection>MVDirection</linkto>,
-// </linkto class=MVPosition>MVPosition</linkto>,
-// </linkto class=MVFrequency>MVFrequency</linkto>,
-// </linkto class=MVDouble>MVDouble</linkto>,
-// </linkto class=MVRadialVelocity>MVRadialVelocity</linkto>.
-// </linkto class=MVBaseline>MVBaseline</linkto>,
-// </linkto class=MVuvw>MVuvw</linkto>,
-// </linkto class=MVEarthMagnetic>MVEarthMagnetic</linkto>,
+// like <linkto class=MVEpoch>MVEpoch</linkto>,
+// <linkto class=MVDirection>MVDirection</linkto>,
+// <linkto class=MVPosition>MVPosition</linkto>,
+// <linkto class=MVFrequency>MVFrequency</linkto>,
+// <linkto class=MVDouble>MVDouble</linkto>,
+// <linkto class=MVRadialVelocity>MVRadialVelocity</linkto>.
+// <linkto class=MVBaseline>MVBaseline</linkto>,
+// <linkto class=MVuvw>MVuvw</linkto>,
+// <linkto class=MVEarthMagnetic>MVEarthMagnetic</linkto>,
 // A few examples:
 // <srcblock>
 //   MVEpoch(12345, 0.1e-20) will create one epoch (MJD12345.0), but preserving

@@ -112,6 +112,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Note that the class names in the following definitions are extended with
 // some individual id (like <src>_PA</src>): do not use them in programming,
 // they are only necessary for the <src>cxx2html</src> interpreter)
+//
+// This class is implemented as a number of specializations for the
+// following data types.
+// <ul> 
+// <li> <src>T</src>
+// <li> <src>AutoDiff<T></src>
+// <li> <src>AutoDiffA<T></src>
+// <li> <src>AutoDiffX<T></src>
+// </ul>
 // </synopsis>
 //
 // <example>
@@ -121,17 +130,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <motivation>
 // To keep the Function class single templated
 // </motivation>
-//
-// <templating arg=T>
-// This class is implemented as a number of specializations for the
-// following data types.
-// <ul> 
-// <li> <src>T</src>
-// <li> <src>AutoDiff<T></src>
-// <li> <src>AutoDiffA<T></src>
-// <li> <src>AutoDiffX<T></src>
-// </ul>
-// </templating>
 //
 // <todo asof="2002/06/19">
 //  <li> Additional <src>AutoDiff*</src> classes if and when needed

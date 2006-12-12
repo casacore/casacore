@@ -56,7 +56,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class=TiledFileAccess>TiledFileAccess</linkto>.
 // It sets up a table description containing one array column
 // to make it possible to use the
-// <linkto class=TiledStMan>tiled storage manager<linkto>
+// <linkto class=TiledStMan>tiled storage manager</linkto>
 // to access an array in an arbitrary file.
 // </synopsis> 
 

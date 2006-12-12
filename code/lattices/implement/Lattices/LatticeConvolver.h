@@ -65,7 +65,9 @@ public:
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeConvolver">
 // </reviewed>
 
-// <prerequisite>The mathematical concept of convolution</prerequisite>
+// <prerequisite>
+//  <li> The mathematical concept of convolution
+// </prerequisite>
 //
 // <etymology>
 // The LatticeConvolver class will convolve Lattices. This class

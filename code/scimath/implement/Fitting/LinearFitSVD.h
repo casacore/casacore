@@ -43,10 +43,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-// <ol>
 //   <li> <linkto class="LinearFit">LinearFit</linkto>
 //   <li> <linkto module="Fitting">Fitting</linkto>
-// </ol>
 // </prerequisite>
 //
 // <etymology>

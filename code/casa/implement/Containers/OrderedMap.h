@@ -356,7 +356,7 @@ public:
   // Retrieve the value at the given index in the internal block
   // which stores the representation of the OrderedMap.
   //
-  // <note> This should typically not be used.
+  // <note> This should typically not be used.</note>
   //
   //+grp
   value &getVal(uInt inx) {

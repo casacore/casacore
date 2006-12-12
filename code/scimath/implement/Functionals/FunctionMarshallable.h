@@ -106,7 +106,7 @@ public:
 
     // store the state of this Function into a Record
     // <thrown>
-    // InvalidSerializationError  if an error during serialization
+    //  <li> InvalidSerializationError  if an error during serialization
     // </thrown>
     virtual void store(Record& gr) const = 0;
 
