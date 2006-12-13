@@ -610,6 +610,7 @@ PERL5    :=
 # Absolute pathnames of doxygen and dot executables (if available).
 DOXYGEN  :=
 DOXYDOT  :=
+DOXYGENCFG = $(shell if [ -f $(AIPSSITE)/doxygen.cfg ]; then echo "$(AIPSSITE)/doxygen.cfg"; else echo "$(CODEINSD)/docutils/doxygen.cfg"; fi )
 
 # How to delete files.
 RM       := rm -f
@@ -670,6 +671,7 @@ DOCDOXY   := docdoxy changelogs
 
 # What standard packages to build (default is all including demo).
 PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
+DOXYPACKAGES = $(PACKAGES)
 
 # Unset this to defeat glish build.
 AIPSGLISH := aips
