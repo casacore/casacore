@@ -54,7 +54,8 @@ else
    INCLINKS := $(patsubst $(AIPSCODE)/%/implement,include/%, \
                     $(wildcard $(AIPSCODE)/*/implement))
 endif
-
+# appsglish/apps symlink is needed to compile the megaserver
+INCLINKS += include/appsglish
 
 # Subdirectories in which to invoke "allsys", in order.
 #------------------------------------------------------
