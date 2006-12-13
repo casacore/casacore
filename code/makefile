@@ -57,6 +57,7 @@ endif
 # appsglish/apps symlink is needed to compile the megaserver
 INCLINKS += include/appsglish
 
+
 # Subdirectories in which to invoke "allsys", in order.
 #------------------------------------------------------
 ALLSYSD  := install $(AIPSGLISH) $(PACKAGES)
@@ -133,17 +134,16 @@ changelogs :
 	   buildchangelog -split module -dir $(AIPSROOT)/docs/project/releasenotes/changelogs $(AIPSROOT)/code
 
 docdoxy : $(AIPSDOCS)/doxygen 
-	 @ cp $(CODEINSD)/docutils/doxygen.cfg $</doxygen.cfg; \
+	 @ cp $(DOXYGENCFG) $</doxygen.cfg; \
 	   if [ "$(DOXYDOT)" != "" ]; then \
 	     echo "HAVE_DOT         = YES" >> $</doxygen.cfg; \
 	     echo "DOT_PATH         = $(DOXYDOT)" >> $</doxygen.cfg; \
 	   fi; \
 	   echo "OUTPUT_DIRECTORY = $<" >> $</doxygen.cfg; \
 	   echo "STRIP_FROM_PATH  = $(AIPSCODE)" >> $</doxygen.cfg; \
-	   echo "INPUT            = $(PACKAGES)" >> $</doxygen.cfg; \
-	   echo "IMAGE_PATH       = ." >> $</doxygen.cfg; \
+	   echo "INPUT            = $(DOXYPACKAGES)" >> $</doxygen.cfg; \
 	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> $</doxygen.cfg; \
-	   echo "GENERATE_TAGFILE = $</casa.tag" >> $</doxygen.cfg; \
+	   echo "GENERATE_TAGFILE = $</aipspp.tag" >> $</doxygen.cfg; \
            $(RM) $</doxygen.log;
 	 $(DOXYGEN) $</doxygen.cfg 2>&1 > $</doxygen.log
 
