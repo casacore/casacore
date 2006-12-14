@@ -699,18 +699,17 @@ ifeq "$(MAKEMODE)" "programmer"
 	  done
 
     doxygen :
-	 @ mkdir -p doc; \
-	   cp $(CODEINSD)/docutils/doxygen.cfg doxygen/doxygen.cfg; \
+	 @ mkdir -p doxygen; \
+	   cp $(DOXYGENCFG) doxygen/doxygen.cfg; \
 	   if [ "$(DOXYDOT)" != "" ]; then \
 	     echo "HAVE_DOT         = YES" >> doxygen/doxygen.cfg; \
 	     echo "DOT_PATH         = $(DOXYDOT)" >> doxygen/doxygen.cfg; \
 	   fi; \
-	   echo "OUTPUT_DIRECTORY = ./doc" >> doxygen/doxygen.cfg; \
+	   echo "OUTPUT_DIRECTORY = ./doxygen" >> doxygen/doxygen.cfg; \
 	   echo "STRIP_FROM_PATH  = $(PGMRCODE)" >> doxygen/doxygen.cfg; \
 	   echo "INPUT            = ." >> doxygen/doxygen.cfg; \
-	   echo "IMAGE_PATH       = ." >> doxygen/doxygen.cfg; \
 	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> doxygen/doxygen.cfg; \
-	   echo "GENERATE_TAGFILE = doxygen/casa.tag" >> doxygen/doxygen.cfg; \
+	   echo "GENERATE_TAGFILE = doxygen/aipspp.tag" >> doxygen/doxygen.cfg; \
            $(RM) doxygen/doxygen.log;
 	 $(DOXYGEN) doxygen/doxygen.cfg 2>&1 > doxygen/doxygen.log
 
