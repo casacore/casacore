@@ -199,12 +199,11 @@ void Directory::create (Bool overwrite)
 			      " already exists"));
 	}
 	Directory(itsFile).removeRecursive(False);
-    } else {
-        if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
-	    throw (AipsError ("Directory::create error on " +
-			      itsFile.path().expandedName() +
-			      ": " + strerror(errno)));
-	}
+    }
+    if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
+        throw (AipsError ("Directory::create error on " +
+			  itsFile.path().expandedName() +
+			  ": " + strerror(errno)));
     }
 }
 
