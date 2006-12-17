@@ -198,12 +198,14 @@ void Directory::create (Bool overwrite)
 			      itsFile.path().expandedName() +
 			      " already exists"));
 	}
-	Directory(itsFile).removeRecursive(False);
-    }
-    if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
-        throw (AipsError ("Directory::create error on " +
-			  itsFile.path().expandedName() +
-			  ": " + strerror(errno)));
+	// Keep the directory, so special allocation on Lustre is preserved.
+	Directory(itsFile).removeRecursive(True);
+    } else {
+        if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
+	    throw (AipsError ("Directory::create error on " +
+			      itsFile.path().expandedName() +
+			      ": " + strerror(errno)));
+	}
     }
 }
 
