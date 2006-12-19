@@ -35,6 +35,7 @@
 #include <tables/Tables/ExprRange.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/Unit.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/iosfwd.h>
@@ -165,6 +166,10 @@ public:
     // If its reference count is zero, delete it.
     static void unlink (TableExprNodeRep*);
 
+    // Get the unit conversion factor.
+    // Default 1 is returned.
+    virtual Double getUnitFactor() const;
+
     // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
@@ -272,6 +277,12 @@ public:
     // Is the exprerssion a constant?
     Bool isConstant() const;
 
+    // Get the unit.
+    const Unit& unit() const;
+
+    // Set the unit.
+    void setUnit (const Unit& unit);
+
     // Get the fixed dimensionality (same for all rows).
     Int ndim() const;
 
@@ -301,6 +312,10 @@ public:
     // Replace the Table pointer in this node and all its children.
     virtual void replaceTablePtr (const Table&);
 
+    // Let a set node convert itself to the given unit.
+    // The default implementation does nothing.
+    virtual void adaptSetUnits (const Unit&);
+
     // Create a range object from a column and an interval.
     static void createRange (Block<TableExprRange>&,
 			     TableExprNodeColumn*, Double start, Double end);
@@ -319,6 +334,7 @@ protected:
     Int               ndim_p;        //# Fixed dimensionality of node values
                                      //# -1 = variable dimensionality
     IPosition         shape_p;       //# Fixed shape of node values
+    Unit              unit_p;        //# Unit of the values
 
     // Get the shape for the given row.
     virtual const IPosition& getShape (const TableExprId& id);
@@ -430,6 +446,11 @@ public:
 				       TableExprNodeRep* right,
 				       Bool convertConstType);
 
+    // Handle the units of the children and possibly set the parent's unit.
+    // The default implementation make the units of the children equal and
+    // set the parent unit to that unit if the parent is not a Bool value.
+    virtual void handleUnits();
+
     // When one of the children is a constant, convert its data type
     // to that of the other operand. This avoids that conversions are
     // done for each get.
@@ -438,15 +459,20 @@ public:
     // Replace the Table in this node and all its children.
     virtual void replaceTablePtr (const Table&);
 
-  // Get the child nodes.
-  // <group>
-  const TableExprNodeRep* getLeftChild() const
-    { return lnode_p; }
-  const TableExprNodeRep* getRightChild() const
-    { return rnode_p; }
-  // </group>
+    // Get the child nodes.
+    // <group>
+    const TableExprNodeRep* getLeftChild() const
+        { return lnode_p; }
+    const TableExprNodeRep* getRightChild() const
+        { return rnode_p; }
+    // </group>
 
 protected:
+    // Make the units equal.
+    // Replace the right node if needed.
+    static const Unit& makeEqualUnits (TableExprNodeRep* left,
+				       TableExprNodeRep*& right);
+
     TableExprNodeRep* lnode_p;     //# left operand
     TableExprNodeRep* rnode_p;     //# right operand
 };
@@ -538,7 +564,7 @@ inline TableExprNodeRep::NodeDataType TableExprNodeRep::dataType() const
 inline TableExprNodeRep::ValueType TableExprNodeRep::valueType() const
     { return vtype_p; }
 
-//# Get the value type of the node.
+//# Set the value type of the node.
 inline void TableExprNodeRep::setValueType (TableExprNodeRep::ValueType vtype)
     { vtype_p = vtype; }
 
@@ -553,6 +579,14 @@ inline TableExprNodeRep::ExprType TableExprNodeRep::exprType() const
 //# Is the expression a constant?
 inline Bool TableExprNodeRep::isConstant() const
     { return  (exprtype_p == Constant); }
+
+//# Get the unit of the node.
+inline const Unit& TableExprNodeRep::unit() const
+    { return unit_p; }
+
+//# Set the unit of the node.
+inline void TableExprNodeRep::setUnit (const Unit& unit)
+    { unit_p = unit; }
 
 //# Get the fixed dimensionality of the node.
 inline Int TableExprNodeRep::ndim() const

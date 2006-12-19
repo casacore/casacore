@@ -104,6 +104,7 @@ public:
   #define TaQLNode_CreTab   char(23)
   #define TaQLNode_ColSpec  char(24)
   #define TaQLNode_RecFld   char(25)
+  #define TaQLNode_Unit     char(26)
   // </group>
 
   // Constructor for derived classes specifying the type.

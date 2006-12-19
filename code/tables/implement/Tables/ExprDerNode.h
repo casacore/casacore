@@ -292,6 +292,9 @@ public:
     Array<DComplex> getColumnDComplex();
     Array<String>   getColumnString();
 
+    // Get the column unit (can be empty).
+    static Unit getColumnUnit (const ROTableColumn&);
+
 protected:
     ROTableColumn* tabColPtr_p;                //# pointer to table column
 };

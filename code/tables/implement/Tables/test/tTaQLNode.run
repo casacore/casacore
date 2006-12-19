@@ -27,6 +27,8 @@ tTaQLNode 'select ab,ac,af from tTaQLNode_tmp.tab where af not like "_3%"'
 
 tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab%1.5==0'
 
+tTaQLNode 'select ab,(ac)mm from tTaQLNode_tmp.tab where ab%1.5==0 "m/s"'
+
 tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
 
 tTaQLNode 'select * from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
@@ -101,7 +103,7 @@ tTaQLNode 'select ab from tTaQLNode_tmp.tab where all(anys(fmod(sums(arr1,1),5)=
 
 tTaQLNode 'select ab from $1'
 
-tTaQLNode 'select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]'
+tTaQLNode 'select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2 rad,2rad,1rad]'
 tTaQLNode 'select ab from tTaQLNode_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)'
 tTaQLNode 'select ab from tTaQLNode_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])'
 tTaQLNode 'select ab from tTaQLNode_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))'

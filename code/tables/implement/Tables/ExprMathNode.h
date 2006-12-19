@@ -47,6 +47,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
+// Addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodePlus : public TableExprNodeBinary
+{
+public:
+    TableExprNodePlus (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodePlus();
+};
+
+
+// <summary>
 // Double addition in table select expression tree
 // </summary>
 
@@ -68,7 +95,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodePlusDouble : public TableExprNodeBinary
+class TableExprNodePlusDouble : public TableExprNodePlus
 {
 public:
     TableExprNodePlusDouble (const TableExprNodeRep&);
@@ -100,7 +127,7 @@ public:
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodePlusDComplex : public TableExprNodeBinary
+class TableExprNodePlusDComplex : public TableExprNodePlus
 {
 public:
     TableExprNodePlusDComplex (const TableExprNodeRep&);
@@ -131,7 +158,7 @@ public:
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodePlusString : public TableExprNodeBinary
+class TableExprNodePlusString : public TableExprNodePlus
 {
 public:
     TableExprNodePlusString (const TableExprNodeRep&);
@@ -162,15 +189,43 @@ public:
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodePlusDate : public TableExprNodeBinary
+class TableExprNodePlusDate : public TableExprNodePlus
 {
 public:
     TableExprNodePlusDate (const TableExprNodeRep&);
     ~TableExprNodePlusDate();
+    virtual void handleUnits();
     Double getDouble (const TableExprId& id);
     MVTime getDate (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Subtraction in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents a subtraction in a table expression tree.
+// </synopsis>
+
+class TableExprNodeMinus : public TableExprNodeBinary
+{
+public:
+    TableExprNodeMinus (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeMinus();
+};
 
 
 // <summary>
@@ -194,11 +249,12 @@ public:
 // a subtraction of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeMinusDouble : public TableExprNodeBinary
+class TableExprNodeMinusDouble : public TableExprNodeMinus
 {
 public:
     TableExprNodeMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeMinusDouble();
+    virtual void handleUnits();
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
@@ -225,7 +281,7 @@ public:
 // a subtraction of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeMinusDComplex : public TableExprNodeBinary
+class TableExprNodeMinusDComplex : public TableExprNodeMinus
 {
 public:
     TableExprNodeMinusDComplex (const TableExprNodeRep&);
@@ -255,15 +311,44 @@ public:
 // a subtraction of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeMinusDate : public TableExprNodeBinary
+class TableExprNodeMinusDate : public TableExprNodeMinus
 {
 public:
     TableExprNodeMinusDate (const TableExprNodeRep&);
     ~TableExprNodeMinusDate();
+    virtual void handleUnits();
     MVTime getDate   (const TableExprId& id);
     Double getDouble (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Multiplication in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents a multiplication in a table expression tree.
+// </synopsis>
+
+class TableExprNodeTimes : public TableExprNodeBinary
+{
+public:
+    TableExprNodeTimes (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeTimes();
+    virtual void handleUnits();
+};
 
 
 // <summary>
@@ -287,7 +372,7 @@ public:
 // a multiplication of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeTimesDouble : public TableExprNodeBinary
+class TableExprNodeTimesDouble : public TableExprNodeTimes
 {
 public:
     TableExprNodeTimesDouble (const TableExprNodeRep&);
@@ -318,7 +403,7 @@ public:
 // a multiplication of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeTimesDComplex : public TableExprNodeBinary
+class TableExprNodeTimesDComplex : public TableExprNodeTimes
 {
 public:
     TableExprNodeTimesDComplex (const TableExprNodeRep&);
@@ -326,6 +411,34 @@ public:
     DComplex getDComplex (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Division in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents a division in a table expression tree.
+// </synopsis>
+
+class TableExprNodeDivide : public TableExprNodeBinary
+{
+public:
+    TableExprNodeDivide (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeDivide();
+    virtual void handleUnits();
+};
 
 
 // <summary>
@@ -349,7 +462,7 @@ public:
 // a division of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeDivideDouble : public TableExprNodeBinary
+class TableExprNodeDivideDouble : public TableExprNodeDivide
 {
 public:
     TableExprNodeDivideDouble (const TableExprNodeRep&);
@@ -380,7 +493,7 @@ public:
 // a division of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeDivideDComplex : public TableExprNodeBinary
+class TableExprNodeDivideDComplex : public TableExprNodeDivide
 {
 public:
     TableExprNodeDivideDComplex (const TableExprNodeRep&);
@@ -404,12 +517,40 @@ public:
 //   <li> TableExprNodeRep
 // </prerequisite>
 
+// <synopsis>
+// This abstract class represents a modulo in a table expression tree.
+// </synopsis>
+
+class TableExprNodeModulo : public TableExprNodeBinary
+{
+public:
+    TableExprNodeModulo (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeModulo();
+    virtual void handleUnits();
+};
+
+
+// <summary>
+// Double modulo in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
 // <synopsis> 
 // This class represents a modulo operation in a table select expression tree.
 // It is only possible for datatype Double.
 // </synopsis> 
 
-class TableExprNodeModuloDouble : public TableExprNodeBinary
+class TableExprNodeModuloDouble : public TableExprNodeModulo
 {
 public:
     TableExprNodeModuloDouble (const TableExprNodeRep&);
@@ -447,8 +588,6 @@ public:
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
-
-
 
 
 } //# NAMESPACE CASA - END

@@ -83,21 +83,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitConstNode (const TaQLConstNodeRep& node)
   {
+    TableExprNode expr;
     switch (node.itsType) {
     case TaQLConstNodeRep::CTBool:
-      return new TaQLNodeHRValue (TableExprNode(node.itsBValue));
+      expr = TableExprNode(node.itsBValue);
+      break;
     case TaQLConstNodeRep::CTInt:
-      return new TaQLNodeHRValue (TableExprNode(node.itsIValue));
+      expr = TableExprNode(node.itsIValue);
+      break;
     case TaQLConstNodeRep::CTReal:
-      return new TaQLNodeHRValue (TableExprNode(node.itsRValue));
+      expr = TableExprNode(node.itsRValue);
+      break;
     case TaQLConstNodeRep::CTComplex:
-      return new TaQLNodeHRValue (TableExprNode(node.itsCValue));
+      expr = TableExprNode(node.itsCValue);
+      break;
     case TaQLConstNodeRep::CTString:
-      return new TaQLNodeHRValue (TableExprNode(node.itsSValue));
+      expr = TableExprNode(node.itsSValue);
+      break;
     case TaQLConstNodeRep::CTTime:
-      return new TaQLNodeHRValue (TableExprNode(node.itsTValue));
+      expr = TableExprNode(node.itsTValue);
+      break;
     }
-    return TaQLNodeResult();
+    if (! node.getUnit().empty()) {
+      expr = expr.useUnit (node.getUnit());
+    }
+    return new TaQLNodeHRValue (expr);
   }
 
   TaQLNodeResult TaQLNodeHandler::visitUnaryNode (const TaQLUnaryNodeRep& node)
@@ -538,6 +548,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     throw TableInvExpr ("TaQLNodeHandler::visitRecFldNode "
 			"should not be called");
     return TaQLNodeResult();
+  }
+
+  TaQLNodeResult TaQLNodeHandler::visitUnitNode (const TaQLUnitNodeRep& node)
+  {
+    TaQLNodeResult res = visitNode (node.itsChild);
+    TableExprNode expr = getHR(res).getExpr();
+    return new TaQLNodeHRValue (expr.useUnit(node.itsUnit));
   }
 
   Record TaQLNodeHandler::handleRecord (const TaQLMultiNodeRep* node)

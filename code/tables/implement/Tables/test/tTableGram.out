@@ -130,7 +130,7 @@ select ab,ac from tTableGram_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc
 2 selected columns:  ab ac
  9 10
  8 9
-select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d - ac/180*pi())
+select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d0m)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d0m - ac/180*pi())
     has been executed
     select of 3 rows
 2 selected columns:  ab ac
@@ -337,7 +337,7 @@ select ab,ac from tTableGram_tmp.tab where any(arr1 in ab)
     select of 1 rows
 2 selected columns:  ab ac
  0 1
-select ab,ac from tTableGram_tmp.tab where (ab=ab)=T
+select ab,ac from tTableGram_tmp.tab where (ab=ab)=True
     has been executed
     select of 10 rows
 2 selected columns:  ab ac
@@ -351,7 +351,7 @@ select ab,ac from tTableGram_tmp.tab where (ab=ab)=T
  7 8
  8 9
  9 10
-select ab,ac from tTableGram_tmp.tab where (ab=ab)=F
+select ab,ac from tTableGram_tmp.tab where (ab=ab)=false
     has been executed
     select of 0 rows
 2 selected columns:  ab ac
@@ -684,7 +684,7 @@ select ab,ac from tTableGram_tmp.tab
  7 8
  9 10
  3 34
-create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
+create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
     has been executed
     cretab of 0 rows
 2 selected columns:  col1 col2
@@ -692,6 +692,20 @@ select col1,col2 from tTableGram_tmp.tab2
     has been executed
     select of 0 rows
 2 selected columns:  col1 col2
+insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(1,[2,3])dam, F)
+    has been executed
+    insert of 1 rows
+2 selected columns:  col1 col2
+ [2, 3] 0
+insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(5,[2,3]), T)
+    has been executed
+    insert of 1 rows
+2 selected columns:  col1 col2
+ [2, 3] 1
+calc sum([select sum(col1) from tTableGram_tmp.tab2])
+    has been executed
+Unit: m
+[90]
 using style python calc [3:6][1]
     has been executed
 [4]
@@ -770,3 +784,32 @@ calc runningMedian(array([0:24],5,5),1,1)
  0, 8, 13, 18, 0
  0, 0, 0, 0, 0]
 
+calc sum([select ab d as ABDAY from tTableGram_tmp.tab])
+    has been executed
+Unit: d
+[28]
+calc sum([select from tTableGram_tmp.tab giving [ab \in]])
+    has been executed
+Unit: in
+[28]
+select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4
+    has been executed
+    select of 3 rows
+2 selected columns:  ab1 ac1
+ 1 2
+ 3 4
+ 5 6
+update tTableGram_tmp.tab_abac set ab1=1min+ab1, ac1=1.5cm+ac1
+    has been executed
+    update of 3 rows
+2 selected columns:  ab1 ac1
+ 61 17
+ 63 19
+ 65 21
+select ab1,ac1 from tTableGram_tmp.tab_abac
+    has been executed
+    select of 3 rows
+2 selected columns:  ab1 ac1
+ 61 17
+ 63 19
+ 65 21

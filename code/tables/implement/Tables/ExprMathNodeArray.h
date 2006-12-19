@@ -49,6 +49,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
+// Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodeArrayPlus : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayPlus (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeArrayPlus();
+};
+
+
+// <summary>
 // Double Array addition in table select expression tree
 // </summary>
 
@@ -70,7 +97,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayPlusDouble : public TableExprNodeArray
+class TableExprNodeArrayPlusDouble : public TableExprNodeArrayPlus
 {
 public:
     TableExprNodeArrayPlusDouble (const TableExprNodeRep&);
@@ -101,7 +128,7 @@ public:
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayPlusDComplex : public TableExprNodeArray
+class TableExprNodeArrayPlusDComplex : public TableExprNodeArrayPlus
 {
 public:
     TableExprNodeArrayPlusDComplex (const TableExprNodeRep&);
@@ -132,7 +159,7 @@ public:
 // an addition of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayPlusString : public TableExprNodeArray
+class TableExprNodeArrayPlusString : public TableExprNodeArrayPlus
 {
 public:
     TableExprNodeArrayPlusString (const TableExprNodeRep&);
@@ -145,6 +172,33 @@ private:
 		     const String* right, Int incrRight, uInt nr) const;
 };
 
+
+
+// <summary>
+// Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodeArrayMinus : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayMinus (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeArrayMinus();
+};
 
 
 // <summary>
@@ -168,7 +222,7 @@ private:
 // a subtraction of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayMinusDouble : public TableExprNodeArray
+class TableExprNodeArrayMinusDouble : public TableExprNodeArrayMinus
 {
 public:
     TableExprNodeArrayMinusDouble (const TableExprNodeRep&);
@@ -198,7 +252,7 @@ public:
 // a subtraction of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayMinusDComplex : public TableExprNodeArray
+class TableExprNodeArrayMinusDComplex : public TableExprNodeArrayMinus
 {
 public:
     TableExprNodeArrayMinusDComplex (const TableExprNodeRep&);
@@ -206,6 +260,34 @@ public:
     Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodeArrayTimes : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayTimes (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeArrayTimes();
+    virtual void handleUnits();
+};
 
 
 // <summary>
@@ -229,7 +311,7 @@ public:
 // a multiplication of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayTimesDouble : public TableExprNodeArray
+class TableExprNodeArrayTimesDouble : public TableExprNodeArrayTimes
 {
 public:
     TableExprNodeArrayTimesDouble (const TableExprNodeRep&);
@@ -259,7 +341,7 @@ public:
 // a multiplication of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayTimesDComplex : public TableExprNodeArray
+class TableExprNodeArrayTimesDComplex : public TableExprNodeArrayTimes
 {
 public:
     TableExprNodeArrayTimesDComplex (const TableExprNodeRep&);
@@ -267,6 +349,34 @@ public:
     Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodeArrayDivide : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayDivide (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeArrayDivide();
+    virtual void handleUnits();
+};
 
 
 // <summary>
@@ -290,7 +400,7 @@ public:
 // a division of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayDivideDouble : public TableExprNodeArray
+class TableExprNodeArrayDivideDouble : public TableExprNodeArrayDivide
 {
 public:
     TableExprNodeArrayDivideDouble (const TableExprNodeRep&);
@@ -320,7 +430,7 @@ public:
 // a division of Int and Complex is possible.
 // </synopsis> 
 
-class TableExprNodeArrayDivideDComplex : public TableExprNodeArray
+class TableExprNodeArrayDivideDComplex : public TableExprNodeArrayDivide
 {
 public:
     TableExprNodeArrayDivideDComplex (const TableExprNodeRep&);
@@ -328,6 +438,34 @@ public:
     Array<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis>
+// This abstract class represents an addition in a table expression tree.
+// </synopsis>
+
+class TableExprNodeArrayModulo : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayModulo (NodeDataType, const TableExprNodeRep&);
+    ~TableExprNodeArrayModulo();
+    virtual void handleUnits();
+};
 
 
 // <summary>
@@ -350,7 +488,7 @@ public:
 // It is only possible for datatype Double.
 // </synopsis> 
 
-class TableExprNodeArrayModuloDouble : public TableExprNodeArray
+class TableExprNodeArrayModuloDouble : public TableExprNodeArrayModulo
 {
 public:
     TableExprNodeArrayModuloDouble (const TableExprNodeRep&);

@@ -36,9 +36,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Implement the arithmetic operators for each data type.
 
+TableExprNodeArrayPlus::TableExprNodeArrayPlus (NodeDataType dt,
+						const TableExprNodeRep& node)
+: TableExprNodeArray (node, dt, OtPlus)
+{}
+TableExprNodeArrayPlus::~TableExprNodeArrayPlus()
+{}
+
 TableExprNodeArrayPlusDouble::TableExprNodeArrayPlusDouble
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTDouble, OtPlus)
+: TableExprNodeArrayPlus (NTDouble, node)
 {}
 TableExprNodeArrayPlusDouble::~TableExprNodeArrayPlusDouble()
 {}
@@ -58,7 +65,7 @@ Array<Double> TableExprNodeArrayPlusDouble::getArrayDouble
 
 TableExprNodeArrayPlusDComplex::TableExprNodeArrayPlusDComplex
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTComplex, OtPlus)
+: TableExprNodeArrayPlus (NTComplex, node)
 {}
 TableExprNodeArrayPlusDComplex::~TableExprNodeArrayPlusDComplex()
 {}
@@ -78,7 +85,7 @@ Array<DComplex> TableExprNodeArrayPlusDComplex::getArrayDComplex
 
 TableExprNodeArrayPlusString::TableExprNodeArrayPlusString
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTComplex, OtPlus)
+: TableExprNodeArrayPlus (NTString, node)
 {}
 TableExprNodeArrayPlusString::~TableExprNodeArrayPlusString()
 {}
@@ -140,9 +147,16 @@ void TableExprNodeArrayPlusString::concString (String* to,
 }
 
 
+TableExprNodeArrayMinus::TableExprNodeArrayMinus (NodeDataType dt,
+						  const TableExprNodeRep& node)
+: TableExprNodeArray (node, dt, OtMinus)
+{}
+TableExprNodeArrayMinus::~TableExprNodeArrayMinus()
+{}
+
 TableExprNodeArrayMinusDouble::TableExprNodeArrayMinusDouble
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTDouble, OtMinus)
+: TableExprNodeArrayMinus (NTDouble, node)
 {}
 TableExprNodeArrayMinusDouble::~TableExprNodeArrayMinusDouble()
 {}
@@ -162,7 +176,7 @@ Array<Double> TableExprNodeArrayMinusDouble::getArrayDouble
 
 TableExprNodeArrayMinusDComplex::TableExprNodeArrayMinusDComplex
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTComplex, OtMinus)
+: TableExprNodeArrayMinus (NTComplex, node)
 {}
 TableExprNodeArrayMinusDComplex::~TableExprNodeArrayMinusDComplex()
 {}
@@ -181,9 +195,28 @@ Array<DComplex> TableExprNodeArrayMinusDComplex::getArrayDComplex
 }
 
 
+TableExprNodeArrayTimes::TableExprNodeArrayTimes (NodeDataType dt,
+						  const TableExprNodeRep& node)
+: TableExprNodeArray (node, dt, OtTimes)
+{}
+TableExprNodeArrayTimes::~TableExprNodeArrayTimes()
+{}
+void TableExprNodeArrayTimes::handleUnits()
+{
+    if (lnode_p->unit().empty()) {
+        setUnit (rnode_p->unit());
+    } else if (rnode_p->unit().empty()) {
+        setUnit (lnode_p->unit());
+    } else {
+        Quantity q1 (1, lnode_p->unit());
+	Quantity q2 (1, rnode_p->unit());
+	setUnit ((q1*q2).getFullUnit());
+    }
+}
+
 TableExprNodeArrayTimesDouble::TableExprNodeArrayTimesDouble
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTDouble, OtTimes)
+: TableExprNodeArrayTimes (NTDouble, node)
 {}
 TableExprNodeArrayTimesDouble::~TableExprNodeArrayTimesDouble()
 {}
@@ -203,7 +236,7 @@ Array<Double> TableExprNodeArrayTimesDouble::getArrayDouble
 
 TableExprNodeArrayTimesDComplex::TableExprNodeArrayTimesDComplex
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTComplex, OtTimes)
+: TableExprNodeArrayTimes (NTComplex, node)
 {}
 TableExprNodeArrayTimesDComplex::~TableExprNodeArrayTimesDComplex()
 {}
@@ -222,9 +255,28 @@ Array<DComplex> TableExprNodeArrayTimesDComplex::getArrayDComplex
 }
 
 
+TableExprNodeArrayDivide::TableExprNodeArrayDivide (NodeDataType dt,
+						const TableExprNodeRep& node)
+: TableExprNodeArray (node, dt, OtDivide)
+{}
+TableExprNodeArrayDivide::~TableExprNodeArrayDivide()
+{}
+void TableExprNodeArrayDivide::handleUnits()
+{
+    if (lnode_p->unit().empty()) {
+        setUnit (rnode_p->unit());
+    } else if (rnode_p->unit().empty()) {
+        setUnit (lnode_p->unit());
+    } else {
+        Quantity q1 (1, lnode_p->unit());
+	Quantity q2 (1, rnode_p->unit());
+	setUnit ((q1/q2).getFullUnit());
+    }
+}
+
 TableExprNodeArrayDivideDouble::TableExprNodeArrayDivideDouble
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTDouble, OtDivide)
+: TableExprNodeArrayDivide (NTDouble, node)
 {}
 TableExprNodeArrayDivideDouble::~TableExprNodeArrayDivideDouble()
 {}
@@ -244,7 +296,7 @@ Array<Double> TableExprNodeArrayDivideDouble::getArrayDouble
 
 TableExprNodeArrayDivideDComplex::TableExprNodeArrayDivideDComplex
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTComplex, OtDivide)
+: TableExprNodeArrayDivide (NTComplex, node)
 {}
 TableExprNodeArrayDivideDComplex::~TableExprNodeArrayDivideDComplex()
 {}
@@ -263,9 +315,20 @@ Array<DComplex> TableExprNodeArrayDivideDComplex::getArrayDComplex
 }
 
 
+TableExprNodeArrayModulo::TableExprNodeArrayModulo (NodeDataType dt,
+						const TableExprNodeRep& node)
+: TableExprNodeArray (node, dt, OtModulo)
+{}
+TableExprNodeArrayModulo::~TableExprNodeArrayModulo()
+{}
+void TableExprNodeArrayModulo::handleUnits()
+{
+    setUnit (lnode_p->unit());
+}
+
 TableExprNodeArrayModuloDouble::TableExprNodeArrayModuloDouble
                                             (const TableExprNodeRep& node)
-: TableExprNodeArray (node, NTDouble, OtModulo)
+: TableExprNodeArrayModulo (NTDouble, node)
 {}
 TableExprNodeArrayModuloDouble::~TableExprNodeArrayModuloDouble()
 {}
@@ -302,6 +365,7 @@ Array<Double> TableExprNodeArrayMIN::getArrayDouble (const TableExprId& id)
     { return -(lnode_p->getArrayDouble(id)); }
 Array<DComplex> TableExprNodeArrayMIN::getArrayDComplex (const TableExprId& id)
     { return -(lnode_p->getArrayDComplex(id)); }
+
 
 } //# NAMESPACE CASA - END
 

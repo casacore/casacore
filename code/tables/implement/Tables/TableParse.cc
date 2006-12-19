@@ -35,6 +35,7 @@
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
 #include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/TableColumn.h>
 #include <tables/Tables/ScalarColumn.h>
@@ -137,6 +138,7 @@ TableParseSelect::TableParseSelect (CommandType commandType)
   : commandType_p   (commandType),
     nrSelExprUsed_p (0),
     distinct_p      (False),
+    resultType_p    (0),
     resultSet_p     (0),
     limit_p         (0),
     offset_p        (0),
@@ -853,6 +855,7 @@ void TableParseSelect::handleColSpec (const String& colName,
   String dmType;
   String dmGroup;
   String comment;
+  String unit;
   for (uInt i=0; i<spec.nfields(); i++) {
     String name = spec.name(i);
     name.upcase();
@@ -878,6 +881,8 @@ void TableParseSelect::handleColSpec (const String& colName,
       dmGroup = spec.asString(i);
     } else if (name == "COMMENT") {
       comment = spec.asString(i);
+    } else if (name == "UNIT") {
+      unit = spec.asString(i);
     } else {
       throw TableError ("TableParseSelect::handleColSpec - "
 			"column specification field name " + name +
@@ -887,7 +892,7 @@ void TableParseSelect::handleColSpec (const String& colName,
   // Now add the scalar or array column description.
   DataType dtype = makeDataType (TpOther, dtstr, colName);
   addColumnDesc (tableDesc_p, dtype, colName, options, ndim, shape,
-		 dmType, dmGroup, comment);
+		 dmType, dmGroup, comment, unit);
   Int nrcol = columnNames_p.nelements();
   columnNames_p.resize (nrcol+1);
   columnNames_p[nrcol] = colName;
@@ -994,45 +999,60 @@ TableExprNode TableParseSelect::doSubQuery()
   if (! colDesc.isScalar()) {
     throw (TableInvExpr ("Nested query should select a scalar column"));
   }
-  const String& name = colDesc.name();
+  ROTableColumn tabcol (table_p, colDesc.name());
+  TableExprNodeRep* tsnptr;
   switch (colDesc.dataType()) {
   case TpBool:
-    return new TableExprNodeArrayConstBool
-                        (ROScalarColumn<Bool> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstBool
+                        (ROScalarColumn<Bool>(tabcol).getColumn());
+    break;
   case TpUChar:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<uChar> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uChar>(tabcol).getColumn());
+    break;
   case TpShort:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Short> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Short>(tabcol).getColumn());
+    break;
   case TpUShort:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<uShort> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uShort>(tabcol).getColumn());
+    break;
   case TpInt:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Int> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Int>(tabcol).getColumn());
+    break;
   case TpUInt:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<uInt> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<uInt>(tabcol).getColumn());
+    break;
   case TpFloat:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Float> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Float>(tabcol).getColumn());
+    break;
   case TpDouble:
-    return new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Double> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDouble
+                        (ROScalarColumn<Double>(tabcol).getColumn());
+    break;
   case TpComplex:
-    return new TableExprNodeArrayConstDComplex
-                        (ROScalarColumn<Complex> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDComplex
+                        (ROScalarColumn<Complex>(tabcol).getColumn());
+    break;
   case TpDComplex:
-    return new TableExprNodeArrayConstDComplex
-                        (ROScalarColumn<DComplex> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstDComplex
+                        (ROScalarColumn<DComplex>(tabcol).getColumn());
+    break;
   case TpString:
-    return new TableExprNodeArrayConstString
-                        (ROScalarColumn<String> (table_p, name).getColumn());
+    tsnptr = new TableExprNodeArrayConstString
+                        (ROScalarColumn<String>(tabcol).getColumn());
+    break;
   default:
-    throw (TableInvExpr ("Nested query column has unknown data type"));
+    throw (TableInvExpr ("Nested query column " + colDesc.name() +
+			 " has unknown data type"));
   }
-  return 0;
+  //# Fill in the column unit (if defined).
+  tsnptr->setUnit (TableExprNodeColumn::getColumnUnit (tabcol));
+  return tsnptr;
 }
 
 
@@ -1136,7 +1156,7 @@ void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
   Block<Int> dtypeCol(nrkey);
   Block<Bool> scalarCol(nrkey);
   for (uInt i=0; i<nrkey; i++) {
-    const TableParseUpdate& key = *(update_p[i]);
+    TableParseUpdate& key = *(update_p[i]);
     const String& colName = key.columnName();
     //# Check if the correct table is used in the update and index expression.
     //# A constant expression can be given.
@@ -1185,6 +1205,9 @@ void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
     }
     cols[i].attach (updTable, colName);
     dtypeCol[i] = coldesc.dataType();
+    // If needed, make the expression's unit the same as the column unit.
+    key.node().adaptUnit (TableExprNodeColumn::getColumnUnit
+			          (ROTableColumn(updTable, colName)));
   }
   // IPosition objects in case slicer.inferShapeFromSource has to be used.
   IPosition trc,blc,inc;
@@ -2062,7 +2085,8 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
 				   columnDtypes_p[i], columnNames_p[i]);
     addColumnDesc (td, dtype, newName, 0,
 		   columnExpr_p[i].isScalar() ? -1:0,    //ndim
-		   IPosition(), "", "", "");
+		   IPosition(), "", "", "",
+		   columnExpr_p[i].unit().getName());
   }
   // Create the table.
   // The types are defined in class TaQLGivingNodeRep.
@@ -2180,7 +2204,8 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
 				      Int ndim, const IPosition& shape,
 				      const String& dmType,
 				      const String& dmGroup,
-				      const String& comment)
+				      const String& comment,
+				      const String& unitName)
 {
   if (ndim < 0) {
     switch (dtype) {
@@ -2295,6 +2320,14 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
     default:
       AlwaysAssert (False, AipsError);
     }
+  }
+  // Write unit in column keywords (in TableMeasures compatible way).
+  // Check if it is valid by constructing the Unit object.
+  if (! unitName.empty()) {
+    Unit unit(unitName);
+    ColumnDesc& cd = td.rwColumnDesc(colName);
+    cd.rwKeywordSet().define ("QuantumUnits",
+			      Vector<String>(1, unit.getName()));
   }
 }
 

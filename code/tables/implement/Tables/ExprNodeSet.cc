@@ -27,6 +27,7 @@
 
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
 #include <tables/Tables/TableError.h>
@@ -56,6 +57,7 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
     TableExprNode tmp(value);
     itsStart = getRep(tmp)->link();
     dtype_p = itsStart->dataType();
+    setUnit (itsStart->unit());
     checkTable();
 }
 
@@ -98,6 +100,8 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
 	throw (TableInvExpr ("start:end should have equal data types ( Double"
 			     " or Date) and incr should have Double"));
     }
+    // Find unit and adapt units if needed.
+    setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
     dtype_p = dts;
     checkTable();
 }
@@ -170,6 +174,7 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNodeSetElem& that,
     if (itsIncr != 0) {
 	itsIncr->link();
     }
+    TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr);
 }
 
 TableExprNodeSetElem::~TableExprNodeSetElem()
@@ -211,7 +216,19 @@ void TableExprNodeSetElem::setup (Bool isLeftClosed,
 	throw (TableInvExpr ("start:=:end only valid for Double,"
 			     " String or Date"));
     }
+    // Find unit and adapt units if needed.
+    setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
     checkTable();
+}
+
+void TableExprNodeSetElem::adaptSetUnits (const Unit& unit)
+{
+    if (! unit.empty()) {
+        if (itsStart) TableExprNodeUnit::adaptUnit (itsStart, unit);
+        if (itsEnd)   TableExprNodeUnit::adaptUnit (itsEnd,   unit);
+        if (itsIncr)  TableExprNodeUnit::adaptUnit (itsIncr,  unit);
+	setUnit (unit);
+    }
 }
 
 void TableExprNodeSetElem::show (ostream& os, uInt indent) const
@@ -628,6 +645,7 @@ TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSet& set)
 	    combineDateIntervals();
 	}
     }
+    setUnit (set.unit());
 }
 
 TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
@@ -870,6 +888,13 @@ void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
     uInt n = itsElems.nelements();
     itsElems.resize (n+1);
     itsElems[n] = new TableExprNodeSetElem (elem);
+    // Set and adapt unit as needed.
+    if (unit().empty()) {
+        setUnit (elem.unit());
+    } else {
+        itsElems[n]->adaptSetUnits (unit());
+    }
+    // See if the set properties change.
     if (! elem.isSingle()) {
 	itsSingle = False;
 	if (! elem.isDiscrete()) {
@@ -886,6 +911,16 @@ void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
     }
     checkTablePtr (itsElems[n]);
     fillExprType  (itsElems[n]);
+}
+
+void TableExprNodeSet::adaptSetUnits (const Unit& unit)
+{
+    if (! unit.empty()) {
+        for (uInt i=0; i<itsElems.nelements(); i++) {
+	    itsElems[i]->adaptSetUnits (unit);
+	}
+	setUnit (unit);
+    }
 }
 
 void TableExprNodeSet::checkEqualDataTypes() const
@@ -976,21 +1011,28 @@ TableExprNodeRep* TableExprNodeSet::setOrArray() const
 TableExprNodeRep* TableExprNodeSet::toArray() const
 {
     // Construct the correct const array object.
+    TableExprNodeRep* tsnptr;
     switch (dataType()) {
     case NTBool:
-	return new TableExprNodeArrayConstBool (toArrayBool(0));
+	tsnptr = new TableExprNodeArrayConstBool (toArrayBool(0));
+	break;
     case NTDouble:
-	return new TableExprNodeArrayConstDouble (toArrayDouble(0));
+	tsnptr = new TableExprNodeArrayConstDouble (toArrayDouble(0));
+	break;
     case NTComplex:
-	return new TableExprNodeArrayConstDComplex (toArrayDComplex(0));
+	tsnptr = new TableExprNodeArrayConstDComplex (toArrayDComplex(0));
+	break;
     case NTString:
-	return new TableExprNodeArrayConstString (toArrayString(0));
+	tsnptr = new TableExprNodeArrayConstString (toArrayString(0));
+	break;
     case NTDate:
-	return new TableExprNodeArrayConstDate (toArrayDate(0));
+	tsnptr = new TableExprNodeArrayConstDate (toArrayDate(0));
+	break;
     default:
 	TableExprNode::throwInvDT ("TableExprNodeSet::toArray");
     }
-    return 0;               // only to satisfy the compiler
+    tsnptr->setUnit (unit());
+    return tsnptr;
 }
 
 Array<Bool> TableExprNodeSet::toArrayBool (const TableExprId& id) const

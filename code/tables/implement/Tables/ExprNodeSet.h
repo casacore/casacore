@@ -187,6 +187,9 @@ public:
     // Replace the BaseTable pointer in this node and all its children.
     virtual void replaceTablePtr (const Table&);
 
+    // Let a set node convert itself to the given unit.
+    virtual void adaptSetUnits (const Unit&);
+
 private:
     // A copy of a TableExprNodeSetElem cannot be made.
     TableExprNodeSetElem& operator= (const TableExprNodeSetElem&);
@@ -384,6 +387,9 @@ public:
 
     // Replace the BaseTable pointer in this node and all its children.
     virtual void replaceTablePtr (const Table&);
+
+    // Let a set node convert itself to the given unit.
+    virtual void adaptSetUnits (const Unit&);
 
 private:
     // A copy of a TableExprNodeSet cannot be made.

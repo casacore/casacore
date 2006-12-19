@@ -17,7 +17,7 @@ select ab,ac,af from tTaQLNode_tmp.tab where lower(af) == regex("v[01279]")
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))=(regex('v[01279]'))
 
 select ab,ac,af from tTaQLNode_tmp.tab where lower(af)!~m/v[01279]/
-SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))<>(REGEX('v[01279]'))
+SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))<>(REGEX('.*(v[01279]).*'))
 
 select ab,ac,af from tTaQLNode_tmp.tab where af ~ p/?{3,5,8}/
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)=(PATTERN('?{3,5,8}'))
@@ -37,6 +37,9 @@ SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)<>(SQLPATTERN('_3%'))
 select ab,ac from tTaQLNode_tmp.tab where ab%1.5==0
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE ((ab)%(1.5))=(0)
 
+select ab,(ac)mm from tTaQLNode_tmp.tab where ab%1.5==0 "m/s"
+SELECT ab,(ac)'mm' FROM tTaQLNode_tmp.tab WHERE ((ab)%(1.5))=((0)'m/s')
+
 select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (((arr1)[1,1,1])>=(10))&&(((arr2)[1,1,1])<(120))
 
@@ -47,7 +50,7 @@ select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE ((arr1)[1,1,(1)+((ab)%(1))])>=(192) ORDERBY ad DESC
 
 select ab,ac from tTaQLNode_tmp.tab where cos(0.01rad) <= sin(-0.02rad)*sin(-ab/180*pi()) + cos(-0.5rad)*cos(-ab/180*pi())*cos(0.02rad - ac/180*pi())
-SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos(0.01))<=(((sin(-(0.02)))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-(0.5)))*(cos(((-(ab))/(180))*(pi()))))*(cos((0.02)-(((ac)/(180))*(pi()))))))
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos((0.01)'rad'))<=(((sin(-((0.02)'rad')))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-((0.5)'rad')))*(cos(((-(ab))/(180))*(pi()))))*(cos(((0.02)'rad')-(((ac)/(180))*(pi()))))))
 
 select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(1960/12/31/00:00:00.0000))+(year('31Dec60')))+(month(1990/05/12/00:00:00.0000)))+(day(date(1990/01/30/12:14:33.3000))))-(3910))
@@ -157,26 +160,26 @@ SELECT ab FROM tTaQLNode_tmp.tab WHERE ALL(anys((fmod(sums(arr1,1),5))=(0),[2:4]
 select ab from $1
 SELECT ab FROM $1
 
-select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]
-SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[2,2,1])
+select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2 rad,2rad,1rad]
+SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[(2)'rad',(2)'rad',(1)'rad'])
 
 select ab from tTaQLNode_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)
-SELECT ab FROM tTaQLNode_tmp.tab WHERE anycone([ab,ab],[2,2],1)
+SELECT ab FROM tTaQLNode_tmp.tab WHERE anycone([ab,ab],[(2)'rad',(2)'rad'],(1)'rad')
 
 select ab from tTaQLNode_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])
-SELECT ab FROM tTaQLNode_tmp.tab WHERE cones([ab,ab],[4,4,1])
+SELECT ab FROM tTaQLNode_tmp.tab WHERE cones([ab,ab],[(4)'rad',(4)'rad',(1)'rad'])
 
 select ab from tTaQLNode_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))
-SELECT ab FROM tTaQLNode_tmp.tab WHERE any(cones([ab,ab],array([2,2,4,4],[2,2]),1))
+SELECT ab FROM tTaQLNode_tmp.tab WHERE any(cones([ab,ab],array([(2)'rad',(2)'rad',(4)'rad',(4)'rad'],[2,2]),(1)'rad'))
 
 select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]
-SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[2,2,1,4,4,1])
+SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[(2)'rad',(2)'rad',(1)'rad',(4)'rad',(4)'rad',(1)'rad'])
 
 calc from tTaQLNode_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])
-CALC FROM tTaQLNode_tmp.tab CALC findcone([ab,ab],array([2,2,4,4],[2,2]),[1,2])
+CALC FROM tTaQLNode_tmp.tab CALC findcone([ab,ab],array([(2)'rad',(2)'rad',(4)'rad',(4)'rad'],[2,2]),[(1)'rad',(2)'rad'])
 
 calc from tTaQLNode_tmp.tab  calc findcone([ab,ab],[select from tTaQLNode_tmp.tab giving [ab,ab]],[1rad,2rad])
-CALC FROM tTaQLNode_tmp.tab CALC findcone([ab,ab],[SELECT FROM tTaQLNode_tmp.tab GIVING [ab,ab]],[1,2])
+CALC FROM tTaQLNode_tmp.tab CALC findcone([ab,ab],[SELECT FROM tTaQLNode_tmp.tab GIVING [ab,ab]],[(1)'rad',(2)'rad'])
 
 
 calc sum([select from tTaQLNode_tmp.tab giving [ab+1]])

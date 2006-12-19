@@ -156,6 +156,8 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLColSpecNodeRep::restore (aio);
   case TaQLNode_RecFld:
     return TaQLRecFldNodeRep::restore (aio);
+  case TaQLNode_Unit:
+    return TaQLUnitNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }

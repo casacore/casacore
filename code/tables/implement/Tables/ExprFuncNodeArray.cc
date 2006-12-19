@@ -68,7 +68,11 @@ TableExprNodeRep* TableExprFuncNodeArray::fillNode
 				    PtrBlock<TableExprNodeRep*>& nodes,
 				    const Block<Int>& dtypeOper)
 {
+    // Fill child nodes as needed.
     TableExprFuncNode::fillChildNodes (&(thisNode->node_p), nodes, dtypeOper);
+    // Set the resulting unit.
+    TableExprFuncNode::fillUnits (thisNode, nodes, thisNode->funcType());
+    // Some functions on a variable can already give a constant result.
     thisNode->tryToConst();
     if (thisNode->operands().nelements() > 0) {
 	return convertNode (thisNode, True);

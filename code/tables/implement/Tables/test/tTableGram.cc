@@ -33,6 +33,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/Complex.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
@@ -47,6 +49,71 @@
 // It ask for commands until a "q" is given.
 // When columns are selected, it will show their contents.
 
+void testUnit (const String& comm, double expResult, const String& expUnit)
+{
+  TaQLResult result = tableCommand (comm);
+  AlwaysAssert (!result.isTable(), AipsError);
+  TableExprNode node = result.node();
+  if (!near (node.getDouble(0), expResult)
+  ||  node.unit().getName() != expUnit) {
+    cout << "Error in evaluating: " + comm << endl;
+    cout << " expected " << expResult << ' ' << expUnit << endl;
+    cout << " found    " << node.getDouble(0) << ' '
+	 << node.unit().getName() << endl;
+  }
+}
+void testUnit (const String& comm, Bool expResult)
+{
+  TaQLResult result = tableCommand (comm);
+  AlwaysAssert (!result.isTable(), AipsError);
+  TableExprNode node = result.node();
+  if (node.getBool(0) != expResult  ||  node.unit().getName() != "") {
+    cout << "Error in evaluating: " + comm << endl;
+    cout << " expected " << expResult << endl;
+    cout << " found    " << node.getBool(0) << ' '
+	 << node.unit().getName() << endl;
+  }
+}
+
+void checkUnits()
+{
+  testUnit ("calc 100mm", 100., "mm");
+  testUnit ("calc 100mm cm", 10., "cm");
+  testUnit ("calc (100mm cm)dm", 1., "dm");
+  testUnit ("calc sin(90 deg)", 1., "");
+  testUnit ("calc asin(1) deg", 90., "deg");
+  testUnit ("calc min(1cm, 2mm)", 0.2, "cm");
+  testUnit ("calc min(1cm, 2mm)mm", 2., "mm");
+  testUnit ("calc min([2mm, 0.1cm])", 1., "mm");
+  testUnit ("calc iif(T, 1mm, 2cm)", 1., "mm");
+  testUnit ("calc iif(F, 1mm, 2cm)", 20., "mm");
+  testUnit ("calc 20mm+3cm", 50., "mm");
+  testUnit ("calc 2 cm + 30 'mm'", 5., "cm");
+  testUnit ("calc 2km/20s", 0.1, "km/(s)");
+  testUnit ("calc 2km/20", 0.1, "km");
+  testUnit ("calc 2 'km/s' * 20s", 40., "km/s.s");
+  testUnit ("calc 2 'km/h' + 1 'm/s'", 5.6, "km/h");
+  testUnit ("calc 2m*3m", 6., "m.m");
+  testUnit ("calc sumsqr([3.m,10dm])", 10., "(m)2");
+  testUnit ("calc sqrt(9 'm2')", 3., "m");
+  testUnit ("calc 20Aug06 - 13Aug06", 7., "d");
+  testUnit ("calc 20Aug06 +86400s + 12*60min - 13Aug06", 8.5, "d");
+  testUnit ("calc sum([2mm,0.1cm] + [3cm,2mm])", 35, "mm");
+  testUnit ("calc 1mm in [2mm,0.1cm]", True);
+  testUnit ("calc 0.02dm in [2mm,0.1cm]", True);
+  testUnit ("calc 0.025dm in [2mm<:<0.3cm]", True);
+  testUnit ("calc 0.02dm in [2mm<:<0.3cm]", False);
+  testUnit ("calc !near(2cm,20mm)", False);
+  testUnit ("calc 0.002km == 2m", True);
+  testUnit ("calc [180deg/pi(),180deg/pi()] incone [2rad,2rad,1rad]", True);
+  testUnit ("calc [90deg/pi(),90deg/pi()] incone [2rad,2rad,1rad]", False);
+  testUnit ("calc [1rad,1.rad] incone [1rad,1rad,1arcsec]", True);
+  testUnit ("calc [1rad,1.0001rad] incone [1rad,1rad,1arcsec]", False);
+  testUnit ("calc [1h0m,15d0m] incone [15deg,15deg,1arcsec]", True);
+  testUnit ("calc near(4.67312e+09s-3200, mjd('2006/12/18'))", True);
+  testUnit ("calc 172800s / 86400", 2., "d");
+  testUnit ("calc 172800m / 86400", 2., "m");
+}
 
 void seltab (const String&);
 void docomm ();
@@ -55,8 +122,15 @@ int main (int argc, char** argv)
 {
   try {
     if (argc > 1) {
-      seltab(argv[1]);
-    }else{
+      if (String(argv[1]) == "0") {
+	// Check the unit handling in TaQL.
+	checkUnits();
+      } else {
+	// Execute the given command.
+	seltab(argv[1]);
+      }
+    } else {
+    // Do some interactive tests.
       docomm();
     }
   } catch (AipsError x) {
@@ -160,6 +234,10 @@ void showExpr(const TableExprNode& expr)
       cout << "Index: " << indices.start() << endl;
     }
   }
+  const Unit& unit = expr.unit();
+  if (! unit.empty()) {
+    cout << "Unit: " << unit.getName() << endl;
+  }
   if (expr.isScalar()) {
     switch (expr.getColumnDataType()) {
     case TpBool:
@@ -244,7 +322,6 @@ void showExpr(const TableExprNode& expr)
 void seltab (const String& str)
 {
   Table* tabp = 0;
-  {
   uInt i;
   Vector<String> vecstr;
   String cmd;
@@ -276,7 +353,6 @@ void seltab (const String& str)
     }
   } else {
     showExpr (result.node());
-  }
   }
   delete tabp;
 }

@@ -125,6 +125,7 @@ public:
   virtual TaQLNodeResult visitCreTabNode   (const TaQLCreTabNodeRep& node);
   virtual TaQLNodeResult visitColSpecNode  (const TaQLColSpecNodeRep& node);
   virtual TaQLNodeResult visitRecFldNode   (const TaQLRecFldNodeRep& node);
+  virtual TaQLNodeResult visitUnitNode     (const TaQLUnitNodeRep& node);
   // </group>
 
   // Get the actual result object from the result.

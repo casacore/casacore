@@ -58,8 +58,9 @@ EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
 COMPLEX   {FLINT}[ij]
-TRUE      T
-FALSE     F
+TRUE      T|([Tt][Rr][Uu][Ee])
+FALSE     F|([Ff][Aa][Ll][Ss][Ee])
+FLINTUNIT {FLINT}[a-zA-Z]+
 
 MONTH     ("-"{INT}?"-")|("-"?[A-Za-z]+"-"?)
 DATEH     {INT}{MONTH}{INT}
@@ -69,17 +70,15 @@ DTIMEHM   {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEHM}|{DTIMEC}
 DATETIME  {DATE}([-/]{DTIME})?
-TIMESL    "/"{DTIME}
 
-TIMEU     {FLINT}[a-zA-Z]+
-POSDM     {INT}[dD]({INT}?([mM]({FLINT})?)?)?
+POSDM     {INT}[dD]{INT}[mM]{FLINT}?
 POSD      {INT}"."{INT}?"."{FLINT}?
-TIME      {DTIMEHM}|{TIMEU}|{POSDM}|{POSD}
+TIME      {DTIMEHM}|{POSDM}|{POSD}
 /*
-     positions with colons cannot be allowed, because they interfere
-     with the interval syntax (and a starting slash is rather ambiguous).
-TIME      {DTIMEHM}|{TIMESL}|{TIMEU}|{POSDM}|{POSD}
+     positions/times with colons cannot be allowed, because they interfere
+     with the interval syntax. It is only possible when preceeded by a date.
 */
+
 
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
@@ -135,6 +134,10 @@ REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
 REGEX3    m#[^#]+#
 REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+FREGEX1   f"/"[^/]+"/"
+FREGEX2   f%[^%]+%
+FREGEX3   f#[^#]+#
+FREGEX    {FREGEX1}|{FREGEX2}|{FREGEX3}
 PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
 PATT3     p#[^#]+#
@@ -352,6 +355,9 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 
 
  /* Literals */
+ /* TIME must be done before FLINTUNIT, otherwise something like 2d1m is
+    recognized as FLINTUNIT instead of TIME.
+    Similarly COMPLEX must be done before FLINTUNIT. */
 {COMPLEX} {
             tableGramPosition() += yyleng;
             double v;
@@ -409,8 +415,19 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 <EXPRstate>{TIME} {
             tableGramPosition() += yyleng;
+            double v = tableGramParseTime (TableGramtext);
             lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep (tableGramParseTime (TableGramtext)));
+                new TaQLConstNodeRep (v, String("rad")));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return LITERAL;
+	  }
+<EXPRstate>{FLINTUNIT} {
+            tableGramPosition() += yyleng;
+            double v;
+            char unit[32];
+	    sscanf (TableGramtext, "%lf%31s", &v, unit);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (v, String(unit)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
@@ -427,6 +444,15 @@ PATT      {PATT1}|{PATT2}|{PATT3}
             return NEREGEX;
           }
 <REGEXstate>{REGEX} {
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep
+                  (".*(" + String(TableGramtext+2,yyleng-3) + ").*"));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+            BEGIN(EXPRstate);
+	    return REGEX;
+	  }
+<REGEXstate>{FREGEX} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (String(TableGramtext+2,yyleng-3)));

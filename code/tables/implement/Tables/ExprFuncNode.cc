@@ -30,10 +30,13 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprUnitNode.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QMath.h>
 #include <casa/OS/Time.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
@@ -55,21 +58,165 @@ TableExprFuncNode::~TableExprFuncNode()
 
 // Fill the children pointers of a node.
 // Also reduce the tree if possible by combining constants.
-// When one of the nodes is a constant, convert its type if
+// If one of the nodes is a constant, convert its type if
 // it does not match the other one.
 TableExprNodeRep* TableExprFuncNode::fillNode
                                    (TableExprFuncNode* thisNode,
 				    PtrBlock<TableExprNodeRep*>& nodes,
 				    const Block<Int>& dtypeOper)
 {
-    // Fill child nodes as needed.
+    // Fill child nodes as needed. It also fills ooperands_p.
     fillChildNodes (thisNode, nodes, dtypeOper);
+    // Set the unit for some functions.
+    fillUnits (thisNode, thisNode->operands_p, thisNode->funcType());
     // Some functions on a variable can already give a constant result.
     thisNode->tryToConst();
     if (thisNode->operands_p.nelements() > 0) {
 	return convertNode (thisNode, True);
     }
     return thisNode;
+}
+
+void TableExprFuncNode::fillUnits (TableExprNodeRep* node,
+				   PtrBlock<TableExprNodeRep*>& nodes,
+				   FunctionType func)
+{
+  if (nodes.nelements() > 0) {
+    const Unit& childUnit = nodes[0]->unit();
+    switch (func) {
+    case asinFUNC:
+    case acosFUNC:
+    case atanFUNC:
+    case atan2FUNC:
+    case timeFUNC:
+      // These functions return radians.
+      node->setUnit ("rad");
+      break;
+    case mjdFUNC:
+      // These functions return days.
+      node->setUnit ("d");
+      break;
+    case mjdtodateFUNC:
+      // These functions require days.
+      if (! childUnit.empty()) {
+	TableExprNodeUnit::adaptUnit (nodes[0], "d");
+      }
+      break;
+    case normFUNC:
+    case absFUNC:
+    case realFUNC:
+    case imagFUNC:
+    case conjFUNC:
+    case roundFUNC:
+    case floorFUNC:
+    case ceilFUNC:
+    case fmodFUNC:
+    case arrsumFUNC:
+    case arrminFUNC:
+    case arrmaxFUNC:
+    case arrmeanFUNC:
+    case arrstddevFUNC:
+    case arravdevFUNC:
+    case arrrmsFUNC:
+    case arrmedianFUNC:
+    case arrfractileFUNC:
+    case arrsumsFUNC:
+    case arrminsFUNC:
+    case arrmaxsFUNC:
+    case arrmeansFUNC:
+    case arrstddevsFUNC:
+    case arravdevsFUNC:
+    case arrrmssFUNC:
+    case arrmediansFUNC:
+    case arrfractilesFUNC:
+    case runminFUNC:
+    case runmaxFUNC:
+    case runmeanFUNC:
+    case runstddevFUNC:
+    case runavdevFUNC:
+    case runrmsFUNC:
+    case runmedianFUNC:
+      // These functions return the same unit as their child.
+      node->setUnit (childUnit);
+      break;
+    case squareFUNC:
+    case arrsumsqrFUNC:
+    case arrsumsqrsFUNC:
+    case arrvarianceFUNC:
+    case arrvariancesFUNC:
+    case runvarianceFUNC:
+      // These functions return the square of their child.
+     if (! childUnit.empty()) {
+       Quantity q(1., childUnit);
+       node->setUnit (pow(q,2).getFullUnit());
+     }
+     break;
+    case sqrtFUNC:
+      // These functions return the sqrt of their child.
+      if (! childUnit.empty()) {
+	Quantity q(1., childUnit);
+	node->setUnit (sqrt(q).getFullUnit());
+      }
+      break;
+    case sinFUNC:
+    case cosFUNC:
+    case tanFUNC:
+      // These functions return no unit, but their child must be in radians.
+      if (! childUnit.empty()) {
+	TableExprNodeUnit::adaptUnit (nodes[0], "rad");
+      }
+      break;
+    case iifFUNC:
+      node->setUnit (makeEqualUnits (nodes, 1, nodes.nelements()));
+      break;
+    case complexFUNC:
+    case minFUNC:
+    case maxFUNC:
+      node->setUnit (makeEqualUnits (nodes, 0, nodes.nelements()));
+      break;
+    case near2FUNC:
+    case nearabs2FUNC:
+    case near3FUNC:
+      makeEqualUnits (nodes, 0, 2);
+      break;
+    case nearabs3FUNC:
+      makeEqualUnits (nodes, 0, 3);
+      break;
+    case conesFUNC:
+    case cones3FUNC:
+    case anyconeFUNC:
+    case anycone3FUNC:
+    case findconeFUNC:
+    case findcone3FUNC:
+      for (uInt i=0; i<nodes.nelements(); ++i) {
+	TableExprNodeUnit::adaptUnit (nodes[i], "rad");
+      }
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+const Unit& TableExprFuncNode::makeEqualUnits
+                             (PtrBlock<TableExprNodeRep*>& nodes,
+			      uInt starg, uInt endarg)
+{
+  // These functions have multiple children, which must have the same unit.
+  // The first real unit is chosen as the result unit.
+  const Unit* unit = &(nodes[starg]->unit());
+  for (uInt i=starg; i<endarg; ++i) {
+    if (! nodes[i]->unit().empty()) {
+      unit = &(nodes[i]->unit());
+      break;
+    }
+  }
+  if (! unit->empty()) {
+    for (uInt i=starg; i<endarg; ++i) {
+      TableExprNodeUnit::adaptUnit (nodes[i], *unit);
+    }
+  }
+  return *unit;
 }
 
 // Fill the children pointers of a node.
@@ -628,7 +775,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     uInt i;
     // The default returned value type is a scalar.
     resVT = VTScalar;
-    // The following functions accept a scalar or array argument.
+    // The following functions accept a single scalar or array argument.
     // They result in a scalar.
     switch (fType) {
     case arrminFUNC:
@@ -773,7 +920,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     }
     // The following functions accept scalars and arrays.
     // They return a array if one of the input arguments is an array.
-    // When a function has no arguments, it results in a scalar.
+    // If a function has no arguments, it results in a scalar.
     for (i=0; i< nodes.nelements(); i++) {
         ValueType vt = nodes[i]->valueType();
 	if (vt == VTArray) {
@@ -944,4 +1091,3 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 }
 
 } //# NAMESPACE CASA - END
-

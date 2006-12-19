@@ -27,6 +27,7 @@
 
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/Table.h>
+#include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ColumnDesc.h>
 #include <tables/Tables/TableError.h>
@@ -137,6 +138,23 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
     default:
 	dtype_p = NTDouble;
     }
+    setUnit (getColumnUnit(*tabColPtr_p));
+}
+
+Unit TableExprNodeColumn::getColumnUnit (const ROTableColumn& tabcol)
+{
+    Unit unit;
+    //# Get the unit (if defined).
+    const TableRecord& keyset = tabcol.keywordSet();
+    if (keyset.isDefined ("QuantumUnits")) {
+        const Array<String>& units = keyset.asArrayString("QuantumUnits");
+	if (units.size() > 0) {
+	    unit = *(units.data());
+	}
+    } else if (keyset.isDefined ("UNIT")) {
+        unit = keyset.asString("UNIT");
+    }
+    return unit;
 }
 
 void TableExprNodeColumn::replaceTablePtr (const Table& table)

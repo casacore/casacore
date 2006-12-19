@@ -49,6 +49,10 @@ TaQLNodeResult TaQLConstNodeRep::visit (TaQLNodeVisitor& visitor) const
 }
 void TaQLConstNodeRep::show (std::ostream& os) const
 {
+  // Output the possible unit in the same way as TaQLUnitNodeRep is doing.
+  if (! itsUnit.empty()) {
+    os << '(';
+  }
   switch (itsType) {
   case CTBool:
     if (itsBValue) {
@@ -86,10 +90,13 @@ void TaQLConstNodeRep::show (std::ostream& os) const
     os << MVTime::Format(MVTime::YMD, 10) << itsTValue;
     break;
   }
+  if (! itsUnit.empty()) {
+    os << ")'" << itsUnit << "'";
+  }
 }
 void TaQLConstNodeRep::save (AipsIO& aio) const
 {
-  aio << char(itsType) << itsIsTableName;
+  aio << char(itsType) << itsIsTableName << itsUnit;
   switch (itsType) {
   case CTBool:
     aio << itsBValue;
@@ -115,7 +122,8 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
 {
   char type;
   Bool isTableName;
-  aio >> type >> isTableName;
+  String unit;
+  aio >> type >> isTableName >> unit;
   switch (type) {
   case CTBool:
     {
@@ -133,7 +141,7 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
     {
       Double value;
       aio >> value;
-      return new TaQLConstNodeRep (value);
+      return new TaQLConstNodeRep (value, unit);
     }
   case CTComplex:
     {
@@ -1047,6 +1055,31 @@ TaQLRecFldNodeRep* TaQLRecFldNodeRep::restore (AipsIO& aio)
   aio >> name;
   TaQLNode values = TaQLNode::restoreNode (aio);
   return new TaQLRecFldNodeRep (name, values);
+}
+
+TaQLUnitNodeRep::~TaQLUnitNodeRep()
+{}
+TaQLNodeResult TaQLUnitNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitUnitNode (*this);
+}
+void TaQLUnitNodeRep::show (std::ostream& os) const
+{
+  os << '(';
+  itsChild.show(os);
+  os << ")'" << itsUnit << "'";
+}
+void TaQLUnitNodeRep::save (AipsIO& aio) const
+{
+  aio << itsUnit;
+  itsChild.saveNode (aio);
+}
+TaQLUnitNodeRep* TaQLUnitNodeRep::restore (AipsIO& aio)
+{
+  String unit;
+  aio >> unit;
+  TaQLNode node = TaQLNode::restoreNode (aio);
+  return new TaQLUnitNodeRep (unit, node);
 }
 
 

@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <tables/Tables/ExprMathNode.h>
+#include <tables/Tables/ExprUnitNode.h>
+#include <tables/Tables/TableError.h>
 #include <casa/Quanta/MVTime.h>
 
 
@@ -33,8 +35,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Implement the arithmetic operators for each data type.
 
+TableExprNodePlus::TableExprNodePlus (NodeDataType dt,
+				      const TableExprNodeRep& node)
+: TableExprNodeBinary (dt, node, OtPlus)
+{}
+TableExprNodePlus::~TableExprNodePlus()
+{}
+
 TableExprNodePlusDouble::TableExprNodePlusDouble (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDouble, node, OtPlus)
+: TableExprNodePlus (NTDouble, node)
 {}
 TableExprNodePlusDouble::~TableExprNodePlusDouble()
 {}
@@ -44,7 +53,7 @@ DComplex TableExprNodePlusDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 TableExprNodePlusDComplex::TableExprNodePlusDComplex (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTComplex, node, OtPlus)
+: TableExprNodePlus (NTComplex, node)
 {}
 TableExprNodePlusDComplex::~TableExprNodePlusDComplex()
 {}
@@ -52,7 +61,7 @@ DComplex TableExprNodePlusDComplex::getDComplex (const TableExprId& id)
     { return lnode_p->getDComplex(id) + rnode_p->getDComplex(id); }
 
 TableExprNodePlusString::TableExprNodePlusString (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTString, node, OtPlus)
+: TableExprNodePlus (NTString, node)
 {}
 TableExprNodePlusString::~TableExprNodePlusString()
 {}
@@ -60,28 +69,51 @@ String TableExprNodePlusString::getString (const TableExprId& id)
     { return lnode_p->getString(id) + rnode_p->getString(id); }
 
 TableExprNodePlusDate::TableExprNodePlusDate (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDate, node, OtPlus)
+: TableExprNodePlus (NTDate, node)
 {}
 TableExprNodePlusDate::~TableExprNodePlusDate()
 {}
+void TableExprNodePlusDate::handleUnits()
+{
+    if (lnode_p->dataType() == NTDouble) {
+        TableExprNodeUnit::adaptUnit (lnode_p, "d");
+    } else if (rnode_p->dataType() == NTDouble) {
+        TableExprNodeUnit::adaptUnit (rnode_p, "d");
+    }
+}
 MVTime TableExprNodePlusDate::getDate(const TableExprId& id)
 { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 Double TableExprNodePlusDate::getDouble(const TableExprId& id)
 { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 
+TableExprNodeMinus::TableExprNodeMinus (NodeDataType dt,
+					const TableExprNodeRep& node)
+: TableExprNodeBinary (dt, node, OtMinus)
+{}
+TableExprNodeMinus::~TableExprNodeMinus()
+{}
+
 TableExprNodeMinusDouble::TableExprNodeMinusDouble (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDouble, node, OtMinus)
+: TableExprNodeMinus (NTDouble, node)
 {}
 TableExprNodeMinusDouble::~TableExprNodeMinusDouble()
 {}
+void TableExprNodeMinusDouble::handleUnits()
+{
+    if (lnode_p->dataType() == NTDate  &&  rnode_p->dataType() == NTDate) {
+        setUnit("d");                     //# date-date results in days
+    } else {
+        TableExprNodeBinary::handleUnits();
+    }
+}
 Double TableExprNodeMinusDouble::getDouble (const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 DComplex TableExprNodeMinusDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 
 TableExprNodeMinusDComplex::TableExprNodeMinusDComplex (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTComplex, node, OtMinus)
+: TableExprNodeMinus (NTComplex, node)
 {}
 TableExprNodeMinusDComplex::~TableExprNodeMinusDComplex()
 {}
@@ -89,18 +121,42 @@ DComplex TableExprNodeMinusDComplex::getDComplex (const TableExprId& id)
     { return lnode_p->getDComplex(id) - rnode_p->getDComplex(id); }
 
 TableExprNodeMinusDate::TableExprNodeMinusDate (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDate, node, OtMinus)
+: TableExprNodeMinus (NTDate, node)
 {}
 TableExprNodeMinusDate::~TableExprNodeMinusDate()
 {}
+void TableExprNodeMinusDate::handleUnits()
+{
+    // Right hand side must be in days.
+    TableExprNodeUnit::adaptUnit (rnode_p, "d");
+}
 MVTime TableExprNodeMinusDate::getDate(const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 Double TableExprNodeMinusDate::getDouble(const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 
 
+TableExprNodeTimes::TableExprNodeTimes (NodeDataType dt,
+					const TableExprNodeRep& node)
+: TableExprNodeBinary (dt, node, OtTimes)
+{}
+TableExprNodeTimes::~TableExprNodeTimes()
+{}
+void TableExprNodeTimes::handleUnits()
+{
+    if (lnode_p->unit().empty()) {
+        setUnit (rnode_p->unit());
+    } else if (rnode_p->unit().empty()) {
+        setUnit (lnode_p->unit());
+    } else {
+        Quantity q1 (1, lnode_p->unit());
+	Quantity q2 (1, rnode_p->unit());
+	setUnit ((q1*q2).getFullUnit());
+    }
+}
+
 TableExprNodeTimesDouble::TableExprNodeTimesDouble (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDouble, node, OtTimes)
+: TableExprNodeTimes (NTDouble, node)
 {}
 TableExprNodeTimesDouble::~TableExprNodeTimesDouble()
 {}
@@ -110,7 +166,7 @@ DComplex TableExprNodeTimesDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) * rnode_p->getDouble(id); }
 
 TableExprNodeTimesDComplex::TableExprNodeTimesDComplex (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTComplex, node, OtTimes)
+: TableExprNodeTimes (NTComplex, node)
 {}
 TableExprNodeTimesDComplex::~TableExprNodeTimesDComplex()
 {}
@@ -118,8 +174,35 @@ DComplex TableExprNodeTimesDComplex::getDComplex (const TableExprId& id)
     { return lnode_p->getDComplex(id) * rnode_p->getDComplex(id); }
 
 
+TableExprNodeDivide::TableExprNodeDivide (NodeDataType dt,
+					  const TableExprNodeRep& node)
+: TableExprNodeBinary (dt, node, OtDivide)
+{}
+TableExprNodeDivide::~TableExprNodeDivide()
+{}
+void TableExprNodeDivide::handleUnits()
+{
+    if (lnode_p->unit().empty()) {
+        setUnit (rnode_p->unit());
+    } else if (rnode_p->unit().empty()) {
+        // For backward compatibility dividing seconds by 86400 is a
+        // conversion to days.
+        if (rnode_p->isConstant()  &&  rnode_p->dataType() == NTDouble
+        &&  rnode_p->getDouble(0) == 86400.
+        &&  lnode_p->unit().getName() == "s") {
+	    setUnit ("d");
+	} else {
+	    setUnit (lnode_p->unit());
+	}
+    } else {
+        Quantity q1 (1, lnode_p->unit());
+	Quantity q2 (1, rnode_p->unit());
+	setUnit ((q1/q2).getFullUnit());
+    }
+}
+
 TableExprNodeDivideDouble::TableExprNodeDivideDouble (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDouble, node, OtDivide)
+: TableExprNodeDivide (NTDouble, node)
 {}
 TableExprNodeDivideDouble::~TableExprNodeDivideDouble()
 {}
@@ -129,7 +212,7 @@ DComplex TableExprNodeDivideDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) / rnode_p->getDouble(id); }
 
 TableExprNodeDivideDComplex::TableExprNodeDivideDComplex (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTComplex, node, OtDivide)
+: TableExprNodeDivide (NTComplex, node)
 {}
 TableExprNodeDivideDComplex::~TableExprNodeDivideDComplex()
 {}
@@ -137,8 +220,19 @@ DComplex TableExprNodeDivideDComplex::getDComplex (const TableExprId& id)
     { return lnode_p->getDComplex(id) / rnode_p->getDComplex(id); }
 
 
+TableExprNodeModulo::TableExprNodeModulo (NodeDataType dt,
+					  const TableExprNodeRep& node)
+: TableExprNodeBinary (dt, node, OtModulo)
+{}
+TableExprNodeModulo::~TableExprNodeModulo()
+{}
+void TableExprNodeModulo::handleUnits()
+{
+    setUnit (lnode_p->unit());
+}
+
 TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTDouble, node, OtModulo)
+: TableExprNodeModulo (NTDouble, node)
 {}
 TableExprNodeModuloDouble::~TableExprNodeModuloDouble()
 {}
@@ -158,5 +252,5 @@ Double TableExprNodeMIN::getDouble (const TableExprId& id)
 DComplex TableExprNodeMIN::getDComplex (const TableExprId& id)
     { return -(lnode_p->getDComplex(id)); }
 
-} //# NAMESPACE CASA - END
 
+} //# NAMESPACE CASA - END

@@ -28,6 +28,7 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeArray.h>
 #include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
@@ -404,6 +405,7 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
 	ndim_p = -1;                         // unknown dimensionality
     }
     shape_p = tabCol_p.shapeColumn();
+    setUnit (TableExprNodeColumn::getColumnUnit(tabCol_p));
 }
 
 TableExprNodeArrayColumn::~TableExprNodeArrayColumn()
