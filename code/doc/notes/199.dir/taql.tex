@@ -154,6 +154,46 @@ reversed (data will not be transposed).
 The style feature has to be used with care. A given TaQL statement will
 behave differently when used with another style.
 
+\subsection{\label{TAQL:RESERVEDWORDS}Reserved words}
+TaQL uses the following words as part of its language.
+\begin{verbatim}
+ ALL           AND      AS        ASC
+ BETWEEN 
+ CREATETABLE
+ DELETE        DESC     DISTINCT  DMINFO
+ EXISTS        EXCEPT
+ F             FALSE    FROM
+ GIVING        GROUPBY
+ HAVING
+ IN            INCONE   INSERT    INTERSECT  INTO
+ JOIN
+ LIKE          LIMIT
+ MINUS
+ NODUPLICATES  NOT
+ OFFSET        OR       ORDERBY
+ SAVETO        SELECT   SET
+ T             TRUE
+ UNION         UNIQUE   UPDATE    USINGSTYLE
+ VALUES 
+ WHERE
+\end{verbatim}
+These words are reserved. Note that the words in the TaQL vocabulary
+are case insensitive, 
+thus the lowercase (or any mixed case) versions are also reserved.
+
+The reserved words cannot directly be used as
+\htmlref{column name}{TAQL:COLUMNS},
+\htmlref{keyword name}{TAQL:KEYWORDS}, or 
+\htmlref{unit}{TAQL:UNITS}.
+However, a reserved word can be used by escaping it with a backslash like
+\verb+\+\texttt{AS}. When reading further, the meaning of
+\begin{verbatim}
+     \IN  \in  IN [3mm,4mm]
+   column unit IN set
+\end{verbatim}
+might come clear. It means: use unit \texttt{in} (inch) for column
+\texttt{IN} and test if it is in the given set. 
+
 \section{Selection from a table}
 The SELECT is the main TaQL command. It can be used to select a subset
 of rows and/or columns from a table or to generate new columns based
@@ -1354,31 +1394,10 @@ escaping them with a backslash. E.g. \texttt{DATE}\verb+\+\texttt{-OBS}.
 \\In the same way a numeric character can be used as the first
 character of the column name. E.g. \verb+\+\texttt{1stDay}.
 \\
-Because several words are used in the language, they cannot
-be used directly as column names. The reserved words are:
-\begin{verbatim}
- ALL           AND      AS        ASC
- BETWEEN 
- CREATETABLE
- DELETE        DESC     DISTINCT  DMINFO
- EXISTS        EXCEPT
- F             FALSE    FROM
- GIVING        GROUPBY
- HAVING
- IN            INCONE   INSERT    INTERSECT  INTO
- JOIN
- LIKE          LIMIT
- MINUS
- NODUPLICATES  NOT
- OFFSET        OR       ORDERBY
- SAVETO        SELECT   SET
- T             TRUE
- UNION         UNIQUE   UPDATE    USINGSTYLE
- VALUES 
- WHERE
-\end{verbatim}
-They can, however, be used as a column name by escaping
-them with a backslash. E.g. \verb+\+\texttt{IN}.
+A \htmlref{reserved word}{TAQL:RESERVEDWORDS} cannot
+be used directly as column name.
+It can, however, be used as a column name by escaping
+it with a backslash. E.g. \verb+\+\texttt{IN}.
 \\Note that in C++ and Glish a backslash itself has to be escaped
 by another backslash. E.g. in Glish:
 \texttt{tab.query('DATE}\verb+\\+\texttt{-OBS$>$10MAR1996')}.
@@ -1566,7 +1585,7 @@ can be given literally if only containing digits, underscores and/or
 dots (e.g. \texttt{m2}, \texttt{fl\_oz}. or \texttt{m.m}).
 Otherwise the unit has to be enclosed in single or double quotes
 (e.g. \texttt{'m/s'}) or the backslash has to be used as escape
-character (e.g. \texttt{\\in} or \texttt{m\\/s}).
+character (e.g. \verb+\+\texttt{in} or \texttt{m}\verb+\+\texttt{/s}).
 \\Arguments to functions like \texttt{sin} will be converted to the
 appropriate unit (radians) as needed. In a similar way, the units of
 operands to operators like addition, will be converted as needed.
@@ -1627,7 +1646,8 @@ Units can be given as follows:
  \item A (sub)expression can be followed by a simple or compound unit.
        If the subexpression has no unit, it gets the given unit.
        Otherwise the resulting value is converted to the unit.
-       \\Note that some units can be the same as a reserved word
+       \\Note that some units can be the same as a
+       \htmlref{reserved word}{TAQL:RESERVEDWORDS}
        (e.g. \texttt{as} or \texttt{in}).
        In that case it has to be escaped or enclosed in quotes.
 	\begin{verbatim}
@@ -1652,10 +1672,6 @@ Units can be given as follows:
  \item When adding or subtracting a value from a date, that value is
 	converted to unit \texttt{d} (days).
 \end{itemize}
-Please note that some units can conflict with the reserved TaQL words.
-An example is unit \texttt{in} (inch). In such a case the unit should
-be enclosed in quotes.
-
 Units will probably mostly be used in an expression in the WHERE
 clause or in a CALC command. However, it is also possible to use a
 unit in the selection of a column in the SELECT clause. For example:
