@@ -6,7 +6,7 @@ The Table Query Language (TaQL, rhymes with bagel (though many people
 pronounce it as tackle)) makes it possible to select
 rows from an arbitrary table based on the contents of its
 columns and keywords. It supports arbitrary complex
-expressions including extended regular expressions and many functions.
+expressions including units, extended regular expressions, and many functions.
 TaQL also makes sorting and column selection possible.
 Furthermore TaQL has commands to create a table and to modify data
 in a table.
@@ -16,9 +16,9 @@ The most important features of TaQL different from SQL are:
 \begin{itemize}
 \item The result of a SELECT is not ASCII output. Instead it always
 creates another table (either temporary or persistent). Usually this
-is a so-called reference table, but if the select column list contains
-expressions, it is a plain table.
-A reference table is a table that can be used as any other table,
+is a so-called reference table, but it is also possible to make a deep
+copy and create a plain table.
+\\A reference table is a table that can be used as any other table,
 but it does not contain data. Instead it contains references to the
 rows and columns in the original table. Thus modifying data in a
 reference table means that effectively the data in the original
@@ -26,6 +26,7 @@ table are modified.
 \item Any operand can be a scalar or an N-dimensional array.
 Many reduction functions can be applied to arrays.
 \item A very rich set of mathematical functions.
+\item Full support of units and automatic conversion of units.
 \item Support of various types of patterns/regular expressions.
 \item Specific operators and functions for cone searching
 (i.e. spatial searching with a search radius).
@@ -40,7 +41,7 @@ table. This can be useful to derive values from a table (e.g. the
 number of flags set in a measurement set). It can even be used as a
 desk calculator.
 \item TaQL can be used from languages with different conventions, for
-eaxmple the order of array axes. Therefore it is possible to set the
+example the order of array axes. Therefore it is possible to set the
 language style to be used.
 \end{itemize}
 
@@ -61,7 +62,8 @@ syntax, but indicate the optional parts of the commands.
   SELECT [[DISTINCT] column_list] [INTO table [AS type]]
     FROM table_list [WHERE expression]
     [ORDERBY [DISTINCT] sort_list]
-    [LIMIT expression] [OFFSET expression] [GIVING table|set]
+    [LIMIT expression] [OFFSET expression]
+    [GIVING table [AS type] | set]
 \end{verbatim}
 It can be used to get an optionally sorted subset from a table.
 
@@ -202,7 +204,7 @@ For example:
 
 It is possible to use expressions in the column list to create
 new columns based on the contents of other columns. When doing this,
-the resulting table is a normal table (because a reference table
+the resulting table is a plain table (because a reference table
 cannot contain expressions). The new column can be given a name
 by giving \texttt{AS name} after the expression (where AS is
 optional). If no name is given, a unique name like
@@ -214,6 +216,13 @@ data type is used.
   select max(ANTENNA1,ANTENNA2) AS ANTENNA INT from 3C343
   select means(DATA,1) from 3C343
 \end{verbatim}
+Note that unit conversion can be (part of) an expression. For example:
+\begin{verbatim}
+  select TIME d AS TIMEH from my.ms
+\end{verbatim}
+to store the time in unit \texttt{d} (days). Units are discussed in
+\htmlref{section 4.9}{TAQL:UNITS}.
+
 Note that for subqueries the GIVING clause offers a
 better (faster) way of specifying a result expression. It also makes it
 possible to use intervals.
@@ -236,10 +245,13 @@ returned. This is the default. Because there is an ambiguity between
 the keyword ALL and function ALL, the first element of the column
 list cannot be an expression if the keyword ALL is used.
 
-\subsection{\label{TAQL:INTO}INTO table [AS type]}
+\subsection{\label{TAQL:INTO}INTO [table] [AS type]}
 This indicates that the ultimate result of the SELECT command should be
 written to a table (with the given name). This table can be a
 reference table, a plain table, or a memory table.
+
+The table argument gives the name of the resulting table. It can be
+omitted if a memory table is created.
 
 The type argument is optional and can be one of several values:
 \begin{description}
@@ -444,13 +456,12 @@ It indicates that the first N rows of the selection have to be
 skipped. As \texttt{LIMIT} it is particularly useful in
 combination with \texttt{ORDERBY}.
 
-\subsection{\label{TAQL:GIVING}GIVING table$|$set}
+\subsection{\label{TAQL:GIVING}GIVING [table] [AS type] $|$ set}
 It indicates that the ultimate result of the SELECT command should be
-written to a table (with the given name). One can also give an option
-using \texttt{AS option}.
+written to a table (with the given name).
 \\Another (more SQL compliant) way to define the output table
 is the \htmlref{INTO}{TAQL:INTO} clause. See \htmlref{INTO}{TAQL:INTO}
-for a more detailed description including the possible options.
+for a more detailed description including the possible types.
 
 It is also possible to specify a set in the GIVING clause
 instead of a table name. This is very useful if the result of a
@@ -469,20 +480,23 @@ used instead of GIVING. Whitespace can be given between SAVE and TO.
 \section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
 key in the ORDERBY clause, in an element in the set in the GIVING
-clause, or as a value in the INSERT and UPDATE command.
+clause, as a value in the INSERT and UPDATE command, or as a column
+in the SELECT command.
 Note that the expression result must be
 a boolean scalar if used in the WHERE clause. If used in ORDERBY
 the result can also be a numeric or string scalar. If used in 
-GIVING it can also be a DateTime scalar. If used as a new value in
-the UPDATE or INSERT command it can also be an array.
+GIVING it can also be a DateTime scalar. If used in
+the UPDATE, INSERT, or SELECT command it can also be an array.
 \\The expression in the clause can be as complex as one likes
-using the standard
-\htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}.
+using
+\htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}, 
+\htmlref{functions}{TAQL:FUNCTIONS}, and \htmlref{units}{TAQL:UNITS}.
 Parentheses can be used to group subexpressions.
 \\The operands in an expression can be
 \htmlref{table columns}{TAQL:COLUMNS},
 \htmlref{table keywords}{TAQL:KEYWORDS},
 \htmlref{constants}{TAQL:CONSTANTS},
+\htmlref{units}{TAQL:UNITS},
 \htmlref{functions}{TAQL:FUNCTIONS},
 \htmlref{sets and intervals}{TAQL:SETS}, and
 \htmlref{subqueries}{TAQL:SUBQUERIES}.
@@ -539,26 +553,33 @@ The possible types and values are:
 Scalar constants of the various data types can be formed as follows
 (which is very similar to Glish):
 \begin{itemize}
-  \item A Bool constant is the value \texttt{T} or \texttt{F}.
+  \item A Bool constant is the value \texttt{T} or \texttt{F} (both in
+  uppercase) or the value \texttt{true} or \texttt{false} (any case).
   \item A Double constant can be any integer or floating-point number.
        \\Another way to define a Double constant is by means of
        a Time or Position. Such a constant is always converted to radians.
       It can be given in several ways:
        \begin{itemize}
          \item An integer or floating-point number immediately
-              followed by a unit
+              followed by a simple unit
               (thus without whitespace). E.g. \texttt{12.43deg}
               \\Some valid units are deg, arcmin, arcsec (or as), rad.
               The units can be scaled by preceeding them with a letter
               (e.g. mrad is millirad).
-         \item A time/position in hours in HMS format.
+         \item A time/position in hours in HMS format. Minutes and/or
+               seconds can be left out.
               E.g. \texttt{12h34m34.5} or \texttt{8h}
-         \item A position in degrees in DMS format.
-              E.g. \texttt{12d34m34.5} or \texttt{8d}
+         \item A position in degrees in DMS format. Only seconds can be
+               left out.
+              E.g. \texttt{12d34m34.5} or \texttt{8d0m}
          \item A position in degrees in dot format. Note that the dots
               for degrees and minutes must always be present.
               E.g. \texttt{12.34.34.5} or \texttt{8..34.5}
        \end{itemize}
+	Note that DMS positions and units have an inherent
+	ambiguity. \texttt{2d3m} will be seen as a position and not
+	as 2000 meter (note that 2d3 is a double precision number).
+	Use \texttt{2.d3m} or \texttt{2d3 m} to indicate the meters case.
   \item The imaginary part of a Complex constant is formed by a Double
        constant immediately followed by a lowercase \textbf{i}. A full Complex
        constant is formed by adding another Double constant as the
@@ -611,21 +632,35 @@ Scalar constants of the various data types can be formed as follows
               \begin{verbatim}
                 name LIKE '3c%'
               \end{verbatim}
-        \item as an extended regular expression.
-              \\\texttt{m/pattern/} can be used after operator \verb+~+
+        \item as an extended regular expression matching the full string.
+              \\\texttt{f/pattern/} can be used after operator \verb+~+
               and \verb+!~+. A slash, \% and \# can be used as delimiter.
-              \\Function \texttt{pattern} can be used after operator = and !=.
+              \\Function \texttt{regex} can be used after operator = and !=.
               It uses many special characters. See class
               \htmladdnormallink{Regex}
               {../../casa/implement/Utilities/Regex.html}
               for a full description.
               \begin{verbatim}
-                name ~ m/[a-zA-Z][a-zA-Z0-9]*/
-                name = regex('[a-zA-Z][a-zA-Z0-9]')
+              name ~ f/[a-zA-Z][a-zA-Z0-9]*/
+          is equal to
+              name = regex('[a-zA-Z][a-zA-Z0-9]*')
+              \end{verbatim}
+        \item as an extended regular expression matching part of a string.
+              \\\texttt{m/pattern/} can be used after operator \verb+~+
+              and \verb+!~+. A slash, \% and \# can be used as delimiter.
+	      \\It is the same as the \texttt{f//} regex above, be it
+	      that it matches a part of a string only. Thus it can be used
+	      to test if a string contains a pattern.
+	      The special characters \verb+^+ and \$ match
+	      the beginning and end of a string.
+              \begin{verbatim}
+              lower(name) ~ m/^[a-z][a-z0-9]*/
+          is equal to
+              lower(name) = regex('[a-z][a-z0-9]*.*')
               \end{verbatim}
         \end{itemize}
-        Note that the functions and operator LIKE work on any string,
-        thus they can be used with any string expression.
+	See \htmlref{below}{TAQL:REGEX} for a further discussion of
+	regex comparisons.
   \item A DateTime constant can be formed in 2 ways:
        \begin{enumerate}
          \item From a String constant using the \texttt{datetime} function.
@@ -727,10 +762,10 @@ precedence) for scalars:
        can be used for double and complex operands.
        Operator + can also be used for:
        \\- Addition (i.e., concatenation) of 2 strings.
-       \\- Addition of a double (unit days) and a DateTime
+       \\- Addition of a double (converted to unit days) and a DateTime
        (resulting in a DateTime).
        \\Operator - can also be used for:
-       \\- Subtraction of a double (unit days) from a DateTime
+       \\- Subtraction of a double (converted to unit days) from a DateTime
        (resulting in a DateTime).
        \\- Subtraction of 2 DateTimes (resulting in a double with unit days).
   \item \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
@@ -822,7 +857,9 @@ These functions can be used on a scalar or an array argument.
        Removes trailing whitespace.
 \end{description}
 
-\subsubsection{Regex functions}
+\subsubsection{\label{TAQL:REGEX}Regex functions}
+Apart from the regex/pattern constants, it is possible to use
+functions to form a regex or pattern.
 The syntax for forming a regex and pattern are explained in class
 \htmladdnormallink{Regex}{../../casa/implement/Utilities/Regex.html}.
 These functions can only be used on a scalar argument.
@@ -845,6 +882,21 @@ A regex formed this way can only be used in a comparison == or !=. E.g.
 \\to find all 3C objects in a catalogue.
 See also the discussion on \htmlref{constants}{TAQL:CONSTANTS} for
 other ways of forming and testing regular expressions.
+
+A few remarks:
+\begin{enumerate}
+\item The regex/pattern functions and operator LIKE work on any string,
+thus they can be used with any string expression.
+\item A Regex is case sensitive. One should use 
+function \texttt{upcase} or \texttt{downcase} on the string to test to
+make it case insensitive. 
+\item Usually a regex/pattern must match the full string, thus not part of
+it. However, one can use the \texttt{m//} regex constant to do partly
+matching. Thus something like \texttt{m/xx/} matches strings
+containing \texttt{xx}. Of course, \texttt{regex('.*xx.*')} can also be used.
+In this way the \texttt{m//} regex works the same as in languages like
+Perl and Glish. 
+\end{enumerate}
 
 \subsubsection{Date/time functions}
 These functions can be used on a scalar or an array argument.
@@ -1305,11 +1357,25 @@ character of the column name. E.g. \verb+\+\texttt{1stDay}.
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
- ALL AND AS ASC BETWEEN CREATETABLE DELETE DESC DISTINCT
- EXISTS EXCEPT FROM GIVING GROUPBY HAVING
- IN INCONE INSERT INTERSECT INTO JOIN LIKE LIMIT
- MINUS NODUPLICATES NOT OFFSET ON OR ORDERBY SAVETO
- SELECT SET UNION UNIQUE UPDATE USINGSTYLE VALUES WHERE
+ ALL           AND      AS        ASC
+ BETWEEN 
+ CREATETABLE
+ DELETE        DESC     DISTINCT  DMINFO
+ EXISTS        EXCEPT
+ F             FALSE    FROM
+ GIVING        GROUPBY
+ HAVING
+ IN            INCONE   INSERT    INTERSECT  INTO
+ JOIN
+ LIKE          LIMIT
+ MINUS
+ NODUPLICATES  NOT
+ OFFSET        OR       ORDERBY
+ SAVETO        SELECT   SET
+ T             TRUE
+ UNION         UNIQUE   UPDATE    USINGSTYLE
+ VALUES 
+ WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
 them with a backslash. E.g. \verb+\+\texttt{IN}.
@@ -1491,6 +1557,114 @@ This makes it possible for array operators and functions
 Another form of constructing a set is using a
 \htmlref{subquery}{TAQL:SUBQUERIES} as shown below.
 
+\subsection{\label{TAQL:UNITS}Units}
+Units can be given at many places in an expression; in fact, each
+subexpression can be ended with a unit meaning that the subexpression
+result gets that unit or will be converted to that unit. A simple
+unit (only letters) can always be given literally. A non-simple unit
+can be given literally if only containing digits, underscores and/or
+dots (e.g. \texttt{m2}, \texttt{fl\_oz}. or \texttt{m.m}).
+Otherwise the unit has to be enclosed in single or double quotes
+(e.g. \texttt{'m/s'}) or the backslash has to be used as escape
+character (e.g. \texttt{\\in} or \texttt{m\\/s}).
+\\Arguments to functions like \texttt{sin} will be converted to the
+appropriate unit (radians) as needed. In a similar way, the units of
+operands to operators like addition, will be converted as needed.
+An exception is thrown if a unit conversion is not possible.
+
+All units supported by module
+\htmladdnormallink{Quanta}{../../casa/implement/Quanta.html}
+can be used. Note that the
+units are case sensitive. Most common units use lowercase characters.
+A unit can be preceeded by a scaling prefix (like \texttt{k} for kilo).
+In glish one can use \texttt{dq.map()} to see the available units and
+prefixes. Compound units are created when multiplying or
+dividing values with units.
+
+Units can be given as follows:
+\begin{itemize}
+ \item If a column has a unit defined in column keyword
+	\texttt{QuantumUnits} or \texttt{UNIT}, it automatically
+	gets that unit.
+ \item A constant can immediately be followed by a simple unit as
+	explained \htmlref{above}{TAQL:CONSTANTS}.
+	E.g. \texttt{2deg}.
+ \item The result of several expressions have an implicit unit.
+	\\Constants given as positions are in radians (rad).
+	\\Difference of 2 dates is in days (d).
+	\\Inverse trigonometric functions give radians.
+ \item When combining values with different units in e.g. an interval,
+	a set, an addition, or a function like \texttt{min}, the values
+	are converted to the unit of the first operand or argument
+	with a unit. Values without a unit have by default the unit
+	of the first operand or argument with a unit.
+	\begin{verbatim}
+        3mm-7cm          result is -67 mm
+        3+3mm            result is 6 mm
+        3mm<:<3cm        result is interval <3mm,30mm>
+        [3,4cm,5]        result is [3cm, 4cm, 5cm]
+        [5, 7cm, 8mm]    result is [5cm, 7cm, 0.8cm]
+        [5, 7mm, 8cm]    result is [5mm, 7mm, 80mm]
+        max(3mm,2cm)     result is 20 mm
+        5 'km/h' + 1 'm/s'      is 8.6 km/h
+        iif(F,3min,30sec)       is 0.5 min
+	\end{verbatim}
+ \item Similarly operands of comparison operators and arguments of
+	comparison functions (like \texttt{near}) are converted to
+	the unit of the first operand or argument with a unit.
+ \item The result of a multiplication and division is a compound unit
+	if both operands have a unit. Otherwise it is the unit of
+	the argument with a unit.
+        \\Before TaQL supported units, it was needed to divide the
+`	TIME column in a MeasurementSet by 86400 to convert it to
+	days, so it could be compared with a given date/time.
+	So, for backward compatibility, a division of a value with
+	unit \texttt{s} by a constant 86400 results in unit \texttt{d}.
+ \item The result of functions like \texttt{SUMSQR} and \texttt{SQRT} is a
+	compound unit if the argument has a unit.
+	Note that \texttt{sqrt(2m)} will fail, because the square root
+	of a meter does not exist.
+ \item A (sub)expression can be followed by a simple or compound unit.
+       If the subexpression has no unit, it gets the given unit.
+       Otherwise the resulting value is converted to the unit.
+       \\Note that some units can be the same as a reserved word
+       (e.g. \texttt{as} or \texttt{in}).
+       In that case it has to be escaped or enclosed in quotes.
+	\begin{verbatim}
+        COL \in          set/convert column COL to inch
+        3 cm             result is 3 cm
+        3 'km/s'         result is 3 km/second
+        3mm cm           result is 0.3 cm
+        (3mm cm)m        result is 0.003 m
+        (3+3) cm         result is 6 cm
+        (3+3mm) cm       result is 0.6 cm
+        [3,4,5]mm        result is [3mm, 4mm, 5mm]
+        [3,4cm,5]mm      result is [30mm, 40mm, 50mm]
+            Note: first all values in set get same unit cm
+        asin(1)          result is pi/2 radians
+        asin(1) deg      result is 90 degrees
+        (3mm+7cm) m      result is 0.073 m
+	\end{verbatim}
+ \item If a function argument is expected in a certain unit, values
+	are converted as needed. For example, arguments to functions 
+	\texttt{sin} and \texttt{anycone}
+	are automatically converted to radians.
+ \item When adding or subtracting a value from a date, that value is
+	converted to unit \texttt{d} (days).
+\end{itemize}
+Please note that some units can conflict with the reserved TaQL words.
+An example is unit \texttt{in} (inch). In such a case the unit should
+be enclosed in quotes.
+
+Units will probably mostly be used in an expression in the WHERE
+clause or in a CALC command. However, it is also possible to use a
+unit in the selection of a column in the SELECT clause. For example:
+\\\texttt{select TIME d as TIMED from my.ms}
+In such a case the selection is an expression and the unit is stored
+in the column keywords. Thus in this example, TIME is stored in a
+column \texttt{TIMED} with keyword \texttt{QuantumUnits=d} and the 
+values are converted to days.
+
 \subsection{\label{TAQL:SUBQUERIES}Subqueries}
 As in SQL it is possible to create a set from a subquery. A
 subquery has the same syntax as a main query, but has to be
@@ -1607,19 +1781,6 @@ values in the measurement set.
 
 
 \section{Some further remarks}
-\subsection{Time/position considerations}
-A position constant (e.g. \texttt{3h4m}) is converted to
-radians, so it can be used easily in functions like \texttt{SIN}.
-Since a time constant has exactly the same format, it is
-also converted to radians, while the user may expect it to be
-expressed in seconds. The user has to take this into account
-if times are used in a comparison. For example, \texttt{timecol $>$ 3h4m}
-is only correct if \texttt{timecol} has unit radians.
-\\To make life easier the function \texttt{TIME} results in a value
-in radians, so it can be used directly in a comparison. For example,
-\texttt{TIME(datecolumn) $>$ 3h4m}.
-\\In the future this may change if units are handled in their full glory.
-
 \subsection{Optimization}
 A lot of development work can be done to improve the query optimization.
 At this stage a few optimizations are done.
@@ -1762,6 +1923,10 @@ shows that it is possible to set an array to a scalar value.
 Type promotion and demotion will be done as much as possible.
 For example, an integer column can get the value of a double
 expression (which will be truncated).
+\\Unit conversion will be done as needed. Thus if a column and
+its expression have different units, the expression result is automatically
+converted to the column's unit. Of course, the units must be of the
+same type to be able to convert the data.
 
 Note that if multiple \texttt{column=expression} parts are given,
 the columns are changed in the order as specified in the update-list.
@@ -1792,9 +1957,10 @@ into account if the subquery is done on the table being modified.
 number of expressions.
 \\Note that row cells not mentioned in the column list,
 are not written, thus may contain rubbish.
-\\The data types of expressions and columns have to match in the same way
-as for the UPDATE command; values have to be promotable or demotable
-to the column data type.
+\\The data types and units of expressions and columns have to conform in
+the same way 
+as for the UPDATE command; values have to be convertible
+to the column data type and unit.
 \\For example:
 \begin{verbatim}
   INSERT INTO my.ms (ANTENNA1,ANTENNA2) VALUES (0,1)
@@ -1854,7 +2020,7 @@ brackets or parentheses (for SQL compatibility).
 It is a comma separated list of column specifications.
 Each specification looks like:
 \begin{verbatim}
-  columnname datatype [NDIM=n, SHAPE=[d1,d2,...],
+  columnname datatype [NDIM=n, SHAPE=[d1,d2,...], UNIT='s',
                        DMTYPE='s',DMGROUP='s',COMMENT='s']
 \end{verbatim}
 The possible data type strings are given in
@@ -1863,14 +2029,24 @@ The part enclosed in square brackets is optional. Zero or more of
 these keywords can be used. It makes it possible
 to define array columns and/or default data manager to be used.
 The square brackets are optional if only one such keyword is used.
-\\\texttt{NDIM=n} defines if the column contains scalars or arrays.
-A negative value means a scalar (unless shape is also given).
+\begin{itemize}
+\item \texttt{NDIM=n} defines if the column contains scalars or arrays.
+\\A negative value means a scalar (unless shape is also given).
 A value 0 means an array of any dimensionality. A positive value means
 an array with the given dimensionality.
-\\\texttt{SHAPE=[d1,d2,...]} makes it possible to define the exact
-array shape. If given and if NDIM is positive, they should be consistent.
-\\\texttt{DMTYPE, DMGROUP, COMMENT} have string values, thus quotes
-have to be used. DMTYPE and DMGROUP are rather specific and are for the expert user.
+\item \texttt{SHAPE=[d1,d2,...]} makes it possible to define the exact
+array shape.
+\\If given and if NDIM is positive, they should be consistent.
+\item \texttt{UNIT='s'} defines the unit to be used for the column.
+\\It can be any valid unit (simple or compound). It is a string,
+thus must always be enclosed in quotes. 
+\item \texttt{COMMENT} defines comments for the column.
+\\It has a string value, thus quotes
+have to be used.
+\item \texttt{DMTYPE, DMGROUP} are rather specific and are for the expert user.
+\\They have a string value, thus quotes
+have to be used.
+\end{itemize}
 
 The \texttt{dataman} part makes it possible for the expert user to
 define the data managers to be used by columns. It is a comma separated
@@ -1912,10 +2088,10 @@ The part in square brackets can be omitted if no column is (directly)
 used in the expression. The examples will make clear what that means.
 
 \begin{verbatim}
-  CALC 1+2
+  CALC 1in cm
 \end{verbatim}
 is a simple expression not using a table. It shows how the CALC
-command can be used as a desk calculator.
+command can be used as a desk calculator to convert 1 inch to cm.
 
 \begin{verbatim}
   CALC FROM mytable CALC mean(column1+column2)
@@ -1961,16 +2137,16 @@ used in the nested query which has a FROM clause itself.
     to be several equal values.
 
   \item[] \texttt{ SELECT FROM some.MS WHERE }
-    \\\texttt{ near(TIME/(24*3600),MJD(1999/03/30/17:27:15)) }
+    \\\texttt{ near(,MJD(1999/03/30/17:27:15), TIME) }
     \\selects the rows with the given time from a MeasurementSet.
-    \\Note that the TIME is stored in seconds; the division converts
-        it to days.
+    \\Note that the TIME is stored in seconds, but will automatically
+	be converted it to days.
 
-   \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
+   \item[] \texttt{ SELECT FROM some.MS where TIME in }
      \\\texttt{ [\{MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)\}] }
      \\selects the rows in the given closed time interval.
 
-   \item[] \texttt{ SELECT FROM some.MS where TIME/(24*3600) in }
+   \item[] \texttt{ SELECT FROM some.MS where TIME in }
      \\\texttt{ [MJD(1999/03/30/17:27:15),MJD(1999/03/30/17:29:15)] }
      \\selects the rows having one of the given times.
      \\Note the difference with the previous example where an interval
@@ -2361,7 +2537,6 @@ features and by doing optimizations.
   \item Handle invalid subexpressions (e.g. exceeding array bounds)
     as undefined values
     which can be tested with the function ISDEFINED.
-  \item Interpret column units defined in a column keyword UNIT.
   \item Maybe functions to convert positions from one equinox or system
        to another (using the Measures system).
   \item Optimize using a B+ tree index.
