@@ -30,6 +30,8 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/Utilities/Copy.h>
 #include <casa/Exceptions/Error.h>
+
+// No socket support on Cray XT3 Catamount (yet)
 #ifndef AIPS_CRAY_PGI
 #include <netinet/in.h>
 #include <arpa/inet.h>            // Definition of sockaddr_in
@@ -48,7 +50,6 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
   throw AipsError("StreamIO is not supported on Cray XT3");
 #else
   // Do hostname lookup!
-
   struct sockaddr_in serverInfo;
   objset(reinterpret_cast<char*>(&serverInfo), static_cast<char>(0), 
 	 sizeof(serverInfo)); // Isn't C a wonderful language!
@@ -148,9 +149,4 @@ Bool StreamIO::isSeekable() const {
   return False;
 }
 
-// Local Variables: 
-// compile-command: "gmake StreamIO; cd test; gmake OPTLIB=1 tStreamIO"
-// End: 
-
 } //# NAMESPACE CASA - END
-

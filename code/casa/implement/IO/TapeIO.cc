@@ -34,6 +34,8 @@
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
 #include <casa/string.h>          // needed for strerror
+
+// No tape support on Cray XT3
 #ifndef AIPS_CRAY_PGI
 #include <sys/mtio.h>             // needed for ioctl
 #if defined(AIPS_SOLARIS) || defined(AIPS_DARWIN)
@@ -341,4 +343,3 @@ void TapeIO::fillSeekable() {
 }
 
 } //# NAMESPACE CASA - END
-
