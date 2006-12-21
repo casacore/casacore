@@ -180,7 +180,6 @@ inline Bool operator<= (const Complex& left, const Complex& right)
 inline Bool operator<  (const Complex& left, const Complex& right)
   { return left==right  ?  False : norm(left) < norm(right); }
 // </group>
-// </group>
 
 
 // <summary>DComplex NaN </summary>
@@ -203,7 +202,6 @@ inline Bool operator<= (const DComplex& left, const DComplex& right)
   { return norm(left) <= norm(right); }
 inline Bool operator<  (const DComplex& left, const DComplex& right)
   { return norm(left) <  norm(right); }
-// </group>
 // </group>
 
 
