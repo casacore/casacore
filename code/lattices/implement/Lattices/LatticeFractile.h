@@ -96,7 +96,7 @@ public:
   // the median. If the lattice has an even number of elements and if
   // the lattice is small enough (< 100 elements), the median is the
   // mean of the 2 middle elements.
-  // <br>If the lattice is masked, onlu masked-on elements are taken
+  // <br>If the lattice is masked, only masked-on elements are taken
   // into account.
   // <br>If the lattice is large, successive histograms are made until
   // <src>smallSize</src> elements are left. Thereafter an in-memory
@@ -108,10 +108,10 @@ public:
   // <group>
   static Vector<T> unmaskedFractile (const Lattice<T>& lattice,
 				     Float fraction,
-				     uInt smallSize = 512*512);
+				     uInt smallSize = 4096*4096);
   static Vector<T> maskedFractile (const MaskedLattice<T>& lattice,
 				   Float fraction,
-				   uInt smallSize = 512*512);
+				   uInt smallSize = 4096*4096);
   // </group>
 
   // Determine the values of the 2 elements at the given fractiles.
@@ -128,10 +128,10 @@ public:
   // <group>
   static Vector<T> unmaskedFractiles (const Lattice<T>& lattice,
 				      Float left, Float right,
-				      uInt smallSize = 512*512);
+				      uInt smallSize = 4096*4096);
   static Vector<T> maskedFractiles (const MaskedLattice<T>& lattice,
 				    Float left, Float right,
-				    uInt smallSize = 512*512);
+				    uInt smallSize = 4096*4096);
   // </group>
 
 private:
@@ -149,25 +149,30 @@ private:
   // <group>
   static uInt maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 			       Block<uInt>& hist,
+			       Block<T>& boundaries,
 			       const MaskedLattice<T>& lattice);
   static void unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 				 Block<uInt>& hist,
+				 Block<T>& boundaries,
 				 const Lattice<T>& lattice);
   // </group>
 
   // Helper function which determines which bin in the histogram 
   // contains the passed index. 
   // On input fractileInx gives the index of the fractile in the entire
-  // histogram and stv,endv give the boundaries of the entire histogram.
-  // On output fractileInx is the index in the bin bounded by
-  // the values given in stv and endv. The nr of values in that bin
-  // is returned as the function value.
-  // On success it returns True, otherwise (rounding problem) False. 
-  // In the latter case the fractile is known and equal to endv.
+  // histogram.
+  // On output stv and endv are set to the boundaries of the bin containing
+  // the index and fractileInx is set to the index in that bin.
+  // The nr of values in that bin is returned as the function value.
+  // minv and maxv are used as the outer limits, thus the first bin extends
+  // to minv and the last bin to maxv.
+  // If the bins are getting too small (i.e. if stv is nearly endv), 0 is
+  // returned. In that case endv contains the fractile.
   static uInt findBin (uInt& fractileInx,
 		       T& stv, T& endv,
 		       T minv, T maxv,
-		       T step, const Block<uInt>& hist);
+		       const Block<uInt>& hist,
+		       const Block<T>& boundaries);
 };
 
 
