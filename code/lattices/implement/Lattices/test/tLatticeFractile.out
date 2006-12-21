@@ -3,12 +3,12 @@
 <<<
 Fractiles (left 50%, right 50%) test
 [1, 1]
-[0, 0]
-[0, 0]
-[0, 0]
+[1, 1]
+[1, 1]
+[1, 1]
 []
 Fractiles (left 40%, right 45%) test
-[0, 0]
+[1, 1]
 []
 []
 Fractiles (left 50%, right 50%) test: [127, 127]
