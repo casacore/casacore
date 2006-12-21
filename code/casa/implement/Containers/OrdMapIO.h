@@ -48,6 +48,7 @@
 // </synopsis>
 //
 // <group name="OrderedMap IO">
+// </group>
 
 #include <casa/Containers/MapIO.h>
 #include <casa/Containers/OrderedMap.h>

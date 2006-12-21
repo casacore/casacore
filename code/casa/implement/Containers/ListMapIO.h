@@ -48,6 +48,7 @@
 // </synopsis>
 //
 // <group name="ListMap IO">
+// </group>
 
 #include <casa/Containers/ListMap.h>
 #include <casa/Containers/MapIO.h>

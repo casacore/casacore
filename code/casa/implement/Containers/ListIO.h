@@ -58,6 +58,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class t> ostream &operator<<(ostream &, const List<t> &);
 template<class t> ostream &operator<<(ostream &, const ConstListIter<t> &);
 // </group>
+// </group>
 
 
 } //# NAMESPACE CASA - END
