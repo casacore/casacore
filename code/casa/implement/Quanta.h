@@ -335,7 +335,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li>  <src>Quantum<Double> c;	// vel of light</src>
 //   <li>  <src>Quantum<Double> G;	// Gravitational constant</src>
 //   <li>  <src>Quantum<Double> h;	// Planck</src>
-//   <li>  <src>Quantum<Double> HI;	// Frequency HI line
+//   <li>  <src>Quantum<Double> HI;	// Frequency HI line</src>
 //   <li>  <src>Quantum<Double> R;	// Gas constant</src>
 //   <li>  <src>Quantum<Double> NA;	// Avogadro</src>
 //   <li>  <src>Quantum<Double> e;	// electron charge</src>

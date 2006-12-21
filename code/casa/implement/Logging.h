@@ -136,7 +136,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    <li> Set up the location where log messages come from. WHERE will expand
 //         into the file name and line number (useful for debugging). Set the
 //         priority to NORMAL (this is the default, but you don't know what
-//         the state of <srC>os</src> is when it is passed in to this function).
+//         the state of <src>os</src> is when it is passed in to this function).
 //    <li> Set the message and the new line number (optional but encouraged) and
 //         post it.
 //    <li> Change the priority to SEVERE and post an error message. 
