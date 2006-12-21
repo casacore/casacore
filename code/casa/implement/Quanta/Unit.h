@@ -45,6 +45,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <use visibility=export>
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tUnit">
+// </reviewed>
 //
 //# // <prerequisite>
 //# // </prerequisite>
