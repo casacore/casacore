@@ -244,7 +244,7 @@ sub change_comment_style
 	  # A class or group header's summary is added to the module's defgroup.
 	  if ($comment =~ m|^\s*<summary>|i) {
 	    $comment =~ s|<summary>|\\ingroup $modnm \n\\brief |i;
-	    $nradded += 1;
+	    $nadded += 1;
 	    $summinx = @spanning_comment + 1;   # index of ingroup line
 	  }
 	  $comment =~ s|</summary>||i;
