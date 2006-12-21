@@ -76,6 +76,7 @@ public:
   //  <note> With a constant map in the case where the key is not
   //         defined, the mapping between key and default value is 
   //         not created, but rather an exception is thrown.
+  //  </note>
   //+grp
   value &operator()(const key &ky);
   const value &operator()(const key &ky) const;
@@ -163,6 +164,7 @@ public:
   //  <note> With a constant map in the case where the key is not
   //         defined, the mapping between key and default value is 
   //         not created, but rather an exception is thrown.
+  //  </note>
   //+grp
   value &operator()(const key &ky);
   const value &operator()(const key &ky) const;

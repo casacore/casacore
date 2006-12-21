@@ -298,6 +298,7 @@ protected:
 //        classes</linkto> to implement "dynamic" cursors so that
 //        multiple cursors are updated as elements are added and
 //        removed from the list.
+// </note>
 //    
 template<class t> class ConstListIter : public NoticeTarget
 {
@@ -597,6 +598,7 @@ protected:
 // <note role=tip> This class uses the "Notice" classes to implement "dynamic" cursors
 //        so that multiple cursors are updated as elements are added and
 //        removed from the list.
+// </note>
 //    
 template<class t> class ListIter : virtual public ConstListIter<t> {
 public:
