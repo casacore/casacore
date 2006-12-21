@@ -187,6 +187,7 @@ Matrix<Double> adjoint (const Matrix<Double> &A);
 //
   Matrix<Float> rproduct (const Matrix<Complex>&, const Matrix<Complex>&);
 
+// </group>
 
 
 } //# NAMESPACE CASA - END

@@ -514,7 +514,6 @@ inline Bool IPosition::conform(const IPosition& other) const
 {
     return  (size_p == other.size_p);
 }
-// </group>
 
 } //# NAMESPACE CASA - END
 
