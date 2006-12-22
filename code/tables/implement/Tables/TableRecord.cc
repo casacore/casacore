@@ -148,6 +148,11 @@ void TableRecord::assign (const RecordInterface& that)
     }
 }
 
+void TableRecord::print (ostream& os, const String& indent) const
+{
+    rep_p.ref().print (os, indent);
+}
+
 
 void TableRecord::makeUnique()
 {

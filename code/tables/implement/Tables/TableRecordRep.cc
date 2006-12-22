@@ -378,6 +378,24 @@ Bool TableRecordRep::areTablesMultiUsed() const
 }
 
 
+void TableRecordRep::print (std::ostream& os, const String& indent) const
+{
+    for (uInt i=0; i<nused_p; i++) {
+        os << indent << desc_p.name(i) << ": ";
+	if (desc_p.type(i) == TpRecord) {
+	    os << '{' << endl;
+	    static_cast<const TableRecord*>(data_p[i])->print(os, indent+"  ");
+	    os << indent << '}' << endl;
+	} else if (desc_p.type(i) == TpTable) {
+	    os << "Table "
+	       << static_cast<const TableKeyword*>(data_p[i])->tableName();
+        } else {
+	    printDataField (os, desc_p.type(i), data_p[i]);
+	    os << endl;
+	}
+    }
+}
+
 void TableRecordRep::putRecord (AipsIO& os, int recordType,
 				const TableAttr& parentAttr) const
 {

@@ -222,6 +222,9 @@ public:
     void merge (const TableRecordRep& other,
 		RecordInterface::DuplicatesFlag);
     
+    // Print a record.
+    virtual void print (std::ostream&, const String& indent) const;
+
 
 protected:
     // Utility function to avoid code duplication in the public member 
