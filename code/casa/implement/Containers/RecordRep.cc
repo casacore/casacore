@@ -729,7 +729,102 @@ void RecordRep::merge (const RecordRep& other,
 	mergeField (other, i, flag);
     }
 }
+
     
+void RecordRep::printDataField (std::ostream& os, DataType type,
+				const void* ptr) const
+{
+    switch (type) {
+    case TpBool:
+        os << "Bool " << *static_cast<const Bool*>(ptr);
+	break;
+    case TpUChar:
+        os << "uChar " << Int(*static_cast<const uChar*>(ptr));
+	break;
+    case TpShort:
+	os << "Short " << *static_cast<const Short*>(ptr);
+	break;
+    case TpInt:
+	os << "Int " << *static_cast<const Int*>(ptr);
+	break;
+    case TpUInt:
+	os << "uInt " << *static_cast<const uInt*>(ptr);
+	break;
+    case TpFloat:
+	os << "Float " << *static_cast<const float*>(ptr);
+	break;
+    case TpDouble:
+	os << "Double " << *static_cast<const double*>(ptr);
+	break;
+    case TpComplex:
+	os << "Complex " << *static_cast<const Complex*>(ptr);
+	break;
+    case TpDComplex:
+	os << "DComplex " << *static_cast<const DComplex*>(ptr);
+	break;
+    case TpString:
+        os << "String " << '"' << *static_cast<const String*>(ptr) << '"';
+	break;
+    case TpArrayBool:
+        os << "Bool array "
+	   << static_cast<const Array<Bool>*>(ptr)->shape();
+	break;
+    case TpArrayUChar:
+        os << "uChar array "
+	   << static_cast<const Array<uChar>*>(ptr)->shape();
+	break;
+    case TpArrayShort:
+        os << "Short array "
+	   << static_cast<const Array<Short>*>(ptr)->shape();
+	break;
+    case TpArrayInt:
+        os << "Int array "
+	   << static_cast<const Array<Int>*>(ptr)->shape();
+	break;
+    case TpArrayUInt:
+        os << "uInt array "
+	   << static_cast<const Array<uInt>*>(ptr)->shape();
+	break;
+    case TpArrayFloat:
+        os << "Float array "
+	   << static_cast<const Array<Float>*>(ptr)->shape();
+	break;
+    case TpArrayDouble:
+        os << "Double array "
+	   << static_cast<const Array<Double>*>(ptr)->shape();
+	break;
+    case TpArrayComplex:
+        os << "Complex array "
+	   << static_cast<const Array<Complex>*>(ptr)->shape();
+	break;
+    case TpArrayDComplex:
+        os << "DComplex array "
+	   << static_cast<const Array<DComplex>*>(ptr)->shape();
+	break;
+    case TpArrayString:
+        os << "String array "
+	   << static_cast<const Array<String>*>(ptr)->shape();
+	break;
+    default:
+	throw (AipsError ("RecordRep::printDataField"));
+    }
+}
+
+void RecordRep::print (std::ostream& os, const String& indent) const
+{
+    for (uInt i=0; i<nused_p; i++) {
+        os << indent << desc_p.name(i) << ": ";
+	if (desc_p.type(i) == TpRecord) {
+	    os << '{' << endl;
+	    static_cast<const Record*>(data_p[i])->print (os, indent+"  ");
+	    os << indent << '}' << endl;
+        } else {
+	    printDataField (os, desc_p.type(i), data_p[i]);
+	    os << endl;
+	}
+    }
+}
+
 
 void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 {
@@ -871,7 +966,6 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
 	throw (AipsError ("RecordRep::getDataField"));
     }
 }
-
 
 void RecordRep::putRecord (AipsIO& os, int recordType) const
 {

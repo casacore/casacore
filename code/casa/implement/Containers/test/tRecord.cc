@@ -233,6 +233,7 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     AlwaysAssertExit (record.subRecord(subField1).asFloat(0) == 4);
     record = record1;
     AlwaysAssertExit (record.subRecord(subField1).asFloat(0) == 3);
+    cout << record;
 }
 
 void doIt (Bool doExcp)

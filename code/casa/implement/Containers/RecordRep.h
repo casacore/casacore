@@ -208,6 +208,8 @@ public:
     // Merge all fields from the other record into this record.
     void merge (const RecordRep& other, RecordInterface::DuplicatesFlag);
     
+    // Print a record.
+    virtual void print (std::ostream&, const String& indent) const;
 
 protected:
     // Utility functions to avoid code duplication in the public member 
@@ -253,6 +255,11 @@ protected:
     // Copy a data field.
     // This can only handle scalars and arrays.
     void copyDataField (DataType type, void* ptr, const void* that) const;
+
+    // Print a data field.
+    // This can only handle scalars and arrays.
+    void printDataField (std::ostream& os, DataType type,
+			 const void* ptr) const;
 
     // Put a data field.
     // This can only handle scalars and arrays.

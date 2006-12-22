@@ -384,6 +384,9 @@ public:
     // (to do copy-on-write in RecordFieldPtr).
     virtual void makeUnique();
 
+    // Print the record.
+    virtual void print (std::ostream&, const String& indent="") const;
+
 
 protected:
     // Used by the RecordField classes to attach in a type-safe way to the

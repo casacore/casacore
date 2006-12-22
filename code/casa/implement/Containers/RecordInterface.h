@@ -433,6 +433,15 @@ public:
 			       const String& recordType) const = 0;
     // </group>
 
+    // Print the record.
+    // <group>
+    friend inline std::ostream& operator<< (std::ostream& os,
+					    const RecordInterface& rec)
+        { rec.print (os, "  "); return os; }
+    virtual void print (std::ostream&,
+			const String& indent="") const = 0;
+    // </group>
+
 
 protected:
     // Let the derived class add an array field with the given type, shape,

@@ -12,14 +12,54 @@ Record::define - fixed array conformance error for field TpArrayString2
 Record::define - fixed array conformance error for field TpBool
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
-(Record.cc : 106) Failed AlwaysAssertExit conform (other)
+(Record.cc : 108) Failed AlwaysAssertExit conform (other)
 <<<
 RecordInterface::asComplex - invalid data type
 >>> Instance-specific assertion error message:
-(Record.cc : 106) Failed AlwaysAssertExit conform (other)
+(Record.cc : 108) Failed AlwaysAssertExit conform (other)
 <<<
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array [1]
+  TpArrayUChar: uChar array [1]
+  TpArrayShort: Short array [1]
+  TpArrayInt: Int array [1]
+  TpArrayUInt: uInt array [1]
+  TpArrayFloat: Float array [1]
+  TpArrayDouble: Double array [1]
+  TpArrayComplex: Complex array [1]
+  TpArrayDComplex: DComplex array [1]
+  TpArrayString: String array []
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array [3]
+  TpArrayString3a: String array []
+  TpString2a: String ""
 >>> Instance-specific assertion error message:
-(Record.cc : 290) Failed AlwaysAssertExit this != &other
+(Record.cc : 281) Failed AlwaysAssertExit this != &other
 <<<
 RecordDesc::mergeField - duplicate in other
 Record cannot be changed (fixed structure)
