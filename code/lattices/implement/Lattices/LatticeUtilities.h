@@ -173,7 +173,7 @@ class LatticeUtilities
                IPosition & posMin, IPosition & posMax, 
                const Lattice<T>& lat);
 
-
+// </group>
 
 
 } //# NAMESPACE CASA - END
