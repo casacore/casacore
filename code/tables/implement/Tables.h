@@ -708,7 +708,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    set.add (TableExprNodeSetElem ("h"));
 //    Table result = table (table.col("NAME).in (set));
 // </srcblock>
-// select rows with a NAME equal to <src>abc</src,
+// select rows with a NAME equal to <src>abc</src>,
 // <src>defg</src>, or <src>h</src>.
 //
 // <p>
