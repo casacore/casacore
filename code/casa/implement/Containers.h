@@ -68,7 +68,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    prototypical computer science types of containers -- <linkto
 //    class=Queue>queues</linkto>, <linkto class=Stack>stacks</linkto>, <linkto
 //    class=List>lists</linkto>, <linkto class=Map>associative arrays</linkto>,
-//    <linkto class="Record">records</linktoand <linkto class=Block>simple
+//    <linkto class="Record">records</linkto> and <linkto class=Block>simple
 //    arrays</linkto>. These classes are useful for all of the various types of low
 //    level data management. In general, these classes will have familiar semantics
 //    and an unsurprising interface.

@@ -205,7 +205,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // checked for usage of LSQFit.
 // </note>
 //
-// The contents can be saved in a record (<src>toRecord<src>), 
+// The contents can be saved in a record (<src>toRecord</src>), 
 // and an object can be created from a record (<src>fromRecord</src>).
 // The record identifier is 'lfit'.
 // <br>The object can also be saved or restored using AipsIO.

@@ -84,7 +84,7 @@ template <class T> class Vector;
 //   <li> getX(arg)   -- will get the indicated X value from the string.
 //		Pointer updated. A get will always return a valid result.
 //		However, if the value did not exist (e.g. 
-//		<src>Double getDouble()<src> form a string like <src>"abc"</src>
+//		<src>Double getDouble()</src> form a string like <src>"abc"</src>
 //		will return 0.0) a False status will be saved. It can be
 //		interrogated by the <src>Bool status()</src> function.
 //		The string part used in producing the value is also

@@ -201,7 +201,7 @@ public:
 
 // Specify a pixel intensity range for which all pixels in that range are 
 // included.  A vector of length 1 for <src>include</src> means that the 
-// range will be set to <src>-abs(include(0))<src> to <src>abs(include(0))</src>.
+// range will be set to <src>-abs(include(0))</src> to <src>abs(include(0))</src>.
 // A return value of <src>False</src> indicates that the internal
 // status of the class is bad. If you don't call this function, the default 
 // state of the class is to include all pixels.

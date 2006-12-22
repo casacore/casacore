@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // added). <br>
 // The following comments hold:
 // <ul>
-// <li> The Array class <src>begin()</src> and <src>end()<src> functions
+// <li> The Array class <src>begin()</src> and <src>end()</src> functions
 // create different objects.  This class can handle comparisons with the
 // <src> end()</src>
 // <li> A VectorSTLIterator can be created from a <src>Vector</src> (non-STL)

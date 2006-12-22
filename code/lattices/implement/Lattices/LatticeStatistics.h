@@ -243,7 +243,7 @@ public:
 // you have given both an <src>include</src> and an <src>exclude</src> 
 // range.  A vector of length 1 for <src>include</src> and/or <src>exclude</src>
 // means that the range will be set to (say for <src>include</src>)
-// <src>-abs(include(0))<src> to <src>abs(include(0))</src>.  A return value
+// <src>-abs(include(0))</src> to <src>abs(include(0))</src>.  A return value
 // of <src>False</src> indicates that both an inclusion and exclusion 
 // range were given or that the internal state of the class is bad.   If you don't
 // call this function, the default state of the class  is to include all pixels.

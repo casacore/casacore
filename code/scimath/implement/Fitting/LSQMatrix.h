@@ -63,7 +63,7 @@ class AipsIO;
 // The class contains a number of public methods (with _pub in name) that
 // can be used anywhere, and which perform index range checking.
 //
-// The contents can be saved in a record (<src>toRecord<src>), 
+// The contents can be saved in a record (<src>toRecord</src>), 
 // and an object can be created from a record (<src>fromRecord</src>).
 // The record identifier is 'tmat'.
 // </synopsis>
