@@ -66,7 +66,7 @@ template <class T> class Vector;
 //		parent of all specific Measures
 //	  <li> <linkto class=MCBase>MCBase</linkto> class, the base class
 //		for all specific conversion routines (like
-//		<linkto class=MCEpoch>MCEpoch).
+//		<linkto class=MCEpoch>MCEpoch</linkto>).
 //   	  <li> <linkto class=MeasData>MeasData</linkto> class, containing a set
 //		of generally usable constants, and all program data necessary for
 //		conversions.

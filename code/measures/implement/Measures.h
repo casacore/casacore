@@ -165,7 +165,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // time to a local sidereal time (LAST).
 // Simple unit conversions (e.g. an angle from mrad to deg), or calculations
 // with values with attached units, are sufficiently catered for by the
-// <linkto module="Quanta">Quanta</a> module classes.
+// <linkto module="Quanta">Quanta</linkto> module classes.
 // <p>
 // Each measure has a <em>value</em> (<linkto class=MeasValue>MeasValue</linkto>) and
 // a <em>reference</em> (<linkto class=MeasRef>MeasRef</linkto>).<br>

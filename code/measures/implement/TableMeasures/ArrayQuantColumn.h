@@ -68,7 +68,7 @@ class String;
 // In addition,
 // for a ROArrayQuantColumn object to be useful the column should
 // contain Quanta.  Inserting Quanta into a column requires the use of a
-// <linkto class=ArrayQuantColumn">ArrayQuantColumn</A>
+// <linkto class=ArrayQuantColumn">ArrayQuantColumn</linkto>
 // object.<br>
 //
 // The ROArrayQuantColumn class is the array version

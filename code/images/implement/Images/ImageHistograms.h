@@ -90,7 +90,7 @@ class IPosition;
 // <note role=tip>
 // Note that for complex images, real and imaginary are treated independently.
 // They are binned and plotted separately.
-// </note role=tip>
+// </note>
 //
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the

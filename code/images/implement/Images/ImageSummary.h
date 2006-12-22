@@ -93,6 +93,7 @@ class Coordinate;
 // it to you (such as the <src>referenceValues()</src> function, 
 // the information is returned to you in whatever units the coordinates
 // are currently in.  It does not convert it.
+// </note>
 // </synopsis>
 
 // <example>

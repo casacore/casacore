@@ -87,7 +87,7 @@ template <class T> class Vector;
 // <note role=caution>
 // If the frame is changed by the user of the conversion machine, the
 // machine has to be reinitialised before using it for output by using
-// <em>reCalculate()</em>.
+// <tt>reCalculate()</tt>.
 //
 // Projection entails a rotation. For changes to a fixed frame (i.e. not
 // changing with e.g. time), the rotation matrix is calculated only once. In
@@ -99,7 +99,7 @@ template <class T> class Vector;
 // is special. Planets are assumed to be in J2000 positions, since that is
 // the only way to carry them from conversion to conversion (and also have a
 // variable phase-center; which can, btw, always be obtained by the
-// phaseCenter() member).<br>
+// phaseCenter() member).</note>
 // Note that a reCalculate() is necessary between calls of the engine,
 // since the planetary position will change from time to time (i.e. with
 // the Frame).
@@ -113,11 +113,12 @@ template <class T> class Vector;
 // can be done to have either two conversion engines (original to Sun, then
 // Sun to AzEl), or by conversion of the Sun to AzEl before entering the
 // engine.
-// </note role=tip>
+// <note role=tip>
 // The output of the machine is either a set of rotation matrices that can
 // be used to convert UVW coordinates (and, if necessary, phases); or the
 // UVW conversion and actual phase can be calculated from a given
 // UVW coordinate (or set of coordinates).
+// </note>
 // <note role=tip> Since e.g. in an EW interferometer (or any set of baselines
 // on a line) the phase correction and UVW transform scales with the length
 // of the baseline, conversion of a nominal (say 1m) baseline suffices to

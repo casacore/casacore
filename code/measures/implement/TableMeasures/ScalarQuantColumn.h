@@ -66,7 +66,7 @@ class Unit;
 // In addition,
 // for a ROScalarQuantColumn object to be useful the column should
 // contain Quanta.  Inserting Quanta into a column requires the use of a
-// <linkto class=ScalarQuantColumn">ScalarQuantColumn</A>
+// <linkto class=ScalarQuantColumn">ScalarQuantColumn</linkto>
 // object.<br>
 //
 // A ROScalarQuantColumn object is used much in the same way as a

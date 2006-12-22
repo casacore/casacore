@@ -164,7 +164,7 @@ public:
     // </group>
 
     // Set a SpectralList of SpectralElements to fit for.    These elements
-    // must be in the correct abcissa domain set in function </src>setData</src>.
+    // must be in the correct abcissa domain set in function <src>setData</src>.
     // You must have already called <src>setData</src> to call this function.
     // The SpectralElements in the list hold the
     // initial estimates.  They also contain the information about whether

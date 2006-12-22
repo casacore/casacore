@@ -129,7 +129,7 @@ template <class T> class ImageMoments;
 // <note role=tip>
 // Note that there are is assignment operator or copy constructor.
 // Do not use the ones the system would generate either.
-// </note role=tip>
+// </note>
 //
 // <todo asof="yyyy/mm/dd">
 //  Derive more classes !
@@ -587,7 +587,7 @@ protected:
 // <note role=tip>
 // Note that there are is assignment operator or copy constructor.
 // Do not use the ones the system would generate either.
-// </note role=tip>
+// </note>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>
@@ -724,7 +724,6 @@ protected:
 // </synopsis>
 //
 // <example>
-// <srcBlock>
 // This example comes from ImageMoments.   outPt is a pointer block holding
 // pointers to the output lattices.  The ancilliary masking lattice is
 // just a smoothed version of the input lattice.  os_P is a LogIO object.
@@ -758,7 +757,7 @@ protected:
 // <note role=tip>
 // Note that there are is assignment operator or copy constructor.
 // Do not use the ones the system would generate either.
-// </note role=tip>
+// </note>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>
@@ -957,7 +956,6 @@ protected:
 // </synopsis>
 //
 // <example>
-// <srcBlock>
 // This example comes from ImageMoments.   outPt is a pointer block holding
 // pointers to the output lattices.   os_P is a LogIO object.
 //                                     
@@ -989,7 +987,7 @@ protected:
 // <note role=tip>
 // Note that there are is assignment operator or copy constructor.
 // Do not use the ones the system would generate either.
-// </note role=tip>
+// </note>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>

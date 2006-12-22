@@ -99,7 +99,7 @@ class Slice;
 //  <li> Boolean constants T and F can be given.
 //  <li> A lot of functions are available.
 //       They are the same as the ones supported by class
-//       <class linkto=LatticeExprNode>LatticeExprNode</linkto>.
+//       <linkto class=LatticeExprNode>LatticeExprNode</linkto>.
 //  <li> Explicit conversion functions float, double, complex and dcomplex
 //       are available. Conversions are automatically done where needed,
 //       but for performance reasons it may sometimes be better to do

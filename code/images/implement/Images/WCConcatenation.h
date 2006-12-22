@@ -58,8 +58,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // That axes should not be an axis in the given regions.
 // <p>
 // WCConcatenation can be seen as a mixture of the classes
-// </linkto class=WCUnion>WCUnion</linkto> and
-// </linkto class=WCExtension>WCExtension</linkto>. Like WCUnion it
+// <linkto class=WCUnion>WCUnion</linkto> and
+// <linkto class=WCExtension>WCExtension</linkto>. Like WCUnion it
 // combines regions and like WCExtension it increases the dimensionality
 // for the new region (be it with only 1).
 // <br>

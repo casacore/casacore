@@ -161,7 +161,7 @@ public:
 // (<src>(blc(i)+trc(i))/2)</src>), otherwise it is set to the reference pixel.   
 // The vector of world coordinates for <src>pixelAxis</src> is returned as formatted 
 // Strings.  If for some reason it can't make the conversion, the element
-// element is returned as "?"    Returns </src>False</src> if the lengths of
+// element is returned as "?"    Returns <src>False</src> if the lengths of
 // <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
 // in the coordinate system.
    static Bool pixToWorld (Vector<String>& sWorld,

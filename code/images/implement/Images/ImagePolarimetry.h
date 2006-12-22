@@ -209,7 +209,7 @@ public:
 
 // Get the linearly polarized intensity image and its
 // standard deviation.  If wish to debias the image, you
-// can either provide <src>sigma<\src> (the standard 
+// can either provide <src>sigma</src> (the standard 
 // deviation of the termal noise ) or if <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
 // <group>
@@ -220,7 +220,7 @@ public:
 // Get the total polarized intensity (from whatever combination
 // of Q, U, and V the construction image has) image and its error 
 // (standard deviation).  If wish to debias the image, you
-// can either provide <src>sigma<\src> (the standard  deviation 
+// can either provide <src>sigma</src> (the standard  deviation 
 // of the thermal noise) or if <src>sigma</src> is 
 // non-positive, it will be worked out for you with a 
 // clipped mean algorithm.
@@ -231,7 +231,7 @@ public:
 
 // Get linearly polarized position angle (degrees or radians) image
 // and error (standard deviation).   If you provide 
-// <src>sigma<\src> it is the  standard deviation of 
+// <src>sigma</src> it is the  standard deviation of 
 // the termal noise.  If <src>sigma</src> is non-positive, it will be 
 // worked out for you with a  clipped mean algorithm.
 // <group>
@@ -241,7 +241,7 @@ public:
 
 // Get fractional linear polarization image 
 // and error (standard deviation).   If wish to debias the image, you
-// can either provide <src>sigma<\src> (the standard 
+// can either provide <src>sigma</src> (the standard 
 // deviation of the termal noise) or if <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
 // <group>
@@ -250,7 +250,7 @@ public:
 // </group>
 
 // Get Fractional total polarization and error (standard deviation)
-// <src>var<\src> is the standard deviation  of the thermal noise.
+// <src>var</src> is the standard deviation  of the thermal noise.
 // If <src>sigma</src> is non-positive, 
 // it will  be worked out for you with a clipped mean algorithm.
 // <group>

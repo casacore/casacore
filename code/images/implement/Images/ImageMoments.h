@@ -486,7 +486,7 @@ enum MethodTypes {
    String errorMessage() const {return error_p;};
 
 // This is the function that does all the computational work.  It should be called
-// after the </src>set</src> functions.  A return value of  <src>False</src>
+// after the <src>set</src> functions.  A return value of  <src>False</src>
 // indicates that additional checking of the combined methods that you
 // have requested has shown that you have not given consistent state to the class.
 // If the axis being collapsed comes from a coordinate with one axis only,
