@@ -386,7 +386,7 @@ sub change_comment_style
 
 	# Organize review info nicely.
 	if ( $review==1 ) {
-	  if ( $comment =~ m|(.*?)</reviewed>(.*)|i ) {
+	  if ( $comment =~ m|(.*?)>(.*)|i ) {
 	    my $b = $2;
 	    $reviewstr = handleReviewed ($reviewstr . " $1");
 	    $comment = "$reviewstr $b";
@@ -397,7 +397,7 @@ sub change_comment_style
 	  }
 	}
 	while ( $review==0  &&  $comment =~ m|<reviewed|i ) {
-	  if ( $comment =~ m|(.*?)<reviewed(.*?)</reviewed>(.*)|i ) {
+	  if ( $comment =~ m|(.*?)<reviewed(.*?)>(.*)|i ) {
 	    my $a = $1;
 	    my $c = $3;
 	    my $reviewstr = handleReviewed ("<reviewed $2");
@@ -408,6 +408,7 @@ sub change_comment_style
 	    $comment = $1;
 	  }
 	}
+	$comment =~ s|</reviewed>||i;
 
 	# Turn note to <em>.
 	# Capitalize the type.
