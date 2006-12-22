@@ -82,8 +82,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // All pixel coordinates are zero relative.
 // </note>
 //
-// </note>
-//
 // <example>
 // In this example we create a StokesCoordinate housing IQUV
 // <srcblock>

@@ -56,6 +56,7 @@ class LogIO;
 // <li> Presumably you are using this in conjuction with the
 //      <linkto class=FITSKeywordUtil>FITSKeywordUtil</linkto> class
 //      to get or set the FITS coordinate axis information.
+// </prerequisite>
 
 // <etymology>
 // This is a collection of static utility functions for use with

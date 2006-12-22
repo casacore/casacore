@@ -178,7 +178,7 @@ class LogIO;
 // called <src>setReferenceConversion</src>.  This enables an extra conversion
 // layer so that conversion between pixel and world can go to a reference frame
 // other than the construction reference.    When you use the function
-// </src>convert</src>, these layers are active, but ONLY if the 
+// <src>convert</src>, these layers are active, but ONLY if the 
 // requested conversion is purely between pixel and world. For 
 // a SpectralCoordinate this must always be true (only has one axis)
 // but for the DirectionCoordinate  you might request a mixed
