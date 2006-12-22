@@ -87,7 +87,7 @@ class ISMBase;
 // The contents of a bucket looks like:
 // <srcblock>
 //    -------------------------------------------------------------------
-//    | index offset   | data part     | index part</src>        | free |
+//    | index offset   | data part     | index part              | free |
 //    -------------------------------------------------------------------
 //     0                4               4+length(data part)
 //    <--------------------------bucketsize----------------------------->

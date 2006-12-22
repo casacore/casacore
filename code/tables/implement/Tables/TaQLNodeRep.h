@@ -60,7 +60,7 @@ class TaQLNodeVisitor;
 // TaQLNode/TaQLNodeRep form an envelope/letter pair.
 // TaQLNodeRep is the abstract base class for all classes used in the
 // raw TaQL parse tree
-// (e.g. <linkto<class=TaQLConstNodeRep>TaQLConstNodeRep</linkto>).
+// (e.g. <linkto class=TaQLConstNodeRep>TaQLConstNodeRep</linkto>).
 // </synopsis> 
 
 // <motivation>

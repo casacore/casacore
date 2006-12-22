@@ -402,6 +402,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // NOT be included in this StokesVector.h, thus the implementations
 // should not be inlined (they are too large anyway), but put in a
 // separate .cc file where Array.h and Vector.h can be included.
+// </note>
 // <p>
 // Another compiler problem is that the variable mask_p is not
 // automatically converted to a void*, so an explicit cast has to be done.

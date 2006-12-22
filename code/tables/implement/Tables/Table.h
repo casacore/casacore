@@ -783,7 +783,7 @@ public:
     // Note that one cannot be sure that table "somename" is the root
     // (i.e. original) table. It may also be a subset of another table.
     // In the latter case doing
-    // <br> <src>    Vector<uInt> rownrs = subset.rowNumbers()<src>
+    // <br> <src>    Vector<uInt> rownrs = subset.rowNumbers()</src>
     // does not give the row numbers in <src>tab</src>, but in the root table
     // (which is probably not what you want).
     Vector<uInt> rowNumbers (const Table& that) const;
