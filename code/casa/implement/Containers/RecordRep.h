@@ -209,7 +209,12 @@ public:
     void merge (const RecordRep& other, RecordInterface::DuplicatesFlag);
     
     // Print a record.
-    virtual void print (std::ostream&, const String& indent) const;
+    // Print the contents of the record.
+    // Only the first <src>maxNrValues</src> of an array will be printed.
+    // A value < 0 means the entire array.
+    void print (std::ostream&,
+		Int maxNrValues = 25,
+		const String& indent="") const;
 
 protected:
     // Utility functions to avoid code duplication in the public member 
@@ -259,6 +264,7 @@ protected:
     // Print a data field.
     // This can only handle scalars and arrays.
     void printDataField (std::ostream& os, DataType type,
+			 const String& indent, Int maxNrValues,
 			 const void* ptr) const;
 
     // Put a data field.

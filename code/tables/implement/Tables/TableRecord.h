@@ -407,8 +407,12 @@ public:
     // already been read.
     void getData (AipsIO& os, uInt version, const TableAttr&);
 
-    // Print the record.
-    virtual void print (std::ostream&, const String& indent="") const;
+    // Print the contents of the record.
+    // Only the first <src>maxNrValues</src> of an array will be printed.
+    // A value < 0 means the entire array.
+    virtual void print (std::ostream&,
+			Int maxNrValues = 25,
+			const String& indent="") const;
 
     // Reopen possible tables in keywords as read/write.
     // Tables are not reopened if they are not writable.

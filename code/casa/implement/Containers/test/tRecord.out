@@ -28,16 +28,16 @@ RecordInterface::asComplex - invalid data type
   TpComplex: Complex (0,0)
   TpDComplex: DComplex (0,0)
   TpString: String ""
-  TpArrayBool: Bool array [1]
-  TpArrayUChar: uChar array [1]
-  TpArrayShort: Short array [1]
-  TpArrayInt: Int array [1]
-  TpArrayUInt: uInt array [1]
-  TpArrayFloat: Float array [1]
-  TpArrayDouble: Double array [1]
-  TpArrayComplex: Complex array [1]
-  TpArrayDComplex: DComplex array [1]
-  TpArrayString: String array []
+  TpArrayBool: Bool array with shape [1]
+  TpArrayUChar: uChar array with shape [1]
+  TpArrayShort: Short array with shape [1]
+  TpArrayInt: Int array with shape [1]
+  TpArrayUInt: uInt array with shape [1]
+  TpArrayFloat: Float array with shape [1]
+  TpArrayDouble: Double array with shape [1]
+  TpArrayComplex: Complex array with shape [1]
+  TpArrayDComplex: DComplex array with shape [1]
+  TpArrayString: String array with shape []
   SubRecord1: {
     fa: Float 3
     ia: Int 2
@@ -55,8 +55,164 @@ RecordInterface::asComplex - invalid data type
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
   TpDComplex2a: DComplex (0,0)
-  TpArrayString2a: String array [3]
-  TpArrayString3a: String array []
+  TpArrayString2a: String array with shape [3]
+  TpArrayString3a: String array with shape []
+  TpString2a: String ""
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array with shape [1]
+[0]
+  TpArrayUChar: uChar array with shape [1]
+[0]
+  TpArrayShort: Short array with shape [1]
+[0]
+  TpArrayInt: Int array with shape [1]
+[0]
+  TpArrayUInt: uInt array with shape [1]
+[0]
+  TpArrayFloat: Float array with shape [1]
+[0]
+  TpArrayDouble: Double array with shape [1]
+[0]
+  TpArrayComplex: Complex array with shape [1]
+[(0,0)]
+  TpArrayDComplex: DComplex array with shape [1]
+[(0,0)]
+  TpArrayString: String array with shape []
+[]
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array with shape [3]
+[, , ]
+  TpArrayString3a: String array with shape []
+[]
+  TpString2a: String ""
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array with shape [1]
+    [0]
+  TpArrayUChar: uChar array with shape [1]
+    [0]
+  TpArrayShort: Short array with shape [1]
+    [0]
+  TpArrayInt: Int array with shape [1]
+    [0]
+  TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayFloat: Float array with shape [1]
+    [0]
+  TpArrayDouble: Double array with shape [1]
+    [0]
+  TpArrayComplex: Complex array with shape [1]
+    [(0,0)]
+  TpArrayDComplex: DComplex array with shape [1]
+    [(0,0)]
+  TpArrayString: String array with shape []
+    []
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array with shape [3], first values:
+    []
+  TpArrayString3a: String array with shape []
+    []
+  TpString2a: String ""
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array with shape [1]
+    [0]
+  TpArrayUChar: uChar array with shape [1]
+    [0]
+  TpArrayShort: Short array with shape [1]
+    [0]
+  TpArrayInt: Int array with shape [1]
+    [0]
+  TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayFloat: Float array with shape [1]
+    [0]
+  TpArrayDouble: Double array with shape [1]
+    [0]
+  TpArrayComplex: Complex array with shape [1]
+    [(0,0)]
+  TpArrayDComplex: DComplex array with shape [1]
+    [(0,0)]
+  TpArrayString: String array with shape []
+    []
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array with shape [3]
+    [, , ]
+  TpArrayString3a: String array with shape []
+    []
   TpString2a: String ""
 >>> Instance-specific assertion error message:
 (Record.cc : 281) Failed AlwaysAssertExit this != &other

@@ -433,12 +433,15 @@ public:
 			       const String& recordType) const = 0;
     // </group>
 
-    // Print the record.
+    // Print the contents of the record.
+    // Only the first <src>maxNrValues</src> of an array will be printed.
+    // A value < 0 means the entire array.
     // <group>
     friend inline std::ostream& operator<< (std::ostream& os,
 					    const RecordInterface& rec)
-        { rec.print (os, "  "); return os; }
+      { rec.print (os, 25, "  "); return os; }
     virtual void print (std::ostream&,
+			Int maxNrValues = 25,
 			const String& indent="") const = 0;
     // </group>
 

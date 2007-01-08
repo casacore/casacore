@@ -125,9 +125,9 @@ void Record::assign (const RecordInterface& that)
     *this = that;
 }
 
-void Record::print (ostream& os, const String& indent) const
+void Record::print (ostream& os, Int maxNrValues, const String& indent) const
 {
-    rep_p.ref().print (os, indent);
+    rep_p.ref().print (os, maxNrValues, indent);
 }
 
 void Record::makeUnique()

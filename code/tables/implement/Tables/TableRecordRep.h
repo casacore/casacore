@@ -223,7 +223,12 @@ public:
 		RecordInterface::DuplicatesFlag);
     
     // Print a record.
-    virtual void print (std::ostream&, const String& indent) const;
+    // Print the contents of the record.
+    // Only the first <src>maxNrValues</src> of an array will be printed.
+    // A value < 0 means the entire array.
+    void print (std::ostream&,
+		Int maxNrValues = 25,
+		const String& indent="") const;
 
 
 protected:
