@@ -1,5 +1,5 @@
 //# SubLattice.h: A subset of a Lattice or MaskedLattice
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,10 +159,6 @@ public:
   // Returns the total number of elements in this SubLattice.
   virtual uInt nelements() const;
   
-  // returns a value of "True" if this instance of Lattice and 'other' have 
-  // the same shape, otherwise returns a value of "False".
-  virtual Bool conform (const Lattice<T>& other) const;
-  
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt maxPixels() const;
@@ -195,6 +191,13 @@ public:
   
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Handle the (un)locking.
+  // <group>
+  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual void unlock();
+  virtual Bool hasLock (FileLocker::LockType) const;
+  // </group>
 
 protected:
   // Set the various pointer needed to construct the object.
