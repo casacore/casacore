@@ -84,7 +84,9 @@ MSMIndColumn::Data* MSMIndColumn::getShape (uInt rownr)
 {
   void* ptr = getArrayPtr(rownr);
   if (ptr == 0) {
-    throw (DataManInvOper ("StMan: no array in this row"));
+    throw (DataManInvOper ("MSM: no array in row " +
+			   String::toString(rownr) +
+			   " of " + stmanPtr_p->fileName()));
   }
   return static_cast<Data*>(ptr);
 }
