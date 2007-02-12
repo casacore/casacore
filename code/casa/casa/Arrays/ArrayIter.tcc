@@ -86,7 +86,7 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
     Int lastoff = 0;
     for (uInt i=0; i<iAxes.nelements(); i++) {
         uInt axis = iAxes(i);
-	trc(axis) = 0;
+	if (trc(axis) > 0) trc(axis) = 0;
 	offset_p(axis) = steps(axis) - lastoff;
 	lastoff += (shape(axis)-1)*steps(axis);
     }

@@ -26,20 +26,15 @@
 //# $Id$
 
 //# Includes
+#include <casa/Quanta/Quantum.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
 #include <casa/Exceptions/Error.h>
-#include <casa/Quanta/Quantum.h>
 #include <casa/Utilities/MUString.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
 #include <casa/Utilities/Register.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/sstream.h>
@@ -254,47 +249,12 @@ void Quantum<Qtype>::setValue(const Qtype &val) {
 
 template <class Qtype>
 Bool Quantum<Qtype>::read(Quantity &res, MUString &in) {
-  Double val0 = 0.0;
-  String unit = "";
-  res = Quantity();
-  UnitVal uv;
-  in.push();
-  if (!in.eos()) {
-    if (MVAngle::read(res, in) || MVTime::read(res, in)) {
-      val0 = res.getValue();
-      unit = res.getUnit();
-    } else {
-      val0 = in.getDouble();
-      unit = in.get();
-      // Check if valid unit specified
-      if (!UnitVal::check(unit, uv)) {
-	in.pop(); return False;
-      };
-    };
-  };
-  //
-  // The next statement is necessary once the read return arg is templated
-  //  Qtype tmp = (Qtype)((res.getValue()) + val0)
-  res.setValue(val0);
-  res.setUnit(unit);
-  in.unpush(); return True; 
+  return readQuantity(res, in);
 }
 
 template <class Qtype>
 Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
-  static Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
-  static Regex ex2("[tT][oO][dD][aA][yY]");
-  static Regex ex3("[nN][oO][wW]");
-  MUString tmp(in);
-  // The next construct is to cater for an unexplained error in
-  // the Linux egcs stream input library; and an even more funny one in sgi
-  ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
-  ///		      in[0] == 'Y')) {
-  if (!in.empty() && !in.contains(ex2) && !in.contains(ex3) &&
-      !in.contains(ex)) {
-    tmp = MUString(String("0.0") + in);		// Pointed non-const String
-  };
-  return Quantum<Qtype>::read(res, tmp);
+  return readQuantity(res, in);
 }
 
 template <class Qtype>
@@ -320,19 +280,19 @@ void Quantum<Qtype>::convert(const Unit &s) {
     if (qUnit.getValue() == s.getValue()) {
       // To suppress some warnings, next statement not used
       //	qVal *= (qUnit.getValue().getFac()/s.getValue().getFac());
-      qVal = (Qtype) (qVal * 
+      qVal = Qtype (qVal * 
 		      (qUnit.getValue().getFac()/s.getValue().getFac()));
       qUnit = s;
     } else {
       if (qUnit.getValue() == UnitVal::ANGLE && 
 	  s.getValue() == UnitVal::TIME) {
-	qVal = (Qtype) (qVal *
+	qVal = Qtype (qVal *
 			(qUnit.getValue().getFac()/s.getValue().getFac()) *
 			C::day/C::circle);
 	qUnit = s;
       } else if (qUnit.getValue() == UnitVal::TIME &&
 		 s.getValue() == UnitVal::ANGLE) {
-	qVal = (Qtype) (qVal *
+	qVal = Qtype (qVal *
 			(qUnit.getValue().getFac()/s.getValue().getFac()) *
 			C::circle/C::day);
 	qUnit = s;
@@ -341,7 +301,7 @@ void Quantum<Qtype>::convert(const Unit &s) {
 	ostringstream oss;
 	oss << qUnit.getValue().getDim();
 	// Suppress (gcc) warnings:
-	qVal = (Qtype) (qVal * qUnit.getValue().getFac());
+	qVal = Qtype (qVal * qUnit.getValue().getFac());
 	if (s.empty()) {
 	  qUnit = String(oss);
 	} else {

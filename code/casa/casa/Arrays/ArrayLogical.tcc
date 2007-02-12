@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayUtil.h>
 #include <casa/Arrays/ArrayError.h>
 //# For scalar near() functions.
 #include <casa/BasicMath/Math.h>

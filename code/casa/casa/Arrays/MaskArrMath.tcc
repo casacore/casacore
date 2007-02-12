@@ -30,7 +30,6 @@
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/VectorIter.h>
 #include <casa/Utilities/GenSort.h>
