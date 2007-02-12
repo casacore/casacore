@@ -142,7 +142,9 @@ StIndArray* StManColumnIndArrayAipsIO::getShape (uInt rownr)
 {
     StIndArray* ptr = STMANINDGETBLOCK(rownr);
     if (ptr == 0) {
-	throw (DataManInvOper ("StMan: no array in this row"));
+        throw (DataManInvOper ("ASM: no array in row " +
+			       String::toString(rownr) +
+			       " of " + stmanPtr_p->fileName()));
     }
     ptr->getShape (*iosfile_p);
     return ptr;

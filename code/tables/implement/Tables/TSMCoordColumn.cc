@@ -133,7 +133,9 @@ IPosition TSMCoordColumn::shape (uInt rownr)
 	return IPosition (1, cubeShape(axisNr_p));
     }
     if (! hypercube->valueRecord().isDefined (columnName())) {
-	throw (DataManInvOper ("StMan: no array in this row"));
+        throw (DataManInvOper ("TSMCoord: no array in row " +
+			       String::toString(rownr) +
+			       " of coordinate column " + columnName()));
     }
     return hypercube->valueRecord().shape (columnName());
 }

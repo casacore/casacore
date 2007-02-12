@@ -148,7 +148,10 @@ IPosition TSMDataColumn::shape (uInt rownr)
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
     IPosition cubeShape = hypercube->cubeShape();
     if (cubeShape.nelements() == 0) {
-	throw (DataManInvOper ("StMan: no array in this row"));
+        throw (DataManInvOper ("TSM: no array in row " +
+			       String::toString(rownr) +
+			       " of column " + columnName() +
+			       " in "+ stmanPtr_p->fileName()));
     }
     IPosition shape (stmanPtr_p->nrCoordVector());
     for (uInt i=0; i<shape.nelements(); i++) {
