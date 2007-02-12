@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Array.h>
+#include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/Arrays/ArrayPosIter.h>
 #include <casa/Arrays/ArrayError.h>
