@@ -1,0 +1,36 @@
+import os
+import SCons.Defaults
+
+# import root environment
+Import( ["buildenv", "install"])
+myenv = buildenv.Copy()
+
+# gather cpp files
+cpps = myenv.SGlob("*/*.cc")
+# filter out files in test directory
+cpps = [ i for i in cpps if not i.startswith('test') ]
+cpps += myenv.SGlob("*.cc")
+
+def base_no_suffix(name):
+    return os.path.basename(name).split('.')[0]
+
+if "static" in myenv["libtype"]:
+    slib =  myenv.StaticLibrary(target = myenv["PACKAGE"], source = cpps)
+    install.AddLibrary(slib)
+if "shared" in myenv["libtype"]:
+    dlib =  myenv.SharedLibrary(target = myenv["PACKAGE"], source = cpps)
+    install.AddLibrary(dlib)
+if myenv["tests"]:
+    tests = myenv.SGlob("test/*.cc")
+    tests += myenv.SGlob("*/test/*.cc")
+    myenv.Append(CPPPATH=["#/"])
+    myenv.Append(LIBPATH=[myenv["BUILDDIR"]])
+    myenv.Append(LIBS=[myenv["PACKAGE"]])
+    #testaux = myenv.SGlob("test/*.out")
+    #testaux += myenv.SGlob("*/*.out")
+    for i in tests:
+	tapp = myenv.Program("#/tests/%s" % base_no_suffix(i), source=i)
+
+install.AddHeaders( ".", "*.h", "casacore/casa", True )
+install.AddHeaders( ".", "*.tcc", "casacore/casa", True )
+
