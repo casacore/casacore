@@ -424,12 +424,14 @@ private:
 // <group name=output>
 // only Quantity is supported on input
 istream& operator>> (istream &is, Quantity &ku);
+Bool readQuantity(Quantity &res, MUString &in);
+Bool readQuantity(Quantity &res, const String &in);
 // </group>
 
 
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Quanta/Quantum.cc>
+#include <casa/Quanta/Quantum.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

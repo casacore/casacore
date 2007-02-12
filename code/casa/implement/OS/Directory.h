@@ -177,6 +177,11 @@ public:
 	       Bool setUserWritePermission = True) const;
     // </group>
 
+    // Copy a directory recursively in a manual way.
+    // This is used in a copy using the system command is not possible
+    // (like on the Cray XT3).
+    void copyRecursive (const String& target) const;
+
     // Move the directory to the target path using the system command mv.
     // If the target already exists (as a file, directory or symlink),
     // and overwrite=True, it will first be removed.

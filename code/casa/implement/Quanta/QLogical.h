@@ -211,6 +211,6 @@ Bool QMakeBool(const LogicalArray &val);
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Quanta/QLogical.cc>
+#include <casa/Quanta/QLogical.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

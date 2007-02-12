@@ -288,7 +288,7 @@ Int ArrayBase::makeSubset (ArrayBase& out,
   }
   uInt j;
   for (j=0; j < ndim(); j++) {
-    if (b(j) < 0 || b(j) > e(j)
+    if (b(j) < 0 || b(j) > e(j)+1
     ||  e(j) >= length_p(j)  ||  i(j) < 1) {
       throw(ArrayError("ArrayBase::operator()(b,e,i) - b,e or i "
 		       "incorrectly specified"));

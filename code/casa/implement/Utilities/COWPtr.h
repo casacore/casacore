@@ -346,6 +346,6 @@ template <class T> inline Bool COWPtr<T>::isUnique() const
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/COWPtr.cc>
+#include <casa/Utilities/COWPtr.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

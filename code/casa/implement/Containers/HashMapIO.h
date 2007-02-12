@@ -59,6 +59,6 @@ template<class key, class val> ostream& operator<<(ostream&, const HashMap<key,v
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/HashMapIO.cc>
+#include <casa/Containers/HashMapIO.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

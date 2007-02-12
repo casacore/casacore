@@ -225,6 +225,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/System/AipsrcVector.cc>
+#include <casa/System/AipsrcVector.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -38,6 +38,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

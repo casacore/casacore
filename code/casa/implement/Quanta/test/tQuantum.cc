@@ -29,11 +29,9 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Array.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/QMath.h>
 #include <casa/Quanta/QLogical.h>

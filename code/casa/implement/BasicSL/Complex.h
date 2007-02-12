@@ -329,7 +329,4 @@ namespace std {
   inline double real(double x) { return x; }
 }
 
-#ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/BasicSL/Complex.cc>
-#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

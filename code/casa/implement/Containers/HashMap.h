@@ -523,6 +523,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/HashMap.cc>
+#include <casa/Containers/HashMap.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

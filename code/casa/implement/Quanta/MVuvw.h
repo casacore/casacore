@@ -122,7 +122,7 @@ public:
   MVuvw(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  MVuvw(Double in0);
+  explicit MVuvw(Double in0);
   MVuvw(const Quantity &l);
   // </group>
   // Creates the uvw from specified (azimuth,elevation) angles and length

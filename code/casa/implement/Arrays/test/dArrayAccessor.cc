@@ -30,6 +30,7 @@
 #include <casa/Arrays/ArrayAccessor.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Slice.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/OS/Timer.h>

@@ -26,11 +26,14 @@
 //# $Id$
 
 #include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/MVAngle.h>
+#include <casa/Quanta/MVTime.h>
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-istream &operator>> (istream &is, Quantity &ku) {
+istream &operator>> (istream &is, Quantity &ku)
+{
   String str;
   is >> str;
   if (ios::failbit & is.rdstate()) return is;
@@ -39,10 +42,55 @@ istream &operator>> (istream &is, Quantity &ku) {
     ku = t;
   } else {
     is.clear(ios::failbit | is.rdstate());
-  };
+  }
   return is;
 }
 
+Bool readQuantity(Quantity &res, MUString &in)
+{
+  Double val0 = 0.0;
+  String unit = "";
+  res = Quantity();
+  UnitVal uv;
+  in.push();
+  if (!in.eos()) {
+    if (MVAngle::read(res, in) || MVTime::read(res, in)) {
+      val0 = res.getValue();
+      unit = res.getUnit();
+    } else {
+      val0 = in.getDouble();
+      unit = in.get();
+      // Check if valid unit specified
+      if (!UnitVal::check(unit, uv)) {
+	in.pop(); return False;
+      }
+    }
+  }
+  //
+  // The next statement is necessary once the read return arg is templated
+  //  Qtype tmp = (Qtype)((res.getValue()) + val0)
+  res.setValue(val0);
+  res.setUnit(unit);
+  in.unpush();
+  return True; 
+}
+
+Bool readQuantity(Quantity &res, const String &in)
+{
+  static Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
+  static Regex ex2("[tT][oO][dD][aA][yY]");
+  static Regex ex3("[nN][oO][wW]");
+  MUString tmp(in);
+  // The next construct is to cater for an unexplained error in
+  // the Linux egcs stream input library; and an even more funny one in sgi
+  ///  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
+  ///		      in[0] == 'Y')) {
+  if (!in.empty() && !in.contains(ex2) && !in.contains(ex3) &&
+      !in.contains(ex)) {
+    tmp = MUString(String("0.0") + in);		// Pointed non-const String
+  }
+  return readQuantity(res, tmp);
+}
 
 } //# NAMESPACE CASA - END
 

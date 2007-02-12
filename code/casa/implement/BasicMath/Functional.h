@@ -134,6 +134,6 @@ template<class Domain, class Range> class Functional {
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/BasicMath/Functional.cc>
+#include <casa/BasicMath/Functional.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

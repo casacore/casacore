@@ -191,6 +191,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/Assert.cc>
+#include <casa/Utilities/Assert.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -421,6 +421,6 @@ public:
 
 } //#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/OrderedMap.cc>
+#include <casa/Containers/OrderedMap.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

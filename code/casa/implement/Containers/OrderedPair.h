@@ -97,6 +97,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/OrderedPair.cc>
+#include <casa/Containers/OrderedPair.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

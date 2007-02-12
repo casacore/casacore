@@ -467,6 +467,6 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/MaskArrMath.cc>
+#include <casa/Arrays/MaskArrMath.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -166,6 +166,12 @@ private:
     // Regular expression if given, with this variable it is possible 
     // to compare files with regular expression.
     Regex itsExpression;
+
+    // Cray XT3 does not support readdir on compute nodes.
+    // Use scandir instead.
+    dirent** itsNameList;
+    int      itsNrNames;
+    int      itsNameInx;
 };
 
 

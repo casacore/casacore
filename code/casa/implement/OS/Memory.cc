@@ -35,9 +35,12 @@
 #include <casa/OS/malloc.h>
 
 #if defined(AIPS_NO_LEA_MALLOC)
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
 #include <sys/time.h>
 #include <sys/resource.h>
+#if defined(AIPS_CRAY_PGI)
+#include <unistd.h>
+#endif
 #else
 #include <malloc.h>
 #endif
@@ -49,7 +52,7 @@ size_t Memory::allocatedMemoryInBytes()
 {
     size_t total = 0;
 
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
 // Use getrusage to get the RSS
    struct rusage rus;
    getrusage(0, &rus);
@@ -77,7 +80,7 @@ size_t Memory::allocatedMemoryInBytes()
 size_t Memory::assignedMemoryInBytes()
 {
     size_t total = 0;
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
 // Use getrusage to get the other memory segments
    struct rusage rus;
    getrusage(0, &rus);
@@ -136,7 +139,7 @@ void Memory::setMemoryOptions(){
 }
 
 int Memory::setMemoryOption(int cmd, int value){
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
    return 0;
 #else
    return(mallopt(cmd, value));

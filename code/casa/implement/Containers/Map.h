@@ -775,7 +775,6 @@ protected:
 
 } //#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/Map.cc>
-#include <casa/Containers/Map2.cc>
+#include <casa/Containers/Map.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

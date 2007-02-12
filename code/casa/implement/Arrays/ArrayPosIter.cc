@@ -99,14 +99,16 @@ void ArrayPositionIterator::setup(const IPosition &axes,
          throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
 				     " - Shape(i) < 0"));
     }
-    Cursor = Start;
     End = Start + Shape - 1;
+    reset();
 }
 
 void ArrayPositionIterator::reset()
 {
     Cursor = Start;
-    atOrBeyondEnd = False;
+    // Immediately at end if first iteration axis is empty.
+    Int ax = iterationAxes[0];
+    atOrBeyondEnd = End[ax] < Start[ax];
 }
 
 Bool ArrayPositionIterator::atStart() const

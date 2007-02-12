@@ -54,11 +54,11 @@
 #include <casa/Containers/OrderedMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+} //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/OrdMapIO.cc>
+#include <casa/Containers/OrdMapIO.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 
-} //# NAMESPACE CASA - END
 

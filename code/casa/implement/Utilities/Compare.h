@@ -85,6 +85,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/Compare.cc>
+#include <casa/Utilities/Compare.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

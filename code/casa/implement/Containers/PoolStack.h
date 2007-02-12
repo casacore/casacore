@@ -155,6 +155,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/PoolStack.cc>
+#include <casa/Containers/PoolStack.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -39,21 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
 {
-  Array<Bool> arr;
-  Int whichField = idToNumber (id);
-  switch (type(whichField)) {
-  case TpInt:
-  case TpArrayInt:
-    {
-      Array<Int> tmp = asArrayInt (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
-  default:
-    arr = asArrayBool(id).copy();
-  }
-  return arr;
+  return asArrayBool(id).copy();
 }
 
 Array<uChar> RecordInterface::toArrayuChar (const RecordFieldId& id) const

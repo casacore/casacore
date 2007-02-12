@@ -553,6 +553,6 @@ inline int GenSortIndirect<T>::isDescending (const T* data, Int i, Int j)
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/GenSort.cc>
+#include <casa/Utilities/GenSort.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

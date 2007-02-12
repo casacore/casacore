@@ -41,7 +41,8 @@ DirectoryIterator::DirectoryIterator()
   itsDirectoryEntry      (0),
   itsEnd                 (False),
   itsDirectory           (),
-  itsExpression          (".*")
+  itsExpression          (".*"),
+  itsNameList            (0)
 {
     init();
 }
@@ -51,7 +52,8 @@ DirectoryIterator::DirectoryIterator (const Directory& dir)
   itsDirectoryEntry      (0),
   itsEnd                 (False),
   itsDirectory           (dir),
-  itsExpression          (".*")
+  itsExpression          (".*"),
+  itsNameList            (0)
 {
     init();
 }
@@ -62,7 +64,8 @@ DirectoryIterator::DirectoryIterator (const Directory& dir,
   itsDirectoryEntry      (0),
   itsEnd                 (False),
   itsDirectory           (dir),
-  itsExpression          (regExpression)
+  itsExpression          (regExpression),
+  itsNameList            (0)
 {
     init();
 }
@@ -72,15 +75,25 @@ DirectoryIterator::DirectoryIterator (const DirectoryIterator& that)
   itsDirectoryEntry      (0),
   itsEnd                 (False),
   itsDirectory           (that.itsDirectory),
-  itsExpression          (that.itsExpression)
+  itsExpression          (that.itsExpression),
+  itsNameList            (0)
 {
     init();
 }
 
 DirectoryIterator::~DirectoryIterator()
 {
+#if defined(AIPS_CRAY_PGI)
+    if (itsNameList != 0) {
+        for (int i=0; i<itsNrNames; i++) {
+	    free(itsNameList[i]);
+	}
+	free(itsNameList);
+    }
+#else
     // Free all the memory used by DirectoryIterator.
     closedir (itsDirectoryDescriptor);
+#endif
 }
 
 DirectoryIterator& DirectoryIterator::operator= (const DirectoryIterator& that)
@@ -100,6 +113,17 @@ DirectoryIterator& DirectoryIterator::operator= (const DirectoryIterator& that)
 
 void DirectoryIterator::init()
 {
+    // Alas readdir is not supported on the compute nodes of the Cray XT3.
+#if defined(AIPS_CRAY_PGI)
+    itsNrNames = scandir(itsDirectory.path().expandedName().chars(),
+			 &itsNameList, 0, alphasort);
+    if (itsNrNames < 0) {
+        throw AipsError ("DirectoryIterator: error on directory " +
+			 itsDirectory.path().expandedName() +
+			 ": No such file or directory");
+    }
+    itsNameInx = 0;
+#else
     // Set the private directory on the current working directory
     // Open the directory, if this is not possible throw an exception
     itsDirectoryDescriptor = opendir(itsDirectory.path().expandedName().chars());
@@ -108,6 +132,7 @@ void DirectoryIterator::init()
 			  itsDirectory.path().expandedName() +
 			  ": " + strerror(errno)));
     }
+#endif
     // Set itsDirectoryEntry on the first entry.
     operator++();
 }
@@ -122,7 +147,15 @@ void DirectoryIterator::operator++()
     // Skip . and ..
     String name;
     do {
+#if defined(AIPS_CRAY_PGI)
+        if (itsNameInx >= itsNrNames) {
+	    itsDirectoryEntry = 0;
+	} else {
+	    itsDirectoryEntry = itsNameList[itsNameInx++];
+	}
+#else
 	itsDirectoryEntry = readdir (itsDirectoryDescriptor);
+#endif
 	if (itsDirectoryEntry == 0){
 	    itsEnd = True;
 	    break;
@@ -157,7 +190,11 @@ void DirectoryIterator::reset()
 {
     // Reset the directory to the beginning of the stream
     // and get the first entry.
+#if defined(AIPS_CRAY_PGI)
+    itsNameInx = 0;
+#else
     rewinddir (itsDirectoryDescriptor);
+#endif
     itsEnd = False;
     operator++();
 }

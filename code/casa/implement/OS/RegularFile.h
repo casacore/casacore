@@ -153,6 +153,10 @@ public:
 	       Bool setUserWritePermission = True) const;
     // </group>
 
+    // Copy the file manually in case the cp command cannot be used.
+    // (like on the Cray XT3).
+    static void manualCopy (const String& source, const String& target);
+
     // Move the file to the target path using the system command mv.
     // If the file is a symbolic link, the regular file pointed to
     // will be moved.

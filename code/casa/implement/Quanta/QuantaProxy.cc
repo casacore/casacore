@@ -5,6 +5,7 @@
 #include <casa/Utilities/MUString.h>
 #include <casa/Quanta.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Quanta/QLogical.h>
 #include <casa/Quanta/QuantumHolder.h>

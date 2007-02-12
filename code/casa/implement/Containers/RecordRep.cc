@@ -29,6 +29,7 @@
 #include <casa/Containers/BlockIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Slice.h>
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Arrays/IPosition.h>

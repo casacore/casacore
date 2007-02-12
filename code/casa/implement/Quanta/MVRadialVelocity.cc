@@ -28,6 +28,7 @@
 //# Includes
 #include <casa/Quanta/MVRadialVelocity.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Quanta/MVFrequency.h>

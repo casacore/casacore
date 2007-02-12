@@ -163,6 +163,9 @@ Bool Directory::isEmpty() const
 
 Double Directory::freeSpace() const
 {
+#if defined(AIPS_CRAY_PGI)
+    return 1e37;
+#else
     struct statfs buf;
 #if defined(AIPS_IRIX)
     if (statfs (itsFile.path().expandedName().chars(),
@@ -182,6 +185,7 @@ Double Directory::freeSpace() const
     }
 #endif
     return bsize * buf.f_bavail;
+#endif
 }
 
 void Directory::create (Bool overwrite)
@@ -266,6 +270,11 @@ void Directory::copy (const Path& target, Bool overwrite,
 	SymLink(targetFile).remove();
     }
     // Copy the entire directory recursively using the system function cp.
+#if defined(AIPS_CRAY_PGI)
+    // On the Cray XT3 the system call is not supported, so we have to
+    // do it ourselves.
+    copyRecursive (targetName.expandedName());
+#else
     String command("cp -r ");
     command += itsFile.path().expandedName() + " " + targetName.expandedName();
     system (command.chars());
@@ -278,6 +287,26 @@ void Directory::copy (const Path& target, Bool overwrite,
 #endif
 	command += targetName.expandedName();
 	system (command.chars());
+    }
+#endif
+}
+
+void Directory::copyRecursive (const String& target) const
+{
+    // First create the directory.
+    Directory dir(target);
+    dir.create (True);
+    // Now loop over all files and copy.
+    DirectoryIterator iter(*this);
+    while (! iter.pastEnd()) {
+        File file = iter.file();
+	String outName = target + '/' + file.path().baseName();
+	if (file.isDirectory (False)) {
+	    Directory(file).copyRecursive (outName);
+	} else {
+	    RegularFile::manualCopy (file.path().originalName(), outName);
+	}
+	iter++;
     }
 }
 

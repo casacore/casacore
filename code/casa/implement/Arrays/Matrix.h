@@ -335,6 +335,6 @@ private:
 
 } //#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/Matrix.cc>
+#include <casa/Arrays/Matrix.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -172,6 +172,25 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
 
 
 
+// <summary> Helper function for partialX functions </summary>
+// <use visibility=export>
+// <synopsis>
+// This is a specialized helper function for functions like partialSums.
+// It determines the shape of the resulting array and calculates the
+// result increments when iterating linearly through the source array.
+// It returns the first result axis which indicates the number of the first
+// contiguous collapse axes. The number of contiguous data points is
+// returned in nelemCont.
+// </synopsis>
+// <group name=partialFuncHelper>
+uInt partialFuncHelper (Int& nelemCont,
+			IPosition& resultShape, IPosition& incr,
+			const IPosition& sourceShape,
+			const IPosition& collapseAxes);
+// </group>
+
+
+
 // <summary>
 // Reorder the axes of an array.
 // </summary>
@@ -221,7 +240,7 @@ Array<T> reorderArray (const Array<T>& array,
 
 
 // <summary>
-// Helper function for function reorderArray..
+// Helper function for function reorderArray.
 // </summary>
 
 // <use visibility=local>
@@ -249,7 +268,6 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/ArrayUtil.cc>
-#include <casa/Arrays/ArrayUtil2.cc>
+#include <casa/Arrays/ArrayUtil.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -132,6 +132,6 @@ template<class t> uInt Register(const t *);
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/Register.cc>
+#include <casa/Utilities/Register.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

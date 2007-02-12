@@ -136,6 +136,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/MatrixIter.cc>
+#include <casa/Arrays/MatrixIter.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -121,7 +121,7 @@ public:
   MVEarthMagnetic(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  MVEarthMagnetic(Double in0);
+  explicit MVEarthMagnetic(Double in0);
   MVEarthMagnetic(const Quantity &l);
   // </group>
   // Creates the EarthMagnetic from specified (azimuth,elevation) angles and length

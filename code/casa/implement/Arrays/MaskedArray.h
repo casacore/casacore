@@ -737,6 +737,6 @@ template<class T, class U>
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/MaskedArray.cc>
+#include <casa/Arrays/MaskedArray.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

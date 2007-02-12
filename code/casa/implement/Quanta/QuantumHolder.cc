@@ -36,6 +36,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

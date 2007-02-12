@@ -35,6 +35,7 @@
 #include <casa/Utilities/GenSort.h>
 #include <casa/Exceptions.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/GenSort.h>
 #include <casa/iostream.h>
 

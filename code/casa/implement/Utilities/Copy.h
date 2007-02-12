@@ -251,7 +251,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Utilities/Copy.cc>
-#include <casa/Utilities/Copy2.cc>
+#include <casa/Utilities/Copy.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

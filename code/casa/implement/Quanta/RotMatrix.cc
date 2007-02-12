@@ -30,6 +30,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Quanta/RotMatrix.h>
 #include <casa/Quanta/Euler.h>
+#include <casa/Arrays/ArrayIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

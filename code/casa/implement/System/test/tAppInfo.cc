@@ -31,7 +31,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/System/AppInfo.h>
 #include <casa/Utilities/Assert.h>
-#include <casa/Arrays/ArrayIO.cc>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/String.h>
 #include <casa/System/AipsrcVector.h>
 #include <casa/Utilities/Regex.h>

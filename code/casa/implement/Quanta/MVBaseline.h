@@ -119,7 +119,7 @@ public:
   MVBaseline(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  MVBaseline(Double in0);
+  explicit MVBaseline(Double in0);
   MVBaseline(const Quantity &l);
   // </group>
   // Creates the Baseline from specified (azimuth,elevation) angles and length

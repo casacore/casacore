@@ -28,13 +28,10 @@
 #ifndef CASA_ARRAY_H
 #define CASA_ARRAY_H
 
-
 //# Includes
 #include <casa/Arrays/ArrayBase.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/CountedPtr.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/LogiArray.h>
 #include <casa/Arrays/MaskLogiArrFwd.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/ostream.h>
@@ -49,6 +46,7 @@ namespace casa { //#Begin casa namespace
 class AipsIO;
 class Slice;
 class Slicer;
+template<class T> class Matrix;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
 template<class Domain, class Range> class Functional;
@@ -678,6 +676,6 @@ protected:
 
 }//#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/Array.cc>
+#include <casa/Arrays/Array.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

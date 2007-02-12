@@ -30,6 +30,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/Register.h>
 #include <casa/Quanta/MVDouble.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

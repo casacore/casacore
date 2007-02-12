@@ -25,6 +25,12 @@
 //#
 //# $Id$
 
+//# The include of Array.h before ArrayUtil.h is needed, otherwise
+//# gcc-4 complains (rightfully) about partialFuncHelper not being declared.
+//# Because include-chain is:
+//#  Array.h, Array.tcc, MaskedArray.h, MaskedArray.tcc, ArrayLogical.h,
+//#  ArrayLogical.tcc, ArrayUtil.h
+#include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Utilities/Regex.h>
 
@@ -77,6 +83,54 @@ Vector<String> stringToVector (const String& string, const Regex& delim)
     return vec;
 }
 
+
+uInt partialFuncHelper (Int& nelemCont,
+			IPosition& resultShape, IPosition& incr,
+			const IPosition& sourceShape,
+			const IPosition& collapseAxes)
+{
+  Int ndim = sourceShape.nelements();
+  // Get the remaining axes.
+  // It also checks if axes are specified correctly.
+  IPosition resultAxes = IPosition::otherAxes (ndim, collapseAxes);
+  uInt nres = resultAxes.nelements();
+  // Create an array which determines how to increment in the result
+  // when incrementing an axis of the input array.
+  incr.resize (ndim);
+  incr = 0;
+  // Find out how many contiguous elements are available.
+  uInt stax = ndim;
+  nelemCont = 1;
+  // Create the resulting shape and array.
+  if (nres == 0) {
+    resultShape.resize (1);
+    resultShape = 1;
+    nelemCont = sourceShape.product();
+  } else {
+    resultShape.resize (nres);
+    Int nr = 1;
+    Int lastAxis = -2;
+    for (uInt i=0; i<nres; i++) {
+      Int axis = resultAxes(i);
+      resultShape(i) = sourceShape(axis);
+      if (axis != lastAxis+1) {
+	incr(axis) = nr;
+      } else {
+	incr(axis) = 0;
+      }
+      lastAxis = axis;
+      nr *= sourceShape(axis);
+      if (++axis < ndim) {
+	incr(axis) = -nr;
+      }
+    }
+    stax = resultAxes(0);
+    for (uInt i=0; i<stax; i++) {
+      nelemCont *= sourceShape(i);
+    }
+  }
+  return stax;
+}
 
 uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 			 const IPosition& shape, const IPosition& newAxisOrder)

@@ -156,6 +156,6 @@ AIPSIO_FUNC_SPEC(String)
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/IO/AipsIOCarray.cc>
+#include <casa/IO/AipsIOCarray.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

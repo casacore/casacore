@@ -257,7 +257,11 @@ uInt Path::getMaxPathNameSize()
     // pathMax is not defined(<0) then pathconf sets pathMax, 
     // if this doesn't work pathMax will get the value of PATH_MAX_GUESS
     if (pathMax == 0) {
+#if defined(AIPS_CRAY_PGI)
+        pathMax = PATH_MAX_GUESS;
+#else
 	pathMax = pathconf ("/",_PC_PATH_MAX) < 0  ?  pathMax : PATH_MAX_GUESS;
+#endif
     }
     return pathMax;
 }
@@ -267,7 +271,11 @@ uInt Path::getMaxNameSize()
     // nameMax is not defined (<0) then pathconf sets nameMax, 
     // if this doesn't work nameMax will get the value of PATH_MAX_GUESS
     if (nameMax == 0) {
+#if defined(AIPS_CRAY_PGI)
+        pathMax = NAME_MAX_GUESS;
+#else
 	nameMax = pathconf ("/",_PC_NAME_MAX) < 0  ?  nameMax : NAME_MAX_GUESS;
+#endif
     }
     return nameMax;
 }

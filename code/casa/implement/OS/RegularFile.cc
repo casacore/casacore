@@ -29,12 +29,15 @@
 #include <casa/Exceptions.h>
 #include <casa/OS/RegularFile.h>
 #include <casa/OS/SymLink.h>
+#include <casa/IO/FiledesIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 #include <fcntl.h>                // needed for creat
 #include <unistd.h>               // needed for unlink, etc.
 #include <errno.h>                // needed for errno
-#include <casa/string.h>               // needed for strerror
-#include <casa/stdlib.h>               // needed for system
+#include <casa/string.h>          // needed for strerror
+#include <casa/stdlib.h>          // needed for system
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -144,6 +147,9 @@ void RegularFile::copy (const Path& target, Bool overwrite,
 {
     Path targetName(target);
     checkTarget (targetName, overwrite);
+#if defined(AIPS_CRAY_PGI)
+    manualCopy (itsFile.path().expandedName(), targetName.expandedName());
+#else
     // This function uses the system function cp.	    
     String call("cp ");
     call += itsFile.path().expandedName() + " " + targetName.expandedName();
@@ -154,16 +160,70 @@ void RegularFile::copy (const Path& target, Bool overwrite,
 	    result.setPermissions (result.readPermissions() | 0200);
 	}
     }
+#endif
+}
+
+void RegularFile::manualCopy (const String& source, const String& target)
+{
+    int infd (FiledesIO::open (source.chars()));
+    int outfd (FiledesIO::create (target.chars()));
+    FiledesIO in (infd);
+    FiledesIO out (outfd);
+    char buf[32768];
+    int nrc = in.read (sizeof(buf), buf, False);
+    while (true) {
+        AlwaysAssert (nrc >= 0, AipsError);
+	out.write (nrc, buf);
+	if (nrc != sizeof(buf)) {
+	    break;
+	}
+	nrc = in.read (sizeof(buf), buf, False);
+    }
+    FiledesIO::close (infd);
+    FiledesIO::close (outfd);
 }
 
 void RegularFile::move (const Path& target, Bool overwrite)
 {
-    Path targetName(target);
-    checkTarget (targetName, overwrite);
-    // This function uses the system function mv.	    
-    String call("mv ");
-    call += itsFile.path().expandedName() + " " + targetName.expandedName();
-    system (call.chars());
+    Path targetPath(target);
+    checkTarget (targetPath, overwrite);
+    // Start trying to rename.
+    // If source and target are the same directory, rename does nothing
+    // and returns a success status.
+    if (rename (path().expandedName().chars(),
+		targetPath.expandedName().chars()) == 0) {
+	return;
+    
+    }
+    // The rename failed for one reason or another.
+    // Remove the target if it already exists.
+    Bool alrExist = False;
+    if (errno == EEXIST) {
+      alrExist = True;
+    }
+#if defined(EBUSY)
+    if (errno == EBUSY) {
+      alrExist = True;
+    }
+#endif
+    if (alrExist) {
+	unlink (targetPath.expandedName().chars());
+    }
+    // Try again.
+    if (rename (path().expandedName().chars(),
+		targetPath.expandedName().chars()) == 0) {
+	return;
+    }
+    // Throw an exception if not "different file systems" error.
+    if (errno != EXDEV) {
+	throw (AipsError ("RegularFile::move error on " +
+			  path().expandedName() + " to " +
+			  targetPath.expandedName() +
+			  ": " + strerror(errno)));
+    }
+    // Copy the file and remove it thereafter.
+    copy (targetPath, overwrite, False);
+    remove();
 }
 
 Int64 RegularFile::size() const

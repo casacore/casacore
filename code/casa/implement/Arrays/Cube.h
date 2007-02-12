@@ -296,6 +296,6 @@ private:
 
 } //#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/Cube.cc>
+#include <casa/Arrays/Cube.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

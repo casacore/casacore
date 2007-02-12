@@ -169,7 +169,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Containers/RecordFieldWriter.cc>
-#include <casa/Containers/RecordField2Writer.cc>
+#include <casa/Containers/RecordFieldWriter.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

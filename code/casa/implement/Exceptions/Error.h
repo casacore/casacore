@@ -367,7 +367,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <casa/Exceptions/Error.cc>
-#include <casa/Exceptions/Error2.cc>
+#include <casa/Exceptions/Error.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
