@@ -32,11 +32,11 @@
 *     Capitaine, N., Chapront, J., Lambert, S. and Wallace, P.,
 *     "Expressions for the Celestial Intermediate Pole and Celestial
 *     Ephemeris Origin consistent with the IAU 2000A precession-nutation
-*     model", submitted to A&A (2002)
+*     model", Astronomy & Astrophysics, 400, 1145-1154 (2003)
 *
-*  This revision:  2002 November 9
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -54,7 +54,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

@@ -22,7 +22,7 @@
 *
 *  1) XP and YP are the "coordinates of the pole", in radians, which
 *     position the Celestial Intermediate Pole in the International
-*     Terrestrial Reference System (see IERS Conventions 2000).  In a
+*     Terrestrial Reference System (see IERS Conventions 2003).  In a
 *     geocentric right-handed triad u,v,w, where the w-axis points at
 *     the north geographic pole, the v-axis points towards the origin
 *     of longitudes and the u axis completes the system, XP = +u and
@@ -48,11 +48,12 @@
 *
 *  Reference:
 *
-*     McCarthy, D.D., IERS Conventions 2000, Chapter 5 (2002).
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  This revision:  2002 November 25
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -72,7 +73,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

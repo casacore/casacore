@@ -41,22 +41,22 @@
 *      3            0 00 00.001
 *      :            0 00 00.000...
 *
-*  2) The largest +ve useful value for NDP is determined by the size
-*     of ANGLE, the format of DOUBLE PRECISION floating-point numbers
-*     on the target platform, and the risk of overflowing IDMSF(4).
-*     On a typical platform, for ANGLE up to 2pi, the available
-*     floating-point precision might correspond to NDP=12.  However,
-*     the practical limit is typically NDP=9, set by the capacity of
-*     a 32-bit IDMSF(4).
+*  2) The largest positive useful value for NDP is determined by the
+*     size of ANGLE, the format of DOUBLE PRECISION floating-point
+*     numbers on the target platform, and the risk of overflowing
+*     IDMSF(4).  On a typical platform, for ANGLE up to 2pi, the
+*     available floating-point precision might correspond to NDP=12.
+*     However, the practical limit is typically NDP=9, set by the
+*     capacity of a 32-bit IDMSF(4).
 *
 *  3) The absolute value of ANGLE may exceed 2pi.  In cases where it
 *     does not, it is up to the caller to test for and handle the
 *     case where ANGLE is very nearly 2pi and rounds up to 360 degrees,
 *     by testing for IHMSF(1)=360 and setting IHMSF(1-4) to zero.
 *
-*  This revision:  2000 November 25
+*  This revision:  2005 August 26
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -84,7 +84,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

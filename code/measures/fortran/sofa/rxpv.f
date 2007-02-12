@@ -23,7 +23,7 @@
 *
 *  This revision:  2000 November 25
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

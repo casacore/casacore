@@ -16,7 +16,7 @@
 *     B        d(3)      second p-vector (not necessarily unit length)
 *
 *  Returned:
-*     S        d         angular separation (radians, always +ve)
+*     S        d         angular separation (radians, always positive)
 *
 *  Notes:
 *
@@ -33,9 +33,9 @@
 *     iau_PM       modulus of p-vector
 *     iau_PDP      scalar product of the two p-vectors
 *
-*  This revision:  2000 December 15
+*  This revision:  2005 August 26
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -55,7 +55,7 @@
       CALL iau_PDP ( A, B, CS )
 
 *  The angle.
-      IF ( SS.NE.0D0 ) THEN
+      IF ( SS.NE.0D0 .OR. CS.NE.0D0 ) THEN
          S = ATAN2(SS,CS)
       ELSE
          S = 0D0
@@ -65,7 +65,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

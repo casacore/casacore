@@ -36,7 +36,7 @@
 *
 *     where [CRS] is a vector in the Geocentric Celestial Reference
 *     System and [TRS] is a vector in the International Terrestrial
-*     Reference System (see IERS Conventions 2000), ERA is the Earth
+*     Reference System (see IERS Conventions 2003), ERA is the Earth
 *     Rotation Angle and RPOM is the polar motion matrix.
 *
 *  Called:
@@ -46,11 +46,12 @@
 *
 *  Reference:
 *
-*     McCarthy, D.D., IERS Conventions 2000, Chapter 5 (2002).
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  This revision:  2002 November 9
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -58,17 +59,18 @@
 
       DOUBLE PRECISION X, Y, S, RC2I(3,3)
 
-      DOUBLE PRECISION E, D
+      DOUBLE PRECISION R2, E, D
 
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 *  Obtain the spherical angles E and d.
-      IF ( X.NE.0D0 .OR. Y.NE.0D0 ) THEN
+      R2 = X*X+Y*Y
+      IF ( R2.NE.0D0 ) THEN
          E = ATAN2 ( Y, X )
       ELSE
          E = 0D0
       END IF
-      D = ATAN ( SQRT((X*X+Y*Y) / (1D0-(X*X+Y*Y))) )
+      D = ATAN ( SQRT ( R2 / (1D0-R2) ) )
 
 *  Form the matrix.
       CALL iau_IR ( RC2I )
@@ -80,7 +82,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

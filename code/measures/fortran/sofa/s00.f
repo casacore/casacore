@@ -42,9 +42,9 @@
 *     are both good compromises between resolution and convenience.
 *
 *  2) The quantity s is the difference between the right ascensions
-*     of the same point in two frames.  The two systems are the GCRS
+*     of the same point in two systems.  The two systems are the GCRS
 *     and the CIP,CEO, and the point is the ascending node of the
-*     respective equators.  The quantity s remains a small fraction of
+*     CIP equator.  The quantity s remains a small fraction of
 *     1 arcsecond throughout 1900-2100.
 *
 *  3) The series used to compute s is in fact for s+XY/2, where X and Y
@@ -61,13 +61,14 @@
 *     Capitaine, N., Chapront, J., Lambert, S. and Wallace, P.,
 *     "Expressions for the Celestial Intermediate Pole and Celestial
 *     Ephemeris Origin consistent with the IAU 2000A precession-nutation
-*     model", submitted to A&A (2002)
+*     model", Astronomy & Astrophysics, 400, 1145-1154 (2003)
 *
-*     McCarthy, D.D., IERS Conventions 2000, Chapter 5 (2002).
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  This revision:  2003 January 14
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -314,7 +315,7 @@
 *  Interval between fundamental epoch J2000.0 and current date (JC).
       T = ( ( DATE1-DJ0 ) + DATE2 ) / DJC
 
-*  Fundamental Arguments (from IERS Conventions 2000)
+*  Fundamental Arguments (from IERS Conventions 2003)
 
 *  Mean Anomaly of the Moon.
       FA(1) = iau_ANPM ( ( 485868.249036D0 +
@@ -431,7 +432,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

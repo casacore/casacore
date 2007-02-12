@@ -4,7 +4,7 @@
 *   i a u _ N U T 0 0 A
 *  - - - - - - - - - - -
 *
-*  Nutation, IAU 2000A model (MHB_2000 luni-solar and planetary nutation
+*  Nutation, IAU 2000A model (MHB2000 luni-solar and planetary nutation
 *  with free core nutation omitted).
 *
 *  This routine is part of the International Astronomical Union's
@@ -48,14 +48,14 @@
 *     latter are due to direct planetary nutations and the perturbations
 *     of the lunar and terrestrial orbits.
 *
-*  3) The routine computes the MHB_2000 nutation series with the
+*  3) The routine computes the MHB2000 nutation series with the
 *     associated corrections for planetary nutations.  It is an
 *     implementation of the nutation part of the IAU 2000A precession-
 *     nutation model, formally adopted by the IAU General Assembly in
 *     2000, namely MHB2000 (Mathews et al. 2002), but with the free core
 *     nutation (FCN - see Note 4) omitted.
 *
-*  4) The full MHB_2000 model also contains contributions to the
+*  4) The full MHB2000 model also contains contributions to the
 *     nutations in longitude and obliquity due to the free-excitation of
 *     the free-core-nutation during the period 1979-2000.  These FCN
 *     terms, which are time-dependent and unpredictable, are NOT
@@ -65,7 +65,7 @@
 *     accurate to a few hundred microarcseconds.  The omission of FCN
 *     introduces further errors of about that size.
 *
-*  5) The present routine provides classical nutation.  The MHB_2000
+*  5) The present routine provides classical nutation.  The MHB2000
 *     algorithm, from which it is adapted, deals also with (i) the
 *     offsets between the GCRS and mean poles and (ii) the adjustments
 *     in longitude and obliquity due to the changed precession rates.
@@ -73,32 +73,32 @@
 *     adjustments, are supported by the SOFA routines iau_BI00 and
 *     iau_PR00.
 *
-*  6) The MHB_2000 algorithm also provides "total" nutations, comprising
+*  6) The MHB2000 algorithm also provides "total" nutations, comprising
 *     the arithmetic sum of the frame bias, precession adjustments,
 *     luni-solar nutation and planetary nutation.  These total nutations
 *     can be used in combination with an existing IAU 1976 precession
 *     implementation, such as iau_PMAT76, to deliver GCRS-to-true
 *     predictions of sub-mas accuracy at current epochs.  However, there
-*     are three shortcomings in the MHB_2000 model that must be taken
+*     are three shortcomings in the MHB2000 model that must be taken
 *     into account if more accurate or definitive results are required
-*     (see Wallace 2002)
+*     (see Wallace 2002):
 *
-*       (i) The MHB_2000 total nutations are simply arithmetic sums,
+*       (i) The MHB2000 total nutations are simply arithmetic sums,
 *           yet in reality the various components are successive Euler
-*           rotations. This slight lack of rigor leads to cross terms
+*           rotations.  This slight lack of rigor leads to cross terms
 *           that exceed 1 mas after a century.  The rigorous procedure
 *           is to form the GCRS-to-true rotation matrix by applying the
 *           bias, precession and nutation in that order.
 *
 *      (ii) Although the precession adjustments are stated to be with
-*           respect to Lieske et al. (1977), the MHB_2000 model does
+*           respect to Lieske et al. (1977), the MHB2000 model does
 *           not specify which set of Euler angles are to be used and
 *           how the adjustments are to be applied.  The most literal and
 *           straightforward procedure is to adopt the 4-rotation
 *           epsilon_0, psi_A, omega_A, xi_A option, and to add DPSIPR to
 *           psi_A and DEPSPR to both omega_A and eps_A.
 *
-*     (iii) The MHB_2000 model predates the determination by Chapront
+*     (iii) The MHB2000 model predates the determination by Chapront
 *           et al. (2002) of a 14.6 mas displacement between the J2000
 *           mean equinox and the origin of the ICRS frame.  It should,
 *           however, be noted that neglecting this displacement when
@@ -114,30 +114,30 @@
 *  References:
 *
 *     Chapront, J., Chapront-Touze, M. & Francou, G., Astron.Astrophys.,
-*     387, 700, 2002.
+*     387, 700 (2002)
 *
 *     Lieske, J.H., Lederle, T., Fricke, W. & Morando, B., "Expressions
 *     for the precession quantities based upon the IAU (1976) System of
-*     Astronomical Constants", Astron.Astrophys., 58, 1-16, 1977.
+*     Astronomical Constants", Astron.Astrophys., 58, 1-16 (1977)
 *
 *     Mathews, P.M., Herring, T.A., Buffet, B.A., "Modeling of nutation
 *     and precession   New nutation series for nonrigid Earth and
 *     insights into the Earth's interior", J.Geophys.Res., 107, B4,
-*     2002.  The MHB_2000 code itself was obtained on 9th September 2002
-*     from ftp //maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
+*     2002.  The MHB2000 code itself was obtained on 9th September 2002
+*     from ftp://maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
 *
 *     Simon, J.-L., Bretagnon, P., Chapront, J., Chapront-Touze, M.,
-*     Francou, G., Laskar, J., A&A282, 663-683 (1994).
+*     Francou, G., Laskar, J., A&A282, 663-683 (1994)
 *
 *     Souchay, J., Loysel, B., Kinoshita, H., Folgueira, M., A&A Supp.
 *     Ser. 135, 111 (1999)
 *
 *     Wallace, P.T., "Software for Implementing the IAU 2000
-*     Resolutions", in IERS Workshop 5.1, 2002.
+*     Resolutions", in IERS Workshop 5.1 (2002)
 *
-*  This revision:  2002 December 23
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -3236,7 +3236,7 @@
 
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-*  Interval between fundamental DATE J2000.0 and given DATE (JC).
+*  Interval between fundamental date J2000.0 and given date (JC).
       T = ( ( DATE1-DJ0 ) + DATE2 ) / DJC
 
 *  -------------------
@@ -3314,11 +3314,12 @@
 *  PLANETARY NUTATION
 *  ------------------
 
-*  n.b.  The MHB_2000 computes the luni-solar and planetary nutation in
-*        different routines, using slightly different Delaunay arguments
-*        in the two cases.  This behaviour is faithfully reproduced
-*        here.  Use of the Simon et al. expressions for both cases leads
-*        to negligible changes, well below 0.1 microarcsecond.
+*  n.b.  The MHB2000 code computes the luni-solar and planetary nutation
+*        in different routines, using slightly different Delaunay
+*        arguments in the two cases.  This behaviour is faithfully
+*        reproduced here.  Use of the Simon et al. expressions for both
+*        cases leads to negligible changes, well below
+*        0.1 microarcsecond.
 
 *  Mean anomaly of the Moon.
       AL   = MOD ( 2.35555598D0 + 8328.6914269554D0 * T, D2PI )
@@ -3395,7 +3396,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

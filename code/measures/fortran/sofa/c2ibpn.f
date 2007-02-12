@@ -52,23 +52,26 @@
 *
 *     where [CRS] is a vector in the Geocentric Celestial Reference
 *     System and [TRS] is a vector in the International Terrestrial
-*     Reference System (see IERS Conventions 2000), ERA is the Earth
+*     Reference System (see IERS Conventions 2003), ERA is the Earth
 *     Rotation Angle and RPOM is the polar motion matrix.
 *
 *  Called:
 *     iau_BPN2XY  extract CIP coordinates from b-p-n matrix
 *     iau_C2IXY   celestial-to-intermediate matrix given X,Y
 *
-*  Reference:
+*  References:
 *
 *     Capitaine, N., Chapront, J., Lambert, S. and Wallace, P.,
 *     "Expressions for the Celestial Intermediate Pole and Celestial
 *     Ephemeris Origin consistent with the IAU 2000A precession-nutation
-*     model", submitted to A&A (2002)
+*     model", Astronomy & Astrophysics, 400, 1145-1154 (2003)
 *
-*  This revision:  2002 December 23
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  This revision:  2005 August 24
+*
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -90,7 +93,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

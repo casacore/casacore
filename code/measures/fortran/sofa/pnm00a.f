@@ -16,7 +16,7 @@
 *     DATE1,DATE2    d       TT as a 2-part Julian Date (Note 1)
 *
 *  Returned:
-*     RBPN         d(3,3)    bias+precession+nutation matrix (Note 2)
+*     RBPN         d(3,3)    bias-precession-nutation matrix (Note 2)
 *
 *  Notes:
 *
@@ -57,9 +57,9 @@
 *     24th General Assembly, Manchester, UK.  Resolutions B1.3, B1.6.
 *     (2000)
 *
-*  This revision:  2003 February 27
+*  This revision:  2004 February 18
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -67,8 +67,8 @@
 
       DOUBLE PRECISION DATE1, DATE2, RBPN(3,3)
 
-      DOUBLE PRECISION  DPSI, DEPS, EPSA, RB(3,3), RP(3,3), RBP(3,3),
-     :                  RN(3,3)
+      DOUBLE PRECISION DPSI, DEPS, EPSA, RB(3,3), RP(3,3), RBP(3,3),
+     :                 RN(3,3)
 
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -80,7 +80,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

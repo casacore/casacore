@@ -98,15 +98,16 @@
 *     insights into the Earth's interior", J.Geophys.Res., 107, B4,
 *     2002.
 *
-*     McCarthy, D.D. & Luzum, B.J., "An Abridged Model of the Motion
-*     of the Celestial Pole", preprint, 2001.
+*     McCarthy, D.D. & Luzum, B.J., "An abridged model of the
+*     precession-nutation of the celestial pole", Celestial Mechanics &
+*     Dynamical Astronomy, 85, 37-49 (2003)
 *
 *     Simon, J.-L., Bretagnon, P., Chapront, J., Chapront-Touze, M.,
 *     Francou, G., Laskar, J., A&A282, 663-683 (1994).
 *
-*  This revision:  2002 December 23
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -436,7 +437,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

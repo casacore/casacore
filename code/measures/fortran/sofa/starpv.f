@@ -17,7 +17,7 @@
 *     PMR      d         RA proper motion (radians/year)
 *     PMD      d         Dec proper motion (radians/year)
 *     PX       d         parallax (arcseconds)
-*     RV       d         radial velocity (km/s, +ve = receding)
+*     RV       d         radial velocity (km/s, positive = receding)
 *
 *  Returned (Note 2):
 *     PV       d(3,2)    pv-vector (AU, AU/day)
@@ -110,9 +110,9 @@
 *
 *     Stumpff, P., Astron.Astrophys. 144, 232-240 (1985).
 *
-*  This revision:  2003 January 14
+*  This revision:  2005 August 26
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -135,7 +135,7 @@
 
 *  Radians to arc seconds
       DOUBLE PRECISION DR2AS
-      PARAMETER ( DR2AS = 206264.8062470963551564733D0 )
+      PARAMETER ( DR2AS = 206264.8062470963551564734D0 )
 
 *  Days to seconds
       DOUBLE PRECISION D2S
@@ -244,7 +244,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

@@ -12,7 +12,7 @@
 *     :                                          :
 *     :  A new version of this routine must be   :
 *     :  produced whenever a new leap second is  :
-*     :  announced.  There are three items to    :
+*     :  announced.  There are five items to     :
 *     :  change on each such occasion:           :
 *     :                                          :
 *     :  1) The parameter NDAT must be           :
@@ -25,12 +25,19 @@
 *     :  3) The parameter IYV must be set to     :
 *     :     the current year.                    :
 *     :                                          :
+*     :  4) The "Latest leap second" comment     :
+*     :     below must be set to the new leap    :
+*     :     second date.                         :
+*     :                                          :
+*     :  5) The "This revision" comment, later,  :
+*     :     must be set to the current date.     :
+*     :                                          :
 *     :  Change (3) must also be carried out     :
 *     :  whenever the routine is re-issued,      :
 *     :  even if no leap seconds have been       :
 *     :  added.                                  :
 *     :                                          :
-*     :  Latest leap second:  1999 January 1     :
+*     :  Latest leap second:  2006 January 1     :
 *     :                                          :
 *     :__________________________________________:
 *
@@ -109,9 +116,9 @@
 *  Called:
 *     iau_CAL2JD  Gregorian calendar to Julian Day Number
 *
-*  This revision:  2003 January 9
+*  This revision:  2005 July 11
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -123,11 +130,11 @@
 
 *  Release year for this version of iau_DAT.
       INTEGER IYV
-      PARAMETER ( IYV = 2003 )
+      PARAMETER ( IYV = 2005 )
 
 *  Number of Delta(AT) changes (increase by 1 for each new leap second).
       INTEGER NDAT
-      PARAMETER ( NDAT = 37 )
+      PARAMETER ( NDAT = 38 )
 
 *  Number of Delta(AT) expressions before leap seconds were introduced.
       INTEGER NERA1
@@ -185,6 +192,7 @@
       DATA (IDATE(I,35),I=1,2),DATS(35) / 1996,  1, 30D0 /
       DATA (IDATE(I,36),I=1,2),DATS(36) / 1997,  7, 31D0 /
       DATA (IDATE(I,37),I=1,2),DATS(37) / 1999,  1, 32D0 /
+      DATA (IDATE(I,38),I=1,2),DATS(38) / 2006,  1, 33D0 /
 
 *  Reference dates and drift rates.
       DATA (DRIFT(I, 1),I=1,2) / 37300D0, 0.001296D0 /
@@ -259,7 +267,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

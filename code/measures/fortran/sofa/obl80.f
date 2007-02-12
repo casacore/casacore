@@ -1,4 +1,4 @@
-      DOUBLE PRECISION FUNCTION iau_OBL80 ( EPOCH1, EPOCH2 )
+      DOUBLE PRECISION FUNCTION iau_OBL80 ( DATE1, DATE2 )
 *+
 *  - - - - - - - - - -
 *   i a u _ O B L 8 0
@@ -12,19 +12,19 @@
 *  Status:  canonical model.
 *
 *  Given:
-*     EPOCH1,EPOCH2   d      TDB starting epoch (Note 1)
+*     DATE1,DATE2     d      TDB date (Note 1)
 *
 *  Returned:
 *     iau_OBL80       d      obliquity of the ecliptic (radians, Note 2)
 *
 *  Notes:
 *
-*  1) The epoch EPOCH1+EPOCH2 is a Julian Date, apportioned in any
+*  1) The date DATE1+DATE2 is a Julian Date, apportioned in any
 *     convenient way between the two arguments.  For example,
 *     JD(TDB)=2450123.7 could be expressed in any of these ways,
 *     among others:
 *
-*            EPOCH1        EPOCH2
+*             DATE1         DATE2
 *
 *         2450123.7D0        0D0        (JD method)
 *          2451545D0      -1421.3D0     (J2000 method)
@@ -39,7 +39,7 @@
 *     are both good compromises between resolution and convenience.
 *
 *  2) The result is the angle between the ecliptic of J2000 and the mean
-*     equator of date EPOCH1+EPOCH2.
+*     equator of date DATE1+DATE2.
 *
 *  Reference:
 *
@@ -47,15 +47,15 @@
 *     P. Kenneth Seidelmann (ed), University Science Books (1992),
 *     Expression 3.222-1 (p114).
 *
-*  This revision:  2001 September 16
+*  This revision:  2004 February 18
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
       IMPLICIT NONE
 
-      DOUBLE PRECISION EPOCH1, EPOCH2
+      DOUBLE PRECISION DATE1, DATE2
 
 *  Arcseconds to radians
       DOUBLE PRECISION DAS2R
@@ -73,8 +73,8 @@
 
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-*  Interval between fundamental epoch J2000.0 and given epoch (JC).
-      T = ( ( EPOCH1-DJ0 ) + EPOCH2 ) / DJC
+*  Interval between fundamental epoch J2000.0 and given date (JC).
+      T = ( ( DATE1-DJ0 ) + DATE2 ) / DJC
 
 *  Mean obliquity of date.
       iau_OBL80 = DAS2R * ( 84381.448D0 +
@@ -86,7 +86,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

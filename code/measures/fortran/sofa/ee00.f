@@ -48,22 +48,24 @@
 *        Greenwich apparent ST = GMST + equation of the equinoxes
 *
 *  4) The result is compatible with the IAU 2000 resolutions.  For
-*     further details, see McCarthy (2002) and Capitaine et al. (2002).
+*     further details, see IERS Conventions 2003 and Capitaine et al.
+*     (2002).
 *
 *  Called:
 *     iau_EECT00    equation of the equinoxes complementary terms
 *
 *  References:
 *
-*     Capitaine, N., Wallace, P.T. and McCarthy, D.D., "Expressions for
-*     the Earth Rotation Angle and Sidereal Time consistent with the IAU
-*     2000A precession-nutation model", in preparation (2002).
+*     Capitaine, N., Wallace, P.T. and McCarthy, D.D., "Expressions to
+*     implement the IAU 2000 definition of UT1", Astronomy &
+*     Astrophysics, 406, 1135-1149 (2003)
 *
-*     McCarthy, D.D., IERS Conventions 2000, Chapter 5 (2002).
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  This revision:  2003 January 14
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -82,7 +84,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

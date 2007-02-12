@@ -18,7 +18,7 @@
 *     DRH       d      proper motion in RA (dRA/dt, rad/Jyear)
 *     DDH       d      proper motion in Dec (dDec/dt, rad/Jyear)
 *     PXH       d      parallax (arcsec)
-*     RVH       d      radial velocity (+ve = receding)
+*     RVH       d      radial velocity (positive = receding)
 *
 *  Returned (all FK5, equinox J2000, epoch J2000):
 *     R5        d      RA (radians)
@@ -26,7 +26,7 @@
 *     DR5       d      proper motion in RA (dRA/dt, rad/Jyear)
 *     DD5       d      proper motion in Dec (dDec/dt, rad/Jyear)
 *     PX5       d      parallax (arcsec)
-*     RV5       d      radial velocity (+ve = receding)
+*     RV5       d      radial velocity (positive = receding)
 *
 *  Notes:
 *
@@ -56,9 +56,9 @@
 *
 *     F.Mignard & M.Froeschle, Astron. Astrophys. 354, 732-739 (2000).
 *
-*  This revision:  2001 August 1
+*  This revision:  2005 August 26
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -101,7 +101,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

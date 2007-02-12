@@ -5,7 +5,7 @@
 *  - - - - - - - - -
 *
 *  Frame bias components of IAU 2000 precession-nutation models (part of
-*  MHB_2000 with additions).
+*  MHB2000 with additions).
 *
 *  This routine is part of the International Astronomical Union's
 *  SOFA (Standards of Fundamental Astronomy) software collection.
@@ -33,7 +33,7 @@
 *     2000A nutation model, formally adopted by the IAU General Assembly
 *     in 2000, namely MHB2000 (Mathews et al. 2002).
 *
-*  References
+*  References:
 *
 *     Chapront, J., Chapront-Touze, M. & Francou, G., Astron.Astrophys.,
 *     387, 700, 2002.
@@ -41,12 +41,12 @@
 *     Mathews, P.M., Herring, T.A., Buffet, B.A., "Modeling of nutation
 *     and precession   New nutation series for nonrigid Earth and
 *     insights into the Earth's interior", J.Geophys.Res., 107, B4,
-*     2002.  The MHB_2000 code itself was obtained on 9th September 2002
-*     from ftp //maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
+*     2002.  The MHB2000 code itself was obtained on 9th September 2002
+*     from ftp://maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
 *
-*  This revision:  2002 December 23
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -78,7 +78,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

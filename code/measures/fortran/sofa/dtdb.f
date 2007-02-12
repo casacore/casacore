@@ -52,7 +52,7 @@
 *  Given:
 *     EPOCH1,EPOCH2   d   epoch, TDB (Notes 1-3)
 *     UT              d   universal time (UT1, fraction of one day)
-*     ELONG           d   longitude (east +ve, radians)
+*     ELONG           d   longitude (east positive, radians)
 *     U               d   distance from Earth spin axis (km)
 *     V               d   distance north of equatorial plane (km)
 *
@@ -155,9 +155,9 @@
 *     Simon J.L., Bretagnon P., Chapront J., Chapront-Touze M.,
 *     Francou G. & Laskar J., 1994, Astron.Astrophys., 282, 663-683.
 *
-*  This revision:  2003 March 11
+*  This revision:  2005 August 26
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -952,6 +952,8 @@
      :    0.000104D-6,     949.175608970D0, 5.674287810D0,
      :    0.000101D-6,   13517.870106233D0, 2.196632348D0,
      :    0.000100D-6,   11933.367960670D0, 4.056084160D0,
+
+*  T^2
      :    4.322990D-6,    6283.075849991D0, 2.642893748D0 /
       DATA ((FAIRHD(I,J),I=1,3),J=681,690) /
      :    0.406495D-6,       0.000000000D0, 4.712388980D0,
@@ -1046,6 +1048,8 @@
      :    0.000131D-6,  -71430.695617928D0, 0.000379226D0,
      :    0.000124D-6,    6279.552731642D0, 2.122264908D0,
      :    0.000108D-6,   -6256.777530192D0, 0.883445696D0,
+
+*  T^3
      :    0.143388D-6,    6283.075849991D0, 1.131453581D0,
      :    0.006671D-6,   12566.151699983D0, 0.775148887D0,
      :    0.001480D-6,     155.420399434D0, 0.480016880D0,
@@ -1068,6 +1072,8 @@
      :    0.000200D-6,     553.569402842D0, 5.355983739D0,
      :    0.000141D-6,    5223.693919802D0, 1.336556009D0,
      :    0.000104D-6,    5856.477659115D0, 4.239842759D0,
+
+*  T^4
      :    0.003826D-6,    6283.075849991D0, 5.705257275D0,
      :    0.000303D-6,   12566.151699983D0, 5.407132842D0,
      :    0.000209D-6,     155.420399434D0, 1.989815753D0 /
@@ -1171,7 +1177,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

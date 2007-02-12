@@ -64,29 +64,30 @@
 *     Time.  This slightly compromises the "geometrical" interpretation
 *     of mean sidereal time but is otherwise inconsequential.
 *
-*     The present routine computes CT in the above expression, compatible
-*     with IAU 2000 resolutions (Capitaine et al., 2002, and McCarthy,
-*     2002).
+*     The present routine computes CT in the above expression,
+*     compatible with IAU 2000 resolutions (Capitaine et al., 2002, and
+*     IERS Conventions 2003).
 *
 *  Called:
 *     iau_ANPM      normalize angle into range +/- pi
 *
 *  References:
 *
-*     IAU Resolution C7, Recommendation 3 (1994)
-*
 *     Capitaine, N. & Gontier, A.-M., Astron. Astrophys., 275,
 *     645-650 (1993)
 *
-*     Capitaine, N., Wallace, P.T. and McCarthy, D.D., "Expressions for
-*     the Earth Rotation Angle and Sidereal Time consistent with the IAU
-*     2000A precession-nutation model", in preparation (2002).
+*     Capitaine, N., Wallace, P.T. and McCarthy, D.D., "Expressions to
+*     implement the IAU 2000 definition of UT1", Astronomy &
+*     Astrophysics, 406, 1135-1149 (2003)
 *
-*     McCarthy, D.D., IERS Conventions 2000, Chapter 5 (2002).
+*     IAU Resolution C7, Recommendation 3 (1994)
 *
-*  This revision:  2003 January 14
+*     McCarthy, D. D., Petit, G. (eds.), IERS Conventions (2003),
+*     IERS Technical Note No. 32, BKG (2004)
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  This revision:  2005 August 24
+*
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -228,7 +229,7 @@
 *  Interval between fundamental epoch J2000.0 and current date (JC).
       T = ( ( DATE1-DJ0 ) + DATE2 ) / DJC
 
-*  Fundamental Arguments (from IERS Conventions 2000)
+*  Fundamental Arguments (from IERS Conventions 2003)
 
 *  Mean Anomaly of the Moon.
       FA(1) = iau_ANPM ( ( 485868.249036D0 +
@@ -310,7 +311,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

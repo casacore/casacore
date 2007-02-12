@@ -57,11 +57,13 @@
 *     McCarthy D.D., 1996, IERS Conventions (IERS Technical Note 21),
 *     Observatoire de Paris.
 *
-*  This revision:  2003 January 14
+*  This revision:  2004 February 27
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
+
+      IMPLICIT NONE
 
       DOUBLE PRECISION DJ1, DJ2
 
@@ -100,7 +102,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

@@ -68,9 +68,9 @@
 *     Reference Frame.  The time unit is one day in TDB.
 *
 *  3) The routine is a SIMPLIFIED SOLUTION from the planetary theory
-*     VSOP2000 (X. Moisson, P. Bretagnon, 2001, Celes. Mech., to be
-*     published) and is an adaptation of original Fortran code
-*     supplied by P. Bretagnon (private communication, 2000).
+*     VSOP2000 (X. Moisson, P. Bretagnon, 2001, Celes. Mechanics &
+*     Dyn. Astron., 80, 3/4, 205-213) and is an adaptation of original
+*     Fortran code supplied by P. Bretagnon (private comm., 2000).
 *
 *  4) Comparisons over the time span 1900-2100 with this simplified
 *     solution and the JPL DE405 ephemeris give the following results:
@@ -84,9 +84,9 @@
 *              position error    4.6   13.4   km
 *              velocity error    1.4    4.9   mm/s
 *
-*  This revision:  2001 January 26
+*  This revision:  2005 April 5
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -2518,7 +2518,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *

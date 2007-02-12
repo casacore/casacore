@@ -5,7 +5,7 @@
 *  - - - - - - - - -
 *
 *  Precession-rate part of the IAU 2000 precession-nutation models
-*  (part of MHB_2000).
+*  (part of MHB2000).
 *
 *  This routine is part of the International Astronomical Union's
 *  SOFA (Standards of Fundamental Astronomy) software collection.
@@ -44,7 +44,7 @@
 *     equinox and ecliptic.
 *
 *  3) Although the precession adjustments are stated to be with respect
-*     to Lieske et al. (1977), the MHB_2000 model does not specify which
+*     to Lieske et al. (1977), the MHB2000 model does not specify which
 *     set of Euler angles are to be used and how the adjustments are to
 *     be applied.  The most literal and straightforward procedure is to
 *     adopt the 4-rotation epsilon_0, psi_A, omega_A, xi_A option, and
@@ -59,20 +59,20 @@
 *
 *     Lieske, J.H., Lederle, T., Fricke, W. & Morando, B., "Expressions
 *     for the precession quantities based upon the IAU (1976) System of
-*     Astronomical Constants", Astron.Astrophys., 58, 1-16, 1977.
+*     Astronomical Constants", Astron.Astrophys., 58, 1-16 (1977)
 *
 *     Mathews, P.M., Herring, T.A., Buffet, B.A., "Modeling of nutation
 *     and precession   New nutation series for nonrigid Earth and
 *     insights into the Earth's interior", J.Geophys.Res., 107, B4,
-*     2002.  The MHB_2000 code itself was obtained on 9th September 2002
-*     from ftp //maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
+*     2002.  The MHB2000 code itself was obtained on 9th September 2002
+*     from ftp://maia.usno.navy.mil/conv2000/chapter5/IAU2000A.
 *
 *     Wallace, P.T., "Software for Implementing the IAU 2000
-*     Resolutions", in IERS Workshop 5.1, 2002.
+*     Resolutions", in IERS Workshop 5.1 (2002)
 *
-*  This revision:  2002 December 23
+*  This revision:  2005 August 24
 *
-*  Copyright (C) 2003 IAU SOFA Review Board.  See notes at end.
+*  Copyright (C) 2005 IAU SOFA Review Board.  See notes at end.
 *
 *-----------------------------------------------------------------------
 
@@ -115,7 +115,7 @@
 
 *+----------------------------------------------------------------------
 *
-*  Copyright (C) 2003
+*  Copyright (C) 2005
 *  Standards Of Fundamental Astronomy Review Board
 *  of the International Astronomical Union.
 *
