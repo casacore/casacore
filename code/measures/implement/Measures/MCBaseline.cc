@@ -1,5 +1,5 @@
 //# MCBaseline.cc:  MBaseline conversion routines 
-//# Copyright (C) 1998,1999,2000,2002,2004
+//# Copyright (C) 1998-2000,2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MCFrame.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

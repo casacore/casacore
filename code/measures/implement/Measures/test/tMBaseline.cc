@@ -1,5 +1,5 @@
 //# tMBaseline.cc: This program tests MBaseline class
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,6 @@
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MCBaseline.h>
 #include <measures/Measures/MBaseline.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/iostream.h>

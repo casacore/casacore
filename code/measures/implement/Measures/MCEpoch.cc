@@ -1,5 +1,5 @@
 //# MCEpoch.cc: MEpoch conversion routines
-//# Copyright (C) 1995-1999,2000,2001,2004
+//# Copyright (C) 1995-2001,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 //# Includes
 #include <casa/BasicSL/Constants.h>
 #include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MeasFrame.h>
 #include <measures/Measures/Nutation.h>
 #include <measures/Measures/MeasTable.h>
@@ -152,181 +151,174 @@ void MCEpoch::doConvert(MVEpoch &in,
 			const MConvertBase &mc) {
   static MVEpoch mve6713(6713.);
   Double locLong, eqox, ut, tt, xx;
-
-  MCFrame::make(inref.getFrame());
-  MCFrame::make(outref.getFrame());
-
-     for (Int i=0; i<mc.nMethod(); i++) {
-
-     switch (mc.getMethod(i)) {
-	
-      case LAST_GAST: {
-	((MCFrame *)(MEpoch::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLong(locLong);
-	in -= locLong/C::circle;
-      };
+  
+  for (Int i=0; i<mc.nMethod(); i++) {
+    
+    switch (mc.getMethod(i)) {
+      
+    case LAST_GAST: {
+      MEpoch::Ref::framePosition(inref, outref).
+	getLong(locLong);
+      in -= locLong/C::circle;
+    };
       break;
       
-      case GAST_LAST: {
-	((MCFrame *)(MEpoch::Ref::framePosition(outref, inref).
-		     getMCFramePoint()))->
-	  getLong(locLong);
-	in += locLong/C::circle;
-      };
+    case GAST_LAST: {
+      MEpoch::Ref::framePosition(outref, inref).
+	getLong(locLong);
+      in += locLong/C::circle;
+    };
       break;
       
-      case LMST_GMST1: {
-	((MCFrame *)(MEpoch::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLong(locLong);
-	in -= locLong/C::circle;
-      };
+    case LMST_GMST1: {
+      MEpoch::Ref::framePosition(inref, outref).
+	getLong(locLong);
+      in -= locLong/C::circle;
+    };
       break;
       
-      case GMST1_LMST: {
-	((MCFrame *)(MEpoch::Ref::framePosition(outref, inref).
-		     getMCFramePoint()))->
-	  getLong(locLong);
-	in += locLong/C::circle;
-      };
+    case GMST1_LMST: {
+      MEpoch::Ref::framePosition(outref, inref).
+	getLong(locLong);
+      in += locLong/C::circle;
+    };
       break;
       
-      case GMST1_UT1: {
-	xx = ut = in.get();
-	in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
-	in -= mve6713;
-	if (MeasTable::useIAU2000()) {
-	  uInt i(0);
-	  do {
-	    MVEpoch xe(in);
-	    ut = xe.get();
-	    xe -= MeasTable::dUT1(xe.get())/MeasData::SECinDAY;
-	    xe += MeasTable::dUTC(xe.get())/MeasData::SECinDAY;
-	    xe += MeasTable::dTAI(xe.get())/MeasData::SECinDAY;
-	    xe += MeasTable::GMST00(ut, xe.get())/C::_2pi;
-	    xe += mve6713;
-	    tt = (xx-xe.get())/2.0055;
-	    in += MVEpoch(tt);
-	    i++;
-	  } while (abs(tt) > 1e-7 && i<10);
-	};
+    case GMST1_UT1: {
+      xx = ut = in.get();
+      in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
+      in -= mve6713;
+      if (MeasTable::useIAU2000()) {
+	uInt i(0);
+	do {
+	  MVEpoch xe(in);
+	  ut = xe.get();
+	  xe -= MeasTable::dUT1(xe.get())/MeasData::SECinDAY;
+	  xe += MeasTable::dUTC(xe.get())/MeasData::SECinDAY;
+	  xe += MeasTable::dTAI(xe.get())/MeasData::SECinDAY;
+	  xe += MeasTable::GMST00(ut, xe.get())/C::_2pi;
+	  xe += mve6713;
+	  tt = (xx-xe.get())/2.0055;
+	  in += MVEpoch(tt);
+	  i++;
+	} while (abs(tt) > 1e-7 && i<10);
       };
+    };
       break;
       
-      case UT1_GMST1: {
-	ut = in.get();
-	if (MeasTable::useIAU2000()) {
-	  in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
-	  in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
-	  in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	  in += MeasTable::GMST00(ut, in.get())/C::_2pi;
-	} else {
-	  in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
-	};
-	in += mve6713;
-      };
-      break;
-      
-      case GAST_UT1: {
-// Guess UT1 without equation of equinoxes
-	ut = in.get();
-	ut += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
-	ut -= 6713.;
-// Equation of equinoxes
-	eqox = NUTATTO->eqox(ut);
-	in -= eqox/C::circle;
-// GMST1 to UT1
-	ut = in.get();
-	in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
-	in -= mve6713;
-      };
-      break;
-
-      case UT1_GAST: {
-// Make GMST1
-	ut = in.get();
-	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
-	in += mve6713;
-// Equation of equinoxes
-	eqox = NUTATFROM->eqox(ut);
-	in += eqox/C::circle;
-      };
-      break;
-
-      case UT1_UTC:
+    case UT1_GMST1: {
+      ut = in.get();
+      if (MeasTable::useIAU2000()) {
 	in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
-	break;
-
-      case UTC_UT1:
-	in += MeasTable::dUT1(in.get())/MeasData::SECinDAY;
-	break;
-
-      case UT1_UT2:
-	break;
-
-      case UT2_UT1:
-	break;
-
-      case UTC_TAI:
 	in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
-	break;
-
-      case TAI_UTC:
-	in -= MeasTable::dUTC(in.get())/MeasData::SECinDAY;
-	break;
-	
-      case TAI_TDT:
 	in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	break;
-
-      case TDT_TAI:
-	in -= MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	break;
-	
-      case TDT_TDB:
-	in += MeasTable::dTDT(in.get())/MeasData::SECinDAY;
-	break;
-
-      case TDB_TDT:
-	in -= MeasTable::dTDT(in.get())/MeasData::SECinDAY;
-	break;
-
-      case TDT_TCG:
-	break;
-	
-      case TCG_TDT:
-	break;
-	
-      case TDB_TCB:
-	in += MeasTable::dTDB(in.get())/MeasData::SECinDAY;
-	break;
-			
-      case TCB_TDB:
-	in -= MeasTable::dTDB(in.get())/MeasData::SECinDAY;
-	break;
-
-      case RAZING:
-	in = in.getDay();
-	break;
-
-      default:
-	break;
-     }; // switch
-     }; //for
+	in += MeasTable::GMST00(ut, in.get())/C::_2pi;
+      } else {
+	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
+      };
+      in += mve6713;
+    };
+      break;
+      
+    case GAST_UT1: {
+      // Guess UT1 without equation of equinoxes
+      ut = in.get();
+      ut += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
+      ut -= 6713.;
+      // Equation of equinoxes
+      eqox = NUTATTO->eqox(ut);
+      in -= eqox/C::circle;
+      // GMST1 to UT1
+      ut = in.get();
+      in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
+      in -= mve6713;
+    };
+      break;
+      
+    case UT1_GAST: {
+      // Make GMST1
+      ut = in.get();
+      in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
+      in += mve6713;
+      // Equation of equinoxes
+      eqox = NUTATFROM->eqox(ut);
+      in += eqox/C::circle;
+    };
+      break;
+      
+    case UT1_UTC:
+      in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case UTC_UT1:
+      in += MeasTable::dUT1(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case UT1_UT2:
+      break;
+      
+    case UT2_UT1:
+      break;
+      
+    case UTC_TAI:
+      in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TAI_UTC:
+      in -= MeasTable::dUTC(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TAI_TDT:
+      in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TDT_TAI:
+      in -= MeasTable::dTAI(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TDT_TDB:
+      in += MeasTable::dTDT(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TDB_TDT:
+      in -= MeasTable::dTDT(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TDT_TCG:
+      break;
+      
+    case TCG_TDT:
+      break;
+      
+    case TDB_TCB:
+      in += MeasTable::dTDB(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case TCB_TDB:
+      in -= MeasTable::dTDB(in.get())/MeasData::SECinDAY;
+      break;
+      
+    case RAZING:
+      in = in.getDay();
+      break;
+      
+    default:
+      break;
+    }; // switch
+  }; //for
 }
-
-String MCEpoch::showState() {
-  if (!stateMade_p) {
-    MEpoch::checkMyTypes();
-    MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
-		      MEpoch::N_Types, MCEpoch::N_Routes,
-		      MCEpoch::ToRef_p);
-  };
-  return MCBase::showState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
-			   MEpoch::N_Types, MCEpoch::N_Routes,
-			   MCEpoch::ToRef_p);
-}
-
+  
+  String MCEpoch::showState() {
+    if (!stateMade_p) {
+      MEpoch::checkMyTypes();
+      MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
+			MEpoch::N_Types, MCEpoch::N_Routes,
+			MCEpoch::ToRef_p);
+    };
+    return MCBase::showState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
+			     MEpoch::N_Types, MCEpoch::N_Routes,
+			     MCEpoch::ToRef_p);
+  }
+  
 } //# NAMESPACE CASA - END
 

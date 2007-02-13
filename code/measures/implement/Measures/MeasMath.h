@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998,2000,2002,2003,2004
+//# Copyright (C) 1998,2000,2002,2003,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,8 +246,8 @@ private:
   typedef const Measure *const (MeasFrame::*FRFCT)() const;
   // To get frame info
   // <group>
-  typedef Bool (MCFrame::*FRDINFO)(Double &);
-  typedef Bool (MCFrame::*FRMVDINFO)(MVDirection &);
+  typedef Bool (MeasFrame::*FRDINFO)(Double &) const;
+  typedef Bool (MeasFrame::*FRMVDINFO)(MVDirection &) const;
   // </group>
 
   //# Cached Data

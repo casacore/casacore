@@ -1,5 +1,5 @@
 //# MCFrame.h: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996-2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,16 +93,38 @@ class MCFrame {
 public:
   
   //# Friends
-  // Delete a conversion frame data
-  friend void MCFrameDelete(void *dmf);
   
   //# Constructors
+  // Construct using the MeasFrame parent
+  MCFrame(MeasFrame &inf);
+
+  // Destructor
+  ~MCFrame();
   
   //# Operators
   
   //# General member functions
-  // Attach an instant of MCFrame to belonging MeasFrame
-  static void make(MeasFrame &in);
+  // Reset Epoch value
+  void resetEpoch();
+  // Reset Position value
+  void resetPosition();
+  // Reset Direction value
+  void resetDirection();
+  // Reset RadialVelocity value
+  void resetRadialVelocity();
+  // Reset Comet
+  void resetComet();
+  // Make full Epoch
+  void makeEpoch();
+  // Make full Position
+  void makePosition();
+  // Make full Direction
+  void makeDirection();
+  // Make full RadialVelocity
+  void makeRadialVelocity();
+  // Make full Comet
+  void makeComet();
+
   // Get TDB in days
   Bool getTDB(Double &tdb);
   // Get UT1 in days
@@ -209,54 +231,13 @@ private:
   // </group>
   
   //# Member functions
-  // Constructor
-  MCFrame(MeasFrame &inf);
   // Default constructor (not implemented)
   MCFrame();
   // Copy constructor (not implemented)
   MCFrame(const MCFrame &other);
   // Copy assignment (not implemented)
   MCFrame &operator=(const MCFrame &other);
-  // Destructor
-  ~MCFrame();
-  // Create an instance of the MCFrame class
-  void create();
-  // Reset Epoch value
-  void resetEpoch();
-  // Reset Position value
-  void resetPosition();
-  // Reset Direction value
-  void resetDirection();
-  // Reset RadialVelocity value
-  void resetRadialVelocity();
-  // Reset Comet
-  void resetComet();
-  // Make full Epoch
-  void makeEpoch();
-  // Make full Position
-  void makePosition();
-  // Make full Direction
-  void makeDirection();
-  // Make full RadialVelocity
-  void makeRadialVelocity();
-  // Make full Comet
-  void makeComet();
 };
-
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=MeasFrameInterface>
-// Delete a frame
-void MCFrameDelete(void *dmf);
-// Get double value for MeasFrame
-Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
-// Get MVDirection value for MeasFrame
-Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
-// Get MVPosition value for MeasFrame
-Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
-// Get uint value for MeasFrame
-Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
-// </group>
 
 
 } //# NAMESPACE CASA - END

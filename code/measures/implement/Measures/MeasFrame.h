@@ -1,5 +1,5 @@
 //# MeasFrame.h: Container for Measure frame
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996-2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -71,16 +71,16 @@ template <class Qtype> class Quantum;
 // as a smart pointer, with reference rather than copy characteristics.
 // Since it caches all its operations, it is advisable to have a 'global'
 // MeasFrame across an execution, resetting (or setting) its values
-// when appropiate. The frame can also contain other related information. At
+// when appropriate. The frame can also contain other related information. At
 // the moment the orbit of a solar system body (MeasComet) can be set.
 // In future the planetary ephemeris used (e.g. DE205) and environmental
 // information like refraction data will be added.
 //
-// A MeasFrame is constructed by setting the appropiate Measures, either in
+// A MeasFrame is constructed by setting the appropriate Measures, either in
 // a constructor, or with a set(). The input to the constructors and set are
 // Measures.<br>
 //
-// Inside the frames automatic conversion to the most appropiate usage of
+// Inside the frames automatic conversion to the most appropriate usage of
 // its values is done (e.g. time to TBD time, position to astronomical
 // longitude). These conversions are done only if an explicit
 // Measure::Convert was used that needed information, e.g. the following
@@ -241,109 +241,56 @@ class MeasFrame {
   const Measure *const radialVelocity() const;
   // Get the comet pointer (0 if not present)
   const MeasComet *const comet() const;
-  // Get data from frame. Only available if appropiate measures are set,
+  // Get data from frame. Only available if appropriate measures are set,
   // and the frame is in a calculating state.
   // <group>
   // Get TDB in days
-  Bool getTDB(Double &tdb);
+  Bool getTDB(Double &tdb) const;
   // Get UT1 in days
-  Bool getUT1(Double &tdb);
+  Bool getUT1(Double &tdb) const;
   // Get TT in days
-  Bool getTT(Double &tdb);
+  Bool getTT(Double &tdb) const;
   // Get the ITRF longitude (in rad)
-  Bool getLong(Double &tdb);
+  Bool getLong(Double &tdb) const;
   // Get the ITRF latitude (in rad)
-  Bool getLat(Double &tdb);
+  Bool getLat(Double &tdb) const;
   // Get the position
-  Bool getITRF(MVPosition &tdb);
+  Bool getITRF(MVPosition &tdb) const;
   // Get the geocentric position (in m)
-  Bool getRadius(Double &tdb);
+  Bool getRadius(Double &tdb) const;
   // Get the geodetic latitude
-  Bool getLatGeo(Double &tdb);
+  Bool getLatGeo(Double &tdb) const;
   // Get the LAST (in days)
-  Bool getLAST(Double &tdb);
+  Bool getLAST(Double &tdb) const;
   // Get the LAST (in rad)
-  Bool getLASTr(Double &tdb);
+  Bool getLASTr(Double &tdb) const;
   // Get J2000 coordinates (direction cosines) and its longitude/latitude (rad)
   // <group>
-  Bool getJ2000(MVDirection &tdb);
-  Bool getJ2000Long(Double &tdb);
-  Bool getJ2000Lat(Double &tdb);
+  Bool getJ2000(MVDirection &tdb) const;
+  Bool getJ2000Long(Double &tdb) const;
+  Bool getJ2000Lat(Double &tdb) const;
   // </group>
   // Get B1950 coordinates (direction cosines)
   // <group>
-  Bool getB1950(MVDirection &tdb);
-  Bool getB1950Long(Double &tdb);
-  Bool getB1950Lat(Double &tdb);
+  Bool getB1950(MVDirection &tdb) const;
+  Bool getB1950Long(Double &tdb) const;
+  Bool getB1950Lat(Double &tdb) const;
   // </group>
   // Get apparent coordinates (direction cosines)
   // <group>
-  Bool getApp(MVDirection &tdb);
-  Bool getAppLong(Double &tdb);
-  Bool getAppLat(Double &tdb);
+  Bool getApp(MVDirection &tdb) const;
+  Bool getAppLong(Double &tdb) const;
+  Bool getAppLat(Double &tdb) const;
   // </group>
   // Get LSR radial velocity (m/s)
-  Bool getLSR(Double &tdb);
+  Bool getLSR(Double &tdb) const;
   // Get the comet table reference type
-  Bool getCometType(uInt &tdb);
+  Bool getCometType(uInt &tdb) const;
   // Get the comet coordinates
-  Bool getComet(MVPosition &tdb);
+  Bool getComet(MVPosition &tdb) const;
   // </group>
-
-  // Get the frame conversion data pointer (0 if none)
-  void *getMCFramePoint() const;
   
 private:
-  
-  //# Enumerations
-  // Types of known get data routines. The actual work is in MCFrame,
-  // using pointers to functions
-  enum GetTypes {
-    // Get TDB in days
-    GetTDB,
-    // Get UT1 in days
-    GetUT1,
-    // Get TT in days
-    GetTT,
-    // Get the ITRF longitude (in rad)
-    GetLong,
-    // Get the ITRF latitude (in rad)
-    GetLat,
-    // Get the geocentric position (in m)
-    GetRadius,
-    // Get the geodetic latitude
-    GetLatGeo,
-    // Get the LAST (in days)
-    GetLAST,
-    // Get the LAST (in rad)
-    GetLASTr,
-    // Get J2000 coordinates (direction cosines)
-    GetJ2000,
-    // Get J2000 coordinates (longitude)
-    GetJ2000Long,
-    // Get J2000 coordinates (latitude)
-    GetJ2000Lat,
-    // Get B1950 coordinates (direction cosines)
-    GetB1950,
-    // Get B1950 coordinates (longitude)
-    GetB1950Long,
-    // Get B1950 coordinates (latitude)
-    GetB1950Lat,
-    // Get apparent coordinates (direction cosines)
-    GetApp,
-    // Get App coordinates (longitude)
-    GetAppLong,
-    // Get App coordinates (latitude)
-    GetAppLat,
-    // Get LSR radial velocity (m/s)
-    GetLSR,
-    // Get the position
-    GetITRF,
-    // Get the comet type
-    GetCometType,
-    // Get comet coordinates
-    GetComet
-  };
   
   //# Data
   // Representation of MeasFrame
@@ -369,44 +316,6 @@ private:
   void makeComet();
   // Throw reset error
   void errorReset(const String &txt);
-  // Get the different set and reset indicators (for use in MCFrame)
-  // <group>
-  Bool getEpset() const;
-  Bool getDirset() const;
-  Bool getPosset() const;
-  Bool getRadset() const;
-  Bool getComset() const;
-  Bool getEpreset() const;
-  Bool getDirreset() const;
-  Bool getPosreset() const;
-  Bool getRadreset() const;
-  Bool getComreset() const;
-  // </group>
-  // Set the different set/reset switches
-  // <group>
-  void setEpset(Bool in);
-  void setPosset(Bool in);
-  void setDirset(Bool in);
-  void setRadset(Bool in);
-  void setComset(Bool in);
-  void setEpreset(Bool in);
-  void setPosreset(Bool in);
-  void setDirreset(Bool in);
-  void setRadreset(Bool in);
-  void setComreset(Bool in);
-  // </group>
-  // Set the frame conversion data pointer (by MCFrame)
-  void setMCFramePoint(void *in);
-  // Set the frame conversion deletor
-  void setMCFrameDelete(void (*in)(void*));
-  // Set the get double routine
-  void setMCFrameGetdbl(Bool (*in)(void *, uInt, Double &));
-  // Set the get MVDirection routine
-  void setMCFrameGetmvdir(Bool (*in)(void *, uInt, MVDirection &));
-  // Set the get MVPosition routine
-  void setMCFrameGetmvpos(Bool (*in)(void *, uInt, MVPosition &));
-  // Set the get uint routine
-  void setMCFrameGetuint(Bool (*in)(void *, uInt, uInt &));
   // Lock the frame to make sure deletion occurs when needed
   void lock();
   // Unlock the frame

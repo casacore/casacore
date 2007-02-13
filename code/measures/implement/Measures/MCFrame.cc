@@ -1,5 +1,5 @@
 //# MCFrame.cc: Measure frame calculations proxy
-//# Copyright (C) 1996,1997,1998,1999,2000,2002,2003
+//# Copyright (C) 1996-2000,2002,2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,16 +58,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
   dirConvJ2000(0), j2000Longp(0), dirJ2000p(0),
   dirConvB1950(0), b1950Longp(0), dirB1950p(0),
   dirConvApp(0), appLongp(0), dirAppp(0),
-  radConvLSR(0), radLSRp(0) {
-    myf.setMCFramePoint(static_cast<void *>(this));
-    myf.setMCFrameDelete(MCFrameDelete);
-    myf.setMCFrameGetdbl(MCFrameGetdbl);
-    myf.setMCFrameGetmvdir(MCFrameGetmvdir);
-    myf.setMCFrameGetmvpos(MCFrameGetmvpos);
-    myf.setMCFrameGetuint(MCFrameGetuint);
-    create();
-    myf.unlock();
-}
+  radConvLSR(0), radLSRp(0) {;}
 
 // Destructor
 MCFrame::~MCFrame() {
@@ -101,16 +92,6 @@ MCFrame::~MCFrame() {
 // Operators
 
 // General member functions
-
-void MCFrame::make(MeasFrame &in) {
-  if (!in.empty() && !in.getMCFramePoint()) {
-    MCFrame *tmp = new MCFrame(in);
-    if (!tmp) {};		// to stop compiler warnings
-  };
-  if (!in.empty()) {
-    (static_cast<MCFrame *>(in.getMCFramePoint()))->create();
-  };
-}
 
 void MCFrame::resetEpoch() {
     delete epTDBp; epTDBp = 0;
@@ -494,54 +475,6 @@ Bool MCFrame::getComet(MVPosition &tdb) {
   return False;
 }
 
-void MCFrame::create() {
-  if (myf.getEpset()) {
-    makeEpoch();
-    myf.setEpset(False);
-    myf.setEpreset(False);
-  };
-  if (myf.getPosset()) {
-    makePosition();
-    myf.setPosset(False);
-    myf.setPosreset(False);
-  };
-  if (myf.getDirset()) {
-    makeDirection();
-    myf.setDirset(False);
-    myf.setDirreset(False);
-  };
-  if (myf.getRadset()) {
-    makeRadialVelocity();
-    myf.setRadset(False);
-    myf.setRadreset(False);
-  };
-  if (myf.getComset()) {
-    makeComet();
-    myf.setComset(False);
-    myf.setComreset(False);
-  };
-  if (myf.getEpreset()) {
-    resetEpoch();
-    myf.setEpreset(False);
-  };
-  if (myf.getPosreset()) {
-    resetPosition();
-    myf.setPosreset(False);
-  };
-  if (myf.getDirreset()) {
-    resetDirection();
-    myf.setDirreset(False);
-  };
-  if (myf.getRadreset()) {
-    resetRadialVelocity();
-    myf.setRadreset(False);
-  };
-  if (myf.getComreset()) {
-    resetComet();
-    myf.setComreset(False);
-  };
-}
-
 void MCFrame::makeEpoch() {
   static const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
   static const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
@@ -675,155 +608,7 @@ void MCFrame::makeRadialVelocity() {
   };
 }
 
-void MCFrame::makeComet() {
-}
-
-void MCFrameDelete(void *dmf) {
-  delete static_cast<MCFrame *>(dmf);
-}
-
-Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
-  try {
-    switch (tp) {
-      
-    case MeasFrame::GetTDB:
-      return static_cast<MCFrame *>(dmf)->getTDB(result);
-      break;
-      
-    case MeasFrame::GetUT1:
-      return static_cast<MCFrame *>(dmf)->getUT1(result);
-      break;
-       
-    case MeasFrame::GetTT:
-      return static_cast<MCFrame *>(dmf)->getTT(result);
-      break;
-       
-    case MeasFrame::GetLong:
-      return static_cast<MCFrame *>(dmf)->getLong(result);
-      break;
-      
-    case MeasFrame::GetLat:
-      return static_cast<MCFrame *>(dmf)->getLat(result);
-      break;
-      
-    case MeasFrame::GetRadius:
-      return static_cast<MCFrame *>(dmf)->getRadius(result);
-      break;
-
-    case MeasFrame::GetLatGeo:
-      return static_cast<MCFrame *>(dmf)->getLatGeo(result);
-      break;
-      
-    case MeasFrame::GetJ2000Long:
-      return static_cast<MCFrame *>(dmf)->getJ2000Long(result);
-      break;
-      
-    case MeasFrame::GetJ2000Lat:
-      return static_cast<MCFrame *>(dmf)->getJ2000Lat(result);
-      break;
-      
-    case MeasFrame::GetB1950Long:
-      return static_cast<MCFrame *>(dmf)->getB1950Long(result);
-      break;
-      
-    case MeasFrame::GetB1950Lat:
-      return static_cast<MCFrame *>(dmf)->getB1950Lat(result);
-      break;
-      
-    case MeasFrame::GetAppLong:
-      return static_cast<MCFrame *>(dmf)->getAppLong(result);
-      break;
-      
-    case MeasFrame::GetAppLat:
-      return static_cast<MCFrame *>(dmf)->getAppLat(result);
-      break;
-      
-    case MeasFrame::GetLAST:
-      return static_cast<MCFrame *>(dmf)->getLAST(result);
-      break;
-      
-    case MeasFrame::GetLASTr:
-      return static_cast<MCFrame *>(dmf)->getLASTr(result);
-      break;
-      
-    case MeasFrame::GetLSR:
-      return static_cast<MCFrame *>(dmf)->getLSR(result);
-      break;
-      
-    default:
-      break;
-    };
-  } catch (AipsError x) {
-  } 
-  
-  result = 0;
-  return False;
-}
-
-Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result) {
-  try {
-    switch (tp) {
-      
-    case MeasFrame::GetJ2000:
-      return static_cast<MCFrame *>(dmf)->getJ2000(result);
-      break;
-      
-    case MeasFrame::GetB1950:
-      return static_cast<MCFrame *>(dmf)->getB1950(result);
-      break;
-      
-    case MeasFrame::GetApp:
-      return static_cast<MCFrame *>(dmf)->getApp(result);
-      break;
-      
-    default:
-      break;
-    };
-  } catch (AipsError x) {
-  } 
-  MVDirection tmp;
-  result = tmp;
-  return False;
-}
-
-Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result) {
-  try {
-    switch (tp) {
-       
-    case MeasFrame::GetITRF:
-      return static_cast<MCFrame *>(dmf)->getITRF(result);
-      break;
-       
-    case MeasFrame::GetComet:
-      return static_cast<MCFrame *>(dmf)->getComet(result);
-      break;
-      
-    default:
-      break;
-    };
-  } catch (AipsError x) {
-  } 
-  MVPosition tmp;
-  result = tmp;
-  return False;
-}
-
-Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result) {
-  try {
-    switch (tp) {
-      
-    case MeasFrame::GetCometType:
-      return static_cast<MCFrame *>(dmf)->getCometType(result);
-      break;
-      
-    default:
-      break;
-    };
-  } catch (AipsError x) {
-  } 
-  result = 0;
-  return False;
-}
+void MCFrame::makeComet() {;}
 
 } //# NAMESPACE CASA - END
 

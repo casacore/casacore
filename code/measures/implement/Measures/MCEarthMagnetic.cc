@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.cc:  MEarthMagnetic conversion routines 
-//# Copyright (C) 1998,1999,2000,2001,2002,2004
+//# Copyright (C) 1998-2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Quanta/MVPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -475,13 +474,11 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     
     case R_MODEL:
       if (!EFIELD) {
-	((MCFrame *)(MEarthMagnetic::Ref::frameEpoch(inref, outref).
-		     getMCFramePoint()))->
+	MEarthMagnetic::Ref::frameEpoch(inref, outref).
 	  getTDB(tdbTime);
 	EFIELD = new EarthField(modID, tdbTime);
       };
-      ((MCFrame *)(MEarthMagnetic::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
+      MEarthMagnetic::Ref::framePosition(outref, inref).
 	getITRF(*MVPOS1);
       in = EFIELD->operator()(*MVPOS1);
       break;

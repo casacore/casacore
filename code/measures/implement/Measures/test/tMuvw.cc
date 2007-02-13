@@ -1,5 +1,5 @@
 //# tMuvw.cc: This program tests Muvw class
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -40,7 +40,6 @@
 #include <measures/Measures/MCuvw.h>
 #include <measures/Measures/Muvw.h>
 #include <casa/Quanta/MVuvw.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/iostream.h>

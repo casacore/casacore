@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
+//# Copyright (C) 1995-1998,2000-2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 //# Includes
 #include <casa/BasicSL/Constants.h>
 #include <measures/Measures/MCFrequency.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Quanta/MVPosition.h>
 #include <casa/Quanta/MVDirection.h>
 #include <measures/Measures/Aberration.h>
@@ -169,17 +168,13 @@ void MCFrequency::doConvert(MVFrequency &in,
 			    const MConvertBase &mc) {
   Double g1, g2, g3, lengthE, tdbTime;
 
-  MCFrame::make(inref.getFrame());
-  MCFrame::make(outref.getFrame());
-
   for (Int i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
 
     case LSRD_BARY: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -189,8 +184,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case BARY_LSRD: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -199,12 +193,10 @@ void MCFrequency::doConvert(MVFrequency &in,
     break;
 
     case BARY_GEO: {
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(outref, inref).
 	getTDB(tdbTime);
       *MVPOS1 = ABERFROM->operator()(tdbTime);
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
@@ -213,23 +205,18 @@ void MCFrequency::doConvert(MVFrequency &in,
     break;
 
     case GEO_TOPO: {
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(outref, inref).
 	getLASTr(g1);
-      ((MCFrame *)(MFrequency::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::framePosition(outref, inref).
 	getRadius(lengthE);
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(outref, inref).
 	getTDB(tdbTime);
-      ((MCFrame *)(MFrequency::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::framePosition(outref, inref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
       *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
       MVPOS1->readjust(g2 * cos(g3));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
@@ -238,12 +225,10 @@ void MCFrequency::doConvert(MVFrequency &in,
     break;
 
     case GEO_BARY: {
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(inref, outref).
 	getTDB(tdbTime);
       *MVPOS1 = ABERTO->operator()(tdbTime);
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
@@ -252,23 +237,18 @@ void MCFrequency::doConvert(MVFrequency &in,
     break;
 
     case TOPO_GEO: {
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(inref, outref).
 	getLASTr(g1);
-      ((MCFrame *)(MFrequency::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::framePosition(inref, outref).
 	getRadius(lengthE);
-      ((MCFrame *)(MFrequency::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameEpoch(inref, outref).
 	getTDB(tdbTime);
-      ((MCFrame *)(MFrequency::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::framePosition(inref, outref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
       *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
       MVPOS1->readjust(g2);
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
@@ -278,8 +258,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case LSRD_GALACTO:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -288,8 +267,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       
     case GALACTO_LSRD:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -298,8 +276,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case LSRK_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -308,8 +285,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case BARY_LSRK:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -318,8 +294,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case LGROUP_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -328,8 +303,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case BARY_LGROUP:
       *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -338,8 +312,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case CMB_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -348,8 +321,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     case BARY_CMB:
       *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue();
@@ -357,11 +329,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       break;
 
     case REST_LSRK:
-      ((MCFrame *)(MFrequency::Ref::frameRadialVelocity(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameRadialVelocity(inref, outref).
 	  getLSR(g1);
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 /= C::c;
       g2 = in.getValue();
@@ -369,11 +339,9 @@ void MCFrequency::doConvert(MVFrequency &in,
       break;
 
     case LSRK_REST:
-      ((MCFrame *)(MFrequency::Ref::frameRadialVelocity(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameRadialVelocity(inref, outref).
 	getLSR(g1);
-      ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MFrequency::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 /= C::c;
       g2 = in.getValue();

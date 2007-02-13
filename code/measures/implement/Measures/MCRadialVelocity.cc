@@ -1,5 +1,5 @@
 //# MCRadialVelocity.cc: MRadialVelocity conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2003
+//# Copyright (C) 1995-1998,2000,2001,2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 //# Includes
 #include <casa/BasicSL/Constants.h>
 #include <measures/Measures/MCRadialVelocity.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Quanta/MVPosition.h>
 #include <casa/Quanta/MVDirection.h>
 #include <measures/Measures/Aberration.h>
@@ -162,17 +161,13 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 				 const MConvertBase &mc) {
   Double g1, g2, g3, lengthE, tdbTime;
 
-  MCFrame::make(inref.getFrame());
-  MCFrame::make(outref.getFrame());
-
   for (Int i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
 
     case LSRD_BARY: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -182,8 +177,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case BARY_LSRD: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -192,12 +186,10 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     break;
 
     case BARY_GEO: {
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(outref, inref).
 	getTDB(tdbTime);
       *MVPOS1 = ABERFROM->operator()(tdbTime);
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue()/C::c;
@@ -206,23 +198,18 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     break;
 
     case GEO_TOPO: {
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(outref, inref).
 	getLASTr(g1);
-      ((MCFrame *)(MRadialVelocity::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::framePosition(outref, inref).
 	getRadius(lengthE);
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(outref, inref).
 	getTDB(tdbTime);
-      ((MCFrame *)(MRadialVelocity::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::framePosition(outref, inref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
       *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
       MVPOS1->readjust(g2 * cos(g3));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue()/C::c;
@@ -231,14 +218,11 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     break;
 
     case GEO_BARY: {
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(inref, outref).
 	getTDB(tdbTime);
       *MVPOS1 = ABERTO->operator()(tdbTime);
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
-      ///	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue()/C::c;
       in = (g2 + g1)/(1 + g2 * g1) * C::c;
@@ -246,23 +230,18 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     break;
 
     case TOPO_GEO: {
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(inref, outref).
 	getLASTr(g1);
-      ((MCFrame *)(MRadialVelocity::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::framePosition(inref, outref).
 	getRadius(lengthE);
-      ((MCFrame *)(MRadialVelocity::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameEpoch(inref, outref).
 	getTDB(tdbTime);
-      ((MCFrame *)(MRadialVelocity::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::framePosition(inref, outref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
       *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
       MVPOS1->readjust(g2 * cos(g3));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue()/C::c;
@@ -272,8 +251,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case LSRD_GALACTO:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -282,8 +260,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case GALACTO_LSRD:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -292,8 +269,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case LSRK_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -302,8 +278,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case BARY_LSRK:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRK(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -312,8 +287,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case LGROUP_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -322,8 +296,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case BARY_LGROUP:
       *MVPOS1 = MVPosition(MeasTable::velocityLGROUP(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -332,8 +305,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case CMB_BARY:
       *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(outref, inref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;
@@ -342,8 +314,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     case BARY_CMB:
       *MVPOS1 = MVPosition(MeasTable::velocityCMB(0));
-      ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
-		   getMCFramePoint()))->
+      MRadialVelocity::Ref::frameDirection(inref, outref).
 	getJ2000(*MVDIR1);
       g1 = (*MVPOS1 * *MVDIR1) / C::c;
       g2 = in.getValue()/C::c;

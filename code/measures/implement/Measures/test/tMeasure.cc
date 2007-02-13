@@ -1,5 +1,5 @@
 //# tMeasure.cc: This program test Measure functions
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
+//# Copyright (C) 1995-2000,2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -45,7 +45,6 @@
 #include <measures/Measures/MRadialVelocity.h>
 #include <measures/Measures/MCFrequency.h>
 #include <measures/Measures/MCDoppler.h>
-#include <measures/Measures/MCFrame.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVTime.h>
 #include <casa/iostream.h>
@@ -237,8 +236,7 @@ int main()
 		.getValue() << endl;
 	MeasFrame flsr1900(lsr1900);
 	// Next one precision problems with cos(90 deg) in Linux
-	//	cout << "LSR frame: " <<
-	//	    (MCFrame::make(flsr1900), flsr1900) << endl;
+	//	cout << "LSR frame: " << flsr1900 << endl;
     }
 
     {
@@ -317,7 +315,7 @@ int main()
 		      Quantity(52.8,"deg"),
 		      MPosition::WGS84);
 	MeasFrame frame(coord,epo,pos);
-	cout << (MCFrame::make(frame), frame) << endl;
+	cout << frame << endl;
 	cout << MDirection::Convert(coord,
 				    MDirection::Ref(MDirection::APP,
 						    frame))()
@@ -381,7 +379,6 @@ int main()
 	cout << "Converted " << tm3 << endl <<
 	    " to " << MEpoch::Ref(MEpoch::GAST) << endl <<
 		" as " << tconv52() << endl;
-	MCFrame::make(frame);
 	cout << "Converted " << tm3 << endl <<
 	    " to " << tasref << endl <<
 		" as " << tconv5() << endl;
@@ -413,7 +410,7 @@ int main()
 	cout << "Epoch B1950: " << tbm << endl;
 
         MeasFrame mftbm(tbm);
-	cout << (MCFrame::make(mftbm), mftbm) << endl;
+	cout << mftbm << endl;
 
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;

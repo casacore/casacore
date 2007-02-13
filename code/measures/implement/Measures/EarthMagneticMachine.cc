@@ -1,5 +1,5 @@
 //# EarthMagneticMachine.cc: Calculates magnetic field in a direction
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 #include <casa/BasicMath/Math.h>
 #include <measures/Measures/MCPosition.h>
 #include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MeasConvert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -49,7 +48,6 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
   inref_p = in;
   inref_p.set(frame);
   hgt_p = hgt.getValue("m");
-  MCFrame::make(inref_p.getFrame());
   if (!frame.getITRF(pos_p)) {
     throw(AipsError("No position in frame for EarthMagneticMachine"));
   };
@@ -80,7 +78,6 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
   inref_p = in;
   inref_p.set(frame);
   rin_p = dir;
-  MCFrame::make(inref_p.getFrame());
   if (!frame.getITRF(pos_p)) {
     throw(AipsError("No position in frame for EarthMagneticMachine"));
   };

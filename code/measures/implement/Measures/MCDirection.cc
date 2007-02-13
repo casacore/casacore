@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995-1998,2000,2001,2002,2004
+//# Copyright (C) 1995-1998,2000,2001,2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MeasFrame.h>
 #include <casa/Quanta/MVPosition.h>
 #include <measures/Measures/Nutation.h>
@@ -468,8 +467,7 @@ void MCDirection::doConvert(MVDirection &in,
       break;
    
     case R_PLANET0: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
+      MDirection::Ref::frameEpoch(outref, inref).
 	getTDB(tdbTime);
       *VEC62 = MeasTable::Planetary(MeasTable::EARTH, tdbTime); // Eb
       *VEC63 = MeasTable::Planetary(MeasTable::SUN, tdbTime);   // Sb
@@ -554,11 +552,9 @@ void MCDirection::doConvert(MVDirection &in,
       break;
     
     case R_COMET0: {
-      ((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
-		   getMCFramePoint()))->
+      MDirection::Ref::frameComet(inref, outref).
 	getCometType(comID);
-      if (!((MCFrame *)(MDirection::Ref::frameComet(inref, outref).
-			getMCFramePoint()))->
+      if (!MDirection::Ref::frameComet(inref, outref).
 	  getComet(*MVPOS1)) {
 	throw(AipsError("No or outside range comet table specified"));
       };

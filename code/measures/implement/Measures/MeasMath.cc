@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998-2000,2002,2003,2004
+//# Copyright (C) 1998-2000,2002,2003,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,6 @@
 #include <measures/Measures/Aberration.h>
 #include <measures/Measures/Precession.h>
 #include <measures/Measures/Nutation.h>
-#include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MRBase.h>
 #include <casa/BasicMath/Math.h>
 
@@ -72,8 +71,6 @@ MeasMath::~MeasMath() {
 
 void MeasMath::initFrame(MRBase &outref, MRBase &inref) {
   // Make sure frames are attached
-  MCFrame::make(inref.getFrame());
-  MCFrame::make(outref.getFrame());
   // Reset all calculations
   for (uInt i=0; i<N_FrameInfo; i++) infoOK_p[i] = False;
   // Get correct frame
@@ -668,36 +665,34 @@ void MeasMath::getInfo(FrameInfo i) {
     DIRECTION, DIRECTION, DIRECTION, DIRECTION };
   // Frame information methods
   static FRDINFO InfoDFrame[N_FrameDInfo] = {
-    &MCFrame::getTDB,
-    &MCFrame::getLASTr,
-    &MCFrame::getTT,
-    &MCFrame::getUT1,
-    &MCFrame::getLong,
-    &MCFrame::getLat,
-    &MCFrame::getRadius,
-    &MCFrame::getLatGeo,
-    &MCFrame::getJ2000Long,
-    &MCFrame::getJ2000Lat,
-    &MCFrame::getB1950Long,
-    &MCFrame::getB1950Lat,
-    &MCFrame::getAppLong,
-    &MCFrame::getAppLat };
+    &MeasFrame::getTDB,
+    &MeasFrame::getLASTr,
+    &MeasFrame::getTT,
+    &MeasFrame::getUT1,
+    &MeasFrame::getLong,
+    &MeasFrame::getLat,
+    &MeasFrame::getRadius,
+    &MeasFrame::getLatGeo,
+    &MeasFrame::getJ2000Long,
+    &MeasFrame::getJ2000Lat,
+    &MeasFrame::getB1950Long,
+    &MeasFrame::getB1950Lat,
+    &MeasFrame::getAppLong,
+    &MeasFrame::getAppLat };
 
   static FRMVDINFO InfoMVDFrame[N_FrameMVDInfo] = {
-    &MCFrame::getJ2000,
-    &MCFrame::getB1950,
-    &MCFrame::getApp };
+    &MeasFrame::getJ2000,
+    &MeasFrame::getB1950,
+    &MeasFrame::getApp };
 
   if (!infoOK_p[i]) {
     // Make sure there has not been an epoch added
     getFrame(InfoType[i]);
     if (frameOK_p[InfoType[i]]) {
       if (i < N_FrameDInfo) {
-	(((MCFrame *)(applyFrame_p[InfoType[i]]->
-		      getMCFramePoint()))->*InfoDFrame[i])(info_p[i]);
+	(applyFrame_p[InfoType[i]]->*InfoDFrame[i])(info_p[i]);
       } else {
-	(((MCFrame *)(applyFrame_p[InfoType[i]]->
-		      getMCFramePoint()))->*InfoMVDFrame[i-N_FrameDInfo])
+	(applyFrame_p[InfoType[i]]->*InfoMVDFrame[i-N_FrameDInfo])
 	  (infomvd_p[i-N_FrameDInfo]);
       };
     } else {

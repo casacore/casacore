@@ -1,5 +1,5 @@
 //# tMeasJPL.cc: This program test JPL DE functions
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997-2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,6 @@
 #include <measures/Measures/MeasIERS.h>
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDirection.h>
-#include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MEpoch.h>
 #include <casa/iostream.h>
 
