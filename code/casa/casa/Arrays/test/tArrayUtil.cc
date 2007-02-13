@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayUtil.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayUtil.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/OS/Timer.h>
 #include <casa/iostream.h>
