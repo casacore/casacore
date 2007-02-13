@@ -43,6 +43,10 @@
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
+//# Bison defines WHERE, which is also defined in LogOrigin.h (which
+//# is included in auto-template mode).
+//# So undefine WHERE first.
+#undef WHERE
 #include <casa/stdlib.h>
 #include <TableGram.ycc>                  // flex output
 #include <TableGram.lcc>                  // bison output
