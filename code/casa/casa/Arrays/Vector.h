@@ -316,5 +316,6 @@ private:
 
 #ifndef AIPS_NO_TEMPLATE_SRC
 #include <casa/Arrays/Vector.tcc>
+#include <casa/Arrays/Vector2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

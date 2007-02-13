@@ -28,6 +28,8 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Utilities/Regex.h>
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

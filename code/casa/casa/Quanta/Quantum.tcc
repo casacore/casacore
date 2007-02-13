@@ -33,10 +33,10 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/MUString.h>
 #include <casa/Utilities/Register.h>
-#include <casa/Utilities/Regex.h>
 #include <casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
