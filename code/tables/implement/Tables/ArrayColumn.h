@@ -539,6 +539,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ArrayColumn.cc>
+#include <tables/Tables/ArrayColumn.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

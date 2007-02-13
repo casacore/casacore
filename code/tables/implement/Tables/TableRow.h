@@ -207,6 +207,12 @@ public:
     // record() function. So one can ignore the return value of get().
     const TableRecord& get (uInt rownr, Bool alwaysRead = False) const;
 
+    // Get the block telling for each column if its value in the row
+    // was indefined in the table.
+    // Note that array values might be undefined in the table, but in
+    // the record they will be represented as empty arrays.
+    const Block<Bool>& getDefined() const;
+
 protected:
     // Copy that object to this object.
     // The writable flag determines if writable or readonly
@@ -251,6 +257,8 @@ protected:
     //# The following block is actually a block of RecordFieldPtr<T>*.
     //# These are used for fast access to the record.
     Block<void*> itsFields;
+    //# Block to tell if the corresponding column value is defined.
+    mutable Block<Bool> itsDefined;
     //# A cache for itsRecord.nfields()
     uInt         itsNrused;
     //# The last rownr read (-1 is nothing read yet).
@@ -461,8 +469,17 @@ public:
     // <note> For performance reasons it is optional to check
     //        the name order conformance.
     // </note>
+    // The <src>valuesDefined</src> block tells if the value in the
+    // corresponding field in the record is actually defined.
+    // If not, nothing will be written.
+    // It is meant for array values which might be undefined in a table.
+    // <group>
     void put (uInt rownr, const TableRecord& record,
 	      Bool checkConformance = True);
+    void put (uInt rownr, const TableRecord& record,
+	      const Block<Bool>& valuesDefined,
+	      Bool checkConformance = True);
+    // </group>
 
     // Put the values found in the TableRecord. Only fields with a matching
     // name in the TableRow object will be put.
@@ -494,6 +511,10 @@ inline Int ROTableRow::rowNumber() const
 inline const TableRecord& ROTableRow::record() const
 {
     return *itsRecord;
+}
+inline const Block<Bool>& ROTableRow::getDefined() const
+{
+    return itsDefined;
 }
 inline TableRecord& TableRow::record()
 {

@@ -526,6 +526,7 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 		ndim = 0;
 	    }
 	}
+	itsDefined[i] = isDefined;
 	//# Now get the value; if undefined, create zero-length array
 	//# with the correct dimensionality.
 	switch (desc.type(i)) {
@@ -975,7 +976,28 @@ void TableRow::put (uInt rownr, const TableRecord& record,
     // internal record. Be sure to reread when the same row is asked for.
     setReread (rownr);
 }
-    
+
+void TableRow::put (uInt rownr, const TableRecord& record,
+		    const Block<Bool>& valuesDefined,
+		    Bool checkConformance)
+{
+    if (checkConformance) {
+	if (! namesConform (record)) {
+	    throw (TableError ("TableRow::put; names not conforming"));
+	}
+    }
+    const RecordDesc& thisDesc = itsRecord->description();
+    uInt nrfield = thisDesc.nfields();
+    for (uInt i=0; i<nrfield; i++) {
+        if (valuesDefined[i]) {
+	    putField (rownr, record, i, i);
+	}
+    }
+    // The values (might) have changed, which is not reflected in the
+    // internal record. Be sure to reread when the same row is asked for.
+    setReread (rownr);
+}
+
 Bool TableRow::namesConform (const TableRecord& that) const
 {
     if (that.nfields() != itsNrused) {
@@ -992,4 +1014,3 @@ Bool TableRow::namesConform (const TableRecord& that) const
 }
 
 } //# NAMESPACE CASA - END
-

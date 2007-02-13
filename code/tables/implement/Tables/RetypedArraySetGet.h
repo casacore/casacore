@@ -156,6 +156,6 @@ void retypedArrayEngineGet (Array<TargetType>& out,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/RetypedArraySetGet.cc>
+#include <tables/Tables/RetypedArraySetGet.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

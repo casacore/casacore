@@ -254,6 +254,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ScaColDesc.cc>
+#include <tables/Tables/ScaColDesc.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

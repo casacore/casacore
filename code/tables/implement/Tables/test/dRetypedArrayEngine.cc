@@ -433,6 +433,7 @@ void c()
 }
 
 
+#ifdef AIPS_NO_TEMPLATE_SRC
 // Instantiate the templates here and not by means of the templates file.
 // This is needed in case -f_no-implicit-templates is not used.
 // In that case weak symbols are also created for Vector<bool>, etc.
@@ -440,26 +441,27 @@ void c()
 // and also takes the dRetypedArrayEngine symbols into account.
 // That is fine when linking dRetypedArrayEngine, but gives undefined
 // linkonce symbols for other test programs which might use Vector<bool> or so.
-#include <casa/Arrays/Array.cc>
-#include <casa/Arrays/ArrayIter.cc>
-#include <casa/Arrays/ArrayLogical.cc>
-#include <casa/Arrays/MaskedArray.cc>
-#include <casa/Arrays/Matrix.cc>
-#include <casa/Arrays/Vector.cc>
+#include <casa/Arrays/Array.tcc>
+#include <casa/Arrays/ArrayIter.tcc>
+#include <casa/Arrays/ArrayLogical.tcc>
+#include <casa/Arrays/MaskedArray.tcc>
+#include <casa/Arrays/Matrix.tcc>
+#include <casa/Arrays/Vector.tcc>
 #include <casa/Containers/Block.h>
-#include <tables/Tables/ArrColData.cc>
-#include <tables/Tables/ArrColDesc.cc>
-#include <tables/Tables/ArrayColumn.cc>
-#include <tables/Tables/BaseMappedArrayEngine.cc>
-#include <tables/Tables/RetypedArraySetGet.cc>
-#include <tables/Tables/RetypedArrayEngine.cc>
-#include <tables/Tables/VirtArrCol.cc>
-#include <casa/Utilities/Copy.cc>
-#include <casa/Utilities/CountedPtr.cc>
+#include <tables/Tables/ArrColData.tcc>
+#include <tables/Tables/ArrColDesc.tcc>
+#include <tables/Tables/ArrayColumn.tcc>
+#include <tables/Tables/BaseMappedArrayEngine.tcc>
+#include <tables/Tables/RetypedArraySetGet.tcc>
+#include <tables/Tables/RetypedArrayEngine.tcc>
+#include <tables/Tables/VirtArrCol.tcc>
+#include <casa/Utilities/Copy.tcc>
+#include <casa/Utilities/CountedPtr.tcc>
 #include <casa/Utilities/ValTypeId.h>
 
 #include <casa/namespace.h>
 namespace casa {
+
 template class ArrayColumnData<RetypedArrayEx1>;
 template class ArrayColumnDesc<RetypedArrayEx1>;
 template class Array<RetypedArrayEx1>;
@@ -521,3 +523,4 @@ template class CountedConstPtr<Block<RetypedArrayEx2> >;
 template String valDataTypeId(RetypedArrayEx2 const *);
 
 }
+#endif

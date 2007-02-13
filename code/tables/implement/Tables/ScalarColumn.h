@@ -385,6 +385,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ScalarColumn.cc>
+#include <tables/Tables/ScalarColumn.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

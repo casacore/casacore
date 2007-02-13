@@ -33,6 +33,7 @@
 #include <casa/Containers/SimOrdMapIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Slice.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Copy.h>
 #include <casa/OS/Path.h>
 #include <casa/BasicMath/Math.h>

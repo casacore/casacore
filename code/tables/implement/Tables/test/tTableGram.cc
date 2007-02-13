@@ -32,6 +32,7 @@
 #include <tables/Tables/ExprNodeArray.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>

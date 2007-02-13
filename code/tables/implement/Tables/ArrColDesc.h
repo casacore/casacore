@@ -286,6 +286,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ArrColDesc.cc>
+#include <tables/Tables/ArrColDesc.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

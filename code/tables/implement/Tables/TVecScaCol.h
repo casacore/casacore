@@ -130,6 +130,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/TVecScaCol.cc>
+#include <tables/Tables/TVecScaCol.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

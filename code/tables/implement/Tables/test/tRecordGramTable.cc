@@ -31,6 +31,7 @@
 #include <casa/System/Aipsrc.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 

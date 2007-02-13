@@ -36,6 +36,7 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/Arrays/Slice.h>
 #include <tables/Tables/TableError.h>

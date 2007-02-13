@@ -465,6 +465,6 @@ BaseMappedArrayEngine<VirtualType, StoredType>::rwColumn()
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/BaseMappedArrayEngine.cc>
+#include <tables/Tables/BaseMappedArrayEngine.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

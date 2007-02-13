@@ -218,6 +218,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ScaColData.cc>
+#include <tables/Tables/ScaColData.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

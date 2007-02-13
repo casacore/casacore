@@ -334,6 +334,6 @@ inline void putVirtualScalarColumn (DataManagerColumn* col, uInt,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/VirtScaCol.cc>
+#include <tables/Tables/VirtScaCol.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

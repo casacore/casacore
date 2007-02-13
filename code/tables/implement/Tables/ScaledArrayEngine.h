@@ -327,6 +327,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ScaledArrayEngine.cc>
+#include <tables/Tables/ScaledArrayEngine.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

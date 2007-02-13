@@ -122,6 +122,7 @@ void VSCExampleVSCEngine::registerClass()
 }
 
 
+#ifdef AIPS_NO_TEMPLATE_SRC
 // Instantiate the templates here and not by means of the templates file.
 // This is needed in case -f_no-implicit-templates is not used.
 // In that case weak symbols are also created for Vector<bool>, etc.
@@ -144,6 +145,7 @@ void VSCExampleVSCEngine::registerClass()
 
 #include <casa/namespace.h>
 namespace casa {
+
 template class Array<VSCExample>;
 template class MaskedArray<VSCExample>;
 template class Vector<VSCExample>;
@@ -166,4 +168,6 @@ template class PtrRep<Block<VSCExample> >;
 template class SimpleCountedConstPtr<Block<VSCExample> >;
 template class SimpleCountedPtr<Block<VSCExample> >;
 template String valDataTypeId(VSCExample const *);
+
 }
+#endif

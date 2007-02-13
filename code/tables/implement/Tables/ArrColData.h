@@ -280,6 +280,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/ArrColData.cc>
+#include <tables/Tables/ArrColData.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

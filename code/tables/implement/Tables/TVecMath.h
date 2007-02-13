@@ -265,6 +265,6 @@ template<class T> TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>&,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <tables/Tables/TVecMath.cc>
+#include <tables/Tables/TVecMath.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

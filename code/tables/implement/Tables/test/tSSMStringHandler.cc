@@ -37,6 +37,7 @@
 #include <tables/Tables/StandardStManAccessor.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/String.h>
 #include <casa/sstream.h>
 
