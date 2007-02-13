@@ -99,7 +99,7 @@ main()
                             } else {
                                  cout << "(unprintable)"    << endl;
                             }
-
+#if !defined(AIPS_DARWIN)
    cout << endl
         << "Machine constants from values.h:"               << endl
         << "HIBITS................  " << HIBITS             << endl
@@ -114,7 +114,7 @@ main()
 
    cout << endl
         << "<<< End of machine constants." << endl;
-
+#endif
    cout << endl
         << "Irrationals:"                                   << endl
         << "C::sqrt2..............  " << C::sqrt2           << endl
