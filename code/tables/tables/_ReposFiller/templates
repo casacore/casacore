@@ -1,9 +1,6 @@
 1000 casa/Arrays/Array.cc 
      = casa/Arrays/IPosition.h 
      template class Array<IPosition> 
-1010 casa/Arrays/Array.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class Array<BasePlot<Float> > 
 1020 casa/Arrays/Array.cc 
      = tables/Tables/ExprNode.h 
      template class Array<TableExprNode> 
@@ -22,9 +19,6 @@
 1000 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/IPosition.h 
      template class MaskedArray<IPosition> 
-1010 casa/Arrays/MaskedArray.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class MaskedArray<BasePlot<Float> > 
 1020 casa/Arrays/MaskedArray.cc 
      = tables/Tables/ExprNode.h 
      template class MaskedArray<TableExprNode> 
@@ -40,9 +34,6 @@
 1000 casa/Arrays/Vector.cc 
      = casa/Arrays/IPosition.h 
      template class Vector<IPosition> 
-1010 casa/Arrays/Vector.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class Vector<BasePlot<Float> > 
 1020 casa/Arrays/Vector.cc 
      = tables/Tables/ExprNode.h 
      template class Vector<TableExprNode> 
@@ -101,14 +92,6 @@
      template class PtrRep<Block<IPosition> > 
      template class SimpleCountedConstPtr<Block<IPosition> > 
      template class SimpleCountedPtr<Block<IPosition> > 
-1010 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/TablePlot/BasePlot.h 
-     template class CountedConstPtr<Block<BasePlot<Float> > > 
-     template class CountedPtr<Block<BasePlot<Float> > > 
-     template class PtrRep<Block<BasePlot<Float> > > 
-     template class SimpleCountedConstPtr<Block<BasePlot<Float> > > 
-     template class SimpleCountedPtr<Block<BasePlot<Float> > > 
 1020 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/Tables/ExprNode.h 
@@ -167,14 +150,6 @@
      template class CountedConstPtr<LoggerHolderRep> 
      template class SimpleCountedPtr<LoggerHolderRep> 
      template class SimpleCountedConstPtr<LoggerHolderRep> 
-1000 tables/TablePlot/BasePlot.cc 
-     template class BasePlot<Float> 
-1000 tables/TablePlot/CrossPlot.cc 
-     template class CrossPlot<Float> 
-1000 tables/TablePlot/TPPlotter.cc 
-     template class TPPlotter<Float> 
-1000 tables/TablePlot/TablePlot.cc 
-     template class TablePlot<Float> 
 1000 tables/Tables/ArrColData.cc casa/BasicSL/Complex.h 
      = casa/BasicSL/String.h 
      template class ArrayColumnData<Bool> 
