@@ -49,6 +49,10 @@ def generate(env):
 	elif isinstance(extradefs, str):
 	    platdefs += [extradefs]
 	env.Append(CPPFLAGS=platfdefs)
+	if env["PLATFORM"] == 'darwin':
+	    # otherwise darwin puts builddir into the name
+	    env.Append(SHLINKFLAGS="-install_name ${TARGET.file}")
+	    env.Append(SHLINKFLAGS="-single_module")
 
     env.AddCasaPlatform = AddCasaPlatform
 
