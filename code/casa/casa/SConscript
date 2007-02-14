@@ -16,18 +16,19 @@ cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 # need this to go to the root dir, as SConsript asumes to be in the
 # build dir
 rootdir=myenv.Dir("#").abspath
-
 if "static" in myenv["libtype"]:
     # build static lib
-    slib =  myenv.StaticLibrary(target = myenv["PACKAGE"], source = cpps)
+    slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], 
+				source = cpps)
     installer.AddLibrary(slib)
 if "shared" in myenv["libtype"]:
     #build dynamic lib
-    dlib =  myenv.SharedLibrary(target = myenv["PACKAGE"], source = cpps)
+    dlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], 
+				source = cpps)
     installer.AddLibrary(dlib)
 
 if myenv["tests"]:
-    # myenv.AddCasaTests()  move the code belowto tools/casa.py
+    # AddCasaTests()  move the code belowto tools/casa.py
 
     # gather test files
     # SGlob works in build dir, so only for cc files
