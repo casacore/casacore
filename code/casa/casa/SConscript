@@ -32,8 +32,7 @@ if myenv["tests"]:
     # gather test files
     # SGlob works in build dir, so only for cc files
     tests = myenv.SGlob("test/*.cc")
-    tests += myenv.SGlob("BasicSL/test/*.cc")
-    print tests
+    tests += myenv.SGlob("*/test/*.cc")
     myenv.Append(LIBPATH=[myenv["BUILDDIR"]])
     myenv.Append(LIBS=[myenv["PACKAGE"]])
     for i in tests:

@@ -73,4 +73,4 @@ for bopt in env["build"]:
 # add the Tools to the casacore/share directory. This way they can be imported
 # by the other casacore packages without having to duplicate them.
 if env["PACKAGE"] == "casa":
-    installer.AddShare("tools/", "*.py", "casacore/", True)
+    installer.AddShares("tools", "*.py", "casacore/", True)

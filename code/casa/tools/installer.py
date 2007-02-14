@@ -62,16 +62,17 @@ def generate(env):
 	        """
 	        self.Add( self._libdir, library )
 
-	    def AddShare( self, parent , pattern, basedir="", recursive=False):
-	        def add(self, shrfile, basedir=""):
-		    self.Add( self._sharedir, shrfile, basedir )
+	    def AddShare( self, header, basedir="" ):
+	        self.Add( self._sharedir, header, basedir )
+
+	    def AddShares( self, parent , pattern, basedir="", recursive=False):
 	        for entry in os.listdir( parent ):
 	            entrypath = os.path.join( parent, entry )
 	            if os.path.isfile( entrypath ) and  \
 			   fnmatch.fnmatch( entry, pattern ):
-	                add(self, entrypath, basedir )
+	                self.AddShare( entrypath, basedir )
 	            elif os.path.isdir( entrypath ) and recursive:
-	                self.AddShare( entrypath, pattern,
+	                self.AddShares( entrypath, pattern,
 					 os.path.join( basedir, entry ),
 					 recursive )
 
@@ -89,6 +90,7 @@ def generate(env):
 	        """
 	        for entry in os.listdir( parent ):
 	            entrypath = os.path.join( parent, entry )
+#		    print entrypath, entry
 	            if os.path.isfile( entrypath ) and  \
 			   fnmatch.fnmatch( entry, pattern ):
 	                self.AddHeader( entrypath, basedir )
