@@ -1,36 +1,65 @@
-import os
+import os, glob
 import SCons.Defaults
 
-# import root environment
-Import( ["buildenv", "install"])
-myenv = buildenv.Copy()
 
-# gather cpp files
-cpps = myenv.SGlob("*/*.cc")
-# filter out files in test directory
-cpps = [ i for i in cpps if not i.startswith('test') ]
-cpps += myenv.SGlob("*.cc")
-
+# helper function to get the basename of a file
 def base_no_suffix(name):
     return os.path.basename(name).split('.')[0]
 
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Copy()
+
+# get all the sourcefiles recursively
+cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
+
+# need this to go to the root dir, as SConsript asumes to be in the
+# build dir
+rootdir=myenv.Dir("#").abspath
+
 if "static" in myenv["libtype"]:
+    # build static lib
     slib =  myenv.StaticLibrary(target = myenv["PACKAGE"], source = cpps)
-    install.AddLibrary(slib)
+    installer.AddLibrary(slib)
 if "shared" in myenv["libtype"]:
+    #build dynamic lib
     dlib =  myenv.SharedLibrary(target = myenv["PACKAGE"], source = cpps)
-    install.AddLibrary(dlib)
+    installer.AddLibrary(dlib)
+
 if myenv["tests"]:
+    # myenv.AddCasaTests()  move the code belowto tools/casa.py
+
+    # gather test files
+    # SGlob works in build dir, so only for cc files
     tests = myenv.SGlob("test/*.cc")
-    tests += myenv.SGlob("*/test/*.cc")
-    myenv.Append(CPPPATH=["#/"])
+    tests += myenv.SGlob("BasicSL/test/*.cc")
+    print tests
     myenv.Append(LIBPATH=[myenv["BUILDDIR"]])
     myenv.Append(LIBS=[myenv["PACKAGE"]])
-    #testaux = myenv.SGlob("test/*.out")
-    #testaux += myenv.SGlob("*/*.out")
     for i in tests:
 	tapp = myenv.Program("#/tests/%s" % base_no_suffix(i), source=i)
 
-install.AddHeaders( ".", "*.h", "casacore/casa", True )
-install.AddHeaders( ".", "*.tcc", "casacore/casa", True )
+    # install assay *.run *.in* *.out files into test directory
+    # use glob here with an absolute path, as Sconsript is "called" 
+    # from the build dir.
+    testaux = glob.glob("%s/%s/test/*.*" % (rootdir, myenv["PACKAGE"]))
+    testaux += glob.glob("%s/%s/*/test/*.*" % (rootdir, myenv["PACKAGE"]))
+    # exclude cc files
+    testaux = [ i for i in testaux if not i.endswith('.cc') ]
+    for i in testaux:
+	# Copy doesn't overwrite, so check if theyalready exist a previous
+	# run.
+	outfile = myenv.File("#/tests/%s" % os.path.basename(i)).abspath
+	tdir = Dir("#/tests").abspath
+	if not os.path.exists(tdir):
+	    myenv.Execute(Mkdir(tdir))
+	if not os.path.exists(outfile):
+	    myenv.Execute(Copy(outfile, i))
+    # run assay here ....
+    #
+    #
+
+# install headers, only works with absolute dir.
+installer.AddHeaders( rootdir, "*.h", "casacore", True )
+installer.AddHeaders( rootdir, "*.tcc", "casacore", True )
 

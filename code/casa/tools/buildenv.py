@@ -3,9 +3,9 @@ def generate(env):
 	print buildtype
 	lenv = env.Copy()
 	if buildtype == "dbg":
-	    lenv.Append(CPPFLAGS=["-g"])
+	    lenv.AppendUnique(CPPFLAGS=["-g"])
 	elif buildtype == "opt":
-	    lenv.Append(CPPFLAGS=["-O2"])
+	    lenv.AppendUnique(CPPFLAGS=["-O2"])
 	return lenv
     env.BuildEnv = BuildEnv
 

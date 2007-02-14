@@ -4,12 +4,15 @@ import sys
 import platform
 
 def generate(env):
-    def CheckCasaLib(context, lib):
-        context.Message("Checking casa library '%s'..."%lib)
-        context.Result(r)
-        return r
+    def CustomCasaCom():
+	"""
+	Overwrite lex/yacc commands to include -p/-P options
+	"""
+	env["LEXCOM"] = "$LEX $LEXFLAGS -t -P${SOURCE.filebase} $SOURCES > $TARGET"
+	env['YACCCOM']   = '$YACC $YACCFLAGS -p ${SOURCE.filebase} -o $TARGET $SOURCES'
+    env.CustomCasaCom = CustomCasaCom
 
-    def AddCasaPlatform():
+    def AddCasaPlatform(extradefs=None):
 	pd = { "darwin": ["-DAIPS_DARWIN"],
 	       "64bit": ["-D__x86_64__", "-DAIPS_64B"],
 	       "linux": ["-DAIPS_LINUX"],
@@ -41,19 +44,18 @@ def generate(env):
 	    platfdefs += pd["xt3"]
 	else:
 	    platfdefs += pd[sysplf]
+	if isinstance(extradefs, list):
+	    platdefs += extradefs
+	elif isinstance(extradefs, str):
+	    platdefs += [extradefs]
 	env.Append(CPPFLAGS=platfdefs)
 
-
-    def CasaLexYacc():
-	env["LEXCOM"] = "$LEX $LEXFLAGS -t -P${BASENOSUFFIX} $SOURCES > $TARGET"
-	env['YACCCOM']   = '$YACC $YACCFLAGS -p ${BASENOSUFFIX} -o $TARGET $SOURCES'
-
-
-    def AddCasaTest(conf):
-        conf.AddTests({'CheckCasa': CheckCasa})
-
-    env.AddCasaTest = AddCasaTest
     env.AddCasaPlatform = AddCasaPlatform
+
+    def CheckCasaLib(context, lib):
+        context.Message("Checking casa library '%s'..."%lib)
+        context.Result(r)
+        return r
 
 def exists(env):
     return true
