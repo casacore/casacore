@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casa/IO/LargeFiledesIO.h>
+#include <casa/IO/LargeIOFuncDef.h>
 #include <casa/OS/Timer.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Exceptions/Error.h>
@@ -83,8 +84,8 @@ int main (int argc, char** argv)
       Timer timer;
       int fd = LargeFiledesIO::create("tMappedIO_tmp.dat2");
       timer.mark();
-      ::lseek64(fd, size*nrch-1, SEEK_SET);
-      ::write (fd, buf, 1);
+      ::traceLSEEK(fd, size*nrch-1, SEEK_SET);
+      ::traceWRITE (fd, buf, 1);
       timer.show("write");
       // Map chunk by chunk.
       for (int k=0; k<nrch; k++) {
