@@ -321,6 +321,8 @@ void ROTableRow::makeObjects (const RecordDesc& description,
     itsColumns.set (static_cast<void*>(0));
     itsFields.resize (itsNrused, False, False);
     itsFields.set (static_cast<void*>(0));
+    itsDefined.resize (itsNrused, False, False);
+    itsDefined.set (True);
     // Create the correct column object for each field.
     // (if not writing, an RO version is sufficient).
     // Also create a RecordFieldPtr object for each column.
@@ -988,6 +990,7 @@ void TableRow::put (uInt rownr, const TableRecord& record,
     }
     const RecordDesc& thisDesc = itsRecord->description();
     uInt nrfield = thisDesc.nfields();
+    AlwaysAssert (valuesDefined.nelements() >= nrfield, AipsError);
     for (uInt i=0; i<nrfield; i++) {
         if (valuesDefined[i]) {
 	    putField (rownr, record, i, i);
