@@ -43,7 +43,7 @@ if "shared" in myenv["libtype"]:
     installer.AddLibrary(dlib)
 
 if myenv["tests"]:
-    testenv = myenv.Clone()
+    testenv = myenv.Copy()
     # AddCasaTests()  move the code belowto tools/casa.py
     # gather test files
     # SGlob works in build dir, so only for cc files
