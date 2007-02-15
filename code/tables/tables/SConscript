@@ -7,19 +7,23 @@ myenv = buildenv.Copy()
 # get all the sourcefiles recursively
 lls = myenv.SGlob("*.ll", recursive=True )
 for f in lls:
-    ff = myenv.Clone(CXXFILESUFFIX=".lcc").CXXFile(File(f))
+    lenv = myenv.Copy()
+    lenv["CXXFILESUFFIX"] = ".lcc"
+    ff = lenv.CXXFile(File(f))
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
     path = os.path.split(str(ff[0]))[0]
-    myenv.AppendUnique(CPPPATH=Dir(path))
+    myenv.AppendUnique(CPPPATH=[Dir(path)])
 
 yys = myenv.SGlob("*.yy", recursive=True )
 for f in yys:
-    ff = myenv.Clone(CXXFILESUFFIX=".ycc").CXXFile(File(f))
+    yenv = myenv.Copy()
+    yenv["CXXFILESUFFIX"] = ".ycc"
+    ff = yenv.CXXFile(File(f))
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
     path = os.path.split(str(ff[0]))[0]
-    myenv.AppendUnique(CPPPATH=Dir(path))
+    myenv.AppendUnique(CPPPATH=[Dir(path)])
 
 
 # get all the sourcefiles recursively
@@ -48,7 +52,7 @@ if myenv["tests"]:
     # point to tests local includes
     # use static lib to link here
     statlib = File(slib[0])
-    testenv.Append(LIBS=statlib)
+    testenv.Append(LIBS=[statlib])
 
     for i in tests:
 	# get the basename no suffix of the file
