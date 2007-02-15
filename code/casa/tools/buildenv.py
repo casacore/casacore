@@ -1,6 +1,5 @@
 def generate(env):
     def BuildEnv(buildtype):
-	print buildtype
 	lenv = env.Copy()
 	if buildtype == "dbg":
 	    lenv.AppendUnique(CPPFLAGS=["-g"])
