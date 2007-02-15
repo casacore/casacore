@@ -168,6 +168,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/MarshButterworthBandpass.cc>
+#include <scimath/Functionals/MarshButterworthBandpass.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

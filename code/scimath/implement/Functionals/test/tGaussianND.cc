@@ -30,6 +30,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <scimath/Mathematics/MatrixMathLA.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/iostream.h>

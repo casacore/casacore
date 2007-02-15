@@ -227,6 +227,6 @@ template<class T> AutoDiff<T> max(const AutoDiff<T> &left,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/AutoDiffMath.cc>
+#include <scimath/Mathematics/AutoDiffMath.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

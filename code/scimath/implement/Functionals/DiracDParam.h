@@ -131,6 +131,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/DiracDParam.cc>
+#include <scimath/Functionals/DiracDParam.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

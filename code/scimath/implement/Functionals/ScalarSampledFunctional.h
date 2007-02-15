@@ -159,7 +159,7 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/ScalarSampledFunctional.cc>
+#include <scimath/Functionals/ScalarSampledFunctional.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

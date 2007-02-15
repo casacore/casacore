@@ -30,7 +30,7 @@
 #define SCIMATH_ECLECTICFUNCTIONFACTORY_H
 
 #include <scimath/Functionals/Function.h>
-#include <casa/Containers/ListMap.h>
+#include <casa/Containers/OrderedMap.h>
 #include <casa/Containers/OrderedPair.h>
 #include <casa/Exceptions/Error.h>
 #include <scimath/Functionals/AbstractFunctionFactory.h>
@@ -145,14 +145,14 @@ public:
 protected:
 
 private:
-    ListMap<String, OrderedPair<FunctionFactory<T>*, Bool> > lookup;
+    OrderedMap<String, OrderedPair<FunctionFactory<T>*, Bool> > lookup;
 };
 
 
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/EclecticFunctionFactory.cc>
+#include <scimath/Functionals/EclecticFunctionFactory.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

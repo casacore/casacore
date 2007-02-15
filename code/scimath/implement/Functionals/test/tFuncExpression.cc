@@ -26,11 +26,12 @@
 //# $Id$
 
 //# Includes
+#include <scimath/Mathematics/AutoDiff.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 #include <scimath/Functionals/FuncExpression.h>
 #include <scimath/Functionals/FuncExprData.h>
 #include <scimath/Functionals/CompiledFunction.h>
 #include <casa/Exceptions/Error.h>
-#include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffIO.h>
 #include <casa/BasicSL/String.h>
 

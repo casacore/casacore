@@ -95,6 +95,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Fitting/LinearFitSVD.cc>
+#include <scimath/Fitting/LinearFitSVD.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

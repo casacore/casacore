@@ -320,6 +320,6 @@ ostream& operator<<(ostream& os, const SquareMatrix<Float,4>& m);
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/SquareMatrix.cc>
+#include <scimath/Mathematics/SquareMatrix.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

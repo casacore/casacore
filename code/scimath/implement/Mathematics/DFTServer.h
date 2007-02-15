@@ -135,6 +135,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/DFTServer.cc>
+#include <scimath/Mathematics/DFTServer.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif //DFT_SERVER

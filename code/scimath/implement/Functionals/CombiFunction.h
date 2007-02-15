@@ -222,7 +222,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/CombiFunction.cc>
-#include <scimath/Functionals/Combi2Function.cc>
+#include <scimath/Functionals/CombiFunction.tcc>
+#include <scimath/Functionals/Combi2Function.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -70,6 +70,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/NNGridder.cc>
+#include <scimath/Mathematics/NNGridder.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

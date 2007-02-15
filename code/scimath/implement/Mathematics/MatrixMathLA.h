@@ -220,6 +220,6 @@ inline void potri(const char *uplo, const int *n, DComplex *a,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/MatrixMathLA.cc>
+#include <scimath/Mathematics/MatrixMathLA.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

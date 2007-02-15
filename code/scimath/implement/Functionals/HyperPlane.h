@@ -215,7 +215,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/HyperPlane.cc>
-#include <scimath/Functionals/HyperPlane2.cc>
+#include <scimath/Functionals/HyperPlane.tcc>
+#include <scimath/Functionals/HyperPlane2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -34,6 +34,7 @@
 #include <casa/Exceptions/Error.h>
 #include <scimath/Functionals/Gaussian1D.h>
 #include <casa/Logging/LogIO.h>
+#include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Regex.h>

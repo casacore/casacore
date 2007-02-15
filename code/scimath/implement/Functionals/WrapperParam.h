@@ -115,6 +115,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/WrapperParam.cc>
+#include <scimath/Functionals/WrapperParam.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

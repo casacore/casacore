@@ -27,6 +27,7 @@
 
 #include <scimath/Functionals/GaussianND.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>

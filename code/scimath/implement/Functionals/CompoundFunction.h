@@ -282,7 +282,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/CompoundFunction.cc>
-#include <scimath/Functionals/Compound2Function.cc>
+#include <scimath/Functionals/CompoundFunction.tcc>
+#include <scimath/Functionals/Compound2Function.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

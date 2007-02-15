@@ -30,6 +30,7 @@
 #define SCIMATH_CONVOLVEGRIDDER_H
 
 #include <scimath/Mathematics/Gridder.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -94,6 +95,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/ConvolveGridder.cc>
+#include <scimath/Mathematics/ConvolveGridder.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

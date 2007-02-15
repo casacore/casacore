@@ -326,6 +326,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/Convolver.cc>
+#include <scimath/Mathematics/Convolver.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

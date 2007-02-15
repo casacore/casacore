@@ -545,7 +545,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/ChebyshevParam.cc>
+#include <scimath/Functionals/ChebyshevParam.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

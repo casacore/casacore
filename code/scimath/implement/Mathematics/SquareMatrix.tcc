@@ -28,17 +28,12 @@
 //# Includes
 #include <scimath/Mathematics/SquareMatrix.h>
 #include <scimath/Mathematics/MatrixMathLA.h>
+#include <casa/BasicSL/Complex.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-inline Float real(Float r) { return r;}
-inline Float conj(Float r) { return r;}
-//#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_KCC)
-inline Complex real(Complex c) { return ::std::real(c);}
-inline Complex conj(Complex c) { return ::std::conj(c);}
-//#endif
 
 template <class T, Int n> 
 SquareMatrix<T,n>& 
@@ -337,17 +332,17 @@ template <class T, Int n>
 SquareMatrix<T,n>& SquareMatrix<T,n>::conj() {
     switch (type_p) {
         case ScalarId: {
-            a_p[0][0]=::casa::conj(a_p[0][0]);
+            a_p[0][0]=std::conj(a_p[0][0]);
 	    return *this;
 	}
         case Diagonal: {
-	    for (Int i=0; i<n; i++) a_p[i][i]=::casa::conj(a_p[i][i]);
+	    for (Int i=0; i<n; i++) a_p[i][i]=std::conj(a_p[i][i]);
 	    return *this;
 	}
 //      case General: 
 	default: {
 	    for (Int i=0; i<n; i++)
-		for (Int j=0; j<n; j++) a_p[i][j]=::casa::conj(a_p[i][j]);
+		for (Int j=0; j<n; j++) a_p[i][j]=std::conj(a_p[i][j]);
 	    return *this;
 	}
     }
@@ -357,19 +352,19 @@ template <class T, Int n>
 SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
     switch (type_p) {
         case ScalarId: {
-	    a_p[0][0]=::casa::conj(a_p[0][0]);
+	    a_p[0][0]=std::conj(a_p[0][0]);
 	    return *this;
 	}
         case Diagonal: {
-	    for (Int i=0; i<n; i++) a_p[i][i]=::casa::conj(a_p[i][i]);
+	    for (Int i=0; i<n; i++) a_p[i][i]=std::conj(a_p[i][i]);
 	    return *this;
 	}
         case General: {
 	    for (Int i=0; i<n; i++) {
-		a_p[i][i]=::casa::conj(a_p[i][i]);
+		a_p[i][i]=std::conj(a_p[i][i]);
 		for (Int j=i+1; j<n; j++) {
-		    T tmp=::casa::conj(a_p[i][j]);
-		    a_p[i][j]=::casa::conj(a_p[j][i]);
+		    T tmp=std::conj(a_p[i][j]);
+		    a_p[i][j]=std::conj(a_p[j][i]);
 		    a_p[j][i]=tmp;
 		}
 	    }
@@ -435,28 +430,6 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::inverse(SquareMatrix<T,n>& result) const {
   }		    
 }		
 
-/*
-template <class T, Int n> 
-SquareMatrix<Float,n>&
-SquareMatrix<T,n>::real(SquareMatrix<Float,n>& result) const {
-    result.type_p=type_p;
-    switch(type_p) {
-        case ScalarId: {
-	result.a_p[0][0]=::real(a_p[0][0]);
-	return result;
-	}
-        case Diagonal: {
-	for (Int i=0; i<n; i++) result.a_p[i][i]=::real(a_p[i][i]);
-	return result;
-	}
-	case General: {
-	for (Int i=0; i<n; i++) 
-	for (Int j=0; j<n; j++) result.a_p[i][j]=::real(a_p[i][j]);
-	return result;
-	}
-    }
-}
-*/
 template <class T, Int n> 
 Matrix<T>& SquareMatrix<T,n>::matrix(Matrix<T>& result) const {
     result.resize(n,n);

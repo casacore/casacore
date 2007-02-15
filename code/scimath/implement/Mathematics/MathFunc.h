@@ -539,7 +539,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/MathFunc.cc>
-#include <scimath/Mathematics/MathFunc2.cc>
+#include <scimath/Mathematics/MathFunc.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif //AIPS_MATHFUNC_H

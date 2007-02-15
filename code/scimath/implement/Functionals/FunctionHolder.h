@@ -220,6 +220,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/FunctionHolder.cc>
+#include <scimath/Functionals/FunctionHolder.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

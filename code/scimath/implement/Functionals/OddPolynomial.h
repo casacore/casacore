@@ -202,7 +202,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/OddPolynomial.cc>
-#include <scimath/Functionals/OddPolynomial2.cc>
+#include <scimath/Functionals/OddPolynomial.tcc>
+#include <scimath/Functionals/OddPolynomial2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

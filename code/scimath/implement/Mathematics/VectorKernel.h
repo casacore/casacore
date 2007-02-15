@@ -37,6 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class Regex;
+class String;
 
 // <summary>
 // Make a Vector smoothing kernel from a kernel specification

@@ -202,7 +202,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/EvenPolynomial.cc>
-#include <scimath/Functionals/EvenPolynomial2.cc>
+#include <scimath/Functionals/EvenPolynomial.tcc>
+#include <scimath/Functionals/EvenPolynomial2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

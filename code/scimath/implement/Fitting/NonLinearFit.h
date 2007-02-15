@@ -243,6 +243,6 @@ protected:
 
 } //# End namespace casa
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Fitting/NonLinearFit.cc>
+#include <scimath/Fitting/NonLinearFit.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

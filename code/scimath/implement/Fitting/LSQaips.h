@@ -201,6 +201,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Fitting/LSQaips.cc>
+#include <scimath/Fitting/LSQaips.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

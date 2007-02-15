@@ -204,6 +204,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Functionals/Gaussian1DParam.cc>
+#include <scimath/Functionals/Gaussian1DParam.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

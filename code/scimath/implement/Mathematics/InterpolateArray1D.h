@@ -239,6 +239,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <scimath/Mathematics/InterpolateArray1D.cc>
+#include <scimath/Mathematics/InterpolateArray1D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
