@@ -1,63 +1,77 @@
 import os, glob
 import SCons.Defaults
 
-
-# helper function to get the basename of a file
-def base_no_suffix(name):
-    return os.path.basename(name).split('.')[0]
-
 # import root environment
 Import( ["buildenv", "installer"])
 myenv = buildenv.Copy()
+# get all the sourcefiles recursively
+lls = myenv.SGlob("*.ll", recursive=True )
+for f in lls:
+    ff = myenv.Clone(CXXFILESUFFIX=".lcc").CXXFile(File(f))
+    # hack to point include path to the builddir rrelative directory
+    # where the lex/yacc file was found
+    path = os.path.split(str(ff[0]))[0]
+    myenv.AppendUnique(CPPPATH=[path])
+
+yys = myenv.SGlob("*.yy", recursive=True )
+for f in yys:
+    ff = myenv.Clone(CXXFILESUFFIX=".ycc").CXXFile(File(f))
+    # hack to point include path to the builddir relative directory
+    # where the lex/yacc file was found
+    path = os.path.split(str(ff[0]))[0]
+    myenv.AppendUnique(CPPPATH=[path])
 
 # get all the sourcefiles recursively
 cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
-
 # need this to go to the root dir, as SConsript asumes to be in the
 # build dir
-
+rootdir=myenv.Dir("#").abspath
 libname= "casa_" + myenv["PACKAGE"]
 
-rootdir=myenv.Dir("#").abspath
 if "static" in myenv["libtype"]:
     # build static lib
-    slib =  myenv.StaticLibrary(target =libname, 
-				source = cpps)
+    slib =  myenv.StaticLibrary(target = libname, source = [cpps])
     installer.AddLibrary(slib)
 if "shared" in myenv["libtype"]:
     #build dynamic lib
-    dlib =  myenv.SharedLibrary(target = libname, 
-				source = cpps)
+    dlib =  myenv.SharedLibrary(target = libname, source = cpps)
     installer.AddLibrary(dlib)
 
 if myenv["tests"]:
+    testenv = myenv.Clone()
     # AddCasaTests()  move the code belowto tools/casa.py
-
     # gather test files
     # SGlob works in build dir, so only for cc files
-    tests = myenv.SGlob("test/*.cc")
-    tests += myenv.SGlob("*/test/*.cc")
-    myenv.Append(LIBPATH=[myenv["BUILDDIR"]])
-    myenv.Append(LIBS=[libname])
-    for i in tests:
-	tapp = myenv.Program("#/tests/%s" % base_no_suffix(i), source=i)
+    tests = testenv.SGlob("test/*.cc")
+    tests += testenv.SGlob("*/test/*.cc")
+    # point to tests local includes
+    # use static lib to link here
+    statlib = File(slib[0])
+    testenv.Append(LIBS=statlib)
 
+    for i in tests:
+	# get the basename no suffix of the file
+	tinfile = os.path.splitext(os.path.basename(i))[0]
+	# out put gos into the root/test directory
+	toutfile = os.path.join("#","tests", tinfile)
+	tapp = testenv.Program(toutfile,source=i)
     # install assay *.run *.in* *.out files into test directory
     # use glob here with an absolute path, as Sconsript is "called" 
     # from the build dir.
-    testaux = glob.glob("%s/%s/test/*.*" % (rootdir, myenv["PACKAGE"]))
-    testaux += glob.glob("%s/%s/*/test/*.*" % (rootdir, myenv["PACKAGE"]))
+    testaux = glob.glob("%s/%s/test/*.*" % (rootdir, testenv["PACKAGE"]))
+    testaux += glob.glob("%s/%s/*/test/*.*" % (rootdir, testenv["PACKAGE"]))
     # exclude cc files
     testaux = [ i for i in testaux if not i.endswith('.cc') ]
+    testaux = [ i for i in testaux if not i.endswith('.h') ]
     for i in testaux:
 	# Copy doesn't overwrite, so check if theyalready exist a previous
 	# run.
-	outfile = myenv.File("#/tests/%s" % os.path.basename(i)).abspath
 	tdir = Dir("#/tests").abspath
 	if not os.path.exists(tdir):
-	    myenv.Execute(Mkdir(tdir))
+	    testenv.Execute(Mkdir(tdir))
+	outfile = os.path.join(tdir, os.path.basename(i))
 	if not os.path.exists(outfile):
-	    myenv.Execute(Copy(outfile, i))
+	    testenv.Execute(Copy(outfile, i))
     # run assay here ....
     #
     #
@@ -65,4 +79,3 @@ if myenv["tests"]:
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )
 installer.AddHeaders( rootdir, "*.tcc", "casacore", True )
-
