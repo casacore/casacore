@@ -48,6 +48,8 @@ def generate(env):
 	    platdefs += extradefs
 	elif isinstance(extradefs, str):
 	    platdefs += [extradefs]
+	if sys.byteorder == "little":
+	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
 	env.Append(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
 	    # otherwise darwin puts builddir into the name
