@@ -15,15 +15,18 @@ cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 
 # need this to go to the root dir, as SConsript asumes to be in the
 # build dir
+
+libname= "casa_" + myenv["PACKAGE"]
+
 rootdir=myenv.Dir("#").abspath
 if "static" in myenv["libtype"]:
     # build static lib
-    slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], 
+    slib =  myenv.StaticLibrary(target =libname, 
 				source = cpps)
     installer.AddLibrary(slib)
 if "shared" in myenv["libtype"]:
     #build dynamic lib
-    dlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], 
+    dlib =  myenv.SharedLibrary(target = libname, 
 				source = cpps)
     installer.AddLibrary(dlib)
 
@@ -35,7 +38,7 @@ if myenv["tests"]:
     tests = myenv.SGlob("test/*.cc")
     tests += myenv.SGlob("*/test/*.cc")
     myenv.Append(LIBPATH=[myenv["BUILDDIR"]])
-    myenv.Append(LIBS=[myenv["PACKAGE"]])
+    myenv.Append(LIBS=[libname])
     for i in tests:
 	tapp = myenv.Program("#/tests/%s" % base_no_suffix(i), source=i)
 
