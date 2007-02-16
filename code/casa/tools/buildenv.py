@@ -5,6 +5,7 @@ def generate(env):
 	    lenv.AppendUnique(CPPFLAGS=["-g"])
 	elif buildtype == "opt":
 	    lenv.AppendUnique(CPPFLAGS=["-O2"])
+	    lenv.AppendUnique(FORTRANFLAGS=["-O2"])
 	return lenv
     env.BuildEnv = BuildEnv
 
