@@ -74,3 +74,5 @@ for bopt in env["build"]:
 # by the other casacore packages without having to duplicate them.
 if env["PACKAGE"] == "casa":
     installer.AddShares("tools", "*.py", "casacore/", True)
+    installer.AddProgram("tools/casacore_assay")
+
