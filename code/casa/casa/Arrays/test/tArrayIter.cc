@@ -251,6 +251,34 @@ int main()
     }
     cout << "END.  Testing int ArrayIterator part.  5 dim. ......\n";
   }
+  // Test iterating through an empty array.
+  {
+    Vector<Int> vec(0);
+    {
+      Array<Int> arr(IPosition(2,0,5));
+      ArrayIterator<Int> iter(arr, 1);
+      int nstep=0;
+      while (!iter.pastEnd()) {
+	Array<Int>& darr = iter.array();
+	darr = vec;
+	iter.next();
+	nstep++;
+      }
+      AlwaysAssertExit (nstep==5);
+    }
+    {
+      Array<Int> arr(IPosition(2,5,0));
+      ArrayIterator<Int> iter(arr, 1);
+      int nstep=0;
+      while (!iter.pastEnd()) {
+	Array<Int>& darr = iter.array();
+	darr = vec;
+	iter.next();
+	nstep++;
+      }
+      AlwaysAssertExit (nstep==0);
+    }
+  }
 
   return 0;
 }

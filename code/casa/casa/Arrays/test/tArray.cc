@@ -199,6 +199,14 @@ void oldArrayTest()
 	  }
 	}
 
+	// Test an empty array slice.
+	{
+	  Array<Int> a1(IPosition(3,2,3,4));
+	  Array<Int> a2 = a1(IPosition(3,0,0,2), IPosition(3,0,0,1));
+	  AlwaysAssertExit (a2.shape() == IPosition(3,1,1,0));
+	  AlwaysAssertExit (a2.size() == 0);
+	}
+
 	cout << "OK\n";
     }
     
