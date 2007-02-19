@@ -107,8 +107,12 @@ void ArrayPositionIterator::reset()
 {
     Cursor = Start;
     // Immediately at end if first iteration axis is empty.
-    Int ax = iterationAxes[0];
-    atOrBeyondEnd = End[ax] < Start[ax];
+    if (iterationAxes.nelements() > 0) {
+      Int ax = iterationAxes[0];
+      atOrBeyondEnd = End[ax] < Start[ax];
+    } else {
+      atOrBeyondEnd = Shape.nelements() == 0  ||  Shape[0] == 0;
+    }
 }
 
 Bool ArrayPositionIterator::atStart() const

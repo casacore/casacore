@@ -278,6 +278,28 @@ int main()
       }
       AlwaysAssertExit (nstep==0);
     }
+    {
+      Array<Int> arr(IPosition(1,2));
+      ArrayIterator<Int> iter(arr, 1);
+      int nstep=0;
+      while (!iter.pastEnd()) {
+	Array<Int>& darr = iter.array();
+	iter.next();
+	nstep++;
+      }
+      AlwaysAssertExit (nstep==1);
+    }
+    {
+      Array<Int> arr(IPosition(1,0));
+      ArrayIterator<Int> iter(arr, 1);
+      int nstep=0;
+      while (!iter.pastEnd()) {
+	Array<Int>& darr = iter.array();
+	iter.next();
+	nstep++;
+      }
+      AlwaysAssertExit (nstep==0);
+    }
   }
 
   return 0;
