@@ -4,14 +4,14 @@ import sys
 # Put the package name here, e.g. casa, tables
 PACKAGE="scimath"
 
-env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
-			  'HOME' : os.environ[ 'HOME' ],
-			  
-			  },
-		  FORTRAN = 'gfortran'		  
+env = Environment(
+		  ENV = { 'PATH' : os.environ[ 'PATH' ],
+			  'HOME' : os.environ[ 'HOME' ]			  
+			  }
 		  )
 # keep a local sconsign database, rather than in very directory
 env.SConsignFile()
+
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
@@ -24,23 +24,6 @@ opts.Add(PathOption("casacoredir", "The location of casacore/casa",
 		    "/usr"))
 # add them into the environment
 opts.Update( env )
-
-if not env.GetOption('clean'):
-    conf = Configure(env)
-    # test for lapack
-    if env['PLATFORM'] == "darwin":
-	print "Using vecLib"
-	# no test neccessary as it ships with vecLib
-	conf.env.Append(FRAMEWORKS=["vecLib"])
-    else:
-	if not conf.CheckLib('lapack'): Exit(1)
-    if not conf.CheckLib('g2c'): 
-	if not conf.CheckLib('gfortran'):
-	    print "gfortran or g77 needs to be installed"
-	    Exit(1)
-	else:
-	    conf.env["FORTRAN"] = "gfortran"
-    env = conf.Finish()
 
 env["PACKAGE"] = PACKAGE
 if env["PACKAGE"] == "casa":
@@ -58,6 +41,7 @@ env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('installer', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
+env.Tool('gfortran', env["casashrdir"])
 # add installer options, e.g. prefix
 env.AddInstallerOptions( opts )
 # add them into environment
@@ -66,6 +50,26 @@ opts.Update( env )
 opts.Save( 'options.cfg', env)
 Help( opts.GenerateHelpText( env ) )
 
+# Auto configure
+if not env.GetOption('clean'):
+    conf = Configure(env)
+    # test for lapack
+    if env['PLATFORM'] == "darwin":
+	print "Using vecLib"
+	# no test neccessary as it ships with vecLib
+	conf.env.Append(FRAMEWORKS=["vecLib"])
+    else:
+	if not conf.CheckLib('lapack'): Exit(1)
+    # This is the only way I can see to detect which fortran compiler is used
+    if env["_FORTRAND"] != 'gfortran': 
+	if not conf.CheckLib('g2c'):
+	    print "gfortran or g77 needs to be installed"
+	    Exit(1)
+    else:
+	if not conf.CheckLib('gfortran'):
+	    print "gfortran or g77 needs to be installed"
+	    Exit(1)
+    env = conf.Finish()
 # create the installer which handles installing the final build
 installer = env.Installer()
 
