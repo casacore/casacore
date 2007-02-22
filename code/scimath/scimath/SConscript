@@ -44,7 +44,7 @@ if "shared" in myenv["libtype"]:
     installer.AddLibrary(dlib)
 
 if myenv["tests"]:
-    testenv = myenv.Clone()
+    testenv = myenv.Copy()
     # AddCasaTests()  move the code belowto tools/casa.py
     # gather test files
     # SGlob works in build dir, so only for cc files
@@ -54,15 +54,8 @@ if myenv["tests"]:
     # use static lib to link here
     testenv.Append(LIBPATH=[Dir("#/fortran")])
     testenv.Prepend(LIBS=["casa_scimath_f"])
-    statlib = File(slib[0])
-    testenv.Prepend(LIBS=[statlib])
-
-    for i in tests:
-	# get the basename no suffix of the file
-	tinfile = os.path.splitext(os.path.basename(i))[0]
-	# out put gos into the root/test directory
-	toutfile = os.path.join("#","tests", tinfile)
-	tapp = testenv.Program(toutfile,source=i)
+    testenv.Prepend(LIBS=[libname])
+    cpppath = testenv["CPPPATH"]
     # install assay *.run *.in* *.out files into test directory
     # use glob here with an absolute path, as Sconsript is "called" 
     # from the build dir.
@@ -71,19 +64,32 @@ if myenv["tests"]:
     # exclude cc files
     testaux = [ i for i in testaux if not i.endswith('.cc') ]
     testaux = [ i for i in testaux if not i.endswith('.h') ]
+    tdir = Dir("#/tests").abspath
     for i in testaux:
 	# Copy doesn't overwrite, so check if they already exist 
 	# from a previous run.
-	tdir = Dir("#/tests").abspath
 	if not os.path.exists(tdir):
 	    testenv.Execute(Mkdir(tdir))
 	outfile = os.path.join(tdir, os.path.basename(i))
 	if not os.path.exists(outfile):
 	    testenv.Execute(Copy(outfile, i))
-    # run assay here ....
-    #
-    #
-
+ 
+    for i in tests:
+	testenv["CPPPATH"] = cpppath
+	# get the basename no suffix of the file
+	tinfile = os.path.splitext(os.path.basename(i))[0]
+	tdir = os.path.split(i)[0]
+	# include location of test headers
+	testenv.AppendUnique(CPPPATH=[tdir])			
+	# out put gos into the root/test directory
+	toutfile = os.path.join("#","tests", tinfile)
+	tapp = testenv.Program(toutfile, source=i)
+	# run assay here ....
+#	f=File(toutfile).abspath
+#	log = File("#/tests/tests.log")
+#	assay="/Users/mar637/repos/casacore/code/tables/casacore_assay "
+#	testenv.Command(log, None,
+#			assay+f+" > $TARGET")
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )
 installer.AddHeaders( rootdir, "*.tcc", "casacore", True )
