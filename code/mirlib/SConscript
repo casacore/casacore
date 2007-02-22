@@ -1,0 +1,11 @@
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Copy()
+
+# gather c files
+cs = myenv.SGlob("*.c")
+
+if "static" in myenv["libtype"]:
+    slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
+    installer.AddLibrary(slib)
+

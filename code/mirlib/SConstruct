@@ -1,0 +1,72 @@
+import os
+import sys
+
+
+# Put the package name here, e.g. casa, tables
+PACKAGE="mirlib"
+
+env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
+			  'HOME' : os.environ[ 'HOME' ] 
+			  }
+		  )
+# keep a local sconsign database, rather than in very directory
+env.SConsignFile()
+
+# general options
+opts = Options( 'options.cfg', ARGUMENTS )
+opts.Add(ListOption("build", "The build type", 
+		    "opt", ["opt", "dbg"]))
+opts.Add(ListOption("libtype", "The type of library to build", 
+		    "static", ["static", "shared"]))
+opts.Add(BoolOption("tests", "Build the tests?", False))
+opts.Add(PathOption("casacoredir", "The location of casacore/casa",
+		    "/usr"))
+# add them into the environment
+opts.Update( env )
+
+env["PACKAGE"] = PACKAGE
+if env["PACKAGE"] == "casa":
+    # use build in dir
+    env["casashrdir"] = ["./tools"]
+    env["casalibdir"] = None
+    env["casaincdir"] = None
+else:
+    # use directory from casacore/casa installation
+    env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
+    env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
+    env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+
+env.Tool('buildenv', env["casashrdir"])
+env.Tool('utils', env["casashrdir"])
+env.Tool('installer', env["casashrdir"])
+env.Tool('casa', env["casashrdir"])
+# add installer options, e.g. prefix
+env.AddInstallerOptions( opts )
+# add them into environment
+opts.Update( env )
+# cache them for the next run
+opts.Save( 'options.cfg', env)
+Help( opts.GenerateHelpText( env ) )
+
+# create the installer which handles installing the final build
+installer = env.Installer()
+
+# to find package based includes
+env.Append(CPPPATH='#')
+
+# add casa specific defines autodetected from platform
+# currently works for darwin/linux(_x86_64), cray doesn't work
+# because PGI compiler needs a lot of environment variables
+# Probably need to write a PGI builder 
+env.AddCasaPlatform()
+# Replace some builder commands (lex,yacc) with custom versions
+env.CustomCasaCom()
+
+for bopt in env["build"]:
+    buildenv = env.BuildEnv(bopt)
+    buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
+    print 
+    env.SConscript(["SConscript"], 
+                   build_dir= buildenv["BUILDDIR"],
+                   duplicate=0, exports=["buildenv", "installer"]) 
+installer.AddHeaders( ".", "*.h", "casacore/mirlib", True )
