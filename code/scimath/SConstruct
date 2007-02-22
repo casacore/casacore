@@ -41,7 +41,6 @@ env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('installer', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
-env.Tool('gfortran', env["casashrdir"])
 # add installer options, e.g. prefix
 env.AddInstallerOptions( opts )
 # add them into environment
@@ -61,14 +60,13 @@ if not env.GetOption('clean'):
     else:
 	if not conf.CheckLib('lapack'): Exit(1)
     # This is the only way I can see to detect which fortran compiler is used
-    if env["_FORTRAND"] != 'gfortran': 
-	if not conf.CheckLib('g2c'):
-	    print "gfortran or g77 needs to be installed"
-	    Exit(1)
-    else:
-	if not conf.CheckLib('gfortran'):
-	    print "gfortran or g77 needs to be installed"
-	    Exit(1)
+
+    conf.env.Tool('fortran')
+    detect_fortran = conf.env.Detect(['gfortran', 'g77', 'f77'])
+    conf.env["FORTRAN"] = detect_fortran
+    fdict = {'gfortran': 'gfortran', 'g77': 'g2c', 'f77': 'f2c'}
+    if not conf.CheckLib(fdict[detect_fortran]):
+	Exit(1)
     env = conf.Finish()
 # create the installer which handles installing the final build
 installer = env.Installer()
