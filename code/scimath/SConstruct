@@ -16,7 +16,7 @@ env.SConsignFile()
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
 opts.Add(ListOption("build", "The build type", 
-		    "opt", ["opt", "dbg"], { "all": ["opt", "dbg"]}))
+		    "opt", ["opt", "dbg"]))
 opts.Add(ListOption("libtype", "The type of library to build", 
 		    "static", ["static", "shared"]))
 opts.Add(BoolOption("tests", "Build the tests?", False))
@@ -31,9 +31,15 @@ if not env.GetOption('clean'):
     if env['PLATFORM'] == "darwin":
 	print "Using vecLib"
 	# no test neccessary as it ships with vecLib
-	env.Append(FRAMEWORKS=["vecLib"])
+	conf.env.Append(FRAMEWORKS=["vecLib"])
     else:
 	if not conf.CheckLib('lapack'): Exit(1)
+    if not conf.CheckLib('g2c'): 
+	if not conf.CheckLib('gfortran'):
+	    print "gfortran or g77 needs to be installed"
+	    Exit(1)
+	else:
+	    conf.env["FORTRAN"] = "gfortran"
     env = conf.Finish()
 
 env["PACKAGE"] = PACKAGE
@@ -67,7 +73,6 @@ installer = env.Installer()
 env.Append(CPPPATH=['#'])
 env.AppendUnique(CPPPATH=env["casaincdir"])
 env.AppendUnique(LIBPATH=env["casalibdir"])
-env.Append(LIBS=['gfortran'])
 env.Prepend(LIBS=["casa_casa"])
 # add casa specific defines autodetected from platform
 # currently works for darwin/linux(_x86_64), cray doesn't work
