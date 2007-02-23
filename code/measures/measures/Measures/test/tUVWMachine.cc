@@ -30,6 +30,7 @@
 #include <casa/Exceptions/Error.h>
 #include <measures/Measures/UVWMachine.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/RotMatrix.h>

@@ -28,9 +28,11 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
-#include <measures/Measures.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>

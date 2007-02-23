@@ -28,6 +28,7 @@
 //# Includes
 #include <measures/Measures/MDoppler.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Quanta/MVFrequency.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Utilities/Assert.h>

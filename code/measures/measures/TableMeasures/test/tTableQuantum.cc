@@ -42,6 +42,7 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/OS/Timer.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>

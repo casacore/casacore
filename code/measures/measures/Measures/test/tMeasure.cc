@@ -31,6 +31,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures.h>
 #include <measures/Measures/Aberration.h>
 #include <measures/Measures/MeasData.h>

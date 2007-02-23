@@ -34,6 +34,7 @@
 #include <measures/Measures/MeasJPL.h>
 #include <casa/Quanta/MVEpoch.h>
 #include <casa/Quanta/MVDirection.h>
+#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MeasIERS.h>
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDirection.h>

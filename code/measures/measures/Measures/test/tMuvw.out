@@ -51,9 +51,11 @@ Muvw state transition matrix:
 uvw: [100, 10, 0]
 uvw: uvw: [100, 10, 0]
 uvw reference: Reference for an uvw with Type: ITRF,
-Frame: Epoch: 50927::22:18:12.3840
+Frame: Epoch: 50927::22:18:12.3840 (TDB = 50927.9, UT1 = 50927.9, TT = 50927.9)
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
+        (Longitude = 2.61014 Latitude = -0.526138)
        Direction: [0.17101, 0.0301537, 0.984808]
+        (J2000 = [-33.1687, 80.0127] deg)
 uvw reference: Reference for an uvw with Type: J2000
 Test uvw conversion ...
 --------------------------------------

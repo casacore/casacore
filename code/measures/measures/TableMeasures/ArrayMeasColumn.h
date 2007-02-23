@@ -362,6 +362,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <measures/TableMeasures/ArrayMeasColumn.cc>
+#include <measures/TableMeasures/ArrayMeasColumn.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

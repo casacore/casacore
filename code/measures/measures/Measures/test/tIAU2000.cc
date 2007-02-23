@@ -28,9 +28,11 @@
 #include <casa/aips.h>
 #include <measures/Measures/SofaTest.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasData.h>

@@ -31,6 +31,7 @@
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MeasRef.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>

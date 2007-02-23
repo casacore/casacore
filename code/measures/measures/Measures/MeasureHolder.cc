@@ -44,6 +44,7 @@
 #include <casa/Containers/RecordFieldId.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>

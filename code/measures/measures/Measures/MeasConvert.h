@@ -284,6 +284,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <measures/Measures/MeasConvert.cc>
+#include <measures/Measures/MeasConvert.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

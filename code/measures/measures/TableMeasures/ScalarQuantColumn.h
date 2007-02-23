@@ -354,6 +354,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <measures/TableMeasures/ScalarQuantColumn.cc>
+#include <measures/TableMeasures/ScalarQuantColumn.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

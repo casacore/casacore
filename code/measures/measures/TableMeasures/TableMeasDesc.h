@@ -295,6 +295,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <measures/TableMeasures/TableMeasDesc.cc>
+#include <measures/TableMeasures/TableMeasDesc.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

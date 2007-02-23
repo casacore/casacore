@@ -30,6 +30,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures.h>
 #include <casa/Quanta/MVDirection.h>
 #include <casa/Quanta/MVPosition.h>

@@ -37,6 +37,7 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDoppler.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>

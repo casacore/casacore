@@ -51,9 +51,11 @@ MBaseline state transition matrix:
 Baseline: [100, 10, 1e-08]
 Baseline: Baseline: [100, 10, 1e-08]
 Baseline reference: Reference for an Baseline with Type: ITRF,
-Frame: Epoch: 50927::22:18:12.3840
+Frame: Epoch: 50927::22:18:12.3840 (TDB = 50927.9, UT1 = 50927.9, TT = 50927.9)
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
+        (Longitude = 2.61014 Latitude = -0.526138)
        Direction: [0.17101, 0.0301537, 0.984808]
+        (J2000 = [-33.1687, 80.0127] deg)
 Baseline reference: Reference for an Baseline with Type: J2000
 Test Baseline conversion ...
 --------------------------------------

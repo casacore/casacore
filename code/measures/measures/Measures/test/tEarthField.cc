@@ -36,6 +36,7 @@
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MeasTable.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>

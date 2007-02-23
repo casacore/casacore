@@ -39,6 +39,7 @@
 #include <measures/Measures/MBaseline.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
