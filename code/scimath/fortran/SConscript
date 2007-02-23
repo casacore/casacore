@@ -20,7 +20,5 @@ if "shared" in myenv["libtype"]:
     #build dynamic lib
     shenv = myenv.Copy()
     shenv.Append(LIBPATH=[shenv["BUILDDIR_FORT"]])
-    shenv.Append(FRAMEWORKS=["vecLib"])
-    shenv.Append(LIBS=["gfortran"])
     dlib =  shenv.SharedLibrary(target = libname, source = ffs)
     installer.AddLibrary(dlib)

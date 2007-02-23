@@ -38,7 +38,7 @@ if "static" in myenv["libtype"]:
 if "shared" in myenv["libtype"]:
     #build dynamic lib
     shenv=myenv.Copy()
-    shenv.Append(LIBPATH=[Dir("#/fortran")])
+    shenv.Append(LIBPATH=["fortran"])
     shenv.Prepend(LIBS=["casa_scimath_f"])
     dlib =  shenv.SharedLibrary(target = libname, source = cpps)
     installer.AddLibrary(dlib)
@@ -52,8 +52,9 @@ if myenv["tests"]:
     tests += testenv.SGlob("*/test/*.cc")
     # point to tests local includes
     # use static lib to link here
-    testenv.Append(LIBPATH=[Dir("#/fortran")])
+    testenv.Append(LIBPATH=["fortran"])
     testenv.Prepend(LIBS=["casa_scimath_f"])
+    testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
     testenv.Prepend(LIBS=[libname])
     cpppath = testenv["CPPPATH"]
     # install assay *.run *.in* *.out files into test directory
