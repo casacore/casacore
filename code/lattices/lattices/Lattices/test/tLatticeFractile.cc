@@ -35,7 +35,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Inputs/Input.h>
-#include <casa/OS/Timer.cc>
+#include <casa/OS/Timer.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
