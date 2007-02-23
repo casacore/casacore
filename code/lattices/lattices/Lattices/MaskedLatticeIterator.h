@@ -211,6 +211,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/MaskedLatticeIterator.cc>
+#include <lattices/Lattices/MaskedLatticeIterator.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

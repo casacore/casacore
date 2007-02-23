@@ -41,6 +41,7 @@ template <class T> class MaskedLattice;
 class IPosition;
 class Interpolate2D;
 class PixelCurve1D;
+class String;
 
 #include <casa/iosstrfwd.h>
 
@@ -165,6 +166,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LatticeSlice1D.cc>
+#include <lattices/Lattices/LatticeSlice1D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

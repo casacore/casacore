@@ -161,6 +161,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/TiledCollapser.cc>
+#include <lattices/Lattices/TiledCollapser.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

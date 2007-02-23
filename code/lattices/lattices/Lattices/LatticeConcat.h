@@ -282,6 +282,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LatticeConcat.cc>
+#include <lattices/Lattices/LatticeConcat.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

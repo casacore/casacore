@@ -320,8 +320,9 @@ private:
 
 } //# NAMESPACE CASA - END
 
+//# See comments in LELInterface why LELInterface.tcc is included here.
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LELUnary.cc>
-#include <lattices/Lattices/LELUnary2.cc>
+#include <lattices/Lattices/LELInterface.tcc>
+#include <lattices/Lattices/LELUnary.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

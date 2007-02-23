@@ -40,6 +40,7 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>

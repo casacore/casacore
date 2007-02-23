@@ -108,6 +108,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/CLIPNearest2D.cc>
+#include <lattices/Lattices/CLIPNearest2D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif 

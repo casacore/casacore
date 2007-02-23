@@ -160,6 +160,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LatticeCache.cc>
+#include <lattices/Lattices/LatticeCache.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

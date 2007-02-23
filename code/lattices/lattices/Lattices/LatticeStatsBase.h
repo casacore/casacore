@@ -30,6 +30,8 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class IPosition;

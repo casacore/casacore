@@ -116,6 +116,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LELSpectralIndex.cc>
+#include <lattices/Lattices/LELSpectralIndex.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

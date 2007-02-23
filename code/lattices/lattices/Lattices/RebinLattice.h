@@ -194,6 +194,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/RebinLattice.cc>
+#include <lattices/Lattices/RebinLattice.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

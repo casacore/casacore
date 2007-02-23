@@ -427,7 +427,13 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
 
 } //# NAMESPACE CASA - END
 
+//# There is a problem in including Lattice.tcc, because it needs
+//# LatticeIterator.h which in its turn includes Lattice.h again.
+//# So in a source file including LatticeIterator.h, Lattice::set fails
+//# to compile, because the LatticeIterator declarations are not seen yet.
+//# Therefore LatticeIterator.h is included here, while LatticeIterator.h
+//# includes Lattice.tcc.
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/Lattice.cc>
+#include <lattices/Lattices/LatticeIterator.h>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

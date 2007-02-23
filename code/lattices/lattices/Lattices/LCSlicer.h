@@ -31,6 +31,7 @@
 //# Includes
 #include <lattices/Lattices/RegionType.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -38,7 +39,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class IPosition;
 class Slicer;
 class TableRecord;
-class String;
 
 
 // <summary>

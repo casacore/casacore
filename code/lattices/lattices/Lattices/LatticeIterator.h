@@ -521,7 +521,9 @@ protected:
 
 } //# NAMESPACE CASA - END
 
+//# See comments in Lattice.h why Lattice.tcc is included here.
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LatticeIterator.cc>
+#include <lattices/Lattices/Lattice.tcc>
+#include <lattices/Lattices/LatticeIterator.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

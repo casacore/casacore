@@ -134,6 +134,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/PagedArrIter.cc>
+#include <lattices/Lattices/PagedArrIter.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -155,6 +155,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LELArray.cc>
+#include <lattices/Lattices/LELArray.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

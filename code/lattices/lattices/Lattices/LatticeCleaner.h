@@ -284,6 +284,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LatticeCleaner.cc>
+#include <lattices/Lattices/LatticeCleaner.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

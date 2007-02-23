@@ -669,6 +669,6 @@ void PagedArray<T>::doReopen() const
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/PagedArray.cc>
+#include <lattices/Lattices/PagedArray.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

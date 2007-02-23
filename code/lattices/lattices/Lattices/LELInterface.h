@@ -213,10 +213,13 @@ private:
 
 } //# NAMESPACE CASA - END
 
+//# There is a problem in including LELInterface.tcc, because it needs
+//# LELUnary.h which in its turn includes LELInterface.h again.
+//# So in a source file including LELUnary.h, LELInterface::replaceScalarExpr
+//# fails to compile, because the LELUnary declarations are not seen yet.
+//# Therefore LELUnary.h is included here, while LELUnary.h includes
+//# LELInterface.tcc.
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <lattices/Lattices/LELInterface.cc>
+#include <lattices/Lattices/LELUnary.h>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-
-
-
