@@ -39,7 +39,7 @@ if "shared" in myenv["libtype"]:
     #build dynamic lib
     shenv=myenv.Copy()
     shenv.Append(LIBPATH=[shenv["BUILDDIR_FORT"]])
-    shenv.Prepend(LIBS=["casa_scimath_f"])
+    shenv.Prepend(LIBS=[libname+"_f"])
     dlib =  shenv.SharedLibrary(target = libname, source = cpps)
     installer.AddLibrary(dlib)
 
@@ -53,7 +53,7 @@ if myenv["tests"]:
     # point to tests local includes
     # use static lib to link here
     testenv.Append(LIBPATH=[testenv["BUILDDIR_FORT"]])
-    testenv.Prepend(LIBS=["casa_scimath_f"])
+    testenv.Prepend(LIBS=[libname+"_f"])
     testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
     testenv.Prepend(LIBS=[libname])
     cpppath = testenv["CPPPATH"]
