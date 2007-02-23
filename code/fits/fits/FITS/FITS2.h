@@ -64,6 +64,6 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <fits/FITS/FITS2.cc>
+#include <fits/FITS/FITS2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
