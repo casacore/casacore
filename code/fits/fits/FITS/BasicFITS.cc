@@ -33,7 +33,6 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/IPosition.h>
-#include <casa/version.h>
 
 #include <casa/sstream.h>
 
@@ -217,8 +216,8 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
     }
 
     ostringstream os;
-    os << "Written by AIPS++ version ";
-    VersionInfo::report(os);
+    os << "Written by casacore version ";
+    os << "trunk";
 
     kw.history(os.str().data());
     kw.end();
