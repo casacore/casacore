@@ -7,8 +7,7 @@ myenv = buildenv.Copy()
 # get all the sourcefiles recursively
 lls = myenv.SGlob("*.ll", recursive=True )
 for f in lls:
-    lenv = myenv.Copy()
-    lenv["CXXFILESUFFIX"] = ".lcc"
+    lenv = myenv.Copy(CXXFILESUFFIX=".lcc")
     ff = lenv.CXXFile(File(f))
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
@@ -17,8 +16,7 @@ for f in lls:
 
 yys = myenv.SGlob("*.yy", recursive=True )
 for f in yys:
-    yenv = myenv.Copy()
-    yenv["CXXFILESUFFIX"] = ".ycc"
+    yenv = myenv.Copy(CXXFILESUFFIX=".ycc")
     ff = yenv.CXXFile(File(f))
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
@@ -30,8 +28,8 @@ for f in yys:
 cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 # need this to go to the root dir, as SConsript asumes to be in the
 # build dir
-rootdir=myenv.Dir("#").abspath
-libname= "casa_" + myenv["PACKAGE"]
+rootdir = myenv.Dir("#").abspath
+libname = "casa_" + myenv["PACKAGE"]
 
 if "static" in myenv["libtype"]:
     # build static lib
