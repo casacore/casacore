@@ -1,0 +1,24 @@
+import os, glob
+import SCons.Defaults
+
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Copy()
+# get all the sourcefiles recursively
+ffs = myenv.SGlob("sofa/*.f", recursive=False )
+# need this to go to the root dir, as SConsript asumes to be in the
+# build dir
+rootdir=myenv.Dir("#").abspath
+libname= "casa_" + myenv["PACKAGE"] + "_f"
+if myenv["buildtype"] == "dbg":
+    libname += "_debug"
+if "static" in myenv["libtype"]:
+    # build static lib
+    slib =  myenv.StaticLibrary(target = libname, source = [ffs])
+    installer.AddLibrary(slib)
+if "shared" in myenv["libtype"]:
+    #build dynamic lib
+    shenv = myenv.Copy()
+    shenv.Append(LIBPATH=[shenv["BUILDDIR_FORT"]])
+    dlib =  shenv.SharedLibrary(target = libname, source = ffs)
+    installer.AddLibrary(dlib)
