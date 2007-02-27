@@ -31,6 +31,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/Slice.h>

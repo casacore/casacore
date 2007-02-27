@@ -31,6 +31,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Arrays/ArrayIO.h>
 
 #include <casa/namespace.h>
 int main(int argc, char **argv)

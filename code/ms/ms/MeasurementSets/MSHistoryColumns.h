@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MCEpoch.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>

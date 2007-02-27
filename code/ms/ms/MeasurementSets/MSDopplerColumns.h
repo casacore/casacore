@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MCDoppler.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <measures/TableMeasures/ScalarQuantColumn.h>

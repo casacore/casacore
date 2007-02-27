@@ -47,6 +47,7 @@
 #include <ms/MeasurementSets/MSPolColumns.h>
 #include <ms/MeasurementSets/MSSpWindowColumns.h>
 #include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>

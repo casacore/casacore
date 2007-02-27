@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCPosition.h>
 #include <measures/TableMeasures/ArrayQuantColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <measures/TableMeasures/ScalarQuantColumn.h>

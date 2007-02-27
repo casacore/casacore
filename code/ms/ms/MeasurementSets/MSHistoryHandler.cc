@@ -28,6 +28,7 @@
 #include <ms/MeasurementSets/MSHistoryHandler.h>
 #include <casa/Logging/LogIO.h>
 #include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MCEpoch.h>
 #include <ms/MeasurementSets/MSColumns.h>
 #include <casa/ostream.h>
 

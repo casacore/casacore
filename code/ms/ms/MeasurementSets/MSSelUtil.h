@@ -97,12 +97,7 @@ template <class T> class MSSelUtil2
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <ms/MeasurementSets/MSSelUtil.cc>
-#include <ms/MeasurementSets/MSSelUtil2.cc>
+#include <ms/MeasurementSets/MSSelUtil.tcc>
+#include <ms/MeasurementSets/MSSelUtil2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-
-
-
-
-

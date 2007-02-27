@@ -52,6 +52,7 @@
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Slice.h>
 #include <measures/Measures/Stokes.h>
 #include <measures/Measures/MeasFrame.h>

@@ -30,7 +30,7 @@
 #include <casa/Exceptions/Error.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSReader.h>
-#include <dish/SDIterators/SDRecord.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/iostream.h>
 #include <casa/OS/Timer.h>
 

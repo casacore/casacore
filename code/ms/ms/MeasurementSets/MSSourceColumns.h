@@ -34,6 +34,11 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MRadialVelocity.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MCPosition.h>
+#include <measures/Measures/MCRadialVelocity.h>
 #include <measures/TableMeasures/ArrayMeasColumn.h>
 #include <measures/TableMeasures/ArrayQuantColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
