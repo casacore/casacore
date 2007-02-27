@@ -98,6 +98,7 @@ void MCFrame::resetEpoch() {
     delete epUT1p; epUT1p = 0;
     delete epTTp; epTTp = 0;
     delete epLASTp; epLASTp = 0;
+    delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
     delete radLSRp; radLSRp = 0;
 }
@@ -379,11 +380,13 @@ Bool MCFrame::getB1950Lat(Double &tdb) {
 
 Bool MCFrame::getB1950(MVDirection &tdb) {
   if (myf.direction()) {
-    if (!dirB1950p) {
+    if (!b1950Longp) {
+      b1950Longp = new Vector<Double>(2);
       dirB1950p = new MVDirection;
       *dirB1950p = static_cast<MDirection::Convert *>(dirConvB1950)->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
+      *b1950Longp = dirB1950p->get();
     };
     tdb = *dirB1950p;
     return True;
@@ -428,11 +431,13 @@ Bool MCFrame::getAppLat(Double &tdb) {
 
 Bool MCFrame::getApp(MVDirection &tdb) {
   if (myf.direction()) {
-    if (!dirAppp) {
+    if (!appLongp) {
+      appLongp = new Vector<Double>(2);
       dirAppp = new MVDirection;
       *dirAppp = static_cast<MDirection::Convert *>(dirConvApp)->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
+      *appLongp = dirAppp->get();
     };
     tdb = *dirAppp;
     return True;
@@ -485,6 +490,7 @@ void MCFrame::makeEpoch() {
   epConvTDB = new MEpoch::Convert(*(myf.epoch()), REFTDB);
   epConvUT1 = new MEpoch::Convert(*(myf.epoch()), REFUT1);
   epConvTT  = new MEpoch::Convert(*(myf.epoch()), REFTT);
+  uInt locker = 0;			// locking assurance
   if (epTDBp) {
     delete epTDBp; epTDBp = 0;
   };
@@ -494,20 +500,19 @@ void MCFrame::makeEpoch() {
   if (epTTp) {
     delete epTTp; epTTp = 0;
   };
- if (epConvLAST) {
-    myf.lock();
+  myf.lock(locker);
+  if (epConvLAST) {
     delete static_cast<MEpoch::Convert *>(epConvLAST);
     epConvLAST = 0;
   };
   epConvLAST = new MEpoch::Convert(*(myf.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, this->myf));
-  if (epConvLAST) {
-    myf.unlock();
-  };
+  myf.unlock(locker);
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
   };
-  if (dirAppp) {
+  if (appLongp) {
+    delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
   };
   if (radLSRp) {
@@ -543,41 +548,37 @@ void MCFrame::makePosition() {
 }
 
 void MCFrame::makeDirection() {
-  static const MDirection::Ref REFJ2000
-    = MDirection::Ref(MDirection::J2000);
+  static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
+  uInt locker =0;
+  myf.lock(locker);
   if (dirConvJ2000) {
-    myf.lock();
     delete static_cast<MDirection::Convert *>(dirConvJ2000);
     dirConvJ2000 = 0;
   };
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::J2000,
 							 this->myf));
-  if (dirConvJ2000) myf.unlock();
+  myf.unlock(locker);
 
-  static const MDirection::Ref REFB1950
-    = MDirection::Ref(MDirection::B1950);
+  static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
+  myf.lock(locker);
   if (dirConvB1950) {
-    myf.lock();
     delete static_cast<MDirection::Convert *>(dirConvB1950);
     dirConvB1950 = 0;
   };
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::B1950,
 							 this->myf));
-  if (dirConvB1950) myf.unlock();
-
+  myf.unlock(locker);
+  myf.lock(locker);
   if (dirConvApp) {
-    myf.lock();
     delete static_cast<MDirection::Convert *>(dirConvApp);
     dirConvApp = 0;
   };
   dirConvApp = new MDirection::Convert(*(myf.direction()),
 				       MDirection::Ref(MDirection::APP,
 						       this->myf));
-  if (dirConvApp) {
-    myf.unlock();
-  };
+  myf.unlock(locker);
   if (j2000Longp) {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
@@ -588,8 +589,6 @@ void MCFrame::makeDirection() {
   };
   if (appLongp) {
     delete appLongp; appLongp = 0;
-  };
-  if (dirAppp) {
     delete dirAppp; dirAppp = 0;
   };
   if (radLSRp) {

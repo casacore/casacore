@@ -30,7 +30,6 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Register.h>
 #include <casa/Quanta/Quantum.h>
-#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
@@ -50,7 +49,7 @@ public:
     mymcf(0), cnt(1) {;};
   // Destructor
   ~FrameRep() {
-    delete epval; 
+    delete epval;
     delete posval;
     delete dirval;
     delete radval;
@@ -109,14 +108,14 @@ MeasFrame::MeasFrame(const MeasFrame &other) {
 
 // Destructor
 MeasFrame::~MeasFrame() {
-  if (rep && --rep->cnt == 0) delete rep;
+  if (rep && rep->cnt && --rep->cnt == 0) delete rep;
 }
 
 // Operators
 MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
   if (this != &other) {
     if (other.rep) other.rep->cnt++;
-    if (rep && --rep->cnt == 0) delete rep;
+    if (rep && rep->cnt && --rep->cnt == 0) delete rep;
     rep = other.rep;
   };
   return *this;
@@ -183,8 +182,11 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
 
 void MeasFrame::resetEpoch(const Measure &val) {
   if (rep && rep->epval) {
+    uInt locker = 0;
+    lock(locker);
     delete rep->epval;
     rep->epval = val.clone();
+    unlock(locker);
     makeEpoch();
   } else {
     errorReset(String("Epoch"));
@@ -210,8 +212,11 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
 
 void MeasFrame::resetPosition(const Measure &val) {
   if (rep && rep->posval) {
+    uInt locker = 0;
+    lock(locker);
     delete rep->posval;
     rep->posval = val.clone();
+    unlock(locker);
     makePosition();
   } else {
     errorReset(String("Position"));
@@ -237,8 +242,11 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
 
 void MeasFrame::resetDirection(const Measure &val) {
   if (rep && rep->dirval) {
+    uInt locker = 0;
+    lock(locker);
     delete rep->dirval;
     rep->dirval = val.clone();
+    unlock(locker);
     makeDirection();
   } else {
     errorReset(String("Direction"));
@@ -264,8 +272,11 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
   if (rep && rep->radval) {
+    uInt locker = 0;
+    lock(locker);
     delete rep->radval;
     rep->radval = val.clone();
+    unlock(locker);
     makeRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
@@ -305,12 +316,13 @@ const MeasComet *const MeasFrame::comet() const{
   return 0;
 }
 
-void MeasFrame::lock() {
-  if (rep) rep->cnt++;
+void MeasFrame::lock(uInt &locker) {
+  locker = 1;
+  if (rep) locker = rep->cnt++;
 }
 
-void MeasFrame::unlock() {
-  if (rep) rep->cnt--;
+void MeasFrame::unlock(const uInt locker) {
+  if (rep) rep->cnt = locker;
 }
 
 Bool MeasFrame::getTDB(Double &tdb) const {
@@ -448,27 +460,39 @@ Bool MeasFrame::getComet(MVPosition &tdb) const {
 void MeasFrame::create() {
   if (!rep) {
     rep = new FrameRep();
+    uInt locker = 0;
+    lock(locker);
     rep->mymcf = new MCFrame(*this);
+    unlock(locker);
   };
 }
 
 void MeasFrame::fill(const Measure *in) {
   if (in) {
+    uInt locker = 0;
     if (in->type() == Register(static_cast<MEpoch *>(0))) {
+      lock(locker);
       delete rep->epval;
       rep->epval = in->clone();
+      unlock(locker);
       makeEpoch();
     } else if (in->type() == Register(static_cast<MPosition *>(0))) {
+      lock(locker);
       delete rep->posval;
       rep->posval = in->clone();
+      unlock(locker);
       makePosition();
     } else if (in->type() == Register(static_cast<MDirection *>(0))) {
+      lock(locker);
       delete rep->dirval;
       rep->dirval = in->clone();
+      unlock(locker);
       makeDirection();
     } else if (in->type() == Register(static_cast<MRadialVelocity *>(0))) {
+      lock(locker);
       delete rep->radval;
       rep->radval = in->clone();
+      unlock(locker);
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +

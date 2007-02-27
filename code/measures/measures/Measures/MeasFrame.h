@@ -317,9 +317,9 @@ private:
   // Throw reset error
   void errorReset(const String &txt);
   // Lock the frame to make sure deletion occurs when needed
-  void lock();
+  void lock(uInt &locker);
   // Unlock the frame
-  void unlock();
+  void unlock(const uInt locker);
 };
 
 //# Global functions
