@@ -28,6 +28,7 @@
 #ifndef IMAGES_FITSIMAGE_H
 #define IMAGES_FITSIMAGE_H
 
+#define WCSLIB_GETWCSTAB
 
 //# Includes
 #include <images/Images/ImageInterface.h>
@@ -37,7 +38,6 @@
 #include <fits/FITS/fits.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
