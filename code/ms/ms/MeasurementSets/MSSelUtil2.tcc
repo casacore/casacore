@@ -154,18 +154,5 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data,
 }
 
 
-
-// define the instantiations we need
-template class MSSelUtil2<Bool>;
-template class MSSelUtil2<Complex>;
-template class MSSelUtil2<Float>;
-
-
-
-
-
-
-
-
 } //# NAMESPACE CASA - END
 

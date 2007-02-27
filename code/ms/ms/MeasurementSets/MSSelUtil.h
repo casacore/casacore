@@ -62,42 +62,9 @@ public:
 			       Bool doMedian=False);
 };
 
-// <summary> 
-// Helper class for MSSelector/DOms with templated static functions
-// </summary>
-// <synopsis> 
-// Helper class for MSSelector/DOms with templated static functions to 
-// reorder data to include or exclude an interferometer axis and
-// a function to time average data.
-// </synopsis> 
-//<visibility=local>
-template <class T> class MSSelUtil2
-{
-  public:
-  // reorder data from 3d (corr,chan,row) to 4d (corr,chan,ifr,time)
-  static void reorderData(Array<T>& data,
-			  const Vector<Int>& ifrSlot,
-			  Int nIfr, 
-			  const Vector<Int>& timeSlot, 
-			  Int nTime,
-			  const T& defvalue);
-
-  // reorder data from 4d (corr,chan,ifr,time) to 3d (corr,chan,row) 
-  static void reorderData(Array<T>& data, 
-			  const Matrix<Int>& rowIndex,
-			  Int nRow);
-
-  // average data (with flags & weights applied) over it's last axis (time or
-  // row), return in data (overwritten), dataFlag gives new flags.
-  static void timeAverage(Array<Bool>& dataFlag, Array<T>& data, 
-			  const Array<Bool>& flag, const Array<Float>& weight);
-
-};
-
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
 #include <ms/MeasurementSets/MSSelUtil.tcc>
-#include <ms/MeasurementSets/MSSelUtil2.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

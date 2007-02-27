@@ -51,7 +51,7 @@
 #include <casa/Utilities/GenSort.h>
 #include <ms/MeasurementSets/MSIter.h>
 #include <ms/MeasurementSets/MSRange.h>
-#include <ms/MeasurementSets/MSSelUtil.h>
+#include <ms/MeasurementSets/MSSelUtil2.h>
 #include <casa/iostream.h>
 
 
