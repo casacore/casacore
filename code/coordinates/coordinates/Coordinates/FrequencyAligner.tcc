@@ -42,6 +42,7 @@
 
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCFrequency.h>
 
 #include <scimath/Mathematics/InterpolateArray1D.h>
 
