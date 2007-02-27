@@ -31,9 +31,9 @@
 
 //# Includes
 #include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasRef.h>
 #include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MFrequency.h>
 #include <scimath/Mathematics/InterpolateArray1D.h>
 
 namespace casa {

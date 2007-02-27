@@ -32,6 +32,11 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/VectorIter.h>
+#include <casa/BasicMath/Math.h>
+#include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QC.h>
+#include <casa/Utilities/Assert.h>
+
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <coordinates/Coordinates/FrequencyAligner.h>
 #include <casa/Exceptions/Error.h>
@@ -39,13 +44,9 @@
 #include <casa/Logging/LogOrigin.h>
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/MVEpoch.h>
-#include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasTable.h>
 #include <casa/Quanta/MVFrequency.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QC.h>
-#include <casa/Utilities/Assert.h>
+#include <measures/Measures/MFrequency.h>
 
 #include <casa/namespace.h>
 #include <casa/iostream.h>
