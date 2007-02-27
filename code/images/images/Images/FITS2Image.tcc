@@ -350,17 +350,5 @@ void FITSImage::crackHeaderOld (CoordinateSystem& cSys,
 }
 
 
-
-
-template void FITSImage::crackHeader<Double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-//
-template void FITSImage::crackHeaderOld<Double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
-template void FITSImage::crackHeaderOld<Float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
-template void FITSImage::crackHeaderOld<Int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
-template void FITSImage::crackHeaderOld<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &);
-
 } //# NAMESPACE CASA - END
 

@@ -41,6 +41,7 @@
 #include <lattices/Lattices/LatticeIterator.h>
 
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/sstream.h>

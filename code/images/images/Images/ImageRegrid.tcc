@@ -31,6 +31,7 @@
 #include <casa/Arrays/ArrayAccessor.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
@@ -60,6 +61,8 @@
 #include <scimath/Mathematics/Interpolate2D.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCFrequency.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/OS/Timer.h>
 #include <casa/Quanta/MVDirection.h>
