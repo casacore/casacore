@@ -40,6 +40,7 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
 #include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MeasConvert.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/Quantum.h>

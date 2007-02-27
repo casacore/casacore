@@ -42,6 +42,11 @@
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCDoppler.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MCPosition.h>
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MeasConvert.h>
 #include <casa/Quanta/MVEpoch.h>
