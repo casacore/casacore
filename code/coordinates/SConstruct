@@ -64,6 +64,21 @@ if not env.GetOption('clean'):
 		#env.Append(CPPPATH=['something/cfitsio'])
     if not conf.CheckLibWithHeader('wcs', 'wcslib/wcs.h', language='c'):
 	Exit(1)
+    # test for lapack
+    if env['PLATFORM'] == "darwin":
+        print "Using vecLib"
+        # no test neccessary as it ships with vecLib
+        conf.env.Append(FRAMEWORKS=["vecLib"])
+    else:
+        if not conf.CheckLib('lapack'): Exit(1)
+        if not conf.CheckLib('blas'): Exit(1)
+    # This is the only way I can see to detect which fortran compiler is used
+
+    detect_fortran = conf.env.Detect(['gfortran', 'g77', 'f77'])
+    fdict = {'gfortran': 'gfortran', 'g77': 'g2c', 'f77': 'f2c'}
+    if not conf.CheckLib(fdict[detect_fortran]):
+        Exit(1)
+
     env = conf.Finish()
 
 # create the installer which handles installing the final build
@@ -73,7 +88,8 @@ installer = env.Installer()
 env.Append(CPPPATH=['#'])
 env.AppendUnique(CPPPATH=env["casaincdir"])
 env.AppendUnique(LIBPATH=env["casalibdir"])
-env.Prepend(LIBS=["casa_measures", "casa_scimath", "casa_scimath_f", 
+env.Prepend(LIBS=[ "casa_fits",
+		  "casa_measures", "casa_scimath", "casa_scimath_f", 
 		  "casa_tables", "casa_casa"])
 # add casa specific defines autodetected from platform
 # currently works for darwin/linux(_x86_64), cray doesn't work
