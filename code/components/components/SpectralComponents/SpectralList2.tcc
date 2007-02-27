@@ -75,19 +75,5 @@ void SpectralList::residual(Vector<MT> &y, const Vector<MT> &x) const {
   };
 }
 
-//# Use for Double and Float
-template void SpectralList::residual<Double>(Vector<Double> &) const;
-template void SpectralList::residual<Float>(Vector<Float> &) const;
-template void SpectralList::evaluate<Double>(Vector<Double> &) const;
-template void SpectralList::evaluate<Float>(Vector<Float> &) const;
-template void SpectralList::residual<Double>(Vector<Double> &, 
-				     Vector<Double> const &) const; 
-template void SpectralList::residual<Float>(Vector<Float> &,
-				     Vector<Float> const &) const; 
-template void SpectralList::evaluate<Double>(Vector<Double> &, 
-				     Vector<Double> const &) const; 
-template void SpectralList::evaluate<Float>(Vector<Float> &,
-				     Vector<Float> const &) const; 
-
 } //# NAMESPACE CASA - END
 

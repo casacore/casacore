@@ -127,29 +127,6 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
   return fitter.converged();
 }
 
-//# Cater for Double and Float profiles
-template Bool SpectralFit::fit<Double>(Vector<Double> const &,
-			       Vector<Double> const &,
-			       const Vector<Bool> *);
-template Bool SpectralFit::fit<Float>(Vector<Float> const &,
-			       Vector<Float> const &,
-			       const Vector<Bool> *);
-template Bool SpectralFit::fit<Float>(Vector<Float> const &,
-			       Vector<Float> const &,
-			       Vector<Bool> const &);
-template Bool SpectralFit::fit<Double>(Vector<Double> const &,
-			       Vector<Double> const &,
-			       Vector<Double> const &,
-			       const Vector<Bool> *);
-template Bool SpectralFit::fit<Float>(Vector<Float> const &,
-			       Vector<Float> const &,
-			       Vector<Float> const &,
-			       const Vector<Bool> *);
-template Bool SpectralFit::fit<Float>(Vector<Float> const &,
-			       Vector<Float> const &,
-			       Vector<Float> const &,
-			       Vector<Bool> const &);
-
 
 } //# NAMESPACE CASA - END
 

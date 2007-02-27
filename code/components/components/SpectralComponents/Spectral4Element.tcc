@@ -74,13 +74,5 @@ void SpectralElement::set(const Vector<MT> &param) {
     for (uInt i=0; i<par_p.nelements(); i++) par_p(i) = param(i);
 }
 
-//# Cater for Double and Float
-template void SpectralElement::set<Double>(Vector<Double> const &);
-template void SpectralElement::set<Float>(Vector<Float> const &);
-template void SpectralElement::set<Double>(SpectralElement::Types tp,
-				   Vector<Double> const &);
-template void SpectralElement::set<Float>(SpectralElement::Types tp,
-				   Vector<Float> const &);
-
 } //# NAMESPACE CASA - END
 
