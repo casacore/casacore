@@ -246,6 +246,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/CurvedImage2D.cc>
+#include <images/Images/CurvedImage2D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

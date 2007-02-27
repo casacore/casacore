@@ -367,7 +367,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/ImageRegrid.cc>
+#include <images/Images/ImageRegrid.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

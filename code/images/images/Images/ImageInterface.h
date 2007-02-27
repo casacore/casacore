@@ -384,6 +384,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/ImageInterface.cc>
+#include <images/Images/ImageInterface.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

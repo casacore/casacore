@@ -32,6 +32,7 @@
 #include <lattices/Lattices/LatticeExpr.h>
 #include <lattices/Lattices/LELLattCoordBase.h>
 #include <tables/Tables/TableRecord.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 

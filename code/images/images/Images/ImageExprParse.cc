@@ -40,6 +40,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Slice.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>

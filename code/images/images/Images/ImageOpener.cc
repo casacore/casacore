@@ -31,6 +31,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableInfo.h>
 #include <images/Images/PagedImage.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/OS/File.h>
 #include <casa/OS/RegularFile.h>
 #include <casa/IO/RegularFileIO.h>

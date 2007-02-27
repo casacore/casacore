@@ -1155,6 +1155,6 @@ inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/MomentCalculator.cc>
+#include <images/Images/MomentCalculator.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

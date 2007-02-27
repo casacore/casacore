@@ -258,6 +258,6 @@ private:
 } //#End casa namespace
 
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/ImageFit1D.cc>
+#include <images/Images/ImageFit1D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif

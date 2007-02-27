@@ -46,6 +46,7 @@
 
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Quanta/UnitMap.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicMath/Math.h>

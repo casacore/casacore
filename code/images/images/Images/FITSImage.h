@@ -298,6 +298,7 @@ private:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <images/Images/FITS2Image.tcc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-
-

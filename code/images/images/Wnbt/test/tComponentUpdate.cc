@@ -28,11 +28,10 @@
 #include <images/Wnbt/ComponentUpdate.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Array.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <components/ComponentModels/ComponentList.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/SkyComponent.h>
