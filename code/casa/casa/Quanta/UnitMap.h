@@ -1,5 +1,5 @@
 //# UnitMap.h: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994-2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -196,6 +196,8 @@ public:
     ~UnitMap();
 
 //# General member functions
+  // Remove all maps (just to get no memory leaks at end of program)
+  static void releaseUM();
     // Check if a unit name is known, and return its value if True
     // <group name="find">
     // Get a prefix definition from key
