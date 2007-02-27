@@ -32,6 +32,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/MUString.h>
+#include <scimath/Mathematics/AutoDiffMath.h>
 #include <scimath/Functionals/CompiledFunction.h>
 
 #include <casa/iostream.h>
@@ -457,4 +458,19 @@ Double SpectralElement::sigmaFromFWHM(const Double fwhm) {
 
 
 } //# NAMESPACE CASA - END
+
+
+//# Cater for Double and Float
+#ifdef AIPS_NO_TEMPLATE_SRC
+#include <components/SpectralComponents/Spectral4Element.tcc>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+template void SpectralElement::set<Double>(Vector<Double> const &);
+template void SpectralElement::set<Float>(Vector<Float> const &);
+template void SpectralElement::set<Double>(SpectralElement::Types tp,
+				   Vector<Double> const &);
+template void SpectralElement::set<Float>(SpectralElement::Types tp,
+				   Vector<Float> const &);
+} //# NAMESPACE CASA - END
+#endif
 

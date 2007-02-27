@@ -233,7 +233,6 @@ private:
 
 } //#End casa namespace
 #ifndef AIPS_NO_TEMPLATE_SRC
-#include <components/SpectralComponents/ProfileFit1D.cc>
+#include <components/SpectralComponents/ProfileFit1D.tcc>
 #endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-

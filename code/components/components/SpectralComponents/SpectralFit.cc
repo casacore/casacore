@@ -74,3 +74,33 @@ void SpectralFit::clear() {
 
 } //# NAMESPACE CASA - END
 
+
+
+//# Cater for Double and Float profiles
+#ifdef AIPS_NO_TEMPLATE_SRC
+#include <components/SpectralComponents/SpectralFit2.tcc>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+template Bool SpectralFit::fit<Double>(Vector<Double> const &,
+			       Vector<Double> const &,
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Bool> const &);
+template Bool SpectralFit::fit<Double>(Vector<Double> const &,
+			       Vector<Double> const &,
+			       Vector<Double> const &,
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Float> const &,
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Bool> const &);
+} //# NAMESPACE CASA - END
+#endif

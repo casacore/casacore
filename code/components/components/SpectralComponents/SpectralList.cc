@@ -221,3 +221,23 @@ ostream &operator<<(ostream &os, const SpectralList &lst) {
 
 } //# NAMESPACE CASA - END
 
+
+//# Cater for Double and Float
+#ifdef AIPS_NO_TEMPLATE_SRC
+#include <components/SpectralComponents/SpectralList2.tcc>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+template void SpectralList::residual<Double>(Vector<Double> &) const;
+template void SpectralList::residual<Float>(Vector<Float> &) const;
+template void SpectralList::evaluate<Double>(Vector<Double> &) const;
+template void SpectralList::evaluate<Float>(Vector<Float> &) const;
+template void SpectralList::residual<Double>(Vector<Double> &, 
+				     Vector<Double> const &) const; 
+template void SpectralList::residual<Float>(Vector<Float> &,
+				     Vector<Float> const &) const; 
+template void SpectralList::evaluate<Double>(Vector<Double> &, 
+				     Vector<Double> const &) const; 
+template void SpectralList::evaluate<Float>(Vector<Float> &,
+				     Vector<Float> const &) const; 
+} //# NAMESPACE CASA - END
+#endif

@@ -40,6 +40,7 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 

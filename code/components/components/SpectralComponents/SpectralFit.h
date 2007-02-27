@@ -175,6 +175,7 @@ class SpectralFit {
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <components/SpectralComponents/SpectralFit2.tcc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-
-

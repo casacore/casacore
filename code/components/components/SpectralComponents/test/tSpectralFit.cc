@@ -29,6 +29,7 @@
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicMath/Random.h>
 #include <casa/Containers/Record.h>

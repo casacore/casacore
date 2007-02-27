@@ -49,6 +49,8 @@
 #include <casa/BasicMath/Math.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MCFrequency.h>
 #include <casa/Quanta/MVFrequency.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/MVDirection.h>

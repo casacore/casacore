@@ -33,11 +33,11 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Utilities/RecordTransformable.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class String;
 #include <casa/iosfwd.h>
 
 // <summary>
@@ -370,6 +370,7 @@ ostream &operator<<(ostream &os, const SpectralElement &elem);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <components/SpectralComponents/Spectral4Element.tcc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
-
-
