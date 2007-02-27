@@ -39,8 +39,6 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Array.h>
 
-#include <casa/version.h>
-
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
 
@@ -132,10 +130,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
 
     // ORIGIN
     ostringstream buffer;
-    buffer << setfill('0') << "AIPS++ " << setw(2)
-	   << VersionInfo::majorVersion() << "." << setw(3)
-	   << VersionInfo::minorVersion() << "." << setw(2)
-	   << VersionInfo::patch();
+    buffer << setfill('0') << "casacore trunk";
     String version(buffer);
     kw.mk(FITS::ORIGIN, version.chars());
 
