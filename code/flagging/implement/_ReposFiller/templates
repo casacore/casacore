@@ -1,8 +1,0 @@
-1000 flagging/Flagging/RFCubeLattice.cc 
-     = flagging/Flagging/RFChunkStats.h 
-     template class RFCubeLattice<Float> 
-     template class RFCubeLatticeIterator<Float> 
-1010 flagging/Flagging/RFCubeLattice.cc 
-     = flagging/Flagging/RFChunkStats.h 
-     template class RFCubeLattice<uInt> 
-     template class RFCubeLatticeIterator<uInt> 
