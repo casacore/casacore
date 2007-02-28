@@ -31,6 +31,7 @@
 #include <scimath/Functionals/Gaussian1D.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Inputs/Input.h>
 #include <casa/Logging.h>

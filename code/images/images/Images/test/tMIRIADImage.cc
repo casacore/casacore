@@ -27,6 +27,7 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Array.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Inputs/Input.h>
 #include <casa/BasicMath/Math.h>
