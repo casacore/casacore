@@ -198,7 +198,7 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
 	    this->data_p  = new Block<T> (this->length_p(0));
 	    this->begin_p = this->data_p->storage();
 	}
-	setEndIter();
+	this->setEndIter();
 	objcopy (this->begin_p, other.begin_p, this->nels_p,
 		 this->inc_p(0), other.inc_p(0));
     }
