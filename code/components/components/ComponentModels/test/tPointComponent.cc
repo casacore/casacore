@@ -35,9 +35,6 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Vector.h>
-#include <tasking/Glish/GlishArray.h>
-#include <tasking/Glish/GlishValue.h>
-#include <tasking/Glish/GlishRecord.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicSL/Constants.h>
