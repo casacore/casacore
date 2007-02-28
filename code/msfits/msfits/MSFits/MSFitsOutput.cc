@@ -34,6 +34,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Containers/RecordField.h>
+#include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSTable.h>
 #include <fits/FITS/FITSDateUtil.h>
