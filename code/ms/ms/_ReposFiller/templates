@@ -15,6 +15,14 @@
      template class SimpleCountedPtr<Block<MSSelection> > 
      template class SimpleCountedConstPtr<Block<MSSelection> > 
      template class PtrRep<Block<MSSelection> > 
+1000 ms/MeasurementSets/MSSelUtil.cc
+     = ms/MeasurementSets/MSSelUtil2.cc
+     = casa/BasicSL/Complex.h
+     template class MSSelUtil<Float>
+     template class MSSelUtil<Complex>
+     template class MSSelUtil2<Bool>
+     template class MSSelUtil2<Float>
+     template class MSSelUtil2<Complex>
 1000 ms/MeasurementSets/MSTable.cc ms/MeasurementSets/MeasurementSet.h 
      template class MSTable<MSAntennaEnums::PredefinedColumns, MSAntennaEnums::PredefinedKeywords> 
      template class MSTable<MSDataDescriptionEnums::PredefinedColumns, MSDataDescriptionEnums::PredefinedKeywords> 
@@ -34,5 +42,3 @@
      template class MSTable<MSStateEnums::PredefinedColumns, MSStateEnums::PredefinedKeywords> 
      template class MSTable<MSSysCalEnums::PredefinedColumns, MSSysCalEnums::PredefinedKeywords> 
      template class MSTable<MSWeatherEnums::PredefinedColumns, MSWeatherEnums::PredefinedKeywords> 
-1000 ms/MSPlot/MsPlot.cc 
-     template class MsPlot<Float> 
