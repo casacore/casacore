@@ -175,11 +175,21 @@ protected:
   // Make the indexing step sizes.
   void baseMakeSteps();
 
+  // Throw expection if vector dimensionality is incorrect.
+  void throwNdimVector();
+
+  // Helper function for templated Vector class.
+  // It returns if this and other are conformant.
+  Bool copyVectorHelper (const ArrayBase& other);
+
 public:
   // Various helper functions.
   // <group>
   void validateConformance (const ArrayBase&) const;
   void validateIndex (const IPosition&) const;
+  void validateIndex (uInt index) const;
+  void validateIndex (uInt index1, uInt index2) const;
+  void validateIndex (uInt index1, uInt index2, uInt index3) const;
   // </group>
 
 protected:

@@ -347,6 +347,46 @@ void ArrayBase::validateIndex (const IPosition& i) const
   // OK - normal return
 }
 
+void ArrayBase::validateIndex (uInt index) const
+{
+  validateIndex (IPosition(1, index));
+}
+void ArrayBase::validateIndex (uInt index1, uInt index2) const
+{
+  IPosition inx(2);
+  inx[0] = index1;
+  inx[1] = index2;
+  validateIndex (inx);
+}
+void ArrayBase::validateIndex (uInt index1, uInt index2, uInt index3) const
+{
+  IPosition inx(3);
+  inx[0] = index1;
+  inx[1] = index2;
+  inx[2] = index3;
+  validateIndex (inx);
+}
+
+void ArrayBase::throwNdimVector()
+{
+  throw ArrayError ("Expected dimensionality 1 for a Vector<T> object");
+}
+
+Bool ArrayBase::copyVectorHelper (const ArrayBase& other)
+{
+  Bool Conform = conform2(other);
+  if (!Conform  &&  length_p(0) != 0) {
+    validateConformance(other);  // We can't overwrite, so throw exception
+  }
+  if (!Conform) { // copy in place
+    length_p         = other.length_p;
+    nels_p           = other.nels_p;
+    originalLength_p = length_p;
+    baseMakeSteps();
+  }
+  return Conform;
+}
+
 Bool ArrayBase::isStorageContiguous() const
 {
   Int i;

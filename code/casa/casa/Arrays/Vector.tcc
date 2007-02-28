@@ -52,7 +52,7 @@ template<class T> Vector<T>::Vector(uInt Length)
 template<class T> Vector<T>::Vector(const IPosition& len)
   : Array<T>(len)
 {
-    AlwaysAssert(len.nelements() == 1, ArrayError);
+    if (len.nelements() != 1) this->throwNdimVector();
 }
 
 template<class T> Vector<T>::Vector(uInt Length, const T &initialValue)
@@ -64,7 +64,7 @@ template<class T> Vector<T>::Vector(uInt Length, const T &initialValue)
 template<class T> Vector<T>::Vector(const IPosition& len, const T &initialValue)
   : Array<T>(len, initialValue)
 {
-    AlwaysAssert(len.nelements() == 1, ArrayError);
+    if (len.nelements() != 1) this->throwNdimVector();
 }
 
 template<class T> Vector<T>::Vector(const Block<T> &other, Int nr)
@@ -128,14 +128,14 @@ Vector<T>::Vector(const IPosition &shape, T *storage,
 		  StorageInitPolicy policy)
   : Array<T>(shape, storage, policy)
 {
-    AlwaysAssert(shape.nelements() == 1, ArrayError);
+    if (shape.nelements() != 1) this->throwNdimVector();
 }
 
 template<class T>
 Vector<T>::Vector(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
-    AlwaysAssert(shape.nelements() == 1, ArrayError);
+    if (shape.nelements() != 1) this->throwNdimVector();
 }
 
 template<class T> Vector<T>::~Vector()
@@ -155,9 +155,7 @@ template<class T> void Vector<T>::resize()
 template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
-    if (l.nelements() != 1)
-	throw(ArrayConformanceError("Vector<T>::resize() - attempt to form "
-				    "non-vector"));
+    if (l.nelements() != 1) this->throwNdimVector();
     if (copyValues) {
         Vector<T> oldref(*this);
 	Array<T>::resize(l);
@@ -172,50 +170,38 @@ template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
 
 
 // <thrown>
-//    <item> ArrayNDimError
+//    <item> ArrayError
 // </thrown>
 template<class T> void Vector<T>::assign (const Array<T>& other)
 {
     DebugAssert(ok(), ArrayError);
-    if (other.ndim() != 1)
-	throw(ArrayNDimError(1, other.ndim(), "Vector<T>::assign()"
-			     " - attempt to assign from non-vector"));
+    if (other.ndim() != 1) this->throwNdimVector();
     Array<T>::assign (other);
 }
 
 // <thrown>
-//    <item> ArrayNDimError
+//    <item> ArrayError
 // </thrown>
 template<class T> void Vector<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
-    if (other.ndim() != 1)
-	throw(ArrayNDimError(1, other.ndim(), "Vector<T>::reference()"
-			     " - attempt to reference non-vector"));
+    if (other.ndim() != 1) this->throwNdimVector();
     Array<T>::reference(other);
 }
 
 template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
 {
     DebugAssert(ok(), ArrayError);
-
-    if (this == &other)
-        return *this;
-
-    Bool Conform = conform(other);
-    if (Conform == False && this->length_p(0) != 0)
-	validateConformance(other);  // We can't overwrite, so throw exception
-
-    if (Conform != True) { // copy in place
-        this->data_p = new Block<T>(other.length_p(0));
-        this->begin_p = this->data_p->storage();
-        this->length_p = other.length_p;
-	this->nels_p = other.nels_p;
-	this->originalLength_p = this->length_p;
-	this->makeSteps();
+    if (this != &other) {
+        if (! this->copyVectorHelper (other)) {
+	    // Block was empty, so allocate new block.
+	    this->data_p  = new Block<T> (this->length_p(0));
+	    this->begin_p = this->data_p->storage();
+	}
+	setEndIter();
+	objcopy (this->begin_p, other.begin_p, this->nels_p,
+		 this->inc_p(0), other.inc_p(0));
     }
-    objcopy(this->begin_p, other.begin_p, this->nels_p,
-	    this->inc_p(0), other.inc_p(0));
     return *this;
 }
 
@@ -290,11 +276,7 @@ void Vector<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 {
     Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);
-    if (tmp.ndim() != 1) {
-	throw (ArrayError ("Vector::nonDegenerate (other, ignoreAxes) - "
-			   "removing degenerate axes from other "
-			   "does not result in vector"));
-    }
+    if (tmp.ndim() != 1) this->throwNdimVector();
     reference (tmp);
 }
 
@@ -302,20 +284,20 @@ template<class T>
 void Vector<T>::takeStorage(const IPosition &shape, T *storage,
 			    StorageInitPolicy policy)
 {
-    AlwaysAssert(shape.nelements() == 1, ArrayError);
+    if (shape.nelements() != 1) this->throwNdimVector();
     Array<T>::takeStorage(shape, storage, policy);
 }
 
 template<class T>
 void Vector<T>::takeStorage(const IPosition &shape, const T *storage)
 {
-    AlwaysAssert(shape.nelements() == 1, ArrayError);
+    if (shape.nelements() != 1) this->throwNdimVector();
     Array<T>::takeStorage(shape, storage);
 }
 
 template<class T> Bool Vector<T>::ok() const
 {
-    return ( (this->ndim() == 1) ? (Array<T>::ok()) : False );
+    return  this->ndim() == 1  &&  Array<T>::ok();
 }
 
 } //#End casa namespace

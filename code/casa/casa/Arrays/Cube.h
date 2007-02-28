@@ -163,9 +163,7 @@ public:
     T &operator()(uInt i1, uInt i2, uInt i3)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-        IPosition index(3);
-        index(0) = i1; index(1) = i2; index(2) = i3;
-        this->validateIndex(index);   // Throws an exception on failure
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
 #endif
 	return this->contiguous_p ? this->begin_p[i1 + i2*yinc_p + i3*zinc_p] :
                               this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
@@ -174,9 +172,7 @@ public:
     const T &operator()(uInt i1, uInt i2, uInt i3) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-        IPosition index(3);
-        index(0) = i1; index(1) = i2; index(2) = i3;
-        this->validateIndex(index);   // Throws an exception on failure
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
 #endif
 	return this->contiguous_p ? this->begin_p[i1 + i2*yinc_p + i3*zinc_p] :
                               this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];

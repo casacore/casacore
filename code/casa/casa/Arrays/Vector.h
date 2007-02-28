@@ -203,11 +203,7 @@ public:
     T &operator()(uInt index)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-	//# It would be better performance wise for this to be static, but
-	//# CFront 3.0.1 doesn't like that.
-	IPosition IndexCopy(1);
-	IndexCopy(0) = index;
-	this->validateIndex(IndexCopy);   //# Throws an exception on failure
+	this->validateIndex(index);   //# Throws an exception on failure
 #endif
         return *(this->begin_p + index*this->inc_p(0));
       }
@@ -215,11 +211,7 @@ public:
     const T &operator()(uInt index) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-	//# It would be better performance wise for this to be static, but
-	//# CFront 3.0.1 doesn't like that.
-	IPosition IndexCopy(1);
-	IndexCopy(0) = index;
-	this->validateIndex(IndexCopy);   //# Throws an exception on failure
+	this->validateIndex(index);   //# Throws an exception on failure
 #endif
         return *(this->begin_p + index*this->inc_p(0));
       }
