@@ -247,4 +247,7 @@ Bool anyNE (const T &val, const ROTableVector<T>& tv)
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/Tables/TabVecLogic.tcc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
