@@ -40,8 +40,8 @@
 #include <lattices/Lattices/LCPagedMask.h>
 #include <lattices/Lattices/LCMask.h>
 #include <lattices/Lattices/LCRegionSingle.h>
-#include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
+#include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSKeywordUtil.h>
 
 #include <casa/Quanta/UnitMap.h>

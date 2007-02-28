@@ -26,15 +26,13 @@
 //#
 //# $Id$
 
-#include <casa/version.h>
-
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageInfo.h>
 #include <lattices/Lattices/MaskedLatticeIterator.h>
 #include <lattices/Lattices/LatticeStepper.h>
-#include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
+#include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSDateUtil.h>
 #include <fits/FITS/FITSKeywordUtil.h>
 #include <fits/FITS/FITSHistoryUtil.h>
@@ -756,8 +754,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // ORIGIN
 //
     ostringstream buffer;
-    buffer << "AIPS++ version ";
-    VersionInfo::report(buffer);
+    buffer << "casacore version  trunk";
     header.define("ORIGIN", String(buffer));
 
     // Set up the FITS header

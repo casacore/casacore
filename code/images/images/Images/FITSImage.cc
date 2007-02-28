@@ -26,9 +26,8 @@
 //# $Id$
 
 #include <images/Images/FITSImage.h>
-
-#include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
+#include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSKeywordUtil.h>
 #include <images/Images/ImageInfo.h>
 #include <images/Images/ImageFITSConverter.h>

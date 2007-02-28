@@ -216,9 +216,7 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
     }
 
     ostringstream os;
-    os << "Written by casacore version ";
-    os << "trunk";
-
+    os << "Written by casacore ";
     kw.history(os.str().data());
     kw.end();
 

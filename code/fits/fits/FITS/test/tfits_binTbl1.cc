@@ -29,8 +29,8 @@
 //# Includes
 
 # include <fits/FITS/fits.h>
-# include <fits/FITS/fitsio.h>
 # include <fits/FITS/hdu.h>
+# include <fits/FITS/fitsio.h>
 
 # include <casa/iostream.h>
 # include <casa/stdlib.h>

@@ -30,6 +30,8 @@
 #ifndef IMAGES_IMAGEFITSCONVERTER_H
 #define IMAGES_IMAGEFITSCONVERTER_H
 
+#define WCSLIB_GETWCSTAB
+
 #include <casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

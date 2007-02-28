@@ -28,7 +28,6 @@
 //# Includes
 
 # include <fits/FITS/fits.h>
-# include <fits/FITS/fitsio.h>
 # include <fits/FITS/hdu.h>
 # include <casa/BasicSL/String.h>
 # include <casa/iostream.h>

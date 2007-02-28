@@ -130,7 +130,7 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
 
     // ORIGIN
     ostringstream buffer;
-    buffer << setfill('0') << "casacore trunk";
+    buffer << setfill('0') << "casacore ";
     String version(buffer);
     kw.mk(FITS::ORIGIN, version.chars());
 
