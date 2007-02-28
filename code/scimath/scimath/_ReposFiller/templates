@@ -289,34 +289,6 @@
      template class Functional<Vector<AutoDiffA<Double> >, AutoDiffA<Double> > 
 1180 casa/BasicMath/Functional.cc scimath/Mathematics/AutoDiffA.h 
      template class Functional<Vector<AutoDiffA<Float> >, AutoDiffA<Float> > 
-1000 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h scimath/Functionals/AbstractFunctionFactory.h 
-     template class Link<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
-1010 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h scimath/Functionals/AbstractFunctionFactory.h 
-     template class Link<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > 
-1000 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     = scimath/Functionals/AbstractFunctionFactory.h 
-     template class List<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
-     template class ListIter<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
-     template class ListNotice<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
-     template class ConstListIter<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
-1010 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     = scimath/Functionals/AbstractFunctionFactory.h 
-     template class List<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > 
-     template class ListIter<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > 
-     template class ListNotice<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > 
-     template class ConstListIter<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > 
-1000 casa/Containers/ListMap.cc 
-     = scimath/Functionals/AbstractFunctionFactory.h 
-     template class ListMap<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
-     template class ListMapRep<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
-     template class ListMapIterRep<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
-1010 casa/Containers/ListMap.cc 
-     = scimath/Functionals/AbstractFunctionFactory.h 
-     template class ListMap<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
-     template class ListMapRep<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
-     template class ListMapIterRep<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
 1000 casa/Containers/Map.cc casa/Containers/OrderedPair.h 
      = scimath/Functionals/AbstractFunctionFactory.h 
      template class Map<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
@@ -347,7 +319,17 @@
      template class ObjectPool<AutoDiffRep<Double>, uInt> 
 1030 casa/Containers/ObjectPool.cc scimath/Mathematics/AutoDiffRep.h 
      template class ObjectPool<AutoDiffRep<Float>, uInt> 
-1000 casa/Containers/OrderedMap.cc scimath/Mathematics/SquareMatrix.h 
+1000 casa/Containers/OrderedMap.cc 
+     = scimath/Functionals/AbstractFunctionFactory.h 
+     template class OrderedMap<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
+     template class OrderedMapRep<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
+     template class OrderedMapIterRep<String, OrderedPair<FunctionFactory<Double>*, Bool> > 
+1010 casa/Containers/OrderedMap.cc 
+     = scimath/Functionals/AbstractFunctionFactory.h 
+     template class OrderedMap<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
+     template class OrderedMapRep<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
+     template class OrderedMapIterRep<String, OrderedPair<FunctionFactory<Float>*, Bool> > 
+1020 casa/Containers/OrderedMap.cc scimath/Mathematics/SquareMatrix.h 
      template class OrderedMap<Double, SquareMatrix<Complex, 2>*> 
      template class OrderedMapRep<Double, SquareMatrix<Complex, 2>*> 
      template class OrderedMapIterRep<Double, SquareMatrix<Complex, 2>*> 
@@ -550,13 +532,13 @@
      = scimath/Mathematics/SquareMatrix.h 
      template uInt Register(OrderedMapNotice<Double, SquareMatrix<Complex, 2>*> const *) 
 1010 casa/Utilities/Register.cc casa/Containers/OrderedPair.h 
-     = casa/Containers/List.h casa/BasicSL/String.h 
+     = casa/Containers/OrderedMap.h casa/BasicSL/String.h 
      = scimath/Functionals/AbstractFunctionFactory.h 
-     template uInt Register(ListNotice<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > const *) 
+     template uInt Register(OrderedMapNotice<String, OrderedPair<FunctionFactory<Double>*, Bool> > const *) 
 1020 casa/Utilities/Register.cc casa/Containers/OrderedPair.h 
-     = casa/Containers/List.h casa/BasicSL/String.h 
+     = casa/Containers/OrderedMap.h casa/BasicSL/String.h 
      = scimath/Functionals/AbstractFunctionFactory.h 
-     template uInt Register(ListNotice<OrderedPair<String, OrderedPair<FunctionFactory<Float>*, Bool> > > const *) 
+     template uInt Register(OrderedMapNotice<String, OrderedPair<FunctionFactory<Float>*, Bool> > const *) 
 1000 casa/stdmap.h 
      = casa/BasicSL/String.h 
      = scimath/Functionals/FuncExprData.h 
