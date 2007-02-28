@@ -15,7 +15,7 @@ def run_scons(targets, extraarg=""):
         command = "scons " #+ os.path.basename(target)
         # copy the command line args into the new command
         for arg in sys.argv[1:]:
-            command += " " + arg + extraarg
+            command += " " + arg + " " + extraarg
         print "Building package: " + target
         sys.stdout.flush()
 	print command
