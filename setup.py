@@ -20,8 +20,8 @@ def run_scons(targets, extraarg=""):
         sys.stdout.flush()
 	print command
         failed = os.system(command)
-#	if failed:
-#	    sys.exit(1)
+	if failed:
+	    sys.exit(failed)
         sys.stdout.flush()
         os.chdir(cwd)
 # always build casa with install target
