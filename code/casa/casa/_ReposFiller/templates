@@ -1280,9 +1280,6 @@
      template class Link<Vector<Float> *> 
 1020 casa/Containers/Link.cc casa/Inputs/Param.h 
      template class Link<Param> 
-1030 casa/Containers/Link.cc casa/Utilities/CountedPtr.h 
-     = casa/OS/SysEvent.h 
-     template class Link<CountedPtr<SysEventTargetInfo> > 
 1040 casa/Containers/Link.cc casa/Utilities/Notice.h 
      template class Link<NoticeTarget *> 
 1050 casa/Containers/Link.cc 
@@ -1299,18 +1296,6 @@
      template class ListIter<Param> 
 1030 casa/Containers/List.cc casa/Inputs/Param.h 
      template class ListNotice<Param> 
-1040 casa/Containers/List.cc casa/Utilities/CountedPtr.h 
-     = casa/OS/SysEvent.h 
-     template class ConstListIter<CountedPtr<SysEventTargetInfo> > 
-1050 casa/Containers/List.cc casa/Utilities/CountedPtr.h 
-     = casa/OS/SysEvent.h 
-     template class List<CountedPtr<SysEventTargetInfo> > 
-1060 casa/Containers/List.cc casa/Utilities/CountedPtr.h 
-     = casa/OS/SysEvent.h 
-     template class ListIter<CountedPtr<SysEventTargetInfo> > 
-1070 casa/Containers/List.cc casa/Utilities/CountedPtr.h 
-     = casa/OS/SysEvent.h 
-     template class ListNotice<CountedPtr<SysEventTargetInfo> > 
 1080 casa/Containers/List.cc 
      template class ConstListIter<uInt> 
      template class List<uInt> 
@@ -2149,18 +2134,6 @@
      template class SimpleCountedPtr<DataConversion> 
      template class SimpleCountedConstPtr<DataConversion> 
      template class PtrRep<DataConversion> 
-1470 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
-     template class CountedConstPtr<SysEventTarget> 
-     template class CountedPtr<SysEventTarget> 
-     template class PtrRep<SysEventTarget> 
-     template class SimpleCountedConstPtr<SysEventTarget> 
-     template class SimpleCountedPtr<SysEventTarget> 
-1480 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
-     template class CountedConstPtr<SysEventTargetInfo> 
-     template class CountedPtr<SysEventTargetInfo> 
-     template class PtrRep<SysEventTargetInfo> 
-     template class SimpleCountedConstPtr<SysEventTargetInfo> 
-     template class SimpleCountedPtr<SysEventTargetInfo> 
 1490 casa/Utilities/CountedPtr.cc casa/fstream.h 
      template class CountedConstPtr<fstream> 
      template class CountedPtr<fstream> 
@@ -2280,9 +2253,6 @@
 1120 casa/Utilities/Register.cc casa/Containers/List.h 
      = casa/Inputs/Param.h 
      template uInt Register(ListNotice<Param> const *) 
-1130 casa/Utilities/Register.cc casa/Containers/List.h 
-     = casa/Utilities/CountedPtr.h casa/OS/SysEvent.h 
-     template uInt Register(ListNotice<CountedPtr<SysEventTargetInfo> > const *) 
 1140 casa/Utilities/Register.cc casa/Containers/List.h 
      template uInt Register(ListNotice<uInt> const *) 
 1150 casa/Utilities/Register.cc casa/Containers/List.h 
@@ -2297,8 +2267,6 @@
      template uInt Register(OrderedMapNotice<Int, Int> const *) 
 1190 casa/Utilities/Register.cc casa/Containers/RecordInterface.h 
      template uInt Register(RecordNotice const *) 
-1200 casa/Utilities/Register.cc casa/OS/SysEvent.h 
-     template uInt Register(SysEventTargetInfo const *) 
 1210 casa/Utilities/Register.cc casa/Quanta/MVBaseline.h 
      template uInt Register(MVBaseline const *) 
 1220 casa/Utilities/Register.cc casa/Quanta/MVDirection.h 
