@@ -33,12 +33,17 @@
 #include <casa/OS/Timer.h>
 #include <iostream>
 
+
+#ifdef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/ArrayMath.tcc>
 namespace casa {
   template Array<Float> slidingArrayMath (const Array<Float>&,
 					  const IPosition&,
 					  Float (*) (const Array<Float>&),
 					  Bool);
 }
+#endif //# AIPS_NO_TEMPLATE_SRC
+
 
 using namespace casa;
 using namespace std;
