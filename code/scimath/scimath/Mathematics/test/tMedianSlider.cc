@@ -28,6 +28,7 @@
 
 #include <casa/BasicMath/Math.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
 #include <scimath/Mathematics/MedianSlider.h>
 
