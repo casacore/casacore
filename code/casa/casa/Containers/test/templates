@@ -2,14 +2,6 @@
      template Bool allEQ(Array<Complex> const &, Complex const &) 
      template Bool allEQ(Array<DComplex> const &, DComplex const &) 
      template Bool allEQ(Array<Short> const &, Short const &) 
-1000 casa/Containers/Dlink.cc 
-     template class Dlink<Int> 
-1000 casa/Containers/Dlist.cc 
-     template class ConstDlistIter<Int> 
-1010 casa/Containers/Dlist.cc 
-     template class Dlist<Int> 
-1020 casa/Containers/Dlist.cc 
-     template class DlistIter<Int> 
 1000 casa/Containers/HashMap.cc 
      template class HashClass<String> 
 1010 casa/Containers/HashMap.cc 
@@ -72,27 +64,6 @@
      template class ListNotice<Int> 
 1000 casa/Containers/ListIO.cc 
      template ostream & operator<<(ostream &, ConstListIter<Int> const &) 
-1000 casa/Containers/ListMap.cc casa/BasicSL/String.h 
-     = casa/Containers/OrderedPair.h 
-     template class ListMapIterRep<String, OrderedPair<String, uInt> > 
-1010 casa/Containers/ListMap.cc casa/BasicSL/String.h 
-     template class ListMap<String, Int> 
-1020 casa/Containers/ListMap.cc casa/BasicSL/String.h 
-     template class ListMapIterRep<String, Int> 
-1030 casa/Containers/ListMap.cc casa/BasicSL/String.h 
-     template class ListMapRep<String, Int> 
-1040 casa/Containers/ListMap.cc casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h 
-     template class ListMap<String, OrderedPair<String, uInt> > 
-1050 casa/Containers/ListMap.cc casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h 
-     template class ListMapRep<String, OrderedPair<String, uInt> > 
-1060 casa/Containers/ListMap.cc 
-     template class ListMap<Int, Int> 
-1070 casa/Containers/ListMap.cc 
-     template class ListMapIterRep<Int, Int> 
-1080 casa/Containers/ListMap.cc 
-     template class ListMapRep<Int, Int> 
 1000 casa/Containers/Map.cc casa/BasicSL/String.h 
      = casa/Containers/OrderedPair.h 
      template class MapIterRep<String, OrderedPair<String, uInt> > 
