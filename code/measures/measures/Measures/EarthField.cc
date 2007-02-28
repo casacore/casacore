@@ -1,5 +1,5 @@
 //# EarthField.cc:  EarthField class model calculations
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998-2000,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,7 +142,14 @@ void EarthField::fillField() {
     sl_p.resize(2*PQ_LEN);
     break;
   };
-  for (Int j=0; j<4; j++) result_p[j].resize(3);
+  for (Int j=0; j<4; j++) {
+    result_p[j].resize(3);
+    for (Int k=0; k<3; ++k) result_p[j][k] = 0;
+  };
+  for (Int j=0; j<3; ++j) {
+    pval_p[j] = 0;
+    for (Int k=0; k<3; ++k) dval_p[j][k] = 0;
+  };
 }
 
 void EarthField::refresh() {

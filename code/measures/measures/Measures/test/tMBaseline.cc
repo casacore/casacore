@@ -169,7 +169,8 @@ int main()
 	  cout << "operator*:      " << x*x1 << endl;
 	  cout << "operator*       " << x*x2 << endl;
 	  cout << "operator*:      " << x1*x << endl;
-	  cout << "clone:          " << *(x.clone()) << endl;
+	  MeasValue *xc = x.clone();
+	  cout << "clone:          " << *xc << endl;
 	  cout << "getVector:      " << x.getVector() << endl;
 	  cout << "near:           " << x.near(x2) << endl;
 	  cout << "near:           " << x.near(x2, Quantity(1, "deg")) << endl;
@@ -180,6 +181,7 @@ int main()
 
 	  cout << "All MVBaseline functions: ok" << endl;
 	  cout << "----------------------------" << endl;
+	  delete xc;
 	}
 
  	cout << "Exercise all MBaseline function" << endl;
@@ -197,7 +199,8 @@ int main()
 	  cout << mb << endl;
 	  MBaseline::assure(mb);
 	  cout << "assure:         " << "ok" << endl;
-	  cout << "clone:          " << *(mb.clone()) << endl;
+	  Measure *mbc = mb.clone();
+	  cout << "clone:          " << *mbc << endl;
 	  cout << "get:            " << mb.get("cm") << endl;
 	  cout << "getAngle:       " << mb.getAngle("deg") << endl;
 	  cout << "getDefaultType: " << mb.getDefaultType() << endl;
@@ -207,6 +210,7 @@ int main()
 
 	  cout << "All MBaseline functions: ok" << endl;
 	  cout << "---------------------------" << endl;
+	  delete mbc;
 	}
       
     } catch (AipsError x) {
