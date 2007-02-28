@@ -33,6 +33,7 @@
 #include <scimath/Mathematics/AutoDiffIO.h>
 
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <scimath/Functionals/Gaussian1D.h>
 #include <casa/Inputs/Input.h>
 #include <casa/BasicMath/Math.h>
