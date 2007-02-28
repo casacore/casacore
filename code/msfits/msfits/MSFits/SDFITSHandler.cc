@@ -46,6 +46,7 @@
 #include <casa/Containers/Record.h>
 #include <fits/FITS/CopyRecord.h>
 #include <casa/Logging/LogIO.h>
+#include <measures/Measures/MCEpoch.h>
 #include <measures/TableMeasures/TableMeasDesc.h>
 #include <measures/TableMeasures/TableQuantumDesc.h>
 

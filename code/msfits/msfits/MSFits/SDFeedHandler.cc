@@ -34,6 +34,7 @@
 #include <ms/MeasurementSets/MSFeed.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
