@@ -28,7 +28,13 @@ def run_scons(targets, extraarg=""):
 xarg = ""
 if "-h" not in sys.argv[1:] and "install" not in sys.argv[1:]:
     xarg = "install"
+ccdir="casacoredir=/usr"
+for a in sys.argv[1:]:
+    if a.startswith("prefix="):
+	ccdir=a.replace("prefix", "casacoredir")
+	break
+
 run_scons(['casa'], xarg)
 run_scons(['tables', 'mirlib', 'scimath', 'measures','fits', 
 	   'lattices', 'coordinates', 'components', 'images', 
-	   'ms', 'msvis', 'mfits'])
+	   'ms', 'msvis', 'mfits'], ccdir)
