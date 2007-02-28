@@ -36,6 +36,7 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicMath/Random.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
