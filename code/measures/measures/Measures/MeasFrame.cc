@@ -30,6 +30,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Register.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures/MCFrame.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
