@@ -36,6 +36,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <scimath/Mathematics/RigidVector.h>
 #include <scimath/Mathematics/SquareMatrix.h>
 #include <casa/Arrays/IPosition.h>
@@ -367,10 +368,10 @@ inline CStokesVector applyScirc(const StokesVector& v) {
 
 // Apply conversion matrix from linear to Stokes.
 inline StokesVector& applySlinInv(StokesVector& result, const CStokesVector& v) {
-  result(0)=real(v(0)+v(3))/2;
-  result(1)=real(v(0)-v(3))/2;
-  result(2)=real(v(1)+v(2))/2;
-  result(3)=real(Complex(0.,1.0)*(v(2)-v(1))/2);
+  result(0)=std::real(v(0)+v(3))/2;
+  result(1)=std::real(v(0)-v(3))/2;
+  result(2)=std::real(v(1)+v(2))/2;
+  result(3)=std::real(Complex(0.,1.0)*(v(2)-v(1))/2);
   return result;
 }
 
@@ -382,10 +383,10 @@ inline StokesVector applySlinInv(const CStokesVector& v) {
 
 // Apply conversion matrix from circular to Stokes.
 inline StokesVector& applyScircInv(StokesVector& result, const CStokesVector& v) {
-  result(0)=real(v(0)+v(3))/2;
-  result(1)=real(v(1)+v(2))/2;
-  result(2)=real(Complex(0.,1.0)*(v(2)-v(1))/2);
-  result(3)=real(v(0)-v(3))/2;
+  result(0)=std::real(v(0)+v(3))/2;
+  result(1)=std::real(v(1)+v(2))/2;
+  result(2)=std::real(Complex(0.,1.0)*(v(2)-v(1))/2);
+  result(3)=std::real(v(0)-v(3))/2;
   return result;
 }
 
