@@ -30,4 +30,5 @@ if "-h" not in sys.argv[1:] and "install" not in sys.argv[1:]:
     xarg = "install"
 run_scons(['casa'], xarg)
 run_scons(['tables', 'mirlib', 'scimath', 'measures','fits', 
-	   'lattices', 'coordinates', 'components'])
+	   'lattices', 'coordinates', 'components', 'images', 
+	   'ms', 'msvis', 'mfits'])
