@@ -36,6 +36,7 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/Containers/RecordField.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
 #include <tables/Tables/TableError.h>
 
 
