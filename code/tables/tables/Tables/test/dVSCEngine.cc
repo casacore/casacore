@@ -130,20 +130,19 @@ void VSCExampleVSCEngine::registerClass()
 // and also takes the dRetypedArrayEngine symbols into account.
 // That is fine when linking dRetypedArrayEngine, but gives undefined
 // linkonce symbols for other test programs which might use Vector<bool> or so.
-#include <casa/Arrays/Array.cc>
-#include <casa/Arrays/MaskedArray.cc>
-#include <casa/Arrays/Vector.cc>
+#include <casa/Arrays/Array.tcc>
+#include <casa/Arrays/MaskedArray.tcc>
+#include <casa/Arrays/Vector.tcc>
 #include <casa/Containers/Block.h>
-#include <tables/Tables/ScaColData.cc>
-#include <tables/Tables/ScaColDesc.cc>
-#include <tables/Tables/ScalarColumn.cc>
-#include <tables/Tables/VirtScaCol.cc>
-#include <casa/Utilities/Compare.cc>
-#include <casa/Utilities/Copy.cc>
-#include <casa/Utilities/CountedPtr.cc>
+#include <tables/Tables/ScaColData.tcc>
+#include <tables/Tables/ScaColDesc.tcc>
+#include <tables/Tables/ScalarColumn.tcc>
+#include <tables/Tables/VirtScaCol.tcc>
+#include <casa/Utilities/Compare.tcc>
+#include <casa/Utilities/Copy.tcc>
+#include <casa/Utilities/CountedPtr.tcc>
 #include <casa/Utilities/ValTypeId.h>
 
-#include <casa/namespace.h>
 namespace casa {
 
 template class Array<VSCExample>;

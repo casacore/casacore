@@ -459,7 +459,6 @@ void c()
 #include <casa/Utilities/CountedPtr.tcc>
 #include <casa/Utilities/ValTypeId.h>
 
-#include <casa/namespace.h>
 namespace casa {
 
 template class ArrayColumnData<RetypedArrayEx1>;
