@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSelUtil.h>
+#include <ms/MeasurementSets/MSSelUtil2.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
