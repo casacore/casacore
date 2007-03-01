@@ -36,10 +36,15 @@
 
 #ifdef AIPS_NO_TEMPLATE_SRC
 #include <casa/Arrays/ArrayMath.tcc>
+#include <casa/Arrays/MaskArrMath.tcc>
 namespace casa {
   template Array<Float> slidingArrayMath (const Array<Float>&,
 					  const IPosition&,
 					  Float (*) (const Array<Float>&),
+					  Bool);
+  template Array<Float> slidingArrayMath (const MaskedArray<Float>&,
+					  const IPosition&,
+					  Float (*) (const MaskedArray<Float>&),
 					  Bool);
 }
 #endif //# AIPS_NO_TEMPLATE_SRC
