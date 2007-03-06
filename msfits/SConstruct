@@ -54,6 +54,7 @@ if not env.GetOption('clean'):
     conf = Configure(env)
     # test for cfitsio
     # do two test as cfitsio 2/3 have different include layout
+    if not conf.CheckLib("m"): Exit(1)
     if not conf.CheckLib('cfitsio'):
         if not conf.CheckHeader('fitsio.h', language='c'):
             if not conf.CheckHeader('cfitsio/fitsio.h', language='c'):
