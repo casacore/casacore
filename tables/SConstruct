@@ -4,13 +4,6 @@ import sys
 # Put the package name here, e.g. casa, tables
 PACKAGE="tables"
 
-env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
-			  'HOME' : os.environ[ 'HOME' ] 
-			  }
-		  )
-# keep a local sconsign database, rather than in very directory
-env.SConsignFile()
-
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
 opts.Add(ListOption("build", "The build type", 
@@ -20,8 +13,16 @@ opts.Add(ListOption("libtype", "The type of library to build",
 opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
 		    "/usr"))
-# add them into the environment
-opts.Update( env )
+opts.Add(("CC", "The c compiler", None))
+opts.Add(("CXX", "The c++ compiler", None))
+
+env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
+			  'HOME' : os.environ[ 'HOME' ] 
+			  },
+		  options=opts
+		  )
+# keep a local sconsign database, rather than in very directory
+env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
 if env["PACKAGE"] == "casa":

@@ -4,26 +4,28 @@ import sys
 # Put the package name here, e.g. casa, tables
 PACKAGE="components"
 
-env = Environment(
-		  ENV = { 'PATH' : os.environ[ 'PATH' ],
-			  'HOME' : os.environ[ 'HOME' ]			  
-			  }
-		  )
-# keep a local sconsign database, rather than in very directory
-env.SConsignFile()
-
-
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
 opts.Add(ListOption("build", "The build type", 
-		    "opt", ["opt", "dbg"]))
+                    "opt", ["opt", "dbg"]))
 opts.Add(ListOption("libtype", "The type of library to build", 
-		    "static", ["static", "shared"]))
+                    "static", ["static", "shared"]))
 opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
-		    "/usr"))
-# add them into the environment
-opts.Update( env )
+                    "/usr"))
+opts.Add(("CC", "The c compiler", None))
+opts.Add(("CXX", "The c++ compiler", None))
+opts.Add(("FORTRAN", "The fortran compiler", None))
+opts.Add(("f2clib", "The fortran to c library", None))
+
+env = Environment(
+		  ENV = { 'PATH' : os.environ[ 'PATH' ],
+			  'HOME' : os.environ[ 'HOME' ]			  
+			  },
+		  options=opts
+		  )
+# keep a local sconsign database, rather than in very directory
+env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
 if env["PACKAGE"] == "casa":
@@ -74,12 +76,8 @@ if not env.GetOption('clean'):
         if not conf.CheckLib('lapack'): Exit(1)
         if not conf.CheckLib('blas'): Exit(1)
     # This is the only way I can see to detect which fortran compiler is used
-
-    detect_fortran = conf.env.Detect(['gfortran', 'g77', 'f77'])
-    fdict = {'gfortran': 'gfortran', 'g77': 'g2c', 'f77': 'f2c'}
-    if not conf.CheckLib(fdict[detect_fortran]):
-        Exit(1)
-
+	
+    conf.env.CheckFortran(conf)
     env = conf.Finish()
 
 # create the installer which handles installing the final build
