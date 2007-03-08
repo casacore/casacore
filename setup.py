@@ -5,17 +5,43 @@ deps = {'casa' : None,
 	'tables': ['casa'],
 	'mirlib': ['casa'],
 	'scimath': ['casa'],
-	'measures': ['casa', 'tables', 'scimath']
+	'measures': ['tables', 'scimath'],
+	'fits': ['measures'],
+	'coordinates': ['fits'],
+	'components': ['coordinates'],
+	'lattices': ['tables', 'scimath'],
+	'ms': ['measures'],
+	'images': ['components', 'mirlib'],
+	'msfits': ['ms', 'fits'],
+	'msvis': ['ms'],
 	}
 
-def run_scons(targets, extraarg=""):
+def get_libs(pkg):
+    if pkg not in deps.keys():
+	return
+    pkgs = [pkg]
+    def getpkg(pkg, pgs):
+	plist =  deps.get(pkg)
+	if plist is None: return
+	for p in plist:
+	    pgs.insert(0, p)
+	    getpkg(p, pgs)
+    getpkg(pkg, pkgs)
+    outpkgs = []
+    # strip off duplicates
+    for i in pkgs:
+	if i not in outpkgs:
+	    outpkgs.append(i)
+    return outpkgs
+
+def run_scons(targets, args=[]):
     cwd = os.getcwd()
     for target in targets:
         os.chdir(target)
         command = "scons " #+ os.path.basename(target)
         # copy the command line args into the new command
-        for arg in sys.argv[1:]:
-            command += " " + arg + " " + extraarg
+        for arg in args:
+            command += " " + arg
         print "Building package: " + target
         sys.stdout.flush()
 	print command
@@ -24,17 +50,36 @@ def run_scons(targets, extraarg=""):
 	    sys.exit(failed)
         sys.stdout.flush()
         os.chdir(cwd)
-# always build casa with install target
-xarg = ""
-if "-h" not in sys.argv[1:] and "install" not in sys.argv[1:]:
-    xarg = "install"
-ccdir="casacoredir=/usr"
-for a in sys.argv[1:]:
-    if a.startswith("prefix="):
-	ccdir=a.replace("prefix", "casacoredir")
-	break
 
-run_scons(['casa'], xarg)
-run_scons(['tables', 'mirlib', 'scimath', 'measures','fits', 
+args = sys.argv[1:]
+if "-h" not in args:
+    if "install" not in args:
+	args.append("install")
+	pth = "./stage"
+	if not os.path.exists(pth):
+	    os.mkdir(pth)
+	for a in args:
+	    if a.startswith("prefix="):
+		args.remove(a)
+	    if a.startswith("casacoredir="):
+		args.remove(a)
+	args.append("prefix=%s" % os.path.abspath(pth))
+	args.append("casacoredir=%s" % os.path.abspath(pth))
+    else:
+	hasprefix = False
+	for a in args:
+	    hasprefix = a.startswith("prefix=")
+	    if hasprefix:
+		args.append(a.replace("prefix", "casacoredir"))
+		break
+	if not hasprefix:
+	    args.append("casacoredir=/usr")
+# build all by default
+tobuild = ['casa', 'tables', 'mirlib', 'scimath', 'measures','fits', 
 	   'lattices', 'coordinates', 'components', 'images', 
-	   'ms', 'msvis', 'mfits'], ccdir)
+	   'ms', 'msvis', 'msfits']
+for k in deps.keys():
+    if k in args:
+	tobuild = get_libs(k)
+	args.remove(k)
+run_scons(tobuild, args)
