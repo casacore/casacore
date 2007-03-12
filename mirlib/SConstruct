@@ -15,6 +15,7 @@ opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
                     "/usr"))
 opts.Add(("CC", "The c compiler", None))
+opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
