@@ -247,7 +247,7 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
     }
   } else {
     if (itsRefIntCol != 0) {
-      locMRef.set ((*itsRefIntCol)(rownr));
+      locMRef.set (measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
     } else if (itsRefStrCol != 0) {
       typename M::Types tp;
       M::getType (tp, (*itsRefStrCol)(rownr));
@@ -297,7 +297,7 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
 	  M::getType (tp, sr_p[i]);
 	  tmpMRef.set (tp);
 	} else {
-	  tmpMRef.set (r_p[i]);
+	  tmpMRef.set (measDesc().getRefDesc().tab2cur(r_p[i]));
 	}
       } else {
 	tmpMRef.set (locMRef.getType());
@@ -596,7 +596,8 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
       locMRef.set (tp);
     }
     if (itsRefIntCol != 0) {
-      itsRefIntCol->put (rownr, tp);
+      uInt tabRefCode = measDesc().getRefDesc().cur2tab (tp);
+      itsRefIntCol->put (rownr, tabRefCode);
     } else if (itsRefStrCol != 0) {
       itsRefStrCol->put (rownr, M::showType(tp));
     }
@@ -657,7 +658,7 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
       if (strRefs) {
 	sr_p[i] = M::showType(refCode);
       } else {
-	r_p[i] = refCode;
+	r_p[i] = measDesc().getRefDesc().cur2tab (refCode);
       }
     }
     if (offsetPerElem) {

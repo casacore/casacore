@@ -227,7 +227,7 @@ MeasRef<M> ROScalarMeasColumn<M>::makeMeasRef (uInt rownr) const
       M::getType (tp, (*itsRefStrCol)(rownr));
       locMRef.set (tp);
     } else {
-      locMRef.set ((*itsRefIntCol)(rownr));
+      locMRef.set (measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
     }
   }
   if (itsOffsetCol != 0) {
@@ -261,7 +261,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
   itsRefStrCol (0),
   itsOffsetCol (0)
 {
-  const TableMeasDescBase& tmDesc = measDesc();
+  TableMeasDescBase& tmDesc = measDesc();
       
   // Create the data column.  If the underlying measure can handle a
   // single value for its data then use a ScalarColumn otherwise an
@@ -272,7 +272,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
     itsArrDataCol = new ArrayColumn<Double>(tab, columnName);
  }
       
-  // Set up the reference code component of the MeasRef
+  // Set up the reference code component of the MeasRef.
   if (tmDesc.isRefCodeVariable()) {
     const String& refColName = tmDesc.refColumnName();
     if ((tab.tableDesc().columnDesc(refColName).dataType() == TpString)) {
@@ -294,6 +294,8 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
   // Only need to convert (during a put) if some component of the reference
   // for the column is fixed.
   itsConvFlag = (itsVarRefFlag == False) || (itsOffsetCol == 0);
+  // For an old table write the reference codes and types.
+  tmDesc.writeIfOld (tab);
 }
 
 template<class M>
@@ -327,6 +329,7 @@ void ScalarMeasColumn<M>::cleanUp()
 template<class M>
 void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
 {
+  cleanUp();
   ROScalarMeasColumn<M>::reference(that);
   itsConvFlag   = that.itsConvFlag;
   itsArrDataCol = that.itsArrDataCol;
@@ -459,7 +462,8 @@ void ScalarMeasColumn<M>::put (uInt rownr, const M& meas)
     if (itsRefStrCol != 0) {
       itsRefStrCol->put(rownr, M::showType(locMeas.getRef().getType()));
     } else {
-      itsRefIntCol->put(rownr, locMeas.getRef().getType());
+      uInt tp = locMeas.getRef().getType();
+      itsRefIntCol->put(rownr, measDesc().getRefDesc().cur2tab (tp));
     }
   }
   if (itsOffsetCol != 0) {

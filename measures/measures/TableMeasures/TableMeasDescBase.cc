@@ -110,7 +110,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
   p->itsValue = TableMeasValueDesc (tab.tableDesc(), columnName);
   p->itsMeasType = TableMeasType(measHolder.asMeasure());
   p->itsUnits = units;
-  p->itsRef = TableMeasRefDesc (measInfo, tab, *p);
+  p->itsRef = TableMeasRefDesc (measInfo, tab, measHolder, *p);
   return p;
 }
 
@@ -155,6 +155,18 @@ void TableMeasDescBase::write (Table& tab)
   itsRef.write (tab, measInfo, *this);
   // Write the MEASINFO record into the keywords of the value column.
   itsValue.write (tab, measInfo);
+}
+
+void TableMeasDescBase::writeIfOld (const Table& tab)
+{
+  if (! itsRef.hasRefTab()) {
+    write (const_cast<Table&>(tab));
+  }
+}
+
+void TableMeasDescBase::initTabRef (const MeasureHolder& measHolder)
+{
+  itsRef.initTabRef (measHolder);
 }
 
 void TableMeasDescBase::setMeasUnits (const Measure& meas,

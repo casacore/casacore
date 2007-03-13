@@ -116,6 +116,10 @@ public:
   void write (Table&);
   // </group>
 
+  // Make the descriptor persistent if there was no refcode vector.
+  // This is only needed for old tables without such vectors.
+  void writeIfOld (const Table&);
+
   // Get the name of the underlying column.
   const String& columnName() const
     { return itsValue.columnName(); }
@@ -134,7 +138,7 @@ public:
     { return itsRef.columnName(); }
 
   // Returns a reference to its measure reference descriptor.
-  const TableMeasRefDesc& getRefDesc()
+  const TableMeasRefDesc& getRefDesc() const
     { return itsRef; }
 
   // Get the name of the offset column. Empty string is returned if no
@@ -195,6 +199,9 @@ public:
   static Bool hasMeasures (const ROTableColumn& column);
 
 protected:
+  // Set the initial reference codes and types in the table.
+  void initTabRef (const MeasureHolder& measHolder);
+
   // Set the measure and possible units.
   void setMeasUnits (const Measure& meas,
 		     const Vector<Quantum<Double> >& val,

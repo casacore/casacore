@@ -31,6 +31,7 @@
 //# Includes
 #include <measures/TableMeasures/TableMeasOffsetDesc.h>
 #include <casa/Quanta/Unit.h>
+#include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -94,11 +95,22 @@ class TableRecord;
 // reference code will be stored per array (row) of Measures.  However,
 // attempting to associate an Array column for references with a
 // ScalarMeasColumn will generate an exception.
+// <note>
+//  Because the reference codes stored are the enums defined in the Measures
+//  classes, it is possible that they change over time. The type strings,
+//  however, wille never change. Therefore the reference codes and types
+//  valid at the time of the table creation, are stored in the column keywords
+//  if the reference codes are kept in an integer column.
+//  <br>
+//  This has only been added in March 2007, but is fully backward compatible.
+//  Older tables will get the codes and types stored when accessed for
+//  read/write.
+// </note>
 //
 // <note role=caution>
-//     When storing Measures into a Measure column with a fixed reference code
-//     the reference code component of the Measures stored is
-//     ignored.
+//  When storing Measures into a Measure column with a fixed reference code
+//  the reference code component of the Measures stored is
+//  ignored.
 // </note>
 // </synopsis>
 
@@ -180,6 +192,7 @@ public:
   // Not useful for the public.
   TableMeasRefDesc (const TableRecord& measInfo,
 		    const Table&,
+		    const MeasureHolder& measHolder,
 		    const TableMeasDescBase&);
 
   // Copy constructor (copy semantics)
@@ -201,6 +214,15 @@ public:
   // Return the name of its variable reference code column.
   const String& columnName() const
     { return itsColumn; }
+
+  // Is the reference code variable and stored in an integer column?
+  Bool isRefCodeColumnInt() const
+    { return itsRefCodeColInt; }
+
+  // Do the keywords contain the reference codes and types.
+  // For old tables this might not be the case.
+  Bool hasRefTab() const
+    { return itsHasRefTab; }
 
   // Returns True if the reference has an offset.
   Bool hasOffset() const
@@ -240,13 +262,65 @@ public:
   void write (Table&, TableRecord& measInfo, const TableMeasDescBase&);
   // </group>
 
+  // Initialize the table reference codes and types and
+  // the maps (mapping a code onto itself).
+  void initTabRef (const MeasureHolder& measHolder);
+
+  // Reference codes can be persistent in tables.
+  // Because their enum values can change, a mapping of current table
+  // to table value is maintained. The mapping is created using their
+  // never-changing string representations.
+  // These functions convert current refcode to and from table refcode.
+  // <group>
+  uInt tab2cur (uInt tabRefCode) const;
+  uInt cur2tab (uInt curRefCode) const;
+  // </group>
+
+  // Set the function used to get all reference codes for a MeasureHolder.
+  // This is not reaaly needed for normal practice, but makes it possible
+  // to add extra codes when testing.
+  // <br> The default function simply calls MeasureHolder.asMeasure.allTypes.
+  // <group>
+  typedef void TypesFunc (Vector<String>& types,
+			  Vector<uInt>& codes, const MeasureHolder&);
+  static void setTypesFunc (TypesFunc* func)
+    { theirTypesFunc = func; }
+  static void defaultTypesFunc (Vector<String>& types,
+				Vector<uInt>& codes, const MeasureHolder&);
+  static TypesFunc* theirTypesFunc;
+  // </group>
+
 private:
   uInt itsRefCode;
   // The name of column containing its variable references.
   String itsColumn;
+  // Is the reference code column a string column?
+  Bool   itsRefCodeColInt;
+  // Do the keywords contain the reference codes and types?
+  Bool   itsHasRefTab;
   //# Its reference offset.
   TableMeasOffsetDesc* itsOffset; 	
+  //# Define the vectors holding the measref codes and types.
+  //# These are the codes as used in the table, which might be different
+  //# from the current values.
+  Vector<String> itsTabRefTypes;
+  Vector<uInt>   itsTabRefCodes;
+  //# Define the mappings of table measref codes to current ones and back.
+  //# There are only filled in and used if a variable reference code is used.
+  Block<Int> itsTab2Cur;
+  Block<Int> itsCur2Tab;
 
+  // Fill the reference code mappings for table<->current.
+  // <group>
+  void initTabRefMap();
+  void fillTabRefMap (const MeasureHolder& measHolder);
+  uInt fillMap (Block<Int>& f2t,
+		const Vector<uInt>& codesf,
+		const Vector<String>& typesf,
+		Vector<uInt>& codest,
+		Vector<String>& typest,
+		Int maxnr);
+  // </group>
 
   // Write the actual keywords.
   void writeKeys (TableRecord& measInfo, 
@@ -254,7 +328,7 @@ private:
 
   // Throw an exception if the column doesn't exist or is of the
   // wrong type.
-  void checkColumn (const TableDesc& td) const;
+  void checkColumn (const TableDesc& td);
 };
 
 

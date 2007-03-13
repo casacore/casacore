@@ -28,6 +28,7 @@
 //# Includes
 #include <measures/TableMeasures/TableMeasDesc.h>
 #include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasureHolder.h>
 #include <casa/Quanta/Unit.h>
 #include <tables/Tables/TableDesc.h>
 #include <casa/Arrays/Vector.h>
@@ -63,11 +64,16 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 				 const TableMeasRefDesc& ref)
 : TableMeasDescBase(value, ref)
 {
+  // Set the units of this measure.
   M meas;
   Vector<Quantum<Double> > val;
   val = meas.getValue().getTMRecordValue();
   Vector<Unit> u;
   setMeasUnits (meas, val, u);
+  // If the reference codes are variable, set the types.
+  if (ref.isRefCodeColumnInt()) {
+    initTabRef (MeasureHolder(meas));
+  }
 }
 
 template<class M>
@@ -80,6 +86,9 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
   Vector<Quantum<Double> > val;
   val = meas.getValue().getTMRecordValue();
   setMeasUnits (meas, val, u);
+  if (ref.isRefCodeColumnInt()) {
+    initTabRef (MeasureHolder(meas));
+  }
 }
 
 template<class M>

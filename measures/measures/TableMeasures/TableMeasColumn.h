@@ -124,8 +124,12 @@ public:
   Bool isDefined (uInt rownr) const;
 
   // Get access to the TableMeasDescBase describing the column.
+  // <group>
   const TableMeasDescBase& measDesc() const
     { return *itsDescPtr; }
+  TableMeasDescBase& measDesc()
+    { return *itsDescPtr; }
+  // </group>
 
   // Test if the object is null.
   Bool isNull() const

@@ -108,6 +108,10 @@
 1000 casa/Utilities/PtrHolder.cc 
      = measures/Measures/Measure.h 
      template class PtrHolder<Measure> 
+1000 casa/Utilities/LinearSearch.cc
+     = casa/Arrays/Vector.h casa/BasicSL/String.h
+     template Int linearSearch1 (const Vector<String>&, const String&, uInt)
+     template Int linearSearchBrackets (Bool&, const uInt* const &, const uInt&, uInt, uInt)
 1000 casa/Utilities/Register.cc measures/Measures/MBaseline.h 
      template uInt Register(MBaseline const *) 
 1010 casa/Utilities/Register.cc measures/Measures/MDirection.h 
