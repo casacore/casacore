@@ -1,2 +1,2 @@
 #!/bin/sh
-exec assay tTapeIO interactive=False
+./tTapeIO interactive=False

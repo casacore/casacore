@@ -22,8 +22,8 @@ if [ $# != 0 ]
 then
     if [ $1 != 0 ]
     then
-        tFile $2
+        ./tFile $2
     fi
 else
-    tFile
+    ./tFile
 fi
