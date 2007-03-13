@@ -1,6 +1,16 @@
 import os, glob
 import SCons.Defaults
 
+def libpath2ldpath(pth):
+    ldpath=""
+    for p in pth:
+	if isinstance(p, str):
+	    ldpath += p
+	else:
+	    ldpath += p.abspath 
+	ldpath += os.path.pathsep
+    return ldpath[:-1]
+
 # import root environment
 Import( ["buildenv", "installer"])
 myenv = buildenv.Copy()
@@ -81,15 +91,25 @@ if myenv["tests"]:
 	tdir = os.path.split(i)[0]
 	# include location of test headers
 	testenv.AppendUnique(CPPPATH=[tdir])			
-	# out put gos into the root/test directory
+	# output goes into the root/tests directory
 	toutfile = os.path.join("#","tests", tinfile)
 	tapp = testenv.Program(toutfile, source=i)
+
 	# run assay here ....
-#	f=File(toutfile).abspath
-#	log = File("#/tests/tests.log")
-#	assay="/Users/mar637/repos/casacore/code/tables/casacore_assay "
-#	testenv.Command(log, None,
-#			assay+f+" > $TARGET")
+	f=File(toutfile).abspath
+	# dummy source to force execution for each test
+	dummy = File("#/tests/%s.dummy" % f)
+	ldpath = "LD_LIBRARY_PATH"
+	if testenv["PLATFORM"] == 'darwin':
+	    ldpath = "DYLD_LIBRARY_PATH"
+	testenv["ASSAYENV"] = \
+	    'AIPSPATH="tests" %s=%s' % \
+	    (ldpath, libpath2ldpath(testenv["LIBPATH"]))
+	testenv["ASSAY"] = os.path.join(testenv["casacoredir"], 
+					"bin", 
+					"casacore_assay")
+	testenv.Command(dummy, None, ['@cd tests', 
+					 '-@$ASSAYENV $ASSAY %s' % f])
 
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )
