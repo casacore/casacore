@@ -48,6 +48,7 @@ TableExprNodeSet* settp;
 %token <val> REGEX
 %token <val> PATTERN
 %token IN
+%token INCONE
 %token BETWEEN
 %token LIKE
 %token EQREGEX
@@ -68,6 +69,7 @@ TableExprNodeSet* settp;
 %token EMPTYOPEN
 %token CLOSEDEMPTY
 %token EMPTYCLOSED
+%type <val> unit
 %type <node> whexpr
 %type <node> orexpr
 %type <node> andexpr
@@ -75,6 +77,7 @@ TableExprNodeSet* settp;
 %type <node> arithexpr
 %type <node> inxexpr
 %type <node> simexpr
+%type <node> simbexpr
 %type <node> set
 %type <node> singlerange
 %type <settp> subscripts
@@ -229,6 +232,17 @@ relexpr:   arithexpr
                delete $4;
 	       delete $6;
            }
+         | arithexpr INCONE arithexpr {
+	       $$ = new TableExprNode (anyCone (*$1, *$3));
+               delete $1;
+               delete $3;
+           }
+         | arithexpr NOT INCONE arithexpr {
+	       TableExprNode node(anyCone (*$1, *$4));
+	       $$ = new TableExprNode (!node);
+               delete $1;
+               delete $4;
+           }
          ;
 
 arithexpr: inxexpr
@@ -277,13 +291,22 @@ arithexpr: inxexpr
 inxexpr:   simexpr
          | simexpr LBRACKET subscripts RBRACKET {
                $$ = new TableExprNode (TableParseSelect::handleSlice
-				       (*$1, *$3, TaQLStyle()));
+				       (*$1, *$3, RecordGram::theirTaQLStyle));
 	       delete $1;
 	       delete $3;
 	   }
          ;
 
-simexpr:   LPAREN orexpr RPAREN
+simexpr:   simbexpr
+               { $$ = $1; }
+         | simbexpr unit {
+	       $$ = new TableExprNode ($1->useUnit ($2->str));
+	       delete $1;
+	       delete $2;
+           }
+         ;
+
+simbexpr:  LPAREN orexpr RPAREN
                { $$ = $2; }
          | NAME LPAREN elemlist RPAREN {
                $$ = new TableExprNode (RecordGram::handleFunc ($1->str, *$3));
@@ -309,6 +332,14 @@ simexpr:   LPAREN orexpr RPAREN
          | set {
 	       $$ = $1;
 	   }
+         ;
+
+unit:      NAME            /* simple unit */
+           { $$ = $1; }
+         | FLDNAME         /* unit with . */
+           { $$ = $1; }
+         | STRINGLITERAL   /* compound unit (with special characters) */
+           { $$ = $1; }
          ;
 
 set:       LBRACKET elems RBRACKET {

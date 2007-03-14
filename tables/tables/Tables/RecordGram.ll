@@ -49,13 +49,17 @@
    In a NAME the backslash can be used to escape special characters like -.
    In that way a name like DATE-OBS can be given as DATE\-OBS.
 */
-WHITE     [ \t\n]*
+WHITE1    [ \t\n]
+WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
-COMPLEX   {FLINT}"i"
+COMPLEX   {FLINT}[ij]
+TRUE      T|([Tt][Rr][Uu][Ee])
+FALSE     F|([Ff][Aa][Ll][Ss][Ee])
+FLINTUNIT {FLINT}[a-zA-Z]+
 
 MONTH     ("-"{INT}?"-")|("-"?[A-Za-z]+"-"?)
 DATEH     {INT}{MONTH}{INT}
@@ -65,12 +69,10 @@ DTIMEHM   {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEHM}|{DTIMEC}
 DATETIME  {DATE}([-/]{DTIME})?
-TIMESL    "/"{DTIME}
 
-TIMEU     {FLINT}[a-zA-Z]+
-POSDM     {INT}[dD]({INT}?([mM]({FLINT})?)?)?
+POSDM     {INT}[dD]{INT}[mM]{FLINT}?
 POSD      {INT}"."{INT}?"."{FLINT}?
-TIME      {DTIMEHM}|{TIMEU}|{POSDM}|{POSD}
+TIME      {DTIMEHM}|{POSDM}|{POSD}
 /*
      positions with colons cannot be allowed, because they interfere
      with the interval syntax (and a starting slash is rather ambiguous).
@@ -83,7 +85,10 @@ UQSTRING   \"[^\"\n]*\n
 UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
+BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
+LIKE      [Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
+INCONE    [Ii][Nn]{WHITE}[Cc][Oo][Nn][Ee]{WHITE1}
 AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
 NOT       [Nn][Oo][Tt]
@@ -93,6 +98,10 @@ REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
 REGEX3    m#[^#]+#
 REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+FREGEX1   f"/"[^/]+"/"
+FREGEX2   f%[^%]+%
+FREGEX3   f#[^#]+#
+FREGEX    {FREGEX1}|{FREGEX2}|{FREGEX3}
 PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
 PATT3     p#[^#]+#
@@ -106,6 +115,10 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 {IN}      {
             recordGramPosition() += yyleng;
             return IN;
+          }
+{INCONE}  {
+            recordGramPosition() += yyleng;
+            return INCONE;
           }
 "["       {
             recordGramPosition() += yyleng;
@@ -133,6 +146,8 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 ">"       { recordGramPosition() += yyleng; return GT; }
 "<="      { recordGramPosition() += yyleng; return LE; }
 "<"       { recordGramPosition() += yyleng; return LT; }
+{BETWEEN} { recordGramPosition() += yyleng; return BETWEEN; }
+{LIKE}    { recordGramPosition() += yyleng; return LIKE; }
 "&&"      { recordGramPosition() += yyleng; return AND; }
 {AND}     { recordGramPosition() += yyleng; return AND; }
 "||"      { recordGramPosition() += yyleng; return OR; }
@@ -153,6 +168,9 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 
 
  /* Literals */
+ /* TIME must be done before FLINTUNIT, otherwise something like 2d1m is
+    recognized as FLINTUNIT instead of TIME.
+    Similarly COMPLEX must be done before FLINTUNIT. */
 {COMPLEX} {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
@@ -182,6 +200,20 @@ PATT      {PATT1}|{PATT2}|{PATT3}
             }
             return LITERAL;
 	  }
+{TRUE}    {
+            recordGramPosition() += yyleng;
+            lvalp->val = new RecordGramVal();
+	    lvalp->val->type = 'b';
+	    lvalp->val->bval = True;
+	    return LITERAL;
+	  }
+{FALSE}   {
+            recordGramPosition() += yyleng;
+            lvalp->val = new RecordGramVal();
+	    lvalp->val->type = 'b';
+	    lvalp->val->bval = False;
+	    return LITERAL;
+	  }
 {STRING}  {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
@@ -203,6 +235,17 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
 	  }
+{FLINTUNIT} {
+            recordGramPosition() += yyleng;
+            double v;
+            char unit[32];
+	    sscanf (RecordGramtext, "%lf%31s", &v, unit);
+            lvalp->val = new RecordGramVal();
+	    lvalp->val->type = 'f';
+	    lvalp->val->str = unit;
+	    return LITERAL;
+	  }
+
 
  /* regular expression and pattern handling */
 "~"       {
@@ -214,7 +257,15 @@ PATT      {PATT1}|{PATT2}|{PATT3}
             return NEREGEX;
           }
 <REGEXstate>{REGEX} {
-            tableGramPosition() += yyleng;
+            recordGramPosition() += yyleng;
+            lvalp->val = new RecordGramVal();
+	    lvalp->val->type = 's';
+	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
+            BEGIN(EXPRstate);
+	    return REGEX;
+	  }
+<REGEXstate>{FREGEX} {
+            recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
@@ -222,7 +273,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	    return REGEX;
 	  }
 <REGEXstate>{PATT} {
-            tableGramPosition() += yyleng;
+            recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);

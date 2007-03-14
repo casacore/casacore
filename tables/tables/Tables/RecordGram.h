@@ -118,7 +118,8 @@ class RecordGramVal
 {
 public:
     Int      type;          //# i=Int, f=Double, c=DComplex, s=String t=Table
-    String   str;           //# string literal; table name; field name
+    String   str;           //# string literal; table name; field name; unit
+    Bool     bval;          //# bool literal
     Int      ival;          //# integer literal
     Double   dval[2];       //# Double/DComplex literal
     Table    tab;           //# Table (from query in e.g. FROM clause)
@@ -146,6 +147,13 @@ public:
 // and bison parser.
 // This stores the information by constructing RecordGram objects
 // as needed and storing them in a List.
+//
+// An expression can be given as a string and parsed by the <src>parse</src>
+// function.
+// The grammar used is as much as possible the same as that for the
+// WHERE clause in TaQL (see AIPS++ note 199).
+// It is possible to set the TaQL style to use by setting
+// <src>theirTaQLStyle</src> before calling the parse functions.
 // </synopsis> 
 
 // <motivation>
@@ -190,6 +198,10 @@ public:
     // Set the final node pointer.
     static void setNodePtr (TableExprNode* nodePtr)
         { theirNodePtr = nodePtr; }
+
+    // Define the global TaQLStyle to use.
+    // By default it is glish style.
+    static TaQLStyle theirTaQLStyle;
 
 private:
     // Do the conversion of an expression string to an expression tree.

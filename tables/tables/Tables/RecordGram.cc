@@ -68,6 +68,7 @@ static Int          posRecordGram = 0;
 const RecordInterface* RecordGram::theirRecPtr = 0;
 TableExprNode* RecordGram::theirNodePtr = 0;
 const Table* RecordGram::theirTabPtr = 0;
+TaQLStyle RecordGram::theirTaQLStyle;
 
 
 //# Parse the command.
@@ -153,26 +154,26 @@ TableExprNode RecordGram::doParse (const String& expression)
 //# The leading and trailing " is removed from a string.
 TableExprNode RecordGram::handleLiteral (RecordGramVal* val)
 {
-    TableExprNodeRep* tsnp = 0;
+    TableExprNode expr;
     switch (val->type) {
+    case 'b':
+	expr = TableExprNode (val->bval);
+	break;
     case 'i':
-	tsnp = new TableExprNodeConstDouble (Double (val->ival));
+	expr = TableExprNode (val->ival);
 	break;
     case 'f':
-	tsnp = new TableExprNodeConstDouble (val->dval[0]);
+	expr = TableExprNode (val->dval[0]);
+	if (! val->str.empty()) {
+	    expr = expr.useUnit (val->str);
+	}
 	break;
     case 'c':
-	tsnp = new TableExprNodeConstDComplex
-	                   (DComplex (val->dval[0], val->dval[1]));
-	break;
-    case 'b':
-        tsnp = new TableExprNodeConstBool (val->dval[0]);
+	expr= TableExprNode (DComplex (val->dval[0], val->dval[1]));
 	break;
     case 's':
-    {
-	tsnp = new TableExprNodeConstString (val->str);
+	expr = TableExprNode (val->str);
 	break;
-    }
     case 'd':
       {
 	MUString str (val->str);
@@ -180,7 +181,7 @@ TableExprNode RecordGram::handleLiteral (RecordGramVal* val)
 	if (! MVTime::read (res, str)) {
 	    throw (TableInvExpr ("invalid date string " + val->str));
 	}
-	tsnp = new TableExprNodeConstDate (MVTime(res));
+	expr = TableExprNode (MVTime(res));
       }
 	break;
     case 't':
@@ -193,13 +194,14 @@ TableExprNode RecordGram::handleLiteral (RecordGramVal* val)
 	if (! MVAngle::read (res, val->str)) {
 	    throw (TableInvExpr ("invalid time/pos string " + val->str));
 	}
-	tsnp = new TableExprNodeConstDouble (MVAngle(res).radian());
+	expr = TableExprNode (MVAngle(res).radian());
+	expr = expr.useUnit ("rad");
       }
 	break;
     default:
 	throw (TableInvExpr ("RecordGram: unhandled literal type"));
     }
-    return tsnp;
+    return expr;
 }
 
 TableExprNode RecordGram::handleField (const String& name)
