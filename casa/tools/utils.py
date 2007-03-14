@@ -60,8 +60,9 @@ def generate(env):
 		if not conf.CheckLib(env["f2clib"]):
 		    Exit(1)
 	if conf.env["FORTRAN"].startswith("g77"):
-	    conf.env.Append(SHFORTRANFLAGS="-Wno-globals")
-	    conf.env.Append(FORTRANFLAGS="-Wno-globals")
+            fflags = ["-Wno-globals", "-fno-second-underscore"]
+	    conf.env.Append(SHFORTRANFLAGS=fflags)
+	    conf.env.Append(FORTRANFLAGS=fflags)
     env.CheckFortran = CheckFortran
 
     def null_action(target, source, env): return 0
