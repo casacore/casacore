@@ -10,8 +10,6 @@ ffs = myenv.SGlob("*.f", recursive=False )
 # build dir
 rootdir=myenv.Dir("#").abspath
 libname= "casa_" + myenv["PACKAGE"] + "_f"
-if myenv["buildtype"] == "dbg":
-    libname += "_debug"
 if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [ffs])
