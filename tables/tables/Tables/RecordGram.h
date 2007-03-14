@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/TableGram.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/Table.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
