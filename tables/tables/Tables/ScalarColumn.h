@@ -205,12 +205,11 @@ private:
 
 protected:
     // Keep a switch to determine if an entire column can be accessed.
-    // All switches are Bool*, because they can be changed in a const function.
     // True = yes;  False = no.
-    Bool* canAccessColumn_p;
+    mutable Bool canAccessColumn_p;
     // Keep a switch to know if access knowledge is permanent or has
     // to be asked again the next time.
-    Bool* reaskAccessColumn_p;
+    mutable Bool reaskAccessColumn_p;
 };
 
 

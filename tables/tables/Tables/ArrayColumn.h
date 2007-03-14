@@ -283,16 +283,15 @@ private:
 protected:
     // Keep switches to determine if a slice or an entire column can
     // be accessed or the change of an array can be changed.
-    // All switches are Bool*, because they can be changed in a const function.
     // True = yes;  False = no.
-    Bool* canAccessSlice_p;
-    Bool* canAccessColumn_p;
-    Bool* canAccessColumnSlice_p;
+    mutable Bool canAccessSlice_p;
+    mutable Bool canAccessColumn_p;
+    mutable Bool canAccessColumnSlice_p;
     // Keep switches to know if access knowledge is permanent or has
     // to be asked again the next time.
-    Bool* reaskAccessSlice_p;
-    Bool* reaskAccessColumn_p;
-    Bool* reaskAccessColumnSlice_p;
+    mutable Bool reaskAccessSlice_p;
+    mutable Bool reaskAccessColumn_p;
+    mutable Bool reaskAccessColumnSlice_p;
 };
 
 

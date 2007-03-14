@@ -42,24 +42,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class T>
 ROArrayColumn<T>::ROArrayColumn()
 : ROTableColumn (),
-  canAccessSlice_p         (new Bool(False)),
-  canAccessColumn_p        (new Bool(False)),
-  canAccessColumnSlice_p   (new Bool(False)),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True))
+  canAccessSlice_p         (False),
+  canAccessColumn_p        (False),
+  canAccessColumnSlice_p   (False),
+  reaskAccessSlice_p       (True),
+  reaskAccessColumn_p      (True),
+  reaskAccessColumnSlice_p (True)
 {}
 
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const Table& tab,
 				 const String& columnName)
 : ROTableColumn (tab, columnName),
-  canAccessSlice_p         (new Bool(False)),
-  canAccessColumn_p        (new Bool(False)),
-  canAccessColumnSlice_p   (new Bool(False)),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True))
+  canAccessSlice_p         (False),
+  canAccessColumn_p        (False),
+  canAccessColumnSlice_p   (False),
+  reaskAccessSlice_p       (True),
+  reaskAccessColumn_p      (True),
+  reaskAccessColumnSlice_p (True)
 {
     checkDataType();
 }
@@ -67,12 +67,12 @@ ROArrayColumn<T>::ROArrayColumn (const Table& tab,
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const ROTableColumn& column)
 : ROTableColumn (column),
-  canAccessSlice_p         (new Bool(False)),
-  canAccessColumn_p        (new Bool(False)),
-  canAccessColumnSlice_p   (new Bool(False)),
-  reaskAccessSlice_p       (new Bool(True)),
-  reaskAccessColumn_p      (new Bool(True)),
-  reaskAccessColumnSlice_p (new Bool(True))
+  canAccessSlice_p         (False),
+  canAccessColumn_p        (False),
+  canAccessColumnSlice_p   (False),
+  reaskAccessSlice_p       (True),
+  reaskAccessColumn_p      (True),
+  reaskAccessColumnSlice_p (True)
 {
     checkDataType();
 }
@@ -80,12 +80,12 @@ ROArrayColumn<T>::ROArrayColumn (const ROTableColumn& column)
 template<class T>
 ROArrayColumn<T>::ROArrayColumn (const ROArrayColumn<T>& that)
 : ROTableColumn (that),
-  canAccessSlice_p         (new Bool (*that.canAccessSlice_p)),
-  canAccessColumn_p        (new Bool (*that.canAccessColumn_p)),
-  canAccessColumnSlice_p   (new Bool (*that.canAccessColumnSlice_p)),
-  reaskAccessSlice_p       (new Bool (*that.reaskAccessSlice_p)),
-  reaskAccessColumn_p      (new Bool (*that.reaskAccessColumn_p)),
-  reaskAccessColumnSlice_p (new Bool (*that.reaskAccessColumnSlice_p))
+  canAccessSlice_p         (that.canAccessSlice_p),
+  canAccessColumn_p        (that.canAccessColumn_p),
+  canAccessColumnSlice_p   (that.canAccessColumnSlice_p),
+  reaskAccessSlice_p       (that.reaskAccessSlice_p),
+  reaskAccessColumn_p      (that.reaskAccessColumn_p),
+  reaskAccessColumnSlice_p (that.reaskAccessColumnSlice_p)
 {}
 
 template<class T>
@@ -98,24 +98,17 @@ template<class T>
 void ROArrayColumn<T>::reference (const ROArrayColumn<T>& that)
 {
     ROTableColumn::reference (that);
-    *canAccessSlice_p         = *that.canAccessSlice_p;
-    *canAccessColumn_p        = *that.canAccessColumn_p;
-    *canAccessColumnSlice_p   = *that.canAccessColumnSlice_p;
-    *reaskAccessSlice_p       = *that.reaskAccessSlice_p;
-    *reaskAccessColumn_p      = *that.reaskAccessColumn_p;
-    *reaskAccessColumnSlice_p = *that.reaskAccessColumnSlice_p;
+    canAccessSlice_p         = that.canAccessSlice_p;
+    canAccessColumn_p        = that.canAccessColumn_p;
+    canAccessColumnSlice_p   = that.canAccessColumnSlice_p;
+    reaskAccessSlice_p       = that.reaskAccessSlice_p;
+    reaskAccessColumn_p      = that.reaskAccessColumn_p;
+    reaskAccessColumnSlice_p = that.reaskAccessColumnSlice_p;
 }
 
 template<class T>
 ROArrayColumn<T>::~ROArrayColumn()
-{
-    delete canAccessSlice_p;
-    delete canAccessColumn_p;
-    delete canAccessColumnSlice_p;
-    delete reaskAccessSlice_p;
-    delete reaskAccessColumn_p;
-    delete reaskAccessColumnSlice_p;
-}
+{}
 
 
 template<class T>
@@ -192,12 +185,12 @@ void ROArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
 	}
     }
     //# Ask if we can access the slice (if that is not known yet).
-    if (*reaskAccessSlice_p) {
-	*canAccessSlice_p = baseColPtr_p->canAccessSlice (*reaskAccessSlice_p);
+    if (reaskAccessSlice_p) {
+	canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
     }
     //# Access the slice if possible.
     //# Otherwise get the entire array and slice it.
-    if (*canAccessSlice_p) {
+    if (canAccessSlice_p) {
         //# Creating a Slicer is somewhat expensive, so use the slicer
         //# itself if it contains no undefined values.
         if (arraySection.isFixed()) {
@@ -246,13 +239,13 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
 	}
     }
     //# Ask if we can access the column (if that is not known yet).
-    if (*reaskAccessColumn_p) {
-	*canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
-	                                           (*reaskAccessColumn_p);
+    if (reaskAccessColumn_p) {
+	canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
+	                                           (reaskAccessColumn_p);
     }
     //# Access the column if possible.
     //# Otherwise fill the entire array by looping through all cells.
-    if (*canAccessColumn_p) {
+    if (canAccessColumn_p) {
 	baseColPtr_p->getArrayColumn (&arr);
     }else{
         if (arr.nelements() > 0) {
@@ -300,14 +293,14 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
 	}
     }
     //# Ask if we can access the column slice (if that is not known yet).
-    if (*reaskAccessColumnSlice_p) {
-	*canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
-	                                       (*reaskAccessColumnSlice_p);
+    if (reaskAccessColumnSlice_p) {
+	canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
+	                                       (reaskAccessColumnSlice_p);
     }
     //# Access the column slice if possible.
     //# Otherwise fill the entire array by looping through all cells.
     Slicer defSlicer (blc, trc, inc, Slicer::endIsLast);
-    if (*canAccessColumnSlice_p) {
+    if (canAccessColumnSlice_p) {
         baseColPtr_p->getColumnSlice (defSlicer, &arr);
     }else{
         if (arr.nelements() > 0) {
@@ -548,12 +541,12 @@ void ArrayColumn<T>::putSlice (uInt rownr, const Slicer& arraySection,
 	throw (TableArrayConformanceError("ArrayColumn::putSlice"));
     }
     //# Ask if we can access the slice (if that is not known yet).
-    if (*reaskAccessSlice_p) {
-	*canAccessSlice_p = baseColPtr_p->canAccessSlice (*reaskAccessSlice_p);
+    if (reaskAccessSlice_p) {
+	canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
     }
     //# Access the slice if possible.
     //# Otherwise get the entire array, put the slice and put it back.
-    if (*canAccessSlice_p) {
+    if (canAccessSlice_p) {
 	baseColPtr_p->putSlice (rownr, arraySection, &arr);
     }else{
 	Array<T> array(arrayShape);
@@ -595,13 +588,13 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
 	}
     }
     //# Ask if we can access the column (if that is not known yet).
-    if (*reaskAccessColumn_p) {
-	*canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
-	                                             (*reaskAccessColumn_p);
+    if (reaskAccessColumn_p) {
+	canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
+	                                             (reaskAccessColumn_p);
     }
     //# Access the column if possible.
     //# Otherwise put the entire array by looping through all cells.
-    if (*canAccessColumn_p) {
+    if (canAccessColumn_p) {
 	baseColPtr_p->putArrayColumn (&arr);
     }else{
         if (arr.nelements() > 0) {
@@ -638,13 +631,13 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
 	}
     }
     //# Ask if we can access the column slice (if that is not known yet).
-    if (*reaskAccessColumnSlice_p) {
-	*canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
-	                                       (*reaskAccessColumnSlice_p);
+    if (reaskAccessColumnSlice_p) {
+	canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
+	                                       (reaskAccessColumnSlice_p);
     }
     //# Access the column slice if possible.
     //# Otherwise put the entire array by looping through all cells.
-    if (*canAccessColumnSlice_p) {
+    if (canAccessColumnSlice_p) {
 	baseColPtr_p->putColumnSlice (arraySection, &arr);
     }else{
         if (arr.nelements() > 0) {

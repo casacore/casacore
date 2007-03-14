@@ -41,16 +41,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class T>
 ROScalarColumn<T>::ROScalarColumn()
 : ROTableColumn(),
-  canAccessColumn_p   (new Bool(False)),
-  reaskAccessColumn_p (new Bool(True))
+  canAccessColumn_p   (False),
+  reaskAccessColumn_p (True)
 {}
 
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const Table& tab,
 				   const String& columnName)
 : ROTableColumn (tab, columnName),
-  canAccessColumn_p   (new Bool(False)),
-  reaskAccessColumn_p (new Bool(True))
+  canAccessColumn_p   (False),
+  reaskAccessColumn_p (True)
 {
     checkDataType();
 }
@@ -58,8 +58,8 @@ ROScalarColumn<T>::ROScalarColumn (const Table& tab,
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
 : ROTableColumn (column),
-  canAccessColumn_p   (new Bool(False)),
-  reaskAccessColumn_p (new Bool(True))
+  canAccessColumn_p   (False),
+  reaskAccessColumn_p (True)
 {
     checkDataType();
 }
@@ -67,8 +67,8 @@ ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
 template<class T>
 ROScalarColumn<T>::ROScalarColumn (const ROScalarColumn<T>& that)
 : ROTableColumn (that),
-  canAccessColumn_p   (new Bool (*that.canAccessColumn_p)),
-  reaskAccessColumn_p (new Bool (*that.reaskAccessColumn_p))
+  canAccessColumn_p   (that.canAccessColumn_p),
+  reaskAccessColumn_p (that.reaskAccessColumn_p)
 {}
 
 template<class T>
@@ -81,16 +81,13 @@ template<class T>
 void ROScalarColumn<T>::reference (const ROScalarColumn<T>& that)
 {
     ROTableColumn::reference (that);
-    *canAccessColumn_p   = *that.canAccessColumn_p;
-    *reaskAccessColumn_p = *that.reaskAccessColumn_p;
+    canAccessColumn_p   = that.canAccessColumn_p;
+    reaskAccessColumn_p = that.reaskAccessColumn_p;
 }
 
 template<class T>
 ROScalarColumn<T>::~ROScalarColumn()
-{
-    delete canAccessColumn_p;
-    delete reaskAccessColumn_p;
-}
+{}
 
 template<class T>
 void ROScalarColumn<T>::checkDataType() const
@@ -133,13 +130,13 @@ void ROScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
 	}
     }
     //# Ask if we can access the column (if that is not known yet).
-    if (*reaskAccessColumn_p) {
-	*canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
-	                                             (*reaskAccessColumn_p);
+    if (reaskAccessColumn_p) {
+	canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
+	                                             (reaskAccessColumn_p);
     }
     //# Access the column if possible.
     //# Otherwise fill the entire vector by looping through all cells.
-    if (*canAccessColumn_p) {
+    if (canAccessColumn_p) {
 	baseColPtr_p->getScalarColumn (&vec);
     }else{
 	for (uInt rownr=0; rownr<nrrow; rownr++) {
@@ -265,13 +262,13 @@ void ScalarColumn<T>::putColumn (const Vector<T>& vec)
 	throw (TableConformanceError("ScalarColumn::putColumn(Vector&)"));
     }
     //# Ask if we can access the column (if that is not known yet).
-    if (*reaskAccessColumn_p) {
-	*canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
-	                                             (*reaskAccessColumn_p);
+    if (reaskAccessColumn_p) {
+	canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
+	                                             (reaskAccessColumn_p);
     }
     //# Access the column if possible.
     //# Otherwise put the entire vector by looping through all cells.
-    if (*canAccessColumn_p) {
+    if (canAccessColumn_p) {
 	baseColPtr_p->putScalarColumn (&vec);
     }else{
 	for (uInt rownr=0; rownr<nrrow; rownr++) {
