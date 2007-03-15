@@ -35,6 +35,35 @@ def generate(env):
         env.PrependUnique(LIBPATH = [os.path.join(path, "lib")])
     env.AddCustomPath = AddCustomPath
 
+    def AddCustomPackage(pkgname=None):
+        if pkgname is None:
+	    return
+	pkgroot = env.get("%sroot" % pkgname, None)
+	pkgincd = env.get("%sincdir" % pkgname, None)
+	pkglibd = env.get("%slibdir" % pkgname, None)
+	incd = None
+	libd = None
+	if pkgroot is not None:
+	    incd = os.path.join(pkgroot, "include")
+	    libd = os.path.join(pkgroot, "lib")
+	else:	    
+	    if pkgincd is not None:
+		incd = pkgincd
+	    if pkglibd is not None:
+		libd = pkglibd
+	if incd is not None:
+	    if not os.path.exists(incd):
+		print "Custom %s include dir '%s' not found" % (pkgname, incd)
+		env.Exit(1)
+	    env.PrependUnique(CPPPATH = [incd])
+	if libd is not None:
+ 	    if not os.path.exists(libd):
+		print "Custom %s lib dir '%s' not found" % (pkgname, libd)
+		env.Exit(1)
+	    env.PrependUnique(LIBPATH = [libd])
+
+    env.AddCustomPackage = AddCustomPackage
+
     def PlatformIdent():
 	p = sys.platform
 	# replace the trailing 2 in linux2

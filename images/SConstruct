@@ -18,6 +18,12 @@ opts.Add(("CXX", "The c++ compiler", None))
 opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
 opts.Add(("FORTRAN", "The fortran compiler", None))
 opts.Add(("f2clib", "The fortran to c library", None))
+opts.Add(("cfitsioroot", 
+	  "The root directory where cfistio is installed", None))
+opts.Add(("cfitsiolibdir", "The cfitsio library location", None))
+opts.Add(("wcsroot", 
+	  "The root directory where wcs is installed", None))
+opts.Add(("wcslibdir", "The wcs library location", None))
 
 env = Environment(
 		  ENV = { 'PATH' : os.environ[ 'PATH' ],
@@ -56,16 +62,11 @@ Help( opts.GenerateHelpText( env ) )
 if not env.GetOption('clean'):
     conf = Configure(env)
     # test for cfitsio
-    # do two test as cfitsio 2/3 have different include layout
     if not conf.CheckLib("m"): Exit(1)
+    conf.env.AddCustomPackage('cfitsio')
     if not conf.CheckLib('cfitsio'):
-	if not conf.CheckHeader('fitsio.h', language='c'):
-	    if not conf.CheckHeader('cfitsio/fitsio.h', language='c'):
-		Exit(1)
-	    else:
-		# add cfitsio inc path
-		pass
-		#env.Append(CPPPATH=['something/cfitsio'])
+	Exit(1)
+    conf.env.AddCustomPackage('wcs')
     if not conf.CheckLibWithHeader('wcs', 'wcslib/wcs.h', language='c'):
 	Exit(1)
     # test for lapack
