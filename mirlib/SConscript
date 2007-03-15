@@ -9,6 +9,6 @@ if "static" in myenv["libtype"]:
     slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
     installer.AddLibrary(slib)
 
-if "shared" in myenv["libtype"]:
+if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
     shlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
     installer.AddLibrary(shlib)

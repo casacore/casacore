@@ -14,7 +14,7 @@ if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [ffs])
     installer.AddLibrary(slib)
-if "shared" in myenv["libtype"]:
+if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
     #build dynamic lib
     shenv = myenv.Copy()
     shenv.Append(LIBPATH=[shenv["BUILDDIR_FORT"]])
