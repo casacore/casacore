@@ -7,8 +7,7 @@ myenv = buildenv.Copy()
 # get all the sourcefiles recursively
 lls = myenv.SGlob("*.ll", recursive=True )
 for f in lls:
-    lenv = myenv.Copy(CXXFILESUFFIX=".lcc")
-    ff = lenv.CXXFile(File(f))
+    ff = myenv.CXXFile(File(f), CXXFILESUFFIX=".lcc")
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
     path = os.path.split(str(ff[0]))[0]
@@ -16,8 +15,7 @@ for f in lls:
 
 yys = myenv.SGlob("*.yy", recursive=True )
 for f in yys:
-    yenv = myenv.Copy(CXXFILESUFFIX=".ycc")
-    ff = yenv.CXXFile(File(f))
+    ff = myenv.CXXFile(File(f), CXXFILESUFFIX=".ycc")
     # hack to point include path to the builddir relative directory
     # where the lex/yacc file was found
     path = os.path.split(str(ff[0]))[0]
@@ -33,7 +31,7 @@ libname = "casa_" + myenv["PACKAGE"]
 
 if "static" in myenv["libtype"]:
     # build static lib
-    slib =  myenv.StaticLibrary(target = libname, source = [cpps])
+    slib =  myenv.StaticLibrary(target = libname, source = cpps)
     installer.AddLibrary(slib)
 if "shared" in myenv["libtype"]:
     #build dynamic lib
@@ -76,21 +74,15 @@ if myenv["tests"]:
 	    testenv.Execute(Copy(outfile, i))
  
     for i in tests:
-	testenv["CPPPATH"] = cpppath
 	# get the basename no suffix of the file
 	tinfile = os.path.splitext(os.path.basename(i))[0]
 	tdir = os.path.split(i)[0]
 	# include location of test headers
-	testenv.AppendUnique(CPPPATH=[tdir])			
-	# out put gos into the root/test directory
+	# output goes into the root/test directory
 	toutfile = os.path.join("#","tests", tinfile)
-	tapp = testenv.Program(toutfile, source=i)
+	tapp = testenv.Program(toutfile, source=i, CPPPATH=cpppath+[tdir])
 	# run assay here ....
-#	f=File(toutfile).abspath
-#	log = File("#/tests/tests.log")
-#	assay="/Users/mar637/repos/casacore/code/tables/casacore_assay "
-#	testenv.Command(log, None,
-#			assay+f+" > $TARGET")
+
 
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )
