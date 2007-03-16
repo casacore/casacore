@@ -774,15 +774,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Bool>& arr = *static_cast<const Array<Bool>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Bool> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -793,15 +793,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<uChar>& arr = *static_cast<const Array<uChar>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<uChar> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -812,15 +812,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Short>& arr = *static_cast<const Array<Short>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Short> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -831,15 +831,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Int>& arr = *static_cast<const Array<Int>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Int> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -850,15 +850,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<uInt>& arr = *static_cast<const Array<uInt>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<uInt> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -869,15 +869,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Float>& arr = *static_cast<const Array<Float>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Float> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -888,15 +888,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Double>& arr = *static_cast<const Array<Double>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Double> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -907,15 +907,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<Complex>& arr = *static_cast<const Array<Complex>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<Complex> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -926,15 +926,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<DComplex>& arr = *static_cast<const Array<DComplex>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<DComplex> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
@@ -945,15 +945,15 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	if (maxNrValues != 0) {
 	  const Array<String>& arr = *static_cast<const Array<String>*>(ptr);
 	  if (maxNrValues < 0) {
-	    cout << endl << arr;
+	    os << endl << arr;
 	  } else {
 	    Vector<String> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
-	      cout << endl << indent << "  " << vec;
+	      os << endl << indent << "  " << vec;
 	    } else {
-	      cout << ", first values:"
-		   << endl << indent << "  "
-		   << vec(Slice(0,maxNrValues-1));
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
 	    }
 	  }
 	}
