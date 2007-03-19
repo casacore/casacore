@@ -26,12 +26,13 @@ def generate(env):
 	if os.environ.has_key("CATAMOUNT_DIR"):
 	    sysplf = "cray"
 	sysarch = platform.architecture()[0]
+	if sysarch == '64bit':
+	    platfdefs += pd["64bit"]
         if  sysplf == 'linux2':
 	    platfdefs += pd["linux"]
 	    if sysarch == '64bit':
 		#env["CASAPLATFORM"] +=  sysarch
 		#don't know why but lib*.a needs to have -fPIC here
-		platfdefs += pd["64bit"]	    
 		platfdefs += ["-fPIC"]
 	elif sysplf == "cray":
 	    # pgi compiler
