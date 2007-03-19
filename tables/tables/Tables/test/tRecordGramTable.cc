@@ -28,7 +28,6 @@
 #include <tables/Tables/RecordGram.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/Table.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayIO.h>
@@ -46,8 +45,7 @@
 
 void doIt (const String& str)
 {
-  String root = Aipsrc::aipsRoot();
-  String name = root + "/data/demo/Tables/tTable_2.data_v0";
+  String name = "tTable_2.data_v0";
   Table tab(name);
   TableExprNode expr = RecordGram::parse (tab, str);
   cout << str << ": ";
