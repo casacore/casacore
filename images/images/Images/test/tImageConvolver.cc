@@ -50,7 +50,7 @@ try {
 
 // Get inputs
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "tImageConvolver_tmp", "Output image name");
    inputs.readArguments(argc, argv);

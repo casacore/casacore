@@ -130,7 +130,7 @@ try {
 
 // Get inputs
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input file name");
    inputs.create("axes", "-10", "Cursor axes");
    inputs.create("blc", "-10", "blc");

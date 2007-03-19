@@ -195,7 +195,7 @@ try {
 
 // Get inputs
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input image name");
    inputs.create("moments", "0", "Moments to output");
    inputs.create("axis", "2", "Moment axis");

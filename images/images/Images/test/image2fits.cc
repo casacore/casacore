@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 	Input inp(1);
 	inp.version(""); // By setting to null, we turn of the announcement
 
-        String name = "test_image";
+        String name = "test_image.im";
 	inp.create("in", name, "Input AIPS++ Image name", "string");
 	inp.create("mask", "default", "Mask to apply", "string");
 	inp.create("out", "image2fits_tmp.out", "Output FITS file name",

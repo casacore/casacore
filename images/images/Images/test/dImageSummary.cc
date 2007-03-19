@@ -48,7 +48,7 @@ try {
    Input inputs(1);
    inputs.version ("$Revision$");
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input image name?");
    inputs.create("type", "RADIO","Velocity type ?");
    inputs.readArguments(argc, argv);

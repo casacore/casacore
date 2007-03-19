@@ -51,7 +51,7 @@ try {
 
 // Get inputs
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "dImageProfileFit_tmp", "Output root image name");
    inputs.create("axis", "2", "axis to fit (default is 2)");

@@ -56,7 +56,7 @@ try {
 
 // Get inputs
 
-   String name = "test_image";
+   String name = "test_image.im";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "tSepImConvolver_tmp", "Output root image name");
    inputs.create("axis", "-1", "axis to convolve (default is all)");
