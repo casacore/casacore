@@ -38,27 +38,27 @@ template<class T>
 AutoDiff<T> Gaussian1D<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
-  if (param_p[HEIGHT].nDerivatives() > 0) tmp = param_p[HEIGHT];
-  else if (param_p[CENTER].nDerivatives() > 0) tmp = param_p[CENTER];
-  else if (param_p[WIDTH].nDerivatives() > 0) tmp = param_p[WIDTH];
-  T x_norm = (x[0] - param_p[CENTER].value())/
-    param_p[WIDTH].value()/fwhm2int.value();
+  if (this->param_p[this->HEIGHT].nDerivatives() > 0) tmp = this->param_p[this->HEIGHT];
+  else if (this->param_p[this->CENTER].nDerivatives() > 0) tmp = this->param_p[this->CENTER];
+  else if (this->param_p[this->WIDTH].nDerivatives() > 0) tmp = this->param_p[this->WIDTH];
+  T x_norm = (x[0] - this->param_p[this->CENTER].value())/
+    this->param_p[this->WIDTH].value()/this->fwhm2int.value();
   T exponential = exp(-(x_norm*x_norm));
   // function value
-  tmp.value() = param_p[HEIGHT].value() * exponential;
+  tmp.value() = this->param_p[this->HEIGHT].value() * exponential;
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
     for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
     // derivative wrt height
     T dev = exponential;
-    if (param_p.mask(HEIGHT)) tmp.deriv(HEIGHT) = dev;
+    if (this->param_p.mask(this->HEIGHT)) tmp.deriv(this->HEIGHT) = dev;
     // derivative wrt center
-    dev *= param_p[HEIGHT].value()*x_norm*T(2.0)/param_p[WIDTH].value()/
-      fwhm2int.value();
-    if (param_p.mask(CENTER)) tmp.deriv(CENTER) = dev;
+    dev *= this->param_p[this->HEIGHT].value()*x_norm*T(2.0)/this->param_p[this->WIDTH].value()/
+      this->fwhm2int.value();
+    if (this->param_p.mask(this->CENTER)) tmp.deriv(this->CENTER) = dev;
     // derivative wrt width
-    if (param_p.mask(WIDTH)) tmp.deriv(WIDTH) = dev*
-			       x_norm*fwhm2int.value();
+    if (this->param_p.mask(this->WIDTH)) tmp.deriv(this->WIDTH) = dev*
+			       x_norm*this->fwhm2int.value();
   };
   return tmp;
 }

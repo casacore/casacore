@@ -38,62 +38,62 @@ template<class T>
 AutoDiff<T> Gaussian2D<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
-  if (param_p[HEIGHT].nDerivatives() > 0) tmp = param_p[HEIGHT];
-  else if (param_p[XCENTER].nDerivatives() > 0) tmp = param_p[XCENTER];
-  else if (param_p[YCENTER].nDerivatives() > 0) tmp = param_p[YCENTER];
-  else if (param_p[YWIDTH].nDerivatives() > 0) tmp = param_p[YWIDTH];
-  else if (param_p[RATIO].nDerivatives() > 0) tmp = param_p[RATIO];
-  else if (param_p[PANGLE].nDerivatives() > 0) tmp = param_p[PANGLE];
+  if (this->param_p[this->HEIGHT].nDerivatives() > 0) tmp = this->param_p[this->HEIGHT];
+  else if (this->param_p[this->XCENTER].nDerivatives() > 0) tmp = this->param_p[this->XCENTER];
+  else if (this->param_p[this->YCENTER].nDerivatives() > 0) tmp = this->param_p[this->YCENTER];
+  else if (this->param_p[this->YWIDTH].nDerivatives() > 0) tmp = this->param_p[this->YWIDTH];
+  else if (this->param_p[this->RATIO].nDerivatives() > 0) tmp = this->param_p[this->RATIO];
+  else if (this->param_p[this->PANGLE].nDerivatives() > 0) tmp = this->param_p[this->PANGLE];
 
-  T x2mean = x[0] - param_p[XCENTER].value();
-  T y2mean = x[1] - param_p[YCENTER].value();
-  if (param_p[PANGLE] != thePA) {
-    thePA = param_p[PANGLE];
-    theCpa = cos(thePA);
-    theSpa = sin(thePA);
+  T x2mean = x[0] - this->param_p[this->XCENTER].value();
+  T y2mean = x[1] - this->param_p[this->YCENTER].value();
+  if (this->param_p[this->PANGLE] != this->thePA) {
+    this->thePA = this->param_p[this->PANGLE];
+    this->theCpa = cos(this->thePA);
+    this->theSpa = sin(this->thePA);
   };
-  T xnorm = x2mean*theCpa.value() + y2mean*theSpa.value();
-  T ynorm = -x2mean*theSpa.value() + y2mean*theCpa.value();
+  T xnorm = x2mean*this->theCpa.value() + y2mean*this->theSpa.value();
+  T ynorm = -x2mean*this->theSpa.value() + y2mean*this->theCpa.value();
   T xnorm2 = xnorm*xnorm;
   T ynorm2 = ynorm*ynorm;
-  theXwidth.value() = param_p[YWIDTH].value() * param_p[RATIO].value();
-  T xwidth2 = theXwidth.value()*theXwidth.value()*
-    fwhm2int.value()*fwhm2int.value();
-  T ywidth2 = param_p[YWIDTH].value()*param_p[YWIDTH].value()*
-    fwhm2int.value()*fwhm2int.value();
+  this->theXwidth.value() = this->param_p[this->YWIDTH].value() * this->param_p[this->RATIO].value();
+  T xwidth2 = this->theXwidth.value()*this->theXwidth.value()*
+    this->fwhm2int.value()*this->fwhm2int.value();
+  T ywidth2 = this->param_p[this->YWIDTH].value()*this->param_p[this->YWIDTH].value()*
+    this->fwhm2int.value()*this->fwhm2int.value();
   T x2w = T(2.0)*xnorm/xwidth2;
   T y2w = T(2.0)*ynorm/ywidth2;
   T x2w2 = x2w*xnorm;
   T y2w2 = y2w*ynorm;
   T exponential = exp(-(xnorm2/xwidth2 + ynorm2/ywidth2));
   // function value
-  tmp.value() = param_p[HEIGHT].value()*exponential;
+  tmp.value() = this->param_p[this->HEIGHT].value()*exponential;
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
     for (uInt k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
     // derivative wrt height
     T dev = exponential;
-    if (param_p.mask(HEIGHT)) tmp.deriv(HEIGHT) = dev;
+    if (this->param_p.mask(this->HEIGHT)) tmp.deriv(this->HEIGHT) = dev;
     // derivative wrt x0 (mean)
-    dev *= param_p[HEIGHT].value();
-    if (param_p.mask(XCENTER)) tmp.deriv(XCENTER) = dev*
-				 (x2w*theCpa.value() - y2w*theSpa.value());
+    dev *= this->param_p[this->HEIGHT].value();
+    if (this->param_p.mask(this->XCENTER)) tmp.deriv(this->XCENTER) = dev*
+				 (x2w*this->theCpa.value() - y2w*this->theSpa.value());
     // derivative wrt y0 (mean)
-    if (param_p.mask(YCENTER)) tmp.deriv(YCENTER) = dev*
-				 (theSpa.value()*x2w + theCpa.value()*y2w);
+    if (this->param_p.mask(this->YCENTER)) tmp.deriv(this->YCENTER) = dev*
+				 (this->theSpa.value()*x2w + this->theCpa.value()*y2w);
     // derivative wrt wy (width)
-    if (param_p.mask(YWIDTH)) tmp.deriv(YWIDTH) = dev*
-				((x2w2+y2w2)/param_p[YWIDTH].value());
+    if (this->param_p.mask(this->YWIDTH)) tmp.deriv(this->YWIDTH) = dev*
+				((x2w2+y2w2)/this->param_p[this->YWIDTH].value());
     // derivative wrt ratio (r=wx/wy, df/dr=(df/wx)*(dwx/dr), and dwx/dr=wy)
-    if (param_p.mask(RATIO)) tmp.deriv(RATIO) = dev*
-			       x2w2*param_p[YWIDTH].value()/
-			       (theXwidth.value());
+    if (this->param_p.mask(this->RATIO)) tmp.deriv(this->RATIO) = dev*
+			       x2w2*this->param_p[this->YWIDTH].value()/
+			       (this->theXwidth.value());
     // derivative wrt theta (rotation)
-    if (param_p.mask(PANGLE)) tmp.deriv(PANGLE) = -dev*
-				(x2w*(-x2mean*theSpa.value() +
-				      y2mean*theCpa.value()) +
-				 y2w*(-x2mean*theCpa.value() -
-				      y2mean*theSpa.value()));
+    if (this->param_p.mask(this->PANGLE)) tmp.deriv(this->PANGLE) = -dev*
+				(x2w*(-x2mean*this->theSpa.value() +
+				      y2mean*this->theCpa.value()) +
+				 y2w*(-x2mean*this->theCpa.value() -
+				      y2mean*this->theSpa.value()));
   };
   return tmp;
 }

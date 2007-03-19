@@ -37,25 +37,25 @@ template<class T>
 AutoDiff<T> Polynomial<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   AutoDiff<T> tmp;
-  for (uInt i=0; i<nparameters(); ++i) {
-    if (param_p[i].nDerivatives() > 0) {
-      tmp = param_p[i];
+  for (uInt i=0; i<this->nparameters(); ++i) {
+    if (this->param_p[i].nDerivatives() > 0) {
+      tmp = this->param_p[i];
       break;
     };
   };
   // function value
-  Int j = nparameters();
-  tmp.value() = param_p[--j].value();
+  Int j = this->nparameters();
+  tmp.value() = this->param_p[--j].value();
   while (--j >= 0) {
     tmp.value() *= x[0];
-    tmp.value() += param_p[j].value();
+    tmp.value() += this->param_p[j].value();
   };
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
     for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
     T dev(1);
-    for (uInt i=0; i<nparameters(); ++i) {
-      if (param_p.mask(i)) tmp.deriv(i) = dev;
+    for (uInt i=0; i<this->nparameters(); ++i) {
+      if (this->param_p.mask(i)) tmp.deriv(i) = dev;
       dev *= x[0];
     };
   };
