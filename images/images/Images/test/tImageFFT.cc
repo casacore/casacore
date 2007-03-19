@@ -31,7 +31,6 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <scimath/Mathematics/FFTServer.h>
 #include <casa/BasicMath/Math.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Inputs/Input.h>
 #include <casa/Logging.h>
@@ -73,8 +72,7 @@ try {
 
 // Get inputs
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("axes", "-10", "axes");
    inputs.readArguments(argc, argv);

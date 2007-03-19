@@ -33,7 +33,6 @@
 #include <casa/Inputs/Input.h>
 #include <casa/Logging.h>
 #include <tables/Tables/Table.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/BasicSL/String.h>
 
 
@@ -51,8 +50,7 @@ try {
 
 // Get inputs
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "tImageConvolver_tmp", "Output image name");
    inputs.readArguments(argc, argv);

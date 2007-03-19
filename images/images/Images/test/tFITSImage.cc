@@ -32,7 +32,6 @@
 #include <casa/Inputs/Input.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/OS/Path.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Exceptions/Error.h>
@@ -68,8 +67,7 @@ try {
    const Int size = inputs.getInt("size");
 //
    if (in.empty()) {
-     String root = Aipsrc::aipsRoot();
-     in = root + "/data/demo/Images/imagetestimage.fits";
+     in = "imagetestimage.fits";
    }   
    Path p(in);
 

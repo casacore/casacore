@@ -38,7 +38,6 @@
 #include <casa/BasicSL/Constants.h>
 #include <scimath/Mathematics/VectorKernel.h>
 #include <tables/Tables/Table.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/BasicSL/String.h>
 
 
@@ -57,8 +56,7 @@ try {
 
 // Get inputs
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "tSepImConvolver_tmp", "Output root image name");
    inputs.create("axis", "-1", "axis to convolve (default is all)");

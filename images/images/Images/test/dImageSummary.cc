@@ -26,7 +26,6 @@
 //# $Id$
 //
 #include <casa/aips.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Inputs/Input.h>
 #include <casa/Logging.h>
@@ -49,8 +48,7 @@ try {
    Input inputs(1);
    inputs.version ("$Revision$");
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input image name?");
    inputs.create("type", "RADIO","Velocity type ?");
    inputs.readArguments(argc, argv);

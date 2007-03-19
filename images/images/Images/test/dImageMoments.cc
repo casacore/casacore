@@ -161,7 +161,6 @@
 //
 //
 #include <casa/aips.h>
-#include <casa/System/Aipsrc.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Inputs/Input.h>
@@ -196,8 +195,7 @@ try {
 
 // Get inputs
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input image name");
    inputs.create("moments", "0", "Moments to output");
    inputs.create("axis", "2", "Moment axis");

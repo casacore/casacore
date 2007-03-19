@@ -30,7 +30,6 @@
 //-----------------------------------------------------------------------------
 
 #include <casa/aips.h>
-#include <casa/System/Aipsrc.h>
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageFITSConverter.h>
@@ -58,8 +57,7 @@ int main(int argc, char *argv[])
 	Input inp(1);
 	inp.version(""); // By setting to null, we turn of the announcement
 
-        String root = Aipsrc::aipsRoot();
-        String name = root + "/data/demo/Images/test_image";
+        String name = "test_image";
 	inp.create("in", name, "Input AIPS++ Image name", "string");
 	inp.create("mask", "default", "Mask to apply", "string");
 	inp.create("out", "image2fits_tmp.out", "Output FITS file name",

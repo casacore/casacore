@@ -31,7 +31,6 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Inputs/Input.h>
 #include <casa/Logging.h>
-#include <casa/System/Aipsrc.h>
 #include <tables/Tables/Table.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
@@ -52,8 +51,7 @@ try {
 
 // Get inputs
 
-   String root = Aipsrc::aipsRoot();
-   String name = root + "/data/demo/Images/test_image";
+   String name = "test_image";
    inputs.create("in", name, "Input file name");
    inputs.create("out", "dImageProfileFit_tmp", "Output root image name");
    inputs.create("axis", "2", "axis to fit (default is 2)");
