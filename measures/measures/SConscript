@@ -45,7 +45,7 @@ if myenv["tests"]:
     tests += testenv.SGlob("*/test/*.cc")
     # point to tests local includes
     testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-    testenv.Prepend(LIBS=[libname])
+    testenv.Prepend(LIBS=[libname, libname+"_f"])
     # install assay *.run *.in* *.out files into test directory
     # use glob here with an absolute path, as Sconsript is "called" 
     # from the build dir.
