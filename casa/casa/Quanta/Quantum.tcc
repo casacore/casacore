@@ -47,7 +47,9 @@ Quantum<Qtype>::Quantum() :
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Quantum<Qtype> &other) :
-    QBase(other), qVal(other.qVal) {}
+    QBase(other) {
+  qVal = other.qVal;
+}
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor) : QBase(),
