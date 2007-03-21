@@ -107,7 +107,8 @@ Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
     if (abs(p) >= 100) throw (AipsError("Quantum::pow exponent too large")); 
 // Make sure 1 in current data type available
     Quantum<Qtype> res;
-    Qtype tmp; tmp = left.getValue() * 0 + 1;
+    Qtype tmp; tmp = left.getValue() * 0. + 1.;
+
     Int i;
     if (p>=0) {
 	for (i=0; i<p; i++) tmp *= left.getValue();
