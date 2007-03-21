@@ -47,13 +47,13 @@ Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
-    return (left == loc);
+    return QMakeBool(left == loc);
 }
 
 template <class Qtype>
 Bool operator==(const Qtype &left, const Quantum<Qtype> &other) {
     Quantum<Qtype> loc; loc = left;
-    return (loc == other);
+    return QMakeBool(loc == other);
 }
 
 template <class Qtype>
@@ -74,8 +74,8 @@ Bool operator!=(const Qtype &left, const Quantum<Qtype> &other) {
 template <class Qtype>
 Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
-	return near(left.getValue(),
-		    other.get(left.getFullUnit()).getValue());
+      return QMakeBool(near(left.getValue(),
+			    other.get(left.getFullUnit()).getValue()));
     }
     return False;
 }
@@ -85,8 +85,8 @@ Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 	  Double tol) {
     UnitVal kind, knew;
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
-	return near(left.getValue(),
-		    other.get(left.getFullUnit()).getValue(),tol);
+      return QMakeBool(near(left.getValue(),
+			    other.get(left.getFullUnit()).getValue(),tol));
     }
     return False;
 }
@@ -94,32 +94,32 @@ Bool near(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 template <class Qtype>
 Bool near(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
-    return near(left, loc);
+    return QMakeBool(near(left, loc));
 }
 
 template <class Qtype>
 Bool near(const Quantum<Qtype> &left, const Qtype &other, Double tol) {
     Quantum<Qtype> loc; loc = other;
-    return near(left, loc, tol);
+    return QMakeBool(near(left, loc, tol));
 }
 
 template <class Qtype>
 Bool near(const Qtype &left, const Quantum<Qtype> &other) {
     Quantum<Qtype> loc; loc = left;
-    return near(loc, other);
+    return QMakeBool(near(loc, other));
 }
 
 template <class Qtype>
 Bool near(const Qtype &left, const Quantum<Qtype> &other, Double tol) {
     Quantum<Qtype> loc; loc = left;
-    return near(loc, other, tol);
+    return QMakeBool(near(loc, other, tol));
 }
 
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
-	return nearAbs(left.getValue(),
-		       other.get(left.getFullUnit()).getValue());
+      return QMakeBool(nearAbs(left.getValue(),
+			       other.get(left.getFullUnit()).getValue()));
     }
     return False;
 }
@@ -128,8 +128,8 @@ template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 	  Double tol) {
     if (left.getFullUnit().getValue() == other.getFullUnit().getValue()) {
-	return nearAbs(left.getValue(),
-		       other.get(left.getFullUnit()).getValue(),tol);
+	return QMakeBool(nearAbs(left.getValue(),
+				 other.get(left.getFullUnit()).getValue(),tol));
     }
     return False;
 }
@@ -137,25 +137,25 @@ Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
-    return nearAbs(left, loc);
+    return QMakeBool(nearAbs(left, loc));
 }
 
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other, Double tol) {
     Quantum<Qtype> loc; loc = other;
-    return nearAbs(left, loc, tol);
+    return QMakeBool(nearAbs(left, loc, tol));
 }
 
 template <class Qtype>
 Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other) {
     Quantum<Qtype> loc; loc = left;
-    return nearAbs(loc, other);
+    return QMakeBool(nearAbs(loc, other));
 }
 
 template <class Qtype>
 Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other, Double tol) {
     Quantum<Qtype> loc; loc = left;
-    return nearAbs(loc, other, tol);
+    return QMakeBool(nearAbs(loc, other, tol));
 }
 
 template <class Qtype>
@@ -164,8 +164,8 @@ Bool operator<(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 	throw (AipsError("Quantum::operator< unequal units '" +
 			 left.getUnit() + ", '" + other.getUnit() + "'"));
     } else {
-	return QMakeBool(left.getValue() <
-			 other.get(left.getFullUnit()).getValue());
+      return QMakeBool(QMakeBool(left.getValue() <
+				 other.get(left.getFullUnit()).getValue()));
     }
     return False;
 }
@@ -173,13 +173,13 @@ Bool operator<(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 template <class Qtype>
 Bool operator<(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
-    return (left < loc);
+    return QMakeBool(left < loc);
 }
 
 template <class Qtype>
 Bool operator<(const Qtype &left, const Quantum<Qtype> &other) {
     Quantum<Qtype> loc; loc = left;
-    return (loc < other);
+    return QMakeBool(loc < other);
 }
 
 template <class Qtype>
@@ -197,13 +197,13 @@ Bool operator>(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 template <class Qtype>
 Bool operator>(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
-    return (left > loc);
+    return QMakeBool(left > loc);
 }
 
 template <class Qtype>
 Bool operator>(const Qtype &left, const Quantum<Qtype> &other) {
     Quantum<Qtype> loc; loc = left;
-    return (loc > other);
+    return QMakeBool(loc > other);
 }
 
 template <class Qtype>
