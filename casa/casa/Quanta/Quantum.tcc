@@ -52,18 +52,22 @@ Quantum<Qtype>::Quantum(const Quantum<Qtype> &other) :
 }
 
 template <class Qtype>
-Quantum<Qtype>::Quantum(const Qtype &factor) : QBase(),
-    qVal(factor) {}
+Quantum<Qtype>::Quantum(const Qtype &factor) : 
+  QBase() {
+  qVal = factor;
+}
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor, const Unit &s) :
-  QBase(s),
-  qVal(factor) {}
+  QBase(s) {
+  qVal = factor;
+}
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Qtype &factor, const QBase &other) :
-  QBase(other),
-  qVal(factor) {}
+  QBase(other) {
+  qVal = factor;
+}
 
 template <class Qtype>
 Quantum<Qtype>::~Quantum() {}
