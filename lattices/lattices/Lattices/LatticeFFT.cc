@@ -28,11 +28,11 @@
 //# $Id$
 
 #include <lattices/Lattices/LatticeFFT.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/ArrayLogical.h>
 #include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
 #include <scimath/Mathematics/FFTServer.h>
 #include <casa/Utilities/Assert.h>
 #include <lattices/Lattices/Lattice.h>
