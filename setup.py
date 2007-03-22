@@ -11,7 +11,7 @@ def run_tests(pkgname, prefix):
     if ldpth is not None:
 	os.environ[platfld] += os.path.pathsep + ldpth
     pth = os.environ.get("PATH")
-    os.environ["PATH"] = os.path.join(prefix, "bin")
+    os.environ["PATH"] =  '.' +os.path.pathsep + os.path.join(prefix, "bin")
     if pth is not None:
 	os.environ["PATH"] += os.path.pathsep + pth
     bdir = os.getcwd()
