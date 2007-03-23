@@ -122,7 +122,7 @@ int main() {
       throw(AipsError("Should not be able to make an unknown shape"));
     }
     catch (AipsError x) {
-      if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
+      if (!x.getMesg().contains("Failed AlwaysAssert ok()")) {
 	throw;
       }
     }
@@ -132,7 +132,7 @@ int main() {
       throw(AipsError("Should not be able to make an unknown spectrum"));
     }
     catch (AipsError x) {
-      if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
+      if (!x.getMesg().contains("Failed AlwaysAssert ok()")) {
 	throw;
       }
     }
