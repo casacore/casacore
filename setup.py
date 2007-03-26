@@ -69,7 +69,8 @@ def run_scons(targets, args=[]):
             command += " " + arg
 	    if arg.startswith("prefix"):
 		pfx = arg.split("=")[-1]
-	    if arg.startswith("tests") and arg.split("=")[-1]:
+	    if arg.startswith("tests") and \
+		arg.split("=")[-1].lower() in ["1","on", "true"]:
 		tests = True
         print "Building package: " + target
         sys.stdout.flush()
@@ -115,6 +116,7 @@ tobuild = ['casa', 'tables', 'mirlib', 'scimath', 'measures','fits',
 	   'lattices', 'coordinates', 'components', 'images', 
 	   'ms', 'msvis', 'msfits']
 for k in deps.keys():
+    k = k.rstrip("/")
     if k in args:
 	tobuild = get_libs(k)
 	args.remove(k)
