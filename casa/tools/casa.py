@@ -34,6 +34,7 @@ def generate(env):
 		#env["CASAPLATFORM"] +=  sysarch
 		#don't know why but lib*.a needs to have -fPIC here
 		platfdefs += ["-fPIC"]
+                env.AppendUnique(SHFORTRANFLAGS=["-fPIC"])
 	elif sysplf == "cray":
 	    # pgi compiler
 	    # had a go at this, but it seem to need a whole lot
@@ -51,7 +52,7 @@ def generate(env):
 	    platdefs += [extradefs]
 	if sys.byteorder == "little":
 	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
-	env.Append(CPPFLAGS=platfdefs)
+        env.AppendUnique(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
 	    # otherwise darwin puts builddir into the name
 	    env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
