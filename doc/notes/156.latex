@@ -1,9 +1,0 @@
-\documentclass[11pt]{article}
-\usepackage{html}
-\begin{document}
-\title{AIPS++ Documentation System (rev 2) \\ DRAFT Version}
-\author{Darrell Schiebel}
-\date{24-June-1996}
-\maketitle
-\input{body156}
-\end{document}
