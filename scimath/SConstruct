@@ -18,6 +18,15 @@ opts.Add(("CXX", "The c++ compiler", None))
 opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
 opts.Add(("FORTRAN", "The fortran compiler", None))
 opts.Add(("f2clib", "The fortran to c library", None))
+opts.Add(("lapackroot", 
+          "The root directory where lapack is installed", None))
+opts.Add(("lapacklibdir", "The lapack library location", None))
+opts.Add(("lapacklib",
+          "The lapack library name (e.g. for specialized AMD libraries",
+          None))
+# not really necessary
+opts.Add(("lapackincdir", "The lapack header file location", None))
+
 env = Environment(
 		  ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ]			  
@@ -56,13 +65,13 @@ if not env.GetOption('clean'):
     conf = Configure(env)
     # test for lapack
     if env['PLATFORM'] == "darwin":
-	print "Platform darwin - using vecLib framework"
+	print "Platform darwin - using build in vecLib framework"
 	# no test neccessary as it ships with vecLib
 	conf.env.Append(FRAMEWORKS=["vecLib"])
     else:
-	if not conf.CheckLib('lapack'): Exit(1)
-	if not conf.CheckLib('blas'): Exit(1)
-    # This is the only way I can see to detect which fortran compiler is used
+        lapackname = conf.env.get("lapacklib", "lapack")
+        conf.env.AddCustomPackage("lapack")
+	if not conf.CheckLib(lapackname): Exit(1)
 
     conf.env.CheckFortran(conf)
 	    

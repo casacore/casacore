@@ -18,6 +18,14 @@ opts.Add(("CXX", "The c++ compiler", None))
 opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
 opts.Add(("FORTRAN", "The fortran compiler", None))
 opts.Add(("f2clib", "The fortran to c library", None))
+opts.Add(("lapackroot", 
+          "The root directory where lapack is installed", None))
+opts.Add(("lapacklibdir", "The lapack library location", None))
+opts.Add(("lapacklib",
+          "The lapack library name (e.g. for specialized AMD libraries",
+          None))
+# not really necessary
+opts.Add(("lapackincdir", "The lapack header file location", None))
 opts.Add(("cfitsioroot", 
 	  "The root directory where cfistio is installed", None))
 opts.Add(("cfitsiolibdir", "The cfitsio library location", None))
@@ -75,8 +83,10 @@ if not env.GetOption('clean'):
         # no test neccessary as it ships with vecLib
         conf.env.Append(FRAMEWORKS=["vecLib"])
     else:
-        if not conf.CheckLib('lapack'): Exit(1)
-        if not conf.CheckLib('blas'): Exit(1)
+        lapackname = conf.env.get("lapacklib", "lapack")
+        conf.env.AddCustomPackage("lapack")
+	if not conf.CheckLib(lapackname): Exit(1)
+
     conf.env.CheckFortran(conf)
     env = conf.Finish()
 
