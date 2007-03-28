@@ -17,6 +17,7 @@ opts.Add(("CC", "The c compiler", None))
 opts.Add(("CXX", "The c++ compiler", None))
 opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
 opts.Add(("FORTRAN", "The fortran compiler", None))
+opts.Add(("f2clib", "The fortran to c library", None))
 opts.Add(("cfitsioroot", 
 	  "The root directory where cfistio is installed", None))
 opts.Add(("cfitsiolibdir", "The cfitsio library location", None))
