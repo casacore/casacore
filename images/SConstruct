@@ -101,11 +101,7 @@ env.Prepend(LIBS=[ "casa_components", "casa_coordinates" ,"casa_fits",
 		   "casa_lattices",
 		   "casa_measures", "casa_scimath", "casa_scimath_f", 
 		   "casa_tables", "casa_casa", "casa_mirlib"])
-# add casa specific defines autodetected from platform
-# currently works for darwin/linux(_x86_64), cray doesn't work
-# because PGI compiler needs a lot of environment variables
-# Probably need to write a PGI builder 
-env.AddCasaPlatform()
+
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
 for bopt in env["build"]:

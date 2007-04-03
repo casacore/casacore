@@ -57,11 +57,7 @@ env.Append(CPPPATH=['#'])
 env.AppendUnique(CPPPATH=env["casaincdir"])
 env.AppendUnique(LIBPATH=env["casalibdir"])
 env.Prepend(LIBS=["casa_casa"])
-# add casa specific defines autodetected from platform
-# currently works for darwin/linux(_x86_64), cray doesn't work
-# because PGI compiler needs a lot of environment variables
-# Probably need to write a PGI builder 
-env.AddCasaPlatform()
+
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
 

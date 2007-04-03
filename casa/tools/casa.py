@@ -12,7 +12,7 @@ def generate(env):
 	env['YACCCOM']   = '$YACC $YACCFLAGS -p ${SOURCE.filebase} -o $TARGET $SOURCES'
     env.CustomCasaCom = CustomCasaCom
 
-    def AddCasaPlatform(extradefs=None):
+    def AddCasaPlatform():
 	pd = { "darwin": ["-DAIPS_DARWIN"],
 	       "64bit": ["-D__x86_64__", "-DAIPS_64B"],
 	       "linux": ["-DAIPS_LINUX"],
@@ -46,10 +46,6 @@ def generate(env):
 	    platfdefs += pd["xt3"]
 	else:
 	    platfdefs += pd[sysplf]
-	if isinstance(extradefs, list):
-	    platdefs += extradefs
-	elif isinstance(extradefs, str):
-	    platdefs += [extradefs]
 	if sys.byteorder == "little":
 	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
         env.AppendUnique(CPPFLAGS=platfdefs)
@@ -58,7 +54,7 @@ def generate(env):
 	    env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
 	    env.Append(SHLINKFLAGS=["-single_module"])
 
-    env.AddCasaPlatform = AddCasaPlatform
+    AddCasaPlatform()
 
     def CheckCasaLib(context, lib):
         context.Message("Checking casa library '%s'..."%lib)
