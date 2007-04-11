@@ -24,8 +24,12 @@ opts.Add(("lapacklibdir", "The lapack library location", None))
 opts.Add(("lapacklib",
           "The lapack library name (e.g. for specialized AMD libraries",
           None))
-# not really necessary
-opts.Add(("lapackincdir", "The lapack header file location", None))
+opts.Add(("blasroot", 
+          "The root directory where blas is installed", None))
+opts.Add(("blaslibdir", "The blas library location", None))
+opts.Add(("blaslib",
+          "The blas library name (e.g. for specialized AMD libraries",
+          None))
 
 env = Environment(
 		  ENV = { 'PATH' : os.environ[ 'PATH' ],
@@ -63,15 +67,13 @@ Help( opts.GenerateHelpText( env ) )
 # Auto configure
 if not env.GetOption('clean'):
     conf = Configure(env)
-    # test for lapack
-    if env['PLATFORM'] == "darwin":
-        print "Using vecLib"
-        # no test neccessary as it ships with vecLib
-        conf.env.Append(FRAMEWORKS=["vecLib"])
-    else:
-        lapackname = conf.env.get("lapacklib", "lapack")
-        conf.env.AddCustomPackage("lapack")
-	if not conf.CheckLib(lapackname): Exit(1)
+    # test for blas/lapack
+    blasname = conf.env.get("blaslib", "blas")
+    conf.env.AddCustomPackage("blas")
+    if not conf.CheckLib(blasname): Exit(1)
+    lapackname = conf.env.get("lapacklib", "lapack")
+    conf.env.AddCustomPackage("lapack")
+    if not conf.CheckLib(lapackname): Exit(1)
 
     conf.env.CheckFortran(conf)
     env = conf.Finish()
