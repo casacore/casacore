@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-// \defgroup lattices lattices package (liblattices)
+// \defgroup lattices lattices package (libcasa_lattices)
 //
 // The lattices package is a generalization of n-dimensional 
 // <linkto module=Arrays>arrays</linkto>.
