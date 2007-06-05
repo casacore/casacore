@@ -30,7 +30,7 @@ def generate(env):
 
     def AddCustomPath(path=None):
         if path is None or not os.path.exists(path):
-            Exit(1)
+            env.Exit(1)
         env.PrependUnique(CPPPATH = [os.path.join(path, "include")])
         env.PrependUnique(LIBPATH = [os.path.join(path, "lib")])
     env.AddCustomPath = AddCustomPath
@@ -80,14 +80,14 @@ def generate(env):
 	    fdict = {'gfortran': 'gfortran', 'g77': 'g2c', 'f77': 'f2c'}
 	    f2clib = conf.env.get("f2clib", fdict[detect_fortran])
 	    if not conf.CheckLib(f2clib):
-		Exit(1)
+		env.Exit(1)
 	else:
 	    if not conf.env.has_key("f2clib"):
 		print "A custom fortran compiler also needs f2clib defined"
-		Exit(1)
+		env.Exit(1)
 	    else:
 		if not conf.CheckLib(env["f2clib"]):
-		    Exit(1)
+		    env.Exit(1)
 	if conf.env["FORTRAN"].startswith("g77"):
             fflags = ["-Wno-globals", "-fno-second-underscore"]
 	    conf.env.Append(SHFORTRANFLAGS=fflags)
