@@ -32,6 +32,8 @@
 
 #include <casa/aips.h>
 #include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Quanta/Quantum.h>
 #include <measures/Measures/Measure.h>
 #include <measures/Measures/MeasFrame.h>
 #include <casa/BasicSL/String.h>
@@ -54,8 +56,8 @@ public:
   String dirshow(const Record& rec);
   Record doptorv(const Record& rec, const String& str);
   Record doptofreq(const Record& rec, const String& str,
-	       const Record& form);
-  Record todop(const Record& rec, const Record& form);
+		   const Quantum<Vector<Double> >& form);
+  Record todop(const Record& rec, const Quantum<Vector<Double> >& form);
   Record torest(const Record& rec, const Record& form);
   Vector<String> obslist();
   Vector<String> srclist();
@@ -64,9 +66,9 @@ public:
   Record source(const String& str);
   Record line(const String& str);
   Record alltyp(const Record& rec);
-  Record posangle(const Record& lrec, const Record& rrec);
-  Record separation(const Record& lrec, const Record& rrec);
-  Record uvw(const Record& mhrec);
+  Quantum<Vector<Double> > posangle(const Record& lrec, const Record& rrec);
+  Quantum<Vector<Double> > separation(const Record& lrec, const Record& rrec);
+  Vector<Quantum<Vector<Double> > > uvw(const Record& mhrec);
   Record expand(const Record& mhrec);
 
 private:

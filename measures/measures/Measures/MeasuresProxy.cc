@@ -510,12 +510,9 @@ Record MeasuresProxy::doptorv(const Record& rec, const String& str)
   return mh2rec(mhout);
 }
 Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
-			      const Record& form)
+				const Quantum<Vector<Double> >& form)
 {
   MeasureHolder mh = rec2mh(rec);
-  QuantumHolder qh;
-  String err;
-  if (!qh.fromRecord(err, form)) throw AipsError(err);
   MeasureHolder mhout;
   MFrequency::Ref outRef;
   MFrequency tout;
@@ -523,7 +520,7 @@ Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
   mhout =
     MeasureHolder(MFrequency::
 		  fromDoppler(mh.asMDoppler(),
-			      MVFrequency(qh.asQuantity()),
+			      MVFrequency(form),
 			      static_cast<MFrequency::Types>
 			      (outRef.getType())));
   uInt nel(mh.nelements());
@@ -535,7 +532,7 @@ Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
       mhout.
 	setMV(i, MFrequency::
 	      fromDoppler(mfcv(mh.getMV(i)),
-			  MVFrequency(qh.asQuantity()),
+			  MVFrequency(form),
 			  static_cast<MFrequency::Types>
 			  (outRef.getType())).getValue());
     }
@@ -543,12 +540,10 @@ Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
   return mh2rec(mhout);
 }
 
-Record MeasuresProxy::todop(const Record& rec, const Record& form)
+Record MeasuresProxy::todop(const Record& rec, 
+			    const Quantum<Vector<Double> >& form)
 {
   MeasureHolder mh = rec2mh(rec);
-  QuantumHolder qh;
-  String err;
-  if (!qh.fromRecord(err, form)) throw AipsError(err);
   MeasureHolder mhout;
   if (mh.isMRadialVelocity()) {
     mhout = MRadialVelocity::toDoppler(mh.asMeasure());
@@ -565,7 +560,7 @@ Record MeasuresProxy::todop(const Record& rec, const Record& form)
     }
   } else if (mh.isMFrequency()) {
     mhout = MFrequency::toDoppler(mh.asMeasure(),
-				   MVFrequency(qh.asQuantity()));
+				   MVFrequency(form));
     uInt nel(mh.nelements());
     if (nel>0) {
       mhout.makeMV(nel);
@@ -574,7 +569,7 @@ Record MeasuresProxy::todop(const Record& rec, const Record& form)
       for (uInt i=0; i<nel; i++) {
 	mhout.setMV(i, MFrequency::
 		    toDoppler(mfcv(mh.getMV(i)),
-			      MVFrequency(qh.asQuantity())).
+			      MVFrequency(form)).
 		    getValue());
       }
     }
@@ -711,7 +706,8 @@ Record MeasuresProxy::line(const String& str)
   return mh2rec(mh);
 }
 
-Record MeasuresProxy::posangle(const Record& lrec, const Record& rrec)
+Quantum<Vector<Double> > MeasuresProxy::posangle(const Record& lrec, 
+					       const Record& rrec)
 {
   MeasureHolder mhl = rec2mh(lrec);
   MeasureHolder mhr = rec2mh(rrec);
@@ -725,15 +721,12 @@ Record MeasuresProxy::posangle(const Record& lrec, const Record& rrec)
     y = MDirection::Convert(y, MDirection::castType
 			    (x.getRefPtr()->getType()))();
   }
-  QuantumHolder qh(x.getValue().positionAngle(y.getValue(), "deg"));
-  String err;
-  Record outrec;
-  if (!qh.toRecord(err, outrec))
-    throw(AipsError(err));
-  return outrec;
+  return \
+    Quantum<Vector<Double> >(
+			     Vector<Double>(1, x.getValue().positionAngle(y.getValue(), "deg").getValue()), "deg");
 }
 
-Record MeasuresProxy::separation(const Record& lrec, const Record& rrec)
+Quantum<Vector<Double> > MeasuresProxy::separation(const Record& lrec, const Record& rrec)
 {
   MeasureHolder mhl = rec2mh(lrec);
   MeasureHolder mhr = rec2mh(rrec);
@@ -747,15 +740,13 @@ Record MeasuresProxy::separation(const Record& lrec, const Record& rrec)
 	y = MDirection::Convert(y, MDirection::castType
 				(x.getRefPtr()->getType()))();
   };
-  QuantumHolder qh(x.getValue().separation(y.getValue(), "deg")); 
-  String err;
-  Record outrec;
-  if (!qh.toRecord(err, outrec))
-    throw(AipsError(err));
-  return outrec;
+  return \
+    Quantum<Vector<Double> >(
+			     Vector<Double>(1, x.getValue().separation(y.getValue(), "deg").getValue()), "deg");
+
 }
 
-Record MeasuresProxy::uvw(const Record& mhrec)
+Vector<Quantum<Vector<Double> > > MeasuresProxy::uvw(const Record& mhrec)
 {
   Record outrec;
   MeasureHolder mhin = rec2mh(mhrec);
@@ -769,14 +760,14 @@ Record MeasuresProxy::uvw(const Record& mhrec)
   mhout.toRecord(err, r0);
   outrec.defineRecord("r0", r0);
 
-  QuantumHolder qh0(Quantum<Vector<Double> >(res, "m/s"));
-  QuantumHolder qh1(Quantum<Vector<Double> >(xres, "m"));
-  Record r1,r2;
-  qh0.toRecord(err, r1);
-  qh1.toRecord(err, r2);
-  outrec.defineRecord("dot", r1);
-  outrec.defineRecord("xyz", r2);
-  return outrec;
+  Quantum<Vector<Double> > q0(res, "m/s");
+  Quantum<Vector<Double> > q1(xres, "m");
+  Vector<Quantum<Vector<Double> > > outvec(2);
+  outvec(0) = Quantum<Vector<Double> >(res, "m/s");
+  outvec(1) = Quantum<Vector<Double> >(xres, "m");
+  //outrec.define("dot", q0);
+  //outrec.define("xyz", q1);
+  return outvec;
 }
 
 Record MeasuresProxy::expand(const Record& mhrec)
@@ -789,10 +780,10 @@ Record MeasuresProxy::expand(const Record& mhrec)
   if (!expandIt(err, mhout, xres, mhin)) 
     throw(AipsError(err));
   QuantumHolder qh0(Quantum<Vector<Double> >(xres, "m"));
-  Record r0,r1;
+  Record r0, r1;
   mhout.toRecord(err, r0);
-  outrec.defineRecord("r0", r0);
   qh0.toRecord(err, r1);
+  outrec.defineRecord("r0", r0);
   outrec.defineRecord("xyz", r1);
   return outrec;
 }
