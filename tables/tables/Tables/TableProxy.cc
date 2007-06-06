@@ -561,31 +561,17 @@ String TableProxy::columnArrayType (const String& columnName)
   }
   String result;
   int columnOption = coldesc.options ();
-  switch (columnOption) {
-  case ColumnDesc::Direct:
+  if (columnOption & ColumnDesc::Direct) {
     result = "Direct";
-    break;   
-  case ColumnDesc::Undefined:
-    result = "Undefined";
-    break;
-  case ColumnDesc::FixedShape:
-    result = "FixedShape";
-    break;
-  case (ColumnDesc::Direct + ColumnDesc::Undefined):
-    result = "Direct,Undefined";
-    break;
-  case (ColumnDesc::Direct + ColumnDesc::FixedShape):
-    result = "Direct,FixedShape";
-    break;
-  case (ColumnDesc::Undefined + ColumnDesc::FixedShape):
-    result = "Undefined,FixedShape";
-    break;
-  case (ColumnDesc::Direct + ColumnDesc::Undefined + ColumnDesc::FixedShape):
-    result = "Direct,Undefined,FixedShape";
-    break;
-  default:
-    result = "Error -- unexpected column type";
+  } else {
+    result = "Indirect";
   }
+  if (columnOption & ColumnDesc::FixedShape) {
+    result += ", fixed";
+  } else {
+    result += ", variable";
+  }
+  result += " sized arrays";
   return result;
 }
 
