@@ -1,3 +1,4 @@
+
 import os
 import sys
 
@@ -33,6 +34,7 @@ opts.Add(("blaslib",
 opts.Add(("cfitsioroot", 
 	  "The root directory where cfistio is installed", None))
 opts.Add(("cfitsiolibdir", "The cfitsio library location", None))
+opts.Add(("cfitsioincdir", "The cfitsio header location", None))
 opts.Add(("wcsroot", 
 	  "The root directory where wcs is installed", None))
 opts.Add(("wcslibdir", "The wcs library location", None))
