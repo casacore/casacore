@@ -127,6 +127,11 @@ private:
   // It fills the rows with 0 values.
   virtual void open (uInt nrrow, AipsIO&);
 
+  // Let the data manager initialize itself further.
+  // It creates nr of rows (given to create) if needed.
+  // Note this is done after reallocateColumn.
+  virtual void prepare();
+
   // Resync the storage manager with the new file contents.
   // It adds or removes rows as needed.
   // It cannot know which rows are deleted, so it always deletes
@@ -177,6 +182,8 @@ private:
   String stmanName_p;
   // The number of rows in the columns.
   uInt   nrrow_p;
+  // The number of rows in create().
+  uInt   nrrowCreate_p;
   // The assembly of all columns.
   PtrBlock<MSMColumn*> colSet_p;
 };

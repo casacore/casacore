@@ -30,28 +30,32 @@
 #include <tables/Tables/MSMDirColumn.h>
 #include <tables/Tables/MSMIndColumn.h>
 #include <tables/Tables/DataManError.h>
+#include <casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 MSMBase::MSMBase()
-: DataManager (),
-  nrrow_p     (0),
-  colSet_p    (0)
+: DataManager   (),
+  nrrow_p       (0),
+  nrrowCreate_p (0),
+  colSet_p      (0)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName)
-: DataManager (),
-  stmanName_p (storageManagerName),
-  nrrow_p     (0),
-  colSet_p    (0)
+: DataManager   (),
+  stmanName_p   (storageManagerName),
+  nrrow_p       (0),
+  nrrowCreate_p (0),
+  colSet_p      (0)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName, const Record&)
-: DataManager (),
-  stmanName_p (storageManagerName),
-  nrrow_p     (0),
-  colSet_p    (0)
+: DataManager   (),
+  stmanName_p   (storageManagerName),
+  nrrow_p       (0),
+  nrrowCreate_p (0),
+  colSet_p      (0)
 {}
 
 MSMBase::~MSMBase()
@@ -163,17 +167,27 @@ DataManagerColumn* MSMBase::reallocateColumn (DataManagerColumn* column)
       if (ptr->isFixedShape()) {
 	MSMIndColumn* col = dynamic_cast<MSMIndColumn*>(ptr);
 	if (col != 0) {
+	  // Turn a fixed shaped indirect array into a direct array.
 	  MSMDirColumn* newcol = new MSMDirColumn (this, col->dataType());
 	  newcol->setShapeColumn (col->columnShape());
 	  delete col;
 	  colSet_p[i] = newcol;
-	  return newcol;
+	  column = newcol;
 	}
       }
     }
   }
-  // The column is not part of this storage manager, so return column itself.
   return column;
+}
+
+void MSMBase::prepare()
+{
+  // Create the rows if needed.
+  if (nrrowCreate_p > 0) {
+    AlwaysAssert (nrrow_p == 0, AipsError);
+    addRow (nrrowCreate_p);
+    nrrowCreate_p = 0;
+  }
 }
 
 
@@ -231,11 +245,11 @@ Bool MSMBase::flush (AipsIO&, Bool)
 
 void MSMBase::create (uInt nrrow)
 {
-  nrrow_p = nrrow;
-  //# Add the required nr of rows.
-  for (uInt i=0; i<ncolumn(); i++) {
-    colSet_p[i]->addRow (nrrow, 0);
-  }
+  //# Do not add the required nr of rows yet.
+  // It is done later in reallocateColumn to avoid that all row data
+  // have to be deleted and allocated again if a IndArrColumn is turned
+  // into a DirArrColumn.
+  nrrowCreate_p = nrrow;
 }
 
 void MSMBase::open (uInt tabNrrow, AipsIO&)
