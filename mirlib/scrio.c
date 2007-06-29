@@ -10,7 +10,8 @@
 
 #include "io.h"
 
-char *sprintf();
+/* char *sprintf(); */
+#include <stdio.h>
 
 static int number=0;
 /************************************************************************/

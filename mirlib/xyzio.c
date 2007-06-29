@@ -51,7 +51,9 @@
 
 #include "maxdimc.h"
 #include "io.h"
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 void    bug_c();
 #define check(x) if(x)bugno_c('f',x)
 
@@ -1406,9 +1408,10 @@ int get_buflen()
 int bufferallocation( n )
 int n;
 {
+  /*
     char *malloc();
     int   free();
-
+  */
     if( buffer != NULL ) { free( buffer ); buffer = NULL; }
     if( mbuffr != NULL ) { free( mbuffr ); mbuffr = NULL; }
 

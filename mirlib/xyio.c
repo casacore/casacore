@@ -16,6 +16,7 @@
 #include <string.h>
 #include "maxdimc.h"
 #include "io.h"
+#include <stdio.h>
 
 #define OLD 1
 #define NEW 2
