@@ -54,10 +54,7 @@ else:
     env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
     env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
-env.Tool('buildenv', env["casashrdir"])
-env.Tool('utils', env["casashrdir"])
 env.Tool('installer', env["casashrdir"])
-env.Tool('casa', env["casashrdir"])
 # add installer options, e.g. prefix
 env.AddInstallerOptions( opts )
 # add them into environment
@@ -65,6 +62,9 @@ opts.Update( env )
 # cache them for the next run
 opts.Save( 'options.cfg', env)
 Help( opts.GenerateHelpText( env ) )
+env.Tool('buildenv', env["casashrdir"])
+env.Tool('utils', env["casashrdir"])
+env.Tool('casa', env["casashrdir"])
 
 # Auto configure
 if not env.GetOption('clean'):
