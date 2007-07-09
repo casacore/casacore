@@ -71,6 +71,32 @@ def generate(env):
 	return p + "_" + platform.machine()
     env.PlatformIdent = PlatformIdent
 
+    def MergeFlags():
+        def _to_list(xf):
+            if xf.count(","):
+                return xf.split(",")
+            return xf.split()
+
+        xf=env.get("extracppflags", None)
+        if xf:
+            env.AppendUnique(CPPFLAGS=_to_list(xf))
+        xf=env.get("extralinkflags", None)
+        if xf:
+            env.AppendUnique(LINKFLAGS=_to_list(xf))
+            env.AppendUnique(SHLINKFLAGS=_to_list(xf))
+        xf=env.get("extracxxflags", None)
+        if xf:
+            env.AppendUnique(CXXFLAGS=_to_list(xf))
+        xf=env.get("extrafflags", None)
+        if xf:
+            env.AppendUnique(FORTRANFLAGS=_to_list(xf))
+            env.AppendUnique(SHFORTRANFLAGS=_to_list(xf))
+        xf=env.get("extracflags", None)
+        if xf:
+            env.AppendUnique(CCFLAGS=_to_list(xf))
+    # set the extra flags if available
+    MergeFlags()
+        
     def CheckFortran(conf):
 	    
 	if not conf.env.has_key("FORTRAN"):

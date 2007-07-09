@@ -15,7 +15,9 @@ opts.Add(PathOption("casacoredir", "The location of casacore/casa",
 		    "/usr"))
 opts.Add(("CC", "The c compiler", None))
 opts.Add(("CXX", "The c++ compiler", None))
-opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
+opts.Add(("extracppflags", "Extra preprocessor flags ", None))
+opts.Add(("extracxxflags", "Extra c++ compiler flags ", None))
+opts.Add(("extralinkflags", "Extra linker flags ", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 

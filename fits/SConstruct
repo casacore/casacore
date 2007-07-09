@@ -15,8 +15,9 @@ opts.Add(PathOption("casacoredir", "The location of casacore/casa",
                     "/usr"))
 opts.Add(("CC", "The c compiler", None))
 opts.Add(("CXX", "The c++ compiler", None))
-opts.Add(("CPPFLAGS", "Extra compiler flags ", None))
-opts.Add(("FORTRAN", "The fortran compiler", None))
+opts.Add(("extracppflags", "Extra preprocessor flags ", None))
+opts.Add(("extracxxflags", "Extra c++ compiler flags ", None))
+opts.Add(("extralinkflags", "Extra linker flags ", None))
 opts.Add(("f2clib", "The fortran to c library", None))
 opts.Add(("lapackroot", 
           "The root directory where lapack is installed", None))
