@@ -12,7 +12,7 @@ opts.Add(ListOption("libtype", "The type of library to build",
                     "static", ["static", "shared"]))
 opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
-                    "/usr"))
+                    "/usr/local"))
 opts.Add(("CC", "The c compiler", None))
 opts.Add(("CXX", "The c++ compiler", None))
 opts.Add(("extracppflags", "Extra preprocessor flags ", None))
