@@ -241,6 +241,10 @@ public:
     // <group>
     Matrix<T> xyPlane(uInt zplane); 
     const  Matrix<T> xyPlane(uInt zplane) const; 
+    Matrix<T> xzPlane(uInt zplane); 
+    const  Matrix<T> xzPlane(uInt zplane) const; 
+    Matrix<T> yzPlane(uInt zplane); 
+    const  Matrix<T> yzPlane(uInt zplane) const; 
     // </group>
 
     // The length of each axis of the cube.
