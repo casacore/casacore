@@ -101,6 +101,8 @@ for bopt in env["build"]:
     buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
     buildenv["BUILDDIR_FORT"] = Dir("#/build_%s/%s/%s" % (env.PlatformIdent(), 
 						      bopt, "fortran"))
+    buildenv["BUILDDIR_APPS"] = Dir("#/build_%s/%s/%s" % (env.PlatformIdent(), 
+						      bopt, "apps"))
 
     env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
 		   build_dir= buildenv["BUILDDIR"],
@@ -108,6 +110,9 @@ for bopt in env["build"]:
     env.SConscript(["%s/SConscript" % "fortran"],
 		   duplicate=0, exports=["buildenv", "installer"],
 		   build_dir=buildenv["BUILDDIR_FORT"])
+    env.SConscript(["%s/SConscript" % "apps"],
+		   duplicate=0, exports=["buildenv", "installer"],
+		   build_dir=buildenv["BUILDDIR_APPS"])
 
 # add the Tools to the casacore/share directory. This way they can be imported
 # by the other casacore packages without having to duplicate them.
