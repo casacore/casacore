@@ -13,7 +13,7 @@ def generate(env):
     env.CustomCasaCom = CustomCasaCom
 
     def AddCasaPlatform():
-	pd = { "darwin": ["-DAIPS_DARWIN"],
+	pd = { "darwin": ["-DAIPS_DARWIN", "-DAIPS_NO_LEA_MALLOC"],
 	       "64bit": ["-D__x86_64__", "-DAIPS_64B"],
 	       "linux": ["-DAIPS_LINUX"],
 	       "cray": ["-DAIPS_LINUX", "-DAIPS_NOLARGEFILE", 
