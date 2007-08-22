@@ -1,5 +1,5 @@
 //# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996,1997,1999,2000,2002
+//# Copyright (C) 1996,1997,1999,2000,2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,6 +68,9 @@ class String;
 // '$AIPSROOT/data/udir', '~/aips++/code/trial/apps/measures',
 // '$AIPSROOT/data/udir' (last two only ad interim)). They are also looked
 // for in <src>data/{ephemerides,geodetic}</src> (root and user aips++).
+//
+// If an explicit Table object is given the lookup is bypassed, and the Table
+// provided is used. The table should still be named.
 //
 // Tables are assumed to have the
 // VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,
@@ -179,7 +182,8 @@ public:
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
   // Returned are an open table, a row record, pointers (rfp) to row data,
-  // and the table keywordset (kws).
+  // and the table keywordset (kws). Lookup for name is bypassed if the
+  // Table address tabin is provided.
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, or type is not IERS
   // </thrown>
@@ -188,7 +192,8 @@ public:
 		       String &vs, Double &dt,
 		       Int N, const String rfn[],
 		       const String &name,
-		       const String &rc, const String &dir);
+		       const String &rc, const String &dir,
+		       const Table *tabin = 0);
 
   // Notify that a table has successfully been opened with getTable()
   static void openNote(CLOSEFUN fun);

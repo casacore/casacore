@@ -441,11 +441,20 @@ void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
 }
 
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
+  MVPosition VPOS3;
+  VPOS3 = in;
   // Frame rotation
   in *= MeasData::MToB1950(4);
   in.adjust();
   // E-terms
   deapplyETerms(in, doin);
+  MVPosition VPOS4;
+  do {
+    VPOS4 = in;
+    deapplyJ2000toB1950(VPOS4, doin);
+    VPOS4 -= VPOS3;
+    in -= VPOS4*MeasData::MToB1950(4);
+  } while (VPOS4.radius() > 1e-12);
 }
 
 void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
@@ -484,7 +493,7 @@ void MeasMath::deapplyETerms(MVPosition &in, Bool doin) {
     MVPOS3.adjust();
     MVPOS3 -= MVPOS4;
     MVPOS2 -= MVPOS3;
-  } while (MVPOS3.radius() > 1e-10);
+  } while (MVPOS3.radius() > 1e-5);
   MVPOS2 -= MVPOS4;
   rotateShift(in, MVPOS2, B1950LONG, B1950LAT, doin);
 }

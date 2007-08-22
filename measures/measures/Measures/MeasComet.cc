@@ -1,5 +1,5 @@
 //# MeasComet.cc: To define position for comets and other solar system bodies
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000-2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,6 +59,16 @@ MeasComet::MeasComet(const String &path) :
   mtype_p(MDirection::APP),
   msgDone_p(False), tp_p(path) {
   initMeas(path);
+  for (uInt i=0; i<2; i++) lnr_p[i] = -1;
+}
+
+MeasComet::MeasComet(const Table &tabin, const String &path) :
+  tab_p(), measFlag_p(True), measured_p(False),
+  row_p(),
+  mjd0_p(0), mjdl_p(0), dmjd_p(0), nrow_p(0), name_p(), topo_p(),
+  mtype_p(MDirection::APP),
+  msgDone_p(False), tp_p(path) {
+  initMeas(path, &tabin);
   for (uInt i=0; i<2; i++) lnr_p[i] = -1;
 }
 
@@ -146,7 +156,7 @@ MeasComet *MeasComet::clone() const {
   return (new MeasComet(*this));
 }
 
-Bool MeasComet::initMeas(const String &which) {
+Bool MeasComet::initMeas(const String &which, const Table *tabin) {
   static const String names[MeasComet::N_Columns] = {
     "MJD",
     "RA", "DEC",
@@ -164,7 +174,7 @@ Bool MeasComet::initMeas(const String &which) {
 			    rfp_p, vs, dt, 
 			    MeasComet::N_Columns, names, tp_p,
 			    tplc,
-			    String("aips/Measures"))) {
+			    String("aips/Measures"), tabin)) {
       return False;
     };
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||

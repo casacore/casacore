@@ -1,5 +1,5 @@
 //# MeasComet.h: To define position for comets and other solar system bodies
-//# Copyright (C) 1999,2000,2002
+//# Copyright (C) 1999,2000,2002,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,6 +121,8 @@ class MeasComet {
   MeasComet();
   // Construct a table from the named path.
   explicit MeasComet(const String &path);
+  // Construct a table from the name and the input table
+  MeasComet(const Table &tabin, const String &path);
   // Copy constructor
   MeasComet(const MeasComet &other);
   // Copy assign
@@ -160,7 +162,7 @@ class MeasComet {
   
   //# General member functions
   // Initialise table from the name given
-  Bool initMeas(const String &which);
+  Bool initMeas(const String &which, const Table *tabin=0);
   // Fill Table lines
   Bool fillMeas(Double utf) const;
 

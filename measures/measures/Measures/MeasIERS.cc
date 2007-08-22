@@ -1,5 +1,5 @@
 //# MeasIERS.cc: Interface to IERS tables
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996-2003,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -224,80 +224,85 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 			String &vs, Double &dt,
 			Int N, const String rfn[],
 			const String &name,
-			const String &rc, const String &dir) {
-  const String path[2] = {
-    "/data/ephemerides/",
-    "/data/geodetic/" };
-  String ldir;
+			const String &rc, const String &dir,
+			const Table *tabin) {
+  Table tab;
   Bool ok = True;
-  Vector<String> searched;
-  if (Aipsrc::find(ldir, rc)) {
-    ldir += '/';
-    searched.resize(searched.nelements()+1, True);
-    searched[searched.nelements()-1] = ldir;
-  } else {
-    String udir;
-    if (!dir.empty()) udir = dir + '/';
-    ldir = "./";
-    searched.resize(searched.nelements()+1, True);
-    searched[searched.nelements()-1] = ldir;
-    if (!Table::isReadable(ldir + name)) {
-      ldir = "./data/";
+  if (!tabin) {				// No table object given: search name
+    const String path[2] = {
+      "/data/ephemerides/",
+      "/data/geodetic/" };
+    String ldir;
+    Vector<String> searched;
+    if (Aipsrc::find(ldir, rc)) {
+      ldir += '/';
+      searched.resize(searched.nelements()+1, True);
+      searched[searched.nelements()-1] = ldir;
+    } else {
+      String udir;
+      if (!dir.empty()) udir = dir + '/';
+      ldir = "./";
       searched.resize(searched.nelements()+1, True);
       searched[searched.nelements()-1] = ldir;
       if (!Table::isReadable(ldir + name)) {
-	Bool found = False;
-	for (Int i=0; i<2; i++) {
-	  ldir = Aipsrc::aipsHome() + path[i];
-	  searched.resize(searched.nelements()+1, True);
-	  searched[searched.nelements()-1] = ldir;
-	  if (Table::isReadable(ldir + name)) {
-	    found = True;
-	    break;
+	ldir = "./data/";
+	searched.resize(searched.nelements()+1, True);
+	searched[searched.nelements()-1] = ldir;
+	if (!Table::isReadable(ldir + name)) {
+	  Bool found = False;
+	  for (Int i=0; i<2; i++) {
+	    ldir = Aipsrc::aipsHome() + path[i];
+	    searched.resize(searched.nelements()+1, True);
+	    searched[searched.nelements()-1] = ldir;
+	    if (Table::isReadable(ldir + name)) {
+	      found = True;
+	      break;
+	    };
+	    ldir = Aipsrc::aipsRoot() + path[i];
+	    searched.resize(searched.nelements()+1, True);
+	    searched[searched.nelements()-1] = ldir;
+	    if (Table::isReadable(ldir + name)) {
+	      found = True;
+	      break;
+	    };
 	  };
-	  ldir = Aipsrc::aipsRoot() + path[i];
-	  searched.resize(searched.nelements()+1, True);
-	  searched[searched.nelements()-1] = ldir;
-	  if (Table::isReadable(ldir + name)) {
-	    found = True;
-	    break;
-	  };
-	};
-	if (!found) {
-	  ldir = Aipsrc::aipsHome() + "/data/" + udir;
-	  searched.resize(searched.nelements()+1, True);
-	  searched[searched.nelements()-1] = ldir;
-	  if (!Table::isReadable(ldir + name)) {
-	    ldir = Aipsrc::aipsRoot() + "/data/" + udir;
+	  if (!found) {
+	    ldir = Aipsrc::aipsHome() + "/data/" + udir;
 	    searched.resize(searched.nelements()+1, True);
 	    searched[searched.nelements()-1] = ldir;
 	    if (!Table::isReadable(ldir + name)) {
-	      ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
+	      ldir = Aipsrc::aipsRoot() + "/data/" + udir;
 	      searched.resize(searched.nelements()+1, True);
 	      searched[searched.nelements()-1] = ldir;
 	      if (!Table::isReadable(ldir + name)) {
-		ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+		ldir = Aipsrc::aipsHome() + "/code/trial/apps/measures/";
 		searched.resize(searched.nelements()+1, True);
 		searched[searched.nelements()-1] = ldir;
+		if (!Table::isReadable(ldir + name)) {
+		  ldir = Aipsrc::aipsRoot() + "/code/trial/apps/measures/";
+		  searched.resize(searched.nelements()+1, True);
+		  searched[searched.nelements()-1] = ldir;
+		};
 	      };
 	    };
 	  };
 	};
       };
     };
-  };
-  if (!Table::isReadable(ldir + name)) {
-    LogIO os(LogOrigin("MeasIERS",
-		       String("fillMeas(MeasIERS::Files, Double)"),
-		       WHERE));
-    os << LogIO::WARN <<
-      String("Requested data table") << name <<
-      String(" cannot be found in the searched directories:\n");
-    for (uInt i=0; i<searched.nelements(); ++i) os << searched[i] << "\n";
-    os << LogIO::POST;
-    return False;
-  };
-  Table tab(ldir + name);
+    if (!Table::isReadable(ldir + name)) {
+      LogIO os(LogOrigin("MeasIERS",
+			 String("fillMeas(MeasIERS::Files, Double)"),
+			 WHERE));
+      os << LogIO::WARN <<
+	String("Requested data table") << name <<
+	String(" cannot be found in the searched directories:\n");
+      for (uInt i=0; i<searched.nelements(); ++i) os << searched[i] << "\n";
+      os << LogIO::POST;
+      return False;
+    };
+    tab = Table(ldir + name);
+  } else tab = *tabin;
+
   TableRecord ks(tab.keywordSet());
   if (!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
       !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
