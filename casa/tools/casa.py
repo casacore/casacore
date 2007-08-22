@@ -16,7 +16,7 @@ def generate(env):
 	pd = { "darwin": ["-DAIPS_DARWIN", "-DAIPS_NO_LEA_MALLOC"],
 	       "64bit": ["-D__x86_64__", "-DAIPS_64B"],
 	       "linux": ["-DAIPS_LINUX"],
-	       "cray": ["-DAIPS_LINUX", "-DAIPS_NOLARGEFILE", 
+	       "cray": ["-DAIPS_CRAY_PGI", "-DAIPS_LINUX", "-DAIPS_NOLARGEFILE",
 			"-DAIPS_NO_LEA_MALLOC" ,"-Minform=severe"]
 	       }
 	# -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
@@ -40,10 +40,11 @@ def generate(env):
 	    # had a go at this, but it seem to need a whole lot
 	    # of environment variables
 	    # probably nedd a pgi builder
-	    print "Currently not supported"
-	    sys.exit()
-	    env["CXX"] = "CC"
-	    platfdefs += pd["xt3"]
+	    #print "Currently not supported"
+	    #sys.exit()
+	    #env["CXX"] = "CC"
+	    platfdefs += pd["cray"]
+            #platfdefs += ["-fPIC"]
 	else:
 	    platfdefs += pd[sysplf]
 	if sys.byteorder == "little":

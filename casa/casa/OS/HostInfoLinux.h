@@ -122,6 +122,7 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
     int fd, len;
     char *p;
 
+#ifndef AIPS_CRAY_PGI
     /* make sure the proc filesystem is mounted */
     {
 	struct statfs sb;
@@ -132,6 +133,7 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
 	    return;
 	}
     }
+#endif
 
     /* get number of CPUs */
     {

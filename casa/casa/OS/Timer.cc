@@ -45,7 +45,16 @@ void Timer::mark()
  usage0 = clock();
  ftime(&real0);
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
- real0 = times (&usage0);
+ #ifdef AIPS_CRAY_PGI
+   struct timezone tz;
+   //timerclear(&usage0);
+   getrusage(0, &usage0);
+   timerclear(&real0);
+   gettimeofday(&real0, &tz);
+   //gettimeofday(&usage0, &tz);
+ #else
+   real0 = times (&usage0);
+ #endif
 #else
  getrusage(0, &usage0);
  ftime(&real0);
@@ -70,12 +79,18 @@ double Timer::real() const
  return (ms);
  
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ struct timeval now;
+ struct timezone tz;
+ timerclear(&now);
+ gettimeofday(&now, &tz);
+ return ((double) (now.tv_sec - real0.tv_sec));
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
-
  real1 = times (&usage1);
  return ((double) (real1 - real0)) / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  double s, ms;
  timeb  real1;        // current elapsed real time
@@ -104,13 +119,28 @@ double Timer::user() const
     return (0.0);
  
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_sec - usage0.tv_sec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+
+ getrusage(0, &usage1);
+ dsec  = (double)usage1.ru_utime.tv_sec  - (double)usage0.ru_utime.tv_sec;
+ dusec = (double)usage1.ru_utime.tv_usec - (double)usage0.ru_utime.tv_usec;
+ return(dsec + dusec * 0.000001);
+
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
  real1 = times (&usage1);
  return ((double) (usage1.tms_utime - usage0.tms_utime))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  double dsec, dusec;
  rusage usage1;       // current rusage structure
@@ -129,6 +159,21 @@ double Timer::system() const
  return(0L);
 
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_sec - usage0.tv_sec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+
+ getrusage(0, &usage1);
+ dsec  = usage1.ru_stime.tv_sec  - usage0.ru_stime.tv_sec;
+ dusec = usage1.ru_stime.tv_usec - usage0.ru_stime.tv_usec;
+ return(dsec + dusec*0.000001);
+
+ #else
 
  clock_t real1;       // current time
  tms usage1;          // current tms structure
@@ -136,7 +181,7 @@ double Timer::system() const
  real1 = times (&usage1);
  return ((double) (usage1.tms_stime - usage0.tms_stime))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  register double dsec, dusec;
  rusage usage1;       // current rusage structure
@@ -160,6 +205,23 @@ double Timer::all() const
     return (0.0);
  
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_sec - usage0.tv_sec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+
+ getrusage(0, &usage1);
+ dsec  = (usage1.ru_utime.tv_sec  - usage0.ru_utime.tv_sec)
+       + (usage1.ru_stime.tv_sec  - usage0.ru_stime.tv_sec);
+ dusec = (usage1.ru_utime.tv_usec - usage0.ru_utime.tv_usec)
+       + (usage1.ru_stime.tv_usec - usage0.ru_stime.tv_usec);
+ return(dsec + dusec*0.000001);
+
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -167,7 +229,7 @@ double Timer::all() const
  return ((double) (  (usage1.tms_utime - usage0.tms_utime)
                    + (usage1.tms_stime - usage0.tms_stime)  ))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  register double dsec, dusec;
  rusage usage1;       // current rusage structure
@@ -193,6 +255,21 @@ register clock_t  usage1;
     return (0.0);
  
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_usec - usage0.tv_usec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+
+ getrusage(0, &usage1);
+ dsec  = usage1.ru_utime.tv_sec  - usage0.ru_utime.tv_sec;
+ dusec = usage1.ru_utime.tv_usec - usage0.ru_utime.tv_usec;
+ return(dsec*1000000.0 + dusec);
+
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -200,7 +277,7 @@ register clock_t  usage1;
  return 1000000.0 *
         ((double) (usage1.tms_utime - usage0.tms_utime))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
 register double dsec, dusec;
  rusage usage1;       // current rusage structure
@@ -219,6 +296,21 @@ double Timer::system_usec() const
  return(0.0);
 
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_usec - usage0.tv_usec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+
+ getrusage(0, &usage1);
+ dsec  = usage1.ru_stime.tv_sec  - usage0.ru_stime.tv_sec;
+ dusec = usage1.ru_stime.tv_usec - usage0.ru_stime.tv_usec;
+ return(dsec*1000000.0 + dusec);
+
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -226,7 +318,7 @@ double Timer::system_usec() const
  return 1000000.0 *
         ((double) (usage1.tms_stime - usage0.tms_stime))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  register double dsec, dusec;
  rusage usage1;       // current rusage structure
@@ -250,6 +342,23 @@ double Timer::all_usec() const
     return (0.0);
  
 #elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+ #ifdef AIPS_CRAY_PGI
+ //struct timeval now;
+ //struct timezone tz;
+ //timerclear(&now);
+ //gettimeofday(&now, &tz);
+ //return ((double) (now.tv_usec - usage0.tv_usec));
+ double dsec, dusec;
+ rusage usage1;       // current rusage structure
+ 
+ getrusage(0, &usage1);
+ dsec  = (usage1.ru_utime.tv_sec  - usage0.ru_utime.tv_sec)
+       + (usage1.ru_stime.tv_sec  - usage0.ru_stime.tv_sec);
+ dusec = (usage1.ru_utime.tv_usec - usage0.ru_utime.tv_usec)
+       + (usage1.ru_stime.tv_usec - usage0.ru_stime.tv_usec);
+ return(dsec*1000000.0 + dusec);
+
+ #else
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -258,7 +367,7 @@ double Timer::all_usec() const
         ((double) (  (usage1.tms_utime - usage0.tms_utime)
                    + (usage1.tms_stime - usage0.tms_stime)  ))
         / ((double) sysconf(_SC_CLK_TCK));
-
+ #endif
 #else
  register double dsec, dusec;
  rusage usage1;       // current rusage structure

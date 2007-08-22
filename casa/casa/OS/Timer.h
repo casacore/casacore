@@ -42,8 +42,15 @@ extern "C" {
 }
 
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
-#include <sys/times.h>
-#include <unistd.h>
+  #if defined(AIPS_CRAY_PGI)
+    #include <sys/time.h>
+    #include <sys/resource.h>
+    #include <unistd.h>
+    extern "C" int getrusage(int, struct rusage*);
+  #else
+    #include <sys/times.h>
+    #include <unistd.h>
+  #endif
 
 #else
 #include <sys/timeb.h>
@@ -183,8 +190,14 @@ private:
     clock_t usage0;
     timeb   real0;          //# elapsed real time at last mark
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+  #if defined(AIPS_CRAY_PGI)
+    //struct timeval usage0;
+    rusage usage0;          //# rusage structure at last mark
+    struct timeval real0;   //# elapsed real time at last mark
+  #else
     tms     usage0;         //# tms structure at last mark
     clock_t real0;          //# elapsed real time at last mark
+  #endif
 #else
     rusage  usage0;         //# rusage structure at last mark
     timeb   real0;          //# elapsed real time at last mark

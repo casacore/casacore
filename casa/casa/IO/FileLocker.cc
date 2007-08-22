@@ -61,6 +61,14 @@ FileLocker::~FileLocker()
 Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
     itsError = 0;
+    // Locking is not supported on Cray compute nodes. So always success.
+#if defined(AIPS_CRAY_PGI)
+    itsReadLocked = True;
+    if (!itsWriteLocked  &&  type == Write) {
+        itsWriteLocked = True;
+    }
+    return True;
+#else
     struct flock ls;
     ls.l_whence = SEEK_SET;
     ls.l_start  = itsStart;
@@ -154,6 +162,7 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 ///    cout << "failed " << itsReadLocked << ' ' <<itsWriteLocked<<' '<<type<<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
     return False;
+#endif
 }
 
 // Release a lock.
@@ -164,6 +173,9 @@ Bool FileLocker::release()
     itsReadLocked  = False;
     itsWriteLocked = False;
     itsError = 0;
+#if defined(AIPS_CRAY_PGI)
+    return True;
+#else
     struct flock ls;
     ls.l_type   = F_UNLCK;
     ls.l_whence = SEEK_SET;
@@ -179,16 +191,24 @@ Bool FileLocker::release()
 #endif
     itsError = errno;
     return False;
+#endif
 }
 
 Bool FileLocker::canLock (LockType type)
 {
+#if defined(AIPS_CRAY_PGI)
+    return True;
+#else
     uInt pid;
     return canLock (pid, type);
+#endif
 }
 
 Bool FileLocker::canLock (uInt& pid, LockType type)
 {
+#if defined(AIPS_CRAY_PGI)
+    return True;
+#else
     pid = 0;
     itsError = 0;
     struct flock ls;
@@ -206,6 +226,7 @@ Bool FileLocker::canLock (uInt& pid, LockType type)
     }
     itsError = errno;
     return False;
+#endif
 }
 
 String FileLocker::lastMessage() const
