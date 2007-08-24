@@ -1616,61 +1616,61 @@ inline TableExprNode runningMin (const TableExprNode& node,
 				 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runminFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningMax (const TableExprNode& node,
 				 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmaxFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningMean (const TableExprNode& node,
 				  const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmeanFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningVariance (const TableExprNode& node,
 				      const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runvarianceFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningStddev (const TableExprNode& node,
 				    const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runstddevFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningAvdev (const TableExprNode& node,
 				   const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runavdevFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningRms (const TableExprNode& node,
 				 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runrmsFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningMedian (const TableExprNode& node,
 				    const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runmedianFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningAny (const TableExprNode& node,
 				 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runanyFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode runningAll (const TableExprNode& node,
 				 const TableExprNodeSet& halfBoxWidth)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::runallFUNC,
-					   node);
+					   node, halfBoxWidth);
 }
 inline TableExprNode array (const TableExprNode& values,
 			    const TableExprNodeSet& shape)
