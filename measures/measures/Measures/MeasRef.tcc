@@ -1,5 +1,5 @@
 //# MeasRef.cc:  Reference frame for physical measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995-2001,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,7 +39,8 @@ template<class Ms> MeasRef<Ms>::MeasRef() :
   rep(0) {}
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(const MeasRef<Ms> &other) {
+MeasRef<Ms>::MeasRef(const MeasRef<Ms> &other) :
+  MRBase(other) {
   rep = other.rep;
   if (rep) rep->cnt++;
 }
