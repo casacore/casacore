@@ -60,8 +60,9 @@ Float smartMedian (const Array<Float>& arr)
   Int nl = 0;
   Int nr = arr.size();
   Float pivot = nr/2;
+  Array<Float>::const_iterator iterEnd=arr.end();
   for (Array<Float>::const_iterator iter=arr.begin();
-       iter!=arr.end();
+       iter!=iterEnd;
        ++iter) {
     Float val = *iter;
     if (val <= pivot) {

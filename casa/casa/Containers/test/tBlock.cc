@@ -36,6 +36,7 @@
 #include <casa/Containers/Block.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
+#include <vector>
 
 // Test the Block class
 #include <assert.h>
@@ -150,6 +151,22 @@ void doit()
 	assert(aliased[3] == 999);
 	delete [] stored;
 	delete [] stored2;
+    }
+    {                                 // Block::iterator
+	Block<Int> bi(6);
+	bi[0] = 0; bi[1] = 1; bi[2] = 2; bi[3] = 3; bi[4] = 4; bi[5] = 5;
+	Int nrit = 0;
+	for (Block<Int>::const_iterator iter=bi.begin();
+	     iter!=bi.end();
+	     iter++) {
+	  assert(*iter == bi[nrit++]);
+	}
+	assert(nrit == 6);
+    
+	std::vector<Int> vec(bi.begin(), bi.end());
+	assert(vec.size() == 6);
+	assert(vec[0] == 0 && vec[1] == 1 && vec[2] == 2 &&
+	       vec[3] == 3 && vec[4] == 4 && vec[5] == 5);
     }
     {
         // Check that this no longer leaks (regression test)

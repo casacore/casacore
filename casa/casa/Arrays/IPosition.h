@@ -300,16 +300,24 @@ public:
     // <group name=STL-iterator>
     // STL-style typedefs.
     // <group>
-    typedef Int value_type;
-    typedef Int* iterator;
-    typedef const Int* const_iterator;
+    typedef Int               value_type;
+    typedef Int*              iterator;
+    typedef const Int*        const_iterator;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer; 
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef size_t            size_type;
+    typedef ptrdiff_t         difference_type;
     // </group>
-    // Get the begin iterator object for any array.
+    // Get the begin and end iterator object for this object.
     // <group>
     iterator begin()
       { return data_p; }
     const_iterator begin() const
       { return data_p; }
+    iterator end()
+      { return data_p + size_p; }
     const_iterator end() const
       { return data_p + size_p; }
     // </group>

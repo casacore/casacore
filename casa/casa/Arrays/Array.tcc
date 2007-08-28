@@ -147,7 +147,7 @@ template<class T> Array<T> Array<T>::copy() const
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = vp.begin_p;
-        end_iterator iterend=end();
+        const_iterator iterend=end();
         for (const_iterator iter=begin(); iter!=iterend; ++iter) {
 	    *ptr++ = *iter;
 	}
@@ -199,7 +199,7 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	} else if (length_p(0) <= 25) {
 	    // If not many elements on a line, it's better to use this loop.
 	    const_iterator from(other.begin());
-	    end_iterator iterend=end();
+	    iterator iterend=end();
 	    for (iterator iter=begin(); iter!=iterend; ++iter) {
 	        *iter = *from;
 		++from;
@@ -297,7 +297,7 @@ template<class T> void Array<T>::set(const T &Value)
 		uInt(originalLength_p(0)*inc_p(1)));
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
-        end_iterator iterend=end();
+        iterator iterend=end();
         for (iterator iter=begin(); iter!=iterend; ++iter) {
 	    *iter = Value;
 	}
@@ -732,8 +732,8 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = storage;
-	end_iterator iterend=end();
-        for (const_iterator iter=begin(); iter!=iterend; ++iter) {
+	iterator iterend=end();
+        for (iterator iter=begin(); iter!=iterend; ++iter) {
 	    *ptr++ = *iter;
 	}
     } else {
@@ -780,7 +780,7 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         const T* ptr = storage;
-        end_iterator iterend=end();
+        iterator iterend=end();
         for (iterator iter=begin(); iter!=iterend; ++iter) {
 	    *iter = *ptr++;
 	}
@@ -860,7 +860,7 @@ void Array<T>::takeStorage(const IPosition &shape, const T *storage)
 
 
 template<class T>
-Array<T>::ConstIteratorSTL::ConstIteratorSTL (const Array<T>& arr)
+Array<T>::BaseIteratorSTL::BaseIteratorSTL (const Array<T>& arr)
 : itsLineIncr (0),
   itsCurPos   (arr.ndim(), 0),
   itsArray    (&arr),
@@ -888,16 +888,14 @@ Array<T>::ConstIteratorSTL::ConstIteratorSTL (const Array<T>& arr)
       }
       itsCurPos(itsLineAxis) = 1;
       itsLineIncr = itsArray->steps()(itsLineAxis) - 1;
-      ///&((*itsArray)(itsCurPos)) - itsPos - 1;
       itsLineEnd = itsPos + itsLastPos(itsLineAxis) * (itsLineIncr+1);
       itsCurPos(itsLineAxis) = 0;
     }
   }
 }
 
-
 template<class T>
-void Array<T>::ConstIteratorSTL::increment()
+void Array<T>::BaseIteratorSTL::increment()
 {
   uInt axis;
   for (axis=itsLineAxis+1; axis<itsCurPos.nelements(); axis++) {
@@ -910,7 +908,7 @@ void Array<T>::ConstIteratorSTL::increment()
     itsLineEnd -= itsLastPos(axis) * itsArray->steps()(axis);
   }
   if (axis == itsCurPos.nelements()) {
-    itsPos = itsArray->end();
+    itsPos = itsArray->cend();
   } else {
     itsPos = itsLineEnd - itsLastPos(itsLineAxis) * (itsLineIncr+1);
   }

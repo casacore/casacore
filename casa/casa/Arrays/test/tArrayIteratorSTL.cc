@@ -29,7 +29,11 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/OS/Timer.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
+#include <vector>
+#include <iterator>
 
 #include <casa/namespace.h>
 
@@ -39,18 +43,26 @@ void testSub (Array<Int>& arr1, const IPosition& blc,
   Array<Int> arr = arr1(blc,trc,inc);
   Array<Int> arrs;
   arrs = arr;
-  Array<Int>::iterator iters = arrs.begin();
+  std::vector<Int> vec(arr.begin(), arr.end());
+  Array<Int>::const_iterator iters = arrs.begin();
   uInt i=0;
-  for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+  Array<Int>::const_iterator enditer=arr.end();
+  for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
     if (*iter != *iters) {
-      cout << "error: " << *iter << ' ' << *iters << endl;
+      cout << "error in iter: " << *iter << ' ' << *iters << endl;
+    }
+    if (vec[i] != *iters) {
+      cout << "error in vec: " << vec[i] << ' ' << *iters << endl;
+    }
+    if (arrs.data()[i] != *iters) {
+      cout << "error in data(): " << arrs.data()[i] << ' ' << *iters << endl;
     }
     iters++;
     i++;
   }
-  if (i != arr.nelements()) {
-    cout << "error: i!=" << arr.nelements() << endl;
-  }
+  AlwaysAssert (i == arr.size(), AipsError);
+  AlwaysAssert (std::distance(arr.begin(), arr.end()) == arr.size(),
+		AipsError);
 }
 
 
@@ -60,11 +72,12 @@ void testIt()
   indgen(arr);
   {
     Int i=0;
-    for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+    Array<Int>::iterator enditer=arr.end();
+    for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
       if (*iter != i) {
 	cout << "error: " << *iter << ' ' << i << endl;
       }
-      i++;
+      ++i;
     }
     if (uInt(i) != arr.nelements()) {
       cout << "error: i!=" << arr.nelements() << endl;
@@ -75,6 +88,7 @@ void testIt()
   testSub (arr, IPosition(3,0,0,0), IPosition(3,3,4,5), IPosition(3,1,1,2));
   testSub (arr, IPosition(3,3,0,0), IPosition(3,3,4,5), IPosition(3,1,1,1));
   testSub (arr, IPosition(3,3,4,1), IPosition(3,3,4,4), IPosition(3,1,1,1));
+  testSub (arr, IPosition(3,1,2,1), IPosition(3,3,3,4), IPosition(3,2,1,1));
 
   // Test an empty array.
   {
@@ -83,7 +97,7 @@ void testIt()
 	 itera1!=earr.end(); itera1++) {
       cout << "error (itera1 should be empty): " << itera1 << ' ' << endl;
     }
-    for (Array<Int>::const_iterator itera2=earr.begin();
+    for (Array<Int>::iterator itera2=earr.begin();
 	 itera2!=earr.end(); itera2++) {
       cout << "error (itera2 should be empty): " << itera2 << ' ' << endl;
     }
@@ -91,7 +105,7 @@ void testIt()
 	 itera3!=earr.cend(); itera3++) {
       cout << "error (itera3 should be empty): " << itera3 << ' ' << endl;
     }
-    for (Array<Int>::const_contiter itera4=earr.cbegin();
+    for (Array<Int>::contiter itera4=earr.cbegin();
 	 itera4!=earr.cend(); itera4++) {
       cout << "error (itera4 should be empty): " << itera4 << ' ' << endl;
     }
@@ -103,7 +117,7 @@ void testIt()
 	 iterb1!=earr.end(); iterb1++) {
       cout << "error (iterb1 should be empty): " << iterb1 << ' ' << endl;
     }
-    for (Array<Int>::const_iterator iterb2=earr.begin();
+    for (Array<Int>::iterator iterb2=earr.begin();
 	 iterb2!=earr.end(); iterb2++) {
       cout << "error (iterb2 should be empty): " << iterb2 << ' ' << endl;
     }
@@ -111,7 +125,7 @@ void testIt()
 	 iterb3!=earr.cend(); iterb3++) {
       cout << "error (iterb3 should be empty): " << iterb3 << ' ' << endl;
     }
-    for (Array<Int>::const_contiter iterb4=earr.cbegin();
+    for (Array<Int>::contiter iterb4=earr.cbegin();
 	 iterb4!=earr.cend(); iterb4++) {
       cout << "error (iterb4 should be empty): " << iterb4 << ' ' << endl;
     }
@@ -122,22 +136,22 @@ int main()
 {
   testIt();
   const Int nelem = 1000000;
-  //  const Int nelem = 5;
   const Int nstep = 100;
+  //const Int nstep = 1;
   {
     Array<Int> arr(IPosition(1,nelem));
     indgen(arr);
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
       }
     }
-    tim.show("read  full, enditer() ");
+    tim.show("read  full, end()     ");
   }
   {
     Array<Int> arr(IPosition(1,nelem));
@@ -145,16 +159,15 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      ///      const Array<Int>::const_iterator& iterend = arr.end();
-      Array<Int>::end_iterator iterend = arr.end();
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=iterend; iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
       }
     }
-    tim.show("read  full; enditer&  ");
+    tim.show("read  full; enditer   ");
   }
   {
     Array<Int> arr(IPosition(1,nelem));
@@ -162,24 +175,7 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      ///      const Array<Int>::const_iterator iterend = arr.end();
-      Array<Int>::end_iterator iterend = arr.end();
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=iterend; iter++) {
-	if (*iter != inx) {
-	  cout << "err" << endl;
-	}
-	inx++;
-      }
-    }
-    tim.show("read  full, enditer   ");
-  }
-  {
-    Array<Int> arr(IPosition(1,nelem));
-    indgen(arr);
-    Timer tim;
-    for (Int j=0; j<nstep; j++) {
-      Int inx=0;
-      for (Array<Int>::const_contiter iter=arr.cbegin(); iter!=arr.cend(); iter++) {
+      for (Array<Int>::const_contiter iter=arr.cbegin(); iter!=arr.cend(); ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
@@ -196,7 +192,7 @@ int main()
       Int inx=0;
       Bool deleteIt;
       const Int* str = bl.getStorage(deleteIt);
-      for (Int i=0; i<nelem; i++) {
+      for (Int i=0; i<nelem; ++i) {
 	if (str[i] != inx) {
 	  cout << "err" << endl;
 	}
@@ -213,7 +209,7 @@ int main()
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
       Int* ptr = bl.data();
-      for (Int i=0; i<nelem; i++) {
+      for (Int i=0; i<nelem; ++i) {
 	if (ptr[i] != inx) {
 	  cout << "err" << endl;
 	}
@@ -231,11 +227,13 @@ int main()
       Bool deleteIt;
       const Int* str = bl.getStorage(deleteIt);
       const Bool contig = bl.contiguousStorage();
-      for (Int i=0; i<nelem; i++) {
+      for (Int i=0; i<nelem; ++i) {
 	if (str[i] != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
+	// This test is always false. It is there to mimic the
+	// contig test in ArraySTLIterator.
 	if (!contig) {
 	  inx++;
 	}
@@ -254,7 +252,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       const Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	if (str[i] != inx) {
 	  cout << "err" << endl;
 	}
@@ -271,14 +269,15 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
       }
     }
-    tim.show("read  part, enditer() ");
+    tim.show("read  part, enditer   ");
   }
   {
     Array<Int> bl1(IPosition(2,1000,1000));
@@ -290,7 +289,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       const Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	if (str[i] != inx) {
 	  cout << "err" << endl;
 	}
@@ -307,14 +306,15 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
       }
     }
-    tim.show("read  incr, enditer() ");
+    tim.show("read  incr, enditer   ");
   }
   {
     Array<Int> bl1(IPosition(2,1000,1000));
@@ -326,7 +326,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       const Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	if (str[i] != inx) {
 	  cout << "err" << endl;
 	}
@@ -343,14 +343,15 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::const_iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
 	inx++;
       }
     }
-    tim.show("read  small enditer() ");
+    tim.show("read  small enditer   ");
   }
 
   {
@@ -358,35 +359,21 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); ++iter) {
 	*iter = inx;
 	inx++;
       }
     }
-    tim.show("write full, enditer() ");
+    tim.show("write full; end()     ");
   }
   {
     Array<Int> arr(IPosition(1,nelem));
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      ///      const Array<Int>::iterator& iterend = arr.end();
-      Array<Int>::end_iterator iterend = arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; iter++) {
-	*iter = inx;
-	inx++;
-      }
-    }
-    tim.show("write full; enditer&  ");
-  }
-  {
-    Array<Int> arr(IPosition(1,nelem));
-    Timer tim;
-    for (Int j=0; j<nstep; j++) {
-      Int inx=0;
-      Array<Int>::end_iterator iterend = arr.end();
-      ///const Array<Int>::iterator iterend = arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; iter++) {
+      Array<Int>::iterator enditer;
+      enditer = arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	*iter = inx;
 	inx++;
       }
@@ -398,7 +385,7 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::contiter iter=arr.cbegin(); iter!=arr.cend(); iter++) {
+      for (Array<Int>::contiter iter=arr.cbegin(); iter!=arr.cend(); ++iter) {
 	*iter = inx;
 	inx++;
       }
@@ -412,7 +399,7 @@ int main()
       Int inx=0;
       Bool deleteIt;
       Int* str = bl.getStorage(deleteIt);
-      for (Int i=0; i<nelem; i++) {
+      for (Int i=0; i<nelem; ++i) {
 	str[i] = inx;
 	inx++;
       }
@@ -429,7 +416,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	str[i] = inx;
 	inx++;
       }
@@ -443,12 +430,13 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	*iter = inx;
 	inx++;
       }
     }
-    tim.show("write part, enditer() ");
+    tim.show("write part, enditer   ");
   }
   {
     Array<Int> bl1(IPosition(2,1000,1000));
@@ -459,7 +447,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	str[i] = inx;
 	inx++;
       }
@@ -473,12 +461,13 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	*iter = inx;
 	inx++;
       }
     }
-    tim.show("write incr, enditer() ");
+    tim.show("write incr, enditer   ");
   }
   {
     Array<Int> bl1(IPosition(2,1000,1000));
@@ -489,7 +478,7 @@ int main()
       Bool deleteIt;
       uInt n = bl.nelements();
       Int* str = bl.getStorage(deleteIt);
-      for (uInt i=0; i<n; i++) {
+      for (uInt i=0; i<n; ++i) {
 	str[i] = inx;
 	inx++;
       }
@@ -503,11 +492,12 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+      Array<Int>::iterator enditer=arr.end();
+      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	*iter = inx;
 	inx++;
       }
     }
-    tim.show("write small enditer() ");
+    tim.show("write small enditer   ");
   }
 }

@@ -40,6 +40,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
+#include <vector>
 
 #include <casa/namespace.h>
 int main()
@@ -51,10 +52,15 @@ int main()
     for (IPosition::const_iterator iter=ip.begin(); iter!=ip.end(); iter++) {
       assert(*iter == ip[nrit++]);
     }
-    
+    assert(nrit == 3);
     assert(ip.nelements() == 3);
     assert(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
     assert(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
+
+    std::vector<Int> vec(ip.begin(), ip.end());
+    assert(vec.size() == 3);
+    assert(vec[0] == 0 && vec[1] == 1 && vec[2] == 2);
+
     ip[2] = 21;
     assert(ip(2) == 21);
     ip(2) = 22;

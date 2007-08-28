@@ -35,6 +35,7 @@
 #include <casa/Arrays/MaskLogiArrFwd.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/ostream.h>
+#include <iterator>
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 WHATEVER_VECTOR_FORWARD_DEC;
 #else
@@ -511,15 +512,20 @@ public:
 
 
     // <group name=STL-iterator>
-    class ConstIteratorSTL
+    // See the function begin() and end() for a detailed description
+    // of the STL iterator capability.
+    class BaseIteratorSTL
     {
     public:
-      ConstIteratorSTL()
-	: itsPos(0), itsLineEnd(0), itsLineIncr(0), itsLineAxis(0),
+      // Create the begin const_iterator object for an Array.
+      explicit BaseIteratorSTL (const Array<T>&);
+      // Create the end const_iterator object for an Array.
+      // It also acts as the default constructor.
+      explicit BaseIteratorSTL (const T* end = 0)
+	: itsPos(end), itsLineEnd(0), itsLineIncr(0), itsLineAxis(0),
 	  itsArray(0), itsContig(False) {}
-      ConstIteratorSTL (const Array<T>&);
 
-      void operator++()
+      void nextElem()
       {
 	itsPos++;
 	if (!itsContig) {
@@ -527,96 +533,146 @@ public:
 	  if (itsPos > itsLineEnd) increment();
 	}
       }
-      void operator++(int)
-        { this->operator++(); }
-
       void nextLine()
       {
 	itsPos = itsLineEnd;
 	increment();
       }
 
-      bool operator== (const T* const pos) const
-        { return itsPos == pos; }
-
-      bool operator!= (const T* const pos) const
-        { return itsPos != pos; }
-
-      bool operator== (const ConstIteratorSTL& other) const
+      bool operator== (const BaseIteratorSTL& other) const
         { return itsPos == other.itsPos; }
 
-      bool operator!= (const ConstIteratorSTL& other) const
+      bool operator!= (const BaseIteratorSTL& other) const
         { return itsPos != other.itsPos; }
 
-      const T& operator*() const
-        { return *itsPos; }
+      T* getPos()
+        { return const_cast<T*>(itsPos); }
 
-      const T* pos() const
-        { return itsPos; }
-
-      void setPos (T* const pos)
-        { itsPos = pos; }
-
-      friend ostream& operator<< (ostream& os, const ConstIteratorSTL& iter)
+      friend ostream& operator<< (ostream& os, const BaseIteratorSTL& iter)
         { os << iter.itsPos; return os; }
 
     protected:
       // Increment iterator for a non-contiguous array.
       void increment();
 
-      const T* itsPos;
-      const T* itsLineEnd;
-      uInt itsLineIncr;
-      uInt itsLineAxis;
+      const T*  itsPos;
+      const T*  itsLineEnd;
+      uInt      itsLineIncr;
+      uInt      itsLineAxis;
       IPosition itsCurPos;
       IPosition itsLastPos;
       const Array<T>* itsArray; 
-      Bool itsContig;
+      Bool      itsContig;
     };
 
-    class IteratorSTL: public ConstIteratorSTL
+    class IteratorSTL: public BaseIteratorSTL
     {
     public:
-      IteratorSTL()
-	: ConstIteratorSTL () {}
-      IteratorSTL (Array<T>& arr)
-	: ConstIteratorSTL (arr) {}
+      // <group name=STL-iterator-typedefs>
+      typedef T                 value_type;
+      typedef value_type*       pointer;
+      typedef value_type&       reference;
+      typedef std::size_t       size_type;
+      typedef ptrdiff_t         difference_type;
+      typedef std::forward_iterator_tag iterator_category;
+      // </group>
+
+      // Create the begin iterator object for an Array.
+      explicit IteratorSTL (Array<T>& arr)
+	: BaseIteratorSTL (arr) {}
+      // Create the end iterator object for an Array.
+      // It also acts as the default constructor.
+      explicit IteratorSTL (const T* end = 0)
+	: BaseIteratorSTL (end) {}
+
+      const IteratorSTL& operator++()
+      {
+	this->nextElem();
+	return *this;
+      }
+      IteratorSTL operator++(int)
+      {
+	IteratorSTL old(*this);
+	this->nextElem();
+	return old;
+      }
+
       T& operator*()
-        { return *const_cast<T*>(ConstIteratorSTL::itsPos); }
+        { return *this->getPos(); }
+    };
 
-      bool operator== (const T* const position) const
-        { return ConstIteratorSTL::itsPos == position; }
+  class ConstIteratorSTL: public BaseIteratorSTL
+    {
+      // <group name=STL-iterator-typedefs>
+      typedef T                 value_type;
+      typedef const value_type* pointer;
+      typedef const value_type& reference;
+      typedef std::size_t       size_type;
+      typedef ptrdiff_t         difference_type;
+      typedef std::forward_iterator_tag iterator_category;
+      // </group>
 
-      bool operator!= (const T* const position) const
-        { return ConstIteratorSTL::itsPos != position; }
+    public:
+      // Create the begin const_iterator object for an Array.
+      explicit ConstIteratorSTL (const Array<T>& arr)
+	: BaseIteratorSTL (arr) {}
+      // Create the end const_iterator object for an Array.
+      // It also acts as the default constructor.
+      explicit ConstIteratorSTL (const T* end = 0)
+	: BaseIteratorSTL (end) {}
+      // Create from a non-const iterator.
+      ConstIteratorSTL (const IteratorSTL& iter)
+	: BaseIteratorSTL (iter) {}
 
-      bool operator== (const IteratorSTL& other) const
-        { return ConstIteratorSTL::itsPos == other.ConstIteratorSTL::itsPos; }
+      const ConstIteratorSTL& operator++()
+      {
+	this->nextElem();
+	return *this;
+      }
+      ConstIteratorSTL operator++(int)
+      {
+	ConstIteratorSTL old(*this);
+	this->nextElem();
+	return old;
+      }
 
-      bool operator!= (const IteratorSTL& other) const
-        { return ConstIteratorSTL::itsPos != other.ConstIteratorSTL::itsPos; }
+      const T& operator*() const
+        { return *this->itsPos; }
 
+      const T* pos() const
+        { return this->itsPos; }
     };
     // </group>
 
-
-    // Define the STL-style iterators.
-    // It makes it possible to iterate through all data elements of an array.
+    // Define the STL-style iterator functions (only forward iterator).
+    // It makes it possible to iterate through all data elements of an array
+    // and to use it common STL functions.
+    // The end() function is relatively expensive, so it should not be
+    // used inside a for statement. It is much better to call it beforehand
+    // as shown in the example below. Furthermore it is very important to
+    // use <src>++iter</src>, because <src>iter++</src> is 4 times slower.
     // <srcblock>
     //  Array<Int> arr(shape);
-    //  for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); iter++) {
+    //  Array<Int>::iterator iterend(arr.end());
+    //  for (Array<Int>::iterator iter=arr.begin(); iter!=iterend; ++iter) {
     //    *iter += 1;
     //  }
     // </srcblock>
+    // The Array class supports random access, so in principle a random
+    // iterator could be implemented, but its performance would not be great,
+    // especially for non-contiguous arrays.
+    // <br>Some other STL like functions exist for performance reasons.
+    // If the array is contiguous, it is possible to use the
+    // <src>cbegin</src> and <src>cend</src> functions which are
+    // about 10% faster.
     // <group name=STL-iterator>
     // STL-style typedefs.
     // <group>
-    typedef T value_type;
-    typedef IteratorSTL iterator;
+    typedef T                value_type;
+    typedef IteratorSTL      iterator;
     typedef ConstIteratorSTL const_iterator;
-    typedef const T* const end_iterator;
-    typedef T* contiter;
-    typedef const T* const_contiter;
+    typedef T*               contiter;
+    typedef const T*         const_contiter;
     // </group>
     // Get the begin iterator object for any array.
     // <group>
@@ -624,8 +680,10 @@ public:
         { return iterator (*this); }
     const_iterator begin() const
         { return const_iterator (*this); }
-    const T* end() const
-        { return end_p; }
+    iterator end()
+        { return iterator(end_p); }
+    const_iterator end() const
+        { return const_iterator(end_p); }
     // </group>
 
     // Get the begin iterator object for a contiguous array.
