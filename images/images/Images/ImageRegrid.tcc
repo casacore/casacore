@@ -2197,8 +2197,9 @@ Bool ImageRegrid<T>::minmax(Double &minX, Double &maxX, Double &minY,
   minY = 1.0e30;
   maxY = -1.0e30;
   Array<Bool>::const_iterator pMask = mask.begin();
+  Array<Double>::const_iterator pXend = xData.end();
   for (Array<Double>::const_iterator pX = xData.begin(), pY = yData.begin();
-       pX != xData.end(); pX++, pY++, pMask++) {
+       pX != pXend; ++pX, ++pY, ++pMask) {
     if (*pMask) {
       minX = minX < *pX ? minX : *pX;
       maxX = maxX > *pX ? maxX : *pX;
