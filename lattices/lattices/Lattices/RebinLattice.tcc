@@ -359,10 +359,11 @@ void RebinLattice<T>::bin (const Array<T>& dataIn, const Array<Bool>& maskIn)
 
       T sumData = 0;
       Int nSum = 0;
+      typename Array<T>::const_iterator dataIterEnd = cursor.end();
       typename Array<T>::const_iterator dataIter;
       typename Array<Bool>::const_iterator maskIter;
       for (dataIter=cursor.begin(),maskIter=cursorMask.begin();
-           dataIter!=cursor.end(); ++dataIter,++maskIter) {
+           dataIter!=dataIterEnd; ++dataIter,++maskIter) {
          if (*maskIter) {
             sumData += *dataIter;
             nSum++;

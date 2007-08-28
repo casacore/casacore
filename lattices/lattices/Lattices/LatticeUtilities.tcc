@@ -148,9 +148,10 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
       mask.resize(n.shape());
 //
       T lim(0.5);
+      typename Array<T>::const_iterator itend = n.end();
       typename Array<T>::const_iterator it;
       typename Array<Bool>::iterator mIt;
-      for (it=n.begin(),mIt=mask.begin(); it!=n.end(); it++,mIt++) {
+      for (it=n.begin(),mIt=mask.begin(); it!=itend; ++it,++mIt) {
          *mIt = True;
          if (*it < lim) *mIt = False;
       }
@@ -206,7 +207,8 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
 //
          typename Array<Bool>::const_iterator mIt;
          typename Array<T>::iterator dIt;
-         for (dIt=pixels.begin(),mIt=mask.begin(); dIt!=pixels.end(); dIt++,mIt++) {
+	 typename Array<T>::iterator dItend = pixels.end();
+         for (dIt=pixels.begin(),mIt=mask.begin(); dIt!=dItend; ++dIt,++mIt) {
             if (!(*mIt)) *dIt = 0.0;
          }
          out.putSlice(pixels, iter.position());
