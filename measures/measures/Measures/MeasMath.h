@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998,2000,2002,2003,2004,2007
+//# Copyright (C) 1998,2000,2002-2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,8 +186,6 @@ public:
   void deapplyTOPOtoHADEC(MVPosition &in, Bool doin=True);
   void applyPolarMotion(MVPosition &in);
   void deapplyPolarMotion(MVPosition &in);
-  void applyPolarMotionLong(MVPosition &in);
-  void deapplyPolarMotionLong(MVPosition &in);
   void applyAZELtoAZELSW(MVPosition &in); 
   void applyECLIPtoJ2000(MVPosition &in);
   void deapplyECLIPtoJ2000(MVPosition &in);
@@ -294,10 +292,11 @@ private:
 
   // Get information from the frame
   // <thrown>
-  //  <li> AipsError if information not available
+  //  <li> AipsError if information not available; or False return if
+  //		<em>ret=True<em>
   // </thrown>
   // <group>
-  void getInfo(FrameInfo i);
+  Bool getInfo(FrameInfo i, Bool ret=False);
   // </group>
 
   // Make a shift of coordinate into a rotation and apply it when doin is

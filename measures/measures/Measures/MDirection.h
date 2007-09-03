@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995-1999,2000,2002,2004
+//# Copyright (C) 1995-1999,2000,2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,6 +120,9 @@ template <class M> class ROScalarMeasColumn;
 //   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC, SUPGAL, ECLIPTIC, ICRS
 //   <li><em>Positiom</em>: HADEC, AZEL, AZELGEO
 // </ul>
+// The conversion between B1950 and J2000 may have an Epoch. If none given
+// an epoch of 2000.0 is assumed for the convfersion.
+//
 // Conversions are based on the IAU system of 
 // <linkto class=Precession>precession</linkto> and 
 // <linkto class=Nutation>nutation</linkto> (with

@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998-2000,2002,2003,2004,2007
+//# Copyright (C) 1998-2000,2002-2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -460,13 +460,23 @@ void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
 void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
   applyETerms(in,doin);
   // Frame rotation
+  MVPOS1 = in*MeasData::MToJ2000(2);
   in *= MeasData::MToJ2000(0);
+  if (getInfo(UT1, True)) {
+    g1 = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
+  } else g1 = 0.0;
+  in += (g1*C::arcsec)*MVPOS1;
   in.adjust();
 }
 
 void MeasMath::applyETerms(MVPosition &in, Bool doin) {
   // E-terms
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
+  if (getInfo(TDB, True)) {
+    g1 = (info_p[TDB]-MeasData::MJD2000)/MeasData::JDCEN;
+  } else g1 = 0.0;
+  g1 += 0.5;
+  MVPOS1 += (g1*C::arcsec)*MVPosition(MeasTable::AberETerm(1));
   if (doin) MVPOS2 = in;
   else {
     getInfo(B1950DIR);
@@ -574,26 +584,6 @@ void MeasMath::deapplyPolarMotion(MVPosition &in) {
   in(1) = -in(1);
 }
 
-void MeasMath::applyPolarMotionLong(MVPosition &in) {
-  /// remove
-  getInfo(TDB);
-  getInfo(LASTR);
-  getInfo(LONG);
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR] - info_p[LONG];
-  in =  RotMatrix(EULER1) * in;
-}
-
-void MeasMath::deapplyPolarMotionLong(MVPosition &in) {
-  /// remove
-  getInfo(TDB);
-  getInfo(LASTR);
-  getInfo(LONG);
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
-  EULER1(2) = info_p[LASTR] - info_p[LONG];
-  in *= RotMatrix(EULER1);
-}
-
 void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
   in(0) = -in(0);
   in(1) = -in(1);
@@ -666,7 +656,7 @@ void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
 }
 
 // General support
-void MeasMath::getInfo(FrameInfo i) {
+Bool MeasMath::getInfo(FrameInfo i, Bool ret) {
   // Frame information groups
   static FrameType InfoType[N_FrameInfo] = {
     EPOCH, EPOCH, EPOCH, EPOCH, POSITION, POSITION, POSITION, POSITION,
@@ -705,11 +695,13 @@ void MeasMath::getInfo(FrameInfo i) {
 	  (infomvd_p[i-N_FrameDInfo]);
       };
     } else {
+      if (ret) return False;
       throw(AipsError(String("Missing information in Frame ") +
 		      "specified for conversion"));
     };
     infoOK_p[i] = True;
   };
+  return True;
 }
 
 void MeasMath::rotateShift(MVPosition &in, const MVPosition &shft,
