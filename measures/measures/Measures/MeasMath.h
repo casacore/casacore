@@ -170,10 +170,14 @@ public:
   void deapplyHADECtoAZEL(MVPosition &in);
   void applyHADECtoAZELGEO(MVPosition &in);
   void deapplyHADECtoAZELGEO(MVPosition &in); 
+  void applyJ2000toB1950(MVPosition &in, Double epo, Bool doin);
+  void deapplyJ2000toB1950(MVPosition &in, Double epo, Bool doin);
   void applyJ2000toB1950(MVPosition &in, Bool doin=True);
   void deapplyJ2000toB1950(MVPosition &in, Bool doin=True);
-  void applyETerms(MVPosition &in, Bool doin=True);
-  void deapplyETerms(MVPosition &in, Bool doin=True);
+  void applyJ2000toB1950_VLA(MVPosition &in, Bool doin=True);
+  void deapplyJ2000toB1950_VLA(MVPosition &in, Bool doin=True);
+  void applyETerms(MVPosition &in, Bool doin=True, Double epo=2000.0);
+  void deapplyETerms(MVPosition &in, Bool doin=True, Double epo=2000.0);
   void applyGALtoJ2000(MVPosition &in);
   void deapplyGALtoJ2000(MVPosition &in);
   void applyGALtoB1950(MVPosition &in);
@@ -278,6 +282,9 @@ private:
   Double info_p[N_FrameDInfo];
   MVDirection infomvd_p[N_FrameMVDInfo];
   // </group>
+  // Aipsrc definition for B1950 epoch (in years)
+  static uInt b1950_reg_p;
+ 
   // </group>
 
   //# Constructors

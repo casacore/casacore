@@ -1,5 +1,5 @@
 //# MCDirection.cc:  MDirection conversion routines 
-//# Copyright (C) 1995-1998,2000,2001,2002,2004,2007
+//# Copyright (C) 1995-1998,2000-2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,7 +47,11 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::J2000,		MDirection::GALACTIC,	0},
   {MDirection::B1950,		MDirection::GALACTIC,	2},
   {MDirection::J2000,		MDirection::B1950,	2},
+  {MDirection::J2000,		MDirection::B1950_VLA,	2},
   {MDirection::B1950,		MDirection::J2000,	2},
+  {MDirection::B1950_VLA,	MDirection::J2000,	2},
+  {MDirection::B1950,		MDirection::B1950_VLA,	0},
+  {MDirection::B1950_VLA,	MDirection::B1950,	0},
   {MDirection::J2000,		MDirection::JMEAN,	0},
   {MDirection::B1950,		MDirection::BMEAN,	2},
   {MDirection::JMEAN,		MDirection::J2000,	0},
@@ -320,9 +324,22 @@ void MCDirection::doConvert(MVDirection &in,
     case J2000_B1950:
       measMath.applyJ2000toB1950(in);
       break;
+      
+    case J2000_B1950_VLA:
+      measMath.applyJ2000toB1950_VLA(in);
+      break;
     
     case B1950_J2000:
       measMath.deapplyJ2000toB1950(in);
+      break;
+    
+    case B1950_VLA_J2000:
+      measMath.deapplyJ2000toB1950_VLA(in);
+      break;
+
+    case B1950_B1950_VLA:
+
+    case B1950_VLA_B1950:
       break;
     
     case J2000_JMEAN:

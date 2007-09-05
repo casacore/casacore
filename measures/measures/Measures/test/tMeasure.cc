@@ -31,7 +31,6 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
 #include <measures/Measures.h>
 #include <measures/Measures/Aberration.h>
 #include <measures/Measures/MeasData.h>
@@ -590,9 +589,9 @@ int main()
       for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
 	for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
 	  if (i == MDirection::B1950 || i == MDirection::BMEAN ||
-	      i == MDirection::BTRUE ||
+	      i == MDirection::BTRUE || i == MDirection::B1950_VLA ||
 	      j == MDirection::B1950 || j == MDirection::BMEAN ||
-	      j == MDirection::BTRUE) tp = 1.7e-8;
+	      j == MDirection::BTRUE || j == MDirection::B1950_VLA) tp = 5e-9;
 	  else tp = 1e-9;
 	  MDirection::Ref rin(i, mf);
 	  MDirection::Ref rout(j, mf);

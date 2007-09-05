@@ -1,5 +1,5 @@
 //# Muvw.h: A Measure: uvw on Earth
-//# Copyright (C) 1998,1999,2000,2002,2004
+//# Copyright (C) 1998-2000,2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -135,6 +135,7 @@ public:
     JTRUE,
     APP,
     B1950,
+    B1950_VLA,
     BMEAN,
     BTRUE,
     GALACTIC,

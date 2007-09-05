@@ -43,7 +43,11 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::J2000,		MBaseline::GALACTIC,	0},
   {MBaseline::B1950,		MBaseline::GALACTIC,	2},
   {MBaseline::J2000,		MBaseline::B1950,	2},
+  {MBaseline::J2000,		MBaseline::B1950_VLA,	2},
   {MBaseline::B1950,		MBaseline::J2000,	2},
+  {MBaseline::B1950_VLA,	MBaseline::J2000,	2},
+  {MBaseline::B1950,		MBaseline::B1950_VLA,	0},
+  {MBaseline::B1950_VLA,	MBaseline::B1950,	0},
   {MBaseline::J2000,		MBaseline::JMEAN,	0},
   {MBaseline::B1950,		MBaseline::BMEAN,	2},
   {MBaseline::JMEAN,		MBaseline::J2000,	0},
@@ -244,11 +248,28 @@ void MCBaseline::doConvert(MVBaseline &in,
       measMath.applyJ2000toB1950(in, False);
       in.readjust(g2);
       break;
+      
+    case J2000_B1950_VLA:
+      in.adjust(g2);
+      measMath.applyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      break;
     
     case B1950_J2000:
       in.adjust(g2);
       measMath.deapplyJ2000toB1950(in, False);
       in.readjust(g2);
+      break;
+    
+    case B1950_VLA_J2000:
+      in.adjust(g2);
+      measMath.deapplyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      break;
+
+    case B1950_B1950_VLA:
+
+    case B1950_VLA_B1950:
       break;
     
     case J2000_JMEAN:

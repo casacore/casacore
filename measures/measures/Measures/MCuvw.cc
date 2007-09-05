@@ -43,7 +43,11 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::J2000,		 	Muvw::GALACTIC,	0},
   {Muvw::B1950,			Muvw::GALACTIC,	2},
   {Muvw::J2000,			Muvw::B1950,	2},
+  {Muvw::J2000,			Muvw::B1950_VLA,2},
   {Muvw::B1950,			Muvw::J2000,	2},
+  {Muvw::B1950_VLA,		Muvw::J2000,	2},
+  {Muvw::B1950,			Muvw::B1950_VLA,0},
+  {Muvw::B1950_VLA,		Muvw::B1950,	0},
   {Muvw::J2000,			Muvw::JMEAN,	0},
   {Muvw::B1950,			Muvw::BMEAN,	2},
   {Muvw::JMEAN,			Muvw::J2000,	0},
@@ -295,6 +299,15 @@ void MCuvw::doConvert(MVuvw &in,
       in.readjust(g2);
       measMath.applyJ2000toB1950(MVDIR1);
       break;
+      
+    case J2000_B1950_VLA:
+      getJ2000();
+      toPole(in);
+      in.adjust(g2);
+      measMath.applyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      measMath.applyJ2000toB1950_VLA(MVDIR1);
+      break;
 
     case B1950_J2000:
       getB1950();
@@ -303,6 +316,22 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.deapplyJ2000toB1950(in, False);
       in.readjust(g2);
       measMath.deapplyJ2000toB1950(MVDIR1);
+      break;
+    
+    case B1950_VLA_J2000:
+      getB1950();
+      toPole(in);
+      in.adjust(g2);
+      measMath.deapplyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      measMath.deapplyJ2000toB1950_VLA(MVDIR1);
+      break;
+
+    case B1950_B1950_VLA:
+
+    case B1950_VLA_B1950:
+      getB1950();
+      toPole(in);
       break;
 
     case J2000_JMEAN:

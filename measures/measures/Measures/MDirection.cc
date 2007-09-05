@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995-1999,2000,2001,2002,2004
+//# Copyright (C) 1995-2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -129,6 +129,7 @@ const String &MDirection::showType(MDirection::Types tp) {
     "JTRUE",
     "APP",
     "B1950",
+    "B1950_VLA",
     "BMEAN",
     "BTRUE",
     "GALACTIC",
@@ -169,7 +170,7 @@ const String &MDirection::showType(uInt tp) {
 
 const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
 					   const uInt *&typ) {
-  static const Int N_name  = 34;
+  static const Int N_name  = 35;
   static const Int N_extra = 11;
   static const String tname[N_name] = {
     "J2000",
@@ -177,6 +178,7 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     "JTRUE",
     "APP",
     "B1950",
+    "B1950_VLA",
     "BMEAN",
     "BTRUE",
     "GALACTIC",
@@ -213,6 +215,7 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     MDirection::JTRUE,
     MDirection::APP,
     MDirection::B1950,
+    MDirection::B1950_VLA,
     MDirection::BMEAN,
     MDirection::BTRUE,
     MDirection::GALACTIC,

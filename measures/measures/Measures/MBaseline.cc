@@ -1,5 +1,5 @@
 //# MBaseline.cc:  A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999,2000,2001,2002,2004
+//# Copyright (C) 1998-2002,2004,2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,6 +108,7 @@ const String &MBaseline::showType(MBaseline::Types tp) {
     "JTRUE",
     "APP",
     "B1950",
+    "B1950_VLA",
     "BMEAN",
     "BTRUE",
     "GALACTIC",
@@ -135,7 +136,7 @@ const String &MBaseline::showType(uInt tp) {
 
 const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 23;
+  static const Int N_name  = 24;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
@@ -143,6 +144,7 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     "JTRUE",
     "APP",
     "B1950",
+    "B1950_VLA",
     "BMEAN",
     "BTRUE",
     "GALACTIC",
@@ -168,6 +170,7 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     MBaseline::JTRUE,
     MBaseline::APP,
     MBaseline::B1950,
+    MBaseline::B1950_VLA,
     MBaseline::BMEAN,
     MBaseline::BTRUE,
     MBaseline::GALACTIC,

@@ -27,17 +27,21 @@
 
 //# Includes
 #include <measures/Measures/MeasMath.h>
+#include <casa/BasicMath/Math.h>
 #include <casa/Exceptions/Error.h>
+#include <casa/System/AipsrcValue.h>
+#include <measures/Measures/Aberration.h>
 #include <measures/Measures/MeasData.h>
 #include <measures/Measures/MeasTable.h>
-#include <measures/Measures/SolarPos.h>
-#include <measures/Measures/Aberration.h>
-#include <measures/Measures/Precession.h>
-#include <measures/Measures/Nutation.h>
 #include <measures/Measures/MRBase.h>
-#include <casa/BasicMath/Math.h>
+#include <measures/Measures/Nutation.h>
+#include <measures/Measures/Precession.h>
+#include <measures/Measures/SolarPos.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+//# Static data
+uInt MeasMath::b1950_reg_p = 0;
 
 //# Constructors
 MeasMath::MeasMath() :
@@ -441,42 +445,72 @@ void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
 }
 
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
+  if (!MeasMath::b1950_reg_p) {
+    b1950_reg_p = 
+      AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
+				      Unit("a"), Unit("a"), 2000.0);
+  };
+  Double epo;
+  if (getInfo(UT1, True)) {
+    epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
+  } else epo = (AipsrcValue<Double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
+  applyJ2000toB1950(in, epo, doin);
+}
+
+void MeasMath::applyJ2000toB1950_VLA(MVPosition &in, Bool doin) {
+  Double epo = 19.799-20.0;
+  applyJ2000toB1950(in, epo, doin);
+}
+
+void MeasMath::applyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
   MVPosition VPOS3;
   VPOS3 = in;
   // Frame rotation
   in *= MeasData::MToB1950(4);
   in.adjust();
   // E-terms
-  deapplyETerms(in, doin);
+  deapplyETerms(in, doin, epo);
   MVPosition VPOS4;
   do {
     VPOS4 = in;
-    deapplyJ2000toB1950(VPOS4, doin);
+    deapplyJ2000toB1950(VPOS4, epo, doin);
     VPOS4 -= VPOS3;
     in -= VPOS4*MeasData::MToB1950(4);
   } while (VPOS4.radius() > 1e-12);
 }
 
 void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
-  applyETerms(in,doin);
+  if (!MeasMath::b1950_reg_p) {
+    b1950_reg_p = 
+      AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
+				      Unit("a"), Unit("a"), 2000.0);
+  };
+  Double epo;
+  if (getInfo(UT1, True)) {
+    epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
+  } else epo = (AipsrcValue<Double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
+  deapplyJ2000toB1950(in, epo, doin);
+}
+
+void MeasMath::deapplyJ2000toB1950_VLA(MVPosition &in, Bool doin) {
+  Double epo = 19.799-20.0;
+  deapplyJ2000toB1950(in, epo, doin);
+}
+
+void MeasMath::deapplyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
+  applyETerms(in, doin, epo);
   // Frame rotation
   MVPOS1 = in*MeasData::MToJ2000(2);
   in *= MeasData::MToJ2000(0);
-  if (getInfo(UT1, True)) {
-    g1 = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
-  } else g1 = 0.0;
-  in += (g1*C::arcsec)*MVPOS1;
+  in += (epo*C::arcsec)*MVPOS1;
   in.adjust();
 }
 
-void MeasMath::applyETerms(MVPosition &in, Bool doin) {
+void MeasMath::applyETerms(MVPosition &in, Bool doin, Double epo) {
   // E-terms
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
-  if (getInfo(TDB, True)) {
-    g1 = (info_p[TDB]-MeasData::MJD2000)/MeasData::JDCEN;
-  } else g1 = 0.0;
-  g1 += 0.5;
-  MVPOS1 += (g1*C::arcsec)*MVPosition(MeasTable::AberETerm(1));
+  epo += 0.5;
+  MVPOS1 += (epo*C::arcsec)*MVPosition(MeasTable::AberETerm(1));
   if (doin) MVPOS2 = in;
   else {
     getInfo(B1950DIR);
@@ -487,10 +521,12 @@ void MeasMath::applyETerms(MVPosition &in, Bool doin) {
   rotateShift(in, MVPOS1, B1950LONG, B1950LAT, doin);
 }
 
-void MeasMath::deapplyETerms(MVPosition &in, Bool doin) {
+void MeasMath::deapplyETerms(MVPosition &in, Bool doin, Double epo) {
   // E-terms
   // Iterate
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
+  epo += 0.5;
+  MVPOS1 += (epo*C::arcsec)*MVPosition(MeasTable::AberETerm(1));
   if (doin) MVPOS4 = in;
   else {
     getInfo(B1950DIR);
