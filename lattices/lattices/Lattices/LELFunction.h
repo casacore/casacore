@@ -72,7 +72,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // MEAN1D, and SUM.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -173,7 +174,8 @@ private:
 // equivalents in the enum of ASIN, ACOS, TAN, TANH, CEIL, and FLOOR.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -275,7 +277,8 @@ private:
 // <src>iif</src> with equivalents in the enum of IIF.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -379,7 +382,8 @@ private:
 // equivalents in the enum of MIN,MAX,POW,ATAN2,FMOD,ABS,ARG,REAL, and IMAG.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -491,7 +495,8 @@ private:
 // equivalent in the enum of NELEM.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -599,8 +604,8 @@ private:
 // <src>pow,conj</src> with equivalents in the enum of POW and CONJ.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -697,8 +702,8 @@ private:
 // <src>pow,conj</src> with equivalents in the enum of POW and CONJ.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -791,8 +796,8 @@ private:
 // <src>all,any</src> with equivalents in the enum of ALL and ANY.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>

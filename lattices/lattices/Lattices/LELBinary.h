@@ -68,7 +68,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // of ADD, SUBTRACT, MULTIPLY, and DIVIDE.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 //
 // </synopsis> 
 //
@@ -173,7 +174,8 @@ private:
 // EQ, NE, GT, GE, LT, and LE
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 //
 // </synopsis> 
 //
@@ -275,7 +277,8 @@ private:
 // equivalents in the enum of  AND, OR, EQ, and NE
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 //
 // </synopsis> 
 //

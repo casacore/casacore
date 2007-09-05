@@ -65,8 +65,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // and Bool.  
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -158,8 +158,8 @@ private:
 // of PLUS and MINUS.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>
@@ -252,8 +252,8 @@ private:
 // in the enum  of NOT.
 //
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
-//
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 //
 // <example>

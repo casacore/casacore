@@ -374,7 +374,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  only once, on a get of the first part of the lattice expression.
 //  <br> Note that a lattice expression is not writable, thus using
 //  the put function on such a lattice results in an exception.
-//  <br> <a href="../../notes/223/223.html">Note 223</a> gives a more detailed
+//  <br> <a href="http://www.astron.nl/aips++/docs/notes/223">Note 223</a>
+//  gives a more detailed
 //  explanation of the capabilities of LEL (Lattice Expression Language).
 //  <p>
 //  When the expression consists of images, the result can also be

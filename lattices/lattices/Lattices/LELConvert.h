@@ -64,7 +64,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // actually happens at tree evaluation time.
 // <p>
 // A description of the implementation details of the LEL classes can
-// be found in <a href="../../../notes/216/216.html">Note 216</a>
+// be found in
+// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 // </synopsis> 
 
 // <example>

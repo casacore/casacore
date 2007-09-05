@@ -73,7 +73,8 @@ class Slicer;
 //  classes which provide the real functionality. 
 //
 //  A description of the implementation details of these classes can
-//  be found in <a href="../../../notes/216/216.html">Note 216</a>
+//  be found in
+//  <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
 //
 //  This class, LELInterface,  is the abstract base class for all of 
 //  the letter classes.  Its purpose is to declare the interface inherited 
