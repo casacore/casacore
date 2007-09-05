@@ -55,7 +55,9 @@ class TaQLNodeHRValue;
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNode>TaQLNode</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
+//   <li> Note 199 describing
+//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        TaQL</a>
 // </prerequisite>
 
 // <synopsis> 
@@ -203,7 +205,9 @@ private:
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNode>TaQLNodeResult</linkto>
 //   <li> <linkto class=TaQLNode>TaQLNodeHandler</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
+//   <li> Note 199 describing
+//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        TaQL</a>
 // </prerequisite>
 
 // <synopsis> 

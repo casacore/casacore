@@ -45,7 +45,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
+//   <li> Note 199 describing
+//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        TaQL</a>
 // </prerequisite>
 
 // <synopsis>
@@ -105,7 +107,9 @@ private:
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
+//   <li> Note 199 describing
+//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        TaQL</a>
 // </prerequisite>
 
 // <synopsis>

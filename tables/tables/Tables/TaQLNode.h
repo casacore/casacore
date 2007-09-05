@@ -56,7 +56,9 @@ class TaQLSelectNodeRep;
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> <linkto group=TableGram.h#TableGramFunctions>TableGram</linkto>
-//   <li> Note 199 describing <a href="../../../notes/199/199.html">TaQL</a>
+//   <li> Note 199 describing
+//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        TaQL</a>
 // </prerequisite>
 
 // <synopsis>

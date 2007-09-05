@@ -132,7 +132,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <LI> <A HREF="#Tables:write">writing</A> into a table,
 //  <LI> <A HREF="#Tables:row-access">accessing rows</A> in a table,
 //  <LI> <A HREF="#Tables:select and sort">selection and sorting</A>
-//       (see also <A HREF=../../notes/199/199.html>Table Query Language</A>),
+//       (see also <A HREF="http://www.astron.nl/aips++/docs/notes/199/199.html">Table Query Language</A>),
 //  <LI> <A HREF="#Tables:iterate">iterating</A> through a table,
 //  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
 //       for concurrent access,
@@ -744,7 +744,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // There is, however, another way. Strings containing selection and
 // sorting commands can be used.
 // The syntax of these commands is based on SQL and is described in the
-// <a href="../../notes/199/199.html">Table Query Language</a> (TaQL).
+// <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">Table Query Language</a> (TaQL).
 // <br>Such a command can be executed with the static function
 // <src>TableParse::tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
@@ -1239,7 +1239,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> The class
 //   <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>
 //   makes it possible to define a column as an arbitrary expression of
-//   other columns. It uses the <a href="../../notes/199/199.html">TaQL</a>
+//   other columns. It uses the
+//   <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">TaQL</a>
 //   CALC command. The virtual column can be a scalar or an array and
 //   can have one of the standard data types supported by the Table System.
 //  <li> The class
