@@ -41,12 +41,13 @@ def generate(env):
 		self._sharedir = env.get( SHAREDIR, os.path.join( self._prefix, "share" ) )
 	        self._env = env
 	
-	    def Add( self, destdir, name, basedir="", perm=0644 ):
+	    def Add( self, destdir, name, basedir="", perm=None ):
 	        destination = os.path.join( destdir, basedir )
 	        obj = self._env.Install( destination, name )
 	        self._env.Alias( "install", destination )
 	        for i in obj:
-	            self._env.AddPostAction( i, SCons.Defaults.Chmod( str(i), perm ) )
+                        if perm:
+                                self._env.AddPostAction( i, SCons.Defaults.Chmod( str(i), perm ) )
 	
 	    def AddProgram( self, program ):
 	        """ Install a program.
