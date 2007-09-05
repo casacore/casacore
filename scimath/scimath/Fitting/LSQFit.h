@@ -48,7 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <prerequisite>
 //   <li> Some knowledge of Matrix operations
 //   <li> The background information provided in 
-//	<a href="../../../notes/224">Note 224</a>
+//        <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>.
 //   <li> <linkto module="Fitting">Fitting module</linkto>
 // </prerequisite>
 //
@@ -58,7 +58,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <synopsis>
 // The LSQFit class contains the basic functions to do all the fitting
-// described in the <a href="../../../notes/224">Note</a> about fitting.
+// described in the 
+// <a href="http://www.astron.nl/aips++/docs/notes/224">Note</a>
+// about fitting.
 // It handles real, and complex equations;<br>
 // linear and non-linear (Levenberg-Marquardt) solutions;<br>
 // regular (with optional constraints) or Singular Value Decomposition
@@ -93,7 +95,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> Create an LSQFit object.
 //      The information that can be provided in the constructor of the object,
 // either directly, or indirectly using the <src>set()</src> commands, is
-// (see <a href="../../../notes/224">Note 224</a>):
+// (see <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>):
 // <ul>
 //  <li> The number of unknowns that have to be solved for (mandatory)
 //  <li> The number of constraint equations you want to use explicitly
@@ -581,7 +583,7 @@ class LSQFit {
   // could lead to equation <src>[1,1,1]</src> with obs as
   // <src>3.1415</src>. Note that each complex constraint will be
   // converted into two real constraints (see 
-  // <a href="../../../notes/224">Note 224</a>).
+  // <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>).
   // <group>
   template <class U, class V>
     Bool setConstraint(uInt n, const V &cEq, const U &obs);
