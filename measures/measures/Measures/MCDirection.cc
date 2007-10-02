@@ -338,8 +338,13 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case B1950_B1950_VLA:
+      measMath.deapplyJ2000toB1950(in);
+      measMath.applyJ2000toB1950_VLA(in);
+      break;
 
     case B1950_VLA_B1950:
+      measMath.deapplyJ2000toB1950_VLA(in);
+      measMath.applyJ2000toB1950(in);
       break;
     
     case J2000_JMEAN:

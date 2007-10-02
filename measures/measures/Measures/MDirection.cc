@@ -319,6 +319,7 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GRADEC,
 	MDirection::GRADEC,
 	MDirection::GRADEC,
+	MDirection::GRADEC,
 	MDirection::GLONGLAT,
 	MDirection::GHADEC,
 	MDirection::GAZEL,

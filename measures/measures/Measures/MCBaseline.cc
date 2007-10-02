@@ -268,8 +268,21 @@ void MCBaseline::doConvert(MVBaseline &in,
       break;
 
     case B1950_B1950_VLA:
+      in.adjust(g2);
+      measMath.deapplyJ2000toB1950(in, False);
+      in.readjust(g2);
+      in.adjust(g2);
+      measMath.applyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      break;
 
     case B1950_VLA_B1950:
+      in.adjust(g2);
+      measMath.deapplyJ2000toB1950_VLA(in, False);
+      in.readjust(g2);
+      in.adjust(g2);
+      measMath.applyJ2000toB1950(in, False);
+      in.readjust(g2);
       break;
     
     case J2000_JMEAN:
