@@ -746,6 +746,8 @@ public:
     // <group>
     TableExprNode (const Bool& value);
     TableExprNode (const Int& value);
+    TableExprNode (const uInt& value);
+    TableExprNode (const Float& value);
     TableExprNode (const Double& value);
     TableExprNode (const Complex& value);
     TableExprNode (const DComplex& value);
