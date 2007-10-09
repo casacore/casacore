@@ -76,12 +76,15 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
 }
 
 void Regex::dealloc() {
-  free(buf->buffer);
-  delete [] buf->fastmap;
-  delete buf;
+  if ( buf != 0 ) {
+    free(buf->buffer);
+    delete [] buf->fastmap;
+    delete buf; buf= 0;
+  }
   delete reg;
   delete str;
   delete [] trans;
+  }
 }
 
 Int Regex::match_info(Int& start, Int& length, Int nth) const {
