@@ -84,7 +84,6 @@ void Regex::dealloc() {
   delete reg;
   delete str;
   delete [] trans;
-  }
 }
 
 Int Regex::match_info(Int& start, Int& length, Int nth) const {
