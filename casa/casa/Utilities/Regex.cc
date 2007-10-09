@@ -81,9 +81,12 @@ void Regex::dealloc() {
     delete [] buf->fastmap;
     delete buf; buf= 0;
   }
-  delete reg;
-  delete str;
-  delete [] trans;
+  if (reg != 0) delete reg;
+  reg=0;
+  if (str != 0) delete str;
+  str=0;
+  if (trans != 0) delete [] trans;
+  trans=0;
 }
 
 Int Regex::match_info(Int& start, Int& length, Int nth) const {
