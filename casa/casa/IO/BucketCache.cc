@@ -237,7 +237,7 @@ void BucketCache::extend (uInt nrBucket)
     its_NewNrOfBuckets += nrBucket;
     uInt oldSize = its_SlotNr.nelements();
     if (oldSize < its_NewNrOfBuckets) {
-        uInt newSize = oldSize + 256;
+        uInt newSize = oldSize*2;
 	if (newSize < its_NewNrOfBuckets) {
 	    newSize = its_NewNrOfBuckets;
 	}
