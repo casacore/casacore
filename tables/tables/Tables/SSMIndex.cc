@@ -133,16 +133,18 @@ void SSMIndex::addRow (uInt aNrRows)
     return;
   }
    
-  // add extra row. If nrrows > itsLastRow.nelements take extra 64 rows
-  // this is cheaper in time. Take in account that NrRows can be bigger then 
-  // itsRowsPerBucket !
+  // add extra row. If nrrows > itsLastRow.nelements reserve extra rows
+  // which is cheaper.
+  // Take in account that NrRows can be bigger then itsRowsPerBucket !
   
   uInt aNr = (aNrRows+itsRowsPerBucket-1) / itsRowsPerBucket;
   
   uInt aNewNr = itsNUsed+aNr;
-  if (aNewNr > itsLastRow.nelements()) { 
-    if (aNewNr < itsLastRow.nelements()+64) {
-      aNewNr = itsLastRow.nelements()+64;
+  uInt aOldNr = itsLastRow.nelements();
+  if (aNewNr > aOldNr) { 
+    uInt newSize = aOldNr*2;
+    if (aNewNr < newSize) {
+      aNewNr = newSize;
     }
     itsLastRow.resize (aNewNr);
     itsBucketNumber.resize(aNewNr);
