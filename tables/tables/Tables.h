@@ -132,12 +132,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <LI> <A HREF="#Tables:write">writing</A> into a table,
 //  <LI> <A HREF="#Tables:row-access">accessing rows</A> in a table,
 //  <LI> <A HREF="#Tables:select and sort">selection and sorting</A>
-//       (see also <A HREF="http://www.astron.nl/aips++/docs/notes/199/199.html">Table Query Language</A>),
+//       (see also <A HREF=../../notes/199/199.html>Table Query Language</A>),
 //  <LI> <A HREF="#Tables:iterate">iterating</A> through a table,
 //  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
 //       for concurrent access,
 //  <LI> <A HREF="#Tables:KeyLookup">indexing</A> a table for faster lookup,
 //  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
+//  <LI> <A HREF="#Tables:performance">performance and robustness</A> considerations.
 // </UL>
 
 
@@ -221,6 +222,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       <code>table.endianformat</code> which defaults to
 //       <code>Table::LocalEndian</code> (thus the endian format of the
 //       machine being used).
+//  <li> The SQL-like
+//       <a href="../../notes/199/199.html">Table Query Language</a> (TaQL)
+//       can be used to do operations on tables like
+//       select, sort, update, insert, delete, and create.
 // </ul>
 //
 // Tables can be in one of three forms:
@@ -744,7 +749,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // There is, however, another way. Strings containing selection and
 // sorting commands can be used.
 // The syntax of these commands is based on SQL and is described in the
-// <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">Table Query Language</a> (TaQL).
+// <a href="../../notes/199/199.html">Table Query Language</a> (TaQL).
 // <br>Such a command can be executed with the static function
 // <src>TableParse::tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
@@ -1239,8 +1244,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> The class
 //   <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>
 //   makes it possible to define a column as an arbitrary expression of
-//   other columns. It uses the
-//   <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">TaQL</a>
+//   other columns. It uses the <a href="../../notes/199/199.html">TaQL</a>
 //   CALC command. The virtual column can be a scalar or an array and
 //   can have one of the standard data types supported by the Table System.
 //  <li> The class
@@ -1469,6 +1473,144 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // key values, but intervals instead. This is useful when a row in
 // a (sub)table is valid for, say, a time range instead of a single
 // timestamp.
+
+// <A NAME="Tables:performance">
+// <h3>Performance and robustness considerations</h3></A>
+//
+// The Table System resembles a database system, but it is not as robust.
+// It lacks the transaction and logging facilities common to data base systems.
+// It means that in case of a crash data might be lost.
+// To reduce the risk of data loss to
+// a minimum, it is advisable to regularly do a <tt>flush</tt>, optionally
+// with an <tt>fsync</tt> to ensure that all data are really written.
+// However, that can degrade the performance because it involves extra writes.
+// So one should find the right balance between robustness and performance.
+//
+// To get a good feeling for the performance issues, it is important to
+// understand some of the internals of the Table System.
+// <br>The storage managers drive the performance. All storage managers use
+// buckets (called tiles for the TiledStMan) which contain the data.
+// All IO is done by bucket. The bucket/tile size is defined when creating
+// the storage manager objects. Sometimes the default will do, but usually
+// it is better to set it explicitly.
+//
+// It is best to do a flush when a tile is full.
+// For example: <br>
+// When creating a MeasurementSet containing N antennae (thus N*(N-1) baselines
+// or N*(N+1) if auto-correlations are stored as well) it makes sense to
+// store, say, N/2 rows in a tile and do a flush each time all baselines
+// are written. In that way tiles are fully filled when doing the flush, so
+// no extra IO is involved.
+// <br>Here is some code showing this when creating a MeasurementSet.
+// The code should speak for itself.
+// <srcblock>
+// MS* createMS (const String& msName, int nrchan, int nrant)
+// {
+//   // Get the MS main default table description.
+//   TableDesc td = MS::requiredTableDesc();
+//   // Add the data column and its unit.
+//   MS::addColumnToDesc(td, MS::DATA, 2);
+//   td.rwColumnDesc(MS::columnName(MS::DATA)).rwKeywordSet().
+//                                                 define("UNIT","Jy");
+//   // Store the DATA and FLAG column in two separate files.
+//   // In this way accessing FLAG only is much cheaper than
+//   // when combining DATA and FLAG.
+//   // All data have the same shape, thus use TiledColumnStMan.
+//   // Also store UVW with TiledColumnStMan.
+//   Vector<String> tsmNames(1);
+//   tsmNames[0] = MS::columnName(MS::DATA);
+//   td.rwColumnDesc(tsmNames[0]).setShape (IPosition(2,itsNrCorr,itsNrFreq));
+//   td.defineHypercolumn("TiledData", 3, tsmNames);
+//   tsmNames[0] = MS::columnName(MS::FLAG);
+//   td.rwColumnDesc(tsmNames[0]).setShape (IPosition(2,itsNrCorr,itsNrFreq));
+//   td.defineHypercolumn("TiledFlag", 3, tsmNames);
+//   tsmNames[0] = MS::columnName(MS::UVW);
+//   td.defineHypercolumn("TiledUVW", 2, tsmNames);
+//   // Setup the new table.
+//   SetupNewTable newTab(msName, td, Table::New);
+//   // Most columns vary slowly and use the IncrStMan.
+//   IncrementalStMan incrStMan("ISMData");
+//   // A few columns use he StandardStMan (set an appropriate bucket size).
+//   StandardStMan    stanStMan("SSMData", 32768);
+//   // Store all pol and freq and some rows in a single tile.
+//   // autocorrelations are written, thus in total there are
+//   // nrant*(nrant+1)/2 baselines. Ensure a baseline takes up an
+//   // integer number of tiles.
+//   TiledColumnStMan tiledData("TiledData",
+//                              IPosition(3,4,nchan,(nrant+1)/2));
+//   TiledColumnStMan tiledFlag("TiledFlag",
+//                              IPosition(3,4,nchan,8*(nrant+1)/2));
+//   TiledColumnStMan tiledUVW("TiledUVW", IPosition(2,3,));
+//                             IPosition(2,3,nrant*(nrant+1)/2));
+//   newTab.bindAll (incrStMan);
+//   newTab.bindColumn(MS::columnName(MS::ANTENNA1),stanStMan);
+//   newTab.bindColumn(MS::columnName(MS::ANTENNA2),stanStMan);
+//   newTab.bindColumn(MS::columnName(MS::DATA),tiledData);
+//   newTab.bindColumn(MS::columnName(MS::FLAG),tiledFlag);
+//   newTab.bindColumn(MS::columnName(MS::UVW),tiledUVW);
+//   // Create the MS and its subtables.
+//   // Get access to its columns.
+//   MS* msp = new MeasurementSet(newTab);
+//   // Create all subtables.
+//   // Do this after the creation of optional subtables,
+//   // so the MS will know about those optional sutables.
+//   msp->createDefaultSubtables (Table::New);
+//   return msp;
+// }
+// </srcblock>
+
+// <h4>Some more performance considerations</h4>
+// Which storage managers to use and how to use them depends heavily on
+// the type of data and the access patterns to the data. Here follow some
+// guidelines:
+// <ol>
+//  <li> Scalar data can be stored with the StandardStMan (SSM) or
+//       IncrementalStMan (ISM). For slowly varying data (e.g. the TIME column
+//       in a MeasurementSet) it is best to use the ISM. Otherwise the SSM.
+//       Note that very long strings (longer than the bucketsize) can only
+//       be stored with the SSM.
+//  <li> Any number of storage managers can be used. In fact, each column
+//       can have a storage manager of its own resulting in column-wise
+//       stored data which is more and more used in data base systems.
+//       In that way a query or sort on that column is very fast, because
+//       the buckets to read only contain data of that column.
+//       In practice one can decide to combine a few frequently used columns
+//       in a storage manager.
+//  <li> Array data can be stored with any column manager. Small fixed size
+//       arrays can be stored directly with the SSM
+//       (or ISM if not changing much).
+//       However, they can also be stored with a TiledStMan (TSM) as shown
+//       for the UVW column in the example above.
+//       <br> Large arrays should usually be stored with a TSM. However,
+//       if it must be possible to change the shape of an array after it
+//       was stored, the SSM (or ISM) must be used. Note that in that
+//       case a lot of disk space can be wasted, because the SSM and ISM
+//       store the array data at the end of the file when the array got
+//       bigger and do not reuse the old space. The only way to
+//       reclaim it is by making a deep copy of the entire table.
+//  <li> When an array is stored with a TSM, it is important to decide
+//       which TSM to use.
+//       <ol>
+//        <li> The TiledColumnStMan is the most efficient, but only suitable
+//         for arrays having the same shape in the entire column.
+//        <li> The TiledShapeStMan is suitable for columns where the arrays
+//         can have a few shapes.
+//        <li> The TiledCellStMan is suitable for columns where the arrays
+//         can have many different shapes.
+//       </ol>
+//       This is discussed in more detail
+//       <a href="#Tables:TiledStMan">above</a>.
+//  <li> When storing an array with a TSM, it can be very important to
+//       choose the right tile shape. Not only does this define the size
+//       of a tile, but it also defines if access in other directions
+//       than the natural direction can be fast. It is also discussed in
+//       more detail <a href="#Tables:TiledStMan">above</a>.
+//  <li> Columns can be combined in a single TiledStMan. For instance, combining DATA
+//       and FLAG is advantageous if FLAG is always used with DATA. However, if FLAG
+//       is used on its own (e.g. in combination with CORRECTED_DATA), it is better
+//       to separate them, otherwise tiles containing FLAG also contain DATA making the
+//       tiles much bigger, thus more expensive to access.
+// </ol>
 
 // </synopsis>
 // </module>
