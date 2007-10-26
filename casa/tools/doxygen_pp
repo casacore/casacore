@@ -39,7 +39,7 @@ $COMMENT_BLOCK     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-  ###open OUT, ">> xyz";
+### open OUT, ">> xyz";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -59,8 +59,8 @@ if ($arguments == 1)
   $filnm = $filename;
   $filnm =~ s|$cwd||;
   $filnm =~ s|^/||; 
-  # Get the name of the file from code on.
-  #$filnm =~ s|.*/code/||;
+  # Get the name of the file from  on.
+  $filnm =~ s|(.*?)/(.*)|$2|;
   # Get the name of the header.
   $hdrnm = $filnm;
   $hdrnm =~ s|.*/||;     # remove directory
@@ -86,7 +86,7 @@ if ($arguments == 1)
   }
   ###print OUT "$cwd $fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr \n";
 
-  # Open the file.
+ # Open the file.
   $status = open(FILEHANDLE, $filename);
 
   # If the file could be opened then read the contents.
