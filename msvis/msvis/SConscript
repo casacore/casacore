@@ -54,10 +54,7 @@ if myenv["tests"]:
     # exclude cc files
     testaux = [ i for i in testaux if not i.endswith('.cc') ]
     testaux = [ i for i in testaux if not i.endswith('.h') ]
-    testsuff = ""
-    if str(testenv["build"]) == "dbg":
-	testsuff = "_dbg"
-    testdir = Dir("#/tests%s" % testsuff).abspath
+    testdir = Dir("#/tests").abspath
 
     for i in testaux:
 	# Copy doesn't overwrite, so check if they already exist 

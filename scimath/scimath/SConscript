@@ -60,10 +60,7 @@ if myenv["tests"]:
     # exclude cc files
     testaux = [ i for i in testaux if not i.endswith('.cc') ]
     testaux = [ i for i in testaux if not i.endswith('.h') ]
-    testsuff = ""
-    if str(testenv["build"]) == "dbg":
-        testsuff = "_dbg"
-    testdir = Dir("#/tests%s" % testsuff).abspath
+    testdir = Dir("#/tests").abspath
     cpppath = testenv["CPPPATH"]
     if not isinstance(cpppath, list): cpppath = [cpppath]
     for i in testaux:
