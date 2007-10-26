@@ -90,6 +90,9 @@ def run_scons(targets, args=[]):
 
 args = sys.argv[1:]
 if "-h" not in args:
+    if "doc" in args:
+        os.system("doxygen doxygen.cfg")
+        sys.exit(0)
     if "install" not in args:
 	args.append("install")
 	pth = "./stage"
