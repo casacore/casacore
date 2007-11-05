@@ -163,6 +163,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_DARWIN
 //  No need for largefile definition as it is the default under DARWIN
 #define AIPS_NOLARGEFILE
+  // Don't use AIPS_LITTLE_ENDIAN as this would preven universal builds
+  // from working. Auto-detect from AIPS_I386 for intel Macs  
+#if defined(AIPS_LITTLE_ENDIAN)
+#undef AIPS_LITTLE_ENDIAN
+#endif
 #endif
 #endif
 
