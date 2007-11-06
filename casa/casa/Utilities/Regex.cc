@@ -160,7 +160,7 @@ Regex::~Regex() {
   dealloc();
 }
 
-Regex::Regex(const Regex &that) {
+Regex::Regex(const Regex &that) : RegexBase() {
   create(*that.str, that.fastval, that.bufsz, that.trans);
 }
 

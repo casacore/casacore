@@ -25,6 +25,8 @@
 //#
 //# $Id$
 
+// we NEED to include aips(env).h before using any AIPS_xyz defines
+#include <casa/OS/Directory.h>
 
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
@@ -50,7 +52,6 @@
 #  endif
 #endif
 
-#include <casa/OS/Directory.h>
 #include <casa/OS/DirectoryIterator.h>
 #include <casa/OS/RegularFile.h>
 #include <casa/OS/SymLink.h>

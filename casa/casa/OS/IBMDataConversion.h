@@ -29,6 +29,7 @@
 #define CASA_IBMDATACONVERSION_H
 
 //# Includes
+#include <casa/aips.h>
 #include <casa/OS/DataConversion.h>
 
 

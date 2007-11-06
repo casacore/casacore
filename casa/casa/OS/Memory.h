@@ -29,6 +29,7 @@
 #ifndef CASA_MEMORY_H
 #define CASA_MEMORY_H
 
+#include <casa/aips.h>
 //# The following is used to get size_t.
 #include <casa/stdlib.h>
 

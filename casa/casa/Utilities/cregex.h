@@ -44,6 +44,9 @@ extern "C" {
 
 #define BYTEWIDTH 8
 
+
+#include <casa/aips.h>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* Maximum number of duplicates an interval can allow. */

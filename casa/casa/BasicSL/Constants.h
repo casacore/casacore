@@ -28,6 +28,8 @@
 #ifndef CASA_CONSTANTS_H
 #define CASA_CONSTANTS_H
 
+#include <casa/aips.h>
+
 #if defined (sun) && ! defined (AIPS_SOLARIS) 
 #   include <sys/limits.h>
 #else

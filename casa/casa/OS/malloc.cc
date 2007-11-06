@@ -25,6 +25,8 @@
 //#
 //# $Id$
 
+#include <casa/aips.h>
+
 #if !defined(AIPS_NO_LEA_MALLOC)
 
 #if !defined(AIPS_LINUX)

@@ -29,6 +29,7 @@
 #define CASA_VAXCONVERSION_H
 
 //# Includes
+#include <casa/aips.h>
 #include <assert.h>
 #include <casa/OS/LittleEndianConversion.h>
 

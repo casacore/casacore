@@ -27,6 +27,8 @@
 //# $Id$
 
 //# MH 97/11/24 Stop attempt to use mallinfo from stdlib.h for HPUX
+#include <casa/aips.h>
+
 #if defined(__hpux__) && !defined(AIPS_NO_LEA_MALLOC)
 #define _STRUCT_MALLINFO
 #endif

@@ -29,6 +29,7 @@
 #define CASA_IBMCONVERSION_H
 
 //# Includes
+#include <casa/aips.h>
 #include <casa/OS/CanonicalConversion.h>
 
 

@@ -27,8 +27,6 @@
 
 
 #include <casa/OS/VAXConversion.h>
-#include <assert.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
