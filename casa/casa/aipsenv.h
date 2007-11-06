@@ -69,7 +69,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 // Alternate project compiler 
-// Note we only support 64bit builds on SGI
 #if defined(AIPS_SGI)
 #undef AIPS_SGI
 #endif
@@ -111,6 +110,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_64B
 #endif
 
+#if defined(__linux)
+#define AIPS_LINUX
+#endif
+
 #if defined(AIPS_KAI)
 #undef AIPS_KAI
 #endif
@@ -137,6 +140,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 #if defined(__QK_USER__)
 #define AIPS_CRAY_PGI
+#define AIPS_NOLARGEFILE
+#define AIPS_NO_LEA_MALLOC
 #endif
 
 #if defined(AIPS_CRAY_CATAMOUNT)
@@ -146,7 +151,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_CRAY_CATAMOUNT
 #endif
 
-#if defined(__ia64)
+#if (defined(__ia64) || defined(__x86_64__))
 #define AIPS_64B
 #endif
 
@@ -159,16 +164,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 #if defined(AIPS_DARWIN)
 #undef AIPS_DARWIN
-#if defined(__APPLE_CC__)
+#endif
+#if defined(__APPLE__)
 #define AIPS_DARWIN
 //  No need for largefile definition as it is the default under DARWIN
 #define AIPS_NOLARGEFILE
-  // Don't use AIPS_LITTLE_ENDIAN as this would preven universal builds
-  // from working. Auto-detect from AIPS_I386 for intel Macs  
-#if defined(AIPS_LITTLE_ENDIAN)
-#undef AIPS_LITTLE_ENDIAN
-#endif
-#endif
+  // Don't use AIPS_LITTLE_ENDIAN as this would prevent universal builds
+  // from working. Auto-detect from AIPS_I386 for intel Macs
+#define AIPS_NO_LEA_MALLOC 
+# if defined(AIPS_LITTLE_ENDIAN)
+# undef AIPS_LITTLE_ENDIAN
+# endif
 #endif
 
 //  Automatically configure for known LITTLE ENDIAN systems
@@ -189,6 +195,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 # ifndef _LARGEFILE64_SOURCE
 #  define _LARGEFILE64_SOURCE
 # endif
+#endif
+
+// Add other platforms here
+#if (defined(AIPS_LINUX) || defined(AIPS_DARWIN))
+#define AIPS_AUTO_STL
+#define AIPS_STDLIB
 #endif
 
 } //# NAMESPACE CASA - END
