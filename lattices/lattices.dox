@@ -25,11 +25,21 @@
 //#
 //# $Id$
 
-// \defgroup lattices lattices package (libcasa_lattices)
+namespace casa {
+
+// \defgroup lattices lattices package (liblattices)
 //
 // The lattices package is a generalization of n-dimensional 
-// <linkto module=Arrays>arrays</linkto>.
+// <a href="group__Arrays.html">arrays</a>.
 // It can hold arrays in memory, on disk, or as a virtual lattice using
-// expressions, subsets, masking, etc.
-//
-// The <linkto module=images>images</linkto> module is built on top of lattices.
+// expressions, subsets, regions, masking, etc.
+// <p>
+// A lot of math functionality (statistics, FFT, convolution, clean, fitting)
+// is available on <a href="group__Lattices">lattices</a>.
+// Module <a href="group__LatticeMath.html">LatticeMath</a>
+// offers the fitting of functionals to lattice data.
+// <p>
+// The <a href="group__Images.html">images</a> module is built on top of
+// lattices.
+
+}
