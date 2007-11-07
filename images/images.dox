@@ -25,7 +25,9 @@
 //#
 //# $Id$
 
-// \defgroup images images package (libcasa_images)
+namespace casa {
+
+// \defgroup images images package (libimages)
 //
 // The images package handles N-dimensional images, their masks,
 // coordinates, and auxiliary info like history.
@@ -34,8 +36,11 @@
 //  <li> slices of images
 //  <li> regions in images
 //  <li> expressions of images
+//   (using <a href="http://www.astron.nl/aips++/docs/notes/223">LEL</a>)
 //  <li> concatenation of images
 // </ul>
 //
 // It is built on top of the
-// <linkto module=lattices>lattices</linkto> module.
+// <a href="group__lattices.html">lattices</a> module.
+
+}
