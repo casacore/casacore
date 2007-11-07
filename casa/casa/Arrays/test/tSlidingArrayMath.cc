@@ -25,10 +25,11 @@
 //#
 //# $Id$
 
+#include <casa/Arrays/MaskArrMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/MaskArrMath.h>
+
 #include <casa/Utilities/GenSort.h>
 #include <casa/OS/Timer.h>
 #include <iostream>
