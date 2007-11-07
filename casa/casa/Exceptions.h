@@ -61,7 +61,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // a more general exception:</em>
 // <srcblock>
 //     #include <casa/Exceptions.h>
-// #include <iostream>
+//     #include <iostream>
 //     main() {
 //         try {
 //             throw(indexError<int>(5,"Dummy error"));
