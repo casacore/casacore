@@ -25,12 +25,18 @@
 //#
 //# $Id$
 
-// \defgroup scimath scimath package (libcasa_scimath)
+namespace casa {
+
+// \defgroup scimath scimath package (libscimath)
 //
 // The scimath package contains the basic mathematical modules of AIPS++.
 // <ul>
-//  <li> Functionals: n-dimensional functions with automatic differentation.
-//  <li> Fitting: linear and non-linear fitting to parameters or Functionals.
-//  <li> Mathematics: FFT, convolution, 2-dim interpolation, random numbers.
+//  <li> <a href="group__Functionals.html">Functionals</a>:
+//    n-dimensional functions with automatic differentation.
+//  <li> <a href="group__Fitting.html">Fitting</a>:
+//    linear and non-linear fitting to parameters or Functionals.
+//  <li> <a href="group__Mathematics.html">Mathematics</a>:
+//    FFT, convolution, 2-dim interpolation, random numbers.
 // </ul>
 
+}
