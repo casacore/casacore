@@ -25,12 +25,18 @@
 //#
 //# $Id$
 
-// \defgroup tables tables package (libcasa_tables)
+namespace casa {
+
+// \defgroup tables tables package (libtables)
 //
 // The tables package contains the core modules for the AIPS++ Table System:
 // <ul>
-//  <li> Tables: data base like tables
-//  <li> TablePlot: table plotting facilities
-//  <li> LogTables: logging tables
+//  <li> <a href="group__Tables.html">Tables</a>:
+//   data base like tables with an advanced query language (TaQL).
+//  <li> <a href="group__TablePlot.html">TablePlot</a>:
+//   plot table columns or expressions of them.
+//  <li> <a href="group__LogTables.html">LogTables</a>:
+//   store log messages in tables.
 // </ul>
 
+}
