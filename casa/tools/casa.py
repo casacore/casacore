@@ -16,8 +16,7 @@ def generate(env):
 	pd = { "darwin": [],
 	       "64bit": [],
 	       "linux": [],
-	       "cray": ["-DAIPS_CRAY_PGI", "-DAIPS_LINUX", "-DAIPS_NOLARGEFILE",
-			"-DAIPS_NO_LEA_MALLOC" ,"-Minform=severe"]
+	       "cray": ["-Minform=severe"]
 	       }
 	# -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
 	platfdefs = []
