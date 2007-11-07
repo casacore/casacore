@@ -25,14 +25,32 @@
 //#
 //# $Id$
 
-// \defgroup casa casa package (libcasa_casa)
-//
-// The casa package contains the core AIPS++ modules:
-// <ul>
-//  <li> Containers (from pre-STL era)
-//  <li> Multi-dimensional arrays
-//  <li> OS and IO interface classes
-//  <li> Quantities (values with physical units)
-//  <li> Various utility classes and functions
-// </ul>
+namespace casa {
 
+// \defgroup casa casa core modules (libcasa)
+
+// The casa package contains the core modules.
+// <ul>
+//   <li> Multi-dimensional <a href="group__Arrays.html">arrays</a>
+//   <li> <a href="group__Quanta.html">Quantities</a> (values with physical units)
+//   <li> <a href="group__OS.html">OS</a> and
+//    <a href="group__IO.html">IO</a> interface classes
+//   <li> <a href="group__Containers.html">Container</a>s (from pre-STL era)
+//   <li> Various <a href="group__Utilities.html">utilit</a>y classes
+//        and functions
+//   <li> Miscellaneous modules for
+//    <a href="group__Exceptions.html">exceptions</a>,
+//    <a href="group__System.html">tasking interface</a>,
+//    <a href="group__Inputs.html">command line input</a>,
+//    <a href="group__Logging.html">logging</a>,
+//    <a href="group__BasicSL.html">STL wrappers</a>, and
+//    <a href="group__BasicMath.html">basic math classes</a>
+// </ul>
+// It is important to note that most of the code has been developed before STL
+// came into existence, so several classes in modules Containers
+// and Utilities are superseded by their STL counterparts. However, they
+// are still used in some casacore code.
+// Furthermore, some classes offer some extra functionality compared
+// to STL.
+
+}
