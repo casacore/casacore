@@ -220,7 +220,7 @@ public:
 
   //# Member functions
   // <thrown>
-  // <li> AipsError if HOME or AIPSPATH environment variable not set
+  // <li> AipsError if HOME environment variable not set
   // </thrown> 
   // The <src>find()</src> functions will, given a keyword, return the value
   // with a matched keyword found in the files. If no match found the

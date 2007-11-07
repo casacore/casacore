@@ -158,11 +158,16 @@ const String &Aipsrc::fillAips(const String &nam) {
     String aipsPath;
     if (extAipsPath.empty()) {
       aipsPath = EnvironmentVariable::get("AIPSPATH");
-    } else aipsPath = extAipsPath;
-    if (aipsPath.empty())
-      throw(AipsError(String("The AIPSPATH environment variable has not been "
-			     "set or setAipsPath has not been used") +
-		      "\n\t(see system administrator)"));
+    } else { 
+      aipsPath = extAipsPath;
+    }
+    if (aipsPath.empty()) {
+      //      throw(AipsError(String("The AIPSPATH environment variable has not been "
+      //			     "set or setAipsPath has not been used") +
+      //		      "\n\t(see system administrator)"));
+      setAipsPath(uhome);
+      aipsPath = extAipsPath;
+    }
     Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
     String *newdir = new String[n];
     n = split(aipsPath, newdir, n, Regex("[ 	]"));
