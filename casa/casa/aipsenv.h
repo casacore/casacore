@@ -110,6 +110,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_64B
 #endif
 
+#if defined(AIPS_LINUX)
+#undef AIPS_LINUX
+#endif
 #if defined(__linux)
 #define AIPS_LINUX
 #endif
@@ -140,8 +143,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 #if defined(__QK_USER__)
 #define AIPS_CRAY_PGI
+#if !defined(AIPS_NOLARGEFILE)
 #define AIPS_NOLARGEFILE
+#endif
+#if !defined(AIPS_NO_LEA_MALLOC)
 #define AIPS_NO_LEA_MALLOC
+#endif
 #endif
 
 #if defined(AIPS_CRAY_CATAMOUNT)
@@ -152,7 +159,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 #if (defined(__ia64) || defined(__x86_64__))
-#define AIPS_64B
+# if !defined(AIPS_64B)
+# define AIPS_64B
+# endif
 #endif
 
 #if defined(AIPS_I386)
@@ -179,7 +188,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //  Automatically configure for known LITTLE ENDIAN systems
 #if !(defined(AIPS_LITTLE_ENDIAN))
-#if (defined(AIPS_ALPHA) || defined(AIPS_I386))
+#if (defined(AIPS_ALPHA) || defined(AIPS_I386) || defined(__x86_64__))
 #define AIPS_LITTLE_ENDIAN
 #endif
 #endif
@@ -199,8 +208,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Add other platforms here
 #if (defined(AIPS_LINUX) || defined(AIPS_DARWIN))
+#if !defined(AIPS_AUTO_STL)
 #define AIPS_AUTO_STL
+#endif
+#if !defined(AIPS_STDLIB)
 #define AIPS_STDLIB
+#endif
 #endif
 
 } //# NAMESPACE CASA - END
