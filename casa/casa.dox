@@ -27,7 +27,7 @@
 
 namespace casa {
 
-// \defgroup casa casa core modules (libcasa)
+// \defgroup casa casa core modules (libcasa_casa)
 
 // The casa package contains the core modules.
 // <ul>
