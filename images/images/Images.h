@@ -35,29 +35,29 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// #include <casa/Arrays/ArrayLattice.h>
-// #include <casa/Arrays/PagedArray.h>
-// #include <casa/Arrays/TempLattice.h>
-// #include <casa/Arrays/TiledShape.h>
-// #include <casa/Arrays/LatticeIterator.h>
-// #include <casa/Arrays/LatticeStepper.h>
-// #include <casa/Arrays/TileStepper.h>
-// #include <casa/Arrays/TiledLineStepper.h>
+//#include <casa/Arrays/ArrayLattice.h>
+//#include <casa/Arrays/PagedArray.h>
+//#include <casa/Arrays/TempLattice.h>
+//#include <casa/Arrays/TiledShape.h>
+//#include <casa/Arrays/LatticeIterator.h>
+//#include <casa/Arrays/LatticeStepper.h>
+//#include <casa/Arrays/TileStepper.h>
+//#include <casa/Arrays/TiledLineStepper.h>
 
-// #include <lattices/Lattices/SubLattice.h>
-// #include <lattices/Lattices/LatticeExpr.h>
+//#include <lattices/Lattices/SubLattice.h>
+//#include <lattices/Lattices/LatticeExpr.h>
 
-// #include <lattices/Lattices/LatticeRegion.h>
-// #include <lattices/Lattices/LCSlicer.h>
-// #include <lattices/Lattices/LCBox.h>
-// #include <lattices/Lattices/LCEllipsoid.h>
-// #include <lattices/Lattices/LCPolygon.h>
-// #include <lattices/Lattices/LCUnion.h>
-// #include <lattices/Lattices/LCIntersection.h>
-// #include <lattices/Lattices/LCDifference.h>
-// #include <lattices/Lattices/LCConcatenation.h>
-// #include <lattices/Lattices/LCComplement.h>
-// #include <lattices/Lattices/LCExtension.h>
+//#include <lattices/Lattices/LatticeRegion.h>
+//#include <lattices/Lattices/LCSlicer.h>
+//#include <lattices/Lattices/LCBox.h>
+//#include <lattices/Lattices/LCEllipsoid.h>
+//#include <lattices/Lattices/LCPolygon.h>
+//#include <lattices/Lattices/LCUnion.h>
+//#include <lattices/Lattices/LCIntersection.h>
+//#include <lattices/Lattices/LCDifference.h>
+//#include <lattices/Lattices/LCConcatenation.h>
+//#include <lattices/Lattices/LCComplement.h>
+//#include <lattices/Lattices/LCExtension.h>
 
 
 // <module>
@@ -69,8 +69,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <prerequisite>
 //   <li> Programmers of new Image classes should understand Inheritance
 //   <li> Users of the Image classes should understand Polymorphism.
-//   <li> class <linkto name=Lattice>Lattice</linkto>
-//   <li> class <linkto name=CoordinateSystem>CoordinateSystem</linkto>
+//   <li> class <linkto class=Lattice>Lattice</linkto>
+//   <li> class <linkto class=CoordinateSystem>CoordinateSystem</linkto>
 // </prerequisite>
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
