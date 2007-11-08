@@ -27,7 +27,7 @@
 
 namespace casa {
 
-// \defgroup images images package (libimages)
+// \defgroup images images package (libcasa_images)
 //
 // The images package handles N-dimensional images, their masks,
 // coordinates, and auxiliary info like history.

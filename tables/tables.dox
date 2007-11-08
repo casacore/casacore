@@ -27,7 +27,7 @@
 
 namespace casa {
 
-// \defgroup tables tables package (libtables)
+// \defgroup tables tables package (libcasa_tables)
 //
 // The tables package contains the core modules for the AIPS++ Table System:
 // <ul>
