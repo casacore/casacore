@@ -31,20 +31,20 @@ namespace casa {
 
 // The casa package contains the core modules.
 // <ul>
-//   <li> Multi-dimensional <a href="group__Arrays.html">arrays</a>
-//   <li> <a href="group__Quanta.html">Quantities</a> (values with physical units)
-//   <li> <a href="group__OS.html">OS</a> and
-//    <a href="group__IO.html">IO</a> interface classes
-//   <li> <a href="group__Containers.html">Container</a>s (from pre-STL era)
-//   <li> Various <a href="group__Utilities.html">utilit</a>y classes
+//   <li> Multi-dimensional <a href="group__casaArrays.html">arrays</a>
+//   <li> <a href="group__casaQuanta.html">Quantities</a> (values with physical units)
+//   <li> <a href="group__casaOS.html">OS</a> and
+//    <a href="group__casaIO.html">IO</a> interface classes
+//   <li> <a href="group__casaContainers.html">Container</a>s (from pre-STL era)
+//   <li> Various <a href="group__casaUtilities.html">utilit</a>y classes
 //        and functions
 //   <li> Miscellaneous modules for
-//    <a href="group__Exceptions.html">exceptions</a>,
-//    <a href="group__System.html">tasking interface</a>,
-//    <a href="group__Inputs.html">command line input</a>,
-//    <a href="group__Logging.html">logging</a>,
-//    <a href="group__BasicSL.html">STL wrappers</a>, and
-//    <a href="group__BasicMath.html">basic math classes</a>
+//    <a href="group__casaExceptions.html">exceptions</a>,
+//    <a href="group__casaSystem.html">tasking interface</a>,
+//    <a href="group__casaInputs.html">command line input</a>,
+//    <a href="group__casaLogging.html">logging</a>,
+//    <a href="group__casaBasicSL.html">STL wrappers</a>, and
+//    <a href="group__casaBasicMath.html">basic math classes</a>
 // </ul>
 // It is important to note that most of the code has been developed before STL
 // came into existence, so several classes in modules Containers
