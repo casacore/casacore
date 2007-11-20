@@ -45,7 +45,6 @@
 #   define LN_MAXFLOAT (M_LN2 * FMAXEXP)
 #   define LN_MINFLOAT (M_LN2 * (FMINEXP -1))
 #endif
-#include <casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
