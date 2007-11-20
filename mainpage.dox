@@ -103,7 +103,7 @@ namespace casa {
 ///   </td>
 ///   </tr>
 ///   <tr>
-///   <td><a href="group_fits.html">fits</a></td>
+///   <td><a href="group__fits.html">fits</a></td>
 ///   <td>
 ///   A C++ interface on top of
 ///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>.
