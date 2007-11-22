@@ -1,8 +1,9 @@
-import os
+\import os
 import sys
 
 # Put the package name here, e.g. casa, tables
-PACKAGE="tables"
+PACKAGE = "tables"
+DEPS = ["casa"]
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
@@ -24,20 +25,15 @@ env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  },
 		  options=opts
 		  )
-# keep a local sconsign database, rather than in very directory
+
+# keep a local sconsign database, rather than in every directory
 env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
-if env["PACKAGE"] == "casa":
-    # use build in dir
-    env["casashrdir"] = ["./tools"]
-    env["casalibdir"] = None
-    env["casaincdir"] = None
-else:
-    # use directory from casacore/casa installation
-    env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
-    env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
-    env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+# use directory from casacore/casa installation
+env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
+env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
+env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
 env.Tool('installer', env["casashrdir"])
 # add installer options, e.g. prefix
@@ -47,9 +43,12 @@ opts.Update( env )
 # cache them for the next run
 opts.Save( 'options.cfg', env)
 Help( opts.GenerateHelpText( env ) )
+
 env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
+env.Tool('assaytest', env["casashrdir"])
+env["ASSAYCOM"] = os.path.join(env["casashrdir"][0], "casacore_assay")
 
 # create the installer which handles installing the final build
 installer = env.Installer()
@@ -58,7 +57,8 @@ installer = env.Installer()
 env.Append(CPPPATH=['#'])
 env.AppendUnique(CPPPATH=env["casaincdir"])
 env.AppendUnique(LIBPATH=env["casalibdir"])
-env.Prepend(LIBS=["casa_casa"])
+for dep in DEPS:
+    env.Prepend(LIBS=["casa_"+dep])
 
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
@@ -71,9 +71,3 @@ for bopt in env["build"]:
     env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
 		   build_dir= buildenv["BUILDDIR"],
 		   duplicate=0, exports=["buildenv", "installer"]) 
-
-# add the Tools to the casacore/share directory. This way they can be imported
-# by the other casacore packages without having to duplicate them.
-if env["PACKAGE"] == "casa":
-    installer.AddShares("tools", "*.py", "casacore/", True)
-    installer.AddProgram("tools/casacore_assay")

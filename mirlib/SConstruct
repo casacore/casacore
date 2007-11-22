@@ -1,9 +1,8 @@
 import os
 import sys
 
-
 # Put the package name here, e.g. casa, tables
-PACKAGE="mirlib"
+PACKAGE = "mirlib"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
@@ -28,16 +27,11 @@ env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
-if env["PACKAGE"] == "casa":
-    # use build in dir
-    env["casashrdir"] = ["./tools"]
-    env["casalibdir"] = None
-    env["casaincdir"] = None
-else:
-    # use directory from casacore/casa installation
-    env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
-    env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
-    env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+
+# use directory from casacore/casa installation
+env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
+env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
+env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
 env.Tool('installer', env["casashrdir"])
 # add installer options, e.g. prefix

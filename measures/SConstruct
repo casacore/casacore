@@ -49,6 +49,7 @@ env["PACKAGE"] = PACKAGE
 env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
 env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
 env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+env["ENV"]["AIPSPATH"] = env["casacoredir"]
 
 env.Tool('installer', env["casashrdir"])
 # add installer options, e.g. prefix
@@ -62,7 +63,7 @@ env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
-env["ASSAYCOM"] = os.path.join(env["casacoredir"], "bin", "casacore_assay")
+env["ASSAYCOM"] = os.path.join(env["casashrdir"][0], "casacore_assay")
 
 # Auto configure
 if not env.GetOption('clean'):
