@@ -31,48 +31,23 @@ if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [cpps])
     installer.AddLibrary(slib)
+    myenv.Default(slib)
 if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
     #build dynamic lib
     dlib =  myenv.SharedLibrary(target = libname, source = cpps)
     installer.AddLibrary(dlib)
 
-if myenv["tests"]:
-    testenv = myenv.Copy()
-    # AddCasaTests()  move the code belowto tools/casa.py
-    # gather test files
-    # SGlob works in build dir, so only for cc files
-    tests = testenv.SGlob("test/*.cc")
-    tests += testenv.SGlob("*/test/*.cc")
-    # point to tests local includes
-    testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-    testenv.Prepend(LIBS=[libname])
-    # install assay *.run *.in* *.out files into test directory
-    # use glob here with an absolute path, as Sconsript is "called" 
-    # from the build dir.
-    testaux = glob.glob("%s/%s/test/*.*" % (rootdir, testenv["PACKAGE"]))
-    testaux += glob.glob("%s/%s/*/test/*.*" % (rootdir, testenv["PACKAGE"]))
-    # exclude cc files
-    testaux = [ i for i in testaux if not i.endswith('.cc') ]
-    testaux = [ i for i in testaux if not i.endswith('.h') ]
-    testdir = Dir("#/tests").abspath
+testenv = myenv.Copy()
+# gather test files
+# SGlob works in build dir, so only for cc files
+tests = testenv.SGlob("test/*.cc")
+tests += testenv.SGlob("*/test/*.cc")
+# point to tests local includes
+testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
+testenv.PrependUnique(LIBS=[slib])
+for t in tests:
+    testenv.addAssayTest(t)
 
-    for i in testaux:
-	# Copy doesn't overwrite, so check if they already exist 
-	# from a previous run.
-	if not os.path.exists(testdir):
-	    testenv.Execute(Mkdir(testdir))
-	outfile = os.path.join(testdir, os.path.basename(i))
-	if not os.path.exists(outfile):
-	    testenv.Execute(Copy(outfile, i))
- 
-    for i in tests:
-	# get the basename no suffix of the file
-	tinfile = os.path.splitext(os.path.basename(i))[0]
-	tdir = os.path.split(i)[0]
-	# output goes into the root/tests directory
-	toutfile = os.path.join(testdir, tinfile)
-	tapp = testenv.Program(toutfile, source=i, 
-			       CPPPATH=[testenv["CPPPATH"]]+[tdir])
 
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )

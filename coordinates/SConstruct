@@ -2,7 +2,8 @@ import os
 import sys
 
 # Put the package name here, e.g. casa, tables
-PACKAGE="coordinates"
+PACKAGE = "coordinates"
+DEPS = ["casa", "tables", "scimath_f", "scimath", "measures", "fits"]
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
@@ -49,17 +50,12 @@ env = Environment(
 env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
-if env["PACKAGE"] == "casa":
-    # use build in dir
-    env["casashrdir"] = ["./tools"]
-    env["casalibdir"] = None
-    env["casaincdir"] = None
-else:
-    # use directory from casacore/casa installation
-    env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
-    env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
-    env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
+# use directory from casacore/casa installation
+env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
+env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
+env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+    
 env.Tool('installer', env["casashrdir"])
 
 # add installer options, e.g. prefix
@@ -72,6 +68,8 @@ Help( opts.GenerateHelpText( env ) )
 env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
+env.Tool('assaytest', env["casashrdir"])
+env["ASSAYCOM"] = os.path.join(env["casashrdir"][0], "casacore_assay")
 
 # Auto configure
 if not env.GetOption('clean'):
@@ -108,14 +106,14 @@ installer = env.Installer()
 env.Append(CPPPATH=['#'])
 env.AppendUnique(CPPPATH=env["casaincdir"])
 env.AppendUnique(LIBPATH=env["casalibdir"])
-env.Prepend(LIBS=[ "casa_fits",
-		  "casa_measures", "casa_scimath", "casa_scimath_f", 
-		  "casa_tables", "casa_casa"])
+for dep in DEPS:
+    env.Prepend(LIBS=["casa_"+dep])
 
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
+
 for bopt in env["build"]:
-    # create an environment copy with teh dbg/opt compiler flags
+    # create an environment copy with the dbg/opt compiler flags
     buildenv = env.BuildEnv(bopt)
     buildenv["buildtype"] = bopt
     # buildir name
@@ -123,8 +121,3 @@ for bopt in env["build"]:
     env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
 		   build_dir= buildenv["BUILDDIR"],
 		   duplicate=0, exports=["buildenv", "installer"]) 
-
-# add the Tools to the casacore/share directory. This way they can be imported
-# by the other casacore packages without having to duplicate them.
-if env["PACKAGE"] == "casa":
-    installer.AddShares("tools", "*.py", "casacore/", True)
