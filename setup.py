@@ -2,28 +2,6 @@ import sys
 import os
 import re
 
-def run_tests(pkgname, prefix):
-    platfld = "LD_LIBRARY_PATH"
-    if  sys.platform == "darwin":
-	platfld = "DYLD_LIBRARY_PATH"
-    ldpth = os.environ.get(platfld)
-    os.environ[platfld] = os.path.join(prefix, "lib")
-    if ldpth is not None:
-	os.environ[platfld] += os.path.pathsep + ldpth
-    pth = os.environ.get("PATH")
-    os.environ["PATH"] =  '.' +os.path.pathsep + os.path.join(prefix, "bin")
-    if pth is not None:
-	os.environ["PATH"] += os.path.pathsep + pth
-    bdir = os.getcwd()
-    os.chdir(os.path.join(pkgname, "tests"))
-    os.environ["AIPSPATH"] = os.path.abspath(os.curdir)
-    # gather test program executables
-    fls = [ i for i in os.listdir(".") if i.startswith("t") ]
-    fls = filter(lambda i: not re.match(re.compile(".*\.\w+$"),i ), fls)
-    for f in fls:
-	status = os.system("casacore_assay ./%s" % f)
-    os.chdir(bdir)
-
 deps = {'casa' : None,
 	'tables': ['casa'],
 	'mirlib': ['casa'],
@@ -69,9 +47,6 @@ def run_scons(targets, args=[]):
             command += " " + arg
 	    if arg.startswith("prefix"):
 		pfx = arg.split("=")[-1]
-	    if arg.startswith("tests") and \
-		arg.split("=")[-1].lower() in ["1","on", "true"]:
-		tests = True
         print "Building package: " + target
         sys.stdout.flush()
 	print command
@@ -83,10 +58,6 @@ def run_scons(targets, args=[]):
 	    sys.exit(failed)
         sys.stdout.flush()
         os.chdir(cwd)
-	if pfx is not None and tests:
-	    print "Testing  package: " + target
-	    run_tests(target, pfx)
-
 
 args = sys.argv[1:]
 if "-h" not in args:
