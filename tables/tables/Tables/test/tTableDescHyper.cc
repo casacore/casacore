@@ -46,7 +46,7 @@ void a();
 void b();
 void excpDesc();
 
-main (int argc) {
+int main (int argc) {
     try {
 	a();
 	b();

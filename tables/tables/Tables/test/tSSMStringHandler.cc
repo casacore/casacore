@@ -85,7 +85,7 @@ void replaceStrings();
 // show table info
 void info(const Table aTable);
 
-main (int argc, char** argv) {
+int main (int argc, char** argv) {
     uInt aNr = 500;
     if (argc > 1) {
 	istringstream anIstr(argv[1]);

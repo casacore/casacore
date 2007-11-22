@@ -63,7 +63,7 @@ void readInfo()
 }
 
 
-main ()
+int main()
 {
     try {
 	writeInfo();

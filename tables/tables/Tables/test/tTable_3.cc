@@ -163,7 +163,7 @@ void a (uInt nrrow)
     }
 }
 
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
     try {
 	uInt nrrow = 100000;

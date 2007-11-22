@@ -30,7 +30,7 @@
 
 using namespace casa;
 
-int main(int argc)
+int main()
 {
   char buf[32768];
   while (cin.getline (buf, sizeof(buf))) {

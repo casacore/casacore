@@ -3,7 +3,7 @@
 # Script to test the tTableCopy test program.
 #=============================================================================
 
-tTableCopy
-tTableCopy m
-tTableCopy p n
-tTableCopy m n
+./tTableCopy
+./tTableCopy m
+./tTableCopy p n
+./tTableCopy m n

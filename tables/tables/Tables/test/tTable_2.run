@@ -13,4 +13,4 @@
 # Fundamentals.
   TABLES="tTable_2.data_v*"
 
-  tTable_2 $TABLES
+  ./tTable_2 $TABLES

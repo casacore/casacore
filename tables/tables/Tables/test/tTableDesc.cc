@@ -433,7 +433,7 @@ void e (Bool)
 }
 
 
-main (int argc)
+int main (int argc)
 {
     try {
 	d ( (argc<2));

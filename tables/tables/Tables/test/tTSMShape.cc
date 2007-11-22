@@ -64,7 +64,7 @@ void check (const IPosition& shape, const IPosition& offsetIncr,
     }
 }
 
-main()
+int main()
 {
   {
     IPosition shape (3,4,5,6);

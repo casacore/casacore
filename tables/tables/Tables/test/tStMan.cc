@@ -600,7 +600,7 @@ void doTest (uInt nrrow, const DataManager& stman)
   checktab ("p");
 }
 
-main (int argc, const char* argv[])
+int main (int argc, const char* argv[])
 {
   uInt nrrow = 10;
   uInt bucketSize = 500;

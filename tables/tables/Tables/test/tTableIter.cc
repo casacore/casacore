@@ -54,7 +54,7 @@ void credes();
 void cretab(uInt);
 void doiter1();
 void doiter2();
-main (int argc, char** argv) {
+int main (int argc, char** argv) {
     uInt nr = 5000;
     if (argc > 1) {
 	istringstream istr(argv[1]);
