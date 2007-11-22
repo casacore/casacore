@@ -48,10 +48,7 @@ def assayAction(target, source, env):
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=env["ENV"], cwd=testpath[0])
     info,err = p.communicate()
-    if len(err) > 0:
-        print err.strip()
-        return 0
-    else:
+    if len(info) > 0:
         if info.find("PASS") > -1 or info.find("OK") > -1:
             print info.strip()
             file(str(target[0]),'w').write(info)
@@ -60,6 +57,8 @@ def assayAction(target, source, env):
             print info.strip()
             print err.strip()
             return 0
+    print err.strip()
+    return 0
 
 def auxString(target, source, env):
     return ""
