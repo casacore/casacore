@@ -35,7 +35,7 @@
 // It allocates buffers, stores data in it and reads it back.
 // The results are written to stdout. A script executes this test program.
 
-main () {
+int main () {
     uInt nrval,n;
     union {
         Char* ptr;

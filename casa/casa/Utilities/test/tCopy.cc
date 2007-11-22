@@ -46,7 +46,7 @@
 // To complete the tests, they are also done for data types Block<uInt>
 // and void*.
 
-main()
+int main()
 {
     Int size=100;             // should be a multiple of 4
     Int* ia = new int[size];

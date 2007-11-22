@@ -42,7 +42,7 @@ static void defaultValue(String &val)
   val = "defaultval";
 };
 
-main()
+int main()
 {
   try {
     Int foo0;

@@ -31,7 +31,7 @@
 #include <casa/math.h>
 
 #include <casa/namespace.h>
-main() {
+int main() {
 
   Time t;
   cout<<"now "<<t.dayOfMonth()<<" "<<t.month()<<" "<<t.year()<<"\n";

@@ -38,7 +38,7 @@
 #include <casa/namespace.h>
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
     uInt nr=4000;
     int type=Sort::HeapSort;
@@ -86,7 +86,7 @@ main(int argc, char** argv)
     if (a1==0 || a2==0 || a3==0 || a4==0) {
 	cout << "Allocation error" << endl;
     }
-    for (Int i=0; i<nr; i++) {
+    for (uInt i=0; i<nr; i++) {
 	a1[i] = i;
 	a2[i] = nr-i;
 	a3[i] = rand();

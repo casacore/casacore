@@ -187,7 +187,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   return True;
 };
 
-main()
+int main()
 {
   try {
 
