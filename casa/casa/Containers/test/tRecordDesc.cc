@@ -34,7 +34,7 @@
 #include <casa/namespace.h>
 void doIt (Bool doExcp);
 
-main (int argc)
+int main (int argc)
 {
     try {
 	doIt ( (argc<2));

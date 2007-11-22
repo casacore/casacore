@@ -34,7 +34,7 @@
 #include <casa/namespace.h>
 static void show(const ConstListIter<int> &);
 static void dump(const ConstListIter<int> *);
-main() {
+int main() {
 
   List<int> one;
   ListIter<int> onePa(one);

@@ -36,7 +36,7 @@
 #include <casa/namespace.h>
 //template<class key,class value> void print(const OrderedMap<key,value> &);
 
-main() {
+int main() {
   OrderedMap<int,int> map(-1);
   OrderedMap<String,OrderedPair<String,uInt> > smap(OrderedPair<String,uInt>("dummy",0));
 
