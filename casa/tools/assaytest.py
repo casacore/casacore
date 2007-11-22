@@ -91,6 +91,7 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
     if source is None:
         source = target
         target = None
+    env.AppendUnique(CPPPATH=[os.path.split(source)[0]])
     program = env.Program(target, source, *args, **kwargs)
     utest = env.Assay(program)
     # add alias to run all unit tests.
