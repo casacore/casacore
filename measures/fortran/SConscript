@@ -13,6 +13,7 @@ libname= "casa_" + myenv["PACKAGE"] + "_f"
 if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [ffs])
+    myenv.Default(slib)
     installer.AddLibrary(slib)
 if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
     #build dynamic lib
