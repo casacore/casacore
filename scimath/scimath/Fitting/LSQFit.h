@@ -1,5 +1,5 @@
 //# LSQFit.h: Basic class for least squares fitting
-//# Copyright (C) 1999-2001,2004-2006
+//# Copyright (C) 1999-2001,2004-2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,8 @@
 #include <scimath/Fitting/LSQTraits.h>
 #include <complex>
 #include <string>
+#include <utility>
+#include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -470,7 +472,7 @@ class LSQFit {
 		   U &sol,
 		   Bool doSVD=False);
   // </group>
-  // Make normal equations using the <src>cEq</src> condition equation
+  // Make normal equations using the <src>cEq</src> condition equation (cArray)
   // (with <src>nUnknowns</src> elements) and a weight <src>weight</src>,
   // given the known observed value <src>obs</src>.
   //
@@ -522,6 +524,7 @@ class LSQFit {
 		  const std::complex<U> &obs,
 		  LSQFit::Conjugate,
 		  Bool doNorm=True, Bool doKnown=True);
+  //
   template <class U, class V, class W>
     void makeNorm(uInt nIndex, const W &cEqIndex,
 		  const V &cEq, const U &weight, const U &obs,
@@ -557,6 +560,45 @@ class LSQFit {
   template <class U, class V, class W>
     void makeNorm(uInt nIndex, const W &cEqIndex,
 		  const V &cEq, const U &weight,
+		  const std::complex<U> &obs,
+		  LSQFit::Conjugate,
+		  Bool doNorm=True, Bool doKnown=True);
+  //
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight, const U &obs,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight, const U &obs,
+		  LSQFit::Real,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight,
+		  const std::complex<U> &obs,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight,
+		  const std::complex<U> &obs,
+		  LSQFit::Complex,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight,
+		  const std::complex<U> &obs,
+		  LSQFit::Separable,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight,
+		  const std::complex<U> &obs,
+		  LSQFit::AsReal,
+		  Bool doNorm=True, Bool doKnown=True);
+  template <class U, class V>
+    void makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		  const U &weight,
 		  const std::complex<U> &obs,
 		  LSQFit::Conjugate,
 		  Bool doNorm=True, Bool doKnown=True);

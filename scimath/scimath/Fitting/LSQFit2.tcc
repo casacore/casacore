@@ -1,5 +1,5 @@
 //# LSQFit2.cc: Basic class for least squares fitting: templated methods
-//# Copyright (C) 1999,2000,2002,2004-2006
+//# Copyright (C) 1999,2000,2002,2004-2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -637,7 +637,309 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
     error_p[SUMLL] += weight*norm(obs);		//sum rms
   };
 }
+  //
+  template <class U, class V>
+  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+			const U &weight, const U &obs,
+			Bool doNorm, Bool doKnown) {
+    if (doNorm) {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i=cEq.begin();
+	 i !=  cEq.end(); ++i) {
+      if (i->second != V(0)) {
+	Double *i2 = norm_p->row(i->first);	//row pointer
+	Double eq(i->second);
+	eq *= weight;
+	for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	       i1=cEq.begin();
+	     i1 != cEq.end(); ++i1) {
+	  if (i->first <= i1->first && i1->second != V(0)) {
+	    i2[i1->first] += eq*Double(i1->second); //equations
+	  };
+	};
+      };
+    };
+    state_p &= ~TRIANGLE;
+    };
+    if (doKnown) {
+      Double obswt = obs*weight;
+      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	     i1=cEq.begin();
+	   i1 != cEq.end(); ++i1) {
+	if (i1->second != V(0)) {
+	  known_p[i1->first] += Double(i1->second)*obswt;	//data vector
+	};
+      };
+      error_p[NC] += 1;				//cnt equations
+      error_p[SUMWEIGHT] += weight;		//sum weight
+      error_p[SUMLL] += obs*obswt;		//sum rms
+    };
+  }
 
+  template <class U, class V>
+  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+			const U &weight, const U &obs,
+			LSQFit::Real,
+			Bool doNorm, Bool doKnown) {
+  makeNorm(cEq, weight, obs, doNorm, doKnown);
+}
+
+template <class U, class V>
+void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		      const U &weight,
+		      const std::complex<U> &obs,
+		      Bool doNorm, Bool doKnown) {
+  if (doNorm) {
+    std::complex<U> dci;
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i=cEq.begin();
+	 i !=  cEq.end(); ++i) {
+      Double *i2 = norm_p->row(2*i->first);	//row pointer
+      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	     i1=cEq.begin();
+	   i1 !=  cEq.end(); ++i1) {
+	if (i->first<=i1->first) {
+	  dci = i->second*conj(i1->second);
+	  i2[2*i1->first]   += dci.real()*weight; //real equations
+	  i2[2*i1->first+1] += dci.imag()*weight; //imag. equations
+	};
+      };
+      Double *i4 = norm_p->row(2*i->first+1);	//next line row pointer
+      for (uInt i1=2*i->first+1; i1<nun_p; i1+=2) {	//duplicate
+	i4[i1] = i2[i1-1];
+      };
+      for (uInt i1=2*i->first+2; i1<nun_p; i1+=2) {
+	i4[i1] = -i2[i1+1];
+      };
+    };
+    state_p &= ~TRIANGLE;
+  };
+  if (doKnown) {
+    std::complex<U> dci;
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i1=cEq.begin();
+	 i1 !=  cEq.end(); ++i1) {
+      dci = obs*conj(i1->second);
+      known_p[2*i1->first]   += dci.real()*weight;	//real part
+      known_p[2*i1->first+1] += dci.imag()*weight;	//imag part
+    };
+    // errors
+    error_p[NC] += 2;				//cnt equations
+    error_p[SUMWEIGHT] += 2*weight; 		//sum weight
+    error_p[SUMLL] += weight*norm(obs);		//sum rms
+  };
+}
+
+template <class U, class V>
+void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		      const U &weight,
+		      const std::complex<U> &obs,
+		      LSQFit::Complex,
+		      Bool doNorm, Bool doKnown) {
+  makeNorm(cEq, weight, obs, doNorm, doKnown);
+}
+
+template <class U, class V>
+void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		      const U &weight,
+		      const std::complex<U> &obs,
+		      LSQFit::Separable,
+		      Bool doNorm, Bool doKnown) {
+  if (doNorm) {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i=cEq.begin();
+	 i !=  cEq.end(); ++i) {
+      Double *i2 = norm_p->row(i->first);	//row pointer
+      if (i->first%2 == 0) {
+	for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	       i1=cEq.begin();
+	     i1 !=  cEq.end(); ++i1) {
+	  if (i->first<=i1->first && i1->first+1 < nun_p) {
+	    if (i1->first%2 == 0) {
+	      i2[i1->first] += realMC(i->second, i1->second)*weight;
+	    } else {
+	      i2[i1->first] += imagMC(i->second, i1->second)*weight;
+	    };
+	  };
+	};
+      } else {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i1=cEq.begin();
+	 i1 !=  cEq.end(); ++i1) {
+	  if (i->first<=i1->first) {
+	    if (i1->first != nun_p-1) {
+	      if (i1->first%2 != 0) {
+		i2[i1->first] += realMC(i->second, i1->second)*weight;
+	      } else {
+		i2[i1->first] -= imagMC(i->second, i1->second)*weight;
+	      };
+	    } else {
+	      i2[i1->first] += realMC(i->second, i1->second)*weight;
+	    };
+	  };
+	};
+      };
+    };
+    state_p &= ~TRIANGLE;
+  };
+  if (doKnown) {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i1=cEq.begin();
+	 i1 !=  cEq.end(); ++i1) {
+      if (i1->first%2 == 0) {
+	known_p[i1->first] += realMC(obs, i1->second)*weight;
+      } else {
+	known_p[i1->first] += imagMC(obs, i1->second)*weight;
+      };
+    };
+    // errors
+    error_p[NC] += 2;				//cnt equations
+    error_p[SUMWEIGHT] += 2*weight; 		//sum weight
+    error_p[SUMLL] += weight*norm(obs);		//sum rms
+  };
+}
+
+template <class U, class V>
+void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		      const U &weight,
+		      const std::complex<U> &obs,
+		      LSQFit::AsReal,
+		      Bool doNorm, Bool doKnown) {
+  if (doNorm) {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i=cEq.begin();
+	 i !=  cEq.end(); ++i) {
+      Double *i2 = norm_p->row(2*i->first);	//row pointer real
+      Double *i2i= norm_p->row(2*i->first+1); //row pointer imag
+      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	     i1=cEq.begin();
+	   i1 !=  cEq.end(); ++i1) {
+	if (i->first<=i1->first) {
+	  i2[2*i1->first]    +=
+	    i->second.real()*i1->second.real()*weight; //real
+	  i2i[2*i1->first+1] +=
+	    i->second.imag()*i1->second.imag()*weight; //imag
+	};
+      };
+    };
+    state_p &= ~TRIANGLE;
+  };
+  if (doKnown) {
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i1=cEq.begin();
+	 i1 !=  cEq.end(); ++i1) {
+      known_p[2*i1->first]   += i1->second.real()*obs.real()*weight ; //real
+      known_p[2*i1->first+1] += i1->second.imag()*obs.imag()*weight ; //imag
+    };
+    // errors
+    error_p[NC] += 2;				//cnt equations
+    error_p[SUMWEIGHT] += 2*weight; 		//sum weight
+    error_p[SUMLL] += weight*norm(obs);		//sum rms
+  };
+}
+
+template <class U, class V>
+void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+		      const U &weight,
+		      const std::complex<U> &obs,
+		      LSQFit::Conjugate,
+		      Bool doNorm, Bool doKnown) {
+  if (doNorm) {
+    std::complex<U> tmp(0);
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i=cEq.begin();
+	 i !=  cEq.end(); ++i) {
+      if (i->first < nun_p) {
+	Double *i2 = norm_p->row(i->first);		//row pointer
+	for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	       i1=cEq.begin();
+	     i1 !=  cEq.end(); ++i1) {
+	  if (i1->first < nun_p) {
+	    tmp = (i->second*conj(i1->second))*weight;
+	    if (i->first%2 == 0) {
+	      Double *i2 = norm_p->row(i->first);	//row pointer
+	      if (i1->first%2 == 0) {
+		if (i->first <= i1->first) {
+		  i2[i1->first]   += tmp.real();
+		  i2[i1->first+1] += tmp.imag(); };
+		i2 = norm_p->row(i->first+1);
+		if (i->first <= i1->first && i1->first+2 < nun_p) {
+		  i2[i1->first+1] += tmp.real(); };
+		if (i->first < i1->first) {
+		  i2[i1->first]   -= tmp.imag(); };
+	      } else {
+		if (i->first < i1->first) {
+		  i2[i1->first-1] += tmp.real();
+		  i2[i1->first]   -= tmp.imag(); };
+		i2 = norm_p->row(i->first+1);
+		if (i->first < i1->first && i1->first+1 < nun_p) {
+		  i2[i1->first]   -= tmp.real(); };
+		if (i->first+2 < i1->first && i1->first < nun_p) {
+		  i2[i1->first-1] -= tmp.imag(); };
+	      };
+	    } else {
+	      i2 = norm_p->row(i->first-1);
+	      if (i1->first%2 == 0) {
+		if (i->first <= i1->first+1) {
+		  i2[i1->first]   += tmp.real();
+		  i2[i1->first+1] += tmp.imag(); };
+		i2 = norm_p->row(i->first);
+		if (i->first <= i1->first+1 && i1->first+2 < nun_p) {
+		  i2[i1->first+1] -= tmp.real(); };
+		if (i->first < i1->first) {
+		  i2[i1->first]   += tmp.imag(); };
+	      } else {
+		if (i->first <= i1->first) {
+		  i2[i1->first-1] += tmp.real();
+		  i2[i1->first]   -= tmp.imag(); };
+		i2 = norm_p->row(i->first);
+		if (i->first <= i1->first && i1->first+1 < nun_p) {
+		  i2[i1->first]   += tmp.real(); };
+		if (i->first < i1->first && i1->first < nun_p) {
+		  i2[i1->first-1] += tmp.imag(); }
+	      };
+	    };
+	  };
+	  if (i1->first == nun_p-1) {
+	    i2 = norm_p->row(nun_p-1);
+	    if (i->first == i1->first) {
+	      i2[i1->first] += tmp.real(); }
+	    if (i->first == nun_p-2) {
+     	      i2[i1->first] -= tmp.real(); }
+	  };
+	  if (i1->first == nun_p-2) {
+	    i2 = norm_p->row(nun_p-1);
+	    if (i->first == i1->first) {
+	      i2[i1->first+1] += tmp.real(); }
+	    if (i->first == nun_p-1) {
+      	      i2[i1->first+1] -= tmp.real(); }
+	  };
+	};
+      };
+    };
+    state_p &= ~TRIANGLE;
+  };
+  if (doKnown) {
+    std::complex<U> tmp(0);
+    for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	   i1=cEq.begin();
+	 i1 !=  cEq.end(); ++i1) {
+      tmp = obs*conj(i1->second)*weight;
+      if (i1->first%2 == 0) {
+	known_p[i1->first]   += tmp.real();
+	known_p[i1->first+1] += tmp.imag();
+      } else {
+	known_p[i1->first-1] += tmp.real();
+	known_p[i1->first]   -= tmp.imag();
+      };
+    };
+    // errors
+    error_p[NC] += 2;				//cnt equations
+    error_p[SUMWEIGHT] += 2*weight; 		//sum weight
+    error_p[SUMLL] += weight*norm(obs);		//sum rms
+  };
+}
+  //
 template <class U>
 Bool LSQFit::getConstraint(uInt n, U *cEq) const {
   n += r_p;
