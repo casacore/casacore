@@ -27,6 +27,8 @@ cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 rootdir = myenv.Dir("#").abspath
 libname = "casa_" + myenv["PACKAGE"]
 
+slib = None
+dlib = None
 if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [cpps])
@@ -44,10 +46,9 @@ tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
 testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.PrependUnique(LIBS=[slib])
+testenv.AppendUnique(LIBS=[slib or dlib])
 for t in tests:
     testenv.addAssayTest(t)
-
 
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )

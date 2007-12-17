@@ -27,13 +27,18 @@ cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 rootdir = myenv.Dir("#").abspath
 libname = "casa_" + myenv["PACKAGE"]
 
+slib = None
+dlib = None
 if "static" in myenv["libtype"]:
     # build static lib
     slib =  myenv.StaticLibrary(target = libname, source = [cpps])
+    myenv.Default(slib)
     installer.AddLibrary(slib)
+
 if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
     #build dynamic lib
     dlib =  myenv.SharedLibrary(target = libname, source = cpps)
+    myenv.Default(dlib)
     installer.AddLibrary(dlib)
 
 # enable later - use targets instead of options
@@ -56,7 +61,7 @@ tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
 testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.AppendUnique(LIBS=[slib])
+testenv.AppendUnique(LIBS=[slib or dlib])
 for t in tests:
     testenv.addAssayTest(t)
 
