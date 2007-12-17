@@ -225,18 +225,10 @@ enum regexpcode
 #define NFAILURES 80
 #endif
 
-#ifdef CHAR_UNSIGNED
-#define SIGN_EXTEND_CHAR(c) ((c)>(char)127?(c)-256:(c)) /* for IBM RT */
-#endif
-#ifndef SIGN_EXTEND_CHAR
-#define SIGN_EXTEND_CHAR(x) (x)
-#endif
- 
-
 /* Store NUMBER in two contiguous bytes starting at DESTINATION.  */
 #define STORE_NUMBER(destination, number)				\
   { (destination)[0] = (number) & 0377;					\
-    (destination)[1] = (char)((number) >> 8); }
+    (destination)[1] = (signed char)((number) >> 8); }
   
 /* Same as STORE_NUMBER, except increment the destination pointer to
    the byte after where the number is stored.  Watch out that values for
@@ -250,7 +242,7 @@ enum regexpcode
    at SOURCE.  */
 #define EXTRACT_NUMBER(destination, source)				\
   { (destination) = *(source) & 0377;					\
-    (destination) += SIGN_EXTEND_CHAR (*(char *)((source) + 1)) << 8; }
+    (destination) += (*(signed char *)((source) + 1)) << 8; }
 
 /* Same as EXTRACT_NUMBER, except increment the pointer for source to
    point to second byte of SOURCE.  Note that SOURCE has to be a value
