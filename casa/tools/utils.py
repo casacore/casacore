@@ -116,8 +116,8 @@ def generate(env):
 		    env.Exit(1)
 	if conf.env["FORTRAN"].startswith("g77"):
             fflags = ["-Wno-globals", "-fno-second-underscore"]
-	    conf.env.Append(SHFORTRANFLAGS=fflags)
-	    conf.env.Append(FORTRANFLAGS=fflags)
+	    conf.env.AppendUnique(SHFORTRANFLAGS=fflags)
+	    conf.env.AppendUnique(FORTRANFLAGS=fflags)
     env.CheckFortran = CheckFortran
 
     def null_action(target, source, env): return 0
