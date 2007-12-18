@@ -46,10 +46,9 @@ tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
 
-testenv.Append(LIBPATH=[testenv["BUILDDIR_FORT"]])
-testenv.Prepend(LIBS=[(slib or dlib) + "_f"])
-testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.AppendUnique(LIBS=[slib or dlib])
+testenv.Prepend(LIBPATH=[testenv["BUILDDIR_FORT"]])
+testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
+testenv.PrependUnique(LIBS=[libname, libname+"_f"])
 for t in tests:
     testenv.addAssayTest(t)
 
