@@ -7,19 +7,8 @@ DEPS = ["casa", "tables", "scimath_f", "scimath", "measures"]
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(ListOption("build", "The build type", 
-                    "opt", ["opt", "dbg"]))
-opts.Add(ListOption("libtype", "The type of library to build", 
-                    "static", ["static", "shared"]))
-opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
                     "/usr/local"))
-opts.Add(("CC", "The c compiler", None))
-opts.Add(("CXX", "The c++ compiler", None))
-opts.Add(("extracppflags", "Extra preprocessor flags ", None))
-opts.Add(("extracxxflags", "Extra c++ compiler flags ", None))
-opts.Add(("extralinkflags", "Extra linker flags ", None))
-opts.Add(("f2clib", "The fortran to c library", None))
 opts.Add(("lapackroot", 
           "The root directory where lapack is installed", None))
 opts.Add(("lapacklibdir", "The lapack library location", None))
@@ -54,6 +43,10 @@ env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
 env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
 env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
+env.Tool('casaoptions', env["casashrdir"])
+# Add common options
+env.AddCommonOptions(opts)
+env.AddFortranOptions(opts)
 env.Tool('installer', env["casashrdir"])
 # add installer options, e.g. prefix
 env.AddInstallerOptions( opts )

@@ -4,12 +4,13 @@ import sys
 import platform
 
 def generate(env):
+
     def CustomCasaCom():
 	"""
 	Overwrite lex/yacc commands to include -p/-P options
 	"""
 	env["LEXCOM"] = "$LEX $LEXFLAGS -t -P${SOURCE.filebase} $SOURCES > $TARGET"
-	env['YACCCOM']   = '$YACC $YACCFLAGS -p ${SOURCE.filebase} -o $TARGET $SOURCES'
+	env['YACCCOM'] = '$YACC $YACCFLAGS -p ${SOURCE.filebase} -o $TARGET $SOURCES'
     env.CustomCasaCom = CustomCasaCom
 
     def AddCasaPlatform():
@@ -50,13 +51,20 @@ def generate(env):
 #	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
         env.AppendUnique(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
-	    # otherwise darwin puts builddir into the name
-            env.Append(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', '-isysroot', '/Developer/SDKs/MacOSX10.4u.sdk'])
-            env.Append(FORTRANFLAGS=['-arch', 'ppc', '-arch', 'i386', '-isysroot', '/Developer/SDKs/MacOSX10.4u.sdk'])
-            env.Append(SHLINKFLAGS=['-arch', 'ppc', '-arch', 'i386', '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
-            env.Append(LINKFLAGS=['-arch', 'ppc', '-arch', 'i386', '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
-	    env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
-	    env.Append(SHLINKFLAGS=["-single_module"])
+            if env["universal"]:
+                env.Append(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', 
+                                     '-isysroot', 
+                                     '/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.Append(FORTRANFLAGS=['-arch', 'ppc', '-arch', 'i386',
+                                         '-isysroot', 
+                                         '/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.Append(SHLINKFLAGS=['-arch', 'ppc', '-arch', 'i386',
+                                        '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.Append(LINKFLAGS=['-arch', 'ppc', '-arch', 'i386', 
+                                      '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
+            # otherwise darwin puts builddir into the name
+            env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
+            env.Append(SHLINKFLAGS=["-single_module"])
             
     AddCasaPlatform()
 

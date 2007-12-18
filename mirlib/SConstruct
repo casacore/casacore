@@ -6,17 +6,8 @@ PACKAGE = "mirlib"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(ListOption("build", "The build type", 
-                    "opt", ["opt", "dbg"]))
-opts.Add(ListOption("libtype", "The type of library to build", 
-                    "static", ["static", "shared"]))
-opts.Add(BoolOption("tests", "Build the tests?", False))
 opts.Add(PathOption("casacoredir", "The location of casacore/casa",
                     "/usr/local"))
-opts.Add(("CC", "The c compiler", None))
-opts.Add(("extracppflags", "Extra preprocessor flags ", None))
-opts.Add(("extralinkflags", "Extra linker flags ", None))
-opts.Add(("extracflags", "Extra compiler flags ", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
@@ -33,6 +24,9 @@ env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
 env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
 env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
 
+env.Tool('casaoptions', env["casashrdir"])
+# Add common options
+env.AddCommonOptions(opts)
 env.Tool('installer', env["casashrdir"])
 # add installer options, e.g. prefix
 env.AddInstallerOptions( opts )

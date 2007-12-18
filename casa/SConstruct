@@ -6,18 +6,6 @@ PACKAGE="casa"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(ListOption("build", "The build type", 
-		    "opt", ["opt", "dbg"]))
-opts.Add(ListOption("libtype", "The type of library to build", 
-		    "static", ["static", "shared"]))
-opts.Add(BoolOption("tests", "Build the tests?", False))
-opts.Add(PathOption("casacoredir", "The location of casacore/casa",
-		    "/usr/local"))
-opts.Add(("CC", "The c compiler", None))
-opts.Add(("CXX", "The c++ compiler", None))
-opts.Add(("extracppflags", "Extra preprocessor flags ", None))
-opts.Add(("extracxxflags", "Extra c++ compiler flags ", None))
-opts.Add(("extralinkflags", "Extra linker flags ", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
@@ -28,29 +16,29 @@ env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 env.SConsignFile()
 
 env["PACKAGE"] = PACKAGE
-if env["PACKAGE"] == "casa":
-    # use build in dir
-    env["casashrdir"] = ["./tools"]
-    env["casalibdir"] = None
-    env["casaincdir"] = None
-else:
-    # use directory from casacore/casa installation
-    env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
-    env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
-    env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+# use build in dir
+env["casashrdir"] = ["./tools"]
+env["casalibdir"] = None
+env["casaincdir"] = None
 
-env.Tool('installer', env["casashrdir"])
+env.Tool('casaoptions', env["casashrdir"])
+# Add common options
+env.AddCommonOptions(opts)
 # add installer options, e.g. prefix
+env.Tool('installer', env["casashrdir"])
 env.AddInstallerOptions( opts )
 # add them into environment
 opts.Update( env )
 # cache them for the next run
 opts.Save( 'options.cfg', env)
 Help( opts.GenerateHelpText( env ) )
+
 env.Tool('buildenv', env["casashrdir"])
-env.Tool('utils', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
+env.Tool('utils', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
+
+env["ENV"]["AIPSPATH"] = env["prefix"]
 
 # create the installer which handles installing the final build
 installer = env.Installer()
@@ -72,7 +60,5 @@ for bopt in env["build"]:
     
 # add the Tools to the casacore/share directory. This way they can be imported
 # by the other casacore packages without having to duplicate them.
-if env["PACKAGE"] == "casa":
-    installer.AddShares("tools", "*.py", "casacore/", True)
-    installer.AddShares("tools", "casacore_assay", "casacore/")
-
+installer.AddShares("tools", "*.py", "casacore/", True)
+installer.AddShares("tools", "casacore_assay", "casacore/")
