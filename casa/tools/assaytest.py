@@ -55,7 +55,8 @@ def assayAction(target, source, env):
             return 0
         else:
             print info.strip()
-            print err.strip()
+            if len(err) > 0:
+                print err.strip()
             return 0
     print err.strip()
     return 0
