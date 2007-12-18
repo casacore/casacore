@@ -45,8 +45,8 @@ testenv = myenv.Copy()
 tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
-testenv.AppendUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.AppendUnique(LIBS=[slib or dlib])
+testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
+testenv.PrependUnique(LIBS=[slib or dlib])
 for t in tests:
     testenv.addAssayTest(t)
 
