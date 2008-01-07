@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: SparseDiff.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
+//# $Id: SparseDiff.cc,v 1.2 2008/01/03 14:32:01 wbrouw Exp $
 
 //# Includes
 #include <scimath/Mathematics/SparseDiff.h>
@@ -59,6 +59,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   template <class T>
+  SparseDiff<T>::SparseDiff(const AutoDiff<T> &other) :
+    rep_p(ObjectStack<SparseDiffRep<T> >::stack().get()) {
+    rep_p->val_p = other.value();
+    for (uInt i=0; i<other.nDerivatives(); ++i)
+      if (other.derivative(i) != T(0))
+	rep_p->grad_p.push_back(std::make_pair(i, other.derivative(i)));
+  }
+
+  template <class T>
   SparseDiff<T>::SparseDiff(const SparseDiff<T> &other) :
     rep_p(ObjectStack<SparseDiffRep<T> >::stack().get()) {
     rep_p->val_p = other.rep_p->val_p;
@@ -87,6 +96,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   SparseDiff<T> &SparseDiff<T>::operator=(const vector<pair<uInt, T> > &der) {
     rep_p->grad_p = der;
     sort();
+    return *this;
+  }
+
+  template <class T>
+  SparseDiff<T> &SparseDiff<T>::operator=(const AutoDiff<T> &other) { 
+    rep_p->val_p = other.value();
+    rep_p->grad_p.clear();
+    for (uInt i=0; i<other.nDerivatives(); ++i)
+      if (other.derivative(i) != T(0))
+	rep_p->grad_p.push_back(std::make_pair(i, other.derivative(i)));
     return *this;
   }
 
@@ -237,6 +256,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     SparseDiff<T>::operator+=(tmp);
   }
 
+  template <class T>
+  AutoDiff<T> SparseDiff<T>::toAutoDiff(uInt n) const {
+    AutoDiff<T> tmp(n);
+    for (typename vector<pair<uInt, T> >::const_iterator
+	   i=grad().begin(); i!=grad().end(); ++i) {
+      if (i->first < n) tmp.derivative(i->first) = i->second;
+    };
+    return tmp;
+  }
 
   template <class T>
   vector<pair<uInt, T> > &SparseDiff<T>::derivatives() const { 

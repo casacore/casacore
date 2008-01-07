@@ -24,13 +24,14 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: SparseDiff.h,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
+//# $Id: SparseDiff.h,v 1.2 2008/01/03 14:32:01 wbrouw Exp $
 
 #ifndef SCIMATH_SPARSEDIFF_H
 #define SCIMATH_SPARSEDIFF_H
 
 //# Includes
 #include <casa/aips.h>
+#include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/SparseDiffRep.h>
 #include <casa/vector.h>
 #include <utility>
@@ -181,6 +182,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // The actual structure of the
   // data block used by <src>SparseDiff</src> is described in 
   // <linkto class=SparseDiffRep>SparseDiffRep</linkto>.
+  //
+  // A SparseDiff can be constructed from an AutoDiff.
+  // <em>toAutoDiff(n)</em> can convert it to an AutoDiff.
   // </synopsis>
   //
   // <example>
@@ -296,6 +300,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // nth derivative is der, and all other derivatives are zero. 
     SparseDiff(const T &v, const uInt n, const T &der); 
 
+    // Construct from an AutoDiff
+    SparseDiff(const AutoDiff<T> &other);
+
     // Construct one from another (deep copy)
     SparseDiff(const SparseDiff<T> &other);
 
@@ -310,6 +317,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Assignment operator.  Assign gradients to variable.
     SparseDiff<T> &operator=(const vector<pair<uInt, T> > &der);
+
+    // Assign from an Autodiff
+    SparseDiff<T> &operator=(const AutoDiff<T> &other);
 
     // Assign one to another (deep copy)
     SparseDiff<T> &operator=(const SparseDiff<T> &other);
@@ -327,6 +337,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     void operator+=(const T other) { value() += other; };
     void operator-=(const T other) { value() -= other; };
     // </group>
+
+    // Convert to an AutoDiff of length <em>n</em>
+    AutoDiff<T> toAutoDiff(uInt n) const;
 
     // Returns the pointer to the structure of value and derivatives.
     // <group>
