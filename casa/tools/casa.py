@@ -52,16 +52,20 @@ def generate(env):
         env.AppendUnique(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
             if env["universal"]:
-                env.Append(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', 
-                                     '-isysroot', 
-                                     '/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.Append(FORTRANFLAGS=['-arch', 'ppc', '-arch', 'i386',
-                                         '-isysroot', 
-                                         '/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.Append(SHLINKFLAGS=['-arch', 'ppc', '-arch', 'i386',
-                                        '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.Append(LINKFLAGS=['-arch', 'ppc', '-arch', 'i386', 
-                                      '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.AppendUnique(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', 
+                                           '-isysroot', 
+                                           '/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.AppendUnique(FORTRANFLAGS=['-arch', 'ppc', '-arch', 'i386',
+                                               '-isysroot', 
+                                               '/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.AppendUnique(SHFORTRANFLAGS=['-arch', 'ppc', 
+                                                 '-arch', 'i386',
+                                                 '-isysroot', 
+                                                 '/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.AppendUnique(SHLINKFLAGS=['-arch', 'ppc', '-arch', 'i386',
+                                              '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
+                env.AppendUnique(LINKFLAGS=['-arch', 'ppc', '-arch', 'i386', 
+                                            '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
             # otherwise darwin puts builddir into the name
             env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
             env.Append(SHLINKFLAGS=["-single_module"])
