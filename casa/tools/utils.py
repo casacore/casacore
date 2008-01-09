@@ -118,6 +118,8 @@ def generate(env):
             fflags = ["-Wno-globals", "-fno-second-underscore"]
 	    conf.env.AppendUnique(SHFORTRANFLAGS=fflags)
 	    conf.env.AppendUnique(FORTRANFLAGS=fflags)
+        conf.env.AppendUnique(SHFORTRANFLAGS=['-fPIC'])
+
     env.CheckFortran = CheckFortran
 
     def null_action(target, source, env): return 0
