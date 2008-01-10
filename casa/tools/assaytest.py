@@ -1,6 +1,8 @@
+import sys
 import os
 import glob
 import shutil
+import string
 import subprocess
 
 def copy_dir(src, dst):
@@ -14,6 +16,27 @@ def copy_dir(src, dst):
         fname = os.path.join(src, f)
         shutil.copy(fname, dstdir)
 
+def add_ldpath(env):
+    envvar = env.get("LIBPATH", [])
+    cdir = os.path.abspath(os.curdir)
+    outpth  = []
+    for pth in envvar:
+        spth = str(pth)
+        if os.path.isabs(spth):
+            outpth.append(spth)
+        else:
+            outpth.append(os.path.join(cdir, spth))
+
+    outvar = string.join(outpth, os.path.pathsep)
+    if len(outvar):
+        ldvar = "LD_LIBRARY_PATH"
+        if sys.platform == "darwin":
+            ldvar = "DYLD_LIBRARY_PATH"
+        ldpth = env["ENV"].get(ldvar, "")
+        if len(ldpth) > 0:
+            outvar += os.path.pathsep + ldpth
+        env["ENV"][ldvar] = outvar 
+    
 def assayAux(target, source, env):
     infile = str(source[0].srcnode().path)
     outpath = os.path.split(str(target[0].path))[0]
@@ -32,7 +55,6 @@ def assayAux(target, source, env):
             # in case they are read-only in svn
             os.chmod(dstaux, 0644)
 
-
 def assayAction(target, source, env):
     """
     Action for a 'UnitTest' builder object.
@@ -44,6 +66,7 @@ def assayAction(target, source, env):
     """
     testpath =  os.path.split(str(source[0].abspath))
     assaycom = env.File(env["ASSAYCOM"]).abspath
+    add_ldpath(env)
     p = subprocess.Popen([assaycom, "./%s" % testpath[1]],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=env["ENV"], cwd=testpath[0])
@@ -101,8 +124,8 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
     # and now an alias just for the app name itself, path stripped
     env.Alias(os.path.basename(os.path.normpath(str(program[0]))), utest)
     return utest
-#-------------------------------------------------------------------------------
-# Functions used to initialize the unit test tool.
+
+
 def generate(env):
     env['BUILDERS']['Assay'] = env.Builder(
         action = [env.Action(assayAux, auxString),
