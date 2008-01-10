@@ -1,5 +1,5 @@
 //# SparseDiff.cc: An automatic differentiating class for functions
-//# Copyright (C) 2007
+//# Copyright (C) 2007,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: SparseDiff.cc,v 1.2 2008/01/03 14:32:01 wbrouw Exp $
+//# $Id: SparseDiff.cc,v 1.3 2008/01/10 12:00:42 wbrouw Exp $
 
 //# Includes
 #include <scimath/Mathematics/SparseDiff.h>
@@ -277,9 +277,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   template <class T>
+  Bool SparseDiff<T>::ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs) {
+    return (lhs.first < rhs.first);
+  }
+
+  template <class T>
   void SparseDiff<T>::sort() {
-    std::make_heap(grad().begin(), grad().end());
-    std::sort_heap(grad().begin(), grad().end());
+    std::make_heap(grad().begin(), grad().end(), SparseDiff<T>::ltSort);
+    std::sort_heap(grad().begin(), grad().end(), SparseDiff<T>::ltSort);
     // Remove empty ones; and add identical ones
     SparseDiffRep<T> *tmp = ObjectStack<SparseDiffRep<T> >::stack().get();
     for (typename vector<pair<uInt, T> >::iterator i=grad().begin();
@@ -295,6 +300,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 i!=grad().end(); ++i) {
       if (i->second != T(0)) tmp->grad_p.push_back(*i);
     };
+    tmp->val_p = value();
     ObjectStack<SparseDiffRep<T> >::stack().put(rep_p);
     rep_p = tmp;
   }

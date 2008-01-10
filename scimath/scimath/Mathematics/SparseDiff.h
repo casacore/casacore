@@ -1,5 +1,5 @@
 //# SparseDiff.h: An automatic differentiating class for functions
-//# Copyright (C) 2007
+//# Copyright (C) 2007,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: SparseDiff.h,v 1.2 2008/01/03 14:32:01 wbrouw Exp $
+//# $Id: SparseDiff.h,v 1.3 2008/01/10 12:00:42 wbrouw Exp $
 
 #ifndef SCIMATH_SPARSEDIFF_H
 #define SCIMATH_SPARSEDIFF_H
@@ -373,6 +373,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
     // Is it a constant, i.e., with zero derivatives?
     Bool isConstant() const { return rep_p->grad_p.empty(); };
+
+    // Sort criterium
+    static Bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);
 
     // Sort derivative list; cater for doubles and zeroes
     void sort();
