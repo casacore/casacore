@@ -92,9 +92,9 @@ for bopt in env["build"]:
     buildenv["BUILDDIR_FORT"] = Dir("#/build_%s/%s/%s" % (env.PlatformIdent(), 
 						      bopt, "fortran"))
 
-    env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
-		   build_dir= buildenv["BUILDDIR"],
-		   duplicate=0, exports=["buildenv", "installer"]) 
     env.SConscript(["%s/SConscript" % "fortran"],
 		   duplicate=0, exports=["buildenv", "installer"],
 		   build_dir=buildenv["BUILDDIR_FORT"])
+    env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
+		   build_dir= buildenv["BUILDDIR"],
+		   duplicate=0, exports=["buildenv", "installer"]) 

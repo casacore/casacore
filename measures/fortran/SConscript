@@ -10,14 +10,14 @@ ffs = myenv.SGlob("sofa/*.f", recursive=False )
 # build dir
 rootdir=myenv.Dir("#").abspath
 libname= "casa_" + myenv["PACKAGE"] + "_f"
-if "static" in myenv["libtype"]:
-    # build static lib
-    slib =  myenv.StaticLibrary(target = libname, source = [ffs])
-    myenv.Default(slib)
-    installer.AddLibrary(slib)
-if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
-    #build dynamic lib
-    shenv = myenv.Copy()
-    shenv.Append(LIBPATH=[shenv["BUILDDIR_FORT"]])
-    dlib =  shenv.SharedLibrary(target = libname, source = ffs)
-    installer.AddLibrary(dlib)
+
+slib =  myenv.StaticLibrary(target = libname, source = [ffs])
+installer.AddLibrary(slib)
+myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
+myenv.Alias("static", slib)
+myenv.Default(slib)
+
+dlib =  myenv.SharedLibrary(target = libname, source = [ffs])
+installer.AddLibrary(dlib)
+myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
+myenv.Alias("shared", dlib)

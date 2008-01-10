@@ -15,7 +15,6 @@ def generate(env):
                                 "Build universal libraries under OS X?", 
                                 True))
 
-
     def AddFortranOptions( opts ):
         """ Adds the build environment options to the opts.  """
         opts.Add(("extrafflags", "Extra fortran flags ", None))
@@ -31,8 +30,6 @@ def generate(env):
         """ Adds the build environment options to the opts.  """
         opts.Add(ListOption("build", "The build type", 
                             "opt", ["opt", "dbg"]))
-        opts.Add(ListOption("libtype", "The type of library to build", 
-                            "static", ["static", "shared"]))
 
     def AddCommonOptions( opts ):
          AddBuildEnvOptions(opts)

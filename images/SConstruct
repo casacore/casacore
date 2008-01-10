@@ -5,7 +5,7 @@ import sys
 # Put the package name here, e.g. casa, tables
 PACKAGE = "images"
 DEPS = ["casa", "mirlib", "tables", "scimath_f", "scimath", "measures", "fits", 
-        "coordinates", "components"]
+        "coordinates", "components", "lattices"]
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )

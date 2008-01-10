@@ -1,3 +1,5 @@
+import os
+
 # import root environment
 Import( ["buildenv", "installer"])
 myenv = buildenv.Copy()
@@ -5,10 +7,13 @@ myenv = buildenv.Copy()
 # gather c files
 cs = myenv.SGlob("*.c")
 
-if "static" in myenv["libtype"]:
-    slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
-    installer.AddLibrary(slib)
+slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
+myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
+myenv.Alias("static", slib)
+myenv.Default(slib)
+installer.AddLibrary(slib)
 
-if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
-    shlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
-    installer.AddLibrary(shlib)
+dlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
+myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
+myenv.Alias("shared", dlib)
+installer.AddLibrary(dlib)

@@ -27,17 +27,18 @@ cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
 rootdir = myenv.Dir("#").abspath
 libname = "casa_" + myenv["PACKAGE"]
 
-slib = None
-dlib = None
-if "static" in myenv["libtype"]:
-    # build static lib
-    slib =  myenv.StaticLibrary(target = libname, source = [cpps])
-    installer.AddLibrary(slib)
-    myenv.Default(slib)
-if "shared" in myenv["libtype"] and str(myenv["build"]) == "opt":
-    #build dynamic lib
-    dlib =  myenv.SharedLibrary(target = libname, source = cpps)
-    installer.AddLibrary(dlib)
+slib =  myenv.StaticLibrary(target = libname, source = [cpps])
+installer.AddLibrary(slib)
+myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
+myenv.Alias("static", slib)
+myenv.Default(slib)
+
+dlib =  myenv.SharedLibrary(target = libname, source = cpps)
+installer.AddLibrary(dlib)
+myenv.PrependUnique(LIBPATH=[myenv["BUILDDIR_FORT"]])
+myenv.Prepend(LIBS=[libname+"_f"])
+myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
+myenv.Alias("shared", dlib)
 
 testenv = myenv.Copy()
 # gather test files
@@ -45,8 +46,7 @@ testenv = myenv.Copy()
 tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
-
-testenv.Prepend(LIBPATH=[testenv["BUILDDIR_FORT"]])
+testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR_FORT"]])
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
 testenv.PrependUnique(LIBS=[libname, libname+"_f"])
 for t in tests:
