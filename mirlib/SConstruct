@@ -48,6 +48,8 @@ env.Append(CPPPATH='#')
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
 
+env.Alias("test",None)
+
 for bopt in env["build"]:
     buildenv = env.BuildEnv(bopt)
     buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
