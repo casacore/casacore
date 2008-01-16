@@ -74,19 +74,19 @@ if "-h" not in args:
 	for a in args:
 	    if a.startswith("prefix="):
 		args.remove(a)
-	    if a.startswith("casacoredir="):
+	    if a.startswith("casacoreroot="):
 		args.remove(a)
 	args.append("prefix=%s" % os.path.abspath(pth))
-	args.append("casacoredir=%s" % os.path.abspath(pth))
+	args.append("casacoreroot=%s" % os.path.abspath(pth))
     else:
 	hasprefix = False
 	for a in args:
 	    hasprefix = a.startswith("prefix=")
 	    if hasprefix:
-		args.append(a.replace("prefix", "casacoredir"))
+		args.append(a.replace("prefix", "casacoreroot"))
 		break
 	if not hasprefix:
-	    args.append("casacoredir=/usr")
+	    args.append("casacoreroot=/usr")
 # build all by default
 tobuild = ['casa', 'tables', 'mirlib', 'scimath', 'measures','fits', 
 	   'lattices', 'coordinates', 'components', 'images', 

@@ -7,7 +7,7 @@ DEPS = ["casa", "tables", "scimath_f", "scimath", "measures", "fits"]
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(PathOption("casacoredir", "The location of casacore/casa",
+opts.Add(PathOption("casacoreroot", "The location of casacore/casa",
                     "/usr/local"))
 opts.Add(("lapackroot", 
           "The root directory where lapack is installed", None))
@@ -41,9 +41,9 @@ env.SConsignFile()
 env["PACKAGE"] = PACKAGE
 
 # use directory from casacore/casa installation
-env["casaincdir"] = [os.path.join(env["casacoredir"],"include","casacore")]
-env["casalibdir"] = [os.path.join(env["casacoredir"],"lib")]
-env["casashrdir"] = [os.path.join(env["casacoredir"],"share","casacore")]
+env["casaincdir"] = [os.path.join(env["casacoreroot"],"include","casacore")]
+env["casalibdir"] = [os.path.join(env["casacoreroot"],"lib")]
+env["casashrdir"] = [os.path.join(env["casacoreroot"],"share","casacore")]
     
 env.Tool('installer', env["casashrdir"])
 
