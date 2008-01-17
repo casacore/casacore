@@ -13,6 +13,7 @@ libname = "casa_" + myenv["PACKAGE"]
 
 # point to tests local includes
 myenv.AppendUnique(LIBPATH=[myenv["BUILDDIR_APPS"]])
+myenv.AppendUnique(LIBPATH=[myenv["BUILDDIR"]])
 myenv.Prepend(LIBS=[libname])
 cpppath = myenv["CPPPATH"]
 

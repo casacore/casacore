@@ -11,9 +11,11 @@ slib =  myenv.StaticLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
 myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
 myenv.Alias("static", slib)
 myenv.Default(slib)
-installer.AddLibrary(slib)
+if "static" in BUILD_TARGETS:
+    installer.AddLibrary(slib)
 
 dlib =  myenv.SharedLibrary(target = "casa_"+myenv["PACKAGE"], source = cs)
 myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
 myenv.Alias("shared", dlib)
-installer.AddLibrary(dlib)
+if "shared" in BUILD_TARGETS:
+    installer.AddLibrary(dlib)
