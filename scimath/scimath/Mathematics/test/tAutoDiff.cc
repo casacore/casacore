@@ -27,6 +27,7 @@
 
 //# Includes
 #include <casa/BasicMath/Math.h>
+#include <casa/Arrays/MaskArrLogi.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayIO.h>
