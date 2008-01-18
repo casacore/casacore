@@ -27,7 +27,7 @@
 // 
 //
 #include <casa/aips.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskArrLogi.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <scimath/Mathematics/FFTServer.h>
 #include <casa/BasicMath/Math.h>
