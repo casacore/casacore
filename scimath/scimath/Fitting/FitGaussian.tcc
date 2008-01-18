@@ -272,7 +272,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
         expandRetryMatrix(1);
       }
 
-      MLCG gen(Time(1982,8,31,10).age());
+      MLCG gen(Int(Time(1982,8,31,10).age()));
       //DiscreteUniform retgen(&gen, -nRetryFactors(), nRetryFactors()-1);
       // any negative number means use the unaltered estimate (50% chance)
    
@@ -593,7 +593,7 @@ void FitGaussian<T>::expandRetryMatrix(uInt rowstoadd)
     }
   }
 
-  MLCG gen(Time(1982,8,31,10).age());
+  MLCG gen(Int(Time(1982,8,31,10).age()));
   Uniform fgen(&gen, 0.0, 1.0);
 
   for (uInt r = initnrows; r < initnrows + rowstoadd; r++)

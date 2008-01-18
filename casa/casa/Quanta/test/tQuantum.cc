@@ -186,7 +186,7 @@ try {
     
     cout << endl << "--------------------------" << endl;
     
-    Quantum<Int> ll5(5.,Quantum<Double>(7.,"mm/s"));
+    Quantum<Int> ll5(5,Quantum<Double>(7.,"mm/s"));
     cout << "Mixed Quantity/Quantum<Int>  " << ll5 << endl;
     
 } catch (AipsError x) {

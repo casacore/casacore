@@ -1,4 +1,4 @@
-tTileStepper: Version  
+./tTileStepper: Version  
 shape = [128, 128, 128]
 tileshape = [32, 32, 32]
 blc = [0, 0, 0]

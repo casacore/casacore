@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <casa/aips.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskArrLogi.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>

@@ -28,9 +28,9 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/Arrays/MaskArrLogi.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Logging/LogIO.h>

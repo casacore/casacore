@@ -1,4 +1,4 @@
-tTiledLineStepper: Version  
+./tTiledLineStepper: Version  
 shape = [32, 32, 32]
 tileshape = [8, 8, 8]
 blc = [0, 0, 0]

@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayLogical.h> 
+#include <casa/Arrays/MaskArrLogi.h>
 #include <coordinates/Coordinates.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/BasicSL/Constants.h>
