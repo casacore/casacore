@@ -67,17 +67,18 @@ if "-h" not in args:
         os.system("doxygen doxygen.cfg")
         sys.exit(0)
     if "install" not in args:
-	args.append("install")
-	pth = "./stage"
-	if not os.path.exists(pth):
-	    os.mkdir(pth)
-	for a in args:
-	    if a.startswith("prefix="):
-		args.remove(a)
-	    if a.startswith("casacoreroot="):
-		args.remove(a)
-	args.append("prefix=%s" % os.path.abspath(pth))
-	args.append("casacoreroot=%s" % os.path.abspath(pth))
+        if "-c" not in args and "test" not in args:
+            args.append("install")
+            pth = "./stage"
+            if not os.path.exists(pth):
+                os.mkdir(pth)
+            for a in args:
+                if a.startswith("prefix="):
+                    args.remove(a)
+                if a.startswith("casacoreroot="):
+                    args.remove(a)
+            args.append("prefix=%s" % os.path.abspath(pth))
+            args.append("casacoreroot=%s" % os.path.abspath(pth))
     else:
 	hasprefix = False
 	for a in args:
