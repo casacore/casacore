@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MaskArrLogi.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Exceptions/Error.h>
 #include <ms/MeasurementSets/StokesConverter.h>
