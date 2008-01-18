@@ -44,7 +44,8 @@ env["PACKAGE"] = PACKAGE
 env["casaincdir"] = [os.path.join(env["casacoreroot"],"include","casacore")]
 env["casalibdir"] = [os.path.join(env["casacoreroot"],"lib")]
 env["casashrdir"] = [os.path.join(env["casacoreroot"],"share","casacore")]
-    
+env["ENV"]["AIPSPATH"] = env["casacoreroot"]    
+
 env.Tool('installer', env["casashrdir"])
 
 env.Tool('casaoptions', env["casashrdir"])
