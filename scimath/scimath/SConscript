@@ -36,9 +36,9 @@ myenv.Default(slib)
 
 dlib =  myenv.SharedLibrary(target = libname, source = cpps)
 if "shared" in BUILD_TARGETS:
+    myenv.Prepend(LIBS=[libname+"_f"])
+    myenv.PrependUnique(LIBPATH=[myenv["BUILDDIR_FORT"]])
     installer.AddLibrary(dlib)
-myenv.PrependUnique(LIBPATH=[myenv["BUILDDIR_FORT"]])
-myenv.Prepend(LIBS=[libname+"_f"])
 myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
 myenv.Alias("shared", dlib)
 
@@ -48,9 +48,10 @@ testenv = myenv.Copy()
 tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
-testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR_FORT"]])
+#testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR_FORT"]])
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.PrependUnique(LIBS=[libname, libname+"_f"])
+sflib = myenv.File("fortran/"+myenv["LIBPREFIX"]+libname+"_f"+myenv["LIBSUFFIX"])
+testenv.PrependUnique(LIBS=[slib, sflib])
 for t in tests:
     testenv.addAssayTest(t)
 

@@ -48,7 +48,7 @@ tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
 # allow either linking against shared or static, static if both present
-testenv.PrependUnique(LIBS=[libname])
+testenv.PrependUnique(LIBS=slib)
 for t in tests:
     testenv.addAssayTest(t)
 

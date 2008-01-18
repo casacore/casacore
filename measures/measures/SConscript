@@ -47,9 +47,9 @@ testenv = myenv.Copy()
 tests = testenv.SGlob("test/*.cc")
 tests += testenv.SGlob("*/test/*.cc")
 # point to tests local includes
-testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR_FORT"]])
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
-testenv.PrependUnique(LIBS=[libname, libname+"_f"])
+sflib = myenv.File("fortran/"+myenv["LIBPREFIX"]+libname+"_f"+myenv["LIBSUFFIX"])
+testenv.PrependUnique(LIBS=[slib, sflib])
 for t in tests:
     testenv.addAssayTest(t)
 
