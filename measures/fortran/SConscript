@@ -12,14 +12,15 @@ rootdir=myenv.Dir("#").abspath
 libname= "casa_" + myenv["PACKAGE"] + "_f"
 
 slib =  myenv.StaticLibrary(target = libname, source = [ffs])
-if "static" in BUILD_TARGETS:
-    installer.AddLibrary(slib)
 myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
 myenv.Alias("static", slib)
-myenv.Default(slib)
+myenv.Default("static")
 
 dlib =  myenv.SharedLibrary(target = libname, source = [ffs])
-if "shared" in BUILD_TARGETS:
-    installer.AddLibrary(dlib)
 myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
 myenv.Alias("shared", dlib)
+
+if "shared" in BUILD_TARGETS:
+    installer.AddLibrary(dlib)
+if "static" in BUILD_TARGETS or "shared" not in BUILD_TARGETS:
+    installer.AddLibrary(slib)

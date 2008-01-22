@@ -7,14 +7,16 @@ import subprocess
 
 def copy_dir(src, dst):
     dirname = os.path.basename(os.path.normpath(src))
-    # ignore .svn. This only goes down one level in the directory
-    files = [ f for f in os.listdir(src) if f != ".svn" ]
     dstdir = os.path.join(dst, dirname)
-    if not os.path.exists(dstdir):
-        os.mkdir(dstdir)
-    for f in files:
-        fname = os.path.join(src, f)
-        shutil.copy(fname, dstdir)
+
+    for dp, dn, fn in os.walk(src):
+        if ".svn" in dn: 
+            dn.remove(".svn")
+        dp1 = dp[dp.find(dirname):]
+        if not os.path.exists(os.path.join(dst,dp1)):
+            os.mkdir(os.path.join(dst,dp1))
+        for f in fn:
+            shutil.copy(os.path.join(dp, f), os.path.join(dst,dp1))
 
 def add_ldpath(env):
     envvar = env.get("LIBPATH", [])
@@ -44,6 +46,9 @@ def assayAux(target, source, env):
     testaux = [ i for i in testaux if not i.endswith('.cc') ]
     testaux = [ i for i in testaux if not i.endswith('.h') ]
     testaux = [ i for i in testaux if not i.endswith('~') ]
+    extraaux = env.get("ASSAYAUX", [])
+    testaux += [ os.path.join(os.path.split(infile)[0],
+                              os.path.split(i)[1]) for i in extraaux ]
     for aux in testaux:
         dstaux = os.path.join(outpath, os.path.split(aux)[1])
         if os.path.isdir(aux):
@@ -66,7 +71,10 @@ def assayAction(target, source, env):
     """
     testpath =  os.path.split(str(source[0].abspath))
     assaycom = env.File(env["ASSAYCOM"]).abspath
-    add_ldpath(env)
+    add_ldpath(env)    
+    if not testpath[1]. startswith("t"):
+        # don't execute demo programs
+        return 0
     p = subprocess.Popen([assaycom, "./%s" % testpath[1]],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=env["ENV"], cwd=testpath[0])
@@ -91,7 +99,10 @@ def assayActionString(target, source, env):
     """
     Return output string which will be seen when running unit tests.
     """
-    return "Running assay ..."
+    if os.path.split(str(source[0]))[1].startswith("t"):
+        return "Running assay ..."
+    else:
+        return ""
 
 def addAssayTest(env, target=None, source=None, *args, **kwargs):
     """
@@ -103,9 +114,7 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
     any additional parameters are passed along directly to env.Program().
     Returns:
     The scons node for the unit test.
-    Any additional files listed in the env['UTEST_MAIN_SRC'] build variable are
-    also included in the source list.
-    All tests added with addUnitTest can be run with the test alias:
+    All tests added with addAssayTest can be run with the test alias:
     "scons test"
     Any test can be run in isolation from other tests, using the name of the
     test executable provided in the target parameter:
