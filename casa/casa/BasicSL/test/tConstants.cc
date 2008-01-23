@@ -111,10 +111,10 @@ main()
         << "MINDOUBLE.............  " << MINDOUBLE          << endl
         << "MAXFLOAT..............  " << MAXFLOAT           << endl
         << "MAXDOUBLE.............  " << MAXDOUBLE          << endl;
-
+#endif
    cout << endl
         << "<<< End of machine constants." << endl;
-#endif
+
    cout << endl
         << "Irrationals:"                                   << endl
         << "C::sqrt2..............  " << C::sqrt2           << endl
