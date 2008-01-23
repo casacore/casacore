@@ -48,19 +48,22 @@ int main()
 	alloc -= 100;
     }
 
+#ifndef AIPS_DARWIN
     AlwaysAssertExit(Memory::allocatedMemoryInBytes()-base >= alloc);
     size_t assigned = Memory::assignedMemoryInBytes(); 
     AlwaysAssertExit( assigned >= Memory::allocatedMemoryInBytes());
     Memory::releaseMemory();
     AlwaysAssertExit(assigned >= Memory::assignedMemoryInBytes());
-
+#endif
 
     // Add a big allocation
     base = Memory::allocatedMemoryInBytes();
     char *cp = new char[10*1024*1024];
+#ifndef AIPS_DARWIN
     AlwaysAssertExit(Memory::allocatedMemoryInBytes()-base > 10*1024*1024);
     assigned = Memory::assignedMemoryInBytes(); 
     AlwaysAssertExit( assigned >= Memory::allocatedMemoryInBytes());
+#endif
 
     // Cleanup
     delete [] cp;
