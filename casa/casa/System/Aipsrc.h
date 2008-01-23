@@ -1,4 +1,4 @@
-//# Aipsrc.h: Class to read the aipsrc general resource files
+//# Aipsrc.h: Class to read the casa general resource files
 //# Copyright (C) 1995,1996,1997,1998,1999,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -52,7 +52,7 @@ typedef AipsrcVector<Bool> AipsrcVBool;
 typedef AipsrcVector<String> AipsrcVString;
 
 
-// <summary> Class to read the aipsrc general resource files </summary>
+// <summary> Class to read the casa general resource files </summary>
 
 // <use visibility=export>
 
@@ -64,11 +64,11 @@ typedef AipsrcVector<String> AipsrcVString;
 // </prerequisite>
 //
 // <etymology>
-// A class for getting values from the aipsrc files
+// A class for getting values from the casa resource files
 // </etymology>
 //
 // <synopsis>
-// The static Aipsrc class can get information from the aipsrc resource files.
+// The static Aipsrc class can get information from the casa resource files.
 // It has the same functionality as getrc (c program used for aips++ 
 // installation scripts).<br>
 // In addition it acts as a central clearing house between system and
@@ -101,9 +101,12 @@ typedef AipsrcVector<String> AipsrcVString;
 // precession and the nutation <src>d_interval</src>.<br>
 // A match between a keyword to be found and a keyword in the resource files
 // will be the first match (taking wildcards into account) encountered in the
-// search through the resource files. The resource files searched are (in the
+// search through the resource files.
+// The resource files to be looked at can be defined in the environment
+// variable CASARCFILES. If undefined, the resource files searched are (in the
 // given order):
 // <srcblock>
+//   ~/.casarc
 //   ~/.aipsrc
 //   $AIPSROOT/.aipsrc
 //   $AIPSHOST/aipsrc
@@ -111,11 +114,13 @@ typedef AipsrcVector<String> AipsrcVString;
 //   $AIPSARCH/aipsrc
 // </srcblock> 
 // It is not an error for any of the aipsrc files to be absent or empty.
-// However, it is an error if either <em>HOME</em> or <em>AIPSPATH</em> has
-// not been set: an exception will occur. AIPSPATH will in general be
+// However, it is an error if <em>HOME</em> has not been set:
+// an exception will occur. AIPSPATH will in general be
 // read from the global environment variables, but can, before any other
 // <src>Aipsrc</src> related call, be set with the
 // <src>setAipsPath()</src> call.<br>
+// If AIPSPATH is not set in either way, it is set to the home directory.
+// <p>
 // The basic interaction with the class is with the static keyword match function
 // <srcblock>Bool Aipsrc::find(String &result, const String &keyword)
 // </srcblock>

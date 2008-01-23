@@ -55,8 +55,8 @@ Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
      if (keyword.contains(Regex(keywordPattern[i]))) {
        where = i;
        return True;
-     };
-   };
+     }
+   }
    return False;
 } 
 
@@ -67,7 +67,7 @@ Bool Aipsrc::find(String &value,
   if (matchKeyword(keyInMap, keyword, start)) {
     value = keywordValue[keyInMap];
     return True;
-  };
+  }
   return False; 
 }
 
@@ -98,7 +98,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, Nname, tname);
     return ((Int)value < Nname ? True : False);
-  };
+  }
   return False;
 }
 
@@ -108,7 +108,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   if (find(res, keyword)) {
     value = MUString::minimaxNC(res, tname);
     return (value < tname.nelements() ? True : False);
-  };
+  }
   return False;
 }
 
@@ -117,7 +117,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   if (!find(value, keyword, Nname, tname)) {
     value = MUString::minimaxNC(deflt, Nname, tname);
     return False;
-  };
+  }
   return True;
 }
 
@@ -126,7 +126,7 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   if (!find(value, keyword, tname)) {
     value = MUString::minimaxNC(deflt, tname);
     return False;
-  };
+  }
   return True;
 }
 
@@ -161,10 +161,8 @@ const String &Aipsrc::fillAips(const String &nam) {
     } else { 
       aipsPath = extAipsPath;
     }
+    // Set the path to home if not defined in any way.
     if (aipsPath.empty()) {
-      //      throw(AipsError(String("The AIPSPATH environment variable has not been "
-      //			     "set or setAipsPath has not been used") +
-      //		      "\n\t(see system administrator)"));
       setAipsPath(uhome);
       aipsPath = extAipsPath;
     }
@@ -179,7 +177,7 @@ const String &Aipsrc::fillAips(const String &nam) {
     host = site + "/" + newdir[3];
     delete [] newdir;
     filled = True;
-  };
+  }
   return nam;
 }
   
@@ -212,11 +210,11 @@ uInt Aipsrc::registerRC(const String &keyword, Block<String> &nlst) {
   uInt n;
   for (n=0; n<nlst.nelements(); n++) {
     if (nlst[n] == keyword) break;
-  };
+  }
   n++;
   if (n>nlst.nelements()) {
     nlst.resize(n);
-  };
+  }
   nlst[n-1] = keyword;
   return n;
 }
@@ -301,7 +299,7 @@ void Aipsrc::save(const String keyword, const String val) {
     fil.move(filno, True);
   } else if (filo.exists()) {
     filo.remove();
-  };
+  }
   ofstream ostr(filn.chars(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
@@ -324,13 +322,13 @@ void Aipsrc::save(const String keyword, const String val) {
 	  if (editCnt < nv) { // copy
 	    ostr << editBuf << endl;
 	    ostr << buffer << endl;
-	  };
+	  }
 	  editSeen = False;
 	  continue;
 	} else {
 	  ostr << editBuf << endl;
-	};
-      };
+	}
+      }
       editSeen = (buffer.index(editTxt) == 0);
       if (editSeen) {
 	editBuf = buffer;
@@ -345,18 +343,27 @@ void Aipsrc::save(const String keyword, const String val) {
 uInt Aipsrc::parse() {
   // Refill basic data
   filled = False;
-  // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
-  String filelist = fillAips(uhome) + String("/.aipsrc:");
-  filelist += (root + String("/.aipsrc:"));
-  filelist += (host + String("/aipsrc:"));
-  filelist += (site + String("/aipsrc:"));
-  filelist += (arch + String("/aipsrc:"));
+  // If defined use setting of CASARCFILES. Make sure it's ended by a colon.
+  String filelist = EnvironmentVariable::get("CASARCFILES");
+  if (! filelist.empty()) {
+    filelist += ':';
+  } else {
+    // Otherwise use AIPSPATH.
+    // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
+    filelist = fillAips(uhome) + String("/.casarc:");
+    filelist += fillAips(uhome) + String("/.aipsrc:");
+    filelist += (root + String("/.aipsrc:"));
+    filelist += (host + String("/aipsrc:"));
+    filelist += (site + String("/aipsrc:"));
+    filelist += (arch + String("/aipsrc:"));
+  }
   uInt i = parse(filelist);
   String x;
-  if (find(x, String("user.aipsdir"), String("/aips++")))
+  if (find(x, String("user.aipsdir"), String("/aips++"))) {
     home = x;
-  else
+  } else {
     home = uhome + x;
+  }
   return i;
 }
 
@@ -377,7 +384,7 @@ uInt Aipsrc::parse(String &fileList) {
     keyword.gsub(gs00, gs01);
     keyword.gsub(gs10, gs11);
     keywordPattern[i] = String("^") + keyword + String("$");
-  };
+  }
   return nkw;
 }
 
@@ -404,38 +411,40 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
     if (i == 0) fileEnd = nkw;
 
     //   Ok now if we have a filename let's see if we can open it
-    File fil(keywordFile[nfile]);
-    if (fil.exists()) {
-      ifstream fileAipsrc(keywordFile[nfile].chars(), ios::in);
-      String buffer;
-      String keyword;
-      String value;
-      const Regex comm("^[ 	]*#");	// Comment line
-      const Regex defin(":[ 	]*");	// Line with value
-      const Regex lspace("^[ 	]*");	// Leading spaces
-      while (fileAipsrc.getline(buf, 8192)) {
-	buffer = buf;
-	if (buffer.empty() || buffer.contains(comm))	// Ignore comments
-	  continue;
-	buffer = buffer.after(lspace);
-	if (buffer.contains(defin)) {		// value defined
-	  keyword = buffer.before(defin);
-	  value = buffer.after(defin);
-	  if (keyword.length() < 1)
+    if (! keywordFile[nfile].empty()) {
+      File fil(keywordFile[nfile]);
+      if (fil.exists()) {
+	ifstream fileAipsrc(keywordFile[nfile].chars(), ios::in);
+	String buffer;
+	String keyword;
+	String value;
+	const Regex comm("^[ 	]*#");	// Comment line
+	const Regex defin(":[ 	]*");	// Line with value
+	const Regex lspace("^[ 	]*");	// Leading spaces
+	while (fileAipsrc.getline(buf, 8192)) {
+	  buffer = buf;
+	  if (buffer.empty() || buffer.contains(comm))	// Ignore comments
 	    continue;
-	  while (nkw >= keywordPattern.nelements()) {
-            keywordPattern.resize(2*keywordPattern.nelements() + 1);
-	    keywordValue.resize(keywordPattern.nelements());
-	  };
-	  keywordValue[nkw] = value;
-	  keywordPattern[nkw] = keyword;
-	  nkw++;
-	  if (i == 0) fileEnd = nkw;
-	};            
-      };
-    };
+	  buffer = buffer.after(lspace);
+	  if (buffer.contains(defin)) {		// value defined
+	    keyword = buffer.before(defin);
+	    value = buffer.after(defin);
+	    if (keyword.length() < 1)
+	      continue;
+	    while (nkw >= keywordPattern.nelements()) {
+	      keywordPattern.resize(2*keywordPattern.nelements() + 1);
+	      keywordValue.resize(keywordPattern.nelements());
+	    }
+	    keywordValue[nkw] = value;
+	    keywordPattern[nkw] = keyword;
+	    nkw++;
+	    if (i == 0) fileEnd = nkw;
+	  }            
+	}
+      }
+    }
     nfile++;
-  };
+  }
   delete [] buf;
   delete [] directories;
 
@@ -466,7 +475,7 @@ void Aipsrc::show(ostream &oStream) {
     oStream << j << ":	" << 
       nam << ":	" <<
       keywordValue[j] << endl;
-  };
+  }
 }
 
 // General usage routines
@@ -486,8 +495,8 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
       n = Aipsrc::registerRC(nl[i], nla);
       vla.resize(n);
       vla[n-1] = vl[i];
-    };
-  };
+    }
+  }
   namlst = Vector<String>(nla);
   vallst = Vector<String>(vla);
   return namlst.nelements();
@@ -503,13 +512,13 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
     fil.move(filno, True);
   } else if (filo.exists()) {
     filo.remove();
-  };
+  }
   ofstream ostr(fnam.chars(), ios::out);
   ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   for (Int i=namlst.nelements()-1; i>=0; i--) {
     ostr << namlst(i) << ":	" << vallst(i) << endl;
-  };
+  }
 }
 
 void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
@@ -530,13 +539,13 @@ Bool Aipsrc::genUnSet(Vector<String> &namlst, Vector<String> &vallst,
   uInt N = namlst.nelements();
   for (n=0; n<N; n++) {
     if (namlst(n) == nam) break;
-  };
+  }
   n++;
   if (n>N) return False;
   for (uInt i=n; i<N; i++) {
     namlst(i-1) = namlst(i);
     vallst(i-1) = vallst(i);
-  };
+  }
   namlst.resize(N-1, True);
   vallst.resize(N-1, True);
   return True;
@@ -547,7 +556,7 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   uInt n;
   for (n=0; n<namlst.nelements(); n++) {
     if (namlst(n) == nam) break;
-  };
+  }
   n++;
   if (n>vallst.nelements()) return False;
   val = vallst(n-1);
