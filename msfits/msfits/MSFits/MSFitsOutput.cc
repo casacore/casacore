@@ -34,7 +34,6 @@
 #include <casa/Containers/Record.h>
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Containers/RecordField.h>
-#include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSTable.h>
 #include <fits/FITS/FITSDateUtil.h>
@@ -55,11 +54,10 @@
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <casa/System/ProgressMeter.h>
 #include <tables/LogTables/NewFile.h>
-
 #include <casa/stdlib.h> // for atoi()
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
-
+#include <casa/iostream.h>
 #include <casa/Logging/LogIO.h>
 
 
@@ -154,10 +152,14 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     nrfield = makeIdMap (fieldidMap, fieldids, fldid, isSubset);
   }  
 
-  // Write main table. Get freq and channel-width back.
+  // Write main table. Get freqs and channel-width back.
+  // For non-WSRT, refFreq and refFreq1 are the same, for WSRT they may 
+  // be different (line observations). refFreq1 will be handed to the AN
+  // table, so this is consistent with the Main table (WSRT and non-WSRT).
+
   Int refPixelFreq;
-  Double refFreq, chanbw;
-  FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, chanbw,
+  Double refFreq, refFreq1, chanbw;
+  FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, refFreq1, chanbw,
 				     outfile, ms, column,
 				     spwidMap, nrspw, startchan, nchan, 
 				     stepchan, fieldidMap,
@@ -168,6 +170,8 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     os << LogIO::SEVERE << "Could not write main table\n" << LogIO::POST;
   } else {
     os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
+    // Note: handing over refFreq otherwise this goes wrong...The FQ table
+    // lists the offset frequencies wrt a single reference.
     ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq, 
 		 chanbw, combineSpw);
   }
@@ -175,14 +179,15 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
   } else {
     os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
-    ok = writeAN(fitsOutput, ms, refFreq, writeStation);
+    // Note: handing over refFreq1 instead of refFreq; see above. Only the 
+    // refreq1 of the first IF is needed.
+    ok = writeAN(fitsOutput, ms, refFreq1, writeStation);
   }
   if (!ok) {
     os << LogIO::SEVERE << "Could not write AN table\n" << LogIO::POST;
   }
 
   // Write the SOURCE table.
-  //  if (ok && !ms.source().isNull()) {
   if (ok) {
     os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
     ok = writeSU(fitsOutput, ms, fieldidMap, nrfield, spwidMap, nrspw);
@@ -204,8 +209,10 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
       os << LogIO::SEVERE << "Could not write TY table\n" << LogIO::POST;
     } else {
       os << LogIO::NORMAL << "Writing AIPS GC table" << LogIO::POST;
+      // Note: handing over refFreq1 instead of refFreq; see above.
+      // Only the refreq1 of the first IF is needed.
       ok = writeGC(fitsOutput, ms, syscal, spwidMap, nrspw, combineSpw,
-		   sensitivity, refPixelFreq, refFreq, chanbw);
+		   sensitivity, refPixelFreq, refFreq1, chanbw);
     }
     if (!ok) {
       os << LogIO::SEVERE << "Could not write GC table\n" << LogIO::POST;
@@ -219,7 +226,9 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
 }
 
 
-FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
+FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, 
+				    Double& refFreq,
+				    Double& refFreq1,
 				    Double& chanbw,
 				    const String &outFITSFile, 
 				    const MeasurementSet &rawms,
@@ -294,6 +303,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 				 MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ROScalarColumn<Double> totalbw(spectralTable,
 	      MSSpectralWindow::columnName(MSSpectralWindow::TOTAL_BANDWIDTH));
+  ROScalarColumn<Int> meas_freq_ref(spectralTable, 
+	      MSSpectralWindow::columnName(MSSpectralWindow::MEAS_FREQ_REF));
 
   // Also find out what the Stokes are and make sure that they are the same
   // throughout the MS. In principle we could handle the same stokes in
@@ -301,7 +312,10 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   Int numcorr0 = 0;
   Int numchan0 = 0;
   Double delta = 0;
-  Double f0 = 0;
+
+  // Must be a vector<Double>
+  Double f0 = 0; 
+  Double f0_org = 0 ; // Needed for WSRT, to remember the frequency of chan0
   Double bw0 = 0;
   Vector<Int> stokes;
   uInt i;
@@ -326,7 +340,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
  	     << "Number of correlations or channels is zero" << LogIO::POST;
  	  return 0;
  	}
-	f0 = freqs(0);
+	f0 = freqs(0); 
 	bw0 = delta;
 	chanbw = abs(delta);
 	stokes = stokesTypes(p);
@@ -343,6 +357,66 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	}
       }
  
+      // If WSRT line, we need to take the central frequency from the NFRA_
+      // table and calculate the frequency of the first channel based on
+      // the fact that this frequency corresponds to that of channel n/2 + 1.
+      // Note that for WSRT the channel frequencies go from high to low, so 
+      // delta is negative. f0_org is set to the frequency of channel 0 as
+      // it is in the MS
+      // Do this for the first IVC-band only!
+
+      if (doWsrt && meas_freq_ref(0) != 5 && i ==0 ) {
+        f0_org = f0;
+	if (!rawms.keywordSet().isDefined ("NFRA_TMS_PARAMETERS")) {
+  
+	  cout << "ERROR - No NFRA_TMS_PARAMETERS table - cannot process this MS.\n";
+	  return false;
+
+	} else {
+
+	  Table tmsParm = rawms.keywordSet().asTable ("NFRA_TMS_PARAMETERS");
+	  Table sel;
+	  ROTableColumn tc(tmsParm, "NAME");
+	  String tmp;
+	  tc.getScalar(0, tmp);
+
+	  //
+	  // Get FW1.GeoSkyFreq 
+	  //
+	  Double fw1_geoskyfreq;
+	  sel = tmsParm (tmsParm.col("NAME") == "FW1.GeoSkyFreq");
+	  if (sel.nrow() == 0){
+	    cout << "ERROR - FW1.GeoSkyFreq not found - cannot process this MS.\n";
+	    return false;
+	  } else {
+	    String aValue;
+	    aValue = ROScalarColumn<String>(sel, "VALUE")(0);
+
+	    //
+	    // Find the comma's,
+	    // Add the substring as Double
+	    //
+	    // The first comma is located before the loop
+	    // The last Double is added after the loop
+	    //
+	    vector<Double> rtn;
+	    Int j = aValue.find(',');
+	    while (j > 0){
+	      Double d = atof(aValue.substr(0, j).c_str());
+	      rtn.push_back(d);
+	      aValue = aValue.substr(j+1);
+	      j = aValue.find(',');
+	    }
+	    // Line ends like "0,0 MHz"; make sure the 'MHz' is stripped off.
+	    j = aValue.find(' ');
+	    Double d = atof(aValue.substr(0, j).c_str());
+	    rtn.push_back(d);
+	    fw1_geoskyfreq = rtn[i] * 1e+6;
+	    f0 = fw1_geoskyfreq - bw0 * nchan/2;
+	  }
+	}
+      }
+
       // Check if values match.
       if (numcorr(p) != numcorr0) {
  	os << LogIO::SEVERE << "Number of correlations varies in the MS"
@@ -831,7 +905,6 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     *obaseline = (inant1(i)+1)*256 + inant2(i) + 1 + inarray(i)*0.01;
 
     // FREQSEL (in the future it might be FREQ_GRP+1)
-    //    *ofreqsel = inddid(i) + 1;
     if (combineSpw) {
       *ofreqsel = 1;
     } else {
@@ -850,14 +923,26 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // changing chanbw to output one
   chanbw=bw0;
 
+  // Make sure refFreq is again the frequency as in the spectral window table
+  // This is required to correctly write the FQ table (uses refFreq and the
+  // original channelfreqs as in the MS to determine a 1-channel offset)
+  // refFreq1 is WSRT specific; must also be handed over to the AN table
+  // and the GC table for consequent values in the UVFits file and tables.
+  // For non-line-WSRT and non-WSRT, reqFreq1 and refFreq are the same, so 
+  // all goes well.
+
+  refFreq1 = refFreq; 
+  if (doWsrt && f0_org > 0) {
+    refFreq = f0_org + f0RefPix * bw0;
+  }     
   return outfile;
 }
 
 
 Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms, 
 			   const Block<Int>& spwidMap, Int nrspw,
-			   Double refFreq, Int refPixelFreq, Double chanbw, 
-			   Bool combineSpw)
+			   Double refFreq, Int refPixelFreq, 
+			   Double chanbw, Bool combineSpw)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
@@ -1299,10 +1384,23 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   header.define ("FREQID", 1);
   String velDef;
   String velType;
+  // WSRT specific issue:
+  // This is tricky... The AIPS standard says that VELTYP = bary, lsr, etc
+  // and VELDEF = radio or optical. The NFRA keywords in the Spectral Window
+  // table are NFRA_VELOCDEFINITION and NFRA_CONVERSIONTYPE , respectively!
+  // Note that datasets with mixed vel.frames or mixed line/continuum cannot
+  // be handled. 
   if (spectralTable.tableDesc().isColumn ("NFRA_VELOCDEFINITION")) {
-    ROScalarColumn<String> velDefCol (spectralTable, "NFRA_VELOCDEFINITION");
-    header.define("VELTYP", "");
-    header.define("VELDEF", "");
+    ROScalarColumn<String> velTypeCol (spectralTable, "NFRA_VELOCDEFINITION");
+    velType = velTypeCol(0);
+    velType.upcase();
+    header.define("VELTYP", velType);
+    if (spectralTable.tableDesc().isColumn ("NFRA_CONVERSIONTYPE")) {
+      ROScalarColumn<String> velDefCol (spectralTable, "NFRA_CONVERSIONTYPE");
+      velDef = velDefCol(0);
+      velDef.upcase();
+      header.define("VELDEF", velDef);
+    }
   } else {
     os << LogIO::NORMAL << "Not setting velocity types" << LogIO::POST;
   }
