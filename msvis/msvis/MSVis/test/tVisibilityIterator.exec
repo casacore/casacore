@@ -1,6 +1,9 @@
 #!/bin/sh
 
   DATADIR=`echo $AIPSPATH | awk '{print $1}'`/data/demo/
+  if [ ! -d $DATADIR/autoflag/WSRT-test.MS2 ]; then
+    exit 3;
+  fi
   rm -rf tVisibilityIterator.MS
   cp -r $DATADIR/autoflag/WSRT-test.MS2 tVisibilityIterator.MS 
     PROGRAM="tVisibilityIterator"
