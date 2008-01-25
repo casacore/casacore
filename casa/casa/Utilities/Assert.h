@@ -155,7 +155,7 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {assert_<exception > dummy_(expr, "Failed AlwaysAssertExit " #expr,__FILE__,(Int)__LINE__); dummy_.null(); }
+    {assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(Int)__LINE__); dummy_.null(); }
 #define AlwaysAssertExit(expr) \
     {assert_<AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
 
