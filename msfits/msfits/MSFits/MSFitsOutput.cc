@@ -34,6 +34,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Containers/RecordField.h>
+#include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSTable.h>
 #include <fits/FITS/FITSDateUtil.h>
@@ -54,10 +55,10 @@
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <casa/System/ProgressMeter.h>
 #include <tables/LogTables/NewFile.h>
+
 #include <casa/stdlib.h> // for atoi()
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
-#include <casa/iostream.h>
 #include <casa/Logging/LogIO.h>
 
 

@@ -94,11 +94,17 @@ for dep in DEPS:
 # Replace some builder commands (lex,yacc) with custom versions
 env.CustomCasaCom()
 for bopt in env["build"]:
-    # create an environment copy with teh dbg/opt compiler flags
+    # create an environment copy with the dbg/opt compiler flags
     buildenv = env.BuildEnv(bopt)
     buildenv["buildtype"] = bopt
     # buildir name
     buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
+    buildenv["BUILDDIR_APPS"] = Dir("#/build_%s/%s/%s" % (env.PlatformIdent(), 
+						      bopt, "apps"))
+
     env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
 		   build_dir= buildenv["BUILDDIR"],
 		   duplicate=0, exports=["buildenv", "installer"]) 
+    env.SConscript(["%s/SConscript" % "apps"],
+		   duplicate=0, exports=["buildenv", "installer"],
+		   build_dir=buildenv["BUILDDIR_APPS"])
