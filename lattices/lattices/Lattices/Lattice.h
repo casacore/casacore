@@ -433,7 +433,7 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
 //# to compile, because the LatticeIterator declarations are not seen yet.
 //# Therefore LatticeIterator.h is included here, while LatticeIterator.h
 //# includes Lattice.tcc.
-#ifndef AIPS_NO_TEMPLATE_SRC
+#ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <lattices/Lattices/LatticeIterator.h>
-#endif //# AIPS_NO_TEMPLATE_SRC
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -220,7 +220,7 @@ private:
 //# fails to compile, because the LELUnary declarations are not seen yet.
 //# Therefore LELUnary.h is included here, while LELUnary.h includes
 //# LELInterface.tcc.
-#ifndef AIPS_NO_TEMPLATE_SRC
+#ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <lattices/Lattices/LELUnary.h>
-#endif //# AIPS_NO_TEMPLATE_SRC
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
