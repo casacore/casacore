@@ -87,7 +87,7 @@ if "-h" not in args:
 		args.append(a.replace("prefix", "casacoreroot"))
 		break
 	if not hasprefix:
-	    args.append("casacoreroot=/usr")
+	    args.append("casacoreroot=/usr/local")
 # build all by default
 tobuild = ['casa', 'tables', 'mirlib', 'scimath', 'measures','fits', 
 	   'lattices', 'coordinates', 'components', 'images', 
