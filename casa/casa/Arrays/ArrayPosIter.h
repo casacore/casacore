@@ -130,6 +130,7 @@ public:
     Bool pastEnd() const;
 
     // Return the position of the cursor.
+    // This include all axes
     const IPosition &pos() const {return Cursor;}
 
     // Return the end position of the cursor.
@@ -137,6 +138,16 @@ public:
 
     // Advance the cursor to its next position.
     virtual void next();
+
+    // Set the cursor to the given position.
+    // The position can only contain the iteration axes or it can be the full
+    // position.
+    // <br>In the first case the position must to be given in the order
+    // of the iteration axes as given in the constructor.
+    // In the latter case the position must be given in natural order
+    // (as given by function <src>pos</src> and only the cursor axes are taken
+    // into account.
+    virtual void set (const IPosition& cursorPos);
 
     // What is the dimensionality of the volume we are iterating through?
     uInt ndim() const;

@@ -134,4 +134,20 @@ template<class T> void ArrayIterator<T>::next()
     apSetPointer(stepDim);
 }
 
+  
+template<class T> void ArrayIterator<T>::set (const IPosition& cursorPos)
+{
+    ArrayPositionIterator::set (cursorPos);
+    if (ap_p == 0)
+	throw(ArrayIteratorError("ArrayIterator<T>::apSetPointer()"
+				 " - no iteration array!"));
+    if (pastEnd()) {
+	ap_p->begin_p = 0;  // Mark it "invalid"
+    } else {
+        dataPtr_p = &((*pOriginalArray_p)(pos()));
+	ap_p->begin_p = dataPtr_p;
+	ap_p->setEndIter();
+    }  
+}
+
 } //# NAMESPACE CASA - END

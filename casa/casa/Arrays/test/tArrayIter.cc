@@ -76,6 +76,13 @@ int main()
         cout << iloop << " [ " << index (0) << " " << index (1) << " ] "
              << arr (index) << "\n";
     }
+    ai.set (IPosition(1,4));
+    AlwaysAssertExit (ai.pos() == IPosition(2,0,4));
+    ai.set (IPosition(2,2,3));
+    AlwaysAssertExit (ai.pos() == IPosition(2,0,3));
+    for ( iloop = 0; ! ai.pastEnd(); ai.next(), iloop++ ) {
+        cout << ai.pos() << endl;
+    }
     cout << "END.  Testing ArrayPositionIterator.  1 dim. ......\n";
 
     cout << "\nBEGIN.  Testing ArrayIterator.  1 dim. ......\n";
@@ -224,6 +231,15 @@ int main()
 	}
       }
       AlwaysAssertExit(iter.pastEnd());
+      // Check if set works correctly.
+      iter.set (IPosition(3,3,1,2));
+      AlwaysAssertExit(iter.pos() == IPosition(5,0,1,0,2,3));
+      Array<Int> tmparr1 (ai(iter.pos(), iter.endPos()).nonDegenerate());
+      AlwaysAssertExit(allEQ (iter.array(), tmparr1));
+      iter.next();
+      AlwaysAssertExit(iter.pos() == IPosition(5,0,1,0,2,4));
+      Array<Int> tmparr2 (ai(iter.pos(), iter.endPos()).nonDegenerate());
+      AlwaysAssertExit(allEQ (iter.array(), tmparr2));
     }
     {
       ReadOnlyArrayIterator<Int> iter(ai, IPosition(3,4,1,3));

@@ -97,6 +97,16 @@ public:
     // Move the cursor to the next position.
     virtual void next();
 
+    // Set the cursor to the given position.
+    // The position can only contain the iteration axes or it can be the full
+    // position.
+    // <br>In the first case the position must to be given in the order
+    // of the iteration axes as given in the constructor.
+    // In the latter case the position must be given in natural order
+    // (as given by function <src>pos</src> and only the cursor axes are taken
+    // into account.
+    virtual void set (const IPosition& cursorPos);
+
     // Reset the cursor to the beginning.
     // <group>
     virtual void reset();
@@ -172,6 +182,16 @@ public:
 
     // Move the cursor to the next position.
     void next() {ai.next();}
+
+    // Set the cursor to the given position.
+    // The position can only contain the iteration axes or it can be the full
+    // position.
+    // <br>In the first case the position must to be given in the order
+    // of the iteration axes as given in the constructor.
+    // In the latter case the position must be given in natural order
+    // (as given by function <src>pos</src> and only the cursor axes are taken
+    // into account.
+    void set (const IPosition& cursorPos) {ai.set(cursorPos);}
 
     // Reset the cursor to the beginning.
     // <group>

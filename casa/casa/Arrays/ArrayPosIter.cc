@@ -129,6 +129,28 @@ void ArrayPositionIterator::next()
     nextStep();
 }
 
+void ArrayPositionIterator::set (const IPosition& cursorPos)
+{
+    Bool all = False;
+    if (cursorPos.nelements() != iterationAxes.nelements()) {
+        all = True;
+	if (cursorPos.nelements() != ndim()) {
+	    throw ArrayIteratorError ("ArrayPositionIterator::set - "
+				      "length of cursorPos is invalid");
+	}
+    }
+    atOrBeyondEnd = False;
+    for (uInt i=0; i<cursorPos.nelements(); ++i) {
+        Int axis = iterationAxes(i);
+	Int cpaxis = i;
+	if (all) cpaxis=axis;
+	Cursor[axis] = cursorPos[cpaxis];
+	if (Cursor[axis] >= End[axis]) {
+	    atOrBeyondEnd = True;
+	}
+    }
+}
+
 uInt ArrayPositionIterator::nextStep()
 {
     // This could and should be made more efficient. 
