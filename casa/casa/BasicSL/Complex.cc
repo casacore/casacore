@@ -59,10 +59,14 @@ Bool near(const Complex &val1, const Complex &val2, Double tol)
 {
   if (tol <= 0) return val1 == val2;
   if (val1 == val2) return True;
-  if (std::abs(val1) == 0) return std::abs(val2) <= (1+tol)*FLT_MIN;
-  else if (std::abs(val2) == 0) return std::abs(val1) <= (1+tol)*FLT_MIN;
+  if (near(val1.real(), val2.real(), tol) &&
+      near(val1.imag(), val2.imag(), tol)) return True;
   Float aval1(std::abs(val1)), aval2(std::abs(val2));
-  return std::abs(val1-val2) <= tol * (aval1 < aval2 ? aval2 : aval1);
+  if (aval1 == 0) return aval2 <= (1+tol)*FLT_MIN;
+  else if (aval2 == 0) return aval1 <= (1+tol)*FLT_MIN;
+  DComplex dval(val1);
+  dval -= DComplex(val2);
+  return std::abs(dval) <= tol * (aval1 < aval2 ? aval2 : aval1);
 }
 
 Bool near(const DComplex &val1, const DComplex &val2, Double tol)
