@@ -145,7 +145,7 @@ void ArrayPositionIterator::set (const IPosition& cursorPos)
 	Int cpaxis = i;
 	if (all) cpaxis=axis;
 	Cursor[axis] = cursorPos[cpaxis];
-	if (Cursor[axis] >= End[axis]) {
+	if (Cursor[axis] > End[axis]) {
 	    atOrBeyondEnd = True;
 	}
     }
