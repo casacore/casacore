@@ -245,7 +245,7 @@ public:
 
     // Get access to the set of column descriptions.
     // In this way const <linkto class=ColumnDescSet>ColumnDescSet</linkto>
-    // (e.g. isDisjoint) can be used.
+    // functions (e.g. isDisjoint) can be used.
     const ColumnDescSet& columnDescSet() const;
 
     // Add another table description to this table description.
