@@ -592,5 +592,15 @@ void ArrayBase::checkCubeShape()
   }
 }
 
+ArrayPositionIterator* ArrayBase::makeIterator (uInt)
+{
+  throw ArrayError ("ArrayBase::makeIterator cannot be used");
+}
+ArrayBase* ArrayBase::getSection (const Slicer&)
+{
+  throw ArrayError ("ArrayBase::getSection cannot be used");
+}
+
+
 } //# NAMESPACE CASA - END
 

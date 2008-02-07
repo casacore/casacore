@@ -150,4 +150,9 @@ template<class T> void ArrayIterator<T>::set (const IPosition& cursorPos)
     }  
 }
 
+template<class T> ArrayBase& ArrayIterator<T>::getArray()
+{
+    return array();
+}
+
 } //# NAMESPACE CASA - END

@@ -114,7 +114,11 @@ public:
 
     // Return the cursor. (Perhaps we should have a fn() that returns a
     // reference to the original array as well?)
+    // <group>
     Array<T> &array() {return *ap_p;}
+    virtual ArrayBase& getArray();
+    // </group>
+
 
 protected:
     // A pointer to the cursor.

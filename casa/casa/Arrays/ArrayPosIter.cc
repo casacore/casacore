@@ -200,4 +200,9 @@ IPosition ArrayPositionIterator::endPos() const
   return endp;
 }
 
+ArrayBase& ArrayPositionIterator::getArray()
+{
+  throw ArrayIteratorError ("ArrayPositionIterator::getArray cannot be used");
+}
+
 } //# NAMESPACE CASA - END

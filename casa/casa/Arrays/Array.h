@@ -412,6 +412,10 @@ public:
     // Get a reference to an array using a Slicer.
     Array<T> operator()(const Slicer&);
 
+    // Get a reference to a section of an array.
+    // This is the same as operator().
+    virtual ArrayBase* getSection (const Slicer&);
+
 
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.
@@ -506,6 +510,9 @@ public:
     // Used to iterate through Arrays. Derived classes VectorIterator and
     // MatrixIterator are probably more useful.
     friend class ArrayIterator<T>;
+
+    // Create an ArrayIterator object of the correct type.
+    virtual ArrayPositionIterator* makeIterator (uInt byDim);
 
     // Needed to be a friend for Matrix<T>::reference()
     friend class Matrix<T>;

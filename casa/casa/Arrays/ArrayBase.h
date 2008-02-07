@@ -35,6 +35,11 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+//# Forward declarations.
+class ArrayPositionIterator;
+class Slicer;
+
+
 // <summary>
 // A global enum used by some Array constructors.
 // </summary>
@@ -127,6 +132,16 @@ public:
   static uInt arrayVersion()
     {return 3;}
 
+  // Create an ArrayIterator object of the correct type.
+  // This is implemented in the derived Array classes.
+  // <br>ArrayBase throws an exception.
+  virtual ArrayPositionIterator* makeIterator (uInt byDim);
+
+  // Get a reference to a section of an array.
+  // This is the same as Array<T>::operator(), but without having to know
+  // the exact template type.
+  // <br>ArrayBase throws an exception.
+  virtual ArrayBase* getSection (const Slicer&);
 
 protected:
   void baseCopy (const ArrayBase& that)

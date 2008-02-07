@@ -28,7 +28,7 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/ArrayPosIter.h>
+#include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicMath/Functional.h>
@@ -645,6 +645,11 @@ template<class T> Array<T> Array<T>::operator()(const Slicer& slicer)
     return operator() (blc, trc, inc);
 }
 
+template<class T> ArrayBase* Array<T>::getSection(const Slicer& slicer)
+{
+    return new Array<T>(operator()(slicer));
+}
+
 
 template<class T>
 MaskedArray<T> Array<T>::operator() (const LogicalArray &mask) const
@@ -856,6 +861,11 @@ void Array<T>::takeStorage(const IPosition &shape, const T *storage)
 }
 
 
+template<class T>
+ArrayPositionIterator* Array<T>::makeIterator (uInt byDim)
+{
+    return new ArrayIterator<T> (*this, byDim);
+}
 
 
 

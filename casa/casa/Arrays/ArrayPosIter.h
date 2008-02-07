@@ -34,11 +34,15 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// 
+//# Forward Declarations
+class ArrayBase;
+
+
 // <summary> Iterate an IPosition through the shape of an Array </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-//
+
+// <synopsis>
 // ArrayPositionIterator manipulates an IPosition "cursor" through some
 // volume defined by an origin and shape. This position can in turn be
 // used to index into, or otherwise define a position in, an Array. Normally
@@ -72,10 +76,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Class <linkto class=ArrayLattice>ArrayLattice</linkto> in the lattices
 // package can be used to iterate with partial volumes.
 //
-// <note role=tip>
-// All the array iterator classes should probably be reimplemented;
-// their implementation is a bit ugly.
-// </note>
+// <p>
+// ArrayPositionIterator also serves as the base class of ArrayIterator.
+// Function <src>makeIterator</src> in class ArrayBase can be used to make an
+// ArrayIterator without having to know the template type. Function
+// <src>getArray</src> in this class can be used to obtain the current
+// contents of the cursor as an ArrayBase object.
+// </synopsis>
 
 class ArrayPositionIterator
 {
@@ -157,6 +164,11 @@ public:
 
     // Return the cursor axes.
     const IPosition &cursorAxes() const {return cursAxes;}
+
+    // Get the array in the cursor.
+    // This is only implemented in the derived ArrayIterator class.
+    // By default it throws an exception.
+    virtual ArrayBase& getArray();
 
 protected:
     // Advance cursor to its next position and tell which dimension stepped.
