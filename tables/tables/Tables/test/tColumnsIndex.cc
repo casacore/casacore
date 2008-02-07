@@ -334,6 +334,7 @@ int main()
 	d();
     } catch (AipsError x) {
         cout << "Exception caught: " << x.getMesg() << endl;
+	return 1;
     } 
     return 0;
 }
