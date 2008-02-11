@@ -610,6 +610,7 @@ public:
 
   class ConstIteratorSTL: public BaseIteratorSTL
     {
+    public:
       // <group name=STL-iterator-typedefs>
       typedef T                 value_type;
       typedef const value_type* pointer;
@@ -619,7 +620,6 @@ public:
       typedef std::forward_iterator_tag iterator_category;
       // </group>
 
-    public:
       // Create the begin const_iterator object for an Array.
       explicit ConstIteratorSTL (const Array<T>& arr)
 	: BaseIteratorSTL (arr) {}
