@@ -27,6 +27,7 @@
 
 #include <tables/Tables/ScaColDesc.h>
 #include <tables/Tables/ScaColData.h>
+#include <tables/Tables/ConcatScalarColumn.h>
 #include <casa/Utilities/ValTypeId.h>
 #include <tables/Tables/TableError.h>
 #include <casa/IO/AipsIO.h>
@@ -197,6 +198,12 @@ PlainColumn* ScalarColumnDesc<T>::makeColumn (ColumnSet* csp) const
 	throw (AllocError ("ScalarColumnDesc::makeColumn", 1));
     }
     return bcp;
+}
+
+template<class T>
+ConcatColumn* ScalarColumnDesc<T>::makeConcatColumn (ConcatTable* ct) const
+{
+    return new ConcatScalarColumn<T> (this, ct);
 }
 
 } //# NAMESPACE CASA - END

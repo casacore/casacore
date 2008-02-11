@@ -175,7 +175,6 @@ public:
     // Assignment (copy semantics).
     SubTableDesc& operator= (const SubTableDesc&);
 
-    //*display 4
     // Clone this column description to another.
     BaseColumnDesc* clone() const;
 
@@ -185,16 +184,13 @@ public:
     // </thrown>
     TableDesc* tableDesc();
 
-    //*display 4
     // Get the name of this class.
     String className() const;
 
-    //*display 4
     // Create a Column column object out of this.
     // This is used by class ColumnSet to construct a table column object.
     PlainColumn* makeColumn (ColumnSet*) const;
 
-    //*display 4
     // Show the column.
     void show (ostream& os) const;
 

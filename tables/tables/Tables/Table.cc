@@ -30,6 +30,7 @@
 #include <tables/Tables/PlainTable.h>
 #include <tables/Tables/MemoryTable.h>
 #include <tables/Tables/RefTable.h>
+#include <tables/Tables/ConcatTable.h>
 #include <tables/Tables/NullTable.h>
 #include <tables/Tables/TableCopy.h>
 #include <tables/Tables/ExprDerNode.h>
@@ -185,6 +186,45 @@ Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
     baseTabPtr_p->link();
 }
 
+Table::Table (const Block<Table>& tables,
+	      const Block<String>& subTables)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    Block<BaseTable*> btab(tables.nelements());
+    for (uInt i=0; i<tables.nelements(); ++i) {
+      btab[i] = tables[i].baseTablePtr();
+    }
+    baseTabPtr_p = new ConcatTable (btab, subTables);
+    baseTabPtr_p->link();
+}
+
+Table::Table (const Block<String>& tableNames,
+	      const Block<String>& subTables,
+	      TableOption option)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new ConcatTable (tableNames, subTables,
+				    option, TableLock());
+    baseTabPtr_p->link();
+}
+
+Table::Table (const Block<String>& tableNames,
+	      const Block<String>& subTables,
+	      const TableLock& lockOptions,
+	      TableOption option)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new ConcatTable (tableNames, subTables,
+				    option, lockOptions);
+    baseTabPtr_p->link();
+}
+
 Table::Table (BaseTable* btp, Bool countIt)
 : baseTabPtr_p     (btp),
   isCounted_p      (countIt),
@@ -320,13 +360,13 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
     ios >> tp;
     if (tp == "PlainTable") {
 	PlainTable::getLayout (desc, ios);
-    }else{
-	if (tp == "RefTable") {
-	    RefTable::getLayout (desc, ios);
-	}else{
-	    throw (TableInternalError
+    } else if (tp == "RefTable") {
+        RefTable::getLayout (desc, ios);
+    } else if (tp == "ConcatTable") {
+        ConcatTable::getLayout (desc, ios);
+    } else {
+        throw (TableInternalError
 		              ("Table::getLayout: unknown table kind " + tp));
-	}
     }
     ios.close();
     return nrow;
@@ -427,7 +467,10 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
     } else if (tp == "RefTable") {
 	baseTabPtr = new RefTable (ios, name, nrrow, tableOption,
 				     lockOptions);
-    }else{
+    } else if (tp == "ConcatTable") {
+	baseTabPtr = new ConcatTable (ios, name, nrrow, tableOption,
+				      lockOptions);
+    } else {
 	throw (TableInternalError
 	       ("Table::open: unknown table kind " + tp));
     }

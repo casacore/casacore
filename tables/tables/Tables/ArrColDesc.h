@@ -260,7 +260,7 @@ public:
 
     // Create a Column object out of this.
     // This is used by class ColumnSet to construct a table column object.
-    PlainColumn* makeColumn (ColumnSet*) const;
+    virtual PlainColumn* makeColumn (ColumnSet*) const;
 
     // Show the column.
     void show (ostream& os) const;

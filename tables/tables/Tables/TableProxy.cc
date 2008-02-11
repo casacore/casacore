@@ -111,6 +111,34 @@ TableProxy::TableProxy (const String& tableName,
 		   nrow, False, endOpt);
 }
 
+TableProxy::TableProxy (const Vector<String>& tableNames,
+			const Vector<String>& concatenateSubTableNames, 
+			const Record& lockOptions,
+			int option)
+{
+  Block<String> names(tableNames.size());
+  std::copy (tableNames.begin(), tableNames.end(), names.begin());
+  Block<String> subNames(concatenateSubTableNames.size());
+  std::copy (concatenateSubTableNames.begin(), concatenateSubTableNames.end(),
+	     subNames.begin());
+  table_p = Table (names, subNames, makeLockOptions(lockOptions),
+		   Table::TableOption(option));
+}
+ 
+TableProxy::TableProxy (const std::vector<TableProxy>& tables,
+			const Vector<String>& concatenateSubTableNames,
+			int, int, int)
+{
+  Block<Table> tabs(tables.size());
+  for (uInt i=0; i<tables.size(); ++i) {
+    tabs[i] = tables[i].table();
+  }
+  Block<String> subNames(concatenateSubTableNames.size());
+  std::copy (concatenateSubTableNames.begin(), concatenateSubTableNames.end(),
+	     subNames.begin());
+  table_p = Table (tabs, subNames);
+}
+
 TableProxy::TableProxy (const String& command,
 			const std::vector<TableProxy>& tables)
 {

@@ -99,11 +99,19 @@ template<class T> class PtrBlock;
 // <code>Table::LocalEndian</code> (thus the endian format of the
 // machine being used).
 //
+// It is possible to create a Table object as the virtual concatenation of
+// Tables having identical table descriptions. Subtables of those tables
+// can optionally be concatenated as well.
+// E.g. if a MeasurementSet is partioned in time, this mechanism makes it
+// possible to view it as a single table. Furthermore, a subtable like
+// SYSCAL can be concatenated as well, while the other subtables are identical
+// in all partitions and are taken from the first table only.
+//
 // Other Table objects can be created from a Table using
-// the select, project and sort functions. In that way a subset
-// of the table can be created and it can be read/written in the same
-// way as a normal Table. However, writing has the effect that the
-// underlying table gets written.
+// the select, project and sort functions. The result in so-called
+// reference tables. In this way a subset of a table can be created and
+// can be read/written in the same way as a normal Table. Writing has the
+// effect that the underlying table gets written.
 // </synopsis>
 
 // <example>
@@ -140,6 +148,7 @@ friend class BaseTable;
 friend class PlainTable;
 friend class MemoryTable;
 friend class RefTable;
+friend class ConcatTable;
 friend class TableIterator;
 friend class RODataManAccessor;
 friend class TableExprNode;
@@ -209,7 +218,7 @@ public:
     // or throwIfNull function in case of doubt.
     Table();
 
-    // Create a table object for an existing writable table.
+    // Create a table object for an existing table.
     // The only options allowed are Old, Update, and Delete.
     // When the name of a table description is given, it is checked
     // if the table has that description.
@@ -268,9 +277,37 @@ public:
 	   EndianFormat = Table::AipsrcEndian);
     // </group>
 
-    //# Virtually concatenate some tables.
-    //# All tables must have the same description.
-//#//    Table (const Block<Table>&);
+    // Create a table object as the virtual concatenation of
+    // one or more of existing tables. The descriptions of all those tables
+    // must be exactly the same.
+    // <br>The keywordset of the virtual table is the set of the first table
+    // including its subtables. However, it is possible to specify the names
+    // of the subtables that have to be concantenated as well.
+    // <br>In this way a concatenation of multiple MS-s can be made, where it
+    // can be specified that, say, the SYSCAL table has to be concatenated too.
+    // <br>
+    // The only open options allowed are Old and Update.
+    // Locking options can be given (see class
+    // <linkto class=TableLock>TableLock</linkto>.
+    // They apply to all underlying tables.
+    // When a table was already opened in this process,
+    // the existing and new locking options are merged using
+    // <src>TableLock::merge</src>.
+    // The default locking mechanism is DefaultLocking. When the table
+    // is not open yet, it comes to AutoLocking with an inspection interval
+    // of 5 seconds. Otherwise DefaultLocking keeps the locking options
+    // of the already open table.
+    // <group>
+    explicit Table (const Block<Table>& tables,
+		    const Block<String>& subTables = Block<String>());
+    explicit Table (const Block<String>& tableNames,
+		    const Block<String>& subTables = Block<String>(),
+		    TableOption = Table::Old);
+    Table (const Block<String>& tableNames,
+	   const Block<String>& subTables,
+	   const TableLock& lockOptions,
+	   TableOption = Table::Old);
+    // </group>
 
     // Copy constructor (reference semantics).
     Table (const Table&);

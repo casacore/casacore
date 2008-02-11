@@ -203,11 +203,9 @@ public:
     // Assignment (copy semantics);
     ScalarColumnDesc<T>& operator= (const ScalarColumnDesc<T>&);
 
-    //*display 4
     // Clone this column description.
     BaseColumnDesc* clone() const;
 
-    //*display 4
     // Get the name of this class. It is used by the registration process.
     // The template argument gets part of the name.
     String className() const;
@@ -220,12 +218,13 @@ public:
     const T& defaultValue() const
 	{ return defaultVal_p; }
 
-    //*display 4
     // Create a Column object out of this.
     // This is used by class ColumnSet to construct a table column object.
-    PlainColumn* makeColumn (ColumnSet*) const;
+    virtual PlainColumn* makeColumn (ColumnSet*) const;
 
-    //*display 4
+    // Make a ConcatColumn object out of the description.
+    virtual ConcatColumn* makeConcatColumn (ConcatTable*) const;
+
     // Show the column.
     void show (ostream& os) const;
 

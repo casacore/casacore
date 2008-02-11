@@ -186,6 +186,28 @@ Vector<uInt> RefRows::convert (const Vector<uInt>& rootRownrs) const
     return rownrs;
 }
 
+Vector<uInt> RefRows::convert() const
+{
+    if (!itsSliced) {
+        return itsRows;
+    }
+    uInt n = nrow();
+    Vector<uInt> rownrs(n);
+    uInt nr = 0;
+    RefRowsSliceIter iter(*this);
+    while (! iter.pastEnd()) {
+        uInt rownr = iter.sliceStart();
+	uInt end = iter.sliceEnd();
+	uInt incr = iter.sliceIncr();
+	while (rownr <= end) {
+	    rownrs(nr++) = rownr;
+	    rownr += incr;
+	}
+	iter++;
+    }
+    return rownrs;
+}
+
 
 RefRowsSliceIter::RefRowsSliceIter (const RefRows& rows)
 : itsRows   (rows.rowVector()),

@@ -133,6 +133,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <LI> <A HREF="#Tables:row-access">accessing rows</A> in a table,
 //  <LI> <A HREF="#Tables:select and sort">selection and sorting</A>
 //       (see also <A HREF=../../notes/199/199.html>Table Query Language</A>),
+//  <LI> <A HREF="#Tables:concatenation">concatenating similar tables</A>
 //  <LI> <A HREF="#Tables:iterate">iterating</A> through a table,
 //  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
 //       for concurrent access,
@@ -753,6 +754,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <br>Such a command can be executed with the static function
 // <src>TableParse::tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
+
+// <A NAME="Tables:concatenation">
+// <h3>Table Concatenation</h3></A>
+// Tables with identical descriptions can be concatenated in a virtual way
+// using the Table concatenation constructor. Such a Table object behaves
+// as any other Table object, thus any operation can be performed on it.
+// An identical description means that the number of columns, the column names,
+// and their data types of the columns must be the same. The columns do not
+// need to be ordered in the same way nor to be stored in the same way.
+// <br>Note that if tables have different column names, it is possible
+// to form a projection (as described in the previous section) first
+// to make them appear identical.
+//
+// Sometimes a MeasurementSet is partitioned, for instance in chunks of
+// one hour. All those chunks can be virtually concatenated this way.
+// Note that all tables in the concatenation will be opened, thus one might
+// run out of file descriptors if there are many chunks.
+//
+// Similar to reference tables, it is possible to make a concatenated Table
+// persistent by using the <src>rename</src> function. It will not copy the
+// data; only the names of the tables used are written.
+//
+// The keywords of a concatenated table are taken from the first table.
+// It is possible to change or add keywords, but that is not persistent,
+// not even if the concatenated table is made persistent.
+// <br>The keywords holding subtables can be handled in a special way.
+// Normally the subtables of the concatenation are the subtables of the first
+// table are used, but is it possible to concatenate subtables as well by
+// giving their names in the constructor.
+// In this way the, say, SYSCAL subtable of a MeasurementSet can be
+// concatenated as well.
+// <srcblock>
+//   // Create virtual concatenation of ms0 and ms1.
+//   Block<String> names(2);
+//   names[0] = "ms0";
+//   names[1] = "ms1";
+//   // Also concatenate their SYSCAL subtables.
+//   Block<String> subNames(1, "SYSCAL");
+//   Table concTab (names, subNames);
+// </srcblock>
 
 // <A NAME="Tables:iterate">
 // <h3>Table Iterators</h3></A>

@@ -28,6 +28,7 @@
 #include <tables/Tables/BaseColDesc.h>
 #include <tables/Tables/ColumnDesc.h>
 #include <tables/Tables/RefColumn.h>
+#include <tables/Tables/ConcatColumn.h>
 #include <tables/Tables/DataManager.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableError.h>
@@ -306,8 +307,12 @@ void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 //# Create a RefColumn object from the description.
 RefColumn* BaseColumnDesc::makeRefColumn (RefTable* rtp, BaseColumn* bcp) const
 {
-    RefColumn* rcp = new RefColumn (this, rtp, bcp);
-    return rcp;
+    return new RefColumn (this, rtp, bcp);
+}
+
+ConcatColumn* BaseColumnDesc::makeConcatColumn (ConcatTable* ctp) const
+{
+    return new ConcatColumn (this, ctp);
 }
 
 } //# NAMESPACE CASA - END

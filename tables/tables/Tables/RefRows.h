@@ -113,6 +113,10 @@ public:
     // RefTable to row numbers in the original root table.
     Vector<uInt> convert (const Vector<uInt>& rootRownrs) const;
 
+    // Convert this object to a Vector<uInt> by de-slicing it.
+    // I.e. it linearizes the row numbers.
+    Vector<uInt> convert() const;
+
     // Return the number of rows given by this object.
     // If the object contains slices, it counts the number of rows
     // represented by each slice.

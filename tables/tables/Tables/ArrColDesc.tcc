@@ -261,5 +261,6 @@ PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
     return bcp;
 }
 
+
 } //# NAMESPACE CASA - END
 

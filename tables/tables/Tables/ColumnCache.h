@@ -57,7 +57,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // valid for multiple rows (as used in
 // <linkto class=IncrementalStMan>IncrementalStMan</linkto>).
 // The value 1 is used for data stored consecutevily in a buffer for
-// each row (as used in // <linkto class=StManAipsIO>StManAipsIO</linkto>).
+// each row (as used in <linkto class=StManAipsIO>StManAipsIO</linkto>).
 // <p>
 // The ColumnCache object is created and updated by the data manager.
 // The top level <linkto class=ScalarColumn>ScalarColumn</linkto> object
@@ -74,9 +74,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // This class was developed to improve the performance for getting a scalar.
 // </motivation>
 
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
+// <todo asof="$DATE:$">
+//  <li>For ConcatColumn add the ability to have other ColumnCache objects
+//      using this one and invalidate them as well.
+// </todo>
 
 
 class ColumnCache
@@ -98,7 +99,7 @@ public:
     void invalidate();
 
     // Calculate the offset in the cached data for the given row.
-    // -1 is returned when the row is not within the cached rows.
+    // -1 is returned if the row is not within the cached rows.
     Int offset (uInt rownr) const;
 
     // Give a pointer to the data.

@@ -38,15 +38,6 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//# Forward Declarations
-class PlainColumn;
-class RefColumn;
-class TableRecord;
-class TableAttr;
-class AipsIO;
-#include <casa/iosfwd.h>
-
-
 // <summary>
 // Envelope class for the description of a table column
 // </summary>
@@ -141,7 +132,6 @@ class ColumnDesc
 friend class ColumnDescSet;
 friend class ColumnSet;
 friend class BaseColumn;
-friend class RefTable;
 
 public:
 
@@ -347,6 +337,18 @@ public:
     // </thrown>
     static BaseColumnDesc* unknownColumnDesc (const String& name);
 
+    // Set the name of the column.
+    void setName (const String& name)
+	{ colPtr_p->setName(name); }
+
+    // Create a RefColumn column object out of this column description.
+    RefColumn* makeRefColumn (RefTable* rtp, BaseColumn* bcp) const
+	{ return colPtr_p->makeRefColumn (rtp, bcp); }
+
+    // Create a ConcatColumn column object out of this column description.
+    ConcatColumn* makeConcatColumn (ConcatTable* rtp) const
+	{ return colPtr_p->makeConcatColumn (rtp); }
+
 protected:
     BaseColumnDesc* colPtr_p;
     Bool            allocated_p;    //# False = not allocated -> do not delete
@@ -403,14 +405,6 @@ private:
     // Create a PlainColumn column object out of this column description.
     PlainColumn* makeColumn (ColumnSet* csp) const
 	{ return colPtr_p->makeColumn (csp); }
-
-    // Create a RefColumn column object out of this column description.
-    RefColumn* makeRefColumn (RefTable* rtp, BaseColumn* bcp) const
-	{ return colPtr_p->makeRefColumn (rtp, bcp); }
-
-    // Set the name of the column.
-    void setName (const String& name)
-	{ colPtr_p->setName(name); }
 
     // Store the object in AipsIO.
     void putFile (AipsIO& ios, const TableAttr&) const;
