@@ -1,5 +1,5 @@
 //# LSQFit.h: Basic class for least squares fitting
-//# Copyright (C) 1999-2001,2004-2007
+//# Copyright (C) 1999-2001,2004-2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -655,11 +655,11 @@ class LSQFit {
   // Merge other <src>LSQFit</src> object (i.e. the normal equation and
   // related information) into <src>this</src>. Both objects must have the
   // same number of unknowns, and be pure normal equations (i.e. no
-  // <src>invert(), solve(), solveLoop()</src> or statistics calls//
+  // <src>invert(), solve(), solveLoop()</src> or statistics calls
   // should have been made). If merging cannot be done, <src>False</src>
   // is returned. The index case (the index is an iterator) assumes that
   // the normal equations to be merged are a sparse subset of the complete
-  // matrix. The index 'vector' specifies which unknown are present. An index
+  // matrix. The index 'vector' specifies which unknowns are present. An index
   // outside the scope of the final equations will be skipped.
   // <note role=tip> For highest numerical precision in the case of a larger
   // number of partial normal equations to be merged, it is best to merge
@@ -667,12 +667,16 @@ class LSQFit {
   // </note>
   // <group>
   Bool merge(const LSQFit &other);
-  Bool merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex);
+  Bool merge(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
+    return mergeIt(other, nIndex, nEqIndex); }
+  Bool merge(const LSQFit &other, uInt nIndex,
+	     const std::vector<uInt> &nEqIndex) {
+    return mergeIt(other, nIndex, &nEqIndex[0]); }
   template <class W>
     Bool merge(const LSQFit &other, uInt nIndex, const W &nEqIndex) {
-    uInt *ix = new uInt[nIndex+1];
-    for (uInt i=0; i<nIndex; ++i) *ix++ = nEqIndex[i];
-    return merge(other, nIndex, ix); delete [] ix; }
+    std::vector<uInt> ix(nIndex);
+    for (uInt i=0; i<nIndex; ++i) ix[i] = nEqIndex[i];
+    return mergeIt(other, nIndex, &ix[0]); }
   // </group>
   // Reset status to empty
   void reset();
@@ -929,6 +933,8 @@ class LSQFit {
   Double normSolution(const Double *sol) const;
   // Get the infinite norm of the known vector
   Double normInfKnown(const Double *known) const;
+  // Merge sparse normal equations
+  Bool mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex);
   // Save current status (or part)
   void save(Bool all=True);
   // Restore current status

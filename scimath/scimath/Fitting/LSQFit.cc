@@ -1,5 +1,5 @@
 //# LSQFit.cc: Basic class for least squares fitting
-//# Copyright (C) 1999,2000,2002,2004-2006
+//# Copyright (C) 1999,2000,2002,2004-2006,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -619,7 +619,7 @@ Bool LSQFit::merge(const LSQFit &other) {
   return True;
 }
 
-Bool LSQFit::merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex) {
+Bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
   ///  if (other.nun_p != nIndex || state_p || other.state_p) return False;
   if (other.nun_p != nIndex) return False;
   // Copy normal equations
@@ -647,7 +647,7 @@ Bool LSQFit::merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex) {
   error_p[SUMLL]     += other.error_p[SUMLL];
   // Copy constraint equations
   for (uInt i=0; i<other.ncon_p; ++i) {
-    addConstraint(nIndex, nEqIndex,
+    addConstraint(nIndex, const_cast<uInt *>(nEqIndex),
 		  other.constr_p + i*other.nun_p, other.known_p[nun_p+i]);
   };  
   return True;
