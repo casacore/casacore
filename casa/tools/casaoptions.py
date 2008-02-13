@@ -23,8 +23,7 @@ def generate(env):
 
     def AddCasaOptions( opts ):
         """ Adds the build environment options to the opts.  """
-        opts.Add(PathOption("casacoredir", "The location of casacore/casa",
-                            "/usr/local"))
+        pass
 
     def AddBuildEnvOptions( opts ):
         """ Adds the build environment options to the opts.  """
