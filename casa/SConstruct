@@ -1,6 +1,9 @@
 import os
 import sys
 
+# This is now needed to make sure assaytest work.
+EnsureSConsVersion(0,97)
+
 # Put the package name here, e.g. casa, tables
 PACKAGE="casa"
 

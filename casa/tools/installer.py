@@ -39,12 +39,15 @@ def generate(env):
 	        self._libdir = env.get( LIBDIR, os.path.join( self._eprefix, "lib" ) )
 	        self._includedir = env.get( INCLUDEDIR, os.path.join( self._prefix, "include" ) )
 		self._sharedir = env.get( SHAREDIR, os.path.join( self._prefix, "share" ) )
+	        env.Alias( "install", env.Dir(self._bindir) )
+	        env.Alias( "install", env.Dir(self._libdir ) )
+	        env.Alias( "install", env.Dir(self._includedir ) )
+	        env.Alias( "install", env.Dir(self._sharedir ) )
 	        self._env = env
 	
 	    def Add( self, destdir, name, basedir="", perm=None ):
 	        destination = os.path.join( destdir, basedir )
 	        obj = self._env.Install( destination, name )
-	        self._env.Alias( "install", destination )
 	        for i in obj:
                         if perm:
                                 self._env.AddPostAction( i, SCons.Defaults.Chmod( str(i), perm ) )
@@ -101,5 +104,6 @@ def generate(env):
 					 recursive )
 	env.Installer = Installer
 	env.AddInstallerOptions  = AddOptions
+
 def exists(env):
 	return True
