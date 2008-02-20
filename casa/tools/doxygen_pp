@@ -39,7 +39,7 @@ $COMMENT_BLOCK     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-### open OUT, ">> xyz";
+# open OUT, ">> xyz";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -79,12 +79,13 @@ if ($arguments == 1)
     $modnm =~ s|(.*?)\..*|$1|;
     # It is a module header if a directory with the same name exists.
     $tmpnm = $fullnm;
-    $tmpnm =~ s|\.[^/]*||;
+    $tmpnm =~ s|\.h$||;
     if (-d $tmpnm) {
       $isModHdr = 1;
     }
   }
-  ###print OUT "$cwd $fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr \n";
+
+#  print OUT "$cwd $fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr \n";
 
  # Open the file.
   $status = open(FILEHANDLE, $filename);
