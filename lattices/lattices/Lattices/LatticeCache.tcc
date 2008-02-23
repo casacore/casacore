@@ -121,12 +121,11 @@ LatticeCache<T>::LatticeCache(Lattice<T> &image,
   for (Int tile=0;tile<numberTiles;tile++) {
     tileSequence[tile]=-1;    
   }
-
-};
+}
 
 // Destructor
 template <class T>
-LatticeCache<T>::~LatticeCache() {};
+LatticeCache<T>::~LatticeCache() {}
 
 // Flush: write all extant tiles out
 template <class T>
@@ -136,7 +135,7 @@ void LatticeCache<T>::flush() {
       writeTile(tile);
     }
   }
-};
+}
 
 // Return a specified tile. If we cannot locate it in the
 // cache, then fill it into the cache. This is the prime
@@ -172,7 +171,7 @@ Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc,
   // Return the contents of this tile
   tileSequence[foundTile]=cacheAccesses;
   return tileContents[foundTile];
-};
+}
  
 
 // Return a specified tile. If we cannot locate it in the
@@ -209,8 +208,7 @@ void LatticeCache<T>::showCacheStatistics(ostream &os) {
   os<<"   Hit rate        "<<100.0*Float(cacheHits)/Float(cacheAccesses)<<"%"<<endl;
   os<<"   Reads           "<<cacheReads<<endl;
   os<<"   Writes          "<<cacheWrites<<endl;
-
-};
+}
 
 // Clear the Cache Statistics
 template <class T>
@@ -221,7 +219,7 @@ void LatticeCache<T>::clearCacheStatistics() {
   cacheMisses=0;
   cacheReads=0;
   cacheWrites=0;
-};
+}
 
 // Find the cache location (i.e. only on a grid).
 template <class T>
@@ -242,7 +240,7 @@ IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& 
     }
   }
   return cacheLoc;
-};
+}
 
 // ******************************************************************
 // Start of private functions
@@ -263,7 +261,7 @@ void LatticeCache<T>::writeTile(Int tile) {
   image_p->putSlice(tileContents[tile], tileLocs[tile], 
     IPosition(tileShape.nelements(), 1));
   cacheWrites++;
-};
+}
 
 // Read a specified tile and validate it
 template <class T>
@@ -285,7 +283,7 @@ void LatticeCache<T>::readTile(Int tile, Bool readonly) {
 		      IPosition(tileShape.nelements(), 1));
     cacheReads++;
   }
-};
+}
 
 // Get a free tile. The contents are undefined since
 // we will overwrite them immediately anyway. If readonly is

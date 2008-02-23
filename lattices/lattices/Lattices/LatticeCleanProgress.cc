@@ -195,7 +195,7 @@ Bool LatticeCleanProgress::info(const Bool lastcall,
   }
   os << "Total flux = " << myTotalFlux << " Jy" << LogIO::POST;
   return False;
-};
+}
 
 
 void  LatticeCleanProgress::basicSetUp(Bool doPlot)
@@ -278,7 +278,7 @@ void  LatticeCleanProgress::basicSetUp(Bool doPlot)
   }
 
   
-};
+}
 
 void  LatticeCleanProgress::plotOne(const Int iteration, 
 					 const Vector<Float>& resid, 
@@ -323,7 +323,7 @@ void  LatticeCleanProgress::plotOne(const Int iteration,
   itsPgplotter->sci(1);
   y(0) = sumf;
   itsPgplotter->pt(x,y,2);
-};
+}
 
 
 void LatticeCleanProgress::resizeDataStorage()
@@ -365,7 +365,7 @@ void LatticeCleanProgress::resizeDataStorage()
       totalFluxesPer(j,i) = tfpr(j,i);
     }
   }
-};
+}
 
 
 
@@ -399,7 +399,7 @@ void LatticeCleanProgress::initialize(const uInt nScales,
     basicSetUp(numberIterations);
     
   }
-};
+}
 
 
 

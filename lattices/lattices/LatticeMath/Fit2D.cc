@@ -739,7 +739,7 @@ void Fit2D::setParams(const Vector<Double> &params, uInt which)
 {
   for (uInt i=0; i<params.nelements(); i++) {
     itsFunction[itsFunction.parameterOffset(which)+i].value() = params[i];
-  };
+  }
 }
 
 

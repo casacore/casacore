@@ -48,12 +48,12 @@
 Int const_arg_func(const Int &val)
 {
   return 3*val;
-};
+}
 
 Int func(Int val)
 {
   return 2*val*val;
-};
+}
 
 int main()
 {
@@ -881,4 +881,4 @@ int main()
   } 
   cout << "OK" << endl; 
   return 0;
-};
+}

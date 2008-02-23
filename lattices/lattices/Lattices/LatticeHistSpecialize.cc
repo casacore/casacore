@@ -245,19 +245,19 @@ void LatticeHistSpecialize::makeLogarithmic (Vector<Complex>& counts,
 ///     if (imag(counts(i)) > 0.0) counts(i).imag() = log10(counts(i).imag());
      if (real(counts(i)) > 0.0) {
        counts(i) = Complex(log10(counts(i).real()), counts(i).imag());
-     };
+     }
      if (imag(counts(i)) > 0.0) {
        counts(i) = Complex(counts(i).real(), log10(counts(i).imag()));
-     };
+     }
 //
      ///     if (real(counts(i)) > real(yMax)) yMax.real() = real(counts(i));
      ///     if (imag(counts(i)) > imag(yMax)) yMax.imag() = imag(counts(i));
      if (real(counts(i)) > real(yMax)) {
        yMax = Complex(real(counts(i)), yMax.imag());
-     };
+     }
      if (imag(counts(i)) > imag(yMax)) {
        yMax = Complex(yMax.real(), imag(counts(i)));
-     };
+     }
    }
 }
 

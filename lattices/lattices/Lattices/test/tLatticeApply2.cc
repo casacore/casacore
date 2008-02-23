@@ -56,7 +56,7 @@
 class MyLineCollapser : public LineCollapser<Float>
 {
 public:
-    MyLineCollapser() {};
+    MyLineCollapser() {}
     virtual void init (uInt nOutPixelsPerCollapse);
     virtual Bool canHandleNullMask() const;
     virtual void process (Float& result, Bool& resultMask,
@@ -121,7 +121,7 @@ void MyLineCollapser::multiProcess (Vector<Float>& result,
 class MyTiledCollapser : public TiledCollapser<Float>
 {
 public:
-    MyTiledCollapser() : itsSum1(0),itsSum2(0),itsNpts(0) {};
+    MyTiledCollapser() : itsSum1(0),itsSum2(0),itsNpts(0) {}
     virtual ~MyTiledCollapser();
     virtual void init (uInt nOutPixelsPerCollapse);
     virtual Bool canHandleNullMask() const;
@@ -228,7 +228,7 @@ void MyTiledCollapser::endAccumulator (Array<Float>& result,
 class MyLatticeProgress : public LatticeProgress
 {
 public:
-    MyLatticeProgress() : itsMeter(0) {};
+    MyLatticeProgress() : itsMeter(0) {}
     virtual ~MyLatticeProgress();
     virtual void initDerived();
     virtual void nstepsDone (uInt nsteps);

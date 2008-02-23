@@ -234,7 +234,7 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask)
     makeScaleMasks();
   }
 
-};
+}
 
 template <class T>
 Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
@@ -270,7 +270,7 @@ void LatticeCleaner<T>::speedup(const Float nDouble)
 {
   itsDoSpeedup=True;
   itsNDouble = nDouble;
-};
+}
 
 
 
@@ -976,7 +976,7 @@ Bool LatticeCleaner<T>::destroyMasks()
   }
   itsScaleMasks.resize(0);
   return True;
-};
+}
 
 //# Removed on 8-Apr-2004 by GvD because it is not used and add Tasking
 //# dependencies to Lattices
@@ -1067,7 +1067,7 @@ Bool LatticeCleaner<T>::makeScaleMasks()
   }
 
   return True;
-};
+}
 
 
 
@@ -1084,7 +1084,7 @@ Float LatticeCleaner<T>::threshold()
     return factor * max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
 		       itsThreshold.get("Jy").getValue());
   }
-};
+}
 
 template<class T>
 void LatticeCleaner<T>::addTo(Lattice<T>& to, const Lattice<T>& add)
