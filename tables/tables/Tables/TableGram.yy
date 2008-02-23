@@ -162,7 +162,7 @@ using namespace casa;
 %left AND
 %nonassoc EQ EQASS GT GE LT LE NE
 %left PLUS MINUS
-%left TIMES DIVIDE MODULO
+%left TIMES DIVIDE DIVIDETRUNC MODULO
 %nonassoc UNARY
 %nonassoc NOT
 %right POWER
@@ -948,6 +948,11 @@ arithexpr: inxexpr {
          | arithexpr DIVIDE arithexpr {
 	       $$ = new TaQLNode(
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_DIVIDE, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr DIVIDETRUNC arithexpr {
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_DIVIDETRUNC, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | arithexpr MODULO arithexpr {

@@ -232,6 +232,9 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
   case B_DIVIDE:
     os << '/';
     break;
+  case B_DIVIDETRUNC:
+    os << "//";
+    break;
   case B_MODULO:
     os << '%';
     break;

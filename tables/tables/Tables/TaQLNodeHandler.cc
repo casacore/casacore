@@ -151,6 +151,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       return new TaQLNodeHRValue (left * right);
     case TaQLBinaryNodeRep::B_DIVIDE:
       return new TaQLNodeHRValue (left / right);
+    case TaQLBinaryNodeRep::B_DIVIDETRUNC:
+      return new TaQLNodeHRValue (floor(left / right));
     case TaQLBinaryNodeRep::B_MODULO:
       return new TaQLNodeHRValue (left % right);
     case TaQLBinaryNodeRep::B_POWER:

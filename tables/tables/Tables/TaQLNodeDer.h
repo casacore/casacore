@@ -189,7 +189,8 @@ public:
 	     B_OR    =12,
 	     B_AND   =13,
 	     B_IN    =14,
-	     B_INDEX =15};
+	     B_INDEX =15,
+	     B_DIVIDETRUNC=16};
   TaQLBinaryNodeRep (Type type, const TaQLNode& left, const TaQLNode& right)
     : TaQLNodeRep (TaQLNode_Binary),
       itsType(type), itsLeft(left), itsRight(right) {}

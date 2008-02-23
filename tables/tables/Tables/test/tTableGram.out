@@ -784,6 +784,15 @@ calc runningMedian(array([0:24],5,5),1,1)
  0, 8, 13, 18, 0
  0, 0, 0, 0, 0]
 
+calc 5.1//2
+    has been executed
+[2]
+calc -4.1//2
+    has been executed
+[-3]
+calc -4**2
+    has been executed
+[-16]
 calc sum([select ab d as ABDAY from tTableGram_tmp.tab])
     has been executed
 Unit: d
