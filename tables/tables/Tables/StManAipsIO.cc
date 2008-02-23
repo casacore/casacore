@@ -58,7 +58,7 @@ StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
 {}
 
 StManColumnAipsIO::~StManColumnAipsIO()
-    { deleteAll(); };
+    { deleteAll(); }
 
 
 void StManColumnAipsIO::doCreate (uInt nrrow)

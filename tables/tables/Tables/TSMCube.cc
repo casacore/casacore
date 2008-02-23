@@ -889,9 +889,9 @@ void TSMCube::resizeTileSections()
     startPixelInFirstTile_p.resize(nrdim_p);
     endPixelInFirstTile_p.resize(nrdim_p);
     endPixelInLastTile_p.resize(nrdim_p);
-  };
+  }
   return;
-};
+}
 
 void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                              char* section, uInt colnr,
