@@ -305,6 +305,13 @@ Bool Table::canDeleteTable (String& message, const String& tableName,
 
 void Table::deleteTable (const String& tableName, Bool checkSubTables)
 {
+    // Escape from attempt to delete a nameless "table"
+    //   because absolute path handling below is potentially
+    //   catastrophic!
+    if (tableName.empty()) {
+        throw TableError
+	  ("Empty string provided for tableName; will not attempt delete.");
+    }
     String tabName = Path(tableName).absoluteName();
     String message;
     if (! canDeleteTable (message, tabName, checkSubTables)) {
