@@ -53,7 +53,7 @@ GNoiseParam<T> &GNoiseParam<T>::operator=(const GNoiseParam<T> &other) {
     Function<T>::operator=(other);
     genit_p = other.genit_p;
     noise_p = Normal(&genit_p, other.noise_p.mean(), other.noise_p.variance());
-  };
+  }
   return *this;
 }
 

@@ -39,7 +39,7 @@ FunctionalProxy::FunctionalProxy(const Record& rec, Int type) : type_(type)
     rec2fhdc(rec);
 }
 
-FunctionalProxy::~FunctionalProxy() {;}
+FunctionalProxy::~FunctionalProxy() {}
 
 
 Record FunctionalProxy::fhd2rec()

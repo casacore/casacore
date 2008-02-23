@@ -42,7 +42,7 @@ T Gaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
     thePA = param_p[PANGLE];
     theCpa = cos(thePA);
     theSpa = sin(thePA);
-  };
+  }
   const T temp(xnorm);
   xnorm =   theCpa*temp  + theSpa*ynorm;
   ynorm = - theSpa*temp  + theCpa*ynorm;

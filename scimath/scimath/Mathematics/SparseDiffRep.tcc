@@ -54,7 +54,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (this != &other) {
       val_p = other.val_p;
       grad_p = other.grad_p;
-    };
+    }
     return *this;
   }
 

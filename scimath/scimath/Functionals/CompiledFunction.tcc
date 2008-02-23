@@ -46,7 +46,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   if (!this->functionPtr_p) {
     error_p = "No CompiledFunction specified";
     return res;
-  };
+  }
   vector<T> exec_p;
   exec_p.resize(0);
   vector<Double>::const_iterator
@@ -59,7 +59,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 	(pos->code == FuncExprData::ATAN && pos->state.argcnt == 2)) {
       t = exec_p.back();
       exec_p.pop_back();
-    };
+    }
     
     switch (pos->code) {
     case FuncExprData::UNAMIN:
@@ -131,13 +131,13 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       if (exec_p.back() == T(0.0)) {
 	pos += pos->info -
 	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
-      };
+      }
       break;
     case FuncExprData::GOTOT:
       if (exec_p.back() != T(0.0)) {
 	pos += pos->info -
 	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
-      };
+      }
       break;
 
     case FuncExprData::SIN:
@@ -150,7 +150,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       if (pos->state.argcnt == 1) {
 	exec_p.back() = atan(exec_p.back());
 	break;
-      };
+      }
     case FuncExprData::ATAN2:
       exec_p.back() = atan2(exec_p.back(), t);
       break;
@@ -196,7 +196,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       } else {
 	exec_p.back() *= static_cast<typename FunctionTraits<T>::BaseType>
 	  (C::pi);
-      };
+      }
       break; }
     case FuncExprData::EE: {
       if (pos->state.argcnt == 0) {
@@ -205,7 +205,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       } else {
 	exec_p.back() *= static_cast<typename FunctionTraits<T>::BaseType>
 	  (C::e);
-      };
+      }
       break; }
     case FuncExprData::ABS:
       exec_p.back() = abs(exec_p.back());
@@ -245,7 +245,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 	pos->name + "': programming error";
       break;
     }
-  };
+  }
   if (exec_p.size() != 1 && error_p.empty()) error_p = "No value returned";
   if (error_p.empty()) res = exec_p.back();
 

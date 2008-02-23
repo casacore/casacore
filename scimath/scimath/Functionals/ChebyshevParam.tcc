@@ -97,7 +97,7 @@ ChebyshevParam<T>::operator=(const ChebyshevParam<T> &other) {
     minx_p = other.minx_p;
     maxx_p = other.maxx_p;
     def_p = other.def_p;
-  };
+  }
   return *this;
 }
 
@@ -112,7 +112,7 @@ void ChebyshevParam<T>::setCoefficients(const Vector<T> &coeffs) {
   if (coeffs.nelements() == 0) {
     throw AipsError("ChebyshevParam<T>::setCoeffiecients(): "
 		    "empty Vector passed");
-  };
+  }
   for (uInt i=0; i<coeffs.nelements(); ++i) setCoefficient(i, coeffs[i]);
 }
 
@@ -126,8 +126,8 @@ void ChebyshevParam<T>::setCoefficient(const uInt which,
     for (uInt i=0; i<sz; ++i) {
       param_p[i] = cfp[i];
       param_p.mask(i) =cfp.mask(i);
-    };
-  };
+    }
+  }
   param_p[which] = value;
 }
 
@@ -166,15 +166,15 @@ void ChebyshevParam<T>::powerToChebyshev(Vector<T> &coeffs) {
     for (j=i, k=1; j>1; j-=2, k++) {
       poly(j,i) = scale;
       scale *= T((i - k + 1) / k);
-    };
+    }
     poly(j,i) = scale;
     if (j == 0) poly(j,i) /= 2;
-  };
+  }
   // multiply transformation matrix by coefficient vector
   for (uInt i=0; i<n; i++) {
     coeffs(i) *= poly(i,i);
     for (uInt k=i+2; k<n; k += 2) coeffs(i) += poly(i,k)*coeffs(k);
-  };
+  }
 }
 
 template <class T>
@@ -188,13 +188,13 @@ void ChebyshevParam<T>::chebyshevToPower(Vector<T> &coeffs) {
     for (Int j=i; j>0; j -= 2) {
       if (j > 1) cheb(j-2,i) -= cheb(j-2,i-2);
       cheb(j,i) += T(2)*cheb(j-1,i-1);
-    };
-  };
+    }
+  }
   // multiply transformation matrix by coefficient vector
   for (uInt i=0; i<n; i++) {
     coeffs(i) *= cheb(i,i);
     for (uInt k=i+2; k<n; k += 2) coeffs(i) += cheb(i,k)*coeffs(k);
-  };
+  }
 }
 
 template <class T>

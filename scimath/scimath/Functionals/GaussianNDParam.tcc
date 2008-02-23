@@ -70,11 +70,11 @@ GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
     throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, "
 		    "Vector<T> mean) - mean must have nDim values."));
-  };
+  }
   for (uInt i=0; i<nDim; i++) {
     param_p[CENTER+i] = mean[i];
     param_p[CENTER+itsDim+i] = T(1);
-  };
+  }
 }
 
 template<class T> 
@@ -87,21 +87,21 @@ GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
     throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, Vector<T> mean, Vector<T> variance)"
 		    " - mean must have nDim values."));
-  };  
+  }  
   if (variance.nelements() != itsDim) {
     throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
 		    "T height, Vector<T> mean, Vector<T> variance)"
 		    " - variance must have nDim values."));
-  };
+  }
   for (uInt i=0; i<nDim; i++) {
     param_p[CENTER+i] = mean[i];
     if (variance[i] <= T(0)) {
       throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim,"
 		      " T height, Vector<T> mean, Vector<T> variance) "
 		      " - variance must be positive"));
-    };
+    }
     param_p[CENTER+itsDim+i] = T(1)/variance[i];
-  };
+  }
   
   T det = param_p[CENTER+itsDim];
   for (uInt i=1; i<itsDim; i++) det *= param_p[CENTER+itsDim+i];
@@ -119,7 +119,7 @@ GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
 		    "T height, "
 		    "Vector<T> mean, Matrix<T> covar)"
 		    " - mean must have nDim values."));
-  };
+  }
   for (uInt i=0; i<nDim; i++) param_p[CENTER+i] = mean[i];
   setCovariance(covar);
 }
@@ -139,7 +139,7 @@ operator=(const GaussianNDParam<T> &other) {
     Function<T>::operator=(other);
     itsDim = other.itsDim;
     itsFlux2Hgt = other.itsFlux2Hgt;
-  };
+  }
   return *this;
 }
 
@@ -165,7 +165,7 @@ void GaussianNDParam<T>::setMean(const Vector<T> &mean) {
   if (mean.nelements() != itsDim) {
     throw(AipsError("GaussianNDParam<T>::setMean(const Vector<T> &mean)"
 		    " - mean must have nDim values."));
-  };
+  }
   for (uInt i=0; i<itsDim; ++i) param_p[CENTER+i] = mean[i];
 }
 
@@ -184,7 +184,7 @@ void GaussianNDParam<T>::setVariance(const Vector<T> &variance) {
     throw(AipsError("GaussianNDParam<T>::setVariance(const Vector<T> "
 		    "&variance)"
 		    " - variance must have nDim values."));
-  };
+  }
   // This Matrix should be symmetric positive definite. invertSymPosDef
   // throws an exception if it is not.
   Matrix<T> locCovariance(itsDim, itsDim);
@@ -210,14 +210,14 @@ void GaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
     throw(AipsError("GaussianNDParam<T>::setCovariance("
 		    "const Matrix<T> &covar)"
 		    " - covariance must have nDim rows and columns"));
-  };
+  }
   Vector<T> sigma(itsDim);
   for (uInt i=0; i<itsDim; i++) {
     if (locCovariance(i,i) > T(0)) sigma[i] = sqrt(locCovariance(i,i));
     else throw(AipsError("GaussianNDParam<T>::setCovariance"
 			 "(const Matrix<T> &covar)"
 			 " - variance must be positive"));
-  };
+  }
   for (uInt i=0; i<itsDim - 1; i++) {
     for (uInt j=i+1; j<itsDim; j++) {
       if (!near(locCovariance(i,j), locCovariance(j,i))) {
@@ -229,15 +229,15 @@ void GaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
 			       "const Matrix<T> &covar)"
 			       " - covariance Matrix is not symmetric"
 			       " or triangular"));
-      };
+      }
       // Now check that each covariance is in a possible range. (-1 < rho < 1)
       if (abs(locCovariance(i,j)) > sigma[i]*sigma[j]) {
 	throw(AipsError("GaussianNDParam<T>::setCovariance("
 			"const Matrix<T> &covar)"
 			" - a covariance entry is too big"));
-      };
-    };
-  };
+      }
+    }
+  }
   // This Matrix should be symmetric positive definite. invertSymPosDef
   // throws an exception if it is not.
   T det;
@@ -252,8 +252,8 @@ void GaussianNDParam<T>::unpack(const Matrix<T> &covar) {
      param_p[CENTER+itsDim+row] = covar(row, row);
      for (uInt col=row+1; col<itsDim; ++col) {
        param_p[CENTER+itsDim+itsDim+k++] = covar(col, row);
-     };
-   };
+     }
+   }
 }
 
 template<class T> 
@@ -262,8 +262,8 @@ void GaussianNDParam<T>::repack(Matrix<T> &covar) const {
     covar(row, row) = param_p[CENTER+itsDim+row];
     for (uInt col=row+1; col<itsDim; ++col) {
       covar(row, col) = covar(col, row) = param_p[CENTER+itsDim+itsDim+k++];
-    };
-  };
+    }
+  }
 }
 
 } //# NAMESPACE CASA - END

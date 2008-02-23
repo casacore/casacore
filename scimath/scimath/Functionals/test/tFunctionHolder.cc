@@ -53,7 +53,7 @@ AutoDiff<Double> Y(AutoDiff<Double> in) {
   in.value() = Y(in.value());
   for (uInt i=0; i<in.nDerivatives(); ++i) {
     in.deriv(i) = Y(in.deriv(i));
-  };
+  }
   return in;
 }
 

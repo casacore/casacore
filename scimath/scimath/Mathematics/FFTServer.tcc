@@ -625,7 +625,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
   IPosition defShape(cShape);
   defShape(0) = 2*cShape(0) - 2;
   return defShape;
-};
+}
 
 template<class T, class S> void FFTServer<T,S>::
 flip(Array<S> & cData, const Bool toZero, const Bool isHermitian) {

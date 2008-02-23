@@ -63,7 +63,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
       static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
       sinarg / this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
     if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::X0)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::X0) = dev;
-  };
+  }
   return tmp;
 }
 

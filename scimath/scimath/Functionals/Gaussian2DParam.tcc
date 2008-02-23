@@ -111,7 +111,7 @@ Gaussian2DParam<T>::operator=(const Gaussian2DParam<T> &other) {
     theXwidth = other.theXwidth;
     theSpa = other.theSpa;
     theCpa = other.theCpa;
-  };
+  }
   return *this;
 }
 
@@ -162,7 +162,7 @@ void Gaussian2DParam<T>::setWidth(const Vector<T> &width) {
   } else {
     setMinorAxis(width(1));
     setMajorAxis(width(0));
-  };
+  }
 }
 
 template<class T>
@@ -176,7 +176,7 @@ void Gaussian2DParam<T>::setMajorAxis(const T &width) {
   if (width <= T(0.0)) {
     throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
 		    " - width must be positive"));
-  };
+  }
   // The near function is necessary for Intel processors (and doesn't hurt for
   // other architectures) because of the extra precision that floating point
   // variables have when returned in floating point registers. See
@@ -187,7 +187,7 @@ void Gaussian2DParam<T>::setMajorAxis(const T &width) {
   if (width < minorWidth && !near(width, minorWidth)) {
     throw(AipsError("Gaussian2DParam<T>::setMajorAxis(const T &width)"
 		    " - major axis is smaller than minor axis"));
-  };
+  }
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(theXwidth) > abs(param_p[YWIDTH])) theXwidth = width;
   else param_p[YWIDTH] = width;
@@ -205,12 +205,12 @@ void Gaussian2DParam<T>::setMinorAxis(const T &width) {
   if (width <= T(0.0)) {
     throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
 		    " - width must be positive"));
-  };
+  }
   const T majorWidth = majorAxis();
   if (width > majorWidth && !near(width, majorWidth)) {
     throw(AipsError("Gaussian2DParam<T>::setMinorAxis(const T &width)"
 		    " - minor axis is greater than major axis"));
-  };
+  }
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(theXwidth) <= abs(param_p[YWIDTH])) theXwidth = width;
   else param_p[YWIDTH] = width;
@@ -227,7 +227,7 @@ void Gaussian2DParam<T>::setAxialRatio(const T &axialRatio) {
   if (axialRatio <= T(0.0) || axialRatio > T(1.0)) {
     throw(AipsError("Gaussian2DParam<T>::setAxialRatio(const T &axialRatio)"
 		    " - axialRatio must be between (0,1]"));
-  };
+  }
   setMinorAxis(axialRatio*majorAxis());
 }
 
@@ -247,7 +247,7 @@ void Gaussian2DParam<T>::setPA(const T &pa) {
   if (abs(pa) > T(C::_2pi)) {
     throw(AipsError("Gaussian2DParam<T>::setPA(const T &pa)"
 		    " - PA must be in radians and between -2pi and 2pi"));
-  };
+  }
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(param_p[YWIDTH]) >= abs(theXwidth)) param_p[PANGLE] = pa;
   else param_p[PANGLE] = pa - T(C::pi_2);

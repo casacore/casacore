@@ -60,7 +60,7 @@ T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
 		for (uInt i=1; i<this->nparameters(); i+=2) tmp -= this->param_p[i];
 	    } else {
 		for (uInt i=0; i<this->nparameters(); ++i) tmp += this->param_p[i];
-	    };
+	    }
 	    return tmp;
 	}
 	break;
@@ -82,7 +82,7 @@ T Chebyshev<T>::eval(const typename FunctionTraits<T>::ArgType *x) const {
 	tmp = T(2)*xp*yi1 - yi2 + this->param_p[i];
 	yi2 = yi1;
 	yi1 = tmp;
-    };
+    }
 
     return xp*yi1 - yi2 + this->param_p[0];
 }

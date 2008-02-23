@@ -76,7 +76,7 @@ FunctionParam<T> &FunctionParam<T>::operator=(const FunctionParam<T> &other) {
     mask_p.resize(npar_p);
     mask_p = other.mask_p;
     clearMaskedPtr();
-  };
+  }
   return *this;
 }
 
@@ -86,7 +86,7 @@ Bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
   for (uInt i=0; i<npar_p; ++i) {
     if (param_p[i] != other.param_p[i] ||
 	mask_p[i] != other.mask_p[i]) return False;
-  };
+  }
   return True;
 }
 
@@ -131,7 +131,7 @@ template<class T>
 void FunctionParam<T>::setMaskedParameters(Vector<T> &in) {
   for (uInt i(0), n(0); i<npar_p && n<in.nelements(); ++i) {
     if (mask_p[i]) param_p[i] = in[n++];
-  };
+  }
   clearMaskedPtr();
 }
 
@@ -143,10 +143,10 @@ void FunctionParam<T>::createMaskedPtr() const {
     uInt n(0);
     for (uInt i(0); i<npar_p; ++i) {
       if (mask_p[i]) tmp[n++] = param_p[i];
-    };
+    }
     tmp.resize(n, True);
     maskedPtr_p = new Vector<T>(tmp);
-  };
+  }
 }
 
 template<class T>
@@ -162,7 +162,7 @@ ostream &FunctionParam<T>::print(ostream &os) const {
     if (i!=0) os << ", ";
     os << "(" << param_p[i] << ", " <<
       ((mask_p[i]) ? "True" : "False") << ")";
-  };
+  }
   os << "]";
   return os;
 }

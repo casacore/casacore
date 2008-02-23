@@ -39,7 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (uInt i=0; i<ad.nDerivatives(); ++i) {
       os << ", " << ad.derivatives()[i].first << "|" << 
 	ad.derivatives()[i].second;
-    };
+    }
     os << ")";
     return os;
   }

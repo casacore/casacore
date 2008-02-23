@@ -43,13 +43,13 @@ T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   for (uInt i=0, k=0; i<itsDim; i++) {
     for (uInt j=i+1; j<itsDim; j++) {
       exponent += norm[i]*norm[j]*param_p[CENTER+itsDim+itsDim+k++];
-    };
-  };
+    }
+  }
   exponent *= 2;
 
   for (uInt i=0; i<itsDim; i++) {
     exponent += norm[i]*norm[i]*param_p[CENTER+itsDim+i];
-  };
+  }
   return param_p[HEIGHT] * exp(-exponent/T(2));
 }
 

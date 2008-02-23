@@ -554,12 +554,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<class T>
   Bool isNaN (const SparseDiff<T> &val) {
     return isNaN(val.value());
-  };
+  }
 
   template<class T>
   Bool isInf(SparseDiff<T> &val) {
     return isInf(val.value());
-  };
+  }
 
   template<class T>
   SparseDiff<T> min(const SparseDiff<T> &left,

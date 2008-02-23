@@ -38,13 +38,13 @@
 
 #include <casa/namespace.h>
 // Some C++ functions
-static Double func0(const Vector<Double> &) {return 1;};            // 1
-static Double func1(const Vector<Double> &x) {return x(0);};         // x
-static Double func2(const Vector<Double> &x) {return sin(x(1));};    // sin(y)
-static Double func3(const Vector<Double> &x) {return x(0)*x(0);};    // x^2
+static Double func0(const Vector<Double> &) {return 1;}            // 1
+static Double func1(const Vector<Double> &x) {return x(0);}         // x
+static Double func2(const Vector<Double> &x) {return sin(x(1));}    // sin(y)
+static Double func3(const Vector<Double> &x) {return x(0)*x(0);}    // x^2
 /*static void myfnc(Vector<Double> &y, const Double x) {
   y(0) = 1;
-  for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
+  for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; }
 */
 
 int main() {

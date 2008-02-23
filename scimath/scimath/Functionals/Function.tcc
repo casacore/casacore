@@ -41,7 +41,7 @@ U Function<T,U>::operator()(const Vector<ArgType> &x) const {
   arg_p.resize(j);
   for (uInt i=0; i<j; ++i) arg_p[i] = x[i];
   return this->eval(&(arg_p[0]));
-};
+}
 
 template<class T, class U>
 U Function<T,U>::operator()(const ArgType &x, const ArgType &y) const {

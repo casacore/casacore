@@ -44,14 +44,14 @@ FunctionOrder<T>::FunctionOrder(const FunctionOrder<T> &other)
     width_p(other.width_p.copy()) {
   for (uInt i=0; i<function_p.nelements(); ++i) {
     function_p[i] = (*(other.function_p[i])).clone();
-  };
+  }
 }
 
 template<class T>
 FunctionOrder<T>::~FunctionOrder() {
   for (uInt i=0; i<function_p.nelements(); ++i) {
     delete function_p[i]; function_p[i] = 0;
-  };
+  }
 }
 
 //# Operators
@@ -71,12 +71,12 @@ FunctionOrder<T> &FunctionOrder<T>::operator=(const FunctionOrder<T> &other) {
     width_p = other.width_p;
     for (uInt i=0; i<function_p.nelements(); ++i) {
       delete function_p[i]; function_p[i] = 0;
-    };
+    }
     function_p =  PtrBlock<Function<T> *>(other.function_p.nelements());
     for (uInt i=0; i<function_p.nelements(); ++i) {
       function_p[i] = (*(other.function_p[i])).clone();
-    };
-  };
+    }
+  }
   return *this;
 }
 
@@ -165,13 +165,13 @@ ostream &FunctionOrder<T>::print(ostream &os) const {
   for (uInt i=0; i<int_p.nelements(); ++i) {
     if (i!=0) os << ", ";
     os << int_p[i];
-  };
+  }
   os << "], ";
   os << "[";
   for (uInt i=0; i<double_p.nelements(); ++i) {
     if (i!=0) os << ", ";
     os << double_p[i];
-  };
+  }
   os << "], ";
   os << "\"";
   os << string_p;
@@ -182,19 +182,19 @@ ostream &FunctionOrder<T>::print(ostream &os) const {
   for (uInt i=0; i<scale_p.nelements(); ++i) {
     if (i!=0) os << ", ";
     os << scale_p[i];
-  };
+  }
   os << "], ";
   os << "[";
   for (uInt i=0; i<center_p.nelements(); ++i) {
     if (i!=0) os << ", ";
     os << center_p[i];
-  };
+  }
   os << "], ";
   os << "[";
   for (uInt i=0; i<width_p.nelements(); ++i) {
     if (i!=0) os << ", ";
     os << width_p[i];
-  };
+  }
   os << "]";
   os << "]";
   return os;

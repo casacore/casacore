@@ -93,7 +93,7 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
     nd_p = other.nd_p;
     grad_p.resize(nd_p);
     grad_p = other.grad_p;
-  };
+  }
   return *this;
 }
 

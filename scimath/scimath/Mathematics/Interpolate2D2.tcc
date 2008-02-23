@@ -90,7 +90,7 @@ Bool Interpolate2D::interpLinear(T &result,
     if (maskPtr) {
       if (!(*maskPtr)(i,j) || !(*maskPtr)(i+1,j) ||
 	  !(*maskPtr)(i,j+1) || !(*maskPtr)(i+1,j+1)) return False;
-    };
+    }
     Double TT = where[0] - i;
     Double UU = where[1] - j;
     result = (1.0-TT)*(1.0-UU)*data(i,j) +
@@ -180,7 +180,7 @@ Bool Interpolate2D::interpCubic(T &result,
    
    if (i<=0 || i>=shape[0]-2 || j<=0 || j>=shape[1]-2) {
      return interpLinear<T>(result, where, data, maskPtr);
-   };
+   }
    
    // Handle mask
    
@@ -233,7 +233,7 @@ Bool Interpolate2D::interpCubic(T &result,
      itsY1[i]  /= 2.0;
      itsY2[i]  /= 2.0;
      itsY12[i] /= 4.0;
-   };
+   }
    
    // Get result
    
@@ -242,10 +242,10 @@ Bool Interpolate2D::interpCubic(T &result,
    for (Int i=3; i>=0; --i) {
      result = TT*result + ((itsC[i][3]*UU + itsC[i][2])*UU + 
 			   itsC[i][1])*UU + itsC[i][0];
-   };
+   }
    //
    return True;
-};
+}
 
 } //# NAMESPACE CASA - END
 

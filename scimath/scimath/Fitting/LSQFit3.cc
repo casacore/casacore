@@ -93,7 +93,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       Record rnar;
       if (!nar_p->toRecord(error, rnar)) return False;
       out.defineRecord(RecordFieldId(nar), rnar);
-    };
+    }
     return True;
   }
   
@@ -122,7 +122,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	error += String("Unknown record identity ") + rrecid +
 	  " for fitting record";
 	return False;
-      };
+      }
       Int rnun;
       Int rncon;
       in.get(RecordFieldId(nun), rnun);
@@ -164,18 +164,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (!nceq_p) nceq_p = new LSQMatrix;
 	if (!nceq_p->fromRecord(error, in.asRecord(RecordFieldId(nceq)))) {
 	  return False;
-	};
-      };
+	}
+      }
       if (in.isDefined(nar)) {
 	if (!nar_p) nar_p = new LSQFit;
 	if (!nar_p->fromRecord(error, in.asRecord(RecordFieldId(nar)))) {
 	  return False;
-	};
-      };
+	}
+      }
     } else {
       error += String("Incorrect fields for fitting record");
       return False;
-   };
+   }
 
     return True;
   }

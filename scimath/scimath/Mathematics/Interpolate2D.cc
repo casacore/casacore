@@ -51,7 +51,7 @@ Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
     itsFuncPtrFloat = &Interpolate2D::interpNearest<Float>;
     itsFuncPtrDouble = &Interpolate2D::interpNearest<Double>;
     itsFuncPtrBool = &Interpolate2D::interpNearestBool;
-  };  
+  }  
 }
 
 Interpolate2D::Interpolate2D(const Interpolate2D &other)
@@ -69,7 +69,7 @@ Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other)
    itsFuncPtrDouble = other.itsFuncPtrDouble;
    itsFuncPtrBool = other.itsFuncPtrBool;
    return *this;
-};
+}
 
 
 
@@ -243,14 +243,14 @@ void Interpolate2D::bcucof (Double c[4][4], const Double y[4],
     X[i+4] = y1[i];
     X[i+8] = y2[i];
     X[i+12] = y12[i];
-  };
+  }
   
   // Matrix multiply the stored table
   
   for (uInt i=0; i<16; ++i) {
     CL[i] = 0.0;
     for (uInt k=0; k<16; ++k) CL[i] += wt[i][k] * X[k];
-  };
+  }
   
   // Unpack the result into the output table
   
@@ -273,7 +273,7 @@ Interpolate2D::Method Interpolate2D::stringToMethod (const String &method) {
     method2 = Interpolate2D::CUBIC;
   } else {
     throw(AipsError("Illegal method"));
-  };
+  }
   return method2;
 }
 
@@ -283,7 +283,7 @@ Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>* &maskPtr,
   if (maskPtr) {
     for (Int j=j1; j<=j2; ++j)
       for (Int i=i1; i<=i2; ++i) if (!(*maskPtr)(i,j)) return True;
-  };
+  }
   return False;
 }  
 

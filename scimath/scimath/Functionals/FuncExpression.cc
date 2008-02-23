@@ -54,7 +54,7 @@ FuncExpression::FuncExpression(const String &prog) :
     throw(AipsError(String("Illegal program string in "
 			   "FuncExpression ctor:\n") +
 		    error_p));
-  };
+  }
 }
 
 FuncExpression::FuncExpression(const FuncExpression &other) :
@@ -76,7 +76,7 @@ FuncExpression &FuncExpression::operator=(const FuncExpression &other) {
     ndim_p = 	other.ndim_p;
     exec_p.resize(0);
     initState();
-  };
+  }
   return *this;
 }
 
@@ -100,8 +100,8 @@ Bool FuncExpression::create(const String &prog) {
       error_p += " at: \n'" + prg.get(0, prg.getPtr()) + "''" +
 	prg.get() + "'";
       return False;
-    };
-  };
+    }
+  }
   return (setOp(exd.special()["FINISH"]));
 }
 
@@ -122,11 +122,11 @@ Bool FuncExpression::compExpr(MUString &prg) {
       prg.skipChar();
     } else {
       if (!setOp(exd.unary1().find(t.at(0,1))->second)) return False;
-    };
+    }
     prg.skipChar();
     prg.skipBlank();
     t = prg.get().at(0,2);
-  };
+  }
   if (!compTerm(prg)) return False;
   // Get binary 
   prg.skipBlank();
@@ -135,7 +135,7 @@ Bool FuncExpression::compExpr(MUString &prg) {
     if (!setOp(exd.special()[":"])) return False;
     if (!compExpr(prg)) return False;
     prg.skipBlank();
-  };    
+  }    
   t = prg.get().at(0,2);
   while (!prg.eos() && 
 	 (exd.binary1().find(t.at(0,1)) != exd.binary1().end() ||
@@ -145,12 +145,12 @@ Bool FuncExpression::compExpr(MUString &prg) {
       prg.skipChar();
     } else {
       if (!setOp(exd.binary1().find(t.at(0,1))->second)) return False;
-    };
+    }
     prg.skipChar();
     if (!compExpr(prg)) return False;
     prg.skipBlank();
     t = prg.get().at(0,2);
-  };
+  }
   return True;
 }
 
@@ -166,7 +166,7 @@ Bool FuncExpression::compTerm(MUString &prg) {
     if (!prg.testChar(')')) {
       error_p = "Missing closing right parenthesis";
       return False;
-    };
+    }
     prg.skipChar();
     if (!setOp(exd.special()[")"])) return False;
   } else if (prg.testAlpha()) {
@@ -185,9 +185,9 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	if (!prg.testChar(')')) {
 	  error_p = "No closing function paranethesis";
 	  return False;
-	};
+	}
 	prg.skipChar();
-      };
+      }
       if (!setOp(exd.special()[")"])) return False;
     } else if (t.matches(parrx) || t.matches(argrx)) {
       tmu.skipChar();
@@ -200,15 +200,15 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	if (m == 0) {
 	  error_p = "Illegal index for argument or parameter";
 	  return False;
-	};
+	}
 	n += m-1;
 	prg.skipBlank();
 	if (!prg.testChar(']')) {
 	  error_p = "Missing closing bracket";
 	  return False;
-	};
+	}
 	prg.skipChar();
-      };
+      }
       FuncExprData::ExprOperator oper;
       if (t.matches(parrx)) {
 	oper = exd.special()["PARAM"];
@@ -216,13 +216,13 @@ Bool FuncExpression::compTerm(MUString &prg) {
       } else {
 	oper = exd.special()["ARG"];
 	if (n >= ndim_p) ndim_p = n+1;
-      };
+      }
       oper.info = n;
       if (!setOp(oper)) return False;
     } else {
       error_p = String("Unknown function name ") + t;
       return False;
-    };
+    }
   } else if (prg.testDouble()) {
     Double d = prg.getDouble();
     FuncExprData::ExprOperator oper;
@@ -234,11 +234,11 @@ Bool FuncExpression::compTerm(MUString &prg) {
       prg.skipChar();
       oper = exd.special()["TOIMAG"];
       if (!setCode(oper)) return False;
-    };
+    }
   } else {
     error_p = "Missing value";
     return False;
-  };
+  }
   return True;
 }
 
@@ -255,11 +255,11 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	error_p = "Not enough operands for operator '";
 	error_p += rps_p.back().name + "'";
 	return False;
-      };
+      }
       state_p.nval -= rps_p.back().nresult;
       rps_p.pop_back();
     } else break;
-  };
+  }
   // Add the new code
   FuncExprData::ExprOperator gotoit;
   switch (oper.special) {
@@ -273,7 +273,7 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
       if (!setCode(exd.special()["GOTOF"])) return False;
       code_p.back().state = state_p;
       state_p.pcptr = static_cast<uInt>(code_p.end()-code_p.begin());
-    };
+    }
   }
   break;
   case FuncExprData::FINAL: {
@@ -282,15 +282,15 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
       if (rps_p.size() != state_p.rpslow || state_p.rpslow < 1) {
 	error_p = "':' not expected";
 	return False;
-      };
+      }
       if (rps_p[state_p.rpslow-1].code !=  FuncExprData::CONDEX) {
 	error_p = "No '?' belonging to a ':' found";
 	return False;
-      };
+      }
       if (state_p.nval != 1) {
 	error_p = "No value between '?' and ':'";
 	return False;
-      };
+      }
       state_p.rpslow = rps_p[state_p.rpslow-1].state.rpslow;
       rps_p.pop_back();
       code_p[state_p.pcptr-1].info =
@@ -307,7 +307,7 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	  rps_p[state_p.rpslow-1].category != FuncExprData::FUNC) {
 	error_p = "Parameter comma separator not expected";
 	return False;
-      };
+      }
       rps_p[state_p.rpslow-1].state.argcnt += state_p.nval;
       state_p.nval = 0;
     }
@@ -317,19 +317,19 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	  state_p.rpslow != 0 || state_p.nval != 1) {
 	error_p = "Unexpected EOS";
 	return False;
-      };
+      }
     }
     break;
     case FuncExprData::RPAREN: {
       if (rps_p.size() != state_p.rpslow || state_p.rpslow < 1) {
 	error_p = "Right parenthesis not expected";
 	return False;
-      };
+      }
       if (rps_p[state_p.rpslow-1].code ==  FuncExprData::LPAREN) {
 	if (state_p.nval != 1) {
 	  error_p = "No value between ()";
 	  return False;
-	};
+	}
 	state_p.nval += rps_p[state_p.rpslow-1].state.nval;
 	state_p.rpslow = rps_p[state_p.rpslow-1].state.rpslow;
 	rps_p.pop_back();
@@ -337,7 +337,7 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	if (state_p.nval > 1) {
 	  error_p = "Incorrect value stack for function evaluation";
 	  return False;
-	};
+	}
 	rps_p[state_p.rpslow-1].state.argcnt += state_p.nval;
 	if (rps_p[state_p.rpslow-1].state.argcnt <
 	    rps_p[state_p.rpslow-1].narg ||
@@ -345,7 +345,7 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	    rps_p[state_p.rpslow-1].nmaxarg) {
 	  error_p = "Incorrect number of arguments in function";
 	  return False;
-	};
+	}
 	if (!setCode(rps_p[state_p.rpslow-1])) return False;
 	state_p.nval = rps_p.back().state.nval + rps_p.back().nresult;
 	state_p.rpslow = rps_p.back().state.rpslow;
@@ -354,19 +354,19 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
       } else {
 	error_p = "Right parenthesis not expected";
 	return False;
-      };
+      }
     }
     break;
     default :
       error_p = "Unexpected final code";
       return False;
-    };
+    }
   }
   break;
   default:
     rps_p.push_back(oper);
     break;
-  };
+  }
   return True;
 }
 
@@ -382,11 +382,11 @@ Bool FuncExpression::setCode(const FuncExprData::ExprOperator &oper) {
       code_p[state_p.pcptr-1].info =
 	static_cast<uInt>(code_p.end()-code_p.begin())-1;
       state_p.pcptr = code_p[state_p.pcptr-1].state.pcptr;
-    };
+    }
   if (code_p.back().special == FuncExprData::GOTOPC) {
     code_p.back().state.pcptr = state_p.pcptr;
     state_p.pcptr = code_p.size()-1;
-  };
+  }
   return True;
 }
 
@@ -432,7 +432,7 @@ Bool FuncExpression::exec(Double &res) const {
       if (pos->narg == 2) {
 	t = exec_p.back();
 	exec_p.pop_back();
-      };
+      }
       switch (pos->code) {
       case FuncExprData::POW:
 	exec_p.back() = pow(exec_p.back(), t);
@@ -494,12 +494,12 @@ Bool FuncExpression::exec(Double &res) const {
       case FuncExprData::GOTOF:
 	if (!exec_p.back()) {
 	  pos += pos->info - (static_cast<uInt>(pos-code_p.begin())+1);
-	};
+	}
 	break;
       case FuncExprData::GOTOT:
 	if (exec_p.back()) {
 	  pos += pos->info - (static_cast<uInt>(pos-code_p.begin())+1);
-	};
+	}
 	break;
       default:
 	error_p = String("Unknown execution code '") +
@@ -521,7 +521,7 @@ Bool FuncExpression::exec(Double &res) const {
 	if (pos->state.argcnt == 1) {
 	  exec_p.back() = atan(exec_p.back());
 	  break;
-	};
+	}
       case FuncExprData::ATAN2: {
 	Double t(exec_p.back());
 	exec_p.pop_back();
@@ -612,12 +612,12 @@ Bool FuncExpression::exec(Double &res) const {
       break;
     }
     if (!error_p.empty()) break;
-  };
+  }
   if (exec_p.size() != 1 && error_p.empty()) error_p = "No value returned";
   if (error_p.empty()) {
     res = exec_p.back();
     return True;
-  };
+  }
   return False;
 }
 

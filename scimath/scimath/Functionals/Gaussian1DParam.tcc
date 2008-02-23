@@ -89,7 +89,7 @@ Gaussian1DParam<T>::operator=(const Gaussian1DParam<T> &other) {
   if (this != &other) {
     fwhm2int = other.fwhm2int;
     Function1D<T>::operator=(other);
-  };
+  }
   return *this;
 }
 

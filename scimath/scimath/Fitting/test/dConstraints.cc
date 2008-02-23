@@ -166,14 +166,14 @@ int main (Int argc, Char** argv) {
       cout << "Expected, Computed Parameter " << v[i];
       cout << ", " << solution[i] << " Std Dev " <<
 	errors[i] << endl;
-    };
+    }
     
     delete gauss;
 
     cout << "---------------------------------------------------" << endl;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  };
+  }
   
   exit(0);
 }

@@ -44,10 +44,10 @@
 #include <casa/namespace.h>
 // Some C++ functions
 // To use them in Fitting, have to have parameters and also AutoDiff
-static Double func0(const Vector<Double> &) {return 1;};            // 1
-static Double func1(const Vector<Double> &x) {return x(0);};         // x
-static Double func2(const Vector<Double> &x) {return sin(x(1));};    // sin(y)
-static Double func3(const Vector<Double> &x) {return x(0)*x(0);};    // x^2
+static Double func0(const Vector<Double> &) {return 1;}            // 1
+static Double func1(const Vector<Double> &x) {return x(0);}         // x
+static Double func2(const Vector<Double> &x) {return sin(x(1));}    // sin(y)
+static Double func3(const Vector<Double> &x) {return x(0)*x(0);}    // x^2
 
 void checkLinearFit(LinearFitSVD<Double> &fitter) {
   //*********** Test one *************
@@ -62,7 +62,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     primesTable(0) = 2;
     for (uInt i=1; i < nPrimes; i++) {
       primesTable(i) = Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
-    };   
+    }   
     sigma = 1.0;
     Vector<Double> actualParameters(3);
     actualParameters(0) = -1.92368;
@@ -103,14 +103,14 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     for (uInt i = 0; i < combination.nparameters(); i++) {
       cout << "Actual Parameter " << actualParameters(i) << 
 	", Computed Parameter " << solution(i) << endl;
-    };
+    }
     // Print actual covariance and computed covariance
     for (uInt i = 0; i < combination.nparameters(); i++) {
       for (uInt j = 0; j < combination.nparameters(); j++) {
 	cout << "Actual Covariance " << actualCovariance(i,j) << 
 	  ", Computed Covariance " << covariance(i,j) << endl;
-      };
-    };
+      }
+    }
     cout << "actual ChiSquare " << actualChiSquare << 
       " Computed ChiSquare " <<
       fitter.chiSquare() << endl;
@@ -155,7 +155,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     for (uInt i=0; i < n; i++) {
       // -1 + 6*x + 10*x^2 + 3*x^3 + unit gaussian noise
       y(i) = poly(x(i)) + noise();
-    };
+    }
     // Uniform variances
     sigma = 1.0;
 
@@ -181,7 +181,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       if (i == 2) cout << "Fixed coefficient ";
       else cout << "Computed ";
       cout << solution(i) << " Std Dev " << sqrt(covariance(i,i)) << endl;
-    };
+    }
     cout << "Solved for " << fitter.fittedNumber() << " parameters" << endl;
     AlwaysAssertExit(fitter.fittedNumber() ==
 		     combination.parameters().nMaskedParameters());
@@ -195,11 +195,11 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       if (i == 2) {
 	j++;
 	continue;
-      };
+      }
       AlwaysAssertExit(nearAbs(solution(i), poly[j],
 			       factor*sqrt(covariance(i,i))));
       j++;
-    };
+    }
   }
   //************ test three ****************
 
@@ -239,7 +239,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
 	x(i,1) = x(i,0)*2;
 	Double nois = noise()/4.0;
 	z(i) = combination(x.row(i)) + nois;
-      };
+      }
       sigma = 1.0;
       cout << endl << "******** test three *************" << endl;
       Vector<Double> z0(2);
@@ -261,7 +261,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       cout << "Std Dev  ";
       for (uInt i = 0; i < solution.nelements(); i++) {
 	cout << sqrt(covariance(i,i)) << " ";
-      };
+      }
       cout << endl;
       
       // See if they are within 3*sigma.
@@ -269,7 +269,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       for (uInt i = 0; i < solution.nelements(); i++) {
 	AlwaysAssertExit(nearAbs(solution(i), combination[i],
 				 factor*sqrt(covariance(i,i))));
-      };
+      }
       AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
       cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() <<
 	endl;
@@ -306,7 +306,7 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   for (uInt i = 0; i < n; i++) {
     x(i) = Complex(noise(), noise());
     y(i) = poly(x(i))+Complex(noise())/Complex(2.0);
-  };
+  }
 
   sigma = Complex(1.0,1.0);
    
@@ -333,7 +333,7 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
     cout << "Computed: (" <<
       solution(i).real() << "," << solution(i).imag() << ") ";
     cout << "Std Dev: " << sqrt(covariance(i,i)) << endl;
-  };
+  }
   cout << "Missing rank: " << 2*fitter.fittedNumber()-fitter.getRank() << endl;
 
   // compare solution with poly parameters. See if they are within 3*sigma.
@@ -342,7 +342,7 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
     AlwaysAssertExit(nearAbs(abs(solution(i)), 
 			     abs(poly[i]),
 			     factor*abs(sqrt(covariance(i,i)))));
-  };
+  }
   AlwaysAssertExit(2*fitter.fittedNumber()-fitter.getRank() == 0);
 }
 
@@ -361,8 +361,8 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
       for (uInt j=0; j<n; ++j) {
 	arg(n*i+j,i) = 1;
 	y[n*i+j] = angle[i];
-      };
-    };
+      }
+    }
       
     // Add noise
     MLCG generator; 
@@ -388,7 +388,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -420,7 +420,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -460,7 +460,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -489,7 +489,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;

@@ -49,7 +49,7 @@ NonLinearFitLM<T> &NonLinearFitLM<T>::operator=(const NonLinearFitLM &other) {
   if (this != &other) {
     NonLinearFit<T>::operator=(other);
     lamda_p = other.lamda_p;
-  };
+  }
   return *this;
 }
 
@@ -71,7 +71,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
-  };
+  }
   // And loop
   while (curiter_p > 0 && (!this->isReady() || curiter_p == maxiter_p)) {
     setMaskedParameterValues(sol_p);
@@ -83,9 +83,9 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);
     if (!solveLoop(nr_p, csolit)) {
       throw(AipsError("NonLinearFitLM: error in loop solution"));
-    };
+    }
     curiter_p--;
-  };
+  }
   converge_p = curiter_p;
   solved_p = True;
   
@@ -101,7 +101,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   for (uInt i=0, k=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
     (*ptr_derive_p)[i].value() = sol[i];
-  };	
+  }	
   solved_p = converge_p;
   return converge_p;
 }

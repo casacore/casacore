@@ -40,14 +40,14 @@ CombiParam<T>::CombiParam(const CombiParam<T> &other) :
   functionPtr_p(other.functionPtr_p.nelements()) { 
   for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
     functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
-  };
+  }
 }
 
 template <class T>
 CombiParam<T>::~CombiParam() {
   for (uInt i=0; i<functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i]; functionPtr_p[i] = 0;
-  };
+  }
 }
 
 template <class T>
@@ -57,12 +57,12 @@ CombiParam<T>& CombiParam<T>::operator=(const CombiParam<T> &other) {
     ndim_p = other.ndim_p;
     for (uInt i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
-    };
+    }
     functionPtr_p =  PtrBlock<Function<T> *>(other.functionPtr_p.nelements());
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
-    };
-  };
+    }
+  }
   return *this;
 }
 
@@ -71,7 +71,7 @@ uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
     throw(AipsError("CombiParam::addFunction() -- "
 		    "Inconsistent function dimension"));
-  };
+  }
   // Add the function
   uInt i = functionPtr_p.nelements();
   functionPtr_p.resize(i + 1);

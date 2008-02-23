@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     } else {
       error += String("No triangular matrix length present");
       return False;
-    };
+    }
     set(vlen);
     return getCArray(error, in, tmatdat, len_p, trian_p);
   }
@@ -77,8 +77,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       } else {
 	error += String("No data for non-empty ") + fname + "vector";
 	return False;
-      };
-    };
+      }
+    }
     return True;
   }
 
@@ -95,9 +95,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	error += String("Inconsistency between lengths in " + fname +
 			"field in record");
 	return False;
-      };
+      }
       std::copy(vt.data(), vt.data()+len, out); 
-    };
+    }
     return True;
   }
 
@@ -112,8 +112,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       } else {
 	error += String("No data for non-empty ") + fname + "vector";
 	return False;
-      };
-    };
+      }
+    }
     return True;
   }
 
@@ -130,9 +130,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	error += String("Inconsistency between lengths in " + fname +
 			"field in record");
 	return False;
-      };
+      }
       std::copy(vt.data(), vt.data()+len, out); 
-    };
+    }
     return True;
   }
 

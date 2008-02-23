@@ -39,26 +39,26 @@ void showdt(const LSQFit &lsq, Int n) {
   if (norm) {
     for (Int i=0; i<(n*(n+1))/2; i++) {
       std::cout << "  Norm" << i << ": " << norm[i];
-    };
-  };
+    }
+  }
   std::cout << std::endl;
   if (err) {
     for (Int i1=0; i1<4; i1++) {
       std::cout << "  Erra" << i1 << ": " << err[i1];
-    };
-  };
+    }
+  }
   std::cout << std::endl;
   if (known) {
     for (Int i2=0; i2<n; i2++) {
       std::cout << "  Know" << i2 << ": " << known[i2];
-    };
-  };
+    }
+  }
   std::cout << std::endl;
   if (piv) {
     for (Int i3=0; i3<n; i3++) {
       std::cout << "  Pivo" << i3 << ": " << piv[i3];
-    };
-  };
+    }
+  }
   std::cout << std::endl;
   std::cout << "  Rank: " << rk << std::endl;
   std::cout << "---------------------------------------------------" << std::endl;
@@ -136,7 +136,7 @@ int main() {
       val1[0] = 1;
       for (uInt j1=1; j1<6; j1++) val1[j1] = val1[j1-1]*j0;
       lsq5.makeNorm(&val1[0], 1.0, val12[j0]);
-    };
+    }
     /// showdt(lsq5,6);
     std::cout << "Invert = " << lsq5.invert(nr1);
     std::cout << ", rank=" << nr1 << std::endl;
@@ -145,7 +145,7 @@ int main() {
     for (uInt i=0; i<6; i++) { 
       std::cout << "Sol" << i << ": " <<
 	sol1[i] << ", " << lsq5.getSD() << ", " << lsq5.getWeightedSD() << std::endl;
-    };
+    }
     /// std::cout << "Expected: " << "2, 0, 0" << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
   }

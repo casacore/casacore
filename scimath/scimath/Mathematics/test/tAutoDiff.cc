@@ -54,13 +54,13 @@ int main() {
     if (a.value() != 0 || (a.derivatives()).nelements() != 0) {
       cerr << "AutoDiff<Float> a; failed a = " << a << endl;
       nerr++;
-    };
+    }
     
     AutoDiff<Float> b(1.0);
     if (b.value() != 1.0 || b.derivatives().nelements() != 0) {
       cerr << "AutoDiff<Float> b(1.0); failed b = " << b << endl;
       nerr++;
-    };
+    }
     
     Vector<Float> g(3);
     g = 0.0;
@@ -69,13 +69,13 @@ int main() {
     if (x.value() != 2.0 || ! allEQ(x.derivatives(),g)) {
       cerr << "AutoDiff<Float> x(2.0, 3, 1); failed x = " << x << endl;
       nerr++;
-    };
+    }
     
     AutoDiff<Float> y(x);
     if (y.value() != x.value() || ! allEQ(y.derivatives(),x.derivatives())) {
       cerr << "AutoDiff<Float> y(x); failed y = " << y << " x = " << x << endl;
       nerr++;
-    };
+    }
     
     g(0) = 1.0;
     g(1) = -1.0;
@@ -86,7 +86,7 @@ int main() {
       cerr << "AutoDiff<Float> z(val, g); failed z = " << z 
 	   << " val = " << val << " g = " << g << endl;
       nerr++;
-    };
+    }
   }
   
   // test the assignment operators
@@ -96,14 +96,14 @@ int main() {
     if (x.value() != 1.0 || x.derivatives().nelements()!=0) {
       cerr << "assignment to constant failed x : " << x << endl;
       nerr++;
-    };
+    }
     
     AutoDiff<Float> y(2.0, 3, 1);
     x = y;
     if (x.value() != y.value() || ! allEQ(x.derivatives(), y.derivatives())) {
       cerr << "assignment to other failed x : " << x << " y : " << y << endl;
       nerr++;
-    };
+    }
   }
   
   // test the class member operators
@@ -119,7 +119,7 @@ int main() {
 	z.derivatives()(1) != x.value()) {
       cerr << "*= operator failed" << endl;
       nerr++;
-    };
+    }
     
     z = x;
     z /= y;
@@ -129,7 +129,7 @@ int main() {
 	z.derivatives()(1) != (-x.value()/(y.value()*y.value()))) {
       cerr << "/= operator failed" << endl;
       nerr++;
-    };
+    }
     
     z = x;
     z += y;
@@ -139,7 +139,7 @@ int main() {
 	z.derivatives()(1) != 1) {
       cerr << "+= operator failed" << endl;
       nerr++;
-    };
+    }
     
     z = x;
     z -= y;
@@ -149,7 +149,7 @@ int main() {
 	z.derivatives()(1) != -1) {
       cerr << "-= operator failed" << endl;
       nerr++;
-    };
+    }
   }
   
   // other class members
@@ -158,16 +158,16 @@ int main() {
     if (x.nDerivatives() != 0) {
       cerr << "wrong number of elements, should be 0" << endl;
       nerr++;
-    };
+    }
     if (!x.isConstant()) {
       cerr << "x should be const, isConstant reports False" << endl;
       nerr++;
-    };
+    }
     AutoDiff<Float> y(1.0,3,0);
     if (y.nDerivatives() != 3) {
       cerr << "resize failed" << endl;
       nerr++;
-    };
+    }
     Vector<Float> grad(3);
     grad(0) = 1.;
     grad(1) = 2.;
@@ -176,16 +176,16 @@ int main() {
     if (!allEQ(y.derivatives(),grad)) {
       cerr << "derivatives assignment failed" << endl;
       nerr++;
-    };
+    }
     y.value() = 4.0;
     if (y.value() != 4.0) {
       cerr << "value assignment failed" << endl;
       nerr++;
-    };
+    }
     if (y.isConstant()) {
       cerr << "y should not be const, isConstant reports True" << endl;
       nerr++;
-    };
+    }
   }
   
   // AutoDIffMath tests
@@ -198,96 +198,96 @@ int main() {
 	!allEQ(y.derivatives(), x.derivatives())) {
       cerr << "operator+(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     y = -x;
     if (y.value() != -x.value() ||
 	!allEQ(y.derivatives(), -x.derivatives())) {
       cerr << "operator-(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     y = x + x;
     if (y.value() != (Float(2.0) * x.value()) ||
 	!allEQ(y.derivatives(), Float(2.0) * x.derivatives())) {
       cerr << "operator+(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     y = x - x;
     if (y.value() != 0.0 ||
 	!allEQ(y.derivatives(), Float(0.0))) {
       cerr << "operator-(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     y = x * x;
     if (y.value() != (x.value() * x.value()) ||
 	!allEQ(y.derivatives(), Float(2.0) * x.value() * x.derivatives())) {
       cerr << "operator*(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     y = x / x;
     if (!near(y.value(),Float(1)) ||
 	!allNearAbs(y.derivatives(), Float(0.0),1.0e-5)) {
       cerr << "operator/(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
 
     y = x + Float(1.0);
     if (y.value() != (x.value() + Float(1.0)) ||
 	!allEQ(y.derivatives(), x.derivatives())) {
       cerr << "operator+(const AutoDiff<T> &,const T&) failed" << endl;
       nerr++;
-    };
+    }
     
     y = x - Float(1.0);
     if (y.value() != (x.value() - Float(1.0)) ||
 	!allEQ(y.derivatives(), x.derivatives())) {
       cerr << "operator-(const AutoDiff<T> &,const T&) failed" << endl;
       nerr++;
-    };
+    }
     
     y = x * Float(2.0);
     if (y.value() != (x.value() * Float(2.0)) ||
 	!allEQ(y.derivatives(), x.derivatives()*Float(2.0))) {
       cerr << "operator*(const AutoDiff<T> &,const T&) failed" << endl;
       nerr++;
-    };
+    }
     
     y = x / Float(2.0);
     if (y.value() != (x.value() / Float(2.0)) ||
 	!allEQ(y.derivatives(), x.derivatives()/Float(2.0))) {
       cerr << "operator/(const AutoDiff<T> &,const T&) failed" << endl;
       nerr++;
-    };
+    }
     
     y = Float(1.0) + x;
     if (y.value() != (x.value() + Float(1.0)) ||
 	!allEQ(y.derivatives(), x.derivatives())) {
       cerr << "operator+(,const T&, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
 
     y = Float(1.0) - x;
     if (y.value() != (Float(1.0) - x.value()) ||
 	!allEQ(y.derivatives(), -x.derivatives())) {
       cerr << "operator-(const T&, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
 
     y = Float(2.0) * x;
     if (y.value() != (x.value() * Float(2.0)) ||
 	!allEQ(y.derivatives(), x.derivatives()*Float(2.0))) {
       cerr << "operator*(const T&, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     y = Float(2.0) / x;
     if (!near(y.value(),Float(2.0) / x.value()) ||
 	!allNearAbs(y.derivatives(), -x.derivatives()*Float(2.0)/(x.value()*x.value()),1.0e-5)) {
       cerr << "operator/(const T&, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
 
     // trancendentals
     x.value() = 0.5;
@@ -298,7 +298,7 @@ int main() {
 	       -x.derivatives()/Float(sqrt(1.0 - x.value()*x.value())))) {
       cerr << "acos(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // asin(x) : derivative = 1/sqrt(1-x*x)
     y = asin(x);
@@ -307,7 +307,7 @@ int main() {
 	       x.derivatives()/Float(sqrt(1.0 - x.value()*x.value())))) {
       cerr << "asin(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // atan(x) : derivative = 1/(1+x*x)
     y = atan(x);
@@ -318,7 +318,7 @@ int main() {
       cerr << y.derivatives() - x.derivatives()/Float(1.0 + x.value()*x.value()) << endl;
       cerr << "atan(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // atan2(x, y) : derivative = d(atan(x/y))
     //                          = (1/(1+(x/y)*(x/y))) * (dx/y - x*dy/y**2)
@@ -333,7 +333,7 @@ int main() {
       cerr << "atan2(const AutoDiff<T> &, const AutoDiff<T> &g) failed" <<
 	endl;
       nerr++;
-    };
+    }
     
     // cos(x) : derivative = -sin(x)
     y = cos(x);
@@ -341,7 +341,7 @@ int main() {
 	!allEQ(y.derivatives(),-Float(sin(x.value()))*x.derivatives())) {
       cerr << "cos(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // cosh(x) : derivative = sinh(x)
     y = cosh(x);
@@ -349,7 +349,7 @@ int main() {
 	!allEQ(y.derivatives(), Float(sinh(x.value()))*x.derivatives())) {
       cerr << "cosh(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // exp(x) : derivative = exp(x)
     y = exp(x);
@@ -357,7 +357,7 @@ int main() {
 	!allEQ(y.derivatives(), x.derivatives() * Float(exp(x.value())))) {
       cerr << "exp(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // log(x) : derivative = 1/x
     y = log(x);
@@ -365,7 +365,7 @@ int main() {
 	!allEQ(y.derivatives(), x.derivatives() / x.value())) {
       cerr << "log(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // log10(x) : derivative = (1/x) / log(10)
     y = log10(x);
@@ -374,7 +374,7 @@ int main() {
 	       Float((x.value()*log(10.0))))) {
       cerr << "log10(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // pow(x,y) : derivative = y*pow(x,y-1)*dx + pow(x,y)*log(x)*dy
     y = pow(w,z);
@@ -386,7 +386,7 @@ int main() {
 		   z.derivatives()))) {
       cerr << "pow(const AutoDiff<T> &, const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
 
     // pow(x,const) : derivative = const*pow(x,const-1)*dx
     y = pow((AutoDiff<Float>&)x,Float(2.5));
@@ -395,7 +395,7 @@ int main() {
 	       Float(2.5*pow(x.value(),1.5))*x.derivatives())) {
       cerr << "pow(const AutoDiff<T> &, const double &) failed" << endl;
       nerr++;
-    };
+    }
     
     // sin(x) : derivative = cos(x)
     y = sin(x);
@@ -403,7 +403,7 @@ int main() {
 	!allEQ(y.derivatives(), Float(cos(x.value()))*x.derivatives())) {
       cerr << "sin(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // sinh(x) : derivative = cosh(x)
     y = sinh(x);
@@ -411,7 +411,7 @@ int main() {
 	!allEQ(y.derivatives(), Float(cosh(x.value()))*x.derivatives())) {
       cerr << "sinh(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // sqrt(x) : derivative = 0.5/sqrt(x)
     y = sqrt(x);
@@ -419,7 +419,7 @@ int main() {
       	!allEQ(y.derivatives(), x.derivatives()*Float(0.5/sqrt(x.value())))) {
       cerr << "sqrt(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // tan(x) : derivative = sec(x)*sec(x) = 1/(cos(x)*cos(x))
     y = tan(x);
@@ -428,7 +428,7 @@ int main() {
 	       x.derivatives()/Float(cos(x.value())*cos(x.value())),1.e-6)) {
       cerr << "tan(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
     // tanh(x) : derivative = sech(x)*sech(x) = 1/(cosh(x)*cosh(x))
     y = tanh(x);
@@ -437,7 +437,7 @@ int main() {
 	       x.derivatives()/Float(cosh(x.value())*cosh(x.value())))) {
       cerr << "sinh(const AutoDiff<T> &) failed" << endl;
       nerr++;
-    };
+    }
     
   }
   if (nerr != 0) cout << "There were " << nerr << " errors" << endl;

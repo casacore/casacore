@@ -119,7 +119,7 @@ int main() {
     for (uInt i=0; i<4; ++i) chebad[i] = cheb[i];
     for (AutoDiffA<Double> x(xmin, 1, 0); x <= xmax; x += 0.1) {
       AlwaysAssertExit(nearAbs(chebp(x.value()), chebad(x).deriv(0), 1.0e-14));
-    };
+    }
 
     // test out-of-interval modes
     AlwaysAssertExit(0 == cheb.getDefault());

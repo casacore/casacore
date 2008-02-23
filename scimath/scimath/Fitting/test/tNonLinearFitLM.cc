@@ -80,7 +80,7 @@ int main() {
   for (uInt i=0; i<n; i++) {
     value = gauss1(x(i));
     y(i) = abs(value);
-  };  
+  }  
     
   // Construct a gaussian function for fitting
   // It has to be a Gaussian1D instantiated with an AutoDiff. 
@@ -129,7 +129,7 @@ int main() {
 	gauss1.parameters().getMaskedParameters()[i]; 
       cout << " Computed Value " << solution(i) << " Std Dev " <<
 	sqrt(covariance(i,i)) << endl;
-    };
+    }
     
     // See if they are within 3*sigma. 
     for (uInt i=0; i<gauss.nparameters(); i++) {
@@ -137,14 +137,14 @@ int main() {
       AlwaysAssertExit(nearAbs(abs(solution(i)), 
       			       gauss1[i],
       			       factor*sqrt(covariance(i,i))));
-    };
+    }
     cout << "Test one succeeded" << endl;
   } else {
     cout << "Did not converge after " << fitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test one failed" << endl;
     return 1;
-  };
+  }
 
   // ***** test oneA: fit 1D Gaussian function using non Autodiff param ****** 
     
@@ -182,7 +182,7 @@ int main() {
 	gauss1.parameters().getMaskedParameters()[i]; 
       cout << " Computed Value " << solution(i) << " Std Dev " <<
 	sqrt(covariance(i,i)) << endl;
-    };
+    }
     
     // See if they are within 3*sigma. 
     for (uInt i=0; i<gaussA.nparameters(); i++) {
@@ -190,14 +190,14 @@ int main() {
       AlwaysAssertExit(nearAbs(abs(solution(i)), 
       			       gauss1[i],
       			       factor*sqrt(covariance(i,i))));
-    };
+    }
     cout << "Test oneA succeeded" << endl;
   } else {
     cout << "Did not converge after " << fitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test oneA failed" << endl;
     return 1;
-  };
+  }
 
   
   // ***** test oneB: fit 1D Gaussian function using compound ****** 
@@ -208,7 +208,7 @@ int main() {
   Gaussian1D<AutoDiff<Double> > gaussB0;
   for (uInt i=0; i<3; i++) {
     gaussB0[i] = AutoDiff<Double>(v[i], gaussB0.nparameters(), i);
-  };
+  }
   CompoundFunction<AutoDiff<Double> > gaussB;
   gaussB.addFunction(gaussB0);
   // Set the function
@@ -240,7 +240,7 @@ int main() {
 	gauss1.parameters().getMaskedParameters()[i]; 
       cout << " Computed Value " << solution(i) << " Std Dev " <<
 	sqrt(covariance(i,i)) << endl;
-    };
+    }
     
     // See if they are within 3*sigma. 
     for (uInt i=0; i<gaussB.nparameters(); i++) {
@@ -248,14 +248,14 @@ int main() {
       AlwaysAssertExit(nearAbs(abs(solution(i)), 
       			       gauss1[i],
       			       factor*sqrt(covariance(i,i))));
-    };
+    }
     cout << "Test oneB succeeded" << endl;
   } else {
     cout << "Did not converge after " << fitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test oneB failed" << endl;
     return 1;
-  };
+  }
   
   // ***** test two: fit a 1D Gaussian function to data but hold the center 
   // ***** of the gaussian fixed
@@ -306,7 +306,7 @@ int main() {
       if (!gauss.mask(i)) cout << " Fixed Parameter Value ";
       else cout << " Computed Value ";
       cout << solution[i] << " Std Dev " << sqrt(covariance(i,i)) << endl;
-    };
+    }
     // See if they are within 3*sigma.
     Int factor=3;
     for (uInt i=0; i<gauss.nparameters(); i++) {
@@ -314,15 +314,15 @@ int main() {
 	AlwaysAssertExit(nearAbs(abs(solution(i)), 
 				 gauss1[i],
 				 factor*sqrt(covariance(i,i))));
-      };
-    };
+      }
+    }
     cout << "Test two succeeded" << endl;
   } else {
     cout << "Did not converge after " << fitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test two failed" << endl;
     return 1;
-  };
+  }
 
 
   // ***** test three: fit a 2D gaussian function to noncircular data
@@ -345,7 +345,7 @@ int main() {
     //    value = gauss2d1(z.row(i));
     value = gauss2d1(z(i,0), z(i,1));
     y(i) = value;
-  };
+  }
 
   // construct the function to be fitted
   Gaussian2D<AutoDiff<Double> > gauss2d;
@@ -376,7 +376,7 @@ int main() {
   Vector<Double> parameters(gauss2d.nparameters());
   for (uInt i=0; i<gauss2d.nparameters(); i++) {
     parameters[i] = gauss2d[i].value();
-  };
+  }
 
   // Set the function
   fitter.setFunction(gauss2d);
@@ -419,7 +419,7 @@ int main() {
 	getMaskedParameters()[j];
       cout << " Computed Value " << solution(j) << " Std Dev " 
 	<< sqrt(covariance(j,j)) << endl;
-    };
+    }
        
     // See if they are within 3*sigma.
     Int factor=3;
@@ -427,14 +427,14 @@ int main() {
       AlwaysAssertExit(nearAbs(abs(solution(j)), 
 			       gauss2d1[j],
       			       factor*sqrt(covariance(j,j))));
-    };
+    }
     cout << "Test three succeeded" << endl;
   } else {
     cout << "Did not converge after " << fitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test three failed" << endl;
     return 1;
-  };
+  }
 
 
   // ***** test four: fit a 2D circular gaussian function to circular data
@@ -453,7 +453,7 @@ int main() {
     z(i,1) = noise()/2.0;
     value = gauss2d1(z(i,0),z(i,1));
     y(i) = value + 0.1*value*noise()/2.5;
-  };
+  }
   
   // construct the function to be fitted
   Gaussian2D<AutoDiff<Double> > gauss2d_auto;
@@ -494,8 +494,8 @@ int main() {
       parameters[i] = parameters[i] + parameters[i]*0.5;
       if (parameters[i] == 0.0) parameters[i] = 0.5;
       gauss2d2[i].value() = parameters[i];
-    };
-  };
+    }
+  }
   // Set the function
   afitter.setFunction(gauss2d2);
 
@@ -531,7 +531,7 @@ int main() {
       cout << "Expected Parameter Value " << gauss2d1[j];
       cout << " Computed Value " << solution(j) << " Std Dev " <<
 	sqrt(covariance(j,j)) << endl;
-    };
+    }
         
     // See if they are within 3*sigma.
     Int factor=3;
@@ -540,15 +540,15 @@ int main() {
 	AlwaysAssertExit(nearAbs(abs(solution(j)), 
 				 gauss2d1[j],
 				 factor*sqrt(covariance(j,j))));
-      };
-    };
+      }
+    }
     cout << "Test four succeeded" << endl;
   } else {
     cout << "Did not converge after " << afitter.currentIteration();
     cout << " interations." << endl;
     cout << "Test four failed" << endl;    
     return 1;
-  };
+  }
 
   // *********** Test constraint one *************
   // fit data to measured angles
@@ -566,8 +566,8 @@ int main() {
       for (uInt j=0; j<n; ++j) {
 	arg(n*i+j,i) = 1;
 	y[n*i+j] = angle[i];
-      };
-    };
+      }
+    }
       
     // Add noise
     MLCG generator; 
@@ -593,7 +593,7 @@ int main() {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -625,7 +625,7 @@ int main() {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -665,7 +665,7 @@ int main() {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -694,7 +694,7 @@ int main() {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
-    };
+    }
     cout <<"Sum solution: " << sum(solution) << endl;
     cout << "Expected ChiSquare: " << sum(yres) << 
       " Computed ChiSquare: " << fitter.chiSquare() << endl;
@@ -731,7 +731,7 @@ int main() {
       x[i] = i*0.5;
       y[i] = gauss(x[i]).value() + noise();
       sigma[i] = 1.0;
-    }; 
+    } 
     // Set the function and initial guess
     for (uInt i=0; i<7; ++i) gauss[i] = vi[i];
     fitter.setFunction(gauss);
@@ -756,20 +756,20 @@ int main() {
 	cout << "Expected, Computed Parameter " << v[i];
 	cout << ", " << solution[i] << " Std Dev " <<
 	  errors[i] << endl;
-      };
+      }
       
       // See if they are within 3*sigma. 
       for (uInt i=0; i<gauss.nparameters(); i++) {
 	AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
 				 3*errors[i]+1e-5));
-      };
+      }
       cout << "Test one for 2 Gaussians succeeded" << endl;
     } else {
       cout << "Did not converge after " << fitter.currentIteration();
       cout << " interations." << endl;
       cout << "Test one for 2 Gaussians failed" << endl;
       return 1;
-    };
+    }
 
     // ***** test constraint: add constraint A0/A1=2 to Gaussians ****** 
     cout << endl << "****** Constrain a double Gaussian's amplitudes *****" <<
@@ -784,7 +784,7 @@ int main() {
       x[i] = i*0.5;
       y[i] = gaussa(x[i]).value() + noise();
       sigma[i] = 1.0;
-    }; 
+    } 
     // Set the function and initial guess
     for (uInt i=0; i<7; ++i) gaussa[i] = AutoDiff<Double>(vi[i],7,i);
     fittera.setFunction(gaussa);
@@ -813,20 +813,20 @@ int main() {
 	cout << "Expected, Computed Parameter " << v[i];
 	cout << ", " << solution[i] << " Std Dev " <<
 	  errors[i] << endl;
-      };
+      }
       
       // See if they are within 3*sigma. 
       for (uInt i=0; i<gaussa.nparameters(); i++) {
 	AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
 				 3*errors[i]+1e-5));
-      };
+      }
       cout << "Test two for 2 Gaussians succeeded" << endl;
     } else {
       cout << "Did not converge after " << fittera.currentIteration();
       cout << " interations." << endl;
       cout << "Test two for 2 Gaussians failed" << endl;
       return 1;
-    };
+    }
     
     // ***** test constraint: add constraint W1=W2 to Gaussians ****** 
     
@@ -861,20 +861,20 @@ int main() {
 	  cout << "Expected, Computed Parameter " << v[i];
 	  cout << ", " << solution[i] << " Std Dev " <<
 	    errors[i] << endl;
-	};
+	}
 	
 	// See if they are within 3*sigma. 
 	for (uInt i=0; i<gaussa.nparameters(); i++) {
 	  AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
 				   3*errors[i]+1e-5));
-	};
+	}
 	cout << "Test three for 2 Gaussians succeeded" << endl;
       } else {
 	cout << "Did not converge after " << fittera.currentIteration();
 	cout << " interations." << endl;
 	cout << "Test thress for 2 Gaussians failed" << endl;
 	return 1;
-      };
+      }
     }
     // ***** test constraint: add also constraint w1=4.0 to Gaussians ****** 
     
@@ -914,20 +914,20 @@ int main() {
 	  cout << "Expected, Computed Parameter " << v[i];
 	  cout << ", " << solution[i] << " Std Dev " <<
 	    errors[i] << endl;
-	};
+	}
 	
 	// See if they are within 3*sigma. 
 	for (uInt i=0; i<gaussa.nparameters(); i++) {
 	  AlwaysAssertExit(nearAbs(abs(solution(i)), v[i],
 				   3*errors[i]+1e-5));
-	};
+	}
 	cout << "Test four for 2 Gaussians succeeded" << endl;
       } else {
 	cout << "Did not converge after " << fittera.currentIteration();
 	cout << " interations." << endl;
 	cout << "Test four for 2 Gaussians failed" << endl;
 	return 1;
-      };
+      }
     }
   }
   cout << endl;

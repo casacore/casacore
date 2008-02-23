@@ -46,18 +46,18 @@ CompoundParam<T>::CompoundParam(const CompoundParam<T> &other) :
   for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
     functionPtr_p[i] = other.functionPtr_p[i]->clone();
     paroff_p[i] = other.paroff_p[i];
-  };
+  }
   for (uInt i=0; i<funpar_p.nelements(); ++i) {
     funpar_p[i] = other.funpar_p[i];
     locpar_p[i] = other.locpar_p[i];
-  };
+  }
 }
 
 template <class T>
 CompoundParam<T>::~CompoundParam() {
   for (uInt i=0; i<functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i]; functionPtr_p[i] = 0;
-  };
+  }
 }
 
 template <class T>
@@ -68,7 +68,7 @@ operator=(const CompoundParam<T> &other) {
     ndim_p = other.ndim_p;
     for (uInt i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
-    };
+    }
     functionPtr_p =  PtrBlock<Function<T> *>(other.functionPtr_p.nelements());
     paroff_p = Block<uInt>(other.paroff_p.nelements());
     funpar_p = Block<uInt>(other.funpar_p.nelements());
@@ -76,12 +76,12 @@ operator=(const CompoundParam<T> &other) {
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
-    };
+    }
     for (uInt i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
-    };
-  };
+    }
+  }
   return *this;
 }
 
@@ -93,7 +93,7 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
     throw(AipsError("CompoundParam::addFunction() -- "
 		    "Inconsistent function dimension"));
-  };
+  }
   // Add the function
   uInt i = functionPtr_p.nelements();
   functionPtr_p.resize(i+1);
@@ -110,13 +110,13 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   for (uInt j=0; j<np; ++j) {
     param_p[j] = old[j];
     param_p.mask(j) = old.mask(j);
-  };
+  }
   for (uInt j=np; j<np+newFunction.nparameters(); ++j) {
     param_p[j] = newFunction[j-np];
     param_p.mask(j) = newFunction.mask(j-np);
     funpar_p[j] = i;
     locpar_p[j] = j-paroff_p[funpar_p[j]];
-  };
+  }
   return i;
 }
 

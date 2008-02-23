@@ -127,7 +127,7 @@ GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
     ferr_p    = other.ferr_p;
     valder_p = other.valder_p;
     consvd_p = other.consvd_p;
-  };
+  }
   return *this;
 }
 
@@ -158,7 +158,7 @@ setConstraintEx(const uInt n,
   for (uInt i=0; i<pCount_p; ++i) {
     (*constrFun_p[n])[i] = typename FunctionTraits<T>::DiffType
       ((*constrFun_p[n])[i].value(), pCount_p, i);
-  };
+  }
   return True;
 }
 
@@ -234,7 +234,7 @@ void GenericL2Fit<T>::setMaskedParameterValues
 (const Vector<typename FunctionTraits<T>::BaseType> &parms) {
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = parms[k++];
-  };
+  }
 }
 
 template<class T>
@@ -245,10 +245,10 @@ BaseType>::base> GenericL2Fit<T>::getSVDConstraint(uInt n) {
   if (n >= consvd_p.nelements()) {
     throw(AipsError("GenericL2Fit::getSVDConstraint(n)"
 		    " -- Illegal constraint number"));
-  };
+  }
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) tmp[i] = consvd_p[n][k++];
-  };
+  }
   return tmp;
 }
 
@@ -363,8 +363,8 @@ errors() const {
     ferr_p = 0;
     for (uInt i=0, k=0; i<pCount_p; ++i) {
       if (ptr_derive_p->mask(i)) ferr_p[i] = err_p[k++];
-    };
-  };
+    }
+  }
   return ferr_p;
 }
 
@@ -378,11 +378,11 @@ errors(Vector<typename FunctionTraits<T>::BaseType> &err) const {
       ferr_p = 0;
       for (uInt i=0, k=0; i<pCount_p; ++i) {
 	if (ptr_derive_p->mask(i)) ferr_p[i] = err_p[k++];
-      };
-    };
+      }
+    }
     err.resize(ferr_p.nelements());
     err = ferr_p;
-  };
+  }
   return errors_p;
 }
 
@@ -401,16 +401,16 @@ void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
   if (!(cov.shape().conform(iw) && cov.shape() == iw)) {
     cov.resize();
     cov.resize(iw);
-  };
+  }
   for (uInt i=0, l=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) {
       for (uInt j=0, k=0; j<pCount_p; j++) {
 	if (ptr_derive_p->mask(j)) cov(j, i) = tmp[nUnknowns()*k++ + l];
 	else cov(j, i) = 0;
-      };
+      }
       l++;
     } else for (uInt j=0; j<pCount_p; j++) cov(j, i) = 0;
-  };
+  }
   delete [] tmp;
 }
 
@@ -493,10 +493,10 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
       for (uInt i=0; i<pCount_p; ++i) {
 	(*ptr_derive_p)[i] = typename FunctionTraits<T>::DiffType
 	  ((*ptr_derive_p)[i].value(), pCount_p, i);
-      };
-    };
+      }
+    }
     consvd_p.resize(0);
-  };
+  }
 }
 
 template<class T>
@@ -509,7 +509,7 @@ testInput_p(const Array<typename FunctionTraits<T>::BaseType> &x,
       (sigma && xRows != sigma->nelements())) {
     throw(AipsError("GenericL2Fit::buildNormalMatrix()"
 		    " -- Illegal argument Array sizes"));
-  };
+  }
   xRows = y.nelements();
   initfit_p(aCount_ai);
   return xRows;
@@ -529,7 +529,7 @@ void GenericL2Fit<T>::resetFunction() {
     delete constrFun_p[i];  constrFun_p[i]  = 0;
     delete constrArg_p[i];  constrArg_p[i]  = 0;
     delete constrVal_p[i];  constrVal_p[i]  = 0;
-  };
+  }
   constrFun_p.resize(0);
   constrArg_p.resize(0);
   constrVal_p.resize(0);
@@ -550,8 +550,8 @@ getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
 	static_cast<const Matrix<typename FunctionTraits<T>::BaseType> &>(x);
       for (uInt k=0; k<ndim_p; k++) arg_p[k] = xt.row(i)[k];
       valder_p = (*ptr_derive_p)(arg_p);
-    };
-  };
+    }
+  }
   valder_p.derivatives(fullEq_p);
   return valder_p.value();
 }
@@ -577,16 +577,16 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
       if (!asweight_p) {
 	sig = abs(typename FunctionTraits<T>::BaseType(1.0)/sig); 
 	sig *= sig;
-      };
-    };
+      }
+    }
     if (ptr_derive_p) {
       b = y(i) - getVal_p(x, 0, i);
       for (uInt j=0, k=0; j<pCount_p; j++) {
 	if (ptr_derive_p->mask(j)) condEq_p[k++] = fullEq_p[j];
-      };
-    };
+      }
+    }
     makeNorm(ceqit, abs(sig), b);
-  };
+  }
   ptr_derive_p->unlockParam();
 }
 
@@ -608,10 +608,10 @@ void GenericL2Fit<T>::buildConstraint() {
     b -= valder_p.value();
     for (uInt j=0, k=0; j<pCount_p; ++j) {
       if (ptr_derive_p->mask(j)) condEq_p[k++] = fullEq_p[j];
-    };
+    }
     if (i<nConstraints()) LSQFit::setConstraint(i, ceqit, b);
     else LSQFit::addConstraint(ceqit, b);
-  };
+  }
 }
 
 template<class T>
@@ -623,7 +623,7 @@ void GenericL2Fit<T>::fillSVDConstraints() {
     VectorSTLIterator<typename LSQTraits<typename FunctionTraits<T>::
       BaseType>::base> conit(consvd_p[i]);
     LSQFit::getConstraint(i, conit);
-  };
+  }
 }
 
 template<class T>
@@ -643,11 +643,11 @@ buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
       if (sol) {
 	for (uInt j=0; j<pCount_p; j++) {
 	  if (ptr_derive_p->mask(j)) y[i] -= sol->operator()(j) * fullEq_p[j];
-	};
-      };
-    };
+	}
+      }
+    }
     if (model) y[i] = -y[i];
-  };
+  }
   return True;
 }
 

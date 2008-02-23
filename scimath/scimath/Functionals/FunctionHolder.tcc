@@ -89,14 +89,14 @@ operator=(const FunctionHolder<T> &other) {
       hold_p.set(other.hold_p.ptr()->clone());
     } else {
       hold_p.clear();
-    };
+    }
 
     if (other.mode_p.ptr()) {
       mode_p.set(other.mode_p.ptr()->clone());
     } else {
       mode_p.clear();
     }
-  };
+  }
   return *this;
 }
 
@@ -116,7 +116,7 @@ template <class T>
 const Function<T> &FunctionHolder<T>::asFunction() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty FunctionHolder argument for asFunction"));
-  };
+  }
   return *hold_p.ptr();
 }
 
@@ -134,7 +134,7 @@ template <class T>
 typename FunctionHolder<T>::Types FunctionHolder<T>::type() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty FunctionHolder argument for type()"));
-  };
+  }
   return nf_p;
 }
 
@@ -176,9 +176,9 @@ void FunctionHolder<T>::init() const {
       nam_p[i] = fnc[i].nam;
       if (i != static_cast<uInt>(fnc[i].tp)) {
 	throw(AipsError("Lists in FunctionHolder incorrect order"));
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 template <class T>
@@ -188,7 +188,7 @@ Bool FunctionHolder<T>::fromRecord(String &error, const RecordInterface &in) {
   if (!getRecord(error, fn, in)) {
     delete fn; fn = 0;
     return False;
-  };
+  }
   hold_p.set(fn);
   return True;
 }
@@ -226,32 +226,32 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
 	if (!fnch.getRecord(error, fnc, fnr)) {
 	  delete fnc; fnc = 0;
 	  return False;
-	};
+	}
 	if (nf_p == COMBINE) {
 	  dynamic_cast<CombiFunction<U> *>(fn)->
 	    addFunction(*fnc);
 	} else {
 	  dynamic_cast<CompoundFunction<U> *>(fn)->
 	    addFunction(*fnc);
-	};
+	}
 	delete fnc; fnc = 0;
-      };
-    };
+      }
+    }
     if (in.isDefined(String("params")) &&
 	(in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDouble ||
 	 in.type(in.idToNumber(RecordFieldId("params"))) == TpArrayDComplex)) {
       Vector<T> params;
       in.get(RecordFieldId("params"), params);
       setParameters(fn, params);
-    };
+    }
     if (in.isDefined(String("masks")) &&
 	in.type(in.idToNumber(RecordFieldId("masks"))) == TpArrayBool) {
       Vector<Bool> masks;
       in.get(RecordFieldId("masks"), masks);
       for (uInt i=0; i<fn->nparameters(); ++i) fn->mask(i) = masks[i];
-    };
+    }
     return True;
-  };
+  }
   error += String("Illegal Function record in "
 		  "FunctionHolder<T>::fromRecord\n");
   return False;
@@ -270,7 +270,7 @@ Bool FunctionHolder<T>::fromString(String &error,
   if (getType(error, fn)) {
     hold_p.set(fn);
     return True;
-  };
+  }
   delete fn; fn = 0;
   return False;
 }
@@ -299,7 +299,7 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
       } else {
 	x = dynamic_cast<const CompoundFunction<T> *>
 	  (hold_p.ptr())->nFunctions();
-      };
+      }
       out.define("nfunc", x);
       Record func;
       for (Int i=0; i<x; ++i) {
@@ -312,15 +312,15 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 	  FunctionHolder<T> fn(dynamic_cast<const CompoundFunction<T> *>
 			    (hold_p.ptr())->function(i));
 	  if (!fn.toRecord(error, fnc)) return False;
-	};
+	}
 	ostringstream oss;
 	oss << "__*" << i;
 	func.defineRecord(String(oss), fnc);
-      };
+      }
       out.defineRecord("funcs", func);
-    };
+    }
     return True;
-  };
+  }
   error += String("No Function specified in FunctionHolder::toRecord\n");
   return False;
 }
@@ -374,7 +374,7 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
   } else {
     error += String("Unknown functional in FunctionHolder::putType()\n");
     return False;
-  };
+  }
   out.define(RecordFieldId("type"), nf_p);
   out.define(RecordFieldId("order"), order_p);
   if (nf_p == COMPILED) out.define(RecordFieldId("progtext"), text_p);
@@ -389,7 +389,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
   if (in.isDefined(String("progtext")) &&
       in.type(in.idToNumber(RecordFieldId("progtext"))) == TpString) {
       in.get(RecordFieldId("progtext"), text_p);
-  };
+  }
 
   // mode can hold function-specific configuration data
   if (in.isDefined(String("mode")) &&
@@ -406,7 +406,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
     nf = MUString::minimaxNC(tp, nam_p);
   } else {
     in.get(RecordFieldId("type"), nf);
-  };
+  }
   nf_p = static_cast<Types>(nf);
   return getType(error, fn);
 }
@@ -417,7 +417,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
   if (nf_p<0 || nf_p >= N_Types) {
     error += "Unknown type in FunctionHolder::getType()\n";
     return False;
-  };
+  }
   ///  hold_p.clear();
   switch (nf_p) {
     
@@ -495,7 +495,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
       error += String("Illegal compiled expression:\n") +
 	dynamic_cast<CompiledFunction<U> *>(fn)->errorMessage() + "\n";
       return False;
-    };
+    }
     break;
     
   default:
@@ -517,7 +517,7 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
 				      const Vector<T> &params) {
   for (uInt i=0; i<fn->nparameters(); ++i) {
     (*fn)[i] = AutoDiff<T>(params[i], fn->nparameters(), i);
-  };
+  }
 }
 
 } //# NAMESPACE CASA - END

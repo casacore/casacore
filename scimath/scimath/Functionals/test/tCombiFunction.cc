@@ -100,7 +100,7 @@ int main() {
     combination[i] = i+10;
     AlwaysAssertExit(combination[i] == Double(i+10));
     v(i) = i+10;
-  };
+  }
 
   // Set all coefficients at once. 
   combination.parameters().setParameters(v);

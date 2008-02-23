@@ -135,7 +135,7 @@ LSQFit &LSQFit::operator=(const LSQFit &other) {
     nnc_p = other.nnc_p;
     init();
     copy(other);
-  };
+  }
   return *this;
 }
 
@@ -150,7 +150,7 @@ void LSQFit::init() {
   if (nun_p) {
     norm_p  = new LSQMatrix(nun_p);
     if (ncon_p) constr_p = new Double[nun_p*ncon_p];
-  };
+  }
   if (n_p) known_p = new Double[n_p];
   error_p = new Double[N_ErrorField];
 }
@@ -189,7 +189,7 @@ void LSQFit::copy(const LSQFit &other, Bool all) {
     if (other.piv_p && !piv_p)	piv_p   = new uInt[nnc_p];
     if (other.sol_p && !sol_p)	sol_p   = new Double[nnc_p];
     if (other.lar_p && !lar_p) 	lar_p   = new Double[n_p*n_p];
-  };
+  }
   if (other.norm_p)   norm_p->copy(*(other.norm_p));
   if (other.known_p)  std::copy(other.known_p, other.known_p+n_p, known_p);
   if (other.error_p)  std::copy(other.error_p, other.error_p+N_ErrorField,
@@ -201,7 +201,7 @@ void LSQFit::copy(const LSQFit &other, Bool all) {
     if (other.piv_p) std::copy(other.piv_p, other.piv_p+nnc_p, piv_p);
     if (other.sol_p) std::copy(other.sol_p, other.sol_p+nnc_p, sol_p);
     if (other.lar_p) std::copy(other.lar_p, other.lar_p+n_p*n_p, lar_p);
-  };
+  }
 }
 
 //# Member functions
@@ -229,7 +229,7 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
 	  for (uInt i2=0; i2<i; i2++) {
 	    Double *i4 = nceq_p->row(i2);		//row pointer
 	    d0 -= i4[i]*i4[i]/i4[i2];
-	  };
+	  }
 	  if (d0*d0/i3[i] <= prec_p) {		 	//dependancy
 	    if (!doSVD) return False;			//should be ok
 	    if (i<r_p-1) {				//rank left
@@ -237,43 +237,43 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
 	      for (uInt i2=0; i2<i; i2++) {		//shift pivot
 		Double *i4 = nceq_p->row(i2);		//row pointer
 		std::swap(i4[i], i4[j0]); 
-	      };
+	      }
 	      std::swap(i3[i], nceq_p->row(j0)[j0]);
 	      for (uInt i2=i+1; i2<j0; i2++) {
 		std::swap(i3[i2], nceq_p->row(i2)[j0]);
-	      };
+	      }
 	      Double *i4 = nceq_p->row(j0);	     	//row pointer
 	      for (uInt i2=j0+1; i2<nnc_p; i2++) {	//shift pivot
 		std::swap(i3[i2], i4[i2]);
-	      };
+	      }
 	      r_p--;					//decrease rank
 	      std::swap(piv_p[i], piv_p[j0]);
 	      continue;
 	    } else {
 	      r_p = i;					//set rank
-	    };
-	  };
+	    }
+	  }
 	  break;
-	};
+	}
 	i3[i] = d0;					//diagonal
 	for (uInt i1=i+1; i1<nnc_p; i1++) {		//lu decomposition
 	  for (uInt i2=0; i2<i; i2++) {
 	    Double *i4 = nceq_p->row(i2);		//row pointer
 	    i3[i1] -= i4[i]*i4[i1]/i4[i2];
-	  };
-	};
-      };
-    };
+	  }
+	}
+      }
+    }
     // constraints
     for (uInt i1=r_p; i1<nnc_p; i1++) {
       for (uInt i=r_p-1; (Int)i>=0; i--) {
 	Double *i3 = nceq_p->row(i);			//row pointer
 	for (uInt i2=i+1; i2<r_p; i2++) {
 	  i3[i1] += i3[i2]*nceq_p->row(i2)[i1];
-	};
+	}
 	i3[i1] /= -i3[i];
-      };
-    };
+      }
+    }
     // rank basis (a=i+g1'*.g1')
     for (uInt i=r_p; i<nnc_p; i++) {
       Double *i3 = nceq_p->row(i);			//row pointer
@@ -282,10 +282,10 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
 	for (uInt i2=0; i2<r_p; i2++) {
 	  Double *i4 = nceq_p->row(i2);		   	//row pointer
 	  i3[i1] += i4[i]*i4[i1];
-	};
-      };
+	}
+      }
       i3[i] += 1.0;
-    };
+    }
     // triangular a
     for (uInt i=r_p; i<nnc_p; i++) {
       Double *i3 = nceq_p->row(i);			//row pointer
@@ -293,10 +293,10 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
 	for (uInt i2=r_p; i2<i; i2++) {
 	  Double *i4 = nceq_p->row(i2);		   	//row pointer
 	  i3[i1] -= i4[i]*i4[i1]/i4[i2];
-	};
-      };
-    };
-  };
+	}
+      }
+    }
+  }
   //
   nRank = r_p;						//rank
   // ready
@@ -311,15 +311,15 @@ void LSQFit::solveIt() {
       sol_p[i1] = 0;
       for (uInt i2=0; i2<i1; i2++) {
 	sol_p[i1] += nceq_p->row(i2)[i1]*known_p[i2];
-      };
+      }
       for (uInt i2=i1; i2<r_p; i2++) {
 	sol_p[i1] += j0[i2]*known_p[i2];
-      };
-    };
+      }
+    }
     Double dmu = 0;
     for (uInt i1=0; i1<r_p; i1++) {
       dmu += sol_p[i1]*known_p[i1];	 		//make rms
-    };
+    }
     dmu = error_p[SUMLL] - dmu; 			//chi**2
     // error per observation
     dmu = sqrt(std::max(0.0, dmu/std::max(1.0, error_p[NC] - nun_p)));
@@ -332,19 +332,19 @@ void LSQFit::solveIt() {
       for (uInt i2=0; i2<i1; i2++) {
 	Double *i3 = nceq_p->row(i2); 			//row pointer
 	sol_p[i1] -= i3[i1]*sol_p[i2]/i3[i2];		//step 1
-      };
-    };
+      }
+    }
     for (uInt i1=r_p-1; (Int)i1>=0; i1--) {
       Double *i3 = nceq_p->row(i1); 			//row pointer
       for (uInt i2=i1+1; i2<r_p; i2++) {
 	sol_p[i1] -= i3[i2]*sol_p[i2]; 			//solution
-      };
+      }
       sol_p[i1] /= i3[i1];
-    };
+    }
     Double dmu=0;
     for (uInt i1=0; i1<r_p; i1++) {
       dmu += sol_p[i1]*known_p[piv_p[i1]];		//make rms
-    };
+    }
     dmu = error_p[SUMLL] - dmu; 			//chi**2
     dmu = sqrt(std::max(0.0, dmu/std::max(1.0, error_p[NC] - nun_p)));
     error_p[CHI2] = dmu; 				//save
@@ -352,7 +352,7 @@ void LSQFit::solveIt() {
     solveMR(nnc_p);
     // solution
     for (uInt i1=0; i1<nnc_p; ++i1) wsol_p[piv_p[i1]] = sol_p[i1];
-  };
+  }
 }
 
 Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
@@ -399,8 +399,8 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
       for (Double *i=wsol_p, *i1=nar_p->sol_p; i!=wsol_p+nun_p; ++i,++i1)
 	*i-=*i1; // new solution
       restore(False);				// restore info
-    };
-  };
+    }
+  }
   if (!ready_p && (maxiter_p==0 || niter_p>0)) {
     if (maxiter_p>0) --niter_p;
     if (balanced_p)  norm_p->addDiagonal(nun_p, nonlin_p);  // apply factor
@@ -408,7 +408,7 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
     if (!invert(nRank, doSVD)) {
       ready_p = SINGULAR;
       return False;	                        // decompose
-    };
+    }
     std::copy(wsol_p, wsol_p+nun_p, nar_p->sol_p);// save current solution
     solveIt();			                // solve
     if (normSolution(wsol_p) <= epsval_p*(normSolution(nar_p->sol_p)+epsval_p))
@@ -433,31 +433,31 @@ void LSQFit::solveMR(uInt nin) {
     sol_p[i1] = 0;
     for (uInt i2=0; i2<r_p; i2++) {
       sol_p[i1] -= sol_p[i2]*nceq_p->row(i2)[i1];
-    };
-  };
+    }
+  }
   // sol_pe x2
   for (uInt i1=r_p; i1<nin; i1++) {			//all unknowns
     for (uInt i2=r_p; i2<i1; i2++) {
       Double *i3 = nceq_p->row(i2); 			//row pointer
       sol_p[i1] -= i3[i1]*sol_p[i2]/i3[i2];		//step 1
-    };
-  };
+    }
+  }
   for (uInt i1=nin-1; (Int)i1>=(Int)r_p; i1--) {
     Double *i3 = nceq_p->row(i1);			//row pointer
     for (uInt i2=i1+1; i2<nin; i2++) {
       sol_p[i1] -= i3[i2]*sol_p[i2]; 			//solution
-    };
+    }
     sol_p[i1] /= i3[i1];
-  };
+  }
   // final x1
   if (r_p<nnc_p) {
     for (uInt i1=0; i1<r_p; i1++) {
       Double *i3 = nceq_p->row(i1);			//row pointer
       for (uInt i2=r_p; i2<nin; i2++) {
 	sol_p[i1] += sol_p[i2]*i3[i2];
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 Bool LSQFit::invertRect() {
@@ -474,18 +474,18 @@ Bool LSQFit::invertRect() {
       for (uInt i1=i+1; i1<nnc_p; i1++) {	//rest
 	j1[i1] = j0[i1];
 	rowrt(i1)[i] = j0[i1];
-      };
-    };
+      }
+    }
     // get scaling
     for (uInt i=0; i<nnc_p; i++) { 		//column loop
       Double d0 = 0;
       for (uInt i1=0; i1<nnc_p; i1++) {
 	Double *j1 = rowrt(i1);
 	if (std::abs(j1[i])>d0) d0 = std::abs(j1[i]);
-      };
+      }
       if (d0 == 0) return False;		//cannot solve
       sol_p[i] = 1./d0;				//save scaling
-    };
+    }
     // do crout
     for (uInt i1=0; i1<nnc_p; i1++) {		//all columns
       Double *j0 = rowrt(i1);
@@ -493,8 +493,8 @@ Bool LSQFit::invertRect() {
 	for (uInt i2=0; i2<i; i2++) {
 	  Double *j1 = rowrt(i2);
 	  j0[i] -= j1[i]*j0[i2];
-	};
-      };
+	}
+      }
 	
       Double d0 = 0;
       uInt i4 = 0;
@@ -502,24 +502,24 @@ Bool LSQFit::invertRect() {
 	for (uInt i2=0; i2<i1; i2++) {
 	  Double *j1 = rowrt(i2);
 	  j0[i] -= j1[i]*j0[i2];
-	};
+	}
 	if (sol_p[i]*std::abs(j0[i]) >= d0) {	 //find best pivot
 	  i4 = i;
 	  d0 = sol_p[i]*std::abs(j0[i]);
-	};
-      };
+	}
+      }
       if (i1 != i4) {	 			//interchange rows
 	for (uInt i2=0; i2<nnc_p; i2++) {
 	  Double *j1 = rowrt(i2);
 	  std::swap(j1[i4], j1[i1]);
-	};
+	}
 	sol_p[i4] = sol_p[i1];	 		//change scale factor
-      };
+      }
       piv_p[i1] = i4;				//save pivot
       if (i1 != nnc_p-1) {	 		//correct for pivot
 	for (uInt i=i1+1; i<nnc_p; i++) j0[i] /= j0[i1];
-      };
-    };
+      }
+    }
     // do invert
     for (uInt i3=0; i3<nnc_p; i3++) {		//all columns
       std::fill_n(sol_p, nnc_p, 0.0);           //inversion test
@@ -529,23 +529,23 @@ Bool LSQFit::invertRect() {
 	for (uInt i1=0; i1<i; i1++) {
 	  Double *j0 = rowrt(i1);
 	  sol_p[i] -= j0[i]*sol_p[i1];
-	};
-      };
+	}
+      }
       for (uInt i=nnc_p-1; (Int)i>=0; i--) {	//backward
 	Double *j0 = rowrt(i);
 	for (uInt i1=i+1; i1<nnc_p; i1++) {
 	  sol_p[i] -=  rowrt(i1)[i]*sol_p[i1];
-	};
+	}
 	sol_p[i] /= j0[i];
-      };
+      }
       Double *j0 = nceq_p->row(i3);		//row result
       for (uInt i=i3; i<nnc_p; i++) {		//save inverted
 	j0[i] = sol_p[i];
-      };
-    };
+      }
+    }
     state_p |= INVERTED;
     return True;
-  };
+  }
   // invert cholesky
   for (uInt i=0; i<r_p; i++) {
     for (uInt i1=0; i1<r_p; i1++) {		//all unknowns
@@ -553,44 +553,44 @@ Bool LSQFit::invertRect() {
 	sol_p[i1] = 1;
       } else {
 	sol_p[i1] = 0;
-      };
+      }
       for (uInt i2=0; i2<i1; i2++) {
 	Double *i3 = nceq_p->row(i2); 		//row pointer
 	sol_p[i1] -= i3[i1]*sol_p[i2]/i3[i2]; 	//step 1
-      };
-    };
+      }
+    }
     for (uInt i1=r_p-1; (Int)i1>=0; i1--) {
       Double *i3 = nceq_p->row(i1);		//row pointer
       for (uInt i2=i1+1; i2<r_p; i2++) {
 	sol_p[i1] -= i3[i2]*sol_p[i2]; 		//solution
-      };
+      }
       sol_p[i1] /= i3[i1];
-    };
+    }
     // missing rank
     solveMR(nun_p);
     // solution
     for (uInt i1=0; i1<nun_p; i1++) {		//save solution
       rowrt(i)[piv_p[i1]] = sol_p[i1];
-    };
-  };
+    }
+  }
   // and again
   for (uInt i=0; i<nun_p; i++) {
     for (uInt i1=0; i1<r_p; i1++) {		//get cv
       sol_p[i1] = rowrt(i1)[i];
-    };
+    }
     // missing rank
     solveMR(nun_p);
     // solution
     for (uInt i1=0; i1<nun_p; i1++) {		//save solution
       rowrt(piv_p[i1])[i] = sol_p[i1];
-    };
-  };
+    }
+  }
   // Save solution
   for (uInt i=0; i<nun_p; i++) {
     Double *j0 = nceq_p->row(i);		//output row
     Double *j1 = rowru(i);			//input row
     for (uInt i1=i; i1<nun_p; i1++) j0[i1] = j1[i1];
-  };
+  }
   
   state_p |= INVERTED;
   return True;
@@ -615,7 +615,7 @@ Bool LSQFit::merge(const LSQFit &other) {
   // Copy constraint equations
   for (uInt i=0; i<other.ncon_p; ++i) {
     addConstraint(other.constr_p + i*other.nun_p, other.known_p[nun_p+i]);
-  };  
+  }  
   return True;
 }
 
@@ -631,16 +631,16 @@ Bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
 	  if (nEqIndex[i] <= nEqIndex[i1]) {
 	    norm_p->row(nEqIndex[i])[nEqIndex[i1]] += i3[i1];
 	  } else norm_p->row(nEqIndex[i1])[nEqIndex[i]] += i3[i1];
-	};
-      };
-    };
-  };
+	}
+      }
+    }
+  }
   // Copy known terms
   Double *i2 = known_p;
   Double *i3 = other.known_p;
   for (uInt i=0; i<nIndex; ++i) {
     if (nEqIndex[i] >= 0 && nEqIndex[i]<nun_p) i2[nEqIndex[i]] += i3[i];
-  };
+  }
   // Copy statistics information
   error_p[NC]        += other.error_p[NC];
   error_p[SUMWEIGHT] += other.error_p[SUMWEIGHT];
@@ -649,7 +649,7 @@ Bool LSQFit::mergeIt(const LSQFit &other, uInt nIndex, const uInt *nEqIndex) {
   for (uInt i=0; i<other.ncon_p; ++i) {
     addConstraint(nIndex, const_cast<uInt *>(nEqIndex),
 		  other.constr_p + i*other.nun_p, other.known_p[nun_p+i]);
-  };  
+  }  
   return True;
 }
 
@@ -672,14 +672,14 @@ void LSQFit::extendConstraints(uInt n) {
     for (uInt i=0; i<ncon_p && i<n; ++i) {
       for (uInt j=0; j<nun_p; ++j) *cptr++ =  *inc++;
       *vptr++ = *inv++;
-    };
+    }
     for (uInt i=ncon_p; i<n; ++i) {
       for (uInt j=0; j<nun_p; ++j) *cptr++ = 0;
       *vptr++ = 0;
-    };
+    }
     delete [] constr_p; constr_p = newcon;
     delete [] known_p;  known_p  = newknw;
-  };
+  }
   ncon_p = n;
   n_p    = nun_p+ncon_p;
   r_p    = n_p;
@@ -695,17 +695,17 @@ void LSQFit::createNCEQ(){
     piv_p = new uInt[nnc_p];
     delete [] sol_p;
     sol_p = new Double[nnc_p];
-  };
+  }
   // Copy the normal and constraint equations
   Double *ne = norm_p->trian_p;
   Double *se = nceq_p->trian_p;
   for (uInt i=0; i<nun_p; ++i) {
     for (uInt j=i; j<nun_p; ++j) *se++ = *ne++;
     for (uInt j=0; j<ncon_p; ++j) *se++ = constr_p[j*nun_p+i];
-  };
+  }
   for (uInt i=nun_p; i<n_p; ++i) {
     for (uInt j=i; j<n_p; ++j) *se++ = 0;
-  };
+  }
   // Initialise pivot table ///
   for (uInt i=0; i<nnc_p; ++i) piv_p[i] = i;
   state_p |= TRIANGLE;
@@ -748,7 +748,7 @@ void LSQFit::save(Bool all) {
     nar_p = new LSQFit(*this);
   } else {
     nar_p->copy(*this, all);
-  };
+  }
 }
 
 void LSQFit::restore(Bool all) {

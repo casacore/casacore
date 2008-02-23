@@ -40,7 +40,7 @@ T Polynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
   while (--j >= 0) {
     accum *= x[0];
     accum += param_p[j];
-  };
+  }
   return accum;
 }
 

@@ -88,7 +88,7 @@ operator=(const SimButterworthBandpass<T> &other) {
     Function1D<T>::operator=(other);
     nl_p = other.nl_p;
     nh_p = other.nh_p;
-  };
+  }
   return *this;
 }
 
@@ -102,13 +102,13 @@ eval(const typename  FunctionTraits<T>::ArgType *x) const {
     hp = T(1) / sqrt(T(1) + pow((x[0] - param_p[CENTER])/
 				(param_p[MAXCUTOFF] - param_p[CENTER]),
 				T(2*nh_p)));
-  };
+  }
   // calculate the high-pass portion
   if (x[0] < param_p[CENTER]) { 
     hp *= T(1) / sqrt(T(1) + pow((param_p[CENTER] - x[0])/
 				(param_p[MINCUTOFF] - param_p[CENTER]),
 				T(2*nl_p)));
-  };  
+  }  
   return param_p[PEAK]*hp;
 }
 

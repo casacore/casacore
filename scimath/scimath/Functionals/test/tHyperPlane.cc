@@ -70,7 +70,7 @@ int main() {
       hyper[i] = i+10;
       AlwaysAssertExit(hyper[i] == Double(i+10));
       v(i) = i+10;
-    };
+    }
     
     // Set all coefficients at once. 
     // Get all the values of coefficients at once.  
@@ -88,14 +88,14 @@ int main() {
     for (uInt i=0; i<hyper.nparameters()-2; i++) { 
       hyper.mask(i) = False;
       AlwaysAssertExit(!hyper.mask(i));
-    };
+    }
     
     AlwaysAssertExit(hyper.parameters().nMaskedParameters() == 2);
     
     for (uInt i=0; i<hyper.parameters().nMaskedParameters(); i++) { 
       AlwaysAssertExit(hyper.parameters().getMaskedParameters()[i] ==
 		       Double(11+i));
-    };
+    }
   
     // test specialized AutoDiff 
     // f(x,y,z) = 10x + 11y + 12*z + 13
@@ -106,7 +106,7 @@ int main() {
       AlwaysAssertExit(s5[i] == Double(i+10));
       v[i] = i+10;
       v6(i) = i+10;
-    };
+    }
     Double y50 = s5(v).value();
     Vector<Double> y51;
     y51 = s5(v).derivatives();
@@ -118,7 +118,7 @@ int main() {
       s6[i] = AutoDiffA<Double>(i+10,3,i);
       AlwaysAssertExit(s6[i].value() == Double(i+10));
       v6(i) = i+10;
-    };
+    }
     Double y60 = s6(v6).value();
     Vector<Double> y61;
     y61 = s6(v6).derivatives();

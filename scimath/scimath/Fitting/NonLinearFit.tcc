@@ -72,7 +72,7 @@ NonLinearFit<T> &NonLinearFit<T>::operator=(const NonLinearFit &other) {
     curiter_p = other.curiter_p;
     criterium_p = other.criterium_p;
     converge_p = other.converge_p;
-  };
+  }
   return *this;
 }
 

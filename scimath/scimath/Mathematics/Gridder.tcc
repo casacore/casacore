@@ -42,10 +42,10 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template <class Domain, class Range>
-Gridder<Domain, Range>::Gridder() {};
+Gridder<Domain, Range>::Gridder() {}
 
 template <class Domain, class Range>
-Gridder<Domain, Range>::~Gridder() {};
+Gridder<Domain, Range>::~Gridder() {}
 
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder(const IPosition& ishape,

@@ -59,7 +59,7 @@ CompiledParam<T>& CompiledParam<T>::operator=(const CompiledParam<T> &other) {
     msg_p = other.msg_p;
     text_p = other.text_p;
     functionPtr_p =  new FuncExpression(*other.functionPtr_p);
-  };
+  }
   return *this;
 }
 
@@ -78,7 +78,7 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
     msg_p = functionPtr_p->errorMessage();
     delete functionPtr_p; functionPtr_p=0;
     return False;
-  };
+  }
   ndim_p = functionPtr_p->getNdim();
   this->param_p = FunctionParam<T>(functionPtr_p->getNpar());
   text_p = newFunction;

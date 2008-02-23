@@ -96,7 +96,7 @@ MatrixSolver & MatrixSolver::operator=(const MatrixSolver & other) {
 }    
 
 // Virtual destructor
-MatrixSolver::~MatrixSolver() {};
+MatrixSolver::~MatrixSolver() {}
 
 // Virtual solve method
 Bool MatrixSolver::solve() {return False;}

@@ -48,21 +48,21 @@ extern "C" {
 };
 
 // Default Constructor
-NNLSMatrixSolver::NNLSMatrixSolver(): MatrixSolver() {};
+NNLSMatrixSolver::NNLSMatrixSolver(): MatrixSolver() {}
   
 // Copy Constructor
 NNLSMatrixSolver::NNLSMatrixSolver(const NNLSMatrixSolver & other)
-: MatrixSolver(other) {};
+: MatrixSolver(other) {}
   
 // Create a NNLSMatrixSolver from a matrix A and a Vector B
 // <note role=warning> A and B are accessed by reference, so don't 
 // modify them during the lifetime of the NNLSMatrixSolver </note>
 NNLSMatrixSolver::NNLSMatrixSolver(const Matrix<FType> & A,
 				   const Vector<FType> & B)
-: MatrixSolver(A,B) {};
+: MatrixSolver(A,B) {}
   
 // Destructor
-NNLSMatrixSolver::~NNLSMatrixSolver() {};
+NNLSMatrixSolver::~NNLSMatrixSolver() {}
 
 Bool NNLSMatrixSolver::solve() // Solve AX=B for X
 {
@@ -94,14 +94,14 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
     message.message(o);logSink().post(message);
     setSolved(False);
     return Solved();
-  };
+  }
   if (mode==3) {
     ostringstream o;o<<"Exceeded number of iterations";
     message.priority(LogMessage::SEVERE);
     message.message(o);logSink().post(message);
     setSolved(False);
     return Solved();
-  };
+  }
   
   if(accurateSolution()) {
     ostringstream o;o<<"Solution acheived";

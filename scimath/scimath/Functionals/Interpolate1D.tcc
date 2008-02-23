@@ -108,8 +108,8 @@ setData(const SampledFunctional<Domain> &x,
       if (nearAbs(xValues[i], xValues[i+1])) {
 	throw(AipsError("Interpolate1D::setData"
 			" data has repeated x values"));
-      };
-    };
+      }
+    }
   //  I will not initialise the y2Values as they are not used unless the
   //  interpolation method is changed to spline. The y2Values are hence
   //  initialised by method.
@@ -250,13 +250,13 @@ template <class Domain, class Range> Vector<Domain> Interpolate1D<Domain, Range>
 getX() const{
   Vector<Domain> x(xValues, nElements);
   return x;
-};
+}
 
 template <class Domain, class Range> Vector<Range> Interpolate1D<Domain, Range>::
 getY() const {
   Vector<Range> y(yValues, nElements);
   return y;
-};
+}
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
 eval(typename Function1D<Domain, Range>::FunctionArg x) const {

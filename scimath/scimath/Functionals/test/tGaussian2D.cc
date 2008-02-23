@@ -65,10 +65,10 @@ int main() {
 		 << exp(-log(16.0)*(z(0)*z(0)+z(1)*z(1)))
 		 << " calculated value is " 
 		 << g(z) << endl;
-	  };
+	  }
 	  sum += g(z);
-	};
-      };
+	}
+      }
       if (failed) cout << "Failed";
       else cout << "Passed";
       cout << " the default Gaussian test" << endl;
@@ -80,18 +80,18 @@ int main() {
 	       << C::pi/log(16.0) << ")" ;
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
-      };
+      }
       if (!failed) {
 	if (!near(C::pi/log(16.0), Double(g.flux()), 1E-7)) {
 	  failed = True;
 	} else {
 	  g.setFlux(2*g.flux());
 	  if (!near(g(0,0), 2.0f)) failed = True;
-	};
+	}
 	if (!failed) cout << "Passed";
 	else cout << "Failed";
 	cout << " the set/get Flux test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }
     {
@@ -102,7 +102,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get height test" << endl;
 
       g.setXcenter(-10.0);
@@ -110,7 +110,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get X centre test" << endl;
 
       g.setYcenter(0.1);
@@ -118,7 +118,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get Y centre test" << endl;
 
       Vector<Double> c(2);
@@ -128,7 +128,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get centre test" << endl;
 
       g.setMajorAxis(10.0);
@@ -136,7 +136,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get major axis length test" << endl;
 
       g.setMinorAxis(0.1);
@@ -144,7 +144,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get minor axis length test" << endl;
 
       Vector<Double> w(2); w(0) = 2.0; w(1) = 1.0;
@@ -153,7 +153,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get width test" << endl;
 
       g.setAxialRatio(1.0);
@@ -161,7 +161,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get axial ratio test" << endl;
 
       g.setPA(-C::pi_2);
@@ -169,7 +169,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
 
       cout << " the set/get PA test" << endl;
       if (!failed) {
@@ -197,7 +197,7 @@ int main() {
 	g.setAvailableParamMask(5, False);
 	for (uInt i = 0; i < 4; i++) {
 	  if (g.getAvailableParamMask(i) == False) failed = True;
-	};
+	}
 	if (g.getAvailableParamMask(4) == True) failed = True;
 	if (g.getAvailableParamMask(5) == True) failed = True;
 	*///
@@ -206,9 +206,9 @@ int main() {
 	else {
 	  cout << "Failed";
 	  failed=True;
-	};
+	}
 	cout << " the set/get parameters test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }*/
     {
@@ -239,7 +239,7 @@ int main() {
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the arbitrary Gaussian test" << endl;
 
       if (failed) anyFailures = True;
@@ -288,7 +288,7 @@ int main() {
     } else {
       cout << "OK" << endl;
       return 0;
-    };
+    }
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;

@@ -41,8 +41,8 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     if (this->param_p[i].nDerivatives() > 0) {
       tmp = this->param_p[i];
       break;
-    };
-  };
+    }
+  }
   // function value
   Int j = this->nparameters();
   tmp.value() = T(0);
@@ -52,8 +52,8 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
     for (uInt i=0; i<this->nparameters(); ++i) {
       if (this->param_p.mask(i)) tmp.deriv(i) = x[i];
-    };
-  };
+    }
+  }
   return tmp;
 }
 

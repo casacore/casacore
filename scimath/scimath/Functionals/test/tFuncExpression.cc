@@ -85,7 +85,7 @@ int main() {
       cout << "Expression: '" << myexpr << "'" << endl; 
       if (!expr.create(myexpr)) {
 	cout << expr.errorMessage() << endl;
-      };
+      }
       cout << expr;
       Double res;
       cout << "Value: ";
@@ -93,37 +93,37 @@ int main() {
 	cout << expr.errorMessage() << endl;
       } else cout << res << endl;
       cout << "----------------------------------------------------" << endl;
-    };
+    }
     for (uInt i=0; i<n; ++i) {
       CompiledFunction<Double> expr;
       String myexpr = exprlist[i];
       cout << "Expression: '" << myexpr << "'" << endl; 
       if (!expr.setFunction(myexpr)) {
 	cout << expr.errorMessage() << endl;
-      };
+      }
       if (expr.nparameters() > 0) expr[0] = 1.5;
       if (expr.nparameters() > 1) expr[1] = 2.5;
       cout << "Value(3.5, 0): ";
       cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
-    };
+    }
     for (uInt i=0; i<n; ++i) {
       CompiledFunction<AutoDiff<Double> > expr;
       String myexpr = exprlist[i];
       cout << "Expression: '" << myexpr << "'" << endl; 
       if (!expr.setFunction(myexpr)) {
 	cout << expr.errorMessage() << endl;
-      };
+      }
       if (expr.nparameters() > 0) {
 	expr[0] = AutoDiff<Double>(1.5, expr.nparameters(), 0);
-      };
+      }
       if (expr.nparameters() > 1) {
 	expr[1] = AutoDiff<Double>(2.5, expr.nparameters(), 1);
-      };
+      }
       cout << "Value(3.5, 0): ";
       cout << expr(3.5) << ", " << expr(0.0) << endl;
       cout << "----------------------------------------------------" << endl;
-    };
+    }
   }  catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
@@ -133,5 +133,5 @@ int main() {
     cerr << "Exception not derived from AipsError" << endl;
     cout << "FAIL" << endl;
     return 2;
-  };
+  }
 }

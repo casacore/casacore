@@ -41,7 +41,7 @@ T OddPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
     accum *= x[0];
     accum += param_p[j];
     accum *= x[0];
-  };
+  }
   return accum;
 }
 

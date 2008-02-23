@@ -54,7 +54,7 @@ FittingProxy::FitType::FitType() :
   fitter_p(0), fitterCX_p(0),
   n_p(0), nceq_p(0), nreal_p(0), typ_p(0),
   colfac_p(1e-8), lmfac_p(1e-3), 
-  soldone_p(False), nr_p(0) {;}
+  soldone_p(False), nr_p(0) {}
 
 FittingProxy::FitType::~FitType() {
   delete fitter_p; fitter_p = 0;
@@ -105,7 +105,7 @@ FittingProxy::FittingProxy() :
 FittingProxy::~FittingProxy() {
   for (uInt i=0; i<nFitter_p; i++) {
     delete list_p[i]; list_p[i] = 0;
-  };
+  }
   delete [] list_p;
 }
 
@@ -119,8 +119,8 @@ Int FittingProxy::getid()
       if (!list_p[i]) {
 	id = i;
 	break;
-      };
-    };
+      }
+    }
     // Make some more
     if (id<0) {
       uInt n = nFitter_p;
@@ -131,10 +131,10 @@ Int FittingProxy::getid()
       for (uInt i=0; i<nFitter_p; i++) {
 	list_p[i] = 0;
 	if (i<n) list_p[i] = list[i];
-      };
+      }
       delete [] list;
-    };
-  };
+    }
+  }
   list_p[id] = new FittingProxy::FitType;
   return id;
 }
@@ -147,7 +147,7 @@ Record FittingProxy::getstate(Int id)
     res.define(String("typ"), list_p[id]->getType());
     res.define(String("colfac"), list_p[id]->getColfac());
     res.define(String("lmfac"), list_p[id]->getLMfac());
-  };      
+  }      
   return res;
 }
 
@@ -158,16 +158,16 @@ Bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac)
   if (tp == 0) {
     if (!list_p[id]->getFitter()) {
       list_p[id]->setFitter(new LinearFitSVD<Double>);
-    };
+    }
     list_p[id]->getFitter()->set(n);
     list_p[id]->getFitter()->set(abs(colfac), abs(lmfac));
   } else {
     if (!list_p[id]->getFitterCX()) {
       list_p[id]->setFitterCX(new LinearFitSVD<DComplex>);
-    };
+    }
     list_p[id]->getFitterCX()->set(n);
     list_p[id]->getFitterCX()->set(abs(colfac), abs(lmfac));
-  };
+  }
   list_p[id]->setStatus(n, tp,
 			  abs(colfac), abs(lmfac));
   list_p[id]->setSolved(False);
@@ -178,7 +178,7 @@ Bool FittingProxy::done(Int id)
 {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to undo a non-existing fitter"));
-  };
+  }
   list_p[id]->setFitter(0);
   return True;
 }
@@ -240,13 +240,13 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Functional fitter x and y lengths disagree"));
-  };
+  }
 
   for (uInt i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
-    };
+    }
     const RecordInterface &con = constraint.asRecord(fid);
     if (con.isDefined(String("fnct")) && con.isDefined(String("x")) &&
 	con.isDefined(String("y")) &&
@@ -261,21 +261,21 @@ Record FittingProxy::functional(Int id, const Record& fnc,
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
-    };
-  };
+    }
+  }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
   Matrix<Double> mval(ip2);
   Array<Double>::const_iterator cit = xval.begin();
   for (ArrayAccessor<Double, Axis<0> > i(mval); i!=i.end(); ++i) {
     for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
-  };
+  }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
     returnval = fitter.fit(mval, yval);
   } else {
     returnval = fitter.fit(mval, yval, wt);
-  };
+  }
   rank = fitter.getRank();
   deficiency = fitter.getDeficiency();
   sd = fitter.getSD();
@@ -288,7 +288,7 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
-  };
+  }
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
@@ -326,12 +326,12 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Linear fitter x and y lengths disagree"));
-  };
+  }
   for (uInt i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
-    };
+    }
     const RecordInterface &con = constraint.asRecord(fid);
     if (con.isDefined(String("fnct")) && con.isDefined(String("x")) &&
 	con.isDefined(String("y")) &&
@@ -346,21 +346,21 @@ Record FittingProxy::linear(Int id, const Record& fnc,
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
-    };
-  };
+    }
+  }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
   Matrix<Double> mval(ip2);
   Array<Double>::const_iterator cit = xval.begin();
   for (ArrayAccessor<Double, Axis<0> > i(mval); i!=i.end(); ++i) {
     for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
-  };
+  }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
     returnval = fitter.fit(mval, yval);
   } else {
     returnval = fitter.fit(mval, yval, wt);
-  };
+  }
   rank = fitter.getRank();
   deficiency = fitter.getDeficiency();
   sd = fitter.getSD();
@@ -373,7 +373,7 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   for (uInt i=0; i<fitter.getDeficiency(); ++i, conit+returnval.nelements()) {
     ctmp = fitter.getSVDConstraint(i);
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
-  };
+  }
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
@@ -413,13 +413,13 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Functional fitter x and y lengths disagree"));
-  };
+  }
 
   for (uInt i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
-    };
+    }
     const RecordInterface &con = constraint.asRecord(fid);
     if (con.isDefined(String("fnct")) && con.isDefined(String("x")) &&
 	con.isDefined(String("y")) &&
@@ -434,21 +434,21 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
-    };
-  };
+    }
+  }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
   Matrix<DComplex> mval(ip2);
   Array<DComplex>::const_iterator cit = xval.begin();
   for (ArrayAccessor<DComplex, Axis<0> > i(mval); i!=i.end(); ++i) {
     for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
-  };
+  }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
     returnval = fitter.fit(mval, yval);
   } else {
     returnval = fitter.fit(mval, yval, wt);
-  };
+  }
   rank = fitter.getRank();
   deficiency = fitter.getDeficiency();
   sd = fitter.getSD();
@@ -461,7 +461,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
-  };
+  }
   fitter.getCovariance(covar);
   err.resize();
   fitter.getErrors(err);
@@ -500,13 +500,13 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Linear fitter x and y lengths disagree"));
-  };
+  }
 
   for (uInt i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
-    };
+    }
     const RecordInterface &con = constraint.asRecord(fid);
     if (con.isDefined(String("fnct")) && con.isDefined(String("x")) &&
 	con.isDefined(String("y")) &&
@@ -521,21 +521,21 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
-    };
-  };
+    }
+  }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
   Matrix<DComplex> mval(ip2);
   Array<DComplex>::const_iterator cit = xval.begin();
   for (ArrayAccessor<DComplex, Axis<0> > i(mval); i!=i.end(); ++i) {
     for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
-  };
+  }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
     returnval = fitter.fit(mval, yval);
   } else {
     returnval = fitter.fit(mval, yval, wt);
-  };
+  }
   rank = fitter.getRank();
   deficiency = fitter.getDeficiency();
   sd = fitter.getSD();
@@ -548,7 +548,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   for (uInt i=0; i<fitter.getDeficiency(); ++i, conit+returnval.nelements()) {
     ctmp = fitter.getSVDConstraint(i);
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
-  };
+  }
 
   fitter.getCovariance(covar);  
   err.resize();

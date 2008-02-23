@@ -51,7 +51,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     this->thePA = this->param_p[this->PANGLE];
     this->theCpa = cos(this->thePA);
     this->theSpa = sin(this->thePA);
-  };
+  }
   T xnorm = x2mean*this->theCpa.value() + y2mean*this->theSpa.value();
   T ynorm = -x2mean*this->theSpa.value() + y2mean*this->theCpa.value();
   T xnorm2 = xnorm*xnorm;
@@ -94,7 +94,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 				      y2mean*this->theCpa.value()) +
 				 y2w*(-x2mean*this->theCpa.value() -
 				      y2mean*this->theSpa.value()));
-  };
+  }
   return tmp;
 }
 

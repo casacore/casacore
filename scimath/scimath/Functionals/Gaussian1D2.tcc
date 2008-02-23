@@ -59,7 +59,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     // derivative wrt width
     if (this->param_p.mask(this->WIDTH)) tmp.deriv(this->WIDTH) = dev*
 			       x_norm*this->fwhm2int.value();
-  };
+  }
   return tmp;
 }
 

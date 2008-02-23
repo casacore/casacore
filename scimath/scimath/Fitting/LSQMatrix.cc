@@ -67,7 +67,7 @@ LSQMatrix &LSQMatrix::operator=(const LSQMatrix &other) {
     n_p    = other.n_p; 
     init();
     copy(other);
-  };
+  }
   return *this;
 }
 
@@ -89,7 +89,7 @@ void LSQMatrix::init() {
     n2m1_p   = 0;
     n2p1_p   = 0;
     trian_p  = 0;
-  };
+  }
 }
 
 void LSQMatrix::clear() {
@@ -125,7 +125,7 @@ void LSQMatrix::doDiagonal(uInt n) {
   for (uInt i=0; i<n; ++i) {
     Double *j = diag(i);
     if (*j == 0.0) *j = 1.0;
-  };
+  }
 }
   
 void LSQMatrix::mulDiagonal(uInt n, Double fac) {

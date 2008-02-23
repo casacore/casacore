@@ -114,7 +114,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (this != &other) {
       rep_p->val_p = other.rep_p->val_p;
       rep_p->grad_p = other.rep_p->grad_p;
-    };
+    }
     return *this;
   }
 
@@ -152,15 +152,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    tmp->grad_p.push_back(std::make_pair(j->first, j->second*value()));
 	  ++j;
 	  --i;
-	};
-      };
+	}
+      }
       if (value() != T(0))
 	for ( ; j!=other.grad().end(); ++j) 
 	  tmp->grad_p.push_back(std::make_pair(j->first, j->second*value()));
       tmp->val_p = value();
       ObjectStack<SparseDiffRep<T> >::stack().put(rep_p);
       rep_p = tmp;
-    };
+    }
     value() *= other.value();
   }
 
@@ -198,8 +198,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						 -j->second*value()/t));
 	  ++j;
 	  --i;
-	};
-      };
+	}
+      }
       if (value() != T(0))
 	for ( ; j!=other.grad().end(); ++j) 
 	  tmp->grad_p.push_back(std::make_pair(j->first,
@@ -207,7 +207,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       tmp->val_p = value();
       ObjectStack<SparseDiffRep<T> >::stack().put(rep_p);
       rep_p = tmp;
-    };
+    }
     value() /= other.value();
   }
 
@@ -236,13 +236,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  tmp->grad_p.push_back(*j);
 	  ++j;
 	  --i;
-	};
-      };
+	}
+      }
       for ( ; j!=other.grad().end(); ++j) tmp->grad_p.push_back(*j);
       tmp->val_p = value();
       ObjectStack<SparseDiffRep<T> >::stack().put(rep_p);
       rep_p = tmp;
-    };
+    }
     value() += other.value();
   }
 
@@ -262,7 +262,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (typename vector<pair<uInt, T> >::const_iterator
 	   i=grad().begin(); i!=grad().end(); ++i) {
       if (i->first < n) tmp.derivative(i->first) = i->second;
-    };
+    }
     return tmp;
   }
 
@@ -293,13 +293,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (i->first == (i-1)->first) {
 	  i->second += (i-1)->second;
 	  i->second = T(0);
-	};
-      };
-    };
+	}
+      }
+    }
     for (typename vector<pair<uInt, T> >::iterator i=grad().begin();
 	 i!=grad().end(); ++i) {
       if (i->second != T(0)) tmp->grad_p.push_back(*i);
-    };
+    }
     tmp->val_p = value();
     ObjectStack<SparseDiffRep<T> >::stack().put(rep_p);
     rep_p = tmp;

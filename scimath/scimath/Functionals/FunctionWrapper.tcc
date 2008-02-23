@@ -72,13 +72,13 @@ template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&, const Vector<T>&),
 					const Vector<T> &par) :
   WrapperParam<T>(par),
-  doit_p(new WrapperData<T,T,Vector<T>,True,True>(f,1)) {};
+  doit_p(new WrapperData<T,T,Vector<T>,True,True>(f,1)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&),
 					const Int dim) :
   WrapperParam<T>(0),
-  doit_p(new WrapperData<T,Vector<T>,T,True,False>(f,dim)) {};
+  doit_p(new WrapperData<T,Vector<T>,T,True,False>(f,dim)) {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&, const T&),
@@ -86,7 +86,7 @@ FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&, const T&),
   WrapperParam<T>(1),
   doit_p(new WrapperData<T,Vector<T>,T,True,True>(f,dim)) {
   param_p[0] = par;
-};
+}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&,
@@ -94,7 +94,7 @@ FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&,
 					const Vector<T> &par,
 					const uInt dim) :
   WrapperParam<T>(par),
-  doit_p(new WrapperData<T,Vector<T>,Vector<T>,True,True>(f,dim)) {};
+  doit_p(new WrapperData<T,Vector<T>,Vector<T>,True,True>(f,dim)) {}
 
 template <class T>
 FunctionWrapper<T>::
@@ -107,7 +107,7 @@ operator=(const FunctionWrapper<T> &other) {
   if (this != &other) {
     WrapperParam<T>::operator=(other);
     doit_p = other.doit_p; /// check clone
-  };
+  }
   return *this;
 }
 

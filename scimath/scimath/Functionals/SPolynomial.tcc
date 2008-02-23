@@ -40,7 +40,7 @@ T SPolynomial<T>::eval(typename Function<T>::FunctionArg x) const {
   while (--j >= 3) {
     accum *= (x[0]-param_p[1])/param_p[2];
     accum += param_p[j];
-  };
+  }
   return param_p[0]*accum;
 }
 

@@ -130,7 +130,7 @@ FuncExprData::FuncExprData() :
       break;
     }
     allop_p[olist[i].code] = olist[i];
-  };
+  }
   spop_p[olist[i].name] = olist[i];
   allop_p[olist[i].code] = olist[i];
 }

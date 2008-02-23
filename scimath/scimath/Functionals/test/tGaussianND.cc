@@ -57,10 +57,10 @@ int main(){
 		 << exp(-(z(0)*z(0)+z(1)*z(1))/2)/(C::_2pi) 
 		 << " calculated value is " 
 		 << default2D(z) << endl;
-	  };
+	  }
 	  sum += default2D(z);
-	};
-      };
+	}
+      }
       if (failed) cout << "Failed";
       else cout << "Passed";
       cout << " the default Gaussian test" << endl;
@@ -71,7 +71,7 @@ int main(){
 	  cout << "Failed (value was " << sum*inc*inc << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }
     { 
@@ -96,7 +96,7 @@ int main(){
 	       << exp(-(z(0)*z(0)/2))/sqrt(C::_2pi) 
 	       << " calculated value is " 
 	       << g(z) << endl;
-	};
+	}
 	if (!near(Double(g1(z)),
 		  2.0*exp(-(z(0)*z(0))/2/2),1E-5)) {
 	  failed = True;
@@ -104,7 +104,7 @@ int main(){
 	       << 2.0*exp(-(z(0)*z(0)/2/2))
 	       << " calculated value is " 
 	       << g1(z) << endl;
-	};
+	}
 	if (!near(Double(g2(z)),
 		  3.0*exp(-(z(0)*z(0))/2/3),1E-5)) {
 	  failed = True;
@@ -112,7 +112,7 @@ int main(){
 	       << 3.0*exp(-(z(0)*z(0)/2/3))
 	       << " calculated value is " 
 	       << g2(z) << endl;
-	};
+	}
       }
       if (!failed) cout << "Passed";
       else cout << "Failed";
@@ -127,7 +127,7 @@ int main(){
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get height test" << endl;
 
       Vector<Float> z(3);
@@ -148,11 +148,11 @@ int main(){
 		   << exp(-(z(0)*z(0)+z(1)*z(1)+z(2)*z(2))/2)
   		   << " calculated value is " 
   		   << gauss3D(z) << endl;
-	    };
+	    }
 	    sum += gauss3D(z);
-	  };
-	};
-      };
+	  }
+	}
+      }
       if (failed) cout << "Failed";
       else cout << "Passed";
       cout << " the 3-D specified height test" << endl;
@@ -165,7 +165,7 @@ int main(){
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }
     {
@@ -180,7 +180,7 @@ int main(){
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get mean test" << endl;
 
       Vector<Double> z(2); z = 0;
@@ -199,10 +199,10 @@ int main(){
 		 << exp(-(square(z(0)-mean(0))+square(z(1)-mean(1)))/2)
   		 << " calculated value is "
   		 << gauss2D(z) << endl;
-	  };
+	  }
 	  sum += gauss2D(z);
-	};
-      };
+	}
+      }
       if (failed) cout << "Failed";
       else cout << "Passed";
       cout << " the 2-D specified height & mean test" << endl;
@@ -215,7 +215,7 @@ int main(){
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }
     {
@@ -233,7 +233,7 @@ int main(){
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get variance test" << endl;
 
       Vector<Double> z(3);
@@ -259,11 +259,11 @@ int main(){
 		      +square(z(2)-mean(2))/variance(2))/2)
 		   << " calculated value is "
 		   << gauss3D(z) << endl;
-	    };
+	    }
 	    sum += gauss3D(z);
-	  };
-	};
-      };
+	  }
+	}
+      }
       if (failed) cout << "Failed";
       else cout << "Passed";
       cout << " the 3-D specified height, mean & variance test" << endl;
@@ -281,7 +281,7 @@ int main(){
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
-      };
+      }
       if (failed) anyFailures = True;
     }
     {
@@ -309,7 +309,7 @@ int main(){
       else {
 	cout << "Failed";
 	failed=True;
-      };
+      }
       cout << " the set/get covariance test" << endl;
       if (!failed) {
 	Vector<Float> z(3); z = 0;
@@ -345,11 +345,11 @@ int main(){
 		failed = True;
 		cout << "Expected value for f(" << z << ") is " << ev
 		     << " calculated value is " << gauss3D(z) << endl;
-	      };
+	      }
 	      sum += gauss3D(z);
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (failed) cout << "Failed";
 	else cout << "Passed";
 	cout << " the 3-D specified height, mean & covariance test" << endl;
@@ -408,19 +408,19 @@ int main(){
 	  parms *= Float(2);
 	  if (!(allNear(gauss3D.parameters().getParameters(), parms, 1E-6))) {
 	    failed=True;
-	  };
+	  }
 	  if (failed) cout << "Failed";
 	  else cout << "Passed";
 	  cout << " the Parameters tests" << endl;
-	};
-      };
+	}
+      }
     
       if (failed) anyFailures = True;
     }
     if (anyFailures) {
       cout << "FAIL" << endl;
       return 1;
-    };
+    }
     cout << "OK" << endl;
     return 0;
   }

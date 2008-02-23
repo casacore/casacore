@@ -46,8 +46,8 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     tmp.value() += t.value();
     for (uInt j=0; j<t.nDerivatives(); ++j) {
       tmp.deriv(this->paroff_p[i]+j) += t.deriv(j);
-    };
-  };
+    }
+  }
   return tmp;
 }
 
@@ -73,17 +73,17 @@ void CompoundFunction<AutoDiff<T> >::fromParam_p() const {
       } else if (k != l) {
 	(*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]] = AutoDiff<T>(T(0), k);
 	l = k;
-      };
+      }
       // Set the parameter data
       for (uInt j=0; j<l; ++j) {
 	(*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].deriv(j) =
 	  this->param_p[i].deriv(j+this->paroff_p[this->funpar_p[i]]);
-      };
+      }
       (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].value() = this->param_p[i].value();
       this->functionPtr_p[this->funpar_p[i]]->mask(this->locpar_p[i]) = this->param_p.mask(i);
-    };
+    }
     this->parset_p = False;
-  };
+  }
 }
 
 template <class T>
@@ -92,7 +92,7 @@ void CompoundFunction<AutoDiff<T> >::toParam_p() {
   // Set derivatives
     if (this->nparameters() != this->param_p[i].nDerivatives()) {
       this->param_p[i] = AutoDiff<T>(this->param_p[i].value(), this->nparameters());
-    };
+    }
     uInt k = this->functionPtr_p[this->funpar_p[i]]->nparameters();
     uInt l = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].nDerivatives();
     // Set correct number of derivatives in sub-functions
@@ -102,15 +102,15 @@ void CompoundFunction<AutoDiff<T> >::toParam_p() {
       } else if (k != l) {
 	(*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]] = AutoDiff<T>(T(0), k);
 	l = k;
-      };
+      }
     // Set the parameter data
     for (uInt j=0; j<l; ++j) {
       this->param_p[i].deriv(j+this->paroff_p[this->funpar_p[i]]) =
 	(*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].deriv(j);
-    };
+    }
     this->param_p[i].value() = (*this->functionPtr_p[this->funpar_p[i]])[this->locpar_p[i]].value();
     this->param_p.mask(i) = this->functionPtr_p[this->funpar_p[i]]->mask(this->locpar_p[i]);
-  };
+  }
 }
 
 } //# NAMESPACE CASA - END
