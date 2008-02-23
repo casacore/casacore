@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <tables/Tables/TableCache.h>
+#include <casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -64,12 +65,21 @@ void TableCache::define (const String& tableName, PlainTable* tab)
 
 void TableCache::remove (const String& tableName)
 {
-    // For static Table objects it is possible that the TableCache is
+    // For static Table objects it is possible that the cache is
     // deleted before the Table.
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
     if (tableMap_p.ndefined() > 0) {
+      try {
 	tableMap_p.remove (tableName);
+      } catch (AipsError&) {
+	// Something strange has happened.
+	// Throwing an exception causes an immediate crash (probably by
+	// Table destructors).
+	// So write a message on stderr;
+	std::cerr << "Cannot remove the table from the table cache;"
+	  "suggest restarting" << std::endl;
+      }
     }
 }
 
