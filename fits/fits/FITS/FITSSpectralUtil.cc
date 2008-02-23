@@ -89,7 +89,13 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	  " does not exist or is the wrong type." << LogIO::POST;
 	return False;
     }
-    
+    Bool has_altrval = header.isDefined(String("altrval")) 
+      && (header.dataType("altrval") == TpDouble
+	  || header.dataType("altrval") == TpFloat);
+    Bool has_altrpix = header.isDefined(String("altrpix")) 
+      && (header.dataType("altrpix") == TpDouble
+	  || header.dataType("altrpix") == TpFloat);    
+
     Vector<String> ctype;
     Vector<Double> crval, crpix, cdelt;
     header.get(n_ctype, ctype);
@@ -183,8 +189,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 
     referenceChannel = crpix(spectralAxis) - offset;
 
-    // ALTRVAL and ALTRPIX are ignored - conversion here is to frequency in
-    // the same reference frame as the pseudo velocity axis (FELO).
+    // ALTRVAL and ALTRPIX are being used in "FREQ" axis mode
 
     // Get NAXIS if we have it
 
@@ -203,13 +208,27 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     const Double rpix = crpix(spectralAxis) - offset;
 
     if (ctype(spectralAxis).contains("FREQ")) {
-	referenceFrequency = rval;
-	deltaFrequency = delt;
-	frequencies.resize(nChan);
-	for (Int i=0; i<nChan; i++) {
-	    frequencies(i) = 
-		referenceFrequency + (Double(i)-referenceChannel)*delt;
-	}
+      referenceFrequency = rval;
+
+      // HAS ALTRVAL
+      if (has_altrval && (restFrequency >= 0.0)) {
+	Double velo;
+	header.get("altrval",velo);
+	MDoppler ledop(Quantity(velo, "m/s"), velocityPreference);
+	referenceFrequency = MFrequency::fromDoppler(ledop, restFrequency).
+	  getValue().getValue(); 
+      }
+      // HAS ALTRPIX
+      if (has_altrpix) {
+	header.get("altrpix", referenceChannel);
+      }
+
+      deltaFrequency = delt;
+      frequencies.resize(nChan);
+      for (Int i=0; i<nChan; i++) {
+	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
+      }
+      
     } else if (ctype(spectralAxis).contains("FELO")) {
 	if (restFrequency < 0) {
 	    logger << LogIO::SEVERE << "FELO axis does not have rest frequency "

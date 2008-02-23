@@ -52,8 +52,8 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
     os << LogOrigin("FITSHistoryUtil", "getHistoryGroup", WHERE);
 
     groupType = "";
-    const Regex groupstart("^ *[Aa][Ii][Pp][Ss][+][+] *[Ss][Tt][Aa][Rr][Tt] *");
-    const Regex groupend("^ *[Aa][Ii][Pp][Ss][+][+] *[Ed][Nn][Dd]");
+    const Regex groupstart("^ *[Cc][Aa][Ss][Aa] *[Ss][Tt][Aa][Rr][Tt] *");
+    const Regex groupend  ("^ *[Cc][Aa][Ss][Aa] *[Ed][Nn][Dd]");
     const Regex trailing(" *$");
     const String empty;
 
@@ -71,9 +71,9 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 	    // Get rid of trailing spaces for all strings
 	    tmp.gsub(trailing, empty);
 	    if (tmp.contains(groupstart)) {
-		// AIPS++ START
+		// CASA START
 		if (foundStart) {
-		    os << LogIO::SEVERE << "Cannot handle nested AIPS++ START"
+		    os << LogIO::SEVERE << "Cannot handle nested CASA START"
 			" history keywords. Ignoring" << LogIO::POST;
 		} else if (nFound > 0) {
 		    // OK, we are ending a normal HISTORY group
@@ -86,7 +86,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		    groupType = tmp;
 		}
 	    } else if (tmp.contains(groupend)) {
-		// AIPS++ END
+		// CASA END
 		if (foundStart) {
 		    // OK, a normal end.
 		    // Attempt to parse the TYPE in the END statement to see
@@ -103,7 +103,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		    }
 		    break;
 		} else {
-		    os << LogIO::SEVERE << "AIPS++ END found in history without"
+		    os << LogIO::SEVERE << "CASA END found in history without"
 			" a corresponding START. Ignoring" << LogIO::POST;
 		}
 	    } else {
@@ -139,7 +139,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
     }
 
     if (groupType != "") {
-	String tmp = String("AIPS++ START ") + groupType;
+	String tmp = String("CASA START ") + groupType;
 	out.history(tmp.chars());
     }
 
@@ -181,7 +181,7 @@ void FITSHistoryUtil::addHistoryGroup(FitsKeywordList &out,
     }	
 
     if (groupType != "") {
-	out.history((String("AIPS++ END ") + groupType).chars());
+	out.history((String("CASA END ") + groupType).chars());
     }
 }
 
@@ -193,8 +193,7 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
     LogSink& sink = logger.sink();
     AlwaysAssert(nstrings <= history.nelements(), AipsError);
 //
-    if (aipsppFormat) {
-	AlwaysAssert(nstrings%2 == 0, AipsError);
+    if (aipsppFormat  &&  (nstrings%2 == 0)) {
 
 // OK, the first line is supposed to be DATE PRIORITY [SRCCODE] [OBJID]
 // And the second one the message.
