@@ -47,9 +47,9 @@ int main() {
       for (uInt j=0; j<2; j++) {
 	for (uInt k=0; k<4; k++) {
 	  cub(i,j,k) = 100*i + 10*j + k + 10000;
-	};
-      };
-    };
+	}
+      }
+    }
     cout << "--------- Test ArrayAccessor ---------------------" << endl;
     cout << "------------------ Loop in cube ------------------" << endl;
     cout << "Cube: " << cub << endl;
@@ -58,8 +58,8 @@ int main() {
       for (ArrayAccessor<Double, Axis<0> > j(i);
 	   j != j.end(); ++j) {
 	cout << *j << ", " << j.index<Axis<1> >(1) << endl;
-      };
-    };
+      }
+    }
     ArrayAccessor<Double, Axis<2> > aa(cub);
     ArrayAccessor<Double, Axis<0> > ab(cub);
         cout << "t1: " << *aa << ", " << *aa.begin() << ", " <<
@@ -70,7 +70,7 @@ int main() {
 	  cout << "t3: " << *ab << endl;;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  };
+  }
 
   try {
     Cube<Double> cube(10,6,16);
@@ -78,9 +78,9 @@ int main() {
       for (uInt j=0; j<6; j++) {
 	for (uInt k=0; k<16; k++) {
 	  cube(i,j,k) = 100*i + 10*j + k + 10000;
-	};
-      };
-    };
+	}
+      }
+    }
     Cube<Double> cub = cube(Slice(1,5,2), Slice(0,2,3), Slice(2,4,4));
     cout << "-------------------- Loop in slice of cube --------" << endl;
     cout << "Cube: " << cub << endl;
@@ -89,11 +89,11 @@ int main() {
       for (ArrayAccessor<Double, Axis<0> > j(i);
 	   j != j.end(); ++j) {
 	cout << *j << ", " << j.index<Axis<1> >(1) << endl;
-      };
-    };
+      }
+    }
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  };
+  }
 
   try {
     Cube<Int> cub(100,100,100);
@@ -108,14 +108,14 @@ int main() {
 	  for (uInt k=0; k<100; k++) {
 	    if (cub(k,j,i) != inx) {
 	      cout << inx << ' ' << cub(k,j,i) << endl;
-	    };
+	    }
 	    inx++;
-	  };
-	};
-      };
+	  }
+	}
+      }
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
+      }
     }
     timer.show("Cube access   full ");
 
@@ -128,14 +128,14 @@ int main() {
 	    for (ArrayAccessor<Int, Axis<0> > k(j); k != k.end() ; ++k) {
 	      if (*k != inx) {
 		cout << inx << ' ' << *k << endl;
-	      };
+	      }
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("ArrayAccessor full ");
     }
@@ -149,14 +149,14 @@ int main() {
 	    for (ArrayAccessor<Int, Axis<0> > k(j); k != k.end() ; ++k) {
 	      if (*k != inx) {
 		cout << inx << ' ' << *k << endl;
-	      };
+	      }
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("ArrayAccessor  run ");
     }
@@ -171,14 +171,14 @@ int main() {
 		 ++k) {
 	      if (*k != inx) {
 		cout << inx << ' ' << *k << endl;
-	      };
+	      }
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("ArrayAccessor run2 ");
     }
@@ -195,14 +195,14 @@ int main() {
 	    for (k = j; k != k.end() ; ++k) {
 	      if (*k != inx) {
 		cout << inx << ' ' << *k << endl;
-	      };
+	      }
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("ArrayAccessor nome ");
     }
@@ -219,12 +219,12 @@ int main() {
 	    for (k = j; k != k.end() ; ++k) {
 	      *k = inx;
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("Accessor writenome ");
     }
@@ -241,12 +241,12 @@ int main() {
 	    for (k = j; k != k.end() ; ++k) {
 	      inx = *k;
 	      inx++;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
 	if (inx != Int(cub.nelements())) {
 	  cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-	};
+	}
       }
       timer.show("Accessor read nome ");
     }
@@ -259,14 +259,14 @@ int main() {
       for (uInt i=0; i<cub.nelements(); i++) {
 	if (ptr[i] != inx) {
 	  cout << inx << ' ' << ptr[i] << endl;
-	};
+	}
 	inx++;
-      };
+      }
       cub.freeStorage(ptr, deleteIt);
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
-    };
+      }
+    }
     timer.show("getStorage    full ");
 
     timer.mark();
@@ -280,16 +280,16 @@ int main() {
 	  for (uInt k=0; k<100; k++) {
 	    if (ptr[ix] != inx) {
 	      cout << inx << ' ' << ptr[i] << endl;
-	    };
+	    }
 	    inx++; ix++;
-	  };
-	};
-      };
+	  }
+	}
+      }
       cub.freeStorage(ptr, deleteIt);
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
-    };
+      }
+    }
     timer.show("getStorage   loops ");
 
     Cube<Int> cubs = cub(Slice(0,50,2), Slice(0,100,1), Slice(0,100,1));
@@ -301,15 +301,15 @@ int main() {
 	  for (uInt k=0; k<50; k++) {
 	    if (cubs(k,j,i) != inx) {
 	      cout << inx << ' ' << cubs(k,j,i) << endl;
-	    };
+	    }
 	    inx+=2;
-	  };
-	};
-      };
+	  }
+	}
+      }
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
-    };
+      }
+    }
     timer.show("Cube access   part ");
 
     timer.mark();
@@ -320,15 +320,15 @@ int main() {
 	  for (ArrayAccessor<Int, Axis<0> > k(j); k != k.end() ; ++k) {
 	    if (*k != inx) {
 	      cout << inx << ' ' << *k << endl;
-	    };
+	    }
 	    inx+=2;
-	  };
-	};
-      };
+	  }
+	}
+      }
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
-    };
+      }
+    }
     timer.show("ArrayAccessor part ");
 
     timer.mark();
@@ -339,19 +339,19 @@ int main() {
       for (uInt i=0; i<cubs.nelements(); i++) {
 	if (ptr[i] != inx) {
 	  cout << inx << ' ' << ptr[i] << endl;
-	};
+	}
 	inx+=2;
-      };
+      }
       cubs.freeStorage(ptr, deleteIt);
       if (inx != Int(cub.nelements())) {
 	cout << "Inx: " << inx << ' ' << cub.nelements() << endl;
-      };
-    };
+      }
+    }
     timer.show("getStorage    part ");
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  };
+  }
 
   exit(0);
 

@@ -49,8 +49,8 @@ void UnitMap::initUMSI1() {
 			      UnitName(UnitDim::dimName(i),
 				       UnitVal(1.0,i),
 				       UnitDim::dimFull(i))));
-    };
-  };
+    }
+  }
   
   UnitMap::mapSI->insert(map<String, UnitName>::value_type
 			 ("$",	UnitName("$",

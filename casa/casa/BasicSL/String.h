@@ -805,13 +805,16 @@ class String : public string {
   Int gsub(const RegexBase &pat, const string &repl);
   //</group>
 
-  // Convert a integer to a String. This is a convenience function. Use the
-  // ostringstream class for conversion of floating point data types
-  // or more sophisticated formatting options.
-  // <group>
-  static String toString(Int value);
-  static String toString(uInt value);
-  // </group>
+  // Convert a value to a String.
+  // It uses a shift into an ostringstream, so that operator must be
+  // defined for the data type used.
+  template<typename T>
+  static String toString(const T& value)
+  {
+    std::ostringstream os;
+    os << value;
+    return os.str();
+  }
 
 private:
   // Helper functions for at, before etc

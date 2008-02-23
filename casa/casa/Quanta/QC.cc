@@ -56,13 +56,13 @@ QC_init::QC_init() {
     if (count++ == 0) {
         UnitMap::clearCache();
 	QC::init();		// make sure statics initialized
-    };
+    }
 }
 
 QC_init::~QC_init() {
     if (--count == 0) {
       UnitMap::releaseUM();	// make sure UnitMaps released
-    };
+    }
 }
 
 void QC::init() {

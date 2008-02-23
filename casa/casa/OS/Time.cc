@@ -245,17 +245,21 @@ Bool Time::operator<(const Time &other) const {
     return False;
 }
 
-ostream& operator<<(ostream& out, const Time& other) {
-  // The operator<< write out Time
+String Time::toString(const Bool iso) const
+{
+  // if iso is True, then use ISO 8601 format
+  // otherwise,
   // Produce the string of the form
   // Tue Mar 22 16:40:24 1994
   // with GMT time
+
+  ostringstream out;
 
   int i,j,jd,l,n,day,month,year,dayweek,sec;
   double jdf,hour,min;
 
   //  Julian day
-  jdf=other.julianDay()+0.5;
+  jdf=julianDay()+0.5;
   jd=(int)jdf;
   // Julian day fraction
   jdf=jdf-(int)jdf;
@@ -286,8 +290,22 @@ ostream& operator<<(ostream& out, const Time& other) {
   }
   // I don't think it should be necessary to go past hour
   // since the day, dayweek, etc. calculation is all
-  // deparately
+  // separately
 
+  if(iso) {
+	out << year  << '-';
+	if (month < 10) out << '0';
+	out << month << '-';
+	if (day  <  10) out << '0';
+	out << day   << ' ';   // NOTE: ISO8601 requires a 'T' char, not space
+	if (hour <  10) out << '0';
+	out << (int) hour << ':';
+	if (min  <  10) out << '0';
+	out << (int) min  <<':';
+	if (sec  <  10) out << '0';
+	out << sec;
+  }
+  else {
   switch(dayweek) {
   case 1: out<<"Sun ";
     break;
@@ -356,6 +374,7 @@ ostream& operator<<(ostream& out, const Time& other) {
     out<<sec;
   out<<" ";
   out<<year;
+  }
 
   return out;
 }

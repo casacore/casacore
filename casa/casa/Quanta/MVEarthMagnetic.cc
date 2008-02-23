@@ -159,7 +159,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Vector<Quantity> &other) :
   MVPosition() {
     if (!putValue(other)) {
       throw (AipsError("Illegal quantity vector in MVEarthMagnetic constructor"));
-    };
+    }
   }
 
 //# Destructor
@@ -237,7 +237,7 @@ uInt MVEarthMagnetic::type() const {
 void MVEarthMagnetic::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVEarthMagnetic *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVEarthMagnetic"));
-  };
+  }
 }
 
 void MVEarthMagnetic::adjust() {}
@@ -246,7 +246,7 @@ void MVEarthMagnetic::adjust(Double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
-  };
+  }
 }
 
 void MVEarthMagnetic::readjust(Double res) {
@@ -254,7 +254,7 @@ void MVEarthMagnetic::readjust(Double res) {
     xyz *= 1e-6;
   } else {
     xyz *= res;
-  };
+  }
 }
 
 Double MVEarthMagnetic::radius() {
@@ -270,7 +270,7 @@ Vector<Double> MVEarthMagnetic::get() const{
     tmp(1) = std::asin(xyz(1)/ln);
   } else {
     tmp(1) = std::atan2(xyz(1),xyz(0));
-  };
+  }
   tmp(2) = std::asin(xyz(2)/ln);
   return tmp;
 }
@@ -313,7 +313,7 @@ Double MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other) const {
     return std::atan2(s1, c1);
   } else {
     return Double(0.0);
-  };
+  }
 }
 
 Quantity MVEarthMagnetic::earthMagneticAngle(const MVEarthMagnetic &other, 
@@ -362,7 +362,7 @@ void MVEarthMagnetic::putVector(const Vector<Double> &in) {
   } else {
     xyz = 0.0;
     for (uInt i=0; i<in.nelements(); i++) xyz(i) = in(i);
-  };
+  }
 }
 
 Vector<Quantum<Double> > MVEarthMagnetic::getRecordValue() const {
@@ -383,14 +383,14 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
 	in(2).check(testUnit)) {
       for (uInt j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
-      };
+      }
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
       Vector<Double> tsin(2), tcos(2);
       for (uInt j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
-      };
+      }
       xyz = Double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -398,7 +398,7 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
       readjust(in(0).getBaseValue());
     } else {
       return False;
-    };
+    }
   } else if (in(2).check(testUnit)) {
     if (in(0).check(UnitVal::ANGLE) &&
 	in(1).check(UnitVal::ANGLE)) {
@@ -407,7 +407,7 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
       for (j=0; j < 2; j++) {
 	tsin(j) = (sin(in(j))).getValue(); 
 	tcos(j) = (cos(in(j))).getValue(); 
-      };
+      }
       xyz = Double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -415,10 +415,10 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
       readjust(in(2).getBaseValue());
     } else {
       return False;
-    };
+    }
   } else {
     return False;
-  };
+  }
   return True;
 }
 

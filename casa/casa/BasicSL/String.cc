@@ -47,7 +47,7 @@ Int String::freq(Char c) const {
     if ((p = find(c, p)) == npos) break;
     found++;
     p++;
-  };
+  }
   return found;
 }
 
@@ -58,7 +58,7 @@ Int String::freq(const string &str) const {
     if ((p = find(str, p)) == npos) break;
     found++;
     p++;
-  };
+  }
   return found;
 }
 
@@ -69,7 +69,7 @@ Int String::freq(const Char *s) const {
     if ((p = find(s, p)) == npos) break;
     found++;
     p++;
-  };
+  }
   return found;
 }
 
@@ -213,8 +213,8 @@ Int String::gsub(const string &pat, const string &repl) {
       nmatches++;
       replace(pos, pat.length(), repl);
       si = pos + rl;
-    };
-  };
+    }
+  }
   return nmatches;
 }
 
@@ -255,9 +255,9 @@ void String::capitalize() {
       while (++p < end()) {
         if (isupper(*p)) *p = ToLower(*p);
         else if (!islower(*p) && !isdigit(*p)) break;
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 // RegexBase related functions
@@ -344,12 +344,12 @@ Int String::gsub(const RegexBase &pat, const string &repl) {
 	if (ps >= npos-1 || pls <= 0) {
 	  replace(pos, pl, repl);	// finish off if no more (anchored) match
 	  break;
-	};
-      };
+	}
+      }
       // Continue global substitution
       replace(pos, pl, repl);
-    };
-  };
+    }
+  }
   return nmatches;
 }
 
@@ -395,7 +395,7 @@ Int split(const string &str, string res[], Int maxn,
     res[i] = String(str, pos, p-pos);
     i++;
     pos = p + sep.length();
-  };
+  }
   return i;
 }
 
@@ -448,20 +448,8 @@ String join(string src[], Int n, const string& sep) {
   for (Int i=0; i<n; i++) {
     x += src[i];
     if (i != n-1) x += sep;
-  };
+  }
   return x;
-}
-
-String String::toString(Int value) {
-  ostringstream s;
-  s << value;
-  return s;
-}
-
-String String::toString(uInt value) {
-  ostringstream s;
-  s << value;
-  return s;
 }
 
 Int fcompare(String x, String y) {

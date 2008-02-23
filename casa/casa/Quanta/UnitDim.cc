@@ -154,10 +154,10 @@ ostream& operator<< (ostream &os, const UnitDim &du) {
 		os << chck << UnitDim::dimName(i);
 	    } else {
 		os << chck << UnitDim::dimName(i) << Int(du.unitDim[i]);
-	    };
+	    }
 	    chck = ".";
-	};
-    };
+	}
+    }
     return os;
 }
 

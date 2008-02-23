@@ -58,9 +58,9 @@ Bool AipsrcVector<String>::find(Vector<String> &value,
     value = Vector<String>(m);
     for (Int i=0; i<m; i++) {
       value(i) = nres[i];
-    };
+    }
     delete [] nres;
-  };
+  }
   return x;
 }
 

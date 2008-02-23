@@ -65,7 +65,7 @@ MUString &MUString::operator=(const MUString &other) {
     stpt = 0;
     stat = True;
     lget = String();
-  };
+  }
   return *this;
 }
 
@@ -122,9 +122,9 @@ Int MUString::getSign() {
   if (testSign()) {
     while (testSign()) {
       if (str[ptr++] == '-') t = -t;
-    };
+    }
     setLast(p);
-  };
+  }
   return t;
 }
 
@@ -151,7 +151,7 @@ Int MUString::getInt() {
     s = getSign();
     s *= getuInt();
     setLast(p);
-  };
+  }
   return s;
 }
 
@@ -165,9 +165,9 @@ uInt MUString::getuInt() {
     while (testNum()) {
       t *= 10; 
       t += str[ptr++] - '0';
-    };
+    }
     setLast(p);
-  };
+  }
   return t;
 }
 
@@ -197,7 +197,7 @@ Double MUString::getDouble() {
     istringstream instr(str.at(ex, ptr));
     instr >> res;
     skipString(ex);
-  };
+  }
   return res;
 }
 
@@ -241,7 +241,7 @@ void MUString::skipAlphaNum() {
   if (testAlpha()) {
     ptr++;
     while (testAlphaNum()) ptr++;
-  };
+  }
 }
 
 Bool MUString::tSkipAlphaNum() {
@@ -311,7 +311,7 @@ Bool MUString::testString(const String &ex) const {
     Int tl = (len-ptr < ex.length()) ? len-ptr : ex.length();
     String t = String(str)(ptr,tl); 
     return (t.matches(ex));
-  };
+  }
   return False;
 }
 
@@ -321,7 +321,7 @@ Bool MUString::testStringNC(const String &ex) const {
     String t = String(str)(ptr,tl); t.downcase();
     String u = ex; u.downcase();
     return (t.matches(u));
-  };
+  }
   return False;
 }
 
@@ -377,14 +377,14 @@ Bool MUString::matchPair(Char nd) {
     } else if (testChar(nd)) {
       cnt--;
       if (cnt == 0) break;
-    };
+    }
     skipChar();
-  };
+  }
   if (cnt == 0) {
     setLast(p);
     skipChar();
     return True;
-  };
+  }
   adjustPtr(p-1);
   return False;
 }
@@ -393,7 +393,7 @@ Int MUString::freqChar(Char ch) const {
   Int c = 0;
   for (uInt i = ptr; i < len; i++) {
     if (str[i] == ch) c++;
-  };
+  }
   return c;
 }
 
@@ -448,7 +448,7 @@ Int MUString::initLast() {
 void MUString::setLast(Int st) {
   if (st < (Int)ptr) {
     stat = True; lget = str(st, ptr-st);
-  };
+  }
 }
 
 uInt MUString::minimaxNC(const String &in, Int N_name, 
@@ -460,7 +460,7 @@ uInt MUString::minimaxNC(const String &in, Int N_name,
 // Exact fit?
     for (i=0; i<N_name; i++) {
 	if (a == upcase(tname[i])) break;
-    };
+    }
 // Now look for partial
     if (i >= N_name) {
 	Int ia, ib;
@@ -477,13 +477,13 @@ uInt MUString::minimaxNC(const String &in, Int N_name,
 		    ib = ia < ib ? ia : ib;
 		    b = upcase(tname[j]);
 		    if (a.at(0,ib) == b.at(0,ib)) break;
-		};
+		}
 // Found duplicate
 		if (j<N_name) i=N_name;
 		break;
-	    };
-	};
-    };
+	    }
+	}
+    }
     return i;
 }
 

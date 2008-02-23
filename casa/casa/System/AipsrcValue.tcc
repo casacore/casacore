@@ -54,7 +54,7 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword) {
   if (x) {
     istringstream instr(res);
     instr >> value;
-  };
+  }
   return x;
 }
 
@@ -76,7 +76,7 @@ Bool AipsrcValue<T>::find(T &value,
     instr >> qres;
     if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
     value = (T) qres.getValue(resun);
-  };
+  }
   return x;
 }
 

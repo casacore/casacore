@@ -38,7 +38,7 @@ template<class T>
 MaskedArray<T>::MaskedArray ()
 : pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False), 
   isRO (False){
-};
+}
 
 template<class T> void
 MaskedArray<T>::setData (const Array<T> &data,

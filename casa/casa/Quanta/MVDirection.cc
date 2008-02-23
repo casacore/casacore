@@ -108,7 +108,7 @@ MVDirection::MVDirection(const Vector<Quantity> &angle) :
   MVPosition() {
     if (!putValue(angle)) {
       throw (AipsError("Illegal quantum vector in MVDirection constructor"));
-    };
+    }
   }
 
 //# Destructor
@@ -148,7 +148,7 @@ uInt MVDirection::type() const {
 void MVDirection::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVDirection *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDirection"));
-  };
+  }
 }
 
 void MVDirection::adjust() {
@@ -215,18 +215,18 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
       in(2).check(UnitVal::NODIM)) {
     for (uInt j = 0; j<i; j++) {
       xyz(j) = in(j).getValue();
-    };
+    }
     adjust();
   } else {
     uInt j;
     for (j = 0; j<i; j++) {
       if (!in(j).check(UnitVal::ANGLE)) return False;
-    };
+    }
     Vector<Double> tsin(i), tcos(i);
     for (j=0; j < i; j++) {
       tsin(j) = (sin(in(j))).getValue(); 
       tcos(j) = (cos(in(j))).getValue(); 
-    };
+    }
     xyz = Double(0.0);
     if (i > 1) {
       xyz(0) = tcos(0) * tcos(1);
@@ -237,9 +237,9 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
       xyz(1) = tsin(0);
     } else {
       xyz(2)=1.0;
-    };
+    }
     adjust();
-  };
+  }
   return True;
 }
 
@@ -334,7 +334,7 @@ void MVDirection::shift(Double lng, Double lat, Bool trueAngle) {
     x(0) += lng;
     x(1) += lat;
     *this = MVDirection(x);
-  };
+  }
 }
 
 void MVDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {

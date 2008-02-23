@@ -78,18 +78,18 @@ Complex innerProduct (const Vector<Complex> &A, const Vector<Complex> &B) {
   for (uInt i = 0; i < A.nelements(); i++)
     scalar += A(i)*conj(B(i));
   return scalar;
-};
+}
  
 Matrix<Complex> conjugate(const Matrix<Complex> &A)
 {
   cout << "MatrixMath::conjugate is deprecated, use ArrayMath::conj." << endl;
   return conj(A);
-};
+}
 
 Matrix<Complex> adjoint(const Matrix<Complex> &A)
 {
   return transpose(Matrix<Complex>(conj(A)));
-};
+}
 
 // ----------------DComplex subroutines---------------------------
 
@@ -103,19 +103,19 @@ DComplex innerProduct (const Vector<DComplex> &A, const Vector<DComplex> &B)
   for (uInt i = 0; i < A.nelements(); i++)
     scalar += A(i)*conj(B(i));
   return scalar;
-};
+}
  
 
 Matrix<DComplex> conjugate(const Matrix<DComplex> &A)
 {
   cout << "MatrixMath::conjugate is deprecated, use ArrayMath::conj." << endl;
   return conj(A);
-};
+}
 
 Matrix<DComplex> adjoint (const Matrix<DComplex> &A)
 {
   return transpose(Matrix<DComplex>(conj(A)));
-};
+}
 
 // Int Vector magnitude/norm
 Int norm (const Vector<Int> &A) 
@@ -161,7 +161,7 @@ Int normI (const Matrix<Int> &A)
       }
   }
   return output;
-};
+}
 
 // The infinity norm of a matrix
 Float normI (const Matrix<Float> &A)
@@ -177,7 +177,7 @@ Float normI (const Matrix<Float> &A)
       }
   }
   return output;
-};
+}
 
 // The infinity norm of a matrix
 Double normI (const Matrix<Double> &A)
@@ -193,7 +193,7 @@ Double normI (const Matrix<Double> &A)
       }
   }
   return output;
-};
+}
                                     
 // the infinite norm of a matrix
 Float normI (const Matrix<Complex> &A)
@@ -209,7 +209,7 @@ Float normI (const Matrix<Complex> &A)
       }
   }
   return output;
-};
+}
 
 // the infinite norm of a matrix
 Double normI (const Matrix<DComplex> &A)
@@ -225,7 +225,7 @@ Double normI (const Matrix<DComplex> &A)
       }
   }
   return output;
-};
+}
 
 // The one norm of a matrix
 Int norm1 (const Matrix<Int> &A)
@@ -241,7 +241,7 @@ Int norm1 (const Matrix<Int> &A)
       }
   }
   return output;
-};
+}
 
 // The one norm of a matrix
 Float norm1 (const Matrix<Float> &A)
@@ -257,7 +257,7 @@ Float norm1 (const Matrix<Float> &A)
       }
   }
   return output;
-};
+}
 
 // The one norm of a matrix
 Double norm1 (const Matrix<Double> &A)
@@ -273,7 +273,7 @@ Double norm1 (const Matrix<Double> &A)
       }
   }
   return output;
-};
+}
 
 // The one norm of a matrix
 Float norm1 (const Matrix<Complex> &A)
@@ -289,7 +289,7 @@ Float norm1 (const Matrix<Complex> &A)
       }
   }
   return output;
-};
+}
 
 // The one norm of a matrix
 Double norm1 (const Matrix<DComplex> &A)
@@ -305,7 +305,7 @@ Double norm1 (const Matrix<DComplex> &A)
       }
   }
   return output;
-};
+}
 
 Matrix<Float> rproduct (const Matrix<Complex> &A, const Matrix<Complex> &B) {
   if (A.ncolumn() != B.nrow())
@@ -348,11 +348,11 @@ Vector<Complex> product(const Matrix<Complex> &A, const Vector<Float> &x) {
 }
 
 Matrix<Int> adjoint (const Matrix<Int> &A){
-  return transpose(A);};
+  return transpose(A);}
 Matrix<Float> adjoint (const Matrix<Float> &A){
-  return transpose(A);};
+  return transpose(A);}
 Matrix<Double> adjoint (const Matrix<Double> &A){
-  return transpose(A);};
+  return transpose(A);}
 
 } //# NAMESPACE CASA - END
 

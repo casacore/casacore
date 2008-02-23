@@ -37,7 +37,7 @@ CompositeNumber::CompositeNumber(const uInt maxval) {
   if (itsMaxComplete < 2) { itsMaxComplete = 2; }
   generate(itsMaxComplete);
 
-};
+}
 
 void CompositeNumber::generate(const uInt maxval) {
   
@@ -59,7 +59,7 @@ void CompositeNumber::generate(const uInt maxval) {
     }
   }
   GenSort<uInt>::sort(itsNumbers, n2*n3*n5);
-};
+}
 
 
 CompositeNumber::~CompositeNumber() {}
@@ -78,7 +78,7 @@ uInt CompositeNumber::nextLarger(const uInt testValue) {
     }
   }
   return  itsNumbers[0];
-};
+}
     
 
 
@@ -93,7 +93,7 @@ uInt CompositeNumber::nextSmaller(const uInt testValue) {
     }
   }
   return itsNumbers[0];
-};
+}
     
 
 
@@ -115,7 +115,7 @@ uInt CompositeNumber::nearest(const uInt testValue) {
   }
   // Should never make it here!
   return itsNumbers[0];
-}; 
+} 
 
 
 
@@ -132,7 +132,7 @@ uInt CompositeNumber::nextLargerEven(const uInt testValue) {
     }
   }
   return  itsNumbers[0];
-};
+}
     
 
 uInt CompositeNumber::nextSmallerEven(const uInt testValue) {
@@ -146,7 +146,7 @@ uInt CompositeNumber::nextSmallerEven(const uInt testValue) {
     }
   }
   return itsNumbers[0];
-};
+}
     
 
 uInt CompositeNumber::nearestEven(const uInt testValue) {
@@ -158,7 +158,7 @@ uInt CompositeNumber::nearestEven(const uInt testValue) {
   } else {
     return down;
   }
-};
+}
     
 
 Bool CompositeNumber::isComposite(const uInt testValue) {
@@ -171,7 +171,7 @@ Bool CompositeNumber::isComposite(const uInt testValue) {
     }
   }
   return False;
-}; 
+} 
 
 
 } //# NAMESPACE CASA - END

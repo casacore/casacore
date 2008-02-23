@@ -110,4 +110,4 @@ int main()
     cout << "Is 1026 composite? " << cn.isComposite(1026) << endl;
     cout << "Is 1027 composite? " << cn.isComposite(1027) << endl;
   }
-};
+}

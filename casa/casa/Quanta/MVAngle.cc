@@ -61,7 +61,7 @@ MVAngle::MVAngle(const Quantity &other) {
     } else {
 	other.assure(UnitVal::TIME);
 	val *= factor;
-    };
+    }
 }
 
 MVAngle &MVAngle::operator=(const MVAngle &other) {
@@ -90,7 +90,7 @@ const MVAngle &MVAngle::operator()(Double norm) {
       // result of order 2e-11
       Double df = std::floor(t)*C::_2pi;
       val -= df;  /// val - = std::floor(t)*C::_2pi;
-    };
+    }
     return *this;
 }
 
@@ -123,7 +123,7 @@ Quantity MVAngle::get() const {
 Quantity MVAngle::get(const Unit &inunit) const {
     if (inunit.getValue() == UnitVal::TIME) {
 	return Quantity(circle(), "d").get(inunit);
-    };
+    }
     return Quantity(val,"rad").get(inunit);
 }
 
@@ -181,7 +181,7 @@ String MVAngle::string() const {
     if (MVAngle::interimSet) {
 	MVAngle::interimSet = False;
 	return string(MVAngle::interimFormat);
-    };
+    }
     return string(MVAngle::defaultFormat);
 }
    
@@ -231,10 +231,10 @@ void MVAngle::print(ostream &oss,
 	t = (t - std::floor(t)) * 24.;
 	if (((intyp & MVAngle::DIG2) == MVAngle::DIG2) && t > 12) {
 	  t -= 24.0;
-	};
-      };
+	}
+      }
       sep = ':';
-    };
+    }
     if (inprec == 0) inprec = oss.precision();
     Char sfill = oss.fill();
     t1 = 1.0;
@@ -250,8 +250,8 @@ void MVAngle::print(ostream &oss,
 	  oss << '+';
 	} else {
 	  oss << ' ';
-	};
-    };
+	}
+    }
     // The next 0.1 necessary for some rounding errors
     t = std::abs((std::floor(std::abs(t)/t1+0.5)+0.1)*t1);
     Int h = ifloor(t);
@@ -264,7 +264,7 @@ void MVAngle::print(ostream &oss,
 	      oss << setfill('0') << setw(3) << h;
 	    } else {
 	      oss << setfill(' ') << setw(3) << h;
-	    };
+	    }
 	  } else {
 	    if (h > 99) {
 	      oss << "**";
@@ -272,21 +272,21 @@ void MVAngle::print(ostream &oss,
 	      oss << setfill('0') << setw(2) << h;
 	    } else {
 	      oss << setfill(' ') << setw(2) << h;
-	    };
-	  };
+	    }
+	  }
 	} else {
 	  if (h > 99) {
 	    oss << "**";
 	  } else {
 	    oss << setfill('0') << setw(2) << h;
-	  };
-	};
+	  }
+	}
 	if ((inprec > 2) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
 	    oss << sep;
-	};
+	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
 	oss << sep;
-    };
+    }
     if (inprec > 2) {
 	t = std::fmod(t,1.0) *60.;
 	h = ifloor(t);
@@ -294,18 +294,18 @@ void MVAngle::print(ostream &oss,
 	    oss << setfill('0') << setw(2) << h;
 	    if ((inprec > 4) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
 		oss << sep;
-	    };
+	    }
 	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
 	    oss << sep;
-	};
+	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
 	oss << sep;
-    };
+    }
     if (inprec > 4 && inprec < 7) {
 	t = std::fmod(t,1.0) *60.;
 	h = ifloor(t);
 	oss << setfill('0') << setw(2) << h;
-    };
+    }
     if (inprec > 6) {
       t = std::abs((std::fmod(t, 1.0) - 6.0*t1)*60.);
       // The following was necessary since abs(0) becomes -0 (Solaris at least)
@@ -315,14 +315,14 @@ void MVAngle::print(ostream &oss,
       oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
 	setprecision(oprec);
       oss.setf(oldb,ios::floatfield);
-    };
+    }
     if ((intyp & MVAngle::FITS) == MVAngle::FITS) {
       if ((intyp & MVAngle::LOCAL) == MVAngle::LOCAL) {
 	MVAngle my = MVAngle::timeZone() * C::circle;
 	my.print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4),
 		 True);
-      };
-    };
+      }
+    }
     oss.fill(sfill);
 }
 
@@ -331,7 +331,7 @@ const MVAngle &MVAngle::binorm(Double norm) {
     if (t < 0 || t >=1) {
       Double df = std::floor(t)*C::pi;
       val -= df;
-    };
+    }
     return *this;
 }
 
@@ -343,7 +343,7 @@ Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
 
 Bool MVAngle::read(Quantity &res, MUString &in) {
   return read(res, in, True);
-};
+}
 
 Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
   LogIO os(LogOrigin("MVAngle", "read()", WHERE));
@@ -361,14 +361,14 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       r += r1/60.0 + in.getDouble()/3600.0;
       r *= s;
       tp = 4;
-    };
+    }
   }else if (in.tSkipCharNC('d')) {
     tp = 1;
   } else if (in.tSkipCharNC('h')) {
     tp = 2;
   } else if (in.tSkipChar(':')) {
     tp = 3;
-  };
+  }
   switch (tp) {
 
   case 1:
@@ -392,22 +392,22 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
 	r += r1/60.0;
       } else {
 	tp = 0;
-      };
+      }
       in.unpush();
       r *= s;
-    };
-  };
+    }
+  }
   break;
 
   default:
     break;
-  };
+  }
 
   if (chk) {
 
     in.skipBlank();
     if (!in.eos()) tp = 0;	     // incorrect
-  };
+  }
   switch (tp) {
 
   case 1:
@@ -424,7 +424,7 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
     in.pop(); return False;
     break;
 
-  };
+  }
   in.unpush();
   return True;
 
@@ -448,8 +448,8 @@ Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
       res = Quantity(Quantity(r/240.,us).getBaseValue(), "deg");
     } else {
       return False;
-    };
-  };
+    }
+  }
   return True;
 }
 
@@ -459,7 +459,7 @@ ostream &operator<<(ostream &os, const MVAngle &meas) {
 	meas.print(os, MVAngle::interimFormat);
     } else {
 	meas.print(os, MVAngle::defaultFormat);
-    };
+    }
     return os;
 }
 
@@ -472,7 +472,7 @@ istream &operator>>(istream &is, MVAngle &meas) {
     meas = MVAngle(t)();
   } else {
     is.clear(ios::failbit | is.rdstate());
-  };
+  }
   return is;
 }
 

@@ -59,36 +59,36 @@ int main() {
 	if (!list[j]->empty()) {
 	  cout << "List not refreshed " << endl;
 	  ok = False;
-	};	
+	}	
 	if (!listInt[j]->empty()) {
 	  cout << "ListInt not refreshed " << endl;
 	  ok = False;
-	};	
+	}	
 	// Fill objects
 	for (uInt k=0; k<7; ++k) {
 	  list[j]->push_back(13.*k);
 	  listInt[j]->push_back(k);
-	};
+	}
 	// Test objects
 	if (list[j]->size() != 7) {
 	  cout << "Incorrect length list " << list[j]->size() << endl;
 	  ok = False;
-	};	
+	}	
 	if (listInt[j]->size() != 7) {
 	  cout << "Incorrect length listInt " << listInt[j]->size() << endl;
 	  ok = False;
-	};
-      };
+	}
+      }
       // Remove in different order
       for (uInt j=0; j<10; ++j) {
 	ObjectStack<vector<Int> >::stack().put(listInt[9-j]);
 	ObjectStack<vector<Double> >::stack().put(list[9-j]);
-      };
-    };
+      }
+    }
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
     ok = False;
-  };
+  }
   
   if (!ok) exit(1);
   cout << "Tests ok" << endl;

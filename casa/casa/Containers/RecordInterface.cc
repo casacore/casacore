@@ -413,6 +413,15 @@ void RecordInterface::get (const RecordFieldId& id, Array<String>& value) const
 Bool RecordInterface::asBool (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
+    DataType dataType = type (whichField);
+    switch (dataType) {
+    case TpBool:
+        break;
+    case TpInt:
+        return *(const Int*)get_pointer (whichField, TpInt);
+    default:
+        throw (AipsError ("RecordInterface::asBool - invalid data type"));
+    }
     return *(const Bool*)get_pointer (whichField, TpBool);
 }
 uChar RecordInterface::asuChar (const RecordFieldId& id) const

@@ -425,7 +425,7 @@ void Template::reset() {
 void Template::read(const Vector<String> &files) {
   for (uInt i=0; i < files.nelements(); i++) { // for each file...
     read(files(i));
-  };
+  }
 }
 
 void Template::read(const String &filename) {
@@ -434,7 +434,7 @@ void Template::read(const String &filename) {
   if (!file) {
     cerr << "Cannot open input file " << filename << endl;
     return;
-  };
+  }
   // Save filename in list
   tdflist_p.resize(tdflist_p.nelements()+1);
   tdflist_p[tdflist_p.nelements()-1] = filename;
@@ -456,7 +456,7 @@ void Template::read(const String &filename) {
       else if (extracted.contains(fileRE)) combine = extracted;
       else err = True;
       if (!err) continue;
-    };
+    }
     // Handle regular extension lines
     if ((extracted.contains(ifRE) ||
 	 extracted.contains(endifRE) ||
@@ -480,26 +480,26 @@ void Template::read(const String &filename) {
 	  extracted = extracted.after(functionprelude);   // template global
 	  if (extracted.contains(funcnameprelude)) {
 	    extracted = extracted.from(funcnameprelude);
-	  };
+	  }
 	} else continue;		// unknown entry
 	if (!extracted.empty()) {	// save the entry
 	  if (tdcount_p >= tdlist_p.nelements()) {
 	    tdlist_p.resize(tdcount_p+100);
 	    tdfile_p.resize(tdcount_p+100);
 	    tdline_p.resize(tdcount_p+100);
-	  };
+	  }
 	  tdlist_p[tdcount_p]   = extracted;
 	  tdfile_p[tdcount_p]   = tdflist_p.nelements()-1;
 	  tdline_p[tdcount_p++] = c1;
-	};
-      };
+	}
+      }
       continue;
-    };
+    }
     // Handle comment lines
     if (ok && !err && extracted.contains(comment)) {
       setComment(extracted, combine.empty());
       continue;
-    };
+    }
     // Handle an initial line
     if ((ok && !err && extracted.contains(fileRE)) || !ok) {
       if (!combine.empty()) setOutput(combine);
@@ -517,10 +517,10 @@ void Template::read(const String &filename) {
 	  extracted(j,
 		    ((extracted.length()-j <= 60) ? extracted.length() : 60));
 	setComment(String(text), combine.empty());
-      };
-    };
+      }
+    }
     if (!ok) break;
-  };
+  }
 }
 
 void Template::canonical(const Bool tmplonly) {
@@ -539,17 +539,17 @@ void Template::canonical(const Bool tmplonly) {
 	  lrep = lpat;
 	  lrep.gsub(PATcanon21[j], REPcanon2[j]);
 	  combine.gsub(lpat, lrep);
-	};
-      };
+	}
+      }
       for (uInt j=0; j<Nnmin; j++) {
 	if (combine.contains(PATnmin[j])) combine = REPnmin[j] + combine;
-      };
+      }
       for (uInt j=0; j<Nnmax; j++) {
 	if (combine.contains(PATnmax[j])) combine = combine.from(REPnmax[j]);
-      };
+      }
       output_p[i] = combine;
-    };
-  };
+    }
+  }
   // Do all template entries
   tdname_p.resize(tdcount_p);
   for (uInt i=0; i<tdcount_p; i++) {
@@ -562,8 +562,8 @@ void Template::canonical(const Bool tmplonly) {
 	lrep = lpat;
 	lrep.gsub(PATcanon21[j], REPcanon2[j]);
 	combine.gsub(lpat, lrep);
-      };
-    };
+      }
+    }
     // Remove leading/trailing spaces and singlefy spaces
     combine.gsub(leadsp, nullsp); 
     combine.gsub(endsp, nullsp);
@@ -580,15 +580,15 @@ void Template::canonical(const Bool tmplonly) {
 	  lrep = lpat;
 	  lrep.gsub(PATtypedef1[j], REPtypedef[j]);
 	  combine.gsub(lpat, lrep);
-	};
-      };
-    };
+	}
+      }
+    }
     // Remove all spaces, and just count 'const' since they can be at
     // different places.
     combine.gsub(mulsp, nullsp);
     combine += Char('0' + combine.gsub(constsp, nullsp));
     tdname_p[i] = combine;
-  };
+  }
 }
 
 void Template::splitName() {
@@ -605,7 +605,7 @@ void Template::splitName() {
     allstring_p[i] = output_p[i].after(splitnum);
     namstring_p[i] = allstring_p[i].through(splitnam);
     nval_p[i] = atoi(nstring_p[i].chars());
-  };
+  }
   isSplit_p = True;
 }
 
@@ -629,11 +629,11 @@ void Template::sortName(const Bool renumber) {
       } else {
 	ident = 1000;
 	prev = namstring_p[inx(j)];
-      };
+      }
       ostringstream text;
       text << ident;
       nstring_p[inx(j)] = String(text) + " ";
-    };
+    }
   } else {
     String prev;
     Int pid(0);
@@ -647,9 +647,9 @@ void Template::sortName(const Bool renumber) {
 	while (j<count_p && namstring_p[inx(j)] == prev) {
 	  mid = (nval_p[inx(j)] > mid) ? nval_p[inx(j)] : mid;
 	  j++;
-	};
+	}
 	mid = (mid/10)*10 + 10;
-      };
+      }
       if (prev == namstring_p[inx(k)]) {
 	if (nval_p[inx(k)] < 1000) {
 	  ostringstream text;
@@ -666,19 +666,19 @@ void Template::sortName(const Bool renumber) {
 	      nval_p[inx(k)] = mid;
 	      mid += 10;
 	      break;
-	    };
-	  };
-	};
+	    }
+	  }
+	}
       } else {
 	prev = "";
 	k--;
-      };
-    };
-  };
+      }
+    }
+  }
   // Make new full line
   for (uInt j=0; j<count_p; j++) {
     output_p[j] = nstring_p[inx(j)] + allstring_p[inx(j)];
-  };
+  }
   // Re-sort comments
   for (uInt j=0; j<ccount_p; j++) {
     if (comptr_p[j] >= 0 && comptr_p[j] < Int(count_p)) {
@@ -686,10 +686,10 @@ void Template::sortName(const Bool renumber) {
       	if (comptr_p[j] == Int(inx(j3))) {
       	  comptr_p[j] = j3;
       	  break;
-      	};
-      };
-    };
-  };
+      	}
+      }
+    }
+  }
 }
 
 void Template::writeOut(ostream &os, const Bool warn) {
@@ -706,8 +706,8 @@ void Template::writeOut(ostream &os, const Bool warn) {
     if (comptr_p[j] < 0) {
       os << comout_p[j] << endl;
       c1++;
-    };
-  };
+    }
+  }
   for (uInt i=0; i<count_p; i++) {
     // Split output at spaces
     uInt nsp = split(output_p[i], spf, Nsplit, sp);
@@ -734,37 +734,37 @@ void Template::writeOut(ostream &os, const Bool warn) {
 	      v = "= ";		// Indicate follow-on include
 	      w = "     ";	// Indent
 	      for (Int i1=0; i1<c; i1++) w += "  ";
-	    };
+	    }
 	    v += spf[m] + sp;
-	  };
+	  }
 	  c1++;
 	  // Format the fields after #if
 	  if (v.contains(sifRE)) {
 	    for (uInt j3=0; j3<Ninif; j3++) v.gsub(PATinif[j3], REPinif[j3]);
-	  };
+	  }
 	  // Format fields in template and count them
 	  if (v.contains(stemRE)) {
 	    if (!v.contains(sretRE3)) tcount_p++;
 	    if (v.contains(sconstRE)) {
 	      cerr << "Error:   non-canonical position of const "
 		"at line " << c1 << endl;
-	    };
+	    }
 	    if (!(v.contains(sretRE1) || v.contains(sretRE3))) {
 	      if (v.contains(sretRE2)) {
 		cerr << "Error:   missing return type "
 		  "at line " << c1 << endl;
-	      };
+	      }
 	      if (v.contains(sretRE4)) {
 		if (warn) {
 		  cerr << "Warning: superfluous template argument given -- "
 		    "remove at line " << c1 << endl;
 		} else cwarn = True;
-	      };
-	    };
-	  };
+	      }
+	    }
+	  }
 	  os << w << v << endl;
 	  if (j == nsp) break;		// ready with element
-	};
+	}
 	k = 1; p = j; w = "     ";
 	if (spf[j] == "#endif" || spf[j] == "#else") c--;
 	for (Int i1=0; i1<c; i1++) w += "  ";
@@ -776,9 +776,9 @@ void Template::writeOut(ostream &os, const Bool warn) {
 	  pr = True;
 	} else pr = False;
 	continue;
-      };
+      }
       k++;
-    };
+    }
     if (c<0) cerr << "SEVERE: too many #endif "
 	       "near line " << c1 << endl;
     while (c>0) {
@@ -789,24 +789,24 @@ void Template::writeOut(ostream &os, const Bool warn) {
       cerr << "Warning: included missing #endif "
 	"at line " << c1 << endl;
       os << w << "#endif" << endl;
-    };
+    }
     for (uInt j1=0; j1<ccount_p; j1++) {	// comments
       if (comptr_p[j1] == Int(i)) {
 	c1++;
 	os << comout_p[j1] << endl;
-      };
-    };
-  };
+      }
+    }
+  }
   for (uInt j2=0; j2<ccount_p; j2++) {		// comments
     if (comptr_p[j2] >= Int(count_p)) {
       c1++;
       os << comout_p[j2] << endl;
-    };
-  };
+    }
+  }
   if (cwarn) {
     cerr << "Warning: One or more possibly superfluous template arguments "
       "given.\n         Run reident with the -v (verbose) switch to learn more" << endl;
-  };
+  }
 }
 
 void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
@@ -823,7 +823,7 @@ void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
     for (uInt j=i; j<tdcount_p; j++) {
       if (tdname_p[inx(j)] == tdname_p[inx(i)]) n++;
       else break;
-    };
+    }
     // Found duplicates
     if (n>1) {
       // Check if -s switch given
@@ -837,10 +837,10 @@ void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
 	  for (uInt k=j+1; k<i+n; k++) {
 	    if (tdflist_p[tdfile_p[inx(j)]] ==
 		tdflist_p[tdfile_p[inx(k)]]) doit = True;
-	  };
+	  }
 	  if (doit) break;
-	};
-      };
+	}
+      }
       if (doit) {
 	os << "---------------------------------------------" << endl;
 	for (uInt j=i; j<i+n; j++) {
@@ -848,12 +848,12 @@ void Template::writeDup(ostream &os, const String &userFile, Bool isSys) {
 	    tdflist_p[tdfile_p[inx(j)]] << " line " << tdline_p[inx(j)];
 	  if (tdflist_p[tdfile_p[inx(j)]] == userFile) os << " ***" << endl;
 	  else os << " -" << endl;;
-	};
+	}
 	dcount_p += n;
-      };
-    };
+      }
+    }
     i += n;			// next group
-  };
+  }
 }
 
 void Template::setComment(const String &txt, const Bool atstart) {
@@ -861,7 +861,7 @@ void Template::setComment(const String &txt, const Bool atstart) {
   if (ccount_p >= comout_p.nelements()) {
     comout_p.resize(ccount_p+100);
     comptr_p.resize(ccount_p+100);
-  };
+  }
   comout_p[ccount_p] = txt;
   comptr_p[ccount_p] = count_p;
   if (atstart && count_p == 0) comptr_p[ccount_p] = -1;

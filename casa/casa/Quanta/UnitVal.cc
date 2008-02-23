@@ -81,7 +81,7 @@ UnitVal::UnitVal(Double factor, const String& s) :
   } else {
     throw (AipsError("UnitVal::UnitVal Illegal unit string '" +
 		     s + "'"));
-  };
+  }
 }
 
 UnitVal::~UnitVal() {}
@@ -90,7 +90,7 @@ UnitVal &UnitVal::operator=(const UnitVal &other) {
   if (this != &other) {
     kindFactor = other.kindFactor;
     kindDim = other.kindDim;
-  };
+  }
   return *this;
 }
 
@@ -145,7 +145,7 @@ UnitVal UnitVal::root(Int p) const {
   for (Int i=0; i<UnitDim::Dnumber; i++) {
     if (kindDim.unitDim[i] % p == 0) loc.kindDim.unitDim[i] /= p;
     else throw (AipsError("UnitVal::UnitVal Illegal unit dimensions for root"));
-  };
+  }
   loc.kindFactor = ::pow(kindFactor, 1.0/Double(p));
   return(loc);
 }
@@ -176,7 +176,7 @@ Bool UnitVal::check(const String &s, UnitVal &loc) {
     UnitMap::putCache(s,loc);
   } else {
     return False;
-  };
+  }
   return True;
 }
 
@@ -196,7 +196,7 @@ Bool UnitVal::create(MUString &str, UnitVal &res) {
     if (!UnitVal::create(str.lastGet(), kind)) return False;
   } else {
     if (!UnitVal::field(str, kind)) return False;
-  };
+  }
   ps *= UnitVal::power(str);			// full power
   if (str.getPtr() == ptr) return False;	// must have been error
   res *= kind.pow(ps);
@@ -209,7 +209,7 @@ Int UnitVal::psign(MUString& str) {
   while (str.testChar(sep)) {
     if (str.testChar('/')) lc = -1;
     str.skipChar();
-  };
+  }
   return lc;
 }
 
@@ -229,7 +229,7 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
     Char prev = str.getChar();
     while (str.testChar(un2) || (str.testNum() && prev == '_'))
       prev = str.getChar();
-  };
+  }
   String key = str.get(wh, str.getPtr());
   if (key.length() == 0) { res = loc.getVal(); return True;}
   if (UnitMap::getCache(key,res)) return True;
@@ -242,8 +242,8 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
       if (UnitMap::getUnit(key.from(2), loc1)) {
 	res = (loc.getVal() * loc1.getVal()); return True;
       }
-    };
-  };
+    }
+  }
   return False;
 }
 

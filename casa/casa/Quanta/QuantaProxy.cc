@@ -56,7 +56,7 @@ Record QuantaProxy::mapit(const String &tp)
       mapInsert(tmp, types[3], UnitMap::giveCust());
     if (p == 0 || p == 4)
       mapInsert(tmp, types[4], UnitMap::giveUser());
-  };
+  }
   return tmp;
 }
 
@@ -477,12 +477,12 @@ Vector<String> QuantaProxy::time(const Record& rec, const Vector<String>& fmt,
         if (j>0) {
           if (form2) oss << ", ";
           else oss << " ";
-        };
+        }
         oss << MVTime(Quantity(val.getValue()(k),
                       val.getFullUnit())).
             string(fm, prec);
         k++;
-      };
+      }
       if (ncol > 1 && form2) oss << ']';
       out(i) = oss.str();
     }
@@ -513,12 +513,12 @@ Vector<String> QuantaProxy::angle(const Record& rec, const Vector<String>& fmt,
         if (j>0) {
           if (form2) oss << ", ";
           else oss << " ";
-        };
+        }
         oss << MVAngle(Quantity(val.getValue()(k),
                       val.getFullUnit())).
             string(fm, prec);
         k++;
-      };
+      }
       if (ncol > 1 && form2) oss << ']';
       out(i) = oss.str();
     }
@@ -555,11 +555,11 @@ Vector<String> QuantaProxy::tfreq(const Record& rec, const String& fmt,
           if (j>0) oss << ", ";
           oss << x(k);
           k++;
-        };
+        }
         if (ncol > 1) oss << ']';
         if (form2) oss << " " << fmt;
         out(i) = oss.str();
-      };
+      }
     } else {
       out.resize(0);
     }

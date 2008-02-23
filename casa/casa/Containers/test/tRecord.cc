@@ -358,6 +358,8 @@ void doIt (Bool doExcp)
 
     // Define a scalar using an array.
     AlwaysAssertExit (record.asInt("TpInt2") == 3);
+    AlwaysAssertExit (record.asBool("TpInt2"));
+    AlwaysAssertExit (allEQ (record.toArrayBool("TpInt2"), True));
     AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
     AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(4)));
     record.define ("TpInt2", Vector<Int>(1,6));

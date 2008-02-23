@@ -52,57 +52,57 @@ int main() {
       for (uInt j=0; j<10; j++) {
 	list3[j] = pool3.get();
 	list5[j] = pool5.get();
-      };
+      }
       if (pool3.key() != 3) {
 	if (ok) cout << "Illegal pool3 id" << endl;
 	ok = False;
-      };
+      }
       if (pool5.key() != 5) {
 	if (ok) cout << "Illegal pool5 id" << endl;
 	ok = False;
-      };
+      }
       if ((list3[4])->nelements() != 3) {
 	if (ok) cout << "Illegal pool3 length" << endl;
 	ok = False;
-      };
+      }
       if ((list5[7])->nelements() != 5) {
 	if (ok) cout << "Illegal pool5 length" << endl;
 	ok = False;
-      };
+      }
       for (uInt j=0; j<10; j++) {
 	pool3.release(list3[9-j]);
 	pool5.release(list5[9-j]);
-      };
-    };
+      }
+    }
     
     if (pool3.nelements() != 16) {
       cout << pool3.nelements() << " elements in pool3" << endl;
       ok =False;
-    };
+    }
     pool5.addElements(2);
     if (pool5.get()->nelements() != 5) {
       cout << "Incorrectly added elements" << endl;
       ok = False;
-    };
+    }
     if (pool5.nelements() != pool3.nelements() + 2) {
       cout << pool5.nelements() << " elements in pool5" << endl;
       ok =False;
-    };
+    }
     pool5.clear();
     if (pool5.nelements() != 1) {
       cout << pool5.nelements() << " elements in pool5 after clearing" << endl;
       ok =False;
-    };
+    }
     pool3.clear();
     if (!pool5.empty() || !pool3.empty()) {
       cout << "Incorrect stack pointer " << endl;
       ok = False;
-    };
+    }
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
     ok = False;
-  };
+  }
   
   if (!ok) exit(1);
   cout << "Tests ok" << endl;

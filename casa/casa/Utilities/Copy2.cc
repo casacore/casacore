@@ -104,7 +104,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    // Determine the crosspoint.
 	    nLeft = fromMto;
 	    if (nLeft > n) nLeft = n;
-	  };
+	  }
 	} else {
 	  // This case is the opposite from the previous one.
 	  // However, the first part has to be moved from the right
@@ -116,10 +116,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    if (startRight > n) startRight = n;
 	    startLeft = startRight;
 	    nLeft = n - startRight;
-	  };
-	};
-      };
-    };
+	  }
+	}
+      }
+    }
   }
  
 } //# NAMESPACE CASA - END

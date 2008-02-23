@@ -450,7 +450,7 @@ template <class T>
 istream &operator >> (istream &s, Array<T> &x) {
   if (!read(s, x, 0, False)) {
     s.clear(ios::failbit | s.rdstate());
-  };
+  }
   return s;
 }
 
@@ -475,15 +475,15 @@ Bool read(istream &s, Array<T> &x,
 	  iter(j) += 1;
 	  if (iter(j) < p(j)) break;
 	  iter(j) = 0;
-	};
+	}
       } else {
 	for (uInt j=0; j <=iptr; j++) {
 	  iter(j) += 1;
 	  if (iter(j) < p(j)) break;
 	  iter(j) = 0;
-	};
-      };
-    };
+	}
+      }
+    }
   } else {
     // Otherwise try if we can resize.
     // This will always be possible for an Array,
@@ -503,7 +503,7 @@ Bool read(istream &s, Array<T> &x,
 	first = tx.shape().getFirst(x.ndim() - 1);
 	last = IPosition(1, tx.shape().
 			 getLast(tx.ndim() - x.ndim() + 1).product());
-      };
+      }
       IPosition tot(x.ndim());
       tot.setFirst(first);
       tot.setLast(last);
@@ -520,11 +520,11 @@ Bool read(istream &s, Array<T> &x,
 	  iter(j) += 1;
 	  if (iter(j) < p(j)) break;
 	  iter(j) = 0;
-	};
-      };
+	}
+      }
       tx.freeStorage(tmp, deleteIt);
     }
-  };
+  }
   return True;
 }
 
@@ -550,7 +550,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
     p = IPosition(0);
   } else {
     p = *ip;
-  };
+  }
   trans = it;
   s >> ws;
   s.get(ch);
@@ -561,7 +561,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
       trans = (!trans);
       s >> ws;
       s.get(ch);
-    };
+    }
     if (ch != '}') {
       s.putback(ch);
       Bool lpt;
@@ -574,16 +574,16 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	lpq.resize(lpp(0));
 	for (Int i=0; i<lpp(0); i++) {
 	  lpq(i) = lpx[i];
-	};
+	}
 	if (p.nelements() != 0 && p.product() != lpq.product()) {
 	  how = False;
 	} else if (p.nelements() == 0) {
 	  p = lpq;
-	};
-      };
+	}
+      }
     } else {
       s.putback(ch);
-    };
+    }
     if (how) {
       s >> ws;
       s.get(ch);
@@ -592,9 +592,9 @@ Bool readArrayBlock(istream &s, Bool &trans,
       } else {
 	s >> ws;
 	s.get(ch);
-      };
-    };
-  };		// end start shape
+      }
+    }
+  }		// end start shape
 
   // The following is done to circumvent the problem arising from the fact that
   // the output of a String array is given as [ abc, def], but the String >>
@@ -613,10 +613,10 @@ Bool readArrayBlock(istream &s, Bool &trans,
     } else {
       if (x.nelements() <= cnt) {
 	x.resize(2*x.nelements() + 1);
-      };
+      }
       x[cnt] = r;
       cnt++;
-    };
+    }
   } else {
     String st;	///
     String sts;	///
@@ -630,7 +630,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	break;
       } else {
 	s.putback(ch);
-      };
+      }
       if (chstr == Register(&r)) {	/// all of this extra
 	s >> st;	/// Read string
 	Int ix = st.index(Regex("[],]"));	/// See if any present
@@ -642,10 +642,10 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	    st = st.after(ix);
 	    if (x.nelements() <= cnt) {
 	      x.resize(2*x.nelements() + 1);
-	    };
+	    }
 	    x[cnt] = r;
 	    cnt++;
-	  };
+	  }
 	  if ((ix = st.index(']')) >= 0) {
 	    sts = st.before(ix);
 	    istringstream ins(sts.chars()); /// Necessary for template
@@ -653,23 +653,23 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	    st = st.from(ix);
 	    if (x.nelements() <= cnt) {
 	      x.resize(2*x.nelements() + 1);
-	    };
+	    }
 	    x[cnt] = r;
 	    cnt++;
 	    for (Int i1=st.length()-1; i1>=0; i1--) {	/// set back
 	      s.putback(st[i1]);	///
-	    };			///
+	    }			///
 	    break;
-	  };	  
+	  }	  
 	  for (Int i1=st.length()-1; i1>=0; i1--) {	/// set back
 	    s.putback(st[i1]);	///
-	  };			///
+	  }			///
 	} else {
 	  istringstream ins(st.chars()); /// Necessary for template
 	  ins >> r;				/// expansion
 	  if (x.nelements() <= cnt) {
 	    x.resize(2*x.nelements() + 1);
-	  };
+	  }
 	  x[cnt] = r;
 	  cnt++;
 	}
@@ -693,24 +693,24 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	} else {
 	  if (x.nelements() <= cnt) {
 	    x.resize(2*x.nelements() + 1);
-	  };
+	  }
 	  x[cnt] = r;
 	  cnt++;
-	};
-      };
-    };
-  };
+	}
+      }
+    }
+  }
   if (how) {
     if (p.nelements() == 0) {
       p = IPosition(1, cnt);
     } else if (Int(cnt) != p.product()) {
       how = False;
-    };
-  };
+    }
+  }
   if (!how) {
     s.clear(ios::failbit);
     p.resize(0);
-  };
+  }
   return how;
 }
 

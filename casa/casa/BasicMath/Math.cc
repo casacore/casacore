@@ -177,13 +177,12 @@ Bool isInf(Float val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
-#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #if defined(AIPS_LINUX)
   return (isinf(Double(val)));
-#endif
-#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+#elif defined(AIPS_DARWIN)
+  return (std::isinf(Double(val)));
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
   return (!finite(Double(val)) && !isnanf(val));
-#endif
 #else // Otherwise this is a default implementation.
   const uChar* uptr = (const uChar*) &val;
   uInt start, stop;
@@ -212,13 +211,12 @@ Bool isInf(Double val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
-#if defined(AIPS_LINUX) || defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 #if defined(AIPS_LINUX)
-  return (isinf(val));
-#endif
-#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return (!finite(val) && !isnan(val));
-#endif
+  return (isinf(Double(val)));
+#elif defined(AIPS_DARWIN)
+  return (std::isinf(Double(val)));
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+  return (!finite(Double(val)) && !isnanf(val));
 #else // Otherwise this is a default implementation.
   const uChar* uptr = (const uChar*) &val;
   uInt start, stop;

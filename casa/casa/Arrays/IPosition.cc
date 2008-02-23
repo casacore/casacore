@@ -168,7 +168,7 @@ IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
 	}
     }
     return nondegenerateIP;
-};
+}
 
 // <thrown>
 //    <item> AllocError

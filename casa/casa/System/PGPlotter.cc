@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <casa/System/PGPlotter.h>
+#include <casa/System/PGPlotterNull.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Record.h>
@@ -79,7 +80,8 @@ PGPlotter PGPlotter::create (const String &device,
 			     uInt sizex, uInt sizey)
 {
     if (creator_p == 0) {
-        return PGPlotter();
+        return PGPlotterNull::createPlotter(device, mincolors, maxcolors,
+					    sizex, sizey);
     }
     return creator_p (device, mincolors, maxcolors, sizex, sizey);
 }

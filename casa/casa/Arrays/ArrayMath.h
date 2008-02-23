@@ -453,6 +453,17 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
 					     Bool inPlace=False);
 // </group>
 
+// Methods for element-by-element scaling of Complex by Float
+//<group>
+void operator*= (Array<Complex> &left, const Array<Float> &other);
+void operator*= (Array<Complex> &left, const Float &other);
+void operator/= (Array<Complex> &left, const Array<Float> &other);
+void operator/= (Array<Complex> &left, const Float &other);
+Array<Complex> operator* (const Array<Complex> &left, const Array<Float> &right);
+Array<Complex> operator* (const Array<Complex> &left, const Float &right);
+Array<Complex> operator/ (const Array<Complex> &left, const Array<Float> &right);
+Array<Complex> operator/ (const Array<Complex> &left, const Float &right);
+// </group>
 
 // Returns the complex conjugate of a complex array.
 //<group>

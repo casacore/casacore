@@ -43,7 +43,7 @@ String::size_type RegexBase::rfind(const Char *s, String::size_type len,
   if (xpos > pos) xpos = pos;
   for (++xpos; xpos-- > 0; ) {
     if (find(s, len, matchlen, xpos)) return xpos;
-  };
+  }
   return String::npos;
 }
 
@@ -59,7 +59,7 @@ String::size_type RegexBase::match(const Char *s,
   Int matchlen;
   if (find(s, len, matchlen, pos) == pos && matchlen == Int(len-pos)) {
     return len-pos;
-  };
+  }
   return String::npos;
 }
 

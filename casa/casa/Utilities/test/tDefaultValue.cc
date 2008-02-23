@@ -40,7 +40,7 @@
 static void defaultValue(String &val)
 {
   val = "defaultval";
-};
+}
 
 int main()
 {

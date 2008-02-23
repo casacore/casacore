@@ -116,7 +116,7 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	// on SUSE 6.1 systems statd might not be installed.
 	// Hence locks on NFS files result in ENOLCK. Treat it as success.
 	// Issue a message if hit for the first time.
-#if defined(AIPS_LINUX)
+#if defined(AIPS_LINUX) || defined(AIPS_DARWIN)
 	if (errno == ENOLCK) {
 	    itsError = 0;
 	    itsReadLocked = True;
@@ -184,7 +184,7 @@ Bool FileLocker::release()
     if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 	return True;
     }
-#if defined(AIPS_LINUX)
+#if defined(AIPS_LINUX) || defined(AIPS_DARWIN)
     if (errno == ENOLCK) {
       return True;
     }

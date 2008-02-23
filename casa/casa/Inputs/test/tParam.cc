@@ -132,6 +132,6 @@ int main()
     cout << "Caught exception" << endl;
     cout << "Message is: " << x.getMesg() << endl;
   }    
-};
+}
 
 

@@ -110,7 +110,7 @@ int main()
 	 instr >> bb;
 	 cout << "Pos1: " << instr.tellg()-stt << endl;
 	 cout << in << " = " << res << " : " << bb << endl;
-       };
+       }
      } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } 

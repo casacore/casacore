@@ -58,7 +58,7 @@ MVDouble::MVDouble(const Quantum<Vector<Double> > &other) {
     val = tmp(0);
   } else {
     throw (AipsError("Illegal vector length in MVDouble constructor"));
-  };
+  }
 }
 
 MVDouble::MVDouble(const Vector<Double> &other) {
@@ -69,13 +69,13 @@ MVDouble::MVDouble(const Vector<Double> &other) {
     val = other(0);
   } else {
     throw (AipsError("Illegal vector length in MVDouble constructor"));
-  };
+  }
 }
 
 MVDouble::MVDouble(const Vector<Quantity> &other) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantity vector in MVDouble constructor"));
-  };
+  }
 }
 
 MVDouble &MVDouble::operator=(const MVDouble &other) {
@@ -120,7 +120,7 @@ uInt MVDouble::type() const {
 void MVDouble::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVDouble *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVDouble"));
-  };
+  }
 }
 
 Bool MVDouble::near(const MVDouble &other, Double tol) const {
@@ -151,7 +151,7 @@ void MVDouble::putVector(const Vector<Double> &in) {
     val = 0.0;
   } else {
     val = in(0);
-  };
+  }
 }
 
 Vector<Quantum<Double> > MVDouble::getRecordValue() const {
@@ -168,7 +168,7 @@ Bool MVDouble::putValue(const Vector<Quantum<Double> > &in) {
     val = (in(0)).get().getValue();
   } else {
     return False;
-  };
+  }
   return True;
 }
 

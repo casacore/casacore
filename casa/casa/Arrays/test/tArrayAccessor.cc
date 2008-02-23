@@ -51,8 +51,8 @@ int main() {
     for (uInt i=0; i<N2; ++i) {
       for (uInt j=0; j<N1; ++j) {
 	for (uInt k=0; k<N0; ++k) AlwaysAssertExit(cub(k,j,i) == inx++);
-      };
-    };
+      }
+    }
     cout << "Cube of dimensions (" << N0 << "," << N1 << "," << N2 <<
       ") properly filled" << endl;
     cout << "--------------------------------------------------" << endl;
@@ -63,9 +63,9 @@ int main() {
       for (ArrayAccessor<Int, Axis<1> > j(i); j!=j.end(); ++j) {
 	for (ArrayAccessor<Int, Axis<0> > k(j); k!=k.end(); ++k) {
 	  AlwaysAssertExit(*k == inx++);
-	};
-      };
-    };
+	}
+      }
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -75,9 +75,9 @@ int main() {
       for (ArrayAccessor<Int, AxisN> j(i, AxisN(1)); j!=j.end(); ++j) {
 	for (ArrayAccessor<Int, AxisN> k(j, AxisN(0)); k!=k.end(); ++k) {
 	  AlwaysAssertExit(*k == inx++);
-	};
-      };
-    };
+	}
+      }
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -87,17 +87,17 @@ int main() {
       for (ArrayAccessor<Int, AxisN> j(i, AxisN(1)); j!=j.end(); ++j) {
 	for (ArrayAccessor<Int, Axis<0> > k(j); k!=k.end(); ++k) {
 	  AlwaysAssertExit(*k == inx++);
-	};
-      };
-    };
+	}
+      }
+    }
     inx = 0;
     for (ArrayAccessor<Int, AxisN> i(cub, AxisN(2)); i!=i.end(); ++i) {
       for (ArrayAccessor<Int, Axis<1> > j(i); j!=j.end(); ++j) {
 	for (ArrayAccessor<Int, AxisN> k(j, AxisN(0)); k!=k.end(); ++k) {
 	  AlwaysAssertExit(*k == inx++);
-	};
-      };
-    };
+	}
+      }
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -114,9 +114,9 @@ int main() {
 	    AlwaysAssertExit(*k == inx);
 	    l = k;
 	    AlwaysAssertExit(*l == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -134,9 +134,9 @@ int main() {
 	    AlwaysAssertExit(*k == inx);
 	    l = k;
 	    AlwaysAssertExit(*l == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -154,9 +154,9 @@ int main() {
 	    AlwaysAssertExit(*k == inx);
 	    l = k;
 	    AlwaysAssertExit(*l == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     inx = 0;
     {
@@ -170,9 +170,9 @@ int main() {
 	    AlwaysAssertExit(*k == inx);
 	    l = k;
 	    AlwaysAssertExit(*l == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -185,17 +185,17 @@ int main() {
 	for (ArrayAccessor<Int, Axis<1> > j(i); j!=j.end(); ++j) {
 	  for (ArrayAccessor<Int, Axis<0> > k(j); k!=k.end(); ++k) {
 	    AlwaysAssertExit(*k == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
       inx = 0;
       for (i.init(cub); i!=i.end(); ++i) {
 	for (ArrayAccessor<Int, Axis<1> > j(i); j!=j.end(); ++j) {
 	  for (ArrayAccessor<Int, Axis<0> > k(j); k!=k.end(); ++k) {
 	    AlwaysAssertExit(*k == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -210,9 +210,9 @@ int main() {
 	for (j = i; j!=j.end(); ++j) {
 	  for (k = j; k!=k.end(); ++k) {
 	    AlwaysAssertExit(*k == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
       inx = 0;
       j.init(AxisN(0));
       k.init(AxisN(1));
@@ -220,9 +220,9 @@ int main() {
 	for (k = i; k!=k.end(); ++k) {
 	  for (j = k; j!=j.end(); ++j) {
 	    AlwaysAssertExit(*j == inx++);
-	  };
-	};
-      };
+	  }
+	}
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -239,10 +239,10 @@ int main() {
 	if (j == j.end()-1) {
 	  AlwaysAssertExit(j.prev<Axis<0> >() == inx-1);
 	  AlwaysAssertExit(j.prev(AxisN(0)) == inx-1);
-	};
+	}
 	inx += N0;
-      };
-    };
+      }
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -259,7 +259,7 @@ int main() {
       i -= 1; AlwaysAssertExit(*i == inx+2*ln);
       i -= 2;
       inx += ln;
-    };
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -274,7 +274,7 @@ int main() {
       AlwaysAssertExit(i.step() == uInt(ln));
       inx += ln;
       ++cnt;
-    };
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -291,7 +291,7 @@ int main() {
       AlwaysAssertExit(i.rbegin(+5) == i.end()-ln+5*ln);
       AlwaysAssertExit(i.rend(1) == i.begin());
       inx += ln;
-    };
+    }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
 
@@ -302,17 +302,17 @@ int main() {
       for (; i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       inx = 0;
       for (i.reset(); i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       inx = 2*ln;
       for (i.reset(i.begin(2)); i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
     }
     {
       inx = 0;
@@ -320,17 +320,17 @@ int main() {
       for (; i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       inx = 0;
       for (i.reset(); i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       inx = 2*ln;
       for (i.reset(i.begin(2)); i!=i.end(); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
@@ -343,11 +343,11 @@ int main() {
       for (; i!=i.end(-2); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       for (j = i; j!=j.end(); ++j) {
 	AlwaysAssertExit(*j == inx);
 	inx += ln;
-      };
+      }
     }
     inx = 0;
     {
@@ -356,18 +356,18 @@ int main() {
       for (; i!=i.end(-2); ++i) {
 	AlwaysAssertExit(*i == inx);
 	inx += ln;
-      };
+      }
       for (j = i; j!=j.end(); ++j) {
 	AlwaysAssertExit(*j == inx);
 	inx += ln;
-      };
+      }
     }
     cout << "ok" << endl <<
       "--------------------------------------------------" << endl;
  
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  };
+  }
 
   exit(0);
 }

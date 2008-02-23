@@ -43,7 +43,7 @@ template <class T, class Key>
 PoolStack<T, Key>::~PoolStack() {
   for (uInt i=0; i<stack_p.nelements(); i++) {
     delete stack_p[i]; stack_p[i] = 0;
-  };
+  }
 }
 
 //# Member functions
@@ -54,14 +54,14 @@ void PoolStack<T, Key>::addElements(const uInt n) {
   for (uInt i=0; i<n; i++) {
     stack_p[stack_p.nelements()-n+i] = 0;
     release(new T(key_p));
-  };
+  }
 }
 
 template <class T, class Key>
 void PoolStack<T, Key>::clear() {
   for (uInt i=0; i<top_p; i++) {
     delete stack_p[i]; stack_p[i] = 0;
-  };
+  }
   stack_p.resize(stack_p.nelements() - top_p, True);
   top_p = 0;
 }

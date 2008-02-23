@@ -59,9 +59,9 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
     value = Vector<Bool>(m);
     for (Int i=0; i<m; i++) {
       value(i) = ((nres[i]).contains(tTrue));;
-    };
+    }
     delete [] nres;
-  };
+  }
   return x;
 }
 
@@ -100,8 +100,8 @@ void AipsrcVector<Bool>::save(uInt keyword) {
       oss << " true";
     } else {
       oss << " false";
-    };
-  };
+    }
+  }
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 

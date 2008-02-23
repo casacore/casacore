@@ -49,7 +49,7 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
   if (transtable) {
     trans = new Char[256];
     memcpy(trans, transtable, 256);
-  };
+  }
   Int tlen = exp.length();
   buf = new re_pattern_buffer;
   reg = new re_registers;
@@ -79,13 +79,14 @@ void Regex::dealloc() {
   if ( buf != 0 ) {
     free(buf->buffer);
     delete [] buf->fastmap;
-    delete buf; buf= 0;
+    delete buf;
+    buf= 0;
   }
-  if (reg != 0) delete reg;
+  delete reg;
   reg=0;
-  if (str != 0) delete str;
+  delete str;
   str=0;
-  if (trans != 0) delete [] trans;
+  delete [] trans;
   trans=0;
 }
 
@@ -95,7 +96,7 @@ Int Regex::match_info(Int& start, Int& length, Int nth) const {
     start = reg->start[nth];
     length = reg->end[nth] - start;
     return start >= 0 && length >= 0;
-  };
+  }
 }
 
 Bool Regex::OK() const {
@@ -126,13 +127,13 @@ String::size_type Regex::search(const Char *s, String::size_type len,
   } else {
     xpos = len + pos;
     range = -xpos;
-  };
+  }
   matchpos = a2_re_search_2(buf, 0, 0, (Char*)s, len, xpos, range, reg, len);
   if (matchpos >= 0) matchlen = reg->end[0] - reg->start[0];
   else {
     matchlen = 0;
     return String::npos;
-  };
+  }
   return matchpos;
 }
 
@@ -358,7 +359,7 @@ String Regex::fromString(const String &strng)
 	    result[len++] = '\\';
 	}
 	result[len++] = c;
-    };
+    }
     return String(result.chars(), len);
 }
 

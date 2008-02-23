@@ -358,9 +358,10 @@ public:
     // </group>
 
     // The following functions get the value based on field name or number.
-    // The scalar functions promote the data type if needed.
-    // The array functions throw an exception if the data type mismatches.
-    // The get function or toArrayX function can be used for type promotion.
+    // The scalar functions promote the data type if needed. It also supports
+    // conversion of Int to Bool.
+    // <br>The array functions throw an exception if the data type mismatches.
+    // The toArrayX function can be used for array type promotion.
     // <group>
     Bool            asBool    (const RecordFieldId&) const;
     uChar           asuChar   (const RecordFieldId&) const;
@@ -387,6 +388,7 @@ public:
     // </group>
 
     // Get an array while promoting the data as needed.
+    // Int values can be converted to Bool.
     // A scalar value is also converted to an array.
     // These functions are slower than <src>asX</src>, but more general.
     // <group>

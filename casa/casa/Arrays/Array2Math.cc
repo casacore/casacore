@@ -51,6 +51,136 @@ void ArrayMinMaxPrintOnceDeprecated ()
     return;
 }
 
+// Mixed-type *=, /=, *, & / operators:
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+void operator*= (Array<Complex> &left, const Array<Float> &other)
+{
+    if (left.shape().conform(other.shape()) == False) {
+	throw(ArrayConformanceError("::operator*=(Array<Complex> &, const Array<Float> &)"
+				    " - arrays do not conform"));
+    }
+
+    uInt ntotal = left.nelements(); // conform , so == other.nelements()
+    
+    Bool leftDelete, otherDelete;
+    Complex *leftStorage = left.getStorage(leftDelete);
+    Complex *ls = leftStorage;
+
+    const Float *otherStorage = other.getStorage(otherDelete);
+    const Float *os = otherStorage;
+
+    while (ntotal--) {
+	*ls++ *= *os++;
+    }
+
+    left.putStorage(leftStorage, leftDelete);
+    other.freeStorage(otherStorage, otherDelete);
+}
+
+void operator*= (Array<Complex> &left, const Float &other)
+{
+    uInt ntotal = left.nelements(); 
+    
+    Bool leftDelete;
+    Complex *leftStorage = left.getStorage(leftDelete);
+    Complex *ls = leftStorage;
+
+    while (ntotal--) {
+	*ls++ *= other;
+    }
+    left.putStorage(leftStorage, leftDelete);
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+void operator/= (Array<Complex> &left, const Array<Float> &other)
+{
+    if (left.shape().conform(other.shape()) == False) {
+	throw(ArrayConformanceError("::operator/=(Array<Complex> &, const Array<Float> &)"
+				    " - arrays do not conform"));
+    }
+
+    uInt ntotal = left.nelements(); // conform , so == other.nelements()
+    
+    Bool leftDelete, otherDelete;
+    Complex *leftStorage = left.getStorage(leftDelete);
+    Complex *ls = leftStorage;
+
+    const Float *otherStorage = other.getStorage(otherDelete);
+    const Float *os = otherStorage;
+
+    while (ntotal--) {
+	*ls++ /= *os++;
+    }
+
+    left.putStorage(leftStorage, leftDelete);
+    other.freeStorage(otherStorage, otherDelete);
+}
+
+void operator/= (Array<Complex> &left, const Float &other)
+{
+    uInt ntotal = left.nelements(); // conform , so == other.nelements()
+    
+    Bool leftDelete;
+    Complex *leftStorage = left.getStorage(leftDelete);
+    Complex *ls = leftStorage;
+
+    while (ntotal--) {
+	*ls++ /= other;
+    }
+    left.putStorage(leftStorage, leftDelete);
+}
+
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+Array<Complex> operator*(const Array<Complex> &left, const Array<Float> &right)
+{
+    if (left.shape().conform(right.shape()) == False) {
+	throw(ArrayConformanceError("::operator*(const Array<Complex> &, const "
+				    "Array<Float> &)"
+				    " - arrays do not conform"));
+    }
+    
+    Array<Complex> tmp(left.copy());
+    tmp *= right;
+    return tmp;
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+Array<Complex> operator/(const Array<Complex> &left, const Array<Float> &right)
+{
+    if (left.shape().conform(right.shape()) == False) {
+	throw(ArrayConformanceError("::operator/(const Array<Complex> &, const "
+				    "Array<Float> &)"
+				    " - arrays do not conform"));
+    }
+    
+    Array<Complex> tmp(left.copy());
+    tmp /= right;
+    return tmp;
+}
+
+Array<Complex> operator* (const Array<Complex> &left, const Float &right)
+{
+    Array<Complex> tmp(left.copy());
+    tmp *= right;
+    return tmp;
+}
+
+Array<Complex> operator/ (const Array<Complex> &left, const Float &right)
+{
+    Array<Complex> tmp(left.copy());
+    tmp /= right;
+    return tmp;
+}
+
 
 //# We could use macros to considerably reduce the number of lines, however
 //# that makes it harder to debug, understand, etc.
@@ -66,7 +196,7 @@ Array<Complex> conj(const Array<Complex> &carray)
   for (uInt i=0; i<n; i++) cptr[i] = conj(cptr[i]);
   retval.putStorage(cptr, delc);
   return retval;
-};
+}
   
 Array<DComplex> conj(const Array<DComplex> &carray)
 {
@@ -79,7 +209,7 @@ Array<DComplex> conj(const Array<DComplex> &carray)
   for (uInt i=0; i<n; i++) cptr[i] = conj(cptr[i]);
   retval.putStorage(cptr, delc);
   return retval;
-};
+}
 
 Matrix<Complex> conj(const Matrix<Complex> &carray)
 {
@@ -92,7 +222,7 @@ Matrix<Complex> conj(const Matrix<Complex> &carray)
   for (uInt i=0; i<n; i++) cptr[i] = conj(cptr[i]);
   retval.putStorage(cptr, delc);
   return retval;
-};
+}
   
 Matrix<DComplex> conj(const Matrix<DComplex> &carray)
 {
@@ -105,7 +235,7 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray)
   for (uInt i=0; i<n; i++) cptr[i] = conj(cptr[i]);
   retval.putStorage(cptr, delc);
   return retval;
-};
+}
 
 void  real(Array<Float> &rarray, const Array<Complex> &carray)
 {

@@ -89,7 +89,7 @@ Bool UnitMap::getCache(const String& s, UnitVal &val) {
   if (pos == mapCache->end()) {
     val = UnitVal();
     return False;
-  };
+  }
   val = pos->second;
   return True;
 }
@@ -100,7 +100,7 @@ Bool UnitMap::getPref(const String& s, UnitName &name) {
   if (pos == mapPref->end()) {
     name = UnitName();
     return False;
-  };
+  }
   name = pos->second;
   return True;
 }
@@ -114,7 +114,7 @@ Bool UnitMap::getUnit(const String& s, UnitName &name) {
   } else {    
     name = UnitName();
     return False;
-  };
+  }
   name = pos->second;
   return True;
 }
@@ -124,7 +124,7 @@ void UnitMap::putCache(const String& s, const UnitVal& val) {
   if (! s.empty()) {
     if (mapCache->size() > 200) clearCache();
     mapCache->insert(map<String, UnitVal>::value_type(s,val));
-  };
+  }
 }
 
 void UnitMap::putUser(const String& s, const UnitVal& val) {
@@ -153,7 +153,7 @@ void UnitMap::removeUser(const String& s) {
   if (pos != mapUser->end()) {
     mapUser->erase(pos);
     clearCache();
-  };
+  }
 }
 
 void UnitMap::removeUser(const UnitName& name) {
@@ -209,7 +209,7 @@ Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
   };
   if (which >= N_FITS) {
     return False;
-  };
+  }
   name = &FITSunit[which];
   return True;
 }
@@ -222,9 +222,9 @@ void UnitMap::addFITS() {
     while (UnitMap::getNameFITS(Fname, cnt)) {
       UnitMap::putUser(*Fname);
       cnt++;
-    };
+    }
     UnitMap::doneFITS = True;
-  };
+  }
 }
 
 void UnitMap::clearFITS() {
@@ -235,9 +235,9 @@ void UnitMap::clearFITS() {
     while (UnitMap::getNameFITS(Fname, cnt)) {
       UnitMap::removeUser(*Fname);
       cnt++;
-    };
+    }
     UnitMap::doneFITS = False;
-  };
+  }
 }
 
 Unit UnitMap::fromFITS(const Unit &un) {
@@ -255,11 +255,11 @@ Unit UnitMap::fromFITS(const Unit &un) {
 	if (z == nam->getName()) {
 	  z =  getStringFITS(i);
 	  break;
-	};
-      };
+	}
+      }
       y += z;
-    };
-  };
+    }
+  }
   return Unit(y);
 }
 
@@ -278,11 +278,11 @@ Unit UnitMap::toFITS(const Unit &un) {
 	  getNameFITS(nam, i);
 	  z =  nam->getName();
 	  break;
-	};
-      };
+	}
+      }
       y += z;
-    };
-  };
+    }
+  }
   return Unit(y);
 }
 
@@ -300,7 +300,7 @@ void UnitMap::listPref(ostream &os) {
   for (map<String, UnitName>::iterator i=mapPref->begin();
        i != mapPref->end(); ++i) {
     os << "    " << i->second << endl;
-  };
+  }
 }
 
 void UnitMap::listDef() {
@@ -312,7 +312,7 @@ void UnitMap::listDef(ostream &os) {
   for (map<String, UnitName>::iterator i=mapDef->begin();
        i != mapDef->end(); ++i) {
     os << "    " << i->second << endl;
-  };
+  }
 }
 
 void UnitMap::listSI() {
@@ -324,7 +324,7 @@ void UnitMap::listSI(ostream &os) {
   for (map<String, UnitName>::iterator i=mapSI->begin();
        i != mapSI->end(); ++i) {
     os << "    " << i->second << endl;
-  };
+  }
 }
 
 void UnitMap::listCust() {
@@ -336,7 +336,7 @@ void UnitMap::listCust(ostream &os) {
   for (map<String, UnitName>::iterator i=mapCust->begin();
        i != mapCust->end(); ++i) {
     os << "    " << i->second << endl;
-  };
+  }
 }
 
 void UnitMap::listUser() {
@@ -348,7 +348,7 @@ void UnitMap::listUser(ostream &os) {
   for (map<String, UnitName>::iterator i=mapUser->begin();
        i != mapUser->end(); ++i) {
     os << "    " << i->second << endl;
-  };
+  }
 }
 
 void UnitMap::list() {
@@ -380,7 +380,7 @@ void UnitMap::listCache(ostream &os) {
        i != mapCache->end(); ++i) {
     os << "    " <<
       UnitName(i->first, i->second) << endl;
-  };
+  }
 }
 
 const map<String, UnitName> &UnitMap::givePref() {

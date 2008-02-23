@@ -59,15 +59,15 @@ int main() {
 	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
-      };
+      }
     } else {
       cout << "To error: " << error << endl;
-    };
+    }
 
     QuantumHolder q02(q00);
     if (q00.asQuantity() != q02.asQuantity()) {
       cout << "Error in copy constructor" << endl;
-    };
+    }
 
     cout << "Is quantum:                  " << q00.isQuantum() << endl;
     cout << "Is quantity:                 " << q00.isQuantity() << endl;
@@ -116,20 +116,20 @@ int main() {
 	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
-      };
+      }
     } else {
       cout << "To error: " << error << endl;
-    };
+    }
     cout << "Input quantity:              " << (QBase &)x02 << endl;
     if (QuantumHolder(x02).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
 	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
       } else {
 	cout << "From error: " << error << endl;
-      };
+      }
     } else {
       cout << "To error: " << error << endl;
-    };
+    }
     cout << "Error expected:" << endl;
     cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
@@ -138,22 +138,22 @@ int main() {
 	cout <<"Record output quantity:      " << q00.asQuantity() << endl;
       } else {
 	cout << "From error: " << error << endl;
-      };
+      }
     } else {
       cout << "To error: " << error << endl;
-    };
+    }
     cout << "Input String:                " << s00 << endl;
     if (q00.fromString(error, s00)) {
       cout << "As quantity:                 " << q00.asQuantum() << endl;
     } else {
       cout << "Unexpected error for String " << s00 << endl;
-    };
+    }
     cout << "Input String:                " << s01 << endl;
     if (q00.fromString(error, s01)) {
       cout << "As quantity:                 " << q00.asQuantum() << endl;
     } else {
       cout << "Unexpected error for String " << s01 << endl;
-    };
+    }
     cout << "Input String:                " << s02 << endl;
     if (q00.fromString(error, s02)) {
       cout << "As quantity:                 " << q00.asQuantum() << endl;
@@ -161,7 +161,7 @@ int main() {
       cout << "Expected error for String " << s02 <<
 	" (value still " << q00.asQuantum() << ")" << endl;
       cout << "Error message now: " << error << endl;
-    };
+    }
     cout << "----------------------------------------------------" << endl;
 
   } catch (AipsError x) {

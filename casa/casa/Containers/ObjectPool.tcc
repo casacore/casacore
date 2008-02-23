@@ -43,7 +43,7 @@ ObjectPool<T, Key>::~ObjectPool() {
   for (uInt i=0; i<map_p.ndefined(); i++) {
     delete map_p.getVal(i);
     map_p.getVal(i) = 0;
-  };
+  }
 }
 
 template <class T, class Key>
@@ -53,7 +53,7 @@ PoolStack<T, Key> &ObjectPool<T, Key>::getStack(const Key key) {
   PoolStack<T, Key> **v0;
   if (!(v0 = map_p.isDefined(key))) {
     v0 = &(map_p.define(key, new PoolStack<T, Key>(key)));
-  };
+  }
   cacheKey_p = key;
   cacheStack_p = *v0;
   return **v0;
@@ -66,7 +66,7 @@ void ObjectPool<T, Key>::release(T *obj, const Key key) {
   else {
     PoolStack<T, Key> **v0;
     if ((v0 = map_p.isDefined(key))) (*v0)->release(obj);
-  };
+  }
 }
 
 template <class T, class Key>
@@ -88,8 +88,8 @@ void ObjectPool<T, Key>::clear() {
       delete map_p.getVal(i);
       map_p.getVal(i) = 0;
       map_p.remove(map_p.getKey(i));
-    };
-  };
+    }
+  }
 }
 
 } //# NAMESPACE CASA - END

@@ -62,7 +62,7 @@ MVFrequency::MVFrequency(const Quantum<Vector<Double> > &other) {
     val = makeF(tmp(0), other.getFullUnit());
   } else {
     throw (AipsError("Illegal vector length in MVFrequency constructor"));
-  };
+  }
 }
 
 MVFrequency::MVFrequency(const Vector<Double> &other) {
@@ -73,13 +73,13 @@ MVFrequency::MVFrequency(const Vector<Double> &other) {
     val = other(0);
   } else {
     throw (AipsError("Illegal vector length in MVFrequency constructor"));
-  };
+  }
 }
 
 MVFrequency::MVFrequency(const Vector<Quantity> &other) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantity vector in MVFrequency constructor"));
-  };
+  }
 }
 
 MVFrequency &MVFrequency::operator=(const MVFrequency &other) {
@@ -132,7 +132,7 @@ uInt MVFrequency::type() const {
 void MVFrequency::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVFrequency *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVFrequency"));
-  };
+  }
 }
 
 void MVFrequency::print(ostream &os) const {
@@ -166,7 +166,7 @@ void MVFrequency::putVector(const Vector<Double> &in) {
     val = 0.0;
   } else {
     val = in(0);
-  };
+  }
 }
 
 Vector<Quantum<Double> > MVFrequency::getRecordValue() const {
@@ -190,7 +190,7 @@ Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
     Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
       UnitVal::TIME/UnitVal::TIME;
     Impuls = UnitVal::MASS*UnitVal::LENGTH;
-  };
+  }
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
@@ -206,10 +206,10 @@ Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
       val = makeF(in(0).getValue(), in(0).getFullUnit());
     } else {
       return False;
-    };
+    }
   } else {
     return False;
-  };
+  }
   return True;
 }
 
@@ -232,7 +232,7 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
     Impuls = UnitVal::MASS*UnitVal::LENGTH;
     LVel = (QC::c).getBaseValue();
     Planck = (QC::h).getBaseValue();
-  };
+  }
   Double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0/dt.getValue().getFac()/v);

@@ -226,7 +226,7 @@ Bool LockFile::inspect (Bool always)
       //# Only inspect if time interval has passed.
       if (itsInterval > 0  &&  itsLastTime.age() < itsInterval) {
 	return False;
-      };
+      }
     }
 
     //# Get the number of request id's and reset the time.

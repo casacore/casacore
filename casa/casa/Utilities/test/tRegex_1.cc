@@ -68,18 +68,18 @@ int main () {
     int i;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromPattern(p[i]) << endl;
-    };
+    }
 
     cout << endl << "SQLPattern --> Regular Expression" << endl;
     cout << "---------------------------------" << endl;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromSQLPattern(p[i]) << endl;
-    };
+    }
 
     cout << endl << "String --> Regular Expression" << endl;
     cout << "-----------------------------" << endl;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromString(p[i]) << endl;
-    };
+    }
     return 0;
 }

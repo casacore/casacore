@@ -41,7 +41,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   ObjectStack<T>::~ObjectStack() {
     for (uInt i=0; i<stack_p.size(); ++i) {
       delete stack_p[i]; stack_p[i]=0;
-    };
+    }
   }
 
   //# Member functions

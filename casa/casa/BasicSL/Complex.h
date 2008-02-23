@@ -210,8 +210,8 @@ inline Bool operator<  (const DComplex& left, const DComplex& right)
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=math>
-inline Double fabs(const DComplex &val) { return std::abs(val); };
-inline Float fabs(const Complex &val) { return std::abs(val); };
+inline Double fabs(const DComplex &val) { return std::abs(val); }
+inline Float fabs(const Complex &val) { return std::abs(val); }
 
 // The log10 should be in stl
 // <group>

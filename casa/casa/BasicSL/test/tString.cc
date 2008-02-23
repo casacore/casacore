@@ -290,7 +290,7 @@ void splittest() {
   cout << "from split(z, RXwhite, w, 10), n words = " << nw << ":\n";
   for (Int i = 0; i < nw; ++i) {
     cout << w[i] << endl;
-  };
+  }
   assert(w[0] == "This");
   assert(w[1] == "string");
   assert(w[2] == "has");
@@ -347,7 +347,7 @@ void identitytest(String a, String b) {
     x += x;
     assert(x == reverse(x));
     assert(x.index(y) == 0);
-  };
+  }
 }
 
 

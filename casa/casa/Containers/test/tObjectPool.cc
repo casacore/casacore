@@ -51,44 +51,44 @@ int main() {
       for (uInt j=0; j<10; j++) {
 	list3[j] = pool.get(3);
 	list5[j] = pool.get(5);
-      };
+      }
       if ((list3[4])->nelements() != 3) {
 	if (ok) cout << "Illegal pool3 length" << endl;
 	ok = False;
-      };
+      }
       if ((list5[7])->nelements() != 5) {
 	if (ok) cout << "Illegal pool5 length" << endl;
 	ok = False;
-      };
+      }
       for (uInt j=0; j<10; j++) {
 	pool.release(list3[9-j], 3);
 	pool.release(list5[9-j], 5);
-      };
-    };
+      }
+    }
     
     if (pool.nelements() != 2) {
       cout << pool.nelements() << " elements in pool" << endl;
       ok =False;
-    };
+    }
     if (pool.get(5)->nelements() != 5) {
       cout << "Incorrectly added elements" << endl;
       ok = False;
-    };
+    }
     PoolStack<Vector<Double>, uInt> &mstack = pool.getStack(5);
     if (mstack.key() != 5) {
       cout << "Illegal key found" << endl;
       ok = False;
-    };
+    }
     pool.clear();
     if (pool.nelements() != 1) {
       cout << pool.nelements() << " elements in pool after clearing" << endl;
       ok =False;
-    };
+    }
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
     ok = False;
-  };
+  }
   
   if (!ok) exit(1);
   cout << "Tests ok" << endl;

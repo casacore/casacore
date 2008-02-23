@@ -346,7 +346,8 @@ public:
     // startingAxis exceeds the array's dimensionality.
     // <br>
     // The functions with argument <src>ignoreAxes</src> do
-    // not consider the axes given in that argument.
+    // not consider the axes given in that argument. In this way it can be
+    // achieved that degenerate axes are kept.
     // <note role=caution> When the two functions returning void throw
     // are invoked on a derived object (e.g. Matrix), an exception is
     // thrown if removing the degenerate axes from other does not result

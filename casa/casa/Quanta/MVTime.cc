@@ -63,13 +63,13 @@ MVTime::MVTime(Int yy, Int mm, Double dd, Double d) {
     if (mm < 3) {
 	yy--;
 	mm += 12;
-    };
+    }
     dd += d;
     Int b = 0;
     if (yy>1582 || (yy==1582 && (mm>10 || (mm==10 && dd >= 15)))) { 
 	b = ifloor(yy/100.);
 	b = 2 - b + (Int)(b/4);
-    };
+    }
     val = ifloor(365.25*yy) + ifloor(30.6001*(mm+1)) + dd - 679006.0 +b;
 }
 
@@ -83,7 +83,7 @@ MVTime::MVTime(const Quantity &other) {
     } else {
 	other.assure(UnitVal::TIME);
 	val /= C::day;
-    };
+    }
 }
 
 MVTime &MVTime::operator=(const MVTime &other) {
@@ -125,7 +125,7 @@ Quantity MVTime::get() const {
 Quantity MVTime::get(const Unit &inunit) const {
     if (inunit.getValue() == UnitVal::TIME) {
 	return Quantity(val, "d").get(inunit);
-    };
+    }
     return Quantity(val*C::circle,"rad").get(inunit);
 }
 
@@ -193,7 +193,7 @@ uInt MVTime::yearday() const {
     c = (e+9)/12;
   } else {
     c = 2 * ((e+9)/12);
-  };
+  }
   return ((275*e)/9 - c + a - 30);
 }
 
@@ -214,7 +214,7 @@ void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
 	if (z >= 2299161) {
 	    Long al = ifloor(((Double) z - 1867216.25)/36524.25);
 	    dd = z + 1 + al - (Int)(al/4);
-	};
+	}
 	dd += 1524;
         // tmp introduced to circumvent optimization problem with gcc2.7.2.1
         // on the DecAlpha
@@ -227,7 +227,7 @@ void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
 	    mm--;
 	} else {
 	    mm -= 13;
-	};
+	}
 	yyyy -= 4715;			// year
 	if (mm > 2) yyyy--;
 }
@@ -301,7 +301,7 @@ String MVTime::string() const {
     if (MVTime::interimSet) {
 	MVTime::interimSet = False;
 	return string(MVTime::interimFormat);
-    };
+    }
     return string(MVTime::defaultFormat);
 }
    
@@ -337,7 +337,7 @@ void MVTime::print(ostream &oss,
     Double loctmp(val);
     if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
       loctmp += MVTime::timeZone();
-    };
+    }
     Int locday = ifloor(loctmp);
     MVTime loc = Double(locday);
     loctmp = (loctmp - loc.val)*C::circle;
@@ -350,8 +350,8 @@ void MVTime::print(ostream &oss,
 	  i1 == MVTime::MJD ||
 	  (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	oss << '-';
-      };
-    };
+      }
+    }
     if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
       Int c,e,a;
       loc.ymd(c,e,a);			// y,m,d
@@ -368,32 +368,32 @@ void MVTime::print(ostream &oss,
 	oss << setfill('0') << setw(4) << c << "-" << 
 	  setw(2) << e << "-" << 
 	  setw(2) << a;
-      };
+      }
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	if (i1 == MVTime::FITS) {
 	  oss << "T";
 	} else {
 	  oss << "/";
-	};
-      };
+	}
+      }
       oss.fill(sfill);
-    };
+    }
     if (i1 == MVTime::MJD) {
       Int c = ifloor(loc);
       oss << c;
       if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	oss << "/";
-      };
-    };
+      }
+    }
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	MVAngle::Format ftmp((MVAngle::formatTypes) intyp, inprec);
 	atmp.print(oss, ftmp);
-    };
+    }
 }
 
 Bool MVTime::read(Quantity &res, MUString &in) {
   return read(res, in, True);
-};
+}
 
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   static const String mon[12] = {
@@ -414,11 +414,11 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	in.unpush(); return True;
       } else {
 	in.pop(); return False;
-      };
-    };
+      }
+    }
     res = Quantity(Time().modifiedJulianDay(), "d");
     in.unpush(); return True;
-  };
+  }
   Int r = in.getuInt();
   Int mm =0;
   Double dd = 0;
@@ -434,18 +434,18 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
  	  mm++;
 	} else {
 	  in.pop(); return False;
-	};
-      };
+	}
+      }
     } else {
       if (in.testChar('-')) {
 	mm = 1;
       } else {
 	mm = in.getuInt();
-      };
+      }
       if (!in.testChar('-')) {
 	in.pop(); return False;
-      };
-    };
+      }
+    }
     in.skipChar('-');
     Int dd2 = in.getuInt();
     if (r > 1000) {		// New FITS format
@@ -455,10 +455,10 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	dd2 += 2000;
       } else if (dd2 < 100) {
 	dd2 += 1900;
-      };
+      }
       dd = r;			// Swap day/year
       r = dd2;
-    };    
+    }    
   } else if (in.testChar('/')) {
     if (in.freqChar('/') > 1) {
       in.skipChar();
@@ -469,21 +469,21 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	mm = in.getuInt();
 	if (!in.tSkipChar('/')) {
 	  in.pop(); return False;
-	};
-      };
+	}
+      }
       dd = in.getDouble();
     } else {
       tp = 1;
-    };
+    }
   } else {
     in.pop(); return False;
-  };
+  }
   if (in.tSkipChar('/') || in.tSkipChar('-')) {
     if (MVAngle::read(res, in, chk)) {
       res = Quantity(res.get("deg").getValue()/360., "d");
     } else {
       in.pop(); return False;
-    };
+    }
   } else if (in.tSkipChar('T')) {	// new FITS
     if (MVAngle::read(res, in, False)) {
       res = Quantity(res.get("deg").getValue()/360., "d");
@@ -492,19 +492,19 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	Double r = in.getuInt();
 	if (in.tSkipChar(':')) {
 	  r += Double(in.getuInt())/60.0;
-	};
+	}
 	res -= Quantity(s*r/24.0,"d");	// Time zone
       } else if (in.tSkipChar('Z')) {	// FITS UTC (old format)
-      };
+      }
     } else {
       in.pop(); return False;
-    };
-  };
+    }
+  }
   if (tp == 0) {
     res += MVTime(r, mm, dd).get();
   } else {
     res += r;
-  };
+  }
   res *= s;			// Sign
   in.unpush(); return True;
 }
@@ -527,8 +527,8 @@ Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
       res = Quantity(Quantity(r/C::_2pi,us).getBaseValue(), "d");
     } else {
       return False;
-    };
-  };
+    }
+  }
   return True;
 }
 
@@ -538,7 +538,7 @@ ostream &operator<<(ostream &os, const MVTime &meas) {
 	meas.print(os, MVTime::interimFormat);
     } else {
 	meas.print(os, MVTime::defaultFormat);
-    };
+    }
     return os;
 }
 
@@ -551,7 +551,7 @@ istream &operator>>(istream &is, MVTime &meas) {
     meas = MVTime(t).get();
   } else {
     is.clear(ios::failbit | is.rdstate());
-  };
+  }
   return is;
 }
 

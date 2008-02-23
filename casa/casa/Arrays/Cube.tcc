@@ -292,9 +292,9 @@ template<class T> Matrix<T> Cube<T>::xzPlane(uInt which)
 	throw(ArrayConformanceError("Cube<T>::xzPlane - plane > end"));
     }
     Cube<T> tmp((*this)(Slice(), which, Slice()));
-    return tmp.nonDegenerate(); // should match Matrix<T>(const Array<T> &)
+    // Keep axes 0 and 2, even if they have length 1.
+    return tmp.nonDegenerate(IPosition(2,0,2));
 }
-
 
 template<class T> const Matrix<T> Cube<T>::xzPlane(uInt which) const
 {
@@ -312,7 +312,8 @@ template<class T> Matrix<T> Cube<T>::yzPlane(uInt which)
 	throw(ArrayConformanceError("Cube<T>::yzPlane - plane > end"));
     }
     Cube<T> tmp((*this)(which, Slice(), Slice()));
-    return tmp.nonDegenerate(); // should match Matrix<T>(const Array<T> &)
+    // Keep axes 1 and 2, even if they have length 1.
+    return tmp.nonDegenerate(IPosition(2,1,2));
 }
 
 

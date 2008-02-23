@@ -64,7 +64,7 @@ MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
     val = tmp(0) * makeF(other.getFullUnit());
   } else {
     throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
-  };
+  }
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
@@ -75,13 +75,13 @@ MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
     val = other(0);
   } else {
     throw (AipsError("Illegal vector length in MVRadialVelocity constructor"));
-  };
+  }
 }
 
 MVRadialVelocity::MVRadialVelocity(const Vector<Quantity> &other) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantity vector in MVRadialVelocity constructor"));
-  };
+  }
 }
 
 MVRadialVelocity &MVRadialVelocity::operator=(const MVRadialVelocity &other) {
@@ -134,7 +134,7 @@ uInt MVRadialVelocity::type() const {
 void MVRadialVelocity::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVRadialVelocity *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVRadialVelocity"));
-  };
+  }
 }
 
 void MVRadialVelocity::print(ostream &os) const {
@@ -168,7 +168,7 @@ void MVRadialVelocity::putVector(const Vector<Double> &in) {
     val = 0.0;
   } else {
     val = in(0);
-  };
+  }
 }
 
 Vector<Quantum<Double> > MVRadialVelocity::getRecordValue() const {
@@ -183,7 +183,7 @@ Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
   if (needInit) {
     needInit = False;
     Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  };
+  }
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
@@ -193,10 +193,10 @@ Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
       val = in(0).getValue() * makeF(in(0).getFullUnit());
     } else {
       return False;
-    };
+    }
   } else {
     return False;
-  };
+  }
   return True;
 }
 
@@ -218,10 +218,10 @@ MVRadialVelocity::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
   for (uInt i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
 			 factor;
-  };
+  }
   for (uInt i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
-  };
+  }
   return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }
 
@@ -231,7 +231,7 @@ Double MVRadialVelocity::makeF(const Unit &dt) const{
   if (needInit) {
     needInit = False;
     Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  };
+  }
   Quantity(1.0,dt).assure(Velocity);
   return (dt.getValue().getFac());
 }

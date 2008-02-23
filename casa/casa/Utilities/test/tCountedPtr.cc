@@ -36,7 +36,7 @@
 
 const char *prt(CountedConstPtr<myobj> &obj) {
   return obj->name();
-};
+}
 
 int main() {
   CountedPtr<myobj> var = new myobj("fred");

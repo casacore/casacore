@@ -64,9 +64,9 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
     for (Int i=0; i<m; i++) {
       istringstream instr(nres[i]);
       instr >> value(i);
-    };
+    }
     delete [] nres;
-  };
+  }
   return x;
 }
 
@@ -95,9 +95,9 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
       instr >> qres;
       if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
       value(i) = (T) qres.getValue(resun);
-    };
+    }
     delete [] nres;
-  };
+  }
   return x;
 }
 

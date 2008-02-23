@@ -124,9 +124,25 @@ class Time {
    Bool operator > (const Time& other) const;
    Bool operator < (const Time& other) const;
 
-     // write the current time, GMT, in format
-     //        Tue Mar 22 16:40:24 1994
-   friend ostream& operator << (ostream&, const Time&);
+    // if iso is True, then use ISO 8601 format
+    // otherwise, produce the string of the form
+    // Tue Mar 22 16:40:24 1994
+    // with GMT time
+  String toString(const Bool iso=False) const;
+
+    // returns a String in ISO 8601 format YYYY-MM-DDTHH:MM:SS in GMT
+    // note: for dates beyond year 9999, use more digits for year
+  const String ISODate() const
+    { return toString(True); }
+
+    // write the current time, GMT, in format
+    //        Tue Mar 22 16:40:24 1994
+  friend ostream& operator<<(ostream& out, const Time& other)
+  {
+    out << other.toString(False);
+    return out;
+  }
+
      // read in date, which must be in the following format
      //     month/day/year,hour:min:sec
      // where month,day,year,hour,min and sec are uInt.

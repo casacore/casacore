@@ -131,8 +131,8 @@ MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
       xyz(1) = tsin(0);
     } else {
       xyz(2)=1.0;
-    };
-  };
+    }
+  }
 }
 
 MVPosition::MVPosition(const Quantity &l, 
@@ -191,7 +191,7 @@ MVPosition::MVPosition(const Vector<Quantity> &other) :
   xyz(3) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantum vector in MVPosition constructor"));
-  };
+  }
 }
 
 //# Destructor
@@ -298,7 +298,7 @@ uInt MVPosition::type() const {
 void MVPosition::assure(const MeasValue &in) {
   if (in.type() != Register(static_cast<MVPosition *>(0))) {
     throw(AipsError("Illegal MeasValue type argument: MVPosition"));
-  };
+  }
 }
 
 void MVPosition::adjust() {}
@@ -307,7 +307,7 @@ void MVPosition::adjust(Double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
-  };
+  }
 }
 
 void MVPosition::readjust(Double res) {
@@ -315,7 +315,7 @@ void MVPosition::readjust(Double res) {
     xyz *= 1e-6;
   } else {
     xyz *= res;
-  };
+  }
 }
 
 Double MVPosition::radius() {
@@ -329,7 +329,7 @@ Vector<Double> MVPosition::get() const{
   tmp(2) = getLat(tmp(0));
   if (tmp(0)>loLimit && tmp(0)<hiLimit) {
     tmp(0) = (tmp(0) - hiLimit)*1e7;
-  };
+  }
   return tmp;
 }
 
@@ -438,7 +438,7 @@ void MVPosition::putVector(const Vector<Double> &in) {
   } else {
     xyz = 0.0;
     for (uInt i=0; i<in.nelements();i++) xyz(i) = in(i);
-  };
+  }
 }
 
 Vector<Quantum<Double> > MVPosition::getRecordValue() const {
@@ -468,7 +468,7 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       uInt j;
       for (j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
-      };
+      }
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
       Vector<Double> tsin(2), tcos(2);
@@ -476,7 +476,7 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       for (j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
-      };
+      }
       xyz = Double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -487,7 +487,7 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       readjust(t);
     } else {
       return False;
-    };
+    }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) &&
 	in(1).check(UnitVal::ANGLE)) {
@@ -496,7 +496,7 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       for (j=0; j < 2; j++) {
 	tsin(j) = (sin(in(j))).getValue(); 
 	tcos(j) = (cos(in(j))).getValue(); 
-      };
+      }
       xyz = Double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
@@ -507,10 +507,10 @@ Bool MVPosition::putValue(const Vector<Quantum<Double> > &in) {
       readjust(t);
     } else {
       return False;
-    };
+    }
   } else {
     return False;
-  };
+  }
   return True;
 }
 

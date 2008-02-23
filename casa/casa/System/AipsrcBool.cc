@@ -82,7 +82,7 @@ void AipsrcValue<Bool>::save(uInt keyword) {
     oss << "true";
   } else {
     oss << "false";
-  };
+  }
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 

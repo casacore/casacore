@@ -109,7 +109,7 @@ void Unit::check() {
     if (!UnitVal::check(uName, uVal)) {
 	throw (AipsError("Unit::check Illegal unit string '" +
 			 uName + "'"));
-    };
+    }
     uName.gsub(sp, ssp);
     uName.gsub(pd, spd);
     uName.gsub(bp, sbp);

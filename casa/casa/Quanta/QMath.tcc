@@ -114,7 +114,7 @@ Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
 	for (i=0; i<p; i++) tmp *= left.getValue();
     } else {
 	for (i=0; i>p; i--) tmp /= left.getValue();
-    };
+    }
     res.setValue(tmp);
     if (p == 0 || left.getUnit().empty()) res.setUnit("");
     else {
@@ -122,11 +122,11 @@ Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
       if (p < 0) {
 	sloc += "-";
 	p = -p;
-      };
+      }
       if (p/10 != 0) sloc += Char(Int(p)/10 + '0');
       sloc += Char(Int(p)%10 + '0');
       res.setUnit(sloc);
-    };
+    }
     return res;
 }
 
@@ -177,7 +177,7 @@ Quantum<Qtype> sin(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::ANGLE) {
 	throw (AipsError("Quantum::sin illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(sin((res.getValue())));
@@ -190,7 +190,7 @@ Quantum<Qtype> cos(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::ANGLE) {
 	throw (AipsError("Quantum::cos illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(cos((res.getValue())));
@@ -203,7 +203,7 @@ Quantum<Qtype> tan(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::ANGLE) {
 	throw (AipsError("Quantum::tan illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(tan((res.getValue())));
@@ -216,7 +216,7 @@ Quantum<Qtype> asin(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::asin illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(asin((res.getValue())));
@@ -229,7 +229,7 @@ Quantum<Qtype> acos(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::acos illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(acos((res.getValue())));
@@ -242,7 +242,7 @@ Quantum<Qtype> atan(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::atan illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(atan((res.getValue())));
@@ -257,7 +257,7 @@ Quantum<Qtype> atan2(const Quantum<Qtype> &left,
 	(other.getFullUnit().getValue() != UnitVal::NODIM)) {
 	throw (AipsError("Quantum::atan2 illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     Qtype tmp; tmp = other.getBaseValue();
     res.setValue(left.getBaseValue());
@@ -285,7 +285,7 @@ Quantum<Qtype> log(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::log illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(log((res.getValue())));
@@ -298,7 +298,7 @@ Quantum<Qtype> log10(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::log10 illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(log10((res.getValue())));
@@ -311,7 +311,7 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left) {
     if (left.getFullUnit().getValue() != UnitVal::NODIM) {
 	throw (AipsError("Quantum::exp illegal unit type '" +
 			 left.getUnit() + "'"));
-    };
+    }
     Quantum<Qtype> res;
     res.setValue(left.getBaseValue());
     res.setValue(exp((res.getValue())));

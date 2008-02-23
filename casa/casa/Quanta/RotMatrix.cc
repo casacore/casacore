@@ -41,7 +41,7 @@ RotMatrix::RotMatrix() {
   for (Int i=0; i<3; i++)
     for (Int j=0; j<3; j++) {
       rotat[i][j] = (i==j) ? Double(1.0) : Double(0.0);
-    };
+    }
 }
 
 RotMatrix::RotMatrix(const RotMatrix &other) {
@@ -55,7 +55,7 @@ RotMatrix &RotMatrix::operator=(const RotMatrix &other) {
     for (Int i=0; i<3; i++)
       for (Int j=0; j<3; j++)
 	rotat[i][j] = other.rotat[i][j];
-  };
+  }
   return *this;
 }
 
@@ -63,7 +63,7 @@ RotMatrix::RotMatrix(const Euler &other) {
   for (Int k=0; k<3; k++)
     for (Int j=0; j<3; j++) {
       rotat[k][j] = (k==j) ? Double(1.0) : Double(0.0);
-    };
+    }
   for (Int i=0; i<3; i++)
     applySingle(other(i),other.get(i));
 }
@@ -95,9 +95,9 @@ RotMatrix &RotMatrix::operator*=(const RotMatrix &other) {
       rotat[i][j] *= other.rotat[0][j];
       for (k=1; k<3; k++) {
 	rotat[i][j] += a[k] * other.rotat[k][j];
-      };
-    };
-  };
+      }
+    }
+  }
   return *this;
 }
 
@@ -134,7 +134,7 @@ void RotMatrix::transpose() {
       tmp = rotat[row][col];
       rotat[row][col] = rotat[col][row];
       rotat[col][row] = tmp;
-    };
+    }
 }
 
 void RotMatrix::set(const Matrix<Double> &in) {
@@ -149,7 +149,7 @@ void RotMatrix::set(const Vector<Double> &in0, const Vector<Double> &in1,
     rotat[0][col] = in0(col);
     rotat[1][col] = in1(col);
     rotat[2][col] = in2(col);
-  };
+  }
 }
 
 ostream &operator<< (ostream &os, const RotMatrix &rot) {

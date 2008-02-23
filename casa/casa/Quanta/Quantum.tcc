@@ -229,7 +229,7 @@ Qtype Quantum<Qtype>::getValue(const Unit &other) const {
     } else if (qUnit.getValue() == UnitVal::TIME) {
       if (other.getValue() == UnitVal::ANGLE)
 	d1 *= C::day/C::circle;
-    };
+    }
     return (Qtype)(qVal/d1);
 }
 
@@ -312,9 +312,9 @@ void Quantum<Qtype>::convert(const Unit &s) {
 	  qUnit = String(oss);
 	} else {
 	  qUnit = Unit(s.getName() + '.' + String(oss).after(0));
-	};
-      };
-    };
+	}
+      }
+    }
 }
 
 template <class Qtype>
