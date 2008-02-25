@@ -132,6 +132,9 @@ public:
     // where.function("anotherFunc").line(__LINE__);
     // </srcBlock>
     // <group>
+    const String &taskName() const;
+    LogOrigin &taskName(const String &funcName);
+
     const String &functionName() const;
     LogOrigin &functionName(const String &funcName);
 
@@ -166,6 +169,7 @@ public:
     // Return true if the line number and file name are not set.
     Bool isUnset() const;
 private:
+    String task_p;
     String function_p;
     String class_p;
     ObjectID id_p;
@@ -198,7 +202,7 @@ struct SourceLocation
     static const SourceLocation *canonicalize(const char *file, Int line);
 };
 
-#define WHERE SourceLocation::canonicalize(__FILE__, __LINE__)
+#define WHERE casa::SourceLocation::canonicalize(__FILE__, __LINE__)
 
 // </group>
 

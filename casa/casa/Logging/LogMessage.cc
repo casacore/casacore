@@ -27,6 +27,7 @@
 
 #include <casa/Logging/LogMessage.h>
 #include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Regex.h>
 
 #include <casa/sstream.h>
 
@@ -46,9 +47,9 @@ LogMessage::LogMessage(const LogOrigin &sourceLocation, Priority priority)
 
 LogMessage::LogMessage(const String &message, const LogOrigin &sourceLocation, 
 	     Priority priority)
-  : message_p(message), origin_p(sourceLocation), priority_p(priority)
+  : origin_p(sourceLocation), priority_p(priority)
 {
-    // Nothing
+    this->message(message);
 }
 
 void LogMessage::copy_other(const LogMessage &other)
@@ -88,7 +89,7 @@ LogMessage &LogMessage::message(const String &message, Bool keepLastTime)
     if (! keepLastTime) {
         time_p.now();
     }
-    // Remove trailing newlines, if any
+	//Remove everything after the final newline
     Int n = message_p.length();
     while (--n >= 0 && message_p[n] == '\n') {
 	; // Nothing
@@ -154,8 +155,8 @@ LogMessage &LogMessage::messageTime(const Time &theTime)
 
 const String &LogMessage::toString(Priority which)
 {
-    static String names[4] = {
-        "DEBUGGING", "NORMAL", "WARN", "SEVERE"
+    static String names[11] = {
+        "DEBUGGING", "DEBUG2", "DEBUG1", "INFO5", "INFO4", "INFO3", "INFO2", "INFO1", "INFO", "WARN", "SEVERE"
     };
 
     AlwaysAssert(which >= DEBUGGING && which <= SEVERE, AipsError);
@@ -164,26 +165,25 @@ const String &LogMessage::toString(Priority which)
 
 String LogMessage::toString() const
 {
-    const String &ref = message();
+	String header  = messageTime().ISODate();
+	       header += "\t";
+	       header += toString(priority());
+	       header += "\t";
+	if (! origin_p.isUnset()){
+	    String daOrigin = origin().toString();
+	    if(priority_p > NORMAL1 && priority_p < WARN)
+	       daOrigin.gsub(Regex(".file .*line .*"), ""); //Remove file and line location from origin
+	    header += daOrigin;
+	}
+	
+	String continuationHeader = "\n" + header + "+\t";
+	
+	String message = String(message_p); // copy
+	Int numLines = message.gsub("\n", continuationHeader);
+
 
     ostringstream os;
-    os << messageTime() << " ";
-    os.width(9); // Width of DEBUGGING
-    os << toString(priority()) << " ";
-    if (! origin_p.isUnset()) {
-        os << origin().toString();
-    }
-
-    // Print it on one line if it is short and contains no \n's. If it's
-    // long or spans more than one line, print it on its own lines.
-    if (ref.length() > 20 || ref.contains("\n")) {
-	// Start a new line
-	os << ":\n";
-	os << ref;
-    } else {
-        // Fits on one line
-        os << " " << '"' << ref << '"';
-    }
+	os << header << "\t" << message;
 
     return os;
 }

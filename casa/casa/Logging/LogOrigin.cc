@@ -32,13 +32,13 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 LogOrigin::LogOrigin()
-  : function_p(""), class_p(""), id_p(True), line_p(0), file_p("")
+  : task_p(""), function_p(""), class_p(""), id_p(True), line_p(0), file_p("")
 {
     // Nothing
 }
 
 LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation *where)
-  : function_p(globalFunctionName), class_p(""), id_p(True), 
+  : task_p(""), function_p(globalFunctionName), class_p(""), id_p(True), 
     line_p(where ? where->lineNumber : 0), 
     file_p(where ? where->fileName : "")
 {
@@ -47,7 +47,7 @@ LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation *whe
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 		     const SourceLocation *where)
-  : function_p(memberFuncName), class_p(className), id_p(True), 
+  : task_p(""), function_p(memberFuncName), class_p(className), id_p(True), 
     line_p(where ? where->lineNumber : 0),
     file_p(where ? where->fileName : "")
 {
@@ -56,7 +56,7 @@ LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName, 
 	  const ObjectID &id, const SourceLocation *where)
-: function_p(memberFuncName), class_p(className), 
+: task_p(""), function_p(memberFuncName), class_p(className), 
   id_p(id), 
   line_p(where ? where->lineNumber : 0),
   file_p(where ? where->fileName : "")
@@ -79,6 +79,7 @@ LogOrigin &LogOrigin::operator=(const LogOrigin &other)
 
 void LogOrigin::copy_other(const LogOrigin &other)
 {
+    task_p = other.task_p;
     function_p = other.function_p;
     class_p = other.class_p;
     id_p = other.id_p;
@@ -90,6 +91,18 @@ LogOrigin::~LogOrigin()
 {
     // Nothing
 }
+
+const String &LogOrigin::taskName() const
+{
+    return task_p;
+}
+
+LogOrigin &LogOrigin::taskName(const String &funcName)
+{
+    task_p = funcName;
+    return *this;
+}
+
 
 const String &LogOrigin::functionName() const
 {
@@ -162,7 +175,11 @@ LogOrigin &LogOrigin::sourceLocation(const SourceLocation *where)
 
 String LogOrigin::fullName() const
 {
-    return className() + "::" + functionName();
+    String nameTag("");
+    if(task_p.length())
+	    nameTag = task_p + "::";
+    nameTag += className() + "::" + functionName();
+    return nameTag;
 }
 
 String LogOrigin::location() const
@@ -194,12 +211,12 @@ String LogOrigin::toString() const
 Bool LogOrigin::isUnset() const
 {
   return (function_p == "" && class_p == "" && id_p.isNull() && 
-		line_p == 0 && file_p == "");
+		line_p == 0 && file_p == "" && task_p == "");
 }
 
 ostream &operator<<(ostream &os, const LogOrigin &origin)
 {
-    os << origin.toString() << endl;
+	os << origin.toString();
     return os;
 }
 

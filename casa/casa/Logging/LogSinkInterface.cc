@@ -118,6 +118,11 @@ void LogSinkInterface::flush(Bool)
     // Defult implementation is to do nothing.
 }
 
+void LogSinkInterface::cerrToo(Bool)
+{
+    // Defult implementation is to do nothing.
+}
+
 void LogSinkInterface::writeLocally (Double,
 				     const String&,
 				     const String&,

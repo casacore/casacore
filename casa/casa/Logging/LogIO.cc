@@ -73,6 +73,11 @@ LogIO::~LogIO()
     text_p = 0;
 }
 
+void LogIO::post(LogMessage &amess)
+{
+	msg_p = amess;
+	sink_p.post(msg_p);
+}
 void LogIO::post()
 {
     if (text_p) {
@@ -116,6 +121,11 @@ void LogIO::priority(LogMessage::Priority which)
     msg_p.priority(which);
 }
 
+LogMessage::Priority LogIO::priority()
+{
+	return msg_p.priority();
+}
+
 void LogIO::sourceLocation(const SourceLocation *where)
 {
     msg_p.sourceLocation(where);
@@ -146,6 +156,13 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
     case LogIO::SEVERE:        os.priority(LogMessage::SEVERE); break;
     case LogIO::WARN:          os.priority(LogMessage::WARN); break;
     case LogIO::NORMAL:        os.priority(LogMessage::NORMAL); break;
+    case LogIO::NORMAL1:       os.priority(LogMessage::NORMAL1); break;
+    case LogIO::NORMAL2:       os.priority(LogMessage::NORMAL2); break;
+    case LogIO::NORMAL3:       os.priority(LogMessage::NORMAL3); break;
+    case LogIO::NORMAL4:       os.priority(LogMessage::NORMAL4); break;
+    case LogIO::NORMAL5:       os.priority(LogMessage::NORMAL5); break;
+    case LogIO::DEBUG1:       os.priority(LogMessage::DEBUG1); break;
+    case LogIO::DEBUG2:       os.priority(LogMessage::DEBUG2); break;
     case LogIO::DEBUGGING:     os.priority(LogMessage::DEBUGGING); break;
     default:
 	AlwaysAssert(0 != 0, AipsError); // NOTREACHED
@@ -155,7 +172,9 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
 
 LogIO &operator<<(LogIO &os, const SourceLocation *item)
 {
-    os.sourceLocation(item);
+    if(os.priority() < LogMessage::NORMAL1 ||
+       os.priority() > LogMessage::WARN )
+       os.sourceLocation(item);
     return os;
 }
 

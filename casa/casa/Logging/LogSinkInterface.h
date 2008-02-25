@@ -152,9 +152,13 @@ public:
   static String localId( );
   // Returns the id of the LogSink in use...
   virtual String id( ) const = 0;
-
+  // Write to cerr too
+  virtual void cerrToo(bool cerr2);
+  void setTaskName(const String &theTask){taskName=theTask;}
 private:
   LogFilterInterface* filter_p;
+protected:
+  String taskName;
 };
 
 
