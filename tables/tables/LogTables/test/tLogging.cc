@@ -86,9 +86,9 @@ void testLogFilter()
 
     // LogFilter(const String& expr);
     LogFilterTaql expr1
-               ("LOCATION=='::abc' && !(PRIORITY in ['NORMAL','DEBUGGING'])");
+               ("LOCATION=='::abc' && !(PRIORITY in ['INFO','DEBUGGING'])");
     LogFilterTaql expr2
-               ("LOCATION=='::abc' && PRIORITY in ['NORMAL','DEBUGGING']");
+               ("LOCATION=='::abc' && PRIORITY in ['INFO','DEBUGGING']");
     LogFilterTaql expr(expr2);
     expr = expr1;
     AlwaysAssertExit (!expr.pass(LogMessage(String("abc"),
@@ -274,7 +274,6 @@ void testLogOrigin()
 	ostringstream buffer;
 	buffer << t3;
 	String s2(buffer);
-	s2 = s2(0, s2.length()-1);
 	AlwaysAssertExit(s2 == s);
     }
 
@@ -482,7 +481,7 @@ void testLogAny (LogSink& sink)
   AlwaysAssertExit (sink.getMessage(0) == "test message");
   AlwaysAssertExit (sink.getPriority(0) == "SEVERE");
   AlwaysAssertExit (sink.getMessage(1) == "test2 message");
-  AlwaysAssertExit (sink.getPriority(1) == "NORMAL");
+  AlwaysAssertExit (sink.getPriority(1) == "INFO");
   sink.localSink().writeLocally (sink.getTime(0), sink.getMessage(1),
 				 sink.getPriority(0), sink.getLocation(0),
 				 sink.getObjectID(0));
