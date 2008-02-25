@@ -1384,7 +1384,7 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
                 
              u = UnitMap::fromFITS(Unit(unitString));
          } else {
-             os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
+             os << "FITS unit " << unitString << " unknown to CASA - ignoring."
                 << LogIO::POST;
          }
       }
@@ -1409,7 +1409,7 @@ Unit ImageFITSConverter::getBrightnessUnitOld (RecordInterface& header, LogIO& o
 
           u = UnitMap::fromFITS(Unit(unitString));
       } else {
-          os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
+          os << "FITS unit " << unitString << " unknown to CASA - ignoring."
              << LogIO::POST;
       }
    }
