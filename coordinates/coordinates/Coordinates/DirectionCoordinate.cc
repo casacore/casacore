@@ -361,6 +361,7 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
+   if(nWorld == nWorld);      // (turn off stupid compiler warning...).
    DebugAssert(nWorld==nWorldAxes(), AipsError);
    DebugAssert(nPixel==nPixelAxes(), AipsError);
    DebugAssert(worldIn.nelements()==nWorld, AipsError);

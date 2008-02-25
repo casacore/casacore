@@ -1077,7 +1077,7 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
 {
     LogIO os(LogOrigin("FITSCoordinateUtil", "fromFITSHeader", WHERE));
     CoordinateSystem cSysTmp;
-    os << "Using new WCS-based FITS parser" << LogIO::POST;
+    os << "Using new WCS-based FITS parser.\n" << LogIO::DEBUGGING;
 //
     if (header.nelements()==0) {
        os << "Header is empty - cannot create CoordinateSystem" << LogIO::WARN;
@@ -1089,7 +1089,45 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
     int nkeys = header.nelements();
     String all;
     for (int i=0; i<nkeys; i++) {
-       all = all.append(header(i));
+      int hsize=header[i].size();
+      if (hsize >= 19 &&       // kludge changes 'RA--SIN ' to 'RA---SIN', etc.
+	  header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
+	  header[i][3]=='P' && header[i][4]=='E' &&
+	  (header[i][5]=='1'|| header[i][5]=='2') &&
+	  header[i][14]=='-' && header[i][18]==' ') {
+	char tmp[hsize];
+	strncpy(tmp,header[i].c_str(),hsize+1);
+	tmp[18]=tmp[17];tmp[17]=tmp[16];tmp[16]=tmp[15];tmp[15]=tmp[14];
+	all = all.append(tmp);
+	os << LogIO::WARN
+	   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+      } else if (hsize >= 19 &&	  // change GLON-FLT to GLON-CAR, etc.
+		 header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
+		 header[i][3]=='P' && header[i][4]=='E' &&
+		 (header[i][5]=='1'|| header[i][5]=='2') &&
+		 header[i][15]=='-' && header[i][16]=='F' &&
+		 header[i][17]=='L' && header[i][18]=='T') {
+	char tmp[hsize];
+	strncpy(tmp,header[i].c_str(),hsize+1);
+	tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
+	all = all.append(tmp);
+	os << LogIO::WARN
+	   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+      } else if (hsize >= 19 &&	  // change 'GLON    ' to 'GLON-CAR', etc.
+		 header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
+		 header[i][3]=='P' && header[i][4]=='E' &&
+		 (header[i][5]=='1'|| header[i][5]=='2') &&
+		 header[i][15]==' ' && header[i][16]==' ' &&
+		 header[i][17]==' ' && header[i][18]==' ') {
+	char tmp[hsize];
+	strncpy(tmp,header[i].c_str(),hsize+1);
+	tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
+	all = all.append(tmp);
+	os << LogIO::WARN
+	   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+      } else {
+	all = all.append(header(i));
+      }
     }
     char* pChar2 = const_cast<char *>(all.chars());
     
@@ -1113,7 +1151,7 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
    int relax = WCSHDR_all;
    int nrej = 0;
    int nwcs = 0;
-   int ctrl = -3;
+   int ctrl = -2;
    int status = wcspih(pChar2, nkeys, relax, ctrl, &nrej, &nwcs, &wcsPtr);
    if (status!=0) {
 //      os << LogIO::WARN << "wcs FITS parse error with error " << wcspih_errmsg[status] << LogIO::POST;
@@ -1167,7 +1205,9 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
                os << LogIO::WARN << wcsNames(i) << " incurred the error " << wcsfix_errmsg[err] <<  LogIO::POST;
                os << LogIO::WARN << "this probably isn't fatal so continuing" << LogIO::POST;
             } else {
-               os << LogIO::SEVERE << wcsNames(i) << " failed with error " << wcsfix_errmsg[err] <<  LogIO::POST;
+	      os << LogIO::SEVERE << "The wcs function '"
+		 << wcsNames(i) << "' failed with error: "
+		 << wcsfix_errmsg[err] <<  LogIO::POST;
 //
                status = wcsvfree(&nwcs, &wcsPtr);
                if (status!=0) {
@@ -1385,7 +1425,7 @@ Bool FITSCoordinateUtil::addLinearCoordinate (CoordinateSystem& cSys,
 
       if (ok) {
          try {
-            Bool oneRel = True;                                // wcs structure from FITS has 1-rel pixel coordinates
+            Bool oneRel = True;    // wcs structure from FITS has 1-rel pixel coordinates
             LinearCoordinate c(wcsDest, oneRel);
 //
             fixCoordinate (c, os);
@@ -1499,12 +1539,22 @@ Bool FITSCoordinateUtil::addSpectralCoordinate (CoordinateSystem& cSys,
 // Convert the struct to a frequency base
 
       int index=0;
-      char ctype[9] = "FREQ-???";
-      int iret = wcssptr (&wcsDest, &index, ctype);
-      if (iret !=0) {
-         os << LogIO::WARN << "Failed to convert Spectral coordinate to Frequency, error status = "
-            << iret << LogIO::POST;
-         ok = False;	     
+      char ctype[9];  // Patched by rrusk 25-Oct-2007
+      String cType = wcs.ctype[axes[0]-1];
+      if (cType.contains("FREQ")) strcpy(ctype,"FREQ-???");
+      else if (cType.contains("VELO")) strcpy(ctype, "VELO-???");
+      else if (cType.contains("FELO")) strcpy(ctype, "FELO-???");
+      else {
+        os << LogIO::WARN << "Unrecognized frequency type" << LogIO::POST;
+        ok = False;
+      }
+      if (ok) {
+	int iret = wcssptr (&wcsDest, &index, ctype);
+	if (iret !=0) {
+	  os << LogIO::WARN << "Failed to convert Spectral coordinate to Frequency, error status = "
+	     << iret << LogIO::POST;
+	  ok = False;	     
+	}
       }
 
 // Find frequency system
@@ -1872,7 +1922,8 @@ ObsInfo FITSCoordinateUtil::getObsInfo (LogIO& os, RecordInterface& header,
       MEpoch dateObs(Quantum<Double>(mjdObs,"d"), timeSystem);
       oi.setObsDate (dateObs);
    } else if (dateObsDefined) {
-      String dateObsStr(wcs.dateobs[0]);
+     //      String dateObsStr(wcs.dateobs[0]);
+      String dateObsStr(wcs.dateobs);
       MVTime time; 
       if (FITSDateUtil::fromFITS(time, timeSystem, dateObsStr, timeSysStr)) {
          oi.setObsDate(MEpoch(time.get(), timeSystem));
