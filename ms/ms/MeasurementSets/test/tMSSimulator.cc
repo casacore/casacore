@@ -175,8 +175,8 @@ int main()
 
 	// NOW:  make and write the MS tables========================================
 	cout << "Write MS with no obs.params!"<<endl;
-	sim2.writeMS("fakems");
-	cout << "MS in fakems" << endl;
+	sim2.writeMS("tMSSimulator_tmp.ms");
+	cout << "MS in tMSSimulator_tmp.ms" << endl;
 
     } catch (AipsError x) {
 	cout << "Caught exception " << endl;
