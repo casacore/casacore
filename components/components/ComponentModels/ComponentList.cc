@@ -759,7 +759,7 @@ void ComponentList::createTable(const Path& fileName,
     }
   }
   SetupNewTable newTable(fileName.absoluteName(), td, option);
-  itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), False);
+  itsTable = Table(newTable, TableLock::AutoLocking, nelements(), False);
   {
     TableInfo& info(itsTable.tableInfo());
     info.setType(TableInfo::type(TableInfo::COMPONENTLIST));
@@ -898,7 +898,7 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     }
     else {
       AlwaysAssert(Table::isWritable(fullName), AipsError);
-      itsTable = Table(fullName, TableLock(TableLock::PermanentLocking),
+      itsTable = Table(fullName, TableLock(TableLock::AutoLocking),
 		       Table::Update);
     }
   }
@@ -1032,18 +1032,20 @@ Bool ComponentList::fromRecord(String& error, const RecordInterface& inRec){
   }  
 
   uInt nelements=0;
-  inRec.get("nelements", nelements);
-  if(nelements >0){
-    for(uInt k=0; k < nelements; ++k){
-      String componentId=String("component")+String::toString(k);
-      Record componentRecord=inRec.asRecord(componentId);
-      SkyComponent  tempComponent;
-      retval=(retval && tempComponent.fromRecord(error, componentRecord));
-      if(retval){
-	add(tempComponent);
-      }
-      else{
-	return retval;
+  if (inRec.isDefined("nelements")) {
+    inRec.get("nelements", nelements);
+    if(nelements >0){
+      for(uInt k=0; k < nelements; ++k){
+	String componentId=String("component")+String::toString(k);
+	Record componentRecord=inRec.asRecord(componentId);
+	SkyComponent  tempComponent;
+	retval=(retval && tempComponent.fromRecord(error, componentRecord));
+	if(retval){
+	  add(tempComponent);
+	}
+	else{
+	  return retval;
+	}
       }
     }
   }

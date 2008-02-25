@@ -30,6 +30,9 @@
 #define COMPONENTS_COMPONENTTYPE_H
 
 #include <casa/aips.h>
+namespace casac {
+      class componentlist;
+};
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class String;
@@ -83,7 +86,7 @@ public:
   // enumerators to objects. The private construct functions can only be
   // accessed by functions in the friend classes specified below.
   friend class SkyCompRep;
-  friend class componentlist;
+  friend class ::casac::componentlist;
 
   // The shapes of all the components
   enum Shape {
