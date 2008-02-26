@@ -47,7 +47,6 @@
 #include <ms/MeasurementSets/MSPolColumns.h>
 #include <ms/MeasurementSets/MSSpWindowColumns.h>
 #include <measures/Measures/MDirection.h>
-#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
@@ -302,12 +301,13 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   ScalarColumn<Bool>& thisFlagRow = flagRow();
   const ROScalarColumn<Int>& otherObsId=otherMainCols.observationId();
   Vector<Int> obsIds=otherObsId.getColumn();
-  Int numObsId=copyObservation(otherMS.observation(), obsIds);
+  //Int numObsId=
+  copyObservation(otherMS.observation(), obsIds);
   copyPointing(otherMS.pointing(), newAntIndices);
 
   // This needs to be fixed when I relaxe the restriction that the input MS
   // must have been created using the uvfits filler.
-  const Int curObsId =  observationId()(curRow-1) + 1;
+  //const Int curObsId =  observationId()(curRow-1) + 1;
   ScalarColumn<Int>& thisObsId = observationId();
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& thisWeightSp = weightSpectrum();
@@ -451,19 +451,30 @@ IPosition MSConcat::getShape(const ROMSDataDescColumns& ddCols,
 }
 
 void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
+   LogIO os(LogOrigin("MSConcat", "checkCategories"));
   const Vector<String> cat = flagCategories();
   const Vector<String> otherCat = otherCols.flagCategories();
   const uInt nCat = cat.nelements();
   if (nCat != otherCat.nelements()) {
-    throw(AipsError(String("MSConcat::checkCategories\n") + 
-		    String("cannot concatenate this measurement set as ") +
-		    String("it has a different number of flag categories")));
+    os << LogIO::WARN 
+       <<"Flag category columns do match in these two ms's\n" 
+       <<"This is not important as Flag category is being deprecated"
+       << LogIO::POST;
+    return;
+    //throw(AipsError(String("MSConcat::checkCategories\n") + 
+    //		    String("cannot concatenate this measurement set as ") +
+    //		    String("it has a different number of flag categories")));
   }
   for (uInt c = 0; c < nCat; c++) {
     if (cat(c) != otherCat(c)) {
-      throw(AipsError(String("MSConcat::checkCategories\n") + 
-		      String("cannot concatenate this measurement set as ") +
-		      String("it has different flag categories")));
+      os << LogIO::WARN 
+	 <<"Flag category columns do match in these two ms's\n" 
+	 <<"This is not important as Flag category is being deprecated"
+	 << LogIO::POST;
+      return;
+      //throw(AipsError(String("MSConcat::checkCategories\n") + 
+      //		      String("cannot concatenate this measurement set as ") +
+      //		      String("it has different flag categories")));
     }
   }
 }
@@ -474,24 +485,24 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
 
   LogIO os(LogOrigin("MSConcat", "concatenate"));
 
-  if(itsMS.pointing().isNull()){
+  if(itsMS.pointing().isNull()|| (itsMS.pointing().nrow() == 0)){
     //We do not have a valid pointing table so we don't care
     return False;
   }
-  if(otherPoint.isNull()){
+  if(otherPoint.isNull() || (otherPoint.nrow() == 0)){
 
     os << LogIO::WARN 
        << "No valid pointing table in ms that is being concatenated" 
        << LogIO::POST;
     os << LogIO::WARN 
-       << "It may be a problem for e.g mosaicing, if that is the case: " 
+       << "It may be a problem for e.g mosaicing,\n so all pointing information is being deleted" 
        << LogIO::POST;
-    os << LogIO::WARN 
-       << "please delete the rows in the POINTING table of the resulting ms " 
-       << LogIO::POST;
-    os << LogIO::WARN 
-       << "imager then will use the FIELD table to get the pointing info " 
-       << LogIO::POST;
+
+             
+    Vector<uInt> delrows(itsMS.pointing().nrow());
+    indgen(delrows);
+    itsMS.pointing().removeRow(delrows); 
+
     return False;
 
   }
@@ -506,16 +517,34 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
     ++actualRow;
     point.addRow();
     pointRow.put(actualRow, otherPointRow.get(k, True));
-
+    
   }
 
   //Now reassigning antennas to the new indices of the ANTENNA table
-  MSPointingColumns pointCol(point);
-  Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
-  for (Int k=origNRow; k <  (origNRow+rowToBeAdded); ++k){
-    pointCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+
+  if(rowToBeAdded > 0){
+    MSPointingColumns pointCol(point);
+    Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
+    if(( min(antennaIDs) <0) || ( uInt(max(antennaIDs)) > newAntIndices.nelements())){
+      
+      os << LogIO::WARN 
+	 << "Found invalid antenna ids in the POINTING table; the POINTING table will be emptied as it is inconsistent" 
+	 << LogIO::POST;
+      Vector<uInt> rowtodel(point.nrow());
+      indgen(rowtodel);
+      point.removeRow(rowtodel);
+      return False;
+      
+      
+    } 
+
+
+
+    for (Int k=origNRow; k <  (origNRow+rowToBeAdded); ++k){
+      pointCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+    }
   }
-  return True;
+    return True;
 
 }
 
@@ -666,9 +695,8 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
   if(Table::isReadable(itsMS.sourceTableName())){
     MSSource& newSource=itsMS.source();
     MSSourceColumns& sourceCol=source();
- 
-    Int maxSrcId=max(sourceCol.sourceId().getColumn());
-    if(newSource.nrow() > 0){
+    Int maxSrcId=0;
+    if(newSource.nrow() > 0){ 
       if(!Table::isReadable(otherms.sourceTableName())){
 	return False;
       }
@@ -676,6 +704,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
       if(otherSource.nrow()==0){
 	return False;
       }
+      maxSrcId=max(sourceCol.sourceId().getColumn());
       TableRecord sourceRecord;
       newSourceIndex_p.clear();
       Int numrows=otherSource.nrow();
@@ -698,7 +727,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
       }
 
       doSource_p=True;
-     }
+    }
 
       
 

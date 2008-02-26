@@ -34,11 +34,12 @@
 #undef YY_DECL
 #define YY_DECL int MSFieldGramlex (YYSTYPE* lvalp)
 static string                qstr;
+#include <ms/MeasurementSets/MSSelectionTools.h>
 %}
 
 WHITE     [ \t\n]*
 DIGIT     [0-9]
-INT       {DIGIT}+
+INT       ({WHITE}{DIGIT}+{WHITE})
 
 QSTRING   \"[^\"\n]*\"
 STRING    ({QSTRING})+
@@ -48,10 +49,11 @@ RQUOTE    (\/)
 NQ        [^\\\n\"]+
 NRQ       [^\\\n\/]+
 
-IDENTIFIER  ([A-Za-z:0-9_{}]+|STRING)
-SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")
+NAME ([A-za-z0-0_'{''}''+''-'])
+IDENTIFIER  ([A-Za-z0-9_{}+-]+|STRING)
+SIDENTIFIER  ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
 
-%x QS RS
+%x QS RS ESC
 /* rules */
 %%
 {QUOTE}   { // Start of a quoted string
@@ -59,6 +61,8 @@ SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")
             BEGIN(QS);
           }
 
+"\\"  {printf("%s\n",MSFieldGramtext);BEGIN(ESC);}
+<ESC>. {BEGIN(INITIAL);}
 <QS>{NQ}  { 
             (qstr)+= MSFieldGramtext;
           }
@@ -93,12 +97,13 @@ SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")
 
 {INT}     { msFieldGramPosition() += yyleng;
             lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
-            strcpy(lvalp->str, MSFieldGramtext);
-            
+            strcpy(lvalp->str, stripWhite(MSFieldGramtext).c_str());
+	    //	    cout << "INT  = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
+
             return INT;
           }
 
-"-"       { msFieldGramPosition() += yyleng;
+"~"       { msFieldGramPosition() += yyleng;
             return DASH; }
 ","       { msFieldGramPosition() += yyleng;
             return COMMA;
@@ -122,11 +127,11 @@ SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")
              }
 {SIDENTIFIER} { msFieldGramPosition() += yyleng;
                 lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
-                strcpy(lvalp->str, MSFieldGramtext);
+                strcpy(lvalp->str, stripWhite(MSFieldGramtext).c_str());
+		//		cout << "SID = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
                 return QSTRING;
               }
 "("       { msFieldGramPosition() += yyleng; return LPAREN; }
 ")"       { msFieldGramPosition() += yyleng; return RPAREN;}
-{WHITE}   { msFieldGramPosition() += yyleng;} /* Eat white spaces */
 .         { msFieldGramPosition() += yyleng;return MSFieldGramtext[0];}
 %%

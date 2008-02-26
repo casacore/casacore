@@ -91,6 +91,30 @@ int main(int argc, char **argv)
     cout << " observatory velocity in GEO frame: "<< msd.obsVel().get("km/s").
       getValue() << "km/s"<<endl;
 
+    Quantity restFreq(1.42041,"GHz");
+    Quantity radioVel(2196.25,"km/s");
+    msd.setVelocityReference(MDoppler::RADIO);
+    msd.setFrequencyReference(MFrequency::TOPO);
+    cout << "radio velocity " << radioVel << " is frequency " << 
+      msd.toFrequency(radioVel, restFreq) << endl;
+    //====
+    /*
+    MSDerivedValues msd1;
+    MeasurementSet ms("/home/rohir/kgolap/Regression/ALMATST1/NGC5921/ngc5921.ms");
+    msd1.setMeasurementSet(ms);
+    msd1.setVelocityReference(MDoppler::RADIO);
+    msd1.setFrequencyReference(MFrequency::LSRK);
+    //locate restFrequency for field 0 and spwid 0
+    Bool hasRestFreq=msd1.setRestFrequency(0,0);
+    if(!hasRestFreq){
+      cout << "Ou la la .....has no restfrequency in this ms" << endl;
+    }
+    else{
+     cout << "radio velocity " << radioVel << " is frequency " << 
+       msd1.toFrequency(radioVel) << endl; 
+    }
+    */
+
     } catch (AipsError x) {
 	cout << "Caught exception " << endl;
 	cout << x.getMesg() << endl;

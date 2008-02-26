@@ -30,6 +30,7 @@
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
+#include <casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -82,29 +83,42 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# </todo>
 
 
-class MSUvDistParse : public MSParse
-{
-
-public:
+  class MSUvDistParse : public MSParse
+  {
+    
+  public:
     // Default constructor
     MSUvDistParse ();
-
+    
     // Associate the ms and the shorthand.
     MSUvDistParse (const MeasurementSet* ms);
-
+    
+    //    ~MSUvDistParse() {if (node_p) delete node_p;node_p=0x0;};
+    
     const TableExprNode *selectUVRange(const Double& startUV,
                                        const Double& endUV, 
 				       const String& unit,
 				       Bool doSlow=False);
+    
+    Vector<Bool> selectedUnits() {return meterUnits_p;}
+    Matrix<Double> selectedUV() {return selectedUV_p;};
+    static void reset(){selectedUV_p.resize(2,0);meterUnits_p.resize(0);};
+    static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
 
     // Get table expression node object.
     static const TableExprNode* node();
     static MSUvDistParse* thisMSUParser;
-
-private:
+    
+  private:
     static TableExprNode* node_p;
-};
-
+    static Matrix<Double> selectedUV_p;
+    static Vector<Bool> meterUnits_p;
+    void accumulateUVList(const Double r0, const Double r1,
+			  const Bool wavelengthUnits, 
+			  const Bool meterUnits);
+    
+  };
+  
 } //# NAMESPACE CASA - END
 
 #endif

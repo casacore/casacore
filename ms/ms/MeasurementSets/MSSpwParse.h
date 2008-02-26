@@ -30,6 +30,7 @@
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
+#include <casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -87,21 +88,34 @@ class MSSpwParse : public MSParse
 public:
   // Default constructor
   MSSpwParse ();
+  //  ~MSSpwParse() {if (node_p) delete node_p;node_p=0x0;};
 
   // Associate the ms and the shorthand.
   MSSpwParse (const MeasurementSet* ms);
 
-  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& fieldIds);
-  const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& fieldIds,
+  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& spwIds);
+  const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& spwIds,
 						const Float factor);
+  const void selectChannelsFromIDList(Vector<Int>& spwIds,
+				      Vector<Int>& chanIDList,
+				      Int nFSpec);
+
+  const void selectChannelsFromDefaultList(Vector<Int>& spwIds,
+					   Vector<Int>& chanDefaultList);
+
   //    const TableExprNode *selectSpwOrSource(const String& fieldName);
 
   // Get table expression node object.
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
-
+  static Vector<Int> selectedIDs() {return idList;}
+  static Matrix<Int> selectedChanIDs() {return chanList;}
+  static void reset() {idList.resize(0);chanList.resize(0,0);};
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
 private:
   static TableExprNode* node_p;
+  static Vector<Int> idList;
+  static Matrix<Int> chanList;
 };
 
 } //# NAMESPACE CASA - END

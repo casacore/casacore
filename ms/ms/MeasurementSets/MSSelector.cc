@@ -374,7 +374,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 	}
       }
     } else if (n==2) {
-      Int id1,id2;
+      Int id1=-1,id2=-1;
       for (Int i=0; i<numCorr; i++) {
 	if (inputPol(i)==wanted(0)) { id1=i; break;}
       }
@@ -677,6 +677,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
   if (ifrAxis && (nIfr==0 || useIfrDefault_p)) {
     // set default
     MSRange msRange(tab);
+    ifrSelection_p.resize();
     ifrSelection_p = msRange.range(MSS::IFR_NUMBER).asArrayInt(0);
     // GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
     nIfr = ifrSelection_p.nelements();
@@ -1545,7 +1546,7 @@ Bool MSSelector::putData(const Record& items)
       break;
     case MSS::FLAG:
       {
-	Array<Bool> flag = items.asArrayBool(RecordFieldId(i));
+	Array<Bool> flag = items.toArrayBool(RecordFieldId(i));
 	// if (GlishArray(items.get(i)).get(flag)) {
 	  if (flag.ndim()==4) {
 	    if (flag.shape()(2)==Int(rowIndex_p.nrow()) && 
@@ -1565,7 +1566,7 @@ Bool MSSelector::putData(const Record& items)
       break;
     case MSS::FLAG_ROW:
       {
-	Array<Bool> flagRow = items.asArrayBool(RecordFieldId(i));
+	Array<Bool> flagRow = items.toArrayBool(RecordFieldId(i));
 	// if (GlishArray(items.get(i)).get(flagRow)) {
 	  if (flagRow.ndim()==2) {
 	    reorderFlagRow(flagRow);

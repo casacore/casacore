@@ -71,7 +71,7 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
   Bool found = False;
 
   // Accessor for the MS columns and sub-tables
-  MSColumns msc (ms_p);
+  ROMSColumns msc (ms_p);
   // Retrieve the doppler id & source id
   Int dopId = (msc.spectralWindow().dopplerId().isNull() ? 
                -1 : msc.spectralWindow().dopplerId()(spwId));
@@ -92,25 +92,27 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 	    Vector<uInt> rows = sourceIndex.getRowNumbers();
 	    for (uInt irow=0; irow<rows.nelements(); irow++) {
 	      Vector<Double> restFrq = msc.source().restFrequency()(irow);
-	      // Does this already exist in the output rest frequency array ?
-	      Bool exists = False;
-	      for (uInt k=0; k<restFrequency.nelements(); k++) {
-		if (restFrq(transId)==restFrequency(k)) {
-		  exists = True;
+	      if(restFrq.nelements() >0){
+		// Does this already exist in the output rest frequency array ?
+		Bool exists = False;
+		for (uInt k=0; k<restFrequency.nelements(); k++) {
+		  if (restFrq(transId)==restFrequency(k)) {
+		    exists = True;
+		  };
 		};
-	      };
-	      if (!exists) {
-		restFrequency.resize(restFrequency.nelements()+1, True);
-		restFrequency(nRestFreq) = restFrq(transId);
-		nRestFreq++;
-		found = True;
-	      };
+		if (!exists) {
+		  restFrequency.resize(restFrequency.nelements()+1, True);
+		  restFrequency(nRestFreq) = restFrq(transId);
+		  nRestFreq++;
+		  found = True;
+		};
+	      }
 	    }; // for (Int irow=0..)
         }; // if (!ms_p.source().isNull())
       }; // if (msc.doppler().dopplerId()..)
     }; // for (Int idoprow=0;..)
   } else if (!ms_p.source().isNull()) {
-    if(ms_p.source().nrow() > 0){
+    if((ms_p.source().nrow() > 0)){
       // use just the source table if it exists
       MSSourceIndex sourceIndex(ms_p.source());
       sourceIndex.sourceId()= msc.field().sourceId()(fieldId);
@@ -118,8 +120,8 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
       Vector<uInt> rows = sourceIndex.getRowNumbers();
       if (!msc.source().restFrequency().isNull()){
 	for (uInt irow=0; irow<rows.nelements(); irow++) {
-	  if ( msc.source().restFrequency().isDefined(irow)) {
-	    Vector<Double> restFrq = msc.source().restFrequency()(irow);
+	  if ( msc.source().restFrequency().isDefined(rows(irow))) {
+	    Vector<Double> restFrq = msc.source().restFrequency()(rows(irow));
 	    // Does this already exist in the output rest frequency array ?
 	    for (uInt transId=0; transId<restFrq.nelements(); transId++) {
 	      Bool exists = False;

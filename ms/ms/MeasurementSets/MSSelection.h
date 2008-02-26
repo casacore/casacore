@@ -36,7 +36,8 @@
 #include <measures/Measures/MRadialVelocity.h>
 #include <tables/Tables/ExprNode.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-
+#include <casa/Arrays/Matrix.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> 
@@ -192,17 +193,30 @@ class MSSelection
                     FIELD_EXPR,
                     SPW_EXPR,
                     SCAN_EXPR,
+                    ARRAY_EXPR,
                     TIME_EXPR,
                     UVDIST_EXPR,
                     TAQL_EXPR,
                     MAX_EXPR = TAQL_EXPR};
-
+  enum MSSMode {PARSE_NOW=0, PARSE_LATE};
    // Default null constructor, and destructor
    MSSelection();
    virtual ~MSSelection();
 
    // Construct from a record representing a selection item
    // at the CLI or user interface level.
+   MSSelection(const MeasurementSet& ms,
+	       const MSSMode& mode=PARSE_NOW,
+	       const String& timeExpr="",
+	       const String& antennaExpr="",
+	       const String& fieldExpr="",
+	       const String& spwExpr="",
+	       const String& uvDistExpr="",
+	       const String& taqlExpr="",
+	       const String& corrExpr="",
+	       const String& scanExpr="",
+	       const String& arrayExpr="");
+
    MSSelection(const Record& selectionItem);
 
    // Copy constructor
@@ -223,15 +237,86 @@ class MSSelection
    Bool setFieldExpr(const String& fieldExpr);
    Bool setSpwExpr(const String& spwExpr);
    Bool setScanExpr(const String& scanExpr);
+   Bool setArrayExpr(const String& ArrayExpr);
    Bool setTimeExpr(const String& timeExpr);
    Bool setUvDistExpr(const String& uvDistExpr);
    Bool setTaQLExpr(const String& taqlExpr);
 
-   // Clear all subexpression and reset priority
-   void clear(void);
+//   inline virtual Vector<Int> getAntenna1List() {return antenna1IDs_p;}
+//   inline virtual Vector<Int> getAntenna2List() {return antenna2IDs_p;}
+//   inline virtual Vector<Int> getFieldList() {return fieldIDs_p;}
+//   inline virtual Vector<Int> getSpwList() {return spwIDs_p;}
+//   inline virtual Matrix<Int> getBaselineList() {return baselineIDs_p;}
 
-   // Convert to TableExprNode format (C++ interface to TaQL)
-   TableExprNode toTableExprNode(const MeasurementSet* ms);
+  TableExprNode getTEN(const MeasurementSet*ms = NULL);
+
+  inline Vector<Int> getAntenna1List(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return antenna1IDs_p.copy();}
+
+  inline Vector<Int> getAntenna2List(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return antenna2IDs_p.copy();}
+
+  inline Matrix<Int> getBaselineList(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return baselineIDs_p.copy();}
+
+  inline Vector<Int> getFieldList(const MeasurementSet* ms=NULL) 
+  {
+    if (fieldIDs_p.nelements() <= 0)
+      getTEN(ms); 
+    return fieldIDs_p.copy();
+  }
+
+  inline Vector<Int> getSpwList(const MeasurementSet* ms=NULL) 
+  {
+    if (spwIDs_p.nelements() <= 0)
+      getTEN(ms); 
+    return spwIDs_p.copy();
+  }
+
+  inline Matrix<Int> getChanList(const MeasurementSet* ms=NULL) 
+  {if (chanIDs_p.nelements() <= 0) getTEN(ms); return chanIDs_p.copy();}
+
+  inline Vector<Int> getScanList(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return scanIDs_p.copy();}
+
+  inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return arrayIDs_p.copy();}
+
+  inline Matrix<Double> getTimeList(const MeasurementSet* ms=NULL)
+  {getTEN(ms); return selectedTimesList_p.copy();}
+
+  inline Matrix<Double> getUVList(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return selectedUVRange_p.copy();}
+
+  inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
+  {getTEN(ms); return selectedUVUnits_p.copy();}
+
+  // Clear subexpression and reset priority.  Default behaviour is to
+  // reset all sub-expressions.
+  void clear(const MSExprType type=NO_EXPR);
+
+  // Convert to TableExprNode format (C++ interface to TaQL)
+  TableExprNode toTableExprNode(const MeasurementSet* ms);
+
+  Bool getSelectedMS(MeasurementSet& selectedMS,
+		     const String& outMSName="");
+
+  void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;};
+  void resetTEN() {fullTEN_p=TableExprNode();};
+
+  void reset(const MeasurementSet& ms,
+	     const MSSMode& mode=PARSE_NOW,
+	     const String& timeExpr="",
+	     const String& antennaExpr="",
+	     const String& fieldExpr="",
+	     const String& spwExpr="",
+	     const String& uvDistExpr="",
+	     const String& taqlExpr="",
+	     const String& corrExpr="",
+	     const String& scanExpr="",
+	     const String& arrayExpr="");
+
+  void setMaxScan(const Int& n) {maxScans_p=n;};
 
  private:
    // Set into the order of the selection expression
@@ -247,18 +332,27 @@ class MSSelection
    // Convert an MS select string to TaQL
    //   const String msToTaQL(const String& msSelect) {};
 
-   // Selection expressions
-   String antennaExpr_p;
-   String corrExpr_p;
-   String fieldExpr_p;
-   String spwExpr_p;
-   String scanExpr_p;
-   String timeExpr_p;
-   String uvDistExpr_p;
-   String taqlExpr_p;
-
-   // Priority
-   Vector<Int> exprOrder_p;
+  TableExprNode fullTEN_p;
+  const MeasurementSet *ms_p;
+  // Selection expressions
+  String antennaExpr_p;
+  String corrExpr_p;
+  String fieldExpr_p;
+  String spwExpr_p;
+  String scanExpr_p;
+  String arrayExpr_p;
+  String timeExpr_p;
+  String uvDistExpr_p;
+  String taqlExpr_p;
+  // Priority
+  Vector<Int> exprOrder_p;
+  Vector<Int> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p;
+  Matrix<Int> chanIDs_p;
+  Matrix<Int> baselineIDs_p;
+  Matrix<Double> selectedTimesList_p;
+  Matrix<Double> selectedUVRange_p;
+  Vector<Bool> selectedUVUnits_p;
+  Int maxScans_p, maxArray_p;
 };
 
 } //# NAMESPACE CASA - END

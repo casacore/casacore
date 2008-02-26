@@ -68,6 +68,8 @@
 
 %type <node> antennastatement
 %type <node> indexcombexpr
+%type <node> baseline
+%type <node> gbaseline
 %type <iv> indexlist
 %type <iv> antidrange
 %type <iv> antidlist
@@ -83,6 +85,7 @@
 
 %{
   int MSAntennaGramlex (YYSTYPE*);
+  Bool MSAntennaGramNegate=False;
   void reportError(char *str)
   {
     String errorMesg;
@@ -94,44 +97,75 @@
 %}
 
 %%
-antennastatement: indexcombexpr 
-                  {
-                    $$ = $1;
-                  }
-                 | indexcombexpr SEMICOLON indexcombexpr
-                  { 
-		    $$ = $1;
-                  }
-                 | LPAREN indexcombexpr RPAREN //Parenthesis are not
-					       //syntactically useful
-					       //here
-                  {
-		    $$ = $2;
-		  }
+antennastatement: indexcombexpr                {$$ = $1;}
+                 | LPAREN indexcombexpr RPAREN {$$ = $2;}
                 ;
-indexcombexpr  : IDENTIFIER COLON IDENTIFIER 
-                 {
-                   $$ = MSAntennaParse().selectFromIdsAndCPs(atoi($1), String($3));
-	         }
-	       | indexlist AMPERSAND indexlist 
-                 {
-                   $$ = MSAntennaParse().selectAntennaIds(*($1), *($3));
-		   cout << "ID & ID = " << *($1) << "&" << *($3) << endl;
-		   delete $1; delete $3;
-                 } 
-               | indexlist AMPERSAND 
-                 {
-                   $$ = MSAntennaParse().selectAntennaIds(*($1), *($1));
-		   cout << "ID & =" << *($1) << endl;
-		   delete $1;
-   	         }
-               | indexlist 
-                 {
-                   $$ = MSAntennaParse().selectAntennaIds(*($1));
-		   cout << "ID = " << *($1) << endl;
-		   delete $1;
-                 }
-	       ;
+
+
+indexcombexpr: gbaseline                        {$$=$1;}
+             | indexcombexpr SEMICOLON gbaseline {$$ = $1;}
+             ;
+
+gbaseline: NOT {MSAntennaGramNegate=True;}  baseline {$$=$3;}
+         |     {MSAntennaGramNegate=False;} baseline {$$=$2;}
+
+baseline: indexlist AMPERSAND indexlist 
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      Vector<Int> a2 = myMSAI.matchId(*($3)); 
+	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a2); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,False,MSAntennaGramNegate); 
+
+	      delete $1; delete $3;
+	    } 
+        | indexlist AMPERSAND  //Match INDEXLIST & INDEXLIST
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a1); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,False,MSAntennaGramNegate); 
+	      
+	      delete $1;
+	    }
+        | indexlist           //Match INDEXLIST & ALLANTENNAS
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      //                    $$ = MSAntennaParse().selectAntennaIds(a1); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,False,MSAntennaGramNegate); 
+	      
+	      delete $1;
+	    }
+        | indexlist AMPERSAND AMPERSAND indexlist // Include self-correlations
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      Vector<Int> a2 = myMSAI.matchId(*($4)); 
+	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a2,True); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,True,MSAntennaGramNegate); 
+
+	      delete $1; delete $4;
+	    } 
+        | indexlist AMPERSAND AMPERSAND // Include self-correlations 
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a1,True); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,True,MSAntennaGramNegate); 
+
+	      delete $1;
+	    }
+        | indexlist AMPERSAND AMPERSAND AMPERSAND // Only self-correlations :-)
+            {
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
+	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
+	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,True); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,True,MSAntennaGramNegate); 
+	      
+	      delete $1;
+	    }
+        ;
 
 antid: IDENTIFIER  // A single antenna name (this could be a regex and
 		   // hence produce a list inf indices)
@@ -182,8 +216,25 @@ antid: IDENTIFIER  // A single antenna name (this could be a regex and
 antidrange: INT // A single antenna index
             {
 	      if (!($$)) delete $$;
+	      //
+	      // This code is due to VLA specienfic complication
+	      // arising due to the fact that VLA antennam "NAMES" are
+	      // strings that can be parsed as valid integers! Believe
+	      // it or not, VLA antenna NAMES are "1", "2", "3" and so
+	      // on.....  So (phew).  Just for antenna selection (and
+	      // this *just* because of silly convention for VLA
+	      // antenna naming!), if we get an INT, treat it as name
+	      // still and first attempt a match with the NAME column.
+	      // If that fails, treat it as an integer index and do the
+	      // right thing.
+	      //
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
+	      Vector<Int> tmp(myMSAI.matchAntennaName($1));
 	      $$ = new Vector<Int>(1);
-	      (*($$))(0) = atoi($1);
+	      if (tmp.nelements() > 0)
+		(*($$))(0) = tmp[0];
+	      else
+		(*($$))(0) = atoi($1);
 	      free($1);
 	    }
            | INT DASH INT // A range of integer antenna indices
@@ -192,23 +243,28 @@ antidrange: INT // A single antenna index
               Int end   = atoi($3);
               Int len = end - start + 1;
               Vector<Int> antennaids(len);
-              for(Int i = 0; i < len; i++) {
-                antennaids[i] = start + i;
-              }
+              for(Int i = 0; i < len; i++) antennaids[i] = start + i;
+
 	      if (!($$)) delete $$;
-              $$ = new Vector<Int>(antennaids);	   
+	      //              $$ = new Vector<Int>(antennaids);	   
+              $$ = new Vector<Int>(len);
+
+	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna());
+	      for(Int i=0;i<len;i++)
+		{
+		  ostringstream vlaName;
+		  vlaName << antennaids[i];
+		  Vector<Int> tmp(myMSAI.matchAntennaName(vlaName));
+		  if (tmp.nelements() > 0) ((*$$))[i] = tmp[0];
+		  else ((*$$))[i] = antennaids[i];
+		}
+		
 	      free($1); free($3);
             }
           ;
 
-antidlist: antid // A singe antenna ID
-            {
-	      $$ = $1;
-            }
-          | antidrange
-            {
-	      $$ = $1;
-	    }
+antidlist: antid       {$$ = $1;}// A singe antenna ID
+          | antidrange {$$ = $1;}
           ;
 indexlist : antidlist
             {
@@ -223,13 +279,15 @@ indexlist : antidlist
 	      (*($$)).resize(N0+N1,True);  // Resize the existing list
 	      for(Int i=N0;i<N0+N1;i++)
 		(*($$))(i) = (*($3))(i-N0);
+
 	      delete $3;
             }
+/*
           | LPAREN indexlist RPAREN //Parenthesis are not
 				    //syntactically useful here
             {
 	      $$ = $2;
 	    }
           ;
+*/
 %%
-

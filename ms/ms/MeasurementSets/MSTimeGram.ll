@@ -70,30 +70,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 %%
 
 {WHITE}   {msTimeGramPosition() += yyleng;;} /* Just eat the white spaces */
-"["       { msTimeGramPosition() += yyleng;
-            return LBRACKET;
-          }
-"("       { msTimeGramPosition() += yyleng;
-            return LPAREN;
-          }          
-"]"       { msTimeGramPosition() += yyleng;
-            return RBRACKET;
-          }
-")"       { msTimeGramPosition() += yyleng;
-            return RPAREN;
-          }
 ":"       { msTimeGramPosition() += yyleng;
             return COLON; }
-"=="      { msTimeGramPosition() += yyleng;
-            return EQ; }
-"="       { msTimeGramPosition() += yyleng;
-            return EQASS; }
-"!="      { msTimeGramPosition() += yyleng;
-            return NE; }
-"<>"      { msTimeGramPosition() += yyleng;
-            return NE; }
-">="      { msTimeGramPosition() += yyleng;
-            return GE; }
 ">"       { msTimeGramPosition() += yyleng;
             return GT; }
 "<="      { msTimeGramPosition() += yyleng;
@@ -114,12 +92,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return PERCENT; }
 "+"       { msTimeGramPosition() += yyleng;
             return PLUS; }
-"-"       { msTimeGramPosition() += yyleng;
+"~"       { msTimeGramPosition() += yyleng;
             return DASH; }
-"{"       { msTimeGramPosition() += yyleng;
-            return LBRACE; }
-"}"       { msTimeGramPosition() += yyleng;
-            return RBRACE; }
 "'"       { msTimeGramPosition() += yyleng;
             return SQUOTE; }
 ","       { msTimeGramPosition() += yyleng;

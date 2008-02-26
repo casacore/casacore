@@ -28,6 +28,7 @@
 */
 
 %{
+#include <errno.h>
   using namespace casa;
 %}
 
@@ -77,10 +78,11 @@
 %nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
 
 %{
+#include <ms/MeasurementSets/MSSelectionTools.h>
   int MSFieldGramlex (YYSTYPE*);
-  void checkFieldError(Vector<Int>& list, ostringstream& msg)
+  void checkFieldError(Vector<Int>& list, ostringstream& msg, Bool force=False, char *token=NULL)
   {
-    if (list.nelements() == 0)
+    if ((list.nelements() == 0) || force)
       {
 	String errorMesg;
 	ostringstream Mesg;
@@ -97,22 +99,33 @@ fieldstatement: indexcombexpr
                   {
                     $$ = $1;
                   }
-                 | LPAREN indexcombexpr RPAREN //Parenthesis are not
-					       //syntactically useful
-					       //here
+                 | LPAREN indexcombexpr RPAREN //Parenthesis are syntactically 
+		                               // not useful here
                   {
 		    $$ = $2;
 		  }
                 ;
 indexcombexpr  : indexlist 
                  {
-                   $$ = MSFieldParse().selectFieldIds(*($1));
+		   ostringstream m;
+	           MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+		   Vector<Int> selectedIDs(myMSFI.maskFieldIDs(*($1)));
+		   if (selectedIDs.nelements() != set_intersection(selectedIDs,(*($1))).nelements())
+		     {
+		       m << "Possible out of range index in the list " << *($1)
+			 << " [TIP: Double-quoted strings forces name matching]";
+		       checkFieldError(selectedIDs, m , True);
+		     }
+                   $$ = MSFieldParse().selectFieldIds(selectedIDs);
+		   m << "Partial or no match for Field ID list " << (*($1));
+                   checkFieldError(selectedIDs, m);
+
 		   delete $1;
                  }
 	       ;
 //
 // A single field name (this could be a regex and
-// hence produce a list inf indices)
+// hence produce a list of indices)
 //
 fieldid: IDENTIFIER   
           { //
@@ -147,6 +160,7 @@ fieldid: IDENTIFIER
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkFieldError(*($$), m);
+	  String s(m.str());
 
 	  free($1);
 	}
@@ -159,7 +173,6 @@ fieldid: IDENTIFIER
 	  //
 	  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
 	  if (!$$) delete $$;
-
 	  $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,True));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
@@ -200,6 +213,7 @@ fieldidbounds: LT INT // <ID
 
 		  ostringstream m; m << "No field ID found <=" << n;
 		  checkFieldError(*($$), m);
+
 
 		  free($2);
 		}
@@ -257,11 +271,13 @@ indexlist : fieldidlist
 		(*($$))(i) = (*($3))(i-N0);
 	      delete $3;
             }
+/*
           | LPAREN indexlist RPAREN //Parenthesis are not
 				    //syntactically useful here
             {
 	      $$ = $2;
 	    }
+*/
           ;
 %%
 

@@ -30,7 +30,7 @@
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
-
+#include <ms/MeasurementSets/MSSelectionError.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
@@ -89,20 +89,25 @@ class MSFieldParse : public MSParse
 public:
     // Default constructor
     MSFieldParse ();
-
+  //  ~MSFieldParse() {idList.resize(0);};
     // Associate the ms and the shorthand.
     MSFieldParse (const MeasurementSet* ms);
+  //~MSFieldParse() {if (node_p) delete node_p;node_p=0x0;};
 
-    const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+  const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
   //    const TableExprNode *selectFieldOrSource(const String& fieldName);
 
     // Get table expression node object.
     static const TableExprNode* node();
     static MSFieldParse* thisMSFParser;
-
+    static Vector<Int> selectedIDs() {return idList;};
+    static void reset(){idList.resize(0);};
+    static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 private:
     static TableExprNode* node_p;
     const String colName;
+    static  Vector<Int> idList;
+
 };
 
 } //# NAMESPACE CASA - END

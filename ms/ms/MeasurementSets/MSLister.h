@@ -31,6 +31,7 @@
 
 #include <casa/aips.h>
 #include <casa/Logging/LogIO.h>
+//#include <casa/Logging/LogSink.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Record.h>
@@ -76,13 +77,15 @@ class MeasurementSet;
 //	// Send the next output to a new location
 //	LogIO newLog;
 //	setNewOS(newLog);
-//	// List only part of the data (the list() method accepts either
-//	// Double or String time inputs)
-//	Double timeStart=4e9, timeStop=4.0001e9;
-//	// ...or...
-//	String timeStart=yyyy/mm/dd[/hh[:mm[:ss]]];
-//      String timeStop=yyyy/mm/dd[/hh[:mm[:ss]]];
-//	myList.list(timeStart,timeStop);
+//	// List all the data, with default output options
+//	myList.list();
+//    // List only selected data, with specified output options
+//    datacolumn = 'corrected'; spw = '3:5~10'; timerange = '<13:34:25.1';
+//    scan = '5'; pagerows = 10; listfile = 'myList.list.out';
+//    // ... define any other parameters, then call function ... 
+//    myList.list(options, datacolumn, field, spw, antenna, timerange,
+//                correlation, scan, feed, array, uvrange, average, 
+//                showflags, msselect, pagerows, listfile);
 // </srcBlock>
 // An <src>MSLister</src> object is constructed from a <src>MS</src>
 // object, and then logged to the supplied <src>LogIO</src> object.
@@ -101,10 +104,9 @@ class MeasurementSet;
 // commonly required.
 // </motivation>
 //
-// <todo asof="1998/12/16">
-//   <li> The string->double conversion in list() 
-//	needs to default to prefix the correct "yyyy/mm/dd/" string if
-//	not provided, or accept it if it is.
+// <todo asof="2008/02/08">
+//   <li> Several of the input parameters to <src>MSLister::list</src> are not
+//    funcational presently.
 //   <li> The (pointer to the) MS is declared and used as non-const throughout
 //	MSLister, because MSSelector requires it.  MSSelector should be
 //	changed to require a const MS since it claims not to change the MS
@@ -123,6 +125,9 @@ public:
 
   // Construct from a MeasurementSet (set pointer), set formatting string,
   // and initialise listing with os.
+  // <todo> os is currently not used as the primary steam for log messages.
+  //   This should be corrected, or os removed completely from the class.
+  // </todo>
   MSLister (const MeasurementSet& ms, LogIO& os);
 
   // Copy constructor, this will initialise the MSLister's MS with other's MS
@@ -137,6 +142,9 @@ public:
   // Change or set the OS this MSLister uses.  Do this before setMS()
   // if doing both.  This method avoids having to reconstruct the MSLister
   // object if you change your mind about the output destination.
+  // <todo> os is currently not used as the primary steam for log messages.
+  //   This should be corrected, or os removed completely from the class.
+  // </todo>
   Bool setNewOS (LogIO& os);
 
   // Change or set the MS this MSLister refers to, and reinitialise the
@@ -156,27 +164,46 @@ public:
 		      const Int precAmpl=3, const int precPhase=1,
 		      const Int precWeight=0 );
 
-  // Overall listing (3 versions). Do the actual work: list MS records to
-  // the logger.  Also provided are versions of list() that accept time
-  // limits in either String or Double format.
-  //
-  // First version to list only data for times in given range, converting
-  // input Strings to Double times.
-  void list (const String timeStart, const String timeStop);
+  // List the visibilities, with optional data selection and output 
+  // specification.
+  void list (const String options="",
+             const String datacolumn="",
+             const String field="", 
+             const String spw="", 
+             const String antenna="", 
+             const String timerange="", 
+             const String correlation="",
+             const String scan="",
+             const String feed="",
+             const String array="",
+             const String uvrange="", 
+             const String average="",
+             const bool   showflags=False,
+             const String msSelect="",
+             const long   pagerows=50,
+             const String listfile="");
 
-  // Second version to list only data for times in given range.
-  void list (Double& timeStart, Double& timeStop);
-
-  // Third version to list data for all (possibly previously selected) times.
-  void list();
-
-  // Select only within the given time range, with sanity checks.
-  Bool selectTime (Double& timeStart, Double& timeStop);
+  // Set uv-data selection via MSSelection
+  void selectvis(const String& timerange="",
+                 const String& spw="",
+                 const String& scan="",
+                 const String& field="",
+                 const String& baseline="",
+                 const String& uvrange="",
+                 const String& chanmode="none",
+                 const Int& nchan=1,
+                 const Int& start=0,
+                 const Int& step=1,
+                 const MRadialVelocity& mStart=MRadialVelocity(),
+                 const MRadialVelocity& mStep=MRadialVelocity(),
+                 const String& correlation="",
+                 const String& array="",
+                 const String& msSelect="");
 
 private:
+
   // Initialise the listing.  initList() does things that need to be done
-  // once per MS: initialises the pagination/formatting, lists some header
-  // information, declares and initialises the private MSSelector object,
+  // once per MS: declares and initialises the private MSSelector object,
   // and gets all the attribute ranges up front.
   void initList();
 
@@ -184,20 +211,21 @@ private:
   void listHeader();
 
   // Get the ranges of a fixed set of MS key attributes.
-  void getRanges();
+  void getRanges(const MeasurementSet &ms);
 
   // Most of the heavy lifting is in here.  Get the data records and list
   // them.
-  void listData();
+  void listData(const int pageRows=50, const String listfile="");
 
   // Column header line for pagination of output.
   void listColumnHeader();
 
   // Pointer to the MS
-  MeasurementSet* pMS;
+  MeasurementSet* pMS_p;
+  MeasurementSet* pMSSel_p;
 
   // Output stream
-  LogIO os_p;
+  LogIO logStream_p;
 
   // A formatting string for convenience
   const String dashline_p;
@@ -205,8 +233,13 @@ private:
   // The MSSelector object used in list() etc.
   MSSelector mss_p;
 
-  // Channel/Pol counters
-  uInt nchan_p, npols_p;
+  // List of channels
+  Vector<Int> channels_p;
+  // Channel counter
+  Int nchan_p;
+
+  // Pol counters
+  uInt npols_p;
 
   // SpW/Pol info from subtables
   Vector<String> pols_p;
@@ -218,7 +251,7 @@ private:
   // Field width variables
   uInt wTime_p, wAnt_p, wIntrf_p, wUVDist_p;
   uInt wFld_p, wSpW_p, wChn_p;
-  uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p;
+  uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
   uInt wTotal_p;
 
   // Order of magnitude control (digits to left of decimal, including sign)
@@ -242,6 +275,12 @@ private:
   // Bools for column showing
   Bool doFld_p, doSpW_p, doChn_p;
 
+  // Data selections
+  // data --> "amplitude", "phase"
+  // corrected --> "corrected_amplitude", "corrected_phase"
+  // model --> "model_amplitude", "model_phase"
+  // residual --> "residual_amplitude", "residual_phase"
+  Vector <String> dataColSel;
 
   // The Record object containing the MSSelector ranges
   Record ranges_p;

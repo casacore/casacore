@@ -69,6 +69,12 @@ MSSummary::MSSummary (const MeasurementSet& ms)
     dashlin2(replicate("=",80))
 {}
 
+MSSummary::MSSummary (const MeasurementSet* ms)
+  : pMS(ms),
+    dashlin1(replicate("-",80)),
+    dashlin2(replicate("=",80))
+{}
+
 
 //
 // Destructor does nothing
@@ -116,6 +122,7 @@ Bool MSSummary::setMS (const MeasurementSet& ms)
 //
 void MSSummary::list (LogIO& os, Bool verbose) const
 {
+
   // List a title for the Summary
   listTitle (os);
 
@@ -270,8 +277,8 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	Int arrid(arridcol(0));
   
 	// Report OBSID and ARRID, and header for listing:
-	os << endl << "   ObservationID = " << obsid+1;
-	os << "         ArrayID = " << arrid+1 << endl;
+	os << endl << "   ObservationID = " << obsid;
+	os << "         ArrayID = " << arrid << endl;
 	os << "  Date        Timerange                ";
 	os << "Scan  FldId FieldName      SpwIds" << endl;
 
@@ -335,7 +342,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      ddids(nddi-1)=ddicol(i);
 	    }
 	  }
-	  
+
 	  // If not first timestamp, check if scan changed, etc.
 	  if (!firsttime) {
 
@@ -356,12 +363,12 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 
 	      // this MJD
 	      day=floor(MVTime(btime/C::day).day());
-
-	      // Spws
-	      spwids.resize(nddi);
-	      for (Int iddi=0; iddi<nddi;++iddi) 
-		spwids(iddi)=specwindids(lastddids(iddi))+1;
 	    
+	      // Spws
+	      spwids.resize(lastddids.nelements());
+	      for (uInt iddi=0; iddi<spwids.nelements();++iddi) 
+		spwids(iddi)=specwindids(lastddids(iddi));
+	  
 	      // Print out last scan's times, fields, ddis
 	      os.output().setf(ios::right, ios::adjustfield);
 	      os.output().width(widthLead); os << "  ";
@@ -379,7 +386,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      os.output().width(widthScan); os << lastscan;
 	      os.output().width(widthLead); os << "  ";
 	      os.output().setf(ios::right, ios::adjustfield);
-	      os.output().width(widthFieldId); os << lastfldids(0)+1 << " ";
+	      os.output().width(widthFieldId); os << lastfldids(0) << " ";
 	      os.output().setf(ios::left, ios::adjustfield);
 	      os.output().width(widthField); os << fieldnames(lastfldids(0));
 	      os.output().width(widthLead); os << "  ";
@@ -416,9 +423,9 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	day=floor(MVTime(btime/C::day).day());
 
 	// Spws
-	spwids.resize(nddi);
-	for (Int iddi=0; iddi<nddi;++iddi) 
-	  spwids(iddi)=specwindids(lastddids(iddi))+1;
+	spwids.resize(lastddids.nelements());
+	for (uInt iddi=0; iddi<spwids.nelements();++iddi) 
+	  spwids(iddi)=specwindids(lastddids(iddi));
 	    
 	// Print out final scan's times, fields, ddis
 	os.output().setf(ios::right, ios::adjustfield);
@@ -437,7 +444,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os.output().width(widthScan); os << lastscan;
 	os.output().width(widthLead);  os << "  ";
 	os.output().setf(ios::right, ios::adjustfield);
-	os.output().width(widthFieldId); os << lastfldids(0)+1 << " ";
+	os.output().width(widthFieldId); os << lastfldids(0) << " ";
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthField); os << fieldnames(lastfldids(0));
 	os.output().width(widthLead);  os << "  ";
@@ -533,7 +540,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
       // write the row
       os << indent;
-      os.output().width(indwidth);  os << ant+1;
+      os.output().width(indwidth);  os << ant;
       os.output().width(namewidth); os << antCol.name()(ant);
       os.output().width(statwidth); os << antCol.station()(ant);
       os.output().precision(diamprec);
@@ -551,13 +558,13 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     for (Int i=0; i<nAnt; i++) {
       Int ant=antIds(i);
       // Build the line
-      line = line + antCol.name()(ant) + "=";
-      line = line + antCol.station()(ant);
+      line = line + "'" + antCol.name()(ant) + "'" + "=";
+      line = line + "'" + antCol.station()(ant) + "'";
       // Add comma if not at the end
       if (ant != (nAnt-1)) line = line + ", ";
       if (line.length()>55 || ant==(nAnt-1)) {
 	// This line is finished, dump it after the line leader
-	leader = String::toString(last+2) +"-" +String::toString(ant+1) +": ";
+	leader = String::toString(last+1) +"-" +String::toString(ant) +": ";
 	os << "   ID=";
         os.output().setf(ios::right, ios::adjustfield);
         os.output().width(8); os << leader;
@@ -621,6 +628,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose) const
 
 void MSSummary::listField (LogIO& os, Bool verbose) const 
 {
+  
   // Make a MS-field-columns object
   ROMSFieldColumns msFC(pMS->field());
 
@@ -638,6 +646,7 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     os << "Fields: " << fieldId.nelements()<<endl;
     Int widthLead  =  2;	
     Int widthField =  5;	
+    Int widthCode  =  5;	
     Int widthName  = 14;
     Int widthRA    = 17;
     Int widthDec   = 14;
@@ -649,6 +658,7 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthLead);	os << "  ";
     os.output().width(widthField);	os << "ID";
+    os.output().width(widthCode);       os << "Code";
     os.output().width(widthName);	os << "Name";
     os.output().width(widthRA);	os << "Right Ascension";
     os.output().width(widthDec);	os << "Declination";
@@ -665,7 +675,8 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthLead);	os << "  ";
-        os.output().width(widthField);	os << (fld+1);
+        os.output().width(widthField);	os << (fld);
+	os.output().width(widthCode);   os << msFC.code()(fld);
 	os.output().width(widthName);	os << msFC.name()(fld);
 	os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,8);
 	os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,8);
@@ -732,7 +743,10 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
 
 String formatTime(const Double time) {
   MVTime mvtime(Quantity(time, "s"));
-  return mvtime.string(MVTime::DMY,6);
+  Time t=mvtime.getTime();
+  ostringstream os;
+  os << t;
+  return os.str();
 }
 
 void MSSummary::listHistory (LogIO& os) const 
@@ -745,22 +759,42 @@ void MSSummary::listHistory (LogIO& os) const
   }
   else {
     uInt nmessages = msHis.time().nrow();
-    os << "History table entries: " << nmessages << endl;
+    os << "History table entries: " << nmessages << endl << LogIO::POST;
+    Vector<Double> theTimes((msHis.time()).getColumn());
+    Vector<String> messOrigin((msHis.origin()).getColumn());
+    Vector<String> messString((msHis.message()).getColumn());
+    Vector<String> messPriority((msHis.priority()).getColumn());
     for (uInt i=0 ; i < nmessages; i++) {
-      os << formatTime(((msHis.time()).getColumn())(i))
-	 << "|" << ((msHis.origin()).getColumn())(i);
-      //<< ((msHis.application()).getColumn())(i) << " | "
-      //<< (msHis.appParams())(i) << " | "
-      try {
-	os << " " << (msHis.cliCommand())(i) << " ";
-      } catch ( AipsError x ) {
-	os << " ";
+      MVTime mvtime(Quantity(theTimes(i), "s"));
+      Time messTime(mvtime.getTime());
+      LogMessage::Priority itsPriority(LogMessage::DEBUGGING);
+      if(messPriority(i) == "DEBUGGING"){
+	      itsPriority = LogMessage::DEBUGGING;
+      } else if(messPriority(i) == "DEBUG2"){
+	      itsPriority = LogMessage::DEBUG2;
+      } else if(messPriority(i) == "DEBUG1"){
+	      itsPriority = LogMessage::DEBUG1;
+      } else if(messPriority(i) == "NORMAL5" || messPriority(i) == "INFO5"){
+	      itsPriority = LogMessage::NORMAL5;
+      } else if(messPriority(i) == "NORMAL4" || messPriority(i) == "INFO4"){
+	      itsPriority = LogMessage::NORMAL4;
+      } else if(messPriority(i) == "NORMAL3" || messPriority(i) == "INFO3"){
+	      itsPriority = LogMessage::NORMAL3;
+      } else if(messPriority(i) == "NORMAL2" || messPriority(i) == "INFO2"){
+	      itsPriority = LogMessage::NORMAL2;
+      } else if(messPriority(i) == "NORMAL1" || messPriority(i) == "INFO1"){
+	      itsPriority = LogMessage::NORMAL1;
+      } else if(messPriority(i) == "NORMAL" || messPriority(i) == "INFO"){
+	      itsPriority = LogMessage::NORMAL;
+      } else if(messPriority(i) == "WARN"){
+	      itsPriority = LogMessage::WARN;
+      } else if(messPriority(i) == "SEVERE"){
+	      itsPriority = LogMessage::SEVERE;
       }
-      os << ((msHis.message()).getColumn())(i)
-	//<< ((msHis.priority()).getColumn())(i) << " | "
-	//<< (msHis.timeQuant())(i) << " | "
-	//<< (msHis.timeMeas())(i)
-	 << endl;
+      LogOrigin orhist(messOrigin(i));
+      LogMessage histMessage(messString(i), orhist.taskName("listHistory"), itsPriority);
+      histMessage.messageTime(messTime);
+      os.post(histMessage);
     }
     os << LogIO::POST;
   }
@@ -1008,7 +1042,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthFrame);      os << "Frame";
     os.output().width(widthFreq);	os << "Ch1(MHz)";
-    os.output().width(widthFreq);	os << "Resoln(kHz)";
+    os.output().width(widthFreq);	os << "ChanWid(kHz)";
     os.output().width(widthFreq);	os << "TotBW(kHz)";
     os.output().width(widthFreq);	os << "Ref(MHz)";
     os.output().width(widthCorrTypes);  os << "Corrs";
@@ -1024,7 +1058,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);		os << "  ";
       // 1th column: Spectral Window Id
-      os.output().width(widthSpwId); os << (spw+1);
+      os.output().width(widthSpwId); os << (spw);
       // 3rd column: number of channels in the spectral window
       os.output().setf(ios::right, ios::adjustfield);
       os.output().width(widthNumChan);		os << msSWC.numChan()(spw) << " ";
@@ -1037,7 +1071,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os<< msSWC.chanFreq()(spw)(IPosition(1,0))/1.0e6;
       // 4th column: channel resolution
       os.output().width(widthFrqNum);
-      os << msSWC.resolution()(spw)(IPosition(1,0))/1000;
+      os << msSWC.chanWidth()(spw)(IPosition(1,0))/1000;
       // 5th column: total bandwidth of the spectral window
       os.output().width(widthFrqNum);
       os<< msSWC.totalBandwidth()(spw)/1000;

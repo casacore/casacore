@@ -62,7 +62,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command) 
+  int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command, 
+				 Vector<Int>& selectedAnts1,
+				 Vector<Int>& selectedAnts2,
+				 Matrix<Int>& selectedBaselines) 
 {
   try 
     {
@@ -73,7 +76,12 @@ int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command)
       posMSAntennaGram  = 0;                   // initialize string position
       MSAntennaParse parser(ms);               // setup measurement set
       MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
+      parser.reset();
       ret=MSAntennaGramparse();                // parse command string
+
+      selectedAnts1 = parser.selectedAnt1();
+      selectedAnts2 = parser.selectedAnt2();
+      selectedBaselines = parser.selectedBaselines();
       return ret;
     }
     catch (MSSelectionAntennaError &x)
@@ -89,6 +97,10 @@ int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command)
 const TableExprNode* msAntennaGramParseNode()
 {
     return MSAntennaParse::node();
+}
+const void msAntennaGramParseDeleteNode()
+{
+    return MSAntennaParse::cleanup();
 }
 
 //# Give the string position.
@@ -116,38 +128,38 @@ void MSAntennaGramerror (char*)
 					 String(MSAntennaGramtext) + "'"));
 }
 
-String msAntennaGramRemoveEscapes (const String& in)
-{
-    String out;
-    int leng = in.length();
-    for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
-    }
-    return out;
-}
+// String msAntennaGramRemoveEscapes (const String& in)
+// {
+//     String out;
+//     int leng = in.length();
+//     for (int i=0; i<leng; i++) {
+// 	if (in[i] == '\\') {
+// 	    i++;
+// 	}
+// 	out += in[i];
+//     }
+//     return out;
+// }
 
-String msAntennaGramRemoveQuotes (const String& in)
-{
-    //# A string is formed as "..."'...''...' etc.
-    //# All ... parts will be extracted and concatenated into an output string.
-    String out;
-    String str = in;
-    int leng = str.length();
-    int pos = 0;
-    while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (AipsError ("MSAntennaParse - Ill-formed quoted string: " +
-			      str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
-    }
-    return out;
-}
+// String msAntennaGramRemoveQuotes (const String& in)
+// {
+//     //# A string is formed as "..."'...''...' etc.
+//     //# All ... parts will be extracted and concatenated into an output string.
+//     String out;
+//     String str = in;
+//     int leng = str.length();
+//     int pos = 0;
+//     while (pos < leng) {
+// 	//# Find next occurrence of leading ' or ""
+// 	int inx = str.index (str[pos], pos+1);
+// 	if (inx < 0) {
+// 	    throw (AipsError ("MSAntennaParse - Ill-formed quoted string: " +
+// 			      str));
+// 	}
+// 	out += str.at (pos+1, inx-pos-1);             // add substring
+// 	pos = inx+1;
+//     }
+//     return out;
+// }
 
 } //# NAMESPACE CASA - END

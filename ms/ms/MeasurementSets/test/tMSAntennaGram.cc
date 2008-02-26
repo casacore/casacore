@@ -22,6 +22,7 @@
 
 #include <ms/MeasurementSets/MSAntennaGram.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSSelection.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableRecord.h>
@@ -43,9 +44,15 @@ int main(int argc, char **argv)
     const String msName = argv[1];
     cout << "ms file is  " << msName << endl;
     MeasurementSet ms(msName);
+    MSSelection mss;
+    mss.setAntennaExpr(String(argv[2]));
+    TableExprNode node=mss.toTableExprNode(&ms);
+
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msAntennaGramParseCommand(&ms, argv[2])==0) {
+    Vector<Int> selectedAnt1, selectedAnt2;
+    Matrix<Int> selectedBaselines;
+    if(msAntennaGramParseCommand(&ms, argv[2],selectedAnt1, selectedAnt2, selectedBaselines)==0) {
       const TableExprNode *node = msAntennaGramParseNode();
       if(node->isNull()) {
 	cout << "NULL node " << endl;
@@ -61,6 +68,8 @@ int main(int argc, char **argv)
       }
       else {
         cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "selected ant1 = " << selectedAnt1 << endl
+	     << "selected ant2 = " << selectedAnt2 << endl;
       }
       delete mssel;
     }

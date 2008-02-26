@@ -1,4 +1,4 @@
-//# MSScanParse.cc: Classes to hold results from scan grammar parser
+//# MSArrayParse.cc: Classes to hold results from scan grammar parser
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,33 +25,32 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSScanParse.h>
+#include <ms/MeasurementSets/MSArrayParse.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 #include <ms/MeasurementSets/MSMainColumns.h>
-#include <strstream>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  MSScanParse* MSScanParse::thisMSSParser = 0x0; // Global pointer to the parser object
-  TableExprNode* MSScanParse::node_p = 0x0;
-  Vector<Int> MSScanParse::idList;
+  MSArrayParse* MSArrayParse::thisMSSParser = 0x0; // Global pointer to the parser object
+  TableExprNode* MSArrayParse::node_p = 0x0;
+  Vector<Int> MSArrayParse::idList;
   
   //# Constructor
-  MSScanParse::MSScanParse ()
-    : MSParse(), colName(MS::columnName(MS::SCAN_NUMBER)), maxScans_p(std::numeric_limits<Int>::max())
+  MSArrayParse::MSArrayParse ()
+    : MSParse(), colName(MS::columnName(MS::ARRAY_ID)), maxArrays_p(1000)
   {
   }
   
   //# Constructor with given ms name.
-  MSScanParse::MSScanParse (const MeasurementSet* ms)
-    : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)), maxScans_p(std::numeric_limits<Int>::max())
+  MSArrayParse::MSArrayParse (const MeasurementSet* ms)
+    : MSParse(ms, "Array"), colName(MS::columnName(MS::ARRAY_ID)), maxArrays_p(1000)
   {
     if(node_p) delete node_p;
     node_p = new TableExprNode();
     idList.resize(0);
   }
   
-  const void MSScanParse::appendToIDList(const Vector<Int>& v)
+  const void MSArrayParse::appendToIDList(const Vector<Int>& v)
   {
     Int currentSize = idList.nelements();
     Int n = v.nelements() + currentSize;
@@ -61,15 +60,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for(Int i=currentSize;i<n;i++) idList[i] = v[j++];
   }
 
-  const TableExprNode *MSScanParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
+  const TableExprNode *MSArrayParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
   {
     TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
 					     (ms()->col(colName) < n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
-	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
-	throw(MSSelectionScanParseError(os.str()));
+	os << "Array Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
+	throw(MSSelectionArrayParseError(os.str()));
       }
     Vector<Int> tmp(n1-n0-1);
     Int j=n0+1;
@@ -84,15 +83,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode *MSScanParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
+  const TableExprNode *MSArrayParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
   {
     TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
 					     (ms()->col(colName) <= n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
-	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
-	throw(MSSelectionScanParseError(os.str()));
+	os << "Array Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
+	throw(MSSelectionArrayParseError(os.str()));
       }
     Vector<Int> tmp(n1-n0+1);
     Int j=n0;
@@ -107,7 +106,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode *MSScanParse::selectScanIds(const Vector<Int>& scanids)
+  const TableExprNode *MSArrayParse::selectArrayIds(const Vector<Int>& scanids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
     
@@ -121,11 +120,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode *MSScanParse::selectScanIdsGT(const Vector<Int>& scanids)
+  const TableExprNode *MSArrayParse::selectArrayIdsGT(const Vector<Int>& scanids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
     
-    Int n=maxScans_p-scanids[0]+1,j;
+    Int n=maxArrays_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
     j=scanids[0]+1;
     for(Int i=0;i<n;i++) tmp[i]=j++;
@@ -139,7 +138,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode *MSScanParse::selectScanIdsLT(const Vector<Int>& scanids)
+  const TableExprNode *MSArrayParse::selectArrayIdsLT(const Vector<Int>& scanids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
     Vector<Int> tmp(scanids[0]);
@@ -154,11 +153,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
 
-  const TableExprNode *MSScanParse::selectScanIdsGTEQ(const Vector<Int>& scanids)
+  const TableExprNode *MSArrayParse::selectArrayIdsGTEQ(const Vector<Int>& scanids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
     
-    Int n=maxScans_p-scanids[0]+1,j;
+    Int n=maxArrays_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
     j=scanids[0];
     for(Int i=0;i<n;i++) tmp[i]=j++;
@@ -172,7 +171,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode *MSScanParse::selectScanIdsLTEQ(const Vector<Int>& scanids)
+  const TableExprNode *MSArrayParse::selectArrayIdsLTEQ(const Vector<Int>& scanids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
     Vector<Int> tmp(scanids[0]+1);
@@ -187,7 +186,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-  const TableExprNode* MSScanParse::node()
+  const TableExprNode* MSArrayParse::node()
   {
     return node_p;
   }

@@ -29,11 +29,12 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+
 MSSelectionError::MSSelectionError (Category c)
-: AipsError("MSSelection Error",c)
+  : AipsError("MSSelection Error",c), hasMessage(False)
 {}
 MSSelectionError::MSSelectionError (const String& str,Category c)
-: AipsError(str,c)
+  : AipsError(str,c), hasMessage(False)
 {}
 MSSelectionError::~MSSelectionError () throw()
 {}
@@ -41,6 +42,7 @@ MSSelectionError::~MSSelectionError () throw()
 void MSSelectionError::addMessage(String& mesg)
 {
   message = message+mesg;
+  hasMessage = True;
 }
 
 void MSSelectionError::changeMessage(String& mesg)
@@ -53,11 +55,17 @@ void MSSelectionError::changeMessage(String& mesg)
 String constructMessage(const Int pos, const String& command)
 {
   ostringstream newMesg;
-  newMesg << " (near char. " << pos << " in string \"" << command << "\")";
+  newMesg << endl << "(near char. " << pos << " in string \"" << command << "\")";
+  //
+  // Make a few guess about user errors and help them out 
+  // (did someone say I don't do user support? ;-))
+  //
+  if ((pos > 0) && (pos < (Int)command.length()) && (command[pos-1] == '-'))
+    newMesg << endl << "[TIP: Did you know we use \"~\" as the range operator (for a good reason)?]";
   return String(newMesg.str().c_str());
 }
 //
-//-----------------------------------------------------------------------------------
+//------------------------Time selection expression parser exceptions----------------
 //
 MSSelectionTimeError::MSSelectionTimeError (const String& str,Category c)
 : MSSelectionError(str,c)
@@ -71,7 +79,7 @@ MSSelectionTimeParseError::MSSelectionTimeParseError (const String& str,Category
 MSSelectionTimeParseError::~MSSelectionTimeParseError () throw()
 {}
 //
-//-----------------------------------------------------------------------------------
+//------------------------Baseline selection expression parser exceptions------------
 //
 MSSelectionAntennaError::MSSelectionAntennaError (const String& str,Category c)
 : MSSelectionError(str,c)
@@ -86,7 +94,7 @@ MSSelectionAntennaParseError::~MSSelectionAntennaParseError () throw()
 {}
 
 //
-//-----------------------------------------------------------------------------------
+//------------------------Field selection expression parser exceptions---------------
 //
 MSSelectionFieldError::MSSelectionFieldError (const String& str,Category c)
 : MSSelectionError(str,c)
@@ -100,7 +108,7 @@ MSSelectionFieldParseError::MSSelectionFieldParseError (const String& str,Catego
 MSSelectionFieldParseError::~MSSelectionFieldParseError () throw()
 {}
 //
-//-----------------------------------------------------------------------------------
+//------------------------UVDist selection expression parser exceptions--------------
 //
 MSSelectionUvDistError::MSSelectionUvDistError (const String& str,Category c)
 : MSSelectionError(str,c)
@@ -114,7 +122,7 @@ MSSelectionUvDistParseError::MSSelectionUvDistParseError (const String& str,Cate
 MSSelectionUvDistParseError::~MSSelectionUvDistParseError () throw()
 {}
 //
-//-----------------------------------------------------------------------------------
+//------------------------SPW selection expression parser exceptions-----------------
 //
 MSSelectionSpwError::MSSelectionSpwError (const String& str,Category c)
 : MSSelectionError(str,c)
@@ -127,12 +135,43 @@ MSSelectionSpwParseError::MSSelectionSpwParseError (const String& str,Category c
 {}
 MSSelectionSpwParseError::~MSSelectionSpwParseError () throw()
 {}
-
 MSSelectionSpwWarning::MSSelectionSpwWarning (const String& str,Category c)
 : MSSelectionSpwError(str,c)
 {}
+
 MSSelectionSpwWarning::~MSSelectionSpwWarning () throw()
 {}
+//
+//------------------------Scan selection expression parser exceptions----------------
+//
+MSSelectionScanError::MSSelectionScanError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionScanError::~MSSelectionScanError () throw()
+{}
+
+MSSelectionScanParseError::MSSelectionScanParseError (const String& str,Category c)
+: MSSelectionScanError(str,c)
+{}
+MSSelectionScanParseError::~MSSelectionScanParseError () throw()
+{}
+//
+//------------------------Sub-array selection expression parser exceptions-----------
+//
+MSSelectionArrayError::MSSelectionArrayError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionArrayError::~MSSelectionArrayError () throw()
+{}
+
+MSSelectionArrayParseError::MSSelectionArrayParseError (const String& str,Category c)
+: MSSelectionArrayError(str,c)
+{}
+MSSelectionArrayParseError::~MSSelectionArrayParseError () throw()
+{}
+//
+//-----------------------------------------------------------------------------------
+//
 
 } //# NAMESPACE CASA - END
 

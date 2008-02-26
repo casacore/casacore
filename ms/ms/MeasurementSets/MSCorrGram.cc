@@ -76,6 +76,10 @@ const TableExprNode* msCorrGramParseNode()
 {
     return MSCorrParse::node();
 }
+const void msCorrGramParseDeleteNode()
+{
+    return MSCorrParse::cleanup();
+}
 
 //# Give the string position.
 Int& msCorrGramPosition()

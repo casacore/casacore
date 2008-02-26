@@ -45,7 +45,8 @@ int main(int argc, char **argv)
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msFieldGramParseCommand(&ms, argv[2])==0) {
+    Vector<Int> selectedIDs;
+    if(msFieldGramParseCommand(&ms, argv[2],selectedIDs)==0) {
       const TableExprNode *node = msFieldGramParseNode();
       if(node->isNull()) {
 	cout << "NULL node " << endl;
@@ -61,6 +62,7 @@ int main(int argc, char **argv)
       }
       else {
         cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "Field IDs selected = " << selectedIDs << endl;
       }
       delete mssel;
     }

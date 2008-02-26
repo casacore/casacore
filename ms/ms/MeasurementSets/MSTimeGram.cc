@@ -38,6 +38,7 @@
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
+#include <casa/Arrays/Matrix.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
@@ -64,7 +65,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   //----------------------------------------------------------------------------
 
-  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command) 
+  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens,
+			      Matrix<Double>& selectedTimeList)
   {
     Int ret;
     try
@@ -73,9 +75,34 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	yy_start = 1;
 	strpMSTimeGram = command.chars();     // get pointer to command string
 	posMSTimeGram  = 0;                   // initialize string position
-	MSTimeParse parser(ms);               // setup the parser and
+	MSTimeParse parser(ms,otherTens);     // setup the parser and
+	parser.reset();  		      // global pointer to it
+	MSTimeParse::thisMSTParser = &parser;
+	ret=MSTimeGramparse();                // parse command string
+	selectedTimeList = parser.selectedTimes();
+      } 
+    catch (MSSelectionTimeError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msTimeGramPosition()+1, command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+    return ret;
+  }
+  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens) 
+  {
+    Matrix<Double> timeList;
+    Int ret;
+    try
+      {
+	MSTimeGramrestart (MSTimeGramin);
+	yy_start = 1;
+	strpMSTimeGram = command.chars();     // get pointer to command string
+	posMSTimeGram  = 0;                   // initialize string position
+	MSTimeParse parser(ms,otherTens);     // setup the parser and
 					      // global pointer to it
-	thisMSTParser = &parser;
+	MSTimeParse::thisMSTParser = &parser;
 	ret=MSTimeGramparse();                // parse command string
       } 
     catch (MSSelectionTimeError &x)
@@ -93,6 +120,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   const TableExprNode* msTimeGramParseNode()
   {
     return MSTimeParse::node();
+  }
+  const void msTimeGramParseDeleteNode()
+  {
+    return MSTimeParse::cleanup();
   }
   
   //# Give the string position.
@@ -137,26 +168,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
   
   //----------------------------------------------------------------------------
-  String msTimeGramRemoveQuotes (const String& in)
-  {
-    //# A string is formed as "..."'...''...' etc.
-    //# All ... parts will be extracted and concatenated into an output string.
-    String out;
-    String str = in;
-    int leng = str.length();
-    int pos = 0;
-    while (pos < leng) {
-      //# Find next occurrence of leading ' or ""
-      int inx = str.index (str[pos], pos+1);
-      if (inx < 0) {
-	throw (AipsError ("MSTimeParse - Ill-formed quoted string: " +
-			  str));
-      }
-      out += str.at (pos+1, inx-pos-1);             // add substring
-      pos = inx+1;
-    }
-    return out;
-  }
+//   String msTimeGramRemoveQuotes (const String& in)
+//   {
+//     //# A string is formed as "..."'...''...' etc.
+//     //# All ... parts will be extracted and concatenated into an output string.
+//     String out;
+//     String str = in;
+//     int leng = str.length();
+//     int pos = 0;
+//     while (pos < leng) {
+//       //# Find next occurrence of leading ' or ""
+//       int inx = str.index (str[pos], pos+1);
+//       if (inx < 0) {
+// 	throw (AipsError ("MSTimeParse - Ill-formed quoted string: " +
+// 			  str));
+//       }
+//       out += str.at (pos+1, inx-pos-1);             // add substring
+//       pos = inx+1;
+//     }
+//     return out;
+//   }
   
   //----------------------------------------------------------------------------
   void msTimeGramSetTimeFields (struct TimeFields& tf, 

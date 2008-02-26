@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSAntennaIndex.h>
+#include <ms/MeasurementSets/MSSelectionTools.h>
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
@@ -54,6 +55,15 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
 };
 
 //-------------------------------------------------------------------------
+  
+  Vector<Int> MSAntennaIndex::matchId(const Vector<Int>& sourceId)
+  {
+    Vector<Int> IDs;
+    IDs = set_intersection(sourceId,antennaIds_p);
+    return IDs;
+  }; 
+
+//-------------------------------------------------------------------------
 
 Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
 						       const Bool regex)
@@ -78,9 +88,11 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
     {
       //Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
       Int ret=(msAntennaCols_p.name().getColumn()(i).matches(reg,pos));
+      if (ret <= 0)
+	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
       //      cerr << i << " " << ret << endl;
-      maskArray(i) = ( (ret>0) &&
-		      !msAntennaCols_p.flagRow().getColumn()(i));
+      maskArray(i) = ( (ret>0) );
+      //		       && !msAntennaCols_p.flagRow().getColumn()(i));
     }
   
   MaskedArray<Int> maskAntennaID(antennaIds_p,maskArray);
@@ -97,18 +109,30 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const String& name)
 // Output:
 //    matchAntennaName   Vector<Int>              Matching antenna id's
 //
-  if(name == "*") {
-    LogicalArray maskArray = (True &&
-			      !msAntennaCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
-    return maskAntennaId.getCompressedArray();
-  } else {
-    LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
-			      !msAntennaCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
-
-    return maskAntennaId.getCompressedArray();
-  }
+/*
+  if(name == "*") 
+    {
+      LogicalArray maskArray = (True && (msAntennaCols_p.flagRow().getColumn()==
+					 msAntennaCols_p.flagRow().getColumn()));
+      //			      !msAntennaCols_p.flagRow().getColumn());
+      MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+      return maskAntennaId.getCompressedArray();
+    } 
+  else 
+*/
+    {
+      LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name);
+      MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+      //
+      // If no match with the NAME column, try with the names in the STATION column.
+      //
+      if (maskAntennaId.getCompressedArray().nelements() == 0)
+	{
+	  maskArray = (msAntennaCols_p.station().getColumn()==name);
+	  maskAntennaId.setData(antennaIds_p, maskArray);
+	}
+      return maskAntennaId.getCompressedArray();
+    }
 }; 
 
 //-------------------------------------------------------------------------
@@ -155,12 +179,14 @@ Vector<Int> MSAntennaIndex::matchAntennaStation(const String& station)
       if(stationNames[j].contains(subStationName))
 	matchstationnames(j) = True;
     }
-    LogicalArray maskArray( matchstationnames && !msAntennaCols_p.flagRow().getColumn());
+    LogicalArray maskArray( matchstationnames && (msAntennaCols_p.flagRow().getColumn()==
+						  msAntennaCols_p.flagRow().getColumn()));
+			    //!msAntennaCols_p.flagRow().getColumn());
     MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
     return maskAntennaId.getCompressedArray();
   }else {
-    LogicalArray maskArray = (msAntennaCols_p.station().getColumn()==station &&
-			      !msAntennaCols_p.flagRow().getColumn());
+    LogicalArray maskArray = (msAntennaCols_p.station().getColumn()==station);
+    //			      && !msAntennaCols_p.flagRow().getColumn());
     MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
     return maskAntennaId.getCompressedArray();
   }
@@ -179,8 +205,8 @@ Vector<Int> MSAntennaIndex::matchAntennaNameAndStation(const String& name,
 //    matchAntennaNameAndStation   Vector<Int>    Matching antenna id's
 //
   LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
-			    msAntennaCols_p.station().getColumn()==station &&
-			    !msAntennaCols_p.flagRow().getColumn());
+			    msAntennaCols_p.station().getColumn()==station);
+  //  && !msAntennaCols_p.flagRow().getColumn());
   MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
   return maskAntennaId.getCompressedArray();
 }; 

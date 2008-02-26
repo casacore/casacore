@@ -33,6 +33,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   MSUvDistParse* MSUvDistParse::thisMSUParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSUvDistParse::node_p = 0x0;
+  Matrix<Double> MSUvDistParse::selectedUV_p(2,0);
+  Vector<Bool> MSUvDistParse::meterUnits_p(0,False);
 
 //# Constructor
 MSUvDistParse::MSUvDistParse ()
@@ -53,8 +55,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 						  const String& unit,
 						  Bool doSlow)
 {
-  Bool distanceUnit = False;
-  Bool wavelenthUnit = False;
+  Bool wavelengthUnit=False, distanceUnit=False;
   Double startPoint;
   Double endPoint;
   // Column accessors
@@ -80,19 +81,19 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     {
       startPoint = startUV * 1000000;
       endPoint = endUV * 1000000;
-      wavelenthUnit = True;
+      wavelengthUnit = True;
     } 
   else if(units == "kl") // Kilo lambda
     {
       startPoint = startUV * 1000;
       endPoint = endUV * 1000;
-      wavelenthUnit = True;
+      wavelengthUnit = True;
     } 
   else if(units == "l") // Lambda
     {
       startPoint = startUV;
       endPoint = endUV;
-      wavelenthUnit = True;
+      wavelengthUnit = True;
     } 
   else 
     {
@@ -101,6 +102,8 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 	" found.  Possible units are [Kk][Ll] for wavelengths or [Kk][Mm] for distance.";
       throw(MSSelectionUvDistParseError(Mesg));
     }
+  
+  accumulateUVList(startPoint, endPoint, wavelengthUnit, distanceUnit);
 
   TableExprNode condition;
   if (!doSlow)
@@ -110,11 +113,18 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       // slower code below
       //
       Int nSpwRows, nDDIDRows;
+      //      TableExprNode uvwDist = sqrt(sumSquare(ms()->col(MS::columnName(MS::UVW))));
+
       //
-      // In the following, sumsquare TaQL function should be used.  But I
-      // (SB) could not figure out how to use it!
+      // This computes only the 2D uv-distance (projection of the
+      // baseline on the uv-plane).  It's certainly more expensive to
+      // compute in TaQL and probably scientifically incorrect too.
       //
-      TableExprNode uvwDist = sumSquare(ms()->col(MS::columnName(MS::UVW)));
+      String colName = MS::columnName(MS::UVW);
+      TableExprNode uvw = ms()->col(colName);
+      TableExprNodeSet su = TableExprNodeSet(IPosition(1,0));
+      TableExprNodeSet sv = TableExprNodeSet(IPosition(1,1));
+      TableExprNode uvwDist = sqrt(uvw(su)*uvw(su) + uvw(sv)*uvw(sv));
       //
       // Build a map from DDID (which is a MainTable column) to SpwID
       // (which then indexes into the SpectralWindow sub-table from
@@ -132,28 +142,29 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       // limits to meters for all available spectral window(s) and an
       // OR'ed TEN for each Spw.
       //
-      if (wavelenthUnit)
+      if (wavelengthUnit)
 	{
 	  Float scaledStartPoint, scaledEndPoint;
 	  const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID);
 	  for(Int i=0;i<nDDIDRows;i++)
 	    {
 	      Int SpwID=mapDDID2SpwID(i);
-	      scaledStartPoint = startPoint * msSpwCol.refFrequency()(SpwID)/C::c;
-	      scaledEndPoint = endPoint * msSpwCol.refFrequency()(SpwID)/C::c;
-	      
-	      if (condition.isNull())
-		condition = ((ms()->col(DATA_DESC_ID)==i)  && 
-			     (uvwDist >= scaledStartPoint) && 
-			     (uvwDist <= scaledEndPoint));
-	      else
-		condition = condition || ((ms()->col(DATA_DESC_ID)==i)  && 
-					  (uvwDist >= scaledStartPoint) && 
-					  (uvwDist <= scaledEndPoint));
+	      Double Lambda = C::c/msSpwCol.refFrequency()(SpwID);
+	      scaledStartPoint = startPoint * Lambda;
+	      scaledEndPoint = endPoint * Lambda;
+
+	      TableExprNode pickUVWDist= ((ms()->col(DATA_DESC_ID)==i)  && 
+					  ((uvwDist >= scaledStartPoint) && 
+					   (uvwDist <= scaledEndPoint)));
+	      if (condition.isNull()) condition = pickUVWDist;
+	      else                    condition = condition || pickUVWDist;
 	    }
 	}
       else
-	condition = ((uvwDist >= startPoint) && (uvwDist <= endPoint));
+	if (condition.isNull())
+	  condition = ((uvwDist >= startPoint) && (uvwDist <= endPoint));
+	else 
+	  condition = condition || ((uvwDist >= startPoint) && (uvwDist <= endPoint));
     }
   else
     {
@@ -166,7 +177,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       Vector<Int> rowsel;
 
       Int nRowSel = 0;
-      if(wavelenthUnit) {
+      if(wavelengthUnit) {
 	for (uInt row=0; row<ms()->nrow(); row++) {
 	  Int ddid = msMainCol.dataDescId()(row);
 	  Int spwid = msDataDescSubTable.spectralWindowId()(ddid);
@@ -212,4 +223,18 @@ const TableExprNode* MSUvDistParse::node()
     return node_p;
 }
 
+void MSUvDistParse::accumulateUVList(const Double r0, const Double r1,
+				     const Bool wavelengthUnit, 
+				     const Bool distanceUnit)
+{
+  Int n0=selectedUV_p.shape()(1);
+  IPosition newShape(selectedUV_p.shape());
+  newShape(1)++;
+  selectedUV_p.resize(newShape,True);
+  meterUnits_p.resize(newShape(1),True);
+  selectedUV_p(0,n0) = r0;
+  selectedUV_p(1,n0) = r1;
+  meterUnits_p(n0)=True;
+  if (wavelengthUnit) meterUnits_p(n0)=False;
+}
 } //# NAMESPACE CASA - END

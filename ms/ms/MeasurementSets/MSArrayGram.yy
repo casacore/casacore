@@ -1,5 +1,5 @@
 /*
-    MSScanGram.y: Parser for scan expressions
+    MSArrayGram.y: Parser for scan expressions
     Copyright (C) 2004
     Associated Universities, Inc. Washington DC, USA.
 
@@ -75,7 +75,7 @@
 %nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
 
 %{
-  int MSScanGramlex (YYSTYPE*);
+  int MSArrayGramlex (YYSTYPE*);
 %}
 
 %%
@@ -99,38 +99,44 @@ indexcombexpr  : scanidrange                       {$$=$1;}
 scanidbounds: LT INT // <ID
                 {
 		  const Vector<Int> idv(1,atoi($2));
-		  $$ = MSScanParse().selectScanIdsLT(idv);
+		  //		  $$ = MSArrayParse().selectArrayIdsLT(idv);
+		  $$ = MSArrayParse::thisMSSParser->selectArrayIdsLT(idv);
 		  free($2);
 		}
               | GT INT // >ID
                 {
 		  const Vector<Int> idv(1,atoi($2));
-		  $$ = MSScanParse().selectScanIdsGT(idv);
+		  //		  $$ = MSArrayParse().selectArrayIdsGT(idv);
+		  $$ = MSArrayParse::thisMSSParser->selectArrayIdsGT(idv);
 		  free($2);
 		}
               | LE INT // <=ID
                 {
 		  const Vector<Int> idv(1,atoi($2));
-		  $$ = MSScanParse().selectScanIdsLTEQ(idv);
+		  //		  $$ = MSArrayParse().selectArrayIdsLTEQ(idv);
+		  $$ = MSArrayParse::thisMSSParser->selectArrayIdsLTEQ(idv);
 		  free($2);
 		}
               | GE INT // >=ID
                 {
 		  const Vector<Int> idv(1,atoi($2));
-		  $$ = MSScanParse().selectScanIdsGTEQ(idv);
+		  //		  $$ = MSArrayParse().selectArrayIdsGTEQ(idv);
+		  $$ = MSArrayParse::thisMSSParser->selectArrayIdsGTEQ(idv);
 		  free($2);
 		}
               | GE INT AMPERSAND LE INT // >=ID & <=ID
                 {
 		  Int n0=atoi($2), n1=atoi($5);
-		  $$ = MSScanParse().selectRangeGEAndLE(n0,n1);
+		  //		  $$ = MSArrayParse().selectRangeGEAndLE(n0,n1);
+		  $$ = MSArrayParse::thisMSSParser->selectRangeGEAndLE(n0,n1);
 
 		  free($2); free($5);
 		}
               | GT INT AMPERSAND LT INT // >ID & <ID
                 {
 		  Int n0=atoi($2), n1=atoi($5);
-		  $$ = MSScanParse().selectRangeGTAndLT(n0,n1);
+		  //		  $$ = MSArrayParse().selectRangeGTAndLT(n0,n1);
+		  $$ = MSArrayParse::thisMSSParser->selectRangeGTAndLT(n0,n1);
 
 		  free($2); free($5);
 		}
@@ -139,7 +145,8 @@ scanidbounds: LT INT // <ID
 scanidrange: INT // A single scan index
             {
 	      const Vector<Int> idv(1,atoi($1));
-	      $$ = MSScanParse().selectScanIds(idv);
+	      //	      $$ = MSArrayParse().selectArrayIds(idv);
+	      $$ = MSArrayParse::thisMSSParser->selectArrayIds(idv);
 	      free($1);
 	    }
            | INT DASH INT // A range of integer scan indices
@@ -151,7 +158,8 @@ scanidrange: INT // A single scan index
               for(Int i = 0; i < len; i++) {
                 scanids[i] = start + i;
               }
-	      $$ = MSScanParse().selectScanIds(scanids);
+	      //	      $$ = MSArrayParse().selectArrayIds(scanids);
+	      $$ = MSArrayParse::thisMSSParser->selectArrayIds(scanids);
 	      free($1); free($3);
             }
           ;

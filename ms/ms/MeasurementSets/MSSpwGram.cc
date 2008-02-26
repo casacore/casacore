@@ -61,7 +61,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSSpwGram = 0;
 static Int                   posMSSpwGram = 0;
-
   // MSSpwGramwrap out of namespace
 
 //# Parse the command.
@@ -77,7 +76,35 @@ int msSpwGramParseCommand (const MeasurementSet* ms, const String& command)
       posMSSpwGram  = 0;                   // initialize string position
       MSSpwParse parser(ms);               // setup measurement set
       MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
+      parser.reset();
       ret=MSSpwGramparse();                // parse command string
+      return ret;
+    }
+  catch (MSSelectionSpwError &x)
+    {
+      String newMesgs;
+      newMesgs = constructMessage(msSpwGramPosition(), command);
+      x.addMessage(newMesgs);
+      throw;
+    }
+}
+
+int msSpwGramParseCommand (const MeasurementSet* ms, const String& command,Vector<Int>& selectedIDs,
+			   Matrix<Int>& selectedChans) 
+{
+  try 
+    {
+      Int ret;
+      MSSpwGramrestart (MSSpwGramin);
+      yy_start = 1;
+      strpMSSpwGram = command.chars();     // get pointer to command string
+      posMSSpwGram  = 0;                   // initialize string position
+      MSSpwParse parser(ms);               // setup measurement set
+      MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
+      parser.reset();
+      ret=MSSpwGramparse();                // parse command string
+      selectedIDs = parser.selectedIDs();
+      selectedChans = parser.selectedChanIDs();
       return ret;
     }
   catch (MSSelectionSpwError &x)
@@ -92,7 +119,12 @@ int msSpwGramParseCommand (const MeasurementSet* ms, const String& command)
 //# Give the table expression node
 const TableExprNode* msSpwGramParseNode()
 {
-    return MSSpwParse::node();
+  return MSSpwParse::node();
+}
+
+const void msSpwGramParseDeleteNode()
+{
+  MSSpwParse::cleanup();
 }
 
 //# Give the string position.
@@ -116,42 +148,42 @@ int msSpwGramInput (char* buf, int max_size)
 
 void MSSpwGramerror (char*)
 {
-    throw (AipsError ("Field Expression: Parse error at or near '" +
-		      String(MSSpwGramtext) + "'"));
+  throw (MSSelectionSpwParseError("Spw Expression: Parse error at or near '" +
+				  String(MSSpwGramtext) + "'"));
 }
 
-String msSpwGramRemoveEscapes (const String& in)
-{
-    String out;
-    int leng = in.length();
-    for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
-    }
-    return out;
-}
+// String msSpwGramRemoveEscapes (const String& in)
+// {
+//     String out;
+//     int leng = in.length();
+//     for (int i=0; i<leng; i++) {
+// 	if (in[i] == '\\') {
+// 	    i++;
+// 	}
+// 	out += in[i];
+//     }
+//     return out;
+// }
 
-String msSpwGramRemoveQuotes (const String& in)
-{
-    //# A string is formed as "..."'...''...' etc.
-    //# All ... parts will be extracted and concatenated into an output string.
-    String out;
-    String str = in;
-    int leng = str.length();
-    int pos = 0;
-    while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (AipsError ("MSSpwParse - Ill-formed quoted string: " +
-			      str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
-    }
-    return out;
-}
+// String msSpwGramRemoveQuotes (const String& in)
+// {
+//     //# A string is formed as "..."'...''...' etc.
+//     //# All ... parts will be extracted and concatenated into an output string.
+//     String out;
+//     String str = in;
+//     int leng = str.length();
+//     int pos = 0;
+//     while (pos < leng) {
+// 	//# Find next occurrence of leading ' or ""
+// 	int inx = str.index (str[pos], pos+1);
+// 	if (inx < 0) {
+// 	    throw (AipsError ("MSSpwParse - Ill-formed quoted string: " +
+// 			      str));
+// 	}
+// 	out += str.at (pos+1, inx-pos-1);             // add substring
+// 	pos = inx+1;
+//     }
+//     return out;
+// }
 
 } //# NAMESPACE CASA - END

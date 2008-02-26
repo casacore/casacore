@@ -44,8 +44,10 @@ int main(int argc, char **argv)
     const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
+    Vector<Int> selectedIDs;
+    Matrix<Int> selectedChans;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msSpwGramParseCommand(&ms, argv[2])==0) {
+    if(msSpwGramParseCommand(&ms, argv[2], selectedIDs, selectedChans)==0) {
       const TableExprNode *node = msSpwGramParseNode();
       if(node->isNull()) {
 	cout << "NULL node " << endl;
@@ -61,6 +63,7 @@ int main(int argc, char **argv)
       }
       else {
         cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "Selected IDs = " << selectedIDs << endl;
       }
       delete mssel;
     }

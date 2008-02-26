@@ -33,16 +33,17 @@
 #include <casa/Arrays/Vector.h>
 #include <measures/Measures.h>
 #include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MCEpoch.h>
 #include <measures/Measures/MCRadialVelocity.h>
 #include <measures/Measures/MPosition.h>
-
+#include <ms/MeasurementSets/MeasurementSet.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class ROMSAntennaColumns;
 class String;
-
 // <summary>
 // MSDerivedValues calculates values derived from a MS
 // </summary>
@@ -147,6 +148,12 @@ public:
   // Set the velocity frame type (e.g., MRadialVelocity::LSRK) 
   MSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
 
+  // Set the velocity frame type (e.g., MRDoppler::RADIO) 
+  MSDerivedValues& setVelocityReference(MDoppler::Types dopType);
+
+  // Set the frequency frame  (e.g., MFrequency::LSRK) 
+  MSDerivedValues& setFrequencyReference(MFrequency::Types frqType);
+
   // get hour angle
   Double hourAngle();
 
@@ -162,6 +169,25 @@ public:
   // get observatory radial velocity for given epoch, position and direction
   const MRadialVelocity& obsVel();
 
+  //Set an ms does not need to explicity setAntennas and is necessary if 
+  //setRestFreqency(fieldid, spwid) is used  
+  MSDerivedValues& setMeasurementSet(const MeasurementSet& ms);
+
+
+  //Set restFrequencies...make it look for it for the fieldid, spwid and line 
+  //number defined in the SOURCE table return False if it fails to find the 
+  //restFrquency
+  Bool setRestFrequency(const Int fieldid, const Int spwid, 
+		       const Int linenum=0);
+
+  //
+  MSDerivedValues& setRestFrequency(const Quantity& restFreq);
+  
+  
+  // get frequency from velocity
+
+  Quantity toFrequency(const Quantity& vel, const Quantity& restFreq);
+  Quantity toFrequency(const Quantity& vel);
 protected:
 
 private:
@@ -181,8 +207,12 @@ private:
   MDirection mFieldCenter_p;
   MPosition mObsPos_p;
   MRadialVelocity::Convert cTOPOToLSR_p;
-
+  MDoppler::Ref velref_p;
+  MFrequency::Ref frqref_p;
+  Bool hasMS_p;
+  Quantity restFreq_p;
   Vector<Int> mount_p;
+  MeasurementSet ms_p;
   //  Vector<Double> receptorAngle_p;
  
 

@@ -32,6 +32,7 @@
 //# includes
 #include <casa/aips.h>
 #include <ms/MeasurementSets/MSField.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
 #include <ms/MeasurementSets/MSFieldColumns.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
@@ -110,6 +111,8 @@ public:
 
   // Add for field code selection
   Vector<Int> matchFieldCode(const String& code);
+
+  Vector<Int> maskFieldIDs(const Vector<Int>& ids);
 
   Vector<Int> matchFieldIDLT(const Int n);
   Vector<Int> matchFieldIDGT(const Int n);

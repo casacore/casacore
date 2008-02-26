@@ -63,6 +63,32 @@ static Int                   posMSUvDistGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command,
+			      Matrix<Double>& selectedUVRange, Vector<Bool>& units) 
+{
+  try 
+    {
+      Int ret;
+      MSUvDistGramrestart (MSUvDistGramin);
+      yy_start = 1;
+      strpMSUvDistGram = command.chars();     // get pointer to command string
+      posMSUvDistGram  = 0;                   // initialize string position
+      MSUvDistParse parser(ms);               // setup measurement set
+      MSUvDistParse::thisMSUParser = &parser; // The global pointer to the parser
+      parser.reset();                         // parse command string
+      ret=MSUvDistGramparse();                
+      selectedUVRange=parser.selectedUV();
+      units = parser.selectedUnits();
+      return ret;
+    }
+    catch (MSSelectionUvDistError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msUvDistGramPosition(),command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+}
 int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
   try 
@@ -91,6 +117,10 @@ const TableExprNode* msUvDistGramParseNode()
 {
     return MSUvDistParse::node();
 }
+const void msUvDistGramParseDeleteNode()
+{
+    return MSUvDistParse::cleanup();
+}
 
 //# Give the string position.
 Int& msUvDistGramPosition()
@@ -117,38 +147,38 @@ void MSUvDistGramerror (char*)
 				     String(MSUvDistGramtext) + "'"));
 }
 
-String msUvDistGramRemoveEscapes (const String& in)
-{
-    String out;
-    int leng = in.length();
-    for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
-    }
-    return out;
-}
+// String msUvDistGramRemoveEscapes (const String& in)
+// {
+//     String out;
+//     int leng = in.length();
+//     for (int i=0; i<leng; i++) {
+// 	if (in[i] == '\\') {
+// 	    i++;
+// 	}
+// 	out += in[i];
+//     }
+//     return out;
+// }
 
-String msUvDistGramRemoveQuotes (const String& in)
-{
-    //# A string is formed as "..."'...''...' etc.
-    //# All ... parts will be extracted and concatenated into an output string.
-    String out;
-    String str = in;
-    int leng = str.length();
-    int pos = 0;
-    while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (AipsError ("MSUvDistParse - Ill-formed quoted string: " +
-			      str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
-    }
-    return out;
-}
+// String msUvDistGramRemoveQuotes (const String& in)
+// {
+//     //# A string is formed as "..."'...''...' etc.
+//     //# All ... parts will be extracted and concatenated into an output string.
+//     String out;
+//     String str = in;
+//     int leng = str.length();
+//     int pos = 0;
+//     while (pos < leng) {
+// 	//# Find next occurrence of leading ' or ""
+// 	int inx = str.index (str[pos], pos+1);
+// 	if (inx < 0) {
+// 	    throw (AipsError ("MSUvDistParse - Ill-formed quoted string: " +
+// 			      str));
+// 	}
+// 	out += str.at (pos+1, inx-pos-1);             // add substring
+// 	pos = inx+1;
+//     }
+//     return out;
+// }
 
 } //# NAMESPACE CASA - END

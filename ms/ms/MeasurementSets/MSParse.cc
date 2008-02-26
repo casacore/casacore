@@ -32,7 +32,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-const MeasurementSet* MSParse::ms_p = 0x0;
+MeasurementSet *MSParse::ms_p = 0;
 
 //# Default constructor.
 MSParse::MSParse ()
@@ -42,7 +42,7 @@ MSParse::MSParse ()
 MSParse::MSParse (const MeasurementSet* ms, const String& shorthand)
 : shorthand_p (shorthand)
 {
-  ms_p = ms;
+  ms_p = const_cast<MeasurementSet *>(ms);
 }
 
 MSParse::MSParse (const MSParse& that)
@@ -67,7 +67,7 @@ String& MSParse::shorthand()
     return shorthand_p;
 }
 
-const MeasurementSet* MSParse::ms()
+MeasurementSet* MSParse::ms()
 {
     return ms_p;
 }

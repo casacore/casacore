@@ -60,7 +60,7 @@ class MDirection;
 class MEpoch;
 class MFrequency;
 class MPosition;
-
+class Record;
 
 //# forward declared so that the following typedef is up-front
 class MeasurementSet;
@@ -343,6 +343,12 @@ public:
   // main table and all the standard subtables including optional
   // subtables. See the Table class for a description of the sync argument.
   void flush(Bool sync=False);
+
+  // Return a record of the indices that the msselection selection selected
+  Record msseltoindex(const String& spw="", const String& field="", 
+		      const String& baseline="", const String& time="", 
+		      const String& scan="", const String& uvrange="", 
+		      const String& taql="");
 
 private:
 

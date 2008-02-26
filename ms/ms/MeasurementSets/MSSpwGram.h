@@ -71,6 +71,8 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
 int msSpwGramParseCommand (const MeasurementSet *ms, const String& command);
+int msSpwGramParseCommand (const MeasurementSet *ms, const String& command,
+			   Vector<Int>& selectedIDs, Matrix<Int>& selectedChanIDs);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -78,6 +80,7 @@ void MSSpwGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msSpwGramParseNode();
+const void msSpwGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
@@ -87,10 +90,10 @@ Int& msSpwGramPosition();
 int msSpwGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-String msSpwGramRemoveEscapes (const String& in);
+//String msSpwGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-String msSpwGramRemoveQuotes (const String& in);
+//String msSpwGramRemoveQuotes (const String& in);
 
 // </group>
 

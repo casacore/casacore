@@ -38,18 +38,23 @@ static string                qstr;
 
 WHITE     [ \t\n]*
 DIGIT     [0-9]
+SIGN      [+-]
 INT       {DIGIT}+
-EXP       [DdEe][+-]?{INT}
+EXP       [DdEe]{SIGN}?{INT}
 DOT       \.?
 NUMBER    ({INT}|{INT}?{DOT}{INT}*)
-FNUMBER   {NUMBER}?{EXP}?
+FNUMBER   {SIGN}?{NUMBER}?{EXP}?
 
-KILO       ([Kk]?)
-MEGA       (M?)
-GIGA       (G?)
-TERA       (T?)
-HERTZ      (([Hh][Zz])?)
-UNIT       (({KILO}|{MEGA}|{GIGA}|{TERA})?{HERTZ})
+KILO       ([Kk])
+MEGA       ([Mm])
+GIGA       ([Gg])
+TERA       ([Tt])
+HERTZ      (([Hh][Zz]))
+METER      (([m]))
+SECOND     ([Ss]|([Ss][Ee][Cc]))
+VELOCITY   (({KILO}|{MEGA})?({METER}[/]{SECOND}))
+FREQ       (({KILO}|{MEGA}|{GIGA}|{TERA})?{HERTZ})
+UNIT       (({FREQ}|{VELOCITY}))
 
 QSTRING   \"[^\"\n]*\"
 STRING    ({QSTRING})+
@@ -59,10 +64,18 @@ RQUOTE    (\/)
 NQ        [^\\\n\"]+
 NRQ       [^\\\n\/]+
 
+NAME       ([a-zA-Z_'{''}''+''-']+[a-zA-Z0-9_{}]*) 
+/*NAME ([A-za-z0-9_'{''}''+''-'])*/
+/*IDENTIFIER  ({NAME}+|STRING)*/
+IDENTIFIER  ({NAME}+)
+SIDENTIFIER  ([A-Za-z_*?{}'+''-'][A-Za-z0-9_'{''}''+''-''*''?']*)
+/*
+SIDENTIFIER  ([A-Za-z_*?{}'+''-']+[A-Za-z0-9_'{''}''+''-''*''?':]*)
+SIDENTIFIER  ({NAME}+['{''}''+''-''*''?']+)
 NAMES       ([a-zA-Z_{}]+[a-zA-Z0-9_{}]*)
 IDENTIFIER  ({NAMES}+|STRING)
 SIDENTIFIER  ({NAMES}+"*")
-
+*/
 %x QS RS
 /* rules */
 %%
@@ -79,8 +92,8 @@ SIDENTIFIER  ({NAMES}+"*")
                BEGIN(INITIAL);
                lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
                strcpy(lvalp->str,qstr.c_str());
-               qstr.resize(0);
 
+               qstr.resize(0);
                return QSTRING;
              }
 
@@ -98,22 +111,21 @@ SIDENTIFIER  ({NAMES}+"*")
                lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
                strcpy(lvalp->str,qstr.c_str());
                qstr.resize(0);
-
                return REGEX;
              }
 
 {FNUMBER} {msSpwGramPosition() += yyleng;
             lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
             strcpy(lvalp->str, MSSpwGramtext);
-
+	    //	    cout << "FN = " << MSSpwGramtext << endl;
             return FNUMBER;
           } 
 {UNIT}    { msSpwGramPosition() += yyleng;
-            lvalp->str = MSSpwGramtext;
-
+            lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
+            strcpy(lvalp->str, MSSpwGramtext);
             return UNIT;
           }
-"-"       { msSpwGramPosition() += yyleng;
+"~"       { msSpwGramPosition() += yyleng;
             return DASH; }
 ","       { msSpwGramPosition() += yyleng;
             return COMMA;
@@ -127,20 +139,29 @@ SIDENTIFIER  ({NAMES}+"*")
 "&"       { msSpwGramPosition() += yyleng;
             return AMPERSAND;
           }
-"~"       { msSpwGramPosition() += yyleng;
-            return TILDA;
+";"       { msSpwGramPosition() += yyleng;
+            return SEMICOLON;
+          }
+":"       { msSpwGramPosition() += yyleng;
+            return COLON;
+          }
+"^"       { msSpwGramPosition() += yyleng;
+            return CARET;
           }
   /* Literals */
 
 {IDENTIFIER} { msSpwGramPosition() += yyleng;
                lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
                strcpy(lvalp->str, MSSpwGramtext);
+	       //	       cout << "ID.l = " << MSSpwGramtext << endl;
 
                return IDENTIFIER;
              }
 {SIDENTIFIER} { msSpwGramPosition() += yyleng;
                 lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
                 strcpy(lvalp->str, MSSpwGramtext);
+		//		cout << "QS.l = " << MSSpwGramtext << endl;
+
                 return QSTRING;
               }
 "("       { msSpwGramPosition() += yyleng; return LPAREN; }

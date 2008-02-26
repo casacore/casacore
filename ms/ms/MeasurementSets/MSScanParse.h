@@ -87,20 +87,35 @@ class MSScanParse : public MSParse
 {
 
 public:
-    // Default constructor
-    MSScanParse ();
-
-    // Associate the ms and the shorthand.
-    MSScanParse (const MeasurementSet* ms);
-
-    const TableExprNode *selectScanIds(const Vector<Int> scanids);
+  // Default constructor
+  MSScanParse ();
+  
+  // Associate the ms and the shorthand.
+  MSScanParse (const MeasurementSet* ms);
+  //  ~MSScanParse() {if (node_p) delete node_p;node_p=0x0;};
+  const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
+  const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
+  const TableExprNode *selectScanIds(const Vector<Int>& scanids);
+  const TableExprNode *selectScanIdsGT(const Vector<Int>& scanids);
+  const TableExprNode *selectScanIdsLT(const Vector<Int>& scanids);
+  const TableExprNode *selectScanIdsGTEQ(const Vector<Int>& scanids);
+  const TableExprNode *selectScanIdsLTEQ(const Vector<Int>& scanids);
 
     // Get table expression node object.
-    static const TableExprNode* node();
+  static const TableExprNode* node();
 
+  static MSScanParse* thisMSSParser;
+  static Vector<Int> selectedIDs() {return idList;};
+  static void reset(){idList.resize(0);};
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+
+  void setMaxScan(const Int& n) {maxScans_p=n;};
 private:
-    static TableExprNode* node_p;
-    const String colName;
+  static TableExprNode* node_p;
+  static Vector<Int> idList;
+  const String colName;
+  const void appendToIDList(const Vector<Int>& v);
+  Int maxScans_p;
 };
 
 } //# NAMESPACE CASA - END

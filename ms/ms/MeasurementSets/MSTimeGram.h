@@ -69,7 +69,9 @@ class TableExprNode;
 // <group name=MSTimeGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int msTimeGramParseCommand (const MeasurementSet *ms, const String& command);
+int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens);
+int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens,
+			    Matrix<Double>& timeList);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -77,6 +79,7 @@ void MSTimeGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msTimeGramParseNode();
+const void msTimeGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
@@ -89,7 +92,7 @@ int msTimeGramInput (char* buf, int max_size);
 String msTimeGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-String msTimeGramRemoveQuotes (const String& in);
+//String msTimeGramRemoveQuotes (const String& in);
 
 // A function to set the fields of the TimeFields structure
 void msTimeGramSetTimeFields (struct TimeFields& tf, 

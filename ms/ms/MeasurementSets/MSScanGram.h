@@ -70,7 +70,7 @@ class TableExprNode;
 // <group name=MSScanGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int msScanGramParseCommand (const MeasurementSet *ms, const String& command);
+  int msScanGramParseCommand (const MeasurementSet *ms, const String& command, Vector<Int>& idList, Int maxScans=1000);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -78,6 +78,7 @@ void MSScanGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msScanGramParseNode();
+const void msScanGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
@@ -87,10 +88,10 @@ Int& msScanGramPosition();
 int msScanGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-String msScanGramRemoveEscapes (const String& in);
+//String msScanGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-String msScanGramRemoveQuotes (const String& in);
+//String msScanGramRemoveQuotes (const String& in);
 
 // </group>
 

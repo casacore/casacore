@@ -1,4 +1,4 @@
-//# MSScanGram.cc: Grammar for scan expressions
+//# MSArrayGram.cc: Grammar for scan expressions
 //# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-// MSScanGram; grammar for scan command lines
+// MSArrayGram; grammar for scan command lines
 
 // This file includes the output files of bison and flex for
 // parsing command lines.
@@ -33,19 +33,19 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSScanGram.h>
-#include <ms/MeasurementSets/MSScanParse.h> // routines used by bison actions
+#include <ms/MeasurementSets/MSArrayGram.h>
+#include <ms/MeasurementSets/MSArrayParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include <MSScanGram.ycc>                  // flex output
-#include <MSScanGram.lcc>                  // bison output
+#include <MSArrayGram.ycc>                  // flex output
+#include <MSArrayGram.lcc>                  // bison output
 
 // Define the yywrap function for flex.
-int MSScanGramwrap()
+int MSArrayGramwrap()
 {
     return 1;
 }
@@ -53,75 +53,75 @@ int MSScanGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSScanGram = 0;
-static Int                   posMSScanGram = 0;
+static const char*           strpMSArrayGram = 0;
+static Int                   posMSArrayGram = 0;
 
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-  int msScanGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
-			      Int maxScans) 
+  int msArrayGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
+			      Int maxArrays) 
 {
   try
     {
-      MSScanGramrestart (MSScanGramin);
+      MSArrayGramrestart (MSArrayGramin);
       yy_start = 1;
-      strpMSScanGram = command.chars();     // get pointer to command string
-      posMSScanGram  = 0;                   // initialize string position
-      MSScanParse parser(ms);               // setup measurement set
-      MSScanParse::thisMSSParser = &parser; // The global pointer to the parser
+      strpMSArrayGram = command.chars();     // get pointer to command string
+      posMSArrayGram  = 0;                   // initialize string position
+      MSArrayParse parser(ms);               // setup measurement set
+      MSArrayParse::thisMSSParser = &parser; // The global pointer to the parser
       parser.reset();
-      parser.setMaxScan(maxScans);
-      int ret=MSScanGramparse();                // parse command string
+      parser.setMaxArray(maxArrays);
+      int ret=MSArrayGramparse();                // parse command string
 
       selectedIDs=parser.selectedIDs();
       return ret;
     }
-  catch (MSSelectionScanError &x)
+  catch (MSSelectionArrayError &x)
     {
       String newMesgs;
-      newMesgs = constructMessage(msScanGramPosition(), command);
+      newMesgs = constructMessage(msArrayGramPosition(), command);
       x.addMessage(newMesgs);
       throw;
     }
 }
 
 //# Give the table expression node
-const TableExprNode* msScanGramParseNode()
+const TableExprNode* msArrayGramParseNode()
 {
-    return MSScanParse::node();
+    return MSArrayParse::node();
 }
-const void msScanGramParseDeleteNode()
+const void msArrayGramParseDeleteNode()
 {
-    return MSScanParse::cleanup();
+    return MSArrayParse::cleanup();
 }
 
 //# Give the string position.
-Int& msScanGramPosition()
+Int& msArrayGramPosition()
 {
-    return posMSScanGram;
+    return posMSArrayGram;
 }
 
 //# Get the next input characters for flex.
-int msScanGramInput (char* buf, int max_size)
+int msArrayGramInput (char* buf, int max_size)
 {
     int nr=0;
-    while (*strpMSScanGram != 0) {
+    while (*strpMSArrayGram != 0) {
 	if (nr >= max_size) {
 	    break;                         // get max. max_size char.
 	}
-	buf[nr++] = *strpMSScanGram++;
+	buf[nr++] = *strpMSArrayGram++;
     }
     return nr;
 }
 
-void MSScanGramerror (char* t)
+void MSArrayGramerror (char* t)
 {
-  throw (MSSelectionScanError ("Scan Expression: Parse error at or near '" +
-			       String(MSScanGramtext) + "'"));
+  throw (MSSelectionArrayError ("Array Expression: Parse error at or near '" +
+			       String(MSArrayGramtext) + "'"));
 }
 
-// String msScanGramRemoveEscapes (const String& in)
+// String msArrayGramRemoveEscapes (const String& in)
 // {
 //     String out;
 //     int leng = in.length();
@@ -134,7 +134,7 @@ void MSScanGramerror (char* t)
 //     return out;
 // }
 
-// String msScanGramRemoveQuotes (const String& in)
+// String msArrayGramRemoveQuotes (const String& in)
 // {
 //     //# A string is formed as "..."'...''...' etc.
 //     //# All ... parts will be extracted and concatenated into an output string.
@@ -146,7 +146,7 @@ void MSScanGramerror (char* t)
 // 	//# Find next occurrence of leading ' or ""
 // 	int inx = str.index (str[pos], pos+1);
 // 	if (inx < 0) {
-// 	    throw (AipsError ("MSScanParse - Ill-formed quoted string: " +
+// 	    throw (AipsError ("MSArrayParse - Ill-formed quoted string: " +
 // 			      str));
 // 	}
 // 	out += str.at (pos+1, inx-pos-1);             // add substring

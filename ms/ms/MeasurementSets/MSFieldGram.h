@@ -70,7 +70,8 @@ class TableExprNode;
 // <group name=MSFieldGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int msFieldGramParseCommand (const MeasurementSet *ms, const String& command);
+  int msFieldGramParseCommand (const MeasurementSet *ms, const String& command);
+  int msFieldGramParseCommand (const MeasurementSet *ms, const String& command,Vector<Int>&);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -78,6 +79,7 @@ void MSFieldGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msFieldGramParseNode();
+  const void msFieldGramParseDeleteNode() ;
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
@@ -87,10 +89,10 @@ Int& msFieldGramPosition();
 int msFieldGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-String msFieldGramRemoveEscapes (const String& in);
+//String msFieldGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-String msFieldGramRemoveQuotes (const String& in);
+//String msFieldGramRemoveQuotes (const String& in);
 
 // </group>
 

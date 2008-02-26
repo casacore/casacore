@@ -30,10 +30,12 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Exceptions/Error.h>
+#include <casa/Containers/Record.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MFrequency.h>
+#include <ms/MeasurementSets/MSSelection.h>
 #include <tables/Tables/TableInfo.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/SetupNewTab.h>
@@ -209,6 +211,7 @@ MeasurementSet::~MeasurementSet()
 	// now we can thrown an exception
 	throw (AipsError("~MS() - Table written is not a valid MS"));
     }
+    // Table::relinquishAutoLocks(True);
     // if we get to here, let nature take its course
     // this should not be necessary, but do it for insurance anyway
     hasBeenDestroyed_p = True;
@@ -858,6 +861,36 @@ void MeasurementSet::checkVersion()
        keywordSet().asFloat("MS_VERSION")!=2.0)) {
     throw(AipsError("These data are not in MSv2 format - use ms1toms2 to convert"));
   }
+}
+
+Record MeasurementSet::msseltoindex(const String& spw, const String& field, 
+		      const String& baseline, const String& time, 
+		      const String& scan, const String& uvrange, 
+				    const String& taql){
+  Record retval;
+  MSSelection thisSelection;
+  thisSelection.setSpwExpr(spw);
+  thisSelection.setFieldExpr(field);
+  thisSelection.setAntennaExpr(baseline);
+  thisSelection.setTimeExpr(time);
+  thisSelection.setScanExpr(scan);
+  thisSelection.setUvDistExpr(uvrange);
+  thisSelection.setTaQLExpr(taql);
+  TableExprNode exprNode=thisSelection.toTableExprNode(this);
+  Vector<Int> fieldlist=thisSelection.getFieldList();
+  Vector<Int> spwlist=thisSelection.getSpwList();
+  Vector<Int> scanlist=thisSelection.getScanList();
+  Vector<Int> antenna1list=thisSelection.getAntenna1List();
+  Vector<Int> antenna2list=thisSelection.getAntenna2List();
+  Matrix<Int>  chanlist=thisSelection.getChanList();
+  retval.define("spw", spwlist);
+  retval.define("field", fieldlist);
+  retval.define("scan",scanlist);
+  retval.define("antenna1", antenna1list);
+  retval.define("antenna2", antenna2list);
+  retval.define("channel", chanlist);
+  return retval;
+
 }
 
 

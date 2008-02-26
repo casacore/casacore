@@ -26,14 +26,15 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSFieldIndex.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Utilities/Regex.h>
-
+#include <ms/MeasurementSets/MSSelectionTools.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
-  
+
   //-------------------------------------------------------------------------
   
   MSFieldIndex::MSFieldIndex(const MSField& field)
@@ -59,9 +60,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						     const Bool regex)
   {
     Vector<Int> IDs;
-    IDs = matchFieldNameRegexOrPattern(pattern,regex);
+    IDs = matchFieldNameRegexOrPattern(pattern, regex);
     if (IDs.nelements()==0)
-      IDs = matchFieldCodeRegexOrPattern(pattern,regex);
+      IDs = matchFieldCodeRegexOrPattern(pattern, regex);
     return IDs;
   }
   //-------------------------------------------------------------------------
@@ -77,24 +78,42 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     Int pos=0;
     Regex reg;
-    if (regex) reg=pattern;
-    else       reg=reg.fromPattern(pattern);
-    
-    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    //   String strippedPattern = stripWhite(pattern);
+    const String& strippedPattern = pattern;
+    try
+      {
+	if (regex) reg=strippedPattern;
+	else       reg=reg.fromPattern(strippedPattern);
+      }
+    catch (...) // Since I (SB) don't know the type of exception Regex throws, catch them all!
+      {
+	ostringstream Mesg;
+	Mesg << "Field Expression: Invalid regular expression \"" << pattern << "\"";
+	throw(MSSelectionFieldParseError(Mesg.str().c_str()));
+      }
+    //cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
     IPosition sh(msFieldCols_p.name().getColumn().shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=(msFieldCols_p.name().getColumn()(i).matches(reg,pos));
-	maskArray(i) = ( (ret>0) &&
-			 !msFieldCols_p.flagRow().getColumn()(i));
+	String name = msFieldCols_p.name().getColumn()(i);
+	String sname = stripWhite(name); // Strip leading and trailing blanks
+	//	const String &sname = name; // Strip leading and trailing blanks
+	//        cout << "Name = " << name << " SName = " << sname << endl;
+	Int ret=(sname.matches(reg,pos));
+	maskArray(i) = ((ret>0) && !msFieldCols_p.flagRow().getColumn()(i));
       }
     
     MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
     return maskFieldID.getCompressedArray();
   }; 
-  
+
+  Vector<Int> MSFieldIndex::maskFieldIDs(const Vector<Int>& ids)
+  {
+    Vector<Int> tmp = set_intersection(fieldIds_p,ids); 
+    return tmp;
+  }
   //-------------------------------------------------------------------------
   
   Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern,
@@ -111,7 +130,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (regex) reg=pattern;
     else       reg=reg.fromPattern(pattern);
     
-    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
     IPosition sh(msFieldCols_p.name().getColumn().shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;

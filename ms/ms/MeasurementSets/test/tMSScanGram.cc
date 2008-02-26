@@ -38,11 +38,12 @@ int main(int argc, char **argv)
 {
   try {
     cout << "before ms constructor called " << endl;
-    const String msName = "3C273XC1_tmp.ms";
+    const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msScanGramParseCommand(&ms, "1")==0) {
+    Vector<Int> selectedIds;
+    if(msScanGramParseCommand(&ms, "1", selectedIds)==0) {
       const TableExprNode *node = msScanGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);

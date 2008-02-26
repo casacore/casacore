@@ -93,6 +93,7 @@ class MSSummary
 public:
 // Constructor
    MSSummary (const MeasurementSet&);
+   MSSummary (const MeasurementSet*);
 
 // Destructor
   ~MSSummary();

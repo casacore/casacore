@@ -34,6 +34,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -86,6 +87,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class MSSpwIndex 
 {
 public:
+  enum MSSpwTypes {MSSPW_INDEXRANGE=0,MSSPW_INDEX=2, MSSPW_UNITHZ=4, MSSPW_UNITVELOCITY=5};
+
   // Construct from an MS FIELD subtable
   MSSpwIndex(const MSSpectralWindow& msSpw);
 
@@ -96,8 +99,15 @@ public:
   Vector<Int> matchName(const String& name);
   Vector<Int> matchName(const Vector<String>& names);
 
-  Vector<Int> matchFrequencyRange(const Float f0,const Float f1,Bool approx);
+  Vector<Int> matchFrequencyRange(const Float f0,const Float f1,Bool approx, const Float f3=0);
 
+  // A version of match freq range that does not throw an exception but returns
+  // false if no match...else spw, start, nchan returns the matches 
+  // f0 and f1 are in Hz and the match is done in the frame defined in the 
+  // SpectralWindow table.
+  Bool matchFrequencyRange(const Double f0, const Double f1, 
+			   Vector<Int>& spw, Vector<Int>& start, 
+			   Vector<Int>& nchan);
   // Look up FIELD_ID's for a given pattern/regex for source name/code
   Vector<Int> matchRegexOrPattern(const String& pattern,
 				       const Bool regex=False);
@@ -107,7 +117,11 @@ public:
   Vector<Int> matchIDLT(const Int n);
   Vector<Int> matchIDGT(const Int n);
   Vector<Int> matchIDGTAndLT(const Int n0, const int n1);
-  Vector<Float> convertToHz(const Float f0, const Float f1, const String& unit); 
+  Vector<Float> convertToMKS(const Float f0, const Float f1, const String& unit); 
+  Vector<Int> convertToChannelIndex(const Vector<Int>& spw, const Vector<Float>& freqList,
+				    Int& nFSpec);
+  Vector<Int> convertToSpwIndex(const Vector<Float>& freqList,
+				Int &nFSpec);
 private:
   // Construct from an MS FIELD subtable
   MSSpwIndex();

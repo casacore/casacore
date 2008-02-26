@@ -28,29 +28,43 @@
 #include <ms/MeasurementSets/MSFieldParse.h>
 #include <ms/MeasurementSets/MSFieldIndex.h>
 #include <ms/MeasurementSets/MSSourceIndex.h>
+#include <ms/MeasurementSets/MSSelectionTools.h>
 #include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSFieldParse::node_p = 0x0;
-  
+  Vector<Int> MSFieldParse::idList;
+
   //# Constructor
   MSFieldParse::MSFieldParse ()
     : MSParse(), colName(MS::columnName(MS::FIELD_ID))
   {
+    if (MSFieldParse::node_p!=0x0) delete MSFieldParse::node_p;
+    MSFieldParse::node_p=0x0;
+    node_p = new TableExprNode();
   }
   
   //# Constructor with given ms name.
   MSFieldParse::MSFieldParse (const MeasurementSet* ms)
     : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
   {
+    if (MSFieldParse::node_p!=0x0) delete MSFieldParse::node_p;
+    MSFieldParse::node_p=0x0;
     if(node_p) delete node_p;
     node_p = new TableExprNode();
+    idList.resize(0);
+    //    setMS(ms);
   }
   
   const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
   {
+    {
+      Vector<Int> tmp(set_union(fieldIds,idList));
+      idList.resize(tmp.nelements());
+      idList = tmp;
+    }
     TableExprNode condition = (ms()->col(colName).in(fieldIds));
     
     if(node_p->isNull())

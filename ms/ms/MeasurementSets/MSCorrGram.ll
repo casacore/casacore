@@ -108,7 +108,7 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return PERCENT; }
 "+"       { msCorrGramPosition() += yyleng;
             return PLUS; }
-"-"       { msCorrGramPosition() += yyleng;
+"~"       { msCorrGramPosition() += yyleng;
             return DASH; }
 "{"       { msCorrGramPosition() += yyleng;
             return LBRACE; }

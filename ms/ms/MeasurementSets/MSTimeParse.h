@@ -37,6 +37,7 @@
 // #include <msvis/MSVis/VisSet.h>
 #include <ms/MeasurementSets/MSTimeDefinitions.h>
 #include <casa/Containers/Block.h>
+#include <casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -97,7 +98,13 @@ public:
   MSTimeParse ();
 
   // Associate the ms and the shorthand.
-  MSTimeParse (const MeasurementSet* ms);
+  MSTimeParse (const MeasurementSet* ms,const TableExprNode& otherTens,const Bool honourRowFlags=True);
+
+//   ~MSTimeParse() 
+//   {
+//     if (node_p) delete node_p;node_p=0x0;
+//     if (otherTens_p) delete otherTens_p;otherTens_p=0x0;
+//   };
 
   const TableExprNode *selectTime(const MEpoch& time,
 				  bool daytime = false);
@@ -108,6 +115,7 @@ public:
   const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
 				       const MEpoch& upboundTime,
 				       bool daytime = false);
+  Matrix<Double> selectedTimes() {return timeList;};
   const TableExprNode *addCondition(TableExprNode& condition);
 
   /*
@@ -117,6 +125,7 @@ public:
   */
 
   static void setDefaults(TimeFields& tf, Bool dataOrigin=True);
+  void getDefaults();
   static void copyDefaults(TimeFields& target, TimeFields& source);
   static const MEpoch *yearTimeConvert(Int year=-1, Int month=-1, Int day=-1,
 				       Int hour = -1, Int minute = -1,
@@ -136,8 +145,16 @@ public:
   const Double defaultInteg() {return defaultExposure;};
 
   static const void validate(const TimeFields& tf);
+  static void reset(){timeList.resize(2,0);};
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+
   static TableExprNode* node_p;
   //private:
+  
+  static TableExprNode *otherTens_p;
+  static Bool defaultTimeComputed;
+  MVTime firstRowTime;
+  static MeasurementSet *ms_p;
   static const Double toTAIInSec(const MEpoch& time);
   static MEpoch* yeartime;
   static MEpoch* daytime;
@@ -145,6 +162,10 @@ public:
     defaultHour, defaultMinute, defaultSeconds, defaultFractionalSec;
   Double defaultExposure;
   const String colName;
+  Bool honourRowFlags_p;
+  static Matrix<Double> timeList;
+  void accumulateTimeList(const Double t0, const Double t1);
+  static MSTimeParse *thisMSTParser;
 
 };
 

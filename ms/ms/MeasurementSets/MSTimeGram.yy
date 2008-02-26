@@ -41,10 +41,11 @@ using namespace casa;
   const MEpoch* tval;
   Int ival;
   Double dval;
+  Double dval3[3];
+  Int ival3[3];
   TimeFields timeFields;
 }
 
-%token EQASS
 %token <ival> NUMBER
 %token <dval> FNUMBER
 %token SQUOTE
@@ -59,12 +60,6 @@ using namespace casa;
 %token PERCENT
 %token STAR
 
-%token LBRACKET
-%token LPAREN
-%token RBRACKET
-%token RPAREN
-%token LBRACE
-%token RBRACE
 %token UNKNOWN
 
 %type <node> timestatement
@@ -74,12 +69,16 @@ using namespace casa;
 %type <node> upboundtimeexpr
 %type <node> lowboundtimeexpr
 %type <timeFields> yeartimeexpr
-%type <dval> FLOAT
-%type <ival> WNUMBER
+%type <dval> wildFloat
+%type <ival> wildNumber
+%type <ival> tFields
+%type <dval3> timeObj
+%type <ival> yFields
+%type <ival3> yearObj
 
 %left OR
 %left AND
-%nonassoc EQ EQASS GT GE LT LE NE COLON SLASH
+%nonassoc GT LT LE COLON SLASH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
@@ -87,51 +86,56 @@ using namespace casa;
 %right POWER
 
 %{
-  extern MSTimeParse *thisMSTParser;
+#include <ms/MeasurementSets/MSSelectionError.h>
+  //  extern MSTimeParse *thisMSTParser;
   int MSTimeGramlex (YYSTYPE*);
   inline void MSTGgarbageCollector(const MEpoch* tval){if (tval) delete tval;}
   void splitSec(const Double& fsec, Int &sec, Int &milliSec) 
   {
     sec = (Int)(fsec);
-    milliSec = (Int)((fsec - sec)*1000);
+    if (sec < 0)
+      milliSec = -1;
+    else
+      milliSec = (Int)((fsec - sec)*1000);
   }
 %}
 
 %%
 timestatement: timeexpr {$$ = $1;}
+             | timestatement COMMA timeexpr 
+                {
+		  //
+		  // The various MSTimeParse::select* methods return the
+		  // static member node_p.  Each visit to these methods
+		  // produces a TEN which is ORed with the existing node_p.
+		  // Effectively node_p is a global store of the TENs tree
+		  // generated during parsing. Hence here $1 and $3 both
+		  // refer to the same TEN tree (node_p) which anyway has
+		  // all the ORed TENs.  So just return either $1 or $3; We
+		  // choose the first-come-first-served principle and
+		  // return $1 :-)
+		  $$=$1;
+		}
              ;
 
 timeexpr: singletimeexpr
         | rangetimeexpr
         | lowboundtimeexpr
         | upboundtimeexpr
-        | timeexpr COMMA timeexpr 
-           {
-	     //
-	     // The various MSTimeParse::select* methods return the
-	     // static member node_p.  Each visit to these methods
-	     // produces a TEN which is ORed with the existing node_p.
-	     // Effectively node_p is a global store of the TENs tree
-	     // generated during parsing. Hence here $1 and $3 both
-	     // refer to the same TEN tree (node_p) which anyway has
-	     // all the ORed TENs.  So just return either $1 or $2;
-	     // 
-	     $$=$1;
-	   }
         ;
 
-WNUMBER: STAR {$$ = -1;}
+wildNumber: STAR {$$ = -1}
           | NUMBER {$$ = $1;}
           ;
-FLOAT: WNUMBER {$$ = $1;}
-        | FNUMBER {$$ = $1;}
-          ;
-
+wildFloat: wildNumber {$$ = $1;}
+         | FNUMBER {$$ = $1;}
+         ;
 singletimeexpr: yeartimeexpr 
                   {
-		    thisMSTParser->setDefaults($1);
-		    const MEpoch *t0=MSTimeParse::yearTimeConvert($1);
-		    $$ = MSTimeParse().selectTime(t0, false); 
+		    MSTimeParse::thisMSTParser->setDefaults($1);
+		    const MEpoch *t0=MSTimeParse::thisMSTParser->yearTimeConvert($1);
+		    //		    $$ = MSTimeParse().selectTime(t0, false); 
+		    $$ = MSTimeParse::thisMSTParser->selectTime(t0, false); 
 
 		    MSTGgarbageCollector(t0);
 		  }
@@ -139,21 +143,24 @@ singletimeexpr: yeartimeexpr
 
 rangetimeexpr: yeartimeexpr DASH yeartimeexpr 
                  {
-		   thisMSTParser->setDefaults($1);
-		   thisMSTParser->copyDefaults($3,$1);
-		   const MEpoch *t0=MSTimeParse::yearTimeConvert($1);
-		   const MEpoch *t1=MSTimeParse::yearTimeConvert($3);
+		   MSTimeParse::thisMSTParser->setDefaults($1);
+		   MSTimeParse::thisMSTParser->copyDefaults($3,$1);
+/* 		   const MEpoch *t0=MSTimeParse::yearTimeConvert($1); */
+/* 		   const MEpoch *t1=MSTimeParse::yearTimeConvert($3); */
+		   const MEpoch *t0=MSTimeParse::thisMSTParser->yearTimeConvert($1);
+		   const MEpoch *t1=MSTimeParse::thisMSTParser->yearTimeConvert($3);
 
-		   $$ = MSTimeParse().selectTimeRange(t0,t1,false);
+		   //		   $$ = MSTimeParse().selectTimeRange(t0,t1,false);
+		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,false);
 		   MSTGgarbageCollector(t0);
 		   MSTGgarbageCollector(t1);
 		 }
-               | yeartimeexpr PLUS yeartimeexpr
+             | yeartimeexpr PLUS yeartimeexpr
                  {
-		   thisMSTParser->setDefaults($1);
-		   thisMSTParser->setDefaults($3,false);
-		   thisMSTParser->validate($1);
-		   thisMSTParser->validate($3);
+		   MSTimeParse::thisMSTParser->setDefaults($1);
+		   MSTimeParse::thisMSTParser->setDefaults($3,false);
+		   MSTimeParse::thisMSTParser->validate($1);
+		   MSTimeParse::thisMSTParser->validate($3);
 		   Double s;
 		   s=$3.sec;
 
@@ -162,10 +169,12 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 		   Double mjd=time1.modifiedJulianDay()*86400.0;
 
 		   time1 = time0 + mjd;
+		   //		   cout << time0 << " " << time1 << endl;
 		   const MEpoch *t0=new MEpoch(MVEpoch(time0.modifiedJulianDay()));
 		   const MEpoch *t1=new MEpoch(MVEpoch(time1.modifiedJulianDay()));
 
-		   $$ = MSTimeParse().selectTimeRange(t0,t1,true);
+		   //		   $$ = MSTimeParse().selectTimeRange(t0,t1,true);
+		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,true);
 		   MSTGgarbageCollector(t0);
 		   MSTGgarbageCollector(t1);
 		 }
@@ -173,21 +182,80 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 
 lowboundtimeexpr: GT yeartimeexpr 
                     {
-		      thisMSTParser->setDefaults($2);
-		      const MEpoch *t0=MSTimeParse::yearTimeConvert($2);
-		      $$ = MSTimeParse().selectTimeGT(t0,false);
+		      MSTimeParse::thisMSTParser->setDefaults($2);
+		      const MEpoch *t0=MSTimeParse::thisMSTParser->yearTimeConvert($2);
+		      //		      $$ = MSTimeParse().selectTimeGT(t0,false);
+		      $$ = MSTimeParse::thisMSTParser->selectTimeGT(t0,false);
 		      MSTGgarbageCollector(t0);
 		    }
-                ;
+                    ;
 
 upboundtimeexpr: LT yeartimeexpr 
                    {
-		     thisMSTParser->setDefaults($2);
+		     MSTimeParse::thisMSTParser->setDefaults($2);
 		     const MEpoch *t0=MSTimeParse::yearTimeConvert($2);
-		     $$ = MSTimeParse().selectTimeLT(t0,false);
+		     //		     $$ = MSTimeParse().selectTimeLT(t0,false);
+		     $$ = MSTimeParse::thisMSTParser->selectTimeLT(t0,false);
 		     MSTGgarbageCollector(t0);
 		   }
-               ;
+                   ;
+tFields: wildNumber COLON {$$ = $1;};
+       | COLON            {$$ = 0;}
+       ;
+
+yFields: wildNumber SLASH {$$ = $1;};
+       | SLASH            {$$ = 0;};
+
+timeObj: tFields tFields wildFloat {/* HH:MM:SS.FF */ $$[0] = $1; $$[1] = $2; $$[2] = $3;}
+       | tFields tFields           {/* HH:MM */       $$[0] = $1; $$[1] = $2; $$[2] = 0;}
+       | tFields wildFloat         {/* MM:SS.FF */    $$[0] = 0;  $$[1] = $1; $$[2] = $2;}
+       | tFields                   {/* HH: */         $$[0] = 0;  $$[1] = 0;  $$[2] = $1;}
+       | wildNumber                {/* HH */          $$[0] = -1;  $$[1] = -1;  $$[2] = $1;}
+;
+yearObj: yFields yFields wildNumber {/* YYYY/MM/DD */ $$[0]=$1; $$[1]=$2; $$[2]=$3;}
+       | yFields yFields            {/* MM/DD/ */     $$[0]=0;  $$[1]=$1; $$[2]=$2;}
+/*       | yFields wildNumber { // MM/DD
+	     $$[0]=0; $$[1]=$1; $$[2]=$2;
+	   }
+*/
+;
+yeartimeexpr: yearObj SLASH timeObj
+                 {
+		   // YY/MM/DD/HH:MM:SS.FF
+		   Int sec,milliSec;
+		   splitSec($3[2],sec,milliSec);
+		   msTimeGramSetTimeFields($$,$1[0],$1[1],$1[2],(Int)$3[0],(Int)$3[1],sec,milliSec);
+
+/* 		   cout << $1[0] << " "  */
+/* 			<< $1[1] << " " */
+/* 			<< $1[2] << " " */
+/* 			<< $3[0] << " " */
+/* 			<< $3[1] << " " */
+/* 			<< sec << " " << milliSec << endl; */
+		 }
+            | yearObj 
+                 {
+                   msTimeGramSetTimeFields($$,$1[0],$1[1],$1[2],-1,-1,-1,-1);
+/* 		   cout << $1[0] << " " */
+/* 			<< $1[1] << " " */
+/* 			<< $1[2] << " " */
+/* 			<< "-1 -1 -1 -1"  */
+/* 			<< endl; */
+		 }
+            | timeObj 
+                 {
+		   Int sec,milliSec;
+		   splitSec($1[2],sec,milliSec);
+		   msTimeGramSetTimeFields($$,-1,-1,-1,(Int)$1[0],(Int)$1[1],sec,milliSec);
+/* 		   cout << -1 << " " */
+/* 			<< -1 << " " */
+/* 			<< -1 << " " */
+/* 			<< $1[0] << " " << $1[1] << " " << sec << " " << milliSec */
+/* 			<< endl; */
+		 }
+                 ;
+%%
+/*
 yeartimeexpr: WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
               COLON WNUMBER COLON FLOAT
                 {
@@ -257,7 +325,7 @@ yeartimeexpr: WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
 		 // DD/HH
 		  msTimeGramSetTimeFields($$,$1,$3,-1,-1,-1,-1,-1);
 	       }            ;
-%%
+*/
 /*
 daytimeexpr: WNUMBER SLASH WNUMBER COLON WNUMBER COLON WNUMBER DOT WNUMBER 
                {

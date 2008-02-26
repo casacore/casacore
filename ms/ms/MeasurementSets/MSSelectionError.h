@@ -62,11 +62,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Construct with given message.
     void changeMessage(String& message);
     void addMessage(String& message);
+    void reset() {message="";};
     MSSelectionError (const String& message,Category c=GENERAL);
     ~MSSelectionError () throw();
+    Bool hasMessage;
   };
-  
-  
+  //
+  //-------------------------------------------------------------------
+  //  
   // <summary>
   // Error thrown by MSTimeXXXX classes.
   // </summary>
@@ -89,6 +92,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MSSelectionTimeParseError (const String& message,Category c=GENERAL);
     ~MSSelectionTimeParseError () throw();
   };
+  //
+  //-------------------------------------------------------------------
+  //  
 
   // <summary>
   // Error thrown by MSAntennaXXXX classes.
@@ -106,6 +112,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MSSelectionAntennaError (const String& message,Category c=GENERAL);
     ~MSSelectionAntennaError () throw();
   };
+  //
+  //-------------------------------------------------------------------
+  //  
   
   class MSSelectionAntennaParseError: public MSSelectionAntennaError {
   public:
@@ -123,6 +132,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <synopsis> 
   // </synopsis> 
   
+  //
+  //-------------------------------------------------------------------
+  //  
   class MSSelectionFieldError : public MSSelectionError {
   public:
     // Add given message to string "MSSelection time error: ".
@@ -130,6 +142,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~MSSelectionFieldError () throw();
   };
   
+  //
+  //-------------------------------------------------------------------
+  //  
   class MSSelectionFieldParseError: public MSSelectionFieldError {
   public:
     MSSelectionFieldParseError (const String& message,Category c=GENERAL);
@@ -146,6 +161,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <synopsis> 
   // </synopsis> 
   
+  //
+  //-------------------------------------------------------------------
+  //  
   class MSSelectionUvDistError : public MSSelectionError {
   public:
     // Add given message to string "MSSelection time error: ".
@@ -159,6 +177,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~MSSelectionUvDistParseError () throw();
   };
 
+  //
+  //-------------------------------------------------------------------
+  //  
   // <summary>
   // Error thrown by MSSpwXXXX classes.
   // </summary>
@@ -187,6 +208,72 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MSSelectionSpwWarning (const String& message,Category c=GENERAL);
     ~MSSelectionSpwWarning () throw();
   };
+  //
+  //-------------------------------------------------------------------
+  //  
+  // <summary>
+  // Error thrown by MSScanXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionScanError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionScanError (const String& message,Category c=GENERAL);
+    ~MSSelectionScanError () throw();
+  };
+  
+  class MSSelectionScanParseError: public MSSelectionScanError {
+  public:
+    MSSelectionScanParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionScanParseError () throw();
+  };
+
+  class MSSelectionScanWarning: public MSSelectionScanError {
+  public:
+    MSSelectionScanWarning (const String& message,Category c=GENERAL);
+    ~MSSelectionScanWarning () throw();
+  };
+
+
+  String constructMessage(const Int pos, const String& command);
+  //
+  //-------------------------------------------------------------------
+  //  
+  // <summary>
+  // Error thrown by MSArrayXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionArrayError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionArrayError (const String& message,Category c=GENERAL);
+    ~MSSelectionArrayError () throw();
+  };
+  
+  class MSSelectionArrayParseError: public MSSelectionArrayError {
+  public:
+    MSSelectionArrayParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionArrayParseError () throw();
+  };
+
+  class MSSelectionArrayWarning: public MSSelectionArrayError {
+  public:
+    MSSelectionArrayWarning (const String& message,Category c=GENERAL);
+    ~MSSelectionArrayWarning () throw();
+  };
+
 
   String constructMessage(const Int pos, const String& command);
 } //# NAMESPACE CASA - END

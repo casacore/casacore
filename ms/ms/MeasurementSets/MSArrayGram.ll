@@ -1,5 +1,5 @@
 /* -*- C -*-
-    MSScanGram.l: Lexical analyzer for ms selection commands
+    MSArrayGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
 
@@ -29,10 +29,10 @@
 
 %{
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=msScanGramInput(buf,max_size)
+#define YY_INPUT(buf,result,max_size) result=msArrayGramInput(buf,max_size)
 
 #undef YY_DECL
-#define YY_DECL int MSScanGramlex (YYSTYPE* lvalp)
+#define YY_DECL int MSArrayGramlex (YYSTYPE* lvalp)
 static string                qstr;
 #include <ms/MeasurementSets/MSSelectionTools.h>
 %}
@@ -43,38 +43,38 @@ INT       ({WHITE}{DIGIT}+{WHITE})
 
 /* rules */
 %%
-{INT}     { msScanGramPosition() += yyleng;
-            lvalp->str = (char *)malloc((strlen(MSScanGramtext) + 1) * sizeof(char));
-            strcpy(lvalp->str, stripWhite(MSScanGramtext).c_str());
-	    //	    cout << "INT  = \"" << MSScanGramtext << "\" \"" << lvalp->str << "\"" << endl;
+{INT}     { msArrayGramPosition() += yyleng;
+            lvalp->str = (char *)malloc((strlen(MSArrayGramtext) + 1) * sizeof(char));
+            strcpy(lvalp->str, stripWhite(MSArrayGramtext).c_str());
+	    //	    cout << "INT  = \"" << MSArrayGramtext << "\" \"" << lvalp->str << "\"" << endl;
 
             return INT;
           }
 
-"~"       { msScanGramPosition() += yyleng;
+"~"       { msArrayGramPosition() += yyleng;
             return DASH; }
-","       { msScanGramPosition() += yyleng;
+","       { msArrayGramPosition() += yyleng;
             return COMMA;
           }
-"<"       { msScanGramPosition() += yyleng;
+"<"       { msArrayGramPosition() += yyleng;
             return LT;
           }
-">"       { msScanGramPosition() += yyleng;
+">"       { msArrayGramPosition() += yyleng;
             return GT;
           }
-"<="       { msScanGramPosition() += yyleng;
+"<="       { msArrayGramPosition() += yyleng;
             return LE;
           }
-">="       { msScanGramPosition() += yyleng;
+">="       { msArrayGramPosition() += yyleng;
             return GE;
           }
-"&"       { msScanGramPosition() += yyleng;
+"&"       { msArrayGramPosition() += yyleng;
             return AMPERSAND;
           }
   /* Literals */
 
-"("       { msScanGramPosition() += yyleng; return LPAREN; }
-")"       { msScanGramPosition() += yyleng; return RPAREN;}
-{WHITE}   { msScanGramPosition() += yyleng;} /* Eat white spaces */
-.         { msScanGramPosition() += yyleng;return MSScanGramtext[0];}
+"("       { msArrayGramPosition() += yyleng; return LPAREN; }
+")"       { msArrayGramPosition() += yyleng; return RPAREN;}
+{WHITE}   { msArrayGramPosition() += yyleng;} /* Eat white spaces */
+.         { msArrayGramPosition() += yyleng;return MSArrayGramtext[0];}
 %%

@@ -35,10 +35,16 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   
-  TableExprNode* MSTimeParse::node_p = 0x0;
-  MEpoch* MSTimeParse::yeartime = 0x0;
-  MEpoch* MSTimeParse::daytime = 0x0;
-  MSTimeParse *thisMSTParser = 0x0;
+  MSTimeParse*     MSTimeParse::thisMSTParser = 0x0; // Global pointer to the parser object
+  TableExprNode*   MSTimeParse::node_p      = 0x0;
+  MEpoch*          MSTimeParse::yeartime    = 0x0;
+  MEpoch*          MSTimeParse::daytime     = 0x0;
+  //  MSTimeParse      *thisMSTParser           = 0x0;
+  MeasurementSet*  MSTimeParse::ms_p        = 0x0;
+  TableExprNode*   MSTimeParse::otherTens_p = 0x0;
+  Bool             MSTimeParse::defaultTimeComputed=False;
+  Matrix<Double>   MSTimeParse::timeList(2,0);
+
   //-------------------------------------------------------------------  
   // Constructor
   //
@@ -49,33 +55,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       = defaultMinute = defaultSeconds = defaultFractionalSec 
       = -1;
     defaultExposure = -100;
+    if(node_p) delete node_p;
+    node_p = new TableExprNode();
+    ms_p= 0x0;
+    otherTens_p=0x0;
   }
   //-------------------------------------------------------------------
   // Constructor with given ms name.
   //
-  MSTimeParse::MSTimeParse (const MeasurementSet* ms)
-    : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME))
+  MSTimeParse::MSTimeParse (const MeasurementSet* ms, const TableExprNode& otherTens,
+			    const Bool honourRowFlags)
+    : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME)), 
+      honourRowFlags_p(honourRowFlags)
   {
     if(node_p) delete node_p;
+    ms_p= (MeasurementSet*)ms;
     node_p = new TableExprNode();
-    ROMSMainColumns msCols(*ms);
-    //
-    // Find the first row which is not flagged.
-    //
-    uInt i,nrow=msCols.flagRow().nrow();
-    for (i=0;i<nrow;i++) if (!msCols.flagRow()(i)) break;
-    if (i >= nrow)
-      throw(MSSelectionTimeError("MSTimeParse: No unflagged row found for time selection"));
-    //
-    // Extract the values from the first valid timestamp in the MS to
-    // be used as defaults
-    //
+    otherTens_p=(TableExprNode *)&otherTens;
+    /*
     MVTime time(msCols.timeQuant()(i));
     Time t0(time.getTime());
-    //
-    // Get the exposure in seconds.
-    //
-    defaultExposure=msCols.exposureQuant()(i,"s").getValue();
 
     defaultYear = time.year();
     defaultMonth = time.month();
@@ -85,6 +84,66 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     defaultSeconds = t0.seconds();
     Time t1(defaultYear,defaultMonth,defaultDay,defaultHour,defaultMinute,defaultSeconds);
     defaultFractionalSec = (Int)((t0-t1)*1E3);
+    */
+  }
+  void  MSTimeParse::getDefaults()
+  {
+    uInt firstLogicalRow=0; // This is the logical first row
+    ROMSMainColumns msCols(*ms_p);
+    if (!defaultTimeComputed)
+      {
+	uInt i=0,nrow=msCols.flagRow().nrow();
+	if (!otherTens_p->isNull())
+	  {
+	    Bool selected=False;
+	    for(i=0;i<nrow;i++)
+	      {
+		// Use the otherTens_p to get to the first logical row
+		if (honourRowFlags_p)
+		  {
+		    if (!msCols.flagRow()(i))
+		      otherTens_p->get(i,selected); 
+		  }
+		else
+		  otherTens_p->get(i,selected);
+		  
+		if (selected) {firstLogicalRow=i;break;}
+	      }
+	  }
+	else if (honourRowFlags_p)
+	  {
+	    //
+	    // Find the first row which is not flagged.
+	    //
+	    for (i=0;i<nrow;i++) if (!msCols.flagRow()(i)) {firstLogicalRow=i;break;}
+	  }
+	if ( firstLogicalRow >= nrow)
+	  throw(MSSelectionTimeError("MSTimeParse: No logical \"row zero\" found for time selection"));
+      }
+    //
+    // Extract the values from the first valid timestamp in the MS to
+    // be used as defaults
+    //
+    //
+    // Get the exposure in seconds.
+    //
+    defaultExposure=msCols.exposureQuant()(firstLogicalRow,"s").getValue();
+    firstRowTime = msCols.timeQuant()(firstLogicalRow);
+
+    //    cout << firstRowTime.string(MVTime::DMY,7) << endl;
+
+    Time t0(firstRowTime.getTime());
+
+    defaultYear    = firstRowTime.year();
+    defaultMonth   = firstRowTime.month();
+    defaultDay     = firstRowTime.monthday();
+    defaultHour    = t0.hours();
+    defaultMinute  = t0.minutes();
+    defaultSeconds = t0.seconds();
+    Time t1(defaultYear,defaultMonth,defaultDay,defaultHour,defaultMinute,defaultSeconds);
+    defaultFractionalSec = (Int)((t0-t1)*1E3);
+
+    defaultTimeComputed=True;
   }
   //
   //-------------------------------------------------------------------
@@ -105,9 +164,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
 
     Double timeInSec= toTAIInSec(time);
-    Double dT= thisMSTParser->defaultExposure/2.0;
+    Double dT= MSTimeParse::thisMSTParser->defaultExposure/2.0;
 
     TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= dT);
+    accumulateTimeList(timeInSec,timeInSec);
+
     return addCondition(condition);
   }
   //
@@ -118,6 +179,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Double timeInSec = toTAIInSec(lowboundTime);
     TableExprNode condition = (ms()->col(colName) >= timeInSec);
+    accumulateTimeList(timeInSec,std::numeric_limits<Double>::max());
+
     return addCondition(condition);
   }
   //
@@ -128,6 +191,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Double timeInSec = toTAIInSec(upboundTime);
     TableExprNode condition = (ms()->col(colName) <= timeInSec);
+    accumulateTimeList(0.0, timeInSec);
+
+
     return addCondition(condition);
   }
   //
@@ -145,7 +211,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     TableExprNode condition = (ms()->col(colName) >= lowerBound &&
  			       (ms()->col(colName) <= upperBound));
-    
+    accumulateTimeList(lowerBound, upperBound);
+
     return addCondition(condition);
   }
   //
@@ -185,13 +252,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     MVEpoch mv(t.modifiedJulianDay());
     
-    //
-    // yeartime is a global - don't know what's it's use and where it
-    // is used. It's a pointer, which is returned on the parser stack.
-    // In this method, it's first deleted, and re-assigned.  This will
-    // do (and does!) strange things to the YY V-stack.
-    // 
-    //    return (yeartime = new MEpoch(mv, MEpoch::UTC));
     return new MEpoch(mv, MEpoch::UTC);
   }
   //
@@ -199,7 +259,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const MEpoch *MSTimeParse::yearTimeConvert(const TimeFields& tf)
   {
-    thisMSTParser->validate(tf);
+    MSTimeParse::thisMSTParser->validate(tf);
     if(yeartime) delete yeartime;
     
     Double s = Double(tf.sec) + Double(tf.fsec)/1000.0;
@@ -207,7 +267,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     MVEpoch mv(t.modifiedJulianDay());
     
-    //
+    // This is the "original" code (from DdeB etc.)
     // yeartime is a global - don't know what's it's use and where it
     // is used. It's a pointer, which is returned on the parser stack.
     // In this method, it's first deleted, and re-assigned.  This will
@@ -239,13 +299,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     if (dataOrigin)
       {
-	if (tf.year == -1)     tf.year=thisMSTParser->year0();//MSTimeParse().year0();
-	if (tf.month == -1)    tf.month=thisMSTParser->month0();
-	if (tf.day == -1)      tf.day=thisMSTParser->day0();
-	if (tf.hour == -1)     tf.hour=thisMSTParser->hour0();
-	if (tf.minute == -1)   tf.minute=thisMSTParser->minute0();
-	if (tf.sec == -1)      tf.sec=thisMSTParser->second0();
-	if (tf.fsec == -1)     tf.fsec = thisMSTParser->fractionalsec0();
+	MSTimeParse::thisMSTParser->getDefaults();
+	if (tf.year == -1)     tf.year=MSTimeParse::thisMSTParser->year0();//MSTimeParse().year0();
+	if (tf.month == -1)    tf.month=MSTimeParse::thisMSTParser->month0();
+	if (tf.day == -1)      tf.day=MSTimeParse::thisMSTParser->day0();
+	if (tf.hour == -1)     tf.hour=MSTimeParse::thisMSTParser->hour0();
+	if (tf.minute == -1)   tf.minute=MSTimeParse::thisMSTParser->minute0();
+	if (tf.sec == -1)      tf.sec=MSTimeParse::thisMSTParser->second0();
+	if (tf.fsec == -1)     tf.fsec = MSTimeParse::thisMSTParser->fractionalsec0();
       }
     else
       {
@@ -269,23 +330,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const void MSTimeParse::validate(const TimeFields& tf)
   {
-    if (tf.year <= 0) 
-      {
+    if (tf.year < 1858) // This is not precise (should be < Wed Nov 17 00:00:00 1858)
+      {                                       
 	ostringstream mesg;
-	mesg << "Year = " << tf.year << " out of range";
-	throw(MSSelectionTimeError(mesg.str()));
+	mesg << "MSTime Selection error: Year = " << tf.year << " out of range";
+	//	throw(MSSelectionTimeError(mesg.str()));
+	throw(AipsError(mesg.str()));
       }
     if ((tf.month <= 0) || (tf.month > 12)) 
       {
 	ostringstream mesg;
-	mesg << "Month = " << tf.month << " out of range";
-	throw(MSSelectionTimeError(mesg.str()));
+	mesg << "MSTime Selection error: Month = " << tf.month << " out of range";
+	//	throw(MSSelectionTimeError(mesg.str()));
+	throw(AipsError(mesg.str()));
       }
     if ((tf.day <= 0) || (tf.day > 31)) 
       {
 	ostringstream mesg;
-	mesg << "Day = " << tf.day << " out of range";
-	throw(MSSelectionTimeError(mesg.str()));
+	mesg << "MSTime Selection error: Day = " << tf.day << " out of range";
+	//	throw(MSSelectionTimeError(mesg.str()));
+	throw(AipsError(mesg.str()));
       }
   }
   //
@@ -293,13 +357,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   void MSTimeParse::copyDefaults(TimeFields& target, TimeFields& source)
   {
-    if (target.year == -1) target.year = source.year;
-    if (target.month == -1) target.month = source.month;
-    if (target.day == -1) target.day = source.day;
-    if (target.hour == -1) target.hour = source.hour;
+    if (target.year   == -1) target.year   = source.year;
+    if (target.month  == -1) target.month  = source.month;
+    if (target.day    == -1) target.day    = source.day;
+    if (target.hour   == -1) target.hour   = source.hour;
     if (target.minute == -1) target.minute = source.minute;
-    if (target.sec == -1) target.sec = source.sec;
-    if (target.fsec == -1) target.fsec = source.fsec;
+    if (target.sec    == -1) target.sec    = source.sec;
+    if (target.fsec   == -1) target.fsec   = source.fsec;
   }
-  
+  //
+  //-------------------------------------------------------------------
+  //  
+  void MSTimeParse::accumulateTimeList(const Double t0, const Double t1)
+  {
+    Int n0=timeList.shape()(1);
+    IPosition newShape(timeList.shape());
+    newShape(1)++;
+    timeList.resize(newShape,True);
+    timeList(0,n0) = t0;//-4.68193e+09;
+    timeList(1,n0) = t1;//-4.68193e+09;
+  }
 } //# NAMESPACE CASA - END

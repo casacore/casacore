@@ -1,4 +1,4 @@
-//# MSAntennaGram.h: Grammar for ms antenna sub-expressions
+//# MSArrayGram.h: Grammar for ms scan sub-expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,13 +25,12 @@
 //#
 //# $Id$
 
-#ifndef MS_MSANTENNAGRAM_H
-#define MS_MSANTENNAGRAM_H
+#ifndef MS_MSARRAYGRAM_H
+#define MS_MSARRAYGRAM_H
 
 
 //# Includes
 #include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -40,7 +39,7 @@ class MeasurementSet;
 class TableExprNode;
 
 // <summary>
-// Global functions for flex/bison scanner/parser for MSAntennaGram
+// Global functions for flex/bison scanner/parser for MSArrayGram
 // </summary>
 
 // <use visibility=local>
@@ -50,7 +49,7 @@ class TableExprNode;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//  <li> MSAntennaGram.l and .y  (flex and bison grammar)
+//  <li> MSArrayGram.l and .y  (flex and bison grammar)
 // </prerequisite>
 
 // <synopsis> 
@@ -68,33 +67,31 @@ class TableExprNode;
 // </todo>
 
 
-// <group name=MSAntennaGramFunctions>
+// <group name=MSArrayGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-  int msAntennaGramParseCommand (const MeasurementSet *ms, const String& command,
-				 Vector<Int>& selectedAnt1, Vector<Int>& selectedAnt2,
-				 Matrix<Int>& selectedBaselines);
+  int msArrayGramParseCommand (const MeasurementSet *ms, const String& command, Vector<Int>& idList, Int maxArrays=1000);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void MSAntennaGramerror (char*);
+void MSArrayGramerror (char*);
 
 // Give the table expression node.
-const TableExprNode *msAntennaGramParseNode();
-const void msAntennaGramParseDeleteNode();
+const TableExprNode *msArrayGramParseNode();
+const void msArrayGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msAntennaGramPosition();
+Int& msArrayGramPosition();
 
 // Declare the input routine for flex/bison.
-int msAntennaGramInput (char* buf, int max_size);
+int msArrayGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-//String msAntennaGramRemoveEscapes (const String& in);
+//String msArrayGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-//String msAntennaGramRemoveQuotes (const String& in);
+//String msArrayGramRemoveQuotes (const String& in);
 
 // </group>
 

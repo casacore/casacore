@@ -36,19 +36,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   MSSpwParse* MSSpwParse::thisMSSParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSSpwParse::node_p = 0x0;
-  
+  Vector<Int> MSSpwParse::idList;
+  Matrix<Int> MSSpwParse::chanList; 
   //# Constructor
   MSSpwParse::MSSpwParse ()
     : MSParse()
   {
+    //    cout << "Spw cleanup()" << endl;
+    if (MSSpwParse::node_p!=0x0) delete MSSpwParse::node_p;
+    MSSpwParse::node_p=0x0;
+    node_p = new TableExprNode();
   }
   
   //# Constructor with given ms name.
   MSSpwParse::MSSpwParse (const MeasurementSet* ms)
     : MSParse(ms, "Spw")
   {
-    if(node_p) delete node_p;
+    idList.resize(0);
+    //    cout << "Spw cleanup(X)" << endl;
+    if(MSSpwParse::node_p) delete MSSpwParse::node_p;
     node_p = new TableExprNode();
+    //    setMS(ms);
   }
   
   const TableExprNode *MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwIds)
@@ -84,6 +92,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      else
 		condition = condition || ((ms()->col(DATA_DESC_ID)==i));
 	      Found = True;
+	      idList.resize(idList.nelements()+1,True);
+	      idList(idList.nelements()-1) = mapDDID2SpwID(i);
 	      break;
 	    }
 	if (!Found)
@@ -167,7 +177,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (!Found)
 	  {
 	    ostringstream Mesg;
-	    Mesg << "Np Spw ID found";
+	    Mesg << "No Spw ID found";
 	    throw(MSSelectionSpwError(Mesg.str()));
 	  }
       }
@@ -179,6 +189,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     return node_p;
   }
+
+  const void MSSpwParse::selectChannelsFromIDList(Vector<Int>& spwIds,
+						  Vector<Int>& chanIDList,
+						  Int nFSpec)
+  {
+    Int n=chanList.shape()(0),
+      nSpw = spwIds.nelements(),
+      m=nSpw*nFSpec,loc=n,k=0;
+
+    chanList.resize(n+m,4,True);
+    for(Int i=0;i<nSpw;i++)
+      {
+	for(Int j=0;j<nFSpec;j++)
+	  {
+	    chanList(loc,0) = spwIds(i);
+	    chanList(loc,1) = chanIDList(k++);
+	    chanList(loc,2) = chanIDList(k++);
+	    chanList(loc,3) = chanIDList(k++);
+	    loc++;
+	  }
+      }
+  }
+
+  
+  const void MSSpwParse::selectChannelsFromDefaultList(Vector<Int>& spwIds,
+						       Vector<Int>& chanIDList)
+  {
+    if (spwIds.nelements() != chanIDList.nelements()/3)
+      throw(AipsError("MSSpwParse::selectChannelsFromDefaultList(): SPW and default channel lists should be of the same size"));
+    
+    Int n=chanList.shape()(0),
+      nSpw = spwIds.nelements();
+    Int m=nSpw,loc=n,j=0;
+    chanList.resize(n+m,4,True);
+    for(Int i=0;i<nSpw;i++)
+      {
+	chanList(loc,0) = spwIds(i);
+	chanList(loc,1) = chanIDList(j++);
+	chanList(loc,2) = chanIDList(j++);
+	chanList(loc,3) = chanIDList(j++);
+	loc++;
+      }
+  }
+
   
   const TableExprNode* MSSpwParse::node()
   {

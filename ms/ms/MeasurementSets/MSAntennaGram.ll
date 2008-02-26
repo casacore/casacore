@@ -48,9 +48,17 @@ RQUOTE    (\/)
 NQ        [^\\\n\"]+
 NRQ       [^\\\n\/]+
 
-NAMES       ([a-zA-Z_{}]+[a-zA-Z:0-9_{}]*)
+/* 
+NAMES       ([a-zA-Z_{}]+[a-zA-Z:0-9_{}]*) 
 IDENTIFIER  ({NAMES}+|STRING)
-SIDENTIFIER  ({NAMES}+"*")
+SIDENTIFIER  ([A-Za-z_'{''}''*''-''+''*']+[A-Za-z:0-9_'{''}''*''+''-']+)
+*/
+
+NAME ([A-za-z0-9_'{''}''+''-':])
+		 /*IDENTIFIER  ([A-Za-z0-9_{}+-:]+|STRING)*/
+IDENTIFIER  ({NAME}+|STRING)
+SIDENTIFIER  ([A-Za-z0-9_'{''}''+''-''*''?':]+)
+		 /* SIDENTIFIER  ({NAMES}+"*") */
 		 /* IDENTIFIER  ([A-Za-z:0-9_{}]+|STRING)*/
 		 /* SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")   */
 %x QS RS
@@ -100,15 +108,11 @@ SIDENTIFIER  ({NAMES}+"*")
             return INT;
           }
 
-";"       { msAntennaGramPosition() += yyleng;
-            return SEMICOLON; }
-"&"       { msAntennaGramPosition() += yyleng;
-            return AMPERSAND; }
-"-"       { msAntennaGramPosition() += yyleng;
-            return DASH; }
-","       { msAntennaGramPosition() += yyleng;
-            return COMMA;
-          }
+";"       { msAntennaGramPosition() += yyleng;  return SEMICOLON; }
+"&"       { msAntennaGramPosition() += yyleng;  return AMPERSAND; }
+"~"       { msAntennaGramPosition() += yyleng;  return DASH; }
+","       { msAntennaGramPosition() += yyleng;  return COMMA;}
+"!"       { msAntennaGramPosition() += yyleng;  return NOT;}
   /* Literals */
 
 {IDENTIFIER} { msAntennaGramPosition() += yyleng;
@@ -120,6 +124,7 @@ SIDENTIFIER  ({NAMES}+"*")
 {SIDENTIFIER} { msAntennaGramPosition() += yyleng;
                 lvalp->str = (char *)malloc((strlen(MSAntennaGramtext) + 1) * sizeof(char));
                 strcpy(lvalp->str, MSAntennaGramtext);
+
                 return QSTRING;
               }
 "("       { msAntennaGramPosition() += yyleng; return LPAREN; }

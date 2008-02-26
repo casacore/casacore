@@ -26,8 +26,10 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSDerivedValues.h>
+#include <ms/MeasurementSets/MSDopplerUtil.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <measures/Measures/VelocityMachine.h>
 #include <casa/Logging/LogMessage.h>
 #include <casa/Logging/LogSink.h>
 #include <casa/Utilities/Assert.h>
@@ -45,7 +47,10 @@ MSDerivedValues::MSDerivedValues(const MSDerivedValues& other)
   operator=(other);
 }
 
-MSDerivedValues::~MSDerivedValues() {}
+MSDerivedValues::~MSDerivedValues() {
+  //break reference
+  ms_p=MeasurementSet();
+}
 
 MSDerivedValues& 
 MSDerivedValues::operator=(const MSDerivedValues& other) 
@@ -102,6 +107,51 @@ MSDerivedValues& MSDerivedValues::setObservatoryPosition(const MPosition&
   mObsPos_p=obsPosition;
   setAntenna(-1);
   return *this;
+}
+MSDerivedValues& MSDerivedValues::setMeasurementSet(const MeasurementSet& ms){
+
+  ms_p=ms;
+  const ROMSAntennaColumns ac(ms_p.antenna());
+  //set antenna mounts and obs position
+  setAntennas(ac);
+  // set the restFrequency spwid 0, fieldid 0 for now
+  setRestFrequency(0, 0);
+
+
+  hasMS_p=True;
+  return *this;
+
+}
+
+Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const Int whichline){
+
+  if(hasMS_p){
+    MSDopplerUtil msdoppler(ms_p);
+    Vector<Double> restFreqVec;
+    msdoppler.dopplerInfo(restFreqVec ,spwid,fieldid);
+    if((restFreqVec.nelements() >0) && (uInt(whichline)<=restFreqVec.nelements())){
+      //using  the first
+      
+      setRestFrequency(Quantity(restFreqVec[whichline], "Hz"));
+		       
+		       return True;
+    }
+    else{
+      setRestFrequency(Quantity(0.0, "Hz"));
+    }
+
+  }
+
+  return False;
+
+
+
+}
+MSDerivedValues& MSDerivedValues::setRestFrequency(const Quantity& restfrq){
+
+  restFreq_p=restfrq;
+  return *this;
+
 }
 
 MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
@@ -199,6 +249,18 @@ MSDerivedValues& MSDerivedValues::setVelocityFrame(MRadialVelocity::Types vType)
   return *this;
 }
 
+MSDerivedValues& MSDerivedValues::setVelocityReference(MDoppler::Types dopType)
+{
+  velref_p=MDoppler::Ref(dopType);
+  return *this;
+}
+
+MSDerivedValues& MSDerivedValues::setFrequencyReference(MFrequency::Types frqType)
+{
+  frqref_p=MFrequency::Ref(frqType);
+  return *this;
+}
+
 Double MSDerivedValues::hourAngle() 
 {
   return cRADecToHADec_p().getValue().get()(0);
@@ -217,6 +279,21 @@ const MEpoch& MSDerivedValues::last()
 const MRadialVelocity& MSDerivedValues::obsVel()
 {
   return cTOPOToLSR_p();
+}
+
+Quantity MSDerivedValues::toFrequency(const Quantity& vel, const Quantity& restFreq){
+  VelocityMachine vm(frqref_p, Unit("GHz"), MVFrequency(restFreq), 
+		     velref_p, vel.getUnit(), fAntFrame_p);
+
+  return vm.makeFrequency(vel.getValue());
+
+
+}
+
+Quantity MSDerivedValues::toFrequency(const Quantity& vel){
+  return toFrequency(vel, restFreq_p);
+
+
 }
 
 void MSDerivedValues::init() 
@@ -241,6 +318,12 @@ void MSDerivedValues::init()
 				   MRadialVelocity::Ref(MRadialVelocity::TOPO,
 							fAntFrame_p)),
 		   MRadialVelocity::Ref(MRadialVelocity::LSRK));
+
+  frqref_p= MFrequency::Ref(MFrequency::LSRK);
+  velref_p=MDoppler::Ref(MDoppler::RADIO);
+  restFreq_p=Quantity(0.0, "Hz");
+  hasMS_p=False;
+
 }
 
 

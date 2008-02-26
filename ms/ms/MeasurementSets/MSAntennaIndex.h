@@ -101,6 +101,7 @@ public:
   Vector<Int> matchAntennaNameAndStation(const String& name,
 					 const String& station);
 
+  Vector<Int> matchId(const Vector<Int>& sourceId);
 private:
   // Default constructor
   MSAntennaIndex();

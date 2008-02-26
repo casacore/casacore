@@ -323,6 +323,15 @@ public:
   // True if all elements of the cube returned by getBeamOffsets are zero
   Bool allBeamOffsetsZero() const;
 
+  // Get the spw, start  and nchan for all the ms's is this msiter that 
+  // match the frequecy "freqstart-freqStep" and "freqEnd+freqStep" range
+  
+  void getSpwInFreqRange(Block<Vector<Int> >& spw, 
+			 Block<Vector<Int> >& start, 
+			 Block<Vector<Int> >& nchan, 
+			 Double freqStart, Double freqEnd, 
+			 Double freqStep);
+
 protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);

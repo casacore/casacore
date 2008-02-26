@@ -1,4 +1,4 @@
-//# MSParse.h: Classes to hold results from an ms grammar parser
+//# MSArrayParse.h: Classes to hold results from scan grammar parser
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,25 +25,19 @@
 //#
 //# $Id$
 
-#ifndef MS_MSPARSE_H
-#define MS_MSPARSE_H
+#ifndef MS_MSARRAYPARSE_H
+#define MS_MSARRAYPARSE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MSParse.h>
+#include <measures/Measures/MEpoch.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class AipsIO;
-
 
 // <summary>
-// Class to hold values from an ms grammar parser
+// Class to hold values from scan grammar parser
 // </summary>
 
 // <use visibility=local>
@@ -56,24 +50,24 @@ class AipsIO;
 // </prerequisite>
 
 // <etymology>
-// MSParse is the class used to parse an ms command.
+// MSArrayParse is the class used to parse a scan command.
 // </etymology>
 
 // <synopsis>
-// MSParse is used by the parser of an ms sub-expression statements.
-// The parser is written in Bison and Flex in files MSXXXGram.y and .l.
+// MSArrayParse is used by the parser of scan sub-expression statements.
+// The parser is written in Bison and Flex in files MSArrayGram.y and .l.
 // The statements in there use the routines in this file to act
 // upon a reduced rule.
 // Since multiple tables can be given (with a shorthand), the table
 // names are stored in a list. The variable names can be qualified
 // by the table name and will be looked up in the appropriate table.
 //
-// The class MSParse only contains information about an ms
-// used in the ms command. Global variables (like a list and a vector)
-// are used in MSParse.cc to hold further information.
+// The class MSArrayParse only contains information about a table
+// used in the table command. Global variables (like a list and a vector)
+// are used in MSArrayParse.cc to hold further information.
 //
 // Global functions are used to operate on the information.
-// The main function is the global function msXXXCommand.
+// The main function is the global function msArrayCommand.
 // It executes the given STaQL command and returns the resulting ms.
 // This is, in fact, the only function to be used by a user.
 // </synopsis>
@@ -89,40 +83,41 @@ class AipsIO;
 //# </todo>
 
 
-class MSParse
+class MSArrayParse : public MSParse
 {
-// Dummy AipsIO routines; they are needed for the List container.
-// <group>
-friend AipsIO& operator<< (AipsIO&, const MSParse&);
-friend AipsIO& operator>> (AipsIO&, MSParse&);
-// </group>
 
 public:
-    // Default constructor for List container class.
-    MSParse ();
+  // Default constructor
+  MSArrayParse ();
 
-    // Copy constructor (copy semantics).
-    MSParse (const MSParse&);
+  // Associate the ms and the shorthand.
+  MSArrayParse (const MeasurementSet* ms);
 
-    // Assignment (copy semantics).
-    MSParse& operator= (const MSParse&);
+  //  ~MSArrayParse() {if (node_p) delete node_p;node_p=0x0;};
 
-    // Associate the ms and the shorthand.
-    MSParse (const MeasurementSet* ms, const String& shorthand);
+  const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
+  const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
+  const TableExprNode *selectArrayIds(const Vector<Int>& scanids);
+  const TableExprNode *selectArrayIdsGT(const Vector<Int>& scanids);
+  const TableExprNode *selectArrayIdsLT(const Vector<Int>& scanids);
+  const TableExprNode *selectArrayIdsGTEQ(const Vector<Int>& scanids);
+  const TableExprNode *selectArrayIdsLTEQ(const Vector<Int>& scanids);
 
-    // Test if shorthand matches.
-    Bool test (const String& shortHand) const;
+    // Get table expression node object.
+  static const TableExprNode* node();
 
-    // Get the shorthand.
-    String& shorthand();
+  static MSArrayParse* thisMSSParser;
+  static Vector<Int> selectedIDs() {return idList;};
+  static void reset(){idList.resize(0);};
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
 
-    // Get ms object.
-    MeasurementSet* ms();
-
-  void setMS(MeasurementSet* ms) {ms_p=ms;};
-  static MeasurementSet *ms_p;
+  void setMaxArray(const Int& n) {maxArrays_p=n;};
 private:
-    String shorthand_p;
+  static TableExprNode* node_p;
+  static Vector<Int> idList;
+  const String colName;
+  const void appendToIDList(const Vector<Int>& v);
+  Int maxArrays_p;
 };
 
 } //# NAMESPACE CASA - END

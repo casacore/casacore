@@ -65,7 +65,7 @@ UNIT      ({DISTANCEUNIT}|{WAVELENGTHUNIT})
 
                   return UNIT;
                 }
-"-"       { msUvDistGramPosition() += yyleng;
+"~"       { msUvDistGramPosition() += yyleng;
             return DASH; }
 ":"       { msUvDistGramPosition() += yyleng;
             return COLON; }

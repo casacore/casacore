@@ -39,7 +39,11 @@
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/iomanip.h>
 #include <casa/iostream.h>
+#include <casa/OS/File.h>
 
+#include <fstream>
+
+#include <ms/MeasurementSets/MSSelectionTools.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -47,8 +51,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Null constructor merely sets private formatting string
 //
 MSLister::MSLister ()
-  : dashline_p(replicate("-",80))
-{}
+  : dashline_p(replicate('-',80))
+{ 
+  pMSSel_p = 0;
+}
 
 
 //
@@ -57,10 +63,10 @@ MSLister::MSLister ()
 // listing.
 //
 MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
-  //  : pMS(&ms),
-  : pMS(const_cast<MeasurementSet*>(&ms)),
-    os_p(os),
-    dashline_p(replicate("-",80))
+  //  : pMS_p(&ms),
+  : pMS_p(const_cast<MeasurementSet*>(&ms)),
+    logStream_p(os),
+    dashline_p(replicate('-',80))
 {
   // Move these into initList()?
   // default precision (in case setPrecision is not called)
@@ -74,6 +80,8 @@ MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
 
   // initialize list params
   initList();
+
+  pMSSel_p = 0;
 }
 
 
@@ -83,7 +91,7 @@ MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
 MSLister& MSLister::operator=(MSLister& other)
 {
   if (this==&other) return *this;
-  pMS = other.pMS;
+  pMS_p = other.pMS_p;
   return *this;
 }
 
@@ -94,13 +102,12 @@ MSLister& MSLister::operator=(MSLister& other)
 MSLister::~MSLister()
 {}
 
-
 //
 // Reinitialise output stream.  Do this before setMS() if doing both.
 //
 Bool MSLister::setNewOS (LogIO& os)
 {
-  os_p = os;
+  logStream_p = os;
   return True;
 }
 
@@ -111,7 +118,7 @@ Bool MSLister::setNewOS (LogIO& os)
 //
 Bool MSLister::setMS (MeasurementSet& ms)
 {
-  pMS = &ms;
+  pMS_p = &ms;
   initList();
   return True;
 }
@@ -125,41 +132,42 @@ Bool MSLister::setMS (MeasurementSet& ms)
 void MSLister::initList()
 {
   // Establish the formatting
-  setPage();		// page size
-  setFormat();		// the # of decimal places for data
+  // setPage();            // page size
+  // setFormat();          // the # of decimal places for data
 
-  // List some header information so the user knows what to select on
-  listHeader();
+  // CLEANUP: Do we want to keep the header info or not?
+  // // List some header information so the user knows what to select on
+  // listHeader();
 
-  // Initialise the MSSelector object.  By default, initSelection() takes all
-  // polarisations and the first spectral channel.
-  mss_p.setMS(*pMS);
-
-  mss_p.initSelection();
+  // // Initialise the MSSelector object.  By default, initSelection() takes all
+  // // polarisations and the first spectral channel.
+  // mss_p.setMS(*pMS_p);
+  // 
+  // mss_p.initSelection();
 
   // Get the ranges (into ranges_p) of the following usefully
   // selectable attributes.  range_p can be changed later to
   // refine selection.
   // **SPW**
   items_p.resize(6,False);
-  items_p(0)="time";			// the range of times
-  items_p(1)="antenna1";		// the list of antenna1 id values
-  items_p(2)="antenna2";		// the list of antenna2 id values
-  items_p(3)="uvdist";			// the range of the UV-distance (m)
-  //  items_p(4)="spectral_window_id";	// the list of spwin id values
+  items_p(0)="time";                // the range of times
+  items_p(1)="antenna1";            // the list of antenna1 id values
+  items_p(2)="antenna2";            // the list of antenna2 id values
+  items_p(3)="uvdist";              // the range of the UV-distance (m)
+  //  items_p(4)="spectral_window_id";    // the list of spwin id values
   items_p(4)="data_desc_id";            // the list of data desc id values
-  items_p(5)="field_id";		// the list of field id values
-  getRanges();
+  items_p(5)="field_id";            // the list of field id values
+  getRanges(*pMS_p);
 
   // Set up for selection on channel or polarisation
-  ROMSSpWindowColumns msSpWinC(pMS->spectralWindow());
-  ROMSPolarizationColumns msPolC(pMS->polarization());
+  ROMSSpWindowColumns msSpWinC(pMS_p->spectralWindow());
+  ROMSPolarizationColumns msPolC(pMS_p->polarization());
   nchan_p = msSpWinC.numChan()(0);
   npols_p = msPolC.corrType()(0).nelements();
   pols_p.resize(npols_p,False);
   for (uInt i=0; i<npols_p; i++) {
     pols_p(i) = Stokes::name(Stokes::type
-			     (msPolC.corrType()(0)(IPosition(1,i))));
+                       (msPolC.corrType()(0)(IPosition(1,i))));
   }
 
 
@@ -169,24 +177,25 @@ void MSLister::initList()
   freqs_p=msSpWinC.refFrequency().getColumn();
 
   // Create map from data_desc_id to spwid:
-  ROMSDataDescColumns msDDI(pMS->dataDescription());
+  ROMSDataDescColumns msDDI(pMS_p->dataDescription());
   spwins_p=msDDI.spectralWindowId().getColumn();
 
-
   // Signal completion of initList
-  os_p << "Lister initialised for this MS" << LogIO::POST;
+  logStream_p << LogIO::NORMAL1 << "Listing initialised for this MS" << LogIO::POST;
 }
 
+// CLEANUP: Removing member function (2008/02/08).  If class still works,
+//   remove this code later.
+// void MSLister::setPage (const uInt width, const uInt height)
+// {
+//   // Set up pagination for output.  Default is for landscape printing (w=120)
+//   // with font size 10 (h=60).
+//   pageWidth_p = width;
+//   pageHeight_p = height;
+// }
 
-void MSLister::setPage (const uInt width, const uInt height)
-{
-  // Set up pagination for output.  Default is for landscape printing (w=120)
-  // with font size 10 (h=60).
-  pageWidth_p = width;
-  pageHeight_p = height;
-}
-
-
+// This function is not currently used.  However, if an output precision
+// option is added to this class, this will be useful.
 void MSLister::setFormat (const uInt ndec)
 {
   // Set up data display precision
@@ -194,8 +203,8 @@ void MSLister::setFormat (const uInt ndec)
 }
 
 void MSLister::setPrecision ( const Int precTime, const Int precUVDist,
-			      const Int precAmpl, const Int precPhase, 
-			      const Int precWeight )
+                        const Int precAmpl, const Int precPhase, 
+                        const Int precWeight )
 {
   // Set private precision vars on basis of user input:
   precTime_p   = precTime+6;  // internally, time precision includes hhmmss.
@@ -205,143 +214,252 @@ void MSLister::setPrecision ( const Int precTime, const Int precUVDist,
   precWeight_p = precWeight;
 }
 
-
-
+// CLEANUP: This function is currently not used.  Remove it?
 void MSLister::listHeader()
 {
   // Construct the MSSummary object and output the header info
-  MSSummary header(*pMS);
-  header.listTitle (os_p);
-  header.listWhat (os_p,False);
-  header.listSpectralWindow (os_p,True);
-  header.listPolarization (os_p,True);
-  header.listAntenna (os_p,True);
-  os_p << dashline_p << endl;
-  os_p.post();
+  // ALL OF THESE SHOULD BE GIVEN PRIORITY NORMAL1.
+  MSSummary header(*pMS_p);
+  header.listTitle (logStream_p);
+  header.listWhat (logStream_p,False);
+  header.listSpectralWindow (logStream_p,True);
+  header.listPolarization (logStream_p,True);
+  header.listAntenna (logStream_p,True);
+  logStream_p.post();
 }
 
 
-//
 // Get the ranges of a fixed set of MS key attributes
-//
-void MSLister::getRanges()
+void MSLister::getRanges(const MeasurementSet &ms)
 {
-  // Get the range of values for the items specified in items_p, into
-  // a Record.
-  // Assumes items_p has already been set (should add check on this)
-  // **SPW**
-  
-  MSRange msr(mss_p);
-  ranges_p = msr.range(items_p);		
-
-  // Print out the retrieved ranges:
-  //  cout << "Printing out the Record ranges_p:" << endl;
-  //  cout << ranges_p << endl;
+  // Get the full range of columns for an MS.
+  MSRange msr(ms);
+  ranges_p = msr.range(items_p);          
 }
 
-
-//
-// Do the actual work: list ms records to the logger.  Also provided are
-// versions of list() that accept time limits in either String or Double
-// format.
-//
-// Version to list only data for times in given range, converting
-// input strings to Double times
-void MSLister::list (const String stimeStart, const String stimeStop)
+void MSLister::list (const String options,
+                     const String datacolumn,
+                     const String field,
+                     const String spw,
+                     const String antenna,
+                     const String timerange,
+                     const String correlation,
+                     const String scan,
+                     const String feed,
+                     const String array,
+                     const String uvrange,
+                     const String average,
+                     const bool   showflags,
+                     const String msSelect,
+                     const long   pagerows,
+                     const String listfile)
 {
+  try{
 
-  // Convert the time strings
-  Quantum<Double> qtime;
-  MVTime::read(qtime, stimeStart);	Double dtimeStart= qtime.getValue("s");
-  MVTime::read(qtime, stimeStop);	Double dtimeStop = qtime.getValue("s");
+    String chanmode;
+    Int nchan;
+    Int start;
+    Int step;
+    MRadialVelocity mStart;
+    MRadialVelocity mStep;
 
-  // Call the next function to restrict the time range selection and list data
-  list(dtimeStart,dtimeStop);
-}
+    // Choose MSSelector keywords according to the value of datacolumn
+    dataColSel.resize(2);
+    if( datacolumn.empty() || datacolumn == "data") {
+        dataColSel(0) = "amplitude";
+        dataColSel(1) = "phase";
+    } else if (datacolumn == "corrected") {
+        dataColSel(0) = "corrected_amplitude";
+        dataColSel(1) = "corrected_phase";
+    } else if (datacolumn == "model") {
+        dataColSel(0) = "model_amplitude";
+        dataColSel(1) = "model_phase";
+    } else if (datacolumn == "residual") {
+        dataColSel(0) = "residual_amplitude";
+        dataColSel(1) = "residual_phase";
+    } else {
+        logStream_p << LogIO::SEVERE << "datacolumn = " << datacolumn << LogIO::POST;
+        throw(AipsError("Unrecognized value in parameter datacolumn"));
+    }
+    // logStream_p << "dataColSel = " << dataColSel << LogIO::POST;
+    // cout << "dataColSel = " << dataColSel << endl;
 
-// Version to list only data for times in given range
-void MSLister::list (Double& timeStart, Double& timeStop)
-{
-  // Check on time selection:
-  if (!selectTime (timeStart, timeStop)) return;
+    selectvis(timerange, spw, scan, field, antenna, uvrange, chanmode,
+              nchan, start, step, mStart, mStep, correlation,
+              array, msSelect);
 
-  // List the data
-  list();
-}
-
-// Version to list data for all (possibly previously selected) times
-void MSLister::list()
-{
-  // NOTE: several placeholders for future functionality.  Implementing
-  // some of these may require some rearrangement of the interface...
-  // (eg put the various select()s into more versions of list()...)
-  // selectOther(?);
-  // Alter the selections
-  // ranges_p = ...;
-  // Select on the ms with the new ranges
-  // if (!mss_p.select(ranges_p)) return boo-boo1;
-
-
-  // Actually apply the ranges_p selection:
-  mss_p.select(ranges_p);
-
-  // Spectral and polarisation selection are handled separately from
-  // the Record ranges_p
-  // uInt startChan=0, widthChan=1, incrChan=1;
-  // if (!mss_p.selectChannel(nchan_p,startChan,widthChan,incrChan) return bb2;
-  // if (!mss_p.selectPolarization(pols_p)) return boo-boo3;
-  
-  // Some pol selecting for testing output format:
-  //  pols_p.resize(2);
-  // pols_p(0)="RL";
-  //pols_p(1)="LR";
-  // npols_p=2;
-  //  mss_p.selectPolarization(pols_p);
-
-
-  // Then make the listing
-  listData();
-}
-
-
-Bool MSLister::selectTime (Double& inputStartTime, Double& inputStopTime)
-{
-  // First get the range of available times in the MS.  The private Record
-  // ranges_p has previously been set in getRanges(), while dataRecords_p is a
-  // private Record member.
-  Vector <Double> msTimeLimits(2);
-  dataRecords_p = ranges_p;
-  msTimeLimits = dataRecords_p.asArrayDouble(RecordFieldId("time"));
-
-  // Make sure requested times make sense
-  Bool ok = (inputStartTime < inputStopTime &&
-		   inputStartTime < msTimeLimits(1) &&
-		   inputStopTime > msTimeLimits(0));
-  if (!ok) {
-    os_p << LogIO::SEVERE << "Given times select no data: try again" << endl
-	 << "(format needs to be yyyy/mm/dd[/time])" << endl << LogIO::POST;
-    return ok;
+    // List the data
+    listData(pagerows, listfile);
   }
-
-  // Modify the range used in the select() if inputs are more restrictive
-  if (inputStartTime> msTimeLimits(0)) {msTimeLimits(0) = inputStartTime;}
-  if (inputStopTime < msTimeLimits(1)) {msTimeLimits(1) = inputStopTime;}
-  dataRecords_p.define("time", msTimeLimits);
-  ranges_p = dataRecords_p;
-
-  // Signal good time selection
-  os_p  << "Timerange selection made:     "
-	<< MVTime(msTimeLimits(0)/86400).ymd() << "/"
-	<< MVTime(msTimeLimits(0)/86400).string() << "     to  "
-	<< MVTime(msTimeLimits(1)/86400).ymd() << "/"
-	<< MVTime(msTimeLimits(1)/86400).string() << endl << endl;
-  os_p.post();
-
-  return ok;
+  catch (AipsError x) {
+    logStream_p << LogOrigin("MSLister","list",WHERE) 
+            << LogIO::SEVERE << "Caught exception: " << x.getMesg()
+            << LogIO::POST;
+    throw(AipsError("Error in MSLister::list"));
+  } 
 }
 
+// // Select data (using MSSelection syntax)
+// 
+// Questions: Is it necessary to sort the MS?  Leaving sorting code for now.
 
-void MSLister::listData()
+// CLEANUP: Remove parameters that are not inputs to mssSetData; they are no
+//   longer used anywhere.
+void MSLister::selectvis(const String& timerange,
+                     const String& spw,
+                     const String& scan,
+                     const String& field,
+                     const String& antenna,
+                     const String& uvrange,
+                     const String& chanmode,        // Not inputs to mssSetData
+                     const Int& nchan,              //  
+                     const Int& start,              //
+                     const Int& step,               //
+                     const MRadialVelocity& mStart, //
+                     const MRadialVelocity& mStep,  //
+                     const String& correlation,
+                     const String& array,
+                     const String& msSelect)
+{
+  
+  try {
+    
+    // List input parameter values.
+    logStream_p << LogIO::DEBUG1 << "timerange   = " << timerange   << " , strlen = " << timerange.length()   << endl;
+    logStream_p << LogIO::DEBUG1 << "spw         = " << spw         << " , strlen = " << spw.length()         << endl;
+    logStream_p << LogIO::DEBUG1 << "scan        = " << scan        << " , strlen = " << scan.length()        << endl;
+    logStream_p << LogIO::DEBUG1 << "field       = " << field       << " , strlen = " << field.length()       << endl;
+    logStream_p << LogIO::DEBUG1 << "antenna     = " << antenna     << " , strlen = " << antenna.length()     << endl;
+    logStream_p << LogIO::DEBUG1 << "uvrange     = " << uvrange     << " , strlen = " << uvrange.length()     << endl;
+    logStream_p << LogIO::DEBUG1 << "correlation = " << correlation << " , strlen = " << correlation.length() << endl;
+    logStream_p << LogIO::DEBUG1 << "array       = " << array       << " , strlen = " << array.length()       << endl;
+    logStream_p << LogIO::DEBUG1 << "msSelect    = " << uvrange     << " , strlen = " << msSelect.length()    << LogIO::POST;
+    // logStream_p << "feed        = " << feed        << " , strlen = " << feed.length()        << endl;
+    // logStream_p << "average     = " << uvrange     << " , strlen = " << average.length()     << endl;
+    // logStream_p << "showflags   = " << uvrange     << " , strlen = " << showflags.length()   << endl;
+
+    // Apply selection to the original MeasurementSet
+    if (!(timerange.empty() && spw.empty() && scan.empty() && field.empty() &&
+          antenna.empty() && uvrange.empty() && correlation.empty() &&
+          msSelect.empty()) ) {
+      logStream_p << LogIO::NORMAL1 << "Performing selection on MeasurementSet" << LogIO::POST;
+    } else { 
+      logStream_p << LogIO::NORMAL2 << "No selection requested." << LogIO::POST;
+    }
+
+    if (pMSSel_p) {
+      delete pMSSel_p;
+      pMSSel_p=0;
+    };
+    
+    // Assume no selection, for starters
+    pMSSel_p = new MeasurementSet(*pMS_p);
+
+    //                                           // mssSetData Param Names
+    MSSelection *pMSSelection = new MSSelection(*pMS_p,
+                           MSSelection::PARSE_NOW,
+                           timerange,            // timeExpr
+                           antenna,              // antennaExpr
+                           field,                // fieldExpr
+                           spw,                  // spwExpr
+                           uvrange,              // uvDistExpr
+                           msSelect,             // taQLExpr
+                           correlation,          // corrExpr
+                           scan,                 // scanExpr
+                           array);               // arrayExpr
+
+    // Check to see if selection returned any rows.
+    Bool nonTrivial = pMSSelection->getSelectedMS(*pMSSel_p, "");
+
+    // What channels are contained in the selected data?
+    Matrix<Int> chanList=pMSSelection->getChanList();
+    logStream_p << LogIO::DEBUG1 << "pMSSelection->getChanList() = " << endl 
+                << pMSSelection->getChanList() << LogIO::POST;
+              
+    // Gather channels to be listed into Vector channels_p
+    for(uInt i=0; i<chanList.nrow(); i++) {
+      Int nChanAdd = chanList(i,2) - chanList(i,1) + 1;
+      Int lenChannels;
+      channels_p.shape(lenChannels);
+      channels_p.resize(lenChannels + nChanAdd, True);
+      if(chanList(i,3) > 0) {
+        for(Int j=chanList(i,1); j<=chanList(i,2); j+=chanList(i,3)) {
+          // push j onto end of Array channels_p
+          channels_p(lenChannels) = j;
+          lenChannels++;
+        }
+      } else { // if chanList(i,3) == 0
+        // push chanList(i,1) onto end of Array channels_p
+        channels_p(lenChannels) = chanList(i,2);
+      }
+    }
+    if (chanList.nrow() == 0) { 
+      channels_p.resize(0,False);
+    }
+    channels_p.shape(nchan_p);
+
+    // If non-trivial MSSelection invoked and nrow reduced:
+    if(nonTrivial && pMSSel_p->nrow()<pMS_p->nrow()) {
+
+      // Escape if no rows selected
+      if (pMSSel_p->nrow()==0) 
+      throw(AipsError("Specified selection contains zero rows (no data)!"));
+
+      // ...otherwise report how many rows are selected
+      logStream_p << LogIO::NORMAL1 << "Selection reduces " << pMS_p->nrow() 
+                << " rows to " << pMSSel_p->nrow() << " rows."
+                << LogIO::POST;
+    }
+    else {
+      // Selection did nothing:
+      logStream_p << LogIO::NORMAL2 << "Selection did not drop any rows." << LogIO::POST;
+    }
+
+    // Set up for selection on channel or polarisation
+    ROMSSpWindowColumns msSpWinC(pMSSel_p->spectralWindow());
+    // If no channels were specified for selection, select all by default.
+    if (nchan_p== 0) {
+      nchan_p = msSpWinC.numChan()(0);
+      channels_p.resize(nchan_p);
+      for(Int i=0; i<nchan_p; i++) { channels_p(i)=i; }
+    }
+    // output the channels to be listed
+    logStream_p << LogIO::NORMAL1 << "Listing channels: " << channels_p << LogIO::POST;
+    logStream_p << LogIO::NORMAL2 << "Number of selected channels = " 
+              << nchan_p << LogIO::POST;
+    logStream_p << LogIO::DEBUG1 << "nchan_p = " << nchan_p << LogIO::POST;
+    logStream_p << LogIO::DEBUG2 << "msSpwinC.numChan() = " << endl 
+              << msSpWinC.numChan().getColumn() 
+              << LogIO::POST;
+    
+    ROMSPolarizationColumns msPolC(pMSSel_p->polarization());
+    npols_p = msPolC.corrType()(0).nelements();
+    pols_p.resize(npols_p,False);
+    for (uInt i=0; i<npols_p; i++) {
+      pols_p(i) = Stokes::name(Stokes::type
+                         (msPolC.corrType()(0)(IPosition(1,i))));
+    }
+  } // end try block
+  catch (MSSelectionError& x) {
+    // Re-initialize with the existing MS
+    logStream_p << LogOrigin("MSLister","selectvis",WHERE) 
+            << LogIO::SEVERE << "Caught exception: " << x.getMesg()
+            << LogIO::POST;
+    //initialize(*pMS_p,False);
+    throw(AipsError("Error in data selection specification."));
+  } 
+  catch (AipsError x) {
+    // Re-initialize with the existing MS
+    logStream_p << LogOrigin("MSLister","selectvis",WHERE) 
+            << LogIO::SEVERE << "Caught exception: " << x.getMesg()
+            << LogIO::POST;
+    // initialize(*pMS_p,False);
+    throw(AipsError("Error in MSLister::selectvis()"));
+  }
+}; // end selectvis
+
+void MSLister::listData(const int maxPageRows, 
+                        const String listfile)
 {
   // Now get the data for the listing.  
   // Currently we are extracting the data through a Record 
@@ -354,296 +472,421 @@ void MSLister::listData()
   // MSSelector::selms_p member...
   // **SPW**
 
-  items_p.resize(9,True);
-  items_p(0)="time";
-  items_p(1)="antenna1";		
-  items_p(2)="antenna2";		
-  items_p(3)="uvdist";			
-  //  items_p(4)="spectral_window_id";	
-  items_p(4)="data_desc_id";	
-  items_p(5)="field_id";		
-  items_p(6)="amplitude";
-  items_p(7)="phase";		
-  items_p(8)="weight";		
-
-  // Get ranges of selected data to ranges_p for use in field-width/precision setting
-  getRanges();
-
-  // Now extract the selected data Record.  Note that mss_p is the *selected*
-  // data, and mss_p.getData() is an implicit Record object
-  dataRecords_p = mss_p.getData(items_p,False);
-
-  // Construct arrays for the Record items.  The V-float declaration
-  // appears to be necessary (instead of V-double) despite the get()
-  // function's claim to do type promotion.
-  Vector <Double>	time,uvdist;
-  Vector <Int>          datadescid;
-  Vector <Int>		ant1,ant2,spwinid,fieldid;
-  Array <Float>		ampl,phase;
-  Array <Float>	        weight;
-
-  time = dataRecords_p.asArrayDouble(RecordFieldId("time"));
-  ant1 = dataRecords_p.asArrayInt(RecordFieldId("ant1"));
-  ant2 = dataRecords_p.asArrayInt(RecordFieldId("ant2"));
-  uvdist = dataRecords_p.asArrayDouble(RecordFieldId("uvdist"));
-  datadescid = dataRecords_p.asArrayInt(RecordFieldId("data_desc_id"));
-  fieldid = dataRecords_p.asArrayInt(RecordFieldId("field_id"));
-  ampl = dataRecords_p.asArrayFloat(RecordFieldId("ampl"));
-  phase = dataRecords_p.asArrayFloat(RecordFieldId("phase"));
-  weight = dataRecords_p.asArrayFloat(RecordFieldId("weight"));
-/*
-  // Extract the values from the Record into the Arrays
-  dataRecords_p.get("time", time);  // in sec
-  dataRecords_p.get("antenna1", ant1);
-  dataRecords_p.get("antenna2", ant2);
-  dataRecords_p.get("uvdist", uvdist);  // in meters
-  //  dataRecords_p.get("spectral_window_id", spwinid);
-  dataRecords_p.get("data_desc_id", datadescid);
-  dataRecords_p.get("field_id", fieldid);
-  dataRecords_p.get("amplitude", ampl);
-  dataRecords_p.get("phase", phase);  // in rad
-  dataRecords_p.get("weight", weight);
-*/
-
-  // Number of rows that will be listed
-  Int nrows = time.nelements();
-
-  spwinid.resize(nrows);
+  try{ 
   
-  // Convert units of some params:
-  time = time/C::day;        // time now in days
-  phase = phase/C::degree;   // phase now in degrees
-  // For each row:
-  for (Int row=0;row<nrows;row++) {
-    // Translate data_desc_id to spwid:  
-    spwinid(row)=spwins_p(datadescid(row));
-    // Change uvdist to wavelengths as function of spwinid:
-    uvdist(row) = uvdist(row)/(C::c/freqs_p(spwinid(row)));  // uvdist in wavelengths
-
-  }    
-
-
-  // Add or adjust ranges_p to non-zero absolutes for non-index and/or 
-  // converted values (so we can use ranges_p for field width and 
-  // precision setting):
-
-  Vector<Double> uvminmax(2);
-  uvminmax(0)=min(uvdist);
-  uvminmax(1)=max(uvdist);
-  ranges_p.define("uvdist",uvminmax);
-
-  Vector<Float> amplminmax(2);
-  amplminmax(0)=min(ampl(ampl>0.0f));
-  amplminmax(1)=max(ampl);
-  ranges_p.define("amplitude",amplminmax);
-
-  Vector<Float> phminmax(2);
-  phminmax(0)=min(abs(phase(phase!=0.0f)));  // 
-  phminmax(1)=max(phase);
-  ranges_p.define("phase",phminmax);
-
-  Vector<Float> wtminmax(2);
-  wtminmax(0)=min(weight(weight >0.0f));
-  wtminmax(1)=max(weight);
-  ranges_p.define("weight",wtminmax);
-
-
-  //  cout << endl;
-  //  cout << "Printing out the Record ranges_p:" << endl;
-  //  cout << ranges_p << endl;
-
-
-
-  // Make flags for showing index columns.
-  doFld_p = (ranges_p.asArrayInt(RecordFieldId("field_id")).nelements() > 1);
-  doSpW_p = (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1);
-  doChn_p = (nchan_p > 1);
-
-
-  //  cout << "Fld id : " << ranges_p.get("field_id") << endl;
-  //  cout << "SpW id : " << ranges_p.get("spectral_window_id") << endl << endl;
-
-
-  // From this point on, don't change scaling in list arrays, since the
-  // field sizes are determined directly from the data.
-
-  //  cout << "Minumum uvdist             = " << min(uvdist) << endl;
-  //  cout << "Maximum uvdist             = " << max(uvdist) << endl;
-  //  cout << "Minumum non-zero amp       = " << min(ampl(ampl>0.0f)) << endl;
-  //  cout << "Maximum amp                = " << max(ampl) << endl;
-  //  cout << "Minumum non-zero abs phase = " << min(abs(phase(phase!=0.0f))) << endl;
-  //  cout << "Maximum phase              = " << max(abs(phase)) << endl;
-  //  cout << "Minumum weight             = " << min(weight(weight>0.0f)) << endl;
-  //  cout << "Maximum weight             = " << max(weight) << endl;
-
-
-  // Set order of magnitude and precision (for field width setting):
-  // If prec*_p < 0, then enforce >=0 (detect minimum decimal places to show is NYI)
-  // If prec*_p > 0, then increment o*_p to provide space for decimal
-
-  oTime_p = 2; // this is space for 2 :'s in time  
-  if ( precTime_p < 0 ) precTime_p = 7; // hh:mm:ss.s
-  if ( precTime_p > 0 ) oTime_p++; // add space for decimal
-
-
-  oUVDist_p = (uInt)max(1,(Int)rint(log10(max(uvdist))+0.5)); // order
-  if ( precUVDist_p < 0 ) precUVDist_p = 0;
-  if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
-
-  oAmpl_p = (uInt)max(1,(Int)rint(log10(max(ampl))+0.5)); 
-  if ( precAmpl_p < 0 ) precAmpl_p = 3;  // mJy
-  if ( precAmpl_p > 0 ) oAmpl_p++;  // add space for decimal
-
-
-  oPhase_p = 3;  // 100s of degs 
-  if ( precPhase_p < 0 ) precPhase_p = 0; 
-  if ( precPhase_p > 0 ) oPhase_p++; // add space for decimal
-  oPhase_p++; // add space for sign
-
-  oWeight_p = (uInt)max(1,(Int)rint(log10(max(weight))+0.5));  // order
-  if ( precWeight_p < 0 ) precWeight_p = 0;
-  if ( precWeight_p > 0 ) oWeight_p++;  // add space for decimal
-
-  // Set field widths.
-  //   For index columns just use the size of the largest value:
-  wAnt_p    = (uInt)rint(log10((float)max(max(ant1),max(ant2)))+0.5);
-  if (doFld_p) wFld_p    = (uInt)rint(log10((float)max(fieldid))+0.5);
-  if (doSpW_p) wSpW_p    = (uInt)rint(log10((float)max(spwinid))+0.5);
-  if (doChn_p) wChn_p    = 3;
-
-  //   The field width for non-index columns is given by the  
-  //    sum of the order and precision:
-  wTime_p   = oTime_p + precTime_p;
-  wUVDist_p = oUVDist_p + precUVDist_p;  
-  wAmpl_p   = oAmpl_p + precAmpl_p;  
-  wPhase_p  = oPhase_p + precPhase_p;  
-  wWeight_p = oWeight_p + precWeight_p;
-
-  // Enforce minimum field widths,
-  // add leading space so columns nicely separated,
-  // and accumulate wTotal_p:
-  wTotal_p = 0;  // initialize 
-  wAnt_p    = max(wAnt_p,   (uInt)2);
-  wIntrf_p  = 2*wAnt_p+1;                       wIntrf_p++;  wTotal_p+=wIntrf_p;
-  if (doFld_p) { wFld_p = max(wFld_p,(uInt)3);  wFld_p++;    wTotal_p+=wFld_p; }
-  if (doSpW_p) { wSpW_p = max(wSpW_p,(uInt)3);  wSpW_p++;    wTotal_p+=wSpW_p;}
-  if (doChn_p) { wChn_p = max(wChn_p,(uInt)3);  wChn_p++;    wTotal_p+=wChn_p;}
-
-  wTime_p   = max(wTime_p,  (uInt)12);
-  wUVDist_p = max(wUVDist_p,(uInt)6);           wUVDist_p++; wTotal_p+=wUVDist_p;
-  wAmpl_p   = max(wAmpl_p,  (uInt)4);           wAmpl_p++; 
-  wPhase_p  = max(wPhase_p, (uInt)4); 
-  wWeight_p = max(wWeight_p,(uInt)3);           wWeight_p++;
-
-  wVis_p = wAmpl_p+wPhase_p+wWeight_p;
-  wTotal_p+=wTime_p+npols_p*wVis_p+1;
-
-  // Make column-ated header rule according to total and field widths
-  String hSeparator(replicate("-",wTotal_p));
-  uInt colPos=0;
-  colPos+=wTime_p;   hSeparator[colPos]='|';
-  colPos+=wIntrf_p;  hSeparator[colPos]='|';
-  colPos+=wUVDist_p; hSeparator[colPos]='|';
-  if (doFld_p) {colPos+=wFld_p;hSeparator[colPos]='|';}
-  if (doSpW_p) {colPos+=wSpW_p;hSeparator[colPos]='|';}
-  if (doChn_p) {colPos+=wChn_p;hSeparator[colPos]='|';}
-  colPos++;
-  for (uInt ipol=0; ipol<npols_p-1; ipol++) {
-    colPos+=wVis_p;
-    hSeparator[colPos]='|';
-  }
-
-  // Finally print the records out, one per line.
-
-  os_p << "Listing " << time.nelements()
-       << " data records satisfying selection criteria, " << endl
-       << "for each of " << npols_p << " polarisation(s) and " << nchan_p
-       << " spectral channel(s)." << endl << endl << dashline_p << endl;
-
-  //  nrows = 90;  // override to make short list for testing
-
-
-
-  for (Int row=0; row<nrows; row++) {
-    date_p = MVTime(time(row)).string(MVTime::YMD_ONLY);
-    // If page lenghth reached, or new day, then paginate
-    if ((row/pageHeight_p)*pageHeight_p == row ||
-        date_p != lastdate_p) {
-      if (row != 0) os_p << hSeparator << endl;
-      listColumnHeader();
-      os_p << hSeparator << endl;
+    items_p.resize(10,False);
+    items_p(0)="time";
+    items_p(1)="antenna1";            
+    items_p(2)="antenna2";            
+    items_p(3)="uvdist";              
+    // items_p(4)="spectral_window_id";    
+    items_p(4)="data_desc_id";  
+    items_p(5)="field_id";            
+    items_p(6)=dataColSel(0);
+    items_p(7)=dataColSel(1);         
+    items_p(8)="weight";        
+    items_p(9)="flag";
+  
+    // Get ranges of selected data to ranges_p for use in field-width/precision setting
+    getRanges(*pMSSel_p);
+  
+    // From here on, all MS access should go through mss_p.
+  
+    // Initialise the MSSelector object.  By default, initSelection() takes all
+    // polarizations and the first spectral channel.
+    mss_p.setMS(*pMSSel_p);
+    mss_p.initSelection();
+  
+    // Now extract the selected data Record.  Note that mss_p is the *selected*
+    // data, and mss_p.getData() is an implicit Record object
+    dataRecords_p = mss_p.getData(items_p,False);
+  
+    // Construct arrays for the Record items.  
+    //  The V-float declaration
+    //  appears to be necessary (instead of V-double) despite the get()
+    //  function's claim to do type promotion.
+    Vector <Double>       rowTime,uvdist;
+    Vector <Int>          datadescid;
+    Vector <Int>          ant1,ant2,spwinid,fieldid;
+    Array <Bool>          flag;
+    Array <Float>         ampl,phase;
+    Array <Float>         weight;
+  
+    // Fill the arrays.
+    rowTime = dataRecords_p.asArrayDouble(RecordFieldId("time"));
+    //  antenna 1
+    if (dataRecords_p.isDefined("antenna1")) {
+      ant1 = dataRecords_p.asArrayInt(RecordFieldId("antenna1"));
+    } else if (dataRecords_p.isDefined("ant1")) {
+      ant1 = dataRecords_p.asArrayInt(RecordFieldId("ant1"));
+    } else {
+      logStream_p << LogIO::SEVERE << "antenna1 isn't defined" << LogIO::POST;
+      return;
     }
-    lastdate_p = date_p;
-
-    for (uInt ichan=0; ichan<nchan_p; ichan++) {
-
-      os_p.output().setf(ios::fixed, ios::floatfield);
-      os_p.output().setf(ios::right, ios::adjustfield);
-      
-      os_p.output().width(wTime_p);	os_p << MVTime(time(row)).string(MVTime::TIME,precTime_p);
-      os_p.output().width(wAnt_p+1);	os_p << ant1(row)+1;
-      os_p.output().width(1);	        os_p << "-";
-      os_p.output().width(wAnt_p);	os_p << ant2(row)+1;
-      os_p.output().precision(precUVDist_p);
-      os_p.output().width(wUVDist_p);os_p << uvdist(row);
-      if (doFld_p) {os_p.output().width(wFld_p);	os_p << fieldid(row)+1;}
-      if (doSpW_p) {os_p.output().width(wSpW_p);	os_p << spwinid(row)+1;}
-      if (doChn_p) {os_p.output().width(wChn_p);	os_p << ichan+1;}
-      os_p << ":";
-      for (uInt ipol=0; ipol<npols_p; ipol++) {
-	os_p.output().precision(precAmpl_p);
-	os_p.output().width(wAmpl_p);	 os_p << ampl(IPosition(3,ipol,ichan,row));
-	os_p.output().precision(precPhase_p);
-	os_p.output().width(wPhase_p); os_p << phase(IPosition(3,ipol,ichan,row));
-	os_p.output().precision(precWeight_p);
-	os_p.output().width(wWeight_p); os_p << weight(IPosition(2,ipol,row));
+    //  antenna 2
+    if (dataRecords_p.isDefined("antenna2")) {
+      ant2 = dataRecords_p.asArrayInt(RecordFieldId("antenna2"));
+    } else if (dataRecords_p.isDefined("ant2")) {
+      ant2 = dataRecords_p.asArrayInt(RecordFieldId("ant2"));
+    } else {
+      logStream_p << LogIO::SEVERE << "antenna2 isn't defined" << LogIO::POST;
+      return;
+    }
+    //  flag, uvdist, datadescid, fieldid
+    flag = dataRecords_p.asArrayBool(RecordFieldId("flag"));
+    uvdist = dataRecords_p.asArrayDouble(RecordFieldId("uvdist"));
+    datadescid = dataRecords_p.asArrayInt(RecordFieldId("data_desc_id"));
+    fieldid = dataRecords_p.asArrayInt(RecordFieldId("field_id"));
+    //  dataColSel(0) (the data identified by this variable)
+    if (dataRecords_p.isDefined(dataColSel(0))) {
+      ampl = dataRecords_p.asArrayFloat(RecordFieldId(dataColSel(0)));
+    } else {
+      logStream_p << LogIO::SEVERE << "Column " << dataColSel(0) 
+                << " (for amplitude) isn't defined." << LogIO::POST;
+      return;
+    }
+    //  dataColSel(1) (the data identified by this variable)
+    if (dataRecords_p.isDefined(dataColSel(1))) {
+      phase = dataRecords_p.asArrayFloat(RecordFieldId(dataColSel(1)));
+    } else {
+      logStream_p << LogIO::SEVERE << "Column " << dataColSel(1) 
+                << " (for phase) isn't defined." << LogIO::POST;
+      return;
+    }
+    //  weight
+    weight = dataRecords_p.asArrayFloat(RecordFieldId("weight"));
+  
+    // Number of rows that will be listed
+    Int nTableRows = rowTime.nelements();
+  
+    spwinid.resize(nTableRows);
+    
+    // Convert units of some params:
+    rowTime = rowTime/C::day;        // time now in days
+    phase = phase/C::degree;   // phase now in degrees
+    // For each row: translate Data Description IDs to Spectral Window IDs
+    // This must be done before column widths can be calculated, before
+    // data can be written.
+    for (Int tableRow=0;tableRow<nTableRows;tableRow++) {
+      // Translate data_desc_id to spwid:  
+      spwinid(tableRow)=spwins_p(datadescid(tableRow));
+      // Change uvdist to wavelengths as function of spwinid:
+      //  Note that uv-distance data selection uses meters at the default unit.
+      uvdist(tableRow) = uvdist(tableRow)/(C::c/freqs_p(spwinid(tableRow)));  
+    }    
+  
+    // Add or adjust ranges_p to non-zero absolutes for non-index and/or 
+    // converted values (so we can use ranges_p for field width and 
+    // precision setting):
+  
+    Vector<Double> uvminmax(2);
+    uvminmax(0)=min(uvdist);
+    uvminmax(1)=max(uvdist);
+    ranges_p.define("uvdist",uvminmax);
+    
+    Vector<Float> amplminmax(2);
+    amplminmax(0)=min(ampl(ampl>0.0f));
+    amplminmax(1)=max(ampl);
+    ranges_p.define(dataColSel(0),amplminmax);
+  
+    // Find the range of phase.  Take care to avoid creating a 0-element
+    //  MaskedArray, if all elements of phase are 0.0f.  A 0-element
+    //  array will crash function min.
+    Vector<Float> phminmax(2);
+    MaskedArray<float> maPhase(phase, (phase!=0.0f));
+    if (maPhase.nelementsValid() != 0) {
+      phminmax(0)=min(abs(phase(phase!=0.0f))); 
+      phminmax(1)=max(phase);
+    } else { 
+      phminmax(0) = 0.0f; 
+      phminmax(1) = 0.0f; 
+      logStream_p << LogIO::NORMAL1 << "All selected data has phase = 0.0" << LogIO::POST;
+    }
+    ranges_p.define(dataColSel(1),phminmax);
+  
+    Vector<Float> wtminmax(2);
+    wtminmax(0)=min(weight(weight >0.0f));
+    wtminmax(1)=max(weight);
+    ranges_p.define("weight",wtminmax);
+  
+    // logStream_p << LogIO::DEBUG2 << "Printing out the Record ranges_p:" << endl
+    //           << ranges_p << LogIO::POST;
+  
+    // Make flags for showing index columns.
+    //  Test to see if more than one value is present
+    //  in the data column.
+    //  If the array consists of only 1 value, ranges_p will have only 1
+    //  element, and the boolean value will be set to false!
+    if (ranges_p.asArrayInt(RecordFieldId("field_id")).nelements() > 1) {
+      doFld_p = True;
+    } else {
+      doFld_p = False;
+      logStream_p << LogIO::NORMAL << "All selected data has FIELD = "
+                << fieldid(0) // ranges_p.asArrayInt(RecordFieldId("field_id"))(0)
+                << LogIO::POST;
+    }
+    // doSpW_p = (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1);
+    if (ranges_p.asArrayInt(RecordFieldId("data_desc_id")).nelements() > 1) {
+      doSpW_p = True;
+    } else {
+      doSpW_p = False;
+      logStream_p << LogIO::NORMAL << "All selected data has SPW = "
+                << datadescid(0) // ranges_p.asArrayInt(RecordFieldId("data_desc_id"))(0)
+                << LogIO::POST;
+    }
+    if (nchan_p > 1) {
+      doChn_p = True;
+      // logStream_p << LogIO::NORMAL2 << "Selected data has CHANNEL(s) = " << endl;
+      // for (Int i=0; i<nchan_p; i++) 
+      //   logStream_p << LogIO::NORMAL2 << "LIST CHAN #, ";
+      // logStream_p << LogIO::POST;
+    } else {
+      doChn_p = False;
+      logStream_p << LogIO::NORMAL << "All selected data has CHANNEL = "
+                << spwinid(0)
+                << LogIO::POST;
+    }
+  
+    // logStream_p << LogIO::DEBUG2 << "Fld id : " << ranges_p.get("field_id") << endl
+    //           << "SpW id : " << ranges_p.get("spectral_window_id") << LogIO::POST;
+  
+    // From this point on, don't change scaling in list arrays, since the
+    // field sizes are determined directly from the data.
+      logStream_p << LogIO::DEBUG1 
+                << "Minumum uvdist   = " << min(uvdist) << endl
+                << "Maximum uvdist   = " << max(uvdist) << endl
+                << "Minumum amp      = " << min(ampl) << endl
+                << "Maximum amp      = " << max(ampl) << endl
+                << "Minumum phase    = " << min(abs(phase)) << endl
+                << "Maximum phase    = " << max(abs(phase)) << endl
+                << "Minumum weight   = " << min(weight) << endl
+                << "Maximum weight   = " << max(weight) << LogIO::POST;
+  
+    // Set order of magnitude and precision (for field width setting):
+    // If prec*_p < 0, then enforce >=0 (detect minimum decimal places to show is NYI)
+    // If prec*_p > 0, then increment o*_p to provide space for decimal
+  
+    oTime_p = 2; // this is space for 2 :'s in time  
+    if ( precTime_p < 0 ) precTime_p = 7; // hh:mm:ss.s
+    if ( precTime_p > 0 ) oTime_p++; // add space for decimal
+  
+    oUVDist_p = (uInt)max(1,(Int)rint(log10(max(uvdist))+0.5)); // order
+    if ( precUVDist_p < 0 ) precUVDist_p = 0;
+    if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
+  
+    oAmpl_p = (uInt)max(1,(Int)rint(log10(max(ampl))+0.5)); 
+    if ( precAmpl_p < 0 ) precAmpl_p = 3;  // mJy
+    if ( precAmpl_p > 0 ) oAmpl_p++;  // add space for decimal
+  
+    oPhase_p = 3;  // 100s of degs 
+    if ( precPhase_p < 0 ) precPhase_p = 0; 
+    if ( precPhase_p > 0 ) oPhase_p++; // add space for decimal
+    oPhase_p++; // add space for sign
+  
+    oWeight_p = (uInt)max(1,(Int)rint(log10(max(weight))+0.5));  // order
+    if ( precWeight_p < 0 ) precWeight_p = 0;
+    if ( precWeight_p > 0 ) oWeight_p++;  // add space for decimal
+  
+    // Set field widths.
+    //   For index columns just use the size of the largest value:
+    wAnt_p    = (uInt)rint(log10((float)max(max(ant1),max(ant2)))+0.5);
+    wFlag_p = 2; // the flag is always 1 character
+    if (doFld_p) wFld_p    = (uInt)rint(log10((float)max(fieldid))+0.5);
+    if (doSpW_p) wSpW_p    = (uInt)rint(log10((float)max(spwinid))+0.5);
+    if (doChn_p) wChn_p    = 3;
+  
+  
+    //   The field width for non-index columns is given by the  
+    //    sum of the order and precision:
+    wTime_p   = oTime_p + precTime_p;
+    wUVDist_p = oUVDist_p + precUVDist_p;  
+    wAmpl_p   = oAmpl_p + precAmpl_p;  
+    wPhase_p  = oPhase_p + precPhase_p;  
+    wWeight_p = oWeight_p + precWeight_p;
+  
+    // Enforce minimum field widths,
+    // add leading space so columns nicely separated,
+    // and accumulate wTotal_p:
+    wTotal_p = 0;  // initialize 
+    wAnt_p    = max(wAnt_p,   (uInt)2);
+    wIntrf_p  = 2*wAnt_p+1;                       wIntrf_p++;  wTotal_p+=wIntrf_p;
+    if (doFld_p) { wFld_p = max(wFld_p,(uInt)3);  wFld_p++;    wTotal_p+=wFld_p; }
+    if (doSpW_p) { wSpW_p = max(wSpW_p,(uInt)3);  wSpW_p++;    wTotal_p+=wSpW_p;}
+    if (doChn_p) { wChn_p = max(wChn_p,(uInt)3);  wChn_p++;    wTotal_p+=wChn_p;}
+  
+    wTime_p   = max(wTime_p,  (uInt)12);
+    wUVDist_p = max(wUVDist_p,(uInt)6);           wUVDist_p++; wTotal_p+=wUVDist_p;
+    wAmpl_p   = max(wAmpl_p,  (uInt)4);           wAmpl_p++; 
+    wPhase_p  = max(wPhase_p, (uInt)4); 
+    wWeight_p = max(wWeight_p,(uInt)3);           wWeight_p++;
+  
+    wVis_p = wAmpl_p+wPhase_p+wWeight_p+wFlag_p;
+    wTotal_p+=wTime_p+npols_p*wVis_p+1;
+  
+    // Make column-ated header rule according to total and field widths
+  
+    // replicate does not work if the first parameter is "-", but it does for '-'.
+    // Bug report here: https://bugs.aoc.nrao.edu/browse/CAS-511
+    String hSeparator=replicate('-',wTotal_p);
+    uInt colPos=0;
+    colPos+=wTime_p;   hSeparator[colPos]='|';
+    colPos+=wIntrf_p;  hSeparator[colPos]='|';
+    colPos+=wUVDist_p; hSeparator[colPos]='|';
+    if (doFld_p) {colPos+=wFld_p;hSeparator[colPos]='|';}
+    if (doSpW_p) {colPos+=wSpW_p;hSeparator[colPos]='|';}
+    if (doChn_p) {colPos+=wChn_p;hSeparator[colPos]='|';}
+    colPos++;
+    for (uInt ipol=0; ipol<npols_p-1; ipol++) {
+      colPos+=wVis_p;
+      hSeparator[colPos]='|';
+    }
+  
+    Vector<String> flagSym(2);
+    flagSym(0) = " ";
+    flagSym(1) = "F";
+  
+    // Finally print the records out, one per line.
+  
+    logStream_p << LogIO::NORMAL << "Listing " << rowTime.nelements()
+              << " data records satisfying selection criteria, " << endl
+              << "for each of " << npols_p << " polarisation(s) and " << nchan_p
+              << " spectral channel(s)." << LogIO::POST;
+  
+    Bool prompt=True;
+    Int pageRow=0;
+  
+    // REDIRECT OUTPUT TO FILE
+    ofstream file;
+    streambuf* sbuf = cout.rdbuf();
+    if(listfile!="") {
+      // non-interactive
+      prompt = False;
+  
+      // Guard against trampling existing file
+      File diskfile(listfile);
+      if (diskfile.exists()) {
+        String errmsg = "File: " + listfile +
+        " already exists; delete it or choose a different name.";
+        throw(AipsError(errmsg));
       }
-      os_p << endl;
+      else
+        cout << "Writing output to file: " << listfile << endl;
+  
+      file.open(listfile.data());
+      cout.rdbuf(file.rdbuf());
     }
+  
+    // WRITE THE DATA
+    for (Int tableRow=0; tableRow<nTableRows; tableRow++) { 
+      date_p = MVTime(rowTime(tableRow)).string(MVTime::YMD_ONLY);
+      Bool endOutput=False;
+  
+      for (Int i=0; i<nchan_p; i++) {
+        uInt ichan = channels_p(i);
+        // If page length reached, or new day, then paginate
+        if ((pageRow/maxPageRows)*maxPageRows == pageRow ||
+            date_p != lastdate_p) {
+          // query the user, if we are interactive
+          if (prompt && pageRow != 0) {
+            string contStr;
+            cout << "Type Q to quit, A to list all, or RETURN to continue [continue]: ";
+            getline(cin,contStr);
+            if ( (contStr.compare(0,1,"q") == 0) or
+                 (contStr.compare(0,1,"Q") == 0) ) { endOutput=True; }
+            if ( (contStr.compare(0,1,"a") == 0) or
+                 (contStr.compare(0,1,"A") == 0) ) { prompt = False; }
+          }
+          if (endOutput) {break;} // break out of if block
+          listColumnHeader();
+          cout << hSeparator << endl;
+        }
+        // if (row != 0) cout << hSeparator << endl; // Print hSeparator at the end of each page.
+        lastdate_p = date_p;
+        if (endOutput) {break;} // break out of chan loop
+  
+        pageRow++;
+  
+        cout.setf(ios::fixed, ios::floatfield);
+        cout.setf(ios::right, ios::adjustfield);
+        
+        cout.width(wTime_p);    cout << MVTime(rowTime(tableRow)).string(MVTime::TIME,precTime_p);
+        cout.width(wAnt_p+1);   cout << ant1(tableRow);
+        cout.width(1);            cout << "-";
+        cout.width(wAnt_p);     cout << ant2(tableRow);
+        cout.precision(precUVDist_p);
+        cout.width(wUVDist_p);cout << uvdist(tableRow);
+        // For the output to agree with listobs, do not add 1 to fieldid and spwinid.
+        if (doFld_p) {cout.width(wFld_p);   cout << fieldid(tableRow);}
+        if (doSpW_p) {cout.width(wSpW_p);   cout << spwinid(tableRow);}
+        if (doChn_p) {cout.width(wChn_p);   cout << ichan;}
+        cout << ":";
+        for (uInt ipol=0; ipol<npols_p; ipol++) {
+        cout.precision(precAmpl_p);
+        cout.width(wAmpl_p);     cout << ampl(IPosition(3,ipol,ichan,tableRow));
+        cout.precision(precPhase_p);
+        cout.width(wPhase_p); cout << phase(IPosition(3,ipol,ichan,tableRow));
+        cout.precision(precWeight_p);
+        cout.width(wWeight_p); cout << weight(IPosition(2,ipol,tableRow));
+        cout.setf(ios::right); cout.width(2);
+        cout << flagSym(flag(IPosition(3,ipol,ichan,tableRow)));
+        }
+        cout << endl;
+      }
+      if (endOutput) {break;} // break out of row loop
+    }
+    cout << hSeparator << endl;
+  
+    // Post it
+    logStream_p.post();
+  
+    // RESTORE COUT (if redirected to file)
+    if(listfile!="")
+      cout.rdbuf(sbuf);
+      
+  } // end try
+  catch(AipsError x){
+    logStream_p << LogIO::SEVERE << "Caught exception: " << x.getMesg()
+              << LogIO::POST;
+    throw(AipsError("Error in MSLister::listData"));
   }
-  //  os_p << dashline_p << endl;
-  os_p << hSeparator << endl;
-
-  // Post it
-  os_p.post();
-}
+} // end listData
 
 void MSLister::listColumnHeader() {
   // Write the column headers
-  os_p << endl << endl;
 
   // First line of column header
-  os_p.output().setf(ios::left, ios::adjustfield);
-  os_p.output().width(wTime_p);             os_p << "Date/Time:";
-  os_p.output().setf(ios::right, ios::adjustfield);
-  os_p.output().width(wIntrf_p);            os_p << " ";
-  os_p.output().width(wUVDist_p);           os_p << " ";
-  if (wFld_p) {os_p.output().width(wFld_p); os_p << " ";}
-  if (wSpW_p) {os_p.output().width(wSpW_p); os_p << " ";}
-  if (wChn_p) {os_p.output().width(wChn_p); os_p << " ";}
-  os_p << " ";
-  os_p.output().setf(ios::left, ios::adjustfield);
+  cout.setf(ios::left, ios::adjustfield);
+  cout.width(wTime_p);             cout << "Date/Time:";
+  cout.setf(ios::right, ios::adjustfield);
+  cout.width(wIntrf_p);            cout << " ";
+  cout.width(wUVDist_p);           cout << " ";
+  if (wFld_p) {cout.width(wFld_p); cout << " ";}
+  if (wSpW_p) {cout.width(wSpW_p); cout << " ";}
+  if (wChn_p) {cout.width(wChn_p); cout << " ";}
+  cout << " ";
+  cout.setf(ios::left, ios::adjustfield);
   for (uInt ipol=0; ipol<npols_p; ipol++) {
-    os_p.output().width(wVis_p); os_p << " "+pols_p(ipol)+":";
+    cout.width(wVis_p); cout << " "+pols_p(ipol)+":";
   }
-  os_p << endl;
+  cout << endl;
   
   // Second line of column header
-  os_p.output().setf(ios::left, ios::adjustfield);
-  os_p.output().width(wTime_p);             os_p << date_p+"/";
-  os_p.output().setf(ios::right, ios::adjustfield);
-  os_p.output().width(wIntrf_p);            os_p << "Intrf";
-  os_p.output().width(wUVDist_p);           os_p << "UVDist";
-  if (wFld_p) {os_p.output().width(wFld_p); os_p << "Fld";}
-  if (wSpW_p) {os_p.output().width(wSpW_p); os_p << "SpW";}
-  if (wChn_p) {os_p.output().width(wChn_p); os_p << "Chn";}
-  os_p << " ";
+  cout.setf(ios::left, ios::adjustfield);
+  cout.width(wTime_p);             cout << date_p+"/";
+  cout.setf(ios::right, ios::adjustfield);
+  cout.width(wIntrf_p);            cout << "Intrf";
+  cout.width(wUVDist_p);           cout << "UVDist";
+  if (wFld_p) {cout.width(wFld_p); cout << "Fld";}
+  if (wSpW_p) {cout.width(wSpW_p); cout << "SpW";}
+  if (wChn_p) {cout.width(wChn_p); cout << "Chn";}
+  cout << " ";
   for (uInt ipol=0; ipol<npols_p; ipol++) {
-    os_p.output().width(wAmpl_p);	os_p << "Amp";
-    os_p.output().width(wPhase_p);	os_p << "Phs";
-    os_p.output().width(wWeight_p);	os_p << "Wt";
+    cout.width(wAmpl_p);      cout << "Amp";
+    cout.width(wPhase_p);     cout << "Phs";
+    cout.width(wWeight_p);    cout << "Wt";
+                              cout << " F"; // flag column
   }
-  os_p << endl;
+  cout << endl;
   // << dashline_p << endl;
 }
 
@@ -652,18 +895,18 @@ void MSLister::listColumnHeader() {
 //
 void MSLister::clearFlags()
 {
-  os_p.output().unsetf(ios::left);
-  os_p.output().unsetf(ios::right);
-  os_p.output().unsetf(ios::internal);
+  cout.unsetf(ios::left);
+  cout.unsetf(ios::right);
+  cout.unsetf(ios::internal);
 
-  os_p.output().unsetf(ios::dec);
-  os_p.output().unsetf(ios::oct);
-  os_p.output().unsetf(ios::hex);
+  cout.unsetf(ios::dec);
+  cout.unsetf(ios::oct);
+  cout.unsetf(ios::hex);
 
-  os_p.output().unsetf(ios::showbase | ios::showpos | ios::uppercase | ios::showpoint);
+  cout.unsetf(ios::showbase | ios::showpos | ios::uppercase | ios::showpoint);
 
-  os_p.output().unsetf(ios::scientific);
-  os_p.output().unsetf(ios::fixed);
+  cout.unsetf(ios::scientific);
+  cout.unsetf(ios::fixed);
 
 }
 

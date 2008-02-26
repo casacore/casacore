@@ -61,7 +61,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSFieldGram = 0;
 static Int                   posMSFieldGram = 0;
-
   // MSFieldGramwrap out of namespace
 
 //# Parse the command.
@@ -77,7 +76,36 @@ int msFieldGramParseCommand (const MeasurementSet* ms, const String& command)
       posMSFieldGram  = 0;                   // initialize string position
       MSFieldParse parser(ms);               // setup measurement set
       MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
+      MSFieldParse::thisMSFParser->reset();
+      //      fieldError.reset();
       ret=MSFieldGramparse();                // parse command string
+      return ret;
+    }
+  catch (MSSelectionFieldError &x)
+    {
+      String newMesgs;
+      newMesgs = constructMessage(msFieldGramPosition(), command);
+      x.addMessage(newMesgs);
+      throw;
+    }
+}
+
+  int msFieldGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs)
+			       
+{
+  try 
+    {
+      Int ret;
+      MSFieldGramrestart (MSFieldGramin);
+      yy_start = 1;
+      strpMSFieldGram = command.chars();     // get pointer to command string
+      posMSFieldGram  = 0;                   // initialize string position
+      MSFieldParse parser(ms);               // setup measurement set
+      MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
+      parser.reset();
+      ret=MSFieldGramparse();                // parse command string
+      
+      selectedIDs=parser.selectedIDs();
       return ret;
     }
   catch (MSSelectionFieldError &x)
@@ -92,9 +120,9 @@ int msFieldGramParseCommand (const MeasurementSet* ms, const String& command)
 //# Give the table expression node
 const TableExprNode* msFieldGramParseNode()
 {
-    return MSFieldParse::node();
+  return MSFieldParse::node();
 }
-
+const void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
 //# Give the string position.
 Int& msFieldGramPosition()
 {
@@ -114,44 +142,44 @@ int msFieldGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSFieldGramerror (char*)
+void MSFieldGramerror (char* t)
 {
-    throw (AipsError ("Field Expression: Parse error at or near '" +
+    throw (MSSelectionFieldParseError ("Field Expression: Parse error at or near '" +
 		      String(MSFieldGramtext) + "'"));
 }
 
-String msFieldGramRemoveEscapes (const String& in)
-{
-    String out;
-    int leng = in.length();
-    for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
-    }
-    return out;
-}
+// String msFieldGramRemoveEscapes (const String& in)
+// {
+//     String out;
+//     int leng = in.length();
+//     for (int i=0; i<leng; i++) {
+// 	if (in[i] == '\\') {
+// 	    i++;
+// 	}
+// 	out += in[i];
+//     }
+//     return out;
+// }
 
-String msFieldGramRemoveQuotes (const String& in)
-{
-    //# A string is formed as "..."'...''...' etc.
-    //# All ... parts will be extracted and concatenated into an output string.
-    String out;
-    String str = in;
-    int leng = str.length();
-    int pos = 0;
-    while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (AipsError ("MSFieldParse - Ill-formed quoted string: " +
-			      str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
-    }
-    return out;
-}
+// String msFieldGramRemoveQuotes (const String& in)
+// {
+//     //# A string is formed as "..."'...''...' etc.
+//     //# All ... parts will be extracted and concatenated into an output string.
+//     String out;
+//     String str = in;
+//     int leng = str.length();
+//     int pos = 0;
+//     while (pos < leng) {
+// 	//# Find next occurrence of leading ' or ""
+// 	int inx = str.index (str[pos], pos+1);
+// 	if (inx < 0) {
+// 	    throw (AipsError ("MSFieldParse - Ill-formed quoted string: " +
+// 			      str));
+// 	}
+// 	out += str.at (pos+1, inx-pos-1);             // add substring
+// 	pos = inx+1;
+//     }
+//     return out;
+// }
 
 } //# NAMESPACE CASA - END
