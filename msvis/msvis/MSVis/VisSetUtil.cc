@@ -94,8 +94,8 @@ void VisSetUtil::WeightNatural(VisSet& vs, Double& sumwt) {
       Int nChan=vb.nChannel();
       for (Int row=0; row<nRow; row++) {
 	for (Int chn=0; chn<nChan; chn++) {
-	  if((!vb.flag()(chn,row))&&vb.sigma()(row)>0.0) {
-	    vb.imagingWeight()(chn,row)=1.0/square(vb.sigma()(row));
+	  if( !vb.flag()(chn,row) ) {
+	    vb.imagingWeight()(chn,row)=vb.weight()(row);
 	    sumwt+=vb.imagingWeight()(chn,row);
 	  }
 	  else {
@@ -107,7 +107,7 @@ void VisSetUtil::WeightNatural(VisSet& vs, Double& sumwt) {
     }
   }
   if(sumwt<=0.0) {
-    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the WEIGHT column is positive" << LogIO::POST;
   }
 }
 
@@ -234,7 +234,7 @@ void VisSetUtil::WeightUniform(VisSet& vs,
     }
   }
   if(sumwt<=0.0) {
-    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the WEIGHT column is positive" << LogIO::POST;
   }
 }
 
@@ -252,10 +252,10 @@ void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
       for (Int row=0; row<vb.nRow(); row++) {
 	for (Int chn=0; chn<vb.nChannel(); chn++) {
 	  Float f=vb.frequency()(chn)/C::c;
-	  if((!vb.flag()(chn,row))&&vb.sigma()(row)>0.0) {
+	  if( !vb.flag()(chn,row) ) {
 	    vb.imagingWeight()(chn,row)=
 	      f*sqrt(square(vb.uvw()(row)(0))+square(vb.uvw()(row)(1)))
-	      / square(vb.sigma()(row));
+	      * vb.weight()(row);
 	    sumwt+=vb.imagingWeight()(chn,row);
 	  }
 	  else {
@@ -267,7 +267,7 @@ void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
     }
   }
   if(sumwt<=0.0) {
-    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the WEIGHT column is positive" << LogIO::POST;
   }
 }
 
@@ -311,7 +311,7 @@ void VisSetUtil::Filter(VisSet& vs, const String& type, const Quantity& bmaj,
 	    Double invLambdaC=vb.frequency()(chn)/C::c;
 	    Double& u = vb.uvw()(row)(0);
 	    Double& v = vb.uvw()(row)(1);
-	    if(!vb.flag()(chn,row)&&vb.sigma()(row)>0.0) {
+	    if(!vb.flag()(chn,row)&&vb.weight()(row)>0.0) {
 	      Double ru = invLambdaC*(  cospa * u + sinpa * v);
 	      Double rv = invLambdaC*(- sinpa * u + cospa * v);
 	      Double filter = exp(-rbmaj*square(ru) - rbmin*square(rv));
@@ -393,6 +393,7 @@ void VisSetUtil::Sensitivity(VisSet &vs, Quantity& pointsourcesens, Double& rela
       Int nRow=vb.nRow();
       Int nChan=vb.nChannel();
       for (Int row=0; row<nRow; row++) {
+	// TBD: Should probably use weight() here, which updates with calibration
         Double variance=square(vb.sigma()(row));
 	for (Int chn=0; chn<nChan; chn++) {
 	  if(!vb.flag()(chn,row)&&variance>0.0) {
@@ -419,6 +420,140 @@ void VisSetUtil::Sensitivity(VisSet &vs, Quantity& pointsourcesens, Double& rela
   relativesens=sqrt(sumwtsq)/sumwt/naturalsens;
 }
 
+void VisSetUtil::HanningSmooth(VisSet &vs)
+{
+  LogIO os(LogOrigin("VisSetUtil", "HanningSmooth()"));
+
+  VisIter& vi(vs.iter());
+  VisBuffer vb(vi);
+
+  Int row, chn, pol;
+
+  for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
+    if (vi.existsWeightSpectrum()) {
+      for (vi.origin();vi.more();vi++) {
+	Cube<Complex>& vc= vb.correctedVisCube();
+	Cube<Bool>& fc= vb.flagCube();
+	Cube<Float>& wc= vb.weightSpectrum();
+
+	Int nRow=vb.nRow();
+	Int nChan=vb.nChannel();
+	if (nChan < 3) break;
+	Int nPol=vi.visibilityShape()(0);
+	Cube<Complex> smoothedData(nPol,nChan,nRow);
+	Cube<Bool> newFlag(nPol,nChan,nRow);
+	Cube<Float> newWeight(nPol,nChan,nRow);
+	for (row=0; row<nRow; row++) {
+	  for (pol=0; pol<nPol; pol++) {
+	    ///Handle first channel and flag it
+	    smoothedData(pol,0,row) = vc(pol,0,row)*0.5 + vc(pol,1,row)*0.5;
+	    newWeight(pol,0,row) = 0.0;
+	    newFlag(pol,0,row) = True;
+	    for (chn=1; chn<nChan-1; chn++) {
+	      smoothedData(pol,chn,row) =
+		vc(pol,chn-1,row)*0.25 + vc(pol,chn,row)*0.50 +
+		vc(pol,chn+1,row)*0.25;
+	      if (wc(pol,chn-1,row) != 0 && wc(pol,chn,row) != 0
+		  && wc(pol,chn+1,row) != 0) {
+		newWeight(pol,chn,row) = 1.0 /
+		  (1.0/(wc(pol,chn-1,row)*16.0) + 1.0/(wc(pol,chn,row)*4.0)
+		   + 1.0/(wc(pol,chn+1,row)*16.0));
+	      } else {
+		newWeight(pol,chn,row) = 0.0;
+	      }
+	      newFlag(pol,chn,row) =
+		fc(pol,chn-1,row)||fc(pol,chn,row)||fc(pol,chn+1,row);
+	    }
+	    //Handle last channel and flag it
+	    smoothedData(pol,nChan-1,row) =
+	      vc(pol,nChan-2,row)*0.5+vc(pol,nChan-1,row)*0.5;
+	    newWeight(pol,nChan-1,row) = 0.0;
+	    newFlag(pol,nChan-1,row) = True;  // flag last channel
+	  }
+	}
+	vi.setVisAndFlag(smoothedData,newFlag,VisibilityIterator::Corrected);
+	vi.setWeightSpectrum(newWeight);
+      }
+    } else {
+      for (vi.origin();vi.more();vi++) {
+	Cube<Complex>& vc= vb.correctedVisCube();
+	Cube<Bool>& fc= vb.flagCube();
+	Matrix<Float>& wm = vb.weightMat();
+
+	Int nRow=vb.nRow();
+	Int nChan=vb.nChannel();
+	if (nChan < 3) break;
+	Int nPol=vi.visibilityShape()(0);
+	Cube<Complex> smoothedData(nPol,nChan,nRow);
+	Cube<Bool> newFlag(nPol,nChan,nRow);
+	Matrix<Float> newWeight(nPol, nRow);
+	for (row=0; row<nRow; row++) {
+	  for (pol=0; pol<nPol; pol++) {
+	    ///Handle first channel and flag it
+	    smoothedData(pol,0,row) = vc(pol,0,row)*0.5 + vc(pol,1,row)*0.5;
+	    newFlag(pol,0,row) = True;
+	    ///Handle chan-independent weights
+	    newWeight(pol, row) = 8.0*wm(pol, row)/3.0;
+	    for (chn=1; chn<nChan-1; chn++) {
+	      smoothedData(pol,chn,row) =
+		vc(pol,chn-1,row)*0.25 + vc(pol,chn,row)*0.50 +
+		vc(pol,chn+1,row)*0.25;
+	      newFlag(pol,chn,row) =
+		fc(pol,chn-1,row)||fc(pol,chn,row)||fc(pol,chn+1,row);
+	    }
+	    //Handle last channel and flag it
+	    smoothedData(pol,nChan-1,row) =
+	      vc(pol,nChan-2,row)*0.5+vc(pol,nChan-1,row)*0.5;
+	    newFlag(pol,nChan-1,row) = True;  // flag last channel
+	  }
+	}
+	vi.setVisAndFlag(smoothedData,newFlag,VisibilityIterator::Corrected);
+	vi.setWeightMat(newWeight);
+      }
+    }
+  }
+}
+
+void VisSetUtil::UVSub(VisSet &vs, Bool reverse)
+{
+  LogIO os(LogOrigin("VisSetUtil", "UVSub()"));
+
+  VisIter& vi(vs.iter());
+  VisBuffer vb(vi);
+
+  Int row, chn, pol;
+
+  for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
+    for (vi.origin();vi.more();vi++) {
+
+      Cube<Complex>& vc= vb.correctedVisCube();
+      Cube<Complex>& mc= vb.modelVisCube();
+
+      Int nRow=vb.nRow();
+      Int nChan=vb.nChannel();
+      Int nPol=vi.visibilityShape()(0);
+      Cube<Complex> residualData(nPol,nChan,nRow);
+      if (reverse) {
+	for (row=0; row<nRow; row++) {
+	  for (pol=0; pol<nPol; pol++) {
+	    for (chn=0; chn<nChan; chn++) {
+	      residualData(pol,chn,row) = vc(pol,chn,row)+mc(pol,chn ,row);
+	    }
+	  }
+	}
+      } else {
+	for (row=0; row<nRow; row++) {
+	  for (pol=0; pol<nPol; pol++) {
+	    for (chn=0; chn<nChan; chn++) {
+	      residualData(pol,chn,row) = vc(pol,chn,row)-mc(pol,chn ,row);
+	    }
+	  }
+	}
+      }
+      vi.setVis(residualData,VisibilityIterator::Corrected);
+    }
+  }
+}
 
 } //# NAMESPACE CASA - END
 

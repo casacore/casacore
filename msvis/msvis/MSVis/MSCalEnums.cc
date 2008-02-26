@@ -89,6 +89,8 @@ void MSCalEnums::initMaps ()
     theirFieldMap.define (SOLUTION_OK, "SOLUTION_OK");
     theirFieldMap.define (FIT, "FIT");
     theirFieldMap.define (FIT_WEIGHT, "FIT_WEIGHT");
+    theirFieldMap.define (FLAG, "FLAG");
+    theirFieldMap.define (SNR, "SNR");
     
     theirFieldMap.define (NUM_SPW, "NUM_SPW");
     theirFieldMap.define (NUM_CHAN, "NUM_CHAN");
@@ -183,6 +185,8 @@ void MSCalEnums::initMaps ()
     theirTypeMap.define (SOLUTION_OK, TpBool);
     theirTypeMap.define (FIT, TpFloat);
     theirTypeMap.define (FIT_WEIGHT, TpFloat);
+    theirTypeMap.define (FLAG, TpBool);
+    theirTypeMap.define (SNR, TpFloat);
     
     theirTypeMap.define (NUM_SPW, TpInt);
     theirTypeMap.define (NUM_CHAN, TpInt);

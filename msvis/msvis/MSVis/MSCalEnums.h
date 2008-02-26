@@ -185,6 +185,10 @@ class MSCalEnums
   FIT = 404,
   // Sum of fit weights (per solution)
   FIT_WEIGHT = 405,
+  // Solution FLAG (!SOLUTION_OK)
+  FLAG = 406,
+  // Solution SNR
+  SNR = 407,
   
   // Calibration description columns
   //

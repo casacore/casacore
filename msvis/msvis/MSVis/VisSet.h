@@ -169,6 +169,9 @@ public:
   // Note: this calls origin on the iterator.
   void selectChannel(Int nGroup,Int start, Int width, Int increment, 
 		     Int spectralWindow);
+  // call to VisIter origin optional:
+  void selectChannel(Int nGroup,Int start, Int width, Int increment, 
+		     Int spectralWindow, Bool callOrigin);
 
   // number of antennas
   Int numberAnt();
@@ -211,6 +214,7 @@ private:
   VisIter* iter_p;
   Matrix<Int> selection_p;
   Block<MeasurementSet> *blockOfMS_p;
+  Bool multims_p;
 
 };
 

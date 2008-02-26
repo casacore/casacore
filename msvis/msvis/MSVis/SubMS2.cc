@@ -1,5 +1,5 @@
-//# SubMS2.cc:  SubMS.cc is split in two parts
-//# Copyright (C) 1996-2006
+//# SubMS.cc 
+//# Copyright (C) 1996-2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -134,7 +134,7 @@ Bool SubMS::fillFieldTable() {
 
 Bool SubMS::fillMainTable(const String& whichCol){
 
-  LogIO os(LogOrigin("SubMS", "fillMainTable()", WHERE));
+  LogIO os(LogOrigin("SubMS", "fillMainTable()"));
 
   msOut_p.addRow(mssel_p.nrow(), True);
   
@@ -285,13 +285,14 @@ Bool SubMS::fillMainTable(const String& whichCol){
 
 Bool SubMS::fillAverMainTable(const String& whichCol){
 
-  LogIO os(LogOrigin("SubMS", "fillAverMainTable()", WHERE));
+  LogIO os(LogOrigin("SubMS", "fillAverMainTable()"));
 
   Double timeBin=timeBin_p;
   Vector<Int> ant1(0);
   Vector<Int> ant2(0);
   Int numBaselines=numOfBaselines(ant1, ant2, False);
   Int numTimeBins=numOfTimeBins(timeBin);
+
   if(numTimeBins < 1){
     os << LogIO::SEVERE << "Number of time bins is less than 1...Time averaging bin size may be  too large"
        << LogIO::POST;
@@ -720,6 +721,7 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 				   Sort::NoDuplicates);
  
 
+
     ant1.resize();
     selAnt1.resize(numAnt1, True);
     ant1=selAnt1;
@@ -734,24 +736,28 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
       }
       
     }
+
+    //For now we are splitting data without autocorrelation
       
-    if((numAnt2/2)*2 !=  numAnt2){
-      if(!hasAuto)
+    if(Int(Float(numAnt2)/2.0)*2 !=  numAnt2){
+      if(!hasAuto){
 	numBasl=(numAnt2+1)/2*numAnt1;
+      }
       else
 	numBasl=(numAnt2-1)/2*numAnt1;
     }
-    else if((numAnt1/2)*2 !=  numAnt1){
-      if(!hasAuto)
+    else if(Int(Float(numAnt1)/2.0)*2 !=  numAnt1){
+      if(!hasAuto){
         numBasl=(numAnt1+1)/2*numAnt2;
+      }
       else
         numBasl=(numAnt1-1)/2*numAnt2;
     }
     else{
       if(!hasAuto)
-	numBasl=numAnt1*numAnt2/2;
+	numBasl=(numAnt1+1)*numAnt2/2;
       else
-	numBasl=(numAnt1-1)*numAnt2/2;
+	numBasl=(numAnt1)*numAnt2/2;
     }
 
     return numBasl;
@@ -799,7 +805,8 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     uInt nrows=msOut_p.nrow();
     Vector<Int> antenna1(nrows);
     Vector<Int> antenna2(nrows);
-    
+
+
     Vector<Double> rowTime(nrows);
 
     Vector<Int> ant2Indexer(max(ant2)+1);
@@ -815,7 +822,21 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 	// be careful as selection may have ant1 which is bigger than max
 	// ant2
 	if(ant1[ant1Index] < max(ant2)){
-	  uInt startAnt2Ind=ant2Indexer[ant1[ant1Index]]+1;
+	  uInt startAnt2Ind=ant2.nelements();
+	  
+	  Int somcounter=1;
+	  //startAnt2Ind=ant2Indexer[ant1[ant1Index]+somcounter];
+	  
+	  while((somcounter+ant1[ant1Index] < Int(ant2Indexer.nelements())) &&  
+		(ant2Indexer[ant1[ant1Index]+somcounter]==-1)){
+	    somcounter+=1;
+	  }
+	  if( ant1[ant1Index]+somcounter < Int(ant2Indexer.nelements())){
+	    startAnt2Ind=ant2Indexer[ant1[ant1Index]+somcounter];  
+	  }
+	  if(k== nrows){
+	      throw(AipsError("Something not expected by the programmer happened; Please file a bug report"));
+	  }
 	  for (uInt ant2Index=startAnt2Ind; ant2Index < ant2.nelements(); 
 	       ++ant2Index){ 
 	    if(!antennaSel_p){
@@ -828,6 +849,7 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 	    }
 	    rowTime[k]=newTimeVal_p[t];
 	    ++k;
+	    
 
 	  }
 	}
@@ -854,7 +876,7 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 			   const String& columnName){
 
 
-    LogIO os(LogOrigin("SubMS", "fillAverMainTable()", WHERE));
+    LogIO os(LogOrigin("SubMS", "fillAverMainTable()"));
 
 
 
@@ -1010,6 +1032,7 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 
 
   }
+
 
 
 } //#End casa namespace

@@ -88,6 +88,17 @@ class SubMS
   //select Time and time averaging or regridding
   //void selectTime();
 
+  //select stuff using msselection syntax ...time is left out
+  // call it seperately with timebin
+  void setmsselect(const String& spw="", const String& field="", 
+		   const String& baseline="", 
+		   const String& scan="", const String& uvrange="", 
+		   const String& taql="", 
+		   const Vector<Int>& nchan=Vector<Int> (1,-1),
+		   const Vector<Int>& start=Vector<Int> (1,0),
+		   const Vector<Int>& step=Vector<Int> (1,1),
+		   Bool averchan=True);
+
   // Select source or field
   void selectSource(Vector<Int> fieldid);
   
@@ -172,6 +183,10 @@ class SubMS
   Vector<Int> timeBinIndex_p;
   Vector<Int> antNewIndex_p;
   Vector<Int> feedNewIndex_p;
+  String scanString_p;
+  String uvrangeString_p;
+  String taqlString_p;
+  
 };
 
 

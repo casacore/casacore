@@ -39,6 +39,8 @@
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/ColDescSet.h>
 #include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledStManAccessor.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -54,8 +56,11 @@ curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
 floatDataFound_p(False),lastfeedpaUT_p(0),lastazelUT_p(0),velSelection_p(False)
 {
+
+  //  cout << "addDefaultSortColumns = False!" << endl;
   This = (ROVisibilityIterator*)this;
   isMultiMS_p=False;
+  msCounter_p=0;
 }
 
 ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
@@ -107,7 +112,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   preselectedChanStart_p=other.preselectedChanStart_p;
   preselectednChan_p=other.preselectednChan_p;
   isMultiMS_p=other.isMultiMS_p;
-
+  msCounter_p=other.msCounter_p;
   slicer_p=other.slicer_p;
   weightSlicer_p=other.weightSlicer_p;
   useSlicer_p=other.useSlicer_p;
@@ -152,6 +157,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colTime.reference(other.colTime);
   colTimeInterval.reference(other.colTimeInterval);
   colWeight.reference(other.colWeight);
+  colWeightSpectrum.reference(other.colWeightSpectrum);
   colImagingWeight.reference(other.colImagingWeight);
   colVis.reference(other.colVis);
   colFloatVis.reference(other.colFloatVis);
@@ -202,6 +208,7 @@ void ROVisibilityIterator::originChunks()
   }
   setState();
   origin();
+  setTileCache();
 }
 
 void ROVisibilityIterator::advance()
@@ -306,6 +313,7 @@ void ROVisibilityIterator::getTopoFreqs()
 
 void ROVisibilityIterator::setState()
 {
+  
   if (stateOk_p) return;
   curTableNumRow_p = msIter_p.table().nrow();
   // get the times for this (major) iteration, so we can do (minor) 
@@ -354,22 +362,81 @@ void ROVisibilityIterator::setState()
 
 void ROVisibilityIterator::updateSlicer()
 {
-  if(isMultiMS_p){
-    numChanGroup_p.resize(0);
+  
+  if(msIter_p.newMS()){
+    numChanGroup_p.resize(0, True, False);
     doChannelSelection();
   }
+  
   // set the Slicer to get the selected part of spectrum out of the table
   Int spw=msIter_p.spectralWindowId();
-  Int start=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw];
+  //Fixed what i think was a confusion between chanWidth and chanInc
+  // 2007/11/12
+  Int start=chanStart_p[spw]+curChanGroup_p*chanWidth_p[spw];
   start-=msIter_p.startChan();
   AlwaysAssert(start>=0 && start+channelGroupSize_p<=nChan_p,AipsError);
   //  slicer_p=Slicer(Slice(),Slice(start,channelGroupSize_p));
-  // above is slow, use IPositions instead..
+  // above is slow, use IPositions instead.
   slicer_p=Slicer(IPosition(2,0,start),
-		  IPosition(2,nPol_p,channelGroupSize_p));
-  weightSlicer_p=Slicer(IPosition(1,start),IPosition(1,channelGroupSize_p));
+		  IPosition(2,nPol_p,channelGroupSize_p), 
+		  IPosition(2,1, (chanInc_p[spw]<=0)? 1 : chanInc_p[spw] ));
+  weightSlicer_p=Slicer(IPosition(1,start),IPosition(1,channelGroupSize_p), 
+			IPosition(1,(chanInc_p[spw]<=0)? 1 : chanInc_p[spw]));
   useSlicer_p=channelGroupSize_p<nChan_p;
+
+  if(msIter_p.newMS()){
+    setTileCache();
+  }
 }
+
+void ROVisibilityIterator::setTileCache(){
+  // This function sets the tile cache because of a feature in 
+  // sliced data access that grows memory dramatically in some cases
+  if(useSlicer_p){
+    const MeasurementSet& thems=msIter_p.ms();
+    const ColumnDescSet& cds=thems.tableDesc().columnDescSet();
+    ROArrayColumn<Complex> colVis;
+ 
+    Vector<String> columns(3);
+    columns(0)=MS::columnName(MS::DATA);
+    columns(1)=MS::columnName(MS::CORRECTED_DATA);
+    columns(2)=MS::columnName(MS::MODEL_DATA);
+
+    for (uInt k=0; k< columns.nelements(); ++k){
+      if (cds.isDefined(columns(k))) {
+	colVis.attach(thems,columns(k));
+	String dataManType = colVis.columnDesc().dataManagerType();
+	if(dataManType.contains("Tiled")){
+	  ROTiledStManAccessor tacc(thems, 
+				    colVis.columnDesc().dataManagerGroup());
+	  uInt nHyper = tacc.nhypercubes();
+	  // Find smallest tile shape
+	  Int lowestProduct = 0;
+	  Int lowestId = 0;
+	  Bool firstFound = False;
+	  for (uInt id=0; id < nHyper; id++) {
+	    Int product = tacc.getTileShape(id).product();
+	    if (product > 0 && (!firstFound || product < lowestProduct)) {
+	      lowestProduct = product;
+	      lowestId = id;
+	      if (!firstFound) firstFound = True;
+	    }
+	  }
+	  Int nchantile=tacc.getTileShape(lowestId)(1);
+	  if(nchantile > 0)
+	    nchantile=channelGroupSize_p/nchantile+1;
+	  if(nchantile<3)
+	    nchantile=10;
+	  
+	  tacc.setCacheSize (0, nchantile);
+	  
+	}
+      }
+    }
+  }
+  
+}
+
 
 void ROVisibilityIterator::attachColumns()
 {
@@ -399,6 +466,8 @@ void ROVisibilityIterator::attachColumns()
   colScan.attach(selTable_p,MS::columnName(MS::SCAN_NUMBER));
   colSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   colWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
+  if (cds.isDefined("WEIGHT_SPECTRUM")) 
+    colWeightSpectrum.attach(selTable_p,"WEIGHT_SPECTRUM");
   if (cds.isDefined("IMAGING_WEIGHT")) 
     colImagingWeight.attach(selTable_p,"IMAGING_WEIGHT");
 }
@@ -416,6 +485,14 @@ ROVisibilityIterator & ROVisibilityIterator::operator++()
   advance();
   return *this;
 }
+
+Vector<uInt>& ROVisibilityIterator::rowIds(Vector<uInt>& rowids) const
+{
+  rowids.resize(curNumRow_p);
+  rowids=selTable_p.rowNumbers();
+  return rowids;
+}
+
 
 Vector<Int>& ROVisibilityIterator::antenna1(Vector<Int>& ant1) const
 {
@@ -449,8 +526,9 @@ Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
 {
   Int spw = msIter_p.spectralWindowId();
   chan.resize(channelGroupSize_p);
+  Int inc=chanInc_p[spw] <= 0 ? 1 : chanInc_p[spw];
   for (Int i=0; i<channelGroupSize_p; i++) {
-    chan(i)=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw]+i;
+    chan(i)=chanStart_p[spw]+curChanGroup_p*chanWidth_p[spw]+i*inc;
   }
   return chan;
 }
@@ -536,8 +614,9 @@ Vector<Double>& ROVisibilityIterator::frequency(Vector<Double>& freq) const
       This->frequency_p.resize(channelGroupSize_p);
       const Vector<Double>& chanFreq=msIter_p.frequency();
       Int start=chanStart_p[spw]-msIter_p.startChan();
+      Int inc=chanInc_p[spw] <= 0 ? 1 : chanInc_p[spw];
       for (Int i=0; i<channelGroupSize_p; i++) {
-	This->frequency_p(i)=chanFreq(start+curChanGroup_p*chanInc_p[spw]+i);
+	This->frequency_p(i)=chanFreq(start+curChanGroup_p*chanWidth_p[spw]+i*inc);
       }
     }
     freq.resize(channelGroupSize_p);
@@ -886,6 +965,13 @@ Vector<Float>& ROVisibilityIterator::sigma(Vector<Float>& sig) const
   return sig;
 }
 
+Matrix<Float>& ROVisibilityIterator::sigmaMat(Matrix<Float>& sigmat) const
+{
+  sigmat.resize(nPol_p,curNumRow_p);
+  colSigma.getColumn(sigmat);
+  return sigmat;
+}
+
 Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
 {
   // Take average of parallel hand polarizations for now.
@@ -896,6 +982,39 @@ Vector<Float>& ROVisibilityIterator::weight(Vector<Float>& wt) const
   wt+=polWeight.row(nPol_p-1);
   wt/=2.0f;
   return wt;
+}
+
+Matrix<Float>& ROVisibilityIterator::weightMat(Matrix<Float>& wtmat) const
+{
+  wtmat.resize(nPol_p,curNumRow_p);
+  colWeight.getColumn(wtmat);
+  return wtmat;
+}
+
+
+Bool ROVisibilityIterator::existsWeightSpectrum() const
+{
+  Bool rstat(False);
+
+  try {
+    rstat = (!colWeightSpectrum.isNull() &&
+	     colWeightSpectrum.shape(0).isEqual(IPosition(2,nPol_p,channelGroupSize())));
+  } catch (AipsError x) {
+    rstat = False;
+  }
+  return rstat;
+}
+
+
+Cube<Float>& ROVisibilityIterator::weightSpectrum(Cube<Float>& wtsp) const
+{
+  if (!colWeightSpectrum.isNull()) {
+    wtsp.resize(nPol_p,nChan_p,curNumRow_p);
+    colWeightSpectrum.getColumn(wtsp);
+  } else {
+    wtsp.resize(0,0,0);
+  }
+  return wtsp;
 }
 
 Matrix<Float>& ROVisibilityIterator::imagingWeight(Matrix<Float>& wt) const
@@ -982,14 +1101,58 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   if (spw<0) spw = msIter_p.spectralWindowId();
   Int n = numChanGroup_p.nelements();
   if(n==0){
-    blockSpw_p.resize(1);
+    blockSpw_p.resize(1, True, False);
     blockSpw_p[0].resize(1);
     blockSpw_p[0][0]=spw;
+    blockNumChanGroup_p.resize(1,True,False);
+    blockNumChanGroup_p[0].resize(1);
+    blockNumChanGroup_p[0][0]=nGroup;
+    blockChanStart_p.resize(1, True, False);
+    blockChanStart_p[0].resize(1);
+    blockChanStart_p[0][0]=start;
+    blockChanWidth_p.resize(1, True, False);
+    blockChanWidth_p[0].resize(1);
+    blockChanWidth_p[0][0]=width;
+    blockChanInc_p.resize(1, True, False);
+    blockChanInc_p[0].resize(1);
+    blockChanInc_p[0][0]=increment;
+    msCounter_p=0;
+
+
+
   }
   else{
-    Int nspw=blockSpw_p[0].nelements()+1;
-    blockSpw_p[0].resize(nspw, True);
-    blockSpw_p[0][nspw-1]=spw;      
+    Bool hasSpw=False;
+    Int spwIndex=-1;
+    for (uInt k = 0; k < blockSpw_p[0].nelements(); ++k){
+      if(spw==blockSpw_p[0][k]){
+	hasSpw=True;
+	spwIndex=k;
+	break;
+      }
+    }
+    if(!hasSpw){
+      Int nspw=blockSpw_p[0].nelements()+1;
+      blockSpw_p[0].resize(nspw, True);
+      blockSpw_p[0][nspw-1]=spw;
+      blockNumChanGroup_p[0].resize(nspw,True);
+      blockNumChanGroup_p[0][nspw-1]=nGroup;
+      blockChanStart_p[0].resize(nspw, True);
+      blockChanStart_p[0][nspw-1]=start;
+      blockChanWidth_p[0].resize(nspw, True);
+      blockChanWidth_p[0][nspw-1]=width;
+      blockChanInc_p[0].resize(nspw, True);
+      blockChanInc_p[0][nspw-1]=increment;
+    }
+    else{
+      blockSpw_p[0][spwIndex]=spw;
+      blockNumChanGroup_p[0][spwIndex]=nGroup;
+      blockChanStart_p[0][spwIndex]=start;
+      blockChanWidth_p[0][spwIndex]=width;
+      blockChanInc_p[0][spwIndex]=increment;
+    }
+
+
   }
   if (spw >= n) {
     // we need to resize the blocks
@@ -1019,13 +1182,14 @@ ROVisibilityIterator::selectChannel(Block<Vector<Int> >& blockNGroup,
 				    Block<Vector<Int> >& blockIncr,
 				    Block<Vector<Int> >& blockSpw)
 {
-
+  /*
+  No longer needed
   if(!isMultiMS_p){
     //Programmer error ...so should not reach here
     cout << "Cannot use this function if Visiter was not constructed with multi-ms" 
 	 << endl;
   }
-
+  */
 
   blockNumChanGroup_p.resize(0, True, False);
   blockNumChanGroup_p=blockNGroup;
@@ -1058,8 +1222,31 @@ ROVisibilityIterator::selectChannel(Block<Vector<Int> >& blockNGroup,
 }
 
 
+void ROVisibilityIterator::getChannelSelection(
+					       Block< Vector<Int> >& blockNGroup,
+					       Block< Vector<Int> >& blockStart,
+					       Block< Vector<Int> >& blockWidth,
+					       Block< Vector<Int> >& blockIncr,
+					       Block< Vector<Int> >& blockSpw){
+
+
+  blockNGroup.resize(0, True, False);
+  blockNGroup=blockNumChanGroup_p;
+  blockStart.resize(0, True, False);
+  blockStart=blockChanStart_p;
+  blockWidth.resize(0, True, False);
+  blockWidth=blockChanWidth_p;
+  blockIncr.resize(0, True, False);
+  blockIncr=blockChanInc_p;
+  blockSpw.resize(0, True, False);
+  blockSpw=blockSpw_p;
+
+
+
+}
 void  ROVisibilityIterator::doChannelSelection()
 {
+
 
   for (uInt k=0; k < blockSpw_p[msCounter_p].nelements(); ++k){
     Int spw=blockSpw_p[msCounter_p][k];
@@ -1068,10 +1255,10 @@ void  ROVisibilityIterator::doChannelSelection()
     if (spw >= n) {
       // we need to resize the blocks
       Int newn = max(2,max(2*n,spw+1));
-      numChanGroup_p.resize(newn);
-      chanStart_p.resize(newn);
-      chanWidth_p.resize(newn);
-      chanInc_p.resize(newn);
+      numChanGroup_p.resize(newn, True, True);
+      chanStart_p.resize(newn, True, True);
+      chanWidth_p.resize(newn, True, True);
+      chanInc_p.resize(newn, True, True);
       for (Int i = n; i<newn; i++) numChanGroup_p[i] = 0;
     }
     chanStart_p[spw] = blockChanStart_p[msCounter_p][k];
@@ -1081,10 +1268,37 @@ void  ROVisibilityIterator::doChannelSelection()
     numChanGroup_p[spw] = blockNumChanGroup_p[msCounter_p][k];
     curNumChanGroup_p = blockNumChanGroup_p[msCounter_p][k];
   }
+  Int spw=msIter_p.spectralWindowId();
+  Int spIndex=-1;
+  for (uInt k=0; k < blockSpw_p[msCounter_p].nelements(); ++k){
+    if(spw==blockSpw_p[msCounter_p][k]){
+      spIndex=k;
+      break;
+    }
+  }
+
+  //leave this at the stage where msiter is pointing
+  channelGroupSize_p = blockChanWidth_p[msCounter_p][spIndex];
+  curNumChanGroup_p = blockNumChanGroup_p[msCounter_p][spIndex];
+
+
 
 }
 
+void  ROVisibilityIterator::getSpwInFreqRange(Block<Vector<Int> >& spw, 
+					      Block<Vector<Int> >& start, 
+					      Block<Vector<Int> >& nchan, 
+					      Double freqStart, 
+					      Double freqEnd, 
+					      Double freqStep){
 
+
+  msIter_p.getSpwInFreqRange(spw, start, nchan, 
+			     freqStart, freqEnd, freqStep);
+
+
+
+}
 
 void ROVisibilityIterator::allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan){
 
@@ -1144,14 +1358,15 @@ void ROVisibilityIterator::lsrFrequency(const Int& spw, Vector<Double>& freq,
 
 
   for (Int i=0; i<chanWidth_p[spw]; i++) {
+    Int inc=chanInc_p[spw] <= 0 ? 1 : chanInc_p[spw] ; 
     if(convert){
       freq[i]=tolsr(chanFreq(start+
-			     (numChanGroup_p[spw]-1)*chanInc_p[spw]+i)).
+			     (numChanGroup_p[spw]-1)*chanWidth_p[spw]+i*inc)).
 	getValue().getValue();
     }
     else{
       freq[i]=chanFreq(start+
-		       (numChanGroup_p[spw]-1)*chanInc_p[spw]+i);
+		       (numChanGroup_p[spw]-1)*chanWidth_p[spw]+i*inc);
     }
   }
 
@@ -1212,6 +1427,7 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
 	RWcolModelVis.reference(other.RWcolModelVis);
 	RWcolCorrVis.reference(other.RWcolCorrVis);
 	RWcolWeight.reference(other.RWcolWeight);
+        RWcolWeightSpectrum.reference(other.RWcolWeightSpectrum);
 	RWcolSigma.reference(other.RWcolSigma);
 	RWcolImagingWeight.reference(other.RWcolImagingWeight);
     }
@@ -1251,6 +1467,8 @@ void VisibilityIterator::attachColumns()
   if (cds.isDefined("CORRECTED_DATA")) 
     RWcolCorrVis.attach(selTable_p,"CORRECTED_DATA");
   RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
+  if (cds.isDefined("WEIGHT_SPECTRUM"))
+    RWcolWeightSpectrum.attach(selTable_p,"WEIGHT_SPECTRUM");
   RWcolSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   RWcolFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
@@ -1367,6 +1585,18 @@ void VisibilityIterator::setWeight(const Vector<Float>& weight)
   RWcolWeight.putColumn(polWeight);
 }
 
+void VisibilityIterator::setWeightMat(const Matrix<Float>& weightMat)
+{
+  RWcolWeight.putColumn(weightMat);
+}
+
+void VisibilityIterator::setWeightSpectrum(const Cube<Float>& weightSpectrum)
+{
+  if (!colWeightSpectrum.isNull()) {
+    RWcolWeightSpectrum.putColumn(weightSpectrum);
+  }
+}
+
 void VisibilityIterator::setSigma(const Vector<Float>& sigma)
 {
   Matrix<Float> sigmat=colSigma.getColumn();
@@ -1461,6 +1691,8 @@ void VisibilityIterator::putDataColumn(DataColumn whichOne,
 {
   // Set the visibility (observed, model or corrected);
   // deal with DATA and FLOAT_DATA seamlessly for observed data.
+
+
   switch (whichOne) {
   case Observed:
     if (floatDataFound_p) {
