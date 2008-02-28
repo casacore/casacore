@@ -365,22 +365,21 @@ LELScalar<Float> LELFunctionFloat::getScalar() const
    }
    case LELFunctionEnums::LENGTH :       
    {
-      Double axis;
+      Double daxis;
       if (arg_p[1].dataType() == TpFloat) {
-	 axis = arg_p[1].getFloat();
+	 daxis = arg_p[1].getFloat();
       } else {
-	 axis = arg_p[1].getDouble();
+	 daxis = arg_p[1].getDouble();
       }
-      axis += 0.5;                // for rounding
-      if (axis < 1) {
-	 throw (AipsError ("Axis argument in length function is < 1; "
-			   "(note axis is 1-relative!)"));
+      Int axis = Int(daxis+0.499);    // add  for rounding
+      if (axis < 0) {
+	 throw (AipsError ("Axis argument in length function is < 0; "
+			   "(note axis is 0-relative!)"));
       }
       if (arg_p[0].isScalar()) {
 	 return 1;
       }
       const IPosition& shape = arg_p[0].shape();
-      axis -= 1;
       if (axis >= shape.nelements()) {
 	 return 1;
       }
@@ -1794,16 +1793,14 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
       } else {
 	daxis = arg_p[0].getDouble();
       }
-      daxis -= 0.5;                // for rounding
-      if (daxis < 0) {
+      Int axis = Int(daxis+0.499);    // add for rounding
+      if (axis < 0) {
 	throw (AipsError ("Axis argument in INDEXIN function is < 1; "
-			  "(note axis is 1-relative!)"));
-      }
-      else if (daxis >= section.ndim()) {
+			  "(note axis is 0-relative!)"));
+      } else if (axis >= section.ndim()) {
 	throw (AipsError ("Axis argument in INDEXIN function outside array; "
-			  "(note axis is 1-relative!)"));
+			  "(note axis is 0-relative!)"));
       }
-      uInt axis = uInt(daxis);
       uInt stinx = section.start()[axis];
       Array<Bool> tmp(section.length());
       const IPosition& shp = tmp.shape();

@@ -1702,31 +1702,31 @@ Bool doIt (const MaskedLattice<Float>& aF,
    {
       cout << "  Float Scalar" << endl;
       LatticeExprNode expr1(bFVal);
-      LatticeExprNode expr2 = length(expr1,Float(1));
+      LatticeExprNode expr2 = length(expr1,Float(0));
       if (!checkFloat(expr2, 1.0, shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Scalar" << endl;
       LatticeExprNode expr1(bCVal);
-      LatticeExprNode expr2 = length(expr1,Double(1));
+      LatticeExprNode expr2 = length(expr1,Double(0));
       if (!checkFloat(expr2, 1.0, shape, True, False)) ok = False;
    }
    {
       cout << "  Float Array" << endl;
       LatticeExprNode expr1(bF);
-      LatticeExprNode expr2 = length(expr1,1);
+      LatticeExprNode expr2 = length(expr1,0);
       if (!checkFloat(expr2, shape(0), shape, True, False)) ok = False;
    }
    {
       cout << "  Complex Array" << endl;
       LatticeExprNode expr1(bC);
-      LatticeExprNode expr2 = length(expr1,2);
+      LatticeExprNode expr2 = length(expr1,1);
       if (!checkFloat(expr2, shape(1), shape, True, False)) ok = False;
    }
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
-      LatticeExprNode expr2 = length(expr1,3);
+      LatticeExprNode expr2 = length(expr1,2);
       if (!checkFloat(expr2, 1, shape, True, False)) ok = False;
    }
     cout << "any" << endl;
@@ -1801,21 +1801,21 @@ Bool doIt (const MaskedLattice<Float>& aF,
     cout << "indexin" << endl;     
    {
       Vector<Bool> flags(2,True);
-      LatticeExprNode expr1(1);
+      LatticeExprNode expr1(0);
       LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
       LatticeExprNode expr = indexin(expr1,expr2);
       if (!checkBool (expr, True, IPosition(2,2,4), False, False, True)) ok = False;
    }
    {
       Vector<Bool> flags(2,True);
-      LatticeExprNode expr1(2);
+      LatticeExprNode expr1(1);
       LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
       LatticeExprNode expr = indexin(expr1,expr2);
       if (!checkBool (expr, True, IPosition(2,10,2), False, False, True)) ok = False;
    }
    {
       Vector<Bool> flags(3,False);
-      LatticeExprNode expr1(1);
+      LatticeExprNode expr1(0);
       LatticeExprNode expr2((ArrayLattice<Bool>(flags)));
       LatticeExprNode expr = indexin(expr1,expr2);
       if (!checkBool (expr, False, IPosition(2,6,2), False, False, True)) ok = False;

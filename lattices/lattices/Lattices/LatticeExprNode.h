@@ -196,8 +196,8 @@ class LatticeExprNode;
   // Results in a scalar Float.
   // The 2nd expression (giving the axis number) has to be a real scalar.
   // <note role=caution>
-  // Axes start counting at 1.
-  // If the axis is a number < 1, an exception is thrown.
+  // Axes start counting at 0.
+  // If the axis is a number < 0, an exception is thrown.
   // If the axis is a number exceeding the dimensionality, 1 is returned.
   // </note>
    LatticeExprNode length (const LatticeExprNode& expr,
@@ -209,8 +209,8 @@ class LatticeExprNode;
   // For indices >= vector_length, the 2nd argument defaults to False.
   // Results in a Bool array.
   // <note role=caution>
-  // Axes start counting at 1.
-  // If the axis is a number < 1 or > ndim, an exception is thrown.
+  // Axes start counting at 0.
+  // If the axis is a number < 0 or >= ndim, an exception is thrown.
   // </note>
    LatticeExprNode indexin (const LatticeExprNode& axis,
 			    const LatticeExprNode& indexFlags);

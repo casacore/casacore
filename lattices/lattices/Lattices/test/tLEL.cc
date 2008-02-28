@@ -2234,7 +2234,7 @@ int main (int argc, char *argv[])
     cout << "   Function indexin" << endl;     
     {
       Vector<Bool> flags(2,True);
-      argb[0] = LatticeExprNode(1);
+      argb[0] = LatticeExprNode(0);
       argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
       LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
       BResult = True;
@@ -2242,7 +2242,7 @@ int main (int argc, char *argv[])
     }
     {
       Vector<Bool> flags(2,True);
-      argb[0] = LatticeExprNode(2);
+      argb[0] = LatticeExprNode(1);
       argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
       LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
       BResult = True;
@@ -2250,7 +2250,7 @@ int main (int argc, char *argv[])
     }
     {
       Vector<Bool> flags(3,False);
-      argb[0] = LatticeExprNode(1);
+      argb[0] = LatticeExprNode(0);
       argb[1] = LatticeExprNode(ArrayLattice<Bool>(flags));
       LELFunctionBool expr(LELFunctionEnums::INDEXIN, argb);
       BResult = False;
