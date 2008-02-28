@@ -51,7 +51,7 @@ def generate(env):
 #	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
         env.AppendUnique(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
-            if env["universal"]:
+            if env.get("universal", False):
                 env.AppendUnique(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', 
                                            '-isysroot', 
                                            '/Developer/SDKs/MacOSX10.4u.sdk'])
