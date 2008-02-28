@@ -266,7 +266,6 @@ private:
 // Convert SE
    SpectralElement convertSpectralElement (const SpectralElement& elIn,
                                            Bool xAbsIn, Bool xAbsOut,
-                                           Bool oneRelIn, Bool oneRelOut,
                                            const String& xUnitIn,
                                            const String& xUnitOut,
                                            const String& dopplerIn,
@@ -282,9 +281,7 @@ private:
                                   const String& unitIn,
                                   const String& unitOut,
                                   const String& dopplerIn,
-                                  const String& dopplerOut,
-                                  Bool oneRelIn,
-                                  Bool oneRelOut);
+                                  const String& dopplerOut);
 
 // 
    SpectralList filterList (const SpectralList& listIn) const;

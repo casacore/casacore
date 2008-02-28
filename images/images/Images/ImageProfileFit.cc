@@ -293,14 +293,12 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
       dopplerIn = rec.asString("doppler");
    }
    Bool xAbsIn = rec.asBool("xabs");
-   Bool oneRelIn = True;
    String yUnitIn = rec.asString("yunit");
 
 // Setup output units
 
    String xUnitOut = itsX.getFullUnit().getName();
    Bool xAbsOut = itsXAbs;
-   Bool oneRelOut = False;
    String dopplerOut = itsDoppler;
    String yUnitOut = itsY.getFullUnit().getName();
 
@@ -327,7 +325,6 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
 // Convert element to required units
 
       SpectralElement seOut = convertSpectralElement (se, xAbsIn, xAbsOut,
-                                                      oneRelIn, oneRelOut,
                                                       xUnitIn, xUnitOut,
                                                       dopplerIn, dopplerOut,
                                                       yUnitIn, yUnitOut);
@@ -393,12 +390,10 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 // Setup units
 
    Bool xAbsIn = itsXAbs;
-   Bool oneRelIn = False;
    String xUnitIn = itsX.getFullUnit().getName();
    String dopplerIn = itsDoppler;
    String yUnitIn = itsY.getFullUnit().getName();
 //
-   Bool oneRelOut = True;               // 1-rel for Glish
    String yUnitOut = yUnitIn;
 //
    Record recVec;
@@ -408,7 +403,6 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 // Convert element to desired units
 
       SpectralElement seOut = convertSpectralElement (list[i], xAbsIn, xAbsOut,
-                                                      oneRelIn, oneRelOut,
                                                       xUnitIn, xUnitOut,
                                                       dopplerIn, dopplerOut,
                                                       yUnitIn, yUnitOut);
@@ -480,14 +474,12 @@ Bool ImageProfileFit::estimate (uInt nMax)
    String xUnitIn("pix");
    String dopplerIn = itsDoppler;
    Bool xAbsIn = True;
-   Bool oneRelIn = False;
    String yUnitIn = itsY.getFullUnit().getName();
 
 // Setup output units
 
    String xUnitOut = itsX.getFullUnit().getName();
    Bool xAbsOut = itsXAbs;
-   Bool oneRelOut = False;
    String dopplerOut = dopplerIn;
    String yUnitOut = yUnitIn;
 
@@ -495,7 +487,6 @@ Bool ImageProfileFit::estimate (uInt nMax)
 
    for (uInt i=0; i<nEl; i++) {   
       SpectralElement se = convertSpectralElement (list[i], xAbsIn, xAbsOut,
-                                                   oneRelIn, oneRelOut,
                                                    xUnitIn, xUnitOut,
                                                    dopplerIn, dopplerOut,
                                                    yUnitIn, yUnitOut);
@@ -658,7 +649,6 @@ void ImageProfileFit::setData (const ImageInterface<Float>*& pSigma,
 
 SpectralElement ImageProfileFit::convertSpectralElement (const SpectralElement& elIn,
                                                          Bool xAbsIn, Bool xAbsOut,
-                                                         Bool oneRelIn, Bool oneRelOut,
                                                          const String& xUnitIn, 
                                                          const String& xUnitOut,
                                                          const String& dopplerIn,
@@ -689,8 +679,7 @@ SpectralElement ImageProfileFit::convertSpectralElement (const SpectralElement& 
       convertGaussianElementX (elOut, itsCoords, itsProfileAxis,
                                xAbsIn, xAbsOut,
                                xUnitIn, xUnitOut,
-                               dopplerIn, dopplerOut, 
-                               oneRelIn, oneRelOut);
+                               dopplerIn, dopplerOut);
    } else {
       os << "Elements of type " << elOut.getType() << " are not yet supported" << LogIO::EXCEPTION;
    }
@@ -708,9 +697,7 @@ void ImageProfileFit::convertGaussianElementX (SpectralElement& el,
                                                const String& unitIn,
                                                const String& unitOut,
                                                const String& dopplerIn,
-                                               const String& dopplerOut,
-                                               Bool oneRelIn, 
-                                               Bool oneRelOut)
+                                               const String& dopplerOut)
 //
 // The data source is an image
 //
@@ -723,7 +710,7 @@ void ImageProfileFit::convertGaussianElementX (SpectralElement& el,
 // See if we have something to do.  One of the doppler strings
 // might be empty so only check if doing velocity.
 
-   if (unitIn==unitOut && absIn==absOut && oneRelIn==oneRelOut) {
+   if (unitIn==unitOut && absIn==absOut) {
       Unit tIn(unitIn);
       Unit tOut(unitOut);
       if (tIn==velUnit && tOut==velUnit) {
@@ -790,12 +777,10 @@ void ImageProfileFit::convertGaussianElementX (SpectralElement& el,
    unitsOut = pix;
    unitsOut(profileAxis) = unitOut;
 
-// Setup pixel offsets if input is in pixels and 1-rel
+// Setup pixel offsets (always 0-rel).
 
    Double offsetIn = 0.0;
-   if (oneRelIn) offsetIn = -1.0;
    Double offsetOut = 0.0;
-   if (oneRelOut) offsetOut = 1.0;
 //
 // Get center and set values
 //
@@ -1015,7 +1000,7 @@ void ImageProfileFit::fit (Bool fillRecord, RecordInterface& rec,
 //
       if (fillRecord) {
          Record rec4, rec3;
-         rec4.define ("pixel", inIter.position().asVector()+1);       // Make 1-rel
+         rec4.define ("pixel", inIter.position().asVector());
          rec3.defineRecord("position", rec4);    
 //
          Record rec2;

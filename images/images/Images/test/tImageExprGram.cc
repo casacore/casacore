@@ -294,7 +294,7 @@ int main (int argc, char *argv[])
   }
   {
     cout << "Expr:  a = nelements(b[$region1 || $region2) - "
-	    "length(b[$region1],1)" << endl;
+	    "length(b[$region1],0)" << endl;
     Block<LatticeExprNode> temps(0);
     PtrBlock<const ImageRegion*> regions(2);
     Matrix<Bool> mask1(shape-1);
@@ -309,7 +309,7 @@ int main (int argc, char *argv[])
 							shape-2, shape)));
     LatticeExpr<Double> expr(ImageExprParse::command
 			     ("nelements(b[$REGION#1 || $REGION#2]) - "
-			      "length(b[$REGION#1],1)",
+			      "length(b[$REGION#1],0)",
 			      temps, regions));
     delete regions[0];
     delete regions[1];
@@ -590,10 +590,10 @@ int main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+sum(kpa[indexin(1,[1:2,8,4:7:2])])" << endl;
+    cout << "Expr:  a = b+sum(kpa[indexin(0,[0:1,7,3:6:2])])" << endl;
 
     LatticeExpr<Double> expr(ImageExprParse::command
-	          ("b+sum(kpa[indexin(1,[1:2,8,4:7:2])])"));
+	          ("b+sum(kpa[indexin(0,[0:1,7,3:6:2])])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -608,10 +608,10 @@ int main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+sum(kpa[indexnotin(2,[1:2,10,4:7:3,10])])" << endl;
+    cout << "Expr:  a = b+sum(kpa[indexnotin(1,[0:1,9,3:6:3,9])])" << endl;
 
     LatticeExpr<Double> expr(ImageExprParse::command
-	          ("b+sum(kpa[indexnotin(2,[1:2,10,4:7:3,10])])"));
+	          ("b+sum(kpa[indexnotin(1,[0:1,9,3:6:3,9])])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -628,10 +628,10 @@ int main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+sum(kpa[index2 in [1:2,10,4:7:3,10]])" << endl;
+    cout << "Expr:  a = b+sum(kpa[index1 in [0:1,9,3:6:3,9]])" << endl;
 
     LatticeExpr<Double> expr(ImageExprParse::command
-	          ("b+sum(kpa[index2 in [1:2,10,4:7:3,10]])"));
+	          ("b+sum(kpa[index1 in [0:1,9,3:6:3,9]])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -646,10 +646,10 @@ int main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])" << endl;
+    cout << "Expr:  a = b+sum(kpa[index1 not in [0:1,9,3:6:3,9]])" << endl;
 
     LatticeExpr<Double> expr(ImageExprParse::command
-	          ("b+sum(kpa[index2 not in [1:2,10,4:7:3,10]])"));
+	          ("b+sum(kpa[index1 not in [0:1,9,3:6:3,9]])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));

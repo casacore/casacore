@@ -469,7 +469,7 @@ Slice* ImageExprParse::makeSlice (const ImageExprParse& start)
   if (start.itsType != TpInt) {
     throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
   }
-  return new Slice(start.itsIval-1);
+  return new Slice(start.itsIval);
 }
 
 Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
@@ -481,7 +481,7 @@ Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
   if (start.itsIval > start.itsIval) {
     throw AipsError("ImageExprParse: in s:e:i s must be <= e");
   }
-  return new Slice(start.itsIval-1, end.itsIval-start.itsIval+1);
+  return new Slice(start.itsIval, end.itsIval-start.itsIval+1);
 }
 
 Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
@@ -494,7 +494,7 @@ Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
   if (start.itsIval > start.itsIval) {
     throw AipsError("ImageExprParse: in s:e:i s must be <= e");
   }
-  return new Slice(start.itsIval-1, end.itsIval-start.itsIval+1, incr.itsIval);
+  return new Slice(start.itsIval, end.itsIval-start.itsIval+1, incr.itsIval);
 }
 
 LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
