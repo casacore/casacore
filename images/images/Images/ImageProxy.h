@@ -32,8 +32,10 @@
 //# Includes
 #include <lattices/LatticeMath/Fit2D.h>
 #include <components/ComponentModels/ComponentType.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <measures/Measures/Stokes.h>
+#include <casa/Quanta/Quantum.h>
 #include <casa/Arrays/AxesSpecifier.h>
-
 namespace casa {
 
 class DirectionCoordinate;
@@ -52,7 +54,7 @@ template<class T> class ImageStatistics;
 template<class T> class ImageHistograms;
 template<class T> class MaskedArray;
 template<class T> class PagedImage;
-template<class T> class Quantum;
+  //template<class T> class Quantum;
 template<class T> class SubLattice;
 template<class T> class SubImage;
 template<class T> class Vector;
