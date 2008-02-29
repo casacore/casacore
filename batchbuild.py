@@ -97,4 +97,7 @@ for k in deps.keys():
     if k in args:
 	tobuild = get_libs(k)
 	args.remove(k)
+if "-c" in args or "clean" in args:
+    # clean up highest level package first
+    tobuild.reverse()
 run_scons(tobuild, args)
