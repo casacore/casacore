@@ -206,10 +206,10 @@ LCBox* LCBox::fromRecord (const TableRecord& rec, const String&)
     // If 1-relative, subtract 1 from blc and trc.
     Bool oneRel = rec.asBool ("oneRel");
     Float off = (oneRel ? 1:0);
-    Array<Float> blc (rec.asArrayFloat ("blc"));
-    Array<Float> trc (rec.asArrayFloat ("trc"));
+    Array<Float> blc (rec.toArrayFloat ("blc"));
+    Array<Float> trc (rec.toArrayFloat ("trc"));
     return new LCBox (blc-off, trc-off,
-		      Vector<Int>(rec.asArrayInt ("shape")));
+		      Vector<Int>(rec.toArrayInt ("shape")));
 }
 
 void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)

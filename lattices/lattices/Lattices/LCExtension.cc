@@ -165,7 +165,7 @@ LCExtension* LCExtension::fromRecord (const TableRecord& rec,
     LCBox* boxPtr = 0;
     boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"), tableName));
     LCExtension* extPtr = new LCExtension (True, regPtr,
-					  Vector<Int>(rec.asArrayInt ("axes")),
+					  Vector<Int>(rec.toArrayInt ("axes")),
 					  *boxPtr);
     delete boxPtr;
     return extPtr;

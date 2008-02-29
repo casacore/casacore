@@ -193,10 +193,10 @@ LCEllipsoid* LCEllipsoid::fromRecord (const TableRecord& rec,
     // If 1-relative, subtract 1 from center.
     Bool oneRel = rec.asBool ("oneRel");
     Float off = (oneRel ? 1:0);
-    Array<Float> center (rec.asArrayFloat ("center"));
+    Array<Float> center (rec.toArrayFloat ("center"));
     return new LCEllipsoid (center-off,
-			    Vector<Float>(rec.asArrayFloat ("radii")),
-			    Vector<Int>(rec.asArrayInt ("shape")));
+			    Vector<Float>(rec.toArrayFloat ("radii")),
+			    Vector<Int>(rec.toArrayInt ("shape")));
 }
 
 void LCEllipsoid::fillCenter (const IPosition& center)

@@ -545,12 +545,12 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
     }
     // If 1-relative, subtract 1 from blc and trc.
     Bool oneRel = rec.asBool ("oneRel");
-    Vector<Float> blc (rec.asArrayFloat ("blc").copy());
-    Vector<Float> trc (rec.asArrayFloat ("trc").copy());
-    Vector<Bool> fracblc (rec.asArrayBool ("fracblc"));
-    Vector<Bool> fractrc (rec.asArrayBool ("fractrc"));
-    Vector<Int> arblc (rec.asArrayInt ("arblc"));
-    Vector<Int> artrc (rec.asArrayInt ("artrc"));
+    Vector<Float> blc (rec.toArrayFloat ("blc").copy());
+    Vector<Float> trc (rec.toArrayFloat ("trc").copy());
+    Vector<Bool> fracblc (rec.toArrayBool ("fracblc"));
+    Vector<Bool> fractrc (rec.toArrayBool ("fractrc"));
+    Vector<Int> arblc (rec.toArrayInt ("arblc"));
+    Vector<Int> artrc (rec.toArrayInt ("artrc"));
     // If blc,trc is 1-relative, make it 0-relative by subtracting 1.
     // Do it only if absolute non-fractional or if MimicSource+1.
     if (oneRel) {
@@ -572,9 +572,9 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
 	}
     }
     LCSlicer* regPtr = new LCSlicer (blc, trc,
-				     rec.asArrayFloat ("inc"),
+				     rec.toArrayFloat ("inc"),
 				     fracblc, fractrc,
-				     rec.asArrayBool ("fracinc"),
+				     rec.toArrayBool ("fracinc"),
 				     arblc, artrc);
     if (rec.isDefined ("comment")) {
 	regPtr->setComment (rec.asString ("comment"));

@@ -117,7 +117,7 @@ LCPixelSet* LCPixelSet::fromRecord (const TableRecord& rec,
 {
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
 						   tableName));
-    LCPixelSet* regPtr = new LCPixelSet (rec.asArrayBool ("mask"), *boxPtr);
+    LCPixelSet* regPtr = new LCPixelSet (rec.toArrayBool ("mask"), *boxPtr);
     delete boxPtr;
     return regPtr;
 }
