@@ -249,6 +249,9 @@ Table::Table (const Table& that)
 Table::~Table()
 {
     if (isCounted_p  &&  baseTabPtr_p != 0) {
+#ifdef CASACORE_UNLOCK_TABLE_ON_DESTRUCT
+        unlock();
+#endif
 	BaseTable::unlink (baseTabPtr_p);
     }
 }
