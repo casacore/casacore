@@ -607,6 +607,8 @@ public:
 
       T& operator*()
         { return *this->getPos(); }
+      T* operator->()
+        { return this->getPos(); }
     };
 
   class ConstIteratorSTL: public BaseIteratorSTL
@@ -646,6 +648,8 @@ public:
 
       const T& operator*() const
         { return *this->itsPos; }
+      const T* operator->()
+        { return this->itsPos; }
 
       const T* pos() const
         { return this->itsPos; }
