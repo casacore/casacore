@@ -31,6 +31,7 @@
 #include <images/Images/ImageOpener.h>
 #include <images/Images/ImageRegion.h>
 #include <images/Images/RegionHandlerTable.h>
+#include <images/Images/HDF5Image.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <lattices/Lattices/PagedArray.h>
 #include <lattices/Lattices/ArrayLattice.h>
@@ -44,7 +45,6 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -62,6 +62,22 @@ static uInt theNrNodes;
 //# Hold the last table used to lookup unqualified region names.
 static Table theLastTable;
 
+//# Hold a pointer to the last HDF5 file to lookup unqualified region names.
+static CountedPtr<HDF5File> theLastHDF5;
+
+// Clear the global info.
+void imageExprParse_clear()
+{
+  theNrNodes   = 0;
+  theLastTable = Table();
+  theLastHDF5  = 0;
+}
+
+// Is there no last table or HDF5 file?
+Bool imageExprParse_hasNoLast()
+{
+  return (theLastTable.isNull() && theLastHDF5.null());
+}
 
 //# Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
@@ -112,6 +128,13 @@ Table& ImageExprParse::getRegionTable (void*, Bool)
   return theLastTable;
 }
 
+#ifdef HAVE_HDF5
+const CountedPtr<HDF5File>& ImageExprParse::getRegionHDF5 (void*)
+{
+  return theLastHDF5;
+}
+#endif
+
 void ImageExprParse::addNode (LatticeExprNode* node)
 {
     if (theNrNodes >= theNodes.nelements()) {
@@ -157,9 +180,7 @@ LatticeExprNode ImageExprParse::command
 {
     theTempLattices = &tempLattices;
     theTempRegions  = &tempRegions;
-    theNrNodes = 0;
-    theLastTable = Table();
-    theirNode = LatticeExprNode();
+    imageExprParse_clear();
     String message;
     String command = str + '\n';
     Bool error = False;
@@ -176,7 +197,7 @@ LatticeExprNode ImageExprParse::command
     LatticeExprNode node = theirNode;
     theirNode = LatticeExprNode();
     deleteNodes();
-    theLastTable = Table();
+    imageExprParse_clear();
     //# If an exception was thrown; throw it again with the message.
     //# Get rid of the constructed node.
     if (error) {
@@ -561,40 +582,50 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     // One or three elements have been given.
     // If the first one is empty, a table must have been used already.
     if (names.nelements() == 1) {
-	if (theLastTable.isNull()) {
+        if (imageExprParse_hasNoLast()) {
 	    throw (AipsError ("ImageExprParse: '" + itsSval +
 			      "' is an unknown lattice or image "
 			      "or it is an unqualified region"));
 	}
     } else if (names(0).empty()) {
-	if (theLastTable.isNull()) {
+        if (imageExprParse_hasNoLast()) {
 	    throw (AipsError ("ImageExprParse: unqualified region '" + itsSval +
 			      "' is used before any table is used"));
 	}
     } else {
-	// The first name is given; see if it is a readable table.
-	if (! Table::isReadable (names(0))) {
-	    throw (AipsError ("ImageExprParse: the table used in region name'"
-			      + itsSval + "' is unknown"));
+	// The first name is given; see if it is a readable table or HDF5 file.
+	if (Table::isReadable (names(0))) {
+	  Table table (names(0));
+	  theLastTable = table;
+	} else if (HDF5File::isHDF5(names(0))) {
+	  theLastHDF5  = new HDF5File(names(0));
+	  theLastTable = Table();
+	} else {
+	  throw (AipsError ("ImageExprParse: the table used in region name'"
+			    + itsSval + "' is unknown"));
 	}
-	Table table (names(0));
-	theLastTable = table;
     }
-    // Now try to find the region in the table.
-    ImageRegion* regPtr;
-    RegionHandlerTable regHand(getRegionTable, 0);
-    if (names.nelements() == 1) {
-	regPtr = regHand.getRegion (names(0), RegionHandler::Any, False);
-	if (regPtr == 0) {
-	    throw (AipsError ("ImageExprParse: '" + itsSval +
-			      "' is an unknown lattice, image, or region"));
-	}
-    } else {
-	regPtr = regHand.getRegion (names(2), RegionHandler::Any, False);
-	if (regPtr == 0) {
-	    throw (AipsError ("ImageExprParse: region '" + itsSval +
-			      " is an unknown region"));
-	}
+    // Now try to find the region in the file.
+    ImageRegion* regPtr = 0;
+    int index = (names.nelements() == 1  ?  0 : 2);
+    if (! theLastTable.isNull()) {
+      RegionHandlerTable regHand(getRegionTable, 0);
+      regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
+    }
+#ifdef HAVE_HDF5
+    if (! theLastHDF5.null()) {
+      RegionHandlerHDF5 regHand(getRegionHDF5, 0);
+      regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
+    }
+#endif
+    if (regPtr == 0) {
+      if (index == 0) {
+	throw (AipsError ("ImageExprParse: '" + itsSval +
+			  "' is an unknown lattice, image, or region"));
+      } else {
+	throw (AipsError ("ImageExprParse: region '" + itsSval +
+			  " is an unknown region"));
+      }
     }
     LatticeExprNode node (*regPtr);
     delete regPtr;
@@ -605,9 +636,35 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 				     const String& name) const
 {
     if (!Table::isReadable(name)) {
-
-// If it's not an aips++ table, try other image types
-
+        // If it's not an aips++ table, try other image types
+        // First try HDF5 (if compiled in).
+#ifdef HAVE_HDF5
+      if (HDF5File::isHDF5(name)) {
+	  // See if it is an image or just an array.
+	  if (isHDF5Image(name)) {
+	    DataType dtype = hdf5imagePixelType(name);
+	    switch (dtype) {
+	    case TpFloat:
+	      node = LatticeExprNode (HDF5Image<Float> (name));
+	      break;
+	      ///	case TpDouble:
+	      ///	    node = LatticeExprNode (HDF5Image<Double> (name));
+	      ///	    break;
+	    case TpComplex:
+	      node = LatticeExprNode (HDF5Image<Complex> (name));
+	      break;
+	      ///	case TpDComplex:
+	      ///	    node = LatticeExprNode (HDF5Image<DComplex> (name));
+	      ///	    break;
+	    default:
+	      throw (AipsError ("ImageExprParse: " + name + " is an HDF5Image "
+				"with an unsupported data type"));
+	    }
+	    return True;
+	  }
+	  return False;   // hdf5, but no image
+	}
+#endif
 	LatticeBase* lattPtr = ImageOpener::openImage (name);
 	if (lattPtr == 0) {
 	   return False;

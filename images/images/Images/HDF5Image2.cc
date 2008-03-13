@@ -1,5 +1,5 @@
-//# images.dox: doxygen description of images package
-//# Copyright (C) 2005
+//# HDF5Image2.cc: non-templated function in HDF5Image
+//# Copyright (C) 2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,24 +25,44 @@
 //#
 //# $Id$
 
-namespace casa {
+#ifdef HAVE_HDF5
 
-// \defgroup images images package (libcasa_images)
-//
-// The images package handles N-dimensional images, their masks,
-// coordinates, and auxiliary info like history.
-// Concrete images can be stored in a Table (as a PagedImage) or in
-// HDF5 format (as an HDF5Image). 
-// <br> Furthermore, it is possible to use virtual images like:
-// <ul>
-//  <li> slices of images
-//  <li> regions in images
-//  <li> expressions of images
-//   (using <a href="http://www.astron.nl/aips++/docs/notes/223">LEL</a>)
-//  <li> concatenation of images
-// </ul>
-//
-// It is built on top of the
-// <a href="group__lattices.html">lattices</a> module.
+#include <images/Images/HDF5Image.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/HDF5/HDF5File.h>
 
-}
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+  DataType hdf5imagePixelType (const String& fileName)
+  {
+    DataType retval = TpOther;
+    if (HDF5File::isHDF5(fileName)) {
+      try {
+	HDF5File file(fileName);
+	retval = HDF5DataSet::getDataType (file.getHid(), "map");
+      } catch (AipsError& x) {
+	// Nothing
+      } 
+    }
+    return retval;
+  }
+
+  Bool isHDF5Image (const String& fileName)
+  {
+    // It is an image if it is an HDF5 file with group coordinfo.
+    Bool retval = False;
+    if (HDF5File::isHDF5(fileName)) {
+      try {
+	HDF5File file(fileName);
+	HDF5Group gid(file, "coordinfo", true);
+	retval = True;
+      } catch (AipsError& x) {
+	// Nothing
+      } 
+    }
+    return retval;
+  }
+
+} //# NAMESPACE CASA - END
+
+#endif

@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/stdvector.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/HDF5/HDF5File.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -298,6 +300,11 @@ public:
     // Callback function for RegionHandlerTable to get the table to be used.
     static Table& getRegionTable (void*, Bool);
 
+#ifdef HAVE_HDF5
+    // Callback function for RegionHandlerHDF5 to get the file to be used.
+    static const CountedPtr<HDF5File>& getRegionHDF5 (void*);
+#endif
+
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;
 
@@ -310,7 +317,6 @@ public:
     DComplex itsDCval;             //# DComplex literal
     String   itsSval;              //# lattice name; function name
 };
-
 
 
 } //# NAMESPACE CASA - END

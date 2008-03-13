@@ -75,6 +75,10 @@ public:
     GIPSY,
     // Classic AIPS
     CAIPS,
+    // Newstar
+    NEWSTAR,
+    // HDF5
+    HDF5,
     // Unknown
     UNKNOWN
    };

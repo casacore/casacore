@@ -366,6 +366,10 @@ protected:
   void setMiscInfoMember (const RecordInterface& rec)
     { miscInfo_p.assign (rec); }
 
+  // Get access to the region handler.
+  RegionHandler* getRegionHandler()
+    { return regHandPtr_p; }
+
 private:
   // It is the job of the derived class to make these variables valid.
   CoordinateSystem coords_p;

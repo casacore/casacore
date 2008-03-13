@@ -27,17 +27,16 @@
 //
 
 #include <images/Images/ImageOpener.h>
-
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableInfo.h>
 #include <images/Images/PagedImage.h>
+#include <casa/HDF5/HDF5File.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/OS/File.h>
 #include <casa/OS/RegularFile.h>
 #include <casa/IO/RegularFileIO.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Regex.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -59,6 +58,9 @@ void ImageOpener::registerOpenImageFunction (ImageTypes type,
 
 ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
 {
+  if (HDF5File::isHDF5(name)) {
+    return HDF5;
+  }
   File file(name);
   if (file.isDirectory()) {
     if (Table::isReadable(name)) {
@@ -151,4 +153,3 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
 
 
 } //# NAMESPACE CASA - END
-
