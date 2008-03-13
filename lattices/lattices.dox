@@ -31,7 +31,8 @@ namespace casa {
 //
 // The lattices package is a generalization of n-dimensional 
 // <a href="group__Arrays.html">arrays</a>.
-// It can hold arrays in memory, on disk, or as a virtual lattice using
+// It can hold arrays in memory, on disk (as a Table or in HDF5),
+// or as a virtual lattice using
 // expressions, subsets, regions, masking, etc.
 // <p>
 // A lot of math functionality (statistics, FFT, convolution, clean, fitting)
