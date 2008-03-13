@@ -38,6 +38,8 @@ namespace casa {
 //   <li> <a href="group__casaContainers.html">Container</a>s (from pre-STL era)
 //   <li> Various <a href="group__casaUtilities.html">utilit</a>y classes
 //        and functions
+//   <li> Classes to store and retrieve casacore data types in/from the 
+//        <a href="group__casaHDF5.html">HDF</a>5 file format
 //   <li> Miscellaneous modules for
 //    <a href="group__casaExceptions.html">exceptions</a>,
 //    <a href="group__casaSystem.html">tasking interface</a>,

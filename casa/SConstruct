@@ -9,6 +9,10 @@ PACKAGE="casa"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
+opts.Add(BoolOption("enable_hdf5", "Turn on hdf5 support", False))
+opts.Add(("hdf5root", 
+	  "The root directory where hdf5 is installed", None))
+opts.Add(("hdf5libdir", "The hdf5 library location", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
@@ -42,6 +46,18 @@ env.Tool('utils', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
 
 env["ENV"]["AIPSPATH"] = env["prefix"]
+
+# Auto configure
+if not env.GetOption('clean'):
+    conf = Configure(env)
+    if conf.env["enable_hdf5"]:
+        conf.env.AddCustomPackage('hdf5')
+        if conf.CheckLib('hdf5', autoadd=0):
+            conf.env.PrependUnique(LIBS=['hdf5'])  
+            conf.env.PrependUnique(CPPFLAGS=['-DHAVE_HDF5'])
+        else:
+            Exit(1)
+    env = conf.Finish()
 
 # create the installer which handles installing the final build
 installer = env.Installer()
