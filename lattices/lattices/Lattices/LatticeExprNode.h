@@ -289,6 +289,11 @@ class LatticeExprNode;
    LatticeExprNode toComplex (const LatticeExprNode& expr);
    LatticeExprNode toDComplex(const LatticeExprNode& expr);
    LatticeExprNode toBool    (const LatticeExprNode& expr);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const Float*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const Double*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const Complex*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const DComplex*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const Bool*);
   // </group>
 // </group>
 
@@ -831,6 +836,16 @@ inline LatticeExprNode operator^ (const LatticeExprNode& left,
 				  const LatticeExprNode& right)
   { return pow (left, right); }
 
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const Float*)
+  { return toFloat (expr); }
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const Double*)
+  { return toDouble (expr); }
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const Complex*)
+  { return toComplex (expr); }
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const DComplex*)
+  { return toDComplex (expr); }
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const Bool*)
+  { return toBool (expr); }
 
 } //# NAMESPACE CASA - END
 

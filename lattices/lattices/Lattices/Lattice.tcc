@@ -48,6 +48,13 @@ Lattice<T>::~Lattice()
   // does nothing
 }
 
+template <class T>
+DataType Lattice<T>::dataType() const
+{
+  return whatType ((T*)0);
+}
+
+
 // rvalue subscript operator for const objects
 template <class T>
 T Lattice<T>::operator() (const IPosition& where) const

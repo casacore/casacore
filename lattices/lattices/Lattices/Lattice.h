@@ -237,7 +237,10 @@ public:
   // Make a copy of the derived object (reference semantics).
   virtual Lattice<T>* clone() const = 0;
 
-    // Return the value of the single element located at the argument
+  // Get the data type of the lattice.
+  virtual DataType dataType() const;
+
+  // Return the value of the single element located at the argument
   // IPosition.  
   // <br> The default implementation uses getSlice.
   // <group>

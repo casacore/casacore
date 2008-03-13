@@ -32,6 +32,7 @@
 //# Includes
 #include <lattices/Lattices/LELCoordinates.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/DataType.h>
 #include <casa/IO/FileLocker.h>
 #include <casa/BasicSL/String.h>
 
@@ -84,6 +85,9 @@ public:
 
   // Make a copy of the derived object (reference semantics).
   virtual LatticeBase* clone() const = 0;
+
+  // Get the data type of the lattice.
+  virtual DataType dataType() const = 0;
 
   // Is the lattice persistent and can it be loaded by other processes as well?
   // That is the case for a PagedArray or PagedImage and for an ImageExpr
