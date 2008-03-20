@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#ifndef CASA_HDF5GROUOP_H
+#ifndef CASA_HDF5GROUP_H
 #define CASA_HDF5GROUP_H
 
 #ifdef HAVE_HDF5
@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <summary>
   // A class representing an HDF5 group.
   // </summary>
-  // <use visibility=local>
+  // <use visibility=export>
   // <reviewed reviewer="" date="" tests="tHDF5Dataset.cc">
   // </reviewed>
   // <synopsis>

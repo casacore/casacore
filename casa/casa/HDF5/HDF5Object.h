@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // An abstract base class representing an HDF5 object
   // </summary>
 
-  // <use visibility=local>
+  // <use visibility=export>
 
   // <reviewed reviewer="" date="" tests="tHDF5Dataset.cc">
   // </reviewed>

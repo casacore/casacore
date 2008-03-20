@@ -47,7 +47,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // A class representing an HDF5 data set.
   // </summary>
 
-  // <use visibility=local>
+  // <use visibility=export>
 
   // <reviewed reviewer="" date="" tests="tHDF5DataSet.cc">
   // </reviewed>
