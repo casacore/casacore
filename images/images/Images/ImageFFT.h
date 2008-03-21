@@ -83,13 +83,13 @@ template<class T> class Vector;
 // <example>
 // <srcblock>
 //
-//// Make a constant image
+// // Make a constant image
 //
 //      IPosition shape(2, 10, 20);
 //      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(), "im1");
 //      im1.set(1.0);
 //
-//// Create output images with masks if needed
+// // Create output images with masks if needed
 //
 //      PagedImage<Float> r1(shape, CoordinateUtil::defaultCoords2D(), "real1");
 //      PagedImage<Float> i1(shape, CoordinateUtil::defaultCoords2D(), "imag1");
@@ -103,13 +103,13 @@ template<class T> class Vector;
 //         i1.defineRegion ("mask0", ImageRegion(mask1), RegionHandler::Masks);
 //         i1.setDefaultMask("mask0");
 //      }
-///
-/// FFT
+// //
+// // FFT
 //
 //      ImageFFT fft;
 //      fft.fftsky(im1);
 //
-//// The coordinates and mask will be updated
+// // The coordinates and mask will be updated
 //
 //      fft.getReal(r1);
 //      fft.getImag(i1);
