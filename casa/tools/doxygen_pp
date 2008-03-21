@@ -39,7 +39,7 @@ $COMMENT_BLOCK     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-# open OUT, ">> xyz";
+###  open OUT, ">> xyz";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -59,7 +59,7 @@ if ($arguments == 1)
   $filnm = $filename;
   $filnm =~ s|$cwd||;
   $filnm =~ s|^/||; 
-  # Get the name of the file from  on.
+  # Get the name of the file.
   $filnm =~ s|(.*?)/(.*)|$2|;
   # Get the name of the header.
   $hdrnm = $filnm;
@@ -71,7 +71,14 @@ if ($arguments == 1)
   $pkgnm = $filnm;
   $pkgnm =~ s|/.*||;
   $modna = $filnm;
-  $modna =~ s|$pknm/||;
+# When removing package name from module, all files like mainpage.dox, casa.dox,
+# etc. have to be changed accordingly. It is neater because it makes modules
+# appear as Arrays instead of casaArrays. However, it gives problems on OS-X
+# where packages tables and module Tables get the same (casa-insensitive)
+# file name.
+# So for the time being, only replace the slash.
+  $modna =~ s|/||;
+###  $modna =~ s|$pkgnm/||;
   $modnm = $modna;
   $modnm =~ s|(.*?)/.*|$1|;
   if ($modnm eq $modna) {
@@ -85,9 +92,9 @@ if ($arguments == 1)
     }
   }
 
-#  print OUT "$cwd $fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr \n";
+###  print OUT "$fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr\n";
 
- # Open the file.
+  # Open the file.
   $status = open(FILEHANDLE, $filename);
 
   # If the file could be opened then read the contents.
@@ -127,10 +134,16 @@ sub handleLinkto
   $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)(:description)?['"]?\s*>| \\link $1 |i;
   $linkstr =~ s|<linkto\s+module\s*=\s*['"]?(.*?):classes['"]?\s*>| \\link $1 |i;
   $linkstr =~ s|<linkto\s+module\s*=\s*['"]?(.*?)['"]?\s*>| \\link $1 |i;
-  if ($linkstr =~ m|<linkto\s+group\s*=\s*['"]?(.*?)['"]?\s*>|) {
-    my $linkgrp = $1;
-    $linkstr =~ s|<linkto.*?>|<a href="$linkgrp">|i;
-    $linkstr .= "</a>";
+  if ($linkstr =~ m|<linkto\s+group\s*=\s*['"]?(.*?)['"]?(:description)?\s*>|) {
+    my $grpnm = $1;
+#    $grpnm =~ s|\s*['".]\s*||g;
+#    $grpnm =~ s|\s+|_|g;
+#    $linkstr =~ s|<linkto.*?>|\\ref $grpnm \"|i;
+#    $linkstr .= "\"";
+#    $linkstr =~ s|<linkto.*?>|<a href="$grpnm">|i;
+#    $linkstr .= "</a>";
+    $linkstr =~ s|<linkto.*?>|\\link $grpnm|i;
+    $linkstr .= " \\endlink";
   } else {
     $linkstr .= " \\endlink";
   }
@@ -224,8 +237,9 @@ sub change_comment_style
 	$newstate = $COMMENT_BLOCK;
 
 	# Doxygen treats #name as a request to link to name.
-	# So escape the #.
+	# So escape the #. Don't do that for #include.
 	$comment =~ s|([ (])#([a-z]+)|$1\\#$2|ig;
+	$comment =~ s| \\#include| #include|ig;
 
 	# A module header is turned into a defgroup and added to the package.
 	if ($isModHdr == 1) {
@@ -233,9 +247,9 @@ sub change_comment_style
 	    $comment =~ s|<module>|\\ingroup $pkgnm\n\\defgroup $modnm $modnm|i;
 	    $nadded += 2;
 	  }
-	  $comment =~ s|</module>|<a class=anchor name=${modnm}_Class_List></a>*/\n/** \\ingroup $modnm\n\\defgroup ${modnm}_internal_classes ${modnm}_internal_classes\n\\brief Internal $modnm classes and functions|i;
+	  $comment =~ s|</module>|<a class=anchor name="${modnm}_Class_List"></a>*/\n/** \\ingroup $modnm\n\\defgroup ${modnm}_internal_classes ${modnm}_internal_classes\n\\brief Internal $modnm classes and functions|i;
 	  $comment =~ s|^\s*<summary>| \\brief |ig;
-	  $comment =~ s|</summary>|<p>See <a href=#${modnm}_Class_List>below</a> for an overview of the classes in this module.|i;
+	  $comment =~ s|</summary>|<p>See <a href="#${modnm}_Class_List">below</a> for an overview of the classes in this module.|i;
 	} else {
 	  # A class or group header's summary is added to the module's defgroup.
 	  if ($comment =~ m|^\s*<summary>|i) {
@@ -248,21 +262,22 @@ sub change_comment_style
 
 	# Handle group tags (also the old fashioned +grp/-grp).
 	# Turn a named group with a summary into a struct, so doxygen
-	# puts it in the module header at the right place.
-	# Keep track of the group level, so such a named group is ended with };.
+	# puts it into the module header at the right place.
+	# Keep track of the group level, so such a named group is ended
+	# like a struct with };.
 	# Named groups are always preceeded by an anchor for linkto references.
 	$comment =~ s|^\s*\+grp|<group>|;
 	$comment =~ s|^\s*-grp|</group>|;
 	if ($comment =~ m|<group\s+name\s*=\s*(.*?)\s*>|i) {
 	  $grpnm = $1;
-	  $comment = "$indent<a class=anchor name=$grpnm></a>";
+	    $grpnm =~ s|\s*['".]\s*||g;
+	    $grpnm =~ s|\s+|_|g;
+	  $comment = "$indent<a class=anchor name=\"$grpnm\"></a>";
 	  # Only a named group at the highest level is turned into a struct.
 	  # Do this only if it has a summary, which indicates it describes
 	  # a group of functions outside a class.
 	  if ($grouplevel == 0  &&  $summinx >= 0) {
 	    $namedgrouplevel += 1;
-	    $grpnm =~ s|\s*['".]\s*||g;
-	    $grpnm =~ s|\s+|_|g;
 	    $extraline = "struct ${hdrnm}_global_functions_${grpnm} {\n";
 	    $nadded += 1;
 	  } else {
