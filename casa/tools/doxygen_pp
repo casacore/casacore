@@ -206,6 +206,7 @@ sub change_comment_style
   $namedgrouplevel = 0;
   $code = 0;           # no <src> block found
   $link = 0;           # no <linkto> block found
+  $linkfr = 0;         # no <linkfrom> found
   $linkstr = "";
   $review = 0;         # no <reviewed> block found
   $reviewstr = "";
@@ -323,6 +324,26 @@ sub change_comment_style
 	  } elsif ( $comment =~ m|(.*?)<linkto(.*)|i ) {
 	    $link = 1;
 	    $linkstr = "<linkto $2";
+	    $comment = $1;
+	  }
+	}
+
+	# Handle linkfrom tags. There can be multiple of them and they can be
+	# spread over multiple lines.
+	# Doxygen has no counterpart for it, so simply remove it.
+	if ( $linkfr==1 ) {
+	  if ( $comment =~ m|(.*?)</linkfrom>(.*)|i ) {
+	    $comment = $2;
+	    $linkfr = 0;
+	  } else {
+	    $comment = "";
+	  }
+	}
+	while ( $linkfr==0  &&  $comment =~ m|<linkfrom|i ) {
+	  if ( $comment =~ m|(.*?)<linkfrom(.*?)</linkfrom>(.*)|i ) {
+	    $comment = "$1 $3";
+	  } elsif ( $comment =~ m|(.*?)<linkfrom(.*)|i ) {
+	    $linkfr = 1;
 	    $comment = $1;
 	  }
 	}
