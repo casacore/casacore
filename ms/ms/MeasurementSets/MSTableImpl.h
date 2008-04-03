@@ -53,9 +53,7 @@ class SetupNewTable;
 // <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto class=MeasurementSet:description">MeasurementSet</linkto>
-// </ul>
 // </prerequisite>
 //
 // <etymology>

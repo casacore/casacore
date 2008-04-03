@@ -29,7 +29,7 @@
 #ifndef COMPONENTS_FLUXSTANDARD_H
 #define COMPONENTS_FLUXSTANDARD_H
 
-// include directives
+//# include directives
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MFrequency.h>
@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="" date="" tests="" demos="">
 
 // <prerequisite>
-//<li><linkto class="Flux">Flux</linkto> module
+// <li><linkto class="Flux">Flux</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -70,7 +70,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 //
 // <todo asof="99/06/01">
-// (i) closer integration into component models.
+// <li> closer integration into component models.
 // </todo>
 
 class FluxStandard

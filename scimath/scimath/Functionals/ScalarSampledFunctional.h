@@ -39,11 +39,6 @@ template<class T> class Block;
 
 // <summary> A unified interface for indexing into Vectors or Blocks </summary>
 
-// <linkfrom anchor="ScalarSampledFunctional" classes="SampledFunctional" modules="Functional">
-// <here> ScalarSampledFunctional </here> 
-// Access an Array or Block using a SampledFunctional interface
-// </linkfrom>
-
 // <use visibility=export>
 
 // <reviewed reviewer="wyoung" date="1996/10/18" tests="tSampledFunctional.cc">

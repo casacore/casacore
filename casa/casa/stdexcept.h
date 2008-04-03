@@ -1,5 +1,5 @@
-//# stdexcept.h: Interim solution for standard/nonstandard system stdexcept
-//# Copyright (C) 2001,2002
+//# stdexcept.h: Make standard exceptions availabe in casa namespace
+//# Copyright (C) 2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,10 +27,6 @@
 
 #ifndef CASA_STDEXCEPT_H
 #define CASA_STDEXCEPT_H
-
-// Define the C standard C++ include file. 
-// This is an interim solution to cater for the SGI non-existence of
-// them (e.g. <cstring>)
 
 #include <stdexcept>
 

@@ -142,6 +142,7 @@ public:
     // you will generally add History keywords with the class
     // <linkto class=FITSHistoryUtil>FITSHistoryUtil</linkto>.
     // Returns False in the following instances:
+    // <ul>
     // <li> The value of a string field is longer than 68 characters.  The value is truncated.
     // <li> An illegal type for a FITS keyword (e.g. Complex).  The field is ignored.
     // <li> An array field has more than 2 dimensions. The field is stored as a vector.
@@ -149,6 +150,7 @@ public:
     // <li> Too many rows or columns for a 2D array (first 999 in each are used).
     // <li> Too many elements in a 1D array (first 999 are used).
     // <li> A field is neither a scalar or an array (e.g. a record).  The field is ignored.
+    // </ul>
     static Bool addKeywords(FitsKeywordList &out, const RecordInterface &in);
 
     // Extract keywords from in and define them in out.  

@@ -32,12 +32,12 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
 class ISMBase;
-#include <casa/iosfwd.h>
 
 // <summary>
 // A bucket in the Incremental Storage Manager

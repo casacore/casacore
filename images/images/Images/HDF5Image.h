@@ -49,14 +49,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </reviewed>
 
   // <prerequisite>
-  // <list>
-  //   <item> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
-  //   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-  //   <item> <linkto class=Lattice>Lattice</linkto>
-  //   <item> <linkto class=LatticeIterator>LatticeIterator</linkto>
-  //   <item> <linkto class=LatticeNavigator>LatticeNavigator</linkto>
-  //   <item> <linkto class=ImageRegion>ImageRegion</linkto>
-  // </list>
+  //   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
+  //   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+  //   <li> <linkto class=Lattice>Lattice</linkto>
+  //   <li> <linkto class=LatticeIterator>LatticeIterator</linkto>
+  //   <li> <linkto class=LatticeNavigator>LatticeNavigator</linkto>
+  //   <li> <linkto class=ImageRegion>ImageRegion</linkto>
   // </prerequisite>
 
   // <etymology>
@@ -315,9 +313,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-  // <linkfrom anchor="pixeltype" classes="HDF5Image">
-  // <here>Global functions</here> for PagedImage.
-  // </linkfrom>
   // Determine the pixel type in the HDF5Image contained in
   // <src>fileName</src>.  If the file doesn't appear to be HDF5 or cannot
   // be opened, TpOther is returned.

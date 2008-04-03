@@ -56,10 +56,8 @@ class String;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=InterpolateArray1D>InterpoateArray1D</linkto>
-//   <item> <linkto class=Array>Array</linkto>
-// </list>
+//   <li> <linkto class=InterpolateArray1D>InterpoateArray1D</linkto>
+//   <li> <linkto class=Array>Array</linkto>
 // </prerequisite>
 //// <synopsis> 
 // Spectra are converted to the specified reference frame and aligned at 

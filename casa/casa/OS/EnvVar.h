@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </summary>
 
 // <use visibility=export>
-// <reviewed reviewer="Paul Shannon, pshannon@nrao.edu" date="1995/02/08" tests="tEnvVar" demos="">
+// <reviewed reviewer="Paul Shannon" date="1995/02/08" tests="tEnvVar" demos="">
 
 // <synopsis> 
 // Environment variables are familiar to every Unix, MSDOS and VMS

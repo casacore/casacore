@@ -38,9 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </summary>
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto module="MeasurementSets:description">MeasurementSets</linkto> module
-// </ul>
 // </prerequisite>
 //
 //

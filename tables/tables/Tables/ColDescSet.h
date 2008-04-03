@@ -33,11 +33,9 @@
 #include <tables/Tables/ColumnDesc.h>
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward Declarations
-#include <casa/iosfwd.h>
 
 // <summary>
 // Set of table column descriptions

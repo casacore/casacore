@@ -36,6 +36,7 @@
 #include <casa/Containers/Block.h>
 #include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -43,7 +44,6 @@ class String;
 class FITSFieldCopier;
 class TableDesc;
 template<class T> class Vector;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Simplified interface to FITS tables with AIPS++ Look and Feel.

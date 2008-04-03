@@ -30,12 +30,12 @@
 
 #include <casa/aips.h>
 #include <casa/Containers/SimOrdMap.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Class declarations.
 class AipsIO;
-#include <casa/iosfwd.h>
 
 // <summary> Global IO functions </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

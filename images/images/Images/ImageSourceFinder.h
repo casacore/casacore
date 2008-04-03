@@ -84,7 +84,6 @@ class LogIO;
 // </motivation>
 
 // <todo asof="2000/11/08">
-//  Lots
 // </todo>
  
 

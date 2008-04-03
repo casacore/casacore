@@ -38,6 +38,7 @@
 #include <casa/System/PGPlotter.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -52,7 +53,6 @@ template <class T> class PtrHolder;
 class IPosition;
 class String;
 class Unit;
-#include <casa/iosfwd.h>
 
 // <summary>
 // This class generates moments from an image.
@@ -248,8 +248,8 @@ public:
 // Note that if I don't put MomentCalcBase as a forward declaration
 // and use instead  "friend class MomentCalcBase<T>"  The gnu compiler
 // fails with a typedef problem.  But I can't solve it with say
-// "typedef MomentCalcBase<T> gpp_type;"  because you can only do a 
-// typedef with an actual type, not a <T> !
+// <src>typedef MomentCalcBase<T> gpp_type;</src>  because you can only do a 
+// typedef with an actual type, not a <tt>T</tt> !
    friend class MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
@@ -580,10 +580,10 @@ private:
                        T& y,
                        PGPlotter& plotter);
 
-// Convert a <T> to a <Float> for plotting
+// Convert a <tt>T</tt> to a <tt>Float</tt> for plotting
    static Float convertT (const T value) {return Float(real(value));};
 
-// Convert a <Float> (from plotting) to a <T> 
+// Convert a <tt>Float</tt> (from plotting) to a <tt>T</tt> 
    static T convertF (const Float value) {return T(value);};
 
 // Fish out cursor values

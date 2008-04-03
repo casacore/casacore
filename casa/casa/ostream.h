@@ -28,13 +28,13 @@
 #ifndef CASA_OSTREAM_H
 #define CASA_OSTREAM_H
 
-// Define the C standard C++ include file. 
-// This is an interim solution to cater for the SGI non-existence of
-// them (e.g. <cstring>)
+//# Define the C standard C++ include file. 
+//# This is an interim solution to cater for the SGI non-existence of
+//# them (e.g. <cstring>)
 
-// Make sure any special macros are set
+//# Make sure any special macros are set
 #include <casa/aips.h>
-// gcc has no <ostream> yet. Change later
+//# gcc has no <ostream> yet. Change later
 #if defined(__GNUG__)
 #include <iostream>
 #else

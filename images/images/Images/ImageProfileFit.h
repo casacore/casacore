@@ -35,7 +35,7 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/Unit.h>
 #include <measures/Measures/MDoppler.h>
-//
+
 #include <components/SpectralComponents/SpectralElement.h>
 #include <components/SpectralComponents/SpectralFit.h>
 #include <casa/Utilities/PtrHolder.h>
@@ -43,7 +43,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// Forward declarations
+//# Forward declarations
 template<class T> class ImageInterface;
 template<class T> class MaskedLattice;
 class GlishRecord;
@@ -53,6 +53,7 @@ class Slicer;
 class LogIO;
 
 // <summary>
+// Class to fit profiles in images
 // </summary>
 
 // <use visibility=export>
@@ -68,7 +69,7 @@ class LogIO;
 // The Record used to contain models/fits is as follows.  Other fields
 // will be ignored.
 //
-// <srcBlock>
+// <srcblock>
 // Field                     Type             Description
 //-----------------------------------------------------------
 // xabs                      Bool              Are the x-values absolute or 
@@ -89,7 +90,7 @@ class LogIO;
 //                                             This field is not used by SpectralElement.  If its
 //                                             not there, all parameters are fitted for.
 //
-// </srcBlock>
+// </srcblock>
 // </synopsis> 
 // <example>
 // <srcblock>

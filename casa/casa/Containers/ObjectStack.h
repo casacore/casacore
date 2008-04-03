@@ -80,11 +80,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <templating arg=T>
   //  <li> the class T must have a <em>constructor(T::FULLREFRESH)</em>
   //       for creating new entries and destructor;
-  //      and must possess a <em>clear()<em> method to enable element re-use.
+  //      and must possess a <em>clear()</em> method to enable element re-use.
   // </templating>
   //
   // <todo asof="2007/11/27">
-  // <li> Nothing I know of
   // </todo>
 
   template <class T> class ObjectStack {

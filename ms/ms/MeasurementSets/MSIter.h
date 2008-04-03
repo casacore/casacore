@@ -70,9 +70,7 @@ private:
 // <use visibility=export>
  
 // <prerequisite>
-// <ul>
 //   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
-// </ul>
 // </prerequisite>
 //
 // <etymology>

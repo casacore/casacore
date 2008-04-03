@@ -43,10 +43,8 @@ class String;
 // <use visibility=export>
  
 // <prerequisite>
-// <ul>
 //   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
-//   <li> <linkto class="TiledStMan:description">TileStMan</linkto> 
-// </ul>
+//   <li> <linkto class="TiledStMan:description">TiledStMan</linkto> 
 // </prerequisite>
 //
 // <etymology>

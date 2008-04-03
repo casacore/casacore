@@ -28,11 +28,11 @@
 #ifndef CASA_STD_MATH_H
 #define CASA_STD_MATH_H
 
-// Define the C standard C++ include file. 
-// This is an interim solution to cater for the SGI non-existence of
-// them (e.g. <cstring>)
+//# Define the C standard C++ include file. 
+//# This is an interim solution to cater for the SGI non-existence of
+//# them (e.g. <cstring>)
 
-// Make sure any special macros are set
+//# Make sure any special macros are set
 #include <casa/aips.h>
 
 #if defined(__APPLE__)
@@ -82,19 +82,18 @@ using std::ceil;
 using std::fmod;
 using ::erf;
 using ::erfc;
-// The following is not yet part of some of the cmath include file. Should be
-// removed at some stage
+//# The following is not yet part of some of the cmath include file. Should be
+//# removed at some stage
 # if defined(NEEDS_POWFLOATFLOAT)
    inline Float pow(Float f1, Float f2)
      { return Float(pow(Double(f1), Double(f2))); };
 # endif
 
-// No float abs defined on the Cray.
+//# No float abs defined on the Cray.
 #if defined(AIPS_CRAY_PGI)
    inline float abs(float v)
      { return fabs(v); }
 #endif
-
 
 
 } //# NAMESPACE CASA - END

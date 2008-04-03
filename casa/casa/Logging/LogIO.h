@@ -34,13 +34,13 @@
 #include <casa/Logging/LogMessage.h>
 #include <casa/Logging/LogSink.h>
 #include <casa/BasicSL/Complex.h>
+#include <casa/iosstrfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class LogSink;
 class LogOrigin;
-#include <casa/iosstrfwd.h>
 
 // <summary>
 // ostream-like interface to creating log messages.

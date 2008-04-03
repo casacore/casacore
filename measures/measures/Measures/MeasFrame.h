@@ -169,12 +169,12 @@ class MeasFrame {
   // <thrown>
   //   <li> AipsError if a non-frame Measure
   // </thrown>
-  // <grp>
+  // <group>
   MeasFrame(const Measure &meas1);
   MeasFrame(const Measure &meas1, const Measure &meas2);
   MeasFrame(const Measure &meas1, const Measure &meas2,
 	    const Measure &meas3);
-  // </grp>
+  // </group>
   // Copy constructor (reference semantics)
   MeasFrame(const MeasFrame &other);
   // Copy assignment (reference semantics)

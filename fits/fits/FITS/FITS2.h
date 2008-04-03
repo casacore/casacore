@@ -29,7 +29,7 @@
 #define FITS_FITS2_H
 
 #include <casa/aips.h>
-// Would like to forward declare
+//# Would like to forward declare
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Map.h>
 #include <fits/FITS/hdu.h>

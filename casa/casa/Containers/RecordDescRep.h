@@ -36,13 +36,13 @@
 #include <casa/Containers/Block.h>
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class RecordDesc;
 class AipsIO;
-#include <casa/iosfwd.h>
 
 
 // <summary>

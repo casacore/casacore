@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <tables/Tables/ColDescSet.h>
 #include <casa/IO/AipsIO.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -41,7 +42,6 @@ class TableRecord;
 class TableAttr;
 class TabPath;
 template<class T> class Vector;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Define the structure of an AIPS++ table

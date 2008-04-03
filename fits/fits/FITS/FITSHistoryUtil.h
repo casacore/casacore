@@ -65,10 +65,12 @@ class LoggerHolder;
 // <synopsis>
 // Manipulate HISTORY information. FITS HISTORY cards are interconverted with
 // String as follows:
+// <ul>
 // <li> 'HISTORY ' and trailing blanks are removed from each card.
 // <li> Continuation cards are CARDS that have '>' in the first line.
 // <li> A string is made by concatenating the leading card and all continuation
 //    cards.
+// </ul>
 // For example:
 // <srcblock>
 // HISTORY Every good

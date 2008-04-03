@@ -75,7 +75,7 @@ class MVDoppler;
 // It can also be generated from a Quantity, where the interpretation
 // depends on the dimensionality of the Quantity:
 // <ul>
-// <it> velocity (e.g. AU/a)
+// <li> velocity (e.g. AU/a)
 // </ul>
 // The different reference types of a RadialVelocity are:
 // <ul>

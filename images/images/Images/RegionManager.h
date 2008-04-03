@@ -30,20 +30,12 @@
 #include <lattices/Lattices/RegionType.h>
 
 
-// put includes here
+//# put includes here
 
 
 namespace casa {
 
-/**
- * image component class 
- *
- * This is a casa based class to provide the funtionality to the 
- * RegionManager Tool
- *
- * @author
- * @version 
- **/
+  //# Forward declarations
   class LogIO;
   class String;
   class Record;
@@ -54,6 +46,14 @@ namespace casa {
   template<class T> class PtrBlock;
   class ImageRegion;
   template<class T> class Quantum;
+
+  // image component class 
+  //
+  // This is a casa based class to provide the funtionality to the 
+  // RegionManager Tool
+  //
+  // @author
+  // @version 
 
   class RegionManager
     {

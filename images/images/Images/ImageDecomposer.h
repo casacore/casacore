@@ -52,10 +52,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=CoordinateSystem>CoordinateSystem</linkto>   
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-// </list>
+//   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto>   
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
 // </prerequisite>
 
 // <etymology>

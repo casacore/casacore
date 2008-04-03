@@ -52,9 +52,7 @@ class MeasurementSet;
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
-// <list>
-//   <item> MeasurementSet
-// </list>
+//   <li> MeasurementSet
 // </prerequisite>
 //
 // <etymology>
@@ -62,7 +60,8 @@ class MeasurementSet;
 // 'fake' data from a set of parameters for instrument and sources.
 // </etymology>
 //
-// <synopsis> // This class creates a MeasurementSet from a set of parameters for instrument
+// <synopsis>
+// This class creates a MeasurementSet from a set of parameters for instrument
 // and sources. It does not simulate the data, only the coordinates of a 
 // measurement. The application "simulator" uses this class to create a true
 // simulated MS with perfect or corrupted data.

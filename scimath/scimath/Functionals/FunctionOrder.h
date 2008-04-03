@@ -35,12 +35,12 @@
 #include <casa/Utilities/RecordTransformable.h>
 #include <scimath/Functionals/Function.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
 class RecordInterface;
-#include <casa/iosfwd.h>
 
 // <summary> Container of function description details
 // </summary>

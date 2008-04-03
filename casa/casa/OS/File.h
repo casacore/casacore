@@ -191,7 +191,7 @@ public:
 
     // Return the time when the file was last accessed
     // as a 26-characters String of the form:
-    // Thu Feb  3 13:40:11 1994\n\0.
+    // Thu Feb  3 13:40:11 1994
     String accessTimeString() const;
 
     // Return the time when the file was last modified in seconds since
@@ -200,7 +200,7 @@ public:
 
     // Return the time when the file was last modified
     // as a 26-characters String of the form:
-    // Thu Feb  3 13:40:11 1994\n\0.
+    // Thu Feb  3 13:40:11 1994
     String modifyTimeString() const;
 
     // Return the time when the file status was last changed in seconds since
@@ -211,7 +211,7 @@ public:
 
     // return the time when the file status was last changed
     // as a 26-characters String of the form:
-    // Thu Feb  3 13:40:11 1994\n\0
+    // Thu Feb  3 13:40:11 1994
     String statusChangeTimeString() const;
 
     // Create a new unique path name in the specified directory, with

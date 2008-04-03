@@ -92,12 +92,12 @@ class String;
 //	(now - time) less than value given (default 5) (days)
 // </ul>
 // These values can be set in aipsrc as well as using 
-// <linkto class=AipsrcValue>AipsrcValue</linkto> set() methods.<br>
-// <logged>
-// 	<li> A message is Logged (once) if an IERS table cannot be found
-//	<li> A message is logged (once) if a date outside the range in
+// <linkto class=AipsrcValue>AipsrcValue</linkto> set() methods.
+// <note>
+// 	A message is Logged (once) if an IERS table cannot be found.
+//	A message is logged (once) if a date outside the range in
 //	the Tables is asked for. 
-// </logged>
+// </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
 // </thrown>

@@ -48,10 +48,8 @@ class Table;
 // </reviewed>
 
 // <prerequisite>
-// <list>
-//   <item> <linkto class=PagedImage>PagedImage</linkto>
-//   <item> <linkto class=ImageRegion>ImageRegion</linkto>
-// </list>
+//   <li> <linkto class=PagedImage>PagedImage</linkto>
+//   <li> <linkto class=ImageRegion>ImageRegion</linkto>
 // </prerequisite>
 
 // <synopsis> 

@@ -32,12 +32,12 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/Assert.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class BitVectorHelper;
-#include <casa/iosfwd.h>
 
 // The size of a unsigned Integer ( assumes 8-bit char )
 const uInt WORDSIZE = sizeof(uInt)*8;

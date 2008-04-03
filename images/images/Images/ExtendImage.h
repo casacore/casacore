@@ -48,10 +48,8 @@ template <class T> class ExtendLattice;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=ExtendLattice>ExtendLattice</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=ExtendLattice>ExtendLattice</linkto>
 // </prerequisite>
 //
 // <synopsis> 

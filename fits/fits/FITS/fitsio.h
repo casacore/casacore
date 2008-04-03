@@ -34,7 +34,8 @@
 //# include <casa/stdvector.h>
 # include <casa/Arrays/Vector.h>
 
-//<category lib=aips module=FITS sect="FITS I/O">   
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 //<summary> sequential FITS I/O </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
@@ -44,9 +45,6 @@
 // No interpretation of the data is attempted here, there are 
 // special FITS classes that handle syntax and interpretation.
 //</synopsis>
-//<linkfrom anchor=FitsIO classes="BlockIO">
-// <here> FitsIO </here> for some BlockIO derived classes.
-//</linkfrom>
 //<example>
 //<srcblock>
 // FitsInput fin("myfile.fits",FITS::Disk);	// open disk file for FITS input
@@ -59,8 +57,6 @@
 // }
 //</srcblock>
 //</example>
-
-namespace casa { //# NAMESPACE CASA - BEGIN
 
 class FitsIO {
     public:
@@ -148,9 +144,6 @@ class FitsIO {
 };
 
 //<summary> fixed-length sequential blocked FITS input </summary>
-//<linkfrom anchor=FitsInput classes="BlockInput">
-// FitsInput
-//</linkfrom>
 
 class FitsInput : public FitsIO {
 	friend int HeaderDataUnit::get_hdr(FITS::HDUType, FitsKeywordList &);

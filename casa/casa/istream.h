@@ -28,13 +28,13 @@
 #ifndef CASA_ISTREAM_H
 #define CASA_ISTREAM_H
 
-// Define the C standard C++ include file. 
-// This is an interim solution to cater for the SGI non-existence of
-// them (e.g. <cstring>)
+//# Define the C standard C++ include file. 
+//# This is an interim solution to cater for the SGI non-existence of
+//# them (e.g. <cstring>)
 
-// Make sure any special macros are set
+//# Make sure any special macros are set
 #include <casa/aips.h>
-// gcc has no <istream> yet. Change later
+//# gcc has no <istream> yet. Change later
 #if defined(__GNUG__)
 #include <casa/iostream.h>
 #else
@@ -44,9 +44,5 @@ using std::istream;
 using std::ws;
 } //# NAMESPACE CASA - END
 #endif
-
-namespace casa { //# NAMESPACE CASA - BEGIN
-
-} //# NAMESPACE CASA - END
 
 #endif

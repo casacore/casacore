@@ -34,11 +34,9 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Utilities/RecordTransformable.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward Declarations
-#include <casa/iosfwd.h>
 
 // <summary>
 // Describes (a set of related) spectral lines

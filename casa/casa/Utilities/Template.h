@@ -32,13 +32,13 @@
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
 #include <casa/BasicSL/String.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
 class Regex;
 template <class T> class Vector;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Canonicalise, format and other actions on aips++ template definitions

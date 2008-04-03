@@ -38,11 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class Record;
 
 // <summary>
-//
-//
-//
-//
-//
+// a class for creating Function objects from Records
 // </summary>
 
 // <use visibility=export>
@@ -78,18 +74,10 @@ class Record;
 //
 // </motivation>
 //
-// <templating arg=T>
-// </templating>
-//
 // <thrown>
-//    <li>
-//    <li>
 // </thrown>
 //
 // <todo asof="yyyy/mm/dd">
-//   <li> 
-//   <li> 
-//   <li> 
 // </todo>
 
 template<class T> 

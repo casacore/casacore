@@ -35,12 +35,12 @@
 #include <casa/Containers/RecordDescRep.h>
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Utilities/COWPtr.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class AipsIO;
-#include <casa/iosfwd.h>
 
 
 // <summary>

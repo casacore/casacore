@@ -41,17 +41,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  View multiple FITS files as a single table
 // </summary>
 
-// <use visibility=local>   or   <use visibility=export>
+// <use visibility=local>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
-// <prerequisite>
-// </prerequisite>
-//
-// <etymology>
-// </etymology>
-//
 // <synopsis>
 // A FITSMultiTable is used to view a collection of FITS files on disk as a 
 // single Table. That is, when next() is called, when one Table ends the next
@@ -66,7 +60,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 //
 // <todo asof="yyyy/mm/dd">
-//   <li>
 // </todo>
 
 class FITSMultiTable :  public FITSTabular

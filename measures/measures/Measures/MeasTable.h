@@ -377,9 +377,9 @@ public:
   // </group>
   
   // Time related routines
-  // <logged>
-  //   <li> HIGH, WARNING given if correction not obtainable
-  // </logged>
+  // <note>
+  //   WARNING given if correction not obtainable
+  // </note>
   // <thrown>
   //  <li> AipsError if table seems to be corrupted
   // </thrown>

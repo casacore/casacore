@@ -31,7 +31,6 @@
 # include <casa/aips.h>
 # include <fits/FITS/fits.h>
 # include <fits/FITS/blockio.h>
-//# include <casa/Utilities/String.h>
 # include <casa/BasicSL/String.h>
 # include <casa/Arrays/Vector.h>
 
@@ -68,10 +67,6 @@ class FitsOutput;
 //					AsciiTableExtension
 //</srcblock>
 //</synopsis>
-//<linkfrom anchor=HeaderDataUnit class="FitsInput FitsOutput">
-//
-//</linkfrom>
-
 
 class HeaderDataUnit {
 	friend std::ostream & operator << (std::ostream &, HeaderDataUnit &);
@@ -301,11 +296,11 @@ inline void HeaderDataUnit::history(const char *c) {
 // memory.  The `write()' function always writes the number of current
 // elements in the internal buffer.  The sequence of operations for each
 // portion of the array written would be: 
-// <list>
+// <ul>
 // <li> `set_next(N)', 
 // <li> fill the array using `data(N)' or other `data()' functions
 // <li> `write(fout)'.  
-// </list>
+// </ul>
 // The `set_next()' function must NOT be used with
 // `read()' or `store()' functions; unpredictable results will occur.  
 //<example>
@@ -339,19 +334,6 @@ inline void HeaderDataUnit::history(const char *c) {
 //</srcblock>
 //</example>
 //
-//#Would be useful if we could place this under a "Global Typedefs"
-//#heading, instead of "Global Functions"
-//# and until cxx2html can handle this, we duplicate:
-//<templating>
-//<srcblock>
-// typedef PrimaryArray<unsigned char> BytePrimaryArray;
-// typedef PrimaryArray<short> ShortPrimaryArray;
-// typedef PrimaryArray<FitsLong> LongPrimaryArray;
-// typedef PrimaryArray<float> FloatPrimaryArray;
-// typedef PrimaryArray<double> DoublePrimaryArray;
-//</srcblock>
-//</templating>
-
 //</synopsis>
 
 template <class TYPE>
@@ -522,13 +504,11 @@ typedef PrimaryArray<double> DoublePrimaryArray;
 
 //<summary> IMAGE extension of given type </summary>
 //<templating>
-//<srcblock>
-// typedef ImageExtension<unsigned char> ByteImageExtension;
-// typedef ImageExtension<short> ShortImageExtension;
-// typedef ImageExtension<FitsLong> LongImageExtension;
-// typedef ImageExtension<float> FloatImageExtension;
-// typedef ImageExtension<double> DoubleImageExtension;
-//</srcblock>
+// <li> typedef ImageExtension<unsigned char> ByteImageExtension;
+// <li> typedef ImageExtension<short> ShortImageExtension;
+// <li> typedef ImageExtension<FitsLong> LongImageExtension;
+// <li> typedef ImageExtension<float> FloatImageExtension;
+// <li> typedef ImageExtension<double> DoubleImageExtension;
 //</templating>
 
 template <class TYPE>
@@ -599,13 +579,11 @@ typedef ImageExtension<double> DoubleImageExtension;
 //</synopsis>
 //<templating>
 //#until cxx2html can handle this, duplicate
-//<srcblock>
-// typedef PrimaryGroup<unsigned char> BytePrimaryGroup;
-// typedef PrimaryGroup<short> ShortPrimaryGroup;
-// typedef PrimaryGroup<FitsLong> LongPrimaryGroup;
-// typedef PrimaryGroup<float> FloatPrimaryGroup;
-// typedef PrimaryGroup<double> DoublePrimaryGroup;
-//</srcblock>
+// <li>typedef PrimaryGroup<unsigned char> BytePrimaryGroup;
+// <li> typedef PrimaryGroup<short> ShortPrimaryGroup;
+// <li> typedef PrimaryGroup<FitsLong> LongPrimaryGroup;
+// <li> typedef PrimaryGroup<float> FloatPrimaryGroup;
+// <li> typedef PrimaryGroup<double> DoublePrimaryGroup;
 //</templating>
 //<note role=warning>
 // Please note that the NOST has deprecated the Random Group 
@@ -758,7 +736,7 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 	void ex_assign();
 };
 
-//<summary> helper class ??? </summary>
+//<summary> helper class </summary>
 
 class FitsBase {
 	friend class BinaryTableExtension;
@@ -794,7 +772,7 @@ inline std::ostream & operator << (std::ostream &o, FitsBase &x) {
 	x.show(o); return o;
 }
 
-//<summary> helper class ??? </summary>
+//<summary> helper class </summary>
 //<note>
 // Note that FitsField does not allocate space for the data.
 // Space is external to FitsField and its address is set via the
@@ -825,23 +803,21 @@ class FitsField : public FitsBase {
 	void setaddr(void **addr);
 };
 
-//<summary> helper class ??? </summary>
+//<summary> helper class </summary>
 //<templating>
 //#until cxx2html can handle this, duplicate
-//<srcblock>
-// typedef FitsField<FitsLogical> LogicalFitsField;
-// typedef FitsField<FitsBit> BitFitsField;
-// typedef FitsField<char> CharFitsField;
-// typedef FitsField<unsigned char> ByteFitsField;
-// typedef FitsField<short> ShortFitsField;
-// typedef FitsField<FitsLong> LongFitsField;
-// typedef FitsField<float> FloatFitsField;
-// typedef FitsField<double> DoubleFitsField;
-// typedef FitsField<Complex> ComplexFitsField;
-// typedef FitsField<IComplex> IComplexFitsField;
-// typedef FitsField<DComplex> DComplexFitsField;
-// typedef FitsField<FitsVADesc> VADescFitsField;
-//</srcblock>
+// <li> typedef FitsField<FitsLogical> LogicalFitsField;
+// <li> typedef FitsField<FitsBit> BitFitsField;
+// <li> typedef FitsField<char> CharFitsField;
+// <li> typedef FitsField<unsigned char> ByteFitsField;
+// <li> typedef FitsField<short> ShortFitsField;
+// <li> typedef FitsField<FitsLong> LongFitsField;
+// <li> typedef FitsField<float> FloatFitsField;
+// <li> typedef FitsField<double> DoubleFitsField;
+// <li> typedef FitsField<Complex> ComplexFitsField;
+// <li> typedef FitsField<IComplex> IComplexFitsField;
+// <li> typedef FitsField<DComplex> DComplexFitsField;
+// <li> typedef FitsField<FitsVADesc> VADescFitsField;
 //</templating>
 //<note role=caution> 
 // Bit fields require special treatment
@@ -920,20 +896,18 @@ class FitsArray : public FitsField<TYPE> {
 
 //<templating>
 //#until cxx2html can handle this, duplicate:
-//<srcblock>
-// typedef FitsArray<FitsLogical> LogicalFitsArray;
-// typedef FitsArray<FitsBit> BitFitsArray;
-// typedef FitsArray<char> CharFitsArray;
-// typedef FitsArray<unsigned char> ByteFitsArray;
-// typedef FitsArray<short> ShortFitsArray;
-// typedef FitsArray<FitsLong> LongFitsArray;
-// typedef FitsArray<float> FloatFitsArray;
-// typedef FitsArray<double> DoubleFitsArray;
-// typedef FitsArray<Complex> ComplexFitsArray;
-// typedef FitsArray<IComplex> IComplexFitsArray;
-// typedef FitsArray<DComplex> DComplexFitsArray;
-// typedef FitsArray<FitsVADesc> VADescFitsArray;
-//</srcblock>
+// <li> typedef FitsArray<FitsLogical> LogicalFitsArray;
+// <li> typedef FitsArray<FitsBit> BitFitsArray;
+// <li> typedef FitsArray<char> CharFitsArray;
+// <li> typedef FitsArray<unsigned char> ByteFitsArray;
+// <li> typedef FitsArray<short> ShortFitsArray;
+// <li> typedef FitsArray<FitsLong> LongFitsArray;
+// <li> typedef FitsArray<float> FloatFitsArray;
+// <li> typedef FitsArray<double> DoubleFitsArray;
+// <li> typedef FitsArray<Complex> ComplexFitsArray;
+// <li> typedef FitsArray<IComplex> IComplexFitsArray;
+// <li> typedef FitsArray<DComplex> DComplexFitsArray;
+// <li> typedef FitsArray<FitsVADesc> VADescFitsArray;
 //</templating>
 //<note>
 // We must specify a FitsArray<FitsBit> as a specialization.

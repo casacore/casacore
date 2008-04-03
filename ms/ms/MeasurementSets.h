@@ -40,10 +40,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </summary>
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
 //   <li> <a href="http://www.astron.nl/aips++/docs/notes/191/191.html">AIPS++ Note 191</a>
-// </ul>
 // </prerequisite>
 //
 //

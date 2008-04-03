@@ -30,16 +30,17 @@
 
 #include <images/Images/ImagePolarimetry.h>
 
-// Implementation of the image polarimetry functionality
-// available from casapy.
-
 namespace casa {
 
+//# Forward declarations
 class LogIO;
 class String;
 class Record;
 class Normal;
 template<class T> class ImageInterface;
+
+// Implementation of the image polarimetry functionality
+// available from casapy.
 
 class ImagePol
 {

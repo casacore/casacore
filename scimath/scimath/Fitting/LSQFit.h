@@ -602,6 +602,22 @@ class LSQFit {
 		  const std::complex<U> &obs,
 		  LSQFit::Conjugate,
 		  Bool doNorm=True, Bool doKnown=True);
+
+// A special optimized version that works with the BBSKernel.
+// This version assumes that the indices in cEqIndex are sorted.
+// For performance reasons, we do the real and complex parts in one call.
+// Finally, we provide both a normal and an SSE2 version of this call.
+// The SSE2 version is selected automatically if "__SSE2__" is defined.
+// This flag is set automatically by gcc if you compile with "-msse2".
+// With casacore, you can turn this on by providing this option: 
+// "extracxxflags=-msse2".
+// -- Rob (nieuwpoort@astron.nl)
+  template <class U, class V, class W>
+      void makeNormSorted(uInt nIndex, const W &cEqIndex,
+		      const V &cEqReal, const V &cEqImag, const U &weight,
+		      const U &obsReal, const U &obsImag,
+		      Bool doNorm=True, Bool doKnown=True);
+
   // </group>
   // Get the <src>n-th</src> (from 0 to the rank deficiency, or missing rank,
   // see e.g. <src>getDeficiency()</src>)

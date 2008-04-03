@@ -47,10 +47,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="wbrouw" date="1996/08/21" tests="tLogging.cc" demos="dLogging.cc">
 // </reviewed>
 
-// <prerequisite> <li> <linkto class="LogMessage">LogMessage</linkto> <li>
-// <linkto class="LogSinkInterface">LogSinkInterface</linkto>, if you are
+// <prerequisite>
+// <li> <linkto class="LogMessage">LogMessage</linkto>
+// <li> <linkto class="LogSinkInterface">LogSinkInterface</linkto>, if you are
 // interested in extending the set of destinations a <src>LogMessage</src> can
-// be sent.  </prerequisite>
+// be sent.
+// </prerequisite>
 //
 // <etymology>
 // Log as in "Log Book." Sink from its common usage ("source/sink") as a thing

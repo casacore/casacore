@@ -41,7 +41,7 @@
 #include <scimath/Functionals/CombiFunction.h>
 #include <scimath/Functionals/CompoundFunction.h>
 
-/// remainder will be removed
+//# remainder will be removed
 #include <scimath/Functionals/SampledFunctional.h>
 
 //# 1-D Functions

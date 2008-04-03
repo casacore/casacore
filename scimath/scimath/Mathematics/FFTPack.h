@@ -30,10 +30,9 @@
 #define SCIMATH_FFTPACK_H
 
 #include <casa/aips.h>
-  //
-  // The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
-  // and Complex.h so we bypass the problem by include Complex.h only.
-  //
+
+  //# The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
+  //# and Complex.h so we bypass the problem by include Complex.h only.
 #if defined(AIPS_USE_NEW_SGI)
 #include <casa/BasicSL/Complex.h>
 #else

@@ -31,7 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
-//
+
 #include <components/SpectralComponents/SpectralList.h>
 #include <components/SpectralComponents/SpectralFit.h>
 

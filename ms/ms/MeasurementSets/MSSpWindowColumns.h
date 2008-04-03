@@ -172,10 +172,7 @@ public:
 	       const Quantum<Double>& bandwidth, Int ifChain,
 	       const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
 	       Bool& reversed) const;
-  // Set the refFrame, which is need when converting MFrequency to a different
-  // frame ( no, ScalarMeasColumn<M>put() will not accept this!
-  //void setFrame( MeasFrame refFrame ){ m_frame = &refFrame; }
-  //
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

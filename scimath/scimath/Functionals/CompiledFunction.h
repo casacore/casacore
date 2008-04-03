@@ -81,7 +81,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // x[0] = 1.9; x[1] = 2.0; x[2] = 2.1;
 // for (uInt i=0; i<3; ++i) {
 //   cout << "Gaussian at x=" << x[i] << ": " << prof(x[i]) << endl;
-// };
+// }
 // // Calculate automatic derivatives of same function:
 // CompiledFunction<AutoDiff<Double> > profad;
 // profad.setFunction("p0*exp(-((x-p1)/p2)^2)");
@@ -92,7 +92,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // profad[2] = AutoDiff<Double>(1,  3,2);      	// the width
 // for (uInt i=0; i<3; ++i) {
 //   cout << "Gaussian at x=" << x[i] << ": " << profad(x[i]) << endl;
-// };
+// }
 // cout << "Value (x=2): " << profad(x[1]).value() << endl;
 // cout << "Derivatives: " << profad(x[1]).derivatives() << endl;
 // cout << "Derivative1: " << profad(x[1]).derivatives()[1] << endl;

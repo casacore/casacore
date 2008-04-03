@@ -283,9 +283,7 @@ private:
 //#    return result.adjoint();
 //#}
 //#
-// <linkfrom anchor=SqM_global_functions classes="SquareMatrixclass">
-//     <here> Global functions </here> for SquareMatrix.
-// </linkfrom>
+
 // <summary>
 // Various global math and IO functions.
 // </summary>

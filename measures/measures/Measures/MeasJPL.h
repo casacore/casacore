@@ -79,11 +79,11 @@ class MVEpoch;
 // <br>
 // Note that the normal usage of these tables is through the Measures system.
 // 
-// <logged>
-// 	<li> A message is Logged (once) if a table cannot be found
-//	<li> A message is logged (once) if a date outside the range in
+// <note>
+// 	A message is Logged (once) if a table cannot be found.
+//	A message is logged (once) if a date outside the range in
 //	the Tables is asked for. 
-// </logged>
+// </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
 // </thrown>

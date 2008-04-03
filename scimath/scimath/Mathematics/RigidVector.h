@@ -32,9 +32,6 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/Complex.h>
-// #include <casa/Tables/RetypedArrayEngine.h>
-// #include <casa/Tables/RetypedArraySetGet.h>
-// #include <casa/Tables/DataManError.h>
 #include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

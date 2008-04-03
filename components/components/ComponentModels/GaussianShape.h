@@ -106,12 +106,13 @@ template <class T> class Vector;
 // <example>
 // Suppose I had an image of a region of the sky and we wanted to subtract
 // a extended source from it. This could be done as follows:
+// <ul>
 // <li> Construct a SkyComponent with a Gaussian of width that is similar to
 //      the extended source.
 // <li> Project the component onto an image
 // <li> Convolve the image by the point spread function
 // <li> subtract the convolved model from the dirty image.
-// </li>
+// </ul>
 // Shown below is the code to perform the first step in this process, ie
 // construct the SkyComponent. This example is also available in the
 // <src>dTwoSidedShape.cc</src> file.  Note that it is more accurate to do

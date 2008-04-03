@@ -25,7 +25,7 @@
 //#
 //#
 //# $Id$
-//
+
 #ifndef IMAGES_IMAGEMOMENTSPROGRESS_H
 #define IMAGES_IMAGEMOMENTSPROGRESS_H
 

@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
 #include <casa/Containers/Block.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -43,7 +44,6 @@ class ISMBucket;
 class ISMIndex;
 class ISMColumn;
 class StManArrayFile;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Base class of the Incremental Storage Manager

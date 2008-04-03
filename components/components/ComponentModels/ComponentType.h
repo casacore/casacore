@@ -118,7 +118,7 @@ public:
   enum SpectralShape {
     // The flux is constant at different frequencies
     CONSTANT_SPECTRUM = 0,
-    // The flux varies as I = I_0 * (\nu / \nu_0)^\alpha
+    // The flux varies as <src>I = I_0 * (nu / nu_0)^alpha</src>
     SPECTRAL_INDEX,
     // an unknown spectral type
     UNKNOWN_SPECTRAL_SHAPE,

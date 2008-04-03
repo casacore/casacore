@@ -44,10 +44,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto class="MeasurementSet:description">MeasurementSet</linkto> 
 //   <li> <linkto class="MSTable">MSTable</linkto> 
-// </ul>
 // </prerequisite>
 //
 // <etymology>

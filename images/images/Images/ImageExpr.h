@@ -56,10 +56,8 @@ class String;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> LatticeExpr
-//   <item> ImageInterface
-// </list>
+//   <li> LatticeExpr
+//   <li> ImageInterface
 // </prerequisite>
 //
 // <etymology>

@@ -78,7 +78,7 @@ template <class T> class Array;
 // <ul>
 //   <li> <linkto file="QMath.h#prefix">Unary operations</linkto>
 //   <li> <linkto file="QMath.h#in-place">In place arithmetic functions: left hand side changed in place</linkto>
-//   <li> <linkto file="QMath.h#math">Arithmetic functions: return Quantum<T></linkto>
+//   <li> <linkto file="QMath.h#math">Arithmetic functions: return <src>Quantum<T><src></linkto>
 //   <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic (linear) functions</linkto>
 //   <li> <linkto file="QMath.h#trigonometric">Trigonometric functions</linkto>
 //   <li> <linkto file="QMath.h#foreign">Functions to implement integer ceil/floor</linkto>
@@ -86,16 +86,16 @@ template <class T> class Array;
 //
 // The operations/functions defined are:
 // <ul>
-//   <li> unary +(Quantum<T>)
-//   <li> unary -(Quantum<T>)
-//   <li> +=Quantum<T>; +=T; -=Quantum<T>; -=T;    
-//   <li> *=Quantum<T>, *=T; /=Quantum<T>; /=T;
-//   <li> +/-/*// for Quantum<T>,Quantum<T>; T,Quantum<T>; Quantum<T>,T;
-//   <li> abs, ceil, floor(Quantum<T>)
-//   <li> pow(Quantum<T>, Int);
-//   <li> sin, cos, tan(Quantum<T>) with proper unit handling
-//   <li> asin, acos, atan, atan2(Quantum<T>) with proper unit handling
-//   <li> log, log10, exp, root, sqrt with proper unit handling
+//   <li> unary <src>+(Quantum<T>)</src>
+//   <li> unary <src>-(Quantum<T>)</src>
+//   <li> <src>+=Quantum<T>; +=T; -=Quantum<T>; -=T;</src>
+//   <li> <src>*=Quantum<T>, *=T; /=Quantum<T>; /=T;</src>
+//   <li> <src>+/-/*//</src> for <src>Quantum<T>,Quantum<T>; T,Quantum<T>; Quantum<T>,T;</src>
+//   <li> <src>abs, ceil, floor(Quantum<T>)</src>
+//   <li> <src>pow(Quantum<T>, Int);</src>
+//   <li> <src>sin, cos, tan(Quantum<T>)</src> with proper unit handling
+//   <li> <src>asin, acos, atan, atan2(Quantum<T>)</src> with proper unit handling
+//   <li> <src>log, log10, exp, root, sqrt</src> with proper unit handling
 // </ul>
 // <note role=warning>
 // Some operators are implemented as member functions, and can be found in the

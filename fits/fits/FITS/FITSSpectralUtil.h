@@ -109,12 +109,14 @@ public:
     // from that found in header by 1.  The naxis keywords are used to determine
     // the output length of the freqs vector.
     // This method returns False if:
+    // <ul>
     // <li> no spectral axis is found. The freqs vector will have a length of zero.
     // <li> The expected set of axis description keywords is not found.
     // <li> The spectral axis is FELO but there is no rest frequency (making it
     //      impossible to convert to frequency and construct a freqs vector).
     // <li> The combination FELO and RADIO is used (which does not make sense).
     // <li> The combination VELO and OPTICAL is used (not yet implemented).
+    // </ul>
     static Bool fromFITSHeader(Int &spectralAxis,
 			       Double &referenceChannel,
 			       Double &referenceFrequency,
@@ -133,11 +135,12 @@ public:
     // the spectral axis given the arguments after the logger.
     // The alternate axis description values are set when sufficient information is available.
     // If they have been set, haveAlt will be set to True.
+    // <ul>
     // <li> Note that the output arguments after "haveAlt"
     //      should not be written to the FITS header unless haveAlt is true. 
     // <li> Note that restfreq is both an input and an output. If there is no rest
     //    frequency, set it to be <=0 on input.  
-
+    // </ul>
     // If preferVelocity is True, the
     // axis description parameters will be set to those appropriate for
     // a velocity axis given the referenceFrame, and velocityPreference
@@ -169,10 +172,11 @@ public:
     // the velocity reference frame) may also optionally be supplied.
     // If tag is empty, velref will be used if it is >= 0.
     // This function returns False if:
+    // <ul>
     // <li> The tag is not empty but is unrecognized.
     // <li> The tag is empty and velref is unrecognized.
     // <li> The tag is empty and velref is < 0 (no velref was supplied).
-
+    // </ul>
     // The default value (set when the return value is False) is TOPO.
     static Bool frameFromTag(MFrequency::Types &referenceFrame,
 			     const String &tag,

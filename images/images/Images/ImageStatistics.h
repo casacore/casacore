@@ -36,13 +36,13 @@
 #include <casa/Logging/LogIO.h>
 #include <lattices/Lattices/LatticeStatistics.h>
 #include <scimath/Mathematics/NumericTraits.h>
+#include <casa/iosstrfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 template <class T> class ImageInterface;
 class IPosition;
-#include <casa/iosstrfwd.h>
 
 // <summary>
 // Displays various statistics from an image.

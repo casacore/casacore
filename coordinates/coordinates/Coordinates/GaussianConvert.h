@@ -48,7 +48,7 @@ template<class T> class Quantum;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=></linkto>
+//   <li> <linkto class=CoordinateSystem>CoordinateSystem</linkto>
 // </prerequisite>
 
 // <synopsis> 
@@ -65,7 +65,7 @@ template<class T> class Quantum;
 // </example>
 
 // <todo asof="1998/12/11">
-// Position angle signs require more thinking in aips++
+//  <li> Position angle signs require more thinking in aips++
 // </todo>
 
 class GaussianConvert

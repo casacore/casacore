@@ -34,8 +34,9 @@
 #include <casa/Arrays/IPosition.h>
 #include <tables/Tables/Table.h>
 
-// # Forward Declarations
+//# Forward Declarations
 #include <casa/iosfwd.h>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class Regex;

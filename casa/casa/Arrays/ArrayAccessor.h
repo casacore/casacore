@@ -181,7 +181,7 @@ template <class T> class ArrayBaseAccessor {
 
 // <summary> Fast 1D accessor/iterator for nD array classes </summary>
 // <use visibility=export>
-// <reviewed reviewer="diepen@astron.nl" date="2002/12/01" tests="tArrayAccessor" demos="dArrayAccessor">
+// <reviewed reviewer="Ger van Diepen" date="2002/12/01" tests="tArrayAccessor" demos="dArrayAccessor">
 // </reviewed>
 // <prerequisite>
 //   <li> Array indexing and access methods

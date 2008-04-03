@@ -28,10 +28,10 @@
 #ifndef CASA_STD_VECTOR_H
 #define CASA_STD_VECTOR_H
 
-// Define the standard C++ include file. 
-// This is an interim solution to cater for the SGI non-existence of
-// them (e.g. <cstring>)
-// Make sure any special macros are set
+//# Define the standard C++ include file. 
+//# This is an interim solution to cater for the SGI non-existence of
+//# them (e.g. <cstring>)
+//# Make sure any special macros are set
 #include <casa/aips.h>
 
 #if !defined(AIPS_SGI)
@@ -43,9 +43,9 @@ using std::vector;
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// A special macro to create the auxilliary template definitions for
-// various compilers
-// Use if defined a vector<T> as AIPS_VECTOR_AUX_TEMPLATES(T)
+//# A special macro to create the auxilliary template definitions for
+//# various compilers
+//# Use if defined a vector<T> as AIPS_VECTOR_AUX_TEMPLATES(T)
 
 #if defined(AIPS_VECTOR_AUX_TEMPLATES)
 #undef AIPS_VECTOR_AUX_TEMPLATES

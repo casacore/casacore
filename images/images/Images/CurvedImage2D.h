@@ -50,10 +50,8 @@ class PixelCurve1D;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=CurvedLattice2D>CurvedLattice2D</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=CurvedLattice2D>CurvedLattice2D</linkto>
 // </prerequisite>
 //
 // <synopsis> 

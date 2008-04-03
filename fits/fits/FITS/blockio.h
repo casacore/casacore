@@ -30,10 +30,10 @@
 //# Include this file first, because it may set LFS variables used by cfitsio.
 #include <casa/aips.h>
 
-// Make sure that cfitsio does not declare the wcs headers.
+//# Make sure that cfitsio does not declare the wcs headers.
 extern "C"{
-#include <fitsio.h>  // header file from cfitsio
-#include <fitsio2.h> // using core functions of cfitsio
+#include <fitsio.h>  //# header file from cfitsio
+#include <fitsio2.h> //# using core functions of cfitsio
 }
 
 #include <stdlib.h>
@@ -133,9 +133,7 @@ class BlockIO {
 
 //<summary> fixed-length blocked sequential input base class</summary>
 //<prerequisite>
-//<list>
-//   <item> BlockIO
-//</list>
+//   <li> BlockIO
 //</prerequisite>
 
 class BlockInput : public BlockIO {
@@ -171,9 +169,7 @@ class BlockInput : public BlockIO {
 
 //<summary> fixed-length blocked sequential output base class</summary>
 //<prerequisite>
-//<list>
-//   <item> BlockIO
-//</list>
+//   <li> BlockIO
 //</prerequisite>             
 
 class BlockOutput : public BlockIO {

@@ -48,10 +48,8 @@ class LogIO;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=RebinLattice>RebinLattice</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=RebinLattice>RebinLattice</linkto>
 // </prerequisite>
 //
 // <synopsis> 

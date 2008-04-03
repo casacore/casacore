@@ -31,10 +31,6 @@
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
 #include <measures/Measures/MEpoch.h>
-// #include <synthesis/MeasurementComponents/Utils.h>
-// #include <msvis/MSVis/VisibilityIterator.h>
-// #include <msvis/MSVis/VisBuffer.h>
-// #include <msvis/MSVis/VisSet.h>
 #include <ms/MeasurementSets/MSTimeDefinitions.h>
 #include <casa/Containers/Block.h>
 #include <casa/Arrays/Matrix.h>

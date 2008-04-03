@@ -36,11 +36,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
-//
-//
-//
-//
-//
+// a class for serializing/reconstituting Function objects to/from Records
 // </summary>
 
 // <use visibility=export>
@@ -79,18 +75,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // </motivation>
 //
-// <templating arg=T>
-// </templating>
-//
 // <thrown>
-//    <li>
-//    <li>
 // </thrown>
 //
 // <todo asof="yyyy/mm/dd">
-//   <li> 
-//   <li> 
-//   <li> 
 // </todo>
 
 class FunctionMarshallable {

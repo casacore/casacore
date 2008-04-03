@@ -56,10 +56,8 @@ class String;
 // </reviewed>
 //
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=SubLattice>SubLattice</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=SubLattice>SubLattice</linkto>
 // </prerequisite>
 //
 // <synopsis> 

@@ -300,7 +300,7 @@ private:
   // Get information from the frame
   // <thrown>
   //  <li> AipsError if information not available; or False return if
-  //		<em>ret=True<em>
+  //		<em>ret=True</em>
   // </thrown>
   // <group>
   Bool getInfo(FrameInfo i, Bool ret=False);

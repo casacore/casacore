@@ -80,7 +80,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li> <linkto file="QLogical.h#compare">Comparisons</linkto>
 //   <li> <linkto file="QLogical.h#foreign">Special make Bool routines
 //                to cater for array comparisons</linkto>
-// </ul
+// </ul>
 //
 // The operations defined are:
 // <ul>

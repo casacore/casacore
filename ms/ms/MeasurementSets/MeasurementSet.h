@@ -78,10 +78,8 @@ typedef MeasurementSet MS;
 // <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="tMeasurementSet.cc" demos="">
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
 //   <li> <linkto class="MSTable">MSTable</linkto> 
-// </ul>
 // </prerequisite>
 //
 // <etymology>

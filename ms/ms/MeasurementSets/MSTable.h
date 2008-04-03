@@ -53,9 +53,7 @@ template <class T> class Block;
 // <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
 
 // <prerequisite>
-// <ul>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
-// </ul>
 // </prerequisite>
 //
 // <etymology>

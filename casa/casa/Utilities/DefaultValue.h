@@ -39,11 +39,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <use visibility=export>
 
-// <reviewed reviewer="syang@nrao.edu" date="1996/03/14" tests="tDefaultValue.cc" demos="">
+// <reviewed reviewer="syang" date="1996/03/14" tests="tDefaultValue.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> none
 // </prerequisite>
 //
 // <etymology>

@@ -91,7 +91,7 @@ template <class M> class ROScalarMeasColumn;
 //  <li>MDirection::AZELGEO --- geodetic Azimuth and Elevation (N through E)   
 //  <li>MDirection::AZELSWGEO - geodetic Azimuth and Elevation (S through W)   
 //  <li>MDirection::AZELNEGEO - geodetic Azimuth and Elevation (N through E)   
-///  <li>MDirection::ECLIPTC   -- ecliptic for J2000 equator and equinox
+//  <li>MDirection::ECLIPTC   -- ecliptic for J2000 equator and equinox
 //  <li>MDirection::MECLIPTIC -- ecliptic for mean equator of date
 //  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates

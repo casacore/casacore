@@ -76,8 +76,8 @@ template <class T> class Quantum;
 // It can also be generated from a Quantity, where the interpretation
 // depends on the dimensionality of the Quantity:
 // <ul>
-// <it> None: a Doppler ratio
-// <it> Velocity: Doppler ratio calculated by dividing with c
+// <li> None: a Doppler ratio
+// <li> Velocity: Doppler ratio calculated by dividing with c
 // </ul>
 // The different types of Doppler (with F = f/f0, the frequency ratio),
 // are:

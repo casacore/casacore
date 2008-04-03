@@ -85,8 +85,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <motivation>
 // </motivation>
 
-// <todo asof="1998/11/02">
-// </todo>
+//# <todo asof="1998/11/02">
+//# </todo>
 
 // </module>
 

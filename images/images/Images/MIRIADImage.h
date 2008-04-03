@@ -35,7 +35,6 @@
 #include <tables/Tables/TiledFileAccess.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <casa/Containers/Record.h>
-// #include <fits/FITS/fits.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 
@@ -64,10 +63,8 @@ class FitsInput;
 // </reviewed>
 
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=FITSMask>FITSMask</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=FITSMask>FITSMask</linkto>
 // </prerequisite>
 
 // <etymology>

@@ -110,8 +110,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <etymology>
 // "Table" is a formal term from relational database theory: 
-//   <cite> "The organizing principle in a relational database is the TABLE,
-//    a rectangular, row/column arrangement of data values."</cite>
+//   <em> "The organizing principle in a relational database is the TABLE,
+//    a rectangular, row/column arrangement of data values."</em>
 // AIPS++ tables are extensions to traditional tables, but are similar
 // enough that we use the same name.  There is also a strong resemblance
 // between the uses of AIPS++ tables, and FITS binary tables, which
@@ -151,7 +151,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <A HREF="http://aips2.cv.nrao.edu/aips++/docs/reference/Database.ps.gz">
 // AIPS++ Database document</A>, from where the following paragraph is taken:
 // 
-// <BLOCKQUOTE>
+// <p>
 // Traditional relational database tables have two features that
 // decisively limit their applicability to scientific data.  First, an item of
 // data in a column of a table must be atomic -- it must have no internal
@@ -169,7 +169,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // must draw on large bodies of data about equipment and its performance
 // in various states.  The restrictions imposed by the relational model
 // make it very difficult to deal with complex problems of this nature.
-// </BLOCKQUOTE>
+// <p>
 // 
 // In response to these limitations, and other needs, the AIPS++ tables were
 // designed.
@@ -1067,7 +1067,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <br>It should not be used anymore, because it uses a lot of memory
 //   for larger tables and because it is not very robust in case an
 //   application or system crashes.
-// </ol>
 //
 //  <li>
 //   <linkto class="MemoryStMan:description">MemoryStMan</linkto>

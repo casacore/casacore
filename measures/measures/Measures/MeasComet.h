@@ -73,10 +73,10 @@ template <class T> class Vector;
 // tables. The data obtained will be in the specified frame.
 // Note that the normal usage of these tables is through the Measures system.
 // 
-// <logged>
-//	<li> A message is logged (once) if a date outside the range in
+// <note>
+//	A message is logged (once) if a date outside the range in
 //	the Tables is asked for. 
-// </logged>
+// </note>
 // <thrown>
 //     <li> AipsError if table opened has wrong format or otherwise corrupted.
 // </thrown>

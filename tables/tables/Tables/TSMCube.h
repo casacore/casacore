@@ -36,6 +36,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/OS/Conversion.h>
+#include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -45,7 +46,6 @@ class TSMFile;
 class TSMColumn;
 class BucketCache;
 template<class T> class Block;
-#include <casa/iosfwd.h>
 
 // <summary>
 // Tiled hypercube in a table

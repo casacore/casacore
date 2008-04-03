@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/iosstrfwd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -42,8 +43,6 @@ class IPosition;
 class Interpolate2D;
 class PixelCurve1D;
 class String;
-
-#include <casa/iosstrfwd.h>
 
 // <summary>
 // Extract a 1-D slice from a Lattice
