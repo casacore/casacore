@@ -208,6 +208,10 @@ sub change_comment_style
   $link = 0;           # no <linkto> block found
   $linkfr = 0;         # no <linkfrom> found
   $linkstr = "";
+  $todo = 0;           # no <todo> found
+  $prereq = 0;         # no <prerequisites> found
+  $thrown = 0;         # no <thrown> found
+  $emnote = 0;         # no <note> found
   $review = 0;         # no <reviewed> block found
   $reviewstr = "";
   $nadded = 0;         # nr of added lines for which blank lines are removed
@@ -238,9 +242,15 @@ sub change_comment_style
 	$newstate = $COMMENT_BLOCK;
 
 	# Doxygen treats #name as a request to link to name.
-	# So escape the #. Don't do that for #include.
+	# So escape the #. Don't do that for #include and if.
 	$comment =~ s|([ (])#([a-z]+)|$1\\#$2|ig;
-	$comment =~ s| \\#include| #include|ig;
+	$comment =~ s| \\#include| #include|g;
+	$comment =~ s| \\#if| #if|g;
+	$comment =~ s| \\#endif| #endif|g;
+
+	# Remove possible prototype text.
+	$comment =~ s|You should have at least a preliminary understanding of these classes:||;
+	$comment =~ s|<li> <linkto class=></linkto>||;
 
 	# A module header is turned into a defgroup and added to the package.
 	if ($isModHdr == 1) {
@@ -351,8 +361,6 @@ sub change_comment_style
 	# Convert the section tags to h3.
 	$comment =~ s|<srcblock>| \\code |ig;
 	$comment =~ s|</srcblock>| \\endcode |ig;
-	$comment =~ s|<prerequisite>|<h3>Prerequisite</h3><ul>|ig;
-	$comment =~ s|</prerequisite>|</ul>|ig;
 	$comment =~ s|<motivation>|<h3>Motivation</h3>|ig;
 	$comment =~ s|</motivation>||ig;
 	$comment =~ s|<synopsis>|<h3>Synopsis</h3>|ig;
@@ -363,22 +371,70 @@ sub change_comment_style
 	$comment =~ s|</etymology>||ig;
 	$comment =~ s|<motivation>|<h3>Motivation</h3>|ig;
 	$comment =~ s|</motivation>||ig;
-	$comment =~ s|<thrown>|<h3>Thrown Exceptions</h3><ul>|ig;
-	$comment =~ s|</thrown>|</ul>|ig;
 	# Remove obsolete category tag (used in e.g. Map.h>).
 	$comment =~ s|<category.*?>||i;
 
 	# Use current date in todo if needed.
-	if ( $comment =~ /<todo\s*(?:asof\s*=\s*["']?(.*?)['"]?.*?)?>/ )
+	if ( $comment =~ /<todo\s*(?:asof\s*=\s*["']?(.*?)['"]?.*?)?>/i )
 	{
 	  my $date = $1;
 	  if ( $date ) {
-	    $comment =~ s|<todo.*?>|<h3>To Do ($date)</h3><ul>|ig;
+	    $comment =~ s|<todo.*?>|<h3>To Do ($date)</h3><ul>|i;
 	  } else {
-	    $comment =~ s|<todo.*?>|<h3>To Do</h3><ul>|ig;
+	    $comment =~ s|<todo.*?>|<h3>To Do</h3><ul>|i;
+	  }
+	  $todo = 1;
+	  $todostr = $comment;
+	  $comment = "";
+	}
+	# Do not insert todo if empty (i.e. no <li> lines).
+	if ( $todo ) {
+	  if ( $comment =~ m|</todo>|i ) {
+	    $comment = "";
+	    $todo = 0;
+	  } elsif ( $comment =~ m|<li>|i ) {
+	    $comment = $todostr . $comment;
+	    $todo = 0;
+	  } else {
+	    $todostr .= $comment;
+	    $comment = ""
 	  }
 	}
-	$comment =~ s|</todo>|</ul>|ig;
+	$comment =~ s|</todo>|</ul>|i;
+
+	# Do not use <ul></ul> for an empty prerequisite.
+	if ( $comment =~ /^\s*<prerequisite>/i ) {
+	  $comment = "";
+	  $prereq = 1;
+	} elsif ( $prereq ) {
+	  if ( $comment =~ m|^\s*</prerequisite>|i ) {
+	    # No lines, so do not insert </ul>.
+	    $comment = "";
+	    $prereq = 0;
+	  } elsif ( $comment !~ m|^\s*$| ) {
+	    # First non-empty line, so prepend with <ul>.
+	    $comment = "<h3>Prerequisite</h3><ul> " . $comment;
+	    $prereq = 0;
+	  }
+	}
+	$comment =~ s|^\s*</prerequisite>|</ul>|i;
+
+	# Do not use <ul></ul> for an empty thrown.
+	if ( $comment =~ /^\s*<thrown>/i ) {
+	  $comment = "";
+	  $thrown = 1;
+	} elsif ( $thrown ) {
+	  if ( $comment =~ m|^\s*</thrown>|i ) {
+	    # No lines, so do not insert </ul>.
+	    $comment = "";
+	    $thrown = 0;
+	  } elsif ( $comment !~ m|^\s*$| ) {
+	    # First non-empty line, so prepend with <ul>.
+	    $comment = "<h3>Thrown Exceptions</h3><ul> " . $comment;
+	    $thrown = 0;
+	  }
+	}
+	$comment =~ s|^\s*</thrown>|</ul>|i;
 
 	# Fill in templating tags.
 	# Use % to prevent doxygen from making a link to class Template.
@@ -400,7 +456,7 @@ sub change_comment_style
 	{
 	  my $arg = $1;
 	  if ( $arg =~ /export/i ) {
-	    $comment =~ s|<use.*?>|<h3>Intended use:</h3> Part of API|ig;
+	    $comment =~ s|<use.*?>|<h3>Intended use:</h3> Public interface|ig;
 	  } elsif ( $arg =~ /local/i ) {
 	    $comment =~ s|<use.*?>|<h3>Intended use:</h3> Internal|ig;
 	    # Change group in summary.
@@ -445,13 +501,25 @@ sub change_comment_style
 	# Turn note to <em>.
 	# Capitalize the type.
 	my $outtype = "Note";
-	if ( $comment =~ /<note\s+role\s*=\s*['"]?(tip|caution|warning)["']?.*?>/i )
-	{
-	  my $type = lc $1;
-	  $outtype = ucfirst $type;
+	if ( $comment =~ /<note/i ) {
+	  $emnote = 1;
+	  if ( $comment =~ /<note\s+role\s*=\s*['"]?(tip|caution|warning)["']?.*?>/i )
+	  {
+	    my $type = lc $1;
+	    $outtype = ucfirst $type;
+	  }
 	}
-	$comment =~ s|<note.*?>|<strong>$outtype:</strong><em> |i;
-	$comment =~ s|</note>|</em>|i;
+	# Doxygen complains about a . inside an <em> block.
+	# So for the time being replace a . by a ;
+	# Note that this is done for the full line with is not entirely correct.
+	if ( $emnote ) {
+	  $comment =~ s|\.|;|g;
+	}
+	$comment =~ s|<note.*?>|<br><strong>$outtype:</strong><em> |i;
+	if ( $comment =~ m|</note>|i ) {
+	  $emnote = 0;
+	}
+	$comment =~ s|</note>|</em><br>|i;
 
 	# Replace <src>. Inside the block the special characters have to
 	# be replaced. Note that multiple <src> can be on a line, but it
@@ -494,9 +562,6 @@ sub change_comment_style
 	    $code = 1;
 	  }
 	}
-	# Remove this line because doxygen cannot handle a line in a <ul>
-	# before an <li>.
-	$comment =~ s|You should have at least a preliminary understanding of these classes:||;
 	# Doxygen treats .. as end of list. So escape second one.
 	$comment =~ s|\.\.|.\\.|g;
 	# Skip an empty line if needed.
