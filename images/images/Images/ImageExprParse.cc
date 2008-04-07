@@ -52,6 +52,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 static const Block<LatticeExprNode>* theTempLattices;
 static const PtrBlock<const ImageRegion*>* theTempRegions;
 
+//# Define static for holding the global directory name.
+static String theDirName;
+
 //# Define a block holding allocated nodes.
 //# They will be deleted when the expression is parsed.
 //# In that way they are also deleted in case of exceptions.
@@ -167,19 +170,22 @@ void ImageExprParse::deleteNodes()
     theNrNodes = 0;
 }
 
-LatticeExprNode ImageExprParse::command (const String& str)
+LatticeExprNode ImageExprParse::command (const String& str,
+					 const String& dirName)
 {
     Block<LatticeExprNode> dummyLat;
     PtrBlock<const ImageRegion*> dummyReg;
-    return command (str, dummyLat, dummyReg);
+    return command (str, dummyLat, dummyReg, dirName);
 }
 LatticeExprNode ImageExprParse::command
                            (const String& str,
 			    const Block<LatticeExprNode>& tempLattices,
-			    const PtrBlock<const ImageRegion*>& tempRegions)
+			    const PtrBlock<const ImageRegion*>& tempRegions,
+			    const String& dirName)
 {
     theTempLattices = &tempLattices;
     theTempRegions  = &tempRegions;
+    theDirName      = dirName;
     imageExprParse_clear();
     String message;
     String command = str + '\n';
@@ -571,13 +577,13 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     // If that does not succeed, it'll be tried later as a region.
     if (names.nelements() == 1) {
 	LatticeExprNode node;
-	if (tryLatticeNode (node, names(0))) {
+	if (tryLatticeNode (node, addDir(names(0)))) {
 	    return node;
 	}
     }
     // If 2 elements given, it should be an image with a mask name.
     if (names.nelements() == 2) {
-	return makeImageNode (names(0), names(1));
+        return makeImageNode (addDir(names(0)), names(1));
     }
     // One or three elements have been given.
     // If the first one is empty, a table must have been used already.
@@ -594,11 +600,12 @@ LatticeExprNode ImageExprParse::makeLRNode() const
 	}
     } else {
 	// The first name is given; see if it is a readable table or HDF5 file.
-	if (Table::isReadable (names(0))) {
-	  Table table (names(0));
+        String fileName = addDir(names(0));
+	if (Table::isReadable (fileName)) {
+	  Table table (fileName);
 	  theLastTable = table;
-	} else if (HDF5File::isHDF5(names(0))) {
-	  theLastHDF5  = new HDF5File(names(0));
+	} else if (HDF5File::isHDF5(fileName)) {
+	  theLastHDF5  = new HDF5File(fileName);
 	  theLastTable = Table();
 	} else {
 	  throw (AipsError ("ImageExprParse: the table used in region name'"
@@ -630,6 +637,27 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     LatticeExprNode node (*regPtr);
     delete regPtr;
     return node;
+}
+
+String ImageExprParse::setAddDir (const String& dirName,
+				  const String& fileName)
+{
+    theDirName = dirName;
+    return addDir (fileName);
+}
+
+String ImageExprParse::addDir (const String& fileName)
+{
+    // Prepend file name with directory if needed.
+    if (theDirName.empty()  ||  fileName.empty()) {
+        return fileName;
+    }
+    // Expand file name to deal with cases like $HOME.
+    String name = Path(fileName).expandedName();
+    if (name[0] == '/') {
+        return fileName;
+    }
+    return theDirName + '/' + fileName;
 }
 
 Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
@@ -679,7 +707,6 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
     }
 
 // Continue and see if its a PagedArray (aips++ image)
-
     Bool isImage = True;
     Table table(name);
     String type = table.tableInfo().type();

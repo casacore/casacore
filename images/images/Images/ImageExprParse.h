@@ -211,11 +211,15 @@ public:
     // <br>The <src>tempLattices/tempRegions</src> arguments make it possible
     // to use temporary lattices/images and regions in the expression by means
     // of the <src>$n</src> notation.
+    // <br> If a directory name is given, it is used instead of the working
+    // directory for relative file names.
     // <group>
-    static LatticeExprNode command (const String& str);
+    static LatticeExprNode command (const String& str,
+				    const String& dirName = String());
     static LatticeExprNode command (const String& str,
 				    const Block<LatticeExprNode>& tempLattices,
-				    const PtrBlock<const ImageRegion*>& tempRegions);
+				    const PtrBlock<const ImageRegion*>& tempRegions,
+				    const String& dirName = String());
     // </group>
 
     // Construct a literal object for the given type.
@@ -286,7 +290,13 @@ public:
     static void deleteNodes();
     // </group>
 
-  //private:
+    // A function to test addDir. It first sets the directory.
+    static String setAddDir (const String& dirName, const String& fileName);
+
+private:
+    // If a directory was given, prepend it to the file name if relative.
+    static String addDir (const String& fileName);
+
     // Try if the name represent a lattice or image.
     // Return False if not.
     Bool tryLatticeNode (LatticeExprNode& node, const String& name) const;
