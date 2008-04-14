@@ -1,5 +1,5 @@
 //# tLSQFit.cc -- test LSQFit
-//# Copyright (C) 1999-2002,2004-2006
+//# Copyright (C) 1999-2002,2004-2006,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -448,6 +448,47 @@ int main() {
     }
     cout << "---------------------------------------------------" << endl;
 
+    cout << "Real -- 6 unknowns --- float --- merged --- indexed[2] -" << endl;
+    {
+      LSQFit lsq5(6);
+      LSQFit lsq5a(6);
+      uInt ixa[6]    = {0,4,3,2,5,1};
+      uInt ixreva[6] = {0,5,3,2,1,4};
+      uInt *ixrev = ixreva;
+      std::vector<uInt> ixv;
+      std::vector<uInt> ixrevv;
+      for (uInt i=0; i<6; ++i) {
+	ixv.push_back(ixa[i]);
+	ixrevv.push_back(ixreva[i]);
+      }
+      for (Int j0=0; j0<511; j0++) {
+	if (j0<300) {
+	  val1f[0] = 1;
+	  for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*j0;
+	  lsq5.makeNorm(val1f, 1.0f, val12f[j0]);
+	} else {
+	  val1f[ixrev[0]] = 1;
+	  for (uInt j1=1; j1<6; j1++) val1f[ixrev[j1]] = val1f[ixrev[j1-1]]*j0;
+	  lsq5a.makeNorm(val1f, 1.0f, val12f[j0]);
+	}
+      }
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      cout << "Merge = " << lsq5.merge(lsq5a, 6, ixv);
+      cout << ", Invert = " << lsq5.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      }
+    }
+    cout << "---------------------------------------------------" << endl;
+
     cout << "Real -- 6 unknowns --- float ------- indexed ---" << endl;
     {
       LSQFit lsq5(6);
@@ -460,6 +501,105 @@ int main() {
 	for (uInt j1=1; j1<6; j1++) val1f[ixrev[j1]] = val1f[ixrev[j1-1]]*j0;
 	lsq5.makeNorm(6, ix, val1f, 1.0f, val12f[j0]);
       }
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      cout << "Invert = " << lsq5.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      }
+    }
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "Real -- 6 unknowns --- float ------- paired ---" << endl;
+    {
+      LSQFit lsq5(6);
+      uInt ixreva[6] = {0,5,3,2,1,4};
+      uInt *ixrev = ixreva;
+      std::vector<std::pair<uInt, Float> > valpf(6);
+      for (Int j0=0; j0<511; ++j0) {
+	val1f[ixrev[0]] = 1;
+	for (uInt j1=1; j1<6; ++j1) val1f[ixrev[j1]] = val1f[ixrev[j1-1]]*j0;
+	for (uInt j1=0; j1<6; ++j1)
+	  valpf[j1] = std::make_pair(j1, val1f[ixrev[j1]]);
+	lsq5.makeNorm(valpf, 1.0f, val12f[j0]);
+      }
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      cout << "Invert = " << lsq5.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      }
+    }
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "Real -- 6 unknowns --- float ---- sorted index ---" << endl;
+    {
+      LSQFit lsq5(6);
+      uInt ixa[6]    = {0,4,3,2,5,1};
+      uInt ixreva[6] = {0,5,3,2,1,4};
+      uInt *ixrev = ixreva;
+      uInt *ix = ixa;
+      Float valpf[6];
+      Float *valsf = valpf;
+      for (Int j0=0; j0<511; ++j0) {
+	val1f[ixrev[0]] = 1;
+	for (uInt j1=1; j1<6; ++j1) val1f[ixrev[j1]] = val1f[ixrev[j1-1]]*j0;
+	for (uInt j1=0; j1<6; ++j1) {
+	  ix[j1] = j1;
+	  valpf[j1] = val1f[ixrev[j1]];
+	}
+	lsq5.makeNormSorted(6, ix, valsf, valsf, 1.0f,
+			    val12f[j0], val12f[j0]);
+      }
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      cout << "Invert = " << lsq5.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq5.solve(sol1);
+      sd1 = lsq5.getSD();
+      mu1 = lsq5.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      }
+    }
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "Real -- 6 unknowns --- float ---- unsorted index-2- ---" << endl;
+    {
+      LSQFit lsq5(6);
+      uInt ixa[6]    = {0,4,3,2,5,1};
+      uInt ixreva[6] = {0,5,3,2,1,4};
+      uInt *ixrev = ixreva;
+      uInt *ix = ixa;
+      for (Int j0=0; j0<511; ++j0) {
+	val1f[ixrev[0]] = 1;
+	for (uInt j1=1; j1<6; ++j1) val1f[ixrev[j1]] = val1f[ixrev[j1-1]]*j0;
+	lsq5.makeNorm(6, ix, val1f, val1f, 1.0f,
+		      val12f[j0], val12f[j0]);
+      }
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
       val1f[0] = 1;
       for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
       lsq5.makeNorm(val1f, 1.0f, val12f[511]);
