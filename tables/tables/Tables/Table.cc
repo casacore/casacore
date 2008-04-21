@@ -406,7 +406,7 @@ void Table::deepCopy (const String& newName,
 
 Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
 {
-  Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this);
+  Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this, noRows);
   if (!noRows) {
     TableCopy::copyRows (newtab, *this);
   }
