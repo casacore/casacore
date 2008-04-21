@@ -317,6 +317,13 @@ void BaseTable::prepareCopyRename (const String& newName,
     if (newName == name_p) {
 	return;
     }
+    // Copy and rename is not allowed if the target table is open.
+    Path path(newName);
+    PlainTable* ptr = PlainTable::tableCache(path.absoluteName());
+    if (ptr) {
+        throw (TableInvOper ("Cannot copy/rename; target table " + newName +
+			     " is still open (is in the table cache)"));
+    }
     // Test if the table already exists.
     // Throw an exception if a file (but not a table) exists.
     File fileNew(newName);
