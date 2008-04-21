@@ -874,6 +874,17 @@ int main()
       pa -= ArrayLattice<Float>(arr);
       AlwaysAssertExit (allEQ(pa.get(), arr));
     }
+    // Test of copyData
+    {
+      const IPosition latticeShape(4, 4, 16, 15, 8);
+      Array<Float> arr(latticeShape);
+      indgen(arr);
+      ArrayLattice<Float> from(arr.copy());
+      ArrayLattice<Float> to(latticeShape);
+      to.copyData (from);
+      AlwaysAssertExit (to.asArray()(IPosition(4,0,0,0,1)) == 960);
+      AlwaysAssertExit (allEQ(arr, to.asArray()));
+    }
   } catch (AipsError x) {
     cerr << x.getMesg () << endl;
     cout << "FAIL" << endl; 
