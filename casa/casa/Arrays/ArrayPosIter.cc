@@ -141,12 +141,23 @@ void ArrayPositionIterator::set (const IPosition& cursorPos)
     }
     atOrBeyondEnd = False;
     for (uInt i=0; i<cursorPos.nelements(); ++i) {
-        Int axis = iterationAxes(i);
-	Int cpaxis = i;
-	if (all) cpaxis=axis;
-	Cursor[axis] = cursorPos[cpaxis];
-	if (Cursor[axis] > End[axis]) {
+        // Only take the axis into account if it is an iteration axis.
+        Int axis = -1;
+	if (!all) {
+	  axis = iterationAxes(i);
+	} else {
+	  for (uInt j=0; j<iterationAxes.nelements(); ++j) {
+	    if (i = iterationAxes[j]) {
+	      axis = i;
+	      break;
+	    }
+	  }
+	}
+	if (axis >= 0) {
+	  Cursor[axis] = cursorPos[i];
+	  if (Cursor[axis] > End[axis]) {
 	    atOrBeyondEnd = True;
+	  }
 	}
     }
 }
