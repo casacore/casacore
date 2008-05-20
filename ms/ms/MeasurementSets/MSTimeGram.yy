@@ -199,12 +199,13 @@ upboundtimeexpr: LT yeartimeexpr
 		     MSTGgarbageCollector(t0);
 		   }
                    ;
-tFields: wildNumber COLON {$$ = $1;};
+tFields: wildNumber COLON {$$ = $1;}
        | COLON            {$$ = 0;}
        ;
 
-yFields: wildNumber SLASH {$$ = $1;};
-       | SLASH            {$$ = 0;};
+yFields: wildNumber SLASH {$$ = $1;}
+       | SLASH            {$$ = 0;}
+       ;
 
 timeObj: tFields tFields wildFloat {/* HH:MM:SS.FF */ $$[0] = $1; $$[1] = $2; $$[2] = $3;}
        | tFields tFields           {/* HH:MM */       $$[0] = $1; $$[1] = $2; $$[2] = 0;}
