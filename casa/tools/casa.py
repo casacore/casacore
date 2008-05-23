@@ -5,6 +5,17 @@ import platform
 
 def generate(env):
 
+    def DarwinDevSdk():
+        import platform        
+        devpath = { "4" : "/Developer/SDKs/MacOSX10.4u.sdk",
+                    "5" : "/Developer/SDKs/MacOSX10.5.sdk" }
+        version = platform.mac_ver()[0].split(".")
+        if version[0] != '10' or int(version[1]) < 4:
+            print "Only Mac OS X >= 10.4 is supported"
+            env.Exit(1)
+        return devpath[version[1]]
+    env.DarwinDevSdk = DarwinDevSdk
+
     def CustomCasaCom():
 	"""
 	Overwrite lex/yacc commands to include -p/-P options
@@ -28,45 +39,33 @@ def generate(env):
 	sysarch = platform.architecture()[0]
 	if sysarch == '64bit':
 	    platfdefs += pd["64bit"]
-        if  sysplf == 'linux2':
-	    platfdefs += pd["linux"]
-	    if sysarch == '64bit':
-		#env["CASAPLATFORM"] +=  sysarch
-		#don't know why but lib*.a needs to have -fPIC here
-		platfdefs += ["-fPIC"]
-                env.AppendUnique(SHFORTRANFLAGS=["-fPIC"])
+            platfdefs += ["-fPIC"]
+            #don't know why but lib*.a needs to have -fPIC here
+            env.AppendUnique(SHFORTRANFLAGS=["-fPIC"])
+            env.AppendUnique(FORTRANFLAGS=["-fPIC"])
 	elif sysplf == "cray":
 	    # pgi compiler
 	    # had a go at this, but it seem to need a whole lot
 	    # of environment variables
 	    # probably nedd a pgi builder
-	    #print "Currently not supported"
-	    #sys.exit()
-	    #env["CXX"] = "CC"
 	    platfdefs += pd["cray"]
-            #platfdefs += ["-fPIC"]
 	else:
 	    platfdefs += pd[sysplf]
-#	if sys.byteorder == "little":
-#	    platfdefs += ["-DAIPS_LITTLE_ENDIAN"]
         env.AppendUnique(CPPFLAGS=platfdefs)
 	if env["PLATFORM"] == 'darwin':
-            if env.get("universal", False):
-                env.AppendUnique(CPPFLAGS=['-arch', 'ppc', '-arch', 'i386', 
-                                           '-isysroot', 
-                                           '/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.AppendUnique(FORTRANFLAGS=['-arch', 'ppc', '-arch', 'i386',
-                                               '-isysroot', 
-                                               '/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.AppendUnique(SHFORTRANFLAGS=['-arch', 'ppc', 
-                                                 '-arch', 'i386',
-                                                 '-isysroot', 
-                                                 '/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.AppendUnique(SHLINKFLAGS=['-arch', 'ppc', '-arch', 'i386',
-                                              '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
-                env.AppendUnique(LINKFLAGS=['-arch', 'ppc', '-arch', 'i386', 
-                                            '-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk'])
-            # otherwise darwin puts builddir into the name
+            uniarch = env.get("universal", False)
+            flags = []
+            if uniarch:
+                for i in uniarch:
+                    flags += ['-arch', i]
+                ppflags =  flags + ['-isysroot' , env.DarwinDevSdk() ]
+                linkflags = flags + ['-Wl,-syslibroot,%s' %  env.DarwinDevSdk()]
+                env.AppendUnique(CPPFLAGS=ppflags)
+                env.AppendUnique(FORTRANFLAGS=ppflags)
+                env.AppendUnique(SHFORTRANFLAGS=ppflags)
+                env.AppendUnique(SHLINKFLAGS=linkflags)
+                env.AppendUnique(LINKFLAGS=linkflags)
+                # otherwise darwin puts builddir into the name
             env.Append(SHLINKFLAGS=["-install_name", "${TARGET.file}"])
             env.Append(SHLINKFLAGS=["-single_module"])
             

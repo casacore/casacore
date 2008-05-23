@@ -1,5 +1,5 @@
 import sys
-from  SCons.Options import ListOption,BoolOption,PathOption
+from  SCons.Options import ListOption, EnumOption
 
 def generate(env):
     def AddCompilerOptions( opts ):
@@ -11,9 +11,10 @@ def generate(env):
         opts.Add(("extracflags", "Extra c compiler flags ", None))
         opts.Add(("extralinkflags", "Extra linker flags ", None))
         if sys.platform == 'darwin':
-            opts.Add(BoolOption("universal", 
-                                "Build universal libraries under OS X?", 
-                                True))
+            opts.Add(ListOption("universal", 
+                                    "Build universal libraries under OS X?", 
+                                    "", ["", "ppc", "i386", 
+                                           "ppc64", "x86_64"]))
 
     def AddFortranOptions( opts ):
         """ Adds the build environment options to the opts.  """
