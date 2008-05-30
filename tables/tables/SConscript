@@ -2,7 +2,7 @@ import os, glob
 
 # import root environment
 Import( ["buildenv", "installer"])
-myenv = buildenv.Copy()
+myenv = buildenv.Clone()
 # get all the sourcefiles recursively
 lls = myenv.SGlob("*.ll", recursive=True )
 for f in lls:
@@ -41,7 +41,7 @@ if "shared" in BUILD_TARGETS:
 if "static" in BUILD_TARGETS or "shared" not in BUILD_TARGETS:
     installer.AddLibrary(slib)
 
-testenv = myenv.Copy()
+testenv = myenv.Clone()
 # gather test files
 # SGlob works in build dir, so only for cc files
 ttests = testenv.SGlob("Tables/test/*.cc")
@@ -50,7 +50,7 @@ lttests = testenv.SGlob("LogTables/test/*.cc")
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
 # allow either linking against shared or static, static if both present
 testenv.PrependUnique(LIBS=slib)
-testenv2 = testenv.Copy()
+testenv2 = testenv.Clone()
 # add files necessary for testing which are not names tXYZ.*
 testenv["ASSAYAUX"] = testenv.SGlob("*/test/*.data_v*")
 map(testenv.addAssayTest, ttests)

@@ -2,7 +2,7 @@ import os, glob
 
 # import root environment
 Import( ["buildenv", "installer"])
-myenv = buildenv.Copy()
+myenv = buildenv.Clone()
 
 # get all the sourcefiles recursively
 cpps = myenv.SGlob("*.cc", recursive=True )

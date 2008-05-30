@@ -2,7 +2,7 @@ import os
 
 # import root environment
 Import( ["buildenv", "installer"])
-myenv = buildenv.Copy()
+myenv = buildenv.Clone()
 
 # gather c files
 cs = myenv.SGlob("*.c")
