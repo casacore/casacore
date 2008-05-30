@@ -65,7 +65,13 @@
 # Original: 1995/11/01 by Mark Calabretta, ATNF
 # $Id: assay,v 19.11 2006/10/17 03:41:50 gvandiep Exp $
 #=============================================================================
-
+# Also set PYTHONPATH.
+  if [ "$PYTHONPATH" = "" ]
+  then
+     PYTHONPATH=.
+  else
+     PYTHONPATH=".:$PYTHONPATH"
+  fi
   CLEANUP=
   if [ -f "$1.exec" ]
   then
