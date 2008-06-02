@@ -27,7 +27,7 @@ def generate(env):
     def AddCasaPlatform():
 	pd = { "darwin": [],
 	       "64bit": [],
-	       "linux": [],
+	       "linux2": [],
 	       "cray": ["-Minform=severe"]
 	       }
 	# -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
