@@ -14,7 +14,7 @@ deps = {'casa' : None,
 	'components': ['coordinates'],
 	'lattices': ['tables', 'scimath'],
 	'ms': ['measures'],
-	'images': ['components', 'mirlib'],
+	'images': ['components', 'lattices', 'mirlib'],
 	'msfits': ['ms', 'fits'],
 	'msvis': ['ms'],
 	}
