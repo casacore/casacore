@@ -131,6 +131,7 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
                                  srcbase+".cc")
         env["ENV"]["PYTHONPATH"] = os.path.split(mod[0].abspath)[0]
         program = [env.File(srcbase+".py")]
+        env.Depends(program, mod)
     else:
         program = env.Program(target, source, *args, **kwargs)
     utest = env.Assay(program)
