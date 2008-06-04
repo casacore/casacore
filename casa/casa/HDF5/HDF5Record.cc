@@ -242,9 +242,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 ++aiter, ++viter) {
       *aiter = String(*viter);
       ::free(*viter);
-      if (*aiter == "__empty__") {
-	*aiter = String();
-      }
     }
     rec.define (name, value);
   }
@@ -356,7 +353,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5Record::writeScaString (hid_t groupHid, const String& name,
 				   const String& value)
   {
-    // It seems that HDF5 cannot handle empty strings.
+    // It seems that HDF5 cannot handle empty fixed length strings.
     String val(value);
     if (val.empty()) {
       val = "__empty__";
@@ -394,19 +391,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5Record::writeArrString (hid_t groupHid, const String& name,
 				   const Array<String>& value)
   {
-    // It seems that HDF5 cannot handle empty strings.
-    char* emptystr = "__empty__";
-    std::vector<char*> ptrs(value.nelements());
     // Copy the string pointers to a vector.
+    std::vector<char*> ptrs(value.nelements());
     Array<String>::const_iterator aiter=value.begin();
     for (std::vector<char*>::iterator viter = ptrs.begin();
 	 viter!=ptrs.end();
 	 ++aiter, ++viter) {
-      if (aiter->empty()) {
-	*viter = emptystr;
-      } else {
-	*viter = (char*)(aiter->c_str());
-      }
+      *viter = (char*)(aiter->c_str());
     }
     // Create the data space for the array.
     const IPosition& shape = value.shape();
