@@ -90,8 +90,8 @@ int main()
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
     for (uInt i=1; i<5; i++) {
-      double dx = x[1] - x[0];
-      double dy = y[1] - y[0];
+      double dx = x[i] - x[i-1];
+      double dy = y[i] - y[i-1];
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
     }
   }
@@ -105,9 +105,9 @@ int main()
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
     for (uInt i=1; i<9; i++) {
-      double dx = x[1] - x[0];
-      double dy = y[1] - y[0];
-      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
+      double dx = x[i] - x[i-1];
+      double dy = y[i] - y[i-1];
+      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-4));
     }
   }
   {
@@ -118,10 +118,10 @@ int main()
     double dx = x[1] - x[0];
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
-    for (uInt i=1; i<90; i++) {
-      double dx = x[1] - x[0];
-      double dy = y[1] - y[0];
-      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
+    for (uInt i=1; i<9; i++) {
+      double dx = x[i] - x[i-1];
+      double dy = y[i] - y[i-1];
+      AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-4));
     }
   }
   cout << setprecision(6);
