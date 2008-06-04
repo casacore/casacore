@@ -90,6 +90,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // The length of the string is part of the type.
     HDF5DataType (const String& value);
 
+    // Create an HDF5 datatype object for an empty array.
+    HDF5DataType (Int, Int);
+
     // The destructor closes the HDF5 data type object.
     ~HDF5DataType()
       { H5Tclose (itsHidMem); H5Tclose(itsHidFile); }

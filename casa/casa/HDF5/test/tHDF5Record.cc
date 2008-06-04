@@ -113,6 +113,47 @@ Array<String> arrstremp()
   return arrstr;
 }
 
+Array<Bool> emparrb()
+{
+  return Array<Bool> (IPosition(4,0));
+}
+Array<uChar> emparruc()
+{
+  return Array<uChar> (IPosition(0,0));
+}
+Array<Short> emparrs()
+{
+  return Array<Short> (IPosition(0,0));
+}
+Array<Int> emparri()
+{
+  return Array<Int> (IPosition(0,0));
+}
+Array<uInt> emparrui()
+{
+  return Array<uInt> (IPosition(1,0));
+}
+Array<Float> emparrf()
+{
+  return Array<Float> (IPosition(2,0));
+}
+Array<Double> emparrd()
+{
+  return Array<Double> (IPosition(1,0));
+}
+Array<Complex> emparrc()
+{
+  return Array<Complex> (IPosition(2,0,0));
+}
+Array<DComplex> emparrdc()
+{
+  return Array<DComplex> (IPosition(2,0,0));
+}
+Array<String> emparrstr()
+{
+  return Array<String> (IPosition(0,0));
+}
+
 void checkRecord (const RecordInterface& rec)
 {
   AlwaysAssertExit (rec.nfields()==11);
@@ -133,8 +174,9 @@ void check (HDF5File& file)
 {
   // Read the records back and check them.
   Record reca3 = HDF5Record::readRecord (file, "test");
-  AlwaysAssertExit (reca3.nfields()==13);
+  AlwaysAssertExit (reca3.nfields()==23);
   AlwaysAssertExit (reca3.asString("string") == "");
+  AlwaysAssertExit (allEQ(reca3.asArrayString("arrstringemp"), arrstremp()));
   AlwaysAssertExit (allEQ(reca3.asArrayBool("arrbool"), arrb()));
   AlwaysAssertExit (allEQ(reca3.asArrayuChar("arruchar"), arruc()));
   AlwaysAssertExit (allEQ(reca3.asArrayShort("arrshort"), arrs()));
@@ -145,7 +187,16 @@ void check (HDF5File& file)
   AlwaysAssertExit (allEQ(reca3.asArrayComplex("arrcomplex"), arrc()));
   AlwaysAssertExit (allEQ(reca3.asArrayDComplex("arrdcomplex"), arrdc()));
   AlwaysAssertExit (allEQ(reca3.asArrayString("arrstring"), arrstr()));
-  AlwaysAssertExit (allEQ(reca3.asArrayString("arrstringemp"), arrstremp()));
+  AlwaysAssertExit (allEQ(reca3.asArrayBool("emparrbool"), emparrb()));
+  AlwaysAssertExit (allEQ(reca3.asArrayuChar("emparruchar"), emparruc()));
+  AlwaysAssertExit (allEQ(reca3.asArrayShort("emparrshort"), emparrs()));
+  AlwaysAssertExit (allEQ(reca3.asArrayInt("emparrint"), emparri()));
+  AlwaysAssertExit (allEQ(reca3.asArrayuInt("emparruint"), emparrui()));
+  AlwaysAssertExit (allEQ(reca3.asArrayFloat("emparrfloat"), emparrf()));
+  AlwaysAssertExit (allEQ(reca3.asArrayDouble("emparrdouble"), emparrd()));
+  AlwaysAssertExit (allEQ(reca3.asArrayComplex("emparrcomplex"), emparrc()));
+  AlwaysAssertExit (allEQ(reca3.asArrayDComplex("emparrdcomplex"), emparrdc()));
+  AlwaysAssertExit (allEQ(reca3.asArrayString("emparrstring"), emparrstr()));
   Record reca2 = reca3.asRecord("rec2");
   AlwaysAssertExit (reca2.nfields()==3);
   AlwaysAssertExit (reca2.asDouble("double") == 3.14);
@@ -178,6 +229,7 @@ int main()
     Record rec3;
     rec3.defineRecord ("rec2",rec2);
     rec3.define ("string", "");
+    rec3.define ("arrstringemp", arrstremp());
     rec3.define ("arrbool", arrb());
     rec3.define ("arruchar", arruc());
     rec3.define ("arrshort", arrs());
@@ -188,7 +240,16 @@ int main()
     rec3.define ("arrcomplex", arrc());
     rec3.define ("arrdcomplex", arrdc());
     rec3.define ("arrstring", arrstr());
-    rec3.define ("arrstringemp", arrstremp());
+    rec3.define ("emparrbool", emparrb());
+    rec3.define ("emparruchar", emparruc());
+    rec3.define ("emparrshort", emparrs());
+    rec3.define ("emparrint", emparri());
+    rec3.define ("emparruint", emparrui());
+    rec3.define ("emparrfloat", emparrf());
+    rec3.define ("emparrdouble", emparrd());
+    rec3.define ("emparrcomplex", emparrc());
+    rec3.define ("emparrdcomplex", emparrdc());
+    rec3.define ("emparrstring", emparrstr());
     HDF5Record::writeRecord (file, "test", rec3);
     file.flush();
    

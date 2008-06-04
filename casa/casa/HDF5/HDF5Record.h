@@ -54,40 +54,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <synopsis>
   // This class has a static function to write a Record (or TableRecord)
   // into an HDF5 file by storing it as attributes for the given group.
-  // It can handle all types of fields in a record. The only exception
-  // is an empty array which cannot be held in HDF5.
+  // Another static function can read back the Record.
+  // It can handle all types of fields in a record.
   // <br>
-  // When writing the record, it first deletes all attributes of the group
-  // to be sure that the group's attributes only contain the record.
-  // <br>
-  // It also has a function to read back the attributes back as a Record.
-  // <p>
-  // An AIPS++ Record is a recursive structure, while attributes are flat.
-  // Therefore the fields of a nested record have the name of the nested record
-  // (followed by a colon) as the attribute name. A nested record is preceeded
-  // by a special integer attribute <tt>__isrec__</tt> containing the
-  // number of fields in the nested record.
-  // Each level of nesting adds another prefix.
-  // <p>
-  // Storing an array of strings could not be dome straightforwardly.
-  // Although HDF5 supports variable length strings and arrays thereof,
-  // it seems they are only supported for data sets, not for attributes.
-  // Therefore an array of strings is stored in two attributes with a
-  // special prefix.
+  // A few remarks:
   // <ul>
-  // <li> <tt>Array<String>_</tt> is the prefix for the attribute holding
-  //      a single string containing all strings.
-  // <li> <tt>Sizes<String>_</tt> is the prefix for the attribute holding
-  //      an array of integers containing the size of each string.
+  //  <li> When writing the record, it first deletes all attributes of the group
+  //   to be sure that the group's attributes only contain the record.
+  //  <li> An AIPS++ Record is a recursive structure, so it is written as nested
+  //   groups. The name of a subgroup is the name of the subrecord.
+  // <li> HDF5 cannot deal with empty arrays. Therefore they are written as
+  //   a special compound type holding the rank and type of the empty array.
+  // <li> HDF5 cannot hold empty fixed length strings. This is solved by
+  //   storing an empty string with the special value <tt>__empty__</tt>.
   // </ul>
-  // <p>
-  // Finally HDF5 cannot hold empty strings. This is solved by storing an empty
-  // string with the special value <tt>__empty__</tt>.
   // </synopsis> 
 
   // <motivation>
-  // Record is a very important class in AIPS++ images, so it had to be
-  // possible to read and write them.
+  // Record is a very important class in AIPS++ images, so it has to be
+  // possible to read and write them from/to HDF5.
   // </motivation>
 
   class HDF5Record
@@ -134,6 +119,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Read a array of strings from an atrribute and add it to the record.
     static void readArrString (hid_t attrId, const IPosition&,
 			       const String& name, RecordInterface& rec);
+
+    // Read a field containing an empty array.
+    static void readEmptyArray (hid_t attrId,
+				const String& name, RecordInterface& rec);
 
     // Read a field containing a scalar of fixed length.
     template<typename T>
@@ -187,6 +176,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // value is written.
     static void writeArrString (hid_t parentHid, const String& name,
 				const Array<String>& value);
+
+    // Write a field containing an empty array.
+    static void writeEmptyArray (hid_t groupHid, const String& name,
+				 Int rank, DataType dtype);
 
     // Write a field containing a fixed length scalar value.
     template<typename T>

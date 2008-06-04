@@ -137,12 +137,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
       break;
     case H5T_COMPOUND:
-      AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
-      if (sz == sizeof(Complex)) {
-	readSca<Complex> (attrId, name, rec);
+      if (H5Tget_nmembers(dtid) == 2) {
+	if (sz == sizeof(Complex)) {
+	  readSca<Complex> (attrId, name, rec);
+	} else {
+	  AlwaysAssert (sz==sizeof(DComplex), AipsError);
+	  readSca<DComplex> (attrId, name, rec);
+	}
       } else {
-	AlwaysAssert (sz==sizeof(DComplex), AipsError);
-	readSca<DComplex> (attrId, name, rec);
+	AlwaysAssert (H5Tget_nmembers(dtid)==3, AipsError);
+	readEmptyArray (attrId, name, rec);
       }
       break;
     case H5T_STRING:
@@ -201,6 +205,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       break;
     default:
       throw HDF5Error ("Unknown data type of array attribute " + name);
+    }
+  }
+
+  void HDF5Record::readEmptyArray (hid_t attrId,
+				   const String& name, RecordInterface& rec)
+  {
+    Int values[3];
+    HDF5DataType dtype(values[1], values[2]);
+    read (attrId, values, dtype);
+    Int rank = values[1];
+    Int dt   = values[2];
+    switch (dt) {
+    case TpBool:
+      rec.define (name, Array<Bool>(IPosition(rank, 0)));
+      break;
+    case TpUChar:
+      rec.define (name, Array<uChar>(IPosition(rank, 0)));
+      break;
+    case TpShort:
+      rec.define (name, Array<Short>(IPosition(rank, 0)));
+      break;
+    case TpInt:
+      rec.define (name, Array<Int>(IPosition(rank, 0)));
+      break;
+    case TpUInt:
+      rec.define (name, Array<uInt>(IPosition(rank, 0)));
+      break;
+    case TpFloat:
+      rec.define (name, Array<Float>(IPosition(rank, 0)));
+      break;
+    case TpDouble:
+      rec.define (name, Array<Double>(IPosition(rank, 0)));
+      break;
+    case TpComplex:
+      rec.define (name, Array<Complex>(IPosition(rank, 0)));
+      break;
+    case TpDComplex:
+      rec.define (name, Array<DComplex>(IPosition(rank, 0)));
+      break;
+    case TpString:
+      rec.define (name, Array<String>(IPosition(rank, 0)));
+      break;
+    default:
+      throw HDF5Error ("Unknown data type of empty array attribute " + name);
     }
   }
 
@@ -373,11 +421,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			       const void* value, const IPosition& shape,
 			       const HDF5DataType& dtype)
   {
-    if (shape.nelements() == 0) {
-      throw HDF5Error ("empty record array " + name + " cannot be stored");
+    int rank = shape.nelements();
+    if (shape.product() == 0) {
+      writeEmptyArray (groupHid, name, rank,
+		       HDF5DataType::getDataType(dtype.getHidFile()));
+      return;
     }
     // Create the data space for the array.
-    int rank = shape.nelements();
     Block<hsize_t> ls = HDF5DataSet::fromShape (shape);
     HDF5HidDataSpace dsid (H5Screate_simple(rank, ls.storage(), NULL));
     AlwaysAssert (dsid.getHid()>=0, AipsError);
@@ -388,9 +438,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     AlwaysAssert (H5Awrite(id, dtype.getHidMem(), value)>=0, AipsError);
   }
 
+  void HDF5Record::writeEmptyArray (hid_t groupHid, const String& name,
+				    Int rank, DataType dtype)
+  {
+    Int values[3];
+    values[0] = 1;
+    values[1] = rank;
+    values[2] = dtype;
+    HDF5DataType dtid(values[1], values[2]);
+    writeScalar (groupHid, name, values, dtid);
+  }
+
   void HDF5Record::writeArrString (hid_t groupHid, const String& name,
 				   const Array<String>& value)
   {
+    if (value.nelements() == 0) {
+      writeEmptyArray (groupHid, name, value.ndim(), TpString);
+      return;
+    }
     // Copy the string pointers to a vector.
     std::vector<char*> ptrs(value.nelements());
     Array<String>::const_iterator aiter=value.begin();

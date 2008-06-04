@@ -116,6 +116,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsHidMem = H5Tcopy (itsHidFile);
   }
 
+  HDF5DataType::HDF5DataType (Int, Int)
+  {
+    // An empty array is represented by its dimensionality and type.
+    // Add an extra dummy field to make the compound different from (D)Complex
+    // without having to test on field names.
+    HDF5DataType dtInt((Int*)0);
+    itsHidFile = H5Tcreate (H5T_COMPOUND, 3*sizeof(Int));
+    H5Tinsert (itsHidFile, "emptyarray",           0, dtInt.getHidFile());
+    H5Tinsert (itsHidFile, "rank",       sizeof(Int), dtInt.getHidFile());
+    H5Tinsert (itsHidFile, "casatype", 2*sizeof(Int), dtInt.getHidFile());
+    itsHidMem = H5Tcopy (itsHidFile);
+  }
+
   DataType HDF5DataType::getDataType (hid_t dtid)
   {
     DataType dtype = TpOther;
