@@ -2,6 +2,7 @@ import sys
 import os
 import glob
 import re
+import string
 import platform
 
 def generate(env):
@@ -94,6 +95,18 @@ def generate(env):
         xf=env.get("extracflags", None)
         if xf:
             env.AppendUnique(CCFLAGS=_to_list(xf))
+        xf=env.get("extralibpath", None)
+        if xf:
+            env.AppendUnique(LIBPATH=_to_list(xf))
+        xf=env.get("extracpppath", None)
+        if xf:
+            env.AppendUnique(CPPPATH=_to_list(xf))
+        xf=env.get("extraldlibrarypath", None)
+        if xf:
+            ldname = "LD_LIBRARY_PATH"
+            if sys.platform == "darwin":
+                ldname = "DY"+ldname
+            env.AppendENVPath(ldname, _to_list(xf))
     # set the extra flags if available
     MergeFlags()
         

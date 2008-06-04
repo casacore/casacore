@@ -9,12 +9,18 @@ def generate(env):
         opts.Add(("extracppflags", "Extra preprocessor flags ", None))
         opts.Add(("extracxxflags", "Extra c++ compiler flags ", None))
         opts.Add(("extracflags", "Extra c compiler flags ", None))
+        opts.Add(("extracpppath", "Extra include paths ", None))
+        opts.Add(("extralibpath", "Extra library paths ", None))
         opts.Add(("extralinkflags", "Extra linker flags ", None))
         if sys.platform == 'darwin':
             opts.Add(ListOption("universal", 
                                     "Build universal libraries under OS X?", 
                                     "", ["", "ppc", "i386", 
                                            "ppc64", "x86_64"]))
+        opts.Add(("extraldlibrarypath", 
+                 "The LD_LIBRARY_PATH does not get imported. Specify \
+                  elements here which are needed for runtime purposes",
+                 None))
 
     def AddFortranOptions( opts ):
         """ Adds the build environment options to the opts.  """
