@@ -397,13 +397,13 @@ int main() {
     
     // pow(x,y) : derivative = y*pow(x,y-1)*dx + pow(x,y)*log(x)*dy
     y = pow(w,z);
-    if (y.value() != Float(pow(w.value(), z.value())) ||
-	(y.derivative(0).second !=
-	 (Float(z.value()*pow(w.value(),z.value()-1))*
-	  w.derivative(0).second) ||
-	 (y.derivative(1).second !=
-	  Float(pow(w.value(),z.value())*log(w.value()))*
-	  z.derivative(0).second))) {
+    if (!near(y.value(), Float(pow(w.value(), z.value())), 1E-7) ||
+	!near(y.derivative(0).second,
+	      (Float(z.value()*pow(w.value(),z.value()-1))*
+	       w.derivative(0).second), 1E-7) ||
+	!near(y.derivative(1).second,
+	      Float(pow(w.value(),z.value())*log(w.value()))*
+	      z.derivative(0).second, 1E-7)) {
       cerr << "pow(const SparseDiff<T> &, const SparseDiff<T> &) failed" << endl;
       nerr++;
     }
