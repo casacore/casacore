@@ -71,6 +71,8 @@ def assayAction(target, source, env):
     """
     testpath =  os.path.split(str(source[0].abspath))
     assaycom = env.File(env["ASSAYCOM"]).abspath
+    assaypath = os.path.split(assaycom)[0]
+    env.PrependENVPath("PATH", assaypath)
     add_ldpath(env)    
     if not testpath[1]. startswith("t"):
         # don't execute demo programs

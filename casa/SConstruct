@@ -82,3 +82,4 @@ for bopt in env["build"]:
 # by the other casacore packages without having to duplicate them.
 installer.AddShares("tools", "*.py", "casacore/", True)
 installer.AddShares("tools", "casacore_assay", "casacore/")
+installer.AddShares("tools", "floatcheck.sh", "casacore/")
