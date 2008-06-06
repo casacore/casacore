@@ -285,7 +285,7 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     // (data columns and coordinate columns can be fixed shape or
     // coordinate columns can already be defined).
     stmanPtr_p->checkCubeShape (this, cubeShape);
-    // When the shape is redefined, the cache may already exist.
+    // If the shape is redefined, the cache may already exist.
     // So delete it first.
     delete cache_p;
     cache_p = 0;
@@ -376,7 +376,7 @@ void TSMCube::setup()
     expandedTilesPerDim_p = TSMShape (tilesPerDim_p);
     // Determine the bucket size for the cache.
     // Also determine the start offset for each data column
-    // and the length of the tile when converted to local format..
+    // and the length of the tile if converted to local format.
     tileSize_p   = tileShape_p.product();
     bucketSize_p = stmanPtr_p->getLengthOffset (tileSize_p, externalOffset_p,
 						localOffset_p,
@@ -806,11 +806,12 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
         end(i) = min (windowLength(i), cubeShape_p(i) - start(i));
     }
     end += start;
-    // When extensible, set end to the end of the start tile.
-    // Otherwise all reused values may get 0 in extensible hypercubes.
+    // If extensible, set end to the end of the tile.
+    // Otherwise all reused values may get 0 for extensible hypercubes.
     if (extensible_p) {
 	i = nrdim_p - 1;
-	end(i) += tileShape_p(i) * (1 + start(i) / tileShape_p(i));
+	///old	end(i) += tileShape_p(i) * (1 + start(i) / tileShape_p(i));
+	end(i) = tileShape_p(i) * (1 + (end(i) - 1) / tileShape_p(i));
     }
     end -= 1;
     // Make the full axes path.
@@ -832,10 +833,10 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
 	sliceTiles(i) = 1 + (st + slice(axis) - 1) / tileShape_p(axis);
         reused(i) = 0;
 	// Determine if a tile is reused in an iteration.
-	// It can only be reused when the slice is smaller than the window.
+	// It can only be reused if the slice is smaller than the window.
         if (slice(axis) < 1 + end(axis) - start(axis)) {
-	    // It is reused when the slice is smaller than the tile.
-	    // or when slice or start do not fit integrally in tile.
+	    // It is reused if the slice is smaller than the tile.
+	    // or if slice or start do not fit integrally in tile.
 	    if (slice(axis) < tileShape_p(axis)
 	    ||  st != 0
 	    ||  slice(axis) % tileShape_p(axis) != 0) {
@@ -843,7 +844,7 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
             }
 	}
     }
-    // Try to cache as much as possible. When the maximum cache size
+    // Try to cache as much as possible. If the maximum cache size
     // is exceeded, try it for one dimension less.
     // Determine the optimum cache size taking the maximum cache
     // size into account. This is done by starting at the highest
@@ -851,7 +852,7 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
     uInt nrd = nrdim_p;
     while (nrd > 0) {
         nrd--;
-        // Caching is needed when lower dimensions are reused because
+        // Caching is needed if lower dimensions are reused because
         // a higher dimension loops through a tile.
         // So skip dimensions until a reused dimension is found.
 	uInt nr = nrd;
@@ -860,7 +861,7 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
         }
 	// The cache needs to contain the tiles needed for the entire window
 	// of the remaining axes.
-	// When a tile is reused, we also need to take into account
+	// If a tile is reused, we also need to take into account
 	// the number of tiles needed for the slice.
         uInt cacheSize = 1;
         for (i=0; i<nr; i++) {
@@ -949,13 +950,13 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     // starts after the other arrays.
     uInt pixelOffset = localOffset_p[colnr];
 
-    // When the section matches the tile shape, we can simply
+    // If the section matches the tile shape, we can simply
     // copy all values and do not have to do difficult iterations.
     if (oneEntireTile) {
         // Get the tile from the cache.
         uInt tileNr = expandedTilesPerDim_p.offset (startTile_p);
         char* dataArray = cachePtr->getBucket (tileNr);
-        // When writing, set cache slot to dirty.
+        // If writing, set cache slot to dirty.
         if (writeFlag) {
             memcpy (dataArray+pixelOffset, section,
 		    tileSize_p * localPixelSize);
@@ -970,7 +971,7 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     // Find out if local size is a multiple of 4, so we can move as integers.
     TSMCube_FindMult;
 
-    // When the section is a line, call a specialized function.
+    // If the section is a line, call a specialized function.
     // Note that a single pixel is also handled as a line.
     if (nOneLong >= nrdim_p - 1) {
         accessLine (section, pixelOffset, localPixelSize,
@@ -1006,7 +1007,7 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
 //      cout << "start=" << startPixel << endl;
 //      cout << "end=" << endPixel << endl;
         // Get the tile from the cache.
-        // Set it to dirty when we are writing.
+        // Set it to dirty if we are writing.
         char* dataArray = cachePtr->getBucket (tileNr);
         if (writeFlag) {
             cachePtr->setDirty();
@@ -1122,12 +1123,12 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
 //      cout << "start=" << startPixel << endl;
 //      cout << "nrpixel=" << nrPixel << endl;
         // Get the tile from the cache.
-        // Set it to dirty when we are writing.
+        // Set it to dirty if we are writing.
         char* dataArray = cachePtr->getBucket (tileNr) + offset;
         if (writeFlag) {
             cachePtr->setDirty();
         }
-        // Copy the data. When contiguous we can copy directly.
+        // Copy the data. If contiguous we can copy directly.
         // Otherwise loop through all pixels.
         if (contiguous) {
             if (writeFlag) {
@@ -1307,7 +1308,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
         accessSection (start, end, section, colnr, localPixelSize, writeFlag);
         return;
     }
-    // Get the cache (when needed).
+    // Get the cache (if needed).
     BucketCache* cachePtr = getCache();
 
     // A tile can contain more than one data array.
@@ -1377,7 +1378,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
 //      cout << "tileNr=" << tileNr << endl;
 //      cout << "start=" << startPixel << endl;
         // Get the tile from the cache.
-        // Set it to dirty when we are writing.
+        // Set it to dirty if we are writing.
         char* dataArray = cachePtr->getBucket (tileNr);
         if (writeFlag) {
             cachePtr->setDirty();
