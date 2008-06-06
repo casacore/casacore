@@ -119,10 +119,6 @@ int n;
 ------------------------------------------------------------------------*/
 {
   static char string[128];
-  /* Cray catamount compute nodes does not support sys_errlist[] */
-#if defined(AIPS_CRAY_PGI)
-  return (strerror(n));
-#else
 
 #ifdef vms
 #include <descrip.h>
@@ -135,17 +131,7 @@ int n;
   string[len0] = 0;
   return(string);
 #else
-# if !(defined(linux) || defined(__APPLE_CC__))
-  extern int sys_nerr;
-  extern char *sys_errlist[];
-# endif
 
-  if(n > 0 && n <= sys_nerr)return((char *)sys_errlist[n]);
-  else{
-    sprintf(string,"Unknown error with number %d detected.",n);
-    return(string);
-  }
-#endif
-
+  return (strerror(n));
 #endif
 }
