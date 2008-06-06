@@ -876,7 +876,7 @@ void d()
     }
 }
 
-int main (int argc)
+int main (int argc,const char*[])
 {
     try {
 	Table::setScratchCallback (cbFunc);

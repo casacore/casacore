@@ -45,7 +45,7 @@
 void doIt (uInt tileSize);
 IPosition getVec (uInt nrdim, const String& prompt);
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     // Get the command line arguments as cube shape, tile shape.
     if (argc < 2) {

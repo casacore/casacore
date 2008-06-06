@@ -45,7 +45,7 @@ void a (Bool, uInt, Int64&, Int64&, Int64&, Int64&);
 void b (Bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
 void c (Bool, Int64, Int64, Int64, Int64);
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     uInt stVersion = 0;
     uInt endVersion = 1;

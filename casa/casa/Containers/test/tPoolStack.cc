@@ -104,10 +104,10 @@ int main() {
     ok = False;
   }
   
-  if (!ok) exit(1);
+  if (!ok) return 1;
   cout << "Tests ok" << endl;
   cout << "---------------------------------------------------" << endl;
 
-  exit(0);
+  return 0;
 }
 

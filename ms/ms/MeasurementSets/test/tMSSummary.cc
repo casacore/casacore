@@ -32,7 +32,7 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSummary.h>
 
-int main(int argc, char *argv[])
+int main(int argc, const char* argv[])
 {
   using namespace std;
   using namespace casa;
@@ -58,6 +58,6 @@ int main(int argc, char *argv[])
     cout << x.getMesg() << endl;
   } 
   
-  exit(0);
+  return 0;
 }
 

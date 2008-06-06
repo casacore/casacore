@@ -112,7 +112,7 @@ void b()
 }
 
 
-main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     if (argc < 2) {
 	cout << "Execute as: tLatticeLocker 1  to create new table"

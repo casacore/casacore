@@ -41,6 +41,7 @@
 
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
+#include <limits>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).

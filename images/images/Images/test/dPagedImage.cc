@@ -41,7 +41,8 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
-main()
+
+int main()
 {
     cout << "untested" << endl;
 }
@@ -73,7 +74,7 @@ const String NAME7 = "image-test-file_7";
 const String NAME8 = "image-test-file_8";
 const String NAME9 = "image-test-file_9";
 
-int main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
   getArguments(argc, argv, verbose_);
   createStandardImageOnDisk(STANDARD);

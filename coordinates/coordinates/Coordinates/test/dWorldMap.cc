@@ -39,7 +39,7 @@ void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
            CoordinateSystem& cSys2);
 
 
-main (int argc, char **argv)
+int main (int argc, const char* argv[])
 //
 // Test out the {world,pixel}Map function in CoordinateSystem
 //
@@ -216,10 +216,10 @@ try {
 
 } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
-      exit(1);
+      return 1;
 }
  
-exit(0);
+return 0;
 
 }
 

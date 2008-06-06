@@ -36,7 +36,7 @@
 
 #include <casa/namespace.h>
 
-int main (Int argc, char** argv)
+int main (Int argc, const char* argv[])
 {
   try {
     // enable input in no-prompt mode

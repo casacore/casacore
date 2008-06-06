@@ -55,7 +55,7 @@ void listBB(const LCRegion* pLCRegion);
 void list (const RecordInterface& record);
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -453,11 +453,11 @@ try {
 } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       cout << "not ok" << endl; 
-      exit(1);
+      return 1;
 }
 
   cout << "ok" << endl; 
-  exit(0);
+  return 0;
  
 }
  

@@ -257,7 +257,7 @@ void MyLatticeProgress::done()
 }
 
 
-void doIt (int argc, char *argv[])
+void doIt (int argc, const char* argv[])
 {
     Input inp(1);
     inp.version(" ");
@@ -618,7 +618,7 @@ void doIt (int argc, char *argv[])
 }
 
 
-main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
     try {
 	doIt (argc,argv);

@@ -40,7 +40,7 @@ void a();
 void b();
 void c();
 
-main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	a();

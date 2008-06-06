@@ -38,7 +38,8 @@
 #include <casa/IO/TapeIO.h>
 
 #include <casa/namespace.h>
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[])
+{
   try {
     Input inputs(1);
     inputs.create ("device", "", "Tape device name");

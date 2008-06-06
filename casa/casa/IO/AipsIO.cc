@@ -33,6 +33,7 @@
 #include <casa/OS/RegularFile.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Assert.h>
+#include <cstring>                  //# for strcmp with gcc-4.3
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

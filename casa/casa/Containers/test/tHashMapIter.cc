@@ -31,6 +31,7 @@
 #include <casa/fstream.h>
 #include <casa/iostream.h>
 #include <casa/stdlib.h>
+#include <cstring>              //# for strdup
 
 #include <casa/namespace.h>
 //# for GNU compile in trial:

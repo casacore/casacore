@@ -38,7 +38,7 @@
 #include <casa/namespace.h>
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 
-int main(int argc, char** argv)
+int main(int argc, const char* argv[])
 {
     uInt nr=4000;
     int type=Sort::HeapSort;

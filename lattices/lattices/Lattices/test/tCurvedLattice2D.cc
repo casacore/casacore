@@ -128,7 +128,7 @@ void doIt3 (const Lattice<Int>& lattice)
   doIt (mlat, 2, 1, 0);
 }
 
-int main (int argc, char* argv[])
+int main (int argc, const char* argv[])
 {
   try {
     {

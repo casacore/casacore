@@ -40,7 +40,7 @@
 
 void a();
 
-main()
+int main()
 {
     try {
 	a();

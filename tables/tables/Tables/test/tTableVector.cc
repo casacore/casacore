@@ -49,7 +49,9 @@
 void credes();
 void cretab(uInt);
 void dovec (Int);
-main (int argc, char** argv) {
+
+int main (int argc, const char* argv[])
+{
     uInt nr = 5000;
     if (argc > 1) {
 	istringstream istr(argv[1]);

@@ -117,7 +117,7 @@ void doIt (const LCRegion& region,
 }
 
 
-main()
+int main()
 {
     try {
 	// A simple box (having no mask).
@@ -152,8 +152,8 @@ main()
 	      IPosition(2,20));
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	exit(1);
+	return 1;
     } 
     cout << "OK" << endl;
-    exit(0);
+    return 0;
 }

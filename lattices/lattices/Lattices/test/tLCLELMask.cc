@@ -65,7 +65,7 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 }
 
 
-main ()
+int main ()
 {
   try {
     IPosition latticeShape(2, 4, 8);
@@ -97,9 +97,9 @@ main ()
     }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
 
    cout << "OK" << endl;
-   exit(0);
+   return 0;
 }

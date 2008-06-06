@@ -177,7 +177,7 @@ void doItMasked (Bool)
   }
 }
 
-int main(int argc)
+int main(int argc, const char*[])
 {
   try {
     doIt (argc>1);

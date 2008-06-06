@@ -52,7 +52,8 @@ void doit4 (RebinLattice<Float>& rb, const IPosition& shape,
 
 
 
-int main (int argc, char **argv) {
+int main (int argc, const char* argv[])
+{
 
 try {
 

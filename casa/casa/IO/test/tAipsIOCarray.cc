@@ -43,7 +43,7 @@
 void doit (Bool doExcp);
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	doit ( (argc<2));

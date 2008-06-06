@@ -62,7 +62,8 @@ void b2 (const String& dir);
 void b3 (const String& dir, const IPosition& autoShape);
 void erronous();
 
-int main (int argc, char** argv) {
+int main (int argc, const char* argv[])
+{
     try {
 	String dir;
 	if (argc > 1) {

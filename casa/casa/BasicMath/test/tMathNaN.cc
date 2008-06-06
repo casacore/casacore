@@ -204,7 +204,7 @@ Bool doIt (Int n, Float x, Bool nan)
 
  
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
    Input inputs(1);
    inputs.version ("$Revision$");

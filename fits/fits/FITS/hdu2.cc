@@ -113,7 +113,7 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 
 //== HeaderDataUnit ===========================================================
 
-void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
+void HeaderDataUnit::errmsg(HDUErrs e, const char *s) {
     ostringstream msgline;
     msgline << "HDU error:  " << s << endl;
     err_status = e;
@@ -918,7 +918,8 @@ AsciiTableExtension::~AsciiTableExtension() {
 void AsciiTableExtension::at_assign() {
 	int i, n, ne;
 	size_t row_align;
-	char *s, typecode;
+	const char *s;
+	char typecode;
 
    tfields_x = 0;		// first initialize everything
 	tbcol_x = 0;
@@ -1253,14 +1254,14 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
   tbcol and ttype values.  
 */
 int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &fout, // I - FITS output object
-           long naxis1,     // I - width of row in the table(number of ascii chars)
-           long naxis2,     // I - number of rows in the table       
-           int tfields,     // I - number of columns in the table      
-           char **ttype,    // I - name of each column                    
-           long *tbcol,     // I - byte offset in row to each column       
-           char **tform,    // I - value of TFORMn keyword for each column 
-           char **tunit,    // I - value of TUNITn keyword for each column 
-           char *extname)   // I - value of EXTNAME keyword, if any                                  
+           long naxis1,         // I - width of row in the table(number of ascii chars)
+           long naxis2,         // I - number of rows in the table       
+           int tfields,         // I - number of columns in the table      
+           const char **ttype,  // I - name of each column                    
+           long *tbcol,         // I - byte offset in row to each column       
+           const char **tform,  // I - value of TFORMn keyword for each column 
+           const char **tunit,  // I - value of TUNITn keyword for each column 
+           const char *extname) // I - value of EXTNAME keyword, if any                                  
                   
 {
 	// flush m_buffer first
@@ -1306,7 +1307,11 @@ int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &fout, // I - FITS output 
 		return -1;
 	}
 	// write the required keywords for AsciiTableExtension to fitsfile.  
-	if(ffphtb( l_newfptr, naxis1, naxis2, tfields,ttype, tbcol, tform, tunit, extname, &l_status)){
+	if(ffphtb( l_newfptr, naxis1, naxis2, tfields,
+		   const_cast<char**>(ttype), tbcol,
+		   const_cast<char**>(tform),
+		   const_cast<char**>(tunit),
+		   const_cast<char*>(extname), &l_status)){
 	   errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Write HDU header failed!");
 	   fits_report_error(stderr, l_status); // print error report
 		return -1;
@@ -1441,8 +1446,8 @@ void BinaryTableExtension::bt_assign() {
 	int i, j, n;
 	size_t row_align;
 	uInt ne;
-	char *s;
-	char *p;
+	const char *s;
+	const char *p;
 	int *dd;
 	int nd;
 
@@ -1954,13 +1959,14 @@ int BinaryTableExtension::write(FitsOutput &fout) {
   is responsible for also updating the TFORM keyword value. GYL 
 */
 int BinaryTableExtension::write_binTbl_hdr( FitsOutput &fout, // I - FITS output object
-           long naxis2,     // I - number of rows in the table             
-           int tfields,     // I - number of columns in the table          
-           char **ttype,    // I - name of each column                     
-           char **tform,    // I - value of TFORMn keyword for each column 
-           char **tunit,    // I - value of TUNITn keyword for each column 
-           char *extname,   // I - value of EXTNAME keyword, if any        
-           long pcount )    // I - size of the variable length heap area                             
+           long naxis2,           // I - number of rows in the table             
+           int tfields,           // I - number of columns in the table          
+           const char **ttype,    // I - name of each column                     
+           const char **tform,    // I - value of TFORMn keyword for each column 
+           const char **tunit,    // I - value of TUNITn keyword for each column 
+           const char *extname,   // I - value of EXTNAME keyword, if any        
+           long pcount )          // I - size of the variable length heap area
+
 {
 	// flush m_buffer first
 	fout.getfout().flush_buffer();
@@ -2004,7 +2010,12 @@ int BinaryTableExtension::write_binTbl_hdr( FitsOutput &fout, // I - FITS output
 		return -1;
 	}
 	// write the required keywords for BinaryTableExtension to fitsfile.  
-	if(ffphbn( l_newfptr, naxis2, tfields, ttype, tform, tunit, extname, pcount, &l_status)){
+	if(ffphbn( l_newfptr, naxis2, tfields,
+		   const_cast<char**>(ttype),
+		   const_cast<char**>(tform),
+		   const_cast<char**>(tunit),
+		   const_cast<char*>(extname),
+		   pcount, &l_status)){
 	   errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Write HDU header failed!");
 	   fits_report_error(stderr, l_status); // print error report
 		return -1;

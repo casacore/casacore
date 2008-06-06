@@ -303,7 +303,7 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
 }
 
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     if (argc < 6) {
 	cout << "Execute as:" << endl;

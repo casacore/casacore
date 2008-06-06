@@ -3399,7 +3399,7 @@ Bool checkMask (const LatticeExprNode& expr,
 }
 
 
-int main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
   Bool ok = True;
   try {

@@ -34,7 +34,7 @@
 #include <casa/Arrays/ArrayIO.h>
 
 #include <casa/namespace.h>
-int main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
   try {
     Quantity longitude; Quantity::read(longitude,"149.33.00.5");

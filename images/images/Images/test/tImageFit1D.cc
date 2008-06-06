@@ -68,8 +68,8 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
 void forcedFailure();
 
 
-int main (int argc, char **argv) {
-
+int main (int argc, const char* argv[])
+{
 
 try {
 

@@ -83,7 +83,7 @@ void readHeaderRecErrHandler(const char *errMessage, FITSError::ErrorLevel sever
     nerrs_++;
 }
 //=============================================================================================
-void FitsInput::errmsg(FitsErrs e, char *s) {
+void FitsInput::errmsg(FitsErrs e, const char *s) {
     //cout<<"[FitsInput::errmsg] called."<<endl;
     ostringstream msgline;
     msgline << "FitsInput error:  ";
@@ -165,7 +165,7 @@ BlockInput &FitsInput::make_input(const char *n, const FITS::FitsDevice &d,
         return *bptr;
 }
 //=============================================================================================
-void FitsOutput::errmsg(FitsErrs e, char *s) {
+void FitsOutput::errmsg(FitsErrs e, const char *s) {
     ostringstream msgline;
     msgline << "FitsOutput error:  ";
     if (m_fout.fname() == 0 || *m_fout.fname() == '\0') 

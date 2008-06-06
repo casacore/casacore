@@ -119,7 +119,7 @@ void testTiling (uInt tileSize)
     }
 }
 	
-main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     try {
 	testClass();

@@ -31,7 +31,7 @@
 #include <casa/Utilities/Copy.h>
 #include <casa/Exceptions/Error.h>
 
-// No socket support on Cray XT3 Catamount (yet)
+//# No socket support on Cray XT3 Catamount (yet)
 #ifndef AIPS_CRAY_PGI
 #include <netinet/in.h>
 #include <arpa/inet.h>            // Definition of sockaddr_in
@@ -39,6 +39,7 @@
 #include <netdb.h>
 #endif
 #include <unistd.h>               // needed for ::close
+#include <cstring>                //# for memcpy with gcc-4.3
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

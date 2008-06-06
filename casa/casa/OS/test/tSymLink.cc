@@ -200,7 +200,7 @@ void doIt (Bool doExcp)
 }
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));

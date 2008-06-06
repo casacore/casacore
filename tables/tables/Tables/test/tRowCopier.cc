@@ -109,7 +109,7 @@ int main()
 		cout << "Ooops, exact.copy(" << rownr << ") returned False!" 
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	// and compare each Scalar column as a TableVector
@@ -118,28 +118,28 @@ int main()
 	    cout << "An exact copy was not made of ICol1"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	TableVector<Int> ic2main(maintab, "ICol2"), ic2copy(exacttab, "ICol2");
         if (anyNE(ic2main, ic2copy)) {
 	    cout << "An exact copy was not made of ICol2"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	TableVector<Float> fcmain(maintab, "FCol"), fccopy(exacttab, "FCol");
         if (anyNE(fcmain, fccopy)) {
 	    cout << "An exact copy was not made of FCol"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	TableVector<Double> dcmain(maintab, "DCol"), dccopy(exacttab, "DCol");
         if (anyNE(dcmain, dccopy)) {
 	    cout << "An exact copy was not made of DCol"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	// and check each Vector in IACol
 	ArrayColumn<Int> iamain(maintab, "IACol"), iacopy(exacttab, "IACol");
@@ -148,7 +148,7 @@ int main()
 		cout << "An exact copy was not made of the array column "
 		    << "at row number " << rownr << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	cout << "Exact copy passes." << endl;
@@ -166,7 +166,7 @@ int main()
 		cout << "Ooops, limited.copy(" << rownr << ") returned False!"
 		    << endl;
 		cout << "tRowCopier Fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	// If it gets here, it really must have passed, but just check that
@@ -176,7 +176,7 @@ int main()
 	if (anyNE(ic1main, ic1part)) {
 	    cout << "ICol1 copy differs!" << endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	// and check each Vector in IACol
 	ArrayColumn<Int> mia(maintab, "IACol"), pia(partialtab, "IACol");
@@ -185,7 +185,7 @@ int main()
 		cout << "The array columns do not match "
 		    << "at row number " << rownr << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	cout << "limited copy passes." << endl;
@@ -208,7 +208,7 @@ int main()
 		     << ic3part(rownr) << endl;
 	    }
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	Vector<String> inname(1), outname(1);
 	inname(0) = "ICol1";
@@ -219,7 +219,7 @@ int main()
 		cout << "Ooops, named.copy(" << rownr << ") returned False!"
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	// now they should be equal
@@ -227,7 +227,7 @@ int main()
 	if (anyNE(ic1main, ic3part)) {
 	    cout << "ICol1 and ICol3 are not exact copies!" << endl;
 	    cout << "tRowCopier fails!" << endl;
-	    exit(1);
+	    return 1;
 	}
 	cout << "Named copy, same row number, passes." << endl;
     }
@@ -248,7 +248,7 @@ int main()
 		cout << "Ooops, named.copy(" << inrownr << ") returned False!"
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	for (inrownr = 0; inrownr < maintab.nrow(); inrownr++) {
@@ -257,7 +257,7 @@ int main()
 		cout << "ICol1(" << inrownr << ") is not equal to ICol3("
 		    << outrownr << ")" << endl;
 		cout << "tRowCopier fails!" << endl;
-		exit(1);
+		return 1;
 	    }
 	}
 	cout << "named copy, reverse order, passes." << endl;
@@ -283,7 +283,7 @@ int main()
 	caught = False;
     } else {
 	cout << "FAILS!" << endl;
-	exit(1);
+	return 1;
     }
 
     // non-conformant columns
@@ -301,7 +301,7 @@ int main()
 	caught = False;
     } else {
 	cout << "FAILS!" << endl;
-	exit(1);
+	return 1;
     }
 
     // different dimensionality, Scalar versus Array
@@ -318,7 +318,7 @@ int main()
 	caught = False;
     } else {
 	cout << "FAILS!" << endl;
-	exit(1);
+	return 1;
     }
 
     // different dimensionality of input strings
@@ -335,7 +335,7 @@ int main()
 	caught = False;
     } else {
 	cout << "FAILS!" << endl;
-	exit(1);
+	return 1;
     }
 
     // and finally, some checks that False is returned when appropriate.
@@ -347,7 +347,7 @@ int main()
 	cout << "Input row number exceeds number of rows in input column : ";
 	if (rc.copy(maintab.nrow()+1), 0) {
 	    cout << "FAILS!" << endl;
-	    exit(1);
+	    return 1;
 	} else {
 	    cout << "OK" << endl;
 	}
@@ -356,12 +356,12 @@ int main()
 	cout << "Output row number exceeds number of rows in output column : ";
 	if (rc.copy(0,maintab.nrow()+1)) {
 	    cout << "FAILS!" << endl;
-	    exit(1);
+	    return 1;
 	} else {
 	    cout << "OK" << endl;
 	}
     }
 
     cout << "\ntRowCopier finishes successfully" << endl;
-    exit(0);
+    return 0;
 }

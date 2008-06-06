@@ -342,10 +342,10 @@ int main()
     cout<< "ok"<< endl;
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
 
-  exit(0);
+  return 0;
 }
 
 #endif

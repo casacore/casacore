@@ -1,6 +1,7 @@
 #include <scimath/Mathematics/MedianSlider.h>
 #include <casa/Exceptions/Error.h>
 #include <stdlib.h>    
+#include <cstring>                  //# for memcpy with gcc-4.3
     
 namespace casa { //# NAMESPACE CASA - BEGIN
 

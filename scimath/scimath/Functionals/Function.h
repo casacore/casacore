@@ -38,10 +38,11 @@
 
 //# Forward declarations
 #include <casa/iosfwd.h>
-class casa::String;
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+//# Forward declarations
+class String;
 class RecordInterface;
  
 // <summary> Numerical functional interface class

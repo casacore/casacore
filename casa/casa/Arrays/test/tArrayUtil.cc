@@ -384,7 +384,7 @@ Bool testReorderArray (Bool doExcp)
 }
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
   Bool ok = True;
   try {

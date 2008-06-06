@@ -149,7 +149,7 @@ void doIt (const IPosition& latticeShape,
 }
 
 
-main()
+int main()
 {
     try {
 	doIt (IPosition (2,11,20),

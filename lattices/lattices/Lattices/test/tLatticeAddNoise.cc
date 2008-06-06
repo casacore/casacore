@@ -49,7 +49,8 @@ void checkStats (Float av0, const Lattice<Float>& data,
                  Random::Types type);
 void checkStatsComplex (Float av0, const Lattice<Complex>& data,
                         Random::Types type);
-main ()
+
+int main ()
 {
   try {
 

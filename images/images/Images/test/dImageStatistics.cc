@@ -120,7 +120,7 @@
 enum defaults {AXES, REGION, STATS, RANGE, PLOTTING, NDEFAULTS=5};
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -301,24 +301,24 @@ try {
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) {
             os << stats.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
       if (validInputs(RANGE)) {
          if (!stats.setInExCludeRange(include, exclude, True)) {
             os << stats.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
       if (!stats.setList(doList)) {
          os << stats.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
          if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
             os << stats.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
 
@@ -354,7 +354,7 @@ try {
 
      if (!stats.display()) {
         os << stats.errorMessage() << LogIO::POST;
-        exit(1);
+        return 1;
      }
 
 // Test copy constructor
@@ -423,18 +423,18 @@ try {
       if (validInputs(AXES)) {
          if (!stats.setAxes(cursorAxes)) {
             os << stats.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
       if (!stats.setList(doList)) {
          os << stats.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
          if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
             os << stats.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
 
@@ -442,7 +442,7 @@ try {
 
      if (!stats.display()) {
         os << stats.errorMessage() << LogIO::POST;
-        exit(1);
+        return 1;
      }
    } else {
       os << LogIO::NORMAL << "images of type " << Int(imageType)

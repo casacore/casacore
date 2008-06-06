@@ -101,7 +101,7 @@ template<class T> class Vector;
 // values will be filled from the command line.
 // Some examples:
 // <srcblock>
-// main(Int argc, char *argv[])
+// int main(int argc,const char* argv[])
 // {
 //   Input inp;
 //   // Create a parameter called "foo" which defaults to True.
@@ -114,7 +114,7 @@ template<class T> class Vector;
 //              "0-100000", "Double", "clean steps");
 // </srcblock>
 // The parameters are "filled" from the command line arguments by the member
-// function ReadArguments(int argc, char**argv).  If an argument is not defined
+// function ReadArguments(int argc, const char* argv[]).  If an argument is not defined
 // within the main block but specified at the command line, an exception is
 // thrown. 
 // <srcblock>
@@ -147,7 +147,7 @@ template<class T> class Vector;
 // <example>
 // <srcblock>
 // #include <casa/Inputs/Input.h>
-// main(Int argc, char *argv[]) 
+// int main(int argc, const char* argv[]) 
 // {
 //  // instantiate an Input.  The integer argument of 1 to the ctor builds 
 //  // the system parameters "debug" and "help" and sets their values to the
@@ -250,7 +250,7 @@ public:
   void close();
 
   // fill the parameter list from argc, argv command line args
-  void readArguments (Int argc, char *argv[]);
+  void readArguments (Int argc, const char* argv[]);
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.

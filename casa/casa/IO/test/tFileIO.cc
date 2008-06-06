@@ -36,7 +36,7 @@
 
 
 #include <casa/namespace.h>
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     int nr = 100;
     if (argc > 1) {

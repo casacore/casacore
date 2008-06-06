@@ -77,7 +77,7 @@ void testArrayRWIter (Lattice<Bool>& lattice)
 }
 
 
-main ()
+int main ()
 
 {
   try {
@@ -150,8 +150,8 @@ main ()
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
-    exit(1);
+    return 1;
   } 
   cout << "OK" << endl;
-  exit(0);
+  return 0;
 }

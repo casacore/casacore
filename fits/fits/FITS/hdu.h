@@ -190,7 +190,7 @@ class HeaderDataUnit {
 	FitsInput *fin;
 	FITSErrorHandler errfn;
 	HDUErrs err_status;
-	void errmsg(HDUErrs, char *);
+	void errmsg(HDUErrs, const char *);
 
 	Int no_dims;		// number of dimensions
 	Int *dimn;		// size of dimension N
@@ -966,23 +966,23 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	Int ncols() const		{ return tfields_x; }
 	uInt rowsize() const		{ return fitsrowsize; }
 	Int tfields() const 		{ return tfields_x; }
-	char *tform(int n) const 	{ return tform_x[n]; }
+	const char *tform(int n) const 	{ return tform_x[n]; }
 	double tscal(int n) const 	{ return tscal_x[n]; }
 	double tzero(int n) const 	{ return tzero_x[n]; }
 	Bool isatnull(int n) const	{ return isatnull_x[n]; }
 	Int  tnull(int n) const 	{ return tnull_x[n]; }
-	char *ttype(int n) const 	{ return ttype_x[n]; }	
-	char *tunit(int n) const 	{ return tunit_x[n]; }
-	char *tdisp(int n) const 	{ return tdisp_x[n]; }
-	char *tdim(int n) const 	{ return tdim_x[n]; }
-	char *ctype(int n) const 	{ return ctype_x[n]; }
+	const char *ttype(int n) const 	{ return ttype_x[n]; }	
+	const char *tunit(int n) const 	{ return tunit_x[n]; }
+	const char *tdisp(int n) const 	{ return tdisp_x[n]; }
+	const char *tdim(int n) const 	{ return tdim_x[n]; }
+	const char *ctype(int n) const 	{ return ctype_x[n]; }
 	double crpix(int n) const 	{ return crpix_x[n]; }
 	double crota(int n) const 	{ return crota_x[n]; }
 	double crval(int n) const 	{ return crval_x[n]; }
 	double cdelt(int n) const 	{ return cdelt_x[n]; }
 	Int theap() const 		{ return theap_x; }
-	char *author() const 		{ return author_x; }
-	char *referenc() const	 	{ return referenc_x; }
+	const char *author() const 	{ return author_x; }
+	const char *referenc() const	{ return referenc_x; }
 	//</group>
 
 	// binds a FitsField to a column
@@ -1004,8 +1004,8 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	// write current rows
 	int write(FitsOutput &);
 	// create a binary table header without using FitsKeywordList objet.
-	int write_binTbl_hdr(FitsOutput &, long, int, char**,
-                        char**, char**, char*, long );
+	int write_binTbl_hdr(FitsOutput &, long, int, const char**,
+			     const char**, const char**, const char*, long );
 
 	// select a field
 	FitsBase &field(int i) const	{ return *fld[i]; }
@@ -1088,7 +1088,8 @@ class AsciiTableExtension : public BinaryTableExtension {
 	char *tnull(int n) 	{ return tnulla_x[n]; }
 	// write the required keywords for ASCIITableExtension
 	int write_ascTbl_hdr( FitsOutput &, long,
-           long, int, char **, long *, char **, char **, char *e);   
+			      long, int, const char **, long *,
+			      const char **, const char **, const char *e);   
 
     protected:
 	Int *tbcol_x;

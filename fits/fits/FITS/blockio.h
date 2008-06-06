@@ -128,7 +128,7 @@ class BlockIO {
 	fitsfile *m_fptr;  		
 
 	// set the error message and error number for later recovery
-	void errmsg(IOErrs, char *);
+	void errmsg(IOErrs, const char *);
 };
 
 //<summary> fixed-length blocked sequential input base class</summary>

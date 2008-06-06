@@ -33,7 +33,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //======================================================================================
-void BlockIO::errmsg(IOErrs e, char *s) { 
+void BlockIO::errmsg(IOErrs e, const char *s) { 
     ostringstream msgline;
     msgline << "BlockIO:  ";
     if (m_filename == 0 || *m_filename == '\0')
@@ -114,7 +114,7 @@ BlockIO::BlockIO(const char *f, int o, int r, int n,
 // Can we get the file name from the file descriptor fd? No. However, this constructor
 // is only used for standard io. So we do not have to worry about it.
 BlockIO::BlockIO(int f, int r, int n, FITSErrorHandler errhandler) :
-	m_filename(""), m_options(0), m_recsize(r), m_nrec(n), m_blocksize(n * r), 
+	m_filename(0), m_options(0), m_recsize(r), m_nrec(n), m_blocksize(n * r), 
 	m_errfn(errhandler), m_err_status(OK), m_fd(f), m_block_no(0), m_rec_no(0), 
 	m_current(0), m_iosize(0) {
 	if ((m_buffer = new char [m_blocksize]) == 0) {

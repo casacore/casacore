@@ -309,7 +309,7 @@ void doTable (Bool ask, const TableDesc& td)
   }
 }
 
-int main (int argc)
+int main (int argc, const char*[])
 {
   try {
     cout << "tTable_4 is for interactive playing with tables" << endl;

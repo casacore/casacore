@@ -33,7 +33,8 @@
 #include <casa/Exceptions/Error.h>
 
 #include <casa/namespace.h>
-main()
+
+int main()
 {
     try {
 

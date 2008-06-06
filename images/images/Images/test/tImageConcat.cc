@@ -365,10 +365,10 @@ int main() {
 
   } catch(AipsError x) {
     cerr << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
   cout << "OK" << endl;
-  exit(0);
+  return 0;
 };
 
 

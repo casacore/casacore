@@ -35,7 +35,7 @@
 #include <casa/namespace.h>
 
 
-int main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
   try {
     if(argc < 3) {
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
       const TableExprNode *node = msAntennaGramParseNode();
       if(node->isNull()) {
 	cout << "NULL node " << endl;
-	exit(0);
+	return 0;
       }
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);

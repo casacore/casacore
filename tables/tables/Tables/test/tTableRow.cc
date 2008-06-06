@@ -345,7 +345,7 @@ void c (Int nrow)
 }
 
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     uInt nr = 500;
     if (argc > 1) {

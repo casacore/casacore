@@ -54,7 +54,7 @@ void doit (Bool doExcp);
 void doIO (Bool doExcp, Bool out, AipsIO&);
 void doTry (AipsIO&);
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	doit (argc<2);

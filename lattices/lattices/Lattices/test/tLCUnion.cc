@@ -120,7 +120,7 @@ void doIt (const IPosition& latticeShape,
 }
 
 
-main()
+int main()
 {
     try {
 	doIt (IPosition (2,11,20),
@@ -131,8 +131,8 @@ main()
 	      IPosition (2,4,16), 5.);
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	exit(1);
+	return 1;
     } 
     cout << "OK" << endl;
-    exit(0);
+    return 0;
 }

@@ -54,7 +54,7 @@
 
 void doIt (const String& tableName);
 
-main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     // Only execute when a table name has been given.
     try {

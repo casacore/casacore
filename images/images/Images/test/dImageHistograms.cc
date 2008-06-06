@@ -117,7 +117,7 @@
 enum defaults {AXES, REGION, RANGE, NDEFAULTS};
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -286,36 +286,36 @@ try {
       if (validInputs(AXES)) {
          if (!histo.setAxes(cursorAxes)) {
             os << histo.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
       if (!histo.setNBins(nBins)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (validInputs(RANGE)) {
          if (!histo.setIncludeRange(include)) {
             os << histo.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
       if (!histo.setGaussian (doGauss)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (!histo.setForm(doLog, doCumu)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (!histo.setStatsList(doList)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
       if (!device.empty()) {
          PGPlotter plotter(device);
          if (!histo.setPlotting(plotter, nxy)) {
             os << histo.errorMessage() << LogIO::POST;
-            exit(1);
+            return 1;
          }
       }
 
@@ -323,7 +323,7 @@ try {
 
       if (!histo.display()) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
 
 // Get histograms   
@@ -332,7 +332,7 @@ try {
       os << LogIO::NORMAL << "Recovering histogram arrays" << LogIO::POST;
       if (!histo.getHistograms(values,counts)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
 //      cout << "values=" << values << endl;
 //      cout << "counts=" << counts << endl;
@@ -342,7 +342,7 @@ try {
       IPosition pos(histo.displayAxes().nelements(),0);
       if (!histo.getHistogram(valuesV,countsV,pos,False)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
       }
 
 //      cout << "values=" << valuesV << endl;
@@ -364,26 +364,24 @@ try {
      os << "Test setNewImage" << LogIO::POST;
      if (!histo.setNewImage(inImage)) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
      } 
      if (!histo.display()) {
          os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+         return 1;
      }
 
    } else {
       os << "images of type " << Int(imageType)
 	 << " not yet supported" << endl;
-      exit(1);
+      return 1;
    }
 }
    catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
-      exit(1);
+      return 1;
   }
 
-  exit(0)
-
-;
+ return 0;
 
 }

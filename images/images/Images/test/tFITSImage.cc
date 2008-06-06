@@ -48,7 +48,7 @@
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -146,9 +146,9 @@ try {
 
 } catch (AipsError x) {
    cerr << "aipserror: error " << x.getMesg() << endl;
-   exit(1);
+   return 1;
 }
-  exit(0);
+  return 0;
 }
 
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,

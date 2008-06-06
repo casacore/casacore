@@ -63,7 +63,8 @@ void d();
 void e (uInt nrrow);
 void f();
 
-main (int argc, char** argv) {
+int main (int argc, const char* argv[])
+{
     uInt nr = 1000;
     if (argc > 1) {
 	istringstream istr(argv[1]);

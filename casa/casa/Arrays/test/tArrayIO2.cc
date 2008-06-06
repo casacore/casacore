@@ -45,7 +45,7 @@ void doMat();
 void doVec();
 
 
-main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	doBin ( (argc<2));

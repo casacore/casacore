@@ -42,7 +42,7 @@
 // It reads from stdin (the test version from tArraIO3.in) and prints
 // the result.
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	Array<Double> a;

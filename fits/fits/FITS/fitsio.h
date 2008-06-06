@@ -139,7 +139,7 @@ class FitsIO {
 	OFF_T m_curr_size;			
 
 	// set error message that belongs to one of the enumerated types
-	virtual void errmsg(FitsErrs, char *) = 0;
+	virtual void errmsg(FitsErrs, const char *) = 0;
 					
 };
 
@@ -187,7 +187,7 @@ class FitsInput : public FitsIO {
 	// total number of hdu in this fits file
 	int m_thdunum;		
 
-	virtual void errmsg(FitsErrs, char *);
+	virtual void errmsg(FitsErrs, const char *);
 	void init();
 	void read_header_rec();
 	bool current_hdu_type( FITS::HDUType &);
@@ -243,7 +243,7 @@ class FitsOutput : public FitsIO {
 	BlockOutput &make_output(const char *, const FITS::FitsDevice &, int, 
 				 FITSErrorHandler errhandler = FITSError::defaultHandler);
 
-	virtual void errmsg(FitsErrs, char *);
+	virtual void errmsg(FitsErrs, const char *);
 
 	int hdu_inprogress() { 
 	    return (m_rec_type == FITS::HDURecord && m_data_size > 0 && m_curr_size < m_data_size);

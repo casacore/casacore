@@ -42,7 +42,7 @@
 
 
 #include <casa/namespace.h>
-main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 
 try {
@@ -63,17 +63,17 @@ try {
 //
    if (in.empty()) {
       cout << "You must give an input image name" << endl;
-      exit(1);
+      return 1;
    }
    if (out.empty()) {
       cout << "You must give an output image root name" << endl;
-      exit(1);
+      return 1;
    }
 // 
    DataType imageType = imagePixelType(in);
    if (imageType!=TpFloat) {
       cout << "The image must be of type Float" << endl;
-      exit(1);
+      return 1;
    }
 
 // Construct images
@@ -81,7 +81,7 @@ try {
    PagedImage<Float> inImage(in);
    if (axis > Int(inImage.ndim())) {
       cout << "Axis must be <=" << inImage.ndim() << endl;
-      exit(1);
+      return 1;
    }
 //
    String outFitName(out+String(".fit"));
@@ -125,6 +125,6 @@ try {
    return 1;
 } 
 
-   exit(0);
+   return 0;
 }
 

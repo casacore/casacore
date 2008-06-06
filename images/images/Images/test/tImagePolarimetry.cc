@@ -63,7 +63,7 @@ void traditionalRotationMeasure (Double rm, Double rmFg, Double rmMax, Double pa
                                  LogIO& os, const String& plotter);
 void fourierRotationMeasure (Double rm, const String& plotter, LogIO& os);
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -359,10 +359,10 @@ try {
 
 }   catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
-     exit(1);
+     return 1;
 } 
   cout << "ok" << endl;
-  exit(0);
+  return 0;
 }
 
 

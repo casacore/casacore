@@ -1423,7 +1423,7 @@ void testRefCodeChg()
 }
 
 
-int main(int argc)
+int main(int argc, const char*[])
 {
   try {
     Bool doExcep = (argc<2);
@@ -1441,7 +1441,7 @@ int main(int argc)
     cout << "An error occurred.  The test ended early with the following";
     cout << " message:\n";
     cout << x.getMesg() << endl;
-    exit(1);
+    return 1;
   }
-  exit(0);
+  return 0;
 }

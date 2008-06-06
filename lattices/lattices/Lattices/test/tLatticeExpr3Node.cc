@@ -118,7 +118,7 @@ Bool doIt (const SubLattice<Float>& aF, const LCRegion& region1,
 }
 
 
-main()
+int main()
 {
     Bool ok = True;
     try {

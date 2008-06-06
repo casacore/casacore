@@ -39,7 +39,7 @@ String removeDir (const String& msg)
   return s;
 }
 
-int main (int argc, char* argv[])
+int main (int argc, const char* argv[])
 {
   Table::TableType ttyp = Table::Plain;
   if (argc > 1  &&  String(argv[1]) == String("m")) {

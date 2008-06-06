@@ -64,7 +64,7 @@ Bool compareSkyComponent (const SkyComponent& in,
 void test1 (LogIO& os, ImageInterface<Float>& im, const DirectionCoordinate& dC);
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -99,10 +99,10 @@ try {
 //
 }  catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
-     exit(1);
+     return 1;
 } 
 
-exit(0);
+return 0;
 }
 
 

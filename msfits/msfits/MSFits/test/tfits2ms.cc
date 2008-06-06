@@ -11,7 +11,8 @@
 
 #include <casa/namespace.h>
 
-int main(int argc, char** argv) {
+int main(int argc, const char* argv[])
+{
   try {
     Input inputs(1);
     inputs.create("ms", "", "Initial measurement set");

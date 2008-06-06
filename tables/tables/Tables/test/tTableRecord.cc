@@ -830,7 +830,7 @@ void testTable2 (Bool)
 }
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	doIt ( (argc<2));

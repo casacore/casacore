@@ -357,7 +357,8 @@ void do_binary_table(BinaryTableExtension &x) {
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, const char* argv[])
+{
 	HeaderDataUnit *h;
 	PrimaryArray<unsigned char> *paB;
 	PrimaryArray<short> *paS;

@@ -149,5 +149,5 @@ int main() {
     /// std::cout << "Expected: " << "2, 0, 0" << std::endl;
     std::cout << "---------------------------------------------------" << std::endl;
   }
-  exit(0);
+  return 0;
 }

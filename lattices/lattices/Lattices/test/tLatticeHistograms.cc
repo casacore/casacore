@@ -55,7 +55,7 @@ void test1DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt 
 void test2DFloat (LatticeHistograms<Float>& histo,  const IPosition& shape, uInt nBin);
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
    try {
       LogOrigin lor("tLatticeHistograms", "main()", WHERE);

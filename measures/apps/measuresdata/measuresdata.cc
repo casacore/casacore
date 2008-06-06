@@ -618,7 +618,8 @@ Bool TAI_UTC(const tableProperties &tprop, inputValues &inVal) {
 //*************************************************************************//
 // Main program
 //*************************************************************************//
-int main (Int argc, char** argv) {
+int main (Int argc, const char* argv[])
+{
   try {
     cout << " " << endl;
     cout << "Create data tables for Measures" << endl;

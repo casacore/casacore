@@ -120,8 +120,8 @@ Double mv(Vector<Double> &res, const Vector<Double> &par, const Double x) {
   return val;
 }
 
-int main(int argc, char **argv) {
-      
+int main(int argc, const char* argv[])
+{      
   // Inputs
   cout << ">>>" << endl;
   Input inputs(1);

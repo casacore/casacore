@@ -92,7 +92,8 @@ void info(const Table aTable);
 // put/putColumn cache test
 void putColumnTest();
 
-int main (int argc, char** argv) {
+int main (int argc, const char* argv[])
+{
     uInt aNr = 250;
     if (argc > 1) {
 	istringstream anIstr(argv[1]);

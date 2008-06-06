@@ -39,7 +39,7 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
-int main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
   try {
     // Inputs

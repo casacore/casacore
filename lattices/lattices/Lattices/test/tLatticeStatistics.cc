@@ -61,7 +61,7 @@ void test2DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
                   const Vector<Bool>& hasResult, const IPosition& shape);
 
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
    try {
       LogOrigin lor("tLatticeStatistics", "main()", WHERE);

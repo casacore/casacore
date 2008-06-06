@@ -32,7 +32,7 @@
 
 
 #include <casa/namespace.h>
-main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
     Input inp(1);
     inp.version(" ");

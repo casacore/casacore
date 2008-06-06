@@ -225,7 +225,8 @@ This is another implementation that accomplishes the same thing.
 	delete &x;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, const char* argv[])
+{
 	AsciiTableExtension *at;
 
 	cout << "Test5 -- convert an ASCII table to a binary table" << endl;

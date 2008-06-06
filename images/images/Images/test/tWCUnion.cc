@@ -115,7 +115,7 @@ void doIt()
 }
 
 
-main ()
+int main()
 {
   try {
     doIt();

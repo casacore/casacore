@@ -66,7 +66,7 @@ Bool checkBool(Lattice<Bool>& expr,
                 const Bool supress);
 
 
-main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
  try {
     Input inp(1);
@@ -228,17 +228,17 @@ main (int argc, char *argv[])
   cout << endl;
   if (!ok) {
      cout << "not ok" << endl;
-     exit(1);
+     return 1;
   } else {
      cout << "ok" << endl;
   }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    exit(1);
+    return 1;
  } 
  
- exit(0);
+ return 0;
 
 }
 

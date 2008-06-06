@@ -144,11 +144,11 @@ int main()
     AlwaysAssertExit (m(0) == 3);
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;
-    exit(1);
+    return 1;
   }
   cout << "OK" << endl;
-  exit(0);
+  return 0;
 }

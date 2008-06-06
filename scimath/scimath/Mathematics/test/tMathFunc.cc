@@ -36,7 +36,8 @@
 #include <casa/Utilities/Assert.h>
 
 #include <casa/namespace.h>
-main()
+
+int main()
 {
 try{
    cout << "\nMathFunc<Float> constants : " << endl;

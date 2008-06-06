@@ -38,7 +38,8 @@
 
 
 #include <casa/namespace.h>
-int main (Int argc, char** argv) {
+int main (int argc, const char* argv[])
+{
     try {
 	// enable input in no-prompt mode
 	Input inputs(1);
@@ -124,9 +125,9 @@ int main (Int argc, char** argv) {
 				    combinespw, writestation, sensitivity);
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
-	exit(1);
+	return 1;
     } 
 
     cout << "ms2uvfits normally ended" << endl;
-    exit(0);
+    return 0;
 }

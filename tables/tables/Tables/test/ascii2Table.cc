@@ -48,7 +48,7 @@
 
 void calc(Table&, const String&);
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     try {
 	if (argc < 3) {

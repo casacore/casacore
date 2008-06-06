@@ -431,9 +431,9 @@ int main()
     }
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   }
       
   cout << "OK\n";
-  exit(0);
+  return 0;
 }

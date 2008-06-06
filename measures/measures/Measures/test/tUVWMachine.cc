@@ -306,5 +306,5 @@ int main() {
     cout << x.getMesg() << endl;
   } 
 
-  exit(0);
+  return 0;
 }

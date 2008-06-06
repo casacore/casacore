@@ -94,7 +94,7 @@ Bool checkBool (LELInterface<Bool>& expr,
 		 const Bool emptyShape=False);
 
 
-int main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
  try {
     cout << ">>>" << endl;
@@ -2336,17 +2336,17 @@ int main (int argc, char *argv[])
 
   if (!ok) {
     cout << "not ok" << endl;
-     exit(1);
+     return 1;
   } else {
     cout << endl << "ok" << endl;
   }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    exit(1);
+    return 1;
  } 
  
-   exit(0);
+   return 0;
 }
 
 

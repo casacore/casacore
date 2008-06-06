@@ -48,7 +48,9 @@
 #include <casa/iomanip.h>
 
 #include <casa/namespace.h>
-main() {
+
+int main()
+{
   try {
     cout << "Test MeasComet..." << endl;
     cout << "--------------------------------------" << endl;
@@ -199,5 +201,5 @@ main() {
     cout << x.getMesg() << endl;
   } 
   
-  exit(0);
+  return 0;
 }

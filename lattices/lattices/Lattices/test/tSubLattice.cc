@@ -359,7 +359,7 @@ void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2, Bool useRef)
   }
 }
 
-int main (int argc, char* argv[])
+int main (int argc, const char* argv[])
 {
   try {
     {

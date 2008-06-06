@@ -41,7 +41,7 @@
 
 
 #include <casa/namespace.h>
-int main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
   try {
     cout << ">>>" << endl;
@@ -196,8 +196,8 @@ int main (int argc, char *argv[])
 
   } catch (const AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   }
 
-  exit(0);
+  return 0;
 }

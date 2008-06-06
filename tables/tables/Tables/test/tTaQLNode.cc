@@ -47,7 +47,7 @@
 void seltab (const String&);
 void docomm ();
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
   try {
     if (argc > 1) {

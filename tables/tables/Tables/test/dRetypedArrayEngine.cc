@@ -200,7 +200,7 @@ void b();
 void c();
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	a( (argc<2));

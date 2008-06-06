@@ -235,7 +235,7 @@ void doIt (Bool doExcp, Bool& success)
 }
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     Bool success = True;
     try {

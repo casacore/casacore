@@ -497,7 +497,7 @@ void Input::keys()
 // Swallow arguments, setting keyword=value pairs appropriately from command
 // line arguments in either "keyword=value" or "-keyword value" format. Argv[0]
 // is assumed to be the program name.
-void Input::readArguments (Int ac, char *av[])
+void Input::readArguments (int ac, const char* av[])
 {
   Int i;
   createPar (1, "argv0", av[0], "Program name", "", "", "");

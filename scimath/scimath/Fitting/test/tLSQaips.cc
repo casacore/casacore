@@ -1200,5 +1200,5 @@ int main() {
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   }
-  exit(0);
+  return 0;
 }

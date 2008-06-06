@@ -68,13 +68,13 @@ int main()
     Bool ok = radec.toWorld(world, pixel);                        // 13
     if (!ok) {                                                    // 14
 	cout << "Error: " << radec.errorMessage() << endl;        // 15
-	exit(1);                                                 // 16
+	return 1;                                                 // 16
     }                                                             // 17
     cout << world << " <--- " << pixel << endl;           // 18
     ok = radec.toPixel(pixel, world);                             // 19
     if (!ok) {
 	cout << "Error: " << radec.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " ---> " << pixel << endl;
 
@@ -88,7 +88,7 @@ int main()
     ok = stokes.toPixel(plane, Stokes::Q);                       // 25
     if (!ok) {
 	cout << "Error: " << stokes.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << "Stokes Q is plane " << plane << endl;
     
@@ -113,14 +113,14 @@ int main()
     ok = spectral.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << spectral.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " <--- " << pixel << endl;
 
     ok = spectral.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << spectral.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " ---> " << pixel << endl;
 
@@ -136,14 +136,14 @@ int main()
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " ---> " << pixel << endl;
 
@@ -156,14 +156,14 @@ int main()
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " ---> " << pixel << endl;
 
@@ -171,20 +171,20 @@ int main()
     ok = coordsys.removePixelAxis(0, 138.0);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     pixel.resize(3); pixel(0) = 138; pixel(1) = 50; pixel(2) = 2;
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " <--- " << pixel << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     cout << world << " ---> " << pixel << endl;
 
@@ -192,21 +192,21 @@ int main()
     ok = coordsys.save(rec, "CS");
     if (!ok) {
         cout << "Error: " << coordsys.errorMessage() << endl;
-	exit(1);
+	return 1;
     }
     CoordinateSystem* pCoordSys = CoordinateSystem::restore(rec,"CS");
     if (pCoordSys == 0) {
        cout << "Failed to restore from record" << endl;
-       exit(1);
+       return 1;
     } else {
        delete pCoordSys;
     }
 
   } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
-     exit(1);
+     return 1;
   }
 
   cout << "ok" << endl;
-  exit(0);
+  return 0;
 }

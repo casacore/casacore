@@ -37,7 +37,7 @@ void convert(String fitsName, String msName)
 }
 
 // This is a very simple test, not in the repository
-int main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
     Input inputs(1);
     inputs.create("ms", "", "Initial measurement set");

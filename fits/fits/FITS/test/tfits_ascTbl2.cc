@@ -99,13 +99,13 @@ int main()
 	
 	 // define the name, datatype, and physical units for the columns 
 	 // I - name of each column
-    char *ttype[] = { "GSC_ID", "RA_DEG", "DEC_DEG","POS_ERR", "MAG" ,"MAG_ERR", "MAG_BAND", "PLATE_ID" };
+         const char *ttype[] = { "GSC_ID", "RA_DEG", "DEC_DEG","POS_ERR", "MAG" ,"MAG_ERR", "MAG_BAND", "PLATE_ID" };
 	 // I - value of TFORMn keyword for each column.   
-    char *tform[] = { "I8",     "E4.2",        "E4.2",       "E4.2",      "E4.2",    "E4.2",       "I8",   "A4" };
+         const char *tform[] = { "I8",     "E4.2",        "E4.2",       "E4.2",      "E4.2",    "E4.2",       "I8",   "A4" };
 	 // I - value of TUNITn keyword for each column    
-	 char *tunit[] = { "\0",      "deg",    "deg",    "deg",     "cm",  "cm",     "cm",  "\0" }; 	 
+	 const char *tunit[] = { "\0",      "deg",    "deg",    "deg",     "cm",  "cm",     "cm",  "\0" }; 	 
 	 // I - value of EXTNAME keyword, if any
-	 char *extname = "GSC_REGION_00100";    
+	 const char *extname = "GSC_REGION_00100";    
        
       
 	AsciiTableExtension at;

@@ -48,7 +48,7 @@ Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Doub
 
 void addNoise (Array<Float>& pixels, Array<Float>& sigma, Double noise);
 
-int main(int argc, char **argv)
+int main(int argc, const char *argv[])
 {
 
   try {

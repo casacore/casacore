@@ -36,7 +36,8 @@
 #include <casa/namespace.h>
 using namespace std;
 
-int main(int argc, char **argv) {
+int main(int argc, const char* argv[])
+{
   Timer timer;
   for(Int i=0;i<20;i++) cout<<endl;  cout<<"Start."<<endl;
   try {

@@ -47,7 +47,7 @@
 
 
 #include <casa/namespace.h>
-main (int argc, char *argv[])
+int main (int argc, const char* argv[])
 {
   Bool foundError = False;
 

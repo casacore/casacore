@@ -62,15 +62,15 @@ extern "C" Int endTracing(void);
 // compares the results with the reference output file.
 
 #ifdef PABLO_IO
-void openPablo (char** argv);
+void openPablo (const char* argv[]);
 void closePablo ();
 #endif // PABLO_IO
-void makeCube (char** argv);
+void makeCube (const char* argv[]);
 void getCube (Bool trav, Bool ask);
 void traverse (const IPosition& cubeShape, const IPosition& tileShape);
 IPosition getVec (uInt nrdim, const String& prompt);
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     // Get the command line arguments as cube shape, tile shape.
     if (argc < 4) {
@@ -162,7 +162,7 @@ void closePablo ()
 #endif
 
 // First build a description.
-void makeCube (char** argv)
+void makeCube (const char* argv[])
 {
     // Convert the command line arguments to shapes.
     uInt i, maxCacheSize;
@@ -177,14 +177,13 @@ void makeCube (char** argv)
 	istringstream istr(cubeV(i).chars());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
-	    cout << "Arrayshape " << cubeShape(i) << " must be > 0" << endl;
-	    exit(1);
+	    throw AipsError("Arrayshape "  + String::toString(cubeShape(i))
+			    + " must be > 0");
 	}
     }
     if (tileV.nelements() != nrdim) {
 	if (tileV.nelements() != 1  ||  tileV(0) != "0") {
-	    cout << "Array and tile must have same dimensionality" << endl;
-	    exit(1);
+	    throw AipsError("Array and tile must have same dimensionality");
 	}
 	tileShape = TiledStMan::makeTileShape (cubeShape);
     }else{
@@ -192,8 +191,8 @@ void makeCube (char** argv)
 	    istringstream istr(tileV(i).chars());
 	    istr >> tileShape(i);
 	    if (tileShape(i) <= 0) {
-		cout << "Tileshape " << tileShape(i) << " must be > 0" << endl;
-		exit(1);
+		throw AipsError("Tileshape " + String::toString(tileShape(i))
+				+ " must be > 0");
 	    }
 	}
     }

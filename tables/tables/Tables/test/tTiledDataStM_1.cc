@@ -54,10 +54,10 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void a (char** argv);
+void a (const char* argv[]);
 void b();
 
-main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     // Get the command line arguments as cell shape, cube shape, tile shape.
     if (argc != 5) {
@@ -76,7 +76,7 @@ main (int argc, char** argv)
     try {
 	a (argv);
 	b ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -84,7 +84,7 @@ main (int argc, char** argv)
 }
 
 // First build a description.
-void a (char** argum)
+void a (const char* argum[])
 {
     // Convert the command line arguments to shapes.
     uInt i, nrdim, maxCacheSize;
@@ -95,12 +95,10 @@ void a (char** argum)
     istringstream istr1(argum[4]);
     istr1 >> maxCacheSize;
     if (cubeV.nelements() != tileV.nelements()) {
-	cout << "Cube and tile must have same dimensionality" << endl;
-	exit(1);
+	throw AipsError("Cube and tile must have same dimensionality");
     }
     if (nrdim > cubeV.nelements()) {
-	cout << "Cell-dimensionality must be <= cube-dimensionality" << endl;
-	exit(1);
+	throw AipsError("Cell-dimensionality must be <= cube-dimensionality");
     }
     IPosition cellShape (nrdim);
     IPosition cubeShape (cubeV.nelements());
@@ -109,16 +107,16 @@ void a (char** argum)
 	istringstream istr(cubeV(i).chars());
 	istr >> cubeShape(i);
 	if (cubeShape(i) <= 0) {
-	    cout << "Cubeshape " << cubeShape(i) << " must be > 0" << endl;
-	    exit(1);
+	    throw AipsError("Cubeshape " + String::toString(cubeShape(i))
+			    + " must be > 0");
 	}
     }
     for (i=0; i<tileV.nelements(); i++) {
 	istringstream istr(tileV(i).chars());
 	istr >> tileShape(i);
 	if (tileShape(i) <= 0) {
-	    cout << "Tileshape " << tileShape(i) << " must be > 0" << endl;
-	    exit(1);
+	    throw AipsError("Tileshape " + String::toString(tileShape(i))
+			    + " must be > 0");
 	}
     }
     for (i=0; i<nrdim; i++) {

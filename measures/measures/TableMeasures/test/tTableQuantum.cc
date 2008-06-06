@@ -50,7 +50,7 @@
 
 
 #include <casa/namespace.h>
-int main (int argc, char* argv[])
+int main (int argc, const char* argv[])
 {
   Bool doExcep = (argc<2);
   uInt nrrow = 5000;
@@ -506,7 +506,7 @@ int main (int argc, char* argv[])
 
   } catch (AipsError x) {
     cout << "Unexpected exception1: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
 
   // Try it with a readonly table.
@@ -527,7 +527,7 @@ int main (int argc, char* argv[])
     }
   } catch (AipsError x) {
     cout << "Unexpected exception2: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
 
   // Now test the performance by putting arrays in nrrow rows.
@@ -576,9 +576,9 @@ int main (int argc, char* argv[])
     cout << "<<<" << endl;
   } catch (AipsError x) {
     cout << "Unexpected exception3: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } 
 
   cout << "\nExecution of tTableQuantum.cc ended normally.\n";
-  exit(0);
+  return 0;
 }

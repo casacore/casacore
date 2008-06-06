@@ -28,6 +28,7 @@
 #include <ms/MeasurementSets/MSScanParse.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 #include <ms/MeasurementSets/MSMainColumns.h>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

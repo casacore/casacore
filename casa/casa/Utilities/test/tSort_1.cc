@@ -45,7 +45,7 @@ static Int* gbla;
 // It sorts some data in ascending and/or descending order.
 // The timing results are written to stdout.
 
-int main(int argc, char** argv)
+int main(int argc, const char* argv[])
 {
     Bool success = True;
     uInt nr=5000;

@@ -62,7 +62,7 @@ void checkNumbers (const ImageInterface<Float>& rIn,
 void makeMask(ImageInterface<Float>& out);
 void makeMask(ImageInterface<Complex>& out);
 
-int main (int argc, char **argv)
+int main (int argc, const char* argv[])
 {
 try {
 
@@ -216,16 +216,16 @@ try {
    } else {
       os << LogIO::NORMAL << "images of type " << Int(imageType)
 	 << " not yet supported" << LogIO::POST;
-      exit(1);
+      return 1;
    }
 }
 
   catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
-     exit(1);
+     return 1;
   } 
 
-  exit(0);
+  return 0;
 }
 
 

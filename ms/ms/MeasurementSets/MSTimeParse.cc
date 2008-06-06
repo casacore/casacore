@@ -32,6 +32,7 @@
 #include <measures/Measures/MEpoch.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 #include <casa/BasicSL/String.h>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   

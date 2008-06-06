@@ -73,7 +73,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   // Build constraint equations
   buildConstraint();
   // Invert normal equations
-  solved_p = invert(nr_p, svd_p);
+  solved_p = this->invert(nr_p, svd_p);
   // Get solution and errors
   if (solved_p) {
     solve(condEq_p);
@@ -87,12 +87,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   }
   return solved_p;
 }
-
-
-
-
-
-
 
 } //# NAMESPACE CASA - END
 

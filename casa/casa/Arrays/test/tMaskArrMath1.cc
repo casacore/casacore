@@ -57,7 +57,8 @@
 
 
 #include <casa/namespace.h>
-main()
+
+int main()
 {
     try {
         {

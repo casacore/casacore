@@ -40,7 +40,8 @@
 #include <casa/math.h>
 
 #include <casa/namespace.h>
-main()
+
+int main()
 {
   try{
     Vector<int> foo_int1(3);

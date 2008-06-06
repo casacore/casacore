@@ -37,7 +37,7 @@
 #include <casa/stdio.h>
 
 #include <casa/namespace.h>
-main(int argc, char **argv)
+int main(int argc, const char* argv[])
 {
     try {
 	Input inputs(1);

@@ -48,7 +48,7 @@
 // often a value varies.
 // </synopsis>
 
-int main (int argc, char** argv)
+int main (int argc, const char* argv[])
 {
     if (argc < 2) {
 	cout << "This program calculates the number of buckets needed" << endl;

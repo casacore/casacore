@@ -29,6 +29,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/stdlib.h>
+#include <cstring>                  //# for strcpy with gcc-4.3
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

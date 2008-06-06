@@ -149,16 +149,16 @@ int main (int argc, const char* argv[])
 {
   if (argc < 2) {
     docomm();
-    exit(0);
+    return 0;
   }
   try {
     doIt(argv[1]);
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
-    exit(1);
+    return 1;
   } catch (...) {
     cout << "Unexpected unknown exception" << endl;
-    exit(1);
+    return 1;
   }
-  exit(0);
+  return 0;
 }

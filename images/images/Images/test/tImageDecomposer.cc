@@ -55,7 +55,7 @@ Bool compareParameters(const Matrix<imagetype>& given,
 
 //////////////////////////////////////////
 
-int main(int argc, char** argv)
+int main(int argc, const char* argv[])
 {  
     //Tests the ImageDecomposer class
 

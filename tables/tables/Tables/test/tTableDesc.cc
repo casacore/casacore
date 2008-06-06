@@ -433,7 +433,7 @@ void e (Bool)
 }
 
 
-int main (int argc)
+int main (int argc, const char*[])
 {
     try {
 	d ( (argc<2));

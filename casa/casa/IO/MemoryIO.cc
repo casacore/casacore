@@ -29,7 +29,7 @@
 #include <casa/IO/MemoryIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
-
+#include <cstring>                  //# for memcpy with gcc-4.3
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
