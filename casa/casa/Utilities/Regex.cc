@@ -34,7 +34,7 @@
 #include <casa/stdexcept.h>
 #include <casa/iostream.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
-#include <malloc.h>
+#include <stdlib.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
