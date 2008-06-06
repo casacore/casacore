@@ -189,7 +189,7 @@ void LoggerHolderRep::doReopen()
 {
   if (itsIsClosed  &&  itsTablePtr == 0  &&  !itsTableName.empty()) {
     if (itsIsWritable) {
-      itsTablePtr = new TableLogSink(LogFilter(), itsTableName, False);
+      itsTablePtr = new TableLogSink(LogFilter(), itsTableName);
     } else {
       itsTablePtr = new TableLogSink(itsTableName);
     }

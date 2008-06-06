@@ -71,7 +71,7 @@ class SetupNewTable;
 // and define the column names might be of interest.
 //
 // This class posts messages which pass the filter to an AIPS++
-// <linkto class=Table>Table</linkto>. It puts ever field of the
+// <linkto class=Table>Table</linkto>. It puts every field of the
 // <linkto class=LogMessage>LogMessage</linkto> into its own column.
 // </synopsis>
 //
@@ -95,16 +95,9 @@ public:
   // If <src>fileName</src> exists, attach and append to it, otherwise create
   // a table with that name. If the table exists, it must have all the
   // required columns defined by <src>logTableDescription()</src>.
-  // <p>
-  // The <src>useSSM</src> is a temmporary fix to make it possible
-  // to use the old StManAipsIO storage manager for a log table.
-  // It is used by PagedImage to make it possible to access release 1.4
-  // images with release 1.3 software.
   // <group>
-  TableLogSink (LogMessage::Priority filter, const String& fileName,
-		Bool useSSM=True);
-  TableLogSink (const LogFilterInterface& filter, const String& fileName,
-		Bool useSSM=True);
+  TableLogSink (LogMessage::Priority filter, const String& fileName);
+  TableLogSink (const LogFilterInterface& filter, const String& fileName);
   // </group>
 
   // Open the log table for readonly.
@@ -221,11 +214,11 @@ private:
   // Avoid duplicating code in copy ctor and assignment operator
   void copy_other(const TableLogSink& other);
   // Make a new log table.
-  void makeTable (SetupNewTable&, Bool useSSM);
+  void makeTable (SetupNewTable&);
   // Attach the column objects and create unit keywor if needed.
   void attachCols();
   // Initialize the object.
-  void init (const String& fileName, Bool useSSM);
+  void init (const String& fileName);
 
 
   Table log_table_p;

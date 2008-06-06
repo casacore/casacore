@@ -48,22 +48,20 @@ String TableLogSink::id( ) const {
 }
 
 TableLogSink::TableLogSink (LogMessage::Priority filter,
-			    const String& fileName,
-			    Bool useSSM)
+			    const String& fileName)
 : LogSinkInterface(LogFilter(filter))
 {
-    init (fileName, useSSM);
+    init (fileName);
 }
 
 TableLogSink::TableLogSink (const LogFilterInterface& filter,
-			    const String& fileName,
-			    Bool useSSM)
+			    const String& fileName)
 : LogSinkInterface(filter)
 {
-    init (fileName, useSSM);
+    init (fileName);
 }
 
-void TableLogSink::init (const String& fileName, Bool useSSM)
+void TableLogSink::init (const String& fileName)
 {
     LogMessage logMessage(LogOrigin("TableLogSink", "TableLogSink", WHERE));
     if (fileName.empty()) {
@@ -72,7 +70,7 @@ void TableLogSink::init (const String& fileName, Bool useSSM)
                             message("Creating temporary log table");
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup (fileName, logTableDescription(), Table::Scratch);
-	makeTable (setup, useSSM);
+	makeTable (setup);
     } else if (Table::isWritable(fileName)) {
 	log_table_p = Table(fileName, Table::Update);
 	logMessage.priority(LogMessage::DEBUGGING).line(__LINE__).message(
@@ -89,7 +87,7 @@ void TableLogSink::init (const String& fileName, Bool useSSM)
                             message("Creating " + fileName);
 	LogSink::postGlobally(logMessage);
         SetupNewTable setup (fileName, logTableDescription(), Table::New);
-        makeTable (setup, useSSM);
+        makeTable (setup);
     }
 
     attachCols();
@@ -153,16 +151,11 @@ TableLogSink::~TableLogSink()
     flush();
 }
 
-void TableLogSink::makeTable (SetupNewTable& setup, Bool useSSM)
+void TableLogSink::makeTable (SetupNewTable& setup)
 {
-    // Bind all to the SSM or ISM.
-    if (useSSM) {
-        StandardStMan stman("SSM", 32768);
-	setup.bindAll(stman);
-    } else {
-        StManAipsIO stman;
-	setup.bindAll(stman);
-    }
+    // Bind all to the SSM.
+    StandardStMan stman("SSM", 32768);
+    setup.bindAll(stman);
     log_table_p = Table(setup);
     log_table_p.tableInfo() = TableInfo(TableInfo::LOG);
     log_table_p.tableInfo().
@@ -314,7 +307,7 @@ void TableLogSink::clearLocally()
   log_table_p = Table();
   // Create new log table.
   SetupNewTable setup (fileName, logTableDescription(), Table::New);
-  makeTable (setup, True);
+  makeTable (setup);
   attachCols();
 }
 
