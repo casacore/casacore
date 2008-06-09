@@ -104,7 +104,7 @@ Quantum<Qtype> operator/(const Qtype &left,
 // - limited values of exponentials foreseen
 template <class Qtype>
 Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
-    if (abs(p) >= 100) throw (AipsError("Quantum::pow exponent too large")); 
+    if (::abs(p) >= 100) throw (AipsError("Quantum::pow exponent too large")); 
 // Make sure 1 in current data type available
     Quantum<Qtype> res;
     Qtype tmp; tmp = left.getValue() * 0. + 1.;
