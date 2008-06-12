@@ -404,6 +404,12 @@ void b (Bool doExcp)
     cout << "sortab2 subtype = " << sortab2.tableInfo().subType() << endl;
     cout << sortab2.tableInfo().readme() << endl;
 
+    // Test using an empty selection.
+    sortab = sortab(TableExprNode());
+    AlwaysAssertExit (sortab.nrow() == sortab2.nrow());
+    sortab2 = sortab2(TableExprNode(), 5);
+    AlwaysAssertExit (sortab2.nrow() == 5);
+
     // Select using the IN function.
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem ("V3"));

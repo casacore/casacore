@@ -654,6 +654,15 @@ Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
 BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
 {
     AlwaysAssert (!isNull(), AipsError);
+    // If it is a null expression, return maxrows.
+    if (node.isNull()) {
+        if (maxRow <=0  ||  maxRow >= nrow()) {
+	    return this;
+	}
+	Vector<uInt> rownrs(maxRow);
+	indgen(rownrs);
+	return select(rownrs);
+    }
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool  ||  !node.isScalar()) {
 	throw (TableInvExpr ("expression result is not Bool scalar"));

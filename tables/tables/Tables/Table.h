@@ -719,6 +719,8 @@ public:
     // You need to include ExprNode.h for this purpose.
     // <br>If <src>maxRow>0</src>, the selection process will stop
     // when <src>maxRow</src> matching rows are found.
+    // <br>The TableExprNode argument can be empty (null) meaning that only
+    // the <src>maxRow</src> argument is taken into account.
     Table operator() (const TableExprNode&, uInt maxRow=0) const;
 
     // Select rows using a vector of row numbers.
