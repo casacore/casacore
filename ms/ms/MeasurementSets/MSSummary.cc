@@ -765,7 +765,8 @@ void MSSummary::listHistory (LogIO& os) const
     Vector<String> messString((msHis.message()).getColumn());
     Vector<String> messPriority((msHis.priority()).getColumn());
     for (uInt i=0 ; i < nmessages; i++) {
-      MVTime mvtime(Quantity(theTimes(i), "s"));
+      Quantity tmpq(theTimes(i), "s");
+      MVTime mvtime(tmpq);
       Time messTime(mvtime.getTime());
       LogMessage::Priority itsPriority(LogMessage::DEBUGGING);
       if(messPriority(i) == "DEBUGGING"){
