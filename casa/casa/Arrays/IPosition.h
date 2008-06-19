@@ -228,6 +228,9 @@ public:
     uInt size() const;
     // </group>
 
+    // Is the IPosition empty (i.e. no elements)?
+    Bool empty() const;
+
     // conform returns true if nelements() == other.nelements().
     Bool conform(const IPosition& other) const;
 
@@ -481,6 +484,10 @@ inline uInt IPosition::nelements() const
 inline uInt IPosition::size() const
 {
     return size_p;
+}
+inline Bool IPosition::empty() const
+{
+    return size_p == 0;
 }
 
 inline Int& IPosition::operator[](uInt index)

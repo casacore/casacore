@@ -51,8 +51,12 @@ void doit()
 
     Block<Int> bi1;                   // Block::Block()
     assert(bi1.nelements() == 0);     // Block::nelements()
+    assert(bi1.size() == 0);
+    assert(bi1.empty());
     Block<Int> bi2(100);              // Block::Block(uInt)
     assert(bi2.nelements() == 100);
+    assert(bi2.size() == 100);
+    assert(!bi2.empty());
     Block<Int> bi7(0);
     assert(bi7.nelements() == 0);
     Block<Int> bi3(200,5);            // Block::Block(uInt, T)

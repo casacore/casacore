@@ -229,10 +229,14 @@ void oldArrayTest()
 	    AlwaysAssertExit(x(i) == 11 && x(i+1) == 5);
 	Vector<Int> zz; // default constructor
 	AlwaysAssertExit(zz.nelements() == 0);
+	AlwaysAssertExit(zz.size() == 0);
+	AlwaysAssertExit(zz.empty());
 	Vector<Int> zzz(x(Slice(0,5,2)));
 	zzz.unique();
 	AlwaysAssertExit(zzz.nrefs() == 1 && allEQ(zzz, 11) &&
 			 zzz.nelements() == 5);
+	AlwaysAssertExit(zzz.size() == 5);
+	AlwaysAssertExit(!zzz.empty());
 	Vector<Int> y1(5, 4);
 	AlwaysAssertExit (allEQ(y1, 4));
 

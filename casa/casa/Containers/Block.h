@@ -285,6 +285,9 @@ public:
   uInt size() const {return npts;}
   // </group>
 
+  // Is the block empty (i.e. no elements)?
+  Bool empty() const {return npts == 0;}
+
   // Define the STL-style iterators.
   // It makes it possible to iterate through all data elements.
   // <srcblock>
@@ -379,6 +382,7 @@ public:
    const T *storage() const {return (const T *)block_p.storage();}
    uInt nelements() const {return block_p.nelements();}
    uInt size() const {return block_p.size();}
+   Bool empty() const {return block_p.empty();}
  private:
    Block<void*> block_p;
  };

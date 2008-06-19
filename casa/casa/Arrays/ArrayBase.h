@@ -100,6 +100,10 @@ public:
     { return nels_p; }
   // </group>
 
+  // Is the array empty (i.e. no elements)?
+  Bool empty() const
+    { return nels_p == 0; }
+
   // Are the array data contiguous?
   // If they are not contiguous, <src>getStorage</src> (see below)
   // needs to make a copy.

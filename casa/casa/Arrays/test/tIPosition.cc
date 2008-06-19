@@ -54,6 +54,8 @@ int main()
     }
     assert(nrit == 3);
     assert(ip.nelements() == 3);
+    assert(ip.size() == 3);
+    assert(!ip.empty());
     assert(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
     assert(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
 
@@ -68,6 +70,8 @@ int main()
 
     IPosition ip2;
     assert(ip2.nelements() == 0);
+    assert(ip2.size() == 0);
+    assert(ip2.empty());
 
     ip2 = ip;
     assert(ip2 == ip);
