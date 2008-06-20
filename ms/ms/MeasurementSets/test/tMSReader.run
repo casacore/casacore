@@ -4,11 +4,10 @@ DATAFILE=`echo $AIPSPATH | awk '{print $1}'`/data/demo/dishdemo/dishdemo1.fits
 
 if [ -f $DATAFILE ]
 then
-   sdfits2ms $DATAFILE tMSReader.ms
-   if [ -d tMSReader.ms ]
+   ./sdfits2ms $DATAFILE tMSReader_tmp.ms
+   if [ -d tMSReader_tmp.ms ]
    then
-      assay tMSReader tMSReader.ms
-      rm -rf tMSReader.ms
+      ./tMSReader tMSReader_tmp.ms
    else
       echo "UNITESTED: tMSReader, could not create tMSReader.ms from" $DATAFILE
       exit 3
