@@ -150,6 +150,30 @@ public:
   const Record&         asRecord       () const;
   // </group>
 
+  // Get the data in a way useful for templates.
+  // <group>
+  void getValue (Bool& value) const            { value = asBool(); }
+  void getValue (uChar& value) const           { value = asuChar(); }
+  void getValue (Short& value) const           { value = asShort(); }
+  void getValue (uShort& value) const          { value = asuShort(); }
+  void getValue (Int& value) const             { value = asInt(); }
+  void getValue (uInt& value) const            { value = asuInt(); }
+  void getValue (Float& value) const           { value = asFloat(); }
+  void getValue (Double& value) const          { value = asDouble(); }
+  void getValue (Complex& value) const         { value = asComplex(); }
+  void getValue (DComplex& value) const        { value = asDComplex(); }
+  void getValue (Array<Bool>& value) const     { value = asArrayBool(); }
+  void getValue (Array<uChar>& value) const    { value = asArrayuChar(); }
+  void getValue (Array<Short>& value) const    { value = asArrayShort(); }
+  void getValue (Array<uShort>& value) const   { value = asArrayuShort(); }
+  void getValue (Array<Int>& value) const      { value = asArrayInt(); }
+  void getValue (Array<uInt>& value) const     { value = asArrayuInt(); }
+  void getValue (Array<Float>& value) const    { value = asArrayFloat(); }
+  void getValue (Array<Double>& value) const   { value = asArrayDouble(); }
+  void getValue (Array<Complex>& value) const  { value = asArrayComplex(); }
+  void getValue (Array<DComplex>& value) const { value = asArrayDComplex(); }
+  // </group>
+
   // Put the value as a field in a record.
   void toRecord (Record&, const RecordFieldId&) const;
 
