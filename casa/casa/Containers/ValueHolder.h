@@ -162,16 +162,26 @@ public:
   void getValue (Double& value) const          { value = asDouble(); }
   void getValue (Complex& value) const         { value = asComplex(); }
   void getValue (DComplex& value) const        { value = asDComplex(); }
-  void getValue (Array<Bool>& value) const     { value = asArrayBool(); }
-  void getValue (Array<uChar>& value) const    { value = asArrayuChar(); }
-  void getValue (Array<Short>& value) const    { value = asArrayShort(); }
-  void getValue (Array<uShort>& value) const   { value = asArrayuShort(); }
-  void getValue (Array<Int>& value) const      { value = asArrayInt(); }
-  void getValue (Array<uInt>& value) const     { value = asArrayuInt(); }
-  void getValue (Array<Float>& value) const    { value = asArrayFloat(); }
-  void getValue (Array<Double>& value) const   { value = asArrayDouble(); }
-  void getValue (Array<Complex>& value) const  { value = asArrayComplex(); }
-  void getValue (Array<DComplex>& value) const { value = asArrayDComplex(); }
+  void getValue (Array<Bool>& value) const
+    { value.reference(asArrayBool()); }
+  void getValue (Array<uChar>& value) const
+    { value.reference(asArrayuChar()); }
+  void getValue (Array<Short>& value) const
+    { value.reference(asArrayShort()); }
+  void getValue (Array<uShort>& value) const
+    { value.reference(asArrayuShort()); }
+  void getValue (Array<Int>& value) const
+    { value.reference(asArrayInt()); }
+  void getValue (Array<uInt>& value) const
+    { value.reference(asArrayuInt()); }
+  void getValue (Array<Float>& value) const
+    { value.reference(asArrayFloat()); }
+  void getValue (Array<Double>& value) const
+    { value.reference(asArrayDouble()); }
+  void getValue (Array<Complex>& value) const
+    { value.reference(asArrayComplex()); }
+  void getValue (Array<DComplex>& value) const
+    { value.reference(asArrayDComplex()); }
   // </group>
 
   // Put the value as a field in a record.
