@@ -402,6 +402,26 @@ public:
     Array<Complex>  toArrayComplex (const RecordFieldId&) const; 
     Array<DComplex> toArrayDComplex(const RecordFieldId&) const;
     Array<String>   toArrayString  (const RecordFieldId&) const;
+    void toArray (const RecordFieldId& id, Array<Bool>& array) const
+      { array.reference (toArrayBool (id)); }
+    void toArray (const RecordFieldId& id, Array<uChar>& array) const
+      { array.reference (toArrayuChar (id)); }
+    void toArray (const RecordFieldId& id, Array<Short>& array) const
+      { array.reference (toArrayShort (id)); }
+    void toArray (const RecordFieldId& id, Array<Int>& array) const
+      { array.reference (toArrayInt (id)); }
+    void toArray (const RecordFieldId& id, Array<uInt>& array) const
+      { array.reference (toArrayuInt (id)); }
+    void toArray (const RecordFieldId& id, Array<Float>& array) const
+      { array.reference (toArrayFloat (id)); }
+    void toArray (const RecordFieldId& id, Array<Double>& array) const
+      { array.reference (toArrayDouble (id)); }
+    void toArray (const RecordFieldId& id, Array<Complex>& array) const
+      { array.reference (toArrayComplex (id)); }
+    void toArray (const RecordFieldId& id, Array<DComplex>& array) const
+      { array.reference (toArrayDComplex (id)); }
+    void toArray (const RecordFieldId& id, Array<String>& array) const
+      { array.reference (toArrayString (id)); }
     // </group>
 
     // Get value based on field name or number.
@@ -413,7 +433,7 @@ public:
     const Array<Float>&    asArrayfloat   (const RecordFieldId&) const;
     const Array<Double>&   asArraydouble  (const RecordFieldId&) const;
     // </group>
-    
+
     // Make a unique record representation
     // (for copy-on-write in RecordFieldPtr).
     virtual void makeUnique() = 0;
