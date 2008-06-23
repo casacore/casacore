@@ -358,9 +358,9 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    CoordinateSystem* pCSys = CoordinateSystem::restore(coordinateRecord, "coordsys");
    setCoordinateInfo(*pCSys);
    delete pCSys;
-//
+// Convert from any type to the required type.
    Array<T> imageArray;
-   inRec.get("imagearray",imageArray);
+   inRec.toArray("imagearray", imageArray);
    this->put(imageArray);
 //
    Record imageInfoRecord(inRec.asRecord("imageinfo"));
