@@ -125,11 +125,23 @@ public:
   Bool setscales(const Vector<Float> & scales);
 
   // Set up control parameters
+  // cleanType - type of the cleaning algorithm to use (HOGBOM, MULTISCALE)
+  // niter - number of iterations
+  // gain - loop gain used in cleaning (a fraction of the maximum 
+  //        subtracted at every iteration)
+  // aThreshold - absolute threshold to stop iterations
+  // fThreshold - fractional threshold (i.e. given w.r.t. maximum residual)
+  //              to stop iterations. This parameter is specified as
+  //              Quantity so it can be given in per cents. 
+  // choose - unused at the moment, specify False. Original meaning is
+  // to allow interactive decision on whether to continue iterations.
+  // This method always returns True.
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
 		  const Float gain, const Quantity& aThreshold,
 		  const Quantity& fThreshold,
 		  const Bool choose=True);
 
+  // This version of the method disables stopping on fractional threshold
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
 		  const Float gain, const Quantity& threshold,
 		  const Bool choose=True);
