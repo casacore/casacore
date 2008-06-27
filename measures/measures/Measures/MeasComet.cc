@@ -174,7 +174,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 			    rfp_p, vs, dt, 
 			    MeasComet::N_Columns, names, tp_p,
 			    tplc,
-			    String("aips/Measures"), tabin)) {
+			    String("geodetic"), tabin)) {
       return False;
     };
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||

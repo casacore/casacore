@@ -151,7 +151,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 			    rfp[Int(which)], vs, dt, 
 			    1, names, tp[which],
 			    tplc[which],
-			    "aips/Measures")) {
+			    "ephemerides")) {
       return False;
     };
     MeasIERS::openNote(&MeasIERS::closeMeas);

@@ -63,7 +63,7 @@ class MVEpoch;
 // Tables are found using the aipsrc 
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
-// (i.e. in $AIPSROOT/data/aips/Measures) Tables are assumed to have the
+// (i.e. in $AIPSROOT/data/ephemerides) Tables are assumed to have the
 // VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,
 // else an exception will be thrown.<br>
 // The <src>get()</src> method will obtain data from the JPL planetary

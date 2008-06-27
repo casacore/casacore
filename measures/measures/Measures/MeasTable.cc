@@ -4061,7 +4061,7 @@ void MeasTable::initObservatories() {
     String vs;	
     if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 3, rfn, "Observatories",
 			    "measures.observatory.directory",
-			    "aips/Measures")) {
+			    "geodetic")) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initObservatories()"),
 			 WHERE));
@@ -4122,7 +4122,7 @@ void MeasTable::initLines() {
     String vs;	
     if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "Lines",
 			    "measures.line.directory",
-			    "aips/Measures")) {
+			    "ephemerides")) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initLines()"),
 			 WHERE));
@@ -4176,7 +4176,7 @@ void MeasTable::initSources() {
     String vs;	
     if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 2, rfn, "Sources",
 			    "measures.sources.directory",
-			    "aips/Measures")) {
+			    "ephemerides")) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initSources()"),
 			 WHERE));
@@ -4236,7 +4236,7 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
     String vs;	
     if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
 			    "measures.igrf.directory",
-			    "aips/Measures")) {
+			    "geodetic")) {
       LogIO os(LogOrigin("MeasTable",
 			 String("IGRF(Double)"),
 			 WHERE));
@@ -6289,7 +6289,7 @@ Double MeasTable::dUTC(Double utc) {
     String vs;
     if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
 			    "measures.tai_utc.directory",
-			    "aips/Measures")) {
+			    "geodetic")) {
       LogIO os(LogOrigin("MeasTable",
 			 String("dUTC(Double)"),
 			 WHERE));

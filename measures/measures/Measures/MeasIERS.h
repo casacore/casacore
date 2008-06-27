@@ -61,7 +61,7 @@ class String;
 // It has a member (<src>getTable()</src>) to open and check IERS
 // (and other Measures related Tables) type tables.
 // Tables are found using the aipsrc 
-// (using <src>measures.<table>.directory</src>)
+// (using <src>measures.<table>.directory</src>, or <src>measures.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // (i.e. they are looked for in (udir in following normally given by
 // program as ephemerides or geodetic) '.', './data', '~/aips++/data/udir',
