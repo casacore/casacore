@@ -169,7 +169,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       before putting the virtual array. In that case the system uses the
 //       relevant part of the stored array shape as the virtual element shape.
 //       </note>
-//       <note role=tip> When the out argument is declared (as it should be) as
+//       <note role=tip> If the out argument is declared (as it should be) as
 //       <src>Array<VirtualType>& out</src>,
 //       the CFront compiler complains about unknown size of
 //       VirtualType when instantiating Array<VirtualType>.

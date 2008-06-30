@@ -36,10 +36,11 @@
 
 $NON_COMMENT_BLOCK = 0;
 $COMMENT_BLOCK     = 1;
+$FIRST_SUMMARY     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-###  open OUT, ">> xyz";
+### open OUT, ">> xyz";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -77,8 +78,8 @@ if ($arguments == 1)
 # where packages tables and module Tables get the same (casa-insensitive)
 # file name.
 # So for the time being, only replace the slash.
-  $modna =~ s|/||;
-###  $modna =~ s|$pkgnm/||;
+###  $modna =~ s|/||;
+  $modna =~ s|$pkgnm/||;
   $modnm = $modna;
   $modnm =~ s|(.*?)/.*|$1|;
   if ($modnm eq $modna) {
@@ -91,6 +92,7 @@ if ($arguments == 1)
       $isModHdr = 1;
     }
   }
+  $modnm .= "_module";
 
 ###  print OUT "$fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr\n";
 
@@ -131,24 +133,55 @@ else
 sub handleLinkto
 {
   my $linkstr = shift(@_);
-  $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)(:description)?['"]?\s*>| \\link $1 |i;
-  $linkstr =~ s|<linkto\s+module\s*=\s*['"]?(.*?):classes['"]?\s*>| \\link $1 |i;
-  $linkstr =~ s|<linkto\s+module\s*=\s*['"]?(.*?)['"]?\s*>| \\link $1 |i;
-  if ($linkstr =~ m|<linkto\s+group\s*=\s*['"]?(.*?)['"]?(:description)?\s*>|) {
-    my $grpnm = $1;
-#    $grpnm =~ s|\s*['".]\s*||g;
-#    $grpnm =~ s|\s+|_|g;
-#    $linkstr =~ s|<linkto.*?>|\\ref $grpnm \"|i;
-#    $linkstr .= "\"";
-#    $linkstr =~ s|<linkto.*?>|<a href="$grpnm">|i;
-#    $linkstr .= "</a>";
-    $linkstr =~ s|<linkto.*?>|\\link $grpnm|i;
-    $linkstr .= " \\endlink";
+  # Remove :description or :classes.
+  $linkstr =~ s%:(description|classes)(['"]?\s*>)%$2%i;
+  my $endlink = "";
+  if ($linkstr =~ m|<linkto\s+class\s*=\s*([^:#]*?)\s*>|i) {
+    # A link to a class.
+    $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)['"]?\s*>| \\link casa::$1 |i;
+    $endlink = " \\endlink";
+  } elsif ($linkstr =~ m%<linkto\s+module\s*=\s*([^:#]*?)\s*>%i) {
+    # A link to a module.
+    $linkstr =~ s%<linkto\s+module\s*=\s*['"]?(.*?)['"]?\s*>% \\ref $1_module_anchor "%i;
+    $endlink = "\"";
   } else {
-    $linkstr .= " \\endlink";
+    # A link to an anchor in a group or file.
+    if ($linkstr =~ m%<linkto\s+(group|file)\s*=\s*(.*?)[:#](.*?)\s*>%i) {
+      my $grpnm = $2;
+      my $ref = $3;
+      $grpnm =~ s|\..*||;
+      $grpnm =~ s|\s*['".]\s*||g;
+      $grpnm =~ s|\s+|_|g;
+      $ref =~ s|\s*['".]\s*||g;
+      $ref =~ s|\s+|_|g;
+      $ref =~ s|:description||;
+      $ref =~ s|[:]|_|g;
+      $linkstr =~ s%<linkto\s+(group|file)\s*=\s*(.*?)[:#](.*?)\s*>% \\ref ${grpnm}_$ref "%i;
+      $endlink = '"';
+    } elsif ($linkstr =~ m%<linkto\s+class\s*=\s*['"]?(.*?)[:#](.*?)\((.*?)\)\s*(const)?\s*['"]?\s*>%i) {
+      # A link to a class member function. Remove the signature.
+      my $classnm = $1;
+      my $funcnm = $2;
+      $linkstr =~ s%<linkto(.*?)>% \\link ${classnm}::$funcnm() %i;
+      $endlink = ' \\endlink';
+    } elsif ($linkstr =~ m%<linkto\s+(class|module)\s*=\s*(.*?)[:#](.*?)\s*>%) {
+      # A link to a class or module anchor.
+      my $grpnm = $2;
+      my $ref = $3;
+      $grpnm =~ s|\s*['".]\s*||g;
+      $grpnm =~ s|\s+|_|g;
+      $ref =~ s|\s*['".]\s*||g;
+      $ref =~ s|\s+|_|g;
+      $ref =~ s|:description||;
+      $ref =~ s|[:]|_|g;
+      $linkstr =~ s%<linkto\s+(class|module)\s*=\s*(.*?)[:#](.*?)\s*>%\\ref ${grpnm}_$ref "%i;
+      $endlink = '"';
+    } else {
+      # For the time being cannot really handle other linkto commands.
+      $linkstr =~ s|<linkto\s+(.*?)>(.*?)|(see $2 ($1))|i;
+    }
   }
-  # For the time being cannot really handle other linkto commands.
-  $linkstr =~ s|<linkto\s+(.*?)>(.*?)\\endlink|(see $2 ($1))|;
+  $linkstr .= $endlink;
   return $linkstr;
 }
 
@@ -255,7 +288,7 @@ sub change_comment_style
 	# A module header is turned into a defgroup and added to the package.
 	if ($isModHdr == 1) {
 	  if ($comment =~ m|^\s*<module>|i) {
-	    $comment =~ s|<module>|\\ingroup $pkgnm\n\\defgroup $modnm $modnm|i;
+	    $comment =~ s|<module>| \\anchor ${modnm}_anchor \\ingroup $pkgnm\n\\defgroup $modnm $modnm|i;
 	    $nadded += 2;
 	  }
 	  $comment =~ s|</module>|<a class=anchor name="${modnm}_Class_List"></a>*/\n/** \\ingroup $modnm\n\\defgroup ${modnm}_internal_classes ${modnm}_internal_classes\n\\brief Internal $modnm classes and functions|i;
@@ -264,7 +297,12 @@ sub change_comment_style
 	} else {
 	  # A class or group header's summary is added to the module's defgroup.
 	  if ($comment =~ m|^\s*<summary>|i) {
-	    $comment =~ s|<summary>|\\ingroup $modnm \n\\brief |i;
+	    if ($FIRST_SUMMARY == 1) {
+	      $comment =~ s|<summary>| \\anchor ${hdrnm}_summary \\ingroup $modnm \n\\brief |i;
+	      $FIRST_SUMMARY = 0;
+	    } else {
+	      $comment =~ s|<summary>| \\ingroup $modnm \n\\brief |i;
+	    }
 	    $nadded += 1;
 	    $summinx = @spanning_comment + 1;   # index of ingroup line
 	  }
@@ -281,9 +319,10 @@ sub change_comment_style
 	$comment =~ s|^\s*-grp|</group>|;
 	if ($comment =~ m|<group\s+name\s*=\s*(.*?)\s*>|i) {
 	  $grpnm = $1;
-	    $grpnm =~ s|\s*['".]\s*||g;
-	    $grpnm =~ s|\s+|_|g;
-	  $comment = "$indent<a class=anchor name=\"$grpnm\"></a>";
+	  $grpnm =~ s|\s*['".]\s*||g;
+	  $grpnm =~ s|\s+|_|g;
+	  $grpnm =~ s|:|_|g;
+	  $comment = "$indent \\anchor ${hdrnm}_$grpnm ";
 	  # Only a named group at the highest level is turned into a struct.
 	  # Do this only if it has a summary, which indicates it describes
 	  # a group of functions outside a class.
@@ -311,6 +350,20 @@ sub change_comment_style
 	  }
 	  $grouplevel -= 1;
 	}
+
+	# Change an anchor tag.
+	# Replace it by a doxygen \anchor tag and an <a name=> tag.
+	# Prepend the doxygen name with the header name.
+	# The latter one is used for internal <a href=> references.
+	if ( $comment =~ m|<anchor\s+name\s*=\s*(.*)\s*>|i ) {
+	  my $nm = $1;
+	  my $dnm = $nm;
+	  $dnm =~ s|\s*['".]\s*||g;
+	  $dnm =~ s|\s+|_|g;
+	  $dnm =~ s|:|_|g;
+	  $comment =~ s|<anchor\s+name\s*=\s*(.*)\s*>| \\anchor $dnm <a name=$nm>|i;
+	}
+	$comment =~ s|</anchor>||ig;
 
 	# Handle linkto tags. There can be multiple of them and they can be
 	# spread over multiple lines.
@@ -365,7 +418,7 @@ sub change_comment_style
 	$comment =~ s|</motivation>||ig;
 	$comment =~ s|<synopsis>|<h3>Synopsis</h3>|ig;
 	$comment =~ s|</synopsis>||ig;
-	$comment =~ s|<example>|<h3>Example</h3>|ig;
+	$comment =~ s|<example>| \\anchor ${hdrnm}_example <h3>Example</h3>|ig;
 	$comment =~ s|</example>||ig;
 	$comment =~ s|<etymology>|<h3>Etymology</h3>|ig;
 	$comment =~ s|</etymology>||ig;

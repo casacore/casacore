@@ -48,7 +48,6 @@ template <class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=FTMachine>FTMachine</linkto> class
 //   <li> <linkto class=MDirection>MDirection</linkto> class
 // </prerequisite>
 //

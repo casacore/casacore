@@ -53,10 +53,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The following functionality is available:
 // <ul>
 //  <li> Forward declarations
-//       <linkto group="Complexfwd.h#Complexfwd":description>
+//       <linkto group="Complexfwd.h#Complexfwd">
 //       Complexfwd</linkto>
 //       for complex numbers.
-//  <li> Class <linkto group="Complex.h#Complex_desc":description>
+//  <li> Class <linkto group="Complex.h#Complex_desc">
 //       Complex</linkto>
 //       to offer single and double precision complex numbers.
 //  <li> Class <linkto class=IComplex:description>

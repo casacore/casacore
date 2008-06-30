@@ -59,9 +59,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  in the vector are used to represent start, end, and increment.
   //  This is used by a function like <src>ScalarColumn::getColumnRange</src>.
   // </ol>
-  // Class <linkto class=ConcatRowsSliceIter>ConcatRowsSliceIter</linkto> can be
+  // Class <linkto class=ConcatRowsIter>ConcatRowsIter</linkto> can be
   // used to iterate through a ConcatRows object. Each step in the iteration
-  // goes to the next a slice. If the ConcatRows objct contains a simple series
+  // goes to the next slice. If the ConcatRows object contains a simple series
   // of row numbers, each slice contains only one row number.
   // This can degrade performance, so it is possible to use shortcuts by
   // testing if the object contains slices (using <src>isSliced()</src>)

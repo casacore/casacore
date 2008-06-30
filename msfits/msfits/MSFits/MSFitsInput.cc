@@ -84,7 +84,6 @@
 #include <fits/FITS/FITSKeywordUtil.h>
 #include <fits/FITS/FITSSpectralUtil.h>
 #include <fits/FITS/BinTable.h>
-#include <fits/FITS/fits.h>
 #include <tables/LogTables/NewFile.h>
 #include <casa/System/ProgressMeter.h>
 #include <ms/MeasurementSets/MSTileLayout.h>

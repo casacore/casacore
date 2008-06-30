@@ -143,7 +143,7 @@ private:
 //     classes.
 // </synopsis>
 //
-// <a name=simple_example>
+// <anchor name=simple_example>
 // <example>
 //     <srcblock>
 // #include <casa/Containers/List.h>
@@ -177,7 +177,7 @@ private:
 //          len=4 pos=4 89 10 8 2
 //     </pre>
 // </example>
-// </a>
+// </anchor>
 // 
 template<class t> class List : public NoticeSource
 {
@@ -536,7 +536,7 @@ protected:
 //  iterators which are observing the same list are updated as the list
 //  changes. This is important when multiple iterators are used.
 //
-// <a name=complete_example>
+// <anchor name=complete_example>
 // <example>
 // <srcblock>
 // #include <casa/Containers/List.h>
@@ -593,7 +593,7 @@ protected:
 //           three: len=5 pos=0 21 17 2 12 18
 //     </pre>
 // </example>
-// </a>
+// </anchor>
 //
 // <note role=tip> This class uses the "Notice" classes to implement "dynamic" cursors
 //        so that multiple cursors are updated as elements are added and

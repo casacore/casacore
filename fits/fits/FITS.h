@@ -41,7 +41,7 @@
 #include <fits/FITS/FITSSpectralUtil.h>
 #include <fits/FITS/FITSTable.h>       
 #include <fits/FITS/FITSTimedTable.h>             
-#include <fits/FITS/fits.h>             
+#include <fits/FITS/fits.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
 #include <fits/FITS/SDFITSTable.h>
@@ -246,8 +246,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=FitsArray:description>
 //       FitsArray</linkto>
 //       FITS array of given type.
-//  <li> Class <linkto class=FitsArray<FitsBit>:description>
-//       FitsArray<FitsBit></linkto>
+//  <li> Class <linkto class=FitsArray:description>
+//       <src>FitsArray<FitsBit></src></linkto>
 //       FITS array of FitsBit type.
 //  <li> Class <linkto class=FitsBase:description>
 //       FitsBase</linkto>
@@ -268,8 +268,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=FitsField:description>
 //       FitsField</linkto>
 //       Helper class.
-//  <li> Class <linkto class=FitsField<FitsBit>:description>
-//       FitsField<FitsBit></linkto>
+//  <li> Class <linkto class=FitsField:description>
+//       <src>FitsField<FitsBit></src></linkto>
 //       Helper class.
 //  <li> Class <linkto class=FitsFPUtil:description>
 //       FitsFPUtil</linkto>

@@ -82,7 +82,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // conversions (called MCmeasure, e.g. MCEpoch.h) should be included as well;
 // in adition to general MeasConvert.h. 
 //
-//  <a name="Measure"><h3> Measures</h3></a>
+//  <anchor name="Measure"><h3> Measures</h3></anchor>
 //
 // Measures are physical quantities within a certain reference frame. Examples
 // are the Hour-angle and Declination of a source at a certain time and 

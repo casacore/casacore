@@ -36,7 +36,6 @@
 #include <casa/OS/Directory.h>
 #include <casa/OS/DirectoryIterator.h>
 
-#include <casa/OS/SysEvent.h>
 #include <casa/OS/Time.h>
 #include <casa/OS/Timer.h>
 
@@ -87,8 +86,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       for dealing with the file system.
 //       Note that module <linkto module=IO>IO</linkto> deals with
 //       reading and writing data to files and other IO streams.
-//  <li> Class <linkto class=SysEvent:description>SysEvent</linkto> for
-//       handling system events.
 //  <li> Class <linkto class=Time:description>Time</linkto>
 //       to get the system time.
 //  <li> Class <linkto class=Timer:description>Timer</linkto>

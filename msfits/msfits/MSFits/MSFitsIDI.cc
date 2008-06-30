@@ -28,7 +28,6 @@
 
 #include <msfits/MSFits/MSFitsIDI.h>
 #include <msfits/MSFits/FitsIDItoMS.h>
-#include <fits/FITS/fits.h>
 #include <fits/FITS/fitsio.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Regex.h>

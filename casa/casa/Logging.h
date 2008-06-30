@@ -311,7 +311,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      much as we did previously.
 // <dt> 7.
 // <dd> LogMessages are relatively expensive to produces and consume. Use of 
-//      them in a very tight loop should either be <src>#ifdef</src>'d out as 
+//      them in a very tight loop should either be <src>ifdef</src>'d out as 
 //      in this example, or like:
 //      <srcblock>
 //      if (aips_debug_on) {

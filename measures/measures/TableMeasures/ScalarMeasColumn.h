@@ -82,8 +82,8 @@ template <class T> class ROScalarColumn;
 //
 // The reading and writing of Measures columns is very similar to reading and
 // writing of "ordinary" Table columns.
-// <linkto class="ROScalarMeasColumn#get">get()</linkto>
-// and <linkto class="ROScalarMeasColumn#get">operator()</linkto>
+// <linkto class="ScalarMeasColumn#get">get()</linkto>
+// and <linkto class="ScalarMeasColumn#get">operator()</linkto>
 // exist for reading Measures and the
 // <linkto class="ScalarMeasColumn#put">put()</linkto> member for adding
 // Measures to a column.  (put() is obviously not defined for
@@ -109,7 +109,7 @@ template <class T> class ROScalarColumn;
 //     MEpoch::ScalarMeasColumn timeCol(tab, "Time1");
 // 	
 //     // print some details about the column
-//     if (timeCol.isRefVariable()) {
+//     if (timeCol.measDesc().isRefCodeVariable()) {
 //        cout << "The column has variable references." << endl;
 //     } else {
 //         cout << "The fixed MeasRef for the column is: "

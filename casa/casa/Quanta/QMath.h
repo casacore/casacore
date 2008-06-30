@@ -78,7 +78,7 @@ template <class T> class Array;
 // <ul>
 //   <li> <linkto file="QMath.h#prefix">Unary operations</linkto>
 //   <li> <linkto file="QMath.h#in-place">In place arithmetic functions: left hand side changed in place</linkto>
-//   <li> <linkto file="QMath.h#math">Arithmetic functions: return <src>Quantum<T><src></linkto>
+//   <li> <linkto file="QMath.h#math">Arithmetic functions: return <src>Quantum<T></src></linkto>
 //   <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic (linear) functions</linkto>
 //   <li> <linkto file="QMath.h#trigonometric">Trigonometric functions</linkto>
 //   <li> <linkto file="QMath.h#foreign">Functions to implement integer ceil/floor</linkto>

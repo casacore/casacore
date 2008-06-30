@@ -77,7 +77,7 @@ public:
 // <synopsis>
 // This file contains specialisations of the templated NumericTraits class. 
 // See the description in 
-// <linkto file="NumericTraits.h#NumericTraits">NumericTraits.h</linkto> 
+// <linkto file="NumericTraits.h#summary">NumericTraits.h</linkto> 
 // for a summary of the purpose and usage of this class and its
 // specialisations.
 // </synopsis>

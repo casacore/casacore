@@ -67,8 +67,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class="ChebyshevParam">ChebyshevParam&lt;T&gt;</linkto> for 
 // the full interface of this function.  
 // 
-// <A NAME="Chebyshev:about">
-// <H3>About Chebyshev Polynomials</H3>
+// <ANCHOR NAME="Chebyshev:about">
+// <H3>About Chebyshev Polynomials</H3></ANCHOR>
 // 
 // Chebyshev polynomials are a special type of ultraspheric polynomials 
 // that are useful in such contexts as numerical analysis and circuit
@@ -122,8 +122,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // calculated from a Chebyshev series are less susceptible to machine
 // rounding errors than the equivalent power series.  
 //
-// <A NAME="Chebyshev:using">
-// <H3>Using the Chebyshev Function class</H3>
+// <ANCHOR NAME="Chebyshev:using">
+// <H3>Using the Chebyshev Function class</H3></ANCHOR>
 // 
 // With a simple change of variable, it is possible to approximate a
 // continuous function over any restricted interval using a

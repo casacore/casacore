@@ -226,8 +226,7 @@ template <class T> class ArrayBaseAccessor {
 //	other languages is needed (like Fortran), or when a large Array is
 //	known to be contiguous, and the data have to be referenced many times.
 //   <li> Access along one or more axes of a (large) multi-dimensional array
-//	is best achieved using the
-//	<linkto class=ArrayAccessor>ArrayAccessor</linkto> class. Its total
+//	is best achieved using the ArrayAccessor class. Its total
 //	access time is about 2 times faster than indexing (for cubes,
 //	more for more indices),
 //   <li> Special iteration (like in chunks) are catered for by the

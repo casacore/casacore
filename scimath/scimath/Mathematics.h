@@ -63,14 +63,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // The Mathematics module has a variety of mathematical classes and functions.
 // Not all numerical operations are found herein. Very complicated operations
-// might be in their own module, such as <linkto
-// module="Deconvolution">Deconvolution</linkto>.  Many whole array operations
+// might be in their own module. such as deconvolution.
+// Many whole array operations
 // are in the <linkto file="ArrayMath.h">ArrayMath</linkto> global functions
 // (part of the <linkto module="Arrays">Arrays</linkto> module). Mathematical
 // operations on Lattices are found in the <linkto
-// module="Lattice">Lattice</linkto> module. A wide variety of special
+// module="Lattices">Lattices</linkto> module. A wide variety of special
 // Mathematical functions is planned for the <linkto
-// module="Functionals">Functional</linkto> module.
+// module="Functionals">Functionals</linkto> module.
 //
 // The classes presently in this module fall into the following categories:
 // <ul>

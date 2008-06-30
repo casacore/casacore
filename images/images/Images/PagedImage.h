@@ -283,7 +283,8 @@ public:
   virtual Bool setUnits (const Unit& newUnits);
 
   // Return the table holding the data.
-  Table& table();
+  Table& table()
+    { return map_p.table(); }
 
   // Flushes the new coordinate system to disk if the table is writable.
   virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
@@ -400,7 +401,13 @@ private:
   void restoreAll (const TableRecord& rec);
 
   void check_conformance (const Lattice<T>& other);
-  void reopenRW();
+  void reopenRW()
+  {
+    //# Open for write if not done yet and if writable.
+    if (!table().isWritable()  &&  isWritable()) {
+      doReopenRW();
+    }
+  }
   void doReopenRW();
   void setTableType();
   void applyMaskSpecifier (const MaskSpecifier&);
@@ -413,7 +420,8 @@ private:
   void makePagedImage (const String& filename, const TableLock& lockOptions,
 		       const MaskSpecifier&, uInt rowNumber);
 
-  const Table& table() const;
+  const Table& table() const
+    { return const_cast<PagedImage<T>*>(this)->table(); }
 
 
   PagedArray<T>  map_p;
@@ -447,26 +455,6 @@ protected:
 // </group>
 
 
-template<class T>
-inline void PagedImage<T>::reopenRW()
-{
-  //# Open for write if not done yet and if writable.
-  if (!table().isWritable()  &&  isWritable()) {
-    doReopenRW();
-  }
-}
-
-template<class T>
-inline Table& PagedImage<T>::table()
-{
-  return map_p.table();
-}
-
-template<class T>
-inline const Table& PagedImage<T>::table() const
-{
-  return const_cast<PagedImage<T>*>(this)->table();
-}
 
 
 

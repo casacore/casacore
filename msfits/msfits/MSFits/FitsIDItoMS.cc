@@ -38,7 +38,6 @@
 #include <casa/Arrays/Slice.h> 
 #include <casa/Containers/Record.h>
 #include <casa/Exceptions/Error.h>
-#include <fits/FITS/fits.h> //
 #include <fits/FITS/fitsio.h>
 #include <casa/Logging/LogOrigin.h>
 #include <casa/BasicSL/Constants.h>

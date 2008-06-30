@@ -28,7 +28,6 @@
 #ifndef MS_FITSIDITOMS_H
 #define MS_FITSIDITOMS_H
 
-#include <fits/FITS/fits.h>
 #include <casa/aips.h>
 #include <fits/FITS/hdu.h>
 #include <tables/Tables/Table.h> //

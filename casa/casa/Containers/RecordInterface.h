@@ -77,7 +77,6 @@ class IPosition;
 // <ul>
 // <li> <linkto class=Record>Record</linkto>
 // <li> <linkto class=TableRecord>TableRecord</linkto>
-// <li> <linkto class=GlishRecord>GlishRecord</linkto>
 // </ul>
 // Presently, the scalar types are chosen to be compatible with the native
 // types of the Table system, viz: Bool, uChar, Short, Int, uInt, Float,

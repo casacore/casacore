@@ -105,8 +105,8 @@ class Unit;
 // <linkto class="ArrayQuantColumn">(RO)ArrayQuantColumn&lt;T&gt;</linkto>
 // objects.
 //
-// <A NAME="TableQuantumDesc:Quantum Units">
-// <h3>Quantum Units</h3></A>
+// <ANCHOR NAME="TableQuantumDesc:Quantum Units">
+// <h3>Quantum Units</h3></ANCHOR>
 // The treatment of the Unit component of a Quantum in the TableQuantumDesc
 // class varies depending on your needs.    The main consideration
 // is whether the Quanta to be stored in a specific column are to have the

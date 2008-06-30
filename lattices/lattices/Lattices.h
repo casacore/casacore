@@ -140,7 +140,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   them because you need persistent data and/or paging into large data sets.
 //   <br>
 //   The persistence is done using a <linkto module="Tables">Table</linkto>,
-//   and uses the <linkto module="Tables#Tables:TiledStMan">tiled storage
+//   and uses the <linkto module="Tables:TiledStMan">tiled storage
 //   manager</linkto>.  This means that accessing the data along any axis is
 //   equally efficient (depending on the tile shape used).
 //   <br>

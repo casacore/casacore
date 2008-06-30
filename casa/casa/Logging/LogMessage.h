@@ -86,7 +86,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // }
 // </srcblock>
 // A more complete example is available in the module file 
-// <linkto module="Logging.h">Logging.h</linkto>.
+// <linkto module="Logging">Logging.h</linkto>.
 // </example>
 //
 // <todo asof="1996/07/23">

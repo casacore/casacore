@@ -61,11 +61,11 @@ namespace casa {
 ///   <td><a href="group__casa.html">casa</a></td>
 ///   <td>
 ///   Core modules:
-///   N-dim <a href="group__casaArrays.html">arrays</a>,
-///   <a href="group__casaQuanta.html">quanta</a>,
-///   <a href="group__casaOS.html">OS</a>,
-///   <a href="group__casaIO.html">IO</a>,
-///   <a href="group__casaLogging.html">logging</a>,
+///   N-dim <a href="group__Arrays-module.html">arrays</a>,
+///   <a href="group__Quanta-module.html">quanta</a>,
+///   <a href="group__OS-module.html">OS</a>,
+///   <a href="group__IO-module.html">IO</a>,
+///   <a href="group__Logging-module.html">logging</a>,
 ///   and various other classes.
 ///   </td>
 ///   </tr>
@@ -73,16 +73,16 @@ namespace casa {
 ///   <td><a href="group__scimath.html">scimath</a></td>
 ///   <td>
 ///   Mathematical modules
-///   N-dim <a href="group__scimathFunctionals.html">functionals</a>,
+///   N-dim <a href="group__Functionals-module.html">functionals</a>,
 ///   linear/non-linear
-///   <a href="group__scimathFitting.html">fitting</a>,
-///   and <a href="group__scimathMathematics.html">miscellaneous</a>,
+///   <a href="group__Fitting-module.html">fitting</a>,
+///   and <a href="group__Mathematics-module.html">miscellaneous</a>,
 ///   </td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__tables.html">tables</a></td>
 ///   <td>
-///   Database-like <a href="group__tablesTables.html">tables</a> with advanced
+///   Database-like <a href="group__Tables-module.html">tables</a> with advanced
 ///   query language
 ///   (<a href="http://www.astron.nl/aips++/docs/notes/199">TaQL</a>).
 ///   </td>
@@ -90,15 +90,15 @@ namespace casa {
 ///   <tr>
 ///   <td><a href="group__measures.html">measures</a></td>
 ///   <td>
-///   Quantities with <a href="group__measuresMeasures.html">references frames</a> 
-///   and their <a href="group__measuresTableMeasures.html">persistency</a>.
+///   Quantities with <a href="group__Measures-module.html">references frames</a> 
+///   and their <a href="group__TableMeasures-module.html">persistency</a>.
 ///   </td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__lattices.html">lattices</a></td>
 ///   <td>
 ///   Memory- or disk-based N-dim arrays
-///   (<a href="group__latticesLattices.html">lattices</a>) with masking,
+///   (<a href="group__Lattices-module.html">lattices</a>) with masking,
 ///   regions, expressions, and math.
 ///   </td>
 ///   </tr>
@@ -144,7 +144,7 @@ namespace casa {
 ///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
 ///   <td>
-///   N-dim <a href="group__imagesImages.html">images</a> with masks,
+///   N-dim <a href="group__Images-module.html">images</a> with masks,
 ///   coordinates, and history.
 ///   </td>
 ///   </tr>

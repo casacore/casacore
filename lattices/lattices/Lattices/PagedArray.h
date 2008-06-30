@@ -120,7 +120,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // do not set up the cache for you and improved performance may be obtained
 // by tweaking the cache using the setCacheSizeFromPath member frunction.
 //
-// <A NAME="PagedArray:advanced"><h3>More Details</h3></A>
+// <ANCHOR NAME="PagedArray:Advanced"><h3>More Details</h3></ANCHOR>
 // In order to utilise PagedArrays fully and understand many of the member
 // functions and data access methods in this class, you need to be familiar
 // with some of the concepts involved in the implementation of PagedArrays.

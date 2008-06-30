@@ -50,13 +50,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // The following functionality is available:
 // <ul>
-//  <li> Templated functions <linkto group="Scalar conversion":description>
+//  <li> Templated functions <linkto group="ConvertScalar.h#Scalar conversion">
 //       ConvertScalar</linkto>
 //       to convert scalars from one type to another.
 //  <li> Class <linkto class=Functional:description>
 //       Functional</linkto>
 //       to map a domain object into a range object.
-//  <li> Functions <linkto group="Math.h interface for AIPS++:description>
+//  <li> Functions <linkto group="Math.h#Math.h interface for AIPS++>
 //       Math</linkto>
 //       to interface to math.h and other scalar math functions.
 //  <li> Class <linkto class=Random:description>

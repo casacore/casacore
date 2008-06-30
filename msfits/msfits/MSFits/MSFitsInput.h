@@ -32,7 +32,6 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Block.h>
-#include <fits/FITS/fits.h>
 #include <fits/FITS/hdu.h>
 #include <casa/Logging/LogIO.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

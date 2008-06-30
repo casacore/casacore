@@ -79,7 +79,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Including the <src>casa/Quanta.h</src> will take care of all
 // includes necessary for the handling of pure Units and Quantities.
 //
-//  <a name="Unit"><h3> Physical units </h3></a>
+//  <anchor name="Unit"><h3> Physical units </h3></anchor>
 // Physical units are basically used in quantities
 // (see <linkto class="Quantum">Quantum</linkto>), i.e.
 // a value and a dimension. The Unit class, or one of its subsidiaries,  will
@@ -208,7 +208,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // for the details of defining/viewing named units.
 // 
 //
-//  <a name="Quantum"><h3> Quantums and Quantities </h3></a>
+//  <anchor name="Quantum"><h3> Quantums and Quantities </h3></anchor>
 // A Quantum is a  value with a unit. Quantums are templated on their value
 // type (e.g. <src>Float</src>, <src>Vector<Double></src>). <em>Quantity</em>
 // is a typedef
@@ -353,7 +353,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </ul>
 // 
 // <p>
-//  <a name="MeasValue"><h3> Values for Measures </h3></a>
+//  <anchor name="MeasValue"><h3> Values for Measures </h3></anchor>
 // The MeasValue class derivatives are all named <em>MVmeasure</em>, e.g.
 // <em>MVFrequency</em>, and represent the internal representation of the
 // specific measure class. There main use is for the Measures module,

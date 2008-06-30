@@ -88,8 +88,8 @@ template <class M> class ROScalarMeasColumn;
 //
 // The reading and writing of Measures columns is very similar to reading and
 // writing of "ordinary" Table columns.
-// <linkto class="ROArrayMeasColumn#get">get()</linkto>
-// and <linkto class="ROArrayMeasColumn#get">operator()</linkto>
+// <linkto class="ArrayMeasColumn#get">get()</linkto>
+// and <linkto class="ArrayMeasColumn#get">operator()</linkto>
 // exist for reading Measures and the
 // <linkto class="ArrayMeasColumn#put">put()</linkto> member for adding
 // Measures to a column.  (put() is obviously not defined for
@@ -104,10 +104,12 @@ template <class M> class ROScalarMeasColumn;
 // the reference component of Measures added to a column is silently
 // ignored, that is, there is no warning nor is there any sort of conversion
 // to the column's reference should the reference of the added Measure be
-// different from the column's reference.  The members
-// <linkto class="ROArrayMeasColumn#isRefVariable">isRefVariable()</linkto>
+// different from the column's reference.  The functions
+// <linkto class="TableMeasDescBase#isRefCodeVariable()">
+// TableMeasDescBase::isRefVariable()</linkto>
 // and
-// <linkto class="ROArrayMeasColumn#getMeasRef">getMeasRef()</linkto> can be
+// <linkto class="ArrayMeasColumn#getMeasRef()">
+// ROArrayMeasColumn::getMeasRef()</linkto> can be
 // used to discover a Measure column's Measure reference characteristics.
 // </synopsis>
 
@@ -218,10 +220,8 @@ public:
   // </group>
 
   // Get the column's reference.
-  // <group name=getMeasRef>
   const MeasRef<M>& getMeasRef() const
     { return itsMeasRef; }
-  // </group>
 
 protected:
   //# Its measure reference when the MeasRef is constant per row.

@@ -50,7 +50,6 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto module=Tasking>Tasking</linkto>
 //   <li> <linkto module=OS>OS</linkto>
 // </prerequisite>
 
@@ -58,8 +57,9 @@ class String;
 // </etymology>
 
 // <synopsis>
-// This class is the connection between the Glish os server, and the
-// OS module. It is meant for access to OS-specific functions, in
+// This class serves as the connection between the OS module and a tasking
+// interface in Glish or Python.
+// It is meant for access to OS-specific functions, in
 // particular file handling.
 // </synopsis>
 
