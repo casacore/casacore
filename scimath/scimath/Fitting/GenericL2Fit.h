@@ -1,4 +1,4 @@
-//# GenericL2Fit.h: Generic base lass for least-squares fit.
+//# GenericL2Fit.h: Generic base class for least-squares fit.
 //#
 //# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
@@ -46,7 +46,7 @@ namespace casa { // begin namespace casa
 template <class T> class Array;
 template <class T, class U> class Function;
 
-// <summary> Generic base lass for least-squares fit.
+// <summary> Generic base class for least-squares fit.
 // </summary>
 //
 // <reviewed reviewer="wbrouw" date="2004/06/14" tests="tLinearFitSVD.cc"
@@ -66,7 +66,7 @@ template <class T, class U> class Function;
 //
 // <synopsis>
 // NOTE: Constraints added. Documentation out of date at moment, check
-// the tLinearFitSVD and tNonLinearFirLM programs for examples.
+// the tLinearFitSVD and tNonLinearFitLM programs for examples.
 //
 // The class acts as a base class for L2-type (least-squares) fitting. 
 // Actual classes (se e.g. <linkto class=LinearFit>LinearFit</linkto> and
@@ -163,9 +163,8 @@ template <class T, class U> class Function;
 // the minimum angle allowed.
 //
 // Singular Value Decomposition is supported by the
-// <linkto class=GenericL2FitSVD>GenericL2FitSVD</linkto> class,
-// which has a behaviour completely identical to this class (apart from a
-// default collinearity of 1e-8). 
+// <em> asSVD()</em> (which will also set the
+// default collinearity to 1e-8).
 //
 // Other information (see a.o. <linkto class=LSQFit>LSQFit</linkto>) can
 // be set and obtained as well.
@@ -179,7 +178,7 @@ template <class T, class U> class Function;
 // <example>
 // In the following a polynomial is fitted through the first 20 prime numbers.
 // The data is given in the x vector (1 to 20) and in the primesTable
-// (2, 3, ..., 71) (see tGenericL2FitSVD test program). In the following
+// (2, 3, ..., 71) (see tLinearFitSVD test program). In the following
 // all four methods to calculate a polynomial through the data is used
 // <srcblock>
 //    	// The list of coordinate x-values
