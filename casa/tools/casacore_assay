@@ -31,7 +31,7 @@
 # Usage: assay <testexe and arguments>
 #-----------------------------------------------------------------------------
 # assay invokes an AIPS++ test program.  If the test program has an associated
-# .exec file then it simply invokes it.  Otherwise assay invokes the test
+# .run file then it simply invokes it.  Otherwise assay invokes the test
 # executable directly, and, if there is a corresponding .out file, compares
 # its output with that.
 #
@@ -42,9 +42,6 @@
 # on them.
 # Similarly Python test scripts are recognized via their .py suffix.
 #
-# It is permissable for a .exec to invoke assay (presubably with arguments for
-# the test executable) - the potential infinite recursion is trapped.
-#
 # Options:
 #   none
 #
@@ -52,7 +49,7 @@
 #    0:  success
 #    1:  test execution failed
 #    2:  test output disagreement
-#    3:  untested (as returned from a .exec)
+#    3:  untested (usually returned from a .run)
 #  130:  interrupt
 #
 # Notes:
@@ -73,22 +70,6 @@
      PYTHONPATH=".:$PYTHONPATH"
   fi
   CLEANUP=
-  if [ -f "$1.exec" ]
-  then
-#    Set a trap in case the .exec file invokes assay.
-     if [ "$ASSAY" != "trap" ]
-     then
-        ASSAY=trap ; export ASSAY
-        sh $1.exec
-        STATUS=$?
-        [ "$CLEANUP" != "" ] && rm -f $1.exec
-	if [ $STATUS = 3 ]
-	then
-           echo "UNTESTED: $*"
-	fi
-        exit $STATUS
-     fi
-  fi
 
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
