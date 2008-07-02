@@ -518,7 +518,7 @@ Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
   if (start.itsType!=TpInt || end.itsType!=TpInt || incr.itsType!=TpInt) {
     throw AipsError("ImageExprParse: s:e:i has to consist of integer values");
   }
-  if (start.itsIval > start.itsIval) {
+  if (start.itsIval > end.itsIval) {
     throw AipsError("ImageExprParse: in s:e:i s must be <= e");
   }
   return new Slice(start.itsIval, end.itsIval-start.itsIval+1, incr.itsIval);
