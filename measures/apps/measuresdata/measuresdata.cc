@@ -138,7 +138,7 @@ struct inputValues {
   String dir;
   // Input file name (e.g. ./tai.in)
   String in;
-  // Refresh even if not necesaary for this file
+  // Refresh even if not necessary for this file
   Bool refresh;
   // Renew complete table, rather than update existing
   Bool renew;
@@ -508,6 +508,7 @@ Bool writeLink(const tableProperties &tprop, const inputValues &inVal) {
       " in=" << tprop.fileAddress[2] <<
       " refresh=y" << " renew=" << boolToString(inVal.renew) <<
       " type=" << inVal.fulltype << " x__n=" << inVal.x__n <<
+      " dir=" << inVal.dir <<
       endl;
   };
   ofile.close();
@@ -534,13 +535,13 @@ Bool TAI_UTC(const tableProperties &tprop, inputValues &inVal) {
   td1.rwKeywordSet().define("UNIT", "s");
   td2.rwKeywordSet().define("UNIT", "d");
   td3.rwKeywordSet().define("UNIT", "s");
-
+  String tpath = inVal.dir+ "/" + tprop.tnam;
   // Test if to update
-  if (!inVal.refresh && testr_table(tprop.tnam)) {
-    Table *tab = openr_table(tprop.tnam);
+  if (!inVal.refresh && testr_table(tpath)) {
+    Table *tab = openr_table(tpath);
     if (today_mjd()-vsdate_mjd(tab) < tprop.updper) {
       cout << tprop.tnam << " is up-to-date" << endl;
-      close_table(tprop.tnam, tab, 0, False);
+      close_table(tpath, tab, 0, False);
       inVal.noup = True;
       return True;
     }; 
@@ -552,7 +553,7 @@ Bool TAI_UTC(const tableProperties &tprop, inputValues &inVal) {
 
   // Read the data file
   vector<String> lines;
-  read_data(lines, tprop.tnam, Path(inVal.in), False);
+  read_data(lines, tpath, Path(inVal.in), False);
 
   // Split data lines into fields
   vector<vector<String> > fields;
@@ -591,7 +592,7 @@ Bool TAI_UTC(const tableProperties &tprop, inputValues &inVal) {
   td.addColumn(td1);
   td.addColumn(td2);
   td.addColumn(td3);
-  Table *tab = create_table(tprop.tnam, "TAI_UTC", td, 1.0,
+  Table *tab = create_table(tpath, "TAI_UTC", td, 1.0,
 			    "TAI_UTC difference obtained from USNO",
 			    "leapSecond", True);
 
@@ -609,7 +610,7 @@ Bool TAI_UTC(const tableProperties &tprop, inputValues &inVal) {
   cmul.putColumn((Vector<Double>(mul)));
 
   // Ready
-  close_table(tprop.tnam, tab, 0);
+  close_table(tpath, tab, 0);
   
   // OK
   return True;
