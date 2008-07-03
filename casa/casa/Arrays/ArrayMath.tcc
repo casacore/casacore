@@ -2197,6 +2197,60 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
 
 
 template <typename T>
+Array<T> boxedArrayMath (const Array<T>& array, const IPosition& boxSize,
+			 T (*reductionFunc) (const Array<T>&))
+{
+  uInt ndim = array.ndim();
+  const IPosition& shape = array.shape();
+  // Set missing axes to 1.
+  IPosition boxsz (boxSize);
+  if (boxsz.size() != ndim) {
+    uInt sz = boxsz.size();
+    boxsz.resize (ndim);
+    for (uInt i=sz; i<ndim; ++i) {
+      boxsz[i] = 1;
+    }
+  }
+  // Determine the output shape.
+  IPosition resShape(ndim);
+  for (uInt i=0; i<ndim; ++i) {
+    // Set unspecified axes to full length.
+    if (boxsz[i] <= 0  ||  boxsz[i] > shape[i]) {
+      boxsz[i] = shape[i];
+    }
+    resShape[i] = (shape[i] + boxsz[i] - 1) / boxsz[i];
+  }
+  // Need to make shallow copy because operator() is non-const.
+  Array<T> arr (array);
+  Array<T> result (resShape);
+  DebugAssert (result.contiguousStorage(), AipsError);
+  T* res = result.data();
+  // Loop through all data and assemble as needed.
+  IPosition blc(ndim, 0);
+  IPosition trc(boxsz-1);
+  while (True) {
+    *res++ = reductionFunc(arr(blc,trc));
+    uInt ax;
+    for (ax=0; ax<ndim; ++ax) {
+      blc[ax] += boxsz[ax];
+      if (blc[ax] < shape[ax]) {
+	trc[ax] += boxsz[ax];
+	if (trc[ax] >= shape[ax]) {
+	  trc[ax] = shape[ax]-1;
+	}
+	break;
+      }
+      blc[ax] = 0;
+      trc[ax] = boxsz[ax]-1;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  return result;
+}
+
+template <typename T>
 Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
 			   T (*reductionFunc) (const Array<T>&),
 			   Bool fillEdge)
@@ -2205,9 +2259,9 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
   const IPosition& shape = array.shape();
   // Set full box size (-1) and resize/fill as needed.
   IPosition hboxsz (2*halfBoxSize);
-  if (hboxsz.size() != array.ndim()) {
+  if (hboxsz.size() != ndim) {
     uInt sz = hboxsz.size();
-    hboxsz.resize (array.ndim());
+    hboxsz.resize (ndim);
     for (uInt i=sz; i<hboxsz.size(); ++i) {
       hboxsz[i] = 0;
     }
@@ -2228,6 +2282,9 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
   // Need to make shallow copy because operator() is non-const.
   Array<T> arr (array);
   Array<T> result (resShape);
+  if (arr.size() == 0) {
+    return result;
+  }
   DebugAssert (result.contiguousStorage(), AipsError);
   T* res = result.data();
   // Loop through all data and assemble as needed.
@@ -2237,7 +2294,7 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
   while (True) {
     *res++ = reductionFunc(arr(blc,trc));
     uInt ax;
-    for (ax=0; ax<ndim; ax++) {
+    for (ax=0; ax<ndim; ++ax) {
       if (++pos[ax] < resShape[ax]) {
 	blc[ax]++;
 	trc[ax]++;

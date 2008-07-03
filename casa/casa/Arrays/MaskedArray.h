@@ -537,7 +537,11 @@ public:
 
     // The number of elements of this masked array.
     // This is the number of elements in the underlying Array.
+    // <group>
     uInt nelements() const;
+    uInt size() const
+        { return nelements(); }
+    // </group>
 
     // The number of valid elements of this masked array.
     // This is the number of elements of the mask which are TRUE.

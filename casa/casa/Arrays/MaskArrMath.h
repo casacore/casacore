@@ -433,6 +433,22 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 // </group>
 
 
+// Apply the given ArrayMath reduction function to each box in the array.
+// <example>
+// Downsample an array by taking the mean of every [25,25] elements.
+// <srcblock>
+//    Array<Float> downArr = boxedArrayMath(in, IPosition(2,25,25),
+//                                          casa::mean);
+// </srcblock>
+// </example>
+// The dimensionality of the array can be larger than the box; in that
+// case the missing axes of the box are assumed to have length 1.
+// A box axis length <= 0 means the full array axis.
+template <typename T>
+MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
+			       const IPosition& boxSize,
+			       T (*reductionFunc) (const MaskedArray<T>&));
+
 // Apply for each element in the array the given ArrayMath reduction function
 // to the box around that element. The full box is 2*halfBoxSize + 1.
 // It can be used for arrays and boxes of any dimensionality; missing
