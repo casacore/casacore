@@ -339,6 +339,16 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
 	return slidingArrayMath (arr, getArrayShape(id), (RedFuncBool*)casa::anyTrue);
       }
+    case TableExprFuncNode::boxallFUNC:
+      {
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncBool*)casa::allTrue);
+      }
+    case TableExprFuncNode::boxanyFUNC:
+      {
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncBool*)casa::anyTrue);
+      }
     case TableExprFuncNode::arrayFUNC:
       {
 	Array<Bool> res(getArrayShape(id));
@@ -850,6 +860,46 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
 	return slidingArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::median);
+    }
+    case TableExprFuncNode::boxminFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::min);
+      }
+    case TableExprFuncNode::boxmaxFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::max);
+      }
+    case TableExprFuncNode::boxmeanFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::mean);
+      }
+    case TableExprFuncNode::boxvarianceFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::variance);
+      }
+    case TableExprFuncNode::boxstddevFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::stddev);
+      }
+    case TableExprFuncNode::boxavdevFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::avdev);
+      }
+    case TableExprFuncNode::boxrmsFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::rms);
+      }
+    case TableExprFuncNode::boxmedianFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedArrayMath (arr, getArrayShape(id), (RedFuncDouble*)casa::median);
     }
     case TableExprFuncNode::ntruesFUNC:
       {

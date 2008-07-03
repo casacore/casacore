@@ -136,6 +136,13 @@ void TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case runavdevFUNC:
     case runrmsFUNC:
     case runmedianFUNC:
+    case boxminFUNC:
+    case boxmaxFUNC:
+    case boxmeanFUNC:
+    case boxstddevFUNC:
+    case boxavdevFUNC:
+    case boxrmsFUNC:
+    case boxmedianFUNC:
       // These functions return the same unit as their child.
       node->setUnit (childUnit);
       break;
@@ -145,6 +152,7 @@ void TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case arrvarianceFUNC:
     case arrvariancesFUNC:
     case runvarianceFUNC:
+    case boxvarianceFUNC:
       // These functions return the square of their child.
      if (! childUnit.empty()) {
        Quantity q(1., childUnit);
@@ -852,6 +860,16 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case runmedianFUNC:
     case runanyFUNC:
     case runallFUNC:
+    case boxminFUNC:
+    case boxmaxFUNC:
+    case boxmeanFUNC:
+    case boxvarianceFUNC:
+    case boxstddevFUNC:
+    case boxavdevFUNC:
+    case boxrmsFUNC:
+    case boxmedianFUNC:
+    case boxanyFUNC:
+    case boxallFUNC:
     case arrayFUNC:
       {
         NodeDataType dtin = NTDouble;
@@ -870,6 +888,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	case allsFUNC:
 	case runanyFUNC:
 	case runallFUNC:
+	case boxanyFUNC:
+	case boxallFUNC:
 	    dtin = dtout = NTBool;
 	    break;
 	case ntruesFUNC:
@@ -889,7 +909,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	dtypeOper.resize(axarg+1);
 	dtypeOper = NTDouble;
 	PtrBlock<TableExprNodeRep*> nodeArr(1);
-	// Check for XXXs and runXXX functions if first argument is an array.
+	// Check for XXXs and run/boxXXX functions if first argument is an array.
 	nodeArr[0] = nodes[0];
 	if (fType != arrayFUNC) {
 	    if (nodes[0]->valueType() != VTArray) {
@@ -906,8 +926,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	  for (uInt i=1; i<axarg; i++) {
 	    if (nodes[i]->valueType() != VTScalar
 	    &&  nodes[i]->dataType() != NTDouble) {
-	      throw TableInvExpr ("2nd argument of runningXXX or XXXs "
-				  "function has to be a double scalar");
+	      throw TableInvExpr ("2nd argument of runningXXX, boxedXXX, or "
+				  "XXXs function has to be a double scalar");
 	    }
 	  }
 	}

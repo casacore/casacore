@@ -1676,6 +1676,66 @@ inline TableExprNode runningAll (const TableExprNode& node,
     return TableExprNode::newFunctionNode (TableExprFuncNode::runallFUNC,
 					   node, halfBoxWidth);
 }
+inline TableExprNode boxedMin (const TableExprNode& node,
+			       const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxminFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedMax (const TableExprNode& node,
+			       const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxmaxFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedMean (const TableExprNode& node,
+				const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxmeanFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedVariance (const TableExprNode& node,
+				    const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxvarianceFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedStddev (const TableExprNode& node,
+				  const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxstddevFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedAvdev (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxavdevFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedRms (const TableExprNode& node,
+			       const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxrmsFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedMedian (const TableExprNode& node,
+				  const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxmedianFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedAny (const TableExprNode& node,
+			       const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxanyFUNC,
+					   node, halfBoxWidth);
+}
+inline TableExprNode boxedAll (const TableExprNode& node,
+			       const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boxallFUNC,
+					   node, halfBoxWidth);
+}
 inline TableExprNode array (const TableExprNode& values,
 			    const TableExprNodeSet& shape)
 {

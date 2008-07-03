@@ -515,6 +515,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrminsFUNC;
   } else if (funcName == "runningmin") {
     ftype = TableExprFuncNode::runminFUNC;
+  } else if (funcName == "boxedmin") {
+    ftype = TableExprFuncNode::boxminFUNC;
   } else if (funcName == "max") {
     ftype = TableExprFuncNode::maxFUNC;
     if (narguments == 1) {
@@ -524,6 +526,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrmaxsFUNC;
   } else if (funcName == "runningmax") {
     ftype = TableExprFuncNode::runmaxFUNC;
+  } else if (funcName == "boxedmax") {
+    ftype = TableExprFuncNode::boxmaxFUNC;
   } else if (funcName == "sum") {
     ftype = TableExprFuncNode::arrsumFUNC;
   } else if (funcName == "sums") {
@@ -542,10 +546,14 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrmeansFUNC;
   } else if (funcName == "runningmean") {
     ftype = TableExprFuncNode::runmeanFUNC;
+  } else if (funcName == "boxedmean") {
+    ftype = TableExprFuncNode::boxmeanFUNC;
   } else if (funcName == "variance") {
     ftype = TableExprFuncNode::arrvarianceFUNC;
   } else if (funcName == "variances") {
     ftype = TableExprFuncNode::arrvariancesFUNC;
+  } else if (funcName == "boxedvariance") {
+    ftype = TableExprFuncNode::boxvarianceFUNC;
   } else if (funcName == "runningvariance") {
     ftype = TableExprFuncNode::runvarianceFUNC;
   } else if (funcName == "stddev") {
@@ -554,24 +562,32 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrstddevsFUNC;
   } else if (funcName == "runningstddev") {
     ftype = TableExprFuncNode::runstddevFUNC;
+  } else if (funcName == "boxedstddev") {
+    ftype = TableExprFuncNode::boxstddevFUNC;
   } else if (funcName == "avdev") {
     ftype = TableExprFuncNode::arravdevFUNC;
   } else if (funcName == "avdevs") {
     ftype = TableExprFuncNode::arravdevsFUNC;
   } else if (funcName == "runningavdev") {
     ftype = TableExprFuncNode::runavdevFUNC;
+  } else if (funcName == "boxedavdev") {
+    ftype = TableExprFuncNode::boxavdevFUNC;
   } else if (funcName == "rms") {
     ftype = TableExprFuncNode::arrrmsFUNC;
   } else if (funcName == "rmss") {
     ftype = TableExprFuncNode::arrrmssFUNC;
   } else if (funcName == "runningrms") {
     ftype = TableExprFuncNode::runrmsFUNC;
+  } else if (funcName == "boxedrms") {
+    ftype = TableExprFuncNode::boxrmsFUNC;
   } else if (funcName == "median") {
     ftype = TableExprFuncNode::arrmedianFUNC;
   } else if (funcName == "medians") {
     ftype = TableExprFuncNode::arrmediansFUNC;
   } else if (funcName == "runningmedian") {
     ftype = TableExprFuncNode::runmedianFUNC;
+  } else if (funcName == "boxedmedian") {
+    ftype = TableExprFuncNode::boxmedianFUNC;
   } else if (funcName == "fractile") {
     ftype = TableExprFuncNode::arrfractileFUNC;
   } else if (funcName == "fractiles") {
@@ -582,12 +598,16 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::anysFUNC;
   } else if (funcName == "runningany") {
     ftype = TableExprFuncNode::runanyFUNC;
+  } else if (funcName == "boxedany") {
+    ftype = TableExprFuncNode::boxanyFUNC;
   } else if (funcName == "all") {
     ftype = TableExprFuncNode::allFUNC;
   } else if (funcName == "alls") {
     ftype = TableExprFuncNode::allsFUNC;
   } else if (funcName == "runningall") {
     ftype = TableExprFuncNode::runallFUNC;
+  } else if (funcName == "boxedall") {
+    ftype = TableExprFuncNode::boxallFUNC;
   } else if (funcName == "ntrue") {
     ftype = TableExprFuncNode::ntrueFUNC;
   } else if (funcName == "ntrues") {
@@ -745,6 +765,16 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::runmedianFUNC:
   case TableExprFuncNode::runanyFUNC:
   case TableExprFuncNode::runallFUNC:
+  case TableExprFuncNode::boxminFUNC:
+  case TableExprFuncNode::boxmaxFUNC:
+  case TableExprFuncNode::boxmeanFUNC:
+  case TableExprFuncNode::boxvarianceFUNC:
+  case TableExprFuncNode::boxstddevFUNC:
+  case TableExprFuncNode::boxavdevFUNC:
+  case TableExprFuncNode::boxrmsFUNC:
+  case TableExprFuncNode::boxmedianFUNC:
+  case TableExprFuncNode::boxanyFUNC:
+  case TableExprFuncNode::boxallFUNC:
   case TableExprFuncNode::arrayFUNC:
     if (arguments.nelements() > axarg) {
       TableExprNodeSet parms;

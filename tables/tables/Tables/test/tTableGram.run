@@ -186,6 +186,8 @@ $1 ./tTableGram 'using style python select ab from tTableGram_tmp.tab where rown
 $1 ./tTableGram 'using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2'
 
 $1 ./tTableGram 'calc runningMedian(array([0:24],5,5),1,1)'
+$1 ./tTableGram 'calc boxedMedian(array([0:24],5,5),1,1)'
+$1 ./tTableGram 'calc boxedMax(array([0:24],5,5),[2,2])'
 $1 ./tTableGram 'calc 5.1//2'
 $1 ./tTableGram 'calc -4.1//2'
 $1 ./tTableGram 'calc -4**2'
