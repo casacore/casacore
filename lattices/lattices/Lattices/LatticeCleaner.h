@@ -103,6 +103,9 @@ public:
 template<class T> class LatticeCleaner
 {
 public:
+  // Create a cleaner : default constructor 
+  LatticeCleaner();
+
   // Create a cleaner for a specific dirty image and PSF
   LatticeCleaner(const Lattice<T> & psf, const Lattice<T> & dirty);
 
@@ -210,6 +213,36 @@ public:
   // Helper function to optimize adding
   void addTo(Lattice<T>& to, const Lattice<T>& add);
 
+protected:
+  // Make sure that the peak of the Psf is within the image
+  Bool validatePsf(const Lattice<T> & psf);
+
+  // Make an lattice of the specified scale
+  void makeScale(Lattice<T>& scale, const Float& scaleSize);
+
+  // Make Spheroidal function for scale images
+  Float spheroidal(Float nu);
+  
+  // Find the Peak of the Lattice
+  Bool findMaxAbsLattice(const Lattice<T>& lattice,
+			 T& maxAbs, IPosition& posMax);
+
+  // Find the Peak of the lattice, applying a mask
+  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+			     T& maxAbs, IPosition& posMax);
+
+  // Helper function to reduce the box sizes until the have the same   
+  // size keeping the centers intact  
+  static void makeBoxesSameSize(IPosition& blc1, IPosition& trc1,                               
+     IPosition &blc2, IPosition& trc2);
+
+  CleanEnums::CleanType itsCleanType;
+  Float itsGain;
+  Int itsMaxNiter;	// maximum possible number of iterations
+  Quantum<Double> itsThreshold;
+  TempLattice<T>* itsMask;
+  IPosition itsPositionPeakPsf;
+
 private:
   //# The following functions are used in various places in the code and are
   //# documented in the .cc file. Static functions are used when the functions
@@ -217,11 +250,8 @@ private:
   //# about the current state and implicit side-effects are not possible
   //# because all information must be supplied in the input arguments
 
-  CleanEnums::CleanType itsCleanType;
-
   TempLattice<T>* itsDirty;
   TempLattice<Complex>* itsXfr;
-  TempLattice<T>* itsMask;
 
   Int itsNscales;
   Vector<Float> itsScaleSizes;
@@ -234,17 +264,13 @@ private:
 
   Bool itsScalesValid;
 
-  Float itsGain;
-  Int itsMaxNiter;	// maximum possible number of iterations
   Int itsIteration;	// what iteration did we get to?
   Int itsStartingIter;	// what iteration did we get to?
-  Quantum<Double> itsThreshold;
   Quantum<Double> itsFracThreshold;
 
   Float itsMaximumResidual;
 
 
-  IPosition itsPositionPeakPsf;
 
   Vector<Float> itsTotalFluxScale;
   Float itsTotalFlux;
@@ -262,25 +288,12 @@ private:
   //# Stop now?
   //#//  Bool stopnow();   Removed on 8-Apr-2004 by GvD
 
-  // Make an lattice of the specified scale
-  void makeScale(Lattice<T>& scale, const Float& scaleSize);
-
-  // Make Spheroidal function for scale images
-  Float spheroidal(Float nu);
 
   // Calculate index into PsfConvScales
   Int index(const Int scale, const Int otherscale);
   
   Bool destroyScales();
   Bool destroyMasks();
-
-  Bool findMaxAbsLattice(const Lattice<T>& lattice,
-			 T& maxAbs, IPosition& posMax);
-
-  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
-			     T& maxAbs, IPosition& posMax);
-
-  Bool validatePsf(const Lattice<T> & psf);
 
   Bool makeScaleMasks();
   Bool itsIgnoreCenterBox;

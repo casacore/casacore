@@ -79,11 +79,37 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
   T maxPsf=0;
   itsPositionPeakPsf=IPosition(psf.shape().nelements(), 0);
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
-  os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf+1
+  os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf
      << LogIO::POST;
   return True;
 }
   
+template<class T> 
+LatticeCleaner<T>::LatticeCleaner():
+  itsMask(0),
+  itsDirty(0),
+  itsXfr(0),
+  itsScaleSizes(0),
+  itsMaximumResidual(0.0),
+  itsChoose(True),
+  itsDoSpeedup(False),
+  itsIgnoreCenterBox(False),
+  itsSmallScaleBias(0.6),
+  itsStopAtLargeScaleNegative(False),
+  itsStopPointMode(-1),
+  itsDidStopPointMode(False),
+  itsJustStarting(True)
+{
+  itsMemoryMB=Double(HostInfo::memoryTotal()/1024)/16.0;
+  itsScales.resize(0);
+  itsScaleXfrs.resize(0);
+  itsDirtyConvScales.resize(0);
+  itsPsfConvScales.resize(0);
+  itsScaleMasks.resize(0);
+  itsScalesValid = False;
+  itsStartingIter = 0;
+}
+
 
 template<class T> 
 LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
@@ -533,6 +559,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     IPosition blcPsf(blc+itsPositionPeakPsf-positionOptimum);
     IPosition trcPsf(trc+itsPositionPeakPsf-positionOptimum);
     LCBox::verify(blcPsf, trcPsf, inc, model.shape());
+
+    makeBoxesSameSize(blc,trc,blcPsf,trcPsf);
     
     LCBox subRegion(blc, trc, model.shape());
     LCBox subRegionPsf(blcPsf, trcPsf, model.shape());
@@ -976,7 +1004,7 @@ Bool LatticeCleaner<T>::destroyMasks()
   }
   itsScaleMasks.resize(0);
   return True;
-}
+};
 
 //# Removed on 8-Apr-2004 by GvD because it is not used and add Tasking
 //# dependencies to Lattices
@@ -1105,6 +1133,37 @@ void LatticeCleaner<T>::addTo(Lattice<T>& to, const Lattice<T>& add)
   }
 }
 
+template <class T>
+void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1, 
+                  IPosition &blc2, IPosition& trc2)
+{
+  const IPosition shape1 = trc1 - blc1;
+  const IPosition shape2 = trc2 - blc2;
+
+  AlwaysAssert(shape1.nelements() == shape2.nelements(), AipsError);
+  
+  if (shape1 == shape2) {
+      return;
+  }
+  for (uInt i=0;i<shape1.nelements();++i) {
+       Int minLength = shape1[i];
+       if (shape2[i]<minLength) {
+           minLength = shape2[i];
+       }
+       AlwaysAssert(minLength>=0, AipsError);
+       //if (minLength % 2 != 0) {
+           // if the number of pixels is odd, ensure that the centre stays 
+           // the same by making this number even
+           //--minLength; // this code is a mistake and should be removed
+       //}
+       const Int increment1 = shape1[i] - minLength;
+       const Int increment2 = shape2[i] - minLength;
+       blc1[i] += increment1/2;
+       trc1[i] -= increment1/2 + (increment1 % 2 != 0 ? 1 : 0);
+       blc2[i] += increment2/2;
+       trc2[i] -= increment2/2 + (increment2 % 2 != 0 ? 1 : 0);
+  }
+}
 
 } //# NAMESPACE CASA - END
 
