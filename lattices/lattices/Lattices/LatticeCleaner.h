@@ -150,8 +150,8 @@ public:
 		  const Bool choose=True);
 
   // return how many iterations we did do
-  Int iteration() { return itsIteration; }
-  Int numberIterations() { return itsIteration; }
+  Int iteration() const { return itsIteration; }
+  Int numberIterations() const { return itsIteration; }
 
   // what iteration number to start on
   void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
@@ -191,7 +191,7 @@ public:
 
   // After completion of cycle, querry this to find out if we stopped because
   // of stopPointMode
-  Bool queryStopPointMode() {return itsDidStopPointMode; }
+  Bool queryStopPointMode() const {return itsDidStopPointMode; }
 
   // speedup() will speed the clean iteration by raising the
   // threshold.  This may be required if the threshold is
@@ -208,10 +208,14 @@ public:
   Lattice<T>*  residual() { return itsDirtyConvScales[0]; }
 
   // Method to return threshold, including any speedup factors
-  Float threshold();
+  Float threshold() const;
+
+  // Method to return the strength optimum achieved at the last clean iteration
+  // The output of this method makes sense only if it is called after clean
+  T strengthOptimum() const { return itsStrengthOptimum; }
 
   // Helper function to optimize adding
-  void addTo(Lattice<T>& to, const Lattice<T>& add);
+  static void addTo(Lattice<T>& to, const Lattice<T>& add);
 
 protected:
   // Make sure that the peak of the Psf is within the image
@@ -224,11 +228,11 @@ protected:
   Float spheroidal(Float nu);
   
   // Find the Peak of the Lattice
-  Bool findMaxAbsLattice(const Lattice<T>& lattice,
+  static Bool findMaxAbsLattice(const Lattice<T>& lattice,
 			 T& maxAbs, IPosition& posMax);
 
   // Find the Peak of the lattice, applying a mask
-  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+  static Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
 			     T& maxAbs, IPosition& posMax);
 
   // Helper function to reduce the box sizes until the have the same   
@@ -269,7 +273,7 @@ private:
   Quantum<Double> itsFracThreshold;
 
   Float itsMaximumResidual;
-
+  T itsStrengthOptimum;
 
 
   Vector<Float> itsTotalFluxScale;

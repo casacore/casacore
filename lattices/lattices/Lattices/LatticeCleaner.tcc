@@ -91,6 +91,7 @@ LatticeCleaner<T>::LatticeCleaner():
   itsXfr(0),
   itsScaleSizes(0),
   itsMaximumResidual(0.0),
+  itsStrengthOptimum(0.0),
   itsChoose(True),
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
@@ -117,6 +118,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsMask(0),
   itsScaleSizes(0),
   itsMaximumResidual(0.0),
+  itsStrengthOptimum(0.0),
   itsChoose(True),
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
@@ -170,6 +172,7 @@ template <class T> LatticeCleaner<T>::
    itsScaleMasks(other.itsScaleMasks),
    itsStartingIter(other.itsStartingIter),
    itsMaximumResidual(other.itsMaximumResidual),
+   itsStrengthOptimum(other.itsStrengthOptimum),
    itsIgnoreCenterBox(other.itsIgnoreCenterBox),
    itsSmallScaleBias(other.itsSmallScaleBias),
    itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
@@ -193,6 +196,7 @@ operator=(const LatticeCleaner<T> & other) {
     itsScaleMasks = other.itsScaleMasks;
     itsStartingIter = other.itsStartingIter;
     itsMaximumResidual = other.itsMaximumResidual;
+    itsStrengthOptimum = other.itsStrengthOptimum;
     itsIgnoreCenterBox = other.itsIgnoreCenterBox;
     itsSmallScaleBias = other.itsSmallScaleBias;
     itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
@@ -445,7 +449,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Bool converged=False;
   Int stopPointModeCounter = 0;
   Int optimumScale=0;
-  T strengthOptimum=0.0;
+  itsStrengthOptimum=0.0;
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
@@ -453,7 +457,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   for (Int ii=itsStartingIter; ii < itsMaxNiter; ii++) {
     itsIteration++;
     // Find the peak residual
-    strengthOptimum = 0.0;
+    itsStrengthOptimum = 0.0;
     optimumScale = 0;
     for (scale=0; scale<nScalesToClean; scale++) {
       // Find absolute maximum for the dirty image
@@ -474,9 +478,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       maxima(scale)/=maxPsfConvScales(scale);
       maxima(scale) *= scaleBias(scale);
       posMaximum[scale]+=blcDirty;
-      if(abs(maxima(scale))>abs(strengthOptimum)) {
+      if(abs(maxima(scale))>abs(itsStrengthOptimum)) {
         optimumScale=scale;
-        strengthOptimum=maxima(scale);
+        itsStrengthOptimum=maxima(scale);
 	positionOptimum=posMaximum[scale];
       }
     }
@@ -484,27 +488,27 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     AlwaysAssert(optimumScale<nScalesToClean, AipsError);
 
     // Now add to the total flux
-    totalFlux += (strengthOptimum*itsGain);
-    totalFluxScale(optimumScale) += (strengthOptimum*itsGain);
+    totalFlux += (itsStrengthOptimum*itsGain);
+    totalFluxScale(optimumScale) += (itsStrengthOptimum*itsGain);
 
     if(ii==itsStartingIter) {
-      itsMaximumResidual=abs(strengthOptimum);
+      itsMaximumResidual=abs(itsStrengthOptimum);
       os << "Initial maximum residual is " << itsMaximumResidual
 	 << LogIO::POST;
     }
 
     // Various ways of stopping:
     //    1. stop if below threshold
-    if(abs(strengthOptimum)<threshold() ) {
+    if(abs(itsStrengthOptimum)<threshold() ) {
       os << "Reached stopping threshold " << threshold() << LogIO::POST;
-      os << "Optimum flux is " << abs(strengthOptimum) << LogIO::POST;
+      os << "Optimum flux is " << abs(itsStrengthOptimum) << LogIO::POST;
       converged = True;
       break;
     }
     //    2. negatives on largest scale?
     if ((nScalesToClean > 1) && itsStopAtLargeScaleNegative  && 
 	optimumScale == (nScalesToClean-1) && 
-	strengthOptimum < 0.0) {
+	itsStrengthOptimum < 0.0) {
       os << "Reached negative on largest scale" << LogIO::POST;
       converged = False;
       break;
@@ -529,20 +533,22 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
     if(progress) {
       progress->info(False, itsIteration, itsMaxNiter, maxima,
-		     posMaximum, strengthOptimum,
+		     posMaximum, itsStrengthOptimum,
 		     optimumScale, positionOptimum,
 		     totalFlux, totalFluxScale,
 		     itsJustStarting );
       itsJustStarting = False;
-    } else if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
-      if (itsIteration == 0) {
-	os << "ItsIteration    Resid   CleanedFlux" << LogIO::POST;
+    } else {
+      if (itsIteration == itsStartingIter + 1) {
+	  os << "iteration    MaximumResidual   CleanedFlux" << LogIO::POST;
       }
-      os << itsIteration <<"      "<<strengthOptimum<<"      "<< totalFlux <<LogIO::POST ;
+      if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
+          os << itsIteration <<"      "<<itsStrengthOptimum<<"      "<< totalFlux <<LogIO::POST;
+      }
     }
 
     T scaleFactor;
-    scaleFactor=itsGain*strengthOptimum;
+    scaleFactor=itsGain*itsStrengthOptimum;
 
     // Continuing: subtract the peak that we found from all dirty images
     // Define a subregion so that that the peak is centered
@@ -600,7 +606,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   // Finish off the plot, etc.
   if(progress) {
     progress->info(True, itsIteration, itsMaxNiter, maxima, posMaximum,
-		   strengthOptimum,
+		   itsStrengthOptimum,
 		   optimumScale, positionOptimum,
 		   totalFlux, totalFluxScale);
   }
@@ -1101,13 +1107,13 @@ Bool LatticeCleaner<T>::makeScaleMasks()
 
 
 template<class T> 
-Float LatticeCleaner<T>::threshold()
+Float LatticeCleaner<T>::threshold() const
 {
   if (! itsDoSpeedup) {
     return max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
 	       itsThreshold.get("Jy").getValue());
   } else {
-    Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
+    const Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
       / 2.7182818;
     return factor * max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
 		       itsThreshold.get("Jy").getValue());
