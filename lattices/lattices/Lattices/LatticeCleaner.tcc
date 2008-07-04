@@ -1151,11 +1151,6 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1,
            minLength = shape2[i];
        }
        AlwaysAssert(minLength>=0, AipsError);
-       //if (minLength % 2 != 0) {
-           // if the number of pixels is odd, ensure that the centre stays 
-           // the same by making this number even
-           //--minLength; // this code is a mistake and should be removed
-       //}
        const Int increment1 = shape1[i] - minLength;
        const Int increment2 = shape2[i] - minLength;
        blc1[i] += increment1/2;
