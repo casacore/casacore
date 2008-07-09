@@ -34,6 +34,7 @@
 #include <casa/OS/Timer.h>
 #include <casa/stdlib.h>
 #include <casa/iomanip.h>
+#include <algorithm>
 
 #include <casa/namespace.h>
 void sortall (Int*, uInt, int, Sort::Order, Bool);
@@ -118,22 +119,22 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     Vector<uInt> inx;
     Vector<uInt> index(nr);
     indgen (index);              // fill with 0,1,2,...
-
-    // Do an indirect sort.
-    Timer tim1;
-    Int n1 = genSort (inx, arr, nr, ord, type);
-    cout <<":  Indirect / direct" << endl;
-    if (!showFlag) {
+    if (nr <= 5000000) {
+      // Do an indirect sort for 'smaller' arrays only.
+      Timer tim1;
+      Int n1 = genSort (inx, arr, nr, ord, type);
+      cout <<":  Indirect / direct" << endl;
+      if (!showFlag) {
 	cout << ">>> Resulting number may vary" << endl;
-    }
-    cout << setw(8) << n1 << endl;
-    if (!showFlag) {
+      }
+      cout << setw(8) << n1 << endl;
+      if (!showFlag) {
 	cout << "<<<" << endl;
-    }
-    cout << ">>> Timing:  ";
-    tim1.show();
-    cout << "<<<" << endl;
-    if (ord == Sort::Ascending) {
+      }
+      cout << ">>> Indirect ";
+      tim1.show();
+      cout << "<<<" << endl;
+      if (ord == Sort::Ascending) {
 	for (Int i=1; i<n1; i++) {
 	    if (arr[inx(i)] < arr[inx(i-1)]) {
 		cout << "order error on index " << i << endl;
@@ -145,7 +146,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 		break;
 	    }
 	}
-    }else{
+      }else{
 	for (Int i=1; i<n1; i++) {
 	    if (arr[inx(i)] > arr[inx(i-1)]) {
 		cout << "order error on index " << i << endl;
@@ -157,19 +158,22 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 		break;
 	    }
 	}
-    }
-    if ((type & Sort::NoDuplicates) != 0) {
+      }
+      if ((type & Sort::NoDuplicates) != 0) {
 	for (Int i=1; i<n1; i++) {
 	    if (arr[inx(i)] == arr[inx(i-1)]) {
 		cout << "dupl. error on index " << i << endl;
 		break;
 	    }
 	}
+      }
     }
 
     // Save the original array.
     Int* cparr = new Int[nr];
     memcpy (cparr, arr, nr*sizeof(Int));
+    Int* cp2arr = new Int[nr];
+    memcpy (cp2arr, arr, nr*sizeof(Int));
 
     // Do an in-place sort.
     Timer tim;
@@ -181,7 +185,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     if (!showFlag) {
 	cout << "<<< Resulting number may vary" << endl;
     }
-    cout << ">>> Timing:  ";
+    cout << ">>> GenSort  ";
     tim.show();
     cout << "<<<" << endl;
     if (ord == Sort::Ascending) {
@@ -226,5 +230,34 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     if (kth != arr[mid]) {
 	cout << "kthLargest is " << kth << "; should be " << arr[mid] << endl;
     }
+
+    // Test STL algorithms.
+    cout << ">>>" << endl;
+    if ((type & Sort::NoDuplicates) != 0) {
+      memcpy (cparr, arr, n*sizeof(Int));
+    } else {
+      memcpy (cparr, cp2arr, n*sizeof(Int));
+    }
+    tim.mark();
+    std::nth_element (cparr, cparr+n/2, cparr+n);
+    tim.show ("STL-nth      ");
+    memcpy (cparr, cp2arr, nr*sizeof(Int));
+    tim.mark();
+    std::sort (cp2arr, cp2arr+nr);
+    tim.show ("STL-sort     ");
+    tim.mark();
+    std::stable_sort (cparr, cparr+nr);
+    tim.show ("STL-stable   ");
+    cout << "<<<" << endl;
+
     delete [] cparr;
+    delete [] cp2arr;
 }
+
+/*
+Test remarks on MacBook OS-X Tiger g++-4.01. -O2:
+1. casa's quicksort and kthLargest are as fast as STL sort and nth_element.
+   However, casa's quicksort is stable and std::sort is not. It is 2-3
+   times faster than std::stable_sort.
+2. median could use min(2nd partition) to determine element (n+1)/2.
+*/
