@@ -500,7 +500,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     // Various ways of stopping:
     //    1. stop if below threshold
     if(abs(itsStrengthOptimum)<threshold() ) {
-      os << "Reached stopping threshold " << threshold() << LogIO::POST;
+      os << "Reached stopping threshold " << threshold() <<" at iteration "<<
+            ii << LogIO::POST;
       os << "Optimum flux is " << abs(itsStrengthOptimum) << LogIO::POST;
       converged = True;
       break;
