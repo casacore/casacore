@@ -99,7 +99,8 @@ LatticeCleaner<T>::LatticeCleaner():
   itsStopAtLargeScaleNegative(False),
   itsStopPointMode(-1),
   itsDidStopPointMode(False),
-  itsJustStarting(True)
+  itsJustStarting(True),
+  itsMaskThreshold(T(0.9))
 {
   itsMemoryMB=Double(HostInfo::memoryTotal()/1024)/16.0;
   itsScales.resize(0);
@@ -178,7 +179,8 @@ template <class T> LatticeCleaner<T>::
    itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
    itsStopPointMode(other.itsStopPointMode),
    itsDidStopPointMode(other.itsDidStopPointMode),
-   itsJustStarting(other.itsJustStarting)
+   itsJustStarting(other.itsJustStarting),
+   itsMaskThreshold(other.itsMaskThreshold)
 {
 }
 
@@ -203,7 +205,7 @@ operator=(const LatticeCleaner<T> & other) {
     itsStopPointMode = other.itsStopPointMode;
     itsDidStopPointMode = other.itsDidStopPointMode;
     itsJustStarting = other.itsJustStarting;
-
+    itsMaskThreshold = other.itsMaskThreshold;
   }
   return *this;
 }
@@ -247,10 +249,19 @@ void LatticeCleaner<T>::update(const Lattice<T> &dirty)
 }
 
 
-// add a mask image
+// Set the mask
+// mask - input mask lattice
+// maskThreshold - if positive, the value is treated as a threshold value to determine
+// whether a pixel is good (mask value is greater than the threshold) or has to be 
+// masked (mask value is below the threshold). Negative threshold switches mask clipping
+// off. The mask value is used to weight the flux during cleaning. This mode is used
+// to implement cleaning based on the signal-to-noise as opposed to the standard cleaning
+// based on the flux. The default threshold value is 0.9, which ensures the behavior of the
+// code is exactly the same as before this parameter has been introduced.
 template<class T> 
-void LatticeCleaner<T>::setMask(Lattice<T> & mask) 
+void LatticeCleaner<T>::setMask(Lattice<T> & mask, const T& maskThreshold) 
 {
+  itsMaskThreshold = maskThreshold;
   IPosition maskShape = mask.shape();
   IPosition dirtyShape = itsDirty->shape();
 
@@ -372,6 +383,11 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   if(itsMask){
     os << "Cleaning using given mask" << LogIO::POST;
+    if (itsMaskThreshold<0) {
+        os << "Mask thresholding is not used, values are interpreted as weights"<<LogIO::POST;
+    } else {
+        os << "Mask values above "<<itsMaskThreshold<<" are interpreted as pixels to clean"<<LogIO::POST;
+    }
     
     Int nx=model.shape()(0);
     Int ny=model.shape()(1);
@@ -481,7 +497,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       if(abs(maxima(scale))>abs(itsStrengthOptimum)) {
         optimumScale=scale;
         itsStrengthOptimum=maxima(scale);
-	positionOptimum=posMaximum[scale];
+        positionOptimum=posMaximum[scale];
       }
     }
 
@@ -681,20 +697,24 @@ Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice,
       IPosition posMinMask=li.position();
       T maxVal=0.0;
       T minVal=0.0;
-      T maxMask=0.0;
-      T minMask=0.0;
       
       minMaxMasked(minVal, maxVal, posMin, posMax, li.cursor(), mi.cursor());
-      minMax(minMask, maxMask, posMinMask, posMaxMask, mi.cursor());
+      if (itsMaskThreshold<0) {
+          // Mask threhsolding is not used, i.e. mask values are interpreted as weights.
+          // This means that minVal and maxVal are optima of the mask * lattice product, 
+          // we need just values of lattice and have to redetermine them.
+          minVal = li.cursor()(posMin);
+          maxVal = li.cursor()(posMax);
+      }
       if(abs(minVal)>abs(maxAbs)) {
-        maxAbs=minVal;
-	posMaxAbs=li.position();
-	posMaxAbs(0)=posMin(0);
+         maxAbs=minVal;
+         posMaxAbs=li.position();
+         posMaxAbs(0)=posMin(0);
       }
       if(abs(maxVal)>abs(maxAbs)) {
-        maxAbs=maxVal;
-	posMaxAbs=li.position();
-	posMaxAbs(0)=posMax(0);
+         maxAbs=maxVal;
+         posMaxAbs=li.position();
+         posMaxAbs(0)=posMax(0);
       }
     }
   }
@@ -1084,8 +1104,10 @@ Bool LatticeCleaner<T>::makeScaleMasks()
     LatticeExpr<Complex> maskExpr((maskFT)*(*itsScaleXfrs[scale]));
     cWork.copyData(maskExpr);
     LatticeFFT::cfft2d(cWork, False);
-    // Allow only 10% overlap
-    LatticeExpr<T> maskWork(iif(real(cWork)>0.9,1.0,0.0));
+    // Allow only 10% overlap by default, hence 0.9 is a default mask threshold
+    // if thresholding is not used, just extract the real part of the complex mask 
+    LatticeExpr<T> maskWork( itsMaskThreshold < 0 ? real(cWork) : 
+                             iif(real(cWork)>itsMaskThreshold,1.0,0.0));
     itsScaleMasks[scale] = new TempLattice<T>(itsMask->shape(),
 					      itsMemoryMB);
     AlwaysAssert(itsScaleMasks[scale], AipsError);

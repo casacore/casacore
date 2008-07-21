@@ -160,7 +160,15 @@ public:
   Bool clean(Lattice<T> & model, LatticeCleanProgress* progress=0);
 
   // Set the mask
-  void setMask(Lattice<T> & mask);
+  // mask - input mask lattice
+  // maskThreshold - if positive, the value is treated as a threshold value to determine
+  // whether a pixel is good (mask value is greater than the threshold) or has to be 
+  // masked (mask value is below the threshold). Negative threshold switches mask clipping
+  // off. The mask value is used to weight the flux during cleaning. This mode is used
+  // to implement cleaning based on the signal-to-noise as opposed to the standard cleaning
+  // based on the flux. The default threshold value is 0.9, which ensures the behavior of the
+  // code is exactly the same as before this parameter has been introduced.
+  void setMask(Lattice<T> & mask, const T& maskThreshold = T(0.9));
 
   // Tell the algorithm to NOT clean just the inner quarter
   // (This is useful when multiscale clean is being used
@@ -232,7 +240,7 @@ protected:
 			 T& maxAbs, IPosition& posMax);
 
   // Find the Peak of the lattice, applying a mask
-  static Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
 			     T& maxAbs, IPosition& posMax);
 
   // Helper function to reduce the box sizes until the have the same   
@@ -307,7 +315,9 @@ private:
   Bool itsDidStopPointMode;
   Bool itsJustStarting;
 
-
+  // threshold for masks. If negative, mask values are used as weights and no pixels are
+  // discarded (although effectively they would be discarded if the mask value is 0.)
+  T itsMaskThreshold;
 };
 
 } //# NAMESPACE CASA - END
