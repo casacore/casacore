@@ -135,41 +135,47 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     int sz = H5Tget_size(dtid);
     switch (H5Tget_class(dtid)) {
     case H5T_INTEGER:
-      int sgn = H5Tget_sign(dtid);
-      if (sgn == H5T_SGN_2) {
-	// A bool is stored as a signed char.
-	if (sz == 1) {
-	  dtype = TpBool;
-	} else if (sz == sizeof(Short)) {
-	  dtype = TpShort;
+      {
+	int sgn = H5Tget_sign(dtid);
+	if (sgn == H5T_SGN_2) {
+	  // A bool is stored as a signed char.
+	  if (sz == 1) {
+	    dtype = TpBool;
+	  } else if (sz == sizeof(Short)) {
+	    dtype = TpShort;
+	  } else {
+	    AlwaysAssert (sz==sizeof(Int), AipsError);
+	    dtype = TpInt;
+	  }
 	} else {
-	  AlwaysAssert (sz==sizeof(Int), AipsError);
-	  dtype = TpInt;
-	}
-      } else {
-	if (sz == 1) {
-	  dtype = TpUChar;
-	} else {
-	  AlwaysAssert (sz==sizeof(uInt), AipsError);
-	  dtype = TpUInt;
+	  if (sz == 1) {
+	    dtype = TpUChar;
+	  } else {
+	    AlwaysAssert (sz==sizeof(uInt), AipsError);
+	    dtype = TpUInt;
+	  }
 	}
       }
       break;
     case H5T_FLOAT:
-      if (sz == sizeof(Float)) {
-	dtype = TpFloat;
-      } else {
-	AlwaysAssert (sz==sizeof(Double), AipsError);
-	dtype = TpDouble;
+      {
+	if (sz == sizeof(Float)) {
+	  dtype = TpFloat;
+	} else {
+	  AlwaysAssert (sz==sizeof(Double), AipsError);
+	  dtype = TpDouble;
+	}
       }
       break;
     case H5T_COMPOUND:
-      AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
-      if (sz == sizeof(Complex)) {
-	dtype = TpComplex;
-      } else {
-	AlwaysAssert (sz==sizeof(DComplex), AipsError);
-	dtype = TpDComplex;
+      {
+	AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
+	if (sz == sizeof(Complex)) {
+	  dtype = TpComplex;
+	} else {
+	  AlwaysAssert (sz==sizeof(DComplex), AipsError);
+	  dtype = TpDComplex;
+	}
       }
       break;
     case H5T_STRING:

@@ -95,7 +95,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   herr_t HDF5Record::readSubRecord (hid_t groupHid, const char* name,
 				    const H5L_info_t*, void* voidRec)
   {
-    std::cout << "subrec=" << name << std::endl;
     HDF5Group gid(groupHid, name, true);
     Record& rec = *(static_cast<Record*>(voidRec));
     rec.defineRecord (name, doReadRecord(gid));
@@ -109,44 +108,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int sz = H5Tget_size(dtid);
     switch (H5Tget_class(dtid)) {
     case H5T_INTEGER:
-      int sgn = H5Tget_sign(dtid);
-      if (sgn == H5T_SGN_2) {
-	if (sz == 1) {
-	  readSca<Bool> (attrId, name, rec);
-	} else if (sz == sizeof(Short)) {
-	  readSca<Short> (attrId, name, rec);
+      {
+	int sgn = H5Tget_sign(dtid);
+	if (sgn == H5T_SGN_2) {
+	  if (sz == 1) {
+	    readSca<Bool> (attrId, name, rec);
+	  } else if (sz == sizeof(Short)) {
+	    readSca<Short> (attrId, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(Int), AipsError);
+	    readSca<Int> (attrId, name, rec);
+	  }
 	} else {
-	  AlwaysAssert (sz==sizeof(Int), AipsError);
-	  readSca<Int> (attrId, name, rec);
-	}
-      } else {
-	if (sz == 1) {
-	  readSca<uChar> (attrId, name, rec);
-	} else {
-	  AlwaysAssert (sz==sizeof(uInt), AipsError);
-	  readSca<uInt> (attrId, name, rec);
+	  if (sz == 1) {
+	    readSca<uChar> (attrId, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(uInt), AipsError);
+	    readSca<uInt> (attrId, name, rec);
+	  }
 	}
       }
       break;
     case H5T_FLOAT:
-      if (sz == sizeof(Float)) {
-	readSca<Float> (attrId, name, rec);
-      } else {
-	AlwaysAssert (sz==sizeof(Double), AipsError);
-	readSca<Double> (attrId, name, rec);
+      {
+	if (sz == sizeof(Float)) {
+	  readSca<Float> (attrId, name, rec);
+	} else {
+	  AlwaysAssert (sz==sizeof(Double), AipsError);
+	  readSca<Double> (attrId, name, rec);
+	}
       }
       break;
     case H5T_COMPOUND:
-      if (H5Tget_nmembers(dtid) == 2) {
-	if (sz == sizeof(Complex)) {
-	  readSca<Complex> (attrId, name, rec);
+      {
+	if (H5Tget_nmembers(dtid) == 2) {
+	  if (sz == sizeof(Complex)) {
+	    readSca<Complex> (attrId, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(DComplex), AipsError);
+	    readSca<DComplex> (attrId, name, rec);
+	  }
 	} else {
-	  AlwaysAssert (sz==sizeof(DComplex), AipsError);
-	  readSca<DComplex> (attrId, name, rec);
+	  AlwaysAssert (H5Tget_nmembers(dtid)==3, AipsError);
+	  readEmptyArray (attrId, name, rec);
 	}
-      } else {
-	AlwaysAssert (H5Tget_nmembers(dtid)==3, AipsError);
-	readEmptyArray (attrId, name, rec);
       }
       break;
     case H5T_STRING:
@@ -164,40 +169,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Handle an array field.
     switch (H5Tget_class(dtid)) {
     case H5T_INTEGER:
-      int sgn = H5Tget_sign(dtid);
-      if (sgn == H5T_SGN_2) {
-	if (sz == 1) {
-	  readArr<Bool> (attrId, shape, name, rec);
-	} else if (sz == sizeof(Short)) {
-	  readArr<Short> (attrId, shape, name, rec);
+      {
+	int sgn = H5Tget_sign(dtid);
+	if (sgn == H5T_SGN_2) {
+	  if (sz == 1) {
+	    readArr<Bool> (attrId, shape, name, rec);
+	  } else if (sz == sizeof(Short)) {
+	    readArr<Short> (attrId, shape, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(Int), AipsError);
+	    readArr<Int> (attrId, shape, name, rec);
+	  }
 	} else {
-	  AlwaysAssert (sz==sizeof(Int), AipsError);
-	  readArr<Int> (attrId, shape, name, rec);
-	}
-      } else {
-	if (sz == 1) {
-	  readArr<uChar> (attrId, shape, name, rec);
-	} else {
-	  AlwaysAssert (sz==sizeof(uInt), AipsError);
-	  readArr<uInt> (attrId, shape, name, rec);
+	  if (sz == 1) {
+	    readArr<uChar> (attrId, shape, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(uInt), AipsError);
+	    readArr<uInt> (attrId, shape, name, rec);
+	  }
 	}
       }
       break;
     case H5T_FLOAT:
-      if (sz == sizeof(Float)) {
-	readArr<Float> (attrId, shape, name, rec);
-      } else {
-	AlwaysAssert (sz==sizeof(Double), AipsError);
-	readArr<Double> (attrId, shape, name, rec);
+      {
+	if (sz == sizeof(Float)) {
+	  readArr<Float> (attrId, shape, name, rec);
+	} else {
+	  AlwaysAssert (sz==sizeof(Double), AipsError);
+	  readArr<Double> (attrId, shape, name, rec);
+	}
       }
       break;
     case H5T_COMPOUND:
-      AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
-      if (sz == sizeof(Complex)) {
-	readArr<Complex> (attrId, shape, name, rec);
-      } else {
-	AlwaysAssert (sz==sizeof(DComplex), AipsError);
-	readArr<DComplex> (attrId, shape, name, rec);
+      {
+	AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
+	if (sz == sizeof(Complex)) {
+	  readArr<Complex> (attrId, shape, name, rec);
+	} else {
+	  AlwaysAssert (sz==sizeof(DComplex), AipsError);
+	  readArr<DComplex> (attrId, shape, name, rec);
+	}
       }
       break;
     case H5T_STRING:
