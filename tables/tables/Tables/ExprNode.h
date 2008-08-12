@@ -100,6 +100,8 @@ class TableExprNode;
   // </group>
 
   // Logical operators to combine boolean TableExprNode's.
+  // A null TableExprNode object is ignored, so it is possible to
+  // build up a full expression gradually.
   // <group>
     TableExprNode operator&& (const TableExprNode& left,
 			      const TableExprNode& right);
@@ -1140,16 +1142,6 @@ inline TableExprNode operator< (const TableExprNode& left,
 inline TableExprNode TableExprNode::in (const TableExprNode& right) const
 {
     return newIN (right.node_p);
-}
-inline TableExprNode operator&& (const TableExprNode& left,
-				 const TableExprNode& right)
-{
-    return left.newAND (right.node_p);
-}
-inline TableExprNode operator|| (const TableExprNode& left,
-				 const TableExprNode& right)
-{
-    return left.newOR (right.node_p);
 }
 inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
 {

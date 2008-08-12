@@ -438,7 +438,8 @@ void b (Bool doExcp)
       if (selempty1.nrow() != 0) {
         cout << "selempty1 is not empty" << endl;
       }
-      Table selempty2 = selempty1 (selempty1.col("ab") < -10);
+      Table selempty2 = selempty1 (selempty1.col("ab") < -10
+				   ||  TableExprNode());
       if (selempty2.nrow() != 0) {
         cout << "selempty2 is not empty" << endl;
       }
@@ -512,7 +513,7 @@ void b (Bool doExcp)
     cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
-    Table exprtab = sortab(sortab.col("ab") >= 5);
+    Table exprtab = sortab(TableExprNode()  &&  sortab.col("ab") >= 5);
     if (exprtab.nrow() != 5) {
 	cout << "exprtab does not contain 5 rows" << endl;
     }

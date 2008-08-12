@@ -201,6 +201,22 @@ TableExprNode::~TableExprNode ()
     TableExprNodeRep::unlink (node_p);
 }
 
+TableExprNode operator&& (const TableExprNode& left,
+			  const TableExprNode& right)
+{
+    if (left.isNull()) return right;
+    if (right.isNull()) return left;
+    return left.newAND (right.node_p);
+}
+
+TableExprNode operator|| (const TableExprNode& left,
+			  const TableExprNode& right)
+{
+    if (left.isNull()) return right;
+    if (right.isNull()) return left;
+    return left.newOR (right.node_p);
+}
+
 TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
 {
     set.checkEqualDataTypes();
