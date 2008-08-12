@@ -653,6 +653,7 @@ Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
 // Do the row selection.
 BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
 {
+    // Check we don't deal with a null table.
     AlwaysAssert (!isNull(), AipsError);
     // If it is a null expression, return maxrows.
     if (node.isNull()) {
