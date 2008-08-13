@@ -41,6 +41,7 @@ class AipsIO;
 class TaQLNodeVisitor;
 class TaQLMultiNode;
 class TaQLConstNodeRep;
+class TaQLRegexNodeRep;
 class TaQLMultiNodeRep;
 class TaQLSelectNodeRep;
 
@@ -182,6 +183,29 @@ private:
 
 
 // <summary>
+// Envelope class for a node containing a constant regex value.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <synopsis>
+// This is a specialization of the envelope class
+// <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
+// a constant regex or pattern value.
+// </synopsis> 
+class TaQLRegexNode: public TaQLNode
+{
+public:
+  explicit TaQLRegexNode (TaQLRegexNodeRep* rep);
+  const String& getString() const;
+  Bool caseInsensitive() const;
+  Bool negate() const;
+private:
+  TaQLRegexNodeRep* itsNRep;
+};
+
+
+// <summary>
 // Envelope class for a node containing a select command.
 // </summary>
 // <use visibility=local>
@@ -190,7 +214,7 @@ private:
 // <synopsis>
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
-// a select command.
+// a list of nodes.
 // </synopsis> 
 class TaQLMultiNode: public TaQLNode
 {
@@ -218,7 +242,7 @@ private:
 // <synopsis>
 // This is a specialization of the envelope class
 // <linkto class=TaQLNode>TaQLNode</linkto> for a node containing
-// a list of nodes.
+// a select command.
 // </synopsis> 
 class TaQLSelectNode: public TaQLNode
 {

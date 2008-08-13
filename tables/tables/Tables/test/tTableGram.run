@@ -31,7 +31,7 @@ $1 ./tTableGram 'select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby 
 $1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3'
 
 $1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")'
-$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af)!~m/v[01279]/'
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af!~m/V[01279]/i'
 
 $1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/'
 $1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")'
@@ -44,7 +44,9 @@ $1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab%1.5==0'
 
 $1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
 
-$1 ./tTableGram 'select * from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+$1 ./tTableGram 'select *, !~ p/ar*/ from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+
+$1 ./tTableGram 'select arr1,~ f/t1\..*/,!~f/t1\.ar.*/ from tTableGram_tmp.tab t1 where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
 
 $1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc'
 

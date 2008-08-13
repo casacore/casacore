@@ -165,6 +165,60 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
   return 0;
 }
 
+TaQLRegexNodeRep::TaQLRegexNodeRep (const String& regex)
+  : TaQLNodeRep (TaQLNode_Regex),
+    itsCaseInsensitive (False),
+    itsNegate          (False)
+{
+  Int sz = regex.size();
+  if (sz > 0  &&  regex[sz-1] == 'i') {
+    itsCaseInsensitive = True;
+    --sz;
+  }
+  AlwaysAssert (sz >= 4  &&  regex[sz-1] != ' ', AipsError);
+  Int inx = 0;
+  if (regex[0] == '!') {
+    itsNegate = True;
+    ++inx;
+  }
+  AlwaysAssert (regex[inx] == '~', AipsError);
+  while (regex[++inx] == ' ') {}
+  AlwaysAssert (regex.size()-inx >= 3, AipsError);
+  itsValue = regex.substr(inx, sz-inx);
+  if (itsCaseInsensitive) {
+    itsValue.downcase();
+  }
+}
+TaQLRegexNodeRep::~TaQLRegexNodeRep()
+{}
+TaQLNodeResult TaQLRegexNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitRegexNode (*this);
+}
+void TaQLRegexNodeRep::show (std::ostream& os) const
+{
+  if (itsNegate) {
+    os << '!';
+  }
+  os << '~';
+  os << itsValue;
+  if (itsCaseInsensitive) {
+    os << 'i';
+  }
+}
+void TaQLRegexNodeRep::save (AipsIO& aio) const
+{
+  aio << itsValue << itsCaseInsensitive << itsNegate;
+}
+TaQLRegexNodeRep* TaQLRegexNodeRep::restore (AipsIO& aio)
+{
+  String value;
+  Bool caseInsensitive, negate;
+  aio >> value >> caseInsensitive >> negate;
+  return new TaQLRegexNodeRep (value, caseInsensitive, negate);
+}
+
+
 TaQLUnaryNodeRep::~TaQLUnaryNodeRep()
 {}
 TaQLNodeResult TaQLUnaryNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -210,6 +264,17 @@ TaQLUnaryNodeRep* TaQLUnaryNodeRep::restore (AipsIO& aio)
 
 TaQLBinaryNodeRep::~TaQLBinaryNodeRep()
 {}
+TaQLBinaryNodeRep* TaQLBinaryNodeRep::handleRegex (const TaQLNode& left,
+						   const TaQLRegexNode& right)
+{
+  Type oper;
+  if (right.negate()) {
+    oper = (right.caseInsensitive()  ?  B_NEREGEXCI : B_NEREGEX);
+  } else {
+    oper = (right.caseInsensitive()  ?  B_EQREGEXCI : B_EQREGEX);
+  }
+  return new TaQLBinaryNodeRep (oper, left, right); 
+}
 TaQLNodeResult TaQLBinaryNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
   return visitor.visitBinaryNode (*this);
@@ -219,6 +284,7 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
   os << '(';
   itsLeft.show (os);
   os << ')';
+  Bool paren = True;
   switch (itsType) {
   case B_PLUS:
     os << '+';
@@ -266,17 +332,25 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
     os << "<=";
     break;
   case B_IN:
+    paren = False;
     os << " IN ";
     break;
   case B_INDEX:
+    paren = False;
+    break;
+  case B_EQREGEX:
+  case B_EQREGEXCI:
+  case B_NEREGEX:
+  case B_NEREGEXCI:
+    paren = False;
     break;
   }
-  if (itsType == B_INDEX  ||  itsType == B_IN) {
-    itsRight.show (os);
-  } else {
+  if (paren) {
     os << '(';
     itsRight.show (os);
     os << ')';
+  } else {
+    itsRight.show (os);
   }
 }
 void TaQLBinaryNodeRep::save (AipsIO& aio) const
@@ -529,7 +603,9 @@ TaQLColNodeRep* TaQLColNodeRep::restore (AipsIO& aio)
 {
   String name, dtype;
   aio >> name >> dtype;
-  return new TaQLColNodeRep (TaQLNode::restoreNode(aio), name, dtype);
+  TaQLColNodeRep* node = new TaQLColNodeRep (TaQLNode::restoreNode(aio),
+					     name, dtype);
+  return node;
 }
 
 TaQLColumnsNodeRep::~TaQLColumnsNodeRep()

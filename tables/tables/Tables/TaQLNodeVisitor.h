@@ -77,6 +77,7 @@ public:
   // Define the functions to visit each node type.
   // <group>
   virtual TaQLNodeResult visitConstNode    (const TaQLConstNodeRep& node) = 0;
+  virtual TaQLNodeResult visitRegexNode    (const TaQLRegexNodeRep& node) = 0;
   virtual TaQLNodeResult visitUnaryNode    (const TaQLUnaryNodeRep& node) = 0;
   virtual TaQLNodeResult visitBinaryNode   (const TaQLBinaryNodeRep& node) = 0;
   virtual TaQLNodeResult visitMultiNode    (const TaQLMultiNodeRep& node) = 0;

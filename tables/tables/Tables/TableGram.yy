@@ -55,6 +55,7 @@ using namespace casa;
 %token NODUPL
 %token GIVING
 %token INTO
+%token EXCEPT
 %token SORTASC
 %token SORTDESC
 %token LIMIT
@@ -66,16 +67,13 @@ using namespace casa;
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
 %token <val> STRINGLITERAL
-%token <val> REGEX
-%token <val> PATTERN
+%token <valre> REGEX
 %token AS
 %token IN
 %token INCONE
 %token BETWEEN
 %token EXISTS
 %token LIKE
-%token EQREGEX
-%token NEREGEX
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -118,6 +116,7 @@ using namespace casa;
 %type <node> given
 %type <node> into
 %type <node> colexpr
+%type <node> wildcol
 %type <node> colspec
 %type <nodelist> columns
 %type <nodelist> acolumns
@@ -174,10 +173,12 @@ using namespace casa;
 */
 %union {
 TaQLConstNode* val;
+TaQLRegexNode* valre;
 TaQLNode* node;
 TaQLConstNode* nodename;
 TaQLMultiNode* nodelist;
 TaQLSelectNode* nodeselect;
+TaQLColNodeRep* nodecolrep;
 }
 
 %{
@@ -251,11 +252,6 @@ selrow:    selcol FROM tables whexpr groupby having order limitoff given {
 selcol:    columns {
                $$ = new TaQLNode(
                     new TaQLColumnsNodeRep (False, *$1));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | TIMES {          /* SELECT * FROM ... */
-               $$ = new TaQLNode(
-                    new TaQLColumnsNodeRep (False, 0));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | ALL acolumns {
@@ -562,12 +558,16 @@ columns:   {          /* no column names given (thus take all) */
 	   }
          ;
 
-/* If ALL is used in column list, the first column must be a name.
+/* If ALL is used in column list, the first column must be a name or *.
    Otherwise there is an ambiguity in e.g. ALL(COL)
-   It can be function ALL with argument COL
-   or it can be the SELECT qualifier ALL with orexpr (COL).
+   which can be function ALL with argument COL
+   or can be the SELECT qualifier ALL with orexpr (COL).
 */
-acolumns:  NAME {
+acolumns:  {          /* no column names given (thus take all) */
+               $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | NAME {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
                TaQLNode p (new TaQLKeyColNodeRep ($1->getString()));
@@ -585,6 +585,11 @@ acolumns:  NAME {
                TaQLNode p (new TaQLKeyColNodeRep ($1->getString()));
                $$->add (new TaQLColNodeRep (p, $3->getString(), $4->getString()));
 	   }
+         | wildcol {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+               $$->add (*$1);
+           }
          | acolumns COMMA colexpr {
 	       $$ = $1;
                $$->add (*$3);
@@ -604,6 +609,20 @@ colexpr:   orexpr {
          | orexpr AS NAME NAME {
 	       $$ = new TaQLNode(
 	            new TaQLColNodeRep (*$1, $3->getString(), $4->getString()));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+	 | wildcol {
+               $$= $1;
+           }
+         ;
+
+wildcol:   TIMES {          /* SELECT * FROM ... */
+               TaQLRegexNode p (new TaQLRegexNodeRep ("~p/*/"));
+               $$ = new TaQLNode (new TaQLColNodeRep (p, "", ""));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+	 | REGEX {
+               $$ = new TaQLNode (new TaQLColNodeRep (*$1, "", ""));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -810,36 +829,8 @@ relexpr:   arithexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | arithexpr EQREGEX REGEX {
-	       TaQLMultiNode re(False);
-               re.add (*$3);
-               TaQLNode ref (new TaQLFuncNodeRep("REGEX", re));
-	       $$ = new TaQLNode(
-	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_EQ, *$1, ref));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | arithexpr NEREGEX REGEX {
-   	       TaQLMultiNode re(False);
-               re.add (*$3);
-               TaQLNode ref (new TaQLFuncNodeRep("REGEX", re));
-	       $$ = new TaQLNode(
-	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, ref));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | arithexpr EQREGEX PATTERN {
-   	       TaQLMultiNode re(False);
-               re.add (*$3);
-               TaQLNode ref (new TaQLFuncNodeRep("PATTERN", re));
-	       $$ = new TaQLNode(
-	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_EQ, *$1, ref));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | arithexpr NEREGEX PATTERN {
-   	       TaQLMultiNode re(False);
-               re.add (*$3);
-               TaQLNode ref (new TaQLFuncNodeRep("PATTERN", re));
-	       $$ = new TaQLNode(
-	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, ref));
+         | arithexpr REGEX {
+	       $$ = new TaQLNode(TaQLBinaryNodeRep::handleRegex (*$1, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | arithexpr LIKE arithexpr {

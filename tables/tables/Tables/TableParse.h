@@ -380,9 +380,6 @@ public:
   // Show the expression tree.
   void show (ostream& os) const;
 
-  // Set the distinct flag for column projection.
-  void setDistinctCol();
-
   // Keep the selection expression.
   void handleSelect (const TableExprNode&);
 
@@ -456,8 +453,11 @@ public:
 				    const Vector<Int>& ignoreFuncs);
 
   // Add a column to the list of column names.
-  void handleColumn (const String& name, const TableExprNode& expr,
+  void handleColumn (Int type, const String& name, const TableExprNode& expr,
 		     const String& newName, const String& newDtype);
+
+  // Finish the addition of columns to the list of column names.
+  void handleColumnFinish (Bool distinct);
 
   // Handle the name and type given in a GIVING clause.
   void handleGiving (const String& name, Int type);
@@ -532,6 +532,9 @@ private:
   // If no shorthand is given, the first table is returned (if there).
   // If not found, a null Table object is returned.
   Table findTable (const String& shorthand) const;
+
+  // Handle the selection of a wildcarded column name.
+  void handleWildColumn (Int stringType, const String& name);
 
   // Add the description of a column to the table description.
   // ndim < 0 means a scalar column.
@@ -645,9 +648,6 @@ inline const Block<String>& TableParseSelect::getColumnNames() const
 
 inline const Table& TableParseSelect::getTable() const
   { return table_p; }
-
-inline void TableParseSelect::setDistinctCol()
-  { distinct_p = True; }
 
 inline void TableParseSelect::addUpdate (TableParseUpdate* upd)
   { update_p.push_back (upd); }

@@ -103,6 +103,7 @@ public:
   // Define the functions to visit each node type.
   // <group>
   virtual TaQLNodeResult visitConstNode    (const TaQLConstNodeRep& node);
+  virtual TaQLNodeResult visitRegexNode    (const TaQLRegexNodeRep& node);
   virtual TaQLNodeResult visitUnaryNode    (const TaQLUnaryNodeRep& node);
   virtual TaQLNodeResult visitBinaryNode   (const TaQLBinaryNodeRep& node);
   virtual TaQLNodeResult visitMultiNode    (const TaQLMultiNodeRep& node);
@@ -227,9 +228,9 @@ class TaQLNodeHRValue: public TaQLNodeResultRep
 {
 public:
   TaQLNodeHRValue()
-  : itsInt(-1), itsElem(0), itsSet(0), itsNames(0) {}
+    : itsInt(-1), itsElem(0), itsSet(0), itsNames(0) {}
   TaQLNodeHRValue (const TableExprNode& expr)
-  : itsInt(-1), itsExpr(expr), itsElem(0), itsSet(0), itsNames(0) {}
+    : itsInt(-1), itsExpr(expr), itsElem(0), itsSet(0), itsNames(0) {}
   virtual ~TaQLNodeHRValue();
 
   // Get the values.

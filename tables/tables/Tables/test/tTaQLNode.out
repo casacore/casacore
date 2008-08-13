@@ -17,10 +17,10 @@ select ab,ac,af from tTaQLNode_tmp.tab where lower(af) == regex("v[01279]")
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))=(regex('v[01279]'))
 
 select ab,ac,af from tTaQLNode_tmp.tab where lower(af)!~m/v[01279]/
-SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))<>(REGEX('.*(v[01279]).*'))
+SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))!~m/v[01279]/
 
 select ab,ac,af from tTaQLNode_tmp.tab where af ~ p/?{3,5,8}/
-SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)=(PATTERN('?{3,5,8}'))
+SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)~p/?{3,5,8}/
 
 select ab,ac,af from tTaQLNode_tmp.tab where af != pattern("?{3,5,8}")
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)<>(pattern('?{3,5,8}'))
@@ -44,7 +44,7 @@ select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (((arr1)[1,1,1])>=(10))&&(((arr2)[1,1,1])<(120))
 
 select * from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
-SELECT FROM tTaQLNode_tmp.tab WHERE (((arr1)[1,1,1])>=(10))&&(((arr2)[1,1,1])<(120))
+SELECT ~p/*/ FROM tTaQLNode_tmp.tab WHERE (((arr1)[1,1,1])>=(10))&&(((arr2)[1,1,1])<(120))
 
 select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE ((arr1)[1,1,(1)+((ab)%(1))])>=(192) ORDERBY ad DESC
@@ -174,6 +174,9 @@ SELECT ab FROM tTaQLNode_tmp.tab WHERE any(cones([ab,ab],array([(2)'rad',(2)'rad
 
 select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]
 SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[(2)'rad',(2)'rad',(1)'rad',(4)'rad',(4)'rad',(1)'rad'])
+
+select *, !~p/ab*/i, *, !~m%b%, !~ m%c%i, abc, ~p/AB*/ from tTaQLNode_tmp.tab
+SELECT ~p/*/,!~p/ab*/i,~p/*/,!~m%b%,!~m%c%i,abc,~p/AB*/ FROM tTaQLNode_tmp.tab
 
 calc from tTaQLNode_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])
 CALC FROM tTaQLNode_tmp.tab CALC findcone([ab,ab],array([(2)'rad',(2)'rad',(4)'rad',(4)'rad'],[2,2]),[(1)'rad',(2)'rad'])

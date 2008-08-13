@@ -108,6 +108,9 @@
 ./tTaQLNode 'select ab from tTaQLNode_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])'
 ./tTaQLNode 'select ab from tTaQLNode_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))'
 ./tTaQLNode 'select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]'
+
+./tTaQLNode 'select *, !~p/ab*/i, *, !~m%b%, !~ m%c%i, abc, ~p/AB*/ from tTaQLNode_tmp.tab'
+
 ./tTaQLNode 'calc from tTaQLNode_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
 ./tTaQLNode 'calc from tTaQLNode_tmp.tab  calc findcone([ab,ab],[select from tTaQLNode_tmp.tab giving [ab,ab]],[1rad,2rad])'
 echo ""

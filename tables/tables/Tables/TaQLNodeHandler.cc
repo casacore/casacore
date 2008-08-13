@@ -110,6 +110,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return new TaQLNodeHRValue (expr);
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitRegexNode (const TaQLRegexNodeRep& node)
+  {
+    // Remove delimiters.
+    String str = node.itsValue.substr(2, node.itsValue.size()-3);
+    if (node.itsValue[0] == 'p') {
+      str = Regex::fromPattern (str);
+    } else if (node.itsValue[0] == 'm') {
+      str = ".*(" + str + ").*";
+    }
+    return new TaQLNodeHRValue (TableExprNode(Regex(str)));
+  }
+
   TaQLNodeResult TaQLNodeHandler::visitUnaryNode (const TaQLUnaryNodeRep& node)
   {
     Bool notexists = True;
@@ -177,6 +189,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       return new TaQLNodeHRValue (left.in (right));
     case TaQLBinaryNodeRep::B_INDEX:
       break;
+    case TaQLBinaryNodeRep::B_EQREGEX:
+      return new TaQLNodeHRValue (left == right);
+    case TaQLBinaryNodeRep::B_EQREGEXCI:
+      return new TaQLNodeHRValue (downcase(left) == right);
+    case TaQLBinaryNodeRep::B_NEREGEX:
+      return new TaQLNodeHRValue (left != right);
+    case TaQLBinaryNodeRep::B_NEREGEXCI:
+      return new TaQLNodeHRValue (downcase(left) != right);
     }
     return TaQLNodeResult();
   }
@@ -296,6 +316,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       // A single column name.
       TaQLKeyColNodeRep* keyNode = (TaQLKeyColNodeRep*)(node.itsExpr.getRep());
       hrval->setString (keyNode->itsName);
+    } else if (node.itsExpr.nodeType() == TaQLNode_Regex) {
+      // A wildcarded column name has an int value >= 0.
+      TaQLRegexNodeRep* regexNode = (TaQLRegexNodeRep*)(node.itsExpr.getRep());
+      Int val = 0;
+      if (regexNode->itsCaseInsensitive) val = val|1;
+      if (regexNode->itsNegate)          val = val|2;
+      hrval->setInt (val);
+      hrval->setString (regexNode->itsValue);
     } else {
       // An expression.
       TaQLNodeResult result = visitNode(node.itsExpr);
@@ -314,13 +342,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       for (uInt i=0; i<nodes.size(); ++i) {
 	TaQLNodeResult result = visitNode (nodes[i]);
 	const TaQLNodeHRValue& res = getHR(result);
-	topStack()->handleColumn (res.getString(), res.getExpr(),
+	topStack()->handleColumn (res.getInt(), res.getString(), res.getExpr(),
 				  res.getAlias(), res.getDtype());
       }
     }
-    if (node.itsDistinct) {
-      topStack()->setDistinctCol();
-    }
+    topStack()->handleColumnFinish (node.itsDistinct);
     return TaQLNodeResult();
   }
 
@@ -770,7 +796,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       // Handle each column name.
       AlwaysAssert (nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
       TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
-      topStack()->handleColumn (colNode->itsName, TableExprNode(), "", "");
+      topStack()->handleColumn (-1, colNode->itsName, TableExprNode(), "", "");
     }
   }
 

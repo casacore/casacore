@@ -54,7 +54,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <synopsis> 
 // This class is a TaQLNodeRep holding a constant expression or a table name.
 // The types supported are Bool, Int, Double, DComplex, String, and MVTime.
-// Note that a keyword and column name is represented by TaQLKeyColNodeRep.
+// Note that a keyword or column name is represented by TaQLKeyColNodeRep.
 // </synopsis> 
 
 class TaQLConstNodeRep: public TaQLNodeRep
@@ -112,6 +112,42 @@ public:
   String   itsSValue;
   MVTime   itsTValue;
   String   itsUnit;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a constant regex value.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding a constant regex/pattern value.
+// Part of the regex are the delimiters (like p//).
+// It also holds if the regex is case-insensitive and if a match or no match
+// operator is given.
+// </synopsis> 
+
+class TaQLRegexNodeRep: public TaQLNodeRep
+{
+public:
+  explicit TaQLRegexNodeRep (const String& value);
+  TaQLRegexNodeRep (const String& value, Bool caseInsensitive, Bool negate)
+    : TaQLNodeRep (TaQLNode_Regex),
+      itsValue(value), itsCaseInsensitive(caseInsensitive), itsNegate(negate) {}
+  virtual ~TaQLRegexNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLRegexNodeRep* restore (AipsIO& aio);
+
+  String itsValue;
+  Bool   itsCaseInsensitive;
+  Bool   itsNegate;             //# True means !~
 };
 
 
@@ -190,7 +226,11 @@ public:
 	     B_AND   =13,
 	     B_IN    =14,
 	     B_INDEX =15,
-	     B_DIVIDETRUNC=16};
+	     B_DIVIDETRUNC=16,
+	     B_EQREGEX    =17,
+	     B_EQREGEXCI  =18,
+	     B_NEREGEX    =19,
+	     B_NEREGEXCI  =20};
   TaQLBinaryNodeRep (Type type, const TaQLNode& left, const TaQLNode& right)
     : TaQLNodeRep (TaQLNode_Binary),
       itsType(type), itsLeft(left), itsRight(right) {}
@@ -199,6 +239,10 @@ public:
   virtual void show (std::ostream& os) const;
   virtual void save (AipsIO& aio) const;
   static TaQLBinaryNodeRep* restore (AipsIO& aio);
+  // Handle a comparison wih a regex. The operator (~ or !~) is extracted
+  // from the regex.
+  static TaQLBinaryNodeRep* handleRegex (const TaQLNode& left,
+					 const TaQLRegexNode& regex);
 
   Type     itsType;
   TaQLNode itsLeft;
@@ -393,7 +437,7 @@ public:
 
 
 // <summary>
-// Raw TaQL parse tree node defining a keyword or column.
+// Raw TaQL parse tree node defining a keyword or column name.
 // </summary>
 // <use visibility=local>
 // <reviewed reviewer="" date="" tests="tTaQLNode">
@@ -421,6 +465,7 @@ public:
 
   String itsName;
 };
+
 
 // <summary>
 // Raw TaQL parse tree node defining a table.
@@ -468,8 +513,9 @@ public:
 // <synopsis> 
 // This class is a TaQLNodeRep holding a column expression in the
 // column list of the select clause.
-// Currently only column names are supported, thus no real expressions.
-// A new column name can be defined for the column (expression).
+// A new column name and data type can be defined for the column (expression).
+// The expression can be a wildcarded column name (a regex) preceeded by
+// ~ or !~ (meaning include or exclude).
 // </synopsis> 
 
 class TaQLColNodeRep: public TaQLNodeRep

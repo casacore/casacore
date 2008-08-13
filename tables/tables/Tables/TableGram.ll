@@ -39,7 +39,6 @@
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
-%s REGEXstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -142,6 +141,8 @@ PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
 PATT3     p#[^#]+#
 PATT      {PATT1}|{PATT2}|{PATT3}
+OPERREX   "!"?"~"
+PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 
 %%
  /* The command to be analyzed is:
@@ -173,7 +174,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 {EXCEPT}  {
             tableGramPosition() += yyleng;
-            throw (TableInvExpr ("EXCEPT/MINUS is not supported yet"));
+	    return EXCEPT;
 	  }
 {STYLE}   {
             tableGramPosition() += yyleng;
@@ -435,40 +436,13 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 
  /* regular expression and pattern handling */
-<EXPRstate>"~" {
+<EXPRstate>{PATTREX} {
             tableGramPosition() += yyleng;
-            BEGIN(REGEXstate);
-            return EQREGEX;
-          }
-<EXPRstate>"!~" {
-            tableGramPosition() += yyleng;
-            BEGIN(REGEXstate);
-            return NEREGEX;
-          }
-<REGEXstate>{REGEX} {
-            tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep
-                  (".*(" + String(TableGramtext+2,yyleng-3) + ").*"));
-            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+            lvalp->valre = new TaQLRegexNode(
+                new TaQLRegexNodeRep (String(TableGramtext,yyleng)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->valre);
             BEGIN(EXPRstate);
 	    return REGEX;
-	  }
-<REGEXstate>{FREGEX} {
-            tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep (String(TableGramtext+2,yyleng-3)));
-            TaQLNode::theirNodesCreated.push_back (lvalp->val);
-            BEGIN(EXPRstate);
-	    return REGEX;
-	  }
-<REGEXstate>{PATT} {
-            tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep (String(TableGramtext+2,yyleng-3)));
-            TaQLNode::theirNodesCreated.push_back (lvalp->val);
-            BEGIN(EXPRstate);
-	    return PATTERN;
 	  }
 
  /* In the FROM clause a shorthand (for a table) can be given.

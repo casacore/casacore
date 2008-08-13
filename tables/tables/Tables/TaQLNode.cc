@@ -158,6 +158,8 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLRecFldNodeRep::restore (aio);
   case TaQLNode_Unit:
     return TaQLUnitNodeRep::restore (aio);
+  case TaQLNode_Regex:
+    return TaQLRegexNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }
@@ -191,6 +193,27 @@ void TaQLConstNode::setIsTableName()
 const String& TaQLConstNode::getString() const
 {
   return itsNRep->getString();
+}
+
+
+TaQLRegexNode::TaQLRegexNode (TaQLRegexNodeRep* rep)
+  : TaQLNode(rep),
+    itsNRep(rep)
+{}
+
+const String& TaQLRegexNode::getString() const
+{
+  return itsNRep->itsValue;
+}
+
+Bool TaQLRegexNode::caseInsensitive() const
+{
+  return itsNRep->itsCaseInsensitive;
+}
+
+Bool TaQLRegexNode::negate() const
+{
+  return itsNRep->itsNegate;
 }
 
 
