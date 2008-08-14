@@ -1037,8 +1037,11 @@ void TableProxy::flush (Bool recursive)
 
 void TableProxy::close()
 {
-  flush(True);
-  table_p = Table();
+  if (! table_p.isNull()) {
+    flush(True);
+    unlock();
+    table_p = Table();
+  }
 }
 
 void TableProxy::reopenRW()
