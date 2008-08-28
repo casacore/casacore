@@ -775,10 +775,18 @@ void ImageRegrid<T>::regridTwoAxisCoordinate (LogIO& os, MaskedLattice<T>& outLa
 // Hence we pick one nice shape and use it on both iterators, although
 // it may be suboptimal for one of the lattices.
 
-   IPosition niceShape = outLattice.niceCursorShape();
+   //IPosition niceShape = outLattice.niceCursorShape();
+   // Temporary fix for AIT/SIN regriding for full sky images
+   // Hold a plane in memory
+   IPosition niceShape=outLattice.shape();
+   niceShape=1;
+   niceShape(xOutAxis)=outLattice.shape()(xOutAxis);
+   niceShape(yOutAxis)=outLattice.shape()(yOutAxis);
+   
    LatticeStepper outStepper(outShape, niceShape, LatticeStepper::RESIZE);
    LatticeIterator<T> outIter(outLattice, outStepper);
-//
+
+   //
    if (itsShowLevel>0) {
       cerr << "xOutAxis, yOutAxis = " << xOutAxis << ", " << yOutAxis << endl;
       cerr << "xInCorrAxis, yInCoorrAxis = " << xInCorrAxis << ", " << 
