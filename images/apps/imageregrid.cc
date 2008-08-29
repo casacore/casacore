@@ -159,7 +159,7 @@ int main(int argc, const char* argv[]) {
     shapeOut[pAx(1)] =  outshape[1];
     //IPosition shapeOut(2,outshape[0],outshape[1]);
     itsTmp = new PagedImage<Float>(shapeOut,csys, out);
-    cout << "Regridding image..." 
+    cout << "Regridding image..." << endl; 
     itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, False, 
                  itsDecimate, False);
     delete itsTmp;
