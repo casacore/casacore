@@ -54,6 +54,7 @@ int main(int argc, const char* argv[]) {
       exit(1);
     }
     String out = inputs.getString("out");
+
     if ( out.empty() ) {
       out = "sliced_"+in;
     }
@@ -94,13 +95,13 @@ int main(int argc, const char* argv[]) {
     
     if (outisfits) {
       String errMsg;
-      Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out+".fits",
+      Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out,
                                                 128, False, False);
     } else {
       PagedImage<Float> pim(subim.shape(), 
                             subim.coordinates(), out);
-      pim.copyData(*pImage);
-      ImageUtilities::copyMiscellaneous(pim, *pImage);
+      pim.copyData(subim);
+      ImageUtilities::copyMiscellaneous(pim, subim);
 
     }
   } catch (const AipsError &x) {
