@@ -37,8 +37,6 @@
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageUtilities.h>
 
-//#include <casa/Logging/LogIO.h>
-
 using namespace casa;
 
 int main(int argc, const char* argv[]) {
@@ -96,10 +94,12 @@ int main(int argc, const char* argv[]) {
     
     if (outisfits) {
       String errMsg;
-      Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out+".fits");
+      Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out+".fits",
+                                                128, False, False);
     } else {
       PagedImage<Float> pim(subim.shape(), 
                             subim.coordinates(), out);
+      pim.copyData(*pImage);
       ImageUtilities::copyMiscellaneous(pim, *pImage);
 
     }
