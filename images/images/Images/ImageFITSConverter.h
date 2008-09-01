@@ -30,7 +30,9 @@
 #ifndef IMAGES_IMAGEFITSCONVERTER_H
 #define IMAGES_IMAGEFITSCONVERTER_H
 
+#ifndef WCSLIB_GETWCSTAB
 #define WCSLIB_GETWCSTAB
+#endif
 
 #include <casa/aips.h>
 
