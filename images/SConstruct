@@ -30,6 +30,7 @@ opts.Add(("cfitsioincdir", "The cfitsio header location", None))
 opts.Add(("wcsroot", 
 	  "The root directory where wcs is installed", None))
 opts.Add(("wcslibdir", "The wcs library location", None))
+opts.Add(("wcsincdir", "The wcs header file location", None))
 opts.Add(BoolOption("enable_hdf5", "Turn on hdf5 support", False))
 opts.Add(("hdf5root", 
 	  "The root directory where hdf5 is installed", None))

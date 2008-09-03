@@ -29,7 +29,7 @@ opts.Add(("cfitsiolibdir", "The cfitsio library location", None))
 opts.Add(("wcsroot", 
           "The root directory where wcs is installed", None))
 opts.Add(("wcslibdir", "The wcs library location", None))
-
+opts.Add(("wcsincdir", "The wcs header file location", None))
 
 env = Environment(
 		  ENV = { 'PATH' : os.environ[ 'PATH' ],
@@ -88,7 +88,8 @@ if not env.GetOption('clean'):
 	Exit(1)
     conf.env.PrependUnique(LIBS=['cfitsio'])
     conf.env.AddCustomPackage('wcs')
-    if not conf.CheckLib('wcs', autoadd=0):
+    if not conf.CheckLibWithHeader('wcs', 'wcslib/wcs.h', language='c',
+				   autoadd=0):
 	Exit(1)
     conf.env.PrependUnique(LIBS=['wcs'])
     env = conf.Finish()
