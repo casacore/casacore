@@ -17,7 +17,7 @@ SHAREDIR = "sharedir"
 
 def AddOptions( opts ):
         """ Adds the installer options to the opts.  """
-        opts.Add( PREFIX, "Directory of architecture independant files.", "/usr" )
+        opts.Add( PREFIX, "Directory of architecture independant files.", "/usr/local" )
         opts.Add( EPREFIX, "Directory of architecture dependant files.", "${%s}" % PREFIX )
         opts.Add( BINDIR, "Directory of executables.", "${%s}/bin" % EPREFIX )
         opts.Add( LIBDIR, "Directory of libraries.", "${%s}/lib" % EPREFIX )
@@ -33,7 +33,7 @@ def generate(env):
 	        @param configuration A dictionary containing the configuration.
 	        @param env The installation environment.
 	        """
-	        self._prefix = env.get( PREFIX, "/usr" )
+	        self._prefix = env.get( PREFIX, "/usr/local" )
 	        self._eprefix = env.get( EPREFIX, self._prefix )
 	        self._bindir = env.get( BINDIR, os.path.join( self._eprefix, "bin" ) )
 	        self._libdir = env.get( LIBDIR, os.path.join( self._eprefix, "lib" ) )
