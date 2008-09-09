@@ -81,9 +81,7 @@ class String;
 class RODataManAccessor
 {
 protected:
-    // Construct the object for the data manager in the table.
-    // An exception is thrown if the data manager type does not
-    // match the type of this IncrementalDataManAccessor object.
+    // Construct the object.
     RODataManAccessor();
 
     ~RODataManAccessor();
