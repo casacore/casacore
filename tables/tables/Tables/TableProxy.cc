@@ -1192,11 +1192,9 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
   while (nrdone < gdesc.nfields()) {
     String name = gdesc.name(nrdone);
     const Record& cold (gdesc.asRecord(nrdone));
-    if (name == "_define_hypercolumn_") {
-      if (! makeHC (cold, tabdesc, message)) {
-	return False;
-      }
-    } else if (name != "_define_dminfo_") {
+    // _define_hypercolumn must be done at the end.
+    // _define_dminfo_ is obsolete and ignored.
+    if (name != "_define_hypercolumn_"  &&  name != "_define_dminfo_") {
       if (! cold.isDefined("valueType")) {
 	message = "No value type for column " + name;
 	return False;
@@ -1283,6 +1281,11 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
       }
     }
     nrdone++;
+  }
+  if (gdesc.isDefined ("_define_hypercolumn_")) {
+    if (! makeHC (gdesc.asRecord("_define_hypercolumn_"), tabdesc, message)) {
+      return False;
+    }
   }
   return True;
 }
