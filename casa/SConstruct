@@ -9,9 +9,9 @@ PACKAGE="casa"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(BoolOption("enable_hdf5", "Turn on hdf5 support", False))
 opts.Add(("hdf5root", 
 	  "The root directory where hdf5 is installed", None))
+opts.Add(("hdf5incdir", "The hdf5 header location", None))
 opts.Add(("hdf5libdir", "The hdf5 library location", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
@@ -49,14 +49,14 @@ env["ENV"]["AIPSPATH"] = env["prefix"]
 
 # Auto configure
 if not env.GetOption('clean'):
-    conf = Configure(env)
-    if conf.env["enable_hdf5"]:
-        conf.env.AddCustomPackage('hdf5')
-        if conf.CheckLib('hdf5', autoadd=0):
-            conf.env.PrependUnique(LIBS=['hdf5'])  
-            conf.env.PrependUnique(CPPFLAGS=['-DHAVE_HDF5'])
-        else:
-            Exit(1)
+    conf = Configure(env, config_h="casa/HDF5Config.h")
+    conf.env.AddCustomPackage('hdf5')
+    if conf.CheckLib('hdf5', autoadd=0):
+        conf.env.PrependUnique(LIBS=['hdf5'])
+        # remove me when casa/HDF5/HDF5* have been updated
+        conf.env.PrependUnique(CPPFLAGS=['-DHAVE_HDF5'])
+    else:
+        print "Building without HDF5 support"
     env = conf.Finish()
 else:
     Execute(Delete("options.cfg"))
