@@ -80,7 +80,7 @@ LCRegion* LCRegion::fromRecord (const TableRecord& rec,
         regPtr = LCExtension::fromRecord (rec, tableName);
     } else if (name == LCStretch::className()) {
         regPtr = LCStretch::fromRecord (rec, tableName);
-#ifdef HAVE_HDF5
+#ifdef HAVE_LIBHDF5
     } else if (name == LCHDF5Mask::className()) {
       	regPtr = LCHDF5Mask::fromRecord (rec, tableName);
 #endif

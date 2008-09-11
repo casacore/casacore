@@ -25,13 +25,6 @@
 //#
 //# $Id$
 
-#ifndef HAVE_HDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
 #include <lattices/Lattices/HDF5Lattice.h>
 #include <lattices/Lattices/LatticeStepper.h>
 #include <lattices/Lattices/LatticeIterator.h>
@@ -53,7 +46,15 @@ int main()
 #include <casa/namespace.h>
 
 
-int main() {
+#ifndef HAVE_LIBHDF5
+int main()
+{
+  return 3;     // skipped
+}
+#else
+
+int main()
+{
   try {
     {
       HDF5Lattice<Float> pa(IPosition(2,12), "tHDF5Lattice_tmp.dat");

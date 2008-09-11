@@ -28,12 +28,11 @@
 #ifndef LATTICES_LCHDF5MASK_H
 #define LATTICES_LCHDF5MASK_H
 
-#ifdef HAVE_HDF5
-
 //# Includes
 #include <lattices/Lattices/LCBox.h>
 #include <lattices/Lattices/HDF5Lattice.h>
 
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

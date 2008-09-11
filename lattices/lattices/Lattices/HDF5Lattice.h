@@ -28,8 +28,6 @@
 #ifndef LATTICES_HDF5LATTICE_H
 #define LATTICES_HDF5LATTICE_H
 
-#ifdef HAVE_HDF5
-
 //# Includes
 #include <lattices/Lattices/Lattice.h>
 #include <lattices/Lattices/TiledShape.h>
@@ -37,6 +35,8 @@
 #include <casa/HDF5/HDF5Group.h>
 #include <casa/HDF5/HDF5DataSet.h>
 #include <casa/BasicSL/String.h>
+
+#ifdef HAVE_LIBHDF5
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

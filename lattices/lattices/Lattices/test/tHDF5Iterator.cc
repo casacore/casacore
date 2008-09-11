@@ -25,14 +25,6 @@
 //#
 //# $Id$
 
-#ifndef HAVE_HDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
-
 #include <casa/aips.h>
 #include <lattices/Lattices/HDF5Lattice.h>
 #include <lattices/Lattices/ArrayLattice.h>
@@ -51,9 +43,17 @@ int main()
 #include <casa/Utilities/Assert.h>
 #include <casa/Inputs/Input.h>
 #include <casa/iostream.h>
-
-
 #include <casa/namespace.h>
+
+
+#ifndef HAVE_LIBHDF5
+int main()
+{
+  return 3;     // skipped
+}
+#else
+
+
 void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Vector cursor" << endl;

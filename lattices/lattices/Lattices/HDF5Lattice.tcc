@@ -25,8 +25,6 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
-
 #include <lattices/Lattices/HDF5Lattice.h>
 #include <lattices/Lattices/LatticeIterator.h>
 #include <lattices/Lattices/LatticeNavigator.h>
@@ -41,6 +39,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

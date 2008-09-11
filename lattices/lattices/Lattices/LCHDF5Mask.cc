@@ -25,14 +25,13 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
-
 #include <lattices/Lattices/LCHDF5Mask.h>
 #include <tables/Tables/TableRecord.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/OS/Path.h>
 #include <casa/Exceptions/Error.h>
 
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
