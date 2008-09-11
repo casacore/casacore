@@ -25,13 +25,6 @@
 //#
 //# $Id$
 
-#ifndef HAVE_HDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
 #include <images/Images/HDF5Image.h>
 #include <images/Images/ImageInfo.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
@@ -62,6 +55,14 @@ int main()
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
+
+
+#ifndef HAVE_LIBHDF5
+int main()
+{
+  return 3;     // skipped
+}
+#else
 
 
 // Remove the dirname from the file name in an error message.

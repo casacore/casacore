@@ -28,12 +28,12 @@
 #ifndef IMAGES_REGIONHANDLERHDF5_H
 #define IMAGES_REGIONHANDLERHDF5_H
 
-#ifdef HAVE_HDF5
-
 //# Includes
 #include <images/Images/RegionHandler.h>
 #include <casa/HDF5/HDF5File.h>
 #include <tables/Tables/TableRecord.h>
+
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

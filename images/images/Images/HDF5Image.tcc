@@ -25,7 +25,6 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
 
 #include <images/Images/HDF5Image.h>
 #include <images/Images/ImageRegion.h>
@@ -60,6 +59,8 @@
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+#ifdef HAVE_LIBHDF5
 
 template <class T> 
 HDF5Image<T>::HDF5Image (const TiledShape& shape, 
@@ -570,6 +571,79 @@ void HDF5Image<T>::flush()
   dynamic_cast<RegionHandlerHDF5*>(this->getRegionHandler())->save();
 }
 
-} //# NAMESPACE CASA - END
+
+#else
+
+template<class T> 
+HDF5Image<T>::HDF5Image (const TiledShape&,
+			 const CoordinateSystem&,
+			 const String&)
+{
+  throw AipsError ("Error: HDF5Image is not configured in");
+}
+  
+template<class T> 
+HDF5Image<T>::HDF5Image (const String&, MaskSpecifier)
+{
+  throw AipsError ("Error: HDF5Image is not configured in");
+}
+
+  
+template<class T> 
+HDF5Image<T>::HDF5Image (const HDF5Image<T>& other)
+  : ImageInterface<T>(other)
+{}
+
+template<class T> 
+HDF5Image<T>::~HDF5Image()
+{}
+  
+template<class T> 
+HDF5Image<T>& HDF5Image<T>::operator= (const HDF5Image<T>& other)
+{
+  ImageInterface<T>::operator= (other);
+  return *this;
+}
+  
+template<class T> 
+ImageInterface<T>* HDF5Image<T>::cloneII() const
+  { return 0; }
+
+template<class T>
+String HDF5Image<T>::imageType() const
+  { return "HDF5Image"; }
+
+template <class T> 
+String HDF5Image<T>::name (Bool) const 
+  { return String(); }
+
+template<class T> 
+void HDF5Image<T>::resize(const TiledShape&)
+{}
+
+template<class T> 
+Bool HDF5Image<T>::ok() const
+  { return True; }
+
+template<class T> 
+IPosition HDF5Image<T>::shape() const
+  { return IPosition(); }
+
+template<class T> 
+Bool HDF5Image<T>::doGetSlice (Array<T>& buffer, const Slicer& theSlice)
+  { return False; }
+  
+template<class T> 
+void HDF5Image<T>::doPutSlice (const Array<T>& sourceBuffer,
+			     const IPosition& where,
+			     const IPosition& stride)
+{}
+
+template<class T> 
+const LatticeRegion* HDF5Image<T>::getRegionPtr() const
+  { return 0; }
+
 
 #endif
+
+} //# NAMESPACE CASA - END

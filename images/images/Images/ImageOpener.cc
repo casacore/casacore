@@ -30,6 +30,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableInfo.h>
 #include <images/Images/PagedImage.h>
+#include <images/Images/HDF5Image.h>
 #include <casa/HDF5/HDF5File.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/OS/File.h>
@@ -136,6 +137,31 @@ LatticeBase* ImageOpener::openPagedImage (const String& fileName,
   }
 }
 
+LatticeBase* ImageOpener::openHDF5Image (const String& fileName,
+					 const MaskSpecifier& spec)
+{
+  if (! HDF5File::isHDF5(fileName)) {
+    return 0;
+  }
+  // See if it is an image or just an array.
+  if (! isHDF5Image(fileName)) {
+    return 0;
+  }
+  DataType dtype = hdf5imagePixelType(fileName);
+  switch (dtype) {
+  case TpFloat:
+    return new HDF5Image<Float> (fileName, spec);
+///	case TpDouble:
+///	    return new HDF5Image<Double> (table, spec);
+  case TpComplex:
+    return new HDF5Image<Complex> (fileName, spec);
+///	case TpDComplex:
+///	    return new HDF5Image<DComplex> (table, spec);
+  default:
+    return 0;
+  }
+}
+
 LatticeBase* ImageOpener::openImage (const String& fileName,
 				     const MaskSpecifier& spec)
 {
@@ -143,9 +169,11 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
      return 0;
    }
    ImageOpener::ImageTypes type = ImageOpener::imageType(fileName);
-   // Do not require the registration of a PagedImage openFunction.
+   // Do not require the registration of a PagedImage or HDF5Image openFunction.
    if (type == AIPSPP) {
      return openPagedImage (fileName, spec);
+   } else if (type == HDF5) {
+     return openHDF5Image (fileName, spec);
    }
    // Try to open a foreign image.
    return theirOpenFuncMap(type) (fileName, spec);

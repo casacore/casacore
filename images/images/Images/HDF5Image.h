@@ -28,8 +28,6 @@
 #ifndef IMAGES_HDF5IMAGE_H
 #define IMAGES_HDF5IMAGE_H
 
-#ifdef HAVE_HDF5
-
 //# Includes
 #include <images/Images/ImageInterface.h>
 #include <lattices/Lattices/HDF5Lattice.h>
@@ -146,6 +144,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Get the image type (returns name of derived class).
     virtual String imageType() const;
 
+    // Return the current HDF5 file name. By default this includes the full path. 
+    // The path preceding the file name can be stripped off on request.
+    virtual String name (Bool stripPath=False) const;
+
+    // Function which changes the shape of the ImageExpr.
+    // Throws an exception as an HDF5Image cannot be resized.
+    virtual void resize(const TiledShape& newShape);
+
+    // Check for symmetry in data members.
+    virtual Bool ok() const;
+
+    // Return the shape of the image.
+    virtual IPosition shape() const;
+
+    // Function which extracts an array from the map.
+    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+  
+    // Function to replace the values in the map with soureBuffer.
+    virtual void doPutSlice (const Array<T>& sourceBuffer,
+			     const IPosition& where,
+			     const IPosition& stride);
+
+    // Get a pointer the default pixelmask object used with this image.
+    // It returns 0 if no default pixelmask is used.
+    virtual const LatticeRegion* getRegionPtr() const;
+
+#ifdef HAVE_LIBHDF5
     // An HDF5Image is always persistent.
     virtual Bool isPersistent() const;
 
@@ -165,10 +190,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual Lattice<Bool>& pixelMask();
     // </group>
 
-    // Get a pointer the default pixelmask object used with this image.
-    // It returns 0 if no default pixelmask is used.
-    virtual const LatticeRegion* getRegionPtr() const;
-
     // Set the default pixelmask to the mask with the given name
     // (which has to exist in the "masks" group).
     // If the image file is writable, the setting is persistent by writing
@@ -180,25 +201,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Use the mask as specified.
     // If a mask was already in use, it is replaced by the new one.
     virtual void useMask (MaskSpecifier = MaskSpecifier());
-
-    // Return the current HDF5 file name. By default this includes the full path. 
-    // The path preceding the file name can be stripped off on request.
-    virtual String name (Bool stripPath=False) const;
-
-    // Return the shape of the image.
-    virtual IPosition shape() const;
-
-    // Function which changes the shape of the ImageExpr.
-    // Throws an exception as an HDF5Image cannot be resized.
-    virtual void resize(const TiledShape& newShape);
-
-    // Function which extracts an array from the map.
-    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
-  
-    // Function to replace the values in the map with soureBuffer.
-    virtual void doPutSlice (const Array<T>& sourceBuffer,
-			     const IPosition& where,
-			     const IPosition& stride);
 
     // Replace every element, x, of the lattice with the result of f(x).
     // you must pass in the address of the function -- so the function
@@ -227,9 +229,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Flushes the new coordinate system to disk if the file is writable.
     virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
-
-    // Check for symmetry in data members.
-    virtual Bool ok() const;
 
     // These are the true implementations of the paran operator.
     // <note> Not for public use </note>
@@ -294,6 +293,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //# Data members.
     HDF5Lattice<T> map_p;
     LatticeRegion* regionPtr_p;
+#endif
 
     //# Make members of parent class known.
   public:
@@ -313,6 +313,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
+  // Tell if HDF5 images can be used.
+  inline Bool canUseHDF5Image()
+  {
+#ifdef HAVE_LIBHDF5
+    return True;
+#else
+    return False;
+#endif
+  }
+
   // Determine the pixel type in the HDF5Image contained in
   // <src>fileName</src>.  If the file doesn't appear to be HDF5 or cannot
   // be opened, TpOther is returned.
@@ -323,11 +333,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </group>
 
 
-
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <images/Images/HDF5Image.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
-#endif
 #endif

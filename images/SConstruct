@@ -31,9 +31,9 @@ opts.Add(("wcsroot",
 	  "The root directory where wcs is installed", None))
 opts.Add(("wcslibdir", "The wcs library location", None))
 opts.Add(("wcsincdir", "The wcs header file location", None))
-opts.Add(BoolOption("enable_hdf5", "Turn on hdf5 support", False))
 opts.Add(("hdf5root", 
 	  "The root directory where hdf5 is installed", None))
+opts.Add(("hdf5incdir", "The hdf5 header location", None))
 opts.Add(("hdf5libdir", "The hdf5 library location", None))
 
 env = Environment(
@@ -97,13 +97,13 @@ if not env.GetOption('clean'):
 	Exit(1)
     conf.env.PrependUnique(LIBS=['wcs'])
 
-    if conf.env["enable_hdf5"]:
-        conf.env.AddCustomPackage('hdf5')
-        if conf.CheckLib('hdf5', autoadd=0):
-            conf.env.PrependUnique(LIBS=['hdf5'])  
-            conf.env.PrependUnique(CPPFLAGS=['-DHAVE_HDF5'])
-        else:
-            Exit(1)
+    # HDF5 is not mandatory
+    conf.env.AddCustomPackage('hdf5')
+    if conf.CheckLib('hdf5', autoadd=0):
+        conf.env.PrependUnique(LIBS=['hdf5'])  
+    else:
+        print "Building without HDF5 support"
+    
     env = conf.Finish()
 
 # create the installer which handles installing the final build

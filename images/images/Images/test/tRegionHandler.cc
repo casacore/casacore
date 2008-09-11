@@ -160,7 +160,7 @@ int main()
     doIt (regtab);
     AlwaysAssertExit (! File("tRegionHandler_tmp.lat/reg2n").exists());
 
-#ifdef HAVE_HDF5
+#ifdef HAVE_LIBHDF5
     theHDF5File = new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New);
     RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
     doIt (reghdf5);

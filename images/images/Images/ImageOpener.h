@@ -111,6 +111,10 @@ public:
   static LatticeBase* openPagedImage (const String& fileName,
 				      const MaskSpecifier& = MaskSpecifier());
 
+  // Open an HDF5 paged image of any data type.
+  static LatticeBase* openHDF5Image (const String& fileName,
+				     const MaskSpecifier& = MaskSpecifier());
+
 private:
   // The default openImage function for an unknown image type.
   // It returns a null pointer.

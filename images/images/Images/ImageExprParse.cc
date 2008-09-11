@@ -131,7 +131,7 @@ Table& ImageExprParse::getRegionTable (void*, Bool)
   return theLastTable;
 }
 
-#ifdef HAVE_HDF5
+#ifdef HAVE_LIBHDF5
 const CountedPtr<HDF5File>& ImageExprParse::getRegionHDF5 (void*)
 {
   return theLastHDF5;
@@ -619,7 +619,7 @@ LatticeExprNode ImageExprParse::makeLRNode() const
       RegionHandlerTable regHand(getRegionTable, 0);
       regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
     }
-#ifdef HAVE_HDF5
+#ifdef HAVE_LIBHDF5
     if (! theLastHDF5.null()) {
       RegionHandlerHDF5 regHand(getRegionHDF5, 0);
       regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
@@ -663,112 +663,101 @@ String ImageExprParse::addDir (const String& fileName)
 Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 				     const String& name) const
 {
-    if (!Table::isReadable(name)) {
-        // If it's not an aips++ table, try other image types
-        // First try HDF5 (if compiled in).
-#ifdef HAVE_HDF5
-      if (HDF5File::isHDF5(name)) {
-	  // See if it is an image or just an array.
-	  if (isHDF5Image(name)) {
-	    DataType dtype = hdf5imagePixelType(name);
-	    switch (dtype) {
-	    case TpFloat:
-	      node = LatticeExprNode (HDF5Image<Float> (name));
-	      break;
-	      ///	case TpDouble:
-	      ///	    node = LatticeExprNode (HDF5Image<Double> (name));
-	      ///	    break;
-	    case TpComplex:
-	      node = LatticeExprNode (HDF5Image<Complex> (name));
-	      break;
-	      ///	case TpDComplex:
-	      ///	    node = LatticeExprNode (HDF5Image<DComplex> (name));
-	      ///	    break;
-	    default:
-	      throw (AipsError ("ImageExprParse: " + name + " is an HDF5Image "
-				"with an unsupported data type"));
-	    }
-	    return True;
-	  }
-	  return False;   // hdf5, but no image
-	}
-#endif
-	LatticeBase* lattPtr = ImageOpener::openImage (name);
-	if (lattPtr == 0) {
-	   return False;
-	}
-	ImageInterface<Float>* img = dynamic_cast<ImageInterface<Float>*>(lattPtr);
-	if (img == 0) {
-	   return False;
-	}
-	node = LatticeExprNode (*img);
-	delete img;
-	return True;
+  // Try to open the image in a standard way.
+  LatticeBase* pLatt = ImageOpener::openImage (name);
+  if (pLatt) {
+    String type;
+    switch (pLatt->dataType()) {
+    case TpFloat:
+    {
+      ImageInterface<Float>* img = dynamic_cast<ImageInterface<Float>*>(pLatt);
+      AlwaysAssert (img!=0, AipsError);
+      node = LatticeExprNode (*img);
+      type = img->imageType();
+      break;
     }
-
-// Continue and see if its a PagedArray (aips++ image)
-    Bool isImage = True;
-    Table table(name);
-    String type = table.tableInfo().type();
-    if (type == TableInfo::type(TableInfo::PAGEDARRAY)) {
-        isImage = False;
-    } else if (type != TableInfo::type(TableInfo::PAGEDIMAGE)) {
-        return False;
+    case TpDouble:
+    {
+      ImageInterface<Double>* img = dynamic_cast<ImageInterface<Double>*>(pLatt);
+      AlwaysAssert (img!=0, AipsError);
+      node = LatticeExprNode (*img);
+      type = img->imageType();
+      break;
     }
-    if (table.nrow() != 1) {
-	throw (AipsError ("ImageExprParse can only handle Lattices/"
-			  "Images with 1 row"));
+    case TpComplex:
+    {
+      ImageInterface<Complex>* img = dynamic_cast<ImageInterface<Complex>*>(pLatt);
+      AlwaysAssert (img!=0, AipsError);
+      node = LatticeExprNode (*img);
+      type = img->imageType();
+      break;
     }
-    DataType dtype = TpOther;
-    String colName;
-    ColumnDesc cdesc = table.tableDesc()[0];
-    if (cdesc.isArray()) {
-	dtype = cdesc.dataType();
-	colName = cdesc.name();
+    case TpDComplex:
+    {
+      ImageInterface<DComplex>* img = dynamic_cast<ImageInterface<DComplex>*>(pLatt);
+      AlwaysAssert (img!=0, AipsError);
+      node = LatticeExprNode (*img);
+      type = img->imageType();
+      break;
     }
-    if (isImage) {
-	switch (dtype) {
-	case TpFloat:
-	    node = LatticeExprNode (PagedImage<Float> (table));
-	    break;
-///	case TpDouble:
-///	    node = LatticeExprNode (PagedImage<Double> (table));
-///	    break;
-	case TpComplex:
-	    node = LatticeExprNode (PagedImage<Complex> (table));
-	    break;
-///	case TpDComplex:
-///	    node = LatticeExprNode (PagedImage<DComplex> (table));
-///	    break;
-	default:
-	    throw (AipsError ("ImageExprParse: " + name + " is a PagedImage "
-			      "with an unsupported data type"));
-	}
-    } else {
-	switch (dtype) {
-	case TpBool:
-	    node = LatticeExprNode (PagedArray<Bool> (table, colName, 0));
-	    break;
-	case TpFloat:
-	    node = LatticeExprNode (PagedArray<Float> (table, colName, 0));
-	    break;
-	case TpDouble:
-	    node = LatticeExprNode (PagedArray<Double> (table, colName, 0));
-	    break;
-	case TpComplex:
-	    node = LatticeExprNode (PagedArray<Complex> (table, colName, 0));
-	    break;
-	case TpDComplex:
-	    node = LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
-	    break;
-	default:
-	    throw (AipsError ("ImageExprParse: " + name + " is a PagedArray "
-			      "with an unsupported data type"));
-	}
+    default:
+      delete pLatt;
+      throw AipsError ("ImageExprParse: " + name + " is a PagedImage "
+		       "with an unsupported data type");
     }
-    // This is now the last table used (for finding unqualified regions).
-    theLastTable = table;
+    // Set the last table used (for finding unqualified regions).
+    if (type == "PagedImage") {
+      theLastTable = Table(name);
+    } else if (type == "HDF5Image") {
+      theLastHDF5  = new HDF5File(name);
+      theLastTable = Table();
+    }
+    delete pLatt;
     return True;
+  }
+  // Try if it is a PagedArray.
+  if (!Table::isReadable(name)) {
+    return False;
+  }
+  Table table(name);
+  String type = table.tableInfo().type();
+  if (type != TableInfo::type(TableInfo::PAGEDARRAY)) {
+    return False;
+  }
+  if (table.nrow() != 1) {
+    throw (AipsError ("ImageExprParse can only handle Lattices/"
+		      "Images with 1 row"));
+  }
+  DataType dtype = TpOther;
+  String colName;
+  ColumnDesc cdesc = table.tableDesc()[0];
+  if (cdesc.isArray()) {
+    dtype = cdesc.dataType();
+    colName = cdesc.name();
+  }
+  switch (dtype) {
+  case TpBool:
+    node = LatticeExprNode (PagedArray<Bool> (table, colName, 0));
+    break;
+  case TpFloat:
+    node = LatticeExprNode (PagedArray<Float> (table, colName, 0));
+    break;
+  case TpDouble:
+    node = LatticeExprNode (PagedArray<Double> (table, colName, 0));
+    break;
+  case TpComplex:
+    node = LatticeExprNode (PagedArray<Complex> (table, colName, 0));
+    break;
+  case TpDComplex:
+    node = LatticeExprNode (PagedArray<DComplex> (table, colName, 0));
+    break;
+  default:
+    throw (AipsError ("ImageExprParse: " + name + " is a PagedArray "
+		      "with an unsupported data type"));
+  }
+  // This is now the last table used (for finding unqualified regions).
+  theLastTable = table;
+  return True;
 }
 
 LatticeExprNode ImageExprParse::makeImageNode (const String& name,

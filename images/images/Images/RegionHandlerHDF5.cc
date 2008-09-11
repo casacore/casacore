@@ -25,8 +25,6 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
-
 #include <images/Images/RegionHandlerHDF5.h>
 #include <images/Images/ImageRegion.h>
 #include <lattices/Lattices/LCHDF5Mask.h>
@@ -36,6 +34,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
