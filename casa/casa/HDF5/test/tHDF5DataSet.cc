@@ -25,13 +25,6 @@
 //#
 //# $Id$
 
-#ifndef HAVE_HDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
 #include <casa/HDF5/HDF5DataSet.h>
 #include <casa/HDF5/HDF5File.h>
 #include <casa/Arrays/Array.h>
@@ -40,6 +33,13 @@ int main()
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
+
+#ifndef HAVE_LIBHDF5
+int main()
+{
+  return 3;     // skipped
+}
+#else
 
 using namespace casa;
 

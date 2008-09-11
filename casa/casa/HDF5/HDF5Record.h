@@ -28,7 +28,8 @@
 #ifndef CASA_HDF5RECORD_H
 #define CASA_HDF5RECORD_H
 
-#ifdef HAVE_HDF5
+#include <casa/HDF5Config.h>
+#ifdef HAVE_LIBHDF5
 
 //# Includes
 #include <casa/HDF5/HDF5Object.h>

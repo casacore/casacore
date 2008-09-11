@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
-
 #include <casa/HDF5/HDF5DataSet.h>
 #include <casa/HDF5/HDF5Error.h>
 #include <casa/Containers/Block.h>
 #include <casa/Containers/BlockIO.h>
 #include <casa/Utilities/Assert.h>
+
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

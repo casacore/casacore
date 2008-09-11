@@ -108,8 +108,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <note>
 // The compilation of these HDF5 classes is conditionally by means of ifdef-s
-// on HAVE_HDF5. See the casacore build instructions at casacore.googlecode.com
-// how to enable the compilation of the HDF5 code.
+// on HAVE_LIBHDF5 which is defined in HDF5Config.h. This file is generated
+// by the build system.
+// See the casacore build instructions at casacore.googlecode.com
+// for more information.
 // </note>
 // </synopsis>
 

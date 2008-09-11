@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#ifdef HAVE_HDF5
-
 //# Includes
 #include <casa/HDF5/HDF5File.h>
 #include <casa/HDF5/HDF5HidMeta.h>
 #include <casa/HDF5/HDF5Error.h>
 #include <casa/OS/RegularFile.h>
+
+#ifdef HAVE_LIBHDF5
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

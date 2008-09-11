@@ -29,6 +29,7 @@
 #define CASA_HDF5FILE_H
 
 //# Includes
+#include <casa/HDF5Config.h>
 #include <casa/HDF5/HDF5Object.h>
 #include <casa/BasicSL/String.h>
 #include <casa/IO/ByteIO.h>
@@ -67,7 +68,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class HDF5File : public HDF5Object
   {
   public:
-#ifndef HAVE_HDF5
+#ifndef HAVE_LIBHDF5
     explicit HDF5File (const String&)
       {}
     static Bool isHDF5 (const String&)

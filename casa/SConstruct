@@ -53,8 +53,6 @@ if not env.GetOption('clean'):
     conf.env.AddCustomPackage('hdf5')
     if conf.CheckLib('hdf5', autoadd=0):
         conf.env.PrependUnique(LIBS=['hdf5'])
-        # remove me when casa/HDF5/HDF5* have been updated
-        conf.env.PrependUnique(CPPFLAGS=['-DHAVE_HDF5'])
     else:
         print "Building without HDF5 support"
     env = conf.Finish()
