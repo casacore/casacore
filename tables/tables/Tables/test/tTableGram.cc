@@ -191,7 +191,7 @@ void showtab (const Table& tab, const Vector<String>& colnam)
   for (i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
       if (tableColumns[j]->columnDesc().isArray()) {
-	cout << " " << tableColumns[j]->shape (i);
+	cout << " shape=" << tableColumns[j]->shape (i);
       }else{
 	switch (tableColumns[j]->columnDesc().dataType()) {
 	case TpBool:
@@ -340,7 +340,8 @@ void seltab (const String& str)
   cout << "    has been executed" << endl;
   if (result.isTable()) {
     tabp = new Table(result.table());
-    cout << "    " << cmd << " of " << tabp->nrow() << " rows" << endl;
+    cout << "    " << cmd << " result of " << tabp->nrow()
+	 << " rows" << endl;
     // Show the selected column names.
     cout << vecstr.nelements() << " selected columns: ";
     for (i=0; i<vecstr.nelements(); i++) {

@@ -1,6 +1,6 @@
 select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
     has been executed
-    select of 5 rows
+    select result of 5 rows
 6 selected columns:  ab ac ad ae af ag
  9 10 11 12 V9 (11,0)
  6 7 8 9 V6 (8,0)
@@ -9,7 +9,7 @@ select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh wh
  3 4 5 6 V3 (5,0)
 select distinct ab+1,ac as ac2 from tTableGram_tmp.tab
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  Col_1 ac2
  1 1
  2 2
@@ -23,7 +23,7 @@ select distinct ab+1,ac as ac2 from tTableGram_tmp.tab
  10 10
 select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
     has been executed
-    select of 5 rows
+    select result of 5 rows
 6 selected columns:  ab ac ad ae af ag
  9 10 11 12 V9 (11,0)
  6 7 8 9 V6 (8,0)
@@ -32,7 +32,7 @@ select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
  3 4 5 6 V3 (5,0)
 select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
     has been executed
-    select of 5 rows
+    select result of 5 rows
 6 selected columns:  ab ac ad ae af ag
  3 4 5 6 V3 (5,0)
  4 5 6 7 V4 (6,0)
@@ -41,13 +41,13 @@ select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
  9 10 11 12 V9 (11,0)
 select ab from tTableGram_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  2
  6
 select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")
     has been executed
-    select of 5 rows
+    select result of 5 rows
 3 selected columns:  ab ac af
  0 1 V0
  1 2 V1
@@ -56,7 +56,7 @@ select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")
  9 10 V9
 select ab,ac,af from tTableGram_tmp.tab where af!~m/V[01279]/i
     has been executed
-    select of 5 rows
+    select result of 5 rows
 3 selected columns:  ab ac af
  3 4 V3
  4 5 V4
@@ -65,14 +65,14 @@ select ab,ac,af from tTableGram_tmp.tab where af!~m/V[01279]/i
  8 9 V8
 select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/
     has been executed
-    select of 3 rows
+    select result of 3 rows
 3 selected columns:  ab ac af
  3 4 V3
  5 6 V5
  8 9 V8
 select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")
     has been executed
-    select of 7 rows
+    select result of 7 rows
 3 selected columns:  ab ac af
  0 1 V0
  1 2 V1
@@ -83,17 +83,17 @@ select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")
  9 10 V9
 select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")
     has been executed
-    select of 1 rows
+    select result of 1 rows
 3 selected columns:  ab ac af
  3 4 V3
 select ab,ac,af from tTableGram_tmp.tab where af like "_3%"
     has been executed
-    select of 1 rows
+    select result of 1 rows
 3 selected columns:  ab ac af
  3 4 V3
 select ab,ac,af from tTableGram_tmp.tab where af not like "_3%"
     has been executed
-    select of 9 rows
+    select result of 9 rows
 3 selected columns:  ab ac af
  0 1 V0
  1 2 V1
@@ -106,7 +106,7 @@ select ab,ac,af from tTableGram_tmp.tab where af not like "_3%"
  9 10 V9
 select ab,ac from tTableGram_tmp.tab where ab%1.5==0
     has been executed
-    select of 4 rows
+    select result of 4 rows
 2 selected columns:  ab ac
  0 1
  3 4
@@ -114,7 +114,7 @@ select ab,ac from tTableGram_tmp.tab where ab%1.5==0
  9 10
 select ab,ac from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
     has been executed
-    select of 4 rows
+    select result of 4 rows
 2 selected columns:  ab ac
  1 2
  2 3
@@ -122,7 +122,7 @@ select ab,ac from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
  4 5
 select *, !~ p/ar*/ from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120
     has been executed
-    select of 4 rows
+    select result of 4 rows
 6 selected columns:  ab ad ag ac ae af
  1 3 (3,0) 2 4 V1
  2 4 (4,0) 3 5 V2
@@ -130,34 +130,34 @@ select *, !~ p/ar*/ from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]
  4 6 (6,0) 5 7 V4
 select arr1,~ f/t1\..*/,!~f/t1\.ar.*/ from tTableGram_tmp.tab t1 where arr1[1,1,1]>=10 && arr2[1,1,1]<120
     has been executed
-    select of 4 rows
+    select result of 4 rows
 7 selected columns:  arr1 ab ad ag ac ae af
- [2, 3, 4] 1 3 (3,0) 2 4 V1
- [2, 3, 4] 2 4 (4,0) 3 5 V2
- [2, 3, 4] 3 5 (5,0) 4 6 V3
- [2, 3, 4] 4 6 (6,0) 5 7 V4
+ shape=[2, 3, 4] 1 3 (3,0) 2 4 V1
+ shape=[2, 3, 4] 2 4 (4,0) 3 5 V2
+ shape=[2, 3, 4] 3 5 (5,0) 4 6 V3
+ shape=[2, 3, 4] 4 6 (6,0) 5 7 V4
 select ab,ac from tTableGram_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc
     has been executed
-    select of 2 rows
+    select result of 2 rows
 2 selected columns:  ab ac
  9 10
  8 9
 select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d0m)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d0m - ac/180*pi())
     has been executed
-    select of 3 rows
+    select result of 3 rows
 2 selected columns:  ab ac
  1 2
  2 3
  3 4
 select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
     has been executed
-    select of 2 rows
+    select result of 2 rows
 6 selected columns:  ab ac ad ae af ag
  8 9 10 11 V8 (10,0)
  9 10 11 12 V9 (11,0)
 select ab,ac,af from tTableGram_tmp.tab where ab>5 orderby af desc, ac
     has been executed
-    select of 4 rows
+    select result of 4 rows
 3 selected columns:  ab ac af
  9 10 V9
  8 9 V8
@@ -165,7 +165,7 @@ select ab,ac,af from tTableGram_tmp.tab where ab>5 orderby af desc, ac
  6 7 V6
 select ab,ac,af from tTableGram_tmp.tab orderby arr1[1,1,1]
     has been executed
-    select of 10 rows
+    select result of 10 rows
 3 selected columns:  ab ac af
  0 1 V0
  1 2 V1
@@ -179,7 +179,7 @@ select ab,ac,af from tTableGram_tmp.tab orderby arr1[1,1,1]
  9 10 V9
 select ab,ac from tTableGram_tmp.tab orderby round(2*sin(ab)),ac desc
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  ab ac
  5 6
  4 5
@@ -193,7 +193,7 @@ select ab,ac from tTableGram_tmp.tab orderby round(2*sin(ab)),ac desc
  1 2
 select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])
     has been executed
-    select of 5 rows
+    select result of 5 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -202,7 +202,7 @@ select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])
  4 5
 select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab)
     has been executed
-    select of 4 rows
+    select result of 4 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -210,11 +210,11 @@ select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableG
  3 4
 select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab LIMIT 11)
     has been executed
-    select of 0 rows
+    select result of 0 rows
 2 selected columns:  ab ac
 select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)
     has been executed
-    select of 4 rows
+    select result of 4 rows
 2 selected columns:  ab ac
  6 7
  7 8
@@ -222,14 +222,14 @@ select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.
  9 10
 select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4
     has been executed
-    select of 3 rows
+    select result of 3 rows
 2 selected columns:  ab ac
  2 3
  3 4
  4 5
 select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4
     has been executed
-    select of 7 rows
+    select result of 7 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -240,7 +240,7 @@ select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4
  9 10
 select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
     has been executed
-    select of 7 rows
+    select result of 7 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -251,13 +251,13 @@ select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
  9 10
 select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))
     has been executed
-    select of 2 rows
+    select result of 2 rows
 2 selected columns:  ab ac
  2 3
  3 4
 select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))
     has been executed
-    select of 8 rows
+    select result of 8 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -269,7 +269,7 @@ select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))
  9 10
 select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]
     has been executed
-    select of 4 rows
+    select result of 4 rows
 2 selected columns:  ab ac
  6 7
  7 8
@@ -277,39 +277,39 @@ select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab
  9 10
 select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:=ab]]
     has been executed
-    select of 3 rows
+    select result of 3 rows
 1 selected columns:  ab
  7
  8
  9
 select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:<ab]]
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  7
  8
 select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:=ab]]
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  8
  9
 select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:<ab]]
     has been executed
-    select of 0 rows
+    select result of 0 rows
 1 selected columns:  ab
 select ab,ac from tTableGram_tmp.tab where any(isnan(arr1)) || isnan(ab)
     has been executed
-    select of 0 rows
+    select result of 0 rows
 2 selected columns:  ab ac
 select ab,ac from tTableGram_tmp.tab where ab IN arr1
     has been executed
-    select of 1 rows
+    select result of 1 rows
 2 selected columns:  ab ac
  0 1
 select ab,ac from tTableGram_tmp.tab where any(arr1-array(100,shape(arr1)) > 0  &&  arr1<200)
     has been executed
-    select of 5 rows
+    select result of 5 rows
 2 selected columns:  ab ac
  4 5
  5 6
@@ -318,7 +318,7 @@ select ab,ac from tTableGram_tmp.tab where any(arr1-array(100,shape(arr1)) > 0  
  8 9
 select ab,ac from tTableGram_tmp.tab where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -332,7 +332,7 @@ select ab,ac from tTableGram_tmp.tab where count(shape(arr1))==3 && count(ab)==1
  9 10
 select ab,ac from tTableGram_tmp.tab where ab in ab
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -346,12 +346,12 @@ select ab,ac from tTableGram_tmp.tab where ab in ab
  9 10
 select ab,ac from tTableGram_tmp.tab where any(arr1 in ab)
     has been executed
-    select of 1 rows
+    select result of 1 rows
 2 selected columns:  ab ac
  0 1
 select ab,ac from tTableGram_tmp.tab where (ab=ab)=True
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -365,11 +365,11 @@ select ab,ac from tTableGram_tmp.tab where (ab=ab)=True
  9 10
 select ab,ac from tTableGram_tmp.tab where (ab=ab)=false
     has been executed
-    select of 0 rows
+    select result of 0 rows
 2 selected columns:  ab ac
 select ab,ac from tTableGram_tmp.tab where rownumber()==rowid()+1
     has been executed
-    select of 10 rows
+    select result of 10 rows
 2 selected columns:  ab ac
  0 1
  1 2
@@ -383,12 +383,12 @@ select ab,ac from tTableGram_tmp.tab where rownumber()==rowid()+1
  9 10
 select ab,ac from [select from tTableGram_tmp.tab where ab > 4] where ab < 6
     has been executed
-    select of 1 rows
+    select result of 1 rows
 2 selected columns:  ab ac
  5 6
 select ab,ac from [select from tTableGram_tmp.tab where ab > 4] TEMPTAB, tTableGram_tmp.tab where any([ab,ac] in [select ac from TEMPTAB])
     has been executed
-    select of 5 rows
+    select result of 5 rows
 2 selected columns:  ab ac
  5 6
  6 7
@@ -397,34 +397,34 @@ select ab,ac from [select from tTableGram_tmp.tab where ab > 4] TEMPTAB, tTableG
  9 10
 select ab,ac from tTableGram_tmp.tab where ac in [select from tTableGram_tmp.tab where ac in 4:6:2 giving [rowid()]]
     has been executed
-    select of 2 rows
+    select result of 2 rows
 2 selected columns:  ab ac
  2 3
  4 5
 select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+arr1[1,1,1]%2,3])) == 19
     has been executed
-    select of 1 rows
+    select result of 1 rows
 1 selected columns:  ab
  0
 select ab from tTableGram_tmp.tab where min(1+maxs(arr1-1,1,3)) == 19
     has been executed
-    select of 1 rows
+    select result of 1 rows
 1 selected columns:  ab
  0
 select ab from tTableGram_tmp.tab where sum(fractiles(arr1,0.5,[2:3])) == 21+shape(arr1)[1]*count(arr1)
     has been executed
-    select of 1 rows
+    select result of 1 rows
 1 selected columns:  ab
  1
 select ab from tTableGram_tmp.tab where sum(ntrues(arr1%5==0,[1])) < 5
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  4
  9
 select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))
     has been executed
-    select of 4 rows
+    select result of 4 rows
 1 selected columns:  ab
  0
  3
@@ -432,7 +432,7 @@ select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))
  8
 select ab from $1;tTableGram_tmp.tab
     has been executed
-    select of 10 rows
+    select result of 10 rows
 1 selected columns:  ab
  0
  1
@@ -446,7 +446,7 @@ select ab from $1;tTableGram_tmp.tab
  9
 select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]
     has been executed
-    select of 4 rows
+    select result of 4 rows
 1 selected columns:  ab
  1
  2
@@ -454,7 +454,7 @@ select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]
  9
 select ab from tTableGram_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)
     has been executed
-    select of 4 rows
+    select result of 4 rows
 1 selected columns:  ab
  1
  2
@@ -462,13 +462,13 @@ select ab from tTableGram_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)
  9
 select ab from tTableGram_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  4
  5
 select ab from tTableGram_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))
     has been executed
-    select of 6 rows
+    select result of 6 rows
 1 selected columns:  ab
  1
  2
@@ -478,7 +478,7 @@ select ab from tTableGram_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,
  9
 select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]
     has been executed
-    select of 6 rows
+    select result of 6 rows
 1 selected columns:  ab
  1
  2
@@ -529,18 +529,18 @@ calc from $1 calc ab+1;tTableGram_tmp.tab
 
 update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3
     has been executed
-    update of 7 rows
+    update result of 7 rows
 2 selected columns:  ab arr1
- 2012 [2, 3, 4]
- 2590 [2, 3, 4]
- 3168 [2, 3, 4]
- 3746 [2, 3, 4]
- 4324 [2, 3, 4]
- 4902 [2, 3, 4]
- 5480 [2, 3, 4]
+ 2012 shape=[2, 3, 4]
+ 2590 shape=[2, 3, 4]
+ 3168 shape=[2, 3, 4]
+ 3746 shape=[2, 3, 4]
+ 4324 shape=[2, 3, 4]
+ 4902 shape=[2, 3, 4]
+ 5480 shape=[2, 3, 4]
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 10 rows
+    select result of 10 rows
 1 selected columns:  ab
  0
  1
@@ -554,39 +554,39 @@ select ab from tTableGram_tmp.tab
  5480
 update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTableGram_tmp.tabc where ac>3 orderby ac limit 5
     has been executed
-    update of 5 rows
+    update result of 5 rows
 2 selected columns:  ab arr1
- 2060 [2, 3, 4]
- 2638 [2, 3, 4]
- 3216 [2, 3, 4]
- 3794 [2, 3, 4]
- 4372 [2, 3, 4]
+ 2060 shape=[2, 3, 4]
+ 2638 shape=[2, 3, 4]
+ 3216 shape=[2, 3, 4]
+ 3794 shape=[2, 3, 4]
+ 4372 shape=[2, 3, 4]
 update tTableGram_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offset 3
     has been executed
-    update of 1 rows
+    update result of 1 rows
 2 selected columns:  arr1 ab
- [2, 3, 4] 48
+ shape=[2, 3, 4] 48
 update tTableGram_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3
     has been executed
-    update of 1 rows
+    update result of 1 rows
 3 selected columns:  arr1 arr1 ab
- [2, 3, 4] [2, 3, 4] 50
+ shape=[2, 3, 4] shape=[2, 3, 4] 50
 update tTableGram_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3
     has been executed
-    update of 1 rows
+    update result of 1 rows
 2 selected columns:  arr1 ab
- [2, 3, 4] 73
+ shape=[2, 3, 4] 73
 delete from tTableGram_tmp.tab limit 3 offset 2
     has been executed
-    delete of 3 rows
+    delete result of 3 rows
 0 selected columns: 
 delete from tTableGram_tmp.tab orderby desc ab limit 1 offset 2
     has been executed
-    delete of 1 rows
+    delete result of 1 rows
 0 selected columns: 
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 6 rows
+    select result of 6 rows
 1 selected columns:  ab
  0
  1
@@ -596,29 +596,29 @@ select ab from tTableGram_tmp.tab
  5480
 delete from tTableGram_tmp.tab
     has been executed
-    delete of 0 rows
+    delete result of 0 rows
 0 selected columns: 
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 0 rows
+    select result of 0 rows
 1 selected columns:  ab
 insert into tTableGram_tmp.tab select from tTableGram_tmp.tabc
     has been executed
-    insert of 10 rows
+    insert result of 10 rows
 9 selected columns:  ab ad ag arr1 arr2 arr3 ac ae af
- 0 2 (2,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 1 3 V0
- 1 3 (3,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 2 4 V1
- 2 4 (4,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 3 5 V2
- 3 5 (5,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 4 6 V3
- 4 6 (6,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 5 7 V4
- 5 7 (7,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 6 8 V5
- 6 8 (8,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 7 9 V6
- 7 9 (9,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 8 10 V7
- 8 10 (10,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 9 11 V8
- 9 11 (11,0) [2, 3, 4] [2, 3, 4] [2, 3, 4] 10 12 V9
+ 0 2 (2,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 1 3 V0
+ 1 3 (3,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 2 4 V1
+ 2 4 (4,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 3 5 V2
+ 3 5 (5,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 4 6 V3
+ 4 6 (6,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 5 7 V4
+ 5 7 (7,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 6 8 V5
+ 6 8 (8,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 7 9 V6
+ 7 9 (9,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 8 10 V7
+ 8 10 (10,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 9 11 V8
+ 9 11 (11,0) shape=[2, 3, 4] shape=[2, 3, 4] shape=[2, 3, 4] 10 12 V9
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 10 rows
+    select result of 10 rows
 1 selected columns:  ab
  0
  1
@@ -632,7 +632,7 @@ select ab from tTableGram_tmp.tab
  9
 insert into tTableGram_tmp.tab (ab) select ab*2 as col1 i4 from tTableGram_tmp.tabc
     has been executed
-    insert of 10 rows
+    insert result of 10 rows
 1 selected columns:  ab
  0
  2
@@ -646,7 +646,7 @@ insert into tTableGram_tmp.tab (ab) select ab*2 as col1 i4 from tTableGram_tmp.t
  18
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 20 rows
+    select result of 20 rows
 1 selected columns:  ab
  0
  1
@@ -670,11 +670,11 @@ select ab from tTableGram_tmp.tab
  18
 delete from tTableGram_tmp.tab where ab%2==0
     has been executed
-    delete of 15 rows
+    delete result of 15 rows
 0 selected columns: 
 select ab from tTableGram_tmp.tab
     has been executed
-    select of 5 rows
+    select result of 5 rows
 1 selected columns:  ab
  1
  3
@@ -683,12 +683,12 @@ select ab from tTableGram_tmp.tab
  9
 insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))
     has been executed
-    insert of 1 rows
+    insert result of 1 rows
 2 selected columns:  ab ac
  3 34
 select ab,ac from tTableGram_tmp.tab
     has been executed
-    select of 6 rows
+    select result of 6 rows
 2 selected columns:  ab ac
  1 2
  3 4
@@ -698,26 +698,31 @@ select ab,ac from tTableGram_tmp.tab
  3 34
 create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
     has been executed
-    cretab of 0 rows
+    cretab result of 0 rows
 2 selected columns:  col1 col2
 select col1,col2 from tTableGram_tmp.tab2
     has been executed
-    select of 0 rows
+    select result of 0 rows
 2 selected columns:  col1 col2
 insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(1,[2,3])dam, F)
     has been executed
-    insert of 1 rows
+    insert result of 1 rows
 2 selected columns:  col1 col2
- [2, 3] 0
+ shape=[2, 3] 0
 insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(5,[2,3]), T)
     has been executed
-    insert of 1 rows
+    insert result of 1 rows
 2 selected columns:  col1 col2
- [2, 3] 1
+ shape=[2, 3] 1
 calc sum([select sum(col1) from tTableGram_tmp.tab2])
     has been executed
 Unit: m
 [90]
+using style python update tTableGram_tmp.tab set arr1 = array(1,4,3,2) where rownumber()==5
+    has been executed
+    update result of 1 rows
+1 selected columns:  arr1
+ shape=[2, 3, 4]
 using style python calc [3:6][1]
     has been executed
 [4]
@@ -746,7 +751,7 @@ Index: [2, 0]
 [5]
 using style python select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [4,3,2])
     has been executed
-    select of 6 rows
+    select result of 6 rows
 2 selected columns:  ab ac
  1 2
  3 4
@@ -756,7 +761,7 @@ using style python select ab,ac from tTableGram_tmp.tab where all(shape(arr1) ==
  3 34
 using style glish  select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [2,3,4])
     has been executed
-    select of 6 rows
+    select result of 6 rows
 2 selected columns:  ab ac
  1 2
  3 4
@@ -766,25 +771,25 @@ using style glish  select ab,ac from tTableGram_tmp.tab where all(shape(arr1) ==
  3 34
 using style python select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,2),5)==0,[0]))
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  3
  5
 using style glish  select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  3
  5
 using style python select ab from tTableGram_tmp.tab where rownumber() < 2
     has been executed
-    select of 2 rows
+    select result of 2 rows
 1 selected columns:  ab
  1
  3
 using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2
     has been executed
-    select of 1 rows
+    select result of 1 rows
 1 selected columns:  ab
  1
 calc runningMedian(array([0:24],5,5),1,1)
@@ -831,21 +836,21 @@ Unit: in
 [28]
 select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4
     has been executed
-    select of 3 rows
+    select result of 3 rows
 2 selected columns:  ab1 ac1
  1 2
  3 4
  5 6
 update tTableGram_tmp.tab_abac set ab1=1min+ab1, ac1=1.5cm+ac1
     has been executed
-    update of 3 rows
+    update result of 3 rows
 2 selected columns:  ab1 ac1
  61 17
  63 19
  65 21
 select ab1,ac1 from tTableGram_tmp.tab_abac
     has been executed
-    select of 3 rows
+    select result of 3 rows
 2 selected columns:  ab1 ac1
  61 17
  63 19

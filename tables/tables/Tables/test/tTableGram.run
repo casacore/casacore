@@ -172,6 +172,7 @@ $1 ./tTableGram 'insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(5,[2,
 $1 ./tTableGram 'calc sum([select sum(col1) from tTableGram_tmp.tab2])'
 
 # Some tests of styles.
+$1 ./tTableGram 'using style python update tTableGram_tmp.tab set arr1 = array(1,4,3,2) where rownumber()==5'
 $1 ./tTableGram 'using style python calc [3:6][1]'
 $1 ./tTableGram 'using style glish  calc [3:6][3]'
 $1 ./tTableGram 'using style base0  calc [3:6][3]'
