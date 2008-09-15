@@ -133,7 +133,7 @@ protected:
 
   Int numberTiles;
   IPosition tileShape;
-  Vector<Int> tileShapeVec, tileLocVec, tileOffsetVec;
+  Vector<Int> tileShapeVec, tileOffsetVec;
   Vector<Float> tileOverlap;
   Bool additive;
 

@@ -67,6 +67,7 @@ LatticeCache<T> &LatticeCache<T>::operator=(const LatticeCache<T> & other)
   numberTiles=other.numberTiles;
   tileShape=other.tileShape;
   tileShapeVec=other.tileShapeVec;
+  tileOffsetVec=other.tileOffsetVec;
   tileOverlap=other.tileOverlap;
   cacheSize=other.cacheSize;
   cacheAccesses=other.cacheAccesses;
