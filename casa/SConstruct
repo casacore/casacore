@@ -46,12 +46,15 @@ env.Tool('utils', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
 
 env["ENV"]["AIPSPATH"] = env["prefix"]
-
+if not (env.Detect(["flex","lex"]) and env.Detect(["bison", "yacc"])):
+    print "lex/yacc needs to be installed"
+    env.Exit(1)
 # Auto configure
 if not env.GetOption('clean'):
     conf = Configure(env, config_h="casa/HDF5Config.h")
     conf.env.AddCustomPackage('hdf5')
     if conf.CheckLib('hdf5', autoadd=0):
+#    if conf.CheckLibWithHeader('hdf5', 'hdf5.h', 'c++', autoadd=0):
         conf.env.PrependUnique(LIBS=['hdf5'])
     else:
         print "Building without HDF5 support"
