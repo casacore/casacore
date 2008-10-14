@@ -95,6 +95,11 @@ TableExprNode::TableExprNode (const String& val)
     node_p = new TableExprNodeConstString (val);
     node_p->link();
 }
+TableExprNode::TableExprNode (const std::string& val)
+{
+    node_p = new TableExprNodeConstString (String(val));
+    node_p->link();
+}
 TableExprNode::TableExprNode (const char* val)
 {
     node_p = new TableExprNodeConstString (String(val));

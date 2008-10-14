@@ -754,6 +754,7 @@ public:
     TableExprNode (const Complex& value);
     TableExprNode (const DComplex& value);
     TableExprNode (const String& value);
+    TableExprNode (const std::string& value);
     TableExprNode (const char*);
     TableExprNode (const Regex& value);
     TableExprNode (const MVTime& value);
