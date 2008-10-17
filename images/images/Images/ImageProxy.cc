@@ -24,151 +24,548 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-//   
+
+//# Do not use automatic template instantiation.
+#define CACACORE_NO_AUTO_TEMPLATES
+
 #include <casa/aips.h>
+#include <images/Images/ImageProxy.h>
+#include <images/Images/ImageInterface.h>
+#include <images/Images/ImageConcat.h>
+#include <images/Images/ImageFITSConverter.h>
+#include <images/Images/ImageRegrid.h>
+#include <images/Images/ImageSummary.h>
+#include <images/Images/ImageOpener.h>
+#include <images/Images/TempImage.h>
+#include <images/Images/ImageExprParse.h>
+#include <images/Images/ImageExpr.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casa/Containers/Record.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/fstream.h>
-#include <casa/Logging/LogFilter.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/OS/File.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Utilities/Assert.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MPosition.h>
-#include <components/ComponentModels/ComponentList.h>
-#include <components/ComponentModels/ComponentShape.h>
-#include <components/ComponentModels/GaussianShape.h>
-#include <components/ComponentModels/SkyComponent.h>
-#include <components/ComponentModels/SkyCompRep.h>
-#include <components/ComponentModels/TwoSidedShape.h>
-#include <components/SpectralComponents/SpectralElement.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/GaussianConvert.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <images/Images/ComponentImager.h>
-#include <images/Images/Image2DConvolver.h>
-#include <images/Images/ImageConcat.h>
-#include <images/Images/ImageConvolver.h>
-#include <images/Images/ImageDecomposer.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageFFT.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/ImageHistograms.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageMoments.h>
-#include <images/Images/ImageRegion.h>
-#include <images/Images/ImageRegrid.h>
-#include <images/Images/ImageSourceFinder.h>
-#include <images/Images/ImageStatistics.h>
-#include <images/Images/ImageSummary.h>
-#include <images/Images/ImageTwoPtCorr.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/LELImageCoord.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/RebinImage.h>
-#include <images/Images/RegionManager.h>
-#include <images/Images/SepImageConvolver.h>
-#include <images/Images/SubImage.h>
-#include <images/Images/TempImage.h>
-#include <images/Images/WCLELMask.h>
-#include <images/Images/ImageProxy.h>
-#include <lattices/LatticeMath/Fit2D.h>
-#include <lattices/LatticeMath/LatticeFit.h>
-#include <lattices/Lattices/LatticeAddNoise.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <lattices/Lattices/LatticeSlice1D.h>
-#include <lattices/Lattices/LatticeUtilities.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <lattices/Lattices/PixelCurve1D.h>
-#include <lattices/Lattices/RegionType.h>
-#include <lattices/Lattices/TiledLineStepper.h>
-#include <measures/Measures/Stokes.h>
-#include <scimath/Fitting/LinearFitSVD.h>
-#include <scimath/Functionals/Polynomial.h>
-#include <scimath/Mathematics/VectorKernel.h>
-#include <tables/LogTables/NewFile.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
+#include <vector>
 
-#include <casa/namespace.h>
-
+using namespace std;
 
 namespace casa { //# name space casa begins
 
-ImageProxy::ImageProxy()
-: pImage_p(0),
-  pStatistics_p(0),
-  pHistograms_p(0),
-  pOldStatsRegionRegion_p(0),
-  pOldStatsMaskRegion_p(0),
-  pOldHistRegionRegion_p(0),
-  pOldHistMaskRegion_p(0)
-{
+  ImageProxy::ImageProxy()
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {}
 
-  // Register the functions to create a FITSImage or MIRIADImage object.
-  FITSImage::registerOpenFunction();
-  MIRIADImage::registerOpenFunction();
+  ImageProxy::ImageProxy (LatticeBase* lattice)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    setup (lattice);
+  }
 
-  itsLog= new LogIO();
-
-}
-
-// private ImageInterface constructor for on the fly components
-ImageProxy::ImageProxy(const ImageInterface<casa::Float>* inImage)
-: pImage_p(0),
-  pStatistics_p(0),
-  pHistograms_p(0),
-  pOldStatsRegionRegion_p(0),
-  pOldStatsMaskRegion_p(0),
-  pOldHistRegionRegion_p(0),
-  pOldHistMaskRegion_p(0)
-{
-
-  itsLog= new LogIO();
-  pImage_p = inImage->cloneII();
-}
-
-ImageProxy::~ImageProxy()
-{
-    if (pImage_p != 0) {
-      delete pImage_p;
-      pImage_p = 0;
+  ImageProxy::ImageProxy (const ValueHolder& arg, const String& mask,
+                          const vector<ImageProxy>& images)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    switch (arg.dataType()) {
+    case TpString:
+      openImage (arg.asString(), mask, images);
+      break;
+    case TpArrayShort:
+    case TpArrayUShort:
+    case TpArrayInt:
+    case TpArrayUInt:
+    case TpArrayFloat:
+      makeImage (arg.asArrayFloat());
+      break;
+    case TpArrayDouble:
+      makeImage (arg.asArrayDouble());
+      break;
+    case TpArrayComplex:
+      makeImage (arg.asArrayComplex());
+      break;
+    case TpArrayDComplex:
+      makeImage (arg.asArrayDComplex());
+      break;
+    default:
+      throw AipsError ("ImageProxy: invalid data type");
     }
-    deleteHistAndStats();
+  }
 
-}
+  ImageProxy::ImageProxy (const Vector<String>& names, Int axis)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    vector<ImageProxy> images;
+    images.reserve (names.size());
+    for (uInt i=0; i<names.size(); ++i) {
+      images.push_back (ImageProxy(ValueHolder(names[i]), "",
+                                   vector<ImageProxy>()));
+    }
+    concatImages (images, axis);
+  }
 
+  ImageProxy::ImageProxy (const vector<ImageProxy>& images, Int axis, Int, Int)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    concatImages (images, axis);
+  }
+
+  ImageProxy::~ImageProxy()
+  {}
+
+  void ImageProxy::openImage (const String& name, const String& mask,
+                              const vector<ImageProxy>& images)
+  {
+    MaskSpecifier maskSp;
+    if (!mask.empty()) {
+      if (mask == "nomask") {
+        maskSp = MaskSpecifier ("");
+      } else {
+        maskSp = MaskSpecifier (mask);
+      }
+    }
+    LatticeBase* lattice = openImageOrExpr (name, maskSp, images);
+    if (lattice == 0) {
+      throw AipsError ("Image " + name + " cannot be opened");
+    }
+    setup (lattice);
+  }
+
+  LatticeBase* ImageProxy::openImageOrExpr (const String& str,
+                                            const MaskSpecifier& spec,
+                                            const vector<ImageProxy>& images)
+  {
+    LatticeBase* lattice = ImageOpener::openImage (str, spec);
+    if (lattice == 0) {
+      LatticeExprNode expr = ImageExprParse::command (str);
+      switch (expr.dataType()) {
+      case TpFloat:
+        lattice = new ImageExpr<Float> (LatticeExpr<Float>(expr), str);
+        break;
+      case TpDouble:
+        lattice = new ImageExpr<Double> (LatticeExpr<Double>(expr), str);
+        break;
+      case TpComplex:
+        lattice = new ImageExpr<Complex> (LatticeExpr<Complex>(expr), str);
+        break;
+      case TpDComplex:
+        lattice = new ImageExpr<DComplex> (LatticeExpr<DComplex>(expr), str);
+        break;
+      default:
+        throw AipsError ("invalid data type of image expression " + str);
+      }
+    }
+    return lattice;
+  }
+
+  void ImageProxy::makeImage (const Array<Float>& array)
+  {
+    CoordinateSystem cSys = 
+      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
+    centreRefPix(cSys, array.shape());
+    setup (new TempImage<Float> (TiledShape(array.shape()), cSys, 1000));
+    itsImageFloat->put (array);
+  }
+
+  void ImageProxy::makeImage (const Array<Double>& array)
+  {
+    CoordinateSystem cSys = 
+      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
+    centreRefPix(cSys, array.shape());
+    setup (new TempImage<Double> (TiledShape(array.shape()), cSys, 1000));
+    itsImageDouble->put (array);
+  }
+
+  void ImageProxy::makeImage (const Array<Complex>& array)
+  {
+    CoordinateSystem cSys = 
+      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
+    centreRefPix(cSys, array.shape());
+    setup (new TempImage<Complex> (TiledShape(array.shape()), cSys, 1000));
+    itsImageComplex->put (array);
+  }
+
+  void ImageProxy::makeImage (const Array<DComplex>& array)
+  {
+    CoordinateSystem cSys = 
+      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
+    centreRefPix(cSys, array.shape());
+    setup (new TempImage<DComplex> (TiledShape(array.shape()), cSys, 1000));
+    itsImageDComplex->put (array);
+  }
+
+  void ImageProxy::concatImages (const vector<ImageProxy>& images, Int axis)
+  {
+    if (images.size() == 0) {
+      throw AipsError ("ImageProxy: no images given in vector");
+    }
+    switch (images[0].getLattice()->dataType()) {
+    case TpFloat:
+      concatImagesFloat (images, axis);
+      break;
+    case TpDouble:
+      concatImagesDouble (images, axis);
+      break;
+    case TpComplex:
+      concatImagesComplex (images, axis);
+      break;
+    case TpDComplex:
+      concatImagesDComplex (images, axis);
+      break;
+    default:
+      throw AipsError ("Image has an invalid data type");
+    }
+  }
+
+  void ImageProxy::concatImagesFloat (const vector<ImageProxy>& images,
+                                      Int axis)
+  {
+    ImageConcat<Float>* concat = new ImageConcat<Float>(axis);
+    for (uInt i=0; i<images.size(); ++i) {
+      LatticeBase* lattice = images[i].getLattice();
+      if (lattice->dataType() != TpFloat) {
+        throw AipsError ("Not all images to concatenate have type Float");
+      }
+      // Note this cast is fully safe.
+      concat->setImage (*(ImageInterface<Float>*)(lattice), True);
+    }
+    setup (concat);
+  }
+
+  void ImageProxy::concatImagesDouble (const vector<ImageProxy>& images,
+                                       Int axis)
+  {
+    ImageConcat<Double>* concat = new ImageConcat<Double>(axis);
+    for (uInt i=0; i<images.size(); ++i) {
+      LatticeBase* lattice = images[i].getLattice();
+      if (lattice->dataType() != TpDouble) {
+        throw AipsError ("Not all images to concatenate have type Double");
+      }
+      // Note this cast is fully safe.
+      concat->setImage (*(ImageInterface<Double>*)(lattice), True);
+    }
+    setup (concat);
+  }
+
+  void ImageProxy::concatImagesComplex (const vector<ImageProxy>& images,
+                                        Int axis)
+  {
+    ImageConcat<Complex>* concat = new ImageConcat<Complex>(axis);
+    for (uInt i=0; i<images.size(); ++i) {
+      LatticeBase* lattice = images[i].getLattice();
+      if (lattice->dataType() != TpComplex) {
+        throw AipsError ("Not all images to concatenate have type Complex");
+      }
+      // Note this cast is fully safe.
+      concat->setImage (*(ImageInterface<Complex>*)(lattice), True);
+    }
+    setup (concat);
+  }
+
+  void ImageProxy::concatImagesDComplex (const vector<ImageProxy>& images,
+                                         Int axis)
+  {
+    ImageConcat<DComplex>* concat = new ImageConcat<DComplex>(axis);
+    for (uInt i=0; i<images.size(); ++i) {
+      LatticeBase* lattice = images[i].getLattice();
+      if (lattice->dataType() != TpDComplex) {
+        throw AipsError ("Not all images to concatenate have type DComplex");
+      }
+      // Note this cast is fully safe.
+      concat->setImage (*(ImageInterface<DComplex>*)(lattice), True);
+    }
+    setup (concat);
+  }
+
+  void ImageProxy::setup (LatticeBase* lattice)
+  {
+    itsLattice = lattice;
+    switch (lattice->dataType()) {
+    case TpFloat:
+      itsImageFloat = dynamic_cast<ImageInterface<Float>*>(lattice);
+      break;
+    case TpDouble:
+      itsImageDouble = dynamic_cast<ImageInterface<Double>*>(lattice);
+      break;
+    case TpComplex:
+      itsImageComplex = dynamic_cast<ImageInterface<Complex>*>(lattice);
+      break;
+    case TpDComplex:
+      itsImageDComplex = dynamic_cast<ImageInterface<DComplex>*>(lattice);
+      break;
+    default:
+      throw AipsError ("Image has an invalid data type");
+    }
+    if (itsImageFloat) {
+      itsCoordSys = &itsImageFloat->coordinates();
+    } else if (itsImageDouble) {
+      itsCoordSys = &itsImageDouble->coordinates();
+    } else if (itsImageComplex) {
+      itsCoordSys = &itsImageComplex->coordinates();
+    } else if (itsImageDComplex) {
+      itsCoordSys = &itsImageDComplex->coordinates();
+    } else {
+      throw AipsError ("The lattice does not appear to be an image");
+    }
+  }
+
+  void ImageProxy::centreRefPix (CoordinateSystem& cSys, 
+                                 const IPosition& shape) const
+  {
+    // Center all axes except Stokes.
+    Int after = -1;
+    Int iS = cSys.findCoordinate (Coordinate::STOKES, after);
+    Int sP = -1;
+    if (iS >= 0) {
+      sP = cSys.pixelAxes(iS)[0];
+    }
+    Vector<Double> refPix = cSys.referencePixel();
+    for (uInt i=0; i<refPix.nelements(); ++i) {
+      if (i != sP) {
+        refPix(i) = Double(shape(i) / 2);
+      }
+    }
+    cSys.setReferencePixel (refPix);
+  }
+
+  Bool ImageProxy::isPersistent() const
+  {
+    return itsLattice->isPersistent();
+  }
+
+  String ImageProxy::name (Bool stripPath) const
+  {
+    return itsLattice->name (stripPath);
+  }
+
+  IPosition ImageProxy::shape() const
+  {
+    return itsLattice->shape();
+  }
+
+  uInt ImageProxy::ndim() const
+  {
+    return itsLattice->shape().size();
+  }
+
+  uInt ImageProxy::size() const
+  {
+    return itsLattice->shape().product();
+  }
+
+  String ImageProxy::dataType() const
+  {
+    ostringstream ostr;
+    ostr << itsLattice->dataType();
+    return ostr.str();
+  }
+
+  ValueHolder ImageProxy::getData (const IPosition& blc,
+                                   const IPosition& trc, 
+                                   const IPosition& inc)
+  {
+    IPosition shp = shape();
+    Slicer slicer(adjustBlc(blc, shp),
+                  adjustTrc(trc, shp),
+                  adjustInc(inc, shp),
+                  Slicer::endIsLast);
+    if (itsImageFloat) {
+      return ValueHolder (itsImageFloat->getSlice (slicer));
+    } else if (itsImageDouble) {
+      return ValueHolder (itsImageDouble->getSlice (slicer));
+    } else if (itsImageComplex) {
+      return ValueHolder (itsImageComplex->getSlice (slicer));
+    }
+    return ValueHolder (itsImageDComplex->getSlice (slicer));
+  }
+
+  ValueHolder ImageProxy::getMask (const IPosition& blc,
+                                   const IPosition& trc, 
+                                   const IPosition& inc)
+  {
+    IPosition shp = shape();
+    Slicer slicer(adjustBlc(blc, shp),
+                  adjustTrc(trc, shp),
+                  adjustInc(inc, shp),
+                  Slicer::endIsLast);
+    if (itsImageFloat) {
+      return ValueHolder (itsImageFloat->getMaskSlice (slicer));
+    } else if (itsImageDouble) {
+      return ValueHolder (itsImageDouble->getMaskSlice (slicer));
+    } else if (itsImageComplex) {
+      return ValueHolder (itsImageComplex->getMaskSlice (slicer));
+    }
+    return ValueHolder (itsImageDComplex->getMaskSlice (slicer));
+  }
+
+  void ImageProxy::putData (const ValueHolder& value,
+                            const IPosition& blc,
+                            const IPosition& inc)
+  {
+    IPosition shp = shape();
+    IPosition ablc = adjustBlc (blc, shp);
+    IPosition ainc = adjustInc (inc, shp);
+    if (itsImageFloat) {
+      itsImageFloat->putSlice (value.asArrayFloat(), ablc, ainc);
+    } else if (itsImageDouble) {
+      itsImageDouble->putSlice (value.asArrayDouble(), ablc, ainc);
+    } else if (itsImageComplex) {
+      itsImageComplex->putSlice (value.asArrayComplex(), ablc, ainc);
+    } else {
+      itsImageDComplex->putSlice (value.asArrayDComplex(), ablc, ainc);
+    }
+  }
+
+  Bool ImageProxy::hasLock (Bool writeLock)
+  {
+    return itsLattice->hasLock (writeLock ?
+                                FileLocker::Write : FileLocker::Read);
+  }
+  
+  void ImageProxy::lock (Bool writeLock, Int nattempts)
+  {
+    itsLattice->lock (writeLock ? FileLocker::Write : FileLocker::Read,
+                      nattempts);
+  }
+
+  void ImageProxy::unlock()
+  {
+    itsLattice->unlock();
+  }
+
+  ImageProxy ImageProxy::subImage (const IPosition& blc,
+                                   const IPosition& trc, 
+                                   const IPosition& inc)
+  {
+    IPosition shp = shape();
+    Slicer slicer(adjustBlc(blc, shp),
+                  adjustTrc(trc, shp),
+                  adjustInc(inc, shp),
+                  Slicer::endIsLast);
+    if (itsImageFloat) {
+      return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer, True));
+    } else if (itsImageDouble) {
+      return ImageProxy(new SubImage<Double>(*itsImageDouble, slicer, True));
+    } else if (itsImageComplex) {
+      return ImageProxy(new SubImage<Complex>(*itsImageComplex, slicer, True));
+    }
+    return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer, True));
+  }
+
+  IPosition ImageProxy::adjustBlc (const IPosition& blc, const IPosition& shp)
+  {
+    if (blc.size() > shp.size()) {
+      throw AipsError ("blc length exceeds dimensionality of image");
+    }
+    // Initialize possibly missing elements to 0.
+    IPosition res(shp.size(), 0);
+    for (uInt i=0; i<blc.size(); ++i) {
+      if (blc[i] >= shp[i]) {
+        throw AipsError ("blc value exceeds shape of image");
+      } else if (blc[i] > 0) {
+        res[i] = blc[i];
+      }
+    }
+    return res;
+  }
+
+  IPosition ImageProxy::adjustTrc (const IPosition& trc, const IPosition& shp)
+  {
+    if (trc.size() > shp.size()) {
+      throw AipsError ("trc length exceeds dimensionality of image");
+    }
+    // Initialize possibly missing elements to shape.
+    IPosition res(shp-1);
+    for (uInt i=0; i<trc.size(); ++i) {
+      if (trc[i] > 0  ||  trc[i] < shp[i]) {
+        res[i] = trc[i];
+      }
+    }
+    return res;
+  }
+
+  IPosition ImageProxy::adjustInc (const IPosition& inc, const IPosition& shp)
+  {
+    if (inc.size() > shp.size()) {
+      throw AipsError ("inc length exceeds dimensionality of image");
+    }
+    // Initialize possibly missing elements to 1.
+    IPosition res(shp.size(), 1);
+    for (uInt i=0; i<inc.size(); ++i) {
+      if (inc[i] > 1) {
+        res[i] = inc[i];
+      }
+    }
+    return res;
+  }
+
+  String ImageProxy::unit()const
+  {
+    if (itsImageFloat) {
+      return itsImageFloat->units().getName();
+    } else if (itsImageDouble) {
+      return itsImageDouble->units().getName();
+    } else if (itsImageComplex) {
+      return itsImageComplex->units().getName();
+    }
+    return itsImageDComplex->units().getName();
+  }
+
+  Record ImageProxy::coordSys() const
+  {
+    Record rec;
+    itsCoordSys->save (rec, "x");
+    return rec.subRecord("x");
+  }
+
+  Record ImageProxy::imageInfo() const
+  {
+    Record rec;
+    String error;
+    if (itsImageFloat) {
+      itsImageFloat->imageInfo().toRecord (error, rec);
+    } else if (itsImageDouble) {
+      itsImageDouble->imageInfo().toRecord (error, rec);
+    } else if (itsImageComplex) {
+      itsImageComplex->imageInfo().toRecord (error, rec);
+    } else {
+      itsImageDComplex->imageInfo().toRecord (error, rec);
+    }
+    return rec;
+  }
+
+  Record ImageProxy::miscInfo() const
+  {
+    TableRecord rec;
+    if (itsImageFloat) {
+      rec = itsImageFloat->miscInfo();
+    } else if (itsImageDouble) {
+      rec = itsImageDouble->miscInfo();
+    } else if (itsImageComplex) {
+      rec = itsImageComplex->miscInfo();
+    } else {
+      rec = itsImageDComplex->miscInfo();
+    }
+    return Record(rec);
+  }
+
+
+
+#if 0
 Bool ImageProxy::toRecord(RecordInterface& rec){
 
 
@@ -5884,23 +6281,6 @@ ImageProxy::makeCoordinateSystem(const Record& coordinates,
   return pCS;
 }
 
-void ImageProxy::centreRefPix (CoordinateSystem& cSys, 
-			       const IPosition& shape) const
-{
-  Int after = -1;
-  Int iS = cSys.findCoordinate(Coordinate::STOKES, after);
-  Int sP = -1;
-  if (iS>=0) {
-    Vector<Int> pixelAxes = cSys.pixelAxes(iS);
-    sP = pixelAxes(0);
-  }
-  Vector<Double> refPix = cSys.referencePixel();
-  for (Int i=0; i<Int(refPix.nelements()); i++) {
-    if (i!=sP) refPix(i) = Double(shape(i) / 2);
-  }
-  cSys.setReferencePixel(refPix);
-}
-
 void ImageProxy::set_cache(const IPosition &chunk_shape) const
 {
   if (pImage_p==0) {
@@ -7405,6 +7785,6 @@ void ImageProxy::trim (Vector<Double>& inout,
 }
 
 /// When CoordSys is refactored the above should be removed cleanly
-
+#endif
 
 } // end of  casa namespace
