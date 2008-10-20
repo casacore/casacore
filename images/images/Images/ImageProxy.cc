@@ -39,6 +39,7 @@
 #include <images/Images/TempImage.h>
 #include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Containers/Record.h>
@@ -138,7 +139,11 @@ namespace casa { //# name space casa begins
         maskSp = MaskSpecifier (mask);
       }
     }
-    LatticeBase* lattice = openImageOrExpr (name, maskSp, images);
+    Block<LatticeExprNode> tempNodes(images.size());
+    for (uInt i=0; i<images.size(); ++i) {
+      tempNodes[i] = images[i].makeNode();
+    }
+    LatticeBase* lattice = openImageOrExpr (name, maskSp, tempNodes);
     if (lattice == 0) {
       throw AipsError ("Image " + name + " cannot be opened");
     }
@@ -147,11 +152,12 @@ namespace casa { //# name space casa begins
 
   LatticeBase* ImageProxy::openImageOrExpr (const String& str,
                                             const MaskSpecifier& spec,
-                                            const vector<ImageProxy>& images)
+                                            const Block<LatticeExprNode>& nodes)
   {
     LatticeBase* lattice = ImageOpener::openImage (str, spec);
     if (lattice == 0) {
-      LatticeExprNode expr = ImageExprParse::command (str);
+      PtrBlock<const ImageRegion*> regions;
+      LatticeExprNode expr = ImageExprParse::command (str, nodes, regions);
       switch (expr.dataType()) {
       case TpFloat:
         lattice = new ImageExpr<Float> (LatticeExpr<Float>(expr), str);
@@ -170,6 +176,20 @@ namespace casa { //# name space casa begins
       }
     }
     return lattice;
+  }
+
+  LatticeExprNode ImageProxy::makeNode() const
+  {
+    if (itsImageFloat) {
+      return LatticeExprNode (*itsImageFloat);
+    } else if (itsImageDouble) {
+      return LatticeExprNode (*itsImageDouble);
+    } else if (itsImageComplex) {
+      return LatticeExprNode (*itsImageComplex);
+    } else if (itsImageDComplex) {
+      return LatticeExprNode (*itsImageDComplex);
+    }
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   void ImageProxy::makeImage (const Array<Float>& array)

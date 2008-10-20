@@ -39,6 +39,7 @@ namespace casa {
 
   //# Forward Declarations.
   template<typename T> class ImageInterface;
+  class LatticeExprNode;
   class CoordinateSystem;
 
   // <synopsis>
@@ -82,7 +83,10 @@ namespace casa {
     // If not successful, try to open it as an image expression.
     static LatticeBase* openImageOrExpr (const String& str,
                                          const MaskSpecifier&,
-                                         const vector<ImageProxy>& images);
+                                         const Block<LatticeExprNode>& nodes);
+
+    // Turn the ImageProxy into a LatticeExprNode.
+    LatticeExprNode makeNode() const;
 
     // Is the image persistent or temporary.
     Bool isPersistent() const;

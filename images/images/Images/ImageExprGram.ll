@@ -69,8 +69,8 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 NAME      [A-Za-z_]([A-Za-z_0-9])*
-TMPNAME   "$OBJ#"{INT}"#O"
-TMPREGION "$REGION#"{INT}
+TMPNAME   "$"{INT}
+TMPREGION "$"[rR]{INT}
 ESCNAME   ([A-Za-z_~$]|(\\.))([A-Za-z0-9._~$]|(\\.))*
 COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 
@@ -166,7 +166,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
  /* A temporary image number can be given */
 {TMPNAME} {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+5));
+            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+1));
 	    ImageExprParse::addNode (lvalp->val);
 	    return NAME;
 	  }
@@ -174,7 +174,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
  /* A temporary region number can be given */
 {TMPREGION} {
             imageExprGramPosition() += yyleng;
-            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+8));
+            lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+2));
 	    ImageExprParse::addNode (lvalp->val);
 	    return TMPREG;
 	  }

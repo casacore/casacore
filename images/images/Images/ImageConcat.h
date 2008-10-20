@@ -127,7 +127,7 @@ template <class T> class ImageConcat : public ImageInterface<T>
 public:
 
 // Constructor. Specify the pixel axis for concatenation
-   ImageConcat (uInt axis, Bool tempClose=True);
+   explicit ImageConcat (uInt axis, Bool tempClose=True);
 
 // Default constructor, Sets the concatenation axis to 0
    ImageConcat();

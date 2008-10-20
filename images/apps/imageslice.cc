@@ -30,12 +30,13 @@
 #include <casa/Inputs/Input.h>
 #include <casa/Arrays/IPosition.h>
 
-#include <images/Images/ImageInterface.h>
-#include <images/Images/PagedImage.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/FITSImage.h>
-
+#include <images/Images/MIRIADImage.h>
 #include <images/Images/SubImage.h>
+#include <images/Images/ImageFITSConverter.h>
 #include <images/Images/ImageUtilities.h>
+#include <images/Images/HDF5Image.h>
 
 using namespace casa;
 
@@ -43,8 +44,8 @@ int main(int argc, const char* argv[]) {
 
   try {
     Input inputs(1);
-    inputs.create("in", "", "Input image name");
-    inputs.create("out", "", "Output image name");
+    inputs.create("in", "", "Input image name", "string");
+    inputs.create("out", "sliced_<in>", "Output image name", "string");
     inputs.create("outregion", "", "Output image region, specify start/end pairs for each axis and use -1 to use the input image shape", "Block<Int>");
     inputs.readArguments(argc, argv);
 
@@ -53,8 +54,8 @@ int main(int argc, const char* argv[]) {
       cout << "Please specify input image name" << endl;
       exit(1);
     }
-    String out = inputs.getString("out");
 
+    String out = inputs.getString("out");
     if ( out.empty() ) {
       out = "sliced_"+in;
     }
@@ -64,11 +65,13 @@ int main(int argc, const char* argv[]) {
 
     Bool inisfits = downcase(in).after(in.size()-6) == ".fits";
 
-    ImageInterface<Float>* pImage = 0;
-    if (inisfits) {
-      pImage = new FITSImage(in);
-    } else {
-      pImage = new PagedImage<Float>(in);
+    FITSImage::registerOpenFunction();
+    MIRIADImage::registerOpenFunction();
+    LatticeBase* pLatt = ImageOpener::openImage(in);
+    ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
+    if (!pImage) {
+      cout << "The input image must have data type Float" << endl;
+      exit(1);
     }
 
     IPosition imshape = pImage->shape();
@@ -98,12 +101,21 @@ int main(int argc, const char* argv[]) {
       Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out,
                                                 128, False, False);
     } else {
-      PagedImage<Float> pim(subim.shape(), 
-                            subim.coordinates(), out);
-      pim.copyData(subim);
-      ImageUtilities::copyMiscellaneous(pim, subim);
-
+      ImageInterface<Float>* pim = 0;
+      if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
+	pim = new HDF5Image<Float> (subim.shape(),
+				    subim.coordinates(), out);
+      }
+      if (pim == 0) {
+	pim = new PagedImage<Float> (subim.shape(), 
+				     subim.coordinates(), out);
+      }
+      pim->copyData(subim);
+      ImageUtilities::copyMiscellaneous(*pim, subim);
+      delete pim;
     }
+
+    delete pImage;
   } catch (const AipsError &x) {
     cerr << "Exception caught:" << endl;
     cerr << x.getMesg() << endl;

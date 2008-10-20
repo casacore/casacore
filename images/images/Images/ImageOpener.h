@@ -104,6 +104,8 @@ public:
   // The specified mask will be applied (default is default mask).
   // A null pointer is returned for an unknown image type.
   // Non-AIPS++ image types must have been registered to be known.
+  // Note that class ImageProxy has a function to open an image from a file
+  // or from an image expression.
   static LatticeBase* openImage (const String& fileName,
 				 const MaskSpecifier& = MaskSpecifier());
 
