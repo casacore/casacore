@@ -86,6 +86,8 @@ Using '%s' as default search location""" % ddir
     # Note the escaped single quotes to handle the string in the define
     conf.env.PrependUnique(CPPFLAGS=['-DCASADATA=\'"%s"\'' % ddir])
     env = conf.Finish()
+else:
+    Execute(Delete("options.cfg"))
 
 # create the installer which handles installing the final build
 installer = env.Installer()

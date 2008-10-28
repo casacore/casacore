@@ -43,6 +43,9 @@ env.Tool('casa', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
 env["ASSAYCOM"] = os.path.join(env["casashrdir"][0], "casacore_assay")
 
+if env.GetOption('clean'):
+    Execute(Delete("options.cfg"))
+
 # create the installer which handles installing the final build
 installer = env.Installer()
 

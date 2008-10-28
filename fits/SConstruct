@@ -81,6 +81,8 @@ if not env.GetOption('clean'):
         Exit(1)
     conf.env.PrependUnique(LIBS=['cfitsio'])
     env = conf.Finish()
+else:
+    Execute(Delete("options.cfg"))
 
 # create the installer which handles installing the final build
 installer = env.Installer()

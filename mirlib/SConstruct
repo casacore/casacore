@@ -39,6 +39,9 @@ env.Tool('buildenv', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('casa', env["casashrdir"])
 
+if env.GetOption('clean'):
+    Execute(Delete("options.cfg"))
+
 # create the installer which handles installing the final build
 installer = env.Installer()
 

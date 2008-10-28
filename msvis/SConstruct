@@ -73,6 +73,8 @@ if not env.GetOption('clean'):
     conf.env.PrependUnique(LIBS=lapackname)
 
     env = conf.Finish()
+else:
+    Execute(Delete("options.cfg"))
 
 # create the installer which handles installing the final build
 installer = env.Installer()
