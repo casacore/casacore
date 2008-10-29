@@ -552,7 +552,6 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     // When the name is numeric, we have a temporary lattice number.
     // Find it in the block of temporary lattices.
     if (itsType == TpInt) {
-      cout << "temp latt " << itsIval << endl;
         Int latnr = itsIval-1;
 	if (latnr < 0  ||  latnr >= Int(theTempLattices->nelements())) {
 	    throw (AipsError ("ImageExprParse: invalid temporary image "

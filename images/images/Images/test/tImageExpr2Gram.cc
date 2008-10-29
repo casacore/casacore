@@ -105,7 +105,7 @@ int main (int argc, const char* argv[])
       cout << endl;
       cout << "Expr:  $1" << endl;
       LatticeExpr<Float> expr (ImageExprParse::command
-			       ("$OBJ#1#O", temps, tempRegs));
+			       ("$1", temps, tempRegs));
       Array<Float> result;
       expr.get (result);
       if (! allEQ (result, arr)) {
@@ -118,7 +118,7 @@ int main (int argc, const char* argv[])
       cout << endl;
       cout << "Expr:  $1[$region || $region && $region]" << endl;
       LatticeExpr<Float> expr (ImageExprParse::command
-			     ("$OBJ#1#O[$REGION#1 || $REGION#1 && $REGION#1]",
+			     ("$1[$R1 || $r1 && $R1]",
 			      temps, tempRegs));
       Array<Float> result;
       expr.get (result);
@@ -132,7 +132,7 @@ int main (int argc, const char* argv[])
       cout << endl;
       cout << "Expr:  nelements($1)" << endl;
       LatticeExprNode expr (ImageExprParse::command
-			    ("nelements($OBJ#1#O)", temps, tempRegs));
+			    ("nelements($1)", temps, tempRegs));
       Double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;
@@ -155,9 +155,9 @@ int main (int argc, const char* argv[])
     }
     {
       cout << endl;
-      cout << "Expr:  ndim($REGION#1)" << endl;
+      cout << "Expr:  ndim($R1)" << endl;
       LatticeExprNode expr (ImageExprParse::command
-			    ("ndim($REGION#1)",
+			    ("ndim($R1)",
 			     temps, tempRegs));
       Float result = expr.getFloat();
       if (result != shape.nelements()) {
