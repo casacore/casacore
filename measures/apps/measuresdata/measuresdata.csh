@@ -36,6 +36,8 @@ while ( 1 == 1 )
     exit 1
   endif
 
+  echo Called by measuresdata $mdata
+
   if ( "$mdata[1]" != "status:" ) then
     echo Severe: no status given in measuresdata.rc
     exit 1
@@ -52,6 +54,9 @@ while ( 1 == 1 )
   shift mdata
 
   set arg = ""
+  unset ftp
+  unset http
+
   while ( $#mdata > 1 ) 
     if ( "$mdata[1]" == "ftp:" ) then
       set ftp = $mdata[2]
@@ -86,7 +91,9 @@ while ( 1 == 1 )
 #
 # Obtain ftp/http
 #
-  if ($?ftp) then
+  if ($?http) then
+    lynx -dump -dont_wrap_pre 'http://'$http'/'$dir'/'$file >! $file
+  else
     $pftp -n -v -i $ftp <<_EOD_
     quote user ftp
     quote pass brouw@astron.nl
@@ -95,8 +102,6 @@ while ( 1 == 1 )
     get $file
     quit
 _EOD_
-  else
-    lynx -dump -dont_wrap_pre 'http://'$http'/'$dir'/'$file >! $file
   endif
 #
 # Call back

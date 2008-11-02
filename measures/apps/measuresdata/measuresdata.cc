@@ -54,6 +54,7 @@
 #include <casa/iomanip.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
+#include <casa/stdio.h>
 #include <map>
 #include <vector>
 
@@ -61,7 +62,8 @@
 
 
 // Version
-const string PROG_VS = "20081101wnb";
+const string PROG_VS = "20081102wnb";
+
 
 // Using
 using std::vector;
@@ -476,7 +478,7 @@ const tableProperties allProperties[] = {
   //**********************************************************************//
 
   { "IGRF",			2.0,			180.0,
-    False,			13193.75,		1826.25,
+    True,			13193.75,		1826.25,
     "geodetic/IGRF",		"http",  		"ascii",
     &IGRF,			IGRFCol,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
@@ -1013,7 +1015,11 @@ Bool read_data(vector<String> &out, const String &tnam,
   while (getline(infile, line)) out.push_back(line);
   infile.clear();
   infile.close();
-  /// Still do delete of in
+  // Remove file if asked for
+  if (del) {
+    cout << "xxx " << in.absoluteName().c_str() << endl;
+    cout << remove(in.absoluteName().c_str()) << "rem" << endl;
+  };
   return True;
 }
 
