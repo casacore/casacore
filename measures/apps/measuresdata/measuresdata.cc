@@ -1017,8 +1017,7 @@ Bool read_data(vector<String> &out, const String &tnam,
   infile.close();
   // Remove file if asked for
   if (del) {
-    cout << "xxx " << in.absoluteName().c_str() << endl;
-    cout << remove(in.absoluteName().c_str()) << "rem" << endl;
+    remove(in.absoluteName().c_str());	
   };
   return True;
 }
