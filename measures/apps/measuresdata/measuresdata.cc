@@ -1602,7 +1602,7 @@ Bool DE405(tableProperties &tprop, inputValues &inVal) {
 // Main program
 //*************************************************************************//
 
-int main (Int argc, char** argv) {
+int main (int argc, const char** argv) {
   try {
     cout << " " << endl;
     cout << "Create data tables for Measures" << endl;
