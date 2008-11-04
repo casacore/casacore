@@ -9,6 +9,7 @@ PACKAGE="casa"
 
 # general options
 opts = Options( 'options.cfg', ARGUMENTS )
+opts.Add(("enable_hdf5", "Enable HDF5 support", None))
 opts.Add(("hdf5root", 
 	  "The root directory where hdf5 is installed", None))
 opts.Add(("hdf5incdir", "The hdf5 header location", None))
@@ -55,7 +56,7 @@ hdf5c = env.File("casa/HDF5Config.h")
 if not env.GetOption('clean'):
     conf = Configure(env, config_h=hdf5c)
     conf.env.AddCustomPackage('hdf5')
-    if conf.CheckLib('hdf5', autoadd=0):
+    if conf.env.get("enable_hdf5") and conf.CheckLib('hdf5', autoadd=0):
         conf.env.PrependUnique(LIBS=['hdf5'])
     else:
         print "Building without HDF5 support"
