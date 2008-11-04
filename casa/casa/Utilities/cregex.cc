@@ -377,8 +377,9 @@ static void insert_op_2 (char, char *, char *_end, int, int);
    the `struct re_pattern_buffer' that bufp pointed to, after
    a2_re_compile_pattern returns. */
 
-char *
-a2_re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
+const char*
+a2_re_compile_pattern (char *pattern, int size,
+                       struct re_pattern_buffer *bufp)
 {
   register char *b = bufp->buffer;
   register char *p = pattern;
@@ -2504,7 +2505,7 @@ bcmp_translate (char *s1, char *s2, int len, unsigned char *translate)
 
 static struct re_pattern_buffer re_comp_buf;
 
-char *
+const char*
 re_comp (char *s)
 {
   static char* noprev = "No previous regular expression";

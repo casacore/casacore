@@ -259,7 +259,7 @@ struct re_registers
 
 #if defined(__STDC__) || defined(__cplusplus)
 
-extern char *a2_re_compile_pattern (char *, int, struct re_pattern_buffer *);
+extern const char *a2_re_compile_pattern (char *, int, struct re_pattern_buffer *);
 extern int a2_re_set_syntax (int syntax);
 /* Is this really advertised?  */
 extern void a2_re_compile_fastmap (struct re_pattern_buffer *);
@@ -274,19 +274,19 @@ extern int a2_re_match_2 (struct re_pattern_buffer *, char *, int,
 		       char *, int, int, struct re_registers *, int);
 
 /* 4.2 bsd compatibility.  */
-// extern char *re_comp (char *);
+// extern const char *re_comp (char *);
 // extern int re_exec (char *);
 
 #else /* !__STDC__ */
 
-extern char *a2_re_compile_pattern ();
+extern const char *a2_re_compile_pattern ();
 /* Is this really advertised? */
 extern void a2_re_compile_fastmap ();
 extern int a2_re_search (), a2_re_search_2 ();
 extern int a2_re_match (), a2_re_match_2 ();
 
 /* 4.2 bsd compatibility.  */
-extern char *re_comp ();
+extern const char *re_comp ();
 extern int re_exec ();
 
 #endif /* __STDC__ */
