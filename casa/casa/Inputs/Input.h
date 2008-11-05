@@ -250,7 +250,7 @@ public:
   void close();
 
   // fill the parameter list from argc, argv command line args
-  void readArguments (Int argc, const char* argv[]);
+  void readArguments (int argc, char const* const* argv);
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
