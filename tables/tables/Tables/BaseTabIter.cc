@@ -55,7 +55,6 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
   cmpFunc_p (cmpFunc)
 {
     // If needed sort the table in order of the iteration keys.
-    // DontCare is sorted as ascending.
     // Sort comparison functions are not used.
     // The passed in compare functions are for the iteration.
     if (option == TableIterator::NoSort) {

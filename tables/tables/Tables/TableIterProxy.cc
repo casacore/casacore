@@ -47,7 +47,7 @@ TableIterProxy::TableIterProxy (const TableProxy& tab,
   }
   String corder(order);
   corder.downcase();
-  TableIterator::Order taborder = TableIterator::DontCare;
+  TableIterator::Order taborder = TableIterator::Ascending;
   if (! corder.empty()) {
     if (corder[0] == 'a') {
       taborder = TableIterator::Ascending;

@@ -121,7 +121,7 @@ class TableIterator
 public:
 
     // Define the possible iteration orders.
-    enum Order {Ascending=-1, DontCare=0, Descending=1};
+    enum Order {Ascending=-1, Descending=1};
     // Define the possible sorts.
     enum Option {QuickSort, HeapSort, InsSort, NoSort};
 
@@ -139,7 +139,7 @@ public:
     // Create a table iterator for the given table.
     // Each iteration step results in a Table containing all
     // rows in which the values in each given column is equal.
-    // An iteration order can be given; it default to DontCare.
+    // An iteration order can be given; it defaults to Ascending.
     // Per column a compare function can be given to use other compare
     // functions than the standard ones defined in Compare.h.
     // The compare functions are used for both the sort and the iteration.
@@ -153,9 +153,9 @@ public:
     // The default option is HeapSort.
     // <group>
     TableIterator (const Table&, const String& columnName,
-		   Order = DontCare, Option = HeapSort);
+		   Order = Ascending, Option = HeapSort);
     TableIterator (const Table&, const Block<String>& columnNames,
-		   Order = DontCare, Option = HeapSort);
+		   Order = Ascending, Option = HeapSort);
     // Give the iteration order per column.
     TableIterator (const Table&, const Block<String>& columnNames,
 		   const Block<Int>& orders, Option = HeapSort);
