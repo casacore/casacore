@@ -111,6 +111,29 @@ void setNaN(DComplex &val)
   val = DComplex(x, y);
 }
 
+// Inf functions
+
+Bool isInf(const Complex &val)
+{
+  return isInf(val.real()) || isInf(val.imag());
+}
+Bool isInf(const DComplex &val)
+{
+  return isInf(val.real()) || isInf(val.imag());
+}
+void setInf(Complex &val)
+{
+  Float x; setInf(x);
+  Float y; setInf(y);
+  val = Complex(x, y);
+}
+void setInf(DComplex &val)
+{
+  Double x; setInf(x);
+  Double y; setInf(y);
+  val = DComplex(x, y);
+}
+
 // fmod functions
 
 DComplex fmod(const DComplex &in, const DComplex &f) {

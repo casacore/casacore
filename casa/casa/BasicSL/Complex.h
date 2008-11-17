@@ -157,12 +157,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <group name="Complex_desc">
 // </group>
 
-// <summary>Complex NaN </summary>
+// <summary>Complex NaN and Infinity</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-// <group name="Complex NaN">
+// <group name="Complex NaN and Infinity">
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
+Bool isInf (const Complex& val);
+void setInf(Complex& val);
 // </group>
 
 // <summary>Complex comparisons </summary>
@@ -182,13 +184,14 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // </group>
 
 
-// <summary>DComplex NaN </summary>
+// <summary>DComplex NaN and Infinity</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-// <group name="DComplex NaN">
+// <group name="DComplex NaN and Infinity">
 Bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
-// </group>
+Bool isInf (const DComplex& val);
+void setInf(DComplex& val);
 
 // <summary> DComplex comparisons </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
