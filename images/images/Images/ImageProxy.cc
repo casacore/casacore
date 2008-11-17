@@ -39,6 +39,8 @@
 #include <images/Images/TempImage.h>
 #include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageExpr.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/HDF5Image.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
@@ -48,6 +50,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -341,7 +344,7 @@ namespace casa { //# name space casa begins
     } else {
       throw AipsError ("The lattice does not appear to be an image");
     }
-  }
+ }
 
   void ImageProxy::centreRefPix (CoordinateSystem& cSys, 
                                  const IPosition& shape) const
@@ -409,8 +412,10 @@ namespace casa { //# name space casa begins
       return ValueHolder (itsImageDouble->getSlice (slicer));
     } else if (itsImageComplex) {
       return ValueHolder (itsImageComplex->getSlice (slicer));
+    } else if (itsImageDComplex) {
+      return ValueHolder (itsImageDComplex->getSlice (slicer));
     }
-    return ValueHolder (itsImageDComplex->getSlice (slicer));
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   ValueHolder ImageProxy::getMask (const IPosition& blc,
@@ -428,8 +433,10 @@ namespace casa { //# name space casa begins
       return ValueHolder (itsImageDouble->getMaskSlice (slicer));
     } else if (itsImageComplex) {
       return ValueHolder (itsImageComplex->getMaskSlice (slicer));
+    } else if (itsImageDComplex) {
+      return ValueHolder (itsImageDComplex->getMaskSlice (slicer));
     }
-    return ValueHolder (itsImageDComplex->getMaskSlice (slicer));
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   void ImageProxy::putData (const ValueHolder& value,
@@ -445,9 +452,10 @@ namespace casa { //# name space casa begins
       itsImageDouble->putSlice (value.asArrayDouble(), ablc, ainc);
     } else if (itsImageComplex) {
       itsImageComplex->putSlice (value.asArrayComplex(), ablc, ainc);
-    } else {
+    } else if (itsImageDComplex) {
       itsImageDComplex->putSlice (value.asArrayDComplex(), ablc, ainc);
     }
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   Bool ImageProxy::hasLock (Bool writeLock)
@@ -469,21 +477,29 @@ namespace casa { //# name space casa begins
 
   ImageProxy ImageProxy::subImage (const IPosition& blc,
                                    const IPosition& trc, 
-                                   const IPosition& inc)
+                                   const IPosition& inc,
+                                   Bool dropDegenerate)
   {
+    AxesSpecifier axesSpec(!dropDegenerate);
     IPosition shp = shape();
     Slicer slicer(adjustBlc(blc, shp),
                   adjustTrc(trc, shp),
                   adjustInc(inc, shp),
                   Slicer::endIsLast);
     if (itsImageFloat) {
-      return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer, True));
+      return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer,
+                                            True, axesSpec));
     } else if (itsImageDouble) {
-      return ImageProxy(new SubImage<Double>(*itsImageDouble, slicer, True));
+      return ImageProxy(new SubImage<Double>(*itsImageDouble, slicer,
+                                             True, axesSpec));
     } else if (itsImageComplex) {
-      return ImageProxy(new SubImage<Complex>(*itsImageComplex, slicer, True));
+      return ImageProxy(new SubImage<Complex>(*itsImageComplex, slicer,
+                                              True, axesSpec));
+    } else if (itsImageDComplex) {
+      return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer,
+                                               True, axesSpec));
     }
-    return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer, True));
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   IPosition ImageProxy::adjustBlc (const IPosition& blc, const IPosition& shp)
@@ -541,8 +557,10 @@ namespace casa { //# name space casa begins
       return itsImageDouble->units().getName();
     } else if (itsImageComplex) {
       return itsImageComplex->units().getName();
+    } else if (itsImageDComplex) {
+      return itsImageDComplex->units().getName();
     }
-    return itsImageDComplex->units().getName();
+    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   Record ImageProxy::coordSys() const
@@ -562,8 +580,10 @@ namespace casa { //# name space casa begins
       itsImageDouble->imageInfo().toRecord (error, rec);
     } else if (itsImageComplex) {
       itsImageComplex->imageInfo().toRecord (error, rec);
-    } else {
+    } else if (itsImageDComplex) {
       itsImageDComplex->imageInfo().toRecord (error, rec);
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
     }
     return rec;
   }
@@ -577,12 +597,162 @@ namespace casa { //# name space casa begins
       rec = itsImageDouble->miscInfo();
     } else if (itsImageComplex) {
       rec = itsImageComplex->miscInfo();
-    } else {
+    } else if (itsImageDComplex) {
       rec = itsImageDComplex->miscInfo();
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
     }
     return Record(rec);
   }
 
+  void ImageProxy::toFits (const String& fileName, Bool overwrite,
+                           Bool velocity, Bool optical, Int bitpix,
+                           Double minpix, Double maxpix) const
+  {
+    Bool ok = False;
+    String error ("Currently only float images can be converted to FITS");
+    if (itsImageFloat) {
+      ok = ImageFITSConverter::ImageToFITS (error, *itsImageFloat, fileName,
+                                            HostInfo::memoryFree()/1024,
+                                            velocity, optical,
+                                            bitpix, minpix, maxpix,
+                                            overwrite, False, False);
+    }
+    if (!ok) {
+      throw AipsError (error);
+    }
+  }
+
+  Vector<String> ImageProxy::history() const
+  {
+    const LoggerHolder* logger;
+    if (itsImageFloat) {
+      logger = &itsImageFloat->logger();
+    } else if (itsImageDouble) {
+      logger = &itsImageDouble->logger();
+    } else if (itsImageComplex) {
+      logger = &itsImageComplex->logger();
+    } else if (itsImageDComplex) {
+      logger = &itsImageDComplex->logger();
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
+    }
+    list<string> l;
+    for (LoggerHolder::const_iterator iter = logger->begin();
+	 iter != logger->end();
+	 iter++) {
+      l.push_back (iter->message());
+    }
+    Vector<String> vec(l.size());
+    String* vecd = vec.data();
+    for (list<string>::const_iterator iter=l.begin(); iter!=l.end(); ++iter) {
+      *vecd++ = *iter;
+    }
+    return vec;
+  }
+
+  ImageProxy ImageProxy::copy (const String& fileName, Bool overwrite,
+                               Bool hdf5,
+                               Bool copyMask, const String& newMaskName,
+                               const IPosition& newTileShape) const
+  {
+    if (!overwrite) {
+      File file(fileName);
+      if (file.exists()) {
+        throw AipsError ("file " + fileName +
+                         " already exists and should not be overwritten");
+      }
+    }
+    if (itsImageFloat) {
+      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
+                                    newTileShape, *itsImageFloat));
+    } else if (itsImageDouble) {
+      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
+                                    newTileShape, *itsImageDouble));
+    } else if (itsImageComplex) {
+      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
+                                    newTileShape, *itsImageComplex));
+    } else if (itsImageDComplex) {
+      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
+                                    newTileShape, *itsImageDComplex));
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
+    }
+  }
+
+  TiledShape ImageProxy::makeTiledShape (const IPosition& newTileShape,
+                                         const IPosition& shape,
+                                         const IPosition& oldTileShape) const
+  {
+    if (! newTileShape.empty()) {
+      return TiledShape (shape, newTileShape);
+    }
+    return TiledShape (shape, oldTileShape);
+  }
+
+  // Definitions of templated functions.
+  template <typename T>
+  ImageInterface<T>* ImageProxy::copyImage (const String& fileName,
+                                            Bool hdf5, Bool copyMask,
+                                            const String& newMaskName, 
+                                            const IPosition& newTileShape,
+                                            const ImageInterface<T>& image) const
+  {
+    ImageInterface<T>* newImage;
+    TiledShape tiledShape (makeTiledShape (newTileShape,
+                                           image.shape(),
+                                           image.niceCursorShape()));
+    if (hdf5) {
+      newImage = new HDF5Image<T>  (tiledShape, image.coordinates(), fileName);
+    } else {
+      newImage = new PagedImage<T> (tiledShape, image.coordinates(), fileName);
+    }
+    newImage->copyData     (image);
+    newImage->setMiscInfo  (image.miscInfo());
+    newImage->setImageInfo (image.imageInfo());
+    newImage->setUnits     (image.units());
+    newImage->appendLog    (image.logger());
+    if (copyMask  &&  image.hasPixelMask()) {
+      // Generate mask name if not given
+      String maskName = newMaskName;
+      if (maskName.empty()) {
+        maskName = image.getDefaultMask();
+        if (maskName.empty()) {
+          maskName = newImage->makeUniqueRegionName ("mask", 0);
+        }
+      }
+      // Create a mask and make it the default mask.
+      ImageRegion mask (newImage->makeMask (maskName, False, True));
+      mask.asMask().copyData (image.pixelMask());
+    }
+    return newImage;
+  }
+
+  // Instantiation of templated functions.
+  template ImageInterface<Float>*
+  ImageProxy::copyImage (const String&,
+                         bool, bool,
+                         const String&, 
+                         const IPosition&,
+                         const ImageInterface<Float>&) const;
+  template ImageInterface<Double>*
+  ImageProxy::copyImage (const String&,
+                         bool, bool,
+                         const String&, 
+                         const IPosition&,
+                         const ImageInterface<Double>&) const;
+  template ImageInterface<Complex>*
+  ImageProxy::copyImage (const String&,
+                         bool, bool,
+                         const String&, 
+                         const IPosition&,
+                         const ImageInterface<Complex>&) const;
+  template ImageInterface<DComplex>*
+  ImageProxy::copyImage (const String&,
+                         bool, bool,
+                         const String&, 
+                         const IPosition&,
+                         const ImageInterface<DComplex>&) const;
 
 
 #if 0
@@ -3487,44 +3657,6 @@ ImageProxy::histograms(Record& histout, const Vector<Int>& axes,
     return True;
 }
 
-Vector<String>
-ImageProxy::history(Bool list, Bool browse)
-{
-    *itsLog << LogOrigin("image", "history");
-
-    //
-    if (browse) {
-      *itsLog << "Table browsing is not implemented yet!" << LogIO::POST;
-    }
-    Vector<String> t;
-    LoggerHolder& logger = pImage_p->logger();
-    //
-    uInt i = 1;
-    for (LoggerHolder::const_iterator iter = logger.begin();
-	 iter != logger.end();
-	 iter++,i++) {
-      if (list) {
-	if (!(iter->location()).empty()) {
-	  *itsLog << LogOrigin(iter->location());
-	} else {
-	  *itsLog << LogOrigin("image", "history");
-	}
-	*itsLog << endl << iter->message() << endl << LogIO::POST;
-      } else {
-	if (i > t.nelements()) {
-	  t.resize(t.nelements()+100, True);
-	}
-	t(i-1) = iter->message();
-      }
-    }
-    if (list) *itsLog << LogIO::POST;
-    //
-    if (!list) {
-      t.resize(i-1, True);
-    }
-    return t;
-}
-
 ImageInterface<Float> *
 ImageProxy::insert(const String& infile, Record& Region,
 		   const Vector<double>& locatePixel)
@@ -5789,61 +5921,6 @@ ImageProxy::summary(Record& header, const String& doppler, Bool list,
 
 }
 
-Bool
-ImageProxy::tofits(const String& fitsfile, Bool velocity,
-		   Bool optical, Int bitpix,
-		   Double minpix, Double maxpix,
-		   Record& pRegion, const String& mask,
-		   Bool overwrite, Bool dropDeg,
-		   Bool degLast)
-{
-
-    *itsLog << LogOrigin("image", "tofits");
-
-    //
-    // Convert image to FITS
-    //
-    String error;
-
-    // Check output file
-    if (!overwrite && !fitsfile.empty()) {
-      NewFile validfile;
-      String errmsg;
-      if (!validfile.valueOK(fitsfile, errmsg)) {
-	*itsLog << errmsg << LogIO::EXCEPTION;
-      }
-    }
-
-    // The SubImage that goes to the FITSCOnverter no longer will know
-    // the name of the parent mask, so spit it out here
-    if (pImage_p->isMasked()) {
-      *itsLog << LogIO::NORMAL << "Applying mask of name '"
-	      << pImage_p->getDefaultMask() << "'" << LogIO::POST;
-    }
-
-    // Convert region from Glish record to ImageRegion. Convert mask
-    // to ImageRegion and make SubImage.
-    ImageRegion* pRegionRegion = 0;
-    ImageRegion* pMaskRegion = 0;
-    AxesSpecifier axesSpecifier;
-    if (dropDeg) axesSpecifier = AxesSpecifier(False);
-    SubImage<Float> subImage =
-      makeSubImage (pRegionRegion, pMaskRegion, *pImage_p,
-		    *(tweakedRegionRecord(&pRegion)), mask, True,
-		    *itsLog, False, axesSpecifier);
-    delete pRegionRegion;
-    delete pMaskRegion;
-    //
-    Bool ok = ImageFITSConverter::ImageToFITS(error, subImage, fitsfile,
-                                              HostInfo::memoryFree()/1024,
-                                              velocity, optical,
-                                              bitpix, minpix, maxpix,
-					      overwrite, degLast);
-    if (!ok) *itsLog << error  << LogIO::EXCEPTION;
-
-    return ok;
-
-}
 
 Bool
 ImageProxy::toASCII(const String& outfile, Record& region,

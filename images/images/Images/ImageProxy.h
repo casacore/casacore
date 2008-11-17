@@ -30,8 +30,9 @@
 #define IMAGES_IMAGEPROXY_H
 
 //# Includes
-#include <lattices/Lattices/LatticeBase.h>
 #include <images/Images/MaskSpecifier.h>
+#include <lattices/Lattices/LatticeBase.h>
+#include <lattices/Lattices/TiledShape.h>
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Containers/ValueHolder.h>
 
@@ -92,7 +93,7 @@ namespace casa {
     Bool isPersistent() const;
 
     // Get the name of the image.
-    String name (Bool stripPath = False) const;
+    String name (Bool stripPath=False) const;
 
     // Get the shape of the image.
     IPosition shape() const;
@@ -127,7 +128,7 @@ namespace casa {
     // Try to acquire a read or write lock.
     // nattempts=0 means wait until acquired. Otherwise every second an
     // attempt is done.
-    void lock (Bool writeLock = False, Int nattempts = 0);
+    void lock (Bool writeLock=False, Int nattempts=0);
 
     // Release the lock acquired by lock().
     void unlock();
@@ -135,7 +136,8 @@ namespace casa {
     // Form a new (virtual) image being a subset of the image.
     ImageProxy subImage (const IPosition& blc,
                          const IPosition& trc, 
-                         const IPosition& inc);
+                         const IPosition& inc,
+                         Bool dropDegenerate=True);
 
     // Get the brightness unit.
     String unit() const;
@@ -149,6 +151,23 @@ namespace casa {
     // Get the miscellaneous info.
     Record miscInfo() const;
 
+    // Get the history.
+    Vector<String> history() const;
+
+    // Write the image in FITS format.
+    // See class ImageFITSConverter for a description of the arguments.
+    // Currently only a float image can be written to FITS.
+    void toFits (const String& fitsfile, Bool overwrite=True,
+                 Bool velocity=True, Bool optical=True, Int bitpix=-32,
+                 Double minpix=-1, Double maxpix=1) const;
+
+    // Write the image to an image file with the given name.
+    // An exception is thrown if the name is the name of an already open image.
+    ImageProxy copy (const String& fileName, Bool overwrite=True,
+                     Bool hdf5=False,
+                     Bool copyMask=True, const String& newMaskName=String(),
+                     const IPosition& newTileShape=IPosition()) const;
+
     // Check and adjust blc, trc, or inc using the shape.
     // <group>
     static IPosition adjustBlc (const IPosition& blc, const IPosition& shp);
@@ -156,10 +175,9 @@ namespace casa {
     static IPosition adjustInc (const IPosition& inc, const IPosition& shp);
     // </group>
 
+
     /*
       CoordinateSystem coordSys (const Vector<Int>& axes);
-    Vector<String> history(Bool list = False, Bool browse = True);
-
     ImageProxy regrid (const String& outfile, 
                        const IPosition& shape, 
                        const Record& csys, const Vector<Int>& axes,
@@ -195,31 +213,20 @@ namespace casa {
                       Bool dropdeg = False,
                       Bool overwrite = False);
 
-    Bool rename (const String& name, Bool overwrite = False);
 
     Bool setbrightnessunit (const String& unit);
 
-    bool setcoordsys (const Record& csys);
+    Bool setcoordsys (const Record& csys);
 
-    bool sethistory (const String& origin, const Vector<String>& history);
+    Bool sethistory (const String& origin, const Vector<String>& history);
 
-    bool setmiscinfo (const Record& info);
+    Bool setmiscinfo (const Record& info);
 
     ImageProxy subimage(const String& outfile, Record& region, 
                         const String& mask, 
                         Bool dropdeg = False, 
                         Bool overwrite = False, 
                         Bool list = True);
-
-    Vector<String> summary(Record& header, const String& doppler = "RADIO", 
-			    Bool list = True, 
-			    Bool pixelorder = True);
-
-    Bool tofits(const String& outfile, Bool velocity, Bool optical,
-		Int bitpix, Double minpix, Double maxpix, 
-		Record& region, const String& mask, 
-		Bool overwrite = False, Bool dropdeg = False, 
-		Bool deglast = False);
 
     Vector<Double> topixel(Record& value);
 
@@ -261,6 +268,21 @@ namespace casa {
     // Centre all axes except the Stokes one.
     void centreRefPix (CoordinateSystem& cSys, 
                        const IPosition& shape) const;
+
+    // Copy the image to an image (PagedImage or HDF5Image) with the given name.
+    // A new tile shape can be given.
+    // If the image is masked, the mask can be copied as well.
+    template <typename T>
+    ImageInterface<T>* copyImage (const String& fileName,
+                                  Bool hdf5, Bool copyMask,
+                                  const String& newMaskName, 
+                                  const IPosition& newTileShape,
+                                  const ImageInterface<T>& image) const;
+
+    // Form a tiled shape from the current shape and a possible new tile shape.
+    TiledShape makeTiledShape (const IPosition& newTileShape,
+                               const IPosition& shape,
+                               const IPosition& oldTileShape) const;
 
     //# Data members.
     //# itsLattice is the real data; the pointers are for type convenience only.
