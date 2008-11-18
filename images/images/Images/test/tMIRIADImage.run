@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ ${#AIPSPATH} = 0 ]
+then 
+   echo "UNTESTED: tMIRIADImage (AIPSPATH not defined)"
+   exit 3
+fi
+
 DATAFILE=`echo $AIPSPATH | awk '{print $1}'`/data/demo/Images/imagetestimage.mir
 
 if [ -f $DATAFILE ]

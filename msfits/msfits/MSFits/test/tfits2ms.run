@@ -2,8 +2,8 @@
 #-----------------------------------------------------------------------------
 # Usage: tfits2ms.run
 #-----------------------------------------------------------------------------
-# This script executes the program tMSConcat to test if new the
-# measurement set concatrenation is working.
+# This script executes the program tfits2MS to test if the
+# conversion of MS to fits is working.
 
 # The script supplies the names of all test tables found in the system.
 # It is meant to be run from assay, but can also be used standalone.
@@ -11,7 +11,7 @@
 # $Id$
 #-----------------------------------------------------------------------------
 
-  if [ "$AIPSPATH" = "" ]
+  if [ ${#AIPSPATH} = 0 ]
   then
      echo "UNTESTED: tfits2ms.run (AIPSPATH not defined)"
      exit 3

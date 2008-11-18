@@ -11,7 +11,7 @@
 # $Id$
 #-----------------------------------------------------------------------------
 
-  if [ "$AIPSPATH" == "" ]
+  if [ ${#AIPSPATH} = 0 ]
   then
      echo "UNTESTED: tMSSelection.run (AIPSPATH not defined)"
      exit 3
