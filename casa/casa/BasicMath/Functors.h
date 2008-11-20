@@ -49,7 +49,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<typename T> struct IsInf
   {
     bool operator() (T value) const
-      { return isNaN (value); }
+      { return isInf (value); }
   };
 
   // Functor to test if two values are relatively near each other.
