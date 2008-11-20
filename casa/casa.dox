@@ -46,7 +46,7 @@ namespace casa {
 //    <a href="group__casaInputs.html">command line input</a>,
 //    <a href="group__casaLogging.html">logging</a>,
 //    <a href="group__casaBasicSL.html">STL wrappers</a>, and
-//    <a href="group__casaBasicMath.html">basic math classes</a>
+//    <a href="group__casaBasicMath.html">basic math classes and functors</a>
 // </ul>
 // It is important to note that most of the code has been developed before STL
 // came into existence, so several classes in modules Containers

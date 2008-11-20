@@ -50,6 +50,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // The following functionality is available:
 // <ul>
+//  <li> Templated functors that can be used with <src>std::transform</src>
+//       to apply functions like sin, near, sqrt, etc. to iterators on
+//       sequences like Array, Block, std::vector, etc.
 //  <li> Templated functions <linkto group="ConvertScalar.h#Scalar conversion">
 //       ConvertScalar</linkto>
 //       to convert scalars from one type to another.

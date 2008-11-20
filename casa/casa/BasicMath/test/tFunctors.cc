@@ -26,9 +26,10 @@
 //# $Id$
 
 #include <casa/aips.h>
+#include <casa/BasicMath/Functors.h>
+#include <casa/OS/Timer.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
-#include <casa/BasicMath/Functors.h>
 #include <vector>
 
 
