@@ -39,7 +39,7 @@ extern "C" {
 /* Define number of parens for which we record the beginnings and ends.
    This affects how much space the `struct re_registers' type takes up.  */
 #ifndef RE_NREGS
-#define RE_NREGS 10
+#define RE_NREGS 32
 #endif
 
 #define BYTEWIDTH 8

@@ -215,26 +215,22 @@ String Regex::fromPattern(const String &pattern)
 		result[len++] = '\\';
 		break;
 	    case '{':
-		// Opening brace gets ((
-		result[len++] = '(';
+		// Opening brace gets (
 		c = '(';
 		bracecount++;
 		break;
 	    case ',':
-		// Comma after opening brace gets )|(
+		// Comma after opening brace gets |
 		// Otherwise it's still a comma.
 		if (bracecount) {
-		    result[len++] = ')';
-		    result[len++] = '|';
-		    c = '(';
+		    c = '|';
 		}
 		break;
 	    case '}':
-		// Closing brace after opening brace gets ))
+		// Closing brace after opening brace gets )
 		// Otherwise it's still an opening brace.
 		if (bracecount) {
 		    bracecount--;
-		    result[len++] = ')';
 		    c = ')';
 		}
 		break;

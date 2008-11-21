@@ -52,6 +52,7 @@
 #include <regex.h>
 #endif
 
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Hack to avoid requiring alloca. Define an instance of this at the beginning
@@ -834,11 +835,9 @@ a2_re_compile_pattern (char *pattern, int size,
               /* Laststart should point to the start_memory that we are about
                  to push (unless the pattern has RE_NREGS or more ('s).  */
               *stackp++ = b - bufp->buffer;    
-	      if (regnum < RE_NREGS)
-	        {
-		  BUFPUSH (start_memory);
-		  BUFPUSH (regnum);
-	        }
+	      if (regnum >= RE_NREGS) goto too_many_paren;
+              BUFPUSH (start_memory);
+              BUFPUSH (regnum);
 	      *stackp++ = fixup_jump ? fixup_jump - bufp->buffer + 1 : 0;
 	      *stackp++ = regnum++;
 	      *stackp++ = begalt - bufp->buffer;
@@ -1172,6 +1171,10 @@ a2_re_compile_pattern (char *pattern, int size,
  nesting_too_deep:
   static char* toodeep = "Nesting too deep";
   return toodeep;
+
+ too_many_paren:
+  static char* toomanyparen = "Too many parentheses";
+  return toomanyparen;
 
  too_big:
   static char* toobig = "Regular expression too big";
