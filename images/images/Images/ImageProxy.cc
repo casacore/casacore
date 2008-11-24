@@ -35,6 +35,7 @@
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/ImageRegrid.h>
 #include <images/Images/ImageSummary.h>
+#include <images/Images/ImageStatistics.h>
 #include <images/Images/ImageOpener.h>
 #include <images/Images/TempImage.h>
 #include <images/Images/ImageExprParse.h>
@@ -754,8 +755,225 @@ namespace casa { //# name space casa begins
                          const IPosition&,
                          const ImageInterface<DComplex>&) const;
 
+  Record ImageProxy::statistics (const IPosition& axes,
+                                 const String& mask,
+                                 const ValueHolder& minMaxValues,
+                                 Bool exclude,
+                                 Bool robust) const
+  {
+    if (itsImageFloat) {
+      return makeStatistics (*itsImageFloat, axes, mask,
+                             minMaxValues, exclude, robust);
+    } else if (itsImageDouble) {
+      throw AipsError("No statistics possible yet on double precision images");
+    } else if (itsImageComplex) {
+      throw AipsError("No statistics possible on complex images");
+    } else if (itsImageDComplex) {
+      throw AipsError("No statistics possible on dcomplex images");
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
+    }
+  }
+
+  template<typename T>
+  Record ImageProxy::makeStatistics (const ImageInterface<T>& image,
+                                     const IPosition& axes,
+                                     const String& mask,
+                                     const ValueHolder& minMaxValues,
+                                     Bool exclude,
+                                     Bool robust) const
+  {
+    ImageStatistics<T> stats(image, False, False);
+    // Set cursor axes.
+    Vector<Int> tmpaxes(axes);
+    if (!stats.setAxes(tmpaxes)) {
+      throw AipsError (stats.errorMessage());
+    }
+    // Set pixel include/exclude ranges.
+    Vector<T> minMax;
+    minMaxValues.getValue (minMax);
+    if (minMax.size() > 0) {
+      if (exclude) {
+        stats.setInExCludeRange (Vector<T>(), minMax, False);
+      } else {
+        stats.setInExCludeRange (minMax, Vector<T>(), False);
+      }
+    }
+    // Get statistics.
+    Array<Double> npts, sum, sumsquared, min, max, mean, sigma;
+    Array<Double> rms, fluxDensity, med, medAbsDevMed, quartile;
+    if (robust) {
+      stats.getStatistic (med, LatticeStatsBase::MEDIAN);
+      stats.getStatistic (medAbsDevMed, LatticeStatsBase::MEDABSDEVMED);
+      stats.getStatistic (quartile, LatticeStatsBase::QUARTILE);
+    }
+    stats.getStatistic (npts, LatticeStatsBase::NPTS);
+    stats.getStatistic (sum, LatticeStatsBase::SUM);
+    stats.getStatistic (sumsquared, LatticeStatsBase::SUMSQ);
+    stats.getStatistic (min, LatticeStatsBase::MIN);
+    stats.getStatistic (max, LatticeStatsBase::MAX);
+    stats.getStatistic (mean, LatticeStatsBase::MEAN);
+    stats.getStatistic (sigma, LatticeStatsBase::SIGMA);
+    stats.getStatistic (rms, LatticeStatsBase::RMS);
+    stats.getStatistic (fluxDensity, LatticeStatsBase::FLUX);
+    Record retval;
+    retval.define ("npts", npts);
+    retval.define ("sum", sum);
+    retval.define ("sumsq", sumsquared);
+    retval.define ("min", min);
+    retval.define ("max", max);
+    retval.define ("mean", mean);
+    if (robust) {
+      retval.define ("median", med);
+      retval.define ("medabsdevmed", medAbsDevMed);
+      retval.define ("quartile", quartile);
+    }
+    retval.define ("sigma", sigma);
+    retval.define ("rms", rms);
+    ////retval.define ("flux", fluxDensity);
+    IPosition minPos, maxPos;
+    if (stats.getMinMaxPos(minPos, maxPos)) {
+      if (minPos.nelements() > 0  &&  maxPos.nelements() > 0) {
+        retval.define ("minpos", minPos.asVector());
+        retval.define ("maxpos", maxPos.asVector());
+      }
+    }
+    return retval;
+  }
+
+  // Instantiation of templated functions.
+  template Record
+  ImageProxy::makeStatistics (const ImageInterface<Float>&,
+                              const IPosition&,
+                              const String&,
+                              const ValueHolder&,
+                              Bool,
+                              Bool) const;
+
+  ImageProxy ImageProxy::regrid (const Vector<Int>& axes,
+                                 const String& outFile,
+                                 Bool overwrite,
+                                 const IPosition& shape,
+                                 const Record& coordSys,
+                                 const String& method,
+                                 Int decimate,
+                                 Bool replicate,
+                                 Bool doRefChange,
+                                 Bool forceRegrid)
+  {
+    if (!overwrite) {
+      File file(outFile);
+      if (file.exists()) {
+        throw AipsError ("file " + outFile +
+                         " already exists and should not be overwritten");
+      }
+    }
+    if (itsImageFloat) {
+      return doRegrid (*itsImageFloat, axes, outFile, overwrite,
+                       shape, coordSys, method,
+                       decimate, replicate, doRefChange, forceRegrid);
+    } else if (itsImageDouble) {
+      throw AipsError("No regrid possible yet on double precision images");
+    } else if (itsImageComplex) {
+      throw AipsError("No regrid possible on complex images");
+    } else if (itsImageDComplex) {
+      throw AipsError("No regrid possible on dcomplex images");
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
+    }
+  }
+
+  template<typename T>
+  ImageProxy ImageProxy::doRegrid (const ImageInterface<T>& image,
+                                   const Vector<Int>& axes,
+                                   const String& outFile,
+                                   Bool overwrite,
+                                   const IPosition& shape,
+                                   const Record& coordSys,
+                                   const String& method,
+                                   Int decimate,
+                                   Bool replicate,
+                                   Bool doRefChange,
+                                   Bool forceRegrid)
+  {
+    String method2 = method;
+    method2.upcase();
+    IPosition outShape;
+    if (shape.size() == 0  ||  shape[0] == -1) {
+      outShape = image.shape();
+    } else {
+      outShape = shape;
+    }
+    // Deal with axes
+    IPosition axes2(axes);
+    // Make CoordinateSystem from user given.
+    CoordinateSystem cSysTo   = makeCoordinateSystem (coordSys, outShape);
+    CoordinateSystem cSysFrom = image.coordinates();
+    CoordinateSystem* pCSTo;
+    if(cSysTo.nCoordinates() == 0){
+      cSysTo = cSysFrom;
+    }
+    cSysTo.setObsInfo (cSysFrom.obsInfo());
+    // Now build a CS which copies the user specified Coordinate for
+    // axes to be regridded and the input image Coordinate for axes not
+    // to be regridded
+    LogIO log;
+    CoordinateSystem cSys =
+      ImageRegrid<T>::makeCoordinateSystem (log, cSysTo, cSysFrom, axes2);
+    if (cSys.nPixelAxes() != outShape.nelements()) {
+      throw AipsError("The number of pixel axes in the output shape and "
+                      "Coordinate System must be the same");
+    }
+    // Create the image and mask
+    ImageInterface<Float>* pImOut;
+    if (outFile.empty()) {
+      pImOut = new TempImage<Float>(outShape, cSys);
+    } else {
+      pImOut = new PagedImage<Float>(outShape, cSys, outFile);
+      /// make hdf5 if image is hdf5
+    }
+    // Create proxy from it, so it gets deleted in case of an exception.
+    ImageProxy proxy(pImOut);
+    pImOut->set(0.0);
+    ImageUtilities::copyMiscellaneous (*pImOut, image);
+    Interpolate2D::Method imethod = Interpolate2D::stringToMethod(method);
+    IPosition dummy;
+    ImageRegrid<T> ir;
+    ir.disableReferenceConversions (!doRefChange);
+    ir.regrid (*pImOut, imethod, axes2, image, replicate, decimate,
+               True, forceRegrid);
+    return proxy;
+  }
+
+  CoordinateSystem
+  ImageProxy::makeCoordinateSystem (const Record& coordinates,
+                                    const IPosition& shape) const
+  {
+    CoordinateSystem* csp;
+    if (coordinates.nfields() == 1) {
+      // Must be a record as an element
+      Record tmp(coordinates.asRecord(RecordFieldId(0)));
+      csp = CoordinateSystem::restore (tmp, "");
+    } else {
+      csp = CoordinateSystem::restore (coordinates, "");
+    }
+    CoordinateSystem cs(*csp);
+    delete csp;
+    // Fix up any body longitude ranges.
+    String errMsg;
+    if (!CoordinateUtil::cylindricalFix (cs, errMsg, shape)) {
+      throw AipsError (errMsg);
+    }
+    return cs;
+  }
+
 
 #if 0
+  void ImageProxy::moments()
+  {
+  }
+
+
 Bool ImageProxy::toRecord(RecordInterface& rec){
 
 
@@ -6352,30 +6570,6 @@ Bool ImageProxy::makeExternalImage (PtrHolder<ImageInterface<Float> >& image,
   } else {
     return False;
   }
-}
-
-CoordinateSystem*
-ImageProxy::makeCoordinateSystem(const Record& coordinates,
-				 const IPosition& shape) const
-{
-  CoordinateSystem* pCS = 0;
-  if (coordinates.nfields() ==1){ // must be a record as an element
-    Record tmp(coordinates.asRecord(RecordFieldId(0)));
-    pCS = CoordinateSystem::restore(tmp, "");
-
-  }
-  else{
-    pCS = CoordinateSystem::restore(coordinates, "");
-  }
-
-  // Fix up any body longitude ranges...
-  String errMsg;
-  if (!CoordinateUtil::cylindricalFix (*pCS, errMsg, shape)) {
-    *itsLog << LogOrigin("image", "makeCoordinateSystem");
-    *itsLog << LogIO::WARN << errMsg << LogIO::POST;
-  }
-  //
-  return pCS;
 }
 
 void ImageProxy::set_cache(const IPosition &chunk_shape) const
