@@ -194,7 +194,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       return LatticeExprNode (*itsImageDComplex);
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
+    throw AipsError ("ImageProxy does not contain an image object");
   }
 
   void ImageProxy::makeImage (const Array<Float>& array)
@@ -417,7 +417,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       return ValueHolder (itsImageDComplex->getSlice (slicer));
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
+    throw AipsError ("ImageProxy does not contain an image object");
   }
 
   ValueHolder ImageProxy::getMask (const IPosition& blc,
@@ -438,7 +438,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       return ValueHolder (itsImageDComplex->getMaskSlice (slicer));
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
+    throw AipsError ("ImageProxy does not contain an image object");
   }
 
   void ImageProxy::putData (const ValueHolder& value,
@@ -457,7 +457,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       itsImageDComplex->putSlice (value.asArrayDComplex(), ablc, ainc);
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
   }
 
@@ -502,7 +502,7 @@ namespace casa { //# name space casa begins
       return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer,
                                                True, axesSpec));
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
+    throw AipsError ("ImageProxy does not contain an image object");
   }
 
   IPosition ImageProxy::adjustBlc (const IPosition& blc, const IPosition& shp)
@@ -563,7 +563,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       return itsImageDComplex->units().getName();
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
+    throw AipsError ("ImageProxy does not contain an image object");
   }
 
   Record ImageProxy::coordSys() const
@@ -586,7 +586,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       itsImageDComplex->imageInfo().toRecord (error, rec);
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
     return rec;
   }
@@ -603,7 +603,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       rec = itsImageDComplex->miscInfo();
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
     return Record(rec);
   }
@@ -638,7 +638,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       logger = &itsImageDComplex->logger();
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
     list<string> l;
     for (LoggerHolder::const_iterator iter = logger->begin();
@@ -679,7 +679,7 @@ namespace casa { //# name space casa begins
       return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
                                     newTileShape, *itsImageDComplex));
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
   }
 
@@ -779,7 +779,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       throw AipsError("No statistics possible on dcomplex images");
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
   }
 
@@ -890,7 +890,7 @@ namespace casa { //# name space casa begins
     } else if (itsImageDComplex) {
       throw AipsError("No regrid possible on dcomplex images");
     } else {
-      throw AipsError ("ImapeProxy does not contain an image object");
+      throw AipsError ("ImageProxy does not contain an image object");
     }
   }
 
