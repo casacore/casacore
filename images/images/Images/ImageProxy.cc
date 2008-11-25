@@ -456,8 +456,9 @@ namespace casa { //# name space casa begins
       itsImageComplex->putSlice (value.asArrayComplex(), ablc, ainc);
     } else if (itsImageDComplex) {
       itsImageDComplex->putSlice (value.asArrayDComplex(), ablc, ainc);
+    } else {
+      throw AipsError ("ImapeProxy does not contain an image object");
     }
-    throw AipsError ("ImapeProxy does not contain an image object");
   }
 
   Bool ImageProxy::hasLock (Bool writeLock)
