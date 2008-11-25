@@ -177,7 +177,7 @@ namespace casa {
     // and max=abs(val).
     // Robust statistics (Median, MedAbsDevMed, and Quartile) can be returned
     // too.
-    Record ImageProxy::statistics (const IPosition& axes,
+    Record ImageProxy::statistics (const Vector<Int>& axes,
                                    const String& mask,
                                    const ValueHolder& minMaxValues,
                                    Bool exclude = False,
@@ -293,7 +293,7 @@ namespace casa {
     // Calculate the statistics.
     template<typename T>
     Record ImageProxy::makeStatistics (const ImageInterface<T>& image,
-                                       const IPosition& axes,
+                                       const Vector<Int>& axes,
                                        const String& mask,
                                        const ValueHolder& minMaxValues,
                                        Bool exclude,

@@ -46,6 +46,7 @@
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Containers/Record.h>
+#include <casa/Arrays/ArrayMath.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
@@ -729,7 +730,7 @@ namespace casa { //# name space casa begins
     return newImage;
   }
 
-  // Instantiation of templated functions.
+  // Instantiation of templated copy functions.
   template ImageInterface<Float>*
   ImageProxy::copyImage (const String&,
                          bool, bool,
@@ -755,14 +756,20 @@ namespace casa { //# name space casa begins
                          const IPosition&,
                          const ImageInterface<DComplex>&) const;
 
-  Record ImageProxy::statistics (const IPosition& axes,
+  Record ImageProxy::statistics (const Vector<Int>& axes,
                                  const String& mask,
                                  const ValueHolder& minMaxValues,
                                  Bool exclude,
                                  Bool robust) const
   {
+    // Default for cursor is all axes.
+    Vector<Int> axesc(axes);
+    if (axesc.empty()) {
+      axesc.resize (ndim());
+      indgen (axesc);
+    }
     if (itsImageFloat) {
-      return makeStatistics (*itsImageFloat, axes, mask,
+      return makeStatistics (*itsImageFloat, axesc, mask,
                              minMaxValues, exclude, robust);
     } else if (itsImageDouble) {
       throw AipsError("No statistics possible yet on double precision images");
@@ -777,7 +784,7 @@ namespace casa { //# name space casa begins
 
   template<typename T>
   Record ImageProxy::makeStatistics (const ImageInterface<T>& image,
-                                     const IPosition& axes,
+                                     const Vector<Int>& axes,
                                      const String& mask,
                                      const ValueHolder& minMaxValues,
                                      Bool exclude,
@@ -785,13 +792,16 @@ namespace casa { //# name space casa begins
   {
     ImageStatistics<T> stats(image, False, False);
     // Set cursor axes.
-    Vector<Int> tmpaxes(axes);
-    if (!stats.setAxes(tmpaxes)) {
+    if (!stats.setAxes(axes)) {
       throw AipsError (stats.errorMessage());
     }
     // Set pixel include/exclude ranges.
+    // An empty python sequence is set to an array of strings.
     Vector<T> minMax;
-    minMaxValues.getValue (minMax);
+    if (minMaxValues.dataType() != TpArrayString  ||
+        minMaxValues.asArrayString().size() != 0) {
+      minMaxValues.getValue (minMax);
+    }
     if (minMax.size() > 0) {
       if (exclude) {
         stats.setInExCludeRange (Vector<T>(), minMax, False);
@@ -841,10 +851,10 @@ namespace casa { //# name space casa begins
     return retval;
   }
 
-  // Instantiation of templated functions.
+  // Instantiation of templated statistics functions.
   template Record
   ImageProxy::makeStatistics (const ImageInterface<Float>&,
-                              const IPosition&,
+                              const Vector<Int>&,
                               const String&,
                               const ValueHolder&,
                               Bool,
@@ -944,6 +954,20 @@ namespace casa { //# name space casa begins
                True, forceRegrid);
     return proxy;
   }
+
+  // Instantiation of templated regrid functions.
+  template
+  ImageProxy ImageProxy::doRegrid (const ImageInterface<Float>& image,
+                                   const Vector<Int>& axes,
+                                   const String& outFile,
+                                   Bool overwrite,
+                                   const IPosition& shape,
+                                   const Record& coordSys,
+                                   const String& method,
+                                   Int decimate,
+                                   Bool replicate,
+                                   Bool doRefChange,
+                                   Bool forceRegrid);
 
   CoordinateSystem
   ImageProxy::makeCoordinateSystem (const Record& coordinates,
