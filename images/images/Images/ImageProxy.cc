@@ -47,6 +47,7 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
@@ -128,6 +129,25 @@ namespace casa { //# name space casa begins
       itsImageDComplex (0)
   {
     concatImages (images, axis);
+  }
+
+  ImageProxy::ImageProxy (const ImageProxy& that)
+    : itsLattice       (that.itsLattice),
+      itsImageFloat    (that.itsImageFloat),
+      itsImageDouble   (that.itsImageDouble),
+      itsImageComplex  (that.itsImageComplex),
+      itsImageDComplex (that.itsImageDComplex)
+  {}
+
+  ImageProxy& ImageProxy::operator= (const ImageProxy& that)
+  {
+    if (this != &that) {
+      itsLattice       = that.itsLattice;
+      itsImageFloat    = that.itsImageFloat;
+      itsImageDouble   = that.itsImageDouble;
+      itsImageComplex  = that.itsImageComplex;
+      itsImageDComplex = that.itsImageDComplex;
+    }
   }
 
   ImageProxy::~ImageProxy()
@@ -654,10 +674,10 @@ namespace casa { //# name space casa begins
     return vec;
   }
 
-  ImageProxy ImageProxy::copy (const String& fileName, Bool overwrite,
-                               Bool hdf5,
-                               Bool copyMask, const String& newMaskName,
-                               const IPosition& newTileShape) const
+  void ImageProxy::saveAs (const String& fileName, Bool overwrite,
+                           Bool hdf5,
+                           Bool copyMask, const String& newMaskName,
+                           const IPosition& newTileShape) const
   {
     if (!overwrite) {
       File file(fileName);
@@ -667,17 +687,17 @@ namespace casa { //# name space casa begins
       }
     }
     if (itsImageFloat) {
-      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
-                                    newTileShape, *itsImageFloat));
+      saveImage (fileName, hdf5, copyMask, newMaskName,
+                 newTileShape, *itsImageFloat);
     } else if (itsImageDouble) {
-      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
-                                    newTileShape, *itsImageDouble));
+      saveImage (fileName, hdf5, copyMask, newMaskName,
+                 newTileShape, *itsImageDouble);
     } else if (itsImageComplex) {
-      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
-                                    newTileShape, *itsImageComplex));
+      saveImage (fileName, hdf5, copyMask, newMaskName,
+                 newTileShape, *itsImageComplex);
     } else if (itsImageDComplex) {
-      return ImageProxy (copyImage (fileName, hdf5, copyMask, newMaskName,
-                                    newTileShape, *itsImageDComplex));
+      saveImage (fileName, hdf5, copyMask, newMaskName,
+                 newTileShape, *itsImageDComplex);
     } else {
       throw AipsError ("ImageProxy does not contain an image object");
     }
@@ -695,11 +715,11 @@ namespace casa { //# name space casa begins
 
   // Definitions of templated functions.
   template <typename T>
-  ImageInterface<T>* ImageProxy::copyImage (const String& fileName,
-                                            Bool hdf5, Bool copyMask,
-                                            const String& newMaskName, 
-                                            const IPosition& newTileShape,
-                                            const ImageInterface<T>& image) const
+  void ImageProxy::saveImage (const String& fileName,
+                              Bool hdf5, Bool copyMask,
+                              const String& newMaskName, 
+                              const IPosition& newTileShape,
+                              const ImageInterface<T>& image) const
   {
     ImageInterface<T>* newImage;
     TiledShape tiledShape (makeTiledShape (newTileShape,
@@ -725,33 +745,33 @@ namespace casa { //# name space casa begins
         }
       }
       // Create a mask and make it the default mask.
-      ImageRegion mask (newImage->makeMask (maskName, False, True));
+      ImageRegion mask (newImage->makeMask (maskName, True, True));
       mask.asMask().copyData (image.pixelMask());
     }
-    return newImage;
+    delete newImage;
   }
 
-  // Instantiation of templated copy functions.
-  template ImageInterface<Float>*
-  ImageProxy::copyImage (const String&,
+  // Instantiation of templated saveImage functions.
+  template void
+  ImageProxy::saveImage (const String&,
                          bool, bool,
                          const String&, 
                          const IPosition&,
                          const ImageInterface<Float>&) const;
-  template ImageInterface<Double>*
-  ImageProxy::copyImage (const String&,
+  template void
+  ImageProxy::saveImage (const String&,
                          bool, bool,
                          const String&, 
                          const IPosition&,
                          const ImageInterface<Double>&) const;
-  template ImageInterface<Complex>*
-  ImageProxy::copyImage (const String&,
+  template void
+  ImageProxy::saveImage (const String&,
                          bool, bool,
                          const String&, 
                          const IPosition&,
                          const ImageInterface<Complex>&) const;
-  template ImageInterface<DComplex>*
-  ImageProxy::copyImage (const String&,
+  template void
+  ImageProxy::saveImage (const String&,
                          bool, bool,
                          const String&, 
                          const IPosition&,

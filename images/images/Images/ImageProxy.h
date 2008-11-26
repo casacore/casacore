@@ -76,6 +76,12 @@ namespace casa {
     ImageProxy (const vector<ImageProxy>& images, Int axis,
                 Int dummy1=0, Int dummy2=0);
 
+    // Copy constructor (reference semantics).
+    ImageProxy (const ImageProxy&);
+
+    // Assignment (reference semantics).
+    ImageProxy& operator= (const ImageProxy&);
+
      ~ImageProxy();
 
     // Open an image in the file/table with the given name.
@@ -164,10 +170,10 @@ namespace casa {
 
     // Write the image to an image file with the given name.
     // An exception is thrown if the name is the name of an already open image.
-    ImageProxy copy (const String& fileName, Bool overwrite=True,
-                     Bool hdf5=False,
-                     Bool copyMask=True, const String& newMaskName=String(),
-                     const IPosition& newTileShape=IPosition()) const;
+    void saveAs (const String& fileName, Bool overwrite=True,
+                 Bool hdf5=False,
+                 Bool copyMask=True, const String& newMaskName=String(),
+                 const IPosition& newTileShape=IPosition()) const;
 
     // Return the statistics for the given axes.
     // E.g. fn axes 0,1 is given in a 3-dim image, the statistics are calculated
@@ -279,11 +285,11 @@ namespace casa {
     // A new tile shape can be given.
     // If the image is masked, the mask can be copied as well.
     template <typename T>
-    ImageInterface<T>* copyImage (const String& fileName,
-                                  Bool hdf5, Bool copyMask,
-                                  const String& newMaskName, 
-                                  const IPosition& newTileShape,
-                                  const ImageInterface<T>& image) const;
+    void saveImage (const String& fileName,
+                    Bool hdf5, Bool copyMask,
+                    const String& newMaskName, 
+                    const IPosition& newTileShape,
+                    const ImageInterface<T>& image) const;
 
     // Form a tiled shape from the current shape and a possible new tile shape.
     TiledShape makeTiledShape (const IPosition& newTileShape,
