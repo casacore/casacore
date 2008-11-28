@@ -218,7 +218,7 @@ VECLOG_LA_OP_AA ( ||, Cube  )
 template<class T> LogicalArray near(const Array<T> &l, const Array<T> &r,
 				    Double tol);
 template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
-				    Double tol);
+                                       Double tol);
 //
 // This only makes sense if the array element type is logical valued.
 // <group>
@@ -270,6 +270,14 @@ template<class T> Bool allOR (const T &val, const Array<T> &array);
 //
 // </group>
 
+
+// Element by element test for NaN or Infinity.
+// <group>
+LogicalArray isNaN (const Array<Float> &array);
+LogicalArray isNaN (const Array<Double> &array);
+LogicalArray isInf (const Array<Float> &array);
+LogicalArray isInf (const Array<Double> &array);
+// </group>
 
 // 
 // Element by element comparisons between an array and a scalar, which
@@ -424,6 +432,25 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 // </group>
 
+// </group>
+
+// <group>
+class AllFunc {
+public:
+  Bool operator() (const Array<Bool>& arr) const { return allTrue(arr); }
+};
+class AnyFunc {
+public:
+  Bool operator() (const Array<Bool>& arr) const { return anyTrue(arr); }
+};
+template<typename T> class NTrueFunc {
+public:
+  T operator() (const Array<T>& arr) const { return ntrue(arr); }
+};
+template<typename T> class NFalseFunc {
+public:
+  T operator() (const Array<T>& arr) const { return nfalse(arr); }
+};
 // </group>
 
 

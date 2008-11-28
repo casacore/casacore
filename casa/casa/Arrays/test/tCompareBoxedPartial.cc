@@ -26,12 +26,107 @@
 //# $Id$
 
 #include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayPartMath.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/OS/Timer.h>
 
+namespace casa {
+template<typename Func, typename T, typename Accum>
+void partialWorker (Array<Accum>& result,
+		    const Array<T>& array,
+		    const IPosition& collapseAxes,
+		    Func oper)
+{
+  if (collapseAxes.nelements() == 0) {
+    result.resize (array.shape());
+    convertArray (result, array);
+    return;
+  }
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    result.resize();
+    return;
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  result.resize (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  Accum* resData = result.getStorage (deleteRes);
+  Accum* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // n0 gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      Accum tmp = *res;
+      for (uInt i=0; i<n0; ++i) {
+	oper (tmp, *data++);
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; ++i) {
+	*res = oper (*res, *data++);
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ++ax) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return;
+}
+
+
+template<class T> Array<T> new1PartialSums (const Array<T>& array,
+					    const IPosition& collapseAxes)
+{
+  Array<T> result;
+  partialWorker (result, array, collapseAxes, std::plus<T>());
+  return result;
+}
+
+template<class T> Array<T> new1PartialVariances (const Array<T>& array,
+						 const IPosition& collapseAxes)
+{
+  Array<T> means = partialMeans (array, collapseAxes);
+  Array<T> result;
+  partialWorker (result, array, collapseAxes, std::plus<T>());
+  return result;
+}
+} // end namespace
+
+
 using namespace casa;
 using namespace std;
+
 
 template<class T>
 void doIt()
@@ -41,7 +136,7 @@ void doIt()
   Timer timer;
   {
     timer.mark();
-    Array<T> res = boxedArrayMath(arr, IPosition(3,100,1,1), &sum);
+    Array<T> res = boxedArrayMath(arr, IPosition(3,100,1,1), SumFunc<T>());
     timer.show ("boxed 0  ");
     cout << res.shape() << endl;
   }
@@ -53,7 +148,13 @@ void doIt()
   }
   {
     timer.mark();
-    Array<T> res = boxedArrayMath(arr, IPosition(3,1,200,1), &sum);
+    Array<T> res = new1PartialSums (arr, IPosition(1,0));
+    timer.show ("n1part  0");
+    cout << res.shape() << endl;
+  }
+  {
+    timer.mark();
+    Array<T> res = boxedArrayMath(arr, IPosition(3,1,200,1), SumFunc<T>());
     timer.show ("boxed 1  ");
     cout << res.shape() << endl;
   }
@@ -65,7 +166,7 @@ void doIt()
   }
   {
     timer.mark();
-    Array<T> res = boxedArrayMath(arr, IPosition(3,1,1,1000), &sum);
+    Array<T> res = boxedArrayMath(arr, IPosition(3,1,1,1000), SumFunc<T>());
     timer.show ("boxed 2  ");
     cout << res.shape() << endl;
   }

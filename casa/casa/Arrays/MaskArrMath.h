@@ -433,32 +433,81 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 // </group>
 
 
-// Apply the given ArrayMath reduction function to each box in the array.
+template<typename T> class MaskedSumFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return sum(arr); }
+};
+template<typename T> class MaskedProductFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return product(arr); }
+};
+template<typename T> class MaskedMinFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return min(arr); }
+};
+template<typename T> class MaskedMaxFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return max(arr); }
+};
+template<typename T> class MaskedMeanFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return mean(arr); }
+};
+template<typename T> class MaskedVarianceFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return variance(arr); }
+};
+template<typename T> class MaskedStddevFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return stddev(arr); }
+};
+template<typename T> class MaskedAvdevFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return avdev(arr); }
+};
+template<typename T> class MaskedRmsFunc {
+public:
+  T operator() (const MaskedArray<T>& arr) const { return rms(arr); }
+};
+template<typename T> class MaskedMedianFunc {
+public:
+  explicit MaskedMedianFunc (Bool sorted=False, Bool takeEvenMean=True)
+    : itsSorted(sorted), itsTakeEvenMean(takeEvenMean) {}
+  T operator() (const MaskedArray<T>& arr) const
+    { return median(arr, itsSorted, itsTakeEvenMean); }
+private:
+  Bool     itsSorted;
+  Bool     itsTakeEvenMean;
+  Bool     itsInPlace;
+};
+
+// Apply the given ArrayMath reduction function objects
+// to each box in the array.
 // <example>
 // Downsample an array by taking the mean of every [25,25] elements.
 // <srcblock>
 //    Array<Float> downArr = boxedArrayMath(in, IPosition(2,25,25),
-//                                          casa::mean);
+//                                          MaskedMeanFunc<Float>());
 // </srcblock>
 // </example>
 // The dimensionality of the array can be larger than the box; in that
 // case the missing axes of the box are assumed to have length 1.
 // A box axis length <= 0 means the full array axis.
-template <typename T>
+template <typename T, typename FuncType>
 MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
 			       const IPosition& boxSize,
-			       T (*reductionFunc) (const MaskedArray<T>&));
+			       const FuncType& funcObj);
 
 // Apply for each element in the array the given ArrayMath reduction function
-// to the box around that element. The full box is 2*halfBoxSize + 1.
+// object to the box around that element. The full box is 2*halfBoxSize + 1.
 // It can be used for arrays and boxes of any dimensionality; missing
 // halfBoxSize values are set to 1.
 // <example>
 // Determine for each element in the array the median of a box
 // with size [51,51] around that element:
 // <srcblock>
-//    Array<Float> medians = boxedArrayMath(in, IPosition(2,25,25),
-//                                          casa::median);
+//    Array<Float> medians = slidingArrayMath(in, IPosition(2,25,25),
+//                                            MaskedMedianFunc<Float>());
 // </srcblock>
 // This is a potentially expensive operation. On a high-end PC it took
 // appr. 27 seconds to get the medians for an array of [1000,1000] using
@@ -473,10 +522,10 @@ MaskedArray<T> boxedArrayMath (const MaskedArray<T>& array,
 // as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
 // it is much, much faster.
 // </note>
-template <typename T>
+template <typename T, typename FuncType>
 Array<T> slidingArrayMath (const MaskedArray<T>& array,
 			   const IPosition& halfBoxSize,
-			   T (*reductionFunc) (const MaskedArray<T>&),
+			   const FuncType& funcObj,
 			   Bool fillEdge=True);
 
 

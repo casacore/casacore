@@ -29,7 +29,7 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Arrays/ArrayError.h>
 //# For scalar near() functions.
-#include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/Functors.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -700,74 +700,77 @@ ARRLOG_LA_OP_AS ( != )
 ARRLOG_LA_OP_SA ( != )
 
 
-template<class T> LogicalArray near(const Array<T> &l, const Array<T> &r,
-				    Double tol)
+template<class T>
+LogicalArray isNaN (const Array<T> &array)
 {
-    if (l.conform(r) == False) {
-	throw(ArrayConformanceError(
-            "::near(const Array<T> &, const Array<T> &, Double tol=1.0e-5)"
-            " - arrays do not conform"));
-    }
-
-    Bool deleteL, deleteR;
-    const T *lStorage = l.getStorage(deleteL);
-    const T *ls = lStorage;
-    const T *rStorage = r.getStorage(deleteR);
-    const T *rs = rStorage;
-
-    LogicalArray retarr (l.shape());
-    Bool deleteRet;
-    Bool *retStorage = retarr.getStorage(deleteRet);
-    Bool *rets = retStorage;
-
-    uInt ntotal = l.nelements();
-    while (ntotal--) {
-        *rets = near(*ls, *rs, tol);
-        rets++;
-        ls++;
-        rs++;
-    }
-
-    retarr.putStorage(retStorage, deleteRet);
-    l.freeStorage(lStorage, deleteL);
-    r.freeStorage(rStorage, deleteR);
-
-    return retarr;
+  LogicalArray result(array.shape());
+  if (array.contiguousStorage()) {
+    std::transform (array.begin(),  array.end(),  result.cbegin(), IsNaN<T>());
+  } else {
+    std::transform (array.cbegin(), array.cend(), result.cbegin(), IsNaN<T>());
+  }
+  return result;
 }
 
-template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
-				    Double tol)
+template<class T>
+LogicalArray isInf (const Array<T> &array)
 {
-    if (l.conform(r) == False) {
-	throw(ArrayConformanceError(
+  LogicalArray result(array.shape());
+  if (array.contiguousStorage()) {
+    std::transform (array.cbegin(), array.cend(), result.cbegin(), IsInf<T>());
+  } else {
+    std::transform (array.begin(),  array.end(),  result.cbegin(), IsInf<T>());
+  }
+  return result;
+}
+
+template<class T>
+LogicalArray near (const Array<T> &l, const Array<T>& r, Double tol)
+{
+  if (! l.shape().isEqual(r.shape())) {
+	throw ArrayConformanceError(
+            "::near(const Array<T> &, const Array<T> &, Double tol=1.0e-5)"
+            " - arrays do not conform");
+  }
+  LogicalArray res(l.shape());
+  if (l.contiguousStorage()) {
+    if (r.contiguousStorage()) {
+      std::transform (l.cbegin(), l.cend(), r.cbegin(),
+                      res.cbegin(), Near<T>(tol));
+    } else {
+      std::transform (l.cbegin(), l.cend(), r.begin(),
+                      res.cbegin(), Near<T>(tol));
+    }
+  } else {
+    if (r.contiguousStorage()) {
+      std::transform (r.cbegin(), r.cend(), l.begin(),
+                      res.cbegin(), Near<T>(tol));
+    } else {
+      std::transform (r.begin(),  r.end(),  l.begin(),
+                      res.cbegin(), Near<T>(tol));
+    }
+  }
+  return res;
+}
+
+
+template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
+              				    Double tol)
+{
+  if (! l.shape().isEqual(r.shape())) {
+	throw ArrayConformanceError(
             "::nearAbs(const Array<T> &, const Array<T> &, Double tol=1.0e-5)"
-            " - arrays do not conform"));
-    }
-
-    Bool deleteL, deleteR;
-    const T *lStorage = l.getStorage(deleteL);
-    const T *ls = lStorage;
-    const T *rStorage = r.getStorage(deleteR);
-    const T *rs = rStorage;
-
-    LogicalArray retarr (l.shape());
-    Bool deleteRet;
-    Bool *retStorage = retarr.getStorage(deleteRet);
-    Bool *rets = retStorage;
-
-    uInt ntotal = l.nelements();
-    while (ntotal--) {
-        *rets = nearAbs(*ls, *rs, tol);
-        rets++;
-        ls++;
-        rs++;
-    }
-
-    retarr.putStorage(retStorage, deleteRet);
-    l.freeStorage(lStorage, deleteL);
-    r.freeStorage(rStorage, deleteR);
-
-    return retarr;
+            " - arrays do not conform");
+  }
+  LogicalArray res(l.shape());
+  if (l.contiguousStorage() && r.contiguousStorage()) {
+    std::transform (l.cbegin(), l.cend(), r.cbegin(),
+                    res.cbegin(), NearAbs<T>(tol));
+  } else {
+    std::transform (r.begin(),  r.end(),  l.begin(),
+                    res.cbegin(), NearAbs<T>(tol));
+  }
+  return res;
 }
 
 template<class T> LogicalArray near (const Array<T> &array, const T &val,

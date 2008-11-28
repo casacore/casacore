@@ -27,29 +27,13 @@
 
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayPartMath.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/MaskArrIO.h>
 
 #include <casa/Utilities/GenSort.h>
 #include <casa/OS/Timer.h>
 #include <iostream>
-
-
-#ifdef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/ArrayMath.tcc>
-#include <casa/Arrays/MaskArrMath.tcc>
-namespace casa {
-  template Array<Float> boxedArrayMath (const Array<Float>&,
-					const IPosition&,
-					Float (*) (const Array<Float>&),
-					Bool);
-  template Array<Float> boxedArrayMath (const MaskedArray<Float>&,
-					const IPosition&,
-					Float (*) (const MaskedArray<Float>&),
-					Bool);
-}
-#endif //# AIPS_NO_TEMPLATE_SRC
 
 
 using namespace casa;
@@ -61,17 +45,17 @@ void doIt (Bool doTiming)
     IPosition shape(2,5,5);
     Array<Float> arr(shape);
     indgen (arr);
-    cout << boxedArrayMath(arr, IPosition(2,2), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(1,0), casa::sum) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,2), SumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,1), SumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(1,0), SumFunc<Float>()) << endl;
 
-    cout << boxedArrayMath(arr, IPosition(4,2), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(3,1), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(),    casa::sum) << endl;
+    cout << boxedArrayMath(arr, IPosition(4,2), SumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(3,1), SumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(),    SumFunc<Float>()) << endl;
 
-    cout << boxedArrayMath(arr, IPosition(2,2), casa::median) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), casa::median) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,0), casa::median) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,2), MedianFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,1), MedianFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,0), MedianFunc<Float>()) << endl;
   }
 
 }
@@ -85,14 +69,14 @@ void doItMasked (Bool)
     MaskedArray<Float> arr = darr(darr<=float(10) || darr>float(14));
     cout << arr.getMask() << endl;
     cout << sum(arr) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,2), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), casa::sum) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,2), MaskedSumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,1), MaskedSumFunc<Float>()) << endl;
 
-    cout << boxedArrayMath(arr, IPosition(4,2), casa::sum) << endl;
-    cout << boxedArrayMath(arr, IPosition(3,1), casa::sum) << endl;
+    cout << boxedArrayMath(arr, IPosition(4,2), MaskedSumFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(3,1), MaskedSumFunc<Float>()) << endl;
 
-    cout << boxedArrayMath(arr, IPosition(2,2), casa::median) << endl;
-    cout << boxedArrayMath(arr, IPosition(2,1), casa::median) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,2), MaskedMedianFunc<Float>()) << endl;
+    cout << boxedArrayMath(arr, IPosition(2,1), MaskedMedianFunc<Float>()) << endl;
   }
 }
 

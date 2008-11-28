@@ -27,7 +27,7 @@
 
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayPartMath.h>
 #include <casa/Arrays/ArrayIO.h>
 
 #include <casa/Utilities/GenSort.h>
@@ -60,7 +60,7 @@ Float smartMedian (const Array<Float>& arr)
   Float* buf = bbuf.storage();
   Int nl = 0;
   Int nr = arr.size();
-  Float pivot = nr/2;
+  Float pivot = arr(arr.shape()/2);
   Array<Float>::const_iterator iterEnd=arr.end();
   for (Array<Float>::const_iterator iter=arr.begin();
        iter!=iterEnd;
@@ -72,7 +72,11 @@ Float smartMedian (const Array<Float>& arr)
       buf[--nr] = val;
     }
   }
-  return GenSort<Float>::kthLargest (buf, nl, nl/2);
+  if (nl >= nr/2) {
+    return GenSort<Float>::kthLargest (buf, nl, nr/2);
+  } else {
+    return GenSort<Float>::kthLargest (buf+nl, nr-nl, nr/2-nl);
+  }
 }
 
 void doIt (Bool doTiming)
@@ -81,24 +85,24 @@ void doIt (Bool doTiming)
     IPosition shape(2,5,5);
     Array<Float> arr(shape);
     indgen (arr);
-    cout << slidingArrayMath(arr, IPosition(2,2), casa::sum, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), casa::sum, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(1,0), casa::sum, False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,2), SumFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,1), SumFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(1,0), SumFunc<Float>(), False) << endl;
 
-    cout << slidingArrayMath(arr, IPosition(4,2), casa::sum, True) << endl;
-    cout << slidingArrayMath(arr, IPosition(3,1), casa::sum, True) << endl;
-    cout << slidingArrayMath(arr, IPosition(),    casa::sum, True) << endl;
+    cout << slidingArrayMath(arr, IPosition(4,2), SumFunc<Float>(), True) << endl;
+    cout << slidingArrayMath(arr, IPosition(3,1), SumFunc<Float>(), True) << endl;
+    cout << slidingArrayMath(arr, IPosition(),    SumFunc<Float>(), True) << endl;
 
-    cout << slidingArrayMath(arr, IPosition(2,2), casa::median, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), casa::median, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,0), casa::median, False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,2), MedianFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,1), MedianFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,0), MedianFunc<Float>(), False) << endl;
   }
 
   if (doTiming) {
     Array<Float> arr(IPosition(2,1000,1000));
     indgen(arr);
     Timer timer;
-    Array<Float> res = slidingArrayMath(arr, IPosition(2,25), casa::median);
+    Array<Float> res = slidingArrayMath(arr, IPosition(2,25), MedianFunc<Float>());
     timer.show();
     timer.mark();
     {
@@ -166,14 +170,14 @@ void doItMasked (Bool)
     MaskedArray<Float> arr = darr(darr<=float(10) || darr>float(14));
     cout << arr.getMask() << endl;
     cout << sum(arr) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,2), casa::sum, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), casa::sum, False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,2), MaskedSumFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,1), MaskedSumFunc<Float>(), False) << endl;
 
-    cout << slidingArrayMath(arr, IPosition(4,2), casa::sum, True) << endl;
-    cout << slidingArrayMath(arr, IPosition(3,1), casa::sum, True) << endl;
+    cout << slidingArrayMath(arr, IPosition(4,2), MaskedSumFunc<Float>(), True) << endl;
+    cout << slidingArrayMath(arr, IPosition(3,1), MaskedSumFunc<Float>(), True) << endl;
 
-    cout << slidingArrayMath(arr, IPosition(2,2), casa::median, False) << endl;
-    cout << slidingArrayMath(arr, IPosition(2,1), casa::median, False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,2), MaskedMedianFunc<Float>(), False) << endl;
+    cout << slidingArrayMath(arr, IPosition(2,1), MaskedMedianFunc<Float>(), False) << endl;
   }
 }
 
