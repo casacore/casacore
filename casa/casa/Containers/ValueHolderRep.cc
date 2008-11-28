@@ -39,90 +39,105 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 ValueHolderRep::ValueHolderRep (Bool value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpBool),
     itsBool (value)
 {}
 
 ValueHolderRep::ValueHolderRep (uChar value)
   : itsCount(0),
+    itsNdim (0),
     itsType  (TpUChar),
     itsUChar (value)
 {}
 
 ValueHolderRep::ValueHolderRep (Short value)
   : itsCount(0),
+    itsNdim (0),
     itsType  (TpShort),
     itsShort (value)
 {}
 
 ValueHolderRep::ValueHolderRep (uShort value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpInt),
     itsInt  (value)
 {}
 
 ValueHolderRep::ValueHolderRep (Int value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpInt),
     itsInt  (value)
 {}
 
 ValueHolderRep::ValueHolderRep (uInt value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpInt),
     itsInt  (value)
 {}
 
 ValueHolderRep::ValueHolderRep (Float value)
   : itsCount(0),
+    itsNdim (0),
     itsType  (TpFloat),
     itsFloat (value)
 {}
 
 ValueHolderRep::ValueHolderRep (Double value)
   : itsCount(0),
+    itsNdim (0),
     itsType   (TpDouble),
     itsDouble (value)
 {}
 
 ValueHolderRep::ValueHolderRep (const Complex& value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpComplex),
     itsPtr  (new Complex(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const DComplex& value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpDComplex),
     itsPtr  (new DComplex(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const String& value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpString),
     itsPtr  (new String(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<Bool>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayBool),
     itsPtr  (new Array<Bool>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<uChar>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayUChar),
     itsPtr  (new Array<uChar>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<Short>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayShort),
     itsPtr  (new Array<Short>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<uShort>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayInt),
     itsPtr  (new Array<Int>(value.shape()))
 {
@@ -131,12 +146,14 @@ ValueHolderRep::ValueHolderRep (const Array<uShort>& value)
 
 ValueHolderRep::ValueHolderRep (const Array<Int>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayInt),
     itsPtr  (new Array<Int>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<uInt>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayInt),
     itsPtr  (new Array<Int>(value.shape()))
 {
@@ -145,38 +162,51 @@ ValueHolderRep::ValueHolderRep (const Array<uInt>& value)
 
 ValueHolderRep::ValueHolderRep (const Array<Float>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayFloat),
     itsPtr  (new Array<Float>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<Double>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayDouble),
     itsPtr  (new Array<Double>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<Complex>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayComplex),
     itsPtr  (new Array<Complex>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<DComplex>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayDComplex),
     itsPtr  (new Array<DComplex>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<String>& value)
   : itsCount(0),
+    itsNdim (value.ndim()),
     itsType (TpArrayString),
     itsPtr  (new Array<String>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Record& value)
   : itsCount(0),
+    itsNdim (0),
     itsType (TpRecord),
     itsPtr  (new Record(value))
+{}
+
+  ValueHolderRep::ValueHolderRep (uInt ndim, Bool)
+  : itsCount(0),
+    itsNdim (ndim),
+    itsType (TpOther),
+    itsPtr  (0)
 {}
 
 ValueHolderRep::~ValueHolderRep()
@@ -462,6 +492,9 @@ const String& ValueHolderRep::asString() const
 
 const Array<Bool> ValueHolderRep::asArrayBool() const
 {
+  if (itsType == TpOther) {
+    return Array<Bool>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayBool:
     return *static_cast<Array<Bool>*>(itsPtr);
@@ -515,6 +548,9 @@ const Array<Bool> ValueHolderRep::asArrayBool() const
 
 const Array<uChar> ValueHolderRep::asArrayuChar() const
 {
+  if (itsType == TpOther) {
+    return Array<uChar>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     return *static_cast<Array<uChar>*>(itsPtr);
@@ -560,6 +596,9 @@ const Array<uChar> ValueHolderRep::asArrayuChar() const
 
 const Array<Short> ValueHolderRep::asArrayShort() const
 {
+  if (itsType == TpOther) {
+    return Array<Short>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -605,6 +644,9 @@ const Array<Short> ValueHolderRep::asArrayShort() const
 
 const Array<uShort> ValueHolderRep::asArrayuShort() const
 {
+  if (itsType == TpOther) {
+    return Array<uShort>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -655,6 +697,9 @@ const Array<uShort> ValueHolderRep::asArrayuShort() const
 
 const Array<Int> ValueHolderRep::asArrayInt() const
 {
+  if (itsType == TpOther) {
+    return Array<Int>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -700,6 +745,9 @@ const Array<Int> ValueHolderRep::asArrayInt() const
 
 const Array<uInt> ValueHolderRep::asArrayuInt() const
 {
+  if (itsType == TpOther) {
+    return Array<uInt>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -750,6 +798,9 @@ const Array<uInt> ValueHolderRep::asArrayuInt() const
 
 const Array<Float> ValueHolderRep::asArrayFloat() const
 {
+  if (itsType == TpOther) {
+    return Array<Float>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -795,6 +846,9 @@ const Array<Float> ValueHolderRep::asArrayFloat() const
 
 const Array<Double> ValueHolderRep::asArrayDouble() const
 {
+  if (itsType == TpOther) {
+    return Array<Double>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -840,6 +894,9 @@ const Array<Double> ValueHolderRep::asArrayDouble() const
 
 const Array<Complex> ValueHolderRep::asArrayComplex() const
 {
+  if (itsType == TpOther) {
+    return Array<Complex>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -901,6 +958,9 @@ const Array<Complex> ValueHolderRep::asArrayComplex() const
 
 const Array<DComplex> ValueHolderRep::asArrayDComplex() const
 {
+  if (itsType == TpOther) {
+    return Array<DComplex>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayUChar:
     {
@@ -962,35 +1022,12 @@ const Array<DComplex> ValueHolderRep::asArrayDComplex() const
 
 const Array<String> ValueHolderRep::asArrayString() const
 {
+  if (itsType == TpOther) {
+    return Array<String>(IPosition(itsNdim, 0));
+  }
   switch (itsType) {
   case TpArrayString:
     return *static_cast<Array<String>*>(itsPtr);
-  // In Python an empty array is created as Int or Float.
-  // So allow such an empty array.
-  case TpArrayInt:
-    {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      if (from.nelements() == 0) {
-	return Array<String>(from.shape());
-      }
-    }
-    break;
-  case TpArrayFloat:
-    {
-      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
-      if (from.nelements() == 0) {
-	return Array<String>(from.shape());
-      }
-    }
-    break;
-  case TpArrayDouble:
-    {
-      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
-      if (from.nelements() == 0) {
-	return Array<String>(from.shape());
-      }
-    }
-    break;
   case TpString:
     return Vector<String>(1, *static_cast<String*>(itsPtr));
   default:

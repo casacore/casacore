@@ -175,6 +175,12 @@ ValueHolder::ValueHolder (const Record& value)
   itsRep->link();
 }
 
+ValueHolder::ValueHolder (uInt ndim, Bool dummy)
+  : itsRep (new ValueHolderRep(ndim, dummy))
+{
+  itsRep->link();
+}
+
 
 ValueHolder::ValueHolder (const ValueHolder& that)
   : itsRep (that.itsRep)

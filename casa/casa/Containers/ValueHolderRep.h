@@ -92,6 +92,9 @@ public:
   explicit ValueHolderRep (const Record& value);
   // </group>
 
+  // Create an empty N-dim array.
+  ValueHolderRep (uInt ndim, Bool dummy);
+
   // Destructor.
   ~ValueHolderRep();
 
@@ -155,6 +158,7 @@ private:
 
 
   Int      itsCount;
+  uInt     itsNdim;
   DataType itsType;
   union {
     Bool   itsBool;
