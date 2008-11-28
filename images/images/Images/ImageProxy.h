@@ -129,6 +129,13 @@ namespace casa {
                   const IPosition& blc,
                   const IPosition& inc);
 
+    // Put a chunk of the mask.
+    // The mask will be created if not present yet.
+    // That will not be done if the entire mask is True.
+    void putMask (const ValueHolder& value,
+                  const IPosition& blc,
+                  const IPosition& inc);
+
     // Does the image have a read or write lock?
     Bool hasLock (Bool writeLock = False);
 
@@ -183,11 +190,11 @@ namespace casa {
     // and max=abs(val).
     // Robust statistics (Median, MedAbsDevMed, and Quartile) can be returned
     // too.
-    Record ImageProxy::statistics (const Vector<Int>& axes,
-                                   const String& mask,
-                                   const ValueHolder& minMaxValues,
-                                   Bool exclude = False,
-                                   Bool robust = False) const;
+    Record statistics (const Vector<Int>& axes,
+                       const String& mask,
+                       const ValueHolder& minMaxValues,
+                       Bool exclude = False,
+                       Bool robust = False) const;
 
     // Regrid the image on the given axes to the given coordinate system.
     // The output is stored in the given file; it no file name is given a
@@ -267,7 +274,7 @@ namespace casa {
 
     // Form a concatenated image.
     // <group>
-    void concatImages (const std::vector<ImageProxy>& images, Int axis);
+    void concatImages         (const std::vector<ImageProxy>& images, Int axis);
     void concatImagesFloat    (const std::vector<ImageProxy>& images, Int axis);
     void concatImagesDouble   (const std::vector<ImageProxy>& images, Int axis);
     void concatImagesComplex  (const std::vector<ImageProxy>& images, Int axis);
@@ -280,6 +287,13 @@ namespace casa {
     // Centre all axes except the Stokes one.
     void centreRefPix (CoordinateSystem& cSys, 
                        const IPosition& shape) const;
+
+    // Put the mask and create it if needed.
+    template<typename T>
+    void doPutMask (ImageInterface<T>& image,
+                    const ValueHolder& value,
+                    const IPosition& blc,
+                    const IPosition& inc);
 
     // Copy the image to an image (PagedImage or HDF5Image) with the given name.
     // A new tile shape can be given.
@@ -298,12 +312,12 @@ namespace casa {
 
     // Calculate the statistics.
     template<typename T>
-    Record ImageProxy::makeStatistics (const ImageInterface<T>& image,
-                                       const Vector<Int>& axes,
-                                       const String& mask,
-                                       const ValueHolder& minMaxValues,
-                                       Bool exclude,
-                                       Bool robust) const;
+    Record makeStatistics (const ImageInterface<T>& image,
+                           const Vector<Int>& axes,
+                           const String& mask,
+                           const ValueHolder& minMaxValues,
+                           Bool exclude,
+                           Bool robust) const;
 
     // Do the actual regridding.
     template<typename T>

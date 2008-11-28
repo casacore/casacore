@@ -481,6 +481,51 @@ namespace casa { //# name space casa begins
     }
   }
 
+  void ImageProxy::putMask (const ValueHolder& value,
+                            const IPosition& blc,
+                            const IPosition& inc)
+  {
+    IPosition shp = shape();
+    IPosition ablc = adjustBlc (blc, shp);
+    IPosition ainc = adjustInc (inc, shp);
+    if (itsImageFloat) {
+      doPutMask (*itsImageFloat, value, ablc, ainc);
+    } else if (itsImageDouble) {
+      doPutMask (*itsImageDouble, value, ablc, ainc);
+    } else if (itsImageComplex) {
+      doPutMask (*itsImageComplex, value, ablc, ainc);
+    } else if (itsImageDComplex) {
+      doPutMask (*itsImageDComplex, value, ablc, ainc);
+    } else {
+      throw AipsError ("ImageProxy does not contain an image object");
+    }
+  }
+
+  template<typename T>
+  void ImageProxy::doPutMask (ImageInterface<T>& image,
+                              const ValueHolder& value,
+                              const IPosition& blc,
+                              const IPosition& inc)
+  {
+    Array<Bool> maskArr = value.asArrayBool();
+    if (! image.hasPixelMask()) {
+      // No mask yet.
+      // Do not put if the entire mask is true. This might reflect a get
+      // where all True-s are filled in if there is no mask.
+      if (anyEQ(maskArr, False)) {
+        // Create a mask and make it the default mask.
+        ImageRegion mask (image.makeMask ("mask0", True, True));
+        // Initialize the mask if only part of the mask will be put.
+        if (! maskArr.shape().isEqual (image.shape())) {
+          image.pixelMask().set (True);
+        }
+      }
+    }
+    if (image.hasPixelMask()) {
+      image.pixelMask().putSlice (value.asArrayBool(), blc, inc);
+    }
+  }
+
   Bool ImageProxy::hasLock (Bool writeLock)
   {
     return itsLattice->hasLock (writeLock ?
@@ -817,12 +862,8 @@ namespace casa { //# name space casa begins
       throw AipsError (stats.errorMessage());
     }
     // Set pixel include/exclude ranges.
-    // An empty python sequence is set to an array of strings.
     Vector<T> minMax;
-    if (minMaxValues.dataType() != TpArrayString  ||
-        minMaxValues.asArrayString().size() != 0) {
-      minMaxValues.getValue (minMax);
-    }
+    minMaxValues.getValue (minMax);
     if (minMax.size() > 0) {
       if (exclude) {
         stats.setInExCludeRange (Vector<T>(), minMax, False);
