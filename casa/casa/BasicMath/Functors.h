@@ -32,6 +32,31 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+
+  // Define a function to do a binary transform in place.
+  // It is functionally equivalent to std::transform where the first and result
+  // iterator are the same, but it is faster for non-trivial iterators.
+  template<typename InputIterator1, typename InputIterator2, typename BinaryOperator>
+  void transformInPlace (InputIterator1 first1, InputIterator1 last1,
+                         InputIterator2 first2, BinaryOperator op)
+  {
+    for (; first1!=last1; ++first1, ++first2) {
+      *first1 = op(*first1, *first2);
+    }
+  }
+  
+  // Define a function to do a unary transform in place.
+  // It is functionally equivalent to std::transform where the first and result
+  // iterator are the same, but it is faster for non-trivial iterators.
+  template<typename InputIterator1, typename UnaryOperator>
+  void transformInPlace (InputIterator1 first1, InputIterator1 last1,
+                         UnaryOperator op)
+  {
+    for (; first1!=last1; ++first1) {
+      *first1 = op(*first1);
+    }
+  }
+
   
   // Functor to test for NaN.
   // It can be used in something like:
@@ -60,7 +85,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <verbatim>
   template<typename T> struct Near
   {
-    Near (double tolerance=1e-5)
+    explicit Near (double tolerance=1e-5)
       : itsTolerance (tolerance)
     {}
     bool operator() (T left, T right) const
@@ -72,7 +97,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // Functor to test for if two values are absolutely near each other.
   template<typename T> struct NearAbs
   {
-    NearAbs (double tolerance=1e-13)
+    explicit NearAbs (double tolerance=1e-13)
       : itsTolerance (tolerance)
     {}
     bool operator() (T left, T right) const
@@ -149,7 +174,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<typename T> struct Atan2
   {
     T operator() (T left, T right) const
-    { return atan2 (left, right); }
+      { return atan2 (left, right); }
   };
 
   // Functor to apply sqr.
@@ -212,14 +237,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<typename T> struct Pow
   {
     T operator() (T left, T right) const
-    { return pow (left, right); }
+      { return pow (left, right); }
   };
 
   // Functor to apply fmod.
   template<typename T> struct Fmod
   {
     T operator() (T left, T right) const
-    { return fmod (left, right); }
+      { return fmod (left, right); }
+  };
+
+  // Functor to get minimum of two values.
+  template<typename T> struct Min
+  {
+    T operator() (T left, T right) const
+      { return (left<right  ?  left : right); }
+  };
+
+  // Functor to get maximum of two values.
+  template<typename T> struct Max
+  {
+    T operator() (T left, T right) const
+      { return (left<right  ?  right : left); }
+  };
+
+  // Functor to add square of right to left.
+  template<typename T, typename Accum=T> struct SumSqr
+  {
+    T operator() (Accum left, T right) const
+      { return left + Accum(right)*Accum(right); }
+  };
+
+  // Functor to add squared diff of right and base value to left.
+  // It can be used to calculate the standard deviation.
+  template<typename T, typename Accum=T> struct SumSqrDiff
+  {
+    explicit SumSqrDiff(T base) : itsBase(base) {}
+    T operator() (Accum left, T right) const
+      { return left + (right-itsBase)*(right-itsBase); }
+  private:
+    Accum itsBase;    // store as Accum, so subtraction results in Accum
   };
 
 

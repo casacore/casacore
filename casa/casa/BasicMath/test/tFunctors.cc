@@ -36,39 +36,101 @@
 using namespace casa;
 using namespace std;
 
+#define TESTFUNCTOR1(NAME, FUNC) \
+  { \
+    std::transform (v1.begin(), v1.end(), res.begin(), NAME<double>()); \
+    for (uInt i=0; i<res.size(); ++i) { \
+      AlwaysAssertExit (res[i] == FUNC(v1[i])); \
+    } \
+    res = v1; \
+    transformInPlace (res.begin(), res.end(), NAME<double>()); \
+    for (uInt i=0; i<res.size(); ++i) { \
+      AlwaysAssertExit (res[i] == FUNC(v1[i])); \
+    } \
+  }
+
+#define TESTFUNCTOR2(NAME, FUNC) \
+  { \
+    std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), NAME<double>()); \
+    for (uInt i=0; i<res.size(); ++i) { \
+      AlwaysAssertExit (res[i] == FUNC(v1[i], v2[i])); \
+    } \
+    res = v1; \
+    transformInPlace (res.begin(), res.end(), v2.begin(), NAME<double>()); \
+    for (uInt i=0; i<res.size(); ++i) { \
+      AlwaysAssertExit (res[i] == FUNC(v1[i], v2[i])); \
+    } \
+  }
+
+#define TESTFUNCTORB1(NAME, FUNC) \
+  { \
+    std::transform (v1.begin(), v1.end(), reb.begin(), NAME<double>()); \
+    for (uInt i=0; i<reb.size(); ++i) { \
+      AlwaysAssertExit (reb[i] == FUNC(v1[i])); \
+    } \
+  }
+
+#define TESTFUNCTORB2(NAME, FUNC) \
+  { \
+    std::transform (v1.begin(), v1.end(), v2.begin(), reb.begin(), NAME<double>()); \
+    for (uInt i=0; i<reb.size(); ++i) { \
+      AlwaysAssertExit (reb[i] == FUNC(v1[i], v2[i])); \
+    } \
+  }
+
+
+double sqr (double r)
+  { return r*r; }
+double sumsqr (double l, double r)
+  { return l + r*r; }
+
+
 int main()
 {
   try {
-    vector<double> v1(10, 1.);
-    vector<double> v2(10, 0.5);
+    vector<double> v1(10);
+    vector<double> v2(10);
     vector<double> res(10);
     vector<bool>   reb(10);
-    std::transform (v1.begin(), v1.end(), res.begin(), Sin<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Sinh<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Asin<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Cos<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Cosh<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Acos<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Tan<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Tanh<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Atan<double>());
-    std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), Atan2<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Sqr<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Sqrt<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Exp<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Log<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Log10<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Abs<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Floor<double>());
-    std::transform (v1.begin(), v1.end(), res.begin(), Ceil<double>());
-    std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), Pow<double>());
-    std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), Fmod<double>());
-    std::transform (v1.begin(), v1.end(), reb.begin(), IsNaN<double>());
-    std::transform (v1.begin(), v1.end(), reb.begin(), IsInf<double>());
-    std::transform (v1.begin(), v1.end(), v2.begin(), reb.begin(), Near<double>());
-    std::transform (v1.begin(), v1.end(), v2.begin(), reb.begin(), NearAbs<double>());
+    for (uInt i=0; i<v1.size(); ++i) {
+      v1[i] = (i+1)*0.05;
+      v2[i] = (i+3)*0.025;
+    }
+    TESTFUNCTOR1 (Sin, sin)
+    TESTFUNCTOR1 (Sinh, sinh)
+    TESTFUNCTOR1 (Asin, asin)
+    TESTFUNCTOR1 (Cos, cos)
+    TESTFUNCTOR1 (Cosh, cosh)
+    TESTFUNCTOR1 (Acos, acos)
+    TESTFUNCTOR1 (Tan, tan)
+    TESTFUNCTOR1 (Tanh, tanh)
+    TESTFUNCTOR1 (Atan, atan)
+    TESTFUNCTOR2 (Atan2, atan2)
+    TESTFUNCTOR1 (Sqr, sqr)
+    TESTFUNCTOR1 (Sqrt, sqrt)
+    TESTFUNCTOR1 (Exp, exp)
+    TESTFUNCTOR1 (Log, log)
+    TESTFUNCTOR1 (Log10, log10)
+    TESTFUNCTOR1 (Abs, std::abs)
+    TESTFUNCTOR1 (Floor, floor)
+    TESTFUNCTOR1 (Ceil, ceil)
+    TESTFUNCTOR2 (Pow, pow)
+    TESTFUNCTOR2 (Fmod, fmod)
+    TESTFUNCTORB1 (IsNaN, isNaN)
+    TESTFUNCTORB1 (IsInf, isInf)
+    TESTFUNCTORB2 (Near, near)
+    TESTFUNCTORB2 (NearAbs, nearAbs)
+    TESTFUNCTOR2 (SumSqr, sumsqr)
+    TESTFUNCTOR2 (Min, std::min)
+    TESTFUNCTOR2 (Max, std::max)
+
+    { 
+      std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), SumSqrDiff<double>(0.25));
+      for (uInt i=0; i<res.size(); ++i) {
+        AlwaysAssertExit (res[i] == v1[i] + (v2[i]-0.25)*(v2[i]-0.25));
+      }
   }
-  catch (AipsError& x) {
+  } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
