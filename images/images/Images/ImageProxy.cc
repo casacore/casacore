@@ -75,32 +75,100 @@ namespace casa { //# name space casa begins
     setup (lattice);
   }
 
-  ImageProxy::ImageProxy (const ValueHolder& arg, const String& mask,
+  ImageProxy::ImageProxy (const String& name, const String& mask,
                           const vector<ImageProxy>& images)
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
       itsImageDComplex (0)
   {
-    switch (arg.dataType()) {
-    case TpString:
-      openImage (arg.asString(), mask, images);
-      break;
+    openImage (name, mask, images);
+  }
+
+  ImageProxy::ImageProxy (const ValueHolder& values, const ValueHolder& mask,
+                          const Record& coordinates,
+                          const String& fileName, Bool overwrite, Bool asHDF5,
+                          const String& maskName,
+                          const IPosition& tileShape)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    if (!overwrite) {
+      File file(fileName);
+      if (file.exists()) {
+        throw AipsError ("file " + fileName +
+                         " already exists and should not be overwritten");
+      }
+    }
+    switch (values.dataType()) {
     case TpArrayShort:
     case TpArrayUShort:
     case TpArrayInt:
     case TpArrayUInt:
     case TpArrayFloat:
-      makeImage (arg.asArrayFloat());
+      makeImage (values.asArrayFloat(), mask.asArrayBool(),
+                 IPosition(), coordinates,
+                 fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayDouble:
-      makeImage (arg.asArrayDouble());
+      makeImage (values.asArrayDouble(), mask.asArrayBool(),
+                 IPosition(), coordinates,
+                 fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayComplex:
-      makeImage (arg.asArrayComplex());
+      makeImage (values.asArrayComplex(), mask.asArrayBool(),
+                 IPosition(), coordinates,
+                 fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayDComplex:
-      makeImage (arg.asArrayDComplex());
+      makeImage (values.asArrayDComplex(), mask.asArrayBool(),
+                 IPosition(), coordinates,
+                 fileName, asHDF5, maskName, tileShape);
+      break;
+    default:
+      throw AipsError ("ImageProxy: invalid data type");
+    }
+  }
+
+  ImageProxy::ImageProxy (const IPosition& shape, const ValueHolder& value,
+                          const Record& coordinates,
+                          const String& fileName, Bool overwrite, Bool asHDF5,
+                          const String& maskName,
+                          const IPosition& tileShape, Int)
+    : itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    if (!overwrite) {
+      File file(fileName);
+      if (file.exists()) {
+        throw AipsError ("file " + fileName +
+                         " already exists and should not be overwritten");
+      }
+    }
+    switch (value.dataType()) {
+    case TpShort:
+    case TpUShort:
+    case TpInt:
+    case TpUInt:
+    case TpFloat:
+      makeImage (Array<Float>(), Array<Bool>(), shape, coordinates,
+                 fileName, asHDF5, maskName, tileShape);
+      break;
+    case TpDouble:
+      makeImage (Array<Double>(), Array<Bool>(), shape, coordinates,
+                 fileName, asHDF5, maskName, tileShape);
+      break;
+    case TpComplex:
+      makeImage (Array<Complex>(), Array<Bool>(), shape, coordinates,
+                 fileName, asHDF5, maskName, tileShape);
+      break;
+    case TpDComplex:
+      makeImage (Array<DComplex>(), Array<Bool>(), shape, coordinates,
+                 fileName, asHDF5, maskName, tileShape);
       break;
     default:
       throw AipsError ("ImageProxy: invalid data type");
@@ -116,13 +184,13 @@ namespace casa { //# name space casa begins
     vector<ImageProxy> images;
     images.reserve (names.size());
     for (uInt i=0; i<names.size(); ++i) {
-      images.push_back (ImageProxy(ValueHolder(names[i]), "",
-                                   vector<ImageProxy>()));
+      images.push_back (ImageProxy(names[i], "", vector<ImageProxy>()));
     }
     concatImages (images, axis);
   }
 
-  ImageProxy::ImageProxy (const vector<ImageProxy>& images, Int axis, Int, Int)
+  ImageProxy::ImageProxy (const vector<ImageProxy>& images, Int axis,
+                          Int, Int)
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
@@ -217,40 +285,62 @@ namespace casa { //# name space casa begins
     throw AipsError ("ImageProxy does not contain an image object");
   }
 
-  void ImageProxy::makeImage (const Array<Float>& array)
+  template<typename T>
+  void ImageProxy::makeImage (const Array<T>& array,
+                              const Array<Bool>& mask,
+                              const IPosition& shape,
+                              const Record& coordinates,
+                              const String& name, Bool asHDF5,
+                              const String& maskName,
+                              const IPosition& tileShape)
   {
-    CoordinateSystem cSys = 
-      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
-    centreRefPix(cSys, array.shape());
-    setup (new TempImage<Float> (TiledShape(array.shape()), cSys, 1000));
-    itsImageFloat->put (array);
-  }
-
-  void ImageProxy::makeImage (const Array<Double>& array)
-  {
-    CoordinateSystem cSys = 
-      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
-    centreRefPix(cSys, array.shape());
-    setup (new TempImage<Double> (TiledShape(array.shape()), cSys, 1000));
-    itsImageDouble->put (array);
-  }
-
-  void ImageProxy::makeImage (const Array<Complex>& array)
-  {
-    CoordinateSystem cSys = 
-      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
-    centreRefPix(cSys, array.shape());
-    setup (new TempImage<Complex> (TiledShape(array.shape()), cSys, 1000));
-    itsImageComplex->put (array);
-  }
-
-  void ImageProxy::makeImage (const Array<DComplex>& array)
-  {
-    CoordinateSystem cSys = 
-      CoordinateUtil::makeCoordinateSystem (array.shape(), false);
-    centreRefPix(cSys, array.shape());
-    setup (new TempImage<DComplex> (TiledShape(array.shape()), cSys, 1000));
-    itsImageDComplex->put (array);
+    // Get shape and check arguments.
+    IPosition shp(shape);
+    if (array.size() == 0) {
+      if (shape.size() == 0) {
+        throw AipsError ("A value array or a shape has to be given");
+      }
+    } else {
+      shp = array.shape();
+      if (mask.size() > 0) {
+        AlwaysAssert (array.shape().isEqual(mask.shape()), AipsError);
+      }
+    }
+    CoordinateSystem cSys;
+    if (coordinates.empty()) {
+      cSys = CoordinateUtil::makeCoordinateSystem (shp, False);
+      centreRefPix(cSys, shp);
+    } else {
+      cSys = makeCoordinateSystem (coordinates, shp);
+    }
+    ImageInterface<T>* image = 0;
+    if (name.empty()) {
+      image = new TempImage<T> (shp, cSys, 1000);
+    } else if (asHDF5) {
+      image = new HDF5Image<T>  (makeTiledShape(tileShape,shp), cSys, name);
+    } else {
+      image = new PagedImage<T> (makeTiledShape(tileShape,shp), cSys, name);
+    }
+    // Let ImageProxy take over the pointer.
+    setup(image);
+    // Write data if present.
+    if (array.size() > 0) {
+      image->put (array);
+    }
+    // Create and put mask if needed.
+    // Use default 'mask0' if a mask is given.
+    String mname(maskName);
+    if (mname.empty()  &&  mask.size() > 0) {
+      mname = "mask0";
+    }
+    if (!mname.empty()) {
+      // Create a mask and make it the default mask.
+      image->makeMask (mname, True, True);
+    }
+    // Put mask if present.
+    if (mask.size() > 0) {
+      image->pixelMask().put (mask);
+    }
   }
 
   void ImageProxy::concatImages (const vector<ImageProxy>& images, Int axis)
@@ -514,7 +604,7 @@ namespace casa { //# name space casa begins
       // where all True-s are filled in if there is no mask.
       if (anyEQ(maskArr, False)) {
         // Create a mask and make it the default mask.
-        ImageRegion mask (image.makeMask ("mask0", True, True));
+        image.makeMask ("mask0", True, True);
         // Initialize the mask if only part of the mask will be put.
         if (! maskArr.shape().isEqual (image.shape())) {
           image.pixelMask().set (True);
@@ -755,10 +845,12 @@ namespace casa { //# name space casa begins
     if (! newTileShape.empty()) {
       return TiledShape (shape, newTileShape);
     }
+    if (oldTileShape.empty()) {
+      return TiledShape (shape);
+    }
     return TiledShape (shape, oldTileShape);
   }
 
-  // Definitions of templated functions.
   template <typename T>
   void ImageProxy::saveImage (const String& fileName,
                               Bool hdf5, Bool copyMask,
@@ -795,32 +887,6 @@ namespace casa { //# name space casa begins
     }
     delete newImage;
   }
-
-  // Instantiation of templated saveImage functions.
-  template void
-  ImageProxy::saveImage (const String&,
-                         bool, bool,
-                         const String&, 
-                         const IPosition&,
-                         const ImageInterface<Float>&) const;
-  template void
-  ImageProxy::saveImage (const String&,
-                         bool, bool,
-                         const String&, 
-                         const IPosition&,
-                         const ImageInterface<Double>&) const;
-  template void
-  ImageProxy::saveImage (const String&,
-                         bool, bool,
-                         const String&, 
-                         const IPosition&,
-                         const ImageInterface<Complex>&) const;
-  template void
-  ImageProxy::saveImage (const String&,
-                         bool, bool,
-                         const String&, 
-                         const IPosition&,
-                         const ImageInterface<DComplex>&) const;
 
   Record ImageProxy::statistics (const Vector<Int>& axes,
                                  const String& mask,
@@ -912,15 +978,6 @@ namespace casa { //# name space casa begins
     }
     return retval;
   }
-
-  // Instantiation of templated statistics functions.
-  template Record
-  ImageProxy::makeStatistics (const ImageInterface<Float>&,
-                              const Vector<Int>&,
-                              const String&,
-                              const ValueHolder&,
-                              Bool,
-                              Bool) const;
 
   ImageProxy ImageProxy::regrid (const Vector<Int>& axes,
                                  const String& outFile,
@@ -1016,20 +1073,6 @@ namespace casa { //# name space casa begins
                True, forceRegrid);
     return proxy;
   }
-
-  // Instantiation of templated regrid functions.
-  template
-  ImageProxy ImageProxy::doRegrid (const ImageInterface<Float>& image,
-                                   const Vector<Int>& axes,
-                                   const String& outFile,
-                                   Bool overwrite,
-                                   const IPosition& shape,
-                                   const Record& coordSys,
-                                   const String& method,
-                                   Int decimate,
-                                   Bool replicate,
-                                   Bool doRefChange,
-                                   Bool forceRegrid);
 
   CoordinateSystem
   ImageProxy::makeCoordinateSystem (const Record& coordinates,

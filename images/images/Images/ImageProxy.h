@@ -53,20 +53,15 @@ namespace casa {
     // Default constructor is needed for Boost-Python.
     ImageProxy();
 
-    // Construct from a ValueHolder which can contain two types of values.
-    // <ol>
-    //  <li> A string is an image name or image expression which is opened
-    //       using ImageOpener.
-    //  <li> An Array of Float or Complex is a temporary image which gets
-    //       default coordinates attached to it.
-    // </ol>
-    ImageProxy (const ValueHolder& name, const String& mask,
-                const vector<ImageProxy>& images);
-
     // Construct from the concatenation of the images along the axis.
     // The axis must be given as a Fortran-array axis.
     // All images must be of the same data type.
     ImageProxy (const Vector<String>& names, Int axis);
+
+    // Construct from a string that contains an image name or image expression.
+    // It is opened using ImageOpener.
+    ImageProxy (const String& name, const String& mask,
+                const vector<ImageProxy>& images);
 
     // Construct from the concatenation of the image objects along the axis.
     // The axis must be given as a Fortran-array axis.
@@ -75,6 +70,35 @@ namespace casa {
     //# different number of arguments (for Boost-Python).
     ImageProxy (const vector<ImageProxy>& images, Int axis,
                 Int dummy1=0, Int dummy2=0);
+
+    // Construct from a ValueHolder containing an Array of Float or Complex.
+    // If the name is empty it is created as a temporary image, otherwise
+    // as a PagedImage or HDF5Image.
+    // If the coordinates record is empty, default coordinates are used.
+    // A mask is created if the mask name or mask value is not empty.
+    ImageProxy (const ValueHolder& values,
+                const ValueHolder& mask,
+                const Record& coordinates,
+                const String& imageName = String(),
+                Bool overwrite = True,
+                Bool asHDF5 = False,
+                const String& maskName = String(),
+                const IPosition& tileShape = IPosition());
+
+    // Construct from a shape.
+    // If the name is empty it is created as a temporary image, otherwise
+    // as a PagedImage or HDF5Image.
+    // If the coordinates record is empty, default coordinates are used.
+    // A mask is created if the mask name is not empty.
+    ImageProxy (const IPosition& shape,
+                const ValueHolder& value,
+                const Record& coordinates,
+                const String& imageName = String(),
+                Bool overwrite = True,
+                Bool asHDF5 = False,
+                const String& maskName = String(),
+                const IPosition& tileShape = IPosition(),
+                Int dummy=0);
 
     // Copy constructor (reference semantics).
     ImageProxy (const ImageProxy&);
@@ -264,13 +288,13 @@ namespace casa {
     void openImage (const String& name, const String& mask,
                     const vector<ImageProxy>& images);
 
-    // Make a TempImage from an array
-    //<group>
-    void makeImage (const Array<Float>& array);
-    void makeImage (const Array<Double>& array);
-    void makeImage (const Array<Complex>& array);
-    void makeImage (const Array<DComplex>& array);
-    // </group>
+    // Make an image from an array or shape.
+    template<typename T>
+    void makeImage (const Array<T>& array, const Array<Bool>& mask,
+                    const IPosition& shape, const Record& coordinates,
+                    const String& fileName, Bool asHDF5,
+                    const String& maskName,
+                    const IPosition& tileShape);
 
     // Form a concatenated image.
     // <group>
@@ -308,7 +332,7 @@ namespace casa {
     // Form a tiled shape from the current shape and a possible new tile shape.
     TiledShape makeTiledShape (const IPosition& newTileShape,
                                const IPosition& shape,
-                               const IPosition& oldTileShape) const;
+                               const IPosition& oldTileShape=IPosition()) const;
 
     // Calculate the statistics.
     template<typename T>
