@@ -1,5 +1,5 @@
 //# UnitVal.cc: defines the class describing a unit as a value and a dimension
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994-2001,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -204,16 +204,18 @@ Bool UnitVal::create(MUString &str, UnitVal &res) {
 }
 
 Int UnitVal::psign(MUString& str) {
-  static Regex sep("[ \\./]");
+  static Regex sep("[ \\*\\./]");
   Int lc = 1;
   while (str.testChar(sep)) {
-    if (str.testChar('/')) lc = -1;
+    if (str.testChar('/')) lc = -lc;
     str.skipChar();
   }
   return lc;
 }
 
 Int UnitVal::power(MUString &str) {
+  if (str.testString("**")) str.skipString("**");
+  if (str.testChar('^')) str.skipChar('^');
   Int lc = (Int) str.getSign();
   Int lp = str.getuInt();
   return (lp == 0 ? lc : lc * lp);
