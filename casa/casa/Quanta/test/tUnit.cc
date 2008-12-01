@@ -1,5 +1,5 @@
 //# tUnit.cc: test program for Unit section of Measures module
-//# Copyright (C) 1994,1995,1996,1998,1999,2000,2002
+//# Copyright (C) 1994-1996,1998-2000,2002,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,9 +141,31 @@ int main () {
 	cout << "A FITS unit to translate: " << Fstr.getName() << endl;
 	cout << "it translates to:         " << 
 	  UnitMap::fromFITS(Fstr).getName() << endl;
+	cout << "or:                       " << Fstr.getValue() << endl;
 	Unit Fstr2(UnitMap::fromFITS(Fstr));
 	cout << "and back to:              " << 
 	  UnitMap::toFITS(Fstr2).getName() << endl;
+	cout << "or:                       " << Fstr2.getValue() << endl;
+
+	Fstr = Unit("M(JY5/SEC**2.(YEAR*HZ)*KM)");
+	cout << "A FITS unit to translate: " << Fstr.getName() << endl;
+	cout << "it translates to:         " << 
+	  UnitMap::fromFITS(Fstr).getName() << endl;
+	cout << "or:                       " << Fstr.getValue() << endl;
+	Fstr2 = (UnitMap::fromFITS(Fstr));
+	cout << "and back to:              " << 
+	  UnitMap::toFITS(Fstr2).getName() << endl;
+	cout << "or:                       " << Fstr2.getValue() << endl;
+
+	Fstr = Unit("M(JY5/SEC^2.(YEAR*HZ).KM)");
+	cout << "A FITS unit to translate: " << Fstr.getName() << endl;
+	cout << "it translates to:         " << 
+	  UnitMap::fromFITS(Fstr).getName() << endl;
+	cout << "or:                       " << Fstr.getValue() << endl;
+	Fstr2 = (UnitMap::fromFITS(Fstr));
+	cout << "and back to:              " << 
+	  UnitMap::toFITS(Fstr2).getName() << endl;
+	cout << "or:                       " << Fstr2.getValue() << endl;
 
 	UnitMap::clearFITS();
 	cout << "User list after FITS removal:" << endl;
