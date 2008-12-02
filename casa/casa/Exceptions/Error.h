@@ -366,6 +366,12 @@ public:
 
 } //# NAMESPACE CASA - END
 
+#ifdef CASACORE_NEEDS_RETHROW
+#define RETHROW(X) throw(X);
+#else
+#define RETHROW(X)
+#endif
+
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casa/Exceptions/Error.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

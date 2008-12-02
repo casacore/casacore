@@ -62,7 +62,9 @@ AbortError::AbortError(const Char *str,Category c)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;
+#ifndef CASACORE_NOEXIT
     exit(1);
+#endif
 }
 
 AbortError::AbortError(const String &str,Category c)
@@ -70,7 +72,9 @@ AbortError::AbortError(const String &str,Category c)
 {
     cerr << "An unrecoverable error occurred: " << endl;
     cerr << str << endl;
+#ifndef CASACORE_NOEXIT
     exit(1);
+#endif
 }
 
 AbortError::~AbortError() throw()

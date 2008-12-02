@@ -35,6 +35,11 @@
 #include <cstdlib>
 #include <cstring>
 
+#if defined __APPLE__
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#endif
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 
@@ -67,7 +72,14 @@ double PrecTimer::get_CPU_speed_in_MHz()
         (colon = strchr(buffer, ':')) != 0) {
       return atof(colon + 2) / 1e6;
     }
-#else
+#elif defined __APPLE__ // Macintosh
+    int mib[2] = { CTL_HW, HW_CPU_FREQ };
+    double result = 0;
+    size_t size = sizeof(result);
+    if( sysctl(mib, 2, &result, &size, NULL, 0) != -1) {
+      return result / 1e6;
+    }
+ #else
     if (strncmp("cpu MHz", buffer, 7) == 0  &&
         (colon = strchr(buffer, ':')) != 0) {
       return atof(colon + 2);
