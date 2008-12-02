@@ -32,6 +32,63 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+// <summary>
+//    Mathematical and logical operations for Array parts.
+// </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArray">
+//
+// <prerequisite>
+//   <li> <linkto class=Array>Array</linkto>
+// </prerequisite>
+//
+// <etymology>
+// This file contains global functions which perform part by part
+// mathematical or logical operations on arrays.
+// </etymology>
+//
+// <synopsis>
+// These functions perform chunk by chunk mathematical operations on
+// arrays.
+// In particular boxed and sliding operations are possible. E.g. to calculate
+// the median in sliding windows making it possible to subtract the background
+// in an image.
+//
+// The operations to be performed are defined by means of functors that
+// reduce an array subset to a scalar. Those functors are wrappers for
+// ArrayMath and ArrayLogical functions like sum, median, and ntrue. 
+//
+// The <src>partialXX</src> functions are a special case of the 
+// <src>BoxedArrayMath</src> function.
+// They reduce one or more entire axes which can be done in a faster way than
+// the more general <src>boxedArrayMath</src> function.
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// Array<Double> data(...);
+// Array<Double> means = partialMeans (data, IPosition(2,0,1));
+// </srcblock>
+// This example calculates the mean of each plan in the data array.
+// </example>
+//
+// <example>
+// <srcblock>
+// IPosition shp = data.shape();
+// Array<Double> means = boxedArrayMath (data, IPosition(2,shp[0],shp[1]),
+//                                       SumFunc<Double>());
+// </srcblock>
+// does the same as the first example.
+// Note that in this example the box is formed by the entire axes, but it
+// could also be a subset of it to average, say, boxes of 5*5 elements.
+// </example>
+//
+// <linkfrom anchor="Array mathematical operations" classes="Array Vector Matrix Cube">
+//    <here>Array mathematical operations</here> -- Mathematical operations for
+//    Arrays.
+// </linkfrom>
+//
+// <group name="Array partial operations">
+
 
 // Determine the sum, product, etc. for the given axes only.
 // The result is an array with a shape formed by the remaining axes.
@@ -216,7 +273,7 @@ Array<T> slidingArrayMath (const Array<T>& array,
 			   const FuncType& funcObj,
 			   Bool fillEdge=True);
 
-
+// </group>
 
 } //# NAMESPACE CASA - END
 

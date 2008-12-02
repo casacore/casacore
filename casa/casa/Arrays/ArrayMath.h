@@ -57,6 +57,18 @@ template<class T> class Matrix;
 // <synopsis>
 // These functions perform element by element mathematical operations on
 // arrays.  The two arrays must conform.
+//
+// Furthermore it defines functions a la std::transform to transform one or
+// two arrays by means of a unary or binary operator. All math and logical
+// operations on arrays can be expressed by means of these transform functions.
+// <br>It also defines an in-place transform function because for non-trivial
+// iterators it works faster than a transform where the result is an iterator
+// on the same data object as the left operand.
+// <br>The transform functions distinguish between contiguous and non-contiguous
+// arrays because iterating through a contiguous array can be done in a faster
+// way.
+// <br> Similar to the standard transform function these functions do not check
+// if the shapes match. The user is responsible for that.
 // </synopsis>
 //
 // <example>
@@ -67,10 +79,29 @@ template<class T> class Matrix;
 //      . . .
 //   c = a + b;
 // </srcblock>
-// This example sets the elements of c to (a+b).
+// This example sets the elements of c to (a+b). It checks if a and b have the
+// same shape.
 // The result of this operation is an Array.
 // </example>
 //
+// <example>
+// <srcblock>
+//   c = arrayTransformResult (a, b, std::plus<Double>());
+// </srcblock>
+// This example does the same as the previous example, but expressed using
+// the transform function (which, in fact, is used by the + operator above).
+// However, it is not checked if the shapes match.
+// </example>
+
+// <example>
+// <srcblock>
+//   arrayContTransform (a, b, c, std::plus<Double>());
+// </srcblock>
+// This example does the same as the previous example, but is faster because
+// the result array already exists and does not need to be allocated.
+// Note that the caller must be sure that c is contiguous.
+// </example>
+
 // <example>
 // <srcblock>
 //   Vector<Double> a(10);
@@ -112,8 +143,11 @@ void ArrayMinMaxPrintOnceDeprecated ();
 
 // Functions to apply a binary or unary operator to arrays.
 // They are modeled after std::transform.
+// They do not check if the shapes conform; as in std::transform the
+// user must take care that the operands conform.
 // <group>
-// Transform left and right to a result, which MUST be a contiguous array.
+// Transform left and right to a result using the binary operator.
+// Result MUST be a contiguous array.
 template<typename T, typename BinaryOperator>
 inline void arrayContTransform (const Array<T>& left, const Array<T>& right,
                                 Array<T>& result, BinaryOperator op)
@@ -128,7 +162,8 @@ inline void arrayContTransform (const Array<T>& left, const Array<T>& right,
   }
 }
 
-// Transform left and right to a result, which MUST be a contiguous array.
+// Transform left and right to a result using the binary operator.
+// Result MUST be a contiguous array.
 template<typename T, typename BinaryOperator>
 inline void arrayContTransform (const Array<T>& left, T right,
                                 Array<T>& result, BinaryOperator op)
@@ -143,7 +178,8 @@ inline void arrayContTransform (const Array<T>& left, T right,
   }
 }
 
-// Transform left and right to a result, which MUST be a contiguous array.
+// Transform left and right to a result using the binary operator.
+// Result MUST be a contiguous array.
 template<typename T, typename BinaryOperator>
 inline void arrayContTransform (T left, const Array<T>& right,
                                 Array<T>& result, BinaryOperator op)
@@ -158,7 +194,8 @@ inline void arrayContTransform (T left, const Array<T>& right,
   }
 }
 
-// Transform array to a result, which MUST be a contiguous array.
+// Transform array to a result using the unary operator.
+// Result MUST be a contiguous array.
 template<typename T, typename UnaryOperator>
 inline void arrayContTransform (const Array<T>& arr,
                                 Array<T>& result, UnaryOperator op)
@@ -171,44 +208,53 @@ inline void arrayContTransform (const Array<T>& arr,
   }
 }
 
-// Transform left and right to a result, which need not be contiguous.
+// Transform left and right to a result using the binary operator.
+// Result need not be a contiguous array.
 template<typename T, typename BinaryOperator>
 void arrayTransform (const Array<T>& left, const Array<T>& right,
                      Array<T>& result, BinaryOperator op);
 
-// Transform left and right to a result, which need not be contiguous.
+// Transform left and right to a result using the binary operator.
+// Result need not be a contiguous array.
 template<typename T, typename BinaryOperator>
 void arrayTransform (const Array<T>& left, T right,
                      Array<T>& result, BinaryOperator op);
 
-// Transform left and right to a result, which need not be contiguous.
+// Transform left and right to a result using the binary operator.
+// Result need not be a contiguous array.
 template<typename T, typename BinaryOperator>
 void arrayTransform (T left, const Array<T>& right,
                      Array<T>& result, BinaryOperator op);
 
-// Transform array to a result, which need not be contiguous.
+// Transform array to a result using the unary operator.
+// Result need not be a contiguous array.
 template<typename T, typename UnaryOperator>
 void arrayTransform (const Array<T>& arr,
                      Array<T>& result, UnaryOperator op);
 
-// Transform left and right and return the result, which is contiguous.
+// Transform left and right to a result using the binary operator.
+// The created and returned result array is contiguous.
 template<typename T, typename BinaryOperator>
 Array<T> arrayTransformResult (const Array<T>& left, const Array<T>& right,
                                BinaryOperator op);
 
-// Transform left and right and return the result, which is contiguous.
+// Transform left and right to a result using the binary operator.
+// The created and returned result array is contiguous.
 template<typename T, typename BinaryOperator>
 Array<T> arrayTransformResult (const Array<T>& left, T right, BinaryOperator op);
 
-// Transform left and right and return the result, which is contiguous.
+// Transform left and right to a result using the binary operator.
+// The created and returned result array is contiguous.
 template<typename T, typename BinaryOperator>
 Array<T> arrayTransformResult (T left, const Array<T>& right, BinaryOperator op);
 
-// Transform the array and return the result, which is contiguous.
+// Transform array to a result using the unary operator.
+// The created and returned result array is contiguous.
 template<typename T, typename UnaryOperator>
 Array<T> arrayTransformResult (const Array<T>& arr, UnaryOperator op);
 
-// Transform left and right and put result in left (e.g. += operation).
+// Transform left and right in place using the binary operator.
+// The result is stored in the left array (useful for e.g. the += operation).
 template<typename T, typename BinaryOperator>
 void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
                             BinaryOperator op)
@@ -220,7 +266,8 @@ void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
   }
 }
 
-// Transform left and right and put result in left (e.g. += operation).
+// Transform left and right in place using the binary operator.
+// The result is stored in the left array (useful for e.g. the += operation).
 template<typename T, typename BinaryOperator>
 void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
 {
@@ -231,7 +278,9 @@ void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
   }
 }
 
-// Transform array and put result back into the array.
+// Transform the array in place using the unary operator.
+// E.g. doing <src>arrayTransformInPlace(array, Sin<T>())</src> is faster than
+// <src>array=sin(array)</src> as it does not need to create a temporary array.
 template<typename T, typename UnaryOperator>
 void arrayTransformInPlace (Array<T>& arr, UnaryOperator op)
 {
