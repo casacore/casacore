@@ -24,7 +24,7 @@
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
 
-    $Id$
+$Id$
 */
 
 %{
@@ -49,9 +49,11 @@ RQUOTE    (\/)
 NQ        [^\\\n\"]+
 NRQ       [^\\\n\/]+
 
-NAME ([A-za-z0-0_'{''}''+''-'])
-IDENTIFIER  ([A-Za-z0-9_{}+-]+|STRING)
-SIDENTIFIER  ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
+/*
+NAME        ([A-za-z0-0_'{''}''+''-'])
+*/
+IDENTIFIER  ([A-Za-z0-9_\{\}\+\-\.]+|STRING)
+SIDENTIFIER ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
 
 %x QS RS ESC
 /* rules */
@@ -61,11 +63,10 @@ SIDENTIFIER  ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
             BEGIN(QS);
           }
 
-"\\"  {printf("%s\n",MSFieldGramtext);BEGIN(ESC);}
-<ESC>. {BEGIN(INITIAL);}
-<QS>{NQ}  { 
-            (qstr)+= MSFieldGramtext;
-          }
+"\\"      {printf("%s\n",MSFieldGramtext);BEGIN(ESC);}
+<ESC>.    {BEGIN(INITIAL);}
+
+<QS>{NQ}  {(qstr)+= MSFieldGramtext;}
 
 <QS>{QUOTE} { /* saw closing quote - all done */
                BEGIN(INITIAL);
@@ -81,9 +82,7 @@ SIDENTIFIER  ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
             BEGIN(RS);
           }
 
-<RS>{NRQ} {
-            (qstr)+= MSFieldGramtext;
-          }
+<RS>{NRQ} {(qstr)+= MSFieldGramtext;}
 
 <RS>{RQUOTE} { /* saw closing quote - all done */
                BEGIN(INITIAL);
@@ -94,44 +93,36 @@ SIDENTIFIER  ({WHITE}[A-Za-z0-9_'{''}''+''-''*''?' ]+{WHITE})
                return REGEX;
              }
 
-
 {INT}     { msFieldGramPosition() += yyleng;
             lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
             strcpy(lvalp->str, stripWhite(MSFieldGramtext).c_str());
-	    //	    cout << "INT  = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
+	    //cout << "INT  = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
 
             return INT;
           }
 
-"~"       { msFieldGramPosition() += yyleng;
-            return DASH; }
-","       { msFieldGramPosition() += yyleng;
-            return COMMA;
-          }
-"<"       { msFieldGramPosition() += yyleng;
-            return LT;
-          }
-">"       { msFieldGramPosition() += yyleng;
-            return GT;
-          }
-"&"       { msFieldGramPosition() += yyleng;
-            return AMPERSAND;
-          }
+"~"       { msFieldGramPosition() += yyleng; return DASH;}
+","       { msFieldGramPosition() += yyleng; return COMMA;}
+"<"       { msFieldGramPosition() += yyleng; return LT;}
+">"       { msFieldGramPosition() += yyleng; return GT;}
+"&"       { msFieldGramPosition() += yyleng; return AMPERSAND;}
   /* Literals */
+
 
 {IDENTIFIER} { msFieldGramPosition() += yyleng;
                lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
                strcpy(lvalp->str, MSFieldGramtext);
+ 	       //cout << "ID = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
 
                return IDENTIFIER;
              }
 {SIDENTIFIER} { msFieldGramPosition() += yyleng;
                 lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
                 strcpy(lvalp->str, stripWhite(MSFieldGramtext).c_str());
-		//		cout << "SID = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
+ 		//cout << "SID = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
                 return QSTRING;
               }
-"("       { msFieldGramPosition() += yyleng; return LPAREN; }
+"("       { msFieldGramPosition() += yyleng; return LPAREN;}
 ")"       { msFieldGramPosition() += yyleng; return RPAREN;}
-.         { msFieldGramPosition() += yyleng;return MSFieldGramtext[0];}
+.         { msFieldGramPosition() += yyleng; return MSFieldGramtext[0];}
 %%

@@ -84,6 +84,15 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
           msc.doppler().sourceId()(idoprow)== srcId) {
         // Find the rest frequency information in the SOURCE subtable
         Int transId = msc.doppler().transitionId()(idoprow);
+
+	// When loading g192_a.ms (from regression) into plotxy (probably a
+	// wrong thing to do), transId is -1, which causes a segv further down
+	// when transId is used as an index. Returning False here causes things
+	// to die with an allocation error later on...
+	if ( transId < 0 ) {
+	  throw( AipsError("MSDopplerUtil::dopplerInfo(): invalid transition id") );
+	}
+
         if (!ms_p.source().isNull()) {
 	    // Use indexed access to the SOURCE sub-table
 	    MSSourceIndex sourceIndex (ms_p.source());

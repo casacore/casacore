@@ -45,7 +45,7 @@ FNUMBER   {NUMBER}?{EXP}?
 KILO       ([Kk]?)
 MEGA       (M?)
 METER      (m?)
-LAMBDA     ([Ll]?)
+LAMBDA     ((("lambda")|("LAMBDA"))?)
 WAVELENGTHUNIT   (({KILO}|{MEGA})?{LAMBDA})
 DISTANCEUNIT     (({KILO})?{METER})
 UNIT      ({DISTANCEUNIT}|{WAVELENGTHUNIT})

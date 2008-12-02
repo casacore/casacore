@@ -282,7 +282,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n)
   {
     LogicalArray maskArray = 
-      (msFieldCols_p.sourceId().getColumn() <= n &&
+      //      (msFieldCols_p.sourceId().getColumn() < n &&
+      (fieldIds_p < n &&
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
@@ -292,7 +293,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n)
   {
     LogicalArray maskArray = 
-      (msFieldCols_p.sourceId().getColumn() >= n &&
+      //      (msFieldCols_p.sourceId().getColumn() > n &&
+      (fieldIds_p > n &&
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
@@ -302,8 +304,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1)
   {
     LogicalArray maskArray = 
-      (msFieldCols_p.sourceId().getColumn() >= n0 &&
-       msFieldCols_p.sourceId().getColumn() <= n1 &&
+//       (msFieldCols_p.sourceId().getColumn() >= n0 &&
+//        msFieldCols_p.sourceId().getColumn() <= n1 &&
+      (fieldIds_p > n0 &&
+       fieldIds_p < n1 &&
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();

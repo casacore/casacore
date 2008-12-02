@@ -116,7 +116,12 @@ MSDerivedValues& MSDerivedValues::setMeasurementSet(const MeasurementSet& ms){
   setAntennas(ac);
   // set the restFrequency spwid 0, fieldid 0 for now
   setRestFrequency(0, 0);
-
+  //set the frequency type
+  const ROMSSpWindowColumns spc(ms_p.spectralWindow());
+  MFrequency refreq0=spc.refFrequencyMeas()(0);
+  MFrequency::Types freqType =
+    MFrequency::castType(refreq0.getRef().getType());
+  setFrequencyReference(freqType);
 
   hasMS_p=True;
   return *this;
@@ -128,7 +133,14 @@ Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const
   if(hasMS_p){
     MSDopplerUtil msdoppler(ms_p);
     Vector<Double> restFreqVec;
-    msdoppler.dopplerInfo(restFreqVec ,spwid,fieldid);
+    try{
+      msdoppler.dopplerInfo(restFreqVec ,spwid,fieldid);
+    }
+    catch(...){
+      setRestFrequency(Quantity(0.0, "Hz"));
+      return False;
+    }
+    
     if((restFreqVec.nelements() >0) && (uInt(whichline)<=restFreqVec.nelements())){
       //using  the first
       
@@ -189,6 +201,26 @@ MSDerivedValues& MSDerivedValues::setFieldCenter(const MDirection& fieldCenter)
   mFieldCenter_p=fieldCenter;
   return *this;
 }
+
+MSDerivedValues& MSDerivedValues::setFieldCenter(uInt fieldid)
+{
+
+  if(hasMS_p && (ms_p.field().nrow() > fieldid)){
+    ROMSColumns msc(ms_p);
+    const MDirection dirn=msc.field().phaseDirMeas(fieldid);
+    setFieldCenter(dirn);
+  }
+  else{
+    MDirection dummy;
+    setFieldCenter(dummy);
+  }
+
+
+  return *this;
+  
+
+}
+
 
 MSDerivedValues& MSDerivedValues::setAntenna(Int antenna)
 {
@@ -293,6 +325,18 @@ Quantity MSDerivedValues::toFrequency(const Quantity& vel, const Quantity& restF
 Quantity MSDerivedValues::toFrequency(const Quantity& vel){
   return toFrequency(vel, restFreq_p);
 
+
+}
+
+Quantity MSDerivedValues::toVelocity(const Quantity& freq, const Quantity& restFreq){
+  VelocityMachine vm(frqref_p, freq.getUnit(), MVFrequency(restFreq), 
+		     velref_p, Unit("km/s"), fAntFrame_p);
+
+		     return vm.makeVelocity(freq.getValue());
+}
+
+Quantity MSDerivedValues::toVelocity(const Quantity& freq){
+  return toVelocity(freq, restFreq_p);
 
 }
 

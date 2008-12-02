@@ -211,7 +211,7 @@ fieldidbounds: LT INT // <ID
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSFI.matchFieldIDLT(n));
 
-		  ostringstream m; m << "No field ID found <=" << n;
+		  ostringstream m; m << "No field ID found <" << n;
 		  checkFieldError(*($$), m);
 
 
@@ -224,7 +224,7 @@ fieldidbounds: LT INT // <ID
 		  Int n=atoi($2);
 		  $$ = new Vector<Int>(myMSFI.matchFieldIDGT(n));
 
-		  ostringstream m; m << "No field ID found >= " << n;
+		  ostringstream m; m << "No field ID found >" << n;
 		  checkFieldError(*($$), m);
 
 		  free($2);

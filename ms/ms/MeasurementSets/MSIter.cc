@@ -543,7 +543,7 @@ void MSIter::setFeedInfo()
     checkFeed_p = False;
     if (timeDepFeed_p) {
       LogIO os;
-      os << LogIO::WARN << LogOrigin("MSIter","setFeedInfo")
+      os << LogIO::NORMAL << LogOrigin("MSIter","setFeedInfo")
 	 <<" time dependent feed table encountered - not correctly handled "
 	 <<" - continuing anyway"<< LogIO::POST;
     }
@@ -557,7 +557,8 @@ void MSIter::setFeedInfo()
     Int maxFeedId=max(feedId);
     AlwaysAssert((maxAntId>=0 && maxFeedId>=0),AipsError);    
     CJones_p.resize(maxAntId+1,maxFeedId+1);
-    uInt maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
+    Vector<Int> numRecept=msc_p->feed().numReceptors().getColumn();
+    uInt maxNumReceptors=max(numRecept);
     if (maxNumReceptors>2)
         throw AipsError("Can't handle more than 2 receptors");    
     receptorAngles_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
@@ -578,8 +579,12 @@ void MSIter::setFeedInfo()
         else 
 	  CJones_p(iAnt,iFeed)=Matrix<Complex>(msc_p->feed().polResponse()(i));
 	
-	receptorAngles_p.xyPlane(iFeed).column(iAnt)=
-	   Vector<Double>(msc_p->feed().receptorAngle()(i));
+	// Handle variable numRecept
+	IPosition blc(1,0);
+	IPosition trc(1,numRecept(i)-1);
+	receptorAngles_p.xyPlane(iFeed).column(iAnt)(blc,trc)=
+	  Vector<Double>(msc_p->feed().receptorAngle()(i))(blc,trc);
+
 	for (uInt rcpt=0;rcpt<maxNumReceptors;++rcpt)
 	     for (uInt j=0;j<2;++j) {
 		  // do an explicit iteration because these matrices are

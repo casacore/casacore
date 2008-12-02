@@ -149,6 +149,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 	}
       }
+      //spw is inside region
+      else if((f0 < chanfreq(0)) && (f1 > chanfreq(1))){
+	++nmatch;
+	spw.resize(nmatch, True);
+	spw(nmatch-1)=k;
+	start.resize(nmatch, True);
+	start(nmatch-1)=0;
+	nchan.resize(nmatch, True);
+	nchan(nmatch-1)=nch;
+	found=True;
+
+      }
+
     }
     return found;
   }
@@ -308,6 +321,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  (freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
 		{
 		  Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
+		  if (start == -1) start = 0;
+		  if (stop == -1) stop = numChans(spw(i))-1;
 		  if (stop == start)
 		    {
 		      start = stop = start < 0? 0 : start;
