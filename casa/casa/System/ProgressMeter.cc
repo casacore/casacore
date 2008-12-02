@@ -26,10 +26,16 @@
 //#
 //# $Id$
 
+
+#include <time.h>
+#include <casa/fstream.h>
 #include <casa/System/ProgressMeter.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
 #include <casa/iostream.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/IO/RegularFileIO.h>
+#include <math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -42,8 +48,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // If we have lots and lots of progress meters we should figure out
 // a way to reclaim the following storage.
 static Block<Double> stderr_min, stderr_max, stderr_last;
+static Block<String> stderr_title;
+static Block<Int> stderr_time;
+const char* ProgressMeter::PROGRESSFILE = "/tmp/xidjapdfs";
 static Int stderr_creation_function(Double min, Double max,
-				    const String &, const String &,
+				    const String &t, const String &,
 				    const String &, const String &,
 				    Bool)
 {
@@ -51,11 +60,63 @@ static Int stderr_creation_function(Double min, Double max,
     stderr_min.resize(n);
     stderr_max.resize(n);
     stderr_last.resize(n);
+    stderr_title.resize(n);
+    stderr_time.resize(n);
     stderr_min[n-1] = min;
     stderr_max[n-1] = max;
     stderr_last[n-1] = min;
-    cerr << "\n0%";
+    stderr_title[n-1] = t;
+    stderr_time[n-1] = time(0);
+    //cerr << "\n0%";
     return n;
+}
+
+static void stderr_show_function(Int id, Double value)
+{
+    if (id < 0 || id > Int(stderr_min.nelements())) {
+	return;
+    }
+    id--; // 0-relative
+    stderr_last[id] = value;
+    fstream file_op(ProgressMeter::PROGRESSFILE,
+                    ios::out | ios::app);
+    file_op << stderr_time[id] << ","
+         << stderr_title[id] << "," 
+         << stderr_min[id] << ","
+         << stderr_max[id] << ","
+         << stderr_last[id] << "\n";
+    file_op.close();
+    return ;
+}
+
+static void stderr_busy_function(Int id)
+{
+    if (id < 0 || id > Int(stderr_min.nelements())) {
+	return;
+    }
+    id--; // 0-relative
+    fstream file_op(ProgressMeter::PROGRESSFILE,
+                    ios::out | ios::app);
+    file_op << stderr_time[id] << ","
+         << stderr_title[id] << "," 
+         << "0,0,1\n";
+    file_op.close();
+    return ;
+}
+
+static void stderr_done_function(Int id)
+{
+    if (id < 0 || id > Int(stderr_min.nelements())) {
+	return;
+    }
+    id--; // 0-relative
+    fstream file_op(ProgressMeter::PROGRESSFILE,
+                    ios::out | ios::app);
+    file_op << stderr_time[id] << ","
+         << stderr_title[id] << "," 
+         << "0,1,1\n";
+    file_op.close();
+    return ;
 }
 
 static void stderr_update_function(Int id, Double value)
@@ -69,6 +130,7 @@ static void stderr_update_function(Int id, Double value)
 			  (stderr_max[id] - stderr_min[id]) * 100.0);
     Int lastpercent = Int((stderr_last[id] - stderr_min[id]) / 
 			  (stderr_max[id] - stderr_min[id]) * 100.0);
+    if (::fabs((stderr_last[id] - stderr_min[id])/stderr_min[id]) <  0.001) cerr << "\n0%";
     if (percent > lastpercent) {
 	stderr_last[id] = value;
 	// Probably we could do this more efficiently. We need to get all the
@@ -91,12 +153,20 @@ Int (*ProgressMeter::creation_function_p)(Double, Double,
 			      const String &, const String &,
                               const String &, const String &,
                               Bool) = stderr_creation_function;
+
 void (*ProgressMeter::update_function_p)(Int, Double) = stderr_update_function;
+
+void (*ProgressMeter::show_function_p)(Int, Double) = stderr_show_function;
+
+void (*ProgressMeter::busy_function_p)(Int) = stderr_busy_function;
+
+void (*ProgressMeter::done_function_p)(Int) = stderr_done_function;
 
 ProgressMeter::ProgressMeter()
     : id_p(-1), min_p(0.0), max_p(1.0), update_every_p(1), update_count_p(0)
 {
 }
+
 
 ProgressMeter::ProgressMeter(Double min, Double max, 
 			     const String &title, const String &subtitle,
@@ -115,10 +185,54 @@ ProgressMeter::ProgressMeter(Double min, Double max,
     }
 }
 
+ProgressMeter::ProgressMeter(Double min, Double max, 
+                             const String &title)
+    : id_p(-1), min_p(min), max_p(max), update_every_p(1),
+      update_count_p(0)
+{
+    if (creation_function_p) {
+	id_p = creation_function_p(min, max, title, 
+                  "", "", "", False);
+    }
+}
+
 ProgressMeter::~ProgressMeter()
 {
     update_count_p++;
     update(max_p, True);
+}
+
+
+void ProgressMeter::_update(Double value, Bool force)
+{
+    update_count_p++;
+    if (update_count_p == 1) {
+	startTime = time(&startTime);
+	showProgress = False;
+	force = True;
+    }
+    time_t itsTime;
+    itsTime = time(&itsTime);
+    if(!showProgress && itsTime >= startTime + time_t(7))
+	    showProgress = True;
+    if(!showProgress){
+      if((value >= min_p) && (value <= max_p)){
+         if(update_count_p == 1 || force || ((update_count_p%update_every_p)== 0))
+	   {
+	       show_function_p(id_p, value);
+	   }
+       }
+    }
+}
+
+void ProgressMeter::busy()
+{
+     busy_function_p(id_p);
+}
+
+void ProgressMeter::done()
+{
+     done_function_p(id_p);
 }
 
 void ProgressMeter::update(Double value, Bool force)
@@ -126,26 +240,33 @@ void ProgressMeter::update(Double value, Bool force)
     update_count_p++;
     // Always force the first one through
     if (update_count_p == 1) {
+	showProgress = False;
+	startTime = time(&startTime);
 	force = True;
     }
-    if((value >= min_p) && (value <= max_p)){
-      if(update_count_p == 1 || force || ((update_count_p%update_every_p)== 0))
-	{
-	  // Do the update if we have a "sink" and a valid id
-	  if (id_p > 0 && update_function_p) {
-	    update_function_p(id_p, value);
-	  } else {
-	    // If we have more than one progress meter active at once
-	    // this might look pretty confusing. We can decide what to
-	    // do if that ever actually happens.
-	    
-	  }
-	}
-    }
-    else{
+    time_t itsTime;
+    itsTime = time(&itsTime);
+    if(!showProgress && itsTime >= startTime + time_t(7))
+	    showProgress = True;
+    if(showProgress){
+       if((value >= min_p) && (value <= max_p)){
+         if(update_count_p == 1 || force || ((update_count_p%update_every_p)== 0))
+	   {
+	     // Do the update if we have a "sink" and a valid id
+	     if (id_p > 0 && update_function_p) {
+	       update_function_p(id_p, value);
+	     } else {
+	       // If we have more than one progress meter active at once
+	       // this might look pretty confusing. We can decide what to
+	       // do if that ever actually happens.
+	       
+	     }
+	   }
+       }else{
 
-      //cerr << "WARNING: progress meter trying to update beyond range" << endl;//The user does not need to know that the programmer does not know how to add.
+         //cerr << "WARNING: progress meter trying to update beyond range" << endl;//The user does not need to know that the programmer does not know how to add.
       
+       }
     }
 }
 

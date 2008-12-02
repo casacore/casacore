@@ -35,12 +35,14 @@
 //# Make sure any special macros are set
 #include <casa/aips.h>
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(AIPS_DARWIN)
 #include <math.h>
 #include <ostream>
 #include <cmath>
 namespace casa { //# NAMESPACE CASA - BEGIN
     using std::isnan;
+    using std::isinf;
+    using std::isfinite;
 } //# NAMESPACE CASA - END
 #endif
 

@@ -53,7 +53,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 #if !defined(AIPS_AUTO_STL)
 # if defined(AIPS_GCC)
-#  if defined(AIPS_GCC3)
+#  if defined(AIPS_GCC3) || defined(AIPS_GCC4)
 #   define AIPS_VECTOR_AUX_TEMPLATES(T) \
 using casa::uInt; \
 using casa::uLong; \

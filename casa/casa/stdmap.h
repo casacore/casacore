@@ -53,7 +53,7 @@ using std::less;
 
 #if !defined(AIPS_AUTO_STL)
 # if defined(AIPS_GCC)
-#  if defined(AIPS_GCC3)
+#  if defined(AIPS_GCC3) || defined(AIPS_GCC4)
 #   define AIPS_MAP_AUX_TEMPLATES(T, U) \
 template class \
   std::_Rb_tree<T, std::pair<T const, U >, \

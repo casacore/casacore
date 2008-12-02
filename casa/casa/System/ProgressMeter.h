@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <time.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -117,6 +118,7 @@ public:
 		  const String &minlabel, const String &maxlabel,
 		  Bool estimateTime = True, Int updateEvery=1);
 
+    ProgressMeter(Double min, Double max, const String &title);
     // The destruction of the meter will cause an update to be sent with the
     // maximum value. This will usually cause the GUI window to be removed
     // from the screen. Thus the progress meter should generally live as long
@@ -124,6 +126,9 @@ public:
     ~ProgressMeter();
 
     void update(Double value, Bool force=False);
+    void _update(Double value, Bool force=False);
+    void busy();
+    void done();
 
     // Display the min and max values of the progress meter.
     // <group>
@@ -132,10 +137,14 @@ public:
     // </group>
 
     friend class ObjectController;
+    static const char* PROGRESSFILE;
 private:
     Int id_p;
     Double min_p, max_p;
     Int update_every_p, update_count_p;
+       // Time the progress meter began
+    time_t startTime; 
+    Bool   showProgress;
     
     // These are set by ObjectController for executables that have the tasking
     // system in them, otherwise they are null and this class just does no-ops.
@@ -144,6 +153,9 @@ private:
                               const String &, const String &,
                               Bool);
     static void (*update_function_p)(Int, Double);
+    static void (*show_function_p)(Int, Double);
+    static void (*busy_function_p)(Int);
+    static void (*done_function_p)(Int);
 
     // Undefined and inaccessible
     ProgressMeter(const ProgressMeter &);
