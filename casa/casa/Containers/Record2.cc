@@ -149,6 +149,10 @@ void Record::defineFromValueHolder (const RecordFieldId& id,
   case TpRecord:
     defineRecord (id, value.asRecord());
     break;
+  case TpOther:
+    // An untyped array is handled as an Int array.
+    define (id, value.asArrayInt());
+    break;
   default:
     throw AipsError ("Record::defineFromValueHolder - unknown data type");
     break;
