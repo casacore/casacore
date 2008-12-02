@@ -42,6 +42,7 @@
 #include <casa/Arrays/VectorIter.h>
 
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayPartMath.h>
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayIO.h>
@@ -116,6 +117,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li>
 // <linkto group="ArrayMath.h#Array mathematical operations">Mathematical</linkto>,
 // <linkto group="ArrayLogical.h#Array logical operations">logical</linkto>,
+// <linkto group="ArrayPartMath.h#Array partial operations">chunked mathematical and logical</linkto>,
 // <linkto group="ArrayIO.h#Array IO">IO</linkto>,
 // and other useful operations are provided for
 // Arrays and MaskedArrays.
