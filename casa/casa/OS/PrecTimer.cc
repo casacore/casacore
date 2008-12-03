@@ -52,7 +52,7 @@ double PrecTimer::get_CPU_speed_in_MHz()
   AlwaysAssert(sizeof(int) == 4, AipsError);
   AlwaysAssert(sizeof(long long) == 8, AipsError);
 
-#if defined __linux__ && \
+#if (defined __linux__ || __APPLE__) &&                                 \
     (defined __i386__ || defined __x86_64__ || defined __ia64__ || defined __PPC__) && \
     (defined __GNUC__ || defined __INTEL_COMPILER || defined __PATHSCALE__ || defined __xlC__)
   ifstream infile("/proc/cpuinfo");
