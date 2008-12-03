@@ -16,6 +16,8 @@ opts.Add(("lapacklibdir", "The lapack library location", None))
 opts.Add(("lapacklib",
           "The lapack library name (e.g. for specialized AMD libraries",
           None))
+opts.Add(("blasroot", 
+          "The root directory where blas is installed", None))
 opts.Add(("blaslibdir", "The blas library location", None))
 opts.Add(("blaslib",
           "The blas library name (e.g. for specialized AMD libraries",
