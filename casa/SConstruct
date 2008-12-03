@@ -1,8 +1,7 @@
 import os
 import sys
 
-# This is now needed to make sure assaytest work.
-EnsureSConsVersion(0,97)
+EnsureSConsVersion(1,1)
 
 # Put the package name here, e.g. casa, tables
 PACKAGE="casa"
@@ -46,7 +45,7 @@ env.Tool('casa', env["casashrdir"])
 env.Tool('utils', env["casashrdir"])
 env.Tool('assaytest', env["casashrdir"])
 
-env["ENV"]["AIPSPATH"] = env["prefix"]
+#env["ENV"]["AIPSPATH"] = env["prefix"]
 if not (env.Detect(["flex","lex"]) and env.Detect(["bison", "yacc"])):
     print "lex/yacc needs to be installed"
     env.Exit(1)

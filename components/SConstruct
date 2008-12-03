@@ -75,13 +75,16 @@ if not env.GetOption('clean'):
     # test for blas/lapack
     blasname = conf.env.get("blaslib", "blas").split(",")
     conf.env.AddCustomPackage("blas")
-    if not conf.CheckLib(blasname, autoadd=0): Exit(1)
-    conf.env.PrependUnique(LIBS=blasname)
+    blasname.reverse()
+    for b in blasname:
+        if not conf.CheckLib(b, autoadd=0): Exit(1)
+        conf.env.PrependUnique(LIBS=b)
     lapackname = conf.env.get("lapacklib", "lapack").split(",")
     conf.env.AddCustomPackage("lapack")
-    if not conf.CheckLib(lapackname, autoadd=0): Exit(1)
-    conf.env.PrependUnique(LIBS=lapackname)
-
+    lapackname.reverse()
+    for l in lapackname:
+        if not conf.CheckLib(l, autoadd=0): Exit(1)
+        conf.env.PrependUnique(LIBS=l)
     # test for cfitsio
     conf.env.AddCustomPackage('cfitsio')
     if not conf.CheckLib('cfitsio', autoadd=0):
