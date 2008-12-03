@@ -28,10 +28,10 @@
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
-# include <fits/FITS/fits.h>
-# include <fits/FITS/hdu.h>
-# include <fits/FITS/fitsio.h>
-# include <string.h>
+#include <fits/FITS/fits.h>
+#include <fits/FITS/hdu.h>
+#include <fits/FITS/fitsio.h>
+#include <string.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

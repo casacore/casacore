@@ -138,7 +138,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 		// number
 		if (!(name.contains(commentName) || name.contains(historyName))) {
 		    // this is just a warning, everything is still ok
-		    os << LogIO::SEVERE
+		    os << LogIO::WARN
 		       << "Name is too long for keyword " << name
 		       << " - truncated to first 8 characters." << LogIO::POST;
 		}
@@ -223,7 +223,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	} else if (isArray(type)) {
 	    // Find out how many like-shaped array columns there are in a row
 	    // and interleave them, i.e. so we have crval1 crpix1 cdelt1,
-	    // crval2 crpix2 cdelt2, ...
+	    // crval2 crpix2 cdelt2, ..
 	    Int start = i;
 	    const Int length = in.shape(i).product();
 	    uInt ndim = in.shape(i).nelements();
@@ -232,6 +232,8 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    if (upcase(in.name(i)) == "NAXIS") {
 		out.mk("NAXIS", int(length));
 	    }
+
+	    // To do: special treatment of the PV array here which should not be interleaved
 
 	    if (ndim > 2) {
 		os << LogIO::SEVERE << ndim << " dimensional array found. "
@@ -298,7 +300,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    }
 		    
 	    // This is inefficient because we are getting the arrays many
-	    // time. We could optimize this if this is ever a problem.
+	    // times. We could optimize this if this is ever a problem.
  	    for (Int k=0; k<length; k++) {
  		for (uInt j=start; j<end; j++) {
  		    DataType type = in.type(j);
@@ -473,7 +475,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // First we take a pass through the keywords noting the array keywords and
     // their minimum and maximum indexes. Unfortunately we have to ignore the
     // FITS keyword functions isindexed() etc. because they do not know about
-    // all indexed keywords, e.g. PROJP, PC, ..., i.e. user-defined or "new"
+    // all indexed keywords, e.g. PC, ..., i.e. user-defined or "new"
     // indexed keywords.
     //
     // In addition, CROTA is a special case.  It is only found on the latitude
