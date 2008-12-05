@@ -16,7 +16,6 @@ deps = {'casa' : None,
 	'ms': ['measures'],
 	'images': ['components', 'lattices', 'mirlib'],
 	'msfits': ['ms', 'fits'],
-	'msvis': ['ms'],
 	}
 
 def get_libs(pkg):
@@ -91,7 +90,7 @@ if "-h" not in args:
 # build all by default
 tobuild = ['casa', 'tables', 'mirlib', 'scimath', 'measures','fits', 
 	   'lattices', 'coordinates', 'components', 'images', 
-	   'ms', 'msvis', 'msfits']
+	   'ms', 'msfits']
 for k in deps.keys():
     k = k.rstrip("/")
     if k in args:
