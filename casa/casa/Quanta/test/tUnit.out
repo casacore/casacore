@@ -253,15 +253,15 @@ it translates to:         m(Jy5/s2.(a.Hz).km)
 or:                       3.15576e-120 m2.kg5.s-12
 and back to:              M(JY5/S2.(YEAR.HZ).KM)
 or:                       3.15576e-120 m2.kg5.s-12
-A FITS unit to translate: M(JY5/SEC**2.(YEAR*HZ)*KM)
-it translates to:         m(Jy5/s**2.(a*Hz)*km)
+A FITS unit to translate: M(JY5/SEC2.(YEAR.HZ).KM)
+it translates to:         m(Jy5/s2.(a.Hz).km)
 or:                       3.15576e-120 m2.kg5.s-12
-and back to:              M(JY5/S**2.(YEAR*HZ)*KM)
+and back to:              M(JY5/S2.(YEAR.HZ).KM)
 or:                       3.15576e-120 m2.kg5.s-12
-A FITS unit to translate: M(JY5/SEC^2.(YEAR*HZ).KM)
-it translates to:         m(Jy5/s^2.(a*Hz).km)
+A FITS unit to translate: M(JY5/SEC2.(YEAR.HZ).KM)
+it translates to:         m(Jy5/s2.(a.Hz).km)
 or:                       3.15576e-120 m2.kg5.s-12
-and back to:              M(JY5/S^2.(YEAR*HZ).KM)
+and back to:              M(JY5/S2.(YEAR.HZ).KM)
 or:                       3.15576e-120 m2.kg5.s-12
 User list after FITS removal:
     Jypb      (Jansky/beam)                1.35425483146e-15 kg.s-2.sr-1
