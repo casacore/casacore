@@ -1,5 +1,5 @@
 //# Unit.h: defines the Unit class
-//# Copyright (C) 1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1994-1996,1998-2000,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,13 +80,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // re-created (<src> a = Unit("5Bolton/beam");</src>).
 // </note>
 // A unit is a string of one or more fields separated 
-// by 'space' or '.' (to indicate multiply) or '/' (to indicate divide).
+// by 'space' or '.' or '*' (FITS option)
+// (to indicate multiply) or '/' (to indicate divide).
 // Multiple separators are acted upon (i.e. m//s == m.s).
 // Separators are acted upon left-to-right (i.e. m/s/A == (m/s)/A; use
 // () to indicate otherwise (e.g. m/(s/A))).
 //
 // A field is a name, or a unit enclosed in (), optionally followed by an,
 // optionally signed, decimal constant.
+// The decimal constant may be proceeded by '**' or '^' (FITS option)
 //
 // E.g. m.(m/s)-2 == m-1.s2)
 // <note role=tip>

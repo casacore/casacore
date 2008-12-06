@@ -1,5 +1,5 @@
 //# Unit.cc: defines the Unit class
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2004
+//# Copyright (C) 1994-1999,2001,2004,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,18 +102,30 @@ void Unit::setName(const String &in) {
 }
 
 void Unit::check() {
-    static Regex sp(" +"); static String ssp(".");
-    static Regex pd("\\.+"); static String spd(".");
-    static Regex bp("^\\.+"); static String sbp("");
-    static Regex ep("\\.+$"); static String ebp("");
-    if (!UnitVal::check(uName, uVal)) {
-	throw (AipsError("Unit::check Illegal unit string '" +
-			 uName + "'"));
-    }
-    uName.gsub(sp, ssp);
-    uName.gsub(pd, spd);
-    uName.gsub(bp, sbp);
-    uName.gsub(ep, ebp);
+  static Regex f1("\\*\\*"); static String sf1("");
+  static Regex f2("\\^"); static String sf2("");
+  static Regex f3("\\*"); static String sf3(".");
+  static Regex f4(" */ *"); static String sf4("/");
+  static Regex f5("//"); static String sf5(".");
+  static Regex f6("\\.*/\\.*"); static String sf6("/");
+  static Regex sp(" +"); static String ssp(".");
+  static Regex pd("\\.+"); static String spd(".");
+  static Regex bp("^\\.+"); static String sbp("");
+  static Regex ep("\\.+$"); static String ebp("");
+  if (!UnitVal::check(uName, uVal)) {
+    throw (AipsError("Unit::check Illegal unit string '" +
+		     uName + "'"));
+  };	
+  uName.gsub(f1, sf1);
+  uName.gsub(f2, sf2);
+  uName.gsub(f3, sf3);
+  uName.gsub(f4, sf4);
+  uName.gsub(f5, sf5);
+  uName.gsub(f6, sf6);
+  uName.gsub(sp, ssp);
+  uName.gsub(pd, spd);
+  uName.gsub(bp, sbp);
+  uName.gsub(ep, ebp);
 }
 
 } //# NAMESPACE CASA - END
