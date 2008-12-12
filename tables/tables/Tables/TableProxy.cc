@@ -103,8 +103,9 @@ TableProxy::TableProxy (const String& tableName,
   if (!makeTableDesc (tableDesc, tabdesc, message)) {
     throw TableError (tableName + " failed: " + message);
   }
-  // Try to create the table.
-  SetupNewTable newtab(tableName, tabdesc, Table::New);
+  // Try to create the table (scratch if no table name given).
+  SetupNewTable newtab(tableName, tabdesc,
+                       tableName.empty()  ?  Table::Scratch : Table::New);
   // Apply a possible dminfo object.
   newtab.bindCreate (dmInfo);
   table_p = Table (newtab, type, makeLockOptions(lockOptions),
