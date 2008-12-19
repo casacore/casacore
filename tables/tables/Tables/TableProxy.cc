@@ -296,16 +296,15 @@ TableProxy TableProxy::copy (const String& newTableName,
 			     Bool noRows)
 {
   Table::EndianFormat endOpt = makeEndianFormat (endianFormat);
-  // Always deepcopy if dminfo is not empty or if no rows are copied.
+  // Always valuecopy if dminfo is not empty or if no rows are copied.
   if (dminfo.nfields() > 0  ||  noRows) {
-    deepCopy = True;
     valueCopy = True;
   }
   Table outtab;
   if (toMemory) {
     outtab = table_p.copyToMemoryTable (newTableName, noRows);
   } else {
-    if (deepCopy) {
+    if (deepCopy || valueCopy) {
       table_p.deepCopy (newTableName, dminfo, Table::New, valueCopy,
 			endOpt, noRows);
     } else {
