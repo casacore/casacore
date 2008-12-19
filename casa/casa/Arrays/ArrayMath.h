@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <casa/BasicMath/Math.h>
+#include <casa/BasicMath/Functors.h>
 #include <casa/Arrays/Array.h>
 //# Needed to get the proper Complex typedef's
 #include <casa/BasicSL/Complex.h>
