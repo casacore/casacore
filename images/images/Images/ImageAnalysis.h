@@ -1,4 +1,4 @@
-//# ImageAnalysis.h:  Image analysis and handling tool
+//# ImageAnalysis.h: Image analysis and handling tool
 //# Copyright (C) 2007
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,20 +27,12 @@
 #define IMAGES_IMAGEANALYSIS_H
 
 
-// put includes here
+//# put includes here
 #include <lattices/LatticeMath/Fit2D.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <casa/Arrays/AxesSpecifier.h>
-namespace casa {
 
-/**
- * image component class 
- *
- * // TODO: WRITE YOUR DESCRIPTION HERE! 
- *
- * @author
- * @version 
- **/
+namespace casa {
 
 class DirectionCoordinate;
 class LogIO;
@@ -63,7 +55,14 @@ template<class T> class SubLattice;
 template<class T> class SubImage;
 template<class T> class Vector;
 
+// <summary>
+// Image analysis and handling tool
+// </summary>
 
+// <synopsis>
+// This the casapy image tool.
+// One time it should be merged with pyrap's image tool ImageProxy.
+// </synopsis>
 
 class ImageAnalysis
 {

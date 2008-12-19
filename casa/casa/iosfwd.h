@@ -28,16 +28,16 @@
 #ifndef CASA_IOSFWD_H
 #define CASA_IOSFWD_H
 
-// Define the IO system forward declarations. Note that if fully standard
-// suppliant, the iosfwd will also forward declare the stringstream classes.
-// If strstream classes have to be known, include <aips/aipsiosstrfwd.h>
-// instead.
-
-// Make sure any special macros are set
+//# Make sure any special macros are set
 #include <casa/aips.h>
 #include <iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+// Define the IO system forward declarations. Note that if fully standard
+// suppliant, the iosfwd will also forward declare the stringstream classes.
+// If strstream classes have to be known, include <aips/aipsiosstrfwd.h>
+// instead.
 
 using std::ios;
 using std::istream;

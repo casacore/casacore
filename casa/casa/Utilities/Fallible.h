@@ -60,7 +60,7 @@ void AccessInvalidFallibleObject();
 // </etymology>
 
 // <synopsis> 
-// This class resembles the one in <cite>Scientific and Engineering C++</cite>
+// This class resembles the one in <em>Scientific and Engineering C++</em>
 // by Barton and Nackman. While it was written with that book closed, the
 // class is simple enough that resemblances likely remain.
 //

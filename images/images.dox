@@ -43,6 +43,6 @@ namespace casa {
 // </ul>
 //
 // It is built on top of the
-// <a href="group__lattices.html">lattices</a> module.
+// <a href="group__Lattices__module.html">lattices</a> module.
 
 }

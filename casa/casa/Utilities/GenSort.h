@@ -48,8 +48,8 @@ template<class T> class Block;
 // sort functions.  They do an in-place sort of an array of values.  The
 // functions are templated, so they can in principle be used with any
 // data type. However, if used with non-builtin data types, their
-// class must provide certain functions (see <cite>Template Type Argument
-// Requirements</cite>).
+// class must provide certain functions (see <em>Template Type Argument
+// Requirements</em>).
 //
 // If it is impossible or too expensive to define these functions, the
 // <linkto class=Sort>Sort</linkto> class can be used instead. This sorts

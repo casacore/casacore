@@ -133,7 +133,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </srcblock>
 // </synopsis>
 
-// <group name="Math.h interface for AIPS++">
+// <group name="Math interface for casacore">
 
 // Returns f1**f2. The Double precision version is defined in the standard
 // library. But many compilers are not good enough to automatically do the type

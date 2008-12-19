@@ -59,7 +59,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=Functional:description>
 //       Functional</linkto>
 //       to map a domain object into a range object.
-//  <li> Functions <linkto group="Math.h#Math.h interface for AIPS++>
+//  <li> Functions <linkto group="Math.h#Math interface for casacore>
 //       Math</linkto>
 //       to interface to math.h and other scalar math functions.
 //  <li> Class <linkto class=Random:description>

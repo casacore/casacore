@@ -31,11 +31,11 @@ namespace casa {
 //
 // The tables package contains the core modules for the AIPS++ Table System:
 // <ul>
-//  <li> <a href="group__Tables.html">Tables</a>:
+//  <li> <a href="group__Tables__module.html">Tables</a>:
 //   data base like tables with an advanced query language (TaQL).
-//  <li> <a href="group__TablePlot.html">TablePlot</a>:
+//  <li> <a href="group__TablePlot__module.html">TablePlot</a>:
 //   plot table columns or expressions of them.
-//  <li> <a href="group__LogTables.html">LogTables</a>:
+//  <li> <a href="group__LogTables__module.html">LogTables</a>:
 //   store log messages in tables.
 // </ul>
 

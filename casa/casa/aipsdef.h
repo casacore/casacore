@@ -28,9 +28,9 @@
 #ifndef CASA_AIPSDEF_H
 #define CASA_AIPSDEF_H
 
-// Define the aips++ global macros
+//# Define the aips++ global macros
 
-// Defined the "aips_name2" macro which is used to join two tokens.
+//# Defined the "aips_name2" macro which is used to join two tokens.
 
 #if defined(__STDC__) || defined(__ANSI_CPP__) || defined(__hpux)
 #define aips_name2(a,b) a##b
@@ -38,14 +38,14 @@
 #define aips_name2(a,b) a/**/b
 #endif
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 // If AIPS_DEBUG is not defined, then the symbol expands to (0) which in an
 // if should be removed by the dead code eliminator of any optimizer; thus
 // using this in your code should have no performance penalty in the normal
 // case. If compiled with AIPS_DEBUG, then aips_debug is (defined to )
 // a global boolean variable (so it can be turned on and off in a debugger) 
 // which is initialized to True.
-
-namespace casa { //# NAMESPACE CASA - BEGIN
 
 extern Bool aips_debug_on;
 

@@ -60,10 +60,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   // Functor to test for NaN.
   // It can be used in something like:
-  // <verbatim>
+  // <srcblock>
   //   std::transform (array.begin(), array.end(),
   //                   result.begin(), IsNaN<T>());
-  // </verbatim>
+  // </srcblock>
   template<typename T> struct IsNaN
   {
     bool operator() (T value) const
@@ -79,10 +79,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   // Functor to test if two values are relatively near each other.
   // It can be used in something like:
-  // <verbatim>
+  // <srcblock>
   //   std::transform (left.begin(), left.cend(), right.begin(),
   //                   result.cbegin(), Near<T>(tolerance));
-  // <verbatim>
+  // </srcblock>
   template<typename T> struct Near
   {
     explicit Near (double tolerance=1e-5)
