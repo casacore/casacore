@@ -197,7 +197,7 @@ namespace casa {
     // Currently only a float image can be written to FITS.
     void toFits (const String& fitsfile, Bool overwrite=True,
                  Bool velocity=True, Bool optical=True, Int bitpix=-32,
-                 Double minpix=-1, Double maxpix=1) const;
+                 Double minpix=1, Double maxpix=-1) const;
 
     // Write the image to an image file with the given name.
     // An exception is thrown if the name is the name of an already open image.
