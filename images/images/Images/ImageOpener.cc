@@ -126,12 +126,12 @@ LatticeBase* ImageOpener::openPagedImage (const String& fileName,
   switch (dtype) {
   case TpFloat:
     return new PagedImage<Float> (table, spec);
-///	case TpDouble:
-///	    return new PagedImage<Double> (table, spec);
+  case TpDouble:
+    return new PagedImage<Double> (table, spec);
   case TpComplex:
     return new PagedImage<Complex> (table, spec);
-///	case TpDComplex:
-///	    return new PagedImage<DComplex> (table, spec);
+  case TpDComplex:
+    return new PagedImage<DComplex> (table, spec);
   default:
     return 0;
   }
@@ -151,12 +151,12 @@ LatticeBase* ImageOpener::openHDF5Image (const String& fileName,
   switch (dtype) {
   case TpFloat:
     return new HDF5Image<Float> (fileName, spec);
-///	case TpDouble:
-///	    return new HDF5Image<Double> (table, spec);
+  case TpDouble:
+    return new HDF5Image<Double> (fileName, spec);
   case TpComplex:
     return new HDF5Image<Complex> (fileName, spec);
-///	case TpDComplex:
-///	    return new HDF5Image<DComplex> (table, spec);
+  case TpDComplex:
+    return new HDF5Image<DComplex> (fileName, spec);
   default:
     return 0;
   }
