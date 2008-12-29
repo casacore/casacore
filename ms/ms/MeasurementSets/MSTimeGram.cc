@@ -44,9 +44,9 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include <MSTimeGram.ycc>                  // flex output
+#include "MSTimeGram.ycc"                  // flex output
 #define yy_scan_chars yy_scan_chars_MSTimeGram
-#include <MSTimeGram.lcc>                  // bison output
+#include "MSTimeGram.lcc"                  // bison output
 
 // Define the yywrap function for flex.
 int MSTimeGramwrap()

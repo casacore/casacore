@@ -43,8 +43,8 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include <MSCorrGram.ycc>                  // flex output
-#include <MSCorrGram.lcc>                  // bison output
+#include "MSCorrGram.ycc"                  // flex output
+#include "MSCorrGram.lcc"                  // bison output
 
 // Define the yywrap function for flex.
 int MSCorrGramwrap()

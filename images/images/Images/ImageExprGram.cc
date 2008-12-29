@@ -42,8 +42,8 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include <ImageExprGram.ycc>                  // flex output
-#include <ImageExprGram.lcc>                  // bison output
+#include "ImageExprGram.ycc"                  // flex output
+#include "ImageExprGram.lcc"                  // bison output
 
 
 

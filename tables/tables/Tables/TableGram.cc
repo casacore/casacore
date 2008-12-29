@@ -48,8 +48,8 @@
 //# So undefine WHERE first.
 #undef WHERE
 #include <casa/stdlib.h>
-#include <TableGram.ycc>                  // flex output
-#include <TableGram.lcc>                  // bison output
+#include "TableGram.ycc"                  // flex output
+#include "TableGram.lcc"                  // bison output
 
 
 // Define the yywrap function for flex.
