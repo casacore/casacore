@@ -882,8 +882,14 @@ namespace casa { //# name space casa begins
         }
       }
       // Create a mask and make it the default mask.
-      ImageRegion mask (newImage->makeMask (maskName, True, True));
-      mask.asMask().copyData (image.pixelMask());
+      // Copy the image mask.
+      newImage->makeMask (maskName, True, True);
+      Lattice<Bool>& pixelMaskOut = newImage->pixelMask();
+      LatticeIterator<Bool> maskIter(pixelMaskOut);
+      for (maskIter.reset(); !maskIter.atEnd(); maskIter++) {
+	maskIter.rwCursor() = image.getMaskSlice(maskIter.position(),
+                                                 maskIter.cursorShape());
+      }
     }
     delete newImage;
   }
