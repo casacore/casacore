@@ -38,7 +38,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class RefRows;
 template<class T> class Array;
+template<class T> class BaseSlicesFunctor;
 class IPosition;
+class Slice;
 class Slicer;
 class String;
 
@@ -184,6 +186,38 @@ public:
     Array<T> getSlice (uInt rownr, const Slicer& arraySection) const;
     // </group>
 
+    // Get an irregular slice of an N-dimensional array in a particular cell
+    // (i.e. table row)  as given by the vectors of Slice objects.
+    // The outer vector represents the array axes.
+    // A missing or empty axis means the entire axis.
+    // The inner vector represents the slices to take for each axis.
+    // For example, to get slices from 2-dim arrays:
+    // <srcblock>
+    // Vector<Vector<Slice> > slices(2);      // 2-dim
+    // slices[1].resize (3);                  // 3 slices in 2nd dim
+    // slices[1][0] = Slice(100,20);
+    // slices[1][1] = Slice(200,18);
+    // slices[1][2] = Slice(538,30,2);
+    // // Get data. Vector of first axis is empty, thus entire axis is read.
+    // Array<Complex> data = dataCol.getColumn (slices);
+    // </srcblock>
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // with the last dimension representing the number of rows and the
+    // other dimensions representing the shape of the slice.
+    // The arrays in the column must have the same shape in all cells.
+    // <group>
+    // According to the assignment rules of class Array, the destination
+    // array must be empty or its shape must conform the resulting (n+1)-dim
+    // array.
+    // However, if the resize flag is set the destination array will be
+    // resized if not conforming.
+    void getSlice (uInt rownr,
+                   const Vector<Vector<Slice> >& arraySlices,
+                   Array<T>& arr, Bool resize = False) const;
+    Array<T> getSlice (uInt rownr,
+                       const Vector<Vector<Slice> >& arraySlices) const;
+    // </group>
+
     // Get the array of all values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim
     // with the last dimension representing the number of rows.
@@ -198,7 +232,7 @@ public:
     Array<T> getColumn() const;
     // </group>
 
-    // Get slices from all arrays in the column.
+    // Get regular slices from all arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // with the last dimension representing the number of rows and the
     // other dimensions representing the shape of the slice.
@@ -212,6 +246,35 @@ public:
     void getColumn (const Slicer& arraySection, Array<T>& array,
 		    Bool resize = False) const;
     Array<T> getColumn (const Slicer& arraySection) const;
+    // </group>
+
+    // Get irregular slices from all arrays in the column as given by the
+    // vectors of Slice objects. The outer vector represents the array axes.
+    // A missing or empty axis means the entire axis.
+    // The inner vector represents the slices to take for each axis.
+    // For example, to get slices from 2-dim arrays:
+    // <srcblock>
+    // Vector<Vector<Slice> > slices(2);      // 2-dim
+    // slices[1].resize (3);                  // 3 slices in 2nd dim
+    // slices[1][0] = Slice(100,20);
+    // slices[1][1] = Slice(200,18);
+    // slices[1][2] = Slice(538,30,2);
+    // // Get data. Vector of first axis is empty, thus entire axis is read.
+    // Array<Complex> data = dataCol.getColumn (slices);
+    // </srcblock>
+    // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
+    // with the last dimension representing the number of rows and the
+    // other dimensions representing the shape of the slice.
+    // The arrays in the column must have the same shape in all cells.
+    // <group>
+    // According to the assignment rules of class Array, the destination
+    // array must be empty or its shape must conform the resulting (n+1)-dim
+    // array.
+    // However, if the resize flag is set the destination array will be
+    // resized if not conforming.
+    void getColumn (const Vector<Vector<Slice> >& arraySection, Array<T>& array,
+		    Bool resize = False) const;
+    Array<T> getColumn (const Vector<Vector<Slice> >& arraySection) const;
     // </group>
 
     // Get the array of some values in a column.
@@ -280,7 +343,22 @@ private:
     // Check if the data type matches the column data type.
     void checkDataType() const;
 
+    // Check the shape of the array. If the array is empty or if
+    // <src>resize=True</src>, the array is resized if needed.
+    // An exception is thrown if not conforming.
+    void checkShape (const IPosition& shp,
+                     Array<T>& arr, Bool resize,
+                     const String& where) const;
+
 protected:
+    // A common function used by all functions that can get or put irregular
+    // array slices. The functor performs the get or put operation.
+    void handleSlices (const Vector<Vector<Slice> >& slices,
+                       BaseSlicesFunctor<T>& functor,
+                       const Slicer& slicer,
+                       IPosition& arrEnd,
+                       Array<T>& array) const;
+
     // Keep switches to determine if a slice or an entire column can
     // be accessed or the change of an array can be changed.
     // True = yes;  False = no.
@@ -459,6 +537,9 @@ public:
     void putSlice (uInt rownr, const Slicer& arraySection,
 		   const Array<T>& array);
 
+    void putSlice (uInt rownr, const Vector<Vector<Slice> >& arraySlices,
+                   const Array<T>& arr);
+
     // Put the array of all values in the column.
     // If the column contains n-dim arrays, the source array must be (n+1)-dim
     // with the last dimension representing the number of rows.
@@ -472,6 +553,9 @@ public:
     // of the table array, thus must be n-dim. Also the slice definition
     // should not exceed the shape of the table arrays.
     void putColumn (const Slicer& arraySection, const Array<T>& array);
+
+    void putColumn (const Vector<Vector<Slice> >& arraySlices,
+                    const Array<T>& arr);
 
     // Put the array of some values in the column.
     // The Slicer object can be used to specify start, end (or length),

@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/ArrayColumnFunc.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/RefRows.h>
 #include <casa/Arrays/Array.h>
@@ -130,6 +131,19 @@ void ROArrayColumn<T>::checkDataType() const
     }
 }
 
+template<class T>
+void ROArrayColumn<T>::checkShape (const IPosition& shp,
+                                   Array<T>& arr, Bool resize,
+                                   const String& where) const
+{
+    if (! shp.isEqual (arr.shape())) {
+	if (resize  ||  arr.nelements() == 0) {
+	    arr.resize (shp);
+	} else {
+          throw TableArrayConformanceError(where);
+	}
+    }
+}
 
 template<class T>
 Array<T> ROArrayColumn<T>::operator() (uInt rownr) const
@@ -142,17 +156,9 @@ Array<T> ROArrayColumn<T>::operator() (uInt rownr) const
 template<class T>
 void ROArrayColumn<T>::get (uInt rownr, Array<T>& arr, Bool resize) const
 {
-    TABLECOLUMNCHECKROW(rownr); 
-    //# Check the array conformance.
-    //# Resize the array if empty or if resize flag is set.
-    IPosition shp = shape(rownr);
-    if (! shp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (shp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::get"));
-	}
-    }
+    TABLECOLUMNCHECKROW(rownr);
+    // Check array conformance and resize if needed and possible.
+    checkShape (shape(rownr), arr, resize, "ArrayColumn::get");
     baseColPtr_p->get (rownr, &arr);
 }
 
@@ -171,19 +177,12 @@ void ROArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
 				 Array<T>& arr, Bool resize) const
 {
     TABLECOLUMNCHECKROW(rownr);
-    //# Check the array conformance.
-    //# Extend the array if empty.
+    // Check array conformance and resize if needed and possible.
     IPosition arrayShape (shape(rownr));
     IPosition blc,trc,inc;
     IPosition shp = arraySection.inferShapeFromSource (arrayShape,
 						       blc, trc, inc);
-    if (! shp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (shp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::getSlice"));
-	}
-    }
+    checkShape (shp, arr, resize, "ArrayColumn::getSlice");
     //# Ask if we can access the slice (if that is not known yet).
     if (reaskAccessSlice_p) {
 	canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
@@ -212,6 +211,76 @@ void ROArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
 
 
 template<class T>
+Array<T> ROArrayColumn<T>::getSlice
+(uInt rownr, const Vector<Vector<Slice> >& arraySlices) const
+{
+    Array<T> arr;
+    getSlice (rownr, arraySlices, arr);
+    return arr;
+}
+
+template<class T>
+void ROArrayColumn<T>::getSlice (uInt rownr,
+                                 const Vector<Vector<Slice> >& arraySlices,
+				 Array<T>& arr, Bool resize) const
+{
+  TABLECOLUMNCHECKROW(rownr);
+  // Use shape of row.
+  IPosition colShp = shape(rownr);
+  Vector<Vector<Slice> > slices(arraySlices);
+  Slicer slicer;
+  IPosition shp = Slice::checkSlices (slices, slicer, colShp);
+  // Check array conformance and resize if needed and possible.
+  checkShape (shp, arr, resize, "ArrayColumn::getSlice");
+  // Now loop through all the slices and fill the array in parts.
+  IPosition arrEnd (slicer.length() - 1);
+  GetCellSlices<T> functor(*this, rownr);
+  handleSlices (slices, functor, slicer, arrEnd, arr);
+}
+
+template<class T>
+void ROArrayColumn<T>::handleSlices (const Vector<Vector<Slice> >& slices,
+                                     BaseSlicesFunctor<T>& functor,
+                                     const Slicer& slicer,
+                                     IPosition& arrEnd,
+                                     Array<T>& arr) const
+{
+  uInt nrdim = slicer.ndim();
+  IPosition arrStart (arrEnd.size(), 0); // for getColumn arrEnd.size() > nrdim
+  IPosition colStart (slicer.start());
+  IPosition colLen   (slicer.length());
+  IPosition colIncr  (slicer.stride());
+  IPosition pos(nrdim, 0);
+  while (True) {
+    Array<T> refArr (arr(arrStart, arrEnd));
+    functor.apply (Slicer(colStart, colLen, colIncr), refArr);
+    uInt i;
+    for (i=0; i<nrdim; ++i) {
+      pos[i]++;
+      if (pos[i] < slices[i].size()) {
+        const Slice& slice = slices[i][pos[i]];
+        colStart[i] = slice.start();
+        colLen[i]   = slice.length();
+        colIncr[i]  = slice.inc();
+        arrStart[i] = arrEnd[i] + 1;
+        arrEnd[i]   = arrStart[i] + slice.length() - 1;
+        break;
+      }
+      pos[i] = 0;
+      arrStart[i] = 0;
+      arrEnd[i]   = slicer.length()[i] - 1;
+      colStart[i] = slicer.start()[i];
+      colLen[i]   = slicer.length()[i];
+      colIncr[i]  = slicer.stride()[i];
+    }
+    if (i == nrdim) {
+      break;
+    }
+  }
+}
+
+
+template<class T>
 Array<T> ROArrayColumn<T>::getColumn() const
 {
     Array<T> arr;
@@ -229,15 +298,9 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
 	shp = shape(0);
     }
     //# Total shape is array shape plus nr of table rows.
-    shp.resize (shp.nelements() + 1);
-    shp(shp.nelements()-1) = nrrow;
-    if (! shp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (shp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::getColumn"));
-	}
-    }
+    shp.append (IPosition(1,nrrow));
+    // Check array conformance and resize if needed and possible.
+    checkShape (shp, arr, resize, "ArrayColumn::getColumn");
     //# Ask if we can access the column (if that is not known yet).
     if (reaskAccessColumn_p) {
 	canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
@@ -283,15 +346,9 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
 	shp = arraySection.inferShapeFromSource (shape(0), blc, trc, inc);
     }
     //# Total shape is slice shape plus nr of table rows.
-    shp.resize (shp.nelements() + 1);
-    shp(shp.nelements()-1) = nrrow;
-    if (! shp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (shp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::getColumn"));
-	}
-    }
+    shp.append (IPosition(1,nrrow));
+    // Check array conformance and resize if needed and possible.
+    checkShape (shp, arr, resize, "ArrayColumn::getColumn");
     //# Ask if we can access the column slice (if that is not known yet).
     if (reaskAccessColumnSlice_p) {
 	canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
@@ -315,6 +372,41 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
 
 
 template<class T>
+Array<T> ROArrayColumn<T>::getColumn
+(const Vector<Vector<Slice> >& arraySlices) const
+{
+    Array<T> arr;
+    getColumn (arraySlices, arr);
+    return arr;
+}
+
+template<class T>
+void ROArrayColumn<T>::getColumn (const Vector<Vector<Slice> >& arraySlices,
+				  Array<T>& arr, Bool resize) const
+{
+  uInt nrrow = nrow();
+  // Get total shape.
+  // Use shape of first row (if there) as overall array shape.
+  IPosition colShp;
+  if (nrrow > 0) {
+    colShp = shape(0);
+  }
+  Vector<Vector<Slice> > slices(arraySlices);
+  Slicer slicer;
+  IPosition shp = Slice::checkSlices (slices, slicer, colShp);
+  // Total shape is slice shape plus nr of table rows.
+  shp.append (IPosition(1,nrrow));
+  // Check array conformance and resize if needed and possible.
+  checkShape (shp, arr, resize, "ArrayColumn::getColumn");
+  // Now loop through all the slices and fill the array in parts.
+  IPosition arrEnd (slicer.length() - 1);
+  arrEnd.append (IPosition(1,nrrow-1));
+  GetColumnSlices<T> functor(*this);
+  handleSlices (slices, functor, slicer, arrEnd, arr);
+}
+
+
+template<class T>
 Array<T> ROArrayColumn<T>::getColumnRange (const Slicer& rowRange) const
 {
     Array<T> arr;
@@ -329,7 +421,7 @@ void ROArrayColumn<T>::getColumnRange (const Slicer& rowRange,
     uInt nrrow = nrow();
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
-    //# When the entire column is accessed, use that function.
+    //# If the entire column is accessed, use that function.
     if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	getColumn (arr, resize);
     } else {
@@ -356,15 +448,9 @@ void ROArrayColumn<T>::getColumnCells (const RefRows& rownrs,
 	arrshp = shape(rownrs.firstRow());
     }
     //# Total shape is array shape plus nr of table rows.
-    arrshp.resize (arrshp.nelements() + 1);
-    arrshp(arrshp.nelements()-1) = nrrow;
-    if (! arrshp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (arrshp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::getColumnRange"));
-	}
-    }
+    arrshp.append (IPosition(1,nrrow));
+    // Check array conformance and resize if needed and possible.
+    checkShape (arrshp, arr, resize, "ArrayColumn::getColumnCells");
     baseColPtr_p->getArrayColumnCells (rownrs, &arr);
 }
 
@@ -386,7 +472,7 @@ void ROArrayColumn<T>::getColumnRange (const Slicer& rowRange,
     uInt nrrow = nrow();
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
-    //# When the entire column is accessed, use that function.
+    //# If the entire column is accessed, use that function.
     if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	getColumn (arraySection, arr, resize);
     } else {
@@ -416,15 +502,9 @@ void ROArrayColumn<T>::getColumnCells (const RefRows& rownrs,
 						    arrblc, arrtrc, arrinc);
     }
     //# Total shape is slice shape plus nr of table rows.
-    arrshp.resize (arrshp.nelements() + 1);
-    arrshp(arrshp.nelements()-1) = nrrow;
-    if (! arrshp.isEqual (arr.shape())) {
-	if (resize  ||  arr.nelements() == 0) {
-	    arr.resize (arrshp);
-	}else{
-	    throw (TableArrayConformanceError("ArrayColumn::getColumnCells"));
-	}
-    }
+    arrshp.append (IPosition(1,nrrow));
+    // Check array conformance and resize if needed and possible.
+    checkShape (arrshp, arr, resize, "ArrayColumn::getColumnCells");
     baseColPtr_p->getColumnSliceCells (rownrs, Slicer(arrblc, arrtrc, arrinc,
 						      Slicer::endIsLast),
 				       &arr);
@@ -557,6 +637,27 @@ void ArrayColumn<T>::putSlice (uInt rownr, const Slicer& arraySection,
 }
 
 template<class T>
+void ArrayColumn<T>::putSlice (uInt rownr,
+                               const Vector<Vector<Slice> >& arraySlices,
+			       const Array<T>& arr)
+{
+  TABLECOLUMNCHECKROW(rownr);
+  // Use shape of the row.
+  IPosition colShp = shape(rownr);
+  Vector<Vector<Slice> > slices(arraySlices);
+  Slicer slicer;
+  IPosition shp = Slice::checkSlices (slices, slicer, colShp);
+  if (! shp.isEqual (arr.shape())) {
+    throw (TableArrayConformanceError("ArrayColumn::putSlice"));
+  }
+  // Now loop through all the slices and fill the array in parts.
+  IPosition arrEnd (slicer.length() - 1);
+  PutCellSlices<T> functor(*this, rownr);
+  Array<T> arrc(arr);     // make non-const
+  handleSlices (slices, functor, slicer, arrEnd, arrc);
+}
+
+template<class T>
 void ArrayColumn<T>::put (uInt thisRownr, const ROTableColumn& that,
 			  uInt thatRownr)
 {
@@ -575,7 +676,7 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
     }
     //# Remove #rows from shape to get the shape of each cell.
     shp.resize (last);
-    //# When the array is fixed shape, check if the shape matches.
+    //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	if (! shp.isEqual (shapeColumn())) {
@@ -618,7 +719,7 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
 	throw (TableArrayConformanceError(
 	                              "ArrayColumn::putColumn (nrrow)"));
     }
-    //# When the array is fixed shape, check if the shape matches.
+    //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	//# Remove #rows from shape to get the shape of each cell.
@@ -651,13 +752,41 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
 }
 
 template<class T>
+void ArrayColumn<T>::putColumn (const Vector<Vector<Slice> >& arraySlices,
+                                const Array<T>& arr)
+{
+  uInt nrrow = nrow();
+  // Get total shape.
+  // Use shape of first row (if there) as overall array shape.
+  IPosition colShp;
+  if (nrrow > 0) {
+    colShp = shape(0);
+  }
+  Vector<Vector<Slice> > slices(arraySlices);
+  Slicer slicer;
+  IPosition shp = Slice::checkSlices (slices, slicer, colShp);
+  // Total shape is slice shape plus nr of table rows.
+  shp.append (IPosition(1,nrrow));
+  // Check array conformance.
+  if (! shp.isEqual (arr.shape())) {
+    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+  }
+  // Now loop through all the slices and fill the array in parts.
+  IPosition arrEnd (slicer.length() - 1);
+  arrEnd.append (IPosition(1,nrrow-1));
+  PutColumnSlices<T> functor(*this);
+  Array<T> arrc(arr);     // make non-const
+  handleSlices (slices, functor, slicer, arrEnd, arrc);
+}
+
+template<class T>
 void ArrayColumn<T>::putColumnRange (const Slicer& rowRange,
 				     const Array<T>& arr)
 {
     uInt nrrow = nrow();
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
-    //# When the entire column is accessed, use that function.
+    //# If the entire column is accessed, use that function.
     if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	putColumn (arr);
     } else {
@@ -679,7 +808,7 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
     }
     //# Remove #rows from shape to get the shape of each cell.
     arrshp.resize (last);
-    //# When the array is fixed shape, check if the shape matches.
+    //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	if (! arrshp.isEqual (shapeColumn())) {
@@ -711,7 +840,7 @@ void ArrayColumn<T>::putColumnRange (const Slicer& rowRange,
     uInt nrrow = nrow();
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
-    //# When the entire column is accessed, use that function.
+    //# If the entire column is accessed, use that function.
     if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
 	putColumn (arraySection, arr);
     } else {
@@ -732,7 +861,7 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError(
 	                              "ArrayColumn::putColumnCells (nrrow)"));
     }
-    //# When the array is fixed shape, check if the shape matches.
+    //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	//# Remove #rows from shape to get the shape of each cell.
@@ -783,4 +912,3 @@ void ArrayColumn<T>::putColumn (const ROArrayColumn<T>& that)
 }
 
 } //# NAMESPACE CASA - END
-
