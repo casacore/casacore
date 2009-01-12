@@ -1,5 +1,5 @@
 import sys
-from  SCons.Options import ListOption, EnumOption
+from  SCons.Variables import ListVariable, EnumVariable
 
 def generate(env):
     def AddCompilerOptions( opts ):
@@ -13,7 +13,7 @@ def generate(env):
         opts.Add(("extralibpath", "Extra library paths ", None))
         opts.Add(("extralinkflags", "Extra linker flags ", None))
         if sys.platform == 'darwin':
-            opts.Add(ListOption("universal", 
+            opts.Add(ListVariable("universal", 
                                     "Build universal libraries under OS X?", 
                                     "", ["", "ppc", "i386", 
                                            "ppc64", "x86_64"]))
@@ -34,7 +34,7 @@ def generate(env):
 
     def AddBuildEnvOptions( opts ):
         """ Adds the build environment options to the opts.  """
-        opts.Add(ListOption("build", "The build type", 
+        opts.Add(ListVariable("build", "The build type", 
                             "opt", ["opt", "dbg"]))
 
     def AddCommonOptions( opts ):

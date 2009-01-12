@@ -6,8 +6,8 @@ PACKAGE = "lattices"
 DEPS = ["casa", "tables", "scimath_f", "scimath"]
 
 # general options
-opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(PathOption("casacoreroot", "The location of casacore/casa",
+opts = Variables( 'options.cfg', ARGUMENTS )
+opts.Add(PathVariable("casacoreroot", "The location of casacore/casa",
                     "/usr/local"))
 opts.Add(("lapackroot", 
           "The root directory where lapack is installed", None))

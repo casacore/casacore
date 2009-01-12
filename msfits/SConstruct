@@ -6,9 +6,9 @@ PACKAGE = "msfits"
 DEPS = "casa tables scimath_f scimath measures fits ms".split()
 
 # general options
-opts = Options( 'options.cfg', ARGUMENTS )
+opts = Variables( 'options.cfg', ARGUMENTS )
 
-opts.Add(PathOption("casacoreroot", "The location of casacore/casa",
+opts.Add(PathVariable("casacoreroot", "The location of casacore/casa",
                     "/usr/local"))
 opts.Add(("lapackroot", 
           "The root directory where lapack is installed", None))

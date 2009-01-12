@@ -5,8 +5,8 @@ import sys
 PACKAGE = "mirlib"
 
 # general options
-opts = Options( 'options.cfg', ARGUMENTS )
-opts.Add(PathOption("casacoreroot", "The location of casacore/casa",
+opts = Variables( 'options.cfg', ARGUMENTS )
+opts.Add(PathVariable("casacoreroot", "The location of casacore/casa",
                     "/usr/local"))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],

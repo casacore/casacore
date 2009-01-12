@@ -7,7 +7,7 @@ EnsureSConsVersion(1,1)
 PACKAGE="casa"
 
 # general options
-opts = Options( 'options.cfg', ARGUMENTS )
+opts = Variables( 'options.cfg', ARGUMENTS )
 opts.Add(("enable_hdf5", "Enable HDF5 support", None))
 opts.Add(("hdf5root", 
 	  "The root directory where hdf5 is installed", None))
