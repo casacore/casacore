@@ -31,6 +31,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
 #include <vector>
+#include <algorithm>
 
 
 using namespace casa;
