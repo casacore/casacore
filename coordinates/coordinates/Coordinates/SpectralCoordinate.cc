@@ -1677,7 +1677,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	// doing nothing for these rest frames until the convention in
 	// Paper III or its successor is formally adopted.
 	FITSKeywordUtil::addComment(header, 
-          "AIPS++ non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL");
+          "casacore non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL");
     }
 
     // OK, put the primary header information back
