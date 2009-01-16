@@ -64,10 +64,8 @@ class FitsInput;
 // </reviewed>
 
 // <prerequisite>
-// <list>
-//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=FITSMask>FITSMask</linkto>
-// </list>
+//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <li> <linkto class=FITSMask>FITSMask</linkto>
 // </prerequisite>
 
 // <etymology>
