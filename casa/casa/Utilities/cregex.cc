@@ -1153,36 +1153,36 @@ a2_re_compile_pattern (char *pattern, int size,
   return 0;
 
  invalid_pattern:
-  static char* invpatt = "Invalid regular expression";
+  static const char* invpatt = "Invalid regular expression";
   return invpatt;
 
  unmatched_open:
-  static char* unmopen = "Unmatched \\(";
+  static const char* unmopen = "Unmatched \\(";
   return unmopen;
 
  unmatched_close:
-  static char* unmclose = "Unmatched \\)";
+  static const char* unmclose = "Unmatched \\)";
   return unmclose;
 
  end_of_pattern:
-  static char* endpatt = "Premature end of regular expression";
+  static const char* endpatt = "Premature end of regular expression";
   return endpatt;
 
  nesting_too_deep:
-  static char* toodeep = "Nesting too deep";
+  static const char* toodeep = "Nesting too deep";
   return toodeep;
 
  too_many_paren:
-  static char* toomanyparen = "Too many parentheses";
+  static const char* toomanyparen = "Too many parentheses";
   return toomanyparen;
 
  too_big:
-  static char* toobig = "Regular expression too big";
+  static const char* toobig = "Regular expression too big";
   return toobig;
 
  memory_exhausted:
-  static char* memexh = "Memory exhausted";
-  return memexh;;
+  static const char* memexh = "Memory exhausted";
+  return memexh;
 }
 
 
@@ -2511,8 +2511,8 @@ static struct re_pattern_buffer re_comp_buf;
 const char*
 re_comp (char *s)
 {
-  static char* noprev = "No previous regular expression";
-  static char* memexh = "Memory exhausted";
+  static const char* noprev = "No previous regular expression";
+  static const char* memexh = "Memory exhausted";
   if (!s)
     {
       if (!re_comp_buf.buffer) {
