@@ -34,6 +34,8 @@
 #include <casa/Arrays/Array.h>
 //# Needed to get the proper Complex typedef's
 #include <casa/BasicSL/Complex.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <numeric>
 #include <functional>
 
@@ -257,8 +259,8 @@ Array<T> arrayTransformResult (const Array<T>& arr, UnaryOperator op);
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
 template<typename T, typename BinaryOperator>
-void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
-                            BinaryOperator op)
+inline void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
+                                   BinaryOperator op)
 {
   if (left.contiguousStorage()  &&  right.contiguousStorage()) {
     transformInPlace (left.cbegin(), left.cend(), right.cbegin(), op);
@@ -270,7 +272,7 @@ void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
 template<typename T, typename BinaryOperator>
-void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
+inline void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
     transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
@@ -283,7 +285,7 @@ void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
 // E.g. doing <src>arrayTransformInPlace(array, Sin<T>())</src> is faster than
 // <src>array=sin(array)</src> as it does not need to create a temporary array.
 template<typename T, typename UnaryOperator>
-void arrayTransformInPlace (Array<T>& arr, UnaryOperator op)
+inline void arrayTransformInPlace (Array<T>& arr, UnaryOperator op)
 {
   if (arr.contiguousStorage()) {
     transformInPlace (arr.cbegin(), arr.cend(), op);
