@@ -154,7 +154,7 @@ LinearCoordinate::LinearCoordinate(const ::wcsprm& wcs, Bool oneRel)
       String name(wcs.cunit[i]);
       Unit u(name);
       Unit u2 = UnitMap::fromFITS(u);
-      strncpy (wcs_p.cunit[0], u2.getName().chars(), 9);
+      strncpy (wcs_p.cunit[i], u2.getName().chars(), 9);
    }
 //
     setDefaultWorldMixRanges();

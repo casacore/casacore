@@ -31,9 +31,9 @@
 
 //# Includes
 #include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MeasRef.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MeasConvert.h>
 #include <scimath/Mathematics/InterpolateArray1D.h>
 
 namespace casa {
@@ -56,8 +56,10 @@ class String;
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class=InterpolateArray1D>InterpoateArray1D</linkto>
-//   <li> <linkto class=Array>Array</linkto>
+// <list>
+//   <item> <linkto class=InterpolateArray1D>InterpoateArray1D</linkto>
+//   <item> <linkto class=Array>Array</linkto>
+// </list>
 // </prerequisite>
 //// <synopsis> 
 // Spectra are converted to the specified reference frame and aligned at 

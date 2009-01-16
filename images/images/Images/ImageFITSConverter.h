@@ -30,10 +30,6 @@
 #ifndef IMAGES_IMAGEFITSCONVERTER_H
 #define IMAGES_IMAGEFITSCONVERTER_H
 
-#ifndef WCSLIB_GETWCSTAB
-#define WCSLIB_GETWCSTAB
-#endif
-
 #include <casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -173,14 +169,14 @@ public:
                             Bool zeroBlanks=False);
 
 // Old version
-    static Bool FITSToImageOld(ImageInterface<Float>*& newImage,
-			    String &error,
-			    const String &imageName,
-			    const String &fitsName, 
-			    uInt whichHDU = 0,
-			    uInt memoryInMB = 64,
-			    Bool allowOverwrite=False,
-                            Bool zeroBlanks=False);
+//    static Bool FITSToImageOld(ImageInterface<Float>*& newImage,
+//			    String &error,
+//			    const String &imageName,
+//			    const String &fitsName, 
+//			    uInt whichHDU = 0,
+//			    uInt memoryInMB = 64,
+//			    Bool allowOverwrite=False,
+//                            Bool zeroBlanks=False);
 
     // Convert an AIPS++ image to a FITS file.
     // <ul>
@@ -240,19 +236,19 @@ public:
                                                  IPosition& shape, Bool dropStokes);
 
 // Old version
-    static CoordinateSystem getCoordinateSystemOld (Int& imageType, RecordInterface& header,
-                                                 LogIO& os, IPosition& shape, Bool dropStokes);
+//    static CoordinateSystem getCoordinateSystemOld (Int& imageType, RecordInterface& header,
+//                                                 LogIO& os, IPosition& shape, Bool dropStokes);
 
 // Recover ImageInfo from header. Used keywords are removed from header
     static ImageInfo getImageInfo (RecordInterface& header);
 
 //Old version
-    static ImageInfo getImageInfoOld (RecordInterface& header);
+//    static ImageInfo getImageInfoOld (RecordInterface& header);
 
 // Recover brightness unit from header. Used keywords are removed from header
     static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
 // Old version
-    static Unit getBrightnessUnitOld (RecordInterface& header, LogIO& os);
+//    static Unit getBrightnessUnitOld (RecordInterface& header, LogIO& os);
 
 // Recover history from FITS file keywrod list into logger
    static void restoreHistory (LoggerHolder& logger,
@@ -292,15 +288,14 @@ public:
 
 
 // Old version
-    static void FITSToImageOld(ImageInterface<Float> *&newImage,
-			    String &error,
-			    const String &imageName,
-			    HDUType &fitsImage,
-			    uInt memoryInMB = 64,
-                            Bool zeroBlanks=False);
+//    static void FITSToImageOld(ImageInterface<Float> *&newImage,
+//			    String &error,
+//			    const String &imageName,
+//			    HDUType &fitsImage,
+//			    uInt memoryInMB = 64,
+//                           Bool zeroBlanks=False);
 
 };
-
 
 
 } //# NAMESPACE CASA - END
@@ -308,4 +303,5 @@ public:
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <images/Images/ImageFITSConverter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
+
 #endif

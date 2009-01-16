@@ -34,8 +34,6 @@
 #include <casa/iostream.h>
 #include <casa/namespace.h>
 
-void testSin();
-
 int main()
 {
    try {
@@ -69,11 +67,11 @@ int main()
          if (isZen) {
             if (type==Projection::AZP || type==Projection::TAN || type==Projection::SIN ||      
                 type==Projection::STG || type==Projection::ARC || type==Projection::ZPN ||      
-                type==Projection::ZEA || type==Projection::AIR) ok = True;
+                type==Projection::ZEA || type==Projection::AIR || type==Projection::SZP) ok = True;
          } else {
             if (type!=Projection::AZP && type!=Projection::TAN && type!=Projection::SIN &&
                 type!=Projection::STG && type!=Projection::ARC && type!=Projection::ZPN &&      
-                type!=Projection::ZEA && type!=Projection::AIR) ok = True;
+                type!=Projection::ZEA && type!=Projection::AIR && type!=Projection::SZP) ok = True;
          }
          if (!ok) {
            throw(AipsError("isZenithal fails"));
@@ -122,7 +120,7 @@ int main()
          pars.resize(0);
          Projection proj3(Projection::SIN, pars);
       }
-      testSin();
+
 //
 // Test copy constructor
 //
@@ -146,19 +144,4 @@ int main()
    return (0);
 }
 
-void testSin()
-//
-// Special case for fail. In its own function as
-// catch does not catch twice
-//
-{
-   Vector<Double> pars;
-   pars.resize(1); pars(0) = 1.0;
-   try {
-      Projection proj4(Projection::SIN, pars);
-   } catch (AipsError x) {
-      return;
-   }
-   throw(AipsError("Expected error did not occur"));
-}
 

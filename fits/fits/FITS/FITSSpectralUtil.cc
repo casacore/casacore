@@ -89,12 +89,12 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	  " does not exist or is the wrong type." << LogIO::POST;
 	return False;
     }
-    Bool has_altrval = header.isDefined(String("altrval")) 
-      && (header.dataType("altrval") == TpDouble
-	  || header.dataType("altrval") == TpFloat);
-    Bool has_altrpix = header.isDefined(String("altrpix")) 
-      && (header.dataType("altrpix") == TpDouble
-	  || header.dataType("altrpix") == TpFloat);    
+    Bool has_altrval=header.isDefined(String("altrval")) 
+      && (header.dataType("altrval") == TpDouble || header.dataType("altrval") == TpFloat);
+    Bool has_altrpix=header.isDefined(String("altrpix")) 
+      && (header.dataType("altrpix") == TpDouble ||header.dataType("altrpix") == TpFloat) ;
+
+
 
     Vector<String> ctype;
     Vector<Double> crval, crpix, cdelt;
@@ -102,7 +102,6 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     header.get(n_crval, crval);
     header.get(n_crpix, crpix);
     header.get(n_cdelt, cdelt);
-
 
 // naxis might not be consistent with the length of the CTYPEs
 // we need both. use naxis preferentially
@@ -114,9 +113,9 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
     } else {
        ndim = ctype.nelements();
     }
-    
+
     // Find the spectral axis, if any.
-    
+
     for (Int i=0; i<ndim; i++) {
 	if (ctype(i).contains("FELO") || ctype(i).contains("FREQ") ||
 	    ctype(i).contains("VELO")) {
@@ -128,7 +127,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	return False;
     }
 
-    Int velref = 2; // Default is optical + topocentric ("OBS")
+    Int velref = 3; // Default is optical + topocentric ("OBS")
     if (header.isDefined("velref")) {
 	if (header.dataType("velref") != TpInt) {
 	    logger << LogIO::SEVERE << "Illegal type for VELREF"
@@ -138,7 +137,7 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	}
     } else {
 	if (ctype(spectralAxis).contains("VELO")) {
-	    velref = 258; // radio + OBS
+	    velref = 259; // radio + OBS
 	}
     }
     
@@ -186,7 +185,6 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 	}
     }
 
-
     referenceChannel = crpix(spectralAxis) - offset;
 
     // ALTRVAL and ALTRPIX are being used in "FREQ" axis mode
@@ -197,109 +195,120 @@ Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 // value/pixel, increment etc.  However, this vector is linear in 
 // frequency, so offers no more information than the reference value/increment
 
+// For random group, NAXIS1=0 and then CTYPE1,CRVAL1,CDELT1,CROTA1 are
+// omitted. spectralAxis is determined from ctype string array, so in order
+// to get corresponding naxis, it needs to be shift by 1. 
     Int nChan = 1;
     if (naxis.nelements()>0) {
-	nChan = naxis(spectralAxis);
+      Int naxisoffset=0;
+      if (naxis(0)==0) naxisoffset=1;
+	nChan = naxis(spectralAxis+naxisoffset);
 	AlwaysAssert(nChan >= 1, AipsError);
     }
-//
+
     const Double delt = cdelt(spectralAxis);
     const Double rval = crval(spectralAxis);
     const Double rpix = crpix(spectralAxis) - offset;
 
     if (ctype(spectralAxis).contains("FREQ")) {
+     
       referenceFrequency = rval;
-
-      // HAS ALTRVAL
-      if (has_altrval && (restFrequency >= 0.0)) {
+      //HAS ALTRVAL
+      if(has_altrval && (restFrequency >= 0.0)){
 	Double velo;
 	header.get("altrval",velo);
-	MDoppler ledop(Quantity(velo, "m/s"), velocityPreference);
-	referenceFrequency = MFrequency::fromDoppler(ledop, restFrequency).
-	  getValue().getValue(); 
+	MDoppler ledop(Quantity(velo, "m/s"), 
+		       velocityPreference);
+	referenceFrequency=MFrequency::fromDoppler(ledop, restFrequency).getValue().getValue(); 
+	
       }
-      // HAS ALTRPIX
-      if (has_altrpix) {
+
+      //HAS ALTRPIX
+      if(has_altrpix){
 	header.get("altrpix", referenceChannel);
       }
+      // include one-based offset
+      // NB: UVFITS refChan is generally one-based
+      referenceChannel-=offset;
 
       deltaFrequency = delt;
       frequencies.resize(nChan);
       for (Int i=0; i<nChan; i++) {
-	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
+	frequencies(i) = 
+	  referenceFrequency + (Double(i)-referenceChannel)*delt;
       }
       
     } else if (ctype(spectralAxis).contains("FELO")) {
-	if (restFrequency < 0) {
-	    logger << LogIO::SEVERE << "FELO axis does not have rest frequency "
-		"information (RESTFREQ)" << LogIO::POST;
+      if (restFrequency < 0) {
+	logger << LogIO::SEVERE << "FELO axis does not have rest frequency "
+	  "information (RESTFREQ)" << LogIO::POST;
+	return False;
+      } else {
+	// Have RESTFREQ
+	referenceChannel = rpix;
+	switch(velocityPreference) {
+	case MDoppler::OPTICAL:
+	  {
+	    referenceFrequency = restFrequency / (1.0 + rval/C::c);
+	    deltaFrequency =   -delt*referenceFrequency / (
+							   ( (C::c + rval) ) );
+	  }
+	  break;
+	case MDoppler::RADIO:
+	  {
+	    logger << LogIO::SEVERE << "FELO/RADIO is illegal" <<
+	      LogIO::POST;
 	    return False;
-	} else {
-	    // Have RESTFREQ
-	    referenceChannel = rpix;
-	    switch(velocityPreference) {
-	    case MDoppler::OPTICAL:
-		{
-		    referenceFrequency = restFrequency / (1.0 + rval/C::c);
-		    deltaFrequency =   -delt*referenceFrequency / (
-			       ( (C::c + rval) ) );
-		}
-		break;
-	    case MDoppler::RADIO:
-		{
-		    logger << LogIO::SEVERE << "FELO/RADIO is illegal" <<
-			LogIO::POST;
-		    return False;
-		}
-		break;
-	    default:
-		{
-		    AlwaysAssert(0, AipsError); // NOTREACHED
-		}
-	    }
-	    frequencies.resize(nChan);
-	    for (Int i=0; i<nChan; i++) {
-		frequencies(i) = referenceFrequency + 
-		    (Double(i)-referenceChannel) * deltaFrequency;
-	    }
+	  }
+	  break;
+	default:
+	  {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
+	  }
 	}
+	frequencies.resize(nChan);
+	for (Int i=0; i<nChan; i++) {
+	  frequencies(i) = referenceFrequency + 
+	    (Double(i)-referenceChannel) * deltaFrequency;
+	}
+      }
     } else if (ctype(spectralAxis).contains("VELO")) {
-	if (restFrequency < 0) {
-	    logger << LogIO::SEVERE << "VELO axis does not have rest frequency "
-		"information (RESTFREQ)" << LogIO::POST;
-	    return False;
-	} else {
+      if (restFrequency < 0) {
+	logger << LogIO::SEVERE << "VELO axis does not have rest frequency "
+	  "information (RESTFREQ)" << LogIO::POST;
+	return False;
+      } else {
 	    // Have RESTFREQ
-	    referenceChannel = rpix;
-	    switch(velocityPreference) {
-	    case MDoppler::RADIO:
+	referenceChannel = rpix;
+	switch(velocityPreference) {
+	case MDoppler::RADIO:
+	  {
+	    referenceFrequency = -rval/C::c*restFrequency + 
+	      restFrequency;
+	    deltaFrequency =  
+	      -delt*referenceFrequency / (C::c - rval);
+	  }
+	  break;
+	case MDoppler::OPTICAL:
 		{
-		    referenceFrequency = -rval/C::c*restFrequency + 
-			restFrequency;
-		    deltaFrequency =  
-			-delt*referenceFrequency / (C::c - rval);
+		  logger << LogIO::SEVERE << 
+		    "VELO/OPTICAL is not implemented" <<LogIO::POST;
+		  return False;
 		}
 		break;
-	    case MDoppler::OPTICAL:
-		{
-		    logger << LogIO::SEVERE << 
-			"VELO/OPTICAL is not implemented" <<LogIO::POST;
-		    return False;
-		}
-		break;
-	    default:
-		{
-		    AlwaysAssert(0, AipsError); // NOTREACHED
-		}
-	    }
-	    frequencies.resize(nChan);
-	    for (Int i=0; i<nChan; i++) {
-		frequencies(i) = referenceFrequency + 
-		    (Double(i)-referenceChannel) * deltaFrequency;
-	    }
+	default:
+	  {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
+	  }
 	}
+	frequencies.resize(nChan);
+	for (Int i=0; i<nChan; i++) {
+	  frequencies(i) = referenceFrequency + 
+	    (Double(i)-referenceChannel) * deltaFrequency;
+	}
+      }
     } else {
-	AlwaysAssert(0, AipsError); // NOTREACHED
+      AlwaysAssert(0, AipsError); // NOTREACHED
     }
 
     return retval;

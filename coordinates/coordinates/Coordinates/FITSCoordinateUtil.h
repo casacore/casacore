@@ -99,9 +99,8 @@ public:
     // keywords is already taken.
     // 
     // If writeWCS is True, attempt to write the WCS convention (Greisen and
-    // Calabretta "Representation of celestial coordinates in FITS"). This is
-    // a DRAFT convention evolving rapidly. It is not recommended that you
-    // write this convention in general.
+    // Calabretta "Representation of celestial coordinates in FITS") as
+    // approved in version 3.0 of the FITS standard.
     // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
     // one-relative FITS coordinates.
     //
@@ -114,7 +113,7 @@ public:
 		      IPosition &shape,
                       const CoordinateSystem& cSys,
 		      Bool oneRelative, 
-		      Char prefix = 'c', Bool writeWCS=False,
+		      Char prefix = 'c', Bool writeWCS=True,
 		      Bool preferVelocity=True, 
 		      Bool opticalVelocity=True) const;
 
@@ -135,13 +134,6 @@ public:
                         const Vector<String>& header,
                         const IPosition& shape,
                         uInt which=0) const;
-// Old version
-    Bool fromFITSHeaderOld(Int& stokesFITSValue,
-                        CoordinateSystem &coordsys,
-                        const RecordInterface &header,
-                        const IPosition& shape,
-                        Bool oneRelative,
-                        Char prefix = 'c');
     //</group>
 
 
@@ -158,8 +150,9 @@ private:
                                Vector<Double>& crval,
                                Vector<Double>& crpix,
                                Vector<Double>& cdelt,
-                               Vector<Double>& crota,
-                               Vector<Double>& projp,
+                               //   Vector<Double>& crota,
+			       //   Vector<Double>& projp,
+                               Vector<Double>& pvi_ma,
                                Vector<String>& ctype,
                                Vector<String>& cunit,
                                Matrix<Double>& pc,

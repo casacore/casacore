@@ -51,6 +51,7 @@
 #include <ms/MeasurementSets/MSPolColumns.h>
 #include <ms/MeasurementSets/MSSpWindowColumns.h>
 #include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDoppler.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
@@ -84,6 +85,7 @@
 #include <fits/FITS/FITSKeywordUtil.h>
 #include <fits/FITS/FITSSpectralUtil.h>
 #include <fits/FITS/BinTable.h>
+#include <fits/FITS/fits.h>
 #include <tables/LogTables/NewFile.h>
 #include <casa/System/ProgressMeter.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
@@ -231,8 +233,9 @@ void MSFitsInput::readFitsFile(Int obsType)
   itsLog << LogOrigin("MSFitsInput", "readFitsFile");
   Int nField=0, nSpW=0;
 
+  useAltrval=False;
   getPrimaryGroupAxisInfo();
-
+   
   Bool useTSM=True;
 
   setupMeasurementSet(msFile_p, useTSM, obsType);
@@ -281,6 +284,7 @@ void MSFitsInput::readFitsFile(Int obsType)
       } else if (type.contains("FQ") && !haveSpW) {
 	haveSpW=True;
 	fillSpectralWindowTable(binTab, nSpW);
+
       } else if (type.contains("SU") && !haveField) {
 	haveField=True;
 	fillFieldTable(binTab, nField);
@@ -299,6 +303,7 @@ void MSFitsInput::readFitsFile(Int obsType)
     }
   }
   if (!haveSpW) {
+
     // single freq. case
     fillSpectralWindowTable();
   }
@@ -470,7 +475,18 @@ void MSFitsInput::getPrimaryGroupAxisInfo()
   array_p = (kwp=priGroup_p.kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
   array_p=array_p.before(trailing);
   // Save the RA/DEC epoch (for ss fits)
-  epoch_p = (kwp=priGroup_p.kw(FITS::EPOCH)) ? kwp->asFloat() : 2000.0;
+  if(priGroup_p.kw(FITS::EPOCH))
+    epoch_p=(priGroup_p.kw(FITS::EPOCH))->asFloat();
+  else if(priGroup_p.kw(FITS::EQUINOX))
+    epoch_p=(priGroup_p.kw(FITS::EQUINOX))->asFloat();
+  else{
+    epoch_p=2000.0;
+    itsLog << LogIO::WARN << 
+	"Cannot find epoch of data, defaulting to J2000" << LogIO::POST;
+
+  }
+  //epoch_p = (kwp=priGroup_p.kw(FITS::EPOCH)) ? kwp->asFloat() : 2000.0;
+
 
   // Get the spectral information
   freqsys_p = MFrequency::TOPO;
@@ -495,7 +511,34 @@ void MSFitsInput::getPrimaryGroupAxisInfo()
 					  restfreq_p,
 					  itsLog,
 					  header);
+
+    //    cout << "Discerned type: " << MFrequency::showType(freqsys_p) << endl;
+    //    cout << "Discerned restfreq: " << restfreq_p << endl;
+
+    // Override freqsys_p from FITSSpectralUtil, if SPECSYS keyword present
+    if (header.isDefined(String("specsys"))) {
+      String fframe;
+      header.get("specsys",fframe);
+      MFrequency::getType(freqsys_p,fframe);
+      //      cout << "SPECSYS Override: " << MFrequency::showType(freqsys_p) << endl;
+    }
+
+    // Be strict about use of ALTREF-derived frequencies:
+    //  Only if frame not enforced with SPECSYS keyword, 
+    //  sufficient info is available to do the back-calculation,
+    //  and if that back calculation takes us out of the TOPO
+    //  Otherwise, we assume that the header and FQ frequencies are
+    //  SPECSYS (or TOPO) and are correct.
+    useAltrval=(!header.isDefined(String("specsys")) &&
+		header.isDefined(String("altrval")) &&
+		header.isDefined(String("restfreq")) &&
+		freqsys_p!=MFrequency::TOPO);
+    //    cout << "useAltrval = " << boolalpha << useAltrval << endl;
+
+    refFreq_p = referenceFrequency;
+    chanFreq_p = frequencies;
   }
+
 }
 
 void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
@@ -507,7 +550,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     nIF_p=nPixel_p(nIF_p);
   } else {
     nIF_p=1;
-  }
+   }
   
   // Make the MS table
   TableDesc td = MS::requiredTableDesc();
@@ -586,7 +629,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     newtab.bindColumn(MS::columnName(MS::UVW),aipsStMan);
   }
   // avoid lock overheads by locking the table permanently
-  TableLock lock(TableLock::PermanentLocking);
+  TableLock lock(TableLock::AutoLocking);
   MeasurementSet ms(newtab,lock);
 
   // Set up the subtables for the UVFITS MS
@@ -629,6 +672,7 @@ void MSFitsInput::fillObsTables() {
   msObsCol.observer().put(0,observer);
   String telescope= (kwp=priGroup_p.kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
   telescope=telescope.before(trailing);  
+  if (telescope=="HATCREEK") telescope="BIMA";
   msObsCol.telescopeName().put(0,telescope);
   msObsCol.scheduleType().put(0, "");
   msObsCol.project().put(0, "");
@@ -1369,6 +1413,11 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    // Fill in some likely values
    Float diameter=25;
    if (array_p=="ATCA") diameter=22;
+   Bool doSMA=(array_p=="SMA");
+   Bool doCARMA=(array_p=="CARMA");
+   if (doSMA) diameter=6;
+   if (array_p=="ATA") diameter=6.1;
+   if (array_p=="HATCREEK" || array_p=="BIMA") diameter=6.1;
   
    //   Table anTab=bt.fullTable("",Table::Scratch);
    Table anTab=bt.fullTable();
@@ -1386,6 +1435,9 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    Bool doVLARot=(array_p=="VLA");
    // initialize rotation matrix with zero rotation
    Matrix<Double> posRot=Rot3D(0,0.0);  
+   // Similar transformations are added for SMA and CARMA for now.
+   // May need to make these default processing for most of the telescopes
+   // in future.
    if ( doVLARot ) {
      // Array position for VLA from aips may be wrong, so use
      //  authoritative position from measures (station positions
@@ -1397,6 +1449,14 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      Double vlaLong=atan2(arrayXYZ(1),arrayXYZ(0));
      posRot=Rot3D(2,vlaLong);  // Applied to each ant position below
    }
+   if (doSMA || doCARMA) {
+     //do VLA-like rotation...for SMA and CARMA
+     MPosition arrayCentre;
+     AlwaysAssert(MeasTable::Observatory(arrayCentre, array_p), AipsError);
+     arrayXYZ = arrayCentre.getValue().getValue();
+     Double arrayLong=atan2(arrayXYZ(1),arrayXYZ(0));
+     posRot=Rot3D(2,arrayLong);  // Applied to each ant position below
+   }
    // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection: 
    //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
    Bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));
@@ -1406,6 +1466,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    Int row=ms_p.antenna().nrow()-1;
    for (Int i=0; i<nAnt; i++) {
      ms_p.antenna().addRow(); row++;
+     if((array_p=="OVRO") || (array_p=="CARMA")){
+       //Crystal Brogan has guaranteed that it is always this order
+       if(id(i) <=6)
+	 diameter=10.4;
+       else
+	 diameter=6.1;
+     }
      ant.dishDiameter().put(row,diameter); 
      String mount;
      switch (mountType(i)) {
@@ -1416,6 +1483,8 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      case 4: mount="BIZARRE"; break;
      default: mount="UNKNOWN"; break;
      }
+     //overwrite mount type for SMA
+     if (doSMA) mount="ALT-AZ"; 
      ant.flagRow().put(row,False);
      ant.mount().put(row,mount);
      ant.name().put(row,String::toString(id(i)));
@@ -1428,7 +1497,8 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      // ROArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
      Vector<Double> corXYZ=antXYZ(i);
      // If nec, rotate coordinates out of local VLA frame to ITRF
-     if ( doVLARot ) corXYZ=product(posRot,corXYZ);
+     //if ( doVLARot ) corXYZ=product(posRot,corXYZ);
+     if ( doVLARot || doSMA || doCARMA ) corXYZ=product(posRot,corXYZ);
 
      // If nec, reflect y-coord to yield right-handed geocentric:
      if ( doVLBIRefl ) corXYZ(1)=-corXYZ(1);
@@ -1447,6 +1517,9 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
 void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
 {
   itsLog << LogOrigin("MSFitsInput()", "fillSpectralWindowTable");
+
+  //  cout << "fSWT type: " << MFrequency::showType(freqsys_p) << endl;
+
   MSSpWindowColumns& msSpW(msc_p->spectralWindow());
   MSDataDescColumns& msDD(msc_p->dataDescription());
   MSPolarizationColumns& msPol(msc_p->polarization());
@@ -1488,6 +1561,7 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
     colChWidth.getColumn(chWidth);
     colTotalBandwidth.getColumn(totalBandwidth);
   }
+
   for (Int spw=0; spw<nSpW; spw++) {
     ms_p.spectralWindow().addRow();
     ms_p.dataDescription().addRow();
@@ -1508,15 +1582,26 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
     msSpW.ifConvChain().put(spw,ifc);
     msSpW.numChan().put(spw,nChan);
     Double refChan = refPix_p(iFreq);
+    // using data from FQ table
     Double refFreq=refVal_p(iFreq)+ifFreq(ifc,fqRow);
+
     Double chanBandwidth=chWidth(ifc,fqRow);
+    //TT debug
     Vector<Double> chanFreq(nChan),resolution(nChan);
     for (Int i=0; i < nChan; i++) {
       chanFreq(i)= refFreq + (i+1-refChan) * chanBandwidth;
     }
     resolution=abs(chanBandwidth);
+
+    //if altrval (and altrpix) fits keywords exist use
+    //recalucalated values instead of the data form FQ table
+    if (useAltrval) {
+
+      refFreq = refFreq_p;
+      chanFreq = chanFreq_p;
+    }
     msSpW.chanFreq().put(spw,chanFreq);
-    msSpW.chanWidth().put(spw,resolution);
+    msSpW.chanWidth().put(spw,resolution); 
     msSpW.effectiveBW().put(spw,resolution);
     msSpW.refFrequency().put(spw,refFreq);
     msSpW.resolution().put(spw,resolution);
@@ -1571,12 +1656,18 @@ void MSFitsInput::fillSpectralWindowTable()
     chanFreq(i)= refFreq + (i+1-refChan) * chanBandwidth;
   }
   resolution=chanBandwidth;
+  //if altrval (and altrpix) fits keywords exist use
+  //recalucalated values
+  if (useAltrval) {
+    refFreq = refFreq_p;
+    chanFreq = chanFreq_p;
+  }
   msSpW.chanFreq().put(spw,chanFreq);
   msSpW.chanWidth().put(spw,resolution);
   msSpW.effectiveBW().put(spw,resolution);
   msSpW.refFrequency().put(spw,refFreq);
   msSpW.resolution().put(spw,resolution);
-  msSpW.totalBandwidth().put(spw,abs(nChan+chanBandwidth));
+  msSpW.totalBandwidth().put(spw,abs(nChan*chanBandwidth));
   if (chanBandwidth>0) {
     msSpW.netSideband().put(spw,1);
   } else {
@@ -1619,6 +1710,12 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
   }
   Int outRow=-1;
 
+  //  ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+  //  ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+  //  cout << "restfreq = " << restfreq.getColumn() << endl;
+  //  cout << "sysvel   = " << sysvel.getColumn() << endl;
+
+
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
 
   //   IF UVFITS CAME FROM AIPS, AND THE FIRST ROW OF SU TABLE 
@@ -1628,7 +1725,12 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
 
   MDirection::Types epochRefZero=MDirection::J2000;
   if (nearAbs(epoch(0),1950.0,0.01)) {
-    epochRefZero=MDirection::B1950;
+    if(array_p=="VLA"){
+      epochRefZero=MDirection::B1950_VLA;
+    }
+    else{
+      epochRefZero=MDirection::B1950;
+    }
   }
   msc_p->setDirectionRef(epochRefZero);
   
@@ -1673,7 +1775,10 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
       if (near(epoch(inRow),2000.0,0.01)) {
 	epochRef = MDirection::J2000;
       } else if (nearAbs(epoch(inRow),1950.0,0.01)) {
-	epochRef = MDirection::B1950;
+	if(array_p=="VLA")
+	  epochRef=MDirection::B1950_VLA;
+	else
+	  epochRef = MDirection::B1950;
       } else if (epoch(inRow) == -1.0) {
 	epochRef = epochRefZero;
 	itsLog << " Assuming standard epoch " 
@@ -1721,6 +1826,8 @@ void MSFitsInput::fillFieldTable(Int nField)
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
   MDirection::Types epochRef=MDirection::J2000;
   if (nearAbs(epoch_p,1950.0,0.01)) epochRef=MDirection::B1950;
+  if((epochRef==MDirection::B1950) && (array_p=="VLA"))
+    epochRef=MDirection::B1950_VLA;
   msc_p->setDirectionRef(epochRef);
 
   MSFieldColumns& msField(msc_p->field());
@@ -1798,6 +1905,10 @@ void MSFitsInput::fillExtraTables()
   // as needed by looking up the field info in the field table
   // If requested also look for new spectralwindows and add source
   // table entries for each field/spw combination
+
+  if (addSourceTable_p)
+    itsLog << LogIO::NORMAL << "Filling SOURCE table."<<LogIO::POST;
+
   Int nrow=ms_p.nrow();
   Int nAnt=ms_p.antenna().nrow();
   Int lastFieldId=-1;
@@ -1806,14 +1917,14 @@ void MSFitsInput::fillExtraTables()
   Vector<Int> fieldId=msc_p->fieldId().getColumn();
   Vector<Int> ddId;
   if (addSourceTable_p) ddId=msc_p->dataDescId().getColumn();
-    for (Int i=0; i<nrow; i++) {
+  for (Int i=0; i<nrow; i++) {
     if (fieldId(i)!=lastFieldId || (addSourceTable_p && ddId(i)!=lastDDId)) {
       lastFieldId=fieldId(i);
       if (i>0) lastTime=msc_p->time()(i-1);
       Array<Double> pointingDir = 
 	msc_p->field().phaseDir()(lastFieldId);
       String name = msc_p->field().name()(lastFieldId);
-      Int numPoly = msc_p->field().numPoly()(lastFieldId);
+      //Int numPoly = msc_p->field().numPoly()(lastFieldId);
       Double time = msc_p->time()(i);
       Int np=ms_p.pointing().nrow();
       if (np>0) {
@@ -1827,6 +1938,10 @@ void MSFitsInput::fillExtraTables()
 	  msc_p->pointing().interval().put(np-j-1,interval);
 	}
       }
+      /* Damn this is not right for concatenating later for mosaicing
+         As it is a useless piece of info copy from Field...field table will
+         do
+
       // The ISMStMan is used for all but antennaId, so only put once
       for (Int j=0; j<nAnt; j++) {
 	ms_p.pointing().addRow();
@@ -1842,6 +1957,7 @@ void MSFitsInput::fillExtraTables()
 	  msc_p->pointing().tracking().put(np+j,True);
 	}
       }
+      */
       if (addSourceTable_p) {
         lastDDId = ddId(i);
         Int spwId = msc_p->dataDescription().spectralWindowId()(lastDDId);

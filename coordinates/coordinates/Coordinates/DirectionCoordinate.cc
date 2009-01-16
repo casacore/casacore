@@ -32,6 +32,7 @@
 #include <coordinates/Coordinates/FITSCoordinateUtil.h>
 #include <coordinates/Coordinates/LinearCoordinate.h>
 #include <coordinates/Coordinates/LinearXform.h>
+#include <measures/Measures/MCDirection.h>
 #include <coordinates/Coordinates/Coordinate.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Matrix.h>
@@ -40,7 +41,6 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
 #include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MeasConvert.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/Quantum.h>
@@ -361,7 +361,7 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
    const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
-   if(nWorld == nWorld);      // (turn off stupid compiler warning...).
+   if(nWorld == nWorld);	// (turn off stupid compiler warning...).
    DebugAssert(nWorld==nWorldAxes(), AipsError);
    DebugAssert(nPixel==nPixelAxes(), AipsError);
    DebugAssert(worldIn.nelements()==nWorld, AipsError);
@@ -676,6 +676,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::JMEAN:
 	case MDirection::APP:
 	case MDirection::B1950:
+	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
 	    names[0] = "RA";
@@ -718,6 +719,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::JMEAN:
 	case MDirection::APP:
 	case MDirection::B1950:
+	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
 	    names[0] = "Right Ascension";
@@ -1969,40 +1971,47 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
 
 void DirectionCoordinate::copy(const DirectionCoordinate &other)
 {
-   type_p = other.type_p;
-   conversionType_p = other.conversionType_p;
-   projection_p = other.projection_p;
+  // copy from "other" to this DirectionCoordinate instantiation
+
+    if(other.wcs_p.pv != NULL && other.wcs_p.pv->i > 2){ // temporary, for debugging
+	std::cerr << "wcs_p.pv.i was " << other.wcs_p.pv->i ;
+	other.wcs_p.pv->i = 2;
+	std:: cerr << ", corrected to." << other.wcs_p.pv->i << std::endl;
+    }
+    type_p = other.type_p;
+    conversionType_p = other.conversionType_p;
+    projection_p = other.projection_p;
 //
-   names_p = other.names_p;
-   units_p = other.units_p;
-   to_degrees_p = other.to_degrees_p.copy();
-   to_radians_p = other.to_radians_p.copy();
-   rot_p = other.rot_p;
-
+    names_p = other.names_p;
+    units_p = other.units_p;
+    to_degrees_p = other.to_degrees_p.copy();
+    to_radians_p = other.to_radians_p.copy();
+    rot_p = other.rot_p;
+    
 // Copy WCS structure.  
-
-   if (wcs_p.flag != -1) {
-      wcsfree (&wcs_p);
-   }
-   int err = wcscopy (1, &(other.wcs_p), &wcs_p);
-   if (err != 0) {
-      String errmsg = "wcs wcscopy_error: ";
-      errmsg += wcscopy_errmsg[err];
-      throw(AipsError(errmsg));
-   } 
-   set_wcs(wcs_p);
-
+    
+    if (wcs_p.flag != -1) {
+	wcsfree (&wcs_p);
+    }
+    int err = wcscopy (1, &(other.wcs_p), &wcs_p);
+    if (err != 0) {
+	String errmsg = "wcs wcscopy_error: ";
+	errmsg += wcscopy_errmsg[err];
+	throw(AipsError(errmsg));
+    } 
+    set_wcs(wcs_p);
+    
 // Machines
-
-   if (pConversionMachineTo_p) {
-      delete pConversionMachineTo_p;
-      pConversionMachineTo_p = 0;
-   }
-   if (pConversionMachineFrom_p) {
-      delete pConversionMachineFrom_p;
-      pConversionMachineFrom_p = 0;
-   }
-   makeConversionMachines();
+    
+    if (pConversionMachineTo_p) {
+	delete pConversionMachineTo_p;
+	pConversionMachineTo_p = 0;
+    }
+    if (pConversionMachineFrom_p) {
+	delete pConversionMachineFrom_p;
+	pConversionMachineFrom_p = 0;
+    }
+    makeConversionMachines();
 }
 
 

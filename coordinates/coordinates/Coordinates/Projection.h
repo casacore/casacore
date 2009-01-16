@@ -31,7 +31,6 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -100,6 +99,8 @@ public:
     enum Type {
 	// Zenithal/Azimuthal perspective.
 	AZP,
+	// Slant zenithal perspective, new
+	SZP,
 	// Gnomonic.
 	TAN, 
 	// Orthographics/synthesis.
@@ -116,7 +117,7 @@ public:
 	AIR, 
 	// Cylindrical perspective.
 	CYP, 
-	// Cartesian.
+	// Plate carree
 	CAR, 
 	// Mercator.
 	MER, 
@@ -142,7 +143,7 @@ public:
 	PAR, 
 	// Hammer-Aitoff.
 	AIT, 
-	// Molweide.
+	// Mollweide.
 	MOL, 
 	// COBE quadrilateralized spherical cube.
 	CSC, 
@@ -150,6 +151,8 @@ public:
 	QSC,
 	// Tangential spherical cube.
 	TSC,
+	// HEALPix grid
+	HPX, 
 	// N_PROJ gives the number of supported projections - it shouldn't be used
 	// as a projection
 	N_PROJ };
@@ -188,9 +191,12 @@ public:
     // Returns N_PROJ if the projection is not known.
     static Projection::Type type(const String &name);
 
-    // How many parameters does this projection have, and what are they?
+    // How many parameters does this projection have at most?
+    // What is the minimum number of parameters that have to be supplied?
+    // What are the parameter values?
     // <group>
     static uInt nParameters(Projection::Type proj);
+    static uInt nMinParameters(Projection::Type proj);
     const Vector<Double> &parameters() const;
     // </group>
 

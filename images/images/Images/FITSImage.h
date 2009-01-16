@@ -28,7 +28,6 @@
 #ifndef IMAGES_FITSIMAGE_H
 #define IMAGES_FITSIMAGE_H
 
-#define WCSLIB_GETWCSTAB
 
 //# Includes
 #include <images/Images/ImageInterface.h>
@@ -38,6 +37,8 @@
 #include <fits/FITS/fits.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
+
+#define WCSLIB_GETWCSTAB
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -63,8 +64,10 @@ class FitsInput;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <li> <linkto class=FITSMask>FITSMask</linkto>
+// <list>
+//   <item> <linkto class=ImageInterface>ImageInterface</linkto>
+//   <item> <linkto class=FITSMask>FITSMask</linkto>
+// </list>
 // </prerequisite>
 
 // <etymology>
@@ -105,10 +108,10 @@ class FITSImage: public ImageInterface<Float>
 {
 public: 
   // Construct a FITSImage from the disk FITS file name and apply mask.
-  explicit FITSImage(const String& name, Bool oldParser=False, uInt whichRep=0);
+  explicit FITSImage(const String& name, uInt whichRep=0);
 
   // Construct a FITSImage from the disk FITS file name and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier& mask, Bool oldParser=False, uInt whichRep=0);
+  FITSImage(const String& name, const MaskSpecifier& mask, uInt whichRep=0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -253,7 +256,6 @@ private:
   DataType       dataType_p;
   Int64          fileOffset_p;
   Bool           isClosed_p;
-  Bool           oldParser_p;
   uInt           whichRep_p;
 
 // Reopen the image if needed.
@@ -274,7 +276,7 @@ private:
 			    FITS::ValueType& dataType, 
                             Float& scale, Float& offset, Short& shortMagic, 
                             Int& longMagic, Bool& hasBlanks, const String& name,
-                            Bool oldParser, uInt whichRep);
+                            uInt whichRep);
 
 // Crack the header
    template <typename T>
@@ -284,12 +286,6 @@ private:
                      Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
                      uInt whichRep);
 		     
-// Old version
-   template <typename T>
-   void crackHeaderOld (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
-                     Unit& brightnessUnit, RecordInterface& miscInfo,
-                     Float& scale, Float& offset, Short& magicShort,
-                     Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile);
 };
 
 
@@ -299,4 +295,7 @@ private:
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <images/Images/FITS2Image.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
+
 #endif
+
+

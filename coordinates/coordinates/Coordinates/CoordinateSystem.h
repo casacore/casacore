@@ -708,9 +708,7 @@ public:
     // keywords is already taken.
     // 
     // If writeWCS is True, attempt to write the WCS convention (Greisen and
-    // Calabretta "Representation of celestial coordinates in FITS"). This is
-    // a DRAFT convention evolving rapidly. It is not recommended that you
-    // write this convention in general.
+    // Calabretta "Representation of celestial coordinates in FITS"). 
     // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
     // one-relative FITS coordinates.
     //
@@ -722,7 +720,7 @@ public:
     Bool toFITSHeader(RecordInterface &header, 
 		      IPosition &shape,
 		      Bool oneRelative, 
-		      Char prefix = 'c', Bool writeWCS=False,
+		      Char prefix = 'c', Bool writeWCS=True,
 		      Bool preferVelocity=True, 
 		      Bool opticalVelocity=True) const;
 
@@ -744,13 +742,6 @@ public:
 			       const Vector<String>& header,
                                const IPosition& shape,
                                uInt which=0);
-// Old version
-    static Bool fromFITSHeaderOld(Int& stokesFITSValue, 
-                               CoordinateSystem &coordsys, 
-			       const RecordInterface &header,
-                               const IPosition& shape,
-			       Bool oneRelative,
-			       Char prefix = 'c');
 			       
 
 // List all header information.  By default, the reference

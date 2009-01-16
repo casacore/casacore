@@ -1,4 +1,4 @@
-//# Cleaner.h: this defines Cleaner a class for doing convolution
+//# MultiTermLatticeCleaner.h: Minor Cycle for MSMFS deconvolution
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -23,17 +23,16 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//#
-//# $Id: LatticeCleaner.h 20359 2008-06-26 05:40:46Z max.voronkov $
-//#
-//# Original file copied from ASKAPsoft, 
-//# MultiTermLatticeCleaner: Minor Cycle for MSMFS deconvolution
-//# @author Urvashi Rau <rurvashi@aoc.nrao.edu>
-//#
+//# Urvashi Rau <rurvashi@aoc.nrao.edu>
+//# $Id$
+
 #ifndef LATTICES_MULTITERMLATTICECLEANER_H
 #define LATTICES_MULTITERMLATTICECLEANER_H
 
 #include <lattices/Lattices/LatticeCleaner.h>
+#include <lattices/Lattices/LatticeIterator.h>
+#include <lattices/Lattices/LatticeExpr.h>
+#include <lattices/Lattices/LatticeExprNode.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -60,7 +59,7 @@ public:
   Bool setscales(const Vector<Float> & scales);
 
   // Initialize all the memory being used.
-  Bool initialise();
+  Bool initialise(Int nx,Int ny);
 
   // Input : psfs and dirty images
   Bool setpsf(int order, Lattice<T> & psf);
@@ -71,8 +70,11 @@ public:
   // Input : model images
   Bool setmodel(int order, Lattice<T> & model);
  
+  // Input : mask
+  Bool setmask(Lattice<T> & mask);
+ 
   // Run the minor cycle
-  Bool mtclean(LatticeCleanProgress* progress=0);
+  Int mtclean(LatticeCleanProgress* progress=0);
 
   // Output : Model images
   Bool getmodel(int order, Lattice<T> & model);
@@ -180,7 +182,7 @@ private:
   Int solveMatrixEqn(Int scale);
   Int computePenaltyFunction(Int scale, Float &loopgain, Bool choosespec);
   Int updateSolution(IPosition globalmaxpos, Int maxscaleindex, Float loopgain);
-  Bool checkConvergence(Bool choosespec, Float thresh, Float fluxlimit); 
+  Int checkConvergence(Bool choosespec, Float thresh, Float fluxlimit); 
   
   Int IND2(Int taylor,Int scale);
   Int IND4(Int taylor1, Int taylor2, Int scale1, Int scale2);
@@ -193,5 +195,5 @@ private:
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <lattices/Lattices/MultiTermLatticeCleaner.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
-#endif // LATTICES_MULTITERMLATTICECLEANER_H
+#endif
 

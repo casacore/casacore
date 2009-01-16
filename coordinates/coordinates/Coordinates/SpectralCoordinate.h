@@ -502,10 +502,10 @@ public:
 		Bool preferVelocity=True, Bool opticalVelDef=True) const;
 
 // Old interface.  Handled by wcs in new interface in FITSCoordinateUtil.cc
-    static Bool fromFITSOld(SpectralCoordinate &out, String &error,
-   			 const RecordInterface &header, 
-			 uInt whichAxis,
-			 LogIO &logger, Bool oneRelative=True);
+//    static Bool fromFITSOld(SpectralCoordinate &out, String &error,
+//   			 const RecordInterface &header, 
+//			 uInt whichAxis,
+//			 LogIO &logger, Bool oneRelative=True);
     //</group>
 
     // Save the SpectralCoordinate into the supplied record using the supplied field name.

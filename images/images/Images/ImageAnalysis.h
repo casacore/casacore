@@ -23,8 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
-#ifndef IMAGES_IMAGEANALYSIS_H
-#define IMAGES_IMAGEANALYSIS_H
+#ifndef _IMAGEANALYSIS__H__
+#define _IMAGEANALYSIS__H__
 
 
 //# put includes here
@@ -101,7 +101,7 @@ class ImageAnalysis
     Bool imagefromfits(const String& outfile, const String& infile, 
 		       const Int whichrep = 0, const Int whichhdu = 0, 
 		       const Bool zeroblanks = False, 
-		       const Bool overwrite = False, const Bool old = False);
+		       const Bool overwrite = False);
 
     Bool imagefromforeign(const String& outfile, const String& infile, 
 			  const String& format, const Bool overwrite = False);
@@ -473,8 +473,7 @@ class ImageAnalysis
 					     const Int whichrep = 0,
 					     const Int whichhdu = 0, 
 					     const Bool zeroblanks = False, 
-					     const Bool overwrite = False,
-					     const Bool old = False);
+					     const Bool overwrite = False);
 
     Record* echo(Record& v, const Bool godeep = False);
 

@@ -32,6 +32,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
 
 #include <casa/sstream.h>
 
@@ -184,51 +185,97 @@ int main()
 
     Vector<String> error2;
     Record rec2;
+    cerr << oi;
     AlwaysAssertExit(oi.toFITS(error, rec2));
     AlwaysAssertExit(oi.toFITS(error, rec2));      // Second pass removes pre-existing fields
+
+    // the record delivered by toFITS contains fields as fields,
+    // the record accepted by fromFITS contains fields as subrecords
+    //  -- a round trip is therefore not possible directly.
+    // need to construct input record
+    RecordDesc keywordNumRec;
+    keywordNumRec.addField("value", TpDouble);
+    RecordDesc keywordStrRec;
+    keywordStrRec.addField("value", TpString);
+
+    Record rec3;
+
+    Record telescop(keywordStrRec);
+    Record observ(keywordStrRec);
+    Record dateobs(keywordStrRec);
+    Record timesys(keywordStrRec);
+    Record obsra(keywordNumRec);
+    Record obsdec(keywordNumRec);
+
+    RecordFieldPtr<String> telescopval(telescop, 0);
+    RecordFieldPtr<String> observval(observ, 0);
+    RecordFieldPtr<String> dateobsval(dateobs, 0);
+    RecordFieldPtr<String> timesysval(timesys, 0);
+    RecordFieldPtr<Double> obsraval(obsra, 0);
+    RecordFieldPtr<Double> obsdecval(obsdec, 0);
+
+    telescopval.define("telescope2");
+    observval.define("observer2");
+    dateobsval.define("1996-08-18T12:00:00.0"); // = MJD 50314.
+    timesysval.define("UTC");
+    obsraval.define(139.);
+    obsdecval.define(45.);
+
+    rec3.defineRecord("telescop", telescop);
+    rec3.defineRecord("observer", observ);
+    rec3.defineRecord("date-obs", dateobs);
+    rec3.defineRecord("timesys", timesys);
+    rec3.defineRecord("obsra", obsra);
+    rec3.defineRecord("obsdec", obsdec);
+
+    // now try to import it
     ObsInfo oi4;
-    AlwaysAssertExit(oi4.fromFITSOld(error2, rec2));
-    AlwaysAssertExit(oi4.telescope() == "telescope2" &&
-		     oi4.observer() == "observer2" &&
-		     near(oi4.obsDate().get("d").getValue(), dateVal) &&
-                     near(oi4.pointingCenter().get()(0),0.03) &&
-                     near(oi4.pointingCenter().get()(1),0.04));
-//
+
+    AlwaysAssertExit(oi4.fromFITS(error2, rec3));
+    cerr << oi4;
+
+    AlwaysAssertExit(oi4.telescope() == "telescope2");
+    AlwaysAssertExit(oi4.observer() == "observer2");
+    AlwaysAssertExit(near(oi4.obsDate().get("d").getValue(),50313.5, 1E-5 ));
+    AlwaysAssertExit(near(oi4.pointingCenter().get()(0),2.42601, 1E-5 ));
+    AlwaysAssertExit(near(oi4.pointingCenter().get()(1),0.785398, 1E-5 ));
 
 
 // Forced errors
 
-    {
-       Record rec3;
-       Double x = 0;
-       rec3.define("telescop", x);
-       AlwaysAssertExit(!oi4.fromFITSOld(error2, rec3));
-    }
-    {
-       Record rec3;
-       Double x = 0;
-       rec3.define("observer", x);
-       AlwaysAssertExit(!oi4.fromFITSOld(error2, rec3));
-    }
-    {
-       Record rec3;
-       String x("I like fish");
-       rec3.define("date-obs", x);
-       rec3.define("timesys", x);
-       AlwaysAssertExit(!oi4.fromFITSOld(error2, rec3));
-    }
-    {
-       Record rec3;
-       Double x = 0;
-       rec3.define("date-obs", x);
-       AlwaysAssertExit(!oi4.fromFITSOld(error2, rec3));
-    }
-    {
-       Record rec3;
-       Float x = 0;
-       rec3.define("obsra", x);
-       rec3.define("obsdec", x);
-       AlwaysAssertExit(!oi4.fromFITSOld(error2, rec3));
+    {    
+      {
+	Record rec4;
+	ObsInfo oi5;
+	Bool rval = True;
+	rec4.defineRecord("telescop", obsra);
+	try {
+	  rval = oi5.fromFITS(error2, rec4);
+	} catch (AipsError x) {
+	  cerr << (rval==True) << endl;
+	  AlwaysAssertExit(!rval);
+	}
+      }	
+      {
+        Record rec4;
+	ObsInfo oi5;
+        rec4.defineRecord("observer", obsra);
+        AlwaysAssertExit(!oi5.fromFITS(error2, rec4));
+      }
+      {
+	Record rec4;
+	ObsInfo oi5;
+	rec4.defineRecord("date-obs", telescop);
+	rec4.defineRecord("timesys", observ);
+	AlwaysAssertExit(!oi5.fromFITS(error2, rec4));
+      }
+      {
+	Record rec4;
+	ObsInfo oi5;
+	rec4.defineRecord("obsra", telescop);
+	rec4.defineRecord("obsdec", telescop);
+	AlwaysAssertExit(!oi5.fromFITS(error2, rec4));
+      }
     }
 
 // This is a fragile test, but probably better to do it than not.
@@ -240,7 +287,7 @@ int main()
 		     vs(3) == "timesys" &&
 		     vs(4) == "obsra" &&
 		     vs(5) == "obsdec");
-//
+
     cout << "OK" << endl;
     return 0;
 }

@@ -37,6 +37,7 @@ template <class T> class PtrBlock;
 template <class T> class Block;
 template <class T> class Array;
 template <class T> class Vector;
+template <class T> class Cube;
 
 // <summary> Interpolate in one dimension </summary>
  
@@ -202,6 +203,38 @@ public:
                           Bool goodIsTrue=False,
 			  Bool extrapolate=False);
 
+  // Interpolate in the middle axis in 3D array (yin) whose x coordinates along the
+  // this dimension are given by xin.
+  // Interpolate a Cube(pol,chan,time) in the chan direction.
+  // Currently only linear interpolation method is implemented.
+  // TODO: add support for nearest neiborhood, cubic, and cubic spline. 
+  static void interpolatey(Cube<Range>& yout,
+                          const Vector<Domain>& xout,
+                          const Vector<Domain>& xin,
+                          const Cube<Range>& yin,
+                          Int method);
+
+  // Interpolate in the middle dimension of 3D array yin whose x coordinates 
+  // along this dimension are given by xin. 
+  // Output array yout has interpolated values for x coordinates xout.
+  // This version handles flagged data in a simple way: all outputs
+  // depending on a flagged input are flagged.
+  // If goodIsTrue==True, then that means
+  // a good data point has a flag value of True (usually for 
+  // visibilities, good is False and for images good is True)
+  // If extrapolate==False, then xout points outside the range of xin
+  // will always be marked as flagged.
+  // Currently only linear interpolation method is implemented.
+  // TODO: add support for nearest neiborhood, cubic, and cubic spline. 
+  static void interpolatey(Cube<Range>& yout,
+			  Cube<Bool>& youtFlags,
+                          const Vector<Domain>& xout,
+                          const Vector<Domain>& xin,
+                          const Cube<Range>& yin,
+			  const Cube<Bool>& yinFlags,
+                          Int method,
+                          Bool goodIsTrue=False,
+			  Bool extrapolate=False);
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
@@ -224,6 +257,29 @@ private:
 			     Int method, Bool goodIsTrue,
 			     Bool extrapolate);
 
+  // Interpolate along yaxis 
+  static void interpolateyPtr(PtrBlock<Range*>& yout,
+                             Int na,
+                             Int nb,
+                             Int nc,
+                             const Vector<Domain>& xout,
+                             const Vector<Domain>& xin,
+                             const PtrBlock<const Range*>& yin,
+                             Int method);
+
+  // Take flagging into account
+  static void interpolateyPtr(PtrBlock<Range*>& yout, 
+			     PtrBlock<Bool*>& youtFlags,
+                             Int na,
+			     Int nb, 
+			     Int nc, 
+			     const Vector<Domain>& xout, 
+			     const Vector<Domain>& xin,
+			     const PtrBlock<const Range*>& yin, 
+			     const PtrBlock<const Bool*>& yinFlags, 
+			     Int method, Bool goodIsTrue,
+			     Bool extrapolate);
+
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
   static void polynomialInterpolation(PtrBlock<Range*>& yout, 
@@ -232,6 +288,7 @@ private:
 				      const Vector<Domain>& xin,
 				      const PtrBlock<const Range*>& yin, 
 				      Int order);
+
 };
 
 

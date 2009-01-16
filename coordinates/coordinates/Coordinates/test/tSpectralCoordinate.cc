@@ -851,14 +851,14 @@ int main()
          Record rec;
          lc.toFITS(rec, 0, os, False, True);
 //
-         SpectralCoordinate lc2;
-         String errMsg;
-         if (!SpectralCoordinate::fromFITSOld(lc2, errMsg, rec, 0, os,  True)) {
-            throw(AipsError(String("fromFITSOld function failed because") + errMsg));  
-         }
-         if (!lc.near(lc2, 1e-6)) {
-            throw(AipsError("FITS reflection failed"));  
-         }
+//          SpectralCoordinate lc2;
+//          String errMsg;
+//          if (!SpectralCoordinate::fromFITSOld(lc2, errMsg, rec, 0, os,  True)) {
+//             throw(AipsError(String("fromFITSOld function failed because") + errMsg));  
+//          }
+//          if (!lc.near(lc2, 1e-6)) {
+//             throw(AipsError("FITS reflection failed"));  
+//          }
       }
 */
    } catch (AipsError x) {

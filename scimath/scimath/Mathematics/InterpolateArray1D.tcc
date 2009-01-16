@@ -27,6 +27,7 @@
 
 #include <scimath/Mathematics/InterpolateArray1D.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Cube.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicMath/Math.h>
@@ -148,6 +149,97 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
   Vector<Domain> vxin(xin);
   interpolate(yout,youtFlags,vxout,vxin,yin,yinFlags,
 	      method,goodIsTrue,extrapolate);
+}
+
+template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
+                                                   const Vector<Domain>& xout,
+                                                   const Vector<Domain>& xin,
+                                                   const Cube<Range>& yin,
+                                                   Int method)
+{
+  const uInt ndim = yin.ndim();
+  DebugAssert(ndim==3,AipsError);
+  Int nxin=xin.nelements(), nxout=xout.nelements();
+  IPosition yinShape=yin.shape();
+  //check the number of elements in y
+  DebugAssert(nxin==yinShape(2),AipsError);
+
+  Bool deleteYin, deleteYout;
+  const Range* pyin=yin.getStorage(deleteYin);
+  Int na=yinShape(0);
+  Int nb=yinShape(1);
+  Int nc=yinShape(2);
+  IPosition youtShape=yinShape;
+  youtShape(1)=nxout;  // pick y of cube
+  //youtShape(2)=nxout;  // pick z of cube
+  yout.resize(youtShape);
+  Range* pyout=yout.getStorage(deleteYout);
+
+  PtrBlock<const Range*> yinPtrs(na*nb*nc);
+  PtrBlock<Range*> youtPtrs(na*nxout*nc);
+  Int i;
+  for (i=0; i<(na*nb*nc); i++) yinPtrs[i]=pyin+i;
+  for (i=0; i<(na*nxout*nc); i++) {
+     youtPtrs[i]=pyout+i;
+  }
+  interpolateyPtr(youtPtrs, na, nb, nc, xout, xin, yinPtrs, method);
+
+  yin.freeStorage(pyin,deleteYin);
+  yout.putStorage(pyout,deleteYout);
+
+}
+
+template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
+                                                   Cube<Bool>& youtFlags,
+                                                   const Vector<Domain>& xout,
+                                                   const Vector<Domain>& xin,
+                                                   const Cube<Range>& yin,
+						   const Cube<Bool>& yinFlags,
+                                                   Int method,
+                                                   Bool goodIsTrue,
+						   Bool extrapolate)
+{
+  const uInt ndim = yin.ndim();
+  Int nxin=xin.nelements(), nxout=xout.nelements();
+  IPosition yinShape=yin.shape();
+  DebugAssert(nxin==yinShape(ndim-1),AipsError);
+  DebugAssert((yinFlags.shape() == yinShape), AipsError);
+
+  Bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
+  const Range* pyin=yin.getStorage(deleteYin);
+  const Bool* pyinFlags=yinFlags.getStorage(deleteYinFlags);
+  Int na=yinShape(0);
+  Int nb=yinShape(1);
+  Int nc=yinShape(2);
+  IPosition youtShape=yinShape;
+  youtShape(1)=nxout;  // pick y of cube
+  yout.resize(youtShape);
+  youtFlags.resize(youtShape);
+  youtFlags.set(False);
+  Range* pyout=yout.getStorage(deleteYout);
+  Bool* pyoutFlags=youtFlags.getStorage(deleteYoutFlags);
+
+  PtrBlock<const Range*> yinPtrs(nxin);
+  PtrBlock<const Bool*> yinFlagPtrs(nxin);
+  PtrBlock<Range*> youtPtrs(nxout);
+  PtrBlock<Bool*> youtFlagPtrs(nxout);
+  Int i;
+  for (i=0; i<(na*nb*nc); i++) {
+    yinPtrs[i]=pyin+i;
+    yinFlagPtrs[i]=pyinFlags+i;
+  }
+  for (i=0; i<(na*nxout*nc); i++) {
+     youtPtrs[i]=pyout+i;
+    youtFlagPtrs[i]=pyoutFlags+i;
+  }
+  ///  interpolatePtr(youtPtrs, youtFlagPtrs, na, nb, nc, xout, xin, yinPtrs,
+  ///                 yinFlagPtrs, method, goodIsTrue, extrapolate);
+  yin.freeStorage(pyin,deleteYin);
+  yinFlags.freeStorage(pyinFlags,deleteYinFlags);
+  yout.putStorage(pyout,deleteYout);
+  youtFlags.putStorage(pyoutFlags,deleteYoutFlags);
 }
 
 template <class Domain, class Range>
@@ -519,6 +611,162 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
     }
   }
 }  
+
+template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
+                                                      Int na,
+                                                      Int nb,
+                                                      Int nc,
+                                                      const Vector<Domain>& xout,
+                                                      const Vector<Domain>& xin,
+                                                      const PtrBlock<const Range*>& yin,
+                                                      Int method)
+{
+  uInt nElements=xin.nelements();
+  AlwaysAssert (nElements>0, AipsError);
+  Domain x_req;
+  switch (method) {
+  case nearestNeighbour: // This does nearest neighbour interpolation
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=nearestNeigbour is not implemented yet"));
+      return;
+    }
+  case linear: // Linear interpolation is the default
+    {
+      Int h;
+      Int nxout=xout.nelements();
+      for (uInt j=0; j<nxout; j++) {
+        x_req=xout[j];
+        Bool found;
+        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        if (where == nElements)
+          where--;
+        else if (where == 0)
+          where++;
+        Domain x2 = xin[where]; Int ind2 = where;
+        where--;
+        Domain x1 = xin[where]; Int ind1 = where;
+        if (nearAbs(x1, x2))
+          throw(AipsError("Interpolate1D::operator()"
+                          " data has repeated x values"));
+        Domain frac=(x_req-x1)/(x2-x1);
+        for (Int k=0; k<nc; k++) {
+          for (Int i=0; i<na; i++) {
+        // column major
+             h = i + j*na + k*na*nxout;
+             Int xind1 = i + ind1*na + k*na*nb;
+             Int xind2 = i + ind2*na + k*na*nb;
+             yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
+        //    return y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
+          }
+        }
+      }
+      return;
+    }
+  case cubic:// fit a cubic polynomial to the four nearest points
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=cubic is not implemented yet"));
+      return;
+    }
+  case spline: // natural cubic splines
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=spline is not implemented"));
+      return;
+    }
+  }
+}
+
+template <class Domain, class Range>
+void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
+                                                      PtrBlock<Bool*>& youtFlags,
+                                                      Int na,
+                                                      Int nb,
+                                                      Int nc,
+                                                      const Vector<Domain>& xout,
+                                                      const Vector<Domain>& xin,
+                                                      const PtrBlock<const Range*>& yin,
+                                                      const PtrBlock<const Bool*>& yinFlags,
+                                                      Int method,
+                                                      Bool goodIsTrue,
+                                                      Bool extrapolate)
+{
+  uInt nElements=xin.nelements();
+  Domain x_req;
+  Bool flag = !(goodIsTrue);
+  switch (method) {
+  case nearestNeighbour: // This does nearest neighbour interpolation
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=nearestNeigbour is not implemented yet"));
+      return;
+    }
+  case linear: // Linear interpolation is the default
+    {
+      Int h;
+      Int nxout=xout.nelements();
+      for (Int j=0; j<nxout; j++) {
+        x_req=xout[j];
+        Bool found;
+        Bool discard = False;
+        uInt where = binarySearchBrackets(found, xin, x_req, nElements);
+        if (where == nElements) {
+          discard=!extrapolate;
+          where--;
+        }
+        else if (where == 0) {
+          discard=(x_req!=xin[0])&&(!extrapolate);
+          where++;
+        }
+        Domain x2 = xin[where]; Int ind2 = where;
+        where--;
+        Domain x1 = xin[where]; Int ind1 = where;
+        if (nearAbs(x1, x2))
+          throw(AipsError("Interpolate1D::operator()"
+                          " data has repeated x values"));
+        Domain frac=(x_req-x1)/(x2-x1);
+
+//    y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
+        if (goodIsTrue) {
+          for (Int k=0; k<nc; k++) {
+            for (Int i=0; i<na; i++) {
+              // column major
+              h = i + j*na + k*na*nxout;
+              Int xind1 = i + ind1*na + k*na*nb;
+              Int xind2 = i + ind2*na + k*na*nb;
+              yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
+              youtFlags[h][0] = (discard ? flag :
+                                yinFlags[xind1][0] && yinFlags[xind2][0]);
+            }
+          }
+        } else {
+          for (Int k=0; k<nc; k++) {
+            for (Int i=0; i<na; i++) {
+              h = i + j*na + k*na*nxout;
+              Int xind1 = i + ind1*na + k*na*nb;
+              Int xind2 = i + ind2*na + k*na*nb;
+             yout[h][0] = yin[xind1][0] + frac * (yin[xind2][0] - yin[xind1][0]);
+             youtFlags[h][0] = ( discard ? flag :
+                                 yinFlags[xind1][0] || yinFlags[xind2][0]);
+            }
+          }
+        }
+      }
+      return ;
+    }
+  case cubic:// fit a cubic polynomial to the four nearest points
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=cubic is not implemented yet"));
+      return;
+    }
+  case spline: // natural cubic splines
+    {
+      throw(AipsError("Interpolate1DArray::interpolateyPtr(): method=spline is not implemented"));
+      return;
+    }
+  }
+}
+
+
+
 
 // Interpolate the y-vectors of length ny from x values xin to xout
 // using polynomial interpolation with specified order

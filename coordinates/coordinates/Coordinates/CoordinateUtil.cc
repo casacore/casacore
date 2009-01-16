@@ -1161,7 +1161,7 @@ Bool CoordinateUtil::cylindricalFix (CoordinateSystem& cSys, String& errorMessag
 // check shape here
 
    DirectionCoordinate dirCoord (cSys.directionCoordinate(coord));
-   if (!dirCoord.cylindricalFix (shape(pixelAxes[0]), shape(pixelAxes[1]))) {
+   if (pixelAxes[0] < 0 || pixelAxes[1] < 0 || !dirCoord.cylindricalFix (shape(pixelAxes[0]), shape(pixelAxes[1]))) {
       errorMessage = dirCoord.errorMessage();
       return False;      
    }

@@ -32,6 +32,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Containers/Record.h>
+#include <casa/Containers/RecordField.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/QLogical.h>
 #include <casa/Arrays/Vector.h>
@@ -127,11 +128,11 @@ try {
     equal(mii2, mii);
 //
     Vector<Quantum<Double> > beam2(3);
-    beam2(0) = Quantum<Double>(50.0, "arcsec");
-    beam2(1) = Quantum<Double>(0.0001, "rad");
+    beam2(0) = Quantum<Double>(7.2, "arcsec");
+    beam2(1) = Quantum<Double>(3.6, "arcsec");
     beam2(2) = Quantum<Double>(-90.0, "deg");
     mii2.setRestoringBeam(beam2);
-    mii2.setImageType(ImageInfo::OpticalDepth);
+    mii2.setImageType(ImageInfo::Intensity);
     mii.setObjectName(String("NGC1399"));
     mii = mii2;
     equal(mii2, mii);
@@ -151,14 +152,41 @@ try {
 //
     Record header;
     AlwaysAssertExit(mii3.toFITS(error, header));
+    // the header delivered by toFITS contains fields as fields,
+    // the header accepted by fromFITS contains fields as subrecords
+    //  -- a round trip is therefore not possible directly.
+    // need to construct input record
+    RecordDesc keywordNumRec;
+    keywordNumRec.addField("value", TpDouble);
+    RecordDesc keywordStrRec;
+    keywordStrRec.addField("value", TpString);
+    Record headerb;
+    Record rbmaj(keywordNumRec);
+    Record rbmin(keywordNumRec);
+    Record rbpa(keywordNumRec);
+    Record robject(keywordStrRec);
+    RecordFieldPtr<Double> bmajval(rbmaj, 0);
+    RecordFieldPtr<Double> bminval(rbmin, 0);
+    RecordFieldPtr<Double> bpaval(rbpa, 0);
+    RecordFieldPtr<String> objectval(robject, 0);
+    bmajval.define(0.002);
+    bminval.define(0.001);
+    bpaval.define(-90.);
+    objectval.define("IC4296");
+    headerb.defineRecord("bmaj", rbmaj);
+    headerb.defineRecord("bmin", rbmin);
+    headerb.defineRecord("bpa", rbpa);
+    headerb.defineRecord("object", robject);
+    // now try to import it
     ImageInfo mii4;
     Vector<String> error2;
-    AlwaysAssertExit(mii4.fromFITSOld(error2, header));
+    AlwaysAssertExit(mii4.fromFITS(error2, headerb));
     equal(mii4, mii3);
 //
 // output stream
 //
     cout << mii3 << endl;
+    cout << mii4 << endl;
 
 } catch (AipsError x) {
   cout << "Caught error " << x.getMesg() << endl;

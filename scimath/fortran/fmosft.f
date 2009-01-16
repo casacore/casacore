@@ -34,7 +34,8 @@ C
      $     scale, offset, grid, nx, ny, npol, nchan, freq, c,
      $     support, convsize, sampling, convfunc, 
      $     chanmap, polmap,
-     $     sumwt, weightgrid, convweight, doweightgrid)
+     $     sumwt, weightgrid, convweight, doweightgrid, convplanemap, 
+     $     nconvplane)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
@@ -60,12 +61,14 @@ C
       complex nvalue
       complex nweight
       integer convsize, sampling
-      complex convfunc(convsize, convsize), cwt, crot
-      complex convweight(convsize, convsize)
+      integer nconvplane
+      integer convplanemap(nrow)
+      complex convfunc(convsize, convsize, nconvplane), cwt, crot
+      complex convweight(convsize, convsize, nconvplane)
 
       complex shiftx(-support:support), shifty(-support:support)
-      complex sconv(-support:support, -support:support)
-      complex sconv2(-support:support, -support:support)
+      complex sconv(-support:support, -support:support, nconvplane)
+      complex sconv2(-support:support, -support:support, nconvplane)
       real sumsconv
       real sumsconv2
       real ratioofbeam
@@ -78,8 +81,8 @@ C
       real pos(3)
       integer loc(3), off(3), iloc(3)
       integer rbeg, rend
-      integer ix, iy, ipol, ichan
-      integer apol, achan, irow
+      integer ix, iy, iz, ipol, ichan
+      integer apol, achan, aconvplane, irow
       double precision pi
       data pi/3.14159265358979323846/
       
@@ -92,12 +95,14 @@ C
          shiftx(ix)=1.0
          shifty(ix)=1.0
       end do
-      do iy=-support,support
-         iloc(2)=iy+convsize/2+1
-         do ix=-support,support
-            iloc(1)=ix+convsize/2+1
-            sconv(ix,iy)=(convfunc(iloc(1), iloc(2)))
-            sconv2(ix,iy)=convweight(iloc(1), iloc(2))
+      do iz=1, nconvplane
+         do iy=-support,support
+            iloc(2)=iy+convsize/2+1
+            do ix=-support,support
+               iloc(1)=ix+convsize/2+1
+               sconv(ix,iy,iz)=(convfunc(iloc(1), iloc(2),iz))
+               sconv2(ix,iy,iz)=convweight(iloc(1), iloc(2),iz)
+            end do
          end do
       end do
       doshift=.FALSE.
@@ -116,7 +121,7 @@ C
       xlast=0.0
       ylast=0.0
       do irow=rbeg, rend
-
+         aconvplane=convplanemap(irow)+1
          if(rflag(irow).eq.0) then 
             do ichan=1, nvischan
                achan=chanmap(ichan)+1
@@ -152,7 +157,7 @@ C     the final image by this term.
      $                                   loc(2)+iy,apol,achan)=
      $                                   grid(loc(1)+ix,
      $                                   loc(2)+iy,apol,achan)+
-     $                                   nvalue*sconv(ix,iy)
+     $                                   nvalue*sconv(ix,iy, aconvplane)
 
                                     if(doweightgrid .gt. 0) then
                                        iloc(1)=nx/2+1+ix
@@ -160,7 +165,7 @@ C     the final image by this term.
                                        weightgrid(iloc(1),iloc(2),
      $                                  apol,achan)= weightgrid(
      $                                  iloc(1),iloc(2),apol,achan)
-     $                                      + nweight*sconv2(ix,iy)
+     $                               + nweight*sconv2(ix,iy,aconvplane)
 
                                     end if
                                  end do
@@ -171,11 +176,12 @@ C     the final image by this term.
      $                                +off(1)
                                  if(doshift) then
                                     cwt=conjg(convfunc(iloc(1),
-     $                                   iloc(2)))*shiftx(ix)*shifty(iy)
+     $                                   iloc(2),aconvplane))*
+     $                                   shiftx(ix)*shifty(iy)
                                     sumsconv=sumsconv+real(cwt)
                                  else
                                     cwt=conjg(convfunc(iloc(1),
-     $                                   iloc(2)))
+     $                                   iloc(2),aconvplane))
                                     sumsconv=sumsconv+real(cwt)
                                  end if
                                  grid(loc(1)+ix,
@@ -204,10 +210,11 @@ C
      $     flag, rflag,
      $     nrow, rownum, scale, offset, grid, nx, ny, npol, nchan, freq,
      $     c, support, convsize, sampling, convfunc,
-     $     chanmap, polmap)
+     $     chanmap, polmap, convplanemap, nconvplane)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
+      integer nconvplane
       complex values(nvispol, nvischan, nrow)
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
@@ -220,15 +227,15 @@ C
       integer rownum
       integer support
       integer chanmap(nchan), polmap(npol)
-
+      integer convplanemap(nrow)
       complex nvalue
 
       integer convsize, sampling
-      complex convfunc(convsize, convsize), cwt, crot
+      complex convfunc(convsize, convsize, nconvplane), cwt, crot
 
       complex shiftx(-support:support), shifty(-support:support)
-      complex sconv(-support:support, -support:support)
-      real sconv2(-support:support, -support:support) 
+      complex sconv(-support:support, -support:support, nconvplane)
+      real sconv2(-support:support, -support:support, nconvplane) 
       real sumsconv2
 
       real norm, phase
@@ -238,8 +245,8 @@ C
       real pos(2)
       integer loc(2), off(2), iloc(2)
       integer rbeg, rend
-      integer ix, iy, ipol, ichan
-      integer apol, achan, irow
+      integer ix, iy, iz, ipol, ichan
+      integer apol, achan, aconvplane, irow
       real wt, wtx, wty
       double precision pi
       data pi/3.14159265358979323846/
@@ -251,13 +258,15 @@ C
          shifty(ix)=1.0
       end do
       sumsconv2=0.0
-      do iy=-support,support
-         iloc(2)=iy+convsize/2+1
-         do ix=-support,support
-            iloc(1)=ix+convsize/2+1
-            sconv(ix,iy)=conjg(convfunc(iloc(1), iloc(2)))
-C            sconv2(ix,iy)=abs(sconv(ix,iy))
-C            sumsconv2=sumsconv2+sconv2(ix,iy)
+      do iz=1, nconvplane
+         do iy=-support,support
+            iloc(2)=iy+convsize/2+1
+            do ix=-support,support
+               iloc(1)=ix+convsize/2+1
+               sconv(ix,iy,iz)=conjg(convfunc(iloc(1), iloc(2),iz))
+C     sconv2(ix,iy)=abs(sconv(ix,iy))
+C     sumsconv2=sumsconv2+sconv2(ix,iy)
+            end do
          end do
       end do
       doshift=.FALSE.
@@ -273,7 +282,7 @@ C
       xlast=0.0
       ylast=0.0
       do irow=rbeg, rend
-
+         aconvplane=convplanemap(irow)+1
          if(rflag(irow).eq.0) then
             do ichan=1, nvischan
                achan=chanmap(ichan)+1
@@ -290,7 +299,8 @@ C
                            if(sampling.eq.1) then
                               do iy=-support,support
                                  do ix=-support,support
-                                    nvalue=nvalue+(sconv(ix,iy))*
+                                    nvalue=nvalue+(sconv(ix,iy,
+     $                               aconvplane))*
      $                                   grid(loc(1)+ix,loc(2)+iy,
      $                                   apol,achan)
                                  end do
@@ -303,11 +313,11 @@ C
      $                                   +off(1)
                                     if(doshift) then
                                        cwt=conjg(convfunc(iloc(1),
-     $                                      iloc(2)))*shiftx(ix)*
+     $                                 iloc(2), aconvplane))*shiftx(ix)*
      $                                      shifty(iy)
                                     else
                                        cwt=conjg(convfunc(iloc(1),
-     $                                      iloc(2)))
+     $                                      iloc(2),aconvplane))
                                     end if
                                     nvalue=nvalue+conjg(cwt)*
      $                                   grid(loc(1)+ix,loc(2)+iy,

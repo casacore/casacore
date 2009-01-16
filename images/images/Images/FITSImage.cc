@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <images/Images/FITSImage.h>
+
 #include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSKeywordUtil.h>
@@ -43,7 +44,6 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
 #include <casa/Containers/Record.h>
 #include <tables/LogTables/LoggerHolder.h>
 #include <casa/Logging/LogIO.h>
@@ -61,7 +61,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-FITSImage::FITSImage (const String& name, Bool oldParser, uInt whichRep)
+FITSImage::FITSImage (const String& name, uInt whichRep)
 : ImageInterface<Float>(),
   name_p      (name),
   pTiledFile_p(0),
@@ -74,14 +74,12 @@ FITSImage::FITSImage (const String& name, Bool oldParser, uInt whichRep)
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
-  oldParser_p(oldParser),
   whichRep_p(whichRep)
 {
    setup();
 }
 
-FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, Bool oldParser,
-                      uInt whichRep)
+FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt whichRep)
 : ImageInterface<Float>(),
   name_p      (name),
   maskSpec_p  (maskSpec),
@@ -95,7 +93,6 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, Bool ol
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
-  oldParser_p(oldParser),
   whichRep_p(whichRep)
 {
    setup();
@@ -116,7 +113,6 @@ FITSImage::FITSImage (const FITSImage& other)
   dataType_p  (other.dataType_p),
   fileOffset_p(other.fileOffset_p),
   isClosed_p  (other.isClosed_p),
-  oldParser_p(other.oldParser_p),
   whichRep_p(other.whichRep_p)
 {
    if (other.pPixelMask_p != 0) {
@@ -151,7 +147,6 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       dataType_p  = other.dataType_p;
       fileOffset_p= other.fileOffset_p;
       isClosed_p  = other.isClosed_p;
-      oldParser_p = other.oldParser_p;
       whichRep_p = other.whichRep_p;
    }
    return *this;
@@ -166,8 +161,7 @@ FITSImage::~FITSImage()
 LatticeBase* FITSImage::openFITSImage (const String& name,
 				       const MaskSpecifier& spec)
 {
-  Bool oldParser = False;
-  return new FITSImage (name, spec, oldParser);
+  return new FITSImage (name, spec);
 }
 
 void FITSImage::registerOpenFunction()
@@ -409,7 +403,7 @@ void FITSImage::setup()
 
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                       recsize, recno, dataType, scale_p, offset_p, shortMagic_p,
-                      longMagic_p, hasBlanks_p, fullName, oldParser_p, whichRep_p);
+                      longMagic_p, hasBlanks_p, fullName,  whichRep_p);
    setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
@@ -508,7 +502,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     FITS::ValueType& dataType, 
                                     Float& scale, Float& offset, Short& shortMagic,
                                     Int& longMagic, Bool& hasBlanks, const String& name,
-                                    Bool oldParser, uInt whichRep)
+                                    uInt whichRep)
 {
 // Open sesame
 
@@ -569,42 +563,20 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
 // Crack header
 
-    if (oldParser) {
-       if (dataType==FITS::FLOAT) {
-          crackHeaderOld<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                                scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-       } else if (dataType==FITS::DOUBLE) {
-          crackHeaderOld<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                              scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-       } else if (dataType==FITS::LONG) {
-          crackHeaderOld<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                           scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-       } if (dataType==FITS::SHORT) {
-          crackHeaderOld<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                             scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-       }
-
-// Fix any DirectionCoordinate for cylindrical coordinates mess
-
-       String errorMessage;
-       if (!CoordinateUtil::cylindricalFix (cSys, errorMessage, shape)) {
-          throw (AipsError(errorMessage));
-       }
-    } else {
-       if (dataType==FITS::FLOAT) {
-          crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
-                             offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-       } else if (dataType==FITS::DOUBLE) {
-          crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-                              offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-       } else if (dataType==FITS::LONG) {
-          crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-                           offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-       } if (dataType==FITS::SHORT) {
-          crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-                             offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-       }
+    if (dataType==FITS::FLOAT) {
+	crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+			   offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    } else if (dataType==FITS::DOUBLE) {
+	crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+			    offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    } else if (dataType==FITS::LONG) {
+	crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+			 offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    } if (dataType==FITS::SHORT) {
+	crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+			   offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     }
+//  }
 
 // Get recordnumber 
    

@@ -1690,51 +1690,51 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     }
 }
 
-Bool SpectralCoordinate::fromFITSOld(SpectralCoordinate &out, String &,
-				  const RecordInterface &header, 
-				  uInt whichAxis, LogIO &logger,
-				  Bool oneRelative)
-{
-    Int spectralAxis;
-    Double referenceChannel, referenceFrequency, deltaFrequency;
-    Vector<Double> frequencies;
-    MFrequency::Types refFrame;
-    MDoppler::Types velocityPreference;
-    Double restFrequency;
-//    
-    Bool ok = FITSSpectralUtil::fromFITSHeader(spectralAxis,
-					       referenceChannel,
-					       referenceFrequency,
-					       deltaFrequency,
-					       frequencies,
-					       refFrame,
-					       velocityPreference,
-					       restFrequency,
-					       logger,
-					       header,
-					       'c',
-					       oneRelative);
-//
-    if (casa::near(deltaFrequency,Double(0.0), Double(1.0e-6))) {
-       logger << LogIO::WARN << "The increment is zero.  Arbitrarily setting to 10% of the reference value" << LogIO::POST;
-       deltaFrequency = referenceFrequency / 10.0;
-    }
-    restFrequency = max(0.0, restFrequency);
-//
-    if (ok) {
-       if (spectralAxis == Int(whichAxis)) {
-          SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
-                                 referenceChannel, restFrequency);
-          out = tmp;
-       } else {
-          logger << LogIO::SEVERE << "Disgreement about where the spectral axis is. " <<
-	    spectralAxis << " vs. " << whichAxis << LogIO::POST;
-          ok = False;
-       }
-    }
-//					       
-    return ok;
-}
+// Bool SpectralCoordinate::fromFITSOld(SpectralCoordinate &out, String &,
+// 				  const RecordInterface &header, 
+// 				  uInt whichAxis, LogIO &logger,
+// 				  Bool oneRelative)
+// {
+//     Int spectralAxis;
+//     Double referenceChannel, referenceFrequency, deltaFrequency;
+//     Vector<Double> frequencies;
+//     MFrequency::Types refFrame;
+//     MDoppler::Types velocityPreference;
+//     Double restFrequency;
+// //    
+//     Bool ok = FITSSpectralUtil::fromFITSHeader(spectralAxis,
+// 					       referenceChannel,
+// 					       referenceFrequency,
+// 					       deltaFrequency,
+// 					       frequencies,
+// 					       refFrame,
+// 					       velocityPreference,
+// 					       restFrequency,
+// 					       logger,
+// 					       header,
+// 					       'c',
+// 					       oneRelative);
+// //
+//     if (casa::near(deltaFrequency,Double(0.0), Double(1.0e-6))) {
+//        logger << LogIO::WARN << "The increment is zero.  Arbitrarily setting to 10% of the reference value" << LogIO::POST;
+//        deltaFrequency = referenceFrequency / 10.0;
+//     }
+//     restFrequency = max(0.0, restFrequency);
+// //
+//     if (ok) {
+//        if (spectralAxis == Int(whichAxis)) {
+//           SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
+//                                  referenceChannel, restFrequency);
+//           out = tmp;
+//        } else {
+//           logger << LogIO::SEVERE << "Disgreement about where the spectral axis is. " <<
+// 	    spectralAxis << " vs. " << whichAxis << LogIO::POST;
+//           ok = False;
+//        }
+//     }
+// //					       
+//     return ok;
+// }
 
 
 Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,

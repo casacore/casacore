@@ -79,19 +79,18 @@ Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
   T maxPsf=0;
   itsPositionPeakPsf=IPosition(psf.shape().nelements(), 0);
   findMaxAbsLattice(psf, maxPsf, itsPositionPeakPsf);
-  os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf
+  os << "Peak of PSF = " << maxPsf << " at " << itsPositionPeakPsf+1
      << LogIO::POST;
   return True;
 }
   
 template<class T> 
 LatticeCleaner<T>::LatticeCleaner():
-  itsMask(0),
   itsDirty(0),
+  itsMask(0),
   itsXfr(0),
   itsScaleSizes(0),
   itsMaximumResidual(0.0),
-  itsStrengthOptimum(0.0),
   itsChoose(True),
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
@@ -99,8 +98,7 @@ LatticeCleaner<T>::LatticeCleaner():
   itsStopAtLargeScaleNegative(False),
   itsStopPointMode(-1),
   itsDidStopPointMode(False),
-  itsJustStarting(True),
-  itsMaskThreshold(T(0.9))
+  itsJustStarting(True)
 {
   itsMemoryMB=Double(HostInfo::memoryTotal()/1024)/16.0;
   itsScales.resize(0);
@@ -112,6 +110,7 @@ LatticeCleaner<T>::LatticeCleaner():
   itsStartingIter = 0;
 }
 
+ 
 
 template<class T> 
 LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
@@ -119,7 +118,6 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsMask(0),
   itsScaleSizes(0),
   itsMaximumResidual(0.0),
-  itsStrengthOptimum(0.0),
   itsChoose(True),
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
@@ -173,14 +171,12 @@ template <class T> LatticeCleaner<T>::
    itsScaleMasks(other.itsScaleMasks),
    itsStartingIter(other.itsStartingIter),
    itsMaximumResidual(other.itsMaximumResidual),
-   itsStrengthOptimum(other.itsStrengthOptimum),
    itsIgnoreCenterBox(other.itsIgnoreCenterBox),
    itsSmallScaleBias(other.itsSmallScaleBias),
    itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
    itsStopPointMode(other.itsStopPointMode),
    itsDidStopPointMode(other.itsDidStopPointMode),
-   itsJustStarting(other.itsJustStarting),
-   itsMaskThreshold(other.itsMaskThreshold)
+   itsJustStarting(other.itsJustStarting)
 {
 }
 
@@ -198,14 +194,13 @@ operator=(const LatticeCleaner<T> & other) {
     itsScaleMasks = other.itsScaleMasks;
     itsStartingIter = other.itsStartingIter;
     itsMaximumResidual = other.itsMaximumResidual;
-    itsStrengthOptimum = other.itsStrengthOptimum;
     itsIgnoreCenterBox = other.itsIgnoreCenterBox;
     itsSmallScaleBias = other.itsSmallScaleBias;
     itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
     itsStopPointMode = other.itsStopPointMode;
     itsDidStopPointMode = other.itsDidStopPointMode;
     itsJustStarting = other.itsJustStarting;
-    itsMaskThreshold = other.itsMaskThreshold;
+
   }
   return *this;
 }
@@ -249,19 +244,10 @@ void LatticeCleaner<T>::update(const Lattice<T> &dirty)
 }
 
 
-// Set the mask
-// mask - input mask lattice
-// maskThreshold - if positive, the value is treated as a threshold value to determine
-// whether a pixel is good (mask value is greater than the threshold) or has to be 
-// masked (mask value is below the threshold). Negative threshold switches mask clipping
-// off. The mask value is used to weight the flux during cleaning. This mode is used
-// to implement cleaning based on the signal-to-noise as opposed to the standard cleaning
-// based on the flux. The default threshold value is 0.9, which ensures the behavior of the
-// code is exactly the same as before this parameter has been introduced.
+// add a mask image
 template<class T> 
-void LatticeCleaner<T>::setMask(Lattice<T> & mask, const T& maskThreshold) 
+void LatticeCleaner<T>::setMask(Lattice<T> & mask) 
 {
-  itsMaskThreshold = maskThreshold;
   IPosition maskShape = mask.shape();
   IPosition dirtyShape = itsDirty->shape();
 
@@ -275,7 +261,7 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask, const T& maskThreshold)
     makeScaleMasks();
   }
 
-}
+};
 
 template <class T>
 Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
@@ -311,7 +297,7 @@ void LatticeCleaner<T>::speedup(const Float nDouble)
 {
   itsDoSpeedup=True;
   itsNDouble = nDouble;
-}
+};
 
 
 
@@ -383,11 +369,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   if(itsMask){
     os << "Cleaning using given mask" << LogIO::POST;
-    if (itsMaskThreshold<0) {
-        os << "Mask thresholding is not used, values are interpreted as weights"<<LogIO::POST;
-    } else {
-        os << "Mask values above "<<itsMaskThreshold<<" are interpreted as pixels to clean"<<LogIO::POST;
-    }
     
     Int nx=model.shape()(0);
     Int ny=model.shape()(1);
@@ -465,7 +446,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Bool converged=False;
   Int stopPointModeCounter = 0;
   Int optimumScale=0;
-  itsStrengthOptimum=0.0;
+  T strengthOptimum=0.0;
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
@@ -473,7 +454,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   for (Int ii=itsStartingIter; ii < itsMaxNiter; ii++) {
     itsIteration++;
     // Find the peak residual
-    itsStrengthOptimum = 0.0;
+    strengthOptimum = 0.0;
     optimumScale = 0;
     for (scale=0; scale<nScalesToClean; scale++) {
       // Find absolute maximum for the dirty image
@@ -494,38 +475,37 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       maxima(scale)/=maxPsfConvScales(scale);
       maxima(scale) *= scaleBias(scale);
       posMaximum[scale]+=blcDirty;
-      if(abs(maxima(scale))>abs(itsStrengthOptimum)) {
+      if(abs(maxima(scale))>abs(strengthOptimum)) {
         optimumScale=scale;
-        itsStrengthOptimum=maxima(scale);
-        positionOptimum=posMaximum[scale];
+        strengthOptimum=maxima(scale);
+	positionOptimum=posMaximum[scale];
       }
     }
 
     AlwaysAssert(optimumScale<nScalesToClean, AipsError);
 
     // Now add to the total flux
-    totalFlux += (itsStrengthOptimum*itsGain);
-    totalFluxScale(optimumScale) += (itsStrengthOptimum*itsGain);
+    totalFlux += (strengthOptimum*itsGain);
+    totalFluxScale(optimumScale) += (strengthOptimum*itsGain);
 
     if(ii==itsStartingIter) {
-      itsMaximumResidual=abs(itsStrengthOptimum);
+      itsMaximumResidual=abs(strengthOptimum);
       os << "Initial maximum residual is " << itsMaximumResidual
 	 << LogIO::POST;
     }
 
     // Various ways of stopping:
     //    1. stop if below threshold
-    if(abs(itsStrengthOptimum)<threshold() ) {
-      os << "Reached stopping threshold " << threshold() <<" at iteration "<<
-            ii << LogIO::POST;
-      os << "Optimum flux is " << abs(itsStrengthOptimum) << LogIO::POST;
+    if(abs(strengthOptimum)<threshold() ) {
+      os << "Reached stopping threshold " << threshold() << LogIO::POST;
+      os << "Optimum flux is " << abs(strengthOptimum) << LogIO::POST;
       converged = True;
       break;
     }
     //    2. negatives on largest scale?
     if ((nScalesToClean > 1) && itsStopAtLargeScaleNegative  && 
 	optimumScale == (nScalesToClean-1) && 
-	itsStrengthOptimum < 0.0) {
+	strengthOptimum < 0.0) {
       os << "Reached negative on largest scale" << LogIO::POST;
       converged = False;
       break;
@@ -550,22 +530,20 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
     if(progress) {
       progress->info(False, itsIteration, itsMaxNiter, maxima,
-		     posMaximum, itsStrengthOptimum,
+		     posMaximum, strengthOptimum,
 		     optimumScale, positionOptimum,
 		     totalFlux, totalFluxScale,
 		     itsJustStarting );
       itsJustStarting = False;
-    } else {
-      if (itsIteration == itsStartingIter + 1) {
-	  os << "iteration    MaximumResidual   CleanedFlux" << LogIO::POST;
+    } else if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
+      if (itsIteration == 0) {
+	os << "ItsIteration    Resid   CleanedFlux" << LogIO::POST;
       }
-      if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
-          os << itsIteration <<"      "<<itsStrengthOptimum<<"      "<< totalFlux <<LogIO::POST;
-      }
+      os << itsIteration <<"      "<<strengthOptimum<<"      "<< totalFlux <<LogIO::POST ;
     }
 
     T scaleFactor;
-    scaleFactor=itsGain*itsStrengthOptimum;
+    scaleFactor=itsGain*strengthOptimum;
 
     // Continuing: subtract the peak that we found from all dirty images
     // Define a subregion so that that the peak is centered
@@ -623,7 +601,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   // Finish off the plot, etc.
   if(progress) {
     progress->info(True, itsIteration, itsMaxNiter, maxima, posMaximum,
-		   itsStrengthOptimum,
+		   strengthOptimum,
 		   optimumScale, positionOptimum,
 		   totalFlux, totalFluxScale);
   }
@@ -697,24 +675,20 @@ Bool LatticeCleaner<T>::findMaxAbsMaskLattice(const Lattice<T>& lattice,
       IPosition posMinMask=li.position();
       T maxVal=0.0;
       T minVal=0.0;
+      T maxMask=0.0;
+      T minMask=0.0;
       
       minMaxMasked(minVal, maxVal, posMin, posMax, li.cursor(), mi.cursor());
-      if (itsMaskThreshold<0) {
-          // Mask threhsolding is not used, i.e. mask values are interpreted as weights.
-          // This means that minVal and maxVal are optima of the mask * lattice product, 
-          // we need just values of lattice and have to redetermine them.
-          minVal = li.cursor()(posMin);
-          maxVal = li.cursor()(posMax);
-      }
+      minMax(minMask, maxMask, posMinMask, posMaxMask, mi.cursor());
       if(abs(minVal)>abs(maxAbs)) {
-         maxAbs=minVal;
-         posMaxAbs=li.position();
-         posMaxAbs(0)=posMin(0);
+        maxAbs=minVal;
+	posMaxAbs=li.position();
+	posMaxAbs(0)=posMin(0);
       }
       if(abs(maxVal)>abs(maxAbs)) {
-         maxAbs=maxVal;
-         posMaxAbs=li.position();
-         posMaxAbs(0)=posMax(0);
+        maxAbs=maxVal;
+	posMaxAbs=li.position();
+	posMaxAbs(0)=posMax(0);
       }
     }
   }
@@ -1104,10 +1078,8 @@ Bool LatticeCleaner<T>::makeScaleMasks()
     LatticeExpr<Complex> maskExpr((maskFT)*(*itsScaleXfrs[scale]));
     cWork.copyData(maskExpr);
     LatticeFFT::cfft2d(cWork, False);
-    // Allow only 10% overlap by default, hence 0.9 is a default mask threshold
-    // if thresholding is not used, just extract the real part of the complex mask 
-    LatticeExpr<T> maskWork( itsMaskThreshold < 0 ? real(cWork) : 
-                             iif(real(cWork)>itsMaskThreshold,1.0,0.0));
+    // Allow only 10% overlap
+    LatticeExpr<T> maskWork(iif(real(cWork)>0.9,1.0,0.0));
     itsScaleMasks[scale] = new TempLattice<T>(itsMask->shape(),
 					      itsMemoryMB);
     AlwaysAssert(itsScaleMasks[scale], AipsError);
@@ -1124,24 +1096,24 @@ Bool LatticeCleaner<T>::makeScaleMasks()
   }
 
   return True;
-}
+};
 
 
 
 
 template<class T> 
-Float LatticeCleaner<T>::threshold() const
+Float LatticeCleaner<T>::threshold()
 {
   if (! itsDoSpeedup) {
     return max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
 	       itsThreshold.get("Jy").getValue());
   } else {
-    const Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
+    Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
       / 2.7182818;
     return factor * max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
 		       itsThreshold.get("Jy").getValue());
   }
-}
+};
 
 template<class T>
 void LatticeCleaner<T>::addTo(Lattice<T>& to, const Lattice<T>& add)
@@ -1180,6 +1152,11 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1,
            minLength = shape2[i];
        }
        AlwaysAssert(minLength>=0, AipsError);
+       //if (minLength % 2 != 0) {
+           // if the number of pixels is odd, ensure that the centre stays 
+           // the same by making this number even
+           //--minLength; // this code is a mistake and should be removed
+       //}
        const Int increment1 = shape1[i] - minLength;
        const Int increment2 = shape2[i] - minLength;
        blc1[i] += increment1/2;
@@ -1188,6 +1165,7 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1,
        trc2[i] -= increment2/2 + (increment2 % 2 != 0 ? 1 : 0);
   }
 }
+
 
 } //# NAMESPACE CASA - END
 

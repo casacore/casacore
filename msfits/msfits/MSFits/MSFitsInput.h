@@ -32,6 +32,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Block.h>
+#include <casa/Containers/Record.h>
+#include <fits/FITS/fits.h>
 #include <fits/FITS/hdu.h>
 #include <casa/Logging/LogIO.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
@@ -278,6 +280,10 @@ private:
   Double restfreq_p;
   Bool addSourceTable_p;
   LogIO itsLog;
+  Record header;
+  Double refFreq_p;
+  Bool useAltrval;
+  Vector<Double> chanFreq_p;
 };
 
 

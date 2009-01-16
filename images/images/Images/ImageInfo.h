@@ -193,7 +193,7 @@ public:
 // </group>
 
 // Old version
-    Bool fromFITSOld(Vector<String>& error, const RecordInterface & inRecord);
+//    Bool fromFITSOld(Vector<String>& error, const RecordInterface & inRecord);
 
 
 

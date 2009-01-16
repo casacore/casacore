@@ -180,8 +180,6 @@ public:
     // <group>
     Bool toFITS(String & error, RecordInterface & outRecord) const;
     Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
-    Bool fromFITSOld(Vector<String>& error, const RecordInterface & inRecord);
-    // </group>
 
     // In some circumstances it might be useful to know what the defaults for
     // the various values are so you can check if they have been set.
