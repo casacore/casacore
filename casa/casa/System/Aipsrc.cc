@@ -157,7 +157,10 @@ const String &Aipsrc::fillAips(const String &nam) {
  
     String aipsPath;
     if (extAipsPath.empty()) {
-      aipsPath = EnvironmentVariable::get("AIPSPATH");
+      aipsPath = EnvironmentVariable::get("CASAPATH");
+      if (aipsPath.empty()) {
+        aipsPath = EnvironmentVariable::get("AIPSPATH");
+      }
     } else { 
       aipsPath = extAipsPath;
     }
@@ -348,7 +351,7 @@ uInt Aipsrc::parse() {
   if (! filelist.empty()) {
     filelist += ':';
   } else {
-    // Otherwise use AIPSPATH.
+    // Otherwise use CASAPATH.
     // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
     filelist = fillAips(uhome) + String("/.casarc:");
     filelist += fillAips(uhome) + String("/.aipsrc:");
