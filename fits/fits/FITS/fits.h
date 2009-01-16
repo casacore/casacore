@@ -362,7 +362,7 @@ class ReservedFitsKeyword {
     private:
 # endif
 	FITS::ReservedName name_;
-	char *aname_;
+	const char *aname_;
 	int namesize_;
 	FITS::ValueType type_;
 	Bool isindexed_; // 0 = NOT INDEXED, 1 = INDEXED
