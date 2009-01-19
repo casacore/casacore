@@ -106,7 +106,7 @@ void doIt()
 {
   T s=0;
   Array<T> arr(IPosition(3,1000,1000,100));
-  arr=1.;
+  arr=T(1.);
   arr(IPosition(3,999,999,10)) = -int(arr.nelements()) + 1;   // makes sum 0
   std::cout<< arr(IPosition(3,999,999,10)) << std::endl;
   // Add in old ArrayMath way.
