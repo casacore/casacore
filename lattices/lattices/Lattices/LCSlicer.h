@@ -206,7 +206,7 @@ private:
 			 const Vector<Double>& trc,
 			 const Vector<Double>& inc);
 
-    // Fill the vectors from the values given as IPositions..
+    // Fill the vectors from the values given as IPositions.
     void fillFromIPosition (const IPosition& blc,
 			    const IPosition& trc,
 			    const IPosition& inc);

@@ -174,7 +174,7 @@ public:
    uInt imageDim() const
      { return latticeConcat_p.latticeDim(); }
 
-// Handle the (un)locking and syncing, etc..
+// Handle the (un)locking and syncing, etc.
 // <group>
    virtual Bool lock (FileLocker::LockType, uInt nattempts);
    virtual void unlock();

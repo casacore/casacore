@@ -140,7 +140,7 @@ public:
     // Let the column object initialize itself for an existing table.
     virtual void getFile (uInt nrrow);
 
-    // Flush and optionally fsync the data..
+    // Flush and optionally fsync the data.
     // This is meant for a derived class.
     virtual Bool flush (uInt nrrow, Bool fsync);
 

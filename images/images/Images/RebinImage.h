@@ -172,7 +172,7 @@ public:
   // Get the best cursor shape.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
-  // Handle the (un)locking and syncing, etc..
+  // Handle the (un)locking and syncing, etc.
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();

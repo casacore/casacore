@@ -38,8 +38,9 @@ namespace casa {
 //  <li> slices of images
 //  <li> regions in images
 //  <li> expressions of images
-//   (using <a href="http://www.astron.nl/aips++/docs/notes/223">LEL</a>)
+//   (using <a href="../notes/223.html">LEL</a>)
 //  <li> concatenation of images
+//  <li> stretching an image cube along a curved line
 // </ul>
 //
 // It is built on top of the

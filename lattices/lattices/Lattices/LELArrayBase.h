@@ -69,7 +69,7 @@ public:
    LELArrayBase (const Array<Bool>& mask)
        : itsMaskPtr(new Array<Bool>(mask)) {}
 
-// Copy constructor (reference semantics)..
+// Copy constructor (reference semantics).
    LELArrayBase (const LELArrayBase& other);
 
    ~LELArrayBase();

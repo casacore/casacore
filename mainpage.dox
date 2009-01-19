@@ -31,29 +31,33 @@ namespace casa {
 ///   \mainpage casacore
 ///   
 ///   The <a href="http://casacore.googlecode.com">casacore</a> package
-///   contains the core libraries of the
+///   contains the core libraries of the old
 ///   <a href="http://aips2.nrao.edu">AIPS++/CASA</a> package. This split
 ///   was made to get
 ///   a better separation of core libraries and applications.
-///   CASA is now built on top of casacore.
+///   <a href="http://casa.nrao.edu">CASA</a> is now built on top of casacore.
 ///   
 ///   The system consists of a set of layered libraries (packages) which can 
-///   be seen best on Doxygen's <a href="modules.html">Modules page</a>.
+///   be seen best on the <a href="modules.html">Modules page</a>.
 ///   <br>
 ///   A <a href="http://www.python.org">Python</a> binding to the
 ///   libraries has been made which is called
-///   <a href="http://pyrap.googlecode.com">pyrap</a>.
+///   <a href="http://pyrap.googlecode.com">pyrap</a>. The documentation
+///   of the pyrap packages can be found
+///   <a href="../../../pyrap/docs/index.html">here</a>.
 ///   
 ///   The main features of AIPS++/CASA are:
 ///   <ul>
-///   <li>\ref scimath N-dim functions with auto-differentiation and linear or non-linear
+///   <li>\ref scimath : N-dim functions with auto-differentiation and linear or non-linear
 ///   fitting.
-///   <li>\ref tables Table data system supporting N-dim arrays with advanced querying.
-///   <li>Values with physical units (Quanta) and astronomical reference frames
-///   \ref measures (Measures).
-///   <li>\ref ms MeasurementSets for storing data in the UV-domain.
-///   <li>\ref images N-dim images in world coordinates with various analysis operations.
+///   <li>\ref tables : Table data system supporting N-dim arrays with advanced querying.
+///   <li>\ref measures : Values in astronomical reference frames using
+///    physical units (<a href="group__Quanta__module.html">Quanta</a>).
+///   <li>\ref ms : MeasurementSets for storing data in the UV-domain.
+///   <li>\ref images : N-dim images in world coordinates with various analysis operations.
 ///   </ul>
+///   Casacore <a href="../notes/notes.html">notes</a> describe
+///   some parts of the system in more detail.
 ///      
 ///   Casacore consists of the following subpackages:
 ///   <table border=0>
@@ -61,11 +65,11 @@ namespace casa {
 ///   <td><a href="group__casa.html">casa</a></td>
 ///   <td>
 ///   Core modules:
-///   N-dim <a href="group__Arrays-module.html">arrays</a>,
-///   <a href="group__Quanta-module.html">quanta</a>,
-///   <a href="group__OS-module.html">OS</a>,
-///   <a href="group__IO-module.html">IO</a>,
-///   <a href="group__Logging-module.html">logging</a>,
+///   N-dim <a href="group__Arrays__module.html">arrays</a>,
+///   <a href="group__Quanta__module.html">quanta</a>,
+///   <a href="group__OS__module.html">OS</a>,
+///   <a href="group__IO__module.html">IO</a>,
+///   <a href="group__Logging__module.html">logging</a>,
 ///   and various other classes.
 ///   </td>
 ///   </tr>
@@ -73,32 +77,32 @@ namespace casa {
 ///   <td><a href="group__scimath.html">scimath</a></td>
 ///   <td>
 ///   Mathematical modules
-///   N-dim <a href="group__Functionals-module.html">functionals</a>,
+///   N-dim <a href="group__Functionals__module.html">functionals</a>,
 ///   linear/non-linear
-///   <a href="group__Fitting-module.html">fitting</a>,
-///   and <a href="group__Mathematics-module.html">miscellaneous</a>,
+///   <a href="group__Fitting__module.html">fitting</a>,
+///   and <a href="group__Mathematics__module.html">miscellaneous</a>,
 ///   </td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__tables.html">tables</a></td>
 ///   <td>
-///   Database-like <a href="group__Tables-module.html">tables</a> with advanced
+///   Database-like <a href="group__Tables__module.html">tables</a> with advanced
 ///   query language
-///   (<a href="http://www.astron.nl/aips++/docs/notes/199">TaQL</a>).
+///   (<a href="../notes/199.html">TaQL</a>).
 ///   </td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__measures.html">measures</a></td>
 ///   <td>
-///   Quantities with <a href="group__Measures-module.html">references frames</a> 
-///   and their <a href="group__TableMeasures-module.html">persistency</a>.
+///   Quantities with <a href="group__Measures__module.html">references frames</a> 
+///   and their <a href="group__TableMeasures__module.html">persistency</a>.
 ///   </td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__lattices.html">lattices</a></td>
 ///   <td>
 ///   Memory- or disk-based N-dim arrays
-///   (<a href="group__Lattices-module.html">lattices</a>) with masking,
+///   (<a href="group__Lattices__module.html">lattices</a>) with masking,
 ///   regions, expressions, and math.
 ///   </td>
 ///   </tr>
@@ -113,14 +117,8 @@ namespace casa {
 ///   <td><a href="group__ms.html">ms</a></td>
 ///   <td>
 ///   The data format for visibility data as described in
-///   the <a href="http://www.astron.nl/aips++/docs/notes/229">
+///   the <a href="../notes/229.html">
 ///   MeasurementSet definition</a>.
-///   </td>
-///   </tr>
-///   <tr>
-///   <td><a href="group__msvis.html">msvis</a></td>
-///   <td>
-///   Accessor and iterator classes for MeasurementSets
 ///   </td>
 ///   </tr>
 ///   <tr>
@@ -144,13 +142,17 @@ namespace casa {
 ///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
 ///   <td>
-///   N-dim <a href="group__Images-module.html">images</a> with masks,
+///   N-dim <a href="group__Images__module.html">images</a> with masks,
 ///   coordinates, and history.
 ///   </td>
 ///   </tr>
 ///   </table>
 ///
-///   The package dependencies are as follows:
+///   Detailed build instructions are given on the 
+///   <a href="http://code.google.com/p/casacore/wiki/BuildInstructions">
+///   casacore</a> pages.
+///   <br>When using a specific casacore package, it is useful to know
+///   the package dependencies when linking a program. They are as follows:
 ///   <table border=1>
 ///   <tr>
 ///   <td><a href="group__casa.html">casa</a></td>
@@ -181,10 +183,6 @@ namespace casa {
 ///   <td>measures tables scimath casa</td>
 ///   </tr>
 ///   <tr>
-///   <td><a href="group__msvis.html">msvis</a></td>
-///   <td>ms measures tables scimath casa</td>
-///   </tr>
-///   <tr>
 ///   <td><a href="group__msfits.html">msfits</a></td>
 ///   <td>ms fits measures tables scimath casa cfitsio</td>
 ///   </tr>
@@ -202,10 +200,10 @@ namespace casa {
 ///      mirlib wcslib cfitsio</td>
 ///   </tr>
 ///   </table>
-///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>,
-///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a>, and
+///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
+///   is distributed and built as part of casacore.
+///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a> and
 ///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>
-///   are external packages used by casacore.
-///
+///   are external packages that have to be installed before building casacore.
 
 }

@@ -208,7 +208,7 @@ protected:
 				 const Slicer& boundingBox);
     // </group>
 
-    // Do the actual translate in a derived class..
+    // Do the actual translate in a derived class.
     virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
 				   const IPosition& newLatticeShape) const = 0;
 

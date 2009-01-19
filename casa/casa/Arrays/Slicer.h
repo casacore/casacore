@@ -388,7 +388,7 @@ public:
     // Report the defined stride.
     const IPosition& stride() const;
 
-    // Report the length of the resulting axes..
+    // Report the length of the resulting axes.
     const IPosition& length() const;
 
     // Are all values fixed (i.e., no MimicSource given)?

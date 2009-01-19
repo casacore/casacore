@@ -54,7 +54,7 @@ class TaQLNodeVisitor;
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNode>TaQLNode</linkto>
 //   <li> Note 199 describing
-//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        <a href="../notes/199.html">
 //        TaQL</a>
 // </prerequisite>
 

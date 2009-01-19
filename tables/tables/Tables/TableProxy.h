@@ -121,7 +121,7 @@ public:
 	      const Record& lockOptions,
 	      int option);
 
-  // Create a table with given name and description, etc..
+  // Create a table with given name and description, etc.
   TableProxy (const String& tableName,
 	      const Record& lockOptions,
 	      const String& endianFormat,

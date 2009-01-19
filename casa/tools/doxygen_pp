@@ -615,8 +615,8 @@ sub change_comment_style
 	    $code = 1;
 	  }
 	}
-	# Doxygen treats .. as end of list. So escape second one.
-	$comment =~ s|\.\.|.\\.|g;
+	# Doxygen treats a trailing .. as end of list. So escape second one.
+	$comment =~ s|\.\.$|.\\.|g;
 	# Skip an empty line if needed.
 	if ($nadded > 0) {
 	  if ($comment =~ /^\s*$/) {

@@ -227,7 +227,7 @@ public:
     void next();
     // </group>
 
-    // Get the current slice start, end, or increment..
+    // Get the current slice start, end, or increment.
     // <group>
     uInt sliceStart() const
         { return itsStart; }

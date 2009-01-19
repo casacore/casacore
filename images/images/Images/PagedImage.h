@@ -67,7 +67,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <synopsis> 
 // All AIPS++ Images are Lattices.  They may be treated like any other Lattice;
-// getSlice(...), putSlice(...), LatticeIterator for iterating, etc...
+// getSlice(...), putSlice(...), LatticeIterator for iterating, etc.
 // ArrayImages contain a map, a mask for that map, and coordinate 
 // information.  This provides a Lattice interface for images and their 
 // respective coordinates.  Additional functionality is defined by the 
@@ -383,7 +383,7 @@ public:
   // <src>reopen</src> is called explicitly.
   virtual void tempClose();
 
-  // If needed, reopen a temporarily closed Image..
+  // If needed, reopen a temporarily closed Image.
   virtual void reopen();
 
 

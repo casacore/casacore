@@ -268,7 +268,7 @@ public:
     MS_VERSION,
     // Observation subtable. Project, observer, schedule.
     OBSERVATION,
-    // Pointing information subtable..
+    // Pointing information subtable.
     POINTING,
     // Polarization setup information subtable.
     POLARIZATION,

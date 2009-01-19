@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 //   <li> Note 199 describing
-//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        <a href="../notes/199.html">
 //        TaQL</a>
 // </prerequisite>
 
@@ -56,7 +56,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // classes derived from <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 // which traverse the parse tree.
 // TaQLNodeResultRep is the counted referenced letter class in the envelope
-// class <linkto class=TaQLNodeResult>TaQLNodeResult</linkto>
+// class <linkto class=TaQLNodeResult>TaQLNodeResult</linkto>.
 // </synopsis>
 
 class TaQLNodeResultRep
@@ -108,7 +108,7 @@ private:
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 //   <li> Note 199 describing
-//        <a href="http://www.astron.nl/aips++/docs/notes/199/199.html">
+//        <a href="../notes/199.html">
 //        TaQL</a>
 // </prerequisite>
 
@@ -118,7 +118,7 @@ private:
 // classes derived from <linkto class=TaQLNodeVisitor>TaQLNodeVisitor</linkto>
 // which traverse the parse tree.
 // The counted referenced letter base class for the envelope is
-// class <linkto class=TaQLNodeResultRep>TaQLNodeResultRep</linkto>
+// class <linkto class=TaQLNodeResultRep>TaQLNodeResultRep</linkto>.
 // </synopsis>
 class TaQLNodeResult
 {
@@ -157,7 +157,7 @@ private:
   TaQLNodeResultRep* itsRep;
 
 public:
-  // Get the actual underlying object..
+  // Get the actual underlying object.
   const TaQLNodeResultRep* getRep() const
     { return itsRep; }
 };

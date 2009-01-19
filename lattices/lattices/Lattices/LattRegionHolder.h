@@ -117,7 +117,7 @@ public:
     Bool operator!=(const LattRegionHolder& other) const;
     // </group>
 
-    // Test if the underlying region is an LCRegion, etc..
+    // Test if the underlying region is an LCRegion, etc.
     // <group>
     Bool isLCRegion() const;
     Bool isLCSlicer() const;
