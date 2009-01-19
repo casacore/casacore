@@ -234,8 +234,8 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
      youtPtrs[i]=pyout+i;
     youtFlagPtrs[i]=pyoutFlags+i;
   }
-  ///  interpolatePtr(youtPtrs, youtFlagPtrs, na, nb, nc, xout, xin, yinPtrs,
-  ///                 yinFlagPtrs, method, goodIsTrue, extrapolate);
+  interpolateyPtr(youtPtrs, youtFlagPtrs, na, nb, nc, xout, xin, yinPtrs,
+                  yinFlagPtrs, method, goodIsTrue, extrapolate);
   yin.freeStorage(pyin,deleteYin);
   yinFlags.freeStorage(pyinFlags,deleteYinFlags);
   yout.putStorage(pyout,deleteYout);
