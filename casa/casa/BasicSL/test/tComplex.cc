@@ -42,8 +42,7 @@ int main() {
   Complex f1(23.9,1.8), f2(9.2,8.2), f3(2.7,1.8), fo(237.561,0.9312), fi;
   IComplex i1(5,2), i3(Int(f1.real()),Int(f1.imag()));
   DComplex d1, d2(f1.real(),f1.imag()), d3(0.921,7.812);
-  char tmpname[L_tmpnam];
-  fstream fio(tmpnam(tmpname),ios::out | ios::trunc);
+  fstream fio("tComplex_tmp.data", ios::out | ios::trunc);
 
   cout << "Initial value for complex: " << d1 << endl;
   cout << d1 << " :" << endl;
@@ -58,10 +57,10 @@ int main() {
   cout << "fabs(" << d1 << ") == " << fabs(d1) << endl;
   fio << fo << endl;
   fio.close();
-  fio.open(tmpname,ios::in);
+  fio.open("tComplex_tmp.data", ios::in);
   fio >> fi;
   fio.close();
-  unlink(tmpname);
+  unlink("tComplex_tmp.data");
   cout << "out: " << fo << "           in: " << fi << endl;
 
   
