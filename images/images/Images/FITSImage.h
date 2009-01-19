@@ -38,7 +38,9 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 
-#define WCSLIB_GETWCSTAB
+#ifndef WCSLIB_GETWCSTAB
+ #define WCSLIB_GETWCSTAB
+#endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

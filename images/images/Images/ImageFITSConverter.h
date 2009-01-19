@@ -32,6 +32,10 @@
 
 #include <casa/aips.h>
 
+#ifndef WCSLIB_GETWCSTAB
+ #define WCSLIB_GETWCSTAB
+#endif
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class PagedImage;
