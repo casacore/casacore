@@ -65,8 +65,8 @@ int main()
       for (i=0; i<nv; i++) {
 	  vvi(i) = i;                     // temporary
 	  vvf(i) = rnd();                 // Array values
-	  vvi(i) = vvf(i);                // round to Int
-	  vvf(i) = vvi(i);                // whole numbers Float
+	  vvi(i) = Int(vvf(i));                // round to Int
+	  vvf(i) = Float(vvi(i));                // whole numbers Float
 	  bvf[i] = vvi(i);                 // Block too
       }
 
