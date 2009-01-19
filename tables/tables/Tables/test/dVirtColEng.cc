@@ -208,11 +208,11 @@ void DummyVirtualScalar::getdoubleV (uInt rownr, double* dataPtr)
 
 void DummyVirtualScalar::put (uInt rownr, const double& data)
 {
-    column_p->put (rownr, data / scale_p);
+    column_p->put (rownr, Int(data / scale_p));
 }
 void DummyVirtualScalar::putdoubleV (uInt rownr, const double* dataPtr)
 {
-    column_p->put (rownr, *dataPtr / scale_p);
+    column_p->put (rownr, Int(*dataPtr / scale_p));
 }
 
 
