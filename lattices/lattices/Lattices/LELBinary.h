@@ -69,7 +69,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // A description of the implementation details of the LEL classes can
 // be found in
-// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
+// <a href="../notes/216.html">Note 216</a>
 //
 // </synopsis> 
 //
@@ -175,7 +175,7 @@ private:
 //
 // A description of the implementation details of the LEL classes can
 // be found in
-// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
+// <a href="../notes/216.html">Note 216</a>
 //
 // </synopsis> 
 //
@@ -278,7 +278,7 @@ private:
 //
 // A description of the implementation details of the LEL classes can
 // be found in
-// <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
+// <a href="../notes/216.html">Note 216</a>
 //
 // </synopsis> 
 //

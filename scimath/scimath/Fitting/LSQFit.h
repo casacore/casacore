@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <prerequisite>
 //   <li> Some knowledge of Matrix operations
 //   <li> The background information provided in 
-//        <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>.
+//        <a href="../notes/224.html">Note 224</a>.
 //   <li> <linkto module="Fitting">Fitting module</linkto>
 // </prerequisite>
 //
@@ -61,7 +61,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <synopsis>
 // The LSQFit class contains the basic functions to do all the fitting
 // described in the 
-// <a href="http://www.astron.nl/aips++/docs/notes/224">Note</a>
+// <a href="../notes/224.html">Note</a>
 // about fitting.
 // It handles real, and complex equations;<br>
 // linear and non-linear (Levenberg-Marquardt) solutions;<br>
@@ -97,7 +97,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> Create an LSQFit object.
 //      The information that can be provided in the constructor of the object,
 // either directly, or indirectly using the <src>set()</src> commands, is
-// (see <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>):
+// (see <a href="../notes/224.html">Note 224</a>):
 // <ul>
 //  <li> The number of unknowns that have to be solved for (mandatory)
 //  <li> The number of constraint equations you want to use explicitly
@@ -492,7 +492,7 @@ class LSQFit {
   // The complex versions can have different interpretation of the inputs,
   // where the complex number can be seen either as a complex number; as two
   // real numbers, or as coefficients of equations with complex conjugates.
-  // See  <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>)
+  // See  <a href="../notes/224.html">Note 224</a>)
   // for the details.
   //
   // Versions with <em>pair</em> assume that the pairs are created by the
@@ -658,7 +658,7 @@ class LSQFit {
   // could lead to equation <src>[1,1,1]</src> with obs as
   // <src>3.1415</src>. Note that each complex constraint will be
   // converted into two real constraints (see 
-  // <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>).
+  // <a href="../notes/224.html">Note 224</a>).
   // <group>
   template <class U, class V>
     Bool setConstraint(uInt n, const V &cEq, const U &obs);

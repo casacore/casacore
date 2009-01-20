@@ -79,7 +79,7 @@ template <class T> class LELArray;
 //
 //    A description of the implementation details of these classes can
 //    be found in
-//    <a href="http://www.astron.nl/aips++/docs/notes/216">Note 216</a>
+//    <a href="../notes/216.html">Note 216</a>
 // </synopsis> 
 //
 // <example>

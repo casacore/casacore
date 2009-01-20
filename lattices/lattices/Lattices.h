@@ -172,7 +172,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </srcblock>
 //
 //   <li>The <linkto class="HDF5Lattice">HDF5Lattice</linkto> class stores its
-//   data on disk in HDF5 format. It works in the same way as PagedArray.
+//   data on disk in <a href="http://www.hdfgroup.org/HDF5">HDF5</a> format.
+//   It works in the same way as PagedArray.
 //
 //  </ul>
 //
@@ -378,7 +379,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  only once, on a get of the first part of the lattice expression.
 //  <br> Note that a lattice expression is not writable, thus using
 //  the put function on such a lattice results in an exception.
-//  <br> <a href="http://www.astron.nl/aips++/docs/notes/223">Note 223</a>
+//  <br> <a href="../notes/223.html">Note 223</a>
 //  gives a more detailed
 //  explanation of the capabilities of LEL (Lattice Expression Language).
 //  <p>

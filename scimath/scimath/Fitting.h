@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <prerequisite>
 // <li> Basic principles can be found in 
-//      <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>.
+//      <a href="../notes/224.html">Note 224</a>.
 // </prerequisite>
 //
 // <reviewed reviewer="Neil Killeen" date="2000/06/01"
@@ -79,7 +79,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // chi<sup>2</sup>.
 //
 // The methods used in the Fitting module are described in aips++ 
-// <a href="http://www.astron.nl/aips++/docs/notes/224">Note 224</a>.
+// <a href="../notes/224.html">Note 224</a>.
 // The methods (both standard and
 // SVD) are based on a Cholesky decomposition of the normal equations.
 //

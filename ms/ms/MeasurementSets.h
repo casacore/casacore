@@ -41,7 +41,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <prerequisite>
 //   <li> <linkto module="Tables:description">Tables</linkto> module
-//   <li> <a href="../notes/229/229.html">Note 229</a>
+//   <li> <a href="../notes/229.html">Note 229</a>
 // </prerequisite>
 //
 //
@@ -71,7 +71,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Each table has a number
 // of predefined columns and keywords, a subset of which is required to be
 // present. The column and keyword layout of each table is described in
-// <a href="http://www.astron.nl/aips++/docs/notes/229/229.html">AIPS++ Note 229</a>
+// <a href="../notes/229.html">Note 229</a>
 // and in a separate class which contains two enum definitions.
 // The enum classes, e.g., 
 // <linkto class=MSMainEnums>MSMainEnums</linkto> and 

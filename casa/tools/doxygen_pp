@@ -616,7 +616,7 @@ sub change_comment_style
 	  }
 	}
 	# Doxygen treats a trailing .. as end of list. So escape second one.
-	$comment =~ s|\.\.$|.\\.|g;
+	$comment =~ s|\.\.\s*$|.\\.|g;
 	# Skip an empty line if needed.
 	if ($nadded > 0) {
 	  if ($comment =~ /^\s*$/) {
