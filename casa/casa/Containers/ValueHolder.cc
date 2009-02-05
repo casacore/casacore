@@ -97,6 +97,12 @@ ValueHolder::ValueHolder (const DComplex& value)
   itsRep->link();
 }
 
+ValueHolder::ValueHolder (const Char* value)
+  : itsRep (new ValueHolderRep(String(value)))
+{
+  itsRep->link();
+}
+
 ValueHolder::ValueHolder (const String& value)
   : itsRep (new ValueHolderRep(value))
 {

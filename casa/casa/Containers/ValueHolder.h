@@ -165,6 +165,7 @@ public:
   void getValue (Double& value) const          { value = asDouble(); }
   void getValue (Complex& value) const         { value = asComplex(); }
   void getValue (DComplex& value) const        { value = asDComplex(); }
+  void getValue (String& value) const          { value = asString(); }
   void getValue (Array<Bool>& value) const
     { value.reference(asArrayBool()); }
   void getValue (Array<uChar>& value) const
@@ -185,6 +186,8 @@ public:
     { value.reference(asArrayComplex()); }
   void getValue (Array<DComplex>& value) const
     { value.reference(asArrayDComplex()); }
+  void getValue (Array<String>& value) const
+    { value.reference(asArrayString()); }
   // </group>
 
   // Put the value as a field in a record.
