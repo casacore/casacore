@@ -339,6 +339,9 @@ private:
 
     // Write a reference table.
     void writeRefTable (Bool fsync);
+
+    // Copy a RefTable that is not persistent. It requires some special logic.
+    void copyRefTable (const String& newName, int tableOption);
 };
 
 
