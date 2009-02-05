@@ -194,7 +194,8 @@ public:
   static ValueHolder fromRecord (const Record&, const RecordFieldId&);
 
   //# Write the ValueHolder to an output stream.
-  //# friend AipsIO& operator<< (AipsIO& os, const ValueHolder& vh);
+  friend std::ostream& operator<< (std::ostream& os, const ValueHolder& vh)
+    { return vh.itsRep->write (os); }
 
   //# Read the ValueHolder from an input stream.
   //# friend AipsIO& operator>> (AipsIO& os, ValueHolder& vh);

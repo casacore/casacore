@@ -31,6 +31,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
@@ -1160,6 +1161,60 @@ ValueHolderRep* ValueHolderRep::fromRecord (const Record& rec,
     break;
   }
   throw AipsError ("ValueHolder::fromRecord - unknown data type");
+}
+
+ostream& ValueHolderRep::write (ostream& os) const
+{
+  switch (itsType) {
+  case TpBool:
+    os << itsBool;
+    break;
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+    os << asInt();
+    break;
+  case TpFloat:
+  case TpDouble:
+    os << asDouble();
+    break;
+  case TpComplex:
+  case TpDComplex:
+    os << asDComplex();
+    break;
+  case TpString:
+    os << asString();
+    break;
+  case TpArrayBool:
+    os << asArrayBool();
+    break;
+  case TpArrayUChar:
+  case TpArrayShort:
+  case TpArrayInt:
+    os << asArrayInt();
+    break;
+  case TpArrayFloat:
+  case TpArrayDouble:
+    os << asArrayDouble();
+    break;
+  case TpArrayComplex:
+  case TpArrayDComplex:
+    os << asArrayDComplex();
+    break;
+  case TpArrayString:
+    os << asArrayString();
+    break;
+  case TpRecord:
+    os << asRecord();
+    break;
+  case TpOther:
+    os << "Empty untyped array";
+    break;
+  default:
+    throw AipsError ("ValueHolder::write - unknown data type");
+    break;
+  }
+  return os;
 }
 
 } //# NAMESPACE CASA - END
