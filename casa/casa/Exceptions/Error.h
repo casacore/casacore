@@ -85,10 +85,10 @@ public:
   // Simply returns the stored error message.
   //
   virtual const char* what() const throw()
-  { return(message.c_str()); }
+    { return(message.c_str()); }
   const String &getMesg() const
     { return(message); }
-  const AipsError::Category getCategory( ) const
+  AipsError::Category getCategory( ) const
     { return(category); }
 
   //
@@ -151,7 +151,7 @@ public:
   //
   // This function returns the failed allocation size.
   //
-  size_t size() {return(Size);}
+  size_t size() const {return(Size);}
 
   //
   // Destructor which does nothing.
