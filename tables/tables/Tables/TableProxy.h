@@ -225,6 +225,21 @@ public:
   // in another process.
   Bool isMultiUsed (Bool checkSubTables);
 
+  // Write the table to an ASCII file
+  // (approximately the inverse of the from-ASCII-contructor).
+  // If <src>headerFile</src> is empty or equal to <src>asciiFile</src>, the
+  // headers are written in the same file as the data, otherwise in a separate
+  // file.
+  // If no columns are given (or if the first column name is empty), all
+  // table columns are written. However, columns containing records or
+  // variable shaped arrays are skipped because they cannot be written.
+  // <br>The first character of argument <src>sep</src> is used as separator
+  // between the values. If it is empty, a blank is used.
+  String toAscii (const String& asciiFile, 
+                  const String& headerFile, 
+                  const Vector<String>& columns, 
+                  const String& sep);
+
   // Rename the table
   void rename (const String& newTableName);
 

@@ -282,6 +282,157 @@ Bool TableProxy::isMultiUsed (Bool checkSubTables)
   return table_p.isMultiUsed (checkSubTables);
 }
 
+String TableProxy::toAscii (const String& asciiFile, 
+                            const String& headerFile, 
+                            const Vector<String>& columns, 
+                            const String& sep)
+{
+  // Possible warning message.
+  String message;
+  // Determine separator
+  char theSep = ' ';
+  if (sep.size() > 0) {
+    theSep = sep[0];
+  }
+  // Determine names of columns to write.
+  Vector<String> colNames(columns);
+  if (columns.empty() || columns(0).empty()) {
+    // No columns given, so use all.
+    colNames = columnNames();
+  }
+  int ncols = colNames.size();
+
+  // Get table description.
+  TableDesc tabDesc (table_p.tableDesc());
+  // Analyse the columns.
+  vector<Bool>   col_is_good(ncols);
+  vector<String> col_type(ncols);
+  int last_good_col = 0;
+  for (int j=0; j<ncols; j++) {
+    col_is_good[j] = True;
+    ColumnDesc colDesc(tabDesc.columnDesc (colNames[j]));
+    // Ignore columns containing Records or variable shaped arrays.
+    if (colDesc.dataType() == TpRecord) {
+      message += "Column " + colNames[j] +
+        " ignored because it contains Record values.\n";
+      col_is_good[j] = False;
+    } else if (! colDesc.isFixedShape()) {
+      message += "Column " + colNames[j] +
+        " ignored because it contains variable shaped arrays.\n";
+      col_is_good[j] = False;
+    } else {
+      ostringstream oss;
+      // Implement the type naming convention as in class ReadTableAscii.
+      switch (colDesc.dataType()) {
+      case TpBool:
+        oss << "B";
+        break;
+      case TpUChar:
+      case TpShort:
+        oss << "S";
+        break;
+      case TpInt:
+        oss << "I";
+        break;
+      case TpFloat:
+        oss << "R";
+        break;
+      case TpDouble:
+        oss << "D";
+        break;
+      case TpComplex:
+        oss << "X";
+        break;
+      case TpDComplex:
+        oss << "DX";
+        break;
+      case TpString:
+        oss << "A";
+        break;
+      default:
+        message += "Column " + colNames[j] +
+          " ignored because it contains values with an unknown type.\n";
+        col_is_good[j] = False;
+        break;
+      }
+      if (colDesc.isArray()) {
+        IPosition col_shape (colDesc.shape());
+        for (int i=0; i<col_shape.size(); ++i) {
+          if (i > 0) {
+            oss << ",";
+          }
+          oss << col_shape[i];
+        }
+      }
+      col_type[j] = oss.str();
+    }
+    // Determine last good column 
+    if (col_is_good[j]) {
+      last_good_col = j;
+    }
+  } // end for(j=0 ...
+
+  // Open the output files.
+  // Determine if header info is in separate file.
+  std::ofstream ofs, ofs2;
+  std::ofstream *ofsp;
+  ofs.open (asciiFile.c_str(), ofstream::out);
+  if (!ofs) {
+    throw TableError("TableProxy::toAscii - error opening file '"
+                     + asciiFile + "'");
+  }
+  ofsp = &ofs;     // set initially header output to same file as data
+  if (!headerFile.empty() && (headerFile != asciiFile)) {
+    ofs2.open (headerFile.c_str(), ofstream::out);
+    if (!ofs2) {
+      throw TableError("TableProxy::toAscii - error opening file '" +
+                       headerFile + "'");
+    }
+    ofsp = &ofs2;  // redirect header output to separate header file
+  }
+  // Write the format into the header file.
+  //  - column names
+  for (int i=0; i<ncols; i++) {
+    if (col_is_good[i]) {
+      *ofsp << colNames[i];
+      if (i<last_good_col) {
+        *ofsp << theSep;
+      }
+    }
+  }
+  *ofsp << endl;
+  //  - data types
+  for (int i=0; i<ncols; i++) {
+    if (col_is_good[i]) {
+      *ofsp << col_type[i];
+      if (i<last_good_col) {
+        *ofsp << theSep;
+      }
+    }
+  }
+  *ofsp << endl;
+  // Close headerfile if needed.
+  if (ofsp == &ofs2) {
+    ofs2.close();
+  }
+
+  // Write the data
+  for (int i=0; i<nrows(); i++) {
+    for (int j=0; j<ncols; j++) {
+      if (col_is_good[j]) {
+        getCell(colNames[j], i).write (ofs, theSep);
+        if (j<last_good_col) {
+          ofs << theSep;
+        }
+      }
+    }
+    ofs << endl;
+  }
+
+  ofs.close();
+  return message;
+}
+
 void TableProxy::rename (const String& newTableName)
 {
   table_p.rename (newTableName, Table::New);
