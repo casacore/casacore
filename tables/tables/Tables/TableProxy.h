@@ -233,12 +233,16 @@ public:
   // If no columns are given (or if the first column name is empty), all
   // table columns are written. However, columns containing records or
   // variable shaped arrays are skipped because they cannot be written.
-  // <br>The first character of argument <src>sep</src> is used as separator
-  // between the values. If it is empty, a blank is used.
+  // <br>Argument <src>sep</src> is used as separator between the values.
+  // If it is empty, a blank is used.
+  // <br>For each column the precision can be given. It is only used for
+  // columns containing floating point numbers. A value <=0 means using the
+  // default which is 7 for single and 16 for double precision.
   String toAscii (const String& asciiFile, 
                   const String& headerFile, 
                   const Vector<String>& columns, 
-                  const String& sep);
+                  const String& sep,
+                  const Vector<Int>& precision);
 
   // Rename the table
   void rename (const String& newTableName);

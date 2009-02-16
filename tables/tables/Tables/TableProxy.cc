@@ -285,14 +285,15 @@ Bool TableProxy::isMultiUsed (Bool checkSubTables)
 String TableProxy::toAscii (const String& asciiFile, 
                             const String& headerFile, 
                             const Vector<String>& columns, 
-                            const String& sep)
+                            const String& sep,
+                            const Vector<Int>& precision)
 {
   // Possible warning message.
   String message;
   // Determine separator
-  char theSep = ' ';
-  if (sep.size() > 0) {
-    theSep = sep[0];
+  String theSep(sep);
+  if (sep.empty()) {
+    theSep = " ";
   }
   // Determine names of columns to write.
   Vector<String> colNames(columns);
@@ -300,15 +301,15 @@ String TableProxy::toAscii (const String& asciiFile,
     // No columns given, so use all.
     colNames = columnNames();
   }
-  int ncols = colNames.size();
+  Int ncols = colNames.size();
 
   // Get table description.
   TableDesc tabDesc (table_p.tableDesc());
   // Analyse the columns.
   vector<Bool>   col_is_good(ncols);
   vector<String> col_type(ncols);
-  int last_good_col = 0;
-  for (int j=0; j<ncols; j++) {
+  Int last_good_col = 0;
+  for (Int j=0; j<ncols; j++) {
     col_is_good[j] = True;
     ColumnDesc colDesc(tabDesc.columnDesc (colNames[j]));
     // Ignore columns containing Records or variable shaped arrays.
@@ -357,7 +358,7 @@ String TableProxy::toAscii (const String& asciiFile,
       }
       if (colDesc.isArray()) {
         IPosition col_shape (colDesc.shape());
-        for (int i=0; i<col_shape.size(); ++i) {
+        for (Int i=0; i<col_shape.size(); ++i) {
           if (i > 0) {
             oss << ",";
           }
@@ -392,7 +393,7 @@ String TableProxy::toAscii (const String& asciiFile,
   }
   // Write the format into the header file.
   //  - column names
-  for (int i=0; i<ncols; i++) {
+  for (Int i=0; i<ncols; i++) {
     if (col_is_good[i]) {
       *ofsp << colNames[i];
       if (i<last_good_col) {
@@ -402,7 +403,7 @@ String TableProxy::toAscii (const String& asciiFile,
   }
   *ofsp << endl;
   //  - data types
-  for (int i=0; i<ncols; i++) {
+  for (Int i=0; i<ncols; i++) {
     if (col_is_good[i]) {
       *ofsp << col_type[i];
       if (i<last_good_col) {
@@ -417,10 +418,11 @@ String TableProxy::toAscii (const String& asciiFile,
   }
 
   // Write the data
-  for (int i=0; i<nrows(); i++) {
-    for (int j=0; j<ncols; j++) {
+  for (Int i=0; i<nrows(); i++) {
+    for (Int j=0; j<ncols; j++) {
+      Int prec = (j < precision.size()  ?  precision[j] : 0);
       if (col_is_good[j]) {
-        getCell(colNames[j], i).write (ofs, theSep);
+        getCell(colNames[j], i).write (ofs, theSep, prec);
         if (j<last_good_col) {
           ofs << theSep;
         }
