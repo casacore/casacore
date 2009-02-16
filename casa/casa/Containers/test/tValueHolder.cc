@@ -254,9 +254,9 @@ void doArrayDComplex (const Array<DComplex>& v)
   Array<DComplex> vc;
   vhc.getValue (vc);
   AlwaysAssertExit (allEQ (vc, v));
-  vh.write (cout, ',', 2);
+  vh.write (cout, ", ", 2);
   cout << ' ';
-  vhc.write (cout, ':', 3);
+  vhc.write (cout, ":", 3);
   cout << ' ' << vh << ' ' << vhc << endl;
 }
 

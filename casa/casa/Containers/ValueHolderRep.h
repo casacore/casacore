@@ -152,7 +152,7 @@ public:
   // because a string might contain the separator.
   // The precision of floating point numbers can be given. If <= 0, it is
   // set high enough to represent them accurately.
-  void write (std::ostream& os, char sep, int prec) const;
+  void write (std::ostream& os, const String& sep, Int prec) const;
 
 private:
   // Forbid copy ctor and assignment.

@@ -1217,9 +1217,9 @@ ostream& ValueHolderRep::write (ostream& os) const
   return os;
 }
 
-void ValueHolderRep::write (ostream& os, char sep, int prec) const
+void ValueHolderRep::write (ostream& os, const String& sep, Int prec) const
 {
-  int defPrec = 16;
+  Int defPrec = 16;
   switch (itsType) {
   case TpBool:
     os << itsBool;

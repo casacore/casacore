@@ -207,7 +207,7 @@ public:
   // because a string might contain the separator.
   // The precision of floating point numbers can be given. If <= 0, it is
   // set high enough to represent them accurately.
-  void write (std::ostream& os, char sep=' ', int prec=0) const
+  void write (std::ostream& os, const String& sep=" ", Int prec=0) const
     { itsRep->write (os, sep, prec); }
 
 private:
