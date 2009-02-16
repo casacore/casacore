@@ -299,7 +299,7 @@ String TableProxy::toAscii (const String& asciiFile,
   Vector<String> colNames(columns);
   if (columns.empty() || columns(0).empty()) {
     // No columns given, so use all.
-    colNames = columnNames();
+    colNames.assign (columnNames());
   }
   Int ncols = colNames.size();
 
