@@ -142,8 +142,17 @@ public:
   // Construct the object from the value in a record.
   static ValueHolderRep* fromRecord (const Record& rec, const RecordFieldId&);
 
-  //# Write the ValueHolderRep to an output stream.
+  // Write the ValueHolderRep to an output stream.
+  // Arrays are written as normal arrays using ArrayIO.h. 
   std::ostream& write (std::ostream& os) const;
+
+  // Write the ValueHolderRep to an output stream.
+  // Arrays are written linearly with the given separator.
+  // Furthermore strings (also scalar strings) are enclosed in double quotes
+  // because a string might contain the separator.
+  // The precision of floating point numbers is set high enough to represent
+  // them accurately.
+  void write (std::ostream& os, char sep) const;
 
 private:
   // Forbid copy ctor and assignment.

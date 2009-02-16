@@ -196,12 +196,19 @@ public:
   // Construct the object from the value in a record.
   static ValueHolder fromRecord (const Record&, const RecordFieldId&);
 
-  //# Write the ValueHolder to an output stream.
+  // Write the ValueHolder to an output stream.
+  // Arrays are written as normal arrays using ArrayIO.h. 
   friend std::ostream& operator<< (std::ostream& os, const ValueHolder& vh)
     { return vh.itsRep->write (os); }
 
-  //# Read the ValueHolder from an input stream.
-  //# friend AipsIO& operator>> (AipsIO& os, ValueHolder& vh);
+  // Write the ValueHolderRep to an output stream.
+  // Arrays are written linearly with the given separator.
+  // Furthermore strings (also scalar strings) are enclosed in double quotes
+  // because a string might contain the separator.
+  // The precision of floating point numbers is set high enough to represent
+  // them accurately.
+  void write (std::ostream& os, char sep) const
+    { itsRep->write (os, sep); }
 
 private:
   ValueHolderRep* itsRep;

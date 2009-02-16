@@ -1217,4 +1217,112 @@ ostream& ValueHolderRep::write (ostream& os) const
   return os;
 }
 
+void ValueHolderRep::write (ostream& os, char sep) const
+{
+  switch (itsType) {
+  case TpBool:
+    os << itsBool;
+    break;
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+    os << asInt();
+    break;
+  case TpFloat:
+  case TpDouble:
+    {
+      // Set precision; set it back at the end.
+      streamsize prec = os.precision(18);
+      os << asDouble();
+      os.precision (prec);
+    }
+    break;
+  case TpComplex:
+  case TpDComplex:
+    {
+      // Set precision; set it back at the end.
+      streamsize prec = os.precision(18);
+      os << asDComplex();
+      os.precision (prec);
+    }
+    break;
+  case TpString:
+    os << '"' << asString() << '"';
+    break;
+  case TpArrayBool:
+    {
+      Array<Bool> arr = asArrayBool();
+      for (Array<Bool>::const_iterator iter=arr.begin();
+           iter!=arr.end(); ++iter) {
+        if (iter != arr.begin()) {
+          os << sep;
+        }
+        os << *iter;
+      }
+    }
+    break;
+  case TpArrayUChar:
+  case TpArrayShort:
+  case TpArrayInt:
+    {
+      Array<Int> arr = asArrayInt();
+      for (Array<Int>::const_iterator iter=arr.begin();
+           iter!=arr.end(); ++iter) {
+        if (iter != arr.begin()) {
+          os << sep;
+        }
+        os << *iter;
+      }
+    }
+    break;
+  case TpArrayFloat:
+  case TpArrayDouble:
+    {
+      // Set precision; set it back at the end.
+      streamsize prec = os.precision(18);
+      Array<Double> arr = asArrayDouble();
+      for (Array<Double>::const_iterator iter=arr.begin();
+           iter!=arr.end(); ++iter) {
+        if (iter != arr.begin()) {
+          os << sep;
+        }
+        os << *iter;
+      }
+      os.precision (prec);
+    }
+    break;
+  case TpArrayComplex:
+  case TpArrayDComplex:
+    {
+      // Set precision; set it back at the end.
+      streamsize prec = os.precision(18);
+      Array<DComplex> arr = asArrayDComplex();
+      for (Array<DComplex>::const_iterator iter=arr.begin();
+           iter!=arr.end(); ++iter) {
+        if (iter != arr.begin()) {
+          os << sep;
+        }
+        os << *iter;
+      }
+      os.precision (prec);
+    }
+    break;
+  case TpArrayString:
+    {
+      Array<String> arr = asArrayString();
+      for (Array<String>::const_iterator iter=arr.begin();
+           iter!=arr.end(); ++iter) {
+        if (iter != arr.begin()) {
+          os << sep;
+        }
+        os << '"' << *iter << '"';
+      }
+    }
+    break;
+  default:
+    throw AipsError ("ValueHolder::write - unknown data type");
+    break;
+  }
+}
+
 } //# NAMESPACE CASA - END
