@@ -205,10 +205,10 @@ public:
   // Arrays are written linearly with the given separator.
   // Furthermore strings (also scalar strings) are enclosed in double quotes
   // because a string might contain the separator.
-  // The precision of floating point numbers is set high enough to represent
-  // them accurately.
-  void write (std::ostream& os, char sep) const
-    { itsRep->write (os, sep); }
+  // The precision of floating point numbers can be given. If <= 0, it is
+  // set high enough to represent them accurately.
+  void write (std::ostream& os, char sep=' ', int prec=0) const
+    { itsRep->write (os, sep, prec); }
 
 private:
   ValueHolderRep* itsRep;

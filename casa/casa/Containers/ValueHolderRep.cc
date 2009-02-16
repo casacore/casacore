@@ -1217,8 +1217,9 @@ ostream& ValueHolderRep::write (ostream& os) const
   return os;
 }
 
-void ValueHolderRep::write (ostream& os, char sep) const
+void ValueHolderRep::write (ostream& os, char sep, int prec) const
 {
+  int defPrec = 16;
   switch (itsType) {
   case TpBool:
     os << itsBool;
@@ -1229,21 +1230,25 @@ void ValueHolderRep::write (ostream& os, char sep) const
     os << asInt();
     break;
   case TpFloat:
+    defPrec = 7;
   case TpDouble:
     {
-      // Set precision; set it back at the end.
-      streamsize prec = os.precision(18);
+      // set precision; set it back at the end.
+      if (prec <= 0) prec = defPrec;
+      streamsize oldPrec = os.precision(prec);
       os << asDouble();
-      os.precision (prec);
+      os.precision (oldPrec);
     }
     break;
   case TpComplex:
+    defPrec = 7;
   case TpDComplex:
     {
-      // Set precision; set it back at the end.
-      streamsize prec = os.precision(18);
+      // set precision; set it back at the end.
+      if (prec <= 0) prec = defPrec;
+      streamsize oldPrec = os.precision(prec);
       os << asDComplex();
-      os.precision (prec);
+      os.precision (oldPrec);
     }
     break;
   case TpString:
@@ -1276,10 +1281,12 @@ void ValueHolderRep::write (ostream& os, char sep) const
     }
     break;
   case TpArrayFloat:
+    defPrec = 7;
   case TpArrayDouble:
     {
-      // Set precision; set it back at the end.
-      streamsize prec = os.precision(18);
+      // set precision; set it back at the end.
+      if (prec <= 0) prec = defPrec;
+      streamsize oldPrec = os.precision(prec);
       Array<Double> arr = asArrayDouble();
       for (Array<Double>::const_iterator iter=arr.begin();
            iter!=arr.end(); ++iter) {
@@ -1288,14 +1295,16 @@ void ValueHolderRep::write (ostream& os, char sep) const
         }
         os << *iter;
       }
-      os.precision (prec);
+      os.precision (oldPrec);
     }
     break;
   case TpArrayComplex:
+    defPrec = 7;
   case TpArrayDComplex:
     {
-      // Set precision; set it back at the end.
-      streamsize prec = os.precision(18);
+      // set precision; set it back at the end.
+      if (prec <= 0) prec = defPrec;
+      streamsize oldPrec = os.precision(prec);
       Array<DComplex> arr = asArrayDComplex();
       for (Array<DComplex>::const_iterator iter=arr.begin();
            iter!=arr.end(); ++iter) {
@@ -1304,7 +1313,7 @@ void ValueHolderRep::write (ostream& os, char sep) const
         }
         os << *iter;
       }
-      os.precision (prec);
+      os.precision (oldPrec);
     }
     break;
   case TpArrayString:

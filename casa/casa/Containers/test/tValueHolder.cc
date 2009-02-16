@@ -103,7 +103,10 @@ template<typename T, typename U> void doPos(T v, U, DataType dt)
   U vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  cout << vh << ' ' << vhc << endl;
+  vh.write (cout);
+  cout << ' ';
+  vhc.write (cout);
+  cout << ' ' << vh << ' ' << vhc << endl;
 }
 
 template<typename T, typename U> void doNeg(T v, U, DataType dt)
@@ -144,7 +147,10 @@ template<typename T, typename U> void doNeg(T v, U, DataType dt)
   U vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  cout << vh << ' ' << vhc << endl;
+  vh.write (cout);
+  cout << ' ';
+  vhc.write (cout);
+  cout << ' ' << vh << ' ' << vhc << endl;
 }
 
 void doComplex (const Complex& v)
@@ -168,7 +174,10 @@ void doComplex (const Complex& v)
   Complex vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  cout << vh << ' ' << vhc << endl;
+  vh.write (cout);
+  cout << ' ';
+  vhc.write (cout);
+  cout << ' ' << vh << ' ' << vhc << endl;
 }
 
 void doDComplex (const DComplex& v)
@@ -192,7 +201,10 @@ void doDComplex (const DComplex& v)
   DComplex vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  cout << vh << ' ' << vhc << endl;
+  vh.write (cout);
+  cout << ' ';
+  vhc.write (cout);
+  cout << ' ' << vh << ' ' << vhc << endl;
 }
 
 void doString (const String& v)
@@ -242,7 +254,10 @@ void doArrayDComplex (const Array<DComplex>& v)
   Array<DComplex> vc;
   vhc.getValue (vc);
   AlwaysAssertExit (allEQ (vc, v));
-  cout << vh << ' ' << vhc << endl;
+  vh.write (cout, ',', 2);
+  cout << ' ';
+  vhc.write (cout, ':', 3);
+  cout << ' ' << vh << ' ' << vhc << endl;
 }
 
 void doArrayString (const Array<String>& v)
@@ -284,11 +299,11 @@ int main()
     doString("");
     doString("astring");
     doComplex(Complex(3.1, -1.5));
-    doDComplex(Complex(-3.2, 11.5));
+    doDComplex(DComplex(-3.2, 11.5));
 
     Array<DComplex> dcomplexs(IPosition(2,1,2));
-    dcomplexs(IPosition(2,0,0)) = DComplex(-1.3, 1.4);
-    dcomplexs(IPosition(2,0,1)) = DComplex(-11.3, 21.4);
+    dcomplexs(IPosition(2,0,0)) = DComplex(-1.311, 1.422);
+    dcomplexs(IPosition(2,0,1)) = DComplex(-11.311, 21.422);
     doArrayDComplex (dcomplexs);
 
     Array<String> strings(IPosition(2,1,1));
