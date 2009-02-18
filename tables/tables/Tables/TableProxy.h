@@ -238,11 +238,17 @@ public:
   // <br>For each column the precision can be given. It is only used for
   // columns containing floating point numbers. A value <=0 means using the
   // default which is 7 for single and 16 for double precision.
+  // <br>If <src>useBrackets=True</src>, arrays are enclosed in [] (for each
+  // dimension), so variable shaped arrays can be read back unambiguously.
+  // The type in the header will be something like D[].
+  // If False, arrays are written linearly where a shape [4,64] is given in
+  // the header like D4,64. In that case arrays should have constant shape.
   String toAscii (const String& asciiFile, 
                   const String& headerFile, 
                   const Vector<String>& columns, 
                   const String& sep,
-                  const Vector<Int>& precision);
+                  const Vector<Int>& precision,
+                  Bool useBrackets);
 
   // Rename the table
   void rename (const String& newTableName);
@@ -562,6 +568,19 @@ private:
   // Make hypercolumn definitions for the given hypercolumns.
   static Bool makeHC (const Record& gdesc, TableDesc& tabdesc,
 		      String& message);
+
+  // Get the column info for toAscii.
+  Bool getColInfo (const String& colName, Bool useBrackets,
+                   String& type, String& message);
+
+  // Print the data in a table cell for toAscii.
+  // <group>
+  void printValueHolder (const ValueHolder& vh, ostream& os,
+                         const String& sep, Int prec, Bool useBrackets) const;
+  template<typename T>
+  void printArray (const Array<T>& arr, ostream& os,
+                   const String& sep, const String& quote) const;
+  // </group>
 
   // Check if the column name and row numbers are valid.
   // Return the recalculated nrow so that it does not exceed #rows.
