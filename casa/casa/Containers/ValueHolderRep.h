@@ -146,14 +146,6 @@ public:
   // Arrays are written as normal arrays using ArrayIO.h. 
   std::ostream& write (std::ostream& os) const;
 
-  // Write the ValueHolderRep to an output stream.
-  // Arrays are written linearly with the given separator.
-  // Furthermore strings (also scalar strings) are enclosed in double quotes
-  // because a string might contain the separator.
-  // The precision of floating point numbers can be given. If <= 0, it is
-  // set high enough to represent them accurately.
-  void write (std::ostream& os, const String& sep, Int prec) const;
-
 private:
   // Forbid copy ctor and assignment.
   //# There is no fundamental reason to forbid them, but it saves

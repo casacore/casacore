@@ -201,15 +201,6 @@ public:
   friend std::ostream& operator<< (std::ostream& os, const ValueHolder& vh)
     { return vh.itsRep->write (os); }
 
-  // Write the ValueHolderRep to an output stream.
-  // Arrays are written linearly with the given separator.
-  // Furthermore strings (also scalar strings) are enclosed in double quotes
-  // because a string might contain the separator.
-  // The precision of floating point numbers can be given. If <= 0, it is
-  // set high enough to represent them accurately.
-  void write (std::ostream& os, const String& sep=" ", Int prec=0) const
-    { itsRep->write (os, sep, prec); }
-
 private:
   ValueHolderRep* itsRep;
 };
