@@ -67,9 +67,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // Add the current condition to the TableExprNode tree.  Mask auto
   // correlations if autoCorr==False
   // 
-  void MSAntennaParse::setTEN(TableExprNode& condition, Bool autoCorr, Bool negate)
+  void MSAntennaParse::setTEN(TableExprNode& condition, 
+			      BaselineListType autoCorr,
+			      Bool negate)
   {
-    if (!autoCorr) 
+    //    if (!autoCorr) 
+    if (autoCorr==CrossOnly) 
       {
       	TableExprNode noAutoCorr = (ms()->col(colName1) != ms()->col(colName2));
 	condition = noAutoCorr && condition;
@@ -86,10 +89,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds, 
-							Bool autoCorr, Bool negate) 
+							BaselineListType autoCorr,
+							Bool negate) 
   {
     TableExprNode condition;
-    if (autoCorr)
+    //    if (autoCorr)
+    if ((autoCorr==AutoCorrAlso) || (autoCorr==AutoCorrOnly))
       {
 	Int n=antennaIds.nelements();
 	if (n)
@@ -130,7 +135,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       else        makeBaselineList(antennaIds,a2,baselineList,autoCorr, negate);
     }
     //    setTEN(condition,autoCorr);
-    setTEN(condition,True, negate);
+    //    setTEN(condition, True, negate);
+    setTEN(condition,AutoCorrAlso , negate);
     return node();
   }
 
@@ -151,7 +157,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds1,
 							const Vector<Int>& antennaIds2,
-							Bool autoCorr, Bool negate)
+							BaselineListType autoCorr,
+							Bool negate)
   {
     TableExprNode condition;
 
@@ -188,7 +195,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna, 
-							   Bool autoCorr, Bool negate)
+							   BaselineListType autoCorr,
+							   Bool negate)
   {
     MSAntennaIndex msAI(ms()->antenna());
     
@@ -202,7 +210,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna1,
 							   const Vector<String>& antenna2,
-							   Bool autoCorr, Bool negate)
+// 							   Bool autoCorr, 
+							   BaselineListType autoCorr,
+							   Bool negate)
   {
     MSAntennaIndex msAI(ms()->antenna());
     
@@ -219,7 +229,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
 							   const String& antenna2,
-							   Bool autoCorr, Bool negate)
+							   BaselineListType autoCorr,
+							   Bool negate)
   {
     TableExprNode condition =
       (ms()->col(colName1) >= antenna1 && ms()->col(colName2) <= antenna2) ||
@@ -260,15 +271,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2, 
-				   Bool autoCorr)
+ 				   BaselineListType autoCorr)
   {
-    if ((ant1 == ant2) && (!autoCorr)) return False;
+    Bool doAutoCorr;
+    doAutoCorr = (autoCorr==AutoCorrAlso) || (autoCorr==AutoCorrOnly);
+    if ((ant1 == ant2) && (!doAutoCorr)) return False;
+    if ((autoCorr==AutoCorrOnly) && (ant1!=ant2)) return False;
 
     Int n=baselist.shape()(0);
     for(Int i=0;i<n;i++)
-      if (((baselist(i,0)==ant1) && (baselist(i,1)==ant2)) ||
-	  ((baselist(i,1)==ant1) && (baselist(i,0)==ant2)))
-	return False;
+      //      if (doAutoCorr && (ant1==ant2))
+	{
+	  if (((baselist(i,0)==ant1) && (baselist(i,1)==ant2)) ||
+	      ((baselist(i,1)==ant1) && (baselist(i,0)==ant2)))
+	  return False;
+	}
+
     return True;
   }
 
@@ -278,7 +296,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // existing list.  The required sizing could be done better.
   //
   void MSAntennaParse::makeBaselineList(const Vector<Int>& a1, const Vector<Int>&a2, 
-					Matrix<Int>& baselist, Bool autoCorr, Bool negate)
+					Matrix<Int>& baselist, 
+					BaselineListType autoCorr,
+					Bool negate)
   {
     Int n1,n2,nb0;
     n1=a1.nelements();  n2=a2.nelements();

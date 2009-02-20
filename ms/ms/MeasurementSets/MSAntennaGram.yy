@@ -1,4 +1,4 @@
-/*
+/*-*- C++ -*-
     MSAntennaGram.y: Parser for antenna expressions
     Copyright (C) 2004
     Associated Universities, Inc. Washington DC, USA.
@@ -115,7 +115,9 @@ baseline: indexlist AMPERSAND indexlist
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      Vector<Int> a2 = myMSAI.matchId(*($3)); 
 	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a2); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,False,MSAntennaGramNegate); 
+	      //	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,False,MSAntennaGramNegate); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,MSAntennaParse::CrossOnly,
+								   MSAntennaGramNegate); 
 
 	      delete $1; delete $3;
 	    } 
@@ -124,7 +126,9 @@ baseline: indexlist AMPERSAND indexlist
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a1); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,False,MSAntennaGramNegate); 
+	      //	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,False,MSAntennaGramNegate); 
+	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,MSAntennaParse::CrossOnly,
+								   MSAntennaGramNegate); 
 	      
 	      delete $1;
 	    }
@@ -133,7 +137,9 @@ baseline: indexlist AMPERSAND indexlist
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      //                    $$ = MSAntennaParse().selectAntennaIds(a1); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,False,MSAntennaGramNegate); 
+// 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,False,MSAntennaGramNegate); 
+ 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,MSAntennaParse::CrossOnly,
+								   MSAntennaGramNegate); 
 	      
 	      delete $1;
 	    }
@@ -143,7 +149,9 @@ baseline: indexlist AMPERSAND indexlist
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      Vector<Int> a2 = myMSAI.matchId(*($4)); 
 	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a2,True); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,True,MSAntennaGramNegate); 
+// 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,True,MSAntennaGramNegate); 
+ 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a2,MSAntennaParse::AutoCorrAlso,
+								   MSAntennaGramNegate); 
 
 	      delete $1; delete $4;
 	    } 
@@ -152,7 +160,9 @@ baseline: indexlist AMPERSAND indexlist
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,a1,True); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,True,MSAntennaGramNegate); 
+// 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,True,MSAntennaGramNegate); 
+ 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,a1,MSAntennaParse::AutoCorrAlso,
+								   MSAntennaGramNegate); 
 
 	      delete $1;
 	    }
@@ -161,7 +171,9 @@ baseline: indexlist AMPERSAND indexlist
 	      MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
 	      Vector<Int> a1 = myMSAI.matchId(*($1)); 
 	      //		   $$ = MSAntennaParse().selectAntennaIds(a1,True); 
-	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,True,MSAntennaGramNegate); 
+// 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,True,MSAntennaGramNegate); 
+ 	      $$ = MSAntennaParse::thisMSAParser->selectAntennaIds(a1,MSAntennaParse::AutoCorrOnly,
+								   MSAntennaGramNegate); 
 	      
 	      delete $1;
 	    }
