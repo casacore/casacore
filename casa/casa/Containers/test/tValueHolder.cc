@@ -103,10 +103,7 @@ template<typename T, typename U> void doPos(T v, U, DataType dt)
   U vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  vh.write (cout);
-  cout << ' ';
-  vhc.write (cout);
-  cout << ' ' << vh << ' ' << vhc << endl;
+  cout << vh << ' ' << vhc << endl;
 }
 
 template<typename T, typename U> void doNeg(T v, U, DataType dt)
@@ -147,10 +144,7 @@ template<typename T, typename U> void doNeg(T v, U, DataType dt)
   U vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  vh.write (cout);
-  cout << ' ';
-  vhc.write (cout);
-  cout << ' ' << vh << ' ' << vhc << endl;
+  cout << vh << ' ' << vhc << endl;
 }
 
 void doComplex (const Complex& v)
@@ -174,10 +168,7 @@ void doComplex (const Complex& v)
   Complex vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  vh.write (cout);
-  cout << ' ';
-  vhc.write (cout);
-  cout << ' ' << vh << ' ' << vhc << endl;
+  cout << vh << ' ' << vhc << endl;
 }
 
 void doDComplex (const DComplex& v)
@@ -201,10 +192,7 @@ void doDComplex (const DComplex& v)
   DComplex vc;
   vhc.getValue (vc);
   AlwaysAssertExit (vc == v);
-  vh.write (cout);
-  cout << ' ';
-  vhc.write (cout);
-  cout << ' ' << vh << ' ' << vhc << endl;
+  cout << vh << ' ' << vhc << endl;
 }
 
 void doString (const String& v)
@@ -254,10 +242,7 @@ void doArrayDComplex (const Array<DComplex>& v)
   Array<DComplex> vc;
   vhc.getValue (vc);
   AlwaysAssertExit (allEQ (vc, v));
-  vh.write (cout, ", ", 2);
-  cout << ' ';
-  vhc.write (cout, ":", 3);
-  cout << ' ' << vh << ' ' << vhc << endl;
+  cout << vh << ' ' << vhc << endl;
 }
 
 void doArrayString (const Array<String>& v)
