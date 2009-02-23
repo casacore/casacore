@@ -436,21 +436,26 @@ Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
     // Append the type with the array shape. Use [] if brackets are to be used.
     // If variable shape, use the shape of the first row.
     if (colDesc.isArray()) {
+      IPosition col_shape;
+      if (colDesc.isFixedShape()) {
+        col_shape = colDesc.shape();
+      }
       if (useBrackets) {
-        oss << "[]";
+        oss << "[";
       } else {
-        IPosition col_shape;
-        if (colDesc.isFixedShape()) {
-          col_shape = colDesc.shape();
-        } else {
+        // Show non-fixed shape of first row if no brackets are used.
+        if (!colDesc.isFixedShape()  &&  table_p.nrow() > 0) {
           col_shape = ROTableColumn(table_p, colName).shape(0);
         }
-        for (Int i=0; i<col_shape.size(); ++i) {
-          if (i > 0) {
-            oss << ",";
-          }
-          oss << col_shape[i];
+      }
+      for (Int i=0; i<col_shape.size(); ++i) {
+        if (i > 0) {
+          oss << ",";
         }
+        oss << col_shape[i];
+      }
+      if (useBrackets) {
+        oss << "]";
       }
     }
     colType = oss.str();
@@ -462,7 +467,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
                                    const String& sep, Int prec,
                                    bool useBrackets) const
 {
-  Int defPrec = 16;
+  Int defPrec = 18;
   switch (vh.dataType()) {
   case TpBool:
     os << vh.asBool();
@@ -473,7 +478,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     os << vh.asInt();
     break;
   case TpFloat:
-    defPrec = 7;
+    defPrec = 9;
   case TpDouble:
     {
       // set precision; set it back at the end.
@@ -484,7 +489,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     }
     break;
   case TpComplex:
-    defPrec = 7;
+    defPrec = 9;
   case TpDComplex:
     {
       // set precision; set it back at the end.
@@ -501,10 +506,11 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     {
       Array<Bool> arr = vh.asArrayBool();
       if (useBrackets) {
-        printArray (arr, os, sep, String());
+        printArray (arr, os, sep);
       } else {
+        Array<Bool>::const_iterator iterend = arr.end();
         for (Array<Bool>::const_iterator iter=arr.begin();
-             iter!=arr.end(); ++iter) {
+             iter!=iterend; ++iter) {
           if (iter != arr.begin()) {
             os << sep;
           }
@@ -519,10 +525,11 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     {
       Array<Int> arr = vh.asArrayInt();
       if (useBrackets) {
-        printArray (arr, os, sep, String());
+        printArray (arr, os, sep);
       } else {
+        Array<Int>::const_iterator iterend = arr.end();
         for (Array<Int>::const_iterator iter=arr.begin();
-             iter!=arr.end(); ++iter) {
+             iter!=iterend; ++iter) {
           if (iter != arr.begin()) {
             os << sep;
           }
@@ -532,7 +539,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     }
     break;
   case TpArrayFloat:
-    defPrec = 7;
+    defPrec = 9;
   case TpArrayDouble:
     {
       // set precision; set it back at the end.
@@ -540,10 +547,11 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
       streamsize oldPrec = os.precision(prec);
       Array<Double> arr = vh.asArrayDouble();
       if (useBrackets) {
-        printArray (arr, os, sep, String());
+        printArray (arr, os, sep);
       } else {
+        Array<Double>::const_iterator iterend = arr.end();
         for (Array<Double>::const_iterator iter=arr.begin();
-             iter!=arr.end(); ++iter) {
+             iter!=iterend; ++iter) {
           if (iter != arr.begin()) {
             os << sep;
           }
@@ -554,7 +562,7 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     }
     break;
   case TpArrayComplex:
-    defPrec = 7;
+    defPrec = 9;
   case TpArrayDComplex:
     {
       // set precision; set it back at the end.
@@ -562,14 +570,15 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
       streamsize oldPrec = os.precision(prec);
       Array<DComplex> arr = vh.asArrayDComplex();
       if (useBrackets) {
-        printArray (arr, os, sep, String());
+        printArray (arr, os, sep);
       } else {
+        Array<DComplex>::const_iterator iterend = arr.end();
         for (Array<DComplex>::const_iterator iter=arr.begin();
-             iter!=arr.end(); ++iter) {
+             iter!=iterend; ++iter) {
           if (iter != arr.begin()) {
             os << sep;
           }
-          os << *iter;
+          os << iter->real() << sep << iter->imag();
         }
       }
       os.precision (oldPrec);
@@ -579,10 +588,11 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     {
       Array<String> arr = vh.asArrayString();
       if (useBrackets) {
-        printArray (arr, os, sep, "\"");
+        printArray (arr, os, sep);
       } else {
+        Array<String>::const_iterator iterend = arr.end();
         for (Array<String>::const_iterator iter=arr.begin();
-             iter!=arr.end(); ++iter) {
+             iter!=iterend; ++iter) {
           if (iter != arr.begin()) {
             os << sep;
           }
@@ -602,30 +612,34 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
 
 template<typename T>
 void TableProxy::printArray (const Array<T>& arr, ostream& os,
-                             const String& sep, const String& quote) const
+                             const String& sep) const
 {
-  const IPosition& shp = arr.shape();
-  uInt ndim = shp.size();
-  IPosition pos(shp.size(), 0);
-  typename Array<T>::const_iterator iter = arr.begin();
-  uInt i = ndim;
-  while (True) {
-    for (uInt j=0; j<i; ++j) {
-      os << '[';
-    }
-    os << quote << *iter << quote;
-    ++iter;
-    for (i=0; i<ndim; ++i) {
-      if (++pos[i] < shp[i]) {
+  if (arr.empty()) {
+    cout << "[]";
+  } else {
+    const IPosition& shp = arr.shape();
+    uInt ndim = shp.size();
+    IPosition pos(shp.size(), 0);
+    typename Array<T>::const_iterator iter = arr.begin();
+    uInt i = ndim;
+    while (True) {
+      for (uInt j=0; j<i; ++j) {
+        os << '[';
+      }
+      printArrayValue (os, *iter, sep);
+      ++iter;
+      for (i=0; i<ndim; ++i) {
+        if (++pos[i] < shp[i]) {
+          break;
+        }
+        os << ']';
+        pos[i] = 0;
+      }
+      if (i == ndim) {
         break;
       }
-      os << ']';
-      pos[i] = 0;
+      os << sep;
     }
-    if (i == ndim) {
-      break;
-    }
-    os << sep;
   }
 }
 
