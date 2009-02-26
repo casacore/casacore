@@ -66,7 +66,7 @@ public:
 private:
   // Write the main table.
   static FitsOutput *writeMain(Int& refPixelFreq, Double& refFreq,
-			       Double& chanbw,
+			       Double& refFreq1, Double& chanbw,
 			       const String& outFITSFile,
 			       const MeasurementSet& rawms,
 			       const String& column,
