@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995-1998,2000-2003,2007
+//# Copyright (C) 1995-1998,2000-2003,2007,2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -229,7 +229,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 	getTDB(tdbTime);
       *MVPOS1 = ABERTO->operator()(tdbTime);
       MFrequency::Ref::frameDirection(outref, inref).
-	getApp(*MVDIR1);
+	getJ2000(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue();
       in = g2*sqrt((1-g1)/(1+g1));
@@ -247,7 +247,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
       *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
-      MVPOS1->readjust(g2);
+      MVPOS1->readjust(g2*cos(g3));
       MFrequency::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
