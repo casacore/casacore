@@ -41,7 +41,7 @@
 #include <tables/Tables/MappedArrayEngine.h>
 #include <tables/Tables/ForwardCol.h>
 #include <tables/Tables/VirtualTaQLColumn.h>
-#include <tables/Tables/BitFlagsEngine.h>
+///#include <tables/Tables/BitFlagsEngine.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/PlainTable.h>
@@ -440,9 +440,9 @@ void DataManager::registerAllCtor ()
     MappedArrayEngine<Complex,DComplex>::registerClass();
     ForwardColumnEngine::registerClass();
     VirtualTaQLColumn::registerClass();
-    BitFlagsEngine<uChar>::registerClass();
-    BitFlagsEngine<Short>::registerClass();
-    BitFlagsEngine<Int>::registerClass();
+    ///    BitFlagsEngine<uChar>::registerClass();
+    ///    BitFlagsEngine<Short>::registerClass();
+    ///    BitFlagsEngine<Int>::registerClass();
 }
 
 } //# NAMESPACE CASA - END
