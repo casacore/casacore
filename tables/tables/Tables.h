@@ -132,7 +132,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <LI> <A HREF="#Tables:write">writing</A> into a table,
 //  <LI> <A HREF="#Tables:row-access">accessing rows</A> in a table,
 //  <LI> <A HREF="#Tables:select and sort">selection and sorting</A>
-//       (see also <A HREF=../../notes/199/199.html>Table Query Language</A>),
+//       (see also <A HREF="../notes/199.html">Table Query Language</A>),
 //  <LI> <A HREF="#Tables:concatenation">concatenating similar tables</A>
 //  <LI> <A HREF="#Tables:iterate">iterating</A> through a table,
 //  <LI> <A HREF="#Tables:LockSync">locking/synchronization</A>
@@ -224,7 +224,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       <code>Table::LocalEndian</code> (thus the endian format of the
 //       machine being used).
 //  <li> The SQL-like
-//       <a href="../../notes/199/199.html">Table Query Language</a> (TaQL)
+//       <a href="../notes/199.html">Table Query Language</a> (TaQL)
 //       can be used to do operations on tables like
 //       select, sort, update, insert, delete, and create.
 // </ul>
@@ -750,7 +750,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // There is, however, another way. Strings containing selection and
 // sorting commands can be used.
 // The syntax of these commands is based on SQL and is described in the
-// <a href="../../notes/199/199.html">Table Query Language</a> (TaQL).
+// <a href="../notes/199.html">Table Query Language</a> (TaQL).
 // <br>Such a command can be executed with the static function
 // <src>TableParse::tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
@@ -1284,9 +1284,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> The class
 //   <linkto class="VirtualTaQLColumn:description">VirtualTaQLColumn</linkto>
 //   makes it possible to define a column as an arbitrary expression of
-//   other columns. It uses the <a href="../../notes/199/199.html">TaQL</a>
+//   other columns. It uses the <a href="../notes/199.html">TaQL</a>
 //   CALC command. The virtual column can be a scalar or an array and
 //   can have one of the standard data types supported by the Table System.
+//  <li> The class
+//   <linkto class="BitFlagsEngine:description">BitFlagsEngine</linkto>
+//   maps an integer bit flags column to a Bool column. A read and write mask
+//   can be defined telling which bits to take into account when mapping
+//   to and from Bool (thus when reading or writing the Bool).
 //  <li> The class
 //   <linkto class="CompressFloat:description">CompressFloat</linkto>
 //   compresses a single precision floating point array by scaling the
