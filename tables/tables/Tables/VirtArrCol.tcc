@@ -27,6 +27,7 @@
 
 //# Includes
 #include <tables/Tables/VirtArrCol.h>
+#include <tables/Tables/RefRows.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/IPosition.h>
@@ -210,29 +211,83 @@ void VirtualArrayColumn<T>::putColumnSlice (const Slicer& slicer,
 
 //# The default implementations of the Cells functions throw an exception.
 template<class T>
-void VirtualArrayColumn<T>::getArrayColumnCells (const RefRows&, Array<T>&)
+void VirtualArrayColumn<T>::getArrayColumnCells (const RefRows& rownrs,
+                                                 Array<T>& value)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::getArrayColumnCells not possible"));
+    ArrayIterator<T> iter(value, value.ndim()-1);
+    RefRowsSliceIter rowiter(rownrs);
+    while (! rowiter.pastEnd()) {
+        uInt rownr = rowiter.sliceStart();
+        uInt end = rowiter.sliceEnd();
+        uInt incr = rowiter.sliceIncr();
+        while (rownr <= end) {
+            if (! isFixedShape()) {
+                if (! iter.array().shape().isEqual (shape(rownr))) {
+                    throw DataManError("getArrayColumnCells shape mismatch");
+                }
+            }
+  	    getArray (rownr, iter.array());
+            rownr += incr;
+	    iter.next();
+	}
+        rowiter++;
+    }
 }
 template<class T>
-void VirtualArrayColumn<T>::putArrayColumnCells (const RefRows&,
-						 const Array<T>&)
+void VirtualArrayColumn<T>::putArrayColumnCells (const RefRows& rownrs,
+						 const Array<T>& value)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::putArrayColumnCells not possible"));
+    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1);
+    RefRowsSliceIter rowiter(rownrs);
+    while (! rowiter.pastEnd()) {
+        uInt rownr = rowiter.sliceStart();
+        uInt end = rowiter.sliceEnd();
+        uInt incr = rowiter.sliceIncr();
+        while (rownr <= end) {
+  	    putArray (rownr, iter.array());
+            rownr += incr;
+	    iter.next();
+	}
+        rowiter++;
+    }
 }
 template<class T>
-void VirtualArrayColumn<T>::getColumnSliceCells (const RefRows&,
-						 const Slicer&,
-						 Array<T>&)
+void VirtualArrayColumn<T>::getColumnSliceCells (const RefRows& rownrs,
+						 const Slicer& ns,
+						 Array<T>& value)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::getColumnSliceCells not possible"));
+    ArrayIterator<T> iter(value, value.ndim()-1);
+    RefRowsSliceIter rowiter(rownrs);
+    while (! rowiter.pastEnd()) {
+        uInt rownr = rowiter.sliceStart();
+        uInt end = rowiter.sliceEnd();
+        uInt incr = rowiter.sliceIncr();
+        while (rownr <= end) {
+	    getSlice (rownr, ns, iter.array());
+            rownr += incr;
+	    iter.next();
+	}
+        rowiter++;
+    }
 }
 template<class T>
-void VirtualArrayColumn<T>::putColumnSliceCells (const RefRows&,
-						 const Slicer&,
-						 const Array<T>&)
+void VirtualArrayColumn<T>::putColumnSliceCells (const RefRows& rownrs,
+						 const Slicer& ns,
+						 const Array<T>& value)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::putColumnSliceCells not possible"));
+    ReadOnlyArrayIterator<T> iter(value, value.ndim()-1);
+    RefRowsSliceIter rowiter(rownrs);
+    while (! rowiter.pastEnd()) {
+        uInt rownr = rowiter.sliceStart();
+        uInt end = rowiter.sliceEnd();
+        uInt incr = rowiter.sliceIncr();
+        while (rownr <= end) {
+	    putSlice (rownr, ns, iter.array());
+            rownr += incr;
+	    iter.next();
+	}
+        rowiter++;
+    }
 }
 
 //# The default implementation of the put function throws
