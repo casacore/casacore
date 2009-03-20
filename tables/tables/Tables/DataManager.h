@@ -232,8 +232,18 @@ public:
     virtual String dataManagerType() const = 0;
 
     // Record a record containing data manager specifications.
-    // The default impementation returns an empty record.
+    // The default implementation returns an empty record.
     virtual Record dataManagerSpec() const;
+
+    // Get data manager properties that can be modified.
+    // It is a subset of the data manager specification.
+    // The default implementation returns an empty record.
+    virtual Record getProperties() const;
+
+    // Modify data manager properties given in record fields. Only the
+    // properties as returned by getProperties are used, others are ignored.
+    // The default implementation does nothing.
+    virtual void setProperties (const Record& spec);
 
     // Is the data manager a storage manager?
     // The default is yes.
