@@ -66,7 +66,9 @@ BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
 template<class VirtualType, class StoredType>
 BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
                    (const BaseMappedArrayEngine<VirtualType, StoredType>& that)
-: virtualName_p  (that.virtualName_p),
+: VirtualColumnEngine(),
+  VirtualArrayColumn<VirtualType>(),
+  virtualName_p  (that.virtualName_p),
   storedName_p   (that.storedName_p),
   isWritable_p   (that.isWritable_p),
   tempWritable_p (False),
