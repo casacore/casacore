@@ -272,14 +272,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BitFlagsEngine<T>::mapOnGet (Array<Bool>& array,
                                     const Array<T>& stored)
   {
-    arrayTransform (stored, array, FlagsToBool(itsReadMask));
+    ///    arrayTransform (stored, array, FlagsToBool(itsReadMask));
   }
 
   template<typename T>
   void BitFlagsEngine<T>::mapOnPut (const Array<Bool>& array,
                                     Array<T>& stored)
   {
-    arrayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));
+    ///    arraayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));
   }
 
 } //# NAMESPACE CASA - END

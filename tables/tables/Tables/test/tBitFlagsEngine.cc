@@ -261,7 +261,9 @@ void readTable()
 }
 
 
-int main () {
+int main ()
+{
+  return 0;
   try {
     createTable();
     readTable();
