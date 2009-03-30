@@ -247,6 +247,10 @@ User list after FITS:
     VOLTS     (volt)                       1 m2.kg.s-3.A-1
     YEAR      (year)                       31557600 s
     YEARS     (year)                       31557600 s
+    exp       (exp)                        1
+    ln        (ln)                         1
+    log       (log10)                      1
+    sqrt      (sqrt)                       1
 A = 4 mJY/BEAM   : 4e-29 kg.s-2._-1
 A FITS unit to translate: M(JY5/SEC2.(YEAR.HZ).KM)
 it translates to:         m(Jy5/s2.(a.Hz).km)
