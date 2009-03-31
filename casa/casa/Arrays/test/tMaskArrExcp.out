@@ -141,11 +141,11 @@ MaskedArray<T> ::min(const MaskedArray<T> &, const MaskedArray<T> &) - arrays do
 
 Test conformance, ::min (Array, Array, MaskedArray)
 Caught an ArrayConformanceError:
- void min(Array<T> &result, const Array<T> &a, const Array<T> &b) - result, a and b  do not have the same nelements()
+ArrayMath/Logical function min: arrays not conformant
 
 Test conformance, ::min (Array, Array, MaskedArray)
 Caught an ArrayConformanceError:
- void min(Array<T> &result, const Array<T> &a, const Array<T> &b) - result, a and b  do not have the same nelements()
+ArrayMath/Logical function min: arrays not conformant
 
 Test insufficient elements, ::sum (const MaskedArray &)
 Caught an ArrayError:

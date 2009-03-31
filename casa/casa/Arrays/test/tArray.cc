@@ -585,12 +585,21 @@ void oldArrayTest()
 	// middle plane
 	blc(0) = 0; blc(1) = 0; blc(2) = 1;
 	trc(0) = 2; trc(1) = 2; trc(2) = 1;
-// Why can't we just write   c(blc,trc) = 11; ?
-	c.Array<Int>::operator()(blc,trc) = 11;
+        c(blc,trc) = 11;
 	AlwaysAssertExit(allEQ (c.xyPlane(1), 11));
 	AlwaysAssertExit(allEQ (c.xyPlane(0), 3));
 	AlwaysAssertExit(allEQ (c.xyPlane(2), 3));
-	
+
+        // Check index operator.
+        Array<Int> cinx (c[1]);
+        AlwaysAssertExit (allEQ (cinx, c.xyPlane(1)));
+        cinx.reference (cinx[0]);
+        AlwaysAssertExit (cinx.shape() == c.shape().getFirst(1));
+        cinx.reference (cinx[0]);
+        AlwaysAssertExit (cinx.shape() == IPosition(1,1));
+        cinx.reference (cinx[0]);
+        AlwaysAssertExit (cinx.shape() == IPosition(1,1));
+        AlwaysAssertExit (allEQ (cinx, 11));
 	
 	cout << "OK\n";
     }

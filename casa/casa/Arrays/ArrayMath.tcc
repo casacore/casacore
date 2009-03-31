@@ -36,13 +36,14 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicMath/ConvertScalar.h>
 #include <casa/Utilities/GenSort.h>
+#include <algorithm>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 
-template<typename T, typename BinaryOperator>
-void arrayTransform (const Array<T>& left, const Array<T>& right,
-                     Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (const Array<L>& left, const Array<R>& right,
+                     Array<RES>& result, BinaryOperator op)
 {
   if (result.contiguousStorage()) {
     arrayContTransform (left, right, result, op);
@@ -57,9 +58,9 @@ void arrayTransform (const Array<T>& left, const Array<T>& right,
   }
 }
 
-template<typename T, typename BinaryOperator>
-void arrayTransform (const Array<T>& left, T right,
-                     Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (const Array<L>& left, R right,
+                     Array<RES>& result, BinaryOperator op)
 {
   if (result.contiguousStorage()) {
     arrayContTransform (left, right, result, op);
@@ -74,9 +75,9 @@ void arrayTransform (const Array<T>& left, T right,
   }
 }
 
-template<typename T, typename BinaryOperator>
-void arrayTransform (T left, const Array<T>& right,
-                     Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (L left, const Array<R>& right,
+                     Array<RES>& result, BinaryOperator op)
 {
   if (result.contiguousStorage()) {
     arrayContTransform (left, right, result, op);
@@ -91,9 +92,9 @@ void arrayTransform (T left, const Array<T>& right,
   }
 }
 
-template<typename T, typename UnaryOperator>
+template<typename T, typename RES, typename UnaryOperator>
 void arrayTransform (const Array<T>& arr,
-                     Array<T>& result, UnaryOperator op)
+                     Array<RES>& result, UnaryOperator op)
 {
   if (result.contiguousStorage()) {
     arrayContTransform (arr, result, op);
@@ -110,7 +111,6 @@ template<typename T, typename BinaryOperator>
 Array<T> arrayTransformResult (const Array<T>& left, const Array<T>& right,
                                BinaryOperator op)
 {
-  AlwaysAssert (left.shape().isEqual (right.shape()), AipsError);
   Array<T> res(left.shape());
   arrayContTransform (left, right, res, op);
   return res;
@@ -164,10 +164,10 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
     minPos = 0;
     maxPos = 0;
     minVal = maxVal = array(minPos);
-    uInt n = ai.vector().nelements();
+    size_t n = ai.vector().nelements();
 
     while (! ai.pastEnd()) {
-	for (uInt i=0; i<n; i++) {
+	for (size_t i=0; i<n; i++) {
 	    val = ai.vector()(i);
 	    if (val < minVal) {
 	        minVal = val;
@@ -216,10 +216,10 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
     minPos = 0;
     maxPos = 0;
     minVal = maxVal = array(minPos) * mask(minPos);
-    uInt n = ai.vector().nelements();
+    size_t n = ai.vector().nelements();
 
     while (! ai.pastEnd()) {
-	for (uInt i=0; i<n; i++) {
+	for (size_t i=0; i<n; i++) {
 	    val = (ai.vector()(i)) * (mi.vector()(i));
 	    if (val < minVal) {
 	        minVal = val;
@@ -267,10 +267,10 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
     // Initialize
     // have to find a valid value in array to init min and max
     Bool found=False;
-    uInt ifound=0;
-    uInt n = mi.vector().nelements();
+    size_t ifound=0;
+    size_t n = mi.vector().nelements();
     while (! mi.pastEnd() && !found) {
-	for (uInt i=0; i<n; i++) {
+	for (size_t i=0; i<n; i++) {
 	    if (mi.vector()(i)) {
 		maxPos = ai.pos();
 		maxPos(0) += i;
@@ -296,7 +296,7 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 
     // Finish with vector where first value was found.
     {
-        for (uInt i=++ifound; i<n; i++) {
+        for (size_t i=++ifound; i<n; i++) {
             if (mi.vector()(i)) {
                 val = ai.vector()(i);
                 if (val < minVal) {
@@ -316,7 +316,7 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 
     // Continue with the rest of the array.
     while (! ai.pastEnd()) {
-        for (uInt i=0; i<n; i++) {
+        for (size_t i=0; i<n; i++) {
             if (mi.vector()(i)) {
                 val = ai.vector()(i);
                 if (val < minVal) {
@@ -340,25 +340,8 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 // </thrown>
 template<class T> void operator+= (Array<T> &left, const Array<T> &other)
 {
-    if (left.conform(other) == False) {
-	throw(ArrayConformanceError("::operator+=(Array<T> &, const Array<T> &)"
-				    " - arrays do not conform"));
-    }
-
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete, otherDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-    
-    const T *otherStorage = other.getStorage(otherDelete);
-    const T *os = otherStorage;
-    while (ntotal--) {
-	*ls++ += *os++;
-    }
-
-    left.putStorage(leftStorage, leftDelete);
-    other.freeStorage(otherStorage, otherDelete);
+    checkArrayShapes (left, other, "+=");
+    arrayTransformInPlace (left, other, std::plus<T>());
 }
 
 template<class T>  T min(const Array<T> &a)
@@ -374,16 +357,7 @@ template<class T>  void indgen(Array<T> &a, T start)
 
 template<class T> void operator+= (Array<T> &left, const T &other)
 {
-    uInt ntotal = left.nelements();
-    
-    Bool leftDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    while (ntotal--) {
-	*ls++ += other;
-    }
-    left.putStorage(leftStorage, leftDelete);
+    arrayTransformInPlace (left, other, std::plus<T>());
 }
 
 // <thrown>
@@ -391,40 +365,13 @@ template<class T> void operator+= (Array<T> &left, const T &other)
 // </thrown>
 template<class T> void operator-= (Array<T> &left, const Array<T> &other)
 {
-    if (left.conform(other) == False) {
-	throw(ArrayConformanceError("::operator-=(Array<T> &, const Array<T> &)"
-				    " - arrays do not conform"));
-    }
-
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete, otherDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    const T *otherStorage = other.getStorage(otherDelete);
-    const T *os = otherStorage;
-
-    while (ntotal--) {
-	*ls++ -= *os++;
-    }
-
-    left.putStorage(leftStorage, leftDelete);
-    other.freeStorage(otherStorage, otherDelete);
+    checkArrayShapes (left, other, "-=");
+    arrayTransformInPlace (left, other, std::minus<T>());
 }
 
 template<class T> void operator-= (Array<T> &left, const T &other)
 {
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    while (ntotal--) {
-	*ls++ -= other;
-    }
-    left.putStorage(leftStorage, leftDelete);
+    arrayTransformInPlace (left, other, std::minus<T>());
 }
 
 // <thrown>
@@ -432,40 +379,13 @@ template<class T> void operator-= (Array<T> &left, const T &other)
 // </thrown>
 template<class T> void operator*= (Array<T> &left, const Array<T> &other)
 {
-    if (left.conform(other) == False) {
-	throw(ArrayConformanceError("::operator*=(Array<T> &, const Array<T> &)"
-				    " - arrays do not conform"));
-    }
-
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete, otherDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    const T *otherStorage = other.getStorage(otherDelete);
-    const T *os = otherStorage;
-
-    while (ntotal--) {
-	*ls++ *= *os++;
-    }
-
-    left.putStorage(leftStorage, leftDelete);
-    other.freeStorage(otherStorage, otherDelete);
+    checkArrayShapes (left, other, "*=");
+    arrayTransformInPlace (left, other, std::multiplies<T>());
 }
 
 template<class T> void operator*= (Array<T> &left, const T &other)
 {
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    while (ntotal--) {
-	*ls++ *= other;
-    }
-    left.putStorage(leftStorage, leftDelete);
+    arrayTransformInPlace (left, other, std::multiplies<T>());
 }
 
 // <thrown>
@@ -473,40 +393,13 @@ template<class T> void operator*= (Array<T> &left, const T &other)
 // </thrown>
 template<class T> void operator/= (Array<T> &left, const Array<T> &other)
 {
-    if (left.conform(other) == False) {
-	throw(ArrayConformanceError("::operator/=(Array<T> &, const Array<T> &)"
-				    " - arrays do not conform"));
-    }
-
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete, otherDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    const T *otherStorage = other.getStorage(otherDelete);
-    const T *os = otherStorage;
-
-    while (ntotal--) {
-	*ls++ /= *os++;
-    }
-
-    left.putStorage(leftStorage, leftDelete);
-    other.freeStorage(otherStorage, otherDelete);
+    checkArrayShapes (left, other, "/=");
+    arrayTransformInPlace (left, other, std::divides<T>());
 }
 
 template<class T> void operator/= (Array<T> &left, const T &other)
 {
-    uInt ntotal = left.nelements(); // conform , so == other.nelements()
-    
-    Bool leftDelete;
-    T *leftStorage = left.getStorage(leftDelete);
-    T *ls = leftStorage;
-
-    while (ntotal--) {
-	*ls++ /= other;
-    }
-    left.putStorage(leftStorage, leftDelete);
+    arrayTransformInPlace (left, other, std::divides<T>());
 }
 
 template<class T> Array<T> operator+(const Array<T> &a)
@@ -516,16 +409,7 @@ template<class T> Array<T> operator+(const Array<T> &a)
 
 template<class T> Array<T> operator-(const Array<T> &a)
 {
-    Array<T> tmp = a.copy();
-    Bool zapIt;
-    T *storage = tmp.getStorage(zapIt);
-    uInt ntotal = tmp.nelements();
-
-    for (uInt i=0; i < ntotal; i++) {
-	storage[i] = - storage[i];
-    }
-    tmp.putStorage(storage, zapIt);
-    return tmp;
+    return arrayTransformResult (a, std::negate<T>());
 }
 
 // <thrown>
@@ -534,15 +418,8 @@ template<class T> Array<T> operator-(const Array<T> &a)
 template<class T>
    Array<T> operator+(const Array<T> &left, const Array<T> &right)
 {
-    if (left.conform(right) == False) {
-	throw(ArrayConformanceError("::operator+(const Array<T> &, const "
-				    "Array<T> &)"
-				    " - arrays do not conform"));
-    }
-    
-    Array<T> tmp(left.copy());
-    tmp += right;
-    return tmp;
+    checkArrayShapes (left, right, "+");
+    return arrayTransformResult (left, right, std::plus<T>());
 }
 
 // <thrown>
@@ -551,15 +428,8 @@ template<class T>
 template<class T>
    Array<T> operator-(const Array<T> &left, const Array<T> &right)
 {
-    if (left.conform(right) == False) {
-	throw(ArrayConformanceError("::operator-(const Array<T> &, const "
-				    "Array<T> &)"
-				    " - arrays do not conform"));
-    }
-    
-    Array<T> tmp(left.copy());
-    tmp -= right;
-    return tmp;
+    checkArrayShapes (left, right, "-");
+    return arrayTransformResult (left, right, std::minus<T>());
 }
 
 // <thrown>
@@ -568,15 +438,8 @@ template<class T>
 template<class T>
    Array<T> operator*(const Array<T> &left, const Array<T> &right)
 {
-    if (left.conform(right) == False) {
-	throw(ArrayConformanceError("::operator*(const Array<T> &, const "
-				    "Array<T> &)"
-				    " - arrays do not conform"));
-    }
-    
-    Array<T> tmp(left.copy());
-    tmp *= right;
-    return tmp;
+    checkArrayShapes (left, right, "*");
+    return arrayTransformResult (left, right, std::multiplies<T>());
 }
 
 // <thrown>
@@ -585,83 +448,56 @@ template<class T>
 template<class T>
    Array<T> operator/(const Array<T> &left, const Array<T> &right)
 {
-    if (left.conform(right) == False) {
-	throw(ArrayConformanceError("::operator/(const Array<T> &, const "
-				    "Array<T> &)"
-				    " - arrays do not conform"));
-    }
-    
-    Array<T> tmp(left.copy());
-    tmp /= right;
-    return tmp;
+    checkArrayShapes (left, right, "/");
+    return arrayTransformResult (left, right, std::divides<T>());
 }
 
 template<class T> 
 Array<T> operator+ (const Array<T> &left, const T &right)
 {
-    Array<T> tmp(left.copy());
-    tmp += right;
-    return tmp;
+    return arrayTransformResult (left, right, std::plus<T>());
 }
 
 template<class T> 
 Array<T> operator- (const Array<T> &left, const T &right)
 {
-    Array<T> tmp(left.copy());
-    tmp -= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::minus<T>());
 }
 
 template<class T>
 Array<T> operator* (const Array<T> &left, const T &right)
 {
-    Array<T> tmp(left.copy());
-    tmp *= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::multiplies<T>());
 }
 
 template<class T> 
 Array<T> operator/ (const Array<T> &left, const T &right)
 {
-    Array<T> tmp(left.copy());
-    tmp /= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::divides<T>());
 }
 
 template<class T> 
 Array<T> operator+ (const T &left, const Array<T> &right)
 {
-    Array<T> tmp(right.shape());
-    tmp = left;
-    tmp += right;
-    return tmp;
+    return arrayTransformResult (left, right, std::plus<T>());
 }
 
 template<class T> 
 Array<T> operator- (const T &left, const Array<T> &right)
 {
-    Array<T> tmp(right.shape());
-    tmp = left;
-    tmp -= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::minus<T>());
 }
 
 template<class T> 
 Array<T> operator* (const T &left, const Array<T> &right)
 {
-    Array<T> tmp(right.shape());
-    tmp = left;
-    tmp *= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::multiplies<T>());
 }
 
 template<class T> 
 Array<T> operator/ (const T &left, const Array<T> &right)
 {
-    Array<T> tmp(right.shape());
-    tmp = left;
-    tmp /= right;
-    return tmp;
+    return arrayTransformResult (left, right, std::divides<T>());
 }
 
 
@@ -670,7 +506,7 @@ Array<T> operator/ (const T &left, const Array<T> &right)
 // </thrown>
 template<class T> void minMax(T &min, T &max, const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
+    size_t ntotal = a.nelements();
     if (ntotal == 0) {
 	throw(ArrayError("void minMax(T &min, T &max, const Array<T> &a) - "
 			 "Array has no elements"));
@@ -701,27 +537,9 @@ template<class T> void minMax(T &min, T &max, const Array<T> &a)
 template<class T> void max(Array<T> &result, const Array<T> &a, 
 			   const Array<T> &b)
 {
-    if (result.nelements() == 0 && a.nelements() == 0 && b.nelements() == 0) {
-	return; // short circuit
-    }
-
-    if (result.nelements() != a.nelements() || a.nelements() != b.nelements()) {
-	throw(ArrayConformanceError(" void max(Array<T> &result, const Array<T>"
-				    " &a, const Array<T> &b) - result, a and b "
-				    " do not have the same nelements()"));
-    }
-    Bool delr, dela, delb;
-    T *sr = result.getStorage(delr);
-    const T *sa = a.getStorage(dela);
-    const T *sb = b.getStorage(delb);
-    uInt n = result.nelements();
-    while (n) {
-	n--;
-	sr[n] = sa[n] > sb[n] ? sa[n] : sb[n];
-    }
-    result.putStorage(sr, delr);
-    a.freeStorage(sa, dela);
-    b.freeStorage(sb, delb);
+    checkArrayShapes (a, b, "max");
+    checkArrayShapes (a, result, "max");
+    arrayTransform (a, b, result, casa::Max<T>());
 }
 
 // <thrown>
@@ -730,27 +548,9 @@ template<class T> void max(Array<T> &result, const Array<T> &a,
 template<class T> void min(Array<T> &result, const Array<T> &a, 
 			   const Array<T> &b)
 {
-    if (result.nelements() == 0 && a.nelements() == 0 && b.nelements() == 0) {
-	return; // short circuit
-    }
-
-    if (result.nelements() != a.nelements() || a.nelements() != b.nelements()) {
-	throw(ArrayConformanceError(" void min(Array<T> &result, const Array<T>"
-				    " &a, const Array<T> &b) - result, a and b "
-				    " do not have the same nelements()"));
-    }
-    Bool delr, dela, delb;
-    T *sr = result.getStorage(delr);
-    const T *sa = a.getStorage(dela);
-    const T *sb = b.getStorage(delb);
-    uInt n = result.nelements();
-    while (n) {
-	n--;
-	sr[n] = sa[n] < sb[n] ? sa[n] : sb[n];
-    }
-    result.putStorage(sr, delr);
-    a.freeStorage(sa, dela);
-    b.freeStorage(sb, delb);
+    checkArrayShapes (a, b, "min");
+    checkArrayShapes (a, result, "min");
+    arrayTransform (a, b, result, casa::Min<T>());
 }
 
 template<class T> Array<T> max(const Array<T> &a, const Array<T> &b)
@@ -773,25 +573,8 @@ template<class T> Array<T> min(const Array<T> &a, const Array<T> &b)
 template<class T> void max(Array<T> &result, const Array<T> &a, 
 			   const T &b)
 {
-    if (result.nelements() == 0 && a.nelements() == 0) {
-	return; // short circuit
-    }
-
-    if (result.nelements() != a.nelements()) {
-	throw(ArrayConformanceError(" void max(Array<T> &result, const Array<T>"
-				    " &a, const T &b) - result and a "
-				    " do not have the same nelements()"));
-    }
-    Bool delr, dela;
-    T *sr = result.getStorage(delr);
-    const T *sa = a.getStorage(dela);
-    uInt n = result.nelements();
-    while (n) {
-	n--;
-	sr[n] = sa[n] > b ? sa[n] : b;
-    }
-    result.putStorage(sr, delr);
-    a.freeStorage(sa, dela);
+    checkArrayShapes (a, result, "max");
+    arrayTransform (a, b, result, casa::Max<T>());
 }
 
 // <thrown>
@@ -800,25 +583,8 @@ template<class T> void max(Array<T> &result, const Array<T> &a,
 template<class T> void min(Array<T> &result, const Array<T> &a, 
 			   const T &b)
 {
-    if (result.nelements() == 0 && a.nelements() == 0) {
-	return; // short circuit
-    }
-
-    if (result.nelements() != a.nelements()) {
-	throw(ArrayConformanceError(" void min(Array<T> &result, const Array<T>"
-				    " &a, const T &b) - result and a "
-				    " do not have the same nelements()"));
-    }
-    Bool delr, dela;
-    T *sr = result.getStorage(delr);
-    const T *sa = a.getStorage(dela);
-    uInt n = result.nelements();
-    while (n) {
-	n--;
-	sr[n] = sa[n] < b ? sa[n] : b;
-    }
-    result.putStorage(sr, delr);
-    a.freeStorage(sa, dela);
+    checkArrayShapes (a, result, "min");
+    arrayTransform (a, b, result, casa::Min<T>());
 }
 
 template<class T> Array<T> max(const Array<T> &a, const T &b)
@@ -838,307 +604,104 @@ template<class T> Array<T> min(const Array<T> &a, const T &b)
 template<class T>
 void indgen(Array<T> &a, T start, T inc)
 {
-    uInt ntotal = a.nelements();
-    Bool deleteIt;
-    T *storage = a.getStorage(deleteIt);
-    T *ts = storage;
-    
-    while (ntotal--) {
-	*ts = start;
-	ts++;
-        start += inc;
+  if (a.contiguousStorage()) {
+    typename Array<T>::contiter aend = a.cend();
+    for (typename Array<T>::contiter iter=a.cbegin(); iter!=aend; ++iter) {
+      *iter = start;
+      start += inc;
     }
-
-    a.putStorage(storage, deleteIt);
+  } else {
+    typename Array<T>::iterator aend = a.end();
+    for (typename Array<T>::iterator iter=a.begin(); iter!=aend; ++iter) {
+      *iter = start;
+      start += inc;
+    }
+  }
 }
 
 template<class T> Array<T> cos(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = cos(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Cos<T>());
 }
 
 template<class T> Array<T> cosh(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = cosh(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Cosh<T>());
 }
 
 template<class T> Array<T> exp(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = exp(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Exp<T>());
 }
 
 template<class T> Array<T> log(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = log(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Log<T>());
 }
 
 template<class T> Array<T> log10(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = log10(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Log10<T>());
 }
 
 template<class T> Array<T> sin(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = sin(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Sin<T>());
 }
 
 template<class T> Array<T> sinh(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = sinh(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Sinh<T>());
 }
 
 template<class T> Array<T> sqrt(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = sqrt(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Sqrt<T>());
 }
 
 template<class T> Array<T> acos(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = acos(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Acos<T>());
 }
 
 template<class T> Array<T> asin(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = asin(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Asin<T>());
 }
 
 template<class T> Array<T> atan(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = atan(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Atan<T>());
 }
 
 template<class T> Array<T> ceil(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = ceil(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Ceil<T>());
 }
 
 template<class T> Array<T> fabs(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = fabs(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Abs<T>());
 }
 
 template<class T> Array<T> abs(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = abs(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Abs<T>());
 }
 
 template<class T> Array<T> floor(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = floor(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Floor<T>());
 }
 
 template<class T> Array<T> tan(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = tan(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Tan<T>());
 }
 
 template<class T> Array<T> tanh(const Array<T> &a)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = tanh(*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, casa::Tanh<T>());
 }
 
 // <thrown>
@@ -1146,49 +709,20 @@ template<class T> Array<T> tanh(const Array<T> &a)
 // </thrown>
 template<class T> Array<T> pow(const Array<T> &a, const Array<T> &b)
 {
-    if (a.conform(b) == False) {
-	throw(ArrayConformanceError("pow(const Array<T> &a, const Array<T> &b) - "
-				    "- a and b not conformant"));
-    }
-
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    Bool deleteOther;
-    const T *otherStorage = b.getStorage(deleteOther);
-    const T *ots = otherStorage;
-
-    while (ntotal--) {
-	*ts = pow(*ts,*ots);
-	ts++;
-	ots++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    b.freeStorage(otherStorage, deleteOther);
-
-    return tmp;
+    checkArrayShapes (a, b, "pow");
+    return arrayTransformResult (a, b, casa::Pow<T>());
 }
 
 template<class T> Array<T> pow(const T &a, const Array<T> &b)
 {
-    uInt ntotal = b.nelements();
-    Array<T> tmp(b.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
+    return arrayTransformResult (a, b, casa::Pow<T>());
+}
 
-    while (ntotal--) {
-	*ts = pow(a,*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-
-    return tmp;
+template<class T> Array<T> pow(const Array<T> &a, const Double &b)
+{
+    Array<T> result(a.shape());
+    arrayContTransform (a, b, result, casa::Pow<T,Double>());
+    return result;
 }
 
 // <thrown>
@@ -1196,31 +730,8 @@ template<class T> Array<T> pow(const T &a, const Array<T> &b)
 // </thrown>
 template<class T> Array<T> atan2(const Array<T> &a, const Array<T> &b)
 {
-    if (a.conform(b) == False) {
-	throw(ArrayConformanceError("atan2(const Array<T>&a,const Array<T>&b) "
-				    "- a and b not conformant"));
-    }
-
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    Bool deleteOther;
-    const T *otherStorage = b.getStorage(deleteOther);
-    const T *ots = otherStorage;
-
-    while (ntotal--) {
-	*ts = atan2(*ts,*ots);
-	ts++;
-	ots++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    b.freeStorage(otherStorage, deleteOther);
-
-    return tmp;
+    checkArrayShapes (a, b, "atan2");
+    return arrayTransformResult (a, b, casa::Atan2<T>());
 }
 
 // <thrown>
@@ -1228,91 +739,18 @@ template<class T> Array<T> atan2(const Array<T> &a, const Array<T> &b)
 // </thrown>
 template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b)
 {
-    if (a.conform(b) == False) {
-	throw(ArrayConformanceError("fmod(const Array<T>&a,const Array<T>&b) "
-				    "- a and b not conformant"));
-    }
-
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    Bool deleteOther;
-    const T *otherStorage = b.getStorage(deleteOther);
-    const T *ots = otherStorage;
-
-    while (ntotal--) {
-	*ts = fmod(*ts,*ots);
-	ts++;
-	ots++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    b.freeStorage(otherStorage, deleteOther);
-
-    return tmp;
+    checkArrayShapes (a, b, "fmod");
+    return arrayTransformResult (a, b, casa::Fmod<T>());
 }
 
 template<class T> Array<T> fmod(const T &a, const Array<T> &b)
 {
-    uInt ntotal = b.nelements();
-    Array<T> tmp(b.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = fmod(a,*ts);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-
-    return tmp;
+    return arrayTransformResult (a, b, casa::Fmod<T>());
 }
 
 template<class T> Array<T> fmod(const Array<T> &a, const T &b)
 {
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    while (ntotal--) {
-	*ts = fmod(*ts,b);
-	ts++;
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-
-    return tmp;
-}
-
-template<class T> Array<T> pow(const Array<T> &a, const Double &b)
-{
-    uInt ntotal = a.nelements();
-    Array<T> tmp(a.copy());
-    Bool deleteIt;
-    T *storage = tmp.getStorage(deleteIt);
-    T *ts = storage;
-
-    if (b == 2) {
-	while (ntotal--) {
-	    *ts *= *ts;
-	    ts++;
-	}
-    } else {
-	while (ntotal--) {
-	    *ts = pow(*ts,b);
-	    ts++;
-	}
-    }
-
-    tmp.putStorage(storage, deleteIt); // should be a no-op
-    return tmp;
+    return arrayTransformResult (a, b, casa::Fmod<T>());
 }
 
 
@@ -1322,8 +760,8 @@ template<class T> Array<T> pow(const Array<T> &a, const Double &b)
 template<class T> T sum(const Array<T> &a)
 {
   return a.contiguousStorage() ?
-    std::accumulate(a.cbegin(), a.cend(), T()) :
-    std::accumulate(a.begin(),  a.end(),  T());
+    std::accumulate(a.cbegin(), a.cend(), T(), std::plus<T>()) :
+    std::accumulate(a.begin(),  a.end(),  T(), std::plus<T>());
 }
 
 // <thrown>
@@ -1332,8 +770,7 @@ template<class T> T sum(const Array<T> &a)
 template<class T> T product(const Array<T> &a)
 {
   if (a.empty()) {
-    throw(ArrayError("void product(const Array<T> &a) - "
-		     "Array has no elements"));
+    return T();
   }
   // Get first element, because T(1) may not work for all types.
   T prod = *a.data();
@@ -1353,7 +790,7 @@ template<class T> T product(const Array<T> &a)
 // </thrown>
 template<class T> T mean(const Array<T> &a)
 {
-    if (a.nelements() == 0) {
+    if (a.empty()) {
 	throw(ArrayError("::mean(const Array<T> &) - 0 element array"));
     }
     return T(sum(a)/(1.0*a.nelements()));
@@ -1368,16 +805,10 @@ template<class T> T variance(const Array<T> &a, T mean)
 	throw(ArrayError("::variance(const Array<T> &,T) - Need at least 2 "
 			 "elements"));
     }
-    uInt ntotal = a.nelements();
-    Bool deleteIt;
-    const T* data = a.getStorage(deleteIt);
-    T sum = 0;
-    for (uInt i=0; i<ntotal; ++i) {
-        T tmp = data[i] - mean;
-        sum += tmp*tmp;
-    }
-    a.freeStorage(data, deleteIt);
-    return T(sum/(1.0*ntotal - 1));
+    T sum = a.contiguousStorage() ?
+      std::accumulate(a.cbegin(), a.cend(), T(), casa::SumSqrDiff<T>(mean)) :
+      std::accumulate(a.begin(),  a.end(),  T(), casa::SumSqrDiff<T>(mean));
+    return T(sum/(1.0*a.nelements() - 1));
 }
 
 // <thrown>
@@ -1437,15 +868,10 @@ template<class T> T avdev(const Array<T> &a, T mean)
 	throw(ArrayError("::avdev(const Array<T> &,T) - Need at least 1 "
 			 "element"));
     }
-    uInt ntotal = a.nelements();
-    Bool deleteIt;
-    const T* data = a.getStorage(deleteIt);
-    T sum = 0;
-    for (uInt i=0; i<ntotal; ++i) {
-        sum += fabs(data[i] - mean);
-    }
-    a.freeStorage(data, deleteIt);
-    return T(sum/(1.0*ntotal));
+    T sum = a.contiguousStorage() ?
+      std::accumulate(a.cbegin(), a.cend(), T(), casa::AbsDiff<T>(mean)) :
+      std::accumulate(a.begin(),  a.end(),  T(), casa::AbsDiff<T>(mean));
+    return T(sum/(1.0*a.nelements()));
 }
 
 // <thrown>
@@ -1457,15 +883,10 @@ template<class T> T rms(const Array<T> &a)
 	throw(ArrayError("::rms(const Array<T> &) - Need at least 1 "
 			 "element"));
     }
-    uInt ntotal = a.nelements();
-    Bool deleteIt;
-    const T* data = a.getStorage(deleteIt);
-    T sum = 0;
-    for (uInt i=0; i<ntotal; ++i) {
-	sum += data[i] * data[i];
-    }
-    a.freeStorage(data, deleteIt);
-    return T(sqrt(sum/(1.0*ntotal)));
+    T sum = a.contiguousStorage() ?
+      std::accumulate(a.cbegin(), a.cend(), T(), casa::SumSqr<T>()) :
+      std::accumulate(a.begin(),  a.end(),  T(), casa::SumSqr<T>());
+    return T(sqrt(sum/(1.0*a.nelements())));
 }
 
 // <thrown>
@@ -1475,7 +896,7 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 			   Bool takeEvenMean, Bool inPlace)
 {
     T medval;
-    Int nelem = a.nelements();
+    size_t nelem = a.nelements();
     if (nelem < 1) {
 	throw(ArrayError("::median(T*) - array needs at least 1 element"));
     }
@@ -1497,7 +918,7 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
       }
     }
     T* data = const_cast<T*>(storage);
-    uInt n2 = (nelem - 1)/2;
+    size_t n2 = (nelem - 1)/2;
     if (!sorted) {
 	// If needed take the mean for an even number of elements.
 	// If the array is small, it is faster to fully sort it.
@@ -1531,7 +952,7 @@ template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
     if (fraction < 0  ||  fraction > 1) {
         throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
     }    
-    uInt nelem = a.nelements();
+    size_t nelem = a.nelements();
     if (nelem < 1) {
 	throw(ArrayError("::fractile(const Array<T>&) - Need at least 1 "
 			 "elements"));
@@ -1551,7 +972,7 @@ template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
       }
     }
     T* data = const_cast<T*>(storage);
-    uInt n2 = uInt((nelem - 1) * fraction);
+    size_t n2 = size_t((nelem - 1) * Double(fraction));
     if (!sorted) {
 	// If the array is small, it is faster to fully sort it.
 	if (nelem > 20) {

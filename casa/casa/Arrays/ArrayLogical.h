@@ -118,6 +118,32 @@ template <class T> class Cube;
 // <group name="Array logical operations">
 
 
+// Determine if the comparisons between corresponding array elements yield True.
+// <group>
+template<typename T, typename CompareOperator>
+bool arrayCompareAll (const Array<T>& left, const Array<T>& right,
+                      CompareOperator op);
+template<typename T, typename CompareOperator>
+bool arrayCompareAll (const Array<T>& left, T right,
+                      CompareOperator op);
+template<typename T, typename CompareOperator>
+bool arrayCompareAll (T left, const Array<T>& right,
+                      CompareOperator op);
+// </group>
+
+// Determine if the comparisons between corresponding array elements yield True.
+// <group>
+template<typename T, typename CompareOperator>
+bool arrayCompareAny (const Array<T>& left, const Array<T>& right,
+                      CompareOperator op);
+template<typename T, typename CompareOperator>
+bool arrayCompareAny (const Array<T>& left, T right,
+                      CompareOperator op);
+template<typename T, typename CompareOperator>
+bool arrayCompareAny (T left, const Array<T>& right,
+                      CompareOperator op);
+// </group>
+
 // 
 // Element by element comparisons between the "l" and "r" arrays. The result
 // is true only if the comparison is true for every element of the arrays.
@@ -410,13 +436,13 @@ inline Bool anyTrue (const Array<Bool>& array)
 
 // Determine it for the full array.
 // <group>
-template<class T> uInt ntrue (const Array<T> &array);
-template<class T> uInt nfalse (const Array<T> &array)
-  { return array.nelements() - ntrue(array); }
+template<class T> uInt nfalse (const Array<T> &array);
+template<class T> uInt ntrue (const Array<T> &array)
+  { return array.nelements() - nfalse(array); }
 // </group>
 
 // The same functions as above, but determine ntrue and nfalse for the
-// given axes only. The result is an array with a shape fomed by the
+// given axes only. The result is an array with a shape formed by the
 // remaining axes.
 // For example, for an array with shape [3,4,5], collapsing axis 0
 // results in an array with shape [4,5] containing ntrue or nfalse for

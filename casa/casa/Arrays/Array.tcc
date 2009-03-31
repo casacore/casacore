@@ -601,9 +601,6 @@ template<class T> T &Array<T>::operator()(const IPosition &index)
 template<class T> const T &Array<T>::operator()(const IPosition &index) const
 {
     DebugAssert(ok(), ArrayError);
-
-    ///uInt i = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-    ///                     inc_p.storage(), index);
     Int offs=0;
     for (uInt i=0; i<ndimen_p; i++) {
         offs += index(i) * steps_p(i);
@@ -648,6 +645,22 @@ template<class T> Array<T> Array<T>::operator()(const Slicer& slicer)
 template<class T> ArrayBase* Array<T>::getSection(const Slicer& slicer)
 {
     return new Array<T>(operator()(slicer));
+}
+
+template<class T> Array<T> Array<T>::operator[](uInt i) const
+{
+    DebugAssert(ok(), ArrayError);
+    uInt nd = ndim();
+    IPosition s(nd, 0);
+    IPosition e(shape() - 1);
+    if (nd > 0) {
+      nd--;
+      s[nd] = i;
+      e[nd] = i;
+    }
+    Array<T> tmp(*this);
+    tmp.reference (tmp(s,e));
+    return nd == 0  ?  tmp : tmp.nonDegenerate(nd);
 }
 
 

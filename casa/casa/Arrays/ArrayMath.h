@@ -139,9 +139,17 @@ template<class T> class Matrix;
 // <group name="Array mathematical operations">
 
 
-// 
-// Function to print "deprecated" message once per program.
-void ArrayMinMaxPrintOnceDeprecated ();
+// Function to check the shapes. It throws an exception if not equal.
+// <group>
+void throwArrayShapes (const char* name);
+inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
+                              const char* name)
+{
+  if (! left.shape().isEqual (right.shape())) {
+    throwArrayShapes (name);
+  }
+}
+// </group>
 
 
 // Functions to apply a binary or unary operator to arrays.
@@ -151,9 +159,9 @@ void ArrayMinMaxPrintOnceDeprecated ();
 // <group>
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename T, typename BinaryOperator>
-inline void arrayContTransform (const Array<T>& left, const Array<T>& right,
-                                Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+inline void arrayContTransform (const Array<L>& left, const Array<R>& right,
+                                Array<RES>& result, BinaryOperator op)
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (left.contiguousStorage()  &&  right.contiguousStorage()) {
@@ -167,9 +175,9 @@ inline void arrayContTransform (const Array<T>& left, const Array<T>& right,
 
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename T, typename BinaryOperator>
-inline void arrayContTransform (const Array<T>& left, T right,
-                                Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+inline void arrayContTransform (const Array<L>& left, R right,
+                                Array<RES>& result, BinaryOperator op)
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (left.contiguousStorage()) {
@@ -183,9 +191,9 @@ inline void arrayContTransform (const Array<T>& left, T right,
 
 // Transform left and right to a result using the binary operator.
 // Result MUST be a contiguous array.
-template<typename T, typename BinaryOperator>
-inline void arrayContTransform (T left, const Array<T>& right,
-                                Array<T>& result, BinaryOperator op)
+template<typename L, typename R, typename RES, typename BinaryOperator>
+inline void arrayContTransform (L left, const Array<R>& right,
+                                Array<RES>& result, BinaryOperator op)
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (right.contiguousStorage()) {
@@ -199,9 +207,9 @@ inline void arrayContTransform (T left, const Array<T>& right,
 
 // Transform array to a result using the unary operator.
 // Result MUST be a contiguous array.
-template<typename T, typename UnaryOperator>
+template<typename T, typename RES, typename UnaryOperator>
 inline void arrayContTransform (const Array<T>& arr,
-                                Array<T>& result, UnaryOperator op)
+                                Array<RES>& result, UnaryOperator op)
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (arr.contiguousStorage()) {
@@ -213,27 +221,27 @@ inline void arrayContTransform (const Array<T>& arr,
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename T, typename BinaryOperator>
-void arrayTransform (const Array<T>& left, const Array<T>& right,
-                     Array<T>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (const Array<L>& left, const Array<R>& right,
+                     Array<RES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename T, typename BinaryOperator>
-void arrayTransform (const Array<T>& left, T right,
-                     Array<T>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (const Array<L>& left, R right,
+                     Array<RES>& result, BinaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // Result need not be a contiguous array.
-template<typename T, typename BinaryOperator>
-void arrayTransform (T left, const Array<T>& right,
-                     Array<T>& result, BinaryOperator op);
+template<typename L, typename R, typename RES, typename BinaryOperator>
+void arrayTransform (L left, const Array<R>& right,
+                     Array<RES>& result, BinaryOperator op);
 
 // Transform array to a result using the unary operator.
 // Result need not be a contiguous array.
-template<typename T, typename UnaryOperator>
+template<typename T, typename RES, typename UnaryOperator>
 void arrayTransform (const Array<T>& arr,
-                     Array<T>& result, UnaryOperator op);
+                     Array<RES>& result, UnaryOperator op);
 
 // Transform left and right to a result using the binary operator.
 // The created and returned result array is contiguous.
@@ -258,8 +266,8 @@ Array<T> arrayTransformResult (const Array<T>& arr, UnaryOperator op);
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename T, typename BinaryOperator>
-inline void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
+template<typename L, typename R, typename BinaryOperator>
+inline void arrayTransformInPlace (Array<L>& left, const Array<R>& right,
                                    BinaryOperator op)
 {
   if (left.contiguousStorage()  &&  right.contiguousStorage()) {
@@ -271,8 +279,8 @@ inline void arrayTransformInPlace (Array<T>& left, const Array<T>& right,
 
 // Transform left and right in place using the binary operator.
 // The result is stored in the left array (useful for e.g. the += operation).
-template<typename T, typename BinaryOperator>
-inline void arrayTransformInPlace (Array<T>& left, T right, BinaryOperator op)
+template<typename L, typename R, typename BinaryOperator>
+inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
     transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
@@ -434,13 +442,6 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
 // This sets min and max to the minimum and maximum of the array to 
 // avoid having to do two passes with max() and min() separately.
 template<class T> void minMax(T &min, T &max, const Array<T> &a);
-//
-// This version is deprecated, due to its nonstandard argument order.
-template<class T> inline void minMax(const Array<T> &a, T &min, T &max)
-{
-    ArrayMinMaxPrintOnceDeprecated ();
-    minMax (min, max, a);
-}
 //
 // The minimum element of the array.
 // Requires that the type "T" has comparison operators.

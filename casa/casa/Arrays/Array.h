@@ -348,7 +348,7 @@ public:
     // The functions with argument <src>ignoreAxes</src> do
     // not consider the axes given in that argument. In this way it can be
     // achieved that degenerate axes are kept.
-    // <note role=caution> When the two functions returning void throw
+    // <note role=caution> When the two functions returning <src>void</src>
     // are invoked on a derived object (e.g. Matrix), an exception is
     // thrown if removing the degenerate axes from other does not result
     // in a correct number of axes.
@@ -416,6 +416,15 @@ public:
     // Get a reference to a section of an array.
     // This is the same as operator().
     virtual ArrayBase* getSection (const Slicer&);
+
+    // Get the subset given by the i-th value of the last axis. So for a cube
+    // it returns the i-th xy plane. For a Matrix it returns the i-th row.
+    // The returned array references the original array data; its dimensionality
+    // is one less. For a 1-dim array it still returns a 1-dim array.
+    // <note>This function should not be used in tight loops as it is (much)
+    // slower than iterating using begin() and end(), ArrayIter, or
+    // ArrayAccessor.</note>
+    Array<T> operator[] (uInt i) const;
 
 
     // The array is masked by the input LogicalArray.
