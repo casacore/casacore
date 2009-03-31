@@ -29,6 +29,7 @@
 #define CASA_FUNCTORS_H
 
 #include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Complex.h>
 #include <functional>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
