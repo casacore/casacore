@@ -311,6 +311,10 @@ template<class T> void operator+= (Array<T> &left, const Array<T> &other);
 template<class T> void operator-= (Array<T> &left, const Array<T> &other);
 template<class T> void operator*= (Array<T> &left, const Array<T> &other);
 template<class T> void operator/= (Array<T> &left, const Array<T> &other);
+template<class T> void operator%= (Array<T> &left, const Array<T> &other);
+template<class T> void operator&= (Array<T> &left, const Array<T> &other);
+template<class T> void operator|= (Array<T> &left, const Array<T> &other);
+template<class T> void operator^= (Array<T> &left, const Array<T> &other);
 // </group>
 
 // 
@@ -321,6 +325,10 @@ template<class T> void operator+= (Array<T> &left, const T &other);
 template<class T> void operator-= (Array<T> &left, const T &other);
 template<class T> void operator*= (Array<T> &left, const T &other);
 template<class T> void operator/= (Array<T> &left, const T &other);
+template<class T> void operator%= (Array<T> &left, const T &other);
+template<class T> void operator&= (Array<T> &left, const T &other);
+template<class T> void operator|= (Array<T> &left, const T &other);
+template<class T> void operator^= (Array<T> &left, const T &other);
 // </group>
 
 // Unary arithmetic operation.
@@ -328,6 +336,7 @@ template<class T> void operator/= (Array<T> &left, const T &other);
 // <group>
 template<class T> Array<T> operator+(const Array<T> &a);
 template<class T> Array<T> operator-(const Array<T> &a);
+template<class T> Array<T> operator~(const Array<T> &a);
 // </group>
 
 // 
@@ -341,6 +350,14 @@ template<class T>
   Array<T> operator* (const Array<T> &left, const Array<T> &right);
 template<class T> 
   Array<T> operator/ (const Array<T> &left, const Array<T> &right);
+template<class T> 
+  Array<T> operator% (const Array<T> &left, const Array<T> &right);
+template<class T> 
+  Array<T> operator| (const Array<T> &left, const Array<T> &right);
+template<class T> 
+  Array<T> operator& (const Array<T> &left, const Array<T> &right);
+template<class T> 
+  Array<T> operator^ (const Array<T> &left, const Array<T> &right);
 // </group>
 
 // 
@@ -355,6 +372,14 @@ template<class T>
     Array<T> operator* (const Array<T> &left, const T &right);
 template<class T> 
     Array<T> operator/ (const Array<T> &left, const T &right);
+template<class T> 
+    Array<T> operator% (const Array<T> &left, const T &right);
+template<class T> 
+    Array<T> operator| (const Array<T> &left, const T &right);
+template<class T> 
+    Array<T> operator& (const Array<T> &left, const T &right);
+template<class T> 
+    Array<T> operator^ (const Array<T> &left, const T &right);
 // </group>
 
 // 
@@ -369,6 +394,14 @@ template<class T>
     Array<T> operator* (const T &left, const Array<T> &right);
 template<class T>  
     Array<T> operator/ (const T &left, const Array<T> &right);
+template<class T>  
+    Array<T> operator% (const T &left, const Array<T> &right);
+template<class T>  
+    Array<T> operator| (const T &left, const Array<T> &right);
+template<class T>  
+    Array<T> operator& (const T &left, const Array<T> &right);
+template<class T>  
+    Array<T> operator^ (const T &left, const Array<T> &right);
 // </group>
 
 // 
@@ -396,6 +429,8 @@ template<class T> Array<T> acos(const Array<T> &a);
 template<class T> Array<T> asin(const Array<T> &a);
 template<class T> Array<T> atan(const Array<T> &a);
 template<class T> Array<T> atan2(const Array<T> &y, const Array<T> &x);
+template<class T> Array<T> atan2(const T &y, const Array<T> &x);
+template<class T> Array<T> atan2(const Array<T> &y, const T &x);
 template<class T> Array<T> ceil(const Array<T> &a);
 template<class T> Array<T> fabs(const Array<T> &a);
 template<class T> Array<T> abs(const Array<T> &a);
@@ -416,22 +451,18 @@ template<class T> Array<T> fabs(const Array<T> &a);
 template<class ScalarType>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos, 
 	    IPosition &maxPos, const Array<ScalarType> &array);
-// The array is only searched at locations where the mask is True. (at least
-// one such position must exist or an exception will be thrown). MaskType
-// should be an Array of Bool.
-//# See the comments at the beginning of ArrayMath.cc for workarounds for a
-//# CFront "core dump or something nasty like that" bug.
+// The array is searched at locations where the mask equals <src>valid</src>.
+// (at least one such position must exist or an exception will be thrown).
+// MaskType should be an Array of Bool.
 template<class ScalarType>
 void minMax(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
 	    IPosition &maxPos, const Array<ScalarType> &array, 
-	    const Array<Bool> &mask);
-// The array * mask is searched 
-//# See the comments at the beginning of ArrayMath.cc for workarounds for a
-//# CFront "core dump or something nasty like that" bug.
+	    const Array<Bool> &mask, Bool valid=True);
+// The array * weight is searched 
 template<class ScalarType>
 void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, IPosition &minPos,
 		  IPosition &maxPos, const Array<ScalarType> &array, 
-		  const Array<ScalarType> &mask);
+		  const Array<ScalarType> &weight);
 // </group>
 
 // 
@@ -461,6 +492,7 @@ template<class T> void min(Array<T> &result, const Array<T> &a,
 // Return an array that contains the maximum of "a" and "b" at each position.
 // "a" and "b" must be conformant.
 template<class T> Array<T> max(const Array<T> &a, const Array<T> &b);
+template<class T> Array<T> max(const T &a, const Array<T> &b);
 // Return an array that contains the minimum of "a" and "b" at each position.
 // "a" and "b" must be conformant.
 template<class T> Array<T> min(const Array<T> &a, const Array<T> &b);
@@ -469,14 +501,24 @@ template<class T> Array<T> min(const Array<T> &a, const Array<T> &b);
 // and "a" must be conformant.
 template<class T> void max(Array<T> &result, const Array<T> &a, 
 			   const T &b);
+template<class T> inline void max(Array<T> &result, const T &a, 
+                                  const Array<T> &b)
+  { max (result, b, a); }
 // "result" contains the minimum of "a" and "b" at each position. "result",
 // and "a" must be conformant.
 template<class T> void min(Array<T> &result, const Array<T> &a, 
 			   const T &b);
+template<class T> inline void min(Array<T> &result, const T &a, 
+                                  const Array<T> &b)
+  { min (result, b, a); }
 // Return an array that contains the maximum of "a" and "b" at each position.
 template<class T> Array<T> max(const Array<T> &a, const T &b);
+template<class T> inline Array<T> max(const T &a, const Array<T> &b)
+  { return max(b, a); }
 // Return an array that contains the minimum of "a" and "b" at each position.
 template<class T> Array<T> min(const Array<T> &a, const T &b);
+template<class T> inline Array<T> min(const T &a, const Array<T> &b)
+  { return min(b, a); }
 // </group>
 
 // 
@@ -591,14 +633,19 @@ void operator/= (Array<Complex> &left, const Array<Float> &other);
 void operator/= (Array<Complex> &left, const Float &other);
 Array<Complex> operator* (const Array<Complex> &left, const Array<Float> &right);
 Array<Complex> operator* (const Array<Complex> &left, const Float &right);
+Array<Complex> operator* (const Complex &left, const Array<Float> &right);
 Array<Complex> operator/ (const Array<Complex> &left, const Array<Float> &right);
 Array<Complex> operator/ (const Array<Complex> &left, const Float &right);
+Array<Complex> operator/ (const Complex &left, const Array<Float> &right);
 // </group>
 
 // Returns the complex conjugate of a complex array.
 //<group>
 Array<Complex> conj(const Array<Complex> &carray);
 Array<DComplex> conj(const Array<DComplex> &carray);
+// Modifies rarray in place. rarray must be conformant.
+void         conj(Array<Complex> &rarray, const Array<Complex> &carray);
+void         conj(Array<DComplex> &rarray, const Array<DComplex> &carray);
 //# The following are implemented to make the compiler find the right conversion
 //# more often.
 Matrix<Complex> conj(const Matrix<Complex> &carray);
@@ -682,21 +729,11 @@ template<class T, class U> void convertArray(Array<T> &to,
 
 
 // Returns an array where every element is squared.
-template<class T> inline Array<T> square(const Array<T> &val)
-{
-    Array<T> retval(val.copy());
-    retval *= retval;
-    return retval;
-}
+template<class T> inline Array<T> square(const Array<T> &val);
 
 // Returns an array where every element is cubed.
-template<class T> inline Array<T> cube(const Array<T> &val)
-{
-    Array<T> retval(val.copy());
-    retval *= val;
-    retval *= val;
-    return retval;
-}
+template<class T> inline Array<T> cube(const Array<T> &val);
+
 
 // </group>
 

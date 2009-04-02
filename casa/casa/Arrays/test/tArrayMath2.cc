@@ -1,4 +1,4 @@
-//# tArrayMath2.cc: This program tests the ArrayMath class
+//# tArrayMath2.cc: This program tests the ArrayPartMath class
 //# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#

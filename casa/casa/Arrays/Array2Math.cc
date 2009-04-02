@@ -77,9 +77,9 @@ void operator/= (Array<Complex> &left, const Float &other)
 Array<Complex> operator*(const Array<Complex> &left, const Array<Float> &other)
 {
   checkArrayShapes (left, other, "*");
-  Array<Complex> tmp(left.copy());
-  tmp *= other;
-  return tmp;
+  Array<Complex> result(left.shape());
+  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
+  return result;
 }
 
 // <thrown>
@@ -88,25 +88,38 @@ Array<Complex> operator*(const Array<Complex> &left, const Array<Float> &other)
 Array<Complex> operator/(const Array<Complex> &left, const Array<Float> &other)
 {
   checkArrayShapes (left, other, "/");
-  Array<Complex> tmp(left.copy());
-  tmp /= other;
-  return tmp;
+  Array<Complex> result(left.shape());
+  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
+  return result;
 }
 
 Array<Complex> operator* (const Array<Complex> &left, const Float &other)
 {
-  Array<Complex> tmp(left.copy());
-  tmp *= other;
-  return tmp;
+  Array<Complex> result(left.shape());
+  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
+  return result;
 }
 
 Array<Complex> operator/ (const Array<Complex> &left, const Float &other)
 {
-  Array<Complex> tmp(left.copy());
-  tmp /= other;
-  return tmp;
+  Array<Complex> result(left.shape());
+  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
+  return result;
 }
 
+Array<Complex> operator*(const Complex &left, const Array<Float> &other)
+{
+  Array<Complex> result(other.shape());
+  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
+  return result;
+}
+
+Array<Complex> operator/(const Complex &left, const Array<Float> &other)
+{
+  Array<Complex> result(other.shape());
+  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
+  return result;
+}
 
 //# We could use macros to considerably reduce the number of lines, however
 //# that makes it harder to debug, understand, etc.
@@ -129,6 +142,18 @@ Matrix<Complex> conj(const Matrix<Complex> &carray)
 Matrix<DComplex> conj(const Matrix<DComplex> &carray)
 {
   return Matrix<DComplex>(conj ((const Array<DComplex>&)carray));
+}
+
+void conj(Array<Complex> &rarray, const Array<Complex> &carray)
+{
+  checkArrayShapes (carray, rarray, "conj");
+  arrayTransform (carray, rarray, casa::Conj<Complex>());
+}
+
+void conj(Array<DComplex> &rarray, const Array<DComplex> &carray)
+{
+  checkArrayShapes (carray, rarray, "conj");
+  arrayTransform (carray, rarray, casa::Conj<DComplex>());
 }
 
 void real(Array<Float> &rarray, const Array<Complex> &carray)

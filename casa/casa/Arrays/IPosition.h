@@ -425,20 +425,14 @@ Bool operator >= (Int val, const IPosition& right);
 // in a file.
 
 // <group name="IPosition Indexing">
-// Convert from offset to IPosition in an array. The second of these
-// functions requires that type T have shape and origin members which return
-// IPositions.
+// Convert from offset to IPosition in an array.
 IPosition toIPositionInArray (const uInt offset, const IPosition& shape);
 
-// Convert from IPosition to offset in an array. The second of these
-// functions requires that type T have shape and origin members which return
-// IPositions.
+// Convert from IPosition to offset in an array.
 uInt toOffsetInArray (const IPosition& iposition, const IPosition& shape);
 
 // Determine if the given offset or IPosition is inside the array. Returns
-// True if it is inside the Array. The second and fourth of these functions
-// require that type T have shape and origin members which return
-// IPositions.
+// True if it is inside the Array.
 // <thrown>
 //   <li> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>

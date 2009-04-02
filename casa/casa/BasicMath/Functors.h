@@ -175,6 +175,47 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return RES(x)/y; }
   };
 
+  // Functor to take modulo of (integer) variables of possible different types.
+  // This is unlike std::divides which requires equal types.
+  template <typename L, typename R=L, typename RES=L>
+  struct Modulo : public std::binary_function<L,R,RES>
+  {
+    RES operator() (const L& x, const R& y) const
+      { return RES(x)%y; }
+  };
+
+  // Functor for bitwise and of (integer) values.
+  template <typename T>
+  struct BitAnd : public std::binary_function<T,T,T>
+  {
+    T operator() (const T& x, const T& y) const
+      { return x&y; }
+  };
+
+  // Functor for bitwise or of (integer) values.
+  template <typename T>
+  struct BitOr : public std::binary_function<T,T,T>
+  {
+    T operator() (const T& x, const T& y) const
+      { return x|y; }
+  };
+
+  // Functor for bitwise xor of (integer) values.
+  template <typename T>
+  struct BitXor : public std::binary_function<T,T,T>
+  {
+    T operator() (const T& x, const T& y) const
+      { return x^y; }
+  };
+
+  // Functor for bitwise negate of (integer) values.
+  template <typename T>
+  struct BitNegate : public std::unary_function<T,T>
+  {
+    T operator() (const T& x) const
+      { return ~x; }
+  };
+
   // Functor to test for NaN.
   // It can be used in something like:
   // <srcblock>
@@ -308,12 +349,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return atan2 (left, right); }
   };
 
-  // Functor to apply sqr.
+  // Functor to apply sqr (power of 2).
   template<typename T>
   struct Sqr : public std::unary_function<T,T>
   {
     T operator() (T value) const
       { return value*value; }
+  };
+
+  // Functor to apply a power of 3.
+  template<typename T>
+  struct Pow3 : public std::unary_function<T,T>
+  {
+    T operator() (T value) const
+      { return value*value*value; }
   };
 
   // Functor to apply sqrt.
@@ -467,9 +516,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // Functor to add absolute diff of right and base value to left.
   // It can be used to calculate the average deviation.
   template<typename T, typename Accum=T>
-  struct AbsDiff : public std::binary_function<Accum,T,Accum>
+  struct SumAbsDiff : public std::binary_function<Accum,T,Accum>
   {
-    explicit AbsDiff(T base) : itsBase(base) {}
+    explicit SumAbsDiff(T base) : itsBase(base) {}
     Accum operator() (Accum left, T right) const
       { return left + abs((right-itsBase)); }
   private:

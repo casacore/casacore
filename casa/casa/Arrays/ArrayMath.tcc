@@ -144,44 +144,51 @@ Array<T> arrayTransformResult (const Array<T>& arr, UnaryOperator op)
 // <thrown>
 //   <item> ArrayError
 // </thrown>
-template<class ScalarType> 
-void minMax(ScalarType &minVal, ScalarType &maxVal, 
+template<class T> 
+void minMax(T &minVal, T &maxVal, 
 	    IPosition &minPos, IPosition &maxPos,
-	    const Array<ScalarType> &array) 
+	    const Array<T> &array) 
 {
-    if (array.nelements() == 0) {
-        throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
-			 "IPosition &maxPos, const Array<T> &array) - "
-                         "Array has no elements"));	
+  size_t n = array.nelements();
+  if (n == 0) {
+    throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
+                     "IPosition &maxPos, const Array<T> &array) - "
+                     "Array has no elements"));	
+  }
+  size_t minp = 0;
+  size_t maxp = 0;
+  size_t i = 0;
+  T minv = array.data()[0];
+  T maxv = minv;
+  if (array.contiguousStorage()) {
+    typename Array<T>::const_contiter iter = array.cbegin();
+    for (size_t i=0; i<n; ++i, ++iter) {
+      if (*iter < minv) {
+        minv = *iter;
+        minp = i;
+      } else if (*iter > maxv) {
+        maxv = *iter;
+        maxp = i;
+      }
     }
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
-
-    ReadOnlyVectorIterator<ScalarType> ai(array);
-    ScalarType val;
-
-    // Initialize
-    minPos = 0;
-    maxPos = 0;
-    minVal = maxVal = array(minPos);
-    size_t n = ai.vector().nelements();
-
-    while (! ai.pastEnd()) {
-	for (size_t i=0; i<n; i++) {
-	    val = ai.vector()(i);
-	    if (val < minVal) {
-	        minVal = val;
-		minPos = ai.pos();
-		minPos(0) += i;
-	    }
-	    if (val > maxVal) {
-	        maxVal = val;
-		maxPos = ai.pos();
-		maxPos(0) += i;
-	    }
-	}
-	ai.next(); 
+  } else {
+    typename Array<T>::const_iterator iter = array.begin();
+    for (size_t i=0; i<n; ++i, ++iter) {
+      if (*iter < minv) {
+        minv = *iter;
+        minp = i;
+      } else if (*iter > maxv) {
+        maxv = *iter;
+        maxp = i;
+      }
     }
+  }
+  minPos.resize (array.ndim());
+  maxPos.resize (array.ndim());
+  minPos = toIPositionInArray (minp, array.shape());
+  maxPos = toIPositionInArray (maxp, array.shape());
+  minVal = minv;
+  maxVal = maxv;
 }
 
 
@@ -189,51 +196,63 @@ void minMax(ScalarType &minVal, ScalarType &maxVal,
 // <thrown>
 //   <item> ArrayError
 // </thrown>
-template<class ScalarType> 
-void minMaxMasked(ScalarType &minVal, ScalarType &maxVal, 
-	    IPosition &minPos, IPosition &maxPos,
-	    const Array<ScalarType> &array, const Array<ScalarType> &mask) 
+template<class T> 
+void minMaxMasked(T &minVal, T &maxVal, 
+                  IPosition &minPos, IPosition &maxPos,
+                  const Array<T> &array, const Array<T> &weight) 
 {
-    if (array.nelements() == 0) {
-      throw(ArrayError("void minMaxMasked(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array) - "
-		       "Array has no elements"));	
+  size_t n = array.nelements();
+  if (n == 0) {
+    throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
+                     "IPosition &maxPos, const Array<T> &array) - "
+                     "const Array<T> &weight) - " 
+                     "Array has no elements"));	
+  }
+  if (! array.shape().isEqual (weight.shape())) {
+    throw(ArrayConformanceError("void minMaxMasked(T &min, T &max,"
+                                "IPosition &minPos, IPosition &maxPos, "
+                                "const Array<T> &array, "
+                                "const Array<T> &weight) - array " 
+                                "and weight do not have the same shape()"));
+  }
+  size_t minp = 0;
+  size_t maxp = 0;
+  size_t i = 0;
+  T minv = array.data()[0];
+  T maxv = minv;
+  if (array.contiguousStorage()  &&  weight.contiguousStorage()) {
+    typename Array<T>::const_contiter iter = array.cbegin();
+    typename Array<T>::const_contiter witer = weight.cbegin();
+    for (size_t i=0; i<n; ++i, ++iter, ++witer) {
+      T tmp = *iter * *witer;
+      if (tmp < minv) {
+        minv = tmp;
+        minp = i;
+      } else if (tmp > maxv) {
+        maxv = tmp;
+        maxp = i;
+      }
     }
-    if (array.shape() != mask.shape()) {
-      throw(ArrayConformanceError("void minMaxMasked(T &min, T &max,"
-				  "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
-				  "const Array<T> &mask) - " 
-				  "array and mask do not have the same shape()"));
-    } 
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
-
-    ReadOnlyVectorIterator<ScalarType> ai(array);
-    ReadOnlyVectorIterator<ScalarType> mi(mask);
-    ScalarType val;
-
-    // Initialize
-    minPos = 0;
-    maxPos = 0;
-    minVal = maxVal = array(minPos) * mask(minPos);
-    size_t n = ai.vector().nelements();
-
-    while (! ai.pastEnd()) {
-	for (size_t i=0; i<n; i++) {
-	    val = (ai.vector()(i)) * (mi.vector()(i));
-	    if (val < minVal) {
-	        minVal = val;
-		minPos = ai.pos();
-		minPos(0) += i;
-	    }
-	    if (val > maxVal) {
-	        maxVal = val;
-		maxPos = ai.pos();
-		maxPos(0) += i;
-	    }
-	}
-	ai.next(); 
+  } else {
+    typename Array<T>::const_iterator iter = array.begin();
+    typename Array<T>::const_iterator witer = weight.begin();
+    for (size_t i=0; i<n; ++i, ++iter, ++witer) {
+      T tmp = *iter * *witer;
+      if (tmp < minv) {
+        minv = tmp;
+        minp = i;
+      } else if (tmp > maxv) {
+        maxv = tmp;
+        maxp = i;
+      }
     }
+  }
+  minPos.resize (array.ndim());
+  maxPos.resize (array.ndim());
+  minPos = toIPositionInArray (minp, array.shape());
+  maxPos = toIPositionInArray (maxp, array.shape());
+  minVal = minv;
+  maxVal = maxv;
 }
 
 
@@ -241,98 +260,87 @@ void minMaxMasked(ScalarType &minVal, ScalarType &maxVal,
 //   <item> ArrayError
 //   <item> AipsError
 // </thrown>
-template<class ScalarType> 
-void minMax(ScalarType &minVal, ScalarType &maxVal, 
+template<class T> 
+void minMax(T &minVal, T &maxVal, 
 	    IPosition &minPos, IPosition &maxPos,
-	    const Array<ScalarType> &array, const Array<Bool> &mask)
+	    const Array<T> &array, const Array<Bool> &mask, Bool valid)
 {
-    if (array.nelements() == 0) {
-      throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
-		       "IPosition &maxPos, const Array<T> &array, "
-		       "const Array<Bool> &mask) - "
-		       "Array has no elements"));	
+  size_t n = array.nelements();
+  if (n == 0) {
+    throw(ArrayError("void minMax(T &min, T &max, IPosition &minPos,"
+                     "IPosition &maxPos, const Array<T> &array, "
+                     "const Array<Bool> &mask) - "
+                     "Array has no elements"));	
+  }
+  if (! array.shape().isEqual (mask.shape())) {
+    throw(ArrayConformanceError("void minMax(T &min, T &max,"
+                                "IPosition &minPos, IPosition &maxPos,"
+                                "const Array<T> &array, "
+                                "const Array<Bool> &mask) - " 
+                                "array and mask do not have the same shape()"));
+  }
+  size_t minp;
+  size_t maxp;
+  size_t i = 0;
+  T minv;
+  T maxv;
+  if (array.contiguousStorage()  &&  mask.contiguousStorage()) {
+    typename Array<T>::const_contiter iter = array.cbegin();
+    typename Array<Bool>::const_contiter miter = mask.cbegin();
+    size_t i=0;
+    for (; i<n; ++i, ++iter, ++miter) {
+      if (*miter == valid) {
+        minv = maxv = *iter;
+        break;
+      }
     }
-    if (array.shape() != mask.shape()) {
-      throw(ArrayConformanceError("void minMax(T &min, T &max,"
-	    "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
-	    "const Array<Bool> &mask) - " 
-	    "array and mask do not have the same shape()"));
-    } 
-    minPos.resize (array.ndim());
-    maxPos.resize (array.ndim());
-
-    ReadOnlyVectorIterator<ScalarType> ai(array);
-    ReadOnlyVectorIterator<Bool> mi(mask);
-
-    // Initialize
-    // have to find a valid value in array to init min and max
-    Bool found=False;
-    size_t ifound=0;
-    size_t n = mi.vector().nelements();
-    while (! mi.pastEnd() && !found) {
-	for (size_t i=0; i<n; i++) {
-	    if (mi.vector()(i)) {
-		maxPos = ai.pos();
-		maxPos(0) += i;
-		found =  True;
-                ifound = i;
-		break;
-	    }
-	}
-        if (!found) {
-	    mi.next();
-	    ai.next();
+    minp = maxp = i;
+    for (; i<n; ++i, ++iter, ++miter) {
+      if (*miter == valid) {
+        if (*iter < minv) {
+          minv = *iter;
+          minp = i;
+        } else if (*iter > maxv) {
+          maxv = *iter;
+          maxp = i;
         }
+      }
     }
-    if (!found) {
-      throw(AipsError("void minMax(T &min, T &max,"
-	    "IPosition &minPos, IPosition &maxPos, const Array<T> &array, "
-	    "const Array<Bool> &mask) - mask==False, no valid array elements"));
+  } else {
+    typename Array<T>::const_iterator iter = array.begin();
+    typename Array<Bool>::const_iterator miter = mask.begin();
+    size_t i=0;
+    for (; i<n; ++i, ++iter, ++miter) {
+      if (*miter == valid) {
+        minv = maxv = *iter;
+        break;
+      }
     }
-    minPos = maxPos;
-    minVal = maxVal = array(minPos);
-
-    ScalarType val; 
-
-    // Finish with vector where first value was found.
-    {
-        for (size_t i=++ifound; i<n; i++) {
-            if (mi.vector()(i)) {
-                val = ai.vector()(i);
-                if (val < minVal) {
-                    minVal = val;
-                    minPos = ai.pos();
-                    minPos(0) += i;
-                }
-                if (val > maxVal) {
-                    maxVal = val;
-                    maxPos = ai.pos();
-                    maxPos(0) += i;
-                }
-            }
+    minp = maxp = i;
+    for (; i<n; ++i, ++iter, ++miter) {
+      if (*miter == valid) {
+        if (*iter < minv) {
+          minv = *iter;
+          minp = i;
+        } else if (*iter > maxv) {
+          maxv = *iter;
+          maxp = i;
         }
-        ai.next(); mi.next();
+      }
     }
-
-    // Continue with the rest of the array.
-    while (! ai.pastEnd()) {
-        for (size_t i=0; i<n; i++) {
-            if (mi.vector()(i)) {
-                val = ai.vector()(i);
-                if (val < minVal) {
-                    minVal = val;
-                    minPos = ai.pos();
-                    minPos(0) += i;
-                }
-                if (val > maxVal) {
-                    maxVal = val;
-                    maxPos = ai.pos();
-                    maxPos(0) += i;
-                }
-            }
-        }
-	ai.next(); mi.next();
-    }
+  }
+  if (minp ==n) {
+    throw(AipsError("void minMax(T &min, T &max,"
+                    "IPosition &minPos, IPosition &maxPos,"
+                    "const Array<T> &array, "
+                    "const Array<Bool> &mask) - no valid array elements"));
+  }
+  minPos.resize (array.ndim());
+  maxPos.resize (array.ndim());
+  minPos = toIPositionInArray (minp, array.shape());
+  maxPos = toIPositionInArray (maxp, array.shape());
+  minVal = minv;
+  maxVal = maxv;
 }
 
 // <thrown>
@@ -402,6 +410,62 @@ template<class T> void operator/= (Array<T> &left, const T &other)
     arrayTransformInPlace (left, other, std::divides<T>());
 }
 
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void operator%= (Array<T> &left, const Array<T> &other)
+{
+    checkArrayShapes (left, other, "%=");
+    arrayTransformInPlace (left, other, Modulo<T>());
+}
+
+template<class T> void operator%= (Array<T> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, Modulo<T>());
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void operator&= (Array<T> &left, const Array<T> &other)
+{
+    checkArrayShapes (left, other, "&=");
+    arrayTransformInPlace (left, other, BitAnd<T>());
+}
+
+template<class T> void operator&= (Array<T> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, BitAnd<T>());
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void operator|= (Array<T> &left, const Array<T> &other)
+{
+    checkArrayShapes (left, other, "|=");
+    arrayTransformInPlace (left, other, BitOr<T>());
+}
+
+template<class T> void operator|= (Array<T> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, BitOr<T>());
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> void operator^= (Array<T> &left, const Array<T> &other)
+{
+    checkArrayShapes (left, other, "^=");
+    arrayTransformInPlace (left, other, BitXor<T>());
+}
+
+template<class T> void operator^= (Array<T> &left, const T &other)
+{
+    arrayTransformInPlace (left, other, BitXor<T>());
+}
+
 template<class T> Array<T> operator+(const Array<T> &a)
 {
     return a.copy();
@@ -410,6 +474,11 @@ template<class T> Array<T> operator+(const Array<T> &a)
 template<class T> Array<T> operator-(const Array<T> &a)
 {
     return arrayTransformResult (a, std::negate<T>());
+}
+
+template<class T> Array<T> operator~(const Array<T> &a)
+{
+    return arrayTransformResult (a, BitNegate<T>());
 }
 
 // <thrown>
@@ -452,6 +521,34 @@ template<class T>
     return arrayTransformResult (left, right, std::divides<T>());
 }
 
+template<class T>
+   Array<T> operator%(const Array<T> &left, const Array<T> &right)
+{
+    checkArrayShapes (left, right, "%");
+    return arrayTransformResult (left, right, Modulo<T>());
+}
+
+template<class T>
+   Array<T> operator&(const Array<T> &left, const Array<T> &right)
+{
+    checkArrayShapes (left, right, "%");
+    return arrayTransformResult (left, right, BitAnd<T>());
+}
+
+template<class T>
+   Array<T> operator|(const Array<T> &left, const Array<T> &right)
+{
+    checkArrayShapes (left, right, "%");
+    return arrayTransformResult (left, right, BitOr<T>());
+}
+
+template<class T>
+   Array<T> operator^(const Array<T> &left, const Array<T> &right)
+{
+    checkArrayShapes (left, right, "%");
+    return arrayTransformResult (left, right, BitXor<T>());
+}
+
 template<class T> 
 Array<T> operator+ (const Array<T> &left, const T &right)
 {
@@ -474,6 +571,30 @@ template<class T>
 Array<T> operator/ (const Array<T> &left, const T &right)
 {
     return arrayTransformResult (left, right, std::divides<T>());
+}
+
+template<class T> 
+Array<T> operator% (const Array<T> &left, const T &right)
+{
+    return arrayTransformResult (left, right, Modulo<T>());
+}
+
+template<class T> 
+Array<T> operator& (const Array<T> &left, const T &right)
+{
+    return arrayTransformResult (left, right, BitAnd<T>());
+}
+
+template<class T> 
+Array<T> operator| (const Array<T> &left, const T &right)
+{
+    return arrayTransformResult (left, right, BitOr<T>());
+}
+
+template<class T> 
+Array<T> operator^ (const Array<T> &left, const T &right)
+{
+    return arrayTransformResult (left, right, BitXor<T>());
 }
 
 template<class T> 
@@ -500,35 +621,65 @@ Array<T> operator/ (const T &left, const Array<T> &right)
     return arrayTransformResult (left, right, std::divides<T>());
 }
 
+template<class T> 
+Array<T> operator% (const T &left, const Array<T> &right)
+{
+    return arrayTransformResult (left, right, Modulo<T>());
+}
+
+template<class T> 
+Array<T> operator& (const T &left, const Array<T> &right)
+{
+    return arrayTransformResult (left, right, BitAnd<T>());
+}
+
+template<class T> 
+Array<T> operator| (const T &left, const Array<T> &right)
+{
+    return arrayTransformResult (left, right, BitOr<T>());
+}
+
+template<class T> 
+Array<T> operator^ (const T &left, const Array<T> &right)
+{
+    return arrayTransformResult (left, right, BitXor<T>());
+}
+
 
 // <thrown>
 //   </item> ArrayError
 // </thrown>
-template<class T> void minMax(T &min, T &max, const Array<T> &a)
+template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
 {
-    size_t ntotal = a.nelements();
-    if (ntotal == 0) {
-	throw(ArrayError("void minMax(T &min, T &max, const Array<T> &a) - "
-			 "Array has no elements"));
+  if (array.nelements() == 0) {
+    throw(ArrayError("void minMax(T &min, T &max, const Array<T> &array) - "
+                     "Array has no elements"));	
+  }
+  T minv = array.data()[0];
+  T maxv = minv;
+  if (array.contiguousStorage()) {
+    typename Array<T>::const_contiter iterEnd = array.cend();
+    for (typename Array<T>::const_contiter iter = array.cbegin();
+         iter!=iterEnd; ++iter) {
+      if (*iter < minv) {
+        minv = *iter;
+      } else if (*iter > maxv) {
+        maxv = *iter;
+      }
     }
-
-    Bool deleteIt;
-    const T *storage = a.getStorage(deleteIt);
-
-    min = *storage;
-    max = *storage;
-
-    // Account for the fact we've seen the first position
-    ntotal--;
-    const T *ts = storage + 1;
-
-    while (ntotal--) {
-	min = (min < (*ts)) ? min : (*ts);
-	max = (max > (*ts)) ? max : (*ts);
-	ts++;
+  } else {
+    typename Array<T>::const_iterator iterEnd = array.end();
+    for (typename Array<T>::const_iterator iter = array.begin();
+         iter!=iterEnd; ++iter) {
+      if (*iter < minv) {
+        minv = *iter;
+      } else if (*iter > maxv) {
+        maxv = *iter;
+      }
     }
-
-    a.freeStorage(storage, deleteIt);
+  }
+  maxVal = maxv;
+  minVal = minv;
 }
 
 // <thrown>
@@ -659,6 +810,16 @@ template<class T> Array<T> sqrt(const Array<T> &a)
     return arrayTransformResult (a, casa::Sqrt<T>());
 }
 
+template<class T> Array<T> square(const Array<T> &a)
+{
+    return arrayTransformResult (a, casa::Sqr<T>());
+}
+
+template<class T> Array<T> cube(const Array<T> &a)
+{
+    return arrayTransformResult (a, casa::Pow3<T>());
+}
+
 template<class T> Array<T> acos(const Array<T> &a)
 {
     return arrayTransformResult (a, casa::Acos<T>());
@@ -731,6 +892,16 @@ template<class T> Array<T> pow(const Array<T> &a, const Double &b)
 template<class T> Array<T> atan2(const Array<T> &a, const Array<T> &b)
 {
     checkArrayShapes (a, b, "atan2");
+    return arrayTransformResult (a, b, casa::Atan2<T>());
+}
+
+template<class T> Array<T> atan2(const T &a, const Array<T> &b)
+{
+    return arrayTransformResult (a, b, casa::Atan2<T>());
+}
+
+template<class T> Array<T> atan2(const Array<T> &a, const T &b)
+{
     return arrayTransformResult (a, b, casa::Atan2<T>());
 }
 
@@ -869,8 +1040,8 @@ template<class T> T avdev(const Array<T> &a, T mean)
 			 "element"));
     }
     T sum = a.contiguousStorage() ?
-      std::accumulate(a.cbegin(), a.cend(), T(), casa::AbsDiff<T>(mean)) :
-      std::accumulate(a.begin(),  a.end(),  T(), casa::AbsDiff<T>(mean));
+      std::accumulate(a.cbegin(), a.cend(), T(), casa::SumAbsDiff<T>(mean)) :
+      std::accumulate(a.begin(),  a.end(),  T(), casa::SumAbsDiff<T>(mean));
     return T(sum/(1.0*a.nelements()));
 }
 
