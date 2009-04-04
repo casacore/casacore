@@ -34,6 +34,42 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 
+  // <summary> Non-templated Helper class to handle the mask. </summary>
+  // <visibility=local>
+  class BFEngineMask
+  {
+  public:
+    // Form the mask as given.
+    explicit BFEngineMask (uInt mask=0xffffffff);
+
+    // Form the mask from the given keywords defining the bits.
+    BFEngineMask (const Array<String>& keys, uInt defaultMask);
+
+    // Make the mask from the given keywords defining the bits.
+    void makeMask (const ROTableColumn& column);
+
+    // Form the read mask from the specification.
+    // If keywords are given, the mask is formed from them.
+    void fromRecord (const RecordInterface& spec, const ROTableColumn& column,
+                     const String& prefix);
+
+    // Store the info in a Record.
+    void toRecord (RecordInterface& spec, const String& prefix) const;
+
+    // Get the mask.
+    uInt getMask() const
+      { return itsMask; }
+
+    // Get the mask keywords.
+    const Array<String>& getKeys() const
+      { return itsMaskKeys; }
+
+  private:
+    Array<String> itsMaskKeys;
+    uInt          itsMask;
+  };
+
+
   // <summary>
   // Templated virtual column engine to map bit flags to a Bool.
   // </summary>
@@ -148,17 +184,34 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     using BaseMappedArrayEngine<Bool,StoredType>::setNames;
 
   public:
-    // Construct an engine to scale all arrays in a column with
-    // the given offset and scale factor.
+    // Construct an engine to map integer arrays in a column to Bool arrays.
     // StoredColumnName is the name of the column where the scaled
     // data will be put and must have data type StoredType.
     // The virtual column using this engine must have data type Bool.
+    // A mask can be given that specifies which bits to use in the mapping
+    // from StoredType to bool. Similarly a mask can be given defining which
+    // bits to set when mapping from Bool to StoredType.
     BitFlagsEngine (const String& virtualColumnName,
                     const String& storedColumnName,
                     StoredType readMask=StoredType(0xffffffff),
                     StoredType writeMask=1);
 
-    // Construct from a record specification as created by getmanagerSpec().
+    // Construct an engine to map integer arrays in a column to Bool arrays.
+    // StoredColumnName is the name of the column where the scaled
+    // data will be put and must have data type StoredType.
+    // The virtual column using this engine must have data type Bool.
+    // A mask can be given that specifies which bits to use in the mapping
+    // from StoredType to bool. Similarly a mask can be given defining which
+    // bits to set when mapping from Bool to StoredType.
+    // The masks are given using the values of keywords in the stored column.
+    // Each keyword should be an integer defining one or more bits and can be
+    // seen as a symbolic name. The keyword values are or-ed to form the mask.
+    BitFlagsEngine (const String& virtualColumnName,
+                    const String& storedColumnName,
+                    const Array<String>& readMaskKeys,
+                    const Array<String>& writeMaskKeys);
+
+    // Construct from a record specification as created by dataManagerSpec().
     BitFlagsEngine (const Record& spec);
 
     // Destructor is mandatory.
@@ -174,12 +227,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual Record dataManagerSpec() const;
 
     // Get data manager properties that can be modified.
-    // These are READMASK and WRITEMASK.
+    // These are ReadMask, WriteMask, ReadMaskKeys, and WriteMaskKeys.
     // It is a subset of the data manager specification.
     virtual Record getProperties() const;
 
     // Modify data manager properties.
-    // Thety can be READMASK and WRITEMASK.
+    // These are ReadMask, WriteMask, ReadMaskKeys, and/or WriteMaskKeys.
+    // Mask keys should be given as an array of strings giving the keyword
+    // names defining mask bits (similar to the constructor). Mask keys are
+    // only used if not empty.
     virtual void setProperties (const Record& spec);
 
     // Return the name of the class.
@@ -312,10 +368,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 				    const Record& spec);
 
   private:
-    StoredType itsReadMask;
-    StoredType itsWriteMask;
+    BFEngineMask itsBFEReadMask;
+    BFEngineMask itsBFEWriteMask;
+    StoredType   itsReadMask;
+    StoredType   itsWriteMask;
+    Bool         itsIsNew;         //# True = new table
   };
-
 
 
 } //# NAMESPACE CASA - END

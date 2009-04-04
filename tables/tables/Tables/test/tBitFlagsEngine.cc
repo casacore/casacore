@@ -36,6 +36,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
@@ -83,10 +84,20 @@ void createTable()
   td.addColumn (ArrayColumnDesc<uChar> ("storedcol3", "",
                                         IPosition(2,3,4),
                                         ColumnDesc::Direct));
+  // Define keywords telling the bitmask.
+  ColumnDesc& cdesc = td.rwColumnDesc("storedcol1");
+  cdesc.rwKeywordSet().define ("bit01", 3);
+  cdesc.rwKeywordSet().define ("bit12", 6);
+  cdesc.rwKeywordSet().define ("bit23", 12);
   // Now create a new table from the description.
   SetupNewTable newtab("tBitFlagsEngine_tmp.data", td, Table::New);
   // Create the virtual column engines and bind the columns to them.
-  BitFlagsEngine<Int> engine1("virtualcol1", "storedcol1");
+  // Use keywords to define the mask.
+  Vector<String> writeMask(2);
+  writeMask[0] = "bit01";
+  writeMask[1] = "bit12";
+  BitFlagsEngine<Int> engine1("virtualcol1", "storedcol1",
+                              Vector<String>(1,"bit23"), writeMask);
   BitFlagsEngine<Short> engine2("virtualcol2", "storedcol2");
   BitFlagsEngine<uChar> engine3("virtualcol3", "storedcol3");
   newtab.bindColumn ("virtualcol1", engine1);
@@ -148,7 +159,7 @@ void readTable()
           arri(i1,i2) = (j + i)%2;
           arrs(i1,i2) = (j + i)%5;
           arrc(i1,i2) = (j + i)%4;
-          arrd1(i1,i2) = arri(i1,i2);
+          arrd1(i1,i2) = arri(i1,i2) & 12;
           arrd2(i1,i2) = arrs(i1,i2);
           arrd3(i1,i2) = arrc(i1,i2);
           ++i;
@@ -263,7 +274,7 @@ void readTable()
 
 int main ()
 {
-  return 0;
+  //  return 0;
   try {
     createTable();
     readTable();

@@ -41,13 +41,14 @@
 #include <tables/Tables/MappedArrayEngine.h>
 #include <tables/Tables/ForwardCol.h>
 #include <tables/Tables/VirtualTaQLColumn.h>
-///#include <tables/Tables/BitFlagsEngine.h>
+#include <tables/Tables/BitFlagsEngine.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/PlainTable.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Containers/Record.h>
 #include <casa/BasicSL/String.h>
+#include <casa/OS/DynLib.h>
 #include <tables/Tables/DataManError.h>
 #include <casa/stdio.h>                     // for sprintf
 
@@ -244,7 +245,23 @@ DataManagerCtor DataManager::getCtor (const String& type)
 {
     DataManagerCtor* fp = registerMap.isDefined (type);
     if (fp) {
-	return *fp;
+        return *fp;
+    }
+    // Try to load the data manager from a dynamic library with that name
+    // (without possible template extension).
+    String tp(type);
+    tp.downcase();
+    string::size_type pos = tp.find ('<');
+    if (pos != string::npos) {
+        tp = tp.substr (0, pos);
+    }
+    // Try to load the dynamic library and see if registered now.
+    DynLib dl(tp, "register_"+tp);
+    if (dl.getHandle()) {
+        fp = registerMap.isDefined (type);
+        if (fp) {
+	    return *fp;
+        }
     }
     return unknownDataManager;
 }
@@ -440,9 +457,9 @@ void DataManager::registerAllCtor ()
     MappedArrayEngine<Complex,DComplex>::registerClass();
     ForwardColumnEngine::registerClass();
     VirtualTaQLColumn::registerClass();
-    ///    BitFlagsEngine<uChar>::registerClass();
-    ///    BitFlagsEngine<Short>::registerClass();
-    ///    BitFlagsEngine<Int>::registerClass();
+    BitFlagsEngine<uChar>::registerClass();
+    BitFlagsEngine<Short>::registerClass();
+    BitFlagsEngine<Int>::registerClass();
 }
 
 } //# NAMESPACE CASA - END

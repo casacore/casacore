@@ -47,15 +47,30 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                      const String& storedColumnName,
                                      T readMask, T writeMask)
   : BaseMappedArrayEngine<Bool,T> (virtualColumnName, storedColumnName),
-    itsReadMask  (readMask),
-    itsWriteMask (writeMask)
+    itsBFEReadMask  (readMask),
+    itsBFEWriteMask (writeMask),
+    itsReadMask     (readMask),
+    itsWriteMask    (writeMask),
+    itsIsNew        (False)
+  {}
+
+  template<typename T>
+  BitFlagsEngine<T>::BitFlagsEngine (const String& virtualColumnName,
+                                     const String& storedColumnName,
+                                     const Array<String>& readMaskKeys,
+                                     const Array<String>& writeMaskKeys)
+  : BaseMappedArrayEngine<Bool,T> (virtualColumnName, storedColumnName),
+    itsBFEReadMask  (readMaskKeys, 0xffffffff),
+    itsBFEWriteMask (writeMaskKeys, 1),
+    itsReadMask     (0xffffffff),
+    itsWriteMask    (1),
+    itsIsNew        (False)
   {}
 
   template<typename T>
   BitFlagsEngine<T>::BitFlagsEngine (const Record& spec)
-  : BaseMappedArrayEngine<Bool,T> (),
-    itsReadMask  (T(0xffffffff)),
-    itsWriteMask (1)
+    : BaseMappedArrayEngine<Bool,T>(),
+      itsIsNew (False)
   {
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
       setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
@@ -66,8 +81,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<typename T>
   BitFlagsEngine<T>::BitFlagsEngine (const BitFlagsEngine<T>& that)
   : BaseMappedArrayEngine<Bool,T> (that),
-    itsReadMask  (that.itsReadMask),
-    itsWriteMask (that.itsWriteMask)
+    itsBFEReadMask   (that.itsBFEReadMask),
+    itsBFEWriteMask  (that.itsBFEWriteMask),
+    itsReadMask      (that.itsReadMask),
+    itsWriteMask     (that.itsWriteMask),
+    itsIsNew         (that.itsIsNew)
   {}
 
   template<typename T>
@@ -116,20 +134,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Record BitFlagsEngine<T>::getProperties() const
   {
     Record spec;
-    spec.define ("READMASK",  Int(itsReadMask));
-    spec.define ("WRITEMASK", Int(itsWriteMask));
+    itsBFEReadMask.toRecord  (spec, "Read");
+    itsBFEWriteMask.toRecord (spec, "Write");
     return spec;
   }
 
   template<typename T>
   void BitFlagsEngine<T>::setProperties (const Record& spec)
   {
-    if (spec.isDefined("READMASK")) {
-      itsReadMask  = T(spec.asInt("READMASK"));
-    }
-    if (spec.isDefined("WRITEMASK")) {
-      itsWriteMask = T(spec.asInt("WRITEMASK"));
-    }
+    itsBFEReadMask.fromRecord  (spec, roColumn(), "Read");
+    itsBFEWriteMask.fromRecord (spec, roColumn(), "Write");
+    itsReadMask  = T(itsBFEReadMask.getMask());
+    itsWriteMask = T(itsBFEWriteMask.getMask());
   }
 
   template<typename T>
@@ -150,21 +166,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BitFlagsEngine<T>::create (uInt initialNrrow)
   {
     BaseMappedArrayEngine<Bool,T>::create (initialNrrow);
-    // Store the various parameters as keywords in this column.
-    TableColumn thisCol (table(), virtualName());
-    thisCol.rwKeywordSet().define ("_BitFlagsEngine_ReadMask",
-				   Int(itsReadMask));
-    thisCol.rwKeywordSet().define ("_BitFlagsEngine_WriteMask",
-				   Int(itsWriteMask));
+    itsIsNew = True;
   }
 
   template<typename T>
   void BitFlagsEngine<T>::prepare()
   {
     BaseMappedArrayEngine<Bool,T>::prepare();
-    ROTableColumn thisCol (table(), virtualName());
-    itsReadMask  = T(thisCol.keywordSet().asInt("_BitFlagsEngine_ReadMask"));
-    itsWriteMask = T(thisCol.keywordSet().asInt("_BitFlagsEngine_WriteMask"));
+    // If a new table, derive the mask here.
+    // This cannot be done in create, because the other column may not
+    // be created yet.
+    if (itsIsNew) {
+      itsBFEReadMask.makeMask (roColumn());
+      itsBFEWriteMask.makeMask(roColumn());
+      // Store the various parameters as keywords in this column.
+      TableColumn thisCol (table(), virtualName());
+      itsBFEReadMask.toRecord (thisCol.rwKeywordSet(), "_BitFlagsEngine_Read");
+      itsBFEWriteMask.toRecord(thisCol.rwKeywordSet(), "_BitFlagsEngine_Write");
+    } else {
+      // Existing table, get masks from the keywords.
+      ROTableColumn thisCol (table(), virtualName());
+      itsBFEReadMask.fromRecord (thisCol.keywordSet(), roColumn(),
+                                 "_BitFlagsEngine_Read");
+      itsBFEWriteMask.fromRecord(thisCol.keywordSet(), roColumn(),
+                                 "_BitFlagsEngine_Write");
+    }
+    itsReadMask  = T(itsBFEReadMask.getMask());
+    itsWriteMask = T(itsBFEWriteMask.getMask());
   }
 
 
@@ -272,14 +300,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BitFlagsEngine<T>::mapOnGet (Array<Bool>& array,
                                     const Array<T>& stored)
   {
-    ///    arrayTransform (stored, array, FlagsToBool(itsReadMask));
+    arrayTransform (stored, array, FlagsToBool(itsReadMask));
   }
 
   template<typename T>
   void BitFlagsEngine<T>::mapOnPut (const Array<Bool>& array,
                                     Array<T>& stored)
   {
-    ///    arraayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));
+    arrayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));
   }
 
 } //# NAMESPACE CASA - END

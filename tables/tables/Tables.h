@@ -1021,6 +1021,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // data managers are being used underneath. Only when the table is created
 // data managers have to be bound to the columns. Thereafter it is
 // completely transparent.
+//
+// Data managers needs to be registered, so they can be found when a table is
+// opened. All data managers mentioned below are part of the system and
+// pre-registered.
+// It is, however, also possible to load data managers on demand. If a data
+// manager is not registered it is tried to load a dynamic library with the
+// name of the data manager (in lowercase).
+// E.g. if <src>BitFlagsEngine<uChar></src> was not registered, the dynamic
+// library <src>libbitflagsengine.so</src> (or .dylib) will be loaded. If
+// successful, its function <src>register_bitflagsengine()</src> will be
+// executed which can register the data manager. Thereafter it is known
+// and will be used. For example in a file Register.h and Register.cc:
+// <srcblock>
+//   // Declare in .h file as C function, so no name mangling is done.
+//   extern "C" {
+//     void register_bitflagsengine();
+//   }
+//   // Implement in .cc file.
+//   void register_bitflagsengine()
+//   {
+//     BitFlagsEngine<uChar>::registerClass();
+//     BitFlagsEngine<Short>::registerClass();
+//     BitFlagsEngine<Int>::registerClass();
+//   }
+// </srcblock>
 
 // <ANCHOR NAME="Tables:storage managers">
 // <h3>Storage Managers</h3></ANCHOR>
