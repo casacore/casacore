@@ -72,13 +72,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BFEngineMask::makeMask (const ROTableColumn& column)
   {
     if (! itsMaskKeys.empty()) {
-      uInt mask = 0;
-      Array<String>::const_iterator iterEnd = itsMaskKeys.end();
-      for (Array<String>::const_iterator iter=itsMaskKeys.begin();
-           iter!=iterEnd; ++iter) {
-        mask = mask | column.keywordSet().asuInt (*iter);
+      if (column.keywordSet().isDefined("FLAGSETS")) {
+        const RecordInterface& rec = column.keywordSet().asRecord("FLAGSETS");
+        uInt mask = 0;
+        Array<String>::const_iterator iterEnd = itsMaskKeys.end();
+        for (Array<String>::const_iterator iter=itsMaskKeys.begin();
+             iter!=iterEnd; ++iter) {
+          if (rec.isDefined(*iter)) {
+            mask = mask | rec.asuInt (*iter);
+          }
+        }
+        itsMask = mask;
       }
-      itsMask = mask;
     }
   }
 

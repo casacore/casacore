@@ -86,9 +86,11 @@ void createTable()
                                         ColumnDesc::Direct));
   // Define keywords telling the bitmask.
   ColumnDesc& cdesc = td.rwColumnDesc("storedcol1");
-  cdesc.rwKeywordSet().define ("bit01", 3);
-  cdesc.rwKeywordSet().define ("bit12", 6);
-  cdesc.rwKeywordSet().define ("bit23", 12);
+  Record brec;
+  brec.define ("bit01", 3);
+  brec.define ("bit12", 6);
+  brec.define ("bit23", 12);
+  cdesc.rwKeywordSet().defineRecord ("FLAGSETS", brec);
   // Now create a new table from the description.
   SetupNewTable newtab("tBitFlagsEngine_tmp.data", td, Table::New);
   // Create the virtual column engines and bind the columns to them.
