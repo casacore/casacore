@@ -41,12 +41,12 @@ using namespace std;
   { \
     std::transform (v1.begin(), v1.end(), res.begin(), NAME<double>()); \
     for (uInt i=0; i<res.size(); ++i) { \
-      AlwaysAssertExit (res[i] == FUNC(v1[i])); \
+      AlwaysAssertExit (near(res[i], FUNC(v1[i])));     \
     } \
     res = v1; \
     transformInPlace (res.begin(), res.end(), NAME<double>()); \
     for (uInt i=0; i<res.size(); ++i) { \
-      AlwaysAssertExit (res[i] == FUNC(v1[i])); \
+      AlwaysAssertExit (near(res[i], FUNC(v1[i])));     \
     } \
   }
 
@@ -54,12 +54,12 @@ using namespace std;
   { \
     std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), NAME<double>()); \
     for (uInt i=0; i<res.size(); ++i) { \
-      AlwaysAssertExit (res[i] == FUNC(v1[i], v2[i])); \
+      AlwaysAssertExit (near(res[i], FUNC(v1[i], v2[i])));      \
     } \
     res = v1; \
     transformInPlace (res.begin(), res.end(), v2.begin(), NAME<double>()); \
     for (uInt i=0; i<res.size(); ++i) { \
-      AlwaysAssertExit (res[i] == FUNC(v1[i], v2[i])); \
+      AlwaysAssertExit (near(res[i], FUNC(v1[i], v2[i])));      \
     } \
   }
 
