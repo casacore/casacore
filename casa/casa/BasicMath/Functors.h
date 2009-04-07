@@ -243,190 +243,206 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //   std::transform (left.begin(), left.cend(), right.begin(),
   //                   result.cbegin(), Near<T>(tolerance));
   // </srcblock>
-  template<typename T>
-  struct Near : public std::binary_function<T,T,bool>
+  template<typename L, typename R=L>
+  struct Near : public std::binary_function<L,R,bool>
   {
     explicit Near (double tolerance=1e-5)
       : itsTolerance (tolerance)
     {}
-    bool operator() (T left, T right) const
-      { return near (left, right, itsTolerance); }
+    bool operator() (L left, R right) const
+      { return near (left, L(right), itsTolerance); }
   private:
     double itsTolerance;
   };
 
   // Functor to test for if two values are absolutely near each other.
-  template<typename T>
-  struct NearAbs : public std::binary_function<T,T,bool>
+  template<typename L, typename R=L>
+  struct NearAbs : public std::binary_function<L,R,bool>
   {
     explicit NearAbs (double tolerance=1e-13)
       : itsTolerance (tolerance)
     {}
-    bool operator() (T left, T right) const
-      { return nearAbs (left, right, itsTolerance); }
+    bool operator() (L left, R right) const
+      { return nearAbs (left, L(right), itsTolerance); }
   private:
     double itsTolerance;
   };
 
 
   // Functor to apply sin.
-  template<typename T>
-  struct Sin : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Sin : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return sin (value); }
+    RES operator() (T value) const
+      { return RES(sin (value)); }
   };
 
   // Functor to apply sinh.
-  template<typename T>
-  struct Sinh : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Sinh : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return sinh (value); }
+    RES operator() (T value) const
+      { return RES(sinh (value)); }
   };
 
   // Functor to apply asin.
-  template<typename T>
-  struct Asin : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Asin : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return asin (value); }
+    RES operator() (T value) const
+      { return RES(asin (value)); }
   };
 
   // Functor to apply cos.
-  template<typename T>
-  struct Cos : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Cos : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return cos (value); }
+    RES operator() (T value) const
+      { return RES(cos (value)); }
   };
 
   // Functor to apply cosh.
-  template<typename T>
-  struct Cosh : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Cosh : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return cosh (value); }
+    RES operator() (T value) const
+      { return RES(cosh (value)); }
   };
 
   // Functor to apply acos.
-  template<typename T>
-  struct Acos : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Acos : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return acos (value); }
+    RES operator() (T value) const
+      { return RES(acos (value)); }
   };
 
   // Functor to apply tan.
-  template<typename T>
-  struct Tan : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Tan : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return tan (value); }
+    RES operator() (T value) const
+      { return RES(tan (value)); }
   };
 
   // Functor to apply tanh.
-  template<typename T>
-  struct Tanh : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Tanh : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return tanh (value); }
+    RES operator() (T value) const
+      { return RES(tanh (value)); }
   };
 
   // Functor to apply atan.
-  template<typename T>
-  struct Atan : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Atan : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return atan (value); }
+    RES operator() (T value) const
+      { return RES(atan (value)); }
   };
 
   // Functor to apply atan2.
-  template<typename T>
-  struct Atan2 : public std::binary_function<T,T,T>
+  template<typename L, typename R=L, typename RES=L>
+  struct Atan2 : public std::binary_function<L,R,RES>
   {
-    T operator() (T left, T right) const
-      { return atan2 (left, right); }
+    RES operator() (L left, R right) const
+      { return RES(atan2 (left, L(right))); }
   };
 
   // Functor to apply sqr (power of 2).
-  template<typename T>
-  struct Sqr : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Sqr : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return value*value; }
+    RES operator() (T value) const
+      { return RES(value*value); }
   };
 
   // Functor to apply a power of 3.
-  template<typename T>
-  struct Pow3 : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Pow3 : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return value*value*value; }
+    RES operator() (T value) const
+      { return RES(value*value*value); }
   };
 
   // Functor to apply sqrt.
-  template<typename T>
-  struct Sqrt : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Sqrt : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return sqrt (value); }
+    RES operator() (T value) const
+      { return RES(sqrt (value)); }
   };
 
   // Functor to apply exp.
-  template<typename T>
-  struct Exp : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Exp : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return exp (value); }
+    RES operator() (T value) const
+      { return RES(exp (value)); }
   };
 
   // Functor to apply log.
-  template<typename T>
-  struct Log : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Log : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return log (value); }
+    RES operator() (T value) const
+      { return RES(log (value)); }
   };
 
   // Functor to apply log10.
-  template<typename T>
-  struct Log10 : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Log10 : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return log10 (value); }
+    RES operator() (T value) const
+      { return RES(log10 (value)); }
   };
 
   // Functor to apply abs.
-  template<typename T>
-  struct Abs : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Abs : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return abs (value); }
+    RES operator() (T value) const
+      { return RES(abs (value)); }
   };
 
   // Functor to apply floor.
-  template<typename T>
-  struct Floor : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Floor : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return floor (value); }
+    RES operator() (T value) const
+      { return RES(floor (value)); }
   };
 
   // Functor to apply ceil.
-  template<typename T>
-  struct Ceil : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Ceil : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return ceil (value); }
+    RES operator() (T value) const
+      { return RES(ceil (value)); }
+  };
+
+  // Functor to apply round (e.g. -3.7 gets -4).
+  template<typename T, typename RES=T>
+  struct Round : public std::unary_function<T,RES>
+  {
+    RES operator() (T value) const
+      { return RES(value<0 ? ceil(value-0.5) : floor(value+0.5)); }
+  };
+
+  // Functor to apply sign (result is -1, 0, or 1).
+  template<typename T, typename RES=T>
+  struct Sign : public std::unary_function<T,RES>
+  {
+    RES operator() (T value) const
+      { return (value<0 ? -1 : (value>0 ? 1:0)); }
   };
 
   // Functor to apply complex function conj.
-  template<typename T>
-  struct Conj : public std::unary_function<T,T>
+  template<typename T, typename RES=T>
+  struct Conj : public std::unary_function<T,RES>
   {
-    T operator() (T value) const
-      { return conj (value); }
+    RES operator() (T value) const
+      { return RES(conj (value)); }
   };
 
   // Functor to apply complex function real.
@@ -434,7 +450,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   struct Real : public std::unary_function<T,RES>
   {
     RES operator() (T value) const
-      { return real (value); }
+      { return RES(real (value)); }
   };
 
   // Functor to apply complex function imag.
@@ -442,7 +458,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   struct Imag : public std::unary_function<T,RES>
   {
     RES operator() (T value) const
-      { return imag (value); }
+      { return RES(imag (value)); }
   };
 
   // Functor to apply complex function arg.
@@ -450,7 +466,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   struct CArg : public std::unary_function<T,RES>
   {
     RES operator() (T value) const
-      { return arg (value); }
+      { return RES(arg (value)); }
   };
 
   // Functor to apply complex function fabs.
@@ -458,39 +474,39 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   struct CAbs : public std::unary_function<T,RES>
   {
     RES operator() (T value) const
-      { return fabs (value); }
+      { return RES(fabs (value)); }
   };
 
   // Functor to apply pow.
-  template<typename T, typename E=T>
-  struct Pow : public std::binary_function<T,E,T>
+  template<typename T, typename E=T, typename RES=T>
+  struct Pow : public std::binary_function<T,E,RES>
   {
-    T operator() (T left, E exponent) const
-      { return pow (left, exponent); }
+    RES operator() (T left, E exponent) const
+      { return RES(pow (left, exponent)); }
   };
 
   // Functor to apply fmod.
-  template<typename T>
-  struct Fmod : public std::binary_function<T,T,T>
+  template<typename L, typename R=L, typename RES=L>
+  struct Fmod : public std::binary_function<L,R,RES>
   {
-    T operator() (T left, T right) const
-      { return fmod (left, right); }
+    RES operator() (R left, L right) const
+      { return RES(fmod (left, L(right))); }
   };
 
   // Functor to get minimum of two values.
-  template<typename T>
-  struct Min : public std::binary_function<T,T,T>
+  template<typename L, typename R=L, typename RES=L>
+  struct Min : public std::binary_function<L,R,RES>
   {
-    T operator() (T left, T right) const
-      { return (left<right  ?  left : right); }
+    RES operator() (L left, R right) const
+      { return RES(left<right  ?  left : right); }
   };
 
   // Functor to get maximum of two values.
-  template<typename T>
-  struct Max : public std::binary_function<T,T,T>
+  template<typename L, typename R=L, typename RES=L>
+  struct Max : public std::binary_function<L,R,RES>
   {
-    T operator() (T left, T right) const
-      { return (left<right  ?  right : left); }
+    RES operator() (L left, R right) const
+      { return RES(left<right  ?  right : left); }
   };
 
   // Functor to add square of right to left.
