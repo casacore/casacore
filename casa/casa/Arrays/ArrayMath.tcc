@@ -855,6 +855,16 @@ template<class T> Array<T> floor(const Array<T> &a)
     return arrayTransformResult (a, casa::Floor<T>());
 }
 
+template<class T> Array<T> round(const Array<T> &a)
+{
+    return arrayTransformResult (a, casa::Round<T>());
+}
+
+template<class T> Array<T> sign(const Array<T> &a)
+{
+    return arrayTransformResult (a, casa::Sign<T>());
+}
+
 template<class T> Array<T> tan(const Array<T> &a)
 {
     return arrayTransformResult (a, casa::Tan<T>());

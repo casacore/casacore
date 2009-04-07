@@ -261,10 +261,8 @@ template<class T> Bool allOR (const T &val, const Array<T> &array);
 
 // Element by element test for NaN or Infinity.
 // <group>
-LogicalArray isNaN (const Array<Float> &array);
-LogicalArray isNaN (const Array<Double> &array);
-LogicalArray isInf (const Array<Float> &array);
-LogicalArray isInf (const Array<Double> &array);
+template<class T> LogicalArray isNaN (const Array<T> &array);
+template<class T> LogicalArray isInf (const Array<T> &array);
 // </group>
 
 // 
