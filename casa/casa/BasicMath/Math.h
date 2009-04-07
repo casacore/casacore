@@ -181,16 +181,23 @@ inline uInt abs(uInt Val) {return Val;}
 
 // Return the square of a value.
 // <group>
-inline Int square(Int val) {return val*val;}
-inline Float square(Float val) {return val*val;}
+inline Int    square(Int val)    {return val*val;}
+inline Float  square(Float val)  {return val*val;}
 inline Double square(Double val) {return val*val;}
 // </group>
 
 // Return the cube of a value.
 // <group>
-inline Int cube(Int val) {return val*val*val;}
-inline Float cube(Float val) {return val*val*val;}
+inline Int    cube(Int val)    {return val*val*val;}
+inline Float  cube(Float val)  {return val*val*val;}
 inline Double cube(Double val) {return val*val*val;}
+// </group>
+
+// Return the sign of a value.
+// <group>
+inline Int    sign(Int val)    {return val<0 ? -1 : (val>0 ? 1:0);}
+inline Float  sign(Float val)  {return val<0 ? -1 : (val>0 ? 1:0);}
+inline Double sign(Double val) {return val<0 ? -1 : (val>0 ? 1:0);}
 // </group>
 
 // Functions to return whether a value is "relatively" near another. Returns
