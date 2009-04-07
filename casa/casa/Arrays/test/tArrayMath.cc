@@ -365,8 +365,10 @@ TestBinary(%, testModuloInt, Int, Int)
 TestBinary(|, testOrInt, Int, Int)
 TestBinary(&, testAndInt, Int, Int)
 TestBinary(^, testXorInt, Int, Int)
-TestBinary(*, testTimesCF, Complex, Float)
+TestBinary(*, testTimesDComplex, DComplex, DComplex)
+TestBinary(*, testTimesComplex, Complex, Complex)
 TestBinary(/, testDivideCF, Complex, Float)
+TestBinary(*, testTimesCF, Complex, Float)
 TestUnary(+, testUPlusInt, Int)
 TestUnary(-, testUMinusInt, Int)
 TestUnary(~, testUNegateInt, Int)
@@ -425,8 +427,10 @@ int main()
     testOrInt();
     testAndInt();
     testXorInt();
-    testTimesCF();
+    testTimesDComplex();
+    testTimesComplex();
     testDivideCF();
+    testTimesCF();
     testUPlusInt();
     testUMinusInt();
     testUNegateInt();

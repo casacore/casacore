@@ -139,6 +139,45 @@ template<class T> class Matrix;
 // <group name="Array mathematical operations">
 
 
+  // The myxtransform functions are defined to avoid a bug in g++-4.3.
+  // That compiler generates incorrect code when only -g is used for
+  // a std::transform with a bind1st or bind2nd for a complex<float>.
+  // So, for example, the multiplication of a Complex array and Complex scalar
+  // fails (see g++ bug 39678).
+  // <group>
+  template<typename _InputIterator1, typename T,
+	   typename _OutputIterator, typename _BinaryOperation>
+    void
+    myltransform(_InputIterator1 __first1, _InputIterator1 __last1,
+                 _OutputIterator __result, T left,
+                 _BinaryOperation __binary_op)
+    {
+      for ( ; __first1 != __last1; ++__first1, ++__result)
+	*__result = __binary_op(left, *__first1);
+    }
+  template<typename _InputIterator1, typename T,
+	   typename _OutputIterator, typename _BinaryOperation>
+    void
+    myrtransform(_InputIterator1 __first1, _InputIterator1 __last1,
+                 _OutputIterator __result, T right,
+                 _BinaryOperation __binary_op)
+    {
+      for ( ; __first1 != __last1; ++__first1, ++__result)
+	*__result = __binary_op(*__first1, right);
+    }
+  template<typename _InputIterator1, typename T,
+	   typename _BinaryOperation>
+    void
+    myiptransform(_InputIterator1 __first1, _InputIterator1 __last1,
+		  T right,
+		  _BinaryOperation __binary_op)
+    {
+      for ( ; __first1 != __last1; ++__first1)
+	*__first1 = __binary_op(*__first1, right);
+    }
+  // </group>
+
+
 // Function to check the shapes. It throws an exception if not equal.
 // <group>
 void throwArrayShapes (const char* name);
@@ -181,11 +220,15 @@ inline void arrayContTransform (const Array<L>& left, R right,
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (left.contiguousStorage()) {
-    std::transform (left.cbegin(), left.cend(),
-                    result.cbegin(), bind2nd(op, right));
+    myrtransform (left.cbegin(), left.cend(),
+                 result.cbegin(), right, op);
+    ///    std::transform (left.cbegin(), left.cend(),
+    ///                    result.cbegin(), bind2nd(op, right));
   } else {
-    std::transform (left.begin(), left.end(),
-                    result.cbegin(), bind2nd(op, right));
+    myrtransform (left.begin(), left.end(),
+                 result.cbegin(), right, op);
+    ///    std::transform (left.begin(), left.end(),
+    ///                    result.cbegin(), bind2nd(op, right));
   }
 }
 
@@ -197,11 +240,15 @@ inline void arrayContTransform (L left, const Array<R>& right,
 {
   DebugAssert (result.contiguousStorage(), AipsError);
   if (right.contiguousStorage()) {
-    std::transform (right.cbegin(), right.cend(),
-                    result.cbegin(), bind1st(op, left));
+    myltransform (right.cbegin(), right.cend(),
+                  result.cbegin(), left, op);
+    ///    std::transform (right.cbegin(), right.cend(),
+    ///                    result.cbegin(), bind1st(op, left));
   } else {
-    std::transform (right.begin(), right.end(),
-                    result.cbegin(), bind1st(op, left));
+    myltransform (right.begin(), right.end(),
+                  result.cbegin(), left, op);
+    ///    std::transform (right.begin(), right.end(),
+    ///                    result.cbegin(), bind1st(op, left));
   }
 }
 
@@ -283,9 +330,11 @@ template<typename L, typename R, typename BinaryOperator>
 inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
-    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
+    myiptransform (left.cbegin(), left.cend(), right, op);
+    ///    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
   } else {
-    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
+    myiptransform (left.begin(), left.end(), right, op);
+    ///    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
   }
 }
 
@@ -435,6 +484,8 @@ template<class T> Array<T> ceil(const Array<T> &a);
 template<class T> Array<T> fabs(const Array<T> &a);
 template<class T> Array<T> abs(const Array<T> &a);
 template<class T> Array<T> floor(const Array<T> &a);
+template<class T> Array<T> round(const Array<T> &a);
+template<class T> Array<T> sign(const Array<T> &a);
 template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b);
 template<class T> Array<T> fmod(const T &a, const Array<T> &b);
 template<class T> Array<T> fmod(const Array<T> &a, const T &b);
@@ -729,10 +780,10 @@ template<class T, class U> void convertArray(Array<T> &to,
 
 
 // Returns an array where every element is squared.
-template<class T> inline Array<T> square(const Array<T> &val);
+template<class T> Array<T> square(const Array<T> &val);
 
 // Returns an array where every element is cubed.
-template<class T> inline Array<T> cube(const Array<T> &val);
+template<class T> Array<T> cube(const Array<T> &val);
 
 
 // </group>
