@@ -128,7 +128,7 @@ int main()
     { 
       std::transform (v1.begin(), v1.end(), v2.begin(), res.begin(), SumSqrDiff<double>(0.25));
       for (uInt i=0; i<res.size(); ++i) {
-        AlwaysAssertExit (res[i] == v1[i] + (v2[i]-0.25)*(v2[i]-0.25));
+        AlwaysAssertExit (near(res[i], v1[i] + (v2[i]-0.25)*(v2[i]-0.25)));
       }
   }
   } catch (AipsError& x) {
