@@ -62,7 +62,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                         ", but not its " + funcName + " function");
       }
       // Execute the register function.
-      reinterpret_cast<void(*)()>(initfunc)();
+      // We need to cast the void* from dlsym to a function pointer,
+      // a function without arguments returning void.
+      // This is not permitted as they are different kind of pointers,
+      // so the compiler might issue a warning.
+      // On RHEL4 gcc-3.4.6 gave an error for a reinterpret_cast,
+      // so we have to use a C-style cast.
+      ///      reinterpret_cast<void(*)()>(initfunc)();
+      ((void(*)())initfunc)();
     }
   }
 
