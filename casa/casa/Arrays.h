@@ -91,7 +91,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ul>
 
 // <li>
-// <linkto class=Array>Array</linkto> is the basic array class.
+// <linkto class=Array>Array</linkto> is the basic array class. It is
+// only templated on data type, not on dimensionality like the array
+// classes in Blitz and boost.
+// It has a non-templated base class ArrayBase.
 //
 // <linkto class=Vector>Vector</linkto>,
 // <linkto class=Matrix>Matrix</linkto>, and
@@ -108,11 +111,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Array exception classes.
 //
 // <li>
-// <linkto class=ArrayIterator>ArrayIterator</linkto> can be used to iterate
-// in a simple way through an Array. Note that
-// <linkto class=LatticeIterator>LatticeIterator</linkto> can be used on a
-// <linkto class=ArrayLattice>ArrayLattice</linkto> object for more
-// advanced iteration.
+// There are several ways o iterate through an array:
+// <ul>
+//  <li> The STL-style Array iterators can be used to iterate
+//    element by element through an array. This is the fastest way.
+//  <li> <linkto class=ArrayIterator>ArrayIterator</linkto> can be used to
+//    iterate line by line, plane by plane, etc. through an array.
+//    Each subset is an array in itself, thus can be iterated again.
+//  <li> The Array function operators () can be used to get a subset from
+//    an array. They can be used for iteration, but that is slower than
+//    the ways mentioned above.
+//  <li> The array operator[] can be used to get the i-th subset. It can
+//    be used for iteration, but ArrayIterator does the same and is faster.
+//  <li> ArrayAccessor is useful when neighbours of an array element have
+//    to be visited.
+//  <li> <linkto class=LatticeIterator>LatticeIterator</linkto> can be used on
+//    a <linkto class=ArrayLattice>ArrayLattice</linkto> object for more
+//    advanced iteration. However, they are part of the lattices packages.
+// </ul>
 //
 // <li>
 // <linkto group="ArrayMath.h#Array mathematical operations">Mathematical</linkto>,
@@ -121,6 +137,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto group="ArrayIO.h#Array IO">IO</linkto>,
 // and other useful operations are provided for
 // Arrays and MaskedArrays.
+// 
+// ArrayMath also defines various STL-style transform functions that use the
+// Array iterators and functors like Plus to apply the mathematical and logical
+// operations. They can, however, also be used directly on arrays of
+// different types making it possible to, say, add a Complex and double array
+// with a DComplex result.
+// <br>It also has a <src>transformInPlace</src> to avoid needless incrementing
+// of iterators which have to be done when using <src>std::transform</src>
+// for in-place operations.
 //
 // <li>
 // Orthogonal n-space descriptors - useful when a shape of an Array is
