@@ -40,7 +40,7 @@
 #include <images/Images/FITSImage.h>
 #include <images/Images/ImageRegrid.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/DirectionCoordinate.h>

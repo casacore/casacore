@@ -34,7 +34,7 @@
 
 #include <images/Images/ImageInterface.h>
 #include <images/Images/LELImageCoord.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/LCRegion.h>
 #include <lattices/Lattices/LCBox.h>
 #include <lattices/Lattices/SubLattice.h>

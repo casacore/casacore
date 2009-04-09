@@ -39,7 +39,7 @@
 #include <images/Images/SubImage.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageRegrid.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/MaskedLattice.h> 
 #include <lattices/Lattices/LCPagedMask.h> 
 #include <lattices/Lattices/TempLattice.h>

@@ -104,7 +104,7 @@
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/SubImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/ImageHistograms.h>
 #include <lattices/Lattices/LCSlicer.h>
 #include <lattices/Lattices/LCBox.h>

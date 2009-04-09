@@ -44,7 +44,7 @@
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/ImageFFT.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/ImageSummary.h>
 #include <images/Images/TempImage.h>
 #include <lattices/Lattices/Lattice.h>

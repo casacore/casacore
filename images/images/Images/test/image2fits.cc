@@ -33,7 +33,7 @@
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageFITSConverter.h>
-#include <images/Images/RegionHandler.h>
+#include <images/Regions/RegionHandler.h>
 
 #include <casa/Arrays/Array.h>
 #include <casa/Containers/MapIO.h>

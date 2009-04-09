@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <images/Images/TempImage.h>
-#include <images/Images/RegionHandlerMemory.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/RegionHandlerMemory.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/TempLattice.h>
 #include <lattices/Lattices/LatticeRegion.h>
 #include <casa/Arrays/Array.h>

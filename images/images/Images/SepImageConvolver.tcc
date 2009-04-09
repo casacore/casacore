@@ -42,7 +42,7 @@
 
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <images/Images/PagedImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/TempImage.h>
 #include <lattices/Lattices/LatticeIterator.h>

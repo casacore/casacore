@@ -27,8 +27,8 @@
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageRegion.h>
-#include <images/Images/WCBox.h>
+#include <images/Regions/ImageRegion.h>
+#include <images/Regions/WCBox.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <lattices/Lattices/LCBox.h>
 #include <lattices/Lattices/LCPagedMask.h>

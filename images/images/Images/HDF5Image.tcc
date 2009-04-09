@@ -27,8 +27,8 @@
 
 
 #include <images/Images/HDF5Image.h>
-#include <images/Images/ImageRegion.h>
-#include <images/Images/RegionHandlerHDF5.h>
+#include <images/Regions/ImageRegion.h>
+#include <images/Regions/RegionHandlerHDF5.h>
 #include <images/Images/ImageInfo.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/LatticeNavigator.h>

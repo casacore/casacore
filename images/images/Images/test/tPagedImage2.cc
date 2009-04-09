@@ -37,8 +37,8 @@
 #include <lattices/Lattices/LCSlicer.h>
 #include <lattices/Lattices/LCPagedMask.h>
 #include <lattices/Lattices/LatticeExpr.h>
-#include <images/Images/ImageRegion.h>
-#include <images/Images/RegionHandler.h>
+#include <images/Regions/ImageRegion.h>
+#include <images/Regions/RegionHandler.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>

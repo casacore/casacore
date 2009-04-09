@@ -37,7 +37,7 @@
 #include <casa/BasicSL/String.h>
   
 #include <images/Images/ImageFFT.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/PagedImage.h>
 #include <lattices/Lattices/LCPagedMask.h>
 

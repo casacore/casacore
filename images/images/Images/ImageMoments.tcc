@@ -68,8 +68,8 @@
 #include <images/Images/MomentCalculator.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/RegionHandler.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/RegionHandler.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/SepImageConvolver.h>
 #include <lattices/Lattices/ArrayLattice.h>

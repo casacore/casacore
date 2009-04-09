@@ -34,7 +34,7 @@
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <images/Images/ImageInterface.h>
 #include <images/Images/SubImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/LatticeUtilities.h>
 #include <components/SpectralComponents/SpectralEstimate.h>
 #include <components/SpectralComponents/SpectralElement.h>

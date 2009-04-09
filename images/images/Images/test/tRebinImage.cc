@@ -34,7 +34,7 @@
 #include <images/Images/SubImage.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/RebinImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <lattices/Lattices/LatticeUtilities.h>
 #include <casa/Logging/LogIO.h>

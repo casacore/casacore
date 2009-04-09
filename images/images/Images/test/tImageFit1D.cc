@@ -45,7 +45,7 @@
 #include<components/SpectralComponents/SpectralElement.h>
 #include<images/Images/TempImage.h>
 #include<images/Images/ImageInterface.h>
-#include<images/Images/ImageRegion.h>
+#include<images/Regions/ImageRegion.h>
 #include<casa/Utilities/Assert.h>
 
 #include <casa/iostream.h>

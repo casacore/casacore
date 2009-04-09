@@ -46,10 +46,10 @@
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/ImageInterface.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/ImageUtilities.h>
 #include <images/Images/PagedImage.h>
-#include <images/Images/RegionHandler.h>
+#include <images/Regions/RegionHandler.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/TempImage.h>
 //#include <images/Images/ImageAnalysis.h>

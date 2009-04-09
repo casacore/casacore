@@ -36,7 +36,7 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Exceptions/Error.h>
 #include <images/Images/ImageInterface.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <lattices/Lattices/TiledLineStepper.h>
 #include <lattices/Lattices/MaskedLatticeIterator.h>

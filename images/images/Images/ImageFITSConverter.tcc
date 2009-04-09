@@ -29,8 +29,8 @@
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/RegionHandler.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/RegionHandler.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/ImageInfo.h>
 #include <coordinates/Coordinates/LinearCoordinate.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>

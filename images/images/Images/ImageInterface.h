@@ -31,7 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
-#include <images/Images/RegionHandler.h>
+#include <images/Regions/RegionHandler.h>
 #include <images/Images/MaskSpecifier.h>
 #include <images/Images/ImageInfo.h>
 #include <lattices/Lattices/MaskedLattice.h>

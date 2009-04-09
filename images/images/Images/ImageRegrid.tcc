@@ -43,7 +43,7 @@
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <coordinates/Coordinates/ObsInfo.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/MaskedLattice.h> 

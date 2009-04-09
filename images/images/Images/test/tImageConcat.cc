@@ -42,7 +42,7 @@
 #include <images/Images/PagedImage.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageInterface.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/LCPagedMask.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/SubLattice.h>

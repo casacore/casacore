@@ -42,8 +42,8 @@
 #include <components/ComponentModels/GaussianShape.h>
 #include <images/Images/ImageInfo.h>
 #include <images/Images/PagedImage.h>
-#include <images/Images/RegionHandler.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/RegionHandler.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/TempImage.h>
 #include <lattices/Lattices/LCRegion.h>

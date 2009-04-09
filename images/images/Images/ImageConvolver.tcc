@@ -35,8 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/RegionHandler.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/RegionHandler.h>
+#include <images/Regions/ImageRegion.h>
 #include <images/Images/ImageUtilities.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/LatticeConvolver.h>

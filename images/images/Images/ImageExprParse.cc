@@ -29,8 +29,8 @@
 #include <images/Images/ImageExprGram.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageOpener.h>
-#include <images/Images/ImageRegion.h>
-#include <images/Images/RegionHandlerTable.h>
+#include <images/Regions/ImageRegion.h>
+#include <images/Regions/RegionHandlerTable.h>
 #include <images/Images/HDF5Image.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <lattices/Lattices/PagedArray.h>

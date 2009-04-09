@@ -27,7 +27,7 @@
 
 #include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageExpr.h>
-#include <images/Images/ImageRegion.h>
+#include <images/Regions/ImageRegion.h>
 #include <lattices/Lattices/PagedArray.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/LCBox.h>
