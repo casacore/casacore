@@ -303,6 +303,7 @@ String Regex::fromSQLPattern(const String &pattern)
 	Char c = pattern[i];
 	switch (c) {
 	case '%':
+	    result[len++] = '.';
 	    result[len++] = '*';
 	    break;
 	case '_':
