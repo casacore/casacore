@@ -44,6 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class TableExprNodeSet;
 class TableExprNodeIndex;
+class TableColumn;
 class AipsIO;
 template<class T> class Vector;
 
@@ -500,6 +501,20 @@ private:
   // Finish the table (rename, copy, and/or flush).
   Table doFinish (Table& table);
 
+  // Update the values in the columns (helpers of doUpdate).
+  // <group>
+  template<typename TCOL, typename TNODE>
+  void updateValue2 (const TableExprId& rowid, Bool isScalarCol,
+                     const TableExprNode& node, TableColumn& col,
+                     const Slicer* slicerPtr,
+                     IPosition& blc, IPosition& trc, IPosition& inc);
+  template<typename T>
+  void updateValue1 (const TableExprId& rowid, Bool isScalarCol,
+                     const TableExprNode& node, TableColumn& col,
+                     const Slicer* slicerPtr,
+                     IPosition& blc, IPosition& trc, IPosition& inc);
+  // </group>
+
   // Make a data type from the string.
   // It checks if it is compatible with the given (expression) data type.
   DataType makeDataType (DataType dtype, const String& dtstr,
@@ -512,8 +527,8 @@ private:
   // Make a set from the results of the subquery.
   TableExprNode makeSubSet() const;
 
-  // Evaluate a double scalar expression.
-  Double evalDSExpr (const TableExprNode& expr) const;
+  // Evaluate an int scalar expression.
+  Int64 evalIntScaExpr (const TableExprNode& expr) const;
 
   // Split a name into its parts (shorthand, column and field names).
   // True is returned when the name contained a keyword part.

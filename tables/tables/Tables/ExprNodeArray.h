@@ -85,12 +85,15 @@ public:
     // Does a value occur in the set?
     // <group>
     virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasInt      (const TableExprId& id, Int64 value);
     virtual Bool hasDouble   (const TableExprId& id, Double value);
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
     virtual Array<Bool> hasArrayBool     (const TableExprId& id,
 					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
+					  const Array<Int64>& value);
     virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
 					  const Array<Double>& value);
     virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
@@ -105,6 +108,8 @@ public:
     // <group>
     virtual Bool     getElemBool     (const TableExprId& id,
 				      const Slicer& index);
+    virtual Int64    getElemInt      (const TableExprId& id,
+				      const Slicer& index);
     virtual Double   getElemDouble   (const TableExprId& id,
 				      const Slicer& index);
     virtual DComplex getElemDComplex (const TableExprId& id,
@@ -118,6 +123,8 @@ public:
     // Get a slice of the array in the given row.
     // <group>
     virtual Array<Bool>     getSliceBool     (const TableExprId& id,
+					      const Slicer&);
+    virtual Array<Int64>    getSliceInt      (const TableExprId& id,
 					      const Slicer&);
     virtual Array<Double>   getSliceDouble   (const TableExprId& id,
 					      const Slicer&);
@@ -145,6 +152,7 @@ public:
     // </group>
 
     // Make an array with the given shape and fill it with the value.
+    static Array<Int64>    makeArray (const IPosition& shape, Int64 value);
     static Array<Double>   makeArray (const IPosition& shape, Double value);
     static Array<DComplex> makeArray (const IPosition& shape,
 				      const DComplex& value);
@@ -268,11 +276,10 @@ public:
     ~TableExprNodeArrayColumnuChar();
 
     // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&);
-
-    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual void replaceTablePtr (const Table&); 
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual Array<Int64> getArrayInt (const TableExprId& id);
+    virtual Array<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uChar>  getElemColumnuChar (const Slicer&);
 protected:
@@ -308,9 +315,9 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&);
 
-    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual Array<Int64> getArrayInt (const TableExprId& id);
+    virtual Array<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Short>  getElemColumnShort (const Slicer&);
 protected:
@@ -346,9 +353,9 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&);
 
-    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual Array<Int64> getArrayInt (const TableExprId& id);
+    virtual Array<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uShort> getElemColumnuShort (const Slicer&);
 protected:
@@ -384,9 +391,9 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&);
 
-    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual Array<Int64> getArrayInt (const TableExprId& id);
+    virtual Array<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Int>    getElemColumnInt (const Slicer&);
 protected:
@@ -422,9 +429,9 @@ public:
     // Replace the Table pointer in this node.
     virtual void replaceTablePtr (const Table&);
 
-    virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
+    virtual Array<Int64> getArrayInt (const TableExprId& id);
+    virtual Array<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uInt>   getElemColumnuInt (const Slicer&);
 protected:
@@ -640,7 +647,7 @@ protected:
 
 // <etymology>
 // TableExprNodeIndex is used to store an index.
-// All the operands must be Double.
+// All the operands must be Int.
 // </etymology>
 
 // <synopsis> 
@@ -649,7 +656,7 @@ protected:
 // </synopsis> 
 
 // <motivation>
-// All operands of TableExprNodeIndex must be Double,
+// All operands of TableExprNodeIndex must be Int,
 // therefore it is a derivation of TableExprNodeMulti.
 // </motivation>
 
@@ -741,12 +748,14 @@ public:
     void show (ostream& os, uInt indent) const;
 
     Bool     getBool     (const TableExprId& id);
+    Int64    getInt      (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
     String   getString   (const TableExprId& id);
     MVTime   getDate     (const TableExprId& id);
 
     Array<Bool>     getArrayBool     (const TableExprId& id);
+    Array<Int64>    getArrayInt      (const TableExprId& id);
     Array<Double>   getArrayDouble   (const TableExprId& id);
     Array<DComplex> getArrayDComplex (const TableExprId& id);
     Array<String>   getArrayString   (const TableExprId& id);

@@ -227,6 +227,45 @@ TableExprNode RecordGram::handleFunc (const String& name,
 					 TaQLStyle());
 }
 
+TableExprNode RecordGram::handleRegex (const TableExprNode& left,
+                                       const String& regex)
+{
+  Bool caseInsensitive = False;
+  Bool negate          = False;
+  Int sz = regex.size();
+  if (sz > 0  &&  regex[sz-1] == 'i') {
+    caseInsensitive = True;
+    --sz;
+  }
+  AlwaysAssert (sz >= 4  &&  regex[sz-1] != ' ', AipsError);
+  Int inx = 0;
+  if (regex[0] == '!') {
+    negate = True;
+    ++inx;
+  }
+  AlwaysAssert (regex[inx] == '~', AipsError);
+  while (regex[++inx] == ' ') {}
+  AlwaysAssert (regex.size()-inx >= 3, AipsError);
+  // Remove delimiters.
+  String str = regex.substr(inx+2, sz-inx-3);
+  if (regex[inx] == 'p') {
+    str = Regex::fromPattern (str);
+  } else if (regex[inx] == 'm') {
+    str = ".*(" + str + ").*";
+  }
+  TableExprNode lnode(left);
+  if (caseInsensitive) {
+    str.downcase();
+    lnode = downcase(left);
+  }
+  TableExprNode rnode((Regex(str)));
+  if (negate) {
+    lnode = (lnode != rnode);
+  } else {
+    lnode = (lnode == rnode);
+  }
+  return lnode;
+}
+
 
 } //# NAMESPACE CASA - END
-

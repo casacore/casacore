@@ -76,6 +76,10 @@ class TableExprNode;
 			     const TableExprNode& right);
     TableExprNode operator% (const TableExprNode& left,
 			     const TableExprNode& right);
+    TableExprNode operator& (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator| (const TableExprNode& left,
+			     const TableExprNode& right);
     TableExprNode operator^ (const TableExprNode& left,
 			     const TableExprNode& right);
   // </group>
@@ -180,9 +184,9 @@ class TableExprNode;
     TableExprNode exp    (const TableExprNode& node);
     TableExprNode log    (const TableExprNode& node);
     TableExprNode log10  (const TableExprNode& node);
-    TableExprNode pow    (const TableExprNode& x,
-			  const TableExprNode& y);
+    TableExprNode pow    (const TableExprNode& x, const TableExprNode& exp);
     TableExprNode square (const TableExprNode& node);
+    TableExprNode cube   (const TableExprNode& node);
     TableExprNode sqrt   (const TableExprNode& node);
     TableExprNode norm   (const TableExprNode& node);
   // </group>
@@ -190,7 +194,6 @@ class TableExprNode;
   // Transcendental functions applied to to nodes containing scalars or
   // arrays with double values.
   // They are invalid for Complex nodes.
-  // <group>
     TableExprNode asin  (const TableExprNode& node);
     TableExprNode acos  (const TableExprNode& node);
     TableExprNode atan  (const TableExprNode& node);
@@ -213,6 +216,8 @@ class TableExprNode;
     TableExprNode upcase    (const TableExprNode& node);
     TableExprNode downcase  (const TableExprNode& node);
     TableExprNode trim      (const TableExprNode& node);
+    TableExprNode ltrim     (const TableExprNode& node);
+    TableExprNode rtrim     (const TableExprNode& node);
   // </group>
 
   // Functions for regular expression matching and 
@@ -265,6 +270,9 @@ class TableExprNode;
   // The imaginary part of a complex node.
   // Defined for scalars and arrays.
     TableExprNode imag (const TableExprNode& node);
+
+  // Convert double to int (using floor).
+    TableExprNode integer (const TableExprNode& node);
 
   // The amplitude (i.e. sqrt(re*re + im*im)) of a complex node.
   // This is a synonym for function abs.
@@ -391,7 +399,7 @@ class TableExprNode;
     TableExprNode isdefined (const TableExprNode& array);
 
   // Functions operating on any scalar or array resulting in a Double scalar.
-  // A scalar has 1 element and dimensionality 1.
+  // A scalar has 1 element and dimensionality 0.
   // <group>
     TableExprNode nelements (const TableExprNode& array);
     TableExprNode ndim (const TableExprNode& array);
@@ -459,8 +467,8 @@ class TableExprNode;
 // Data types Bool, Double, DComplex and String are used.
 // Char, uChar, Short, uShort, Int, uInt and float are converted 
 // to Double and Complex to DComplex.
-// Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
-// Also &&, ||, parentheses and unary +, - and ! are recognized.
+// Binary operators +, -, *, /, %, &, }, ^, ==, >=, >, <, <= and != are
+// recognized. Also &&, ||, parentheses and unary +, -, ~ and ! are recognized.
 // For strings the binary operator + can also be used.
 // The operators have the normal C++ precedence.
 // Furthermore functions (like sin, max, ceil) can be used in an expression.
@@ -535,6 +543,10 @@ class TableExprNode
 				    const TableExprNode& right);
     friend TableExprNode operator% (const TableExprNode& left,
 				    const TableExprNode& right);
+    friend TableExprNode operator& (const TableExprNode& left,
+				    const TableExprNode& right);
+    friend TableExprNode operator| (const TableExprNode& left,
+				    const TableExprNode& right);
     friend TableExprNode operator^ (const TableExprNode& left,
 				    const TableExprNode& right);
     friend TableExprNode operator== (const TableExprNode& left,
@@ -586,8 +598,9 @@ class TableExprNode
     friend TableExprNode log    (const TableExprNode& node);
     friend TableExprNode log10  (const TableExprNode& node);
     friend TableExprNode pow    (const TableExprNode& x,
-				 const TableExprNode& y);
+				 const TableExprNode& exp);
     friend TableExprNode square (const TableExprNode& node);
+    friend TableExprNode cube   (const TableExprNode& node);
     friend TableExprNode sqrt   (const TableExprNode& node);
     friend TableExprNode norm   (const TableExprNode& node);
     friend TableExprNode asin  (const TableExprNode& node);
@@ -608,9 +621,11 @@ class TableExprNode
     friend TableExprNode upcase    (const TableExprNode& node);
     friend TableExprNode downcase  (const TableExprNode& node);
     friend TableExprNode trim      (const TableExprNode& node);
-    friend TableExprNode regex      (const TableExprNode& node);
-    friend TableExprNode pattern    (const TableExprNode& node);
-    friend TableExprNode sqlpattern (const TableExprNode& node);
+    friend TableExprNode ltrim     (const TableExprNode& node);
+    friend TableExprNode ttrim     (const TableExprNode& node);
+    friend TableExprNode regex     (const TableExprNode& node);
+    friend TableExprNode pattern   (const TableExprNode& node);
+    friend TableExprNode sqlpattern(const TableExprNode& node);
     friend TableExprNode datetime  (const TableExprNode& node);
     friend TableExprNode mjdtodate (const TableExprNode& node);
     friend TableExprNode mjd       (const TableExprNode& node);
@@ -715,6 +730,8 @@ public:
     // </group>
     // Unary NOT-operator on boolean TableExprNode's.
     TableExprNode operator! () const;
+    // Unary bitwise negate-operator on integer TableExprNode's.
+    TableExprNode operator~ () const;
 
     // Slicing in a node containing an array. It is possible to
     // address a single pixel or an n-dimensional subarray.
@@ -747,8 +764,10 @@ public:
     // is not done automatically.
     // <group>
     TableExprNode (const Bool& value);
+    TableExprNode (const Int64& value);
     TableExprNode (const Int& value);
     TableExprNode (const uInt& value);
+    TableExprNode (const ssize_t& value);
     TableExprNode (const Float& value);
     TableExprNode (const Double& value);
     TableExprNode (const Complex& value);
@@ -793,10 +812,9 @@ public:
       { return node_p->unit(); }
 
     // Get the data type of the expression.
-    // Currently the only possible values are TpBool, TpDouble,
-    // TpDComplex and TpString.
-    // An expression is thrown if the result is not a scalar of one
-    // of those types.
+    // Currently the only possible values are TpBool, TpInt, TpDouble,
+    // TpDComplex, TpString, and TpOther.
+    // The latter is returned for a date or regex.
     DataType dataType() const;
 
     // Is the expression a scalar?
@@ -815,21 +833,25 @@ public:
     // operator on the resulting values.
     // <group>
     void get (const TableExprId& id, Bool& value) const;
+    void get (const TableExprId& id, Int64& value) const;
     void get (const TableExprId& id, Double& value) const;
     void get (const TableExprId& id, DComplex& value) const;
     void get (const TableExprId& id, String& value) const;
     void get (const TableExprId& id, Regex& value) const;
     void get (const TableExprId& id, MVTime& value) const;
     void get (const TableExprId& id, Array<Bool>& value) const;
+    void get (const TableExprId& id, Array<Int64>& value) const;
     void get (const TableExprId& id, Array<Double>& value) const;
     void get (const TableExprId& id, Array<DComplex>& value) const;
     void get (const TableExprId& id, Array<String>& value) const;
     void get (const TableExprId& id, Array<MVTime>& value) const;
     Bool     getBool     (const TableExprId& id) const;
+    Int64    getInt      (const TableExprId& id) const;
     Double   getDouble   (const TableExprId& id) const;
     DComplex getDComplex (const TableExprId& id) const;
     String   getString   (const TableExprId& id) const;
     Array<Bool>     getArrayBool     (const TableExprId& id) const;
+    Array<Int64>    getArrayInt      (const TableExprId& id) const;
     Array<Double>   getArrayDouble   (const TableExprId& id) const;
     Array<DComplex> getArrayDComplex (const TableExprId& id) const;
     Array<String>   getArrayString   (const TableExprId& id) const;
@@ -907,10 +929,7 @@ public:
 				      const Vector<String>& fieldNames);
 
     // Throw invalid data type exception.
-    // <group>
-    static void throwInvDT();
     static void throwInvDT (const String& message);
-    // </group>
 
     // Create function node of the given type with the given arguments.
     // <group>
@@ -989,6 +1008,9 @@ private:
     TableExprNodeRep* newTimes  (TableExprNodeRep* right) const;
     TableExprNodeRep* newDivide (TableExprNodeRep* right) const;
     TableExprNodeRep* newModulo (TableExprNodeRep* right) const;
+    TableExprNodeRep* newBitAnd (TableExprNodeRep* right) const;
+    TableExprNodeRep* newBitOr  (TableExprNodeRep* right) const;
+    TableExprNodeRep* newBitXor (TableExprNodeRep* right) const;
     TableExprNodeRep* newEQ     (TableExprNodeRep* right) const;
     TableExprNodeRep* newNE     (TableExprNodeRep* right) const;
     TableExprNodeRep* newGE     (TableExprNodeRep* right) const;
@@ -1014,6 +1036,8 @@ inline const Table& TableExprNode::table() const
 //# Get the value of an expression.
 inline void TableExprNode::get (const TableExprId& id, Bool& value) const
     { value = node_p->getBool (id); }
+inline void TableExprNode::get (const TableExprId& id, Int64& value) const
+    { value = node_p->getInt (id); }
 inline void TableExprNode::get (const TableExprId& id, Double& value) const
     { value = node_p->getDouble (id); }
 inline void TableExprNode::get (const TableExprId& id, DComplex& value) const
@@ -1028,6 +1052,9 @@ inline void TableExprNode::get (const TableExprId& id,
 				Array<Bool>& value) const
     { value = node_p->getArrayBool (id); }
 inline void TableExprNode::get (const TableExprId& id,
+				Array<Int64>& value) const
+    { value = node_p->getArrayInt (id); }
+inline void TableExprNode::get (const TableExprId& id,
 				Array<Double>& value) const
     { value = node_p->getArrayDouble (id); }
 inline void TableExprNode::get (const TableExprId& id,
@@ -1041,6 +1068,8 @@ inline void TableExprNode::get (const TableExprId& id,
     { value = node_p->getArrayDate (id); }
 inline Bool TableExprNode::getBool (const TableExprId& id) const
     { return node_p->getBool (id); }
+inline Int64 TableExprNode::getInt (const TableExprId& id) const
+    { return node_p->getInt (id); }
 inline Double TableExprNode::getDouble (const TableExprId& id) const
     { return node_p->getDouble (id); }
 inline DComplex TableExprNode::getDComplex (const TableExprId& id) const
@@ -1049,6 +1078,8 @@ inline String TableExprNode::getString (const TableExprId& id) const
     { return node_p->getString (id); }
 inline Array<Bool> TableExprNode::getArrayBool (const TableExprId& id) const
     { return node_p->getArrayBool (id); }
+inline Array<Int64> TableExprNode::getArrayInt (const TableExprId& id) const
+    { return node_p->getArrayInt (id); }
 inline Array<Double> TableExprNode::getArrayDouble (const TableExprId& id) const
     { return node_p->getArrayDouble (id); }
 inline Array<DComplex> TableExprNode::getArrayDComplex (const TableExprId& id) const
@@ -1105,10 +1136,20 @@ inline TableExprNode operator% (const TableExprNode& left,
 {
     return left.newModulo (right.node_p);
 }
+inline TableExprNode operator& (const TableExprNode& left,
+				const TableExprNode& right)
+{
+    return left.newBitAnd (right.node_p);
+}
+inline TableExprNode operator| (const TableExprNode& left,
+				const TableExprNode& right)
+{
+    return left.newBitOr (right.node_p);
+}
 inline TableExprNode operator^ (const TableExprNode& left,
 				const TableExprNode& right)
 {
-    return pow(left, right);
+    return left.newBitXor (right.node_p);
 }
 inline TableExprNode operator== (const TableExprNode& left,
 				 const TableExprNode& right)
@@ -1252,6 +1293,11 @@ inline TableExprNode square (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::squareFUNC,
 					   node);
 }
+inline TableExprNode cube (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::cubeFUNC,
+					   node);
+}
 inline TableExprNode sqrt (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::sqrtFUNC, node);
@@ -1323,6 +1369,10 @@ inline TableExprNode real (const TableExprNode& node)
 inline TableExprNode imag (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::imagFUNC, node);
+}
+inline TableExprNode integer (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::intFUNC, node);
 }
 inline TableExprNode conj (const TableExprNode& node)
 {
@@ -1430,6 +1480,14 @@ inline TableExprNode time (const TableExprNode& node)
 inline TableExprNode trim (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::trimFUNC, node);
+}
+inline TableExprNode ltrim (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ltrimFUNC, node);
+}
+inline TableExprNode rtrim (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::rtrimFUNC, node);
 }
 inline TableExprNode isNaN (const TableExprNode& node)
 {

@@ -37,6 +37,10 @@ TableExprNodeUnit::TableExprNodeUnit (TableExprNodeRep& child,
 				      const Unit& unit)
 : TableExprNodeBinary (child.dataType(), child, OtUndef)
 {
+    // Units imply conversion, thus result cannot be integer.
+    if (dtype_p == NTInt) {
+        dtype_p = NTDouble;
+    }
     lnode_p  = child.link();
     factor_p = set (*this, child, unit);
 }
@@ -144,6 +148,10 @@ TableExprNodeArrayUnit::TableExprNodeArrayUnit (TableExprNodeRep& child,
 						const Unit& unit)
 : TableExprNodeArray (child, child.dataType(), OtUndef)
 {
+  // Units imply conversion, thus result cannot be integer.
+  if (dtype_p == NTInt) {
+    dtype_p = NTDouble;
+  }
   lnode_p  = child.link();
   factor_p = TableExprNodeUnit::set (*this, child, unit);
 }

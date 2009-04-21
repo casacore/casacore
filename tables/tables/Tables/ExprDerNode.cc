@@ -55,6 +55,19 @@ TableExprNodeConstBool::~TableExprNodeConstBool()
 Bool TableExprNodeConstBool::getBool (const TableExprId&)
     { return value_p; }
 
+TableExprNodeConstInt::TableExprNodeConstInt (const Int64& val)
+: TableExprNodeBinary (NTInt, VTScalar, OtLiteral, Table()),
+  value_p             (val)
+{}
+TableExprNodeConstInt::~TableExprNodeConstInt()
+{}
+Int64 TableExprNodeConstInt::getInt (const TableExprId&)
+    { return value_p; }
+Double TableExprNodeConstInt::getDouble (const TableExprId&)
+    { return value_p; }
+DComplex TableExprNodeConstInt::getDComplex (const TableExprId&)
+    { return double(value_p); }
+
 TableExprNodeConstDouble::TableExprNodeConstDouble (const Double& val)
 : TableExprNodeBinary (NTDouble, VTScalar, OtLiteral, Table()),
   value_p             (val)
@@ -135,8 +148,12 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
     case TpDComplex:
 	dtype_p = NTComplex;
 	break;
-    default:
+    case TpFloat:
+    case TpDouble:
 	dtype_p = NTDouble;
+	break;
+    default:
+	dtype_p = NTInt;
     }
     setUnit (getColumnUnit(*tabColPtr_p));
 }
@@ -175,6 +192,12 @@ const ROTableColumn& TableExprNodeColumn::getColumn() const
 Bool TableExprNodeColumn::getBool (const TableExprId& id)
 {
     Bool val;
+    tabColPtr_p->getScalar (id.rownr(), val);
+    return val;
+}
+Int64 TableExprNodeColumn::getInt (const TableExprId& id)
+{
+    Int64 val;
     tabColPtr_p->getScalar (id.rownr(), val);
     return val;
 }
@@ -262,12 +285,12 @@ Array<String>   TableExprNodeColumn::getColumnString()
 
 
 TableExprNodeRownr::TableExprNodeRownr (const Table& table, uInt origin)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, table),
+: TableExprNodeBinary (NTInt, VTScalar, OtRownr, table),
   origin_p            (origin)
 {}
 TableExprNodeRownr::~TableExprNodeRownr ()
 {}
-Double TableExprNodeRownr::getDouble (const TableExprId& id)
+Int64 TableExprNodeRownr::getInt (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
     return id.rownr() + origin_p;
@@ -276,11 +299,11 @@ Double TableExprNodeRownr::getDouble (const TableExprId& id)
 
 
 TableExprNodeRowid::TableExprNodeRowid (const Table& table)
-: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, table)
+: TableExprNodeBinary (NTInt, VTScalar, OtRownr, table)
 {}
 TableExprNodeRowid::~TableExprNodeRowid ()
 {}
-Double TableExprNodeRowid::getDouble (const TableExprId& id)
+Int64 TableExprNodeRowid::getInt (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
     // Get all row numbers on first access, so we're sure the correct

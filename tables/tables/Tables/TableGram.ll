@@ -1,7 +1,7 @@
 /*
     TableGram.l: Lexical analyzer for table commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
-    Associated Universities, Inc. Washington DC, USA.
+    Associated Universities, Inc. Washington DC,a USA.
 
     This library is free software; you can redistribute it and/or modify it
     under the terms of the GNU Library General Public License as published by
@@ -53,6 +53,7 @@ WHITE1    [ \t\n]
 WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
+HEXINT       0[xX][0-9a-fA-F]+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
@@ -111,6 +112,8 @@ GIVING    {GIVING1}|{SAVETO}
 INTO      [Ii][Nn][Tt][Oo]
 GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]{WHITE1}
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
+JOIN      [Jj][Oo][Ii][Nn]
+ON        [Oo][Nn]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
 LIMIT     [Ll][Ii][Mm][Ii][Tt]
@@ -277,6 +280,14 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
             tableGramPosition() += yyleng;
             throw (TableInvExpr ("HAVING is not supported yet"));
           }
+{JOIN} {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("JOIN ON is not supported yet"));
+          }
+{ON}  {
+            tableGramPosition() += yyleng;
+            throw (TableInvExpr ("JOIN ON is not supported yet"));
+          }
 
 {AS}      {
             tableGramPosition() += yyleng;
@@ -311,6 +322,17 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
             return RPAREN;
           }
 
+ /* regular expression and pattern handling */
+<EXPRstate>{PATTREX} {
+            tableGramPosition() += yyleng;
+            lvalp->valre = new TaQLRegexNode(
+                new TaQLRegexNodeRep (String(TableGramtext,yyleng)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->valre);
+            BEGIN(EXPRstate);
+	    return REGEX;
+	  }
+
+ /* operators */
 "<:<"     { tableGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { tableGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { tableGramPosition() += yyleng; return CLOSEDOPEN; }
@@ -337,7 +359,8 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {OR}      { tableGramPosition() += yyleng; return OR; }
 "!"       { tableGramPosition() += yyleng; return NOT; }
 {NOT}     { tableGramPosition() += yyleng; return NOT; }
-"^"       { tableGramPosition() += yyleng; return POWER; }
+ /*"^"       { tableGramPosition() += yyleng; return BITXOR; }   /* was POWER */
+"^"       { throw TableInvExpr ("^ is deprecated; will be XOR in next release"); }
 "**"      { tableGramPosition() += yyleng; return POWER; }
 "*"       { tableGramPosition() += yyleng; return TIMES; }
 "//"      { tableGramPosition() += yyleng; return DIVIDETRUNC; }
@@ -345,6 +368,9 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 "%"       { tableGramPosition() += yyleng; return MODULO; }
 "+"       { tableGramPosition() += yyleng; return PLUS; }
 "-"       { tableGramPosition() += yyleng; return MINUS; }
+"|"       { tableGramPosition() += yyleng; return BITOR; }
+"&"       { tableGramPosition() += yyleng; return BITAND; }
+"~"       { tableGramPosition() += yyleng; return BITNOT; }
 "{"       { tableGramPosition() += yyleng; return LBRACE; }
 "}"       { tableGramPosition() += yyleng; return RBRACE; }
 ","       {
@@ -373,20 +399,29 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {FLOAT}   {
             tableGramPosition() += yyleng;
 	    double v = atof(TableGramtext);
-            lvalp->val = new TaQLConstNode(
-                new TaQLConstNodeRep (v));
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 {INT}     {
             tableGramPosition() += yyleng;
-            int ival = atoi(TableGramtext);
-            double dval = atof(TableGramtext);
-            if (ival < dval-0.1  ||  ival > dval+0.1) {
-                lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (dval));
-            } else {
-                lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
+            char* endPtr;
+            Int64 v = strtol(TableGramtext, &endPtr, 10);
+            if (endPtr != TableGramtext+yyleng) {
+                throw TableInvExpr ("Integer number not fully parsed");
             }
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+            return LITERAL;
+	  }
+{HEXINT}  {
+            tableGramPosition() += yyleng;
+            char* endPtr;
+            Int64 v = strtol(TableGramtext, &endPtr, 0);
+            if (endPtr != TableGramtext+yyleng) {
+                throw TableInvExpr ("Hex number not fully parsed");
+            }
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (v));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
 	  }
@@ -435,16 +470,6 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 	    return LITERAL;
 	  }
 
- /* regular expression and pattern handling */
-<EXPRstate>{PATTREX} {
-            tableGramPosition() += yyleng;
-            lvalp->valre = new TaQLRegexNode(
-                new TaQLRegexNodeRep (String(TableGramtext,yyleng)));
-            TaQLNode::theirNodesCreated.push_back (lvalp->valre);
-            BEGIN(EXPRstate);
-	    return REGEX;
-	  }
-
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
     Note that this rule could also be done by NAMEFLD. However, in the
@@ -475,7 +500,7 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
  /* A temporary table number can be given in the FROM clause */
 <FROMstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
-            int ival = atoi(TableGramtext+1);
+            Int64 ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;

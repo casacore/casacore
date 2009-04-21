@@ -39,7 +39,7 @@ select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
  5 6 7 8 V5 (7,0)
  6 7 8 9 V6 (8,0)
  9 10 11 12 V9 (11,0)
-select ab from tTableGram_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3
+select ab from tTableGram_tmp.tab where ab==2**1**2 || ab==-2**-1*8/-2*3
     has been executed
     select result of 2 rows
 1 selected columns:  ab
@@ -526,6 +526,12 @@ calc from tTableGram_tmp.tab calc arr1[1+ab%2,1,1]
 calc from $1 calc ab+1;tTableGram_tmp.tab
     has been executed
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+calc from tTableGram_tmp.tab calc ab&0x000b
+    has been executed
+[0, 1, 2, 3, 0, 1, 2, 3, 8, 9]
+calc from tTableGram_tmp.tab calc (ab|2)&~0x0001
+    has been executed
+[2, 2, 2, 2, 6, 6, 6, 6, 10, 10]
 
 update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3
     has been executed

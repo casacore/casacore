@@ -68,7 +68,7 @@ template<class T> class Vector;
 //  <br>- A single value in a set (used with the IN operator).
 //        This is in fact a bounded discrete interval (see below).
 // <li> A discrete interval consisting of start, end and increment.
-//  Each of those has to be a double scalar. Increment defaults to 1.
+//  Each of those has to be an int scalar. Increment defaults to 1.
 //  It can be used for 2 purposes:
 //  <br>- A slice in an array indexing operation. In that case start
 //   defaults to the beginning of the dimension and end defaults to the end.
@@ -77,7 +77,7 @@ template<class T> class Vector;
 //  For a discrete interval, the type of start and end can also be
 //  a datetime scalar.
 // <li> A continuous interval, which can only be used in a set.
-//  It consists of a start and/or an end scalar value of type double,
+//  It consists of a start and/or an end scalar value of type int, double,
 //  datetime, or string. The interval can be open or closed on one or
 //  both sides.
 // </ol>
@@ -145,10 +145,14 @@ public:
     TableExprNodeRep* increment() const;
     // </group>
 
-    // Fill a vector with the value(s) from this element.
+    // Fill a vector with the value(s) from this element by appending them
+    // at the end of the vector; the end is given by argument <src>cnt</src>
+    // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
     void fillVector (Vector<Bool>& vec, uInt& cnt,
+		     const TableExprId& id) const;
+    void fillVector (Vector<Int64>& vec, uInt& cnt,
 		     const TableExprId& id) const;
     void fillVector (Vector<Double>& vec, uInt& cnt,
 		     const TableExprId& id) const;
@@ -163,8 +167,12 @@ public:
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
+    // <br>Note that it does NOT set match values to False; it is assumed they
+    // are initialized that way.
     // <group>
     void matchBool     (Bool* match, const Bool* value, uInt nval,
+			const TableExprId& id) const;
+    void matchInt      (Bool* match, const Int64* value, uInt nval,
 			const TableExprId& id) const;
     void matchDouble   (Bool* match, const Double* value, uInt nval,
 			const TableExprId& id) const;
@@ -271,7 +279,7 @@ inline TableExprNodeRep* TableExprNodeSetElem::increment() const
 // <li> To hold the arguments of a function.
 //      All set elements must be single.
 // <li> To hold the variables of an index for an array slice.
-//      All set elements must be of type double scalar and they must
+//      All set elements must be of type int scalar and they must
 //      represent a discrete interval (which includes single).
 // <li> To hold the elements of a set used with the IN operator.
 //      All set elements must be scalars of any type.
@@ -360,6 +368,7 @@ public:
     // Get an array value for this bounded set in the given row.
     // <group>
     virtual Array<Bool> getArrayBool         (const TableExprId& id);
+    virtual Array<Int64> getArrayInt         (const TableExprId& id);
     virtual Array<Double> getArrayDouble     (const TableExprId& id);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
     virtual Array<String> getArrayString     (const TableExprId& id);
@@ -369,12 +378,15 @@ public:
     // Does a value occur in the set?
     // <group>
     virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasInt      (const TableExprId& id, Int64 value);
     virtual Bool hasDouble   (const TableExprId& id, Double value);
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
     virtual Array<Bool> hasArrayBool     (const TableExprId& id,
 					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
+					  const Array<Int64>& value);
     virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
 					  const Array<Double>& value);
     virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
@@ -401,6 +413,7 @@ private:
     // Convert a bounded set to an Array.
     // <group>
     Array<Bool>     toArrayBool     (const TableExprId& id) const;
+    Array<Int64>    toArrayInt      (const TableExprId& id) const;
     Array<Double>   toArrayDouble   (const TableExprId& id) const;
     Array<DComplex> toArrayDComplex (const TableExprId& id) const;
     Array<String>   toArrayString   (const TableExprId& id) const;
@@ -409,6 +422,7 @@ private:
 
     // Sort and combine intervals.
     // <group>
+    void combineIntIntervals();
     void combineDoubleIntervals();
     void combineDateIntervals();
     // </group>

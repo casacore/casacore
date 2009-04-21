@@ -160,9 +160,12 @@ using namespace casa;
 %left OR
 %left AND
 %nonassoc EQ EQASS GT GE LT LE NE
+%left BITOR
+%left BITXOR
+%left BITAND
 %left PLUS MINUS
 %left TIMES DIVIDE DIVIDETRUNC MODULO
-%nonassoc UNARY
+%nonassoc UNARY BITNOT
 %nonassoc NOT
 %right POWER
 
@@ -951,6 +954,21 @@ arithexpr: inxexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_MODULO, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
+         | arithexpr BITAND arithexpr {
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_BITAND, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr BITXOR arithexpr {
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_BITXOR, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr BITOR arithexpr {
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_BITOR, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          | MINUS arithexpr %prec UNARY {
 	       $$ = new TaQLNode(
 	            new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_MINUS, *$2));
@@ -958,6 +976,11 @@ arithexpr: inxexpr {
 	   }
          | PLUS  arithexpr %prec UNARY
                { $$ = $2; }
+         | BITNOT arithexpr {
+	       $$ = new TaQLNode(
+	            new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_BITNOT, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          | NOT   arithexpr {
 	       $$ = new TaQLNode(
 	            new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, *$2));

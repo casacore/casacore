@@ -38,11 +38,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, uInt and float are converted 
-//# to Double, and Complex to DComplex.
-//# Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
-//# Also &&, ||, parentheses and unary +, - and ! are recognized.
+//# Data types Bool, Int64, Double, DComplex and String are used.
+//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+//# Float to Double, and Complex to DComplex.
+//# Binary operators ==, >=, >, <, <=, !=, and IN are recognized.
+//# Also &&, ||, and unary ! are recognized.
 
 
 
@@ -72,6 +72,36 @@ class TableExprNodeEQBool : public TableExprNodeBinary
 public:
     TableExprNodeEQBool (const TableExprNodeRep&);
     ~TableExprNodeEQBool();
+    Bool getBool (const TableExprId& id);
+};
+
+
+// <summary>
+// Int comparison == in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an == comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
+class TableExprNodeEQInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeEQInt (const TableExprNodeRep&);
+    ~TableExprNodeEQInt();
     Bool getBool (const TableExprId& id);
 };
 
@@ -259,6 +289,36 @@ public:
 
 
 // <summary>
+// Int comparison != in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an != comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
+class TableExprNodeNEInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeNEInt (const TableExprNodeRep&);
+    ~TableExprNodeNEInt();
+    Bool getBool (const TableExprId& id);
+};
+
+
+// <summary>
 // Double comparison != in table select expression tree
 // </summary>
 
@@ -410,6 +470,36 @@ public:
 
 
 // <summary>
+// Int comparison > in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an > comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
+class TableExprNodeGTInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeGTInt (const TableExprNodeRep&);
+    ~TableExprNodeGTInt();
+    Bool getBool (const TableExprId& id);
+};
+
+
+// <summary>
 // Double comparison > in table select expression tree
 // </summary>
 
@@ -532,6 +622,36 @@ public:
 
 
 // <summary>
+// Int comparison >= in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an >= comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
+class TableExprNodeGEInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeGEInt (const TableExprNodeRep&);
+    ~TableExprNodeGEInt();
+    Bool getBool (const TableExprId& id);
+};
+
+
+// <summary>
 // Double comparison >= in table select expression tree
 // </summary>
 
@@ -651,6 +771,36 @@ public:
     Bool getBool (const TableExprId& id);
 };
 
+
+
+// <summary>
+// Int comparison IN in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an IN comparison in a table select expression tree.
+// This is defined for all data types.
+// Only the Bool get function is defined, because the result of a
+// compare is always a Bool.
+// </synopsis> 
+
+class TableExprNodeINInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeINInt (const TableExprNodeRep&);
+    ~TableExprNodeINInt();
+    Bool getBool (const TableExprId& id);
+};
 
 
 // <summary>

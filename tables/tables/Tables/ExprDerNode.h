@@ -44,9 +44,9 @@ class Table;
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, uInt and float are converted 
-//# to Double, and Complex to DComplex.
+//# Data types Bool, Int64, Double, DComplex and String are used.
+//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
+//# Float to Double, and Complex to DComplex.
 //# Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 //# Also &&, ||, parentheses and unary +, - and ! are recognized.
 
@@ -80,6 +80,39 @@ public:
     Bool getBool (const TableExprId& id);
 private:
     Bool value_p;
+};
+
+
+// <summary>
+// Constant Int64 in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
+
+class TableExprNodeConstInt : public TableExprNodeBinary
+{
+public:
+    TableExprNodeConstInt (const Int64& value);
+    ~TableExprNodeConstInt();
+    Int64    getInt      (const TableExprId& id);
+    Double   getDouble   (const TableExprId& id);
+    DComplex getDComplex (const TableExprId& id);
+private:
+    Int64 value_p;
 };
 
 
@@ -272,6 +305,7 @@ public:
     virtual void replaceTablePtr (const Table&);
 
     Bool     getBool     (const TableExprId& id);
+    Int64    getInt      (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
     String   getString   (const TableExprId& id);
@@ -327,7 +361,7 @@ class TableExprNodeRownr : public TableExprNodeBinary
 public:
     TableExprNodeRownr (const Table&, uInt origin);
     ~TableExprNodeRownr();
-    Double getDouble (const TableExprId& id);
+    Int64  getInt (const TableExprId& id);
 private:
     uInt origin_p;
 };
@@ -361,7 +395,7 @@ class TableExprNodeRowid : public TableExprNodeBinary
 public:
     TableExprNodeRowid (const Table&);
     ~TableExprNodeRowid();
-    Double getDouble (const TableExprId& id);
+    Int64 getInt (const TableExprId& id);
 private:
     Vector<uInt> rownrs_p;
 };
@@ -397,7 +431,6 @@ private:
     MLCG    generator_p;
     Uniform random_p;
 };
-
 
 
 

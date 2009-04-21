@@ -57,9 +57,8 @@ public:
   void next()
     { itsEntry++; }
   // Note that only the get functions for the possible types are needed.
-  // Also note that all numeric types are handled by TaQL as Double.
   // The exception should never be thrown unless things are screwed up.
-  virtual Double getDouble (const Block<Int>& fieldNrs) const
+  virtual Int64 getInt (const Block<Int>& fieldNrs) const
     { switch (fieldNrs[0]) {
       case 0:
         return itsFld1(itsEntry);

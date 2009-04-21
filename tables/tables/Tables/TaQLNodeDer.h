@@ -70,7 +70,7 @@ public:
   explicit TaQLConstNodeRep (Bool value)
     : TaQLNodeRep (TaQLNode_Const),
       itsType(CTBool), itsIsTableName(False), itsBValue(value) {}
-  explicit TaQLConstNodeRep (Int value, Bool isTableName=False)
+  explicit TaQLConstNodeRep (Int64 value, Bool isTableName=False)
     : TaQLNodeRep (TaQLNode_Const),
       itsType(CTInt), itsIsTableName(isTableName), itsIValue(value),
       itsRValue(value), itsCValue(value,0.) {}
@@ -106,7 +106,7 @@ public:
   Type     itsType;
   Bool     itsIsTableName;
   Bool     itsBValue;
-  Int      itsIValue;
+  Int64    itsIValue;
   Double   itsRValue;
   DComplex itsCValue;
   String   itsSValue;
@@ -163,8 +163,8 @@ public:
 // </prerequisite>
 // <synopsis> 
 // This class is a TaQLNodeRep holding a unary operator and operand.
-// The operators supported are -, NOT, EXISTS, and NOT EXISTS.
-// Note the unary operator + is superfuous and is ignored by the parser.
+// The operators supported are -, ~, NOT, EXISTS, and NOT EXISTS.
+// Note the unary operator + is superfluous and is ignored by the parser.
 // </synopsis> 
 
 class TaQLUnaryNodeRep: public TaQLNodeRep
@@ -174,7 +174,8 @@ public:
   enum Type {U_MINUS    =0,
 	     U_NOT      =1,
 	     U_EXISTS   =2,
-	     U_NOTEXISTS=3};
+	     U_NOTEXISTS=3,
+             U_BITNOT   =4};
   TaQLUnaryNodeRep (Type type, const TaQLNode& child)
     : TaQLNodeRep (TaQLNode_Unary),
       itsType(type), itsChild(child) {}
@@ -201,7 +202,7 @@ public:
 // </prerequisite>
 // <synopsis> 
 // This class is a TaQLNodeRep holding a binary operator and operands.
-// All standard mathematical (including % and ^), relational, and logical
+// All standard mathematical (including % and ^), relational, bit, and logical
 // operators are supported. Furthermore operator IN and the INDEX operator
 // (for indexing in an array) are supported.
 // </synopsis> 
@@ -230,7 +231,10 @@ public:
 	     B_EQREGEX    =17,
 	     B_EQREGEXCI  =18,
 	     B_NEREGEX    =19,
-	     B_NEREGEXCI  =20};
+	     B_NEREGEXCI  =20,
+	     B_BITAND     =21,
+             B_BITXOR     =22,
+             B_BITOR      =23};
   TaQLBinaryNodeRep (Type type, const TaQLNode& left, const TaQLNode& right)
     : TaQLNodeRep (TaQLNode_Binary),
       itsType(type), itsLeft(left), itsRight(right) {}

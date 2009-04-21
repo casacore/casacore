@@ -13,7 +13,9 @@
 
 ./tTaQLNode 'select all ab as ab1,ac as ac1,ad,ae,af,ag from tTaQLNode_tmp.data2 orderby af'
 
-./tTaQLNode 'select ab from tTaQLNode_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3'
+./tTaQLNode 'select ab from tTaQLNode_tmp.tab where ab==2**1**2 || ab==-2**-1*0x0A1f/-2*3'
+
+# ./tTaQLNode 'select ab from tTaQLNode_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3'
 
 ./tTaQLNode 'select ab,ac,af from tTaQLNode_tmp.tab where lower(af) == regex("v[01279]")'
 ./tTaQLNode 'select ab,ac,af from tTaQLNode_tmp.tab where lower(af)!~m/v[01279]/'

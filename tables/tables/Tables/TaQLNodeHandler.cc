@@ -137,6 +137,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       break;
     case TaQLUnaryNodeRep::U_NOTEXISTS:
       break;
+    case TaQLUnaryNodeRep::U_BITNOT:
+      return new TaQLNodeHRValue (~expr);
     }
     TableExprNode exres(topStack()->doExists (notexists));
     popStack();
@@ -168,7 +170,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case TaQLBinaryNodeRep::B_MODULO:
       return new TaQLNodeHRValue (left % right);
     case TaQLBinaryNodeRep::B_POWER:
-      return new TaQLNodeHRValue (left ^ right);
+      return new TaQLNodeHRValue (pow(left, right));
     case TaQLBinaryNodeRep::B_OR:
       return new TaQLNodeHRValue (left || right);
     case TaQLBinaryNodeRep::B_AND:
@@ -197,6 +199,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       return new TaQLNodeHRValue (left != right);
     case TaQLBinaryNodeRep::B_NEREGEXCI:
       return new TaQLNodeHRValue (downcase(left) != right);
+    case TaQLBinaryNodeRep::B_BITAND:
+      return new TaQLNodeHRValue (left & right);
+    case TaQLBinaryNodeRep::B_BITXOR:
+      return new TaQLNodeHRValue (left ^ right);
+    case TaQLBinaryNodeRep::B_BITOR:
+      return new TaQLNodeHRValue (left | right);
     }
     return TaQLNodeResult();
   }
@@ -617,7 +625,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       rec.define (fld.itsName, val.itsBValue);
       break;
     case TaQLConstNodeRep::CTInt:
-      rec.define (fld.itsName, val.itsIValue);
+      rec.define (fld.itsName, Int(val.itsIValue));
       break;
     case TaQLConstNodeRep::CTReal:
       rec.define (fld.itsName, val.itsRValue);

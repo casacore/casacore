@@ -46,13 +46,11 @@ TableExprNodeSet* settp;
 %token <val> LITERAL
 %token <val> STRINGLITERAL
 %token <val> REGEX
-%token <val> PATTERN
 %token IN
 %token INCONE
 %token BETWEEN
 %token LIKE
-%token EQREGEX
-%token NEREGEX
+%token REGEX
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -92,9 +90,12 @@ TableExprNodeSet* settp;
 %left OR
 %left AND
 %nonassoc EQ GT GE LT LE NE
+%left BITOR
+%left BITXOR
+%left BITAND
 %left PLUS MINUS
-%left TIMES DIVIDE MODULO
-%nonassoc UNARY
+%left TIMES DIVIDE DIVIDETRUNC MODULO
+%nonassoc UNARY BITNOT
 %nonassoc NOT
 %right POWER
 
@@ -159,29 +160,10 @@ relexpr:   arithexpr
 	       delete $1;
 	       delete $3;
 	   }
-         | arithexpr EQREGEX REGEX {
-	       TableExprNode node (RecordGram::handleLiteral ($3));
-	       $$ = new TableExprNode (*$1 == regex(node));
+         | arithexpr REGEX {
+           $$ = new TableExprNode (RecordGram::handleRegex (*$1, $2->str));
 	       delete $1;
-	       delete $3;
-	   }
-         | arithexpr NEREGEX REGEX {
-	       TableExprNode node (RecordGram::handleLiteral ($3));
-	       $$ = new TableExprNode (*$1 != regex(node));
-	       delete $1;
-	       delete $3;
-	   }
-         | arithexpr EQREGEX PATTERN {
-	       TableExprNode node (RecordGram::handleLiteral ($3));
-	       $$ = new TableExprNode (*$1 == pattern(node));
-	       delete $1;
-	       delete $3;
-	   }
-         | arithexpr NEREGEX PATTERN {
-	       TableExprNode node (RecordGram::handleLiteral ($3));
-	       $$ = new TableExprNode (*$1 != pattern(node));
-	       delete $1;
-	       delete $3;
+	       delete $2;
 	   }
          | arithexpr LIKE arithexpr {
 	       $$ = new TableExprNode (*$1 == sqlpattern(*$3));
@@ -266,8 +248,28 @@ arithexpr: inxexpr
 	       delete $1;
 	       delete $3;
 	   }
+         | arithexpr DIVIDETRUNC arithexpr {
+               $$ = new TableExprNode (floor(*$1 / *$3));
+	       delete $1;
+	       delete $3;
+	   }
          | arithexpr MODULO arithexpr {
 	       $$ = new TableExprNode (*$1 % *$3);
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr BITAND arithexpr {
+	       $$ = new TableExprNode (*$1 & *$3);
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr BITXOR arithexpr {
+	       $$ = new TableExprNode (*$1 ^ *$3);
+	       delete $1;
+	       delete $3;
+	   }
+         | arithexpr BITOR arithexpr {
+               $$ = new TableExprNode (*$1 | *$3);
 	       delete $1;
 	       delete $3;
 	   }
@@ -277,6 +279,10 @@ arithexpr: inxexpr
 	   }
          | PLUS  arithexpr %prec UNARY
                { $$ = $2; }
+         | BITNOT arithexpr {
+	       $$ = new TableExprNode (~*$2);
+	       delete $2;
+	   }
          | NOT   arithexpr {
 	       $$ = new TableExprNode (!*$2);
 	       delete $2;

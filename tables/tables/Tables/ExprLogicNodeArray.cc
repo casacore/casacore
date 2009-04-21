@@ -55,6 +55,25 @@ Array<Bool> TableExprNodeArrayEQBool::getArrayBool (const TableExprId& id)
     return lnode_p->getArrayBool (id) == rnode_p->getArrayBool (id);
 }
 
+TableExprNodeArrayEQInt::TableExprNodeArrayEQInt
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArray (node, NTBool, OtEQ)
+{}
+TableExprNodeArrayEQInt::~TableExprNodeArrayEQInt()
+{}
+Array<Bool> TableExprNodeArrayEQInt::getArrayBool (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+	return lnode_p->getArrayInt (id) == rnode_p->getInt (id);
+    case ScaArr:
+	return lnode_p->getInt (id) == rnode_p->getArrayInt (id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayInt (id) == rnode_p->getArrayInt (id);
+}
+
 TableExprNodeArrayEQDouble::TableExprNodeArrayEQDouble
                                             (const TableExprNodeRep& node)
 : TableExprNodeArray (node, NTBool, OtEQ)
@@ -174,6 +193,25 @@ Array<Bool> TableExprNodeArrayNEBool::getArrayBool (const TableExprId& id)
     return lnode_p->getArrayBool (id) != rnode_p->getArrayBool (id);
 }
 
+TableExprNodeArrayNEInt::TableExprNodeArrayNEInt
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArray (node, NTBool, OtNE)
+{}
+TableExprNodeArrayNEInt::~TableExprNodeArrayNEInt()
+{}
+Array<Bool> TableExprNodeArrayNEInt::getArrayBool (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+	return lnode_p->getArrayInt (id) != rnode_p->getInt (id);
+    case ScaArr:
+	return lnode_p->getInt (id) != rnode_p->getArrayInt (id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayInt (id) != rnode_p->getArrayInt (id);
+}
+
 TableExprNodeArrayNEDouble::TableExprNodeArrayNEDouble
                                             (const TableExprNodeRep& node)
 : TableExprNodeArray (node, NTBool, OtNE)
@@ -274,6 +312,25 @@ Array<Bool> TableExprNodeArrayNEDate::getArrayBool (const TableExprId& id)
 }
 
 
+TableExprNodeArrayGTInt::TableExprNodeArrayGTInt
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArray (node, NTBool, OtGT)
+{}
+TableExprNodeArrayGTInt::~TableExprNodeArrayGTInt()
+{}
+Array<Bool> TableExprNodeArrayGTInt::getArrayBool (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+	return lnode_p->getArrayInt(id) > rnode_p->getInt(id);
+    case ScaArr:
+	return lnode_p->getInt(id) > rnode_p->getArrayInt(id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayInt(id) > rnode_p->getArrayInt(id);
+}
+
 TableExprNodeArrayGTDouble::TableExprNodeArrayGTDouble
                                             (const TableExprNodeRep& node)
 : TableExprNodeArray (node, NTBool, OtGT)
@@ -351,6 +408,25 @@ Array<Bool> TableExprNodeArrayGTDate::getArrayBool (const TableExprId& id)
 }
 
 
+TableExprNodeArrayGEInt::TableExprNodeArrayGEInt
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArray (node, NTBool, OtGE)
+{}
+TableExprNodeArrayGEInt::~TableExprNodeArrayGEInt()
+{}
+Array<Bool> TableExprNodeArrayGEInt::getArrayBool (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+	return lnode_p->getArrayInt(id) >= rnode_p->getInt(id);
+    case ScaArr:
+	return lnode_p->getInt(id) >= rnode_p->getArrayInt(id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayInt(id) >= rnode_p->getArrayInt(id);
+}
+
 TableExprNodeArrayGEDouble::TableExprNodeArrayGEDouble
                                             (const TableExprNodeRep& node)
 : TableExprNodeArray (node, NTBool, OtGE)
@@ -427,6 +503,17 @@ Array<Bool> TableExprNodeArrayGEDate::getArrayBool (const TableExprId& id)
     return lnode_p->getArrayDate(id) >= rnode_p->getArrayDate(id);
 }
 
+
+TableExprNodeArrayINInt::TableExprNodeArrayINInt
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArray (node, NTBool, OtIN)
+{}
+TableExprNodeArrayINInt::~TableExprNodeArrayINInt()
+{}
+Array<Bool> TableExprNodeArrayINInt::getArrayBool (const TableExprId& id)
+{
+    return rnode_p->hasArrayInt (id, lnode_p->getArrayInt (id));
+}
 
 TableExprNodeArrayINDouble::TableExprNodeArrayINDouble
                                             (const TableExprNodeRep& node)

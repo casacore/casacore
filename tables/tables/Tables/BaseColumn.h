@@ -250,6 +250,8 @@ public:
 
     // Get the value from the row and convert it to the required type.
     // This can only be used for scalar columns with a standard data type.
+    // Note that an unsigned integer caanot be converted to a signed integer
+    // with the same length. So only Int64 can handle all integer values.
     // <group>
     void getScalar (uInt rownr, Bool& value) const;
     void getScalar (uInt rownr, uChar& value) const;
@@ -257,6 +259,7 @@ public:
     void getScalar (uInt rownr, uShort& value) const;
     void getScalar (uInt rownr, Int& value) const;
     void getScalar (uInt rownr, uInt& value) const;
+    void getScalar (uInt rownr, Int64& value) const;
     void getScalar (uInt rownr, float& value) const;
     void getScalar (uInt rownr, double& value) const;
     void getScalar (uInt rownr, Complex& value) const;

@@ -48,9 +48,14 @@ Bool     TableExprData::getBool     (const Block<Int>&) const
   throw (AipsError ("TableExprData::getBool not implemented"));
 }
 
-Double   TableExprData::getDouble   (const Block<Int>&) const
+Int64    TableExprData::getInt      (const Block<Int>&) const
 {
-  throw (AipsError ("TableExprData::getDouble not implemented"));
+  throw (AipsError ("TableExprData::getInt not implemented"));
+}
+
+Double   TableExprData::getDouble   (const Block<Int>& fieldNrs) const
+{
+  return getInt (fieldNrs);
 }
 
 DComplex TableExprData::getDComplex (const Block<Int>& fieldNrs) const
@@ -68,9 +73,18 @@ Array<Bool>     TableExprData::getArrayBool     (const Block<Int>&) const
   throw (AipsError ("TableExprData::getArrayBool not implemented"));
 }
 
-Array<Double>   TableExprData::getArrayDouble   (const Block<Int>&) const
+Array<Int64>    TableExprData::getArrayInt      (const Block<Int>&) const
 {
-  throw (AipsError ("TableExprData::getArrayDouble not implemented"));
+  throw (AipsError ("TableExprData::getArrayInt not implemented"));
+}
+
+Array<Double>   TableExprData::getArrayDouble (const Block<Int>& fieldNrs) const
+{
+  Array<Int64> tmp = getArrayInt (fieldNrs);
+  Array<Double> result(tmp.shape());
+  convertArray (result, tmp);
+  return result;
+
 }
 
 Array<DComplex> TableExprData::getArrayDComplex
@@ -88,4 +102,3 @@ Array<String>   TableExprData::getArrayString   (const Block<Int>&) const
 }
 
 } //# NAMESPACE CASA - END
-

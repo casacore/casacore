@@ -10,9 +10,14 @@ SELECT DISTINCT (ab)+(1) AS ab1,ac,ad,ae,af,ag FROM tTaQLNode_tmp.data2
 select all ab as ab1,ac as ac1,ad,ae,af,ag from tTaQLNode_tmp.data2 orderby af
 SELECT ab AS ab1,ac AS ac1,ad,ae,af,ag FROM tTaQLNode_tmp.data2 ORDERBY af
 
-select ab from tTaQLNode_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3
-SELECT ab FROM tTaQLNode_tmp.tab WHERE ((ab)=((2)^((1)^(2))))||((ab)=((((-((2)^(-(1))))*(8))/(-(2)))*(3)))
+select ab from tTaQLNode_tmp.tab where ab==2**1**2 || ab==-2**-1*0x0A1f/-2*3
+SELECT ab FROM tTaQLNode_tmp.tab WHERE ((ab)=((2)**((1)**(2))))||((ab)=((((-((2)**(-(1))))*(2591))/(-(2)))*(3)))
 
+>>>
+select ab from tTaQLNode_tmp.tab where ab==2^1^2 || ab==-2^-1*8/-2*3
+SELECT ab FROM tTaQLNode_tmp.tab WHERE ((ab)=(((2)^(1))^(2)))||((ab)=((-(2))^((((-(1))*(8))/(-(2)))*(3))))
+
+<<<
 select ab,ac,af from tTaQLNode_tmp.tab where lower(af) == regex("v[01279]")
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (lower(af))=(regex('v[01279]'))
 

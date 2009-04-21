@@ -109,7 +109,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //       The keywords are stored in a subrecord of keyword FLAGSETS.
   //       Example of keyword and their values could be:
   //       <br>RFI=1, CAL=2, CLIP=4, OTHER=8, RFICAL=3
-  //       <br>Note that RFICAL is defined such that it contains RFI and CAL.
+  //       <br>Note that in this example RFICAL is defined such that it
+  //       contains RFI and CAL.
+  // </ul>
+  // A mask can be set at construction time, but it can be changed at runtime
+  // using the <src>setProperties</src> function.
+  // The masks are kept in special keywords (which are different from the
+  // keywords defining the flag bits), so it is possible to change a mask
+  // by changing those keywords before opening a table. However, that is
+  // not recommended.
   //
   // BitFlagsEngine is known to the table system for data types uChar, Short,
   // and Int.

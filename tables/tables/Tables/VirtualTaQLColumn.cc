@@ -175,6 +175,8 @@ void VirtualTaQLColumn::prepare()
   case TpUShort:
   case TpInt:
   case TpUInt:
+    exptype = TpInt;
+    break;
   case TpFloat:
     exptype = TpDouble;
     break;
@@ -256,23 +258,23 @@ void VirtualTaQLColumn::getBoolV (uInt rownr, Bool* dataPtr)
 }
 void VirtualTaQLColumn::getuCharV (uInt rownr, uChar* dataPtr)
 {
-  *dataPtr = uChar(itsNode->getDouble (rownr));
+  *dataPtr = uChar(itsNode->getInt (rownr));
 }
 void VirtualTaQLColumn::getShortV (uInt rownr, Short* dataPtr)
 {
-  *dataPtr = Short(itsNode->getDouble (rownr));
+  *dataPtr = Short(itsNode->getInt (rownr));
 }
 void VirtualTaQLColumn::getuShortV (uInt rownr, uShort* dataPtr)
 {
-  *dataPtr = uShort(itsNode->getDouble (rownr));
+  *dataPtr = uShort(itsNode->getInt (rownr));
 }
 void VirtualTaQLColumn::getIntV (uInt rownr, Int* dataPtr)
 {
-  *dataPtr = Int(itsNode->getDouble (rownr));
+  *dataPtr = Int(itsNode->getInt (rownr));
 }
 void VirtualTaQLColumn::getuIntV (uInt rownr, uInt* dataPtr)
 {
-  *dataPtr = uInt(itsNode->getDouble (rownr));
+  *dataPtr = uInt(itsNode->getInt (rownr));
 }
 void VirtualTaQLColumn::getfloatV (uInt rownr, float* dataPtr)
 {
@@ -365,7 +367,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
     break;
   case TpUChar:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      Array<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uChar>& out = *static_cast<Array<uChar>*>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
@@ -374,7 +376,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
     }
   case TpShort:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      Array<Int64> arr = itsNode->getArrayInt (rownr);
       Array<Short>& out = *static_cast<Array<Short>*>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
@@ -383,7 +385,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
     }
   case TpUShort:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      Array<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uShort>& out = *static_cast<Array<uShort>*>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
@@ -392,7 +394,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
     }
   case TpInt:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      Array<Int64> arr = itsNode->getArrayInt (rownr);
       Array<Int>& out = *static_cast<Array<Int>*>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
@@ -401,7 +403,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
     }
   case TpUInt:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      Array<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uInt>& out = *static_cast<Array<uInt>*>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);

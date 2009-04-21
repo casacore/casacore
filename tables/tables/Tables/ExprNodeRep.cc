@@ -114,6 +114,14 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
        << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
 }
 
+void TableExprNodeRep::setUnit (const Unit& unit)
+{
+    unit_p = unit;
+    if (!unit.empty()  &&  dtype_p == NTInt) {
+        dtype_p = NTDouble;
+    }
+}
+
 Double TableExprNodeRep::getUnitFactor() const
 {
     return 1.;
@@ -218,15 +226,18 @@ Bool TableExprNodeRep::getBool (const TableExprId&)
     TableExprNode::throwInvDT ("(getBool not implemented)");
     return False;
 }
-Double TableExprNodeRep::getDouble (const TableExprId&)
+Int64 TableExprNodeRep::getInt (const TableExprId&)
 {
-    TableExprNode::throwInvDT ("(getDouble not implemented)");
+    TableExprNode::throwInvDT ("(getInt not implemented)");
     return 0;
 }
-DComplex TableExprNodeRep::getDComplex (const TableExprId&)
+Double TableExprNodeRep::getDouble (const TableExprId& id)
 {
-    TableExprNode::throwInvDT ("(getDComplex not implemented)");
-    return 0;
+    return getInt (id);
+}
+DComplex TableExprNodeRep::getDComplex (const TableExprId& id)
+{
+    return getDouble (id);
 }
 String TableExprNodeRep::getString (const TableExprId&)
 {
@@ -248,10 +259,17 @@ Array<Bool> TableExprNodeRep::getArrayBool (const TableExprId&)
     TableExprNode::throwInvDT ("(getArrayBool not implemented)");
     return Array<Bool>();
 }
-Array<Double> TableExprNodeRep::getArrayDouble (const TableExprId&)
+Array<Int64> TableExprNodeRep::getArrayInt (const TableExprId&)
 {
-    TableExprNode::throwInvDT ("(getArrayDouble not implemented)");
-    return Array<Double>();
+    TableExprNode::throwInvDT ("(getArrayInt not implemented)");
+    return Array<Int64>();
+}
+Array<Double> TableExprNodeRep::getArrayDouble (const TableExprId& id)
+{
+    Array<Int64> tmp(getArrayInt(id));
+    Array<Double> res(tmp.shape());
+    convertArray (res, tmp);
+    return res;
 }
 Array<DComplex> TableExprNodeRep::getArrayDComplex (const TableExprId&)
 {
@@ -273,6 +291,10 @@ Array<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
 Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
 {
     return (value == getBool(id));
+}
+Bool TableExprNodeRep::hasInt      (const TableExprId& id, Int64 value)
+{
+    return (value == getInt(id));
 }
 Bool TableExprNodeRep::hasDouble   (const TableExprId& id, Double value)
 {
@@ -297,6 +319,11 @@ Array<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
 					    const Array<Bool>& value)
 {
     return (getBool(id) == value);
+}
+Array<Bool> TableExprNodeRep::hasArrayInt (const TableExprId& id,
+                                           const Array<Int64>& value)
+{
+    return (getInt(id) == value);
 }
 Array<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
 					      const Array<Double>& value)
@@ -346,14 +373,27 @@ Array<uShort>   TableExprNodeRep::getColumnuShort()
 }
 Array<Int>      TableExprNodeRep::getColumnInt()
 {
-    TableExprNode::throwInvDT ("(getColumnInt not implemented)");
-    return Array<Int>();
+    uInt nrrow = nrow();
+    Vector<Int> vec (nrrow);
+    for (uInt i=0; i<nrrow; i++) {
+	vec(i) = getInt (i);
+    }
+    return vec;
 }
 Array<uInt>     TableExprNodeRep::getColumnuInt()
 {
     TableExprNode::throwInvDT ("(getColumnuInt not implemented)");
     return Array<uInt>();
 }
+// Array<Int64>    TableExprNodeRep::getColumnInt64()
+// {
+//     uInt nrrow = nrow();
+//     Vector<Int64> vec (nrrow);
+//     for (uInt i=0; i<nrrow; i++) {
+// 	vec(i) = getInt (i);
+//     }
+//     return vec;
+// }
 Array<Float>    TableExprNodeRep::getColumnFloat()
 {
     TableExprNode::throwInvDT ("(getColumnFloat not implemented)");
@@ -476,6 +516,9 @@ TableExprNodeRep* TableExprNodeRep::convertNode (TableExprNodeRep* thisNode,
 	case NTBool:
 	    newNode = new TableExprNodeConstBool (thisNode->getBool (0));
 	    break;
+	case NTInt:
+	    newNode = new TableExprNodeConstInt (thisNode->getInt (0));
+	    break;
 	case NTDouble:
 	    newNode = new TableExprNodeConstDouble (thisNode->getDouble (0));
 	    break;
@@ -499,6 +542,10 @@ TableExprNodeRep* TableExprNodeRep::convertNode (TableExprNodeRep* thisNode,
 	case NTBool:
 	    newNode = new TableExprNodeArrayConstBool
                                          (thisNode->getArrayBool (0));
+	    break;
+	case NTInt:
+	    newNode = new TableExprNodeArrayConstInt
+                                         (thisNode->getArrayInt (0));
 	    break;
 	case NTDouble:
 	    newNode = new TableExprNodeArrayConstDouble
@@ -596,22 +643,24 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
 					      NodeDataType rightDtype,
 					      OperType opt)
 {
-    // Bool only matches itself.
-    if (leftDtype == NTBool  &&  rightDtype == NTBool) {
-	return NTBool;
+    // Equal types is mostly fine.
+    if (leftDtype == rightDtype) {
+        if (leftDtype==NTBool || leftDtype==NTDouble ||
+            leftDtype==NTComplex || leftDtype==NTString ||
+            (leftDtype==NTInt && opt!=OtDivide)) {
+          return leftDtype;
+        }
     }
-    // String matches String.
-    if (leftDtype == NTString  &&  rightDtype == NTString) {
-	return NTString;
-    }
-    // Double matches Double.
-    if (leftDtype == NTDouble  &&  rightDtype == NTDouble) {
-	return NTDouble;
+    // If one is an Int, try as Double.
+    if (leftDtype  == NTInt) leftDtype = NTDouble;
+    if (rightDtype == NTInt) rightDtype = NTDouble;
+    // Double matches Int and Double.
+    if (leftDtype  == NTDouble  &&  rightDtype == NTDouble) {
+      return NTDouble;
     }
     // Complex matches Double and Complex.
     if ((leftDtype == NTComplex  &&  rightDtype == NTDouble)
-    ||  (leftDtype == NTDouble   &&  rightDtype == NTComplex)
-    ||  (leftDtype == NTComplex  &&  rightDtype == NTComplex)) {
+    ||  (leftDtype == NTDouble   &&  rightDtype == NTComplex)) {
 	return NTComplex;
     }
     // String and Regex will get Regex
@@ -646,7 +695,8 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
 	    return NTDate;
 	}
     }
-    TableExprNode::throwInvDT();
+    TableExprNode::throwInvDT("TableExprNodeBinary::getDT cannot derive "
+                              "resulting data type");
     return NTComplex;                  // compiler satisfaction
 }
 
@@ -795,7 +845,7 @@ void TableExprNodeBinary::convertConstChild()
     // from Double to DComplex if:
     //   - there are 2 nodes
     //   - data types are not equal
-    //   - data of constant is Double and other is Complex
+    //   - conversion from Int or Double can be done
     if (rnode_p == 0  ||  lnode_p->dataType() == rnode_p->dataType()) {
 	return;
     }
@@ -809,29 +859,45 @@ void TableExprNodeBinary::convertConstChild()
 	constNode = &rnode_p;
 	otherNode = &lnode_p;
     }
-    // Determine if the other is Complex.
-    if ((**otherNode).dataType() != NTComplex) {
-	return;
-    }
     // Only scalars and arrays can be converted.
     ValueType vtype = (**constNode).valueType();
     if (vtype != VTScalar  &&  vtype != VTArray) {
 	return;
     }
-    // The only possible conversion is from Double (to DComplex).
-    if ((**constNode).dataType() != NTDouble) {
-	return;
+    // The only possible conversion is from Int or Double to Double or DComplex.
+    NodeDataType newType = NTDouble;
+    if ((**otherNode).dataType() == NTDouble) {
+        if ((**constNode).dataType() != NTInt) {
+            return;
+        }
+    } else if ((**otherNode).dataType() == NTComplex) {
+        newType = NTComplex;
+        if (((**constNode).dataType() != NTInt)
+        &&  ((**constNode).dataType() != NTDouble)) {
+            return;
+        }
+    } else {
+        return;
     }
     // Yeah, we have something to convert.
 #if defined(AIPS_TRACE)
-    cout << "constant converted from Double to DComplex" << endl;
+    cout << "constant converted" << endl;
 #endif
     TableExprNodeRep* newNode;
     if (vtype == VTScalar) {
+      if (newType == NTDouble) {
+	newNode = new TableExprNodeConstDouble ((**constNode).getDouble(0));
+      } else {
 	newNode = new TableExprNodeConstDComplex ((**constNode).getDouble(0));
+      }
     }else{
+      if (newType == NTDouble) {
+	newNode = new TableExprNodeArrayConstDouble
+	                                    ((**constNode).getArrayDouble(0));
+      } else {
 	newNode = new TableExprNodeArrayConstDComplex
 	                                    ((**constNode).getArrayDouble(0));
+      }
     }
     // Put a BaseTable in it, so the expression analyzer knows the constant
     // comes from a Table.
@@ -910,24 +976,44 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
     // An output of NTAny means that the types have to match.
     if (dtIn == NTAny) {
         if (dtOut != NTAny) {
-	    return dtOut;
+          // Make sure output type is not generic.
+          AlwaysAssert (dtOut!=NTNumeric && dtOut!=NTReal && dtOut!=NTDouCom,
+                        AipsError);
+          return dtOut;
 	}
+        // Input data type is first one. Set to NTNumeric if numeric, so
+        // numeric data types can be mixed.
 	dtIn = nodes[0]->dataType();
-	if (dtIn == NTDouble  ||  dtIn == NTComplex) {
+	if (dtIn == NTInt  ||  dtIn == NTDouble  ||  dtIn == NTComplex) {
 	    dtIn = NTNumeric;
 	}
     }
     uInt i;
     NodeDataType resultType = dtIn;
-    // NTNumeric -> dtIn must be NTComplex or NTDouble
-    //              and set resultType to the highest type of dtIn
     if (dtIn == NTNumeric) {
-	resultType = NTDouble;
+        // NTNumeric -> dtIn must be NTComplex or NTDouble or NTInt
+        //              and set resultType to the highest type of dtIn
+        resultType = (dtOut==NTDouCom ? NTDouble : NTInt);
 	for (i=0; i<nelem; i++) {
 	    if (nodes[i]->dataType() == NTComplex) {
 		resultType = NTComplex;
-	    } else if (nodes[i]->dataType() != NTDouble) {
-		TableExprNode::throwInvDT();
+	    } else if (nodes[i]->dataType() == NTDouble) {
+                if (resultType != NTComplex) {
+                    resultType = NTDouble;
+                }
+            } else if (nodes[i]->dataType() != NTInt) {
+		TableExprNode::throwInvDT("function argument is not numeric");
+	    }
+	}
+    } else if (dtIn == NTReal) {
+        // NTReal -> dtIn must be NTDouble or NTInt
+        //           and set resultType to the highest type of dtIn
+        resultType = (dtOut==NTDouCom ? NTDouble : NTInt);
+	for (i=0; i<nelem; i++) {
+            if (nodes[i]->dataType() == NTDouble) {
+                resultType = NTDouble;
+            } else if (nodes[i]->dataType() != NTInt) {
+		TableExprNode::throwInvDT("function argument is not real");
 	    }
 	}
     } else {
@@ -936,16 +1022,24 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
 	    // String to Date conversion is possible.
 	    if (nodes[i]->dataType() != dtIn) {
 		if (nodes[i]->dataType() != NTString  ||  dtIn != NTDate) {
-		    TableExprNode::throwInvDT();
+		    TableExprNode::throwInvDT("function argument is not "
+                                              "string or date");
 		}
 	    }
 	}
     }
-    if (dtOut == NTNumeric  ||  dtOut == NTAny) {
-	return resultType;
+    if (dtOut == NTReal) {
+        if (resultType == NTComplex) {
+            resultType = NTDouble;
+        }
+    } else if (dtOut == NTDouCom) {
+        if (resultType == NTInt) {
+            resultType = NTDouble;
+        }
+    } else if (dtOut != NTNumeric  &&  dtOut != NTAny) {
+        resultType = dtOut;
     }
-    return dtOut;
+    return resultType;
 }
 
 } //# NAMESPACE CASA - END
-

@@ -574,7 +574,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
 	if (nvalPos != 2) {
 	  resVT = VTArray;
 	}
-	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
+	return checkDT (dtypeOper, NTReal, NTDouble, nodes);
       }    
       // cones returns an array if there is more than one cone or radius.
       if (fType == conesFUNC) {
@@ -586,7 +586,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
 	  resVT = VTArray;
 	}
       }
-      return checkDT (dtypeOper, NTDouble, NTBool, nodes);
+      return checkDT (dtypeOper, NTReal, NTBool, nodes);
     }
   default:
     throw (TableInvExpr ("TableExprConeNode::checkOperands, "

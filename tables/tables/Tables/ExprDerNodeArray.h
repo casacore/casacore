@@ -70,6 +70,44 @@ private:
 
 
 // <summary>
+// Int Array constant in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNodeArray
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
+
+class TableExprNodeArrayConstInt : public TableExprNodeArray
+{
+public:
+    TableExprNodeArrayConstInt (const Array<Int64>& value);
+    TableExprNodeArrayConstInt (const Array<uInt>& value);
+    TableExprNodeArrayConstInt (const Array<Int>& value);
+    TableExprNodeArrayConstInt (const Array<uShort>& value);
+    TableExprNodeArrayConstInt (const Array<Short>& value);
+    TableExprNodeArrayConstInt (const Array<uChar>& value);
+    ~TableExprNodeArrayConstInt();
+    Array<Int64>    getArrayInt      (const TableExprId& id);
+    Array<Double>   getArrayDouble   (const TableExprId& id);
+    Array<DComplex> getArrayDComplex (const TableExprId& id);
+private:
+    Array<Int64> value_p;
+};
+
+
+// <summary>
 // Double Array constant in table select expression tree
 // </summary>
 
@@ -94,11 +132,7 @@ class TableExprNodeArrayConstDouble : public TableExprNodeArray
 public:
     TableExprNodeArrayConstDouble (const Array<Double>& value);
     TableExprNodeArrayConstDouble (const Array<Float>& value);
-    TableExprNodeArrayConstDouble (const Array<uInt>& value);
-    TableExprNodeArrayConstDouble (const Array<Int>& value);
-    TableExprNodeArrayConstDouble (const Array<uShort>& value);
-    TableExprNodeArrayConstDouble (const Array<Short>& value);
-    TableExprNodeArrayConstDouble (const Array<uChar>& value);
+    TableExprNodeArrayConstDouble (const Array<Int64>& value);
     ~TableExprNodeArrayConstDouble();
     Array<Double>   getArrayDouble   (const TableExprId& id);
     Array<DComplex> getArrayDComplex (const TableExprId& id);
@@ -133,6 +167,7 @@ public:
     TableExprNodeArrayConstDComplex (const Array<DComplex>& value);
     TableExprNodeArrayConstDComplex (const Array<Complex>& value);
     TableExprNodeArrayConstDComplex (const Array<Double>& value);
+    TableExprNodeArrayConstDComplex (const Array<Int64>& value);
     ~TableExprNodeArrayConstDComplex();
     Array<DComplex> getArrayDComplex (const TableExprId& id);
 private:

@@ -228,6 +228,8 @@ public:
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
     void getScalar (uInt rownr, uInt& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
+    void getScalar (uInt rownr, Int64& value) const
+	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
     void getScalar (uInt rownr, float& value) const
 	{ TABLECOLUMNCHECKROW(rownr); baseColPtr_p->getScalar (rownr, value); }
     void getScalar (uInt rownr, double& value) const

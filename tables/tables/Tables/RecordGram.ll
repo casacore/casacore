@@ -35,10 +35,6 @@
 #define YY_DECL int RecordGramlex (YYSTYPE* lvalp)
 %}
 
-/* states */
-%s EXPRstate
-%s REGEXstate
-
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -53,6 +49,7 @@ WHITE1    [ \t\n]
 WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
+HEXINT    0[xX][0-9a-fA-F]+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
@@ -106,6 +103,8 @@ PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
 PATT3     p#[^#]+#
 PATT      {PATT1}|{PATT2}|{PATT3}
+OPERREX   "!"?"~"
+PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 
 
 %%
@@ -129,6 +128,16 @@ PATT      {PATT1}|{PATT2}|{PATT3}
             return RBRACKET;
           }
 
+ /* regular expression and pattern handling */
+{PATTREX} {
+            recordGramPosition() += yyleng;
+            lvalp->val = new RecordGramVal();
+            lvalp->val->type = 'r';
+            lvalp->val->str = String(RecordGramtext,yyleng);
+	    return REGEX;
+	  }
+
+ /* operators */
 "<:<"     { recordGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { recordGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { recordGramPosition() += yyleng; return CLOSEDOPEN; }
@@ -154,12 +163,18 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 {OR}      { recordGramPosition() += yyleng; return OR; }
 "!"       { recordGramPosition() += yyleng; return NOT; }
 {NOT}     { recordGramPosition() += yyleng; return NOT; }
-"^"       { recordGramPosition() += yyleng; return POWER; }
+ /* "^"       { recordGramPosition() += yyleng; return BITXOR; } /* was POWER */
+"^"       { throw TableInvExpr ("^ is deprecated; will be XOR in next relese"); }
+"**"      { recordGramPosition() += yyleng; return POWER; }
 "*"       { recordGramPosition() += yyleng; return TIMES; }
 "/"       { recordGramPosition() += yyleng; return DIVIDE; }
+"//"      { recordGramPosition() += yyleng; return DIVIDETRUNC; }
 "%"       { recordGramPosition() += yyleng; return MODULO; }
 "+"       { recordGramPosition() += yyleng; return PLUS; }
 "-"       { recordGramPosition() += yyleng; return MINUS; }
+"|"       { tableGramPosition() += yyleng; return BITOR; }
+"&"       { tableGramPosition() += yyleng; return BITAND; }
+"~"       { tableGramPosition() += yyleng; return BITNOT; }
 "("       { recordGramPosition() += yyleng; return LPAREN; }
 ")"       { recordGramPosition() += yyleng; return RPAREN; }
 "{"       { recordGramPosition() += yyleng; return LBRACE; }
@@ -188,16 +203,26 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 {INT}     {
             recordGramPosition() += yyleng;
-            lvalp->val = new RecordGramVal();
-            Int ival = atoi(RecordGramtext);
-            Double dval = atof(RecordGramtext);
-            if (ival < dval-0.1  ||  ival > dval+0.1) {
-                lvalp->val->type = 'f';
-                lvalp->val->dval[0] = dval;
-            } else {
-                lvalp->val->type = 'i';
-                lvalp->val->ival = ival;
+            char* endPtr;
+            Int64 v = strtol(RecordGramtext, &endPtr, 10);
+            if (endPtr != RecordGramtext+yyleng) {
+                throw TableInvExpr ("Integer number not fully parsed");
             }
+            lvalp->val = new RecordGramVal();
+            lvalp->val->type = 'i';
+            lvalp->val->ival = v;
+            return LITERAL;
+	  }
+{HEXINT}  {
+            recordGramPosition() += yyleng;
+            char* endPtr;
+            Int64 v = strtol(RecordGramtext, &endPtr, 0);
+            if (endPtr != RecordGramtext+yyleng) {
+                throw TableInvExpr ("Hex number not fully parsed");
+            }
+            lvalp->val = new RecordGramVal();
+            lvalp->val->type = 'i';
+            lvalp->val->ival = v;
             return LITERAL;
 	  }
 {TRUE}    {
@@ -246,40 +271,6 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	    return LITERAL;
 	  }
 
-
- /* regular expression and pattern handling */
-"~"       {
-            BEGIN(REGEXstate);
-            return EQREGEX;
-          }
-"!~"      {
-            BEGIN(REGEXstate);
-            return NEREGEX;
-          }
-<REGEXstate>{REGEX} {
-            recordGramPosition() += yyleng;
-            lvalp->val = new RecordGramVal();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
-            BEGIN(EXPRstate);
-	    return REGEX;
-	  }
-<REGEXstate>{FREGEX} {
-            recordGramPosition() += yyleng;
-            lvalp->val = new RecordGramVal();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
-            BEGIN(EXPRstate);
-	    return REGEX;
-	  }
-<REGEXstate>{PATT} {
-            recordGramPosition() += yyleng;
-            lvalp->val = new RecordGramVal();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
-            BEGIN(EXPRstate);
-	    return PATTERN;
-	  }
 
 {NAME}    {
             recordGramPosition() += yyleng;

@@ -78,13 +78,13 @@ public:
     enum FunctionType {
 	piFUNC,
 	eFUNC,
-	    // for Double or Complex returning Bool
+	    // for Int, or Double or Complex returning Bool
 	    // (2 is with default tolerance)
 	near2FUNC,
 	near3FUNC,
 	nearabs2FUNC,
 	nearabs3FUNC,
-            // for Double or DComplex returning same data type
+            // for Int, Double or DComplex returning Double or Complex
 	sinFUNC,
 	sinhFUNC,
 	cosFUNC,
@@ -92,40 +92,46 @@ public:
 	expFUNC,
 	logFUNC,
 	log10FUNC,
-	powFUNC,
-	squareFUNC,
 	sqrtFUNC,
+	powFUNC,
 	conjFUNC,
+            // for Int, Double or DComplex returning Int, Double or Complex
+	squareFUNC,
+	cubeFUNC,
 	minFUNC,
 	maxFUNC,
-            // for Double or DComplex returning Double
+            // for Int, Double or DComplex returning Int or Double
 	normFUNC,
 	absFUNC,
 	argFUNC,
+            // for Int, Double or DComplex returning Double
 	realFUNC,
 	imagFUNC,
-            // for Double returning Double
+            // for Int or Double returning Int (using floor)
+        intFUNC,
+            // for Int or Double returning Double
 	asinFUNC,
 	acosFUNC,
 	atanFUNC,
 	atan2FUNC,
 	tanFUNC,
 	tanhFUNC,
+            // for Int or Double returning Int or Double
 	signFUNC,
 	roundFUNC,
 	floorFUNC,
 	ceilFUNC,
 	fmodFUNC,
-            // for Double returning DComplex
+            // for Int, Double or DComplex returning DComplex
 	complexFUNC,
-	    // for Double or Complex array returning scalar
+	    // for Int, Double or Complex array returning the same
 	arrsumFUNC,
 	arrsumsFUNC,
 	arrproductFUNC,
 	arrproductsFUNC,
 	arrsumsqrFUNC,
 	arrsumsqrsFUNC,
-	    // for Double array returning Double
+	    // for Int or Double array returning Int or Double
 	arrminFUNC,
 	arrminsFUNC,
 	runminFUNC,
@@ -134,6 +140,7 @@ public:
 	arrmaxsFUNC,
 	runmaxFUNC,
 	boxmaxFUNC,
+	    // for Int or Double array returning Double
 	arrmeanFUNC,
 	arrmeansFUNC,
 	runmeanFUNC,
@@ -169,27 +176,29 @@ public:
 	allsFUNC,
 	runallFUNC,
 	boxallFUNC,
-	    // for Bool array returning Double
+	    // for Bool array returning Int scalar
 	ntrueFUNC,
 	ntruesFUNC,
 	nfalseFUNC,
 	nfalsesFUNC,
 	    // for any type returning array of that type
 	arrayFUNC,
-	    // for Double or DComplex array returning Bool
+	    // for Int, Double or DComplex array returning Bool
 	isnanFUNC,
 	    // for any array returning Bool scalar
 	isdefFUNC,
-	    // for any array returning Double scalar
+	    // for any array returning Int scalar
 	ndimFUNC,
 	nelemFUNC,
-	    // for any array returning Double array
+	    // for any array returning Int array
 	shapeFUNC,
             // for String
-	strlengthFUNC,         //# returning Double
+	strlengthFUNC,         //# returning Int
 	upcaseFUNC,            //# returning String
 	downcaseFUNC,          //# returning String
 	trimFUNC,              //# returning String
+	ltrimFUNC,             //# returning String
+	rtrimFUNC,             //# returning String
 	regexFUNC,             //# returning Regex
 	patternFUNC,           //# returning Regex
 	sqlpatternFUNC,        //# returning Regex
@@ -199,18 +208,18 @@ public:
 	mjdFUNC,               //# returning Double
 	dateFUNC,              //# returning Date
 	timeFUNC,              //# returning Double (in radians)
-	yearFUNC,              //# returning Double
-	monthFUNC,             //# returning Double
-	dayFUNC,               //# returning Double
+	yearFUNC,              //# returning Int
+	monthFUNC,             //# returning Int
+	dayFUNC,               //# returning Int
 	cmonthFUNC,            //# returning String
-	weekdayFUNC,           //# returning Double
+	weekdayFUNC,           //# returning Int
 	cdowFUNC,              //# returning String
-	weekFUNC,              //# returning Double
-	    // special function to select on a random number
+	weekFUNC,              //# returning Int
+	    // special function returning a random Double number
 	randFUNC,
-            // special function to select on row number
+            // special function returning Int row number
 	rownrFUNC,
-            // special function to return row id (meant for GIVING)
+            // special function returning Int row id (meant for GIVING)
 	rowidFUNC,
             // special function resembling if statement
 	iifFUNC,
@@ -234,6 +243,7 @@ public:
     // 'get' Functions to get the desired result of a function
     // <group>
     Bool     getBool     (const TableExprId& id);
+    Int64    getInt      (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
     String   getString   (const TableExprId& id);
@@ -253,9 +263,10 @@ public:
 
     // Fill the result unit in the node.
     // Adapt the children nodes if their units need to be converted.
-    static void fillUnits (TableExprNodeRep* node,
-			   PtrBlock<TableExprNodeRep*>& nodes,
-			   FunctionType func);
+    // It returns a possible scale factor in case result unit is SI (for sqrt).
+    static Double fillUnits (TableExprNodeRep* node,
+                             PtrBlock<TableExprNodeRep*>& nodes,
+                             FunctionType func);
 
     // Link the children to the node and convert the children
     // to constants if possible. Also convert the node to
@@ -273,6 +284,14 @@ public:
     // Fill the unit of the node for the functions with a predefined unit
     // (like asin).
     static void fillUnit (TableExprNodeRep& node, FunctionType func);
+
+    // Set unit scale factor (needed for sqrt).
+    void setScale (Double scale)
+        { scale_p = scale; }
+
+    // Get possible unit scale factor (needed for sqrt).
+    Double getScale() const
+        { return scale_p; }
 
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
@@ -297,9 +316,9 @@ private:
 
     FunctionType funcType_p;        // which function
     NodeDataType argDataType_p;     // common argument data type
+    Double       scale_p;           // possible scaling for unit conversion
+                                    // (needed for sqrt)
 };
-
-
 
 
 } //# NAMESPACE CASA - END

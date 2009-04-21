@@ -113,7 +113,7 @@ void a (const TableDesc& td)
     SetupNewTable newtab("tVirtualTaQLColumn_tmp.data0", td, Table::New);
     newtab.setShapeColumn("arr1",IPosition(3,2,3,4));
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
-    VirtualTaQLColumn vtc("ab+10");
+    VirtualTaQLColumn vtc("ab+10.");
     VirtualTaQLColumn vtc2("ag+max(arr3)");
     VirtualTaQLColumn vtc3("ab*ac");
     VirtualTaQLColumn vtac("ab*arr3");

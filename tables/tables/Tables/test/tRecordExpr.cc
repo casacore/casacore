@@ -47,7 +47,7 @@ void doIt()
   // Check if it handles a normal record field.
   TableRecord rec;
   rec.define ("fld1", Int(1));
-  TableExprNode expr (makeRecordExpr(rec, "fld1") == 1);
+  TableExprNode expr (makeRecordExpr(rec, "fld1") == 1.);
   Bool result;
   expr.get (rec, result);
   AlwaysAssertExit (result);

@@ -100,12 +100,15 @@ public:
     // Define the data types of a node.
     enum NodeDataType {
 	NTBool,
+        NTInt,
 	NTDouble,
 	NTComplex,
 	NTString,
 	NTRegex,
 	NTDate,
-	NTNumeric,             //# NTDouble or NTComplex
+        NTReal,                //# NTInt or NTDouble
+        NTDouCom,              //# NTDouble or NTComplex
+	NTNumeric,             //# NTInt, NTDouble, or NTComplex
 	NTAny                  //# Any data type
     };
 
@@ -122,6 +125,7 @@ public:
     // Define the operator types.
     // LE and LT are handled as GE and GT with swapped operands.
     enum OperType {OtPlus, OtMinus, OtTimes, OtDivide, OtModulo,
+                   OtBitAnd, OtBitOr, OtBitXor, OtBitNegate,
 		   OtEQ, OtGE, OtGT, OtNE, OtIN,
 		   OtAND, OtOR, OtNOT, OtMIN,
 		   OtColumn, OtField, OtLiteral, OtFunc, OtSlice, OtUndef,
@@ -176,6 +180,7 @@ public:
     // operator on the resulting values.
     // <group>
     virtual Bool getBool         (const TableExprId& id);
+    virtual Int64 getInt         (const TableExprId& id);
     virtual Double getDouble     (const TableExprId& id);
     virtual DComplex getDComplex (const TableExprId& id);
     virtual String getString     (const TableExprId& id);
@@ -189,6 +194,7 @@ public:
     // operator on the resulting values.
     // <group>
     virtual Array<Bool> getArrayBool         (const TableExprId& id);
+    virtual Array<Int64> getArrayInt         (const TableExprId& id);
     virtual Array<Double> getArrayDouble     (const TableExprId& id);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
     virtual Array<String> getArrayString     (const TableExprId& id);
@@ -199,12 +205,15 @@ public:
     // The default implementation tests if it is in an array.
     // <group>
     virtual Bool hasBool     (const TableExprId& id, Bool value);
+    virtual Bool hasInt      (const TableExprId& id, Int64 value);
     virtual Bool hasDouble   (const TableExprId& id, Double value);
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
     virtual Array<Bool> hasArrayBool     (const TableExprId& id,
 					  const Array<Bool>& value);
+    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
+					  const Array<Int64>& value);
     virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
 					  const Array<Double>& value);
     virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
@@ -281,6 +290,7 @@ public:
     const Unit& unit() const;
 
     // Set the unit.
+    // It also sets the datatype to NTDouble if it is NTInt.
     void setUnit (const Unit& unit);
 
     // Get the fixed dimensionality (same for all rows).
@@ -583,10 +593,6 @@ inline Bool TableExprNodeRep::isConstant() const
 //# Get the unit of the node.
 inline const Unit& TableExprNodeRep::unit() const
     { return unit_p; }
-
-//# Set the unit of the node.
-inline void TableExprNodeRep::setUnit (const Unit& unit)
-    { unit_p = unit; }
 
 //# Get the fixed dimensionality of the node.
 inline Int TableExprNodeRep::ndim() const

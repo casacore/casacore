@@ -133,7 +133,7 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
     }
   case CTInt:
     {
-      Int value;
+      Int64 value;
       aio >> value;
       return new TaQLConstNodeRep (value, isTableName);
     }
@@ -246,6 +246,11 @@ void TaQLUnaryNodeRep::show (std::ostream& os) const
     os << "NOT EXISTS ";
     itsChild.show(os);
     break;
+  case U_BITNOT:
+    os << "~(";
+    itsChild.show(os);
+    os << ')';
+    break;
   }
 }
 void TaQLUnaryNodeRep::save (AipsIO& aio) const
@@ -305,7 +310,7 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
     os << '%';
     break;
   case B_POWER:
-    os << '^';
+    os << "**";
     break;
   case B_OR:
     os << "||";
@@ -343,6 +348,15 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
   case B_NEREGEX:
   case B_NEREGEXCI:
     paren = False;
+    break;
+  case B_BITAND:
+    os << '&';
+    break;
+  case B_BITXOR:
+    os << '^';
+    break;
+  case B_BITOR:
+    os << '|';
     break;
   }
   if (paren) {
