@@ -40,7 +40,7 @@ def run_scons(targets, args=[]):
     cwd = os.getcwd()
     for target in targets:
         os.chdir(target)
-        command = "scons " #+ os.path.basename(target)
+        command = "scons-1.2.0 " #+ os.path.basename(target)
         # copy the command line args into the new command
 	pfx = None
 	tests = False

@@ -129,18 +129,30 @@ public:
   Bool setscales(const Vector<Float> & scales);
 
   // Set up control parameters
+  // cleanType - type of the cleaning algorithm to use (HOGBOM, MULTISCALE)
+  // niter - number of iterations
+  // gain - loop gain used in cleaning (a fraction of the maximum 
+  //        subtracted at every iteration)
+  // aThreshold - absolute threshold to stop iterations
+  // fThreshold - fractional threshold (i.e. given w.r.t. maximum residual)
+  //              to stop iterations. This parameter is specified as
+  //              Quantity so it can be given in per cents. 
+  // choose - unused at the moment, specify False. Original meaning is
+  // to allow interactive decision on whether to continue iterations.
+  // This method always returns True.
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
 		  const Float gain, const Quantity& aThreshold,
 		  const Quantity& fThreshold,
 		  const Bool choose=True);
 
+  // This version of the method disables stopping on fractional threshold
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
 		  const Float gain, const Quantity& threshold,
 		  const Bool choose=True);
 
   // return how many iterations we did do
-  Int iteration() { return itsIteration; }
-  Int numberIterations() { return itsIteration; }
+  Int iteration() const { return itsIteration; }
+  Int numberIterations() const { return itsIteration; }
 
   // what iteration number to start on
   void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
@@ -149,7 +161,15 @@ public:
   Bool clean(Lattice<T> & model, LatticeCleanProgress* progress=0);
 
   // Set the mask
-  void setMask(Lattice<T> & mask);
+  // mask - input mask lattice
+  // maskThreshold - if positive, the value is treated as a threshold value to determine
+  // whether a pixel is good (mask value is greater than the threshold) or has to be 
+  // masked (mask value is below the threshold). Negative threshold switches mask clipping
+  // off. The mask value is used to weight the flux during cleaning. This mode is used
+  // to implement cleaning based on the signal-to-noise as opposed to the standard cleaning
+  // based on the flux. The default threshold value is 0.9, which ensures the behavior of the
+  // code is exactly the same as before this parameter has been introduced.
+  void setMask(Lattice<T> & mask, const T& maskThreshold = T(0.9));
 
   // Tell the algorithm to NOT clean just the inner quarter
   // (This is useful when multiscale clean is being used
@@ -180,7 +200,7 @@ public:
 
   // After completion of cycle, querry this to find out if we stopped because
   // of stopPointMode
-  Bool queryStopPointMode() {return itsDidStopPointMode; }
+  Bool queryStopPointMode() const {return itsDidStopPointMode; }
 
   // speedup() will speed the clean iteration by raising the
   // threshold.  This may be required if the threshold is
@@ -197,23 +217,56 @@ public:
   Lattice<T>*  residual() { return itsDirtyConvScales[0]; }
 
   // Method to return threshold, including any speedup factors
-  Float threshold();
+  Float threshold() const;
+
+  // Method to return the strength optimum achieved at the last clean iteration
+  // The output of this method makes sense only if it is called after clean
+  T strengthOptimum() const { return itsStrengthOptimum; }
 
   // Helper function to optimize adding
-  void addTo(Lattice<T>& to, const Lattice<T>& add);
+  static void addTo(Lattice<T>& to, const Lattice<T>& add);
 
 protected:
+  // Make sure that the peak of the Psf is within the image
+  Bool validatePsf(const Lattice<T> & psf);
+
+  // Make an lattice of the specified scale
+  void makeScale(Lattice<T>& scale, const Float& scaleSize);
+
+  // Make Spheroidal function for scale images
+  Float spheroidal(Float nu);
+  
+  // Find the Peak of the Lattice
+  static Bool findMaxAbsLattice(const Lattice<T>& lattice,
+                         T& maxAbs, IPosition& posMax);
+
+  // Find the Peak of the lattice, applying a mask
+  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
+                             T& maxAbs, IPosition& posMax);
+
+  // Helper function to reduce the box sizes until the have the same   
+  // size keeping the centers intact  
+  static void makeBoxesSameSize(IPosition& blc1, IPosition& trc1,                               
+     IPosition &blc2, IPosition& trc2);
+
+
+  CleanEnums::CleanType itsCleanType;
+  Float itsGain;
+  Int itsMaxNiter;      // maximum possible number of iterations
+  Quantum<Double> itsThreshold;
+  TempLattice<T>* itsMask;
+  IPosition itsPositionPeakPsf;
+private:
+
   //# The following functions are used in various places in the code and are
   //# documented in the .cc file. Static functions are used when the functions
   //# do not modify the object state. They ensure that implicit assumptions
   //# about the current state and implicit side-effects are not possible
   //# because all information must be supplied in the input arguments
 
-  CleanEnums::CleanType itsCleanType;
 
   TempLattice<T>* itsDirty;
   TempLattice<Complex>* itsXfr;
-  TempLattice<T>* itsMask;
 
   Int itsNscales;
   Vector<Float> itsScaleSizes;
@@ -226,17 +279,13 @@ protected:
 
   Bool itsScalesValid;
 
-  Float itsGain;
-  Int itsMaxNiter;	// maximum possible number of iterations
   Int itsIteration;	// what iteration did we get to?
   Int itsStartingIter;	// what iteration did we get to?
-  Quantum<Double> itsThreshold;
   Quantum<Double> itsFracThreshold;
 
   Float itsMaximumResidual;
+  T itsStrengthOptimum;
 
-
-  IPosition itsPositionPeakPsf;
 
   Vector<Float> itsTotalFluxScale;
   Float itsTotalFlux;
@@ -254,29 +303,11 @@ protected:
   //# Stop now?
   //#//  Bool stopnow();   Removed on 8-Apr-2004 by GvD
 
-  // Make an lattice of the specified scale
-  void makeScale(Lattice<T>& scale, const Float& scaleSize);
-
-  // Make Spheroidal function for scale images
-  Float spheroidal(Float nu);
-
   // Calculate index into PsfConvScales
   Int index(const Int scale, const Int otherscale);
   
   Bool destroyScales();
   Bool destroyMasks();
-
-  Bool findMaxAbsLattice(const Lattice<T>& lattice,
-			 T& maxAbs, IPosition& posMax);
-
-  Bool findMaxAbsMaskLattice(const Lattice<T>& lattice, const Lattice<T>& mask,
-			     T& maxAbs, IPosition& posMax);
-
-  Bool validatePsf(const Lattice<T> & psf);
-
-  // Helper function to reduce the box sizes until the have the same   
-  // size keeping the centers intact  
-  static void makeBoxesSameSize(IPosition& blc1, IPosition& trc1,IPosition &blc2, IPosition& trc2);
 
 
   Bool makeScaleMasks();
@@ -287,6 +318,9 @@ protected:
   Bool itsDidStopPointMode;
   Bool itsJustStarting;
 
+  // threshold for masks. If negative, mask values are used as weights and no pixels are
+  // discarded (although effectively they would be discarded if the mask value is 0.)
+  T itsMaskThreshold;
 
 };
 
