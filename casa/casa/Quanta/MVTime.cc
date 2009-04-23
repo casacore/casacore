@@ -1,5 +1,5 @@
 //# MVTime.cc: Class to handle date/time type conversions and I/O
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003,2004,2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -198,22 +198,14 @@ uInt MVTime::yearday() const {
 }
 
 uInt MVTime::yearweek() const {
-  /// Old implementation gave incorrect week for eg. 5-Apr-09
-  ///  Int yd(yearday()-4);
-  ///  uInt yw((yd+7)/7);
-  ///  yd %= 7;
-  ///  // Check for other week
-  ///  if (yd >= 0) {
-  ///    if (yd > (Int)weekday()) return yw+1;
-  ///  } else if (yd+7 > (Int)weekday()) return yw+1;
-  ///  return yw;
-  Int yd = yearday();
-  Int wd = weekday();
-  Int wd11 = wd - (yd-1)%7;       // weekday of 1-Jan
-  if (wd11 <= 0) wd11+=7;
-  Int w = (yd + wd11 - 2) / 7;    // weeknumber
-  if (wd11 <= 4) ++w;             // at least 4 days in first week means week 1
-  return w;
+  Int yd(yearday()-4);
+  uInt yw((yd+7)/7);
+  yd %= 7;
+  // Check for other week
+  if (yd >= 0) {
+    if (yd >= (Int)weekday()) return yw+1;
+  } else if (yd+7 >= (Int)weekday()) return yw+1;
+  return yw;
 }
 
 void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
