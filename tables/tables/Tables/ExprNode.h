@@ -767,7 +767,6 @@ public:
     TableExprNode (const Int64& value);
     TableExprNode (const Int& value);
     TableExprNode (const uInt& value);
-    TableExprNode (const ssize_t& value);
     TableExprNode (const Float& value);
     TableExprNode (const Double& value);
     TableExprNode (const Complex& value);
