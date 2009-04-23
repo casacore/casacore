@@ -50,7 +50,6 @@ TableExprNodeSet* settp;
 %token INCONE
 %token BETWEEN
 %token LIKE
-%token REGEX
 %token LPAREN
 %token RPAREN
 %token COMMA
