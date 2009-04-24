@@ -121,12 +121,12 @@ void doIt()
   checkScaDouble ("e3%e2", 0, e3%e2, 0.02, "m");
   // Comparison
   checkScaBool ("e3*e2==e2*e3", 0, e3*e2==e2*e3, True);
-  checkScaBool ("e2==e3", 0, e2==e3, True);
-  checkScaBool ("e2>=e3", 0, e2>=e3, True);
-  checkScaBool ("e2>e3", 0, e2>e3, False);
-  checkScaBool ("e2<=e3", 0, e2<=e3, True);
-  checkScaBool ("e2<e3", 0, e2<e3, False);
-  checkScaBool ("e2!=e3", 0, e2!=e3, False);
+  checkScaBool ("e2==e3", 0, e2+0.00001==e3, False);
+  checkScaBool ("e2>=e3", 0, e2+0.00001>=e3, True);
+  checkScaBool ("e2>e3", 0, e2+0.00001>e3, True);
+  checkScaBool ("e2<=e3", 0, e2-0.00001<=e3, True);
+  checkScaBool ("e2<e3", 0, e2-0.00001<e3, True);
+  checkScaBool ("e2!=e3", 0, e2+0.00001!=e3, True);
   // Functions
   checkScaBool ("near2(e2,e3)", 0, near(e2,e3), True);
   checkScaBool ("near3(e2,e3)", 0, near(e2,e3,1e-10), True);

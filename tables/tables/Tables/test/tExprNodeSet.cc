@@ -233,7 +233,7 @@ void doDiscreteDouble()
 {
   TableExprNode st(1);
   st.useUnit ("dm");
-  TableExprNode end(1);
+  TableExprNode end(1.001);
   end.useUnit ("m");
   TableExprNode incr(2);
   incr.useUnit ("cm");
@@ -495,7 +495,7 @@ void doIntervalDouble()
 {
   TableExprNode st(1);
   st.useUnit ("m");
-  TableExprNode end(990);
+  TableExprNode end(989.5);
   end.useUnit ("cm");
   {
     TableExprNodeSetElem tset(False, st, end, False);
@@ -520,7 +520,7 @@ void doIntervalDouble()
     checkMatchDouble (tset, -1., False);
     checkMatchDouble (tset, 1., True);
     checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, True);
+    checkMatchDouble (tset, 9.9, False);
     checkMatchDouble (tset, 10., False);
   }
   {
@@ -546,7 +546,7 @@ void doIntervalDouble()
     checkMatchDouble (tset, -1., True);
     checkMatchDouble (tset, 1., True);
     checkMatchDouble (tset, 989., True);
-    checkMatchDouble (tset, 990, True);     // unit is cm
+    checkMatchDouble (tset, 990, False);     // unit is cm
     checkMatchDouble (tset, 1000., False);
   }
 }
