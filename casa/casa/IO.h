@@ -98,21 +98,29 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ol>
 // <li> <linkto class=RegularFileIO:description>RegularFileIO</linkto> uses a
 //      regular file to hold the data. Internally it uses FilebufIO (see below).
-// <li> <linkto class=FilebufIO:description>FilebufIO</linkto> uses the
-//      <src>stdio</src> system to do IO in a buffered way. It uses
-//      an internal buffer to do physical IO only when needed. See the
-//      description of C-functions like <src>fopen, fread</src> or do
-//      <src>man stdio</src> for more information.
+// <li> <linkto class=LargeRegularFileIO:description>LargeRegularFileIO</linkto>
+//      is similar to RegularFileIO for 64-bit systems.
+// <li> <linkto class=FilebufIO:description>FilebufIO</linkto> does the IO
+//      in a buffered way similar to the <src>stdio</src> system. However, it
+//      does not use stdio because that gave problems when doing concurrent
+//      access from multiple processes.
+// <li> <linkto class=LargeFilebufIO:description>LargeFilebufIO</linkto> is
+//      similar to FilebufIO for 64-bit systems.
 // <li> <linkto class=FiledesIO:description>FiledesIO</linkto> uses the
 //      UNIX IO-functions like <src>open, read</src> to do IO directly.
-//      It does not use an internal buffer. Instead it always do a
+//      It does not use an internal buffer. Instead it always does
 //      physical IO. It is meant for IO operations where large chunks of
 //      a file are accessed and for IO on sockets, pipes, etc..
+// <li> <linkto class=LargeFiledesIO:description>LargeFiledesIO</linkto> is
+//      similar to FiledesIO for 64-bit systems.
 // <li> <linkto class=MemoryIO:description>MemoryIO</linkto> uses a
 //      (possibly expandable) buffer in memory to hold the data.
+// <li> <linkto class=MMapIO>MMapIO:description</linkto> uses memory-mapped IO.
+//      Be careful to use this on 32-bit machines, because its address space is
+//      too small to handle a file of a few GBytes.
 // </ol>
 //
-// The IO framework is easily expandable. Once can for instance think of a
+// The IO framework is easily expandable. One can for instance think of a
 // class <src>AsciiIO</src> derived from <src>TypeIO</src>
 // to hold data in ASCII format.
 // <br> A class <src>TapeIO</src> could be derived from <src>ByteIO</src>
