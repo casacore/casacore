@@ -42,12 +42,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 //
-// <author>
-// <ul>    
-// <li>Shannon Jaeger, original author
-// </ul>
-// </author>    
-//
 // <prerequisite>
 //   <li> <linkto class=RSFileReaderWriter</linkto>
 // </prerequisite>
@@ -65,11 +59,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // have been stored into an AipsIO file.
 // </motivation>
 //
-// #<note>
-// #</note>
-//
-// <todo asof="1998/05/20">
-// </todo>
+//# <todo asof="1998/05/20">
+//# </todo>
+
 class AipsIOReaderWriter : public RFReader, public RFWriter {
 public:
     // Static Members //

@@ -46,14 +46,8 @@ class RFWriter;
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 //
-// <author>
-// <li> Laura Glendening, original author
-// <li> Shannon Jaeger, Relocated from display tool to image regions.
-// </author>
-// 
 // <prerequisite>
-// <li>
-// </prerequesite>
+// </prerequisite>
 //
 // <synopsis>
 // </synopsis>
@@ -61,25 +55,26 @@ class RFWriter;
 // <example>
 // <srcblock>
 // </srcblock>
+// </example>
 //
 //# <todo asof="2009/03/10">
 //# <li>
 //# </todo> 
+
 class RFError {
 public:
     // Constructor, blank error.
     RFError();
-    
+
     // Constructor, error with the given text and isFatal flag.
     RFError(const String& error, bool isFatal = false);
-    
+
     // Destructor.
     ~RFError();
-    
-    
+
     // Returns whether this error was fatal or not.
     bool isFatal() const;
-    
+
     // Returns this error's text.
     const String& error() const;
 
@@ -102,14 +97,8 @@ private:
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 //
-// <author>
-// <li> Laura Glendening, original author
-// <li> Shannon Jaeger, Relocated from display tool to image regions.
-// </author>
-// 
 // <prerequisite>
-// <li>
-// </prerequesite>
+// </prerequisite>
 //
 // <synopsis>
 // </synopsis>
@@ -117,10 +106,12 @@ private:
 // <example>
 // <srcblock>
 // </srcblock>
+// </example>
 //
 //# <todo asof="2009/03/10">
 //# <li>
 //# </todo> 
+
 class RFReaderWriter {
 public:
     // Public Static Methods //
@@ -205,14 +196,8 @@ protected:
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 //
-// <author>
-// <li> Laura Glendening, original author
-// <li> Shannon Jaeger, Relocated from display tool to image regions.
-// </author>
-// 
 // <prerequisite>
-// <li>
-// </prerequesite>
+// </prerequisite>
 //
 // <synopsis>
 // Provide a well defined set of operations for reading
@@ -229,10 +214,12 @@ protected:
 // <example>
 // <srcblock>
 // </srcblock>
+// </example>
 //
 //# <todo asof="2009/03/10">
 //# <li>
 //# </todo> 
+
 class RFReader : public virtual RFReaderWriter {
 public:
     // Constructor.
@@ -271,14 +258,8 @@ public:
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
 //
-// <author>
-// <li> Laura Glendening, original author
-// <li> Shannon Jaeger, Relocated from display tool to image regions.
-// </author>
-//
 // <prerequisite>
-// <li>
-// </prerequesite>
+// </prerequisite>
 //
 // <synopsis>
 // Provide a well defined set of operations that all
@@ -293,10 +274,12 @@ public:
 // <example>
 // <srcblock>
 // </srcblock>
+// </example>
 //
 //# <todo asof="2009/03/10">
 //# <li>
 //# </todo> 
+
 class RFWriter : public virtual RFReaderWriter {
 public:
     // Constructor.
