@@ -194,6 +194,7 @@ class TableExprNode;
   // Transcendental functions applied to to nodes containing scalars or
   // arrays with double values.
   // They are invalid for Complex nodes.
+  // <group>
     TableExprNode asin  (const TableExprNode& node);
     TableExprNode acos  (const TableExprNode& node);
     TableExprNode atan  (const TableExprNode& node);

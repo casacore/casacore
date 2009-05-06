@@ -694,7 +694,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ul>
 //  <li> Relational operators ==, !=, >, >=, < and <=.
 //  <li> Logical operators &&, || and !.
-//  <li> Arithmetic operators +, -, *, /, %, ^, and unary + and -.
+//  <li> Arithmetic operators +, -, *, /, %, and unary + and -.
+//  <li> Bit operators ^, &, |, and unary ~.
 //  <li> Operator() to take a subsection of an array.
 // </ul>
 // Many functions (like sin, max, conj) can be used in an expression.
