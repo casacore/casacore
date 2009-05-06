@@ -44,7 +44,7 @@ void tConvertEQ()
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
-  AlwaysAssertExit (allEQ(res, exp));\
+  AlwaysAssertExit (allEQ(res, exp));
 }
 
 template<typename T, typename F>
@@ -56,7 +56,7 @@ void tConvertNear()
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
-  AlwaysAssertExit (allNear(res, exp, 1e-5));        \
+  AlwaysAssertExit (allNear(res, exp, 1e-5));
 }
 
 int main()
