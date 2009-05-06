@@ -86,6 +86,12 @@ Bool DataManager::isStorageManager() const
     { return True; }
 
 
+uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
+{
+    open (nrrow, ios);
+    return nrrow;
+}
+
 void DataManager::reopenRW()
 {}
 

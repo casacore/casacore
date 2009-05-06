@@ -211,7 +211,9 @@ public:
     // Read the data, reconstruct the data managers, and link those to
     // the table object.
     // This function gets called when an existing table is read back.
-    void getFile (AipsIO&, Table& tab, uInt nrrow, Bool bigEndian);
+    // It returns the number of rows in case a data manager thinks there are
+    // more. That is in particular used by LofarStMan.
+    uInt getFile (AipsIO&, Table& tab, uInt nrrow, Bool bigEndian);
 
     // Set the table to being changed.
     void setTableChanged();

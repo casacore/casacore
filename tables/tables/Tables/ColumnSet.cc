@@ -755,7 +755,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 }
 
 
-void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian)
+uInt ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian)
 {
     //# When the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
@@ -810,10 +810,14 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian)
 	ios.getnew (leng, data);
 	MemoryIO memio (data, leng);
 	AipsIO aio(&memio);
-	BLOCKDATAMANVAL(i)->open (nrrow_p, aio);
+	uInt nrrow = BLOCKDATAMANVAL(i)->open1 (nrrow_p, aio);
+        if (nrrow > nrrow_p) {
+          nrrow_p = nrrow;
+        }
 	delete [] data;
     }
     prepareSomeDataManagers (0);
+    return nrrow_p;
 }
 
 

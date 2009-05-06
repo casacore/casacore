@@ -432,6 +432,14 @@ private:
     // in the flush function.
     virtual void open (uInt nrrow, AipsIO& ios) = 0;
 
+    // Open as above.
+    // The data manager can return the number of rows it thinks there are.
+    // This is particularly useful for data managers like LofarStMan whose
+    // data are written outside the table system, thus for which no rows
+    // have been added.
+    // <br>By default it calls open and returns <src>nrrow</src>.
+    virtual uInt open1 (uInt nrrow, AipsIO& ios);
+
     // Resync the data by rereading cached data from the file.
     // This is called when a lock is acquired on the file and it appears 
     // that data in this data manager has been changed by another process.

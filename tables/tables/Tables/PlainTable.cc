@@ -231,7 +231,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
     Table tab(this, False);
-    colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p);
+    nrrow_p = colSetPtr_p->getFile (ios, tab, nrrow_p, bigEndian_p);
     //# Read the TableInfo object.
     getTableInfo();
     //# Release the read lock if UserLocking is used.
