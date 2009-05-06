@@ -103,7 +103,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   axisName_p("Frequency"),
   formatUnit_p("")
 {
-   AlwaysAssert(restFrequency>=0.0, AipsError);
+  ///   AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = max(0.0, restFrequency);
 //
