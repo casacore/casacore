@@ -166,8 +166,17 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType,
 //   called makeObject). This requires that the type name and constructor
 //   for each possible data manager are registered before the table
 //   is opened. The DataManager function registerAllCtor (implemented
-//   in DataManReg.cc) is called before a table is opened, so registration
+//   in DataManager.cc) is called before a table is opened, so registration
 //   of data managers should, in principle, be done there.
+//   <br>However, for unknown data managers it is tried to load a shared
+//   library whose name is the lowercase version of the data manager without a
+//   possible template argument (e.g. <src>bitflagsengine</src> for
+//   data manager <src>BitFlagsEngine<Int></src>).
+//   It can be preceeded by lib or libcasa_ and followed by .so or .dylib.
+//   The shared library has to have a function with a name like
+//   <src>register_bitflagsengine</src> that must register the data manager(s).
+//   The function must be declared as <src>extern "C"</src>, otherwise its
+//   name gets mangled.
 //  <li>
 //   Each table column is bound to the correct data manager. The sequence
 //   number stored in the table file is used for that purpose.
