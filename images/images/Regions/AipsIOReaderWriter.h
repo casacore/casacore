@@ -24,8 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#ifndef AIPSIOREADERWRITIER_H_
-#define AIPSIOREADERWRITIER_H_
+
+#ifndef IMAGES_AIPSIOREADERWRITER_H
+#define IMAGES_AIPSIOREADERWRITER_H
 
 //# Includes
 #include <images/Regions/RFReaderWriter.h>
@@ -43,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class=RSFileReaderWriter</linkto>
+//   <li> <linkto class=RFReaderWriter>RFReaderWriter</linkto>
 // </prerequisite>
 //
 // <synopsis> 
@@ -62,13 +63,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# <todo asof="1998/05/20">
 //# </todo>
 
-class AipsIOReaderWriter : public RFReader, public RFWriter {
+class AipsIOReaderWriter : public RFReader, public RFWriter
+{
 public:
-    // Static Members //
-    
-    
-    // Non-Static Members //    
-    
     // Constructor.
     AipsIOReaderWriter();
     
@@ -97,9 +94,8 @@ public:
     bool write(const Record& region) const;
     bool write(const ImageRegion& region) const;
     //</group>
+};
 
-  };
+} //# end namespace
 
-}
-
-#endif /* AIPSIOREADERWRITIER_H_ */
+#endif

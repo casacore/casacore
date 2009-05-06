@@ -24,8 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#ifndef RFREADERWRITER_H_
-#define RFREADERWRITER_H_
+
+#ifndef IMAGES_RFREADERWRITER_H
+#define IMAGES_RFREADERWRITER_H
 
 //# Includes
 #include <casa/Logging/LogIO.h>
@@ -34,6 +35,7 @@
 
 namespace casa {//# NAMESPACE CASA - BEGIN 
 
+//# Forward declarations
 class RFReader;
 class RFWriter;
  
@@ -61,7 +63,8 @@ class RFWriter;
 //# <li>
 //# </todo> 
 
-class RFError {
+class RFError
+{
 public:
     // Constructor, blank error.
     RFError();
@@ -112,10 +115,9 @@ private:
 //# <li>
 //# </todo> 
 
-class RFReaderWriter {
+class RFReaderWriter
+{
 public:
-    // Public Static Methods //
-    
     // An enum of all known subclasses/formats supported.
     enum SupportedType {
         AIPS_BOX, DS9, CASA_XML, AIPS_IO
@@ -149,8 +151,6 @@ public:
     static Record* optionsWidgetForType(SupportedType type);
     
     
-    // Non-Static Members //
-    
     // Constructor.
     RFReaderWriter() { }
     
@@ -160,10 +160,8 @@ public:
     // Sets the file to be read/written to the given.
     virtual void setFile(const String& filename);
 
-
     // Sets the region name associated withe the file to be read or written.
     virtual void setName(const String& regionName);
-    
     
     // Returns the last error set during read/write.
     virtual const RFError& lastError() const;
@@ -220,7 +218,8 @@ protected:
 //# <li>
 //# </todo> 
 
-class RFReader : public virtual RFReaderWriter {
+class RFReader : public virtual RFReaderWriter
+{
 public:
     // Constructor.
     RFReader() { }
@@ -280,7 +279,8 @@ public:
 //# <li>
 //# </todo> 
 
-class RFWriter : public virtual RFReaderWriter {
+class RFWriter : public virtual RFReaderWriter
+{
 public:
     // Constructor.
     RFWriter() { }
@@ -307,8 +307,8 @@ public:
         setFile(filename);
         return write(regions);
     }
+};
 
-   };
-}
+} //# end namespace
 
-#endif /*RFREADERWRITER_H_*/
+#endif
