@@ -378,7 +378,7 @@ Int64 FilebufIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
   switch (dir) {
   case ByteIO::Begin:
     itsOffset = offset;
-    return itsOffset;
+    break;
   case ByteIO::End:
     itsSeekOffset = ::traceLSEEK (itsFile, offset, SEEK_END);
     itsOffset = itsSeekOffset;
