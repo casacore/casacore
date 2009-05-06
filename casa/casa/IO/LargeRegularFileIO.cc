@@ -44,7 +44,26 @@ LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,
 : itsOption      (option),
   itsRegularFile (regularFile)
 {
-    const String& name = itsRegularFile.path().expandedName();
+    int file = openCreate (regularFile, option);
+    attach (file, (bufferSize == 0 ? 16384 : bufferSize));
+    // If appending, set the stream offset to the file length.
+    if (option == ByteIO::Append) {
+        seek (length());
+    }
+}
+
+LargeRegularFileIO::~LargeRegularFileIO()
+{
+    detach (True);
+    if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
+	itsRegularFile.remove();
+    }
+}
+
+int LargeRegularFileIO::openCreate (const RegularFile& file,
+                                    ByteIO::OpenOption option)
+{
+    const String& name = file.path().expandedName();
     Bool writable = True;
     Bool create = False;
     Int stropt;
@@ -54,7 +73,7 @@ LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,
 	stropt = O_RDONLY;
 	break;
     case ByteIO::NewNoReplace:
-	if (regularFile.exists()) {
+	if (file.exists()) {
 	    throw (AipsError ("LargeRegularFileIO: new file " + name +
 			      " already exists"));
 	}
@@ -74,31 +93,18 @@ LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,
 	throw (AipsError ("LargeRegularFileIO: unknown open option"));
     }
     // Open the file.
-    int file;
+    int fd;
     if (create) {
-      file = trace3OPEN ((char*)name.chars(), stropt, 0644);
+      fd = trace3OPEN ((char*)name.chars(), stropt, 0644);
     } else {
-      file = trace2OPEN ((char*)name.chars(), stropt);
+      fd = trace2OPEN ((char*)name.chars(), stropt);
     }
-    if (file < 0) {
+    if (fd < 0) {
 	throw (AipsError ("LargeRegularFileIO: error in open or create of file " +
 			  name + ": " + strerror(errno)));
     }
-    attach (file, (bufferSize == 0 ? 16384 : bufferSize));
-    // If appending, set the stream offset to the file length.
-    if (option == ByteIO::Append) {
-        seek (length());
-    }
+    return fd;
 }
-
-LargeRegularFileIO::~LargeRegularFileIO()
-{
-    detach (True);
-    if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
-	itsRegularFile.remove();
-    }
-}
-
 
 void LargeRegularFileIO::reopenRW()
 {

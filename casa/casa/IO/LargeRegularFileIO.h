@@ -103,6 +103,11 @@ public:
     // Get the file name of the file attached.
     virtual String fileName() const;
 
+    // Convenience function to open or create a file.
+    // Optionally it is checked if the file does not exist yet.
+    // It returns the file descriptor.
+    static int openCreate (const RegularFile& file, ByteIO::OpenOption);
+
 private:
     OpenOption  itsOption;
     RegularFile itsRegularFile;
