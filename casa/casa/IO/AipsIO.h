@@ -169,7 +169,7 @@ public:
     AipsIO();
 
     // Construct and open/create a file with the given name.
-    // The actual IO is done via a TypeIO object using a filebuf
+    // The actual IO is done via a CanonicalIO object using a filebuf
     // with a buffer of the given size.
     explicit AipsIO (const String& fileName,
 		     ByteIO::OpenOption = ByteIO::Old,
