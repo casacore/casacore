@@ -36,11 +36,11 @@
 
 
 template<typename T, typename F>
-void tConvertEQ()
+void tConvertEQ (const IPosition& shape)
 {
-  Array<F> arr(IPosition(3,4,5,6));
-  Array<T> res(IPosition(3,4,5,6));
-  Array<T> exp(IPosition(3,4,5,6));
+  Array<F> arr(shape);
+  Array<T> res(shape);
+  Array<T> exp(shape);
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
@@ -48,11 +48,11 @@ void tConvertEQ()
 }
 
 template<typename T, typename F>
-void tConvertNear()
+void tConvertNear (const IPosition& shape)
 {
-  Array<F> arr(IPosition(3,4,5,6));
-  Array<T> res(IPosition(3,4,5,6));
-  Array<T> exp(IPosition(3,4,5,6));
+  Array<F> arr(shape);
+  Array<T> res(shape);
+  Array<T> exp(shape);
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
@@ -62,10 +62,12 @@ void tConvertNear()
 int main()
 {
   try {
-    tConvertEQ<Int,Short>();
-    tConvertEQ<Short,Int>();
-    tConvertNear<Float,Int>();
-    tConvertNear<Complex,Float>();
+    IPosition shape1(3,40,50,6);   // size should fit in Short
+    IPosition shape2(3,40,50,600);
+    tConvertEQ<Int,Short> (shape1);
+    tConvertEQ<Short,Int> (shape1);
+    tConvertNear<Float,Int> (shape2);
+    tConvertNear<Complex,Float> (shape2);
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
