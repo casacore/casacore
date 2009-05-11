@@ -33,12 +33,7 @@
 #include <casa/HDF5/HDF5File.h>
 #include <tables/Tables/TableRecord.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward declarations
-class HDF5;
 
 
 // <summary>
@@ -201,5 +196,4 @@ private:
 
 } //# NAMESPACE CASA - END
 
-#endif
 #endif

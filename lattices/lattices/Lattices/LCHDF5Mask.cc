@@ -31,8 +31,6 @@
 #include <casa/OS/Path.h>
 #include <casa/Exceptions/Error.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   LCHDF5Mask::LCHDF5Mask()
@@ -192,5 +190,3 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 } //# NAMESPACE CASA - END
-
-#endif

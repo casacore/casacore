@@ -31,8 +31,6 @@
 #include <casa/Containers/BlockIO.h>
 #include <casa/Utilities/Assert.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
@@ -129,6 +127,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     close();
   }
+
+#ifdef HAVE_LIBHDF5
 
   void HDF5DataSet::create (hid_t parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape)
@@ -290,6 +290,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return shape;
   }
 
-}
+#else
+
+  void HDF5DataSet::create (hid_t, const String&,
+			    const IPosition&, const IPosition&)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  void HDF5DataSet::open (hid_t, const String&)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  void HDF5DataSet::close()
+  {}
+
+  DataType HDF5DataSet::getDataType (hid_t, const String&)
+  {}
+
+  void HDF5DataSet::get (const Slicer&, void*)
+  {}
+
+  void HDF5DataSet::put (const Slicer&, const void*)
+  {}
+
+  Block<hsize_t> HDF5DataSet::fromShape (const IPosition&)
+  {}
+  IPosition HDF5DataSet::toShape (const Block<hsize_t>&)
+  {}
 
 #endif
+
+}

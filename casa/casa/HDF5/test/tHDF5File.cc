@@ -29,17 +29,14 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
-#ifndef HAVE_LIBHDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
 using namespace casa;
 
 int main()
 {
+  // Exit with untested if no HDF5 support.
+  if (! HDF5Object::hasHDF5Support()) {
+    return 3;
+  }
   try {
     {
       // Create the file.
@@ -121,5 +118,3 @@ int main()
   cout << "OK" << endl;
   return 0;
 }
-
-#endif

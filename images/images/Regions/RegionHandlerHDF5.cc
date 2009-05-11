@@ -34,8 +34,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 RegionHandlerHDF5::RegionHandlerHDF5 (GetCallback* callback,
@@ -336,5 +334,3 @@ void RegionHandlerHDF5::restore()
 }
 
 } //# NAMESPACE CASA - END
-
-#endif

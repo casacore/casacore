@@ -159,13 +159,12 @@ int main()
     RegionHandlerTable regtab (getTable, 0);
     doIt (regtab);
     AlwaysAssertExit (! File("tRegionHandler_tmp.lat/reg2n").exists());
-
-#ifdef HAVE_LIBHDF5
-    theHDF5File = new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New);
-    RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
-    doIt (reghdf5);
-#endif
-
+    // Test regions in HDF5 only if supported.
+    if (HDF5Object::hasHDF5Support()) {
+      theHDF5File = new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New);
+      RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
+      doIt (reghdf5);
+    }
   } catch (AipsError x) {
     cerr << "Unexpected exception: " << x.getMesg() << endl;
     return 1;

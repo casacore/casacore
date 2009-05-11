@@ -31,9 +31,9 @@
 #include <casa/HDF5/HDF5Error.h>
 #include <casa/OS/RegularFile.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+#ifdef HAVE_LIBHDF5
 
   HDF5File::HDF5File (const String& name,
 		      ByteIO::OpenOption option)
@@ -144,6 +144,42 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-}
+#else
+
+  HDF5File::HDF5File (const String& name,
+		      ByteIO::OpenOption option)
+    : itsOption (option),
+      itsDelete (False)
+  {
+    setName (name);
+    doOpen();
+  }
+
+  HDF5File::~HDF5File()
+  {}
+
+  Bool HDF5File::isHDF5 (const String&)
+  {
+    return False;
+  }
+
+  void HDF5File::reopenRW()
+  {}
+
+  void HDF5File::close()
+  {}
+    
+  void HDF5File::reopen()
+  {}
+
+  void HDF5File::flush()
+  {}
+
+  void HDF5File::doOpen()
+  {
+    throw HDF5Error("HDF5 support is not compiled into this casacore version");
+  }
 
 #endif
+
+}

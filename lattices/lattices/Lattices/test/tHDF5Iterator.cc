@@ -43,15 +43,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Inputs/Input.h>
 #include <casa/iostream.h>
-#include <casa/namespace.h>
 
-
-#ifndef HAVE_LIBHDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
+using namespace casa;
 
 
 void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
@@ -1163,7 +1156,11 @@ void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2, Bool useRef)
 
 int main (int argc, const char *argv[])
 {
- try {
+  // Exit with untested if no HDF5 support.
+  if (! HDF5Object::hasHDF5Support()) {
+    return 3;
+  }
+  try {
     {
       cout << "Creating a HDF5Lattice on disk" << endl;
       const TiledShape latticeShape(IPosition(4, 16, 12, 4, 32),
@@ -1457,5 +1454,3 @@ int main (int argc, const char *argv[])
     cout << "OK" << endl;
     return 0;
 }
-
-#endif

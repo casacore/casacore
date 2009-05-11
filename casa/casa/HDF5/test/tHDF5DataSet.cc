@@ -33,18 +33,15 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
-
-#ifndef HAVE_LIBHDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
-
+ 
 using namespace casa;
 
 int main()
 {
+  // Exit with untested if no HDF5 support.
+  if (! HDF5Object::hasHDF5Support()) {
+    return 3;
+  }
   try {
     IPosition shape(2,5,6);
     IPosition ts(shape);
@@ -108,5 +105,3 @@ int main()
   cout << "OK" << endl;
   return 0;
 }
-
-#endif

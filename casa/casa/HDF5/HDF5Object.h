@@ -29,13 +29,34 @@
 #define CASA_HDF5OBJECT_H
 
 //# Includes
+#include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 #include <casa/HDF5Config.h>
+
+//# Define hid_t and hsize_t if not defined (thus if HDF5 disabled).
+//# They should be the same as used by HDF5.
+//# This is checked by functions check_hid_t and check_hsize_t.
 #ifdef HAVE_LIBHDF5
 # include <hdf5.h>
+#else 
+  typedef int                hid_t;
+  typedef unsigned long long hsize_t;
 #endif
-#include <casa/BasicSL/String.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+  // Define 2 functions to check that hid_t and hsize_t are mapped correctly.
+  // They are called by the constructor, so the compiler will scream if
+  // incorrect.
+  // <group>
+  void throwInvHDF5();
+  inline void check_hid_t (int) {}
+  template<typename T> inline void check_hid_t (T) {throwInvHDF5();}
+  inline void check_hsize_t (unsigned long long) {}
+  template<typename T> inline void check_hsize_t (T) {throwInvHDF5();}
+  // </group>
+
 
   // <summary>
   // An abstract base class representing an HDF5 object
@@ -63,12 +84,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
   public: 
     // Default constructor sets to invalid hid.
-    HDF5Object();
+    HDF5Object()
+    : itsHid(-1)
+    {
+      check_hid_t   (hid_t(0));
+      check_hsize_t (hsize_t(0));
+    }
 
     // The destructor in a derived class should close the hid appropriately.
     virtual ~HDF5Object();
 
-#ifdef HAVE_LIBHDF5
+    // Check if there is HDF5 support compiled in.
+    static Bool hasHDF5Support();
+
     // Close the hid if valid.
     virtual void close() = 0;
 
@@ -92,6 +120,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return itsName; }
     // </group>
 
+    // If no HDF5, throw an exception that HDF5 is not supported.
+    static void throwNoHDF5();
+
   protected:
     // Set the hid.
     void setHid (hid_t hid)
@@ -105,7 +136,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //# Data members
     hid_t  itsHid;
     String itsName;
-#endif
 
   private:
     // Copy constructor cannot be used.
@@ -114,12 +144,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5Object& operator= (const HDF5Object& that);
   };
 
-
-  inline HDF5Object::HDF5Object()
-#ifdef HAVE_LIBHDF5
-      : itsHid(-1)
-#endif
-    {}
 
 }
 

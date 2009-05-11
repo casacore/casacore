@@ -39,8 +39,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   template<typename T>
@@ -298,5 +296,3 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 } //# NAMESPACE CASA - END
-
-#endif

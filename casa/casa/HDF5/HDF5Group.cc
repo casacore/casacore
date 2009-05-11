@@ -29,9 +29,9 @@
 #include <casa/HDF5/HDF5Group.h>
 #include <casa/HDF5/HDF5Error.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+#ifdef HAVE_LIBHDF5
 
   void HDF5Group::init (hid_t parentHid, const String& parentName,
 			const String& name,
@@ -76,6 +76,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     H5Ldelete (parentHid, name.c_str(), H5P_LINK_ACCESS_DEFAULT);
   }
 
-}
+#else
+
+  void HDF5Group::init (hid_t, const String&,
+			const String&,
+			bool, bool)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5Group::~HDF5Group()
+  {}
+  
+  void HDF5Group::close()
+  {}
+
+  void HDF5Group::remove (const HDF5Object&, const String&)
+  {
+    HDF5Object::throwNoHDF5();
+  }
 
 #endif
+
+}

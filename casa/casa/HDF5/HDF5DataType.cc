@@ -29,9 +29,9 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+#ifdef HAVE_LIBHDF5
 
   HDF5DataType::HDF5DataType (const Bool*)
   {
@@ -129,6 +129,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsHidMem = H5Tcopy (itsHidFile);
   }
 
+  HDF5DataType::~HDF5DataType()
+  {
+    H5Tclose (itsHidMem);
+    H5Tclose(itsHidFile);
+  }
+
   DataType HDF5DataType::getDataType (hid_t dtid)
   {
     DataType dtype = TpOther;
@@ -187,6 +193,81 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return dtype;
   }
 
-}
+#else
+
+  HDF5DataType::HDF5DataType (const Bool*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const uChar*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const Short*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const uShort*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const Int*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const uInt*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const Float*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const Double*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const Complex*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const DComplex*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const String&)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (const String*)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::HDF5DataType (Int, Int)
+  {
+    HDF5Object::throwNoHDF5();
+  }
+
+  HDF5DataType::~HDF5DataType()
+  {}
+
+  DataType HDF5DataType::getDataType (hid_t)
+  {
+    return TpOther;
+  }
 
 #endif
+
+}

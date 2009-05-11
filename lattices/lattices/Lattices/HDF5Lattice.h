@@ -36,9 +36,6 @@
 #include <casa/HDF5/HDF5DataSet.h>
 #include <casa/BasicSL/String.h>
 
-#ifdef HAVE_LIBHDF5
-
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   // <summary>
@@ -256,5 +253,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <lattices/Lattices/HDF5Lattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
-#endif
+
 #endif

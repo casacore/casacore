@@ -28,9 +28,6 @@
 #ifndef CASA_HDF5DATASET_H
 #define CASA_HDF5DATASET_H
 
-#include <casa/HDF5Config.h>
-#ifdef HAVE_LIBHDF5
-
 //# Includes
 #include <casa/HDF5/HDF5Object.h>
 #include <casa/HDF5/HDF5HidMeta.h>
@@ -169,5 +166,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 }
 
-#endif
 #endif

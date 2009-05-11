@@ -32,8 +32,6 @@
 #include <lattices/Lattices/LCBox.h>
 #include <lattices/Lattices/HDF5Lattice.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   // <summary>
@@ -143,5 +141,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 } //# NAMESPACE CASA - END
 
-#endif
 #endif

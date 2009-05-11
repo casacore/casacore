@@ -29,8 +29,6 @@
 #include <casa/HDF5/HDF5File.h>
 #include <casa/Exceptions/Error.h>
 
-#ifdef HAVE_LIBHDF5
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   DataType hdf5imagePixelType (const String& fileName)
@@ -64,21 +62,3 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 } //# NAMESPACE CASA - END
-
-#else
-
-namespace casa { //# NAMESPACE CASA - BEGIN
-
-  DataType hdf5imagePixelType (const String&)
-  {
-    return TpOther;
-  }
-
-  Bool isHDF5Image (const String&)
-  {
-    return False;
-  }
-
-} //# NAMESPACE CASA - END
-
-#endif

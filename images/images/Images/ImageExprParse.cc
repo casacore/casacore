@@ -131,12 +131,10 @@ Table& ImageExprParse::getRegionTable (void*, Bool)
   return theLastTable;
 }
 
-#ifdef HAVE_LIBHDF5
 const CountedPtr<HDF5File>& ImageExprParse::getRegionHDF5 (void*)
 {
   return theLastHDF5;
 }
-#endif
 
 void ImageExprParse::addNode (LatticeExprNode* node)
 {
@@ -619,12 +617,10 @@ LatticeExprNode ImageExprParse::makeLRNode() const
       RegionHandlerTable regHand(getRegionTable, 0);
       regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
     }
-#ifdef HAVE_LIBHDF5
     if (! theLastHDF5.null()) {
       RegionHandlerHDF5 regHand(getRegionHDF5, 0);
       regPtr = regHand.getRegion (names(index), RegionHandler::Any, False);
     }
-#endif
     if (regPtr == 0) {
       if (index == 0) {
 	throw (AipsError ("ImageExprParse: '" + itsSval +

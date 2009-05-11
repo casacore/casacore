@@ -28,11 +28,8 @@
 #ifndef CASA_HDF5HIDMETA_H
 #define CASA_HDF5HIDMETA_H
 
-#include <casa/HDF5Config.h>
-#ifdef HAVE_LIBHDF5
-
 //# Includes
-#include <hdf5.h>
+#include <casa/HDF5/HDF5Object.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,8 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~HDF5HidProperty()
       { close(); }
     // Close the hid if valid.
-    void close()
-      { if (itsHid>=0) H5Pclose(itsHid); itsHid=-1; }
+    void close();
     // Put hid in it. If it already contains a hid, it will be closed.
     void operator= (hid_t hid)
       { close(); itsHid = hid; }
@@ -115,8 +111,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~HDF5HidDataType()
       { close(); }
     // Close the hid if valid.
-    void close()
-      { if (itsHid>=0) H5Tclose(itsHid); itsHid=-1; }
+    void close();
     // Put hid in it. If it already contains a hid, it will be closed.
     void operator= (hid_t hid)
       { close(); itsHid = hid; }
@@ -165,8 +160,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~HDF5HidDataSpace()
       { close(); }
     // Close the hid if valid.
-    void close()
-      { if (itsHid>=0) H5Sclose(itsHid); itsHid=-1; }
+    void close();
     // Put hid in it. If it already contains a hid, it will be closed.
     void operator= (hid_t hid)
       { close(); itsHid = hid; }
@@ -215,8 +209,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~HDF5HidAttribute()
       { close(); }
     // Close the hid if valid.
-    void close()
-      { if (itsHid>=0) H5Aclose(itsHid); itsHid=-1; }
+    void close();
     // Put hid in it. If it already contains a hid, it will be closed.
     void operator= (hid_t hid)
       { close(); itsHid = hid; }
@@ -238,5 +231,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 }
 
-#endif
 #endif

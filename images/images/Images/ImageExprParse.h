@@ -310,10 +310,8 @@ private:
     // Callback function for RegionHandlerTable to get the table to be used.
     static Table& getRegionTable (void*, Bool);
 
-#ifdef HAVE_LIBHDF5
     // Callback function for RegionHandlerHDF5 to get the file to be used.
     static const CountedPtr<HDF5File>& getRegionHDF5 (void*);
-#endif
 
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;

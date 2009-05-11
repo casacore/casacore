@@ -54,15 +54,7 @@
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
-#include <casa/namespace.h>
-
-
-#ifndef HAVE_LIBHDF5
-int main()
-{
-  return 3;     // skipped
-}
-#else
+using namespace casa;
 
 
 // Remove the dirname from the file name in an error message.
@@ -86,6 +78,10 @@ Float func(Float val)
 
 int main()
 {
+  // Exit with untested if no HDF5 support.
+  if (! HDF5Object::hasHDF5Support()) {
+    return 3;
+  }
   try {
 
     // Build things to make a HDF5Image
@@ -348,5 +344,3 @@ int main()
 
   return 0;
 }
-
-#endif

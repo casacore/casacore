@@ -1,4 +1,4 @@
-//# HDF5Object.cc: An abstract base class representing an HDF5 object
+//# HDF5HidMeta.cc: Classes representing an HDF5 hid of meta objects
 //# Copyright (C) 2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,32 +25,50 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/HDF5/HDF5Object.h>
-#include <casa/HDF5/HDF5Error.h>
+#include <casa/HDF5/HDF5HidMeta.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  HDF5Object::~HDF5Object()
-  {}
-
 #ifdef HAVE_LIBHDF5
-  Bool HDF5Object::hasHDF5Support()
-    { return True; }
-  void HDF5Object::throwNoHDF5()
-  {}
-#else
-  Bool HDF5Object::hasHDF5Support()
-    { return False; }
-  void HDF5Object::throwNoHDF5()
-  {
-    throw HDF5Error("HDF5 support is not compiled into this casacore version");
-  }
-#endif
 
-  void throwInvHDF5()
+  void HDF5HidProperty::close()
   {
-    throw HDF5Error("HDF5 hid_t or hsize_t have incorrect type in HDF5Object");
+    if (itsHid>=0) H5Pclose(itsHid);
+    itsHid=-1;
   }
+
+  void HDF5HidDataType::close()
+  {
+    if (itsHid>=0) H5Tclose(itsHid);
+    itsHid=-1;
+  }
+
+  void HDF5HidDataSpace::close()
+  {
+    if (itsHid>=0) H5Sclose(itsHid);
+    itsHid=-1;
+  }
+
+  void HDF5HidAttribute::close()
+  {
+    if (itsHid>=0) H5Aclose(itsHid);
+    itsHid=-1;
+  }
+
+#else
+
+  void HDF5HidProperty::close()
+  {}
+
+  void HDF5HidDataType::close()
+  {}
+
+  void HDF5HidDataSpace::close()
+  {}
+
+  void HDF5HidAttribute::close()
+  {}
+
+#endif
 
 }
