@@ -53,7 +53,7 @@ WHITE1    [ \t\n]
 WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
-HEXINT       0[xX][0-9a-fA-F]+
+HEXINT    0[xX][0-9a-fA-F]+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
@@ -126,6 +126,7 @@ INCONE    [Ii][Nn]{WHITE}[Cc][Oo][Nn][Ee]{WHITE1}
 AS        [Aa][Ss]
 AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
+XOR       [Xx][Oo][Rr]
 NOT       [Nn][Oo][Tt]
 ALL       [Aa][Ll][Ll]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
@@ -360,7 +361,8 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 "!"       { tableGramPosition() += yyleng; return NOT; }
 {NOT}     { tableGramPosition() += yyleng; return NOT; }
  /*"^"       { tableGramPosition() += yyleng; return BITXOR; }   /* was POWER */
-"^"       { throw TableInvExpr ("^ is deprecated; will be XOR in next release"); }
+"^"       { throw TableInvExpr ("^ is deprecated; will mean XOR in next release"); }
+{XOR}     { tableGramPosition() += yyleng; return BITXOR; }
 "**"      { tableGramPosition() += yyleng; return POWER; }
 "*"       { tableGramPosition() += yyleng; return TIMES; }
 "//"      { tableGramPosition() += yyleng; return DIVIDETRUNC; }
@@ -406,7 +408,7 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {INT}     {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtol(TableGramtext, &endPtr, 10);
+            Int64 v = strtoll(TableGramtext, &endPtr, 10);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Integer number not fully parsed");
             }
@@ -417,7 +419,7 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {HEXINT}  {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtol(TableGramtext, &endPtr, 0);
+            Int64 v = strtoll(TableGramtext, &endPtr, 0);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Hex number not fully parsed");
             }
