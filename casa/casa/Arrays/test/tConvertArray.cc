@@ -45,6 +45,16 @@ void tConvertEQ (const IPosition& shape)
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
   AlwaysAssertExit (allEQ(res, exp));
+  // Test on non-contiguous array.
+  IPosition st(shape.size(), 1);
+  IPosition end(shape-2);
+  Array<F> arr1 = arr(st,end);
+  Array<T> exp1 = exp(st,end);
+  Array<T> res1 = res(st,end);
+  res1 = 0;
+  convertArray (res1, arr1);
+  AlwaysAssertExit (allEQ(res1, exp1));
+  AlwaysAssertExit (allEQ(res, exp));
 }
 
 template<typename T, typename F>
@@ -56,6 +66,16 @@ void tConvertNear (const IPosition& shape)
   indgen (arr, F(0), F(1));
   indgen (exp, T(0), T(1));
   convertArray (res, arr);
+  AlwaysAssertExit (allNear(res, exp, 1e-5));
+  // Test on non-contiguous array.
+  IPosition st(shape.size(), 1);
+  IPosition end(shape-2);
+  Array<F> arr1 = arr(st,end);
+  Array<T> exp1 = exp(st,end);
+  Array<T> res1 = res(st,end);
+  res1 = 0;
+  convertArray (res1, arr1);
+  AlwaysAssertExit (allNear(res1, exp1, 1e-5));
   AlwaysAssertExit (allNear(res, exp, 1e-5));
 }
 
