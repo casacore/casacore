@@ -322,17 +322,37 @@ void showExpr(const TableExprNode& expr)
 // Sort and select data.
 void seltab (const String& str)
 {
+  // If no command is given, assume it is CALC.
+  String::size_type spos = str.find_first_not_of (' ');
+  Bool addCalc = False;
+  if (spos != String::npos) {
+    String::size_type epos = str.find (' ', spos);
+    if (epos == String::npos) {
+      addCalc = True;
+    } else {
+      String s = str.substr(spos, epos-spos);
+      s.downcase();
+      addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
+                  s=="delete" || s=="create" || s=="createtable" ||
+                  s=="using"  || s=="usingstyle");
+    }
+  } 
+  String strc(str);
+  if (addCalc) {
+    strc = "CALC " + str;
+  }
+  cout << strc << endl;
+  // Parse and execute the command.
+  TaQLResult result;
   Table* tabp = 0;
   uInt i;
   Vector<String> vecstr;
   String cmd;
-  cout << str << endl;
-  TaQLResult result;
-  String::size_type semipos = str.find(';');
+  // A semicolon can be used to specify a possible table after it (for $1).
+  String::size_type semipos = strc.find(';');
   if (semipos == String::npos) {
-    result = tableCommand (str, vecstr, cmd);
+    result = tableCommand (strc, vecstr, cmd);
   } else {
-    String strc(str);
     Table tab(strc.after(semipos));
     std::vector<const Table*> tabblock(1, &tab);
     result = tableCommand (strc.before(semipos), tabblock, vecstr, cmd);
