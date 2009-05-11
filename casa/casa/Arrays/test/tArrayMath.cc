@@ -29,6 +29,7 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
@@ -246,7 +247,7 @@ void NAME()\
 #define TestComplex(FUNC, SFUNC, NAME, T, U)\
 void NAME()\
 {\
-  Array<Complex> a(IPosition(3,4,5,6));\
+  Array<T> a(IPosition(3,4,5,6));\
   Array<U> e(IPosition(3,4,5,6));\
   T* ap = a.data();\
   U* ep = e.data();\
@@ -269,6 +270,71 @@ void NAME()\
   res=0;   \
   FUNC(sres,sa);\
   AlwaysAssertExit (allNear(res, e, 1e-13));          \
+}
+
+template<typename T, typename U>
+void testSetReal()
+{
+  Array<T> a(IPosition(3,4,5,6));
+  Array<T> e(IPosition(3,4,5,6));
+  T* ap = a.data();
+  T* ep = e.data();
+  for (uInt i=0; i<a.size(); ++i) {
+    ap[i] = T(i+1, i+2);
+    ep[i] = T(i+11, i+2);
+  }
+  Array<T> b;
+  b = a;
+  setReal(b, real(a+T(10,5)));
+  AlwaysAssertExit (allNear(b, e, 1e-13));
+  IPosition start(3,0,1,2);
+  IPosition end(3,2,3,4);
+  Array<T> sa(a(start,end));
+  setReal(sa, real(sa+T(10,5)));
+  AlwaysAssertExit (allNear(sa, e(start,end), 1e-13));
+}
+
+template<typename T, typename U>
+void testSetImag()
+{
+  Array<T> a(IPosition(3,4,5,6));
+  Array<T> e(IPosition(3,4,5,6));
+  T* ap = a.data();
+  T* ep = e.data();
+  for (uInt i=0; i<a.size(); ++i) {
+    ap[i] = T(i+1, i+2);
+    ep[i] = T(i+1, i+7);
+  }
+  Array<T> b;
+  b = a;
+  setImag(b, imag(a+T(10,5)));
+  AlwaysAssertExit (allNear(b, e, 1e-13));
+  IPosition start(3,0,1,2);
+  IPosition end(3,2,3,4);
+  Array<T> sa(a(start,end));
+  setImag(sa, imag(sa+T(10,5)));
+  AlwaysAssertExit (allNear(sa, e(start,end), 1e-13));
+}
+
+template<typename T, typename U>
+void testMakeComplex()
+{
+  Array<T> a(IPosition(3,4,5,6));
+  Array<T> b(IPosition(3,4,5,6));
+  Array<U> e(IPosition(3,4,5,6));
+  T* ap = a.data();
+  T* bp = b.data();
+  U* ep = e.data();
+  for (uInt i=0; i<a.size(); ++i) {
+    ap[i] = i+1;
+    bp[i] = i+2;
+    ep[i] = U(ap[i], bp[i]);
+  }
+  AlwaysAssertExit (allNear(makeComplex(a,b), e, 1e-13));
+  IPosition start(3,0,1,2);
+  IPosition end(3,2,3,4);
+  AlwaysAssertExit (allNear(makeComplex(a(start,end), b(start,end)),
+                            e(start,end), 1e-13));
 }
 
 void testMinMax1()
@@ -415,6 +481,11 @@ TestComplex(phase, arg, testComplexPhase, Complex, Float)
 TestComplex(real, real, testComplexReal, Complex, Float)
 TestComplex(imag, imag, testComplexImag, Complex, Float)
 TestComplex(conj, conj, testComplexConj, Complex, Complex)
+TestComplex(amplitude, fabs, testDComplexAbs, DComplex, Double)
+TestComplex(phase, arg, testDComplexPhase, DComplex, Double)
+TestComplex(real, real, testDComplexReal, DComplex, Double)
+TestComplex(imag, imag, testDComplexImag, DComplex, Double)
+TestComplex(conj, conj, testDComplexConj, DComplex, DComplex)
 
 int main()
 {
@@ -476,6 +547,17 @@ int main()
     testComplexReal();
     testComplexImag();
     testComplexConj();
+    testDComplexAbs();
+    testDComplexPhase();
+    testDComplexReal();
+    testDComplexImag();
+    testDComplexConj();
+    testSetReal<Complex,Float>();
+    testSetReal<DComplex,Double>();
+    testSetImag<Complex,Float>();
+    testSetImag<DComplex,Double>();
+    testMakeComplex<Float,Complex>();
+    testMakeComplex<Double,DComplex>();
     testMinMax1();
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;

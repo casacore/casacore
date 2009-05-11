@@ -1169,6 +1169,31 @@ template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
     return fracval;
 }
 
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &left, const Array<T>& right)
+{
+  checkArrayShapes (left, right, "makeComplex");
+  Array<std::complex<T> > res(left.shape());
+  arrayContTransform (left, right, res,
+                      casa::MakeComplex<T,T,std::complex<T> >());
+  return res;
+}
+
+template<typename C, typename R>
+void setReal(Array<C> &carray, const Array<R> &rarray)
+{
+  checkArrayShapes (carray, rarray, "setReal");
+  // Cannot be done in place, because imag is taken from second operand.
+  arrayTransform (rarray, carray, carray, casa::MakeComplexImag<R,C,C>());
+}
+
+template<typename C, typename R>
+void setImag(Array<C> &carray, const Array<R> &rarray)
+{
+  checkArrayShapes (carray, rarray, "setImag");
+  arrayTransformInPlace (carray, rarray, casa::MakeComplexReal<C,R,C>());
+}
+
 
 template<class T, class U> void convertArray(Array<T> &to,
 					     const Array<U> &from)

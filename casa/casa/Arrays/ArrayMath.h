@@ -143,8 +143,9 @@ template<class T> class Matrix;
   // That compiler generates incorrect code when only -g is used for
   // a std::transform with a bind1st or bind2nd for a complex<float>.
   // So, for example, the multiplication of a Complex array and Complex scalar
-  // fails (see g++ bug 39678).
+  // would fail (see g++ bug 39678).
   // <group>
+  // sequence = scalar OP sequence
   template<typename _InputIterator1, typename T,
 	   typename _OutputIterator, typename _BinaryOperation>
     void
@@ -155,6 +156,7 @@ template<class T> class Matrix;
       for ( ; __first1 != __last1; ++__first1, ++__result)
 	*__result = __binary_op(left, *__first1);
     }
+  // sequence = sequence OP scalar
   template<typename _InputIterator1, typename T,
 	   typename _OutputIterator, typename _BinaryOperation>
     void
@@ -165,6 +167,7 @@ template<class T> class Matrix;
       for ( ; __first1 != __last1; ++__first1, ++__result)
 	*__result = __binary_op(*__first1, right);
     }
+  // sequence OP= scalar
   template<typename _InputIterator1, typename T,
 	   typename _BinaryOperation>
     void
@@ -703,7 +706,20 @@ Matrix<Complex> conj(const Matrix<Complex> &carray);
 Matrix<DComplex> conj(const Matrix<DComplex> &carray);
 //</group>
 
-// 
+// Form an array of complex numbers from the given real arrays.
+// Note that Complex and DComplex are simply typedefs for std::complex<float>
+// and std::complex<double>, so the result is in fact one of these types.
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &real, const Array<T>& imag);
+
+// Set the real part of the left complex array to the right real array.
+template<typename L, typename R>
+void setReal(Array<L> &carray, const Array<R> &rarray);
+
+// Set the imaginary part of the left complex array to right real array.
+template<typename R, typename L>
+void setImag(Array<R> &carray, const Array<L> &rarray);
+
 // Extracts the real part of a complex array into an array of floats.
 // <group>
 Array<Float>  real(const Array<Complex> &carray);
