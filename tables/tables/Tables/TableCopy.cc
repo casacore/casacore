@@ -34,6 +34,7 @@
 #include <tables/Tables/TableColumn.h>
 #include <tables/Tables/TableLocker.h>
 #include <tables/Tables/TableError.h>
+#include <tables/Tables/DataManager.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/Vector.h>
@@ -65,6 +66,9 @@ Table TableCopy::makeEmptyTable (const String& newName,
     // Replace possible usage of TiledDataStMan by TiledShapeStMan.
     adjustTSM (tabDesc, dminfo);
   }
+  // Replace non-writable storage managers by StandardStMan.
+  // This is for instance needed for LofarStMan.
+  dminfo = adjustStMan (tabDesc, dminfo);
   SetupNewTable newtab (newName, tabDesc, Table::New);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
@@ -219,6 +223,23 @@ void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)
   }
 }
 
+Record TableCopy::adjustStMan (const TableDesc& tabDesc, const Record& dminfo)
+{
+  Record newdm;
+  for (uInt j=0; j<dminfo.nfields(); j++) {
+    Record rec = dminfo.subRecord(j);
+    // Get the data manager name and create an object for it.
+    String dmName = rec.asString("NAME");
+    DataManager* dmptr = DataManager::getCtor(rec.asString("TYPE"))
+      (rec.asString("NAME"), Record());
+    if (dmptr->isStorageManager()  &&  !dmptr->canAddRow()) {
+      // A non-writable storage manager; use StandardStMan instead.
+      rec.define ("TYPE", "StandardStMan");
+    }
+    newdm.defineRecord (j, rec);
+  }
+  return newdm;
+}
 
 void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
 			  uInt startin, uInt nrrow)

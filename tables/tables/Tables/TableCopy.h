@@ -135,6 +135,10 @@ public:
   // adjusted as well in tabDesc and dminfo.
   static void adjustTSM (TableDesc& tabDesc, Record& dminfo);
 
+  // Replace non-writable storage managers by StandardStMan. This is needed
+  // for special storage managers like LofarStMan.
+  static Record adjustStMan (const TableDesc& tabDesc, const Record& dminfo);
+
   // Adjust the data manager types and groups and the
   // hypercolumn definitions to the actual data manager info.
   static void adjustDesc (TableDesc& tabDesc, const Record& dminfo);
