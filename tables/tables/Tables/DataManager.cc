@@ -92,6 +92,12 @@ uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
     return nrrow;
 }
 
+uInt DataManager::resync1 (uInt nrrow)
+{
+    resync (nrrow);
+    return nrrow;
+}
+
 void DataManager::reopenRW()
 {}
 

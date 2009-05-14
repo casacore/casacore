@@ -454,6 +454,14 @@ private:
     // that data in this data manager has been changed by another process.
     virtual void resync (uInt nrrow) = 0;
 
+    // Resync as above.
+    // The data manager can return the number of rows it thinks there are.
+    // This is particularly useful for data managers like LofarStMan whose
+    // data are written outside the table system, thus for which no rows
+    // have been added.
+    // <br>By default it calls resync and returns <src>nrrow</src>.
+    virtual uInt resync1 (uInt nrrow);
+
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all
     // columns. In this way one can be sure that referenced columns

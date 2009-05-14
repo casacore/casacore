@@ -164,20 +164,24 @@ void ColumnSet::prepareSomeDataManagers (uInt from)
 }
 
 
-void ColumnSet::resync (uInt nrrow)
+uInt ColumnSet::resync (uInt nrrow, Bool forceSync)
 {
     //# There may be no sync data (when new table locked for first time).
     if (dataManChanged_p.nelements() > 0) {
 	AlwaysAssert (dataManChanged_p.nelements() ==
 		                   blockDataMan_p.nelements(), AipsError);
 	for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p) {
-		BLOCKDATAMANVAL(i)->resync (nrrow);
+	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p  ||  forceSync) {
+                uInt nrr = BLOCKDATAMANVAL(i)->resync1 (nrrow);
+                if (nrr > nrrow) {
+                    nrrow = nrr;
+                }
 		dataManChanged_p[i] = False;
 	    }
 	}
 	nrrow_p = nrrow;
     }
+    return nrrow_p;
 }
 
 

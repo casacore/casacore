@@ -368,7 +368,8 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 	    // Older readonly table files may have empty locksync data.
 	    // Skip the sync-ing in that case.
 	    uInt ncolumn;
-	    if (! lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+            uInt nrrow;
+	    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 				   colSetPtr_p->dataManChanged())) {
 		tableChanged = False;
 	    } else {
@@ -376,7 +377,7 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 		    throw (TableError ("Table::lock cannot sync; another "
 				     "process changed the number of columns"));
 		}
-		colSetPtr_p->resync (nrrow_p);
+		nrrow_p = colSetPtr_p->resync (nrrow, False);
 		if (tableChanged  &&  ncolumn > 0) {
 		    syncTable();
 		}
@@ -449,7 +450,8 @@ void PlainTable::resync()
     // Older readonly table files may have empty locksync data.
     // Skip the sync-ing in that case.
     uInt ncolumn;
-    if (! lockSync_p.read (nrrow_p, ncolumn, tableChanged,
+    uInt nrrow;
+    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
 			   colSetPtr_p->dataManChanged())) {
         tableChanged = False;
     } else {
@@ -457,7 +459,7 @@ void PlainTable::resync()
 	    throw (TableError ("Table::resync cannot sync; another "
 			       "process changed the number of columns"));
 	}
-	colSetPtr_p->resync (nrrow_p);
+	nrrow_p = colSetPtr_p->resync (nrrow, True);
 	if (tableChanged  &&  ncolumn > 0) {
 	    syncTable();
 	}

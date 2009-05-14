@@ -222,7 +222,12 @@ public:
     Block<Bool>& dataManChanged();
 
     // Synchronize the data managers when data in them have changed.
-    void resync (uInt nrrow);
+    // It returns the number of rows it think it has, which is needed for
+    // storage managers like LofarStMan.
+    // <src>forceSync=True</src> means that the data managers are forced
+    // to do a sync. Otherwise the contents of the lock file tell if a data
+    // manager has to sync.
+    uInt resync (uInt nrrow, Bool forceSync);
 
     // Invalidate the column caches for all columns.
     void invalidateColumnCaches();
