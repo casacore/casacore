@@ -129,8 +129,8 @@ extern int obscure_syntax;
    If not set, it does.  */
 #define RE_HAT_NOT_NEWLINE (1 << 11)
 
-/* If this bit is set, back references are recognized.
-   If not set, they aren't.  */
+/* If this bit is not set, back references are recognized.
+   If set, they aren't.  */
 #define RE_NO_BK_REFS (1 << 12)
 
 /* If this bit is set, back references must refer to a preceding

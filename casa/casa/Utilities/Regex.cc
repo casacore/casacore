@@ -33,6 +33,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/stdexcept.h>
 #include <casa/iostream.h>
+#include <casa/vector.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
 #include <stdlib.h>
 
@@ -62,12 +63,12 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
     bufsize = tlen;
   buf->allocated = bufsize;
   buf->buffer = (Char *) malloc(buf->allocated);
-  Int orig = a2_re_set_syntax(RE_NO_BK_PARENS+       // use () for grouping
+  Int orig = a2_re_set_syntax(RE_NO_BK_PARENS+     // use () for grouping
 			    RE_NO_BK_VBAR+         // use | for OR
 			    RE_INTERVALS+          // intervals are possible
 			    RE_NO_BK_CURLY_BRACES+ // use {} for interval
 			    RE_CHAR_CLASSES+       // [:upper:], etc. possible
-			    RE_NO_BK_REFS+         // backreferences possible
+			    RE_NO_EMPTY_BK_REF+    // backreferences possible
 			    RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
 			    RE_CONTEXTUAL_INVALID_OPS);
   const char* msg = a2_re_compile_pattern((Char*)(exp.chars()), tlen, buf);
@@ -191,18 +192,20 @@ const Char *Regex::transtable() const {
 String Regex::fromPattern(const String &pattern)
 {
     enum CState{stream, bracketopen, escapechar};
-    uInt len = 0;
     uInt bracecount = 0;
-    uInt inbrcount = 0;
+    Int inbrcount = -1;
+    Bool skipChar = False;
+    Bool charClass = False;
+    vector<Int> emptySubStr;
     uInt pattLeng = pattern.length();
     String result;
-    result.alloc(3*pattLeng+1);
+    result.reserve (3*pattLeng);
     CState state = stream;
     for (uInt i=0; i<pattLeng; i++) {
 	Char c = pattern[i];
 	switch(state) {
-	case stream :
 
+	case stream :
 	    switch (c) {
 	    case '^':
 	    case '$':
@@ -212,36 +215,53 @@ String Regex::fromPattern(const String &pattern)
 	    case '+':
 	    case '|':
 		// Special chars have to be escaped.
-		result[len++] = '\\';
+                result.push_back ('\\');
 		break;
 	    case '{':
 		// Opening brace gets (
 		c = '(';
 		bracecount++;
+                emptySubStr.push_back(0);    // no empty substrings yet
 		break;
 	    case ',':
-		// Comma after opening brace gets |
+		// Comma after opening brace gets |.
 		// Otherwise it's still a comma.
+                // Handle an empty substring a bit differently because
+                // a regex cannot handle an empty |. Instead a ? gets inserted
+                // after the closing brace.
 		if (bracecount) {
 		    c = '|';
+                    if (pattern[i-1] == '{'  ||  pattern[i-1] == ',') {
+                        emptySubStr[bracecount-1] += 1;
+                        skipChar = True;
+                    }
 		}
 		break;
 	    case '}':
 		// Closing brace after opening brace gets )
-		// Otherwise it's still an opening brace.
+		// Otherwise it's still an opening brace to be escaped.
 		if (bracecount) {
 		    bracecount--;
 		    c = ')';
-		}
+                    // If an empty substring was used, the block is optional.
+                    if (emptySubStr.back() > 0) {
+                        result.push_back (c);
+                        c = '?';
+                    }
+                    emptySubStr.pop_back();
+		} else {
+                    result.push_back ('\\');
+                }
 		break;
 	    case '[':
 		// Opening bracket puts us in a special state.
 		state = bracketopen;
-		inbrcount = 0;
+                charClass = False;
+		inbrcount = -1;
 		break;
 	    case '*':
 		// * gets .*
-		result[len++] = '.';
+                result.push_back ('.');
 		break;
 	    case '?':
 		// ? gets .
@@ -256,37 +276,58 @@ String Regex::fromPattern(const String &pattern)
 	    break;
 	    
 	case bracketopen:
-	    // A closing bracket immediately after the start of a bracket
-	    // expression is a literal ] and not the end of the expression.
-	    // Otherwise a closing bracket puts us back in the normal state.
-	    if (c == ']'  &&  inbrcount) {
+            if (c == ']'  &&  inbrcount > 0) {
+                // A closing bracket immediately after the start of a bracket
+                // expression is a literal ] and not the end of the expression.
+                // Otherwise a closing bracket puts us back in the normal state.
 		state = stream;
-	    } else if (c == '!'  &&  !inbrcount) {
-		// A starting ! is a not.
+	    } else if ((c == '!'  ||  c == '^')  &&  inbrcount < 0) {
+		// A starting ! or ^ is a not and does not count yet.
 		c = '^';
-	    }
-	    inbrcount++;
+            } else {
+                // Some character is found.
+                if (inbrcount < 0) {
+                    inbrcount = 0;
+                }
+                // An opening bracket followed by a colon is the start of a
+                // Posix character class.
+                // Go to next char, so closing bracket in [[:] is end of
+                // bracket and not end of character class.
+                if (c == '['  &&  i+1<pattLeng  &&  pattern[i+1] == ':') {
+                    result.push_back (c);
+                    c = pattern[++i];
+                    charClass = True;
+                } else if (charClass  &&
+                           c == ':'  &&  i+1<pattLeng  && pattern[i+1] == ']') {
+                    // End of Posix character class.
+                    result.push_back (c);
+                    c = pattern[++i];
+                    charClass = False;
+                }
+            }
+            inbrcount++;
 	    break;
 	    
 	case escapechar:
 	    // An escaped comma can be turned into a normal comma, thus
 	    // does not need the backslash.
 	    if (c != ',') {
-		result[len++] = '\\';
+                result.push_back ('\\');
 	    }
 	    state = stream;
 	    break;
 	}
 	// Wait with storing an escape character.
-	if (state != escapechar) {
-	    result[len++] = c;
+	if (!skipChar  &&  state != escapechar) {
+          result.push_back (c);
 	}
+        skipChar = False;
     }
     // Store a trailing backslash.
     if (state == escapechar) {
-	result[len++] = '\\';
+        result.push_back ('\\');
     }
-    return String(result.chars(), len);
+    return result;
 }
 
 String Regex::fromSQLPattern(const String &pattern)
@@ -297,17 +338,16 @@ String Regex::fromSQLPattern(const String &pattern)
     // Escape all special regex characters.
     uInt strLeng = pattern.length();
     String result;
-    result.alloc(2*strLeng+1);
-    uInt len = 0;
+    result.reserve(2*strLeng);
     for (uInt i=0; i<strLeng; i++) {
 	Char c = pattern[i];
 	switch (c) {
 	case '%':
-	    result[len++] = '.';
-	    result[len++] = '*';
+            result.push_back ('.');
+            result.push_back ('*');
 	    break;
 	case '_':
-	    result[len++] = '.';
+            result.push_back ('.');
 	    break;
 	// Escape special characters.
 	case '^':
@@ -324,20 +364,19 @@ String Regex::fromSQLPattern(const String &pattern)
 	case '(':
 	case ')':
 	case '\\':
-	    result[len++] = '\\';
+            result.push_back ('\\');
 	default:
-	    result[len++] = c;
+            result.push_back (c);
 	}
     }
-    return String(result.chars(), len);
+    return result;
 }
 
-String Regex::fromString(const String &strng)
+String Regex::fromString (const String& strng)
 {
     uInt strLeng = strng.length();
     String result;
-    result.alloc(2*strLeng+1);
-    uInt len = 0;
+    result.reserve(2*strLeng);
     for (uInt i=0; i<strLeng; i++) {
 	Char c = strng[i];
 	// Escape special characters.
@@ -356,11 +395,104 @@ String Regex::fromString(const String &strng)
 	case '(':
 	case ')':
 	case '\\':
-	    result[len++] = '\\';
+            result.push_back ('\\');
 	}
-	result[len++] = c;
+	result.push_back (c);
     }
-    return String(result.chars(), len);
+    return result;
+}
+
+String Regex::makeCaseInsensitive (const String &strng)
+{
+  uInt strLeng = strng.length();
+  String result;
+  result.reserve(4*strLeng);
+  Bool inBracket = False;
+  Bool openBracket = False;
+  Bool escaped = False;
+  Bool charClass = False;
+  for (uInt i=0; i<strLeng; i++) {
+    Char c = strng[i];
+    if (escaped) {
+      result.push_back (c);
+      escaped = False;
+    } else if (c == '\\'  &&  !inBracket) {
+      // Note that a \ inside a set is part of the set and not an escape.
+      result.push_back (c);
+      escaped = True;
+    } else if (c == '['  &&  !inBracket) {
+      result.push_back (c);
+      inBracket = True;
+      openBracket = True;
+      charClass = False;
+    } else if (c == ']'  &&  !openBracket) {
+      // Note that a ] right after a [ is part of the set and not a closing ].
+      result.push_back (c);
+      inBracket = False;
+    } else if (c == '^'  ||  c == '!') {
+      // Note that a ^ or ! can be right after the [ and keeps the openBracket.
+      result.push_back (c);
+    } else {
+      // Character classes like [:alpha:] should not be changed.
+      if (inBracket) {
+        if (c=='['  &&  i+1<strLeng  &&  strng[i+1] == ':') {
+          result.push_back (c);
+          c = strng[++i];
+          charClass = True;
+        } else if (charClass && c==':' && i+1<strLeng  &&  strng[i+1] == ']') {
+          result.push_back (c);
+          c = strng[++i];
+          charClass = False;
+        }
+      }
+      openBracket = False;
+      // An alphabetic character needs both cases.
+      int c1 = c;
+      int c2 = -1;
+      if (!charClass) {
+        if (islower(c1)) {
+          c2 = toupper(c1);
+        } else if (isupper(c1)) {
+          c2 = tolower(c1);
+        }
+      }
+      if (c2 >= 0) {
+        if (inBracket) {
+          // If a range, the entire range must be copied if both ends are alpha.
+          if (i+2 < strLeng  &&  strng[i+1] == '-'  &&  isalpha(strng[i+2])) {
+            i += 2;
+            int ec = strng[i];
+            result.push_back (c1);
+            result.push_back ('-');
+            result.push_back (ec);
+            if (islower(ec)) {
+              result.push_back (c2);
+              result.push_back ('-');
+              result.push_back (toupper(ec));
+            } else if (isupper(ec)) {
+              result.push_back (c2);
+              result.push_back ('-');
+              result.push_back (tolower(ec));
+            }
+          } else {
+            // Add to the bracketed characters.
+            result.push_back (c1);
+            result.push_back (c2);
+          }
+        } else {
+          // It was a single character; put in brackets now.
+          result.push_back ('[');
+          result.push_back (c1);
+          result.push_back (c2);
+          result.push_back (']');
+        }
+      } else {
+        // Copy any other char.
+        result.push_back (c);
+      }
+    }
+  }
+  return result;
 }
 
 

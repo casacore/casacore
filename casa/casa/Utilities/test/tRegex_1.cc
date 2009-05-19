@@ -34,7 +34,7 @@
 
 int main ()
 {
-    const Int ntests = 29;
+    const Int ntests = 31;
     String p[ntests];
     p[0]  = "^().+|$";
     p[1]  = "\\,";
@@ -50,7 +50,7 @@ int main ()
     p[11] = "[]*]";
     p[12] = "[[]*";
     p[13] = "[[*]";
-    p[14] = "dfg*";
+    p[14] = "DfG*";
     p[15] = "abc?vf??skkre*";
     p[16] = "[^^]";
     p[17] = "[!^]";
@@ -59,18 +59,27 @@ int main ()
     p[20] = "[{a,b}*^[?()+|]";
     p[21] = "{a,bc*^?()+|]}";
     p[22] = "s{t{aa,bb},c{dd,ee}f}";
-    p[23] = "{[{}]}";
+    p[23] = "{[{,}]}";
     p[24] = "a\\,b";
     p[25] = "\n\t";
     p[26] = "\\?\\**";
     p[27] = "\\\\";
     p[28] = "__3%a%*";
+    p[29] = "*.{h,hpp,c,cc,cpp}";
+    p[30] = "*.{[hc]{,pp},cc}";
 
     cout << "Pattern --> Regular Expression" << endl;
     cout << "------------------------------" << endl;
     int i;
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromPattern(p[i]) << endl;
+    }
+
+    cout << endl << "Pattern --> Case Insensitive Regular Expression" << endl;
+    cout << "-----------------------------------------------" << endl;
+    for (i=0; i<ntests; i++) {
+	cout << p[i] << " --> "
+             << Regex::makeCaseInsensitive(Regex::fromPattern(p[i])) << endl;
     }
 
     cout << endl << "SQLPattern --> Regular Expression" << endl;
@@ -91,6 +100,10 @@ int main ()
      AlwaysAssertExit (String(str).matches (Regex(Regex::fromPattern(p[i]))))
 #define CHECKNPATT(i,str) \
      AlwaysAssertExit (!String(str).matches (Regex(Regex::fromPattern(p[i]))))
+#define CHECKPATTCI(i,str) \
+    AlwaysAssertExit (String(str).matches (Regex(Regex::makeCaseInsensitive(Regex::fromPattern(p[i])))))
+#define CHECKNPATTCI(i,str) \
+    AlwaysAssertExit (!String(str).matches (Regex(Regex::makeCaseInsensitive(Regex::fromPattern(p[i])))))
 
     CHECKPATT (0,  "^().+|$");
     CHECKPATT (1,  ",");
@@ -122,9 +135,10 @@ int main ()
     CHECKPATT (13, "[");
     CHECKPATT (13, "*");
     CHECKNPATT(13, "[*");
-    CHECKPATT (14, "dfg");
-    CHECKPATT (14, "dfgxyz");
-    CHECKNPATT(14, "df");
+    CHECKPATT (14, "DfG");
+    CHECKPATT (14, "DfGxyz");
+    CHECKNPATT(14, "Df");
+    CHECKNPATT(14, "Dfg");
     CHECKPATT (15, "abcxvfxxskkrexxx");
     CHECKPATT (16, "x");
     CHECKNPATT(16, "^");
@@ -159,6 +173,7 @@ int main ()
     CHECKNPATT(22, "scee");
     CHECKPATT (23, "{");
     CHECKPATT (23, "}");
+    CHECKPATT (23, ",");
     CHECKNPATT(23, "x");
     CHECKPATT (24, "a,b");
     CHECKPATT (25, "\n\t");
@@ -169,6 +184,118 @@ int main ()
     CHECKNPATT(26, "?xxx");
     CHECKPATT (27, "\\");
     CHECKPATT (28, "__3%a%");
+
+    CHECKPATTCI (0,  "^().+|$");
+    CHECKPATTCI (1,  ",");
+    CHECKPATTCI (2,  "a");
+    CHECKPATTCI (2,  "abefg");
+    CHECKPATTCI (2,  "cdefg");
+    CHECKNPATTCI(2,  "ab");
+    CHECKNPATTCI(2,  "abdefg");
+    CHECKPATTCI (3,  "()");
+    CHECKPATTCI (3,  "test");
+    CHECKPATTCI (4,  "}a");
+    CHECKPATTCI (5,  "}a}");
+    CHECKNPATTCI(5,  "}a");
+    CHECKPATTCI (6,  "}a}");
+    CHECKPATTCI (6,  "}}}");
+    CHECKNPATTCI(6,  "}a");
+    CHECKNPATTCI(6,  "}}");
+    CHECKPATTCI (7,  "[");
+    CHECKPATTCI (8,  "]");
+    CHECKPATTCI (9,  "]]");
+    CHECKNPATTCI(9,  "]");
+    CHECKPATTCI (10, "]]]]]");
+    CHECKPATTCI (11, "]");
+    CHECKPATTCI (11, "*");
+    CHECKNPATTCI(11, "**");
+    CHECKNPATTCI(11, "]*");
+    CHECKPATTCI (12, "[");
+    CHECKPATTCI (12, "[[[[");
+    CHECKPATTCI (13, "[");
+    CHECKPATTCI (13, "*");
+    CHECKNPATTCI(13, "[*");
+    CHECKPATTCI (14, "dfg");
+    CHECKPATTCI (14, "DFG");
+    CHECKPATTCI (14, "dfgxyz");
+    CHECKNPATTCI(14, "df");
+    CHECKPATTCI (15, "abcxvfxxskkrexxx");
+    CHECKPATTCI (16, "x");
+    CHECKNPATTCI(16, "^");
+    CHECKPATTCI (17, "x");
+    CHECKNPATTCI(17, "^");
+    CHECKPATTCI (18, "x");
+    CHECKNPATTCI(18, "!");
+    CHECKPATTCI (19, "x");
+    CHECKNPATTCI(19, "!");
+    CHECKPATTCI (20, "{");
+    CHECKPATTCI (20, "a");
+    CHECKPATTCI (20, ",");
+    CHECKPATTCI (20, "b");
+    CHECKPATTCI (20, "}");
+    CHECKPATTCI (20, "*");
+    CHECKPATTCI (20, "^");
+    CHECKPATTCI (20, "[");
+    CHECKPATTCI (20, "?");
+    CHECKPATTCI (20, "(");
+    CHECKPATTCI (20, ")");
+    CHECKPATTCI (20, "+");
+    CHECKPATTCI (20, "|");
+    CHECKNPATTCI(20, "x");
+    CHECKPATTCI (21, "a");
+    CHECKPATTCI (21, "bc^x()+|]");
+    CHECKPATTCI (21, "bcxxx^x()+|]");
+    CHECKNPATTCI(21, "bcxxx^xx)+|]");
+    CHECKPATTCI (22, "staa");
+    CHECKPATTCI (22, "stbb");
+    CHECKPATTCI (22, "scddf");
+    CHECKPATTCI (22, "sceef");
+    CHECKNPATTCI(22, "scee");
+    CHECKPATTCI (23, "{");
+    CHECKPATTCI (23, "}");
+    CHECKNPATTCI(23, "x");
+    CHECKPATTCI (24, "a,b");
+    CHECKPATTCI (25, "\n\t");
+    CHECKNPATTCI(25, "\n ");
+    CHECKPATTCI (26, "?*");
+    CHECKPATTCI (26, "?*xx");
+    CHECKNPATTCI(26, "x*xx");
+    CHECKNPATTCI(26, "?xxx");
+    CHECKPATTCI (27, "\\");
+    CHECKPATTCI (28, "__3%a%");
+    CHECKPATTCI (29, "file.h");
+    CHECKPATTCI (29, "file.hpp");
+    CHECKPATTCI (29, "file.c");
+    CHECKPATTCI (29, "file.cc");
+    CHECKPATTCI (29, "file.cpp");
+    CHECKNPATTCI(29, "file.hh");
+    CHECKNPATTCI(29, "file.hp");
+    CHECKNPATTCI(29, "file.cp");
+    CHECKPATTCI (30, "file.h");
+    CHECKPATTCI (30, "file.hpp");
+    CHECKPATTCI (30, "file.c");
+    CHECKPATTCI (30, "file.cc");
+    CHECKPATTCI (30, "file.cpp");
+    CHECKNPATTCI(30, "file.hh");
+    CHECKNPATTCI(30, "file.hp");
+    CHECKNPATTCI(30, "file.cp");
+
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[ab]") == "[aAbB]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[]AB]") == "[]AaBb]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[^]AB]") == "[^]AaBb]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[B\\a]b]") == "[Bb\\aA][bB]]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("a-c") == "[aA]-[cC]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[a-c]") == "[a-cA-C]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[a-]\\w") == "[aA-]\\w");
+    AlwaysAssertExit (Regex::fromPattern("[:alpha:]") == "[:alpha:]");
+    AlwaysAssertExit (Regex::fromPattern("[[:alpha:]]") == "[[:alpha:]]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[:alpha:]") == "[:aAlLpPhHaA:]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive("[[:alpha:]]") == "[[:alpha:]]");
+    AlwaysAssertExit (Regex::makeCaseInsensitive
+      (Regex::fromPattern("[[:alpha:]x[:bb:]]")) == "[[:alpha:]xX[:bb:]]");
+    // Omitting the " makes a bid difference.
+    AlwaysAssertExit (Regex::makeCaseInsensitive
+      (Regex::fromPattern("[[alpha:]x[:bb:]]")) == "[[aAlLpPhHaA:][xX][:bBbB:]]");
 
     return 0;
 }
