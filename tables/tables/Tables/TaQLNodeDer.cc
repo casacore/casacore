@@ -274,9 +274,9 @@ TaQLBinaryNodeRep* TaQLBinaryNodeRep::handleRegex (const TaQLNode& left,
 {
   Type oper;
   if (right.negate()) {
-    oper = (right.caseInsensitive()  ?  B_NEREGEXCI : B_NEREGEX);
+    oper = B_NEREGEX;
   } else {
-    oper = (right.caseInsensitive()  ?  B_EQREGEXCI : B_EQREGEX);
+    oper = B_EQREGEX;
   }
   return new TaQLBinaryNodeRep (oper, left, right); 
 }
@@ -344,9 +344,7 @@ void TaQLBinaryNodeRep::show (std::ostream& os) const
     paren = False;
     break;
   case B_EQREGEX:
-  case B_EQREGEXCI:
   case B_NEREGEX:
-  case B_NEREGEXCI:
     paren = False;
     break;
   case B_BITAND:

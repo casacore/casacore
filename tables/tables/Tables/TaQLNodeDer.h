@@ -229,12 +229,10 @@ public:
 	     B_INDEX =15,
 	     B_DIVIDETRUNC=16,
 	     B_EQREGEX    =17,
-	     B_EQREGEXCI  =18,
-	     B_NEREGEX    =19,
-	     B_NEREGEXCI  =20,
-	     B_BITAND     =21,
-             B_BITXOR     =22,
-             B_BITOR      =23};
+	     B_NEREGEX    =18,
+	     B_BITAND     =19,
+             B_BITXOR     =20,
+             B_BITOR      =21};
   TaQLBinaryNodeRep (Type type, const TaQLNode& left, const TaQLNode& right)
     : TaQLNodeRep (TaQLNode_Binary),
       itsType(type), itsLeft(left), itsRight(right) {}
