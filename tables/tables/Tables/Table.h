@@ -405,6 +405,14 @@ public:
     // will be unlocked.
     static void relinquishAutoLocks (Bool all = False);
 
+    // Get the names of tables locked in this process.
+    // By default all locked tables are given (note that as write lock
+    // implies a read lock), but it is possible to select on lock type
+    // FileLocker::Write and on option (TableLock::AutoLocking,
+    // TableLock::ReadLocking, or TableLock::PermanentLocking).
+    static Vector<String> getLockedTables(FileLocker::LockType=FileLocker::Read,
+                                          int lockOption=-1);
+
     // Determine if column or keyword table data have changed
     // (or is being changed) since the last time this function was called.
     Bool hasDataChanged();

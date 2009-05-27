@@ -591,6 +591,22 @@ void Table::relinquishAutoLocks (Bool all)
     }
 }
 
+Vector<String> Table::getLockedTables (FileLocker::LockType lockType,
+                                       int lockOption)
+{
+    vector<String> names;
+    TableCache& cache = PlainTable::tableCache;
+    uInt ntab = cache.ntable();
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *(cache(i));
+	if (lockOption < 0  ||  table.lockOptions().option() == lockOption) {
+	    if (table.hasLock (lockType)) {
+                names.push_back (table.tableName());
+	    }
+	}
+    }
+    return Vector<String>(names);
+}
 
 
 TableRecord& Table::rwKeywordSet()
