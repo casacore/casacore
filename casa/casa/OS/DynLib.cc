@@ -25,6 +25,11 @@
 //#
 //# $Id$
 
+//# For the time being assume that all systems have dlopen.
+#ifndef HAVE_DLOPEN
+# define HAVE_DLOPEN
+#endif
+
 //# Includes
 #include <casa/OS/DynLib.h>
 #include <casa/Exceptions/Error.h>
@@ -93,7 +98,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void* DynLib::getFunc (const std::string& funcName)
   {
 #ifdef HAVE_DLOPEN
-    if (itsHandle) {
+    if (itsHandle ) {
       return dlsym (itsHandle, funcName.c_str());
     }
 #endif
