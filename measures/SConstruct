@@ -75,6 +75,10 @@ if not env.GetOption('clean'):
     for l in lapackname:
         if not conf.CheckLib(l, autoadd=0): Exit(1)
         conf.env.PrependUnique(LIBS=l)
+
+    if not conf.CheckLib("dl"): Exit(1)
+    conf.env.PrependUnique(LIBS=['dl'])
+
     ddir = os.path.join(conf.env["casashrdir"][0], 'data')
     if conf.env.has_key("datadir"):
         dir = os.path.expanduser(os.path.expandvars(conf.env["datadir"]))

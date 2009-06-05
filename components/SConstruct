@@ -95,6 +95,9 @@ if not env.GetOption('clean'):
 				   autoadd=0):
 	Exit(1)
     conf.env.PrependUnique(LIBS=['wcs'])
+
+    if not conf.CheckLib("dl"): Exit(1)
+    conf.env.PrependUnique(LIBS=['dl'])
     env = conf.Finish()
 else:
     Execute(Delete("options.cfg"))

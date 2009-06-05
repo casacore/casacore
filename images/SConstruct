@@ -101,6 +101,9 @@ if not env.GetOption('clean'):
 	Exit(1)
     conf.env.PrependUnique(LIBS=['wcs'])
 
+    if not conf.CheckLib("dl"): Exit(1)
+    conf.env.PrependUnique(LIBS=['dl'])
+
     # HDF5 is not mandatory
     conf.env.AddCustomPackage('hdf5')
     if conf.CheckLib('hdf5', autoadd=0):

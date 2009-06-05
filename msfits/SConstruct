@@ -85,6 +85,9 @@ if not env.GetOption('clean'):
     if not conf.CheckLib('cfitsio', autoadd=0):
         Exit(1)
     conf.env.PrependUnique(LIBS=['cfitsio'])
+
+    if not conf.CheckLib("dl"): Exit(1)
+    conf.env.PrependUnique(LIBS=['dl'])
     env = conf.Finish()
 else:
     Execute(Delete("options.cfg"))
