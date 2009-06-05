@@ -51,9 +51,17 @@ if not (env.Detect(["flex","lex"]) and env.Detect(["bison", "yacc"])):
     env.Exit(1)
 
 # Auto configure
+#conf.env.AddCustomPackage('dl')
+#if not conf.CheckLibWithHeader('dl', 'dlfcn.h', language='c',
+#   				   autoadd=0):
+#    print "libdl or dlfcn.h cannot be found for loading shared libraries"
+#    Exit(1)
+ 
 hdf5c = env.File("casa/HDF5Config.h")
 if not env.GetOption('clean'):
     conf = Configure(env, config_h=hdf5c)
+    if not conf.CheckLib("dl"): Exit(1)
+    conf.env.PrependUnique(LIBS=['dl'])
     conf.env.AddCustomPackage('hdf5')
     if conf.env.get("enable_hdf5") and conf.CheckLib('hdf5', autoadd=0):
         conf.env.PrependUnique(LIBS=['hdf5'])
