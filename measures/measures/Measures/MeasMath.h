@@ -245,7 +245,7 @@ private:
 
   //# Typedefs
   // To get frame group
-  typedef const Measure *const (MeasFrame::*FRFCT)() const;
+  typedef const Measure* (MeasFrame::*FRFCT)() const;
   // To get frame info
   // <group>
   typedef Bool (MeasFrame::*FRDINFO)(Double &) const;

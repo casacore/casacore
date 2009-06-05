@@ -109,7 +109,7 @@ void MeasBase<Mv,Mr>::assured(const String &tp) const {
 }
 
 template <class Mv, class Mr>
-const MeasValue *const MeasBase<Mv,Mr>::getData() const {
+const MeasValue* MeasBase<Mv,Mr>::getData() const {
   return &data;
 }
 

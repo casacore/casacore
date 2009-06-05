@@ -168,8 +168,8 @@ const String &MDirection::showType(uInt tp) {
   return MDirection::showType(MDirection::castType(tp));
 }
 
-const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
-					   const uInt *&typ) {
+const String* MDirection::allMyTypes(Int &nall, Int &nextra,
+                                     const uInt *&typ) {
   static const Int N_name  = 35;
   static const Int N_extra = 11;
   static const String tname[N_name] = {
@@ -253,8 +253,8 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MDirection::allTypes(Int &nall, Int &nextra,
-					 const uInt *&typ) const {
+const String* MDirection::allTypes(Int &nall, Int &nextra,
+                                   const uInt *&typ) const {
   return MDirection::allMyTypes(nall, nextra, typ);
 }
 

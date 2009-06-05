@@ -149,7 +149,7 @@ public:
 				     MRBase &ref2);
   // </group>
   // Return the offset (or 0)
-  virtual const Measure *const offset() const;
+  virtual const Measure* offset() const;
   // Set the type
   // <thrown>
   //   <li> AipsError if wrong Measure

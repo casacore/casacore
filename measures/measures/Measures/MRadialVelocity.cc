@@ -125,7 +125,7 @@ const String &MRadialVelocity::showType(uInt tp) {
   return MRadialVelocity::showType(MRadialVelocity::castType(tp));
 }
 
-const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
+const String* MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
   static const Int N_name  = 8;
   static const Int N_extra = 0;
@@ -156,7 +156,7 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MRadialVelocity::allTypes(Int &nall, Int &nextra,
+const String* MRadialVelocity::allTypes(Int &nall, Int &nextra,
 					const uInt *&typ) const {
   return MRadialVelocity::allMyTypes(nall, nextra, typ);
 }

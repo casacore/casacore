@@ -350,12 +350,12 @@ public:
   // end of list). typ returns the list of corresponding types.
   // All should have
   // <srcblock>
-  //  static const String *const allMyTypes(Int &nall, Int &nextra,
-  //					    const uInt *&typ);
+  //  static const String* allMyTypes(Int &nall, Int &nextra,
+  //			              const uInt *&typ);
   // </srcblock>
   // <group>
-  virtual const String *const allTypes(Int &nall, Int &nextra,
-				       const uInt *&typ) const;
+  virtual const String* allTypes(Int &nall, Int &nextra,
+                                 const uInt *&typ) const;
   // </group>
   //
   // Check if all internal tables of types (both enum and String) are 
@@ -407,7 +407,7 @@ public:
   virtual const Unit &getUnit() const = 0;
   
   // Get data pointer (used by MeasConvert)
-  virtual const MeasValue *const getData() const = 0;
+  virtual const MeasValue* getData() const = 0;
   
   // Get general reference pointer
   virtual MRBase *getRefPtr() const = 0;

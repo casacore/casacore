@@ -134,8 +134,8 @@ const String &MBaseline::showType(uInt tp) {
   return MBaseline::showType(MBaseline::castType(tp));
 }
 
-const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
-					  const uInt *&typ) {
+const String* MBaseline::allMyTypes(Int &nall, Int &nextra,
+                                    const uInt *&typ) {
   static const Int N_name  = 24;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
@@ -197,8 +197,8 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MBaseline::allTypes(Int &nall, Int &nextra,
-					const uInt *&typ) const {
+const String* MBaseline::allTypes(Int &nall, Int &nextra,
+                                  const uInt *&typ) const {
   return MBaseline::allMyTypes(nall, nextra, typ);
 }
 

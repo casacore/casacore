@@ -144,7 +144,7 @@ public:
   virtual MRBase *getRefPtr() const;
   
   // Get pointer to data
-  virtual const MeasValue * const getData() const;
+  virtual const MeasValue* getData() const;
   
   // Print a Measure
   virtual void print(std::ostream &os) const;

@@ -143,7 +143,7 @@ public:
   //						  const MRBase &ref2) = 0;
   // </srcblock>
   // Return the offset (or 0)
-  virtual const Measure *const offset() const = 0;
+  virtual const Measure* offset() const = 0;
   // Set the type
   // <thrown>
   //   <li> AipsError if wrong Measure

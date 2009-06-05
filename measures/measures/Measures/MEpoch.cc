@@ -117,8 +117,8 @@ const String &MEpoch::showType(uInt tp) {
   return MEpoch::showType(MEpoch::castType(tp));
 }
 
-const String *const MEpoch::allMyTypes(Int &nall, Int &nextra,
-					   const uInt *&typ) {
+const String* MEpoch::allMyTypes(Int &nall, Int &nextra,
+                                 const uInt *&typ) {
   static const Int N_name = 17;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
@@ -166,8 +166,8 @@ const String *const MEpoch::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MEpoch::allTypes(Int &nall, Int &nextra,
-					 const uInt *&typ) const {
+const String* MEpoch::allTypes(Int &nall, Int &nextra,
+                               const uInt *&typ) const {
   return MEpoch::allMyTypes(nall, nextra, typ);
 }
 

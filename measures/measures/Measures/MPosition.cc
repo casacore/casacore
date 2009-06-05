@@ -118,8 +118,8 @@ void MPosition::assure(const Measure &in) {
   };
 }
 
-const String *const MPosition::allMyTypes(Int &nall, Int &nextra,
-					  const uInt *&typ) {
+const String* MPosition::allMyTypes(Int &nall, Int &nextra,
+                                    const uInt *&typ) {
   static const Int N_name  = 2;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
@@ -137,8 +137,8 @@ const String *const MPosition::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MPosition::allTypes(Int &nall, Int &nextra,
-					const uInt *&typ) const {
+const String* MPosition::allTypes(Int &nall, Int &nextra,
+                                  const uInt *&typ) const {
   return MPosition::allMyTypes(nall, nextra, typ);
 }
 

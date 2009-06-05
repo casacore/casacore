@@ -327,10 +327,10 @@ public:
   // nextra the number of specials (like planets) that should be at 
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String *const allTypes(Int &nall, Int &nextra,
-				       const uInt *&typ) const;
-  static const String *const allMyTypes(Int &nall, Int &nextra,
-					const uInt *&typ);
+  virtual const String* allTypes(Int &nall, Int &nextra,
+                                 const uInt *&typ) const;
+  static const String* allMyTypes(Int &nall, Int &nextra,
+                                  const uInt *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are 
   // complete and correct. This function is called automatically if and when

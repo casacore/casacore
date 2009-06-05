@@ -201,7 +201,7 @@ const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
 }
 
 template<class Ms>
-const Measure *const MeasRef<Ms>::offset() const {
+const Measure* MeasRef<Ms>::offset() const {
   return ( rep ? rep->offmp : 0);
 }
 

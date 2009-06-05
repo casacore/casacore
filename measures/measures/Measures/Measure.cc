@@ -47,8 +47,8 @@ uInt Measure::giveMe(const String &in, Int N_name,
   return MUString::minimaxNC(in, N_name, tname);
 }
 
-const String *const Measure::allTypes(Int &nall, Int &nextra,
-				      const uInt *&typ) const {
+const String* Measure::allTypes(Int &nall, Int &nextra,
+                                const uInt *&typ) const {
   static const Int N_name  = 0;
   static const Int N_extra = 0;
   static const String *tname = 0;

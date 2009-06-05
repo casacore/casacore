@@ -117,8 +117,8 @@ const String &MFrequency::showType(uInt tp) {
   return MFrequency::showType(MFrequency::castType(tp));
 }
 
-const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
-					  const uInt *&typ) {
+const String* MFrequency::allMyTypes(Int &nall, Int &nextra,
+                                     const uInt *&typ) {
   static const Int N_name  = 9;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
@@ -150,8 +150,8 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String *const MFrequency::allTypes(Int &nall, Int &nextra,
-					const uInt *&typ) const {
+const String* MFrequency::allTypes(Int &nall, Int &nextra,
+                                   const uInt *&typ) const {
   return MFrequency::allMyTypes(nall, nextra, typ);
 }
 
