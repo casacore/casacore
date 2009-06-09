@@ -40,7 +40,7 @@ $FIRST_SUMMARY     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-### open OUT, ">> xyz";
+###open OUT, ">> xyz";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -48,7 +48,7 @@ if ($arguments == 1)
   # The argument represents the name of the file to process.
   $filename = $ARGV[0];
 
-  # Get current directory.
+  # Get current directory without trailing slash.
   $cwd = `pwd`;
   chop($cwd);
   $cwd =~ s|/$||;
@@ -58,33 +58,26 @@ if ($arguments == 1)
     $fullnm = $cwd . "/" . $filename;
   }
   $filnm = $filename;
-  $filnm =~ s|$cwd||;
-  $filnm =~ s|^/||; 
-  # Get the name of the file.
-  $filnm =~ s|(.*?)/(.*)|$2|;
+  $filnm =~ s|$cwd||;     # remove current directory (thus keep past casacore)
+  $filnm =~ s|^/||;       # remove leading slash
   # Get the name of the header.
   $hdrnm = $filnm;
-  $hdrnm =~ s|.*/||;     # remove directory
-  $hdrnm =~ s|\..*||;    # remove extension
+  $hdrnm =~ s|.*/||;      # remove directory (until last slash)
+  $hdrnm =~ s|\..*||;     # remove extension
   # Get the name of the package and module.
   $isModHdr = 0;
   $modnm = "";
   $pkgnm = $filnm;
-  $pkgnm =~ s|/.*||;
+  $pkgnm =~ s|/.*||;      # remove first slash and beyond giving package name
   $modna = $filnm;
-# When removing package name from module, all files like mainpage.dox, casa.dox,
-# etc. have to be changed accordingly. It is neater because it makes modules
-# appear as Arrays instead of casaArrays. However, it gives problems on OS-X
-# where packages tables and module Tables get the same (casa-insensitive)
-# file name.
-# So for the time being, only replace the slash.
-###  $modna =~ s|/||;
-  $modna =~ s|$pkgnm/||;
+  $modna =~ s|$pkgnm/||;  # remove package name
+  # The old situation has an extra layer like casa/casa/OS or casa/implement/OS.  # Remove that too.
+  $modna =~ s%$pkgnm/|implement/%%;  # remove package name
   $modnm = $modna;
-  $modnm =~ s|(.*?)/.*|$1|;
+  $modnm =~ s|/.*||;      # again remove first slash and beyond giving module
   if ($modnm eq $modna) {
-    # We have a .h file outside a module.
-    $modnm =~ s|(.*?)\..*|$1|;
+    # Nothing removed, so we have a .h file outside a module.
+    $modnm =~ s|\..*||;   # remove extension
     # It is a module header if a directory with the same name exists.
     $tmpnm = $fullnm;
     $tmpnm =~ s|\.h$||;
@@ -92,6 +85,8 @@ if ($arguments == 1)
       $isModHdr = 1;
     }
   }
+  # On OS-X package tables and module Tables get the same (casa-insensitive)
+  # file name which is solved by appending '_module' to a module name.
   $modnm .= "_module";
 
 ###  print OUT "$fullnm $filnm $hdrnm $modnm $pkgnm $isModHdr\n";
