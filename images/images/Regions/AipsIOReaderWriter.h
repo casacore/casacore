@@ -81,9 +81,6 @@ public:
     //</group>
 
 
-    // Implements RSFileWriter::options
-    Record* options() const;
-    
     // RSFileWriter methods //
     
     // Implements RSFileWriter::setOptions.

@@ -204,7 +204,7 @@ protected:
 // Note that some file formats allow for plotting options
 // to be defined as well as the regions. These options are
 // read and stored in a record of ... , the contents
-// of this record is ill-definted (ie. there is no standard).
+// of this record is ill-defined (ie. there is no standard).
 // 
 // There may come a time where a standard is necessary.
 // </synopsis>
