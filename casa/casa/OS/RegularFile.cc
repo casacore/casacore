@@ -151,8 +151,9 @@ void RegularFile::copy (const Path& target, Bool overwrite,
     manualCopy (itsFile.path().expandedName(), targetName.expandedName());
 #else
     // This function uses the system function cp.	    
-    String call("cp ");
-    call += itsFile.path().expandedName() + " " + targetName.expandedName();
+    String call("cp '");
+    call += itsFile.path().expandedName() + "' '" +
+            targetName.expandedName() + "'";
     system (call.chars());
     if (setUserWritePermission) {
 	File result(targetName.expandedName());
