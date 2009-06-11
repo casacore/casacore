@@ -64,7 +64,8 @@ CurvedLattice2D<T>::CurvedLattice2D (const MaskedLattice<T>& lattice,
 
 template<class T>
 CurvedLattice2D<T>::CurvedLattice2D (const CurvedLattice2D<T>& other)
-: itsLatticePtr   (0),
+: MaskedLattice<T>(),
+  itsLatticePtr   (0),
   itsInterpolator (0)
 {
   operator= (other);
@@ -227,9 +228,9 @@ Bool CurvedLattice2D<T>::doGetSlice (Array<T>& buffer,
 }
 
 template<class T>
-void CurvedLattice2D<T>::doPutSlice (const Array<T>& sourceBuffer,
-				     const IPosition& where, 
-				     const IPosition& stride)
+void CurvedLattice2D<T>::doPutSlice (const Array<T>&,
+				     const IPosition&, 
+				     const IPosition&)
 {
   throw (AipsError ("CurvedLattice2D::putSlice - non-writable lattice"));
 }

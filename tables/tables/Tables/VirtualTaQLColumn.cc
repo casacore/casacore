@@ -246,7 +246,7 @@ IPosition VirtualTaQLColumn::shape (uInt rownr)
   return itsCurShape;
 }
 
-Bool VirtualTaQLColumn::isShapeDefined (uInt rownr)
+Bool VirtualTaQLColumn::isShapeDefined (uInt)
 {
   return True;
 }

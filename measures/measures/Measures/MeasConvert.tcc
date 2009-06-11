@@ -45,6 +45,7 @@ MeasConvert<M>::MeasConvert() :
 
 template<class M>
 MeasConvert<M>::MeasConvert(const MeasConvert<M> &other) :
+  MConvertBase(other),
   model(0), unit(), outref(),
   offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();

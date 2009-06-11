@@ -75,27 +75,27 @@ uInt LogSinkInterface::nelements() const
   return 0;
 }
 
-Double LogSinkInterface::getTime (uInt i) const
+Double LogSinkInterface::getTime (uInt) const
 {
   throw AipsError ("LogSinkInterface::getTime - no such message");
   return 0;
 }
-String LogSinkInterface::getPriority (uInt i) const
+String LogSinkInterface::getPriority (uInt) const
 {
   throw AipsError ("LogSinkInterface::getPriority - no such message");
   return "";
 }
-String LogSinkInterface::getMessage (uInt i) const
+String LogSinkInterface::getMessage (uInt) const
 {
   throw AipsError ("LogSinkInterface::getMessage - no such message");
   return "";
 }
-String LogSinkInterface::getLocation (uInt i) const
+String LogSinkInterface::getLocation (uInt) const
 {
   throw AipsError ("LogSinkInterface::getLocation - no such message");
   return "";
 }
-String LogSinkInterface::getObjectID (uInt i) const
+String LogSinkInterface::getObjectID (uInt) const
 {
   throw AipsError ("LogSinkInterface::getObjectID - no such message");
   return "";

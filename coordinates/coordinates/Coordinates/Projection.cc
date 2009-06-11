@@ -316,7 +316,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    case AZP: 
 	    case SIN: 
 	    case ZPN:
-	        for (int i=actualSize; i<requiredSize; i++){
+	        for (uInt i=actualSize; i<requiredSize; i++){
 		    parameters_p(i) = 0.; // all default to 0
 		}
 		break;
@@ -325,7 +325,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		break;
 	    case CYP: 
 	    case CEA: 
-	        for (int i=actualSize; i<requiredSize; i++){
+	        for (uInt i=actualSize; i<requiredSize; i++){
 		    parameters_p(i) = 1.; // all default to 1.
 		}
 		break;

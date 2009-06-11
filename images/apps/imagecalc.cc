@@ -55,6 +55,11 @@ int main(int argc, const char* argv[])
       outName = "/tmp/image.out";
     }
     Bool hdf5 = inputs.getBool("hdf5");
+    if (hdf5  &&  !HDF5Object::hasHDF5Support()) {
+      cerr << "Support for HDF5 has not been compiled in; revert to PagedImage"
+           << endl;
+      hdf5 = False;
+    }
 
     LatticeExprNode node(ImageExprParse::command(imgin));
     if (node.isScalar()) {
@@ -71,13 +76,50 @@ int main(int argc, const char* argv[])
       }
     } else {
       cout << "Copying '" << imgin << "' to '" << outName << "'" << endl;
-      LatticeExpr<Float> lat (node);
-      ImageExpr<Float> img (lat, imgin);
-      // Copy the expression result to the image.
-      PagedImage<Float> res(TiledShape(img.shape(), img.niceCursorShape()),
-			    img.coordinates(), outName);
-      res.copyData (img);
-      res.flush();
+      if (node.dataType() == TpFloat) {
+        LatticeExpr<Float> lat (node);
+        ImageExpr<Float> img (lat, imgin);
+        // Copy the expression result to the image.
+        if (hdf5) {
+          HDF5Image<Float> res(TiledShape(img.shape(),
+                                          img.niceCursorShape()),
+                               img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        } else {
+          PagedImage<Float> res(TiledShape(img.shape(),
+                                           img.niceCursorShape()),
+                                img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        }
+      } else if (node.dataType() == TpDouble) {
+        LatticeExpr<Double> lat (node);
+        ImageExpr<Double> img (lat, imgin);
+        // Copy the expression result to the image.
+        PagedImage<Double> res(TiledShape(img.shape(), img.niceCursorShape()),
+                              img.coordinates(), outName);
+        res.copyData (img);
+        res.flush();
+      } else if (node.dataType() == TpComplex) {
+        LatticeExpr<Complex> lat (node);
+        ImageExpr<Complex> img (lat, imgin);
+        // Copy the expression result to the image.
+        PagedImage<Complex> res(TiledShape(img.shape(), img.niceCursorShape()),
+                              img.coordinates(), outName);
+        res.copyData (img);
+        res.flush();
+      } else if (node.dataType() == TpDComplex) {
+        LatticeExpr<DComplex> lat (node);
+        ImageExpr<DComplex> img (lat, imgin);
+        // Copy the expression result to the image.
+        PagedImage<DComplex> res(TiledShape(img.shape(), img.niceCursorShape()),
+                                 img.coordinates(), outName);
+        res.copyData (img);
+        res.flush();
+      } else {
+	throw AipsError("Expression has an invalid data type (probably bool)");
+      }
     }
   } catch (AipsError x) {
     cout << x.getMesg() << endl;

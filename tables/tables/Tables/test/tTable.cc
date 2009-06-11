@@ -880,7 +880,13 @@ void d()
 	if (!allEQ( arr2(0), arrf2)) {
 	    cout << "error in rereading arr2" << endl;
 	}
+        // Check the locked tables.
+        Vector<String> vec (Table::getLockedTables());
+        AlwaysAssertExit (vec.size() == 1);
+        AlwaysAssertExit (removeDir(vec[0]) == "tTable_tmp.data3");
     }
+    // No locked tables should be left.
+    AlwaysAssertExit (Table::getLockedTables().size() == 0);
 }
 
 int main (int argc,const char*[])

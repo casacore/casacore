@@ -216,6 +216,7 @@ namespace casa { //# name space casa begins
       itsImageComplex  = that.itsImageComplex;
       itsImageDComplex = that.itsImageDComplex;
     }
+    return *this;
   }
 
   ImageProxy::~ImageProxy()
@@ -470,7 +471,7 @@ namespace casa { //# name space casa begins
     }
     Vector<Double> refPix = cSys.referencePixel();
     for (uInt i=0; i<refPix.nelements(); ++i) {
-      if (i != sP) {
+      if (Int(i) != sP) {
         refPix(i) = Double(shape(i) / 2);
       }
     }
@@ -923,7 +924,7 @@ namespace casa { //# name space casa begins
   template<typename T>
   Record ImageProxy::makeStatistics (const ImageInterface<T>& image,
                                      const Vector<Int>& axes,
-                                     const String& mask,
+                                     const String&,
                                      const ValueHolder& minMaxValues,
                                      Bool exclude,
                                      Bool robust) const
@@ -1004,7 +1005,7 @@ namespace casa { //# name space casa begins
       }
     }
     if (itsImageFloat) {
-      return doRegrid (*itsImageFloat, axes, outFile, overwrite,
+      return doRegrid (*itsImageFloat, axes, outFile,
                        shape, coordSys, method,
                        decimate, replicate, doRefChange, forceRegrid);
     } else if (itsImageDouble) {
@@ -1022,7 +1023,6 @@ namespace casa { //# name space casa begins
   ImageProxy ImageProxy::doRegrid (const ImageInterface<T>& image,
                                    const Vector<Int>& axes,
                                    const String& outFile,
-                                   Bool overwrite,
                                    const IPosition& shape,
                                    const Record& coordSys,
                                    const String& method,
@@ -1044,7 +1044,6 @@ namespace casa { //# name space casa begins
     // Make CoordinateSystem from user given.
     CoordinateSystem cSysTo   = makeCoordinateSystem (coordSys, outShape);
     CoordinateSystem cSysFrom = image.coordinates();
-    CoordinateSystem* pCSTo;
     if(cSysTo.nCoordinates() == 0){
       cSysTo = cSysFrom;
     }

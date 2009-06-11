@@ -129,7 +129,7 @@ Int StreamIO::read(uInt size, void* buf, Bool throwException) {
   return size - bytesToRead;
 }
 
-Int64 StreamIO::doSeek (Int64 offset, ByteIO::SeekOption dir) {
+Int64 StreamIO::doSeek (Int64, ByteIO::SeekOption) {
   throw(AipsError("StreamIO::doSeek - streams are not seekable."));
   return -1;
 }

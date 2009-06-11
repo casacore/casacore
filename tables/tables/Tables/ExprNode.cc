@@ -1349,6 +1349,7 @@ DataType TableExprNode::dataType() const
             return TpOther;
 	}
     }
+    return TpOther;
 }
 
 } //# NAMESPACE CASA - END

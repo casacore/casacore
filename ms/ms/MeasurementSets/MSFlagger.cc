@@ -123,12 +123,11 @@ Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
       buffer_p.define("datafield",itm);
     }
     return True;
-    break;
   default:
     os << LogIO::WARN <<"No DATA derived item specified, buffer unchanged"
        << LogIO::POST;
-    return False;
   }
+  return False;
 }
 
 Record MSFlagger::diffDataBuffer(const String& direction, Int window,

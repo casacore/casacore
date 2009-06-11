@@ -43,6 +43,7 @@ RegionHandlerMemory::RegionHandlerMemory()
 }
 
 RegionHandlerMemory::RegionHandlerMemory (const RegionHandlerMemory& that)
+ : RegionHandler(that)
 {
   itsMaps[0] = 0;
   itsMaps[1] = 0;

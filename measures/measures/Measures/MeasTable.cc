@@ -4099,7 +4099,7 @@ const Vector<String> &MeasTable::Observatories() {
   return MeasTable::obsNams;
 }
 
-const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
+Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   MeasTable::initObservatories();
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
@@ -4153,7 +4153,7 @@ const Vector<String> &MeasTable::Lines() {
   return MeasTable::lineNams;
 }
 
-const Bool MeasTable::Line(MFrequency &obs, const String &nam) {
+Bool MeasTable::Line(MFrequency &obs, const String &nam) {
   MeasTable::initLines();
   uInt i=MUString::minimaxNC(nam, MeasTable::lineNams);
   if (i < MeasTable::lineNams.nelements()) {
@@ -4213,7 +4213,7 @@ const Vector<String> &MeasTable::Sources() {
   return MeasTable::srcNams;
 }
 
-const Bool MeasTable::Source(MDirection &obs, const String &nam) {
+Bool MeasTable::Source(MDirection &obs, const String &nam) {
   MeasTable::initSources();
   uInt i=MUString::minimaxNC(nam, MeasTable::srcNams);
   if (i < MeasTable::srcNams.nelements()) {

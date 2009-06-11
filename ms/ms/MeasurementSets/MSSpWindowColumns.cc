@@ -164,7 +164,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 }
 // this version has info of MeasFrame.
 Int ROMSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
+matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasFrame& measFrm,
     const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
 	 const Quantum<Double>& bandwidth, Int ifChain,
 	 const Quantum<Double>& tolerance, Int tryRow) const {
@@ -231,7 +231,7 @@ allMatchedSpw(const MFrequency& refFreq, uInt nChan,
 
 
   Int numMatch=0;
-  for (Int k=0; k < r; ++k){
+  for (uInt k=0; k < r; ++k){
     
     if (!flagRow()(k) &&
 	matchNumChan(k, nChan) &&

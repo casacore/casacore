@@ -64,7 +64,8 @@ TempLattice<T>::TempLattice (const TiledShape& shape, Double maxMemoryInMB)
 
 template<class T>
 TempLattice<T>::TempLattice (const TempLattice<T>& other)
-: itsTablePtr (0),
+: Lattice<T>(),
+  itsTablePtr (0),
   itsIsClosed (False)
 {
   operator= (other);

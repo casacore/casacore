@@ -48,28 +48,6 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template <class T>
-LatticeTwoPtCorr<T>::LatticeTwoPtCorr()
-{}
-   
-  
-template <class T>
-LatticeTwoPtCorr<T>::LatticeTwoPtCorr (const LatticeTwoPtCorr<T>& other)
-{}
- 
-template <class T>
-LatticeTwoPtCorr<T>& LatticeTwoPtCorr<T>::operator=(const LatticeTwoPtCorr<T>& other)
-{
-   if (this != &other) {
-   }
-   return *this;
-}
-
-template <class T>     
-LatticeTwoPtCorr<T>::~LatticeTwoPtCorr()
-{}
- 
-
 template <class T> 
 void LatticeTwoPtCorr<T>::autoCorrelation (MaskedLattice<T>& latOut, 
                                            const MaskedLattice<T>& latIn,

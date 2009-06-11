@@ -81,7 +81,6 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
 {
     newImage = 0;
     error = "";
-    AlwaysAssert(whichRep>=0,AipsError);
 
 // First make sure that imageName is writable and does not already
 // exist.  Optionally remove it if it does.  If imageName is empty,

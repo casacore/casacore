@@ -199,11 +199,11 @@ Bool ProfileFit1D<T>::setRangeMask (const Vector<uInt>& start,
          itsError = "The start index must be < the end index";
          return False;
       }
-      if (start[i]<0 || start[i]>=n) {
+      if (start[i]>=n) {
          itsError = "The start index must be in the range 0->nElements-1";
          return False;
       }
-      if (end[i]<0 || end[i]>=n) {
+      if (end[i]>=n) {
          itsError = "The end index must be in the range 0->nElements-1";
          return False;
       }
@@ -448,7 +448,7 @@ void ProfileFit1D<T>::copy(const ProfileFit1D& other)
 template <class T> 
 void ProfileFit1D<T>::checkType() const
 {
-   T* p;
+   T* p=0;
    AlwaysAssert(whatType(p)==TpDouble,AipsError);
 }
 

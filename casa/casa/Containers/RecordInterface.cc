@@ -53,7 +53,8 @@ RecordInterface::RecordInterface (RecordType type,
 {}
 
 RecordInterface::RecordInterface (const RecordInterface& other)
-: checkFunction_p (other.checkFunction_p),
+: NoticeSource    (),
+  checkFunction_p (other.checkFunction_p),
   checkArgument_p (other.checkArgument_p),
   type_p          (other.type_p)
 {}

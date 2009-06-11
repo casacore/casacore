@@ -155,7 +155,8 @@ void TabularCoordinate::clear_self()
 
 
 TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
-: crval_p(0.0), 
+: Coordinate(),
+  crval_p(0.0), 
   cdelt_p(0.0), 
   crpix_p(0.0), 
   matrix_p(0.0), 

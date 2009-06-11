@@ -57,8 +57,8 @@ template<class T> Queue<T> &Queue<T>::operator=(const Queue<T> &other)
 
     // The lazy solution. We could avoid some copying if we didn't copy
     // the empty elements first.
-    next_p = other.next_p;
     first_p = other.first_p;
+    next_p = other.next_p;
     data_p = other.data_p;
     compress();
     return *this;

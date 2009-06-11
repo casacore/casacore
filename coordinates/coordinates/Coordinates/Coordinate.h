@@ -517,8 +517,10 @@ protected:
    // and the native one. The default implementations do nothing.  They
    // should be over-ridden in the derived classes.
    // <group>
-   virtual void convertTo (Vector<Double>& world) const {;};
-   virtual void convertFrom (Vector<Double>& world) const {;};
+   virtual void convertTo (Vector<Double>&) const
+     {}
+   virtual void convertFrom (Vector<Double>&) const
+     {}
    // </group>
 
    // Functions for handling conversion between the current reference frame 

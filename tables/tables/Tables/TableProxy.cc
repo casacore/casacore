@@ -361,7 +361,7 @@ String TableProxy::toAscii (const String& asciiFile,
   // Write the data
   for (Int i=0; i<nrows(); i++) {
     for (Int j=0; j<ncols; j++) {
-      Int prec = (j < precision.size()  ?  precision[j] : 0);
+      Int prec = (j < Int(precision.size())  ?  precision[j] : 0);
       if (col_is_good[j]) {
         printValueHolder (getCell(colNames[j], i), ofs, theSep,
                           prec, useBrackets);
@@ -436,23 +436,23 @@ Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
     // Append the type with the array shape. Use [] if brackets are to be used.
     // If variable shape, use the shape of the first row.
     if (colDesc.isArray()) {
-      IPosition col_shape;
+      IPosition colShape;
       if (colDesc.isFixedShape()) {
-        col_shape = colDesc.shape();
+        colShape = colDesc.shape();
       }
       if (useBrackets) {
         oss << "[";
       } else {
         // Show non-fixed shape of first row if no brackets are used.
         if (!colDesc.isFixedShape()  &&  table_p.nrow() > 0) {
-          col_shape = ROTableColumn(table_p, colName).shape(0);
+          colShape = ROTableColumn(table_p, colName).shape(0);
         }
       }
-      for (Int i=0; i<col_shape.size(); ++i) {
+      for (uInt i=0; i<colShape.size(); ++i) {
         if (i > 0) {
           oss << ",";
         }
-        oss << col_shape[i];
+        oss << colShape[i];
       }
       if (useBrackets) {
         oss << "]";

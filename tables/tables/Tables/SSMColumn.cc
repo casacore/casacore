@@ -91,7 +91,7 @@ void SSMColumn::getFile(uInt)
 {
 }
 
-void SSMColumn::addRow (uInt aNewNrRows, uInt anOldNrRows, Bool doInit)
+void SSMColumn::addRow (uInt aNewNrRows, uInt, Bool doInit)
 {
   if (doInit  &&  dataType() == TpString) {
     uInt aRowNr=0;

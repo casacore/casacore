@@ -703,7 +703,7 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
  
 
 Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
-                                          Int coordinateTo, Int coordinateFrom,
+                                          Int, Int,
                                           const CoordinateSystem& coordsTo,
                                           const CoordinateSystem& coordsFrom, 
                                           const Unit& unit)
@@ -1306,7 +1306,7 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
      
 // Set format Unit
            
-      Bool ok = sCoord.setFormatUnit (unit);
+      sCoord.setFormatUnit (unit);
       
 // Velocity State
 

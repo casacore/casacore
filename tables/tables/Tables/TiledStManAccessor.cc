@@ -57,7 +57,8 @@ ROTiledStManAccessor::~ROTiledStManAccessor()
 
 ROTiledStManAccessor::ROTiledStManAccessor
                                (const ROTiledStManAccessor& that)
-: dataManPtr_p (that.dataManPtr_p)
+: RODataManAccessor(that),
+  dataManPtr_p (that.dataManPtr_p)
 {}
 
 ROTiledStManAccessor& ROTiledStManAccessor::operator=

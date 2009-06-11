@@ -406,7 +406,7 @@ public:
     static void relinquishAutoLocks (Bool all = False);
 
     // Get the names of tables locked in this process.
-    // By default all locked tables are given (note that as write lock
+    // By default all locked tables are given (note that a write lock
     // implies a read lock), but it is possible to select on lock type
     // FileLocker::Write and on option (TableLock::AutoLocking,
     // TableLock::ReadLocking, or TableLock::PermanentLocking).

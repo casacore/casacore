@@ -44,7 +44,8 @@ RegionHandlerTable::RegionHandlerTable (GetCallback* callback,
 {}
 
 RegionHandlerTable::RegionHandlerTable (const RegionHandlerTable& that)
-: itsCallback  (that.itsCallback),
+: RegionHandler(that),
+  itsCallback  (that.itsCallback),
   itsObjectPtr (that.itsObjectPtr)
 {}
 

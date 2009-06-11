@@ -416,7 +416,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	      else
 		{
-		  Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
+		  //Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		  //
 		  // Now that I think about this, veloctiy based
 		  // selection in MSSelection does not make sense.

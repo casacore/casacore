@@ -45,6 +45,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class BaseSlicesFunctor
   {
   public:
+    virtual ~BaseSlicesFunctor()
+    {}
     virtual void apply (const Slicer& slicer, Array<T>& arr) = 0;
   };
 

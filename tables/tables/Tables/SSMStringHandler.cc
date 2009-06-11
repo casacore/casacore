@@ -519,7 +519,7 @@ void SSMStringHandler::putShape (Int& bucketNr, Int& offset, Int& length,
 }
 
 void SSMStringHandler::getShape (IPosition& aShape, Int bucket, Int& offset, 
-				 Int length)
+				 Int)
 {
   if (itsCurrentBucket != static_cast<Int>(bucket)) {
     getBucket(bucket);

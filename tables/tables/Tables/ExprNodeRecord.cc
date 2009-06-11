@@ -86,7 +86,7 @@ const IPosition& TableExprNodeRecordField::getShape (const TableExprId&)
 
 Bool TableExprNodeRecordField::isDefined (const TableExprId& id)
 {
-  DataType dtype;
+  DataType dtype=TpOther;
   if (id.byData()) {
     dtype = id.data().dataType (fieldNrs_p);
   } else {
@@ -227,7 +227,7 @@ const IPosition& TableExprNodeRecordFieldArray::getShape
 
 Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
 {
-  DataType dtype;
+  DataType dtype=TpOther;
   if (id.byData()) {
     dtype = id.data().dataType (fieldNrs_p);
   } else {

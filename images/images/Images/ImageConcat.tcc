@@ -771,7 +771,7 @@ void ImageConcat<T>::reopen()
 }
 
 template<class T>
-String ImageConcat<T>::name (Bool stripPath) const
+String ImageConcat<T>::name (Bool) const
 {
   return String("Concatenation :");
 }

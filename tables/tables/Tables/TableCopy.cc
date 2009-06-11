@@ -68,8 +68,8 @@ Table TableCopy::makeEmptyTable (const String& newName,
   }
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
-  dminfo = adjustStMan (tabDesc, dminfo);
-  SetupNewTable newtab (newName, tabDesc, Table::New);
+  dminfo = adjustStMan (dminfo);
+  SetupNewTable newtab (newName, tabDesc, option);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
 }
@@ -223,7 +223,7 @@ void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)
   }
 }
 
-Record TableCopy::adjustStMan (const TableDesc& tabDesc, const Record& dminfo)
+Record TableCopy::adjustStMan (const Record& dminfo)
 {
   Record newdm;
   for (uInt j=0; j<dminfo.nfields(); j++) {

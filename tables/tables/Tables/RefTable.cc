@@ -264,7 +264,7 @@ Bool RefTable::adjustRownrs (uInt nr, Vector<uInt>& rowStorage,
 
 
 //# Write a reference table into a file.
-void RefTable::writeRefTable (Bool fsync)
+void RefTable::writeRefTable (Bool)
 {
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.

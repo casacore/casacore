@@ -380,10 +380,10 @@ LELScalar<Float> LELFunctionFloat::getScalar() const
 	 return 1;
       }
       const IPosition& shape = arg_p[0].shape();
-      if (axis >= shape.nelements()) {
+      if (axis >= Int(shape.nelements())) {
 	 return 1;
       }
-      return shape(Int(axis));
+      return shape(axis);
    }
    case LELFunctionEnums::ABS :       
    {
@@ -1797,7 +1797,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
       if (axis < 0) {
 	throw (AipsError ("Axis argument in INDEXIN function is < 1; "
 			  "(note axis is 0-relative!)"));
-      } else if (axis >= section.ndim()) {
+      } else if (axis >= Int(section.ndim())) {
 	throw (AipsError ("Axis argument in INDEXIN function outside array; "
 			  "(note axis is 0-relative!)"));
       }
@@ -1806,7 +1806,7 @@ void LELFunctionBool::eval(LELArray<Bool>& result,
       const IPosition& shp = tmp.shape();
       uInt nrinx = stinx + shp[axis];
       uInt nr1 = 1;
-      for (uInt i=0; i<axis; i++) {
+      for (Int i=0; i<axis; i++) {
 	nr1 *= shp[i];
       }
       uInt nr2 = 1;

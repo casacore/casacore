@@ -249,6 +249,25 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
 
 PlainTable::~PlainTable()
 {
+  // If destructed during an exception, catch possible other exceptions to
+  // avoid termination.
+  if (std::uncaught_exception() ) {
+    try {
+      closeObject();
+    } catch (std::exception& x) {
+      try {
+        cerr << "Exception in ~PlainTable during exception unwind:" << endl
+             << "  " << x.what() << endl;
+      } catch (...) {
+      }
+    }
+  } else {
+    closeObject();
+  }
+}
+
+void PlainTable::closeObject()
+{
     //# When needed, write and sync the table files if not marked for delete
     if (!isMarkedForDelete()) {
 	if (openedForWrite()  &&  !shouldNotWrite()) {

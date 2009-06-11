@@ -539,7 +539,7 @@ void GenericL2Fit<T>::resetFunction() {
 template<class T>
 typename FunctionTraits<T>::BaseType GenericL2Fit<T>::
 getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
-	 uInt j, uInt i) const {
+	 uInt, uInt i) const {
   if (ptr_derive_p) {
     if (x.ndim() == 1) {
       valder_p =

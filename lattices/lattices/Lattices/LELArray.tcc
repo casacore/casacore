@@ -42,6 +42,7 @@ LELArray<T>::~LELArray()
 
 template <class T>
 LELArray<T>::LELArray (const LELArray<T>& other)
+: LELArrayBase()
 {
     operator= (other);
 }

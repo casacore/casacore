@@ -147,7 +147,7 @@ void ArrayPositionIterator::set (const IPosition& cursorPos)
 	  axis = iterationAxes(i);
 	} else {
 	  for (uInt j=0; j<iterationAxes.nelements(); ++j) {
-	    if (i = iterationAxes[j]) {
+	    if (i == uInt(iterationAxes[j])) {
 	      axis = i;
 	      break;
 	    }

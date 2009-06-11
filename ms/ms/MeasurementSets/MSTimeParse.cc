@@ -161,7 +161,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   //-------------------------------------------------------------------
   //  
-  const TableExprNode *MSTimeParse::selectTime(const MEpoch& time,bool daytime)
+  const TableExprNode *MSTimeParse::selectTime(const MEpoch& time, bool)
   {
 
     Double timeInSec= toTAIInSec(time);
@@ -176,7 +176,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //-------------------------------------------------------------------
   //  
   const TableExprNode *MSTimeParse::selectTimeGT(const MEpoch& lowboundTime,
-						 bool daytime)
+						 bool)
   {
     Double timeInSec = toTAIInSec(lowboundTime);
     TableExprNode condition = (ms()->col(colName) >= timeInSec);
@@ -188,7 +188,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //-------------------------------------------------------------------
   //  
   const TableExprNode *MSTimeParse::selectTimeLT(const MEpoch& upboundTime,
-						 bool daytime)
+						 bool)
   {
     Double timeInSec = toTAIInSec(upboundTime);
     TableExprNode condition = (ms()->col(colName) <= timeInSec);
@@ -202,7 +202,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
 						    const MEpoch& upboundTime,
-						    bool Add)
+						    bool)
   {
     Double upperBound = toTAIInSec(upboundTime);
     Double lowerBound = toTAIInSec(lowboundTime);

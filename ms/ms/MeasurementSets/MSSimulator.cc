@@ -175,13 +175,13 @@ void MSSimulator::local2global(Vector<Double>& xGeo,
 
 };
 
-void MSSimulator::longlat2global(Vector<Double>& xReturned,
-				 Vector<Double>& yReturned,
-				 Vector<Double>& zReturned,
-				 const MPosition& mRefLocation,
-				 const Vector<Double>& xIn,
-				 const Vector<Double>& yIn,
-				 const Vector<Double>& zIn)
+void MSSimulator::longlat2global(Vector<Double>&,
+				 Vector<Double>&,
+				 Vector<Double>&,
+				 const MPosition&,
+				 const Vector<Double>&,
+				 const Vector<Double>&,
+				 const Vector<Double>&)
 {
   LogIO os(LogOrigin("MSSimulator", "longlat2global()", WHERE));
   os <<  LogIO::SEVERE << "MSSimulator::longlat2global not yet implemented" << LogIO::POST;

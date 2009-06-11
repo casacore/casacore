@@ -263,7 +263,7 @@ void LatticeSlice1D<T>::findPlane (const IPosition& blc,
 
 template<class T>
 void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<Bool>& mask,
-                                    const PixelCurve1D& curve, 
+                                    const PixelCurve1D&, 
                                     const IPosition& blc, const IPosition& trc)
 {
 

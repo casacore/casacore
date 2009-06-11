@@ -56,7 +56,8 @@ ROStandardStManAccessor::~ROStandardStManAccessor()
 
 ROStandardStManAccessor::ROStandardStManAccessor
                                (const ROStandardStManAccessor& that)
-: itsSSMPtr (that.itsSSMPtr)
+: RODataManAccessor(that),
+  itsSSMPtr (that.itsSSMPtr)
 {}
 
 ROStandardStManAccessor& ROStandardStManAccessor::operator=

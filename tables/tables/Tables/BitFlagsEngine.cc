@@ -43,8 +43,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   BFEngineMask::BFEngineMask (const Array<String>& keys,
                               uInt defaultMask)
-    : itsMask     (defaultMask),
-      itsMaskKeys (keys)
+    : itsMaskKeys (keys),
+      itsMask     (defaultMask)
   {}
 
   void BFEngineMask::fromRecord (const RecordInterface& spec,

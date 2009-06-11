@@ -93,7 +93,8 @@ WCLELMask::WCLELMask (const LatticeExprNode& expr)
 }
 
 WCLELMask::WCLELMask (const WCLELMask& that)
-: itsImageExpr (0),
+: WCRegion     (),
+  itsImageExpr (0),
   itsLattExpr  (0),
   itsLattNode  (0)
 {
@@ -244,7 +245,7 @@ LCRegion* WCLELMask::toLCRegion (const CoordinateSystem& cSys,
   return new LCLELMask (*itsLattExpr);
 }
 
-LCRegion* WCLELMask::doToLCRegion (const CoordinateSystem& cSys,
+LCRegion* WCLELMask::doToLCRegion (const CoordinateSystem&,
 				   const IPosition& latticeShape,
 				   const IPosition& pixelAxesMap,
 				   const IPosition& outOrder) const

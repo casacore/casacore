@@ -65,7 +65,8 @@ ArrayLattice<T>::ArrayLattice (const Array<T>& array)
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const ArrayLattice<T>&other) 
-: itsData     (other.itsData),
+: Lattice<T>(),
+  itsData     (other.itsData),
   itsWritable (other.itsWritable)
 {
 }

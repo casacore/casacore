@@ -209,7 +209,7 @@ Bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<Bool>& maskOut,
    AlwaysAssert(shp.isEqual(maskIn.shape()), AipsError);
    const Int n = itsRefFreqX.nelements();
    AlwaysAssert(n>1, AipsError);
-   AlwaysAssert(axis>=0&&axis<shp.nelements(),AipsError);
+   AlwaysAssert(axis<shp.nelements(),AipsError);
    AlwaysAssert(shp(axis)==n,AipsError);
 //
    yOut.resize(yIn.shape());

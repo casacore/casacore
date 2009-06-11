@@ -410,7 +410,7 @@ public:
     WrapperBase<T>(dim), pf_p(f) {};
   virtual ~WrapperData_VF() {};
   virtual T eval(typename Function<T>::FunctionArg x,
-		 const Vector<T> &par) const {
+		 const Vector<T> &) const {
     if (pf_p) {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p); };

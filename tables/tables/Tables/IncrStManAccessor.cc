@@ -55,7 +55,8 @@ ROIncrementalStManAccessor::~ROIncrementalStManAccessor()
 
 ROIncrementalStManAccessor::ROIncrementalStManAccessor
                                (const ROIncrementalStManAccessor& that)
-: dataManPtr_p (that.dataManPtr_p)
+: RODataManAccessor(that),
+  dataManPtr_p (that.dataManPtr_p)
 {}
 
 ROIncrementalStManAccessor& ROIncrementalStManAccessor::operator=

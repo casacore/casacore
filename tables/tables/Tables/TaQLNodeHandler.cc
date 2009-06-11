@@ -357,7 +357,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return TaQLNodeResult();
   }
 
-  TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep& node)
+  TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep&)
   {
     throw TableInvExpr ("join is not supported yet");
     return TaQLNodeResult();
@@ -576,7 +576,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return TaQLNodeResult();
   }
 
-  TaQLNodeResult TaQLNodeHandler::visitRecFldNode (const TaQLRecFldNodeRep& node)
+  TaQLNodeResult TaQLNodeHandler::visitRecFldNode (const TaQLRecFldNodeRep&)
   {
     // This function cannot be called, because handleRecord processes
     // the fields.
@@ -668,7 +668,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // There is a vector of values.
     AlwaysAssert (nodeType == TaQLNode_Const, AipsError);
     // Check if all data types are equal or can be made equal.
-    int dtype;
+    int dtype=TpOther;
     for (uInt i=0; i<vals.size(); ++i) {
       TaQLConstNodeRep* val = (TaQLConstNodeRep*)(vals[i].getRep());
       if (i == 0) {

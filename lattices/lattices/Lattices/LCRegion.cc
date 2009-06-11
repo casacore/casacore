@@ -44,7 +44,8 @@ LCRegion::LCRegion (const IPosition& latticeShape)
 {}
 
 LCRegion::LCRegion (const LCRegion& other)
-: itsShape       (other.itsShape),
+: Lattice<Bool>(),
+  itsShape       (other.itsShape),
   itsBoundingBox (other.itsBoundingBox),
   itsComment     (other.itsComment)
 {}

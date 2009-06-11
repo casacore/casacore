@@ -65,7 +65,7 @@ void SerialHelper::checkFuncType(const String& ftype) const
 					     ftype + ", found " + thistype);
 }
 
-template <> void getArrayVal<Bool>(Bool& val,     Int gtype, const Record& gr, 
+template <> void getArrayVal<Bool>(Bool& val,     Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -87,7 +87,7 @@ template <> void getArrayVal<Bool>(Bool& val,     Int gtype, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Short>(Short& val,    Int gtype, const Record& gr, 
+template <> void getArrayVal<Short>(Short& val,    Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -109,7 +109,7 @@ template <> void getArrayVal<Short>(Short& val,    Int gtype, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Int>(Int& val,      Int gtype, const Record& gr, 
+template <> void getArrayVal<Int>(Int& val,      Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -131,7 +131,7 @@ template <> void getArrayVal<Int>(Int& val,      Int gtype, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Float>(Float& val,    Int gtype, const Record& gr, 
+template <> void getArrayVal<Float>(Float& val,    Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -153,7 +153,7 @@ template <> void getArrayVal<Float>(Float& val,    Int gtype, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Double>(Double& val,   Int gtype, const Record& gr, 
+template <> void getArrayVal<Double>(Double& val,   Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -175,7 +175,7 @@ template <> void getArrayVal<Double>(Double& val,   Int gtype, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Complex>(Complex& val,  Int gtype, const Record& gr, 
+template <> void getArrayVal<Complex>(Complex& val,  Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -197,7 +197,7 @@ template <> void getArrayVal<Complex>(Complex& val,  Int gtype, const Record& gr
            break;
     }
 }
-template <> void getArrayVal<DComplex>(DComplex& val, Int gtype, const Record& gr, 
+template <> void getArrayVal<DComplex>(DComplex& val, Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -219,7 +219,7 @@ template <> void getArrayVal<DComplex>(DComplex& val, Int gtype, const Record& g
            break;
     }
 }
-template <> void getArrayVal<String>(String& val,   Int gtype, const Record& gr, 
+template <> void getArrayVal<String>(String& val,   Int, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -242,7 +242,7 @@ template <> void getArrayVal<String>(String& val,   Int gtype, const Record& gr,
     }
 }
 
-template <> void getArray<Bool>(Array<Bool>& val,     Int gtype, const Record& gr, 
+template <> void getArray<Bool>(Array<Bool>& val,     Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -253,7 +253,7 @@ template <> void getArray<Bool>(Array<Bool>& val,     Int gtype, const Record& g
 					     " found record)");
     val = gr.asArrayBool(RecordFieldId(name));
 }
-template <> void getArray<Short>(Array<Short>& val,    Int gtype, const Record& gr, 
+template <> void getArray<Short>(Array<Short>& val,    Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -264,7 +264,7 @@ template <> void getArray<Short>(Array<Short>& val,    Int gtype, const Record& 
 					     " found record)");
     val = gr.asArrayShort(RecordFieldId(name));
 }
-template <> void getArray<Int>(Array<Int>& val,      Int gtype, const Record& gr, 
+template <> void getArray<Int>(Array<Int>& val,      Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -275,7 +275,7 @@ template <> void getArray<Int>(Array<Int>& val,      Int gtype, const Record& gr
 					     " found record)");
     val = gr.asArrayInt(RecordFieldId(name));
 }
-template <> void getArray<Float>(Array<Float>& val,    Int gtype, const Record& gr, 
+template <> void getArray<Float>(Array<Float>& val,    Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -286,7 +286,7 @@ template <> void getArray<Float>(Array<Float>& val,    Int gtype, const Record& 
 					     " found record)");
     val = gr.asArrayFloat(RecordFieldId(name));
 }
-template <> void getArray<Double>(Array<Double>& val,   Int gtype, const Record& gr, 
+template <> void getArray<Double>(Array<Double>& val,   Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -297,7 +297,7 @@ template <> void getArray<Double>(Array<Double>& val,   Int gtype, const Record&
 					     " found record)");
     val = gr.asArrayDouble(RecordFieldId(name));
 }
-template <> void getArray<Complex>(Array<Complex>& val,  Int gtype, const Record& gr, 
+template <> void getArray<Complex>(Array<Complex>& val,  Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -308,7 +308,7 @@ template <> void getArray<Complex>(Array<Complex>& val,  Int gtype, const Record
 					     " found record)");
     val = gr.asArrayComplex(RecordFieldId(name));
 }
-template <> void getArray<DComplex>(Array<DComplex>& val, Int gtype, const Record& gr, 
+template <> void getArray<DComplex>(Array<DComplex>& val, Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -319,7 +319,7 @@ template <> void getArray<DComplex>(Array<DComplex>& val, Int gtype, const Recor
 					     " found record)");
     val = gr.asArrayDComplex(RecordFieldId(name));
 }
-template <> void getArray<String>(Array<String>& val,   Int gtype, const Record& gr, 
+template <> void getArray<String>(Array<String>& val,   Int, const Record& gr, 
 			                      const String& name)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);

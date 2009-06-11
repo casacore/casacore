@@ -67,7 +67,8 @@ LatticeRegion::LatticeRegion (const Slicer& slicer,
 }
   
 LatticeRegion::LatticeRegion (const LatticeRegion& other)
-: itsRegion (other.itsRegion->cloneRegion()),
+: Lattice<Bool>(),
+  itsRegion (other.itsRegion->cloneRegion()),
   itsSlicer (other.itsSlicer),
   itsHasRegionMask (other.itsHasRegionMask)
 {}

@@ -39,8 +39,11 @@
 #include <casa/string.h>          // needed for strerror
 
 #if defined(AIPS_DARWIN)
+#undef trace3OPEN
 #define trace3OPEN open
+#undef trace2OPEN
 #define trace2OPEN open
+#undef traceLSEEK
 #define traceLSEEK lseek
 #endif
 

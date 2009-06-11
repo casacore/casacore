@@ -1190,7 +1190,7 @@ TableExprNodeRep* TableExprNodeSet::setOrArray() const
 TableExprNodeRep* TableExprNodeSet::toArray() const
 {
     // Construct the correct const array object.
-    TableExprNodeRep* tsnptr;
+    TableExprNodeRep* tsnptr=0;
     switch (dataType()) {
     case NTBool:
 	tsnptr = new TableExprNodeArrayConstBool (toArrayBool(0));

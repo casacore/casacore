@@ -56,12 +56,13 @@ double PrecTimer::get_CPU_speed_in_MHz()
     (defined __i386__ || defined __x86_64__ || defined __ia64__ || defined __PPC__) && \
     (defined __GNUC__ || defined __INTEL_COMPILER || defined __PATHSCALE__ || defined __xlC__)
   ifstream infile("/proc/cpuinfo");
-  char     buffer[256], *colon;
+  char     buffer[256];
 
   while (infile.good()) {
     infile.getline(buffer, 256);
 
 #if defined __PPC__
+    char* colon;
     if (strcmp("cpu\t\t: 450 Blue Gene/P DD2", buffer) == 0) {
       return 850.0;
     }
@@ -80,6 +81,7 @@ double PrecTimer::get_CPU_speed_in_MHz()
       return result / 1e6;
     }
  #else
+    char* colon;
     if (strncmp("cpu MHz", buffer, 7) == 0  &&
         (colon = strchr(buffer, ':')) != 0) {
       return atof(colon + 2);

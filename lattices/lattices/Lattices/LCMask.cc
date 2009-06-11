@@ -239,7 +239,7 @@ String LCMask::type() const
   return className();
 }
 
-TableRecord LCMask::toRecord (const String& tableName) const
+TableRecord LCMask::toRecord (const String&) const
 {
   throw AipsError ("LCMask::toRecord is not supported");
   return TableRecord();;

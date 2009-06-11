@@ -54,10 +54,11 @@ ArraySampledFunctional(const T & data)
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional(ArraySampledFunctional<T> & other)
-  :theRefData(other.theRefData),
-   theEnd(other.theEnd),
-   theLastAxis(other.theLastAxis),
-   theNelements(other.theNelements)
+  : SampledFunctional<T>(other),
+    theRefData(other.theRefData),
+    theEnd(other.theEnd),
+    theLastAxis(other.theLastAxis),
+    theNelements(other.theNelements)
 {
 }
 

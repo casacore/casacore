@@ -162,7 +162,7 @@ Bool MSFitsIDI::fillMS()
   //
   Bool atEnd = False;
   if (itsDeviceType == FITS::Tape9) {
-    Int fileIndex = 0;
+    uInt fileIndex = 0;
     Int currentFile = 1;
     Int fileno = currentFile;
 
@@ -172,7 +172,7 @@ Bool MSFitsIDI::fillMS()
 	fileno = currentFile;
       } else {
 	atEnd = (fileIndex >= itsSelectedFiles.nelements()-1);
-	if (!atEnd) fileno = itsSelectedFiles(fileIndex);
+	if (!atEnd) fileno = itsSelectedFiles(fileIndex++);
       };
 
       if (!atEnd) {

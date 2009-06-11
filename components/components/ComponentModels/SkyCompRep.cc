@@ -101,7 +101,8 @@ SkyCompRep::SkyCompRep(const Flux<Double>& flux,
 }
 
 SkyCompRep::SkyCompRep(const SkyCompRep& other) 
-  :itsShapePtr(other.itsShapePtr->clone()),
+  :SkyCompBase(),
+   itsShapePtr(other.itsShapePtr->clone()),
    itsSpectrumPtr(other.itsSpectrumPtr->clone()),
    itsFlux(other.itsFlux.copy()),
    itsLabel(other.itsLabel)

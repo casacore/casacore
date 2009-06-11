@@ -348,7 +348,6 @@ namespace casa {
     ImageProxy doRegrid (const ImageInterface<T>& image,
                          const Vector<Int>& axes,
                          const String& outfile,
-                         Bool overwrite,
                          const IPosition& shape,
                          const Record& coordSys,
                          const String& method,

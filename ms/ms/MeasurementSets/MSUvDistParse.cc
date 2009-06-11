@@ -225,7 +225,7 @@ const TableExprNode* MSUvDistParse::node()
 
 void MSUvDistParse::accumulateUVList(const Double r0, const Double r1,
 				     const Bool wavelengthUnit, 
-				     const Bool distanceUnit)
+				     const Bool)
 {
   Int n0=selectedUV_p.shape()(1);
   IPosition newShape(selectedUV_p.shape());

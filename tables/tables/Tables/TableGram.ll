@@ -360,7 +360,7 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {OR}      { tableGramPosition() += yyleng; return OR; }
 "!"       { tableGramPosition() += yyleng; return NOT; }
 {NOT}     { tableGramPosition() += yyleng; return NOT; }
- /*"^"       { tableGramPosition() += yyleng; return BITXOR; }   /* was POWER */
+ /*"^"       { tableGramPosition() += yyleng; return BITXOR; } was POWER */
 "^"       { throw TableInvExpr ("^ is deprecated; will mean XOR in next release"); }
 {XOR}     { tableGramPosition() += yyleng; return BITXOR; }
 "**"      { tableGramPosition() += yyleng; return POWER; }

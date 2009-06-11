@@ -72,7 +72,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (int index=0; index<nfields; ++index) {
       HDF5HidAttribute id(H5Aopen_idx(groupHid, index));
       AlwaysAssert (id.getHid()>=0, AipsError);
-      int namsz = H5Aget_name(id, sizeof(cname), cname);
+      unsigned int namsz = H5Aget_name(id, sizeof(cname), cname);
       AlwaysAssert (namsz<sizeof(cname), AipsError);
       String name(cname);
       // Get rank and shape from the dataspace info.
@@ -96,7 +96,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Now read all subrecords.
     //# Use INDEX_NAME (using INDEX_CRT_ORDER results in a return of -1).
     hsize_t idx=0;
-    herr_t err = H5Literate (groupHid, H5_INDEX_NAME, H5_ITER_NATIVE, &idx,
+    H5Literate (groupHid, H5_INDEX_NAME, H5_ITER_NATIVE, &idx,
 		&readSubRecord, &rec);
     return rec;
   }
@@ -502,11 +502,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 				 const String&)
   {
     HDF5Object::throwNoHDF5();
+    return Record();
   }
 
   Record HDF5Record::doReadRecord (hid_t)
   {
     HDF5Object::throwNoHDF5();
+    return Record();
   }
 
   void HDF5Record::readScalar (hid_t, hid_t,

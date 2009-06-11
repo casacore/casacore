@@ -112,7 +112,7 @@ void SDFeedHandler::resetRow(const Record &row)
     initRow(dummyCols, row);
 }
 
-void SDFeedHandler::fill(const Record &row, Int antennaId, Int spwinId, const Vector<Int> &stokes)
+void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vector<Int> &stokes)
 {
     // don't bother unless there is something there
     if (msFeed_p) {

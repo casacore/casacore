@@ -516,7 +516,7 @@ public:
   // </group>
 
   // Is the iterator not at the end yet?
-  Bool operator!= (const LoggerHolderIterator& that)
+  Bool operator!= (const LoggerHolderIterator&)
     { return itsNotAtEnd; }
 
   // Get the entry.

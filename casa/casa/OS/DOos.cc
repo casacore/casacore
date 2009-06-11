@@ -215,6 +215,9 @@ Vector<Double> DOos::fileTime (const Vector<String>& fileName,
       throw (AipsError ("DOos::fileTime - file " + fileName(i) +
 			" does not exist"));
     }
+    if (follow && file.isSymLink()) {
+      file = File(SymLink(file).followSymLink());
+    }
     // Note that MJD 40587 is 1-1-1970 which is the starting time of
     // the file times.
     Double time;

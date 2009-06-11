@@ -165,27 +165,26 @@ const String &LogMessage::toString(Priority which)
 
 String LogMessage::toString() const
 {
-	String header  = messageTime().ISODate();
-	       header += "\t";
-	       header += toString(priority());
-	       header += "\t";
-	if (! origin_p.isUnset()){
-	    String daOrigin = origin().toString();
-	    if(priority_p > NORMAL1 && priority_p < WARN)
-	       daOrigin.gsub(Regex(".file .*line .*"), ""); //Remove file and line location from origin
-	    header += daOrigin;
-	}
+    String header  = messageTime().ISODate();
+    header += "\t";
+    header += toString(priority());
+    header += "\t";
+    if (! origin_p.isUnset()) {
+        String daOrigin = origin().toString();
+        if (priority_p > NORMAL1 && priority_p < WARN) {
+            // Remove file and line location from origin
+            daOrigin.gsub(Regex(".file .*line .*"), "");
+        }
+        header += daOrigin;
+  }
 	
-	String continuationHeader = "\n" + header + "+\t";
-	
-	String message = String(message_p); // copy
-	Int numLines = message.gsub("\n", continuationHeader);
+  String continuationHeader = "\n" + header + "+\t";
+  String message = String(message_p); // copy
+  message.gsub("\n", continuationHeader);
 
-
-    ostringstream os;
-	os << header << "\t" << message;
-
-    return os;
+  ostringstream os;
+  os << header << "\t" << message;
+  return os;
 }
 
 ostream &operator<<(ostream &os, const LogMessage &message)

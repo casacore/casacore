@@ -73,7 +73,8 @@ TiledLineStepper::TiledLineStepper (const IPosition& latticeShape,
 
 // the copy constructor which uses copy semantics.
 TiledLineStepper::TiledLineStepper (const TiledLineStepper& other)
-: itsBlc(other.itsBlc),
+: LatticeNavigator(),
+  itsBlc(other.itsBlc),
   itsTrc(other.itsTrc),
   itsInc(other.itsInc),
   itsSubSection(other.itsSubSection),

@@ -45,9 +45,11 @@ const Double MVEpoch::secInDay(3600*24);
 MVEpoch::MVEpoch() :
   wday(0), frday(0) {}
 
-MVEpoch::MVEpoch(const MVEpoch &other) {
-  wday = other.wday;
-  frday = other.frday;
+MVEpoch::MVEpoch(const MVEpoch &other) :
+  MeasValue(),
+  wday (other.wday),
+  frday (other.frday)
+{
   adjust();
 }
 

@@ -959,7 +959,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 }
 
 IPosition ImagePolarimetry::rotationMeasureShape(CoordinateSystem& cSys, Int& fAxis, 
-                                                 Int& sAxis, LogIO& os, Int spectralAxis) const
+                                                 Int& sAxis, LogIO&, Int spectralAxis) const
 {
 
 // Construction image CS
@@ -1006,7 +1006,7 @@ IPosition ImagePolarimetry::rotationMeasureShape(CoordinateSystem& cSys, Int& fA
 
 
 IPosition ImagePolarimetry::positionAngleShape(CoordinateSystem& cSys, 
-                                               Int& fAxis, Int& sAxis, LogIO& os, Int spectralAxis) const
+                                               Int& fAxis, Int& sAxis, LogIO&, Int spectralAxis) const
 {
 
 // Construction image CS

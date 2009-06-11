@@ -68,10 +68,9 @@ Double ConstantSpectrum::sample(const MFrequency&) const {
 }
 
 void ConstantSpectrum::sample(Vector<Double>& scale, 
-			      const Vector<MFrequency::MVType>& frequencies, 
-			      const MFrequency::Ref& refFrame) const {
+			      const Vector<MFrequency::MVType>&, 
+			      const MFrequency::Ref&) const {
   DebugAssert(ok(), AipsError);
-  DebugAssert(scale.nelements() == frequencies.nelements(), AipsError);
   scale = 1.0;
 }
 

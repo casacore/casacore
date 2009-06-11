@@ -55,9 +55,9 @@ Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
 }
 
 Interpolate2D::Interpolate2D(const Interpolate2D &other)
-: itsFuncPtrFloat(0),
-  itsFuncPtrDouble(0),
-  itsFuncPtrBool(0)
+: itsFuncPtrFloat (other.itsFuncPtrFloat),
+  itsFuncPtrDouble(other.itsFuncPtrDouble),
+  itsFuncPtrBool  (other.itsFuncPtrBool)
 {}
 
 Interpolate2D::~Interpolate2D()
@@ -65,9 +65,9 @@ Interpolate2D::~Interpolate2D()
 
 Interpolate2D &Interpolate2D::operator=(const Interpolate2D &other)
 {
-   itsFuncPtrFloat = other.itsFuncPtrFloat;
+   itsFuncPtrFloat  = other.itsFuncPtrFloat;
    itsFuncPtrDouble = other.itsFuncPtrDouble;
-   itsFuncPtrBool = other.itsFuncPtrBool;
+   itsFuncPtrBool   = other.itsFuncPtrBool;
    return *this;
 }
 

@@ -170,7 +170,8 @@ SubLattice<T>::SubLattice (MaskedLattice<T>& lattice,
 
 template<class T>
 SubLattice<T>::SubLattice (const SubLattice<T>& other)
-: itsLatticePtr   (0),
+: MaskedLattice<T>(),
+  itsLatticePtr   (0),
   itsMaskLatPtr   (0),
   itsPixelMask    (0),
   itsOwnPixelMask (0)

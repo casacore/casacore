@@ -118,6 +118,7 @@ TableLogSink::TableLogSink (const String& fileName)
 }
 
 TableLogSink::TableLogSink (const TableLogSink& other)
+: LogSinkInterface()
 {
     copy_other (other);
 }

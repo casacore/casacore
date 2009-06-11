@@ -500,11 +500,12 @@ void Coordinate::set_error(const String &errorMsg) const
 
 
 
-Coordinate* Coordinate::makeFourierCoordinate (const Vector<Bool>& axes,
-                                               const Vector<Int>& shape)  const
+Coordinate* Coordinate::makeFourierCoordinate (const Vector<Bool>&,
+                                               const Vector<Int>&)  const
 {
-   String tmp = String("Coordinates of type ") + showType() + String(" cannot be Fourier Transformed");
-   throw(AipsError(tmp));
+   String tmp = String("Coordinates of type ") + showType() +
+                String(" cannot be Fourier Transformed");
+   throw AipsError(tmp);
 }
 
 

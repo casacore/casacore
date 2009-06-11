@@ -406,7 +406,7 @@ void ImageFit1D<T>::checkType() const
 // at the moment.  Later X<T> and Y<T> can be separated
  //
 {
-   FitterType* p;
+   FitterType* p=0;
    DataType tp = whatType(p);
    AlwaysAssert(tp==TpDouble, AipsError);
 }

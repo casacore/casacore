@@ -107,7 +107,7 @@ void SDFieldHandler::resetRow(const Record &row)
     initRow(dummyCols, row);
 }
 
-void SDFieldHandler::fill(const Record &row, const String &name, Int directionRefType,
+void SDFieldHandler::fill(const Record &, const String &name, Int directionRefType,
 			  const Matrix<Double> &directionPoly, Double time, Int sourceId)
 {
     // don't bother unless there is something there

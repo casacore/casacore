@@ -114,9 +114,10 @@ LatticeExpr<T>::~LatticeExpr()
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExpr<T>& other)
-: expr_p  (other.expr_p),
-  shape_p (other.shape_p),
-  lastChunkPtr_p (0)
+: MaskedLattice<T>(),
+  expr_p          (other.expr_p),
+  shape_p         (other.shape_p),
+  lastChunkPtr_p  (0)
 {}
 
 template <class T>

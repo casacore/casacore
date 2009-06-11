@@ -154,7 +154,7 @@ private:
     Vector<uInt> lastSearch_p;
 
     // last nearest
-    uInt lastNearest_p;
+    Int lastNearest_p;
     Bool nearestFound_p, nearestReady_p;
 
     // last known sub-table size

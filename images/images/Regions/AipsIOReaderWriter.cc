@@ -48,7 +48,7 @@ AipsIOReaderWriter::~AipsIOReaderWriter() { }
 // regions in a single file.
 bool AipsIOReaderWriter::read(Record& region){
 
-    ImageRegion *leImgReg;
+    ImageRegion *leImgReg=0;
     read( leImgReg );
     
     try{
@@ -139,7 +139,7 @@ Bool AipsIOReaderWriter::write(const ImageRegion& region ) const {
 }
 
 
-void AipsIOReaderWriter::setOptions(const Record* options ) 
+void AipsIOReaderWriter::setOptions(const Record*) 
 {
     setError( String( "AipsIO region files do not contain any display options, no options to set." ), False );
     

@@ -50,7 +50,8 @@ LogFilterExpr::LogFilterExpr (const String& expr)
 }
 
 LogFilterExpr::LogFilterExpr (const LogFilterExpr& that)
-: itsExpr (0)
+: TableExprData(),
+  itsExpr (0)
 {
   if (that.itsExpr != 0) {
     itsExpr = new TableExprNode (*that.itsExpr);

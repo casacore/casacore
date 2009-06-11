@@ -66,7 +66,8 @@ LatticeConcat<T>::LatticeConcat(uInt axis, Bool tempClose)
 
 template<class T>
 LatticeConcat<T>::LatticeConcat (const LatticeConcat<T>&other) 
-: lattices_p(other.lattices_p.nelements()),
+: MaskedLattice<T>(),
+  lattices_p(other.lattices_p.nelements()),
   axis_p (other.axis_p),
   shape_p(other.shape_p),
   isMasked_p(other.isMasked_p),

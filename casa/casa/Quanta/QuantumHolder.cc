@@ -48,7 +48,9 @@ QuantumHolder::QuantumHolder(const QBase &in)
   : hold_p(in.clone()) {}
 
 QuantumHolder::QuantumHolder(const QuantumHolder &other) 
-  : hold_p() {
+  : RecordTransformable(),
+    hold_p()
+{
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
 }
 
@@ -606,7 +608,7 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
 }
 
 void QuantumHolder::toReal(const uInt &tp) {
-  Double d1;
+  Double d1=0;
   if (isArray()) {
     IPosition stx(ndim(), 0);
     if (isQuantumArrayDouble()) {

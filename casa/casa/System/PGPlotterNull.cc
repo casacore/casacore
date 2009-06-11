@@ -37,7 +37,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-PGPlotterNull::PGPlotterNull(const String &device)
+PGPlotterNull::PGPlotterNull(const String &)
     : beenWarned(True)
 {
     // If this fails, we need a bit more development to copy Float*'s to
@@ -58,7 +58,7 @@ PGPlotter PGPlotterNull::createPlotter (const String &device,
     return PGPlotter (new PGPlotterNull (device));
 }
 
-Record PGPlotterNull::curs(Float X, Float Y)
+Record PGPlotterNull::curs(Float, Float)
 {
     Record retval;
     noplotter();
@@ -66,12 +66,12 @@ Record PGPlotterNull::curs(Float X, Float Y)
 }
 
 
-void PGPlotterNull::arro(Float x1, Float y1, Float x2, Float y2)
+void PGPlotterNull::arro(Float, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::ask(Bool flag)
+void PGPlotterNull::ask(Bool)
 {
     noplotter();
 }
@@ -81,18 +81,18 @@ void PGPlotterNull::bbuf()
     noplotter();
 }
 
-void PGPlotterNull::box(const String &xopt, Float xtick, Int nxsub, 
-	     const String &yopt, Float ytick, Int nysub)
+void PGPlotterNull::box(const String &, Float, Int, 
+                        const String &, Float, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::circ(Float xcent, Float ycent, Float radius)
+void PGPlotterNull::circ(Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::draw(Float x, Float y)
+void PGPlotterNull::draw(Float, Float)
 {
     noplotter();
 }
@@ -102,8 +102,8 @@ void PGPlotterNull::ebuf()
     noplotter();
 }
 
-void PGPlotterNull::env(Float xmin, Float xmax, Float ymin, Float ymax, 
-			 Int just, Int axis)
+void PGPlotterNull::env(Float, Float, Float, Float, 
+			 Int, Int)
 {
     noplotter();
 }
@@ -113,44 +113,44 @@ void PGPlotterNull::eras()
     noplotter();
 }
 
-void PGPlotterNull::errb(Int dir, const Vector<Float> &x, 
-			  const Vector<Float> &y,
-			  const Vector<Float> &e, Float t)
+void PGPlotterNull::errb(Int, const Vector<Float> &, 
+                         const Vector<Float> &,
+                         const Vector<Float> &, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::erry(const Vector<Float> &x, const Vector<Float> &y1,
-	      const Vector<Float> &y2, Float t)
+void PGPlotterNull::erry(const Vector<Float> &, const Vector<Float> &,
+                         const Vector<Float> &, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::hist(const Vector<Float> &data, Float datmin, 
-			  Float datmax, 
-			  Int nbin, Int pcflag)
+void PGPlotterNull::hist(const Vector<Float> &, Float, 
+                         Float, 
+                         Int, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::lab(const String &xlbl, const String &ylbl, 
-		   const String &toplbl)
+void PGPlotterNull::lab(const String &, const String &, 
+                        const String &)
 {
     noplotter();
 }
 
-void PGPlotterNull::line(const Vector<Float> &xpts, const Vector<Float> &ypts)
+void PGPlotterNull::line(const Vector<Float> &, const Vector<Float> &)
 {
     noplotter();
 }
 
-void PGPlotterNull::move(Float x, Float y)
+void PGPlotterNull::move(Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::mtxt(const String &side, Float disp, Float coord, 
-			  Float fjust, const String &text)
+void PGPlotterNull::mtxt(const String &, Float, Float, 
+                         Float, const String &)
 {
     noplotter();
 }
@@ -160,41 +160,40 @@ void PGPlotterNull::page()
     noplotter();
 }
 
-void PGPlotterNull::poly(const Vector<Float> &xpts, const Vector<Float> &ypts)
+void PGPlotterNull::poly(const Vector<Float> &, const Vector<Float> &)
 {
     noplotter();
 }
 
-void PGPlotterNull::pt(const Vector<Float> &xpts, const Vector<Float> &ypts, 
-		  Int symbol)
+void PGPlotterNull::pt(const Vector<Float> &, const Vector<Float> &, 
+                       Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::ptxt(Float x, Float y, Float angle, Float fjust, 
-		    const String &text)
+void PGPlotterNull::ptxt(Float, Float, Float, Float, 
+                         const String &)
 {
     noplotter();
 }
 
 Int PGPlotterNull::qci()
 {
-    int i;
     noplotter();
-    return i;
+    return 0;
 }
 
 Int PGPlotterNull::qtbg()
 {
-    int i;
     noplotter();
-    return i;
+    return 0;
 }
 
-Vector<Float> PGPlotterNull::qtxt(Float x, Float y, Float angle, Float fjust, 
-		    const String &text)
+Vector<Float> PGPlotterNull::qtxt(Float, Float, Float, Float, 
+                                  const String &)
 {
     Vector<Float> xboxybox(8);
+    xboxybox = 0.;
     noplotter();
     return xboxybox;
 }
@@ -202,16 +201,17 @@ Vector<Float> PGPlotterNull::qtxt(Float x, Float y, Float angle, Float fjust,
 Vector<Float> PGPlotterNull::qwin()
 {
     Vector<Float> retval(4);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-void PGPlotterNull::rect(Float x1, Float x2, Float y1, Float y2)
+void PGPlotterNull::rect(Float, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::sah(Int fs, Float angle, Float vent)
+void PGPlotterNull::sah(Int, Float, Float)
 {
     noplotter();
 }
@@ -221,63 +221,63 @@ void PGPlotterNull::save()
     noplotter();
 }
 
-void PGPlotterNull::sch(Float size)
+void PGPlotterNull::sch(Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::sci(Int ci)
+void PGPlotterNull::sci(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::scr(Int ci, Float cr, Float cg, Float cb)
+void PGPlotterNull::scr(Int, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::sfs(Int fs)
+void PGPlotterNull::sfs(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::sls(Int ls)
+void PGPlotterNull::sls(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::slw(Int lw)
+void PGPlotterNull::slw(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::stbg(Int tbci)
+void PGPlotterNull::stbg(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::subp(Int nxsub, Int nysub)
+void PGPlotterNull::subp(Int, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::svp(Float xleft, Float xright, Float ybot, Float ytop)
+void PGPlotterNull::svp(Float, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::swin(Float x1, Float x2, Float y1, Float y2)
+void PGPlotterNull::swin(Float, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::tbox(const String &xopt, Float xtick, Int nxsub,
-			  const String &yopt, Float ytick, Int nysub)
+void PGPlotterNull::tbox(const String &, Float, Int,
+                         const String &, Float, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::text(Float x, Float y, const String &text)
+void PGPlotterNull::text(Float, Float, const String &)
 {
     noplotter();
 }
@@ -297,33 +297,33 @@ void PGPlotterNull::vstd()
     noplotter();
 }
 
-void PGPlotterNull::wnad(Float x1, Float x2, Float y1, Float y2)
+void PGPlotterNull::wnad(Float, Float, Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::conl(const Matrix<Float> &a, Float c,
-			  const Vector<Float> &tr, const String &label,
-			  Int intval, Int minint)
+void PGPlotterNull::conl(const Matrix<Float> &, Float,
+                         const Vector<Float> &, const String &,
+                         Int, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::cont(const Matrix<Float> &a, const Vector<Float> &c,
-			  Bool nc, const Vector<Float> &tr)
+void PGPlotterNull::cont(const Matrix<Float> &, const Vector<Float> &,
+                         Bool, const Vector<Float> &)
 {
     noplotter();
 }
 
-void PGPlotterNull::ctab(const Vector<Float> &l, const Vector<Float> &r,
-			  const Vector<Float> &g, const Vector<Float> &b,
-			  Float contra, Float bright)
+void PGPlotterNull::ctab(const Vector<Float> &, const Vector<Float> &,
+                         const Vector<Float> &, const Vector<Float> &,
+                         Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::gray(const Matrix<Float> &a, Float fg, Float bg,
-			  const Vector<Float> &tr)
+void PGPlotterNull::gray(const Matrix<Float> &, Float, Float,
+                         const Vector<Float> &)
 {
     noplotter();
 } 
@@ -333,8 +333,8 @@ void PGPlotterNull::iden()
     noplotter();
 }
 
-void PGPlotterNull::imag(const Matrix<Float> &a, Float a1, Float a2,
-			  const Vector<Float> &tr)
+void PGPlotterNull::imag(const Matrix<Float> &, Float, Float,
+                         const Vector<Float> &)
 {
     noplotter();
 }
@@ -342,6 +342,7 @@ void PGPlotterNull::imag(const Matrix<Float> &a, Float a1, Float a2,
 Vector<Int> PGPlotterNull::qcir()
 {
     Vector<Int> retval(2);
+    retval = 0;
     noplotter();
     return retval;
 }
@@ -349,47 +350,48 @@ Vector<Int> PGPlotterNull::qcir()
 Vector<Int> PGPlotterNull::qcol()
 {
     Vector<Int> retval(2);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-void PGPlotterNull::scir(Int icilo, Int icihi)
+void PGPlotterNull::scir(Int, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::sitf(Int itf)
+void PGPlotterNull::sitf(Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::bin(const Vector<Float> &x, const Vector<Float> &data,
-		     Bool center)
+void PGPlotterNull::bin(const Vector<Float> &, const Vector<Float> &,
+                        Bool)
 {
     noplotter();
 }
 
-void PGPlotterNull::conb(const Matrix<Float> &a, const Vector<Float> &c,
-		      const Vector<Float> &tr, Float blank)
+void PGPlotterNull::conb(const Matrix<Float> &, const Vector<Float> &,
+                         const Vector<Float> &, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::cons(const Matrix<Float> &a, const Vector<Float> &c,
-		      const Vector<Float> &tr)
+void PGPlotterNull::cons(const Matrix<Float> &, const Vector<Float> &,
+                         const Vector<Float> &)
 {
     noplotter();
 }
 
-void PGPlotterNull::errx(const Vector<Float> &x1, const Vector<Float> &x2,
-		      const Vector<Float> &y, Float t)
+void PGPlotterNull::errx(const Vector<Float> &, const Vector<Float> &,
+                         const Vector<Float> &, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::hi2d(const Matrix<Float> &data, const Vector<Float> &x,
-		      Int ioff, Float bias, Bool center, 
-		      const Vector<Float> &ylims)
+void PGPlotterNull::hi2d(const Matrix<Float> &, const Vector<Float> &,
+                         Int, Float, Bool, 
+                         const Vector<Float> &)
 {
     noplotter();
 }
@@ -399,37 +401,38 @@ void PGPlotterNull::ldev()
     noplotter();
 }
 
-Vector<Float> PGPlotterNull::len(Int units, const String &string)
+Vector<Float> PGPlotterNull::len(Int, const String &)
 {
     Vector<Float> retval(2);
+    retval =0;
     noplotter();
     return retval;
 }
 
-String PGPlotterNull::numb(Int mm, Int pp, Int form)
+String PGPlotterNull::numb(Int, Int, Int)
 {
     noplotter();
-    return String("");
+    return String();
 }
 
-void PGPlotterNull::panl(Int ix, Int iy)
-{
-    noplotter();
-}
-
-void PGPlotterNull::pap(Float width, Float aspect)
+void PGPlotterNull::panl(Int, Int)
 {
     noplotter();
 }
 
-void PGPlotterNull::pixl(const Matrix<Int> &ia, Float x1, Float x2,
-		      Float y1, Float y2)
+void PGPlotterNull::pap(Float, Float)
 {
     noplotter();
 }
 
-void PGPlotterNull::pnts(const Vector<Float> &x, const Vector<Float> &y,
-		      const Vector<Int> symbol)
+void PGPlotterNull::pixl(const Matrix<Int> &, Float, Float,
+                         Float, Float)
+{
+    noplotter();
+}
+
+void PGPlotterNull::pnts(const Vector<Float> &, const Vector<Float> &,
+                         const Vector<Int>)
 {
     noplotter();
 }
@@ -437,155 +440,156 @@ void PGPlotterNull::pnts(const Vector<Float> &x, const Vector<Float> &y,
 Vector<Float>  PGPlotterNull::qah()
 {
     Vector<Float> retval(3);
+    retval = 0;
     noplotter();
     return retval;
 }
 
 Int PGPlotterNull::qcf()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
 Float PGPlotterNull::qch()
 {
-    float retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
-Vector<Float> PGPlotterNull::qcr(Int ci)
+Vector<Float> PGPlotterNull::qcr(Int)
 {
     Vector<Float> retval(3);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-Vector<Float> PGPlotterNull::qcs(Int units)
+Vector<Float> PGPlotterNull::qcs(Int)
 {
     Vector<Float> retval(2);
+    retval = 0;
     noplotter();
     return retval;
 }
 
 Int PGPlotterNull::qfs()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
 Vector<Float> PGPlotterNull::qhs()
 {
     Vector<Float> retval(3);
+    retval = 0;
     noplotter();
     return retval;
 }
 
 Int PGPlotterNull::qid()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
-String PGPlotterNull::qinf(const String &item)
+String PGPlotterNull::qinf(const String &)
 {
     noplotter();
-    return String("");
+    return String();
 }
 
 Int PGPlotterNull::qitf()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
 Int PGPlotterNull::qls()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
 Int PGPlotterNull::qlw()
 {
-    int retval;
     noplotter();
-    return retval;
+    return 0;
 }
 
 Vector<Float> PGPlotterNull::qpos()
 {
     Vector<Float> retval(2);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-Vector<Float> PGPlotterNull::qvp(Int units)
+Vector<Float> PGPlotterNull::qvp(Int)
 {
     Vector<Float> retval(4);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-Vector<Float> PGPlotterNull::qvsz(Int units)
+Vector<Float> PGPlotterNull::qvsz(Int)
 {
     Vector<Float> retval(4);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-Float PGPlotterNull::rnd(Float x, Int nsub)
+Float PGPlotterNull::rnd(Float x, Int)
 {
     noplotter();
     return x;
 }
 
-Vector<Float> PGPlotterNull::rnge(Float x1, Float x2)
+Vector<Float> PGPlotterNull::rnge(Float, Float)
 {
     Vector<Float> retval(2);
+    retval = 0;
     noplotter();
     return retval;
 }
 
-void PGPlotterNull::scf(Int font)
+void PGPlotterNull::scf(Int)
 {
   noplotter();
 }
 
-void PGPlotterNull::scrn(Int ci, const String &name)
+void PGPlotterNull::scrn(Int, const String &)
 {
   noplotter();
 }
 
-void PGPlotterNull::shls(Int ci, Float ch, Float cl, Float cs)
+void PGPlotterNull::shls(Int, Float, Float, Float)
 {
   noplotter();
 }
 
-void PGPlotterNull::shs(Float angle, Float sepn, Float phase)
+void PGPlotterNull::shs(Float, Float, Float)
 {
   noplotter();
 }
 
-void PGPlotterNull::vect(const Matrix<Float> &a, const Matrix<Float> &b,
-		      Float c, Int nc, 
-		      const Vector<Float> &tr, Float blank)
+void PGPlotterNull::vect(const Matrix<Float> &, const Matrix<Float> &,
+                         Float, Int, 
+                         const Vector<Float> &, Float)
 {
   noplotter();
 }
 
-void PGPlotterNull::vsiz(Float xleft, Float xright, Float ybot,
-		      Float ytop)
+  void PGPlotterNull::vsiz(Float, Float, Float,
+                           Float)
 {
   noplotter();
 }
 
-void PGPlotterNull::wedg(const String &side, Float disp, Float width,
-		      Float fg, Float bg, const String &label)
+void PGPlotterNull::wedg(const String &, Float, Float,
+                         Float, Float, const String &)
 {
   noplotter();
 }

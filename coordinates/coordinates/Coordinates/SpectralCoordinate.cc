@@ -955,7 +955,7 @@ void SpectralCoordinate::setRestFrequencies(const Vector<Double>& restFrequencie
       restfreqs_p = restFrequencies;
    }
 //
-   AlwaysAssert(which>=0 && which<restfreqs_p.nelements(), AipsError);
+   AlwaysAssert(which<restfreqs_p.nelements(), AipsError);
    selectRestFrequency(which);
 }
 
@@ -977,7 +977,7 @@ void SpectralCoordinate::selectRestFrequency(Double restFrequency)
 
 void SpectralCoordinate::selectRestFrequency(uInt which)
 {
-   AlwaysAssert(which>=0 && which<restfreqs_p.nelements(), AipsError)
+   AlwaysAssert(which<restfreqs_p.nelements(), AipsError)
 //
    restfreqIdx_p = which;
    Quantum<Double> rf(restfreqs_p(restfreqIdx_p), unit_p);

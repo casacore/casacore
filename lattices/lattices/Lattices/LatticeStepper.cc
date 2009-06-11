@@ -93,7 +93,8 @@ LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 }
 
 LatticeStepper::LatticeStepper (const LatticeStepper& other)
-: itsIndexer     (other.itsIndexer),
+: LatticeNavigator(),
+  itsIndexer     (other.itsIndexer),
   itsCursorAxes  (other.itsCursorAxes),
   itsCursorShape (other.itsCursorShape),
   itsCursorPos   (other.itsCursorPos),

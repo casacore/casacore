@@ -131,8 +131,8 @@ public:
     // How many elements are in the queue?
     uInt nelements() const {return next_p - first_p;}
 private:
-    Int next_p;
     Int first_p;
+    Int next_p;
     Block<T> data_p;
 };
 

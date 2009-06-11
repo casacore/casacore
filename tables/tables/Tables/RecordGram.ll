@@ -163,7 +163,7 @@ PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
 {OR}      { recordGramPosition() += yyleng; return OR; }
 "!"       { recordGramPosition() += yyleng; return NOT; }
 {NOT}     { recordGramPosition() += yyleng; return NOT; }
- /* "^"       { recordGramPosition() += yyleng; return BITXOR; } /* was POWER */
+ /* "^"       { recordGramPosition() += yyleng; return BITXOR; } was POWER */
 "^"       { throw TableInvExpr ("^ is deprecated; will be XOR in next relese"); }
 "**"      { recordGramPosition() += yyleng; return POWER; }
 "*"       { recordGramPosition() += yyleng; return TIMES; }

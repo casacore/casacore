@@ -241,7 +241,7 @@ private:
 
 
 template<> inline
-void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
+void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>&, int) const
   { throwBoolMath(); }
 
 

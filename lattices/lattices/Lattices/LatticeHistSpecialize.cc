@@ -346,7 +346,7 @@ void LatticeHistSpecialize::plot(PGPlotter& plotter, Bool doGauss, Bool doCumu, 
                                 Complex linearSum, Complex yMax,
                                 Complex binWidth, const Vector<Complex>& values, 
                                 const Vector<Complex>& counts, const Vector<Complex>& stats,
-                                uInt dum1, uInt dum2, Bool dum3)
+                                uInt, uInt, Bool)
 //
 // The histogram is already in its desired form - linear, log, cumu
 // yMax is in that form too.

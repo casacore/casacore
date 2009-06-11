@@ -51,12 +51,14 @@ ScalarSampledFunctional(const Vector<T> & data)
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(ScalarSampledFunctional<T> & other)
-  :refData(other.refData){
+  : SampledFunctional<T>(other),
+    refData(other.refData){
 }
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(const ScalarSampledFunctional<T> & other)
-  :refData(other.refData.copy()){
+  : SampledFunctional<T>(other),
+    refData(other.refData.copy()){
 }
 
 template<class T> ScalarSampledFunctional<T> & ScalarSampledFunctional<T>::

@@ -53,9 +53,11 @@ MVPosition::MVPosition() :
 }
 
 MVPosition::MVPosition(const MVPosition &other) : 
-  xyz(3) {
-    xyz = other.xyz;
-  }
+  MeasValue(),
+  xyz(3)
+{
+  xyz = other.xyz;
+}
 
 MVPosition &MVPosition::operator=(const MVPosition &other) {
   if (this != &other) {

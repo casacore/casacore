@@ -140,12 +140,13 @@ void Memory::setMemoryOptions(){
    #endif
 }
 
-int Memory::setMemoryOption(int cmd, int value){
 #if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
+int Memory::setMemoryOption(int, int) {
    return 0;
 #else
+int Memory::setMemoryOption(int cmd, int value) {
    return(mallopt(cmd, value));
 #endif
+}
 
 } //#End namespace casa
-}

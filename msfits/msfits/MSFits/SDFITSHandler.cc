@@ -87,7 +87,7 @@ void SDFITSHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const 
     initAll(ms, handledCols, row);
 }
 
-void SDFITSHandler::fill(const Record &row, const MEpoch &time, const Double &interval)
+void SDFITSHandler::fill(const Record &, const MEpoch &time, const Double &interval)
 {
     // don't bother unless there is something there
     if (tab_p) {

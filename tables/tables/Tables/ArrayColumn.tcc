@@ -257,7 +257,7 @@ void ROArrayColumn<T>::handleSlices (const Vector<Vector<Slice> >& slices,
     uInt i;
     for (i=0; i<nrdim; ++i) {
       pos[i]++;
-      if (pos[i] < slices[i].size()) {
+      if (uInt(pos[i]) < slices[i].size()) {
         const Slice& slice = slices[i][pos[i]];
         colStart[i] = slice.start();
         colLen[i]   = slice.length();

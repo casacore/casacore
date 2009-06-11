@@ -1817,7 +1817,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    char *string2_arg, int size2,
 	    int pos,
 	    struct re_registers *regs,
-	    int mstop, cregex_allocator &alloca)
+	    int mstop, cregex_allocator &)
 {
   register unsigned char *p = (unsigned char *) pbufp->buffer;
 
@@ -2493,7 +2493,9 @@ a2_re_match_2 (struct re_pattern_buffer *pbufp,
 static int
 bcmp_translate (char *s1, char *s2, int len, unsigned char *translate)
 {
-  register char *p1 = s1, *p2 = s2;
+  // Use signed char instead of char to avoid compiler warnings
+  // about subscripting with a char.
+  register signed char *p1 = (signed char*)s1, *p2 = (signed char*)s2;
   while (len)
     {
       if (translate [*p1++] != translate [*p2++]) return 1;

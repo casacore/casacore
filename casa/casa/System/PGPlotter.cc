@@ -59,7 +59,8 @@ PGPlotter::PGPlotter (const String &device,
 }
 
 PGPlotter::PGPlotter(const PGPlotter &other)
-  : worker_p(other.worker_p)
+  : PGPlotterInterface(),
+    worker_p(other.worker_p)
 {
     // Nothing
 }

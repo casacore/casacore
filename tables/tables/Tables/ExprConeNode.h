@@ -75,10 +75,10 @@ public:
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  Bool     getBool   (const TableExprId& id);
-  Double   getDouble (const TableExprId& id);
-  Array<Bool>   getArrayBool   (const TableExprId& id);
-  Array<Double> getArrayDouble (const TableExprId& id);
+  Bool  getBool (const TableExprId& id);
+  Int64 getInt  (const TableExprId& id);
+  Array<Bool>  getArrayBool (const TableExprId& id);
+  Array<Int64> getArrayInt  (const TableExprId& id);
   // </group>
 
   // Check the data and value types of the operands.

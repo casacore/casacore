@@ -96,16 +96,12 @@ enum Method {
 
 
 // Default constructor
-   LatticeTwoPtCorr();
-
-// Copy constructor (copy semantics)
-   LatticeTwoPtCorr (const LatticeTwoPtCorr<T>& other);
-
-// Assignment (copy semantics)
-   LatticeTwoPtCorr& operator=(const LatticeTwoPtCorr<T>& other);
+   LatticeTwoPtCorr()
+   {}
 
 // Destructor
-   ~LatticeTwoPtCorr();
+   ~LatticeTwoPtCorr()
+   {}
 
 // Compute specified autocorrelation function for the planes of the given TWO axes.
 // If the output lattice has a mask, it will first be set to False (bad)

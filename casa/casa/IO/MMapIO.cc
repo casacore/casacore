@@ -137,7 +137,7 @@ Int MMapIO::read (uInt size, void* buf, Bool throwException)
   if (szrd > 0) {
     memcpy (buf, itsPtr+itsPosition, szrd);
     itsPosition += szrd;
-    if (throwException  &&  szrd < size) {
+    if (throwException  &&  szrd < Int(size)) {
       throw AipsError ("MMapIO::read - " + itsFileName +
                        " incorrect number of bytes read");
     }

@@ -463,7 +463,7 @@ void MIRIADImage::open()
 
 void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
                                       IPosition& shape, ImageInfo& imageInfo,
-                                      Unit& brightnessUnit, Record& miscInfo, 
+                                      Unit& brightnessUnit, Record&, 
                                       Bool& hasBlanks, const String& name)
 {
   LogIO os(LogOrigin("MIRIADImage", "getImageAttributes", WHERE));

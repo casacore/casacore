@@ -38,7 +38,8 @@ LogFilterTaql::LogFilterTaql (const String& expr)
 }
 
 LogFilterTaql::LogFilterTaql (const LogFilterTaql& other)
-: expr_p  (0)
+: LogFilterInterface(),
+  expr_p  (0)
 {
   if (other.expr_p != 0) {
     expr_p = new LogFilterExpr (*other.expr_p);

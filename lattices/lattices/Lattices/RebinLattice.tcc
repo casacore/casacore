@@ -77,7 +77,8 @@ RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
 
 template<class T>
 RebinLattice<T>::RebinLattice (const RebinLattice<T>& other)
-: itsLatticePtr(0)
+: MaskedLattice<T>(),
+  itsLatticePtr(0)
 {
   operator= (other);
 }
@@ -219,9 +220,9 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 
 
 template<class T>
-void RebinLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
-                                  const IPosition& where, 
-                                  const IPosition& stride)
+void RebinLattice<T>::doPutSlice (const Array<T>&,
+                                  const IPosition&, 
+                                  const IPosition&)
 {
   throw (AipsError ("RebinLattice::putSlice - non-writable lattice"));
 }

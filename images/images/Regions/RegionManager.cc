@@ -691,7 +691,8 @@ namespace casa { //# name space casa begins
   }
 
 
-  Table& RegionManager::getTable(void* ptr, Bool writable){
+  Table& RegionManager::getTable(void* ptr, Bool)
+  {
     RegionManager* rg = static_cast<RegionManager*>(ptr);
     return rg->tab_p;
   }

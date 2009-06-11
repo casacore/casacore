@@ -276,17 +276,18 @@ void Directory::copy (const Path& target, Bool overwrite,
     // do it ourselves.
     copyRecursive (targetName.expandedName());
 #else
-    String command("cp -r ");
-    command += itsFile.path().expandedName() + " " + targetName.expandedName();
+    String command("cp -r '");
+    command += itsFile.path().expandedName() + "' '" +
+               targetName.expandedName() + "'";
     system (command.chars());
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
-	command = "chmod -R u+w ";
+	command = "chmod -R u+w '";
 #else
-	command = "chmod -Rf u+w ";
+	command = "chmod -Rf u+w '";
 #endif
-	command += targetName.expandedName();
+	command += targetName.expandedName() + "'";
 	system (command.chars());
     }
 #endif

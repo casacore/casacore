@@ -66,7 +66,8 @@ ComponentShape::ComponentShape(const MDirection& direction)
 }
 
 ComponentShape::ComponentShape(const ComponentShape& other)
-  :itsDir(other.itsDir),
+  :RecordTransformable(),
+   itsDir(other.itsDir),
    itsDirErrLat(other.itsDirErrLat),
    itsDirErrLong(other.itsDirErrLong)
 {

@@ -690,8 +690,8 @@ ImageAnalysis::imagefromfits(const String& outfile, const String& fitsfile,
 
 // Convert foreign images to aips++ via FITS
 Bool 
-ImageAnalysis::imagefromforeign(const String& outfile, const String& infile,
-			const String& format, const Bool overwrite)
+ImageAnalysis::imagefromforeign(const String&, const String&,
+			const String&, const Bool)
 {
   // TODO : IMPLEMENT ME HERE !
   Bool rstat = False;
@@ -916,7 +916,7 @@ ImageAnalysis::convolve(const String& outFile, Array<Float>& kernelArray,
 			const  String& kernelFileName,
 			const Double in_scale, Record& region,
 			String& mask, const Bool overwrite,
-			const Bool async)
+			const Bool)
 {
 
     *itsLog << LogOrigin("ImageAnalysis", "convolve");
@@ -1456,7 +1456,7 @@ ImageAnalysis::convolve2d(const String& outFile, const Vector<Int>& axes,
 		  const Quantity& minorKernel, const Quantity& paKernel,
 		  Double scale, Record& Region,
 		  const String& mask, const Bool overwrite,
-		  const Bool async)
+		  const Bool)
 {
   *itsLog << LogOrigin("ImageAnalysis", "convolve2d");
   String kernel(type);
@@ -2960,7 +2960,7 @@ ImageAnalysis::histograms(Record& histout, const Vector<Int>& axes,
 			  Record& regionRec, const String& sMask, 
 			  const Int nbins, const Vector<Double>& includepix, 
 			  const Bool gauss, const Bool cumu, const Bool log, 
-			  const Bool list, const String& plotterdev, 
+			  const Bool list, const String&, 
 			  const Int nx, const Int ny, const Vector<Int>& size, 
 			  const Bool force, const Bool disk)
 {
@@ -3837,7 +3837,7 @@ ImageAnalysis::putregion(const Array<Float>& pixels,
 		 const Array<Bool>& mask,
 		 Record& region,
 		 const Bool list, const Bool usemask,
-		 const Bool locking, const Bool replicateArray)
+		 const Bool, const Bool replicateArray)
 {
     *itsLog << LogOrigin("ImageAnalysis", "putregion");
 
@@ -4969,7 +4969,7 @@ ImageAnalysis::statistics(Record& statsout, const Vector<Int>& axes,
 		  const Vector<String>& plotstats,
 		  const Vector<Float>& includepix,
 		  const Vector<Float>& excludepix,
-		  const String& plotterdev, const Int nx, const Int ny,
+		  const String&, const Int nx, const Int ny,
 		  const Bool list, const Bool force, const Bool disk,
 		  const Bool robust, const Bool verbose)
 {
@@ -5540,7 +5540,7 @@ ImageAnalysis::toASCII(const String& outfile, Record& region,
 
 
 Vector<Double>
-ImageAnalysis::topixel(Record& value)
+ImageAnalysis::topixel(Record&)
 {
 
   /*  std::vector<double> rstat;
@@ -5774,7 +5774,7 @@ Bool ImageAnalysis::haveRegionsChanged (ImageRegion* pNewRegionRegion,
 
 void ImageAnalysis::makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
 				     const Record& Regions,
-				     LogIO& os)
+				     LogIO&)
 {
 
   // Trying to mimick  a glishRegion by a Record of Records
@@ -6119,9 +6119,9 @@ ImageAnalysis::singleParameterEstimate (Fit2D& fitter, Fit2D::Types model,
 				const MaskedArray<Float>& pixels,                                               Float minVal, Float maxVal,
 				const IPosition& minPos,
 				const IPosition& maxPos,
-				Stokes::StokesTypes stokes,
-				const ImageInterface<Float>& im,
-				Bool xIsLong, LogIO& os) const
+				Stokes::StokesTypes,
+				const ImageInterface<Float>&,
+				Bool, LogIO& os) const
   //
   // position angle +x -> +y
   //
@@ -6958,9 +6958,9 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy,
 			Vector<Float>& zxaxisval, Vector<Float>& zyaxisval,
 				   const String& xytype, 
 				   const String& specaxis,
-				   const Int& whichStokes,
-				   const Int& whichTabular,
-				   const Int& whichLinear,
+				   const Int&,
+				   const Int&,
+				   const Int&,
 				   const String& xunits){
 
   String whatXY=xytype;

@@ -54,7 +54,7 @@ Bool RegionHandler::canDefineRegion() const
   return False;
 }
 
-void RegionHandler::setDefaultMask (const String& regionName)
+void RegionHandler::setDefaultMask (const String&)
 {
   throw AipsError ("RegionHandler::setDefaultMask"
 		   " cannot be used for this image type");
@@ -106,8 +106,8 @@ Vector<String> RegionHandler::regionNames (RegionHandler::GroupType) const
   return Vector<String>();
 }
 
-ImageRegion* RegionHandler::getRegion (const String& name,
-				       RegionHandler::GroupType type,
+ImageRegion* RegionHandler::getRegion (const String&,
+				       RegionHandler::GroupType,
 				       Bool throwIfUnknown) const
 {
   if (throwIfUnknown) {

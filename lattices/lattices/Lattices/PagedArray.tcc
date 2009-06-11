@@ -147,7 +147,8 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
 
 template<class T>
 PagedArray<T>::PagedArray (const PagedArray<T>& other)
-: itsTable      (other.itsTable),
+: Lattice<T>(),
+  itsTable      (other.itsTable),
   itsColumnName (other.itsColumnName), 
   itsRowNumber  (other.itsRowNumber),
   itsIsClosed   (other.itsIsClosed),

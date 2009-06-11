@@ -60,7 +60,8 @@ SpectralModel::SpectralModel(const MFrequency& refFreq, const Unit& freqUnit)
 }
 
 SpectralModel::SpectralModel(const SpectralModel& other) 
-  :itsRefFreq(other.itsRefFreq),
+  :RecordTransformable(),
+   itsRefFreq(other.itsRefFreq),
    itsFreqUnit(other.itsFreqUnit),
    itsFreqErr(other.itsFreqErr)
 {

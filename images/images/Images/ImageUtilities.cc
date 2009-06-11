@@ -214,7 +214,7 @@ String ImageUtilities::shortAxisName (const String& axisName)
 }
 
 
-SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& facToJy,
+SkyComponent ImageUtilities::encodeSkyComponent(LogIO&, Double& facToJy,
                                                 const ImageInfo& ii,
                                                 const CoordinateSystem& cSys,
                                                 const Unit& brightnessUnit,

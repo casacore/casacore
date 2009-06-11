@@ -66,6 +66,7 @@ void ImageInfo::copy_other(const ImageInfo &other)
 }
 
 ImageInfo::ImageInfo(const ImageInfo &other)
+: RecordTransformable()
 {
     copy_other(other);
 }

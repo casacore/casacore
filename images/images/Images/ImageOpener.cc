@@ -45,7 +45,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 SimpleOrderedMap<ImageOpener::ImageTypes,ImageOpener::OpenImageFunction*>
      ImageOpener::theirOpenFuncMap(&ImageOpener::unknownImageOpen);
 
-LatticeBase* ImageOpener::unknownImageOpen (const String& name,
+LatticeBase* ImageOpener::unknownImageOpen (const String&,
 					    const MaskSpecifier&)
 {
   return 0;

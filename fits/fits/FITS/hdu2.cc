@@ -603,7 +603,7 @@ HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t,
 // Use this constructor to construct objects that write only required keywords to fitsfile.
 // the write method to call by these object should be those for the specific
 // hdu, such as write_binTbl_hdr().
-HeaderDataUnit::HeaderDataUnit( FITS::HDUType t, 
+HeaderDataUnit::HeaderDataUnit( FITS::HDUType, 
 			       FITSErrorHandler errhandler, FitsInput *f ) 
     : kwlist_(*new FitsKeywordList()), constkwlist_( kwlist_),fin(f),
 	   errfn(errhandler), err_status(OK), no_dims(0),

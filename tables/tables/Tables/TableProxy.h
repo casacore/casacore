@@ -589,7 +589,7 @@ private:
     {os << v;}
   void printArrayValue (ostream& os, Double v, const String&) const
     {os << v;}
-  void printArrayValue (ostream& os, const DComplex& v, const String& sep) const
+  void printArrayValue (ostream& os, const DComplex& v, const String&) const
     {os << v;}
   void printArrayValue (ostream& os, const String& v, const String&) const
     {os << '"' << v << '"';}

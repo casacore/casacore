@@ -117,6 +117,7 @@ setData(const SampledFunctional<Domain> &x,
 
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D(const Interpolate1D<Domain, Range> & other):
+  Function1D<Domain, Range> (other),
   curMethod(other.curMethod),
   nElements(other.nElements),
   xValues(other.xValues),

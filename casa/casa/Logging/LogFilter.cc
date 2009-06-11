@@ -35,7 +35,8 @@ LogFilter::LogFilter (LogMessage::Priority lowest)
 {}
 
 LogFilter::LogFilter (const LogFilter& other)
-: lowest_p(other.lowest_p)
+: LogFilterInterface(),
+  lowest_p(other.lowest_p)
 {}
 
 LogFilter& LogFilter::operator= (const LogFilter& other)

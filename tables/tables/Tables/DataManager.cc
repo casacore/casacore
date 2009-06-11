@@ -280,7 +280,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
 
 //# The default "ctor" function for unknown data manager type names.
 DataManager* DataManager::unknownDataManager (const String& type,
-					      const Record& spec)
+					      const Record&)
 {
     throw (DataManUnknownCtor ("Data Manager class " + type + 
 			       " is not registered"));

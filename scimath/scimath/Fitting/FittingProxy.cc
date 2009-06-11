@@ -369,9 +369,9 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
   casa::Vector<Double> ctmp(returnval.nelements());
-  Double *ctit = ctmp.data();
-  for (uInt i=0; i<fitter.getDeficiency(); ++i, conit+returnval.nelements()) {
+  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
+    Double *ctit = ctmp.data();
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
   covar = fitter.compuCovariance();
@@ -544,9 +544,9 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
   casa::Vector<Double> ctmp(returnval.nelements());
-  Double *ctit = ctmp.data();
-  for (uInt i=0; i<fitter.getDeficiency(); ++i, conit+returnval.nelements()) {
+  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
+    Double *ctit = ctmp.data();
     for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
 

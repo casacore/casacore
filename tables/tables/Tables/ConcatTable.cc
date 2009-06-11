@@ -59,8 +59,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   ConcatTable::ConcatTable (const Block<BaseTable*>& tables,
 			    const Block<String>& subTables)
     : BaseTable       ("", Table::Scratch, 0),
-      colMap_p        (static_cast<ConcatColumn*>(0)),
       subTableNames_p (subTables),
+      colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
     noWrite_p = True;
@@ -93,8 +93,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			    int option,
 			    const TableLock& lockOptions)
     : BaseTable       ("", Table::Scratch, 0),
-      colMap_p        (static_cast<ConcatColumn*>(0)),
       subTableNames_p (subTables),
+      colMap_p        (static_cast<ConcatColumn*>(0)),
       changed_p       (True)
   {
     noWrite_p = True;
@@ -212,7 +212,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
   //# Write a concatenate table into a file.
-  void ConcatTable::writeConcatTable (Bool fsync)
+  void ConcatTable::writeConcatTable (Bool)
   {
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.
@@ -245,6 +245,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     uInt nrtab;
     Block<String> rootNames;
     Int version = ios.getstart ("ConcatTable");
+    AlwaysAssert (version==0, AipsError);
     ios >> nrtab;
     rootNames.resize(nrtab);
     for (uInt i=0; i<nrtab; ++i) {
@@ -328,6 +329,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     uInt nrtab;
     Block<String> rootNames, subNames;
     Int version = ios.getstart ("ConcatTable");
+    AlwaysAssert (version==0, AipsError);
     ios >> nrtab;
     rootNames.resize(nrtab);
     for (uInt i=0; i<nrtab; ++i) {
@@ -434,20 +436,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   { return False; }
   Bool ConcatTable::canRemoveColumn (const Vector<String>&) const
   { return False; }
-  Bool ConcatTable::canRenameColumn (const String& columnName) const
+  Bool ConcatTable::canRenameColumn (const String&) const
   { return False; }
 
-  void ConcatTable::removeRow (uInt rownr)
+  void ConcatTable::removeRow (uInt)
   {
     throw TableInvOper("ConcatTable cannot remove rows");
   }
 
-  void ConcatTable::removeColumn (const Vector<String>& columnNames)
+  void ConcatTable::removeColumn (const Vector<String>&)
   {
     throw TableInvOper("ConcatTable cannot remove columns");
   }
  
-  void ConcatTable::renameColumn (const String& newName, const String& oldName)
+  void ConcatTable::renameColumn (const String&, const String&)
   {
     throw TableInvOper("ConcatTable cannot rename columns");
   }

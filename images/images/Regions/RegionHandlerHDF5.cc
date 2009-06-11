@@ -38,15 +38,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 RegionHandlerHDF5::RegionHandlerHDF5 (GetCallback* callback,
 				      void* objectPtr)
-: itsCallback  (callback),
-  itsObjectPtr (objectPtr),
-  itsChanged   (False)
+  : itsChanged   (False),
+    itsCallback  (callback),
+    itsObjectPtr (objectPtr)
 {}
 
 RegionHandlerHDF5::RegionHandlerHDF5 (const RegionHandlerHDF5& that)
-: itsCallback  (that.itsCallback),
-  itsObjectPtr (that.itsObjectPtr),
-  itsChanged   (that.itsChanged)
+  : RegionHandler(that),
+    itsChanged   (that.itsChanged),
+    itsCallback  (that.itsCallback),
+    itsObjectPtr (that.itsObjectPtr)
 {}
 
 RegionHandlerHDF5::~RegionHandlerHDF5()
@@ -56,9 +57,9 @@ RegionHandlerHDF5& RegionHandlerHDF5::operator=
                                        (const RegionHandlerHDF5& that)
 {
   if (this != &that) {
+    itsChanged   = that.itsChanged;
     itsCallback  = that.itsCallback;
     itsObjectPtr = that.itsObjectPtr;
-    itsChanged   = that.itsChanged;
   }
   return *this;
 }

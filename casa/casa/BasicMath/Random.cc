@@ -259,7 +259,7 @@ ACG::ACG(uInt seed, Int size)
   Int l;
   for (l = 0; 
        randomStateTable[l][0] != -1 && randomStateTable[l][1] < size;
-       l++);
+       l++) {}
   
   if (randomStateTable[l][1] == -1) {
     l--;
@@ -668,7 +668,7 @@ Double Geometric::operator()() {
 
 uInt Geometric::asInt() {
   uInt samples;
-  for (samples = 0; itsRNG->asDouble() > itsProbability; samples++);
+  for (samples = 0; itsRNG->asDouble() > itsProbability; samples++) {}
   return samples;
 }
 

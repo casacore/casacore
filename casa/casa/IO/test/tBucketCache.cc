@@ -98,7 +98,7 @@ void aDeleteBuffer (void*, char* buffer)
 char* aInitBuffer (void*)
 {
     char* ptr = new char[32768];
-    for (uInt i=0; i++; i<32768) {
+    for (uInt i=0; i<32768; i++) {
 	ptr[i] = 0;
     }
     *(Int*)ptr = ++counter;

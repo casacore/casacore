@@ -48,7 +48,9 @@ MVRadialVelocity::MVRadialVelocity(Double d) :
   val(d){}
 
 MVRadialVelocity::MVRadialVelocity(const MVRadialVelocity &other) :
-  val(other.val) {}
+  MeasValue(),
+  val(other.val)
+{}
 
 MVRadialVelocity::MVRadialVelocity(const Quantity &other) {
   val = other.getValue() * makeF(other.getFullUnit());

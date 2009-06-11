@@ -226,22 +226,22 @@ void MSLister::listHeader()
         logStream_p << LogIO::DEBUG1 << "End: MSLister::getRanges" << LogIO::POST;
     }
     
-void MSLister::list (const String options,
-                     const String datacolumn,
-                     const String field,
-                     const String spw,
-                     const String antenna,
-                     const String timerange,
-                     const String correlation,
-                     const String scan,
-                     const String feed,
-                     const String array,
-                     const String uvrange,
-                     const String average,
-                     const bool   showflags,
-                     const String msSelect,
-                     const long   pagerows,
-                     const String listfile)
+  void MSLister::list (const String,
+                       const String datacolumn,
+                       const String field,
+                       const String spw,
+                       const String antenna,
+                       const String timerange,
+                       const String correlation,
+                       const String scan,
+                       const String,
+                       const String,
+                       const String uvrange,
+                       const String,
+                       const bool  ,
+                       const String msSelect,
+                       const long   pagerows,
+                       const String listfile)
 {
   try{
 
@@ -304,20 +304,20 @@ void MSLister::list (const String options,
 // CLEANUP: Remove parameters that are not inputs to mssSetData; they are no
 //   longer used anywhere.
 void MSLister::selectvis(const String& timerange,
-                     const String& spw,
-                     const String& scan,
-                     const String& field,
-                     const String& antenna,
-                     const String& uvrange,
-                     const String& chanmode,        // Not inputs to mssSetData
-                     const Int& nchan,              //  
-                     const Int& start,              //
-                     const Int& step,               //
-                     const MRadialVelocity& mStart, //
-                     const MRadialVelocity& mStep,  //
-                     const String& correlation,
-                     const String& array,
-                     const String& msSelect)
+                         const String& spw,
+                         const String& scan,
+                         const String& field,
+                         const String& antenna,
+                         const String& uvrange,
+                         const String&,             // Not inputs to mssSetData
+                         const Int&,
+                         const Int&,
+                         const Int&,
+                         const MRadialVelocity&,
+                         const MRadialVelocity&,
+                         const String& correlation,
+                         const String& array,
+                         const String& msSelect)
 {
   
   try {

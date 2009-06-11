@@ -37,9 +37,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template <> 
 Bool AipsrcValue<String>::find(String &value,
 			       const String &keyword,
-			       const Unit &defun, const Unit &resun) {
+			       const Unit &, const Unit &) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
+  value = res;
   return x;
 }
 

@@ -225,7 +225,7 @@ String Path::baseName() const
 	len--;
     }
     Int i=len;
-    while (--i >= 0  &&  name[i] != '/');
+    while (--i >= 0  &&  name[i] != '/') {}
     // The base name is the part from the slash till the end.
     return name(i+1, len-i-1);
 }
@@ -239,7 +239,7 @@ String Path::dirName() const
     if (i > 1  &&  name[i-1] == '/') {
 	i--;
     }
-    while (--i >= 0  &&  name[i] != '/');
+    while (--i >= 0  &&  name[i] != '/') {}
     // If no slash, the dirname is the current directory.
     if (i < 0) {
 	return ".";

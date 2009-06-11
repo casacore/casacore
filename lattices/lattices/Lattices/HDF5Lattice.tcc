@@ -98,7 +98,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice (const HDF5Lattice<T>& other)
-  : itsFile    (other.itsFile),
+  : Lattice<T>(),
+    itsFile    (other.itsFile),
     itsGroup   (other.itsGroup),
     itsDataSet (other.itsDataSet)
   {

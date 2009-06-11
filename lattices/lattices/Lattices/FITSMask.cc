@@ -80,7 +80,8 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
 
 
 FITSMask::FITSMask (const FITSMask& other)
-: itsTiledFilePtr(other.itsTiledFilePtr),
+: Lattice<Bool>(other),
+  itsTiledFilePtr(other.itsTiledFilePtr),
   itsScale(other.itsScale),
   itsOffset(other.itsOffset),
   itsShortMagic(other.itsShortMagic),
@@ -160,9 +161,9 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
    return False;            // Not a reference
 }
 
-void FITSMask::doPutSlice (const Array<Bool>& sourceBuffer,
-                           const IPosition& where, 	
-                           const IPosition& stride)
+void FITSMask::doPutSlice (const Array<Bool>&,
+                           const IPosition&, 	
+                           const IPosition&)
 {
    throw(AipsError("FITSMask object is not writable"));
 }

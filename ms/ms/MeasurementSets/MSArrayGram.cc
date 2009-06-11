@@ -115,7 +115,7 @@ int msArrayGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSArrayGramerror (char* t)
+void MSArrayGramerror (char*)
 {
   throw (MSSelectionArrayError ("Array Expression: Parse error at or near '" +
 			       String(MSArrayGramtext) + "'"));

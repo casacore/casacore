@@ -71,7 +71,8 @@ SkyComponent::SkyComponent(const Flux<Double>& flux,
 }
 
 SkyComponent::SkyComponent(const SkyComponent& other) 
-  :itsCompPtr(other.itsCompPtr)
+  :SkyCompBase(other),
+   itsCompPtr (other.itsCompPtr)
 { 
   DebugAssert(ok(), AipsError);
 }

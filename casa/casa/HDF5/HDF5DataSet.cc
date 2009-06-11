@@ -216,7 +216,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (id < 0) {
       throw HDF5Error("Data set array " + name + " does not exist");
     }
-    DataType dtype = TpOther;
     // Get the (external) data type and check if it matches.
     HDF5HidDataType dtid (H5Dget_type(id));
     H5Dclose(id);
@@ -307,7 +306,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {}
 
   DataType HDF5DataSet::getDataType (hid_t, const String&)
-  {}
+    { return TpOther; }
 
   void HDF5DataSet::get (const Slicer&, void*)
   {}
@@ -316,9 +315,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {}
 
   Block<hsize_t> HDF5DataSet::fromShape (const IPosition&)
-  {}
+    { return Block<hsize_t>(); }
   IPosition HDF5DataSet::toShape (const Block<hsize_t>&)
-  {}
+    { return IPosition(); }
 
 #endif
 

@@ -139,7 +139,6 @@ void SymLink::move (const Path& target, Bool overwrite)
 {
     Path targetName(target);
     checkTarget (targetName, overwrite);
-    // This function uses the system function mv.	    
     File targetFile(targetName);
     if (targetFile.isRegular (False)) {
 	RegularFile(targetFile).remove();

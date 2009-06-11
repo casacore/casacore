@@ -93,9 +93,9 @@ void IBMConversion::fromLocal (void* to, char from)
 {
     assert (sizeof(char) == 1);
     if (from < 0) {
-	*(char*)to = 0;
+	*(signed char*)to = 0;
     }else{
-	*(char*)to = toEBCDIC[from];
+        *(signed char*)to = toEBCDIC[int(from)];
     }
 }
 
@@ -103,7 +103,7 @@ void IBMConversion::fromLocal (void* to, const char* from,
 			       unsigned int nr)
 {
     assert (sizeof(char) == 1);
-    char* data = (char*)to;
+    signed char* data = (signed char*)to;
     const char* last = from + nr;
     while (from < last) {
 	fromLocal (data++, *from++);

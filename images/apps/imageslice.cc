@@ -63,8 +63,6 @@ int main(int argc, const char* argv[]) {
 
     const Block<Int> outregion = inputs.getIntArray("outregion");
 
-    Bool inisfits = downcase(in).after(in.size()-6) == ".fits";
-
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
@@ -98,8 +96,8 @@ int main(int argc, const char* argv[]) {
     
     if (outisfits) {
       String errMsg;
-      Bool ok = ImageFITSConverter::ImageToFITS(errMsg, subim, out,
-                                                128, False, False);
+      ImageFITSConverter::ImageToFITS(errMsg, subim, out,
+                                      128, False, False);
     } else {
       ImageInterface<Float>* pim = 0;
       if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {

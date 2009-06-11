@@ -1329,7 +1329,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 
 Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 			   const Block<Int>& fieldidMap, Int nrfield,
-			   const Block<Int>& spwidMap, Int nrspw)
+			   const Block<Int>& /*spwidMap*/, Int nrspw)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeSU"));
   // Basically we make the FIELD_ID the source ID.
@@ -1691,7 +1691,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
 }
 
 Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
-			   const Table& syscal, const Block<Int>& spwidMap,
+			   const Table& syscal, const Block<Int>& /*spwidMap*/,
 			   uInt nrif, Bool combineSpw, Double sensitivity,
 			   Int refPixelFreq, Double refFreq, Double chanbw)
 {

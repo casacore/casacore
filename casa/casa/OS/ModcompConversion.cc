@@ -143,7 +143,7 @@ uInt ModcompConversion::toLocal (Float* to, const void* from, uInt nr) {
 	    if (prevMsbIsSet) asByte[i] |= 0x01;
 	    i--;
 	  }
-	  asByte[1] = ((asByte[1] & 0x3f) << 1) | asByte[1] & 0xc0;
+	  asByte[1] = ((asByte[1] & 0x3f) << 1) | (asByte[1] & 0xc0);
 	  if (msbIsSet) asByte[1] |= 0x01;
 	}
 	exponent--; // Because the exponent can go negative it must be signed
@@ -308,7 +308,7 @@ uInt ModcompConversion::toLocal (Double* to, const void* from, uInt nr) {
  	    if (prevMsbIsSet) asByte[i] |= 0x01;
  	    i--;
  	  }
- 	  asByte[1] = ((asByte[1] & 0x3f) << 1) | asByte[1] & 0xc0;
+ 	  asByte[1] = ((asByte[1] & 0x3f) << 1) | (asByte[1] & 0xc0);
  	  if (msbIsSet) asByte[1] |= 0x01;
  	}
  	exponent--; // Because the exponent can go negative it must be signed

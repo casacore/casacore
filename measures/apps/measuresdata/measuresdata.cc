@@ -271,7 +271,7 @@ const columnDescr TAI_UTCCol[] = {
   {"dUTC", 	"s", 	columnDescr::CTD, 6},
   {"Offset", 	"d", 	columnDescr::CTD, 11},
   {"Multiplier","s", 	columnDescr::CTD, 13},
-  {""} };
+  {"",          "",     columnDescr::N_ColTypes, 0} };
 
 // IERSeop97
 const columnDescr IERSeop97Col[] = {
@@ -288,7 +288,7 @@ const columnDescr IERSeop97Col[] = {
   {"DdPsi", 	"arcsec", 	columnDescr::CTD, 14},
   {"dEps", 	"arcsec",	columnDescr::CTD, 9},
   {"DdEps", 	"arcsec", 	columnDescr::CTD, 15},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // IERSeop2000
 const columnDescr IERSeop2000Col[] = {
@@ -305,7 +305,7 @@ const columnDescr IERSeop2000Col[] = {
   {"DdX", 	"arcsec", 	columnDescr::CTD, 14},
   {"dY", 	"arcsec",	columnDescr::CTD, 9},
   {"DdY", 	"arcsec", 	columnDescr::CTD, 15},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // IERSpredict
 const columnDescr IERSpredictCol[] = {
@@ -322,7 +322,7 @@ const columnDescr IERSpredictCol[] = {
   {"DdPsi", 	"arcsec", 	columnDescr::CTD, 16},
   {"dEps", 	"arcsec",	columnDescr::CTD, 17},
   {"DdEps", 	"arcsec", 	columnDescr::CTD, 18},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // IERSpredict2000
 const columnDescr IERSpredict2000Col[] = {
@@ -339,26 +339,26 @@ const columnDescr IERSpredict2000Col[] = {
   {"DdX", 	"arcsec", 	columnDescr::CTD, 16},
   {"dY", 	"arcsec",	columnDescr::CTD, 17},
   {"DdY", 	"arcsec", 	columnDescr::CTD, 18},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // IGRF
 const columnDescr IGRFCol[] = {
   {"MJD",	"d", 		columnDescr::CTD,  0},
   {"COEF",	"nT/km",	columnDescr::CTAD, 0},
   {"dCOEF",	"nT/km/a",	columnDescr::CTAD, 0},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // DE200
 const columnDescr DE200Col[] = {
   {"MJD",	"d", 		columnDescr::CTD,  0},
   {"x",		"",		columnDescr::CTAD, 0},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 // DE405
 const columnDescr DE405Col[] = {
   {"MJD",	"d", 		columnDescr::CTD,  0},
   {"x",		"",		columnDescr::CTAD, 0},
-  {""} };
+  {"",          "",             columnDescr::N_ColTypes, 0} };
 
 //*************************************************************************//
 
@@ -513,7 +513,15 @@ const tableProperties allProperties[] = {
 
   //**********************************************************************//
 
-  { "" }						// last table
+  { "",  			0.0,			0.0,
+    False,			0.0,			0.0,
+    "",                 	"",     		"",
+    0,	        		DE405Col,		0,
+    vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
+    "",			        "",
+    True,			"",                     vector<String>(),
+    0,				vector<formatDescr>(),
+    { "", "", "" } }    // last table
 };					
 
 // As vectors/maps
@@ -655,7 +663,7 @@ void makeProperties() {
 }
 
 // Remove columns 
-void rmColumns(Table *tab, tableProperties &tprop) {
+void rmColumns(Table *, tableProperties &tprop) {
     for (uInt j=0; j<tprop.columns.size(); ++j) {
       delete tprop.columns[j]; tprop.columns[j] = 0;
     };
@@ -1003,7 +1011,7 @@ void put_tversion(Table *tab, Double vs) {
 
 // Read data from ascii input file. The table (for reference only) is tnam;
 // input file is inpath; out is vector of file lines.
-Bool read_data(vector<String> &out, const String &tnam,
+Bool read_data(vector<String> &out, const String &,
 	       const Path &in, Bool del=True) {
   out.resize(0);
   ifstream infile(in.absoluteName().c_str());
@@ -1426,9 +1434,9 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   };
   uInt ksize(0);
   uInt ncoeff(0);
-  Double stepo;
-  Double endepo;
-  uInt incepo;
+  Double stepo(0);
+  Double endepo(0);
+  uInt incepo(0);
   vector<String> kwnames;
   vector<Double> kwval;
   vector<Int> ptt;

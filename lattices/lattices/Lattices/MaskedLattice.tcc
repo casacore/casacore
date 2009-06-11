@@ -39,7 +39,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 template <class T>
 MaskedLattice<T>::MaskedLattice (const MaskedLattice<T>& that)
-: itsDefRegPtr (0)
+: Lattice<T>(),
+  itsDefRegPtr (0)
 {
   if (that.itsDefRegPtr != 0) {
     itsDefRegPtr = new LatticeRegion (*that.itsDefRegPtr);

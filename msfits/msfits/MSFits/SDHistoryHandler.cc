@@ -80,7 +80,7 @@ void SDHistoryHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols,
     initAll(ms, handledCols, row);
 }
 
-void SDHistoryHandler::fill(const Record &row, Int observationId,
+void SDHistoryHandler::fill(const Record &, Int observationId,
 			    const String &message, const String &priority)
 {
     // this always just fills as is
@@ -139,7 +139,7 @@ void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCo
     initRow(handledCols, row);
 }
 
-void SDHistoryHandler::initRow(const Vector<Bool> &handledCols, const Record &row)
+void SDHistoryHandler::initRow(const Vector<Bool> &, const Record &row)
 {
     // look for a TIMESYS field in row
     if (row.fieldNumber("TIMESYS") >= 0) {

@@ -130,7 +130,7 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
       const SpectralCoordinate& cIn = cSysOut.spectralCoordinate(axis);
       SpectralCoordinate& cOut = dynamic_cast<SpectralCoordinate&>(coordOut);
       cOut = cIn;
-   } else if (type=Coordinate::TABULAR) {
+   } else if (type==Coordinate::TABULAR) {
       const TabularCoordinate& cIn = cSysOut.tabularCoordinate(axis);
       TabularCoordinate& cOut = dynamic_cast<TabularCoordinate&>(coordOut);
       cOut = cIn;

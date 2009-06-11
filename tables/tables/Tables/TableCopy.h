@@ -137,7 +137,7 @@ public:
 
   // Replace non-writable storage managers by StandardStMan. This is needed
   // for special storage managers like LofarStMan.
-  static Record adjustStMan (const TableDesc& tabDesc, const Record& dminfo);
+  static Record adjustStMan (const Record& dminfo);
 
   // Adjust the data manager types and groups and the
   // hypercolumn definitions to the actual data manager info.

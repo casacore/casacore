@@ -283,7 +283,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    else {
 		// determine which axis is the "latitude" axis, i.e. DEC or xLAT
 		int theLatAxisNum = -1;
-		for (int k=0; k<ctype.nelements(); k++){
+		for (uInt k=0; k<ctype.nelements(); k++){
 		    string theType(ctype[k]);
 		    if (theType.substr(0,3) == "DEC" || theType.substr(1,3) == "LAT"){
 			theLatAxisNum = k;
@@ -379,7 +379,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
 
 
-    Bool FITSCoordinateUtil::generateFITSKeywords (LogIO& os, Bool& isNCP, 
+    Bool FITSCoordinateUtil::generateFITSKeywords (LogIO&, Bool& isNCP, 
 						   Double& longPole,  Double& latPole,
 						   Vector<Double>& crval,
 						   Vector<Double>& crpix,
@@ -392,8 +392,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						   const CoordinateSystem& cSys,
 						   Int skyCoord, Int longAxis, 
 						   Int latAxis, Int specAxis, 
-						   Int stokesAxis, Bool writeWCS, 
-						   Double offset, const String& sprefix) const
+						   Int stokesAxis, Bool, 
+						   Double offset, const String&) const
     {
 	const Int n = cSys.nWorldAxes();
 	crval = cSys.referenceValue();
@@ -1354,7 +1354,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     Vector<String> FITSCoordinateUtil::cTypeFromDirection(Bool& isNCP, const Projection& proj,
 							  const Vector<String>& axisNames,
-							  Double refLat, Bool printError) 
+							  Double, Bool printError) 
     //
     // RefLat in radians
     //

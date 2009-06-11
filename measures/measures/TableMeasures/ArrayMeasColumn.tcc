@@ -117,7 +117,8 @@ ROArrayMeasColumn<M>::ROArrayMeasColumn (const Table& tab,
 
 template<class M>
 ROArrayMeasColumn<M>::ROArrayMeasColumn (const ROArrayMeasColumn<M>& that)
-: itsDataCol     (0),
+: ROTableMeasColumn(),
+  itsDataCol     (0),
   itsRefIntCol   (0),
   itsArrRefIntCol(0),
   itsRefStrCol   (0),

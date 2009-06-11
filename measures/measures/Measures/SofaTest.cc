@@ -83,12 +83,12 @@ void SofaTest::put(const Double in) {
     for (uInt i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+i] = histo_p[hsize_p+2*i] + histo_p[hsize_p+2*i+1];
       histo_p[hsize_p-i-1] = histo_p[hsize_p-2*i-1] += histo_p[hsize_p-2*i-2];
-    };
+    }
     for (uInt i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+hsize_p/2+i] = 0;
       histo_p[hsize_p-hsize_p/2-i-1] = 0;
-    };
-  };
+    }
+  }
   Int n=Int(floor(in/hstep_p)+hsize_p);
   if (n>=0 & n<Int(hwidth_p)) histo_p[n]++;
 }
@@ -104,7 +104,7 @@ void SofaTest::show(ostream &os) {
     if (n_p == 1) os << 0.0;
     else os << sqrt(sq_p/(n_p-1));
     os << endl;
-  };
+  }
 }
 
 void SofaTest::showHisto(ostream &os) {
@@ -115,23 +115,23 @@ void SofaTest::showHisto(ostream &os) {
   for (Int i=-20; i<20; i++) {
     for (Int j=hsize_p +i*n; j<Int(hsize_p +(i+1)*n); j++) {
       if (j>=0 && j<Int(hwidth_p)) cnt[k] += histo_p[j];
-    };
+    }
     k++;
-  };
+  }
   Double step = n*hstep_p;
   k=0;
   for (uInt i=0; i<41; i++) k = (cnt[i]>k) ? cnt[i] : k;
   n = Int(ceil(Double(k)/60.));
   if (n==0) n=1;
-  cout << endl << n << " counts per step; " << step << " value." << endl; 
+  os << endl << n << " counts per step; " << step << " value." << endl; 
   for (uInt i=0; i<41; i++) {
-    if (i==19) cout << " _";
-    else cout << " |";
+    if (i==19) os << " _";
+    else os << " |";
     if (cnt[i] != 0) {
-      for (Int j=0; j<cnt[i]/n; j++) cout << "-";
-    };
-    cout << "*" << endl;
-  };
+      for (Int j=0; j<cnt[i]/n; j++) os << "-";
+    }
+    os << "*" << endl;
+  }
 }
 
 void SofaTest::copy(const SofaTest &other) {

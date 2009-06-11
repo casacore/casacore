@@ -56,6 +56,7 @@ MemoryLogSink::MemoryLogSink (const LogFilterInterface& filter)
 {}
 
 MemoryLogSink::MemoryLogSink (const MemoryLogSink& other)
+: LogSinkInterface()
 {
   copy_other (other);
 }

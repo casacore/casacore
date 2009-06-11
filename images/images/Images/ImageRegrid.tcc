@@ -1375,7 +1375,7 @@ void ImageRegrid<T>::make2DCoordinateGrid (Cube<Double>& in2DPos,
                                            const Vector<Double>& pixelScale,
                                            uInt xInAxis, uInt yInAxis,
                                            uInt xOutAxis, uInt yOutAxis,
-                                           uInt xInCorrAxis, uInt yInCorrAxis,
+                                           uInt, uInt,
                                            uInt xOutCorrAxis, uInt yOutCorrAxis,
                                            const IPosition& outPos, 
                                            const IPosition& outCursorShape)
@@ -2230,7 +2230,7 @@ void ImageRegrid<T>::get2DCoordinateGrid (Cube<Double> &grid,
 template<class T>
 void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double> &grid, 
                                           const Matrix<Bool> &gridMask,
-                                          Bool notify)
+                                          Bool)
 {
    itsUser2DCoordinateGrid.resize();
    itsUser2DCoordinateGrid = grid;

@@ -33,7 +33,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
-				  Int observationType, Int nIfr, Int nInt)
+				  Int observationType, Int nIfr, Int)
 {
   const Int ioBlockSize = 16384; // 16384 * sizeOf(Complex) = 128 kByte
   IPosition tileShape(3,0,0,0);

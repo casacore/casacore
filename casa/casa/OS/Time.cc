@@ -79,42 +79,30 @@ Time::Time(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
 // Valid for all values of year>=-4712 ( for all dates with Julian 
 // Day >= 0).
 
-  if(sec >= 60)
-    DebugAssert(sec >= 60, AipsError);
-  if(min >= 60)
-    DebugAssert(min >= 60, AipsError);
-  if(hour >= 24)
-    DebugAssert(hour >= 24, AipsError);
+  DebugAssert(sec >= 60, AipsError);
+  DebugAssert(min >= 60, AipsError);
+  DebugAssert(hour >= 24, AipsError);
 
-  if(month > 12)
-    DebugAssert(month > 12, AipsError);
+  DebugAssert(month > 12, AipsError);
   if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    if(day > 31)
-      DebugAssert(day > 31, AipsError);
-  }
-  else if(month==4 || month==6 || month==9 || month==11) {
-    if(day > 30)
-      DebugAssert(day > 30, AipsError);
-  }
-  else {
+    DebugAssert(day > 31, AipsError);
+  } else if(month==4 || month==6 || month==9 || month==11) {
+    DebugAssert(day > 30, AipsError);
+  } else {
     // Check february days for leap years
     if( year%100 == 0)
       if( year%400 == 0) {
-        if(day > 29)
         DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
         DebugAssert(day > 28, AipsError);
       }
     else
       if( year%4 == 0) {
-        if(day > 29)
-          DebugAssert(day > 29, AipsError);
+        DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
-          DebugAssert(day > 28, AipsError);
+        DebugAssert(day > 28, AipsError);
       }
   }
 
@@ -404,42 +392,30 @@ istream& operator>>(istream& in, Time& other) {
 // Converting between Julian calendar date and Julian date number
 // Valid for all values of year>=-4712 ( for all dates with Julian Day >=
 // 0).
-  if(sec >= 60)
-    DebugAssert(sec >= 60, AipsError);
-  if(min >= 60)
-    DebugAssert(min >= 60, AipsError);
-  if(hour >= 24)
-    DebugAssert(hour >= 24, AipsError);
+  DebugAssert(sec >= 60, AipsError);
+  DebugAssert(min >= 60, AipsError);
+  DebugAssert(hour >= 24, AipsError);
 
-  if(month > 12)
-    DebugAssert(month > 12, AipsError);
+  DebugAssert(month > 12, AipsError);
   if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    if(day > 31)
-      DebugAssert(day > 31, AipsError);
-  }
-  else if(month==4 || month==6 || month==9 || month==11) {
-    if(day > 30)
-      DebugAssert(day > 30, AipsError);
-  }
-  else {
+    DebugAssert(day > 31, AipsError);
+  } else if(month==4 || month==6 || month==9 || month==11) {
+    DebugAssert(day > 30, AipsError);
+  } else {
     // Check february days for leap years
     if( year%100 == 0)
       if( year%400 == 0) {
-        if(day > 29)
         DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
         DebugAssert(day > 28, AipsError);
       }
     else
       if( year%4 == 0) {
-        if(day > 29)
-          DebugAssert(day > 29, AipsError);
+        DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
-          DebugAssert(day > 28, AipsError);
+        DebugAssert(day > 28, AipsError);
       }
   }
 
@@ -477,42 +453,30 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
 // Valid for all values of year>=-4712 ( for all dates with Julian 
 // Day >= 0).
 
-  if(sec >= 60)
-    DebugAssert(sec >= 60, AipsError);
-  if(min >= 60)
-    DebugAssert(min >= 60, AipsError);
-  if(hour >= 24)
-    DebugAssert(hour >= 24, AipsError);
+  DebugAssert(sec >= 60, AipsError);
+  DebugAssert(min >= 60, AipsError);
+  DebugAssert(hour >= 24, AipsError);
 
-  if(month > 12)
-    DebugAssert(month > 12, AipsError);
+  DebugAssert(month > 12, AipsError);
   if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    if(day > 31)
-      DebugAssert(day > 31, AipsError);
-  }
-  else if(month==4 || month==6 || month==9 || month==11) {
-    if(day > 30)
-      DebugAssert(day > 30, AipsError);
-  }
-  else {
+    DebugAssert(day > 31, AipsError);
+  } else if(month==4 || month==6 || month==9 || month==11) {
+    DebugAssert(day > 30, AipsError);
+  } else {
    // Check february days for leap years
     if( year%100 == 0)
       if( year%400 == 0) {
-        if(day > 29)
         DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
         DebugAssert(day > 28, AipsError);
       }
     else
       if( year%4 == 0) {
-        if(day > 29)
-          DebugAssert(day > 29, AipsError);
+        DebugAssert(day > 29, AipsError);
       }
       else {
-        if(day > 28)
-          DebugAssert(day > 28, AipsError);
+        DebugAssert(day > 28, AipsError);
       }
   }
 
@@ -760,16 +724,11 @@ Bool Time::isLeapYear() {
 
 Bool Time::isLeapYear(uInt lyear) {
 
-  if( lyear%100 == 0)
-    if( lyear%400 == 0)
-      return True;
-    else
-      return False;
-  else
-    if( lyear%4 == 0)
-      return True;
-    else
-      return False;
+  if( lyear%100 == 0) {
+    return lyear%400 == 0;
+  } else {
+    return lyear%4 == 0;
+  }
 }
 
 // Used internally here to determine if Daylight Savings Time (Summer

@@ -46,7 +46,9 @@ MVFrequency::MVFrequency(Double d) :
   val(d){}
 
 MVFrequency::MVFrequency(const MVFrequency &other) :
-  val(other.val) {}
+  MeasValue(),
+  val(other.val)
+{}
 
 MVFrequency::MVFrequency(const Quantity &other) {
   val = makeF(other.getValue(), other.getFullUnit());

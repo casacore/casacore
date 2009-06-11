@@ -284,9 +284,9 @@ DataManagerColumn* SSMBase::makeScalarColumn (const String&,
   return aColumn;
 }
 
-DataManagerColumn* SSMBase::makeDirArrColumn (const String& aName,
+DataManagerColumn* SSMBase::makeDirArrColumn (const String&,
 					      int aDataType,
-					      const String& aDataTypeId)
+					      const String&)
 {
   //# Extend itsPtrColumn block if needed.
   if (ncolumn() >= itsPtrColumn.nelements()) {

@@ -78,7 +78,7 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
 
 // BITPIX
 
-    T* t;
+    T* t=0;
     DataType dataType = whatType(t);
 //
     Int bitpix;   

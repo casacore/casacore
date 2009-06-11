@@ -1644,7 +1644,7 @@ void FITSIDItoMS1::getAxisInfo()
 
 
       //while((kw = kwl.next())&& setMAXIS == False) 
-      while(kw = kwl.next()) 
+      while((kw = kwl.next())) 
         {
           kwname = kw->name();
           //cout << "kwname1=" << kwname <<endl;

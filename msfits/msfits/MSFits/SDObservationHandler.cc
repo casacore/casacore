@@ -117,7 +117,7 @@ void SDObservationHandler::resetRow(const Record &row)
     initRow(dummyHandled, row);
 }
 
-void SDObservationHandler::fill(const Record &row, const String &telescopeName,
+void SDObservationHandler::fill(const Record &, const String &telescopeName,
 				const Vector<Double> &timeRange)
 {
     // don't bother unless there is something there

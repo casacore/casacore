@@ -80,7 +80,7 @@
 %{
 #include <ms/MeasurementSets/MSSelectionTools.h>
   int MSFieldGramlex (YYSTYPE*);
-  void checkFieldError(Vector<Int>& list, ostringstream& msg, Bool force=False, char *token=NULL)
+  void checkFieldError(Vector<Int>& list, ostringstream& msg, Bool force=False, char* = NULL)
   {
     if ((list.nelements() == 0) || force)
       {

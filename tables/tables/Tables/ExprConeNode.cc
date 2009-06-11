@@ -215,7 +215,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
   return True;
 }
 
-Double TableExprConeNode::getDouble (const TableExprId& id)
+Int64 TableExprConeNode::getInt (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::findconeFUNC:
@@ -412,7 +412,7 @@ Array<Bool> TableExprConeNode::getArrayBool (const TableExprId& id)
   }
 }
 
-Array<Double> TableExprConeNode::getArrayDouble (const TableExprId& id)
+Array<Int64> TableExprConeNode::getArrayInt (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::findconeFUNC:
@@ -436,11 +436,11 @@ Array<Double> TableExprConeNode::getArrayDouble (const TableExprId& id)
 	shp = shpc;
 	shp[0] = shp[0] / 2;
       }
-      Array<Double> resArr(shp);
+      Array<Int64> resArr(shp);
       Bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
-      Double* res = resArr.data();
+      Int64* res = resArr.data();
       for (uInt j=0; j<srcArr.nelements(); j+=2) {
 	const double ra  = src[j];
 	const double dec = src[j+1];
@@ -500,8 +500,8 @@ Array<Double> TableExprConeNode::getArrayDouble (const TableExprId& id)
       if (rad != &radval) {
 	rad = radArr.getStorage (deleteRad);
       }
-      Array<Double> resArr(shp);
-      Double* res = resArr.data();
+      Array<Int64> resArr(shp);
+      Int64* res = resArr.data();
       for (uInt j=0; j<srcArr.nelements(); j+=2) {
 	const double ra  = src[j];
 	const double dec = src[j+1];
@@ -568,13 +568,13 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
       // Check the number of elements in the position node.
       Int nvalPos = findNelem (nodes[0]);
       Int nvalCone = findNelem (nodes[1]);
-      // findcone returns an index value as double.
+      // findcone returns an index value as integer.
       // This is a scalar if there is one source.
       if (fType == findconeFUNC  ||  fType == findcone3FUNC) {
 	if (nvalPos != 2) {
 	  resVT = VTArray;
 	}
-	return checkDT (dtypeOper, NTReal, NTDouble, nodes);
+	return checkDT (dtypeOper, NTReal, NTInt, nodes);
       }    
       // cones returns an array if there is more than one cone or radius.
       if (fType == conesFUNC) {

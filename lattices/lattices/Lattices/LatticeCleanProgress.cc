@@ -73,8 +73,8 @@ Bool LatticeCleanProgress::info(const Bool lastcall,
 				     const Block<IPosition>& posMaximum,
 				     const Float strengthOptimum,
 				     const Int optimumScale,
-				     const IPosition& positionOptimum,
-				     const Float& totalFlux,
+				     const IPosition&,
+				     const Float&,
 				     const Vector<Float>& totalFluxScale,
 				     const Bool resetBase) 
 {

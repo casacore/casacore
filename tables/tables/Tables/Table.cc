@@ -279,7 +279,7 @@ void Table::closeSubTables() const
 Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
 {
     String message;
-    return canDeleteTable (message, tableName);
+    return canDeleteTable (message, tableName, checkSubTables);
 }
 Bool Table::canDeleteTable (String& message, const String& tableName,
 			    Bool checkSubTables)

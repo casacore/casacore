@@ -239,8 +239,6 @@ public:
     // thereafter x and y. An axis can occur only once in the axisPath.
     // The non-specified <src>axisPath</src> parts get the natural order.
     // E.g. in the previous example axisPath=[2] defines the same path.
-    // <br>When forceSmaller is False, the cache is not resized when the
-    // new size is smaller.
     // <group>
     uInt calcCacheSize (uInt rownr, const IPosition& sliceShape,
 			const IPosition& axisPath) const;
@@ -252,6 +250,8 @@ public:
 
     // Set the cache size using the corresponding <src>calcCacheSize</src>
     // function mentioned above.
+    // <br>When forceSmaller is False, the cache is not resized when the
+    // new size is smaller.
     // <group>
     void setCacheSize (uInt rownr, const IPosition& sliceShape,
 		       const IPosition& axisPath,

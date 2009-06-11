@@ -86,7 +86,8 @@ TileStepper::TileStepper(const IPosition& latticeShape,
 
 // the copy constructor which uses copy semantics.
 TileStepper::TileStepper(const TileStepper& other)
-: itsBlc(other.itsBlc),
+: LatticeNavigator(),
+  itsBlc(other.itsBlc),
   itsTrc(other.itsTrc),
   itsInc(other.itsInc),
   itsSubSection(other.itsSubSection),

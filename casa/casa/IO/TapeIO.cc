@@ -198,8 +198,8 @@ void TapeIO::setVariableBlockSize() {
 #endif
 }
 
-void TapeIO::setBlockSize(uInt sizeInBytes) {
 #if (defined(AIPS_SOLARIS) || defined(AIPS_LINUX)) && !defined(AIPS_CRAY_PGI)
+void TapeIO::setBlockSize(uInt sizeInBytes) {
   struct mtop tapeCommand;
 #if defined(AIPS_LINUX) 
   tapeCommand.mt_op = MTSETBLK;
@@ -213,6 +213,8 @@ void TapeIO::setBlockSize(uInt sizeInBytes) {
 		    String("error returned by ioctl: ") 
 		    + strerror(errno)));
   }
+#else
+void TapeIO::setBlockSize(uInt) {
 #endif
 }
 

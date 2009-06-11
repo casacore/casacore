@@ -89,6 +89,7 @@ void ObsInfo::copy_other(const ObsInfo &other)
 }
 
 ObsInfo::ObsInfo(const ObsInfo &other)
+  : RecordTransformable()
 {
     copy_other(other);
 }

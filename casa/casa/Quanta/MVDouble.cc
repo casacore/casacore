@@ -42,7 +42,9 @@ MVDouble::MVDouble(Double d) :
   val(d){}
 
 MVDouble::MVDouble(const MVDouble &other) :
-  val(other.val) {}
+  MeasValue(),
+  val(other.val)
+{}
 
 MVDouble::MVDouble(const Quantity &other) {
   val = other.get().getValue();

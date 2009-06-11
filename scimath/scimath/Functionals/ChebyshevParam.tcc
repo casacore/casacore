@@ -49,7 +49,7 @@ ChebyshevParam<T>::ChebyshevParam(const uInt n) :
   minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) {} 
 
 template <class T>
-ChebyshevParam<T>::ChebyshevParam(const uInt n, const RecordInterface& mode) :
+ChebyshevParam<T>::ChebyshevParam(const uInt n, const RecordInterface&) :
   Function1D<T>(n+1), def_p(T(0)), 
   minx_p(T(-1)), maxx_p(T(1)), mode_p(ChebyshevEnums::CONSTANT) 
 { } 
@@ -66,7 +66,7 @@ ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
 				  const T &min, const T &max, 
-				  ChebyshevEnums::OutOfIntervalMode mode,
+				  ChebyshevEnums::OutOfIntervalMode,
 				  const T &defval) :
   Function1D<T>(coeffs.nelements()), def_p(defval), 
     minx_p(min), maxx_p(max), mode_p(ChebyshevEnums::CONSTANT) 

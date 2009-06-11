@@ -44,7 +44,9 @@ VSCEngine<T>::VSCEngine (const String& sourceColumnName)
 
 template<class T>
 VSCEngine<T>::VSCEngine (const VSCEngine<T>& that)
-: sourceName_p (that.sourceName_p)
+: VirtualColumnEngine(),
+  VirtualScalarColumn<T>(),
+  sourceName_p (that.sourceName_p)
 {}
 
 template<class T>

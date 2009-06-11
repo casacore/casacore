@@ -44,7 +44,9 @@ MVDoppler::MVDoppler(Double d) :
   val(d){}
 
 MVDoppler::MVDoppler(const MVDoppler &other) :
-  val(other.val) {}
+  MeasValue(),
+  val(other.val)
+{}
 
 MVDoppler::MVDoppler(const Quantity &other) {
   val = makeD(other.getValue(), other.getFullUnit());

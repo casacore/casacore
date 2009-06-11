@@ -240,7 +240,7 @@ public:
   // Get list of all observatories
   static const Vector<String> &Observatories();
   // Get position of observatory nam (False if not present)
-  static const Bool Observatory(MPosition &obs, const String &nam);
+  static Bool Observatory(MPosition &obs, const String &nam);
   // </group>
 
   // Source list positions
@@ -250,7 +250,7 @@ public:
   // Get list of all sources
   static const Vector<String> &Sources();
   // get position of source nam (False if not present)
-  static const Bool Source(MDirection &obs, const String &nam);
+  static Bool Source(MDirection &obs, const String &nam);
   // </group>
   
   // Rest frequencies
@@ -260,7 +260,7 @@ public:
   // Get list of all frequencies
   static const Vector<String> &Lines();
   // Get frequency of line name (False if not present)
-  static const Bool Line(MFrequency &obs, const String &nam);
+  static Bool Line(MFrequency &obs, const String &nam);
   // </group>
 
   // Earth magnetic field (IGRF) data

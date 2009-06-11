@@ -272,28 +272,28 @@ Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
     return ok;
 }
 
-Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units)
+Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &)
 {
     return True;
 }
 
-Bool StokesCoordinate::setReferencePixel(const Vector<Double> &refPix)
+Bool StokesCoordinate::setReferencePixel(const Vector<Double> &)
 {
    return True;
 }
 
 
-Bool StokesCoordinate::setLinearTransform(const Matrix<Double> &xform)
+Bool StokesCoordinate::setLinearTransform(const Matrix<Double> &)
 {
    return True;
 }
 
-Bool StokesCoordinate::setIncrement(const Vector<Double> &inc) 
+Bool StokesCoordinate::setIncrement(const Vector<Double> &) 
 {
    return True;
 }
 
-Bool StokesCoordinate::setReferenceValue(const Vector<Double> &refval)
+Bool StokesCoordinate::setReferenceValue(const Vector<Double> &)
 {
    return True;
 }
@@ -308,7 +308,7 @@ Bool StokesCoordinate::near(const Coordinate& other,
 
 Bool StokesCoordinate::near(const Coordinate& other,
                             const Vector<Int>& excludeAxes,
-                            Double tol) const
+                            Double) const
 {
    if (other.type() != this->type()) {
       set_error("Comparison is not with another StokesCoordinate");
@@ -361,9 +361,9 @@ Bool StokesCoordinate::near(const Coordinate& other,
 }
 
 Bool StokesCoordinate::doNearPixel (const Coordinate& other,
-                                    const Vector<Bool>&  thisAxes,
-                                    const Vector<Bool>& otherAxes,
-                                    Double tol) const
+                                    const Vector<Bool>&,
+                                    const Vector<Bool>&,
+                                    Double) const
 {
    if (other.type() != Coordinate::STOKES) {
       set_error("Other Coordinate type is not Stokes");
@@ -551,7 +551,7 @@ void StokesCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 } 
    
 
-void StokesCoordinate::makeWorldRelative (Vector<Double>& world) const
+void StokesCoordinate::makeWorldRelative (Vector<Double>&) const
 //
 // By definition, for StokesCoordinate, world abs = rel
 //
@@ -559,7 +559,7 @@ void StokesCoordinate::makeWorldRelative (Vector<Double>& world) const
 }
 
 
-void StokesCoordinate::makeWorldAbsolute (Vector<Double>& world) const
+void StokesCoordinate::makeWorldAbsolute (Vector<Double>&) const
 //
 // By definition, for StokesCoordinate, world abs = rel
 //
@@ -606,7 +606,7 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     return True;
 }
 
-Bool StokesCoordinate::setWorldMixRanges (const IPosition& shape)
+Bool StokesCoordinate::setWorldMixRanges (const IPosition&)
 {
    setDefaultWorldMixRanges();
    return True;

@@ -103,7 +103,8 @@ ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
 
 template<class M>
 ROScalarMeasColumn<M>::ROScalarMeasColumn (const ROScalarMeasColumn<M>& that)
-: itsArrDataCol(0),
+: ROTableMeasColumn(),
+  itsArrDataCol(0),
   itsScaDataCol(0),
   itsRefIntCol (0),
   itsRefStrCol (0),

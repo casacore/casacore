@@ -64,7 +64,8 @@ ExtendLattice<T>::ExtendLattice (const MaskedLattice<T>& lattice,
 
 template<class T>
 ExtendLattice<T>::ExtendLattice (const ExtendLattice<T>& other)
-: itsLatticePtr (0),
+: MaskedLattice<T>(),
+  itsLatticePtr (0),
   itsMaskLatPtr (0),
   itsPixelMask  (0)
 {

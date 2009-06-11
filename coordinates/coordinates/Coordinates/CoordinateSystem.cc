@@ -149,7 +149,8 @@ void CoordinateSystem::clear()
 }
 
 CoordinateSystem::CoordinateSystem(const CoordinateSystem &other)
-    : coordinates_p(0), 
+    : Coordinate(),
+      coordinates_p(0), 
       world_maps_p(0), world_tmps_p(0), world_replacement_values_p(0),
       pixel_maps_p(0), pixel_tmps_p(0), pixel_replacement_values_p(0),
       worldAxes_tmps_p(0), pixelAxes_tmps_p(0),
@@ -3215,7 +3216,7 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
                                    Int coordinate, Int axisInCoordinate,  
                                    Int pixelAxis, Int precRefValSci, 
                                    Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat, 
-                                   Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const
+                                   Int, const IPosition& latticeShape, const IPosition& tileShape) const
 //
 // List all the good stuff
 //
@@ -3493,7 +3494,8 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
                                     Bool findWidths, Int axisInCoordinate, 
                                     Int pixelAxis, MDoppler::Types doppler,
                                     Int precRefValSci, Int precRefValFloat, 
-                                    Int precRefValRADEC, Int precRefPixFloat, Int precIncSci) const
+                                    Int precRefValRADEC, Int precRefPixFloat,
+                                    Int precIncSci) const
 //
 // List all the good stuff
 //

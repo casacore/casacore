@@ -33,7 +33,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class FType> Convolver<FType>::
-Convolver(const Array<FType>& psf, Bool cachePsf){
+Convolver(const Array<FType>& psf, Bool){
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
   valid = False;
@@ -42,9 +42,9 @@ Convolver(const Array<FType>& psf, Bool cachePsf){
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, 
-	  const IPosition& imageSize,
-	  Bool fullSize,
-	  Bool cachePsf){
+	  const IPosition&,
+	  Bool,
+	  Bool){
   //  if (cachePsf) thePsf = psf;
   thePsf = psf;
   valid = False;
@@ -279,7 +279,7 @@ doConvolution(Array<FType>& result,
 }
   
 template<class FType> void Convolver<FType>::
-setPsf(const Array<FType>& psf, Bool cachePsf){
+setPsf(const Array<FType>& psf, Bool){
   thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;
@@ -288,9 +288,9 @@ setPsf(const Array<FType>& psf, Bool cachePsf){
   
 template<class FType> void Convolver<FType>::
 setPsf(const Array<FType>& psf, 
-       IPosition imageSize, 
-       Bool fullSize,
-       Bool cachePsf){
+       IPosition, 
+       Bool,
+       Bool){
   thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;

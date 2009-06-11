@@ -39,7 +39,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Member functions 
-Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
+Bool SpectralElement::toRecord(String &, RecordInterface &out) const {
   out.define(RecordFieldId("type"), fromType(tp_p));
 
   Vector<Double> ptmp(par_p.copy());
