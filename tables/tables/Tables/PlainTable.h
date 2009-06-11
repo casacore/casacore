@@ -247,7 +247,7 @@ private:
     PlainTable& operator= (const PlainTable&);
 
     // Close the object which is called by the destructor.
-    void PlainTable::closeObject();
+    void closeObject();
 
     // Rename the subtables (used by rename function).
     virtual void renameSubTables (const String& newName,
