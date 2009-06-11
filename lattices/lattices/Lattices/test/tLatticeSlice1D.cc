@@ -61,10 +61,8 @@ try {
 // Get inputs
 
    inputs.create("shape", "-10", "shape");
-   inputs.create("npts", "0", "npts");
    inputs.readArguments(argc, argv);
    const Block<Int> shapeU(inputs.getIntArray("shape"));
-   const Int nPts(inputs.getInt("npts"));
 
 // Convert inputs
 
@@ -77,7 +75,6 @@ try {
          for (uInt i=0; i<shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
       }
    }
-   uInt nDim = shapeIn.nelements();
 
 // Test 
 

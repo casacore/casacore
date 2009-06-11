@@ -39,7 +39,7 @@ void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
            CoordinateSystem& cSys2);
 
 
-int main (int argc, const char* argv[])
+int main()
 //
 // Test out the {world,pixel}Map function in CoordinateSystem
 //

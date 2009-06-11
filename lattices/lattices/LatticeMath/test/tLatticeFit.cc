@@ -40,9 +40,6 @@
 #include <casa/namespace.h>
 int main() {
 
-    MaskedLattice<Float>* pSigma = 0;
-    MaskedLattice<Float>* pOutFit = 0;
-//
     uInt nx = 10, ny = 20, nz = 30;
     Cube<Float> cube(10, 20, 30);
 

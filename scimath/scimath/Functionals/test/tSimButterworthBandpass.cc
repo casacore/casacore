@@ -69,7 +69,9 @@ int main() {
     butt.setMaxCutoff(9.0);
     AlwaysAssertExit(butt.getMaxCutoff() == 9.0);
 
-    Double pk = butt.getPeak(), cen = butt.getCenter(), irt2 = 1.0/sqrt(2.0);
+    Double pk = butt.getPeak();
+    Double cen = butt.getCenter();
+    //Double irt2 = 1.0/sqrt(2.0);
     AlwaysAssertExit(butt(cen) == pk);
     //AlwaysAssertExit(butt(fabs(butt.getMinCutoff()) - irt2*pk) < DBL_EPSILON && 
 //	             butt(fabs(butt.getMaxCutoff()) - irt2*pk) < DBL_EPSILON);

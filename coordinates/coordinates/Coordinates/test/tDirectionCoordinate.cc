@@ -1102,6 +1102,7 @@ void doit9 ()
    Vector<Double> pixel(2), world;
    pixel = 0.0;   
    Bool ok = dc.toWorld(world, pixel);
+   AlwaysAssert(ok, AipsError);
    cerr << "pixel, world = " << pixel << world << endl;
 }
 

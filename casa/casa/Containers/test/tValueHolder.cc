@@ -102,7 +102,7 @@ template<typename T, typename U> void doPos(T v, U, DataType dt)
   AlwaysAssertExit (vhc.dataType() == dt);
   U vc;
   vhc.getValue (vc);
-  AlwaysAssertExit (vc == v);
+  AlwaysAssertExit (vc == U(v));
   cout << vh << ' ' << vhc << endl;
 }
 

@@ -61,7 +61,7 @@ void testSub (Array<Int>& arr1, const IPosition& blc,
     i++;
   }
   AlwaysAssert (i == arr.size(), AipsError);
-  AlwaysAssert (std::distance(arr.begin(), arr.end()) == arr.size(),
+  AlwaysAssert (std::distance(arr.begin(), arr.end()) == Int(arr.size()),
 		AipsError);
 }
 

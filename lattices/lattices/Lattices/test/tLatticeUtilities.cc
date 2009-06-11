@@ -289,7 +289,7 @@ void doBin ()
 //
    MaskedArray<Float> mArrOut;
    uInt axis = 0;
-   uInt bin = 4;
+   Int bin = 4;
    LatticeUtilities::bin(mArrOut, mArrIn, axis, bin);
    IPosition shapeOut = mArrOut.shape();
    for (uInt i=0; i<shape.nelements(); i++) {

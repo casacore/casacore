@@ -47,7 +47,6 @@ int main(int argc, const char* argv[])
     cout << "--------------------------------------" << endl;
 
     LogIO os(LogOrigin("tMSSummary", "main()"));
-    Bool verbose=True;
 
     String MSName(argv[1]);
     MeasurementSet ms(MSName, Table::Old);

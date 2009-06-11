@@ -34,7 +34,7 @@
 #include <tables/Tables/Table.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
-
+#include <casa/Utilities/Assert.h>
 
 #include <images/Images/PagedImage.h>
 #include <casa/iostream.h>
@@ -103,7 +103,7 @@ try {
 
    Int nMax = 1;
    Bool ok = fitter.estimate(nMax);
-
+   AlwaysAssert(ok, AipsError);
 // Fit
 
    Record rec;

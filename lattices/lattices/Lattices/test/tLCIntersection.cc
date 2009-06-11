@@ -121,7 +121,6 @@ void doIt (const IPosition& latticeShape,
 
 int main()
 {
-    Bool ok = True;
     try {
 	doIt (IPosition (2,11,20),
 	      IPosition (2,3,4), IPosition (2,7,8),

@@ -56,21 +56,21 @@ int main (int argc, char* argv[])
   std::vector<float> resv(vec1.size());
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       Array<float> res1 (arrayTransformResult(arr1, arr2, std::plus<float>()));
     }
     timer.show(std::cout, "Arraya");
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       Array<float> res1 = arrayTransformResult(arr1, float(2), std::plus<float>());
     }
     timer.show(std::cout, "Arrays");
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(arr1.cbegin(), arr1.cend(), arr2.cbegin(),
                      res.cbegin(), std::plus<float>());
     }
@@ -78,7 +78,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(vec1.begin(), vec1.end(), vec2.begin(),
                      resv.begin(), std::plus<float>());
     }
@@ -86,7 +86,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(arr1.begin(), arr1.end(), arr2.begin(),
                      res.cbegin(), std::plus<float>());
     }
@@ -94,7 +94,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(arr1.cbegin(), arr1.cend(), arr2.cbegin(),
                      arr1.cbegin(), std::plus<float>());
     }
@@ -102,7 +102,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(vec1.begin(), vec1.end(), vec2.begin(),
                      vec1.begin(), std::plus<float>());
     }
@@ -110,28 +110,28 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       arrayTransformInPlace(arr1, arr2, std::plus<float>());
     }
     timer.show(std::cout, "inplac");
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       arr1 += arr2;
     }
     timer.show(std::cout, "arr+=a");
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       arr1 += float(2);
     }
     timer.show(std::cout, "arr+=s");
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       transformInPlace (arr1.cbegin(), arr1.cend(),
                         bind2nd(std::plus<float>(), float(2)));
     }
@@ -139,7 +139,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       transformInPlace(arr1.begin(), arr1.end(), arr2.begin(),
                        std::plus<float>());
     }
@@ -147,7 +147,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       std::transform(arr1.begin(), arr1.end(), arr2.begin(),
                      arr1.begin(), std::plus<float>());
     }
@@ -155,12 +155,12 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       float* p1 = arr1.data();
       float* p2 = arr2.data();
       float* r = res.data();
-      uint sz = arr1.size();
-      for (uint i=0; i<sz; ++i) {
+      uInt sz = arr1.size();
+      for (uInt i=0; i<sz; ++i) {
         r[i] = p1[i] + p2[i];
       }
     }
@@ -168,7 +168,7 @@ int main (int argc, char* argv[])
   }
   {
     Timer timer;
-    for (uint j=0; j<nloop; ++j) {
+    for (int j=0; j<nloop; ++j) {
       float* p1 = arr1.data();
       float* p2 = arr2.data();
       float* r = res.data();

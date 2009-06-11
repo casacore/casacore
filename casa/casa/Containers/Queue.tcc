@@ -90,7 +90,7 @@ template<class T> void Queue<T>::compress()
 template<class T> void Queue<T>::enqueue(const T &value)
 {
     data_p[next_p++] = value;
-    if (next_p >= data_p.nelements()) {
+    if (next_p >= Int(data_p.nelements())) {
 	// If we only resized by nelements()+1 (say), we would have a quadratic
 	// cost in adding elements. This exponential doubling results in only a
 	// logarithmic cost.

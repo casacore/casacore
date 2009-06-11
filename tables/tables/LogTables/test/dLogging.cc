@@ -117,6 +117,9 @@ int main()
     square(dc);                                                    // 7
                                                                    // 8
     Float total = sum(dc);                                         // 9
-                                                                   // 10
-    return 0;                                                      // 11
+    if (total != 40) {                                             // 10
+      cout << "sum is incorrect" << endl;                          // 11
+      return 1;                                                    // 12
+    }                                                              // 13
+    return 0;                                                      // 14
 }

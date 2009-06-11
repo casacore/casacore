@@ -124,7 +124,7 @@ void fill(const String& name, const String& name2, Int stval)
   }
 }
 
-void checkTable (const Table& tab, Int nkey, Int nsubrow, Int stval,
+void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
 		 Bool reorder=True, uInt nrow=10)
 {
   AlwaysAssertExit (tab.nrow() == nrow);
@@ -146,7 +146,7 @@ void checkTable (const Table& tab, Int nkey, Int nsubrow, Int stval,
   ROScalarColumn<String> astring(tab, "astring");
   char str[8];
   // Values are stored as: 0 1 2 5 6 7 8 9 3 4
-  for (Int i=0; i<tab.nrow(); i++) {
+  for (uInt i=0; i<tab.nrow(); i++) {
     Int row = i%10;
     Int rowd = i - row;
     if (reorder) {
@@ -161,7 +161,7 @@ void checkTable (const Table& tab, Int nkey, Int nsubrow, Int stval,
     AlwaysAssertExit (auchar(row) == stval);
     AlwaysAssertExit (ashort(row) == stval);
     AlwaysAssertExit (aint(row) == stval);
-    AlwaysAssertExit (auint(row) == stval);
+    AlwaysAssertExit (auint(row) == uInt(stval));
     AlwaysAssertExit (afloat(row) == stval);
     AlwaysAssertExit (adouble(row) == stval);
     AlwaysAssertExit (acomplex(row) == Complex(stval,0));
@@ -172,12 +172,12 @@ void checkTable (const Table& tab, Int nkey, Int nsubrow, Int stval,
   }
 }
 
-void check (const String& name, Int nkey, Int stval)
+void check (const String& name, uInt nkey, Int stval)
 {
   checkTable (Table(name), nkey, 10, stval);
 }
 
-void checkComb (const String& name1, const String& name2, Int nkey, Int stval)
+void checkComb (const String& name1, const String& name2, uInt nkey, Int stval)
 {
   Block<Table> tabs(2);
   tabs[0] = Table(name1);
@@ -186,7 +186,7 @@ void checkComb (const String& name1, const String& name2, Int nkey, Int stval)
   checkTable (tab, nkey, 10, stval, True, 20);
 }
 
-void checkSplit (const String& name, Int nkey, Int stval)
+void checkSplit (const String& name, uInt nkey, Int stval)
 {
   Table tab(name);
   // Split and concatenate the table such that we get the original order.

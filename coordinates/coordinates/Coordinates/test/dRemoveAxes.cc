@@ -41,7 +41,7 @@
 
 
 #include <casa/namespace.h>
-int main (int argc, const char* argv[])
+int main()
 {
 try {
 

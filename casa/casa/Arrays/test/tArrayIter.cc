@@ -301,6 +301,7 @@ int main()
       int nstep=0;
       while (!iter.pastEnd()) {
 	Array<Int>& darr = iter.array();
+        AlwaysAssertExit (darr.shape() == IPosition(1,2));
 	iter.next();
 	nstep++;
       }
@@ -311,7 +312,6 @@ int main()
       ArrayIterator<Int> iter(arr, 1);
       int nstep=0;
       while (!iter.pastEnd()) {
-	Array<Int>& darr = iter.array();
 	iter.next();
 	nstep++;
       }

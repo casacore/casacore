@@ -164,7 +164,7 @@ int main()
     {
        Record rec3;
        Record rec4;
-       Double x;
+       Double x(0);
        rec4.define("value", x);
        rec3.defineRecord("pointingcenter", rec4);
        AlwaysAssertExit(!oi3.fromRecord(error, rec3));

@@ -145,7 +145,6 @@ int main(int argc, const char* argv[])
   para(1) = AutoDiff<Double>(2, 3, 1);
   para(2) = AutoDiff<Double>(3, 3, 2);
   Vector<Double> va(3);
-  Double v;
 
   // Check results
   cout << "Values (g0: 1 line; g1: 2 lines; g2: RPN type):" << endl;

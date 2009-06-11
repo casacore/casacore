@@ -348,7 +348,6 @@ void doFits()
    }
 //
    if (pResid) {
-      Float zero(0.0);
       Float one(1.0);
       for (uInt j=0; j<ny; j++) {
          pos2(1) = j;

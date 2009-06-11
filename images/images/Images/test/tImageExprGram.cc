@@ -61,7 +61,7 @@ String substituteOID (Block<LatticeExprNode>& nodes,
 }
 void makeRegionBlock (PtrBlock<const ImageRegion*>& regions,
 		      const Record&,
-		      LogIO& os)
+		      LogIO&)
 {
    for (uInt j=0; j<regions.nelements(); j++) {
       delete regions[j];

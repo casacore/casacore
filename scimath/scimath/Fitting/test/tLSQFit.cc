@@ -1443,6 +1443,7 @@ int main() {
       }
       Float sol[3] = {10, 20, 2};
       Float muf, mef;
+      mef = lnl.getWeightedSD();
       Double una[3];
       Double *un = una;
       Double kn[1];

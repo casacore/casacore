@@ -39,7 +39,7 @@
 using namespace casa;
 using namespace std;
 
-void doIt (Bool doTiming)
+void doIt (Bool /*doTiming*/)
 {
   {
     IPosition shape(2,5,5);

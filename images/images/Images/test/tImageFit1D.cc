@@ -197,6 +197,7 @@ SpectralCoordinate makeSpectralCoordinate(Double fac)
    Vector<String> units(1);
    units = "GHz";
    Bool ok = c.setWorldAxisUnits(units);
+   AlwaysAssert(ok, AipsError);
 //
    Vector<Double> inc;
    inc = c.increment();

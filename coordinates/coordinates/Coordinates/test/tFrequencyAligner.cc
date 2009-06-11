@@ -207,8 +207,9 @@ int main()
 //
          uInt axis = 0;
 //
-         Bool ok = fa.alignMany (yOutMany, maskOutMany, yInMany, maskInMany, axis, epoch, 
-                                 method, extrapolate);
+         Bool ok = fa.alignMany (yOutMany, maskOutMany, yInMany, maskInMany,
+                                 axis, epoch, method, extrapolate);
+         AlwaysAssert(ok, AipsError);
          ReadOnlyVectorIterator<Float> it(yOutMany,axis);
          Vector<Float> data1;
          Vector<Bool> mask1;

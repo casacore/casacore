@@ -36,6 +36,10 @@
 
 int main(int argc, const char* argv[])
 {
+  if (argc != 2) {
+    cout << "Usage: "<< argv[0] << " MS_filename" << endl;
+    return 0;
+  }
   try {
     cout << "before ms constructor called " << endl;
     const String msName = argv[1];

@@ -230,6 +230,7 @@ int main() {
          GaussianShape gc(dir, majorAxis, minorAxis, pa);
          SkyCompRep sky(flux, gc, cs);
          Bool ok = pixelReflection(sky, cSys, beam, unit, 1.0e-3);
+         AlwaysAssert(ok, AipsError);
       }
 //
       {

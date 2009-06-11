@@ -12,7 +12,7 @@
 
 #include <casa/namespace.h>
 
-int main(int argc, const char* argv[])
+int main()
 {
   Double height = 9.0;
   Double xCen = 0.0;

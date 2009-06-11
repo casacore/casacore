@@ -134,7 +134,8 @@ DummyVirtualScalar::DummyVirtualScalar (DummyVirtualEngine* dve, double scale)
 //# when writable_p and the column_p variables are not filled yet.
 //# Check if that is indeed the case.
 DummyVirtualScalar::DummyVirtualScalar (const DummyVirtualScalar& that)
-: enginePtr_p(that.enginePtr_p),
+: VirtualScalarColumn<Double>(),
+  enginePtr_p(that.enginePtr_p),
   scale_p    (that.scale_p),
   writable_p (0),
   roColumn_p (0),
@@ -230,7 +231,8 @@ DummyVirtualArray::DummyVirtualArray (DummyVirtualEngine* dve, double scale)
 //# when writable_p and the column_p variables are not filled yet.
 //# Check if that is indeed the case.
 DummyVirtualArray::DummyVirtualArray (const DummyVirtualArray& that)
-: enginePtr_p(that.enginePtr_p),
+: VirtualArrayColumn<Double>(),
+  enginePtr_p(that.enginePtr_p),
   scale_p    (that.scale_p),
   writable_p (0),
   roColumn_p (0),

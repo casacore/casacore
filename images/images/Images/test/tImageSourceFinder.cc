@@ -64,7 +64,7 @@ Bool compareSkyComponent (const SkyComponent& in,
 void test1 (LogIO& os, ImageInterface<Float>& im, const DirectionCoordinate& dC);
 
 
-int main (int argc, const char* argv[])
+int main()
 {
 try {
 

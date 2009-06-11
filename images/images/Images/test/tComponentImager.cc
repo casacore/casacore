@@ -64,7 +64,6 @@ int main() {
   try {
     const uInt nx = 4;
     const uInt ny = nx;
-    const uInt nPol = 1;
     const uInt nFreq = 3;
 
     ComponentList clist;

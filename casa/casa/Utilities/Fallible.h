@@ -123,7 +123,7 @@ template<class T> class Fallible
 {
 public: 
     // The default constructor creates an invalid object.
-    Fallible() : isValid_p(False) {}
+    Fallible() : value_p(T()), isValid_p(False) {}
 
     // Create a valid object
     Fallible(const T &value) : value_p(value), isValid_p(True) {}
