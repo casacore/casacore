@@ -116,7 +116,7 @@ public:
     // <group>
     const String& name() const
       { return name_p; }
-    const Bool openWritable() const
+    Bool openWritable() const
       { return openWritable_p; }
     const TableLock& lockOptions() const
       { return lockOptions_p; }

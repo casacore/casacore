@@ -363,7 +363,7 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, uInt rownr)
     // If so, determine if it matches previous or next entry.
     // To match, the cube has to be the same and the position has to
     // be consecutive.
-    Bool atB = (rownr == 0  ||  index > 0  &&  rownr-1 == rowMap_p[index-1]);
+    Bool atB = (rownr == 0  ||  (index > 0  &&  rownr-1 == rowMap_p[index-1]));
     Bool atE = found;
     Bool eqP = False;
     Bool eqN = False;
