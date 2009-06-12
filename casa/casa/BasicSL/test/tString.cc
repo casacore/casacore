@@ -41,7 +41,7 @@ String X = "Hello";
 String Y = "world";
 String N = "123";
 String c;
-Char*  s = ",";
+const Char*  s = ",";
 Regex  r = String("e[a-z]*o");
 
 void decltest() {
