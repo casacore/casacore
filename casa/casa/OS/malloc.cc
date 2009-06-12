@@ -2330,6 +2330,7 @@ History:
 #else
 /* Some binutils unhappy with a file with no symbols at all */
     static const char *ptr = 0; 
+    ptr=0;
 #endif
 /* AIPS_LINUX */
 

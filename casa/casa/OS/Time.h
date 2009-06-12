@@ -175,8 +175,6 @@ class Time {
 
    static uInt howManyDaysInMonth ();
 
-   static uInt howManyDaysInMonth (uInt month);
-
    static uInt howManyDaysInMonth (uInt month,uInt year);
 
    static Bool isLeapYear ();

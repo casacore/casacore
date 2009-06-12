@@ -75,50 +75,7 @@ Time::Time(double jdn) {
 
 Time::Time(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
 
-// Converting between Julian calendar date and Julian date number
-// Valid for all values of year>=-4712 ( for all dates with Julian 
-// Day >= 0).
-
-  DebugAssert(sec >= 60, AipsError);
-  DebugAssert(min >= 60, AipsError);
-  DebugAssert(hour >= 24, AipsError);
-
-  DebugAssert(month > 12, AipsError);
-  if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    DebugAssert(day > 31, AipsError);
-  } else if(month==4 || month==6 || month==9 || month==11) {
-    DebugAssert(day > 30, AipsError);
-  } else {
-    // Check february days for leap years
-    if( year%100 == 0)
-      if( year%400 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
-    else
-      if( year%4 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
-  }
-
-  double jd;  // the fraction of the day
-  uInt md;    // Modify Julian day number
-  int y=year,m=month,d=day;
-
-  md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
-
-  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/C::day);
-  // with this formula (calculated md)
-  // date --> Julian day number - 0.5
-  // then Julian day -1 (jd-1) and fraction +0.5 (md+0.5)
-
-  mJulianDayfrac = jd;
-  mJulianDay= md - 2400001;
+  setDate (year, month, day, hour, min, sec);
 }
 
 Time::Time( const Time& time ) {
@@ -184,53 +141,37 @@ Time Time::operator+(const double plus) {
 Bool Time::operator==(const Time &other) const {
 
   if( mJulianDay == other.mJulianDay ) {
-    if( mJulianDayfrac == other.mJulianDayfrac)
-      return True;
-    else
-      return False;
+    return mJulianDayfrac == other.mJulianDayfrac;
   }
-  else
-    return False;
+  return False;
 }
 
 Bool Time::operator!=(const Time &other) const {
 
-  if( mJulianDay != other.mJulianDay )
-    return True;
-  else {
-    if( mJulianDayfrac != other.mJulianDayfrac)
-      return True;
-    else
-      return False;
+  if( mJulianDay == other.mJulianDay ) {
+    return mJulianDayfrac != other.mJulianDayfrac;
   }
+  return True;
 }
 
 Bool Time::operator>(const Time &other) const {
 
-  if( mJulianDay > other.mJulianDay )
+  if( mJulianDay > other.mJulianDay ) {
     return True;
-  else if(mJulianDay == other.mJulianDay ) {
-    if( mJulianDayfrac > other.mJulianDayfrac)
-      return True;
-    else
-      return False;
+  } else if (mJulianDay == other.mJulianDay ) {
+    return mJulianDayfrac > other.mJulianDayfrac;
   }
-  else
-    return False;
+  return False;
 }
 
 Bool Time::operator<(const Time &other) const {
 
-  if( mJulianDay < other.mJulianDay )
+  if( mJulianDay < other.mJulianDay ) {
     return True;
-  else if(mJulianDay == other.mJulianDay ) {
-    if( mJulianDayfrac < other.mJulianDayfrac)
-      return True;
-    else
-      return False;
+  } else if(mJulianDay == other.mJulianDay ) {
+    return mJulianDayfrac < other.mJulianDayfrac;
   }
-  else
-    return False;
+  return False;
 }
 
 String Time::toString(const Bool iso) const
@@ -281,87 +222,80 @@ String Time::toString(const Bool iso) const
   // separately
 
   if(iso) {
-	out << year  << '-';
-	if (month < 10) out << '0';
-	out << month << '-';
-	if (day  <  10) out << '0';
-	out << day   << ' ';   // NOTE: ISO8601 requires a 'T' char, not space
-	if (hour <  10) out << '0';
-	out << (int) hour << ':';
-	if (min  <  10) out << '0';
-	out << (int) min  <<':';
-	if (sec  <  10) out << '0';
-	out << sec;
-  }
-  else {
-  switch(dayweek) {
-  case 1: out<<"Sun ";
-    break;
-  case 2: out<<"Mon ";
-    break;
-  case 3: out<<"Tue ";
-    break;
-  case 4: out<<"Wed ";
-    break;
-  case 5: out<<"Thu ";
-    break;
-  case 6: out<<"Fri ";
-    break;
-  case 7: out<<"Sat ";
-    break;
-  }
+      out << year  << '-';
+      if (month < 10) out << '0';
+      out << month << '-';
+      if (day  <  10) out << '0';
+      out << day   << ' ';   // NOTE: ISO8601 requires a 'T' char, not space
+      if (hour <  10) out << '0';
+      out << (int) hour << ':';
+      if (min  <  10) out << '0';
+      out << (int) min  <<':';
+      if (sec  <  10) out << '0';
+      out << sec;
+  } else {
+      switch(dayweek) {
+      case 1: out<<"Sun ";
+        break;
+      case 2: out<<"Mon ";
+        break;
+      case 3: out<<"Tue ";
+        break;
+      case 4: out<<"Wed ";
+        break;
+      case 5: out<<"Thu ";
+        break;
+      case 6: out<<"Fri ";
+        break;
+      case 7: out<<"Sat ";
+        break;
+      }
 
-  switch(month) {
-  case 1: out<<"Jan ";
-    break;
-  case 2: out<<"Feb ";
-    break;
-  case 3: out<<"Mar ";
-    break;
-  case 4: out<<"Apr ";
-    break;
-  case 5: out<<"May ";
-    break;
-  case 6: out<<"Jun ";
-    break;
-  case 7: out<<"Jul ";
-    break;
-  case 8: out<<"Aug ";
-    break;
-  case 9: out<<"Sep ";
-    break;
-  case 10: out<<"Oct ";
-    break;
-  case 11: out<<"Nov ";
-    break;
-  case 12: out<<"Dec ";
-    break;
-  }
+      switch(month) {
+      case 1: out<<"Jan ";
+        break;
+      case 2: out<<"Feb ";
+        break;
+      case 3: out<<"Mar ";
+        break;
+      case 4: out<<"Apr ";
+        break;
+      case 5: out<<"May ";
+        break;
+      case 6: out<<"Jun ";
+        break;
+      case 7: out<<"Jul ";
+        break;
+      case 8: out<<"Aug ";
+        break;
+      case 9: out<<"Sep ";
+        break;
+      case 10: out<<"Oct ";
+        break;
+      case 11: out<<"Nov ";
+        break;
+      case 12: out<<"Dec ";
+        break;
+      }
 
-  out<<day;
-  out<<" ";
-  if(hour<10){
-    out<<"0";
-    out<<(int)hour;
-  }
-  else
-    out<<(int)hour;
-  out<<":";
-  if(min<10){
-    out<<"0";
-    out<<(int)min;
-  }
-  else
-    out<<(int)min;
-  out<<":";
-  if(sec<10){
-    out<<"0";
-    out<<sec;
-  }
-  else
-    out<<sec;
-  out<<" ";
-  out<<year;
+      out<<day;
+      out<<" ";
+      if(hour<10) {
+        out<<"0";
+      }
+      out<<(int)hour;
+      out<<":";
+      if(min<10){
+        out<<"0";
+      }
+      out<<(int)min;
+      out<<":";
+      if(sec<10){
+        out<<"0";
+      }
+      out<<sec;
+      out<<" ";
+      out<<year;
   }
 
   return out;
@@ -377,62 +311,24 @@ istream& operator>>(istream& in, Time& other) {
 
   in>>ch;
   in.putback(ch);
-    in>> month >>ch;
-  if(ch == '/')
+  in>> month >>ch;
+  if(ch == '/') {
     in>> day >>ch;
-  if(ch == '/')
+  }
+  if(ch == '/') {
     in>> year>>ch;
-  if(ch == ',')
+  }
+  if(ch == ',') {
     in>> hour >>ch;
-  if(ch == ':')
+  }
+  if(ch == ':') {
     in>> min >>ch;
-  if(ch == ':')
+  }
+  if(ch == ':') {
     in>> sec;
-
-// Converting between Julian calendar date and Julian date number
-// Valid for all values of year>=-4712 ( for all dates with Julian Day >=
-// 0).
-  DebugAssert(sec >= 60, AipsError);
-  DebugAssert(min >= 60, AipsError);
-  DebugAssert(hour >= 24, AipsError);
-
-  DebugAssert(month > 12, AipsError);
-  if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    DebugAssert(day > 31, AipsError);
-  } else if(month==4 || month==6 || month==9 || month==11) {
-    DebugAssert(day > 30, AipsError);
-  } else {
-    // Check february days for leap years
-    if( year%100 == 0)
-      if( year%400 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
-    else
-      if( year%4 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
   }
 
-  double jd;  // the fraction of the day
-  uInt md;    // Modify Julian day number
-  int y=year,m=month,d=day;
-
-  md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
-
-  jd= ((double)hour/24) + ((double)min/1440) + ((double)sec/C::day);
-  // with this formula (calculated md)
-  // date --> Julian day number - 0.5
-  // then Julian day -1 (jd-1) and fraction +0.5 (md+0.5)
-
-  other.mJulianDayfrac = jd;
-  other.mJulianDay = md - 2400001 ;
-
+  other.setDate (year, month, day, hour, min, sec);
   return in;
 }
 
@@ -453,31 +349,22 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
 // Valid for all values of year>=-4712 ( for all dates with Julian 
 // Day >= 0).
 
-  DebugAssert(sec >= 60, AipsError);
-  DebugAssert(min >= 60, AipsError);
-  DebugAssert(hour >= 24, AipsError);
+  DebugAssert(sec < 60, AipsError);
+  DebugAssert(min < 60, AipsError);
+  DebugAssert(hour < 24, AipsError);
 
-  DebugAssert(month > 12, AipsError);
+  DebugAssert(month <= 12, AipsError);
   if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
-    DebugAssert(day > 31, AipsError);
+    DebugAssert(day <= 31, AipsError);
   } else if(month==4 || month==6 || month==9 || month==11) {
-    DebugAssert(day > 30, AipsError);
+    DebugAssert(day <= 30, AipsError);
   } else {
    // Check february days for leap years
-    if( year%100 == 0)
-      if( year%400 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
-    else
-      if( year%4 == 0) {
-        DebugAssert(day > 29, AipsError);
-      }
-      else {
-        DebugAssert(day > 28, AipsError);
-      }
+    if (isLeapYear(year)) {
+      DebugAssert(day <= 29, AipsError);
+    } else {
+      DebugAssert(day <= 28, AipsError);
+    }
   }
 
   double jd;  // the fraction of the day
@@ -503,8 +390,7 @@ double Time::age() {
     jd=(double)mJulianDay - 40587.0;
     double se = sn - ((jd + mJulianDayfrac)*C::day);
     return se;
-  }
-  else {
+  } else {
     sn = 3506716800.0 + sn;
     double se = sn - (((double)mJulianDay + mJulianDayfrac)*C::day);
     return se;
@@ -541,7 +427,7 @@ uInt Time::dayOfMonth() {
   uInt jd,j,l,n,i;
 
 //  Julian day
-    jd= mJulianDay + 2400001;
+  jd= mJulianDay + 2400001;
 
   l=jd+68569;
   n=(4*l)/146097;
@@ -554,12 +440,12 @@ uInt Time::dayOfMonth() {
 }
 
 uInt Time::month() {
-   // Return month of the year [1,12] with local time
+  // Return month of the year [1,12] with local time
 
   uInt jd,j,l,n,i;
 
 //  Julian day
-    jd= mJulianDay + 2400001;
+  jd= mJulianDay + 2400001;
 
   l=jd+68569;
   n=(4*l)/146097;
@@ -573,12 +459,12 @@ uInt Time::month() {
 }
 
 uInt Time::year() {
-   // Return year
+  // Return year
 
   uInt jd,j,l,n,i;
 
 //  Julian day
-    jd= mJulianDay + 2400001;
+  jd= mJulianDay + 2400001;
 
   l=jd+68569;
   n=(4*l)/146097;
@@ -592,19 +478,19 @@ uInt Time::year() {
 }
 
 uInt Time::dayOfWeek() {
-   // Return day of the week for the Julian day number.
-   // Where day runs from 1 though 7, with 1 being Sunday
+  // Return day of the week for the Julian day number.
+  // Where day runs from 1 though 7, with 1 being Sunday
 
   uInt jd;
 //  Julian day
-    jd= mJulianDay + 2400001;
+  jd= mJulianDay + 2400001;
 
-   return jd-7*((jd+1)/7)+2;
+  return jd-7*((jd+1)/7)+2;
 }
 
 uInt Time::dayOfYear() {
-   // Return day of the year for the Julian day number.
-   // Where day runs from 1 though 366.
+  // Return day of the year for the Julian day number.
+  // Where day runs from 1 though 366.
 
   int i,j,jd,l,n,day,month,year;
  
@@ -645,12 +531,9 @@ uInt Time::dayOfYear() {
     break;
   }
 
-  if( year%100 == 0)
-    if( year%400 == 0)
-      day++;
-  else
-    if( year%4 == 0)
-      day++;
+  if (isLeapYear(year)) {
+    day++;
+  }
 
   return day;
 }
@@ -659,76 +542,37 @@ uInt Time::howManyDaysInMonth(uInt month, uInt year) {
   // Return how many days are in a month
   // Note: for february, always return 28
 
-  if(month > 12)
-    DebugAssert(month > 12, AipsError);
-  if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)
+  DebugAssert(month <= 12, AipsError);
+  if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) {
     return 31;
-  else if(month==4 || month==6 || month==9 || month==11)
+  } else if (month==4 || month==6 || month==9 || month==11) {
     return 30;
-  else
-    if(Time().isLeapYear(year))
-      return 29;
-    else
-      return 28;
+  }
+  if (isLeapYear(year)) {
+    return 29;
+  } else {
+    return 28;
+  }
 }
 
-uInt Time::howManyDaysInMonth(uInt month) {
-  // Return how many days are in a month
-  // Note: for february, always return 28
-
-  if(month > 12)
-    DebugAssert(month > 12, AipsError);
-  if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12)
-    return 31;
-  else if(month==4 || month==6 || month==9 || month==11)
-    return 30;
-  else
-    if(Time().isLeapYear())
-      return 29;
-    else
-      return 28;
-}
 
 uInt Time::howManyDaysInMonth() {
   // Return how many days are in a months
-  // Note: for february, always return 28
-
-  uInt months=Time().month();
-  if(months > 12)
-    DebugAssert(months > 12, AipsError);
-  if(months==1 || months==3 || months==5 || months==7 || months==8 || months==10 || months==12)
-    return 31;
-  else if(months==4 || months==6 || months==9 || months==11)
-    return 30;
-  else
-    if(Time().isLeapYear())
-      return 29;
-    else
-      return 28;
+  Time time;
+  return howManyDaysInMonth (time.month(), time.year());
 }
 
 Bool Time::isLeapYear() {
 
-  uInt lyear=Time().year();
-  if( lyear%100 == 0)
-    if( lyear%400 == 0)
-      return True;
-    else
-      return False;
-  else
-    if( lyear%4 == 0)
-      return True;
-    else
-      return False;
+  return isLeapYear (Time().year());
 }
 
 Bool Time::isLeapYear(uInt lyear) {
 
   if( lyear%100 == 0) {
     return lyear%400 == 0;
-  } else {
-    return lyear%4 == 0;
   }
+  return lyear%4 == 0;
 }
 
 // Used internally here to determine if Daylight Savings Time (Summer

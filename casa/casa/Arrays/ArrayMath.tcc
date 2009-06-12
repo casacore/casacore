@@ -1073,7 +1073,7 @@ template<class T> T rms(const Array<T> &a)
 template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 			   Bool takeEvenMean, Bool inPlace)
 {
-    T medval;
+    T medval=T();
     size_t nelem = a.nelements();
     if (nelem < 1) {
 	throw(ArrayError("::median(T*) - array needs at least 1 element"));

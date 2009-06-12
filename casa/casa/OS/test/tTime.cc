@@ -78,7 +78,6 @@ int main() {
   cout<<t9.dayOfMonth()<<" "<<t9.month()<<" "<<t9.year()<<" "<<t9.hours()<<" "<<t9.minutes()<<" "<<t9.seconds()<<"\n";
   uInt m=2,y=1992;
   cout<<"how many days this month "<<t9.howManyDaysInMonth()<<"\n";
-  cout<<"how many days february "<<t9.howManyDaysInMonth(m)<<"\n";
   cout<<"how many days february of 1992 "<<t9.howManyDaysInMonth(m,y)<<"\n";
 
   if(t9.isLeapYear(y))
