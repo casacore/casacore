@@ -74,7 +74,7 @@ class TableExprNode;
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void MSArrayGramerror (char*);
+void MSArrayGramerror (const char*);
 
 // Give the table expression node.
 const TableExprNode *msArrayGramParseNode();

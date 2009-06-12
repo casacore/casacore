@@ -27,6 +27,10 @@
     $Id$
 */
 
+/* yy_unput is not used, so let flex not generate it, otherwise picky
+   compilers will issue warnings. */
+%option nounput
+
 %{
 #undef YY_INPUT
 #define YY_INPUT(buf,result,max_size) result=msUvDistGramInput(buf,max_size)

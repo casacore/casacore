@@ -90,7 +90,7 @@ int imageExprGramInput (char* buf, int max_size)
     return nr;
 }
 
-void ImageExprGramerror (char*)
+void ImageExprGramerror (const char*)
 {
     throw (AipsError ("Image Expression: Parse error at or near '" +
 		      String(ImageExprGramtext) + "'"));

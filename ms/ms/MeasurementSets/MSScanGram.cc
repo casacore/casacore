@@ -115,7 +115,7 @@ int msScanGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSScanGramerror (char*)
+void MSScanGramerror (const char*)
 {
   throw (MSSelectionScanError ("Scan Expression: Parse error at or near '" +
 			       String(MSScanGramtext) + "'"));

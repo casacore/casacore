@@ -142,7 +142,7 @@ int msUvDistGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSUvDistGramerror (char*)
+void MSUvDistGramerror (const char*)
 {
   throw (MSSelectionUvDistParseError("UV Distribution Expression: Parse error at or near '"+
 				     String(MSUvDistGramtext) + "'"));

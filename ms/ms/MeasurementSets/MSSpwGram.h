@@ -76,7 +76,7 @@ int msSpwGramParseCommand (const MeasurementSet *ms, const String& command,
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void MSSpwGramerror (char*);
+void MSSpwGramerror (const char*);
 
 // Give the table expression node.
 const TableExprNode *msSpwGramParseNode();

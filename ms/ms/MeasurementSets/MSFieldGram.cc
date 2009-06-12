@@ -142,7 +142,7 @@ int msFieldGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSFieldGramerror (char*)
+void MSFieldGramerror (const char*)
 {
     throw (MSSelectionFieldParseError ("Field Expression: Parse error at or near '" +
 		      String(MSFieldGramtext) + "'"));

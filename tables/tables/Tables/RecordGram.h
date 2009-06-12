@@ -79,7 +79,7 @@ int recordGramParseCommand (const String& command);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void RecordGramerror (char*);
+void RecordGramerror (const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

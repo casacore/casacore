@@ -95,7 +95,7 @@ int tableGramInput (char* buf, int max_size)
     return nr;
 }
 
-void TableGramerror (char*)
+void TableGramerror (const char*)
 {
     throw (TableError ("parse error at or near position " +
 		       String::toString(tableGramPosition()) + " '" +

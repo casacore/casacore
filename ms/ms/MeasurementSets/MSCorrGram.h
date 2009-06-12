@@ -74,7 +74,7 @@ int msCorrGramParseCommand (const MeasurementSet *ms, const String& command);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void MSCorrGramerror (char*);
+void MSCorrGramerror (const char*);
 
 // Give the table expression node.
 const TableExprNode *msCorrGramParseNode();

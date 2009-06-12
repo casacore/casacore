@@ -100,7 +100,7 @@ int msCorrGramInput (char* buf, int max_size)
     return nr;
 }
 
-void MSCorrGramerror (char*)
+void MSCorrGramerror (const char*)
 {
     throw (AipsError ("Corr Expression: Parse error at or near '" +
 		      String(MSCorrGramtext) + "'"));

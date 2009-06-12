@@ -101,7 +101,7 @@ int recordGramInput (char* buf, int max_size)
     return nr;
 }
 
-void RecordGramerror (char*)
+void RecordGramerror (const char*)
 {
     throw (TableInvExpr ("Parse error at or near '" +
 			 String(RecordGramtext) + "'"));
