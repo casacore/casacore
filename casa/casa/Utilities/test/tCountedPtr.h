@@ -57,9 +57,9 @@
 
 
 class myobj {
-    char *store;
+    const char *store;
 public:
-    myobj(char *str) : store(str) { 
+    myobj(const char *str) : store(str) { 
 	cout << "myobj(" << store << ") ctor" << endl;
     }
     ~myobj() { cout << "myobj(" << store << ") dtor" << endl;}

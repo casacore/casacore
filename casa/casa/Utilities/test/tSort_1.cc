@@ -141,7 +141,7 @@ void qksort (Int nr, uInt* inx)
     int cm, sw=0;
     for (Int i=1; i<nr; i++) {
 	cm = cmp (inx, &inx[i]);
-	if (cm > 0  ||  cm == 0  &&  (sw = !sw)) {
+	if (cm > 0  ||  (cm == 0  &&  (sw = !sw))) {
 	    sav = inx[i];
 	    inx[i] = inx[++j];
 	    inx[j] = sav;
@@ -217,7 +217,7 @@ Bool sortall (Int* arr, uInt nr, uInt type)
 	}
     }
     delete [] inx;
-    if (type==0 || (type==2 && nr<=10000) || type==5 && nr<=20000
+    if (type==0 || (type==2 && nr<=10000) || (type==5 && nr<=20000)
     || (type==10 && nr<=100000)) {
 	cout << "UNIX qsort";
 	tim.mark();

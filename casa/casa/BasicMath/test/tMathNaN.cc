@@ -39,8 +39,8 @@
 
 
 #include <casa/namespace.h>
-#define	isnanfmacro(x)	(((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
-			    ((*(Int *)&(x) & 0x007fffff) != 0x00000000))
+#define	isnanfmacro(x)	(((*(Int *)(x) & 0x7f800000) == 0x7f800000) && \
+			    ((*(Int *)(x) & 0x007fffff) != 0x00000000))
 
 inline Bool isNaN_isnan(Float val) {
   return (isnan(Double(val)));
@@ -50,7 +50,7 @@ inline Bool isNaN_isnanf(const Float& val) {
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
   return (isnanf(val));
 #else
-  return (isnanfmacro(val));
+  return (isnanfmacro(&val));
 #endif
 }
 
@@ -60,8 +60,9 @@ inline Bool isNaN_ref(const Float &x)
 		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
-inline Bool isNaN_val(Float x)
+inline Bool isNaN_val(Float x1)
 {
+  Float x=x1;
   return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
 		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
@@ -185,7 +186,7 @@ Bool doIt (Int n, Float x, Bool nan)
    t.mark();
    for (Int i=0; i<n; i++) {
      for (Int j=0; j<narr; j++) {
-       if (isnanfmacro(arr[j])) {
+       if (isnanfmacro(arr+j)) {
 	 nf++;
        }
       }
