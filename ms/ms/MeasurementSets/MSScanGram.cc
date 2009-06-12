@@ -91,7 +91,7 @@ const TableExprNode* msScanGramParseNode()
 {
     return MSScanParse::node();
 }
-const void msScanGramParseDeleteNode()
+void msScanGramParseDeleteNode()
 {
     return MSScanParse::cleanup();
 }

@@ -407,12 +407,12 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
       else {
 
         for (uInt g = 0; g < itsNGaussians; g++) {    
-          if ((itsDimension == 1) &&  (solution(g*ngpars+2) < 0)   ||
-	      (itsDimension == 2) && ((solution(g*ngpars+3) < 0) || 
-				      (solution(g*ngpars+4) < 0))  ||
-              (itsDimension == 3) && ((solution(g*ngpars+4) < 0) || 
-	                              (solution(g*ngpars+5) < 0) ||
-                                      (solution(g*ngpars+6) < 0))) { 
+          if ((itsDimension == 1  &&  solution(g*ngpars+2) < 0)   ||
+	      (itsDimension == 2  && (solution(g*ngpars+3) < 0  || 
+				      solution(g*ngpars+4) < 0))  ||
+              (itsDimension == 3  && (solution(g*ngpars+4) < 0  || 
+	                              solution(g*ngpars+5) < 0  ||
+                                      solution(g*ngpars+6) < 0))) { 
             fitfailure = 4;
             cout << "Unsuccessful - Negative axis widths not permissible.";
             cout << endl;
