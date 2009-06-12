@@ -319,8 +319,8 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
 		Bool take = False;
 		// Calculate the crossing point for the interval around yf
 		// if that interval and the line segment overlap.
-		if (yfs < ptrY[i+1]  &&  yfe > ptrY[i]
-		|| (yfs < ptrY[i]  &&  yfe > ptrY[i+1])) {
+		if ((yfs < ptrY[i+1]  &&  yfe > ptrY[i])
+                ||  (yfs < ptrY[i]  &&  yfe > ptrY[i+1])) {
 		    crs = Int(a[i] * yfs + b[i] + 0.5) - blcx;
 		    cre = Int(a[i] * yfe + b[i] + 0.5) - blcx;
 		    take = True;

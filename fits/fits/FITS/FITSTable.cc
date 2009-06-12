@@ -113,14 +113,14 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
       kwname = key->kw().name();
       // skip certain keywords if allKeywords is not True
       if (!allKeywords && key->isreserved() && 
-	  kwname == FITS::BITPIX || kwname == FITS::GCOUNT || kwname == FITS::NAXIS ||
-	  kwname == FITS::PCOUNT || kwname == FITS::TBCOL || 
-	  kwname == FITS::TDIM || kwname == FITS::TDISP ||
-	  kwname == FITS::TFIELDS || kwname == FITS::THEAP ||
-	  kwname == FITS::TFORM || kwname == FITS::TNULL ||
-	  kwname == FITS::TSCAL || kwname == FITS::TTYPE || 
-	  kwname == FITS::TUNIT || kwname == FITS::TZERO ||
-	  kwname == FITS::XTENSION) {
+	  (kwname == FITS::BITPIX || kwname == FITS::GCOUNT || kwname == FITS::NAXIS ||
+           kwname == FITS::PCOUNT || kwname == FITS::TBCOL || 
+           kwname == FITS::TDIM || kwname == FITS::TDISP ||
+           kwname == FITS::TFIELDS || kwname == FITS::THEAP ||
+           kwname == FITS::TFORM || kwname == FITS::TNULL ||
+           kwname == FITS::TSCAL || kwname == FITS::TTYPE || 
+           kwname == FITS::TUNIT || kwname == FITS::TZERO ||
+           kwname == FITS::XTENSION)) {
 	key = hdu.nextkw();
 	continue;
       }
@@ -679,7 +679,7 @@ Bool FITSTable::reopen(const String &fileName)
     // look for fields to promote and TDIMnnn columns, extracting (nnn-1)
     for (i=0;i<nfields_p;i++) {
 	DataType type = description_p.type(i);
-	if (raw_table_p->tscal(i) != 1.0 || raw_table_p->tzero(i) != 0.0
+	if ((raw_table_p->tscal(i) != 1.0 || raw_table_p->tzero(i) != 0.0)
 	    && (type == TpUChar || type == TpArrayUChar ||
 		type == TpShort || type == TpArrayShort ||
 		type == TpInt   || type == TpArrayInt)) {

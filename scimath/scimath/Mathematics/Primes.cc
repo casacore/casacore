@@ -74,7 +74,7 @@ uInt Primes::nextLargerPrimeThan( uInt number )
     if ( cacheTable.nelements() < MINSIZE ) {
 	initializeCache();
     }
-    while( !isPrime( ++number ) );
+    while( !isPrime( ++number ) ) {}
     uInt index = cacheTable.nelements();
     for( i = cacheTable.nelements(); i > 0; i-- ) {
 	if ( cacheTable[(i-1)] == number ) {

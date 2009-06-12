@@ -121,7 +121,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     return MSTimeParse::node();
   }
-  const void msTimeGramParseDeleteNode()
+  void msTimeGramParseDeleteNode()
   {
     return MSTimeParse::cleanup();
   }

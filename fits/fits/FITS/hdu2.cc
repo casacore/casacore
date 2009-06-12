@@ -1037,7 +1037,7 @@ void AsciiTableExtension::at_assign() {
 	    }
             n = 0;
             format[i][n++] = '%';
-	    for (s = tform(i); *s == ' '; ++s); // skip leading blanks
+	    for (s = tform(i); *s == ' '; ++s) {} // skip leading blanks
 	    typecode = *s++; // code indicating kind of field
 	    fits_width[i] = 1; // get the fits field width
 	    if (FITS::isa_digit(*s)) {
@@ -1227,7 +1227,7 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 			break;
 		    case FITS::DOUBLE:
 			sprintf(tmp,format[i],*((double *)(fld[i]->data())));
-			for (t = &tmp[strlen(tmp) - 2]; *t != 'E'; --t);
+			for (t = &tmp[strlen(tmp) - 2]; *t != 'E'; --t) {}
 			*t = 'D'; // Change the 'E' to a 'D' in the format
          memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
 			break;
@@ -1543,7 +1543,7 @@ void BinaryTableExtension::bt_assign() {
 	    return;
 	}
 	for (i = 0; i < tfields(); ++i) {
-	    for (s = tform(i); *s == ' '; ++s); // skip leading blanks
+            for (s = tform(i); *s == ' '; ++s) {} // skip leading blanks
 	    ne = 1; // ne is the number of elements in the field
 	    if (FITS::isa_digit(*s)) {
 		ne = FITS::digit2bin(*s++);

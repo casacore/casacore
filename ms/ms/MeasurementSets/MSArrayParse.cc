@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     idList.resize(0);
   }
   
-  const void MSArrayParse::appendToIDList(const Vector<Int>& v)
+  void MSArrayParse::appendToIDList(const Vector<Int>& v)
   {
     Int currentSize = idList.nelements();
     Int n = v.nelements() + currentSize;

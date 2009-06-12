@@ -98,7 +98,7 @@ const TableExprNode* msAntennaGramParseNode()
 {
     return MSAntennaParse::node();
 }
-const void msAntennaGramParseDeleteNode()
+void msAntennaGramParseDeleteNode()
 {
     return MSAntennaParse::cleanup();
 }

@@ -223,7 +223,7 @@ void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q,
   Bool deleteQuant;
   Quantum<T>* q_p = q.getStorage(deleteQuant);
   
-  const String* u_p;
+  const String* u_p=0;
   Bool deleteUnits;
   Array<String> tmpUnitsCol;
   Vector<Unit> localUnit(itsUnit);

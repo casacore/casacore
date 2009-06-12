@@ -82,7 +82,7 @@ void MSUvDistGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msUvDistGramParseNode();
-const void msUvDistGramParseDeleteNode();
+void msUvDistGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

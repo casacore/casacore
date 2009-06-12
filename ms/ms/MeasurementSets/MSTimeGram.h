@@ -79,7 +79,7 @@ void MSTimeGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msTimeGramParseNode();
-const void msTimeGramParseDeleteNode();
+void msTimeGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

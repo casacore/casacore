@@ -115,7 +115,7 @@ Float MedianSlider::add ( Float din,Bool flag )
       {
         uInt j=0;
         // skip indices up to outgoing value
-        for( ; j<nind && index[j]!=ibuf0; j++ );
+        for( ; j<nind && index[j]!=ibuf0; j++ ) {}
 //        Assure(j<nind);
         // move up indexes (up to incoming value)
         for( j++; j<nind; j++ )
@@ -130,10 +130,10 @@ Float MedianSlider::add ( Float din,Bool flag )
       {   
         uInt j=0;
         // skip indices up to incoming value
-        for( ; j<nind && buf[index[j]]<din; j++ );
+        for( ; j<nind && buf[index[j]]<din; j++ ) {}
         int j0 = j;
         // go forward to locate the outgoing value
-        for( ; j<nind && index[j]!=ibuf0; j++ );
+        for( ; j<nind && index[j]!=ibuf0; j++ ) {}
 //        Assure(j<nind);
         // move down indices up to the outgoing value
         if( j-j0 ) 
@@ -147,7 +147,7 @@ Float MedianSlider::add ( Float din,Bool flag )
     {
       uInt j=0;
       // skip indices up to outgoing datum
-      for( ; j<nind && index[j]!=ibuf0; j++ );
+      for( ; j<nind && index[j]!=ibuf0; j++ ) {}
 //      Assure(j<nind);
       // shift up remaining indices
       if( nind-j-1 )
@@ -161,7 +161,7 @@ Float MedianSlider::add ( Float din,Bool flag )
     {
       uInt j=0;
       // skip indices up to incoming value
-      for( ; j<nind && buf[index[j]]<din; j++ );
+      for( ; j<nind && buf[index[j]]<din; j++ ) {}
       // move down the remaining indices to make space
       if( nind-j ) 
         memmove(index+j+1,index+j,(nind-j)*sizeof(index[0]));

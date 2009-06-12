@@ -264,7 +264,7 @@ void MSFlagger::applyRowFlags(Array<Bool>& flag, Array<Bool>& flagRow)
       for (Int j=0; j<nXY; j++) pflag[offset+j]=True;
     } else {
       Bool ok=False;
-      for (Int j=0; j<nXY && (ok=pflag[offset+j]); j++); 
+      for (Int j=0; j<nXY && (ok=pflag[offset+j]); j++) {}
       if (ok) pflagRow[i]=True;
     }
   }

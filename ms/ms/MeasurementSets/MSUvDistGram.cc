@@ -118,7 +118,7 @@ const TableExprNode* msUvDistGramParseNode()
 {
     return MSUvDistParse::node();
 }
-const void msUvDistGramParseDeleteNode()
+void msUvDistGramParseDeleteNode()
 {
     return MSUvDistParse::cleanup();
 }

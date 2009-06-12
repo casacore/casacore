@@ -122,7 +122,7 @@ const TableExprNode* msFieldGramParseNode()
 {
   return MSFieldParse::node();
 }
-const void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
+void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
 //# Give the string position.
 Int& msFieldGramPosition()
 {

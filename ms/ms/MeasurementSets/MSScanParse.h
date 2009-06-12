@@ -114,7 +114,7 @@ private:
   static TableExprNode* node_p;
   static Vector<Int> idList;
   const String colName;
-  const void appendToIDList(const Vector<Int>& v);
+  void appendToIDList(const Vector<Int>& v);
   Int maxScans_p;
 };
 

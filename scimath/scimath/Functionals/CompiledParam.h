@@ -147,7 +147,7 @@ template <class T> class CompiledParam : public Function<T> {
   const String &getText() const { return text_p; };
 
   // Returns the function pointer (for debugging)
-  const FuncExpression *const getFunctionPtr() const {
+  const FuncExpression* getFunctionPtr() const {
     return functionPtr_p; };
 
 protected:

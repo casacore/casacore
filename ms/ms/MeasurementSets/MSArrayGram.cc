@@ -91,7 +91,7 @@ const TableExprNode* msArrayGramParseNode()
 {
     return MSArrayParse::node();
 }
-const void msArrayGramParseDeleteNode()
+void msArrayGramParseDeleteNode()
 {
     return MSArrayParse::cleanup();
 }

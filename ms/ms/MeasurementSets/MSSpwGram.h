@@ -80,7 +80,7 @@ void MSSpwGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msSpwGramParseNode();
-const void msSpwGramParseDeleteNode();
+void msSpwGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

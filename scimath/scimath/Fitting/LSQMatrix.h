@@ -138,7 +138,7 @@ class LSQMatrix : public RecordTransformable {
   // Index an element in the triangularised matrix
   // <group>
   Double &operator[](uInt index) { return (trian_p[index]); };
-  const Double operator[](uInt index) const { return (trian_p[index]); };
+  Double operator[](uInt index) const { return (trian_p[index]); };
   // </group>
 
   //# General Member Functions

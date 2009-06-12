@@ -182,15 +182,15 @@ public:
     return *(functionPtr_p[which]); };
   // </group>
   // Get the offset in function parameterlist for function which
-  const uInt parameterOffset(uInt which) const {
+  uInt parameterOffset(uInt which) const {
     DebugAssert(nFunctions() > which, AipsError); return paroff_p[which]; };
   // Get the function number belonging to parameter list element which
-  const uInt parameterFunction(uInt which) const {
+  uInt parameterFunction(uInt which) const {
     DebugAssert(nparameters() > which, AipsError);
     return funpar_p[which];
   };
   // Return locpar
-  const uInt parameterLocation(uInt which) const {
+  uInt parameterLocation(uInt which) const {
     DebugAssert(nparameters() > which, AipsError);
     return locpar_p[which];
   };

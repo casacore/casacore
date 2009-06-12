@@ -76,7 +76,7 @@ const TableExprNode* msCorrGramParseNode()
 {
     return MSCorrParse::node();
 }
-const void msCorrGramParseDeleteNode()
+void msCorrGramParseDeleteNode()
 {
     return MSCorrParse::cleanup();
 }

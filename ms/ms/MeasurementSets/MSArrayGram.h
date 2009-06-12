@@ -78,7 +78,7 @@ void MSArrayGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msArrayGramParseNode();
-const void msArrayGramParseDeleteNode();
+void msArrayGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

@@ -280,7 +280,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   //-------------------------------------------------------------------
   //  
-  const Double MSTimeParse::toTAIInSec(const MEpoch& whatEver)
+  Double MSTimeParse::toTAIInSec(const MEpoch& whatEver)
   {
     //    MEpoch tai=MEpoch::Convert(whatEver,MEpoch::Ref(MEpoch::TAI))();
     MEpoch tai=whatEver;
@@ -329,7 +329,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   //-------------------------------------------------------------------
   //  
-  const void MSTimeParse::validate(const TimeFields& tf)
+  void MSTimeParse::validate(const TimeFields& tf)
   {
     if (tf.year < 1858) // This is not precise (should be < Wed Nov 17 00:00:00 1858)
       {                                       

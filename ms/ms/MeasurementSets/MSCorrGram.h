@@ -78,7 +78,7 @@ void MSCorrGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msCorrGramParseNode();
-const void msCorrGramParseDeleteNode();
+void msCorrGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

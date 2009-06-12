@@ -174,9 +174,9 @@ Double SpectralElement::operator[](const uInt n) const {
   return par_p(n);
 }
 
-const String *const SpectralElement::allTypes(Int &nall,
-					      const SpectralElement::Types
-					      *&typ) {
+const String* SpectralElement::allTypes(Int &nall,
+                                        const SpectralElement::Types
+                                        *&typ) {
   static const String tname[SpectralElement::N_Types] = {
     String("GAUSSIAN"),
     String("POLYNOMIAL"),

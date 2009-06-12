@@ -299,8 +299,8 @@ template<class T> class GenericL2Fit : public LSQaips {
     typename FunctionTraits<T>::DiffType> *fittedFunction() {
     return ptr_derive_p; };
   const Function<typename FunctionTraits<T>::DiffType,
-    typename FunctionTraits<T>::DiffType>
-    *const fittedFunction() const { return ptr_derive_p; };
+                 typename FunctionTraits<T>::DiffType>*
+    fittedFunction() const { return ptr_derive_p; };
   // </group>
   // Return the number of fitted parameters
   uInt fittedNumber() const { return aCount_ai; };

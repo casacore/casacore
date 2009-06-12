@@ -235,8 +235,8 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
   Bool strRefs = (itsArrRefStrCol != 0);
   Array<Int> intRefArr;
   Array<String> strRefArr;
-  const Int* r_p;
-  const String* sr_p;
+  const Int* r_p=0;
+  const String* sr_p=0;
   Bool deleteRef;
   if (refPerElem) {
     if (strRefs) {
@@ -259,7 +259,7 @@ void ROArrayMeasColumn<M>::get (uInt rownr, Array<M>& meas,
   // Setup for offset component of MeasRef.
   Bool offsetPerElem = (itsArrOffsetCol != 0);
   Array<M> offsetArr;
-  const M* os_p;
+  const M* os_p=0;
   Bool deleteOffset;
   if (offsetPerElem) {
     itsArrOffsetCol->get (rownr, offsetArr, True);

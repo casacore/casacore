@@ -81,7 +81,7 @@ void MSAntennaGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msAntennaGramParseNode();
-const void msAntennaGramParseDeleteNode();
+void msAntennaGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

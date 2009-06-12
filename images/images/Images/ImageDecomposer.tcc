@@ -767,7 +767,7 @@ Bool ImageDecomposer<T>::isLocalMax(Int x, Int y, Int z, Int naxis) const
     for (Int yi=yimin; yi<=yimax; yi++) {
       for (Int zi=zimin; zi<=zimax; zi++) {
         if ( ((naxis > 0) || !(xi || yi || zi))
-	  && ((naxis > 1) || !(xi && yi || xi && zi || yi && zi ))      
+          && ((naxis > 1) || !((xi && yi) || (xi && zi) || (yi && zi) ))      
           && ((naxis > 2) || !(xi && yi && zi))
           && (getImageVal(x+xi,y+yi,z+zi) > maxval)) {
            return False;
@@ -1277,7 +1277,7 @@ uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
         for (Int yi=yimin; yi<=yimax; yi++) {
           for (Int zi=zimin; zi<=zimax; zi++) {
             if ( (xi || yi || zi) &&
-	        ((naxis > 1) || !(xi && yi || xi && zi || yi && zi )) &&
+                ((naxis > 1) || !((xi && yi) || (xi && zi) || (yi && zi) )) &&
 	        ((naxis > 2) || !(xi && yi && zi))) {
               IPosition ipos(pos);
               ipos(0) += xi; ipos(1) += yi; if (itsDim == 3) ipos(2) += zi;
@@ -1576,7 +1576,7 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours,
                         continue; //border of radius only
                       }
 
-                      if   ( ((naxis==1) && (xi&&yi || xi&&zi || yi&&zi))
+                      if   ( ((naxis==1) && ((xi&&yi) || (xi&&zi) || (yi&&zi)))
 		          || ((naxis==2) && (xi && yi && zi))) {
 		        continue;
                       }

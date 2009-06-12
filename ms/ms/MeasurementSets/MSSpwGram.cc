@@ -122,7 +122,7 @@ const TableExprNode* msSpwGramParseNode()
   return MSSpwParse::node();
 }
 
-const void msSpwGramParseDeleteNode()
+void msSpwGramParseDeleteNode()
 {
   MSSpwParse::cleanup();
 }

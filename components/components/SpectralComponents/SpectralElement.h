@@ -150,8 +150,8 @@ class SpectralElement : public RecordTransformable {
 
   //# Member functions
   // Get all the types available as String and codes, and number available
-  static const String *const allTypes(Int &nall,
-				      const SpectralElement::Types *&typ);
+  static const String* allTypes(Int &nall,
+                                const SpectralElement::Types *&typ);
   // Get a string from the type
   static const String &fromType(SpectralElement::Types tp);
   // Get a type from a (non-case sensitive; minimum match) String

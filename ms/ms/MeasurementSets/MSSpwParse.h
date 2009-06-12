@@ -96,12 +96,12 @@ public:
   const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& spwIds);
   const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& spwIds,
 						const Float factor);
-  const void selectChannelsFromIDList(Vector<Int>& spwIds,
-				      Vector<Int>& chanIDList,
-				      Int nFSpec);
+  void selectChannelsFromIDList(Vector<Int>& spwIds,
+                                Vector<Int>& chanIDList,
+                                Int nFSpec);
 
-  const void selectChannelsFromDefaultList(Vector<Int>& spwIds,
-					   Vector<Int>& chanDefaultList);
+  void selectChannelsFromDefaultList(Vector<Int>& spwIds,
+                                     Vector<Int>& chanDefaultList);
 
   //    const TableExprNode *selectSpwOrSource(const String& fieldName);
 

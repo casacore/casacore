@@ -404,11 +404,13 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
         default:  break;
 	} // Switch
       
-      if(node && node->isNull() == False)
-	if(condition.isNull() == True)
+      if(node && node->isNull() == False) {
+	if(condition.isNull() == True) {
 	  condition = *node;
-	else
+	} else {
 	  condition = condition && *node;
+        }
+      }
     }//For
   //
   // Now parse the time expression.  Internally use the condition
@@ -423,9 +425,13 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
   //
   // Add the time-expression TEN to the condition
   //
-  if(timeNode && timeNode->isNull() == False)
-    if(condition.isNull() == True) condition = *timeNode;
-    else                           condition = condition && *timeNode;
+  if(timeNode && timeNode->isNull() == False) {
+    if(condition.isNull() == True) {
+      condition = *timeNode;
+    } else {
+      condition = condition && *timeNode;
+    }
+  }
 
   fullTEN_p = condition;
   msAntennaGramParseDeleteNode();

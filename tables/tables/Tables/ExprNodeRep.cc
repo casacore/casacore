@@ -707,8 +707,8 @@ TableExprNodeRep TableExprNodeBinary::getTypes (const TableExprNodeRep& left,
     ValueType leftVtype = left.valueType();
     ValueType rightVtype = right.valueType();
     // Check that the value type is VTScalar and/or VTArray.
-    if (leftVtype  != VTArray  &&  leftVtype  != VTScalar
-    ||  rightVtype != VTArray  &&  rightVtype != VTScalar) {
+    if ((leftVtype  != VTArray  &&  leftVtype  != VTScalar)
+    ||  (rightVtype != VTArray  &&  rightVtype != VTScalar)) {
 	throw (TableInvExpr ("Operand has to be a scalar or an array"));
     }
     // The resulting value type is Array if one of the operands is array.

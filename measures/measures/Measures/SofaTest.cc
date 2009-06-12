@@ -90,7 +90,7 @@ void SofaTest::put(const Double in) {
     }
   }
   Int n=Int(floor(in/hstep_p)+hsize_p);
-  if (n>=0 & n<Int(hwidth_p)) histo_p[n]++;
+  if (n>=0 && n<Int(hwidth_p)) histo_p[n]++;
 }
 
 void SofaTest::show(ostream &os) {

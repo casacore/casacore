@@ -79,7 +79,7 @@ void MSFieldGramerror (char*);
 
 // Give the table expression node.
 const TableExprNode *msFieldGramParseNode();
-  const void msFieldGramParseDeleteNode() ;
+void msFieldGramParseDeleteNode() ;
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

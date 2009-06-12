@@ -190,9 +190,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
 
-  const void MSSpwParse::selectChannelsFromIDList(Vector<Int>& spwIds,
-						  Vector<Int>& chanIDList,
-						  Int nFSpec)
+  void MSSpwParse::selectChannelsFromIDList(Vector<Int>& spwIds,
+                                            Vector<Int>& chanIDList,
+                                            Int nFSpec)
   {
     Int n=chanList.shape()(0),
       nSpw = spwIds.nelements(),
@@ -213,8 +213,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   
-  const void MSSpwParse::selectChannelsFromDefaultList(Vector<Int>& spwIds,
-						       Vector<Int>& chanIDList)
+  void MSSpwParse::selectChannelsFromDefaultList(Vector<Int>& spwIds,
+                                                 Vector<Int>& chanIDList)
   {
     if (spwIds.nelements() != chanIDList.nelements()/3)
       throw(AipsError("MSSpwParse::selectChannelsFromDefaultList(): SPW and default channel lists should be of the same size"));
