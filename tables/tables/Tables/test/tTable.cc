@@ -521,7 +521,7 @@ void b (Bool doExcp)
     cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
-			      tab.col("ab") >= 5  &&  tab.col("ab") < 8);
+			 (tab.col("ab") >= 5  &&  tab.col("ab") < 8));
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
@@ -662,7 +662,7 @@ void c (Bool doExcp)
 
     //# Select some rows from the table.
     Table expr2tab = tab(tab.col("af") == "V3"  ||
-			      tab.col("ab") >= 5  &&  tab.col("ab") < 8);
+			 (tab.col("ab") >= 5  &&  tab.col("ab") < 8));
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }

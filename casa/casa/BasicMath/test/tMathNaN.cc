@@ -60,11 +60,11 @@ inline Bool isNaN_ref(const Float &x)
 		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
 }
 
-inline Bool isNaN_val(Float x1)
+inline Bool isNaN_val(Float x)
 {
-  Float x=x1;
-  return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
-		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
+  Float* xp=&x;
+  return (((*(Int *)xp & 0x7f800000) == 0x7f800000) && \
+		((*(Int *)xp & 0x007fffff) != 0x00000000));
 }
 
 

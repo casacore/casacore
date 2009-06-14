@@ -68,10 +68,9 @@ void doOpens()
                               name1);
       String error;
       String name2("tImageUtilities_tmp/fits.img");
-      Bool ok = ImageFITSConverter::ImageToFITS(error, img, name2,
-                                                64, True, True, -32, 1, -1,
-                                                True);
-      if (ok);			// Satisfy compiler
+      ImageFITSConverter::ImageToFITS(error, img, name2,
+				      64, True, True, -32, 1, -1,
+				      True);
 //
       {
          PtrHolder<ImageInterface<Float> > im;

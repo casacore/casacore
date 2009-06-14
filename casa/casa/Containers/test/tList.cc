@@ -279,7 +279,7 @@ int main() {
   onePc.toStart();
 
   onePb.swapRight(onePa);
-  for(;onePb.atEnd() != True;onePb++);
+  for(;onePb.atEnd() != True;onePb++) {}
   onePb.swapRight(onePc);
 
   cout << "<b:onePa> - ";

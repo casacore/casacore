@@ -78,8 +78,7 @@ int main(int argc, const char *argv[])
    Double pa = inputs.getDouble("pa") * C::pi / 180.0;          // +x -> +y
    const Int nx = inputs.getInt("nx");   
    const Int ny = inputs.getInt("ny");   
-   const Bool norm = inputs.getBool("norm");
-   if (norm) ;			// Stop warning
+   ///const Bool norm = inputs.getBool("norm");
    const Block<Int> mask = inputs.getIntArray("mask");
    const Block<Double> includeRange = inputs.getDoubleArray("include");
    const Block<Double> excludeRange = inputs.getDoubleArray("exclude");

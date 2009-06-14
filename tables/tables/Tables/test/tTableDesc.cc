@@ -217,22 +217,22 @@ void a (Bool doExcp)
     AlwaysAssertExit (cdesc.ndim() == 2);
     AlwaysAssertExit (cdesc.shape() == IPosition(2,4,5));
     AlwaysAssertExit (cdesc.options() ==
-                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+		      (ColumnDesc::FixedShape|ColumnDesc::Direct));
     cdesc.setNdim (0);
     AlwaysAssertExit (cdesc.ndim() == -1);
     AlwaysAssertExit (cdesc.shape() == IPosition());
     AlwaysAssertExit (cdesc.options() ==
-                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+		      (ColumnDesc::FixedShape|ColumnDesc::Direct));
     cdesc.setShape (IPosition(1,4));
     AlwaysAssertExit (cdesc.ndim() == 1);
     AlwaysAssertExit (cdesc.shape() == IPosition(1,4));
     AlwaysAssertExit (cdesc.options() ==
-                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+		      (ColumnDesc::FixedShape|ColumnDesc::Direct));
     cdesc.setNdim (0);
     AlwaysAssertExit (cdesc.ndim() == -1);
     AlwaysAssertExit (cdesc.shape() == IPosition());
     AlwaysAssertExit (cdesc.options() ==
-                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+		      (ColumnDesc::FixedShape|ColumnDesc::Direct));
     cdesc.setShape (IPosition(2,4,5), False);
     AlwaysAssertExit (cdesc.ndim() == 2);
     AlwaysAssertExit (cdesc.shape() == IPosition(2,4,5));
@@ -245,7 +245,7 @@ void a (Bool doExcp)
     AlwaysAssertExit (cdesc.ndim() == -1);
     AlwaysAssertExit (cdesc.shape() == IPosition());
     AlwaysAssertExit (cdesc.options() ==
-                                  ColumnDesc::FixedShape|ColumnDesc::Direct);
+		      (ColumnDesc::FixedShape|ColumnDesc::Direct));
     td.removeColumn ("ArrExtra");
 }
 
