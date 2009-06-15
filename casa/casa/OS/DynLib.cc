@@ -42,8 +42,9 @@ using namespace std;
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   DynLib::DynLib (const std::string& library,
+                  const std::string& prefix,
                   const std::string& funcName,
-                  Bool closeOnDestruction)
+                  bool closeOnDestruction)
     : itsHandle  (0),
       itsDoClose (closeOnDestruction)
   {
@@ -51,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     string ext;
     for (int i=0; i<4; ++i) {
       ext = (i%2==0 ? ".so" : ".dylib");
-      if (i == 2) pref = "libcasa_";
+      if (i == 2) pref = prefix;
       open (pref + library + ext);
       if (itsHandle) {
         break;
