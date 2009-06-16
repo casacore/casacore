@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <scimath/Mathematics/Primes.h>
+#include <casa/BasicMath/Primes.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 

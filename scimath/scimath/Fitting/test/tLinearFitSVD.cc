@@ -35,7 +35,7 @@
 #include <scimath/Functionals/HyperPlane.h>
 #include <scimath/Functionals/Polynomial.h>
 #include <casa/BasicSL/Complex.h>
-#include <scimath/Mathematics/Primes.h>
+#include <casa/BasicMath/Primes.h>
 #include <casa/BasicMath/Random.h>
 #include <casa/Utilities/Assert.h>
 
