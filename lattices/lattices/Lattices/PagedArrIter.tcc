@@ -82,8 +82,12 @@ LatticeIterInterface<T>* PagedArrIter<T>::clone() const
 template<class T>
 void PagedArrIter<T>::setupTileCache()
 {
-  uInt cacheSize = itsNavPtr->calcCacheSize (&(itsData.accessor()),
-					     itsData.rowNumber());
+  const ROTiledStManAccessor& acc = itsData.accessor();
+  uInt rownr = itsData.rowNumber();
+  uInt cacheSize = itsNavPtr->calcCacheSize (acc.hypercubeShape(rownr),
+                                             acc.tileShape(rownr),
+                                             acc.maximumCacheSize(),
+                                             acc.bucketSize(rownr));
   itsData.setCacheSizeInTiles (cacheSize);
 }
 

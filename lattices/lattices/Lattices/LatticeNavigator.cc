@@ -108,11 +108,5 @@ Bool LatticeNavigator::ok() const
   return True;
 }
 
-uInt LatticeNavigator::calcCacheSize (const ROTiledStManAccessor* accessor,
-				      Int rowNumber) const
-{
-    return (accessor == 0  ?  0 : calcCacheSize (*accessor, rowNumber));
-}
-
 } //# NAMESPACE CASA - END
 

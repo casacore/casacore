@@ -195,6 +195,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Returns the current tile shape for this HDF5Lattice.
     IPosition tileShape() const;
 
+    // Set the actual cache size for this Array to be big enough for the
+    // indicated number of tiles. This cache is not shared with other
+    // HDF5Lattices,
+    // Tiles are cached using an LRU algorithm.
+    virtual void setCacheSizeInTiles (uInt howManyTiles);
+
+    // Set the cache size as to "fit" the indicated access pattern.
+    virtual void setCacheSizeFromPath (const IPosition& sliceShape,
+                                       const IPosition& windowStart,
+                                       const IPosition& windowLength,
+                                       const IPosition& axisPath);
+
     // Return the value of the single element located at the argument
     // IPosition.
     // Note that <src>Lattice::operator()</src> can also be used.

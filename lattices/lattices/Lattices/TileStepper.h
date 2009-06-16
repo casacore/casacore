@@ -257,11 +257,11 @@ public:
   // Returns True if everything is fine otherwise returns False
   virtual Bool ok() const;
 
-protected:
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize (const ROTiledStManAccessor&,
-			      uInt rowNumber) const;
+  virtual uInt calcCacheSize (const IPosition& cubeShape,
+                              const IPosition& tileShape,
+                              uInt maxCacheSize, uInt bucketSize) const;
 
 private:
   // Prevent the default constructor from being used.

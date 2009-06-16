@@ -425,12 +425,15 @@ const IPosition& TiledLineStepper::axisPath() const
   return itsAxisPath;
 }
 
-uInt TiledLineStepper::calcCacheSize (const ROTiledStManAccessor& accessor,
-				      uInt rowNumber) const
+uInt TiledLineStepper::calcCacheSize (const IPosition&,
+                                      const IPosition& tileShape,
+                                      uInt, uInt bucketSize) const
 {
-  // Tile per tile is accessed, but the main axis needs the entire window.
+  if (bucketSize == 0) {
+    return 0;
+  }
+  // Tile by tile is accessed, but the main axis needs the entire window.
   // So calculate the start and end tile for the window.
-  IPosition tileShape = accessor.tileShape (rowNumber);
   Int tilesz = tileShape(itsAxis);
   Int stTile = itsBlc(itsAxis) / tilesz;
   Int endTile = itsTrc(itsAxis) / tilesz;

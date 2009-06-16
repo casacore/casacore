@@ -388,7 +388,9 @@ const IPosition& TileStepper::axisPath() const
   return itsAxisPath;
 }
 
-uInt TileStepper::calcCacheSize (const ROTiledStManAccessor&, uInt) const
+uInt TileStepper::calcCacheSize (const IPosition&,
+                                 const IPosition&,
+                                 uInt, uInt) const
 {
   // Cache needs to be 1 tile only.
   return 1;
