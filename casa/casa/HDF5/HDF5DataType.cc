@@ -34,6 +34,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #ifdef HAVE_LIBHDF5
 
   HDF5DataType::HDF5DataType (const Bool*)
+    : itsSize (sizeof(Bool))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_SCHAR);
     itsHidMem = H5Tcopy (itsHidFile);
@@ -41,12 +42,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const uChar*)
+    : itsSize (sizeof(uChar))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_UCHAR);
     itsHidMem = H5Tcopy (itsHidFile);
   }
 
   HDF5DataType::HDF5DataType (const Short*)
+    : itsSize (sizeof(Short))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_SHORT);
     H5Tset_size (itsHidFile, sizeof(Short));
@@ -54,6 +57,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const uShort*)
+    : itsSize (sizeof(uShort))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_USHORT);
     H5Tset_size (itsHidFile, sizeof(uShort));
@@ -61,6 +65,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const Int*)
+    : itsSize (sizeof(Int))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_INT);
     H5Tset_size (itsHidFile, sizeof(Int));
@@ -68,6 +73,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const uInt*)
+    : itsSize (sizeof(uInt))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_UINT);
     H5Tset_size (itsHidFile, sizeof(uInt));
@@ -75,18 +81,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const Float*)
+    : itsSize (sizeof(Float))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_FLOAT);
     itsHidMem = H5Tcopy (itsHidFile);
   }
 
   HDF5DataType::HDF5DataType (const Double*)
+    : itsSize (sizeof(Double))
   {
     itsHidFile = H5Tcopy (H5T_NATIVE_DOUBLE);
     itsHidMem = H5Tcopy (itsHidFile);
   }
 
   HDF5DataType::HDF5DataType (const Complex*)
+    : itsSize (sizeof(Complex))
   {
     itsHidFile = H5Tcreate (H5T_COMPOUND, sizeof(Complex));
     H5Tinsert (itsHidFile, "re", 0, H5T_NATIVE_FLOAT);
@@ -95,6 +104,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const DComplex*)
+    : itsSize (sizeof(DComplex))
   {
     itsHidFile = H5Tcreate (H5T_COMPOUND, sizeof(DComplex));
     H5Tinsert (itsHidFile, "re", 0, H5T_NATIVE_DOUBLE);
@@ -103,6 +113,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const String& value)
+    : itsSize (0)
   {
     itsHidFile = H5Tcopy (H5T_C_S1);
     H5Tset_size (itsHidFile, value.size());
@@ -110,6 +121,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   HDF5DataType::HDF5DataType (const String*)
+    : itsSize (0)
   {
     itsHidFile = H5Tcopy (H5T_C_S1);
     H5Tset_size (itsHidFile, H5T_VARIABLE);

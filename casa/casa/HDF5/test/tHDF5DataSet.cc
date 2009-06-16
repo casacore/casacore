@@ -65,6 +65,8 @@ int main()
       AlwaysAssertExit (dset.getName() == "array");
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
+      // Set the cache size in chunks.
+      dset.setCacheSize (10);
       Array<Int> ires(shape);
       dset.get (Slicer(IPosition(2,0), shape), ires.data());
       AlwaysAssertExit (allEQ(iarr, ires));

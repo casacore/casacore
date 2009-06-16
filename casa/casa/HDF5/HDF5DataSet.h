@@ -118,6 +118,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Close the hid if valid.
     virtual void close();
 
+    // Set the cache size (in chunks) for the data set.
+    // It needs to close and reopen the DataSet to take effect.
+    void setCacheSize (uInt nchunks);
+
     // Get the data type for the data set with the given name.
     static DataType getDataType (hid_t, const String& name);
 
@@ -150,18 +154,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5DataSet& operator= (const HDF5DataSet& that);
 
     // Create the data set.
-    void create (hid_t, const String&,
+    void create (const HDF5Object&, const String&,
 		 const IPosition& shape, const IPosition& tileShape);
 
     // Open the data set and check if the external data type matches.
-    void open (hid_t, const String&);
+    void open (const HDF5Object&, const String&);
 
+    // Close the dataset (but not other hids).
+    void closeDataSet();
 
-    HDF5HidDataSpace itsDSid;        //# data space id
-    HDF5HidProperty  itsPLid;        //# property list id
-    IPosition        itsShape;
-    IPosition        itsTileShape;
-    HDF5DataType     itsDataType;
+    HDF5HidDataSpace   itsDSid;        //# data space id
+    HDF5HidProperty    itsPLid;        //# create property list id
+    HDF5HidProperty    itsDaplid;      //# access property list id
+    IPosition          itsShape;
+    IPosition          itsTileShape;
+    HDF5DataType       itsDataType;
+    const HDF5Object*  itsParent;
   };
 
 }

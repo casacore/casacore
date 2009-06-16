@@ -104,6 +104,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     hid_t getHidFile() const
       { return itsHidFile; }
 
+    // Get the size in bytes of the data type.
+    // Note that the size of a string is variable, thus 0.
+    uInt size() const
+      { return itsSize; }
+
   private:
     // Copy constructor cannot be used.
     HDF5DataType (const HDF5DataType& that);
@@ -114,6 +119,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     hid_t itsHidMem;
     hid_t itsHidFile;
+    uInt  itsSize;
   };
 
 }

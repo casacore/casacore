@@ -29,6 +29,7 @@
 #include <casa/HDF5/HDF5Error.h>
 #include <casa/Containers/Block.h>
 #include <casa/Containers/BlockIO.h>
+#include <casa/BasicMath/Primes.h>
 #include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -130,9 +131,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 #ifdef HAVE_LIBHDF5
 
-  void HDF5DataSet::create (hid_t parentHid, const String& name,
+  void HDF5DataSet::create (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape)
   {
+    itsParent = &parentHid;
     setName (name);
     // Get the array shape and tile shape. Adjust as needed.
     AlwaysAssert (shape.nelements() >= tileShape.nelements(), AipsError);
@@ -142,6 +144,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (uInt i=0; i<tileShape.nelements(); ++i) {
       itsTileShape[i] = std::min (tileShape[i], shape[i]);
     }
+    // Create access property for later setting of cache size.
+    itsDaplid = H5Pcreate (H5P_DATASET_ACCESS);
+    AlwaysAssert (itsDaplid.getHid() >= 0, AipsError);
     // Create the data space for the array.
     int rank = itsShape.nelements();
     Block<hsize_t> ls = fromShape (itsShape);
@@ -160,8 +165,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-  void HDF5DataSet::open (hid_t parentHid, const String& name)
+  void HDF5DataSet::open (const HDF5Object& parentHid, const String& name)
   {
+    itsParent = &parentHid;
     setName (name);
     // Open the dataset.
     setHid (H5Dopen(parentHid, name.chars(), NULL));
@@ -173,6 +179,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (H5Tget_class(dsType) != H5Tget_class(itsDataType.getHidFile())) {
       throw HDF5Error("Data set array " + name + " has an incorrect data type");
     }
+    // Create access property for later setting of cache size.
+    itsDaplid = H5Pcreate (H5P_DATASET_ACCESS);
+    AlwaysAssert (itsDaplid.getHid() >= 0, AipsError);
     // Get the data space (for the shape).
     itsDSid = H5Dget_space(getHid());
     if (itsDSid.getHid() < 0) {
@@ -200,14 +209,49 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsTileShape = toShape(shp);
   }
 
-  void HDF5DataSet::close()
+  void HDF5DataSet::closeDataSet()
   {
     if (isValid()) {
       H5Dclose(getHid());
       clearHid();
     }
-    itsDSid = -1;
-    itsPLid = -1;
+  }
+
+  void HDF5DataSet::close()
+  {
+    // First close dataset.
+    closeDataSet();
+    // Close extra hids.
+    itsDSid.close();
+    itsPLid.close();
+    itsDaplid.close();
+  }
+
+  void HDF5DataSet::setCacheSize (uInt nchunks)
+  {
+    // Setting the cache size takes only effect when opening the dataset.
+    // So close it first.
+    closeDataSet();
+    // Use LRU caching (4th argument is 0).
+    // Hash size should be a prime according to the HDF5 documentation and
+    // preferably 100 times the nr of chunks. This seems excessive, so use 20x.
+    uInt nhash = 1;
+    if (nchunks > 1) {
+      nhash = Primes::nextLargerPrimeThan(nchunks*100);
+    }
+    // The cache size needs to be set in bytes.
+    size_t sz = tileShape().product();
+    sz *= nchunks*itsDataType.size();
+    int err = H5Pset_chunk_cache (itsDaplid, nhash, sz, 0.);
+    if (err < 0) {
+      throw HDF5Error ("Could not set cache for HDF5 Dataset " + getName());
+    }
+    // Reopen the dataset with cache size in itsDaplid.
+    String name = getName();
+    setHid (H5Dopen(*itsParent, name.chars(), itsDaplid));
+    if (! isValid()) {
+      throw HDF5Error("Data set array " + name + " could not be reopened");
+    }
   }
 
   DataType HDF5DataSet::getDataType (hid_t parentHid, const String& name)
