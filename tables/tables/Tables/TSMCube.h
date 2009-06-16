@@ -237,10 +237,20 @@ public:
 
     // Calculate the cache size (in buckets) for the given slice
     // and access path.
+    // <group>
     uInt calcCacheSize (const IPosition& sliceShape,
 			const IPosition& windowStart,
 			const IPosition& windowLength,
 			const IPosition& axisPath) const;
+    static uInt calcCacheSize (const IPosition& cubeShape,
+                               const IPosition& tileShape,
+                               Bool extensible,
+                               const IPosition& sliceShape,
+                               const IPosition& windowStart,
+                               const IPosition& windowLength,
+                               const IPosition& axisPath,
+                               uInt maxCacheSize, uInt bucketSize);
+    // </group>
 
     // Set the cache size for the given slice and access path.
     void setCacheSize (const IPosition& sliceShape,
@@ -262,7 +272,11 @@ public:
     // Validate the cache size (in buckets).
     // This means it will return the given cache size if smaller
     // than the maximum cache size. Otherwise the maximum is returned.
+    // <group>
     uInt validateCacheSize (uInt cacheSize) const;
+    static uInt validateCacheSize (uInt cacheSize, uInt maxSize,
+                                   uInt bucketSize);
+    // </group>
 
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache() const;

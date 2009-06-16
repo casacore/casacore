@@ -729,10 +729,16 @@ uInt TSMCube::cacheSize() const
 
 uInt TSMCube::validateCacheSize (uInt cacheSize) const
 {
+  return validateCacheSize (cacheSize, stmanPtr_p->maximumCacheSize(),
+                            bucketSize_p);
+}
+
+uInt TSMCube::validateCacheSize (uInt cacheSize, uInt maxSize,
+                                 uInt bucketSize)
+{
     // An overdraft of 10% is allowed.
-    uInt maxSize = stmanPtr_p->maximumCacheSize();
-    if (maxSize > 0  &&  cacheSize * bucketSize_p > maxSize) {
-        uInt size = maxSize / bucketSize_p;
+    if (maxSize > 0  &&  cacheSize * bucketSize > maxSize) {
+        uInt size = maxSize / bucketSize;
         if (10 * cacheSize  >  11 * size) {
             return size;
         }
@@ -781,65 +787,80 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
 			     const IPosition& windowLength,
 			     const IPosition& axisPath) const
 {
-    if (sliceShape.nelements() > nrdim_p
-    ||  windowStart.nelements() > nrdim_p
-    ||  windowLength.nelements() > nrdim_p
-    ||  axisPath.nelements() > nrdim_p) {
+    return calcCacheSize (cubeShape_p, tileShape_p, extensible_p,
+                          sliceShape, windowStart, windowLength, axisPath,
+                          stmanPtr_p->maximumCacheSize(), bucketSize_p);
+}
+
+uInt TSMCube::calcCacheSize (const IPosition& cubeShape,
+                             const IPosition& tileShape,
+                             Bool extensible,
+                             const IPosition& sliceShape,
+			     const IPosition& windowStart,
+			     const IPosition& windowLength,
+			     const IPosition& axisPath,
+                             uInt maxCacheSize, uInt bucketSize)
+{
+    uInt nrdim = cubeShape.nelements();
+    if (sliceShape.nelements() > nrdim
+    ||  windowStart.nelements() > nrdim
+    ||  windowLength.nelements() > nrdim
+    ||  axisPath.nelements() > nrdim) {
         throw (TSMError ("calcCacheSize: invalid arguments"));
     }
     uInt i;
     // The unspecified sliceShape dimensions are 1.
-    IPosition slice(nrdim_p, 1);
+    IPosition slice(nrdim, 1);
     for (i=0; i<sliceShape.nelements(); i++) {
 	if (sliceShape(i) > 0) {
 	    slice(i) = sliceShape(i);
 	}
     }
     // The unspecified window start dimensions are 0.
-    IPosition start(nrdim_p, 0);
+    IPosition start(nrdim, 0);
     for (i=0; i<windowStart.nelements(); i++) {
-        start(i) = min (windowStart(i), cubeShape_p(i)-1);
+        start(i) = min (windowStart(i), cubeShape(i)-1);
     }
     // The unspecified window length elements are set to the hypercube shape.
-    IPosition end(cubeShape_p);
+    IPosition end(cubeShape);
     for (i=0; i<windowLength.nelements(); i++) {
-        end(i) = min (windowLength(i), cubeShape_p(i) - start(i));
+        end(i) = min (windowLength(i), cubeShape(i) - start(i));
     }
     end += start;
     // If extensible, set end to the end of the tile.
     // Otherwise all reused values may get 0 for extensible hypercubes.
-    if (extensible_p) {
-	i = nrdim_p - 1;
+    if (extensible) {
+	i = nrdim - 1;
 	///old	end(i) += tileShape_p(i) * (1 + start(i) / tileShape_p(i));
-	end(i) = tileShape_p(i) * (1 + (end(i) - 1) / tileShape_p(i));
+	end(i) = tileShape(i) * (1 + (end(i) - 1) / tileShape(i));
     }
     end -= 1;
     // Make the full axes path.
-    IPosition path = IPosition::makeAxisPath (nrdim_p, axisPath);
+    IPosition path = IPosition::makeAxisPath (nrdim, axisPath);
     // Determine per dimension the number of tiles needed for the window.
     // Determine per dimension how many tiles are needed for a slice.
     // Determine per dimension how often a tile will be reused.
-    IPosition ntiles(nrdim_p);
-    IPosition reused(nrdim_p);
-    IPosition sliceTiles(nrdim_p);
-    for (i=0; i<nrdim_p; i++) {
+    IPosition ntiles(nrdim);
+    IPosition reused(nrdim);
+    IPosition sliceTiles(nrdim);
+    for (i=0; i<nrdim; i++) {
         uInt axis = path(i);
-        uInt startTile = start(axis) / tileShape_p(axis);
-        uInt endTile   = end(axis) / tileShape_p(axis);
+        uInt startTile = start(axis) / tileShape(axis);
+        uInt endTile   = end(axis) / tileShape(axis);
         ntiles(i) = 1 + endTile - startTile;
 	// Get start pixel in first tile.
-	Int st = start(axis) % tileShape_p(axis);
+	Int st = start(axis) % tileShape(axis);
 	// Nr of tiles needed for a slice (note that start plays a role).
-	sliceTiles(i) = 1 + (st + slice(axis) - 1) / tileShape_p(axis);
+	sliceTiles(i) = 1 + (st + slice(axis) - 1) / tileShape(axis);
         reused(i) = 0;
 	// Determine if a tile is reused in an iteration.
 	// It can only be reused if the slice is smaller than the window.
         if (slice(axis) < 1 + end(axis) - start(axis)) {
 	    // It is reused if the slice is smaller than the tile.
 	    // or if slice or start do not fit integrally in tile.
-	    if (slice(axis) < tileShape_p(axis)
+	    if (slice(axis) < tileShape(axis)
 	    ||  st != 0
-	    ||  slice(axis) % tileShape_p(axis) != 0) {
+	    ||  slice(axis) % tileShape(axis) != 0) {
 		reused(i) = 1;
             }
 	}
@@ -849,7 +870,7 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
     // Determine the optimum cache size taking the maximum cache
     // size into account. This is done by starting at the highest
     // dimension and working our way down until the cache size fits.
-    uInt nrd = nrdim_p;
+    uInt nrd = nrdim;
     while (nrd > 0) {
         nrd--;
         // Caching is needed if lower dimensions are reused because
@@ -872,7 +893,8 @@ uInt TSMCube::calcCacheSize (const IPosition& sliceShape,
 		cacheSize *= sliceTiles(i);
 	    }
 	}
-        if (cacheSize == validateCacheSize (cacheSize)) {
+        if (cacheSize == validateCacheSize (cacheSize, maxCacheSize,
+                                            bucketSize)) {
 	    return cacheSize;
         }
 	nrd = nr;
