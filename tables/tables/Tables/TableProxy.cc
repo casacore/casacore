@@ -1681,7 +1681,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   if (valtype == "boolean"  ||  valtype == "bool") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<Bool>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<Bool>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1689,7 +1689,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "byte"  ||  valtype == "uchar") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<uChar>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<uChar>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1697,7 +1697,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "short") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<Short>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<Short>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1705,7 +1705,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "integer"  ||  valtype == "int") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<Int>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<Int>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1713,7 +1713,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "uint") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<uInt>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<uInt>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1721,7 +1721,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "float") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<float>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<float>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1729,7 +1729,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "double") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<double>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<double>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1737,7 +1737,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "complex") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<Complex>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<Complex>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1745,7 +1745,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "dcomplex") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<DComplex>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<DComplex>
 			 (name, comment, dmtype, dmgrp, ndim, option));
@@ -1753,7 +1753,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
   } else if (valtype == "string") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<String>
-			 (name, comment, dmtype, dmgrp, shape, option));
+			 (name, comment, dmtype, dmgrp, shp, option));
     }else{
       tabdesc.addColumn (ArrayColumnDesc<String>
 			 (name, comment, dmtype, dmgrp, ndim, option));
