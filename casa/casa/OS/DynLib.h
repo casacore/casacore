@@ -77,7 +77,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
   public:
 
-    // Load the dynamic library. It is tried with prefixes "lib" and <prefix>
+    // Load the dynamic library. It is tried with prefixes "lib" and <src>prefix</src>
     // and suffixes ".so" and ".dylib".
     // If not loaded successfully, the internal handle is NULL.
     // <br>If a non-empty funcName is given, that function is looked up and

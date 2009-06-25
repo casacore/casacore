@@ -33,6 +33,7 @@
 #include <casa/BasicMath/Functional.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicMath/Random.h>
+#include <casa/BasicMath/Primes.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,6 +66,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=Random:description>
 //       Random</linkto>
 //       to offer random number generators.
+// <li> <linkto class="Primes">Prime</linkto> numbers
 // </ul>
 //
 // <note role=tip> You may want to look at the individual header files
