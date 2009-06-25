@@ -349,6 +349,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5DataSet::close()
   {}
 
+  void HDF5DataSet::setCacheSize (uInt)
+  {}
+
   DataType HDF5DataSet::getDataType (hid_t, const String&)
     { return TpOther; }
 
