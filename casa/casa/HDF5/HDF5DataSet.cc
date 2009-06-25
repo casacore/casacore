@@ -335,13 +335,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 #else
 
-  void HDF5DataSet::create (hid_t, const String&,
+  void HDF5DataSet::create (const HDF5Object&, const String&,
 			    const IPosition&, const IPosition&)
   {
     HDF5Object::throwNoHDF5();
   }
 
-  void HDF5DataSet::open (hid_t, const String&)
+  void HDF5DataSet::open (const HDF5Object&, const String&)
   {
     HDF5Object::throwNoHDF5();
   }
