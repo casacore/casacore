@@ -35,7 +35,6 @@
 #include <scimath/Mathematics/FFTServer.h>
 #include <casa/BasicMath/Math.h>
 #include <scimath/Mathematics/NumericTraits.h>
-#include <scimath/Mathematics/Primes.h>
 #include <casa/BasicMath/Random.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
