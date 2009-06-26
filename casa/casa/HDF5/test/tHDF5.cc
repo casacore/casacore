@@ -25,10 +25,20 @@
 //#
 //# $Id$
 
-#include <hdf5.h>
 #include <iostream>
+
+#ifndef HAVE_LIBHDF5
+int main()
+{
+  std::cout << "HDF5 not configured in, so cannot run tHDF5" << std::endl;
+  return 0;
+}
+
+#else
+
 #include <vector>
 #include <math.h>
+#include <hdf5.h>
 
 using namespace std;
 
@@ -419,3 +429,5 @@ int main(int argc, char* argv[])
   }
   exit(0);
 }
+
+#endif
