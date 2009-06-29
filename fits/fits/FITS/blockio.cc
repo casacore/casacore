@@ -192,48 +192,56 @@ BlockInput::~BlockInput() {
 //==========================================================================================
 // wrap the read() method with cfitsio of NASA. GYL
 char *BlockInput::read() {
-   m_current += m_recsize;
-	if (m_current >= m_iosize) {
-	   int l_ntoread = m_blocksize;
-		int l_status = 0;
-	   m_iosize = 0;
-		// check that we do not exceed the end of the fits file
-      OFF_T l_byte_left_in_file  = (m_fptr->Fptr)->filesize - (m_fptr->Fptr)->bytepos;
-		// if reached the end of file, return to caller with a NULL pointer.
-		if( l_byte_left_in_file == 0 ){ 
-		   //cout << "No more data in file, return a NULL pointer." << endl;
-		   return(NULL);
-	   }
-		
-	   if( OFF_T(m_blocksize) > l_byte_left_in_file ){
-		   l_ntoread = int(l_byte_left_in_file);
-		}
-	   // using the cfitsio function to read m_blocksize bytes from the file
-	   // pointed to by m_fptr from where the file position indicator currently at.
-	   OFF_T bytepost = (m_fptr->Fptr)->bytepos; 
-		ffgbyt( m_fptr,       // I - FITS file pointer             
-              l_ntoread,    // I - number of bytes to read       
-              m_buffer,     // O - buffer to read into           
-             &l_status);    // IO - error status               
-      if( l_status ){   
-		   fits_report_error(stderr, l_status); /* print error report */
- 	      return(0);
-	   }
-		bytepost = bytepost + OFF_T(l_ntoread);
-		if( bytepost < ((m_fptr->Fptr)->filesize) ){
-		   if(ffmbyt(m_fptr, bytepost, REPORT_EOF, &l_status)>0 ){ errmsg(READERR,"bytepos setting error!"); }
-		}else{
-		   (m_fptr->Fptr)->bytepos = bytepost;
-		}
-	   m_block_no++;
-		m_iosize = l_ntoread;
-	   if (m_iosize % m_recsize != 0) {
-	      errmsg(READERR,"Wrong length record");
-	      m_iosize -= (m_iosize % m_recsize);
-  	   } else {
-	      m_err_status = OK;
-	   }
-	   m_current = 0;
+    m_current += m_recsize;
+    if (m_current >= m_iosize) {
+	int l_ntoread = m_blocksize;
+	int l_status = 0;
+	m_iosize = 0;
+	// check that we do not exceed the end of the fits file
+	OFF_T l_byte_left_in_file  = (m_fptr->Fptr)->filesize - (m_fptr->Fptr)->bytepos;
+	// if reached the end of file, return to caller with a NULL pointer.
+	if( l_byte_left_in_file == 0 ){ 
+	    //cout << "No more data in file, return a NULL pointer." << endl;
+	    return(NULL);
+	}
+	
+	if( OFF_T(m_blocksize) > l_byte_left_in_file ){
+	    l_ntoread = m_recsize; // switch down to reading single records instead of blocks
+	    if( OFF_T(m_recsize) > l_byte_left_in_file ){
+		// ignore remainder if not multiple of record size
+		cout << "WARNING: fits blockio ignoring last " << l_byte_left_in_file << " bytes." << endl;
+		return(NULL);
+	    }		
+	}
+	// using the cfitsio function to read m_blocksize bytes from the file
+	// pointed to by m_fptr from where the file position indicator currently at.
+	OFF_T bytepost = (m_fptr->Fptr)->bytepos; 
+// 	cout << "m_iosize, m_blocksize,  m_recsize, m_iosize % m_recsize, bytepost, l_ntoread "
+// 	     << m_iosize << " " << m_blocksize << " " << m_recsize << " " << m_iosize % m_recsize 
+// 	     << " " << bytepost << " " << l_ntoread << endl; 
+
+	ffgbyt( m_fptr,       // I - FITS file pointer             
+		l_ntoread,    // I - number of bytes to read       
+		m_buffer,     // O - buffer to read into           
+		&l_status);    // IO - error status               
+	if( l_status ){   
+	    fits_report_error(stderr, l_status); /* print error report */
+	    return(0);
+	}
+	
+	// try to move on to the next record
+	bytepost = bytepost + OFF_T(l_ntoread);
+	l_byte_left_in_file  = (m_fptr->Fptr)->filesize - bytepost;
+	if( l_byte_left_in_file  >= OFF_T(m_recsize) ){
+	    if(ffmbyt(m_fptr, bytepost, REPORT_EOF, &l_status)>0 ){ errmsg(READERR,"bytepos setting error!"); }
+	}else{
+	    (m_fptr->Fptr)->bytepos = bytepost;
+	}
+	m_block_no++;
+	m_iosize = l_ntoread; // always a multiple of the record size
+	m_err_status = OK;
+
+	m_current = 0;
     }
     m_rec_no++;
     return &m_buffer[m_current];

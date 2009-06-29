@@ -160,6 +160,10 @@ private:
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<AccumType>& ord);
 
+   virtual void displayStats( AccumType nPts, AccumType sum, AccumType median,
+           AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
+           AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax );
+
 
   //# Make members of parent class known.
 protected:
@@ -171,6 +175,7 @@ protected:
   using LatticeStatistics<T>::displayAxes_p;
   using LatticeStatistics<T>::cursorAxes_p;
   using LatticeStatistics<T>::doRobust_p;
+  using LatticeStatistics<T>::doList_p;
   using LatticeStatistics<T>::fixedMinMax_p;
   using LatticeStatistics<T>::minPos_p;
   using LatticeStatistics<T>::maxPos_p;

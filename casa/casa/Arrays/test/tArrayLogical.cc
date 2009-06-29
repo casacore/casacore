@@ -72,6 +72,9 @@ int main()
             cout << endl << "y= " << endl;
             cout << y << endl;
 
+            AlwaysAssertExit (allSame(x));
+            AlwaysAssertExit (!allSame(y));
+
             b = (x <= y);
             cout << endl << "b= (x <= y) = " << endl;
             cout << b << endl;

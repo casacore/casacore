@@ -221,10 +221,10 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
   Range* pyout=yout.getStorage(deleteYout);
   Bool* pyoutFlags=youtFlags.getStorage(deleteYoutFlags);
 
-  PtrBlock<const Range*> yinPtrs(nxin);
-  PtrBlock<const Bool*> yinFlagPtrs(nxin);
-  PtrBlock<Range*> youtPtrs(nxout);
-  PtrBlock<Bool*> youtFlagPtrs(nxout);
+  PtrBlock<const Range*> yinPtrs(na*nb*nc);
+  PtrBlock<const Bool*> yinFlagPtrs(na*nb*nc);
+  PtrBlock<Range*> youtPtrs(na*nxout*nc);
+  PtrBlock<Bool*> youtFlagPtrs(na*nxout*nc);
   Int i;
   for (i=0; i<(na*nb*nc); i++) {
     yinPtrs[i]=pyin+i;

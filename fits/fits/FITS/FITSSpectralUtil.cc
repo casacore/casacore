@@ -379,7 +379,8 @@ Bool FITSSpectralUtil::toFITSHeader(String &ctype,
 
     if (!haveAlt || !preferVelocity) {
 	// FREQ is primary
-	ctype = String("FREQ") + ctypetag;
+	//	ctype = String("FREQ") + ctypetag;
+	ctype = String("FREQ"); // no tag here. change requested by C. Brogan
 	crval = refFrequency;
 	cdelt = freqIncrement;
 	crpix = refChannel;

@@ -296,7 +296,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			"There is no axis with type DEC or LAT. Cannot identify latitude axis for WCS."
 			" Will assume axis 2 as default." <<
 			LogIO::POST;
-		    header.define("pv2_", pvi_ma);		}
+		}
 		else {
 		    ostringstream oss;
 		    oss << "pv" << theLatAxisNum+1 << "_"; // numbers are start at 1 in WCS
@@ -473,7 +473,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // this method takes header converts it into cSys and puts the remainer into recHeader
 
 
-	LogIO os(LogOrigin("FITSCoordinateUtil", "fromFITSHeader", WHERE));
+	LogIO os(LogOrigin("FITSCoordinateUtil", "fromFITSHeader"));
 	CoordinateSystem cSysTmp;
 
 	if (header.nelements()==0) {
@@ -497,7 +497,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		tmp[18]=tmp[17];tmp[17]=tmp[16];tmp[16]=tmp[15];tmp[15]=tmp[14];
 		all = all.append(tmp);
 		os << LogIO::WARN
-		   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
 	    } else if (hsize >= 19 &&	  // change GLON-FLT to GLON-CAR, etc.
 		       header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
 		       header[i][3]=='P' && header[i][4]=='E' &&
@@ -509,7 +509,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
 		all = all.append(tmp);
 		os << LogIO::WARN
-		   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
 	    } else if (hsize >= 19 &&	  // change 'GLON    ' to 'GLON-CAR', etc.
 		       header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
 		       header[i][3]=='P' && header[i][4]=='E' &&
@@ -521,7 +521,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
 		all = all.append(tmp);
 		os << LogIO::WARN
-		   << "Header\n"<< header[i] << "\nrewrote as\n" << tmp << LogIO::POST;
+		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
+	    } else if (hsize >= 19 &&	  // change 'OBSFREQ' to 'RESTFRQ'
+		       header[i][0]=='O' && header[i][1]=='B' && header[i][2]=='S' &&
+		       header[i][3]=='F' && header[i][4]=='R' &&
+		       header[i][5]=='E' && header[i][6]=='Q' &&
+		       header[i][7]==' ') {
+		char tmp[hsize];
+		strncpy(tmp,header[i].c_str(),hsize+1);
+		tmp[0]='R'; tmp[1]='E'; tmp[2]='S'; tmp[3]='T';
+		tmp[4]='F'; tmp[5]='R'; tmp[6]='Q'; tmp[7]=' ';
+		all = all.append(tmp);
+		os << LogIO::WARN
+		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
+	    } else if (hsize >= 24 &&       // ignore "-SIP"
+		       header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
+		       header[i][3]=='P' && header[i][4]=='E' &&
+		       (header[i][5]=='1'|| header[i][5]=='2') &&
+		       header[i][19]=='-' && header[i][20]=='S' && 
+		       header[i][21]=='I' && header[i][22]=='P' && 
+		       header[i][23]=='\'') {
+		char tmp[hsize];
+		strncpy(tmp,header[i].c_str(),hsize+1);
+		tmp[19]='\'';tmp[20]=tmp[21]=tmp[22]=tmp[23]=' ';
+		all = all.append(tmp);
+		os << LogIO::WARN
+		   << "The SIP convention for representing distortion in FITS headers\n  is not part of FITS standard v3.0"
+		   << " and not yet supported by CASA.\n  Header\n  "<< header[i] << "\n  was interpreted as\n  " << tmp << LogIO::POST;
 	    } else {
 		all = all.append(header(i));
 	    }
@@ -551,18 +577,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	int ctrl = -2;
 	int status = wcspih(pChar2, nkeys, relax, ctrl, &nrej, &nwcs, &wcsPtr);
 	if (status!=0) {
-//      os << LogIO::WARN << "wcs FITS parse error with error " << wcspih_errmsg[status] << LogIO::POST;
 	    os << LogIO::SEVERE << "wcs FITS parse error with error code " << status << LogIO::POST;
 	    return False;
 	}
-	if (which >= uInt(nwcs)) {
-	    os << LogIO::SEVERE << "Specified Coordinate Representation is out of range - number available is " << nwcs << LogIO::POST;
+	if (uInt(nwcs) == 0) {
+	    os << LogIO::WARN << "No WCS compliant coordinate representation found. Will try to continue ..." << LogIO::POST;
+	    cardsToRecord (os, recHeader, pChar2);
 	    return False;
+	}
+	else if (which >= uInt(nwcs)) {
+	    os << LogIO::SEVERE << "Requested WCS # " << which << " exceeds the number available " << nwcs << LogIO::POST;
 	}
 
 // Put the rest of the header into a Record for subsequent use
-
 	cardsToRecord (os, recHeader, pChar2);
+
 
 // Add FITS units to system
 
@@ -906,17 +935,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						    LogIO& os) const
     {
 
-// Extract wcs structure pertaining to Spectral Coordinate
-
+        // Extract wcs structure pertaining to Spectral Coordinate
 	int nsub = 1;
 	Block<int> axes(nsub);
 	axes[0] = WCSSUB_SPECTRAL;
-//
+
 	::wcsprm wcsDest;
 	wcsDest.flag = -1;
 	int alloc = 1;
 	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
-//
+
 	Bool ok = True;
 	String errMsg;
 	if (ierr!=0) {
@@ -925,37 +953,52 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    ok = False;
 	}
 
-// See if we found the axis
-
+	// See if we found the axis
 	if (ok && nsub==1) {
 
-// Call wcssset on new struct
-
+	    // throws exception if wcsset() fails
 	    setWCS (wcsDest);
 
-// Convert the struct to a frequency base
-
+	    // Convert the struct to a frequency base...
+	    // ...really convert to FREQ... casa (non-core) above depends
+	    // on receiving FREQ coordinates (not VELO)... if other uses
+	    // of addSpectralCoordinate( ) depend on retrieving VELO, then
+	    // FREQ conversion should be added as an option, taking advantage
+	    // of wcslib's conversion abilities.
 	    int index=0;
 	    char ctype[9];  // Patched by rrusk 25-Oct-2007
 	    String cType = wcs.ctype[axes[0]-1];
+
+	    if (cType.contains("VELO") || cType.contains("VRAD")) {
+	      os << "Converting velocity axis to frequency axis" << LogIO::POST;
+	    }
+
+
 	    if (cType.contains("FREQ")) strcpy(ctype,"FREQ-???");
-	    else if (cType.contains("VELO")) strcpy(ctype, "VELO-???");
-	    else if (cType.contains("FELO")) strcpy(ctype, "FELO-???");
+	    else if (cType.contains("VELO")) strcpy(ctype, "FREQ-???");
+	    else if (cType.contains("VRAD")) strcpy(ctype, "FREQ-???");
+	    else if (cType.contains("FELO")) strcpy(ctype, "FELO-???"); // FELO should never occur here
+	                                                                // because wcsfix should have replaced it, DP
+	                                                                // Will correct this for the 3.0 release
+	    else if (cType.contains("VOPT")) strcpy(ctype, "FREQ-???");
 	    else {
 		os << LogIO::WARN << "Unrecognized frequency type" << LogIO::POST;
 		ok = False;
 	    }
+
 	    if (ok) {
-		int iret = wcssptr (&wcsDest, &index, ctype);
-		if (iret !=0) {
+	        int status = 0;
+		if ((status=wcssptr (&wcsDest, &index, ctype))) {
 		    os << LogIO::WARN << "Failed to convert Spectral coordinate to Frequency, error status = "
-		       << iret << LogIO::POST;
+		       << status << LogIO::POST;
 		    ok = False;	     
+		} else {
+		  // throws exception if wcsset() fails
+		  setWCS (wcsDest);
 		}
 	    }
 
-// Find frequency system
-
+	    // Find frequency system
 	    MFrequency::Types freqSystem;
 	    if (ok) {
 		specAxis = axes[0] - 1;                  // 1 -> 0 rel
@@ -965,14 +1008,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	    }
 
-// Try to create SpectralCoordinate and fix up zero 
-// increments etc and add to CoordinateSystem
-
+	    // Try to create SpectralCoordinate and fix up zero 
+	    // increments etc and add to CoordinateSystem
 	    if (ok) {
 		try {
 		    Bool oneRel = True;           // wcs structure from FITS has 1-rel pixel coordinate
 		    SpectralCoordinate c(freqSystem, wcsDest, oneRel);
-//
+
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
 		} catch (AipsError x) {
@@ -980,10 +1022,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		    ok = False;
 		}     
 	    }
+	} else {
+	  //os << LogIO::DEBUG1 << "passing empty or nonexistant spectral Coordinate axis" << LogIO::POST;
+	  os << "passing empty or nonexistant spectral Coordinate axis" << LogIO::POST;
 	}
 
-// Clean up
-
+	// Clean up
 	wcsfree (&wcsDest);
 	return ok;
     }
@@ -1138,7 +1182,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			return True;
 		    }
 		} else {                                      // No RaDecSys or equinox
-		    os << LogIO::WARN << "No Direction system is defined - J2000 assumed" << LogIO::POST;
+		    os << "No Direction system is defined - J2000 assumed" << LogIO::POST;
 		    type = MDirection::J2000;                  // Defaults to ICRS
 		    return True;
 		}

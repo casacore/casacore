@@ -486,7 +486,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   medFmedT = buffer_p.asArrayFloat("medFmedT");
   adT = buffer_p.asArrayFloat("adT");
   medF = buffer_p.asArrayFloat("medF");
-  medTmedF = buffer_p.asArrayFloat("medTmeF");
+  medTmedF = buffer_p.asArrayFloat("medTmedF");
   adF = buffer_p.asArrayFloat("adF");
 /*
   GlishArray(buffer_p.get("adTF")).get(adTF);

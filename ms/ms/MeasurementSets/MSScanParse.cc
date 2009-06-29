@@ -38,13 +38,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Constructor
   MSScanParse::MSScanParse ()
-    : MSParse(), colName(MS::columnName(MS::SCAN_NUMBER)), maxScans_p(std::numeric_limits<Int>::max())
+    : MSParse(), colName(MS::columnName(MS::SCAN_NUMBER)),
+      //      maxScans_p(std::numeric_limits<Int>::max())
+      maxScans_p(1000)
   {
   }
   
   //# Constructor with given ms name.
   MSScanParse::MSScanParse (const MeasurementSet* ms)
-    : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)), maxScans_p(std::numeric_limits<Int>::max())
+    : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)),
+      //      maxScans_p(std::numeric_limits<Int>::max())
+      maxScans_p(1000)
   {
     if(node_p) delete node_p;
     node_p = new TableExprNode();

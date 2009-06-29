@@ -54,10 +54,11 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   IPosition slabShape = cLattice.niceCursorShape(maxPixels);
   const uInt nx = slabShape(0) = latticeShape(0);
   const uInt ny = slabShape(1) = latticeShape(1);
-  Int cacheSize=HostInfo::memoryFree()*1024/(8); 
+  // use 1/8 of memory for FFT of a plane at most 
+  Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
 
   // For small transforms, we do everything in one plane
-  if ((Int) slabShape.product() <= cacheSize) {
+  if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
     const IPosition cursorShape(2, nx, ny);
     LatticeStepper ls(latticeShape, cursorShape);
     LatticeIterator<Complex> li(cLattice, ls);

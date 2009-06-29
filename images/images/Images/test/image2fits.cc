@@ -96,9 +96,11 @@ int main(int argc, const char *argv[])
         Int bits = -32;
         if (do16) bits = 16;
         Bool degLast = False;
+        Bool stokesLast = True;
 	Bool ok = ImageFITSConverter::ImageToFITS(error, image, out,
 						  64, True, True, bits, 1, -1,
-						  overwrite, degLast, verbose);
+						  overwrite, degLast, verbose,
+                                                  stokesLast);
 	if (!ok) {
 	    cout << "Error writing FITS file: " << error << endl;
 	    return 1;

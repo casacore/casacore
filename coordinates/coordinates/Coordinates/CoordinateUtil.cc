@@ -600,16 +600,9 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
 // The conversion failed, so we need either or both of epoch 
 // and position in the machine.  
 
-   Double t = epochFrom.getValue().get();
-   if (t<0.0) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
+   os << LogOrigin("CoordinateUtil", "makeDirectionMachine");
+   if (epochFrom.getValue().get() < 0.0 || epochTo.getValue().get() < 0.0)
       os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
-   }
-   t = epochTo.getValue().get();
-   if (t<0.0) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
-   }
 
 // Now add the epoch to the machine and see if that works
 
@@ -635,27 +628,19 @@ Bool CoordinateUtil::makeDirectionMachine(LogIO& os, MDirection::Convert& machin
 // Now add the position to the machine and see if that works
 
    if (telFrom==String("UNKNOWN")) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "The output CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+      os << 
+	"The output CoordinateSystem has no valid observatory name - cannot divine its position"
+	 << LogIO::EXCEPTION;
    }
    if (telTo==String("UNKNOWN")) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "The input CoordinateSystem has no valid observatory name - cannot divine its position" << LogIO::EXCEPTION;
+      os <<
+	"The input CoordinateSystem has no valid observatory name - cannot divine its position"
+	 << LogIO::EXCEPTION;
    }
 //
    MPosition posFrom, posTo;
-   Bool found = MeasTable::Observatory(posFrom, telFrom);
-   if (!found) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
-   found = MeasTable::Observatory(posTo, telTo);
-   if (!found) {
-      os << "In setting up the DirectionCoordinate conversion machinery" << endl;
-      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
+   findObservatoryOrRaiseException(os, posFrom, telFrom);
+   findObservatoryOrRaiseException(os, posTo,   telTo);
 //
    {
       MeasFrame frameFrom;
@@ -764,17 +749,10 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 //   
    String telFrom = obsInfoFrom.telescope();
    String telTo = obsInfoTo.telescope();
-   MPosition posFrom, posTo; 
-   Bool found = MeasTable::Observatory(posFrom, telFrom);
-   if (!found) {
-      os << "Cannot lookup the observatory name " << telFrom << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
-   found = MeasTable::Observatory(posTo, telTo);
-   if (!found) {
-      os << "Cannot lookup the observatory name " << telTo << " in the AIPS++" << endl;
-      os << "data base.  Please request that it be added" << LogIO::EXCEPTION;
-   }
+   MPosition posFrom, posTo;
+
+   findObservatoryOrRaiseException(os, posFrom, telFrom);
+   findObservatoryOrRaiseException(os, posTo,   telTo);
 //
    return makeFrequencyMachine(os, machine, typeTo, typeFrom,
                                dirTo, dirFrom, 
@@ -783,16 +761,30 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
                                posTo, posFrom, unit);
 }
 
+void CoordinateUtil::findObservatoryOrRaiseException(LogIO& os,
+						     MPosition& pos,
+						     const String& tel)
+{
+  Bool found = MeasTable::Observatory(pos, tel);
+
+  if(!found){
+    os << "Cannot find the observatory name " << tel << " in the CASA" << endl;
+    os << "database.  Please request that it be added." << LogIO::EXCEPTION;
+  }
+}
+  
 
 Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
-                                          MFrequency::Types typeTo, MFrequency::Types typeFrom,
-                                          const MDirection& dirTo, const MDirection& dirFrom,
-                                          const MEpoch& epochTo, const MEpoch& epochFrom,
-                                          const MPosition& posTo, const MPosition& posFrom,
+                                          MFrequency::Types typeTo,
+					  MFrequency::Types typeFrom,
+                                          const MDirection& dirTo,
+					  const MDirection& dirFrom,
+                                          const MEpoch& epochTo,
+					  const MEpoch& epochFrom,
+                                          const MPosition& posTo,
+					  const MPosition& posFrom,
                                           const Unit& unit)
-
 {
-
 // Create frames
 
    MeasFrame frameFrom;
@@ -805,16 +797,11 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 
 // Add Epoch   
 
-   Double t = epochFrom.getValue().get();
-   if (t<0.0) {
-      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+   os << LogOrigin("CoordinateUtil", "makeFrequencyMachine");
+   if(epochFrom.getValue().get() < 0.0)
       os << "The output CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
-   }
-   t = epochTo.getValue().get();
-   if (t<0.0) {
-      os << "In setting up the SpectralCoordinate conversion machinery" << endl;
+   if(epochTo.getValue().get() < 0.0)
       os << "The input CoordinateSystem has no valid epoch" << LogIO::EXCEPTION;
-   }
    frameFrom.set(epochFrom);
    frameTo.set(epochTo);
 

@@ -345,6 +345,83 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    return True;
 }
 
+template <class T>
+void ImageStatistics<T>::displayStats( AccumType nPts, AccumType sum, AccumType median, 
+	AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean, 
+	AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax )
+{
+    if ( ! doList_p ) {
+	// Nothing to display, listing data is turned off.
+	return;
+    }
+    
+
+    // Get beam
+    Double beamArea;
+    Bool hasBeam = getBeamArea(beamArea);
+
+    // Find world coordinates of min and max. We list pixel coordinates
+    // of min/max relative to the start of the parent lattice
+    //if (!fixedMinMax_p) {
+
+    CoordinateSystem cSys(pInImage_p->coordinates());
+    String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys);
+    String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys);
+	//}
+    
+
+    // Have to convert LogIO object to ostream before can apply
+    // the manipulators.  Also formatting Complex numbers with
+    // the setw manipulator fails, so I go to a lot of trouble
+    // with ostringstreams (which are useable only once).
+    const Int oPrec = 6;
+    Int oWidth = 14;
+    T* dummy = 0;
+    DataType type = whatType(dummy);
+    if (type==TpComplex) {
+	oWidth = 32;
+    }
+    setStream(os_p.output(), oPrec);
+    
+    ///////////////////////////////////////////////////////////////////////
+    //                 Do Values Section
+    ///////////////////////////////////////////////////////////////////////
+    os_p << "Values --- " << LogIO::POST;
+    if ( hasBeam ) {
+	os_p << "         -- flux density [flux]:     " << sum/beamArea << " Jy" << LogIO::POST;
+    }
+    
+    if (LattStatsSpecialize::hasSomePoints(nPts)) {
+	os_p << "         -- number of points [npts]:                " << nPts << LogIO::POST;
+	os_p << "         -- maximum value [max]:                    " << dMax << LogIO::POST;
+	os_p << "         -- minimum value [min]:                    " << dMin << LogIO::POST;
+	os_p << "         -- position of max value (pixel) [maxpos]: " << maxPos_p << LogIO::POST;
+	os_p << "         -- position of min value (pixel) [minpos]: " << minPos_p << LogIO::POST;
+	os_p << "         -- position of max value (world) [maxposf]: " << maxPosString << LogIO::POST;
+	os_p << "         -- position of min value (world) [maxposf]: " << minPosString << LogIO::POST;
+	os_p << "         -- Sum of pixel values [sum]:               " << sum << LogIO::POST;
+	os_p << "         -- Sum of squared pixel values [sumsq]:     " << sumSq << LogIO::POST;
+    }
+    
+    
+
+    ///////////////////////////////////////////////////////////////////////
+    //                 Do Statistical Section
+    ///////////////////////////////////////////////////////////////////////
+    os_p << "\nStatistics --- " << LogIO::POST;
+    if (LattStatsSpecialize::hasSomePoints(nPts)) {
+	os_p << "        -- Mean of the pixel values [mean]:         " << mean << LogIO::POST;
+	os_p << "        -- Variance of the pixel values :           " << var << LogIO::POST;
+	os_p << "        -- Standard deviation of the Mean [sigma]:  " << sigma << LogIO::POST;
+	os_p << "        -- Root mean square [rms]:                  " << rms << LogIO::POST;
+	os_p << "        -- Median of the pixel values [median]:     " << median << LogIO::POST;
+	os_p << "        -- Median of the deviations [medabsdevmed]: " << medAbsDevMed << LogIO::POST;
+	os_p << "        -- Quartile [quartile]:                     " << quartile << LogIO::POST;
+    } else {
+	os_p << LogIO::WARN << "No valid points found " << LogIO::POST;
+    }
+}
+
 
 template <class T>
 void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const
@@ -382,6 +459,7 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
    }
 }
 
+
 template <class T>
 void ImageStatistics<T>::listMinMax(ostringstream& osMin,
                                     ostringstream& osMax,
@@ -412,6 +490,7 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
       os_p.post();
    }
 }
+
 
 } //# NAMESPACE CASA - END
 

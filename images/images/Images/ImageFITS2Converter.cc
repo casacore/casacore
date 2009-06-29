@@ -218,7 +218,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     Bool opticalVelocity,
 				     Int BITPIX, Float minPix, Float maxPix,
 				     Bool allowOverwrite, Bool degenerateLast,
-                                     Bool verbose)
+                                     Bool verbose, Bool stokesLast)
 {
 //
 // Make a logger
@@ -271,33 +271,65 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	return False;
     }
 
+
 //
 // Make degenerate axes last if requested
+// and make Stokes the very last if requested
 //
    IPosition shape = image.shape();
    IPosition newShape = shape;
    const uInt ndim = shape.nelements();
-   if (degenerateLast) {
-      IPosition shape2(ndim);
-      IPosition cursorShape2(ndim);
-      Vector<Int> order(ndim);
-      uInt j = 0;
-      for (uInt i=0; i<ndim; i++) {
-         if (shape(i)>1) {
-            order(j) = i;
-            newShape(j) = shape(i);
-            j++;
-         }
-      }
-      for (uInt i=0; i<ndim; i++) {
-         if (shape(i)==1) {
-            order(j) = i;
-            newShape(j) = shape(i);
-            j++;
-         }
-      }
-//
-      cSys.transpose(order,order);
+
+   if(stokesLast || degenerateLast){
+       Vector<Int> order(ndim); 
+       Vector<String> cNames = cSys.worldAxisNames();
+       //       cout << "1: " << cNames << endl;
+       uInt nStokes = 0; // number of stokes axes
+       if(stokesLast){
+	   for (uInt i=0; i<ndim; i++) { // loop over axes
+		   order(i) = i; 
+		   newShape(i) = shape(i);
+	   }	       
+	   for (uInt i=0; i<ndim; i++) { // loop over axes
+	       if (cNames(i) == "Stokes") { // swap to back 
+		   nStokes++;
+		   order(ndim-nStokes) = i; 
+		   newShape(ndim-nStokes) = shape(i);
+		   order(i) = ndim-nStokes;
+		   newShape(i) = shape(ndim-nStokes);
+	       }
+	   }	   
+       }
+       if(nStokes>0){ // apply the stokes reordering
+	   cSys.transpose(order,order);
+       } 
+       //       cNames = cSys.worldAxisNames();
+       //       cout << "2: " << cNames << endl;
+
+       if (degenerateLast) {
+	   // make sure the stokes axes stay where they are now
+	   for (uInt i=ndim-nStokes; i<ndim; i++) {
+	       order(i) = i;
+	   }
+	   uInt j = 0;
+	   for (uInt i=0; i<ndim-nStokes; i++) { // loop over axes
+	       if (shape(i)>1) { // axis is not degenerate
+		   order(j) = i; // put it in front, keeping order 
+		   newShape(j) = shape(i);
+		   j++;
+	       }
+	   }
+	   for (uInt i=0; i<ndim-nStokes; i++) { // loop over axes again
+	       if (shape(i)==1) { // axis is degenerate
+		   order(j) = i;
+		   newShape(j) = shape(i);
+		   j++;
+	       }
+	   }
+	   cSys.transpose(order,order); // apply the degenerate reordering
+	   //	   cNames = cSys.worldAxisNames();
+	   //	   cout << "3: " << cNames << endl;
+       }
    }
 //
     Bool applyMask = False;
@@ -1000,15 +1032,15 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
         os << LogIO::WARN <<
           "Cannot create the coordinate system from FITS keywords.\n"
           "I will use a dummy linear coordinate along each axis instead.\n"
-          "If you your FITS file actually does contain a coordinate system\n"
+          "If your FITS file actually does contain a coordinate system\n"
           "please submit a bug report."  << LogIO::POST;
 //
         CoordinateSystem cSys2;
         Vector<String> names(shape.nelements());
         for (uInt i=0; i<names.nelements(); i++) {
-           ostringstream oss;
-           oss << i;
-           names(i) = String("linear") + String(oss);
+	    ostringstream oss;
+	    oss << i;
+	    names(i) = String("linear") + String(oss);
         }   
         CoordinateUtil::addLinearAxes(cSys2, names, shape);
         cSys = cSys2;

@@ -40,7 +40,9 @@ void FITSError::defaultHandler(const char *errMessage,
     if (severity == FITSError::WARN) {
 	os << LogIO::WARN;
     } else {
+      if (severity == FITSError::SEVERE) {
 	os << LogIO::SEVERE;
+      }
     }
     os << errMessage;
     os << LogIO::POST;

@@ -90,6 +90,8 @@
 #include <casa/System/ProgressMeter.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
 #include <ms/MeasurementSets/MSSourceIndex.h>
+#include <casa/iostream.h>
+#include <casa/iomanip.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -181,10 +183,10 @@ void MSPrimaryGroupHolder::detach()
   pf = 0;
 }
 
-MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile)
+MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile, const Bool useNewStyle)
   :infile_p(0),
    msc_p(0),addSourceTable_p(False),
-   itsLog(LogOrigin("MSFitsInput", "MSFitsInput"))
+   itsLog(LogOrigin("MSFitsInput", "MSFitsInput")), newNameStyle(useNewStyle)
 {
   // First, lets verify that fitsfile exists and that it appears to be a
   // FITS file.
@@ -1418,7 +1420,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    if (doSMA) diameter=6;
    if (array_p=="ATA") diameter=6.1;
    if (array_p=="HATCREEK" || array_p=="BIMA") diameter=6.1;
-  
+   
    //   Table anTab=bt.fullTable("",Table::Scratch);
    Table anTab=bt.fullTable();
    MSAntennaColumns& ant(msc_p->antenna());
@@ -1429,7 +1431,23 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    ROScalarColumn<Float> polangleA(anTab,"POLAA");
    ROScalarColumn<Float> polangleB(anTab,"POLAB");
    ROArrayColumn<Double> antXYZ(anTab,"STABXYZ");
-
+   Vector<Float> antDiams(nAnt);
+   antDiams.set(diameter);
+   
+   //If it has a column called DIAMETER ...make use of it
+   if(anTab.tableDesc().isColumn("DIAMETER")){
+     ROScalarColumn<Float> fitsDiams(anTab,"DIAMETER");
+     antDiams=fitsDiams.getColumn();
+   }
+   else if((array_p=="OVRO") || (array_p=="CARMA")){
+     for (Int i=0; i<nAnt; i++) {
+       //Crystal Brogan has guaranteed that it is always this order
+       if(id(i) <=6)
+	 antDiams(i)=10.4;
+       else
+	 antDiams(i)=6.1;
+     }
+   }
    // Prepare handling of UVFITS Antenna position coord conventions:
    // VLA requires rotation of local coords:
    Bool doVLARot=(array_p=="VLA");
@@ -1466,14 +1484,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    Int row=ms_p.antenna().nrow()-1;
    for (Int i=0; i<nAnt; i++) {
      ms_p.antenna().addRow(); row++;
-     if((array_p=="OVRO") || (array_p=="CARMA")){
-       //Crystal Brogan has guaranteed that it is always this order
-       if(id(i) <=6)
-	 diameter=10.4;
-       else
-	 diameter=6.1;
-     }
-     ant.dishDiameter().put(row,diameter); 
+     ant.dishDiameter().put(row,antDiams(i)); 
      String mount;
      switch (mountType(i)) {
      case 0: mount="ALT-AZ"; break;
@@ -1487,7 +1498,17 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      if (doSMA) mount="ALT-AZ"; 
      ant.flagRow().put(row,False);
      ant.mount().put(row,mount);
-     ant.name().put(row,String::toString(id(i)));
+     if(doVLARot && newNameStyle){
+	ostringstream oss;
+	if(name(i).contains("EVLA"))
+	   oss << "EA" << setw(2) << setfill('0') << id(i);
+	else 
+	   oss << "VA" << setw(2) << setfill('0') << id(i);
+	//cerr << name(i) << endl;
+        ant.name().put(row,oss.str());
+     }else{
+        ant.name().put(row,String::toString(id(i)));
+     }
      Vector<Double> offsets(3); offsets=0.; offsets(0)=offset(i);
      ant.offset().put(row,offsets);
      ant.station().put(row,name(i));

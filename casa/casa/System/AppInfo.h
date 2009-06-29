@@ -54,11 +54,11 @@ template<class T> class Vector;
 //
 // <synopsis>
 // This class provides general information that an application might want to
-// know about it's processing environment. This will be based either on
+// know about its processing environment. This will be based either on
 // information coded into <linkto class=Aipsrc>aipsrc</linkto> variables, or
 // on information which can be obtained directly from some other source. For
 // example, the time zone will generally be obtained from the host OS, but it
-// can be over-ridden by an <linkto class=Aipsrc>aipsrc</linkto> variable if
+// can be overridden by an <linkto class=Aipsrc>aipsrc</linkto> variable if
 // necessary.
 //
 // Generally speaking, this class is provided to hide the details of how the
@@ -113,8 +113,8 @@ public:
 
     // This function returns a fully qualified filename for a non-existent file
     // in a work directory with enough free space. That is, you can create a
-    // temporary file with the name returned from this function. Tthis function
-    // calls <src>workDirectory</src> and then appends a unique (files does not
+    // temporary file with the name returned from this function. This function
+    // calls <src>workDirectory</src> and then appends a unique (file does not
     // exist) filename. By default the prefix of temporary file name is
     // <src>aipstmp_</src>, but you can override this if you choose.
     // <thrown>

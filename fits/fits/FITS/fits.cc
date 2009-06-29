@@ -2409,7 +2409,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 	    ++cardno;
 	    kwlist.parse(&buff[i*80],80);
 	    if (show_err && (kwlist.no_parse_errs() > 0)) {
-		FITSError::ErrorLevel errlev = FITSError::WARN;
+		FITSError::ErrorLevel errlev = FITSError::INFO;
 		if (strcmp(kwlist.curr()->name(),"ERROR") == 0)
 		    errlev = FITSError::SEVERE;
 		ostringstream msgline;

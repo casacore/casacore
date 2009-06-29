@@ -379,9 +379,9 @@ String replicate(Char c, String::size_type n) {
 }
 
 String replicate(const string &str, String::size_type n) {
-  String t;
-  t.resize(n*str.length());
-  while (n-- > 0) t += str;
+  String t(str);
+  t.reserve(n*str.length());
+  while (--n > 0) t += str;
   return t;
 }
 

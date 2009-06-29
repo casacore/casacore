@@ -1290,7 +1290,7 @@ ImageAnalysis::continuumsub(const String& outline, const String& outcont,
     IPosition imshape = subim->shape();
     if (imshape[spectralPixelAxis[0]] == 1) {
       delete subim;
-      *itsLog << LogIO::SEVERE
+      *itsLog << LogIO::WARN
 	      << "There is only one channel in the selected region."
 	      << LogIO::POST;
       return 0;
@@ -2335,7 +2335,7 @@ ImageAnalysis::fitpolynomial(const String& residFile, const String& fitFile,
     PtrHolder<ImageInterface<Float> > residImage;
     ImageInterface<Float>* pResid=0;
     if (makeExternalImage (residImage, residFile, cSys, imageShape,
-			   subImage, *itsLog, True, True, False))
+			   subImage, *itsLog, overwrite, True, False))
       pResid = residImage.ptr()->cloneII();
 
     // Create optional disk image holding fit
@@ -2343,7 +2343,7 @@ ImageAnalysis::fitpolynomial(const String& residFile, const String& fitFile,
     PtrHolder<ImageInterface<Float> > fitImage;
     ImageInterface<Float>* pFit=0;
     if (makeExternalImage (fitImage, fitFile, cSys, imageShape,
-			   subImage, *itsLog, True, False, False))
+			   subImage, *itsLog, overwrite, False, False))
       pFit = fitImage.ptr();
 
     // Make fitter
@@ -5410,11 +5410,12 @@ ImageAnalysis::summary(Record& header, const String& doppler, const Bool list,
 
 Bool
 ImageAnalysis::tofits(const String& fitsfile, const Bool velocity,
-	      const Bool optical, const Int bitpix,
-	      const Double minpix, const Double maxpix,
-	      Record& pRegion, const String& mask,
-	      const Bool overwrite, const Bool dropDeg,
-	      const Bool degLast)
+		      const Bool optical, const Int bitpix,
+		      const Double minpix, const Double maxpix,
+		      Record& pRegion, const String& mask,
+		      const Bool overwrite, 
+		      const Bool dropDeg, const Bool,
+		      const Bool dropStokes, const Bool stokesLast)
 {
 
     *itsLog << LogOrigin("ImageAnalysis", "tofits");
@@ -5444,8 +5445,38 @@ ImageAnalysis::tofits(const String& fitsfile, const Bool velocity,
     // to ImageRegion and make SubImage.
     ImageRegion* pRegionRegion = 0;
     ImageRegion* pMaskRegion = 0;
+
+    IPosition keepAxes;
+    if(!dropDeg){
+      if(dropStokes){
+	CoordinateSystem cSys = pImage_p->coordinates();
+	if(cSys.findCoordinate(Coordinate::STOKES)>=0 && cSys.nCoordinates()>1){ 
+	  // Stokes axis exists and its not the only one
+	  Vector<String> cNames = cSys.worldAxisNames();
+	  // cout << "cNames = " << cNames << endl;
+	  keepAxes = IPosition(cNames.size()-1);
+	  uInt j = 0;
+	  for(uInt i=0; i<cNames.size(); i++){
+	    if(cNames(i) != "Stokes"){ // not Stokes?
+	      keepAxes(j) = i; // keep it
+	      j++;
+	    }
+	  }
+	}
+	// cout << "keepAxes = " << keepAxes << endl;
+	// else: nothing to drop
+      }
+    }
+
+
     AxesSpecifier axesSpecifier;
-    if (dropDeg) axesSpecifier = AxesSpecifier(False);
+    if (dropDeg){ // just drop all degenerate axes
+      axesSpecifier = AxesSpecifier(False);
+    }
+    else if(!keepAxes.empty()){ // specify which axes to keep
+      axesSpecifier = AxesSpecifier(keepAxes);
+    }
+          
     SubImage<Float> subImage =
       makeSubImage (pRegionRegion, pMaskRegion, *pImage_p,
 		    *(tweakedRegionRecord(&pRegion)), mask, True,
@@ -5457,7 +5488,11 @@ ImageAnalysis::tofits(const String& fitsfile, const Bool velocity,
                                               HostInfo::memoryFree()/1024,
                                               velocity, optical,
                                               bitpix, minpix, maxpix,
-					      overwrite, degLast);
+					      overwrite, 
+					      False, //  deglast default
+					      False, //  verbose default
+					      stokesLast
+					      );
     if (!ok) *itsLog << error  << LogIO::EXCEPTION;
 
     return ok;
@@ -6911,51 +6946,51 @@ ImageAnalysis::echo(Record& v, const bool godeep)
     return  inrec;
 }
 
- Bool ImageAnalysis::getSpectralAxisVal(const String& specaxis, 
-					Vector<Float>& specVal, 
-					const CoordinateSystem& cSys, 
-					const String& xunits){
+Bool ImageAnalysis::getSpectralAxisVal(const String& specaxis, 
+				       Vector<Float>& specVal, 
+				       const CoordinateSystem& cSys, 
+				       const String& xunits){
+  
+  Int specAx=cSys.findCoordinate(Coordinate::SPECTRAL);
+  Vector<Double> pix(specVal.nelements());
+  indgen(pix);
+  SpectralCoordinate specCoor=cSys.spectralCoordinate(specAx); 
+  Vector<Double> xworld(pix.nelements());
+  String axis=specaxis;
+  axis.downcase();
+  Bool ok=False;
+  if(axis.contains("vel")){
+    specCoor.setVelocity(xunits); 
+    ok=specCoor.pixelToVelocity(xworld, pix);
+  }
+  else if(axis.contains("fre")){
+    ok=True;
+    Vector<String> tmpstr(1);
+    if(xunits==String("")){
+      tmpstr[0]=String("GHz");
+    }
+    else{
+      tmpstr[0]=xunits;
+    }
+    specCoor.setWorldAxisUnits(tmpstr);
+    for (uInt k=0; k< pix.nelements(); ++k){ 
+      ok=ok && specCoor.toWorld(xworld[k], pix[k]);
+    }
+  }
+  else{
+    xworld=pix;
+    ok=True;
+  }
+  if(!ok) 
+    return False;
+  convertArray(specVal, xworld);
+  return True;
+  
+}
 
-   Int specAx=cSys.findCoordinate(Coordinate::SPECTRAL);
-   Vector<Double> pix(specVal.nelements());
-   indgen(pix);
-   SpectralCoordinate specCoor=cSys.spectralCoordinate(specAx); 
-   Vector<Double> xworld(pix.nelements());
-   String axis=specaxis;
-   axis.downcase();
-   Bool ok=False;
-   if(axis.contains("vel")){
-     specCoor.setVelocity(xunits); 
-     ok=specCoor.pixelToVelocity(xworld, pix);
-   }
-   else if(axis.contains("fre")){
-     ok=True;
-     Vector<String> tmpstr(1);
-     if(xunits==String("")){
-       tmpstr[0]=String("GHz");
-     }
-     else{
-       tmpstr[0]=xunits;
-     }
-     specCoor.setWorldAxisUnits(tmpstr);
-     for (uInt k=0; k< pix.nelements(); ++k){ 
-       ok=ok && specCoor.toWorld(xworld[k], pix[k]);
-     }
-   }
-   else{
-     xworld=pix;
-     ok=True;
-   }
-   if(!ok) 
-     return False;
-   convertArray(specVal, xworld);
-   return True;
-
-
-
- }
 Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy,  
-			Vector<Float>& zxaxisval, Vector<Float>& zyaxisval,
+				   Vector<Float>& zxaxisval, 
+				   Vector<Float>& zyaxisval,
 				   const String& xytype, 
 				   const String& specaxis,
 				   const Int&,
@@ -6968,10 +7003,10 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy,
   xypix=0.0;
   whatXY.downcase();
   CoordinateSystem cSys=pImage_p->coordinates();
-  Int witch=cSys.findCoordinate(Coordinate::DIRECTION);
+  Int which=cSys.findCoordinate(Coordinate::DIRECTION);
 
   if(whatXY.contains("wor")){
-    const DirectionCoordinate& dirCoor=cSys.directionCoordinate(witch);
+    const DirectionCoordinate& dirCoor=cSys.directionCoordinate(which);
     if(!dirCoor.toPixel(xypix, xy))
       return False;    
   }
@@ -6980,7 +7015,7 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy,
       return False;
     xypix=xy;
   }
-  Vector<Int> dirPixelAxis=cSys.pixelAxes(witch);
+  Vector<Int> dirPixelAxis=cSys.pixelAxes(which);
   IPosition blc(pImage_p->ndim(),0);
   IPosition trc(pImage_p->ndim(),0);
   if( (xypix(0) < 0) || (xypix(0) > pImage_p->shape()(0)) || 
@@ -6988,29 +7023,41 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy,
 
     return False;
   }
-  blc[dirPixelAxis(0)]=Int(xypix(0)); 
-  trc[dirPixelAxis(0)]=Int(xypix(0));
-  blc[dirPixelAxis(1)]=Int(xypix(1)); 
-  trc[dirPixelAxis(1)]=Int(xypix(1));
+
+  blc[dirPixelAxis(0)]=Int(xypix(0)+0.5);   // note: pixel _center_ is at integer values
+  trc[dirPixelAxis(0)]=Int(xypix(0)+0.5);
+  blc[dirPixelAxis(1)]=Int(xypix(1)+0.5); 
+  trc[dirPixelAxis(1)]=Int(xypix(1)+0.5);
  
 
   Int specAx=cSys.findCoordinate(Coordinate::SPECTRAL);
-  trc[cSys.pixelAxes(specAx)[0]]=pImage_p->shape()(cSys.pixelAxes(specAx)[0])-1;  zyaxisval.resize();
+  Vector<Bool> zyaxismask;
+  trc[cSys.pixelAxes(specAx)[0]] = pImage_p->shape()(cSys.pixelAxes(specAx)[0]) - 1;  
+  zyaxisval.resize();
   zyaxisval=pImage_p->getSlice(blc, trc-blc+1, True);
-  if(!(pImage_p->units().getName().contains("mJy"))){
-    for (uInt kk=0; kk < zyaxisval.nelements() ; ++kk){
-      zyaxisval[kk]=Quantity(zyaxisval[kk], pImage_p->units()).getValue("mJy");
-    }
+  zyaxismask=pImage_p->getMaskSlice(blc, trc-blc+1, True);
 
+//   if(pImage_p->units().getName().contains("Jy")){   // convert to mJy
+//     for (uInt kk=0; kk < zyaxisval.nelements() ; ++kk){
+//       zyaxisval[kk]=Quantity(zyaxisval[kk], pImage_p->units()).getValue("mJy");
+//     }
+//   }
+
+  // apply mask
+  for (uInt kk=0; kk < zyaxisval.nelements() ; ++kk){
+    if(!zyaxismask[kk]){
+      zyaxisval[kk] = 0.;
+    }
   }
+
   zxaxisval.resize(zyaxisval.nelements());
   return getSpectralAxisVal(specaxis, zxaxisval,cSys, xunits);
 }
 
 Bool ImageAnalysis::getFreqProfile(const Vector<Double>& x,  
-                        const Vector<Double>& y,  
-			Vector<Float>& zxaxisval, 
-                        Vector<Float>& zyaxisval,
+				   const Vector<Double>& y,  
+				   Vector<Float>& zxaxisval, 
+				   Vector<Float>& zyaxisval,
 				   const String& xytype, 
 				   const String& specaxis,
 				   const Int& whichStokes,
@@ -7033,12 +7080,13 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& x,
                  specaxis, whichStokes, whichTabular, 
                  whichLinear, xunits);
     }
+    // n > 1, i.e. region to average over is a rectangle or polygon
     Int specAx=cSys.findCoordinate(Coordinate::SPECTRAL);
     Int pixSpecAx=cSys.pixelAxes(specAx)[0];
     Int nchan=pImage_p->shape()(pixSpecAx);
     try{
       Vector<Int> dirPixelAxis=cSys.pixelAxes(cSys.findCoordinate(Coordinate::DIRECTION));
-      if (n == 2) {
+      if (n == 2) { // rectangle
 	Vector<Quantity> blc(2);
 	Vector<Quantity> trc(2);
 	if(xytype.contains("wor")){
@@ -7051,7 +7099,7 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& x,
 	  imagreg=regMan.wbox(blc,trc,pixax,cSys);
 	}
       }
-      if(n > 2){
+      if(n > 2){ // polygon
 	Vector<Quantity> xvertex(n);
 	Vector<Quantity> yvertex(n);
 	for(Int k=0; k < n; ++k){ 
@@ -7094,12 +7142,12 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& x,
       
       }
 
-      if(!(pImage_p->units().getName().contains("mJy"))){
-	for (uInt kk=0; kk < zyaxisval.nelements() ; ++kk){
-	  zyaxisval[kk]=Quantity(zyaxisval[kk], pImage_p->units()).getValue("mJy");
-	}
-	
-      }
+//      if(pImage_p->units().getName().contains("Jy")){  // convert to mJy
+// 	  for (uInt kk=0; kk < zyaxisval.nelements() ; ++kk){
+// 	    zyaxisval[kk]=Quantity(zyaxisval[kk], pImage_p->units()).getValue("mJy");
+// 	  }
+//      }
+
       zxaxisval.resize(zyaxisval.nelements());
       return getSpectralAxisVal(specaxis, zxaxisval,cSys, xunits);
 
@@ -7112,6 +7160,8 @@ Bool ImageAnalysis::getFreqProfile(const Vector<Double>& x,
     }
     return True;
 }
+
+
 // These should really go in a coordsys inside the casa name space
 
 Record ImageAnalysis::toWorldRecord (const Vector<Double>& pixel, 

@@ -154,6 +154,10 @@ private:
 // Clear formatting flags
    void clearFlags (LogIO& os) const;
 
+// For keeping track of the number of vis per field
+   mutable Vector<Int> nVisPerField_;
+
+
 };
 
 

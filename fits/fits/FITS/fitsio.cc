@@ -312,51 +312,57 @@ void FitsInput::init() {
 //===============================================================================================
 // return the header of the chdu as a Vector of Strings.
 Vector<String> FitsInput::kwlist_str(Bool length80){  
-   Vector<String> cards;
-   if( !m_header_done ){
-  		cout<< "[FitsInput::kwlist_str()] If you need call this method, you should do so before reading any data from CHDU."<<endl;
-		return cards;	
-   }else{
-	   // remember the cfitsio bytepos before calling any cfitsio function
-	   OFF_T l_bytepos = (m_fptr->Fptr)->bytepos; 	
- 	   int l_keysexist = 0, l_morekeys = 0, l_status = 0;
-	   // get the total number of keywords in the chdu
-	   if(ffghsp( m_fptr,&l_keysexist, &l_morekeys, &l_status )){
-		   fits_report_error(stderr, l_status); // print error report
-		   cout<<"[FitsInput::kwlist_str()]Error when getting total number of keywords in CHDU."<<endl;
-         return cards;
-	   }
-	   // get every card image as a char* and store them into cards.
-	   char* cardImg = new char[81];
-		cards.resize( l_keysexist + 1 );
-	   for( int keynum = 1; keynum<l_keysexist+1;keynum++ ){
-	      ffgrec( m_fptr, keynum, cardImg, &l_status );
-	  	   String onecard( cardImg );
-		  	cards[keynum -1] = onecard;	
-	   }
-	   // since keysexist does not count the END keyword, we add it in.
-		String endCard( "END" );
-	   cards[l_keysexist] = endCard;
-		// set the cfitsio bytepos to what it was at begnning of this method.
-		if( l_bytepos < ((m_fptr->Fptr)->filesize) ){
-		   if(ffmbyt(m_fptr, l_bytepos, REPORT_EOF, &l_status)>0 ){
-			   fits_report_error(stderr, l_status); // print error report
-			   errmsg(BADOPER,"bytepos setting error!");
-		   }
-	   }else{
-		   (m_fptr->Fptr)->bytepos = l_bytepos;
-	   }
-// The next block is added by Neil Killeen
-           if (length80) {
-              String tmp("                                                                                ");
-              for (uInt i=0; i<cards.nelements(); i++) {
-                 String tmp2(tmp);
-                 tmp2.replace(0, cards(i).length(), cards(i));
-                 cards(i) = tmp2;
-              }
-           } 
-	   return cards;
+    Vector<String> cards;
+    if( !m_header_done ){
+	cout<< "[FitsInput::kwlist_str()] If you need call this method, you should do so before reading any data from CHDU."<<endl;
+	return cards;	
+    }else{
+	// remember the cfitsio bytepos before calling any cfitsio function
+	OFF_T l_bytepos = (m_fptr->Fptr)->bytepos; 	
+	int l_keysexist = 0, l_morekeys = 0, l_status = 0;
+	// get the total number of keywords in the chdu
+	if(ffghsp( m_fptr,&l_keysexist, &l_morekeys, &l_status )){
+	    fits_report_error(stderr, l_status); // print error report
+	    cout<<"[FitsInput::kwlist_str()]Error when getting total number of keywords in CHDU."<<endl;
+	    return cards;
 	}
+	// get every card image as a char* and store them into cards.
+	char* cardImg = new char[81];
+	cards.resize( l_keysexist + 1 );
+	for( int keynum = 1; keynum<l_keysexist+1;keynum++ ){
+	    if(ffgrec( m_fptr, keynum, cardImg, &l_status )){ // error reading card
+		fits_report_error(stderr, l_status); // print error report
+		errmsg(BADOPER,"error reading card!");
+	    }
+	    else {
+		String onecard( cardImg );
+		cards[keynum -1] = onecard;	
+	    }
+	}
+	// since keysexist does not count the END keyword, we add it in.
+	String endCard( "END" );
+	cards[l_keysexist] = endCard;
+	// set the cfitsio bytepos to what it was at begnning of this method.
+	if( l_bytepos < ((m_fptr->Fptr)->filesize) ){
+	    if(ffmbyt(m_fptr, l_bytepos, REPORT_EOF, &l_status)>0 ){
+		fits_report_error(stderr, l_status); // print error report
+		errmsg(BADOPER,"bytepos setting error!");
+	    }
+	}else{
+	    (m_fptr->Fptr)->bytepos = l_bytepos;
+	}
+// The next block is added by Neil Killeen
+	if (length80) {
+	    String tmp("                                                                                ");
+	    //          12345678901234567890123456789012345678901234567890123456789012345678901234567890
+	    for (uInt i=0; i<cards.nelements(); i++) {
+		String tmp2(tmp);
+		tmp2.replace(0, cards(i).length(), cards(i));
+		cards(i) = tmp2;
+	    }
+	} 
+	return cards;
+    }
 }
 
 //================================================================================================
@@ -452,55 +458,23 @@ char * FitsInput::read_sp() {
 //========================================================================================================
 // implement read_head_rec() with CFITSIO of NASA
 void FitsInput::read_header_rec() {
-   // make the next hdu be the chdu of cfitsio and set the file position pointer at the begining of the hdu.	
-	int l_status = 0, l_hdutype = 0, l_chdunum = 0;
-	// get the number of the current hdu. This function returns the number of
-	// chdu, not an error code. So we do not check the return.         
-	ffghdn(m_fptr, &l_chdunum);
-	// if there is more hdu, make the next hdu be the current hdu
-	if( l_chdunum < m_thdunum ){ 
-	   if( ffmrhd(m_fptr,  1, &l_hdutype, &l_status)>0){
-	      fits_report_error(stderr, l_status); // print error report
-		   errmsg(IOERR,"[FitsInput::read_header_rec()] Error moving CHDU.");
-         return;
-	   }
-	}else{ // reach the end of the fits file, end the program gracefully.
-	   m_curr = m_fin.read();
-	   m_got_rec = True;
-	   if (!m_curr) {
-	     //cout <<"Reached the end of the FITS file. [ FitsInput::read_header_rec()] "<< endl;
-	     m_rec_type = FITS::EndOfFile;
-	     return;
-	   }
-	   if (m_fin.err()) {
-	     errmsg(IOERR,"Error reading first record of new header [ FitsInput::read_header_rec()].");
-	     m_rec_type = FITS::UnrecognizableRecord;
-	     return;
- 	   }
+    // make the next hdu be the chdu of cfitsio and set the file position pointer at the begining of the hdu.	
+    int l_status = 0, l_hdutype = 0, l_chdunum = 0;
+    // get the number of the current hdu. This function returns the number of
+    // chdu, not an error code. So we do not check the return.         
+    ffghdn(m_fptr, &l_chdunum);
+    // if there is more hdu, make the next hdu be the current hdu
+    if( l_chdunum < m_thdunum ){ 
+	if( ffmrhd(m_fptr,  1, &l_hdutype, &l_status)>0){
+	    fits_report_error(stderr, l_status); // print error report
+	    errmsg(IOERR,"[FitsInput::read_header_rec()] Error moving CHDU.");
+	    return;
 	}
-	// since ffmrhd() reads the header, we need to move the file pointer back
-	// to the beginning of the hdu before calling m_fin.read()
-	 OFF_T l_headstart, l_datastart, l_dataend;
-    l_status = 0;
-    // get size info of the current HDU 
-    if (ffghof(m_fptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
-	 	 fits_report_error(stderr, l_status); // print error report
-		 errmsg(BADSIZE,"[FitsInput::read_header_rec()]Error computing size of data.");
-       return;
-    }
-	 // move file pointer to the beginning of the new hdu.
-	 l_status = 0;
-	 if(ffmbyt(m_fptr, l_headstart, REPORT_EOF, &l_status)){
-	 	 fits_report_error(stderr, l_status); // print error report
-		 errmsg(IOERR,"[FitsInput::read_header_rec()]Error when moving the file position pointer.");
-	 }
-	 // reset m_iosize so that next m_fin.read() will start from the beginning of next hdu.
-	 m_fin.reset_iosize();
-    // end of the new code
+    }else{ // reach the end of the fits file, end the program gracefully.
 	m_curr = m_fin.read();
 	m_got_rec = True;
 	if (!m_curr) {
-	    //cout <<" Reached the end of the fit file. [ FitsInput::read_header_rec()] "<< endl;
+	    //cout <<"Reached the end of the FITS file. [ FitsInput::read_header_rec()] "<< endl;
 	    m_rec_type = FITS::EndOfFile;
 	    return;
 	}
@@ -509,37 +483,69 @@ void FitsInput::read_header_rec() {
 	    m_rec_type = FITS::UnrecognizableRecord;
 	    return;
 	}
-	m_kw.delete_all();
-	// reset the cache counter nevertheless
-	nerrs_ = 0;
-	m_kc.parse(m_curr,m_kw,0,readHeaderRecErrHandler,True);
-	//cout << "[ FitsInput::read_header_rec()] Number of errors from parsing: nerrs_ = " << nerrs_ <<endl;
-	uInt parseErrs = nerrs_;
-	HeaderDataUnit::HDUErrs n;
-	if (!HeaderDataUnit::determine_type(m_kw,m_hdu_type,m_data_type,readHeaderRecErrHandler,n)) {
-	    // in this case, the header is completely bogus, the error messages which
-	    // convey that are the ones returned by determine_type, the ones returned
-	    // by parse are useless and needlessly confusing, so don't show them
-		 //cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
-	    for (uInt i=parseErrs; i<nerrs_;i++) {
-	 	    m_errfn(messages_[i].chars(),
+    }
+    // since ffmrhd() reads the header, we need to move the file pointer back
+    // to the beginning of the hdu before calling m_fin.read()
+    OFF_T l_headstart, l_datastart, l_dataend;
+    l_status = 0;
+    // get size info of the current HDU 
+    if (ffghof(m_fptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+	fits_report_error(stderr, l_status); // print error report
+	errmsg(BADSIZE,"[FitsInput::read_header_rec()]Error computing size of data.");
+	return;
+    }
+    // move file pointer to the beginning of the new hdu.
+    l_status = 0;
+    if(ffmbyt(m_fptr, l_headstart, REPORT_EOF, &l_status)){
+	fits_report_error(stderr, l_status); // print error report
+	errmsg(IOERR,"[FitsInput::read_header_rec()]Error when moving the file position pointer.");
+    }
+    // reset m_iosize so that next m_fin.read() will start from the beginning of next hdu.
+    m_fin.reset_iosize();
+    // end of the new code
+    m_curr = m_fin.read();
+    m_got_rec = True;
+    if (!m_curr) {
+	//cout <<" Reached the end of the fit file. [ FitsInput::read_header_rec()] "<< endl;
+	m_rec_type = FITS::EndOfFile;
+	return;
+    }
+    if (m_fin.err()) {
+	errmsg(IOERR,"Error reading first record of new header [ FitsInput::read_header_rec()].");
+	m_rec_type = FITS::UnrecognizableRecord;
+	return;
+    }
+    m_kw.delete_all();
+    // reset the cache counter nevertheless
+    nerrs_ = 0;
+    m_kc.parse(m_curr,m_kw,0,readHeaderRecErrHandler,True);
+    //cout << "[ FitsInput::read_header_rec()] Number of errors from parsing: nerrs_ = " << nerrs_ <<endl;
+    uInt parseErrs = nerrs_;
+    HeaderDataUnit::HDUErrs n;
+    if (!HeaderDataUnit::determine_type(m_kw,m_hdu_type,m_data_type,readHeaderRecErrHandler,n)) {
+	// in this case, the header is completely bogus, the error messages which
+	// convey that are the ones returned by determine_type, the ones returned
+	// by parse are useless and needlessly confusing, so don't show them
+	//cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
+	for (uInt i=parseErrs; i<nerrs_;i++) {
+	    m_errfn(messages_[i].chars(),
 		    FITSError::ErrorLevel(errLevels_[i]));
-	    }
-	    nerrs_ = 0;
-	    m_rec_type = FITS::SpecialRecord;
-	    return;
-	}
-	// spit out all of the cached error messages
-	// cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" << endl;
-	for (uInt i=0;i<nerrs_;i++) {
-	    m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
 	}
 	nerrs_ = 0;
-	if (m_hdu_type == FITS::PrimaryArrayHDU || m_hdu_type == FITS::PrimaryGroupHDU){ 
-	    errmsg(BADPRIMARY,"[ FitsInput::read_header_rec()] Misplaced primary header-data unit.");
-	}
-	m_rec_type = FITS::HDURecord;
-   m_header_done = False;
+	m_rec_type = FITS::SpecialRecord;
+	return;
+    }
+    // spit out all of the cached error messages
+    // cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" << endl;
+    for (uInt i=0;i<nerrs_;i++) {
+	m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
+    }
+    nerrs_ = 0;
+    if (m_hdu_type == FITS::PrimaryArrayHDU || m_hdu_type == FITS::PrimaryGroupHDU){ 
+	errmsg(BADPRIMARY,"[ FitsInput::read_header_rec()] Misplaced primary header-data unit.");
+    }
+    m_rec_type = FITS::HDURecord;
+    m_header_done = False;
 }
 //========================================================================================
 // Implement the skip_hdu with cfitsio of NASA

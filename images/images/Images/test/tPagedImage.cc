@@ -110,7 +110,6 @@ int main()
        PagedImage<Float> pIm(tiledShape, cSys, 
                              String("tPagedImage_tmp.img2"));
     }
-    Table::deleteTable(String("tPagedImage_tmp.img2"));
     {
        PagedImage<Float> pIm(tiledShape, cSys, 
                              String("tPagedImage_tmp.img3"),

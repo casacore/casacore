@@ -259,6 +259,11 @@ template<class T> Bool allOR (const T &val, const Array<T> &array);
 // </group>
 
 
+// Test if all elements in an array are the same.
+template<class T> Bool allSame (const Array<T> &a)
+  { return a.size() <= 1  ||  allEQ(*a.data(), a); }
+
+
 // Element by element test for NaN or Infinity.
 // <group>
 template<class T> LogicalArray isNaN (const Array<T> &array);

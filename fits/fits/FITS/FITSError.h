@@ -92,7 +92,7 @@ public:
     //      violation of the FITS rules is detected.
     // SEVERE means that a fatal error has occurred and the FITS file
     //     can not be properly processed.
-    enum ErrorLevel { WARN, SEVERE };
+    enum ErrorLevel { INFO, WARN, SEVERE };
 
     // The default error handler.  The errMessage is posted to
     // the global log sink at the severity implied by ErrorLevel.

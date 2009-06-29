@@ -220,7 +220,8 @@ public:
 			    Float minPix = 1.0, Float maxPix = -1.0,
 			    Bool allowOverwrite=False,
                             Bool degenerateLast=False,
-                            Bool verbose=True);
+                            Bool verbose=True,
+			    Bool stokesLast=False);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

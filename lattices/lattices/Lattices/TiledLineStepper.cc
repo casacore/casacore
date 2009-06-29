@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <lattices/Lattices/TiledLineStepper.h>
-#include <tables/Tables/TiledStManAccessor.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>

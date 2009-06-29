@@ -80,10 +80,10 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   haveLogger_p(True),
   fixedMinMax_p(False),
   doRobust_p(False),
+  doList_p(False),
   error_p(""),
   pInLattice_p(0), 
   pStoreLattice_p(0),
-  doList_p(False),
   noInclude_p(True),
   noExclude_p(True),
   needStorageLattice_p(True),
@@ -123,10 +123,10 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   haveLogger_p(False),
   fixedMinMax_p(False),
   doRobust_p(False),
+  doList_p(False),
   error_p(""),
   pInLattice_p(0), 
   pStoreLattice_p(0),
-  doList_p(False),
   noInclude_p(True),
   noExclude_p(True),
   needStorageLattice_p(True),
@@ -212,6 +212,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       blcParent_p = other.blcParent_p;
       forceDisk_p = other.forceDisk_p;
       doRobust_p = other.doRobust_p;
+      doList_p = other.doList_p;
       error_p = other.error_p;
 //
       doneFullMinMax_p= other.doneFullMinMax_p;
@@ -367,7 +368,6 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 
    return True;
 } 
-
 
 template <class T>
 Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
@@ -837,14 +837,13 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     Double useMemory = Double(memory)/10.0;
     if (forceDisk_p) useMemory = 0.0;
     if (haveLogger_p) {
-       os_p << LogIO::NORMAL 
+       os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
 //
     if (pStoreLattice_p != 0) delete pStoreLattice_p;
     pStoreLattice_p = new TempLattice<AccumType>(TiledShape(storeLatticeShape,
                                                  tileShape), useMemory);
-
 // Set up min/max location variables
 
     minPos_p.resize(pInLattice_p->shape().nelements());
@@ -884,8 +883,8 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 template <class T>
 void LatticeStatistics<T>::generateRobust ()
 {
-   Bool showMsg = doRobust_p && displayAxes_p.nelements()==0;
-   if (showMsg) os_p << "Computing robust statistics" << LogIO::POST;
+   Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
+   if (showMsg) os_p << LogIO::NORMAL1 << "Computing robust statistics" << LogIO::POST;
 //
    const uInt nCursorAxes = cursorAxes_p.nelements();
    const IPosition latticeShape(pInLattice_p->shape());
@@ -911,23 +910,33 @@ void LatticeStatistics<T>::generateRobust ()
 
 // Get statistics with LEL
 
+	 // sdj: Removed the displaying of Median  and Median of absolute deviation
+	 //     since only the labels are displayed. Kind of silly if you ask me!
          LatticeExprNode node(median(subLat));
          T dummy = 0;
-         if (showMsg) os_p << "  Median" << LogIO::POST;
+         //if (showMsg) os_p << LogIO::NORMAL << "  Median" << LogIO::POST;
          T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
          LatticeExprNode node2(median(abs((subLat)-lelMed)));
-         if (showMsg) os_p << "  Median of absolute deviations from median" << LogIO::POST;
+         //if (showMsg) os_p << LogIO::NORMAL << "  Median of absolute deviations from median" << LogIO::POST;
          T lelMed2 = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
 //
-         if (showMsg) os_p << "  Inter quartile range" << LogIO::POST;
-         Array<T> data = subLat.get();
-         Bool deleteData;
-         T* pData = data.getStorage(deleteData);
-         const uInt n = data.nelements();
-         T iqa = GenSort<T>::kthLargest (pData, n, Int(0.25*n));
-         T iqb = GenSort<T>::kthLargest (pData, n, Int(0.75*n));
-         data.putStorage(pData, deleteData);
-         T iqr = (iqb-iqa)/2.0;
+         //if (showMsg) os_p << LogIO::NORMAL << "  Inter quartile range" << LogIO::POST;
+	 // This older code is erroneous because:  (dk) 
+	 // - It doesn't exclude masked values (it usually
+	 //   produces 'nan' if there are any).
+	 // - By definition interquartile range isn't supposed
+	 //   supposed to be divided by two, as was done below.
+	 //
+         // Array<T> data = subLat.get();
+         // Bool deleteData;
+         // T* pData = data.getStorage(deleteData);
+         // const uInt n = data.nelements();
+         // T iqa = GenSort<T>::kthLargest (pData, n, Int(0.25*n));
+         // T iqb = GenSort<T>::kthLargest (pData, n, Int(0.75*n));
+         // data.putStorage(pData, deleteData);
+         // T iqr = (iqb-iqa)/2.0;
+	 LatticeExprNode nodeIQR(fractileRange(subLat, .25, .75));
+	 T iqr = LattStatsSpecialize::getNodeScalarValue(nodeIQR, dummy);
 
 // Whack results into storage lattice
 
@@ -953,7 +962,6 @@ void LatticeStatistics<T>::generateRobust ()
 }
 
 
-
 template <class T>
 void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
                                       ostringstream& osMax,
@@ -964,7 +972,7 @@ void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
 //
 {
    if (!fixedMinMax_p) {
-      os_p << "Minimum value ";
+       os_p << LogIO::NORMAL << "Minimum value ";
       os_p.output() << setw(oWidth) << String(osMin);
       if (type==TpFloat) {
          os_p <<  " at " << blcParent_p + minPos_p+1;
@@ -1035,6 +1043,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       IPosition blc(pInLattice_p->ndim(),0);
       IPosition trc(pInLattice_p->shape()-1);
 //
+      os_p << LogIO::NORMAL;
       for (uInt j=1; j<nDisplayAxes; j++) {
          os_p <<  "Axis " << displayAxes_p(j) + 1 << " = " 
               << locInLattice(dPos,True)(j)+1;
@@ -1054,7 +1063,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // Write headers
 
-   os_p << endl;
+   os_p << LogIO::NORMAL << endl;
    Int len0;
    if (nStatsAxes == 1) {
       os_p << "Profile ";
@@ -1228,7 +1237,7 @@ Bool LatticeStatistics<T>::display()
 // Do we have anything to do
 
    if (!doList_p && !plotter_p.isAttached() && haveLogger_p) {
-      os_p << LogIO::NORMAL << "There is nothing to plot or list" << LogIO::POST;
+      os_p << LogIO::NORMAL1 << "There is nothing to plot or list" << LogIO::POST;
      return True;
    }
 
@@ -1253,6 +1262,7 @@ Bool LatticeStatistics<T>::display()
 
    if (displayAxes_p.nelements() == 0) {
      summStats ();
+     
      return True;
    }
 
@@ -2393,6 +2403,20 @@ void LatticeStatistics<T>::summStats ()
    pos(0) = MAX;
    AccumType  dMax = stats(pos);
 
+   // Do this check so that we only print the stats when we have values.   
+   if (LattStatsSpecialize::hasSomePoints(nPts)) 
+       displayStats( nPts, sum, median, medAbsDevMed, quartile, sumSq, mean, var, rms, sigma, dMin, dMax );
+   
+}
+   
+template <class T>
+void LatticeStatistics<T>::displayStats (AccumType nPts, AccumType sum, AccumType median, 
+                                         AccumType medAbsDevMed, AccumType quartile,
+                                         AccumType /*sumSq*/, AccumType mean, 
+                                         AccumType var, AccumType rms, AccumType sigma,
+                                         AccumType dMin, AccumType dMax)
+{
+
 // Get beam
 
    Double beamArea;
@@ -2419,7 +2443,7 @@ void LatticeStatistics<T>::summStats ()
    setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
    setStream(os9, oPrec); setStream(os10, oPrec), setStream(os11, oPrec);
 //
-   os_p << endl << LogIO::POST;
+   os_p << LogIO::NORMAL << endl << LogIO::POST;
    if (LattStatsSpecialize::hasSomePoints(nPts)) {
       os00 << nPts;
       os1 << sum; 
@@ -2431,7 +2455,7 @@ void LatticeStatistics<T>::summStats ()
       os7 << dMax; 
       os8 << median;
       os9 << medAbsDevMed;
-      os10 << quartile;
+      os10 << quartile; 
 //
       os_p << "Number points = ";
       os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";

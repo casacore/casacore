@@ -183,7 +183,7 @@ class MSFitsInput
 public:
   // Create from output and input file names. This function opens the input
   // file, and checks the output file is writable.
-  MSFitsInput(const String& msFile, const String& fitsFile);
+  MSFitsInput(const String& msFile, const String& fitsFile, const Bool NewNameStyle=False);
 
   // The destructor is fairly trivial.
   ~MSFitsInput();
@@ -284,6 +284,7 @@ private:
   Double refFreq_p;
   Bool useAltrval;
   Vector<Double> chanFreq_p;
+  Bool newNameStyle;
 };
 
 

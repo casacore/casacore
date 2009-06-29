@@ -179,6 +179,7 @@ private:
   Int hyperCubeID_p;
   Bool hasHyperCubes_p;
   Int lastSpWID_p;
+  Int lastNchan_p;
 
   MeasurementSet* ms_p;
 

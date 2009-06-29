@@ -302,8 +302,8 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
          goodParameterStatus_p = False;
          return False;
       }
-      if (pInImage_p->shape()(momentAxis_p) <= 1) {
-         error_p = "Illegal moment axis; it has only 1 pixel";
+      if (pInImage_p->shape()(momentAxis_p) <= 0) {
+         error_p = "Illegal moment axis; it has no pixels";
          goodParameterStatus_p = False;
          return False;
       }

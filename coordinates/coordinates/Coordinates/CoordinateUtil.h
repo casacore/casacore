@@ -500,6 +500,11 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
   static CoordinateSystem makeBinnedCoordinateSystem (const IPosition& factors,
                                                       const CoordinateSystem& cSysIn,
                                                       Bool failOnStokes=False);
+private:
+  // Sets pos to the position found for tel in the database, or
+  // raises an exception + error message.
+  static void findObservatoryOrRaiseException(LogIO& os, MPosition& pos,
+					      const String& tel);
 };
 
 

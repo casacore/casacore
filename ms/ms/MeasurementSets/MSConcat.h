@@ -106,8 +106,8 @@ private:
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const ROMSMainColumns& otherCols) const;
   Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
-  Int copyObservation(const MSObservation& otherObs, 
-		      Vector<Int>& otherObsId);
+  Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
+                             // by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyField(const MSField& otherFld);
@@ -115,6 +115,13 @@ private:
 			    const MSPolarization& otherPol,
 			    const MSDataDescription& otherDD);
   Bool copySource(const MeasurementSet& otherms);
+  Bool updateSource();
+  Bool sourceRowsEquivalent(const MSSourceColumns& sourceCol, 
+			   const uInt& rowi, const uInt& rowj);
+
+  Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
+			 const uInt& rowi, const uInt& rowj);
+
 
   void updateModelDataKeywords();
 
@@ -124,8 +131,47 @@ private:
   Quantum<Double> itsDirTol;
   Vector<Bool> itsChanReversed;
   SimpleOrderedMap <Int, Int> newSourceIndex_p;
+  SimpleOrderedMap <Int, Int> newSourceIndex2_p;
+  SimpleOrderedMap <Int, Int> newSPWIndex_p;
+  SimpleOrderedMap <Int, Int> newObsIndexA_p;
+  SimpleOrderedMap <Int, Int> newObsIndexB_p;
+
   Bool doSource_p;
+  Bool doSource2_p;
+  Bool doSPW_p;
+  Bool doObsA_p;
+  Bool doObsB_p;
+
 };
+
+template<class T>
+Bool areEQ(const ROScalarColumn<T>& col, uInt row_i, uInt row_j) 
+{
+  T value_i, value_j;
+  col.get(row_i, value_i);
+  col.get(row_j, value_j);
+  return (value_i == value_j);
+}
+
+template<class T>
+Bool areEQ(const ROArrayColumn<T>& col, uInt row_i, uInt row_j) 
+{
+  Bool rval(False);
+  Array<T> arr_i;
+  Array<T> arr_j;
+  
+  col.get(row_i, arr_i, True);
+  col.get(row_j, arr_j, True);
+  Int ni = arr_i.nelements();
+  Int nj = arr_j.nelements();
+  if( (ni==0 && nj==0) ||    // no data is regarded as equal
+      allEQ(arr_i, arr_j)){
+    rval = True;
+  }
+  return rval;
+}
+
+
 
 } //# NAMESPACE CASA - END
 

@@ -521,7 +521,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   } else {
      Unit t;
      brightnessUnit = t;
-     os << "FITS unit " << cunit << " unknown to AIPS++ - ignoring." << LogIO::POST;
+     os << "FITS unit " << cunit << " unknown to CASA - ignoring." << LogIO::POST;
   }
 
   // get the miriad axes descriptors

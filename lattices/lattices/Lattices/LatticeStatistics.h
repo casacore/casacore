@@ -43,7 +43,6 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Logging/LogIO.h>
-#include <casa/iosstrfwd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -52,6 +51,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
+#include <casa/iosstrfwd.h>
 
 
 // <summary>
@@ -354,7 +354,8 @@ protected:
 // doRobust means that when the storage lattice is generated, the
 // robust statistics are generated as well
 
-   Bool doRobust_p;        
+   Bool doRobust_p;
+   Bool doList_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
    String error_p;
 //
@@ -409,7 +410,8 @@ private:
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;
    PGPlotter plotter_p;
-   Bool doList_p, noInclude_p, noExclude_p;
+   Bool noInclude_p, noExclude_p;
+       
    Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
    Bool showProgress_p, forceDisk_p;
 //
@@ -417,16 +419,18 @@ private:
    Bool doneFullMinMax_p;
 
 // Summarize the statistics found over the entire lattice
-   virtual void summStats(); 
+   virtual void summStats();
+   virtual void displayStats( AccumType nPts, AccumType sum, AccumType median,
+	   AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
+	   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax );
 
 // Calculate statistic from storage lattice and return in an array
    Bool calculateStatistic (Array<AccumType>& slice, 
                             LatticeStatsBase::StatisticsTypes type,
                             Bool dropDeg);
 
-// Convert a <tt>AccumType</tt> to a <tt>Float</tt> for plotting
-   static Float convertATtoF (AccumType value)
-     {return Float(std::real(value));};
+// Convert a <AccumType> to a <Float> for plotting
+   static Float convertATtoF (AccumType value) {return Float(std::real(value));};
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
