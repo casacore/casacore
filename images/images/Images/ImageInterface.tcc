@@ -56,10 +56,6 @@ template <class T>
 ImageInterface<T>::ImageInterface()
 : regHandPtr_p (0)
 {
-  logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface()",
-			 WHERE) << LogIO::DEBUGGING <<
-    "Creating ImageInterface" << LogIO::POST;
   regHandPtr_p = new RegionHandler();
 }
 
@@ -67,10 +63,6 @@ template <class T>
 ImageInterface<T>::ImageInterface (const RegionHandler& regHand)
 : regHandPtr_p (0)
 {
-  logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface()",
-			 WHERE) << LogIO::DEBUGGING <<
-    "Creating ImageInterface" << LogIO::POST;
   regHandPtr_p = regHand.clone();
   regHandPtr_p->setObjectPtr (this);
 }
@@ -85,9 +77,6 @@ ImageInterface<T>::ImageInterface (const ImageInterface& other)
   miscInfo_p   (other.miscInfo_p),
   regHandPtr_p (0)
 {
-  logSink() << LogOrigin("ImageInterface<T>",
-	    "ImageInterface(const ImageInterface&)",
-			 WHERE) << LogIO::DEBUGGING << LogIO::POST;
   regHandPtr_p = other.regHandPtr_p->clone();
   regHandPtr_p->setObjectPtr (this);
 }
@@ -129,16 +118,14 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 {
     ostringstream errmsg;
     errmsg << "Cannot set coordinate system: ";
-
     Bool ok = (coords.nPixelAxes() == shape().nelements());
     if (!ok) {
-	errmsg << "coords.nPixelAxes() == " << coords.nPixelAxes() << 
-	    ", image.ndim() == " << shape().nelements();
+	errmsg << "coords.nPixelAxes() == " << coords.nPixelAxes()
+               << ", image.ndim() == " << shape().nelements();
     } else {
 	// Check that the shape is compatible with the stokes coordinates
 	Int stkcrd = -1;
-	while (ok && (stkcrd = coords.findCoordinate(Coordinate::STOKES, 
-							  stkcrd)) >= 0) {
+	while (ok && (stkcrd = coords.findCoordinate(Coordinate::STOKES, 				  stkcrd)) >= 0) {
 	    ok = True;
 	    Int axis = coords.pixelAxes(stkcrd)(0);
 	    const StokesCoordinate &stokes = coords.stokesCoordinate(stkcrd);
@@ -148,16 +135,17 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 		if (axislength > nstokes) {
 		    ok = False;
 		    errmsg << "Stokes axis is length " << axislength <<
-			" but we only have " << nstokes << " stokes values"
+			" but we only have " << nstokes << 
+ 			" stokes values in Stokes Coordinate " << stkcrd
 			   << endl;
 		}
 	    }
 	}
     }
-
     if (ok) {
 	coords_p = coords;
-	logSink() << LogIO::DEBUGGING << 
+        LogIO os;
+	os << LogIO::DEBUGGING << 
 	    "Changing coordinate system:\n" <<
 	    "        ndim = " << shape().nelements() << endl <<
 	    "        axes = " << coords_p.worldAxisNames() << endl <<
@@ -168,8 +156,8 @@ Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	    "linear xfrom = " << coords_p.linearTransform() << 
 	    LogIO::POST;
     } else {
-	// !ok
-	logSink() << LogIO::SEVERE << String(errmsg) << LogIO::POST;
+        LogIO os;
+	os << LogIO::SEVERE << String(errmsg) << LogIO::POST;
     }
     return ok;
 }
@@ -337,17 +325,14 @@ Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
    imageInfo_p.toRecord(errorString, imageInfoRecord);
    outRec.defineRecord("imageinfo", imageInfoRecord, 
 		       RecordInterface::Variable);
-   error = "";
+   error = String();
    return True;
 }                        
 
 template<class T>
 Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
 {
-//
 // Restore the current ImageInterface object from an input state record
-// 
-//
    Vector<Int> shape;
    inRec.get("shape", shape);
    IPosition shape2(shape);
@@ -367,9 +352,8 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    String errorString; 
    imageInfo_p.fromRecord(errorString, imageInfoRecord); 
 
-   error = "";
+   error = String();
    return True;
 }
 
 } //# NAMESPACE CASA - END
-

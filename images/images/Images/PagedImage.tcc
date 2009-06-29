@@ -75,17 +75,6 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
   regionPtr_p   (0)
 {
   attach_logtable();
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(const TiledShape& shape,  "
-			 "const CoordinateSystem& coordinateInfo, "
-			 "Table& table, uInt rowNumber)", WHERE);
-  
-  logSink() << LogIO::DEBUGGING 
-	    << "Creating an image in row " << rowNumber 
-	    << " of an existing table called"
-	    << " '" << name() << "'" << endl
-	    << "The image shape is " << shape.shape() << endl;
-  logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 }
@@ -123,22 +112,10 @@ void PagedImage<T>::makePagedImage (const TiledShape& shape,
 				    const TableLock& lockOptions,
 				    uInt rowNumber)
 {
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(const TiledShape& shape, "
-			 "const CoordinateSystem& coordinateInfo, "
-			 "const TableLock& lockoptions, "
-			 "const String& filename, "
-			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::DEBUGGING
-	    << "Creating an image in row " << rowNumber 
-	    << " of a new table called"
-	    << " '" << filename << "'" << endl
-	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   Table tab(newtab, lockOptions);
   map_p = PagedArray<T> (shape, tab, "map", rowNumber);
   attach_logtable();
-  logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 }
@@ -151,21 +128,10 @@ PagedImage<T>::PagedImage (const TiledShape& shape,
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
   regionPtr_p   (0)
 {
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(const TiledShape& shape,  "
-			 "const CoordinateSystem& coordinateInfo, "
-			 "const String& filename, "
-			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::DEBUGGING
-	    << "Creating an image in row " << rowNumber 
-	    << " of a new table called"
-	    << " '" << filename << "'" << endl
-	    << "The image shape is " << shape.shape() << endl;
   SetupNewTable newtab (filename, TableDesc(), Table::New);
   Table tab(newtab);
   map_p = PagedArray<T> (shape, tab, "map", rowNumber);
   attach_logtable();
-  logSink() << LogIO::NORMAL;
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
   setTableType();
 }
@@ -177,16 +143,6 @@ PagedImage<T>::PagedImage (Table& table, MaskSpecifier spec, uInt rowNumber)
   regionPtr_p   (0)
 {
   attach_logtable();
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(Table& table, "
-			 "MaskSpecifier, "
-			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::DEBUGGING
-	    << "Reading an image from row " << rowNumber 
-	    << " of a table called"
-	    << " '" << name() << "'" << endl
-	    << "The image shape is " << map_p.shape() << endl;
-
   restoreAll (table.keywordSet());
   applyMaskSpecifier (spec);
 }
@@ -197,20 +153,9 @@ PagedImage<T>::PagedImage (const String& filename, MaskSpecifier spec,
 : ImageInterface<T>(RegionHandlerTable(getTable, this)),
   regionPtr_p   (0)
 {
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(const String& filename, "
-			 "MaskSpecifier, "
-			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::DEBUGGING
-	    << "Reading an image from row " << rowNumber 
-	    << " of a file called"
-	    << " '" << filename << "'" << endl;
   Table tab(filename);
   map_p = PagedArray<T>(tab, "map", rowNumber);
   attach_logtable();
-  logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
-  logSink() << LogIO::DEBUGGING;
-//
   restoreAll (tab.keywordSet());
   applyMaskSpecifier (spec);
 }
@@ -241,21 +186,9 @@ void PagedImage<T>::makePagedImage (const String& filename,
 				    const MaskSpecifier& spec,
 				    uInt rowNumber)
 {
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "PagedImage(const String& filename, "
-			 "const TableLock& lockOptions, "
-			 "MaskSpecifier, "
-			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::DEBUGGING
-	    << "Reading an image from row " << rowNumber 
-	    << " of a file called"
-	    << " '" << filename << "'" << endl;
   Table tab(filename, lockOptions);
   map_p = PagedArray<T>(tab, "map", rowNumber);
   attach_logtable();
-  logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
-  logSink() << LogIO::DEBUGGING;
-//
   restoreAll (tab.keywordSet());
   applyMaskSpecifier (spec);
 }
@@ -401,7 +334,7 @@ void PagedImage<T>::applyMaskSpecifier (const MaskSpecifier& spec)
   if (spec.useDefault()) {
     name = getDefaultMask();
     if (! hasRegion (name, RegionHandler::Masks)) {
-      name = "";
+      name = String();
     }
   }
   applyMask (name);
@@ -471,9 +404,6 @@ void PagedImage<T>::resize (const TiledShape& newShape)
 template <class T> 
 Bool PagedImage<T>::setCoordinateInfo (const CoordinateSystem& coords)
 {
-  logSink() << LogOrigin ("PagedImage<T>", "setCoordinateInfo(const "
-			  "CoordinateSystem& coords)",  WHERE);
-  
   Bool ok = ImageInterface<T>::setCoordinateInfo(coords);
   if (ok) {
     reopenRW();
@@ -484,14 +414,16 @@ Bool PagedImage<T>::setCoordinateInfo (const CoordinateSystem& coords)
 	tab.rwKeywordSet().removeField("coords");
       }
       if (!(coordinates().save(tab.rwKeywordSet(), "coords"))) {
-	logSink() << LogIO::SEVERE << "Error saving coordinates in table"
-		  << LogIO::POST;
+        LogIO os;
+	os << LogIO::SEVERE << "Error saving coordinates in image " << name()
+           << LogIO::POST;
 	ok = False;
       }
     } else {
-      logSink() << LogIO::SEVERE
-		<< "Table is not writable: not saving coordinates to disk."
-		<< LogIO::POST;
+      LogIO os;
+      os << LogIO::SEVERE << "Image " << name()
+         << " is not writable; not saving coordinates"
+         << LogIO::POST;
     }
   }
   return ok;
@@ -603,27 +535,10 @@ Bool PagedImage<T>::ok() const
 template <class T> 
 PagedImage<T>& PagedImage<T>::operator+= (const Lattice<T>& other)
 {
-  logSink() << LogOrigin("PagedImage<T>", 
-			 "operator+=(const Lattice<T>& other)", WHERE) <<
-    LogIO::DEBUGGING << "Adding other to our pixels" << endl;
-  
   check_conformance(other);
-  logSink() << LogIO::POST;
-  logSink() << LogIO::NORMAL;
-/*  
-  IPosition cursorShape(this->niceCursorShape(this->advisedMaxPixels() - 1));
-  LatticeIterator<T> toiter(*this, cursorShape);
-  RO_LatticeIterator<T> otheriter(other, cursorShape);
-  for (toiter.reset(), otheriter.reset(); !toiter.atEnd();
-       toiter++, otheriter++) {
-    toiter.rwCursor() += otheriter.cursor();
-  }
-  // Mask is not handled in such a loop; therefore use LEL.
-*/
-
+  // Use LEL, so a mask is also handled.
   LatticeExpr<T> expr(*this + other);
   copyData (expr);
-  ///  copyData (LatticeExprNode(*this)+LatticeExprNode(other));
   return *this;
 }
 
@@ -632,7 +547,6 @@ template<class T>
 void PagedImage<T>::attach_logtable()
 {
   open_logtable();
-  logSink() << LogIO::NORMAL;
 }
 
 template<class T> 
@@ -671,9 +585,9 @@ void PagedImage<T>::restoreUnits (const TableRecord& rec)
   if (rec.isDefined("units")) {
     if (rec.dataType("units") != TpString) {
       LogIO os;
-      os << LogOrigin("PagedImage<T>", "units()", WHERE) <<
-	"'units' keyword in image table is not a string! Units not restored." 
-		<< LogIO::SEVERE << LogIO::POST;
+      os << LogOrigin("PagedImage<T>", "units()", WHERE)
+	 << "'units' keyword in image table is not a string! Units not restored." 
+         << LogIO::SEVERE << LogIO::POST;
     } else {
       rec.get("units", unitName);
     }
@@ -693,9 +607,12 @@ void PagedImage<T>::restoreUnits (const TableRecord& rec)
     if (!UnitVal::check(unitName)) {
       // I give up!
       LogIO os;
-      os << LogOrigin("PagedImage<T>", "units()", WHERE) <<
-	LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
-	" Not restoring units" << LogIO::POST;
+      UnitMap::putUser(unitName, UnitVal::UnitVal(1.0, UnitDim::Dnon), unitName);
+      os << LogIO::WARN << "FITS unit \"" << unitName
+         << "\" unknown to CASA - will treat it as non-dimensional."
+	 << LogIO::POST;
+      retval.setName(unitName);
+      retval.setValue(UnitVal::UnitVal(1.0, UnitDim::Dnon));
     } else {
       retval = Unit(unitName);
     }
@@ -712,7 +629,7 @@ void PagedImage<T>::removeRegion (const String& name,
   reopenRW();
   // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
-    setDefaultMask ("");
+    setDefaultMask (String());
   }
   ImageInterface<T>::removeRegion (name, type, throwIfUnknown);
 }
@@ -722,8 +639,7 @@ template<class T>
 void PagedImage<T>::check_conformance(const Lattice<T>& other)
 {
   if (! this->conform(other)) {
-    logSink() << "this and other do not conform (" << this->shape() 
-	      << " != " << other.shape() << ")" << LogIO::EXCEPTION;
+    throw AipsError("Shapes of image " + name() + " and other lattice do not conform");
   }
 }
 
@@ -885,32 +801,35 @@ void PagedImage<T>::reopen()
 template<class T>
 Bool PagedImage<T>::setImageInfo (const ImageInfo& info) 
 {
-  logSink() << LogOrigin ("PagedImage<T>", "setImageInfo(const "
-			  "ImageInfo& info)",  WHERE);
+  // Set imageinfo in base class.
   Bool ok = ImageInterface<T>::setImageInfo(info);
   if (ok) {
+    // Make persistent in table keywords.
     reopenRW();
     Table& tab = table();
     if (tab.isWritable()) {
-
-// Update the ImageInfo
-
+      // Delete existing one if there.
       if (tab.keywordSet().isDefined("imageinfo")) {
 	tab.rwKeywordSet().removeField("imageinfo");
       }
+      // Convert info to a record and save as keyword.
       TableRecord rec;
       String error;
       if (imageInfo().toRecord(error, rec)) {
          tab.rwKeywordSet().defineRecord("imageinfo", rec);
       } else {
-	logSink() << LogIO::SEVERE << "Error saving ImageInfo in table because " 
-          + error << LogIO::POST;
+        // Could not convert to record.
+        LogIO os;
+	os << LogIO::SEVERE << "Error saving ImageInfo in image " << name()
+           << "; " << error << LogIO::POST;
 	ok = False;
       }
     } else {
-      logSink() << LogIO::SEVERE
-		<< "Table is not writable: not saving ImageInfo to disk."
-		<< LogIO::POST;
+      // Table not writable.
+      LogIO os;
+      os << LogIO::SEVERE
+         << "Image " << name() << " is not writable; not saving ImageInfo"
+         << LogIO::POST;
     }
   }
   return ok;
@@ -923,14 +842,14 @@ void PagedImage<T>::restoreImageInfo (const TableRecord& rec)
     String error;
     ImageInfo info;
     Bool ok = info.fromRecord (error, rec.asRecord("imageinfo"));
-    if (!ok) {
-      logSink() << LogIO::WARN << "Failed to restore the ImageInfo because " 
-	+ error << LogIO::POST;
-    } else {
+    if (ok) {
       setImageInfoMember (info);
+    } else {
+      LogIO os;
+      os << LogIO::WARN << "Failed to restore the ImageInfo in image " << name()
+         << "; " << error << LogIO::POST;
     }
   }
 }
 
 } //# NAMESPACE CASA - END
-
