@@ -623,7 +623,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
 
     // create final maps
     // map for first table
-    for(uInt i=0; i<originalNrow; i++){ // loop over rows of old first table
+    for(Int i=0; i<originalNrow; i++){ // loop over rows of old first table
       if(tempObsIndex2.isDefined(i)){ // ID changed because of removal
 	  newObsIndexA_p.define(i,tempObsIndex2(i));
 	  doObsA_p = True;
@@ -888,9 +888,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // loop over the columns of the merged source table 
       Vector<Bool> rowToBeRemoved(numrows_this, False);
       vector<uint> rowsToBeRemoved;
-      for (uint j=0 ; j < numrows_this ; ++j){
+      for (Int j=0 ; j < numrows_this ; ++j){
 	// check if row j has an equivalent row somewhere else in the table
-	for (uint k=0 ; k < numrows_this ; ++k){
+	for (Int k=0 ; k < numrows_this ; ++k){
 	  if (k!=j && !rowToBeRemoved(j) && !rowToBeRemoved(k)){
 	    if( sourceRowsEquivalent(sourceCol, j, k) ){ // all columns are the same (not testing source and spw id)
 	      if(areEQ(sourceCol.spectralWindowId(),j, k)){ // also the SPW id is the same
@@ -940,9 +940,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // give equivalent rows the same source id 
       Bool rowsRenamed(False);
       Int nDistinctSources = newNumrows_this;
-      for (uint j=0 ; j < newNumrows_this ; ++j){
+      for (Int j=0 ; j < newNumrows_this ; ++j){
 	// check if row j has an equivalent row somewhere down in the table
-	for (uint k=j+1 ; k < newNumrows_this ; ++k){
+	for (Int k=j+1 ; k < newNumrows_this ; ++k){
 	  if( sourceRowsEquivalent(sourceCol, j, k) && 
 	      !areEQ(sourceCol.sourceId(),j, k)){ // all columns are the same except source id (not testing spw id),
 	                                          // spw id must be different, otherwise row would have been deleted above

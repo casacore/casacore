@@ -139,7 +139,7 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
     {
 	cpus = 0;
 	FILE *fptr = fopen(CPUINFO, "r");
-	while ( p = fgets( buffer, sizeof(buffer), fptr ) ) {
+	while ( (p = fgets( buffer, sizeof(buffer), fptr )) ) {
 	    if ( ! strncmp( p, "processor", 9 ) ) ++cpus;
 	}
 	fclose(fptr);
