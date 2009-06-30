@@ -908,33 +908,13 @@ void LatticeStatistics<T>::generateRobust ()
          Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
          SubLattice<T> subLat(*pInLattice_p, slicer);
 
-// Get statistics with LEL
+// Get robust statistics with LEL (which takes masked values into account)
 
-	 // sdj: Removed the displaying of Median  and Median of absolute deviation
-	 //     since only the labels are displayed. Kind of silly if you ask me!
          LatticeExprNode node(median(subLat));
          T dummy = 0;
-         //if (showMsg) os_p << LogIO::NORMAL << "  Median" << LogIO::POST;
          T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
          LatticeExprNode node2(median(abs((subLat)-lelMed)));
-         //if (showMsg) os_p << LogIO::NORMAL << "  Median of absolute deviations from median" << LogIO::POST;
          T lelMed2 = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
-//
-         //if (showMsg) os_p << LogIO::NORMAL << "  Inter quartile range" << LogIO::POST;
-	 // This older code is erroneous because:  (dk) 
-	 // - It doesn't exclude masked values (it usually
-	 //   produces 'nan' if there are any).
-	 // - By definition interquartile range isn't supposed
-	 //   supposed to be divided by two, as was done below.
-	 //
-         // Array<T> data = subLat.get();
-         // Bool deleteData;
-         // T* pData = data.getStorage(deleteData);
-         // const uInt n = data.nelements();
-         // T iqa = GenSort<T>::kthLargest (pData, n, Int(0.25*n));
-         // T iqb = GenSort<T>::kthLargest (pData, n, Int(0.75*n));
-         // data.putStorage(pData, deleteData);
-         // T iqr = (iqb-iqa)/2.0;
 	 LatticeExprNode nodeIQR(fractileRange(subLat, .25, .75));
 	 T iqr = LattStatsSpecialize::getNodeScalarValue(nodeIQR, dummy);
 
