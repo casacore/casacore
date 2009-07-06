@@ -271,6 +271,14 @@ String::size_type String::rfind(const RegexBase &r, size_type pos) const {
   return r.rfind(c_str(), length(), unused, pos-length());
 }
 
+Bool String::matches(const string &str, Int pos) const {
+  return ((pos < 0) ? index(str, pos) == 0 :
+	  length() != 0 && str.length() != 0 &&
+	  length() == pos+str.length() &&
+	  static_cast<size_type>(pos) < length() &&
+	  index(str, pos) == static_cast<size_type>(pos)) ;
+}
+
 Bool String::contains(const RegexBase &r) const {
   Int unused;
   return (r.find(c_str(), length(), unused, 0)) != npos;
