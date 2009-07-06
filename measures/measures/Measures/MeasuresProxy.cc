@@ -510,7 +510,7 @@ Record MeasuresProxy::doptorv(const Record& rec, const String& str)
   return mh2rec(mhout);
 }
 Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
-				const Quantum<Vector<Double> >& form)
+				const Quantity& form)
 {
   MeasureHolder mh = rec2mh(rec);
   MeasureHolder mhout;
@@ -541,7 +541,7 @@ Record MeasuresProxy::doptofreq(const Record& rec, const String& str,
 }
 
 Record MeasuresProxy::todop(const Record& rec, 
-			    const Quantum<Vector<Double> >& form)
+			    const Quantity& form)
 {
   MeasureHolder mh = rec2mh(rec);
   MeasureHolder mhout;

@@ -56,8 +56,8 @@ public:
   String dirshow(const Record& rec);
   Record doptorv(const Record& rec, const String& str);
   Record doptofreq(const Record& rec, const String& str,
-		   const Quantum<Vector<Double> >& form);
-  Record todop(const Record& rec, const Quantum<Vector<Double> >& form);
+		   const Quantity& form);
+  Record todop(const Record& rec, const Quantity& form);
   Record torest(const Record& rec, const Record& form);
   Vector<String> obslist();
   Vector<String> srclist();
