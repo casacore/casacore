@@ -34,6 +34,22 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+IPosition::IPosition (uInt length)
+: size_p (length),
+  data_p (buffer_p)
+{
+    if (length > BufferLength) {
+	allocateBuffer();
+    }
+}
+
+IPosition::~IPosition()
+{
+    if (data_p != &buffer_p[0]) {
+        delete [] data_p;
+    }
+}
+
 // <thrown>
 //    <item> AllocError
 // </thrown>

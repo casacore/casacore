@@ -450,21 +450,6 @@ inline IPosition::IPosition()
 : size_p (0),
   data_p (buffer_p)
 {}
-inline IPosition::IPosition (uInt length)
-: size_p (length),
-  data_p (buffer_p)
-{
-    if (length > BufferLength) {
-	allocateBuffer();
-    }
-}
-
-inline IPosition::~IPosition()
-{
-    if (data_p != &buffer_p[0]) {
-        delete [] data_p;
-    }
-}
 
 inline IPosition IPosition::makeAxisPath (uInt nrdim)
 {
