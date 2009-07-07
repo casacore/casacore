@@ -103,19 +103,18 @@ def generate(env):
             env.AppendUnique(CPPPATH=_to_list(xf))
         xf=env.get("extraldlibrarypath", None)
         if xf:
-            ldname = "LD_LIBRARY_PATH"
-            if sys.platform == "darwin":
-                ldname = "DY"+ldname
+            ldname = sys.platform == "darwin" and "DYLD_LIBRARY_PATH" or \
+                "LD_LIBRARY_PATH"
             env.AppendENVPath(ldname, _to_list(xf))
     # set the extra flags if available
     MergeFlags()
+
         
     def CheckFortran(conf):
         
         def getf2clib(fc):
             fdict = {'gfortran': 'gfortran', 'g77': 'g2c', 'f77': 'f2c'}
             return fdict[fc]
-
         
 	if not conf.env.has_key("FORTRAN"):
 	    # auto-detect fortran

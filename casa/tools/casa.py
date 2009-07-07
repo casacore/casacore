@@ -2,8 +2,12 @@ import os
 import re
 import sys
 import platform
+import SCons
 
 def generate(env):
+    env["LEXFLAGS"] = SCons.Util.CLVar("-P${SOURCE.filebase}")
+    env["YACCFLAGS"] = SCons.Util.CLVar("-p ${SOURCE.filebase}")
+
 
     def DarwinDevSdk():
         import platform        
@@ -15,14 +19,6 @@ def generate(env):
             env.Exit(1)
         return devpath[version[1]]
     env.DarwinDevSdk = DarwinDevSdk
-
-    def CustomCasaCom():
-	"""
-	Overwrite lex/yacc commands to include -p/-P options
-	"""
-	env["LEXCOM"] = "$LEX $LEXFLAGS -t -P${SOURCE.filebase} $SOURCES > $TARGET"
-	env['YACCCOM'] = '$YACC $YACCFLAGS -p ${SOURCE.filebase} -o $TARGET $SOURCES'
-    env.CustomCasaCom = CustomCasaCom
 
     def AddCasaPlatform():
 	pd = { "darwin": [],
