@@ -12,7 +12,7 @@ opts.Add(PathVariable("casacoreroot", "The location of casacore/casa",
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
 			  },
-		  options=opts
+		  variables=opts
 		  )
 # keep a local sconsign database, rather than in very directory
 env.SConsignFile()
@@ -48,15 +48,11 @@ installer = env.Installer()
 # to find package based includes
 env.Append(CPPPATH='#')
 
-# Replace some builder commands (lex,yacc) with custom versions
-env.CustomCasaCom()
-
 env.Alias("test",None)
 
 for bopt in env["build"]:
     buildenv = env.BuildEnv(bopt)
     buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
-    print 
     env.SConscript(["SConscript"], 
                    build_dir= buildenv["BUILDDIR"],
                    duplicate=0, exports=["buildenv", "installer"]) 
