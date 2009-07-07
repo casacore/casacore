@@ -31,7 +31,7 @@
 
 //# Includes
 #include <tables/Tables/Table.h>
-
+#include <casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -138,6 +138,24 @@ public:
   // Replace non-writable storage managers by StandardStMan. This is needed
   // for special storage managers like LofarStMan.
   static Record adjustStMan (const Record& dminfo);
+
+  // Set the data managers of the given column(s) to the given tiled storage
+  // manager (normally TiledShapeStMan or TiledColumnStMan).
+  // The columns are combined in a single storage manager, so the function
+  // has to be called multiple times if, say, one per column is needed.
+  // The columns already having a tiled storage manager are not changed.
+  static void setTiledStMan (Record& dminfo, const Vector<String>& columns,
+                             const String& dmType, const String& dmName,
+                             const IPosition& defaultTileShape);
+
+  // Remove the columns from the dminfo record and return a vector with the
+  // names of the columns actually removed.
+  // The columns having a data manager matching <src>keepType</src> are not
+  // removed. Matching means that the beginning of the data manager name
+  // have to match, so "Tiled" matches all tiled storagemanagers.
+  static Vector<String> removeDminfoColumns (Record& dminfo,
+                                             const Vector<String>& columns,
+                                             const String& keepType= String());
 
   // Adjust the data manager types and groups and the
   // hypercolumn definitions to the actual data manager info.
