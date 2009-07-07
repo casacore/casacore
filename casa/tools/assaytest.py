@@ -152,10 +152,7 @@ def generate(env):
                   env.Action(assayAction, assayActionString)],
         suffix='.passed')
     env["ASSAYCOM"] = os.path.join(env["casashrdir"][0],"casacore_assay")
-    # The following is a bit of a nasty hack to add a wrapper function for the
-    # UnitTest builder, see http://www.scons.org/wiki/WrapperFunctions
-    from SCons.Script.SConscript import SConsEnvironment
-    SConsEnvironment.addAssayTest = addAssayTest
+    env.AddMethod(addAssayTest)
 
 def exists(env):
     return 1
