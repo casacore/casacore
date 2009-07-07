@@ -8,16 +8,18 @@ PACKAGE="casa"
 
 # general options
 opts = Variables( 'options.cfg', ARGUMENTS )
-opts.Add(("enable_hdf5", "Enable HDF5 support", None))
-opts.Add(("hdf5root", 
-	  "The root directory where hdf5 is installed", None))
-opts.Add(("hdf5incdir", "The hdf5 header location", None))
-opts.Add(("hdf5libdir", "The hdf5 library location", None))
+opts.AddVariables(BoolVariable("disable_dlopen", "Enable dlopen support", False),
+                  BoolVariable("enable_hdf5", "Enable HDF5 support", True),
+                  ("hdf5root", 
+                   "The root directory where hdf5 is installed", None),
+                  ("hdf5incdir", "The hdf5 header location", None),
+                  ("hdf5libdir", "The hdf5 library location", None) 
+                  )
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
 			  },
-		  options=opts
+		  variables=opts
 		  )
 # keep a local sconsign database, rather than in very directory
 env.SConsignFile()
@@ -51,34 +53,24 @@ if not (env.Detect(["flex","lex"]) and env.Detect(["bison", "yacc"])):
     env.Exit(1)
 
 # Auto configure
-#conf.env.AddCustomPackage('dl')
-#if not conf.CheckLibWithHeader('dl', 'dlfcn.h', language='c',
-#   				   autoadd=0):
-#    print "libdl or dlfcn.h cannot be found for loading shared libraries"
-#    Exit(1)
- 
-hdf5c = env.File("casa/HDF5Config.h")
 if not env.GetOption('clean'):
-    conf = Configure(env, config_h=hdf5c)
-    if not conf.CheckLib("dl"): Exit(1)
-    conf.env.PrependUnique(LIBS=['dl'])
+    conf = Configure(env)
     conf.env.AddCustomPackage('hdf5')
     if conf.env.get("enable_hdf5") and conf.CheckLib('hdf5', autoadd=0):
+        conf.env.AppendUnique(CPPFLAGS=["-DHAVE_HDF5"])
         conf.env.PrependUnique(LIBS=['hdf5'])
-    else:
-        print "Building without HDF5 support"
+    if not conf.env.get("disable_dlopen") and \
+             conf.CheckLib('dl', 'dlopen', autoadd=0):
+        conf.env.AppendUnique(CPPFLAGS=["-DHAVE_DLOPEN"])
+        conf.env.PrependUnique(LIBS=['dl'])
     env = conf.Finish()
 else:
     env.Execute(Delete("options.cfg"))
-    env.Execute(Delete(hdf5c))
 # create the installer which handles installing the final build
 installer = env.Installer()
 
 # to find package based includes
 env.Append(CPPPATH='#')
-
-# Replace some builder commands (lex,yacc) with custom versions
-env.CustomCasaCom()
 
 for bopt in env["build"]:
     # create an environment copy with the dbg/opt compiler flags
@@ -94,4 +86,3 @@ for bopt in env["build"]:
 installer.AddShares("tools", "*.py", "casacore/", True)
 installer.AddShares("tools", "casacore_assay", "casacore/")
 installer.AddShares("tools", "floatcheck.sh", "casacore/")
-installer.AddHeader( str(hdf5c), "casacore/casa")
