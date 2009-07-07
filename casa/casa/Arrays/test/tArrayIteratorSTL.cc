@@ -35,7 +35,7 @@
 #include <vector>
 #include <iterator>
 
-#include <casa/namespace.h>
+using namespace casa;
 
 void testSub (Array<Int>& arr1, const IPosition& blc,
 	      const IPosition& trc, const IPosition& inc)
@@ -72,8 +72,8 @@ void testIt()
   indgen(arr);
   {
     Int i=0;
-    Array<Int>::iterator enditer=arr.end();
-    for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
+    Array<Int>::const_iterator enditer=arr.end();
+    for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
       if (*iter != i) {
 	cout << "error: " << *iter << ' ' << i << endl;
       }
@@ -144,7 +144,7 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      for (Array<Int>::iterator iter=arr.begin(); iter!=arr.end(); ++iter) {
+      for (Array<Int>::const_iterator iter=arr.begin(); iter!=arr.end(); ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
@@ -159,8 +159,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      Array<Int>::iterator enditer=arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
+      Array<Int>::const_iterator enditer=arr.end();
+      for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
@@ -269,8 +269,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      Array<Int>::iterator enditer=arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
+      Array<Int>::const_iterator enditer=arr.end();
+      for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
@@ -306,8 +306,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      Array<Int>::iterator enditer=arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
+      Array<Int>::const_iterator enditer=arr.end();
+      for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
@@ -343,8 +343,8 @@ int main()
     Timer tim;
     for (Int j=0; j<nstep; j++) {
       Int inx=0;
-      Array<Int>::iterator enditer=arr.end();
-      for (Array<Int>::iterator iter=arr.begin(); iter!=enditer; ++iter) {
+      Array<Int>::const_iterator enditer=arr.end();
+      for (Array<Int>::const_iterator iter=arr.begin(); iter!=enditer; ++iter) {
 	if (*iter != inx) {
 	  cout << "err" << endl;
 	}
