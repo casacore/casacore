@@ -31,7 +31,6 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
-#include <casa/HDF5Config.h>
 
 //# Define hid_t and hsize_t if not defined (thus if HDF5 disabled).
 //# They should be the same as used by HDF5.
