@@ -100,6 +100,7 @@ void renameTables (const String& newName, const String& oldName)
 {
     Table tab(oldName, Table::Update);
     tab.rename (newName, Table::New);
+    tab.flush();
     // Try to open the table with the old name (should fail).
     Bool excp = False;
     try {
