@@ -1611,7 +1611,7 @@ void TableParseSelect::updateValue2 (const TableExprId& rowid,
     // Expression node has a scalar value, so get it.
     TNODE val;
     node.get (rowid, val);
-    TCOL value(val);
+    TCOL value(static_cast<TCOL>(val));
     if (isScalarCol) {
       // The column is a scalar too, so put it.
       col.putScalar (row, value);
