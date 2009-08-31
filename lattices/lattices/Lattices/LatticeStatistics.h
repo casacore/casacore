@@ -429,7 +429,7 @@ private:
                             LatticeStatsBase::StatisticsTypes type,
                             Bool dropDeg);
 
-// Convert a <AccumType> to a <Float> for plotting
+// Convert a AccumType to a Float for plotting.
    static Float convertATtoF (AccumType value) {return Float(std::real(value));};
 
 // Find the next good or bad point in an array
