@@ -310,9 +310,12 @@ sub change_comment_style
 	# Keep track of the group level, so such a named group is ended
 	# like a struct with };.
 	# Named groups are always preceeded by an anchor for linkto references.
+        # Unnamed groups are removed because doxygen handles them in a strange way.
+        # Sometimes they do not appear in the summary output.
 	$comment =~ s|^\s*\+grp|<group>|;
 	$comment =~ s|^\s*-grp|</group>|;
 	if ($comment =~ m|<group\s+name\s*=\s*(.*?)\s*>|i) {
+          $named = 1;
 	  $grpnm = $1;
 	  $grpnm =~ s|\s*['".]\s*||g;
 	  $grpnm =~ s|\s+|_|g;
@@ -332,8 +335,10 @@ sub change_comment_style
 	  }
 	  $grouplevel += 1;
         } elsif ($comment =~ m|<group>|) {
+          $named = 0;
 ##	  $comment =~ s|<group>| \\name='' @\{|i;
-	  $comment =~ s|<group>|@\{|i;
+##	  $comment =~ s|<group>|@\{|i;
+	  $comment =~ s|<group>||i;
 	  $grouplevel += 1;
         } elsif ($comment =~ m|</group>|) {
 	  if ($namedgrouplevel == $grouplevel) {
@@ -341,7 +346,11 @@ sub change_comment_style
 	    $newstate = $NON_COMMENT_BLOCK;
 	    $namedgrouplevel -= 1;
 	  } else {
-	    $comment =~ s|</group>|@\}|i;
+            if ($named == 1) {
+              $comment =~ s|</group>|@\}|i;
+            } else {
+              $comment =~ s|</group>||i;
+            }
 	  }
 	  $grouplevel -= 1;
 	}
