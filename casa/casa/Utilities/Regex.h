@@ -53,7 +53,10 @@ struct re_registers;
 // matching and searching in strings, comparison of expressions, and
 // input/output. It is built on the regular expression functions in the
 // GNU library (see files cregex.h and cregex.cc).
-// <br>
+// <br> Apart from proper regular expressions, it also supports glob patterns
+// (UNIX file name patterns) by means of a conversion to a proper regex.
+// Also ordinary strings can be converted to a proper regex.
+// <p>
 // cregex.cc supports many syntaxes. Regex supports
 // only one syntax, the extended regular expression with { and not \\{
 // as a special character. The special characters are:
@@ -212,7 +215,7 @@ public:
     // </thrown>
     Regex(const String &exp, Bool fast = False, Int sz = 40, 
 	  const Char *translation = 0);
-    
+
     // Copy constructor (copy semantics).
     // <thrown>
     //  <li> invalid_argument
@@ -253,10 +256,12 @@ public:
     static String makeCaseInsensitive (const String &strng);
 
     // Get the regular expression string.
-    const String &regexp() const;
+    const String &regexp() const
+      { return *str; }
     
     // Get the translation table (can be a zero pointer).
-    const Char *transtable() const;
+    const Char *transtable() const
+      { return trans; }
     
     // Test if the regular expression matches (part of) string <src>s</src>.
     // The return value gives the length of the matching string part,
@@ -305,7 +310,7 @@ public:
     friend ostream &operator<<(ostream &ios, const Regex &exp);
     
 protected:
-    String*            str;                 // the reg. exp.
+    String*            str;                 // the reg. exp. string
     Int                fastval;             // fast flag
     Int                bufsz;               // buffer size given
     Char*              trans;               // possible translation table

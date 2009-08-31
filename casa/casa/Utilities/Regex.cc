@@ -181,14 +181,6 @@ Regex &Regex::operator=(const String &strng) {
   return *this;
 }
 
-const String &Regex::regexp() const {
-  return *str;
-}
-
-const Char *Regex::transtable() const {
-  return trans;
-}
-
 String Regex::fromPattern(const String &pattern)
 {
     enum CState{stream, bracketopen, escapechar};
