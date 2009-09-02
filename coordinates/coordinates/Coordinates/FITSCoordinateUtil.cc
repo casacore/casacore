@@ -622,8 +622,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	wcsNames(CYLFIX) =  String("cylfix");
 //
 	int stat[NWCSFIX];
-	ctrl = 7;                                             // Do all unsafe unit corrections
-	if (wcsfix(ctrl, shape.storage(), &wcsPtr[which], stat) > 0) {
+	ctrl = 7;                         // Do all unsafe unit corrections
+        // wcsfix needs Int shape, so copy it.
+        std::vector<Int> tmpshp(shape.begin(), shape.end());
+        if (wcsfix(ctrl, &(tmpshp[0]), &wcsPtr[which], stat) > 0) {
 	    for (int i=0; i<NWCSFIX; i++) {
 		int err = stat[i];
 		if (err>0) {

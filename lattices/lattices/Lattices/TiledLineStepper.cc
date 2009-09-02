@@ -265,8 +265,8 @@ void TiledLineStepper::reset()
   //# so make it the tile shape for convenience (but not exceeding lattice).
   IPosition tilerBlc = itsBlc / itsTileShape * itsTileShape;
   IPosition tilerTrc = itsTrc;
-  tilerTrc(itsAxis) = min(latticeShape()(itsAxis) - 1,
-			  tilerBlc(itsAxis) + itsTileShape(itsAxis) - 1);
+  tilerTrc(itsAxis) = std::min(latticeShape()(itsAxis) - 1,
+                               tilerBlc(itsAxis) + itsTileShape(itsAxis) - 1);
   itsTiler.fullSize();
   itsTiler.subSection (tilerBlc, tilerTrc);
   itsTilerCursorPos = 0;

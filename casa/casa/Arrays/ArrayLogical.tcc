@@ -700,7 +700,7 @@ template<class T> Bool anyNearAbs (const T &val, const Array<T> &array,
 }
 
 
-template<class T> uInt nfalse (const Array<T> &array)
+template<class T> size_t nfalse (const Array<T> &array)
 {
   return (array.contiguousStorage() ?
           std::count (array.cbegin(), array.cend(), T()) :

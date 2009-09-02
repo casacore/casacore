@@ -119,7 +119,7 @@ template <class T> class LatticeIterInterface;
 //   const IPosition cursorShape = lat.niceCursorShape(cursorSize);
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;
-//   uInt nPixels = 0u;
+//   size_t nPixels = 0u;
 //   RO_LatticeIterator<Complex> iter(lat, 
 // 				   LatticeStepper(latticeShape, cursorShape));
 //   for (iter.reset(); !iter.atEnd(); iter++){

@@ -132,8 +132,6 @@ template<class T> Array<T> Array<T>::copy() const
     DebugAssert(ok(), ArrayError);
 
     Array<T> vp(shape());
-    uInt offset;
-
     if (ndim() == 0) {
         return vp;
     } else if (contiguousStorage()) {
@@ -156,7 +154,8 @@ template<class T> Array<T> Array<T>::copy() const
 	// The output is guaranteed to have all incs set to 1
 	ArrayPositionIterator ai(shape(), 1);
 	IPosition index(ndim());
-        uInt count=0;
+        size_t offset;
+        size_t count=0;
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
@@ -180,7 +179,7 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
     if (!Conform  &&  nelements() != 0) {
 	validateConformance(other);  // We can't overwrite, so throw exception
     }
-    uInt offset, offset2;
+    size_t offset, offset2;
     IPosition index(other.ndim());
 
     if (Conform == True) { // Copy in place
@@ -259,7 +258,7 @@ template<class T> Array<T> &Array<T>::operator= (const MaskedArray<T> &marray)
         = marray.getMaskStorage(deleteMask);
     const LogicalArrayElem *maskS = maskStorage;
 
-    uInt ntotal = nelements();
+    size_t ntotal = nelements();
     while (ntotal--) {
         if (*maskS) {
             *thisS = *arrS;
@@ -284,7 +283,7 @@ template<class T> void Array<T>::set(const T &Value)
     // Ultimately we should go to RawFillAll functions
     // RawFillAll(ndim(), begin_p, inc_p.storage(), length_p.storage(), Value);
     // Step through Vector by Vector
-    uInt offset;
+    size_t offset;
     if (ndim() == 0) {
         return;
     } else if (contiguousStorage()) {
@@ -324,7 +323,7 @@ template<class T> void Array<T>::apply(T (*function)(T))
     }
 
     if (contiguousStorage()) {
-	for (uInt i=0; i<nels_p; i++) {
+	for (size_t i=0; i<nels_p; i++) {
 	    begin_p[i] = function(begin_p[i]);
 	}
     } else {
@@ -334,7 +333,7 @@ template<class T> void Array<T>::apply(T (*function)(T))
 
 	uInt len  = length_p(0);
 	uInt incr = inc_p(0);
-	uInt offset;
+	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
@@ -357,7 +356,7 @@ template<class T> void Array<T>::apply(T (*function)(const T &))
     }
 
     if (contiguousStorage()) {
-	for (uInt i=0; i<nels_p; i++) {
+	for (size_t i=0; i<nels_p; i++) {
 	    begin_p[i] = function(begin_p[i]);
 	}
     } else {
@@ -367,7 +366,7 @@ template<class T> void Array<T>::apply(T (*function)(const T &))
 
 	uInt len  = length_p(0);
 	uInt incr = inc_p(0);
-	uInt offset;
+	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
@@ -390,7 +389,7 @@ template<class T> void Array<T>::apply(const Functional<T,T> &function)
     }
 
     if (contiguousStorage()) {
-	for (uInt i=0; i<nels_p; i++) {
+	for (size_t i=0; i<nels_p; i++) {
 	    begin_p[i] = function(begin_p[i]);
 	}
     } else {
@@ -400,7 +399,7 @@ template<class T> void Array<T>::apply(const Functional<T,T> &function)
 
 	uInt len  = length_p(0);
 	uInt incr = inc_p(0);
-	uInt offset;
+	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
@@ -591,7 +590,7 @@ template<class T> T &Array<T>::operator()(const IPosition &index)
     }
     ///uInt offs = ArrayIndexOffset(ndim(), originalLength_p.storage(),
     ///                        inc_p.storage(), index);
-    Int offs=0;
+    size_t offs=0;
     for (uInt i=0; i<ndimen_p; i++) {
         offs += index(i) * steps_p(i);
     }
@@ -601,7 +600,7 @@ template<class T> T &Array<T>::operator()(const IPosition &index)
 template<class T> const T &Array<T>::operator()(const IPosition &index) const
 {
     DebugAssert(ok(), ArrayError);
-    Int offs=0;
+    size_t offs=0;
     for (uInt i=0; i<ndimen_p; i++) {
         offs += index(i) * steps_p(i);
     }
@@ -617,7 +616,7 @@ template<class T> Array<T> Array<T>::operator()(const IPosition &b,
 {
     DebugAssert(ok(), ArrayError);
     Array<T> tmp(*this);
-    Int offs = makeSubset (tmp, b, e, i);
+    size_t offs = makeSubset (tmp, b, e, i);
     tmp.begin_p += offs;
     tmp.setEndIter();
     DebugAssert (tmp.ok(), ArrayError);
@@ -756,7 +755,7 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 	}
     } else {
 	ArrayPositionIterator ai(this->shape(), 1);
-	uInt offset;
+	size_t offset;
 	IPosition index(ndim());
 	uInt count=0;
 	while (! ai.pastEnd()) {
@@ -804,9 +803,9 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
 	}
     } else {
 	ArrayPositionIterator ai(this->shape(), 1);
-	uInt offset;
+	size_t offset;
 	IPosition index(ndim());
-	uInt count=0;
+	size_t count=0;
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
@@ -838,7 +837,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
 			   StorageInitPolicy policy)
 {
     baseCopy (ArrayBase(shape));
-    uInt new_nels = shape.product();
+    size_t new_nels = shape.product();
 
     switch(policy) {
     case COPY:

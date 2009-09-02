@@ -819,12 +819,12 @@ uInt TSMCube::calcCacheSize (const IPosition& cubeShape,
     // The unspecified window start dimensions are 0.
     IPosition start(nrdim, 0);
     for (i=0; i<windowStart.nelements(); i++) {
-        start(i) = min (windowStart(i), cubeShape(i)-1);
+        start(i) = std::min (windowStart(i), cubeShape(i)-1);
     }
     // The unspecified window length elements are set to the hypercube shape.
     IPosition end(cubeShape);
     for (i=0; i<windowLength.nelements(); i++) {
-        end(i) = min (windowLength(i), cubeShape(i) - start(i));
+        end(i) = std::min (windowLength(i), cubeShape(i) - start(i));
     }
     end += start;
     // If extensible, set end to the end of the tile.

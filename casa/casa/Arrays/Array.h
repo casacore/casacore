@@ -574,7 +574,7 @@ public:
 
       const T*  itsPos;
       const T*  itsLineEnd;
-      uInt      itsLineIncr;
+      size_t    itsLineIncr;
       uInt      itsLineAxis;
       IPosition itsCurPos;
       IPosition itsLastPos;
@@ -750,7 +750,7 @@ protected:
     // Set the end iterator.
     void setEndIter()
       { end_p = (nels_p==0 ? 0 : (contiguous_p  ?  begin_p + nels_p :
-		  begin_p + length_p(ndim()-1) * steps_p(ndim()-1))); }
+                   begin_p + size_t(length_p(ndim()-1)) * steps_p(ndim()-1))); }
 };
 
 }//#End casa namespace

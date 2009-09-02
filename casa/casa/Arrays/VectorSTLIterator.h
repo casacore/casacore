@@ -81,19 +81,25 @@ class VectorSTLIterator
   // the same as if created from <src>Vector.begin()</src>. Copy
   // constructor and assignment can be the default ones.
   // <group>
-  explicit VectorSTLIterator(const Vector<T> &c) :
-    start_p(const_cast<T*>(c.data())), 
-    step_p(std::max(1,c.steps()(0))),
-    iter_p(const_cast<T*>(c.data()))
- {;}
-  VectorSTLIterator() : start_p(0), step_p(1), iter_p(0) {;}
-  VectorSTLIterator(const typename Array<T>::IteratorSTL &c) : start_p(c.pos()), 
-    step_p(std::max(1,c.steps()(0))), iter_p(start_p) {;}
+  explicit VectorSTLIterator(const Vector<T> &c)
+    : start_p(const_cast<T*>(c.data())), 
+      step_p (std::max(ssize_t(1), c.steps()(0))),
+      iter_p (const_cast<T*>(c.data()))
+  {}
+  VectorSTLIterator() : start_p(0), step_p(1), iter_p(0)
+  {}
+  VectorSTLIterator(const typename Array<T>::IteratorSTL &c)
+    : start_p(c.pos()), 
+      step_p (std::max(ssize_t(1), c.steps()(0))),
+      iter_p (start_p)
+  {}
   // Copy constructor.
   //# It is certainly needed for the Intel compiler.
-  VectorSTLIterator(const VectorSTLIterator<T>& that) :
-    std::iterator<std::random_access_iterator_tag, T>(that), 
-    start_p(that.start_p), step_p(that.step_p), iter_p(that.iter_p) {;}
+  VectorSTLIterator(const VectorSTLIterator<T>& that)
+    : std::iterator<std::random_access_iterator_tag, T>(that), 
+      start_p(that.start_p), step_p(that.step_p),
+      iter_p(that.iter_p)
+  {}
   // Assignment.
   //# It is certainly needed for the Intel compiler.
   VectorSTLIterator<T>& operator=(const VectorSTLIterator<T>& that)

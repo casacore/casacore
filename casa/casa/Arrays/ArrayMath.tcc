@@ -1150,7 +1150,7 @@ template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
       }
     }
     T* data = const_cast<T*>(storage);
-    size_t n2 = size_t((nelem - 1) * Double(fraction));
+    size_t n2 = uInt((nelem - 1) * Double(fraction));
     if (!sorted) {
 	// If the array is small, it is faster to fully sort it.
 	if (nelem > 20) {

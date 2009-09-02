@@ -84,7 +84,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Block<Int> b;         // 0-length Block
 // // ...
 // b = a;                // resize b and copy a into it
-// for (uInt i=0; i < a.nelements(); i++) {
+// for (size_t i=0; i < a.nelements(); i++) {
 //     a[i] = i;    // Generate a sequence
 //                  // with Vectors, could simply say "indgen(myVector);"
 // }
@@ -104,11 +104,11 @@ public:
   Block() : npts(0), array(0), destroyPointer(True) {}
   // Create a Block with the given number of points. The values in Block
   // are uninitialized. Note that indices range between 0 and n-1.
-  explicit Block(uInt n) : npts(n), array(n>0 ? new T[n] : 0), destroyPointer(True)
+  explicit Block(size_t n) : npts(n), array(n>0 ? new T[n] : 0), destroyPointer(True)
     {}
   // Create a Block of the given length, and initialize (via operator= for 
   // objects of type T) with the provided value.
-  Block(uInt n, T val) : npts(n), array(n > 0 ? new T[n] : 0), destroyPointer(True)
+  Block(size_t n, T val) : npts(n), array(n > 0 ? new T[n] : 0), destroyPointer(True)
     { objset(array, val, n); }
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If 
@@ -116,7 +116,7 @@ public:
   // it owns the pointer, i.e. that it is safe to <src>delet[]</src> it when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
-  Block(uInt n, T *&storagePointer, Bool takeOverStorage = True)
+  Block(size_t n, T *&storagePointer, Bool takeOverStorage = True)
     : npts(n), array(storagePointer), destroyPointer(takeOverStorage)
     { if (destroyPointer) storagePointer = 0;}
 
@@ -158,11 +158,11 @@ public:
   // This is written as three functions because default parameters do
   // not always work properly with templates.
   // <group>
-  void resize(uInt n, Bool forceSmaller=False, Bool copyElements=True) {
+  void resize(size_t n, Bool forceSmaller=False, Bool copyElements=True) {
     if (!(n == npts || (n < npts && forceSmaller == False))) {
       T *tp = n > 0 ? new T[n] : 0;
       if (copyElements) {
-	uInt nmin = npts < n ? npts : n;  // Don't copy too much!
+	size_t nmin = npts < n ? npts : n;  // Don't copy too much!
 	objcopy(tp, array, nmin);
       };
       if (array && destroyPointer) { // delete...
@@ -183,7 +183,7 @@ public:
   // index above the removed element are shuffled down by one. For backward
   // compatibility forceSmaller is True by default.
   // <group>
-  void remove(uInt whichOne, Bool forceSmaller=True) {
+  void remove(size_t whichOne, Bool forceSmaller=True) {
     if (whichOne >= npts) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
       throw(indexError<uInt>(whichOne, "Block::remove() - "
@@ -212,7 +212,7 @@ public:
   // owns the pointer, i.e. that it is safe to <src>delete[]</src> it when the 
   // <src>Block</src>is destructed, otherwise the actual storage is not destroyed.
   // If true, storagePointer is set to <src>NULL</src>.
-  void replaceStorage(uInt n, T *&storagePointer, Bool takeOverStorage=True) {
+  void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage=True) {
     if (array && destroyPointer) {
       delete [] array;
       array = 0;
@@ -231,7 +231,7 @@ public:
   //    <li> indexError
   // </thrown>
   // <group>
-  T &operator[](uInt index) {
+  T &operator[](size_t index) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     // Write it this way to avoid casts; remember index and npts are
     // unsigned.
@@ -242,7 +242,7 @@ public:
 #endif
     return array[index];
   }
-  const T &operator[](uInt index) const {
+  const T &operator[](size_t index) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if ((npts == 0) || (index > npts - 1)) {
       throw(indexError<uInt>(index, "Block::operator[] const - "
@@ -281,8 +281,8 @@ public:
 
   // The number of elements contained in this <src>Block<T></src>.
   // <group>
-  uInt nelements() const {return npts;}
-  uInt size() const {return npts;}
+  size_t nelements() const {return npts;}
+  size_t size() const {return npts;}
   // </group>
 
   // Is the block empty (i.e. no elements)?
@@ -324,7 +324,7 @@ public:
 
  private:
   // The number of points in the vector
-  uInt  npts;
+  size_t npts;
   // The actual storage
   T *array;
   // Can we delete the storage upon destruction?
@@ -356,32 +356,32 @@ public:
  template<class T> class PtrBlock {
  public:
    PtrBlock() : block_p() {}
-   explicit PtrBlock(uInt n) : block_p(n) {}
-   PtrBlock(uInt n, T val) : block_p(n, (void *)val) {}
-   PtrBlock(uInt n, T *&storagePointer, Bool takeOverStorage = True)
+   explicit PtrBlock(size_t n) : block_p(n) {}
+   PtrBlock(size_t n, T val) : block_p(n, (void *)val) {}
+   PtrBlock(size_t n, T *&storagePointer, Bool takeOverStorage = True)
      : block_p(n, (void **&)storagePointer, takeOverStorage) {}
    PtrBlock(const PtrBlock<T> &other) : block_p(other.block_p) {}
    PtrBlock<T> &operator=(const PtrBlock<T> &other)
      { block_p = other.block_p; return *this;}
    ~PtrBlock() {}
-   void resize(uInt n, Bool forceSmaller, Bool copyElements)
+   void resize(size_t n, Bool forceSmaller, Bool copyElements)
      { block_p.resize(n,forceSmaller, copyElements); }
-   void resize(uInt n) {block_p.resize(n);}
-   void resize(uInt n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
-   void remove(uInt whichOne, Bool forceSmaller) {
+   void resize(size_t n) {block_p.resize(n);}
+   void resize(size_t n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
+   void remove(size_t whichOne, Bool forceSmaller) {
      block_p.remove(whichOne, forceSmaller);}
-   void remove(uInt whichOne) {block_p.remove(whichOne);}
-   void replaceStorage(uInt n, T *&storagePointer, 
+   void remove(size_t whichOne) {block_p.remove(whichOne);}
+   void replaceStorage(size_t n, T *&storagePointer, 
 		       Bool takeOverStorage=True)
      {block_p.replaceStorage(n, (void **&)storagePointer, takeOverStorage);}
-   T &operator[](uInt index) {return (T &)block_p[index];}
-   const T &operator[](uInt index) const {return (const T &)block_p[index];}
+   T &operator[](size_t index) {return (T &)block_p[index];}
+   const T &operator[](size_t index) const {return (const T &)block_p[index];}
    void set(const T &val) {block_p.set((void *const &)val);}
    PtrBlock<T> &operator=(const T &val) {set(val); return *this;}
    T *storage()  {return (T *)block_p.storage();}
    const T *storage() const {return (const T *)block_p.storage();}
-   uInt nelements() const {return block_p.nelements();}
-   uInt size() const {return block_p.size();}
+   size_t nelements() const {return block_p.nelements();}
+   size_t size() const {return block_p.size();}
    Bool empty() const {return block_p.empty();}
  private:
    Block<void*> block_p;

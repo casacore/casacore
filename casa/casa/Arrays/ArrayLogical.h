@@ -401,8 +401,8 @@ inline Bool anyTrue (const Array<Bool>& array)
 
 // Determine it for the full array.
 // <group>
-template<class T> uInt nfalse (const Array<T> &array);
-template<class T> uInt ntrue (const Array<T> &array)
+template<class T> size_t nfalse (const Array<T> &array);
+template<class T> size_t ntrue (const Array<T> &array)
   { return array.nelements() - nfalse(array); }
 // </group>
 

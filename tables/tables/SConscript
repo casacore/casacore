@@ -45,16 +45,18 @@ testenv = myenv.Clone()
 # gather test files
 # SGlob works in build dir, so only for cc files
 ttests = testenv.SGlob("Tables/test/*.cc")
-lttests = testenv.SGlob("LogTables/test/*.cc")
+ttests += testenv.SGlob("TaQL/test/*.cc")
+dttests = testenv.SGlob("DataMan/test/*.cc")
+dttests += testenv.SGlob("LogTables/test/*.cc")
 # point to tests local includes
 testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
 # allow either linking against shared or static, static if both present
 testenv.PrependUnique(LIBS=slib)
 testenv2 = testenv.Clone()
 # add files necessary for testing which are not names tXYZ.*
-testenv["ASSAYAUX"] = testenv.SGlob("*/test/*.data_v*")
+testenv["ASSAYAUX"] = testenv.SGlob("Tables/test/*.data_v*")
 map(testenv.addAssayTest, ttests)
-map(testenv2.addAssayTest, lttests)
+map(testenv2.addAssayTest, dttests)
 
 # install headers, only works with absolute dir.
 installer.AddHeaders( rootdir, "*.h", "casacore", True )

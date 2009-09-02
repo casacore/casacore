@@ -671,7 +671,7 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
     uInt n = indices.nelements();
     itsElems.resize (n);
     for (uInt i=0; i<n; i++) {
-	itsElems[i] = new TableExprNodeSetElem (TableExprNode (indices(i)));
+      itsElems[i] = new TableExprNodeSetElem (TableExprNode (Int64(indices(i))));
     }
 }
 
@@ -693,14 +693,14 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
     for (uInt i=0; i<n; i++) {
 	startp = endp = 0;
 	if (indices.start()(i) != Slicer::MimicSource) {
-	    start = TableExprNode (indices.start()(i));
+          start = TableExprNode (Int64(indices.start()(i)));
 	    startp = &start;
 	}
 	if (indices.end()(i) != Slicer::MimicSource) {
-	    end = TableExprNode (indices.end()(i));
+          end = TableExprNode (Int64(indices.end()(i)));
 	    endp = &end;
 	}
-	TableExprNode incr (indices.stride()(i));
+	TableExprNode incr (Int64(indices.stride()(i)));
 	itsElems[i] = new TableExprNodeSetElem (startp, endp, &incr);
     }
 }

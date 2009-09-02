@@ -152,7 +152,7 @@ public:
     virtual uInt ndim() const;
 
     // Returns the total number of elements in this LatticeRegion.
-    virtual uInt nelements() const;
+    virtual size_t nelements() const;
 
     // Check class internals - used for debugging. Should always return True
     virtual Bool ok() const;

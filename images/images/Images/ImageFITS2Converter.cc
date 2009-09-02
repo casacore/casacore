@@ -1269,21 +1269,36 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
       if (subRec.dataType("value") == TpString) {
          String unitString;
          subRec.get("value", unitString);
-//
+
          UnitMap::addFITS();
          if (UnitVal::check(unitString)) {
-            
-// Translate units from FITS units to true aips++ units
-// There is no scale factor in this translation.
-                
+	     // Translate units from FITS units to true aips++ units
+	     // There is no scale factor in this translation.
              u = UnitMap::fromFITS(Unit(unitString));
-         } else {
-	     UnitMap::putUser("\""+unitString+"\"", UnitVal::UnitVal(1.0, UnitDim::Dnon), "\""+unitString+"\"");
-	     os << LogIO::WARN << "FITS unit \"" << unitString << "\" unknown to CASA - will treat it as non-dimensional."
-		<< LogIO::POST;
-	     u.setName("\""+unitString+"\"");
-	     u.setValue(UnitVal::UnitVal(1.0, UnitDim::Dnon));
-         }
+         } else { // unit check failed, try to recover by removing bracketed comments like in "K (Tb)"
+	     String::size_type bracketPos;
+	     String truncUnitString;
+	     Bool uFixed = False;
+	     if((bracketPos = unitString.find("("))!=String::npos 
+		|| (bracketPos = unitString.find("["))!=String::npos){
+		 // remove everything beginning at bracketPos from the string
+		 truncUnitString = unitString.substr(0, bracketPos);
+		 if (UnitVal::check(truncUnitString)) {
+		     os << LogIO::WARN << "FITS unit \"" << unitString << "\" unknown to CASA, was truncated to \""
+			<< truncUnitString << "\"."
+			<< LogIO::POST;
+		     u = UnitMap::fromFITS(Unit(truncUnitString));
+		     uFixed = True;
+		 }
+	     }
+	     if(!uFixed){ // recovery  attempt failed as well 
+		 UnitMap::putUser("\""+unitString+"\"", UnitVal::UnitVal(1.0, UnitDim::Dnon), "\""+unitString+"\"");
+		 os << LogIO::WARN << "FITS unit \"" << unitString << "\" unknown to CASA - will treat it as non-dimensional."
+		    << LogIO::POST;
+		 u.setName("\""+unitString+"\"");
+		 u.setValue(UnitVal::UnitVal(1.0, UnitDim::Dnon));
+	     }
+	 }
       }
       header.removeField("bunit");
    }       

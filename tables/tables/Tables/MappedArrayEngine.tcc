@@ -114,69 +114,16 @@ void MappedArrayEngine<S,T>::registerClass()
   DataManager::registerCtor (className(), makeObject);
 }
 
-
 template<class S, class T>
-void MappedArrayEngine<S,T>::getArray (uInt rownr, Array<S>& array)
+void MappedArrayEngine<S,T>::mapOnGet (Array<S>& array, const Array<T>& target)
 {
-  Array<T> target(array.shape());
-  roColumn().get (rownr, target);
-  convertArray (array, target);  
-}
-template<class S, class T>
-void MappedArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
-{
-  Array<T> target(array.shape());
-  convertArray (target, array);
-  rwColumn().put (rownr, target);
+  convertArray (array, target);
 }
 
 template<class S, class T>
-void MappedArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
-				       Array<S>& array)
+void MappedArrayEngine<S,T>::mapOnPut (const Array<S>& array, Array<T>& target)
 {
-  Array<T> target(array.shape());
-  roColumn().getSlice (rownr, slicer, target);
-  convertArray (array, target);  
-}
-template<class S, class T>
-void MappedArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
-				       const Array<S>& array)
-{
-  Array<T> target(array.shape());
   convertArray (target, array);
-  rwColumn().putSlice (rownr, slicer, target);
-}
-
-template<class S, class T>
-void MappedArrayEngine<S,T>::getArrayColumn (Array<S>& array)
-{
-  Array<T> target(array.shape());
-  roColumn().getColumn (target);
-  convertArray (array, target);  
-}
-template<class S, class T>
-void MappedArrayEngine<S,T>::putArrayColumn (const Array<S>& array)
-{
-  Array<T> target(array.shape());
-  convertArray (target, array);
-  rwColumn().putColumn (target);
-}
-
-template<class S, class T>
-void MappedArrayEngine<S,T>::getColumnSlice (const Slicer& slicer,
-					     Array<S>& array)
-{
-  Array<T> target(array.shape());
-  roColumn().getColumn (slicer, target);
-  convertArray (array, target);  
-}
-template<class S, class T>
-void MappedArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
-					     const Array<S>& array)
-{
-  Array<T> target(array.shape());
-  convertArray (target, array);
-  rwColumn().putColumn (slicer, target);
 }
 
 } //# NAMESPACE CASA - END

@@ -29,6 +29,7 @@
 #define CASA_SLICE_H
 
 #include <casa/aips.h>
+#include <unistd.h>         //# for ssize_t
 
 #if defined(AIPS_DEBUG)
 #include <casa/Utilities/Assert.h>
@@ -96,20 +97,23 @@ public:
     Slice();
     // Create a Slice with a given start, length, and increment. The latter
     // two default to one if not given.
-    Slice(Int Start, uInt Length=1, uInt Inc=1);
+    Slice(size_t Start, size_t Length=1, size_t Inc=1);
+    // Create a Slice with a given start, end or length, and increment.
+    // If <src>endIsLength=False</src>, end is interpreted as length.
+    Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength);
     // Was the entire range of indices on this axis selected?
     Bool all() const;
     // Report the selected starting position. If all() is true,
     // start=len=inc=0 is set.
-    Int start() const;
+    size_t start() const;
     // Report the defined length. If all() is true, start=len=inc=0 is set.
-    uInt length() const;
+    size_t length() const;
     // Report the defined increment. If all() is true, start=len=inc=0 is set.
-    uInt inc() const;
+    size_t inc() const;
     // Attempt to report the last element of the slice. If all() is
     // True, end() returns -1 (which is less than start(), which returns
     // zero  in that case).
-    Int end() const;
+    size_t end() const;
 
     // Check a vector of slices.
     // If a vector of an axis is empty or missing, it is replaced by a Slice
@@ -128,8 +132,9 @@ private:
     //# stands for private to avoid it colliding with the accessor names.
     //# incp < 0 is chosen as the flag since the user can set inc to be zero
     //# although that is an error that can be caught if AIPS_DEBUG is defined).
-    Int startp, incp;
-    uInt lengthp;
+    size_t  startp;
+    ssize_t incp;
+    size_t  lengthp;
 };
 
 inline Slice::Slice() : startp(0), incp(-1), lengthp(0)
@@ -138,34 +143,40 @@ inline Slice::Slice() : startp(0), incp(-1), lengthp(0)
 }
 
 inline
-Slice::Slice(Int Start, uInt Length, uInt Inc) : startp(Start), incp(Inc), 
-                                                 lengthp(Length)
+Slice::Slice(size_t Start, size_t Length, size_t Inc)
+  : startp(Start), incp(Inc), lengthp(Length)
 {
 #if defined(AIPS_DEBUG)
     DebugAssert(incp > 0, AipsError);
 #endif
 }
 
-inline Bool Slice::all() const
+inline
+Slice::Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength)
+  : startp(Start), incp(Inc), lengthp(endIsLength ? End : End+1-Start)
 {
-    if (incp < 0) {
-	return True;
-    } else {
-	return False;
-    }
+#if defined(AIPS_DEBUG)
+    DebugAssert(End >= Start, AipsError);
+    DebugAssert(incp > 0, AipsError);
+#endif
 }
 
-inline Int Slice::start() const
+inline Bool Slice::all() const
+{
+    return incp<0;
+}
+
+inline size_t Slice::start() const
 {
     return startp;
 }
 
-inline uInt Slice::length() const
+inline size_t Slice::length() const
 {
     return lengthp;
 }
 
-inline uInt Slice::inc() const
+inline size_t Slice::inc() const
 {
     if (all()) {
 	return 0;
@@ -174,7 +185,7 @@ inline uInt Slice::inc() const
     }
 }
 
-inline Int Slice::end() const
+inline size_t Slice::end() const
 {
     // return -1 if all()
     return startp + lengthp - 1;

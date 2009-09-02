@@ -278,5 +278,122 @@ Bool BaseMappedArrayEngine<VirtualType, StoredType>::canChangeShape() const
     return (roColumn_p == 0  ?  False : roColumn_p->canChangeShape());
 }
 
-} //# NAMESPACE CASA - END
 
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getArray
+(uInt rownr, Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().baseGet (rownr, target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putArray
+(uInt rownr, const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().basePut (rownr, target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getSlice
+(uInt rownr, const Slicer& slicer, Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().getSlice (rownr, slicer, target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putSlice
+(uInt rownr, const Slicer& slicer, const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().putSlice (rownr, slicer, target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getArrayColumn
+(Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().getColumn (target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putArrayColumn
+(const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().putColumn (target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getArrayColumnCells
+(const RefRows& rownrs, Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().getColumnCells (rownrs, target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putArrayColumnCells
+(const RefRows& rownrs, const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().putColumnCells (rownrs, target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getColumnSlice
+(const Slicer& slicer, Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().getColumn (slicer, target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putColumnSlice
+(const Slicer& slicer, const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().putColumn (slicer, target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::getColumnSliceCells
+(const RefRows& rownrs, const Slicer& slicer, Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    roColumn().getColumnCells (rownrs, slicer, target);
+    mapOnGet (array, target);
+  }
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::putColumnSliceCells
+(const RefRows& rownrs, const Slicer& slicer, const Array<VirtualType>& array)
+  {
+    Array<StoredType> target(array.shape());
+    mapOnPut (array, target);
+    rwColumn().putColumnCells (rownrs, slicer, target);
+  }
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnGet
+(Array<VirtualType>&, const Array<StoredType>&)
+{
+  throw ("BaseMappedArrayEngine::mapOnGet not implemented");
+}
+
+template<class VirtualType, class StoredType>
+void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnPut
+(const Array<VirtualType>&, Array<StoredType>&)
+{
+  throw ("BaseMappedArrayEngine::mapOnPut not implemented");
+}
+
+
+} //# NAMESPACE CASA - END

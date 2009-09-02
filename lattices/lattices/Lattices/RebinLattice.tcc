@@ -424,8 +424,8 @@ Slicer RebinLattice<T>::findOriginalSlicer (const Slicer& section) const
       blcOrig[i] = blc[i] * itsBin[i];
       trcOrig[i] = trc[i] * itsBin[i] + (itsBin[i] - 1);
 //
-      blcOrig[i] = max(0, min(blcOrig[i], shapeOrig[i]-1));
-      trcOrig[i] = max(0, min(trcOrig[i], shapeOrig[i]-1));
+      blcOrig[i] = std::max(ssize_t(0), std::min(blcOrig[i], shapeOrig[i]-1));
+      trcOrig[i] = std::max(ssize_t(0), std::min(trcOrig[i], shapeOrig[i]-1));
    }
 //
    IPosition strideOrig(nDim,1);

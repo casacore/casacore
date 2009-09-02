@@ -288,7 +288,7 @@ private:
   // from local to file format, etc..
   void init();
 
-  // Get the pointer to the cache. It is Created if not done yet.
+  // Get the pointer to the cache. It is created if not done yet.
   char* getDataPtr();
 };
 

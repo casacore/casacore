@@ -560,10 +560,12 @@ public:
     // </group>
 
     // The length of each axis.
-    IPosition shape() const;
+    const IPosition& shape() const
+      { return pArray->shape(); }
 
     // Is the array read only?
-    Bool isReadOnly() const;
+    Bool isReadOnly() const
+      { return isRO; }
 
     // Set the array to be read only.
     void setReadOnly() const;

@@ -548,31 +548,6 @@ private:
     // of the underlying stored array.
     IPosition shape (uInt rownr);
 
-    // Get an array in the given row.
-    void getArray (uInt rownr, Array<VirtualType>& array);
-
-    // Put an array in the given row.
-    void putArray (uInt rownr, const Array<VirtualType>& array);
-
-    // Get a section of the array in the given row.
-    void getSlice (uInt rownr, const Slicer& slicer, Array<VirtualType>& array);
-
-    // Put into a section of the array in the given row.
-    void putSlice (uInt rownr, const Slicer& slicer,
-		   const Array<VirtualType>& array);
-
-    // Get an entire column.
-    void getArrayColumn (Array<VirtualType>& array);
-
-    // Put an entire column.
-    void putArrayColumn (const Array<VirtualType>& array);
-
-    // Get a section of all arrays in the column.
-    void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
-
-    // Put a section of all arrays in the column.
-    void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
-
     // Check if the shapes of virtual and stored match.
     // Determine the shape of the virtual elements in the stored.
     IPosition checkShape (const Array<VirtualType>& source,
@@ -580,13 +555,13 @@ private:
 
     // Copy the stored array to the virtual array.
     // It tries to optimize as much as possible.
-    void copyOnGet (Array<VirtualType>& array,
-		    const Array<StoredType>& stored);
+    virtual void mapOnGet (Array<VirtualType>& array,
+                           const Array<StoredType>& stored);
 
     // Copy the virtual array to the stored array.
     // It tries to optimize as much as possible.
-    void copyOnPut (const Array<VirtualType>& array,
-		    Array<StoredType>& stored);
+    virtual void mapOnPut (const Array<VirtualType>& array,
+                           Array<StoredType>& stored);
 
     // Determine the shape of a cell in the stored column from the
     // shape of the cell in the virtual column.

@@ -197,7 +197,7 @@ uInt LatticeRegion::ndim() const
     return itsSlicer.ndim();
 }
   
-uInt LatticeRegion::nelements() const
+size_t LatticeRegion::nelements() const
 {
     return itsRegion->nelements();
 }

@@ -294,7 +294,7 @@ uInt SubImage<T>::ndim() const
 }
 
 template<class T>
-uInt SubImage<T>::nelements() const
+size_t SubImage<T>::nelements() const
 {
   return itsSubLatPtr->nelements();
 }

@@ -124,41 +124,41 @@ Int HostInfo::numCPUs( )				\
     return info->valid ? info->cpus : 0;		\
 }							\
 							\
-Int HostInfo::memoryTotal( ) 				\
+ssize_t HostInfo::memoryTotal( ) 				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     return info->valid ? info->memory_total : -1;	\
 }							\
 							\
-Int HostInfo::memoryUsed( )				\
+ssize_t HostInfo::memoryUsed( )				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     info->update_info( );				\
     return info->valid ? info->memory_used : -1;	\
 }							\
 							\
-Int HostInfo::memoryFree( )				\
+ssize_t HostInfo::memoryFree( )				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     info->update_info( );				\
     return info->valid ? info->memory_free : -1;	\
 }							\
 							\
-Int HostInfo::swapTotal( )				\
+ssize_t HostInfo::swapTotal( )				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     info->update_info( );				\
     return info->valid ? info->swap_total : -1;		\
 }							\
 							\
-int HostInfo::swapUsed( )				\
+ssize_t HostInfo::swapUsed( )				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     info->update_info( );				\
     return info->valid ? info->swap_used : -1;		\
 }							\
 							\
-int HostInfo::swapFree( )				\
+ssize_t HostInfo::swapFree( )				\
 {							\
     if ( ! info ) info = new HostMachineInfo( );	\
     info->update_info( );				\
@@ -213,12 +213,12 @@ HOSTINFO_IMPLEMENT_MEMBERS
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 Int HostInfo::numCPUs( ) { return 0; }
-Int HostInfo::memoryTotal( ) { return -1; }
-Int HostInfo::memoryUsed( ) { return -1; }
-Int HostInfo::memoryFree( ) { return -1; }
-Int HostInfo::swapTotal( ) { return -1; }
-int HostInfo::swapUsed( ) { return -1; }
-int HostInfo::swapFree( ) { return -1; }
+ssize_t HostInfo::memoryTotal( ) { return -1; }
+ssize_t HostInfo::memoryUsed( )  { return -1; }
+ssize_t HostInfo::memoryFree( )  { return -1; }
+ssize_t HostInfo::swapTotal( )   { return -1; }
+ssize_t HostInfo::swapUsed( )    { return -1; }
+ssize_t HostInfo::swapFree( )    { return -1; }
 
 } //# NAMESPACE CASA - END
 

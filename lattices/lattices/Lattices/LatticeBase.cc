@@ -85,7 +85,7 @@ uInt LatticeBase::ndim() const
   return shape().nelements();
 }
 
-uInt LatticeBase::nelements() const
+size_t LatticeBase::nelements() const
 {
   return shape().product(); 
 }

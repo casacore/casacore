@@ -120,11 +120,11 @@ makeXfr(const Array<FType>& psf,
       theFFTSize = thePsfSize+extractShape(thePsfSize, imageNDSize);
     else
       for (uInt i = 0; i < psfDim; i++)
-	theFFTSize(i) = max(thePsfSize(i), 
-			    convImageSize(i)+2*Int((thePsfSize(i)+3)/4));
+	theFFTSize(i) = std::max(thePsfSize(i), 
+                                 convImageSize(i)+2*Int((thePsfSize(i)+3)/4));
   else 
     for (uInt i = 0; i < psfDim; i++)
-      theFFTSize(i) = max(thePsfSize(i), convImageSize(i));
+      theFFTSize(i) = std::max(thePsfSize(i), convImageSize(i));
   {
     IPosition tmp = theXfr.shape();
     tmp = 0;
@@ -195,8 +195,8 @@ linearConv(Array<FType>& result,
   else {
     Bool doResize = False;
     for (uInt i = 0; i < thePsfSize.nelements(); i++) {
-      if (theFFTSize < max(thePsfSize(i), 
-			   imageSize(i)+2*Int((thePsfSize(i)+3)/4)))
+      if (theFFTSize < std::max(thePsfSize(i), 
+                                imageSize(i)+2*Int((thePsfSize(i)+3)/4)))
 	doResize=True;
     }
     if (doResize)

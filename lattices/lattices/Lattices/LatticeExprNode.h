@@ -560,7 +560,10 @@ public:
 
 // Unary constant expression constructors.
 // <group>
+   LatticeExprNode (Int64 constant);
    LatticeExprNode (Int constant);
+   LatticeExprNode (uInt constant);
+   LatticeExprNode (Long constant);
    LatticeExprNode (Float constant);
    LatticeExprNode (Double constant);
    LatticeExprNode (const Complex& constant);

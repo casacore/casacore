@@ -159,7 +159,7 @@ template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
     if (copyValues) {
         Vector<T> oldref(*this);
 	Array<T>::resize(l);
-	uInt minNels = min(this->nelements(), oldref.nelements());
+	size_t minNels = std::min(this->nelements(), oldref.nelements());
 	objcopy(this->begin_p, oldref.begin_p, minNels,
 		uInt(this->inc_p(0)), uInt(oldref.inc_p(0)));
     } else {

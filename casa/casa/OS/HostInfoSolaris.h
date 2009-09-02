@@ -119,13 +119,13 @@ friend class HostInfo;
 
     int cpus;
 
-    int memory_total;
-    int memory_used;
-    int memory_free;
+    ssize_t memory_total;
+    ssize_t memory_used;
+    ssize_t memory_free;
 
-    int swap_total;
-    int swap_used;
-    int swap_free;
+    ssize_t swap_total;
+    ssize_t swap_used;
+    ssize_t swap_free;
 };
 
 // </group>

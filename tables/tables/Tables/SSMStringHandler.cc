@@ -108,7 +108,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length,
     replaceData (offset,itsIntSize, itsIntBuf);
 
     for (uInt i=0; i< aShape.nelements();i++) {
-      CanonicalConversion::fromLocal (itsIntBuf, aShape(i));
+      CanonicalConversion::fromLocal (itsIntBuf, Int(aShape(i)));
       replaceData (offset,itsIntSize, itsIntBuf);
     }
     CanonicalConversion::fromLocal (itsIntBuf,1);
@@ -145,7 +145,7 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length,
   replaceData (offset,itsIntSize, itsIntBuf);
 
   for (uInt i=0; i< aShape.nelements();i++) {
-    CanonicalConversion::fromLocal (itsIntBuf, aShape(i));
+    CanonicalConversion::fromLocal (itsIntBuf, Int(aShape(i)));
     replaceData (offset,itsIntSize, itsIntBuf);
   }
 
@@ -292,7 +292,7 @@ void SSMStringHandler::put (Int& bucketNr, Int& offset, Int& length,
     putData (itsIntSize, itsIntBuf);
 
     for (uInt i=0; i< string.ndim();i++) {
-      CanonicalConversion::fromLocal (itsIntBuf, aShape(i));
+      CanonicalConversion::fromLocal (itsIntBuf, Int(aShape(i)));
       putData (itsIntSize, itsIntBuf);
     }
     CanonicalConversion::fromLocal (itsIntBuf,1);
@@ -509,7 +509,7 @@ void SSMStringHandler::putShape (Int& bucketNr, Int& offset, Int& length,
   putData (itsIntSize, itsIntBuf);
 
   for (uInt i=0; i< aShape.nelements();i++) {
-    CanonicalConversion::fromLocal (itsIntBuf, aShape(i));
+    CanonicalConversion::fromLocal (itsIntBuf, Int(aShape(i)));
     putData (itsIntSize, itsIntBuf);
   }
 
@@ -531,9 +531,11 @@ void SSMStringHandler::getShape (IPosition& aShape, Int bucket, Int& offset,
   CanonicalConversion::toLocal(nDim,itsIntBuf);
   aShape.resize(nDim);
 
+  Int tmp;
   for (Int i=0; i< nDim; i++) {
     getData (itsIntSize, itsIntBuf,offset);
-    CanonicalConversion::toLocal(aShape(i),itsIntBuf);
+    CanonicalConversion::toLocal(tmp, itsIntBuf);
+    aShape(i) = tmp;
   }
 }
 

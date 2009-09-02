@@ -137,9 +137,10 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // The new outOrd objects have to have numbers in the range 0..n,
     // where n is the length.
     // We use the same trick as in WCRegion by sorting them and using
-    // the resuting index vector.
+    // the resulting index vector.
     Vector<uInt> reginx(ndreg);
-    GenSortIndirect<Int>::sort (reginx, regOutOrd.storage(), ndreg);
+    std::vector<Int> tmp(regOutOrd.begin(), regOutOrd.end());
+    GenSortIndirect<Int>::sort (reginx, &(tmp[0]), ndreg);
     for (i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }

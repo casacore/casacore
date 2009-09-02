@@ -208,7 +208,7 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
     Vector<Float> boxLatBlc(nre);
     Vector<Float> boxLatTrc(nre);
     Vector<uInt> reginx(nre);
-    GenSortIndirect<Int>::sort (reginx, extendAxes.storage(), nre);
+    GenSortIndirect<ssize_t>::sort (reginx, extendAxes.storage(), nre);
     Int first = -1;
     for (uInt i=0; i<nre; i++) {
         uInt axis = reginx(i);

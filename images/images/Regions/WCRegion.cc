@@ -241,7 +241,8 @@ LCRegion* WCRegion::toLCRegionAxes (const CoordinateSystem& cSys,
     IPosition extendAxes(ndout-ndreg);
     IPosition extendShape(ndout-ndreg);
     Vector<uInt> inx(ndreg);
-    GenSortIndirect<Int>::sort (inx, outOrder.storage(), ndreg);
+    std::vector<Int> tmp(outOrder.begin(), outOrder.end());
+    GenSortIndirect<Int>::sort (inx, &(tmp[0]), ndreg);
     for (i=0; i<ndreg; i++) {
         pixAxesMap(i) = pixelAxesMap(i);
 	outOrd(inx(i)) = i;

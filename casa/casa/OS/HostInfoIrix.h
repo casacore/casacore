@@ -78,15 +78,15 @@ friend class HostInfo;
     int valid;
     int cpus;
 
-    int swap_total;
-    int swap_used;
-    int swap_free;
+    ssize_t swap_total;
+    ssize_t swap_used;
+    ssize_t swap_free;
 
-    int memory_total;
-    int memory_used;
-    int memory_free;
+    ssize_t memory_total;
+    ssize_t memory_used;
+    ssize_t memory_free;
 
-    int pagesize;
+    ssize_t pagesize;
 
 };
 

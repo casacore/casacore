@@ -194,20 +194,6 @@ IPosition TempLattice<T>::shape() const
 }
 
 template<class T>
-uInt TempLattice<T>::ndim() const
-{
-  doReopen();
-  return itsLatticePtr->ndim();
-}
-
-template<class T>
-uInt TempLattice<T>::nelements() const
-{
-  doReopen();
-  return itsLatticePtr->nelements();
-}
-
-template<class T>
 Bool TempLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
   doReopen();

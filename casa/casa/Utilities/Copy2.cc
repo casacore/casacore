@@ -30,50 +30,50 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  void objthrowmv1(const void *to, const void *from, const uInt n) {
+  void objthrowmv1(const void *to, const void *from, const size_t n) {
     if (n > 0 && (!from || !to)) 
-      throw(AipsError("objmove(T* to, const T* from, uInt n)"
+      throw(AipsError("objmove(T* to, const T* from, size_t n)"
 		      " - illegal argument"));		
   }	
   
-  void objthrowmv2(const void *to, const void *from, const uInt n,
-		   const uInt toStride, const uInt fromStride) {
+  void objthrowmv2(const void *to, const void *from, const size_t n,
+		   const size_t toStride, const size_t fromStride) {
     if (n > 0 && (!from || !to || !toStride || !fromStride))
-      throw(AipsError("objmove(T* to, const T* from, uInt n, uInt toStride, "
-		      "uInt fromStride) - illegal argument"));
+      throw(AipsError("objmove(T* to, const T* from, size_t n, size_t toStride, "
+		      "size_t fromStride) - illegal argument"));
   }
 
-  void objthrowcp1(const void *to, const void *from, const uInt n) {
+  void objthrowcp1(const void *to, const void *from, const size_t n) {
     if (n > 0 && (!from || !to))
-      throw(AipsError("objcopy(T* to, const T* from, uInt n)"
+      throw(AipsError("objcopy(T* to, const T* from, size_t n)"
 		      " - illegal argument"));
   }
 
-  void objthrowcp2(const void *to, const void *from, const uInt n,
-		   const uInt toStride, const uInt fromStride) {
+  void objthrowcp2(const void *to, const void *from, const size_t n,
+		   const size_t toStride, const size_t fromStride) {
     if (n > 0 && (!from || !to || !toStride || !fromStride))
-      throw(AipsError("objcopy(T* to, const T* from, uInt n, uInt toStride, "
-		      "uInt fromStride) - illegal argument"));
+      throw(AipsError("objcopy(T* to, const T* from, size_t n, size_t toStride, "
+		      "size_t fromStride) - illegal argument"));
   }
 
-  void objthrowfl1(const void *to, const uInt n) {
+  void objthrowfl1(const void *to, const size_t n) {
     if (n > 0 && !to)
-      throw(AipsError("objset(T* to, const T fillValue, uInt n)"
+      throw(AipsError("objset(T* to, const T fillValue, size_t n)"
                       " - illegal argument"));
   }
 
-  void objthrowfl2(const void *to, const uInt n,
-                   const uInt toStride) {
+  void objthrowfl2(const void *to, const size_t n,
+                   const size_t toStride) {
     if (n > 0 && (!to || !toStride))
-      throw(AipsError("objset(T* to, const T fillValue, uInt n, "
-                      "uInt toStride) - illegal argument"));
+      throw(AipsError("objset(T* to, const T fillValue, size_t n, "
+                      "size_t toStride) - illegal argument"));
   }
 
-  void objtestmv(uInt &nLeft, uInt &startLeft, uInt &startRight,
-		 const void *to, const void *from, const uInt n, 
-		 const uInt toStride, const uInt fromStride,
+  void objtestmv(size_t &nLeft, size_t &startLeft, size_t &startRight,
+		 const void *to, const void *from, const size_t n, 
+		 const size_t toStride, const size_t fromStride,
 		 const void *toPn, const void *fromPn,
-		 const uInt fromMto, const uInt toMfrom) {
+		 const size_t fromMto, const size_t toMfrom) {
     // It's not a simple block move.
     // The to and from interval may overlap, so determine
     // if we have to start moving from the left or right.

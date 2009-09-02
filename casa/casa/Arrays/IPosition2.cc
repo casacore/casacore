@@ -54,9 +54,9 @@ IPosition::IPosition (const Array<Int> &other)
     allocateBuffer();
     Bool del;
     const Int *storage = other.getStorage(del);
-    // We could optimize away this copy in the case when storage is already
-    // a copy.
-    objcopy (data_p, storage, size_p);
+    for (uInt i=0; i<size_p; ++i) {
+      data_p[i] = storage[i];
+    }
     other.freeStorage (storage, del);
     DebugAssert(ok(), AipsError);
 }
@@ -67,7 +67,8 @@ Vector<Int> IPosition::asVector() const
     // Make an array which is the correct size.
     Vector<Int> retval(nelements());
     for (uInt i=0; i<nelements(); i++) {
-	retval(i) = (*this)(i);
+        AlwaysAssert (data_p[i] <= 2147483647, AipsError);
+	retval[i] = data_p[i];
     }
     return retval;
 }
@@ -80,11 +81,32 @@ LogIO& operator<< (LogIO& os, const IPosition& ip)
 
 AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
 {
-    aio.putstart("IPosition", IPosition::IPositionVersion);
-    // Write out the values
-    aio.put (ip.size_p, ip.data_p);
-    aio.putend();
-    return aio;
+  Bool use32 = True;
+  if (sizeof(ssize_t) > 4) {
+    for (uInt i=0; i<ip.size_p; ++i) {
+      if (ip[i] >= 32768U*65536U) {
+        use32 = False;
+        break;
+      }
+    }
+  }
+  if (use32) {
+    // Write values as Int.
+    aio.putstart("IPosition", 1);
+    aio << ip.size_p;
+    for (uInt i=0; i<ip.size_p; ++i) {
+      aio << Int(ip[i]);
+    }
+  } else {
+    // Write values as Int64.
+    aio.putstart("IPosition", 2);
+    aio << ip.size_p;
+    for (uInt i=0; i<ip.size_p; ++i) {
+      aio << Int64(ip[i]);
+    }
+  }
+  aio.putend();
+  return aio;
 }
 
 // <thrown>
@@ -92,18 +114,33 @@ AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
 // </thrown>
 AipsIO& operator>> (AipsIO& aio, IPosition& ip)
 {
-    if (aio.getstart("IPosition") != IPosition::IPositionVersion) {
-	throw(AipsError("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
-			"version on disk and in class do not match"));
+  Int vers = aio.getstart("IPosition");
+  uInt nel;
+  aio >> nel;
+  ip.resize (nel, False);
+  if (vers == 1) {
+    Int v;
+    for (uInt i=0; i<nel; ++i) {
+      aio >> v;
+      ip[i] = v;
     }
-    uInt nel;
-    aio >> nel;
-    ip.resize (nel, False);
-    aio.get (nel, ip.data_p);
-    aio.getend();
-    DebugAssert (ip.ok(), AipsError);
-    return aio;
+  } else if (vers == 2) {
+    Int64 v;
+    if (sizeof(ssize_t) <= 4) {
+      throw AipsError ("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
+                       "cannot read back in an ssize_t of 4 bytes");
+    }
+    for (uInt i=0; i<nel; ++i) {
+      aio >> v;
+      ip[i] = v;
+    }
+  } else {
+    throw(AipsError("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
+                    "version on disk and in class do not match"));
+  }
+  aio.getend();
+  DebugAssert (ip.ok(), AipsError);
+  return aio;
 }
 
 } //# NAMESPACE CASA - END
-

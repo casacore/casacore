@@ -95,7 +95,7 @@ ArrayBase::~ArrayBase()
 void ArrayBase::baseReform (ArrayBase& tmp, const IPosition& len) const
 {
   // Check if reform can be done.
-  if (len.product() != Int(nelements())) {
+  if (len.product() != nelements()) {
     throw(ArrayConformanceError("ArrayBase::reform() - "
 				"total elements differ"));
   }
@@ -229,7 +229,7 @@ void ArrayBase::baseNonDegenerate (ArrayBase& other,
     } else {
       // OK, we have some axes to remove
       uInt skippedVolume = 1;
-      count=0;
+      count = 0;
       for (i=0; i<nd; i++) {
 	if (keepAxes(i) == 1) {
 	  length_p(count) = other.length_p(i);
@@ -276,10 +276,10 @@ void ArrayBase::baseAddDegenerate (ArrayBase& tmp, uInt numAxes)
 // <thrown>
 //     <item> ArrayError
 // </thrown>
-Int ArrayBase::makeSubset (ArrayBase& out,
-			   const IPosition& b,
-			   const IPosition& e,
-			   const IPosition& i)
+size_t ArrayBase::makeSubset (ArrayBase& out,
+                              const IPosition& b,
+                              const IPosition& e,
+                              const IPosition& i)
 {
   if (b.nelements() != ndim() || e.nelements() != ndim() ||
       i.nelements() != ndim()) {
@@ -294,7 +294,7 @@ Int ArrayBase::makeSubset (ArrayBase& out,
 		       "incorrectly specified"));
     }
   }
-  Int offs=0;
+  size_t offs=0;
   for (j=0; j<ndimen_p; j++) {
     offs += b(j) * steps_p(j);
   }
@@ -470,7 +470,7 @@ Bool ArrayBase::ok() const
     return False;
   }
   uInt i;
-  uInt count = 1;
+  size_t count = 1;
   IPosition pos(ndimen_p, 0);
   for (i=0; i < ndim(); i++) {
     if (length_p(i) < 0  ||  inc_p(i) < 1
@@ -480,8 +480,8 @@ Bool ArrayBase::ok() const
     count *= length_p(i);
     if (length_p(i) > 1) {
       pos(i) = 1;
-      Int off = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-				 inc_p.storage(), pos);
+      size_t off = ArrayIndexOffset(ndim(), originalLength_p.storage(),
+                                    inc_p.storage(), pos);
       pos(i) = 0;
       if (steps_p(i) != off) {
 	return False;

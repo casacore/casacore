@@ -156,7 +156,7 @@ void putArray (AipsIO &ios, const Array<T> &a, const Char* name)
     ios << a.ndim();
     // Write out length
     for (uInt i=0; i < a.ndim(); i++) {
-	ios << a.shape()(i);
+      ios << uInt(a.shape()(i));
     }
     // Now write out the data
     Bool deleteIt;
@@ -196,8 +196,10 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
 	    ios >> orig;
 	}
     }
+    uInt v;
     for (Int i=0; i < ndim; i++) {
-	ios >> shape(i);
+      ios >> v;
+      shape(i) = v;
     }
     a.resize(shape);                // hopefully a no-op if unchanged
 

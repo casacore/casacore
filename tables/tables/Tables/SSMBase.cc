@@ -616,7 +616,7 @@ void SSMBase::writeIndex()
   anOs << itsIdxBucketOffset;           // Offset of bucket if fitting
   anOs << itsLastStringBucket;          // Last String bucket in use
   anOs << idxLength;                    // length of index
-  anOs << itsPtrIndex.nelements();      // Nr of indices
+  anOs << uInt(itsPtrIndex.nelements());// Nr of indices
   
   anOs.putend();  
   anOs.close();

@@ -33,6 +33,10 @@ namespace casa {
 // <ul>
 //  <li> <a href="group__Tables__module.html">Tables</a>:
 //   data base like tables with an advanced query language (TaQL).
+//  <li> <a href="group__DataMan__module.html">DataMan</a>:
+//   data managers to store/retrieve table data or calculating them on the fly.
+//  <li> <a href="group__TaQL__module.html">TaQL</a>:
+//   Table Query Language and classes for direct queries.
 //  <li> <a href="group__TablePlot__module.html">TablePlot</a>:
 //   plot table columns or expressions of them.
 //  <li> <a href="group__LogTables__module.html">LogTables</a>:

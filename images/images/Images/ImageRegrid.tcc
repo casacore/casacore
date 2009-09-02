@@ -560,7 +560,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
       inBlc(i) -= d;
 //
       t = outTrc(i);
-      outTrc(i) = min(outShape(i)-1, outTrc(i));
+      outTrc(i) = std::min(outShape(i)-1, outTrc(i));
       d = t - outTrc(i);
       inTrc(i) -= d;
    }

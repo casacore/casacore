@@ -59,6 +59,10 @@ class AipsIO;
 //# It appears that (at least for the SUN compiler) the 3rd argument
 //# cannot be an uInt (otherwise the compiler says no match when
 //# called as e.g.  putBlock(ios,blk,10);).
+//#
+//# Note that as of 29-Dec-2008 the size of Block is a size_t, so nr should
+//# also be a size_t. However, because AipsIO cannot handle sizes larger than
+//# an uInt, it makes no sense to make that change.
 //
 // These functions allow the user to read and write <src>Block</src>s
 // from the <src>AipsIO</src> stream. 

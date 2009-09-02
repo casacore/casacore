@@ -97,9 +97,9 @@ Bool MeasIERS::get(Double &returnValue,
 	LogIO os(LogOrigin("MeasIERS",
 			   String("fillMeas(MeasIERS::Files, Double)"),
 			   WHERE));
-	os << LogIO::WARN <<
+	os <<
 	  String("Requested JD ") << date << String(" is outside "
-		 "the IERS table data range"
+		 "the IERS table data range."
 		 "\nCalculations will proceed with less precision") << 
 	  LogIO::POST;
       };
@@ -144,7 +144,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
       LogIO os(LogOrigin("MeasIERS",
 			 String("initMeas(MeasIERS::Files)"),
 			 WHERE));
-      os << LogIO::WARN <<
+      os <<
 	String("Cannot read IERS table ") + tp[which] +
 	  "\nCalculations will proceed with lower precision" << 
 	LogIO::POST;
@@ -350,7 +350,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 		       WHERE));
     os << String("A ") + name + 
       " table has been read that seems corrupted"
-      "\nNotify the AIPS++ system manager about it" << LogIO::EXCEPTION;
+      "\nNotify the CASA system manager about it" << LogIO::EXCEPTION;
     return False;
   };
   table = tab;

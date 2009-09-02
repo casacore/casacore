@@ -204,7 +204,8 @@ void Slicer::fillFixed()
     }
 }
 
-void Slicer::fillSlice (const Slice& sl, Int& start, Int& len, Int& stride)
+void Slicer::fillSlice (const Slice& sl, ssize_t& start, ssize_t& len,
+                        ssize_t& stride)
 {
     //# Initialized values will do in case an "entire" slice is given.
     if (!sl.all()) {

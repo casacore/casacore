@@ -187,13 +187,6 @@ public:
   // (ie. axes with a length of one)
   virtual IPosition shape() const;
   
-  // Return the number of axes in this Lattice. This includes all
-  // degenerate axes.
-  virtual uInt ndim() const;
-  
-  // Return the total number of elements in this Lattice.
-  virtual uInt nelements() const;
-  
   // Set all of the elements in the Lattice to the given value.
   virtual void set (const T& value);
 

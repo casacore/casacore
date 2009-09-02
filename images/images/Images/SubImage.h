@@ -177,7 +177,7 @@ public:
   virtual uInt ndim() const;
   
   // Returns the total number of elements in this SubImage.
-  virtual uInt nelements() const;
+  virtual size_t nelements() const;
   
   // returns a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".

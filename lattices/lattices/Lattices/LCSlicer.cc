@@ -554,7 +554,7 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
     // If blc,trc is 1-relative, make it 0-relative by subtracting 1.
     // Do it only if absolute non-fractional or if MimicSource+1.
     if (oneRel) {
-	for (i=0; i<min(blc.nelements(), fracblc.nelements()); i++) {
+      for (i=0; i<std::min(blc.nelements(), fracblc.nelements()); i++) {
 	    if ((! fracblc(i)  &&  arblc(i) == RegionType::Abs)
             ||  blc(i) == 1+Slicer::MimicSource) {
 		if (blc(i) != Slicer::MimicSource) {
@@ -562,7 +562,7 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
 		}
 	    }
 	}
-	for (i=0; i<min(trc.nelements(), fractrc.nelements()); i++) {
+      for (i=0; i<std::min(trc.nelements(), fractrc.nelements()); i++) {
 	    if ((! fractrc(i)  &&  artrc(i) == RegionType::Abs)
 	    ||  trc(i) == 1+Slicer::MimicSource) {
 		if (trc(i) != Slicer::MimicSource) {

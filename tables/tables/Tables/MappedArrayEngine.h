@@ -178,30 +178,14 @@ private:
   // Clone the engine object.
   DataManager* clone() const;
 
-  // Get an array in the given row.
-  void getArray (uInt rownr, Array<VirtualType>& array);
+  // Copy the stored array to the virtual array.
+  virtual void mapOnGet (Array<VirtualType>& array,
+                         const Array<StoredType>& stored);
 
-  // Put an array in the given row.
-  void putArray (uInt rownr, const Array<VirtualType>& array);
+  // Copy the virtual array to the stored array.
+  virtual void mapOnPut (const Array<VirtualType>& array,
+                         Array<StoredType>& stored);
 
-  // Get a section of the array in the given row.
-  void getSlice (uInt rownr, const Slicer& slicer, Array<VirtualType>& array);
-
-  // Put into a section of the array in the given row.
-  void putSlice (uInt rownr, const Slicer& slicer,
-		 const Array<VirtualType>& array);
-
-  // Get an entire column.
-  void getArrayColumn (Array<VirtualType>& array);
-
-  // Put an entire column.
-  void putArrayColumn (const Array<VirtualType>& array);
-
-  // Get a section of all arrays in the column.
-  void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
-
-  // Put a section of all arrays in the column.
-  void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
 
 public:
   // Define the "constructor" to construct this engine when a

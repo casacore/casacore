@@ -298,6 +298,7 @@ protected:
   ScalarColumn<Float>* rwScaleColumn_p;  //# writable column with scale value
   ScalarColumn<Float>* rwOffsetColumn_p; //# writable column with offset value
   Array<Int>     buffer_p;             //# buffer to avoid Array constructions
+                                       //# (makes multi-threading harder)
 
   // Get the scale value for this row.
   Float getScale (uInt rownr);

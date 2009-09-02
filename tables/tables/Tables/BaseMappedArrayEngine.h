@@ -401,7 +401,75 @@ protected:
     // This has to be used in the create function, otherwise it could not
     // create a TableColumn object to store data in the column keywords.
     TableColumn makeTableColumn (const String& columnName);
-    
+
+    // Get an array in the given row.
+    // This will scale and offset from the underlying array.
+    virtual void getArray (uInt rownr, Array<VirtualType>& array);
+
+    // Put an array in the given row.
+    // This will scale and offset to the underlying array.
+    virtual void putArray (uInt rownr, const Array<VirtualType>& array);
+
+    // Get a section of the array in the given row.
+    // This will scale and offset from the underlying array.
+    virtual void getSlice (uInt rownr, const Slicer& slicer,
+                           Array<VirtualType>& array);
+
+    // Put into a section of the array in the given row.
+    // This will scale and offset to the underlying array.
+    virtual void putSlice (uInt rownr, const Slicer& slicer,
+                           const Array<VirtualType>& array);
+
+    // Get an entire column.
+    // This will scale and offset from the underlying array.
+    virtual void getArrayColumn (Array<VirtualType>& array);
+
+    // Put an entire column.
+    // This will scale and offset to the underlying array.
+    virtual void putArrayColumn (const Array<VirtualType>& array);
+
+    // Get some array values in the column.
+    // This will scale and offset from the underlying array.
+    virtual void getArrayColumnCells (const RefRows& rownrs,
+				      Array<VirtualType>& data);
+
+    // Put some array values in the column.
+    // This will scale and offset to the underlying array.
+    virtual void putArrayColumnCells (const RefRows& rownrs,
+				      const Array<VirtualType>& data);
+
+    // Get a section of all arrays in the column.
+    // This will scale and offset from the underlying array.
+    void getColumnSlice (const Slicer& slicer, Array<VirtualType>& array);
+
+    // Put a section of all arrays in the column.
+    // This will scale and offset to the underlying array.
+    void putColumnSlice (const Slicer& slicer, const Array<VirtualType>& array);
+
+    // Get a section of some arrays in the column.
+    // This will scale and offset from the underlying array.
+    virtual void getColumnSliceCells (const RefRows& rownrs,
+				      const Slicer& slicer,
+				      Array<VirtualType>& data);
+
+    // Put into a section of some arrays in the column.
+    // This will scale and offset to the underlying array.
+    virtual void putColumnSliceCells (const RefRows& rownrs,
+				      const Slicer& slicer,
+				      const Array<VirtualType>& data);
+
+    // Map StoredType array to VirtualType array.
+    // This is meant when reading an array from the stored column.
+    // The default implementation throws an exception.
+    virtual void mapOnGet (Array<VirtualType>& array,
+                           const Array<StoredType>& stored);
+
+    // Map Bool array to bit flags array.
+    // This is meant when writing an array into the stored column.
+    // The default implementation throws an exception.
+    virtual void mapOnPut (const Array<VirtualType>& array,
+                           Array<StoredType>& stored);
+
 
 private:
     // Assignment is not needed and therefore forbidden

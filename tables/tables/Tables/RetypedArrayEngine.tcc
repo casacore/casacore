@@ -300,8 +300,8 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
 
 // Copy an array for get.
 template<class S, class T>
-void RetypedArrayEngine<S,T>::copyOnGet (Array<S>& array,
-					 const Array<T>& target)
+void RetypedArrayEngine<S,T>::mapOnGet (Array<S>& array,
+                                        const Array<T>& target)
 {
     IPosition elemShape = checkShape (array, target);
     S::set (copyInfo_p, &array, target, elemShape);
@@ -309,77 +309,13 @@ void RetypedArrayEngine<S,T>::copyOnGet (Array<S>& array,
 
 // Copy an array for put.
 template<class S, class T>
-void RetypedArrayEngine<S,T>::copyOnPut (const Array<S>& array,
+void RetypedArrayEngine<S,T>::mapOnPut (const Array<S>& array,
 					 Array<T>& target)
 {
     IPosition elemShape = checkShape (array, target);
     S::get (copyInfo_p, target, &array, elemShape);
 }
 
-
-template<class S, class T>
-void RetypedArrayEngine<S,T>::getArray (uInt rownr, Array<S>& array)
-{
-    Array<T> target;
-    roColumn().get (rownr, target);
-    copyOnGet (array, target);
-}
-template<class S, class T>
-void RetypedArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
-{
-    Array<T> target(storedShape (rownr, array.shape()));
-    copyOnPut (array, target);
-    rwColumn().put (rownr, target);
-}
-
-template<class S, class T>
-void RetypedArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
-					Array<S>& array)
-{
-    Array<T> target;
-    roColumn().getSlice (rownr, storedSlicer(slicer), target);
-    copyOnGet (array, target);
-}
-template<class S, class T>
-void RetypedArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
-					const Array<S>& array)
-{
-    Array<T> target(storedShape (rownr, array.shape()));
-    copyOnPut (array, target);
-    rwColumn().putSlice (rownr, storedSlicer(slicer), target);
-}
-
-template<class S, class T>
-void RetypedArrayEngine<S,T>::getArrayColumn (Array<S>& array)
-{
-    Array<T> target;
-    roColumn().getColumn (target);
-    copyOnGet (array, target);
-}
-template<class S, class T>
-void RetypedArrayEngine<S,T>::putArrayColumn (const Array<S>& array)
-{
-    Array<T> target(storedShape (0, array.shape()));
-    copyOnPut (array, target);
-    rwColumn().putColumn (target);
-}
-
-template<class S, class T>
-void RetypedArrayEngine<S,T>::getColumnSlice (const Slicer& slicer,
-					      Array<S>& array)
-{
-    Array<T> target;
-    roColumn().getColumn (storedSlicer(slicer), target);
-    copyOnGet (array, target);
-}
-template<class S, class T>
-void RetypedArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
-					      const Array<S>& array)
-{
-    Array<T> target(storedShape (0, array.shape()));
-    copyOnPut (array, target);
-    rwColumn().putColumn (storedSlicer(slicer), target);
-}
 
 } //# NAMESPACE CASA - END
 

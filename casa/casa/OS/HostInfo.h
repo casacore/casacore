@@ -30,6 +30,7 @@
 #define CASA_HOSTINFO_H
 
 #include <casa/aips.h>
+#include <cstring>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -113,18 +114,20 @@ public:
     // Returns 0 if unable to determine the number of CPUs.
     static Int numCPUs( );
 
+    // Get memory info (in KBytes).
     // Returns -1 if unable to determine memory info.
     // <group>
-    static Int memoryTotal();
-    static Int memoryUsed();
-    static Int memoryFree();
+    static ssize_t memoryTotal();
+    static ssize_t memoryUsed();
+    static ssize_t memoryFree();
     // </group>
 
+    // Get swap space info (in KBytes).
     // Returns -1 if unable to determine swap info.
     // <group>
-    static Int swapTotal();
-    static Int swapUsed();
-    static Int swapFree();
+    static ssize_t swapTotal();
+    static ssize_t swapUsed();
+    static ssize_t swapFree();
     // </group>
 
 private:

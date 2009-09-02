@@ -412,7 +412,7 @@ uInt StManArrayFile::putRes (const IPosition& shape, Int64& offset,
     }
     n += put (shape.nelements());
     for (uInt i=0; i<shape.nelements(); i++) {
-	n += put (shape(i));
+      n += put (Int(shape(i)));
     }
     // Add length of shape and of entire array to file length.
     // Take care of rounding (needed for Bool case).
@@ -438,8 +438,10 @@ uInt StManArrayFile::getShape (Int64 fileOff, IPosition& shape)
     uInt nr;
     n += get (nr);
     shape.resize (nr);
+    Int tmp;
     for (uInt i=0; i<nr; i++) {
-	n += get (shape(i));
+	n += get (tmp);
+        shape(i) = tmp;
     }
     return n;
 }

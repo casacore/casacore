@@ -57,7 +57,7 @@ int main()
     Int i;
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == 99);
-    objset(ia+1,66, uInt(size/2), uInt(2));
+    objset(ia+1,66, size/2, 2);
     for (i=0; i<size; i += 2)
 	AlwaysAssertExit(ia[i] == 99 && ia[i+1] == 66);
 
@@ -70,48 +70,48 @@ int main()
     for (i=1; i<size-1; i += 2)
 	AlwaysAssertExit(ia2[i] == 99 && ia2[i+1] == 66);
     AlwaysAssertExit(ia2[0] == 0 && ia2[size-1] == 99);
-    objcopy(ia2, ia, size, uInt(1), uInt(1));
+    objcopy(ia2, ia, size, 1, 1);
     for (i=0; i<size; i += 2)
 	AlwaysAssertExit(ia2[i] == 99 && ia2[i+1] == 66);
     // With toStride=fromStride=2.
-    objcopy(ia2+1, ia, uInt(size/2), uInt(2), uInt(2));
+    objcopy(ia2+1, ia, size/2, 2, 2);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia2[i] == 99);
     // With fromStride=2.
-    objcopy(ia2, ia+1, uInt(size/2), uInt(1), uInt(2));
+    objcopy(ia2, ia+1, size/2, 1, 2);
     for (i=0; i<size/2; i++)
 	AlwaysAssertExit(ia2[i] == 66);
     for (i=size/2; i<size; i++)
 	AlwaysAssertExit(ia2[i] == 99);
     // With toStride=2.
-    objcopy(ia, ia2, uInt(size/2), uInt(2), uInt(1));
+    objcopy(ia, ia2, size/2, 2, 1);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == 66);
 
     // Test non-overlap moves.
     // Without strides.
     objset(ia, 99, size);
-    objset(ia+1,66, uInt(size/2), uInt(2));
+    objset(ia+1,66, size/2, 2);
     ia2[0] = 0;
     objmove(ia2+1, ia, size-1);
     for (i=1; i<size-1; i += 2)
 	AlwaysAssertExit(ia2[i] == 99 && ia2[i+1] == 66);
     AlwaysAssertExit(ia2[0] == 0 && ia2[size-1] == 99);
-    objmove(ia2, ia, size, uInt(1), uInt(1));
+    objmove(ia2, ia, size, 1, 1);
     for (i=0; i<size; i += 2)
 	AlwaysAssertExit(ia2[i] == 99 && ia2[i+1] == 66);
     // With toStride=fromStride=2.
-    objmove(ia2+1, ia, uInt(size/2), uInt(2), uInt(2));
+    objmove(ia2+1, ia, size/2, 2, 2);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia2[i] == 99);
     // With fromStride=2.
-    objmove(ia2, ia+1, uInt(size/2), uInt(1), uInt(2));
+    objmove(ia2, ia+1, size/2, 1, 2);
     for (i=0; i<size/2; i++)
 	AlwaysAssertExit(ia2[i] == 66);
     for (i=size/2; i<size; i++)
 	AlwaysAssertExit(ia2[i] == 99);
     // With toStride=2.
-    objmove(ia, ia2, uInt(size/2), uInt(2), uInt(1));
+    objmove(ia, ia2, size/2, 2, 1);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == 66);
 
@@ -119,24 +119,24 @@ int main()
     for (i=0; i<size; i++)
 	ia[i] = i;
     // Move to left without strides.
-    objmove (ia, ia+1, uInt(size-1));
+    objmove (ia, ia+1, size-1);
     for (i=0; i<size-1; i++)
 	AlwaysAssertExit(ia[i] == i+1);
     AlwaysAssertExit(ia[size-1] == size-1);
     // Move to right without strides.
-    objmove (ia+1, ia, uInt(size-1));
+    objmove (ia+1, ia, size-1);
     for (i=1; i<size; i++)
 	AlwaysAssertExit(ia[i] == i);
     AlwaysAssertExit(ia[0] == 1);
 
     // Move to left with toStride=fromStride=2.
-    objmove (ia, ia+1, uInt(size/2), uInt(2), uInt(2));
+    objmove (ia, ia+1, size/2, 2, 2);
     for (i=0; i<size; i+=2)
 	AlwaysAssertExit(ia[i] == i+1  &&  ia[i+1] == i+1);
     // Move to right with toStride=fromStride=2.
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+1, ia, uInt(size/2), uInt(2), uInt(2));
+    objmove (ia+1, ia, size/2, 2, 2);
     for (i=0; i<size; i+=2)
 	AlwaysAssertExit(ia[i] == i  &&  ia[i+1] == i);
     
@@ -146,26 +146,26 @@ int main()
     objmove (ia, ia, size);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == i);
-    objmove (ia, ia, uInt(size/2), uInt(1), uInt(2));
+    objmove (ia, ia, size/2, 1, 2);
     for (i=0; i<size/2; i++)
 	AlwaysAssertExit(ia[i] == 2*i);
     for (i=size/2; i<size; i++)
 	AlwaysAssertExit(ia[i] == i);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia, ia, uInt(size/2), uInt(2), uInt(1));
+    objmove (ia, ia, size/2, 2, 1);
     for (i=0; i<size; i+=2)
 	AlwaysAssertExit(ia[i] == i/2  &&  ia[i+1] == i+1);
 
     // Move to the left with different strides.
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia, ia+50, uInt(size/2), uInt(2), uInt(1));
+    objmove (ia, ia+50, size/2, 2, 1);
     for (i=0; i<size; i+=2)
 	AlwaysAssertExit(ia[i] == size/2 + i/2  &&  ia[i+1] == i+1);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia, ia+2, uInt(size/2-1), uInt(1), uInt(2));
+    objmove (ia, ia+2, size/2-1, 1, 2);
     for (i=0; i<size/2-1; i++)
 	AlwaysAssertExit(ia[i] == 2*(i+1));
     for (i=size/2-1; i<size; i++)
@@ -174,7 +174,7 @@ int main()
     // Move to the right with different strides.
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+size/2, ia, uInt(size/2), uInt(1), uInt(2));
+    objmove (ia+size/2, ia, size/2, 1, 2);
     for (i=0; i<size/2; i++)
 	AlwaysAssertExit(ia[i] == i);
     for (i=size/2; i<size; i++)
@@ -188,7 +188,7 @@ int main()
     // so that no source point gets overwritten.
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+size/4, ia, uInt(size/2), uInt(1), uInt(2));
+    objmove (ia+size/4, ia, size/2, 1, 2);
     for (i=0; i<size/4; i++)
 	AlwaysAssertExit(ia[i] == i);
     for (i=size/4; i<3*size/4; i++)
@@ -197,7 +197,7 @@ int main()
 	AlwaysAssertExit(ia[i] == i);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+size/4, ia, uInt(size/4), uInt(2), uInt(4));
+    objmove (ia+size/4, ia, size/4, 2, 4);
     for (i=0; i<size/4; i++)
 	AlwaysAssertExit(ia[i] == i);
     for (i=size/4; i<3*size/4; i+=2)
@@ -206,7 +206,7 @@ int main()
 	AlwaysAssertExit(ia[i] == i);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+size/4, ia+1, uInt(size/4), uInt(2), uInt(4));
+    objmove (ia+size/4, ia+1, size/4, 2, 4);
     for (i=0; i<size/4; i++)
 	AlwaysAssertExit(ia[i] == i);
     for (i=size/4; i<3*size/4; i+=2)
@@ -218,18 +218,18 @@ int main()
     // The similar tests are done.
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia, ia+size/4, uInt(size/2), uInt(2), uInt(1));
+    objmove (ia, ia+size/4, size/2, 2, 1);
     for (i=0; i<size; i+=2)
 	AlwaysAssertExit(ia[i] == i/2+size/4  &&  ia[i+1] == i+1);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia, ia+size/4, uInt(size/4), uInt(4), uInt(2));
+    objmove (ia, ia+size/4, size/4, 4, 2);
     for (i=0; i<size; i+=4)
 	AlwaysAssertExit(ia[i] == i/2+size/4  &&  ia[i+1] == i+1  &&
 			 ia[i+2] == i+2  &&  ia[i+3] == i+3);
     for (i=0; i<size; i++)
 	ia[i] = i;
-    objmove (ia+1, ia+size/4, uInt(size/4), uInt(4), uInt(2));
+    objmove (ia+1, ia+size/4, size/4, 4, 2);
     for (i=1; i<size-4; i+=4)
 	AlwaysAssertExit(ia[i] == (i-1)/2+size/4  &&  ia[i+1] == i+1  &&
 			 ia[i+2] == i+2  &&  ia[i+3] == i+3);
@@ -240,12 +240,12 @@ int main()
     Block<int>* ta = new Block<int>[size];
     Block<int> set(3);
     set[0] = 1; set[1] = 2; set[2] = 3;
-    objset(ta, set, size, uInt(1));
+    objset(ta, set, size, 1);
     for (i=0; i < size; i++)
 	AlwaysAssertExit(ta[i][0] == 1 && ta[i][1] == 2 && ta[i][2] == 3);
 
     set[0] = set[1] = set[2] = 7;
-    objset(ta + 1, set, uInt(size/2), uInt(2));
+    objset(ta + 1, set, size/2, 2);
     for (i=0; i < size; i+=2) {
 	AlwaysAssertExit(ta[i][0] == 1 && ta[i][1] == 2 && ta[i][2] == 3);
 	AlwaysAssertExit(ta[i+1][0] == 7 && ta[i+1][1] == 7 && ta[i+1][2] == 7);
@@ -258,8 +258,8 @@ int main()
     Block<int>* ta2 = new Block<int>[size];
 
     // Test objcopy for a non-builtin data type.
-    objcopy(ta2, ta, uInt(size/2), uInt(1), uInt(2));
-    objcopy(ta2+size/2, ta+1, uInt(size/2), uInt(1), uInt(2));
+    objcopy(ta2, ta, size/2, 1, 2);
+    objcopy(ta2+size/2, ta+1, size/2, 1, 2);
     for (i=0; i < size/2; i++)
 	AlwaysAssertExit(ta2[i][0] == 2*i  &&
 			 ta2[i][1] == 2*i+size  &&
@@ -284,8 +284,8 @@ int main()
 	ta[i][1] = i+size;
 	ta[i][2] = i+2*size;
     }
-    objmove(ta2, ta, uInt(size/2), uInt(1), uInt(2));
-    objmove(ta2+size/2, ta+1, uInt(size/2), uInt(1), uInt(2));
+    objmove(ta2, ta, size/2, 1, 2);
+    objmove(ta2+size/2, ta+1, size/2, 1, 2);
     for (i=0; i < size/2; i++)
 	AlwaysAssertExit(ta2[i][0] == 2*i  &&
 			 ta2[i][1] == 2*i+size  &&
@@ -303,7 +303,7 @@ int main()
 	AlwaysAssertExit(ta[i][0] == 2*(i-size/2)+1  &&
 			 ta[i][1] == 2*(i-size/2)+1+size  &&
 			 ta[i][2] == 2*(i-size/2)+1+2*size);
-    objmove (ta, ta+1, size-1, uInt(1), uInt(1));
+    objmove (ta, ta+1, size-1, 1, 1);
     for (i=0; i < size/2-1; i++)
 	AlwaysAssertExit(ta[i][0] == 2*(i+1)  &&
 			 ta[i][1] == 2*(i+1)+size  &&
@@ -315,7 +315,7 @@ int main()
     AlwaysAssertExit(ta[size-1][0] == size-1  &&
 		     ta[size-1][1] == size-1+size  &&
 		     ta[size-1][2] == size-1+2*size);
-    objmove (ta+1, ta, size-1, uInt(1), uInt(1));
+    objmove (ta+1, ta, size-1, 1, 1);
     for (i=1; i < size/2; i++)
 	AlwaysAssertExit(ta[i][0] == 2*i  &&
 			 ta[i][1] == 2*i+size  &&

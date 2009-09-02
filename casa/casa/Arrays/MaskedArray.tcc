@@ -36,9 +36,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> 
 MaskedArray<T>::MaskedArray ()
-: pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False), 
-  isRO (False){
-}
+  : pArray (0), pMask (0), nelemValid (0), nelemValidIsOK (False), 
+    isRO (False)
+{}
 
 template<class T> void
 MaskedArray<T>::setData (const Array<T> &data,
@@ -650,22 +650,6 @@ Bool MaskedArray<T>::conform(const MaskedArray<T> &other) const
     DebugAssert(ok(), ArrayError);
 
     return pArray->conform(*(other.pArray));
-}
-
-
-template<class T> IPosition MaskedArray<T>::shape() const
-{
-    DebugAssert(ok(), ArrayError);
-
-    return pArray->shape();
-}
-
-
-template<class T> Bool MaskedArray<T>::isReadOnly() const
-{
-    DebugAssert(ok(), ArrayError);
-
-    return isRO;
 }
 
 

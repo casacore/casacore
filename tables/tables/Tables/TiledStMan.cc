@@ -1004,7 +1004,7 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt nrCube)
     headerFile << hypercolumnName_p;
     headerFile << persMaxCacheSize_p;
     headerFile << nrdim_p;
-    headerFile << fileSet_p.nelements();
+    headerFile << uInt(fileSet_p.nelements());
     for (i=0; i<fileSet_p.nelements(); i++) {
 	if (fileSet_p[i] == 0) {
 	    headerFile << False;

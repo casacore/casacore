@@ -989,7 +989,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
 
   header.define("EXTNAME", "AIPS FQ");             // EXTNAME
   header.define("EXTVER", 1);                      // EXTVER
-  header.define("NO_IF", shape(0));                // NO_IF
+  header.define("NO_IF", Int(shape(0)));           // NO_IF
 
   // Table description
   RecordDesc desc;
@@ -1791,7 +1791,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
   header.define("REF_FREQ", refFreq);              // REF_FREQ
   header.define("CHAN_BW", abs(chanbw));      // CHAN_BW
   header.define("REF_PIXL", Double(1+refPixelFreq)); // REF_PIXL (==CRPIX4)
-  header.define("NO_TABS", shape(0));              // NO_TABS
+  header.define("NO_TABS", Int(shape(0)));         // NO_TABS
   header.define("TABREV", 2);                      // TABREV
     
   // Table description

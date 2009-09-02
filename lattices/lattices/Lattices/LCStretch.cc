@@ -182,7 +182,7 @@ void LCStretch::fill (const IPosition& stretchAxes, const LCBox& stretchBox)
     Vector<Float> boxLatBlc(nrs);
     Vector<Float> boxLatTrc(nrs);
     Vector<uInt> reginx(nrs);
-    GenSortIndirect<Int>::sort (reginx, stretchAxes.storage(), nrs);
+    GenSortIndirect<ssize_t>::sort (reginx, stretchAxes.storage(), nrs);
     Int first = -1;
     for (uInt i=0; i<nrs; i++) {
         uInt axis = reginx(i);

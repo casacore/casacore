@@ -129,7 +129,7 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
 //
 
   // Do the match per frequency channel on each row
-  uInt nChan = min(chanFreq.nelements(), chanWidth.nelements());
+  uInt nChan = std::min(chanFreq.nelements(), chanWidth.nelements());
   uInt nrows = msSpWindowCols_p.nrow();
   Vector<Bool> freqMatch(nrows, False);
   for (uInt row=0; row<nrows; row++) {

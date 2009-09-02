@@ -63,6 +63,7 @@ if not env.GetOption('clean'):
              conf.CheckLib('dl', 'dlopen', autoadd=0):
         conf.env.AppendUnique(CPPFLAGS=["-DHAVE_DLOPEN"])
         conf.env.PrependUnique(LIBS=['dl'])
+    conf.env.PrependUnique(CPPFLAGS=['-DHAVE_DLOPEN=1'])
     env = conf.Finish()
 else:
     env.Execute(Delete("options.cfg"))

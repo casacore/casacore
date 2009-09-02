@@ -212,7 +212,49 @@ LatticeExprNode::LatticeExprNode(LELInterface<Bool>* pExpr)
 }
 
 
+LatticeExprNode::LatticeExprNode (Int64 constant) 
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELUnaryConst<Float> (constant))
+{ 
+   pAttr_p = &pExprFloat_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
+	<< pExprFloat_p.nrefs() << endl;
+#endif
+}
+
 LatticeExprNode::LatticeExprNode (Int constant) 
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELUnaryConst<Float> (constant))
+{ 
+   pAttr_p = &pExprFloat_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
+	<< pExprFloat_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (uInt constant) 
+: donePrepare_p   (False),
+  dtype_p         (TpFloat),
+  isInvalid_p     (False),
+  pExprFloat_p    (new LELUnaryConst<Float> (constant))
+{ 
+   pAttr_p = &pExprFloat_p->getAttribute();
+
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: Unary constructor (T); pExpr_p.nrefs() = "
+	<< pExprFloat_p.nrefs() << endl;
+#endif
+}
+
+LatticeExprNode::LatticeExprNode (Long constant) 
 : donePrepare_p   (False),
   dtype_p         (TpFloat),
   isInvalid_p     (False),

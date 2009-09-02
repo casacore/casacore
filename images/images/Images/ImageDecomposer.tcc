@@ -1461,7 +1461,7 @@ void ImageDecomposer<T>::deblendRegions(const Vector<T>& contours,
                 Int distsq = 0;
                 if (originlevel(fr2-1) == -1) continue;
                 for (uInt a = 0; a < itsDim; a++) {
-                  distsq += square(regcenter[fr2-1](a)-regcenter[fr-1](a));
+                  distsq += square(Int(regcenter[fr2-1](a)-regcenter[fr-1](a)));
 	        }
                 if (distsq < mindistsq) {
                   frabs = fr2;

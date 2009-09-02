@@ -61,27 +61,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <example>
   // Setting and copying arrays of built-in types:
   // <srcblock>
-  // // Create uInt array of 4 elements
-  // uInt size=4;
+  // // Create int array of 4 elements
+  // size_t size=4;
   // int* ia = new int[size];
   // // Initialize all elements to value 99
   // objset(ia, 99, size);
   // // Change all odd elements to 66 -> [99 66 99 66]
-  // objset(ia+1,66, uInt(5), uInt(2));
+  // objset(ia+1, 66, 5, 2);
   //
-  // // Create another 4-element uInt array
+  // // Create another 4-element int array
   // int* ia2 = new int[size];
   // // Copy array ia into array ia2 -> [99 66 99 66]
   // objmove(ia2, ia, size);
   // // Copy the even elements of ia to the odd elements of ia2
   // //                              -> [99 99 99 99]
-  // objcopy(ia2+1, ia, uInt(size/2), uInt(2), uInt(2));
+  // objcopy(ia2+1, ia, size/2, 2, 2);
   // </srcblock>
   //
   // Setting and copying arrays of a randomly chosen type:
   // <srcblock>
   // // Create 4-element array of 3-element Block<int> objects 
-  // uInt size=4;
+  // size_t size=4;
   // Block<int>* ta = new Block<int>[size];
   // Block<int> set(3);
   // // Initialize the array -> [[123][123][123][123]]
@@ -89,37 +89,37 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // objset(ta, set, size);
   // // Change odd Blocks to [777]-> [[123][777][123][777]]
   // set[0] = set[1] = set[2] = 7;
-  // objset(ta + 1, set, uInt(size/2), uInt(2));
+  // objset(ta + 1, set, size/2, 2);
   //
   // // Create another Block<int> array 
   // Block<int>* ta2 = new Block<int>[size];
   // // Copy the even elements of ta to the first elements of ta2
   // //                      -> [[123][123]...]
-  // objcopy(ta2, ta, uInt(size/2), uInt(1), uInt(2));
+  // objcopy(ta2, ta, size/2, 1, 2);
   // </srcblock>
   // </example>
   
   // <group name=throw>
   // Throw the various AipsErrors when incorrect arguments used
-  void objthrowmv1(const void *to, const void *from, const uInt n);
-  void objthrowmv2(const void *to, const void *from, const uInt n,
-                   const uInt toStride, const uInt fromStride);
-  void objthrowcp1(const void *to, const void *from, const uInt n);
-  void objthrowcp2(const void *to, const void *from, const uInt n,
-                   const uInt toStride, const uInt fromStride);
-  void objthrowfl1(const void *to, const uInt n);
-  void objthrowfl2(const void *to, const uInt n,
-		   const uInt toStride);
+  void objthrowmv1(const void *to, const void *from, const size_t n);
+  void objthrowmv2(const void *to, const void *from, const size_t n,
+                   const size_t toStride, const size_t fromStride);
+  void objthrowcp1(const void *to, const void *from, const size_t n);
+  void objthrowcp2(const void *to, const void *from, const size_t n,
+                   const size_t toStride, const size_t fromStride);
+  void objthrowfl1(const void *to, const size_t n);
+  void objthrowfl2(const void *to, const size_t n,
+		   const size_t toStride);
   // </group>
   
   // <summary> Test routines </summary>
   // <group name=test>
   // Test on how to handle the overlap in move
-  void objtestmv(uInt &nLeft, uInt &startLeft, uInt &startRight,
-                 const void *to, const void *from, const uInt n,
-                 const uInt toStride, const uInt fromStride,
+  void objtestmv(size_t &nLeft, size_t &startLeft, size_t &startRight,
+                 const void *to, const void *from, const size_t n,
+                 const size_t toStride, const size_t fromStride,
                  const void *toPn, const void *fromPn,
-                 const uInt fromMto, const uInt toMfrom);
+                 const size_t fromMto, const size_t toMfrom);
   // </group>
   
   // <summary> Copy methods </summary>
@@ -140,18 +140,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </thrown>
   //
   // <group>
-  template<class T> void objmove(T* to, const T* from, uInt n) {
+  template<class T> void objmove(T* to, const T* from, size_t n) {
     objthrowmv1(to,from,n);
     (to<from || to >= from+n) ? std::copy(from,from+n,to)
       : std::copy_backward(from,from+n,to+n); }
-  template<class T> void objmove(T* to, const T* from, uInt n,
-				 uInt toStride, uInt fromStride) {
+  template<class T> void objmove(T* to, const T* from, size_t n,
+				 size_t toStride, size_t fromStride) {
     if (!n) return;
     objthrowmv2(to,from,n,toStride,fromStride);
     if (toStride*fromStride == 1) { objmove(to, from, n);
     return; }
-    uInt nLeft, startLeft, startRight;
-    uInt fromMto=0; uInt toMfrom=0;
+    size_t nLeft, startLeft, startRight;
+    size_t fromMto=0; size_t toMfrom=0;
     if (toStride > fromStride && from > to)
       fromMto = (from-to)/(toStride-fromStride);
     else if (toStride < fromStride && from < to)
@@ -177,15 +177,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# To support a container of const void*.
   //# I think that nowadays handled ok
-  ///  inline void objmove(const void** to, const void*const *from, uInt n)
+  ///  inline void objmove(const void** to, const void*const *from, size_t n)
   ///    { memmove(to, from, n*sizeof(void*)); }
-  ///  inline void objmove(const char** to, const char*const *from, uInt n)
+  ///  inline void objmove(const char** to, const char*const *from, size_t n)
   ///    { memmove(to, from, n*sizeof(char*)); }
   
   //# To support a container of void*.
-  ///  inline void objmove(void** to, void*const *from, uInt n)
+  ///  inline void objmove(void** to, void*const *from, size_t n)
   ///    { memmove(to, from, n*sizeof(void*)); }
-  ///  inline void objmove(char** to, char*const *from, uInt n)
+  ///  inline void objmove(char** to, char*const *from, size_t n)
   ///    { memmove(to, from, n*sizeof(char*)); }
   
   // The non-general function to copy <src>n</src> objects from one place
@@ -203,25 +203,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </thrown>
   //
   // <group>
-  template<class T> void objcopy(T* to, const T* from, uInt n) {
+  template<class T> void objcopy(T* to, const T* from, size_t n) {
     objthrowcp1(to,from,n); std::copy(from, from+n, to); }
-  template<class T> void objcopy(T* to, const T* from, uInt n, uInt toStride,
-				 uInt fromStride) {
+  template<class T> void objcopy(T* to, const T* from, size_t n,
+                                 size_t toStride, size_t fromStride) {
     objthrowcp2(to,from,n,toStride,fromStride); while (n--) {
       *to = *from; to += toStride; from += fromStride; } }
   // </group> 
   
   //# To support a container of const void*.
   //# Not necessary I think wnb
-  ///  inline void objcopy(const void** to, const void*const *from, uInt n)
+  ///  inline void objcopy(const void** to, const void*const *from, size_t n)
   ///    { memcpy(to, from, n*sizeof(void*)); }
-  ///  inline void objcopy(const char** to, const char*const *from, uInt n)
+  ///  inline void objcopy(const char** to, const char*const *from, size_t n)
   ///    { memcpy(to, from, n*sizeof(char*)); }
   
   //# To support a container of void*.
-  ///  inline void objcopy(void** to, void*const *from, uInt n)
+  ///  inline void objcopy(void** to, void*const *from, size_t n)
   ///    { memcpy(to, from, n*sizeof(void*)); }
-  ///  inline void objcopy(char** to, char*const *from, uInt n)
+  ///  inline void objcopy(char** to, char*const *from, size_t n)
   ///    { memcpy(to, from, n*sizeof(char*)); }
   
   // Fill <src>n</src> elements of an array of objects with the given
@@ -236,11 +236,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </thrown>
   //
   // <group>
-  template<class T> void objset(T* to, const T fillValue, uInt n) {
+  template<class T> void objset(T* to, const T fillValue, size_t n) {
     objthrowfl1(to,n); std::fill_n(to, n, fillValue); }
   
-  template<class T> void objset(T* to, const T fillValue, uInt n,
-				uInt toStride) {
+  template<class T> void objset(T* to, const T fillValue, size_t n,
+				size_t toStride) {
     objthrowfl2(to,n,toStride); 
     while (n--){*to = fillValue; to += toStride; }; }
   

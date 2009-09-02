@@ -168,7 +168,7 @@ public:
 
   // Function which returns the number of elements in the sub-Lattice; 
   // this value is equal to the product of shape().
-  uInt nelements() const;
+  size_t nelements() const;
 
   // Function which increments (incr=True) or decrements (incr=False) the
   // cursor position (the first IPosition argument) by a cursor shape (the
@@ -256,7 +256,7 @@ inline uInt LatticeIndexer::ndim() const
 {
   return itsNdim;
 }
-inline uInt LatticeIndexer::nelements() const
+inline size_t LatticeIndexer::nelements() const
 {
   return itsShape.product();
 }

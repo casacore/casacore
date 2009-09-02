@@ -167,25 +167,29 @@ LCRegion* WCExtension::doToLCRegion (const CoordinateSystem& cSys,
     // We use the same trick as in WCRegion by sorting them and using
     // the resulting index vector.
     Vector<uInt> reginx(ndreg);
-    GenSortIndirect<Int>::sort (reginx, regOutOrd.storage(), ndreg);
+    std::vector<Int> tmpreg(regOutOrd.begin(), regOutOrd.end());
+    GenSortIndirect<Int>::sort (reginx, &(tmpreg[0]), ndreg);
     for (uInt i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }
     Vector<uInt> extinx(ndext);
-    GenSortIndirect<Int>::sort (extinx, extOutOrd.storage(), ndext);
+    std::vector<Int> tmpext(extOutOrd.begin(), extOutOrd.end());
+    GenSortIndirect<Int>::sort (extinx, &(tmpext[0]), ndext);
     for (uInt i=0; i<ndext; i++) {
         extendAxes(i) = extOutOrd(extinx(i));
 	extOutOrd(extinx(i)) = i;
     }
     Vector<uInt> strinx(ndstr);
-    GenSortIndirect<Int>::sort (strinx, strOutOrd.storage(), ndstr);
+    std::vector<Int> tmpstr(strOutOrd.begin(), strOutOrd.end());
+    GenSortIndirect<Int>::sort (strinx, &(tmpstr[0]), ndstr);
     for (uInt i=0; i<ndstr; i++) {
         stretchAxes(i) = regOutOrd(stretchRegAxes(i));
 	strOutOrd(strinx(i)) = i;
     }
     // The box axes get already reordered by its toLCRegion.
     // So the stretched axis must be region axis in the new order.
-    GenSortIndirect<Int>::sort (strinx, stretchAxes.storage(), ndstr);
+    std::vector<Int> tmpstretch(stretchAxes.begin(), stretchAxes.end());
+    GenSortIndirect<Int>::sort (strinx, &(tmpstretch[0]), ndstr);
     for (uInt i=0; i<ndstr; i++) {
         stretchRegAxes(i) = stretchAxes(strinx(i));
     }

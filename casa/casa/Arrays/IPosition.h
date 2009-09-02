@@ -118,15 +118,15 @@ public:
 
     // An IPosition of size "length." The values in the object get
     // initialized to val.
-    IPosition(uInt length, Int val);
+    IPosition(uInt length, ssize_t val);
 
     // An IPosition of size "length" with defined values. You need to supply
     // a value for each element of the IPosition (up to 10). [Unfortunately
     // varargs might not be sufficiently portable.]
-    IPosition (uInt length, Int val0, Int val1, Int val2=MIN_INT, 
-	       Int val3=MIN_INT, Int val4=MIN_INT, Int val5=MIN_INT,
-	       Int val6=MIN_INT, Int val7=MIN_INT, Int val8=MIN_INT, 
-	       Int val9=MIN_INT);
+    IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2=MIN_INT, 
+	       ssize_t val3=MIN_INT, ssize_t val4=MIN_INT, ssize_t val5=MIN_INT,
+	       ssize_t val6=MIN_INT, ssize_t val7=MIN_INT, ssize_t val8=MIN_INT,
+	       ssize_t val9=MIN_INT);
 
     // Makes a copy (copy, NOT reference, semantics) of other.
     IPosition(const IPosition& other);
@@ -139,7 +139,7 @@ public:
     IPosition& operator=(const IPosition& other);
 
     // Copy "value" into every position of this IPosition.
-    IPosition& operator=(Int value);
+    IPosition& operator=(ssize_t value);
 
     // Construct a default axis path consisting of the values 0 .. nrdim-1.
     static IPosition makeAxisPath (uInt nrdim);
@@ -184,14 +184,14 @@ public:
     // "index" to ensure it is not out of bounds. If this check fails, an
     // AipsError will be thrown.
     // <group>
-    Int& operator[] (uInt index);
-    Int operator[]  (uInt index) const;
-    Int& operator() (uInt index);
-    Int operator()  (uInt index) const;
+    ssize_t& operator[] (uInt index);
+    ssize_t operator[]  (uInt index) const;
+    ssize_t& operator() (uInt index);
+    ssize_t operator()  (uInt index) const;
     // </group>
 
     // Get the storage.
-    const Int *storage() const;
+    const ssize_t *storage() const;
 
     // Append this IPosition with another one (causing a resize).
     void append (const IPosition& other);
@@ -240,15 +240,15 @@ public:
     void operator -= (const IPosition& other);
     void operator *= (const IPosition& other);
     void operator /= (const IPosition& other);
-    void operator += (Int val);
-    void operator -= (Int val);
-    void operator *= (Int val);
-    void operator /= (Int val);
+    void operator += (ssize_t val);
+    void operator -= (ssize_t val);
+    void operator *= (ssize_t val);
+    void operator /= (ssize_t val);
     // </group>
 
     // Returns 0 if nelements() == 0, otherwise it returns the product of
     // its elements.
-    Int product() const;
+    Int64 product() const;
 
     // Element-by-element comparison for equality.
     // It returns True if the lengths and all elements are equal.
@@ -303,9 +303,9 @@ public:
     // <group name=STL-iterator>
     // STL-style typedefs.
     // <group>
-    typedef Int               value_type;
-    typedef Int*              iterator;
-    typedef const Int*        const_iterator;
+    typedef ssize_t               value_type;
+    typedef ssize_t*              iterator;
+    typedef const ssize_t*        const_iterator;
     typedef value_type*       pointer;
     typedef const value_type* const_pointer; 
     typedef value_type&       reference;
@@ -334,12 +334,12 @@ private:
     // Throw an index error exception.
     void throwIndexError() const;
 
-    enum { IPositionVersion = 1, BufferLength = 4 };
+    enum { BufferLength = 4 };
     uInt size_p;
-    Int buffer_p[BufferLength];
+    ssize_t buffer_p[BufferLength];
     // When the iposition is length BufferSize or less data is just buffer_p,
     // avoiding calls to new and delete.
-    Int *data_p;
+    ssize_t *data_p;
 };
 
 // <summary>Arithmetic Operations for IPosition's</summary>
@@ -357,17 +357,17 @@ IPosition operator / (const IPosition& left, const IPosition& right);
 // Each operation is done by appliying the integer argument to all elements
 // of the IPosition argument. 
 // <group>
-IPosition operator + (const IPosition& left, Int val);
-IPosition operator - (const IPosition& left, Int val);
-IPosition operator * (const IPosition& left, Int val);
-IPosition operator / (const IPosition& left, Int val);
+IPosition operator + (const IPosition& left, ssize_t val);
+IPosition operator - (const IPosition& left, ssize_t val);
+IPosition operator * (const IPosition& left, ssize_t val);
+IPosition operator / (const IPosition& left, ssize_t val);
 // </group>
 // Same functions as above but with with the Int argument on the left side.
 // <group>
-IPosition operator + (Int val, const IPosition& right);
-IPosition operator - (Int val, const IPosition& right);
-IPosition operator * (Int val, const IPosition& right);
-IPosition operator / (Int val, const IPosition& right);
+IPosition operator + (ssize_t val, const IPosition& right);
+IPosition operator - (ssize_t val, const IPosition& right);
+IPosition operator * (ssize_t val, const IPosition& right);
+IPosition operator / (ssize_t val, const IPosition& right);
 // </group>
 
 // Returns the element by element minimum or maximum.
@@ -394,21 +394,21 @@ Bool operator >= (const IPosition& left, const IPosition& right);
 // </group>
 // Each operation is done by appliying the integer argument to all elements
 // <group>
-Bool operator == (const IPosition& left, Int val);
-Bool operator != (const IPosition& left, Int val);
-Bool operator <  (const IPosition& left, Int val);
-Bool operator <= (const IPosition& left, Int val);
-Bool operator >  (const IPosition& left, Int val);
-Bool operator >= (const IPosition& left, Int val);
+Bool operator == (const IPosition& left, ssize_t val);
+Bool operator != (const IPosition& left, ssize_t val);
+Bool operator <  (const IPosition& left, ssize_t val);
+Bool operator <= (const IPosition& left, ssize_t val);
+Bool operator >  (const IPosition& left, ssize_t val);
+Bool operator >= (const IPosition& left, ssize_t val);
 // </group>
 // Same functions as above but with with the Int argument on the left side.
 // <group>
-Bool operator == (Int val, const IPosition& right);
-Bool operator != (Int val, const IPosition& right);
-Bool operator <  (Int val, const IPosition& right);
-Bool operator <= (Int val, const IPosition& right);
-Bool operator >  (Int val, const IPosition& right);
-Bool operator >= (Int val, const IPosition& right);
+Bool operator == (ssize_t val, const IPosition& right);
+Bool operator != (ssize_t val, const IPosition& right);
+Bool operator <  (ssize_t val, const IPosition& right);
+Bool operator <= (ssize_t val, const IPosition& right);
+Bool operator >  (ssize_t val, const IPosition& right);
+Bool operator >= (ssize_t val, const IPosition& right);
 // </group>
 // </group>
 
@@ -426,10 +426,10 @@ Bool operator >= (Int val, const IPosition& right);
 
 // <group name="IPosition Indexing">
 // Convert from offset to IPosition in an array.
-IPosition toIPositionInArray (const uInt offset, const IPosition& shape);
+IPosition toIPositionInArray (Int64 offset, const IPosition& shape);
 
 // Convert from IPosition to offset in an array.
-uInt toOffsetInArray (const IPosition& iposition, const IPosition& shape);
+Int64 toOffsetInArray (const IPosition& iposition, const IPosition& shape);
 
 // Determine if the given offset or IPosition is inside the array. Returns
 // True if it is inside the Array.
@@ -437,7 +437,7 @@ uInt toOffsetInArray (const IPosition& iposition, const IPosition& shape);
 //   <li> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>
 // <group>
-Bool isInsideArray (const uInt offset, const IPosition& shape);
+Bool isInsideArray (const Int64 offset, const IPosition& shape);
 Bool isInsideArray (const IPosition& iposition, const IPosition& shape);
 // </group>
 // </group>
@@ -469,27 +469,17 @@ inline Bool IPosition::empty() const
     return size_p == 0;
 }
 
-inline Int& IPosition::operator[](uInt index)
+inline ssize_t& IPosition::operator[](uInt index)
 {
     return data_p[index];
 }
 
-inline Int IPosition::operator[](uInt index) const
+inline ssize_t IPosition::operator[](uInt index) const
 {
     return data_p[index];
 }
 
-inline Int& IPosition::operator()(uInt index)
-{
-#if defined(AIPS_ARRAY_INDEX_CHECK)
-    if (index >= nelements()) {
-	throwIndexError();
-    }
-#endif
-    return data_p[index];
-}
-
-inline Int IPosition::operator()(uInt index) const
+inline ssize_t& IPosition::operator()(uInt index)
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (index >= nelements()) {
@@ -499,7 +489,17 @@ inline Int IPosition::operator()(uInt index) const
     return data_p[index];
 }
 
-inline const Int *IPosition::storage() const
+inline ssize_t IPosition::operator()(uInt index) const
+{
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+    if (index >= nelements()) {
+	throwIndexError();
+    }
+#endif
+    return data_p[index];
+}
+
+inline const ssize_t *IPosition::storage() const
 {
     return data_p;
 }
