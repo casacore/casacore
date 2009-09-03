@@ -76,6 +76,8 @@ Int String::freq(const Char *s) const {
 Double String::toDouble(const String& string) {
     istringstream instr(string);
     Double var;
+    // Initialize in case the string is empty or non-numeric.
+    var = 0;
     instr >> var;
     return var;
 }

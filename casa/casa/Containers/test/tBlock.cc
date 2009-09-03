@@ -185,7 +185,7 @@ void doit()
 void testIO()
 {
   Block<Int> bl(10000);
-  for (uint i=0; i<bl.size(); ++i) {
+  for (uInt i=0; i<bl.size(); ++i) {
     bl[i] = i+1;
   }
   {
@@ -199,8 +199,8 @@ void testIO()
     Block<Int> bl2;
     aio >> bl2;
     AlwaysAssertExit (bl2.size() == bl.size());
-    for (uint i=0; i<bl2.size(); ++i) {
-      AlwaysAssertExit (bl[i] == i+1);
+    for (uInt i=0; i<bl2.size(); ++i) {
+      AlwaysAssertExit (bl[i] == Int(i+1));
     }
   }
 }
