@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-#ifndef HAVE_LIBHDF5
+#ifndef HAVE_HDF5
 int main()
 {
   std::cout << "HDF5 not configured in, so cannot run tHDF5" << std::endl;

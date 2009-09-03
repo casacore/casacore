@@ -129,7 +129,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     close();
   }
 
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
 
   void HDF5DataSet::create (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape)

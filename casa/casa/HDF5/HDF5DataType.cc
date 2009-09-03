@@ -31,7 +31,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
 
   HDF5DataType::HDF5DataType (const Bool*)
     : itsSize (sizeof(Bool))

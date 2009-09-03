@@ -29,7 +29,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
 
   void HDF5HidProperty::close()
   {

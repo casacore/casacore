@@ -29,12 +29,12 @@
 #include <casa/HDF5/HDF5Object.h>
 #include <casa/HDF5/HDF5Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa { //# NAMESPACE CASA - BEGI
 
   HDF5Object::~HDF5Object()
   {}
 
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
   Bool HDF5Object::hasHDF5Support()
     { return True; }
   void HDF5Object::throwNoHDF5()

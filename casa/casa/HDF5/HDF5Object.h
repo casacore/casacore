@@ -35,7 +35,7 @@
 //# Define hid_t and hsize_t if not defined (thus if HDF5 disabled).
 //# They should be the same as used by HDF5.
 //# This is checked by functions check_hid_t and check_hsize_t.
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
 # include <hdf5.h>
 #else 
   typedef int                hid_t;

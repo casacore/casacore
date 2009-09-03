@@ -34,7 +34,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-#ifdef HAVE_LIBHDF5
+#ifdef HAVE_HDF5
 
   herr_t readSubRecord (hid_t groupHid, const char* name,
                         const H5L_info_t*, void* voidRec)
