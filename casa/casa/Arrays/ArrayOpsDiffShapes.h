@@ -65,7 +65,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // 255 and l from 0 to 3.  Note that right must be either reformable to left's
 // shape (same # of elements) or its shape must equal left's shape "as far as
 // it goes", i.e. where right's dimensions are defined.
-// </synposis>
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -80,6 +80,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // same as b's where b's dimensions are defined.
 // The result of this operation is an Array.
 // </example>
+
+// <group name=OpsDiff_functions>
 
 // Returns a LogicalArray with elements (at pos) set to (data(pos) ==
 // truthvalue).  data is effectively collapsed using anyEQ if necessary to
@@ -100,13 +102,15 @@ Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightSha
 // replicated along.  e.g. if left's shape is (1, 2, 4) and right's is (1, 2),
 // the result will be left(i, j, k) op right(i, j) for all (i, j, k).
 //
-// template<typename L, typename R, typename BinaryOperator, typename RES>
-// Array<RES> binOpExpandR(const Array<L>& left, const Array<R>& right,
-// 			BinaryOperator op);
+//# template<typename L, typename R, typename BinaryOperator, typename RES>
+//# Array<RES> binOpExpandR(const Array<L>& left, const Array<R>& right,
+//# 			BinaryOperator op);
 
 // Like binOpExpandR(left, right, res, op), but work on left in place.
 template<typename L, typename R, typename BinaryOperator>
 void binOpExpandInPlace(Array<L>& left, const Array<R>& right, BinaryOperator op);
+
+// </group>
 
 } //#End casa namespace
 

@@ -52,9 +52,7 @@ class MeasurementSet;
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
-// <list>
-//   <item> MeasurementSet
-// </list>
+//   <li> MeasurementSet
 // </prerequisite>
 //
 // <etymology>
