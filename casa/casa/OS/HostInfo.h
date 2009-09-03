@@ -31,6 +31,7 @@
 
 #include <casa/aips.h>
 #include <cstring>
+#include <unistd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

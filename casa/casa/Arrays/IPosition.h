@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/iosfwd.h>
+#include <unistd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
