@@ -35,6 +35,7 @@
 #include <tables/Tables/TableLocker.h>
 #include <tables/Tables/TableError.h>
 #include <tables/Tables/DataManager.h>
+#include <tables/Tables/DataManInfo.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/Arrays/Vector.h>
@@ -60,15 +61,15 @@ Table TableCopy::makeEmptyTable (const String& newName,
   } else {
     // Set data manager group in description to actual group.
     // Also remove possible obsolete hypercolumn definitions.
-    adjustDesc (tabDesc, dminfo);
+    DataManInfo::adjustDesc (tabDesc, dminfo);
   }
   if (replaceTSM) {
     // Replace possible usage of TiledDataStMan by TiledShapeStMan.
-    adjustTSM (tabDesc, dminfo);
+    DataManInfo::adjustTSM (tabDesc, dminfo);
   }
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
-  dminfo = adjustStMan (dminfo);
+  dminfo = DataManInfo::adjustStMan (dminfo, "StandardStMan");
   SetupNewTable newtab (newName, tabDesc, option);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
@@ -83,226 +84,6 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
   SetupNewTable newtab (newName, tabDesc, Table::New);
   newtab.bindCreate (dminfo);
   return Table(newtab, Table::Memory, (noRows ? 0 : tab.nrow()));
-}
-
-void TableCopy::adjustDesc (TableDesc& tdesc, const Record& dminfo)
-{
-  // Find out the columns and data manager groups of the fields.
-  SimpleOrderedMap<String,String> dmTypeMap("", tdesc.ncolumn());
-  SimpleOrderedMap<String,String> dmGroupMap("", tdesc.ncolumn());
-  for (uInt i=0; i<dminfo.nfields(); i++) {
-    const Record& sub = dminfo.asRecord (i);
-    if (sub.isDefined("COLUMNS")) {
-      String dmType = "";
-      String dmGroup = "";
-      if (sub.isDefined("TYPE")) {
-	dmType = sub.asString ("TYPE");
-      }
-      if (sub.isDefined("NAME")) {
-	dmGroup = sub.asString ("NAME");
-      }
-      Vector<String> cols = sub.asArrayString ("COLUMNS");
-      for (uInt j=0; j<cols.nelements(); j++) {
-	dmTypeMap(cols[j]) = dmType;
-	dmGroupMap(cols[j]) = dmGroup;
-      }
-    }
-  }
-  // Exit if no columns in dminfo.
-  if (dmTypeMap.ndefined() == 0) {
-    return;
-  }
-  // Change data manager type and group as needed.
-  for (uInt i=0; i<tdesc.ncolumn(); i++) {
-    ColumnDesc& cdesc = tdesc.rwColumnDesc(i);
-    const String& name = cdesc.name();
-    String* v = dmTypeMap.isDefined (name);
-    if (v) {
-      if (! v->empty()) {
-	cdesc.dataManagerType() = *v;
-      }
-    }
-    v = dmGroupMap.isDefined (name);
-    if (v) {
-      if (! v->empty()) {
-	cdesc.dataManagerGroup() = *v;
-      }
-    }
-  }
-  // Remove hypercolumn definitions which are different from
-  // data manager group in the column descriptions.
-  Vector<String> hcNames = tdesc.hypercolumnNames();
-  for (uInt i=0; i<hcNames.nelements(); i++) {
-    Vector<String> dataNames, coordNames, idNames;
-    tdesc.hypercolumnDesc (hcNames[i], dataNames, coordNames, idNames);
-    Bool same = True;
-    for (uInt j=0; j<dataNames.nelements(); j++) {
-      const ColumnDesc& cdesc = tdesc[dataNames[j]];
-      if (cdesc.dataManagerGroup() != hcNames[i]) {
-	same = False;
-	break;
-      }
-    }
-    if (same) {
-      for (uInt j=0; j<coordNames.nelements(); j++) {
-	const ColumnDesc& cdesc = tdesc[dataNames[j]];
-	if (cdesc.dataManagerGroup() != hcNames[i]) {
-	  same = False;
-	  break;
-	}
-      }
-    }
-    if (same) {
-      for (uInt j=0; j<idNames.nelements(); j++) {
-	const ColumnDesc& cdesc = tdesc[dataNames[j]];
-	if (cdesc.dataManagerGroup() != hcNames[i]) {
-	  same = False;
-	  break;
-	}
-      }
-    }
-    if (!same) {
-      tdesc.removeHypercolumnDesc (hcNames[i]);
-    }
-  }
-}
-
-void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)
-{
-  Vector<String> dataNames, coordNames, idNames;
-  // Keep track of hypercolumns to be changed.
-  Vector<String> hcChange;
-  uInt nrhc = 0;
-  // Loop through all hypercolumn descriptions.
-  Vector<String> hcNames = tabDesc.hypercolumnNames();
-  for (uInt i=0; i<hcNames.nelements(); i++) {
-    // Find the hypercolumn in the dminfo.
-    // If found, adjust if needed.
-    for (uInt j=0; j<dminfo.nfields(); j++) {
-      const Record& rec = dminfo.subRecord(j);
-      if (rec.asString("NAME") == hcNames(i)) {
-	if (rec.asString("TYPE") == "TiledDataStMan") {
-	  // Replace TiledDataStMan by TiledShapeStMan.
-	  Record& rwrec = dminfo.rwSubRecord(j);
-	  rwrec.define("TYPE", "TiledShapeStMan");
-	  // Get hypercolumn description.
-	  tabDesc.hypercolumnDesc (hcNames(i), dataNames,
-				   coordNames, idNames);
-	  uInt nrid = idNames.nelements();
-	  if (nrid > 0) {
-	    // The hypercolumn definition contains ID columns, so it
-	    // has to be changed later in the TableDesc.
-	    hcChange.resize (nrhc+1, True);
-	    hcChange(nrhc++) = hcNames(i);
-	    // Keep the dminfo columns which are not an ID column.
-	    Vector<String> colNames = rec.asArrayString("COLUMNS");
-	    Vector<String> colsout(colNames.nelements());
-	    uInt nrout = 0;
-	    for (uInt k=0; k<colNames.nelements(); k++) {
-	      Bool found = False;
-	      for (uInt k1=0; k1<idNames.nelements(); k1++) {
-		if (colNames(k) == idNames(k1)) {
-		  found = True;
-		  break;
-		}
-	      }
-	      if (!found) {
-		colsout(nrout++) = colNames(k);
-	      }
-	    }
-	    colsout.resize (nrout, True);
-	    rwrec.define ("COLUMNS", colsout);
-	  }
-	}	  
-	break;
-      }
-    }
-  }
-  if (nrhc > 0) {
-    tabDesc.removeIDhypercolumns (hcChange);
-  }
-}
-
-Record TableCopy::adjustStMan (const Record& dminfo)
-{
-  Record newdm;
-  for (uInt j=0; j<dminfo.nfields(); j++) {
-    Record rec = dminfo.subRecord(j);
-    // Get the data manager name and create an object for it.
-    String dmName = rec.asString("NAME");
-    DataManager* dmptr = DataManager::getCtor(rec.asString("TYPE"))
-      (rec.asString("NAME"), Record());
-    if (dmptr->isStorageManager()  &&  !dmptr->canAddRow()) {
-      // A non-writable storage manager; use StandardStMan instead.
-      rec.define ("TYPE", "StandardStMan");
-    }
-    newdm.defineRecord (j, rec);
-  }
-  return newdm;
-}
-
-Vector<String> TableCopy::removeDminfoColumns (Record& dminfo,
-                                               const Vector<String>& columns,
-                                               const String& keepType)
-{
-  Record newdm;
-  // Find the given columns and remove them.
-  // Keep track which columns are removed.
-  Vector<String> remCols(columns.size());
-  uInt ncols = 0;
-  for (uInt j=0; j<dminfo.nfields(); j++) {
-    Record rec = dminfo.subRecord(j);
-    Vector<String> dmcols (rec.asArrayString("COLUMNS"));
-    uInt ndmcol = dmcols.size();
-    const String& dmtype = rec.asString ("TYPE");
-    if (keepType.empty()  ||  dmtype.substr(0,keepType.size()) != keepType) {
-      // dmtype does not need to be kept, so remove the column.
-      for (uInt i=0; i<columns.size(); ++i) {
-        const String& col = columns[i];
-        for (uInt j=0; j<dmcols.size(); ++j) {
-          if (col == dmcols[j]) {
-            // Column name matches, so remove it.
-            // Add it to the vectors of removed columns.
-            remCols[ncols++] = col;
-            --ndmcol;
-            for (j+=1; j<dmcols.size(); ++j) {
-              dmcols[j-1] = dmcols[j];
-            }
-          }
-        }
-      }
-    }
-    // Only use the dm if there are columns left.
-    if (ndmcol > 0) {
-      if (ndmcol != dmcols.size()) {
-        dmcols.resize (ndmcol, True);
-        rec.define ("COLUMNS", dmcols);
-      }
-      newdm.defineRecord (j, rec);
-    }
-  }
-  dminfo = newdm;
-  remCols.resize (ncols, True);
-  return remCols;
-}
-
-void TableCopy::setTiledStMan (Record& dminfo, const Vector<String>& columns,
-                               const String& dmType, const String& dmName,
-                               const IPosition& defaultTileShape)
-{
-  // Remove the columns.
-  Vector<String> remCols (removeDminfoColumns (dminfo, columns, "Tiled"));
-  // Add removed columns with a TiledStMan.
-  if (remCols.size() > 0) {
-    Record dm;
-    dm.define("TYPE", dmType);
-    dm.define("NAME", dmName);
-    dm.define ("COLUMNS", remCols);
-    Record spec;
-    spec.define("DEFAULTTILESHAPE", defaultTileShape.asVector());
-    dm.defineRecord ("SPEC", spec);
-    dminfo.defineRecord (dminfo.nfields(), dm);
-  }
 }
 
 void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
