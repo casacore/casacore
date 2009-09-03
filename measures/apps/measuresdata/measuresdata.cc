@@ -803,7 +803,7 @@ Double double_data(const String &in) {
   else {
     String tmp(in);
     if (Int(tmp.size())>mlen &&
-	tmp[mlen]=='D' || tmp[mlen]=='d') tmp[mlen] = 'e';
+	(tmp[mlen]=='D' || tmp[mlen]=='d')) tmp[mlen] = 'e';
     istringstream(tmp) >> x;
   };
   return x;

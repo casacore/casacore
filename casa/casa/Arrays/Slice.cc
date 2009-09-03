@@ -60,7 +60,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       // Get total slices length if slices are given.
       // Check if slice does not exceed shape.
       for (uInt j=0; j<sliceVec.size(); ++j) {
-        if (sliceVec[j].end() >= shape[i]) {
+        if (sliceVec[j].end() >= size_t(shape[i])) {
           throw AipsError("Slice::checkSlices - "
                           "slice exceeds array shape");
         }

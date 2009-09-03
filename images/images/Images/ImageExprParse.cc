@@ -526,7 +526,7 @@ LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
 						 const vector<Slice>& slices)
 {
   // Determine maximum end value.
-  Int maxEnd = 0;
+  size_t maxEnd = 0;
   for (uInt i=0; i<slices.size(); i++) {
     if (slices[i].end() > maxEnd) {
       maxEnd = slices[i].end();
@@ -537,7 +537,7 @@ LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
   Vector<Bool> flags(maxEnd+1, False);
   for (uInt i=0; i<slices.size(); i++) {
     const Slice& slice = slices[i];
-    for (Int j=slice.start(); j<=slice.end(); j+=slice.inc()) {
+    for (size_t j=slice.start(); j<=slice.end(); j+=slice.inc()) {
       flags[j] = True;
     }
   }
