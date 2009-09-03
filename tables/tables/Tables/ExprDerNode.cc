@@ -97,13 +97,13 @@ TableExprNodeConstString::~TableExprNodeConstString()
 String TableExprNodeConstString::getString (const TableExprId&)
     { return value_p; }
 
-TableExprNodeConstRegex::TableExprNodeConstRegex (const Regex& val)
+TableExprNodeConstRegex::TableExprNodeConstRegex (const TaqlRegex& val)
 : TableExprNodeBinary (NTRegex, VTScalar, OtLiteral, Table()),
   value_p             (val)
 {}
 TableExprNodeConstRegex::~TableExprNodeConstRegex()
 {}
-Regex TableExprNodeConstRegex::getRegex (const TableExprId&)
+TaqlRegex TableExprNodeConstRegex::getRegex (const TableExprId&)
     { return value_p; }
 
 TableExprNodeConstDate::TableExprNodeConstDate (const MVTime& val)

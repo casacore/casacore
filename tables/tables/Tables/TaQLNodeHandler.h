@@ -124,6 +124,7 @@ public:
   virtual TaQLNodeResult visitUpdateNode   (const TaQLUpdateNodeRep& node);
   virtual TaQLNodeResult visitInsertNode   (const TaQLInsertNodeRep& node);
   virtual TaQLNodeResult visitDeleteNode   (const TaQLDeleteNodeRep& node);
+  virtual TaQLNodeResult visitCountNode    (const TaQLCountNodeRep& node);
   virtual TaQLNodeResult visitCalcNode     (const TaQLCalcNodeRep& node);
   virtual TaQLNodeResult visitCreTabNode   (const TaQLCreTabNodeRep& node);
   virtual TaQLNodeResult visitColSpecNode  (const TaQLColSpecNodeRep& node);

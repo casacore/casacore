@@ -98,6 +98,7 @@ public:
   virtual TaQLNodeResult visitUpdateNode   (const TaQLUpdateNodeRep& node) = 0;
   virtual TaQLNodeResult visitInsertNode   (const TaQLInsertNodeRep& node) = 0;
   virtual TaQLNodeResult visitDeleteNode   (const TaQLDeleteNodeRep& node) = 0;
+  virtual TaQLNodeResult visitCountNode    (const TaQLCountNodeRep& node) = 0;
   virtual TaQLNodeResult visitCalcNode     (const TaQLCalcNodeRep& node) = 0;
   virtual TaQLNodeResult visitCreTabNode   (const TaQLCreTabNodeRep& node) = 0;
   virtual TaQLNodeResult visitColSpecNode  (const TaQLColSpecNodeRep& node) = 0;

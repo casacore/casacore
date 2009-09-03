@@ -112,6 +112,16 @@ TableExprNode::TableExprNode (const char* val)
 }
 TableExprNode::TableExprNode (const Regex& val)
 {
+    node_p = new TableExprNodeConstRegex (TaqlRegex(val));
+    node_p->link();
+}
+TableExprNode::TableExprNode (const StringDistance& val)
+{
+    node_p = new TableExprNodeConstRegex (TaqlRegex(val));
+    node_p->link();
+}
+TableExprNode::TableExprNode (const TaqlRegex& val)
+{
     node_p = new TableExprNodeConstRegex (val);
     node_p->link();
 }

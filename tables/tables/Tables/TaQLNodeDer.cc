@@ -32,6 +32,7 @@
 #include <casa/IO/AipsIO.h>
 #include <tables/Tables/TableError.h>
 #include <iomanip>
+#include <sstream>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -168,13 +169,11 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
 TaQLRegexNodeRep::TaQLRegexNodeRep (const String& regex)
   : TaQLNodeRep (TaQLNode_Regex),
     itsCaseInsensitive (False),
-    itsNegate          (False)
+    itsNegate          (False),
+    itsIgnoreBlanks    (False),
+    itsMaxDistance     (-1)
 {
   Int sz = regex.size();
-  if (sz > 0  &&  regex[sz-1] == 'i') {
-    itsCaseInsensitive = True;
-    --sz;
-  }
   AlwaysAssert (sz >= 4  &&  regex[sz-1] != ' ', AipsError);
   Int inx = 0;
   if (regex[0] == '!') {
@@ -182,8 +181,26 @@ TaQLRegexNodeRep::TaQLRegexNodeRep (const String& regex)
     ++inx;
   }
   AlwaysAssert (regex[inx] == '~', AipsError);
+  // Skip blanks.
   while (regex[++inx] == ' ') {}
-  AlwaysAssert (regex.size()-inx >= 3, AipsError);
+  // Find regex qualifiers.
+  while (--sz > inx) {
+    if (regex[sz] == 'i') {
+      itsCaseInsensitive = True;
+    } else if (regex[sz] == 'b') {
+      itsIgnoreBlanks = True;
+    } else if (isdigit(regex[sz])) {
+      int numend = sz;
+      while (isdigit(regex[--sz])) {}
+      ++sz;
+      istringstream istr(regex.substr(sz, numend));
+      istr >> itsMaxDistance;
+    } else {
+      break;
+    }
+  }
+  ++sz;
+  AlwaysAssert (sz-inx >= 3, AipsError);
   itsValue = regex.substr(inx, sz-inx);
   if (itsCaseInsensitive) {
     itsValue.downcase();
@@ -205,17 +222,27 @@ void TaQLRegexNodeRep::show (std::ostream& os) const
   if (itsCaseInsensitive) {
     os << 'i';
   }
+  if (itsIgnoreBlanks) {
+    os << 'b';
+  }
+  if (itsMaxDistance >= 0) {
+    os << itsMaxDistance;
+  }
 }
 void TaQLRegexNodeRep::save (AipsIO& aio) const
 {
-  aio << itsValue << itsCaseInsensitive << itsNegate;
+  aio << itsValue << itsCaseInsensitive << itsNegate << itsIgnoreBlanks
+      << itsMaxDistance;
 }
 TaQLRegexNodeRep* TaQLRegexNodeRep::restore (AipsIO& aio)
 {
   String value;
-  Bool caseInsensitive, negate;
-  aio >> value >> caseInsensitive >> negate;
-  return new TaQLRegexNodeRep (value, caseInsensitive, negate);
+  Bool caseInsensitive, negate, ignoreBlanks;
+  Int maxDistance;
+  aio >> value >> caseInsensitive >> negate >> ignoreBlanks
+      >> maxDistance;
+  return new TaQLRegexNodeRep (value, caseInsensitive, negate, ignoreBlanks,
+                               maxDistance);
 }
 
 
@@ -857,6 +884,32 @@ TaQLUpdExprNodeRep* TaQLUpdExprNodeRep::restore (AipsIO& aio)
   return new TaQLUpdExprNodeRep (name, indices, expr);
 }
 
+TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
+                                      const TaQLMultiNode& tables,
+                                      const TaQLNode& join,
+                                      const TaQLNode& where,
+                                      const TaQLNode& groupby,
+                                      const TaQLNode& having,
+                                      const TaQLNode& sort,
+                                      const TaQLNode& limitoff,
+                                      const TaQLNode& giving,
+                                      Bool brackets,
+                                      Bool noExecute,
+                                      Bool fromExecute)
+  : TaQLNodeRep (TaQLNode_Select),
+    itsBrackets(brackets),
+    itsNoExecute(noExecute), itsFromExecute(fromExecute),
+    itsColumns(columns), itsTables(tables), itsJoin(join),
+    itsWhere(where), itsGroupby(groupby), itsHaving(having),
+    itsSort(sort), itsLimitOff(limitoff), itsGiving(giving)
+{
+  if (itsHaving.isValid()  &&  !itsGroupby.isValid()) {
+    throw TableInvExpr ("HAVING can only be used if GROUPBY is used");
+  }
+  if (itsGroupby.isValid()) {
+    throw TableInvExpr ("GROUPBY is not supported yet");
+  }
+}
 TaQLSelectNodeRep::~TaQLSelectNodeRep()
 {}
 TaQLNodeResult TaQLSelectNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -1032,6 +1085,37 @@ TaQLDeleteNodeRep* TaQLDeleteNodeRep::restore (AipsIO& aio)
   TaQLNode sort = TaQLNode::restoreNode (aio);
   TaQLNode limitoff = TaQLNode::restoreNode (aio);
   return new TaQLDeleteNodeRep (tables, where, sort, limitoff);
+}
+
+TaQLCountNodeRep::~TaQLCountNodeRep()
+{}
+TaQLNodeResult TaQLCountNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitCountNode (*this);
+}
+void TaQLCountNodeRep::show (std::ostream& os) const
+{
+  os << "COUNT ";
+  itsColumns.show (os);
+  os << " FROM ";
+  itsTables.show (os);
+  if (itsWhere.isValid()) {
+    os << " WHERE ";
+    itsWhere.show (os);
+  }
+}
+void TaQLCountNodeRep::save (AipsIO& aio) const
+{
+  itsColumns.saveNode (aio);
+  itsTables.saveNode (aio);
+  itsWhere.saveNode (aio);
+}
+TaQLCountNodeRep* TaQLCountNodeRep::restore (AipsIO& aio)
+{
+  TaQLNode columns = TaQLNode::restoreNode (aio);
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLNode where = TaQLNode::restoreNode (aio);
+  return new TaQLCountNodeRep (columns, tables, where);
 }
 
 TaQLCalcNodeRep::~TaQLCalcNodeRep()

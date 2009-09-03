@@ -57,6 +57,51 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 TableExprFuncNode::~TableExprFuncNode()
 {}
 
+Bool TableExprFuncNode::isSingleValue() const
+{
+  // Constant and group reduction functions result in a single value.
+  // Note that in the column-list something like max(column) is ambiguous because
+  // for arrays it could mean take the max of each array (resulting in a scalar
+  // per row) or take the max of the corresponding elements of all arrays in the
+  // column (resulting in a single array).
+  // For now max(column) means the first for arrays, but for scalars it is the
+  // max of the entire column (to be SQL compliant).
+  // We could introduce maxg for the second meaning of max(arraycolumn).
+  // This is true for all reduction functions below.
+  switch (funcType_p) {
+  case piFUNC:
+  case eFUNC:
+  case randFUNC:
+    return True;
+  case arrsumFUNC:
+  case arrproductFUNC:
+  case arrsumsqrFUNC:
+  case arrminFUNC:
+  case arrmaxFUNC:
+  case arrmeanFUNC:
+  case arrvarianceFUNC:
+  case arrstddevFUNC:
+  case arravdevFUNC:
+  case arrrmsFUNC:
+  case arrmedianFUNC:
+  case arrfractileFUNC:
+  case anyFUNC:
+  case allFUNC:
+  case ntrueFUNC:
+  case nfalseFUNC:
+    return operands_p[0]->valueType() == VTScalar;
+  default:
+    break;
+  }
+  // Otherwise all children have to be such.
+  for (uInt i=0; i<operands_p.size(); ++i) {
+    if (! operands_p[0]->isSingleValue()) {
+      return False;
+    }
+  }
+  return True;
+}
+
 // Fill the children pointers of a node.
 // Also reduce the tree if possible by combining constants.
 // If one of the nodes is a constant, convert its type if
@@ -840,23 +885,23 @@ String TableExprFuncNode::getString (const TableExprId& id)
     return "";
 }
 
-Regex TableExprFuncNode::getRegex (const TableExprId& id)
+TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
 {
     switch (funcType_p) {
     case regexFUNC:
-	return Regex(operands_p[0]->getString (id));
+      return TaqlRegex(Regex(operands_p[0]->getString (id)));
     case patternFUNC:
-	return Regex(Regex::fromPattern(operands_p[0]->getString (id)));
+      return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id))));
     case sqlpatternFUNC:
-	return Regex(Regex::fromSQLPattern(operands_p[0]->getString (id)));
+      return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id))));
     case iifFUNC:
-        return operands_p[0]->getBool(id)  ?
-	       operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
+      return operands_p[0]->getBool(id)  ?
+        operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
     default:
-	throw (TableInvExpr ("TableExprFuncNode::getRegex, "
-			     "unknown function"));
+      break;
     }
-    return Regex("");
+    throw (TableInvExpr ("TableExprFuncNode::getRegex, "
+                         "unknown function"));
 }
 
 MVTime TableExprFuncNode::getDate (const TableExprId& id)

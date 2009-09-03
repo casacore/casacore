@@ -179,6 +179,7 @@ public:
 	    // for Bool array returning Int scalar
 	ntrueFUNC,
 	ntruesFUNC,
+	gnfalseFUNC,
 	nfalseFUNC,
 	nfalsesFUNC,
 	    // for any type returning array of that type
@@ -199,9 +200,9 @@ public:
 	trimFUNC,              //# returning String
 	ltrimFUNC,             //# returning String
 	rtrimFUNC,             //# returning String
-	regexFUNC,             //# returning Regex
-	patternFUNC,           //# returning Regex
-	sqlpatternFUNC,        //# returning Regex
+	regexFUNC,             //# returning TaqlRegex
+	patternFUNC,           //# returning TaqlRegex
+	sqlpatternFUNC,        //# returning TaqlRegex
             // for Date
 	datetimeFUNC,          //# returning Date
 	mjdtodateFUNC,         //# returning Date
@@ -240,15 +241,19 @@ public:
     // Destructor
     ~TableExprFuncNode ();
 
+    // Does the node result in a single value (for e.g. GROUPBY)?
+    // This is the case for reduction functions and constant functions.
+    virtual Bool isSingleValue() const;
+
     // 'get' Functions to get the desired result of a function
     // <group>
-    Bool     getBool     (const TableExprId& id);
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
-    DComplex getDComplex (const TableExprId& id);
-    String   getString   (const TableExprId& id);
-    Regex    getRegex    (const TableExprId& id);
-    MVTime   getDate     (const TableExprId& id);
+    Bool      getBool     (const TableExprId& id);
+    Int64     getInt      (const TableExprId& id);
+    Double    getDouble   (const TableExprId& id);
+    DComplex  getDComplex (const TableExprId& id);
+    String    getString   (const TableExprId& id);
+    TaqlRegex getRegex    (const TableExprId& id);
+    MVTime    getDate     (const TableExprId& id);
     // </group>
 
     // Check the data and value types of the operands.

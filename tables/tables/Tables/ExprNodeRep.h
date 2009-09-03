@@ -38,6 +38,7 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Regex.h>
+#include <casa/Utilities/StringDistance.h>
 #include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -46,6 +47,53 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class TableExprNode;
 class TableExprNodeColumn;
 template<class T> class Block;
+
+
+// <summary>
+// Class to handle a Regex or StringDistance.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=Regex>Regex</linkto>
+//   <li> <linkto class=StringDistance>StringDistance</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// A StringDistance (Levensthein distance) in TaQL is given in the same way
+// as a Regex. This class is needed to have a single object in the parse tree
+// objects containing them (in class TableExprNodeConstRegex).
+// </synopsis> 
+
+class TaqlRegex
+{
+public:
+    // Construct from a regex.
+  explicit TaqlRegex (const Regex& regex)
+    : itsRegex(regex)
+  {}
+
+  // Construct from a StringDistance.
+  explicit TaqlRegex (const StringDistance& dist)
+    : itsDist(dist)
+  {}
+
+  // Does the regex or maximum string distance match?
+  Bool match (const String& str) const
+    { return itsRegex.regexp().empty()  ?
+        itsDist.match(str) : str.matches(itsRegex);
+    }
+
+private:
+  Regex          itsRegex;
+  StringDistance itsDist;
+};
+
 
 
 // <summary>
@@ -174,6 +222,11 @@ public:
     // Default 1 is returned.
     virtual Double getUnitFactor() const;
 
+    // Does the node result in a single value (for e.g. GROUPBY)?
+    // It is the case for a reduction value or constant value.
+    // By default it is if the value is constant.
+    virtual Bool isSingleValue() const;
+
     // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
@@ -184,7 +237,7 @@ public:
     virtual Double getDouble     (const TableExprId& id);
     virtual DComplex getDComplex (const TableExprId& id);
     virtual String getString     (const TableExprId& id);
-    virtual Regex getRegex       (const TableExprId& id);
+    virtual TaqlRegex getRegex   (const TableExprId& id);
     virtual MVTime getDate       (const TableExprId& id);
     // </group>
 
@@ -283,7 +336,7 @@ public:
     // Get the expression type.
     ExprType exprType() const;
 
-    // Is the exprerssion a constant?
+    // Is the expression a constant?
     Bool isConstant() const;
 
     // Get the unit.
@@ -437,6 +490,9 @@ public:
     
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
+
+    // Does the node result in a single value (for e.g. GROUPBY)?
+    virtual Bool isSingleValue() const;
 
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,

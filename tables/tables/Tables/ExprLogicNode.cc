@@ -95,7 +95,7 @@ TableExprNodeEQRegex::~TableExprNodeEQRegex()
 {}
 Bool TableExprNodeEQRegex::getBool (const TableExprId& id)
 {
-    return lnode_p->getString(id).matches(rnode_p->getRegex(id));
+    return rnode_p->getRegex(id).match (lnode_p->getString(id));
 }
 
 TableExprNodeEQDate::TableExprNodeEQDate (const TableExprNodeRep& node)
@@ -166,7 +166,7 @@ TableExprNodeNERegex::~TableExprNodeNERegex()
 {}
 Bool TableExprNodeNERegex::getBool (const TableExprId& id)
 {
-    return ! lnode_p->getString(id).matches(rnode_p->getRegex(id));
+    return ! rnode_p->getRegex(id).match (lnode_p->getString(id));
 }
 
 TableExprNodeNEDate::TableExprNodeNEDate (const TableExprNodeRep& node)

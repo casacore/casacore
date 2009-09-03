@@ -108,6 +108,7 @@ public:
   #define TaQLNode_RecFld   char(25)
   #define TaQLNode_Unit     char(26)
   #define TaQLNode_Regex    char(27)
+  #define TaQLNode_Count    char(28)
   // </group>
 
   // Constructor for derived classes specifying the type.

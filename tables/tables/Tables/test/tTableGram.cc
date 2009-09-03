@@ -325,16 +325,17 @@ void seltab (const String& str)
   // If no command is given, assume it is CALC.
   String::size_type spos = str.find_first_not_of (' ');
   Bool addCalc = False;
+  String s;
   if (spos != String::npos) {
     String::size_type epos = str.find (' ', spos);
     if (epos == String::npos) {
       addCalc = True;
     } else {
-      String s = str.substr(spos, epos-spos);
+      s = str.substr(spos, epos-spos);
       s.downcase();
       addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
                   s=="delete" || s=="create" || s=="createtable" ||
-                  s=="using"  || s=="usingstyle");
+                  s=="count"  || s=="using"  || s=="usingstyle");
     }
   } 
   String strc(str);
@@ -363,6 +364,12 @@ void seltab (const String& str)
     cout << "    " << cmd << " result of " << tabp->nrow()
 	 << " rows" << endl;
     // Show the selected column names.
+    // Add _COUNT_ column if counting is done.
+    if (s == "count") {
+      uInt nrcol = vecstr.size();
+      vecstr.resize (nrcol+1, True);
+      vecstr[nrcol] = "_COUNT_";
+    }
     cout << vecstr.nelements() << " selected columns: ";
     for (i=0; i<vecstr.nelements(); i++) {
       cout << " " << vecstr(i);

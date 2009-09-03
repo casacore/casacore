@@ -45,6 +45,7 @@ using namespace casa;
 %token INSERT
 %token VALUES
 %token DELETE
+%token COUNT
 %token CALC
 %token CREATETAB
 %token FROM
@@ -101,11 +102,13 @@ using namespace casa;
 %type <node> updcomm
 %type <node> inscomm
 %type <node> delcomm
+%type <node> countcomm
 %type <node> calccomm
 %type <node> cretabcomm
 %type <nodeselect> subquery
 %type <nodeselect> selrow
 %type <node> selcol
+%type <node> normcol
 %type <nodelist> tables
 %type <node> whexpr
 %type <node> groupby
@@ -217,6 +220,8 @@ command:   selcomm
              { TaQLNode::theirNode = *$1; }
          | delcomm
              { TaQLNode::theirNode = *$1; }
+         | countcomm
+             { TaQLNode::theirNode = *$1; }
          | calccomm
              { TaQLNode::theirNode = *$1; }
          | cretabcomm
@@ -252,10 +257,8 @@ selrow:    selcol FROM tables whexpr groupby having order limitoff given {
            }
          ;
 
-selcol:    columns {
-               $$ = new TaQLNode(
-                    new TaQLColumnsNodeRep (False, *$1));
-	       TaQLNode::theirNodesCreated.push_back ($$);
+selcol:    normcol {
+               $$ = $1;
            }
          | ALL acolumns {
                $$ = new TaQLNode(
@@ -268,6 +271,12 @@ selcol:    columns {
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
+
+normcol:   columns {
+               $$ = new TaQLNode(
+                    new TaQLColumnsNodeRep (False, *$1));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
 
 updcomm:   UPDATE updrow {
                $$ = $2;
@@ -360,6 +369,13 @@ insvlist:  insvlist COMMA orexpr {
 delcomm:   DELETE FROM tables whexpr order limitoff {
 	       $$ = new TaQLNode(
                     new TaQLDeleteNodeRep (*$3, *$4, *$5, *$6));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         ;
+
+countcomm: COUNT normcol FROM tables whexpr {
+	       $$ = new TaQLNode(
+                    new TaQLCountNodeRep (*$2, *$4, *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -1022,6 +1038,11 @@ simbexpr:  LPAREN orexpr RPAREN
          | ALL LPAREN elemlist RPAREN {
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ("ALL", *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | COUNT LPAREN elemlist RPAREN {
+	       $$ = new TaQLNode(
+                    new TaQLFuncNodeRep ("COUNT", *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME {

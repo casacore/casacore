@@ -33,7 +33,6 @@
 #include <tables/Tables/ExprNodeRep.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicMath/Random.h>
-#include <casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -211,7 +210,7 @@ private:
 
 
 // <summary>
-// Constant Regex in table select expression tree
+// Constant Regex or StringDistance in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -233,11 +232,12 @@ private:
 class TableExprNodeConstRegex : public TableExprNodeBinary
 {
 public:
-    TableExprNodeConstRegex (const Regex& value);
+    TableExprNodeConstRegex (const TaqlRegex& value);
     ~TableExprNodeConstRegex();
-    Regex getRegex (const TableExprId& id);
+    TaqlRegex getRegex (const TableExprId& id);
 private:
-    Regex value_p;
+    TaqlRegex      value_p;
+    StringDistance dist_p;
 };
 
 

@@ -340,6 +340,7 @@ public:
     PUPDATE,
     PINSERT,
     PDELETE,
+    PCOUNT,
     PCALC,
     PCRETAB
   };
@@ -407,6 +408,10 @@ public:
   void handleInsert();
   void handleInsert (TableParseSelect* sel);
   // </group>
+
+  // Make ready for a COUNT command.
+  // It checks if all column expressions are scalar.
+  void handleCount();
 
   // Keep the sort expressions.
   void handleSort (const std::vector<TableParseSort>& sortList,
@@ -482,6 +487,10 @@ private:
 
   // Do the delete step.
   void doDelete (Table& table, const Table& sel);
+
+  // Do the count step returning a memory table containing the unique
+  // column values and the counts of the column values.
+  Table doCount (const Table&);
 
   // Do the projection step returning a table containing the projection.
   Table doProject (const Table&);

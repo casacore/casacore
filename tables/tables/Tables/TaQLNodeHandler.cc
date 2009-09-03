@@ -27,6 +27,8 @@
 
 #include <tables/Tables/TaQLNodeHandler.h>
 #include <tables/Tables/TableError.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/Utilities/StringDistance.h>
 #include <casa/Utilities/Assert.h>
 
 
@@ -114,7 +116,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     // Remove delimiters.
     String str = node.itsValue.substr(2, node.itsValue.size()-3);
-    if (node.itsValue[0] == 'p') {
+    if (node.itsValue[0] == 'd') {
+      return new TaQLNodeHRValue (TableExprNode(TaqlRegex(
+                             StringDistance(str,
+                                            node.itsMaxDistance,
+                                            True,
+                                            node.itsIgnoreBlanks,
+                                            node.itsCaseInsensitive))));
+    } else if (node.itsValue[0] == 'p') {
       str = Regex::fromPattern (str);
     } else if (node.itsValue[0] == 'm') {
       str = ".*(" + str + ").*";
@@ -122,7 +131,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (node.itsCaseInsensitive) {
       str = Regex::makeCaseInsensitive(str);
     }
-    return new TaQLNodeHRValue (TableExprNode(Regex(str)));
+    return new TaQLNodeHRValue (TableExprNode(TaqlRegex(Regex(str))));
   }
 
   TaQLNodeResult TaQLNodeHandler::visitUnaryNode (const TaQLUnaryNodeRep& node)
@@ -535,6 +544,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeResult res(hrval);
     hrval->setTable (curSel->getTable());
     hrval->setString ("delete");
+    popStack();
+    return res;
+  }
+
+  TaQLNodeResult TaQLNodeHandler::visitCountNode (const TaQLCountNodeRep& node)
+  {
+    TableParseSelect* curSel = pushStack (TableParseSelect::PCOUNT);
+    handleTables  (node.itsTables);
+    visitNode     (node.itsColumns);
+    handleWhere   (node.itsWhere);
+    curSel->handleCount();
+    curSel->execute (False);
+    TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
+    TaQLNodeResult res(hrval);
+    hrval->setTable (curSel->getTable());
+    hrval->setNames (new Vector<String>(curSel->getColumnNames()));
+    hrval->setString ("count");
     popStack();
     return res;
   }

@@ -107,8 +107,14 @@ PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
 PATT3     p#[^#]+#
 PATT      {PATT1}|{PATT2}|{PATT3}
+PATTEX    ({REGEX}|{FREGEX}|{PATT})i?
+DIST1     d\/[^/]+\/
+DIST2     d%[^%]+%
+DIST3     d#[^#]+#
+DISTOPT   [bi]*{INT}?[bi]*
+DISTEX    ({DIST1}|{DIST2}|{DIST3}){DISTOPT}
 OPERREX   "!"?"~"
-PATTREX   {OPERREX}{WHITE}({REGEX}|{FREGEX}|{PATT})i?
+PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
 
 %%

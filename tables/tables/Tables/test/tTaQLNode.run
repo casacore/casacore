@@ -27,6 +27,11 @@
 ./tTaQLNode 'select ab,ac,af from tTaQLNode_tmp.tab where af like "_3%"'
 ./tTaQLNode 'select ab,ac,af from tTaQLNode_tmp.tab where af not like "_3%"'
 
+./tTaQLNode 'select from tTaQLNode_tmp.tab where af ~ d/abc/'
+./tTaQLNode 'select from tTaQLNode_tmp.tab where af ~ d#abc#ib3'
+./tTaQLNode 'select from tTaQLNode_tmp.tab where af ~ d/abc/03bi'
+./tTaQLNode 'select from tTaQLNode_tmp.tab where af ~ d%abc%04'
+
 ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where ab%1.5==0'
 
 ./tTaQLNode 'select ab,(ac)mm from tTaQLNode_tmp.tab where ab%1.5==0 "m/s"'
@@ -113,6 +118,9 @@
 
 ./tTaQLNode 'select *, !~p/ab*/i, *, !~m%b%, !~ m%c%i, abc, ~p/AB*/ from tTaQLNode_tmp.tab'
 
+./tTaQLNode 'count TIME from tTaQLNode_tmp.tab'
+./tTaQLNode 'count ANTENNA+1,ANTENNA2+3 from tTaQLNode_tmp.tab where ab'
+
 ./tTaQLNode 'calc from tTaQLNode_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
 ./tTaQLNode 'calc from tTaQLNode_tmp.tab  calc findcone([ab,ab],[select from tTaQLNode_tmp.tab giving [ab,ab]],[1rad,2rad])'
 echo ""
@@ -150,5 +158,8 @@ echo ""
 
 ./tTaQLNode 'insert into tTaQLNode_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTaQLNode_tmp.tab]))'
 ./tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab'
+
+./tTaQLNode 'count ab,ac+1 from tTaQLnode_tmp.tab'
+./tTaQLNode 'count min(ab),ac+1 from tTaQLnode_tmp.tab where ac>1'
 
 ./tTaQLNode 'create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]'

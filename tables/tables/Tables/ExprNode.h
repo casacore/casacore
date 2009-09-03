@@ -37,13 +37,14 @@
 #include <tables/Tables/TaQLStyle.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/Complex.h>
-#include <casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class Table;
 class String;
+class Regex;
+class StringDistance;
 class Unit;
 class TableRecord;
 class TableExprNodeSet;
@@ -776,6 +777,8 @@ public:
     TableExprNode (const std::string& value);
     TableExprNode (const char*);
     TableExprNode (const Regex& value);
+    TableExprNode (const StringDistance& value);
+    TableExprNode (const TaqlRegex& value);
     TableExprNode (const MVTime& value);
     TableExprNode (const Array<Bool>& value);
     TableExprNode (const Array<uChar>& value);
@@ -837,7 +840,7 @@ public:
     void get (const TableExprId& id, Double& value) const;
     void get (const TableExprId& id, DComplex& value) const;
     void get (const TableExprId& id, String& value) const;
-    void get (const TableExprId& id, Regex& value) const;
+    void get (const TableExprId& id, TaqlRegex& value) const;
     void get (const TableExprId& id, MVTime& value) const;
     void get (const TableExprId& id, Array<Bool>& value) const;
     void get (const TableExprId& id, Array<Int64>& value) const;
@@ -1044,7 +1047,7 @@ inline void TableExprNode::get (const TableExprId& id, DComplex& value) const
     { value = node_p->getDComplex (id); }
 inline void TableExprNode::get (const TableExprId& id, String& value) const
     { value = node_p->getString (id); }
-inline void TableExprNode::get (const TableExprId& id, Regex& value) const
+inline void TableExprNode::get (const TableExprId& id, TaqlRegex& value) const
     { value = node_p->getRegex (id); }
 inline void TableExprNode::get (const TableExprId& id, MVTime& value) const
     { value = node_p->getDate (id); }
