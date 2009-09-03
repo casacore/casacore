@@ -47,11 +47,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& spwExpr="",
 		  const String& uvDistExpr="",
 		  const String& taQLExpr="",
-		  const String& corrExpr="",
+		  const String& polnExpr="",
 		  const String& scanExpr="",
 		  const String& arrayExpr=""
 		  );
   String stripWhite(const String& str, Bool onlyends=True);
+  int tokenize(const String& str, const String& sep, Vector<String>& tokens,Bool upCase=False);
 };
 
 #endif

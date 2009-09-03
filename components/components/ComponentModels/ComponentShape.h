@@ -282,6 +282,9 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
+  // Return a pointer to the object. All subclasses must implement. 
+  virtual const ComponentShape* getPtr() const = 0;
+
 protected:
   // The constructors and assignment operator are protected as only derived
   // classes should use them.

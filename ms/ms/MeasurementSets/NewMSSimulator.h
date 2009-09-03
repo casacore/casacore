@@ -1,5 +1,5 @@
 //# NewMSSimulator.h: this defines the MeasurementSet Simulator
-//# Copyright (C) 1995,1996,1998,1999,2000,2002
+//# Copyright (C) 1995-2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,7 +52,9 @@ class MeasurementSet;
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> MeasurementSet
+// <list>
+//   <item> MeasurementSet
+// </list>
 // </prerequisite>
 //
 // <etymology>
@@ -60,7 +62,7 @@ class MeasurementSet;
 // 'fake' data from a set of parameters for instrument and sources.
 // </etymology>
 //
-// <synopsis>
+// <synopsis> 
 // This class creates a MeasurementSet from a set of parameters for instrument
 // and sources. It does not simulate the data, only the coordinates of a 
 // measurement. The application "simulator" uses this class to create a true
@@ -219,6 +221,10 @@ private:
   void addHyperCubes(const Int id, const Int nBase, const Int nChan, const Int nCorr);
 
   void defaults();
+
+  Bool calcAntUVW(MEpoch& epoch, MDirection& refdir, 
+			Matrix<Double>& uvwAnt);
+
 
 };
 

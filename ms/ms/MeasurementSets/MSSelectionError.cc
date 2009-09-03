@@ -172,6 +172,17 @@ MSSelectionArrayParseError::~MSSelectionArrayParseError () throw()
 //
 //-----------------------------------------------------------------------------------
 //
+MSSelectionPolnError::MSSelectionPolnError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionPolnError::~MSSelectionPolnError () throw()
+{}
+
+MSSelectionPolnParseError::MSSelectionPolnParseError (const String& str,Category c)
+: MSSelectionPolnError(str,c)
+{}
+MSSelectionPolnParseError::~MSSelectionPolnParseError () throw()
+{}
 
 } //# NAMESPACE CASA - END
 

@@ -284,6 +284,11 @@ Bool DiskShape::ok() const {
   return True;
 }
 
+const ComponentShape* DiskShape::getPtr() const {
+    return this;
+}
+
+
 Double DiskShape::calcVis(Double u, Double v, const Double factor) const {
   u *= itsMinValue;
   v *= itsMajValue;

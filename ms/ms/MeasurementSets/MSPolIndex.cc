@@ -25,11 +25,15 @@
 //#
 //# $Id$
 
+
 #include <ms/MeasurementSets/MSPolIndex.h>
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/aips.h>
+#include <casa/stdlib.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -100,7 +104,7 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 };
 
 // Add for MS selection 
-Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType)
+  Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool exactMatch)
 {
 // Match a set of polarization correlation types 
 // Input:
@@ -113,20 +117,25 @@ Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType)
   // Match the polarization correlation types by row and correlation index
   uInt numCorr = corrType.nelements();
   uInt nrows = msPolarizationCols_p.nrow();
-
+  
+  Vector<Bool> allMatch(numCorr);
   Vector<Bool> corrMatch(nrows, False);
-  for (uInt row=0; row<nrows; row++) {
-    Vector<Int> rowCorrType;
-    msPolarizationCols_p.corrType().get(row, rowCorrType);
-    //    corrMatch(row) = (rowCorrType.nelements() == numCorr);
-    //    cout << " corrMatch " << corrMatch(row) << endl;
-    //    if (corrMatch(row)) {
-      for (uInt i=0; i < numCorr; i++) {
-	//corrMatch(row) = (corrMatch(row) &&
-	corrMatch(row) = (rowCorrType(i) == corrType(i));
-      };
-      //    };
-  };
+  allMatch=False;
+  for (uInt row=0; row<nrows; row++) 
+    {
+      Vector<Int> rowCorrType;
+      msPolarizationCols_p.corrType().get(row, rowCorrType);
+      if (exactMatch)
+	for (uInt i=0; i < numCorr; i++) 
+	  corrMatch(row) = (rowCorrType(i) == corrType(i));
+      else
+	{
+	  for(uInt i=0; i<numCorr; i++)
+	    for(uInt j=0; j<rowCorrType.nelements(); j++)
+	      if (rowCorrType(j) == corrType(i)) {allMatch(i)=True;break;}
+	  corrMatch(row)=allTrue(allMatch);
+	}
+    };
 
   LogicalArray maskArray(corrMatch);
   MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);

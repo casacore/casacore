@@ -445,7 +445,6 @@ void HDF5Image<T>::restoreUnits (const RecordInterface& rec)
       UnitMap::addFITS();
     }
     if (!UnitVal::check(unitName)) {
-      // I give up!
       LogIO os;
       os << LogOrigin("HDF5Image<T>", "units()", WHERE)
          << LogIO::SEVERE << "Unit '" << unitName

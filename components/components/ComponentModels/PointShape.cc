@@ -212,6 +212,9 @@ Bool PointShape::ok() const {
   return ComponentShape::ok();
 }
 
+const ComponentShape* PointShape::getPtr() const {
+    return this;
+}
 
 
 Double PointShape::dirIsInPixel (Double longSize, Double latSize, Double nearSize,

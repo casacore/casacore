@@ -74,7 +74,7 @@ class Euler;
 // <br> References:<br> Explanatory supplements to the Astronomical Almanac
 // <br> C. Ron and J. Vondrak, Bull. Astron. Inst. Czechosl. 37, p96, 1986
 // <br> M. Soma, Th. Hirayama and H. Kinoshita, Celest. Mech. 41, p389, 1988
-// <br> V.S. Gubanov, Astron. Zh. 49, p1112, 1992
+// <br> V.S. Gubanov, Astron. Zh. 49, p1112, 1972
 //
 // Where strings are passed in as arguments (observatory names, sources), they
 // will be case insensitive, and minimum match.
@@ -280,7 +280,7 @@ public:
   static const Polynomial<Double> &aber1950Arg(uInt which);
   // </group>
   
-  // Generate the which' vector of the aberration series arguments
+  // Generate the 'which' vector of the aberration series arguments
   // <group>
   static const Vector<Char> &mulAberArg(uInt which);
   static const Vector<Char> &mulAber1950Arg(uInt which);
@@ -288,9 +288,9 @@ public:
   static const Vector<Char> &mulAberEarthArg(uInt which);
   // </group>
   
-  // Generate the which' vector of the aberration series multipliers
-  // at T, measured in Julian centuries since J2000.0 (or comparable for
-  // B1950).
+  // Generate the 'which' vector of the aberration series multipliers
+  // at T, measured in Julian centuries since J2000.0 (or J1900.0, yes,
+  // J1900.0, for B1950).
   // <group>
   static const Vector<Double> &mulAber(uInt which, Double T);
   static const Vector<Double> &mulAber1950(uInt which, Double T);

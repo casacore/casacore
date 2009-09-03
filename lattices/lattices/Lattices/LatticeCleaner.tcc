@@ -310,13 +310,15 @@ void LatticeCleaner<T>::speedup(const Float nDouble)
 
 // Do the clean as set up
 template <class T>
-Bool LatticeCleaner<T>::clean(Lattice<T>& model,
+Int LatticeCleaner<T>::clean(Lattice<T>& model,
 			      LatticeCleanProgress* progress)
 {
   AlwaysAssert(model.shape()==itsDirty->shape(), AipsError);
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
-  
+
+  T tmpMaximumResidual;  
+
   Int nScalesToClean=itsNscales;
   if (itsCleanType==CleanEnums::HOGBOM) {
     os << "Hogbom Clean algorithm" << LogIO::POST;
@@ -366,7 +368,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     if ( maxPsfConvScales(scale) < 0.0) {
       os << "As Peak of PSF is negative, you should setscales again with a smaller scale size" 
 	 << LogIO::SEVERE;
-      return False;
+      return -1;
     }
   }
 
@@ -456,7 +458,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Block<IPosition> posMaximum(nScalesToClean);
   Vector<T> totalFluxScale(nScalesToClean); totalFluxScale=0.0;
   T totalFlux=0.0;
-  Bool converged=False;
+  Int converged=0;
   Int stopPointModeCounter = 0;
   Int optimumScale=0;
   itsStrengthOptimum=0.0;
@@ -501,8 +503,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     totalFlux += (itsStrengthOptimum*itsGain);
     totalFluxScale(optimumScale) += (itsStrengthOptimum*itsGain);
 
-    if(ii==itsStartingIter) {
+    if(ii==itsStartingIter ) {
       itsMaximumResidual=abs(itsStrengthOptimum);
+      tmpMaximumResidual=itsMaximumResidual;
       os << "Initial maximum residual is " << itsMaximumResidual
 	 << LogIO::POST;
     }
@@ -513,7 +516,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       os << "Reached stopping threshold " << threshold() << " at iteration "<<
             ii << LogIO::POST;
       os << "Optimum flux is " << abs(itsStrengthOptimum) << LogIO::POST;
-      converged = True;
+      converged = 1;
       break;
     }
     //    2. negatives on largest scale?
@@ -521,9 +524,10 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 	optimumScale == (nScalesToClean-1) && 
 	itsStrengthOptimum < 0.0) {
       os << "Reached negative on largest scale" << LogIO::POST;
-      converged = False;
+      converged = -2;
       break;
     }
+    //  3. stop point mode at work
     if (itsStopPointMode > 0) {
       if (optimumScale == 0) {
 	stopPointModeCounter++;
@@ -535,9 +539,22 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 	  " consecutive components from the smallest scale, stopping prematurely"
 	   << LogIO::POST;
 	itsDidStopPointMode = True;
-	converged = False;
+	converged = -1;
 	break;
       }
+    }
+    //4. Diverging large scale
+    //If actual value is 10% above the fiducial maximum residual. ..good chance it will not recover at this stage
+    if(((abs(itsStrengthOptimum)-abs(tmpMaximumResidual)) > (abs(tmpMaximumResidual)/10.0)) 
+       && !(itsStopAtLargeScaleNegative)){
+       //clean is diverging most probably due to the large scale 
+      converged=-2;
+      break;
+    }
+    //5. Diverging for some other reason; may just need another CS-style reconciling
+    if((abs(itsStrengthOptimum)-abs(tmpMaximumResidual)) > (abs(tmpMaximumResidual)/10.0)){
+      converged=-3;
+      break;
     }
 
 
@@ -554,7 +571,10 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
           os << "iteration    MaximumResidual   CleanedFlux" << LogIO::POST;
       }
       if ((itsIteration % (itsMaxNiter/10 > 0 ? itsMaxNiter/10 : 1)) == 0) {
-          os << itsIteration <<"      "<<itsStrengthOptimum<<"      "<< totalFlux <<LogIO::POST;
+	//Good place to re-up the fiducial maximum residual
+	tmpMaximumResidual=abs(itsStrengthOptimum);
+	os << itsIteration <<"      "<<itsStrengthOptimum<<"      "
+	   << totalFlux <<LogIO::POST;
       }
     }
 
@@ -624,12 +644,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   if(!converged) {
     os << "Failed to reach stopping threshold" << LogIO::POST;
-    return False;
   }
-  else {
-    return True;
-  }
-  return True;
+
+  return converged;
 }
 
 

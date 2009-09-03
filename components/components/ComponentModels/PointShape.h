@@ -254,6 +254,9 @@ public:
   // values. Returns True if everything is fine otherwise returns False.
   virtual Bool ok() const;
 
+  // return a pointer to this object.
+  virtual const ComponentShape* getPtr() const; 
+
 private:
 
 // FInd out if a direction is located within a pixel 

@@ -510,6 +510,9 @@ ostream & operator << (ostream &o, const FITS::ValueType &ty) {
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i, 
 	const char *s, int s_len, Bool n, FITS::ValueType t, const void *v,
 	int v_len, const char *&msg) const {
+
+        ostringstream msgline;
+
 	if (t == FITS::FLOAT || t == FITS::DOUBLE)
 	    t = FITS::REAL;	// change t to REAL to match on types
 	if (t == FITS::FSTRING)
@@ -534,11 +537,14 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i,
 			break;
 	    }
 	    if (resword[i].isindexed() != n) {
-		if (resword[i].isindexed())
-		    msg = "Keyword requires an index.";
-		else
-		    msg = "Keyword must not have an index.";
-		return error_item;
+	      if (resword[i].isindexed()){
+		  msg = "Keyword requires an index.";
+		  return error_item;
+	      }
+	      else {
+		  msg = "Keyword should not have an index.";
+		  return user_def_item; // treat as non-reserved keyword
+	      }
 	    }
 	}
 	return rules(resword[i],s,s_len,n,t,v,v_len,msg) == -1 ?
@@ -1694,8 +1700,9 @@ must have a value.");
 	const char *reserr = 0;
 	const ReservedFitsKeyword *res = &FITS::ResWord.get(&s[kword.begpos],
 		kword.len,kword.isaindex,val.type,addrval,val.s[1],reserr);
-	if (reserr)
+	if (reserr){
 	    seterr(reserr);
+	}
 	if (res->name() == FITS::ERRWORD) {
 	    n = FITS::ResWord.isreserved(&s[kword.begpos],kword.len);
 	    if ((n != 0) && FITS::ResWord.isunique(n) &&
@@ -2402,6 +2409,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 					      int count, 
 					      FITSErrorHandler errhandler, 
 					      Bool show_err) {
+    char messagestring[180]; // storage for composing error messages
 	int i, j;
 	cardno = 0;
 	int end_found = 0;
@@ -2415,8 +2423,8 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
-		const char * mptr = msgline.str().data();
-		errhandler(mptr, errlev);
+		strncpy(messagestring, msgline.str().c_str(), 179);
+		errhandler(messagestring, errlev);
 		// delete [] mptr;
 		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
 		    errhandler(kwlist.parse_err(j), errlev);

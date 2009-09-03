@@ -124,7 +124,7 @@ timeexpr: singletimeexpr
         | upboundtimeexpr
         ;
 
-wildNumber: STAR {$$ = -1}
+wildNumber: STAR {$$ = -1;}
           | NUMBER {$$ = $1;}
           ;
 wildFloat: wildNumber {$$ = $1;}

@@ -158,7 +158,13 @@ public:
   void startingIteration(const Int starting = 0) {itsStartingIter = starting; }
 
   // Clean an image. 
-  Bool clean(Lattice<T> & model, LatticeCleanProgress* progress=0);
+  //return value gives you a hint of what's happening
+  //  1 = converged
+  //  0 = not converged but behaving normally
+  // -1 = not converged and stopped on cleaning consecutive smallest scale
+  // -2 = not converged and either large scale hit negative or diverging 
+  // -3 = clean is diverging rather than converging 
+  Int clean(Lattice<T> & model, LatticeCleanProgress* progress=0);
 
   // Set the mask
   // mask - input mask lattice

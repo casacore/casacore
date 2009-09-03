@@ -256,6 +256,11 @@ Bool GaussianShape::ok() const {
   return True;
 }
 
+const ComponentShape* GaussianShape::getPtr() const {
+    return this;
+}
+
+
 void GaussianShape::updateFT() {
   const Double factor = 4.0*C::ln2/C::pi;
   Vector<Double> width(2);

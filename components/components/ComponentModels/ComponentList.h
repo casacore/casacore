@@ -246,6 +246,7 @@ public:
   // Returns a Vector whose indices indicate which components are selected
   Vector<Int> selected() const;
 
+
   // set the label on the specified components to the specified string
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
@@ -253,6 +254,16 @@ public:
   // </thrown>
   void setLabel(const Vector<Int>& which,
 		const String& newLabel);
+
+  // get the the flux as a double
+  // param: which - the component number (0 based)
+  // return The flux as a Quantity
+  void getFlux(Vector<Quantity>& fluxQuant, const Int& which);
+  void getFlux(Vector<Quantum<Complex> >& fluxQuant, const Int& which);
+
+  // get the associated polarizations as a vector of strings for the
+  // specified component. Returned vector always has 4 elements.
+  Vector<String> getStokes(const Int& which);
 
   // set the flux on the specified components to the specified flux
   // <thrown>
@@ -307,6 +318,8 @@ public:
   void convertRefDirection(const Vector<Int>& which,
 			   MDirection::Types newFrame);
 
+  MDirection getRefDirection(Int which);
+
   // set the shape on the specified components to the specified one.
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
@@ -314,6 +327,10 @@ public:
   // </thrown>
   void setShape(const Vector<Int>& which,
 		const ComponentShape& newShape);
+
+  // get the shape of the specified component as a const pointer. No need to
+  // delete it, it will be deleted when the variable goes out of scope.
+  const ComponentShape* getShape(Int which) const;
 
   // set the shape on the specified components to the specified one. However
   // this function unlike the previous one does not change the reference

@@ -242,6 +242,10 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
+  // return a pointer to this object.
+  virtual const ComponentShape* getPtr() const; 
+
+
 private:
   //# Updates the parameters of the itsFT object
   void updateFT();

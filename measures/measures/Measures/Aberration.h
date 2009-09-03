@@ -135,7 +135,7 @@ public:
     const MVPosition &operator()(Double epoch);
 
 //# General Member Functions
-// Return derivative of Aberration (d<sup>-1</sup>)
+// Return derivative of Aberration (d<sup>-1</sup>) w.r.t. time
     const MVPosition &derivative (Double epoch);
 
 // Re-initialise Aberration object

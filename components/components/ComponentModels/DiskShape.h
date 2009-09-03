@@ -232,6 +232,10 @@ public:
   // otherwise returns False.
   virtual Bool ok() const;
 
+  // return a pointer to this object.
+  virtual const ComponentShape* getPtr() const; 
+
+
 private:
   Double calcSample(const MDirection::MVType& compDirValue, 
 		    const MDirection::MVType& dirVal, 

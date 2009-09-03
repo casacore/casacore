@@ -138,14 +138,14 @@ template <class M> class ROScalarMeasColumn;
 // equation of equinoxes; the <em>AZEL</em> will include Earth tides and
 // refraction at a later stage.<br>
 // Note that conversion between B1950 and J2000 can only be approximate, and is
-// based on FK4 to FK% conversion. The best conversion is to convert first
+// based on FK4 to FK5 conversion. The best conversion is to convert first
 // to an apparent position at the time of observation, and convert from there
 // to the other standard (the correct route will be followed).<br>
 // Another problem can arise if the source has proper motion and/or radial
 // velocities. These should be taken into account. An
 // MCatalog class will maybe take care of that.
 // <note role=warning>
-// The offset that can be specified in the MDirection::Ref is an MDIrection
+// The offset that can be specified in the MDirection::Ref is an MDirection
 // offset, and can not be used for specifying angular offsets. shift()
 // methods are available for these cases.
 // </note>
@@ -296,6 +296,8 @@ public:
     static const String &showMe();
 // </group>
 // Tell me your reference type (as Register())
+  // N.B. as defined in MDirection.cc, it does NOT return the type of an
+  // instance, i.e. it just returns Register(static_cast<MDirection *>(0)).
     virtual uInt type() const;
 // Assert you are a direction
     static void assure(const Measure &in);
@@ -345,6 +347,8 @@ public:
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
+  // N.B. Being static, it does NOT return the type of an instance, i.e. use it
+  // as MDirection::myType(), not md.myType().
   static uInt myType();
   // Tell me if you are a pure model (e.g. a planet)
   virtual Bool isModel() const;

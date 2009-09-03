@@ -354,11 +354,12 @@ public:
   // set the direction reference type for the DIRECTION, TARGET & and, if
   // defined, the SOURCE_OFFSET & POINTING_OFFSET columns. This can only be
   // done when the table has no rows. Trying to do so at other times will throw
-  // an exception. Note the optional ENCODERE column must be done separately as
-  // the MSv2 definition allows this column to have a different frame.
+  // an exception.  Note that the optional ENCODER column must be done
+  // separately as the MSv2 definition requires this column to use the frame(s)
+  // of the antenna mounts.
   void setDirectionRef(MDirection::Types ref);
 
-  // set the irection reference type for the ENCODER column (if it is defined).
+  // set the direction reference type for the ENCODER column (if it is defined).
   // This can only be done when the table has no rows. Trying to do so at other
   // times will throw an exception.
   void setEncoderDirectionRef(MDirection::Types ref);

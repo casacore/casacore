@@ -37,6 +37,7 @@
 #include <fits/FITS/hdu.h>
 #include <casa/Logging/LogIO.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
+#include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
@@ -244,6 +245,11 @@ protected:
   // fix up the EPOCH MEASURE_REFERENCE keywords using the value found
   // in the (last) AN table
   void fixEpochReferences();
+
+  // Returns the Direction Measure reference for UVW and other appropriate columns
+  // in msc_p (which must exist but have empty columns before you can set it!).
+  MDirection::Types getDirectionFrame(Double epoch);
+  
   // Check the frame if there is an SU table
   void setFreqFrameVar(BinaryTable& binTab);
   // update a the Spectral window post filling if necessary
@@ -273,6 +279,8 @@ private:
   Vector<Double> refVal_p, refPix_p, delta_p;
   String array_p,object_p,timsys_p;
   Double epoch_p;
+  MDirection::Types epochRef_p; // This is a direction measure reference code
+                                // determined by epoch_p, hence the name and type.
   Int nAnt_p;
   Int nArray_p;
   Vector<Double> receptorAngle_p;
