@@ -706,6 +706,15 @@ void PlainTable::renameColumn (const String& newName, const String& oldName)
     tableChanged_p = True;
 }
 
+void PlainTable::renameHypercolumn (const String& newName, const String& oldName)
+{
+    if (! isWritable()) {
+	throw (TableInvOper ("Table::renameColumn; table is not writable"));
+    }
+    tdescPtr_p->renameHypercolumn (newName, oldName);
+    tableChanged_p = True;
+}
+
 
 DataManager* PlainTable::findDataManager (const String& dataManagerName) const
 {

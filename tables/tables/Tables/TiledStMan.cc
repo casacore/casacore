@@ -279,6 +279,9 @@ IPosition TiledStMan::makeTileShape (const IPosition& hypercubeShape,
 String TiledStMan::dataManagerName() const
     { return hypercolumnName_p; }
 
+void TiledStMan::setDataManagerName(const String& newHypercolumnName)
+    { hypercolumnName_p = newHypercolumnName; }
+
 Record TiledStMan::dataManagerSpec() const
 {
     Record rec;

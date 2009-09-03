@@ -124,6 +124,8 @@ public:
     // This is the name of the hypercolumn.
     String dataManagerName() const;
 
+    void setDataManagerName (const String& newHypercolumnName);
+
     // Record a record containing data manager specifications.
     virtual Record dataManagerSpec() const;
 

@@ -680,6 +680,12 @@ void RefTable::renameColumn (const String& newName, const String& oldName)
     changed_p = True;
 }
 
+void RefTable::renameHypercolumn (const String& newName, const String& oldName)
+{
+    tdescPtr_p->renameHypercolumn (newName, oldName);
+    changed_p = True;
+}
+
 
 DataManager* RefTable::findDataManager (const String& dataManagerName) const
 {

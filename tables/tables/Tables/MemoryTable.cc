@@ -318,6 +318,11 @@ void MemoryTable::renameColumn (const String& newName, const String& oldName)
   colSetPtr_p->renameColumn (newName, oldName);
 }
 
+void MemoryTable::renameHypercolumn (const String& newName, const String& oldName)
+{
+  tdescPtr_p->renameHypercolumn (newName, oldName);
+}
+
 DataManager* MemoryTable::findDataManager (const String& dataManagerName) const
 {
   return colSetPtr_p->findDataManager (dataManagerName);

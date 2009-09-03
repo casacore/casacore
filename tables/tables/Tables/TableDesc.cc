@@ -682,5 +682,25 @@ void TableDesc::removeHypercolumnDesc (const String& hypercolumnName)
     privKey_p->removeField (theHyperPrefix + hypercolumnName);
 }
 
+void TableDesc::renameHypercolumn (const String& newHypercolumnName,
+				   const String& hypercolumnName)
+{
+    if (! isHypercolumn(hypercolumnName)) {
+	throw TableError ("Hypercolumn " + hypercolumnName +
+			  " does not exist, thus cannot be renamed");
+    }  
+    if (newHypercolumnName == "") {
+        throw TableError ("New hypercolumn name must be non-empty");
+    }  
+    // Get hypercolumn description
+    Vector<String> dataNames, coordNames, idNames;
+    uInt ndim = hypercolumnDesc (hypercolumnName, dataNames, coordNames, idNames);
+    // delete the hypercolumn
+    privKey_p->removeField (theHyperPrefix + hypercolumnName);
+    // recreate it under new name (will also change the column descriptions)
+    defineHypercolumn (newHypercolumnName, ndim, dataNames, coordNames, idNames);
+    
+}
+
 } //# NAMESPACE CASA - END
 

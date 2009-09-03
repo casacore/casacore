@@ -454,6 +454,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     throw TableInvOper("ConcatTable cannot rename columns");
   }
 
+  void ConcatTable::renameHypercolumn (const String&, const String&)
+  {
+    throw TableInvOper("ConcatTable cannot rename hypercolumns");
+  }
+
 
   DataManager* ConcatTable::findDataManager (const String& dataManagerName) const
   {

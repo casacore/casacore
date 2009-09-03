@@ -231,6 +231,11 @@ void NullTable::renameColumn (const String&, const String&)
   throwError ("renameColumn");
 }
 
+void NullTable::renameHypercolumn (const String&, const String&)
+{
+  throwError ("renameHypercolumn");
+}
+
 Vector<uInt> NullTable::rowNumbers() const
 {
   throwError ("rowNumbers");

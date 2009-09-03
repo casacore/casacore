@@ -907,6 +907,8 @@ public:
     // </note>
     void renameColumn (const String& newName, const String& oldName);
 
+    void renameHypercolumn (const String& newName, const String& oldName);
+
     // Write a table to AipsIO (for <src>TypedKeywords<Table></src>).
     // This will only write the table name.
     friend AipsIO& operator<< (AipsIO&, const Table&);
@@ -925,6 +927,10 @@ public:
     // Write a table to ostream (for <src>TypedKeywords<Table></src>).
     // This only shows its name and number of columns and rows.
     friend ostream& operator<< (ostream&, const Table&);
+
+    // Find the data manager with the given name.
+    DataManager* findDataManager (const String& datamanagerName) const;
+
 
 protected:
     BaseTable*  baseTabPtr_p;                 //# ptr to table representation
@@ -970,8 +976,6 @@ private:
     BaseTable* lookCache (const String& name, int tableOption,
 			  const TableLock& tableInfo);
 
-    // Find the data manager with the given name.
-    DataManager* findDataManager (const String& datamanagerName) const;
 };
 
 
@@ -1096,6 +1100,8 @@ inline void Table::removeColumn (const Vector<String>& columnNames)
     { baseTabPtr_p->removeColumn (columnNames); }
 inline void Table::renameColumn (const String& newName, const String& oldName)
     { baseTabPtr_p->renameColumn (newName, oldName); }
+inline void Table::renameHypercolumn (const String& newName, const String& oldName)
+    { baseTabPtr_p->renameHypercolumn (newName, oldName); }
 
 inline DataManager* Table::findDataManager (const String& name) const
 {

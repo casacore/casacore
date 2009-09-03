@@ -474,6 +474,10 @@ public:
     // Check recursively if the descriptions of all subtables are known.
     void checkSubTableDesc() const;
 
+    void renameHypercolumn (const String& newHypercolumnName,
+			    const String& hypercolumnName);
+
+
 private:
     String             name_p;          //# name of table description
     String             vers_p;          //# version of table description

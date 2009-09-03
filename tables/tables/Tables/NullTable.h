@@ -117,6 +117,8 @@ public:
   virtual void removeColumn (const Vector<String>& columnNames);
   virtual Bool canRenameColumn (const String& columnName) const;
   virtual void renameColumn (const String& newName, const String& oldName);
+  virtual void renameHypercolumn (const String& newName,
+				    const String& oldName);
   virtual Vector<uInt> rowNumbers() const;
   virtual BaseTable* root();
   virtual Bool rowOrder() const;

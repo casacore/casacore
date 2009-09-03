@@ -256,6 +256,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Rename a column.
     virtual void renameColumn (const String& newName, const String& oldName);
 
+    // Rename a hypercolumn.
+    virtual void renameHypercolumn (const String& newName,
+				    const String& oldName);
+
     // Find the data manager with the given name.
     virtual DataManager* findDataManager (const String& dataManagerName) const;
 

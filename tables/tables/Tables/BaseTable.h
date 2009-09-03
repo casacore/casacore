@@ -398,6 +398,10 @@ public:
     virtual void renameColumn (const String& newName,
 			       const String& oldName) = 0;
 
+    // Rename a hypercolumn.
+    virtual void renameHypercolumn (const String& newName,
+				    const String& oldName) = 0;
+
     // Get a vector of row numbers.
     // By default it returns the row numbers 0..nrrow()-1.
     // It needs to be implemented for RefTable only.
