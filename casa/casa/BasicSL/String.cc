@@ -73,6 +73,13 @@ Int String::freq(const Char *s) const {
   return found;
 }
 
+Double String::toDouble(const String& string) {
+    istringstream instr(string);
+    Double var;
+    instr >> var;
+    return var;
+}
+
 // Obtain a (separate) 'sub'-string
 SubString String::at(size_type pos, size_type len) {
   return _substr(pos, len);

@@ -115,6 +115,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ul>
 //  <li> The STL-style Array iterators can be used to iterate
 //    element by element through an array. This is the fastest way.
+//    They also make it possible to virtually extend an array (called
+//    shape broadcasting in numpy) and to reorder the iteration axes.
 //  <li> <linkto class=ArrayIterator>ArrayIterator</linkto> can be used to
 //    iterate line by line, plane by plane, etc. through an array.
 //    Each subset is an array in itself, thus can be iterated again.

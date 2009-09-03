@@ -97,6 +97,8 @@ public:
   // <group>
   AipsError (const Char *str, Category c = GENERAL);
   AipsError (const String &str, Category c = GENERAL);
+  AipsError (const String &msg, const String &filename, uInt lineNumber,
+             Category c = GENERAL);
   AipsError (Category c = GENERAL) : message(), category(c) {};
   // </group>
 
@@ -365,6 +367,12 @@ public:
 
 
 } //# NAMESPACE CASA - END
+
+#ifdef AIPS_NEEDS_RETHROW
+#ifndef CASACORE_NEEDS_RETHROW
+#define CASACORE_NEEDS_RETHROW
+#endif
+#endif
 
 #ifdef CASACORE_NEEDS_RETHROW
 #define RETHROW(X) throw(X);

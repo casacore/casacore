@@ -570,6 +570,12 @@ class String : public string {
   String substr(size_type pos=0, size_type n=npos) const {
     return String(*this, pos, n); }
 
+
+  // convert a string to a Double. If the specified string does not represent
+  // a Double, 0 (or something very close because of finite precision) is
+  // returned.
+  static Double toDouble(const String& string);
+
   // Search functions. Returns either npos (if not found); else position.
   // <note role=warning> The RegexBase ones are ** aips++ additions</note>
   // <group>

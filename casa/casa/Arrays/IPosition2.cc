@@ -84,7 +84,7 @@ AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
   Bool use32 = True;
   if (sizeof(ssize_t) > 4) {
     for (uInt i=0; i<ip.size_p; ++i) {
-      if (ip[i] >= 32768U*65536U) {
+      if (ip[i] >= ssize_t(32768)*65536) {
         use32 = False;
         break;
       }

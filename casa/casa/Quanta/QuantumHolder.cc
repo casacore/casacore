@@ -482,57 +482,80 @@ Bool QuantumHolder::fromRecord(String &error,
       in.type(in.idToNumber(RecordFieldId("unit"))) == TpString) {
     String un;
     in.get(RecordFieldId("unit"), un);
-    if (in.type(in.idToNumber(RecordFieldId("value"))) == TpDouble) {
+    switch (in.type(in.idToNumber(RecordFieldId("value")))) {
+    case TpDouble:
+    {
       Double vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Double>(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpFloat) {
+      return True;
+    }
+    case TpFloat:
+    {
       Float vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Float>(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpInt) {
+      return True;
+    }
+    case TpInt:
+    {
       Int vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Int>(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpComplex) {
+      return True;
+    }
+    case TpComplex:
+    {
       Complex vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Complex>(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) == TpDComplex) {
+      return True;
+    }
+    case TpDComplex:
+    {
       DComplex vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<DComplex>(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
-	       TpArrayDouble) {
+      return True;
+    }
+    case TpArrayDouble:
+    {
       Array<Double> vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Array<Double> >(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
-	       TpArrayFloat) {
+      return True;
+    }
+    case TpArrayFloat:
+    {
       Array<Float> vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Array<Float> >(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
-	       TpArrayInt) {
+      return True;
+    }
+    case TpArrayInt:
+    {
       Array<Int> vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Array<Int> >(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
-	       TpArrayComplex) {
+      return True;
+    }
+    case TpArrayComplex:
+    {
       Array<Complex> vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Array<Complex> >(vl, un));
-    } else if (in.type(in.idToNumber(RecordFieldId("value"))) ==
-	       TpArrayDComplex) {
+      return True;
+    }
+    case TpArrayDComplex:
+    {
       Array<DComplex> vl;
       in.get(RecordFieldId("value"), vl);
       hold_p.set(new Quantum<Array<DComplex> >(vl, un));
-    } else {
-      error +=
-	String("Illegal Quantum datatype in QuantumHolder::fromRecord\n");
-      return False;
+      return True;
     }
-    return True;
+    default:
+      break;
+    }
   }
   error += String("Illegal Quantum record in QuantumHolder::fromRecord\n");
   return False;

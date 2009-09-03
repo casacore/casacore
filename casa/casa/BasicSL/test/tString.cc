@@ -360,6 +360,16 @@ void freqtest() {
   assert(x.freq(y) == 1);	// SubString
 }
 
+void toDouble() {
+    String x = "1.5";
+    Double y = String::toDouble(x);
+    assert(y == 1.5);
+    x = "frodo";
+    y = String::toDouble(x);
+    // should be 0, but account for finite machine precision
+    assert(y < 1e-316 && y > -1e-316);
+}
+
 /* void hashtest()
 {
   String *xp, a, x[] = {
@@ -399,6 +409,7 @@ int main() {
 	       "just another useless string.");
   ///  hashtest();
   iotest();
+  toDouble();
   cout << "\nEnd of test\n";
   return(0);
 }

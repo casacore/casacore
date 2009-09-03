@@ -483,7 +483,7 @@ Bool ArrayBase::ok() const
       size_t off = ArrayIndexOffset(ndim(), originalLength_p.storage(),
                                     inc_p.storage(), pos);
       pos(i) = 0;
-      if (steps_p(i) != off) {
+      if (size_t(steps_p(i)) != off) {
 	return False;
       }
     }

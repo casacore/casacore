@@ -40,6 +40,15 @@ AipsError::AipsError(const String &str,Category c)
   : message(str), category(c)
 {}
 
+AipsError::AipsError (const String &msg, const String& filename,
+                      uInt lineNumber, Category c)
+  : category(c)
+{
+  ostringstream os;
+  os << msg << " at File: " << filename << ", line: " << lineNumber;
+  message = os.str();
+}
+
 AipsError::~AipsError() throw()
 {}
 
