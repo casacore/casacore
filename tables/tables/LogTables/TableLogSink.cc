@@ -286,7 +286,7 @@ void TableLogSink::writeLocally (Double mtime,
 				 const String& mobjectID)
 {
   uInt offset = table().nrow();
-  cout << "writing " << mmessage << " at row " << offset << endl;
+  // cout << "writing " << mmessage << " at row " << offset << endl;
   table().addRow(1);
   time().put     (offset, mtime);
   message().put  (offset, mmessage);
