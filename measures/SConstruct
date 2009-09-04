@@ -22,6 +22,10 @@ opts.Add(("blaslibdir", "The blas library location", None))
 opts.Add(("blaslib",
           "The blas library name (e.g. for specialized AMD libraries",
           None))
+opts.Add(("hdf5root", 
+	  "The root directory where hdf5 is installed", None))
+opts.Add(("hdf5incdir", "The hdf5 header location", None))
+opts.Add(("hdf5libdir", "The hdf5 library location", None))
 opts.Add(("datadir", "The location of measures data tables (geodetic, ephemerides)", None))
 
 env = Environment(
@@ -75,6 +79,12 @@ if not env.GetOption('clean'):
     for l in lapackname:
         if not conf.CheckLib(l, autoadd=0): Exit(1)
         conf.env.PrependUnique(LIBS=l)
+    # HDF5 is not mandatory
+    conf.env.AddCustomPackage('hdf5')
+    if conf.CheckLib('hdf5', autoadd=0):
+        conf.env.PrependUnique(LIBS=['hdf5'])  
+    else:
+        print "Building without HDF5 support"
 
     if not conf.CheckLib("dl"): Exit(1)
     conf.env.PrependUnique(LIBS=['dl'])

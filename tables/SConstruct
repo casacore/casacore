@@ -9,6 +9,10 @@ DEPS = ["casa"]
 opts = Variables( 'options.cfg', ARGUMENTS )
 opts.Add(PathVariable("casacoreroot", "The location of casacore/casa",
 		    "/usr/local"))
+opts.Add(("hdf5root", 
+	  "The root directory where hdf5 is installed", None))
+opts.Add(("hdf5incdir", "The hdf5 header location", None))
+opts.Add(("hdf5libdir", "The hdf5 library location", None))
 
 env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
 			  'HOME' : os.environ[ 'HOME' ] 
@@ -45,6 +49,14 @@ env["ASSAYCOM"] = os.path.join(env["casashrdir"][0], "casacore_assay")
 
 if not env.GetOption('clean'):
     conf = Configure(env)
+
+    # HDF5 is not mandatory
+    conf.env.AddCustomPackage('hdf5')
+    if conf.CheckLib('hdf5', autoadd=0):
+        conf.env.PrependUnique(LIBS=['hdf5'])  
+    else:
+        print "Building without HDF5 support"
+
     if not conf.CheckLib("dl"): Exit(1)
     conf.env.PrependUnique(LIBS=['dl'])
     env = conf.Finish()
