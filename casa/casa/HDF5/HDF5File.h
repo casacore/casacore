@@ -67,7 +67,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class HDF5File : public HDF5Object
   {
   public:
-    // Create an HDF5 file object with the given file name.
+    // Create an HDF5 file object with the given file name (possible tilde
+    // or environment variables in it will be expanded).
     // The ByteIO option determines if the file will be created,
     // opened for input and/or output, or possibly deleted by the destructor.
     explicit HDF5File (const String& name,
