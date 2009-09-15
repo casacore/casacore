@@ -411,11 +411,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  default:  break;
 	  } // Switch
 	
-	if(node && !node->isNull())
-	  if(condition.isNull())
+	if(node && !node->isNull()) {
+	  if(condition.isNull()) {
 	    condition = *node;
-	  else
+	  } else {
 	    condition = condition && *node;
+	  }
+	}
       }//For
     //
     // Now parse the time expression.  Internally use the condition
@@ -430,9 +432,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     // Add the time-expression TEN to the condition
     //
-    if(timeNode && !timeNode->isNull())
-      if(condition.isNull()) condition = *timeNode;
-      else                   condition = condition && *timeNode;
+    if(timeNode && !timeNode->isNull()) {
+      if(condition.isNull()) {
+	condition = *timeNode;
+      } else {
+	condition = condition && *timeNode;
+      }
+    }
     
     fullTEN_p = condition;
     msAntennaGramParseDeleteNode();
