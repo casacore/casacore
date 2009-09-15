@@ -265,12 +265,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	  }
 
-	if (allFound=(foundCounter == polIds.nelements()))
-	  {
-	    if (addToMap) setIDLists((Int)row,0,polIndices);
-	  }
+	allFound=(foundCounter == polIds.nelements());
 	if (allFound)
 	  {
+	    if (addToMap) setIDLists((Int)row,0,polIndices);
 	    uInt n;
 	    rowList.resize((n=rowList.nelements())+1,True);
 	    rowList[n]=row;
