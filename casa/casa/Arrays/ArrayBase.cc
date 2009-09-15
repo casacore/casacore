@@ -95,7 +95,7 @@ ArrayBase::~ArrayBase()
 void ArrayBase::baseReform (ArrayBase& tmp, const IPosition& len) const
 {
   // Check if reform can be done.
-  if (len.product() != nelements()) {
+  if (len.product() != Int64(nelements())) {
     throw(ArrayConformanceError("ArrayBase::reform() - "
 				"total elements differ"));
   }
