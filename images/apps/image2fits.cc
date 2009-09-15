@@ -28,21 +28,28 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Inputs.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageFITSConverter.h>
+#include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
 
-int main (Int argc, const char* argv[])
+int main (int argc, const char* argv[])
 {
   try {
+    // Register the FITS and Miriad image types.
+    casa::FITSImage::registerOpenFunction();
+    casa::MIRIADImage::registerOpenFunction();
+
     // enable input in no-prompt mode
     Input inputs(1);
     // define the input structure
-    inputs.version("20080214GvD");
+    inputs.version("20090915GvD");
     inputs.create ("in", "",
 		   "Name of input Image or image expression",
 		   "string");
@@ -64,16 +71,35 @@ int main (Int argc, const char* argv[])
       throw AipsError(" an output FITS file name must be given");
     }
 
+    // First try to open as a normal image.
+    ImageInterface<Float>* img = 0;
     String error;
-    LatticeExpr<Float> lat (ImageExprParse::command(imgin));
-    ImageExpr<Float> img (lat, imgin);
+    Bool res = True;
+    LatticeBase* lattice = ImageOpener::openImage (imgin);
+    if (lattice) {
+      // Succeeded to open as an image.
+      if (lattice->dataType() == TpFloat) {
+        img = dynamic_cast<ImageInterface<Float>*>(lattice);
+      } else {
+        // If no datatype float, convert to it using LEL.
+        // Enclose the name in quotes.
+        imgin = "float('" + imgin + "')";
+        delete lattice;
+      }
+    }
+    if (img == 0) {
+      // Try to interpret it as a LEL expression.
+      LatticeExpr<Float> lat (ImageExprParse::command(imgin));
+      img = new ImageExpr<Float> (lat, imgin);
+    }
     // Now write the fits file.
-    Bool res = ImageFITSConverter::ImageToFITS (error, img, ffout);
+    res = ImageFITSConverter::ImageToFITS (error, *img, ffout);
+    delete img;
     if (!res) {
       throw AipsError(error);
     }
-  } catch (AipsError x) {
-    cout << x.getMesg() << endl;
+  } catch (std::exception& x) {
+    cout << x.what() << endl;
     return 1;
   } 
   cout << "image2fits normally ended" << endl;
