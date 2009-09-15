@@ -28,6 +28,8 @@
 #include <casa/Inputs/Input.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/HDF5Image.h>
+#include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/ImageExprParse.h>
 
@@ -36,12 +38,16 @@ using namespace casa;
 int main(int argc, const char* argv[]) 
 {
   try {
+    // Register the FITS and Miriad image types.
+    casa::FITSImage::registerOpenFunction();
+    casa::MIRIADImage::registerOpenFunction();
+
+    // Read the input parameters.
     Input inputs(1);
     inputs.version("20080710GvD");
     inputs.create("in", "", "Input image or image expression", "string");
     inputs.create("out", "", "Output image name (optional)", "string");
     inputs.create("hdf5", "F", "output image in HDF5 format?", "bool");
-
     inputs.readArguments(argc, argv);
 
     // Get and check the input specification.
@@ -97,26 +103,50 @@ int main(int argc, const char* argv[])
         LatticeExpr<Double> lat (node);
         ImageExpr<Double> img (lat, imgin);
         // Copy the expression result to the image.
-        PagedImage<Double> res(TiledShape(img.shape(), img.niceCursorShape()),
-                              img.coordinates(), outName);
-        res.copyData (img);
-        res.flush();
+        if (hdf5) {
+          HDF5Image<Double> res(TiledShape(img.shape(),
+                                           img.niceCursorShape()),
+                                img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        } else {
+          PagedImage<Double> res(TiledShape(img.shape(), img.niceCursorShape()),
+                                 img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        }
       } else if (node.dataType() == TpComplex) {
         LatticeExpr<Complex> lat (node);
         ImageExpr<Complex> img (lat, imgin);
         // Copy the expression result to the image.
-        PagedImage<Complex> res(TiledShape(img.shape(), img.niceCursorShape()),
-                              img.coordinates(), outName);
-        res.copyData (img);
-        res.flush();
+        if (hdf5) {
+          HDF5Image<Complex> res(TiledShape(img.shape(),
+                                            img.niceCursorShape()),
+                                 img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        } else {
+          PagedImage<Complex> res(TiledShape(img.shape(), img.niceCursorShape()),
+                                  img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        }
       } else if (node.dataType() == TpDComplex) {
         LatticeExpr<DComplex> lat (node);
         ImageExpr<DComplex> img (lat, imgin);
         // Copy the expression result to the image.
-        PagedImage<DComplex> res(TiledShape(img.shape(), img.niceCursorShape()),
-                                 img.coordinates(), outName);
-        res.copyData (img);
-        res.flush();
+        if (hdf5) {
+          HDF5Image<DComplex> res(TiledShape(img.shape(),
+                                             img.niceCursorShape()),
+                                  img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        } else {
+          PagedImage<DComplex> res(TiledShape(img.shape(), img.niceCursorShape()),
+                                   img.coordinates(), outName);
+          res.copyData (img);
+          res.flush();
+        }
       } else {
 	throw AipsError("Expression has an invalid data type (probably bool)");
       }
