@@ -328,7 +328,10 @@ uInt FITSHistoryUtil::toHISTORY(Vector<String>& history, Bool& aipsppFormat,
        }
     }
 //
-    firstLine += aipsppFormat ? nstrings/2 : nstrings;
+    // If nstrings==0, aipsppFormat may not be set yet. So test it.
+    if (nstrings > 0) {
+      firstLine += aipsppFormat ? nstrings/2 : nstrings;
+    }
     return firstLine;
 }
 
