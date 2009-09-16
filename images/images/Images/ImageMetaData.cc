@@ -128,14 +128,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     Vector<Int> ImageMetaData::directionAxesNumbers() const {
         if (! hasDirectionCoordinate()) {
-          return Vector<Int>(1, -1);
+          return Vector<Int>();
         }
         return itsCoordinates.pixelAxes(directionCoordinateNumber());
     }    
 
     Vector<Int> ImageMetaData::directionShape() const {
         Vector<Int> dirAxesNums = directionAxesNumbers();
-        if (! dirAxesNums[0] < 0) {
+        if (dirAxesNums.nelements() == 0) {
             return Vector<Int>();
         }
         Vector<Int> dirShape(2);

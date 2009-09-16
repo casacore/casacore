@@ -138,13 +138,14 @@ class ImageMetaData {
         Bool hasDirectionCoordinate() const;
 
         // Get the direction axes numbers for this image. Returns a two element
-        // Vector. If there is no direction coordinate, both elements of the
-        // returned Vector are -1.
+        // Vector if there is a direction coordinate, if not returns a zero element
+        // vector.
         Vector<Int> directionAxesNumbers() const; 
 
-        // Get the shape of the direction axes. Returns a two element Vector. 
-        // If no direction coordinate, both elements of the returned Vector are
-        // equal to 0.
+        // Get the shape of the direction axes. Returns a two element
+        // Vector if there is a direction coordinate, if not returns a zero element
+        // vector.
+
         Vector<Int> directionShape() const;
 
         // if the specified stokes parameter is valid. A message suitable for
