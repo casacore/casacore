@@ -372,7 +372,7 @@ void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
 		      "the table is not empty"));
   }
   itsDescPtr->resetRefCode (refCode);
-  itsDescPtr->write (const_cast<TableDesc&>(tab.tableDesc()));
+  itsDescPtr->write (tab);
   itsMeasRef.set (refCode);
 }
 
@@ -386,7 +386,7 @@ void ScalarMeasColumn<M>::setDescOffset (const Measure& offset,
 		      "the table is not empty"));
   }
   itsDescPtr->resetOffset (offset);
-  itsDescPtr->write (const_cast<TableDesc&>(tab.tableDesc()));
+  itsDescPtr->write (tab);
   itsMeasRef.set (offset);
 }
 
@@ -400,7 +400,7 @@ void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
 		      "the table is not empty"));
   }
   itsDescPtr->resetUnits (units);
-  itsDescPtr->write (const_cast<TableDesc&>(tab.tableDesc()));
+  itsDescPtr->write (tab);
 }
  
 template<class M>
