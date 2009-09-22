@@ -34,6 +34,7 @@
 
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
 #include <casa/Quanta/MVDirection.h>
 
 //# Forward declarations
@@ -113,9 +114,15 @@ public:
     // Telescope identifier. If this is a "standard" telescope, you should use
     // the same name as is available in the Observatories method of class
     // <linkto class=MeasTable>MeasTable</linkto>. Defaults to "UNKNOWN".
+    // If non-standard, you can also give the position of the telescope.
     // <group>
     String telescope() const;
     ObsInfo& setTelescope(const String &telescope);
+    Bool isTelescopePositionSet() const
+      { return isTelPositionSet_p; }
+    const MPosition& telescopePosition() const
+      { return telPosition_p; }
+    ObsInfo& setTelescopePosition(const MPosition&);
     // </group>
 
     // The name (or initials) of the observer. Defaults to "UNKNOWN".
@@ -199,6 +206,8 @@ private:
     String telescope_p;
     String observer_p;
     MEpoch obsdate_p;
+    MPosition telPosition_p;
+    Bool isTelPositionSet_p;
     MVDirection pointingCenter_p;
     Bool isPointingCenterInitial_p;    // True when ObsInfo contructed. 
                                        // False after setPointingCenter called
