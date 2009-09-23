@@ -87,7 +87,7 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
 }
 
 void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
-			  uInt startin, uInt nrrow)
+			  uInt startin, uInt nrrow, Bool flush)
 {
   // Check if startin and nrrow are correct for input.
   if (startin + nrrow > in.nrow()) {
@@ -116,7 +116,9 @@ void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
     inrow.get (startin + i);
     outrow.put (startout + i, inrow.record(), inrow.getDefined(), False);
   }
-  out.flush();
+  if (flush) {
+    out.flush();
+  }
 }
 
 void TableCopy::copyInfo (Table& out, const Table& in)
