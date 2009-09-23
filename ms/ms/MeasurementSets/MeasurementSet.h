@@ -135,7 +135,7 @@ typedef MeasurementSet MS;
 // This example illustrates a simple use of the MeasurementSet class.
 // <srcblock>
 //      // create the table descriptor
-//      TableDesc simpleDesc = MS::requiredTableDesc()
+//      TableDesc simpleDesc = MS::requiredTableDesc();
 //      // set up a new table
 //      SetupNewTable newTab("simpleTab", simpleDesc, Table::New);
 //      // create the MeasurementSet
