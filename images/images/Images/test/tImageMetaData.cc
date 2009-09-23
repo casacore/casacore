@@ -41,7 +41,7 @@ int main(Int argc, char *argv[]) {
     Path path(argv[0]);
     // if fixtures directory exists, get the test data from there
     // necessary because of differences between build system for NRAO repos
-    // and Google code.
+    // and Google repos.
     String fixturesDir = path.dirName() + "/fixtures/tImageMetaData/";
     if (! File(fixturesDir).exists()) {
         fixturesDir = path.dirName() + "/";
