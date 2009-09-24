@@ -59,9 +59,6 @@ void ImageOpener::registerOpenImageFunction (ImageTypes type,
 
 ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
 {
-  if (HDF5File::isHDF5(name)) {
-    return HDF5;
-  }
   File file(name);
   if (file.isDirectory()) {
     if (Table::isReadable(name)) {
@@ -99,6 +96,9 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       if (str.matches (Regex("^SIMPLE *= *T.*"))) {
 	return FITS;
       }
+    }
+    if (HDF5File::isHDF5(name)) {
+      return HDF5;
     }
   }
   return UNKNOWN;
