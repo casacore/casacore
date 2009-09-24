@@ -2943,6 +2943,9 @@ Vector<String> CoordinateSystem::list (LogIO& os,
    } else {
       os << "Date observation    : " << "UNKNOWN" << endl;
    }
+   if (obsinfo_p.isTelescopePositionSet()) {
+      os << "Telescope position: " << obsinfo_p.telescopePositionString() << endl;
+   }
    os << endl;
 
 // Determine the widths for all the fields that we want to list

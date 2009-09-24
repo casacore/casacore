@@ -28,6 +28,7 @@
 
 #include <coordinates/Coordinates/ObsInfo.h>
 #include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MCPosition.h>
 #include <casa/Quanta/MVAngle.h>
@@ -113,14 +114,32 @@ String ObsInfo::telescope() const
 ObsInfo& ObsInfo::setTelescope(const String &telescope)
 {
     telescope_p = telescope;
+    if (!isTelPositionSet_p) {
+      MPosition pos;
+      if (MeasTable::Observatory (pos, telescope)) {
+        setTelescopePosition (pos);
+      }
+    }
     return *this;
 }
 
 ObsInfo& ObsInfo::setTelescopePosition(const MPosition &pos)
 {
-    telPosition_p = pos;
+    telPosition_p = MPosition::Convert(pos, MPosition::ITRF)();
     isTelPositionSet_p = True;
     return *this;
+}
+
+String ObsInfo::telescopePositionString() const
+{
+    ostringstream oss;
+    if (isTelPositionSet_p) {
+        MVPosition pos1 = telPosition_p.getValue();
+        oss << "[" << pos1.getValue()[0] << "m, "
+            << pos1.getValue()[1] << "m, "
+            << pos1.getValue()[2] << "m] (ITRF)";
+    }
+    return oss.str();
 }
 
 String ObsInfo::observer() const
@@ -396,8 +415,7 @@ Bool ObsInfo::toFITS(String & error, RecordInterface & outRecord) const
     names[2] = "obsgeo-z";
     if (isTelPositionSet_p) {
        // Store position in ITRF meters.
-       MPosition pos = MPosition::Convert(telPosition_p, MPosition::ITRF)();
-       MVPosition mvpos = pos.getValue();
+       MVPosition mvpos = telPosition_p.getValue();
        for (int i=0; i<3; ++i) {
          outRecord.define (names[i], mvpos.getValue()[i]);
        }
@@ -564,10 +582,7 @@ ostream &operator<<(ostream &os, const ObsInfo &info)
 {
     os << "Telescope: " << info.telescope();
     if (info.isTelescopePositionSet()) {
-        MVPosition pos1 = info.telescopePosition().getValue();
-        os << " Position: [" << pos1.get()[0] << "m, "
-           << pos1.getLong("deg").getValue() << "deg, "
-           << pos1.getLat("deg").getValue() << "deg]";
+        os << " Position: " << info.telescopePositionString();
     }
     os << " Observer: " <<
 	info.observer() << " Date Observed: " << info.obsDate() <<

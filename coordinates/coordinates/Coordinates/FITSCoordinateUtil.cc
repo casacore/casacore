@@ -483,10 +483,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Convert header to char* for wcs parser
 
+        // Keep obsgeo-x,y,z because wcspih removes them, but they are needed
+        // by ObsInfo.
+        vector<String> saveCards;
 	int nkeys = header.nelements();
 	String all;
 	for (int i=0; i<nkeys; i++) {
-	    int hsize=header[i].size();
+            if (header[i].substr(0,7) == "OBSGEO-") {
+                saveCards.push_back (header[i]);
+            }
+	    int hsize = header[i].size();
 	    if (hsize >= 19 &&       // kludge changes 'RA--SIN ' to 'RA---SIN', etc.
 		header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
 		header[i][3]=='P' && header[i][4]=='E' &&
@@ -557,16 +563,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Print cards for debugging
   
 	Bool print(False);
-	if (print) {
+        if (print) {
 	    cerr << "Header Cards " << endl;
 	    for (Int i=0; i<nkeys; i++) {
 		uInt pt = i*80;
 		char* pChar3 = &pChar2[pt];
 		String s(pChar3,80);
 		cerr << s << endl;
-	    }
+            }
 	    cerr << endl;
-	}
+        }
   
 // Parse FITS header cards with wcs and remove wcs cards from char header
 
@@ -588,6 +594,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	else if (which >= uInt(nwcs)) {
 	    os << LogIO::SEVERE << "Requested WCS # " << which << " exceeds the number available " << nwcs << LogIO::POST;
 	}
+
+// Add the saved OBSGEO keywords.
+// This is a bit tricky because pChar2 is in fact the char* of String 'all'.
+// So make a new string and add them to it.
+        String newHdr;
+        if (saveCards.size() > 0) {
+            newHdr = String(pChar2);
+            for (uInt i=0; i<saveCards.size(); ++i) {
+                newHdr.append (saveCards[i]);
+            }
+            pChar2 = const_cast<char*>(newHdr.chars());
+        }
 
 // Put the rest of the header into a Record for subsequent use
 	cardsToRecord (os, recHeader, pChar2);
@@ -1693,7 +1711,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    }
 	    case 5:                                 // Floating point
 	    {
-		Float value(keys[i].keyvalue.f);
+		Double value(keys[i].keyvalue.f);
 		subRec.define("value", value);
 		break;
 	    }

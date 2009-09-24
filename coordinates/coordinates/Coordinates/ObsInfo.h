@@ -114,7 +114,10 @@ public:
     // Telescope identifier. If this is a "standard" telescope, you should use
     // the same name as is available in the Observatories method of class
     // <linkto class=MeasTable>MeasTable</linkto>. Defaults to "UNKNOWN".
-    // If non-standard, you can also give the position of the telescope.
+    // <br>
+    // The telescope position can be set and will be converted to ITRF.
+    // If the telescope position has not been set explicitly, it will be
+    // set for a standard telescope found in the MeasTable.
     // <group>
     String telescope() const;
     ObsInfo& setTelescope(const String &telescope);
@@ -122,6 +125,7 @@ public:
       { return isTelPositionSet_p; }
     const MPosition& telescopePosition() const
       { return telPosition_p; }
+    String telescopePositionString() const;
     ObsInfo& setTelescopePosition(const MPosition&);
     // </group>
 
