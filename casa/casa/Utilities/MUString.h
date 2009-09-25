@@ -306,6 +306,8 @@ public:
   Bool tSkipChar(Char nc);
   void skipCharNC(Char ch);
   Bool tSkipCharNC(Char ch);
+  Bool tSkipOneChar(Char ch);
+  Bool tSkipOneCharNC(Char ch);
   void skipChar(const Regex &ex);
   Bool tSkipChar(const Regex &ex);
   void skipAlpha();

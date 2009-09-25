@@ -221,6 +221,22 @@ Bool MUString::tSkipCharNC(Char ch) {
   return (testCharNC(ch) ? (skipCharNC(ch), True) : False);
 }
 
+Bool MUString::tSkipOneChar(Char ch) {
+  if (testChar(ch)) {
+    ptr++;
+    return True;
+  }
+  return False;
+}
+
+Bool MUString::tSkipOneCharNC(Char ch) {
+  if (testCharNC(ch)) {
+    ptr++;
+    return True;
+  }
+  return False;
+}
+
 void MUString::skipChar(const Regex &ex) {
   while (testChar(ex)) ptr++;
 }

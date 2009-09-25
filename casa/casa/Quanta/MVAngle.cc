@@ -362,11 +362,11 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       r *= s;
       tp = 4;
     }
-  }else if (in.tSkipCharNC('d')) {
+  }else if (in.tSkipOneCharNC('d')) {
     tp = 1;
-  } else if (in.tSkipCharNC('h')) {
+  } else if (in.tSkipOneCharNC('h')) {
     tp = 2;
-  } else if (in.tSkipChar(':')) {
+  } else if (in.tSkipOneChar(':')) {
     tp = 3;
   }
   switch (tp) {
@@ -381,16 +381,14 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       if (tp == 3) tc = ':';
       in.push();
       Double r1 = in.getuInt();
-      if (in.tSkipCharNC(tc)) {
+      if (in.tSkipOneCharNC(tc)) {
 	r += r1/60.0 + in.getDouble()/3600.;
-	if (tp != 3) in.tSkipCharNC('s');
-      } else if (tp == 1 && r1 == 0 && !in.testCharNC('.') &&
-		 !in.testCharNC('/')) {
-	r += r1/60.0;
+	if (tp != 3) in.tSkipOneCharNC('s');
       } else if (tp == 3 && !in.testCharNC('.') &&
 		 !in.testCharNC('/') && !in.testAlpha()) {
 	r += r1/60.0;
-      } else {
+      } else if ( !(tp == 1 && r1 == 0 && !in.testCharNC('.') &&
+                    !in.testCharNC('/'))) {
 	tp = 0;
       }
       in.unpush();
