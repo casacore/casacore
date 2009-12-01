@@ -47,7 +47,7 @@ typedef MSSelectionKeywords MSS;
 // MSSelectionKeywords specifies selection keywords for the MeasurementSet
 // </summary>
 
-// <visibility=export>
+// <use visibility=export>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
