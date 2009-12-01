@@ -1,0 +1,167 @@
+#-----------------------------------------------------------------------------
+# makedefs: Installation-specific definitions used by AIPS++ makefiles
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996,1997,1998,2000
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is read in by the makedefs file in the directory above
+# this.  That "default makedefs" file defines default values of each and
+# every variable required by the AIPS++ makefiles.  Those default values are
+# overridden where necessary by redefining them in this file.
+#
+# Installation instructions:
+#
+#    A template version of this file was copied from the "install/alpha_gnu"
+#    directory into the site-specific AIPS++ system directory for this
+#    architecture (this directory) by the 'configure' script as part of the
+#    AIPS++ installation.
+#
+#    While default definitions are made in the default makedefs file in the
+#    directory above this, certain platform-specific redefinitions may have
+#    been included here to help make the installation easier.
+#
+#    You must carefully check all of the definitions made in the default
+#    makedefs file (as well as the redefinitions made here) and if necessary,
+#    correct them by making an overriding definition (or correction) here.
+#    However,
+#
+#                  DO NOT MODIFY THE DEFAULT MAKEDEFS FILE -
+#
+#                         MODIFY THIS FILE INSTEAD
+#
+#    Certain of the defaults in the default makedefs file are expressed in
+#    terms of another default using "recursively expanded" variables (defined
+#    with '=') rather than "simply expanded" (defined with ':=').  For
+#    example the TeX variables are defined in terms of "TEXROOT".  This may
+#    allow this makedefs file to redefine a whole set of variables, for
+#    example all of the TeX variables, simply by redefining one, TEXROOT.
+#    However,
+#
+#           ALWAYS USE "SIMPLY EXPANDED" VARIABLES WITHIN THIS FILE
+#
+#    That is, always use ":=" to make the assignments.
+#
+# Original: 1996/08/30 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+# Libraries and include paths.
+#-----------------------------------------------------------------------------
+ 
+# The C++ compiler.
+#------------------
+C++ROOT  := /usr/local/gnu
+
+
+# General external libraries.
+#----------------------------
+# Motif.
+MotifROOT := /usr
+
+# X11.
+X11ROOT  := /usr
+
+# FORTRAN compiler.
+F77ROOT  := /usr/lib/cmplrs
+F77LIBD  := $(F77ROOT)/fortrtl
+F77LIB   := -lfor -lFutil -lUfor -lots
+
+# Platform-specific libraries.
+ARCHLIBS :=
+
+
+#-----------------------------------------------------------------------------
+# Compilation and linkage variables
+#-----------------------------------------------------------------------------
+# Preprocessor flags for system debug/optimized compilations.
+CPPDBG   += -DAIPS_OSF -DAIPS_LITTLE_ENDIAN -DAIPS_ARRAY_INDEX_CHECK -DAIPS_DEBUG
+CPPOPT   += -DAIPS_OSF -DAIPS_LITTLE_ENDIAN
+
+# C compiler flags for system debug/optimized compilations.
+CC       := /usr/local/gnu/bin/gcc
+CDBG     += -DAIPS_SVID3 
+COPT     += -DAIPS_SVID3
+
+# C++ compiler flags for system debug/optimized compilations.
+C++      := $(C++ROOT)/bin/c++
+C++DBGLVL:= -g
+C++DBG   := $(C++DBGLVL) -fno-implicit-templates -Wreturn-type
+C++OPTLVL:= -O2
+C++OPT   := $(C++OPTLVL) -fno-implicit-templates -Wreturn-type
+
+# Use do-it-yourself template instantiation.
+TEMPLATES := diy
+
+# FORTRAN compiler flags for system debug/optimized compilations.
+FC       := /usr/bin/f77
+FCOPTLVL := -fast
+
+# Object library utilities.
+AR       := /usr/ccs/bin/ar
+ARFLAGS  := ruv
+RANLIB   := :
+
+ 
+# Linker flags for producing a sharable object.
+LDSOPTS  := -shared
+
+
+#-----------------------------------------------------------------------------
+# Programmer variables for code development.
+#-----------------------------------------------------------------------------
+ifeq "$(MAKEMODE)" "programmer"
+   # Alternate definitions for CPPFLAGS.
+   ifeq "$(CPPFLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+   endif
+
+   # C++ compiler flags for programmer compilations.
+   ifdef OPT
+      C++FLAGS := $(C++OPT) -Wall
+   else
+      C++FLAGS := $(C++DBG) -Wall
+   endif
+ 
+   # Where to put binaries for programmer compilations.
+   ifdef OPT
+      PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+   else
+      PGMRLIBD := $(wildcard $(PGMRARCH)/libdbg)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bindbg)
+   endif
+ 
+   # Alternate definitions for C++FLAGS.
+   ifeq "$(C++FLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+      PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+      override C++FLAGS := $(C++OPT)
+   endif
+
+   # Extra compiler flags.
+   C++FLAGS += $(EXTRA_C++FLAGS)
+endif

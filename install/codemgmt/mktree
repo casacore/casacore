@@ -1,0 +1,385 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# mktree: Construct an AIPS++ directory tree
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-1996,1997
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: mktree [-d] [-l] [-r] [-s]
+#-----------------------------------------------------------------------------
+# mktree creates a shadow directory tree with symbolic links pointing to
+# the RCS code repositories under $AIPSRCS.
+#
+# It also creates the code/include directory and populates it with
+# symbolic links to the implement directories of installed packages.
+#
+# Options:
+#   -d     Delete any pre-existing symbolic links.  Can be used to force them
+#          to be recreated.
+#
+#   -l     RCS symbolic links will normally be created only if $AIPSRCS
+#          is being shadowed (see the -r option below), or if
+#          $AIPSCODE/RCS exists.  This option forces them to be created.
+#
+#   -r     Shadow the $AIPSRCS tree rather than $AIPSCODE.  This should
+#          be used for constructing or updating $AIPSCODE at consortium
+#          sites.
+#
+#   -s     Don't ask for confirmation of the parent directory or for deletion
+#          of any defunct directories or files contained therein.
+#
+# The "-master" option creates RCS symlinks directly into $AIPSMSTR and
+# should only ever be used by 'exhale' when building a new public release.
+#
+# Status return values:
+#    0:  success
+#    1:  initialization error
+#
+# Original: 1992/03/07 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Get the AIPS++ root directory.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "mktree: AIPSPATH is undefined (use aipsinit.[c]sh), abort!"
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+# Parse command input.
+  DELRCS=""
+  RCSLINK=""
+  STEM=code
+  LIMB="."
+  VERBOSE=1
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -d)
+        DELRCS=1
+        ;;
+     -l)
+        RCSLINK=rcs
+        ;;
+     -master)
+        RCSLINK=master
+        ;;
+     -r)
+        STEM=rcs
+        ;;
+     -s)
+        VERBOSE=""
+        ;;
+     *)
+        echo "Usage: mktree [-d] [-l] [-r] [-s]"
+        exit 1
+        ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+# Automounter woes!
+  TMPMNT=`(cd $AIPSROOT && /bin/pwd) 2> /dev/null`
+  NODEDIR=`/bin/pwd`
+
+# Create RCS symbolic links?
+  if [ "$RCSLINK" = master ]
+  then
+#    Used only by 'exhale' for generating a new public release.
+     STEM=master
+  else
+     case "$NODEDIR" in
+     $TMPMNT | $TMPMNT/*)
+#       Always refer $AIPSCODE to $AIPSRCS.
+        RCSLINK=rcs
+        STEM=rcs
+        ;;
+     *)
+#       Ordinary user area.
+        [ "$STEM" = rcs ] && RCSLINK=rcs
+        [ -d "$AIPSROOT/code/RCS" ] && RCSLINK=rcs
+        ;;
+     esac
+  fi
+
+# Are we updating a subtree?
+  case "$NODEDIR" in
+  */code/*)
+#    Create/update a subtree.
+     LIMB=`echo $NODEDIR | sed -e 's=.*/code/=='`
+     STEM="$STEM/$LIMB"
+     ;;
+  */code)
+#    Create/update the whole tree.
+     ;;
+  *)
+#    Move into the code subdirectory.
+     if [ ! -d code ]
+     then
+        mkdir code
+        echo "Created directory code"
+     fi
+
+     cd code
+     NODEDIR="$NODEDIR/code"
+  esac
+
+
+# Resolve $ROOTSTEM - 'find' doesn't follow symlinks.
+  ROOTSTEM=`(cd "$AIPSROOT/$STEM" && \
+           /bin/pwd | sed -e "s#^$TMPMNT#$AIPSROOT#") 2> /dev/null`
+  if [ "$ROOTSTEM" = "" ]
+  then
+     echo "mktree: $AIPSROOT/$STEM - no such directory." 1>&2
+     exit 1
+  fi
+
+# Make sure the user knows where the shadow tree is going.
+  if [ "$VERBOSE" != "" ]
+  then
+     echo ""
+     if [ "$RCSLINK" != "" ]
+     then
+        echo "The shadow tree (with RCS links) will be constructed"
+     else
+        echo "The shadow tree (without RCS links) will be constructed"
+     fi
+     echo "in `pwd`, shadowing $ROOTSTEM."
+     if [ "`echo -n X`" = "X" ] ; then
+	echo -n "Continue? (y/n) [y]: "
+     else
+	echo "Continue? (y/n) [y]: \c"
+     fi
+     read ANSWER
+     affirm -a -s $ANSWER || exit 1
+     echo ""
+  fi
+
+# Find all subdirectories.
+  find $ROOTSTEM/. -type d -print |
+  {
+     exec 3<&0 0</dev/null
+
+     while read DIR 0<&3
+     do
+
+#       Skip build residue
+        [ ! -f "$DIR/.mktree.precious" ] || continue
+
+        DIR=`echo $DIR | sed -e "s#^$ROOTSTEM/##"`
+
+#       Create the directory.
+        if [ ! -d "$DIR" ]
+        then
+           case "$DIR" in
+           */.[0-9][0-9].[0-9][0-9][0-9]_*)
+#             Don't create rescinded directories (in -master mode).
+              continue
+              ;;
+           */tmplinst)
+#             Don't create DIY template instantiation directories.
+              continue
+              ;;
+           esac
+
+           if `mkdir $DIR`
+           then
+              echo "Created directory $DIR"
+           else
+              echo "Failed to create directory $DIR"
+           fi
+        fi
+
+#       Don't create an RCS symlink in code/include.
+        case "$LIMB" in
+        .)
+           case $DIR in
+           ./include)
+              rm -f $DIR/RCS
+              continue
+              ;;
+           esac
+           ;;
+        include)
+           case $DIR in
+           .)
+              rm -f $DIR/RCS
+              continue
+              ;;
+           esac
+           ;;
+        esac
+
+#       Delete pre-existing symlinks?
+        [ "$DELRCS" = "" ] || rm -f $DIR/RCS
+
+#       Create the RCS symlink.
+        if [ "$RCSLINK" != "" -a ! -d "$DIR/RCS" ]
+        then
+#          Delete any misdirected symlink.
+           rm -f $DIR/RCS
+
+           RCSDIR=`echo "$AIPSROOT/$RCSLINK/$LIMB/$DIR" | \
+                   sed -e '{s=/\./=/=g;s=/\./=/=g;s=/\.$==;}'`
+           [ -d "$RCSDIR" ] || continue
+
+           if `ln -s $RCSDIR $DIR/RCS`
+           then
+              echo "Created symlink   $DIR/RCS"
+           else
+              echo "Failed to create symlink   $DIR/RCS"
+           fi
+        fi
+     done
+  } || exit $?
+
+
+
+# Create the symlinks used to construct the AIPS++ include paths.
+  case "$LIMB" in
+  .)
+#    Create the code/include directory.
+     if [ ! -d ./include ]
+     then
+        if `mkdir ./include`
+        then
+           echo ""
+           echo "Created directory ./include"
+        else
+           echo "Failed to create directory ./include"
+        fi
+     fi
+
+     cd include
+
+#    Create the code/include symlinks.
+     INCDIRS=`(cd $ROOTSTEM ; ls -d */implement)`
+     for INCDIR in $INCDIRS
+     do
+        PACKAGE=`echo $INCDIR | awk -F/ '{ print $1 }'`
+
+#       Delete pre-existing symlinks?
+        [ "$DELRCS" = "" ] || rm -f $PACKAGE
+
+        if [ ! -d "$PACKAGE" ]
+        then
+#          Delete any misdirected symlink.
+           rm -f $PACKAGE
+
+           if `ln -s ../$PACKAGE/implement $PACKAGE`
+           then
+              echo "Created symlink   ./include/$PACKAGE"
+           else
+              echo "Failed to create symlink   ./include/$PACKAGE"
+           fi
+        fi
+     done
+
+     cd $NODEDIR
+     ;;
+
+  include)
+#    Create the code/include symlinks.
+     INCDIRS=`(cd $ROOTSTEM/.. ; ls -d */implement)`
+     for INCDIR in $INCDIRS
+     do
+        PACKAGE=`echo $INCDIR | awk -F/ '{ print $1 }'`
+
+#       Delete pre-existing symlinks?
+        [ "$DELRCS" = "" ] || rm -f $PACKAGE
+
+        if [ ! -d "$PACKAGE" ]
+        then
+#          Delete any misdirected symlink.
+           rm -f $PACKAGE
+
+           if `ln -s ../$PACKAGE/implement $PACKAGE`
+           then
+              echo "Created symlink   ./$PACKAGE"
+           else
+              echo "Failed to create symlink   ./$PACKAGE"
+           fi
+        fi
+     done
+     ;;
+  esac
+
+
+# Delete defunct directories.
+  for DIR in `find . -type d -depth -print`
+  do
+     case $DIR in
+     */tmplinst)
+        continue
+        ;;
+     esac
+
+     case "$LIMB" in
+     .)
+        case $DIR in
+        ./include)
+           continue
+           ;;
+        esac
+        ;;
+     include)
+        case $DIR in
+        .)
+           continue
+           ;;
+        esac
+        ;;
+     esac
+
+     RCSDIR="$ROOTSTEM/$DIR"
+     if [ ! -d "$RCSDIR" ]
+     then
+        if [ "$VERBOSE" != "" ]
+        then
+#          Verify each deletion.
+           echo "Found defunct directory $DIR:"
+           rm -rfi $DIR
+           echo ""
+        else
+           if [ ! -f "$DIR/.mktree.precious" ]
+           then
+#             Just delete it.
+              rm -rf $DIR
+              echo "Found defunct directory $DIR: (deleted)"
+           else
+              echo "Found defunct directory $DIR: (left)"
+           fi
+        fi
+     fi
+  done
+
+
+  exit 0

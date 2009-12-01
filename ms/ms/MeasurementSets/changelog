@@ -1,0 +1,84 @@
+
+<change id=0098>
+ <author> Ger van Diepen </author>
+ <date> 2001/06/11 </date>
+ <avers> 1.6 </avers>
+ <area> Library </area>
+ <package> ms </package>
+ <module> MeasurementSets </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Data compression is now possible
+ </summary>
+ <description>
+The function addColumnCompression has been added to MSTable.
+It makes it possible to define in the MS table description that
+compression has to be used for the given column (using the new
+virtual column engines CompressFloat or CompressComplex).
+It can only be used for Float or Complex columns (which get compressed
+to Short and Int, resp.).
+It means that 3 extra columns get added: X_COMPRESSED, X_SCALE, X_OFFSET
+where X is the name of the original column.
+One can choose the let the engine scale automatically or to supply a
+scale and offset values before putting the data.
+Note that compression is only meaningful for bigger arrays. If e.g.
+nchan==1, compression is not useful at all.
+The MS constructor recognizes from the TableDesc that compression is
+required and will set up the data managers accordingly.
+
+In order to use compression fillers need to be changed.
+The code to use compression in a filler is e.g.:
+    TableDesc td(MS::requiredTableDesc());
+    // Add the DATA column and compress it.
+    MS::addColumnToDesc(td, MS::DATA, 2);
+    MS::addColumnCompression (td, MS::DATA);
+    SetupNewTable setup(msName, td, Table::New);
+    MeasurementSet ms(setup);
+ </description>
+</change>
+
+<change id=0099>
+ <author> Athol Kemball </author>
+ <date> 2001/06/25 </date>
+ <avers> 1.6 </avers>
+ <area> Tool </area>
+ <package> ms </package>
+ <module> fitsidi2ms </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+New FITS-IDI filler tool
+ </summary>
+ <description>
+
+The existing FITS-IDI filler code has been rationalized to
+include contributed code from Tak Tsutsumi (CfA), which
+supports a greater range of FITS-IDI subtables and multiple
+UV_DATA extents. The older fitsidi2ms.cc stand-alone
+program has also been converted to an AIPS++ DO fitsidi2ms.g.
+ </description>
+</change>
+
+<change id=0108>
+ <author> Raymond Plante </author>
+ <date> 2001/10/25 </date>
+ <avers> 1.6 </avers>
+ <area> Library </area>
+ <package> ms </package>
+ <module> MeasurementSets </module>
+ <type> Code </type>
+ <category> Bugfix </category>
+ <defects> AOCso02280 </defects>
+ <summary>
+Properly support -1 (wildcard) indicies according to MS2 spec.
+ </summary>
+ <description>
+This change fixed a bug that is seen when certain MS subtables (SOURCE,
+FEED) make use of the -1 wildcard index for SPECTRAL_WINDOW_ID.  It 
+prevented imager from properly matching rest frequencies to spectral 
+windows, causing data selection by velocity to fail.
+ </description>
+</change>

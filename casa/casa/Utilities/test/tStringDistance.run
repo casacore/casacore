@@ -1,0 +1,16 @@
+#!/bin/sh
+#-------------------------------------------------------------------
+# Script to test the StringDistance class.
+#======================================================
+
+./tStringDistance abcd abcd 0 0 0
+./tStringDistance abcd abcd 1 1 1
+./tStringDistance AbCd aBcD 0 0 0
+./tStringDistance AbCd aBcD 0 0 1
+./tStringDistance AbCd abcd 0 0 1
+./tStringDistance ACbd abcd 0 0 0
+./tStringDistance ACbd abcd 0 0 1
+./tStringDistance ACbd abcd 1 0 1
+./tStringDistance ACbd 'ab cd' 1 0 1
+./tStringDistance ACbd 'ab cd' 1 1 1
+./tStringDistance ab ba 1 1 1

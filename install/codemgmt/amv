@@ -1,0 +1,431 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# amv: Renames AIPS++ files and directories
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1993-1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: amv (-src | -top) <old_name> <new_name>
+#-----------------------------------------------------------------------------
+# amv renames AIPS++ files and directories.  It adds an entry to 'ax_master'
+# to rename the file or directory and then invokes it on the master.  The
+# renames will be applied to the slave and system by 'inhale' and 'sneeze'
+# respectively.
+#
+# amv must be setuid to "aips2mgr" and it will add setuid to "aips2mgr" on
+# $AIPSMSTR/etc/ax_master.
+#
+# Options:
+#   -src   Rename files or directories in the AIPS++ RCS repository and code
+#          subtree.  Both arguments must be specified as a pathname relative
+#          to $AIPSRCS (and therefore $AIPSCODE).  For example,
+#
+#             amv -src aips/Foo.cc vlbi/Bar.cc
+#
+#          will result in the following renames:
+#
+#             $AIPSMSTR/aips/implement/Foo.cc,v ->
+#                     $AIPSMSTR/vlbi/implement/Bar.cc,v
+#             $AIPSLAVE/aips/implement/Foo.cc,v ->
+#                     $AIPSLAVE/vlbi/implement/Bar.cc,v
+#             $AIPSCODE/aips/implement/Foo.cc   ->
+#                     $AIPSCODE/vlbi/implement/Bar.cc
+#
+#          and deletions:
+#
+#             $AIPSARCH/lib/libaips.a(Foo.o)
+#             $AIPSARCH/libdbg/libaips.a(Foo.o)
+#
+#   -top   Rename a file or directory beneath $AIPSROOT.  Both arguments must
+#          be specified as a pathname relative to $AIPSROOT.  For example,
+#
+#             amv -top docs/README docs/ReadMe
+#
+#          will result in renaming
+#
+#             $AIPSROOT/docs/README  -> $AIPSROOT/docs/ReadMe
+#
+#          Note the following special cases:
+#
+#             amv -top master/old master/new
+#             amv -top slave/old slave/new
+#             amv -top rcs/old rcs/new
+#
+#          The first only renames the master file, the second only renames
+#          the slave file, and the third renames both.
+#
+# Notes:
+#    1) Renaming a file or directory in the AIPS++ system area must be done
+#       by using 'ax -sys' to delete it, and relying on a system rebuild to
+#       recreate any missing files.
+#
+#    2) Directory renaming is only allowed for members of the "aips2mgr"
+#       group.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  usage error
+#    3:  failed to get ax_master
+#
+# Original: 1993/07/23 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "amv: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  ROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  ARCH=`echo $AIPSPATH | awk '{ print $2 }'`
+
+  AIPSROOT=$ROOT
+  AIPSARCH=$ROOT/$ARCH
+
+# Define AIPS++ directory names.
+  AIPSMSTR=$AIPSROOT/master
+  MSTRETCD=$AIPSMSTR/etc
+  AIPSLAVE=$AIPSROOT/slave
+  AIPSRCS=$AIPSROOT/rcs
+  AIPSCODE=$AIPSROOT/code
+  ARCHTMPD=$AIPSARCH/tmp
+
+# Check number of arguments.
+  if [ "$#" != 3 ]
+  then
+     exec 1>&2
+     echo "Usage: amv (-src | -top) <old_name> <new_name>"
+     echo "       Consult the AIPS++ System manual for usage and options."
+     exit 2
+  fi
+
+# Parse arguments.
+  case $1 in
+  -src | -top )
+     OPER=$1
+     shift
+     ;;
+
+  -sys)
+#    Issue an advisory.
+     echo "amv: Renaming a system file or directory is done simply by using"
+     echo "     'ax -sys' to delete it (any subsequent system rebuild will"
+     echo "     recreate anything which is missing)."
+     exit 2
+     ;;
+
+  *)
+     echo "Usage: amv (-src | -top) <old_name> <new_name>"
+     echo "       Consult the AIPS++ System manual for usage and options."
+     exit 2
+  esac
+
+# Check for trivial renaming.
+  if [ "$1" = "$2" ]
+  then
+     echo "amv: New name same as old name, abort!" 1>&2
+     exit 2
+  fi
+
+# Check that the master directories are accessible.
+  while [ ! -f "$MSTRETCD/ax_master" ]
+  do
+     echo "amv: $AIPSMSTR is not responding, trying..." 1>&2
+     sleep 15
+  done
+
+# Are renamings disabled?
+  if [ -f "$MSTRETCD/amv_disable" ]
+  then
+     if [ -s "$MSTRETCD/amv_disable" ]
+     then
+        cat $MSTRETCD/amv_disable
+        echo ""
+     fi
+
+     echo "amv: Renames are currently disabled, try again later." 1>&2
+     exit 1
+  fi
+
+# Are we in the "aips2mgr" group?
+  DIRDEL=""
+  AIPS2MGR=`getrc -i account.manager 2> /dev/null`
+  MGRACCNT=`echo $AIPS2MGR | sed -e 's/\..*//'`
+  MGRGROUP=`echo $AIPS2MGR | sed -e 's#.*\.##'`
+  [ "`groups | grep $MGRGROUP`" != "" ] && DIRDEL=1
+
+# Prevent checkouts by "aips2mgr".
+  if [ "${LOGNAME-$USER}" = "$MGRACCNT" ]
+  then
+     echo "amv: Renames by \"$MGRACCNT\" are not permitted." 1>&2
+     exit 1
+  fi
+
+# Get the current master version.
+  if [ ! -f "$AIPSMSTR/VERSION" ]
+  then
+     echo "amv: Couldn't find $AIPSMSTR/VERSION, abort!" 1>&2
+     exit 1
+  fi
+
+  MSTRVERS=`sed -e 's/ .*//' $AIPSMSTR/VERSION`
+  MSTRMAJ=`echo $MSTRVERS | awk -F. '{ print $1 }'`
+  MSTRMIN=`echo $MSTRVERS | awk -F. '{ print $2 }'`
+
+# Make a temporary work area for editing ax_master.
+  umask 002
+  TMPAMVD=$ARCHTMPD/amv.$$
+  trap "echo Cleaning up... ; \
+        cd $ARCHTMPD ; \
+        rm -rf $TMPAMVD" 0 1 2 3 15
+  amkdir $TMPAMVD/code/install/codemgmt
+  if [ "$?" != 0 ]
+  then
+     echo "amv: Failed to create work directory, abort!" 1>&2
+     exit 1
+  fi
+
+  cd $TMPAMVD/code/install/codemgmt
+
+
+# Do it.
+  case $OPER in
+  -src)
+#    Check that the parent directories exist.
+     NEWDIR=`echo $AIPSMSTR/$2 | sed -e 's#/[^/]*$##'`
+     if [ ! -d "$NEWDIR" ]
+     then
+        echo "amv: $NEWDIR does not exist, abort!." 1>&2
+        exit 2
+     fi
+
+#    Check that the object doesn't already exist.
+     if [ -f "$AIPSMSTR/$2,v" -o -d "$AIPSMSTR/$2" ]
+     then
+        echo "amv: $AIPSMSTR/$2 already exists, abort!." 1>&2
+        exit 2
+     fi
+
+#    Check for directory renaming.
+     if [ -d "$AIPSMSTR/$1" ]
+     then
+        case $1 in
+        */*/*)
+           ;;
+        *)
+           if [ "$DIRDEL" = "" ]
+           then
+              exec 1>&2
+              echo "amv: This directory renaming may only be done" \
+                   "by users in the \"aips2mgr\" group,"
+              echo "     abort!"
+              exit 2
+           fi
+           ;;
+        esac
+
+        echo "WARNING! Renaming directory $1"
+        echo $MSTRMAJ $MSTRMIN src mv $1 $2 >> ax_list
+     else
+#       Check that the file exists.
+        if [ -f "$AIPSLAVE/$1,v" ]
+        then
+           : ok
+        elif [ -f "$AIPSCODE/$1" ]
+        then
+           : ok
+        elif [ -f "$AIPSMSTR/$1,v" ]
+        then
+           : ok
+        else
+           echo "amv: $1 does not exist, abort!." 1>&2
+           exit 2
+        fi
+
+#       Validate the new filename.
+        case $2 in
+        *.cc | *.[hly])
+           AV=`av $2`
+           if [ "$AV" != "" ]
+           then
+              AV1=`echo $1 | sed -e 's/\..*//'`
+              AV2=`echo $2 | sed -e 's/\..*//'`
+              case $AV in
+              $AV1* | $AV2*)
+                 : ok
+                 ;;
+              *)
+                 exec 1>&2
+                 echo "amv: Abort! The first 15 characters of filename match"
+                 for AVi in $AV
+                 do
+                    echo "     $AVi"
+                 done
+                 exit 2
+                 ;;
+              esac
+           else
+#             Create an addendum to the av cache.
+              echo $2 | sed -e 's#\..*##' | gzip > av_cache-$$.gz
+              chmod 644 av_cache-$$.gz
+           fi
+           ;;
+        esac
+
+        echo $MSTRMAJ $MSTRMIN src mv $1 $2 >> ax_list
+     fi
+     ;;
+
+  -top)
+#    Trap special use of "rcs" renaming.
+     case $1 in
+     rcs/*)
+        SUBJECT1=`echo $1 | sed -e 's#rcs/#slave/#'`
+        SUBJECT2=`echo $1 | sed -e 's#rcs/#master/#'`
+        ;;
+     *)
+        SUBJECT1="$1"
+        SUBJECT2="$1"
+        ;;
+     esac
+
+#    Check that the parent directories exist.
+     NEWDIR=`echo $AIPSMSTR/$SUBJECT1 | sed -e 's#/[^/]*$##'`
+     if [ ! -d "$NEWDIR" ]
+     then
+        echo "amv: $NEWDIR does not exist, abort!." 1>&2
+        exit 2
+     fi
+
+     NEWDIR=`echo $AIPSMSTR/$SUBJECT2 | sed -e 's#/[^/]*$##'`
+     if [ ! -d "$NEWDIR" ]
+     then
+        echo "amv: $NEWDIR does not exist, abort!." 1>&2
+        exit 2
+     fi
+
+#    Check that the object doesn't already exist.
+     if [ -f "$AIPSROOT/$2" -o -d "$AIPSROOT/$2" ]
+     then
+        echo "amv: $AIPSROOT/$2 already exists, abort!." 1>&2
+        exit 2
+     fi
+
+#    Check for directory renaming.
+     if [ -d "$AIPSROOT/$SUBJECT1" -o -d "$AIPSROOT/$SUBJECT2" ]
+     then
+        case $1 in
+        */*/*)
+           ;;
+        *)
+           if [ "$DIRDEL" = "" ]
+           then
+              exec 1>&2
+              echo "amv: This directory renaming may only be done" \
+                   "by users in the \"aips2mgr\" group,"
+              echo "     abort!"
+              exit 2
+           fi
+           ;;
+        esac
+
+        echo "WARNING! Renaming directory $1"
+        echo $MSTRMAJ $MSTRMIN top mv $1 $2 >> ax_list
+     elif [ -f "$AIPSROOT/$SUBJECT1" -o -f "$AIPSROOT/$SUBJECT2" ]
+     then
+        echo $MSTRMAJ $MSTRMIN top mv $1 $2 >> ax_list
+     else
+        echo "amv: $AIPSROOT/$1 does not exist, skipping."
+     fi
+     ;;
+
+  *)
+     exec 1>&2
+     echo "amv: Unrecognized opcode: $OPER, abort!"
+     echo "     Recognized opcodes: -src, -top"
+     exit 2
+     ;;
+  esac
+
+  [ "$2" = "" ] && break
+  shift
+
+
+# Check that we got something.
+  if [ ! -f ax_list ]
+  then
+     echo "The renaming list for ax_master is empty, abort!" 1>&2
+     exit 2
+  fi
+
+# Get confirmation from the user before proceeding.
+  echo ""
+  echo "The rename command for ax_master is as follows:"
+  echo ""
+  cat ax_list
+  echo ""
+  if [ "`echo -n X`" = "X" ] ; then
+     echo -n "Continue (y/n) [n]: "
+  else
+     echo "Continue (y/n) [n]: \c"
+  fi
+  read ANSWER
+  [ "$ANSWER" = y ] || exit 0
+
+# We want exclusive use of ax_master, try to check it out.
+  trap "echo Cleaning up... ; \
+        ao -u ax_master ; \
+        cd $ARCHTMPD ; \
+        rm -rf $TMPAMVD" 0 1 2 3 15
+  ao -l ax_master
+  if [ "$?" != 0 ]
+  then
+     echo "amv: Failed to check out ax_master, abort!" 1>&2
+     exit 3
+  fi
+
+# Update and install ax_master.
+  cat ax_master ax_list > ax_master.new
+  mv -f ax_master.new ax_master
+  echo "amv: `who am i`" > amv_log
+  echo "" >> amv_log
+  cat ax_list >> amv_log
+  ai ax_master < amv_log
+
+# Invoke it on the master.
+  [ -f av_cache-$$.gz ] && mv -f av_cache-$$.gz $MSTRETCD
+  cat ax_list >> $MSTRETCD/ax_list
+  $MSTRETCD/ax_master -master -s
+
+# Clean up.
+  cd $ARCHTMPD
+  rm -rf $TMPAMVD
+  trap 0
+
+
+  exit 0

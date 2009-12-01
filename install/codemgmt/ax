@@ -1,0 +1,500 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# ax: Mark AIPS++ files for deletion
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: ax [-src | -sys | -top ] target1 [target2,...]
+#-----------------------------------------------------------------------------
+# ax is used to delete AIPS++ files and directories.  It does not delete them
+# itself but instead appends deletion commands to the action list contained
+# within 'ax_master' (see below) which it then invokes on the master AIPS++
+# RCS repository which must be available.  The deletions will be applied to
+# the slave RCS repositories and system by 'inhale' and 'sneeze' respectively.
+# This mechanism allows AIPS++ slave sites to follow changes made to the
+# master.
+#
+# In fact, 'ax_master' does not delete any files from the AIPS++ master RCS
+# repositories but instead "rescinds" them by renaming them so as to hide
+# them from the code distribution system.  The rescinded files are given names
+# of the form .MM.NNN.filename, where MM.NNN is the AIPS++ version number at
+# the time the file is rescinded.
+#
+# Options:
+#   -src   Delete a pair of files from the AIPS++ RCS repository and code
+#          subtree.  The target must be specified as a pathname relative to
+#          "$AIPSCODE" (and therefore "$AIPSLAVE" and "$AIPSMSTR"), and need
+#          not have an RCS ",v" suffix.  For example,
+#
+#             ax -src aips/Application.cc
+#
+#          would cause the following files to be deleted
+#
+#             $AIPSMSTR/aips/Application.cc,v
+#             $AIPSLAVE/aips/Application.cc,v
+#             $AIPSCODE/aips/Application.cc
+#
+#          the first is rescinded when 'ax_master' is invoked by 'ax' itself,
+#          and the other two are deleted when 'ax_master' is invoked by
+#          'inhale'.  Note, however, that any executables associated with an
+#          application will not be deleted.  These may be deleted explicitly
+#          by using the "-sys" option.
+#
+#          If the target specified is a class implementation file, the object
+#          module will be deleted from the relevant library when 'ax_master'
+#          is invoked by 'sneeze'.  For example,
+#
+#             ax -src aips/implement/Class.cc
+#
+#          will mark
+#
+#             $AIPSMSTR/aips/implement/Class.cc,v
+#             $AIPSLAVE/aips/implement/Class.cc,v
+#             $AIPSCODE/aips/implement/Class.cc
+#             $AIPSARCH/lib/libaips.a(Class.o)
+#             $AIPSARCH/libdbg/libaips.a(Class.o)
+#
+#          for deletion by 'ax_master', which will then 'ranlib' the object
+#          libraries and rebuild any sharable objects.
+#
+#          Members of the "aips2mgr" group can specify a directory as target,
+#          in which case it will be rescinded from the master and recursively
+#          deleted from the slave and code areas.
+#
+#   -sys   Delete a file from the AIPS++ system area.  The target must be
+#          specified as a pathname relative to "$AIPSARCH" - the master,
+#          slave, and code areas are not affected.  For example,
+#
+#             ax -sys bin/Application bindbg/Application
+#
+#          will mark
+#
+#             $AIPSARCH/bin/Application
+#             $AIPSARCH/bindbg/Application
+#
+#          for deletion by 'ax_master' when invoked by 'sneeze'.
+#
+#          Targets specified in the form x(y) denote library modules.  For
+#          example,
+#
+#             ax -sys lib/libaips.a(Class.o)
+#
+#          will mark Class.o for deletion from
+#
+#             $AIPSARCH/lib/libaips.a   AND
+#             $AIPSARCH/libdbg/libaips.a
+#
+#          by 'ax_master' when invoked by 'sneeze'.  'ax_master' would then
+#          'ranlib' the object libraries and rebuild any sharable objects.
+#
+#          Members of the "aips2mgr" group can specify a directory as target,
+#          in which case it will be marked for recursive deletion.
+#
+#   -top   Delete a file beneath "$AIPSROOT".  The target must be specified as
+#          a pathname relative to "$AIPSROOT".  This is a catch-all target and
+#          should only be used when the -src and -sys options are
+#          inappropriate.
+#
+#          If the target refers to a file in the master repository then it
+#          will be rescinded when 'ax_master' is invoked by 'ax'.  If it
+#          refers to a file in the slave or code areas then it will be deleted
+#          when 'ax_master' is invoked by 'inhale'.  If it refers to a file in
+#          the system area then it will be deleted when 'ax_master' is invoked
+#          by 'sneeze' running on a machine of the corresponding architecture.
+#
+#          For example,
+#
+#             ax -top docs/reference/Example.ps
+#
+#          will mark
+#
+#             $AIPSROOT/docs/reference/Example.ps
+#
+#          for deletion by 'ax_master' when invoked by 'inhale'.  Note the
+#          following:
+#
+#             ax -top master/aips/Application.cc,v
+#             ax -top slave/aips/Application.cc,v
+#             ax -top rcs/aips/Application.cc,v
+#
+#          The first rescinds the master rcs version file, the second deletes
+#          the slave RCS version file, and by convention the third does both.
+#          Note that the rcs ",v" suffix needed to be specified here.
+#
+#          Members of the "aips2mgr" group can specify a directory as target,
+#          in which case it will be rescinded from the master and recursively
+#          deleted from the slave and code areas.
+#
+# Notes:
+#    1) Directory deletion is allowed only for members of the "aips2mgr" group
+#       because it may cause a fundamental change to the AIPS++ directory
+#       hierarchy, and also because of its vast destructive potential (for
+#       example, 'ax -top code').
+#
+#    2) Manual invokation of 'ax_master' is forbidden.  However, it may be of
+#       interest to know that it has a mode which causes it to apply all
+#       entries in its action list for the current major AIPS++ version.  This
+#       is used by 'inhale' and 'sneeze' immediately before downloading a
+#       cumulative update.
+#
+#    3) When 'ax_master' is invoked on the master RCS repositories it uses a
+#       temporary action list placed in "$MSTRETCD/ax_list" by 'ax'.  This
+#       mechanism prevents the same file from being rescinded twice from the
+#       master by 'ax_master' in the same version of AIPS++.
+#
+#    4) 'ax' may be disabled by creating a file "$MSTRETCD/ax_disable".  If
+#       this file contains any text it will be printed as an informative
+#       message.
+#
+#    5) Where several files are to be deleted, it may be convenient in csh and
+#       some other shells which allow it to use a command of the form
+#
+#          cd /aips++/code
+#          ax -src aips/implement/{Foo,Man,Chu}.*
+#
+#       The shell would expand the argument to
+#
+#          aips/implement/Foo.cc aips/implement/Foo.h \
+#          aips/implement/Man.cc aips/implement/Man.h \
+#          aips/implement/Chu.cc aips/implement/Chu.h
+#
+#       Note that the 'cd /aips++/code' provided the context for the shell's
+#       wildcarding mechanism.
+#
+#    6) 'ax' must be owned by "aips2mgr" and have the setuid bit set.  It will
+#       add setuid to "aips2mgr" on "$MSTRETCD/ax_master".
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  usage error
+#    3:  failed to get ax_master
+#
+# Original: 1992/05/14 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "ax: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  AIPSARCH=`echo $AIPSPATH | awk '{ print $1 "/" $2 }'`
+
+# Define AIPS++ directory names.
+  AIPSMSTR=$AIPSROOT/master
+  MSTRETCD=$AIPSMSTR/etc
+  AIPSLAVE=$AIPSROOT/slave
+  AIPSCODE=$AIPSROOT/code
+  ARCHTMPD=$AIPSARCH/tmp
+
+# Check number of arguments.
+  if [ "$#" = 0 ]
+  then
+     exec 1>&2
+     echo "Usage: ax [ -src | -sys | -top ] target1 [target2,...]"
+     echo "       Consult the AIPS++ System manual for usage and options."
+     exit 2
+  fi
+
+
+# Check that the master directories are accessible.
+  while [ ! -f "$MSTRETCD/ax_master" ]
+  do
+     echo "ax: $AIPSMSTR is not responding, trying..." 1>&2
+     sleep 15
+  done
+
+# Are deletions disabled?
+  if [ -f "$MSTRETCD/ax_disable" ]
+  then
+     if [ -s "$MSTRETCD/ax_disable" ]
+     then
+        cat $MSTRETCD/ax_disable
+        echo ""
+     fi
+
+     echo "ax: Deletions are currently disabled, try again later." 1>&2
+     exit 1
+  fi
+
+# Are we in the "aips2mgr" group?
+  DIRDEL=""
+  AIPS2MGR=`getrc -i account.manager 2> /dev/null`
+  MGRACCNT=`echo $AIPS2MGR | sed -e 's/\..*//'`
+  MGRGROUP=`echo $AIPS2MGR | sed -e 's#.*\.##'`
+  [ "`groups | grep $MGRGROUP`" != "" ] && DIRDEL=1
+
+# Prevent checkouts by "aips2mgr".
+  if [ "${LOGNAME-$USER}" = "$MGRACCNT" ]
+  then
+     echo "ax: Deletions by \"$MGRACCNT\" are not permitted." 1>&2
+     exit 1
+  fi
+
+# Get the current master version.
+  if [ ! -f "$AIPSMSTR/VERSION" ]
+  then
+     echo "ax: Couldn't find $AIPSMSTR/VERSION, abort!" 1>&2
+     exit 1
+  fi
+
+  MSTRVERS=`sed -e 's/ .*//' $AIPSMSTR/VERSION`
+  MSTRMAJ=`echo $MSTRVERS | awk -F. '{ print $1 }'`
+  MSTRMIN=`echo $MSTRVERS | awk -F. '{ print $2 }'`
+
+# Make a temporary work area for editing ax_master.
+  umask 002
+  TMPAXD=$ARCHTMPD/ax.$$
+  trap "echo Cleaning up... ; \
+        cd $ARCHTMPD ; \
+        rm -rf $TMPAXD" 0 1 2 3 15
+  amkdir $TMPAXD/code/install/codemgmt
+  if [ "$?" != 0 ]
+  then
+     echo "ax: Failed to create work directory, abort!" 1>&2
+     exit 1
+  fi
+
+  cd $TMPAXD/code/install/codemgmt
+
+
+# We're in business, parse arguments.
+  OPER=""
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -src | -sys | -top )
+        OPER=$1
+        [ "$2" = "" ] && break
+        shift
+        ;;
+     *)
+        if [ "$OPER" = "" ]
+        then
+           exec 1>&2
+           echo "Usage: ax [-src | -sys | -top ] target1 [target2,...]"
+           echo "       Consult the AIPS++ System manual for usage and options."
+           exit 2
+        fi
+     esac
+
+     TARGET=$1
+
+     case $OPER in
+     -src)
+        TARGET=`echo $TARGET | sed -e 's/,v$//'`
+
+#       Check for directory deletion.
+        if [ -d "$AIPSMSTR/$TARGET" ]
+        then
+           case $TARGET in
+           */*/*)
+              ;;
+           *)
+              if [ "$DIRDEL" = "" ]
+              then
+                 exec 1>&2
+                 echo "ax: This directory deletion may only be done" \
+                      "by users in the \"aips2mgr\" group,"
+                 echo "    abort!"
+                 exit 2
+              fi
+              ;;
+           esac
+
+           echo "WARNING! Recursive directory deletion: $TARGET"
+           echo $MSTRMAJ $MSTRMIN src rm $TARGET >> ax_list
+        elif [ -f "$AIPSLAVE/$TARGET,v" -o -f "$AIPSCODE/$TARGET" ]
+        then
+           echo $MSTRMAJ $MSTRMIN src rm $TARGET >> ax_list
+        elif [ -f "$AIPSMSTR/$TARGET,v" ]
+        then
+           echo $MSTRMAJ $MSTRMIN src rm $TARGET >> ax_list
+        else
+           echo "ax: $TARGET does not exist, skipping."
+        fi
+        ;;
+
+     -sys)
+#       Must consider library modules.
+        case $TARGET in
+           *\(*\))
+              LIBR=`echo $TARGET | sed -e 's#(.*##'`
+              if [ ! -f "$AIPSARCH/$LIBR" ]
+              then
+                 echo "ax: Library $AIPSARCH/$LIBR does not exist, skipping."
+              else
+                 MODULE=`echo $TARGET | sed -e 's#.*(##' -e 's#)$##'`
+                 ar t $LIBR $MODULE > /dev/null 2>&1
+                 if [ "$?" = 0 ]
+                 then
+                    echo $MSTRMAJ $MSTRMIN sys rm $TARGET >> ax_list
+                 else
+                    echo "ax: Module $MODULE does not exist in library"
+                    echo "    $AIPSARCH/$LIBR, skipping."
+                 fi
+              fi
+              ;;
+           *)
+#             Check for directory deletion.
+              if [ -d "$AIPSARCH/$TARGET" ]
+              then
+                 case $TARGET in
+                 */*/*)
+                    ;;
+                 *)
+                    if [ "$DIRDEL" = "" ]
+                    then
+                       exec 1>&2
+                       echo "ax: This directory deletion may only be done" \
+                            "by users in the \"aips2mgr\" group,"
+                       echo "    abort!"
+                       exit 2
+                    fi
+                    ;;
+                 esac
+
+                 echo "WARNING! Recursive directory deletion: $TARGET"
+                 echo $MSTRMAJ $MSTRMIN sys rm $TARGET >> ax_list
+              elif [ -f "$AIPSARCH/$TARGET" ]
+              then
+                 echo $MSTRMAJ $MSTRMIN sys rm $TARGET >> ax_list
+              else
+                 echo "ax: $AIPSARCH/$TARGET does not exist, skipping."
+              fi
+        esac
+        ;;
+
+     -top)
+#       Check for use of the "rcs" convention.
+        case $TARGET in
+        rcs/*)
+           TARGET1=`echo $TARGET | sed -e 's#rcs/#slave/#'`
+           TARGET2=`echo $TARGET | sed -e 's#rcs/#master/#'`
+           ;;
+        *)
+           TARGET1="$TARGET"
+           TARGET2="$TARGET"
+           ;;
+        esac
+
+#       Check for directory deletion.
+        if [ -d "$AIPSROOT/$TARGET1" -o -d "$AIPSROOT/$TARGET2" ]
+        then
+           case $TARGET in
+           */*/*)
+              ;;
+           *)
+              if [ "$DIRDEL" = "" ]
+              then
+                 exec 1>&2
+                 echo "ax: This directory deletion may only be done" \
+                      "by users in the \"aips2mgr\" group,"
+                 echo "    abort!"
+                 exit 2
+              fi
+              ;;
+           esac
+
+           echo "WARNING! Recursive directory deletion: $TARGET"
+           echo $MSTRMAJ $MSTRMIN top rm $TARGET >> ax_list
+        elif [ -f "$AIPSROOT/$TARGET1" -o -f "$AIPSROOT/$TARGET2" ]
+        then
+           echo $MSTRMAJ $MSTRMIN top rm $TARGET >> ax_list
+        else
+           echo "ax: $AIPSROOT/$TARGET does not exist, skipping."
+        fi
+
+        ;;
+     *)
+        exec 1>&2
+        echo "ax: Unrecognized opcode: $OPER, abort!"
+        echo "    Recognized opcodes: -src, -sys, -top"
+        exit 2
+        ;;
+     esac
+
+     [ "$2" = "" ] && break
+     shift
+  done
+
+
+# Check that we got something.
+  if [ ! -f ax_list ]
+  then
+     echo "The deletion list for ax_master is empty, abort!" 1>&2
+     exit 2
+  fi
+
+# Get confirmation from the user before proceeding.
+  echo ""
+  echo "The deletion list for ax_master contains the following:"
+  echo ""
+  cat ax_list
+  echo ""
+  if [ "`echo -n X`" = "X" ] ; then
+     echo -n "Continue (y/n) [n]: "
+  else
+     echo "Continue (y/n) [n]: \c"
+  fi
+  read ANSWER
+  [ "$ANSWER" = y ] || exit 0
+
+# We want exclusive use of ax_master, try to check it out.
+  trap "echo Cleaning up... ; \
+        ao -u ax_master ; \
+        cd $ARCHTMPD ; \
+        rm -rf $TMPAXD" 0 1 2 3 15
+  ao -l ax_master
+  if [ "$?" != 0 ]
+  then
+     echo "ax: Failed to check out ax_master, abort!" 1>&2
+     exit 3
+  fi
+
+# Update and install ax_master.
+  cat ax_master ax_list > ax_master.new
+  mv -f ax_master.new ax_master
+  echo "ax: `who am i`" > ax_log
+  echo "" >> ax_log
+  cat ax_list >> ax_log
+  ai ax_master < ax_log
+
+# Invoke it on the master.
+  cat ax_list >> $MSTRETCD/ax_list
+  $MSTRETCD/ax_master -master -s
+
+# Clean up.
+  cd $ARCHTMPD
+  rm -rf $TMPAXD
+  trap 0
+
+
+  exit 0

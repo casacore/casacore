@@ -1,0 +1,14 @@
+! # spectral windows
+3		
+! nchan, start-freq, freq-inc, freq-resolution, #integrations/spw
+! ncorr, (corr_type)*ncorr
+! spw #1
+8 1384.e6 4.e6 6.5e6 8
+4 XX XY YX YY
+! spw #2
+8 2496.e6 4.e6 6.5e6 16
+4 XX XY YX YY
+! spw #3
+16 1420.e6 2.e6 3.0e6 8
+2 XX YY
+

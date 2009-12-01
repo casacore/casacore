@@ -1,0 +1,89 @@
+Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[300]
+
+Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[54, 99, 144
+ 63, 108, 153
+ 72, 117, 162]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 5, 10, 15, 20
+ 1, 6, 11, 16, 21
+ 2, 7, 12, 17, 22
+ 3, 8, 13, 18, 23
+ 4, 9, 14, 19, 24]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0, 0
+ 0, 0, 0, 0, 0
+ 0, 0, 300, 0, 0
+ 0, 0, 0, 0, 0
+ 0, 0, 0, 0, 0]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0, 0
+ 0, 54, 99, 144, 0
+ 0, 63, 108, 153, 0
+ 0, 72, 117, 162, 0
+ 0, 0, 0, 0, 0]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 5, 10, 15, 20
+ 1, 6, 11, 16, 21
+ 2, 7, 12, 17, 22
+ 3, 8, 13, 18, 23
+ 4, 9, 14, 19, 24]
+
+Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[12]
+
+Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[6, 11, 16
+ 7, 12, 17
+ 8, 13, 18]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 5, 10, 15, 20
+ 1, 6, 11, 16, 21
+ 2, 7, 12, 17, 22
+ 3, 8, 13, 18, 23
+ 4, 9, 14, 19, 24]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[1, 1, 1, 1, 1
+ 1, 1, 0, 1, 1
+ 1, 1, 0, 1, 1
+ 1, 1, 0, 1, 1
+ 1, 1, 0, 1, 1]
+
+250
+Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[250]
+
+Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[31, 76, 121
+ 27, 72, 117
+ 33, 78, 123]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0, 0
+ 0, 0, 0, 0, 0
+ 0, 0, 250, 0, 0
+ 0, 0, 0, 0, 0
+ 0, 0, 0, 0, 0]
+
+Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0, 0
+ 0, 31, 76, 121, 0
+ 0, 27, 72, 117, 0
+ 0, 33, 78, 123, 0
+ 0, 0, 0, 0, 0]
+
+Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[10]
+
+Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[5, 10, 17
+ 4.5, 12, 19.5
+ 5.5, 13, 20.5]
+

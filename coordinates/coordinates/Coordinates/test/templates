@@ -1,0 +1,11 @@
+1000 casa/Arrays/ArrayLogical.cc casa/Arrays/Array.h 
+     template Bool allNearAbs(Array<Double> const &, Double const &, Double) 
+################################################################################
+# Needed for tFrequencyAligner
+1000 coordinates/Coordinates/FrequencyAligner.cc 
+     template class FrequencyAligner<Float> 
+1020 scimath/Mathematics/InterpolateArray1D.cc 
+     template class InterpolateArray1D<Double, Float> 
+1050 casa/Utilities/BinarySearch.cc casa/Arrays/Vector.h
+     template Int binarySearchBrackets(Bool &, Vector<Double> const &, Double const &, uInt, Int)
+################################################################################

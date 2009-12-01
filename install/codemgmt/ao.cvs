@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Simple script to check out a file directly from the repository
+#
+REPOS=`cat CVS/Repository`
+THEDIR=`pwd | sed -e s@^.*/@@`
+THEFILE=$1
+(cd ..; cvs co -d $THEDIR $REPOS/$THEFILE)

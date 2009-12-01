@@ -1,0 +1,245 @@
+#LaTeX2HTML Version 96.1
+#
+### Command Line Argument Defaults #######################################
+
+$MAX_SPLIT_DEPTH = 8;	# Stop making separate files at this depth
+
+$MAX_LINK_DEPTH = 4;    # Stop showing child nodes at this depth   
+
+$NOLATEX = 0;           # 1 = do not pass unknown environments to Latex
+
+$EXTERNAL_IMAGES = 0;   # 1 = leave the images outside the document 
+
+$ACCENT_IMAGES = 'large'; # Add large accents to images
+
+$ASCII_MODE = 0;        # 1 = do not use any icons or internal images
+
+# 1 =  use links to external postscript images rather than inlined GIF's.
+$PS_IMAGES = 0;
+
+$TITLE = $default_title;      # The default is "No Title" 
+
+$DESTDIR = '';         # Put the result in this directory 
+
+# When this is set, the generated HTML files will be placed in the 
+# current directory. If set to 0 the default behaviour is to create (or reuse)
+# another file directory.
+$NO_SUBDIR = 0;
+
+if(length $ENV{DOCSROOT} > 0){
+  $DOCSROOT = $ENV{DOCSROOT};
+} else {
+   $DOCSROOT = '../..';
+}
+if(!$DOCSCOLOR) {
+   $DOCSCOLOR = '#00009C';
+}
+
+$TEXINPUTS = $ENV{TEXINPUTS};
+
+$AVERS = `avers`;
+@VERS = split /\./, $AVERS;
+$AIPSVERS = $VERS[0]/10;
+$VERSHTML = "Version  $AIPSVERS Build $VERS[1]";
+
+
+$ADDRESS = "<I>Please send questions or comments about AIPS++ to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1995-2000 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
+Washington, D.C.</I><BR><B> Return to </B><A HREF=\"$DOCSROOT/aips++.html\">AIPS++ Home Page</A>\n<BR><STRONG>\n$address_data[1]</STRONG><BR>";
+   
+
+$NO_NAVIGATION = 0;	# 1 = do not put a navigation panel at the top of each page
+
+# Put navigation links at the top of each  page.  If  the page  exceeds
+# $WORDS_IN_PAGE  number of words then put one at the bottom of the page.
+$AUTO_NAVIGATION = 1;
+
+# Put a link to the index page in  the  navigation  panel
+$INDEX_IN_NAVIGATION = 1;
+
+# Put a link to the table of contents  in  the  navigation  panel
+$CONTENTS_IN_NAVIGATION = 1;
+
+# Put a link to the next logical page  in  the  navigation  panel
+$NEXT_PAGE_IN_NAVIGATION = 1;
+
+# Put a link to the previous logical page  in  the  navigation  panel
+$PREVIOUS_PAGE_IN_NAVIGATION = 1;
+
+$INFO = 0;              # 0 = do not make a "About this document..." section 
+
+# Reuse images generated during previous runs
+$REUSE = 2;
+
+$WHITE_BACKGROUND = 1;  #Try for a white backgroup by default
+
+$SHOW_SECTION_NUMBERS = 0;
+
+### Other global variables ###############################################
+$CHILDLINE = "<BR> <HR>\n";
+$LINE_WIDTH = 500;		
+$WORDS_IN_PAGE = 100;	
+$default_language = 'english';	
+$WORDS_IN_NAVIGATION_PANEL_TITLES = 8;
+$PK_GENERATION = 1;
+$METAFONT_DPI = 180;
+$MATH_SCALE_FACTOR = 1.5;
+$FIGURE_SCALE_FACTOR = 1.5;
+$DEBUG = 0;
+$EXTERNAL_UP_LINK = "";
+$EXTERNAL_UP_TITLE = "";
+$NETSCAPE_HTML = 0;
+$PAPERSIZE = "a5";
+$TITLES_LANGUAGE = "english";
+$NO_SIMPLE_MATH = 1;
+$HTML_VERSION = "3.2,math";
+$BODYTEXT =  "background=\"$DOCSROOT/gif/watermark.gif\" bgcolor=\"\#ffffff\" text=\"\#000000\" link=\"\#cc0f0f\" vlink=\"\#00009c\"";
+
+### Navigation Panel ##########################################################
+
+sub aips2script {
+"\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\" src=\"$DOCSROOT/javascripts/menu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\" src=\"$DOCSROOT/javascripts/aipsmenu.js\"></script>\n" .
+"<SCRIPT LANGUAGE = \"JavaScript\">\n" .
+"<!--\n" .
+" // Function need to place directory relative to docs tree.\n" .
+" aMenu = new aipsMenu(\"$DOCSROOT\", \"$DOCSCOLOR\");\n" .
+" function onLoad() {\n" .
+"    if (document.layers) {\n" .
+"        aMenu.loadMenus();\n" .
+"    }\n" .
+" }\n" .
+"//-->\n" .
+"</SCRIPT>\n" .
+"\n" 
+}
+sub aips2topbar {
+"\n" .
+"<table bgcolor=\"\#00009C\" cellpadding=4 cellspacing=0 border=0 width=600 height=25>\n" .
+"<tr><td>\n" .
+"<a href=\"$DOCSROOT/gettingstarted.html\" onMouseOver=\"aMenu.showAipsMenu(\'gsMenu\')\">\n" .
+"<font size=2 face=helvetica  color=\"\#ffffff\">\n" .
+"<b>Getting Started</b></a></td>\n" .
+"<td>\n" .
+"<a href=\"$DOCSROOT/user/documentation.html\" onMouseOver=\"aMenu.showAipsMenu(\'userMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Documentation</b></a></td>\n" .
+"<td><a href=\"$DOCSROOT/glish/glish.html\" onMouseOver=\"aMenu.showAipsMenu(\'glishMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffdd00\">\n" .
+"<b>Glish</b></a></td>\n" .
+"<td><a href=\"$DOCSROOT/learnmore.html\" onMouseOver=\"aMenu.showAipsMenu(\'learnMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Learn More</b></a></td>\n" .
+"<td>\n" .
+"<a href=\"$DOCSROOT/programmer/programmer.html\" onMouseOver=\"aMenu.showAipsMenu(\'progMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Programming</b></a></td>\n" .
+"<td><a href=\"$DOCSROOT/contactus/contactus.html\" onMouseOver=\"aMenu.showAipsMenu(\'commMenu\')\">\n" .
+"<font size=2 face=helvetica color=\"\#ffffff\">\n" .
+"<b>Contact Us</b></a>\n" .
+"</td></tr></table>\n" .
+"<table cellpadding=2 cellspace=2 width=600>\n" .
+"<tr><td><img src=\"$DOCSROOT/gif/aips2logo-sm.gif\">\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"> <b>$VERSHTML</b></font>\n" .
+"</td><td align=right>\n" .
+"<table cellpadding=2 cellspace=2>\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/newsletters/index.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>News </a>" .
+"</font></b></td>\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/faq/faq.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>FAQ</a></font>\n" .
+"</b></td></tr>\n" .
+"<tr><td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/search/search.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Search\n" .
+"</a></font></b></td>\n" .
+"<td><font size=2 face=helvetica color=\"\#cc0f0f\"><a href=\"$DOCSROOT/aips++.html\"><img src=\"$DOCSROOT/gif/tri2.gif\" border=0>  <b>Home</a></font>\n" .
+"</b></td></tr>\n" .
+"\n" .
+"</table>\n" .
+"</td></tr></table><hr>\n" .
+"\n"
+}
+
+sub top_navigation_panel {
+# Put in a body statement (could also have text color here)
+    &aips2script .
+    &aips2topbar .
+    ($MAX_SPLIT_DEPTH > 1 ? 
+
+    "<BR>\n" .		# Line break
+
+    # Now add a few buttons with a space between them
+    "$NEXT $UP $PREVIOUS $CONTENTS $INDEX $CUSTOM_BUTTONS" .
+    
+    "<BR>\n" .		# Line break
+	
+    # If ``next'' section exists, add its title to the navigation panel
+    ($NEXT_TITLE ? "<B> Next:</B> $NEXT_TITLE\n" : undef) 
+. 
+    
+    # Similarly with the ``up'' title ...
+    ($UP_TITLE ? "<B>Up:</B> $UP_TITLE\n" : undef) . 
+ 
+    # ... and the ``previous'' title
+    ($PREVIOUS_TITLE ? "<B> Previous:</B> $PREVIOUS_TITLE\n" : undef) .
+
+    #  Line Break, horizontal rule (3-d dividing line) and new paragraph  
+     "<br><p> \n"		
+    : "" ) .
+    "\n"
+}
+#sub bot_navigation_panel {
+#
+#    #  Start with a horizontal rule (3-d dividing line)
+#    "<HR>".			
+#    
+#    # Now add a few buttons with a space between them
+#    "$NEXT $UP $PREVIOUS $CONTENTS $INDEX $CUSTOM_BUTTONS" .
+#    
+#    "<BR>\n" .		# Line break
+#	
+#    # If ``next'' section exists, add its title to the navigation panel
+#    ($NEXT_TITLE ? "<B> Next:</B> $NEXT_TITLE\n" : undef)  .
+#    
+#    # Similarly with the ``up'' title ...
+#    ($UP_TITLE ? "<B>Up:</B> $UP_TITLE\n" : undef) . 
+# 
+#    # ... and the ``previous'' title
+#    ($PREVIOUS_TITLE ? "<B> Previous:</B> $PREVIOUS_TITLE\n" : undef) .
+#
+#    "<BR><BR>\n" .
+#    &aips2botbar;
+#
+#
+#}
+
+
+#&process_commands_wrap_deferred (<<_RAW_ARG_DEFERRED_CMDS_);
+#helptab
+#_RAW_ARG_DEFERRED_CMDS_
+
+1;	# This must be the last line
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

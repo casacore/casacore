@@ -1,0 +1,330 @@
+Test measure class MVAngle
+--------------------------------------
+Degrees:  191
+Radians:  3.33358
+Fraction: 0.530556
+Degrees:  -169
+Radians:  -2.94961
+Fraction: -0.469444
+Degrees:  911
+Degrees:  -529
+Fraction: 0.530556
+Prec =2=: +191..
+Prec =4=: +191.00.
+Prec =6=: +191.00.00
+Prec =8=: +190.59.59.95
+Clean=2=:  191
+Time = =: 12:44:00
+CNO_H= =: 44:00
+Days:       44362.6
+Hours:      1.0647e+06
+Seconds:    3.83293e+09
+Minutes:    6.38821e+07
+Prec =6=:   14:24:00
+Day:        Sat-14:24:00
+YMD:        1980/05/03/14:24:00
+DMY:        03-May-1980/14:24:00
+Day+DMY:    Sat-03-May-1980/14:24:00
+Day+YMD:    Sat-1980/05/03/14:24:00
+Weekday:    6
+yyyy mm dd: 1980 5 3
+yyyymmdd:   19800503
+Yearday:    124
+Yearweek:   18
+Week 960101:1
+Read it back:
+Prec =6=:   14:24:00
+Day:        Sat-14:24:00
+YMD:        1980/05/03/14:24:00
+DMY:        03-May-1980/14:24:00
+Day+DMY:    Sat-03-May-1980/14:24:00
+Day+YMD:    Sat-1980/05/03/14:24:00
+Day (NO_T): Sat
+Day+YMD:    Sat-1980/05/03
+Day+YMD:    Sat-1980/05/03
+
+Test measure class ...
+--------------------------------------
+
+MDirection state transition matrix:
+
+   |  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21
+----------------------------------------------------------------------
+  0| -- 10 10 18  4  5  4  4  2 18 18 18 18 18 18 34 10 10  2 18 18 47
+   |     1  1 14  4  5  4  4  8 14 14 14 14 14 14 15  1  1  8 14 14 21
+  1| 12 -- 13 12 12 12 12 12 12 12 12 12 12 12 12 12 36 13 12 12 12 12
+   |  0     2  0  0  0  0  0  0  0  0  0  0  0  0  0 16  2  0  0  0  0
+  2| 16 16 -- 16 16 16 16 16 16 16 16 16 16 16 16 16 16 38 16 16 16 16
+   |  1  1     1  1  1  1  1  1  1  1  1  1  1  1  1  1 17  1  1  1  1
+  3| 32 32 32 -- 21 21 21 21 32 22 22 22 22 22 32 32 32 32 32 22 22 32
+   | 14 14 14     4  4  4  4 14 20 20 20 20 20 14 14 14 14 14 20 20 14
+  4|  6  6  6 20 --  8 11 11  3 20 20 20 20 20  6  6  6  6  3 20 20  6
+   |  0  0  0  3     5  6  6  8  3  3  3  3  3  0  0  0  0  8  3  3  0
+  5|  7  7  7  9  9 --  9  9  7  9  9  9  9  9  7  7  7  7  7  9  9  7
+   |  0  0  0  4  4     4  4  0  4  4  4  4  4  0  0  0  0  0  4  4  0
+  6| 14 14 14 14 14 14 -- 15 14 14 14 14 14 14 14 14 14 14 14 14 14 14
+   |  4  4  4  4  4  4     7  4  4  4  4  4  4  4  4  4  4  4  4  4  4
+  7| 17 17 17 17 17 17 17 -- 17 17 17 17 17 17 17 17 17 17 17 17 17 17
+   |  6  6  6  6  6  6  6     6  6  6  6  6  6  6  6  6  6  6  6  6  6
+  8|  0  0  0  0  1  0  1  1 --  0  0  0  0  0  0  0  0  0 40  0  0  0
+   |  0  0  0  0  4  0  4  4     0  0  0  0  0  0  0  0  0 18  0  0  0
+  9| 27 27 27 27 27 27 27 27 27 -- 23 23 24 24 27 27 27 27 27 43 27 27
+   | 20 20 20 20 20 20 20 20 20    10 10 12 12 20 20 20 20 20 19 20 20
+ 10| 25 25 25 25 25 25 25 25 25 25 -- 28 25 25 25 25 25 25 25 25 25 25
+   |  9  9  9  9  9  9  9  9  9  9    11  9  9  9  9  9  9  9  9  9  9
+ 11| 30 30 30 30 30 30 30 30 30 30 30 -- 30 30 30 30 30 30 30 30 30 30
+   | 10 10 10 10 10 10 10 10 10 10 10    10 10 10 10 10 10 10 10 10 10
+ 12| 26 26 26 26 26 26 26 26 26 26 26 26 -- 29 26 26 26 26 26 26 26 26
+   |  9  9  9  9  9  9  9  9  9  9  9  9    13  9  9  9  9  9  9  9  9
+ 13| 31 31 31 31 31 31 31 31 31 31 31 31 31 -- 31 31 31 31 31 31 31 31
+   | 12 12 12 12 12 12 12 12 12 12 12 12 12    12 12 12 12 12 12 12 12
+ 14| 19 19 19 33 19 19 19 19 19 33 33 33 33 33 -- 19 19 19 19 33 33 19
+   |  0  0  0  3  0  0  0  0  0  3  3  3  3  3     0  0  0  0  3  3  0
+ 15| 35 35 35 35 35 35 35 35 35 35 35 35 35 35 35 -- 35 35 35 35 35 35
+   |  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0     0  0  0  0  0  0
+ 16| 37 37 37 37 37 37 37 37 37 37 37 37 37 37 37 37 -- 37 37 37 37 37
+   |  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1     1  1  1  1  1
+ 17| 39 39 39 39 39 39 39 39 39 39 39 39 39 39 39 39 39 -- 39 39 39 39
+   |  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2     2  2  2  2
+ 18| 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 -- 41 41 41
+   |  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8     8  8  8
+ 19| 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 42 -- 42 42
+   |  9  9  9  9  9  9  9  9  9  9  9  9  9  9  9  9  9  9  9     9  9
+ 20| 45 45 45 45 45 45 45 45 45 44 44 44 44 44 45 45 45 45 45 44 -- 45
+   |  3  3  3  3  3  3  3  3  3  9  9  9  9  9  3  3  3  3  3  9     3
+ 21| 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 --
+   |  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   
+
+
+MPosition state transition matrix:
+
+   |  0  1
+----------
+  0| --  0
+   |     1
+  1|  1 --
+   |  0   
+
+
+MEpoch state transition matrix:
+
+   |  0  1  2  3  4  5  6  7  8  9 10 11
+----------------------------------------
+  0| --  0  0  0  0  0  0  0  0  0  0  0
+   |     3  3  3  3  3  3  3  3  3  3  3
+  1|  2 --  2  2  2  2  2  2  2  2  2  2
+   |  2     2  2  2  2  2  2  2  2  2  2
+  2|  4  3 --  4  4  4  4  4  4  4  4  4
+   |  4  1     4  4  4  4  4  4  4  4  4
+  3|  1  6  6 --  6  6  6  6  6  6  6  6
+   |  0  4  4     4  4  4  4  4  4  4  4
+  4|  7  5  5  7 -- 10  8  8  8  8  8  8
+   |  3  2  2  3     5  6  6  6  6  6  6
+  5| 11 11 11 11 11 -- 11 11 11 11 11 11
+   |  4  4  4  4  4     4  4  4  4  4  4
+  6|  9  9  9  9  9  9 -- 12 12 12 12 12
+   |  4  4  4  4  4  4     7  7  7  7  7
+  7| 13 13 13 13 13 13 13 -- 14 14 14 14
+   |  6  6  6  6  6  6  6     8  8  8  8
+  8| 15 15 15 15 15 15 15 15 -- 18 16 16
+   |  7  7  7  7  7  7  7  7     9 10 10
+  9| 19 19 19 19 19 19 19 19 19 -- 19 19
+   |  8  8  8  8  8  8  8  8  8     8  8
+ 10| 17 17 17 17 17 17 17 17 17 17 -- 20
+   |  8  8  8  8  8  8  8  8  8  8    11
+ 11| 21 21 21 21 21 21 21 21 21 21 21 --
+   | 10 10 10 10 10 10 10 10 10 10 10   
+
+
+MFrequency state transition matrix:
+
+   |  0  1  2  3  4  5  6  7  8
+-------------------------------
+  0| -- 14 14 14 14 14 14 14 14
+   |     1  1  1  1  1  1  1  1
+  1| 15 --  8  8  8  8  8  8  8
+   |  0     3  3  3  3  3  3  3
+  2|  0  0 --  0  0  0  6  0  0
+   |  3  3     3  3  3  6  3  3
+  3|  9  9  1 --  2  2  1 10 12
+   |  1  1  2     4  4  2  7  8
+  4|  4  4  4  4 --  3  4  4  4
+   |  3  3  3  3     5  3  3  3
+  5|  5  5  5  5  5 --  5  5  5
+   |  4  4  4  4  4     4  4  4
+  6|  7  7  7  7  7  7 --  7  7
+   |  2  2  2  2  2  2     2  2
+  7| 11 11 11 11 11 11 11 -- 11
+   |  3  3  3  3  3  3  3     3
+  8| 13 13 13 13 13 13 13 13 --
+   |  3  3  3  3  3  3  3  3   
+
+
+MRadialVelocity state transition matrix:
+
+   |  0  1  2  3  4  5  6  7
+----------------------------
+  0| --  8  8  8  8  8  8  8
+   |     2  2  2  2  2  2  2
+  1|  0 --  0  0  0  6  0  0
+   |  2     2  2  2  5  2  2
+  2|  9  1 --  2  2  1 10 12
+   |  0  1     3  3  1  6  7
+  3|  4  4  4 --  3  4  4  4
+   |  2  2  2     4  2  2  2
+  4|  5  5  5  5 --  5  5  5
+   |  3  3  3  3     3  3  3
+  5|  7  7  7  7  7 --  7  7
+   |  1  1  1  1  1     1  1
+  6| 11 11 11 11 11 11 -- 11
+   |  2  2  2  2  2  2     2
+  7| 13 13 13 13 13 13 13 --
+   |  2  2  2  2  2  2  2   
+
+
+MDoppler state transition matrix:
+
+   |  0  1  2  3  4
+-------------------
+  0| --  0  0  0  0
+   |     2  2  2  2
+  1|  1 --  1  1  1
+   |  2     2  2  2
+  2|  4  5 --  6  7
+   |  0  1     3  4
+  3|  2  2  2 --  2
+   |  2  2  2     2
+  4|  3  3  3  3 --
+   |  2  2  2  2   
+
+Epoch B1950: Epoch: 33281::22:09:46.8619
+Epoch 2000: Epoch: 51544::12:00:00.0000
+Epoch reference: Reference for an Epoch with Type: TAI
+Epoch 2000 ref B1950: Epoch: 18262::13:50:13.1381
+Epoch reference: Reference for an Epoch with Type: TAI, Offset: Epoch: 33281::22:09:46.8619
+Test measure conversion ...
+--------------------------------------
+Converted Epoch: 18262::13:50:13.1381
+ to Reference for an Epoch with Type: TAI
+ as Epoch: 51544::12:00:00.0000
+Converted Epoch: 18262::13:50:13.1381
+ to Reference for an Epoch with Type: UTC
+ as Epoch: 51544::11:59:28.0000
+Converted Epoch: 50082::00:00:00.0000
+ to Reference for an Epoch with Type: GMST1
+ as Epoch: 56791::06:35:48.3230
+Converted Epoch: 50082::17:21:20.6108
+ to Reference for an Epoch with Type: GMST1
+ as Epoch: 56792::00:00:00.0000
+Converted Epoch: 44238::00:00:00.0000
+ to Reference for an Epoch with Type: GMST1
+ as Epoch: 50931::06:35:18.7565
+Converted back Epoch: 50931::06:35:18.7565
+ to Reference for an Epoch with Type: UT1
+ as Epoch: 44237::23:59:60.0000
+Converted Epoch: 50082::00:00:00.0000
+ to Reference for an Epoch with Type: GAST
+ as Epoch: 56791::06:35:48.7519
+Converted back Epoch: 56791::06:35:48.7519
+ to Reference for an Epoch with Type: UT1
+ as Epoch: 50081::23:59:60.0000
+LSR (B1900): [-90, 30] deg
+LSR (B1950): [-89.5206, 30.0012] deg
+LSR (J2000): [-89.0406, 30.0047] deg
+LSR (B1900): [0, -0.866025, 0.5]
+LSR (B1950): [0.00724658, -0.865985, 0.500018]
+LSR (J2000): [0.0145, -0.865863, 0.500071]
+Radial velocity (BARY): Radialvelocity: 1e+06
+                 (GEO): 1.02688e+06
+and back: 1e+06
+and 0 (GEO) to TOPO: 1.3625e-11
+and back: 0
+and 0 (BARY) to LSR: 5251.89
+and back: 0
+Test real radial velocity
+-----------------------------------------
+Frame: Epoch: 50217::15:00:00.0000 (TDB = 50217.6, UT1 = 50217.6, TT = 50217.6)
+       Position: [6.00587, 0.695346, 7.9653]
+        (Longitude = 0.115265 Latitude = 0.918296)
+       Direction: [-0.846092, -0.0803642, 0.526943]
+        (J2000 = [-173.951, 31.5223] deg)
+[-173.994, 31.5433] deg
+[-0.847567, -0.0891753, 0.523143]
+56927::06:56:56.6228
+15475.1
+[-0.847567, -0.0891753, 0.523143]
+Aberration: [7.87739e-05, -5.38236e-05, -2.33309e-05]
+22013.9
+Converted Epoch: 50272::09:44:30.0000
+ to Reference for an Epoch with Type: GMST1
+ as Epoch: 56982::04:50:59.8613
+Converted Epoch: 50272::09:44:30.0000
+ to Reference for an Epoch with Type: GAST
+ as Epoch: 56982::04:51:00.1311
+Converted Epoch: 50272::09:44:30.0000
+ to Reference for an Epoch with Type: LAST,
+Frame: Position: [1.07394e-07, -6.33753e-07, 7.66044e-07]
+        (Longitude = -1.40293 Latitude = 0.872665)
+ as Epoch: 56981::23:29:28.4118
+Converted back Epoch: 56981::23:29:28.4118
+ to Reference for an Epoch with Type: UT1
+ as Epoch: 50272::09:44:30.0000
+Converted Epoch: 50272::09:44:30.0000
+ to Reference for an Epoch with Type: LAST, Offset: Epoch: 50272::09:44:30.0000,
+Frame: Position: [1.07394e-07, -6.33753e-07, 7.66044e-07]
+        (Longitude = -1.40293 Latitude = 0.872665)
+ as Epoch: 0::23:29:28.4118
+Test MeasFrame ...
+--------------------------------------
+Epoch B1950: Epoch: 33281::22:09:46.8619
+Frame: Epoch: 33281::22:09:46.8619 (TDB = 33281.9, UT1 = 33281.9, TT = 33281.9)
+Test coordinate conversion ...
+--------------------------------------
+Converted B1950 galactic pole Direction: [-0.867601, -0.188375, 0.4602]
+ to Reference for an Direction with Type: GALACTIC
+ as [0, 0, 1]
+Converted B1950 galactic pole Direction: [-0.867601, -0.188375, 0.4602]
+ to Reference for an Direction with Type: B1950
+ as [119.879, 29.4091] deg
+Converted J2000 coordinates [-0.373799, -0.312643, -0.873229] to: [-0.374478, -0.31236, -0.873039]
+Converted back to J2000 coordinates [-0.374478, -0.31236, -0.873039] to: [-0.373799, -0.312643, -0.873229]
+Converted B1950 to J2000 coordinates [-0.373799, -0.312643, -0.873229] to: [-0.366031, -0.31678, -0.875027]
+Converted J2000 to B1950 coordinates [-0.366031, -0.31678, -0.875027] to: [-0.373799, -0.312643, -0.873229]
+Converted geodetic position: 
+16 m, [6.60417, 52.9169] deg
+to: 6.36458e+06 m, [6.60417, 52.7316] deg
+Converted geocentric position: 
+6.36458e+06 m, [6.60417, 52.7316] deg
+to: 16 m, [6.60417, 52.9169] deg
+J2000 coordinates: [-140.091, -60.836] deg
+Apparent coordinate[-140.168, -60.8138] deg
+Longitude: 6.60417 deg
+Latitude:  52.7316 deg
+LAST:      07:02:13.75
+LAST:      +105.33.26.29
+LAST:      Epoch: 56791::07:02:13.7527
+HA/DEC: [-114.275, -60.8138] deg
+Back:   [-140.168, -60.8138] deg
+Az/El:  [129.705, -54.7033] deg
+Back:   [-114.275, -60.8138] deg
+Converted to B1950 coordinates [85.4267, 49.8502] deg to: [84.6801, 49.829] deg
+and back to: [85.4267, 49.8502] deg
+Rotation angle: 0.336428 deg
+------------------------------------
+Testing all MDirection conversions forward/backward
+All forward/backward Direction conversions: ok
+------------------------------------
+Testing all MPosition conversions forward/backward
+All forward/backward Position conversions: ok
+------------------------------------
+Testing all MEpoch conversions forward/backward
+All forward/backward Epoch conversions: ok
+------------------------------------
+Testing all MFrequency conversions forward/backward
+All forward/backward Frequency conversions: ok
+------------------------------------
+Testing all MDoppler conversions forward/backward
+All forward/backward Doppler conversions: ok
+------------------------------------
+Testing all MRadialVelocity conversions forward/backward
+All forward/backward RadialVelocity conversions: ok

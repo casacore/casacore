@@ -1,0 +1,61 @@
+import os, glob
+
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Clone()
+# get all the sourcefiles recursively
+lls = myenv.SGlob("*.ll", recursive=True )
+for f in lls:
+    ff = myenv.CXXFile(File(f), CXXFILESUFFIX=".lcc")
+    # hack to point include path to the builddir relative directory
+    # where the lex/yacc file was found
+    path = os.path.split(str(ff[0]))[0]
+    myenv.AppendUnique(CPPPATH=[Dir(path)])
+
+yys = myenv.SGlob("*.yy", recursive=True )
+for f in yys:
+    ff = myenv.CXXFile(File(f), CXXFILESUFFIX=".ycc")
+    # hack to point include path to the builddir relative directory
+    # where the lex/yacc file was found
+    path = os.path.split(str(ff[0]))[0]
+    myenv.AppendUnique(CPPPATH=[Dir(path)])
+
+# get all the sourcefiles recursively
+cpps = myenv.SGlob("*.cc", excludedirs=["test"], recursive=True )
+# need this to go to the root dir, as SConsript asumes to be in the
+# build dir
+rootdir = myenv.Dir("#").abspath
+libname = "casa_" + myenv["PACKAGE"]
+
+slib =  myenv.StaticLibrary(target = libname, source = [cpps])
+myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
+myenv.Alias("static", slib)
+myenv.Default("static")
+
+dlib =  myenv.SharedLibrary(target = libname, source = cpps)
+myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
+myenv.Alias("shared", dlib)
+
+if "shared" in BUILD_TARGETS:
+    installer.AddLibrary(dlib)
+if "static" in BUILD_TARGETS or "shared" not in BUILD_TARGETS:
+    installer.AddLibrary(slib)
+
+testenv = myenv.Clone()
+# gather test files
+# SGlob works in build dir, so only for cc files
+ttests = testenv.SGlob("Tables/test/*.cc")
+lttests = testenv.SGlob("LogTables/test/*.cc")
+# point to tests local includes
+testenv.PrependUnique(LIBPATH=[testenv["BUILDDIR"]])
+# allow either linking against shared or static, static if both present
+testenv.PrependUnique(LIBS=slib)
+testenv2 = testenv.Clone()
+# add files necessary for testing which are not names tXYZ.*
+testenv["ASSAYAUX"] = testenv.SGlob("*/test/*.data_v*")
+map(testenv.addAssayTest, ttests)
+map(testenv2.addAssayTest, lttests)
+
+# install headers, only works with absolute dir.
+installer.AddHeaders( rootdir, "*.h", "casacore", True )
+installer.AddHeaders( rootdir, "*.tcc", "casacore", True )

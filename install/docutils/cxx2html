@@ -1,0 +1,546 @@
+#!/usr/local/bin/perl5
+
+#
+#   This is cxx2html Version 1.2 Patchlevel 4
+#   Created by Darrell Schiebel (drs@nrao.edu)
+#
+#   This utility is part of AIPS++, a software project centered at
+#   the National Radio Astronomy Observatory.
+#
+#   Copyright (C) 1995,1997,1998,1999
+#   Associated Universities, Inc. Washington DC, USA.
+# 
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+# 
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+# 
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   675 Massachusetts Ave, Cambridge, MA 02139, USA.
+# 
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+
+$VERSION = '1.2';
+$PATCHLEVEL = '4';
+$PACKAGE = 'cxx2html';
+
+BEGIN {
+    my $LIBDIR = '';
+    my @AIPSPATH;
+
+    if ( $LIBDIR ) {
+	push(@INC,$LIBDIR);
+    } else {
+        if ( @AIPSPATH = split(/\s+/,$ENV{'AIPSPATH'}) ) {
+	    push(@INC, "@AIPSPATH[0]/@AIPSPATH[1]/bin");
+	} 
+    }
+}
+
+# - - - - Start of the non-substituted section - - - -
+
+BEGIN {@AnyDBM_File::ISA = qw(GDBM_File NDBM_File DB_File SDBM_File ODBM_File);}
+use AnyDBM_File;
+
+use File::Basename;
+use POSIX;
+use Path;
+require Class;
+require ScanCxx;
+require Html;
+
+##
+## Setup for scanning the header files
+##
+$DBFILE = "";
+$CLEAR = 0;
+$ONLYSCAN = 0;
+
+@GUESSROOT = ();
+
+@FILE_EXTENSIONS = ('\.h', '\.H', '\.hpp', '\.hxx',
+		    '\.cc', '\.C', '\.cpp', '\.cxx',); 
+$HTML_EXTENSION = 'html';
+$MAX_SUMMARY_LENGTH = 80;
+
+##
+## Setup for generating output
+##
+%flags = ( dir => '',		# directory for html ($pwd)
+	   hierarchy => 1,	# preserve hierarchy?
+	   create => 0,		# create any needed dirs
+	   root => [],		# hierarchy root
+	   absolute => 1,	# use absolute paths for 
+				#       non-generated files
+	   'AIPS++ extensions' => 1,
+	   'File Extensions' => \@FILE_EXTENSIONS,
+	   'HTML Extension' => $HTML_EXTENSION,
+	   'Max Summary Length' => $MAX_SUMMARY_LENGTH,
+	   'Copyright Notice' => [],
+	  );
+
+while ($_ = @ARGV[0], (/^-/)) {
+    shift(@ARGV);
+    last if /^--$/;
+
+    #
+    # Scan flags
+    #
+    /^-db$/i && ($DBFILE = shift(@ARGV), next);
+    /^-clear$/i && ($CLEAR = 1, next);
+
+    #
+    # Output flags
+    #
+    /^-dir(?:ectory)?$/i && ($flags{'dir'} = shift(@ARGV), next);
+    /^-create$/i && ($flags{'create'} = $flags{'create'}?0:1, next);
+    /^-flat$/i && ($flags{'hierarchy'} = $flags{'hierarchy'}?0:1, next);
+    /^-rel(?:ative)?$/i && ($flags{'absolute'} = $flags{'absolute'}?0:1, next);
+    /^-root$/i && (push(@{$flags{'root'}},shift(@ARGV)), next);
+    /^-aips$/i && ($flags{'AIPS++ extensions'} = $flags{'AIPS++ extensions'}?0:1, next);
+
+    #
+    # Extra flags
+    #
+    /^-scan$/i && ($ONLYSCAN = 1, next);
+    /^-ext(?:ension)?$/i && ($HTML_EXTENSION=shift(@ARGV),
+			     $flags{'HTML Extension'}=$HTML_EXTENSION,
+			     next);
+    /^-maxsumlen$/i && ($MAX_SUMMARY_LENGTH=shift(@ARGV),
+			     $flags{'Max Summary Length'}=$MAX_SUMMARY_LENGTH,
+			     next);
+
+    if ( /^-copy(?:right)?$/i ) {
+	my $File = shift(@ARGV);
+	unless ( open(COPYRIGHTFILE,"< $File") ) {
+	    print STDERR "Can't open copyright file, \"$File\", ignoring...\n";
+	    next;
+	}
+	@{$flags{'Copyright Notice'}} = <COPYRIGHTFILE>;
+	next;
+    }
+
+    if ( /^-v$/i ){
+	print STDERR "This is $PACKAGE Version $VERSION\PL$PATCHLEVEL\n";
+	print STDERR "Correspondence to $PACKAGE\@nrao.edu\n";
+	print STDERR "Created by Darrell Schiebel <drs\@nrao.edu>\n";
+	print STDERR "Copyright (C) 1995,1997,1998,1999 Associated Universities, Inc. Washington DC, USA.\n";
+	next;
+    }
+
+    print STDERR "Unknown option: $_ (ignoring)\n";
+}
+
+die "No output file specified for scan." if  $ONLYSCAN && ! $DBFILE;
+
+if ( $DBFILE ) {
+    ($name,$path,$suffix) = fileparse($DBFILE,"");
+    die "Bad output directory \"$path\"." unless -d $path && -w _;
+    die "Can't write to \"$name\"." unless !-e "$DBFILE.pag" || -f _ && -w _;
+    tie(%DB, AnyDBM_File, $DBFILE, O_RDWR | O_CREAT, 0644);
+    %DB = () if $CLEAR;
+} else {
+    %DB = ();
+}
+
+unless (scalar(@{$flags{'root'}})) {
+    push(@GUESSROOT,commonpath(\%DB,@ARGV)) ;
+
+    $tstamp = time;
+    if ($old = $DB{'*status*'}) {
+	$DB{'*status*'} = "$tstamp:$flags{'hierarchy'}";
+	($t,$h) = split(/:/,$old);
+	@ALLPATHS = split(/:/,$DB{$t});
+	push(@ALLPATHS, @GUESSROOT);
+	@ALLPATHS = sort {length($a) <=> length($b)} @ALLPATHS;
+	my $i = 0;
+	while ($i <= $#ALLPATHS) {
+	    my $j = $i+1;
+	    while ($j <= $#ALLPATHS) {
+		splice(@ALLPATHS,$j,1) if $ALLPATHS[$j] =~ /^$ALLPATHS[$i]/;
+	    } continue { ++$j }
+	} continue { ++$i }
+	delete $DB{$t};
+    } else {
+	@ALLPATHS = @GUESSROOT;
+	$DB{'*status*'} = "$tstamp:$flags{'hierarchy'}";
+    }
+    push(@{$flags{'root'}},@ALLPATHS);
+    $DB{$tstamp} = join(':',@{$flags{'root'}});
+}
+
+if ( $ONLYSCAN ) {
+    scanFiles(\%DB,@ARGV);
+    untie(%DB) if $DBFILE;
+    exit(0);
+}
+
+foreach $file (@ARGV) {
+    $proc = new ScanCxx();
+    $out = new Html(\%DB,%flags);
+
+    ##
+    ## Pick output file name
+    ##
+    ($outname,$path,$suffix) = fileparse($file,@FILE_EXTENSIONS);
+    $outfile = "$outname.$HTML_EXTENSION";
+
+    scanFiles(\%DB,@ARGV) unless $DB{"long*$outname"};
+
+    if (-r $file && -f _) {
+	if (! ($val=$DB{"file*$outname"}) ) {
+	    if ( $val=$DB{"module*$outname"} ) {
+		dumpModule(\%DB, $outname);
+	    } else {
+		    print "warn: no module or classes in \"$outname$suffix\".\n";
+	    }
+	    next;
+	}
+	@classes = split(/,/,$val);
+	die "Badly formed entry in \"$inname\"." if $#classes < 0;
+	die "Can't open input file \"$file\"." unless $proc->open($file);
+	die "Can't open output file \"$outfile\"." unless $out->open($outfile);
+	foreach (@classes) {
+	    ($start,$end,$class,$type) = split /:/;
+	    $fulltype = "class";
+	    if ( $type eq 'G' ) {
+	        $fulltype = 'group';
+	    } elsif ( $type eq 'E' ) {
+	        $fulltype = 'enum';
+	    }
+	    $proc->set( limit => $end + 1 );
+	    $out->set( title => "$outname$suffix" );
+	    $comment = $proc->skipto($start);
+	    $out->fixcomment($class,$comment,1);
+	    $summary = $out->getsummary($comment, $fulltype . " " . $class);
+	    if ( $type eq 'C' ) {
+		$header = $proc->tobrace();
+		($class = $header) =~ s/^.*(?:class|struct)\s*([A-Za-z0-9_]+).*$/$1/;
+		$out->createsection($class,$header,$comment,$file);
+	    } elsif ( $type eq 'G' ) {
+		$header = $summary;
+		$out->createsimplesection($class,$header,$comment,$file);
+	    } elsif ( $type eq 'E' ) {
+		$header = $proc->tobrace();
+		($class = $header) =~ s/^.*enum\s*([A-Za-z0-9_]+).*$/$1/;
+		$out->createenumsection($class,$header,$comment,$file);
+	    }
+
+	    ##
+	    ## output table of contents
+	    ##
+	    $out->contententry($class,$summary,$type);
+
+	    while (!$proc->atlimit()) {
+		$commenta = $proc->comment();
+		$out->fixcomment($class,$commenta);
+		($depth, $element) = $proc->elementditchbraces( $type eq 'E' ? 1 : 0 );
+		if ( $depth ) {
+		    $out->startenumentry($class,$element,$commenta,$proc->section());
+		    while ( $depth ) {
+			$commenta = $proc->comment();
+			($depth, $element) = $proc->elementditchbraces( 1 );
+			$out->enumsectionentry($class,$element,$commenta,$proc->section(),'types');
+		    }
+		    $out->endenumentry($class);
+		}
+
+		$element =~ s/^\s+//;
+		$element =~ s/\s+$//;
+		$element =~ s/\s{2,}/ /g;
+
+		##
+		## get rid of template<t> at the start of global
+		## functions
+		##
+		$element =~ s/^\s*template\s*<[^>]*>\s*// if $type eq 'G';
+
+		if ( $type ne 'E' ) {
+		    $out->sectionentry($class,$element,$commenta,$proc->section());
+		} else {
+		    $out->enumsectionentry($class,$element,$commenta,$proc->section());
+		}
+	    }
+
+ 	    if ( $type eq 'C' && defined $DB{"rel\@c*$class"} ) {
+		my $cnt = $DB{"rel\@c*$class"};
+		my $i = 0;
+		while ( $i <= $cnt ) {
+ 		    ($fname,$lbl,$msg) = split(/\$:/,$DB{"rel\@c*$i*$class"});
+		    $out->relsectionentry($class,$fname,$lbl,$msg);
+ 		} continue { ++$i }
+ 	    }
+
+	    $out->flush($class);
+	}
+    }
+    $out->showpage();
+}
+
+untie(%DB) if $DBFILE;
+exit(0);
+
+
+sub commonpath {
+    my $xxin = shift;
+    my @pathmatch = ();
+    my @newmatch = ();
+    my @ary = @_;
+    my @path = ();
+    my $file = '';
+    my $name = '';
+    my $path = '';
+    my $suffix = '';
+
+    foreach $file ( @ary ) {
+	$file = fullPath($file) if $file =~ /^\./;
+	($name,$path,$suffix) = fileparse($file,@FILE_EXTENSIONS);
+	$path = CachedCwd() . "/$path" if $path !~ /^\//;
+	$path =~ s/(?:\.|\.\/)$// if $path =~ /^\//;
+	$path =~ s/\.$// if $path =~ /^\//;
+	if ( scalar(@pathmatch) ) {
+	    if ( ! ($file = $$xxin{"long*$name"}) ) {
+		my @x = @_;
+		scanFiles($xxin,@x);
+		$file = $$xxin{"long*$name"};
+	    }		
+	    $file =~ s@^/@@;
+	    $file =~ s@/$@@;
+	    if ( $file ) {
+		@path = split(/\//,$file);
+		@newmatch = ();
+		while (($n = shift(@path)) && ($c = shift(@pathmatch))) {
+		    last if $n ne $c;
+		    push(@newmatch,$n);
+		}
+		@pathmatch = @newmatch;
+	    }
+	} else {
+	    $path =~ s@^/@@;
+	    $path =~ s@/$@@;
+	    @pathmatch = split(/\//,$path);
+	}
+    }
+    return '/' . join('/',@pathmatch);
+}
+
+sub scanFiles {
+    my $db = shift;
+    my @ary = @_;
+    my $classScan = new Class ( num => 1,
+			       strip => 1,
+			       head => 1,
+			       tail => 1,
+			       func => 1,
+			       enum => 1,
+			       );
+    my $file = '';
+    my $name = '';
+    my $path = '';
+    my $s = '';
+    my @Class = ();
+    my $start = 0;
+    my $end = 0;
+    my $type = '';
+    my $class = '';
+    my $old = '';
+    my $c = '';
+    my @module = ();
+    my $module = "";
+    my $fullpath = "";
+
+    foreach $file (@ary) {
+	($name,$path,$s) = fileparse($file,@FILE_EXTENSIONS);
+	if (-r $file && -f _) {
+	    $classScan->open($file);
+	    $fullpath = fullPath($path);
+	    ($module = $fullpath) =~ s|.*/([^/]+)$|$1|;
+	    if ( ! $$db{"long*$name"} ) {
+		$$db{"long*$name"} = "$fullpath/$name$s";
+	    }
+	    #
+	    # Delete previous information
+	    #
+	    if ( $old = $$db{"file*$name"} ) {
+		delete $$db{"file*$name"};
+		foreach $c ( split(/,/,$old) ) {
+		    ($s,$e,$c,$type) = split(/:/,$c);
+		    if ( $type eq 'C' ) {
+			delete $$db{"class*$c"};
+		    }
+		}
+	    }
+			
+
+	    while (@Types = $classScan->read()) {
+		$Class = shift(@Types);
+		##
+		## handling the class info
+		##
+		($start = $$Class[0]) =~ s/^([0-9]+).*\n?/$1/;
+		($end = $$Class[$#$Class]) =~ s/^([0-9]+).*\n?/$1/;
+		if ( $$Class[$#$Class] =~ m|</group>$| ) {
+		    $type = 'G';
+		    ($class = $$Class[0]) =~ s/.*?<group>\s+(\S+)/$1/;	 	# group label
+		} elsif ( $$Class[0] =~ m/^\d+\s+class|struct/ ) {
+		    $type = 'C';
+		    ($class = "@$Class") =~ s/(^|\s+)[0-9]+(?= )/$1/gm;
+		    $class =~ s/.*?(?:class|struct)\s+([A-Za-z0-9_]+)(?![^<]*?>)(?:.|\n)*/$1/m;
+		} else {
+		    $type = 'E';
+		    ($class = $$Class[0]) =~ s/.*?enum\s+(\S+).*\n?$/$1/;
+		}
+
+		if ( $type eq 'C' ) {
+		    if ( $old = $$db{"class*$class"} ) {
+			$$db{"class*$class"} = "$old,$start:$end:$module:$name" if $old !~ m/$start:$end:$name/;
+		    } else {
+			$$db{"class*$class"} = "$start:$end:$module:$name";
+		    }
+		    while ( scalar(@Types) ) {
+			$Enum = shift(@Types);
+			@enums = ();
+			if ( scalar(@$Enum) && $$Enum[0] =~ /enum/ ) {
+			    ($enum = $$Enum[0]) =~ s/.*?enum\s+(\S+).*\n?$/$1/;
+			    ($estart = $$Enum[0]) =~ s/^([0-9]+).*\n?/$1/;
+			    ($eend = $$Enum[$#$Enum]) =~ s/^([0-9]+).*\n?/$1/;
+			    push(@enums,$enum);
+			    if ( $old = $$db{"enum*$class\:\:$enum"} ) {
+				$$db{"enum*$class\:\:$enum"} = "$old,$estart:$eend:$module:$class:$name" if $old !~ m/$start:$end:$name/;
+			    } else {
+				$$db{"enum*$class\:\:$enum"} = "$estart:$eend:$module:$class:$name";
+			    }
+			}
+		    }
+		    $$db{"enums*$class"} = join( ',', @enums ) if scalar( @enums );
+		} elsif ( $type eq 'G' ) {
+		    # Move back the end because we don't want to 
+		    # include the closing comment
+		    $end -= 1;
+		    # Move start up one to avoid the opening group
+		    $start += 1;
+
+		    if ( $old = $$db{"group*$class"} ) {
+			$$db{"group*$class"} = "$old,$start:$end:$name" if $old !~ m/$start:$end:$name/;
+		    } else {
+			$$db{"group*$class"} = "$start:$end:$name";
+		    }
+		} else {
+		    if ( $old = $$db{"enum*$class"} ) {
+			$$db{"enum*$class"} = "$old,$start:$end:$module:$name" if $old !~ m/$start:$end:$name/;
+		    } else {
+			$$db{"enum*$class"} = "$start:$end:$module:$name";
+		    }
+		}
+
+		if ( $old = $$db{"file*$name"} ) {
+		    $$db{"file*$name"} = "$old,$start:$end:$class:$type" if $old !~ m/$start:$end:$class:$type/;
+		} else {
+		    $$db{"file*$name"} = "$start:$end:$class:$type";
+		}
+
+		$$db{"s*$module*$class*$name"} = $classScan->summary();
+	    }
+	    ##
+	    ## handling the module info
+	    ##
+	    $$db{"module*$name"} = join(",",@module) if @module = $classScan->module();
+	    ##
+	    ## handling the 'linkfrom' info
+	    ##
+	    @linkfrom = $classScan->linkfrom();
+	    foreach $linkfrom (@linkfrom) {
+		($l,$a,$c,$m,$msg) = @$linkfrom;
+		foreach (@$c) {
+		    if ( ! defined $$db{"rel\@c*$_"} ) {
+			$$db{"rel\@c*$_"} = 0;
+		    } else {
+			$$db{"rel\@c*$_"} += 1;
+		    }
+		    my $count = $$db{"rel\@c*$_"};
+		    $$db{"rel\@c*$count*$_"} = "$name\$:$a\$:$msg";
+		}
+		foreach (@$m) {
+		    if ( ! defined $$db{"rel\@m*$_"} ) {
+			$$db{"rel\@m*$_"} = 0;
+		    } else {
+			$$db{"rel\@m*$_"} += 1;
+		    }
+		    my $count = $$db{"rel\@m*$_"};
+		    $$db{"rel\@m*$count*$_"} = "$name\$:$a\$:$msg";
+		}
+	    }
+	}
+    }
+}
+
+sub dumpModule {
+    my $db = shift;
+    my $name = shift;
+    my $proc = new ScanCxx();
+    my $out = new Html($db,%flags);
+    my $LOC;
+    my @moduleDoc = ();
+    my @locs = ();
+    my @funcs = ();
+    my $loc,$start,$end,$val;
+    my $comment = '';
+    my $xsummaryx = '';
+    my $fname,$lbl,$msg;
+    my $module = '';
+    my %modules = ();
+    my $p,$s;
+    ($module,$p,$s) = fileparse($name,@FILE_EXTENSIONS);
+
+    print STDERR "No module header for $module, skipping", return unless $LOC = $$db{"module*$module"};
+    print STDERR "Can't open $module$s, skipping", return unless $proc->open($$db{"long*$module"});
+    print STDERR "Can't open output file \"$module.$HTML_EXTENSION\", skipping", return unless $out->open("$module.$HTML_EXTENSION");
+
+    $out->set( title => "Module $module" );
+    @locs = split(/,/,$LOC);
+    foreach $loc (@locs) {
+	($start,$end) = split(/:/,$loc);
+	$proc->set( limit => $end + 1 );
+	$proc->skiptoNoProc($start - 1);
+	$comment = $proc->skipto($end + 1);
+	$xsummaryx = $out->getsummary($comment, "module " . $module);
+	$out->fixcomment($module,$comment);
+	push(@moduleDoc,$xsummaryx);
+	push(@moduleDoc,@$comment," ");
+    }
+    $out->createmodule($module,\@moduleDoc);
+    if ( defined $$db{"rel\@m*$module"} ) {
+	my $cnt = $$db{"rel\@m*$module"};
+	my $i = 0;
+	while ( $i <= $cnt ) {
+	    ($fname,$lbl,$msg) = split(/\$:/,$$db{"rel\@m*$i*$module"});
+	    $out->relsectionentry('NOT USED',$fname,$lbl,$msg,1);
+	} continue { ++$i }
+    }
+
+    foreach (keys %$db) {
+	$modules{$1} = $$db{$_} if /s\*\Q$module\E\*(.*)/;
+    }
+
+    foreach (sort keys %modules) {
+	($class, $file) = split(/\*/,$_);
+	$summary = $modules{$_};
+	$out->fixcomment($class,\$summary,1) if $summary;
+	$out->moduleentry($class,$file,$summary);
+    }
+
+    $out->showmodule();
+}
+

@@ -1,0 +1,452 @@
+#!/bin/echo Usage:source
+#-----------------------------------------------------------------------------
+# UPinfo: help and general parameters for UP scripts
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000,2001,2002,2004
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+# The UPinfo script is called as 'source UPinfo' from any of the UP
+# executable scripts to get general data. It is assumed that the name of the
+# calling script is in the $script variable, and $usage contains the usage.
+# Help text can be placed in htxt, hsw, huse and hcrea (each line an element).
+# If the -h switch is present, this help information is shown.
+#
+# Set the result
+#
+set ok = 0
+#
+# Set the non-switch arguments
+#
+set arg = ()
+#
+# Set the generally allowed switches
+#
+set upsw = "cdhnrtu"
+#
+# Set the allowed switches for appropriate scripts
+#
+if ("$script" == "UPchange") then
+    set upsw = "$upsw"
+else if ("$script" == "UPdup") then
+    set upsw = "s$upsw"
+else if ("$script" == "UPfind") then
+    set upsw = "fg$upsw"
+else if ("$script" == "UPlist") then
+    set upsw = "l$upsw"
+else if ("$script" == "UPload") then
+    set upsw = "$upsw"
+else if ("$script" == "UPlock") then
+    set upsw = "al$upsw"
+else if ("$script" == "UPmove") then
+    set upsw = "$upsw"
+else if ("$script" == "UPreident") then
+    set upsw = "az$upsw"
+else if ("$script" == "UPtmpl") then
+    set upsw = "$upsw"
+else if ("$script" == "UPcasa") then
+    set upsw = "h"
+else
+    echo "Unknown script ${script} present. Abort."
+    exit 1
+endif
+#
+# Set all the switches to initial state
+#
+foreach i (a c d h n r f g l s t u z E F P Q 0 1 2 3 4 5 6 7 8 9)
+    set upsw$i = 0
+end
+#
+# Special switches:
+# P   = pattern             Q = quiet       E = embedded   F = force acceptance
+# 0-9 = extensions
+#
+foreach i (0 1 2 3 4 5 6 7 8 9)
+    set upswp0$i = 0
+end
+#
+# Get switches and arguments
+#
+while ($# > 0)
+    if ("$1" =~ "-"*) then
+	set x = (`echo "x"$1 | fold -1`)
+	shift x
+	shift x
+	while ($#x > 0)
+	    if ("EFPQ$upsw" =~ *"$x[1]"*) then
+		set upsw$x[1] = 1
+	    else if ("$x[1]" == "0" && $upswP) then
+		set upsw$x[1] = 1
+	    else if ("123456789" =~ *"$x[1]"* && $upsw0) then
+		set upswP = 0
+		set upsw0 = 0
+		set upswp0$x[1] = 1
+	    else
+	        echo "Illegal or unknown switch '$x[1]' given: discarded"
+	    endif
+	    shift x
+        end
+    else if ("$1" =~ "+"*) then
+	set x = (`echo "x"$1 | fold -1`)
+	shift x
+	shift x
+	while ($#x > 0)
+	    if ("EFQ$upsw" =~ *"$x[1]"* && $#x > 1 && \
+		("$x[2]" == "0" || "$x[2]" == "1")) then
+		set upsw$x[1] = $x[2]
+		shift x
+	    else
+	        echo "Illegal or unknown +switch '$x[1]' given: discarded"
+	    endif
+	    shift x
+        end
+    else
+	set arg = ($arg $1)
+    endif
+    shift
+end
+if ($upswP || $upsw0) then
+    echo "Illegal standard pattern P* given."
+    exit 1
+endif
+set upswQE = 0
+if ($upswQ || $upswE) set upswQE = 1
+#
+# Help
+#
+if ($upswh) then
+  if ($?usage) then
+    echo "Usage:   $usage"
+  endif
+  if ($?htxt) then
+    while ($#htxt > 0)
+	echo "  $htxt[1]"
+	shift htxt
+    end
+  endif
+  if ($?huse) then
+    echo "Uses:    $huse[1]"
+    shift huse
+    while ($#huse > 0)
+	echo "         $huse[1]"
+	shift huse
+    end
+  endif
+  if ($?hcrea) then
+    echo "Creates: $hcrea"
+  endif
+  if ($?hsw) then
+    while ($#hsw > 0)
+	echo "  $hsw[1]"
+	shift hsw
+    end
+  endif
+  if ($?usage) then
+    if ("$script" != "UPcasa") then
+      echo "  -c clear all defining information files for this script"
+      echo "  -r clear only the general defining information in .def"
+      echo "  -u clear all but the general defining information in .def"
+      echo "  -d give some debug information (mostly not implemented)"
+      echo "  -n run script only to get defining information, without executing"
+      echo "  -Q run quietly"
+      echo "  -F force acceptance of normally asked for data"
+    endif
+    echo "  -h this information"
+  endif
+  cat << '_EOF_'
+
+The following UP scripts are available:
+    UPfind    [-f] [-g]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPlist    [-l]           [-c] [-r] [-u] [-d] [-n] <typ>	    
+    UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPmove    [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPload                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
+    UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
+    UPcasa
+'_EOF_'
+  exit 0
+endif
+#
+# Start with no general information
+#
+if ($upswc) then
+    set upswu = 1
+    set upswr = 1
+endif
+unset upswc
+unset ldir
+unset apath
+unset hasm
+set touns = (dir mdir xao xai)
+set x = ($touns)
+while ($#x > 0)
+    unset $x[1]
+    shift x
+end
+#
+# Check local environment and directory
+#
+set cdat = `date '+%y%m%d'`
+set apath = ($AIPSPATH)
+set lhasm = 0
+if (-d $apath[1]/master) then
+    set lhasm = 1
+endif
+
+set ldir = `pwd`
+if (! -w $ldir) then
+    echo "Local directory ${ldir} not writeable "
+    exit 1
+endif
+#
+# Set package information
+#
+# Basic package names in order
+#
+set a = $apath[1]/code/install
+set x = (`gmake -f $a/makedefs VARS=PACKAGES show_vars | sed -e 's;^.*=;;'`)
+unset a
+set casapack = ()
+while ($#x > 0)
+  if ("$x[1]" != "demo") then
+    set casapack = ($casapack $x[1])
+  endif
+  shift x
+end
+set casapack = ($casapack tasking)
+unset x
+
+set casapack = (casa scimath tables measures fits lattices coordinates \
+	components images ms msvis calibration ionosphere flagging \
+	dish simulators synthesis graphics tasking)
+#
+# Directories (packages) to skip
+#
+set skippack = (CVS admin aips doc include install test)
+#
+if ("$script" == "UPcasa") then
+  set ok = 1
+  exit 0
+endif
+#
+# Get type
+#
+set y = 0
+if ($#arg < 1) then
+    if (-r $ldir/.UpTyPe.$cdat) then
+	source $ldir/.UpTyPe.$cdat
+    else
+        set tp = t$cdat
+	if (! $upswF) set y = 1
+    endif
+    if ($y || "$script" == "UPfind" || "$script" == "UPchange" || \
+	      "$script" == "UPmove" || "$script" == "UPreident") then
+	echo -n "Specify type [${tp}]: "
+	set x = "$<"
+	if ("$x" != "") set tp = $x
+ 	if ("$tp" == "") then
+	    echo "No <typ> given for ${script}"
+	    exit 1
+	endif
+	unset x
+     else
+	echo "Assuming <typ> as '$tp'."
+     endif
+else
+    set tp = $arg[1]
+    set tp = $tp:r
+    shift arg
+endif
+unset y
+#
+# Get base type
+#
+set tpb = `echo $tp | sed -e 's;_[A-Z][A-Z]*$;;' `
+#
+# Get base extension
+#
+set tpbx = ""
+if (! -e ${tp}.found && ! -e ${tp}.spat) then
+    if (-e ${tp}_MV.found && -e ${tp}_MV.spat) set tpbx = "_MV"
+endif
+#
+# Save current type for today
+#
+touch $ldir/.UpTyPe.xx
+if (1) rm -f $ldir/.UpTyPe.*
+if (! -e $ldir/.UpTyPe.$cdat) then
+    echo "set tp = $tpb" >! $ldir/.UpTyPe.$cdat
+endif
+#
+# Get remote user
+#
+set ruser = "$USER"
+set sshuser = ""
+if ($?AUID) then
+    set ruser = "$AUID"
+    set sshuser = "-l ruser"
+endif
+set rmaster = "aips2.nrao.edu"
+set rssh = "ssh $rmaster $sshuser /aips++/weekly/.rshexec sh -c "
+set rscp = "scp -qpC"
+set rpath =  "${ruser}@${rmaster}"
+set pdir = `pwd | sed -e 's#.*/aips++/#aips++/#'`
+set tmp = $$
+#
+# Get info
+#
+if (! $upswQE) echo "Getting info..."
+#
+# Clear info if asked
+#
+if ($upswr) then
+  if (-e $ldir/${tpb}.def) rm -f $ldir/${tpb}.def
+endif
+
+if ($upswu) then
+  if ("$script" == "UPfind") then 
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+    if (-e $ldir/${tp}.rmpat)  rm -f $ldir/${tp}.rmpat
+  else if ("$script" == "UPchange") then
+    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
+    if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
+  else if ("$script" == "UPmove") then
+    if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
+    if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+    if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+    if (-e $ldir/${tp}_MVF.spat) rm -f $ldir/${tp}_MVF.spat
+    if (-e $ldir/${tp}_MVF.rmpat)  rm -f $ldir/${tp}_MVF.rmpat
+    if (-e $ldir/${tp}_MV.spat) rm -f $ldir/${tp}_MV.spat
+    if (-e $ldir/${tp}_MV.rmpat)  rm -f $ldir/${tp}_MV.rmpat
+    if (-e $ldir/${tp}_MV.sed) rm -f $ldir/${tp}_MV.sed
+    if (-e $ldir/${tp}_MV.rcs) rm -f $ldir/${tp}_MV.rcs
+  else if ("$script" == "UPlist") then 
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+  else if ("$script" == "UPreident") then
+    if (-e $ldir/${tp}.tsel) rm -f $ldir/${tp}.tsel
+  else if ("$script" == "UPtmpl" || "$script" == "UPlock" || \
+	   "$script" == "UPdup"  || "$script" == "UPload") then
+  else
+    echo "Internal error: '$script' not supported"
+    exit 1
+  endif 
+endif
+#
+# Get general info
+#
+if (-r $ldir/${tpb}.def) then
+   source $ldir/${tpb}.def
+endif
+
+if ($?hasm) then
+    if ($lhasm != $hasm) then
+	while ($#touns > 0)
+	    unset $touns[1]
+	    shift touns
+	end
+    endif
+endif
+set hasm = $lhasm
+
+if (! $?dir) then
+   set dir = $apath[1]
+   set x = ""
+   if (! $upswQE) then
+     echo "Make sure you have a proper mktree built before proceeding..."
+   endif
+   if ($upswF && -d $dir/code) then
+     set x = $dir
+   else
+     while ("$x" == "" || ! -d $x/code)
+	echo -n "Specify code tree root to be used [$dir]: "
+	set x = ($<)
+	if ("$x" == "") then
+	    set x = "$dir"
+	endif
+     end
+   endif
+   set dir = "$x"
+   unset x
+endif 
+
+if (! $?mdir) then
+   if ("$script" == "UPchange" || "$script" == "UPreident") then
+     set mdir = "~/aips++"
+     while (! -d $mdir/code) 
+        if (! $upswQE) then
+          echo "Path to local aips++ tree root is not $mdir"
+        endif
+        echo -n "Specify your local aips++ tree root [$mdir]: "
+        set x = "$<"
+        if ("$x" != "") then
+  	  set mdir = "$x"
+        endif
+        unset x
+     end
+   endif
+endif
+
+if ($?xao || ! $?xai) then
+    set xao = rao
+    set xai = rai
+    if ($hasm) then
+	set xao = ao
+	set xai = ai
+    endif
+endif
+
+if ("$script" == "UPmove" && ! $upswn) then
+    set domv = 0
+    echo -n "Need to move files first to new directory (y|n) [n]? "
+    set x = "$<"
+    if ("$x" == "y" || "$x" == "Y") then
+        set domv = 1
+    endif
+    if ($domv  && ! $upswt && ! $hasm) then
+	echo "Note: The moving can only be done while logged into aoc, since "
+	echo "      it uses the amv command."
+	exit 1
+    endif
+    unset x
+endif
+
+if (! -e $ldir/${tpb}.def) then
+   echo "set dir = $dir" >! $ldir/${tpb}.def
+   if ($?mdir) then
+     echo "set mdir = $mdir" >> $ldir/${tpb}.def
+   endif
+   echo "set xao = $xao" >> $ldir/${tpb}.def
+   echo "set xai = $xai" >> $ldir/${tpb}.def
+   echo "set hasm = $hasm" >> $ldir/${tpb}.def
+endif 
+#
+# Correct result
+#
+set ok = 1
+exit 0
+#

@@ -1,0 +1,48 @@
+{
+    ##
+    ## Did the user request no GUIs?
+    ##
+    if ( any(argv == '-nogui' ) ) {
+	system.nogui := T
+    } else {
+	system.nogui := F
+    }
+
+    ##
+    ## Set up the AIPSPATH related bits.
+    ##
+    local apath := split(shell("echo $AIPSPATH"))
+    if ( len(apath) == 4 ) {
+	local libexec := spaste(apath[1],'/',apath[2],'/libexec')
+	system.path.include := [ '.', libexec,
+				 system.path.include[ system.path.include != '.' &
+						      system.path.include != libexec ] ]
+
+	##
+	## Change the focus model
+	##
+	if ( any(argv == '-click-focus') ) {
+	    system.tk := [=]
+	    system.tk.focus := 'click'
+	}
+
+	##
+	## Leave out Tk?
+	##
+	if ( ! any(argv == '-notk' ) ) {
+	    include 'glishtk.g'
+	    include 'pgplot.g'
+	} else {
+	    func have_gui( ) { return F }
+	}
+
+	##
+	## Leave out the most basic AIPS++ initialization?
+	##
+	if ( ! any(argv == '-plain') )
+	    include 'aips++init.g'
+
+	if ( len(stat(spaste(apath[1],'/.glishrc_local'))) > 0 )
+	    include spaste(apath[1],'/.glishrc_local')
+    }
+}

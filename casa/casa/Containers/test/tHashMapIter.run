@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the tHashMap functions.  All files generated will be deleted
+# on exit.
+#=============================================================================
+
+# Unzip the input file.
+  if test -f ./tHashMap.in_words.gz && \
+     gunzip -c ./tHashMap.in_words.gz > tHashMap_tmp.words; then :
+  else
+     exit 3
+  fi
+  ./tHashMapIter
+

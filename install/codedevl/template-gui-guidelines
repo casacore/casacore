@@ -1,0 +1,314 @@
+
+GUI Guidelines.
+
+These guidelines represent the current consensus on how to build a GUI
+within AIPS++.  They do not cover all aspects of the GUI but instead
+focus on certain issues over which differences have arisen.  It is
+expect that as new issues arise, new guidelines will be proposed and
+added to these guidelines.
+
+These are only guidelines.  The primary source for GUI design is the
+Motif Style Guide
+(http://www.premier.sco.com/guide/MotifStyleGuide/en_US/TOC.html)
+unless these guidelines contradict that source.  It is up to the
+reviewer of GUI scripts to decide when an exception to these
+guidelines and the Motif Style Guide is warranted (and the code author
+to convince the reviewer of the need for an exception).  Repeated
+exceptions to these rules probably indicate that these guidelines
+should be changed.
+
+The number of guidelines should be kept low.  Uniformity of GUIs is
+best achieved by code sharing rather than long lists of rules.  Code
+sharing is done through use of the widgetserver (and usually the
+default widgetserver, dws).  Useful widgets should be added to the
+widgetserver for general use.  When building a GUI, the developer
+should use the widgetserver for all components.  Reinventing a widget
+with similar functionality to something already available in the
+widgetserver is not allowed.
+
+When in doubt, consult the Motif Style Guide.
+
+Parent frames:
+   Whenever a graphical component is created, the function
+creating it should have as its first argument a parent frame.
+If the graphical component could usefully exist on its own, this
+argument should default to F.  This is the same syntax used by
+the standard glish/Tk widget constructors.
+
+        guicomponent(parent, ...)
+
+where parent is either an existing frame or is F if the widget
+should construct its own outer frame. This allows others to 
+embed your interface within a wider frame even if you originally 
+thought that no one would ever possibly want to do that.
+GUIs for specific objects should be started using a standard
+myobject.gui(parent) interface.  Such GUIS could be automatically
+started by that object when it is created by default, or, if not, 
+if an entry in the aipsrc file of the following form is found:
+
+        myobject.gui.auto :     T
+
+Automatic creation (if that is the default) can be suppressed by:
+
+        myobject.gui.auto :     F
+
+Titles:
+   Log GUI titles are not very convenient for use in windowing systems
+where the name is truncated.  The most significant part of a window
+title should come first.
+   For example, use "File Catalog (AIPS++)" instead of "AIPS++ File Catalog".
+
+
+Menubars:
+   Complex GUIs intended to be run as stand-alone interfaces 
+should usually have a menubar.  Although usually invoked as
+stand-alone entities they should be embed-able in a parent frame
+through the previously discussed mechanism. 
+
+Menubars should have the following characteristics:
+
+   o raised appearance
+        The entire menu bar is contained within a frame
+        with raised relief.
+   o Menus
+        Menubars will only contain menu buttons (having flat
+        relief).
+   o Help menu 
+        A menu labelled "Help" should appear at the right-most
+        position in the menu bar.  Use the helpmenu widget.
+
+    o File
+        This is optional, but if it appears, it should be
+        the left most item in the menu bar.  If a File menu
+        appears, then there should be at least one item
+        related to dismissing the GUI.  The possible types
+        of dismissal which could appear in the File menu
+        are:
+            o Dismiss Window - this item makes the outer frame
+                controlled by this GUI invisible.  It does not destroy
+                any glish closures (except perhaps its own so long
+		as doing so does not lead to any loss of information).
+ 		The GUI should be easily re-creatable by the user 
+		with no loss of information in the GUI.
+		Often an unmap event will be all that is necessary
+		to implement the action behind this menu item.
+
+            o Dismiss All Windows - this item should be used if
+                there are a number of related windows launched
+                from the same or closely related GUIs.  Again,
+                as in "Close Window" this does not disable any
+                underlying closures.  This is just "Dismiss Window"
+		applied to a number of windows.
+
+	    o Done - This destroys the GUI and any
+		underlying closures but does not exit glish.
+		It is often the GUI front-end to a distributed
+		object "done" function.
+
+            o Exit - this menu item is reserved only for GUIs which
+                are intended to run as stand-alone scripts where they
+                are the sole reason that particular session of glish exists
+                (e.g. some background glish script with a controlling
+                GUI which has been started without direct access to the
+                underlying glish).  When invoked, the underlying glish
+                is exited.
+
+        It is often wise for each of these menu items to lead to
+        an "Are you sure?" dialog box giving the user the option to cancel
+        that operation.  It is up to the programmer to decide when
+        such an action is appropriate although users are more likely
+	to demand an "Are you sure?" box when it is both easy
+	to accidentally select such an action and when choosing such
+	an action would cause substantial information and work to
+	be lost.  An Exit button will almost certainly lead to 
+	such a dialog box, a Done button will usually lead to 
+	such a dialog box and a Dismiss button will often not
+	require an "Are you sure" dialog box.
+
+Toolbar
+   A toolbar containing simple buttons (usually as icons rather than
+as text) may exist immediately below the menubar.  Toolbars have
+a raised relief.
+
+
+Closing the GUI
+    There must always be some graceful way of closing
+a GUI which might be used by itself without the user having
+to rely on the window manager.  If the GUI might also be used
+within a larger GUI where independently closing the widget would
+be undesirable, they should provide a way of disabling this
+feature when the widget is created.  For very basic GUIs
+(e.g. combobox) this is not necessary.  There are three ways
+in which an outer GUI frame might be closed:
+
+    o From the File menu in cases where there is a menubar.
+         See the comments under the menubar.
+
+    o From button analogs to the File menu cases.  These may
+	be desirable as short cuts.  The comments under File menu
+	case regarding an "Are you sure?" dialog box apply to
+	these buttons as well.  Possible buttons are "Dismiss",
+	which is equivalent to "Dismiss this Window" in the File
+	menu and "Done".
+	   These buttons may simply close one frame in a
+        larger GUI (this action is clearly possible if a, for example,
+        designer has provided a "Dismiss" button and a consumer
+        has used that GUI within a larger frame and has opted
+        to have the "Dismiss" button remain on this GUI).  When
+        a button closes one frame in a larger GUI, that
+        frame should use an appropriate border relief
+        (ridge or groove) so that it is clear which frame is
+        controlled by the button.
+            Such a button should appear as near to the lower
+        right of the frame it is controlling as possible
+        without this requirement leading to excessive wasted
+        space in the frame.
+
+    o From a required choice.  When a GUI exists only to demand
+        some choice from the user (for example the
+        "Are you sure?" dialog box suggested under the File menu
+        discussion) then the act of choosing will itself dismiss
+        the GUI.  "Cancel" should be one possible option
+        (unless the author can convince the reviewer that
+        there is no going back on the user's part and hence
+        canceling is simply not an option).  When present, the
+        "Cancel" button should be the rightmost button in the list
+        of possible actions.
+
+
+Buttons
+   Button relief should be as follows:
+        simple buttons (actions) : raised
+        check/radio buttons : flat
+        menus (not in menubar) : grooved
+   Buttons which start up a separate window should have their
+        name end in "...", e.g. "Report a bug ..."
+
+Entries
+    Entries in which the user is expected to type should be
+set off by having a white background.  Other entry widgets,
+which the user is not expected to type in, should have some
+other background color probably the same background as everything 
+else in the GUI.  These colors are controlled through
+.aipsrc variables.  The return or 'tab' event from an entry widget should
+be used to signal syntax checking on the value in the widget
+when appropriate.
+
+
+Scrollbars
+    Scrollbars should be as wide/tall as the thing they
+are controlling.  In other words, through the careful use
+of padding frames scrollbars should never extend beyond the
+thing they are scrolling and imaginary lines extending from
+the ends of x and y scrollbars controlling the same object
+should never cross.  The default scrollbar placement shall 
+be vertical scrollbars to the right and horizontal scrollbars
+to the bottom of the thing they are scrolling. 
+
+Fonts, Colors, and default relief:
+    The default values for all widgets are set by the widgetserver
+which in turn relies on aipsrc values.  GUI developers should respect
+the widgetserver values.  This allows users to choose their own
+default fonts and colors and helps aips++ GUI tools have a similar
+look and feel.  See the documentation on widgetserver for further
+information.
+
+Icons
+   Standard icons for GUIs action buttons should be used when available.
+
+Popuphelp
+   Popuphelp should be attached all of the pieces the user interacts
+with.  For complex groupings (e.g. entry boxes with an associated label)
+a single popuphelp is appropriate.  In that case, it should be attached
+to the component where the user is least likely to linger with the mouse
+(e.g. the label and not the entry box).  The popuphelp for the top menu
+button should contain summary help information for each of the menu items
+found under that button.  See the popuphelp produced by the helpmenu
+widget for an example of menu help information.
+
+Behavior on resize
+    Care should be taken - through the appropriate use of
+padding frame and expand='' arguments - so that when a user
+drags the outer frame of a widget that the components of that
+widget behave "nicely".  (scrollbars should stay near the
+things they are scrolling, button groupings should stay
+near each other, labels should remain near the things they
+are labelling, etc.).
+
+Actions
+
+    GUIs often consist of a number of fields which the user
+interacts with (setting parameters) and an action button which
+signals that the values in those fields are to be used to do
+something.  Such action buttons should be named "Go" (and not
+"Apply").  Single action buttons may be called "OK".
+    If a "Go" or other action button exists which uses values
+that the user sees, then what the user sees should
+always be used (i.e. the user shouldn't need to hit "return"
+or otherwise indicate that the entry has been entered and should
+be used in addition to pressing the "Go" button).  As suggested
+above under "Entries", the 'return' event could be used as way of 
+signaling that an entry is complete (for example, so that its
+syntax could be checked).  The action may itself cause the values 
+to be set or reset after using the values which were there when 
+the action button was pressed.
+
+Interactions with the "Tab" key.
+    Whenever possible, designers should attempt to group widgets
+such that using the "Tab" key leads users through the entry widgets
+in a sensible fashion.  The Motif Style Guide has several reasonable
+statements about the use of the "Tab" key.  This statement on
+the desirability of "Tab" directed input does not preclude
+other alternative uses of the "Tab" key (e.g. file name completion).
+
+User Feedback
+    All GUI actions which take more than a few seconds on the
+canonical aips++ machine must change the cursor to indicate the the
+action was seen and is being worked on.  In addition, it may also be
+desirable to disable widgets for operations that take more than a few
+seconds to prevent possible confusion.
+
+
+Trap window manager kill events
+    Watch for killed events from the outer frame and do
+something appropriate.  Also watch for frames which have
+a "killed" field as apparently sometimes these are set
+even when no killed events have been generated.  Killed events
+should be treated as if the user had pressed a "Done"
+button or menu item.
+
+Underlying design issues:
+   o When a GUI exists as an alternate interface to a glish
+     command line interface (e.g. the measures closure and
+     its gui), then the GUI should always use the public
+     interface of the associated closure.  This allows the
+     GUI to be separated from the underlying closure which
+     makes both easier to maintain and debug.
+
+   o subsequences
+     GUIs are event driven and complex widgets intended to be 
+        used by others should be subsequences and should respond 
+        to and generate events much as the regular glish/tk
+        widgets do.  Although it will often be useful
+        to have subsequences which also have some functional
+        interface.  All of the widgets served by the widgetserver
+        are subsequences.
+     In order to fully separate the GUI from the underlying
+     glish, it may also be useful to have the underlying glish
+     closure be a subsequence (this is the clearest case where
+     a subsequence should also have a functional interface
+     since the underlying closure is primarily a functional
+     interface).  The rule here is that anything with state
+     which needs to signal when that state changes should
+     be a subsequence.
+
+   o It should never be possible to do something to an object through
+     its GUI interface which could not also be done through its
+     functional interface.
+
+   o Widget constructors should have sensible names that are long
+     enough to convey information and yet short enough to be
+     manageable.  They must be available as global symbols as well
+     as, using the same name, through the widgetserver.  Since
+     widgets are usually constructed through the widgetserver, names
+     involving the string "widget" are strongly discouraged.

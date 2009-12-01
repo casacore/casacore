@@ -1,0 +1,159 @@
+Test quantity classes (Quantum, QC, Quantity)...
+
+--------------------------
+Some physical constants:
+
+    QC::c        2.99792e+08 m/s
+    QC::G        6.67259e-11 N.m2/kg2
+    QC::h        6.62608e-34 J.s
+    QC::HI       1420.41 MHz
+    QC::R        8.31451 J/K/mol
+    QC::NA       6.02214e+23 mol-1
+    QC::e        1.60218e-19 C
+    QC::mp       1.67262e-27 kg
+    QC::mp_me    1836.15 
+    QC::mu0      1.25664e-06 H/m
+    QC::epsilon0 8.85419e-12 F/m
+    QC::k        1.38066e-23 J/K
+    QC::F        96485.3 C/mol
+    QC::me       9.10939e-31 kg
+    QC::re       2.8179e-15 m
+    QC::a0       5.2918e-11 m
+    QC::R0       6.9599e+08 m
+    QC::k2       0.000295912 AU3/d2/S0
+
+--------------------------
+Manipulate quantities:
+
+QVQ         = Vector(A,D,DEG)        = [5 m, 6 Jy, 5 deg]
+A           = Quantity(5,"m")      = 5 m
+B           = Quantity(2.,"yd")    = 2 yd
+C           = Quantity(3.)           = 3 
+D           = Quantity(6,"Jy")     = 6 Jy
+DEG         = Quantity(5,"deg")    = 5 deg
+CQ          = Complex(7,"ml")      = (7,0) ml
+VQ          = Vector((3,4),"uA")   = [3, 4] uA
+V2          = Vector(2,2)            = [2, 2]
+V1          = Vector(3)              = [3, 3]
+*E          = new Quantity(10,"L") = 10 L
+-QVQ        = [-5 m, -6 Jy, -5 deg]
+A*QVQ       = [25 m.m, 30 m.Jy, 25 m.deg]
+A*B         = 10 m.yd
+-B          = -2 yd
+2.*B        = 4 yd
+B*2.        = 4 yd
+B/2.        = 1 yd
+2*CQ        = (14,0) ml
+V2*VQ       = [6, 8] uA
+V1*VQ       = [9, 12] uA
+A*C         = 15 m
+A/B         = 2.5 m/(yd)
+A/C         = 1.66667 m
+(A/B)^-5    = 0.01024 (m/(yd))-5
+A+B         = 6.8288 m
+A-B         = 3.1712 m
+B+A         = 7.46807 yd
+B-A         = -3.46807 yd
+abs(A)      = 5 m
+abs(CQ)     = (7,0) ml
+abs(VQ)     = [3, 4] uA
+ceil(A)     = 5 m
+ceil(CQ)    = (7,0) ml
+ceil(VQ)    = [3, 4] uA
+floor(A)    = 5 m
+floor(CQ)   = (7,0) ml
+floor(VQ)   = [3, 4] uA
+sin(DEG)    = 0.0871557 
+asin()      = 0.0872665 rad
+atan2(1,5)  = 0.197396 rad
+log()       = 0.693147 
+log10()     = 0.30103 
+exp()       = 7.38906 
+sqrt()      = 1.41421 
+sqrt(m2.s4) = 1.41421 m.s2
+sqrt(Jy2)   = 1.41421e-26 kg.s-2
+sqrt(Jy2)^2 = 2e-52 kg.s-2.kg.s-2
+B==A        = 0
+VQ==V2      = 0
+VQ!=V1      = 0
+B!=A        = 1
+D==A        = 0
+D!=A        = 1
+B<A         = 1
+B>A         = 0
+B<=A        = 1
+B>=A        = 0
+
+--------------------------
+Convert      A*B to:
+    m:         9.144 m.m
+    yd:        10 yd.m
+    m2:        9.144 m2
+    yd2:       10.9361 yd2
+    unit:      m.yd
+    canonical: 9.144 m2
+    can val:   9.144
+    can unit:  m2
+    km2 val:   9.144e-06
+
+--------------------------
+Other conversions:
+A to B        5.46807 yd
+D to Watt     6e-26 W.m-2.s
+A value to 9  9 yd
+A unit to km  9 km
+scale A by 3  27 km
+
+--------------------------
+Check types
+
+    Are dam's Mpc's? 1
+    Are Jy's Watts?  0
+
+--------------------------
+List contents of Cache
+
+Cached unit table (26):
+     kg.s-2   ()                           1 kg.s-2
+     m.s2     ()                           1 m.s2
+     m2       ()                           1 m2
+    (m/(yd))-5()                           0.639265234981
+    Jy        ()                           1e-26 kg.s-2
+    Jy2       ()                           1e-52 kg2.s-4
+    L         ()                           0.001 m3
+    Mpc       ()                           3.08567758065e+22 m
+    W         ()                           1 m2.kg.s-3
+    W.m-2.s   ()                           1 kg.s-2
+    dam       ()                           10 m
+    kg.s-2.kg.s-2                                ()                           1 kg2.s-4
+    km        ()                           1000 m
+    km2       ()                           1000000 m2
+    m         ()                           1 m
+    m.Jy      ()                           1e-26 m.kg.s-2
+    m.deg     ()                           0.0174532925199 m.rad
+    m.m       ()                           1 m2
+    m.yd      ()                           0.9144 m2
+    m/(yd)    ()                           1.09361329834
+    m2        ()                           1 m2
+    m2.s4     ()                           1 m2.s4
+    rad       ()                           1 rad
+    yd        ()                           0.9144 m
+    yd.m      ()                           0.9144 m2
+    yd2       ()                           0.83612736 m2
+
+--------------------------
+Mixed Quantity/Quantum<Int>  5 mm/s
+
+--------------------------
+Try illegal operations
+
+Unit::check Illegal unit string 'KpH'
+Quantum::operator+ unequal units 'km, 'Jy'
+Quantum::operator< unequal units 'km, 'Jy'
+Quantum::pow exponent too large
+Unit::check Illegal unit string 'JY'
+Quantum::sin illegal unit type 'km'
+Quantum::log illegal unit type 'km'
+UnitVal::UnitVal Illegal unit dimensions for root
+
+--------------------------

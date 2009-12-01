@@ -1,0 +1,114 @@
+
+Testing MaskArrMath2.
+
+df=indgen(df) = 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+dg=indgen(dg) = 
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+dk=
+[0, 1, 5, 3, 9, 2, 7, 7, 4, 3]
+
+Test min (MaskedArray<Double>)
+ min (dk ((dk > 2.5) && (dk < 7.5)))= 3
+
+Test max (MaskedArray<Double>)
+ max (dk ((dk > 2.5) && (dk < 7.5)))= 7
+
+Test minMax (minVal, maxVal, minPos, maxPos,
+             MaskedArray<Double>)
+minMax (minVal, maxVal, minPos, maxPos,
+        dk((dk > 2.5) && (dk < 7.5)));
+minVal= 3
+maxVal= 7
+minPos= [3]
+maxPos= [6]
+
+
+Test minMax (minVal, maxVal,
+             MaskedArray<Double>)
+minMax (minVal, maxVal,
+        dk((dk > 2.5) && (dk < 7.5)));
+minVal= 3
+maxVal= 7
+
+
+Test min (MaskedArray<Double>,
+          Array<Double>, Array<Double>);
+
+dh=2.0; 
+min (dh((dk > 2.5) && (dk < 7.5)), dk, df);
+[2, 2, 2, 3, 2, 2, 6, 7, 4, 3]
+
+Test max (MaskedArray<Double>,
+          Array<Double>, Array<Double>)
+
+dh=2.0; 
+max (dh((dk > 2.5) && (dk < 7.5)), dk, df);
+[2, 2, 5, 3, 2, 2, 7, 7, 8, 9]
+
+Test min (MaskedArray<Double>, Array<Double>)
+
+dh=2.0; 
+dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
+[2, 2, 2, 3, 2, 2, 6, 7, 4, 3]
+
+Test max (MaskedArray<Double>, Array<Double>)
+
+dh=2.0; 
+dh = max (dk((dk > 2.5) && (dk < 7.5)), df);
+[2, 2, 5, 3, 2, 2, 7, 7, 8, 9]
+
+Test min (Array<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+dh = min (dk((dk > 2.5) && (dk < 7.5)), df);
+[2, 2, 2, 3, 2, 2, 6, 7, 4, 3]
+
+Test max (Array<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+dh = max (df, dk((dk > 2.5) && (dk < 7.5)));
+[2, 2, 5, 3, 2, 2, 7, 7, 8, 9]
+
+Test min (MaskedArray<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+dh = min (dk((dk > 2.5) && (dk < 7.5)),
+          df((df > 2.5) && (df < 7.5)));
+[2, 2, 2, 3, 2, 2, 6, 7, 2, 2]
+
+Test max (MaskedArray<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+dh = max (dk((dk > 2.5) && (dk < 7.5)),
+          df((df > 2.5) && (df < 7.5)));
+[2, 2, 2, 3, 2, 2, 7, 7, 2, 2]
+
+Test min (MaskedArray<Double>, Double)
+
+dh=2.0; 
+dh = min (dk((dk > 2.5) && (dk < 7.5)), 5.0);
+[2, 2, 5, 3, 2, 2, 5, 5, 4, 3]
+
+Test max (MaskedArray<Double>, Double)
+
+dh=2.0; 
+dh = max (dk((dk > 2.5) && (dk < 7.5)), 5.0);
+[2, 2, 5, 5, 2, 2, 7, 7, 5, 5]
+
+Test min (Double, MaskedArray<Double>)
+
+dh=2.0; 
+dh = min (5.0, dk((dk > 2.5) && (dk < 7.5)));
+[2, 2, 5, 3, 2, 2, 5, 5, 4, 3]
+
+Test max (Double, MaskedArray<Double>)
+
+dh=2.0; 
+dh = max (5.0, dk((dk > 2.5) && (dk < 7.5)));
+[2, 2, 5, 5, 2, 2, 7, 7, 5, 5]
+
+OK
+OK

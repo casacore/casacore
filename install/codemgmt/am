@@ -1,0 +1,209 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# am: Change the descriptive text in an AIPS++ RCS version file
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1995,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: am [-au] file1 [file2,...]
+#-----------------------------------------------------------------------------
+# am changes the descriptive text in an AIPS++ RCS version file.  The filename
+# arguments must be specified without path or RCS (,v) suffix.  The
+# descriptive text will be obtained from stdin.
+#
+# Code checked into the master repository will have the file ownership defined
+# by the owner of the $AIPSMSTR/etc/ai_master script (aips2adm) which must be
+# setuid.
+#
+# If the "-au" option is specified, then after checking the code into the
+# master, 'am' copies the RCS version file back to the slave RCS repository
+# (if it exists), giving it a file ownership defined by the owner of 'am'
+# (aips2mgr at the remote site), which must itself be setuid.  If this
+# completed successfully, au then checks out a plain-text copy of the code
+# from the AIPS++ rcs directory into the corresponding code directory.
+#
+# Options:
+#   -au    Update the slave repository after changing the master.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  failed to update the master
+#    3:  updated master, but slave not updated
+#
+# Original: 1995/03/17 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "am: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+# Define AIPS++ directory names.
+  AIPSMSTR=$AIPSROOT/master
+  MSTRETCD=$AIPSMSTR/etc
+  AIPSLAVE=$AIPSROOT/slave
+  AIPSRCS=$AIPSROOT/rcs
+
+# Get the master directory.
+  MSTRDIR=`pwd | sed -e 's#/code$#/code/#' -e "s#.*/code/#$AIPSMSTR/#"`
+
+# Make sure we've got something sensible.
+  echo $MSTRDIR | grep "^$AIPSMSTR" > /dev/null 2>&1
+  if [ "$?" != 0 ]
+  then
+     exec 1>&2
+     echo "am: Invalid work directory - `pwd`"
+     exit 1
+  fi
+
+# Get working directory names.
+  SLAVDIR=`echo $MSTRDIR | sed -e 's#/master#/slave#'`
+  RCSDIR=`echo $MSTRDIR | sed -e 's#/master#/rcs#'`
+  CODEDIR=`echo $MSTRDIR | sed -e 's#/master#/code#'`
+
+# Get options and file names.
+  OPTS=""
+  TARGETS=""
+  UPDATE=""
+  for i
+  do
+     case $i in
+     -au)
+        UPDATE=1
+        ;;
+
+     -*)
+        exec 1>&2
+        echo "Usage: am [-au] file1 [file2,...]"
+        echo "       Consult the AIPS++ System manual for usage and options."
+        exit 1
+        ;;
+
+     */*)
+        echo "am: Pathnames are not allowed!  Ignored $i"
+        ;;
+
+     *,v)
+        echo "am: Specify a simple filename!  Ignored $i"
+        ;;
+
+     *)
+        TARGETS="$TARGETS $i"
+        ;;
+     esac
+  done
+
+# Check that we got something.
+  if [ "$TARGETS" = "" ]
+  then
+     echo "Usage: am [-au] file1 [file2,...]" 1>&2
+     echo "       Consult the AIPS++ System manual for usage and options."
+     exit 1
+  fi
+
+# File permission mask for RCS files.
+  umask 002
+
+
+# Check that the master directories are accessible.
+  while [ ! -f "$MSTRETCD/am_master" ]
+  do
+     echo "am: $AIPSMSTR is not responding, trying..." 1>&2
+     sleep 15
+  done
+
+# Are modifications (checkins) disabled?
+  if [ -f "$MSTRETCD/ai_disable" ]
+  then
+     if [ -s "$MSTRETCD/ai_disable" ]
+     then
+        cat $MSTRETCD/ai_disable
+        echo ""
+     fi
+
+     echo "am: Modifications are currently disabled, try again later." 1>&2
+     exit 2
+  fi
+
+  for TARGET in $TARGETS
+  do
+#    Check that the file already exists.
+     if [ ! -f "$MSTRDIR/$TARGET,v" ]
+     then
+        echo "am: $MSTRDIR/$TARGET,v not found, abort!" 1>&2
+        exit 2
+     fi
+
+#    Check the file into the master.
+     $MSTRETCD/am_master $MSTRDIR/$TARGET,v
+     if [ "$?" != 0 ]
+     then
+        echo "am: Failed to modify $TARGET in the master, abort!" 1>&2
+        exit 2
+     fi
+
+#    Don't update the slave unless explicitly requested.
+     [ "$UPDATE" = "" ] && continue
+
+#    Update $AIPSLAVE if it exists.
+     if [ -d "$AIPSLAVE" ]
+     then
+#       Change file permission before attempting to overwrite.
+        if [ -f "$SLAVDIR/$TARGET,v" ]
+        then
+           chmod +w "$SLAVDIR/$TARGET,v" 2> /dev/null || \
+              rm -f "$SLAVDIR/$TARGET,v"
+        fi
+
+
+#       Check that the slave directory exists.
+        if [ ! -d "$SLAVDIR" ]
+        then
+           echo "am: Slave directory doesn't exist, abort!" 1>&2
+           echo "    $SLAVEDIR" 1>&2
+           exit 3
+        fi
+
+#       Try to copy it.
+        cp -p $MSTRDIR/$TARGET,v $SLAVDIR/$TARGET,v
+        if [ "$?" != 0 ]
+        then
+           echo "am: Failed to update $AIPSLAVE with $TARGET, abort!" 1>&2
+           exit 3
+        fi
+
+        echo ""
+        echo "am: Updated the slave repository."
+     fi
+  done
+
+
+  exit 0

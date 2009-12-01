@@ -1,0 +1,396 @@
+#-----------------------------------------------------------------------------
+# makefile.ftn: Generic AIPS++ FORTRAN subroutine compilation makefile
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-2003
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is included by other AIPS++ makefiles and is not intended
+# for stand-alone use.
+#
+# Original: 1993/01/06 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+# AIPS++ fundamentals.
+#---------------------
+AIPSROOT := $(word 1, $(AIPSPATH))
+AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
+include $(AIPSARCH)/makedefs
+
+# Do not include template source files.
+#--------------------------------------
+CPPOPT += -DAIPS_NO_TEMPLATE_SRC
+CPPDBG += -DAIPS_NO_TEMPLATE_SRC
+
+PCKGMOD := $(subst /,-,$(subst $(AIPSCODE)/,,$(CODEDIR)))
+MODULE  := $(word 3,$(subst -,$(space),$(PCKGMOD)))
+
+# Get architecture-specific module-specific definitions.
+-include $(INSTARCH)/$(PCKGMOD).defs
+
+PCKGLANG := $(PACKAGE)_f
+
+
+# Temporary directories.
+#-----------------------
+TMPPCKGD := $(ARCHTMPD)/$(PCKGLANG)
+PCKGDBGD := $(TMPPCKGD)/dbg
+PCKGOPTD := $(TMPPCKGD)/opt
+
+FIRST := $(shell amkdir -p ug=rwx,g+s,o=rx -v $(PCKGDBGD) $(PCKGOPTD))
+
+
+# Libraries.
+#-----------
+LIBDBG   := $(LIBDBGD)/lib$(PCKGLANG).$(SFXSTAT)
+LIBOPT   := $(LIBOPTD)/lib$(PCKGLANG).$(SFXSTAT)
+
+AIPSLIBS :=
+ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+   AIPSLIBS += $(LIBDBG)
+endif
+ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+   AIPSLIBS += $(LIBOPT)
+endif
+
+ifdef AIPSLIBS
+   override LIB := lib
+else
+   override LIB :=
+endif
+
+ifndef PGMRLIBD
+   override PGMRLIBD := .
+endif
+
+PGMRLIBR := $(PGMRLIBD)/lib$(PCKGLANG).$(SFXSTAT)
+ifeq "$(PGMRLIBD)" "."
+   ifneq "$(MODULE)" ""
+      PGMRLIBR := ../lib$(PCKGLANG).$(SFXSTAT)
+   endif
+endif
+
+
+# Augmented include paths.
+#-------------------------
+AIPSINCL := -I$(CODEDIR) $(AIPSINCL)
+
+PGMRINCL := $(addprefix -I,  \
+               $(EXTRA_PGMRINCL) \
+               . \
+               $(PGMRCODE)/include) \
+            $(AIPSINCL)
+
+
+# Source lists.
+#--------------
+AIPSFTNS := $(filter %.f,$(AIPSSRCS))
+AIPSCSRC := $(filter %.c,$(AIPSSRCS))
+AIPSIMPL := $(filter %.cc,$(AIPSSRCS))
+
+AIPSOBJS := $(AIPSFTNS:.f=.o) $(AIPSCSRC:.c=.o) $(AIPSIMPL:.cc=.o)
+
+PGMRFTNS := $(wildcard *.f)
+PGMRCSRC := $(wildcard *.c)
+PGMRIMPL := $(wildcard *.cc)
+
+PGMROBJS := $(PGMRFTNS:.f=.o) $(PGMRCSRC:.c=.o) $(PGMRIMPL:.cc=.o)
+ALLOBJS  := $(sort $(PGMROBJS) $(AIPSOBJS))
+
+
+# Lock files.
+#------------
+LOCKDBG  := $(PCKGDBGD)/BUILD.$(JOBIDENT)
+LOCKOPT  := $(PCKGOPTD)/BUILD.$(JOBIDENT)
+
+
+# Pattern rules.
+#---------------
+lib(%.o) : $(addsuffix (%.o),$(AIPSLIBS)) ;
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.f
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(FC) $(FCDBG) -c -o $(PCKGDBGD)/$(<F:f=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(FC) $(FCOPT) -c -o $(PCKGOPTD)/$(<F:f=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.c
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(CC) $(CPPDBG) -I$(CODEDIR) $(CDBG) -c -o $(PCKGDBGD)/$(<F:c=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(CC) $(CPPOPT) -I$(CODEDIR) $(COPT) -c -o $(PCKGOPTD)/$(<F:c=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.cc
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(C++) $(CPPDBG) $(AIPSINCL) $(C++DBG) -c -o $(PCKGDBGD)/$(<F:cc=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(C++) $(CPPOPT) $(AIPSINCL) $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
+# Programmer-oriented pattern rules.
+ifeq "$(MAKEMODE)" "programmer"
+   vpath %.f  $(CODEDIR)
+   vpath %.c  $(CODEDIR)
+   vpath %.cc $(CODEDIR)
+
+   mylib(%.o) : $(PGMRLIBR)(%.o)
+	@ if [ -f "$(PGMRLIBD)/$%" ] ; then \
+	     cd $(PGMRLIBD) ; \
+	     $(AR) $(ARFLAGS) $(PGMRLIBR) $% ; \
+	     $(RM) $% ; \
+	     $(RANLIB) $(PGMRLIBR) ; \
+	  fi
+
+   $(PGMRLIBR)(%.o) : $(PGMRLIBD)/%.o ;
+
+   $(PGMRLIBD)/%.o : %.f
+	-@ echo ""
+	   $(FC) $(FFLAGS) -c -o $@ $<
+
+   $(PGMRLIBD)/%.o : %.c
+	-@ echo ""
+	   $(CC) $(CPPFLAGS) -I. -I$(CODEDIR) $(CFLAGS) -c -o $@ $<
+
+   $(PGMRLIBD)/%.i : %.c
+	-@ echo ""
+	   $(CPP) $(CPPFLAGS) -I. -I$(CODEDIR) $< > $@
+
+   $(PGMRLIBD)/%.o : %.cc
+	-@ echo ""
+	   $(C++) $(CPPFLAGS) $(PGMRINCL) $(C++FLAGS) -c -o $@ $<
+
+   $(PGMRLIBD)/%.i : %.cc
+	-@ echo ""
+	   $(CPP) $(CPPFLAGS) $(PGMRINCL) $< > $@
+
+   ifneq "$(PGMRLIBD)" "."
+      %.o : $(PGMRLIBD)/%.o ;
+      %.i : $(PGMRLIBD)/%.i ;
+   endif
+
+   % : mylib(%.o) ;
+endif
+
+# Defeat builtin pattern rules.
+(%) : %
+#%.o : %.f
+#%.o : %.c
+#%.o : %.cc
+% : %.f
+% : %.c
+% : %.cc
+
+
+# Static and static pattern rules.
+#---------------------------------
+.PRECIOUS : $(LIBDBG) $(LIBOPT)
+
+.PHONY : build_lock lib libdbg ranlib updatelib
+
+allsys : $(LIB)
+
+.cleancode ::
+	-$Q cd $(CODEDIR) && $(RM) *.o
+
+.cleansys ::
+	-$Q $(RM) $(PCKGDBGD)/BUILD.*
+	-$Q $(RM) $(PCKGOPTD)/BUILD.*
+	-$Q $(RM) $(LIBDBG)
+	-$Q $(RM) $(LIBOPT)
+
+lib : build_lock $(foreach OBJ,$(AIPSOBJS),$(addsuffix ($(OBJ)),$(AIPSLIBS))) \
+      updatelib
+	-@ $(RM) $(LOCKDBG)
+	-@ $(RM) $(LOCKOPT)
+	 @ for i in $$SUBDIRS ; do \
+	      $(MAKE) -C $$i $@ ; \
+	   done
+
+build_lock :
+	-@ echo ""
+	-@ echo "Begin FORTRAN library rebuild"
+	-@ $(TIMER)
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	    @ adate > $(LOCKDBG)
+	   -@ echo ""
+	   -@ echo "Debug compile commands are:"
+	   -@ echo "$(FC) $(FCDBG) -c ???.f"
+	   -@ if [ "$(AIPSCSRC)" != "" ] ; then \
+                 echo "$(CC) $(CPPDBG) -I$(CODEDIR) $(CDBG) -c ???.c" ; \
+	      fi
+	   -@ if [ "$(AIPSIMPL)" != "" ] ; then \
+	         echo "$(C++) $(CPPDBG) $(AIPSINCL) $(C++DBG) -c ???.cc" ; \
+	      fi
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	    @ adate > $(LOCKOPT)
+	   -@ echo ""
+	   -@ echo "Optimized compile commands are:"
+	   -@ echo "$(FC) $(FCOPT) -c ???.f"
+	   -@ if [ "$(AIPSCSRC)" != "" ] ; then \
+	         echo "$(CC) $(CPPOPT) -I$(CODEDIR) $(COPT) -c ???.c" ; \
+	      fi
+	   -@ if [ "$(AIPSIMPL)" != "" ] ; then \
+	         echo "$(C++) $(CPPOPT) $(AIPSINCL) $(C++OPT) -c ???.cc" ; \
+	      fi
+        endif
+
+updatelib :
+	@ updatelib $(PCKGLANG)
+
+ranlib :
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   @ $(RANLIB) $(LIBDBG)
+	   @ chmod 664 $(LIBDBG)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   @ $(RANLIB) $(LIBOPT)
+	   @ chmod 664 $(LIBOPT)
+        endif
+
+# Programmer-oriented static rules.
+ifeq "$(MAKEMODE)" "programmer"
+   .PRECIOUS : $(PGMRLIBR) $(PGMRLIBD)/%.o $(PGMRLIBD)/%.i
+
+   .PHONY : mylib mylibs update_mylib
+
+   all : $(PGMROBJS:%=$(PGMRLIBR)(%)) update_mylib
+
+   .clean ::
+	-cd $(PGMRLIBD) && $(RM) *.o *.i a.out core
+
+   .cleaner ::
+	-$(RM) $(PGMRLIBR)
+
+   mylibs : mylib
+	@ for i in $$SUBDIRS ; do \
+	     $(MAKE) -C $$i $@ ; \
+	  done
+
+   mylib : $(PGMRLIBR) ;
+
+   $(PGMRLIBR) : $(ALLOBJS:%=$(PGMRLIBR)(%)) update_mylib ;
+
+   update_mylib :
+	@ cd $(PGMRLIBD) ; \
+	  [ "$(ALLOBJS)" != "" ] && ALLOBJS=`ls $(ALLOBJS) 2>/dev/null` ; \
+	  if [ "$$ALLOBJS" != "" ] ; then \
+	     $(AR) $(ARFLAGS) $(PGMRLIBR) $$ALLOBJS ; \
+	     $(RM) $$ALLOBJS ; \
+	     $(RANLIB) $(PGMRLIBR) ; \
+	  fi
+endif
+
+show_local :
+	-@ echo ""
+	-@ echo "Variables defined in the fortran makefile"
+	-@ echo "========================================="
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "MODULE  =$(MODULE)"
+	-@ echo "PCKGMOD =$(PCKGMOD)"
+	-@ echo "PCKGLANG=$(PCKGLANG)"
+	-@ echo ""
+	-@ echo "TMPPCKGD=$(TMPPCKGD)"
+	-@ echo "PCKGDBGD=$(PCKGDBGD)"
+	-@ echo "PCKGOPTD=$(PCKGOPTD)"
+	-@ echo ""
+	-@ echo "LIBDBG  =$(LIBDBG)"
+	-@ echo "LIBOPT  =$(LIBOPT)"
+	-@ echo "AIPSLIBS=$(AIPSLIBS)"
+	-@ echo "LOCKDBG =$(LOCKDBG)"
+	-@ echo "LOCKOPT =$(LOCKOPT)"
+	-@ echo ""
+	-@ echo "AIPSINCL=$(AIPSINCL)"
+	-@ echo ""
+	-@ echo "AIPSFTNS=$(AIPSFTNS)"
+	-@ echo "AIPSCSRC=$(AIPSCSRC)"
+	-@ echo "AIPSIMPL=$(AIPSIMPL)"
+	-@ echo ""
+	-@ echo "AIPSOBJS=$(AIPSOBJS)"
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "PGMRINCL=$(PGMRINCL)"
+	-@ echo ""
+	-@ echo "PGMRLIBR=$(PGMRLIBR)"
+	-@ echo "PGMRFTNS=$(PGMRFTNS)"
+	-@ echo "PGMRCSRC=$(PGMRCSRC)"
+	-@ echo "PGMRIMPL=$(PGMRIMPL)"
+	-@ echo ""
+	-@ echo "PGMROBJS=$(PGMROBJS)"
+	-@ echo "ALLOBJS =$(ALLOBJS)"
+
+help ::
+	-@ echo ""
+	-@ echo "Targets defined in the fortran makefile"
+	-@ echo "======================================="
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "   lib(%.o): compile a module and insert it into the system
+	-@ echo "             libraries (debug and/or optimized)."
+	-@ echo "        lib: build the system libraries."
+	-@ echo "  updatelib: insert all object modules into the system"
+	-@ echo "             libraries and ranlib them."
+	-@ echo "     ranlib: ranlib the system libraries."
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo " mylib(%.o): compile a subroutine and insert it into a"
+	-@ echo "             private library."
+	-@ echo "        %.o: compile a subroutine."
+	-@ echo "          %: same as mylib(%.o)."
+	-@ echo "      mylib: build a private library from all local and."
+	-@ echo "             system sources."
+	-@ echo "     mylibs: invoke mylib in this directory and all"
+	-@ echo "             subdirectories."
+	-@ echo "update_mylib: insert all object modules into a private"
+	-@ echo "             library and ranlib it."

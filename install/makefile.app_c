@@ -1,0 +1,657 @@
+#-----------------------------------------------------------------------------
+# makefile.appc: Common AIPS++ applications makefile
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-2004
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is included by other AIPS++ makefiles and is not intended
+# for stand-alone use.
+#
+# Original: 1992/06/24 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+# AIPS++ fundamentals.
+#---------------------
+AIPSROOT := $(word 1, $(AIPSPATH))
+AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
+include $(AIPSARCH)/makedefs
+
+# Do not include template source files.
+#--------------------------------------
+CPPOPT += -DAIPS_NO_TEMPLATE_SRC
+CPPDBG += -DAIPS_NO_TEMPLATE_SRC
+
+# The name of this application.
+#------------------------------
+THISAPP  := $(word 3,$(subst /,$(space),$(CODESUBD)))
+PCKGAPP  := $(PACKAGE)_$(THISAPP)
+
+# Hook to allow compilation of this application to be skipped.
+BIN := bin
+
+# Get architecture-specific, application-specific definitions.
+-include $(INSTARCH)/$(PCKGAPP).defs
+
+
+# Temporary directories.
+#-----------------------
+TMPPCKGD := $(ARCHTMPD)/$(PACKAGE)
+
+
+# Source lists.
+#--------------
+AIPSIMPS := $(filter-out $(THISAPP).cc,$(filter %.cc,$(AIPSSRCS)))
+PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
+
+# Python scripts.
+LIBPYTHS := $(filter %.py, $(AIPSSRCS))
+
+# Glish scripts.
+LIBEXECS := $(filter %.g %.gp %.gm, $(AIPSSRCS))
+
+# Glish script icons.
+LIBICONS := $(filter %.xbm, $(AIPSSRCS))
+
+# Lex & yacc
+LEXYACC := $(filter %.l %.y, $(AIPSSRCS))
+
+# Programmer path to include files for this application.
+PRGAPINC := -I. -I$(CODEDIR)
+
+
+# Do-it-yourself template instantiation.
+#---------------------------------------
+AIPSINST :=
+PGMRINST :=
+ifeq "$(TEMPLATES)" "diy"
+   ifneq "$(findstring templates,$(AIPSSRCS))" ""
+      AIPSINST := $(CODEDIR)/tmplinst
+   endif
+
+   ifeq "$(MAKEMODE)" "programmer"
+      ifeq "$(notdir $(CODESUBD))" "tmplinst"
+         PGMRIMPS := $(wildcard *.cc)
+         ifeq "$(wildcard ../MyTemplatesOnly)" ""
+            PGMRIMPS := $(sort $(PGMRIMPS) \
+                           $(notdir $(wildcard $(CODEDIR)/*.cc)))
+         endif
+         PRGAPINC := -I.. -I$(dir $(CODEDIR))
+      else
+         ifneq "$(wildcard templates)" ""
+            PGMRINST := inst
+         else
+            ifneq "$(findstring templates,$(AIPSSRCS))" ""
+               ifeq "$(wildcard MyTemplatesOnly)" ""
+                  PGMRINST := inst
+               endif
+            endif
+         endif
+      endif
+   endif
+endif
+
+
+# Libraries.
+#-----------
+# Is there an overriding link list for this application?
+ifeq "$(origin LINKAPP)" "undefined"
+  LINKAPP := $(LINK$(PACKAGE))
+endif
+
+# Parse the link lists and library control variables.
+DBGLIBS  := $(foreach PCKG,$(LINKAPP), \
+               $(subst $(LIBDBGD)/lib$(PCKG).defeat, \
+                  $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))), \
+                  $(subst $(LIBDBGD)/lib$(PCKG)_c.defeat, \
+                     $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))), \
+                     $(subst $(LIBDBGD)/lib$(PCKG)_f.defeat, \
+                        $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG))), \
+                           $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))) \
+                           $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))) \
+                           $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG)))))))
+DBGLIBS  := $(strip \
+               $(subst .static,.$(SFXSTAT), \
+                  $(subst .shatic,.$(SFXSTAT), \
+                     $(subst .shared,.$(SFXSHAR), \
+                        $(filter-out %.defeat,$(DBGLIBS))))))
+
+OPTLIBS  := $(foreach PCKG,$(LINKAPP), \
+               $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
+                  $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))), \
+                  $(subst $(LIBOPTD)/lib$(PCKG)_c.defeat, \
+                     $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))), \
+                     $(subst $(LIBOPTD)/lib$(PCKG)_f.defeat, \
+                        $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG))), \
+                           $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))) \
+                           $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))) \
+                           $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG)))))))
+OPTLIBS  := $(strip \
+               $(subst .static,.$(SFXSTAT), \
+                  $(subst .shatic,.$(SFXSTAT), \
+                     $(subst .shared,.$(SFXSHAR), \
+                        $(filter-out %.defeat,$(OPTLIBS))))))
+
+
+
+ifeq "$(MAKEMODE)" "programmer"
+   # Programmer libraries.
+   #----------------------
+   ifndef OPTLIB
+      OPTLIB := $(OPT)
+   endif
+
+   ifdef PGMRLIBD
+      ifndef OPTLIB
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG).$(SFXSTAT)) \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG)_c.$(SFXSTAT)) \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG)_f.$(SFXSTAT)) \
+            $(subst $(LIBDBGD)/lib$(PCKG).defeat, \
+               $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))), \
+               $(subst $(LIBDBGD)/lib$(PCKG)_c.defeat, \
+                  $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))), \
+                  $(subst $(LIBDBGD)/lib$(PCKG)_f.defeat, \
+                     $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG))), \
+                        $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))) \
+                        $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))) \
+                        $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG)))))))
+      else
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG).$(SFXSTAT)) \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG)_c.$(SFXSTAT)) \
+            $(wildcard $(PGMRLIBD)/lib$(PCKG)_f.$(SFXSTAT)) \
+            $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
+               $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))), \
+               $(subst $(LIBOPTD)/lib$(PCKG)_c.defeat, \
+                  $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))), \
+                  $(subst $(LIBOPTD)/lib$(PCKG)_f.defeat, \
+                     $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG))), \
+                        $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))) \
+                        $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))) \
+                        $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG)))))))
+      endif
+   else
+      ifndef OPTLIB
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
+            $(wildcard $(PGMRCODE)/$(PCKG)/implement/lib$(PCKG).$(SFXSTAT)) \
+            $(wildcard $(PGMRCODE)/$(PCKG)/C/lib$(PCKG)_c.$(SFXSTAT))       \
+            $(wildcard $(PGMRCODE)/$(PCKG)/fortran/lib$(PCKG)_f.$(SFXSTAT)) \
+            $(subst $(LIBDBGD)/lib$(PCKG).defeat, \
+               $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))), \
+               $(subst $(LIBDBGD)/lib$(PCKG)_c.defeat, \
+                  $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))), \
+                  $(subst $(LIBDBGD)/lib$(PCKG)_f.defeat, \
+                     $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG))), \
+                        $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))) \
+                        $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))) \
+                        $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG)))))))
+      else
+         PGMRLIBR := $(foreach PCKG,$(LINKAPP), \
+            $(wildcard $(PGMRCODE)/$(PCKG)/implement/lib$(PCKG).$(SFXSTAT)) \
+            $(wildcard $(PGMRCODE)/$(PCKG)/C/lib$(PCKG)_c.$(SFXSTAT))       \
+            $(wildcard $(PGMRCODE)/$(PCKG)/fortran/lib$(PCKG)_f.$(SFXSTAT)) \
+            $(subst $(LIBOPTD)/lib$(PCKG).defeat, \
+               $(LIBDBGD)/lib$(PCKG).$(word 1,$(LIB$(PCKG))), \
+               $(subst $(LIBOPTD)/lib$(PCKG)_c.defeat, \
+                  $(LIBDBGD)/lib$(PCKG)_c.$(word 3,$(LIB$(PCKG))), \
+                  $(subst $(LIBOPTD)/lib$(PCKG)_f.defeat, \
+                     $(LIBDBGD)/lib$(PCKG)_f.$(word 5,$(LIB$(PCKG))), \
+                        $(LIBOPTD)/lib$(PCKG).$(word 2,$(LIB$(PCKG))) \
+                        $(LIBOPTD)/lib$(PCKG)_c.$(word 4,$(LIB$(PCKG))) \
+                        $(LIBOPTD)/lib$(PCKG)_f.$(word 6,$(LIB$(PCKG)))))))
+      endif
+   endif
+
+   PGMRLIBR := $(strip \
+                  $(subst .static,.$(SFXSTAT), \
+                     $(subst .shatic,.$(SFXSTAT), \
+                        $(subst .shared,.$(SFXSTAT), \
+                           $(filter-out %.defeat,$(PGMRLIBR))))))
+
+   # Programmer applications library.
+   ifdef PGMRLIBD
+      PRGAPLIB := $(PGMRLIBD)/lib$(PCKGAPP).$(SFXSTAT)
+   else
+      ifeq "$(notdir $(CODESUBD))" "tmplinst"
+         PRGAPLIB := ../lib$(PCKGAPP).$(SFXSTAT)
+      else
+         PRGAPLIB := lib$(PCKGAPP).$(SFXSTAT)
+      endif
+   endif
+
+   ifneq "$(PGMRIMPS)$(PGMRINST)" ""
+      PGMRLIBR := $(PRGAPLIB) $(PGMRLIBR) $(PRGAPLIB) $(PGMRLIBR)
+   endif
+
+   ifndef OPTLIB
+      PGMRLIBS = $(DBGVERSO) $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
+   else
+      PGMRLIBS = $(OPTVERSO) $(PGMRLIBR) $(XTRNLIBS) $(EXTRA_PGMRLIBS)
+   endif
+
+
+   # Programmer dependency lists.
+   #-----------------------------
+   ifndef PGMRAUXD
+      override PGMRAUXD := .
+   endif
+
+   ifeq "$(notdir $(CODESUBD))" "tmplinst"
+      PGMRLIST := $(PGMRAUXD)/$(PCKGAPP)-tmplinst.list
+      PGMRTIME := $(PGMRAUXD)/$(PCKGAPP)-tmplinst.time
+   else
+      PGMRLIST := $(PGMRAUXD)/$(PCKGAPP).list
+      PGMRTIME := $(PGMRAUXD)/$(PCKGAPP).time
+   endif
+
+
+   # Programmer lock files.
+   #-----------------------
+   PGMRLOCK := $(PGMRAUXD)/$(PCKGAPP).lock
+
+
+   # Programmer paths.
+   #------------------
+   ifndef PGMRLIBD
+      override PGMRLIBD := .
+   endif
+
+   ifndef PGMRBIND
+      override PGMRBIND := .
+   endif
+   include $(AIPSROOT)/code/install/makefile.help
+endif
+
+
+# Pattern rules.
+#---------------
+$(TMPPCKGD)/%.lcc : $(CODEDIR)/%.l
+	-@ echo ""
+	$(FLEX) -t -P$(<F:.l=) $< > $@
+
+$(TMPPCKGD)/%.lcc : ;
+
+$(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
+	-@ echo ""
+	$(BISON) -p $(<F:.y=) -o $@ $<
+
+$(TMPPCKGD)/%.ycc : ;
+
+$(LIBPYTHD)/$(THISAPP)/% : $(CODEDIR)/%
+	@ amkdir -p u=rwx,og=rx -v $(LIBPYTHD)/$(THISAPP)
+	@ $(RM) $@
+	  cp $< $@;
+	@ chmod 664 $@
+
+$(LIBEXECD)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  sed -e 's#__SFXSHAR#$(SFXSHAR)#g' $< > $@
+	@ chmod 664 $@
+
+$(LIBICOND)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 664 $@
+
+$(ARCHBIND)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 775 $@
+
+# Programmer-oriented pattern rules.
+ifeq "$(MAKEMODE)" "programmer"
+   vpath %.cc $(CODEDIR)
+   vpath %.l  $(CODEDIR)
+   vpath %.y  $(CODEDIR)
+   vpath templates $(CODEDIR)
+
+   # Paths assumed by the programmer dependency lists.
+   vpath %.h  $(PGMRCODE)/include:$(CODEINCD):$(THISDIR):$(CODEDIR)
+   vpath %.cc $(PGMRCODE)/include:$(CODEINCD):$(THISDIR):$(CODEDIR)
+
+   mylib(%.o) : $(PRGAPLIB)(%.o)
+	@ if [ -f "$(PGMRLIBD)/$%" ] ; then \
+	     cd $(PGMRLIBD) ; \
+	     $(CXXAR) $(CXXARFLAGS) $(PRGAPLIB) $% ; \
+	     $(RM) $% ; \
+	     $(RANLIB) $(PRGAPLIB) ; \
+	  fi
+
+   $(PRGAPLIB)(%.o) : %.cc $(PGMRTIME)(%)
+	-@ echo ""
+	-@ $(RM) $(PGMRLIBD)/$%
+	   $(C++) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) -c $(C++FLAGS) -o $(PGMRLIBD)/$% $<
+
+   $(PGMRBIND)/%.o : %.cc $(PGMRTIME)(%)
+	-@ echo ""
+	-@ $(RM) $@
+	   $(C++) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) -c $(C++FLAGS) -o $@ $<
+
+   %.lcc : %.l
+	-@ echo ""
+	$(FLEX) -t -P$(<F:.l=) $< > $@
+
+   %.lcc : ;
+
+   %.ycc : %.y
+	-@ echo ""
+	$(BISON) -p $(<F:.y=) -o $@ $<
+
+   %.ycc : ;
+
+   $(PGMRBIND)/%.i : %.cc $(PGMRTIME)(%)
+	-@ echo ""
+	-@ $(RM) $@
+	   $(CPP) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) $< > $@
+
+   %.d : %.cc $(PGMRTIME)(%)
+	-@ echo ""
+	-@ echo "Programmer dependencies for $<:"
+	-@ sed -n -e '\#^$$(PGMRTIME)($*)#s#.* : #   #p' $(PGMRLIST)
+
+   $(PGMRTIME)(%) : %.cc %.lcc %.ycc
+	-@ echo ""
+	-@ echo "Updating dependencies for $<"
+	 @ for i in 10 9 8 7 6 5 4 3 2 1 ; do \
+	      [ ! -f "$(PGMRLOCK)" ] && break ; \
+	      echo "    waiting for lock file ($$i)..." ; \
+	      sleep 5 ; \
+	   done
+	-@ touch $(PGMRLIST)
+	 @ trap "$(RM) $(PGMRLOCK) $(PGMRLIST).$(PID)" 1 2 3 15 ; \
+	      TARGET='$$(PGMRTIME)($*) : ' ; \
+	      sed -n -e "\#^$$TARGET#!p" $(PGMRLIST) > $(PGMRLOCK) ; \
+	      $(CPP) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) $< | \
+	      sed -n \
+	          -e '\%^# *[0-9][0-9]* ".*"%!d' \
+	          -e 's%.*"./\(.*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
+	          -e 's%.*"\([^</].*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
+	          -e 's%.*"$(CODEDIR)/\(.*\)".*%'"$$TARGET"'\1%p' \
+	          -e 's%.*"$(dir $(CODEDIR))\(.*\)".*%'"$$TARGET"'../\1%p' \
+	          -e 's%.*"$(PGMRCODE)/\(include/.*\)".*%'"$$TARGET"'$$(PGMRCODE)/\1%p' \
+	          -e 's%.*"$(CODEINCD)/\(.*\)".*%'"$$TARGET"'\1%p' | \
+	      sort -u | sort -m - $(PGMRLOCK) > $(PGMRLIST).$(PID)
+	 @ if [ -f "$(PGMRLOCK)" ] ; then \
+	      mv -f $(PGMRLIST).$(PID) $(PGMRLIST) ; \
+	      $(RM) $(PGMRLOCK) ; \
+	      trap "$(RM) $(PGMRAUXD)/$*" 1 2 3 15 ; \
+	      cat /dev/null > $(PGMRAUXD)/$* ; \
+	      $(AR) r $(PGMRTIME) $(PGMRAUXD)/$* ; \
+	      $(RM) $(PGMRAUXD)/$* ; \
+	   fi
+
+   ifneq "$(PGMRBIND)" "."
+      %   : $(PGMRBIND)/%   ;
+      %.o : $(PGMRBIND)/%.o ;
+      %.i : $(PGMRBIND)/%.i ;
+   endif
+
+   %.h : ;
+   $(THISDIR)/%.cc : ;
+endif
+
+# Defeat builtin pattern rules.
+%.i : %.cc
+%.o : %.cc
+%   : %.cc
+
+
+# Static and static pattern rules.
+# The rules for bin and bindbg need to be defined in higher level makefile.
+#---------------------------------
+.PRECIOUS : $(DBGLIBS) $(OPTLIBS) $(LIBDBGD)/version.o $(LIBOPTD)/version.o
+
+.PHONY : bin bindbg pyopyc exorcise instsys
+
+allsys : $(BIN)
+
+.cleancode ::
+	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
+	-$Q $(RM) -r $(CODEDIR)/tmplinst
+
+.cleansys ::
+	-$Q $(RM) -r $(LIBPYTHD)/$(THISAPP)
+
+$(TMPPCKGD) :
+	@ if [ ! -d "$@" ] ; then \
+	      echo "" ; \
+	      amkdir -p ug=rwx,g+s,o=rx -v $@ ; \
+	   fi
+
+instsys : $(CODEDIR)/tmplinst ;
+
+$(CODEDIR)/tmplinst : $(CODEDIR)/templates
+	-@ echo ""
+	 @ amkdir -p ug=rwx,g+s,o=rx -v $@
+	-@ echo ""
+	 @ cd $@ && mkinst -q $<
+
+# Python scripts are compiled.
+pyopyc : $(LIBPYTHS)
+	 @ if [ -d $(LIBPYTHD)/$(THISAPP) ]; then \
+	      echo "Compiling $(THISAPP) Python scripts"; \
+	      $(PYTHONBIN) -O $(PYTHONCMP) -q $(LIBPYTHD)/$(THISAPP); \
+	      $(PYTHONBIN)    $(PYTHONCMP) -q $(LIBPYTHD)/$(THISAPP); \
+	   fi
+
+# Included python scripts
+$(LIBPYTHS) : % : $(LIBPYTHD)/$(THISAPP)/% ;
+
+# Included scripts.
+$(LIBEXECS) : % : $(LIBEXECD)/% ;
+
+# Included icons.
+$(LIBICONS) : % : $(LIBICOND)/% ;
+
+# Executable scripts.
+$(BINEXECS) : % : $(ARCHBIND)/% ;
+
+# Programmer-oriented static and static pattern rules.
+ifeq "$(MAKEMODE)" "programmer"
+   .PHONY : %.d inst mylib
+
+   all : $(THISAPP)
+
+   .clean ::
+	- cd $(PGMRAUXD) && $(RM) *~ *% $(PCKGAPP).lock
+	- cd $(PGMRLIBD) && $(RM) *.i *.o *.cdb *.cyi a.out core
+	- cd $(PGMRBIND) && $(RM) *.i *.o *.cdb *.cyi a.out core
+
+   .cleaner ::
+	- $(RM) $(PGMRAUXD)/$(PCKGAPP)*.*
+	- $(RM) $(PRGAPLIB)
+	- $(RM) -r tmplinst
+	- $(RM) $(PGMRBIND)/$(THISAPP)
+
+   depend : $(THISAPP:%=$(PGMRTIME)(%)) $(PGMRIMPS:%.cc=$(PGMRTIME)(%));
+
+   exorcise :
+	-@ if [ -f "$(PGMRLIST)" ] ; then \
+	      grep "(THISDIR)" $(PGMRLIST) | \
+	      awk '{print $$3}' | \
+	      sort -u | \
+	      while read RHS ; do \
+	         DFILE=`echo $$RHS | sed -e 's#\$$(THISDIR)#$(THISDIR)#'` ; \
+	         if [ ! -f "$$DFILE" ] ; then \
+	            grep "$$RHS" $(PGMRLIST) | \
+	            awk '{print $$1}' | \
+	            sort -u | \
+	            while read LHS ; do \
+	               TARGET=`echo $$LHS | sed -e '{s/.*(//;s/)$$//;}'` ; \
+	               echo "Deleting dependencies for $$TARGET because of" ; \
+	               echo "   $$DFILE" ; \
+	               grep -v "^$$LHS : " $(PGMRLIST) > $(PGMRLIST).$(PID) ; \
+	               mv $(PGMRLIST).$(PID) $(PGMRLIST) ; \
+	               $(AR) d $(PGMRTIME) $$TARGET ; \
+	               echo "Deleting $$TARGET.o from" ; \
+	               echo "   $(PRGAPLIB)" ; \
+	               $(AR) d $(PRGAPLIB) $$TARGET.o ; \
+	            done ; \
+	         fi ; \
+	      done ; \
+	   fi
+	-@ if [ -f "$(PGMRLIST)" ] ; then \
+	      grep PGMRCODE $(PGMRLIST) | \
+	      awk '{print $$3}' | \
+	      sort -u | \
+	      while read RHS ; do \
+	         DFILE=`echo $$RHS | sed -e 's#\$$(PGMRCODE)#$(PGMRCODE)#'` ; \
+	         if [ ! -f "$$DFILE" ] ; then \
+	            grep "$$RHS" $(PGMRLIST) | \
+	            awk '{print $$1}' | \
+	            sort -u | \
+	            while read LHS ; do \
+	               TARGET=`echo $$LHS | sed -e '{s/.*(//;s/)$$//;}'` ; \
+	               echo "Deleting dependencies for $$TARGET because of" ; \
+	               echo "   $$DFILE" ; \
+	               grep -v "^$$LHS : " $(PGMRLIST) > $(PGMRLIST).$(PID) ; \
+	               mv $(PGMRLIST).$(PID) $(PGMRLIST) ; \
+	               $(AR) d $(PGMRTIME) $$TARGET ; \
+	            done ; \
+	         fi ; \
+	      done ; \
+	   fi
+	-@ if [ ! -s "$(PGMRLIST)" ] ; then \
+	      $(RM) $(PGMRLIST) $(PGMRTIME) ; \
+	   fi
+	-@ if [ -d tmplinst ] ; then \
+	      if [ -f templates ] ; then \
+	         (cd tmplinst && mkinst -q ../templates) ; \
+	      else \
+	         (cd tmplinst && mkinst -q - < /dev/null) ; \
+	      fi ; \
+	      $(MAKE) -f $(THISDIR)/makefile -C tmplinst $@ ; \
+	   fi
+
+   mylib : $(PRGAPLIB) ;
+
+   $(PRGAPLIB) : $(PGMRINST) $(PGMRIMPS:%.cc=$(PRGAPLIB)(%.o)) update_mylib ;
+
+   inst : tmplinst FORCE
+	-@ if [ -f MyTemplatesOnly ] ; then \
+	      echo "" ; \
+	      echo "WARNING: Ignoring system template instantiation files." ; \
+	   fi
+	 @ $(MAKE) -f $(THISDIR)/makefile -C $< mylib
+
+   tmplinst : templates
+	-@ echo ""
+	 @ amkdir -p ug=rwx,g+s,o=rx -v $@
+	-@ echo ""
+	 @ case "$<" in \
+	   templates) \
+	      cd $@ && mkinst -q ../$< ; \
+	      ;; \
+	   *) \
+	      cd $@ && mkinst -q - < /dev/null ; \
+              ;; \
+	   esac
+
+   update_mylib :
+	@ cd $(PGMRLIBD) ; \
+	  PGMROBJS="$(PGMRIMPS:%.cc=%.o)" ; \
+	  [ "$$PGMROBJS" != "" ] && PGMROBJS=`ls $$PGMROBJS 2>/dev/null` ; \
+	  if [ "$$PGMROBJS" != "" ] ; then \
+	     $(CXXAR) $(CXXARFLAGS) $(PRGAPLIB) $$PGMROBJS ; \
+	     $(RM) $$PGMROBJS ; \
+	     $(RANLIB) $(PRGAPLIB) ; \
+	  fi
+endif
+
+show_local :
+	-@ echo ""
+	-@ echo "Variables defined in the applications makefile"
+	-@ echo "=============================================="
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "THISAPP =$(THISAPP)"
+	-@ echo "PCKGAPP =$(PCKGAPP)"
+	-@ echo ""
+	-@ echo "TMPPCKGD=$(TMPPCKGD)"
+	-@ echo ""
+	-@ echo "AIPSIMPS=$(AIPSIMPS)"
+	-@ echo "LIBPYTHS=$(LIBPYTHS)"
+	-@ echo "LIBEXECS=$(LIBEXECS)"
+	-@ echo "LIBICONS=$(LIBICONS)"
+	-@ echo "BINEXECS=$(BINEXECS)"
+	-@ echo ""
+	-@ echo "AIPSINST=$(AIPSINST)"
+	-@ echo ""
+	-@ echo "DBGVERSO=$(DBGVERSO)"
+	-@ echo "OPTVERSO=$(OPTVERSO)"
+	-@ echo ""
+	-@ echo "LINKAPP =$(LINKAPP)"
+	-@ echo "DBGLIBS =$(DBGLIBS)"
+	-@ echo "OPTLIBS =$(OPTLIBS)"
+	-@ echo ""
+	-@ echo "MODULIBS=$(MODULIBS)"
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "PGMRINST=$(PGMRINST)"
+	-@ echo "PGMRIMPS=$(PGMRIMPS)"
+	-@ echo "PRGAPINC=$(PRGAPINC)"
+	-@ echo ""
+	-@ echo "PGMRLIBR=$(PGMRLIBR)"
+	-@ echo "PGMRLIBS=$(PGMRLIBS)"
+	-@ echo ""
+	-@ echo "PRGAPLIB=$(PRGAPLIB)"
+	-@ echo ""
+	-@ echo "PGMRLIST=$(PGMRLIST)"
+	-@ echo "PGMRTIME=$(PGMRTIME)"
+	-@ echo "PGMRLOCK=$(PGMRLOCK)"
+
+help ::
+	-@ echo ""
+	-@ echo "Targets defined in the applications makefile"
+	-@ echo "============================================"
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "        bin: compile this application."
+	-@ echo "     bindbg: compile this application in debug mode."
+	-@ echo "    instsys: generate diy template instantiation files."
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "        %.o: produce an object file."
+	-@ echo "        %.i: preprocess a .cc file."
+	-@ echo "        %.d: list dependencies for an application."
+	-@ echo "     depend: determine dependencies for \$$(THISAPP)."
+	-@ echo "   exorcise: dispell vexatious spirits."
+	-@ echo " \$$(THISAPP): compile this application."
+	-@ echo "       inst: generate and instantiate diy templates."
+	-@ echo "   tmplinst: generate diy template instantiation files."
+	-@ echo "      mylib: instantiate diy templates."
+	-@ echo "update_mylib: insert all object modules into a private"
+	-@ echo "             library and ranlib it (if necessary)."
+
+# Programmer dependency list.
+ifeq "$(MAKEMODE)" "programmer"
+   -include $(PGMRLIST)
+endif

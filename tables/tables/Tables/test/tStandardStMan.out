@@ -1,0 +1,2062 @@
+after creation
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 10
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 192
+ ColIndex[2]           : 0 ColOffset[2]          : 240
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 9
+Freespace entries: 1
+Offset[0]: 242  -  nrBytes[0]: 8
+
+
+
+
+Col-1: DComplex
+[(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18)]
+Col-2: Int
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+Col-3: Bool
+[1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+after reopening and adding 10 rows
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 20
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 192
+ ColIndex[2]           : 0 ColOffset[2]          : 240
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 2
+Total Index buckets         : 1
+1st Index bucket            : 1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 11
+BucketNr[1]  : 2 - LastRow[1]   : 19
+Freespace entries: 1
+Offset[0]: 242  -  nrBytes[0]: 8
+
+
+
+
+Col-1: DComplex
+[(0,0), (1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38)]
+Col-2: Int
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+Col-3: Bool
+[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+after removing row: 0
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 19
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 192
+ ColIndex[2]           : 0 ColOffset[2]          : 240
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 3
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 18
+Freespace entries: 1
+Offset[0]: 242  -  nrBytes[0]: 8
+
+
+
+
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (18,36), (19,38)]
+Col-2: Int
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+after removing row: 17
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 192
+ ColIndex[2]           : 0 ColOffset[2]          : 240
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 3
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 242  -  nrBytes[0]: 8
+
+
+
+
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (19,38)]
+Col-2: Int
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19]
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Try to remove Column 1 after saving the contents
+After removing Column 1
+StandardStMan Base statistics:
+Nr of columns               : 2
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 192
+ ColIndex[1]           : 0 ColOffset[1]          : 240
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 3
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 2
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 0  -  nrBytes[0]: 192
+Offset[1]: 242  -  nrBytes[1]: 8
+
+
+
+
+Col-2: Int
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19]
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Try to restore Column 1
+After restoring Column1:
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 192
+ ColIndex[1]           : 0 ColOffset[1]          : 240
+ ColIndex[2]           : 0 ColOffset[2]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 3
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 242  -  nrBytes[0]: 8
+
+
+
+
+Col-2: Int
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19]
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (19,38)]
+Try to remove Column:Col-2
+After removing Column: Col-2
+StandardStMan Base statistics:
+Nr of columns               : 2
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 240
+ ColIndex[1]           : 0 ColOffset[1]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 3
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 2
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 192  -  nrBytes[0]: 48
+Offset[1]: 242  -  nrBytes[1]: 8
+
+
+
+
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (19,38)]
+Try to add Column: Col-4 and fill it. 
+It Should be using space just freed up
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 240
+ ColIndex[1]           : 0 ColOffset[1]          : 0
+ ColIndex[2]           : 0 ColOffset[2]          : 242
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 1
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 3
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 192  -  nrBytes[0]: 48
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+
+
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (19,38)]
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Try to add Column: Col-5 and fill it. 
+It should make a new index because there's not enough free space
+StandardStMan Base statistics:
+Nr of columns               : 4
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 240
+ ColIndex[1]           : 0 ColOffset[1]          : 0
+ ColIndex[2]           : 0 ColOffset[2]          : 242
+ ColIndex[3]           : 1 ColOffset[3]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 4
+Total Index buckets         : 1
+1st Index bucket            : 3
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 192  -  nrBytes[0]: 48
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+
+
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Col-1: DComplex
+[(1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16), (9,18), (10,20), (11,22), (12,24), (13,26), (14,28), (15,30), (16,32), (17,34), (19,38)]
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Try to remove Column:Col-1
+After removing Column: Col-1
+StandardStMan Base statistics:
+Nr of columns               : 3
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 240
+ ColIndex[1]           : 0 ColOffset[1]          : 242
+ ColIndex[2]           : 1 ColOffset[2]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 7
+Total Index buckets         : 2
+1st Index bucket            : 6
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 1
+1st free bucket             : 3
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 2
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 0  -  nrBytes[0]: 240
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+
+
+Col-3: Bool
+[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0]
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Try to remove Column:Col-3
+After removing Column: Col-3
+StandardStMan Base statistics:
+Nr of columns               : 2
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 8
+Total Index buckets         : 2
+1st Index bucket            : 7
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 2
+1st free bucket             : 5
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 1
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 0  -  nrBytes[0]: 242
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Trying to add a few  Direct Array Columns.
+StandardStMan Base statistics:
+Nr of columns               : 5
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 3 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 8
+Total Index buckets         : 2
+1st Index bucket            : 6
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 2
+1st free bucket             : 3
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 2
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 53  -  nrBytes[0]: 189
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 9
+BucketNr[1]  : 7 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 3
+Rows Per bucket    : 7
+Nr of Columns      : 1
+BucketNr[0]  : 8 - LastRow[0]   : 6
+BucketNr[1]  : 9 - LastRow[1]   : 13
+BucketNr[2]  : 10 - LastRow[2]   : 17
+Freespace entries: 1
+Offset[0]: 224  -  nrBytes[0]: 26
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 18] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][18, 19]
+[0, 1, 0, 3][20, 21]
+[0, 2, 0, 3][22, 23]
+[0, 0, 0, 4][24, 25]
+[0, 1, 0, 4][26, 27]
+[0, 2, 0, 4][28, 29]
+[0, 0, 0, 5][30, 31]
+[0, 1, 0, 5][32, 33]
+[0, 2, 0, 5][34, 35]
+[0, 0, 0, 6][36, 37]
+[0, 1, 0, 6][38, 39]
+[0, 2, 0, 6][40, 41]
+[0, 0, 0, 7][42, 43]
+[0, 1, 0, 7][44, 45]
+[0, 2, 0, 7][46, 47]
+[0, 0, 0, 8][48, 49]
+[0, 1, 0, 8][50, 51]
+[0, 2, 0, 8][52, 53]
+[0, 0, 0, 9][54, 55]
+[0, 1, 0, 9][56, 57]
+[0, 2, 0, 9][58, 59]
+[0, 0, 0, 10][60, 61]
+[0, 1, 0, 10][62, 63]
+[0, 2, 0, 10][64, 65]
+[0, 0, 0, 11][66, 67]
+[0, 1, 0, 11][68, 69]
+[0, 2, 0, 11][70, 71]
+[0, 0, 0, 12][72, 73]
+[0, 1, 0, 12][74, 75]
+[0, 2, 0, 12][76, 77]
+[0, 0, 0, 13][78, 79]
+[0, 1, 0, 13][80, 81]
+[0, 2, 0, 13][82, 83]
+[0, 0, 0, 14][84, 85]
+[0, 1, 0, 14][86, 87]
+[0, 2, 0, 14][88, 89]
+[0, 0, 0, 15][90, 91]
+[0, 1, 0, 15][92, 93]
+[0, 2, 0, 15][94, 95]
+[0, 0, 0, 16][96, 97]
+[0, 1, 0, 16][98, 99]
+[0, 2, 0, 16][100, 101]
+[0, 0, 0, 17][102, 103]
+[0, 1, 0, 17][104, 105]
+[0, 2, 0, 17][106, 107]
+
+Col-7: DComplex
+Axis Lengths: [2, 18]  (NB: Matrix in Row/Column order)
+[(1.2,3.4), (3.2,6.4), (5.2,9.4), (7.2,12.4), (9.2,15.4), (11.2,18.4), (13.2,21.4), (15.2,24.4), (17.2,27.4), (19.2,30.4), (21.2,33.4), (23.2,36.4), (25.2,39.4), (27.2,42.4), (29.2,45.4), (31.2,48.4), (33.2,51.4), (35.2,54.4)
+ (-2.3,5.6), (-0.3,8.6), (1.7,11.6), (3.7,14.6), (5.7,17.6), (7.7,20.6), (9.7,23.6), (11.7,26.6), (13.7,29.6), (15.7,32.6), (17.7,35.6), (19.7,38.6), (21.7,41.6), (23.7,44.6), (25.7,47.6), (27.7,50.6), (29.7,53.6), (31.7,56.6)]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 18] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+[0, 0, 0, 15][0, 0, 1, 0, 0]
+[0, 1, 0, 15][1, 0, 0, 1, 0]
+[0, 2, 0, 15][0, 1, 0, 0, 1]
+[0, 3, 0, 15][0, 0, 1, 0, 0]
+[0, 4, 0, 15][1, 0, 0, 1, 0]
+[0, 5, 0, 15][0, 1, 0, 0, 1]
+[0, 6, 0, 15][0, 0, 1, 0, 0]
+[0, 0, 0, 16][0, 0, 1, 0, 0]
+[0, 1, 0, 16][1, 0, 0, 1, 0]
+[0, 2, 0, 16][0, 1, 0, 0, 1]
+[0, 3, 0, 16][0, 0, 1, 0, 0]
+[0, 4, 0, 16][1, 0, 0, 1, 0]
+[0, 5, 0, 16][0, 1, 0, 0, 1]
+[0, 6, 0, 16][0, 0, 1, 0, 0]
+[0, 0, 0, 17][0, 0, 1, 0, 0]
+[0, 1, 0, 17][1, 0, 0, 1, 0]
+[0, 2, 0, 17][0, 1, 0, 0, 1]
+[0, 3, 0, 17][0, 0, 1, 0, 0]
+[0, 4, 0, 17][1, 0, 0, 1, 0]
+[0, 5, 0, 17][0, 1, 0, 0, 1]
+[0, 6, 0, 17][0, 0, 1, 0, 0]
+
+Trying to add an  indirect String Array Column.
+StandardStMan Base statistics:
+Nr of columns               : 6
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 3 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 0
+ ColIndex[5]           : 0 ColOffset[5]          : 53
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 14
+Total Index buckets         : 3
+1st Index bucket            : 13
+Index bucket offset         : 0
+last String bucket used     : -1
+Total free buckets          : 2
+1st free bucket             : 5
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 197  -  nrBytes[0]: 45
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 9
+BucketNr[1]  : 7 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 3
+Rows Per bucket    : 7
+Nr of Columns      : 1
+BucketNr[0]  : 8 - LastRow[0]   : 6
+BucketNr[1]  : 9 - LastRow[1]   : 13
+BucketNr[2]  : 10 - LastRow[2]   : 17
+Freespace entries: 1
+Offset[0]: 224  -  nrBytes[0]: 26
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 18] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][18, 19]
+[0, 1, 0, 3][20, 21]
+[0, 2, 0, 3][22, 23]
+[0, 0, 0, 4][24, 25]
+[0, 1, 0, 4][26, 27]
+[0, 2, 0, 4][28, 29]
+[0, 0, 0, 5][30, 31]
+[0, 1, 0, 5][32, 33]
+[0, 2, 0, 5][34, 35]
+[0, 0, 0, 6][36, 37]
+[0, 1, 0, 6][38, 39]
+[0, 2, 0, 6][40, 41]
+[0, 0, 0, 7][42, 43]
+[0, 1, 0, 7][44, 45]
+[0, 2, 0, 7][46, 47]
+[0, 0, 0, 8][48, 49]
+[0, 1, 0, 8][50, 51]
+[0, 2, 0, 8][52, 53]
+[0, 0, 0, 9][54, 55]
+[0, 1, 0, 9][56, 57]
+[0, 2, 0, 9][58, 59]
+[0, 0, 0, 10][60, 61]
+[0, 1, 0, 10][62, 63]
+[0, 2, 0, 10][64, 65]
+[0, 0, 0, 11][66, 67]
+[0, 1, 0, 11][68, 69]
+[0, 2, 0, 11][70, 71]
+[0, 0, 0, 12][72, 73]
+[0, 1, 0, 12][74, 75]
+[0, 2, 0, 12][76, 77]
+[0, 0, 0, 13][78, 79]
+[0, 1, 0, 13][80, 81]
+[0, 2, 0, 13][82, 83]
+[0, 0, 0, 14][84, 85]
+[0, 1, 0, 14][86, 87]
+[0, 2, 0, 14][88, 89]
+[0, 0, 0, 15][90, 91]
+[0, 1, 0, 15][92, 93]
+[0, 2, 0, 15][94, 95]
+[0, 0, 0, 16][96, 97]
+[0, 1, 0, 16][98, 99]
+[0, 2, 0, 16][100, 101]
+[0, 0, 0, 17][102, 103]
+[0, 1, 0, 17][104, 105]
+[0, 2, 0, 17][106, 107]
+
+Col-7: DComplex
+Axis Lengths: [2, 18]  (NB: Matrix in Row/Column order)
+[(1.2,3.4), (3.2,6.4), (5.2,9.4), (7.2,12.4), (9.2,15.4), (11.2,18.4), (13.2,21.4), (15.2,24.4), (17.2,27.4), (19.2,30.4), (21.2,33.4), (23.2,36.4), (25.2,39.4), (27.2,42.4), (29.2,45.4), (31.2,48.4), (33.2,51.4), (35.2,54.4)
+ (-2.3,5.6), (-0.3,8.6), (1.7,11.6), (3.7,14.6), (5.7,17.6), (7.7,20.6), (9.7,23.6), (11.7,26.6), (13.7,29.6), (15.7,32.6), (17.7,35.6), (19.7,38.6), (21.7,41.6), (23.7,44.6), (25.7,47.6), (27.7,50.6), (29.7,53.6), (31.7,56.6)]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 18] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+[0, 0, 0, 15][0, 0, 1, 0, 0]
+[0, 1, 0, 15][1, 0, 0, 1, 0]
+[0, 2, 0, 15][0, 1, 0, 0, 1]
+[0, 3, 0, 15][0, 0, 1, 0, 0]
+[0, 4, 0, 15][1, 0, 0, 1, 0]
+[0, 5, 0, 15][0, 1, 0, 0, 1]
+[0, 6, 0, 15][0, 0, 1, 0, 0]
+[0, 0, 0, 16][0, 0, 1, 0, 0]
+[0, 1, 0, 16][1, 0, 0, 1, 0]
+[0, 2, 0, 16][0, 1, 0, 0, 1]
+[0, 3, 0, 16][0, 0, 1, 0, 0]
+[0, 4, 0, 16][1, 0, 0, 1, 0]
+[0, 5, 0, 16][0, 1, 0, 0, 1]
+[0, 6, 0, 16][0, 0, 1, 0, 0]
+[0, 0, 0, 17][0, 0, 1, 0, 0]
+[0, 1, 0, 17][1, 0, 0, 1, 0]
+[0, 2, 0, 17][0, 1, 0, 0, 1]
+[0, 3, 0, 17][0, 0, 1, 0, 0]
+[0, 4, 0, 17][1, 0, 0, 1, 0]
+[0, 5, 0, 17][0, 1, 0, 0, 1]
+[0, 6, 0, 17][0, 0, 1, 0, 0]
+
+Col-9: String
+Axis Lengths: [5, 18]  (NB: Matrix in Row/Column order)
+[Start-1, Start-1 0, Start-1 0 1, Start-1 0 1 2, Start-1 0 1 2 3, Start-1 0 1 2 3 4, Start-1 0 1 2 3 4 5, Start-1 0 1 2 3 4 5 6, Start-1 0 1 2 3 4 5 6 7, Start-1 0 1 2 3 4 5 6 7 8, Start-1 0 1 2 3 4 5 6 7 8 9, Start-1 0 1 2 3 4 5 6 7 8 9 10, Start-1 0 1 2 3 4 5 6 7 8 9 10 11, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-2, Start-2 0, Start-2 0 1, Start-2 0 1 2, Start-2 0 1 2 3, Start-2 0 1 2 3 4, Start-2 0 1 2 3 4 5, Start-2 0 1 2 3 4 5 6, Start-2 0 1 2 3 4 5 6 7, Start-2 0 1 2 3 4 5 6 7 8, Start-2 0 1 2 3 4 5 6 7 8 9, Start-2 0 1 2 3 4 5 6 7 8 9 10, Start-2 0 1 2 3 4 5 6 7 8 9 10 11, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-3, Start-3 0, Start-3 0 1, Start-3 0 1 2, Start-3 0 1 2 3, Start-3 0 1 2 3 4, Start-3 0 1 2 3 4 5, Start-3 0 1 2 3 4 5 6, Start-3 0 1 2 3 4 5 6 7, Start-3 0 1 2 3 4 5 6 7 8, Start-3 0 1 2 3 4 5 6 7 8 9, Start-3 0 1 2 3 4 5 6 7 8 9 10, Start-3 0 1 2 3 4 5 6 7 8 9 10 11, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-4, Start-4 0, Start-4 0 1, Start-4 0 1 2, Start-4 0 1 2 3, Start-4 0 1 2 3 4, Start-4 0 1 2 3 4 5, Start-4 0 1 2 3 4 5 6, Start-4 0 1 2 3 4 5 6 7, Start-4 0 1 2 3 4 5 6 7 8, Start-4 0 1 2 3 4 5 6 7 8 9, Start-4 0 1 2 3 4 5 6 7 8 9 10, Start-4 0 1 2 3 4 5 6 7 8 9 10 11, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-5, Start-5 0, Start-5 0 1, Start-5 0 1 2, Start-5 0 1 2 3, Start-5 0 1 2 3 4, Start-5 0 1 2 3 4 5, Start-5 0 1 2 3 4 5 6, Start-5 0 1 2 3 4 5 6 7, Start-5 0 1 2 3 4 5 6 7 8, Start-5 0 1 2 3 4 5 6 7 8 9, Start-5 0 1 2 3 4 5 6 7 8 9 10, Start-5 0 1 2 3 4 5 6 7 8 9 10 11, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+
+Trying to add an  indirect Array Column.
+StandardStMan Base statistics:
+Nr of columns               : 7
+Nr of rows in the columns   : 18
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 3 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 0
+ ColIndex[5]           : 0 ColOffset[5]          : 53
+ ColIndex[6]           : 4 ColOffset[6]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 28
+Total Index buckets         : 3
+1st Index bucket            : 27
+Index bucket offset         : 0
+last String bucket used     : 24
+Total free buckets          : 3
+1st free bucket             : 11
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 10
+BucketNr[1]  : 2 - LastRow[1]   : 17
+Freespace entries: 2
+Offset[0]: 197  -  nrBytes[0]: 45
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 14
+BucketNr[1]  : 4 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 9
+BucketNr[1]  : 7 - LastRow[1]   : 17
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 3
+Rows Per bucket    : 7
+Nr of Columns      : 1
+BucketNr[0]  : 8 - LastRow[0]   : 6
+BucketNr[1]  : 9 - LastRow[1]   : 13
+BucketNr[2]  : 10 - LastRow[2]   : 17
+Freespace entries: 1
+Offset[0]: 224  -  nrBytes[0]: 26
+
+
+StandardStMan index: 4 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 31
+Nr of Columns      : 1
+BucketNr[0]  : 11 - LastRow[0]   : 17
+Freespace entries: 1
+Offset[0]: 248  -  nrBytes[0]: 2
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (15,3), (14,4), (13,5), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 18] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][18, 19]
+[0, 1, 0, 3][20, 21]
+[0, 2, 0, 3][22, 23]
+[0, 0, 0, 4][24, 25]
+[0, 1, 0, 4][26, 27]
+[0, 2, 0, 4][28, 29]
+[0, 0, 0, 5][30, 31]
+[0, 1, 0, 5][32, 33]
+[0, 2, 0, 5][34, 35]
+[0, 0, 0, 6][36, 37]
+[0, 1, 0, 6][38, 39]
+[0, 2, 0, 6][40, 41]
+[0, 0, 0, 7][42, 43]
+[0, 1, 0, 7][44, 45]
+[0, 2, 0, 7][46, 47]
+[0, 0, 0, 8][48, 49]
+[0, 1, 0, 8][50, 51]
+[0, 2, 0, 8][52, 53]
+[0, 0, 0, 9][54, 55]
+[0, 1, 0, 9][56, 57]
+[0, 2, 0, 9][58, 59]
+[0, 0, 0, 10][60, 61]
+[0, 1, 0, 10][62, 63]
+[0, 2, 0, 10][64, 65]
+[0, 0, 0, 11][66, 67]
+[0, 1, 0, 11][68, 69]
+[0, 2, 0, 11][70, 71]
+[0, 0, 0, 12][72, 73]
+[0, 1, 0, 12][74, 75]
+[0, 2, 0, 12][76, 77]
+[0, 0, 0, 13][78, 79]
+[0, 1, 0, 13][80, 81]
+[0, 2, 0, 13][82, 83]
+[0, 0, 0, 14][84, 85]
+[0, 1, 0, 14][86, 87]
+[0, 2, 0, 14][88, 89]
+[0, 0, 0, 15][90, 91]
+[0, 1, 0, 15][92, 93]
+[0, 2, 0, 15][94, 95]
+[0, 0, 0, 16][96, 97]
+[0, 1, 0, 16][98, 99]
+[0, 2, 0, 16][100, 101]
+[0, 0, 0, 17][102, 103]
+[0, 1, 0, 17][104, 105]
+[0, 2, 0, 17][106, 107]
+
+Col-7: DComplex
+Axis Lengths: [2, 18]  (NB: Matrix in Row/Column order)
+[(1.2,3.4), (3.2,6.4), (5.2,9.4), (7.2,12.4), (9.2,15.4), (11.2,18.4), (13.2,21.4), (15.2,24.4), (17.2,27.4), (19.2,30.4), (21.2,33.4), (23.2,36.4), (25.2,39.4), (27.2,42.4), (29.2,45.4), (31.2,48.4), (33.2,51.4), (35.2,54.4)
+ (-2.3,5.6), (-0.3,8.6), (1.7,11.6), (3.7,14.6), (5.7,17.6), (7.7,20.6), (9.7,23.6), (11.7,26.6), (13.7,29.6), (15.7,32.6), (17.7,35.6), (19.7,38.6), (21.7,41.6), (23.7,44.6), (25.7,47.6), (27.7,50.6), (29.7,53.6), (31.7,56.6)]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 18] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+[0, 0, 0, 15][0, 0, 1, 0, 0]
+[0, 1, 0, 15][1, 0, 0, 1, 0]
+[0, 2, 0, 15][0, 1, 0, 0, 1]
+[0, 3, 0, 15][0, 0, 1, 0, 0]
+[0, 4, 0, 15][1, 0, 0, 1, 0]
+[0, 5, 0, 15][0, 1, 0, 0, 1]
+[0, 6, 0, 15][0, 0, 1, 0, 0]
+[0, 0, 0, 16][0, 0, 1, 0, 0]
+[0, 1, 0, 16][1, 0, 0, 1, 0]
+[0, 2, 0, 16][0, 1, 0, 0, 1]
+[0, 3, 0, 16][0, 0, 1, 0, 0]
+[0, 4, 0, 16][1, 0, 0, 1, 0]
+[0, 5, 0, 16][0, 1, 0, 0, 1]
+[0, 6, 0, 16][0, 0, 1, 0, 0]
+[0, 0, 0, 17][0, 0, 1, 0, 0]
+[0, 1, 0, 17][1, 0, 0, 1, 0]
+[0, 2, 0, 17][0, 1, 0, 0, 1]
+[0, 3, 0, 17][0, 0, 1, 0, 0]
+[0, 4, 0, 17][1, 0, 0, 1, 0]
+[0, 5, 0, 17][0, 1, 0, 0, 1]
+[0, 6, 0, 17][0, 0, 1, 0, 0]
+
+Col-9: String
+Axis Lengths: [5, 18]  (NB: Matrix in Row/Column order)
+[Start-1, Start-1 0, Start-1 0 1, Start-1 0 1 2, Start-1 0 1 2 3, Start-1 0 1 2 3 4, Start-1 0 1 2 3 4 5, Start-1 0 1 2 3 4 5 6, Start-1 0 1 2 3 4 5 6 7, Start-1 0 1 2 3 4 5 6 7 8, Start-1 0 1 2 3 4 5 6 7 8 9, Start-1 0 1 2 3 4 5 6 7 8 9 10, Start-1 0 1 2 3 4 5 6 7 8 9 10 11, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-2, Start-2 0, Start-2 0 1, Start-2 0 1 2, Start-2 0 1 2 3, Start-2 0 1 2 3 4, Start-2 0 1 2 3 4 5, Start-2 0 1 2 3 4 5 6, Start-2 0 1 2 3 4 5 6 7, Start-2 0 1 2 3 4 5 6 7 8, Start-2 0 1 2 3 4 5 6 7 8 9, Start-2 0 1 2 3 4 5 6 7 8 9 10, Start-2 0 1 2 3 4 5 6 7 8 9 10 11, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-3, Start-3 0, Start-3 0 1, Start-3 0 1 2, Start-3 0 1 2 3, Start-3 0 1 2 3 4, Start-3 0 1 2 3 4 5, Start-3 0 1 2 3 4 5 6, Start-3 0 1 2 3 4 5 6 7, Start-3 0 1 2 3 4 5 6 7 8, Start-3 0 1 2 3 4 5 6 7 8 9, Start-3 0 1 2 3 4 5 6 7 8 9 10, Start-3 0 1 2 3 4 5 6 7 8 9 10 11, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-4, Start-4 0, Start-4 0 1, Start-4 0 1 2, Start-4 0 1 2 3, Start-4 0 1 2 3 4, Start-4 0 1 2 3 4 5, Start-4 0 1 2 3 4 5 6, Start-4 0 1 2 3 4 5 6 7, Start-4 0 1 2 3 4 5 6 7 8, Start-4 0 1 2 3 4 5 6 7 8 9, Start-4 0 1 2 3 4 5 6 7 8 9 10, Start-4 0 1 2 3 4 5 6 7 8 9 10 11, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-5, Start-5 0, Start-5 0 1, Start-5 0 1 2, Start-5 0 1 2 3, Start-5 0 1 2 3 4, Start-5 0 1 2 3 4 5, Start-5 0 1 2 3 4 5 6, Start-5 0 1 2 3 4 5 6 7, Start-5 0 1 2 3 4 5 6 7 8, Start-5 0 1 2 3 4 5 6 7 8 9, Start-5 0 1 2 3 4 5 6 7 8 9 10, Start-5 0 1 2 3 4 5 6 7 8 9 10 11, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+
+Col-11: Int
+Axis Lengths: [5, 18]  (NB: Matrix in Row/Column order)
+[1, 1, 2, 4, 7, 11, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137
+ 2, 2, 3, 5, 8, 12, 17, 23, 30, 38, 47, 57, 68, 80, 93, 107, 122, 138
+ 3, 3, 4, 6, 9, 13, 18, 24, 31, 39, 48, 58, 69, 81, 94, 108, 123, 139
+ 4, 4, 5, 7, 10, 14, 19, 25, 32, 40, 49, 59, 70, 82, 95, 109, 124, 140
+ 5, 5, 6, 8, 11, 15, 20, 26, 33, 41, 50, 60, 71, 83, 96, 110, 125, 141]
+
+after removing several rows at once: 
+StandardStMan Base statistics:
+Nr of columns               : 7
+Nr of rows in the columns   : 15
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 3 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 0
+ ColIndex[5]           : 0 ColOffset[5]          : 53
+ ColIndex[6]           : 4 ColOffset[6]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 29
+Total Index buckets         : 3
+1st Index bucket            : 28
+Index bucket offset         : 0
+last String bucket used     : 24
+Total free buckets          : 3
+1st free bucket             : 25
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 7
+BucketNr[1]  : 2 - LastRow[1]   : 14
+Freespace entries: 2
+Offset[0]: 197  -  nrBytes[0]: 45
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 11
+BucketNr[1]  : 4 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 6
+BucketNr[1]  : 7 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 3
+Rows Per bucket    : 7
+Nr of Columns      : 1
+BucketNr[0]  : 8 - LastRow[0]   : 3
+BucketNr[1]  : 9 - LastRow[1]   : 10
+BucketNr[2]  : 10 - LastRow[2]   : 14
+Freespace entries: 1
+Offset[0]: 224  -  nrBytes[0]: 26
+
+
+StandardStMan index: 4 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 31
+Nr of Columns      : 1
+BucketNr[0]  : 11 - LastRow[0]   : 14
+Freespace entries: 1
+Offset[0]: 248  -  nrBytes[0]: 2
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 15] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][36, 37]
+[0, 1, 0, 3][38, 39]
+[0, 2, 0, 3][40, 41]
+[0, 0, 0, 4][42, 43]
+[0, 1, 0, 4][44, 45]
+[0, 2, 0, 4][46, 47]
+[0, 0, 0, 5][48, 49]
+[0, 1, 0, 5][50, 51]
+[0, 2, 0, 5][52, 53]
+[0, 0, 0, 6][54, 55]
+[0, 1, 0, 6][56, 57]
+[0, 2, 0, 6][58, 59]
+[0, 0, 0, 7][60, 61]
+[0, 1, 0, 7][62, 63]
+[0, 2, 0, 7][64, 65]
+[0, 0, 0, 8][66, 67]
+[0, 1, 0, 8][68, 69]
+[0, 2, 0, 8][70, 71]
+[0, 0, 0, 9][72, 73]
+[0, 1, 0, 9][74, 75]
+[0, 2, 0, 9][76, 77]
+[0, 0, 0, 10][78, 79]
+[0, 1, 0, 10][80, 81]
+[0, 2, 0, 10][82, 83]
+[0, 0, 0, 11][84, 85]
+[0, 1, 0, 11][86, 87]
+[0, 2, 0, 11][88, 89]
+[0, 0, 0, 12][90, 91]
+[0, 1, 0, 12][92, 93]
+[0, 2, 0, 12][94, 95]
+[0, 0, 0, 13][96, 97]
+[0, 1, 0, 13][98, 99]
+[0, 2, 0, 13][100, 101]
+[0, 0, 0, 14][102, 103]
+[0, 1, 0, 14][104, 105]
+[0, 2, 0, 14][106, 107]
+
+Col-7: DComplex
+Axis Lengths: [2, 15]  (NB: Matrix in Row/Column order)
+[(1.2,3.4), (3.2,6.4), (5.2,9.4), (13.2,21.4), (15.2,24.4), (17.2,27.4), (19.2,30.4), (21.2,33.4), (23.2,36.4), (25.2,39.4), (27.2,42.4), (29.2,45.4), (31.2,48.4), (33.2,51.4), (35.2,54.4)
+ (-2.3,5.6), (-0.3,8.6), (1.7,11.6), (9.7,23.6), (11.7,26.6), (13.7,29.6), (15.7,32.6), (17.7,35.6), (19.7,38.6), (21.7,41.6), (23.7,44.6), (25.7,47.6), (27.7,50.6), (29.7,53.6), (31.7,56.6)]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 15] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+
+Col-9: String
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[Start-1, Start-1 0, Start-1 0 1, Start-1 0 1 2 3 4 5, Start-1 0 1 2 3 4 5 6, Start-1 0 1 2 3 4 5 6 7, Start-1 0 1 2 3 4 5 6 7 8, Start-1 0 1 2 3 4 5 6 7 8 9, Start-1 0 1 2 3 4 5 6 7 8 9 10, Start-1 0 1 2 3 4 5 6 7 8 9 10 11, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-2, Start-2 0, Start-2 0 1, Start-2 0 1 2 3 4 5, Start-2 0 1 2 3 4 5 6, Start-2 0 1 2 3 4 5 6 7, Start-2 0 1 2 3 4 5 6 7 8, Start-2 0 1 2 3 4 5 6 7 8 9, Start-2 0 1 2 3 4 5 6 7 8 9 10, Start-2 0 1 2 3 4 5 6 7 8 9 10 11, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-3, Start-3 0, Start-3 0 1, Start-3 0 1 2 3 4 5, Start-3 0 1 2 3 4 5 6, Start-3 0 1 2 3 4 5 6 7, Start-3 0 1 2 3 4 5 6 7 8, Start-3 0 1 2 3 4 5 6 7 8 9, Start-3 0 1 2 3 4 5 6 7 8 9 10, Start-3 0 1 2 3 4 5 6 7 8 9 10 11, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-4, Start-4 0, Start-4 0 1, Start-4 0 1 2 3 4 5, Start-4 0 1 2 3 4 5 6, Start-4 0 1 2 3 4 5 6 7, Start-4 0 1 2 3 4 5 6 7 8, Start-4 0 1 2 3 4 5 6 7 8 9, Start-4 0 1 2 3 4 5 6 7 8 9 10, Start-4 0 1 2 3 4 5 6 7 8 9 10 11, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-5, Start-5 0, Start-5 0 1, Start-5 0 1 2 3 4 5, Start-5 0 1 2 3 4 5 6, Start-5 0 1 2 3 4 5 6 7, Start-5 0 1 2 3 4 5 6 7 8, Start-5 0 1 2 3 4 5 6 7 8 9, Start-5 0 1 2 3 4 5 6 7 8 9 10, Start-5 0 1 2 3 4 5 6 7 8 9 10 11, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+
+Col-11: Int
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[1, 1, 2, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137
+ 2, 2, 3, 17, 23, 30, 38, 47, 57, 68, 80, 93, 107, 122, 138
+ 3, 3, 4, 18, 24, 31, 39, 48, 58, 69, 81, 94, 108, 123, 139
+ 4, 4, 5, 19, 25, 32, 40, 49, 59, 70, 82, 95, 109, 124, 140
+ 5, 5, 6, 20, 26, 33, 41, 50, 60, 71, 83, 96, 110, 125, 141]
+
+Try to remove Column:Col-7
+After removing Column: Col-7
+StandardStMan Base statistics:
+Nr of columns               : 6
+Nr of rows in the columns   : 15
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 0 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 53
+ ColIndex[5]           : 3 ColOffset[5]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 29
+Total Index buckets         : 3
+1st Index bucket            : 27
+Index bucket offset         : 0
+last String bucket used     : 24
+Total free buckets          : 3
+1st free bucket             : 12
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 7
+BucketNr[1]  : 2 - LastRow[1]   : 14
+Freespace entries: 2
+Offset[0]: 197  -  nrBytes[0]: 45
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 11
+BucketNr[1]  : 4 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 6
+BucketNr[1]  : 7 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 31
+Nr of Columns      : 1
+BucketNr[0]  : 11 - LastRow[0]   : 14
+Freespace entries: 1
+Offset[0]: 248  -  nrBytes[0]: 2
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 15] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][36, 37]
+[0, 1, 0, 3][38, 39]
+[0, 2, 0, 3][40, 41]
+[0, 0, 0, 4][42, 43]
+[0, 1, 0, 4][44, 45]
+[0, 2, 0, 4][46, 47]
+[0, 0, 0, 5][48, 49]
+[0, 1, 0, 5][50, 51]
+[0, 2, 0, 5][52, 53]
+[0, 0, 0, 6][54, 55]
+[0, 1, 0, 6][56, 57]
+[0, 2, 0, 6][58, 59]
+[0, 0, 0, 7][60, 61]
+[0, 1, 0, 7][62, 63]
+[0, 2, 0, 7][64, 65]
+[0, 0, 0, 8][66, 67]
+[0, 1, 0, 8][68, 69]
+[0, 2, 0, 8][70, 71]
+[0, 0, 0, 9][72, 73]
+[0, 1, 0, 9][74, 75]
+[0, 2, 0, 9][76, 77]
+[0, 0, 0, 10][78, 79]
+[0, 1, 0, 10][80, 81]
+[0, 2, 0, 10][82, 83]
+[0, 0, 0, 11][84, 85]
+[0, 1, 0, 11][86, 87]
+[0, 2, 0, 11][88, 89]
+[0, 0, 0, 12][90, 91]
+[0, 1, 0, 12][92, 93]
+[0, 2, 0, 12][94, 95]
+[0, 0, 0, 13][96, 97]
+[0, 1, 0, 13][98, 99]
+[0, 2, 0, 13][100, 101]
+[0, 0, 0, 14][102, 103]
+[0, 1, 0, 14][104, 105]
+[0, 2, 0, 14][106, 107]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 15] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+
+Col-9: String
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[Start-1, Start-1 0, Start-1 0 1, Start-1 0 1 2 3 4 5, Start-1 0 1 2 3 4 5 6, Start-1 0 1 2 3 4 5 6 7, Start-1 0 1 2 3 4 5 6 7 8, Start-1 0 1 2 3 4 5 6 7 8 9, Start-1 0 1 2 3 4 5 6 7 8 9 10, Start-1 0 1 2 3 4 5 6 7 8 9 10 11, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-2, Start-2 0, Start-2 0 1, Start-2 0 1 2 3 4 5, Start-2 0 1 2 3 4 5 6, Start-2 0 1 2 3 4 5 6 7, Start-2 0 1 2 3 4 5 6 7 8, Start-2 0 1 2 3 4 5 6 7 8 9, Start-2 0 1 2 3 4 5 6 7 8 9 10, Start-2 0 1 2 3 4 5 6 7 8 9 10 11, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-3, Start-3 0, Start-3 0 1, Start-3 0 1 2 3 4 5, Start-3 0 1 2 3 4 5 6, Start-3 0 1 2 3 4 5 6 7, Start-3 0 1 2 3 4 5 6 7 8, Start-3 0 1 2 3 4 5 6 7 8 9, Start-3 0 1 2 3 4 5 6 7 8 9 10, Start-3 0 1 2 3 4 5 6 7 8 9 10 11, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-4, Start-4 0, Start-4 0 1, Start-4 0 1 2 3 4 5, Start-4 0 1 2 3 4 5 6, Start-4 0 1 2 3 4 5 6 7, Start-4 0 1 2 3 4 5 6 7 8, Start-4 0 1 2 3 4 5 6 7 8 9, Start-4 0 1 2 3 4 5 6 7 8 9 10, Start-4 0 1 2 3 4 5 6 7 8 9 10 11, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-5, Start-5 0, Start-5 0 1, Start-5 0 1 2 3 4 5, Start-5 0 1 2 3 4 5 6, Start-5 0 1 2 3 4 5 6 7, Start-5 0 1 2 3 4 5 6 7 8, Start-5 0 1 2 3 4 5 6 7 8 9, Start-5 0 1 2 3 4 5 6 7 8 9 10, Start-5 0 1 2 3 4 5 6 7 8 9 10 11, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+
+Col-11: Int
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[1, 1, 2, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137
+ 2, 2, 3, 17, 23, 30, 38, 47, 57, 68, 80, 93, 107, 122, 138
+ 3, 3, 4, 18, 24, 31, 39, 48, 58, 69, 81, 94, 108, 123, 139
+ 4, 4, 5, 19, 25, 32, 40, 49, 59, 70, 82, 95, 109, 124, 140
+ 5, 5, 6, 20, 26, 33, 41, 50, 60, 71, 83, 96, 110, 125, 141]
+
+Try to add a string Column: Col-10 and fill it. 
+StandardStMan Base statistics:
+Nr of columns               : 7
+Nr of rows in the columns   : 15
+ ColIndex[0]           : 0 ColOffset[0]          : 242
+ ColIndex[1]           : 1 ColOffset[1]          : 0
+ ColIndex[2]           : 2 ColOffset[2]          : 0
+ ColIndex[3]           : 0 ColOffset[3]          : 0
+ ColIndex[4]           : 0 ColOffset[4]          : 53
+ ColIndex[5]           : 3 ColOffset[5]          : 0
+ ColIndex[6]           : 4 ColOffset[6]          : 0
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 29
+Total Index buckets         : 3
+1st Index bucket            : 8
+Index bucket offset         : 0
+last String bucket used     : 24
+Total free buckets          : 6
+1st free bucket             : 25
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 12
+Nr of Columns      : 3
+BucketNr[0]  : 0 - LastRow[0]   : 7
+BucketNr[1]  : 2 - LastRow[1]   : 14
+Freespace entries: 2
+Offset[0]: 197  -  nrBytes[0]: 45
+Offset[1]: 244  -  nrBytes[1]: 6
+
+
+StandardStMan index: 1 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 15
+Nr of Columns      : 1
+BucketNr[0]  : 1 - LastRow[0]   : 11
+BucketNr[1]  : 4 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 2 statistics:
+Index statistics: 
+Entries used       : 2
+Rows Per bucket    : 10
+Nr of Columns      : 1
+BucketNr[0]  : 3 - LastRow[0]   : 6
+BucketNr[1]  : 7 - LastRow[1]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+StandardStMan index: 3 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 31
+Nr of Columns      : 1
+BucketNr[0]  : 11 - LastRow[0]   : 14
+Freespace entries: 1
+Offset[0]: 248  -  nrBytes[0]: 2
+
+
+StandardStMan index: 4 statistics:
+Index statistics: 
+Entries used       : 1
+Rows Per bucket    : 20
+Nr of Columns      : 1
+BucketNr[0]  : 25 - LastRow[0]   : 14
+Freespace entries: 1
+Offset[0]: 240  -  nrBytes[0]: 10
+
+
+
+
+Col-4: Bool
+[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+Col-5: DComplex
+[(18,0), (17,1), (16,2), (12,6), (11,7), (10,8), (9,9), (8,10), (7,11), (6,12), (5,13), (4,14), (3,15), (2,16), (1,17)]
+Col-6: float
+Ndim=4 Axis Lengths: [2, 3, 1, 15] 
+[0, 0, 0, 0][0, 1]
+[0, 1, 0, 0][2, 3]
+[0, 2, 0, 0][4, 5]
+[0, 0, 0, 1][6, 7]
+[0, 1, 0, 1][8, 9]
+[0, 2, 0, 1][10, 11]
+[0, 0, 0, 2][12, 13]
+[0, 1, 0, 2][14, 15]
+[0, 2, 0, 2][16, 17]
+[0, 0, 0, 3][36, 37]
+[0, 1, 0, 3][38, 39]
+[0, 2, 0, 3][40, 41]
+[0, 0, 0, 4][42, 43]
+[0, 1, 0, 4][44, 45]
+[0, 2, 0, 4][46, 47]
+[0, 0, 0, 5][48, 49]
+[0, 1, 0, 5][50, 51]
+[0, 2, 0, 5][52, 53]
+[0, 0, 0, 6][54, 55]
+[0, 1, 0, 6][56, 57]
+[0, 2, 0, 6][58, 59]
+[0, 0, 0, 7][60, 61]
+[0, 1, 0, 7][62, 63]
+[0, 2, 0, 7][64, 65]
+[0, 0, 0, 8][66, 67]
+[0, 1, 0, 8][68, 69]
+[0, 2, 0, 8][70, 71]
+[0, 0, 0, 9][72, 73]
+[0, 1, 0, 9][74, 75]
+[0, 2, 0, 9][76, 77]
+[0, 0, 0, 10][78, 79]
+[0, 1, 0, 10][80, 81]
+[0, 2, 0, 10][82, 83]
+[0, 0, 0, 11][84, 85]
+[0, 1, 0, 11][86, 87]
+[0, 2, 0, 11][88, 89]
+[0, 0, 0, 12][90, 91]
+[0, 1, 0, 12][92, 93]
+[0, 2, 0, 12][94, 95]
+[0, 0, 0, 13][96, 97]
+[0, 1, 0, 13][98, 99]
+[0, 2, 0, 13][100, 101]
+[0, 0, 0, 14][102, 103]
+[0, 1, 0, 14][104, 105]
+[0, 2, 0, 14][106, 107]
+
+Col-8: Bool
+Ndim=4 Axis Lengths: [5, 7, 1, 15] 
+[0, 0, 0, 0][0, 0, 1, 0, 0]
+[0, 1, 0, 0][1, 0, 0, 1, 0]
+[0, 2, 0, 0][0, 1, 0, 0, 1]
+[0, 3, 0, 0][0, 0, 1, 0, 0]
+[0, 4, 0, 0][1, 0, 0, 1, 0]
+[0, 5, 0, 0][0, 1, 0, 0, 1]
+[0, 6, 0, 0][0, 0, 1, 0, 0]
+[0, 0, 0, 1][0, 0, 1, 0, 0]
+[0, 1, 0, 1][1, 0, 0, 1, 0]
+[0, 2, 0, 1][0, 1, 0, 0, 1]
+[0, 3, 0, 1][0, 0, 1, 0, 0]
+[0, 4, 0, 1][1, 0, 0, 1, 0]
+[0, 5, 0, 1][0, 1, 0, 0, 1]
+[0, 6, 0, 1][0, 0, 1, 0, 0]
+[0, 0, 0, 2][0, 0, 1, 0, 0]
+[0, 1, 0, 2][1, 0, 0, 1, 0]
+[0, 2, 0, 2][0, 1, 0, 0, 1]
+[0, 3, 0, 2][0, 0, 1, 0, 0]
+[0, 4, 0, 2][1, 0, 0, 1, 0]
+[0, 5, 0, 2][0, 1, 0, 0, 1]
+[0, 6, 0, 2][0, 0, 1, 0, 0]
+[0, 0, 0, 3][0, 0, 1, 0, 0]
+[0, 1, 0, 3][1, 0, 0, 1, 0]
+[0, 2, 0, 3][0, 1, 0, 0, 1]
+[0, 3, 0, 3][0, 0, 1, 0, 0]
+[0, 4, 0, 3][1, 0, 0, 1, 0]
+[0, 5, 0, 3][0, 1, 0, 0, 1]
+[0, 6, 0, 3][0, 0, 1, 0, 0]
+[0, 0, 0, 4][0, 0, 1, 0, 0]
+[0, 1, 0, 4][1, 0, 0, 1, 0]
+[0, 2, 0, 4][0, 1, 0, 0, 1]
+[0, 3, 0, 4][0, 0, 1, 0, 0]
+[0, 4, 0, 4][1, 0, 0, 1, 0]
+[0, 5, 0, 4][0, 1, 0, 0, 1]
+[0, 6, 0, 4][0, 0, 1, 0, 0]
+[0, 0, 0, 5][0, 0, 1, 0, 0]
+[0, 1, 0, 5][1, 0, 0, 1, 0]
+[0, 2, 0, 5][0, 1, 0, 0, 1]
+[0, 3, 0, 5][0, 0, 1, 0, 0]
+[0, 4, 0, 5][1, 0, 0, 1, 0]
+[0, 5, 0, 5][0, 1, 0, 0, 1]
+[0, 6, 0, 5][0, 0, 1, 0, 0]
+[0, 0, 0, 6][0, 0, 1, 0, 0]
+[0, 1, 0, 6][1, 0, 0, 1, 0]
+[0, 2, 0, 6][0, 1, 0, 0, 1]
+[0, 3, 0, 6][0, 0, 1, 0, 0]
+[0, 4, 0, 6][1, 0, 0, 1, 0]
+[0, 5, 0, 6][0, 1, 0, 0, 1]
+[0, 6, 0, 6][0, 0, 1, 0, 0]
+[0, 0, 0, 7][0, 0, 1, 0, 0]
+[0, 1, 0, 7][1, 0, 0, 1, 0]
+[0, 2, 0, 7][0, 1, 0, 0, 1]
+[0, 3, 0, 7][0, 0, 1, 0, 0]
+[0, 4, 0, 7][1, 0, 0, 1, 0]
+[0, 5, 0, 7][0, 1, 0, 0, 1]
+[0, 6, 0, 7][0, 0, 1, 0, 0]
+[0, 0, 0, 8][0, 0, 1, 0, 0]
+[0, 1, 0, 8][1, 0, 0, 1, 0]
+[0, 2, 0, 8][0, 1, 0, 0, 1]
+[0, 3, 0, 8][0, 0, 1, 0, 0]
+[0, 4, 0, 8][1, 0, 0, 1, 0]
+[0, 5, 0, 8][0, 1, 0, 0, 1]
+[0, 6, 0, 8][0, 0, 1, 0, 0]
+[0, 0, 0, 9][0, 0, 1, 0, 0]
+[0, 1, 0, 9][1, 0, 0, 1, 0]
+[0, 2, 0, 9][0, 1, 0, 0, 1]
+[0, 3, 0, 9][0, 0, 1, 0, 0]
+[0, 4, 0, 9][1, 0, 0, 1, 0]
+[0, 5, 0, 9][0, 1, 0, 0, 1]
+[0, 6, 0, 9][0, 0, 1, 0, 0]
+[0, 0, 0, 10][0, 0, 1, 0, 0]
+[0, 1, 0, 10][1, 0, 0, 1, 0]
+[0, 2, 0, 10][0, 1, 0, 0, 1]
+[0, 3, 0, 10][0, 0, 1, 0, 0]
+[0, 4, 0, 10][1, 0, 0, 1, 0]
+[0, 5, 0, 10][0, 1, 0, 0, 1]
+[0, 6, 0, 10][0, 0, 1, 0, 0]
+[0, 0, 0, 11][0, 0, 1, 0, 0]
+[0, 1, 0, 11][1, 0, 0, 1, 0]
+[0, 2, 0, 11][0, 1, 0, 0, 1]
+[0, 3, 0, 11][0, 0, 1, 0, 0]
+[0, 4, 0, 11][1, 0, 0, 1, 0]
+[0, 5, 0, 11][0, 1, 0, 0, 1]
+[0, 6, 0, 11][0, 0, 1, 0, 0]
+[0, 0, 0, 12][0, 0, 1, 0, 0]
+[0, 1, 0, 12][1, 0, 0, 1, 0]
+[0, 2, 0, 12][0, 1, 0, 0, 1]
+[0, 3, 0, 12][0, 0, 1, 0, 0]
+[0, 4, 0, 12][1, 0, 0, 1, 0]
+[0, 5, 0, 12][0, 1, 0, 0, 1]
+[0, 6, 0, 12][0, 0, 1, 0, 0]
+[0, 0, 0, 13][0, 0, 1, 0, 0]
+[0, 1, 0, 13][1, 0, 0, 1, 0]
+[0, 2, 0, 13][0, 1, 0, 0, 1]
+[0, 3, 0, 13][0, 0, 1, 0, 0]
+[0, 4, 0, 13][1, 0, 0, 1, 0]
+[0, 5, 0, 13][0, 1, 0, 0, 1]
+[0, 6, 0, 13][0, 0, 1, 0, 0]
+[0, 0, 0, 14][0, 0, 1, 0, 0]
+[0, 1, 0, 14][1, 0, 0, 1, 0]
+[0, 2, 0, 14][0, 1, 0, 0, 1]
+[0, 3, 0, 14][0, 0, 1, 0, 0]
+[0, 4, 0, 14][1, 0, 0, 1, 0]
+[0, 5, 0, 14][0, 1, 0, 0, 1]
+[0, 6, 0, 14][0, 0, 1, 0, 0]
+
+Col-9: String
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[Start-1, Start-1 0, Start-1 0 1, Start-1 0 1 2 3 4 5, Start-1 0 1 2 3 4 5 6, Start-1 0 1 2 3 4 5 6 7, Start-1 0 1 2 3 4 5 6 7 8, Start-1 0 1 2 3 4 5 6 7 8 9, Start-1 0 1 2 3 4 5 6 7 8 9 10, Start-1 0 1 2 3 4 5 6 7 8 9 10 11, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-2, Start-2 0, Start-2 0 1, Start-2 0 1 2 3 4 5, Start-2 0 1 2 3 4 5 6, Start-2 0 1 2 3 4 5 6 7, Start-2 0 1 2 3 4 5 6 7 8, Start-2 0 1 2 3 4 5 6 7 8 9, Start-2 0 1 2 3 4 5 6 7 8 9 10, Start-2 0 1 2 3 4 5 6 7 8 9 10 11, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-2 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-3, Start-3 0, Start-3 0 1, Start-3 0 1 2 3 4 5, Start-3 0 1 2 3 4 5 6, Start-3 0 1 2 3 4 5 6 7, Start-3 0 1 2 3 4 5 6 7 8, Start-3 0 1 2 3 4 5 6 7 8 9, Start-3 0 1 2 3 4 5 6 7 8 9 10, Start-3 0 1 2 3 4 5 6 7 8 9 10 11, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-3 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-4, Start-4 0, Start-4 0 1, Start-4 0 1 2 3 4 5, Start-4 0 1 2 3 4 5 6, Start-4 0 1 2 3 4 5 6 7, Start-4 0 1 2 3 4 5 6 7 8, Start-4 0 1 2 3 4 5 6 7 8 9, Start-4 0 1 2 3 4 5 6 7 8 9 10, Start-4 0 1 2 3 4 5 6 7 8 9 10 11, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-4 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+ Start-5, Start-5 0, Start-5 0 1, Start-5 0 1 2 3 4 5, Start-5 0 1 2 3 4 5 6, Start-5 0 1 2 3 4 5 6 7, Start-5 0 1 2 3 4 5 6 7 8, Start-5 0 1 2 3 4 5 6 7 8 9, Start-5 0 1 2 3 4 5 6 7 8 9 10, Start-5 0 1 2 3 4 5 6 7 8 9 10 11, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, Start-5 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+
+Col-11: Int
+Axis Lengths: [5, 15]  (NB: Matrix in Row/Column order)
+[1, 1, 2, 16, 22, 29, 37, 46, 56, 67, 79, 92, 106, 121, 137
+ 2, 2, 3, 17, 23, 30, 38, 47, 57, 68, 80, 93, 107, 122, 138
+ 3, 3, 4, 18, 24, 31, 39, 48, 58, 69, 81, 94, 108, 123, 139
+ 4, 4, 5, 19, 25, 32, 40, 49, 59, 70, 82, 95, 109, 124, 140
+ 5, 5, 6, 20, 26, 33, 41, 50, 60, 71, 83, 96, 110, 125, 141]
+
+Col-10: String
+[String-1, String-1 0, String-1 0 1, String-1 0 1 2, String-1 0 1 2 3, String-1 0 1 2 3 4, String-1 0 1 2 3 4 5, String-1 0 1 2 3 4 5 6, String-1 0 1 2 3 4 5 6 7, String-1 0 1 2 3 4 5 6 7 8, String-1 0 1 2 3 4 5 6 7 8 9, String-1 0 1 2 3 4 5 6 7 8 9 10, String-1 0 1 2 3 4 5 6 7 8 9 10 11, String-1 0 1 2 3 4 5 6 7 8 9 10 11 12, String-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13]
+after removing several rows at once: 
+StandardStMan Base statistics:
+Nr of columns               : 7
+Nr of rows in the columns   : 0
+ ColIndex[0]           : 0 ColOffset[0]          : 0
+ ColIndex[1]           : 0 ColOffset[1]          : 1
+ ColIndex[2]           : 0 ColOffset[2]          : 49
+ ColIndex[3]           : 0 ColOffset[3]          : 121
+ ColIndex[4]           : 0 ColOffset[4]          : 135
+ ColIndex[5]           : 0 ColOffset[5]          : 171
+ ColIndex[6]           : 0 ColOffset[6]          : 195
+CacheSize                   : 2
+Size of buckets             : 250
+Total buckets               : 0
+Total Index buckets         : 0
+1st Index bucket            : -1
+Index bucket offset         : 0
+last String bucket used     : 26
+Total free buckets          : 0
+1st free bucket             : -1
+
+StandardStMan index: 0 statistics:
+Index statistics: 
+Entries used       : 0
+Rows Per bucket    : 3
+Nr of Columns      : 7
+Freespace entries: 1
+Offset[0]: 231  -  nrBytes[0]: 19
+
+
+
+
+Col-4: Bool
+[]
+Col-5: DComplex
+[]
+Col-6: float
+[]
+Col-8: Bool
+[]
+Col-9: String
+[]
+Col-11: Int
+[]
+Col-10: String
+[]

@@ -1,0 +1,73 @@
+tTableCopy_tmp.tbl
+tTableCopy_tmp.tbl/SUBTABLE
+tTableCopy_tmp.newtbl
+tTableCopy_tmp.newtbl/SUBTABLE
+1 1 1 1 0 0
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "StandardStMan"
+    SPEC: {
+      BUCKETSIZE: Int 640
+      CACHESIZE: Int 2
+    }
+    COLUMNS: String array with shape [4]
+      [col1, col2, col3, col4]
+  }
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "StandardStMan"
+    SPEC: {
+      BUCKETSIZE: Int 640
+      CACHESIZE: Int 2
+    }
+    COLUMNS: String array with shape [4]
+      [col1, col2, col3, col4]
+  }
+[]
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "StandardStMan"
+    SPEC: {
+      BUCKETSIZE: Int 640
+      CACHESIZE: Int 2
+    }
+    COLUMNS: String array with shape [3]
+      [col2, col3, col4]
+  }
+[col1]
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "StandardStMan"
+    SPEC: {
+      BUCKETSIZE: Int 640
+      CACHESIZE: Int 2
+    }
+    COLUMNS: String array with shape [2]
+      [col2, col4]
+  }
+  *2: {
+    TYPE: String "TiledShapeStMan"
+    NAME: String "TSMData"
+    COLUMNS: String array with shape [1]
+      [col3]
+    SPEC: {
+      DEFAULTTILESHAPE: Int array with shape [3]
+        [3, 4, 5]
+    }
+  }
+
+tTableCopy_tmp.tbl
+tTableCopy_tmp.tbl/SUBTABLE
+tTableCopy_tmp.newtbl
+tTableCopy_tmp.newtbl/SUBTABLE
+1 1 1 1 1 0
+tTableCopy_tmp.tbl
+tTableCopy_tmp.tbl/SUBTABLE
+tTableCopy_tmp.newtbl
+tTableCopy_tmp.newtbl/SUBTABLE
+1 1 0 0 0 0
+tTableCopy_tmp.tbl
+tTableCopy_tmp.tbl/SUBTABLE
+tTableCopy_tmp.newtbl
+tTableCopy_tmp.newtbl/SUBTABLE
+1 1 0 0 1 0

@@ -1,0 +1,29 @@
+oldShape    [10, 1, 3, 1]
+newShape    [10, 1, 5, 3, 8]
+newAxes     [2]
+stretchAxes [4]
+extendAxes  [2, 4]
+oldOldAxes  [0, 1, 2]
+oldNewAxes  [0, 1, 3]
+[3, 4, 5, 6] -> [3, 4, 1, 5, 1]
+Slicer [0, 1, 2, 3, 4] [1, 2, 3, 4, 5] [1, 1, 1, 1, 1]
+    -> [0, 1, 3, 0] [1, 2, 4, 1] [1, 1, 1, 1]  shp: [1, 2, 1, 4, 1]
+oldShape    [10, 1, 1, 3]
+newShape    [10, 1, 5, 3, 8]
+newAxes     [4]
+stretchAxes [2]
+extendAxes  [2, 4]
+oldOldAxes  [0, 1, 3]
+oldNewAxes  [0, 1, 3]
+[3, 4, 5, 6] -> [3, 4, 1, 6, 1]
+Slicer [0, 1, 2, 3, 4] [1, 2, 3, 4, 5] [1, 1, 1, 1, 1]
+    -> [0, 1, 0, 3] [1, 2, 1, 4] [1, 1, 1, 1]  shp: [1, 2, 1, 4, 1]
+ExtendSpecifier - new nor stretch axes given
+ExtendSpecifier - no axes remaining
+ExtendSpecifier - length of stretched axis > 1
+ExtendSpecifier - lengths of old axis mismatch
+ExtendSpecifier - axis multiply specified
+ExtendSpecifier - axis multiply specified
+ExtendSpecifier - #axes in oldShape,newShape,newAxes mismatch
+ExtendSpecifier - invalid axis given (<0 or >=nrdim)
+ExtendSpecifier - invalid axis given (<0 or >=nrdim)

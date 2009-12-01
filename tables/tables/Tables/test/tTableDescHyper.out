@@ -1,0 +1,99 @@
+011110
+[TSMExample1, TSMExample2, TSMExample3, TSMExample4, TSMExample5, TSMExample6, TSMExample7, TSMExample8, TSMExample9, TSMExample10, TSMExample11]
+TSMExample1: ndim=4
+  Data=[Data, Weight]Coord=[Pol, Freq, Baseline, Time]Id=[Id]
+TSMExample2: ndim=4
+  Data=[Data]Coord=[]Id=[]
+TSMExample3: ndim=3
+  Data=[Data, Weight]Coord=[Pol, Freq, Time]Id=[]
+TSMExample4: ndim=2
+  Data=[DataScalar]Coord=[Baseline, Time]Id=[]
+TSMExample5: ndim=4
+  Data=[Data, Weight]Coord=[, , , ]Id=[]
+TSMExample6: ndim=4
+  Data=[Data, Weight]Coord=[Pol, , , ]Id=[]
+TSMExample7: ndim=4
+  Data=[Data, Weight]Coord=[, Freq, , ]Id=[]
+TSMExample8: ndim=4
+  Data=[Data, Weight]Coord=[, , Time, ]Id=[]
+TSMExample9: ndim=4
+  Data=[Data, Weight]Coord=[, , , Baseline]Id=[]
+TSMExample10: ndim=4
+  Data=[Data, Weight]Coord=[, Freq, Time, ]Id=[]
+TSMExample11: ndim=4
+  Data=[Data, Weight]Coord=[Pol, , , Baseline]Id=[]
+
+TableDesc tTableDescHyper_tmp   version 1   (Directory ./)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 8
+0  Hypercolumn_TSMExample1 : SUBRECORD
+1  Hypercolumn_TSMExample2 : SUBRECORD
+2  Hypercolumn_TSMExample3 : SUBRECORD
+3  Hypercolumn_TSMExample4 : SUBRECORD
+4  Hypercolumn_TSMExample5 : SUBRECORD
+5  Hypercolumn_TSMExample6 : SUBRECORD
+6  Hypercolumn_TSMExample7 : SUBRECORD
+7  Hypercolumn_TSMExample8 : SUBRECORD
+8  Hypercolumn_TSMExample9 : SUBRECORD
+9  Hypercolumn_TSMExample10 : SUBRECORD
+10  Hypercolumn_TSMExample11 : SUBRECORD
+   Name=Time   DataType=float
+   DataManager=TiledShapeStMan/TSMExample10   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=Baseline   DataType=double
+   DataManager=TiledShapeStMan/TSMExample11   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=DataScalar   DataType=Complex
+   DataManager=TiledColumnStMan/TSMExample4   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=Pol   DataType=float   Nrdim=1   Shape=[16]
+   DataManager=TiledShapeStMan/TSMExample11
+   Comment = 
+   #keywords=0
+
+   Name=Freq   DataType=float   Nrdim=1   Shape=[]
+   DataManager=TiledShapeStMan/TSMExample10
+   Comment = 
+   #keywords=0
+
+   Name=Id   DataType=String
+   DataManager=TiledShapeStMan/TSMExample1   Default=
+   Comment = 
+   #keywords=0
+
+   Name=Data   DataType=float   Nrdim=2   Shape=[]
+   DataManager=TiledShapeStMan/TSMExample11
+   Comment = 
+   #keywords=0
+
+   Name=Weight   DataType=float   Nrdim=2   Shape=[16, 25]
+   DataManager=TiledShapeStMan/TSMExample11
+   Comment = 
+   #keywords=0
+
+Invalid description of hypercolumn TSMExample: dataColumnNames is empty
+Invalid description of hypercolumn TSMExample: ndim < 1
+Invalid description of hypercolumn TSMExample: #coordColumnNames mismatches ndim
+Invalid description of hypercolumn TSMExample: coordColumn Timex does not exist
+Invalid description of hypercolumn TSMExample: dataColumn Datax does not exist
+Invalid description of hypercolumn TSMExample: idColumn Idx does not exist
+Invalid description of hypercolumn TSMExample: coordColumn TimeNotNum is not numeric
+Invalid description of hypercolumn TSMExample: coordColumn TimeShort: (u)Char and (u)Short not supported
+Invalid description of hypercolumn TSMExample: coordColumn Data is not a scalar or vector
+Invalid description of hypercolumn TSMExample: coordinate vectors have to describe the first axes
+Invalid description of hypercolumn TSMExample: the dimensionality of data column Data0 is undefined
+Invalid description of hypercolumn TSMExample: the dimensionality of data column Weight mismatches that of previous data columns
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
+Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
+Invalid description of hypercolumn TSMExample: idColumn TimeShort: (u)Char and (u)Short not supported
+Invalid description of hypercolumn TSMExample: idColumn Data is not a scalar
+Invalid description of hypercolumn TSMExample: column name Time is multiply used

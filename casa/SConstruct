@@ -1,0 +1,88 @@
+import os
+import sys
+
+EnsureSConsVersion(1,0)
+
+# Put the package name here, e.g. casa, tables
+PACKAGE="casa"
+
+# general options
+opts = Variables( 'options.cfg', ARGUMENTS )
+opts.AddVariables(BoolVariable("disable_dlopen", "Enable dlopen support", False),
+                  BoolVariable("enable_hdf5", "Enable HDF5 support", True),
+                  ("hdf5root", 
+                   "The root directory where hdf5 is installed", None),
+                  ("hdf5incdir", "The hdf5 header location", None),
+                  ("hdf5libdir", "The hdf5 library location", None) 
+                  )
+
+env = Environment(ENV = { 'PATH' : os.environ[ 'PATH' ],
+			  'HOME' : os.environ[ 'HOME' ] 
+			  },
+		  variables=opts
+		  )
+# keep a local sconsign database, rather than in very directory
+env.SConsignFile()
+
+env["PACKAGE"] = PACKAGE
+# use build in dir
+env["casashrdir"] = ["./tools"]
+env["casalibdir"] = None
+env["casaincdir"] = None
+
+env.Tool('casaoptions', env["casashrdir"])
+# Add common options
+env.AddCommonOptions(opts)
+# add installer options, e.g. prefix
+env.Tool('installer', env["casashrdir"])
+env.AddInstallerOptions( opts )
+# add them into environment
+opts.Update( env )
+# cache them for the next run
+opts.Save( 'options.cfg', env)
+Help( opts.GenerateHelpText( env ) )
+
+env.Tool('buildenv', env["casashrdir"])
+env.Tool('casa', env["casashrdir"])
+env.Tool('utils', env["casashrdir"])
+env.Tool('assaytest', env["casashrdir"])
+
+#env["ENV"]["AIPSPATH"] = env["prefix"]
+if not (env.Detect(["flex","lex"]) and env.Detect(["bison", "yacc"])):
+    print "lex/yacc needs to be installed"
+    env.Exit(1)
+
+# Auto configure
+if not env.GetOption('clean'):
+    conf = Configure(env)
+    conf.env.AddCustomPackage('hdf5')
+    if conf.env.get("enable_hdf5") and conf.CheckLib('hdf5', autoadd=0):
+        conf.env.AppendUnique(CPPFLAGS=["-DHAVE_HDF5"])
+        conf.env.PrependUnique(LIBS=['hdf5'])
+    if not conf.env.get("disable_dlopen") and \
+             conf.CheckLib('dl', 'dlopen', autoadd=0):
+        conf.env.AppendUnique(CPPFLAGS=["-DHAVE_DLOPEN"])
+        conf.env.PrependUnique(LIBS=['dl'])
+    env = conf.Finish()
+else:
+    env.Execute(Delete("options.cfg"))
+# create the installer which handles installing the final build
+installer = env.Installer()
+
+# to find package based includes
+env.Append(CPPPATH='#')
+
+for bopt in env["build"]:
+    # create an environment copy with the dbg/opt compiler flags
+    buildenv = env.BuildEnv(bopt)
+    # buildir name
+    buildenv["BUILDDIR"] = Dir("#/build_%s/%s" % (env.PlatformIdent(), bopt))
+    env.SConscript(["%s/SConscript" % env["PACKAGE"]], 
+		   build_dir= buildenv["BUILDDIR"],
+		   duplicate=0, exports=["buildenv", "installer"])
+
+# add the Tools to the casacore/share directory. This way they can be imported
+# by the other casacore packages without having to duplicate them.
+installer.AddShares("tools", "*.py", "casacore/", True)
+installer.AddProgram("tools/casacore_assay")
+installer.AddProgram("tools/casacore_floatcheck")

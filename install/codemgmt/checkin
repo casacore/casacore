@@ -1,0 +1,174 @@
+#!/usr/local/bin/perl5
+#
+#   Copyright (C) 1998,1999
+#   Associated Universities, Inc. Washington DC, USA.
+# 
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+# 
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+# 
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   675 Massachusetts Ave, Cambridge, MA 02139, USA.
+# 
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+
+require "find.pl";
+
+%flags = ( "dryrun" => 0,
+	   "message" => "",
+	   "list" => 0,
+	   "new" => 0
+	  );
+
+@skip = ();
+@dir = ();
+@newdirs = ();
+
+sub fullpath {
+    my $dir = shift;
+    open(SYS,"(cd $dir; pwd) |");
+    local @CWD = <SYS>;
+    close(SYS);
+    chop $CWD[0];
+    $CWD[0];
+}
+	
+sub shify {
+    local($str) = @_[0];
+    $str =~ s/^['"]+//;
+    $str =~ s/['"]+$//;
+    $str =~ s/\\/\\\\/g;
+    $str =~ s/\"/\\\"/g;
+    $str =~ s/\$/\\\$/g;
+    $str;
+}
+
+sub compare_lengths { length($a) <=> length($b); }
+
+##
+##  list, command
+sub invoke {
+    my $command = shift;
+    my $dir = scalar(@_) ? shift : "";
+    my $file = scalar(@_) ? shift : "";
+
+    if ( $flags{"list"} ) {
+        print "$dir $file\n" if $dir || $file;
+    } elsif ( $flags{"dryrun"} ) {
+	print "\n";
+	print "system( $command )\n";
+    } else {
+        print "#: $dir $file\n" if $dir || $file;
+	open(SYS, "( $command ) 2>&1 |");
+	while (<SYS>) { print; }
+	close(SYS);
+	print "\n";
+    }
+}
+
+sub make_directories {
+    my $i;
+    my $dir;
+    my $root;
+    my $home = fullpath(".");
+    my $rcs = lstat("RCS") && -l _ ? readlink("RCS") : "";
+
+    die "cannot determine RCS location\n" unless $rcs;
+
+    foreach $i ( @_ ) {
+        ($root,$dir) = split(/\s+/,$i);
+
+	if ( $root !~ m@/@ && ( ! lstat("$root/RCS") || ! -e _ ) ) {
+	    invoke( "ai $root && cd $root && ln -s $rcs/$root RCS", $root );
+	}
+	if ( ! lstat("$root/$dir/RCS") || ! -e _ ) {
+	    invoke( "cd $root && ai $dir && cd $dir && ln -s $rcs/$root/$dir RCS", "$root/$dir" );
+	}
+    }
+}
+
+sub wanted {
+
+    if ( $flags{"new"} == 1 ) {
+
+	if ( (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
+	     -d _ && ! -e "RCS/$_" ) {
+	    push(@newdirs,"$dir $_") if ! m/^\./;
+	}
+
+    } elsif ( (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
+	      -f _ && -w _ && (($flags{"new"} != 2 && -f "RCS/$_,v") ||
+			       ($flags{"new"} == 2 && ! -f "RCS/$_,v")) ) {
+        foreach $re ( @skip ) {
+	    $cur = "$dir/$_";
+	    next unless $cur =~ m@$re@ ;
+	    return;
+	}
+
+	invoke( "echo \"$flags{'message'}\" | ai -u $_", $dir, $_ );
+
+    }
+
+}
+
+while ( ($_ = shift(@ARGV)) ) {
+    m/^-s(?:kip)?$/i && (push(@skip,shift(@ARGV)), $skip[$#skip] =~ s/\@/\\@/, next);
+    m/^-l(?:ist)?$/i && ($flags{"list"} = 1, next);
+    m/^-d(?:ryrun)?$/i && ($flags{"dryrun"} = 1, next);
+    m/^-n(?:ew)?$/i && ($flags{"new"} = 1, next);
+    m/^-m(?:essage)?$/i && ($flags{"message"} = shify(shift(@ARGV)), next);
+    push(@dir,$_);
+}
+
+$cnt = 0;
+$| = 1;
+foreach $dir ( @dir ) {
+
+    ($message = $flags{'message'}) =~ s/\n/\n\#\#\+\t/g;
+
+    print "\n" if $cnt;
+    print "##\n";
+    if ( $flags{"list"} ) {
+	print "## listing";
+    } elsif ( $flags{"dryrun"} ) {
+	print "## dryrun";
+    } else {
+	print "## initiating checkin";
+    }
+
+    print " in initial directory:\n##\n##\t",fullpath($dir),"\n";
+    print "##\n";
+    print "## with message:\n";
+    print "##\t\"$message\"\n";
+    print "##\n";
+    if ( $flags{"new"} ) {
+        print "## (checking in only NEW files)\n";
+    } else {
+        print "## (checking in only EXISTING files)\n";
+    }
+    print "##\n";
+
+    find($dir);
+    if ( $flags{"new"} ) {
+        @newdirs = sort compare_lengths @newdirs;
+	make_directories( @newdirs );
+	$flags{"new"} = 2;
+	find($dir);
+	$flags{"new"} = 1;
+	@newdirs=();
+    }
+    $cnt += 1;
+}

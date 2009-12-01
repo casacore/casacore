@@ -1,0 +1,335 @@
+.TH LWF_A 1-LOCAL "16 January 1986"
+.UC
+
+.SH NAME
+lwf_a \- PostScript filter
+
+.SH SYNOPSIS
+\fBlwf_a\fR [\fB\-1\fR] [\fB\-b\fR] [\fB\-c\fR#] [\fB\-d\fR#] [\fB\-f\fRfont]
+[\fB\-g\fR#] [\fB\-i\fR#] [\fB\-l\fR] [\fB\-n\fRfile] [\fB\-o\fRlist]
+[\fB\-p\fR#] [\fB\-r\fR] [\fB\-s\fR#] [\fB\-t\fR#] [\fB\-u\fR] [\fB\-x\fR]
+[file1 [file2 ...]]
+
+.SH DESCRIPTION
+\fBlwf_a\fR is a PostScript filter.  It can process multiple input files into a
+single multi-document PostScript file.  If no files are specified input is
+read from stdin.
+
+\fBlwf_a\fR correctly processes form feed characters and tabs and also
+understands backspacing.  If a fixed-width font is used, such as one of those
+in the Courier family, then backspaces followed by underscores may be used for
+underlining.
+
+\fBlwf_a\fR can also display 7-bit and 8-bit ASCII control codes as described by
+the \fB\-d\fR option below.
+
+The default font and font size (Courier 10pt) allows 80 characters per line
+in portrait mode, and 132 characters in landscape on A4 paper.  However, the
+left margin is then too narrow to be punched for a ring binder.  If this is
+required, Courier 9pt with a 2 cm margin may be used, specify \fB\-i2 \-s9\fR.
+
+.SH OPTIONS
+.IP \fB\-1\fR 9
+Print in single-sided mode; the default is to print in two-sided (duplex)
+mode if the printer supports it.
+
+.IP \fB\-b\fR 9
+Normally a header is written at the top of each page.  The \fB-b\fR flag
+prevents this and instead produces a separate banner page.
+
+.IP \fB\-c\fI#\fR 9
+Specifies multicolumn output.  The page is divided into the specified number
+of equally-spaced columns without regard to whether the text fits within
+them.  The default is 1.
+
+.IP \fB\-d\fI#\fR 9
+Display ASCII control codes (ASCII 00-1f, 7f-ff):
+
+.RS 9
+.IP 0: 3
+Interpret BS, HT, NL, NP, and CR and ignore all other control codes.
+
+.IP 1: 3
+Interpret NUL, BS, HT, NL, NP, and CR and display all other control codes in
+two-character mnemonic form (default).
+
+.IP 2: 3
+Display all control codes in two-character mnemonic form and also interpret
+HT, NL, NP, and CR.
+
+.IP 3: 3
+Same as 2 except that lines are broken at 80 characters.  Note that since
+horizontal tabs are still interpreted the printed line may exceed 80 columns.
+
+.IP 4: 3
+Display all control codes in two-character mnemonic form and don't interpret
+any of them.  Lines will be broken at 80 characters.
+
+.IP 5: 3
+Interpret the input as a non-ASCII byte stream, displaying each byte in
+hexadecimal notation.  Lines will be broken at 80 characters.
+.RE
+
+.RS 9
+Modes 1, 2, and 3 are suitable for printing text files which may contain a few
+control codes, for example a .cshrc file which sets variables containing
+terminal escape sequences.  Modes 2 and 3 might be useful for debugging
+makefiles since horizontal tabs in these have a special significance.  Modes
+4 and 5 are suitable for dumping binary files.  Mode 4 might be used for
+examining the ASCII character strings contined in an object module, while
+mode 5 might be used for dumping a data file.
+
+The two-character mnemonics are printed at half size.
+
+ASCII control codes are listed below.
+.RE
+
+.IP \fB\-f\fIfont\fR 9
+Set the font type, the default is Courier.  Courier, Helvetica, and Times are
+PostScript standards; the following fonts are supported by most PostScript
+printers:
+   AGB    AvantGarde\-Book
+   AGBO   AvantGarde\-BookOblique
+   AGD    AvantGarde\-Demi
+   AGDO   AvantGarde\-DemiOblique
+   BD     Bookman\-Demi
+   BDI    Bookman\-DemiItalic
+   BL     Bookman\-Light
+   BLI    Bookman\-LightItalic
+   C      Courier
+   CO     Courier\-Oblique
+   CB     Courier\-Bold
+   CBO    Courier\-BoldOblique
+   H      Helvetica
+   HB     Helvetica\-Bold
+   HO     Helvetica\-Oblique
+   HBO    Helvetica\-BoldOblique
+   HN     Helvetica\-Narrow
+   HNB    Helvetica\-Narrow\-Bold
+   HNO    Helvetica\-Narrow\-Oblique
+   HNBO   Helvetica\-Narrow\-BoldOblique
+   NCSR   NewCenturySchlbk\-Roman
+   NCSB   NewCenturySchlbk\-Bold
+   NCSI   NewCenturySchlbk\-Italic
+   NCSBI  NewCenturySchlbk\-BoldItalic
+   PR     Palatino\-Roman
+   PB     Palatino\-Bold
+   PI     Palatino\-Italic
+   PBI    Palatino\-BoldItalic
+   TR     Times\-Roman
+   TB     Times\-Bold
+   TI     Times\-Italic
+   TBI    Times\-BoldItalic
+   ZCMI   ZapfChancery\-MediumItalic
+.br
+The full font name (exactly as specified above) or the abbreviation given on
+the left may be used.
+
+.IP \fB\-g\fI#\fR 9
+Group lines of text in multiples, as specified, by printing grey bands in the
+background.  The default is not to produce banding.
+
+.IP \fB\-i\fI#\fR 9
+The distance in centimetres to indent all text from the left-hand edge of the
+page instead of the default 1cm.
+
+.IP \fB\-l\fR 9
+Use landscape format instead of the default portrait format.  The default font
+type, font size, and indentation allow 80 characters in portrait, and 132 in
+landscape format.
+
+.IP \fB\-n\fR\fIfile\fR 9
+Use \fIfile\fR as the file name in the page header.
+
+.IP \fB\-o\fIM:N\fR 9
+Only pages whose page numbers appear in the comma-separated list of numbers
+and ranges will be printed.  A range \fIM:N\fR means pages \fIM\fR through
+\fIN\fR inclusive.  An initial \fI:N\fR means from the beginning to page
+\fIN\fR, and a final \fIM\fR: means from \fIM\fR to the end.  The default,
+``\fI:\fR'', is to print all pages.
+
+Formfeeds are inserted to maintain the correct parity when printing in duplex
+mode (see the \fI-x\fR option).
+
+.IP \fB\-p\fIpaper\fR 9
+Set the paper type.  The default is A4 and recognized values are
+
+.nf
+-----------------------------------------------------
+  name          point        inch           cm
+-----------------------------------------------------
+ A3          (842 x 1190)              29.7  x 42.0
+ A4          (595 x  842)              21.0  x 29.7
+ A5          (420 x  595)              14.82 x 21.0
+ B4          (729 x 1032)              25.72 x 36.41
+ B5          (516 x  729)              18.20 x 25.72
+ statement   (396 x  612)  5.5 x 8.5  (13.97 x 21.59)
+ executive   (540 x  720)  7.5 x 10   (19.05 x 25.40)
+ quarto      (610 x  780)             (21.52 x 27.52)
+ letter      (612 x  792)  8.5 x 11   (21.59 x 27.94)
+ folio       (612 x  936)  8.5 x 13   (21.59 x 33.02)
+ legal       (612 x 1008)  8.5 x 14   (21.59 x 35.56)
+ 10x14       (720 x 1008)  10  x 14   (25.40 x 35.56)
+ tabloid     (792 x 1224)  11  x 17   (27.94 x 43.18)
+ ledger     (1224 x  792)  17  x 11   (43.18 x 27.94)
+.fi
+
+In addition, "A4/letter" is recognized as being the width of A4 and height of
+letter size paper.
+
+.IP \fB\-r\fR 9
+Reverse the page order and file sequence.  This may be useful for printers
+like the Apple LaserWriter which delivers pages face up, but is not
+appropriate for those which deliver them face down.
+
+.IP \fB\-s\fI#\fR 9
+Set the font size, in points.  The default is 10 and legal values lie in the
+range from 5 to 1000.
+
+.IP \fB\-t\fI#\fR 9
+Set the line spacing.  The default is 1.0 (single space) and legal values lie
+in the range from 1.0 to 3.0 (fractional values are allowed).
+
+.IP \fB\-u\fR 9
+Invert text on the reverse side of the page when printing in duplex mode.
+This may be used when the pages are to be bound on the upper edge of the paper
+(as defined by the orientation of the text on the front side).
+
+.IP \fB\-x\fR 9
+Exchange parity when printing in duplex mode so that the odd numbered pages
+are printed on the reverse side of the paper.
+
+.SH NOTES
+.IP \fB*\fR 3
+\fBlwf_a\fR produces PostScript which conforms to level 3.0 document
+structuring conventions.
+
+.IP \fB*\fR 3
+The following table lists the number of rows and columns per page for a
+variety of input options.  It applies only for Courier with single spacing
+and the default indentation.
+
+.in -2
+.nf
+  ----------------------------------------------------------
+               A3                A4               letter
+        ----------------  ----------------  ----------------
+  Font  Portrait Landsc.  Portrait Landsc.  Portrait Landsc.
+  size  row/col  row/col  row/col  row/col  row/col  row/col
+  ----------------------------------------------------------
+
+    5   220/266  150/389  150/184  101/266  140/190  104/250
+    6   183/222  125/329  125/153   84/222  117/158   87/209
+    7   157/190  107/274  107/131   72/190  100/135   74/179
+    8   137/166   94/239   94/115   63/166   87/118   65/156
+    9   122/148   83/213   83/102   56/148   78/105   58/139
+   10   110/133   75/192   75/92    50/133   70/95    52/125
+   11   100/121   68/174   68/83    46/121   63/86    47/114
+   12    91/111   62/160   62/76    42/111   58/79    43/104
+   15    73/89    50/128   50/61    33/89    46/63    34/83
+   18    61/74    41/106   41/51    28/74    39/53    29/69
+   24    45/55    31/80    31/38    21/55    29/39    21/51
+.in -5
+.fi
+
+.IP \fB*\fR 3
+The ASCII codes in hexadecimal, with two-character mnemonics for control
+codes, are as follows:
+
+.nf
+  00  NU  (NUL - null character)
+  01  SH  (SOH - start of heading)
+  02  SX  (STX - start of text)
+  03  EX  (ETX - end of text)
+  04  ET  (EOT - end of transmission)
+  05  EQ  (ENQ - enquiry)
+  06  AK  (ACK - acknowledge)
+  07  BL  (BEL - bell)
+  08  BS  (BS  - backspace)
+  09  HT  (HT  - horizontal tab) 
+  0a  NL  (NL  - new line, or LF - line feed) 
+  0b  VT  (VT  - vertical tab) 
+  0c  NP  (NP  - new page, or FF - form feed) 
+  0d  CR  (CR  - carriage return) 
+  0e  SO  (SO  - shift out) 
+  0f  SI  (SI  - shift in) 
+
+  10  DL  (DLE - data link escape)
+  11  D1  (DC1 - device control 1)
+  12  D2  (DC1 - device control 2)
+  13  D3  (DC1 - device control 3)
+  14  D4  (DC1 - device control 4)
+  15  NK  (NAK - negative acknowledge)
+  16  SY  (SYN - synchonous idle)
+  17  EB  (ETB - end of transmission block)
+  18  CN  (CAN - cancel)
+  19  EM  (EM  - end of medium) 
+  1a  SB  (SUB - substitute)
+  1b  ES  (ESC - escape)
+  1c  FS  (FS  - file separator) 
+  1d  GS  (GS  - group separator) 
+  1e  RS  (RS  - record separator) 
+  1f  US  (US  - unit separator) 
+
+  20 < >    30  0     40  @     50  P     60  `     70  p
+  21  !     31  1     41  A     51  Q     61  a     71  q 
+  22  "     32  2     42  B     52  R     62  b     72  r 
+  23  #     33  3     43  C     53  S     63  c     73  s 
+  24  $     34  4     44  D     54  T     64  d     74  t 
+  25  %     35  5     45  E     55  U     65  e     75  u 
+  26  &     36  6     46  F     56  V     66  f     76  v 
+  27  '     37  7     47  G     57  W     67  g     77  w 
+  28  (     38  8     48  H     58  X     68  h     78  x
+  29  )     39  9     49  I     59  Y     69  i     79  y 
+  2a  *     3a  :     4a  J     5a  Z     6a  j     7a  z 
+  2b  +     3b  ;     4b  K     5b  [     6b  k     7b  { 
+  2c  ,     3c  <     4c  L     5c  \\     6c  l     7e  ~ 
+  2d  -     3d  =     4d  M     5d  ]     7c  |     6d  m 
+  2e  .     3e  >     4e  N     5e  ^     7d  }     6e  n 
+  2f  /     3f  ?     4f  O     5f  _     6f  o
+
+  7f DL (DEL - delete)
+.fi
+
+Eight-bit codes (from 80 to ff) are displayed via their two hexadecimal
+digits using "abcdef" (in lower case) to distinguish them from certain
+seven-bit control codes all of which are printed in upper case - in
+particular, the eight-bit codes (d1, d2, d3, d4, and eb) and the seven-bit
+codes (D1, D2, D3, D4, and EB).
+
+Do not confuse the hexadecimal code ff with "formfeed" which is displayed
+as NP "newpage".
+
+.SH EXAMPLES
+The command
+
+.ti +5
+lwf_a -s12 -i2.5 file1
+
+would convert file1 to PostScript, indented 2.5cm, and in 12pt Courier font.
+
+The command
+
+.ti +5
+lwf_a -b -c2 -fPR -s6 foo.f
+
+would convert foo.f to PostScript in two column form using a 6pt Palatino
+font.  A separate banner page would be printed.
+
+The command
+
+.ti +5
+man lwf_a | lwf_a
+
+would convert the manual page for \fBlwf_a\fR to PostScript.
+
+.SH BUGS
+If you find any bugs please report them to \fBmcalabre@atnf.csiro.au\fR.
+
+.SH SEE ALSO
+lpr(1)
+
+.SH AUTHORS
+Barry Brachman wrote the original version called \fBlwf\rR (1985/Nov).
+.br
+Extensively modified by Mark Calabretta, 1989/May - 1994.

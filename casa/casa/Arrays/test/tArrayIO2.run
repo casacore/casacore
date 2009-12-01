@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the ArrayIO2 functions.  All files generated will be deleted
+# on exit.
+#=============================================================================
+
+  if ./tArrayIO2 > tArrayIO2_tmp.out
+  then
+     cat tArrayIO2_tmp.mat >> tArrayIO2_tmp.out
+     cat tArrayIO2_tmp.vec >> tArrayIO2_tmp.out
+     exit 0
+  else
+     exit 1
+  fi

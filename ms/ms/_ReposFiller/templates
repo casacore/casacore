@@ -1,0 +1,44 @@
+1000 casa/Arrays/Array.cc 
+     = ms/MeasurementSets/MSSelection.h 
+     template class Array<MSSelection> 
+1000 casa/Arrays/MaskedArray.cc 
+     = ms/MeasurementSets/MSSelection.h 
+     template class MaskedArray<MSSelection> 
+1000 casa/Arrays/Vector.cc 
+     = ms/MeasurementSets/MSSelection.h 
+     template class Vector<MSSelection> 
+1000 casa/Utilities/CountedPtr.cc 
+     = ms/MeasurementSets/MSSelection.h 
+     = casa/Containers/Block.h 
+     template class CountedPtr<Block<MSSelection> > 
+     template class CountedConstPtr<Block<MSSelection> > 
+     template class SimpleCountedPtr<Block<MSSelection> > 
+     template class SimpleCountedConstPtr<Block<MSSelection> > 
+     template class PtrRep<Block<MSSelection> > 
+1000 ms/MeasurementSets/MSSelUtil.cc
+     = ms/MeasurementSets/MSSelUtil2.cc
+     = casa/BasicSL/Complex.h
+     template class MSSelUtil<Float>
+     template class MSSelUtil<Complex>
+     template class MSSelUtil2<Bool>
+     template class MSSelUtil2<Float>
+     template class MSSelUtil2<Complex>
+1000 ms/MeasurementSets/MSTable.cc ms/MeasurementSets/MeasurementSet.h 
+     template class MSTable<MSAntennaEnums::PredefinedColumns, MSAntennaEnums::PredefinedKeywords> 
+     template class MSTable<MSDataDescriptionEnums::PredefinedColumns, MSDataDescriptionEnums::PredefinedKeywords> 
+     template class MSTable<MSDopplerEnums::PredefinedColumns, MSDopplerEnums::PredefinedKeywords> 
+     template class MSTable<MSFeedEnums::PredefinedColumns, MSFeedEnums::PredefinedKeywords> 
+     template class MSTable<MSFieldEnums::PredefinedColumns, MSFieldEnums::PredefinedKeywords> 
+     template class MSTable<MSFlagCmdEnums::PredefinedColumns, MSFlagCmdEnums::PredefinedKeywords> 
+     template class MSTable<MSFreqOffsetEnums::PredefinedColumns, MSFreqOffsetEnums::PredefinedKeywords> 
+     template class MSTable<MSHistoryEnums::PredefinedColumns, MSHistoryEnums::PredefinedKeywords> 
+     template class MSTable<MSMainEnums::PredefinedColumns, MSMainEnums::PredefinedKeywords> 
+     template class MSTable<MSObservationEnums::PredefinedColumns, MSObservationEnums::PredefinedKeywords> 
+     template class MSTable<MSPointingEnums::PredefinedColumns, MSPointingEnums::PredefinedKeywords> 
+     template class MSTable<MSPolarizationEnums::PredefinedColumns, MSPolarizationEnums::PredefinedKeywords> 
+     template class MSTable<MSProcessorEnums::PredefinedColumns, MSProcessorEnums::PredefinedKeywords> 
+     template class MSTable<MSSourceEnums::PredefinedColumns, MSSourceEnums::PredefinedKeywords> 
+     template class MSTable<MSSpectralWindowEnums::PredefinedColumns, MSSpectralWindowEnums::PredefinedKeywords> 
+     template class MSTable<MSStateEnums::PredefinedColumns, MSStateEnums::PredefinedKeywords> 
+     template class MSTable<MSSysCalEnums::PredefinedColumns, MSSysCalEnums::PredefinedKeywords> 
+     template class MSTable<MSWeatherEnums::PredefinedColumns, MSWeatherEnums::PredefinedKeywords> 

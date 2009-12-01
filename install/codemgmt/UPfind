@@ -1,0 +1,197 @@
+#!/usr/bin/env tcsh
+#-----------------------------------------------------------------------------
+# UPfind script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000,2001,2002,2003,2004
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+# UPfind script (must have x allowed)
+#
+set script = "UPfind"
+set usage = 'UPfind [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Get all files that contain data according to an egrep rule." \
+	     "The found files can be used in other UP scripts like UPlist, " \
+	     "UPchange etc. The <typ> is an id acting (by virtue of files) " \
+	     "as a communication between the different UP scripts." \
+	     "All .cc, .h and templates files in the code tree are searched.")
+set hsw   = ("-g use all .g files rather than the C++ files" \
+	     "-f use a file pattern to search for files, not their contents")
+set huse  =  "<typ>.def, <typ>.spat, <typ>.rmpat"
+set hcrea =  "<typ>.raw, <typ>.found"
+#
+# Get general info
+#
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+# Get search pattern
+#
+# Special patterns
+#
+if ($upswp01 || $upswp02) then
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+    touch $ldir/${tp}.spat
+    foreach i ($casapack)
+      echo "/$i/implement/" >> $ldir/${tp}.spat 
+    end
+    echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
+endif
+
+if (! -r $ldir/${tp}.spat) then
+ touch $ldir/${tp}.spat
+ if (! $upswf) then
+   if (! $upswQ) then
+     echo "Specify egrep expression(s) to find files"
+     echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
+     echo '      or: [(][^(]*[*] *[)][ \t]*0'
+     echo 'Multi-line expressions will be ORed'
+   endif
+   while (1)
+	echo -n "Find expression: "
+	set x = "$<"
+	if ("$x" == "") break
+	echo "$x" >> $ldir/${tp}.spat
+   end
+   unset x
+ else
+   if (! $upswQ) then
+     echo "Specify file pattern(s) rooted in AIPSROOT/code to find files"
+     echo 'Example: trial/implement/Measures/M*.h'
+   endif
+   while (1)
+	echo -n "File pattern: "
+	set x = "$<"
+	if ("$x" == "") break
+	echo "$x" >> $ldir/${tp}.spat
+   end
+   unset x
+ endif
+endif
+if (-z $ldir/${tp}.spat) then
+   echo "An empty or no ${tp}.spat file created"
+   if (-e $ldir/${tp}.spat)  rm -f $ldir/${tp}.spat
+   exit 1
+endif
+
+if (! -r $ldir/${tp}.rmpat) then
+   if (! $upswQ) then
+     echo "Specify egrep pattern for files to be removed from raw list found."
+     echo "Example: [/]aipsview[/]"
+     echo "tmplinst files will always be removed"
+   endif
+   echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
+   echo -n "Remove glish files? (y|n) [y]: "
+   set x = "$<"
+   if ("$x" != "n" && "$x" != "N") then
+      echo '[/]glish[/]' >> $ldir/${tp}.rmpat
+   endif
+   while (1)
+	 echo -n "Remove pattern: "
+	 set x = "$<"
+	 if ("$x" == "") break
+	 echo "$x" >> $ldir/${tp}.rmpat
+   end
+   unset x
+endif
+
+if ($upswn) exit 0
+#
+# Execute
+#
+cd $dir/code
+if (! $upswQE) echo "Starting find..."
+if ($upswp01) then
+    find . -name 'templates' -print  >! $ldir/${tp}.raw
+else if ($upswp02) then
+    find . -name 'templates' -print  | \
+	egrep -f $ldir/${tp}.spat >! $ldir/${tp}.raw
+else if ($upswf) then
+  if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
+  touch $ldir/${tp}.raw
+  set y = (`cat $ldir/${tp}.spat`)
+  set x = (`ls $y`)
+  if ($#x == 0) then
+    echo "No files found using pattern"
+    if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
+    exit 1
+  endif
+  foreach i ($x)
+    echo "./$i" >> $ldir/${tp}.raw
+  end
+  unset y
+  unset x
+else
+ if ($upswg) then
+   find . -name '*.g' \
+	-exec egrep -l -f $ldir/${tp}.spat {} \; \
+	      >! $ldir/${tp}.raw 
+ else
+   find . \( \( -name '*.h' -o -name '*.cc' \) -o -name 'templates' \) \
+	-exec egrep -l -f $ldir/${tp}.spat {} \; \
+	      >! $ldir/${tp}.raw 
+ endif
+endif
+
+cd $ldir
+
+if (! $upswQE) then
+  set a = ( `wc $ldir/${tp}.raw` )
+  echo $a[1] files found in ${tp}.raw
+  unset a
+  echo "Starting selected removal..."
+endif
+
+egrep -v -f $ldir/${tp}.rmpat $ldir/${tp}.raw >! $ldir/${tp}.found
+
+if (! $upswQE) then
+  set a = ( `wc $ldir/${tp}.found` )
+  echo $a[1] files left in ${tp}.found
+  unset a
+endif
+
+exit 0
+#

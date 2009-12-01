@@ -1,0 +1,16 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the RecordGram class for a table
+#=============================================================================
+
+./tRecordGramTable "ab"
+./tRecordGramTable "ac"
+./tRecordGramTable "ad"
+./tRecordGramTable "ae"
+./tRecordGramTable "af"
+./tRecordGramTable "ag"
+./tRecordGramTable "ab>4"
+./tRecordGramTable "ab+ac"
+./tRecordGramTable "arr1[1,1,1]+1"
+./tRecordGramTable "max(arr1)"
+./tRecordGramTable "arr1"

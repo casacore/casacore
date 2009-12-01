@@ -1,0 +1,139 @@
+#-----------------------------------------------------------------------------
+# makefile.pkg: Generic AIPS++ package makefile
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1995,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is included by other AIPS++ makefiles and is not intended
+# for stand-alone use.
+#
+# Original: 1995/03/07 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+# AIPS++ fundamentals.
+#---------------------
+AIPSROOT := $(word 1, $(AIPSPATH))
+AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
+include $(AIPSARCH)/makedefs
+
+# Do not include template source files.
+#--------------------------------------
+CPPOPT += -DAIPS_NO_TEMPLATE_SRC
+CPPDBG += -DAIPS_NO_TEMPLATE_SRC
+
+# Package subdirectories.
+#------------------------
+PCKGIMPD := $(CODEDIR)/implement
+PCKGFTND := $(CODEDIR)/fortran
+PCKGAPSD := $(CODEDIR)/apps
+
+MAKEIMPD := $(filter $(PCKGIMPD), $(CODESUBS))
+MAKEFTND := $(filter $(PCKGFTND), $(CODESUBS))
+MAKEAPSD := $(filter $(PCKGAPSD), $(CODESUBS))
+
+MAKEAUXD := $(filter-out $(PCKGIMPD) $(PCKGFTND) $(PCKGAPSD), $(CODESUBS))
+
+
+# Static and static pattern rules.
+#---------------------------------
+.PHONY : bin lib
+
+allsys : $(MAKEAUXD) $(MAKEIMPD) $(MAKEFTND) $(MAKEAPSD)
+
+.cleansys ::
+	-$Q $(RM) -r $(ARCHTMPD)/$(PACKAGE)
+
+lib : $(MAKEIMPD) $(MAKEFTND) ;
+
+bin : $(MAKEAPSD) ;
+
+docscan docextr runtests :
+	-@ if [ "$Q" != "@" -o "$(MAKELEVEL)" = 0 ] ; then \
+	      echo "" ; \
+	      echo gmake[$(MAKELEVEL)]: $(MAKE) -C $(CODEDIR)/implement $@ ; \
+	   else \
+	      echo $@[$(MAKELEVEL)]:"$(MAKEINDENT)"implement ; \
+	   fi
+	 @ $(MAKE) -C implement NODEP=1 $@ 
+
+# Programmer-oriented pattern rules.
+ifeq "$(MAKEMODE)" "programmer"
+   check :
+	@ for i in $$SUBDIRS ; do \
+	     copied=0; \
+	     if [ ! -f $$i/makefile ]; then \
+	        if [ -f $$i/src/makefile ]; then \
+		   cp $$i/src/makefile $$i; \
+		   copied=1; \
+		fi; \
+	     fi; \
+	     if [ -f $$i/makefile ]; then \
+	        echo "$(MAKE) -C $$i $@" ; \
+	        $(MAKE) -C $$i $@ ; \
+		if [ $$copied = 1 ]; then \
+		   $(RM) makefile; \
+	        fi; \
+	     fi; \
+	  done
+endif
+
+
+show_local :
+	-@ echo ""
+	-@ echo "Variables defined in the package makefile"
+	-@ echo "========================================="
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "PCKGIMPD=$(PCKGIMPD)"
+	-@ echo "PCKGFTND=$(PCKGFTND)"
+	-@ echo "PCKGAPSD=$(PCKGAPSD)"
+	-@ echo ""
+	-@ echo "MAKEIMPD=$(MAKEIMPD)"
+	-@ echo "MAKEFTND=$(MAKEFTND)"
+	-@ echo "MAKEAPSD=$(MAKEAPSD)"
+	-@ echo ""
+	-@ echo "MAKEAUXD=$(MAKEAUXD)"
+
+help ::
+	-@ echo ""
+	-@ echo "Targets defined in the package makefile"
+	-@ echo "======================================="
+	-@ echo ""
+	-@ echo "System"
+	-@ echo "------"
+	-@ echo "        lib: initiate 'gmake allsys' in the implement"
+	-@ echo "             and fortran subdirectories."
+	-@ echo "        bin: initiate 'gmake allsys' in the apps"
+	-@ echo "             subdirectory."
+	-@ echo "    docscan: scan C++ sources for class information."
+	-@ echo "    docextr: extract documentation from the C++ sources."
+	-@ echo "   runtests: run all test programs."
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "      check: build, run, and check all test programs."

@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# $Id$
+
+# Fundamentals.
+  TABLES="tTable_2.data_v0"
+
+  ./tConcatTable $TABLES

@@ -1,0 +1,7 @@
+Demonstrate measure class to provide field rotations
+----------------------------------------------------
+Specify the base epoch (B1950, J2000) [B1950]: Specify RA in degrees:  Specify DEC in degrees: Specify time in MJD: B1950 coordinates: [50.3041, -59.8021] deg
+Rotation angle: -0.487177 deg
+Apparent coordinates: [50, -60] deg
+Rotation angle: -0.487075 deg
+Specify time in MJD: Specify RA in degrees:  

@@ -1,0 +1,35 @@
+#! /bin/sh
+#-----------------------------------------------------------------------------
+# Script to execute the tSymLink program via assay.
+# It defines a few files, etc. to make the program work in any environment.
+# Execution:
+#      tSymLink.run        execute using assay (normal procedure)
+#      tSymLink.run 0      only define the subdirectory, etc. (for debugging)
+#      tSymLink.run 1      execute as such (to test)
+#      tSymLink.run 1 1    execute without exceptions (to test leakage)
+#=============================================================================
+
+/bin/rm -rf tSymLink_tmp
+mkdir tSymLink_tmp
+
+ln -s  A  tSymLink_tmp/B
+ln -s  B  tSymLink_tmp/A
+ln -s  E  tSymLink_tmp/D
+ln -s  $HOME  tSymLink_tmp/E
+ln -s  E  tSymLink_tmp/F
+ln -s  F  tSymLink_tmp/G
+ln -s  G  tSymLink_tmp/H
+ln -s  H  tSymLink_tmp/I
+ln -s  $HOME  tSymLink_tmp/isLink
+ls > tSymLink_tmp/isFile
+mkdir tSymLink_tmp/isDir
+
+if [ $# != 0 ]
+then
+    if [ $1 != 0 ]
+    then
+        ./tSymLink $2
+    fi
+else
+    ./tSymLink
+fi

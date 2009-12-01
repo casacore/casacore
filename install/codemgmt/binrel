@@ -1,0 +1,505 @@
+#!/opt/local/bin/perl
+##
+## Command line flags:
+##
+##	-skip-strip		if you know the binaries have already been
+##				stripped you can skip that step with this flag
+##
+##	-exclude-re REGEX
+## or	-exre REGEX		use REGEX to exclude files from the distribution
+##				this REGEX will be applied to all directories when
+##				looking for files to exclude. The following files
+##				are automatically excluded:
+##
+##					glish/\.*/$ARCH		(for each architecure)
+##					RCS$
+##					/tmplinst/
+##
+##	-exclude-file FILENAME
+## or	-exfi FILENAME		use FILENAME as the file listing a collection of
+##				fully qualified file paths to be excluded
+##
+##	-target-dir DIRNAME
+## or	-tgt DIRNAME		the directory where files binary release should
+##				be placed
+##
+##	-arch-only
+##	-aro			only produce architecture files, skip source,
+##				documentation, etc.
+##	
+##
+require "find.pl";
+require "ctime.pl";
+require "hostname.pl";
+use Cwd qw(cwd chdir);
+
+umask(022);
+
+@APATH = split(/\s+/,$ENV{'AIPSPATH'});
+die "AIPSPATH not set" unless scalar(@APATH) > 0;
+
+##
+## where is the aips++ installation upon which
+## the beta releases are to be created
+##
+$RROOT=$APATH[0];
+
+##
+## where should the releases be placed
+##
+$TARGET="";
+
+##
+## which file should be read for tar exclusions,
+## $ARCH will be expanded appropriately
+##
+$EXCLUDE= "$RROOT/exclude";
+
+##
+## various utilities to use, $STRIP must exist
+## on each architecture
+##
+$RSH='rsh';
+$STRIP='strip';
+$ZIP='gzip -best';
+
+$TAR='gtar';
+
+##
+## which architecture files to include, rooted in $ARCH
+##
+$BIN_FILES = "aipsrc bin doc lib libexec makedefs VERSION grfont.dat rgb.txt local";
+
+##
+## which code directories to include, rooted in code
+##
+$CODE_DIRS = "admin aips atnf bima contrib dish display doc hia install nfra nral nrao synthesis tifr trial trialdisplay vlbi jive npoi";
+
+##
+## which files to copy directly, rooted in code
+##
+$COPY_FILES = "code/VERSION code/install/configure";
+
+##
+## maps the possible architectures to machines we can use
+## for the architecture and the initial PATH
+##
+%arch_map = ( $APATH[1] => [ hostname(), '' ] );
+$local_host = hostname();
+
+##
+## text for the README file
+##
+$README_TEXT = <<'EOF'
+
+This directory contains AIPS++ release $VERSION.  If you
+wish more information about AIPS++, please point your web browser to
+http://aips2.nrao.edu.
+
+For installation:
+
+1) Insert the CD into the CD-ROM drive
+2) Type: mount /mnt/cdrom
+3) Type: sh /mnt/cdrom/INSTALL
+
+After then installation is complete, point your web browser to
+
+file://\$AIPSINSTALL/readme.html
+
+for more information, where \$AIPSINSTALL is the AIPS++ installation 
+directory you have chosen.
+
+If your system configuration restricts user mounting of a CDROM, you 
+you will need to either mount the CD as root or have your system 
+adminstrator enable user mounting of the CDROM. On Solaris, the system 
+adminstrator may need to enable vold to automatically mount the CDROM.
+Typing df /cdrom/aips2install will indicate if the CDROM has been mounted 
+properly.
+
+Please send comments and questions to: aips2-request@aoc.nrao.edu
+
+The AIPS++ Consortium
+
+EOF
+;
+##
+##  ---  ---  ---  end setup  ---  ---  ---
+##
+
+##
+## skip stripping the binaries?
+##
+$skipstrip=0;
+##
+## only do architecture files
+##
+$archonly=0;
+
+chdir $RROOT;
+
+##
+## determine the release number
+##
+die "no VERSION file" unless open(IN,"< code/VERSION");
+($NAME = <IN>) =~ s/^(\d+\.\d+).*\n?/$1/;
+close(IN);
+
+##
+## where is our scratch area
+##
+$tmpdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME";
+
+##
+## load aipshosts
+##
+if ( -e $tmpdir ) {
+    $tmpdir = "$RROOT/$APATH[1]/tmp/autobeta-$NAME-$$";
+    if ( -e $tmpdir ) {
+        $Seed = "aaaa";
+        while ( -e ($tmpdir="$RROOT/$APATH[1]/tmp/autobeta-$NAME-$Seed") ) { $Seed++; }
+    }
+}
+die "couldn't create work directory: $tmpdir" unless mkdir($tmpdir,0755);
+
+%ahosts = ();
+die "couldn't open aipshosts" unless open(AHOSTS,"< aipshosts");
+while ( <AHOSTS> ) {
+    ($h,$a,@junk) = split(/\s+/);
+    $ahosts{$h} = $a;
+}
+close(AHOSTS);
+
+##
+## values set in via ARGV
+##
+@EXCLUDE_RE = ();
+
+##
+## handle command line flags
+##
+while ($_ = @ARGV[0], (/^-/)) {
+    shift(@ARGV);
+    last if /^--$/;
+
+    /^-skip-strip$/i && ($skipstrip =1, next);
+    /^-exclude-re$/i && (push(@EXCLUDE_RE,shift(@ARGV)), next);
+    /^-exre$/i && (push(@EXCLUDE_RE,shift(@ARGV)), next);
+    /^-exclude-file$/i && ($EXCLUDE = shift(@ARGV),next);
+    /^-exfi$/i && ($EXCLUDE = shift(@ARGV),next);
+    /^-target-dir$/i && ($TARGET = shift(@ARGV),next);
+    /^-tgt$/i && ($TARGET = shift(@ARGV),next);
+    /^-arch-only$/i && ($archonly = 1,next);
+    /^-aro$/i && ($archonly = 1,next);
+    if ( /^-host$/i ) {
+	shift(@ARGV) =~ m/(\w+)\s*(.*)/;
+	die "unknown host: $1" unless defined $ahosts{$1};
+	$arch_map{$ahosts{$1}} = [$1,$2];
+	next;
+    }
+
+    warn "Unknown option: $_ (ignoring)";
+}
+
+##
+## exclude variables
+##
+$EXCLUDE_FILE = "$tmpdir/exclude";
+$EXCLUDED_FILES = "$tmpdir/excluded";
+@EXCLUDE_ARCH = ();
+@EXCLUDE = ();
+
+die "no target directory" unless $TARGET && -d $TARGET;
+die "could not open excluded file" unless open(IN,"> $EXCLUDED_FILES");
+close(IN);
+unlink($EXCLUDED_FILES);
+
+die "no docs directory" unless -d "docs";
+
+##
+## variables used by find()
+##
+@FIND_FILES = ();
+@FIND_RE = ();
+$FIND_DIR = "";
+
+##
+## automatically exclude architecture files beneath
+## glish (for all possible architectures), RCS links,
+## and template instantiations
+##
+push(@EXCLUDE_RE,'RCS$');
+push(@EXCLUDE_RE,'/tmplinst/');
+%been_there = ();
+while (($key, $val) = each %ahosts) {
+    $val =~ s@^(\w+?)(?:_\w+)?$@$1(?:_\\w+)?@;
+    if ( ! defined $been_there{$val} ) {
+	push(@EXCLUDE_RE,"glish/(?:.+/)?$val");
+	$been_there{$val} = 1;
+    }
+}
+
+##
+## verify that the architecture directories are good
+##
+foreach $arch (keys %arch_map) {
+    die "bad architecture, $arch" if ! -d $arch || ! -d "$arch/bin" || ! -d "$arch/lib";
+}
+
+##
+## split exclude file up into those dependent upon
+## $ARCH and those not dependent upon $ARCH
+##
+if ( -f $EXCLUDE ) {
+    open(IN,"< $EXCLUDE");
+    while ( <IN> ) {
+	s/\n$//;
+	if ( m/\$ARCH/ ) {
+	    push(@EXCLUDE_ARCH,$_);
+	} else {
+	    push(@EXCLUDE,$_);
+	}
+    }
+    close(IN);
+}
+
+if ( ! $archonly ) {
+    print "clearing out old $NAME files in $TARGET\n";
+    open(CLEAN,"rm -rf $TARGET/$NAME* 2>&1 |");
+    while ( <CLEAN> ) { print "\t$_"; }
+    close(CLEAN);
+    mkdir("$TARGET/$NAME",0755);
+} else {
+    print "skipping clearing out old $NAME files in $TARGET\n";
+}
+
+foreach $arch (keys %arch_map) {
+
+    @backup=();
+    @backupdesc=();
+    @backupdir=();
+
+    if ( $skipstrip ) {
+	print "skipping stripping $arch binaries\n";
+    } else {
+
+	# ------------- libraries -------------
+	opendir(LIB,"$arch/lib") || die "cannot open $arch/lib";
+	@files = readdir(LIB);
+	closedir(LIB);
+
+	# collect binaries for $arch
+	@libraries = ();
+	foreach $lib (@files) {
+	    lstat("$arch/lib/$lib");
+	    if ( ! -l _ ) {
+	        if ( -B _ && ! -d _ && ! -z _ ) {
+		    push(@libraries,$lib);
+		}
+	    }
+	}
+
+	print "backing up libraries for $arch\n";
+        $backup = "$tmpdir/arch-lib-backup.tar.gz";
+
+	push( @backup, $backup );
+	push( @backupdesc, "libraries" );
+	push( @backupdir, "$arch/lib" );
+
+	open( TAR, "(cd $arch/lib; tar cf - " . join(' ',@libraries) . " | $ZIP -c > $backup) 2>&1 |" );
+        while ( <TAR> ) { print "\t$_"; }
+	close(TAR);
+
+	print "stripping libraries for $arch\n";
+	if ( $arch_map[1] ) {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . ") 2>&1 |");
+	    }
+	} else {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; cd $RROOT/$arch/lib; $STRIP " .
+			     join(' ',@libraries) . ") 2>&1 |");
+	    }
+
+	}
+
+	while ( <REMOTE> ) { print "\t$_"; }
+	close(REMOTE);
+
+	# ------------- binaries  -------------
+	opendir(BIN,"$arch/bin") || die "cannot open $arch/bin";
+	@files = readdir(BIN);
+	closedir(BIN);
+
+	# collect binaries for $arch
+	@binaries = ();
+	foreach $bin (@files) {
+	    lstat("$arch/bin/$bin");
+	    if ( ! -l _ ) {
+	        if ( -B _ && ! -d _ && ! -z _ ) {
+		    push(@binaries,$bin);
+		}
+	    }
+	}
+
+	print "backing up binaries for $arch\n";
+        $backup = "$tmpdir/arch-bin-backup.tar.gz";
+
+	push( @backup, $backup );
+	push( @backupdesc, "binaries" );
+	push( @backupdir, "$arch/bin" );
+
+	open( TAR, "(cd $arch/bin; tar cf - " . join(' ',@binaries) . " | $ZIP -c > $backup) 2>&1 |" );
+        while ( <TAR> ) { print "\t$_"; }
+	close(TAR);
+
+	print "stripping binaries for $arch\n";
+	if ( $arch_map[1] ) {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; PATH=$arch_map{$arch}[1]:\$PATH; export PATH; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . ") 2>&1 |");
+	    }
+	} else {
+	    if ( $arch_map{$arch}[0] ne $local_host ) {
+		open(REMOTE,"$RSH $arch_map{$arch}[0] '. .profile; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . "' 2>&1 |");
+	    } else {
+		open(REMOTE,"( . \$HOME/.profile; cd $RROOT/$arch/bin; $STRIP " .
+			     join(' ',@binaries) . ") 2>&1 |");
+	    }
+
+	}
+
+	while ( <REMOTE> ) { print "\t$_"; }
+	close(REMOTE);
+    }
+
+    @exclude = @EXCLUDE_ARCH;
+    foreach ( @exclude ) {
+	s/\$ARCH/$arch/;
+    }
+
+    ($files = $BIN_FILES) =~ s@([-a-zA-Z0-9_.]+)@$arch/$1@g;
+    tar( $arch, $files, \@exclude );
+
+    foreach $backup ( @backup ) {
+	print "restoring original ", shift(@backupdesc), " for $arch\n";
+	open( UNTAR, "(cd " . shift(@backupdir) . "; $ZIP -d -c $backup | tar xf -) 2>&1 |" );
+	while ( <UNTAR> ) { print "\t$_"; }
+	close(UNTAR);
+	unlink($backup);
+    }
+}
+
+if ( ! $archonly ) {
+
+    tar( "docs", "docs" );
+
+    foreach $dir ( split(/\s+/,$CODE_DIRS) ) {
+	die "bad code directory, $dir" if ! -d "code/$dir";
+	tar( $dir, "code/$dir" );
+    }
+
+    print "copying individual files\n";
+    open(CP,"cp $COPY_FILES $TARGET/$NAME 2>&1 |");
+    while ( <CP> ) { print "\t$_"; }
+    close(CP);
+
+    print "creating readme file\n";
+    open(OUT,"> $TARGET/$NAME/README");
+    $README_TEXT =~ s/\$VERSION/$NAME/g;
+    print OUT $README_TEXT;
+    ($curtime = ctime(time)) =~ s/\n$//;
+    print OUT "This release was created on ", $curtime , ".\n\n";
+    close(OUT);
+
+}
+
+if ( -f $EXCLUDED_FILES ) {
+    print "see $EXCLUDED_FILES for a list of files automatically excluded\n";
+}
+
+unlink($EXCLUDE_FILE);
+
+exit;
+
+##
+##  ---  ---  ---  begin subroutines  ---  ---  ---
+##
+
+sub tar {
+    my $name = shift;
+    my $dir = shift;
+    my $exclude = ( $#_ >= 0 ? shift : [] );
+    my @dirs = split(/\s+/,$dir);
+    my $extra = '';
+
+    print "creating $name tar file\n";
+
+    if ( $#EXCLUDE >= 0 ) { push( @$exclude, @EXCLUDE ); }
+
+    @FIND_RE = ();
+    foreach $re ( @EXCLUDE_RE ) {
+	my $add = 1;
+	foreach $d ( @dirs ) {
+	    if ( $d =~ m/$re/ ) {
+		$add = 0;
+		last;
+	    }
+	}
+	if ( $add != 0 ) {
+	    push(@FIND_RE,$re);
+	}
+    }
+
+    if ( $#FIND_RE >= 0 ) {
+	@FIND_FILES=();
+	foreach $FIND_DIR ( @dirs ) {
+	    find($FIND_DIR) if -d $FIND_DIR;
+	}
+	if ( $#FIND_FILES >= 0 ) {
+	    open( OUT, ">> $EXCLUDED_FILES" );
+	    print OUT join("\n",@FIND_FILES),"\n";
+	    close( OUT );
+	}
+	push(@$exclude,@FIND_FILES);
+    }
+
+    unlink($EXCLUDE_FILE);
+    $extra = '';
+    if ( $#$exclude >= 0 ) {
+	open(OUT,"> $EXCLUDE_FILE");
+	print OUT join("\n",@$exclude),"\n";
+	close(OUT);
+	$extra = "--exclude-from $EXCLUDE_FILE";
+    }
+
+    open(TAR,"($TAR --create --file $TARGET/$NAME/$name.tar $extra $dir > /dev/null) 2>&1 |");
+    while ( <TAR> ) { print "\t$_"; }
+    close(TAR);
+
+    print "gzipping $name tar file\n";
+    open(ZIP,"$ZIP $TARGET/$NAME/$name.tar 2>&1 |");
+    while ( <ZIP> ) { print "\t$_"; }
+    close(ZIP);
+
+}
+
+sub wanted {
+    if ( (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
+         ( -f _ || -d _ || -l _ ) && -r _ ) {
+	foreach $re ( @FIND_RE ) {
+	    $dir =~ s/^\./$FIND_DIR/;
+	    if ( "$dir/$_" =~ m/$re/ ) { push( @FIND_FILES, "$dir/$_" ); last; }
+	}
+    }
+}

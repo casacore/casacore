@@ -1,0 +1,3 @@
+1000 casa/Utilities/GenSort.cc casa/Arrays/Array.h 
+     = casa/BasicSL/String.h 
+     template uInt genSort(Array<String> &) 

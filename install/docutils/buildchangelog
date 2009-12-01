@@ -1,0 +1,781 @@
+#!/usr/local/bin/perl5
+
+#   buildchangelog: build changelog html files
+#
+#   This utility is part of AIPS++, a software project centered at
+#   the National Radio Astronomy Observatory.
+#
+#   Copyright (C) 2000
+#   Associated Universities, Inc. Washington DC, USA.
+# 
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+# 
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+# 
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   675 Massachusetts Ave, Cambridge, MA 02139, USA.
+# 
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+
+
+#
+%mhash = {"jan" => "01", "feb" => "02", "mar" => "03", "apr" => "04",
+          "may" => "05", "jun" => "06", "jul" => "07", "aug" => "08",
+          "sep" => "09", "oct" => "10", "nov" => "11", "dec" => "12",
+	 };
+
+# Try to get the AIPS++ version from the VERSION file in the code directory.
+$aipsvers = 'unknown';
+$aipsdate = 'unknown';
+my @AIPSPATH;
+if (@AIPSPATH = split (/\s+/, $ENV{'AIPSPATH'})) {
+  my $versfile = "@AIPSPATH[0]/code/VERSION";
+  if (open FH, $versfile) {
+    while (<FH>) {
+      chop($_);
+      if (/^(.+?)\s+(.*)$/) {
+	$aipsdate = $2;
+	$aipsvers = $1;
+	my @vers;
+	if (@vers = split(/\./, $aipsvers)) {
+	  $aipsvers = @vers[0];
+	  $aipsvers = substr($aipsvers,0,-1).'.'.substr($aipsvers,-1,1);
+	}
+      }
+    }
+    close FH;
+  }
+}
+
+# Default output directory is .
+# Default is all detailed output in 1 file.
+# Summary output is always in 1 file.
+# By default only the changes for the current version are selected.
+# Use -version all to select all versions.
+$OUTPATH = '.';
+$SUMNAME = '';
+$SPLIT = '';
+%filter = ( 'DATECMP' => 0, 'DATEVAL' => 0,
+            'CHIDCMP' => 0, 'CHIDVAL' => 0,
+            'AREACMP' => 0, 'AREAVAL' => 0,
+            'PKGCMP' => 0,  'PKGVAL' => 0,
+            'MODCMP' => 0,  'MODVAL' => 0,
+            'VERSCMP' => 1, 'VERSVAL' => $aipsvers,
+            'TYPECMP' => 0, 'TYPEVAL' => 0,
+            'CATCMP' => 0,  'CATVAL' => 0,
+	  );
+%processed;
+@logfiles;
+
+while ($_ = @ARGV[0], (/^-/)) {
+  shift(@ARGV);
+  last if /^--$/;
+
+  # Output flags
+  /^-dir(?:ectory)?$/i && ($OUTPATH = shift(@ARGV), next);
+  /^-name$/i && ($SUMNAME = shift(@ARGV), next);
+  /^-split(?:file)?$/i && ($SPLIT = shift(@ARGV), next);
+
+  # Filter options
+  /^-date$/i && ($filter{'DATECMP'} = 1,
+ 	         $filter{'DATEVAL'} = shift(@ARGV), next);
+  /^-nodate$/i && ($filter{'DATECMP'} = -1,
+ 	           $filter{'DATEVAL'} = shift(@ARGV), next);
+  /^-id$/i && ($filter{'CHIDCMP'} = 1,
+ 	       $filter{'CHIDVAL'} = shift(@ARGV), next);
+  /^-noid$/i && ($filter{'CHIDCMP'} = -1,
+ 	         $filter{'CHIDVAL'} = shift(@ARGV), next);
+  /^-area$/i && ($filter{'AREACMP'} = 1,
+		 $filter{'AREAVAL'} = shift(@ARGV), next);
+  /^-noarea$/i && ($filter{'AREACMP'} = -1,
+		   $filter{'AREAVAL'} = shift(@ARGV), next);
+  /^-package$/i && ($filter{'PKGCMP'} = 1,
+ 	            $filter{'PKGVAL'} = shift(@ARGV), next);
+  /^-nopackage$/i && ($filter{'PKGCMP'} = -1,
+ 	              $filter{'PKGVAL'} = shift(@ARGV), next);
+  /^-module/i && ($filter{'MODCMP'} = 1,
+		  $filter{'MODVAL'} = shift(@ARGV), next);
+  /^-nomodule$/i && ($filter{'MODCMP'} = -1,
+		     $filter{'MODVAL'} = shift(@ARGV), next);
+  /^-avers$/i && ($filter{'VERSCMP'} = 1,
+		  $filter{'VERSVAL'} = shift(@ARGV), next);
+  /^-noavers$/i && ($filter{'VERSCMP'} = -1,
+ 	            $filter{'VERSVAL'} = shift(@ARGV), next);
+  /^-type$/i && ($filter{'TYPECMP'} = 1,
+ 	         $filter{'TYPEVAL'} = shift(@ARGV), next);
+  /^-notype$/i && ($filter{'TYPECMP'} = -1,
+ 	           $filter{'TYPEVAL'} = shift(@ARGV), next);
+  /^-category$/i && ($filter{'CATCMP'} = 1,
+		     $filter{'CATVAL'} = shift(@ARGV), next);
+  /^-nocategory$/i && ($filter{'CATCMP'} = -1,
+		       $filter{'CATVAL'} = shift(@ARGV), next);
+
+  print STDERR "Error; unknown option: $_\n";
+  exit(1);
+}
+
+# Add trailing slash to OUTPATH if needed.
+if ($OUTPATH =~ /^\s*$/) {
+  $OUTPATH = '';
+}
+if ($OUTPATH !~ /\/$/) {
+  $OUTPATH .= '/';
+}
+
+# Determine how to split the output file.
+my $splitfile = 0;
+if ($SPLIT =~ /^\s*$/) {
+  $splitfile = 1;
+}
+if ($SPLIT =~ /^area$/i) {
+  $splitfile = 2;
+}
+if ($SPLIT =~ /^package$/i) {
+  $splitfile = 3;
+}
+if ($SPLIT =~ /^module$/i) {
+  $splitfile = 4;
+}
+if ($splitfile == 0) {
+  print STDERR "Error; $SPLIT is an invalid splitfile option (use area, package, or module";
+  exit(1);
+}
+
+# Get name of input tree.
+if ($#ARGV < 0) {
+  print STDERR "Error; no input directory given (e.g. /aips++/weekly/code)\n";
+  exit(1);
+}
+$INPATH = $ARGV[0];
+@names = split /\//, $INPATH;
+if ($names[$#names] ne 'code') {
+  print STDERR "Error; the input directory path should end in 'code'\n";
+  exit(1);
+}
+
+# Process the given filters to a more usable form.
+processfilter (\%filter);
+
+# Process all change logs.
+processlogs (\%filter);
+
+exit(0);
+
+
+# Process all change logs.
+sub processlogs (filter)
+{
+  my $filter = shift;
+  my @chrecarr;
+  my @files = `find $INPATH -name changelog -print`;
+  foreach $file (@files) {
+    if (open HANDLE, "$file") {
+      my $text = '';
+      while (<HANDLE>) {
+        unless (/^#/) {
+	  $text .= $_;
+	}
+      }
+      close HANDLE;
+      if ($text !~ m/^\s*$/) {
+        processtext ($file, $text, \@chrecarr, \%filter);
+      }
+    }
+  }
+  # Write the ending html text in all files created.
+  foreach $file (@logfiles) {
+    unless (open OUT, ">> $file") {
+      print STDERR "Error: unable to open file $file for final append\n";
+    }
+    print OUT "</body>\n";
+    print OUT "</html>\n";
+    close OUT;
+  }
+  # Create the summary files.
+  if ($splitfile == 1) {
+    processsummary1 (\@chrecarr);
+  } else {
+    processsummary2 (\@chrecarr);
+  }
+}
+
+
+sub processtext (file, alltext, chrecarr, filter)
+{
+  my $file    = shift;
+  my $alltext = shift;
+  my $chrecarr  = shift;
+  my $filter  = shift;
+  while ($alltext !~ m/^\s*$/) {
+    unless ($alltext =~ s@^\s*<change\s+id\s*=\s*([0-9]+)\s*>(.+?)</change>@@is) {
+      print STDERR "Error; invalid change entry in file $file\n";
+      return;
+    }
+    my $chid = $1;
+    my $text = $2;
+    my $date    = '';
+    my $vers    = '';
+    my $author  = '';
+    my $area    = '';
+    my $pkg     = '';
+    my $module  = '';
+    my $type    = '';
+    my $cat     = '';
+    my $defects = '';
+    my $summary = '';
+    my $desc    = '';
+
+    $date    = $1 if $text =~ s@<date>(.+)</date>@@is;
+    $date    =~ s/\s+//sg;
+    $vers    = $1 if $text =~ s@<avers>(.+)</avers>@@is;
+    $vers    =~ s/\s+//sg;
+    $author  = $1 if $text =~ s@<author>(.+)</author>@@is;
+    $author  =~ s/\s+/ /sg;
+    $author  =~ s/^\s//;
+    $author  =~ s/\s$//;
+    $area    = $1 if $text =~ s@<area>(.+)</area>@@is;
+    $area    =~ s/\s+//sg;
+    if ($area ne 'Tool') {
+      $pkg     = $1 if $text =~ s@<package>(.+)</package>@@is;
+      $pkg     =~ s/\s+//sg;
+    }
+    $module  = $1 if $text =~ s@<module>(.+)</module>@@is;
+    $module  =~ s/\s+//sg;
+    $cat     = $1 if $text =~ s@<category>(.+)</category>@@is;
+    $cat     =~ s/,/ /sg;
+    $cat     =~ s/\s+/,/sg;
+    $cat     =~ s/^,//;
+    $cat     =~ s/,$//;
+    @cats    = split (/,/, lc($cat));
+    $type    = $1 if $text =~ s@<type>(.+)</type>@@is;
+    $type    =~ s/,/ /sg;
+    $type    =~ s/\s+/,/sg;
+    $type    =~ s/^,//;
+    $type    =~ s/,$//;
+    @types   = split (/,/, lc($type));
+    $defect  = $1 if $text =~ s@<defects>(.+)</defects>@@is;
+    $defect  =~ s/,/ /sg;
+    $defect  =~ s/\s+/,/sg;
+    $defect  =~ s/^,//;
+    $defect  =~ s/,$//;
+    @defects = split(/,/, $defect);
+    $summary = $1 if $text =~ s@<summary>(.+)</summary>@@is;
+    $summary =~ s/\s+/ /sg;
+    $summary =~ s/^\s//;
+    $summary =~ s/\s$//;
+    $desc    = $1 if $text =~ s@<description>(.+)</description>@@is;
+    $desc    =~ s/^\s+//;
+    $desc    =~ s/\s+$//;
+
+    my $sel = 0;
+    # Test if the area has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'AREACMP'} != 0) {
+      $sel = $filter->{'AREACMP'};
+      foreach $a (@{$filter->{'AREAARR'}}) {
+	if ($area eq $a) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the package has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'PKGCMP'} != 0) {
+      $sel = $filter->{'PKGCMP'};
+      foreach $p (@{$filter->{'PKGARR'}}) {
+	if ($pkg eq $p) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the module has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'MODCMP'} != 0) {
+      $sel = $filter->{'MODCMP'};
+      foreach $m (@{$filter->{'MODARR'}}) {
+	if ($module eq $m) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the version has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'VERSCMP'} != 0) {
+      $sel = $filter->{'VERSCMP'};
+      my $n = $#{$filter->{'VERSARR'}};
+      for ($i=0; $i<=$n; $i+=2) {
+	if ($vers >= $filter->{'VERSARR'}[$i]  &&
+  	    $vers <= $filter->{'VERSARR'}[$i+1]) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the changeid has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'CHIDCMP'} != 0) {
+      $sel = $filter->{'CHIDCMP'};
+      my $n = $#{$filter->{'CHIDARR'}};
+      for ($i=0; $i<=$n; $i+=2) {
+	if ($chid >= $filter->{'CHIDARR'}[$i]  &&
+  	    $chid <= $filter->{'CHIDARR'}[$i+1]) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the category has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{CATCMP} != 0) {
+      $sel = $filter->{'CATCMP'};
+      foreach $c (@{$filter->{'CATARR'}}) {
+	my $match = 0;
+	foreach $v (@cats) {
+	  if ($v eq $c) {
+	    $match = 1;
+	    last;
+	  }
+	}
+	if ($match == 1) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the type has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'TYPECMP'} != 0) {
+      $sel = $filter->{'TYPECMP'};
+      foreach $t (@{$filter->{'TYPEARR'}}) {
+	my $match = 0;
+	foreach $v (@types) {
+	  if ($v eq $t) {
+	    $match = 1;
+	    last;
+	  }
+	}
+	if ($match == 1) {
+	  $sel *= -1;
+	  last;
+	}
+      }
+    }
+
+    # Test if the date has to be (de)selected.
+    if ($sel <= 0  &&  $filter->{'DATECMP'} != 0) {
+      $sel = $filter->{'DATECMP'};
+      my @dmy = split (/[-\/]/, $date);
+      my $y = 0;
+      my $m = 1;
+      my $d = 2;
+      if ($dmy[0] <= 31  ||  $dmy[2] >= 1900) {
+	$y = 2;
+	$d = 0;
+      }
+      my $n = $#{$filter->{'DATEYARR'}};
+      for ($i=0; $i<=$n; $i+=2) {
+	if (($dmy[$y] >  $filter->{'DATEYARR'}[$i])  ||
+  	    ($dmy[$y] == $filter->{'DATEYARR'}[$i]  &&
+	   (($dmy[$m] >  $filter->{'DATEMARR'}[$i])  ||
+	    ($dmy[$m] == $filter->{'DATEMARR'}[$i]  &&
+	     $dmy[$d] >= $filter->{'DATEDARR'}[$i])))) {
+	  if (($dmy[$y] <  $filter->{'DATEYARR'}[$i+1])  ||
+  	      ($dmy[$y] == $filter->{'DATEYARR'}[$i+1]  &&
+	     (($dmy[$m] <  $filter->{'DATEMARR'}[$i+1])  ||
+	      ($dmy[$m] == $filter->{'DATEMARR'}[$i+1]  &&
+	       $dmy[$d] <= $filter->{'DATEDARR'}[$i+1])))) {
+	    $sel *= -1;
+	    last;
+	  }
+	}
+      }
+    }
+
+    # Write the change into the output file.
+    if ($sel <= 0) {
+      # Combine all info in a record.
+      my %chrec;
+      $chrec{'chid'}    = $chid;
+      $chrec{'date'}    = $date;
+      $chrec{'vers'}    = $vers;
+      $chrec{'author'}  = $author;
+      $chrec{'area'}    = $area;
+      $chrec{'pkg'}     = $pkg;
+      $chrec{'module'}  = $module;
+      $chrec{'type'}    = $type;
+      $chrec{'cat'}     = $cat;
+      $chrec{'defects'} = \@defects;
+      $chrec{'summary'} = $summary;
+      processchange ($desc, \%chrec);
+      push (@{$chrecarr}, \%chrec);
+    }
+  }
+}
+
+
+sub processchange (desc, chrec)
+{
+  my $desc = shift;
+  my $chrec = shift;
+  # form the file name (depending on how to split output file).
+  my $name = $chrec->{'area'};
+  my $sumname = 'changelog_'.$chrec->{'area'}.'_summary.html';
+  if ($splitfile == 1) {
+    $name = '';
+    $sumname = 'changelog_summary.html';
+  }
+  if ($splitfile >= 3  &&  $chrec->{'pkg'} ne '') {
+    $name .= '_'.$chrec->{'pkg'};
+  }
+  if ($splitfile == 4  &&  $chrec->{'module'} ne '') {
+    $name .= '_'.$chrec->{'module'};
+  }
+  my $namef = 'changelog.html';
+  if ($name ne '') {
+    $namef = 'changelog'.'_'.$name.'.html';
+  }
+  my $file = $OUTPATH.$namef;
+  $chrec->{'link'} = $namef;
+  if ($processed{$name} > 0) {
+    unless (open OUT, ">> $file") {
+      print STDERR "Error: unable to open file $file for append\n";
+      return;
+    }
+    $processed{$name} += 1;
+  } else {
+    unless (open OUT, "> $file") {
+      print STDERR "Error: unable to create file $file\n";
+      return;
+    }
+    print "Created changelog file $file\n";
+    $processed{$name} = 1;
+    push (@logfiles, $file);
+    print OUT "<html>\n";
+    print OUT "<head>\n";
+    print OUT "<title>Change log $name for AIPS++ version $aipsvers</title>\n";
+    print OUT "</head>\n";
+    print OUT "<body>\n";
+    print OUT "<h1>Change log $name for AIPS++ version $aipsvers</h1>\n";
+    print OUT "A <A HREF=\"$sumname\">summary</A> of the changes is available.\n";
+  }
+  print OUT "<A NAME=\"$chrec->{'chid'}\"></A>\n";
+  print OUT "<PRE>\n";
+  print OUT "Change-id:  $chrec->{'chid'}\n";
+  print OUT "Author:     $chrec->{'author'}\n";
+  print OUT "Date:       $chrec->{'date'}\n";
+  print OUT "Area:       $chrec->{'area'}";
+  if ($chrec->{'pkg'} ne '') {
+    print OUT "  $chrec->{'pkg'}";
+  }
+  if ($chrec->{'module'} ne '') {
+    print OUT "    $chrec->{'module'}";
+  }
+  print OUT "\n";
+  print OUT "Category:   $chrec->{'cat'} $chrec->{'type'}";
+  @defects = @{$chrec->{'defects'}};
+  if ($#defects >= 0) {
+    print OUT " (resolving defect ";
+    my $first = 0;
+    foreach $defect (@defects) {
+      if ($first == 0) {
+	$first = 1;
+      } else {
+	print OUT ", ";
+      }
+      print OUT "<A HREF=\"http://aips2.nrao.edu/ddts/ddts_main?bug_id=AOCso";
+      print OUT sprintf ('%05d', $defect);
+      print OUT "&REMOTE_USER=nobody&LastForm=DumpBug\">";
+      print OUT "$defect</A>";
+    }
+    print OUT ")";
+  }
+  print OUT "\n";
+  print OUT "Summary:    $chrec->{'summary'}\n";
+  print OUT "</PRE>\n";
+  print OUT "$desc\n";
+  print OUT "<HR>\n\n";
+  close OUT;
+}
+
+	
+sub processsummary1 (chrecarr)
+{
+  my $chrecarr = shift;
+  my @sum = sort { $a->{'chid'} <=> $b->{'chid'} } @{$chrecarr};
+  my $file = $OUTPATH.'changelog_summary.html';
+  my $nrproc = 0;
+  unless (open OUT, "> $file") {
+    print STDERR "Error: unable to create file $file\n";
+    return;
+  }
+  print "Created changelog summary $file\n";
+  print OUT "<html>\n";
+  print OUT "<head>\n";
+  print OUT "<title>Change log summary for AIPS++ version $aipsvers</title>\n";
+  print OUT "</head>\n";
+  print OUT "<body>\n";
+  print OUT "<h1>Change log summary for AIPS++ version $aipsvers</h1>\n";
+  print OUT "<TABLE BORDER=3 CELLSPACING=0 CELLPADDING=3>\n";
+  print OUT "  <TH>date</TH>\n";
+  print OUT "  <TH>id</TH>\n";
+  print OUT "  <TH>area</TH>\n";
+  print OUT "  <TH>package</TH>\n";
+  print OUT "  <TH></TH>\n";
+  print OUT "  <TH ALIGN=LEFT>short description</TH>\n\n";
+  foreach $chrec (@sum) {
+    $nrproc++;
+    print OUT "<TR>\n";
+    print OUT "  <TD>$chrec->{'date'}</TD>\n";
+    print OUT "  <TD><A HREF=\"$chrec->{'link'}#$chrec->{'chid'}\">$chrec->{'chid'}</A></TD>\n";
+    print OUT "  <TD>$chrec->{'area'}</TD>\n";
+    print OUT "  <TD>$chrec->{'pkg'}</TD>\n";
+    print OUT "  <TD>$chrec->{'module'}</TD>\n";
+    print OUT "  <TD>$chrec->{'summary'}</TD>\n";
+    print OUT "</TR>\n\n";
+  }
+  print OUT "</TABLE>\n";
+  print OUT "</body>\n";
+  print OUT "</html>\n";
+  close OUT;
+  print "$nrproc entries written in $file\n";
+}
+
+
+sub processsummary2 (chrecarr)
+{
+  my $chrecarr = shift;
+  my @sum = sort { $a->{'date'} <=> $b->{'date'} } @{$chrecarr};
+  my %sumprocessed;
+  my %sumareas;
+  my @sumnames;
+  foreach $chrec (@sum) {
+    my $name = 'changelog_'.$chrec->{'area'}.'_summary.html';
+    my $file = $OUTPATH.$name;
+    if ($sumprocessed{$name} > 0) {
+      unless (open OUT, ">> $file") {
+	print STDERR "Error: unable to open file $file for append\n";
+	return;
+      }
+      $sumprocessed{$name} += 1;
+    } else {
+      unless (open OUT, "> $file") {
+	print STDERR "Error: unable to create file $file\n";
+	return;
+      }
+      print "Created changelog summary $file\n";
+      $sumprocessed{$name} = 1;
+      $sumareas{$name} = $chrec->{'area'};
+      push (@sumnames, $name);
+      print OUT "<html>\n";
+      print OUT "<head>\n";
+      print OUT "<title>Change log summary of area $chrec->{'area'} ";
+      print OUT "for AIPS++ version $aipsvers</title>\n";
+      print OUT "</head>\n";
+      print OUT "<body>\n";
+      print OUT "<h1>Change log summary of area $name->{'area'} ";
+      print OUT "for AIPS++ version $aipsvers</h1>\n";
+      print OUT "<TABLE BORDER=3 CELLSPACING=0 CELLPADDING=3>\n";
+      print OUT "  <TH>date</TH>\n";
+      print OUT "  <TH>id</TH>\n";
+      print OUT "  <TH>$chrec->{'area'}</TH>\n";
+      print OUT "  <TH></TH>\n";
+      print OUT "  <TH ALIGN=LEFT>short description</TH>\n\n";
+    }
+    print OUT "<TR>\n";
+    print OUT "  <TD>$chrec->{'date'}</TD>\n";
+    print OUT "  <TD><A HREF=\"$chrec->{'link'}#$chrec->{'chid'}\">$chrec->{'chid'}</A></TD>\n";
+    print OUT "  <TD>$chrec->{'pkg'}</TD>\n";
+    print OUT "  <TD>$chrec->{'module'}</TD>\n";
+    print OUT "  <TD>$chrec->{'summary'}</TD>\n";
+    print OUT "</TR>\n\n";
+  }
+  # End and close all the files;
+  foreach $name (@sumnames) {
+    my $file = $OUTPATH.$name;
+    unless (open OUT, ">> $file") {
+      print STDERR "Error: unable to open file $file for final append\n";
+      return;
+    }
+    print OUT "</TABLE>\n";
+    print OUT "</body>\n";
+    print OUT "</html>\n";
+    close OUT;
+    print "$sumprocessed{$name} entries written in $OUTPATH$name\n";
+  }
+  # Write a single summary file referencing the others.
+  my $file = $OUTPATH.'changelog_summary.html';
+  unless (open OUT, "> $file") {
+    print STDERR "Error: unable to create file $file\n";
+    return;
+  }
+  print "Created changelog overview $file\n";
+  print OUT "<html>\n";
+  print OUT "<head>\n";
+  print OUT "<title>Change log overview for AIPS++ version $aipsvers</title>\n";
+  print OUT "</head>\n";
+  print OUT "<body>\n";
+  print OUT "<h1>Change log overview for AIPS++ version $aipsvers</h1>\n";
+  foreach $name (@sumnames) {
+    print OUT "$sumprocessed{$name} changes for area ";
+    print OUT "<A HREF=\"$name\">$sumareas{$name}</A>\n";
+    print OUT "<p>\n";
+  }
+  print OUT "</body>\n";
+  print OUT "</html>\n";
+  close OUT;
+}
+
+
+sub processfilter (filter)
+{
+  my $filter = shift;
+  if ($filter->{'AREACMP'} != 0) {
+    my @parr = split (/\s*,\s*/, $filter->{'AREAVAL'});
+    $filter->{'AREAARR'} = \@parr;
+  }
+  if ($filter->{'PKGCMP'} != 0) {
+    my @parr = split (/\s*,\s*/, $filter->{'PKGVAL'});
+    $filter->{'PKGARR'} = \@parr;
+  }
+  if ($filter->{'MODCMP'} != 0) {
+    my @parr = split (/\s*,\s*/, $filter->{'MODVAL'});
+    $filter->{'MODARR'} = \@parr;
+  }
+  if ($filter->{'VERSCMP'} == 1  &&  $filter->{'VERSVAL'} =~ /\s*all\s*/i) { 
+    $filter->{'VERSCMP'} = 0;
+  }
+  if ($filter->{'VERSCMP'} != 0) {
+    my @parr = processranges ($filter->{'VERSVAL'}, "avers", 1);
+    $filter->{'VERSARR'} = \@parr;
+  }
+  if ($filter->{'CATCMP'} != 0) {
+    my @parr = split (/\s*,\s*/, lc($filter->{'CATVAL'}));
+    $filter->{'CATARR'} = \@parr;
+  }
+  if ($filter->{'TYPECMP'} != 0) {
+    my @parr = split (/\s*,\s*/, lc($filter->{'TYPEVAL'}));
+    $filter->{'TYPEARR'} = \@parr;
+  }
+  if ($filter->{'CHIDCMP'} != 0) {
+    my @parr = processranges ($filter->{'CHIDVAL'}, "id", 1);
+    $filter->{'CHIDARR'} = \@parr;
+  }
+  if ($filter->{'DATECMP'} != 0) {
+    my @date = processranges ($filter->{'DATEVAL'}, "date", 0);
+    my $n = $#date;
+    my @yarr;
+    my @marr;
+    my @darr;
+    for ($i=0; $i<=$n; $i+=2) {
+      my @st  = split (/[-\/]/, $date[$i]);
+      my @end = split (/[-\/]/, $date[$i+1]);
+      if ($#st != $#end) {
+        print STDERR "Error; start-date $date[$i] and end-date $date[$i+1] incorrect: unequal number of parts\n";
+        exit(1);
+      }
+      if ($#st >= 3) {
+        print STDERR "Error; date $date[$i] incorrect: more than 3 parts\n";
+        exit(1);
+      }
+      if ($#end >= 3) {
+        print STDERR "Error; date $date[$i+1] incorrect: more than 3 parts\n";
+        exit(1);
+      }
+      $st[0] = ""  if ($#st < 0  ||  $st[0] =~ /^\s*$/);
+      $st[1] = ""  if ($#st < 1  ||  $st[1] =~ /^\s*$/);
+      $st[2] = ""  if ($#st < 2  ||  $st[2] =~ /^\s*$/);
+      $end[0] = ""  if ($#end < 0  ||  $end[0] =~ /^\s*$/);
+      $end[1] = ""  if ($#end < 1  ||  $end[1] =~ /^\s*$/);
+      $end[2] = ""  if ($#end < 2  ||  $end[2] =~ /^\s*$/);
+      my $y = 0;
+      my $m = 1;
+      my $d = 2;
+      if (($st[0] ne ""  &&  $st[0] <= 31)  ||
+ 	  ($st[2] ne ""  &&  $st[2] >= 1900)) {
+	$y = 2;
+	$d = 0;
+      }
+      $st[$y] = "0"  if ($st[$y] eq "");
+      $st[$m] = "0"  if ($st[$m] eq "");
+      $st[$d] = "0"  if ($st[$d] eq "");
+      $end[$y] = "10000"  if ($end[$y] eq "");
+      $end[$m] = "12"  if ($end[$m] eq "");
+      $end[$d] = "31"  if ($end[$d] eq "");
+      $st[$m] = replacemonth ($st[$m]);
+      $end[$m] = replacemonth ($end[$m]);
+      if (($st[$y] > $end[$y])  ||  ($st[$y] == $end[$y]  &&
+	 (($st[$m] > $end[$m])  ||  ($st[$m] == $end[$m]  &&
+  	   $st[$d] > $end[$d])))) {
+        print STDERR "Error; start-date $date[$i] and end-date $date[$i+1] incorrect: end<start\n";
+        exit(1);
+      }
+      push (@yarr, $st[$y]);
+      push (@marr, $st[$m]);
+      push (@darr, $st[$d]);
+      push (@yarr, $end[$y]);
+      push (@marr, $end[$m]);
+      push (@darr, $end[$d]);
+    }
+    $filter->{'DATEYARR'} = \@yarr;
+    $filter->{'DATEMARR'} = \@marr;
+    $filter->{'DATEDARR'} = \@darr;
+  }
+}
+
+sub processranges (string, option, check)
+{
+  # Split the string at each comma (with optional whitespace).
+  my $string = shift;
+  my $option = shift;
+  my $check  = shift;
+  my @carr = split (/\s*,\s*/, $string);
+  my @cres;
+  my $n = 0;
+  foreach $cval (@carr) {
+    # Split each non-empty value at an optional colon
+    # which gives a start and end value.
+    if ($cval !~ /^\s*$/) {
+      my @v = split (/\s*:\s*/, $cval);
+      $cres[$n] = $v[0];
+      $n++;
+      $cres[$n] = $v[0];
+      if ($#v >= 1) {
+	if ($#v >= 2) {
+	  print STDERR "Error; $cval in $option option is incorrect: >1 colons\n";
+	  exit(1);
+	}
+	$cres[$n] = $v[1];
+	if ($check == 1  &&  $cres[$n] < $cres[$n-1]) {
+	  print STDERR "Error; $cval in $option option is incorrect: end<start\n";
+	  exit(1);
+	}
+      }
+      $n++;
+    }
+  }
+  return @cres;
+}
+
+sub replacemonth (month)
+{
+  my $m = shift;
+  if ($m =~ /^[0-9]*$/) {
+    return $m;
+  }
+  return $mhash{uc($m)};
+}

@@ -1,0 +1,151 @@
+#!/bin/sh
+
+codetree=../..
+scriptpath=.
+
+function depend
+{
+   if test $1 = "lib"
+      then
+         subdir="implement"
+         echo "  Library:" >> compliance.log
+      else
+         subdir="apps"
+         echo "  Application:" >> compliance.log
+   fi
+
+   for dep in `cat $scriptpath/compliance.dat`
+   do
+      rm -rf $dep_compliance.log
+
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*.h \
+           >> $dep_compliance.log \
+           2> /dev/null
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/*.h \
+           >> $dep_compliance.log \
+           2> /dev/null
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/*.cc \
+           >> $dep_compliance.log \
+           2> /dev/null
+
+      if test -d $codetree/$2/$subdir/src
+         then
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/src/*.h \
+                >> $dep_compliance.log \
+                2> /dev/null
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/src/*.h \
+                >> $dep_compliance.log \
+                2> /dev/null
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/src/*.cc \
+                >> $dep_compliance.log \
+                2> /dev/null
+      fi
+
+      if test -s $dep_compliance.log
+         then
+            echo "    $1$2 => lib$dep" >> compliance.log
+      fi
+   done
+}
+
+function process
+{
+   echo "Processing $2..."
+   echo "Dependencies for $2" >> compliance.log
+
+   if test $1 = "all"
+      then
+         depend "lib" $2
+         depend "app" $2
+      else
+         depend $1 $2
+   fi
+
+   echo >> compliance.log
+}
+
+function usage
+{
+   if test $1 
+      then
+         if test $1 = "all" -o $1 = "lib" -o $1 = "app"
+            then
+               return
+         fi
+   fi
+
+   echo "usage: compliance [all|lib|app] {dir}"
+   exit 1
+}
+
+function checkdir
+{
+   if test -d $codetree/install/codedevl/src
+      then
+         scriptpath=$codetree/install/codedevl/src
+      else
+         scriptpath=$codetree/install/codedevl
+   fi
+
+   for dir in `cat $scriptpath/compliance.dat`
+   do
+      if test -d $codetree/$dir
+         then
+            continue
+         else
+            echo "Missing $codetree/$dir"
+            echo "The compliance script must be run from the root tree"
+            exit 1
+      fi
+   done
+}
+
+function compliance
+{
+   for diff in `diff $scriptpath/compliance.$1 compliance.log`
+   do
+
+      if test $diff = ">"
+         then
+            echo
+            echo "A new dependency has been introduced:"
+      elif test $diff = "<"
+         then
+            echo
+            echo "An old dependency has been removed:"
+      else
+         printf " $diff" | sed 's/[0-9].*//'
+      fi
+   done
+
+   echo
+}
+
+
+usage $1
+checkdir
+
+rm -rf compliance.log
+
+if test $2
+   then
+      process $1 $2
+
+      echo
+      cat compliance.log
+   else
+      for dir in `cat $scriptpath/compliance.dat`
+      do
+         process $1 $dir
+      done
+
+      echo
+      echo "Reporting compliance failures..."
+
+      compliance $1
+   fi
+
+echo
+echo "Complete"
+echo
+

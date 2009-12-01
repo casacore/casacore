@@ -1,0 +1,585 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# dox: Select and view documents online
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1993,1994,1995
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: dox [-d <directory> | --directory==<directory>]
+#            [-D <default> | --default==<default>]
+#            [-r | --restrict-search]
+#            [<document>]
+#-----------------------------------------------------------------------------
+# dox provides a convenient user interface for selecting and viewing the
+# documents stored in a specified directory and its subdirectories,
+# $AIPSROOT/docs by default.
+#
+# dox recognizes DVI, HTML, PostScript, and ASCII files, and also many
+# standard unix file types (via their file suffix).  It also handles
+# compressed PostScript and text files with .gz, .z, and .Z suffix extensions.
+#
+# If no document is specified on the command line then dox will produce a list
+# of all available documents and ask the user to pick one.  Full minimum-
+# match is applied to the user's response, including minimum-match on the
+# subdirectory name.
+#
+# If a document is specified on the command line then full minimum-match is
+# applied to it (including matching on subdirectories).  Likewise for any
+# default specified.
+#
+# Options:
+#   -d     The documentation directory (default is $AIPSROOT/docs).
+#   -D     Default document when querying the user interactively.
+#   -r     Restrict the search of the documentation directory and all
+#          subdirectories to *.dvi, *.htm, *.htm, *.ps*, *.text*, and *.txt*
+#          files when preparing the document list.  The default is to list
+#          everything.
+#
+# Status return values
+#    0:  success
+#    1:  initialization error
+#    2:  error getting document name
+#    3:  error starting previewer
+#
+# Notes:
+#    1) Whitespace is allowed between short-form options and their arguments.
+#
+# Original: 1993/08/09 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ ! "$AIPSPATH" ]
+  then
+     echo "dox: AIPSPATH is not defined, abort!"
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+
+# Parse arguments.
+  if [ "$DOXPATH" != "" ]
+  then
+     DOXPATH=`echo $DOXPATH | sed -e 's/::*/ /'`
+  else
+     DOXPATH=$AIPSROOT/docs
+  fi
+
+  DEFAULTMM=reference/Introaips.ps
+  FULL=1
+  TIMER=
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+        --timer | -t)
+           TIMER=1
+           ;;
+
+        --directory=* | -d*)
+           case $1 in
+              --directory=*)
+                 DOXPATH=`echo $1 | sed -e 's/^--directory=//'`
+                 ;;
+              -d)
+                 shift
+                 DOXPATH="$1"
+                 ;;
+              *)
+                 DOXPATH=`echo $1 | sed -e 's/^-d//'`
+                 ;;
+           esac
+           ;;
+
+        --default=* | -D*)
+           case $1 in
+              --default=*)
+                 DEFAULTMM=`echo $1 | sed -e 's/^--default=//'`
+                 ;;
+              -D)
+                 shift
+                 DEFAULTMM="$1"
+                 ;;
+              *)
+                 DEFAULTMM=`echo $1 | sed -e 's/^-D//'`
+                 ;;
+           esac
+           ;;
+
+        --restrict-search | -r)
+           FULL=""
+           ;;
+
+        -*)
+           exec 1>&2
+           echo "Usage: dox [-d <directory> | --directory==<directory>]"
+           echo "           [-D <default> | --default==<default>]"
+           echo "           [-r | --restrict-search]"
+           echo "           [<document>]"
+           exit 1
+           ;;
+
+        *)
+           DOCMM="$1"
+           ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+  [ "$TIMER" != "" ] && echo "`date`: start quick search"
+
+  for DOXDIR in $DOXPATH
+  do
+#    Ensure that DOXDIR exists.
+     if [ ! -d $DOXDIR ]
+     then
+        echo "dox: $DOXDIR does not exist." 1>&2
+        continue
+     fi
+
+     cd $DOXDIR
+
+#    If DOCMM is defined then quickly try to resolve it.
+     DOC=""
+     if [ "$DOCMM" != "" ]
+     then
+        DOC=`ls -d ${DOCMM}* 2> /dev/null | sed -n 1p`
+        [ -f "$DOC" ] || DOC=""
+        ONCE=1
+     fi
+
+     [ "$DOC" != "" ] && break
+  done
+
+  [ "$TIMER" != "" ] && echo "`date`: get list of all documents"
+
+# Get a list of all documents.
+  DOX=
+  if [ "$DOC" = "" ]
+  then
+     for DOXDIR in $DOXPATH
+     do
+        [ -d "$DOXDIR" ] || continue
+        cd $DOXDIR
+
+        echo "Searching $DOXDIR..."
+
+        [ "$TIMER" != "" ] && echo "`date`: begin find"
+
+        if [ "$FULL" != "" ]
+        then
+#          Get a full list of all files herein.
+           DOXi=`find . ! -type d -name "*" -print 2> /dev/null | \
+                 sed -e 's#^\./\([^/]*/\)#\1#' | \
+                 sort`
+        else
+#          Get a list of all DVI, HTML, PostScript, and text files herein.
+           DOXi=`find . \( \
+                       -name "*.[dD][vV][iI]" \
+                    -o -name "*.[hH][tT][mM][lL]*" \
+                    -o -name "*.[hH][tT][mM]*" \
+                    -o -name "*.[pP][sS]*" \
+                    -o -name "*.text*" \
+                    -o -name "*.txt*" \) \
+                    -print 2> /dev/null | \
+                 sed -e 's#^\./\([^/]*/\)#\1#' | \
+                 sort`
+        fi
+
+        [ "$TIMER" != "" ] && echo "`date`: end find"
+
+        if [ "$DOXi" = "" ]
+        then
+           echo "dox: $DOXDIR does not contain any documents." 1>&2
+           continue
+        fi
+
+        if [ "$DOCMM" != "" ]
+        then
+#          Try now for a good match.
+           case $DOXi in
+           *$DOCMM*)
+              for DOCi in $DOXi
+              do
+                 case $DOCi in
+                 */${DOCMM}*)
+                    DOC=$DOXDIR/$DOCi
+                    break
+                    ;;
+                 esac
+              done
+              ;;
+           esac
+
+           [ "$DOC" != "" ] && break
+        fi
+
+#       Preserve embedded newlines.
+        if [ "$DOX" = "" ]
+        then
+           DOX=`echo "$DOXDIR//" ; echo "$DOXi"`
+        else
+           DOX=`echo "$DOX" ; echo "$DOXDIR//" ; echo "$DOXi"`
+        fi
+     done
+
+#    Resolve minimum-match on the default.
+     if [ "$DOC" = "" -a "$DEFAULTMM" != "" ]
+     then
+        for DOCi in $DOX
+        do
+           case $DOCi in
+           *${DEFAULTMM}*)
+              DEFAULT=${DEFAULT-$DOCi}
+              case `basename $DOCi` in
+              ${DEFAULTMM}*)
+                 DEFAULT=$DOCi
+                 break
+                 ;;
+              *${DEFAULTMM}*)
+                 DEFAULT=$DOCi
+                 ;;
+              esac
+              ;;
+           esac
+        done
+
+        if [ "$DEFAULT" = "" ]
+        then
+#          Oh well, pull the second entry from DOX.
+           set $DOX
+           DEFAULT=`echo $2 | sed -e 's#^./##'`
+        fi
+     fi
+  fi
+
+
+  LISTED=""
+  while true
+  do
+#    Ascertain which document is to be displayed.
+     if [ "$DOCMM" = "" -a "$LISTED" = "" ]
+     then
+        [ "$TIMER" != "" ] && echo "`date`: list all documents"
+
+        echo "Documents available"
+        echo "-------------------"
+
+        DOXTMP="$DOX"
+        set - `echo "$DOX" | \
+                  sed -n -e '{s#/[^/]*$##;H;x;/^\(.*\)\n\1$/d;x;p;x;}'`
+        for DOCSUB
+        do
+           shift
+
+           case $DOCSUB in
+           */)
+              DOXDIR=`echo $DOCSUB | sed -e 's#/$##'`
+              cd $DOXDIR
+              continue
+              ;;
+           esac
+
+           [ "$1" = "$DOCSUB" ] && continue
+           NEXTSUB="$1"
+
+           echo ""
+           if [ "$DOCSUB" = . ]
+           then
+              echo "$DOXDIR:"
+           else
+              echo "$DOXDIR/$DOCSUB:"
+           fi
+
+           if [ "$NEXTSUB" = "" ]
+           then
+              DOXLS=$DOXTMP
+           else
+              DOCSUBS=$*
+              set - $DOXTMP
+
+              DOXLS=""
+              for DOCi
+              do
+                 case $DOCi in
+                 ${NEXTSUB}/*)
+                    DOXTMP=$*
+                    break
+                    ;;
+                 *)
+                    DOXLS="$DOXLS $DOCi"
+                    ;;
+                 esac
+                 shift
+              done
+
+              set - $DOCSUBS
+           fi
+
+           DOXLS=`echo " " $DOXLS | sed -e 's# [^ ]*/# #g'`
+           (cd $DOCSUB ; ls $DOXLS 2> /dev/null)
+        done
+
+        LISTED=1
+
+        [ "$TIMER" != "" ] && echo "`date`: finished listing documents"
+     fi
+
+
+     if [ "$DOCMM" = "" ]
+     then
+#       Query the user for the document to be displayed.
+        echo ""
+        echo -n "Enter selection (min-match) [$DEFAULT]: "
+        read DOCMM
+     fi
+
+     if [ "$DOCMM" = "" ]
+     then
+        DOCMM=$DEFAULT
+     fi
+
+     if [ "$DOC" = "" ]
+     then
+        [ "$TIMER" != "" ] && echo "`date`: try for case-sensitive match"
+
+#       Resolve minimum-match.
+        case $DOX in
+        *$DOCMM*)
+           for DOCi in $DOX
+           do
+              case $DOCi in
+              *//)
+                 DOXDIR=`echo $DOCi | sed -e 's#//$##'`
+                 continue
+                 ;;
+              *${DOCMM}*)
+                 if [ "$DOC" = "" ]
+                 then
+                    DOC=$DOXDIR/$DOCi
+                 fi
+
+                 case `basename $DOCi` in
+                 ${DOCMM}*)
+                    DOC=$DOXDIR/$DOCi
+                    break
+                    ;;
+                 *${DOCMM}*)
+                    DOC=$DOXDIR/$DOCi
+                    ;;
+                 esac
+                 ;;
+              esac
+           done
+           ;;
+        esac
+     fi
+
+     if [ "$DOC" = "" ]
+     then
+        [ "$TIMER" != "" ] && echo "`date`: try for case-insensitive match"
+
+#       Try for a case-insensitive match.
+        [ "$dox" = "" ] && dox=`echo $DOX | tr A-Z a-z`
+        docmm=`echo $DOCMM | tr A-Z a-z`
+
+        case $dox in
+        *$docmm*)
+           set - $dox
+
+           for DOCi in $DOX
+           do
+              case $DOCi in
+              *//)
+                 DOXDIR=`echo $DOCi | sed -e 's#//$##'`
+                 shift
+                 continue
+                 ;;
+              esac
+
+              case $1 in
+              *${docmm}*)
+                 if [ "$DOC" = "" ]
+                 then
+                    DOC=$DOXDIR/$DOCi
+                 fi
+
+                 case `basename $1` in
+                 ${docmm}*)
+                    DOC=$DOXDIR/$DOCi
+                    break
+                    ;;
+                 *${docmm}*)
+                    DOC=$DOXDIR/$DOCi
+                    ;;
+                 esac
+                 ;;
+              esac
+
+              shift
+           done
+           ;;
+        esac
+     fi
+
+     if [ "$DOC" = "" ]
+     then
+        echo ""
+        echo "No match for \"$DOCMM\".  "
+        DOCMM=""
+        continue
+     fi
+
+     DOC=`echo $DOC | sed -e 's#/./#/#'`
+
+
+     [ "$TIMER" != "" ] && echo "`date`: start document viewer"
+
+#    Define document viewers.
+     DVIVIEWER=${DVIVIEWER-xdvi}
+     HTMLVIEWER=${HTMLVIEWER-netscape}
+     PSVIEWER=${PSVIEWER-ghostview}
+     PAGER=${PAGER-more}
+
+     PATH=${PATH}:/usr/local/X11/bin:/usr/local/gnu/bin
+
+#    Display it.
+     case $DOC in
+     *.[dD][vV][iI])
+        if [ "$DISPLAY" = "" ]
+        then
+           echo "dox: DISPLAY not set, can't start $DVIVIEWER, sorry."
+           exit 3
+        fi
+
+        echo "Starting $DVIVIEWER to display $DOC..."
+        $DVIVIEWER $DOC > /dev/null 2>&1 &
+        ;;
+
+     *.[pP][sS] | *.[pP][sS].gz | *.[pP][sS].[zZ])
+        if [ "$DISPLAY" = "" ]
+        then
+           echo "dox: DISPLAY not set, can't start $PSVIEWER, sorry."
+           exit 3
+        fi
+
+        case $DOC in
+        *.[pP][sS])
+           echo "Starting $PSVIEWER to display $DOC..."
+           $PSVIEWER $DOC &
+           ;;
+        *)
+           echo "Uncompressing $DOC and piping it to $PSVIEWER"
+           echo "(which will only allow you to peruse it in the forward" \
+                "direction)..."
+           zcat $DOC | $PSVIEWER - &
+           ;;
+        esac
+        ;;
+
+     *.[hH][tT][mM][lL] | *.[hH][tT][mM])
+        if [ "$DISPLAY" = "" ]
+        then
+           echo "dox: DISPLAY not set, can't start $HTMLVIEWER, sorry."
+           exit 3
+        fi
+
+        echo "Starting $HTMLVIEWER to display $DOC..."
+        $HTMLVIEWER $DOC &
+        ;;
+
+     *.text | *.text.gz | *.text.[zZ] | *.txt | *.txt.gz | *.txt.[zZ])
+        case $DOC in
+        *.text | *.txt)
+           ${PAGER} $DOC
+           ;;
+        *)
+           zmore $DOC
+           ;;
+        esac
+        ;;
+
+     *.c | *.cc | *.C | *.CC | *.f | *.csh | *.sh | *.perl | *.pl)
+        ${PAGER} $DOC
+        ;;
+
+     *.tar | *.tar.gz | *.tar.[zZ])
+        echo "Listing of tar file $DOC..."
+        case $DOC in
+        *.tar)
+           tar tvf $DOC
+           ;;
+        *)
+           zcat $DOC | tar Btvf -
+           ;;
+        esac
+        ;;
+
+     *.a)
+        (echo "Listing of archive library $DOC..." ; ar tv $DOC) | ${PAGER}
+        ;;
+
+     *.o)
+        (echo "Namelist for object module $DOC..." ; nm $DOC) | ${PAGER}
+        ;;
+
+     *)
+#       We have to look inside the file, is it PostScript?
+        sed -n 1p $DOC | egrep "^%!" > /dev/null 2>&1
+        if [ "$?" = 0 ]
+        then
+           if [ "$DISPLAY" = "" ]
+           then
+              echo "dox: DISPLAY not set, can't start $PSVIEWER, sorry."
+              exit 3
+           fi
+
+           echo "Starting $PSVIEWER to display $DOC..."
+           $PSVIEWER $DOC &
+        else
+#          Is it a printable file?
+           tr -d '\000-\006\010\013\016-\037\177-\377' < $DOC | cmp -s - $DOC
+           if [ "$?" = 0 ]
+           then
+              ${PAGER} $DOC
+           else
+#             Final desperation!
+              ${OD-od} -a $DOC
+           fi
+        fi
+
+     esac
+
+     [ "$ONCE" = "" ] || break
+
+     DOC=""
+     DOCMM=""
+  done
+
+  exit 0

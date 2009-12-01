@@ -1,0 +1,298 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# aupdate: Update AIPS++, binary, data, docs, maybe even code.
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-1997,1999,2000,2001,2002,2003
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-------------------------------------------------------------------------------------
+# Usage: aupdate [[no]data | auxdata] [[no]docs] [[no]binary] [[no]libexec
+#                [no]code] [[no]gui | useftp] 
+#                [basestable | stable | beta | release | usefile[s] filenames ...]
+#-------------------------------------------------------------------------------------
+# aupdate retrieves the latest and greatest, usually via cvsup
+#
+# options:
+# [no]data 	retrieves [or not] necessary data files from the data repository to run aips++
+# auxdata 	retrieves auxillary data files used for demos and tests from the
+#		data repository.
+# [no]docs	retrieves [or not] documentation
+# [no]binary	retrieves [or not] bin and lib/*.so* files necessary for the system
+# [no]libexec   retrieves [or not] *.g files from libexec
+# [no]code 	retrieves [or not] files from the code tree (currently not implemented)
+# [no]gui 	typically aupdate uses cvsup to retrieve files, if the $DISPLAY variable 
+#		is set the cvsup gui will display unless no is specified
+# useftp	instead of using cvsup, use ftp instead to fetch the files
+#
+# Various states of the system can be downloaded.  What typically differentiates them is the
+# 		amount of testing.  A release has the most testing, followed by beta, then
+#		basestable, then stable.  In general the basestable should be good enough
+#		but a "patched" stable may be used to fix an onerous bug which is fairly 
+#		isolated in the system.
+#
+# basestable	Fetch files from the current base (unpatched) stable
+# stable	Fetch files from the current patched stable
+# beta		Fetch files from the current beta release
+# release	Fetch files from the current official patched release
+# usefile[s] files...	Use the specified tar files to update.  Tar files must be based
+#		at the $AIPSROOT directory
+#
+#-------------------------------------------------------------------------------------
+#
+# Initialization
+#-----------------------------------------------------------------------------
+# Name of the master ftp machine and area.
+  MASTERHOST="aips2.nrao.edu"
+  MSTRFTPD="/pub/master"
+
+# Guard against being overwritten.
+  case $0 in
+  *-)
+     ARGS=$*
+     ;;
+  *)
+     cp $0 $0-
+     exec $0- $*
+     ;;
+  esac
+
+# Identify ourselves.
+  HOST=`uname -n | sed -e 's/\..*//'`
+  LOGNAME=${LOGNAME-$USER}
+
+  echo ""
+  echo "aupdate: Execution on $HOST by $LOGNAME commenced at"
+  echo "aupdate: `adate`"
+  echo "aupdate: `adate -l`"
+  echo ""
+  echo "aupdate: Command line arguments \"$*\""
+# Check that AIPSPATH is defined.
+  if [ "$AIPSPATH" = "" ] ; then
+     exec 1>&2
+     echo ""
+     echo "inhale: AIPSPATH is undefined, abort!"
+     exit 1
+  fi
+# Get the site name.
+  SITE=`echo $AIPSPATH | awk '{print $3}'`
+# And its architecture.
+  ARCH=`echo $AIPSPATH | awk '{print $2}'`
+# Produce a status report.
+  echo ""
+  echo "inhale: Current status of the $SITE installation"
+  avers -l
+# Determine the AIPS++ root directory.
+  AIPSROOT=`echo $AIPSPATH | awk '{print $1}'`
+
+# Check the accessibility of the AIPSROOT area.
+  if [ ! -d "$AIPSROOT" ]
+  then
+    exec 1>&2
+    echo ""
+    echo "inhale: The AIPS++ root directory does not exist or is"
+    echo "        not accessible, $AIPSROOT"
+    exit 1
+  fi
+# Get account information.
+  # AIPS2MGR=`getrc -i account.manager    2> /dev/null`
+  AIPS2MGR=`ls -l $AIPSROOT/$ARCH/bin/inhale | awk '{print $3}'`
+  # MGRACCNT=`echo $AIPS2MGR | sed -e 's/\..*//'`
+  MGRACCNT=$AIPS2MGR
+  MGRGROUP=`echo $AIPS2MGR | sed -e 's/.*\.//'`
+  if [ $LOGNAME = "root" ]
+  then
+	  MGRACCNT=""
+  fi
+
+# Check that this script is being run from the right account.
+  if [ "$MGRACCNT" != "$LOGNAME" -a "$MGRACCNT" != "" ]
+  then
+    exec 1>&2
+    echo ""
+    echo "inhale: This script can only be run by $MGRACCNT, not" \
+    "$LOGNAME, abort!"
+    exit 1
+  fi
+
+# Set default file creation mode.
+  umask 002
+
+#
+# Set the defaults for fetching
+#
+  DATA=""
+  DOCS=""
+  BINARY="no"
+  LIBEXEC=""
+  CODE=""
+  GUI=""
+  USEFTP=""
+  RELEASE="stables"
+  USEFILES=""
+  BASE="base"
+  USECVSUP=1
+
+#
+#  If nothing requested do the standard thing
+#
+  if [ $# -eq 0 ]
+  then
+     DATA="base"
+     DOCS="stable"
+     BINARY="bin"
+     LIBEXEC="libexec"
+  fi
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in 
+        data )
+           DATA="base"
+           ;;
+        nodata)
+	   DATA=""
+	   ;;
+        auxdata)
+	   DATA=all
+	   ;;
+        docs)
+	   DOCS="stable"
+	   ;;
+        nodocs)
+	   DOCS=""
+	   ;;
+        binary)
+	   BINARY="bin"
+	   ;;
+        nobinary)
+	   BINARY="no"
+	   ;;
+        libexec)
+	   LIBEXEC="libexec"
+	   ;;
+        nolibexec)
+	   LIBEXEC=""
+	   ;;
+        nocode)
+	   CODE=""
+	   ;;
+        nogui)
+	   GUI="-g"
+	   ;;
+        useftp)
+	   USEFTP=1
+           USECVSUP=0
+	   ;;
+        basestable)
+	   RELEASE="stables"
+	   BASE="base"
+	   ;;
+        stable)
+	   RELEASE="stables"
+	   BASE=""
+	   ;;
+        beta)
+	   RELEASE="beta"
+	   BASE=""
+	   ;;
+        release)
+	   RELEASE="releases"
+	   BASE=""
+	   ;;
+        usefile*)
+	   USEFILES="files"
+           USECVSUP=0
+           USEFTP=0
+	   ;;
+	*)
+	   exec 1>&2
+	   echo ""
+	   echo "Useage: aupdate"
+	   exit 1
+	   ;;
+     esac
+     shift
+  done
+#
+#  Choose either the solaris or linux binaries
+#
+case $ARCH in
+  linux* )
+     MYARCH=linux
+     break
+     ;;
+  sun4sol* )
+     MYARCH=sun4sol
+     break
+     ;;
+esac
+
+#Add the necessary base to what we need to get
+
+RELARCH=""
+if [ $BINARY != "no" ]; then
+   RELARCH=$BASE$MYARCH
+fi
+
+
+echo "aupdate options that have been set:"
+echo "RELEASE  = $RELEASE"
+echo "USEFILES = $USEFILES"
+echo "USECVSUP = $USECVSUP"
+echo "USEFTP   = $USEFTP"
+echo "GUI      = $GUI"
+echo "CODE     = $CODE"
+echo "DATA     = $DATA"
+echo "DOCS     = $DOCS"
+echo "BINARY   = $BINARY"
+echo "LIBEXEC  = $LIBEXEC"
+
+
+#
+# Construct the cvsup file here.
+#
+if [ $USECVSUP = 1 ] ; then
+   cd $AIPSROOT
+   echo "*default host=aips2.nrao.edu compress" > supfile
+   echo "*default delete use-rel-suffix" >> supfile
+   echo "*default base=$AIPSROOT" >> supfile
+   if [ $RELARCH ] ; then
+      echo "$RELEASE release=$RELARCH base=$AIPSROOT/$ARCH" >> supfile
+   fi
+   if [ $LIBEXEC ] ; then
+      echo "$RELEASE release=$BASE$LIBEXEC base=$AIPSROOT/$ARCH" >> supfile
+   fi
+   if [ $DATA ] ; then
+      echo "data release=$DATA" base=$AIPSROOT/data>> supfile
+   fi
+   if [ $DOCS ] ; then
+      echo "docs release=$BASE$DOCS" >> supfile
+   fi
+   cvsup $GUI supfile
+elif [ $USEFTP = 1 ] ; then
+	echo using ftp
+elif [ $USEFILES ] ; then
+	echo using files
+fi

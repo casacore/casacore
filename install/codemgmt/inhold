@@ -1,0 +1,115 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# inhold: Wait for inhale to finish
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: inhold [-t #]
+#-----------------------------------------------------------------------------
+# inhold waits for inhale to finish rebuilding the system.  It may be used to
+# synchronize a programmer rebuild, especially as initiated via a cron job, so
+# that it starts shortly after inhale finishes.
+#
+# inhold uses tract to determine when $AIPSARCH/LOGFILE is updated.
+#
+# Options:
+#   -t#    Time resolution, in seconds (default 300).
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#
+# Notes:
+#    1) An example programmer cron entry might be as follows:
+#
+#          00 23 * * 6 . $HOME/.profile ; inhold && rebuild
+#
+#       where 'rebuild' is some script written by the programmer to rebuild
+#       the AIPS++ workspace.  The cron start time should coincide with
+#       inhale's start time.
+#
+#    2) The time resolution specified by the -t option determines the sleep
+#       interval.  An extra 60 seconds is added to this to derive the maximum
+#       age of the LOGFILE.  This accounts for slow NFS updates of LOGFILE's
+#       timestamp.
+#
+# Original: 1996/03/13 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "inhold: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  AIPSARCH=`echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
+
+
+# Parse options.
+  HOLD=300
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -t*)
+        case $1 in
+        -t)
+           shift
+           HOLD="$1"
+           ;;
+        *)
+           HOLD=`echo $1 | sed -e 's/^-t//'`
+           ;;
+        esac
+        ;;
+
+     *)
+        exec 1>&2
+        echo ""
+        echo "Usage: inhold [-t<seconds>]"
+        exit 1
+        ;;
+     esac
+
+ 
+     [ "$2" = "" ] && break
+ 
+     shift
+  done
+
+# Check for a reasonable time resolution.
+  [ "$HOLD" -lt 0 ] && exit 1
+
+
+# Go into a holding pattern.
+  OLDER=`expr $HOLD + 60`
+  while `tract -q$OLDER $AIPSARCH/LOGFILE`
+  do
+     sleep $HOLD
+  done
+
+  exit 0

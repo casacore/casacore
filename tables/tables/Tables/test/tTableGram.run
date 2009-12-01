@@ -1,0 +1,205 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# One argument can be given to this script, which will preceed the tTableGram
+# command. This can be used to run e.g. valgrind on it.
+
+# Use table tTable_2.data_v0 as the input by creating a link to its directory.
+  rm -rf tTableGram_tmp.tab*
+  mkdir tTableGram_tmp.tab
+  cp -r tTable_2.data_v0/table.* tTableGram_tmp.tab
+  chmod 644 tTableGram_tmp.tab/*
+  cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
+
+# Whitespace around * had to be removed to avoid file name expansion by shell.
+
+# First do the tests of unit handling.
+./tTableGram 0
+
+# Now execute all kind of commands.
+$1 ./tTableGram 'select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab'
+
+$1 ./tTableGram 'select distinct ab+1,ac as ac2 from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2'
+
+$1 ./tTableGram 'select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab==2**1**2 || ab==-2**-1*8/-2*3'
+
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")'
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af!~m/V[01279]/i'
+
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/'
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af != pattern("?{3,5,8}")'
+
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af == sqlpattern("_3%")'
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af like "_3%"'
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af not like "_3%"'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab%1.5==0'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+
+$1 ./tTableGram 'select *, !~ p/ar*/ from tTableGram_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+
+$1 ./tTableGram 'select arr1,~ f/t1\..*/,!~f/t1\.ar.*/ from tTableGram_tmp.tab t1 where arr1[1,1,1]>=10 && arr2[1,1,1]<120'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d0m)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d0m - ac/180*pi())'
+
+$1 ./tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910'
+
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where ab>5 orderby af desc, ac'
+
+$1 ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab orderby arr1[1,1,1]'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab orderby round(2*sin(ab)),ac desc'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab)'
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab LIMIT 11)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.tab where ab>4)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4'
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))'
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:=ab]]'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1=:<ab]]'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:=ab]]'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>7 giving [ab-1<:<ab]]'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where any(isnan(arr1)) || isnan(ab)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN arr1'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where any(arr1-array(100,shape(arr1)) > 0  &&  arr1<200)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where count(shape(arr1))==3 && count(ab)==1 && ndim(ac)==0 && isdefined(arr2)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab in ab'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where any(arr1 in ab)'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where (ab=ab)=True'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where (ab=ab)=false'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where rownumber()==rowid()+1'
+
+$1 ./tTableGram 'select ab,ac from [select from tTableGram_tmp.tab where ab > 4] where ab < 6'
+
+$1 ./tTableGram 'select ab,ac from [select from tTableGram_tmp.tab where ab > 4] TEMPTAB, tTableGram_tmp.tab where any([ab,ac] in [select ac from TEMPTAB])'
+
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ac in [select from tTableGram_tmp.tab where ac in 4:6:2 giving [rowid()]]'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+arr1[1,1,1]%2,3])) == 19'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where min(1+maxs(arr1-1,1,3)) == 19'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where sum(fractiles(arr1,0.5,[2:3])) == 21+shape(arr1)[1]*count(arr1)'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where sum(ntrues(arr1%5==0,[1])) < 5'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))'
+
+$1 ./tTableGram 'select ab from $1;tTableGram_tmp.tab'
+
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])'
+echo ""
+
+$1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
+$1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
+$1 ./tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc ab'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc arr1[2,1,1]'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc arr1[1+ab%2,1,1]'
+$1 ./tTableGram 'calc from $1 calc ab+1;tTableGram_tmp.tab'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc ab&0x000b'
+$1 ./tTableGram 'calc from tTableGram_tmp.tab calc (ab|2)&~0x0001'
+
+echo ""
+
+$1 ./tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+$1 ./tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTableGram_tmp.tabc where ac>3 orderby ac limit 5'
+
+$1 ./tTableGram 'update tTableGram_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offset 3'
+$1 ./tTableGram 'update tTableGram_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3'
+$1 ./tTableGram 'update tTableGram_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3'
+
+$1 ./tTableGram 'delete from tTableGram_tmp.tab limit 3 offset 2'
+$1 ./tTableGram 'delete from tTableGram_tmp.tab orderby desc ab limit 1 offset 2'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'delete from tTableGram_tmp.tab'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'insert into tTableGram_tmp.tab select from tTableGram_tmp.tabc'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'insert into tTableGram_tmp.tab (ab) select ab*2 as col1 i4 from tTableGram_tmp.tabc'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'delete from tTableGram_tmp.tab where ab%2==0'
+$1 ./tTableGram 'select ab from tTableGram_tmp.tab'
+
+$1 ./tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))'
+$1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
+
+# Test create and insert with a unit.
+$1 ./tTableGram 'create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
+$1 ./tTableGram 'select col1,col2 from tTableGram_tmp.tab2'
+$1 ./tTableGram 'insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(1,[2,3])dam, F)'
+$1 ./tTableGram 'insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(5,[2,3]), T)'
+$1 ./tTableGram 'calc sum([select sum(col1) from tTableGram_tmp.tab2])'
+
+# Some tests of styles.
+$1 ./tTableGram 'using style python update tTableGram_tmp.tab set arr1 = array(1,4,3,2) where rownumber()==5'
+$1 ./tTableGram 'using style python calc [3:6][1]'
+$1 ./tTableGram 'using style glish  calc [3:6][3]'
+$1 ./tTableGram 'using style base0  calc [3:6][3]'
+$1 ./tTableGram 'using style base1  calc [3:6][3]'
+$1 ./tTableGram 'using style python calc 6 in [3:6]'
+$1 ./tTableGram 'using style glish  calc 6 in [3:6]'
+$1 ./tTableGram 'using style python calc array([3:7],3,4)[0,3]'
+$1 ./tTableGram 'using style glish  calc array([3:7],3,4)[3,1]'
+$1 ./tTableGram 'using style python select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [4,3,2])'
+$1 ./tTableGram 'using style glish  select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [2,3,4])'
+$1 ./tTableGram 'using style python select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,2),5)==0,[0]))'
+$1 ./tTableGram 'using style glish  select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))'
+$1 ./tTableGram 'using style python select ab from tTableGram_tmp.tab where rownumber() < 2'
+$1 ./tTableGram 'using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2'
+
+$1 ./tTableGram 'calc runningMedian(array([0:24],5,5),1,1)'
+$1 ./tTableGram 'calc boxedMedian(array([0:24],5,5),1,1)'
+$1 ./tTableGram 'calc boxedMax(array([0:24],5,5),[2,2])'
+$1 ./tTableGram 'calc 5.1//2'
+$1 ./tTableGram 'calc -4.1//2'
+$1 ./tTableGram 'calc -4**2'
+
+# Some tests of units.
+$1 ./tTableGram 'calc sum([select ab d as ABDAY from tTableGram_tmp.tab])'
+$1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab \in]])'
+$1 ./tTableGram 'select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4'
+$1 ./tTableGram 'update tTableGram_tmp.tab_abac set ab1=1min+ab1, ac1=1.5cm+ac1'
+$1 ./tTableGram 'select ab1,ac1 from tTableGram_tmp.tab_abac'

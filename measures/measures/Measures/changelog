@@ -1,0 +1,263 @@
+
+<change id=0011>
+ <author> Wim Brouw </author>
+ <date> 2000/06/15 </date>
+ <avers> 1.4 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects> 1425 </defects>
+ <summary>
+Change of default LSR to kinematic one
+ </summary>
+ <description>
+The MFrequency and MRadialVelocity classes have two different definitions of the Local Standard of Rest (LSR): the dynamical, and the kinematical one.
+The classes were originally designed having an 'LSR' and an 'LSRK' definition, with the LSR being the default (the dynamical). This turned out a bad choice, since radio astronomy uses the kinematoical definition more; call it plain LSR, and often have no idea that there is a difference.
+
+After the multi-beam and the VLA filler programs had problems, a chnage was made. In principle there are now only the LSRK and LSRD fefinition. To make current programs compile, for a short while an LSR alias will be present, equal to the LSRK definition. This could influence some of the results of (test-) programs.
+ </description>
+</change>
+
+<change id=0012>
+ <author> Wim Brouw </author>
+ <date> 2000/06/15 </date>
+ <avers> 1.4 </avers>
+ <area> Tool </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects> 1425 </defects>
+ <summary>
+Change in LSR definition
+ </summary>
+ <description>
+The MFrequency and MRadialVelocity classes have two different
+definitions of the Local Standard of Rest (LSR): the dynamical, and
+the kinematical one.  The classes were originally designed having an
+'LSR' and an 'LSRK' definition, with the LSR being the default (the
+dynamical). This turned out a bad choice, since radio astronomy uses
+the kinematoical definition more; call it plain LSR, and often have no
+idea that there is a difference.
+
+After the multi-beam and the VLA filler programs had problems, a
+chnage was made. In principle there are now only the LSRK and LSRD
+fefinition. To make current programs compile, for a short while an LSR
+alias will be present, equal to the LSRK definition. This could
+influence some of the results of (test-) programs.
+ </description>
+</change>
+
+<change id=0027>
+ <author> Wim Brouw </author>
+ <date> 2000/07/27 </date>
+ <avers> 1.4 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added toType() and toFrom() to MeasureHolder
+ </summary>
+ <description>
+To be able to create a skeleton default Measure (e.g. for a measurement set column woth a TableMeasure), I added the toType() and fromType() methods to the MeasureHolder record conversions.
+ </description>
+</change>
+
+<change id=0028>
+ <author> Wim Brouw </author>
+ <date> 2000/07/27 </date>
+ <avers> 1.4 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added fromString() to MeasureHolder
+ </summary>
+ <description>
+A fromString() method was added to the MeasureHolder class. This makes it, transparently, possible for e.g. glish code to send a string with 'direction' to the Tasking interface, which will be translated into a Parameter<MDirection> (or Parameter<MeasureHolder> with MDirection embedded) with default type and value (i.e a J2000 north pole direction with no offset).
+ </description>
+</change>
+
+<change id=0046>
+ <author> Wim Brouw </author>
+ <date> 2000/09/05 </date>
+ <avers> 1.4 </avers>
+ <area> Tool </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Finalized quanta/measures spli
+ </summary>
+ <description>
+At one stage, some time ago, the quanta and measures functionality were split in the glish code. As an interim measure, all the non-duplicated methods of the quanta tool (like e.g. dq.quantity()), were also made available in the measures tool (like dm.quantity()).
+This practice has been discontinued. Some problems could arise in non-adjusted glish scripts.
+ </description>
+</change>
+
+<change id=0053>
+ <author> Wim Brouw </author>
+ <date> 2000/10/23 </date>
+ <avers> 1.4 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+better baseline and uvw conversions
+ </summary>
+ <description>
+The baseline and uvw conversions (i.e. conversions of MBaseline and Muvw using the MCuvw and MCBaseline types) have been improved.
+They now use the belonging direction if necessary, to cater for second order effects.
+ </description>
+</change>
+
+<change id=0054>
+ <author> Wim Brouw </author>
+ <date> 2000/11/07 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Clean baseline/uvw interface
+ </summary>
+ <description>
+To aid in calculating the UVW coordinates as they are defined in an aips++ Measurement SEt, the MBaseline and Muvw mtehods (especially the conversion) were cleaned up.
+
+They now correspond with the VLA defined conventions.
+ </description>
+</change>
+
+<change id=0062>
+ <author> Wim Brouw </author>
+ <date> 2000/12/08 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code Documentation Test </type>
+ <category> New Change </category>
+ <defects>  </defects>
+ <summary>
+Added multiple value support to MeasureHolder
+ </summary>
+ <description>
+To enhance the speed of measure handling in Glish, MeasureHolder has been enhanced to transparently handle measure record conversions with contain more than one value for each coordinate. E.g a measure specified as:
+dm.frequency('lsrk', dq.quantity([1,2,3,4,5], GHz))
+will be converted to a record 'as is', and can be handled in a single
+conversion.
+ </description>
+</change>
+
+<change id=0083>
+ <author> Wim Brouw </author>
+ <date> 2000/12/18 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Change Bugfix </category>
+ <defects> 2138 </defects>
+ <summary>
+Added change of measure type functionality
+ </summary>
+ <description>
+Added to the Muvw and MDirection classes the methods:
+Mx::Types fromDirType(MDirection::Types)
+MDirection::Types toDirType(Mx::Types)
+
+In addition checks on the correctness of all string/enum tables in all measures was added.
+ </description>
+</change>
+
+<change id=0124>
+ <author> Wim Brouw </author>
+ <date> 2002/06/18 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> Bugfix </category>
+ <defects>  </defects>
+ <summary>
+Improved frequency conversions
+ </summary>
+ <description>
+Improved the frequency conversions to full precision
+ </description>
+</change>
+
+<change id=0129>
+ <author> Wim Brouw </author>
+ <date> 2002/10/10 </date>
+ <avers> 1.8 </avers>
+ <area> Tool </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects> 4003 </defects>
+ <summary>
+Added a general show(measure)
+ </summary>
+ <description>
+A dm.show(measure, refcode=T) was added.
+A measure given to show() will be displayed using the globally set formats (cf dirshow()). refcode can suppress the reference code output.
+ </description>
+</change>
+
+<change id=0131>
+ <author> Wim Brouw </author>
+ <date> 2002/12/12 </date>
+ <avers> 1.8 </avers>
+ <area> Tool </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects> Enhancement 4012 </defects>
+ <summary>
+Added uvw and derivative calculations
+ </summary>
+ <description>
+A touvw() to calculate uvw coordinates and their time derivative uvw-dot have been added to the measures tool ('dm').
+Methods in aid: asbaseline(position) to make a baseline from a position; and 'expand' to make baseline based values from telescope based values were added as well.
+Please indicate any other wish for interfaceing.
+ </description>
+</change>
+
+<change id=0133>
+ <author> Wim Brouw </author>
+ <date> 2003/03/04 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> measures </package>
+ <module> Measures </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added new velocity codes LGROUP and CMB
+ </summary>
+ <description>
+Added reference codes to MFrequency and MRadialVelocity for Local Group (LGROUP) and Cosmic Background dipole (CMB)
+ </description>
+</change>
