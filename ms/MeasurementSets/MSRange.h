@@ -43,7 +43,7 @@ class MSSelector;
 // MSRange determines ranges of values in a MeasurementSet
 // </summary>
 
-// <visibility=export>
+// <use visibility=export>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>

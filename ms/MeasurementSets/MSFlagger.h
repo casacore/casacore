@@ -43,7 +43,7 @@ class String;
 // MSFlagger specifies selections on a MeasurementSet
 // </summary>
 
-// <visibility=export>
+// <use visibility=export>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
