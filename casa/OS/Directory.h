@@ -220,7 +220,10 @@ public:
     // name, no matching is done on the path, just the trailing file name.
     // Throws an AipsError if the shell pattern is illegal.
     static Vector<String> shellExpand (const Vector<String>& files, Bool stripPath=False);
-
+    // Return the total size  of everything in the Directory. If the Directory
+    // does not exist, an exception will be thrown.
+    virtual Int64 size() const;
+    
 private:
     // Check if the path defines a directory.
     // Also resolve possible symlinks.

@@ -176,7 +176,11 @@ inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // for integers in <src><stdlib.h></src>.  Define it for uInts so that certain
 // compilers can resolve the ambiguity when used in a templated class.
 // <group>
-inline uInt abs(uInt Val) {return Val;}
+#if defined(AIPS_BSD)                                                          
+  inline Int64 abs(Int64 Val) {return Val;}                                    
+#else                                                                          
+  inline uInt abs(uInt Val) {return Val;}  
+#endif
 // </group>
 
 // Return the square of a value.

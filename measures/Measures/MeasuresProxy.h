@@ -68,7 +68,7 @@ public:
   Record alltyp(const Record& rec);
   Quantum<Vector<Double> > posangle(const Record& lrec, const Record& rrec);
   Quantum<Vector<Double> > separation(const Record& lrec, const Record& rrec);
-  Vector<Quantum<Vector<Double> > > uvw(const Record& mhrec);
+  Record uvw(const Record& mhrec);
   Record expand(const Record& mhrec);
 
 private:

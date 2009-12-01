@@ -1,4 +1,4 @@
-//# MSPolnGram.cc: Grammar for spectral window expressions
+//# MSPolnGram.cc: Grammar for polarization selection expressions
 //# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -50,7 +50,7 @@ int MSPolnGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
-  //  static const char*           strpMSPolnGram = 0;
+  /* static const char*           strpMSPolnGram = 0; */
   static Int                   posMSPolnGram = 0;
   
   // MSPolnGramwrap out of namespace
@@ -91,11 +91,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	parser.reset();
 	// parse command string
 	ret=parser.theParser(command);
-			     // selectedDDIDs,
-			     // selectedSpwPolnMap);
-	// selectedIDs = parser.selectedIDs();
-	// selectedChans = parser.selectedChanIDs();
-	node=(*(parser.node()));
+	//	node=(*(parser.node()));
+	node=((parser.node()));
 	selectedDDIDs = parser.selectedDDIDs();
 	selectedPolnMap = parser.selectedPolnMap();
 	selectedSetupMap = parser.selectedSetupMap();
@@ -116,8 +113,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Give the table expression node
   const TableExprNode* msPolnGramParseNode()
   {
-    //   return MSPolnParse::node();
     return 0;
+    //   return MSPolnParse::node();
   }
   //
   //------------------------------------------------------------------------------

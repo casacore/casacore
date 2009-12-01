@@ -37,7 +37,7 @@
 #endif
 
 #include <float.h>
-#if !defined(AIPS_DARWIN)
+#if !defined(AIPS_DARWIN) && !defined(AIPS_BSD)
 #include <values.h>
 #endif
 

@@ -746,7 +746,7 @@ Quantum<Vector<Double> > MeasuresProxy::separation(const Record& lrec, const Rec
 
 }
 
-Vector<Quantum<Vector<Double> > > MeasuresProxy::uvw(const Record& mhrec)
+Record MeasuresProxy::uvw(const Record& mhrec)
 {
   Record outrec;
   MeasureHolder mhin = rec2mh(mhrec);
@@ -758,16 +758,16 @@ Vector<Quantum<Vector<Double> > > MeasuresProxy::uvw(const Record& mhrec)
     throw(AipsError(err));
   Record r0;
   mhout.toRecord(err, r0);
-  outrec.defineRecord("r0", r0);
+  outrec.defineRecord("measure", r0);
 
-  Quantum<Vector<Double> > q0(res, "m/s");
-  Quantum<Vector<Double> > q1(xres, "m");
-  Vector<Quantum<Vector<Double> > > outvec(2);
-  outvec(0) = Quantum<Vector<Double> >(res, "m/s");
-  outvec(1) = Quantum<Vector<Double> >(xres, "m");
-  //outrec.define("dot", q0);
-  //outrec.define("xyz", q1);
-  return outvec;
+  QuantumHolder qh0(Quantum<Vector<Double> >(res, "m/s"));
+  QuantumHolder qh1(Quantum<Vector<Double> >(xres, "m"));
+  Record r1, r2;
+  qh0.toRecord(err, r1);
+  qh1.toRecord(err, r2);
+  outrec.defineRecord("dot", r1);
+  outrec.defineRecord("xyz", r2);
+  return outrec;
 }
 
 Record MeasuresProxy::expand(const Record& mhrec)
@@ -783,7 +783,7 @@ Record MeasuresProxy::expand(const Record& mhrec)
   Record r0, r1;
   mhout.toRecord(err, r0);
   qh0.toRecord(err, r1);
-  outrec.defineRecord("r0", r0);
+  outrec.defineRecord("measure", r0);
   outrec.defineRecord("xyz", r1);
   return outrec;
 }

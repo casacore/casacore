@@ -38,7 +38,7 @@
 #include <errno.h>                // needed for errno
 #include <casa/string.h>          // needed for strerror
 
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_BSD)
 #undef trace3OPEN
 #define trace3OPEN open
 #undef trace2OPEN

@@ -388,7 +388,7 @@ class MVAngle {
 // Output/Input
 // <group name=output>
 ostream &operator<<(ostream &os, const MVAngle &meas);
-ostream &operator>>(ostream &is, MVAngle &meas);
+istream &operator>>(istream &is, MVAngle &meas);
 ostream &operator<<(ostream &os, const MVAngle::Format &form);
 // </group>
 

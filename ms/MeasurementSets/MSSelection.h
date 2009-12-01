@@ -78,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // href="http://casa.nrao.edu/Memos/msselection/index.html">Data
 // Selection</a>
 //
-// The subexpressions are interpreted in the order which they were
+// The sub-expressions are interpreted in the order which they were
 // set.  The order however in not important - any dependency on the
 // order in which the expressions are evaluated is handled internally.
 // The result of parsing the expressions is TableExprNode (TEN).  All
@@ -92,7 +92,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // // Create a MS and a MS selection
 // MeasurementSet ms(msName);
 // MSSelection select;
-// // Setup any subexpressions of interest directly
+// // Setup any sub-expressions of interest directly
 // // (or optionally send this information through a Record)
 // select.setFieldExpr("0,1");
 // select.setSpwExpr(">0");
@@ -172,13 +172,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool setTaQLExpr(const String& taqlExpr);
     Bool setPolnExpr(const String& polnExpr);
     
-    //   inline virtual Vector<Int> getAntenna1List() {return antenna1IDs_p;}
-    //   inline virtual Vector<Int> getAntenna2List() {return antenna2IDs_p;}
-    //   inline virtual Vector<Int> getFieldList() {return fieldIDs_p;}
-    //   inline virtual Vector<Int> getSpwList() {return spwIDs_p;}
-    //   inline virtual Matrix<Int> getBaselineList() {return baselineIDs_p;}
-    
     TableExprNode getTEN(const MeasurementSet*ms = NULL);
+
+    // Methods to return the list of various selected IDs
+    inline Vector<Int> getScanList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return scanIDs_p.copy();}
+
+    inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return arrayIDs_p.copy();}
     
     inline Vector<Int> getAntenna1List(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return antenna1IDs_p.copy();}
@@ -190,53 +191,84 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     {getTEN(ms); return baselineIDs_p.copy();}
     
     inline Vector<Int> getFieldList(const MeasurementSet* ms=NULL) 
-    {
-      if (fieldIDs_p.nelements() <= 0)
-	getTEN(ms); 
-      return fieldIDs_p.copy();
-    }
+    {if (fieldIDs_p.nelements() <= 0) getTEN(ms); return fieldIDs_p.copy();}
     
+    // Return the list of the specified time range(s) as the start and
+    // end MJD values.
+    inline Matrix<Double> getTimeList(const MeasurementSet* ms=NULL)
+    {getTEN(ms); return selectedTimesList_p.copy();}
+    
+    // Return the list of the specified uv-range(s) as the start and
+    // end values in units used in the MS.
+    inline Matrix<Double> getUVList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return selectedUVRange_p.copy();}
+    
+    // Return the list of user defined units for the uv-range(s).  The
+    // uv-range(s) return by getUVList is always in the units used in
+    // the MS.
+    inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return selectedUVUnits_p.copy();}
+
+    // Return the list of the selected Spectral Window IDs.
     inline Vector<Int> getSpwList(const MeasurementSet* ms=NULL) 
+    {if (spwIDs_p.nelements() <= 0) getTEN(ms); return spwIDs_p.copy();}
+    
+    // Return the table (as a nx4 Matrix) of the selected Spectral
+    // Windows and associated ranges of selected channels.  Each row
+    // of the Matrix has the following elements:
+    //
+    //    SpwID StartCh StopCh Step
+    //
+    // where StartCh, StopCh and Step are the first and the last
+    // selected channels and step is the step size.  If no step size
+    // was supplied as part of the expression, the value of Step is
+    // replaced with the value of the defaultStep parameter. Multiple
+    // channel specifications for the same Spectral Window selection,
+    // results in multiple row in the Matrix.
+    inline Matrix<Int> getChanList(const MeasurementSet* ms=NULL, const Int defaultStep=1) 
     {
-      if (spwIDs_p.nelements() <= 0)
-	getTEN(ms); 
-      return spwIDs_p.copy();
+      if (chanIDs_p.nelements() <= 0) getTEN(ms); 
+      Int n=chanIDs_p.shape()[0];
+      Matrix<Int> chanIDList=chanIDs_p;
+      for(Int i=0;i<n;i++) 
+      	if (chanIDList(i,3) < 0) 
+      	  chanIDList(i,3)=defaultStep;
+      return chanIDList.copy();
     }
-    
-    inline Matrix<Int> getChanList(const MeasurementSet* ms=NULL) 
-    {if (chanIDs_p.nelements() <= 0) getTEN(ms); return chanIDs_p.copy();}
-    
+
+    // Return the list of the selected Data Description IDs.    
     inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
     {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p.copy();}
     
     inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedPolMap_p;};
-    
+
     inline OrderedMap<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedSetupMap_p;};
+
+    // Methods to convert the maps return by getChanList and
+    // getCorrMap to a list of Slice which can be directly used by
+    // Table system for in-row selection of frequency channels and
+    // polarizations.
+    void getChanSlices(Vector<Vector<Slice> >& chanslices, 
+		       const MeasurementSet* ms=NULL, 
+		       const Int defaultChanStep=1);
+
+    void getCorrSlices(Vector<Vector<Slice> >& corrslices,
+		       const MeasurementSet* ms=NULL);
     
-    inline Vector<Int> getScanList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return scanIDs_p.copy();}
     
-    inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return arrayIDs_p.copy();}
-    
-    inline Matrix<Double> getTimeList(const MeasurementSet* ms=NULL)
-    {getTEN(ms); return selectedTimesList_p.copy();}
-    
-    inline Matrix<Double> getUVList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedUVRange_p.copy();}
-    
-    inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedUVUnits_p.copy();}
-    
-    // Clear subexpression and reset priority.  Default behaviour is to
+    // Clear sub-expression and reset priority.  Default behavior is to
     // reset all sub-expressions.
     void clear(const MSExprType type=NO_EXPR);
     
     // Convert to TableExprNode format (C++ interface to TaQL)
     TableExprNode toTableExprNode(const MeasurementSet* ms);
     
+    // Return the selected MS.  For now, the selected MS reflects only
+    // row selections (as against in-row selections).  If outMSName !=
+    // "", the selected MS is also written to the disk (a shallow
+    // copy).
     Bool getSelectedMS(MeasurementSet& selectedMS,
 		       const String& outMSName="");
     
@@ -300,3 +332,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #endif
+
+

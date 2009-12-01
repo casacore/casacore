@@ -426,6 +426,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      lastday=day;
 
 	      thisnrow=0;
+              meanIntTim=0.0;
 	    }
 
 	    // etime keeps pace with thistime
@@ -440,7 +441,6 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	  }
 
 	  thisnrow+=nrow;
-
 	  meanIntTim+=sum(inttim.makeVector());
 
 	  // for comparison at next timestamp
@@ -492,7 +492,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os.output().width(widthLead);  os << "  ";
 	os << spwids;
 	os << endl;
-	
+
 	// post to logger
 	os << LogIO::POST;
 	

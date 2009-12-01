@@ -82,6 +82,15 @@ Double String::toDouble(const String& string) {
     return var;
 }
 
+Float String::toFloat(const String& string) {
+    istringstream instr(string);
+    Float var;
+    // Initialize in case the string is empty or non-numeric.
+    var = 0;
+    instr >> var;
+    return var;
+}
+
 // Obtain a (separate) 'sub'-string
 SubString String::at(size_type pos, size_type len) {
   return _substr(pos, len);
@@ -278,14 +287,6 @@ String::size_type String::find(const RegexBase &r, size_type pos) const {
 String::size_type String::rfind(const RegexBase &r, size_type pos) const {
   Int unused;
   return r.rfind(c_str(), length(), unused, pos-length());
-}
-
-Bool String::matches(const string &str, Int pos) const {
-  return ((pos < 0) ? index(str, pos) == 0 :
-	  length() != 0 && str.length() != 0 &&
-	  length() == pos+str.length() &&
-	  static_cast<size_type>(pos) < length() &&
-	  index(str, pos) == static_cast<size_type>(pos)) ;
 }
 
 Bool String::contains(const RegexBase &r) const {

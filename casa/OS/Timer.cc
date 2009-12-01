@@ -44,7 +44,7 @@ void Timer::mark()
 #if defined (DOS) || defined (MSDOS)
  usage0 = clock();
  ftime(&real0);
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
    struct timezone tz;
    //timerclear(&usage0);
@@ -78,7 +78,7 @@ double Timer::real() const
  ms = ms * 0.001 + s;
  return (ms);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  struct timeval now;
  struct timezone tz;
@@ -118,7 +118,7 @@ double Timer::user() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;
@@ -158,7 +158,7 @@ double Timer::system() const
 #if defined (DOS) || defined (MSDOS)
  return(0L);
 
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;
@@ -204,7 +204,7 @@ double Timer::all() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;
@@ -254,7 +254,7 @@ register clock_t  usage1;
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;
@@ -295,7 +295,7 @@ double Timer::system_usec() const
 #if defined (DOS) || defined (MSDOS)
  return(0.0);
 
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;
@@ -341,7 +341,7 @@ double Timer::all_usec() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
  #ifdef AIPS_CRAY_PGI
  //struct timeval now;
  //struct timezone tz;

@@ -7,16 +7,16 @@ import subprocess
 
 def copy_dir(src, dst):
     dirname = os.path.basename(os.path.normpath(src))
-    dstdir = os.path.join(dst, dirname)
-
     for dp, dn, fn in os.walk(src):
         if ".svn" in dn: 
             dn.remove(".svn")
         dp1 = dp[dp.find(dirname):]
-        if not os.path.exists(os.path.join(dst,dp1)):
-            os.mkdir(os.path.join(dst,dp1))
+        ddir = os.path.join(dst, dp1)
+        if not os.path.exists(ddir):
+            os.mkdir(ddir)
+            os.chmod(ddir, 0755)
         for f in fn:
-            shutil.copy(os.path.join(dp, f), os.path.join(dst,dp1))
+            shutil.copy(os.path.join(dp, f), ddir)
 
 def add_ldpath(env):
     envvar = env.get("LIBPATH", [])
@@ -51,6 +51,8 @@ def assayAux(target, source, env):
                               os.path.split(i)[1]) for i in extraaux ]
     for aux in testaux:
         dstaux = os.path.join(outpath, os.path.split(aux)[1])
+        if not os.path.exists(aux):
+            continue
         if os.path.isdir(aux):
             copy_dir(aux, outpath)
             env.Depends(target, env.Dir(aux))                
@@ -126,10 +128,14 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
         source = target
         target = None
     env.AppendUnique(CPPPATH=[os.path.split(source)[0]])
+    aliases = ['test', 'check']
+    if "alias" in kwargs.keys():
+        aliases.append(kwargs.pop("alias"))
     if source.endswith(".py"):
         srcbase = source.replace(".py","")
         modelem = os.path.split(srcbase)
-        mod = env.LoadableModule(os.path.join(modelem[0], "_"+modelem[1]+".so"),
+        mod = env.LoadableModule(os.path.join(modelem[0],
+                                              "_"+modelem[1]+".so"),
                                  srcbase+".cc")
         env["ENV"]["PYTHONPATH"] = os.path.split(mod[0].abspath)[0]
         program = [env.File(srcbase+".py")]
@@ -138,7 +144,7 @@ def addAssayTest(env, target=None, source=None, *args, **kwargs):
         program = env.Program(target, source, *args, **kwargs)
     utest = env.Assay(program)
     # add alias to run all unit tests.
-    env.Alias(['test', 'check'], utest)
+    env.Alias(aliases, utest)
     # make an alias to run the test in isolation from the rest of the tests.
     env.Alias(str(program[0]), utest)
     # and now an alias just for the app name itself, path stripped
@@ -151,7 +157,7 @@ def generate(env):
         action = [env.Action(assayAux, auxString),
                   env.Action(assayAction, assayActionString)],
         suffix='.passed')
-    env["ASSAYCOM"] = os.path.join(env["casashrdir"][0],"casacore_assay")
+    env["ASSAYCOM"] = os.path.join(env["casashrdir"],"casacore_assay")
     env.AddMethod(addAssayTest)
 
 def exists(env):

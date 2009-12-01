@@ -38,9 +38,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 typedef long long Int64;
 typedef unsigned long long uInt64;
 
-//# Slicer is used in GLU (OpenGL Utilities), so use another name for AIPS++.
-#define Slicer ArraySlicer
-
 //# All FITS code seems to assume longs are 4 bytes. Take care of machines 
 //# for which this isn't true here by defining FitsLong to be the 4 byte int.
 //# Use FitsLong instead of long in the FITS code where it matters.

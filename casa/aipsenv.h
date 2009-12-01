@@ -110,6 +110,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_64B
 #endif
 
+#if defined(AIPS_BSD)
+#undef AIPS_BSD
+#endif
+#if defined(__FreeBSD__)
+#define AIPS_BSD
+#define AIPS_NOLARGEFILE
+#endif
+
 #if defined(AIPS_LINUX)
 #undef AIPS_LINUX
 #endif
@@ -207,7 +215,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 // Add other platforms here
-#if (defined(AIPS_LINUX) || defined(AIPS_DARWIN))
+#if (defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD))
 #if !defined(AIPS_AUTO_STL)
 #define AIPS_AUTO_STL
 #endif

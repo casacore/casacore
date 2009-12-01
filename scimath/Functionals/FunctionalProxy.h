@@ -46,13 +46,13 @@ public:
   virtual ~FunctionalProxy();
   Vector<Double> f(const Vector<Double>& val);
   Vector<Double> fdf(const Vector<Double>& val);
-  Vector<String> names();
   void add(const FunctionalProxy& func);
   Vector<DComplex> fc(const Vector<DComplex>& val);
   Vector<DComplex> fdfc(const Vector<Double>& val);
   void addc(const FunctionalProxy& func);
   Record asrecord();
   Int npar() const;
+  uInt ndim() const;
   void setparameters(const Vector<Double>& val);
   void setparametersc(const Vector<DComplex>& val);
   void setmasks(const Vector<Bool>& val);

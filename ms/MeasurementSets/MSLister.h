@@ -269,19 +269,19 @@ private:
   uInt nIndexPols_p;
 
   // Field width variables
-  uInt wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p;
+  uInt wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p, wUVW_p;
   uInt wFld_p, wSpW_p, wChn_p;
   uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
   uInt wTotal_p;
 
   // Order of magnitude control (digits to left of decimal, including sign)
-  uInt oTime_p, oUVDist_p;
+  uInt oTime_p, oUVDist_p, oUVW_p;
   uInt oAmpl_p, oPhase_p;
   uInt oWeight_p;
 
   // Precision control (digits to right of decimal point)
   //   (precTime_p includes hhmmss, so 7 yields hh:mm:ss.s)
-  Int precTime_p, precUVDist_p;
+  Int precTime_p, precUVDist_p, precUVW_p;
   Int precAmpl_p, precPhase_p;
   Int precWeight_p;
   

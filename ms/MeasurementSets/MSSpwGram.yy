@@ -1,4 +1,4 @@
-/*
+/* -*-C++-*-
     MSSpwGram.y: Parser for Spw expressions
     Copyright (C) 2004
     Associated Universities, Inc. Washington DC, USA.
@@ -148,7 +148,8 @@ PhyRange: Physical DASH Physical
 						     "range greater than end of range")));
 	     $$[0] = $1[0];
 	     $$[1] = $3[0];
-	     $$[2] = 0;     // The Step
+	     //	     $$[2] = 0;     // The Step
+	     $$[2] = -1;     // The Step
 	     if ($1[1] != $3[1])
 	       throw(MSSelectionSpwParseError(String("Spw expression: Start and stop specification"
 						     " not in the same units.")));
@@ -165,7 +166,7 @@ PhyRange: Physical DASH Physical
 	     //	     cout << $1 << " " << $3 << " " << $4[0] << " " << $4[1] << endl;
 	     $$[0]=$1*$4[1];
 	     $$[1]=$3*$4[1];
-	     $$[2] = 1;       // The Step
+	     $$[2] = -1;       // The Step
 	     $$[3] = $4[0];
     	   }
         | PhyRange CARET Physical
@@ -189,7 +190,8 @@ IndexRange: PhyVal DASH PhyVal
 						       "range greater than end of range")));
 	       $$[0] = (Int)$1;
 	       $$[1] = (Int)$3;
-	       $$[2] = 1;
+	       //	       $$[2] = 1;  // The Step
+	     $$[2] = -1;       // The Step
 	       $$[3] = MSSpwIndex::MSSPW_INDEX;
 	     }
           | IndexRange CARET PhyVal
@@ -399,10 +401,11 @@ FullSpec: Spw
 	      Vector<Int> chanList = myMSSI.convertToChannelIndex(varifiedSpwList, (*($3)), nFSpecs);
 	      //
 	      // This just fills in the chan. list structure (to be
-	      // returned for MSSelection::getChanList()).  This is a
-	      // statement of intent (i.e. whenever we can figure out
-	      // a way to select channels in the VisBuffer, this
-	      // method is where we will do it).
+	      // returned for MSSelection::getChanList()).  The name
+	      // selectionChannelsFromIDList is a statement of intent
+	      // (i.e. whenever we can figure out a way to select
+	      // channels in the VisBuffer, this method is where we
+	      // will do it).
 	      //
 	      //	      MSSpwParse::thisMSSParser->selectChannelsFromIDList((*($1)), chanList);
 	      //	      MSSpwParse().selectChannelsFromIDList(varifiedSpwList, chanList, nFSpecs);

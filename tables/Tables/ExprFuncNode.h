@@ -300,7 +300,9 @@ public:
 
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
-    PtrBlock<TableExprNodeRep*> operands()
+    const PtrBlock<TableExprNodeRep*>& operands() const
+        { return operands_p; }
+    PtrBlock<TableExprNodeRep*>& rwOperands()
         { return operands_p; }
     FunctionType funcType() const
         { return funcType_p; }

@@ -41,7 +41,7 @@
     }
 #  endif
 #  define statfs statvfs
-#elif defined(AIPS_DARWIN)
+#elif defined(AIPS_DARWIN) || defined(AIPS_BSD)
 #include <sys/param.h>
 #include <sys/mount.h>
 #else
@@ -254,6 +254,23 @@ void Directory::removeRecursive (Bool keepDir)
     if (!keepDir) {
         remove();
     }
+}
+
+Int64 Directory::size() const
+{
+
+  Int64 totSize=0;
+  DirectoryIterator iter(*this);
+  while (! iter.pastEnd()) {
+    File file = iter.file();
+    if (file.isDirectory ()) {
+      totSize+=Directory(file).size();
+    } else {
+      totSize+=file.size();
+    }
+    iter++;
+  }
+  return totSize;
 }
 
 void Directory::copy (const Path& target, Bool overwrite,

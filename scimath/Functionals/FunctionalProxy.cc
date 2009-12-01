@@ -60,6 +60,12 @@ Record FunctionalProxy::fhdc2rec()
   return rec;
 }
 
+uInt FunctionalProxy::ndim() const {
+  if (type_ == 0)
+    return fhd_.asFunction().ndim();
+  else
+    return fhdc_.asFunction().ndim();  
+}
 
 Record  FunctionalProxy::asrecord()
 {
@@ -120,11 +126,6 @@ Vector<Double> FunctionalProxy::fdf(const Vector<Double>& val)
   return out;
 }
 
-Vector<String> FunctionalProxy::names()
-{
-  return fhd_.names();
-}
-
 void FunctionalProxy::add(const FunctionalProxy& func)
 {
   if (!fhd_.addFunction(func.fhd_.asFunction())) {
@@ -134,7 +135,6 @@ void FunctionalProxy::add(const FunctionalProxy& func)
 
 Vector<DComplex> FunctionalProxy::fc(const Vector<DComplex>& val)
 {
-  cout << "debug start" << endl;
   Int nd=1;
   if (fhdc_.asFunction().ndim() != 0) nd = fhdc_.asFunction().ndim();
   Vector<DComplex> out(val.nelements()/nd);

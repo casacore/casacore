@@ -219,7 +219,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	!allEQ(bms_p[i].keywordSet().asArrayString("SORT_COLUMNS"),
 	       Vector<String>(columns))) {
       // if not, sort and store it (if possible)
-      store=bms_p[i].isWritable();
+      store=(bms_p[i].isWritable() && (bms_p[i].tableType() != Table::Memory));
     } else {
       sorted = bms_p[i].keywordSet().asTable("SORTED_TABLE");
       // if sorted table is smaller it can't be useful, remake it

@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""),taqlExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR),
     antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), 
-    scanIDs_p(), ddIDs_p(), baselineIDs_p(), selectedTimesList_p(),
+    scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
     selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
     selectedSetupMap_p(Vector<Vector<Int> >(0)),
     maxScans_p(1000), maxArray_p(1000)
@@ -172,7 +172,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""),taqlExpr_p(""),antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
-    spwIDs_p(), ddIDs_p(), baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)),
+    spwIDs_p(),ddIDs_p(),baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)),
     selectedSetupMap_p(Vector<Vector<Int> >(0))
     
   {
@@ -711,6 +711,64 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return False;
   }
   
+  //----------------------------------------------------------------------------
+
+  void MSSelection::getChanSlices(Vector<Vector<Slice> >& chanslices,
+				  const MeasurementSet* ms,const Int defaultChanStep) {
+    
+    // The total number of spws
+    Int nspw=ms->spectralWindow().nrow();
+    
+    // Nominally empty selection for all spws
+    chanslices.resize(nspw);
+    chanslices.set(Vector<Slice>());
+    
+    // Get the chan selection matrix
+    Matrix<Int> chanmat=this->getChanList(ms,defaultChanStep);
+    
+    for (uInt i=0;i<chanmat.nrow();++i) {
+      // Reference to the current spw's slice list
+      Vector<Slice>& currspwsl(chanslices(chanmat(i,0)));
+      
+      // Add a slice element and fill it
+      Int islice=currspwsl.nelements();
+      currspwsl.resize(islice+1,True);
+      currspwsl(islice)=Slice(chanmat(i,1),
+			      chanmat(i,2)-chanmat(i,1)+1,
+			      chanmat(i,3));
+    }
+    
+  }
+
+
+  //----------------------------------------------------------------------------
+  void MSSelection::getCorrSlices(Vector<Vector<Slice> >& corrslices,
+				  const MeasurementSet* ms) {
+
+    // The total number of polids
+    Int npol=ms->polarization().nrow();
+    
+    // Nominally empty selection for all polids
+    corrslices.resize(npol);
+    corrslices.set(Vector<Slice>());
+    
+    // Get the corr indices as an ordered map
+    OrderedMap<Int, Vector<Vector<Int> > > corrmap(this->getCorrMap(ms));
+
+    // Iterate over the ordered map to fill the slices
+    ConstMapIter<Int, Vector<Vector<Int> > > mi(corrmap);
+    for (mi.toStart(); !mi.atEnd(); mi++) {
+      Int pol=mi.getKey();
+      Vector<Int> corridx=mi.getVal()[0];
+      
+      Int ncorr=corridx.nelements();
+      corrslices(pol).resize(ncorr);
+      for (Int i=0;i<ncorr;++i)
+	corrslices(pol)(i)=Slice(corridx(i),1,1);
+    }
+    
+  }
+
   //----------------------------------------------------------------------------
   
   void MSSelection::fromSelectionItem(const Record& selectionItem)

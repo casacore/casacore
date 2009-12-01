@@ -92,18 +92,18 @@ class MSPolnParse : public MSParse
 public:
   // Default constructor
   MSPolnParse ();
-  //  ~MSPolnParse() {if (node_p) delete node_p;node_p=0x0;};
+  //  ~MSPolnParse() {cleanup();};
 
   // Associate the ms and the shorthand.
   MSPolnParse (const MeasurementSet* ms);
 
-  const TableExprNode *selectFromIDList(const Vector<Int>& ddIDs);
+  const TableExprNode selectFromIDList(const Vector<Int>& ddIDs);
 
   // Get table expression node object.
-  const TableExprNode* node();
+  const TableExprNode node();
   //  static MSPolnParse* thisMSSParser;
   void reset() {polMap_p.clear(); ddIDList_p.resize(0);};
-  void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  void cleanup() {/*if (node_p) delete node_p;node_p=0x0;*/};
   Int theParser(const String& command); 
 		// Vector<Int>& selectedDDIDs, 
 		// Matrix<Int>& selectedSpwPolnMap);
@@ -127,10 +127,10 @@ private:
 			      const Vector<Int>& spwIDs, 
 			      Vector<Int>& polnIDs,
 			      Vector<Int>& polnIndices);
-  TableExprNode* node_p;
+  TableExprNode node_p;
+  Vector<Int> ddIDList_p;
   OrderedMap<Int, Vector<Int> > polMap_p;
   OrderedMap<Int, Vector<Vector<Int> > > setupMap_p;
-  Vector<Int> ddIDList_p;
 
   void setIDLists(const Int key, const Int ndx, Vector<Int>& val);
 };

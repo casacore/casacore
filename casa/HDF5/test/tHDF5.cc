@@ -39,6 +39,7 @@ int main()
 #include <vector>
 #include <math.h>
 #include <hdf5.h>
+#include <stdlib.h>
 
 using namespace std;
 

@@ -645,10 +645,10 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case fmodFUNC:
 	return fmod     (operands_p[0]->getDouble(id),
 			 operands_p[1]->getDouble(id));
-    case datetimeFUNC:
-    case mjdtodateFUNC:
-    case dateFUNC:
-        return Double (getDate(id));
+        ///    case datetimeFUNC:
+        ///    case mjdtodateFUNC:
+        ///    case dateFUNC:
+        ///        return Double (getDate(id));
     case mjdFUNC:
 	return operands_p[0]->getDate(id).day();
     case timeFUNC:                                       //# return in radians

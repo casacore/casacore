@@ -2316,8 +2316,10 @@ Int LatticeExprNode::makeEqualDim (LatticeExprNode& expr0,
     expr1 = cptr->makeExtendLattice (expr1,
 				     attr0.shape(),
 				     attr0.coordinates().coordinates());
-  } else if (result != 0) {
+  } else if (result == 9) {
     throw AipsError ("LatticeExprNode - coordinates of operands mismatch");
+  } else if (result != 0) {
+    throw AipsError ("LatticeExprNode - shapes of operands mismatch");
   }
   return result;
 }

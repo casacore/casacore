@@ -511,8 +511,6 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i,
 	const char *s, int s_len, Bool n, FITS::ValueType t, const void *v,
 	int v_len, const char *&msg) const {
 
-        ostringstream msgline;
-
 	if (t == FITS::FLOAT || t == FITS::DOUBLE)
 	    t = FITS::REAL;	// change t to REAL to match on types
 	if (t == FITS::FSTRING)
@@ -2273,6 +2271,9 @@ FitsKeyword *FitsKeywordList::next(const char *w) {
 int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 	// apply rules to x against the keyword list
 	// return: 0 = no errors, 1 = minor errors, -1 = major errors
+
+        static char msgstring[180]; // storage for composing error messages
+
 	if (x.kw().name() == FITS::USER_DEF)
 	    return 0;
 	if (x.kw().name() == FITS::ERRWORD)
@@ -2290,9 +2291,8 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 				ostringstream msgline;
 				msgline << "Illegal value for keyword NAXIS"
 					<< x.index();
-				const char * mptr = msgline.str().data();
-				errhandler(mptr, FITSError::SEVERE);
-				// delete [] mptr;
+				strncpy(msgstring, msgline.str().c_str(), sizeof(msgstring)-1);
+				errhandler(msgstring, FITSError::SEVERE);
 				return -1;
 			    }
 			}
@@ -2318,9 +2318,8 @@ int FitsKeywordList::rules(FitsKeyword &x, FITSErrorHandler errhandler) {
 			    ostringstream msgline;
 			    msgline << "Illegal value for keyword TBCOL"
 				    << x.index();
-			    const char * mptr = msgline.str().data();
-			    errhandler(mptr, FITSError::SEVERE);
-			    // delete [] mptr;
+			    strncpy(msgstring, msgline.str().c_str(), sizeof(msgstring)-1);
+			    errhandler(msgstring, FITSError::SEVERE);
 			    return -1;
 			}
 		    }
@@ -2409,7 +2408,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 					      int count, 
 					      FITSErrorHandler errhandler, 
 					      Bool show_err) {
-    char messagestring[180]; // storage for composing error messages
+        char msgstring[180]; // storage for composing error messages
 	int i, j;
 	cardno = 0;
 	int end_found = 0;
@@ -2423,27 +2422,25 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
-		strncpy(messagestring, msgline.str().c_str(), 179);
-		errhandler(messagestring, errlev);
-		// delete [] mptr;
+		strncpy(msgstring, msgline.str().c_str(), sizeof(msgstring)-1);
+		errhandler(msgstring, errlev);
 		for (j = 0; j < kwlist.no_parse_errs(); ++j) {
 		    errhandler(kwlist.parse_err(j), errlev);
 		}
 	    }
 	    if (end_found) {
 		if (kwlist.curr()->isreserved() && 
-		      kwlist.curr()->kw().name() == FITS::SPACES &&
-		      kwlist.curr()->commlen() == 0)
+		    kwlist.curr()->kw().name() == FITS::SPACES &&
+		    kwlist.curr()->commlen() == 0)
 		    kwlist.del();
 		else {
 		    if (no_errs_ < max_errs) {
 			ostringstream msgline;
-		    	msgline << "FITS card " 
+			msgline << "FITS card " 
 				<< (count * 36 + cardno) << ": ";
-		    	msgline.write(&buff[i*80],80);
-			const char * mptr = msgline.str().data();
-			errhandler(mptr, FITSError::WARN);
-			// delete [] mptr;
+			msgline.write(&buff[i*80],80);
+			strncpy(msgstring, msgline.str().c_str(), sizeof(msgstring)-1);
+			errhandler(msgstring, FITSError::WARN);
 		    	errhandler("Invalid card after END keyword.",
 				   FITSError::WARN);
 		    }
@@ -2451,12 +2448,12 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 	    }
 	    if (kwlist.curr()->isreserved() && 
 	        kwlist.curr()->kw().name() == FITS::END)
-	      {
+	    {
 		end_found = 1;
                 break; // don't attempt to read beyond END card (fails on ASCII null)
-	      }
+	    }
 	}
-
+	
 	return kwlist;
 }
 

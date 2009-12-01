@@ -106,8 +106,10 @@ private:
 
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
-    PtrBlock<TableExprNodeRep*> operands()
+    const PtrBlock<TableExprNodeRep*>& operands() const
         { return node_p.operands(); }
+    PtrBlock<TableExprNodeRep*>& rwOperands()
+        { return node_p.rwOperands(); }
     TableExprFuncNode::FunctionType funcType() const
         { return node_p.funcType(); }
     NodeDataType argDataType() const

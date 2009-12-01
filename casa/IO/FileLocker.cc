@@ -33,6 +33,12 @@
 #include <errno.h>
 #include <casa/string.h>
 
+//# Locking is not supported on Cray compute nodes.
+#if defined(AIPS_CRAY_PGI)  &&  !defined(AIPS_NOFILELOCK)
+# define AIPS_NOFILELOCK 1
+#endif
+
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 FileLocker::FileLocker()
@@ -61,8 +67,8 @@ FileLocker::~FileLocker()
 Bool FileLocker::acquire (LockType type, uInt nattempts)
 {
     itsError = 0;
-    // Locking is not supported on Cray compute nodes. So always success.
-#if defined(AIPS_CRAY_PGI)
+    // Always success if locking is not supported.
+#if defined(AIPS_NOFILELOCK)
     itsReadLocked = True;
     if (!itsWriteLocked  &&  type == Write) {
         itsWriteLocked = True;
@@ -173,7 +179,7 @@ Bool FileLocker::release()
     itsReadLocked  = False;
     itsWriteLocked = False;
     itsError = 0;
-#if defined(AIPS_CRAY_PGI)
+#if defined(AIPS_NOFILELOCK)
     return True;
 #else
     struct flock ls;
@@ -196,7 +202,7 @@ Bool FileLocker::release()
 
 Bool FileLocker::canLock (LockType type)
 {
-#if defined(AIPS_CRAY_PGI)
+#if defined(AIPS_NOFILELOCK)
     return True;
 #else
     uInt pid;
@@ -206,7 +212,7 @@ Bool FileLocker::canLock (LockType type)
 
 Bool FileLocker::canLock (uInt& pid, LockType type)
 {
-#if defined(AIPS_CRAY_PGI)
+#if defined(AIPS_NOFILELOCK)
     return True;
 #else
     pid = 0;

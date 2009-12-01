@@ -31,28 +31,10 @@
 #include <casa/namespace.h>
 #include <casa/OS/File.h>
 
-int main(Int argc, char *argv[]) {
-    // just to eliminate compiler warning about argc not being used
-    if (argc > 1) {
-        cerr << "WARNING: This test takes no command line options, "
-            << "so the options you specified will be ignored" << endl;
-    }
-
-    Path path(argv[0]);
-    // if fixtures directory exists, get the test data from there
-    // necessary because of differences between build system for NRAO repos
-    // and Google repos.
-    String fixturesDir = path.dirName() + "/fixtures/tImageMetaData/";
-    if (! File(fixturesDir).exists()) {
-        fixturesDir = path.dirName() + "/";
-    }
+int main() {
     try {
-        FITSImage fourAxesImage(
-            fixturesDir + "ngc5921.clean.fits"
-        );
-        FITSImage twoAxesImage(
-            fixturesDir + "ngc5921.clean.no_freq.no_stokes.fits"
-        );
+        FITSImage fourAxesImage("ngc5921.clean.fits");
+        FITSImage twoAxesImage("ngc5921.clean.no_freq.no_stokes.fits");
    
         ImageMetaData fourAxesImageMetaData(fourAxesImage);
         ImageMetaData twoAxesImageMetaData(twoAxesImage);

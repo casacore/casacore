@@ -1352,6 +1352,8 @@ Bool ImageFITSConverter::extractMiscInfo (RecordInterface& miscInfo, const Recor
                miscInfo.define(name, subRec.asString("value"));
             } else if (type==TpFloat) {
                miscInfo.define(name, subRec.asFloat("value"));
+            } else if (type==TpDouble) {
+               miscInfo.define(name, subRec.asDouble("value"));
             } else if (type==TpInt) {
                miscInfo.define(name, subRec.asInt("value"));
             } else if (type==TpBool) {

@@ -42,7 +42,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class TableExprNode;
   
   // <summary>
-  // Global functions for flex/bison scanner/parser for MSPolnGram
+  // Global functions to drive the MSPolnParse class.  These, for
+  // Polarization selection, need not be global functions, but are
+  // done this way to keep the interface uniform for the various
+  // selection expressions.
   // </summary>
   
   // <use visibility=local>
@@ -52,18 +55,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   // <prerequisite>
   //# Classes you should understand before using this one.
-  //  <li> MSPolnGram.l and .y  (flex and bison grammar)
   // </prerequisite>
   
   // <synopsis> 
-  // Global functions are needed to define the input of the flex scanner
-  // and to start the bison parser.
-  // The input is taken from a string.
   // </synopsis> 
   
   // <motivation>
-  // It is necessary to be able to give an image expression in ASCII.
-  // This can be used in glish.
   // </motivation>
   // <todo asof="$DATE:$">
   //# A List of bugs, limitations, extensions or planned refinements.
@@ -72,7 +69,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   // <group name=MSPolnGramFunctions>
   
-  // Declare the bison parser (is implemented by bison command).
+  // The top level interface to the parser.
   int msPolnGramParseCommand (const MeasurementSet *ms, const String& command);
   int msPolnGramParseCommand (const MeasurementSet *ms, const String& command,
 			      TableExprNode& node,
@@ -81,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			      OrderedMap<Int, Vector<Vector<Int> > >& selectedSetupMap
 			      );
   
-  // The yyerror function for the parser.
+  // The error handler.
   // It throws an exception with the current token.
   void MSPolnGramerror (char*);
   

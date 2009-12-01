@@ -589,7 +589,7 @@ static Int isDST () {
 Int Time::timeZoneSeconds () {
   return isDST () ? -altzone : -timezone;
 }
-#elif defined(AIPS_OSF) || defined(AIPS_DARWIN)
+#elif defined(AIPS_OSF) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
 Int Time::timeZoneSeconds () {
   time_t tim = time (NULL);
   struct tm *tm_info = localtime (&tim);

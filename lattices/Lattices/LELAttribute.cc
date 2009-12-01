@@ -197,25 +197,25 @@ Int LELAttribute::compareCoord (const LELAttribute& other) const
   const IPosition& thisShape = shape();
   const IPosition& thatShape = other.shape();
   if (thisShape.nelements() != thatShape.nelements()) {
-    return 9;
+    return 8;
   }
   for (uInt i=0; i<thisShape.nelements(); i++) {
     if (thisShape(i) != thatShape(i)) {
       if (thisShape(i) == 1  &&  thatShape(i) > 1) {
 	// This is subset of that; check if not already the other way.
 	if (result == 1) {
-	  return 9;
+	  return 8;
 	}
 	result = -1;
       } else if (thisShape(i) > 1  &&  thatShape(i) == 1) {
 	// That is subset of this; check if not already the other way.
 	if (result == -1) {
-	  return 9;
+	  return 8;
 	}
 	result = 1;
       } else {
 	// Mismatching shapes
-	return 9;
+	return 8;
       }
     }
   }

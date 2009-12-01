@@ -116,6 +116,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   //----------------------------------------------------------------------------
   //
+  Bool mssSetData(const MeasurementSet& ms, 
+		  MeasurementSet& selectedMS,
+		  Vector<Vector<Slice> >& chanSlices,
+		  Vector<Vector<Slice> >& corrSlices,
+		  const String& outMSName,
+		  const String& timeExpr,
+		  const String& antennaExpr,
+		  const String& fieldExpr,
+		  const String& spwExpr,
+		  const String& uvDistExpr,
+		  const String& taQLExpr,
+		  const String& polnExpr,
+		  const String& scanExpr,
+		  const String& arrayExpr,
+		  const Int defaultChanStep
+		  )
+  {
+    //
+    // Parse the various expressions and produce the accmuluated TEN
+    // internally.
+    //
+	
+    MSSelection *mss = new MSSelection(ms,MSSelection::PARSE_NOW,
+				       timeExpr,antennaExpr,fieldExpr,spwExpr,
+				       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr);
+    //
+    // Apply the internal accumulated TEN to the MS and produce the
+    // selected MS.  
+    //
+    // If the accumulated TEN is NULL, this returns False.  Else
+    // return True.
+    //
+    Bool rstat = mss->getSelectedMS(selectedMS,outMSName);
+
+    // Get in-row selection info
+    mss->getChanSlices(chanSlices,&ms,defaultChanStep);
+    mss->getCorrSlices(corrSlices,&ms);
+
+    delete mss;
+    return rstat;
+  }
+  //
+  //----------------------------------------------------------------------------
+  //
   String stripWhite(const String& str, Bool onlyends)
   {
     Int j0,j1;
@@ -134,7 +178,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	       Bool upcase)
   {
     String tmpStr(str);
-    ///String::size_type tokpos,startpos=0;
+    /* String::size_type tokpos,startpos=0; */
     if (upcase) tmpStr.upcase();
     char *sep_p=(char *)sep.c_str();
 

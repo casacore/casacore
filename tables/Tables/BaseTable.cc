@@ -451,7 +451,7 @@ void BaseTable::copy (const String& newName, int tableOption) const
 		   ("BaseTable::copy: no input table files exist"));
 	}
 	//# Flush the data and subtables.
-	//# (cast is necessary to bypass non-constness).
+	//# (cast is necesaary to bypass non-constness).
 	((BaseTable*)this)->flush (True, True);
 	//# Copy the files (thus recursively the entire directory).
 	//# Set user write permission after the copy.
@@ -459,8 +459,10 @@ void BaseTable::copy (const String& newName, int tableOption) const
 	Directory fileOld(name_p);
 //#//	fileOld.copy (absNewName, True, True);
 	fileOld.copy (absNewName);
-        //# Renaming of subtables is not needed, because their names in
-        //# the table directory (the ones copiued) are all relative.
+	//# Okay, the table file have been copied.
+	//# Now rename the subtables in its keywords (where needed).
+	Table tab(absNewName, Table::Update);
+	tab.baseTablePtr()->renameSubTables (absNewName, name_p);
     }
 }
 

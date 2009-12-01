@@ -317,7 +317,8 @@ Int LatticeCleaner<T>::clean(Lattice<T>& model,
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
 
-  T tmpMaximumResidual;  
+  T tmpMaximumResidual;
+  tmpMaximumResidual = T();
 
   Int nScalesToClean=itsNscales;
   if (itsCleanType==CleanEnums::HOGBOM) {

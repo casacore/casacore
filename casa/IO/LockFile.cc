@@ -85,7 +85,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
 {
     AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<Int*>(0)),
 		  AipsError);
-    itsName = Path(fileName).expandedName();
+    itsName = Path(fileName).absoluteName();
     //# Create the file if it does not exist yet.
     //# When the flag is set, it is allowed that the file does not
     //# exist and cannot be created. In that case it is assumed that
@@ -384,16 +384,16 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 {
     pid = 0;
     permLocked = False;
-    String fullName = Path(fileName).expandedName();
+    String fullName = Path(fileName).absoluteName();
     File f (fullName);
     if (! f.exists()) {
-        throw AipsError ("FileLocker::showLock - File " + fileName +
+        throw AipsError ("LockFile::showLock - File " + fileName +
 			 " does not exist");
     }
     //# Open the lock file as readonly.
     int fd = FiledesIO::open (fullName.chars(), False);
     if (fd == -1) {
-        throw AipsError ("FileLocker::showLock - File " + fileName +
+        throw AipsError ("LockFile::showLock - File " + fileName +
 			 " could not be opened");
     }
     // The first byte is for read/write locking.
@@ -401,7 +401,7 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
     // The third one is to see if the file is permanently locked.
     FileLocker fileLocker (fd, 0, 1);
     FileLocker useLocker  (fd, 1, 1);
-    FileLocker permLocker  (fd, 2, 1);
+    FileLocker permLocker (fd, 2, 1);
     // Determine if the file is opened in another process.
     // If not, we can exit immediately.
     uInt usePid;
@@ -427,4 +427,3 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 }
 
 } //# NAMESPACE CASA - END
-

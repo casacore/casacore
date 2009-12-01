@@ -66,9 +66,12 @@ int main()
 	tmp.resize(0);
 	// Someday this test will fail!
 	tmp = AppInfo::workDirectories(1000000);
-	AlwaysAssertExit(tmp.nelements() == 0);
+        // Indeed this tests failed in Nov-2009 on a 2 TByte disk.
+        // So outcommented the test.
+	///AlwaysAssertExit(tmp.nelements() == 0);
 
 	// Check that we cycle through the valid directories
+	tmp.resize(0);
 	tmp = AppInfo::workDirectories();
 	String dir1 = AppInfo::workDirectory();
 	String dir2 = AppInfo::workDirectory();
@@ -88,11 +91,13 @@ int main()
 	try {
 	    cerr << "=====Expect a single SEVERE level message\n";
 	    file = AppInfo::workFileName(1000000);
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    caught = True;
 	} 
 	cerr << "=====There should be no more messages\n\n";
-	AlwaysAssertExit(caught);
+        // Do not check if it failed or succeeded, because that is
+        // system dependent (same reason as workDirectories test).
+	///AlwaysAssertExit(caught);
     }
 
     cerr << "OK" << endl;

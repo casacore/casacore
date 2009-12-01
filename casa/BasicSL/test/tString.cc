@@ -370,6 +370,16 @@ void toDouble() {
     assert(y < 1e-316 && y > -1e-316);
 }
 
+void toFloat() {
+    String x = "1.5";
+    Float y = String::toFloat(x);
+    assert(y == 1.5);
+    x = "frodo";
+    y = String::toFloat(x);
+    // should be 0, but account for finite machine precision
+    assert(y < 1e-316 && y > -1e-316);
+}
+
 /* void hashtest()
 {
   String *xp, a, x[] = {
@@ -410,6 +420,7 @@ int main() {
   ///  hashtest();
   iotest();
   toDouble();
+  toFloat();
   cout << "\nEnd of test\n";
   return(0);
 }

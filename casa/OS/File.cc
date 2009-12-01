@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #   define _LARGEFILE64_SOURCE
 #  endif
 # endif
-#if defined(AIPS_DARWIN)
+#if defined(AIPS_DARWIN) || defined(AIPS_BSD)
 # define fileLSTAT lstat
 # define fileSTAT  stat
 #else

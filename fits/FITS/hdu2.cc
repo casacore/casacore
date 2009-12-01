@@ -114,14 +114,13 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 //== HeaderDataUnit ===========================================================
 
 void HeaderDataUnit::errmsg(HDUErrs e, const char *s) {
+    static char msgstring[180]; // storage for composing error messages
     ostringstream msgline;
     msgline << "HDU error:  " << s << endl;
     err_status = e;
     // all of the errors which use this function are SEVERE
-    //const char * mptr = msgline.str().data();
-	 const char * mptr = (msgline.str()).c_str();
-    errfn(mptr, FITSError::SEVERE);
-    // delete [] mptr;
+    strncpy(msgstring, msgline.str().c_str(), sizeof(msgstring)-1);
+    errfn(msgstring, FITSError::SEVERE);
 }
 //== determine_type of HeaderDataUnit ========================================
 
