@@ -2326,6 +2326,49 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 void TableParseSelect::execute (Bool setInGiving,
 				Bool mustSelect, uInt maxRow)
 {
+  //# A selection query consists of:
+  //#  - SELECT to do projection
+  //#     can only refer to columns in FROM
+  //#     can contain aggregate functions
+  //#  - FROM to tell the tables to use
+  //#  - WHERE to select rows from tables
+  //#     can only refer to columns in FROM
+  //#  - GROUPBY to group result of WHERE
+  //#     can refer to columns in SELECT, FROM or expressions of FROM
+  //#     (in SQL92 only to columns in FROM), thus look in FROM first
+  //#  - HAVING to select groups
+  //#     aggregate functions of FROM
+  //#     or aggregate column in SELECT
+  //#     HAVING is possible without GROUPBY (-> one group only)
+  //#  - apply combination (UNION, INTERSECTION, DIFFERENCE)
+  //#     must have equal SELECT result (with equal column names)
+  //#  - ORDERBY to sort result of HAVING
+  //#     can refer to columns in SELECT, FROM, or expressions of FROM
+  //#      not FROM if combination used
+  //#     (in SQL92 only to columns in SELECT), thus look in SELECT first
+  //#  - LIMIT to skip latest results of ORDERBY
+  //#  - OFFSET to ignore first results of ORDERBY
+  //# If GROUPBY is given, SELECT can only contain aggregate or GROUPBY columns
+  //# Plan:
+  //#  - make columnlist of SELECT columns to make them known for parser
+  //#     thus there is a FROM and a SELECT columnlist (as TableDesc?)
+  //#  - execute WHERE and make reftable
+  //#  - if aggregates
+  //#      make temptable if GROUPBY or HAVING has non-FROM columns
+  //#      tableiter over GROUPBY columns (if any) and
+  //#       make temptable of aggregates in SELECT and possibly HAVING
+  //#        get expressions underneath the aggregate
+  //#      apply HAVING if needed
+  //#      apply SELECT
+  //#    else
+  //#      apply SELECT
+  //#  - order result
+  //#  - apply limit/offset
+  //# Note:
+  //# - if only COUNT(*) and no GROUPBY given, shortcut (result is nrows)
+  //#     there can be a HAVING though
+  //# - error if non-aggregate in SELECT if GROUPBY given
+
   //# Set limit if not given.
   if (limit_p == 0) {
     limit_p = maxRow;

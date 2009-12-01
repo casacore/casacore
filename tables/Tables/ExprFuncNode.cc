@@ -60,13 +60,14 @@ TableExprFuncNode::~TableExprFuncNode()
 Bool TableExprFuncNode::isSingleValue() const
 {
   // Constant and group reduction functions result in a single value.
-  // Note that in the column-list something like max(column) is ambiguous because
-  // for arrays it could mean take the max of each array (resulting in a scalar
-  // per row) or take the max of the corresponding elements of all arrays in the
-  // column (resulting in a single array).
+  // Note that in the column-list something like max(column) is ambiguous
+  // because for arrays it could mean take the max of each array (resulting in
+  // a scalar per row) or take the max of the corresponding elements of all
+  // arrays in the column (resulting in a single array).
   // For now max(column) means the first for arrays, but for scalars it is the
   // max of the entire column (to be SQL compliant).
-  // We could introduce maxg for the second meaning of max(arraycolumn).
+  // If needed, we can later introduce maxc for the meaning max(column),
+  // thus a result as an array with the meaning max(row1, row2, ...).
   // This is true for all reduction functions below.
   switch (funcType_p) {
   case piFUNC:
