@@ -1,0 +1,154 @@
+1010 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template LogicalArray operator<(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator<(Double const &, Array<Double> const &) 
+     template LogicalArray operator<=(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator<=(Double const &, Array<Double> const &) 
+     template LogicalArray operator<(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator<(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator<(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator<=(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator<=(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator<=(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator<(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator<(Array<String> const &, String const &) 
+     template LogicalArray operator<(String const &, Array<String> const &) 
+     template LogicalArray operator<=(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator<=(Array<String> const &, String const &) 
+     template LogicalArray operator<=(String const &, Array<String> const &) 
+     template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
+1000 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
+     template Bool allEQ(Array<Complex> const &, Complex const &) 
+     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
+     template Bool allEQ(Array<Short> const &, Short const &) 
+     template Bool allEQ(Array<uShort> const &, Array<uShort> const &) 
+     template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
+     template LogicalArray operator<(Array<Double> const &, Double const &) 
+1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template void indgen(Array<Complex> &) 
+     template void indgen(Array<Complex> &, Complex, Complex) 
+     template void operator+=(Array<uChar> &, uChar const &) 
+     template void operator+=(Array<uShort> &, uShort const &) 
+     template Array<Complex> operator+(Array<Complex> const &, Complex const &) 
+     template Array<String> operator+(Array<String> const &, String const &) 
+     template Double stddev(Array<Double> const &, Double) 
+     template Array<Float> fmod(Array<Float> const &, Float const &) 
+1010 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+     template void indgen(Array<DComplex> &) 
+     template void indgen(Array<DComplex> &, DComplex, DComplex) 
+1020 casa/Arrays/ArrayMath.cc 
+     template void convertArray(Array<uShort> &, Array<Float> const &) 
+1000 casa/Arrays/Cube.cc 
+     template class Cube<uChar> 
+     template class Cube<uShort> 
+1000 casa/Containers/BlockIO.cc 
+     template ostream & operator<<(ostream &, Block<uInt> const &) 
+1000 casa/Containers/RecordField.cc tables/Tables/Table.h 
+     = tables/Tables/TableRecord.h 
+     template class RORecordFieldPtr<Table> 
+     template class RecordFieldPtr<Table> 
+1000 casa/Utilities/Assert.cc tables/Tables/DataManError.h 
+     template class assert_<DataManError> 
+1000 casa/Utilities/GenSort.cc casa/Arrays/Vector.h 
+     = casa/Containers/Block.h 
+     template uInt genSort(Vector<uInt> &, Block<uInt> const &) 
+1000 tables/Tables/BaseMappedArrayEngine.cc 
+     = tables/Tables/ScaledArrayEngine.cc 
+     template class BaseMappedArrayEngine<Double, Int> 
+     template class BaseMappedArrayEngine<Float, uChar> 
+     template class ScaledArrayEngine<Double, Int> 
+     template class ScaledArrayEngine<Float, uChar> 
+1000 tables/Tables/MappedArrayEngine.cc 
+     = tables/Tables/BaseMappedArrayEngine.cc 
+     template class BaseMappedArrayEngine<Float, uShort> 
+     template class MappedArrayEngine<Float, uShort> 
+1000 tables/Tables/ScaledComplexData.cc 
+     = tables/Tables/BaseMappedArrayEngine.cc 
+     = tables/Tables/VirtArrCol.cc 
+     = casa/BasicSL/Complex.h 
+     template class BaseMappedArrayEngine<DComplex, Int> 
+     template class BaseMappedArrayEngine<Complex, Short> 
+     template class ScaledComplexData<DComplex, Int> 
+     template class ScaledComplexData<Complex, Short> 
+     template class VirtualArrayColumn<DComplex> 
+1000 tables/Tables/TabVecLogic.cc tables/Tables/TabVecMath.cc 
+     = tables/Tables/TVecLogic.cc tables/Tables/TVecMath.cc 
+     template Bool allEQ(ROTableVector<Double> const &, ROTableVector<Double> const &) 
+     template Bool allEQ(ROTableVector<Float> const &, ROTableVector<Float> const &) 
+     template Bool allEQ(ROTableVector<Int> const &, ROTableVector<Int> const &) 
+     template Bool allNE(ROTableVector<Int> const &, ROTableVector<Int> const &) 
+     template Bool anyEQ(ROTableVector<Int> const &, ROTableVector<Int> const &) 
+     template Bool anyNE(ROTableVector<Double> const &, ROTableVector<Double> const &) 
+     template Bool anyNE(ROTableVector<Float> const &, ROTableVector<Float> const &) 
+     template Bool anyNE(ROTableVector<Int> const &, ROTableVector<Int> const &) 
+     template void operator*=(TableVector<Int> &, Int const &) 
+     template TableVector<Int> operator+(ROTableVector<Int> const &, Int const &) 
+     template TableVector<Int> operator+(ROTableVector<Int> const &, ROTableVector<Int> const &) 
+     template void operator+=(TableVector<Int> &, ROTableVector<Int> const &) 
+     template Bool tabVecReptvEQ(TabVecRep<Double> const &, TabVecRep<Double> const &) 
+     template Bool tabVecReptvEQ(TabVecRep<Float> const &, TabVecRep<Float> const &) 
+     template Bool tabVecReptvEQ(TabVecRep<Int> const &, TabVecRep<Int> const &) 
+     template Bool tabVecReptvNE(TabVecRep<Int> const &, TabVecRep<Int> const &) 
+     template TabVecRep<Int> & tabVecReptvadd(TabVecRep<Int> const &, TabVecRep<Int> const &) 
+     template void tabVecReptvassadd(TabVecRep<Int> &, TabVecRep<Int> const &) 
+     template void tabVecRepvalasstim(TabVecRep<Int> &, Int const &) 
+     template TabVecRep<Int> & tabVecRepvalradd(TabVecRep<Int> const &, Int const &) 
+1000 tables/Tables/TableVector.cc tables/Tables/TVec.cc 
+     = tables/Tables/TVecScaCol.cc tables/Tables/TVecTemp.cc 
+     template class ROTableVector<Float> 
+     template class TableVector<Float> 
+     template class TabVecRep<Float> 
+     template class TabVecScaCol<Float> 
+     template class TabVecTemp<Float> 
+1000 tables/Tables/VirtArrCol.cc tables/Tables/VirtScaCol.cc 
+     template class VirtualArrayColumn<Double> 
+     template class VirtualScalarColumn<Double> 
+1000 tables/Tables/test/dVSCEngine.h casa/Arrays/Array.cc 
+     = casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.cc casa/Containers/Block.h 
+     = tables/Tables/ScaColData.cc 
+     = tables/Tables/ScaColDesc.cc tables/Tables/ScalarColumn.cc 
+     = tables/Tables/VSCEngine.cc tables/Tables/VirtScaCol.cc 
+     = casa/Utilities/Compare.cc 
+     = casa/Utilities/CountedPtr.cc casa/Utilities/ValTypeId.h 
+     template class Array<VSCExample> 
+     template class MaskedArray<VSCExample> 
+     template class Vector<VSCExample> 
+     template class ScalarColumnData<VSCExample> 
+     template class ScalarColumnDesc<VSCExample> 
+     template class ROScalarColumn<VSCExample> 
+     template class ScalarColumn<VSCExample> 
+     template class VSCEngine<VSCExample> 
+     template class VirtualScalarColumn<VSCExample> 
+     template class ObjCompare<VSCExample> 
+     template class CountedConstPtr<Block<VSCExample> > 
+     template class CountedPtr<Block<VSCExample> > 
+     template class PtrRep<Block<VSCExample> > 
+     template class SimpleCountedConstPtr<Block<VSCExample> > 
+     template class SimpleCountedPtr<Block<VSCExample> > 
+     template String valDataTypeId(VSCExample const *) 
+1000 tables/Tables/test/tTableDesc.h casa/Arrays/Array.cc 
+     = casa/Arrays/ArrayIter.cc 
+     = casa/Arrays/MaskedArray.cc casa/Arrays/Vector.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/ArrColData.cc tables/Tables/ArrColDesc.cc 
+     = tables/Tables/ScaColData.cc tables/Tables/ScaColDesc.cc 
+     = casa/Utilities/Compare.cc 
+     = casa/Utilities/CountedPtr.cc casa/Utilities/ValTypeId.h 
+     template class Array<ExampleDesc> 
+     template class ArrayIterator<ExampleDesc> 
+     template class ReadOnlyArrayIterator<ExampleDesc> 
+     template class MaskedArray<ExampleDesc> 
+     template class Vector<ExampleDesc> 
+     template class ArrayColumnData<ExampleDesc> 
+     template class ArrayColumnDesc<ExampleDesc> 
+     template class ScalarColumnData<ExampleDesc> 
+     template class ScalarColumnDesc<ExampleDesc> 
+     template class ObjCompare<ExampleDesc> 
+     template class CountedConstPtr<Block<ExampleDesc> > 
+     template class CountedPtr<Block<ExampleDesc> > 
+     template class PtrRep<Block<ExampleDesc> > 
+     template class SimpleCountedConstPtr<Block<ExampleDesc> > 
+     template class SimpleCountedPtr<Block<ExampleDesc> > 
+     template String valDataTypeId(ExampleDesc const *) 

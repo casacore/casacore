@@ -1,0 +1,945 @@
+(omt_version 5 0)
+#  %W% %G%  
+
+(omt_module
+ (key 1)
+ (anno unique_methods NO)
+ (anno unique_fields NO)
+ (name OS_1)
+ (language C++)
+ (fcode_max 1001)
+ (omt_model
+  (omt_class
+   (key 3)
+   (anno description "A class with virtual functions to convert VAX format")
+   (anno cxx_field_access private)
+   (name VAXDataConversion))
+  (omt_class
+   (key 7)
+   (anno unique_fields YES)
+   (anno virtual_method YES)
+   (anno description "Abstract base class with functions to convert any format.
+
+This abstract base class contains pure virtual functions to convert from any foreign data format to local format and vice-versa. IEEEDataConversion).
+Classes derived from it implement the functions for a specific foreign format (e.g. IBMDataConversion, CanonicalDataConversion,
+
+Example:
+// Construct the correct conversion object.
+DataConversion* conv = new IBMDataConversion();
+// Say that you read a block of 256 floats.
+char buffer[1024];
+read (fd, buffer, 1024);
+float values[256];
+// conv->toLocal (values, buffer, 256);
+")
+   (name DataConversion)
+   (method
+    (key 25)
+    (anno description "Convert one value from foreign format to local format.
+The from and to buffer should not overlap.
+
+The char version handles characters (thus may involve convers EBCDIC to ASCII), while the unsigned chars are simply bytes.ion")
+    (anno const YES)
+    (name toLocal)
+    (type uInt)
+    (arglist
+     (arg
+      (key 169)
+      (name to))
+     (arg
+      (key 170)
+      (name from*)))
+    (genheader "unsigned int VAXDataConversion::toLocal (void* to&,void* from*)
+"))
+   (method
+    (key 28)
+    (anno description "Convert nr values from foreign format to local format.
+The from and to buffer should not overlap.
+
+The char version handles characters (thus may involve conversion EBCDIC to ASCII), while the unsigned chars are simply bytes.")
+    (anno const YES)
+    (name toLocal)
+    (type uInt)
+    (arglist
+     (arg
+      (key 171)
+      (name to*))
+     (arg
+      (key 172)
+      (name from*))
+     (arg
+      (key 173)
+      (name nr))))
+   (method
+    (key 32)
+    (anno description "Convert one value from local format to foreign format.
+The from and to buffer should not overlap.
+
+The char version handles characters (thus may involve conversion ASCII to EBCDIC), while the unsigned chars are simply bytes.")
+    (anno const YES)
+    (name fromLocal)
+    (type uInt)
+    (arglist
+     (arg
+      (key 174)
+      (name to*))
+     (arg
+      (key 175)
+      (name from))))
+   (method
+    (key 35)
+    (anno description "Convert nr values from local format to foreign format.
+The from and to buffer should not overlap.
+
+The char version handles characters (thus may involve convers ASCII to EBCDIC), while the unsigned chars are simply bytes.ion")
+    (anno const YES)
+    (name fromLocal)
+    (type uInt)
+    (arglist
+     (arg
+      (key 176)
+      (name to*))
+     (arg
+      (key 177)
+      (name from*))
+     (arg
+      (key 178)
+      (name nr))))
+   (method
+    (key 39)
+    (anno const YES)
+    (anno description "Determine if values of data type T can be copied directly.")
+    (name canCopy)
+    (type Bool)
+    (arglist
+     (arg
+      (key 179)
+      (name T*))))
+   (method
+    (key 41)
+    (anno const YES)
+    (anno description "Get the size in bytes of a value with data type T in external format.")
+    (name externalSize)
+    (type T*)
+    (arglist
+     (arg
+      (key 180)
+      (name uInt)))))
+  (omt_class
+   (key 43)
+   (anno unique_fields YES)
+   (anno cxx_field_access private)
+   (anno description "A class with static functions to convert IBM format.
+
+")
+   (name IBMConversion)
+   (method
+    (key 44)
+    (anno description "Convert one value from IBM/360 format to local format.
+The from and to buffer should not overlap.
+
+The char version converts from EBCDIC to ASCII, while the unsigned char version is a simple copy.
+")
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 181)
+      (name to))
+     (arg
+      (key 182)
+      (name from*)))
+    (genheader "unsigned int VAXDataConversion::toLocal (void* to&,void* from*)
+"))
+   (method
+    (key 47)
+    (anno description "Convert nr values from IBM/360 format to local format.
+The from and to buffer should not overlap.
+
+The char version converts from EBCDIC to ASCII, while the unsigned char version is a simple copy.")
+    (anno virtual_method YES)
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 183)
+      (name to*))
+     (arg
+      (key 184)
+      (name from*))
+     (arg
+      (key 185)
+      (name nr))))
+   (method
+    (key 51)
+    (anno description "Convert one value from local format to IBM/360 format.
+The from and to buffer should not overlap.
+
+The char version  converts from ASCII to EBCDIC, while the unsigned char version is a simple copy.
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 186)
+      (name to*))
+     (arg
+      (key 187)
+      (name from))))
+   (method
+    (key 54)
+    (anno description "Convert nr values from local format to IBM/360 format.
+The from and to buffer should not overlap.
+
+The char version converts from ASCII to EBCDIC, while the unsigned char version is a simple copy.")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 188)
+      (name to*))
+     (arg
+      (key 189)
+      (name from*))
+     (arg
+      (key 190)
+      (name nr)))))
+  (omt_class
+   (key 58)
+   (anno unique_fields YES)
+   (anno cxx_field_access private)
+   (anno description "A class with static functions to convert canonical format.")
+   (name Conversion)
+   (method
+    (key 191)
+    (anno description "Conversion of boolean values to bits.
+There is also a version with an argument start.")
+    (name boolToBit)
+    (is_class)
+    (type uInt)
+    (arglist
+     (arg
+      (key 192)
+      (name to*))
+     (arg
+      (key 193)
+      (name from*))
+     (arg
+      (key 194)
+      (name nr))))
+   (method
+    (key 195)
+    (anno description "Conversion of bits to boolean values.
+There is also a version with an argument start.")
+    (name bitToBool)
+    (is_class)
+    (type uInt)
+    (arglist
+     (arg
+      (key 196)
+      (name to*))
+     (arg
+      (key 197)
+      (name from*))
+     (arg
+      (key 198)
+      (name nr))))
+   (method
+    (key 199)
+    (anno description "A function using memcpy, but returning nr of bytes
+to have the ValueFunction signature.")
+    (name valueCopy)
+    (is_class)
+    (type uInt)
+    (arglist
+     (arg
+      (key 200)
+      (name to*))
+     (arg
+      (key 201)
+      (name from*))
+     (arg
+      (key 202)
+      (name nbytes))))
+   (method
+    (key 203)
+    (anno description "Get the memcpy function.")
+    (name getmemcpy)
+    (is_class)
+    (type ByteFunction*))
+   (method
+    (key 204)
+    (anno description "Wrapper on systems with a non-standard memcpy signature.")
+    (name mymemcpy)
+    (is_class)
+    (type void*)
+    (arglist
+     (arg
+      (key 205)
+      (name to*))
+     (arg
+      (key 206)
+      (name from*))
+     (arg
+      (key 207)
+      (name nbytes)))))
+  (omt_class
+   (key 60)
+   (anno description "A class with static functions to convert VAX format.")
+   (name VAXConversion)
+   (method
+    (key 61)
+    (anno description "Convert one value from VAX format to local format.
+The from and to buffer should not overlap.
+
+")
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 62)
+      (name to))
+     (arg
+      (key 63)
+      (name from*)))
+    (genheader "unsigned int VAXDataConversion::toLocal (void* to&,void* from*)
+"))
+   (method
+    (key 64)
+    (anno description "Convert nr values from VAX format to local format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 65)
+      (name to*))
+     (arg
+      (key 66)
+      (name from*))
+     (arg
+      (key 67)
+      (name nr))))
+   (method
+    (key 68)
+    (anno description "Convert one value from local format to VAX format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 69)
+      (name to*))
+     (arg
+      (key 70)
+      (name from))))
+   (method
+    (key 71)
+    (anno description "Convert nr values from local format to VAX format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 72)
+      (name to*))
+     (arg
+      (key 73)
+      (name from*))
+     (arg
+      (key 74)
+      (name nr))))
+   (method
+    (key 75)
+    (anno description "Move a float value (by swapping bytes correctly).")
+    (name moveFloat)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 76)
+      (name to*))
+     (arg
+      (key 77)
+      (name from*)))))
+  (omt_class
+   (key 78)
+   (anno description " A class with static functions to convert littleEndian format
+")
+   (name LittleEndianConversion)
+   (method
+    (key 79)
+    (anno description "Convert one value from littleEndian format to local format.
+The from and to buffer should not overlap.
+
+")
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 80)
+      (name to))
+     (arg
+      (key 81)
+      (name from*)))
+    (genheader "unsigned int VAXDataConversion::toLocal (void* to&,void* from*)
+"))
+   (method
+    (key 82)
+    (anno description "Convert nr values from littleEndian format to local format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 83)
+      (name to*))
+     (arg
+      (key 84)
+      (name from*))
+     (arg
+      (key 85)
+      (name nr))))
+   (method
+    (key 86)
+    (anno description "Convert one value from local format to littleEndian format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 87)
+      (name to*))
+     (arg
+      (key 88)
+      (name from))))
+   (method
+    (key 89)
+    (anno description "Convert nr values from local format to littleEndian format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 90)
+      (name to*))
+     (arg
+      (key 91)
+      (name from*))
+     (arg
+      (key 92)
+      (name nr)))))
+  (omt_class
+   (key 93)
+   (anno description " A class with static functions to convert canonical format
+")
+   (name CanonicalConversion)
+   (method
+    (key 94)
+    (anno description "Convert one value from canonical format to local format.
+The from and to buffer should not overlap.
+
+")
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 95)
+      (name to))
+     (arg
+      (key 96)
+      (name from*)))
+    (genheader "unsigned int VAXDataConversion::toLocal (void* to&,void* from*)
+"))
+   (method
+    (key 97)
+    (anno description "Convert nr values from canonical format to local format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name toLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 98)
+      (name to*))
+     (arg
+      (key 99)
+      (name from*))
+     (arg
+      (key 100)
+      (name nr))))
+   (method
+    (key 101)
+    (anno description "Convert one value from local format to canonical format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 102)
+      (name to*))
+     (arg
+      (key 103)
+      (name from))))
+   (method
+    (key 104)
+    (anno description "Convert nr values from local format to canonical format.
+The from and to buffer should not overlap.
+
+")
+    (anno virtual_method YES)
+    (name fromLocal)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 105)
+      (name to*))
+     (arg
+      (key 106)
+      (name from*))
+     (arg
+      (key 107)
+      (name nr))))
+   (method
+    (key 108)
+    (anno description "Convert data with the given data type to local format.
+
+Note that the length is given in bytes iso. values.
+In this way this function matches the ConversionFunction definition in class Conversion. ")
+    (name toLocalT)
+    (is_class)
+    (type void*)
+    (arglist
+     (arg
+      (key 208)
+      (name to*))
+     (arg
+      (key 209)
+      (name from*))
+     (arg
+      (key 210)
+      (name nr))))
+   (method
+    (key 211)
+    (anno description "")
+    (name fromLocalT)
+    (is_class)
+    (type void*)
+    (arglist
+     (arg
+      (key 212)
+      (name to*))
+     (arg
+      (key 213)
+      (name from*))
+     (arg
+      (key 214)
+      (name nr))))
+   (method
+    (key 116)
+    (anno description "Convert function with a ByteFunction signature.")
+    (name byteToLocalT)
+    (is_class)
+    (type void*)
+    (arglist
+     (arg
+      (key 215)
+      (name to*))
+     (arg
+      (key 216)
+      (name from*))
+     (arg
+      (key 217)
+      (name nbytes))))
+   (method
+    (key 218)
+    (anno description "Convert function with a ByteFunction signature.")
+    (name byteFromLocalT)
+    (is_class)
+    (type void*)
+    (arglist
+     (arg
+      (key 219)
+      (name to*))
+     (arg
+      (key 220)
+      (name from*))
+     (arg
+      (key 221)
+      (name nbytes))))
+   (method
+    (key 222)
+    (anno description "")
+    (name getToLocal)
+    (is_class)
+    (type ValueFunction*)
+    (arglist
+     (arg
+      (key 223)
+      (name T*))))
+   (method
+    (key 224)
+    (anno description "")
+    (name getFromLocal)
+    (is_class)
+    (type ValueFunction*)
+    (arglist
+     (arg
+      (key 225)
+      (name T*))))
+   (method
+    (key 226)
+    (anno description "")
+    (name getByteToLocal)
+    (is_class)
+    (type ByteFunction*)
+    (arglist
+     (arg
+      (key 227)
+      (name T*))))
+   (method
+    (key 228)
+    (anno description "")
+    (name getByteFromLocal)
+    (is_class)
+    (type ByteFunction*)
+    (arglist
+     (arg
+      (key 229)
+      (name T*))))
+   (method
+    (key 230)
+    (name canonicalSize)
+    (is_class)
+    (type uInt)
+    (arglist
+     (arg
+      (key 231)
+      (name Type*))))
+   (method
+    (key 118)
+    (anno description "Reverse N bytes, where N=2,4, or 8.")
+    (name reverseN)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 119)
+      (name to*))
+     (arg
+      (key 120)
+      (name from*))))
+   (method
+    (key 121)
+    (anno description "Move N bytes, where N=2,4, or 8.")
+    (name moveN)
+    (is_class)
+    (type void)
+    (arglist
+     (arg
+      (key 122)
+      (name to*))
+     (arg
+      (key 123)
+      (name from*)))))
+  (omt_class
+   (key 124)
+   (anno description "A class with virtual functions to convert canonical format.")
+   (name CanonicalDataConversion))
+  (omt_class
+   (key 131)
+   (anno description "A class with virtual functions to convert IBM format")
+   (name IBMDataConversion))
+  (omt_class
+   (key 232)
+   (anno description "A DataConversion class for no-conversion operations.")
+   (name RawDataConversion))
+  (generalization_relation
+   (key 233)
+   (superclass 7)
+   (subclasses 131 3 124 232))
+  (binary_association
+   (key 132)
+   (anno role1_is_class NO)
+   (anno role2_is_class NO)
+   (anno description "")
+   (name uses)
+   (role
+    (key 133)
+    (primary 7)
+    (mult 1 2))
+   (role
+    (key 134)
+    (primary 58)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 135)
+   (anno role1_is_class NO)
+   (anno role2_is_class NO)
+   (anno description "")
+   (name uses)
+   (role
+    (key 136)
+    (primary 43)
+    (mult 1 2))
+   (role
+    (key 137)
+    (primary 93)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 149)
+   (anno role1_is_class NO)
+   (anno role2_is_class NO)
+   (anno description "")
+   (name uses)
+   (role
+    (key 150)
+    (primary 78)
+    (mult 1 2))
+   (role
+    (key 151)
+    (primary 93)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 152)
+   (anno role1_is_class NO)
+   (anno role2_is_class NO)
+   (anno description "")
+   (name uses)
+   (role
+    (key 153)
+    (primary 60)
+    (mult 1 2))
+   (role
+    (key 154)
+    (primary 78)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 157)
+   (name uses)
+   (role
+    (key 158)
+    (primary 131)
+    (mult 1 2))
+   (role
+    (key 159)
+    (primary 43)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 160)
+   (name uses)
+   (role
+    (key 161)
+    (primary 3)
+    (mult 1 2))
+   (role
+    (key 162)
+    (primary 60)
+    (is_arrow)
+    (mult 1 2)))
+  (binary_association
+   (key 163)
+   (name uses)
+   (role
+    (key 164)
+    (primary 124)
+    (mult 1 2))
+   (role
+    (key 165)
+    (primary 93)
+    (is_arrow)
+    (mult 1 2))))
+ (omt_image
+  (sheet
+   (key 2)
+   (anno description "")
+   (name OM)
+   (model_type Object)
+   (width 750)
+   (height 670)
+   (background_color white)
+   (foreground_color black)
+   (ClassBox
+    (key 126)
+    (represents 43)
+    (frame
+     (loc 5 336)
+     (dimensions 175 96)))
+   (ClassBox
+    (key 144)
+    (represents 131)
+    (frame
+     (loc 31 218)
+     (dimensions 128 44)))
+   (ClassBox
+    (key 10)
+    (represents 3)
+    (frame
+     (loc 232 215)
+     (dimensions 128 44)))
+   (ClassBox
+    (key 130)
+    (represents 124)
+    (frame
+     (loc 423 215)
+     (dimensions 160 44)))
+   (ClassBox
+    (key 234)
+    (represents 232)
+    (frame
+     (loc 613 215)
+     (dimensions 131 44)))
+   (ClassBox
+    (key 125)
+    (represents 58)
+    (frame
+     (loc 522 25)
+     (dimensions 214 109)))
+   (ClassBox
+    (key 9)
+    (represents 7)
+    (frame
+     (loc 199 5)
+     (dimensions 195 122)))
+   (ClassBox
+    (key 128)
+    (represents 60)
+    (frame
+     (loc 204 336)
+     (dimensions 175 109)))
+   (ClassBox
+    (key 127)
+    (represents 78)
+    (frame
+     (loc 201 500)
+     (dimensions 175 96)))
+   (ClassBox
+    (key 129)
+    (represents 93)
+    (frame
+     (loc 423 334)
+     (dimensions 242 239)))
+   (AssociationImage
+    (key 156)
+    (represents 149)
+    (nodes 127 129)
+    (points
+     (377 594)
+     (476 594)
+     (476 574))
+    (arc_name 400 594 7))
+   (AssociationImage
+    (key 145)
+    (represents 132)
+    (nodes 9 125)
+    (points
+     (395 86)
+     (521 86))
+    (arc_name 498 86 7))
+   (GeneralizationImage
+    (key 235)
+    (represents 233)
+    (supernode 9
+     (296 128)
+     (296 205))
+    (node 144
+     (95 207)
+     (95 217))
+    (node 10
+     (296 207)
+     (296 214))
+    (node 130
+     (503 207)
+     (503 214))
+    (node 234
+     (678 207)
+     (678 214)))
+   (AssociationImage
+    (key 168)
+    (represents 160)
+    (nodes 10 128)
+    (points
+     (296 260)
+     (296 335))
+    (arc_name 296 285 1))
+   (AssociationImage
+    (key 166)
+    (represents 157)
+    (nodes 144 126)
+    (points
+     (95 263)
+     (95 335))
+    (arc_name 95 285 1))
+   (AssociationImage
+    (key 146)
+    (represents 135)
+    (nodes 126 129)
+    (points
+     (92 433)
+     (92 631)
+     (539 631)
+     (539 574))
+    (arc_name 265 631 7))
+   (AssociationImage
+    (key 155)
+    (represents 152)
+    (nodes 128 127)
+    (points
+     (293 446)
+     (293 499))
+    (arc_name 293 473 1))
+   (AssociationImage
+    (key 167)
+    (represents 163)
+    (nodes 130 129)
+    (points
+     (503 260)
+     (503 333))
+    (arc_name 503 284 1))))
+ (savekey_max 235))

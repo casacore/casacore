@@ -1,0 +1,339 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# alog: Produce a change log of AIPS++ sources
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994,1996,2002
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: alog [--archive]
+#             [--file=<file> | -f <file>]
+#             [--dorescind]
+#             [--listall]
+#             [--master | -m]
+#             [--package=<package> | -p <package> ]
+#             [--noheader]
+#             [<options for rlog>]
+#             [<file1> [<file2>...]]
+#-----------------------------------------------------------------------------
+# alog prints change log messages for AIPS++ sources.  It is a front-end to
+# the RCS 'rlog' utility which it executes for all AIPS++ sources if no files
+# are specified on the command line.
+#
+# Options:
+#   --archive
+#                Consult the archived RCS files.  These include all RCS
+#                revisions up to the base release of the current major
+#                version.  This option can only be used at the master site.
+#
+#   --file=<file> | -f <file>
+#                The specified <file>, if it exists, contains a timestamp
+#                which alog converts to a "-d" option for 'rlog'.  The
+#                timestamp is then updated.
+#
+#   --dorescind
+#                Include rescinded files in the report (these only exist in
+#                the archive and master RCS repositories).
+#
+#   --listall
+#                List all files, the default behaviour is for alog to filter
+#                out files without revisions unless the -R, -h, or -t rlog
+#                options are specified.
+#
+#   --master | -m
+#                Consult the master RCS files.  The AIPS++ master and slave
+#                RCS files contain only the current and preceeding versions.
+#                The slave is typically a day to a week behind the master.
+#                This option should only be used at the master site.
+#
+#   --package=<package> | -p=<package>
+#                Run 'rlog' for the specified AIPS++ package only.
+#
+#   --noheader
+#                Don't add a separate header for each package.
+#
+# All other command line options are passed directly to rlog(1).
+# In particular, the "-d" option may be used to specify a range of dates,
+# and "-w" to specify a list of users.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#
+# Original: 1993/01/22 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Parse command input.
+  OPTS=
+  TSFILE=
+  FILES=
+  DORESC=
+  LISTALL=
+  PACKAGE=
+  HEADER=1
+  RCS=slave
+
+  DELIMX=`echo xxxxxxx | sed -e 's/x/xxxxxxxxxxx/g'`
+  DELIME=`echo ======= | sed -e 's/=/===========/g'`
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+        --archive)
+           RCS=archive
+           ;;
+        --file=* | -f*)
+           case $1 in
+              --file=*)
+                 TSFILE=`echo $1 | sed -e 's/^--file=//'`
+                 ;;
+              -f)
+                 shift
+                 TSFILE="$1"
+                 ;;
+              *)
+                 TSFILE=`echo $1 | sed -e 's/^-f//'`
+                 ;;
+           esac
+           ;;
+        --dorescind)
+           DORESC=1
+           ;;
+        --listall)
+           LISTALL=1
+           ;;
+        --master | -m)
+           RCS=master
+           ;;
+        --package=* | -p*)
+           case $1 in
+              --package=*)
+                 PACKAGE=`echo $1 | sed -e 's/^--package=//'`
+                 ;;
+              -p)
+                 shift
+                 PACKAGE="$1"
+                 ;;
+              *)
+                 PACKAGE=`echo $1 | sed -e 's/^-p//'`
+                 ;;
+           esac
+           ;;
+        --noheader)
+           HEADER=
+           ;;
+        -*)
+           case $1 in
+           -d*)
+#             Replace blanks in the date/time string.
+              DOPT=`echo $1 | sed -e 's/  */-/g'`
+              OPTS="$OPTS $DOPT"
+              ;;
+           -[Rht])
+              LISTALL=1
+              OPTS="$OPTS $1"
+              ;;
+           *)
+              OPTS="$OPTS $1"
+              ;;
+           esac
+           ;;
+        *)
+           FILES="$FILES $1"
+           ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+# Get timestamp.
+  if [ "$TSFILE" != "" ]
+  then
+     if [ -f "$TSFILE" ]
+     then
+        DOPT="-d>`sed -n -e '{s/....//;s/  */:/g;p;}' $TSFILE`"
+        OPTS="$OPTS $DOPT"
+     fi
+
+#    Update the timestamp.
+     adate > $TSFILE
+  fi
+
+# Get fundamental variables.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "alog: AIPSPATH is not defined, abort!"
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  AIPSRCS=$AIPSROOT/$RCS
+
+# Ensure that this installation has the RCS version files.
+  if [ ! -d "$AIPSRCS" ]
+  then
+     echo "alog: The AIPS++ $RCS RCS files are not available, abort!"
+     exit 1
+  fi
+
+
+# If any files were specified just process those.
+  if [ "$FILES" != "" ]
+  then
+     echo ""
+     echo "$DELIME"
+
+#    Use archive or master versions?
+     case $RCS in
+     archive | master)
+        DIR=`pwd | sed -e 's#.*/code/##' -e 's#.*/slave/##' -e 's#.*/rcs/##'`
+        cd $AIPSROOT/master/$DIR
+        ;;
+     esac
+
+     rlog $OPTS $FILES 2>&1 | \
+        sed -e "/^$/N" \
+               -e "/\nRCS file: /d" \
+            -e "/^Working file: /s#^Working file: ##" \
+            -e "/^head:/d" \
+            -e "/^branch:/d" \
+            -e "/^locks:/N" \
+               -e "/locks:.*\naccess list:/D" \
+               -e "s/.*\n	\([^:]*\): \(.*\)/Revision \2 locked by \1/" \
+            -e "/^access list:/d" \
+            -e "/^symbolic names:/d" \
+            -e "/^	v[0-9][0-9]-[0-9][0-9][0-9]-00/d" \
+            -e "/^	ex[0-9][0-9][0-9]:/d" \
+            -e "/^	st[0-9][0-9][0-9]:/d" \
+            -e "/^	exhale:/d" \
+            -e "/^	stable:/d" \
+            -e "/^comment leader:/d" \
+            -e "/^keyword substitution:/d" \
+            -e "/^total revisions:/d" \
+            -e "/^description:/d"
+
+     exit 0
+  fi
+
+
+# Test that we have a valid package.
+  [ "$PACKAGE" = "" ] && PACKAGE="."
+  if [ ! -d "$AIPSRCS/$PACKAGE" ]
+  then
+     echo "alog: $PACKAGE is not a recognized AIPS++ package, abort!"
+     exit 1
+  fi
+
+# Signal handling.
+  trap "rm -f /tmp/alog[12].$$" 0 1 2 3 15
+
+# Run 'rlog' recursively; find does not follow symlinks.
+  GOTONE=
+  cd $AIPSRCS
+  find $PACKAGE -type d -print |
+  {
+     exec 3<&0 0</dev/null
+
+     while read DIR 0<&3
+     do
+        cd $AIPSRCS/$DIR
+
+#       Any extant RCS version files here?
+        RCSFILES=`echo *,v`
+        [ "$RCSFILES" = "*,v" ] && RCSFILES=
+
+#       Any rescinded RCS version files here?
+        if [ "$DORESC" = 1 ]
+        then
+           DOTFILES=`echo .*,v`
+           [ "$DOTFILES" = ".*,v" ] && DOTFILES=
+        else
+           DOTFILES=
+        fi
+
+        [ "$RCSFILES" = "" -a "$DOTFILES" = "" ] && continue
+
+        DIR=`echo $DIR | sed -e 's#\./##'`
+
+        rlog $OPTS $RCSFILES $DOTFILES 2>&1 | \
+           sed -e "/^$/N" \
+                  -e "/\nRCS file: /d" \
+               -e "/^Working file: /s#^Working file: #$DIR/#" \
+               -e "/^head:/d" \
+               -e "/^branch:/d" \
+               -e "/^locks:/N" \
+                  -e "/locks:.*\naccess list:/D" \
+                  -e "s/.*\n	\([^:]*\): \(.*\)/Revision \2 locked by \1/" \
+               -e "/^access list:/d" \
+               -e "/^symbolic names:/d" \
+               -e "/^	v[0-9][0-9]-[0-9][0-9][0-9]-00/d" \
+               -e "/^	ex[0-9][0-9][0-9]:/d" \
+               -e "/^	st[0-9][0-9][0-9]:/d" \
+               -e "/^	exhale:/d" \
+               -e "/^	stable:/d" \
+               -e "/^comment leader:/d" \
+               -e "/^keyword substitution:/d" \
+               -e "/^total revisions:/d" \
+               -e "/^description:/d" >> /tmp/alog1.$$
+
+        if [ "$LISTALL" = "1" ]
+        then
+           mv -f /tmp/alog1.$$ /tmp/alog2.$$
+        else
+#          Filter out any files which weren't revised.
+           echo "=====" | \
+              cat - /tmp/alog1.$$ | \
+              sed -n -e '/^[=-][=-][=-][=-]*$/!H' \
+                     -e '/^------*$/{x;p;x;h;}' \
+                     -e '/^======*$/{H;x;/^------*\n/p;n;x;}' \
+                  > /tmp/alog2.$$
+           rm -f /tmp/alog1.$$
+        fi
+
+        [ -s /tmp/alog2.$$ ] || continue
+
+        if [ "$HEADER" != "" ]
+        then
+           echo ""
+           echo "$DELIMX"
+           echo "Change log information for $DIR"
+           echo "$DELIMX"
+        elif [ "$GOTONE" = "" ]
+        then
+           echo "$DELIME"
+           GOTONE=1
+        fi
+
+        cat /tmp/alog2.$$
+
+        [ "$HEADER" = "" ] || echo ""
+     done
+  }
+
+  rm -f /tmp/alog[12].$$
+
+  exit 0

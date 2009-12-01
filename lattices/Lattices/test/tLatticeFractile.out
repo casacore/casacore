@@ -1,0 +1,57 @@
+>>>
+/export/home/gvd/aips++/sun4sol_egcs/bin/tLatticeFractile: Version  
+<<<
+Fractiles (left 50%, right 50%) test
+[1, 1]
+[1, 1]
+[1, 1]
+[1, 1]
+[]
+Fractiles (left 40%, right 45%) test
+[1, 1]
+[]
+[]
+Fractiles (left 50%, right 50%) test: [127, 127]
+[127, 127]
+[127, 127]
+[127, 127]
+[130]
+Fractiles (left 40%, right 45%) test
+[102, 140]
+[105, 142]
+[105, 142]
+Fractiles (left 50%, right 50%) test: [12799, 12799]
+[12799, 12799]
+[12799, 12799]
+[12799, 12799]
+[12802, 12802]
+[12802, 12802]
+Fractiles (left 50%, right 50%) test: [131071, 131071]
+[131071, 131071]
+[131071, 131071]
+[131071, 131071]
+[131074, 131074]
+[131074, 131074]
+>>>
+Last value = 25099.6
+[5099.59, 20099.6]
+ArrayLattice  20% fractiles       1.55 real        1.55 user           0 system
+[5099.59, 20099.6]
+ArrayLat 1280 20% fractiles       1.54 real        1.54 user           0 system
+[5102.72, 20100.4]
+MaskedLattice 20% fractiles       4.01 real        3.09 user        0.86 system
+[5099.59, 20099.6]
+PagedArray    20% fractiles       1.55 real        1.55 user           0 system
+[5099.59, 20099.6]
+PagedArr 4    20% fractiles       1.91 real        1.91 user           0 system
+[5099.59, 20099.6]
+PagedArr 1280 20% fractiles       1.54 real        1.54 user           0 system
+[5102.72, 20100.4]
+MaskedLattice 20% fractiles       4.12 real        3.17 user        0.78 system
+tileshape = [200, 160]
+Fill PagedArr      42.24 real        6.73 user        6.76 system
+[159.991, 159.991]
+BigPagedArray      92.33 real       21.87 user       10.32 system
+[159.991, 159.991]
+PagedArr 1280     171.81 real       30.89 user       20.09 system
+<<<

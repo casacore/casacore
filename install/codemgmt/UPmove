@@ -1,0 +1,228 @@
+#!/usr/bin/env tcsh
+#-----------------------------------------------------------------------------
+# UPmove script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000,2001
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+# UPmove script (must have x allowed)
+#
+set script = "UPmove"
+set usage = 'UPmove [-t] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Move files, and change references to them in all aips++" \
+	     "code files. The script uses the UPfind and UPchange " \
+	     "scripts (see there for details)." \
+	     "<typ>.done and <typ>.error will contain the files successfully" \
+	     "done or not.")
+set hsw   = ("-t will run a test mode")
+set huse  = ("<typ>.def, <typ>.sel <typ>.cfnm, <typ>.todo" \
+	     "<typ>_MVF.found, <typ>_MVF.spat, <typ>_MVF.rmpat" \
+	     "<typ>_MV.sed, <typ>_MV.rcs, <typ>_MV.found")
+set hcrea =  "<typ>.done, <typ>.error, <typ>.diff"
+#
+# Get general info
+#
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+if (! -r $ldir/${tp}.sel) then
+   $uppath/UPfind -f +u$upswu +Q$upswQ -E ${tp}_MVF
+   if (-e $ldir/${tp}_MVF.found) then
+      cp -f $ldir/${tp}_MVF.found $ldir/${tp}.sel
+   else
+      echo "No files found for ${tp}.sel"
+      exit 1
+   endif
+endif
+if (-z $ldir/${tp}.sel) then
+   echo "No files specified in ${tp}.sel"
+   if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
+   exit 1
+endif
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.sel` )
+  echo $a[1] files in ${tp}.sel to be moved
+  unset a
+endif
+
+if (! -r $ldir/${tp}.cfnm) then
+   touch $ldir/${tp}.cfnm
+   if (! $upswQ) then
+     echo "Specify the sed patterns used to change the name of the moved files"
+     echo 'Example: s#trial/#aips/#'
+   endif
+   while (1)
+      echo -n 'Change pattern: '
+      set x = "$<"
+      if ("$x" == "") break
+      echo "$x" >> $ldir/${tp}.cfnm
+   end
+   unset x
+endif
+if (-z $ldir/${tp}.cfnm) then
+   echo "No change patterns specified in ${tp}.cfnm"
+   if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+   exit 1
+endif
+
+cd $ldir
+if (! -e $ldir/${tp}_MV.spat || ! -e $ldir/${tp}.todo) then
+   if (-e $ldir/${tp}_MV.spat) rm -f $ldir/${tp}_MV.spat
+   if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+   touch $tmp.tmp
+   foreach i (`cat $ldir/${tp}.sel`)
+      echo `echo $i | sed -e 's#[.]/##g'` >> $tmp.tmp 
+      echo `echo $i | sed -e 's#[.]/##g' -e 's#/implement##g'` >> $tmp.tmp 
+   end
+   cat $tmp.tmp | sort | uniq >! $ldir/${tp}_MV.spat 
+   cat >! $ldir/${tp}_MV.rmpat <<EOF
+[/]tmplinst[/]
+[/]glish[/]
+EOF
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+endif
+if (-z $ldir/${tp}_MV.spat) then
+   echo "No file name change patterns created in ${tp}_MV.spat"
+   if (-e $ldir/${tp}_MV.spat) rm -f $ldir/${tp}_MV.spat
+   exit 1
+endif
+
+if (! -e $ldir/${tp}_MV.sed) then
+   set x = ""
+   set y = ""
+   set a = ""
+   set b = ""
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+   touch $tmp.tmp
+   foreach i (`cat $ldir/${tp}.sel`)
+      set x = (`echo $i | sed -e 's#[.]/##g'`)
+      set a = (`echo $x | sed -e 's#/implement##g'`)
+      set y = (`echo $x | sed -f $ldir/${tp}.cfnm`)
+      set b = (`echo $y | sed -e 's#/implement##g'`)
+      echo "s#$x#$y#g" >>  $tmp.tmp
+      echo "s#$a#$b#g" >>  $tmp.tmp
+   end
+   cat $tmp.tmp | sort | uniq >! $ldir/${tp}_MV.sed
+   unset x y a b
+   if (-e $tmp.tmp) rm -f $tmp.tmp
+endif
+
+if (! -e $ldir/${tp}.todo) then
+   $uppath/UPfind +u$upswu +Q$upswQ -E ${tp}_MV
+   touch $ldir/${tp}.todo
+   if (-e $ldir/${tp}_MV.found) then
+	cp -f $ldir/${tp}_MV.found $ldir/${tp}.todo
+   endif
+endif
+if (-e $ldir/${tp}.todo && -z $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+
+if (-e $ldir/${tp}.todo) then
+    if (! $upswQ) then
+      set a = ( `wc $ldir/${tp}.todo` )
+      echo $a[1] files in ${tp}.todo to be changed
+      unset a
+    endif
+endif
+
+if ($upswn) then
+    $uppath/UPchange -n +Q$upswQ -E ${tp}_MV
+    exit 0
+endif
+#
+# Execute
+#
+cd $dir/code/
+if ($domv) then
+  set x = (`cat $ldir/${tp}.sel`)
+  foreach i ($x)
+    set j = `echo $i | sed -f $ldir/${tp}.cfnm`
+    if (! $upswt) then
+       amv -src $i $j <<EOF
+y
+EOF
+    else
+       echo amv -src $i $j
+    endif
+  end
+  unset x
+endif
+
+cd $ldir
+if (! $upswt) then
+   sed -f $ldir/${tp}_MV.sed $ldir/${tp}.todo >! $ldir/${tp}_MV.found
+else
+   cat $ldir/${tp}.todo >! $ldir/${tp}_MV.found
+endif
+
+if (-z $ldir/${tp}_MV.found) then
+    echo "No files in ${tp}.todo"
+    exit 1
+endif
+
+if (-e $ldir/${tp}.diff) rm -f $ldir/${tp}.diff
+if (-e $ldir/${tp}.done) rm -f $ldir/${tp}.done
+if (-e $ldir/${tp}.error) rm -f $ldir/${tp}.error
+$uppath/UPchange +t$upswt +Q$upswQ -E ${tp}_MV
+
+if (-e $ldir/${tp}_MV.diff) mv -f $ldir/${tp}_MV.diff $ldir/${tp}.diff
+if (-e $ldir/${tp}_MV.done) mv -f $ldir/${tp}_MV.done $ldir/${tp}.done
+if (-e $ldir/${tp}_MV.error) mv -f $ldir/${tp}_MV.error $ldir/${tp}.error
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.done` )
+  echo $a[1] files in ${tp}.done
+  unset a
+
+  set a = ( `wc $ldir/${tp}.error` )
+  echo $a[1] files in ${tp}.error
+  unset a
+endif
+
+exit 0
+#

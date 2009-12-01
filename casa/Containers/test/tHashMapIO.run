@@ -1,0 +1,30 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the tHashMapIO functions.  All files generated will be deleted
+# on exit.
+#=============================================================================
+
+# Unzip the input file.
+  if test -f ./tHashMap.in_words.gz && \
+     gunzip -c ./tHashMap.in_words.gz > tHashMap_tmp.words; then :
+  else
+     exit 3
+  fi
+
+  if ./tHashMapIO; then
+     if test -f tHashMapIO_tmp.1st && \
+	test -f tHashMapIO_tmp.2nd && \
+	test -f tHashMapIO_tmp.3rd
+     then
+	cat tHashMapIO_tmp.1st | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.a
+	cat tHashMapIO_tmp.2nd | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.b
+	cat tHashMapIO_tmp.3rd | perl -pe 's/\)(.)/\)\n$1/g' | sort > tHashMapIO_tmp.c
+
+	if diff tHashMapIO_tmp.a tHashMapIO_tmp.b && \
+	   diff tHashMapIO_tmp.b tHashMapIO_tmp.c
+	then
+	   exit 0
+	fi
+     fi
+  fi
+  exit 1

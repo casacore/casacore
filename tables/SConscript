@@ -1,0 +1,11 @@
+import os
+
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Clone()
+apps =  myenv.SConscript(["%s/SConscript" % "apps"],
+                         duplicate=0, exports=["buildenv", "installer"])
+
+# add custom test auxiliary files
+myenv["ASSAYAUX"] = myenv.SGlob("*/test/*.data_v*")
+myenv.CasaBuilder(installer=installer)

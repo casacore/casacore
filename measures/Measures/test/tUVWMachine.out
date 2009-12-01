@@ -1,0 +1,136 @@
+Test UVWMachine class
+--------------------------------------
+Original reference:    Reference for an Direction with Type: B1950
+Original phase centre: Direction: [-0.992475, -0.11551, 0.0406321]
+                       [-173.361, 2.32869] deg
+Input UVW: [-739.048, -1939.11, 1168.63]
+-------- B1950 -> J2000 --------------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: J2000
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588764, -1.45692e-06
+ -0.000589097, 1, 1.44823e-06
+ -4.24861e-07, 3.6803e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat with copied UVW machine
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588764, -1.45692e-06
+ -0.000589097, 1, 1.44823e-06
+ -4.24861e-07, 3.6803e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat with assigned UVW machine
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588764, -1.45692e-06
+ -0.000589097, 1, 1.44823e-06
+ -4.24861e-07, 3.6803e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+Repeat after reCalculate()
+Converted to:  Direction: [-0.991307, -0.126601, 0.0358136]
+               [-172.722, 2.05241] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0.000588764, -1.45692e-06
+ -0.000589097, 1, 1.44823e-06
+ -4.24861e-07, 3.6803e-07, 1]
+
+New UVW:        [-737.906, -1939.54, 1168.62]
+Phase rotation: 0
+Phase: 0, UVW: [-737.906, -1939.54, 1168.62]
+-------- B1950 -> B1950+offset ---------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: B1950
+Converted to:  Direction: [-0.990818, -0.125371, 0.0506217]
+               [-172.789, 2.90165] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.99995, -0.000506192, -0.0099867
+ 0.000406302, 0.99995, -0.0100019
+ 0.00999126, 0.00999729, 0.9999]
+
+New UVW:        [-728.123, -1926.95, 1195.28]
+Phase rotation: 26.6586
+Phase: 26.6586, UVW: [-728.123, -1926.95, 1195.28]
+-------- B1950 -> J2000+offset ---------
+Input coordinates: Direction: [-0.992475, -0.11551, 0.0406321]
+                 : [-173.361, 2.32869] deg
+Conversion to: Reference for an Direction with Type: J2000
+Converted to:  Direction: [-0.991949, -0.117866, 0.0463105]
+               [-173.224, 2.65434] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.999961, 0.000994203, 0.0087388
+ -0.000902666, 0.999944, -0.0105106
+ -0.00875065, 0.0105042, 0.999907]
+
+New UVW:        [-747.496, -1927.46, 1182.44]
+Phase rotation: 13.8153
+Phase: 13.8153, UVW: [-747.496, -1927.46, 1182.44]
+-------- J2000+offset -> B1950 ---------
+Input coordinates: Direction: [-0.991949, -0.117866, 0.0463105]
+                 : [-173.224, 2.65434] deg
+Conversion to: Reference for an Direction with Type: B1950
+Converted to:  Direction: [-0.992475, -0.11551, 0.0406321]
+               [-173.361, 2.32869] deg
+UVW rotation matrix: Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.999962, -0.00090232, -0.00874877
+ 0.000994555, 0.999944, 0.0105023
+ 0.00874069, -0.0105125, 0.999906]
+
+New UVW:        [-739.048, -1939.11, 1168.63]
+Phase rotation: -13.8153
+Phase: -13.8153, UVW: [-739.048, -1939.11, 1168.63]
+-------------- deproject -----------------
+Input coordinates:    Direction: [0.745134, 0.363426, 0.559193]
+                 :    [26, 34] deg
+Output coordinates:   Direction: [0.691639, 0.399318, 0.601815]
+                  :   [30, 37] deg
+Input uvw:            [10, 100, 200]
+UVW rotation:         Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[0.997564, -0.0419805, -0.05571
+ 0.0390073, 0.99781, -0.0534238
+ 0.0578307, 0.0511206, 0.997017]
+
+Phase correction:     -6.49614
+Corrected UVW:        [25.4425, 109.585, 193.504]
+Corrected UVW:        [25.4425, 109.585, 193.504]
+-------------- Projected: ------------
+UVW rotation:         Axis Lengths: [3, 3]  (NB: Matrix in Row/Column order)
+[1, 0, -0.05571
+ 0, 1, -0.0534238
+ 0.0558767, 0.0535837, 0.997017]
+
+Phase correction:     -6.49614
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Phase correction:     -6.49614
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Phase correction:     -6.49614
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+---------------Vectors: ---------------
+Input uvw:            [10, 100, 200]
+Phase correction:     [-6.49614]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [25.4425, 109.585, 193.504]
+Corrected UVW:        [25.4425, 109.585, 193.504]
+Phase correction:     [-6.49614]
+Corrected UVW:        [21.1753, 110.717, 193.504]
+Corrected UVW:        [25.4425, 109.585, 193.504]
+Corrected UVW:        [25.4425, 109.585, 193.504]
+---------------------------------------

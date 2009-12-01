@@ -1,0 +1,247 @@
+
+<change id=0088>
+ <author> Wim Brouw </author>
+ <date> 2002/02/25 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added odd and even polynomials
+ </summary>
+ <description>
+Added the specialised OddPolynomial and EvenPolynomial classes
+ </description>
+</change>
+
+<change id=0116>
+ <author> Wim Brouw </author>
+ <date> 2002/02/18 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Re-working of Functions
+ </summary>
+ <description>
+The Function interface has been reworked to create both leaner and easier interface to actual Functions.
+In general a function has been split into a parameter handling part (e.g. Gaussian1DParam) and an actual function part (e.g. Gaussian1D). The latter is the user's interface to the complete function.
+
+Functions are viewed as an f(x;p) family, with p the parameter vector (e.g. width and height of Gaussian), and x a variable argument (2-dimensional for Gaussian2D e.g.).
+
+Functions are in general templated on the type (like Double, Float), but can also be templated on AutoDiff<> or AutoDiffA. In these cases the function will calculate both the function value for the specified parameters, as the derivative wrt parameters (e.g. for least-squares fitting). Most functions in the system have specializations (for speed reasons) for AutoDiff<> templating
+
+Class FuncWithDerivs have been removed from the system: all Functions can be used to calculate derivatives.
+ </description>
+</change>
+
+<change id=0121>
+ <author> Wim Brouw </author>
+ <date> 2002/04/17 </date>
+ <avers> 1.7 </avers>
+ <area> Tool </area>
+ <package> scimath </package>
+ <module> functionals </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+functional tool added
+ </summary>
+ <description>
+A functionals tool has been provided, which encapsulates the state (parameters, type, dimension, combination) of a Function in a glish closure.
+Methods in the closure exists to get values and derivatives at single or multiple points, and to manipulate the parameters. Functions that can combine/compound a number of functions exist
+ </description>
+</change>
+
+<change id=0122>
+ <author> Wim Brouw </author>
+ <date> 2002/04/17 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code Documentation </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added generic FunctionHolder
+ </summary>
+ <description>
+A generic FunctionHolder class has been added.
+It is used in the transfer of functional related information between gliosh and C++.
+It can (and will ) be used to create a Param<Function>
+ </description>
+</change>
+
+<change id=0136>
+ <author> Raymond Plante </author>
+ <date> 2003/03/26 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+added "Mode" facility to the abstract Function interface
+ </summary>
+ <description>
+The "Mode" facility provides a generic interface for getting and setting
+function-specific state outside of the "Parameter" mechanism.  This state
+is passed in the form of a Record whose contents are defined by the specific
+implementations of the Function.  This is useful for data that do not fit
+in well as Parameters, e.g. because they are not of the same type as the 
+Range or Domain.  This facility is used by the FunctionHolder class to pass
+such special state between C++ and Glish.
+
+Chebyshev was updated to make use of the Mode facility.  The special state
+passed in this way includes the interval of interest, the out-of-interval
+behavior, and the default value.  
+
+The Mode facility may be replaced with a different mechanism in the future.
+ </description>
+</change>
+
+<change id=0137>
+ <author> Raymond Plante </author>
+ <date> 2003/03/26 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+FunctionHolder supports new Function "Mode" facility
+ </summary>
+ <description>
+The "Mode" facility was added to the Function class to facilitate the 
+passing of non-Parameter-type state between Glish and a specific Function
+on the C++ side.  Thus, FunctionHolder has been updated to use the "Mode"
+facility to pass this special state.
+ </description>
+</change>
+
+<change id=0138>
+ <author> Raymond Plante </author>
+ <date> 2003/03/26 </date>
+ <avers> 1.8 </avers>
+ <area> Tool </area>
+ <package> scimath </package>
+ <module> functionals </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+added support for Chebyshev function
+ </summary>
+ <description>
+The functionals tool now supports the Chebyshev function.
+ </description>
+</change>
+
+<change id=0141>
+ <author> Raymond Plante </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+add support for Butterworth bandpasses in FunctionHolder
+ </summary>
+ <description>
+The FunctionHolder now recognizes Butterworth bandpass functions in the 
+form of SimButterworthBandpass.  This enables support for this function
+in the functionals tool.
+ </description>
+</change>
+
+<change id=0142>
+ <author> Raymond Plante </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+added get/setMode() functions to SimButterworthBandpass
+ </summary>
+ <description>
+SimButterworthBandpass now uses the Function interface's "Mode" facility
+to support generic access to non-Parameter data.  In this case, the passband
+orders can be accessed via a Record using this facility.  This allows these
+parameters to be accessible to the functionals tool.
+ </description>
+</change>
+
+<change id=0143>
+ <author> Raymond Plante </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Tool </area>
+ <package> scimath </package>
+ <module> functionals </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+added butterworth functional
+ </summary>
+ <description>
+The functionals tool now supports a Butterworth bandpass functional via
+dfs.butterworth().  This is supported on the C++ side via the 
+SimButterworthBandpass class.
+ </description>
+</change>
+
+<change id=0163>
+ <author> Wim Brouw </author>
+ <date> 2005/02/02 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Functionals </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added cross-cloning
+ </summary>
+ <description>
+To ease the use of Functionals in the Fitting module, I have added cloneAD() and cloneNonAD() methods to all Functionals usable for fitting.
+
+If you have e.g. a 
+Gaussian1D<Double> gd1;
+functional with some parameters set, the following can be done:
+
+Gaussian1D<AutoDiff<Double> > *gd1ad = gd1.cloneAD();
+or
+Function<AutoDiff<Double> > *funad = gd1.cloneAD();
+
+In essence the following table holds:
+
+Method		In	Out	In	Out
+clone()		T	T	AD<T>	AD<T>
+cloneAD()	T	AD<T>	AD<T>	AD<T>
+cloneNonAD()	T	T	AD<T>	<T>
+
+See tGauusian1D for an example
+ </description>
+</change>

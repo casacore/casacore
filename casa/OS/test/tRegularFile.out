@@ -1,0 +1,10 @@
+RegularFile: tRegularFile_tmp/a/b does not exist and cannot be created
+RegularFile: tRegularFile_tmp exists, but is no regular file
+RegularFile: tRegularFile_tmp/isLink2 is a symbolic link not pointing to a valid regular file
+RegularFile::create: tRegularFile_tmp/isFile already exists
+22
+RegularFile::copy/move: target directory tRegularFile_tmp/aa/bb is not writable
+RegularFile::copy/move: target file tRegularFile_tmp/isFile already exists
+RegularFile::copy/move: target file tRegularFile_tmp/moveto/isFile1 already exists and is not writable
+RegularFile::copy/move: target file tRegularFile_tmp/moveto/isFile1 already exists
+OK

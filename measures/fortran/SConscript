@@ -1,0 +1,21 @@
+import os
+
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Clone()
+# get all the sourcefiles recursively
+ffs = myenv.SGlob("sofa/*.f", recursive=False )
+
+# need this to go to the root dir, as SConsript asumes to be in the
+# build dir
+name = "measures_sofa"
+libname = "casa_%s" % name
+lib = os.path.join(str(myenv["BUILDDIR"]), libname)
+
+if not myenv.GetOption("disable_static"):
+    slib =  myenv.StaticLibrary(target = lib, source = [ffs])
+
+if myenv.GetOption("enable_shared"):
+    dlib =  myenv.SharedLibrary(target = lib, source = [ffs])
+
+Return('libname')

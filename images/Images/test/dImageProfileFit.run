@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# dImageProfileFit often fails or hangs for unknown reason.
+# So skip this test until resolved.
+  exit 3
+

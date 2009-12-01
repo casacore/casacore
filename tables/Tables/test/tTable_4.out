@@ -1,0 +1,483 @@
+tTable_4 is for interactive playing with tables
+-----------------------------------------------
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 5
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+ Added and initialized 1 row
+ Reopened table
+ Removed columns c1,c2,c3,c4
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 1
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c5]
+Table has 1 rows
+
+ Reopened table
+ Checked all data
+ Removed columns c5
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 0
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+Data Managers:
+Table has 1 rows
+
+ Reopened table
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 0
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+Data Managers:
+Table has 1 rows
+
+tTable_4 is for interactive playing with tables
+-----------------------------------------------
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 6
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c6   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+ Added and initialized 1 row
+ Reopened table
+Invalid Table operation: Table::removeColumn - column c2 cannot be removed from table tTable_4_tmp.data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 6
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c6   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
+ Type=IncrementalStMan Name=IncrementalStMan #Spec=2 Columns=[c2, c6]
+ Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+Table has 1 rows
+
+ Removed columns c2,c6
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 4
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
+ Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+Table has 1 rows
+
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 4
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
+ Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+Table has 1 rows
+
+tTable_4 is for interactive playing with tables
+-----------------------------------------------
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 7
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StandardStMan/ssm2   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c6   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 7
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=StandardStMan/ssm2   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c4   DataType=uInt
+   DataManager=IncrementalStMan/IncrementalStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c5   DataType=uInt
+   DataManager=StManAipsIO/StManAipsIO   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c6   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c2]
+ Type=StandardStMan Name=ssm2 #Spec=2 Columns=[c3]
+ Type=IncrementalStMan Name=IncrementalStMan #Spec=2 Columns=[c4]
+ Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c5]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c6, c7]
+Table has 0 rows
+
+ Added and initialized 1 row
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 2
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+Table has 1 rows
+
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 2
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+Table has 1 rows
+
+ Checked all data
+ Recreated table
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 2
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+Table has 0 rows
+
+tTable_4 is for interactive playing with tables
+-----------------------------------------------
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 0
+ Added and initialized 1 row
+ Added and initialized 1 row
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 1
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+ Added and initialized 1 columns
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 1
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+Table has 2 rows
+
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 2
+0  Hypercolumn_tsm1 : SUBRECORD
+   Name=c2   DataType=uInt
+   DataManager=TiledColumnStMan/tsm1   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=TiledColumnStMan/tsm1   Default=0
+   Comment = 
+   #keywords=0
+
+ Added and initialized 2 columns
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 3
+0  Hypercolumn_tsm1 : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c2   DataType=uInt
+   DataManager=TiledColumnStMan/tsm1   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c3   DataType=uInt
+   DataManager=TiledColumnStMan/tsm1   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=tsm1 #Spec=4 Columns=[c2, c3]
+Table has 2 rows
+
+ Checked all data

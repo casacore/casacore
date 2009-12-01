@@ -1,0 +1,128 @@
+#!/usr/bin/env tcsh
+#-----------------------------------------------------------------------------
+# UPlock script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000,2001
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+#
+# UPlock script (must have x allowed)
+#
+set script = "UPlock"
+set usage = 'UPlock [-a] [-l] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Test for each locked file if it is in the list of files" \
+	     "<typ>.found (as created with UPfind), and output the " \
+	     "result in the file <typ>.locked.")
+set hsw   = ("-a display all locked files, rather than a selection based" \
+	     "   on <typ>.found" \
+	     "-l show the locker and revision number as well")
+set huse  =  "<typ>.def, <typ>.found"
+set hcrea =  "<typ>.locked"
+#
+# Get general info
+#
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+      exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+   set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+
+if ($upswn) exit 0
+#
+# Get specific data 
+#
+# Execute
+#
+if (! $upswa && ! -r $ldir/${tp}${tpbx}.found) then
+   echo "No ${tp}.found present. Cannot proceed."
+   echo "Execute UPfind first"
+   exit 1
+endif
+
+if (! $upswa && ! $upswQ) then
+  set a = ( `wc $ldir/${tp}${tpbx}.found` )
+  echo $a[1] files in ${tp}.found
+  unset a
+  echo "Finding locked files..."
+endif
+
+if (-e $ldir/${tp}.locked) rm -f $ldir/${tp}.locked
+touch $ldir/${tp}.locked
+#
+# Get the locked information
+#
+set cmd = "alog -m -L -h"
+if ($hasm) then
+    $cmd | \
+	awk '{ if ($1 == "Revision") print "./" f,$0; f=$1}' >! $ldir/$tmp.t1
+else
+$rssh \'\""$cmd"\"\' | \
+	awk '{ if ($1 == "Revision") print "./" f,$0; f=$1}' >! $ldir/$tmp.t1
+endif
+#
+# Select if found
+#
+if (! $upswa) then
+    if (-e $ldir/$tmp.t2) rm -f $ldir/$tmp.t2
+    touch $ldir/$tmp.t2
+    foreach i (`awk '{print $1}' $ldir/${tp}.found`)
+	grep "$i" $ldir/$tmp.t1 >> $ldir/$tmp.t2
+    end
+    mv -f $ldir/$tmp.t2 $ldir/$tmp.t1
+endif
+
+if ($upswl) then 
+    sort -k 6 $ldir/$tmp.t1 | awk '{print $6,$3,$1}' >> $ldir/${tp}.locked
+else
+    awk '{print $1}' $ldir/$tmp.t1 >> $ldir/${tp}.locked
+endif
+if (-e $ldir/$tmp.t2) rm -f $ldir/$tmp.t2
+if (-e $ldir/$tmp.t1) rm -f $ldir/$tmp.t1
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.locked` )
+  echo $a[1] files in ${tp}.locked
+  unset a
+endif
+
+exit 0
+#

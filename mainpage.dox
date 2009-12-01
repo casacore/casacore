@@ -1,0 +1,209 @@
+//# mainpage.dox: doxygen description of casa package
+//# Copyright (C) 2005
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id: mainpage.dox 19988 2007-02-28 10:34:10Z Malte.Marquarding $
+
+namespace casa {
+
+///
+///   \mainpage casacore
+///   
+///   The <a href="http://casacore.googlecode.com">casacore</a> package
+///   contains the core libraries of the old
+///   <a href="http://aips2.nrao.edu">AIPS++/CASA</a> package. This split
+///   was made to get
+///   a better separation of core libraries and applications.
+///   <a href="http://casa.nrao.edu">CASA</a> is now built on top of casacore.
+///   
+///   The system consists of a set of layered libraries (packages) which can 
+///   be seen best on the <a href="modules.html">Modules page</a>.
+///   <br>
+///   A <a href="http://www.python.org">Python</a> binding to the
+///   libraries has been made which is called
+///   <a href="http://pyrap.googlecode.com">pyrap</a>. The documentation
+///   of the pyrap packages can be found
+///   <a href="../../../pyrap/docs/index.html">here</a>.
+///   
+///   The main features of AIPS++/CASA are:
+///   <ul>
+///   <li>\ref scimath : N-dim functions with auto-differentiation and linear or non-linear
+///   fitting.
+///   <li>\ref tables : Table data system supporting N-dim arrays with advanced querying.
+///   <li>\ref measures : Values in astronomical reference frames using
+///    physical units (<a href="group__Quanta__module.html">Quanta</a>).
+///   <li>\ref ms : MeasurementSets for storing data in the UV-domain.
+///   <li>\ref images : N-dim images in world coordinates with various analysis operations.
+///   </ul>
+///   Casacore <a href="../notes/notes.html">notes</a> describe
+///   some parts of the system in more detail.
+///      
+///   Casacore consists of the following subpackages:
+///   <table border=0>
+///   <tr>
+///   <td><a href="group__casa.html">casa</a></td>
+///   <td>
+///   Core modules:
+///   N-dim <a href="group__Arrays__module.html">arrays</a>,
+///   <a href="group__Quanta__module.html">quanta</a>,
+///   <a href="group__OS__module.html">OS</a>,
+///   <a href="group__IO__module.html">IO</a>,
+///   <a href="group__Logging__module.html">logging</a>,
+///   and various other classes.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__scimath.html">scimath</a></td>
+///   <td>
+///   Mathematical modules
+///   N-dim <a href="group__Functionals__module.html">functionals</a>,
+///   linear/non-linear
+///   <a href="group__Fitting__module.html">fitting</a>,
+///   and <a href="group__Mathematics__module.html">miscellaneous</a>,
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__tables.html">tables</a></td>
+///   <td>
+///   Database-like <a href="group__Tables__module.html">tables</a> with advanced
+///   query language
+///   (<a href="../notes/199.html">TaQL</a>).
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__measures.html">measures</a></td>
+///   <td>
+///   Quantities with <a href="group__Measures__module.html">references frames</a> 
+///   and their <a href="group__TableMeasures__module.html">persistency</a>.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__lattices.html">lattices</a></td>
+///   <td>
+///   Memory- or disk-based N-dim arrays
+///   (<a href="group__Lattices__module.html">lattices</a>) with masking,
+///   regions, expressions, and math.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__fits.html">fits</a></td>
+///   <td>
+///   A C++ interface on top of
+///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__ms.html">ms</a></td>
+///   <td>
+///   The data format for visibility data as described in
+///   the <a href="../notes/229.html">
+///   MeasurementSet definition</a>.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__msfits.html">msfits</a></td>
+///   <td>
+///   Mapping of MeasurementSets to/from FITS.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__coordinates.html">coordinates</a></td>
+///   <td>
+///   Coordinates for astronomical images.
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__components.html">components</a></td>
+///   <td>
+///   Sky components (point sources, gaussians, etc.)
+///   </td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__images.html">images</a></td>
+///   <td>
+///   N-dim <a href="group__Images__module.html">images</a> with masks,
+///   coordinates, and history.
+///   </td>
+///   </tr>
+///   </table>
+///
+///   Detailed build instructions are given on the 
+///   <a href="http://code.google.com/p/casacore/wiki/BuildInstructions">
+///   casacore</a> pages.
+///   <br>When using a specific casacore package, it is useful to know
+///   the package dependencies when linking a program. They are as follows:
+///   <table border=1>
+///   <tr>
+///   <td><a href="group__casa.html">casa</a></td>
+///   <td></td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__scimath.html">scimath</a></td>
+///   <td>casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__tables.html">tables</a></td>
+///   <td>casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__measures.html">measures</a></td>
+///   <td>tables scimath casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__lattices.html">lattices</a></td>
+///   <td>tables scimath casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group_fits.html">fits</a></td>
+///   <td>measures tables scimath casa cfitsio</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__ms.html">ms</a></td>
+///   <td>measures tables scimath casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__msfits.html">msfits</a></td>
+///   <td>ms fits measures tables scimath casa cfitsio</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__coordinates.html">coordinates</a></td>
+///   <td>fits measures tables scimath casa wcslib cfitsio</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__components.html">components</a></td>
+///   <td>coordinates fits measures tables scimath casa wcslib cfitsio</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__images.html">images</a></td>
+///   <td>components coordinates fits measures tables scimath casa
+///      mirlib wcslib cfitsio</td>
+///   </tr>
+///   </table>
+///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
+///   is distributed and built as part of casacore.
+///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a> and
+///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>
+///   are external packages that have to be installed before building casacore.
+
+}

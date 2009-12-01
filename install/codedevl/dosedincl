@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Apply the sed commands given in $1 to all .h, .cc and templates files
+# (recursively).
+#
+# Run as:
+#    dosedincl <sed-script>
+#
+# If no sed-script is given, it uses includepath.sed in the AIPS++ code tree.
+# In this way the include paths in user code can be changed after the
+# library split on 25-Aug-2004.
+
+
+  FIL="$1"
+  if [ "$FIL" = "" ]; then
+    FIL=`echo $AIPSPATH | awk '{ print $1; }'`
+    FIL=$FIL/code/install/codedevl/includepath.sed
+  fi
+  if [ ! -f "$FIL" ]; then
+    echo "Error: sed script '$FIL' does not exist"
+    exit 1;
+  fi
+  echo "dosed: using sed-script $FIL"
+
+  find . -name "*.h" >> dofiles
+  find . -name "*.cc" >> dofiles
+  find . -name "*.tcc" >> dofiles
+  find . -name "templates" >> dofiles
+
+  cat dofiles | xargs -n1 dosed_one "$FIL"
+  \rm -f dofiles

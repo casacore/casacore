@@ -1,0 +1,28 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Usage: tMSConcat.run
+#-----------------------------------------------------------------------------
+# This script executes the program tMSConcat to test if new the
+# measurement set concatrenation is working.
+
+# The script supplies the names of all test tables found in the system.
+# It is meant to be run from assay, but can also be used standalone.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+  if [ ${#AIPSPATH} = 0 ]
+  then
+     echo "UNTESTED: tMSConcat.run (AIPSPATH not defined)"
+     exit 3
+  fi
+
+  IN1='BLLAC.fits'
+  IN2='3C273XC1.fits'
+  AIPSDEMO=`echo $AIPSPATH | awk '{printf("%s/data/demo",$1)}'`
+  FITS1=`echo $AIPSDEMO $IN1 | awk '{printf("%s/%s", $1,$2)}'`
+  FITS2=`echo $AIPSDEMO $IN2 | awk '{printf("%s/%s", $1,$2)}'`
+  MS1=`echo $IN1 | sed 's/.fits/_tmp.ms/'`
+  MS2=`echo $IN2 | sed 's/.fits/_tmp.ms/'`
+
+  tMSConcat fits=$FITS1 ms=$MS1 fitsappend=$FITS2 append=$MS2

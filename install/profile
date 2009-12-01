@@ -1,0 +1,80 @@
+#-----------------------------------------------------------------------------
+# profile: .profile initialization script for Bourne-like shells in AIPS++
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994,1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: . .profile
+#-----------------------------------------------------------------------------
+#
+#    WARNING! Don't make any changes to this file, they will be undone by
+#    the code distribution system.  Put changes in .profile_local instead.
+#
+#-----------------------------------------------------------------------------
+# This .profile file is provided to create a minimal Bourne-shell environment
+# for aips2mgr cron jobs and 'rsh' processes.
+#
+# Don't make any changes in this file, they will be trashed by the code
+# distribution system.  Put changes in .profile_local instead.
+#
+# Original: 1992/04/30 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# The AIPS++ root directory is hardcoded here.
+  AIPSROOT=__AIPSROOT
+  export AIPSROOT
+
+#------------------ Do not change anything below this line -------------------
+
+# Get the host name and architecture.
+  HOST=`uname -n | sed -e 's/\..*//'`
+  ARCH=UNKNOWN
+  if  [ -r $AIPSROOT/aipshosts ]
+  then
+     ARCH=`grep "$HOST" $AIPSROOT/aipshosts | awk '{ print $2 }'`
+  fi
+  export HOST ARCH
+
+# Default file protection.
+  umask 002
+
+# Interactive?
+  tty -s && stty sane erase "^?" kill "^U" intr "^C"
+
+# Read any local .profile file.
+  if [ -f $AIPSROOT/.profile_local ]
+  then
+     . $AIPSROOT/.profile_local
+  else
+#    Best guess at sensible defaults.
+     PATH=".:aips_bin:/usr/local/bin:/usr/local/X11R5/bin:/usr/lang:/usr/ucb:/usr/bsd:/usr/bin:/bin"
+     MANPATH=":/usr/local/man:/usr/local/X11R5/man:/usr/lang/man:/usr/man"
+  fi
+  export PATH MANPATH
+
+# Get the AIPS++ environment.
+  [ -f "$AIPSROOT/aipsinit.sh" ] && . $AIPSROOT/aipsinit.sh
+  tty -s && echo "AIPSPATH: $AIPSPATH"

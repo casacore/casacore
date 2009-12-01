@@ -1,0 +1,131 @@
+1000 fits/FITS/FITS2.cc fits/FITS/hdu.h 
+     template void ReadFITSin(PrimaryArray<Double> &, Array<Float> &, Bool &, String &, String *, Vector<String> *, Vector<Float> *, Vector<Float> *, Vector<Float> *, Map<String, Double> *, String *) 
+1010 fits/FITS/FITS2.cc fits/FITS/hdu.h 
+     template void ReadFITSin(PrimaryArray<FitsLong> &, Array<Float> &, Bool &, String &, String *, Vector<String> *, Vector<Float> *, Vector<Float> *, Vector<Float> *, Map<String, Double> *, String *) 
+1020 fits/FITS/FITS2.cc fits/FITS/hdu.h 
+     template void ReadFITSin(PrimaryArray<Float> &, Array<Float> &, Bool &, String &, String *, Vector<String> *, Vector<Float> *, Vector<Float> *, Vector<Float> *, Map<String, Double> *, String *) 
+1030 fits/FITS/FITS2.cc fits/FITS/hdu.h 
+     template void ReadFITSin(PrimaryArray<Short> &, Array<Float> &, Bool &, String &, String *, Vector<String> *, Vector<Float> *, Vector<Float> *, Vector<Float> *, Map<String, Double> *, String *) 
+1040 fits/FITS/FITS2.cc fits/FITS/hdu.h 
+     template void ReadFITSin(PrimaryArray<uChar> &, Array<Float> &, Bool &, String &, String *, Vector<String> *, Vector<Float> *, Vector<Float> *, Vector<Float> *, Map<String, Double> *, String *) 
+1000 fits/FITS/fits.h casa/BasicSL/Complex.h 
+     template class NoConvert<Complex> 
+1010 fits/FITS/fits.h casa/BasicSL/Complex.h 
+     template class NoConvert<DComplex> 
+1020 fits/FITS/fits.h casa/BasicSL/Complex.h 
+     template class NoConvert<IComplex> 
+1030 fits/FITS/fits.h 
+     template class NoConvert<Char> 
+1040 fits/FITS/fits.h 
+     template class NoConvert<Double> 
+1050 fits/FITS/fits.h 
+     template class NoConvert<FitsLogical> 
+1060 fits/FITS/fits.h 
+     template class NoConvert<FitsLong> 
+1070 fits/FITS/fits.h 
+     template class NoConvert<FitsVADesc> 
+1080 fits/FITS/fits.h 
+     template class NoConvert<Float> 
+1090 fits/FITS/fits.h 
+     template class NoConvert<Short> 
+1100 fits/FITS/fits.h 
+     template class NoConvert<uChar> 
+1000 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsArray<Complex> 
+1010 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsArray<DComplex> 
+1020 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsArray<IComplex> 
+1030 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsField<Complex> 
+1040 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsField<DComplex> 
+1050 fits/FITS/hdu.cc casa/BasicSL/Complex.h 
+     template class FitsField<IComplex> 
+1060 fits/FITS/hdu.cc 
+     template class FitsArray<Char> 
+1070 fits/FITS/hdu.cc 
+     template class FitsArray<Double> 
+1080 fits/FITS/hdu.cc 
+     template class FitsArray<FitsLogical> 
+1090 fits/FITS/hdu.cc 
+     template class FitsArray<FitsLong> 
+1100 fits/FITS/hdu.cc 
+     template class FitsArray<FitsVADesc> 
+1110 fits/FITS/hdu.cc 
+     template class FitsArray<Float> 
+1120 fits/FITS/hdu.cc 
+     template class FitsArray<Short> 
+1130 fits/FITS/hdu.cc 
+     template class FitsArray<uChar> 
+1140 fits/FITS/hdu.cc 
+     template class FitsField<Char> 
+1150 fits/FITS/hdu.cc 
+     template class FitsField<Double> 
+1160 fits/FITS/hdu.cc 
+     template class FitsField<FitsLogical> 
+1170 fits/FITS/hdu.cc 
+     template class FitsField<FitsLong> 
+1180 fits/FITS/hdu.cc 
+     template class FitsField<FitsVADesc> 
+1190 fits/FITS/hdu.cc 
+     template class FitsField<Float> 
+1200 fits/FITS/hdu.cc 
+     template class FitsField<Short> 
+1210 fits/FITS/hdu.cc 
+     template class FitsField<uChar> 
+1220 fits/FITS/hdu.cc 
+     template class ImageExtension<Double> 
+1230 fits/FITS/hdu.cc 
+     template class ImageExtension<FitsLong> 
+1240 fits/FITS/hdu.cc 
+     template class ImageExtension<Float> 
+1250 fits/FITS/hdu.cc 
+     template class ImageExtension<Short> 
+1260 fits/FITS/hdu.cc 
+     template class ImageExtension<uChar> 
+1270 fits/FITS/hdu.cc 
+     template class PrimaryArray<Double> 
+1280 fits/FITS/hdu.cc 
+     template class PrimaryArray<FitsLong> 
+1290 fits/FITS/hdu.cc 
+     template class PrimaryArray<Float> 
+1300 fits/FITS/hdu.cc 
+     template class PrimaryArray<Int> 
+1310 fits/FITS/hdu.cc 
+     template class PrimaryArray<Short> 
+1320 fits/FITS/hdu.cc 
+     template class PrimaryArray<uChar> 
+1330 fits/FITS/hdu.cc 
+     template class PrimaryGroup<FitsLong> 
+1340 fits/FITS/hdu.cc 
+     template class PrimaryGroup<Float> 
+1350 fits/FITS/hdu.cc 
+     template class PrimaryGroup<Short> 
+1000 fits/FITS/FITSFieldCopier.h 
+     template class ArrayFITSFieldCopier<Bool, FitsLogical> 
+     template class ArrayFITSFieldCopier<Complex, Complex> 
+     template class ArrayFITSFieldCopier<DComplex, DComplex> 
+     template class ArrayFITSFieldCopier<Double, Double> 
+     template class ArrayFITSFieldCopier<Float, Float> 
+     template class ArrayFITSFieldCopier<Int, FitsLong> 
+     template class ArrayFITSFieldCopier<Short, Short> 
+     template class ArrayFITSFieldCopier<uChar, uChar> 
+1010 fits/FITS/FITSFieldCopier.h 
+     template class ScalarFITSFieldCopier<Bool, FitsLogical> 
+     template class ScalarFITSFieldCopier<Complex, Complex> 
+     template class ScalarFITSFieldCopier<DComplex, DComplex> 
+     template class ScalarFITSFieldCopier<Double, Double> 
+     template class ScalarFITSFieldCopier<Float, Float> 
+     template class ScalarFITSFieldCopier<Int, FitsLong> 
+     template class ScalarFITSFieldCopier<Short, Short> 
+     template class ScalarFITSFieldCopier<uChar, uChar> 
+1020 fits/FITS/FITSFieldCopier.h 
+     template class VariableArrayFITSFieldCopier<Bool, FitsLogical> 
+     template class VariableArrayFITSFieldCopier<Complex, Complex> 
+     template class VariableArrayFITSFieldCopier<DComplex, DComplex> 
+     template class VariableArrayFITSFieldCopier<Double, Double> 
+     template class VariableArrayFITSFieldCopier<Float, Float> 
+     template class VariableArrayFITSFieldCopier<Int, FitsLong> 
+     template class VariableArrayFITSFieldCopier<Short, Short> 
+     template class VariableArrayFITSFieldCopier<uChar, uChar> 

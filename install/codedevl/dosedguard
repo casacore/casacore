@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Standardize the include guard recursively in all .h files
+# (except the ones in glish, mirlib, wcslib, hia).
+# See dosedguard_one for the description how the guard is standardized.
+#
+# It checks if there are no duplicate include guards, both in the original
+# files (input) and in the changed files (output). If there appear to be
+# duplicates, one can look in the guard.* files to find the file where the
+# guard is used.
+# The old guards are listed in guard.allold.
+# The new guards are listed in guard.allnew.
+#
+# Run as:
+#    dosedguard
+
+
+  find . -name "*.h" > dofiles
+
+  \rm -f guard.allold
+  \rm -f guard.allnew
+  grep -v '/glish/' dofiles | grep -v '/hia/' | grep -v '/mirlib/' | grep -v '/wcslib/' | grep -v '/fortran/' | xargs -n1 dosedguard_one
+  \rm -f dofiles
+  # Check for duplicate guards in input.
+  sed -e 's/ .*//' guard.allold | sort > guard.allold_sort
+  uniq guard.allold_sort > guard.allold_uniq
+  diff guard.allold_sort guard.allold_uniq
+  if [ $? != 0 ]; then
+    echo "*** error *** there seem to be duplicate include guards in the input"
+  else
+    \rm -f guard.allold guard.allold_uniq guard.allold_sort
+  fi
+  # Check for duplicate guards in output.
+  sed -e 's/ .*//' guard.allnew | sort > guard.allnew_sort
+  uniq guard.allnew_sort > guard.allnew_uniq
+  diff guard.allnew_sort guard.allnew_uniq
+  if [ $? != 0 ]; then
+    echo "*** error *** there seem to be duplicate include guards in the output"
+  else
+    \rm -f guard.allnew guard.allnew_uniq guard.allnew_sort
+  fi

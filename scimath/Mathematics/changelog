@@ -1,0 +1,64 @@
+
+<change id=0100>
+ <author> Wim Brouw </author>
+ <date> 2001/06/26 </date>
+ <avers> 1.6 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Mathematics </module>
+ <type> Code Test </type>
+ <category> New Change </category>
+ <defects>  </defects>
+ <summary>
+Re-implemented auto differentiation
+ </summary>
+ <description>
+Auto differentiation speed is of crucial importance. To improve it, two classes are added to the system:
+- ObjectPool
+- PoolStack
+
+Together they create a pool of objects that can be used without copying and memory allocation from the heap for temporary variables.
+
+The automatic differentiation in the system has been changed to make use of these classes.
+These classes are an initial trial, and will, after copping, change considerable, but with a comparable interface.
+ </description>
+</change>
+
+<change id=0117>
+ <author> Wim Brouw </author>
+ <date> 2002/02/18 </date>
+ <avers> 1.7 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Mathematics </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Auto differntiation
+ </summary>
+ <description>
+The Automatic differentiation classes AutoDiff<> have been reworked, especially to improve their speed.
+Most of the time was spent in memory allocation. By the use of special Container classes ObjectPool and PoolStack memory allocation use is limited, resulting in automatic differentiation being of same order of magnitude timing as normal handcoding.
+
+A separate class AutoDiffA<> is provided for internal differntiation in details (see e.g. FunctionTraits)
+ </description>
+</change>
+
+<change id=0125>
+ <author> Wim Brouw </author>
+ <date> 2002/06/19 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> scimath </package>
+ <module> Mathematics </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added AutoDiffX for more automatic differentiation options
+ </summary>
+ <description>
+Added AutoDiffX to make it possible to automatic differentiate with respect to either the fixed parameters, or the variable argument, or both of  a function
+ </description>
+</change>

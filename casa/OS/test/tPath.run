@@ -1,0 +1,29 @@
+#! /bin/sh
+#-----------------------------------------------------------------------------
+# Script to execute the tPath program via assay.
+# It defines a few environment variables which are used in tPath.
+# Execution:
+#      tPath.run        execute using assay (normal procedure)
+#      tPath.run 0      only define the subdirectory, etc. (for debugging)
+#      tPath.run 1      execute as such (to test)
+#      tPath.run 1 1    execute without exceptions (to test leakage)
+#=============================================================================
+
+tPath_Env_Username=`whoami`
+export tPath_Env_Username
+tPath_Env_User="~`whoami`"
+export tPath_Env_User
+tPath_Env_Curr=`pwd`
+export tPath_Env_Curr
+tPath_Env_Test1='$HOME'
+export tPath_Env_Test1
+
+if [ $# != 0 ]
+then
+    if [ $1 != 0 ]
+    then
+        ./tPath $2
+    fi
+else
+    ./tPath
+fi

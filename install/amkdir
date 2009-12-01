@@ -1,0 +1,165 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# amkdir: Create a sequence of directories
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1994,1995
+#   Associated Universities, Inc. Washington DC, USA.
+#   
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#   
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#   
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#   
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: amkdir [-g <group>] [-p <perms>] [-s] [-v] [<directory> ...]
+#-----------------------------------------------------------------------------
+# amkdir creates directories giving them the specified group ownership and
+# permissions.  It will create all directories in the pathname which do not
+# already exist.  The pathname may be absolute or relative.
+#
+# Options:
+#   -g     Group ownership to be applied to newly created directories via
+#          chgrp(1).
+#
+#   -p     Directory permissions to be applied to newly created directories
+#          via chmod(1).  Numeric or symbolic forms are acceptable.
+#
+#   -s     Strip off the last component of the pathname.
+#
+#   -v     Verbose mode.
+#
+# Notes:
+#    1) It is not an error for the directory to be omitted.
+#
+# Status return values:
+#    0:  success
+#    1:  initialization error
+#    2:  directory creation error
+#
+# Original: 1994/02/04 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Parse command input.
+  CHGRP=":"
+  CHMOD=":"
+  STRIP=
+  VERBOSE=
+  PATHS=
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+        -g*)
+           case $1 in
+              -g)
+                 shift
+                 CHGRP="chgrp $1"
+                 ;;
+              *)
+                 CHGRP="chgrp `echo $1 | sed -e 's/^-g//'`"
+                 ;;
+           esac
+           ;;
+
+        -p*)
+           case $1 in
+              -p)
+                 shift
+                 CHMOD="chmod $1"
+                 ;;
+              *)
+                 CHMOD="chmod `echo $1 | sed -e 's/^-p//'`"
+                 ;;
+           esac
+           ;;
+
+        -s)
+           STRIP=1
+           ;;
+
+        -v)
+           VERBOSE=1
+           ;;
+
+        -*)
+           echo "Usage: amkdir [-g <group>] [-p <perms>] [-s] [-v]" \
+                "[<directory> ...]" 1>&2
+           exit 1
+           ;;
+
+         *)
+           PATHS="$PATHS $1"
+           ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+  [ "$PATHS" = "" ] && exit 0
+
+
+  for PATHNAME in $PATHS
+  do
+     if [ "$STRIP" != "" ]
+     then
+#       Strip off the last component of the directory specification.
+        PATHNAME=`echo $PATHNAME | sed -e 's#/[^/]*$##'`
+     fi
+
+#    Quick test for existence.
+     [ -d "$PATHNAME" ] && continue
+
+#    Get the components of the directory specification.
+     DIRS=`echo $PATHNAME | sed -e 's#/# /#g'`
+
+#    Create each directory in sequence.
+     DIRSEQ=
+     for DIR in $DIRS
+     do
+        DIRSEQ=${DIRSEQ}$DIR
+
+        if [ ! -d "$DIRSEQ" ]
+        then
+           if mkdir $DIRSEQ
+           then
+              [ "$VERBOSE" = 1 ] && echo "Created directory $DIRSEQ"
+
+              if [ "$CHGRP" != ":" ]
+              then
+                 [ "$VERBOSE" = 1 ] && echo "   $CHGRP $DIRSEQ"
+                 $CHGRP $DIRSEQ
+              fi
+
+              if [ "$CHMOD" != ":" ]
+              then
+                 [ "$VERBOSE" = 1 ] && echo "   $CHMOD $DIRSEQ"
+                 $CHMOD $DIRSEQ
+              fi
+           else
+              echo "amkdir: Failed to create directory $DIRSEQ."
+              exit 2
+           fi
+        fi
+     done
+  done
+
+  exit 0

@@ -1,0 +1,10 @@
+MemoryIO::read - incorrect number of bytes read
+MemoryIO::seek - cannot seek before start of object
+MemoryIO::write - buffer cannot be expanded
+MemoryIO::seek - buffer cannot be expanded
+MemoryIO::write - buffer cannot be expanded
+MemoryIO::seek - buffer cannot be expanded
+MemoryIO::write - MemoryIO object is not writable
+read/write
+readonly
+writeonly

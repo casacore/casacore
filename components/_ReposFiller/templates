@@ -1,0 +1,65 @@
+1000 casa/Arrays/Array.cc 
+     = components/ComponentModels/Flux.h 
+     template class Array<Flux<Double> > 
+1010 casa/Arrays/Array.cc 
+     = components/ComponentModels/SkyComponent.h 
+     template class Array<SkyComponent> 
+1000 casa/Arrays/MaskedArray.cc 
+     = components/ComponentModels/Flux.h 
+     template class MaskedArray<Flux<Double> > 
+1010 casa/Arrays/MaskedArray.cc 
+     = components/ComponentModels/SkyComponent.h 
+     template class MaskedArray<SkyComponent> 
+1000 casa/Arrays/Matrix.cc 
+     = components/ComponentModels/Flux.h 
+     template class Matrix<Flux<Double> > 
+1000 casa/Arrays/Vector.cc 
+     = components/ComponentModels/Flux.h 
+     template class Vector<Flux<Double> > 
+1010 casa/Arrays/Vector.cc 
+     = components/ComponentModels/SkyComponent.h 
+     template class Vector<SkyComponent> 
+1000 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = components/ComponentModels/SkyComponent.h 
+     template class CountedConstPtr<Block<SkyComponent> > 
+     template class CountedPtr<Block<SkyComponent> > 
+     template class PtrRep<Block<SkyComponent> > 
+     template class SimpleCountedConstPtr<Block<SkyComponent> > 
+     template class SimpleCountedPtr<Block<SkyComponent> > 
+1010 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = components/ComponentModels/Flux.h 
+     template class CountedConstPtr<Block<Flux<Double> > > 
+     template class CountedPtr<Block<Flux<Double> > > 
+     template class PtrRep<Block<Flux<Double> > > 
+     template class SimpleCountedConstPtr<Block<Flux<Double> > > 
+     template class SimpleCountedPtr<Block<Flux<Double> > > 
+1020 casa/Utilities/CountedPtr.cc components/ComponentModels/ComponentShape.h 
+     template class CountedPtr<ComponentShape> 
+     template class CountedConstPtr<ComponentShape> 
+     template class SimpleCountedPtr<ComponentShape> 
+     template class SimpleCountedConstPtr<ComponentShape> 
+     template class PtrRep<ComponentShape> 
+1030 casa/Utilities/CountedPtr.cc components/ComponentModels/SkyCompRep.h 
+     template class CountedPtr<SkyCompRep> 
+     template class CountedConstPtr<SkyCompRep> 
+     template class SimpleCountedPtr<SkyCompRep> 
+     template class SimpleCountedConstPtr<SkyCompRep> 
+     template class PtrRep<SkyCompRep> 
+1040 casa/Utilities/CountedPtr.cc components/ComponentModels/SpectralModel.h 
+     template class CountedPtr<SpectralModel> 
+     template class CountedConstPtr<SpectralModel> 
+     template class SimpleCountedPtr<SpectralModel> 
+     template class SimpleCountedConstPtr<SpectralModel> 
+     template class PtrRep<SpectralModel> 
+1000 components/ComponentModels/Flux.cc 
+     = casa/Utilities/CountedPtr.cc 
+     template class Flux<Double> 
+     template class FluxRep<Double> 
+     template class CountedPtr<FluxRep<Double> > 
+     template class PtrRep<FluxRep<Double> > 
+     template class SimpleCountedConstPtr<FluxRep<Double> > 
+     template class CountedConstPtr<FluxRep<Double> > 
+     template class SimpleCountedPtr<FluxRep<Double> > 
+1000 components/SpectralComponents/ProfileFit1D.cc 
+     template class ProfileFit1D<Double> 

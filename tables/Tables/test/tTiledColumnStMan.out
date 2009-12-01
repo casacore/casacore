@@ -1,0 +1,142 @@
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    2448
+#inits:    816
+#writes:   1632
+#accesses: 3264        hit-rate:  0%
+<<<
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    1632
+#accesses: 1632        hit-rate:  0%
+<<<
+get's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816
+#reads:    816
+#accesses: 816        hit-rate:  0%
+<<<
+getColumn has been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 208 (*240)
+#buckets:  816
+#reads:    816
+#accesses: 16320        hit-rate:  95%
+<<<
+getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 208 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    4335
+#accesses: 16320        hit-rate:  73.4375%
+<<<
+strided getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 4 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    1224
+#accesses: 3570        hit-rate:  65.7143%
+<<<
+getSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 4 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    4998
+#accesses: 4998        hit-rate:  0%
+<<<
+getSlice's with strides have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    2448
+#inits:    816
+#writes:   1632
+#accesses: 3264        hit-rate:  0%
+<<<
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    1632
+#accesses: 1632        hit-rate:  0%
+<<<
+get's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 1 (*240)
+#buckets:  816
+#reads:    816
+#accesses: 816        hit-rate:  0%
+<<<
+getColumn has been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 208 (*240)
+#buckets:  816
+#reads:    816
+#accesses: 16320        hit-rate:  95%
+<<<
+getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 208 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    4335
+#accesses: 16320        hit-rate:  73.4375%
+<<<
+strided getColumnSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 4 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    1224
+#accesses: 3570        hit-rate:  65.7143%
+<<<
+getSlice's have been done
+>>> TSMCube cache statistics:
+cubeShape: [16, 20, 51]
+tileShape: [5, 6, 1]
+maxCacheSz:0
+cacheSize: 4 (*240)
+#buckets:  816         (<  #reads + #writes!)
+#reads:    4998
+#accesses: 4998        hit-rate:  0%
+<<<
+getSlice's with strides have been done

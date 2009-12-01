@@ -1,0 +1,307 @@
+Checking table tForwardColRow_tmp.data0
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+Checking table tForwardColRow_tmp.data1
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+ canAddRow=1 canRemoveRow=1
+Checking table tForwardColRow_tmp.data0
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+Checking table tForwardColRow_tmp.data1
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+Checking table tForwardColRow_tmp.data2
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+get scalar row 10 defined=111111
+get array row 10
+ defined=111 ndim=3,3,3
+get scalar row 11 defined=111111
+get array row 11
+ defined=111 ndim=3,3,3
+get scalar row 12 defined=111111
+get array row 12
+ defined=111 ndim=3,3,3
+get scalar row 13 defined=111111
+get array row 13
+ defined=111 ndim=3,3,3
+get scalar row 14 defined=111111
+get array row 14
+ defined=111 ndim=3,3,3
+get scalar row 15 defined=111111
+get array row 15
+ defined=111 ndim=3,3,3
+get scalar row 16 defined=111111
+get array row 16
+ defined=111 ndim=3,3,3
+get scalar row 17 defined=111111
+get array row 17
+ defined=111 ndim=3,3,3
+get scalar row 18 defined=111111
+get array row 18
+ defined=111 ndim=3,3,3
+get scalar row 19 defined=111111
+get array row 19
+ defined=111 ndim=3,3,3
+Checking table tForwardColRow_tmp.data3
+get scalar row 0 defined=111111
+get array row 0
+ defined=111 ndim=3,3,3
+get scalar row 1 defined=111111
+get array row 1
+ defined=111 ndim=3,3,3
+get scalar row 2 defined=111111
+get array row 2
+ defined=111 ndim=3,3,3
+get scalar row 3 defined=111111
+get array row 3
+ defined=111 ndim=3,3,3
+get scalar row 4 defined=111111
+get array row 4
+ defined=111 ndim=3,3,3
+get scalar row 5 defined=111111
+get array row 5
+ defined=111 ndim=3,3,3
+get scalar row 6 defined=111111
+get array row 6
+ defined=111 ndim=3,3,3
+get scalar row 7 defined=111111
+get array row 7
+ defined=111 ndim=3,3,3
+get scalar row 8 defined=111111
+get array row 8
+ defined=111 ndim=3,3,3
+get scalar row 9 defined=111111
+get array row 9
+ defined=111 ndim=3,3,3
+get scalar row 10 defined=111111
+get array row 10
+ defined=111 ndim=3,3,3
+get scalar row 11 defined=111111
+get array row 11
+ defined=111 ndim=3,3,3
+get scalar row 12 defined=111111
+get array row 12
+ defined=111 ndim=3,3,3
+get scalar row 13 defined=111111
+get array row 13
+ defined=111 ndim=3,3,3
+get scalar row 14 defined=111111
+get array row 14
+ defined=111 ndim=3,3,3
+get scalar row 15 defined=111111
+get array row 15
+ defined=111 ndim=3,3,3
+get scalar row 16 defined=111111
+get array row 16
+ defined=111 ndim=3,3,3
+get scalar row 17 defined=111111
+get array row 17
+ defined=111 ndim=3,3,3
+get scalar row 18 defined=111111
+get array row 18
+ defined=111 ndim=3,3,3
+get scalar row 19 defined=111111
+get array row 19
+ defined=111 ndim=3,3,3
+get scalar row 20 defined=111111
+get array row 20
+ defined=111 ndim=3,3,3
+get scalar row 21 defined=111111
+get array row 21
+ defined=111 ndim=3,3,3
+get scalar row 22 defined=111111
+get array row 22
+ defined=111 ndim=3,3,3
+get scalar row 23 defined=111111
+get array row 23
+ defined=111 ndim=3,3,3
+get scalar row 24 defined=111111
+get array row 24
+ defined=111 ndim=3,3,3
+get scalar row 25 defined=111111
+get array row 25
+ defined=111 ndim=3,3,3
+get scalar row 26 defined=111111
+get array row 26
+ defined=111 ndim=3,3,3
+get scalar row 27 defined=111111
+get array row 27
+ defined=111 ndim=3,3,3
+get scalar row 28 defined=111111
+get array row 28
+ defined=111 ndim=3,3,3
+get scalar row 29 defined=111111
+get array row 29
+ defined=111 ndim=3,3,3
+get scalar row 30 defined=111111
+get array row 30
+ defined=111 ndim=3,3,3
+get scalar row 31 defined=111111
+get array row 31
+ defined=111 ndim=3,3,3
+get scalar row 32 defined=111111
+get array row 32
+ defined=111 ndim=3,3,3
+get scalar row 33 defined=111111
+get array row 33
+ defined=111 ndim=3,3,3
+get scalar row 34 defined=111111
+get array row 34
+ defined=111 ndim=3,3,3
+get scalar row 35 defined=111111
+get array row 35
+ defined=111 ndim=3,3,3
+get scalar row 36 defined=111111
+get array row 36
+ defined=111 ndim=3,3,3
+get scalar row 37 defined=111111
+get array row 37
+ defined=111 ndim=3,3,3
+get scalar row 38 defined=111111
+get array row 38
+ defined=111 ndim=3,3,3
+get scalar row 39 defined=111111
+get array row 39
+ defined=111 ndim=3,3,3

@@ -1,0 +1,4 @@
+COLI   COLF   COLD       COLX        COLZ       COLS      COLRA    COLDEC
+ I      R      D          X           Z          A         HMS      DMS
+1      1.1    1.11       1.12 1.13   1.14 1.15  "Str1"    1:0:0    15.0.0
+10     11     12         13   14     15   16    String17 23:60:0 "359 60 0"

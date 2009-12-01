@@ -1,0 +1,125 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# doover: Generate a function which returns AIPS++ version information
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1996
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: doover
+#-----------------------------------------------------------------------------
+# doover generates C++ code which records version information found in
+# $AIPSCODE/VERSION.  It is intended to be used only by the AIPS++ makefiles.
+#
+# Options:
+#   none
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  VERSION file not found
+#
+# Original: 1996/02/29 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Fundamentals.
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "doover: AIPSPATH is not defined, abort!" 1>&2
+     exit 1
+  fi
+
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+
+# Define AIPS++ directory names.
+  AIPSCODE=$AIPSROOT/code
+
+# Check number of arguments.
+  if [ "$#" != 0 ]
+  then
+     exec 1>&2
+     echo "Usage: doover (no options)"
+     exit 1
+  fi
+
+
+# Parse the VERSION file.
+  if [ ! -f "$AIPSCODE/VERSION" ]
+  then
+     exec 1>&2
+     echo "doover: VERSION file not found, abort!"
+     exit 2
+  fi
+
+  VERSN=`cat $AIPSCODE/VERSION | awk '{print $1}'`
+  MAJOR=`echo $VERSN | awk -F. '{print int($1)}'`
+  MINOR=`echo $VERSN | awk -F. '{print int($2)}'`
+  PATCH=`echo $VERSN | awk -F. '{print int($3)}'`
+
+  DATE=`cat $AIPSCODE/VERSION | \
+           awk 'BEGIN {FS = ""} {printf("%s\n",substr($1,11,31))}'`
+  INFO=`cat $AIPSCODE/VERSION | \
+           awk 'BEGIN {FS = ""} {printf("%s\n",substr($1,45,36))}'`
+
+  echo "namespace casa { //# NAMESPACE CASA - BEGIN"
+  echo "extern const int   aips_major_version = $MAJOR;"
+  echo "extern const int   aips_minor_version = $MINOR;"
+  echo "extern const int   aips_patch_version = $PATCH;"
+  echo "extern const char* aips_version_date  = \"$DATE\";"
+  echo "extern const char* aips_version_info  = \"$INFO\";"
+  echo "} //# NAMESPACE CASA - END"
+
+  cat << EOT
+
+
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+namespace casa { //# NAMESPACE CASA
+
+void report_aips_version(ostream &os)
+{
+   os << "AIPS++ version: "
+      << setfill('0')
+      << setw(2)  << aips_major_version
+      << "."
+      << setw(3)  << aips_minor_version
+      << "."
+      << setw(2)  << aips_patch_version
+      << " "
+      << setfill(' ')
+      << setiosflags(ios::left)
+      << setw(31) << aips_version_date
+      << "  "
+      << setw(0)  << aips_version_info
+      << endl;
+}
+
+} //# NAMESPACE CASA - END
+EOT
+
+  exit 0

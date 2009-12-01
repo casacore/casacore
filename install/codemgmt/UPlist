@@ -1,0 +1,136 @@
+#!/usr/bin/env tcsh
+#-----------------------------------------------------------------------------
+# UPlist script
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000,2001
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+#
+# UPlist script (must have x allowed)
+#
+set script = "UPlist"
+set usage = 'UPlist [-l] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("List all lines that have been found using an egrep rule in" \
+	     "<typ>.spat. The files are given in <typ>.found." \
+	     "In general the pattern and files are listed using UPfind.")
+set hsw   = ("-l will give the line numbers in the files")
+set huse  =  "<typ>.def, <typ>.spat, <typ>.found"
+set hcrea =  "<typ>.list"
+#
+# Get general info
+#
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+   exit 1
+endif
+set x = "`which UPfind`"
+if (-x "$x") then
+   set uppath = $x:h
+else
+   set x = ( $AIPSPATH )
+   set uppath = $x[1]/$x[2]/bin
+endif
+unset x
+if ("$uppath" == ".") then
+    set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
+source $uppath/UPinfo
+if (! $ok) exit 1
+#
+# Get specific data
+#
+if (! -r $ldir/${tp}${tpbx}.spat) then
+   touch $ldir/${tp}${tpbx}.spat
+   if (! $upswQ) then
+     echo "Specify egrep expression(s) to search in files"
+     echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
+     echo '      or: [(][^(]*[*] *[)][ \t]*0'
+     echo 'Multi-line expressions will be ORed'
+   endif
+   while (1)
+	echo -n "Find expression: "
+	set x = "$<"
+	if ("$x" == "") break
+	echo "$x" >> $ldir/${tp}${tpbx}.spat
+   end
+   unset x
+endif
+
+if (-z $ldir/${tp}${tpbx}.spat) then
+   echo "An empty or no ${tp}.spat file created"
+   if (-e $ldir/${tp}${tpbx}.spat)  rm -f $ldir/${tp}${tpbx}.spat
+   exit 1
+endif
+
+if ($upswn) exit 0
+#
+# Execute
+#
+if (! -e $ldir/${tp}${tpbx}.found) then
+   echo "No ${tp}.found file present. Create one using UPfind"
+   exit 1
+endif
+
+cd $dir/code
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}${tpbx}.found` )
+  echo $a[1] files found in ${tp}.found
+  unset a
+  echo "Starting list..."
+endif
+
+if (-e $ldir/${tp}.list) rm -f $ldir/${tp}.list
+set cnt = 1000
+set x = ""
+if ($upswl) set x = '-n'
+if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
+touch $ldir/$tmp.tmp
+
+foreach i (`cat $ldir/${tp}${tpbx}.found`)
+   echo "$cnt"' ## '"$i" >> $ldir/$tmp.tmp
+   egrep $x -f $ldir/${tp}${tpbx}.spat $i | \
+	awk '{ print '$cnt', "::", $0 }'  >> $ldir/$tmp.tmp
+   @ cnt = $cnt + 1
+end
+unset x
+
+cd $ldir
+cat $ldir/$tmp.tmp | sort +1 -2 >! $ldir/${tp}.list
+if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
+
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.list` )
+  echo $a[1] lines in ${tp}.list
+  unset a
+endif
+
+exit 0
+#

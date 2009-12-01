@@ -1,0 +1,296 @@
+1000 casa/Arrays/Array.cc 
+     = casa/Arrays/IPosition.h 
+     template class Array<IPosition> 
+1020 casa/Arrays/Array.cc 
+     = tables/Tables/ExprNode.h 
+     template class Array<TableExprNode> 
+1030 casa/Arrays/Array.cc 
+     = tables/Tables/Table.h 
+     template class Array<Table> 
+1040 casa/Arrays/Array.cc 
+     = tables/Tables/TableIter.h 
+     template class Array<TableIterator> 
+1050 casa/Arrays/Array.cc 
+     = tables/Tables/TableRecord.h 
+     template class Array<TableRecord> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<TableRecord>::ConstIteratorSTL 
+     #endif 
+1000 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/IPosition.h 
+     template class MaskedArray<IPosition> 
+1020 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/ExprNode.h 
+     template class MaskedArray<TableExprNode> 
+1030 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/Table.h 
+     template class MaskedArray<Table> 
+1040 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/TableIter.h 
+     template class MaskedArray<TableIterator> 
+1050 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/TableRecord.h 
+     template class MaskedArray<TableRecord> 
+1000 casa/Arrays/Vector.cc 
+     = casa/Arrays/IPosition.h 
+     template class Vector<IPosition> 
+1020 casa/Arrays/Vector.cc 
+     = tables/Tables/ExprNode.h 
+     template class Vector<TableExprNode> 
+1030 casa/Arrays/Vector.cc 
+     = tables/Tables/Table.h 
+     template class Vector<Table> 
+1040 casa/Arrays/Vector.cc 
+     = tables/Tables/TableIter.h 
+     template class Vector<TableIterator> 
+1050 casa/Arrays/Vector.cc 
+     = tables/Tables/TableRecord.h 
+     template class Vector<TableRecord> 
+1000 casa/Containers/Link.cc tables/Tables/TableParse.h 
+     template class Link<TableParse> 
+1000 casa/Containers/List.cc tables/Tables/TableParse.h 
+     template class ConstListIter<TableParse> 
+1010 casa/Containers/List.cc tables/Tables/TableParse.h 
+     template class List<TableParse> 
+1020 casa/Containers/List.cc tables/Tables/TableParse.h 
+     template class ListIter<TableParse> 
+1030 casa/Containers/List.cc tables/Tables/TableParse.h 
+     template class ListNotice<TableParse> 
+1000 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     = tables/Tables/ColumnDesc.h 
+     template class OrderedPair<String, ColumnDesc> 
+1010 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     = tables/Tables/RefColumn.h 
+     template class OrderedPair<String, RefColumn *> 
+1020 casa/Containers/OrderedPair.cc tables/Tables/BaseColDesc.h 
+     template class OrderedPair<String, BaseColumnDesc *(*)(String const &)> 
+1030 casa/Containers/OrderedPair.cc tables/Tables/DataManager.h 
+     template class OrderedPair<String, DataManager *(*)(String const &, Record const &)> 
+1000 casa/Containers/RecordField.cc tables/Tables/TableRecord.h 
+     template class RORecordFieldPtr<TableRecord> 
+     template class RecordFieldPtr<TableRecord> 
+1000 casa/Containers/SimOrdMap.cc casa/BasicSL/String.h 
+     = tables/Tables/BaseColDesc.h 
+     = tables/Tables/ColumnDesc.h 
+     = tables/Tables/DataManager.h 
+     = tables/Tables/RefColumn.h 
+     template class SimpleOrderedMap<String, BaseColumnDesc *(*)(String const &)> 
+     template class SimpleOrderedMap<String, ColumnDesc> 
+     template class SimpleOrderedMap<String, DataManager *(*)(String const &, Record const &)> 
+     template class SimpleOrderedMap<String, RefColumn *> 
+1000 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Double> const &, Double const &, uInt, Int) 
+1010 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
+1000 casa/Utilities/COWPtr.cc tables/Tables/TableRecordRep.h 
+     template class COWPtr<TableRecordRep> 
+1000 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = casa/Arrays/IPosition.h 
+     template class CountedConstPtr<Block<IPosition> > 
+     template class CountedPtr<Block<IPosition> > 
+     template class PtrRep<Block<IPosition> > 
+     template class SimpleCountedConstPtr<Block<IPosition> > 
+     template class SimpleCountedPtr<Block<IPosition> > 
+1020 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/ExprNode.h 
+     template class CountedConstPtr<Block<TableExprNode> > 
+     template class CountedPtr<Block<TableExprNode> > 
+     template class PtrRep<Block<TableExprNode> > 
+     template class SimpleCountedConstPtr<Block<TableExprNode> > 
+     template class SimpleCountedPtr<Block<TableExprNode> > 
+1030 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/Table.h 
+     template class CountedConstPtr<Block<Table> > 
+     template class CountedPtr<Block<Table> > 
+     template class PtrRep<Block<Table> > 
+     template class SimpleCountedConstPtr<Block<Table> > 
+     template class SimpleCountedPtr<Block<Table> > 
+1040 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/TableIter.h 
+     template class CountedConstPtr<Block<TableIterator> > 
+     template class CountedPtr<Block<TableIterator> > 
+     template class PtrRep<Block<TableIterator> > 
+     template class SimpleCountedConstPtr<Block<TableIterator> > 
+     template class SimpleCountedPtr<Block<TableIterator> > 
+1050 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/TableRecord.h 
+     template class CountedConstPtr<Block<TableRecord> > 
+     template class CountedPtr<Block<TableRecord> > 
+     template class PtrRep<Block<TableRecord> > 
+     template class SimpleCountedConstPtr<Block<TableRecord> > 
+     template class SimpleCountedPtr<Block<TableRecord> > 
+1060 casa/Utilities/CountedPtr.cc 
+     = tables/Tables/TiledFileAccess.h 
+     template class CountedConstPtr<TiledFileAccess> 
+     template class CountedPtr<TiledFileAccess> 
+     template class PtrRep<TiledFileAccess> 
+     template class SimpleCountedConstPtr<TiledFileAccess> 
+     template class SimpleCountedPtr<TiledFileAccess> 
+1070 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
+     template class PtrRep<TableDesc> 
+     template class SimpleCountedConstPtr<TableDesc> 
+1080 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
+     template class CountedConstPtr<TableRecordRep> 
+     template class CountedPtr<TableRecordRep> 
+     template class PtrRep<TableRecordRep> 
+     template class SimpleCountedConstPtr<TableRecordRep> 
+     template class SimpleCountedPtr<TableRecordRep> 
+1000 casa/Utilities/Register.cc casa/Containers/List.h 
+     = tables/Tables/TableParse.h 
+     template uInt Register(ListNotice<TableParse> const *) 
+1000 tables/LogTables/LoggerHolder.h 
+     = casa/Utilities/CountedPtr.cc 
+     template class PtrRep<LoggerHolderRep> 
+     template class CountedPtr<LoggerHolderRep> 
+     template class CountedConstPtr<LoggerHolderRep> 
+     template class SimpleCountedPtr<LoggerHolderRep> 
+     template class SimpleCountedConstPtr<LoggerHolderRep> 
+1000 tables/Tables/ArrColData.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template class ArrayColumnData<Bool> 
+     template class ArrayColumnData<Char> 
+     template class ArrayColumnData<uChar> 
+     template class ArrayColumnData<Short> 
+     template class ArrayColumnData<uShort> 
+     template class ArrayColumnData<Int> 
+     template class ArrayColumnData<uInt> 
+     template class ArrayColumnData<Float> 
+     template class ArrayColumnData<Double> 
+     template class ArrayColumnData<Complex> 
+     template class ArrayColumnData<DComplex> 
+     template class ArrayColumnData<String> 
+1000 tables/Tables/ArrColDesc.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template class ArrayColumnDesc<Bool> 
+     template class ArrayColumnDesc<Char> 
+     template class ArrayColumnDesc<uChar> 
+     template class ArrayColumnDesc<Short> 
+     template class ArrayColumnDesc<uShort> 
+     template class ArrayColumnDesc<Int> 
+     template class ArrayColumnDesc<uInt> 
+     template class ArrayColumnDesc<Float> 
+     template class ArrayColumnDesc<Double> 
+     template class ArrayColumnDesc<Complex> 
+     template class ArrayColumnDesc<DComplex> 
+     template class ArrayColumnDesc<String> 
+1000 tables/Tables/ArrayColumn.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template class ArrayColumn<Bool> 
+     template class ArrayColumn<uChar> 
+     template class ArrayColumn<Short> 
+     template class ArrayColumn<uShort> 
+     template class ArrayColumn<Int> 
+     template class ArrayColumn<uInt> 
+     template class ArrayColumn<Float> 
+     template class ArrayColumn<Double> 
+     template class ArrayColumn<Complex> 
+     template class ArrayColumn<DComplex> 
+     template class ArrayColumn<String> 
+     template class ROArrayColumn<Bool> 
+     template class ROArrayColumn<uChar> 
+     template class ROArrayColumn<uShort> 
+     template class ROArrayColumn<Short> 
+     template class ROArrayColumn<Int> 
+     template class ROArrayColumn<uInt> 
+     template class ROArrayColumn<Float> 
+     template class ROArrayColumn<Double> 
+     template class ROArrayColumn<Complex> 
+     template class ROArrayColumn<DComplex> 
+     template class ROArrayColumn<String> 
+1000 tables/Tables/BaseMappedArrayEngine.cc 
+     = casa/BasicSL/Complex.h 
+     template class BaseMappedArrayEngine<Complex, Int> 
+     template class BaseMappedArrayEngine<Float, Short> 
+1000 tables/Tables/MappedArrayEngine.cc 
+     = tables/Tables/BaseMappedArrayEngine.cc 
+     = casa/BasicSL/Complex.h 
+     template class MappedArrayEngine<Complex, DComplex> 
+     template class BaseMappedArrayEngine<Complex, DComplex> 
+1000 tables/Tables/ScaColData.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template class ScalarColumnData<Bool> 
+     template class ScalarColumnData<Char> 
+     template class ScalarColumnData<uChar> 
+     template class ScalarColumnData<Short> 
+     template class ScalarColumnData<uShort> 
+     template class ScalarColumnData<Int> 
+     template class ScalarColumnData<uInt> 
+     template class ScalarColumnData<Float> 
+     template class ScalarColumnData<Double> 
+     template class ScalarColumnData<Complex> 
+     template class ScalarColumnData<DComplex> 
+     template class ScalarColumnData<String> 
+1000 tables/Tables/ScaColDesc.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     template class ScalarColumnDesc<Bool> 
+     template class ScalarColumnDesc<Char> 
+     template class ScalarColumnDesc<uChar> 
+     template class ScalarColumnDesc<Short> 
+     template class ScalarColumnDesc<uShort> 
+     template class ScalarColumnDesc<Int> 
+     template class ScalarColumnDesc<uInt> 
+     template class ScalarColumnDesc<Float> 
+     template class ScalarColumnDesc<Double> 
+     template class ScalarColumnDesc<Complex> 
+     template class ScalarColumnDesc<DComplex> 
+     template class ScalarColumnDesc<String> 
+1000 tables/Tables/ScalarColumn.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h tables/Tables/TableRecord.h 
+     template class ROScalarColumn<Bool> 
+     template class ROScalarColumn<uChar> 
+     template class ROScalarColumn<Short> 
+     template class ROScalarColumn<uShort> 
+     template class ROScalarColumn<Int> 
+     template class ROScalarColumn<uInt> 
+     template class ROScalarColumn<Float> 
+     template class ROScalarColumn<Double> 
+     template class ROScalarColumn<Complex> 
+     template class ROScalarColumn<DComplex> 
+     template class ROScalarColumn<String> 
+     template class ROScalarColumn<TableRecord> 
+     template class ScalarColumn<Bool> 
+     template class ScalarColumn<uChar> 
+     template class ScalarColumn<Short> 
+     template class ScalarColumn<uShort> 
+     template class ScalarColumn<Int> 
+     template class ScalarColumn<uInt> 
+     template class ScalarColumn<Float> 
+     template class ScalarColumn<Double> 
+     template class ScalarColumn<Complex> 
+     template class ScalarColumn<DComplex> 
+     template class ScalarColumn<String> 
+     template class ScalarColumn<TableRecord> 
+1000 tables/Tables/TVec.cc 
+     template class TabVecRep<Double> 
+1010 tables/Tables/TVec.cc 
+     template class TabVecRep<Int> 
+1000 tables/Tables/TVecMath.cc tables/Tables/TVec.h 
+     template void tabVecRepminmax(Int &, Int &, TabVecRep<Int> const &) 
+1000 tables/Tables/TVecScaCol.cc 
+     template class TabVecScaCol<Double> 
+1010 tables/Tables/TVecScaCol.cc 
+     template class TabVecScaCol<Int> 
+1000 tables/Tables/TVecTemp.cc 
+     template class TabVecTemp<Double> 
+1010 tables/Tables/TVecTemp.cc 
+     template class TabVecTemp<Int> 
+1000 tables/Tables/TabVecMath.cc tables/Tables/TableVector.h 
+     template Int max(ROTableVector<Int> const &) 
+1000 tables/Tables/TableVector.cc 
+     template class ROTableVector<Int> 
+1010 tables/Tables/TableVector.cc 
+     template class TableVector<Double> 
+     template class ROTableVector<Double> 
+1020 tables/Tables/TableVector.cc 
+     template class TableVector<Int> 
+1000 tables/Tables/VirtArrCol.cc 
+     = casa/BasicSL/Complex.h 
+     template class VirtualArrayColumn<Float> 
+     template class VirtualArrayColumn<Complex> 
+1000 tables/Tables/VirtScaCol.cc 
+     template class VirtualScalarColumn<Float> 

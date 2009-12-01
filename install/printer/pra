@@ -1,0 +1,179 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# pra: Print AIPS++ class files in a compact form
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992,1993,1994
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: pra [-l] [-P printer] [class1 [class2 ...]]
+#-----------------------------------------------------------------------------
+# Print AIPS++ class files in a compact form without having to check them out.
+#
+# If no classes are specified on the command line, all class files in the
+# current directory will be printed.
+#
+# Options:
+#   -l:  Print programmer class files from the current directory if they
+#        exist.
+#
+#   -P:  Printer queue to use.
+#
+#   -*:  All other options are passed to pri (options which take values must
+#        not contain embeded whitespace).
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#
+# Original: 1992/03/04 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+# Get the AIPS++ root directory from AIPSPATH.
+  AIPSROOT=`echo $AIPSPATH | awk '{ print $1 }'`
+  AIPSCODE=$AIPSROOT/code
+
+# Check that we're in an implement subdirectory.
+  PWD=`pwd`
+  case $PWD in
+  */implement | */implement/*)
+     ;;
+  *)
+     echo "pra: Not an implement subdirectory, abort!" 1>&2
+     exit 1
+     ;;
+  esac
+
+# Parse arguments.
+  CLASSES=""
+  PGMRIMPD=""
+  QUAL=""
+
+  while [ "$#" -gt 0 ]
+  do
+     case $1 in
+     -l)
+        PGMRIMPD=`pwd`
+        ;;
+     -P*)
+        case $1 in
+        -P)
+           shift
+           PRINTER="$1"
+           ;;
+        *)
+           PRINTER=`echo $1 | sed -e 's/^-P//'`
+           ;;
+        esac
+
+        export PRINTER
+        ;;
+     -*)
+        QUAL="$QUAL $1"
+        ;;
+     *)
+        CLASSES="$CLASSES $1"
+        ;;
+     esac
+
+     [ "$2" = "" ] && break
+
+     shift
+  done
+
+
+# AIPS++ code directory corresponding to this directory.
+  PCKGIMPD=`pwd | sed -e "s#.*code#$AIPSCODE#"`
+  [ -d "$PCKGIMPD" ] || PCKGIMPD=""
+
+# If no classes were specified then do the lot.
+  if [ "$CLASSES" = "" ]
+  then
+     if [ "$PGMRIMPD" != "" ]
+     then
+        CLASSES=`(cd $PGMRIMPD ; ls *.h *.cc | sed -e 's#\..*$##' | sort -u)`
+     elif [ "$PCKGIMPD" != "" ]
+     then
+        CLASSES=`(cd $PCKGIMPD ; ls *.h *.cc | sed -e 's#\..*$##' | sort -u)`
+     else
+        echo "pra: Invalid directory."
+        exit 1
+     fi
+  fi
+
+
+# Print each class.
+  DELIM=`echo ======== | sed -e 's/=/==========/g'`
+  for CLASS in $CLASSES
+  do
+     GOTONE=""
+     PRATMP="/tmp/$CLASS.pra$$"
+
+     trap "rm -f $PRATMP" 0 1 2 3 15
+
+     if [ "$PGMRIMPD" != "" -a -f $PGMRIMPD/$CLASS.h ]
+     then
+        cat $PGMRIMPD/$CLASS.h >> $PRATMP
+        GOTONE=1
+     elif [ "$PCKGIMPD" != "" -a -f $PCKGIMPD/$CLASS.h ]
+     then
+        cat $PCKGIMPD/$CLASS.h >> $PRATMP
+        GOTONE=1
+     fi
+
+     if [ "$PGMRIMPD" != "" -a -f $PGMRIMPD/$CLASS.cc ]
+     then
+        if [ "$GOTONE" != "" ]
+        then
+           echo "" >> $PRATMP
+           echo "$DELIM" >> $PRATMP
+           echo "" >> $PRATMP
+        fi
+        cat $PGMRIMPD/$CLASS.cc >> $PRATMP
+        GOTONE=1
+     elif [ "$PCKGIMPD" != "" -a -f $PCKGIMPD/$CLASS.cc ]
+     then
+        if [ "$GOTONE" != "" ]
+        then
+           echo "" >> $PRATMP
+           echo "$DELIM" >> $PRATMP
+           echo "" >> $PRATMP
+        fi
+
+        cat $PCKGIMPD/$CLASS.cc >> $PRATMP
+        GOTONE=1
+     fi
+
+     if [ "$GOTONE" != "" ]
+     then
+        pri -m80 -n$CLASS $QUAL $PRATMP
+        rm -f $PRATMP
+     else
+        echo "pra: Class $CLASS not found!"
+     fi
+  done
+
+
+  exit 0

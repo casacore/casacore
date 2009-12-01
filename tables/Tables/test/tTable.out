@@ -1,0 +1,240 @@
+Invalid Table operation: SetupNewTable::setShapeColumn, column arr2 is not fixed shape
+ScratchCallBack:  name=tTable_tmp.data  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data  isScratch=0  oldName=
+stored columns: 111111
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: A test of class Table
+  #Keywords = 0
+  #Columns  = 9
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ag   DataType=DComplex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=arr1   DataType=float   Nrdim=3   Shape=[2, 3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=arr2   DataType=float   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=arr3   DataType=float   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=ae   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=af   DataType=String   MaxLength=10
+   DataManager=StandardStMan/StandardStMan   Default=
+   Comment = 
+   #keywords=0
+
+ScalarColumn::put: string value '12345678901' exceeds maximum length
+ArrayColumn::put: Table array conformance error
+get layout in static way
+Table::getlayout #rows = 10
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: A test of class Table
+  #Keywords = 0
+  #Columns  = 9
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ag   DataType=DComplex
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
+   Comment = 
+   #keywords=0
+
+   Name=arr1   DataType=float   Nrdim=3   Shape=[2, 3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=arr2   DataType=float   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=arr3   DataType=float   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=ae   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=af   DataType=String   MaxLength=10
+   DataManager=StandardStMan/StandardStMan   Default=
+   Comment = 
+   #keywords=0
+
+
+type = testtype
+subtype = testsubtype
+first readme line
+second test readme line
+
+1100
+start reading Table
+end reading Table
+type = testtype
+subtype = testsubtype
+first readme line
+second test readme line
+
+Invalid Table operation: Table::addColumn; table is not writable
+1 arr1.shapeColumn() = [2, 3, 4]
+0 arr2.shapeColumn() = []
+1 arr3.shapeColumn() = [2, 3, 4]
+datatypes ab = Int Int
+datatypes ac = Int Int
+datatypes ad = uInt uInt
+datatypes ae = float float
+datatypes af = String String
+datatypes ag = DComplex DComplex
+datatypes ar1 = float Array<float>
+datatypes arr2 = float Array<float>
+datatypes arr3 = float Array<float>
+get scalar row 0
+get array row 0
+get scalar row 1
+get array row 1
+get scalar row 2
+get array row 2
+get scalar row 3
+get array row 3
+get scalar row 4
+get array row 4
+get scalar row 5
+get array row 5
+get scalar row 6
+get array row 6
+get scalar row 7
+get array row 7
+get scalar row 8
+get array row 8
+get scalar row 9
+get array row 9
+10 10
+[12, 11, 10, 9, 8, 7, 6, 5, 4, 3]
+#columns in sortab: 9
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+#columns in sortab2: 9
+sortab2 type = testtype
+sortab2 subtype = testsubtype
+first readme line
+second test readme line
+a sortab line
+
+[9, 6, 3, 1]
+[9, 6, 3, 1]
+[0, 3, 6, 8]
+[6, 8, 0, 3]
+#columns in seltab1: 9
+[6, 8, 0, 3]
+#columns in seltab2: 3
+[8, 0]
+#columns in seltab3: 3
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: A test of class Table
+  #Keywords = 0
+  #Columns  = 3
+   Name=ae   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=arr1   DataType=float   Nrdim=3   Shape=[2, 3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+[1, 2, 4, 5, 7, 9]
+#columns in xortab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or1tab: 9
+[0, 1, 2, 4, 5, 7, 8, 9]
+#columns in or2tab: 3
+[9, 8, 7, 6, 5]
+[3, 5, 6, 7]
+[6, 7, 8, 9]
+>>>
+ScratchCallBack:  name=tab14159_16  isScratch=0  oldName=
+<<<
+ScratchCallBack:  name=tTable_tmp.ex1  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.ex1  isScratch=0  oldName=
+ScratchCallBack:  name=tTable_tmp.data1  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data1  isScratch=0  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data2a  isScratch=1  oldName=tTable_tmp.data2
+ScratchCallBack:  name=tTable_tmp.data2a  isScratch=0  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data2  isScratch=0  oldName=
+Table tTable_tmp.file already exists (and is not a true table directory)
+Table tTable_tmp.data already exists
+Table tTable.datx does not exist
+Invalid description of column ab: column already exists
+[3, 5, 6, 7]
+[3, 6]
+[0, 1, 2, 4, 5, 7, 8, 9]
+Invalid Table operation: removeRow: rownr 7 too high in table tTable_tmp.data2a (#rows=7)
+[0, 1, 2, 4, 5, 7, 8]
+[0, 1]
+[23, 4]
+[5, 6]
+[9, 100]
+[1, 2]
+[6, 7]
+[8, 9]
+Axis Lengths: [2, 7]  (NB: Matrix in Row/Column order)
+[0, 23, 5, 9, 1, 6, 8
+ 1, 4, 6, 100, 2, 7, 9]
+
+ScratchCallBack:  name=tTable_tmp.data3  isScratch=1  oldName=
+ScratchCallBack:  name=tTable_tmp.data3  isScratch=0  oldName=

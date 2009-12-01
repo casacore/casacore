@@ -1,0 +1,248 @@
+#-----------------------------------------------------------------------------
+# makedefs: Installation-specific definitions used by AIPS++ makefiles
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1997,1998,1999,2000,2003
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is read in by the makedefs file in the directory above
+# this.  That "default makedefs" file defines default values of each and
+# every variable required by the AIPS++ makefiles.  Those default values are
+# overridden where necessary by redefining them in this file.
+#
+# Installation instructions:
+#
+#    A template version of this file was copied from the "install/linux_egcs"
+#    directory into the site-specific AIPS++ system directory for this
+#    architecture (this directory) by the 'configure' script as part of the
+#    AIPS++ installation.
+#
+#    While default definitions are made in the default makedefs file in the
+#    directory above this, certain platform-specific redefinitions may have
+#    been included here to help make the installation easier.
+#
+#    You must carefully check all of the definitions made in the default
+#    makedefs file (as well as the redefinitions made here) and if necessary,
+#    correct them by making an overriding definition (or correction) here.
+#    However,
+#
+#                  DO NOT MODIFY THE DEFAULT MAKEDEFS FILE -
+#
+#                         MODIFY THIS FILE INSTEAD
+#
+#    Certain of the defaults in the default makedefs file are expressed in
+#    terms of another default using "recursively expanded" variables (defined
+#    with '=') rather than "simply expanded" (defined with ':=').  For
+#    example the TeX variables are defined in terms of "TEXROOT".  This may
+#    allow this makedefs file to redefine a whole set of variables, for
+#    example all of the TeX variables, simply by redefining one, TEXROOT.
+#    However,
+#
+#           ALWAYS USE "SIMPLY EXPANDED" VARIABLES WITHIN THIS FILE
+#
+#    That is, always use ":=" to make the assignments.
+#
+# Original: 1996/08/30 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+#-----------------------------------------------------------------------------
+# This file should work on RedHat Linux 5.2 systems without
+# modification and with a bit of tweaking on RedHat-5.1 system
+# assuming that the additional software (lapack, pgplot etc.)
+# available on the AIPS++ ftp site has been installed. It uses egcs as
+# the compiler for C,C++ and Fortran (ie g77).
+#-----------------------------------------------------------------------------
+
+# Libraries and include paths.
+#-----------------------------------------------------------------------------
+
+# The C++ compiler.
+#------------------
+C++ROOT := /usr/local/gnu
+
+# General external libraries. 
+#---------------------------- 
+
+# TCL (version 7.6 or later).
+TCLLIB  += -ldl
+
+# X11.
+X11ROOT := /usr/X11R6
+
+# Motif.
+MotifROOT := $(X11ROOT)
+
+# XPM (X Pixmap) library
+XPMROOT  := $(X11ROOT)
+
+# FORTRAN compiler.
+# using native g77
+F77ROOT  := $(C++ROOT)
+F77LIBD  := 
+# The fortran library is fully specified to guarentee that we do not
+# link against /usr/lib/libf2c.{a,so}. This can happen if a -L/usr
+# flag appears in the library link path before -L$(F77LIBD) and F77LIB
+# is defined as -lf2c
+#F77LIB   := $(F77ROOT)/gcc-lib/powerpc-apple-darwin7.2.0/3.3/libgcc.a
+
+# Platform-specific libraries - always added.
+ARCHLIBS := -lm
+
+# External libraries required by particular AIPS++ packages.
+#-----------------------------------------------------------
+# RPFITS (required by ATNF).
+RPFITSLIB :=
+
+#-----------------------------------------------------------------------------
+# Compilation and linkage variables
+#-----------------------------------------------------------------------------
+
+# Preprocessor flags for system debug/optimized compilations.
+CPPDBG   += -DAIPS_DARWIN -DAIPS_BIG_ENDIAN -DNATIVE_EXCP -DAIPS_ARRAY_INDEX_CHECK
+CPPOPT   += -DAIPS_DARWIN -DAIPS_BIG_ENDIAN -DNATIVE_EXCP
+CPPSTD   += -DAIPS_STDLIB
+
+# C compiler flags for system debug/optimized compilations.
+CC       := gcc
+CDBG    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
+COPTLVL := -O2
+COPT    += -DAIPS_SVID3 -DHAVE_LINUX_GLIBC -Wreturn-type -Wimplicit -fPIC
+
+# C++ compiler flags for system debug/optimized compilations.
+C++       := c++
+C++DBG    += -pipe -fno-implicit-templates -Wreturn-type -Wimplicit -fPIC
+C++OPTLVL := -O2
+C++OPT    += -pipe -fno-implicit-templates -Wreturn-type -Wimplicit -fPIC
+
+# Use do-it-yourself template instantiation.
+TEMPLATES := diy
+
+# FORTRAN compiler flags for system debug/optimized compilations.
+FC       := g77
+FCDBG    += -fPIC
+FCOPTLVL := -O2
+FCOPT    += -fPIC
+
+# Link flags for system debug/optimized compilations; these are passed to
+# the C++ compiler.
+LDDBG := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib
+LDOPT := -s $(LDDBG)
+
+# Object library utilities.
+RANLIB := true
+
+# Control table for building AIPS++ libraries.  Four keywords are recognized:
+#    defeat:  The library will not be built (and if an old version exists it
+#             will be deleted).
+#    static:  The static library is built and is the one linked to.
+#    shatic:  The static and shared libraries are built but the static library
+#             is the one linked to.
+#    shared:  The static and shared libraries are built and the shared library
+#             is the one linked to.
+#
+#                    C++            C          FORTRAN
+#                 dbg    opt    dbg    opt    dbg    opt
+#               ------------- ------------- -------------
+#                                                          Kernel
+LIBaips      := defeat static defeat defeat defeat static
+#                                                          Auxiliary
+LIBtrial     := defeat static defeat defeat defeat static
+
+#AUXILIARY := trial trialdisplay
+
+# Absolute pathnames of perl-4 and perl-5 executables (if available).
+PERL4 := /usr/bin/perl
+PERL5 := /usr/bin/perl
+
+# TeX, dvips, and MetaFont paths.
+#--------------------------------
+TEXROOT    := /usr/lib/texmf/texmf
+TEXFONTS   := $(TEXROOT)/fonts/tfm//
+TEXFORMATS := $(TEXROOT)/web2c
+TEXINPUTS  := $(TEXROOT)/tex//
+TEXPOOL    := $(TEXROOT)/web2c
+TEXPKS     := $(TEXROOT)/fonts/pk//
+MFBASES    := $(TEXROOT)/web2c
+MFINPUTS   := $(TEXROOT)/metafont//:$(TEXROOT)/fonts/source//
+MFPOOL     := $(TEXROOT)/web2c
+LATEX2HTML := /usr/local/bin/latex2html -init_file $(AIPSROOT)/code/install/docutils/latex2html-init
+
+# Set these variables to get local icons in the html files generated by
+# latex2html
+ICONSERVER := http://www.nrao.edu/icons/latex2html
+ICONS2LOCAL := $(AIPSARCH)/bin/redoicons.sh              
+
+# Variables which tell the makefiles what to do and how to do it
+#-----------------------------------------------------------------------------
+# Command for benchmarking the rebuild (usually 'adate -l').
+TIMER := adate -l
+
+# Unset this to defeat document compilation.
+DOCSYS :=
+
+# Unset this to defeat document extraction from C++ sources.
+DOCEXTR :=
+
+# What consortium packages to build (atnf bima hia nfra nral nrao tifr).
+CONSORTIA := 
+
+#-----------------------------------------------------------------------------
+# The remaining definitions are programmer variables for code development.
+# These are not required for production-line systems.
+#-----------------------------------------------------------------------------
+ifeq "$(MAKEMODE)" "programmer"
+   # Alternate definitions for CPPFLAGS.
+   ifeq "$(CPPFLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+   endif
+
+   # C++ compiler flags for programmer compilations.
+   ifdef OPT
+      C++FLAGS := $(C++OPT) -Wall
+   else
+      C++FLAGS := $(C++DBG) -Wall
+   endif
+
+   # Where to put binaries for programmer compilations.
+   ifdef OPT
+      PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+   else
+      PGMRLIBD := $(wildcard $(PGMRARCH)/libdbg)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bindbg)
+   endif
+
+   # Alternate definitions for C++FLAGS.
+   ifeq "$(C++FLAGS)" "alt1"
+      override CPPFLAGS := $(CPPOPT) $(EXTRA_CPPFLAGS)
+      PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+      PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+      override C++FLAGS := $(C++OPT) -Wall
+   endif
+
+   # Extra compiler flags.
+   C++FLAGS += $(EXTRA_C++FLAGS)
+endif

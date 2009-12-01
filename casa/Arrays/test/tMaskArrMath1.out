@@ -1,0 +1,160 @@
+
+Testing MaskArrMath1.
+
+df=indgen(df) = 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+dg=indgen(dg) = 
+[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+Test cos (MaskedArray<Double>)
+
+dh=2.0; 
+dh = cos (df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, -0.989992, -0.653644, 0.283662, 0.96017, 2, 2, 2]
+
+df= 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+Test atan2 (MaskedArray<Double>, Array<Double>)
+
+dh=2.0; 
+ dh = atan2 (df ((df > 2.5) && (df < 6.5)), dg);
+[2, 2, 2, 0.54042, 0.588003, 0.620249, 0.643501, 2, 2, 2]
+
+Test atan2 (Array<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+ dh = atan2 (dg, df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 1.03038, 0.982794, 0.950547, 0.927295, 2, 2, 2]
+
+Test atan2 (MaskedArray<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+ dh = atan2 (dg ((df > 3.5) && (df < 7.5)),
+             df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 2, 0.982794, 0.950547, 0.927295, 2, 2, 2]
+
+Test atan2 (MaskedArray<Double>, Double)
+
+dh=2.0; 
+ dh = atan2 (df ((df > 2.5) && (df < 6.5)), 2.0);
+[2, 2, 2, 0.982794, 1.10715, 1.19029, 1.24905, 2, 2, 2]
+
+Test atan2 (Double, MaskedArray<Double>)
+
+dh=2.0; 
+ dh = atan2 (2.0, df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 0.588003, 0.463648, 0.380506, 0.321751, 2, 2, 2]
+
+Test pow (MaskedArray<Double>, Array<Double>)
+
+dh=2.0; 
+ dh = pow (df ((df > 2.5) && (df < 6.5)), dg);
+[2, 2, 2, 243, 4096, 78125, 1.67962e+06, 2, 2, 2]
+
+Test pow (Array<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+ dh = pow (dg, df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 125, 1296, 16807, 262144, 2, 2, 2]
+
+Test pow (MaskedArray<Double>, MaskedArray<Double>)
+
+dh=2.0; 
+ dh = pow (dg ((df > 3.5) && (df < 7.5)),
+             df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 2, 1296, 16807, 262144, 2, 2, 2]
+
+Test pow (MaskedArray<Double>, Double)
+
+dh=2.0; 
+ dh = pow (df ((df > 2.5) && (df < 6.5)), 2.0);
+[2, 2, 2, 9, 16, 25, 36, 2, 2, 2]
+
+Test sum (MaskedArray<Double>)
+
+ result = sum (df ((df > 2.5) && (df < 6.5)));
+18
+
+Test sumsquares (MaskedArray<Double>)
+
+ result = sumsquares (df ((df > 2.5) && (df < 6.5)));
+86
+
+Test product (MaskedArray<Double>)
+
+ result = product (df ((df > 2.5) && (df < 6.5)));
+360
+
+Test mean (MaskedArray<Double>)
+
+ result = mean (df ((df > 2.5) && (df < 6.5)));
+4.5
+
+Test variance (MaskedArray<Double>)
+
+ result = variance (df ((df > 2.5) && (df < 6.5)));
+1.66667
+
+Test stddev (MaskedArray<Double>)
+
+ result = stddev (df ((df > 2.5) && (df < 6.5)));
+1.29099
+
+Test avdev (MaskedArray<Double>)
+
+ result = avdev (df ((df > 2.5) && (df < 6.5)));
+1
+
+Test rms (MaskedArray<Double>)
+
+ result = rms (df ((df > 2.5) && (df < 6.5)));
+4.63681
+
+Test even median (MaskedArray<Double>, True)
+
+ result = median (df ((df > 2.5) && (df < 6.5)), True);
+4.5
+
+Test even median (MaskedArray<Double>)
+
+ result = median (dfunsort ((dfunsort > 2.5) &&
+                            (dfunsort < 6.5)));
+4.5
+dfunsort= 
+[0, 1, 2, 3, 4, 9, 6, 7, 8, 5]
+
+Test odd median (MaskedArray<Double>, True)
+
+ result = median (df ((df > 2.5) && (df < 7.5)), True);
+5
+
+Test odd  median (MaskedArray<Double>)
+
+ result = median (dfunsort ((dfunsort > 2.5) &&
+                            (dfunsort < 7.5)));
+5
+dfunsort= 
+[0, 1, 2, 3, 4, 9, 6, 7, 8, 5]
+
+Test square (MaskedArray<Double>)
+
+dh=2.0; 
+dh = square (df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 9, 16, 25, 36, 2, 2, 2]
+
+df= 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+Test cube (MaskedArray<Double>)
+
+dh=2.0; 
+dh = cube (df ((df > 2.5) && (df < 6.5)));
+[2, 2, 2, 27, 64, 125, 216, 2, 2, 2]
+
+df= 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+OK
+OK

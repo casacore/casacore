@@ -1,0 +1,591 @@
+TableDesc::renameColumn - new name colint2 already exists
+TableDesc::renameColumn - old name colintxxx does not exist
+colint comment addition
+colint2 comment2
+colint3 comment
+c1 c1-comment
+
+TableDesc namex   version v2.0.1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 1
+0  tab_key1 : String
+  #Columns  = 4
+   Name=colint   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment addition
+   #keywords=0
+
+   Name=colint2   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment2
+   #keywords=1
+0  colint_key1 : Int
+
+   Name=colint3   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment
+   #keywords=0
+
+   Name=c1   DataType=Int
+   DataManager=c1_engine/c1_engine   Default=0
+   Comment = c1-comment
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp1   version    (Directory ./)
+---------
+  Comment: 
+  #Keywords = 1
+0  tab_key1 : String
+  #Columns  = 4
+   Name=colint   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment addition
+   #keywords=0
+
+   Name=colint2   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment2
+   #keywords=1
+0  colint_key1 : Int
+
+   Name=colint3   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment
+   #keywords=0
+
+   Name=c1   DataType=Int
+   DataManager=c1_engine/c1_engine   Default=0
+   Comment = c1-comment
+   #keywords=0
+
+Invalid description of column ab: column already exists
+Invalid description of column af: Option Undefined only allowed for standard data types
+Invalid description of column Arr3: Shape only allowed for FixedShape arrays
+Invalid Table operation: setNdim: column ab is no array
+Invalid Table operation: setShape: column ab is no array
+Invalid Table operation: setNdim(): dimensionality of column Arr3 already defined
+Invalid Table operation: setShape(): shape of column Arr3 already defined
+
+TableDesc tTableDesc_tmp   version 1   (Directory ./)
+---------
+  Comment: A test of class TableDesc
+  #Keywords = 3
+0  ra : float
+1  equinox : double
+2  aa : Int
+  #Columns  = 13
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=2
+0  scale : Complex
+1  unit : String
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ae   DataType=Other, ExampleDesc
+   DataManager=ExampleDescVSCEngine/ae   Default=
+   Comment = 
+   #keywords=0
+
+   Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
+   DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=Arr1   DataType=Complex   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=A2r1   DataType=Int   Nrdim=3   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=Arr3   DataType=uInt   Nrdim=2   Shape=[3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=sub1  Subtable type=tTableDesc_tmp_sub  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=sub2  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable copy
+   #keywords=0
+
+   Name=sub3  Subtable type=tTableDesc_tmp_sub  (directly)
+   Comment = subtable pointer
+   #keywords=0
+
+   Name=sub4Renamed  Subtable type=tTableDesc_tmp_sub1  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+1100
+checkSubTableDesc: Table desc. tTableDesc_tmp_sub1 does not exist
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
+---------
+  Comment: 
+  #Keywords = 1
+0  subint : Int
+  #Columns  = 2
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
+---------
+  Comment: 
+  #Keywords = 2
+0  subint : Int
+1  CoordSys : String
+  #Columns  = 3
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=Equinox   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 1
+0  subint : Int
+  #Columns  = 2
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+[ab, ac, ad, ae, arr0, rec0, Arr1, A2r1, Arr3, sub1, sub2, sub3, sub4Renamed]
+10000001
+
+TableDesc tTableDesc_tmp   version 1   (Directory ./)
+---------
+  Comment: A test of class TableDesc
+  #Keywords = 3
+0  ra : float
+1  equinox : double
+2  aa : Int
+  #Columns  = 13
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=2
+0  scale : Complex
+1  unit : String
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ae   DataType=Other, ExampleDesc
+   DataManager=ExampleDescVSCEngine/ae   Default=
+   Comment = 
+   #keywords=0
+
+   Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
+   DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=Arr1   DataType=Complex   Nrdim=-1   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=A2r1   DataType=Int   Nrdim=3   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=Arr3   DataType=uInt   Nrdim=2   Shape=[3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=sub1  Subtable type=tTableDesc_tmp_sub  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=sub2  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable copy
+   #keywords=0
+
+   Name=sub3  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable pointer
+   #keywords=0
+
+   Name=sub4Renamed  Subtable type=tTableDesc_tmp_sub1  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory ./)
+---------
+  Comment: 
+  #Keywords = 2
+0  subint : Int
+1  CoordSys : String
+  #Columns  = 3
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=Equinox   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 1
+0  subint : Int
+  #Columns  = 2
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp_sub   version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 2
+0  subint : Int
+1  CoordSys : String
+  #Columns  = 3
+   Name=ra   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=dec   DataType=double
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=Equinox   DataType=float
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+endshow
+Invalid Table operation: setShape(): dimensionality of column Arr1 mismatches new shape
+Invalid Table operation: tableDesc(): column Arr1 is no subtable
+
+TableDesc TabSub   version    (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 2
+0  key1 : Int
+1  key2 : Int
+  #Columns  = 1
+   Name=cola   DataType=String   MaxLength=32
+   DataManager=StandardStMan/StandardStMan   Default=
+   Comment = 
+   #keywords=0
+
+
+
+TableDesc OtherName   version O2   (Directory **SCRATCH**)
+---------
+  Comment: A test of class TableDesc
+  #Keywords = 3
+0  ra : float
+1  equinox : double
+2  aa : Int
+  #Columns  = 14
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=2
+0  scale : Complex
+1  unit : String
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ae   DataType=Other, ExampleDesc
+   DataManager=ExampleDescVSCEngine/ae   Default=
+   Comment = 
+   #keywords=0
+
+   Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
+   DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=Arr1   DataType=Complex   Nrdim=2   Shape=[4, 5]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=A2r1   DataType=Int   Nrdim=3   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=Arr3   DataType=uInt   Nrdim=2   Shape=[3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=sub1  Subtable type=tTableDesc_tmp_sub  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=sub2  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable copy
+   #keywords=0
+
+   Name=sub3  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable pointer
+   #keywords=0
+
+   Name=sub4Renamed  Subtable type=tTableDesc_tmp_sub1  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=colsub  Subtable type=TabSub
+   Comment = colsub comment
+   #keywords=0
+
+
+TableDesc tTableDesc_tmp   version 1   (Directory ./)
+---------
+  Comment: A test of class TableDesc
+  #Keywords = 3
+0  ra : float
+1  equinox : double
+2  aa : Int
+  #Columns  = 14
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=2
+0  scale : Complex
+1  unit : String
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ae   DataType=Other, ExampleDesc
+   DataManager=ExampleDescVSCEngine/ae   Default=
+   Comment = 
+   #keywords=0
+
+   Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
+   DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=Arr1   DataType=Complex   Nrdim=2   Shape=[4, 5]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=A2r1   DataType=Int   Nrdim=3   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=Arr3   DataType=uInt   Nrdim=2   Shape=[3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=sub1  Subtable type=tTableDesc_tmp_sub  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=sub2  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable copy
+   #keywords=0
+
+   Name=sub3  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable pointer
+   #keywords=0
+
+   Name=sub4Renamed  Subtable type=tTableDesc_tmp_sub1  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=colsub  Subtable type=TabSub
+   Comment = colsub comment
+   #keywords=0
+
+
+TableDesc OtherName   version O2   (Directory **SCRATCH**)
+---------
+  Comment: A test of class TableDesc
+  #Keywords = 2
+0  equinox : double
+1  aa : Int
+  #Columns  = 14
+   Name=ab   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = Comment for column ab
+   #keywords=0
+
+   Name=ac   DataType=Int
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=1
+0  unit : String
+
+   Name=ad   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = comment for ad
+   #keywords=0
+
+   Name=ae   DataType=Other, ExampleDesc
+   DataManager=ExampleDescVSCEngine/ae   Default=
+   Comment = 
+   #keywords=0
+
+   Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
+   DataManager=ExampleDescVSCEngine/arr0
+   Comment = 
+   #keywords=0
+
+   Name=rec0   DataType=Record
+   DataManager=StandardStMan/StandardStMan
+   Comment = 
+   #keywords=0
+
+   Name=Arr1   DataType=Complex   Nrdim=2   Shape=[4, 5]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=A2r1   DataType=Int   Nrdim=3   Shape=[]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=Arr3   DataType=uInt   Nrdim=2   Shape=[3, 4]
+   DataManager=StandardStMan/StandardStMan
+   Comment = comment for Arr1
+   #keywords=0
+
+   Name=sub1  Subtable type=tTableDesc_tmp_sub  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=sub3  Subtable type=tTableDesc_tmp_sub
+   Comment = subtable pointer
+   #keywords=0
+
+   Name=sub4Renamed  Subtable type=tTableDesc_tmp_sub1  (by name)
+   Comment = subtable by name
+   #keywords=0
+
+   Name=colsub  Subtable type=TabSub
+   Comment = colsub comment
+   #keywords=0
+
+   Name=cola   DataType=String   MaxLength=32
+   DataManager=StandardStMan/StandardStMan   Default=
+   Comment = 
+   #keywords=0
+
+Tryerr update
+No name for table description
+Tryerr update not exist
+Table desc.tTableDescXX_tmp does not exist
+Tryerr old not exist
+Table desc.tTableDescXX_tmp does not exist
+Tryerr newnoreplace
+Table desc. tTableDesc_tmp already exists
+
+OK

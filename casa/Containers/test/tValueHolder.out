@@ -1,0 +1,31 @@
+1
+1 1
+0
+0 0
+-4 -4
+-7 -7
+-4.1 -4.1
+-4.7 -4.7
+13 13
+4 4
+14 14
+17 17
+10 10
+4.1 4.1
+4.7 4.7
+    
+    
+astring astring astring astring astring
+(3.1,-1.5) (3.1,-1.5)
+(-3.2,11.5) (-3.2,11.5)
+Axis Lengths: [1, 2]  (NB: Matrix in Row/Column order)
+[(-1.311,1.422), (-11.311,21.422)]
+ Axis Lengths: [1, 2]  (NB: Matrix in Row/Column order)
+[(-1.311,1.422), (-11.311,21.422)]
+
+Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[abc]
+ Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
+[abc]
+
+OK

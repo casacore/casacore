@@ -1,0 +1,55 @@
+######################################################################
+# Needed for several test programs
+1000 casa/Arrays/ArrayLogical.cc 
+     = casa/BasicSL/Complex.h 
+     template Bool allEQ(Array<Complex> const &, Complex const &) 
+     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
+     template Bool allNear(Array<DComplex> const &, DComplex const &, Double) 
+     template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
+     template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
+1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+     template Array<Int> operator-(Array<Int> const &, Int const &)
+     template void indgen(Array<Complex> &) 
+     template void indgen(Array<Complex> &, Complex, Complex) 
+1000 casa/Utilities/GenSort.cc casa/BasicSL/Complex.h 
+     template class GenSort<Complex> 
+######################################################################
+# Needed for dLatticeStatistics
+1000 lattices/Lattices/CLInterpolator2D.cc 
+     = lattices/Lattices/CLIPNearest2D.cc 
+     = lattices/Lattices/CurvedLattice2D.cc 
+     template class CLInterpolator2D<Int> 
+     template class CLIPNearest2D<Int> 
+     template class CurvedLattice2D<Int> 
+1000 lattices/Lattices/ExtendLattice.cc 
+     template class ExtendLattice<Int> 
+1000 lattices/Lattices/LatticeApply.cc 
+     = lattices/Lattices/LineCollapser.cc 
+     = lattices/Lattices/TiledCollapser.cc 
+     template class LatticeApply<Complex> 
+     template class LineCollapser<Complex> 
+     template class TiledCollapser<Complex> 
+1000 lattices/Lattices/LatticeStatistics.cc 
+     = casa/BasicSL/Complex.h 
+     = lattices/Lattices/LatticeApply.cc 
+     = lattices/Lattices/TiledCollapser.cc 
+     template class LatticeStatistics<Complex> 
+     template class LatticeApply<Complex, DComplex> 
+     template class StatsTiledCollapser<Complex, DComplex> 
+     template class TiledCollapser<Complex, DComplex> 
+######################################################################
+# Needed for tExtendLattice
+1000 lattices/Lattices/LatticeUtilities.cc 
+     = casa/Arrays/MaskedArray.cc 
+     template void LatticeUtilities::bin<Float>(MaskedArray<Float> &, MaskedArray<Float> const &, uInt, uInt) 
+1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
+     = casa/Utilities/CountedPtr.cc 
+     = lattices/Lattices/Lattice.h 
+     template class TempLattice<DComplex> 
+     template class CountedConstPtr<Lattice<DComplex> > 
+     template class CountedPtr<Lattice<DComplex> > 
+     template class PtrRep<Lattice<DComplex> > 
+     template class SimpleCountedConstPtr<Lattice<DComplex> > 
+     template class SimpleCountedPtr<Lattice<DComplex> > 
+################################################################################
+# Needed for tLatticeUtilities.cc

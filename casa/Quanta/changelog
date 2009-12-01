@@ -1,0 +1,70 @@
+
+<change id=0057>
+ <author> Wim Brouw </author>
+ <date> 2000/11/23 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> casa </package>
+ <module> Quanta </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects> 1953 </defects>
+ <summary>
+Added log, exp and root of qunatities
+ </summary>
+ <description>
+Added the functions log, log10, root, exp and sqrt for quantities.
+ </description>
+</change>
+
+<change id=0036>
+ <author> Wim Brouw </author>
+ <date> 2000/08/22 </date>
+ <avers> 1.4 </avers>
+ <area> Tool </area>
+ <package> casa </package>
+ <module> quanta </module>
+ <type> Code Documentation </type>
+ <category> New Bugfix </category>
+ <defects> 1589 </defects>
+ <summary>
+Added splitdate()
+ </summary>
+ <description>
+Fulfilling enhancement request #1589, I have added a splitdate() function.
+Example:
+- dq.splitdate('today')
+[mjd=51778.948, year=2000, yearday=235, month=8, monthday=22, week=34, weekday=2, hour=22, min=45, sec=5]
+ </description>
+</change>
+
+<change id=0064>
+ <author> Wim Brouw </author>
+ <date> 2000/12/14 </date>
+ <avers> 1.5 </avers>
+ <area> Tool </area>
+ <package> casa </package>
+ <module> quantagui </module>
+ <type> Code Documentation </type>
+ <category> Change Bugfix </category>
+ <defects> 1953 </defects>
+ <summary>
+Correct stack and added functionality
+ </summary>
+ <description>
+Corrected the stack behaviour of the quantagui RPN calculator. In addition I added functionality:
+- I added an indicator to show if the field is being entered, or is a
+correct top of the stack, or is incorrect and should be edited
+- I made the entry window the top of the stack (I think this was the
+easiest way to really copy normal rpn calculator behaviour)
+- I added a button to enable (re-)editing of the top of the stack (maybe
+after some external data is pasted in)
+- I added a deg/rad choice. 
+- if no units given for a sin(x) I will assume the selected units
+- for inverse functions (asin etc) the result will be in units chosen
+- log and exp added (only for undimensioned data), and sqrt (only if
+units dimensions are even)
+- added dms and hms formatting for angle like data (or time, or with
+selected units)
+ </description>
+</change>

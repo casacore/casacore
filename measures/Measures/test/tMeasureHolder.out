@@ -1,0 +1,57 @@
+----------------------------------------------------
+Test MeasureHolder  
+----------------------------------------------------
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Record output value:      Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Is measure:        1
+Is direction:      1
+Is empty:          0
+Is epoch:          0
+Is doppler:        0
+Is position:       0
+Is frequency:      0
+Is radialvelocity: 0
+As measure:        Direction: [0.663414, 0.383022, -0.642788]
+As direction:      Direction: [0.663414, 0.383022, -0.642788]
+Error expected:
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+From error: Illegal Measure record in MeasureHolder::fromRecord
+
+Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
+Record output value:      Direction: [0.663414, 0.383022, -0.642788] (J2000)
+As epoch:      Empty or wrong MeasureHolder for asMEpoch
+Input value:              Epoch: 30456::00:00:00.0000 (UTC)
+Record output value:      Epoch: 30456::00:00:00.0000 (UTC)
+As epoch:      Epoch: 30456::00:00:00.0000
+Input value:              Doppler: 0.00010159 (RADIO)
+Record output value:      Doppler: 0.00010159 (RADIO)
+As Doppler:      Doppler: 0.00010159
+Input value:              Frequency: 3.0456e+10 (LSRK)
+Record output value:      Frequency: 3.0456e+10 (LSRK)
+As Frequency:      Frequency: 3.0456e+10
+Input value:              Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
+Record output value:      Position: [4.88279e+06, 1.77719e+06, 3e+06] (ITRF)
+As Position:      Position: [4.88279e+06, 1.77719e+06, 3e+06]
+Input value:              Radialvelocity: 30456 (LSRK)
+Record output value:      Radialvelocity: 30456 (LSRK)
+As RadialVelocity:      Radialvelocity: 30456
+----------------------------------------------------
+Test MeasureHolder extension  
+----------------------------------------------------
+Direction: Direction: [0.999848, 0.0174524, 0]
+Holder:    Direction: [0.999848, 0.0174524, 0]
+Number of values: 2
+0: ok
+1: ok
+2: ok
+Set 0: 1
+Set 1: 1
+Set 2: 0
+Number of values: 2
+2: ok
+0: [0.999848, 0.0174524, 0]
+1: [0.984808, 0.173648, 0]
+Direction:                Direction: [0.999848, 0.0174524, 0]
+m0: [0.0174533, 0.174533] rad
+m1: [0, 0] rad
+Record output value:      Direction: [0.999848, 0.0174524, 0] (J2000)

@@ -1,0 +1,153 @@
+sabc
+1
+105
+1
+52
+1
+2
+3
+20
+3
+17
+64
+94
+1
+3000288
+Length=3000555
+sabc
+abcdefghij abcdefghij Version=20
+3 -32768
+1 -32768
+105
+Version=20
+Ger van Diepen
+1 -32768
+52
+Version=20
+1
+klm klm Version=21
+2
+Version=22
+3
+20
+4
+r Version=23
+5
+17
+6
+64
+7
+94
+Version=20
+3 -32768
+1 -32768
+250000
+100
+250000
+100
+5
+5
+5
+5
+string000 string000 str1 str1
+str1 str1 strin2 strin2
+strin2 strin2 stri3 stri3
+stri3 stri3 string45 string45
+string45 string45 s s
+FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
+3000288
+FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
+Length=3000555
+AipsIO::getNextType: no magic value found
+AipsIO::getstart: found object type abcdefghij, expected aa
+TryErrOpen
+AipsIO: already open
+TryAlrCls
+TryErrIn
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
+TryScr
+TryErrDel
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
+TryOut
+TryApp
+TryUpd
+TryErrNorep
+RegularFileIO: new file tAipsIO_tmp.aa already exists
+TryDel
+TryErrUpd
+RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
+TryNew
+TryIn
+TryScr
+TryOut
+TryApp
+TryDel
+TryNorep
+TryUpd
+TryNew
+
+>>>
+sabc
+1
+97
+1
+52
+1
+2
+3
+20
+3
+17
+64
+94
+1
+3000288
+Length=3000547
+sabc
+abcdefghij abcdefghij Version=20
+3 -32768
+1 -32768
+97
+Version=20
+Ger van Diepen
+1 -32768
+52
+Version=20
+1
+klm klm Version=21
+2
+Version=22
+3
+20
+4
+r Version=23
+5
+17
+6
+64
+7
+94
+Version=20
+3 -32768
+1 -32768
+250000
+100
+250000
+100
+5
+5
+5
+5
+string000 string000 str1 str1
+str1 str1 strin2 strin2
+strin2 strin2 stri3 stri3
+stri3 stri3 string45 string45
+string45 string45 s s
+MemoryIO::read beyond end-of-buffer
+3000288
+MemoryIO::read beyond end-of-buffer
+Length=3000547
+AipsIO::getNextType: no magic value found
+AipsIO::getstart: found object type abcdefghij, expected aa
+<<<
+end

@@ -1,0 +1,743 @@
+#!/usr/local/bin/perl5
+#
+#   Copyright (C) 1996,1997,1998,1999,2000,2001
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU General Public License as published by the Free
+#   Software Foundation; either version 2 of the License, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful, but WITHOUT
+#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#   more details.
+#
+#   You should have received a copy of the GNU General Public License along
+#   with this program; if not, write to the Free Software Foundation, Inc.,
+#   675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#   $Id$
+#
+use Getopt::Long;
+use Cwd;
+
+$/ = "";
+$* = 1;
+$mtext = "[^}]*";
+$etext = "([^\}]*\{[^\}]*\}[^\}]*|[^\}]*)";
+$wlabel = "\\subsubsection";
+$tbflabel = '\\flushleft\\vspace{.20in}\\textbf';
+$theText = "";
+$args = "";
+$end_section = "\\vspace{.18in}\n\\hrule";
+   
+   # OK first we make sure we can tokenize everything by adding an endaips2help
+   # token after the \\end{ah}
+$result = &GetOptions('glish', 'noheaders', 'package=s', 'outline');
+if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0){
+   print "\\documentclass{book}\n";
+   print "\\usepackage{html, longtable, epsfig}\n";
+   print "\\begin{document}\n";   
+   print "\\newcommand{\\starthelptab}{\n";
+   print "\\begin{tabular}{|l p{0.25in}p{0.36in}p{2.79in}|}\n";
+   print "}\n";
+   print "\\begin{htmlonly}\n";
+   print "\\newcommand{\\starthelptab}{\n";
+   print "\\begin{tabular}{|l p{0.25in}p{0.75in}p{2.38in}|}\n";
+   print "}\n";
+   print "\\end{htmlonly}\n";
+   print "\\input{aips2defs}\n";
+}
+$pack = $opt_package;
+
+if($opt_glish == 1){
+   $pack = "help::pkg.$opt_package";
+   print "\# atoms$opt_package.g: help atoms for the $opt_package package. \n";
+   print "\# Copyright (C) 1999\n";
+   print "\# Associated Universities, Inc. Washington DC, USA.\n";
+   print "\#\n";
+   print "\# This library is free software; you can redistribute it and/or modify it\n";
+   print "\# under the terms of the GNU Library General Public License as published by\n";
+   print "\# the Free Software Foundation; either version 2 of the License, or (at your\n";
+   print "\# option) any later version.\n";
+   print "\#\n";
+   print "\# This library is distributed in the hope that it will be useful, but WITHOUT\n";
+   print "\# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or\n";
+   print "\# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public\n";
+   print "\# License for more details.\n";
+   print "\#\n";
+   print "\# You should have received a copy of the GNU Library General Public License\n";
+   print "\# along with this library; if not, write to the Free Software Foundation,\n";
+   print "\# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.\n";
+   print "\#\n";
+   print "\# Correspondence concerning AIPS++ should be addressed as follows:\n";
+   print "\#        Internet email: aips2-request\@nrao.edu.\n";
+   print "\#        Postal address: AIPS++ Project Office\n";
+   print "\#                        National Radio Astronomy Observatory\n";
+   print "\#                        520 Edgemont Road\n";
+   print "\#                        Charlottesville, VA 22903-2475 USA\n";
+   print "\#\n";
+   print "\# \$Id$pack.g,v 11.2 1999/05/21 01:53:22 wbrouw Exp \$\n";
+   print "\n";
+   print "pragma include once\n";
+   print "val $pack := [=];\n";
+}
+
+
+
+foreach $file (@ARGV) {
+   &fetch_raw_help($file, 'fh00', $pack);
+   foreach $moduleN (split(/beginaips2module/, $theText)){
+      $objectText = "";
+      foreach $objectN (split(/beginaips2object/, $moduleN)){
+         &make_tex_file($objectN);
+         &term_object($firstPass);
+         $objectText .= $_;
+      }
+      $isObj = 0;
+      &term_module($objectText);
+   }
+}
+if($opt_noheaders == 0 && $opt_glish == 0 && $opt_outline == 0 ){
+   print "\\end{document}\n";
+}
+
+sub fetch_raw_help{
+   local($filename, $readme, $pack)  = @_;
+   $readme++;
+   open($readme, $filename);
+   while(<$readme>){
+      s/\\%/escapedpercent/g;
+        # remove any comments that have ah commands or
+        # environments in them.
+      s/%.*begin.*ah.*//g;
+      s/%.*\\ah.*//g;
+      s/%%.*//g;
+      s/escapedpercent/\\%/g;
+      s/(\\begin{ahmodule})/beginaips2module $1/g;
+      s/(\\begin{ahtool})/beginaips2object $1/g;
+      s/(\\begin{ahobject})/beginaips2object $1/g;
+      s/(\\begin{ahfunction})/beginaips2help $1/g;
+      s/(\\begin{ahconstructor})/beginaips2help $1/g;
+      s/(\\begin{ahrecord})/beginaips2help $1/g;
+      s/(\\end{ahrecord})/beginaips2help $1/g;
+      s/\\documentclass.*//g;
+      s/\\usepackage.*//g;
+      s/\\begin{document}//g;
+      s/\\end{document}//g;
+
+      if($opt_glish == 1){
+        if(/\\ahpackage{($mtext)}/mg){
+           $packd = "::d";
+           print "help::pkg.$opt_package$packd := '$1';\n";
+        }
+      } else {
+        s/\\ahpackage{($mtext)}/
+        \\begin{htmlonly}
+        \\htmladdnormallink{Postscript file available}{\\psgzfile}
+        \\vspace{.10in}
+        \\end{htmlonly}
+        $1\\\\
+        /g;
+      }
+      if(/\\input{($mtext)}/){
+         foreach $inputfile(split(/\n/, $_)){
+            if($inputfile =~ /\\input{(.*)}/){
+               &fetch_raw_help($1, $readme, $pack); 
+               $inputfile =~ s/\\input{(.*)}/$itext/g;
+            }
+         }
+      }
+      if(/\\include{($mtext)}/){
+         foreach $inputfile(split(/\n/, $_)){
+            if($inputfile =~ /\\input{(.*)}/){
+               &fetch_raw_help($1, $readme, $pack); 
+               $inputfile =~ s/\\include{(.*)}/$itext/g;
+            }
+         }
+      }
+      $theText .= $_;
+   }
+   close $readme;
+   return;
+}
+
+sub term_module{
+   local($theRawText) = @_;
+   $_ = $theRawText;
+#
+   $objs_count = %objs;
+   $objItems = "";
+   if($objs_count > 0){
+      @keys = sort (keys %objs);
+      for($i=0;$i<@objsid;$i++){
+          #$key = $objsid[$i];
+          $key = $keys[$i];
+          $objItems .= "\\htmlref{$key}{$mname:$key} & $objs{$key}\\\\\n";
+          delete $objs{$key};
+       }
+       s/\\ahobjs{}/
+\\flushleft
+\\textbf{Tools}\\\\
+\\begin{longtable}{ll}
+$objItems
+\\end{longtable}/g;
+   } else {
+       s/\\ahobjs{}//g;
+   }
+   $funs_count = %funcs;
+   local $funItems = "";
+   if($funs_count > 0){
+   @keys = sort (keys %funcs);
+#      foreach $key (keys %funcs) {
+     for ($i=0; $i<@funcsid; $i++){
+        $key = $keys[$i];
+        # print $i, $key;
+        $funItems .= "\\htmlref{$key}{$mname:$key} & $funcs{$key}\\\\\n";
+        delete $funcs{$key};
+      }
+      s/\\ahfuncs{}/
+\\textbf{Functions}
+\\begin{longtable}{ll}
+$funItems
+\\end{longtable}/g;
+    }
+
+#
+   s/\\ahobjs{}//g;
+   s/\\ahfuncs{}//g;
+   s/\\ahmethods{}//g;
+   if($opt_glish == 0 && $opt_outline == 0){
+      print;
+   }
+   if($opt_outline != 1){
+      print "\n";
+   }
+   return;
+}
+
+sub term_object{
+   local($theRawText) = @_;
+   $_ = $theRawText;
+   $wlabel = "\\subsubsection";
+   local $methodItems = "";
+   local $constructorItems = "";
+
+   if($has_methods == 1){
+     
+   @keys = sort (keys %{$methods{$oname}});
+     for($i=0;$i<@{$methodsid{$oname}};$i++) {
+        $key = $keys[$i];
+        # print "Your are here ", $i, " ", $key, "\n";
+        $methodItems .= "\\htmlref{$key}{$mname:$oname.$key.function} & $methods{$oname}{$key}\\\\\n";
+     }
+   @ckeys = sort (keys %{$constructors{$oname}});
+     for($i=0;$i<@{$constructorsid{$oname}};$i++) {
+        $key = $ckeys[$i];
+        # print "Your are here ", $i, " ", $key, "\n";
+        $constructorItems .= "\\htmlref{$key}{$mname:$oname.$key.constructor} & $constructors{$oname}{$key}\\\\\n";
+     }
+     s/\\ahmethods{}/
+   \\flushleft
+   \\textbf{Constructors}\\\\
+   \\begin{longtable}{ll}
+   $constructorItems
+   \\end{longtable}
+   \\textbf{Functions}\\\\
+   \\begin{longtable}{ll}
+   $methodItems
+   \\end{longtable}/g;
+     s/\\ahfuncs{}/
+   \\flushleft
+   \\textbf{Constructors}\\\\
+   \\begin{longtable}{ll}
+   $constructorItems
+   \\end{longtable}
+   \\textbf{Functions}\\\\
+   \\begin{longtable}{ll}
+   $methodItems
+   \\end{longtable}/g;
+   }
+   $has_methods = 0;
+   return;
+}
+
+sub make_tex_file{
+   local($theRawText) = @_;   
+   # Now we split the the text into several pieces we can handle
+   
+   $firstPass = "";
+   foreach $thing (split(/beginaips2help/, $theRawText)){
+      $_ = $thing;
+      if(/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/){
+         $isObj = 0;
+         $needsSynopsis = 0;
+         $terminateObject = 0;
+         $mname = $1;
+         $miname = $1;
+         $miname =~ s/\\_/_/g;
+         $wlabel = "\\subsection";
+         $has_methods = 0;
+         $iname = $mname;
+         $dum = $2;
+         $iname = $miname;
+         undef @funcsid;
+         undef @objsid;
+         $psfile = "../$miname-Module.ps.gz";
+         if($opt_glish == 1){
+            print "$pack.$miname := [=];\n";
+            print "$pack.$miname.objs := [=];\n";
+            print "$pack.$miname.funs := [=];\n";
+            $argroot ='';
+            $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
+            print "$pack.$miname.d := '$dum';\n";}
+          if($opt_outline == 1){
+            print "\\>\\htmlref{$mname}{$mname}\\\\\n";
+          }
+      }
+      if(/\\begin{ahrecord}\s*{($mtext)}/){
+        $recname = "$1.";
+      }
+      if(/\\end{ahrecord}/){
+        $recname = '';
+      }
+      if(/\\begin{ahaipsrc}/){
+         $needsSynopsis = 0;
+      }
+      if(/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/){
+         $oname = $1;
+         $needsSynopsis = 0;
+         $terminateObject = 0;
+         $objs{$1} = $2;
+         push @objsid, $1;
+         $isObj = 1;
+         $wlabel = "\\subsubsection";
+         $has_methods = 0;
+         $iname = $1;
+         $dum = $2;
+         $iname =~ s/\\_/_/g;
+         $oiname = $iname;
+         $psfile = "../$oiname-Tool.ps.gz";
+         if($opt_glish == 1){
+            $oiname =~ s$/$_or_$g;
+            print "$pack.$miname.objs.$oiname := [=];\n";
+            print "$pack.$miname.objs.$oiname.m := [=];\n";
+            $argroot ='';
+            $argroot = "$pack.$miname.objs.$oiname.c";
+            # $argroot =~ s$/$_or_$g;
+            print "$argroot := [=];\n";
+            $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
+            print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
+         #if($opt_outline == 1){
+           #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         #}
+         undef @methodsid{$oname};
+         undef @constructorsid{$oname};
+         undef @constructors{$oname};
+         undef @methods{$oname};
+      }
+      if(/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/){
+         $oname = $1;
+         $needsSynopsis = 0;
+         $terminateObject = 0;
+         $objs{$1} = $2;
+         push @objsid, $1;
+         $isObj = 1;
+         $wlabel = "\\subsubsection";
+         $has_methods = 0;
+         $iname = $1;
+         $dum = $2;
+         $iname =~ s/\\_/_/g;
+         $oiname = $iname;
+         $psfile = "../$oiname-Tool.ps.gz";
+         if($opt_glish == 1){
+            $oiname =~ s$/$_or_$g;
+            print "$pack.$miname.objs.$oiname := [=];\n";
+            print "$pack.$miname.objs.$oiname.m := [=];\n";
+            $argroot ='';
+            $argroot = "$pack.$miname.objs.$oiname.c";
+            #$argroot =~ s$/$_or_$g;
+            print "$argroot := [=];\n";
+            $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
+            print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
+         #if($opt_outline == 1){
+           #print "\\>\\>\\htmlref{$oname}{$mname:$oname}\\\\\n";
+         #}
+         undef @methodsid{$oname};
+         undef @constructorsid{$oname};
+         undef @constructors{$oname};
+         undef @methods{$oname};
+      }
+      if(/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/){
+         $args = "";
+         $needsSynopsis = 1;
+         $constructors{$oname}{$1} = $2;
+         push @{$constructorsid{$oname}}, $1;
+         # print "Adding ", $1, @{$methodsid{$oname}}, "\n";
+         $wlabel = "\\paragraph";
+         $fname = $1;
+         $iname = $1;
+         $dum = $2;
+         $iname =~ s/\\_/_/g;
+         $argroot ='';
+         $argroot = "$pack.$mname.objs.$oname.c.$iname";
+         if($opt_glish == 1){
+            $argroot = "$pack.$miname.objs.$oiname.c.$iname";
+            print "$pack.$miname.objs.$oiname.c.$iname := [=];\n";
+            $dum =~ s/[\n\']/ /g;
+            $dum =~ s/\\aipspp/AIPS++/g;
+            print "$pack.$miname.objs.$oiname.c.$iname.d := '$dum';\n";}
+         #if($opt_outline == 1){
+           #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.constructor}\\\\\n";
+         #}
+      }
+      $recIndent = "";
+      if(/\\begin{ahrecord}/){
+         $recIndent = "\\hspace{0.25in}";
+      }
+      if(/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/){
+         $needsSynopsis = 1;
+         $args = "";
+         $fname = $1;
+         $iname = $1;
+         $dum = $2;
+         $iname =~ s/\\_/_/g;
+         $argroot ='';
+         if($isObj == 1){
+            $has_methods = 1;
+            $methods{$oname}{$fname} = $dum;
+            push @{$methodsid{$oname}}, $fname;
+            # print "Adding ", $fname, @{$methodsid{$oname}},"\n";
+            $wlabel = "\\paragraph";
+            $argroot = "$pack.$mname.objs.$oname.m.$iname";
+            if($opt_glish == 1){
+               $argroot = "$pack.$miname.objs.$oiname.m.$iname";
+               print "$argroot := [=];\n";
+               $dum =~ s/[\n\']/ /g;
+               $dum =~ s/\\aipspp/AIPS++/g;
+               print "$argroot.d := '$dum';\n"; }
+             #if($opt_outline == 1){
+                #print "\\>\\>\\>\\htmlref{$fname}{$mname:$oname.$fname.function}\\\\\n";
+             #}
+         }else{
+            push @funcsid, $fname;
+            $funcs{$fname} = $dum;
+            $wlabel = "\\subsubsection";
+            $argroot = "$pack.$mname.funs.$iname";
+            if($opt_glish == 1){
+               $argroot = "$pack.$miname.funs.$iname";
+               print "$argroot := [=];\n";
+               print "$argroot.a := [=];\n";
+               $dum =~ s/[\n\']/ /g;
+               $dum =~ s/\\aipspp/AIPS++/g;
+               print "$argroot.d := '$dum';\n";}
+             #if($opt_outline == 1){
+                #print "\\>\\>\\htmlref{$fname}{$mname:$fname.function}\\\\\n";
+             #}
+         }
+      } 
+   
+     # Build an argument list from addarg, used for synopsis
+   
+     $hasArgs = 0;
+     $dtext = ".*[\s]*.*";
+
+      # Changed dtext to mtext in the hopes everything will appear in the
+      # synopsis now
+
+     while(/\\ahaddarg[^\{]*{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/mg){
+       $args .= ($1.", ");
+       $hasArgs = 1;
+       if($opt_glish == 1 && length $argroot){
+          $glish_arg = $1;
+          # Need to strip away any blanks
+          if(!(length $glish_arg)){
+             $glish_arg = "noname";
+          }
+          $desc = $2;
+          $def = $3;
+          $dum = $4;
+          $glish_arg =~ s/\\_/_/g;
+          $glish_arg =~ s/\.\.\./dots/g;
+          $glish_arg =~ s/\\ldots/dots/g;
+          $glish_arg =~ s/\./dot/g;
+          $glish_arg =~ s/ /_/g;
+          $glish_arg =~ s/\$\<//g;
+          $glish_arg =~ s/\>\$//g;
+          $glish_arg =~ s/\\it//g;
+          $glish_arg =~ s/\\rm//g;
+          $glish_arg =~ s$/$$g;
+          $desc =~ s/[\n]/ /g;
+          $desc =~ s/[\']/\\\' /g;
+          $desc=~ s/\\aipspp/AIPS++/g;
+          print "$argroot.a.$glish_arg := [=];\n";
+          print "$argroot.a.$glish_arg.d := '$desc';\n";
+          $def =~ s/[\n]/ /g;
+          $def =~ s/[\']/\\\' /g;
+          $def =~ s/\\aipspp/AIPS++/g;
+          print "$argroot.a.$glish_arg.def := '$def';\n";
+          $dum =~ s/[\n]/ /g;
+          $dum =~ s/[\']/\\\' /g;
+          $dum =~ s/\\aipspp/AIPS++/g;
+          print "$argroot.a.$glish_arg.a := '$dum';\n";
+       }
+     }
+     if($hasArgs == 1){
+        $args =~ s/, $//g;
+     }
+     if($opt_glish == 1 && length $argroot && $needsSynopsis == 1){
+        $glish_args = $args;
+        $glish_args =~ s/\\_/_/g;
+        $glish_args =~ s/\\aipspp/AIPS++/g;
+        print "$argroot.s := '$iname($glish_args)';\n";
+     }
+
+   
+   # substitutions go here
+   #  labels must use iname's otherwise things get confused
+
+      s/\\end{ahfunction}/$end_section/g;
+   
+      if($isObj == 1){
+         s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
+   \\subsubsection{$oname.$1 - Function\\label{$miname:$oiname.$iname.function}\\index{$mname.$oname.$1}\\index{$1}}
+   \\subsectionM{$oname.$1}{$pack}{$mname}{$oname}
+   $2\\\\
+   \\ahsynopsis{$1}
+   /sg;
+      } else {
+         s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
+   \\subsection{$1 - Function\\label{$miname:$iname.function}\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionF{$1}{$pack}{$mname}
+   $2\\\\
+   \\ahsynopsis{$1}
+   /sg;
+      } 
+
+      if(/\\end{ahobject}/ || /\\end{ahtool}/|| /\\end{ahmodule}/){
+         $isObj = 0;
+      }
+      s/\\end{ahobject}/$end_section/g;
+      s/\\end{ahtool}/$end_section/g;
+   
+    $changelogfile = "../../../docs/project/releasenotes/changelogs/changelog_Tool_$iname.html";
+    if(-e $changelogfile){
+      s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\htmladdnormallink{Changelog of current development cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_$iname.html}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   
+      s/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\htmladdnormallink{Changelog of current development cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_$iname.html}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   } else {
+      s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   
+      s/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   }
+   
+      s/\\end{ahconstructor}/$end_section/g;
+      s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
+   \\subsubsection{$1 - Constructor\\label{$miname:$oiname.$iname.constructor}\\index{$1}\\index{$mname.$1}}
+   \\subsectionC{$1}{$pack}{$mname}{$oname}
+   $2\\\\
+   \\ahsynopsis{$1}
+   /g;
+  
+     s/\\end{ahmodule}/$end_section
+   \\newpage/g;
+   
+      my $dir = cwd() . '/' . $file;
+      $dir =~ s|/+|/|g;
+      my @dirs = split (/\//, $dir);
+      if ($#dirs > 2) {
+	$dir = $dirs[$#dirs - 3];     #get package
+      }
+      my $name = $dirs[$#dirs];       #get tool name (is .help file)
+      $name =~ s|\.[^.]+$||;          #remove extension
+
+     s/\\begin{ahmodule}\s*{($mtext)}\s*{($mtext)}/
+   \\section{$1 - Module \\label{$iname}\\index{$1}}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\/g;
+   
+     s/\\ahinclude{($mtext)}/include \"$1\"/g;
+   
+     s/\\ahcategory{($mtext)}//g;
+     s/\\end{ahdescription}//g;
+     s/\\begin{ahdescription}/$tbflabel {Description}\\newline/g;
+     s/\\end{ahrecord}/\\hline
+     \\end{longtable}/g;
+     s/\\begin{ahrecord}{($mtext)}{($mtext)}/
+       \\begin{longtable}{ll}
+       \\hline
+       $1 - Record & $2\\\\/g;
+
+     s/\\end{ahdata}/\\end{longtable}/g;
+     s/\\begin{ahdata}/
+     $tbflabel {Attributes} - Public Data\\\\ 
+     \\begin{longtable}{|p{1.5in}p{4.0in}|}
+     \\hline
+     ID & Description \\\\
+     \\hline
+     \\endhead
+     \\hline
+     \\endfoot/g;
+     s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{}\s*{}/
+       $recname$1 \& $2\\\\/g;
+     s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
+       $recname$1 \& $2\\\\
+          \& Default: $3\\\\/g;
+     s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
+          $recname$1 \& $2\\\\
+          \& Allowed: $3\\\\/g;
+     s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
+       $recname$1 \& $2\\\\
+          \& Allowed: $4\\\\
+          \& Default: $3\\\\/g;
+
+     s/\\end{ahaipsrc}/\\end{tabular}/g;
+   
+     s/\\begin{ahaipsrc}/$tbflabel {Aipsrc Variables} \\\\ 
+   \\hfill \\\\
+   \\starthelptab
+   \\hline/g;
+   
+#
+     s/\\end{ahargs}/\\end{tabular}/g;
+   
+     s/\\begin{ahargs}/$tbflabel {Arguments}\\\\
+   \\hfill \\\\
+   \\starthelptab
+   \\hline/g;
+
+     s/\\end{ahargslong}/\\end{longtable}/g;
+  
+     s/\\begin{ahargslong}/$tbflabel {Arguments}\\\\
+   \\hfill \\\\
+   \\begin{longtable}{|p{1in}p{0.25in}p{0.39in}p{2.79in}|}
+   \\hline/g;
+   
+     s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{\s*}\s*{\s*}/
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\ \\hline/g;
+
+     s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+      \& \& Allowed: \& $3\\\\ \\hline/g;
+   
+     s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+   \& \& Default: \& $3 \\\\ \\hline/g;
+   
+     s/\\ahaddarg{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
+   $1 \& \& \\multicolumn{2}{p{3.36in}|}{$2}\\\\
+   \& \& Allowed: \& $4\\\\
+   \& \& Default: \& $3  \\\\ \\hline/g;
+   
+# input/output option   
+    foreach $inout ("in", "out", "inout", ""){
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{\s*}\s*{\s*}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\ \\hline/g;
+
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+      \& \& Allowed: \& $4\\\\ \\hline/g;
+   
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+   \& \& Default: \& $4 \\\\ \\hline/g;
+   
+     s/\\ahaddarg\[($inout)\]{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
+   $2 \& $inout \& \\multicolumn{2}{p{3.36in}|}{$3}\\\\
+   \& \& Allowed: \& $5\\\\
+   \& \& Default: \& $4  \\\\ \\hline/g;
+   }
+   
+     s/\\ahsynopsis{($mtext)}/$tbflabel {Synopsis}\\newline
+   $1($args)/g;
+
+     s/\\ahreturns{($mtext)}/$tbflabel {Returns}\\newline
+   $1\\\\/g;
+   
+     s/\\end{ahexample}//g;
+     s/\\begin{ahexample}/$tbflabel {Example}\\newline/g;
+     s/\\end{ahseealso}//g;
+     s/\\begin{ahseealso}/$tbflabel {See Also}\\newline/g;
+     s/\\ahkeyword{($mtext)}\s*{($mtext)}/\\index{$1}\\index{$mname.$1}/g;
+     s/\\ahkeyword{($mtext)}\s*{}/\\index{$1}\\index{$mname:$1}/g;
+     s/\\ahkeyword{($mtext)}/\\index{$1}\\index{$mname:$1}/g;
+     while(/\\ahlink{($mtext)}\s*{($mtext)}/){
+        $thelabel = $2;
+        if(($thelabel =~ m/function$/) || ($thelabel =~ m/constructor$/)){
+           s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
+        } else {
+           if( $thelabel =~ m/[:\.]/){
+              @lfields = split(/[:\.]/, $thelabel);
+              $nfields = @lfields;
+              if($nfields > 2){
+                 if( $lfields[$nfields-2] eq $lfields[$nfields-1] ){
+                    s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.constructor}/;
+                 } else {
+                    s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2.function}/;
+                 }
+              } else {
+                 s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
+              }
+           } else {
+              s/\\ahlink{($mtext)}\s*{($mtext)}/\\htmlref{$1}{$2}/;
+           }
+        }
+     }
+     s/\\end{ahcomments}//g;
+     s/\\begin{ahcomments}//g;
+
+     $firstPass .= $_;
+   }
+
+   return;
+}

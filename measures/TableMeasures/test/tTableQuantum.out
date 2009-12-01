@@ -1,0 +1,162 @@
+Begin tTableQuantum.cc.
+Adding column descriptors to the table...
+[MHz, GHz]
+[kHz, MHz]
+Testing TableQuantumDesc constructor exceptions...
+A no such column message should follow
+TableQuantum::checkColumn; No such column: SillyName
+A no such unit's column message should follow
+TableQuantum::checkUnitsColumn; No such column: SillyName
+A message about an incorrect variable unit's type...
+TableQuantum::checkUnitsColumn; Type of column should be String: testvarcolumn
+Column's name is: ScaQuantDouble
+Column's name is: ScaQuantComplex
+Creating a null ScaQuantumCol()
+Check if isNull and then throwIfNull
+Catch an AipsError. Column is null...
+Invalid Table operation: Quantum table column is null
+Object says it is null...attach a column
+No longer null...good
+Column's quantum units are: deg
+Quantum 0: 0 deg
+Quantum 1: 178.763 deg
+Quantum 2: 357.526 deg
+Quantum 3: 536.288 deg
+Quantum 4: 715.051 deg
+Quantum arcmin 0: 0 arcmin
+Quantum arcmin 1: 10725.8 arcmin
+Quantum arcmin 2: 21451.5 arcmin
+Quantum arcmin 3: 32177.3 arcmin
+Quantum arcmin 4: 42903.1 arcmin
+Quantum arcsec 0: 0 arcsec
+Quantum arcsec 1: 643546 arcsec
+Quantum arcsec 2: 1.28709e+06 arcsec
+Quantum arcsec 3: 1.93064e+06 arcsec
+Quantum arcsec 4: 2.57418e+06 arcsec
+Quantum arcmin 0: 0 arcmin
+Quantum arcmin 1: 10725.8 arcmin
+Quantum arcmin 2: 21451.5 arcmin
+Quantum arcmin 3: 32177.3 arcmin
+Quantum arcmin 4: 42903.1 arcmin
+The units for ScaQuantComplex are variable.
+getUnits() should produce an empty string: 
+(0.0698132,0.00366519) m/s.m-1.s.rad
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 0: (4,0.21) deg
+Complex quantum (var unit) 1: (960000,50400) ms
+Complex quantum (var unit) 2: (960000,50400) g.kg-1.s
+Complex quantum (var unit) 3: (9.6e+28,5.04e+27) Jy.kg-1.s3
+Complex quantum (var unit) 4: (9.6e-07,5.04e-08) GHz.s2
+Complex quantum (var unit) 0: (0.0698132,0.00366519) m/s.m-1.s.rad
+Complex quantum (var unit) 1: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 2: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 3: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 4: (960,50.4) m/s.m-1.s2
+
+Finished test of Quantum scalar column...........
+
+Start test of Quantum array column...........
+Catch an AipsError. Array column is null...
+Invalid Table operation: Quantum table column is null
+Exception should report not a quantum column...
+TableQuantum::reconstruct; Not a Quantum column: BogusQuantCol
+Array Quantum Column is initially null.
+Array quantum column: units are variable.
+The following line should be a Table array conformance error exception.
+ArrayQuantColumn::get: Table array conformance error
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212 GHz, 1.4003 Hz
+ 1.4921 MHz, 1.22 GHz
+ 1.4111 kHz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212 GHz, 1.4003 Hz
+ 1.4921 MHz, 1.22 GHz
+ 1.4111 kHz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 0.0014003 kHz
+ 1492.1 kHz, 1.22e+06 kHz
+ 1.4111 kHz, 0.00109091 kHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1.22e+06 kHz
+ 1.4111 kHz, 1.09091e-06 MHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+06 kHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1.22e+06 kHz
+ 1.4111 kHz, 1.09091e-06 MHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Array quantum column: units are variable.
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212 GHz, 1.4003e-09 GHz
+ 0.0014921 GHz, 1.22 GHz
+ 1.4111e-06 GHz, 1.09091e-09 GHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212 kHz, 0.0014003 kHz
+ 1492.1 kHz, 1.22e+06 kHz
+ 1.4111 kHz, 0.00109091 kHz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1412.12 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212e+09 Hz, 1.4003 Hz
+ 1.4921e+06 Hz, 1.22e+09 Hz
+ 1411.1 Hz, 1.09091 Hz]
+[MHz]
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[0.00141212 MHz, 1.4003e-06 MHz
+ 1.4921 MHz, 1220 MHz
+ 0.0014111 MHz, 1.09091e-06 MHz]
+
+[MHz, GHz]
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[0.00141212 MHz, 1.4003e-09 GHz
+ 0.0014921 GHz, 1220 MHz
+ 0.0014111 MHz, 1.09091e-09 GHz]
+
+Column's quantum units are: deg
+Quantum 0: 0 deg
+Quantum 1: 178.763 deg
+Quantum 2: 357.526 deg
+Quantum 3: 536.288 deg
+Quantum 4: 715.051 deg
+>>>
+put tq var arrays       2.04 real        1.18 user        0.77 system
+put tq fix arrays       0.98 real        0.62 user        0.33 system
+put tab    arrays       0.28 real        0.16 user        0.11 system
+get tq var arrays       5.96 real        2.46 user        3.21 system
+get tq fix arrays       1.88 real        0.37 user         1.4 system
+get tab    arrays        1.6 real         0.2 user        1.36 system
+<<<
+
+Execution of tTableQuantum.cc ended normally.

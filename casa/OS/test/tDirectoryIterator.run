@@ -1,0 +1,30 @@
+#! /bin/sh
+#-----------------------------------------------------------------------------
+# Script to execute the tDirectoryIterator program via assay.
+# It defines a few files, etc. to make the program work in any environment.
+# Execution:
+#     tDirectoryIterator.run     execute using assay (normal procedure)
+#     tDirectoryIterator.run 0   only define the subdirectory, etc. (to debug)
+#     tDirectoryIterator.run 1   execute as such (to test)
+#     tDirectoryIterator.run 1 1 execute without exceptions (to test leakage)
+#=============================================================================
+
+/bin/rm -rf tDirectoryIterator_tmp
+mkdir tDirectoryIterator_tmp
+
+touch tDirectoryIterator_tmp/a
+touch tDirectoryIterator_tmp/b
+touch tDirectoryIterator_tmp/c
+touch tDirectoryIterator_tmp/c1
+touch tDirectoryIterator_tmp/ca
+touch tDirectoryIterator_tmp/ca.cc
+
+if [ $# != 0 ]
+then
+    if [ $1 != 0 ]
+    then
+        ./tDirectoryIterator $2
+    fi
+else
+    ./tDirectoryIterator
+fi

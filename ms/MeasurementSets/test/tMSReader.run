@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ ${#AIPSPATH} = 0 ]
+then 
+   echo "UNTESTED: tMSReader (AIPSPATH not defined)"
+   exit 3
+fi
+
+DATAFILE=`echo $AIPSPATH | awk '{print $1}'`/data/demo/dishdemo/dishdemo1.fits
+
+if [ -f $DATAFILE ]
+then
+   ./sdfits2ms $DATAFILE tMSReader_tmp.ms
+   if [ -d tMSReader_tmp.ms ]
+   then
+      ./tMSReader tMSReader_tmp.ms
+   else
+      echo "FAIL: tMSReader, could not create tMSReader.ms from" $DATAFILE
+      exit 3
+   fi
+else
+   echo "UNTESTED: tMSReader, could not find the test data" $DATAFILE
+   exit 3
+fi

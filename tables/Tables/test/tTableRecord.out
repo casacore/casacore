@@ -1,0 +1,21 @@
+Record field  cannot be added: length<1
+Record field aB cannot be added: no uppercase
+Record field A cannot be added: extra==10
+TableRecordRep::defineDataField - incorrect data type used for field TpShort
+ArrayBase::validateConformance
+ArrayBase::validateConformance
+ArrayBase::validateConformance
+ArrayBase::validateConformance
+Record::define - fixed array conformance error for field TpArrayString2
+Record::define - fixed array conformance error for field TpBool
+Record cannot be changed (fixed structure)
+>>> Instance-specific assertion error message:
+(/aips++/code/aips/implement/Tables/TableRecord.cc : 121) Failed AlwaysAssertExit conform (other)
+<<<
+TableRecordRep::get_pointer - field SubRecord is not of type TableRecord
+>>> Instance-specific assertion error message:
+(/aips++/code/aips/implement/Tables/TableRecord.cc : 121) Failed AlwaysAssertExit conform (other)
+<<<
+TableKeyword::operator=; non-conforming table
+TableRecordRep::get_pointer - incorrect data type used for field tab1
+OK

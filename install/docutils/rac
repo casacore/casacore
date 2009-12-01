@@ -1,0 +1,129 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# rac: Add entry to changelog
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 2000
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: rac
+#-----------------------------------------------------------------------------
+# rac add an entry to the changelog of an application or library module.
+#
+# 'rac' first checks out the changelog and CHANGELOG.LAST* files.
+# It starts a glish script to let the user fill in a change entry,
+# which also increases the lastid in CHANGELOG.LASTID and adds the
+# entry to the changelog file.
+# Finally the files are checked into the system.
+#
+# In case of errors the files are unlocked.
+#
+# Status returns:
+#    0:  success
+#    1:  initialization error
+#    2:  checkout failure
+#    3:  checkin failure
+#    4:  no changes made
+#
+# Notes:
+#    flag -i indicates that the files only need to be checked in.
+#    This should hardly ever be needed. Only if the checkin part
+#    cannot be done (e.g. because exhale started) it needs to be used
+#    once checkins are possible again.
+#
+# Original: 2000/04/03 by Ger van Diepen, NFRA
+# $Id$
+#=============================================================================
+
+# Determine the code directory (for CHANGELOG.LAST*).
+a_code=`pwd | sed -e '{s#/code/.*#/code#;}'`
+
+# Ignore most if only a checkin needs to be done.
+if [ "$1" != "-i" ]
+then
+    
+    # A GUI is needed for the glish script.
+    if [ "$DISPLAY" = "" ]
+	then
+	echo "rac: DISPLAY is not set, abort!" 1>&2
+	exit 1
+    fi
+
+    # Check out and lock the required files.
+    # Start with checking out CHANGELOG.LASTID, because that file has
+    # the highest chance of being locked.
+    # Exit if checking out fails.
+    echo 'rac: Checking out changelog and CHANGELOG.LAST* ...'
+    a_pwd=`pwd`
+    cd $a_code
+    rao -l CHANGELOG.LASTID CHANGELOG.LAST
+    if [ "$?" != 0 ]
+    then
+	exit 2;
+    fi
+    cd $a_pwd
+    rao -l changelog
+    if [ "$?" != 0 ]
+    then
+	cd $a_code
+	rao -u CHANGELOG.LASTID CHANGELOG.LAST
+	\rm -f CHANGELOG.LAST*
+	exit 2;
+    fi
+
+    # Let the user fill in a changelog form and append it to the changelog.
+    # If no changes found, unlock the files.
+    echo 'rac: Starting glish ...'
+    cp changelog changelog.old
+    glish addchange.g
+    diff changelog changelog.old > /dev/null
+    if [ "$?" = 0 ]
+    then
+	echo "rac: No entry added to changelog; files will be unlocked";
+        chmod 444 changelog
+	rao -u changelog
+	\rm -f changelog changelog.old
+	cd $a_code
+	chmod 444 CHANGELOG.LASTID CHANGELOG.LAST
+	rao -u CHANGELOG.LASTID CHANGELOG.LAST
+	\rm -f CHANGELOG.LAST*
+	exit 4;
+    fi
+fi
+
+# Check in the changed files.
+# Set mode correctly (needed in case of -i because the previous rai
+# might have set the mode to 444.
+\rm -f changelog.old
+echo 'rac: Checking in new changelog and CHANGELOG.LAST* ...'
+a_id=`cat $a_code/CHANGELOG.LASTID`
+chmod 644 changelog
+echo "rac: added change-id $a_id" | rai changelog
+cd $a_code
+chmod 644 CHANGELOG.LASTID CHANGELOG.LAST
+echo "rac: set to change-id $a_id" | rai CHANGELOG.LASTID CHANGELOG.LAST
+
+
+exit 0

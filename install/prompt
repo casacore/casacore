@@ -1,0 +1,96 @@
+#!/bin/echo Usage: source
+#-----------------------------------------------------------------------------
+# prompt: .prompt file to set window frame labels for C-like shells
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1992-1994,1996,1997
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# Usage: source .prompt
+#-----------------------------------------------------------------------------
+# Sends an escape sequence to identify the current working directory in the
+# window label.
+#
+# Recognizes 'xterm' windows, and Sun 'cmdtool' and 'shelltool' windows.  For
+# other windows it sets the subprocess level in the "prompt" shell variable.
+#
+# Some versions of 'csh' strip escape sequences from the prompt variable as
+# the prompt is printed; Solaris 5.2 is an example.  In this case, the
+# "noAutoWinLabel" shell variable may be set to cause the window label to be
+# updated whenever this script is invoked.  This behaves correctly most of the
+# time, the one exception being that the label is not updated after logging
+# out of a remote session.
+#
+# Original: 1992/05/01 by Mark Calabretta, ATNF.
+# $Id$
+#=============================================================================
+# Applicable only to interactive shells.
+  if ($?term) then
+#    Set the subprocess level.
+     if (! $?prlvl) then
+        if (! $?PRLVL) setenv PRLVL 0
+        @ prlvl=$PRLVL
+        @ prlvl++
+        setenv PRLVL $prlvl
+     endif
+
+#    Encode an escape sequence in "prompt" to change the window label.
+     set aipspath
+     if ($?AIPSPATH) then
+        set aipspath = "$AIPSPATH"
+     endif
+     if ("$term" == xterm) then
+        set idpl = "]2;$prlvl  $aipspath  $cwd"
+     else if ("$term" == sun-cmd) then
+        set idpl = "]l$prlvl  $aipspath  $cwd\"
+     else if ("$term" == sun && "`tty`" != /dev/console) then
+        set idpl = "]l$prlvl  $aipspath  $cwd\"
+     endif
+     unset aipspath
+
+     if ($?idpl) then
+        if ($?noAutoWinLabel) then
+#          The prompt string is unbolded to distinguish this mode.
+           echo -n "$idpl"
+           set prompt = "$host-\!% "
+        else
+           if ($?tcsh) then
+              set prompt = "%{$idpl[1m%}$host-\!%%%{[m%} "
+           else
+              set prompt = "$idpl[1m$host-\!%[m "
+           endif
+        endif
+     else
+#       No window label.
+        set idpl = `echo $cwd | sed -e 's#.*/\([^/]*/[^/]*\)#\1#'`
+        if ($?tcsh) then
+           set prompt = "%{[1m%}$user@$host ${idpl}:\!%%%{[m%} "
+        else
+           set prompt = "[1m$user@$host ${idpl}:\!%[m "
+        endif
+     endif
+
+     unset idpl
+  endif

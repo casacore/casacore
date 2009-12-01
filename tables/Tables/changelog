@@ -1,0 +1,500 @@
+
+<change id=0004>
+ <author> Ger van Diepen </author>
+ <date> 2000/05/22 </date>
+ <avers> 1.4 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added the new storage manager StandardStMan
+ </summary>
+ <description>
+The new storage manager StandardStMan has been added to the Table System.
+It is meant as a replacement for StManAipsIO, although the latter can
+still be used (and will be used when needed for existing tables).
+<br>StandardStMan is now the default storage manager.
+It adresses the drawbacks of StManAipsIO:
+<br>- StandardStMan is much more robust.
+<br>- StandardStMan is file bucket based, so uses little memory.
+<br>- When tables are shared amongst processes, StandardStMan is much faster. For non-shared tables it is only slightly slower.
+ </description>
+</change>
+
+<change id=0065>
+ <author> Ger van Diepen </author>
+ <date> 2001/01/09 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Large files are supported
+ </summary>
+ <description>
+The support for large files (files >= 2 Gb) has been added.
+All file offsets are now 64 bits, although they are written as 32
+bits if they are small enough. In that way older software can
+still access newer tables.
+The compile flag -DAIPS_LARGEFILE has to be added to the site makedefs
+to effectively use large files.
+Note that on Linux systems large files are usually not supported,
+although all 64 bit functions seem to be present in the libc library.
+ </description>
+</change>
+
+<change id=0071>
+ <author> Ger van Diepen </author>
+ <date> 2001/01/24 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Remove multiple columns and better table information
+ </summary>
+ <description>
+The table system has been extended.
+
+1. It is now possible to remove multiple columns. If all columns of a
+   data manager are removed, the entire data manager (and the files it
+   uses) are removed.
+   So the main advantage of removing multiple columns is that it makes it
+   possible to remove an entire data manager. Before it was not possible
+   to remove a column from a tiled stman.
+
+2. The function actualTableDesc() gives the description of the table
+   as it is setup. Thus it gives the actual shapes and data managers
+   and not the ones used when setting up the table description.
+   In case of a reference table only the columns in that table are given.
+
+3. The function dataManagerInfo gives information about the data managers
+   used (type and name) and the columns served by those data managers.
+   The information is returned in a Record.
+   In case of a reference table only the columns in that table are given.
+ </description>
+</change>
+
+<change id=0074>
+ <author> Ger van Diepen </author>
+ <date> 2001/02/14 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Support for access to arrays in arbitrary files
+ </summary>
+ <description>
+The class TiledFileAccess is created. It gives access to data arrays
+in any file on any offset. The data can be in canonical or in local
+format.
+Using this class it is possible to access, for example, the primary
+array in a FITS image as if it is normal AIPS++ data.
+ </description>
+</change>
+
+<change id=0077>
+ <author> Ger van Diepen </author>
+ <date> 2001/02/28 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Added functionality to TaQL
+ </summary>
+ <description>
+TaQL has been extended as follows:
+1. Function ROWID has been added to make it possible to return the result of    a query on a subtable where the row number is the key
+   (.e.g DATA_DESCRIPTION).
+2. The righthand side of operator IN can be a scalar. This makes it much
+   easier to paste the value in glish (i.e. no special case if needed
+   on 1 or more values in a glish variable).
+3. TaQL failed to recognize e.g. 10011387.MS as a table name.
+   This has been fixed.
+4. Boolean constants T and F have been added.
+
+Note 199 has been updated accordingly.
+ </description>
+</change>
+
+<change id=0084>
+ <author> Ger van Diepen </author>
+ <date> 2001/03/15 </date>
+ <avers> 1.5 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code Test </type>
+ <category> New Change </category>
+ <defects>  </defects>
+ <summary>
+Added new TaQL functions
+ </summary>
+ <description>
+The following functions have been added to TaQL:
+1. sumsquare (alias sumsqr) gives the sum of the square of all
+   elements in an array.
+2. fractile gives the fractile at the given fraction in an array.
+   A fraction of 0.5 is the same as the median.
+3. iif acts as the ternary ?: operator in C++.
+   It can be used as:  iif (condition, arg1, arg2)
+   If the condition is true, the element from arg1 is taken, otherwise
+   from arg2.
+
+All TaQL functions (except pattern and regex) can operate on scalars
+and arrays. If a function can have multiple arguments, any mix of
+scalars and arrays can be used.
+
+Function square got the alias sqr.
+
+Finally a test program tExprNode has been created which tests all
+possible operators and functions in virtually all possible combinations
+of scalars, arrays, and data types.
+It revealed a little bug.
+ </description>
+</change>
+
+<change id=0101>
+ <author> Ger van Diepen </author>
+ <date> 2001/07/04 </date>
+ <avers> 1.6 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added ability to create a table from an existing table setup
+ </summary>
+ <description>
+In preparation of a deepCopy function in the Table system the ability
+has been added to construct a Table using the same data managers with
+the same specifictions as an existing table.
+For this purpose Table::dataManagerInfo has been extended to let the
+data managers fill in their specifications in the record.
+SetupNewTable got a new function bindCreate to bind the columns of the
+table to create to data managers using the dataManagerInfo.
+So it can look like:
+	Table tab("tab.old");
+	SetupNewTable newtab("tab.new", tab.tableDesc(), Table::New);
+	newtab.bindCreate (tab.dataManagerInfo());
+	Table ntab (newtab, tab.nrow());
+ </description>
+</change>
+
+<change id=0102>
+ <author> Ger van Diepen </author>
+ <date> 2001/07/11 </date>
+ <avers> 1.6 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+deep copy of a reference table
+ </summary>
+ <description>
+It is now possible to make a deep copy of a table.
+For a normal table it is the same as a normal copy (thus the files
+are copied).
+For a reference table all selected data is retrieved and copied to a
+newly created table. The table is created using the characteristics
+of the original table (thus with the same storage managers; only
+TiledDataStMan is replaced by TiledShapeStMan).
+All keywords, info, and subtables are also copied.
+
+A class TableCopy is created to do the actual work.
+This class can also be used to have finer control over the copy process.
+ </description>
+</change>
+
+<change id=0127>
+ <author> Ger van Diepen </author>
+ <date> 2002/08/13 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Little endian canonical format supported
+ </summary>
+ <description>
+Until now all table data was stored in big endian canonical format.
+Because PC's are used more and more, support of little endian canonical format has been added.
+Table constructors now have an extra argument telling if data have to be stored in big or little endian format. The default is to use the value of the aipsrc variable table.endianformat which in its turn defaults to big endian (in the next release it will be changed to local endian).
+
+Tables stored in little endian format have a few extra fields stored, so they cannot be accessed by older versions of AIPS++..On the other hand tables in big endian format have exactly the same format as before, so they can still be read by older versions.
+ </description>
+</change>
+
+<change id=0134>
+ <author> Ger van Diepen </author>
+ <date> 2003/03/13 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added memory based storage manager
+ </summary>
+ <description>
+MemoryStMan has been added as a new storage manager. It keeps the data of the columns bound to it in memory. It means that such data are not persistent.
+See the documentation of the Tables module (Tables.html) for more information.
+ </description>
+</change>
+
+<change id=0139>
+ <author> Ger van Diepen </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added possibility of a table in memory
+ </summary>
+ <description>
+Recently the MemoryStMan storage manager has been added. It is a storage manager holding its data in memory. It is meant for temporary columns, where care has to be taken that the amount of data does not get too large.
+It can be used as any other storage manager with the difference that its data are not persistent. When a table is reopened, the data of the MemoryStMan storage managers are initialized to 0.
+
+Based on this storage manager a table class has been made which holds its data entirely in memory. It can be created as any other table (thus using SetupNewTable). All its stored columns will be bound to MemoryStMan. Virtual columns will keep their virtual column engine (e.g. CompressComplex).
+See the documentation of the Tables module (Tables.html) for more information.
+ </description>
+</change>
+
+<change id=0140>
+ <author> Ger van Diepen </author>
+ <date> 2003/03/31 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Easier use of Tiled Storage Managers
+ </summary>
+ <description>
+Working with the tiled storage managers used to be somewhat difficult because of the need to have a hypercolumn definition in the table description. This constraint has been removed for all tiled storage managers with the exception of TiledDataStMan.
+If a tiled storage manager finds no hypercolumn definition, it will handle all columns bound to it as data columns. In this way the use of TiledShapeStMan, etc. is now as transparant as the use of StandardStMan.
+
+This change makes it very easy to add a column using a tiled storage manager to a table.
+ </description>
+</change>
+
+<change id=0146>
+ <author> Ger van Diepen </author>
+ <date> 2003/04/09 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects> 3930 </defects>
+ <summary>
+Improved compression for single dish data
+ </summary>
+ <description>
+The class CompressComplexSD has been developed to improve the compression of single dish data. Because in SD the imaginary part is usually 0, the algorithm used in CompressComplex gives bad results. CompressComplexSD fixes that problem.
+ </description>
+</change>
+
+<change id=0153>
+ <author> Ger van Diepen </author>
+ <date> 2003/05/21 </date>
+ <avers> 1.8 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added new functions to TaQL
+ </summary>
+ <description>
+Several new functions have been added to TaQL.
+
+ISNAN tests if a real or complex number is not-a-number.
+
+The functions reducing an array to a scalar (like MIN, SUM, ALL) now
+have a 'plural' counterpart (like MINS, SUMS, ALLS) which reduce an array to an array with a smaller dimensionality. These functions operate on all subsets of the array defined by the axes arguments.
+E.g.  for a 3-dim column 'array', the function MINS(array,1,3) returns
+a 1-dim array where each value is the MIN of the corresponding x-z plane in the cube.
+Class TableExprNode got similar functions.
+
+For ease of use it is now possible to omit square brackets for a set with a single element. Something like
+ col IN 1:=:5
+formerly had to be written as
+ col IN [1:=:5]
+
+See note 199 for a full description.
+ </description>
+</change>
+
+<change id=0155>
+ <author> Ger van Diepen </author>
+ <date> 2003/08/11 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Addition of UPDATE, INSERT, and DELETE command to TaQL
+ </summary>
+ <description>
+TaQL has been extended to make it more SQL-compliant.
+The following has been changed:
+- addition of the commands:
+  - UPDATE to update one or more columns for the selected rows.
+    It is also possible to update an array slice.
+  - INSERT to add and fill one or more rows to a table.
+  - DELETE to delete one or more rows from a table.
+- addition of the clauses:
+  - LIMIT to limit the number of rows selected.
+  - OFFSET to skip the first N rows selected.
+  Both clauses are most useful in combination with ORDERBY.
+  For example, to select the 10 highest values.
+- Apart from square brackets, parentheses can also be used as set
+  delimiters.
+
+Note 199 contains a more detailed description and some examples.
+ </description>
+</change>
+
+<change id=0165>
+ <author> Ger van Diepen </author>
+ <date> 2005/02/16 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added a virtual column engine for a TaQL expression
+ </summary>
+ <description>
+The virtual column engine VirtualTaQLColumn has been added to the Table System. It makes it possible to have a virtual column based on a TaQL CALC expression. The column can be a scalar or an array and can have any standard data type.
+For example:
+   tab.addColumn (ScalarColumnDesc<double>("MeanArrayCol"),
+                  VirtualTaQLColumn("mean(ArrayCol)"));
+
+As can be seen in the example the TaQL expression is passed to the constructor as a string. The expression can be as complex as one likes.
+Care has to be taken not to delete a column used in such an expression. The system is not robust enough (yet) to cope with that.
+ </description>
+</change>
+
+<change id=0167>
+ <author> Ger van Diepen </author>
+ <date> 2005/04/19 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added cone searching to TaQL
+ </summary>
+ <description>
+TaQL got an operator INCONE and a few new functions to make it possible to find sources contained in a cone.
+It is possible to do catalogue matching using these new functions.
+ </description>
+</change>
+
+<change id=0169>
+ <author> Ger van Diepen </author>
+ <date> 2005/05/19 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added class MappedArrayEngine
+ </summary>
+ <description>
+The class MappedArrayEngine has been added.
+It makes it possible to map the data type of a column to another data type.
+For instance, for accuracy it is sometimes needed to store the residual data in an MS as double precision. The imager can only read single precision data, so using this engine the column containing the residual data can be mapped to a virtual column with single precision data.
+ </description>
+</change>
+
+<change id=0170>
+ <author> Ger van Diepen </author>
+ <date> 2005/07/04 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Extended TaQL with select column expressions and create table
+ </summary>
+ <description>
+TaQL has been extended in two ways.
+1. It is now possible to specify an expression in the selection column list. If an expression is given, the resulting table is a plain table instead of a reference table. Optionally a data type can be given as well.
+2. The CREATE TABLE command has been added to create a new table with 0 or more columns. Optionally specific data manager info can be given.
+See note 199 for more info.
+ </description>
+</change>
+
+<change id=0171>
+ <author> Ger van Diepen </author>
+ <date> 2005/10/14 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Default endian format of table is now local
+ </summary>
+ <description>
+The default endian format of a table has been changed from big to local.
+It means that on big-endian machines (e.g. SUN) the default endian format of a table is big, while on a little endian machine (e.g. Intel) it is little.
+ </description>
+</change>

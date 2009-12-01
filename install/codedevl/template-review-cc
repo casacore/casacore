@@ -1,0 +1,116 @@
+$Id$
+
+Class reviewed:
+Reviewer(s):
+Date of review:
+
+The format here follows Paul Shannon's note 167: AIPS++ Programming:
+Standards and Guidelines.
+===========================================================================
+General comments
+----------------
+
+
+===========================================================================
+Code Organization
+-----------------
+
+*** Classes: header, implementation, test files present?
+
+*** Data types: only AIPS++ fundamental types used?
+
+*** Modules: necessary and present?
+
+*** Global Functions 
+
+*** Templates explicitly initiated?
+
+*** File Size not too large?
+
+*** Function Length not too large?
+
+===========================================================================
+Documentation and Naming
+------------------------
+
+*** Documentation in Header Files
+
+*** Documentation in Implementation Files
+
+*** Names for Classes, Functions and Variables
+
+*** Names for Files
+
+*** Format for Dates
+
+===========================================================================
+Coding
+------
+
+*** Forward Declarations, Use of Includes necessary?
+
+*** Protected Data Members necessary?
+
+*** Access to Private Data not allowed?
+
+*** Are All Virtual Functions Labelled Explicitly?
+
+*** Are Loose Ends Documented?
+
+*** Are Standard Class Member Functions present?
+
+*** Is The Order of Function Arguments correct?
+
+*** Are Formal Arguments and Default Parameters in declarations?
+
+*** Are Return Types specified?
+
+*** Is use of Exceptions correct, and documented with <thrown>
+
+*** Are constructors with one argument made explicit (or are explicitly
+    explained why they are to be used as automatic conversions)
+
+*** Are all functions that warrant it declared as const, and mutable used
+    correctly if necessary?
+
+*** Are ther no compiler warnings using the standard compiler (egcs at the
+    moment) and the other allowed compilers directly or indirectly (sgi-ntv at
+    the moment)
+
+*** private data members use either the '_p' or 'its' convention
+
+*** braces around multi-line compound statements. eg.,
+    if (condition) {
+      statement1;
+    } else {
+      statement2;
+    };
+
+*** is the use of templated arguments minimised by either the use of
+    'typename' (having class typedefs) or 'traits' (for standard types)
+
+*** are only the C++-style casts (x_cast<>) used, and no C-style casts
+
+*** is the use of '#if' limited to the include guard (and used there?), or
+    use discussed with QAG?
+
+===========================================================================
+Test programs
+-------------
+
+*** do test programs follow the standard rules of programs to be run
+    by assay? See the system manual, 'System verification'.
+  
+(The following three items can be found using purify and purecov,
+either at the author's or the reviewer's site) 
+
+*** test program coverage of class (should be at least 80%)
+
+*** Memory Leaks
+
+*** Memory Access Errors
+===========================================================================
+Other comments
+--------------
+
+===========================================================================

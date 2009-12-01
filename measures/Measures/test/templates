@@ -1,0 +1,30 @@
+1000 casa/Arrays/Array.cc 
+     = casa/Quanta/MVEpoch.h 
+     template class Array<MVEpoch> 
+1000 casa/Arrays/ArrayMath.cc casa/Quanta/Quantum.h 
+     template Array<Quantum<Double> > operator*(Quantum<Double> const &, Array<Quantum<Double> > const &) 
+     template Array<Quantum<Double> > operator-(Array<Quantum<Double> > const &) 
+     template void operator*=(Array<Quantum<Double> > &, Array<Quantum<Double> > const &) 
+1000 casa/Arrays/MaskedArray.cc 
+     = casa/Quanta/MVEpoch.h 
+     template class MaskedArray<MVEpoch> 
+1000 casa/Arrays/Vector.cc 
+     = casa/Quanta/MVEpoch.h 
+     template class Vector<MVEpoch> 
+1000 casa/Quanta/QLogical.cc casa/Arrays/Vector.h 
+     template Bool operator==(Quantum<Vector<Double> > const &, Quantum<Vector<Double> > const &) 
+     template Bool operator==(Quantum<Vector<Double> > const &, Vector<Double> const &) 
+1000 casa/Quanta/QMath.cc casa/Arrays/Vector.h 
+     = casa/BasicSL/Complex.h 
+     template Quantum<Vector<Double> > operator*(Vector<Double> const &, Quantum<Vector<Double> > const &) 
+     template Quantum<Complex> operator*(Complex const &, Quantum<Complex> const &) 
+     template Quantum<Complex> ceil(Quantum<Complex> const &) 
+     template Quantum<Complex> floor(Quantum<Complex> const &) 
+     template Quantum<Complex> abs(Quantum<Complex> const &) 
+1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = casa/Quanta/MVEpoch.h 
+     template class CountedConstPtr<Block<MVEpoch> > 
+     template class CountedPtr<Block<MVEpoch> > 
+     template class PtrRep<Block<MVEpoch> > 
+     template class SimpleCountedConstPtr<Block<MVEpoch> > 
+     template class SimpleCountedPtr<Block<MVEpoch> > 

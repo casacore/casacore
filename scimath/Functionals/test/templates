@@ -1,0 +1,132 @@
+1000 casa/Arrays/Array.cc 
+     template class Array<Array<Float> > 
+1000 casa/Arrays/ArrayLogical.cc 
+     template Bool anyLE(Array<Double> const &, Double const &) 
+1000 casa/Arrays/ArrayMath.cc 
+     = casa/BasicSL/Complex.h 
+     template Array<Complex> operator*(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Complex> operator*(Complex const &, Array<Complex> const &) 
+     template void indgen(Array<Complex> &) 
+     template void indgen(Array<Complex> &, Complex, Complex) 
+     template Array<Complex> operator+(Array<Complex> const &, Complex const &) 
+1010 casa/Arrays/ArrayMath.cc 
+     = casa/BasicSL/Complex.h 
+     template void indgen(Array<DComplex> &) 
+     template void indgen(Array<DComplex> &, DComplex, DComplex) 
+1000 casa/Arrays/MaskedArray.cc casa/Arrays/Array.h 
+     template class MaskedArray<Array<Float> > 
+# For tGaussian3D.cc
+1000 casa/Arrays/Vector.cc casa/Arrays/Array.h 
+     template class Vector<Array<Float> > 
+1000 casa/BasicMath/Functional.cc 
+     = casa/Arrays/Array.h 
+     = casa/BasicSL/Complex.h 
+     template class Functional<uInt, Array<Complex> > 
+1010 casa/BasicMath/Functional.cc 
+     = casa/Arrays/Array.h 
+     template class Functional<Float, Array<Float> > 
+     template class Functional<Float, Double> 
+     template class Functional<Int, Double> 
+     template class Functional<uInt, Int> 
+     = casa/BasicSL/Complex.h 
+     template class Functional<Double, DComplex> 
+     template class Functional<uInt, DComplex> 
+1020 casa/BasicMath/Functional.cc casa/Arrays/Array.h 
+     template class Functional<uInt, Array<Float> > 
+     template class Functional<uInt, Array<DComplex> > 
+1030 casa/BasicMath/Functional.cc casa/Arrays/Vector.h 
+     template class Functional<Vector<Float>, Double> 
+     template class Functional<Vector<Int>, Double> 
+     = casa/BasicSL/Complex.h 
+     template class Functional<Vector<Double>, DComplex> 
+     = casa/Arrays/Array.h 
+     template class Functional<Vector<Float>, Array<Float> > 
+1000 casa/Utilities/BinarySearch.cc casa/Containers/Block.h 
+     template Int binarySearchBrackets(Bool &, Block<Int> const &, Int const &, uInt, Int) 
+1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = casa/Arrays/Array.h 
+     template class CountedConstPtr<Block<Array<Float> > > 
+     template class CountedPtr<Block<Array<Float> > > 
+     template class PtrRep<Block<Array<Float> > > 
+     template class SimpleCountedConstPtr<Block<Array<Float> > > 
+     template class SimpleCountedPtr<Block<Array<Float> > > 
+1000 casa/Utilities/GenSort.cc casa/Arrays/Vector.h 
+     = casa/Containers/Block.h 
+     template uInt genSort(Vector<uInt> &, Block<Float> const &) 
+1000 scimath/Functionals/ArraySampledFunctional.cc 
+     = casa/Arrays/Array.h 
+     template class ArraySampledFunctional<Array<Complex> > 
+1010 scimath/Functionals/ArraySampledFunctional.cc 
+     = casa/Arrays/Array.h 
+     template class ArraySampledFunctional<Array<Double> > 
+     template class ArraySampledFunctional<Array<Float> > 
+1000 scimath/Functionals/Function.cc casa/Arrays/Array.h 
+     template class Function<Float, Array<Float> > 
+1010 scimath/Functionals/Function.cc 
+     template class Function<Float, Double> 
+     template class Function<Int, Double> 
+     template ostream & operator<<(ostream &, Function<Double, Double> const &) 
+     = casa/BasicSL/Complex.h 
+     template class Function<Double, DComplex> 
+1000 scimath/Functionals/Function1D.h casa/Arrays/Array.h 
+     template class Function1D<Float, Array<Float> > 
+1010 scimath/Functionals/Function1D.h 
+     template class Function1D<Float, Double> 
+     template class Function1D<Int, Double> 
+     = casa/BasicSL/Complex.h 
+     template class Function1D<Double, DComplex> 
+1000 scimath/Functionals/FunctionOrder.cc 
+     template class FunctionOrder<Double> 
+     template ostream & operator<<(ostream &, FunctionOrder<Double> const &) 
+1010 scimath/Functionals/FunctionOrder.cc 
+     template const String &FunctionOrder<Double>::ident() const 
+     template Bool FunctionOrder<Double>::toRecord(String &, RecordInterface &out) const 
+     template Bool FunctionOrder<Double>::fromString(String &, String const &) 
+     template Bool FunctionOrder<Double>::fromRecord(String &, RecordInterface const &) 
+1000 scimath/Functionals/FunctionParam.cc 
+     template class FunctionParam<Int> 
+1000 scimath/Functionals/Gaussian3D.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian3D<AutoDiffA<Double> > 
+1000 scimath/Functionals/Gaussian3DParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian3DParam<AutoDiffA<Double> > 
+1000 scimath/Functionals/GaussianND.cc 
+     template class GaussianND<Float> 
+1000 scimath/Functionals/GaussianNDParam.cc 
+     template class GaussianNDParam<Float> 
+1000 scimath/Functionals/Interpolate1D.cc 
+     = casa/Arrays/Array.h 
+     template class Interpolate1D<Float, Array<Float> > 
+1010 scimath/Functionals/Interpolate1D.cc 
+     template class Interpolate1D<Float, Double> 
+     template class Interpolate1D<Float, Float> 
+     template class Interpolate1D<Int, Double> 
+     = casa/BasicSL/Complex.h 
+     template class Interpolate1D<Double, DComplex> 
+1000 scimath/Functionals/SampledFunctional.h 
+     = casa/Arrays/Array.h 
+     = casa/BasicSL/Complex.h 
+     template class SampledFunctional<Array<Complex> > 
+1010 scimath/Functionals/SampledFunctional.h 
+     = casa/Arrays/Array.h 
+     template class SampledFunctional<Array<Float> > 
+1020 scimath/Functionals/SampledFunctional.h 
+     = casa/BasicSL/Complex.h 
+     template class SampledFunctional<Int> 
+     template class SampledFunctional<DComplex> 
+1000 scimath/Functionals/ScalarSampledFunctional.cc 
+     = casa/BasicSL/Complex.h 
+     template class ScalarSampledFunctional<Int> 
+     template class ScalarSampledFunctional<DComplex> 
+1000 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<Float> &, Vector<Float> &) 
+     template void CholeskySolve(Matrix<Float> &, Vector<Float> &, Vector<Float> &, Vector<Float> &) 
+1010 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     template Matrix<Float> invertSymPosDef(Matrix<Float> const &) 
+     template void invertSymPosDef(Matrix<Float> &, Float &, Matrix<Float> const &) 

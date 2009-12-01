@@ -1,0 +1,149 @@
+1000 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
+     template Bool allEQ(Array<Complex> const &, Complex const &) 
+     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
+     template Bool allEQ(Array<Short> const &, Short const &) 
+1000 casa/Containers/HashMap.cc 
+     template class HashClass<String> 
+1010 casa/Containers/HashMap.cc 
+     template class HashMap<String, Int> 
+1000 casa/Containers/HashMapIO.cc 
+     template ostream &operator<<(ostream &, HashMap<String, Int> const &) 
+1000 casa/Containers/HashMapIter.cc 
+     template class ConstHashMapIter<String, Int> 
+1010 casa/Containers/HashMapIter.cc 
+     template class HashMapIter<String, Int> 
+1000 casa/Containers/Link.cc casa/BasicSL/String.h 
+     = casa/Containers/OrderedPair.h 
+     template class Link<OrderedPair<String, Int> > 
+1010 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class Link<OrderedPair<String, OrderedPair<String, uInt> > > 
+1020 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
+     template class Link<OrderedPair<Int, Int> > 
+1030 casa/Containers/Link.cc 
+     template class Link<Int> 
+1000 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ConstListIter<OrderedPair<String, Int> > 
+1010 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ConstListIter<OrderedPair<String, OrderedPair<String, uInt> > > 
+1020 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class List<OrderedPair<String, Int> > 
+1030 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class List<OrderedPair<String, OrderedPair<String, uInt> > > 
+1040 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ListIter<OrderedPair<String, Int> > 
+1050 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ListIter<OrderedPair<String, OrderedPair<String, uInt> > > 
+1060 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ListNotice<OrderedPair<String, Int> > 
+1070 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ListNotice<OrderedPair<String, OrderedPair<String, uInt> > > 
+1080 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     template class ConstListIter<OrderedPair<Int, Int> > 
+1090 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     template class List<OrderedPair<Int, Int> > 
+1100 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     template class ListIter<OrderedPair<Int, Int> > 
+1110 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+     template class ListNotice<OrderedPair<Int, Int> > 
+1120 casa/Containers/List.cc 
+     template class ConstListIter<Int> 
+1130 casa/Containers/List.cc 
+     template class List<Int> 
+1140 casa/Containers/List.cc 
+     template class ListIter<Int> 
+1150 casa/Containers/List.cc 
+     template class ListNotice<Int> 
+1000 casa/Containers/ListIO.cc 
+     template ostream & operator<<(ostream &, ConstListIter<Int> const &) 
+1000 casa/Containers/Map.cc casa/BasicSL/String.h 
+     = casa/Containers/OrderedPair.h 
+     template class MapIterRep<String, OrderedPair<String, uInt> > 
+1010 casa/Containers/Map.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class ConstMapIter<String, OrderedPair<String, uInt> > 
+1020 casa/Containers/Map.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class Map<String, OrderedPair<String, uInt> > 
+1030 casa/Containers/Map.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class MapRep<String, OrderedPair<String, uInt> > 
+1040 casa/Containers/Map.cc 
+     template class MapIter<Int, Int> 
+1000 casa/Containers/MapIO.cc casa/BasicSL/String.h 
+     template ostream & operator<<(ostream &, ConstMapIter<String, Int> const &) 
+1010 casa/Containers/MapIO.cc casa/BasicSL/String.h 
+     template ostream & operator<<(ostream &, Map<String, Int> const &) 
+1020 casa/Containers/MapIO.cc casa/Containers/OrderedPair.h 
+     = casa/Containers/OrdPairIO.h casa/BasicSL/String.h 
+     template ostream & operator<<(ostream &, Map<String, OrderedPair<String, uInt> > const &) 
+1030 casa/Containers/MapIO.cc 
+     template ostream & operator<<(ostream &, Map<Int, Int> const &) 
+1000 casa/Containers/ObjectPool.cc 
+     = casa/Arrays/Vector.h 
+     template class ObjectPool<Vector<Double>, uInt> 
+1000 casa/Containers/OrdPairIO.cc casa/BasicSL/String.h 
+     template ostream & operator<<(ostream &, OrderedPair<String, uInt> const &) 
+1000 casa/Containers/OrderedMap.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class OrderedMap<String, OrderedPair<String, uInt> > 
+1010 casa/Containers/OrderedMap.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class OrderedMapIterRep<String, OrderedPair<String, uInt> > 
+1020 casa/Containers/OrderedMap.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class OrderedMapNotice<String, OrderedPair<String, uInt> > 
+1030 casa/Containers/OrderedMap.cc casa/Containers/OrderedPair.h 
+     = casa/BasicSL/String.h 
+     template class OrderedMapRep<String, OrderedPair<String, uInt> > 
+1000 casa/Containers/OrderedPair.cc 
+     = casa/Arrays/Vector.h 
+     template <class T, class Key> class PoolStack 
+     template class OrderedPair<uInt, PoolStack<Vector<Double>, uInt> *> 
+1010 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     template class OrderedPair<String, OrderedPair<String, uInt> > 
+1020 casa/Containers/OrderedPair.cc casa/BasicSL/String.h 
+     template class OrderedPair<String, uInt> 
+1000 casa/Containers/PoolStack.cc 
+     = casa/Arrays/Vector.h 
+     template class PoolStack<Vector<Double>, uInt> 
+1000 casa/Containers/Queue.cc 
+     template class Queue<Int> 
+1000 casa/Containers/SimOrdMap.cc 
+     = casa/Arrays/Vector.h 
+     template <class T, class Key> class PoolStack 
+     template class SimpleOrderedMap<uInt, PoolStack<Vector<Double>, uInt> *> 
+1000 casa/Containers/SimOrdMapIO.cc casa/BasicSL/String.h 
+     template ostream & operator<<(ostream &, SimpleOrderedMap<String, Int> const &) 
+1010 casa/Containers/SimOrdMapIO.cc casa/IO/AipsIO.h 
+     = casa/BasicSL/String.h 
+     template AipsIO & operator<<(AipsIO &, SimpleOrderedMap<String, Int> const &) 
+1020 casa/Containers/SimOrdMapIO.cc casa/IO/AipsIO.h 
+     = casa/BasicSL/String.h 
+     template AipsIO & operator>>(AipsIO &, SimpleOrderedMap<String, Int> &) 
+1030 casa/Containers/SimOrdMapIO.cc 
+     template ostream & operator<<(ostream &, SimpleOrderedMap<Int, Int> const &) 
+1000 casa/Containers/Stack.cc 
+     template class Stack<Int> 
+1000 casa/Utilities/Register.cc casa/Containers/List.h 
+     = casa/Containers/OrderedPair.h casa/BasicSL/String.h 
+     template uInt Register(ListNotice<OrderedPair<String, Int> > const *) 
+1010 casa/Utilities/Register.cc casa/Containers/List.h 
+     = casa/Containers/OrderedPair.h casa/BasicSL/String.h 
+     template uInt Register(ListNotice<OrderedPair<String, OrderedPair<String, uInt> > > const *) 
+1020 casa/Utilities/Register.cc casa/Containers/List.h 
+     = casa/Containers/OrderedPair.h 
+     template uInt Register(ListNotice<OrderedPair<Int, Int> > const *) 
+1030 casa/Utilities/Register.cc casa/Containers/List.h 
+     template uInt Register(ListNotice<Int> const *) 
+1040 casa/Utilities/Register.cc casa/Containers/OrderedMap.h 
+     = casa/Containers/OrderedPair.h casa/BasicSL/String.h 
+     template uInt Register(OrderedMapNotice<String, OrderedPair<String, uInt> > const *) 

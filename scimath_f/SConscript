@@ -1,0 +1,8 @@
+import os, glob
+
+# import root environment
+Import( ["buildenv", "installer"])
+myenv = buildenv.Clone()
+
+myenv.CasaBuilder(source="*.f", installer=installer, tests=False)
+
