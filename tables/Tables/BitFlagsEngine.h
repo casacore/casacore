@@ -35,7 +35,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
   // <summary> Non-templated Helper class to handle the mask. </summary>
-  // <visibility=local>
+  // <use visibility=local>
   class BFEngineMask
   {
   public:

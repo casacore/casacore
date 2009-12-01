@@ -123,8 +123,7 @@ Bool TableKeyword::isMultiUsed (Bool checkSubTables) const
 void TableKeyword::renameTable (const String& newParentName,
 				const String& oldParentName)
 {
-    // When stripping off the parent table name changes the name,
-    // the table is part of the parent table.
+    // Remove common part of old name from subtable name.
     String old = tableName (oldParentName);
     if (old != attr_p.name()) {
 	attr_p.setName (Path::addDirectory (old, newParentName));
