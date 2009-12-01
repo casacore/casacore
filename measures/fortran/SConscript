@@ -1,26 +1,21 @@
-import os, glob
-import SCons.Defaults
+import os
 
 # import root environment
 Import( ["buildenv", "installer"])
 myenv = buildenv.Clone()
 # get all the sourcefiles recursively
 ffs = myenv.SGlob("sofa/*.f", recursive=False )
+
 # need this to go to the root dir, as SConsript asumes to be in the
 # build dir
-rootdir=myenv.Dir("#").abspath
-libname= "casa_" + myenv["PACKAGE"] + "_f"
+name = "measures_sofa"
+libname = "casa_%s" % name
+lib = os.path.join(str(myenv["BUILDDIR"]), libname)
 
-slib =  myenv.StaticLibrary(target = libname, source = [ffs])
-myenv.Alias(os.path.basename(os.path.normpath(str(slib[0]))), slib)
-myenv.Alias("static", slib)
-myenv.Default("static")
+if not myenv.GetOption("disable_static"):
+    slib =  myenv.StaticLibrary(target = lib, source = [ffs])
 
-dlib =  myenv.SharedLibrary(target = libname, source = [ffs])
-myenv.Alias(os.path.basename(os.path.normpath(str(dlib[0]))), dlib)
-myenv.Alias("shared", dlib)
+if myenv.GetOption("enable_shared"):
+    dlib =  myenv.SharedLibrary(target = lib, source = [ffs])
 
-if "shared" in BUILD_TARGETS:
-    installer.AddLibrary(dlib)
-if "static" in BUILD_TARGETS or "shared" not in BUILD_TARGETS:
-    installer.AddLibrary(slib)
+Return('libname')

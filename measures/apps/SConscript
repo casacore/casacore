@@ -4,30 +4,7 @@ import os, glob
 Import( ["buildenv", "installer"])
 myenv = buildenv.Clone()
 
-# get all the sourcefiles recursively
-cpps = myenv.SGlob("*.cc", recursive=True )
-# need this to go to the root dir, as SConsript asumes to be in the
-# build dir
-rootdir = myenv.Dir("#").abspath
-libname = "casa_" + myenv["PACKAGE"]
+myenv.AppsBuilder(installer=installer)
 
-# point to tests local includes
-myenv.AppendUnique(LIBPATH=[myenv["BUILDDIR_APPS"]])
-myenv.AppendUnique(LIBPATH=[myenv["BUILDDIR"]])
-
-if "static" in BUILD_TARGETS or "shared" not in BUILD_TARGETS:
-    libname = myenv["LIBPREFIX"]+libname+myenv["LIBSUFFIX"]
-
-myenv.Prepend(LIBS=[libname])
-cpppath = myenv["CPPPATH"]
-
-for i in cpps:
-    # get the basename no suffix of the file
-    tinfile = os.path.splitext(os.path.basename(i))[0]
-    tdir = os.path.split(i)[0]
-    tapp = myenv.Program(source=i, CPPPATH=cpppath+[tdir])
-    installer.AddProgram(tapp)
-    # fix this to work with multiple files or if it doesn't exists
-    installer.AddProgram(str(tapp[0])+".csh")
 
 
