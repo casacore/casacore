@@ -93,7 +93,7 @@ int main ()
     for (i=0; i<ntests; i++) {
 	cout << p[i] << " --> " << Regex::fromString(p[i]) << endl;
         Regex exp(Regex::fromString(p[i]));
-        AlwaysAssertExit (String(p[i]).matches(exp));
+        AlwaysAssertExit (p[i].matches(exp));
     }
 
 #define CHECKPATT(i,str) \
