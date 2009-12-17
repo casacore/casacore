@@ -100,7 +100,10 @@ def generate(env):
                        headers.
 	        @param recursive Search recursively for headers.
 	        """
-                if parent.find("test") > -1:
+                parentlist = os.path.split(parent)
+                if ".svn" in parentlist:
+                    return
+                if parentlist[-1] == "test":
                     return
 	        for entry in os.listdir( parent ):
 	            entrypath = os.path.join( parent, entry )
