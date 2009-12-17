@@ -121,7 +121,7 @@ if not env.GetOption('clean') and not env.GetOption("help"):
             conf.env.PrependUnique(CPPPATH=[suseincdir])
             if not conf.CheckHeader(os.path.join(suseincdir,"fitsio.h")):
                 env.Exit(1)
-            if not conf.CheckLib(cfitsioname, "c", autoadd=0):
+            if not conf.CheckLib(cfitsioname, autoadd=0):
                 env.Exit(1)
             else:
                 env["%s_incdir" % pkgname] = suseincdir
