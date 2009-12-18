@@ -319,8 +319,10 @@ void showExpr(const TableExprNode& expr)
 Table doCommand (const String& str, const vector<const Table*>& tempTables)
 {
   // If no command is given, assume it is CALC.
+  // Only show results for SELECT and CALC.
   String::size_type spos = str.find_first_not_of (' ');
   Bool addCalc = False;
+  Bool showResult = False;
   if (spos != String::npos) {
     String::size_type epos = str.find (' ', spos);
     if (epos == String::npos) {
@@ -332,7 +334,9 @@ Table doCommand (const String& str, const vector<const Table*>& tempTables)
       addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
                   s=="delete" || s=="create" || s=="createtable" ||
                   s=="count"  || s=="using"  || s=="usingstyle");
+      showResult = (s=="select" || s=="calc");
     }
+    showResult = showResult || addCalc;
   } 
   String strc(str);
   if (addCalc) {
@@ -392,6 +396,9 @@ void showHelp()
        << endl;
   cerr << "   t1 = select from my.ms where ANTENNA1=1" << endl;
   cerr << "   t2 = select from $t1 where ANTENNA2=2" << endl;
+  cerr << endl;
+  cerr << "taql can be started with option -s or --style which defines the TaQL style." << endl;
+  cerr << "The default style is python; if no value is given after -s it defaults to glish" << endl;
   cerr << endl;
 }
 
@@ -511,7 +518,7 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
 }
 
 // Ask and execute commands till quit or ^D is given.
-void askCommands()
+void askCommands (const String& prefix)
 {
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   Regex assRE("[ \t]*=");
@@ -573,7 +580,7 @@ void askCommands()
                 cout << varName << " = ";
               }
               cout << command << endl;
-              Table tab = doCommand (str, tabs);
+              Table tab = doCommand (prefix + str, tabs);
               if (!varName.empty()  &&  !tab.isNull()) {
                 // Keep the resulting table if a variable was given.
                 tables[varName] = make_pair(tab, command);
@@ -592,15 +599,34 @@ void askCommands()
 int main (int argc, const char* argv[])
 {
   try {
+    string style = "python";
+    int st = 1;
     if (argc > 1) {
-      // Execute the given command.
-      doCommand (argv[1], vector<const Table*>());
+      if (string(argv[1]) == "-s"  ||  string(argv[1]) == "--style") {
+        style = string();
+        ++st;
+        if (argc > 2) {
+          style = argv[2];
+          ++st;
+        }
+      }
+    }
+    string prefix;
+    if (style.empty()) {
+      style = "glish";
     } else {
-    // Do some interactive tests.
-      askCommands();
+      prefix = "using style " + style + ' ';
+    }
+    if (st < argc) {
+      // Execute the given command.
+      doCommand (prefix + argv[st], vector<const Table*>());
+    } else {
+    // Ask the user for commands.
+      cout << "Using default TaQL style " << style << endl;
+      askCommands (prefix);
     }
   } catch (AipsError& x) {
-    cout << "\nCaught an exception: " << x.getMesg() << endl;
+    cerr << "\nCaught an exception: " << x.getMesg() << endl;
     return 1;
   } 
   return 0;               // successfully executed
