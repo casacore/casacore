@@ -348,13 +348,14 @@ Table doCommand (const String& str, const vector<const Table*>& tempTables)
   String cmd;
   TaQLResult result;
   result = tableCommand (strc, tempTables, colNames, cmd);
+  cout << strc << endl;
   cout << "    has been executed" << endl;
   // Set default format for printing datetime.
   if (result.isTable()) {
     tabp = result.table();
     cout << "    " << cmd << " result of " << tabp.nrow()
 	 << " rows" << endl;
-    if (colNames.nelements() > 0) {
+    if (showResult  &&  colNames.nelements() > 0) {
       // Show the selected column names.
       cout << colNames.nelements() << " selected columns: ";
       for (i=0; i<colNames.nelements(); i++) {
