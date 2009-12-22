@@ -52,6 +52,7 @@
 
 // Outcomment and uncomment the correct typedef and define.
 //typedef Int Type;
+
 typedef Double Type;
 #define ARRINIT indgen(array)
 #define ARRINCR array += (Type)1
@@ -310,6 +311,8 @@ void writeVar (Bool chk, const IPosition& shape,
 	ARRINCR;
       }
     }
+    // Sync to measure true IO.
+    table.flush(True);
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
   }
@@ -322,7 +325,7 @@ int main (int argc, const char* argv[])
   Bool ok = True;
   try {
     if (argc < 5) {
-      cout << "Run as  tTiledShapeStM_1 mode nrow nx ny [tx ty] [sx sy ex ey ix iy]" << endl;;
+      cout << "Run as  tTiledShapeStM_1 mode nrow nx ny [tx ty tz] [sx sy ex ey ix iy]" << endl;;
       cout << "Mode&1 = 1: check data read" << endl;
       cout << "    &2 = 1: read cell slices" << endl;
       cout << "    &4 = 1: read column slices in X" << endl;  
@@ -357,38 +360,43 @@ int main (int argc, const char* argv[])
       istringstream istr(argv[6]);
       istr >> ty;
     }
-    uInt sx = 0;
+    uInt tz = 1;
     if (argc >= 8) {
       istringstream istr(argv[7]);
+      istr >> tz;
+    }
+    uInt sx = 0;
+    if (argc >= 9) {
+      istringstream istr(argv[8]);
       istr >> sx;
     }
     uInt sy = 0;
-    if (argc >= 9) {
-      istringstream istr(argv[8]);
+    if (argc >= 10) {
+      istringstream istr(argv[9]);
       istr >> sy;
     }
     uInt ex = nx-1;
-    if (argc >= 10) {
-      istringstream istr(argv[9]);
+    if (argc >= 11) {
+      istringstream istr(argv[10]);
       istr >> ex;
     }
     uInt ey = ny-1;
-    if (argc >= 11) {
-      istringstream istr(argv[10]);
+    if (argc >= 12) {
+      istringstream istr(argv[11]);
       istr >> ey;
     }
     uInt ix = 1;
-    if (argc >= 12) {
-      istringstream istr(argv[11]);
+    if (argc >= 13) {
+      istringstream istr(argv[12]);
       istr >> ix;
     }
     uInt iy = 1;
-    if (argc >= 13) {
-      istringstream istr(argv[12]);
+    if (argc >= 14) {
+      istringstream istr(argv[13]);
       istr >> iy;
     }
     IPosition shape(2,nx,ny);
-    IPosition tileShape(2,tx,ty);
+    IPosition tileShape(3,tx,ty,tz);
     IPosition blc(2,sx,sy);
     IPosition trc(2,ex,ey);
     IPosition inc(2,ix,iy);
