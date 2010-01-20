@@ -186,25 +186,25 @@ DataManager* NullTable::findDataManager (const String&) const
   return 0;
 }
 
-void NullTable::addColumn (const ColumnDesc&)
+void NullTable::addColumn (const ColumnDesc&, Bool)
 {
   throwError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
-			   const String&, Bool)
+			   const String&, Bool, Bool)
 {
   throwError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
-			   const DataManager&)
+			   const DataManager&, Bool)
 {
   throwError ("addColumn");
 }
 
 void NullTable::addColumn (const TableDesc& ,
-			   const DataManager&)
+			   const DataManager&, Bool)
 {
   throwError ("addColumn");
 }

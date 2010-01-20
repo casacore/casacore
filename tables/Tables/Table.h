@@ -839,11 +839,15 @@ public:
     // The data manager used for the column depend on the function used.
     // Exceptions are thrown when the column already exist or when the
     // table is not writable.
+    // <br>If this table is a reference table (result of selection) and if
+    // <src>addToParent=True</src> the column is also added to the parent
+    // table.
     // <group>
     // Use the first appropriate existing storage manager.
     // When there is none, a data manager is created using the default
     // data manager in the column description.
-    void addColumn (const ColumnDesc& columnDesc);
+    void addColumn (const ColumnDesc& columnDesc,
+                    Bool addToParent = True);
     // Use an existing data manager with the given name or type.
     // When the flag byName is True, a name is given, otherwise a type.
     // When a name is given, an exception is thrown if the data manager is
@@ -851,10 +855,12 @@ public:
     // When a type is given, a storage manager of the given type will be
     // created when there is no such data manager allowing addition of rows.
     void addColumn (const ColumnDesc& columnDesc,
-		    const String& dataManager, Bool byName);
+		    const String& dataManager, Bool byName,
+                    Bool addToParent = True);
     // Use the given data manager (which is a new one).
     void addColumn (const ColumnDesc& columnDesc,
-		    const DataManager& dataManager);
+		    const DataManager& dataManager,
+                    Bool addToParent = True);
     // </group>
 
     // Add a bunch of columns using the given new data manager.
@@ -863,15 +869,20 @@ public:
     // This can be used in case of specific data managers which need to
     // be created with more than one column (e.g. the tiled hypercube
     // storage managers).
-    // The data manager can be given directly or by means of a record
+    // <br>The data manager can be given directly or by means of a record
     // describing the data manager in the standard way with the fields
     // TYPE, NAME, and SPEC. The record can contain those fields itself
     // or it can contain a single subrecord with those fields.
+    // <br>If this table is a reference table (result of selection) and if
+    // <src>addToParent=True</src> the columns are also added to the parent
+    // table.
     // <group>
     void addColumn (const TableDesc& tableDesc,
-		    const DataManager& dataManager);
+		    const DataManager& dataManager,
+                    Bool addToParent = True);
     void addColumn (const TableDesc& tableDesc,
-		    const Record& dataManagerInfo);
+		    const Record& dataManagerInfo,
+                    Bool addToParent = True);
     // </group>
 
     // Test if columns can be removed.
@@ -1082,20 +1093,20 @@ inline void Table::removeRow (uInt rownr)
     { baseTabPtr_p->removeRow (rownr); }
 inline void Table::removeRow (const Vector<uInt>& rownrs)
     { baseTabPtr_p->removeRow (rownrs); }
-inline void Table::addColumn (const ColumnDesc& columnDesc)
-    { baseTabPtr_p->addColumn (columnDesc); }
+inline void Table::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, addToParent); }
 inline void Table::addColumn (const ColumnDesc& columnDesc,
-			      const String& dataManager, Bool byName)
-    { baseTabPtr_p->addColumn (columnDesc, dataManager, byName); }
+			      const String& dataManager, Bool byName,
+                              Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, dataManager, byName, addToParent); }
 inline void Table::addColumn (const ColumnDesc& columnDesc,
-			      const DataManager& dataManager)
-    { baseTabPtr_p->addColumn (columnDesc, dataManager); }
+			      const DataManager& dataManager, Bool addToParent)
+    { baseTabPtr_p->addColumn (columnDesc, dataManager, addToParent); }
 inline void Table::addColumn (const TableDesc& tableDesc,
-			      const DataManager& dataManager)
-    { baseTabPtr_p->addColumn (tableDesc, dataManager); }
+			      const DataManager& dataManager, Bool addToParent)
+    { baseTabPtr_p->addColumn (tableDesc, dataManager, addToParent); }
 inline void Table::addColumn (const TableDesc& tableDesc,
-			      const Record& dataManagerInfo)
-    { baseTabPtr_p->addColumns (tableDesc, dataManagerInfo); }
+			      const Record& dataManagerInfo, Bool addToParent)      { baseTabPtr_p->addColumns (tableDesc, dataManagerInfo, addToParent); }
 inline void Table::removeColumn (const Vector<String>& columnNames)
     { baseTabPtr_p->removeColumn (columnNames); }
 inline void Table::renameColumn (const String& newName, const String& oldName)

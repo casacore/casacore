@@ -206,15 +206,16 @@ public:
     virtual void removeRow (uInt rownr);
 
     // Add a column to the table.
-    // The default implementation throws an "invalid operation" exception.
+    // The last Bool argument is not used in PlainTable, but can be used in
+    // other classes derived from BaseTable.
     // <group>
-    virtual void addColumn (const ColumnDesc& columnDesc);
+    virtual void addColumn (const ColumnDesc& columnDesc, Bool);
     virtual void addColumn (const ColumnDesc& columnDesc,
-			    const String& dataManager, Bool byName);
+			    const String& dataManager, Bool byName, Bool);
     virtual void addColumn (const ColumnDesc& columnDesc,
-			    const DataManager& dataManager);
+			    const DataManager& dataManager, Bool);
     virtual void addColumn (const TableDesc& tableDesc,
-			    const DataManager& dataManager);
+			    const DataManager& dataManager, Bool);
     // </group>
 
     // Test if columns can be removed.
