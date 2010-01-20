@@ -648,7 +648,7 @@ void PlainTable::removeRow (uInt rownr)
     colSetPtr_p->autoReleaseLock();
 }
 
-void PlainTable::addColumn (const ColumnDesc& columnDesc)
+void PlainTable::addColumn (const ColumnDesc& columnDesc, Bool)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
@@ -658,7 +658,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc)
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
-			    const String& dataManager, Bool byName)
+			    const String& dataManager, Bool byName, Bool)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
@@ -668,7 +668,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
-			    const DataManager& dataManager)
+			    const DataManager& dataManager, Bool)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::addColumn; table is not writable"));
@@ -678,7 +678,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
     tableChanged_p = True;
 }
 void PlainTable::addColumn (const TableDesc& tableDesc,
-			    const DataManager& dataManager)
+			    const DataManager& dataManager, Bool)
 {
     if (! isWritable()) {
 	throw (TableInvOper ("Table::addColumn; table is not writable"));

@@ -446,6 +446,23 @@ void RefTable::makeRefCol()
     }
 }
 
+//# Add column to this object for an addColumn.
+void RefTable::addRefCol (const ColumnDesc& columnDesc)
+{
+    ColumnDesc& cd = tdescPtr_p->addColumn (columnDesc);
+    nameMap_p.define (cd.name(), cd.name());
+    // Use cd (and not columnDesc) because underneath a pointer to its
+    // BaseColumnDesc which is disastrous for the temporary columnDesc.
+    colMap_p.define (cd.name(), cd.makeRefColumn
+                     (this, baseTabPtr_p->getColumn(nameMap_p(cd.name()))));
+}
+void RefTable::addRefCol (const TableDesc& tdesc)
+{
+    for (uInt i=0; i<tdesc.ncolumn(); i++) {
+        addRefCol (tdesc[i]);
+    }
+}
+
 
 //# Add a row number of the root table.
 void RefTable::addRownr (uInt rnr)
@@ -635,6 +652,69 @@ Vector<uInt> RefTable::rowNumbers () const
     return vec(Slice(0, nrrow_p));
 }
 
+
+Bool RefTable::checkAddColumn (const String& name, Bool addToParent)
+{
+  if (! isWritable()) {
+    throw TableInvOper ("Table::addColumn; table is not writable");
+  }
+  if (tdescPtr_p->isColumn(name)) {
+    throw TableInvOper ("Table::addColumn; column " + name + " already exists");
+  }
+  if (baseTabPtr_p->tableDesc().isColumn(name)) {
+    return False;
+  }
+  if (!addToParent) {
+    throw TableInvOper ("RefTable::addColumn; column " + name +
+                        " does not exist in parent table"
+                        " and must not be added");
+  }
+  return True;
+}
+
+void RefTable::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
+{
+  if (checkAddColumn (columnDesc.name(), addToParent)) {
+    baseTabPtr_p->addColumn (columnDesc, addToParent);
+  }
+  addRefCol (columnDesc);
+}
+void RefTable::addColumn (const ColumnDesc& columnDesc,
+                          const String& dataManager, Bool byName,
+                          Bool addToParent)
+{
+  if (checkAddColumn (columnDesc.name(), addToParent)) {
+    baseTabPtr_p->addColumn (columnDesc, dataManager, byName, addToParent); 
+  }
+  addRefCol (columnDesc);
+}
+void RefTable::addColumn (const ColumnDesc& columnDesc,
+                          const DataManager& dataManager,
+                          Bool addToParent)
+{
+  if (checkAddColumn (columnDesc.name(), addToParent)) {
+    baseTabPtr_p->addColumn (columnDesc,dataManager, addToParent);
+  }
+  addRefCol (columnDesc);
+}
+void RefTable::addColumn (const TableDesc& tableDesc,
+                          const DataManager& dataManager,
+                          Bool addToParent)
+{
+  // First check if all columns exist and can be added or not.
+  // Collect all columns to be added to the parent.
+  TableDesc addTabDesc;
+  for (uInt i=0; i<tableDesc.ncolumn(); ++i) {
+    if (checkAddColumn (tableDesc[i].name(), addToParent)) {
+      addTabDesc.addColumn (tableDesc[i]);
+    }
+  }
+  // Add to the parent if needed.
+  if (addTabDesc.ncolumn() > 0) {
+    baseTabPtr_p->addColumn (addTabDesc, dataManager, addToParent);
+  }
+  addRefCol (tableDesc);
+}
 
 //# Rows and columns can be removed and renamed.
 Bool RefTable::canRemoveRow() const

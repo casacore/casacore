@@ -185,14 +185,17 @@ public:
 
   // Add a column to the table.
   // If the DataManager is not a virtual engine, MemoryStMan will be used.
+  // The last Bool argument is not used in MemoryTable, but can be used in
+  // other classes derived from BaseTable.
   // <group>
-  virtual void addColumn (const ColumnDesc& columnDesc);
+  virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const String& dataManager, Bool byName);
+			  const String& dataManager, Bool byName,
+                          Bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const DataManager& dataManager);
+			  const DataManager& dataManager, Bool addToParent);
   virtual void addColumn (const TableDesc& tableDesc,
-			  const DataManager& dataManager);
+			  const DataManager& dataManager, Bool addToParent);
   // </group>
 
   // Test if columns can be removed (yes).

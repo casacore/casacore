@@ -518,16 +518,17 @@ void BaseTable::removeRow (const Vector<uInt>& rownrs)
     }
 }
 
-void BaseTable::addColumn (const ColumnDesc&)
+void BaseTable::addColumn (const ColumnDesc&, Bool)
     { throw (TableInvOper ("Table: cannot add a column")); }
-void BaseTable::addColumn (const ColumnDesc&, const String&, Bool)
+void BaseTable::addColumn (const ColumnDesc&, const String&, Bool, Bool)
     { throw (TableInvOper ("Table: cannot add a column")); }
-void BaseTable::addColumn (const ColumnDesc&, const DataManager&)
+void BaseTable::addColumn (const ColumnDesc&, const DataManager&, Bool)
     { throw (TableInvOper ("Table: cannot add a column")); }
-void BaseTable::addColumn (const TableDesc&, const DataManager&)
+void BaseTable::addColumn (const TableDesc&, const DataManager&, Bool)
     { throw (TableInvOper ("Table: cannot add a column")); }
 
-void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo)
+void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
+                            Bool addToParent)
 {
   // Create the correct data manager using the record.
   // The record can be the dminfo description itself or contain a
@@ -542,7 +543,7 @@ void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo)
     String dmGroup = rec.asString ("NAME");
     const Record& sp = rec.subRecord ("SPEC");;
     DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
-    addColumn (desc, *dataMan);
+    addColumn (desc, *dataMan, addToParent);
     delete dataMan;
   } else {
     throw TableError ("Invalid dmInfo record given in Table::addColumn");

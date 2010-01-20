@@ -106,13 +106,14 @@ public:
   virtual Bool canRemoveRow() const;
   virtual void removeRow (uInt rownr);
   virtual DataManager* findDataManager (const String& dataManagerName) const;
-  virtual void addColumn (const ColumnDesc& columnDesc);
+  virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const String& dataManager, Bool byName);
+			  const String& dataManager, Bool byName,
+                          Bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const DataManager& dataManager);
+			  const DataManager& dataManager, Bool addToParent);
   virtual void addColumn (const TableDesc& tableDesc,
-			  const DataManager& dataManager);
+			  const DataManager& dataManager, Bool addToParent);
   virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
   virtual void removeColumn (const Vector<String>& columnNames);
   virtual Bool canRenameColumn (const String& columnName) const;
