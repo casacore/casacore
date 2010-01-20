@@ -119,7 +119,8 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
 	    return True;
 	}
-	// on SUSE 6.1 systems statd might not be installed.
+	// If locking fails, there is usually something wrong with locking
+        // over NFS because the statd or lockd deamons are not running.
 	// Hence locks on NFS files result in ENOLCK. Treat it as success.
 	// Issue a message if hit for the first time.
 #if defined(AIPS_LINUX) || defined(AIPS_DARWIN)
@@ -131,11 +132,9 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	    }
 	    if (!itsMsgShown) {
 	      itsMsgShown = True;
-	      cerr << "*** It looks as if the statd deamon is not running on your Linux system" << endl;
-	      cerr << "*** which means that no locks can be used on NFS files" << endl;
-	      cerr << "*** so a lock is always granted and NFS files are not properly shared." << endl;
-	      cerr << "*** SUSE 6.1 systems might come without the statd package." << endl;
-	      cerr << "*** You can get it from /pub/linux/devel/gcc/knfsd-1.4.1.tar.gz" << endl;
+	      cerr << "*** The ENOLCK error was returned by the kernel." << endl;
+              cerr << "*** It usually means that a lock for an NFS file could not be" << endl;
+              cerr << "*** obtained, maybe because the statd or lockd daemon is not running." << endl;
 	    }
 	    return True;
 	}
