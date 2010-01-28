@@ -181,7 +181,7 @@ void PixelCurve1D::getPixelCoord (Vector<float>& x, Vector<float>& y,
   uInt nr = 1 + (end-start) / incr;
   x.resize (nr);
   y.resize (nr);
-  for (uint i=0; i<nr; i++) {
+  for (uInt i=0; i<nr; i++) {
     x[i] = itsX[start];
     y[i] = itsY[start];
     start += incr;
