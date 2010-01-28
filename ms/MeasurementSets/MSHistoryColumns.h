@@ -159,6 +159,11 @@ private:
 // for every predefined column. Access to non-predefined columns will still
 // have to be done with explicit declarations.
 // See <linkto class=MSColumns> MSColumns</linkto> for an example.
+//
+// Note by GvD 28-Jan-2010:
+// According to note 229 the OBJECTID column should contain Strings.
+// It is, however, defined as Int. It has to be left as such, otherwise older
+// MeasurementSets cannot be read anymore.
 // </synopsis>
 //
 // <motivation>
