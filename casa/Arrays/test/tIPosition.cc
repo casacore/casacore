@@ -407,6 +407,9 @@ int main()
     IPosition ip3(vi);
     AlwaysAssertExit(ip3(0) == 1 && ip3(1) == 2 && ip3(2) == 3 && ip3(3) == 4 &&
 		     ip3(4) == 5 && ip3(5) == 6);
+
+    AlwaysAssertExit(IPosition(3,1).allOne());
+    AlwaysAssertExit(! IPosition(3,0).allOne());
 }
 
 }
@@ -414,5 +417,3 @@ int main()
     cout << "OK\n";
     return 0;
 }
-
-

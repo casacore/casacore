@@ -251,6 +251,10 @@ public:
     // its elements.
     Int64 product() const;
 
+    // Are all elements equal to 1?
+    // Useful to check if a given stride is really a stride.
+    Bool allOne() const;
+
     // Element-by-element comparison for equality.
     // It returns True if the lengths and all elements are equal.
     // <br>
