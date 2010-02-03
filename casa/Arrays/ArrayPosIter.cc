@@ -62,7 +62,7 @@ ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape,
 // <thrown>
 //     <item> ArrayIteratorError
 // </thrown>
-void ArrayPositionIterator::setup(uint byDim)
+void ArrayPositionIterator::setup(uInt byDim)
 {
     if (byDim > ndim()) {
 	throw(ArrayIteratorError("ArrayPositionIterator::ArrayPositionIterator"
