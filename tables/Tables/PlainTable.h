@@ -35,6 +35,7 @@
 #include <tables/Tables/TableCache.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableSyncData.h>
+#include <tables/Tables/TSMOption.h>
 #include <casa/IO/AipsIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -90,14 +91,15 @@ public:
     // all storage managers. The given number of rows is stored in
     // the table and initialized if the flag is set.
     PlainTable (SetupNewTable&, uInt nrrow, Bool initialize,
-		const TableLock& lockOptions, int endianFormat);
+		const TableLock& lockOptions, int endianFormat,
+                const TSMOption& tsmOption);
 
     // Construct the object for an existing table.
     // It opens the table file, reads the table control information
     // and creates and initializes the required storage managers.
     PlainTable (AipsIO&, uInt version, const String& name, const String& type,
 		uInt nrrow, int option, const TableLock& lockOptions,
-		Bool addToCache, uInt locknr);
+		const TSMOption& tsmOption, Bool addToCache, uInt locknr);
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
@@ -289,6 +291,7 @@ private:
     TableSyncData  lockSync_p;         //# table synchronization
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
+    TSMOption      tsmOption_p;
 };
 
 

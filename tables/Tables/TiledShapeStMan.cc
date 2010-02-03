@@ -191,7 +191,8 @@ void TiledShapeStMan::create (uInt nrrow)
     setup(1);
     // Create a cubeset (with no file attached) for undefined cells.
     cubeSet_p.resize (1);
-    cubeSet_p[0] = new TSMCube (this, 0);
+    cubeSet_p[0] = new TSMCube (this, 0, IPosition(), IPosition(),
+                                Record(), -1);
     // Add the rows for the given number of rows.
     addRow (nrrow);
 }

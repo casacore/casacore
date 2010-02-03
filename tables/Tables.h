@@ -1,5 +1,5 @@
-//# Tables.h: The Tables module - AIPS++ data storage
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Tables.h: The Tables module - Casacore data storage
+//# Copyright (C) 1994-2010
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,7 +96,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <module>
 
 // <summary>
-// Tables are the data storage mechanism for AIPS++
+// Tables are the data storage mechanism for Casacore
 // </summary>
 
 // <use visibility=export>
@@ -112,15 +112,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // "Table" is a formal term from relational database theory: 
 //   <em> "The organizing principle in a relational database is the TABLE,
 //    a rectangular, row/column arrangement of data values."</em>
-// AIPS++ tables are extensions to traditional tables, but are similar
+// Casacore tables are extensions to traditional tables, but are similar
 // enough that we use the same name.  There is also a strong resemblance
-// between the uses of AIPS++ tables, and FITS binary tables, which
-// provides another reason to use "Tables" to describe the AIPS++ data
+// between the uses of Casacore tables, and FITS binary tables, which
+// provides another reason to use "Tables" to describe the Casacore data
 // storage mechanism.
 // </etymology>
 
 // <synopsis> 
-// Tables are the fundamental storage mechanism for AIPS++. This document
+// Tables are the fundamental storage mechanism for Casacore. This document
 // explains <A HREF="#Tables:motivation">why</A> they had to be made,
 // <A HREF="#Tables:properties">what</A> their properties are, and 
 // <A HREF="#Tables:open">how</A> to use them. The last subject is
@@ -146,7 +146,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ANCHOR NAME="Tables:motivation">
 // <motivation></ANCHOR>
 //
-// The AIPS++ tables are mainly based upon the ideas of Allen Farris,
+// The Casacore tables are mainly based upon the ideas of Allen Farris,
 // as laid out in the
 // <A HREF="http://aips2.cv.nrao.edu/aips++/docs/reference/Database.ps.gz">
 // AIPS++ Database document</A>, from where the following paragraph is taken:
@@ -171,14 +171,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // make it very difficult to deal with complex problems of this nature.
 // <p>
 // 
-// In response to these limitations, and other needs, the AIPS++ tables were
+// In response to these limitations, and other needs, the Casacore tables were
 // designed.
 // </motivation>
 
 // <ANCHOR NAME="Tables:properties">
 // <h3>Table Properties</h3></ANCHOR>
 //
-// AIPS++ tables have the following properties:
+// Casacore tables have the following properties:
 // <ul>
 //  <li> A table consists of a number of rows and columns.
 //       <A HREF="#Tables:keywords">Keyword/value pairs</A> may be defined
@@ -203,7 +203,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //	  <LI> "virtual" -- containing a recipe telling how the data will
 //             be generated dynamically
 //       </UL>
-//  <li> Only the standard AIPS++ data types can be used in filled
+//  <li> Only the standard Casacore data types can be used in filled
 //       columns, be they scalars or arrays:  Bool, uChar, Short, uShort,
 //       Int, uInt, float, double, Complex, DComplex and String.
 //       Furthermore scalars containing
@@ -443,7 +443,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Once a table has been created or has been opened for read/write,
 // you want to write data into it. Before doing that you may have
 // to add one or more rows to the table.
-// <note role=tip> When a table was created with a given number of rows, you
+// <note role=tip> If a table was created with a given number of rows, you
 // do not need to add rows; you may not even be able to do so.
 // </note>
 //
@@ -589,7 +589,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     <linkto class="TableColumn">TableColumn::put(...)</linkto> and
 //     <linkto class="TableColumn">TableColumn::putColumn(...)</linkto> and
 //     are the most generic. They can be
-//     used when the data types of both input and output column are unknown.
+//     used if the data types of both input and output column are unknown.
 //     Note that these functions are virtual.
 //    <li>
 //     <linkto class="ScalarColumn">ScalarColumn::put(...)</linkto>,
@@ -921,7 +921,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // The creation of the table descriptor is the first step in the creation of
 // a new table. The description is part of the table itself, but may also
-// exist in a separate file. This is useful when you need to create a number
+// exist in a separate file. This is useful if you need to create a number
 // of tables with the same structure; in other circumstances it probably
 // should be avoided.
 //
@@ -1053,7 +1053,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // Several storage managers are currently supported.
 // The default and preferred storage manager is <src>StandardStMan</src>.
-// Other storage managers should only be used when they pay off in
+// Other storage managers should only be used if they pay off in
 // file space (like <src>IncrementalStMan</src> for slowly varying data)
 // or access speed (like the tiled storage managers for large data arrays).
 // <br>The storage managers store the data in a big or little endian
@@ -1071,7 +1071,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li>
 //   <linkto class="IncrementalStMan:description">IncrementalStMan</linkto>
 //   uses a storage mechanism resembling "incremental backups". A value
-//   is only stored when it is different from the previous row. It is
+//   is only stored if it is different from the previous row. It is
 //   very well suited for slowly varying data.
 //   <br>The class <linkto class="ROIncrementalStManAccessor:description">
 //   ROIncrementalStManAccessor</linkto> can be used to tune the
@@ -1100,7 +1100,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   storage manager are NOT persistent.
 //   <br>This storage manager is primarily meant for tables held in
 //   memory, but it can also be useful for temporary columns in
-//   normal tables. Note, however, that when a table is accessed
+//   normal tables. Note, however, that if a table is accessed
 //   concurrently from multiple processes, MemoryStMan data cannot be
 //   synchronized.
 // </ol>
@@ -1139,11 +1139,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> There can be more than one Tiled Storage Manager in
 //       a table; each with its own (unique) name.
 //  <li> Each Tiled Storage Manager can store an
-//       N-dimensional so-called hypercolumn (defined using
+//       N-dimensional so-called hypercolumn.
+//       Elaborate hypercolumns can be defined using
 //       <linkto file="TableDesc.h#defineHypercolumn">
 //       TableDesc::defineHypercolumn</linkto>).
-//       <br>A hypercolumn consists of up to three types
-//       of columns:
+//       <br>Note that defining a hypercolumn is only necessary if it
+//       contains multiple columns or if the TiledDataStMan is used.
+//       It means that in practice it is hardly ever needed to define a
+//       hypercolumn.
+//       <br>A hypercolumn consists of up to three types of columns:
 //       <dl>
 //        <dt> Data columns
 //        <dd> contain the data to be stored in a tiled way. This will
@@ -1153,16 +1157,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //                  data columns "Visibility" and "Weight".
 //        <dt> Coordinate columns
 //        <dd> define the world coordinates of the pixels in the data columns.
-//             Coordinate columns are optional, but when given there must
+//             Coordinate columns are optional, but if given there must
 //             be N coordinate columns for an N-dimensional hypercolumn.
 //             <br>
 //             For example: the data in the example above is 4-dimensional
 //             and has coordinate columns "Time", "Baseline", "Frequency",
 //             and "Polarization".
 //        <dt> Id columns
-//        <dd> are needed when TiledDataStMan is used.
+//        <dd> are needed if TiledDataStMan is used.
 //             Different rows in the data columns can be stored in different
-//             hypercube. The values in the id column(s) uniquely identify
+//             hypercubes. The values in the id column(s) uniquely identify
 //             the hypercube a row is stored in.
 //             <br>
 //             For example: the line and continuum data in a MeasurementSet
@@ -1170,9 +1174,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //             their shapes are different (see below)). A column containing
 //             the type (line or continuum) has to be used as an id column.
 //       </dl>
-//  <li> When multiple data columns are used, the shape of their data
+//  <li> If multiple data columns are used, the shape of their data
 //       must be conforming in each individual row.
-//       When data in different rows have different shapes, they must be
+//       If data in different rows have different shapes, they must be
 //       stored in different hypercubes, because a hypercube can only hold
 //       data with conforming shapes.
 //       <br>
@@ -1191,7 +1195,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       can be extended when another chunk of data has to be stored.
 //       This can be very useful in, for example, a (quasi-)realtime
 //       environment where the size of the time axis is not known.
-//  <li> When coordinate columns are defined, they describe the coordinates
+//  <li> If coordinate columns are defined, they describe the coordinates
 //       of the axes of the hypercubes. Each hypercube has its own set of
 //       coordinates.
 //  <li> Data and id columns have to be stored with the Tiled
@@ -1202,13 +1206,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       has to be used (because the Tiled Storage Manager can only
 //       hold constant coordinates).
 // </ul>
-// The Tiled Storage Managers use internal caches to minimize IO. It is
-// possible to define a maximum cache size. The description of class
-// <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
-// contains a discussion about the effect of defining a maximum cache size.
 // <p>
 // The following Tiled Storage Managers are available:
 // <dl>
+//  <dt> <linkto class=TiledShapeStMan:description>TiledShapeStMan</linkto>
+//  <dd> can be seen as a specialization of <src>TiledDataStMan</src>
+//       by using the array shape as the id value.
+//       Similarly to <src>TiledDataStMan</src> it can maintain multiple
+//       hypercubes and store multiple rows in a hypercube, but it is
+//       easier to use, because the special <src>addHypercube</src> and
+//       <src>extendHypercube</src> functions are not needed.
+//       An hypercube is automatically added when a new array shape is
+//       encountered.
+//       <br>
+//       This storage manager could be used for a table with a column
+//       containing line and continuum data, which will result
+//       in 2 hypercubes.
 //  <dt> <linkto class=TiledCellStMan:description>TiledCellStMan</linkto>
 //  <dd> creates (automatically) a new hypercube for each row.
 //       Thus each row of the hypercolumn is stored in a separate hypercube.
@@ -1222,7 +1235,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <dt> <linkto class=TiledColumnStMan:description>TiledColumnStMan</linkto>
 //  <dd> creates one hypercube for the entire hypercolumn. Thus all cells
 //       in the hypercube have to have the same shape and therefore this
-//       storage manager is only possible when all columns in the hypercolumn
+//       storage manager is only possible if all columns in the hypercolumn
 //       have the attribute FixedShape.
 //       <br>
 //       This storage manager could be used for a table with a column
@@ -1235,52 +1248,37 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       This is done by means of the class
 //       <linkto class=TiledDataStManAccessor:description>
 //       TiledDataStManAccessor</linkto>.
-//       This makes it possible to store, say, row 0-9 in hypercube A,
+//       It makes it possible to store, say, row 0-9 in hypercube A,
 //       row 10-34 in hypercube B, row 35-54 in hypercube A again, etc..
 //       <br>
-//       This storage manager could be used to store UV-data with a mix
-//       of continuum and line data.
-//  <dt> <linkto class=TiledShapeStMan:description>TiledShapeStMan</linkto>
-//  <dd> can be seen as a specialization of <src>TiledDataStMan</src>
-//       by using the array shape as the id value.
-//       Similarly to <src>TiledDataStMan</src> it can maintain multiple
-//       hypercubes and store multiple rows in a hypercube, but is is
-//       easier to use, because the special <src>addHypercube</src> and
-//       <src>extendHypercube</src> functions are not needed.
-//       An hypercube is automatically added when a new array shape is
-//       encountered.
-//       <br>
-//       This storage manager could be used for a table with a column
-//       containing line and continuum data, which will result
-//       in 2 hypercubes.
+//       The drawback of this storage manager is that its hypercubes are not
+//       automatically extended when adding new rows. The special functions
+//       <src>addHypercube</src> and <src>extendHypercube</src> have to be
+//       used making it somewhat tedious to use.
+//       Therefore this storage manager may become obsolete in the near future.
 // </dl>
-//
-// For example:<br>
-// UV-data and weights have to be stored in a table.
-// The data have the coordinates Pol, Freq, Baseline and Time.
-// There is continuum and line data, which have to be stored in 2 separate
-// hypercubes. This could lead to the following scenario when creating/filling
-// the table:
+// The Tiled Storage Managers have 3 ways to access and cache the data.
+// Class <linkto class=TSMOption>TSMOption</linkto> can be used to setup an
+// access choice and use it in a Table constructor.
 // <ul>
-//  <li> Define a hypercolumn with data columns Data and Weight,
-//       coordinate columns Pol, Freq, Baseline and Time and id column Id.
-//       The id column is needed to differentiate between continuum and line.
-//  <li> Use the storage manager TiledDataStMan to be able to drive which
-//       hypercube is used.
-//  <li> Add the two hypercubes (using TiledDataStManAccessor)
-//       with their correct id values and coordinate values.
-//       The last axis (i.e. time) is extensible.
-//  <li> Read the data from a source (which will be in time-order).
-//       Add rows to the table, extend the appropriate hypercube and put
-//       the data into the row(s).
+//  <li> The old way (the only way until January 2010) uses a cache
+//       of its own to keep tiles that might need to be reused. It will always
+//       access entire tiles, even if only a small part is needed.
+//       It is possible to define a maximum cache size. The description of class
+//       <linkto class=ROTiledStManAccessor>ROTiledStManAccessor</linkto>
+//       contains a discussion about the effect of defining a maximum cache
+//       size.
+//  <li> Memory-mapping the data files. In this way the operating system
+//       takes care of the IO and caching. However, the limited address space
+//       may preclude using it for large tables on 32-bit systems.
+//  <li> Use buffered IO and let the kernel's file cache take care of caching.
+//       It will access the data in chunks of the given buffer size, so the
+//       entire tile does not need to be accessed if only a small part is
+//       needed.
 // </ul>
-// An alternative scenario could be that the data in the source is not
-// in time order, but that the size of the data is known. In that case
-// the hypercubes can be defined with their correct shape and putColumn
-// (with a Slicer) can be used to put the data (and reorder them implicitly).
-// <br>
-// Another alternative is to use TiledShapeStMan, so the hypercubes are
-// added or extended automatically.
+// Apart from reading, all access ways described above can also handle writing
+// and extending tables. They create fully equal files. Both little and big
+// endian data can be read or written.
 
 // <ANCHOR NAME="Tables:virtual column engines">
 // <h3>Virtual Column Engines</h3></ANCHOR>
@@ -1346,7 +1344,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   converts the data from one data type to another with the possibility
 //   to reduce the number of dimensions. For example, it can be used to
 //   store an 2-d array of StokesVector objects as a 3-d array of floats
-//   by treating the 4 data elements as an extra array axis. When the
+//   by treating the 4 data elements as an extra array axis. If the
 //   StokesVector class is simple, it can be done very efficiently.
 //  <li> The class
 //   <linkto class="ForwardColumnEngine:description">
@@ -1429,13 +1427,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // In general the default locking option will do.
 // From the above it should be clear that heavy concurrent access
 // results in a lot of flushing, thus will have a negative impact on
-// performance. When uninterrupted access to a table is needed,
+// performance. If uninterrupted access to a table is needed,
 // the <src>PermanentLocking</src> option should be used.
-// When transaction-like processing is done (e.g. updating a table
+// If transaction-like processing is done (e.g. updating a table
 // containing an observation catalogue), the <src>UserLocking</src>
 // option is probably best.
 // <p>
-// Creation or deletion of a table is not possible when that table
+// Creation or deletion of a table is not possible if that table
 // is still open in another process. The function
 // <src>Table::isMultiUsed()</src> can be used to check if a table
 // is open in other processes.
@@ -1483,7 +1481,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // }
 // </srcblock>
 //
-// The following example deletes a table when it is not used in
+// The following example deletes a table if it is not used in
 // another process.
 // <srcblock>
 // Table tab ("some.name");
@@ -1540,8 +1538,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 // <linkto class=ColumnsIndex>ColumnsIndex</linkto> itself contains a more
 // advanced example. It shows how to use a private compare function
-// to adjust the lookup when the index does not contain single
-// key values, but intervals instead. This is useful when a row in
+// to adjust the lookup if the index does not contain single
+// key values, but intervals instead. This is useful if a row in
 // a (sub)table is valid for, say, a time range instead of a single
 // timestamp.
 
@@ -1656,10 +1654,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       if it must be possible to change the shape of an array after it
 //       was stored, the SSM (or ISM) must be used. Note that in that
 //       case a lot of disk space can be wasted, because the SSM and ISM
-//       store the array data at the end of the file when the array got
+//       store the array data at the end of the file if the array got
 //       bigger and do not reuse the old space. The only way to
 //       reclaim it is by making a deep copy of the entire table.
-//  <li> When an array is stored with a TSM, it is important to decide
+//  <li> If an array is stored with a TSM, it is important to decide
 //       which TSM to use.
 //       <ol>
 //        <li> The TiledColumnStMan is the most efficient, but only suitable
@@ -1671,7 +1669,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       </ol>
 //       This is discussed in more detail
 //       <a href="#Tables:TiledStMan">above</a>.
-//  <li> When storing an array with a TSM, it can be very important to
+//  <li> If storing an array with a TSM, it can be very important to
 //       choose the right tile shape. Not only does this define the size
 //       of a tile, but it also defines if access in other directions
 //       than the natural direction can be fast. It is also discussed in

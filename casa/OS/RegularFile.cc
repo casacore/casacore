@@ -168,8 +168,8 @@ void RegularFile::manualCopy (const String& source, const String& target)
 {
     int infd (FiledesIO::open (source.chars()));
     int outfd (FiledesIO::create (target.chars()));
-    FiledesIO in (infd);
-    FiledesIO out (outfd);
+    FiledesIO in (infd, source);
+    FiledesIO out (outfd, target);
     char buf[32768];
     int nrc = in.read (sizeof(buf), buf, False);
     while (true) {

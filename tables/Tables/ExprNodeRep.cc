@@ -632,7 +632,7 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
 
 Bool TableExprNodeBinary::isSingleValue() const
 {
-  // If no children, it is a constant value.
+  // If no children, it is a constant single value.
   if (! lnode_p) {
     return True;
   } else if (! rnode_p) {

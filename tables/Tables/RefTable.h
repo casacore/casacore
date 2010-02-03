@@ -39,6 +39,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
+class TSMOption;
 class RefColumn;
 class AipsIO;
 
@@ -136,7 +137,7 @@ public:
     // Create a reference table out of a file (written by writeRefTable).
     // The referenced table will also be created (if not stored in the cache).
     RefTable (AipsIO&, const String& name, uInt nrrow, int option,
-	      const TableLock& lockOptions);
+	      const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
@@ -199,7 +200,8 @@ public:
 
     // Read a reference table from a file.
     // The referenced table will also be created (if not stored in the cache).
-    void getRef (AipsIO&, int option, const TableLock& lockOptions);
+    void getRef (AipsIO&, int option, const TableLock& lockOptions,
+                 const TSMOption& tsmOption);
 
     // This is doing a shallow copy.
     // It gives an error if the RefTable has not been stored yet.

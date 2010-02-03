@@ -279,7 +279,7 @@ void ISMBase::readIndex()
 {
     file_p->seek (0);
     // Use the file indicated by the fd from the BucketFile object.
-    FiledesIO fio (file_p->fd());
+    FiledesIO fio (file_p->fd(), file_p->name());
     TypeIO* tio;
     // It is stored in canonical or local format.
     if (asBigEndian()) {
@@ -335,7 +335,7 @@ void ISMBase::writeIndex()
     // Write a few items at the beginning of the file.
     file_p->seek (0);
     // Use the file indicated by the fd from the BucketFile object.
-    FiledesIO fio (file_p->fd());
+    FiledesIO fio (file_p->fd(), file_p->name());
     TypeIO* tio;
     // Store it in canonical or local format.
     if (asBigEndian()) {

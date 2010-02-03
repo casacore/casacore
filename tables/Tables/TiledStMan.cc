@@ -31,6 +31,8 @@
 #include <tables/Tables/TSMCoordColumn.h>
 #include <tables/Tables/TSMIdColumn.h>
 #include <tables/Tables/TSMCube.h>
+#include <tables/Tables/TSMCubeMMap.h>
+#include <tables/Tables/TSMCubeBuff.h>
 #include <tables/Tables/TSMFile.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableDesc.h>
@@ -289,7 +291,7 @@ Record TiledStMan::dataManagerSpec() const
     rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
     Record subrec;
     Int nrrec=0;
-    for (uint i=0; i<cubeSet_p.nelements(); i++) {
+    for (uInt i=0; i<cubeSet_p.nelements(); i++) {
 	if (cubeSet_p[i] != 0  &&  cubeSet_p[i]->cubeShape().nelements() > 0) {
 	    Record srec;
 	    srec.define ("CubeShape", cubeSet_p[i]->cubeShape().asVector());
@@ -355,6 +357,31 @@ Bool TiledStMan::canAddRow() const
     return True;
 }
 
+TSMCube* TiledStMan::makeTSMCube (TSMFile* file, const IPosition& cubeShape,
+                                  const IPosition& tileShape,
+                                  const Record& values,
+                                  Int64 fileOffset)
+{
+    TSMCube* hypercube;
+    if (tsmOption().option() == TSMOption::MMap) {
+        //cout << "mmapping TSM1" << endl;
+      AlwaysAssert (file->bucketFile()->isMapped(), AipsError);
+        hypercube = new TSMCubeMMap (this, file, cubeShape, tileShape,
+                                     values, fileOffset);
+    } else if (tsmOption().option() == TSMOption::Buffer) {
+        //cout << "buffered TSM1" << endl;
+        AlwaysAssert (file->bucketFile()->isBuffered(), AipsError);
+        hypercube = new TSMCubeBuff (this, file, cubeShape, tileShape,
+                                     values, fileOffset,
+                                     tsmOption().bufferSize());
+    } else {
+        //cout << "caching TSM1" << endl;
+        AlwaysAssert (file->bucketFile()->isCached(), AipsError);
+        hypercube = new TSMCube (this, file, cubeShape, tileShape,
+                                 values, fileOffset);
+    }
+    return hypercube;
+}
 
 TSMCube* TiledStMan::getTSMCube (uInt hypercube)
 {
@@ -847,14 +874,12 @@ TSMCube* TiledStMan::makeHypercube (const IPosition& cubeShape,
     }
     // Create a TSMCube object.
     // Its data will be written at the end of the file.
-    TSMCube* hypercube = new TSMCube (this, fileSet_p[filenr],
-				      cubeShape, tileShape, values);
-    return hypercube;
+    return makeTSMCube (fileSet_p[filenr], cubeShape, tileShape, values);
 }
 
 void TiledStMan::createFile (uInt index)
 {
-    TSMFile* file = new TSMFile (this, index);
+  TSMFile* file = new TSMFile (this, index, tsmOption());
     fileSet_p[index] = file;
 }
 
@@ -1091,7 +1116,7 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	headerFile >> flag;
 	if (flag) {
 	    if (fileSet_p[i] == 0) {
-		fileSet_p[i] = new TSMFile (this, headerFile, i);
+                fileSet_p[i] = new TSMFile (this, headerFile, i, tsmOption());
 	    }else{
 		fileSet_p[i]->getObject (headerFile);
 	    }
@@ -1109,7 +1134,17 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
     }
     for (i=0; i<nrCube; i++) {
 	if (cubeSet_p[i] == 0) {
-	    cubeSet_p[i] = new TSMCube (this, headerFile);
+            if (tsmOption().option() == TSMOption::MMap) {
+                //cout << "mmapping TSM" << endl;
+                cubeSet_p[i] = new TSMCubeMMap (this, headerFile);
+            } else if (tsmOption().option() == TSMOption::Buffer) {
+                //cout << "buffered TSM" << endl;
+                cubeSet_p[i] = new TSMCubeBuff (this, headerFile,
+                                                tsmOption().bufferSize());
+            }else{
+                //cout << "caching TSM" << endl;
+	        cubeSet_p[i] = new TSMCube (this, headerFile);
+            }
 	}else{
 	    cubeSet_p[i]->resync (headerFile);
 	}

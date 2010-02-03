@@ -42,6 +42,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   //# Forward Declarations
+  class TSMOption;
   class ConcatColumn;
   class AipsIO;
 
@@ -130,14 +131,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		 const Block<String>& subTables);
     ConcatTable (const Block<String>& tableNames,
 		 const Block<String>& subTables,
-		 Int option,
-		 const TableLock& lockOptions);
+		 int option,
+		 const TableLock& lockOptions,
+                 const TSMOption& tsmOption);
     // </group>
 
     // Create a concat table out of a file (written by writeConcatTable).
     // The referenced tables will also be opened (if not stored in the cache).
     ConcatTable (AipsIO&, const String& name, uInt nrrow, int option,
-		 const TableLock& lockOptions);
+		 const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
@@ -202,7 +204,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Read a concat table from a file.
     // The underlying tables will be opened (if not stored in the cache).
-    void getConcat (AipsIO&, int option, const TableLock& lockOptions);
+    void getConcat (AipsIO&, int option, const TableLock& lockOptions,
+                    const TSMOption& tsmOption);
 
     // This is doing a shallow copy.
     // It gives an error if the ConcatTable has not been stored yet.
@@ -247,6 +250,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Test if columns can be removed (no).
     virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
 
+    // Add one or more columns to the table.
+    // The column is added to the parent tables if told so and if not existing.
+    // <group>
+    virtual void addColumn (const ColumnDesc& columnDesc,
+                            Bool addToParent);
+    virtual void addColumn (const ColumnDesc& columnDesc,
+			    const String& dataManager, Bool byName,
+                            Bool addToParent);
+    virtual void addColumn (const ColumnDesc& columnDesc,
+			    const DataManager& dataManager,
+                            Bool addToParent);
+    virtual void addColumn (const TableDesc& tableDesc,
+			    const DataManager& dataManager,
+                            Bool addToParent);
+    // </group>
+
     // Remove a column.
     virtual void removeColumn (const Vector<String>& columnNames);
 
@@ -287,7 +306,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Open all tables in the required way.
     void openTables (const Block<String>& tableNames, Int option,
-		     const TableLock& lockOptions);
+		     const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // Initialize.
     // It checks if the descriptions of all tables are equal.
@@ -313,6 +332,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Write a reference table.
     void writeConcatTable (Bool fsync);
 
+    // Check if the column can be added, thus does not exist yet.
+    void checkAddColumn (const String& name, Bool addToParent);
 
     //# Data members
     Block<String>     subTableNames_p;

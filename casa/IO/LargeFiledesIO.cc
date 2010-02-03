@@ -45,10 +45,10 @@ LargeFiledesIO::LargeFiledesIO()
   itsFile     (-1)
 {}
 
-LargeFiledesIO::LargeFiledesIO (int fd)
+LargeFiledesIO::LargeFiledesIO (int fd, const String& fileName)
 : itsFile  (-1)
 {
-    attach (fd);
+  attach (fd, fileName);
 }
 
 LargeFiledesIO::~LargeFiledesIO()
@@ -57,10 +57,11 @@ LargeFiledesIO::~LargeFiledesIO()
 }
 
 
-void LargeFiledesIO::attach (int fd)
+void LargeFiledesIO::attach (int fd, const String& fileName)
 {
     AlwaysAssert (itsFile == -1, AipsError);
-    itsFile = fd;
+    itsFile     = fd;
+    itsFileName = fileName;
     fillRWFlags (fd);
     fillSeekable();
 }
@@ -91,21 +92,16 @@ void LargeFiledesIO::fillSeekable()
 }
 
 
-String LargeFiledesIO::fileName() const
-{
-    return "";
-}
-
-
 void LargeFiledesIO::write (uInt size, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
-	throw (AipsError ("LargeFiledesIO object is not writable"));
+	throw AipsError ("LargeFiledesIO " + itsFileName
+                         + "is not writable");
     }
     if (::traceWRITE(itsFile, (Char *)buf, size) != Int(size)) {
-	throw (AipsError (String("LargeFiledesIO: write error: ")
-			  + strerror(errno)));
+	throw AipsError ("LargeFiledesIO: write error in "
+                         + itsFileName + ": " + strerror(errno));
     }
 }
 
@@ -113,20 +109,22 @@ Int LargeFiledesIO::read (uInt size, void* buf, Bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
-    throw (AipsError ("LargeFiledesIO::read - descriptor is not readable"));
+    throw AipsError ("LargeFiledesIO::read " + itsFileName
+                     + " - is not readable");
   }
   Int bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
   if (bytesRead > Int(size)) { // Should never be executed
-    throw (AipsError ("LargeFiledesIO::read - read returned a bad value"));
+    throw AipsError ("LargeFiledesIO::read " + itsFileName
+                     + " - read returned a bad value");
   }
   if (bytesRead != Int(size) && throwException == True) {
     if (bytesRead < 0) {
-      throw (AipsError (String("LargeFiledesIO::read - "
-			       " error returned by system call: ") + 
-			strerror(errno)));
+      throw AipsError ("LargeFiledesIO::read " + itsFileName +
+                       " - error returned by system call: " + 
+                       strerror(errno));
     } else if (bytesRead < Int(size)) {
-      throw (AipsError ("LargeFiledesIO::read - "
-			"incorrect number of bytes read"));
+      throw AipsError ("LargeFiledesIO::read " + itsFileName +
+                       " - incorrect number of bytes read");
     }
   }
   return bytesRead;
@@ -181,8 +179,8 @@ int LargeFiledesIO::create (const Char* name, int mode)
 {
     int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
     if (fd == -1) {
-	throw (AipsError ("LargeFiledesIO: file " + String(name) +
-			  " could not be created: " + strerror(errno)));
+      throw AipsError ("LargeFiledesIO: file " + String(name) +
+                       " could not be created: " + strerror(errno));
     }
     return fd;
 }
@@ -195,18 +193,17 @@ int LargeFiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 	fd = ::trace2OPEN ((Char *)name, O_RDONLY);
     }
     if (throwExcp  &&  fd == -1) {
-	throw (AipsError ("LargeFiledesIO: file " + String(name) +
-			  " could not be opened: " + strerror(errno)));
+	throw AipsError ("LargeFiledesIO: file " + String(name) +
+                         " could not be opened: " + strerror(errno));
     }
     return fd;
 }
 void LargeFiledesIO::close (int fd)
 {
     if (::traceCLOSE (fd)  == -1) {
-	throw (AipsError (String("LargeFiledesIO: file could not be closed: ")
-			  + strerror(errno)));
+	throw AipsError (String("LargeFiledesIO: file could not be closed: ")
+                         + strerror(errno));
     }
 }
 
 } //# NAMESPACE CASA - END
-

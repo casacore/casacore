@@ -273,7 +273,7 @@ int main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FiledesIO file4 (fd);
+	FiledesIO file4 (fd, "");
 	doIt (file4);
 	close (fd);
 
@@ -286,7 +286,7 @@ int main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FiledesIO file5 (fd1);
+	FiledesIO file5 (fd1, "");
 	checkValues (file5, 100);
 	close (fd1);
 
@@ -299,7 +299,7 @@ int main()
 	} else {
 	    cout << "readonly" << endl;
 	}
-	FiledesIO file6 (fd2);
+	FiledesIO file6 (fd2, "");
 	close (fd2);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;

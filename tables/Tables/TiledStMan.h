@@ -34,6 +34,7 @@
 #include <tables/Tables/DataManager.h>
 #include <casa/Containers/Block.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/OS/Conversion.h>
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -284,6 +285,11 @@ public:
     // It also returns the position of the row in that hypercube.
     virtual TSMCube* getHypercube (uInt rownr, IPosition& position) = 0;
 
+    // Make the correct TSMCube type (depending on tsmOption()).
+    TSMCube* makeTSMCube (TSMFile* file, const IPosition& cubeShape,
+                          const IPosition& tileShape,
+                          const Record& values, Int64 fileOffset=-1);
+
     // Read a tile and convert the data to local format.
     void readTile (char* local, const Block<uInt>& localOffset,
 		   const char* external, const Block<uInt>& externalOffset,
@@ -352,6 +358,9 @@ public:
     // Initialize the new coordinates for the given cube.
     void initCoordinates (TSMCube* hypercube);
 
+    // Get pointer to data column object.
+    const TSMDataColumn* getDataColumn (uInt colnr) const
+      { return dataCols_p[colnr]; }
 
 protected:
     // Set the persistent maximum cache size.

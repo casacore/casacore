@@ -110,14 +110,14 @@ public:
 
     // Calculate the offset for a given position.
     // <group>
-    uInt offset (const IPosition& position) const;
-    uInt offset (const IPosition& position, const IPosition& origin) const;
+    size_t offset (const IPosition& position) const;
+    size_t offset (const IPosition& position, const IPosition& origin) const;
     // </group>
 
     // Calculate the position for a given offset.
     // <group>
-    IPosition position (uInt offset) const;
-    IPosition position (uInt offset, const IPosition& origin) const;
+    IPosition position (size_t offset) const;
+    IPosition position (size_t offset, const IPosition& origin) const;
     // </group>
 
     // Calculate the increments when stepping through an array in

@@ -31,6 +31,7 @@
 
 //# Includes
 #include <tables/Tables/TSMCube.h>
+#include <tables/Tables/TSMOption.h>
 #include <casa/Utilities/DataType.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -93,16 +94,19 @@ public:
   // Create a TiledFileAccess object.
   // The data is assumed to be in local canonical format
   // (thus big endian on e.g. SUN and little endian on e.g. PC).
+  // The TSMOption determines how the file is accessed.
   TiledFileAccess (const String& fileName, Int64 fileOffset,
 		   const IPosition& shape, const IPosition& tileShape,
-		   DataType dataType, uInt maximumCacheSize=0,
+		   DataType dataType, 
+                   const TSMOption& = TSMOption(),
 		   Bool writable=False);
 
   // Create a TiledFileAccess object.
   // The endian format of the data is explicitly given.
   TiledFileAccess (const String& fileName, Int64 fileOffset,
 		   const IPosition& shape, const IPosition& tileShape,
-		   DataType dataType, uInt maximumCacheSize,
+		   DataType dataType,
+                   const TSMOption&,
 		   Bool writable, Bool bigEndian);
 
   ~TiledFileAccess();

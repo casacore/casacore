@@ -30,7 +30,7 @@
 #define CASA_MMAPIO_H
 
 //# Includes
-#include <casa/IO/LargeFiledesIO.h>
+#include <casa/IO/MMapfdIO.h>
 #include <casa/OS/RegularFile.h>
 
 namespace casa
@@ -59,11 +59,11 @@ namespace casa
 // contents.
 // </synopsis>
 
-class MMapIO: public LargeFiledesIO
+class MMapIO: public MMapfdIO
 {
 public:
   // Open the given file and map it entirely into memory with read access.
-  // The map has also write access when the file is opened for write.
+  // The map has write access if the file is opened for write.
   explicit MMapIO (const RegularFile& regularFile,
                    ByteIO::OpenOption = ByteIO::Old);
 
@@ -71,63 +71,12 @@ public:
   // It will flush and unmap the file.
   ~MMapIO();
 
-  // Flush changed mapped data to the file.
-  // Nothing is done if the file is readonly.
-  void flush();
-
-  // Write the number of bytes from the seek position on.
-  // The file will be extended and remapped when writing beyond end-of-file.
-  // In that case possible pointers obtained using <src>getXXPointer</src>
-  // are not valid anymore.
-  virtual void write (uInt size, const void* buf);
-
-  // Read <src>size</src> bytes from the File. Returns the number of bytes
-  // actually read. Will throw an exception (AipsError) if the requested
-  // number of bytes could not be read unless throwException is set to
-  // False. Will always throw an exception if the file is not readable or
-  // the system call returns an undocumented value.
-  virtual Int read (uInt size, void* buf, Bool throwException=True);
-
-  // Get a read or write pointer to the given position in the mapped file.
-  // An exception is thrown if beyond end-of-file or it not writable.
-  // These functions should be used with care. If the pointer is used to
-  // access data beyond the file size, a segmentation fault will occur.
-  // So it means that the write pointer can only be used to update the file,
-  // not to extend it. The <src>seek</src> and <src>write</src> functions
-  // should be used to extend a file.
-  // <group>
-  const void* getReadPointer (Int64 offset) const;
-  void* getWritePointer (Int64 offset);
-  // </group>
-
-  // Get the file size.
-  Int64 getFileSize() const
-    { return itsFileSize; }
-
-protected:
-  // Reset the position pointer to the given value. It returns the
-  // new position.
-  virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
-
 private:
-  // Map the entire file.
-  void mapFile();
-
-  // Unmap the file.
-  void unmapFile();
-
   // Forbid copy constructor and assignment
   // <group>
   MMapIO (const MMapIO&);
   MMapIO& operator= (const MMapIO&);
   // </group>
-
-  Int64  itsFileSize;       //# File size
-  Int64  itsPosition;       //# Current seek position
-  char*  itsPtr;            //# Pointer to memory map
-  int    itsFD;
-  Bool   itsIsWritable;
-  String itsFileName;
 };
 
 } // end namespace

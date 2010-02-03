@@ -30,11 +30,18 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/IO/MMapfdIO.h>
+#include <casa/IO/LargeFilebufIO.h>
 #include <casa/BasicSL/String.h>
 #include <unistd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+// Forward Declarations.
+class MMapfdIO;
+class LargeFilebufIO;
+
 
 // <summary>
 // File object for the bucket cache.
@@ -92,15 +99,29 @@ class BucketFile
 public:
     // Create a BucketFile object for a new file.
     // The file with the given name will be created.
-    explicit BucketFile (const String& fileName);
+    // It can be indicated if a MMapfdIO and/or LargeFilebufIO object must be
+    // created for the file.
+    explicit BucketFile (const String& fileName,
+                         uInt bufSizeFile=0, Bool mappedFile=False);
 
     // Create a BucketFile object for an existing file.
     // The file should be opened by the <src>open</src>.
-    // Tell if the file must later be opened writable.
-    BucketFile (const String& fileName, Bool writable);
+    // Tell if the file must be opened writable.
+    // It can be indicated if a MMapfdIO and/or LargeFilebufIO object must be
+    // created for the file.
+    BucketFile (const String& fileName, Bool writable,
+                uInt bufSizeFile=0, Bool mappedFile=False);
 
     // The destructor closes the file (if open).
     ~BucketFile();
+
+    // Get the mapped file object.
+    MMapfdIO* mappedFile()
+      { return mappedFile_p; }
+
+    // Get the buffered file object.
+    LargeFilebufIO* bufferedFile()
+      { return bufferedFile_p; }
 
     // Open the file if not open yet.
     void open();
@@ -114,7 +135,7 @@ public:
     // Fsync the file (i.e. force the data to be physically written).
     void fsync();
 
-    // Set the file to read/write access.
+    // Set the file to read/write access. It is reopened if not writable.
     // It does nothing if the file is already writable.
     void setRW();
 
@@ -143,13 +164,26 @@ public:
     // Get the file descriptor of the internal file.
     int fd();
 
+    // Is the file cached, mapped, or buffered?
+    // <group>
+    Bool isCached() const;
+    Bool isMapped() const;
+    Bool isBuffered() const;
+    // </group>
+
 private:
     // The file name.
     String name_p;
     // The (logical) writability of the file.
     Bool isWritable_p;
+    Bool isMapped_p;
+    uInt bufSize_p;
     // The file descriptor.
     int fd_p;
+    // The optional mapped file.
+    MMapfdIO* mappedFile_p;
+    // The optional buffered file.
+    LargeFilebufIO* bufferedFile_p;
 	    
 
     // Forbid copy constructor.
@@ -157,6 +191,12 @@ private:
 
     // Forbid assignment.
     BucketFile& operator= (const BucketFile&);
+
+    // Create the mapped or buffered file object.
+    void createMapBuf();
+
+    // Delete the possible mapped or buffered file object.
+    void deleteMapBuf();
 };
 
 
@@ -172,6 +212,12 @@ inline int BucketFile::fd()
 inline void BucketFile::seek (Int offset) const
     { seek (Int64(offset)); }
 
+inline Bool BucketFile::isCached() const
+    { return !isMapped_p && bufSize_p==0; }
+inline Bool BucketFile::isMapped() const
+    { return isMapped_p; }
+inline Bool BucketFile::isBuffered() const
+    { return bufSize_p>0; }
 
 
 } //# NAMESPACE CASA - END

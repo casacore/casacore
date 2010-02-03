@@ -461,7 +461,6 @@ void FITSImage::setup()
 
 void FITSImage::open()
 {
-   uInt maxCacheSize = 0;
    Bool writable = False;
    Bool canonical = True;    
 
@@ -469,7 +468,7 @@ void FITSImage::open()
 
    pTiledFile_p = new TiledFileAccess(name_p, fileOffset_p,
 				      shape_p.shape(), shape_p.tileShape(),
-                                      dataType_p, maxCacheSize,
+                                      dataType_p, TSMOption(),
 				      writable, canonical);
 
 // Shares the pTiledFile_p pointer. Scale factors for 16bit and 32 bit integers

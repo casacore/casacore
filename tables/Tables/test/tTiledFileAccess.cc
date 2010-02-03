@@ -62,7 +62,8 @@ int main()
     }
     try {
       TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", 0, shape,
-			   IPosition(2,16,1), TpFloat, 0, False, True);
+			   IPosition(2,16,1), TpFloat, TSMOption::Cache,
+                           False, True);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -103,15 +104,15 @@ int main()
     try {
       // The array starts at offset off2.
       TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", off2, shape,
-			   IPosition(2,16,1), TpFloat, 100);
+			   IPosition(2,16,1), TpFloat,
+                           TSMOption(TSMOption::MMap, 0, 1));
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
-      AlwaysAssertExit (tfa.maximumCacheSize() == 100);
+      AlwaysAssertExit (tfa.maximumCacheSize() == 1024*1024);
       cout << tfa.cacheSize() << endl;
       tfa.setMaximumCacheSize (100000);
       AlwaysAssertExit (tfa.maximumCacheSize() == 100000);
-      
       AlwaysAssertExit (allEQ (arr, tfa.getFloat (Slicer(IPosition(2,0,0),
 							 shape))));
       tfa.showCacheStatistics (cout);
@@ -143,12 +144,15 @@ int main()
     try {
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True, True);
+			    IPosition(2,17,1), TpDComplex,
+                            TSMOption::Cache, True, True);
+      AlwaysAssertExit (tfac.isWritable());
       AlwaysAssertExit (allEQ (arr, tfac.getDComplex (slicer)));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True);
+			    IPosition(2,17,1), TpDComplex,
+                            TSMOption::Cache, True);
       AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
       tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
       tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
@@ -158,11 +162,13 @@ int main()
     }
     try {
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True, True);
+			    IPosition(2,17,1), TpDComplex,
+                            TSMOption::Buffer, True, True);
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
-			    IPosition(2,17,1), TpDComplex, 0, True);
+			    IPosition(2,17,1), TpDComplex,
+                            TSMOption::Buffer, True);
       IPosition st(2,0,0);
       IPosition end(2,15,0);
       IPosition leng(2,16,1);
@@ -202,7 +208,8 @@ int main()
     try {
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
-			    IPosition(2,17,4), TpShort, 0, True, True);
+			    IPosition(2,17,4), TpShort,
+                            TSMOption::Cache, True, True);
       AlwaysAssertExit (allEQ (arrs, tfac.getShort (slicer)));
       AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
 						    short(-32768))));

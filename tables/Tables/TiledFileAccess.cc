@@ -44,7 +44,7 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
 				  const IPosition& shape,
 				  const IPosition& tileShape,
 				  DataType dataType,
-				  uInt maximumCacheSize,
+                                  const TSMOption& tsmOpt,
 				  Bool writable)
 : itsCube     (0),
   itsTSM      (0),
@@ -52,9 +52,10 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
   itsDataType (dataType)
 {
   itsLocalPixelSize = ValType::getTypeSize (dataType);
-  itsTSM  = new TiledFileHelper (fileName, shape, dataType, maximumCacheSize,
+  itsTSM  = new TiledFileHelper (fileName, shape, dataType, tsmOpt,
 				 writable, HostInfo::bigEndian());
-  itsCube = new TSMCube (itsTSM, itsTSM->file(), shape, tileShape, fileOffset);
+  itsCube = itsTSM->makeTSMCube (itsTSM->file(), shape, tileShape,
+                                 Record(), fileOffset);
 }
 
 TiledFileAccess::TiledFileAccess (const String& fileName,
@@ -62,7 +63,7 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
 				  const IPosition& shape,
 				  const IPosition& tileShape,
 				  DataType dataType,
-				  uInt maximumCacheSize,
+                                  const TSMOption& tsmOpt,
 				  Bool writable,
 				  Bool bigEndian)
 : itsCube     (0),
@@ -71,9 +72,10 @@ TiledFileAccess::TiledFileAccess (const String& fileName,
   itsDataType (dataType)
 {
   itsLocalPixelSize = ValType::getTypeSize (dataType);
-  itsTSM  = new TiledFileHelper (fileName, shape, dataType, maximumCacheSize,
+  itsTSM  = new TiledFileHelper (fileName, shape, dataType, tsmOpt,
 				 writable, bigEndian);
-  itsCube = new TSMCube (itsTSM, itsTSM->file(), shape, tileShape, fileOffset);
+  itsCube = itsTSM->makeTSMCube (itsTSM->file(), shape, tileShape,
+                                 Record(), fileOffset);
 }
 
 TiledFileAccess::~TiledFileAccess()
@@ -135,7 +137,7 @@ void TiledFileAccess::get (Array<Bool>& buffer, const Slicer& section)
   Bool deleteIt;
   Bool* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -149,7 +151,7 @@ void TiledFileAccess::get (Array<Short>& buffer, const Slicer& section)
   Bool deleteIt;
   Short* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -163,7 +165,7 @@ void TiledFileAccess::get (Array<Int>& buffer, const Slicer& section)
   Bool deleteIt;
   Int* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -177,7 +179,7 @@ void TiledFileAccess::get (Array<Float>& buffer, const Slicer& section)
   Bool deleteIt;
   Float* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -191,7 +193,7 @@ void TiledFileAccess::get (Array<Double>& buffer, const Slicer& section)
   Bool deleteIt;
   Double* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -205,7 +207,7 @@ void TiledFileAccess::get (Array<Complex>& buffer, const Slicer& section)
   Bool deleteIt;
   Complex* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -219,7 +221,7 @@ void TiledFileAccess::get (Array<DComplex>& buffer, const Slicer& section)
   Bool deleteIt;
   DComplex* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, False);
+  			  itsLocalPixelSize, itsLocalPixelSize, False);
   buffer.putStorage (dataPtr, deleteIt);
 }
 
@@ -308,7 +310,7 @@ void TiledFileAccess::put (const Array<Bool>& buffer, const Slicer& section)
   Bool deleteIt;
   const Bool* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -323,7 +325,7 @@ void TiledFileAccess::put (const Array<Short>& buffer, const Slicer& section)
   Bool deleteIt;
   const Short* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -338,7 +340,7 @@ void TiledFileAccess::put (const Array<Int>& buffer, const Slicer& section)
   Bool deleteIt;
   const Int* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -353,7 +355,7 @@ void TiledFileAccess::put (const Array<Float>& buffer, const Slicer& section)
   Bool deleteIt;
   const Float* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -368,7 +370,7 @@ void TiledFileAccess::put (const Array<Double>& buffer, const Slicer& section)
   Bool deleteIt;
   const Double* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -383,7 +385,7 @@ void TiledFileAccess::put (const Array<Complex>& buffer, const Slicer& section)
   Bool deleteIt;
   const Complex* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 
@@ -399,7 +401,7 @@ void TiledFileAccess::put (const Array<DComplex>& buffer,
   Bool deleteIt;
   const DComplex* dataPtr = buffer.getStorage (deleteIt);
   itsCube->accessStrided (start, end, stride, (char*)dataPtr, 0,
-  			  itsLocalPixelSize, True);
+  			  itsLocalPixelSize, itsLocalPixelSize, True);
   buffer.freeStorage (dataPtr, deleteIt);
 }
 

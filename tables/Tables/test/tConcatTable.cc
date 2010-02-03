@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>
@@ -250,6 +251,11 @@ void doIt (const Table& tab)
   }
   ROScalarColumn<Int> expr2ab(expr2tab, "ab");
   cout << expr2ab.getColumn() << endl;
+  // Add a column.
+  Table tabrw(tab);
+  tabrw.reopenRW();
+  tabrw.addColumn (ScalarColumnDesc<Int>("newcol"));
+  AlwaysAssertExit (tab.tableDesc().isColumn ("newcol"));
 }
 
 void doIt1 (const String& tableName)

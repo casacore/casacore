@@ -76,7 +76,8 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
   //# Initialize the data managers.
   Table tab(this, False);
   nrrowToAdd_p = nrrow;
-  colSetPtr_p->initDataManagers (nrrow, False, tab);
+  colSetPtr_p->initDataManagers (nrrow, False,
+                                 TSMOption(TSMOption::Cache,0,0), tab);
   //# Initialize the columns if needed.
   if (initialize  &&  nrrow > 0) {
     colSetPtr_p->initialize (0, nrrow-1);
@@ -258,14 +259,16 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc, Bool)
   // Make sure the MemoryStMan is used.
   cold.dataManagerType() = "MemoryStMan";
   cold.dataManagerGroup() = "MSMTAB";
-  colSetPtr_p->addColumn (cold, False, tab);
+  colSetPtr_p->addColumn (cold, False,
+                          TSMOption(TSMOption::Cache,0,0), tab);
 }
 void MemoryTable::addColumn (const ColumnDesc& columnDesc,
 			     const String& dataManager, Bool byName, Bool)
 {
   Table tab(this, False);
   if (byName) {
-    colSetPtr_p->addColumn (columnDesc, dataManager, byName, False, tab);
+    colSetPtr_p->addColumn (columnDesc, dataManager, byName, False,
+                            TSMOption(TSMOption::Cache,0,0), tab);
   } else {
     // Make sure the MemoryStMan is used if no virtual engine is used.
     DataManager* dmptr = DataManager::getCtor(dataManager)
@@ -282,7 +285,8 @@ void MemoryTable::addColumn (const ColumnDesc& columnDesc,
   if (dataManager.isStorageManager()) {
     addColumn (columnDesc, False);
   } else {
-    colSetPtr_p->addColumn (columnDesc, dataManager, False, tab);
+    colSetPtr_p->addColumn (columnDesc, dataManager, False,
+                            TSMOption(TSMOption::Cache,0,0), tab);
   }
 }
 void MemoryTable::addColumn (const TableDesc& tableDesc,
@@ -292,9 +296,11 @@ void MemoryTable::addColumn (const TableDesc& tableDesc,
   // Make sure the MemoryStMan is used if no virtual engine is used.
   if (dataManager.isStorageManager()) {
     MemoryStMan stman(dataManager.dataManagerName());
-    colSetPtr_p->addColumn (tableDesc, stman, False, tab);
+    colSetPtr_p->addColumn (tableDesc, stman, False,
+                            TSMOption(TSMOption::Cache,0,0), tab);
   } else {
-    colSetPtr_p->addColumn (tableDesc, dataManager, False, tab);
+    colSetPtr_p->addColumn (tableDesc, dataManager, False,
+                            TSMOption(TSMOption::Cache,0,0), tab);
   }
 }
 

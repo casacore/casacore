@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/ColumnCache.h>
+#include <tables/Tables/TSMOption.h>
 #include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Containers/SimOrdMap.h>
@@ -282,6 +283,10 @@ public:
     Bool asBigEndian() const
       { return asBigEndian_p; }
 
+    // Get the TSM option.
+    const TSMOption& tsmOption() const
+      { return tsmOption_p; }
+
     // Compose a keyword name from the given keyword appended with the
     // sequence number (e.g. key_0).
     // This makes the keyword name unique if multiple data managers
@@ -357,6 +362,10 @@ protected:
     void setEndian (Bool bigEndian)
       { asBigEndian_p = bigEndian; }
 
+    // Tell the data manager which TSM option to use.
+    void setTsmOption (const TSMOption& tsmOption)
+      { tsmOption_p = tsmOption; }
+
     // Throw an exception in case data type is TpOther, because the
     // storage managers (and maybe other data managers) do not support
     // such columns.
@@ -367,6 +376,7 @@ private:
     uInt         nrcol_p;            //# #columns in this st.man.
     uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
     Bool         asBigEndian_p;      //# store data in big or little endian
+    TSMOption    tsmOption_p;
     Table*       table_p;            //# Table this data manager belongs to
     mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 
