@@ -648,9 +648,6 @@ IPosition min (const IPosition& left, const IPosition& right)
     return result;
 }
 
-// <thrown>
-//    <item> ArrayConformanceError
-// </thrown>
 Int64 IPosition::product() const
 {
     if (nelements() ==  0) {
@@ -658,9 +655,19 @@ Int64 IPosition::product() const
     }
     Int64 total = 1;
     for (uInt i=0; i<nelements(); i++) {
-	total *= (*this)[i];
+	total *= data_p[i];
     }
     return total;
+}
+
+Bool IPosition::allOne() const
+{
+    for (uInt i=0; i<nelements(); ++i) {
+        if (data_p[i] != 1) {
+            return False;
+        }
+    }
+    return True;
 }
 
 // <thrown>
