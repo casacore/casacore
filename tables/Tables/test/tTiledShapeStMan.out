@@ -1,3 +1,6 @@
+WriteFixed ...
+Checking 101 rows
+WriteVar ...
  pol.isDefined=0
  pol.isDefined=1
 data.isDefined=0
@@ -28,6 +31,8 @@ data.isDefined=0
 weig.isDefined=1
 freq.isDefined=1
 [16][25][16, 25][16, 25]
+Checking 5 rows
+WriteFixVar ...
  pol.isDefined=1
  pol.isDefined=1
 data.isDefined=1
@@ -58,6 +63,8 @@ data.isDefined=1
 weig.isDefined=1
 freq.isDefined=1
 [16][25][16, 25][16, 25]
+Checking 5 rows
+WriteVarShaped ...
  pol.isDefined=0
  pol.isDefined=1
 data.isDefined=0
@@ -118,3 +125,6 @@ data.isDefined=0
 weig.isDefined=1
 freq.isDefined=1
 [16][10][16, 10][16, 10]
+Checking 10 rows
+WriteNoHyper ...
+Checking 101 rows

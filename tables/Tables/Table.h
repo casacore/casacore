@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <tables/Tables/BaseTable.h>
 #include <tables/Tables/TableLock.h>
+#include <tables/Tables/TSMOption.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/Sort.h>
 
@@ -155,6 +156,7 @@ friend class TableExprNode;
 friend class TableExprNodeRep;
 
 public:
+    // Define the possible options how a table can be opened.
     enum TableOption {
 	// existing table
 	Old=1,
@@ -170,6 +172,7 @@ public:
 	Delete
     };
 
+    // Define the possible table types.
     enum TableType {
 	// plain table (stored on disk)
         Plain,
@@ -177,16 +180,19 @@ public:
 	Memory
     };
 
+    // Define the possible endian formats in which table data can be stored.
     enum EndianFormat {
 	// store table data in big endian (e.g. SUN) format
 	BigEndian=1,
 	// store table data in little endian (e.g. Intel) format
 	LittleEndian,
-	// store data in endian format of the machine used
+	// store data in the endian format of the machine used
 	LocalEndian,
 	// use endian format defined in the aipsrc variable table.endianformat
+        // If undefined, it defaults to LocalEndian.
 	AipsrcEndian
     };
+
 
     // Define the signature of the function being called when the state
     // of a scratch table changes (i.e. created, closed, renamed,
@@ -207,15 +213,11 @@ public:
     static ScratchCallback* setScratchCallback (ScratchCallback*);
 
 
-    // Create a null Table object (i.e. no table is attached yet).
+    // Create a null Table object (i.e. a NullTable is attached).
     // The sole purpose of this constructor is to allow construction
     // of an array of Table objects.
     // The assignment operator can be used to make a null object
-    // reference a column.
-    // Note that sort functions, etc. will cause a segmentation fault
-    // when operating on a null object. It was felt it was too expensive
-    // to test on null over and over again. The user should use the isNull
-    // or throwIfNull function in case of doubt.
+    // reference a proper table.
     Table();
 
     // Create a table object for an existing table.
@@ -232,19 +234,22 @@ public:
     // of 5 seconds. Otherwise DefaultLocking keeps the locking options
     // of the already open table.
     // <group>
-    explicit Table (const String& tableName, TableOption = Table::Old);
+    explicit Table (const String& tableName, TableOption = Table::Old,
+                    const TSMOption& = TSMOption());
     Table (const String& tableName, const TableLock& lockOptions,
-	   TableOption = Table::Old);
+	   TableOption = Table::Old, const TSMOption& = TSMOption());
     Table (const String& tableName, const String& tableDescName,
-	   TableOption = Table::Old);
+	   TableOption = Table::Old, const TSMOption& = TSMOption());
     Table (const String& tableName, const String& tableDescName,
-	   const TableLock& lockOptions, TableOption = Table::Old);
+	   const TableLock& lockOptions, TableOption = Table::Old,
+           const TSMOption& = TSMOption());
     // </group>
 
     // Make a new empty table (plain (scratch) or memory type).
     // Columns should be added to make it a real one.
     // Note that the endian format is only relevant for plain tables.
-    explicit Table (TableType, EndianFormat = Table::AipsrcEndian);
+  explicit Table (TableType, EndianFormat = Table::AipsrcEndian,
+                  const TSMOption& = TSMOption());
 
     // Make a table object for a new table, which can thereafter be used
     // for reading and writing.
@@ -262,19 +267,20 @@ public:
     // <br>The data will be stored in the given endian format.
     // <group>
     explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False,
-		    EndianFormat = Table::AipsrcEndian);
+		    EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
     Table (SetupNewTable&, TableType,
 	   uInt nrrow = 0, Bool initialize = False,
-	   EndianFormat = Table::AipsrcEndian);
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
     Table (SetupNewTable&, TableType, const TableLock& lockOptions,
 	   uInt nrrow = 0, Bool initialize = False,
-	   EndianFormat = Table::AipsrcEndian);
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
     Table (SetupNewTable&, TableLock::LockOption,
 	   uInt nrrow = 0, Bool initialize = False,
-	   EndianFormat = Table::AipsrcEndian);
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
     Table (SetupNewTable&, const TableLock& lockOptions,
 	   uInt nrrow = 0, Bool initialize = False,
-	   EndianFormat = Table::AipsrcEndian);
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
     // </group>
 
     // Create a table object as the virtual concatenation of
@@ -302,11 +308,11 @@ public:
 		    const Block<String>& subTables = Block<String>());
     explicit Table (const Block<String>& tableNames,
 		    const Block<String>& subTables = Block<String>(),
-		    TableOption = Table::Old);
+		    TableOption = Table::Old, const TSMOption& = TSMOption());
     Table (const Block<String>& tableNames,
 	   const Block<String>& subTables,
 	   const TableLock& lockOptions,
-	   TableOption = Table::Old);
+	   TableOption = Table::Old, const TSMOption& = TSMOption());
     // </group>
 
     // Copy constructor (reference semantics).
@@ -438,7 +444,7 @@ public:
     // does not synchronize itself automatically.
     void resync();
 
-    // Test if the object is null, i.e. does not reference a table yet.
+    // Test if the object is null, i.e. does not reference a proper table.
     // This is the case if the default constructor is used.
     Bool isNull() const
       { return (baseTabPtr_p == 0  ?  True : baseTabPtr_p->isNull()); }
@@ -966,7 +972,7 @@ protected:
 
     // Open an existing table.
     void open (const String& name, const String& type, int tableOption,
-	       const TableLock& lockOptions);
+	       const TableLock& lockOptions, const TSMOption& tsmOpt);
 
 
 private:
@@ -974,6 +980,7 @@ private:
     static BaseTable* makeBaseTable (const String& name, const String& type,
 				     int tableOption,
 				     const TableLock& lockOptions,
+                                     const TSMOption& tsmOpt,
 				     Bool addToCache, uInt locknr);
 
 

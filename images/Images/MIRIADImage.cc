@@ -435,7 +435,6 @@ void MIRIADImage::setup()
 
 void MIRIADImage::open()
 {
-   uInt maxCacheSize = 0;
    Bool writable = False;
    Bool canonical = True;    
    String iname = name_p + "/image";    // fails for very small miriad images !!
@@ -444,7 +443,7 @@ void MIRIADImage::open()
 
    pTiledFile_p = new TiledFileAccess(iname, fileOffset_p,
 				      shape_p.shape(), shape_p.tileShape(),
-                                      dataType_p, maxCacheSize,
+                                      dataType_p, TSMOption(),
 				      writable, canonical);
 
    // Shares the pTiledFile_p pointer. 

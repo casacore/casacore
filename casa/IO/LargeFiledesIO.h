@@ -93,14 +93,17 @@ public:
     LargeFiledesIO();
 
     // Construct from the given file descriptor.
-    explicit LargeFiledesIO (int fd);
+    // The file name is only used in possible error messages.
+    explicit LargeFiledesIO (int fd, const String& fileName);
 
     // Attach to the given file descriptor.
-    void attach (int fd);
+    // An exception is thrown if it is not in a detached state.
+    // The file name is only used in error messages.
+    void attach (int fd, const String& fileName);
 
     // The destructor does not close the file.
     ~LargeFiledesIO();
-    
+
     // Write the number of bytes.
     virtual void write (uInt size, const void* buf);
 
@@ -125,7 +128,8 @@ public:
     virtual Bool isSeekable() const;
 
     // Get the file name of the file attached.
-    virtual String fileName() const;
+    const String& fileName() const
+      { return itsFileName; }
 
     // Some static convenience functions for file create/open/close.
     // <group>
@@ -137,7 +141,11 @@ public:
 
 
 protected:
-    // Detach the FILE. Close it when it is owned.
+    // Get the file descriptor.
+    int fd() const
+      { return itsFile; }
+
+    // Detach from the file descriptor. It is not closed.
     void detach();
 
     // Determine if the file descriptor is readable and/or writable.
@@ -151,11 +159,11 @@ protected:
     virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
 
 private:
-    Bool        itsOwner;
-    Bool        itsSeekable;
-    Bool        itsReadable;
-    Bool        itsWritable;
-    int         itsFile;
+    Bool   itsSeekable;
+    Bool   itsReadable;
+    Bool   itsWritable;
+    int    itsFile;
+    String itsFileName;
 
     // Copy constructor, should not be used.
     LargeFiledesIO (const LargeFiledesIO& that);

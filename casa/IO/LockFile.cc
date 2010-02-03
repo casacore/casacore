@@ -126,7 +126,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     } else {
         itsUseLocker = FileLocker (fd, 4*seqnr+1, 1);
     }
-    itsFileIO = new FiledesIO (fd);
+    itsFileIO = new FiledesIO (fd, itsName);
     itsCanIO  = new CanonicalIO (itsFileIO);
     // Set the file to in use by acquiring a read lock.
     itsUseLocker.acquire (FileLocker::Read, 1);

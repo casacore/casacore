@@ -78,7 +78,7 @@ int main (int argc, const char* argv[])
 	}
 	timer.show ("RegularFileIO write");
 	int fd = FiledesIO::create ("tFileIO_tmp.dat1");
-	FiledesIO file2 (fd);
+	FiledesIO file2 (fd, "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -102,7 +102,7 @@ int main (int argc, const char* argv[])
 	    if (buf[0] != 0) cout << "mismatch" << endl;
 	}
 	timer.show ("RegularFileIO read ");
-	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.dat1"));
+	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.dat1"), "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -125,7 +125,7 @@ int main (int argc, const char* argv[])
 	}
 	timer.show ("LargeRegularFileIO write");
 	int fd = LargeFiledesIO::create ("tFileIO_tmp.dat2");
-	LargeFiledesIO file2 (fd);
+	LargeFiledesIO file2 (fd, "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -148,7 +148,7 @@ int main (int argc, const char* argv[])
 	    file1.read (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO read ");
-	LargeFiledesIO file2 (LargeFiledesIO::open ("tFileIO_tmp.dat2"));
+	LargeFiledesIO file2 (LargeFiledesIO::open ("tFileIO_tmp.dat2"), "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -170,7 +170,7 @@ int main (int argc, const char* argv[])
 	    file1.read (leng, buf);
 	}
 	timer.show ("RegularFileIO large ");
-	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.dat2"));
+	FiledesIO file2 (FiledesIO::open ("tFileIO_tmp.dat2"), "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -191,7 +191,7 @@ int main (int argc, const char* argv[])
 	    file1.read (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO small");
-	LargeFiledesIO file2 (LargeFiledesIO::open ("tFileIO_tmp.dat1"));
+	LargeFiledesIO file2 (LargeFiledesIO::open ("tFileIO_tmp.dat1"), "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {

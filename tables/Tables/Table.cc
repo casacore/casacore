@@ -74,41 +74,44 @@ Table::Table()
     baseTabPtr_p->link();
 }
 
-Table::Table (const String& name, TableOption option)
+  Table::Table (const String& name, TableOption option, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, "", option, TableLock());
+  open (name, "", option, TableLock(), tsmOpt);
 }
 
 Table::Table (const String& name, const TableLock& lockOptions,
-	      TableOption option)
+	      TableOption option, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, "", option, lockOptions);
+  open (name, "", option, lockOptions, tsmOpt);
 }
     
-Table::Table (const String& name, const String& type, TableOption option)
+  Table::Table (const String& name, const String& type, TableOption option,
+                const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, type, option, TableLock());
+  open (name, type, option, TableLock(), tsmOpt);
 }
     
 Table::Table (const String& name, const String& type,
-	      const TableLock& lockOptions, TableOption option)
+	      const TableLock& lockOptions, TableOption option,
+              const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    open (name, type, option, lockOptions);
+  open (name, type, option, lockOptions, tsmOpt);
 }
 
-Table::Table (Table::TableType type, Table::EndianFormat endianFormat)
+  Table::Table (Table::TableType type, Table::EndianFormat endianFormat,
+                const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
@@ -118,24 +121,24 @@ Table::Table (Table::TableType type, Table::EndianFormat endianFormat)
         baseTabPtr_p = new MemoryTable (newtab, 0, False);
     } else {
         baseTabPtr_p = new PlainTable (newtab, 0, False,
-				       TableLock(), endianFormat);
+				       TableLock(), endianFormat, tsmOpt);
     }
     baseTabPtr_p->link();
 }
 
 Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize,
-	      Table::EndianFormat endianFormat)
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				   TableLock(), endianFormat);
+				   TableLock(), endianFormat, tsmOpt);
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, Table::TableType type,
 	      uInt nrrow, Bool initialize,
-	      Table::EndianFormat endianFormat)
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
@@ -144,14 +147,14 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
         baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				       TableLock(), endianFormat);
+				       TableLock(), endianFormat, tsmOpt);
     }
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, Table::TableType type,
 	      const TableLock& lockOptions,
 	      uInt nrrow, Bool initialize,
-	      Table::EndianFormat endianFormat)
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
@@ -160,29 +163,31 @@ Table::Table (SetupNewTable& newtab, Table::TableType type,
         baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
     } else {
         baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
-				       lockOptions, endianFormat);
+				       lockOptions, endianFormat, tsmOpt);
     }
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat)
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+              const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
 				   TableLock(lockOption),
-				   endianFormat);
+				   endianFormat, tsmOpt);
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
-	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat)
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+              const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions,
-				   endianFormat);
+				   endianFormat, tsmOpt);
     baseTabPtr_p->link();
 }
 
@@ -202,26 +207,26 @@ Table::Table (const Block<Table>& tables,
 
 Table::Table (const Block<String>& tableNames,
 	      const Block<String>& subTables,
-	      TableOption option)
+	      TableOption option, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new ConcatTable (tableNames, subTables,
-				    option, TableLock());
+				    option, TableLock(), tsmOpt);
     baseTabPtr_p->link();
 }
 
 Table::Table (const Block<String>& tableNames,
 	      const Block<String>& subTables,
 	      const TableLock& lockOptions,
-	      TableOption option)
+	      TableOption option, const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
     baseTabPtr_p = new ConcatTable (tableNames, subTables,
-				    option, lockOptions);
+				    option, lockOptions, tsmOpt);
     baseTabPtr_p->link();
 }
 
@@ -418,7 +423,7 @@ Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
 
 //# Open the table file and read it in if necessary.
 void Table::open (const String& name, const String& type, int tableOption,
-		  const TableLock& lockOptions)
+		  const TableLock& lockOptions, const TSMOption& tsmOpt)
 {
     //# Option Delete is effectively the same as Old followed by a
     //# markForDelete.
@@ -441,7 +446,7 @@ void Table::open (const String& name, const String& type, int tableOption,
 	}
 	// Create the BaseTable object and add a PlainTable to the cache.
 	baseTabPtr_p = makeBaseTable (absName, type, tableOption,
-				      lockOptions, True, 0);
+				      lockOptions, tsmOpt, True, 0);
 	if (baseTabPtr_p == 0) {
 	    throw (AllocError("Table::open",1));
 	}
@@ -454,7 +459,8 @@ void Table::open (const String& name, const String& type, int tableOption,
 
 BaseTable* Table::makeBaseTable (const String& name, const String& type,
 				 int tableOption, const TableLock& lockOptions,
-				 Bool addToCache, uInt locknr)
+				 const TSMOption& tsmOpt,
+                                 Bool addToCache, uInt locknr)
 {
     BaseTable* baseTabPtr = 0;
     //# Determine the file option for the table.
@@ -472,14 +478,14 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
     ios >> tp;
     if (tp == "PlainTable") {
 	baseTabPtr = new PlainTable (ios, version, name, type, nrrow,
-				     tableOption, lockOptions, addToCache,
-				     locknr);
+				     tableOption, lockOptions, tsmOpt,
+                                     addToCache, locknr);
     } else if (tp == "RefTable") {
 	baseTabPtr = new RefTable (ios, name, nrrow, tableOption,
-				     lockOptions);
+                                   lockOptions, tsmOpt);
     } else if (tp == "ConcatTable") {
 	baseTabPtr = new ConcatTable (ios, name, nrrow, tableOption,
-				      lockOptions);
+				      lockOptions, tsmOpt);
     } else {
 	throw (TableInternalError
 	       ("Table::open: unknown table kind " + tp));

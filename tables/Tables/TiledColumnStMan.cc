@@ -131,7 +131,7 @@ void TiledColumnStMan::create (uInt nrrow)
     cubeShape.resize (nrdim_p);
     cubeShape(nrdim_p - 1) = 0;
     cubeSet_p.resize (1);
-    cubeSet_p[0] = new TSMCube (this, fileSet_p[0],
+    cubeSet_p[0] = makeTSMCube (fileSet_p[0],
 				cubeShape, tileShape_p, emptyRecord);
     // Add the rows for the given number of rows.
     addRow (nrrow);

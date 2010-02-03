@@ -44,7 +44,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
-		    const TableLock& lockOptions)
+		    const TableLock& lockOptions, const TSMOption& tsmOption)
 : BaseTable    (name, opt, nrrow),
   rowStorage_p (0),              // initially empty vector of rownrs
   nameMap_p    (""),
@@ -56,7 +56,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
     // At the end it is reset. In this way nothing is written if
     // an exception is thrown during initialization.
     noWrite_p = True;
-    getRef (ios, opt, lockOptions);
+    getRef (ios, opt, lockOptions, tsmOption);
     noWrite_p = False;
 }
 
@@ -295,7 +295,8 @@ void RefTable::writeRefTable (Bool)
 }
 
 //# Read a reference table from a file and read the associated table.
-void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
+void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
+                       const TSMOption& tsmOption)
 {
     //# Open the file, read name and type of root and read object data.
     String rootName;
@@ -322,9 +323,9 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions)
     //# we can do to make sure the referenced rows are still the same.
     Table tab;
     if (opt == Table::Old) {
-	tab = Table(rootName, lockOptions, Table::Old);
+        tab = Table(rootName, lockOptions, Table::Old, tsmOption);
     }else{
-	tab = Table(rootName, lockOptions, Table::Update);
+        tab = Table(rootName, lockOptions, Table::Update, tsmOption);
     }
     baseTabPtr_p = tab.baseTablePtr();
     if (rootNrow > baseTabPtr_p->nrow()) {
@@ -666,8 +667,8 @@ Bool RefTable::checkAddColumn (const String& name, Bool addToParent)
   }
   if (!addToParent) {
     throw TableInvOper ("RefTable::addColumn; column " + name +
-                        " does not exist in parent table"
-                        " and must not be added");
+                        " does not exist in parent table, but must not be added"
+                        " (addToParent=False)");
   }
   return True;
 }

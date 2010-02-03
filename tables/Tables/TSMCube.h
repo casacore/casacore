@@ -1,4 +1,3 @@
-
 //# TSMCube.h: Tiled hypercube in a table
 //# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -115,35 +114,26 @@ public:
 	ColumnSliceAccess
     };
 
-    // Construct an object with a still undefined hypercube.
-    // It can be filled later with setShape.
-    // It is used by TiledCellStMan which may know its hypercube shape
-    // only when ArrayColumn::setShape is done.
-    TSMCube (TiledStMan* stman, TSMFile* file);
-
     // Construct the hypercube using the given file with the given shape.
     // The record contains the id and possible coordinate values.
+    // <br>If the cubeshape is empty, the hypercube is still undefined and
+    // can be added later with setShape. That is only used by TiledCellStMan.
+    // <br> The fileOffset argument is meant for class TiledFileAccess.
     TSMCube (TiledStMan* stman, TSMFile* file,
 	     const IPosition& cubeShape,
 	     const IPosition& tileShape,
-	     const Record& values);
+	     const Record& values,
+             Int64 fileOffset);
 
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
     TSMCube (TiledStMan* stman, AipsIO& ios);
 
-    // Construct a TSMCube object for an existing array in a file.
-    // It is meant to be used by
-    // <linkto>class=TiledFileAccess>TiledFileAccess</linkto>.
-    TSMCube (TiledStMan* stman, TSMFile* file,
-	     const IPosition& cubeShape, const IPosition& tileShape,
-	     Int64 fileOffset);
-
-    ~TSMCube();
+    virtual ~TSMCube();
 
     // Flush the data in the cache.
-    void flushCache();
+    virtual void flushCache();
 
     // Clear the cache, so data will be reread.
     // If wanted, the data is flushed before the cache is cleared.
@@ -156,7 +146,7 @@ public:
     void emptyCache();
 
     // Show the cache statistics.
-    void showCacheStatistics (ostream& os) const;
+    virtual void showCacheStatistics (ostream& os) const;
 
     // Put the data of the object into the AipsIO stream.
     void putObject (AipsIO& ios);
@@ -168,7 +158,7 @@ public:
 
     // Resync the object with the data file.
     // It reads the object, and adjusts the cache.
-    void resync (AipsIO& ios);
+    virtual void resync (AipsIO& ios);
 
     // Is the hypercube extensible?
     Bool isExtensible() const;
@@ -181,7 +171,8 @@ public:
 
     // Set the hypercube shape.
     // This is only possible when the shape was not defined yet.
-    void setShape (const IPosition& cubeShape, const IPosition& tileShape);
+    virtual void setShape (const IPosition& cubeShape,
+                           const IPosition& tileShape);
 
     // Get the shape of the hypercube.
     const IPosition& cubeShape() const;
@@ -205,12 +196,12 @@ public:
 
     // Test if the id values match.
     Bool matches (const PtrBlock<TSMColumn*>& idColSet,
-		  const Record& idValues);
+                 const Record& idValues);
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    void extend (uInt nr, const Record& coordValues,
-		 const TSMColumn* lastCoordColumn);
+    virtual void extend (uInt nr, const Record& coordValues,
+                         const TSMColumn* lastCoordColumn);
 
     // Extend the coordinates vector for the given coordinate
     // to the given length with the given coordValues.
@@ -221,16 +212,18 @@ public:
 
     // Read or write a section in the cube.
     // It is assumed that the section buffer is long enough.
-    void accessSection (const IPosition& start, const IPosition& end,
-			char* section, uInt colnr,
-			uInt localPixelSize, Bool writeFlag);
+    virtual void accessSection (const IPosition& start, const IPosition& end,
+                                char* section, uInt colnr,
+                                uInt localPixelSize, uInt externalPixelSize,
+                                Bool writeFlag);
 
     // Read or write a section in a strided way.
     // It is assumed that the section buffer is long enough.
-    void accessStrided (const IPosition& start, const IPosition& end,
-			const IPosition& stride,
-			char* section, uInt colnr,
-			uInt localPixelSize, Bool writeFlag);
+    virtual void accessStrided (const IPosition& start, const IPosition& end,
+                                const IPosition& stride,
+                                char* section, uInt colnr,
+                                uInt localPixelSize, uInt externalPixelSize,
+                                Bool writeFlag);
 
     // Get the current cache size (in buckets).
     uInt cacheSize() const;
@@ -253,11 +246,11 @@ public:
     // </group>
 
     // Set the cache size for the given slice and access path.
-    void setCacheSize (const IPosition& sliceShape,
-		       const IPosition& windowStart,
-		       const IPosition& windowLength,
-		       const IPosition& axisPath,
-		       Bool forceSmaller, Bool userSet);
+    virtual void setCacheSize (const IPosition& sliceShape,
+                               const IPosition& windowStart,
+                               const IPosition& windowLength,
+                               const IPosition& axisPath,
+                               Bool forceSmaller, Bool userSet);
 
     // Resize the cache object.
     // When forceSmaller is False, the cache will only be resized
@@ -267,7 +260,7 @@ public:
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
     // the user (by an Accessor object) or automatically (by TSMDataColumn).
-    void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
+    virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
 
     // Validate the cache size (in buckets).
     // This means it will return the given cache size if smaller
@@ -291,13 +284,7 @@ public:
     void setLastColSlice (const IPosition& slice);
     // </group>
 
-private:
-    // Forbid copy constructor.
-    TSMCube (const TSMCube&);
-
-    // Forbid assignment.
-    TSMCube& operator= (const TSMCube&);
-
+protected:
     // Initialize the various variables.
     // <group>
     void setup();
@@ -309,13 +296,30 @@ private:
     // A tile size > cube size gets set to the cube size.
     IPosition adjustTileShape (const IPosition& cubeShape,
 			       const IPosition& tileShape) const;
-    
+
+    // Resize the IPosition member variables used in accessSection()
+    // if nrdim_p changes value.
+    void resizeTileSections();
+
+private:
+    // Forbid copy constructor.
+    TSMCube (const TSMCube&);
+
+    // Forbid assignment.
+    TSMCube& operator= (const TSMCube&);
+
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketCache* getCache();
 
     // Construct the cache object (if not constructed yet).
-    void makeCache();
+    virtual void makeCache();
+
+    // Resync the cache object.
+    virtual void resyncCache();
+
+    // Delete the cache object.
+    virtual void deleteCache();
 
     // Access a line in a more optimized way.
     void accessLine (char* section, uInt pixelOffset,
@@ -342,10 +346,7 @@ private:
     void writeTile (char* external, const char* local);
     // </group>
 
-    // Resize the IPosition member variables used in accessSection()
-    // if nrdim_p changes value.
-    void resizeTileSections();
-
+protected:
     //# Declare member variables.
     // Pointer to the parent storage manager.
     TiledStMan*     stmanPtr_p;

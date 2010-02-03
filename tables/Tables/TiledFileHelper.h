@@ -75,7 +75,7 @@ public:
   // Create a TiledFileHelper object.
   // Tell if the data is stored in big or little endian canonical format.
   TiledFileHelper (const String& fileName, const IPosition& shape,
-		   DataType dtype, uInt maximumCacheSize,
+		   DataType dtype, const TSMOption&,
 		   Bool writable, Bool bigEndian);
 
   ~TiledFileHelper();

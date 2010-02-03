@@ -796,6 +796,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       topStack()->addTable (res.getInt(), res.getString(), res.getTable(),
 			    res.getAlias(), itsTempTables, itsStack);
     }
+    //# Possibly let handleColumns also add a table (for selected columns)
   }
 
   void TaQLNodeHandler::handleWhere (const TaQLNode& node)

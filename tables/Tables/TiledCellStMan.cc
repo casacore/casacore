@@ -193,7 +193,8 @@ void TiledCellStMan::addRow (uInt nrow)
 	}
     }
     for (uInt i=nrrow_p; i<nrrow_p+nrow; i++) {
-	TSMCube* hypercube = new TSMCube (this, fileSet_p[0]);
+        TSMCube* hypercube = makeTSMCube (fileSet_p[0], IPosition(),
+                                          IPosition(), Record());
 	cubeSet_p[i] = hypercube;
 	if (fixedCellShape_p.nelements() > 0) {
 	    hypercube->setShape (fixedCellShape_p, defaultTileShape_p);

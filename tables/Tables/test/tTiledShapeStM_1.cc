@@ -61,10 +61,26 @@ typedef Double Type;
 //#define ARRINIT array = False
 //#define ARRINCR array = !array
 
-Bool readTable (Bool chk, const IPosition& shape, uInt nrrow)
+TSMOption makeAcc (int acc, Bool read=True)
+{
+  if (!read) {
+    acc = acc>>2;
+  }
+  if ((acc&3) == 1) {
+    cout << "use mmapped TSM access" << endl;
+    return TSMOption (TSMOption::MMap, 0, 0);
+  } else if ((acc&3) == 2) {
+    cout << "use buffered TSM access" << endl;
+    return TSMOption (TSMOption::Buffer, 0, 0);
+  }
+  cout << "use cached TSM access" << endl;
+  return TSMOption (TSMOption::Cache, 0, 0);
+}
+
+Bool readTable (int acc, Bool chk, const IPosition& shape, uInt nrrow)
 {
   Bool ok = True;
-  Table table("tTiledShapeStM_1_tmp.data");
+  Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected "
 	 << nrrow << endl;
@@ -92,11 +108,11 @@ Bool readTable (Bool chk, const IPosition& shape, uInt nrrow)
   return ok;
 }
 
-Bool readSlices (Bool chk, const IPosition& shape, const IPosition& blc,
+Bool readSlices (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 		 const IPosition& trc, const IPosition& inc, uInt nrrow)
 {
   Bool ok = True;
-  Table table("tTiledShapeStM_1_tmp.data");
+  Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected "
 	 << nrrow << endl;
@@ -126,11 +142,11 @@ Bool readSlices (Bool chk, const IPosition& shape, const IPosition& blc,
   return ok;
 }
 
-Bool readColX (Bool chk, const IPosition& shape, const IPosition& blc,
+Bool readColX (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	       const IPosition& trc, const IPosition& inc, uInt nrrow)
 {
   Bool ok = True;
-  Table table("tTiledShapeStM_1_tmp.data");
+  Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected "
 	 << nrrow << endl;
@@ -181,11 +197,11 @@ Bool readColX (Bool chk, const IPosition& shape, const IPosition& blc,
   return ok;
 }
 
-Bool readColY (Bool chk, const IPosition& shape, const IPosition& blc,
+Bool readColY (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	       const IPosition& trc, const IPosition& inc, uInt nrrow)
 {
   Bool ok = True;
-  Table table("tTiledShapeStM_1_tmp.data");
+  Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected "
 	 << nrrow << endl;
@@ -236,11 +252,11 @@ Bool readColY (Bool chk, const IPosition& shape, const IPosition& blc,
   return ok;
 }
 
-Bool readCol (Bool chk, const IPosition& shape, const IPosition& blc,
+Bool readCol (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	      const IPosition& trc, const IPosition& inc, uInt nrrow)
 {
   Bool ok = True;
-  Table table("tTiledShapeStM_1_tmp.data");
+  Table table("tTiledShapeStM_1_tmp.data", Table::Old, makeAcc(acc));
   if (table.nrow() != nrrow) {
     cout << "Table has " << table.nrow() << " rows; expected "
 	 << nrrow << endl;
@@ -281,7 +297,7 @@ Bool readCol (Bool chk, const IPosition& shape, const IPosition& blc,
   return ok;
 }
 
-void writeVar (Bool chk, const IPosition& shape,
+void writeVar (int acc, Bool chk, const IPosition& shape,
 	       const IPosition& tileShape, uInt nrrow)
 {
   // Build the table description.
@@ -296,8 +312,7 @@ void writeVar (Bool chk, const IPosition& shape,
   // Create a storage manager for it.
   TiledShapeStMan sm1 ("TSMExample", tileShape);
   newtab.bindAll (sm1);
-  Table table(newtab);
-  
+  Table table(newtab, 0, False, Table::AipsrcEndian, makeAcc(acc, False));
   ArrayColumn<Type> data (table, "Data");
   Array<Type> array(shape);
   uInt i;
@@ -324,75 +339,85 @@ int main (int argc, const char* argv[])
 {
   Bool ok = True;
   try {
-    if (argc < 5) {
-      cout << "Run as  tTiledShapeStM_1 mode nrow nx ny [tx ty tz] [sx sy ex ey ix iy]" << endl;;
+    if (argc < 6) {
+      cout << "Run as  tTiledShapeStM_1 acc mode nrow nx ny [tx ty tz] [sx sy ex ey ix iy]" << endl;
+      cout << "Acc&3 = 0: use cache on read" << endl;
+      cout << "Acc&3 = 1: use mmap on read" << endl;
+      cout << "Acc&3 = 2: use buffer on read" << endl;
+      cout << "Acc&12 = 0: use cache on write" << endl;
+      cout << "Acc&12 = 4: use mmap on write" << endl;
+      cout << "Acc&12 = 8: use buffer on write" << endl;
       cout << "Mode&1 = 1: check data read" << endl;
       cout << "    &2 = 1: read cell slices" << endl;
-      cout << "    &4 = 1: read column slices in X" << endl;  
-      cout << "    &8 = 1: read column slices in Y" << endl;  
-      cout << "    &16= 1: read column slices" << endl;  
+      cout << "    &4 = 1: read column slices in X" << endl;
+      cout << "    &8 = 1: read column slices in Y" << endl;
+      cout << "    &16= 1: read column slices" << endl;
       return 0;
     }
-    uInt mode, nrow, nx, ny;
+    uInt acc, mode, nrow, nx, ny;
     {
       istringstream istr(argv[1]);
-      istr >> mode;
+      istr >> acc;
     }
     {
       istringstream istr(argv[2]);
-      istr >> nrow;
+      istr >> mode;
     }
     {
       istringstream istr(argv[3]);
-      istr >> nx;
+      istr >> nrow;
     }
     {
       istringstream istr(argv[4]);
+      istr >> nx;
+    }
+    {
+      istringstream istr(argv[5]);
       istr >> ny;
     }
     uInt tx = nx;
-    if (argc >= 6) {
-      istringstream istr(argv[5]);
+    if (argc >= 7) {
+      istringstream istr(argv[6]);
       istr >> tx;
     }
     uInt ty = ny;
-    if (argc >= 7) {
-      istringstream istr(argv[6]);
+    if (argc >= 8) {
+      istringstream istr(argv[7]);
       istr >> ty;
     }
     uInt tz = 1;
-    if (argc >= 8) {
-      istringstream istr(argv[7]);
+    if (argc >= 9) {
+      istringstream istr(argv[8]);
       istr >> tz;
     }
     uInt sx = 0;
-    if (argc >= 9) {
-      istringstream istr(argv[8]);
+    if (argc >= 10) {
+      istringstream istr(argv[9]);
       istr >> sx;
     }
     uInt sy = 0;
-    if (argc >= 10) {
-      istringstream istr(argv[9]);
+    if (argc >= 11) {
+      istringstream istr(argv[10]);
       istr >> sy;
     }
     uInt ex = nx-1;
-    if (argc >= 11) {
-      istringstream istr(argv[10]);
+    if (argc >= 12) {
+      istringstream istr(argv[11]);
       istr >> ex;
     }
     uInt ey = ny-1;
-    if (argc >= 12) {
-      istringstream istr(argv[11]);
+    if (argc >= 13) {
+      istringstream istr(argv[12]);
       istr >> ey;
     }
     uInt ix = 1;
-    if (argc >= 13) {
-      istringstream istr(argv[12]);
+    if (argc >= 14) {
+      istringstream istr(argv[13]);
       istr >> ix;
     }
     uInt iy = 1;
-    if (argc >= 14) {
-      istringstream istr(argv[13]);
+    if (argc >= 15) {
+      istringstream istr(argv[14]);
       istr >> iy;
     }
     IPosition shape(2,nx,ny);
@@ -400,6 +425,7 @@ int main (int argc, const char* argv[])
     IPosition blc(2,sx,sy);
     IPosition trc(2,ex,ey);
     IPosition inc(2,ix,iy);
+    cout << "acc:       " << acc << endl;
     cout << "mode:      " << mode << endl;
     cout << "nrow:      " << nrow << endl;
     cout << "shape:     " << shape << endl;
@@ -407,27 +433,27 @@ int main (int argc, const char* argv[])
     cout << "sei:       " << blc << trc << inc << endl;
     cout << ">>>" << endl;
 
-    writeVar (mode%2==1, shape, tileShape, nrow);
-    if (! readTable (mode%2==1, shape, nrow)) {
+    writeVar (acc, mode%2==1, shape, tileShape, nrow);
+    if (! readTable (acc, mode%2==1, shape, nrow)) {
       ok = False;
     }
     if ((mode&2) == 2) {
-      if (! readSlices (mode%2==1, shape, blc, trc, inc, nrow)) {
+      if (! readSlices (acc, mode%2==1, shape, blc, trc, inc, nrow)) {
 	ok = False;
       }
     }
     if ((mode&4) == 4) {
-      if (! readColX (mode%2==1, shape, blc, trc, inc, nrow)) {
+      if (! readColX (acc, mode%2==1, shape, blc, trc, inc, nrow)) {
 	ok = False;
       }
     }
     if ((mode&8) == 8) {
-      if (! readColY (mode%2==1, shape, blc, trc, inc, nrow)) {
+      if (! readColY (acc, mode%2==1, shape, blc, trc, inc, nrow)) {
 	ok = False;
       }
     }
     if ((mode&16) == 16) {
-      if (! readCol (mode%2==1, shape, blc, trc, inc, nrow)) {
+      if (! readCol (acc, mode%2==1, shape, blc, trc, inc, nrow)) {
 	ok = False;
       }
     }

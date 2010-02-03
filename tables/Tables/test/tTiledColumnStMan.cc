@@ -56,16 +56,18 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void writeFixed();
-void readTable(Bool readKeys);
-void writeNoHyper();
+void writeFixed(const TSMOption&);
+void readTable(const TSMOption&, Bool readKeys);
+void writeNoHyper(const TSMOption&);
 
 int main () {
     try {
-	writeFixed();
-	readTable(True);
-	writeNoHyper();
-	readTable(False);
+        writeFixed(TSMOption::Cache);
+	readTable(TSMOption::MMap, True);
+	writeNoHyper(TSMOption::MMap);
+	readTable(TSMOption::Buffer, False);
+        writeFixed(TSMOption::Buffer);
+	readTable(TSMOption::Cache, False);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -74,7 +76,7 @@ int main () {
 }
 
 // First build a description.
-void writeFixed()
+void writeFixed(const TSMOption& tsmOpt)
 {
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
@@ -97,7 +99,7 @@ void writeFixed()
     newtab.setShapeColumn ("Freq", IPosition(1,20));
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindAll (sm1);
-    Table table(newtab);
+    Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
@@ -160,9 +162,9 @@ void writeFixed()
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
-void readTable (Bool readKeys)
+void readTable (const TSMOption& tsmOpt, Bool readKeys)
 {
-    Table table("tTiledColumnStMan_tmp.data");
+  Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
     ROTiledStManAccessor accessor (table, "TSMExample");
     ROArrayColumn<float> freq (table, "Freq");
     ROArrayColumn<float> pol (table, "Pol");
@@ -355,7 +357,7 @@ void readTable (Bool readKeys)
 }
 
 // First build a description.
-void writeNoHyper()
+void writeNoHyper(const TSMOption& tsmOpt)
 {
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
@@ -375,7 +377,7 @@ void writeNoHyper()
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindColumn ("Data", sm1);
     newtab.bindColumn ("Weight", sm1);
-    Table table(newtab);
+    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);

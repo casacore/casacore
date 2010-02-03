@@ -100,8 +100,13 @@ inline void TSMCube_copyChar (Char* to, const Char* from, uInt nr)
 
 
 
-TSMCube::TSMCube (TiledStMan* stman, TSMFile* file)
+TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
+                  const IPosition& cubeShape,
+                  const IPosition& tileShape,
+                  const Record& values,
+                  Int64 fileOffset)
 : stmanPtr_p     (stman),
+  values_p       (values),
   extensible_p   (False),
   nrdim_p        (0),
   tileSize_p     (0),
@@ -110,25 +115,19 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file)
   cache_p        (0),
   userSetCache_p (False),
   lastColAccess_p(NoAccess)
-{}
-
-
-TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
-                  const IPosition& cubeShape,
-                  const IPosition& tileShape,
-                  const Record& values)
-: stmanPtr_p     (stman),
-  values_p       (values),
-  extensible_p   (cubeShape(cubeShape.nelements()-1) == 0),
-  nrdim_p        (0),
-  tileSize_p     (0),
-  filePtr_p      (file),
-  fileOffset_p   (0),
-  cache_p        (0),
-  userSetCache_p (False),
-  lastColAccess_p(NoAccess)
 {
-    setShape (cubeShape, tileShape);
+    if (fileOffset < 0) {
+        if (! cubeShape.empty()) {
+            extensible_p = cubeShape(cubeShape.nelements()-1) == 0;
+            setShape (cubeShape, tileShape);
+        }
+    } else {
+        nrdim_p      = cubeShape.nelements();
+        cubeShape_p  = cubeShape;
+        tileShape_p  = tileShape;
+        fileOffset_p = fileOffset;
+        setup();
+    }
 }
 
 TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
@@ -146,25 +145,6 @@ TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
     setup();
 }
 
-TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
-                  const IPosition& cubeShape,
-                  const IPosition& tileShape,
-                  Int64 fileOffset)
-: stmanPtr_p     (stman),
-  extensible_p   (False),
-  nrdim_p        (cubeShape.nelements()),
-  cubeShape_p    (cubeShape),
-  tileShape_p    (tileShape),
-  filePtr_p      (file),
-  fileOffset_p   (fileOffset),
-  cache_p        (0),
-  userSetCache_p (False),
-  lastColAccess_p(NoAccess)
-{
-    // Calculate the various variables.
-    setup();
-}
-
 TSMCube::~TSMCube()
 {
     delete cache_p;
@@ -173,8 +153,11 @@ TSMCube::~TSMCube()
 
 void TSMCube::clearCache (Bool doFlush)
 {
+    if (doFlush) {
+        flushCache();
+    }
     if (cache_p != 0) {
-        cache_p->clear (0, doFlush);
+        cache_p->clear (0, False);
     }
 }
 void TSMCube::emptyCache()
@@ -287,19 +270,17 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     stmanPtr_p->checkCubeShape (this, cubeShape);
     // If the shape is redefined, the cache may already exist.
     // So delete it first.
-    delete cache_p;
-    cache_p = 0;
+    deleteCache();
     fileOffset_p = filePtr_p->length();
     nrdim_p      = cubeShape.nelements();
     // Resize the tile section member variables used in accessSection()
     resizeTileSections();
-
     cubeShape_p  = cubeShape;
     tileShape_p  = adjustTileShape (cubeShape, tileShape);
     // Calculate the various variables.
     setup();
     // Create the cache and extend the file.
-    makeCache();
+    ///    makeCache();
     filePtr_p->extend (nrTiles_p * bucketSize_p);
     // Initialize the coordinate columns (as far as needed).
     stmanPtr_p->initCoordinates (this);
@@ -360,11 +341,8 @@ void TSMCube::resync (AipsIO& ios)
 {
     getObject (ios);
     setupNrTiles();
-    if (cache_p != 0) {
-        cache_p->resync (nrTiles_p, 0, -1);
-    }
+    resyncCache();
 }
-
 
 void TSMCube::setup()
 {
@@ -421,6 +399,20 @@ void TSMCube::flushCache()
 	cache_p->flush();
     }
 }
+
+void TSMCube::resyncCache()
+{
+    if (cache_p != 0) {
+      cache_p->resync (nrTiles_p, 0, -1);
+    }
+}
+
+void TSMCube::deleteCache()
+{
+    delete cache_p;
+    cache_p = 0;
+}
+
 
 Bool TSMCube::isExtensible() const
 {
@@ -918,7 +910,7 @@ void TSMCube::resizeTileSections()
 
 void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                              char* section, uInt colnr,
-                             uInt localPixelSize, Bool writeFlag)
+                             uInt localPixelSize, uInt, Bool writeFlag)
 {
     // Set flag if writing.
     if (writeFlag) {
@@ -1020,7 +1012,7 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
     IPosition dataPos   (nrdim_p);
     IPosition sectionPos(nrdim_p);
     uInt dataOffset;
-    uInt sectionOffset;
+    size_t sectionOffset;
     uInt tileNr = expandedTilesPerDim_p.offset (tilePos);
 
     while (True) {
@@ -1292,7 +1284,7 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
                 }
                 if (convert) {
                     while (nrPixel > 0) {
-                        memcpy (dataArray, section, localPixelSize);
+                      memcpy (section, dataArray, localPixelSize);
                         dataArray += stride;
                         section   += localPixelSize;
                         nrPixel--;
@@ -1311,25 +1303,20 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
 void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
                              const IPosition& stride,
                              char* section, uInt colnr,
-                             uInt localPixelSize, Bool writeFlag)
+                             uInt localPixelSize, uInt externalPixelSize,
+                             Bool writeFlag)
 {
+    // If all strides are 1, use accessSection.
+    if (stride.allOne()) {
+        accessSection (start, end, section, colnr,
+                       localPixelSize, externalPixelSize, writeFlag);
+        return;
+    }
     // Set flag if writing.
     if (writeFlag) {
 	stmanPtr_p->setDataChanged();
     }
-    // If all strides are 1, use accessSection.
     uInt i, j;
-    Bool contiguous = True;
-    i = 0;
-    while (contiguous  &&  i < nrdim_p) {
-        if (stride(i++) != 1) {
-            contiguous = False;
-        }
-    }
-    if (contiguous) {
-        accessSection (start, end, section, colnr, localPixelSize, writeFlag);
-        return;
-    }
     // Get the cache (if needed).
     BucketCache* cachePtr = getCache();
 
@@ -1353,7 +1340,7 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
     IPosition dataLength(nrdim_p);
     IPosition dataPos   (nrdim_p);
     uInt dataOffset;
-    uInt sectionOffset;
+    size_t sectionOffset;
 
     // Find out if local size is a multiple of 4, so we can move as integers.
     TSMCube_FindMult;
@@ -1494,4 +1481,3 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
 
 
 } //# NAMESPACE CASA - END
-

@@ -93,7 +93,7 @@ bool readLineSkip (String& line, const String& prompt,
         // Do not test for comment
         fnd = true;
       } else {
-        for (uint i=0; i<commentChars.size(); ++i) {
+        for (uInt i=0; i<commentChars.size(); ++i) {
           if (commentChars[i] != line[i]) {
             // non-comment
             fnd = true;

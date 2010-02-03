@@ -177,7 +177,7 @@ public:
     // Set the maximum cache size (in bytes) to be used by a hypercube
     // in the storage manager. Note that each hypercube has its own cache.
     // 0 means unlimited.
-    // The initial maximum cache size is 1 Mb.
+    // The initial maximum cache size is unlimited.
     // The maximum cache size given in this way is not persistent.
     // Only the maximum cache size given to the constructors of the tiled
     // storage managers, is persistent.
