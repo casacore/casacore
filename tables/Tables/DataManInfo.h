@@ -45,7 +45,7 @@ class Record;
 
 // <use visibility=export>
 
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tTableCopy.cc">
 // </reviewed>
 
 // <prerequisite>
