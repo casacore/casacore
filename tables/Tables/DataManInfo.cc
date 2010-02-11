@@ -201,8 +201,8 @@ Record DataManInfo::adjustStMan (const Record& dminfo, const String& dmType)
 }
 
 Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
-                                               const Vector<String>& columns,
-                                               const String& keepType)
+                                                 const Vector<String>& columns,
+                                                 const String& keepType)
 {
   Record newdm;
   // Find the given columns and remove them.
@@ -215,17 +215,17 @@ Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
     uInt ndmcol = dmcols.size();
     const String& dmtype = rec.asString ("TYPE");
     if (keepType.empty()  ||  dmtype.substr(0,keepType.size()) != keepType) {
-      // dmtype does not need to be kept, so remove the column.
+      // This dmtype does not need to be kept, so columns can be removed.
       for (uInt i=0; i<columns.size(); ++i) {
         const String& col = columns[i];
-        for (uInt j=0; j<dmcols.size(); ++j) {
+        for (uInt j=0; j<ndmcol; ++j) {
           if (col == dmcols[j]) {
             // Column name matches, so remove it.
-            // Add it to the vectors of removed columns.
+            // Add it to the vector of removed columns.
             remCols[ncols++] = col;
             --ndmcol;
-            for (j+=1; j<dmcols.size(); ++j) {
-              dmcols[j-1] = dmcols[j];
+            for (uint k=j; k<ndmcol; ++k) {
+              dmcols[k] = dmcols[k+1];
             }
           }
         }
