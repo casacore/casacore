@@ -68,7 +68,7 @@ int main (int argc, const char* argv[])
 	cin >> nrow;
     }else{
 	istringstream istr2(argv[2]);
-	istr1 >> nrow;
+	istr2 >> nrow;
     }
     nrent = 0;
     totNrcol = 0;
