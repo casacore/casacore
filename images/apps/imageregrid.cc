@@ -37,7 +37,11 @@
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageInterface.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
+#include <images/Images/HDF5Image.h>
+#include <images/Images/ImageUtilities.h>
 #include <images/Images/ImageRegrid.h>
 #include <images/Images/TempImage.h>
 #include <images/Regions/ImageRegion.h>
@@ -68,53 +72,67 @@ int main(int argc, const char* argv[]) {
 
   try {
     Input inputs(1);
-    inputs.create("in", "GASS_11.integrated", "Input image name");
-    inputs.create("out", "GASS_11.integrated.regridded", "Output image name");
+    inputs.version("$Id:");
+    inputs.create("in", "", "Input image name");
+    inputs.create("out", "", "Output image name");
     inputs.create("decimate", "10", "decimation factor");
     inputs.create("dirref", "GALACTIC", "MDirection type");
     inputs.create("projection", "AIT", "Projection");
-    inputs.create("shape", "2400,2200", "Output image shape", "Block<Int>");
-    inputs.create("refval", "300.0,0.0", "Reference value", "Block<Double>");
+    inputs.create("shape", "", "Output image shape", "Block<Int>");
+    inputs.create("refval", "", "New center of the image in degrees (reference value)", 
+		  "Block<Double>");
+    inputs.create("interpolation", "linear", "Interpolation method (linear, nearest, cubic)");
     inputs.readArguments(argc, argv);
 
     const String in = inputs.getString("in");
-    const String out = inputs.getString("out");
+    if ( in.empty() ) {
+      cerr << "Please specify input image name" << endl;
+      exit(1);
+    }
+    String out = inputs.getString("out");
+    if ( out.empty() ) {
+      out = "regridded_"+in;
+      cout << "No output name give using '" << out << "'." << endl;
+    }
+    Bool outisfits = downcase(out).after(out.size()-6) == ".fits";
+
     const Int decimate = inputs.getInt("decimate");
     const String dirref = inputs.getString("dirref");
-    const Block<Int> outshape = inputs.getIntArray("shape");
+    Block<Int> outshape = inputs.getIntArray("shape");
     const Block<Double> refval = inputs.getDoubleArray("refval");
+    if (refval.size() != 2) {
+      cerr << "Please specify valid reference value e.g. refval=0.0,0.0" << endl;
+      exit(1);
+    }
     const String proj = inputs.getString("projection");
+    const String interpolation = inputs.getString("interpolation");
 
-    Bool isfits = downcase(in).after(in.size()-6) == ".fits";    
-
-    ImageInterface<Float>* pImage = 0;
-    if (isfits) {
-      cout << "Trying to load FITS Image \"" << in << "\"" << endl;
-      pImage = new FITSImage(in);
-    } else {
-      cout << "Trying to load AIPS++ Image \"" << in << "\"" << endl;
-      pImage = new PagedImage<Float>(in);
+    FITSImage::registerOpenFunction();
+    MIRIADImage::registerOpenFunction();
+    LatticeBase* pLatt = ImageOpener::openImage(in);
+    ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
+    if (!pImage) {
+      cout << "The input image must have data type Float" << endl;
+      exit(1);
     }
     
     Vector<uInt> itsAxes;
     ImageInterface<Float>* itsImage = pImage;
     ImageRegrid<Float> itsIr;
-    PagedImage<Float>* itsTmp;
-    Interpolate2D::Method itsMethod = Interpolate2D::stringToMethod("linear");
+    ImageInterface<Float>* itsTmp;
+    Interpolate2D::Method itsMethod = Interpolate2D::stringToMethod(interpolation);
     itsIr.disableReferenceConversions(False);
     itsIr.showDebugInfo(0);
     Int itsDecimate = decimate;
     String itsProj = proj;
     String itsMDir = dirref;
     
-    Bool changeRefFrame = False;
-    changeRefFrame = (itsProj != "" || itsMDir != "");
+    //Bool changeRefFrame = False;
+    //changeRefFrame = (itsProj != "" || itsMDir != "");
     CoordinateSystem csys(itsImage->coordinates());
     Int dircoordNo = 
         itsImage->coordinates().findCoordinate(Coordinate::DIRECTION, -1);
-    if (!changeRefFrame) {
-      //fail
-    }
+
     DirectionCoordinate                                                 \
       dirCoordFrom(itsImage->coordinates().directionCoordinate(dircoordNo));
     
@@ -131,8 +149,22 @@ int main(int argc, const char* argv[]) {
     radUnits = String("rad");
     if (!dirCoordFrom.setWorldAxisUnits(radUnits)) {
       cerr << "Failed to set radian units for DirectionCoordinate" << endl;
+      delete itsImage;
+      exit(1);
     }
-    //Vector<Double> refValFrom = dirCoordFrom.referenceValue();
+    // HARDCODED
+    IPosition shapeOut = itsImage->shape();
+    Vector<Int> pAx, wAx;
+    CoordinateUtil::findDirectionAxes(pAx, wAx, dircoordNo, csys);
+    //use output shape if valid
+    if (outshape.size() == 2) {
+      shapeOut[pAx(0)] = outshape[0];
+      shapeOut[pAx(1)] =  outshape[1];
+    } else {
+      cout << "Output shape not specified, using input shape " <<  shapeOut[pAx(0)]
+	   << "," << shapeOut[pAx(1)] << "." << endl;
+    }
+
     Vector<Double> refPixFrom = dirCoordFrom.referencePixel();
     Vector<Double> incrFrom = dirCoordFrom.increment();
     Vector<Double> refValFrom = dirCoordFrom.referenceValue();
@@ -150,18 +182,30 @@ int main(int argc, const char* argv[]) {
                                    refPixFrom(0), refPixFrom(1));
     
     csys.replaceCoordinate(dirCoordTo, dircoordNo);
-    Vector<Int> pAx, wAx;
-    CoordinateUtil::findDirectionAxes(pAx, wAx, dircoordNo, csys);
-    // HARDCODED
     IPosition outAxes(2, pAx(0), pAx(1));
-    IPosition shapeOut = itsImage->shape();
-    shapeOut[pAx(0)] = outshape[0];
-    shapeOut[pAx(1)] =  outshape[1];
-    //IPosition shapeOut(2,outshape[0],outshape[1]);
-    itsTmp = new PagedImage<Float>(shapeOut,csys, out);
+    itsTmp = new TempImage<Float>(shapeOut,csys);
     cout << "Regridding image..." << endl; 
     itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, False, 
                  itsDecimate, False);
+    cout << "Writing " << out << "..." << endl;
+    if (outisfits) {
+      String errMsg;
+      ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out, 128, False, False);
+    } else {
+      ImageInterface<Float>* pim = 0;
+      if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
+        pim = new HDF5Image<Float> (itsTmp->shape(),
+                                    itsTmp->coordinates(), out);
+      }
+      if (pim == 0) {
+        pim = new PagedImage<Float>(itsTmp->shape(), 
+				    itsTmp->coordinates(), out);
+      }
+      pim->copyData(*itsTmp);
+      ImageUtilities::copyMiscellaneous(*pim, *itsTmp);
+      delete pim;
+    }
+
     delete itsTmp;
   } catch (const AipsError &x) {
     cerr << "Exception caught:" << endl;
