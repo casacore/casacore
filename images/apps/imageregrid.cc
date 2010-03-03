@@ -58,7 +58,7 @@ int main(int argc, const char* argv[]) {
 
   try {
     Input inputs(1);
-    inputs.version("$Id:");
+    inputs.version("$Id$");
     inputs.create("in", "", "Input image name");
     inputs.create("out", "", "Output image name");
     inputs.create("decimate", "10", "decimation factor");
