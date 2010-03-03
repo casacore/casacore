@@ -27,8 +27,6 @@
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/OS/Timer.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
@@ -44,27 +42,15 @@
 #include <images/Images/ImageUtilities.h>
 #include <images/Images/ImageRegrid.h>
 #include <images/Images/TempImage.h>
-#include <images/Regions/ImageRegion.h>
-#include <images/Images/SubImage.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/DirectionCoordinate.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/LatticeStatistics.h>
 
-#include <casa/Logging/LogIO.h>
+//#include <casa/Logging/LogIO.h>
 #include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/Stokes.h>
 #include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Quanta/QuantumHolder.h>
+//#include <casa/Quanta/MVAngle.h>
+
 
 using namespace casa;
 
