@@ -87,7 +87,9 @@ bool readLineSkip (String& line, const String& prompt,
     // Skip leading and trailing whitespace.
     line.del (lwhiteRE);
     line.del (rwhiteRE);
-    if (! line.empty()) {                            
+    if (line.empty()) {                            
+      cerr << "h or help gives help info" << endl;
+    } else {
       // non-empty line.
       if (commentChars.empty()  ||  commentChars.size() > line.size()) {
         // Do not test for comment
@@ -316,7 +318,9 @@ void showExpr(const TableExprNode& expr)
 
 
 // Sort and select data.
-Table doCommand (const String& str, const vector<const Table*>& tempTables)
+Table doCommand (bool printCommand, bool printSelect, bool printRows,
+                 const String& varName, const String& prefix, const String& str,
+                 const vector<const Table*>& tempTables)
 {
   // If no command is given, assume it is CALC.
   // Only show results for SELECT and CALC.
@@ -334,28 +338,35 @@ Table doCommand (const String& str, const vector<const Table*>& tempTables)
       addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
                   s=="delete" || s=="create" || s=="createtable" ||
                   s=="count"  || s=="using"  || s=="usingstyle");
-      showResult = (s=="select" || s=="calc");
+      showResult = (s=="select");
     }
-    showResult = showResult || addCalc;
-  } 
+  }
   String strc(str);
   if (addCalc) {
     strc = "CALC " + str;
   }
+  strc = prefix + strc;
   Table tabp;
   uInt i;
   Vector<String> colNames;
   String cmd;
   TaQLResult result;
   result = tableCommand (strc, tempTables, colNames, cmd);
-  cout << strc << endl;
-  cout << "    has been executed" << endl;
+  if (printCommand) {
+    if (!varName.empty()) {
+      cout << varName << " = ";
+    }
+    cout << strc << endl;
+    cout << "    has been executed" << endl;
+  }
   // Set default format for printing datetime.
   if (result.isTable()) {
     tabp = result.table();
-    cout << "    " << cmd << " result of " << tabp.nrow()
-	 << " rows" << endl;
-    if (showResult  &&  colNames.nelements() > 0) {
+    if (printRows) {
+      cout << "    " << cmd << " result of " << tabp.nrow()
+           << " rows" << endl;
+    }
+    if (printSelect  &&  showResult  &&  colNames.nelements() > 0) {
       // Show the selected column names.
       cout << colNames.nelements() << " selected columns: ";
       for (i=0; i<colNames.nelements(); i++) {
@@ -379,27 +390,42 @@ void showHelp()
        << endl;
   cerr << "  http://www.astron.nl/casacore/trunk/casacore/doc/notes/199.html"
        << endl;
-  cerr << "Any TaQL command can be given." << endl;
-  cerr << "The result of a CALC command and selected columns will be printed."
-       << endl;
-  cerr << "If no command name is given, CALC is assumed" << endl;
+  cerr << "taql can be started with multiple arguments containing options and" << endl;
+  cerr << "an optional TaQL command as the last argument." << endl;
+  cerr << "It will run interactively if no TaQL command is given." << endl;
+  cerr << "Use q, quit, exit, or ^D to exit." << endl;
+  cerr << endl;
+  cerr << "Any TaQL command can be used. If no command name is given, CALC is assumed." << endl;
   cerr << "For example:" << endl;
   cerr << "   mean([select EXPOSURE from my.ms])" << endl;
-  cerr << "   mjdtodate([select distinct TIME from my.ms])    print as dates"
-       << endl;
-  cerr << "   date() + 60     which date is 60 days after today" << endl;
-  cerr << "For other commands the number of selected rows is printed." << endl;
+  cerr << "   mjdtodate([select distinct TIME from my.ms])    #print as dates" << endl;
+  cerr << "   date() + 60     #which date is 60 days after today" << endl;
+  cerr << "   select from my.ms where ANTENNA1=1 giving sel.ms" << endl;
+  cerr << "The result of a CALC command will be printed." << endl;
+  cerr << "The number of resulting rows and the values of possible selected" << endl;
+  cerr << "columns can be printed (see options below)." << endl;
   cerr << endl;
   cerr << "It is possible to save the table resulting from a selection" << endl;
   cerr << "by assigning it like:" << endl;
   cerr << "   var = taqlcommand" << endl;
-  cerr << "Thereafter var can be used as a table in another TaQL command like:"
+  cerr << "Thereafter $var can be used as a table in another TaQL command like:"
        << endl;
   cerr << "   t1 = select from my.ms where ANTENNA1=1" << endl;
   cerr << "   t2 = select from $t1 where ANTENNA2=2" << endl;
+  cerr << "A variable name followed by zero or more question marks gives info about" << endl;
+  cerr << "the table. More info for more question marks (e.g. t1?)." << endl;
+  cerr << "   var =" << endl;
+  cerr << "clears 'var' (removes it from the saved selections)." << endl;
+  cerr << "Use command ? to show all saved selections." << endl;
   cerr << endl;
-  cerr << "taql can be started with option -s or --style which defines the TaQL style." << endl;
-  cerr << "The default style is python; if no value is given after -s it defaults to glish" << endl;
+  cerr << "taql can be started with a few options:" << endl;
+  cerr << " -s or --style defines the TaQL style." << endl;
+  cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
+  cerr << " -h  or --help         shows this help and exits." << endl;
+  cerr << " -pc or --printcommand shows the (expanded) TaQL command." << endl;
+  cerr << " -ps or --printselect  shows the values of selected columns." << endl;
+  cerr << " -pr or --printrows    shows the number of rows selected, updated, etc." << endl;
+  cerr << "The default for the latter 3 options is on for interactive mode, otherwise off." << endl;
   cerr << endl;
 }
 
@@ -407,10 +433,16 @@ void showTableInfo (const String& name, const Table& tab,
                     const String& command, Int level)
 {
   TableDesc tdesc(tab.actualTableDesc());
-  cout << "  " << name << " resulted from:" << endl
-       << "    " << command << endl;
-  cout << "  " << tab.nrow() << " rows, "
-       << tdesc.ncolumn() << " columns" << endl;
+  cout << "  " << name << " resulted from:";
+  if (level >= 0) {
+    cout << endl;
+    cout << "   ";
+  }
+  cout << ' ' << command << endl;
+  if (level >= 0) {
+    cout << "  " << tab.nrow() << " rows, "
+         << tdesc.ncolumn() << " columns" << endl;
+  }
   if (level > 0) {
     Vector<String> colNames = tdesc.columnNames();
     cout << "    " << colNames << endl;
@@ -449,6 +481,20 @@ void showTableInfo (const String& name, const Table& tab,
   }
 }
 
+// Show the variable names and tables associated to them.
+void showTableMap (const TableMap& tables)
+{
+  if (tables.empty()) {
+    cout << "  no saved selections;    note: use h or help to get help info" << endl;
+      } else {
+    for (TableMap::const_iterator iter = tables.begin();
+         iter != tables.end(); ++iter) {
+      showTableInfo (iter->first, iter->second.first, iter->second.second, -1);
+    }
+  }
+}
+
+// Substitute possible table variables given like $var.
 String substituteName (const String& name, const TableMap& tables,
                        vector<const Table*>& tabs)
 {
@@ -519,11 +565,13 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
 }
 
 // Ask and execute commands till quit or ^D is given.
-void askCommands (const String& prefix)
+void askCommands (bool printCommand, bool printSelect, bool printRows,
+                  const String& prefix)
 {
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   Regex assRE("[ \t]*=");
-  Regex whiteRE("^[ \t]*");
+  Regex lwhiteRE("^[ \t]*");
+  Regex rwhiteRE("[ \t]*$");
   TableMap tables;
   while (True) {
     String str;
@@ -531,66 +579,60 @@ void askCommands (const String& prefix)
       cerr << endl;
       break;
     }
-    // Remove leading whitespace.
-    str.del (whiteRE);
-    if (str.empty()) {
-      cerr << "?, h, or help gives help info" << endl;
+    if (str == "h"  ||  str == "help") {
+      showHelp();
+    } else if (str == "?") {
+      showTableMap (tables);
+    } else if (str == "exit"  ||  str == "quit"  ||  str == "q") {
+      break;
     } else {
-      if (str == "?"  ||  str == "h"  ||  str == "help") {
-        showHelp();
-      } else if (str == "exit"  ||  str == "quit"  ||  str == "q") {
-        break;
-      } else {
-        try {
-          String varName;
-          String::size_type assLen = varassRE.match (str.c_str(), str.size());
-          if (assLen != String::npos) {
-            // Assignment to variable; get its name and remove from command.
-            varName = str.before(assLen);
-            str = str.from(assLen);
-            varName.del (assRE);
-            if (varName.empty()) {
-              throw AipsError ("Variable name before command is empty");
-            }
+      try {
+        String varName;
+        String::size_type assLen = varassRE.match (str.c_str(), str.size());
+        if (assLen != String::npos) {
+          // Assignment to variable; get its name and remove from command.
+          varName = str.before(assLen);
+          str = str.from(assLen);
+          varName.del (assRE);
+          if (varName.empty()) {
+            throw AipsError ("Variable name before =command is empty");
           }
-          str.del (whiteRE);
-          if (str.empty()) {
-            // No command means that the variable will be removed.
-            tables.erase (varName);
-          } else {
-            // No assignment, so it is a name or a command.
-            // First try it as a name.
-            // A name can be followed by question marks giving the level of
-            // info to be printed.
-            Int sz = str.size();
-            while (sz > 0  &&  str[sz-1] == '?') {
-              --sz;
-            }
-            Int level = str.size() - sz;
-            String name = str.substr(0, sz);
-            TableMap::const_iterator it = tables.find (name);
-            if (it != tables.end()) {
-              // It exists, so it must be a name.
-              showTableInfo (name, it->second.first, it->second.second, level);
-            } else {
-              // No name, so it must be a command.
-              // Note that CALC commands can omit CALC.
-              String command(str);
-              vector<const Table*> tabs = replaceVars (str, tables);
-              if (!varName.empty()) {
-                cout << varName << " = ";
-              }
-              cout << command << endl;
-              Table tab = doCommand (prefix + str, tabs);
-              if (!varName.empty()  &&  !tab.isNull()) {
-                // Keep the resulting table if a variable was given.
-                tables[varName] = make_pair(tab, command);
-              }
-            }
-          }
-        } catch (AipsError& x) {
-          cerr << x.getMesg() << endl;
         }
+        str.del (lwhiteRE);
+        if (str.empty()) {
+          // No command means that the variable will be removed.
+          tables.erase (varName);
+        } else {
+          // No assignment, so it is a name or a command.
+          // First try it as a name.
+          // A name can be followed by question marks giving the level of
+          // info to be printed.
+          Int sz = str.size();
+          while (sz > 0  &&  str[sz-1] == '?') {
+            --sz;
+          }
+          Int level = str.size() - sz;
+          String name = str.substr(0, sz);
+          name.del (rwhiteRE);
+          TableMap::const_iterator it = tables.find (name);
+          if (it != tables.end()) {
+            // It exists, so it must be a name.
+            showTableInfo (name, it->second.first, it->second.second, level);
+          } else {
+            // No name, so it must be a command.
+            // Note that CALC commands can omit CALC.
+            String command(str);
+            vector<const Table*> tabs = replaceVars (str, tables);
+            Table tab = doCommand (printCommand, printSelect, printRows,
+                                   varName, prefix, str, tabs);
+            if (!varName.empty()  &&  !tab.isNull()) {
+              // Keep the resulting table if a variable was given.
+              tables[varName] = make_pair(tab, command);
+            }
+          }
+        }
+      } catch (AipsError& x) {
+        cerr << x.getMesg() << endl;
       }
     }
   }
@@ -601,30 +643,59 @@ int main (int argc, const char* argv[])
 {
   try {
     string style = "python";
-    int st = 1;
-    if (argc > 1) {
-      if (string(argv[1]) == "-s"  ||  string(argv[1]) == "--style") {
+    int printCommand = -1;
+    int printSelect  = -1;
+    int printRows    = -1;
+    int st;
+    for (st=1; st<argc; ++st) {
+      string arg(argv[st]);
+      if (arg == "-s"  ||  arg == "--style") {
         style = string();
-        ++st;
-        if (argc > 2) {
-          style = argv[2];
-          ++st;
+        if (st+1 < argc) {
+          style = argv[st+1];
+          if (style.size() > 0  &&  style[0] == '-') {
+            // no style value, thus ignore.
+            style = string();
+          } else {
+            // use style value.
+            st++;
+          }
         }
+      } else if (arg == "-pc"  ||  arg == "--printcommand") {
+        printCommand = 1;
+      } else if (arg == "-ps"  ||  arg == "--printselect") {
+        printSelect = 1;
+      } else if (arg == "-pr"  ||  arg == "--printrows") {
+        printRows = 1;
+      } else if (arg == "-nopc"  ||  arg == "--noprintcommand") {
+        printCommand = 0;
+      } else if (arg == "-nops"  ||  arg == "--noprintselect") {
+        printSelect = 0;
+      } else if (arg == "-nopr"  ||  arg == "--noprintrows") {
+        printRows = 0;
+      } else if (arg == "-h"  ||  arg == "--help") {
+        showHelp();
+        return 0;
+      } else if (arg[0] == '-') {
+        cerr << arg << " is an invalid option" << endl;
+        return 1;
+      } else {
+        break;
       }
     }
     string prefix;
     if (style.empty()) {
       style = "glish";
-    } else {
-      prefix = "using style " + style + ' ';
     }
+    prefix = "using style " + style + ' ';
     if (st < argc) {
       // Execute the given command.
-      doCommand (prefix + argv[st], vector<const Table*>());
+      doCommand (printCommand==1, printSelect==1, printRows==1,
+                 String(), prefix, argv[st], vector<const Table*>());
     } else {
     // Ask the user for commands.
       cout << "Using default TaQL style " << style << endl;
-      askCommands (prefix);
+      askCommands (printCommand!=0, printSelect!=0, printRows!=0, prefix);
     }
   } catch (AipsError& x) {
     cerr << "\nCaught an exception: " << x.getMesg() << endl;
