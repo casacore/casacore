@@ -176,7 +176,10 @@ int main(int argc, const char* argv[]) {
     cout << "Writing " << out << "..." << endl;
     if (outisfits) {
       String errMsg;
-      ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out, 128, False, False);
+      Bool res = ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out);
+      if (!res) {
+	cerr << errMsg << endl;
+      }
     } else {
       ImageInterface<Float>* pim = 0;
       if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
