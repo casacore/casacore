@@ -68,7 +68,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Array<Double> data(...);
 // Array<Double> means = partialMeans (data, IPosition(2,0,1));
 // </srcblock>
-// This example calculates the mean of each plan in the data array.
+// This example calculates the mean of each plane in the data array.
 // </example>
 //
 // <example>
