@@ -92,7 +92,7 @@ public:
 
     // Construct from the given file descriptor.
     // The file name is only used in possible error messages.
-    explicit FiledesIO (int fd, const String& fileName);
+    explicit FiledesIO (int fd, const String& fileName=String());
 
     // Attach to the given file descriptor.
     // An exception is thrown if it is not in a detached state.
