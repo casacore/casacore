@@ -31,6 +31,7 @@
 #include <casa/IO/FilebufIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
+#include <cstring>   //# for memset
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
