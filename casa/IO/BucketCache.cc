@@ -227,6 +227,11 @@ char* BucketCache::getBucket (uInt bucketNr)
 	getSlot (bucketNr);
 	readBucket (its_ActualSlot);
     }else{
+        if (! its_file->isWritable()) {
+            throw AipsError ("BucketCache::getBucket: bucket " +
+                             String::toString(bucketNr) +
+                             " exceeds nr of buckets");
+        }
 	initializeBuckets (bucketNr);
     }
     return its_Cache[its_ActualSlot];
