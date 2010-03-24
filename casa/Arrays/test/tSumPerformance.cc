@@ -102,13 +102,13 @@ template<class T> T product1(const Array<T> &a)
 }
 
 template<class T, class ACC>
-void doIt()
+void doIt(int nx, int ny, int nz)
 {
   T s=0;
-  Array<T> arr(IPosition(3,1000,1000,100));
+  Array<T> arr(IPosition(3,nx,ny,nz));
   arr=T(1.);
-  arr(IPosition(3,999,999,10)) = -int(arr.nelements()) + 1;   // makes sum 0
-  std::cout<< arr(IPosition(3,999,999,10)) << std::endl;
+  arr(IPosition(3,nx-1,ny-1,nz/10)) = -int(arr.nelements()) + 1;  // makes sum 0
+  std::cout<< arr(IPosition(3,nz-1,ny-1,nz/10)) << std::endl;
   // Add in old ArrayMath way.
   Timer timer;
   s = sumold (arr);
@@ -131,7 +131,7 @@ void doIt()
   std::cout<< s << std::endl;
   {
     // Test large subset.
-    Array<T> subarr (arr(IPosition(3,0), IPosition(3,998,998,98)));
+    Array<T> subarr (arr(IPosition(3,0), IPosition(3,nx-2,ny-2,nz-2)));
     timer.mark();
     s = sumold (subarr);
     timer.show("sumold big   ");
@@ -145,13 +145,13 @@ void doIt()
     // Test small subset.
     Array<T> subarr (arr(IPosition(3,0), IPosition(3,19)));
     timer.mark();
-    for(int i=0; i<1000; ++i) {
+    for(int i=0; i<nx; ++i) {
       s = sumold (subarr);
     }
     timer.show("sumold small ");
     std::cout << s << std::endl;
     timer.mark();
-    for(int i=0; i<1000; ++i) {
+    for(int i=0; i<nx; ++i) {
       s = sumiter (subarr);
     }
     timer.show("sumiter small");
@@ -159,12 +159,24 @@ void doIt()
   }
 }
 
-int main()
+int main (int argc, char* argv[])
 {
+  // Test with 1000 1000 100 to get some real performance numbers.
+  int nx = 0;
+  int ny = 0;
+  int nz = 0;
+  if (argc > 1) nx = atoi(argv[1]);
+  if (argc > 2) ny = atoi(argv[2]);
+  if (argc > 3) nz = atoi(argv[3]);
+  if (nx < 20) nx = 20;
+  if (ny < 20) ny = 20;
+  if (nz < 20) nz = 20;
+  std::cout << "tSumPerformance: nx=" << nx << " ny=" << ny << " nz=" << nz
+            << std::endl;
   std::cout << "test int ..." << std::endl;
-  doIt<int, int>();
+  doIt<int, int> (nx, ny, nz);
   std::cout << "test float ..." << std::endl;
-  doIt<float, double>();
+  doIt<float, double> (nx, ny, nz);
   Array<Complex> arr(IPosition(1,5));
   arr=2;
   std::cout << product(arr) << std::endl;
