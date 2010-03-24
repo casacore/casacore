@@ -280,7 +280,7 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     // Calculate the various variables.
     setup();
     // Create the cache and extend the file.
-    ///    makeCache();
+    makeCache();
     filePtr_p->extend (nrTiles_p * bucketSize_p);
     // Initialize the coordinate columns (as far as needed).
     stmanPtr_p->initCoordinates (this);
