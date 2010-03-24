@@ -607,12 +607,12 @@ void PagedImage<T>::restoreUnits (const TableRecord& rec)
     if (!UnitVal::check(unitName)) {
       // I give up!
       LogIO os;
-      UnitMap::putUser(unitName, UnitVal::UnitVal(1.0, UnitDim::Dnon), unitName);
+      UnitMap::putUser(unitName, UnitVal(1.0, UnitDim::Dnon), unitName);
       os << LogIO::WARN << "FITS unit \"" << unitName
          << "\" unknown to CASA - will treat it as non-dimensional."
 	 << LogIO::POST;
       retval.setName(unitName);
-      retval.setValue(UnitVal::UnitVal(1.0, UnitDim::Dnon));
+      retval.setValue(UnitVal(1.0, UnitDim::Dnon));
     } else {
       retval = Unit(unitName);
     }
