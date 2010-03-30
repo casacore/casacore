@@ -76,7 +76,7 @@ template<class T> class Block;
 // <br>
 // Normally hypercubes share the same TSMFile object, but extensible
 // hypercubes have their own TSMFile object (to be extensible).
-// When the hypercolumn has multiple data columns, their cells share the same
+// If the hypercolumn has multiple data columns, their cells share the same
 // tiles. Per tile data column A appears first, thereafter B, etc..
 // <br>
 // The data in the cache is held in external format and is converted
@@ -123,12 +123,14 @@ public:
 	     const IPosition& cubeShape,
 	     const IPosition& tileShape,
 	     const Record& values,
-             Int64 fileOffset);
+             Int64 fileOffset,
+             Bool useDerived = False);
 
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
-    TSMCube (TiledStMan* stman, AipsIO& ios);
+    TSMCube (TiledStMan* stman, AipsIO& ios,
+             Bool useDerived = False);
 
     virtual ~TSMCube();
 
@@ -170,7 +172,7 @@ public:
     uInt localTileLength() const;
 
     // Set the hypercube shape.
-    // This is only possible when the shape was not defined yet.
+    // This is only possible if the shape was not defined yet.
     virtual void setShape (const IPosition& cubeShape,
                            const IPosition& tileShape);
 
@@ -253,9 +255,8 @@ public:
                                Bool forceSmaller, Bool userSet);
 
     // Resize the cache object.
-    // When forceSmaller is False, the cache will only be resized
-    // when it grows.
-    // When the given size exceeds the maximum size with more
+    // If forceSmaller is False, the cache will only be resized when it grows.
+    // If the given size exceeds the maximum size with more
     // than 10%, the maximum size will be used.
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
@@ -350,6 +351,8 @@ protected:
     //# Declare member variables.
     // Pointer to the parent storage manager.
     TiledStMan*     stmanPtr_p;
+    // Is the class used directly or only by a derived class only?
+    Bool            useDerived_p;
     // The values of the possible id and coordinate columns.
     Record          values_p;
     // Is the hypercube extensible?

@@ -104,11 +104,14 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   const IPosition& cubeShape,
                   const IPosition& tileShape,
                   const Record& values,
-                  Int64 fileOffset)
+                  Int64 fileOffset,
+                  Bool useDerived)
 : stmanPtr_p     (stman),
+  useDerived_p   (useDerived),
   values_p       (values),
   extensible_p   (False),
   nrdim_p        (0),
+  nrTiles_p      (0),
   tileSize_p     (0),
   filePtr_p      (file),
   fileOffset_p   (0),
@@ -117,11 +120,14 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
   lastColAccess_p(NoAccess)
 {
     if (fileOffset < 0) {
+        // TiledCellStMan uses an empty shape; setShape is called later. 
         if (! cubeShape.empty()) {
+            // A shape is given, so set it.
             extensible_p = cubeShape(cubeShape.nelements()-1) == 0;
             setShape (cubeShape, tileShape);
         }
     } else {
+        // Meant for TiledFileAccess.
         nrdim_p      = cubeShape.nelements();
         cubeShape_p  = cubeShape;
         tileShape_p  = tileShape;
@@ -130,8 +136,10 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
     }
 }
 
-TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios)
+TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios,
+                  Bool useDerived)
 : stmanPtr_p     (stman),
+  useDerived_p   (useDerived),
   filePtr_p      (0),
   cache_p        (0),
   userSetCache_p (False),
@@ -279,8 +287,13 @@ void TSMCube::setShape (const IPosition& cubeShape, const IPosition& tileShape)
     tileShape_p  = adjustTileShape (cubeShape, tileShape);
     // Calculate the various variables.
     setup();
-    // Create the cache and extend the file.
-    makeCache();
+    // If used directly, create the cache.
+    // It has to be done here, otherwise the file does not get extended if
+    // no explicit put is done.
+    if (!useDerived_p) {
+      makeCache();
+    }
+    // Tell TSMFile that the file gets extended.
     filePtr_p->extend (nrTiles_p * bucketSize_p);
     // Initialize the coordinate columns (as far as needed).
     stmanPtr_p->initCoordinates (this);

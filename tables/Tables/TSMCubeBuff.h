@@ -68,7 +68,7 @@ class BucketBuffered;
 // <br>
 // Normally hypercubes share the same TSMFile object, but extensible
 // hypercubes have their own TSMFile object (to be extensible).
-// When the hypercolumn has multiple data columns, their cells share the same
+// If the hypercolumn has multiple data columns, their cells share the same
 // tiles. Per tile data column A appears first, thereafter B, etc..
 // <br>
 // The data in the cache is held in external format and is converted
@@ -120,6 +120,11 @@ public:
     // Show the cache statistics.
     virtual void showCacheStatistics (ostream& os) const;
 
+    // Set the hypercube shape.
+    // This is only possible if the shape was not defined yet.
+    virtual void setShape (const IPosition& cubeShape,
+                           const IPosition& tileShape);
+
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
     virtual void extend (uInt nr, const Record& coordValues,
@@ -148,9 +153,8 @@ public:
                                Bool forceSmaller, Bool userSet);
 
     // Resize the cache object.
-    // When forceSmaller is False, the cache will only be resized
-    // when it grows.
-    // When the given size exceeds the maximum size with more
+    // If forceSmaller is False, the cache will only be resized when it grows.
+    // If the given size exceeds the maximum size with more
     // than 10%, the maximum size will be used.
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
