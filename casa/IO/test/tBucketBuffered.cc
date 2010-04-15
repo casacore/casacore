@@ -30,6 +30,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/OS/Timer.h>
 #include <casa/iostream.h>
+#include <cstring>
 
 #include <casa/namespace.h>
 // <summary>
