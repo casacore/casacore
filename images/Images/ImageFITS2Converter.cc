@@ -537,7 +537,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
  	String tmp0 = image.miscInfo().name(i);
         String miscname(tmp0.at(0,8));
         if (tmp0.length() > 8) {
-           os  << LogIO::WARN << "Truncating miscinfo field " << tmp0 
+           os  << LogIO::NORMAL << "Truncating miscinfo field " << tmp0 
                << " to " << miscname << LogIO::POST;
         }
 //         
@@ -1027,14 +1027,10 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
 // Get CS and return un-used cards in a Record for further use
 
     CoordinateSystem cSys;
-    if (!CoordinateSystem::fromFITSHeader (stokesFITSValue, cSys, headerRec, header, 
+    if (!CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys, headerRec, header, 
                                           shape, whichRep)) {
-        os << LogIO::WARN <<
-          "Cannot create the coordinate system from FITS keywords.\n"
-          "I will use a dummy linear coordinate along each axis instead.\n"
-          "If your FITS file actually does contain a coordinate system\n"
-          "please submit a bug report."  << LogIO::POST;
-//
+        os << LogIO::WARN << "No proper coordinate system defined in FITS file. Using dummy linear system instead." << LogIO::POST;
+
         CoordinateSystem cSys2;
         Vector<String> names(shape.nelements());
         for (uInt i=0; i<names.nelements(); i++) {
@@ -1058,7 +1054,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
           shape.resize(0);
           shape = shape2;
 //
-          os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
+          os << LogIO::NORMAL << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
           os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
        } else {
           os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
@@ -1110,124 +1106,6 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
 }
 
 
-// CoordinateSystem ImageFITSConverter::getCoordinateSystemOld (Int& stokesFITSValue,
-//                                                           RecordInterface& header,
-//                                                           LogIO& os,
-//                                                           IPosition& shape,
-//                                                           Bool dropStokes)
-// {
-//     CoordinateSystem cSys;
-//     Char prefix = 'c';
-//     if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys, header, shape, True, prefix)) {
-//         os << LogIO::WARN <<
-//           "Cannot create the coordinate system from FITS keywords.\n"
-//           "I will use a dummy linear coordinate along each axis instead.\n"
-//           "If you your FITS file actually does contain a coordinate system\n"
-//           "please submit a bug report."  << LogIO::POST;
-// //
-//         CoordinateSystem cSys2;
-//         Vector<String> names(shape.nelements());
-//         for (uInt i=0; i<names.nelements(); i++) {
-//            ostringstream oss;
-//            oss << i;
-//            names(i) = String("linear") + String(oss);
-//         }
-//         CoordinateUtil::addLinearAxes(cSys2, names, shape);
-//         cSys = cSys2;
-//     }
-
-// // Check shape and CS consistency.  Add dummy axis to shape if possible
-
-//     if (shape.nelements() != cSys.nPixelAxes()) {
-//        IPosition shape2;
-//        if (cSys.nPixelAxes() > shape.nelements()) {
-//           Int nDeg = cSys.nPixelAxes() - shape.nelements();
-//           shape2.resize(cSys.nPixelAxes());
-//           shape2 = 1;
-//           for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);
-//           shape.resize(0);
-//           shape = shape2;
-// //
-//           os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
-//           os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
-//        } else {
-//           os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
-//        }
-//     }
-
-// // Drop Stokes axis IF it's of length 1 AND there is an unoffical
-// // pseudo-STokes value (e.g. optical dpeth) on it.  This is stored
-// // in ImageInfo instead.
-
-//     Int after = -1;
-//     Int c = cSys.findCoordinate(Coordinate::STOKES, after);
-//     if (dropStokes && c >= 0 && stokesFITSValue >= 0) {
-//        uInt nS = cSys.stokesCoordinate(c).stokes().nelements();
-//        if (nS==1) {
-//           CoordinateSystem cSys2;
-//           for (uInt i=0; i<cSys.nCoordinates(); i++) {
-//              if (cSys.type(i) != Coordinate::STOKES) {
-//                 cSys2.addCoordinate(cSys.coordinate(i));
-//              }
-//           }
-// //
-//           uInt dropAxis = cSys.pixelAxes(c)(0);
-//           cSys = cSys2;
-//           IPosition shape2(cSys.nPixelAxes());
-//           uInt j = 0;
-//           for (uInt i=0; i<shape.nelements(); i++) {
-//              if (i!=dropAxis) {
-//                 shape2(j) = shape(i);
-//                 j++;
-//              }
-//           }
-// //
-//           shape.resize(0);
-//           shape = shape2;
-//        }
-//     }
-
-// // Remove keywords
-
-//     Vector<String> ignore(14);
-//     ignore(0) = "^date-map$";
-//     ignore(1) = "^simple$";
-//     ignore(2) = "^naxis";
-//     ignore(3) = "^projp$";
-//     ignore(4) = "^pc$";
-//     ignore(5) = "^equinox$";
-//     ignore(6) = "^epoch$";
-//     ignore(7) = "ctype";
-//     ignore(8) = "crpix";
-//     ignore(9) = "crval";
-//     ignore(10) = "crota";
-//     ignore(11) = "cdelt";
-//     ignore(12) = "bscale";
-//     ignore(13) = "bzero";
-//     FITSKeywordUtil::removeKeywords(header, ignore);
-
-// // Remove any ObsInfo keywords
-
-//     FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
-// //
-//     after = -1;
-//     if (cSys.findCoordinate(Coordinate::SPECTRAL, after) >= 0) {
-//        ignore.resize(1);
-//        ignore(0) = "restfreq";
-//        FITSKeywordUtil::removeKeywords(header, ignore);
-//     }
-
-// // Fix up Direction coordinate so that longitudes is in range [-180,l80]
-// // as assumed by wcs.
-
-//     String errMsg;
-//     if (!CoordinateUtil::cylindricalFix (cSys, errMsg, shape)) {
-//        os << errMsg << LogIO::EXCEPTION;
-//     }
-// //
-//     return cSys;
-// }
-
 
 ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
 {
@@ -1244,21 +1122,6 @@ ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
    return ii;
 }
 
-
-// ImageInfo ImageFITSConverter::getImageInfoOld (RecordInterface& header)
-// {
-//    ImageInfo ii;
-//    Vector<String> errors;
-//    Bool ok = ii.fromFITSOld (errors, header);
-//    if (!ok) {
-//       LogIO log(LogOrigin("ImageFITSConverter::getImageInfoOld", "ImageToFITS", WHERE));
-//       log << errors << endl;
-//    }
-// //
-//    FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
-// //
-//    return ii;
-// }
 
 
 Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
@@ -1292,11 +1155,14 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
 		 }
 	     }
 	     if(!uFixed){ // recovery  attempt failed as well 
-		 UnitMap::putUser("\""+unitString+"\"", UnitVal::UnitVal(1.0, UnitDim::Dnon), "\""+unitString+"\"");
-		 os << LogIO::WARN << "FITS unit \"" << unitString << "\" unknown to CASA - will treat it as non-dimensional."
+		 UnitMap::putUser("\""+unitString+"\"",
+                                  UnitVal(1.0, UnitDim::Dnon),
+                                  "\""+unitString+"\"");
+		 os << LogIO::WARN << "FITS unit \"" << unitString
+                    << "\" unknown to CASA - will treat it as non-dimensional."
 		    << LogIO::POST;
 		 u.setName("\""+unitString+"\"");
-		 u.setValue(UnitVal::UnitVal(1.0, UnitDim::Dnon));
+		 u.setValue(UnitVal(1.0, UnitDim::Dnon));
 	     }
 	 }
       }
@@ -1306,27 +1172,6 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
 }
 
 
-// Unit ImageFITSConverter::getBrightnessUnitOld (RecordInterface& header, LogIO& os)
-// {
-//    Unit u;
-//    if (header.isDefined("bunit") && header.dataType("bunit") == TpString) {
-//       String unitString;
-//       header.get("bunit", unitString);
-//       header.removeField("bunit");
-//       UnitMap::addFITS();
-//       if (UnitVal::check(unitString)) {
-
-// // Translate units from FITS units to true aips++ units
-// // There is no scale factor in this translation.
-
-//           u = UnitMap::fromFITS(Unit(unitString));
-//       } else {
-//           os << "FITS unit " << unitString << " unknown to CASA - ignoring."
-//              << LogIO::POST;
-//       }
-//    }
-//    return u;
-// }
 
 Bool ImageFITSConverter::extractMiscInfo (RecordInterface& miscInfo, const RecordInterface& header)
 //
