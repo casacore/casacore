@@ -322,9 +322,13 @@ DataManager* SSMBase::makeObject (const String& group, const Record& spec)
   return new SSMBase (group, spec);
 }
 
-void SSMBase::setCacheSize (uInt aCacheSize)
+void SSMBase::setCacheSize (uInt aCacheSize, Bool canExceedNrBuckets)
 {
   itsCacheSize = max(aCacheSize,2u);
+  // Limit the cache size if needed.
+  if (!canExceedNrBuckets  &&  itsCacheSize > getCache().nBucket()) {
+    itsCacheSize = itsCache->nBucket();
+  }
   if (itsCache != 0) {
     itsCache->resize (itsCacheSize);
   }

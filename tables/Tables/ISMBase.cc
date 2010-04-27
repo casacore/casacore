@@ -231,11 +231,15 @@ DataManager* ISMBase::makeObject (const String& group, const Record& spec)
     return new ISMBase (group, spec);
 }
 
-void ISMBase::setCacheSize (uInt cacheSize)
+void ISMBase::setCacheSize (uInt cacheSize, Bool canExceedNrBuckets)
 {
     cacheSize_p = cacheSize;
+    // Limit the cache size if needed.
+    if (!canExceedNrBuckets  &&  cacheSize_p > getCache().nBucket()) {
+        cacheSize_p = cache_p->nBucket();
+    }
     if (cache_p != 0) {
-	cache_p->resize (cacheSize);
+	cache_p->resize (cacheSize_p);
     }
 }
 
