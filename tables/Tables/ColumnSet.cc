@@ -595,9 +595,11 @@ Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
 	for (uInt j=from; j<blockDataMan_p.nelements(); j++) {
 	    if (name == BLOCKDATAMANVAL(j)->dataManagerName()) {
 	        if (doTthrow) {
-		    throw (TableInvOper ("Data manager name " + name +
-					 " is already used in table " +
-					 baseTablePtr_p->tableName()));
+                    String tabName;
+                    if (baseTablePtr_p) tabName = baseTablePtr_p->tableName();
+		    throw TableInvOper ("Data manager name " + name +
+                                        " is already used in table " +
+                                        tabName);
 		}
 		return False;
 	    }
