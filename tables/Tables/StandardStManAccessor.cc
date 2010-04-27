@@ -68,9 +68,10 @@ ROStandardStManAccessor& ROStandardStManAccessor::operator=
 }
 
 
-void ROStandardStManAccessor::setCacheSize (uInt aSize)
+void ROStandardStManAccessor::setCacheSize (uInt aSize,
+                                            Bool canExceedNrBuckets)
 {
-    itsSSMPtr->setCacheSize (aSize);
+    itsSSMPtr->setCacheSize (aSize, canExceedNrBuckets);
 }
 
 uInt ROStandardStManAccessor::getCacheSize() const

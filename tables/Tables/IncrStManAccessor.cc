@@ -67,9 +67,10 @@ ROIncrementalStManAccessor& ROIncrementalStManAccessor::operator=
 }
 
 
-void ROIncrementalStManAccessor::setCacheSize (uInt size)
+void ROIncrementalStManAccessor::setCacheSize (uInt size,
+                                               Bool canExceedNrBuckets)
 {
-    dataManPtr_p->setCacheSize (size);
+    dataManPtr_p->setCacheSize (size, canExceedNrBuckets);
 }
 uInt ROIncrementalStManAccessor::cacheSize() const
 {
