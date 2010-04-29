@@ -214,6 +214,19 @@ Record VirtualTaQLColumn::dataManagerSpec() const
   return spec;
 }
 
+Bool VirtualTaQLColumn::canAddRow() const
+{
+    return True;
+}
+void VirtualTaQLColumn::addRow (uInt)
+{}
+Bool VirtualTaQLColumn::canRemoveRow() const
+{
+    return True;
+}
+void VirtualTaQLColumn::removeRow (uInt)
+{}
+
 int VirtualTaQLColumn::dataType() const
 {
   return itsDataType;
