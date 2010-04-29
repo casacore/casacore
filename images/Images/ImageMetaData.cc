@@ -97,7 +97,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         }
         Int polCoordNum = polarizationCoordinateNumber();
         StokesCoordinate stokesCoord = itsCoordinates.stokesCoordinate(polCoordNum);
-        Int stokesPix;
+        Int stokesPix=-1;
         stokesCoord.toPixel(stokesPix, Stokes::type(stokesString));
         if (stokesPix < 0 || stokesPix >= (Int)nStokes()) {
             return -1;

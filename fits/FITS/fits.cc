@@ -885,7 +885,7 @@ int FITS::get_value_id(const char *s, int l, int &pos) {
 	// If there is a value_id, 1 is returned; otherwise, 0 is returned.
 	// If a value_id is present, its position is recorded in pos.
 	int i;
-	for (i = 0; *s == ' ' && (i < l); ++i, ++s) ; // skip spaces
+	for (i = 0; i < l && *s == ' '; ++i, ++s) ; // skip spaces
 	if (i == l || *s != '=') {
 	    pos = 0;
 	    return 0;
@@ -1447,8 +1447,8 @@ int FITS::chk_comment(const char *s, int len) {
 int FITS::get_comment(const char *s, int len, int &begpos) {
 	// find the beginning of a comment and return the trimmed length
 	int i;
-	for (i = 0; s[i] == ' ' && i < len; ++i) ;
-	if (s[i] == '/') {
+	for (i = 0; i < len && s[i] == ' '; ++i) ;
+	if (i < len && s[i] == '/') {
 	    ++i;
 	    if (i < len) {
 		begpos = i;
