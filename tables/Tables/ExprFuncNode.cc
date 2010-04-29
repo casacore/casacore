@@ -1273,9 +1273,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	}
     }
     switch (fType) {
-    case randFUNC:
     case rownrFUNC:
     case rowidFUNC:
+	checkNumOfArg (0, 0, nodes);
+	return NTInt;
+    case randFUNC:
     case piFUNC:
     case eFUNC:
 	checkNumOfArg (0, 0, nodes);
