@@ -328,7 +328,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		return cards;
 	    }
 	    // get every card image as a char* and store them into cards.
-	    char* cardImg = new char[81];
+	    char cardImg[81];;
 	    cards.resize( l_keysexist + 1 );
 	    for( int keynum = 1; keynum<l_keysexist+1;keynum++ ){
 		if(ffgrec( m_fptr, keynum, cardImg, &l_status )){ // error reading card

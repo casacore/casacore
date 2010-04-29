@@ -146,6 +146,7 @@ public:
     // </group>
 
     // Interconvert between pixel and world as a Stokes type.
+    // It returns False if no conversion could be done.
     // <group>
     Bool toPixel(Int &pixel, Stokes::StokesTypes stokes) const;
     Bool toWorld(Stokes::StokesTypes &stokes, Int pixel) const;
