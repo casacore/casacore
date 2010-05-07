@@ -123,8 +123,8 @@ template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz,
 template<class T> void Cube<T>::assign (const Array<T>& other)
 {
     DebugAssert(ok(), ArrayError);
-    if (other.ndim() != 2)
-	throw(ArrayNDimError(2, other.ndim(), "Cube<T>::assign()"
+    if (other.ndim() != 3)
+	throw(ArrayNDimError(3, other.ndim(), "Cube<T>::assign()"
 			     " - attempt to assign from non-cube"));
     Array<T>::assign (other);
 }
