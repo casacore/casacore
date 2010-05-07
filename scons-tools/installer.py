@@ -103,7 +103,8 @@ def generate(env):
                 parentlist = os.path.split(parent)
                 if ".svn" in parentlist:
                     return
-                if parentlist[-1] == "test":
+                relpath = parent.replace(str(env.Dir("#")), "")
+                if exclude_tests and relpath.find("test") > -1:
                     return
 	        for entry in os.listdir( parent ):
 	            entrypath = os.path.join( parent, entry )
