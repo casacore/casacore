@@ -45,6 +45,6 @@ As quantity:                 -97.8 Mpc/a
 Input String:                12.5JY
 Expected error for String 12.5JY (value still -97.8 Mpc/a)
 Error message now: Illegal Quantum record in QuantumHolder::fromRecord
-Illegal input units or format in QuantumHolder::fromString
+in QuantumHolder::fromString with input string "12.5JY": Illegal input units or format
 
 ----------------------------------------------------

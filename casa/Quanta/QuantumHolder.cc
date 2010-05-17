@@ -565,8 +565,8 @@ Bool QuantumHolder::fromString(String &error,
 			       const String &in) {
   Quantum<Double> res;
   if (!Quantum<Double>::read(res, in)) {
-    error += String("Illegal input units or format in ") +
-      String("QuantumHolder::fromString\n");
+    error += String("in QuantumHolder::fromString with input string \"") +
+      in + String("\": Illegal input units or format\n");
     return False;
   }
   hold_p.set(new Quantum<Double>(res));
