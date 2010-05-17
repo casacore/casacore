@@ -515,8 +515,12 @@ void RefTable::copyRefTable (const String& newName, int tableOption)
 
 void RefTable::copy (const String& newName, int tableOption) const
 {
-    // If not persistent, make the copy by writing the table.
-    if (!madeDir_p) {
+    // If a memory table, make a deep copy.
+    if (tableType() == Table::Memory) {
+        deepCopy (newName, Record(), tableOption, True, Table::AipsrcEndian,
+                  False);
+        // If not persistent, make the copy by writing the table.
+    } else if (!madeDir_p) {
         const_cast<RefTable*>(this)->copyRefTable (newName, tableOption);
     } else {
         BaseTable::copy (newName, tableOption);
@@ -528,8 +532,8 @@ void RefTable::deepCopy (const String& newName,
 			 int tableOption, Bool, int endianFormat,
 			 Bool noRows) const
 {
-    trueDeepCopy (newName, dataManagerInfo, tableOption,
-		  endianFormat, noRows);
+    trueDeepCopy (newName, dataManagerInfo,
+                  tableOption, endianFormat, noRows);
 }
 
 int RefTable::tableType() const

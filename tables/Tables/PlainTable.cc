@@ -96,7 +96,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# Create the data managers for unbound columns.
     //# Check if there are no data managers with equal names.
     newtab.handleUnbound();
-    newtab.columnSetPtr()->checkDataManagerNames();
+    newtab.columnSetPtr()->checkDataManagerNames (name_p);
     //# Get the data from the SetupNewTable object.
     //# Set SetupNewTable object to in use.
     tdescPtr_p  = newtab.tableDescPtr();

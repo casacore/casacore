@@ -410,7 +410,8 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 {
     checkWriteLock (True);
     // Check if the data manager name has not been used already.
-    checkDataManagerName (dataManager.dataManagerName(), 0);
+    checkDataManagerName (dataManager.dataManagerName(), 0,
+                          baseTablePtr_p->tableName());
     // Add the new table description to the current one.
     // This adds column and possible hypercolumn descriptions.
     // When failing, nothing will have been added.
@@ -577,16 +578,18 @@ DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
     return 0;
 }
 
-void ColumnSet::checkDataManagerNames() const
+void ColumnSet::checkDataManagerNames (const String& tableName) const
 {
     // Loop through all data managers.
     // A name can appear only once (except a blank name).
     String name;
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	checkDataManagerName (BLOCKDATAMANVAL(i)->dataManagerName(), i+1);
+      checkDataManagerName (BLOCKDATAMANVAL(i)->dataManagerName(), i+1,
+                            tableName);
     }
 }
 Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
+                                      const String& tableName,
 				      Bool doTthrow) const
 {
     // Loop through all data managers.
@@ -595,11 +598,9 @@ Bool ColumnSet::checkDataManagerName (const String& name, uInt from,
 	for (uInt j=from; j<blockDataMan_p.nelements(); j++) {
 	    if (name == BLOCKDATAMANVAL(j)->dataManagerName()) {
 	        if (doTthrow) {
-                    String tabName;
-                    if (baseTablePtr_p) tabName = baseTablePtr_p->tableName();
 		    throw TableInvOper ("Data manager name " + name +
                                         " is already used in table " +
-                                        tabName);
+                                        tableName);
 		}
 		return False;
 	    }
@@ -612,7 +613,7 @@ String ColumnSet::uniqueDataManagerName (const String& name) const
 {
     String dmName = name;
     Int nr = 0;
-    while (! checkDataManagerName (dmName, 0, False)) {
+    while (! checkDataManagerName (dmName, 0, String(), False)) {
         nr++;
 	dmName = name + '_' + String::toString(nr);
     }

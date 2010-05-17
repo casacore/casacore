@@ -34,6 +34,7 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ExprNode.h>
+#include <tables/Tables/VirtualTaQLColumn.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayIO.h>
@@ -94,6 +95,9 @@ void putColumnTest(Table&);
 // Copy the table to a plain table
 void copyTable(const Table&);
 
+// Copy a reftable to the memory table to a plain table
+void copyRefTable(const Table&);
+
 // Copy the table to a memory table
 void copyMemoryTable(const Table&);
 
@@ -127,6 +131,8 @@ int main ()
 	  addKeys (tabc);
 	  // copy to a plain table
 	  copyTable(tabc);
+	  // copy a reference to a plain table
+          ///	  copyRefTable(tabc);
 	  // copy to a memory table
 	  copyMemoryTable(tabc);
 	  // copy a subset to a memory table
@@ -234,6 +240,15 @@ void info (const Table& aTable)
 	cout << ad.getColumn() << endl;
       }
       break;
+    case TpDouble:
+      if (cdesc.isArray()) {
+	ROArrayColumn<double> ad(aTable,cdesc.name());
+	cout << ad.getColumn() << endl;
+      } else {
+	ROScalarColumn<double> ad(aTable,cdesc.name());
+	cout << ad.getColumn() << endl;
+      }
+      break;
     case TpString:
       if (cdesc.isArray()) {
 	ROArrayColumn<String> ad(aTable,cdesc.name());
@@ -289,10 +304,17 @@ void init (uInt aMode, Table& aTable)
     td.addColumn (ScalarColumnDesc<DComplex>("Col-1"));
     td.addColumn (ScalarColumnDesc<Int>("Col-2"));
     td.addColumn (ScalarColumnDesc<Bool>("Col-3"));
+    td.addColumn (ScalarColumnDesc<Int>("Colvirt"));
     
     // Now create a new table from the description.
     SetupNewTable aNewTab("tmtest", td, Table::New);
+    VirtualTaQLColumn engine("2*rownumber()");
+    aNewTab.bindColumn("Colvirt", engine);
     aTable = Table (aNewTab, Table::Memory, 10);
+    AlwaysAssertExit (aTable.isColumnStored ("Col-1"));
+    AlwaysAssertExit (aTable.isColumnStored ("Col-2"));
+    AlwaysAssertExit (aTable.isColumnStored ("Col-3"));
+    AlwaysAssertExit (!aTable.isColumnStored ("Colvirt"));
   }
   
   ScalarColumn<DComplex> aa(aTable,"Col-1");
@@ -609,20 +631,38 @@ void copyTable (const Table& aTable)
   Table tab(aTable);
   cout << "old name = " << Path(tab.tableName()).baseName();
   tab.rename ("mt_newname", Table::Scratch);
+  AlwaysAssertExit (!tab.isColumnStored ("Colvirt"));
   cout << "     new name = " << Path(tab.tableName()).baseName() << endl;
   aTable.copy ("tMemoryTable_tmp.tabcp", Table::New);
   Table tabc("tMemoryTable_tmp.tabcp");
   cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
+  AlwaysAssertExit (!tabc.isColumnStored ("Colvirt"));
   info(tabc);
+}
+
+void copyRefTable (const Table& aTable)
+{
+  cout << "Try to copy a referenced memory table" << endl;
+  Table tab (aTable(aTable.col("Colvirt") < 10));
+  AlwaysAssertExit (!tab.isColumnStored ("Colvirt"));
+  tab.deepCopy ("tMemoryTable_tmp.tabcpr", Table::New);
+  Table tabc("tMemoryTable_tmp.tabcpr");
+  cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
+  AlwaysAssertExit (!tabc.isColumnStored ("Colvirt"));
+  info(tabc);
+  cout << tab.dataManagerInfo() << endl;
+  cout << tabc.dataManagerInfo() << endl;
 }
 
 void copyMemoryTable (const Table& aTable)
 {
   cout << "Try to copy the table to a MemoryTable" << endl;
   Table tab(aTable);
+  AlwaysAssertExit (!tab.isColumnStored ("Colvirt"));
   cout << "name = " << Path(tab.tableName()).baseName() << endl;
   Table tabc = tab.copyToMemoryTable ("tMemoryTable.dat");
   cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
+  AlwaysAssertExit (!tabc.isColumnStored ("Colvirt"));
   info(tabc);
 }
 

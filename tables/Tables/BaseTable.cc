@@ -420,7 +420,7 @@ void BaseTable::trueDeepCopy (const String& newName,
         throw TableError
 	       ("Table::deepCopy: new name equal to old name " + name_p);
     }
-    //# Flush the data and sutables.
+    //# Flush the data and subtables.
     //# (cast is necessary to bypass non-constness).
     BaseTable* ncThis = const_cast<BaseTable*>(this);
     ncThis->flush (True, True);

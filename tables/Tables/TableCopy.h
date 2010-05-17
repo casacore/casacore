@@ -82,8 +82,11 @@ public:
   // table is used, so it has the same keywords and columns as the input one.
   // The data managers can be given in the dataManagerInfo record.
   // If it is empty, the info is taken from the input table.
-  // By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
-  // By default, the new table has the same nr of rows as the input table.
+  // <br>Non-writable storage managers (like LofarStMan) are by default replaced
+  // by StandardStMan. If <src>replaceMSM</src> is set, MemoryStMan is also
+  // replaced by StandardStMan.
+  // <br>By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
+  // <br>By default, the new table has the same nr of rows as the input table.
   // If <src>noRows=True</src> is given, it does not contain any row.
   static Table makeEmptyTable (const String& newName,
 			       const Record& dataManagerInfo,
