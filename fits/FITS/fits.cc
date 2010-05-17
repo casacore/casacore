@@ -2418,7 +2418,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 	    if (show_err && (kwlist.no_parse_errs() > 0)) {
 		FITSError::ErrorLevel errlev = FITSError::INFO;
 		if (strcmp(kwlist.curr()->name(),"ERROR") == 0)
-		    errlev = FITSError::SEVERE;
+		    errlev = FITSError::WARN;
 		ostringstream msgline;
 		msgline << "FITS card " << (count * 36 + cardno) << ": ";
 		msgline.write(&buff[i*80],80);
