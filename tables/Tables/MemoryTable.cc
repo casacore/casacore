@@ -62,7 +62,7 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
     }
   }
   //# Check if there are no data managers with equal names.
-  newtab.columnSetPtr()->checkDataManagerNames();
+  newtab.columnSetPtr()->checkDataManagerNames ("MemoryTable");
   //# Get the data from the SetupNewTable object.
   //# Set SetupNewTable object to in use.
   tdescPtr_p  = tdescPtr;
@@ -149,9 +149,7 @@ Bool MemoryTable::isWritable() const
 
 void MemoryTable::copy (const String& newName, int tableOption) const
 {
-  // Only use the current data manager info for possible
-  // virtual column engines.
-  Record dmInfo = colSetPtr_p->dataManagerInfo(True);
+  Record dmInfo = colSetPtr_p->dataManagerInfo();
   deepCopy (newName, dmInfo, tableOption, True, Table::AipsrcEndian, False);
 }
 
@@ -160,21 +158,7 @@ void MemoryTable::deepCopy (const String& newName,
 			    int tableOption, Bool, int endianFormat,
 			    Bool noRows) const
 {
-  // Make sure that all columns get by default the StandardStMan.
-  // The given dmInfo is used to overwrite those defaults.
-  // So make StandardStMan the first field to be sure that the possible
-  // following fields overwrite the defaults.
-  Record dmInfo;
-  Record ssm;
-  ssm.define ("TYPE", "StandardStMan");
-  ssm.define ("NAME", "SSM");
-  ssm.defineRecord ("SPEC", Record());
-  ssm.define ("COLUMNS", tdescPtr_p->columnNames());
-  dmInfo.defineRecord (0, ssm);
-  for (uInt i=0; i<dataManagerInfo.nfields(); i++) {
-    dmInfo.defineRecord (i+1, dataManagerInfo.subRecord(i));
-  }
-  trueDeepCopy (newName, dmInfo, tableOption, endianFormat, noRows);
+  trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat, noRows);
 }
 
 void MemoryTable::rename (const String& newName, int)

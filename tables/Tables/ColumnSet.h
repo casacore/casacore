@@ -242,7 +242,7 @@ public:
     DataManager* getDataManager (uInt seqnr) const;
 
     // Check if no double data manager names have been given.
-    void checkDataManagerNames() const;
+    void checkDataManagerNames (const String& tableName) const;
 
     // Find the data manager with the given name.
     // When the data manager is unknown, an exception is thrown.
@@ -277,6 +277,7 @@ private:
     // It returns False if the name has already been used.
     // By default an exception is thrown if the name has already been used.
     Bool checkDataManagerName (const String& name, uInt from,
+                               const String& tableName,
 			       Bool doTthrow=True) const;
 
     // Do the actual addition of a column.
