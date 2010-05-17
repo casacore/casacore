@@ -113,12 +113,12 @@ public:
     static Bool bigEndian();
 
     // Returns 0 if unable to determine the number of CPUs.
-    static Int numCPUs( );
+    static Int numCPUs(bool use_aipsrc=false);
 
     // Get memory info (in KBytes).
     // Returns -1 if unable to determine memory info.
     // <group>
-    static ssize_t memoryTotal();
+    static ssize_t memoryTotal(bool use_aipsrc=false);
     static ssize_t memoryUsed();
     static ssize_t memoryFree();
     // </group>

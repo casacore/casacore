@@ -27,16 +27,24 @@
 //# $Id$
 
 // For sleep() and ssize_t.
+#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <casa/OS/HostInfo.h>
+#include <casa/System/Aipsrc.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
+
+#define AIPSRCENV "CASARCFILES=aipsrc"
+
 int main()
 {
+
+    putenv(strdup(AIPSRCENV));
     cout << "Host: " << HostInfo::hostName() << endl;
     cout << "Process ID: " << HostInfo::processID() << endl;
     Double s = HostInfo::secondsFrom1970();
@@ -46,6 +54,20 @@ int main()
     cout << "Physical Memory: " << HostInfo::memoryTotal( ) <<
       "K [ " << HostInfo::memoryUsed( ) << " used, " <<
       HostInfo::memoryFree( ) << " free ]" << endl;
+    FILE *aipsrc = fopen( "aipsrc", "w" );
+    fprintf( aipsrc, "system.resources.cores: 1\n" );
+    fprintf( aipsrc, "system.resources.memory: 512\n" );
+    fclose( aipsrc );
+    Aipsrc::reRead( );
+    cout << "Number of CPUs (from ./aipsrc): " << HostInfo::numCPUs(true) << endl;
+    cout << "Physical Memory (from ./aipsrc): " << HostInfo::memoryTotal(true) << "K" << endl;
+    unlink( "aipsrc" );
+    aipsrc = fopen( "aipsrc", "w" );
+    fprintf( aipsrc, "system.resources.memfrac: 50\n" );
+    fclose( aipsrc );
+    Aipsrc::reRead( );
+    cout << "50% Physical Memory (from ./aipsrc): " << HostInfo::memoryTotal(true) << "K" << endl;
+    unlink( "aipsrc" );
     cout << "Swap Space: " << HostInfo::swapTotal( ) <<
       "K [ " << HostInfo::swapUsed( ) << " used, " <<
       HostInfo::swapFree( ) << " free ]" << endl;
@@ -63,8 +85,8 @@ int main()
     Double now = HostInfo::secondsFrom1970();
     sleep(5);
     Double diff = HostInfo::secondsFrom1970() - now;
-    // Assume granularity could be as bad as 200ms
-    AlwaysAssertExit(diff >= 4.8 && diff <= 5.2);
+    // Assume granularity could be as bad as 100ms
+    AlwaysAssertExit(diff >= 4.9 && diff <= 5.1);
 
     // No good way to test hostName, other than using the same library call
     // that hostName is built upon!
