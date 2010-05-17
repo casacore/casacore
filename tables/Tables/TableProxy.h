@@ -298,7 +298,8 @@ public:
 
   // Add one or more columns to the table.
   void addColumns (const Record& tableDesc,
-		   const Record& dminfo);
+		   const Record& dminfo,
+                   Bool addToParent);
 
   // Rename a column in the table.
   void renameColumn (const String& nameOld,
