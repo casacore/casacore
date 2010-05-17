@@ -1474,7 +1474,8 @@ Bool TableProxy::isWritable() const
 }
 
 void TableProxy::addColumns (const Record& tableDesc,
-			     const Record& dminfo)
+			     const Record& dminfo,
+                             Bool addToParent)
 {
   TableDesc tabdesc;
   String message;
@@ -1482,10 +1483,10 @@ void TableProxy::addColumns (const Record& tableDesc,
     throw TableError("addColumns failed: " + message);
   }
   if (dminfo.nfields() > 0) {
-    table_p.addColumn (tabdesc, dminfo);
+    table_p.addColumn (tabdesc, dminfo, addToParent);
   } else {
     for (uInt i=0; i<tabdesc.ncolumn(); i++) {
-      table_p.addColumn (tabdesc[i]);
+      table_p.addColumn (tabdesc[i], addToParent);
     }
   }
 }
