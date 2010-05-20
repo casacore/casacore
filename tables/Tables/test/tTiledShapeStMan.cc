@@ -505,6 +505,60 @@ void writeNoHyper(const TSMOption& tsmOpt)
     }
 }
 
+// Tests for the non-existence of a specific bug that happened
+// when writing boolean values using TSMOption::Buffer
+void writeFlags()
+{
+    TSMOption tsmOpt = TSMOption::Buffer;
+
+    // Build the table description.
+    TableDesc td ("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2, ColumnDesc::FixedShape));
+    
+    // Now create a new table from the description.
+    SetupNewTable newtab("tTiledShapeStMan_tmp.data", td, Table::New);
+
+    // Create a storage manager for it.
+    TiledShapeStMan sm1 ("TSMExample", IPosition(3,1,7,2));
+    newtab.setShapeColumn ("Flag", IPosition(2,16,25));
+    newtab.bindColumn ("Flag", sm1);
+    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+
+    ArrayColumn<Bool> flag (table, "Flag");
+    Matrix<Bool> ones(IPosition(2,16,25));
+    Matrix<Bool> zeros(IPosition(2,16,25));
+    Matrix<Bool> fresult(IPosition(2,16,25));
+
+    table.addRow();
+    table.addRow();
+    table.addRow();
+    table.addRow();
+
+    for (uInt j=0; j < fresult.nelements(); ++j) {
+        zeros.data()[j] = 0;
+        ones.data()[j] = 1;
+    }
+
+    flag.put (3, zeros);
+    flag.get (3, fresult);
+    if (! allEQ (fresult, zeros)) {
+        cout << "Problem writing row 3" << endl;
+        return;
+    }
+
+    flag.put (0, ones);
+    flag.put (1, ones);
+    flag.put (2, ones);
+
+    flag.get (3, fresult);
+
+    if (! allEQ (fresult, zeros)) {
+        cout << "Row 3 has changed since it was written!" << endl;
+    }
+
+    return;
+}
+
 
 int main () {
     try {
@@ -518,6 +572,9 @@ int main () {
 	readTable (IPosition(), TSMOption::Aipsrc);
 	writeNoHyper (TSMOption::Aipsrc);
 	readTable (IPosition(2,16,25), TSMOption::Default);
+
+        writeFlags();
+
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
