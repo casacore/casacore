@@ -276,9 +276,23 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
       expandedTileShape_p.offsetIncrement (dataLength);
     IPosition sectionIncr = localPixelSize *
       expandedSectionShape.offsetIncrement (dataLength);
-    uInt nrval     = dataLength(0) * nrConvElem;
-    uInt localSize = dataLength(0) * localPixelSize;
-    uInt dataSize  = dataLength(0) * dataPixelSize;
+
+    // Calculate the largest number of pixels
+    // that are consecutive in data and in section.
+    uInt n = dataLength(0);
+    uInt incrDim = 1;
+    for (uInt j = 1; j < nrdim_p; j++) {
+      if (dataLength(j-1) == tileShape_p(j-1)  &&
+          dataLength(j-1) == sectionShape(j-1)) {
+        n *= dataLength(j);
+        incrDim = j+1;
+      } else {
+        break;
+      }
+    }
+    uInt nrval     = n * nrConvElem;
+    uInt localSize = n * localPixelSize;
+    uInt dataSize  = n * dataPixelSize;
 
     // Loop through the data in the tile. Handle Bool specifically.
     // On read, it converts the data from the external to the local format.
@@ -291,7 +305,7 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
         uInt nBytes = (stBit+nrval+7) / 8;
         if (writeFlag) {
           // Read first and/or last byte if no full byte is used.
-          if (stBit != 0) {
+          if (stBit > 0  ||  nrval < 8) {
             cachePtr->read (tileNr, offset, 1);
           }
           if (nBytes > 1  &&  (stBit+nrval) % 8 != 0) {
@@ -308,7 +322,7 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
         dataOffset    += dataSize;
         sectionOffset += localSize;
         uInt j;
-        for (j=1; j<nrdim_p; j++) {
+        for (j=incrDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {
@@ -334,7 +348,7 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
         dataOffset    += dataSize;
         sectionOffset += localSize;
         uInt j;
-        for (j=1; j<nrdim_p; j++) {
+        for (j=incrDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {
