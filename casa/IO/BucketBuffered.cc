@@ -55,9 +55,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BucketBuffered::read (uInt bucketNr, uInt bucketOffset, uInt nbytes,
                              uInt bufferOffset)
   {
+    if (bucketNr >= itsNewNrOfBuckets) {
+      throw (indexError<Int> (bucketNr));
+    }
     itsFile->bufferedFile()->seek
       (itsStartOffset + Int64(bucketNr)*itsBucketSize + bucketOffset);
-    itsFile->bufferedFile()->read (nbytes, itsBuffer+bufferOffset);
+    // When doing read/write, it can happen that not all bytes are written yet.
+    // So accept it if not all bytes could be read.
+    uInt nread = itsFile->bufferedFile()->read (nbytes, itsBuffer+bufferOffset,
+                                                False);
+    if (nread < nbytes) {
+      memset (itsBuffer+bufferOffset+nread, 0, nbytes-nread);
+    }
   }
 
   void BucketBuffered::write (uInt bucketNr, uInt bucketOffset, uInt nbytes)

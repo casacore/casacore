@@ -367,7 +367,11 @@ uInt FilebufIO::readBlock (uInt size, char* buf, Bool throwException)
       throw AipsError ("FilebufIO::readBlock - incorrect number of bytes"
 		       " read for file " + fileName());
     }
-    size = itsBufLen-st;
+    if (itsBufLen > st) {
+      size = itsBufLen-st;
+    } else {
+      size = 0;
+    }
   }
   memcpy (buf, itsBuffer+st, size);
   return size;
