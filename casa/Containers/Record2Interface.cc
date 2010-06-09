@@ -134,6 +134,49 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   return arr;
 }
 
+Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
+{
+  Array<Int64> arr;
+  Int whichField = idToNumber (id);
+  switch (type(whichField)) {
+  case TpUChar:
+  case TpArrayUChar:
+    {
+      Array<uChar> tmp = asArrayuChar (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  case TpShort:
+  case TpArrayShort:
+    {
+      Array<Short> tmp = asArrayShort (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  case TpInt:
+  case TpArrayInt:
+    {
+      Array<Int> tmp = asArrayInt (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  case TpUInt:
+  case TpArrayUInt:
+    {
+      Array<uInt> tmp = asArrayuInt (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  default:
+    arr = asArrayInt64 (id);
+  }
+  return arr;
+}
+
 Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
 {
   Array<Float> arr;
@@ -167,6 +210,14 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpArrayUInt:
     {
       Array<uInt> tmp = asArrayuInt (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  case TpInt64:
+  case TpArrayInt64:
+    {
+      Array<Int64> tmp = asArrayInt64 (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -222,6 +273,14 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
       convertArray (arr, tmp);
       break;
     }
+  case TpInt64:
+  case TpArrayInt64:
+    {
+      Array<Int64> tmp = asArrayInt64 (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
   case TpFloat:
   case TpArrayFloat:
     {
@@ -244,40 +303,18 @@ Array<DComplex> RecordInterface::toArrayDComplex
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
-    {
-      Array<uChar> tmp = asArrayuChar (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpShort:
   case TpArrayShort:
-    {
-      Array<Short> tmp = asArrayShort (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpInt:
   case TpArrayInt:
-    {
-      Array<Int> tmp = asArrayInt (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpUInt:
   case TpArrayUInt:
-    {
-      Array<uInt> tmp = asArrayuInt (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
+  case TpInt64:
+  case TpArrayInt64:
   case TpFloat:
   case TpArrayFloat:
     {
-      Array<Float> tmp = asArrayFloat (id);
+      Array<Double> tmp = toArrayDouble (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -312,32 +349,18 @@ Array<Complex> RecordInterface::toArrayComplex
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
-    {
-      Array<uChar> tmp = asArrayuChar (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpShort:
   case TpArrayShort:
-    {
-      Array<Short> tmp = asArrayShort (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpInt:
   case TpArrayInt:
-    {
-      Array<Int> tmp = asArrayInt (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
   case TpUInt:
   case TpArrayUInt:
+  case TpInt64:
+  case TpArrayInt64:
+  case TpDouble:
+  case TpArrayDouble:
     {
-      Array<uInt> tmp = asArrayuInt (id);
+      Array<Float> tmp = toArrayFloat (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -346,14 +369,6 @@ Array<Complex> RecordInterface::toArrayComplex
   case TpArrayFloat:
     {
       Array<Float> tmp = asArrayFloat (id);
-      arr.resize (tmp.shape());
-      convertArray (arr, tmp);
-      break;
-    }
-  case TpDouble:
-  case TpArrayDouble:
-    {
-      Array<Double> tmp = asArrayDouble (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;

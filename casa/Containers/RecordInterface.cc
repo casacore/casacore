@@ -146,6 +146,8 @@ IPosition RecordInterface::shape (const RecordFieldId& id) const
 	return asArrayInt(whichField).shape();
     case TpArrayUInt:
 	return asArrayuInt(whichField).shape();
+    case TpArrayInt64:
+	return asArrayInt64(whichField).shape();
     case TpArrayFloat:
 	return asArrayFloat(whichField).shape();
     case TpArrayDouble:
@@ -207,6 +209,10 @@ void RecordInterface::define (const RecordFieldId& id, uInt value)
 {
     defineField (id, TpUInt, &value);
 }
+void RecordInterface::define (const RecordFieldId& id, Int64 value)
+{
+    defineField (id, TpInt64, &value);
+}
 void RecordInterface::define (const RecordFieldId& id, float value)
 {
     defineField (id, TpFloat, &value);
@@ -256,6 +262,12 @@ void RecordInterface::define (const RecordFieldId& id,
 			      Bool fixedShape)
 {
     defineField (id, TpArrayUInt, value.shape(), fixedShape, &value);
+}
+void RecordInterface::define (const RecordFieldId& id,
+			      const Array<Int64>& value,
+			      Bool fixedShape)
+{
+    defineField (id, TpArrayInt64, value.shape(), fixedShape, &value);
 }
 void RecordInterface::define (const RecordFieldId& id,
 			      const Array<float>& value,
@@ -308,6 +320,10 @@ void RecordInterface::get (const RecordFieldId& id, Int& value) const
 void RecordInterface::get (const RecordFieldId& id, uInt& value) const
 {
     value = asuInt (id);
+}
+void RecordInterface::get (const RecordFieldId& id, Int64& value) const
+{
+    value = asInt64 (id);
 }
 void RecordInterface::get (const RecordFieldId& id, float& value) const
 {
@@ -366,6 +382,14 @@ void RecordInterface::get (const RecordFieldId& id, Array<uInt>& value) const
     Int whichField = idToNumber (id);
     const Array<uInt>& array = *(const Array<uInt>*)
 	                            get_pointer (whichField, TpArrayUInt);
+    value.resize (array.shape());
+    value = array;
+}
+void RecordInterface::get (const RecordFieldId& id, Array<Int64>& value) const
+{
+    Int whichField = idToNumber (id);
+    const Array<Int64>& array = *(const Array<Int64>*)
+	                            get_pointer (whichField, TpArrayInt64);
     value.resize (array.shape());
     value = array;
 }
@@ -497,6 +521,26 @@ uInt RecordInterface::asuInt (const RecordFieldId& id) const
     }
     return *(const uInt*)get_pointer (whichField, TpUInt);
 }
+Int64 RecordInterface::asInt64 (const RecordFieldId& id) const
+{
+    Int whichField = idToNumber (id);
+    DataType dataType = type (whichField);
+    switch (dataType) {
+    case TpUChar:
+	return *(const uChar*)get_pointer (whichField, TpUChar);
+    case TpShort:
+	return *(const Short*)get_pointer (whichField, TpShort);
+    case TpInt:
+	return *(const Int*)get_pointer (whichField, TpInt);
+    case TpUInt:
+	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	break;
+    default:
+	throw (AipsError ("RecordInterface::asInt64 - invalid data type"));
+    }
+    return *(const Int64*)get_pointer (whichField, TpInt64);
+}
 float RecordInterface::asFloat (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
@@ -510,6 +554,8 @@ float RecordInterface::asFloat (const RecordFieldId& id) const
 	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     case TpFloat:
 	break;
     case TpDouble:
@@ -532,6 +578,8 @@ double RecordInterface::asDouble (const RecordFieldId& id) const
 	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     case TpFloat:
 	return *(const float*)get_pointer (whichField, TpFloat);
     case TpDouble:
@@ -554,6 +602,8 @@ Complex RecordInterface::asComplex (const RecordFieldId& id) const
 	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     case TpFloat:
 	return *(const float*)get_pointer (whichField, TpFloat);
     case TpDouble:
@@ -583,6 +633,8 @@ DComplex RecordInterface::asDComplex (const RecordFieldId& id) const
 	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     case TpFloat:
 	return *(const float*)get_pointer (whichField, TpFloat);
     case TpDouble:
@@ -629,6 +681,11 @@ const Array<uInt>& RecordInterface::asArrayuInt (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
     return *(const Array<uInt>*)get_pointer (whichField, TpArrayUInt);
+}
+const Array<Int64>& RecordInterface::asArrayInt64 (const RecordFieldId& id) const
+{
+    Int whichField = idToNumber (id);
+    return *(const Array<Int64>*)get_pointer (whichField, TpArrayInt64);
 }
 const Array<float>& RecordInterface::asArrayFloat (const RecordFieldId& id) const
 {

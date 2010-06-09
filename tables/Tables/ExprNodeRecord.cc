@@ -62,6 +62,7 @@ TableExprNodeRecordField::TableExprNodeRecordField
   case TpUShort:
   case TpInt:
   case TpUInt:
+  case TpInt64:
     dtype_p = NTInt;
     break;
   case TpFloat:
@@ -110,13 +111,15 @@ Bool TableExprNodeRecordField::isDefined (const TableExprId& id)
     return dtype == TpBool;
   case NTInt:
     return dtype == TpUChar  ||  dtype == TpShort  ||  dtype == TpInt
-       ||  dtype == TpUInt;
+       ||  dtype == TpUInt   ||  dtype == TpInt64;
   case NTDouble:
     return dtype == TpUChar  ||  dtype == TpShort  ||  dtype == TpInt
-       ||  dtype == TpUInt   ||  dtype == TpFloat  ||  dtype == TpDouble;
+       ||  dtype == TpUInt   ||  dtype == TpInt64
+       ||  dtype == TpFloat  ||  dtype == TpDouble;
   case NTComplex:
     return dtype == TpUChar  ||  dtype == TpShort  ||  dtype == TpInt
-       ||  dtype == TpUInt   ||  dtype == TpFloat  ||  dtype == TpDouble
+       ||  dtype == TpUInt   ||  dtype == TpInt64
+       ||  dtype == TpFloat  ||  dtype == TpDouble
        ||  dtype == TpComplex  ||  dtype == TpDComplex;
   case NTString:
     return dtype == TpString;
@@ -138,7 +141,7 @@ Int64    TableExprNodeRecordField::getInt      (const TableExprId& id)
   if (id.byData()) {
     return id.data().getInt (fieldNrs_p);
   }
-  return getRecord(id).asInt (fieldNrs_p[lastEntry_p]);
+  return getRecord(id).asInt64 (fieldNrs_p[lastEntry_p]);
 }
 Double   TableExprNodeRecordField::getDouble   (const TableExprId& id)
 {
@@ -198,6 +201,7 @@ TableExprNodeRecordFieldArray::TableExprNodeRecordFieldArray
   case TpArrayShort:
   case TpArrayInt:
   case TpArrayUInt:
+  case TpArrayInt64:
     dtype_p = NTInt;
     break;
   case TpArrayFloat:
@@ -251,14 +255,17 @@ Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
     return dtype == TpArrayBool;
   case NTInt:
     return dtype == TpArrayUChar  ||  dtype == TpArrayShort
-       ||  dtype == TpArrayInt    ||  dtype == TpArrayUInt;
+       ||  dtype == TpArrayInt    ||  dtype == TpArrayUInt
+       ||  dtype == TpArrayInt64;
   case NTDouble:
     return dtype == TpArrayUChar  ||  dtype == TpArrayShort
        ||  dtype == TpArrayInt    ||  dtype == TpArrayUInt
+       ||  dtype == TpArrayInt64
        ||  dtype == TpArrayFloat  ||  dtype == TpArrayDouble;
   case NTComplex:
     return dtype == TpArrayUChar  ||  dtype == TpArrayShort
        ||  dtype == TpArrayInt    ||  dtype == TpArrayUInt
+       ||  dtype == TpArrayInt64
        ||  dtype == TpArrayFloat  ||  dtype == TpArrayDouble
        ||  dtype == TpArrayComplex  ||  dtype == TpArrayDComplex;
   case NTString:
@@ -284,26 +291,7 @@ Array<Int64> TableExprNodeRecordFieldArray::getArrayInt
   if (id.byData()) {
     return id.data().getArrayInt (fieldNrs_p);
   }
-  const RecordInterface& record = getRecord(id);
-  DataType dtype = record.type(fieldNrs_p[lastEntry_p]);
-  Array<Int64> result (record.shape(fieldNrs_p[lastEntry_p]));
-  switch (dtype) {
-  case TpArrayUChar:
-    convertArray (result, record.asArrayuChar (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayShort:
-    convertArray (result, record.asArrayShort (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayInt:
-    convertArray (result, record.asArrayInt (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayUInt:
-    convertArray (result, record.asArrayuInt (fieldNrs_p[lastEntry_p]));
-    break;
-  default:
-    throw (AipsError ("TableExprNodeRecordFieldArray::getArrayDouble"));
-  }
-  return result;
+  return getRecord(id).toArrayInt64 (fieldNrs_p[lastEntry_p]);
 }
 
 Array<Double> TableExprNodeRecordFieldArray::getArrayDouble
@@ -312,32 +300,7 @@ Array<Double> TableExprNodeRecordFieldArray::getArrayDouble
   if (id.byData()) {
     return id.data().getArrayDouble (fieldNrs_p);
   }
-  const RecordInterface& record = getRecord(id);
-  DataType dtype = record.type(fieldNrs_p[lastEntry_p]);
-  if (dtype == TpArrayDouble) {
-    return record.asArrayDouble (fieldNrs_p[lastEntry_p]);
-  }
-  Array<Double> result (record.shape(fieldNrs_p[lastEntry_p]));
-  switch (dtype) {
-  case TpArrayUChar:
-    convertArray (result, record.asArrayuChar (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayShort:
-    convertArray (result, record.asArrayShort (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayInt:
-    convertArray (result, record.asArrayInt (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayUInt:
-    convertArray (result, record.asArrayuInt (fieldNrs_p[lastEntry_p]));
-    break;
-  case TpArrayFloat:
-    convertArray (result, record.asArrayFloat (fieldNrs_p[lastEntry_p]));
-    break;
-  default:
-    throw (AipsError ("TableExprNodeRecordFieldArray::getArrayDouble"));
-  }
-  return result;
+  return getRecord(id).toArrayDouble (fieldNrs_p[lastEntry_p]);
 }
 
 Array<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
@@ -346,20 +309,7 @@ Array<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
   if (id.byData()) {
     return id.data().getArrayDComplex (fieldNrs_p);
   }
-  const RecordInterface& record = getRecord(id);
-  DataType dtype = record.type(fieldNrs_p[lastEntry_p]);
-  if (dtype == TpArrayDComplex) {
-    return getRecord(id).asArrayDComplex (fieldNrs_p[lastEntry_p]);
-  }
-  Array<DComplex> result (record.shape(fieldNrs_p[lastEntry_p]));
-  switch (dtype) {
-  case TpArrayComplex:
-    convertArray (result, record.asArrayComplex (fieldNrs_p[lastEntry_p]));
-    break;
-  default:
-    convertArray (result, getArrayDouble (id));
-  }
-  return result;
+  return getRecord(id).toArrayDComplex (fieldNrs_p[lastEntry_p]);
 }
 
 Array<String> TableExprNodeRecordFieldArray::getArrayString

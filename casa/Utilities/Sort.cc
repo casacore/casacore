@@ -96,6 +96,11 @@ uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 	    return GenSortIndirect<Int>::sort (indexVector, (Int*)data_p,
 					       nrrec, ord, opt);
 	}
+    } else if (cmpFunc_p == ObjCompare<Int64>::compare) {
+	if (incr_p == sizeof(Int64)) {
+	    return GenSortIndirect<Int64>::sort (indexVector, (Int64*)data_p,
+                                                 nrrec, ord, opt);
+	}
     } else if (cmpFunc_p == ObjCompare<String>::compare) {
 	if (incr_p == sizeof(String)) {
 	    return GenSortIndirect<String>::sort (indexVector, (String*)data_p,

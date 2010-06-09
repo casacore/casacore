@@ -118,6 +118,7 @@ AipsIO& RecordDesc::get (AipsIO& os)
 	case TpArrayUShort:
 	case TpArrayInt:
 	case TpArrayUInt:
+	case TpArrayInt64:
 	case TpArrayFloat:
 	case TpArrayDouble:
 	case TpArrayComplex:

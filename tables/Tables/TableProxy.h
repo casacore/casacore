@@ -588,6 +588,8 @@ private:
     {os << v;}
   void printArrayValue (ostream& os, Int v, const String&) const
     {os << v;}
+  void printArrayValue (ostream& os, Int64 v, const String&) const
+    {os << v;}
   void printArrayValue (ostream& os, Double v, const String&) const
     {os << v;}
   void printArrayValue (ostream& os, const DComplex& v, const String&) const

@@ -87,6 +87,7 @@ public:
     static uShort    undefUShort   ();
     static Int       undefInt      ();
     static uInt      undefUInt     ();
+    static Int64     undefInt64    ();
     static float     undefFloat    ();
     static double    undefDouble   ();
     static Complex   undefComplex  ();
@@ -105,6 +106,7 @@ public:
     static void getUndef (uShort*);
     static void getUndef (Int*);
     static void getUndef (uInt*);
+    static void getUndef (Int64*);
     static void getUndef (float*);
     static void getUndef (double*);
     static void getUndef (Complex*);
@@ -123,6 +125,7 @@ public:
     static DataType getType (const uShort*);
     static DataType getType (const Int*);
     static DataType getType (const uInt*);
+    static DataType getType (const Int64*);
     static DataType getType (const float*);
     static DataType getType (const double*);
     static DataType getType (const Complex*);
@@ -143,6 +146,7 @@ public:
     static const String& getTypeStr (const uShort*);
     static const String& getTypeStr (const Int*);
     static const String& getTypeStr (const uInt*);
+    static const String& getTypeStr (const Int64*);
     static const String& getTypeStr (const float*);
     static const String& getTypeStr (const double*);
     static const String& getTypeStr (const Complex*);
@@ -189,6 +193,7 @@ public:
     static void put (AipsIO&, const uShort*);
     static void put (AipsIO&, const Int*);
     static void put (AipsIO&, const uInt*);
+    static void put (AipsIO&, const Int64*);
     static void put (AipsIO&, const float*);
     static void put (AipsIO&, const double*);
     static void put (AipsIO&, const Complex*);
@@ -208,6 +213,7 @@ public:
     static void get (AipsIO&, uShort*);
     static void get (AipsIO&, Int*);
     static void get (AipsIO&, uInt*);
+    static void get (AipsIO&, Int64*);
     static void get (AipsIO&, float*);
     static void get (AipsIO&, double*);
     static void get (AipsIO&, Complex*);
@@ -227,6 +233,7 @@ public:
     static void put (ostream&, const uShort*);
     static void put (ostream&, const Int*);
     static void put (ostream&, const uInt*);
+    static void put (ostream&, const Int64*);
     static void put (ostream&, const float*);
     static void put (ostream&, const double*);
     static void put (ostream&, const Complex*);
@@ -247,6 +254,7 @@ public:
     static int isDefined (const uShort* value,   const uShort* undef);
     static int isDefined (const Int* value,      const Int* undef);
     static int isDefined (const uInt* value,     const uInt* undef);
+    static int isDefined (const Int64* value,    const Int64* undef);
     static int isDefined (const float* value,    const float* undef);
     static int isDefined (const double* value,   const double* undef);
     static int isDefined (const Complex* value,  const Complex* undef);
@@ -263,6 +271,7 @@ private:
     static const uShort   undefushort  ;
     static const Int      undefint     ;
     static const uInt     undefuint    ;
+    static const Int64    undefint64   ;
     static const float    undeffloat   ;
     static const double   undefdouble  ;
     static const Complex  undefcomplex ;
@@ -276,6 +285,7 @@ private:
     static const String strushort;
     static const String strint;
     static const String struint;
+    static const String strint64;
     static const String strfloat;
     static const String strdouble;
     static const String strcomplex;
@@ -307,6 +317,8 @@ inline Int ValType::undefInt ()
     {return undefint;}
 inline uInt ValType::undefUInt ()
     {return undefuint;}
+inline Int64 ValType::undefInt64 ()
+    {return undefint64;}
 inline float ValType::undefFloat ()
     {return undeffloat;}
 inline double ValType::undefDouble ()
@@ -333,6 +345,8 @@ inline void ValType::getUndef (Int* val)
     {*val = undefint;}
 inline void ValType::getUndef (uInt* val)
     {*val = undefuint;}
+inline void ValType::getUndef (Int64* val)
+    {*val = undefint64;}
 inline void ValType::getUndef (float* val)
     {*val = undeffloat;}
 inline void ValType::getUndef (double* val)
@@ -360,6 +374,8 @@ inline DataType ValType::getType (const Int*)
     {return TpInt;}
 inline DataType ValType::getType (const uInt*)
     {return TpUInt;}
+inline DataType ValType::getType (const Int64*)
+    {return TpInt64;}
 inline DataType ValType::getType (const float*)
     {return TpFloat;}
 inline DataType ValType::getType (const double*)
@@ -389,6 +405,8 @@ inline const String& ValType::getTypeStr (const Int*)
     {return strint;}
 inline const String& ValType::getTypeStr (const uInt*)
     {return struint;}
+inline const String& ValType::getTypeStr (const Int64*)
+    {return strint64;}
 inline const String& ValType::getTypeStr (const float*)
     {return strfloat;}
 inline const String& ValType::getTypeStr (const double*)
@@ -418,6 +436,8 @@ inline void ValType::put (AipsIO& ios, const Int* value)
     {ios << *value;}
 inline void ValType::put (AipsIO& ios, const uInt* value)
     {ios << *value;}
+inline void ValType::put (AipsIO& ios, const Int64* value)
+    {ios << *value;}
 inline void ValType::put (AipsIO& ios, const float* value)
     {ios << *value;}
 inline void ValType::put (AipsIO& ios, const double* value)
@@ -444,6 +464,8 @@ inline void ValType::get (AipsIO& ios, uShort* value)
 inline void ValType::get (AipsIO& ios, Int* value)
     {ios >> *value;}
 inline void ValType::get (AipsIO& ios, uInt* value)
+    {ios >> *value;}
+inline void ValType::get (AipsIO& ios, Int64* value)
     {ios >> *value;}
 inline void ValType::get (AipsIO& ios, float* value)
     {ios >> *value;}
@@ -472,6 +494,8 @@ inline void ValType::put (ostream& ios, const Int* value)
     {ios << *value;}
 inline void ValType::put (ostream& ios, const uInt* value)
     {ios << *value;}
+inline void ValType::put (ostream& ios, const Int64* value)
+    {ios << *value;}
 inline void ValType::put (ostream& ios, const float* value)
     {ios << *value;}
 inline void ValType::put (ostream& ios, const double* value)
@@ -499,6 +523,8 @@ inline int ValType::isDefined (const uShort* value,   const uShort* undef)
 inline int ValType::isDefined (const Int* value,      const Int* undef)
     {return *value != *undef;}
 inline int ValType::isDefined (const uInt* value,     const uInt* undef)
+    {return *value != *undef;}
+inline int ValType::isDefined (const Int64* value,    const Int64* undef)
     {return *value != *undef;}
 inline int ValType::isDefined (const float* value,    const float* undef)
     {return *value != *undef;}

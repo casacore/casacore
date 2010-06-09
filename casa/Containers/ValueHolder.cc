@@ -73,6 +73,12 @@ ValueHolder::ValueHolder (uInt value)
   itsRep->link();
 }
 
+ValueHolder::ValueHolder (Int64 value)
+  : itsRep (new ValueHolderRep(value))
+{
+  itsRep->link();
+}
+
 ValueHolder::ValueHolder (Float value)
   : itsRep (new ValueHolderRep(value))
 {
@@ -140,6 +146,12 @@ ValueHolder::ValueHolder (const Array<Int>& value)
 }
 
 ValueHolder::ValueHolder (const Array<uInt>& value)
+  : itsRep (new ValueHolderRep(value))
+{
+  itsRep->link();
+}
+
+ValueHolder::ValueHolder (const Array<Int64>& value)
   : itsRep (new ValueHolderRep(value))
 {
   itsRep->link();

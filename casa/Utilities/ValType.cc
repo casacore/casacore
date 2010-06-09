@@ -48,6 +48,7 @@ const Short          ValType::undefshort    = -32768;
 const uShort         ValType::undefushort   = 0;
 const Int            ValType::undefint      = -2*Int(32768*32768);
 const uInt           ValType::undefuint     = 0;
+const Int64          ValType::undefint64    = -2*Int64(32768*32768)*Int64(32768*32768);
 const float          ValType::undeffloat    = -C::minfloat;
 const Complex        ValType::undefcomplex   (-C::minfloat,  -C::minfloat);
 const double         ValType::undefdouble   = -C::mindouble;
@@ -62,6 +63,7 @@ const String ValType::strshort       = "Short   ";
 const String ValType::strushort      = "uShort  ";
 const String ValType::strint         = "Int     ";
 const String ValType::struint        = "uInt    ";
+const String ValType::strint64       = "Int64   ";
 const String ValType::strfloat       = "float   ";
 const String ValType::strdouble      = "double  ";
 const String ValType::strcomplex     = "Complex ";
@@ -91,6 +93,8 @@ const String& ValType::getTypeStr (DataType dt)
 	return strint;
     case TpUInt:
 	return struint;
+    case TpInt64:
+	return strint64;
     case TpFloat:
 	return strfloat;
     case TpDouble:
@@ -139,6 +143,9 @@ int ValType::getTypeSize (DataType dt)
     case TpUInt:
     case TpArrayUInt:
 	return sizeof(uInt);
+    case TpInt64:
+    case TpArrayInt64:
+	return sizeof(Int64);
     case TpFloat:
     case TpArrayFloat:
 	return sizeof(float);
@@ -183,6 +190,9 @@ int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
     case TpUInt:
     case TpArrayUInt:
       return CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
+    case TpInt64:
+    case TpArrayInt64:
+      return CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
     case TpFloat:
     case TpArrayFloat:
       return CanonicalConversion::canonicalSize (static_cast<float*>(0));
@@ -218,6 +228,9 @@ int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
     case TpUInt:
     case TpArrayUInt:
       return LECanonicalConversion::canonicalSize (static_cast<uInt*>(0));
+    case TpInt64:
+    case TpArrayInt64:
+      return LECanonicalConversion::canonicalSize (static_cast<Int64*>(0));
     case TpFloat:
     case TpArrayFloat:
       return LECanonicalConversion::canonicalSize (static_cast<float*>(0));
@@ -282,6 +295,11 @@ void ValType::getCanonicalFunc (DataType dt,
       readFunc  = CanonicalConversion::getToLocal (static_cast<uInt*>(0));
       writeFunc = CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
       break;
+    case TpInt64:
+    case TpArrayInt64:
+      readFunc  = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+      break;
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
@@ -339,6 +357,11 @@ void ValType::getCanonicalFunc (DataType dt,
       readFunc  = LECanonicalConversion::getToLocal (static_cast<uInt*>(0));
       writeFunc = LECanonicalConversion::getFromLocal (static_cast<uInt*>(0));
       break;
+    case TpInt64:
+    case TpArrayInt64:
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<Int64*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+      break;
     case TpComplex:
     case TpArrayComplex:
       nrElementsPerValue = 2;
@@ -378,6 +401,9 @@ Bool ValType::isPromotable (DataType from, DataType to)
 	if (to == TpInt)
 	    return True;
     case TpInt:
+	if (to == TpInt64)
+	    return True;
+    case TpInt64:
     case TpFloat:
     case TpDouble:
 	if (to == TpFloat  ||  to == TpDouble)
@@ -394,6 +420,8 @@ Bool ValType::isPromotable (DataType from, DataType to)
 	if (to == TpUInt)
 	    return True;
     case TpUInt:
+        if (to == TpInt64)
+            return True;
 	if (to == TpFloat  ||  to == TpDouble)
 	    return True;
 	if (to == TpComplex  ||  to == TpDComplex)
@@ -424,6 +452,8 @@ ObjCompareFunc* ValType::getCmpFunc (DataType dt)
 	return &ObjCompare<Int>::compare;
     case TpUInt:
 	return &ObjCompare<uInt>::compare;
+    case TpInt64:
+	return &ObjCompare<Int64>::compare;
     case TpFloat:
 	return &ObjCompare<float>::compare;
     case TpDouble:

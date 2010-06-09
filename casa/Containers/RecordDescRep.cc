@@ -120,6 +120,7 @@ void RecordDescRep::addFieldAny (DataType type)
     case TpUShort:
     case TpInt:
     case TpUInt:
+    case TpInt64:
     case TpFloat:
     case TpDouble:
     case TpComplex:
@@ -133,6 +134,7 @@ void RecordDescRep::addFieldAny (DataType type)
     case TpArrayUShort:
     case TpArrayInt:
     case TpArrayUInt:
+    case TpArrayInt64:
     case TpArrayFloat:
     case TpArrayDouble:
     case TpArrayComplex:
@@ -190,6 +192,10 @@ void RecordDescRep::addFieldArray (DataType type, const IPosition& shape)
     case TpUInt:
     case TpArrayUInt:
 	types_p[n] = TpArrayUInt;
+	break;
+    case TpInt64:
+    case TpArrayInt64:
+	types_p[n] = TpArrayInt64;
 	break;
     case TpFloat:
     case TpArrayFloat:

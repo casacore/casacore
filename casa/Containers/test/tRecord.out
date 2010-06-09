@@ -23,6 +23,7 @@ RecordInterface::asComplex - invalid data type
   TpShort: Short 0
   TpInt: Int 0
   TpUInt: uInt 0
+  TpInt64: Int64 0
   TpFloat: Float 0
   TpDouble: Double 0
   TpComplex: Complex (0,0)
@@ -33,6 +34,7 @@ RecordInterface::asComplex - invalid data type
   TpArrayShort: Short array with shape [1]
   TpArrayInt: Int array with shape [1]
   TpArrayUInt: uInt array with shape [1]
+  TpArrayInt64: Int64 array with shape [1]
   TpArrayFloat: Float array with shape [1]
   TpArrayDouble: Double array with shape [1]
   TpArrayComplex: Complex array with shape [1]
@@ -51,6 +53,7 @@ RecordInterface::asComplex - invalid data type
   TpShort2a: Short 0
   TpInt2a: Int 0
   TpUInt2a: uInt 0
+  TpInt642a: Int64 0
   TpFloat2a: Float 0
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
@@ -63,6 +66,7 @@ RecordInterface::asComplex - invalid data type
   TpShort: Short 0
   TpInt: Int 0
   TpUInt: uInt 0
+  TpInt64: Int64 0
   TpFloat: Float 0
   TpDouble: Double 0
   TpComplex: Complex (0,0)
@@ -77,6 +81,8 @@ RecordInterface::asComplex - invalid data type
   TpArrayInt: Int array with shape [1]
 [0]
   TpArrayUInt: uInt array with shape [1]
+[0]
+  TpArrayInt64: Int64 array with shape [1]
 [0]
   TpArrayFloat: Float array with shape [1]
 [0]
@@ -101,6 +107,7 @@ RecordInterface::asComplex - invalid data type
   TpShort2a: Short 0
   TpInt2a: Int 0
   TpUInt2a: uInt 0
+  TpInt642a: Int64 0
   TpFloat2a: Float 0
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
@@ -115,6 +122,7 @@ RecordInterface::asComplex - invalid data type
   TpShort: Short 0
   TpInt: Int 0
   TpUInt: uInt 0
+  TpInt64: Int64 0
   TpFloat: Float 0
   TpDouble: Double 0
   TpComplex: Complex (0,0)
@@ -129,6 +137,8 @@ RecordInterface::asComplex - invalid data type
   TpArrayInt: Int array with shape [1]
     [0]
   TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayInt64: Int64 array with shape [1]
     [0]
   TpArrayFloat: Float array with shape [1]
     [0]
@@ -153,6 +163,7 @@ RecordInterface::asComplex - invalid data type
   TpShort2a: Short 0
   TpInt2a: Int 0
   TpUInt2a: uInt 0
+  TpInt642a: Int64 0
   TpFloat2a: Float 0
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
@@ -167,6 +178,7 @@ RecordInterface::asComplex - invalid data type
   TpShort: Short 0
   TpInt: Int 0
   TpUInt: uInt 0
+  TpInt64: Int64 0
   TpFloat: Float 0
   TpDouble: Double 0
   TpComplex: Complex (0,0)
@@ -181,6 +193,8 @@ RecordInterface::asComplex - invalid data type
   TpArrayInt: Int array with shape [1]
     [0]
   TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayInt64: Int64 array with shape [1]
     [0]
   TpArrayFloat: Float array with shape [1]
     [0]
@@ -205,6 +219,7 @@ RecordInterface::asComplex - invalid data type
   TpShort2a: Short 0
   TpInt2a: Int 0
   TpUInt2a: uInt 0
+  TpInt642a: Int64 0
   TpFloat2a: Float 0
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)

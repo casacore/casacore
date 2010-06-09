@@ -79,8 +79,8 @@ class IPosition;
 // <li> <linkto class=TableRecord>TableRecord</linkto>
 // </ul>
 // Presently, the scalar types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Float,
-// Double, Complex, DComplex, String.
+// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Int64,
+// Float, Double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // It is fairly straightforward to extend this set if necessary, although it
 // will result in more template instantiations with the current implementation.
@@ -305,6 +305,7 @@ public:
     void define (const RecordFieldId&, Short value);
     void define (const RecordFieldId&, Int value);
     void define (const RecordFieldId&, uInt value);
+    void define (const RecordFieldId&, Int64 value);
     void define (const RecordFieldId&, Float value);
     void define (const RecordFieldId&, Double value);
     void define (const RecordFieldId&, const Complex& value);
@@ -320,6 +321,8 @@ public:
     void define (const RecordFieldId&, const Array<Int>& value,
 		 Bool FixedShape = False);
     void define (const RecordFieldId&, const Array<uInt>& value,
+		 Bool FixedShape = False);
+    void define (const RecordFieldId&, const Array<Int64>& value,
 		 Bool FixedShape = False);
     void define (const RecordFieldId&, const Array<Float>& value,
 		 Bool FixedShape = False);
@@ -347,6 +350,7 @@ public:
     void get (const RecordFieldId&, Short& value) const;
     void get (const RecordFieldId&, Int& value) const;
     void get (const RecordFieldId&, uInt& value) const;
+    void get (const RecordFieldId&, Int64& value) const;
     void get (const RecordFieldId&, Float& value) const;
     void get (const RecordFieldId&, Double& value) const;
     void get (const RecordFieldId&, Complex& value) const;
@@ -357,6 +361,7 @@ public:
     void get (const RecordFieldId&, Array<Short>& value) const;
     void get (const RecordFieldId&, Array<Int>& value) const;
     void get (const RecordFieldId&, Array<uInt>& value) const;
+    void get (const RecordFieldId&, Array<Int64>& value) const;
     void get (const RecordFieldId&, Array<Float>& value) const;
     void get (const RecordFieldId&, Array<Double>& value) const;
     void get (const RecordFieldId&, Array<Complex>& value) const;
@@ -375,6 +380,7 @@ public:
     Short           asShort   (const RecordFieldId&) const;
     Int             asInt     (const RecordFieldId&) const;
     uInt            asuInt    (const RecordFieldId&) const;
+    Int64           asInt64   (const RecordFieldId&) const;
     Float           asFloat   (const RecordFieldId&) const;
     Double          asDouble  (const RecordFieldId&) const;
     Complex         asComplex (const RecordFieldId&) const;
@@ -385,6 +391,7 @@ public:
     const Array<Short>&    asArrayShort   (const RecordFieldId&) const;
     const Array<Int>&      asArrayInt     (const RecordFieldId&) const;
     const Array<uInt>&     asArrayuInt    (const RecordFieldId&) const;
+    const Array<Int64>&    asArrayInt64   (const RecordFieldId&) const;
     const Array<Float>&    asArrayFloat   (const RecordFieldId&) const;
     const Array<Double>&   asArrayDouble  (const RecordFieldId&) const;
     const Array<Complex>&  asArrayComplex (const RecordFieldId&) const; 
@@ -404,6 +411,7 @@ public:
     Array<Short>    toArrayShort   (const RecordFieldId&) const;
     Array<Int>      toArrayInt     (const RecordFieldId&) const;
     Array<uInt>     toArrayuInt    (const RecordFieldId&) const;
+    Array<Int64>    toArrayInt64   (const RecordFieldId&) const;
     Array<Float>    toArrayFloat   (const RecordFieldId&) const;
     Array<Double>   toArrayDouble  (const RecordFieldId&) const;
     Array<Complex>  toArrayComplex (const RecordFieldId&) const; 
@@ -419,6 +427,8 @@ public:
       { array.reference (toArrayInt (id)); }
     void toArray (const RecordFieldId& id, Array<uInt>& array) const
       { array.reference (toArrayuInt (id)); }
+    void toArray (const RecordFieldId& id, Array<Int64>& array) const
+      { array.reference (toArrayInt64 (id)); }
     void toArray (const RecordFieldId& id, Array<Float>& array) const
       { array.reference (toArrayFloat (id)); }
     void toArray (const RecordFieldId& id, Array<Double>& array) const

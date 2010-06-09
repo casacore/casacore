@@ -115,9 +115,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    readSca<Bool> (attrId, name, rec);
 	  } else if (sz == sizeof(Short)) {
 	    readSca<Short> (attrId, name, rec);
-	  } else {
-	    AlwaysAssert (sz==sizeof(Int), AipsError);
+	  } else if (sz == sizeof(Int)) {
 	    readSca<Int> (attrId, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(Int64), AipsError);
+	    readSca<Int64> (attrId, name, rec);
 	  }
 	} else {
 	  if (sz == 1) {
@@ -176,9 +178,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    readArr<Bool> (attrId, shape, name, rec);
 	  } else if (sz == sizeof(Short)) {
 	    readArr<Short> (attrId, shape, name, rec);
-	  } else {
-	    AlwaysAssert (sz==sizeof(Int), AipsError);
+	  } else if (sz == sizeof(Int)) {
 	    readArr<Int> (attrId, shape, name, rec);
+	  } else {
+	    AlwaysAssert (sz==sizeof(Int64), AipsError);
+	    readArr<Int64> (attrId, shape, name, rec);
 	  }
 	} else {
 	  if (sz == 1) {
@@ -242,6 +246,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       break;
     case TpUInt:
       rec.define (name, Array<uInt>(IPosition(rank, 0)));
+      break;
+    case TpInt64:
+      rec.define (name, Array<Int64>(IPosition(rank, 0)));
       break;
     case TpFloat:
       rec.define (name, Array<Float>(IPosition(rank, 0)));
@@ -337,6 +344,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       case TpUInt:
 	writeSca<uInt> (groupHid, name, rec, i);
 	break;
+      case TpInt64:
+	writeSca<Int64> (groupHid, name, rec, i);
+	break;
       case TpFloat:
 	writeSca<Float> (groupHid, name, rec, i);
 	break;
@@ -366,6 +376,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	break;
       case TpArrayUInt:
 	writeArr<uInt> (groupHid, name, rec, i);
+	break;
+      case TpArrayInt64:
+	writeArr<Int64> (groupHid, name, rec, i);
 	break;
       case TpArrayFloat:
 	writeArr<Float> (groupHid, name, rec, i);
