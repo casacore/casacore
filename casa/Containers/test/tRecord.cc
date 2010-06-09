@@ -250,6 +250,7 @@ void doIt (Bool doExcp)
     rd.addField ("TpShort", TpShort);
     rd.addField ("TpInt", TpInt);
     rd.addField ("TpUInt", TpUInt);
+    rd.addField ("TpInt64", TpInt64);
     rd.addField ("TpFloat", TpFloat);
     rd.addField ("TpDouble", TpDouble);
     rd.addField ("TpComplex", TpComplex);
@@ -260,6 +261,7 @@ void doIt (Bool doExcp)
     rd.addField ("TpArrayShort", TpArrayShort, IPosition(1,1));
     rd.addField ("TpArrayInt", TpArrayInt, IPosition(1,1));
     rd.addField ("TpArrayUInt", TpArrayUInt, IPosition(1,1));
+    rd.addField ("TpArrayInt64", TpArrayInt64, IPosition(1,1));
     rd.addField ("TpArrayFloat", TpArrayFloat, IPosition(1,1));
     rd.addField ("TpArrayDouble", TpArrayDouble, IPosition(1,1));
     rd.addField ("TpArrayComplex", TpArrayComplex, IPosition(1,1));
@@ -279,7 +281,7 @@ void doIt (Bool doExcp)
     record.setComment ("TpBool", "comment for TpBool");
     AlwaysAssertExit (record.comment ("TpBool") == "comment for TpBool");
     AlwaysAssertExit(record.nfields() == rd.nfields() &&
-		     record.nfields() == 22);
+		     record.nfields() == 24);
     AlwaysAssertExit(record.description() == rd);
 
     // Test renameField.
@@ -326,7 +328,7 @@ void doIt (Bool doExcp)
 	} 
     }
     AlwaysAssertExit(record.nfields() == rd.nfields() &&
-		     record.nfields() == 22);
+		     record.nfields() == 24);
     AlwaysAssertExit(record.description() == rd);
 
     //    void define (const String& name, value);
@@ -341,6 +343,8 @@ void doIt (Bool doExcp)
     rd.addField ("TpInt2a", TpInt);
     record.define ("TpUInt2", uInt(4));
     rd.addField ("TpUInt2a", TpUInt);
+    record.define ("TpInt642", Int64(2e10));
+    rd.addField ("TpInt642a", TpInt64);
     record.define ("TpFloat2", Float(5));
     rd.addField ("TpFloat2a", TpFloat);
     record.define ("TpDouble2", Double(6));
@@ -435,11 +439,12 @@ void doIt (Bool doExcp)
     RecordFieldPtr<Short>    shortField(record, 2);
     RecordFieldPtr<Int>      intField(record, 3);
     RecordFieldPtr<uInt>     uintField(record, 4);
-    RecordFieldPtr<Float>    floatField(record, 5);
-    RecordFieldPtr<Double>   doubleField(record, 6);
-    RecordFieldPtr<Complex>  complexField(record, 7);
-    RecordFieldPtr<DComplex> dcomplexField(record, 8);
-    RecordFieldPtr<String>   stringField(record, 9);
+    RecordFieldPtr<Int64>    int64Field(record, 5);
+    RecordFieldPtr<Float>    floatField(record, 6);
+    RecordFieldPtr<Double>   doubleField(record, 7);
+    RecordFieldPtr<Complex>  complexField(record, 8);
+    RecordFieldPtr<DComplex> dcomplexField(record, 9);
+    RecordFieldPtr<String>   stringField(record, 10);
     //    RecordFieldPtr(Record &record, uInt whichField);
     //    T &operator*()
     //    const T &operator*() const
@@ -450,6 +455,7 @@ void doIt (Bool doExcp)
     *shortField = 32767;
     *intField = -1234567;
     uintField.define (1234567);
+    *int64Field = Int64(3e10);
     *floatField = 7.0f;
     *doubleField = 9.0;
     *complexField = Complex(1.0f, 11.0f);
@@ -457,22 +463,24 @@ void doIt (Bool doExcp)
     *stringField = "Hello";
 
     // Array fields
-    RecordFieldPtr<Array<Bool> >     arrayboolField(record, 10);
-    RecordFieldPtr<Array<uChar> >    arrayucharField(record, 11);
-    RecordFieldPtr<Array<Short> >    arrayshortField(record, 12);
-    RecordFieldPtr<Array<Int> >      arrayintField(record, 13);
-    RecordFieldPtr<Array<uInt> >     arrayuintField(record, 14);
-    RecordFieldPtr<Array<Float> >    arrayfloatField(record, 15);
-    RecordFieldPtr<Array<Double> >   arraydoubleField(record, 16);
-    RecordFieldPtr<Array<Complex> >  arraycomplexField(record, 17);
-    RecordFieldPtr<Array<DComplex> > arraydcomplexField(record, 18);
-    RecordFieldPtr<Array<String> >   arraystringField(record, 19);
+    RecordFieldPtr<Array<Bool> >     arrayboolField(record, 11);
+    RecordFieldPtr<Array<uChar> >    arrayucharField(record, 12);
+    RecordFieldPtr<Array<Short> >    arrayshortField(record, 13);
+    RecordFieldPtr<Array<Int> >      arrayintField(record, 14);
+    RecordFieldPtr<Array<uInt> >     arrayuintField(record, 15);
+    RecordFieldPtr<Array<Int64> >    arrayint64Field(record, 16);
+    RecordFieldPtr<Array<Float> >    arrayfloatField(record, 17);
+    RecordFieldPtr<Array<Double> >   arraydoubleField(record, 18);
+    RecordFieldPtr<Array<Complex> >  arraycomplexField(record, 19);
+    RecordFieldPtr<Array<DComplex> > arraydcomplexField(record, 20);
+    RecordFieldPtr<Array<String> >   arraystringField(record, 21);
     arrayboolField.setComment ("comment for TpArrayBool");
     *arrayboolField = True;
     *arrayucharField = 255;
     *arrayshortField = 32767;
     *arrayintField = -1234567;
     *arrayuintField = 1234567;
+    *arrayint64Field = Int64(3e10);
     *arrayfloatField = 7.0f; 
     *arraydoubleField = 9.0; 
     *arraycomplexField = Complex(1.0f, 11.0f);
@@ -496,8 +504,8 @@ void doIt (Bool doExcp)
 
     // Check if shape works okay.
     AlwaysAssertExit (record.shape("TpBool") == IPosition(1,1));
-    AlwaysAssertExit (record.shape(18) == IPosition(1,1));
-    AlwaysAssertExit (record.shape(19) == IPosition(1,2));
+    AlwaysAssertExit (record.shape(20) == IPosition(1,1));
+    AlwaysAssertExit (record.shape(21) == IPosition(1,2));
 
     // Sub-record fields
     RecordFieldPtr<Record> recordField(record, "SubRecord");
@@ -523,55 +531,55 @@ void doIt (Bool doExcp)
     *sub2 = subrec;
 
     // Check if the entire record is correct.
-    check (record, -1234567, 34);
+    check (record, -1234567, 37);
 
     // Now make a copy of the record and assign a value via RecordFieldPtr.
     // This has to result in a copy(-on-write) operation.
     Record savrec2(record);
-    check (savrec2, -1234567, 34);
+    check (savrec2, -1234567, 37);
     *intField += 1;
     *arrayintField = -1234566;
-    check (savrec2, -1234567, 34);
-    check (record, -1234566, 34);
+    check (savrec2, -1234567, 37);
+    check (record, -1234566, 37);
     savrec2 = record;
-    check (savrec2, -1234566, 34);
+    check (savrec2, -1234566, 37);
 
     // Clone the record.
     RecordInterface* recClone = record.clone();
-    check (Record(*recClone), -1234566, 34);
+    check (Record(*recClone), -1234566, 37);
     *intField += 11;
     *arrayintField = -1234555;
     Record reccp (record);
-    check (reccp, -1234555, 34);
-    check (Record(*recClone), -1234566, 34);
+    check (reccp, -1234555, 37);
+    check (Record(*recClone), -1234566, 37);
     reccp.assign (*recClone);
-    check (reccp, -1234566, 34);
-    check (Record(*recClone), -1234566, 34);
+    check (reccp, -1234566, 37);
+    check (Record(*recClone), -1234566, 37);
     delete recClone;
     *intField -= 11;
     *arrayintField = -1234566;
-    check (record, -1234566, 34);
+    check (record, -1234566, 37);
 
     // Change some more fields and check if the original is kept intact
     // (thus if copy-on-write works fine). This also checks if
     // reacquiring the RecordFieldPtr pointers after a copy works fine.
     Record savrec2a(savrec2);
     RecordFieldPtr<Int> savrf (savrec2, 3);
-    RecordFieldPtr<Array<Int> > savrfarray (savrec2, 13);
+    RecordFieldPtr<Array<Int> > savrfarray (savrec2, 14);
     savrf.define (savrf.get() + 11);
     *savrfarray = *savrf;
-    check (savrec2, -1234555, 34);
-    check (savrec2a, -1234566, 34);
-    check (record, -1234566, 34);
+    check (savrec2, -1234555, 37);
+    check (savrec2a, -1234566, 37);
+    check (record, -1234566, 37);
 
     // Add some fields.
     // Check if removing a field results in deattaching and in
     // decrementing the field number.
     record.define ("TpString3", "abcd");
     record.define ("TpString4", "efghij");
-    check (record, -1234566, 36);
+    check (record, -1234566, 39);
     Record savrec3(record);
-    check (savrec3, -1234566, 36);
+    check (savrec3, -1234566, 39);
     RecordFieldPtr<String> tpstring2 (record, "TpString2");
     RecordFieldPtr<String> tpstring3 (record, "TpString3");
     RecordFieldPtr<String> tpstring4 (record, "TpString4");
@@ -579,12 +587,12 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (tpstring2.isAttached());
     AlwaysAssertExit (! tpstring3.isAttached());
     AlwaysAssertExit (tpstring4.isAttached());
-    AlwaysAssertExit (tpstring2.fieldNumber() == 33);
+    AlwaysAssertExit (tpstring2.fieldNumber() == 36);
     AlwaysAssertExit (tpstring3.fieldNumber() == -1);
-    AlwaysAssertExit (tpstring4.fieldNumber() == 34);
+    AlwaysAssertExit (tpstring4.fieldNumber() == 37);
     record.removeField (record.fieldNumber("TpString4"));
-    check (savrec3, -1234566, 36);
-    check (record, -1234566, 34);
+    check (savrec3, -1234566, 39);
+    check (record, -1234566, 37);
 
     // OK, we've tested the Record members, now test the remaining 
     // RecordFieldPtr members.
@@ -632,44 +640,44 @@ void doIt (Bool doExcp)
     aos.open ("tRecord_tmp.data");
     aos >> record5;
     AlwaysAssertExit(record5.conform(record));
-    check (record5, -1234566, 34);
+    check (record5, -1234566, 37);
 
     // Check defining and removing a subrecord.
-    record5.defineRecord (34, record);
-    AlwaysAssertExit (record5.name(34) == "*35");
-    record5.renameField ("abcd", 34);
+    record5.defineRecord (37, record);
+    AlwaysAssertExit (record5.name(37) == "*38");
+    record5.renameField ("abcd", 37);
     record5.defineRecord ("abcd", record);
-    check (record5, -1234566, 35);
+    check (record5, -1234566, 38);
     record5.removeField (record5.fieldNumber("abcd"));
-    check (record5, -1234566, 34);
+    check (record5, -1234566, 37);
 
     // Check defining a field by number.
-    record5.define (34, Int(2));
-    check (record5, -1234566, 35);
-    AlwaysAssertExit (record5.asInt("*35") == 2);
-    record5.removeField (34);
-    check (record5, -1234566, 34);
+    record5.define (37, Int(2));
+    check (record5, -1234566, 38);
+    AlwaysAssertExit (record5.asInt("*38") == 2);
+    record5.removeField (37);
+    check (record5, -1234566, 37);
 
     // Check field merge.
     Record recordm(record5);
-    check (recordm, -1234566, 34);
+    check (recordm, -1234566, 37);
     recordm.merge (record, RecordInterface::SkipDuplicates);
-    check (recordm, -1234566, 34);
+    check (recordm, -1234566, 37);
     recordm.merge (record, RecordInterface::OverwriteDuplicates);
-    check (recordm, -1234566, 34);
+    check (recordm, -1234566, 37);
     recordm.merge (record, RecordInterface::RenameDuplicates);
-    check (recordm, -1234566, 68);
+    check (recordm, -1234566, 74);
     recordm.define (3, -1234555);
     RecordFieldPtr<Array<Int> > fldm (recordm, "TpArrayInt");
     *fldm = -1234555;
-    check (recordm, -1234555, 68);
+    check (recordm, -1234555, 74);
     AlwaysAssertExit (recordm.isDefined ("TpInt_1"));
-    AlwaysAssertExit (recordm.fieldNumber ("TpInt_1") == 37);
+    AlwaysAssertExit (recordm.fieldNumber ("TpInt_1") == 40);
     recordm.merge (record, RecordInterface::OverwriteDuplicates);
     AlwaysAssertExit (recordm.isDefined ("TpInt_1"));
     AlwaysAssertExit (recordm.fieldNumber ("TpInt_1") == 3);
-    AlwaysAssertExit (recordm.fieldNumber ("TpInt") == 37);
-    AlwaysAssertExit (recordm.asInt(37) == -1234566);
+    AlwaysAssertExit (recordm.fieldNumber ("TpInt") == 40);
+    AlwaysAssertExit (recordm.asInt(40) == -1234566);
     RecordFieldPtr<Array<Int> > fldm2 (recordm, "TpArrayInt");
     AlwaysAssertExit (allEQ (*fldm2, -1234566));
 
@@ -717,11 +725,12 @@ void check (const Record& record, Int intValue, uInt nrField)
     RORecordFieldPtr<Short>    shortField(record, 2);
     RORecordFieldPtr<Int>      intField(record, 3);
     RORecordFieldPtr<uInt>     uintField(record, 4);
-    RORecordFieldPtr<Float>    floatField(record, 5);
-    RORecordFieldPtr<Double>   doubleField(record, 6);
-    RORecordFieldPtr<Complex>  complexField(record, 7);
-    RORecordFieldPtr<DComplex> dcomplexField(record, 8);
-    RORecordFieldPtr<String>   stringField(record, 9);
+    RORecordFieldPtr<Int64>    int64Field(record, 5);
+    RORecordFieldPtr<Float>    floatField(record, 6);
+    RORecordFieldPtr<Double>   doubleField(record, 7);
+    RORecordFieldPtr<Complex>  complexField(record, 8);
+    RORecordFieldPtr<DComplex> dcomplexField(record, 9);
+    RORecordFieldPtr<String>   stringField(record, 10);
     //    RORecordFieldPtr(Record &record, uInt whichField);
     //    const T &operator*() const {return *field_ptr_p;}
     AlwaysAssertExit(boolField.comment() == "comment for TpBool");
@@ -730,6 +739,7 @@ void check (const Record& record, Int intValue, uInt nrField)
     AlwaysAssertExit(*shortField == 32767);
     AlwaysAssertExit(intField.get() == intValue);
     AlwaysAssertExit(uintField.get() == 1234567);
+    AlwaysAssertExit(*int64Field == Int64(3e10));
     AlwaysAssertExit(*floatField == 7.0f);
     AlwaysAssertExit(*doubleField == 9.0);
     AlwaysAssertExit(*complexField == Complex(1.0f, 11.0f));
@@ -741,107 +751,123 @@ void check (const Record& record, Int intValue, uInt nrField)
     Short sv;
     Int iv;
     uInt uiv;
+    Int64 i64v;
     Float fv;
     Double dv;
     Complex cv;
     DComplex dcv;
     String strv;
     //    Record::get (T& value) const;
-    record.get (22, bv);
-    record.get (23, ucv);
-    record.get (24, sv);
-    record.get (25, iv);
-    record.get (26, uiv);
-    record.get (27, fv);
-    record.get (28, dv);
-    record.get (29, cv);
-    record.get (30, dcv);
-    record.get (33, strv);
+    record.get (24, bv);
+    record.get (25, ucv);
+    record.get (26, sv);
+    record.get (27, iv);
+    record.get (28, uiv);
+    record.get (29, i64v);
+    record.get (30, fv);
+    record.get (31, dv);
+    record.get (32, cv);
+    record.get (33, dcv);
+    record.get (36, strv);
     AlwaysAssertExit(bv == False);
     AlwaysAssertExit(ucv == 1);
     AlwaysAssertExit(sv == 2);
     AlwaysAssertExit(iv == 3);
     AlwaysAssertExit(uiv == 4);
+    AlwaysAssertExit(i64v == Int64(2e10));
     AlwaysAssertExit(fv == 5);
     AlwaysAssertExit(dv == 6);
     AlwaysAssertExit(cv == Complex(7,8));
     AlwaysAssertExit(dcv == DComplex(9,10));
     AlwaysAssertExit(strv == "abc");
-    AlwaysAssertExit (allEQ (record.asArrayBool(22), bv));
-    AlwaysAssertExit (allEQ (record.asArrayuChar(23), ucv));
-    AlwaysAssertExit (allEQ (record.asArrayShort(24), sv));
-    AlwaysAssertExit (allEQ (record.asArrayInt(25), iv));
-    AlwaysAssertExit (allEQ (record.asArrayuInt(26), uiv));
-    AlwaysAssertExit (allEQ (record.asArrayFloat(27), fv));
-    AlwaysAssertExit (allEQ (record.asArrayDouble(28), dv));
-    AlwaysAssertExit (allEQ (record.asArrayComplex(29), cv));
-    AlwaysAssertExit (allEQ (record.asArrayDComplex(30), dcv));
-    AlwaysAssertExit (allEQ (record.asArrayString(33), strv));
+    AlwaysAssertExit (allEQ (record.asArrayBool(24), bv));
+    AlwaysAssertExit (allEQ (record.asArrayuChar(25), ucv));
+    AlwaysAssertExit (allEQ (record.asArrayShort(26), sv));
+    AlwaysAssertExit (allEQ (record.asArrayInt(27), iv));
+    AlwaysAssertExit (allEQ (record.asArrayuInt(28), uiv));
+    AlwaysAssertExit (allEQ (record.asArrayInt64(29), i64v));
+    AlwaysAssertExit (allEQ (record.asArrayFloat(30), fv));
+    AlwaysAssertExit (allEQ (record.asArrayDouble(31), dv));
+    AlwaysAssertExit (allEQ (record.asArrayComplex(32), cv));
+    AlwaysAssertExit (allEQ (record.asArrayDComplex(33), dcv));
+    AlwaysAssertExit (allEQ (record.asArrayString(36), strv));
 
-    AlwaysAssertExit (allEQ (record.toArrayBool(22), bv));
-    AlwaysAssertExit (allEQ (record.toArrayuChar(23), ucv));
-    AlwaysAssertExit (allEQ (record.toArrayShort(24), sv));
-    AlwaysAssertExit (allEQ (record.toArrayInt(25), iv));
-    AlwaysAssertExit (allEQ (record.toArrayuInt(26), uiv));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(27), fv));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(28), dv));
-    AlwaysAssertExit (allEQ (record.toArrayComplex(29), cv));
-    AlwaysAssertExit (allEQ (record.toArrayDComplex(30), dcv));
-    AlwaysAssertExit (allEQ (record.toArrayString(33), strv));
-    AlwaysAssertExit (allEQ (record.toArrayBool(10), *boolField));
-    AlwaysAssertExit (allEQ (record.toArrayuChar(11), *ucharField));
-    AlwaysAssertExit (allEQ (record.toArrayShort(11), Short(*ucharField)));
-    AlwaysAssertExit (allEQ (record.toArrayInt(11), Int(*ucharField)));
-    AlwaysAssertExit (allEQ (record.toArrayuInt(11), uInt(*ucharField)));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(11), Float(*ucharField)));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(11), Double(*ucharField)));
-    AlwaysAssertExit (allEQ (record.toArrayComplex(11),
-			     Complex(*ucharField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayDComplex(11),
-			     DComplex(*ucharField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayShort(12), *shortField));
-    AlwaysAssertExit (allEQ (record.toArrayInt(12), Int(*shortField)));
-    AlwaysAssertExit (allEQ (record.toArrayuInt(12), uInt(*shortField)));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(12), Float(*shortField)));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(12), Double(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayBool(24), bv));
+    AlwaysAssertExit (allEQ (record.toArrayuChar(25), ucv));
+    AlwaysAssertExit (allEQ (record.toArrayShort(26), sv));
+    AlwaysAssertExit (allEQ (record.toArrayInt(27), iv));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(28), uiv));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(29), i64v));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(30), fv));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(31), dv));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(32), cv));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(33), dcv));
+    AlwaysAssertExit (allEQ (record.toArrayString(36), strv));
+    AlwaysAssertExit (allEQ (record.toArrayBool(11), *boolField));
+    AlwaysAssertExit (allEQ (record.toArrayuChar(12), *ucharField));
+    AlwaysAssertExit (allEQ (record.toArrayShort(12), Short(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayInt(12), Int(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(12), uInt(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(12), Int64(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(12), Float(*ucharField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(12), Double(*ucharField)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(12),
-			     Complex(*shortField,0)));
+			     Complex(*ucharField,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(12),
-			     DComplex(*shortField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayInt(13), *intField));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(13), Float(*intField)));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(13), Double(*intField)));
+			     DComplex(*ucharField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayShort(13), *shortField));
+    AlwaysAssertExit (allEQ (record.toArrayInt(13), Int(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(13), uInt(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(13), Int64(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(13), Float(*shortField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(13), Double(*shortField)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(13),
-			     Complex(*intField,0)));
+			     Complex(*shortField,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(13),
-			     DComplex(*intField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayuInt(14), *uintField));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(14), Float(*uintField)));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(14), Double(*uintField)));
+			     DComplex(*shortField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayInt(14), *intField));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(14), Int64(*intField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(14), Float(*intField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(14), Double(*intField)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(14),
-			     Complex(*uintField,0)));
+			     Complex(*intField,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(14),
-			     DComplex(*uintField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(15), *floatField));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(15), Double(*floatField)));
+			     DComplex(*intField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayuInt(15), *uintField));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(15), Int64(*uintField)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(15), Float(*uintField)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(15), Double(*uintField)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(15),
-			     Complex(*floatField,0)));
+			     Complex(*uintField,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(15),
-			     DComplex(*floatField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayDouble(16), *doubleField));
-    AlwaysAssertExit (allEQ (record.toArrayFloat(16), Float(*doubleField)));
+			     DComplex(*uintField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayInt64(16), *int64Field));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(16), Float(*int64Field)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(16), Double(*int64Field)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(16),
-			     Complex(*doubleField,0)));
+			     Complex(*int64Field,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(16),
-			     DComplex(*doubleField,0)));
-    AlwaysAssertExit (allEQ (record.toArrayComplex(17), *complexField));
+			     DComplex(*int64Field,0)));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(17), *floatField));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(17), Double(*floatField)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(17),
+			     Complex(*floatField,0)));
     AlwaysAssertExit (allEQ (record.toArrayDComplex(17),
-			     DComplex(*complexField)));
-    AlwaysAssertExit (allEQ (record.toArrayDComplex(18), *dcomplexField));
+			     DComplex(*floatField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDouble(18), *doubleField));
+    AlwaysAssertExit (allEQ (record.toArrayFloat(18), Float(*doubleField)));
     AlwaysAssertExit (allEQ (record.toArrayComplex(18),
+			     Complex(*doubleField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(18),
+			     DComplex(*doubleField,0)));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(19), *complexField));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(19),
+			     DComplex(*complexField)));
+    AlwaysAssertExit (allEQ (record.toArrayDComplex(20), *dcomplexField));
+    AlwaysAssertExit (allEQ (record.toArrayComplex(20),
 			     Complex((*dcomplexField).real(),
 				     (*dcomplexField).imag())));
-    AlwaysAssertExit (allEQ (record.toArrayString(19),
+    AlwaysAssertExit (allEQ (record.toArrayString(21),
                                     stringToVector("Hello,Goodbye")));
 
     // Scalars as Arrays.
@@ -850,16 +876,18 @@ void check (const Record& record, Int intValue, uInt nrField)
     RORecordFieldPtr<Array<Short> >    shortFieldA(record, 2);
     RORecordFieldPtr<Array<Int> >      intFieldA(record, 3);
     RORecordFieldPtr<Array<uInt> >     uintFieldA(record, 4);
-    RORecordFieldPtr<Array<Float> >    floatFieldA(record, 5);
-    RORecordFieldPtr<Array<Double> >   doubleFieldA(record, 6);
-    RORecordFieldPtr<Array<Complex> >  complexFieldA(record, 7);
-    RORecordFieldPtr<Array<DComplex> > dcomplexFieldA(record, 8);
-    RORecordFieldPtr<Array<String> >   stringFieldA(record, 9);
+    RORecordFieldPtr<Array<Int64> >    int64FieldA(record, 5);
+    RORecordFieldPtr<Array<Float> >    floatFieldA(record, 6);
+    RORecordFieldPtr<Array<Double> >   doubleFieldA(record, 7);
+    RORecordFieldPtr<Array<Complex> >  complexFieldA(record, 8);
+    RORecordFieldPtr<Array<DComplex> > dcomplexFieldA(record, 9);
+    RORecordFieldPtr<Array<String> >   stringFieldA(record, 10);
     AlwaysAssertExit (allEQ (*boolFieldA, Vector<Bool>(1, *boolField)));
     AlwaysAssertExit (allEQ (*ucharFieldA, Vector<uChar>(1, *ucharField)));
     AlwaysAssertExit (allEQ (*shortFieldA, Vector<Short>(1, *shortField)));
     AlwaysAssertExit (allEQ (*intFieldA, Vector<Int>(1, *intField)));
     AlwaysAssertExit (allEQ (*uintFieldA, Vector<uInt>(1, *uintField)));
+    AlwaysAssertExit (allEQ (*int64FieldA, Vector<Int64>(1, *int64Field)));
     AlwaysAssertExit (allEQ (*floatFieldA, Vector<Float>(1, *floatField)));
     AlwaysAssertExit (allEQ (*doubleFieldA, Vector<Double>(1, *doubleField)));
     AlwaysAssertExit (allEQ (*complexFieldA, Vector<Complex>(1, *complexField)));
@@ -867,22 +895,24 @@ void check (const Record& record, Int intValue, uInt nrField)
     AlwaysAssertExit (allEQ (*stringFieldA, Vector<String>(1, *stringField)));
 
     // Array fields
-    RORecordFieldPtr<Array<Bool> >     arrayboolField(record, 10);
-    RORecordFieldPtr<Array<uChar> >    arrayucharField(record, 11);
-    RORecordFieldPtr<Array<Short> >    arrayshortField(record, 12);
-    RORecordFieldPtr<Array<Int> >      arrayintField(record, 13);
-    RORecordFieldPtr<Array<uInt> >     arrayuintField(record, 14);
-    RORecordFieldPtr<Array<Float> >    arrayfloatField(record, 15);
-    RORecordFieldPtr<Array<Double> >   arraydoubleField(record, 16);
-    RORecordFieldPtr<Array<Complex> >  arraycomplexField(record, 17);
-    RORecordFieldPtr<Array<DComplex> > arraydcomplexField(record, 18);
-    RORecordFieldPtr<Array<String> >   arraystringField(record, 19);
+    RORecordFieldPtr<Array<Bool> >     arrayboolField(record, 11);
+    RORecordFieldPtr<Array<uChar> >    arrayucharField(record, 12);
+    RORecordFieldPtr<Array<Short> >    arrayshortField(record, 13);
+    RORecordFieldPtr<Array<Int> >      arrayintField(record, 14);
+    RORecordFieldPtr<Array<uInt> >     arrayuintField(record, 15);
+    RORecordFieldPtr<Array<Int64> >    arrayint64Field(record, 16);
+    RORecordFieldPtr<Array<Float> >    arrayfloatField(record, 17);
+    RORecordFieldPtr<Array<Double> >   arraydoubleField(record, 18);
+    RORecordFieldPtr<Array<Complex> >  arraycomplexField(record, 19);
+    RORecordFieldPtr<Array<DComplex> > arraydcomplexField(record, 20);
+    RORecordFieldPtr<Array<String> >   arraystringField(record, 21);
     AlwaysAssertExit(arrayboolField.comment() == "comment for TpArrayBool");
     AlwaysAssertExit(allEQ(*arrayboolField, *boolField));
     AlwaysAssertExit(allEQ(*arrayucharField, *ucharField));
     AlwaysAssertExit(allEQ(*arrayshortField, *shortField));
     AlwaysAssertExit(allEQ(*arrayintField, *intField));
     AlwaysAssertExit(allEQ(*arrayuintField, *uintField));
+    AlwaysAssertExit(allEQ(*arrayint64Field, *int64Field));
     AlwaysAssertExit(allEQ(*arrayfloatField, *floatField));
     AlwaysAssertExit(allEQ(*arraydoubleField, *doubleField));
     AlwaysAssertExit(allEQ(*arraycomplexField, *complexField));

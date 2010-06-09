@@ -76,6 +76,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5DataType (const uShort*);
     HDF5DataType (const Int*);
     HDF5DataType (const uInt*);
+    HDF5DataType (const Int64*);
     HDF5DataType (const Float*);
     HDF5DataType (const Double*);
     HDF5DataType (const Complex*);

@@ -1,2 +1,5 @@
 #!/bin/sh
+echo "./tTapeIO interactive=False"
 ./tTapeIO interactive=False
+echo "tapeio status = $?"
+exit 0

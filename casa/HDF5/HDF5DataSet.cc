@@ -52,6 +52,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
+			    const Int64* type)
+    : itsDataType (type)
+  {
+    create (parentHid, name, shape, tileShape);
+  }
+
+  HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
+			    const IPosition& shape, const IPosition& tileShape,
 			    const Float* type)
     : itsDataType (type)
   {
@@ -91,6 +99,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const Int* type)
+    : itsDataType (type)
+  {
+    open (parentHid, name);
+  }
+
+  HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
+			    const Int64* type)
     : itsDataType (type)
   {
     open (parentHid, name);

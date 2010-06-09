@@ -67,6 +67,7 @@ template<typename T, typename U> void doPos(T v, U, DataType dt)
   AlwaysAssertExit (vh.asuShort() == uShort(v));
   AlwaysAssertExit (vh.asInt() == Int(v));
   AlwaysAssertExit (vh.asuInt() == uInt(v));
+  AlwaysAssertExit (vh.asInt64() == Int64(v));
   AlwaysAssertExit (vh.asFloat() == float(v));
   AlwaysAssertExit (vh.asDouble() == double(v));
   AlwaysAssertExit (vh.asComplex() == Complex(float(v),0));
@@ -83,6 +84,8 @@ template<typename T, typename U> void doPos(T v, U, DataType dt)
   AlwaysAssertExit (vecInt.size() == 1  &&  vecInt.data()[0] == Int(v));
   Vector<uInt> vecuInt = vh.asArrayuInt();
   AlwaysAssertExit (vecuInt.size() == 1  &&  vecuInt.data()[0] == uInt(v));
+  Vector<Int64> vecInt64 = vh.asArrayInt64();
+  AlwaysAssertExit (vecInt64.size() == 1  &&  vecInt64.data()[0] == Int64(v));
   Vector<Float> vecfloat = vh.asArrayFloat();
   AlwaysAssertExit (vecfloat.size() == 1  &&  vecfloat.data()[0] == float(v));
   Vector<Double> vecdouble = vh.asArrayDouble();
@@ -114,6 +117,7 @@ template<typename T, typename U> void doNeg(T v, U, DataType dt)
   AlwaysAssertExit (vh.asBool());
   AlwaysAssertExit (vh.asShort() == Short(v));
   AlwaysAssertExit (vh.asInt() == Int(v));
+  AlwaysAssertExit (vh.asInt64() == Int64(v));
   AlwaysAssertExit (vh.asFloat() == float(v));
   AlwaysAssertExit (vh.asDouble() == double(v));
   AlwaysAssertExit (vh.asComplex() == Complex(float(v),0));
@@ -124,6 +128,8 @@ template<typename T, typename U> void doNeg(T v, U, DataType dt)
   AlwaysAssertExit (vecShort.size() == 1  &&  vecShort.data()[0] == Short(v));
   Vector<Int> vecInt = vh.asArrayInt();
   AlwaysAssertExit (vecInt.size() == 1  &&  vecInt.data()[0] == Int(v));
+  Vector<Int64> vecInt64 = vh.asArrayInt64();
+  AlwaysAssertExit (vecInt64.size() == 1  &&  vecInt64.data()[0] == Int64(v));
   Vector<Float> vecfloat = vh.asArrayFloat();
   AlwaysAssertExit (vecfloat.size() == 1  &&  vecfloat.data()[0] == float(v));
   Vector<Double> vecdouble = vh.asArrayDouble();
@@ -271,6 +277,7 @@ int main()
     doBool(False);
     doNeg(Short(-4), Short(0), TpShort);
     doNeg(Int(-7), Int(0), TpInt);
+    doNeg(Int64(-40), Int64(0), TpInt64);
     doNeg(float(-4.1), float(0), TpFloat);
     doNeg(double(-4.7), double(0), TpDouble);
     doPos(uChar(13), uChar(0), TpUChar);
@@ -278,6 +285,7 @@ int main()
     doPos(uShort(14), Int(0), TpInt);
     doPos(Int(17), Int(0), TpInt);
     doPos(uInt(10), Int(0), TpInt);
+    doPos(Int64(40), Int64(0), TpInt64);
     doPos(float(4.1), Float(0), TpFloat);
     doPos(double(4.7), Double(0), TpDouble);
     doString(String());

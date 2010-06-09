@@ -55,6 +55,19 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+// Define some global variables; before they were externs in the .h file.
+
+/* Set by a2_re_set_syntax to the current regexp syntax to recognize.  */
+int obscure_syntax = 0;
+
+char re_syntax_table[256];
+
+/* Roughly the maximum number of failure points on the stack.  Would be
+   exactly that if always pushed MAX_NUM_FAILURE_ITEMS each time we failed.  */
+int re_max_failures = 2000;
+
+
+
 // Hack to avoid requiring alloca. Define an instance of this at the beginning
 // of your function and call it alloca.
 class cregex_allocator
@@ -103,8 +116,6 @@ char *cregex_allocator::operator()(int nbytes)
 #endif
 
 #define SYNTAX(c) re_syntax_table[c]
-
-static char re_syntax_table[256];
 
 static void
 init_syntax_once ()
@@ -269,9 +280,6 @@ a2_re_set_syntax (int syntax)
   obscure_syntax = syntax;
   return ret;
 }
-
-/* Set by a2_re_set_syntax to the current regexp syntax to recognize.  */
-int obscure_syntax = 0;
 
 
 
@@ -1635,11 +1643,6 @@ a2_re_match (struct re_pattern_buffer *pbufp,
 
 
 /* The following are used for a2_re_match_2, defined below:  */
-
-/* Roughly the maximum number of failure points on the stack.  Would be
-   exactly that if always pushed MAX_NUM_FAILURE_ITEMS each time we failed.  */
-   
-int re_max_failures = 2000;
 
 /* Routine used by a2_re_match_2.  */
 static int bcmp_translate (char *, char *, int, unsigned char *);

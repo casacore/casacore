@@ -79,6 +79,7 @@ public:
   explicit ValueHolder (uShort value);
   explicit ValueHolder (Int value);
   explicit ValueHolder (uInt value);
+  explicit ValueHolder (Int64 value);
   explicit ValueHolder (Float value);
   explicit ValueHolder (Double value);
   explicit ValueHolder (const Complex& value);
@@ -91,6 +92,7 @@ public:
   explicit ValueHolder (const Array<uShort>& value);
   explicit ValueHolder (const Array<Int>& value);
   explicit ValueHolder (const Array<uInt>& value);
+  explicit ValueHolder (const Array<Int64>& value);
   explicit ValueHolder (const Array<Float>& value);
   explicit ValueHolder (const Array<Double>& value);
   explicit ValueHolder (const Array<Complex>& value);
@@ -134,6 +136,7 @@ public:
   uShort                asuShort  () const;
   Int                   asInt     () const;
   uInt                  asuInt    () const;
+  Int64                 asInt64   () const;
   Float                 asFloat   () const;
   Double                asDouble  () const;
   Complex               asComplex () const;
@@ -145,6 +148,7 @@ public:
   const Array<uShort>   asArrayuShort  () const;
   const Array<Int>      asArrayInt     () const;
   const Array<uInt>     asArrayuInt    () const;
+  const Array<Int64>    asArrayInt64   () const;
   const Array<Float>    asArrayFloat   () const;
   const Array<Double>   asArrayDouble  () const;
   const Array<Complex>  asArrayComplex () const; 
@@ -161,6 +165,7 @@ public:
   void getValue (uShort& value) const          { value = asuShort(); }
   void getValue (Int& value) const             { value = asInt(); }
   void getValue (uInt& value) const            { value = asuInt(); }
+  void getValue (Int64& value) const           { value = asInt64(); }
   void getValue (Float& value) const           { value = asFloat(); }
   void getValue (Double& value) const          { value = asDouble(); }
   void getValue (Complex& value) const         { value = asComplex(); }
@@ -178,6 +183,8 @@ public:
     { value.reference(asArrayInt()); }
   void getValue (Array<uInt>& value) const
     { value.reference(asArrayuInt()); }
+  void getValue (Array<Int64>& value) const
+    { value.reference(asArrayInt64()); }
   void getValue (Array<Float>& value) const
     { value.reference(asArrayFloat()); }
   void getValue (Array<Double>& value) const
@@ -225,6 +232,8 @@ inline Int ValueHolder::asInt() const
   { return itsRep->asInt(); }
 inline uInt ValueHolder::asuInt() const
   { return itsRep->asuInt(); }
+inline Int64 ValueHolder::asInt64() const
+  { return itsRep->asInt64(); }
 inline Float ValueHolder::asFloat() const
   { return itsRep->asFloat(); }
 inline Double ValueHolder::asDouble() const
@@ -247,6 +256,8 @@ inline const Array<Int> ValueHolder::asArrayInt() const
   { return itsRep->asArrayInt(); }
 inline const Array<uInt> ValueHolder::asArrayuInt() const
   { return itsRep->asArrayuInt(); }
+inline const Array<Int64> ValueHolder::asArrayInt64() const
+  { return itsRep->asArrayInt64(); }
 inline const Array<Float> ValueHolder::asArrayFloat() const
   { return itsRep->asArrayFloat(); }
 inline const Array<Double> ValueHolder::asArrayDouble() const

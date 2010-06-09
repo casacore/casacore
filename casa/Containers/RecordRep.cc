@@ -164,6 +164,7 @@ void RecordRep::addDataField (const String& name, DataType type,
               ||  type == TpShort     ||  type == TpArrayShort
               ||  type == TpInt       ||  type == TpArrayInt
               ||  type == TpUInt      ||  type == TpArrayUInt
+              ||  type == TpInt64     ||  type == TpArrayInt64
               ||  type == TpFloat     ||  type == TpArrayFloat
               ||  type == TpDouble    ||  type == TpArrayDouble
               ||  type == TpComplex   ||  type == TpArrayComplex
@@ -215,6 +216,9 @@ void RecordRep::checkShape (DataType type, const IPosition& shape,
 	break;
     case TpArrayUInt:
 	arrShape = static_cast<const Array<uInt>*>(value)->shape();
+	break;
+    case TpArrayInt64:
+	arrShape = static_cast<const Array<Int64>*>(value)->shape();
 	break;
     case TpArrayFloat:
 	arrShape = static_cast<const Array<float>*>(value)->shape();
@@ -310,6 +314,12 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
 	    *ptr = 0;
 	    return ptr;
 	}
+    case TpInt64:
+	{
+	    Int64* ptr = new Int64;
+	    *ptr = 0;
+	    return ptr;
+	}
     case TpFloat:
 	{
 	    float* ptr = new float;
@@ -355,6 +365,12 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     case TpArrayUInt:
 	{
 	    Array<uInt>* ptr = new Array<uInt> (arrayShape);
+	    *ptr = 0;
+	    return ptr;
+	}
+    case TpArrayInt64:
+	{
+	    Array<Int64>* ptr = new Array<Int64> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
@@ -404,6 +420,10 @@ void RecordRep::makeDataVec (Int whichField, DataType type)
     case TpUInt:
         datavec_p[whichField] = new Array<uInt>
 	  (shape, static_cast<uInt*>(data_p[whichField]), SHARE);
+	break;
+    case TpInt64:
+        datavec_p[whichField] = new Array<Int64>
+	  (shape, static_cast<Int64*>(data_p[whichField]), SHARE);
 	break;
     case TpFloat:
         datavec_p[whichField] = new Array<float>
@@ -465,6 +485,10 @@ void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
 	delete static_cast<uInt*>(ptr);
 	delete static_cast<Array<uInt>*>(vecptr);
 	break;
+    case TpInt64:
+	delete static_cast<Int64*>(ptr);
+	delete static_cast<Array<Int64>*>(vecptr);
+	break;
     case TpFloat:
 	delete static_cast<float*>(ptr);
 	delete static_cast<Array<float>*>(vecptr);
@@ -499,6 +523,9 @@ void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
 	break;
     case TpArrayUInt:
 	delete static_cast<Array<uInt>*>(ptr);
+	break;
+    case TpArrayInt64:
+	delete static_cast<Array<Int64>*>(ptr);
 	break;
     case TpArrayFloat:
 	delete static_cast<Array<float>*>(ptr);
@@ -586,6 +613,9 @@ void RecordRep::copyDataField (DataType type, void* ptr,
     case TpUInt:
 	*static_cast<uInt*>(ptr) = *static_cast<const uInt*>(that);
 	break;
+    case TpInt64:
+	*static_cast<Int64*>(ptr) = *static_cast<const Int64*>(that);
+	break;
     case TpFloat:
 	*static_cast<float*>(ptr) = *static_cast<const float*>(that);
 	break;
@@ -630,6 +660,12 @@ void RecordRep::copyDataField (DataType type, void* ptr,
 	  (static_cast<const Array<uInt>*>(that)->shape());
 	*static_cast<Array<uInt>*>(ptr) =
 	  *static_cast<const Array<uInt>*>(that);
+	break;
+    case TpArrayInt64:
+	static_cast<Array<Int64>*>(ptr)->resize
+	  (static_cast<const Array<Int64>*>(that)->shape());
+	*static_cast<Array<Int64>*>(ptr) 
+	  = *static_cast<const Array<Int64>*>(that);
 	break;
     case TpArrayFloat:
 	static_cast<Array<float>*>(ptr)->resize
@@ -754,6 +790,9 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
     case TpUInt:
 	os << "uInt " << *static_cast<const uInt*>(ptr);
 	break;
+    case TpInt64:
+	os << "Int64 " << *static_cast<const Int64*>(ptr);
+	break;
     case TpFloat:
 	os << "Float " << *static_cast<const float*>(ptr);
 	break;
@@ -854,6 +893,25 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	    os << endl << arr;
 	  } else {
 	    Vector<uInt> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	      os << endl << indent << "  " << vec;
+	    } else {
+	      os << ", first values:"
+		 << endl << indent << "  "
+		 << vec(Slice(0,maxNrValues-1));
+	    }
+	  }
+	}
+	break;
+    case TpArrayInt64:
+        os << "Int64 array with shape "
+	   << static_cast<const Array<Int64>*>(ptr)->shape();
+	if (maxNrValues != 0) {
+	  const Array<Int64>& arr = *static_cast<const Array<Int64>*>(ptr);
+	  if (maxNrValues < 0) {
+	    os << endl << arr;
+	  } else {
+	    Vector<Int64> vec = arr.reform (IPosition(1, arr.nelements()));
 	    if (uInt(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
@@ -1001,6 +1059,9 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
     case TpUInt:
 	os << *static_cast<const uInt*>(ptr);
 	break;
+    case TpInt64:
+	os << *static_cast<const Int64*>(ptr);
+	break;
     case TpFloat:
 	os << *static_cast<const float*>(ptr);
 	break;
@@ -1030,6 +1091,10 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 	break;
     case TpArrayUInt:
 	putArray (os, *static_cast<const Array<uInt>*>(ptr), "Array<uInt>");
+	break;
+    case TpArrayInt64:
+	putArray (os, *static_cast<const Array<Int64>*>(ptr),
+		  "Array<Int64>");
 	break;
     case TpArrayFloat:
 	putArray (os, *static_cast<const Array<float>*>(ptr),
@@ -1074,6 +1139,9 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
     case TpUInt:
 	os >> *static_cast<uInt*>(ptr);
 	break;
+    case TpInt64:
+	os >> *static_cast<Int64*>(ptr);
+	break;
     case TpFloat:
 	os >> *static_cast<float*>(ptr);
 	break;
@@ -1103,6 +1171,9 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
 	break;
     case TpArrayUInt:
 	os >> *static_cast<Array<uInt>*>(ptr);
+	break;
+    case TpArrayInt64:
+	os >> *static_cast<Array<Int64>*>(ptr);
 	break;
     case TpArrayFloat:
 	os >> *static_cast<Array<float>*>(ptr);
@@ -1152,6 +1223,9 @@ void RecordRep::putData (AipsIO& os) const
 void RecordRep::getRecord (AipsIO& os, int& recordType)
 {
     // Support reading scalar and array keyword sets as records.
+    // They are the very old way of storing keywords, since long replaced
+    // by Record. The code does not exist anymore, but theoretically such data
+    // can exist in a very old table. Therefore it is still supported here.
     uInt version;
     String type = os.getNextType();
     if (type == "ScalarKeywordSet") {

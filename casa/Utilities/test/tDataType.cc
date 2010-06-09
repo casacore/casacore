@@ -73,6 +73,11 @@ void simpleTests()
     }
     {
 	ostringstream formatter;
+	formatter << TpInt64; 
+	AlwaysAssertExit(formatter.str() == "Int64");
+    }
+    {
+	ostringstream formatter;
 	formatter << TpFloat; 
 	AlwaysAssertExit(formatter.str() == "float");
     }
@@ -138,6 +143,11 @@ void simpleTests()
     }
     {
 	ostringstream formatter;
+	formatter << TpArrayInt64; 
+	AlwaysAssertExit(formatter.str() == "Array<Int64>");
+    }
+    {
+	ostringstream formatter;
 	formatter << TpArrayFloat; 
 	AlwaysAssertExit(formatter.str() == "Array<float>");
     }
@@ -192,6 +202,7 @@ void simpleTests()
     AlwaysAssertExit( whatType(static_cast<uShort *>(0)) == TpUShort );
     AlwaysAssertExit( whatType(static_cast<Int *>(0)) == TpInt );
     AlwaysAssertExit( whatType(static_cast<uInt *>(0)) == TpUInt );
+    AlwaysAssertExit( whatType(static_cast<Int64 *>(0)) == TpInt64 );
     AlwaysAssertExit( whatType(static_cast<Float *>(0)) == TpFloat );
     AlwaysAssertExit( whatType(static_cast<Double *>(0)) == TpDouble );
     AlwaysAssertExit( whatType(static_cast<Complex *>(0)) == TpComplex );
@@ -205,6 +216,7 @@ void simpleTests()
     AlwaysAssertExit( whatType(static_cast<Array<uShort> *>(0)) == TpArrayUShort );
     AlwaysAssertExit( whatType(static_cast<Array<Int> *>(0)) == TpArrayInt );
     AlwaysAssertExit( whatType(static_cast<Array<uInt> *>(0)) == TpArrayUInt );
+    AlwaysAssertExit( whatType(static_cast<Array<Int64> *>(0)) == TpArrayInt64 );
     AlwaysAssertExit( whatType(static_cast<Array<Float> *>(0)) == TpArrayFloat );
     AlwaysAssertExit( whatType(static_cast<Array<Double> *>(0)) == TpArrayDouble );
     AlwaysAssertExit( whatType(static_cast<Array<Complex> *>(0)) == TpArrayComplex );
@@ -218,7 +230,7 @@ void simpleTests()
 		      isScalar(TpShort) && isScalar(TpUShort) && isScalar(TpInt) && 
 		      isScalar(TpUInt) && isScalar(TpFloat) && isScalar(TpDouble) &&
 		      isScalar(TpComplex) && isScalar(TpDComplex) && isScalar(TpString) &&
-		      isScalar(TpQuantity) &&
+		      isScalar(TpQuantity) && isScalar(TpInt64) &&
 		      !isScalar(TpTable) && !isScalar(TpRecord) && !isScalar(TpOther) &&
 		      !isScalar(TpArrayBool) && !isScalar(TpArrayChar) && 
 		      !isScalar(TpArrayUChar)&& !isScalar(TpArrayShort) && 
@@ -226,20 +238,20 @@ void simpleTests()
 		      !isScalar(TpArrayUInt) && !isScalar(TpArrayFloat) && 
 		      !isScalar(TpArrayDouble) && !isScalar(TpArrayComplex) &&
 		      !isScalar(TpArrayDComplex) && !isScalar(TpArrayString) &&
-		      !isScalar(TpArrayQuantity));
+		      !isScalar(TpArrayQuantity) && !isScalar(TpArrayInt64));
     AlwaysAssertExit (!isArray(TpBool) && !isArray(TpChar) && !isArray(TpUChar)&&
 		      !isArray(TpShort) && !isArray(TpUShort) && !isArray(TpInt) && 
 		      !isArray(TpUInt) && !isArray(TpFloat) && !isArray(TpDouble) &&
 		      !isArray(TpComplex) && !isArray(TpDComplex) && !isArray(TpString) &&
 		      !isArray(TpTable) && !isArray(TpRecord) && !isArray(TpOther) &&
-		      !isArray(TpQuantity) &&
+		      !isArray(TpQuantity) && !isArray(TpInt64) &&
 		      isArray(TpArrayBool) && isArray(TpArrayChar) && 
 		      isArray(TpArrayUChar)&& isArray(TpArrayShort) && 
 		      isArray(TpArrayUShort) && isArray(TpArrayInt) && 
 		      isArray(TpArrayUInt) && isArray(TpArrayFloat) && 
 		      isArray(TpArrayDouble) && isArray(TpArrayComplex) &&
 		      isArray(TpArrayDComplex) && isArray(TpArrayString) &&
-		      isArray(TpArrayQuantity));
+		      isArray(TpArrayQuantity) && isArray(TpArrayInt64));
     AlwaysAssertExit(asScalar(TpBool) == TpBool &&
 		     asScalar(TpChar) == TpChar &&
 		     asScalar(TpUChar) == TpUChar &&
@@ -247,6 +259,7 @@ void simpleTests()
 		     asScalar(TpUShort) == TpUShort &&
 		     asScalar(TpInt) == TpInt &&
 		     asScalar(TpUInt) == TpUInt &&
+		     asScalar(TpInt64) == TpInt64 &&
 		     asScalar(TpFloat) == TpFloat &&
 		     asScalar(TpDouble) == TpDouble &&
 		     asScalar(TpComplex) == TpComplex &&
@@ -260,6 +273,7 @@ void simpleTests()
 		     asScalar(TpArrayUShort) == TpUShort &&
 		     asScalar(TpArrayInt) == TpInt &&
 		     asScalar(TpArrayUInt) == TpUInt &&
+		     asScalar(TpArrayInt64) == TpInt64 &&
 		     asScalar(TpArrayFloat) == TpFloat &&
 		     asScalar(TpArrayDouble) == TpDouble &&
 		     asScalar(TpArrayComplex) == TpComplex &&
@@ -274,6 +288,7 @@ void simpleTests()
 		     asArray(TpUShort) == TpArrayUShort &&
 		     asArray(TpInt) == TpArrayInt &&
 		     asArray(TpUInt) == TpArrayUInt &&
+		     asArray(TpInt64) == TpArrayInt64 &&
 		     asArray(TpFloat) == TpArrayFloat &&
 		     asArray(TpDouble) == TpArrayDouble &&
 		     asArray(TpComplex) == TpArrayComplex &&
@@ -287,6 +302,7 @@ void simpleTests()
 		     asArray(TpArrayUShort) == TpArrayUShort &&
 		     asArray(TpArrayInt) == TpArrayInt &&
 		     asArray(TpArrayUInt) == TpArrayUInt &&
+		     asArray(TpArrayInt64) == TpArrayInt64 &&
 		     asArray(TpArrayFloat) == TpArrayFloat &&
 		     asArray(TpArrayDouble) == TpArrayDouble &&
 		     asArray(TpArrayComplex) == TpArrayComplex &&

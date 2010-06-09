@@ -92,6 +92,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Int*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
+		 const IPosition& tileShape, const Int64*);
+    HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Float*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Double*);
@@ -106,6 +108,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // <group>
     HDF5DataSet (const HDF5Object&, const String&, const Bool*);
     HDF5DataSet (const HDF5Object&, const String&, const Int*);
+    HDF5DataSet (const HDF5Object&, const String&, const Int64*);
     HDF5DataSet (const HDF5Object&, const String&, const Float*);
     HDF5DataSet (const HDF5Object&, const String&, const Double*);
     HDF5DataSet (const HDF5Object&, const String&, const Complex*);

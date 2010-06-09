@@ -136,21 +136,7 @@ class Record;
 //   Enumeration of the <here>data types</here> in the table system
 // </linkfrom>
 //
-// Enumeration of the possible data types for keywords and table columns:
-// <srcblock>
-// enum DataType {TpBool,         TpChar,          TpUChar,
-//	        TpShort,        TpUShort,        TpInt,        TpUInt,
-//	        TpFloat,        TpDouble,   
-//	        TpComplex,      TpDComplex,      TpString,
-//	        TpTable,
-//	        TpArrayBool,    TpArrayChar,     TpArrayUChar,
-//	        TpArrayShort,   TpArrayUShort,   TpArrayInt,   TpArrayUInt,
-//	        TpArrayFloat,   TpArrayDouble,
-//	        TpArrayComplex, TpArrayDComplex, TpArrayString,
-//	        TpRecord, TpOther,
-//              TpNumberOfTypes
-//	         };
-// </srcblock>
+// Enumeration of the possible data types for keywords and table columns.
 // <group name=DataType>
 enum DataType {TpBool,    TpChar,     TpUChar,
 	       TpShort,   TpUShort,   TpInt,     TpUInt,
@@ -165,6 +151,7 @@ enum DataType {TpBool,    TpChar,     TpUChar,
 //#// TpLDouble,
 //#// TpArrayLDouble,
 	       TpQuantity, TpArrayQuantity,
+               TpInt64, TpArrayInt64,
 	       // Since we start at zero, this is the number of types in the
 	       // enum.
                TpNumberOfTypes
@@ -189,6 +176,7 @@ inline DataType whatType(const Short*) {return TpShort ; }
 inline DataType whatType(const uShort*) {return TpUShort ; }
 inline DataType whatType(const Int*) {return TpInt ; }
 inline DataType whatType(const uInt*) {return TpUInt ; }
+inline DataType whatType(const Int64*) {return TpInt64 ; }
 inline DataType whatType(const float*) {return TpFloat ; }
 inline DataType whatType(const double*) {return TpDouble ; }
 inline DataType whatType(const Complex*) {return TpComplex ; }
@@ -202,6 +190,7 @@ inline DataType whatType(const Array<Short>*) {return TpArrayShort ; }
 inline DataType whatType(const Array<uShort> *) {return TpArrayUShort ; }
 inline DataType whatType(const Array<Int> *) {return TpArrayInt ; }
 inline DataType whatType(const Array<uInt> *) {return TpArrayUInt ; }
+inline DataType whatType(const Array<Int64> *) {return TpArrayInt64 ; }
 inline DataType whatType(const Array<float> *) {return TpArrayFloat ; }
 inline DataType whatType(const Array<double> *) {return TpArrayDouble ; }
 inline DataType whatType(const Array<Complex> *) {return TpArrayComplex ; }

@@ -1,9 +1,11 @@
 0  foo : Int
     foo comment
 1  bar : Array<DComplex>[3, 4]
-2  fubar : SUBRECORD
+2  bar64 : Int64
+3  fubar : SUBRECORD
     0  foo : Int
         foo comment
     1  bar : Array<DComplex>[3, 4]
-3  futab : TableDesc fuName
+    2  bar64 : Int64
+4  futab : TableDesc fuName
 OK

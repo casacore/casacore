@@ -237,6 +237,7 @@ void doIt (Bool doExcp)
     g.addField("TpArrayUShort", TpArrayUShort, IPosition(1,1));
     g.addField("TpArrayInt", TpArrayInt, IPosition(1,1));
     g.addField("TpArrayUInt", TpArrayUInt, IPosition(1,1));
+    g.addField("TpArrayInt64", TpArrayInt64, IPosition(1,1));
     g.addField("TpArrayFloat", TpArrayFloat, IPosition(1,1));
     g.addField("TpArrayDouble", TpArrayDouble, IPosition(1,1));
     g.addField("TpArrayComplex", TpArrayComplex, IPosition(1,1));
@@ -259,6 +260,7 @@ void doIt (Bool doExcp)
 	rd.addField("foo", TpInt);
 	rd.setComment (0, "foo comment");
 	rd.addField("bar", TpDComplex, IPosition(2, 3, 4));
+	rd.addField("bar64", TpInt64);
 	rd.addField("fubar", RecordDesc(rd));
 	rd.addTable("futab", "fuName");
 	cout << rd;
@@ -268,6 +270,7 @@ void doIt (Bool doExcp)
 	aos.close();
 	aos.open ("tRecordDesc_tmp.data");
 	RecordDesc rd1;
+        rd1.addField ("should be removed by >>", TpShort);
 	aos >> rd1;
 	AlwaysAssertExit(rd == rd1);
 	AlwaysAssertExit (rd1.comment (0) == "foo comment");

@@ -44,6 +44,8 @@ ValueHolder Record::asValueHolder (const RecordFieldId& id) const
     return ValueHolder(asInt(id));
   case TpUInt:
     return ValueHolder(asuInt(id));
+  case TpInt64:
+    return ValueHolder(asInt64(id));
   case TpFloat:
     return ValueHolder(asFloat(id));
   case TpDouble:
@@ -100,6 +102,9 @@ void Record::defineFromValueHolder (const RecordFieldId& id,
     break;
   case TpUInt:
     define (id, value.asuInt());
+    break;
+  case TpInt64:
+    define (id, value.asInt64());
     break;
   case TpFloat:
     define (id, value.asFloat());

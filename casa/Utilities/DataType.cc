@@ -42,6 +42,7 @@ ostream &operator<<(ostream &os, DataType type)
     case TpUShort: os << "uShort"; break;
     case TpInt: os << "Int"; break;
     case TpUInt: os << "uInt"; break;
+    case TpInt64: os << "Int64"; break;
     case TpFloat: os << "float"; break;
     case TpDouble: os << "double"; break;
     case TpComplex: os << "Complex"; break;
@@ -55,6 +56,7 @@ ostream &operator<<(ostream &os, DataType type)
     case TpArrayUShort: os << "Array<uShort>"; break;
     case TpArrayInt: os << "Array<Int>"; break;
     case TpArrayUInt: os << "Array<uInt>"; break;
+    case TpArrayInt64: os << "Array<Int64>"; break;
     case TpArrayFloat: os << "Array<float>"; break;
     case TpArrayDouble: os << "Array<double>"; break;
     case TpArrayComplex: os << "Array<Complex>"; break;
@@ -72,7 +74,7 @@ ostream &operator<<(ostream &os, DataType type)
 
 Bool isScalar(DataType type)
 {
-    return ((type <= TpString) || (type == TpQuantity));
+  return ((type <= TpString) || (type == TpQuantity) || (type == TpInt64));
 }
 
 Bool isScalarFun(DataType type){return isScalar(type);}
@@ -81,7 +83,7 @@ Bool isScalarFun(DataType type){return isScalar(type);}
 Bool isArray(DataType type)
 {
     return ((type >= TpArrayBool && type <= TpArrayString) ||
-		  (type == TpArrayQuantity));
+            (type == TpArrayQuantity) || (type == TpArrayInt64));
 }
 
 Bool isReal(DataType type)    
@@ -110,6 +112,8 @@ DataType asScalar(DataType type)
     if (isArray(tmp)) {
       if (tmp == TpArrayQuantity) {
 	tmp = TpQuantity;
+      } else if (tmp == TpArrayInt64) {
+	tmp = TpInt64;
       } else {
 	tmp = DataType(type - TpArrayBool + TpBool);
       }
@@ -125,6 +129,8 @@ DataType asArray(DataType type)
     if (isScalar(tmp)) {
       if (tmp == TpQuantity) {
 	tmp = TpArrayQuantity;
+      } else if (tmp == TpInt64) {
+	tmp = TpArrayInt64;
       } else {
 	tmp = DataType(type - TpBool + TpArrayBool);
       }
