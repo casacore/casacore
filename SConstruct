@@ -108,6 +108,20 @@ if not env.GetOption('clean') and not env.GetOption("help"):
         pass
         # quiet_print("Building without HDF5 support")
 
+    # FFTW3
+    if conf.env.get("enable_fftw3"):
+        pkgname = "fftw3"
+        libname = conf.env.get(pkgname+"_lib", "fftw3,fftw3f").split(",")
+        conf.env.AddCustomPackage(pkgname)
+        for l in libname:
+            if not conf.CheckLib(l, autoadd=0):
+                env.Exit(1)
+        env.PrependUnique(LIBS=[libname])
+        env.Append(CPPFLAGS=['-DHAVE_FFTW3'])
+    else:
+        pass
+        # quiet_print("Building without FFTW3 support")
+
     # cfitsio
     pkgname = "cfitsio"
     cfitsioname = conf.env.get(pkgname+"_lib")
