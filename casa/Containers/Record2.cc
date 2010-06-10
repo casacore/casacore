@@ -66,6 +66,8 @@ ValueHolder Record::asValueHolder (const RecordFieldId& id) const
     return ValueHolder(asArrayInt(id));
   case TpArrayUInt:
     return ValueHolder(asArrayuInt(id));
+  case TpArrayInt64:
+    return ValueHolder(asArrayInt64(id));
   case TpArrayFloat:
     return ValueHolder(asArrayFloat(id));
   case TpArrayDouble:
@@ -135,6 +137,9 @@ void Record::defineFromValueHolder (const RecordFieldId& id,
     break;
   case TpArrayUInt:
     define (id, value.asArrayuInt());
+    break;
+  case TpArrayInt64:
+    define (id, value.asArrayInt64());
     break;
   case TpArrayFloat:
     define (id, value.asArrayFloat());
