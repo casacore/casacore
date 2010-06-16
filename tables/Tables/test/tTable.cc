@@ -410,6 +410,14 @@ void b (Bool doExcp)
     sortab2 = sortab2(TableExprNode(), 5);
     AlwaysAssertExit (sortab2.nrow() == 5);
 
+    // Test using a const Bool expression.
+    Table csortab = sortab(TableExprNode(2) + 3 == 5);
+    AlwaysAssertExit (csortab.nrow() == sortab.nrow());
+    csortab = sortab(TableExprNode(False));
+    AlwaysAssertExit (csortab.nrow() == 0);
+    csortab = sortab(TableExprNode(True), 5);
+    AlwaysAssertExit (csortab.nrow() == 5);
+
     // Select using the IN function.
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem ("V3"));
