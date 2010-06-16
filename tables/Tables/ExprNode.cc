@@ -239,6 +239,12 @@ TableExprNode operator|| (const TableExprNode& left,
 
 TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
 {
+    // An empty set never matches.
+    // Note it makes it possible to use an empty set that has
+    // no data type yet.
+    if (set.nelements() == 0) {
+        return TableExprNode(False);
+    }
     set.checkEqualDataTypes();
     TableExprNodeSet setcp = set;
     return newIN (setcp.setOrArray());
