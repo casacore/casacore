@@ -418,13 +418,16 @@ void b (Bool doExcp)
     csortab = sortab(TableExprNode(True), 5);
     AlwaysAssertExit (csortab.nrow() == 5);
 
+    // Select using an empty set.
     // Select using the IN function.
     TableExprNodeSet set;
+    Table seltabset = sortab (sortab.col("af").in (set));
+    AlwaysAssertExit (seltabset.nrow() == 0);
     set.add (TableExprNodeSetElem ("V3"));
     set.add (TableExprNodeSetElem ("V1"));
     set.add (TableExprNodeSetElem ("V9"));
     set.add (TableExprNodeSetElem ("V6"));
-    Table seltabset = sortab (sortab.col("af").in (set));
+    seltabset = sortab (sortab.col("af").in (set));
     if (seltabset.nrow() != 4) {
 	cout << "seltabset does not contain 4 rows" << endl;
     }

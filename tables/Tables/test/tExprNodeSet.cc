@@ -908,6 +908,17 @@ void doSlicer()
   }
 }
 
+void doEmpty()
+{
+  TableExprNodeSet set;
+  AlwaysAssertExit (set.isSingle());
+  AlwaysAssertExit (set.isDiscrete());
+  AlwaysAssertExit (set.isBounded());
+  AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTNumeric);
+  AlwaysAssertExit (set.nelements() == 0);
+  AlwaysAssertExit (!set.hasArrays());
+}
+
 
 int main()
 {
@@ -932,6 +943,7 @@ int main()
     doSetDate();
     doIPosition();
     doSlicer();
+    doEmpty();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
