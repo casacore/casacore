@@ -648,6 +648,16 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
     { return True; }
 
+BaseTable* BaseTable::select (uInt maxRow)
+{
+    if (maxRow == 0  ||  maxRow >= nrow()) {
+        return this;
+    }
+    Vector<uInt> rownrs(maxRow);
+    indgen(rownrs);
+    return select(rownrs);
+}
+
 // Do the row selection.
 BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
 {
@@ -655,16 +665,20 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     AlwaysAssert (!isNull(), AipsError);
     // If it is a null expression, return maxrows.
     if (node.isNull()) {
-        if (maxRow <=0  ||  maxRow >= nrow()) {
-	    return this;
-	}
-	Vector<uInt> rownrs(maxRow);
-	indgen(rownrs);
-	return select(rownrs);
+        return select (maxRow);
     }
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool  ||  !node.isScalar()) {
 	throw (TableInvExpr ("expression result is not Bool scalar"));
+    }
+    // Accept a const bool expression.
+    if (node.getNodeRep()->isConstant()) {
+        if (node.getBool(0)) {
+            // Select maxRow rows.
+            return select (maxRow);
+        }
+        // Select no rows.
+        return select(Vector<uInt>());
     }
     //# Now check if this table has been used for all columns.
     //# This also catches a case like:  tab(True);

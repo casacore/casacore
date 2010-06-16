@@ -323,6 +323,9 @@ public:
     // Select rows using the given expression.
     BaseTable* select (const TableExprNode&, uInt maxRow);
 
+    // Select maxRow rows. maxRow=0 means all.
+    BaseTable* select (uInt maxRow);
+
     // Select rows using a vector of row numbers.
     BaseTable* select (const Vector<uInt>& rownrs);
 
