@@ -113,7 +113,7 @@ if not env.GetOption('clean') and not env.GetOption("help"):
         pkgname = "fftw3"
         deflib = "fftw3,fftw3f"
         if not conf.env.get("disable_fftw3_threads"):
-            deflib += ",fftw3_threads,fftw3f_threads"
+            deflib += ",fftw3_threads,fftw3f_threads,pthread"
             env.Append(CPPFLAGS=['-DHAVE_FFTW3_THREADS'])
         # The fftw3_lib variable is defined as 'fftw3' if not explicitly given.
         # So set to default if the value is 'fftw3'.

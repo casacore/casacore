@@ -102,11 +102,12 @@ namespace casa {
       
       //    std::cout << "init threads " << fftwf_init_threads() << std::endl;
       //    std::cout << "init threads " << fftw_init_threads() << std::endl;
+#ifdef HAVE_FFTW3_THREADS
       fftwf_init_threads();
       fftw_init_threads();
       fftwf_plan_with_nthreads(nthreads);
       fftw_plan_with_nthreads(nthreads);
-
+#endif
       is_initialized_fftw = True;
     }
     //    std::cerr << "will use " << nthreads << " threads " << std::endl;
@@ -130,6 +131,7 @@ namespace casa {
     delete itsPlanC2CB;
     // We cannot deinitialize FFTW as in the following because
     // there may be other instances of this class around
+    // Could do it when keeping a static counter, but must be made thread-safe.
 #if 0
     fftw_cleanup();
     fftwf_cleanup();
