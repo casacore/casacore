@@ -111,7 +111,17 @@ if not env.GetOption('clean') and not env.GetOption("help"):
     # FFTW3
     if conf.env.get("enable_fftw3"):
         pkgname = "fftw3"
-        libname = conf.env.get(pkgname+"_lib", "fftw3,fftw3f").split(",")
+        deflib = "fftw3,fftw3f"
+        if not conf.env.get("disable_fftw3_threads"):
+            deflib += ",fftw3_threads,fftw3f_threads"
+            env.Append(CPPFLAGS=['-DHAVE_FFTW3_THREADS'])
+        # The fftw3_lib variable is defined as 'fftw3' if not explicitly given.
+        # So set to default if the value is 'fftw3'.
+        # Note that if explicitly given, it can never be done as 'fftw3'.
+        libstr = conf.env.get(pkgname+"_lib")
+        if libstr == 'fftw3':
+            libstr= deflib
+        libname = libstr.split(",")
         conf.env.AddCustomPackage(pkgname)
         for l in libname:
             if not conf.CheckLib(l, autoadd=0):
