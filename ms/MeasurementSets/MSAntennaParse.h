@@ -93,7 +93,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Associate the ms and the shorthand.
     MSAntennaParse (const MeasurementSet* ms);
     
-    //    ~MSAntennaParse() {if (node_p) delete node_p;node_p=0x0;};
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds, 
 					  BaselineListType autoCorr=CrossOnly, Bool negate=False);
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
@@ -117,22 +116,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     const TableExprNode* selectFromIdsAndCPs(const Int index, const String& cp);
     const TableExprNode* selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, 
 					     const Int secondIndex, const String& secondcp);
+    // Selection on baseline length
+    const TableExprNode* selectLength(const std::vector<double>& lengths,
+                                      Bool negate=False);
     // Get table expression node object.
     static const TableExprNode* node();
+    // Get the factor to convert the given unit to m.
+    static double getUnitFactor (const char* unit);
     static MSAntennaParse* thisMSAParser;
     static Vector<Int> selectedAnt1() {return ant1List;};
     static Vector<Int> selectedAnt2() {return ant2List;};
     static Matrix<Int> selectedBaselines() {return baselineList;};
     static void reset(){ant1List.resize(0);ant2List.resize(0);baselineList.resize(0,2);};
-    static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
   private:
     
-    static TableExprNode* node_p;
+    static TableExprNode node_p;
     const String colName1, colName2;
 //     void setTEN(TableExprNode& condition, Bool autoCorr=False, Bool negate=False);
      void setTEN(TableExprNode& condition, 
 		 BaselineListType autoCorr=CrossOnly,
 		 Bool negate=False);
+    Matrix<double> getBaselineLengths();
     void makeBaselineList(const Vector<Int>&a1, const Vector<Int>&a2, Matrix<Int>&b, 
 			  //			  Bool autoCorr=False, 
 			  BaselineListType autoCorr=CrossOnly,
