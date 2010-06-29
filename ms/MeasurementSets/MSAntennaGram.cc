@@ -100,7 +100,6 @@ const TableExprNode* msAntennaGramParseNode()
 }
 void msAntennaGramParseDeleteNode()
 {
-    return MSAntennaParse::cleanup();
 }
 
 //# Give the string position.

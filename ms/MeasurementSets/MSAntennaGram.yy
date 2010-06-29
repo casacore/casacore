@@ -35,53 +35,42 @@
 
 %union {
   const TableExprNode* node;
-  Block<TableExprNode>* exprb;
-  TableExprNodeSetElem* elem;
-  TableExprNodeSet* settp;
-  Int ival[2];
-  char * str;
-  Double dval;
+  char* str;
   Vector<Int>* iv;
+  std::vector<double>* dv;
   Vector<String>* is;
 }
 
 
-%token EQASS
-%token SQUOTE
-%token <str> IDENTIFIER
 %token COMMA
-
-%token LBRACKET
+%token SEMICOLON
+%token AMPERSAND
+%token DASH
+%token NOT
 %token LPAREN
-%token RBRACKET
 %token RPAREN
-%token LBRACE
-%token RBRACE
-%token WHITE
+%token LT
+%token GT
 
 %token <str> INT
+%token <str> FLOAT
+%token <str> UNIT
 %token <str> QSTRING
 %token <str> REGEX
-
-%token COLON
-%token SEMICOLON
+%token <str> IDENTIFIER
 
 %type <node> antennastatement
 %type <node> indexcombexpr
 %type <node> baseline
 %type <node> gbaseline
+%type <str> ident
+%type <str> flint
 %type <iv> indexlist
 %type <iv> antidrange
 %type <iv> antidlist
 %type <iv> antid
-
-%left OR AND
-%nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
-%left PLUS MINUS
-%left TIMES DIVIDE MODULO
-%nonassoc UNARY
-%nonassoc NOT
-%right POWER
+%type <dv> blength
+%type <dv> blengthlist
 
 %{
   int MSAntennaGramlex (YYSTYPE*);
@@ -177,9 +166,19 @@ baseline: indexlist AMPERSAND indexlist
 	      
 	      delete $1;
 	    }
+        | blengthlist  // baseline length list
+            {
+              $$ = MSAntennaParse::thisMSAParser->selectLength (*$1, MSAntennaGramNegate);
+              delete $1;
+            }
         ;
 
-antid: IDENTIFIER  // A single antenna name (this could be a regex and
+ident:   IDENTIFIER
+           { $$ = $1; }
+       | UNIT             // a unit ia an aphabetic name, so here it is a name
+           { $$ = $1; }
+
+antid: ident  // A single antenna name (this could be a regex and
 		   // hence produce a list inf indices)
                    // 
         { // Use the string as-is.  This cannot include patterns/regex
@@ -294,12 +293,85 @@ indexlist : antidlist
 
 	      delete $3;
             }
-/*
-          | LPAREN indexlist RPAREN //Parenthesis are not
-				    //syntactically useful here
-            {
-	      $$ = $2;
-	    }
-          ;
-*/
+
+blengthlist: blength
+             {
+               $$ = $1;
+             }
+           | blengthlist COMMA blength
+             {
+               $$ = $1;
+               $$->push_back ((*$3)[0]);
+               $$->push_back ((*$3)[1]);
+               delete $3;
+             }
+
+blength:     LT flint
+             {
+               $$ = new std::vector<double>();
+               $$->push_back (-1e30);
+               $$->push_back (atof($2));
+               free($2);
+             }
+           | LT flint UNIT
+             {
+               double factor = MSAntennaParse::getUnitFactor ($3);
+               $$ = new std::vector<double>();
+               $$->push_back (-1e30);
+               $$->push_back (atof($2) / factor);
+               free($2);
+               free($3);
+             }
+           | GT flint
+             {
+               $$ = new std::vector<double>();
+               $$->push_back (atof($2));
+               $$->push_back (1e30);
+               free($2);
+             }
+           | GT flint UNIT
+             {
+               double factor = MSAntennaParse::getUnitFactor ($3);
+               $$ = new std::vector<double>();
+               $$->push_back (atof($2) / factor);
+               $$->push_back (1e30);
+               free($2);
+               free($3);
+             }
+           | FLOAT DASH FLOAT
+             {
+               $$ = new std::vector<double>();
+               $$->push_back (atof($1));
+               $$->push_back (atof($3));
+               free($1);
+               free($3);
+             }
+           | flint DASH flint UNIT
+             {
+               double factor = MSAntennaParse::getUnitFactor ($4);
+               $$ = new std::vector<double>();
+               $$->push_back (atof($1) / factor);
+               $$->push_back (atof($3) / factor);
+               free($1);
+               free($3);
+               free($4);
+             }
+           | flint UNIT DASH flint UNIT
+             {
+               double factor1 = MSAntennaParse::getUnitFactor ($2);
+               double factor2 = MSAntennaParse::getUnitFactor ($5);
+               $$ = new std::vector<double>();
+               $$->push_back (atof($1) / factor1);
+               $$->push_back (atof($4) / factor2);
+               free($1);
+               free($2);
+               free($4);
+               free($5);
+             }
+
+flint:     FLOAT
+             { $$ = $1; }
+         | INT
+             { $$ = $1; }
+
 %%
