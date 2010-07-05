@@ -154,6 +154,8 @@ public:
 // WHERE clause in TaQL (see AIPS++ note 199).
 // It is possible to set the TaQL style to use by setting
 // <src>theirTaQLStyle</src> before calling the parse functions.
+// A better way is to define the style with the 'USING STYLE' part of
+// the command (similar to TaQL).
 // </synopsis> 
 
 // <motivation>
