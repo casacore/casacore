@@ -216,9 +216,11 @@ LatticeExprNode ImageExprParse::command
 LatticeExprNode ImageExprParse::makeFuncNode() const
 {
     AlwaysAssert (itsType == TpString, AipsError);
-    if (itsSval == "pi") {
+    String val(itsSval);
+    val.downcase();
+    if (val == "pi") {
 	return LatticeExprNode (C::pi);
-    } else if (itsSval == "e") {
+    } else if (val == "e") {
 	return LatticeExprNode (C::e);
     } else {
 	throw (AipsError ("0-argument function " + itsSval + " is unknown"));
@@ -229,95 +231,97 @@ LatticeExprNode ImageExprParse::makeFuncNode() const
 LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
-    if (itsSval == "sin") {
+    String val(itsSval);
+    val.downcase();
+    if (val == "sin") {
 	return sin(arg1);
-    } else if (itsSval == "sinh") {
+    } else if (val == "sinh") {
 	return sinh(arg1);
-    } else if (itsSval == "asin") {
+    } else if (val == "asin") {
 	return asin(arg1);
-    } else if (itsSval == "cos") {
+    } else if (val == "cos") {
 	return cos(arg1);
-    } else if (itsSval == "cosh") {
+    } else if (val == "cosh") {
 	return cosh(arg1);
-    } else if (itsSval == "acos") {
+    } else if (val == "acos") {
 	return acos(arg1);
-    } else if (itsSval == "tan") {
+    } else if (val == "tan") {
 	return tan(arg1);
-    } else if (itsSval == "tanh") {
+    } else if (val == "tanh") {
 	return tanh(arg1);
-    } else if (itsSval == "atan") {
+    } else if (val == "atan") {
 	return atan(arg1);
-    } else if (itsSval == "exp") {
+    } else if (val == "exp") {
 	return exp(arg1);
-    } else if (itsSval == "log") {
+    } else if (val == "log") {
 	return log(arg1);
-    } else if (itsSval == "log10") {
+    } else if (val == "log10") {
 	return log10(arg1);
-    } else if (itsSval == "sqrt") {
+    } else if (val == "sqrt") {
 	return sqrt(arg1);
-    } else if (itsSval == "ceil") {
+    } else if (val == "ceil") {
 	return ceil(arg1);
-    } else if (itsSval == "floor") {
+    } else if (val == "floor") {
 	return floor(arg1);
-    } else if (itsSval == "round") {
+    } else if (val == "round") {
 	return round(arg1);
-    } else if (itsSval == "sign") {
+    } else if (val == "sign") {
 	return sign(arg1);
-    } else if (itsSval == "conj") {
+    } else if (val == "conj") {
 	return conj(arg1);
-    } else if (itsSval == "abs"  ||  itsSval == "amplitude") {
+    } else if (val == "abs"  ||  val == "amplitude") {
 	return abs(arg1);
-    } else if (itsSval == "arg"  ||  itsSval == "phase") {
+    } else if (val == "arg"  ||  val == "phase") {
 	return arg(arg1);
-    } else if (itsSval == "real") {
+    } else if (val == "real") {
 	return real(arg1);
-    } else if (itsSval == "imag") {
+    } else if (val == "imag") {
 	return imag(arg1);
-    } else if (itsSval == "min") {
+    } else if (val == "min") {
 	return min(arg1);
-    } else if (itsSval == "max") {
+    } else if (val == "max") {
 	return max(arg1);
-    } else if (itsSval == "median") {
+    } else if (val == "median") {
 	return median(arg1);
-    } else if (itsSval == "mean") {
+    } else if (val == "mean") {
 	return mean(arg1);
-    } else if (itsSval == "variance") {
+    } else if (val == "variance") {
 	return variance(arg1);
-    } else if (itsSval == "stddev") {
+    } else if (val == "stddev") {
 	return stddev(arg1);
-    } else if (itsSval == "avdev") {
+    } else if (val == "avdev") {
 	return avdev(arg1);
-    } else if (itsSval == "sum") {
+    } else if (val == "sum") {
 	return sum(arg1);
-    } else if (itsSval == "replace") {
+    } else if (val == "replace") {
 	return replace(arg1, 0);
-    } else if (itsSval == "ndim") {
+    } else if (val == "ndim") {
 	return ndim(arg1);
-    } else if (itsSval == "nelements"  ||  itsSval == "count") {
+    } else if (val == "nelements"  ||  val == "count") {
 	return nelements(arg1);
-    } else if (itsSval == "any") {
+    } else if (val == "any") {
 	return any(arg1);
-    } else if (itsSval == "all") {
+    } else if (val == "all") {
 	return all(arg1);
-    } else if (itsSval == "ntrue") {
+    } else if (val == "ntrue") {
 	return ntrue(arg1);
-    } else if (itsSval == "nfalse") {
+    } else if (val == "nfalse") {
 	return nfalse(arg1);
-    } else if (itsSval == "isnan") {
+    } else if (val == "isnan") {
 	return isNaN(arg1);
-    } else if (itsSval == "mask") {
+    } else if (val == "mask") {
 	return mask(arg1);
-    } else if (itsSval == "value") {
+    } else if (val == "value") {
 	return value(arg1);
-    } else if (itsSval == "float") {
+    } else if (val == "float") {
 	return toFloat(arg1);
-    } else if (itsSval == "double") {
+    } else if (val == "double") {
 	return toDouble(arg1);
-    } else if (itsSval == "complex") {
+    } else if (val == "complex") {
 	return toComplex(arg1);
-    } else if (itsSval == "dcomplex") {
+    } else if (val == "dcomplex") {
 	return toDComplex(arg1);
-    } else if (itsSval == "bool"  ||  itsSval == "boolean") {
+    } else if (val == "bool"  ||  val == "boolean") {
 	return toBool(arg1);
     } else {
 	throw (AipsError ("1-argument function " + itsSval + " is unknown"));
@@ -329,33 +333,35 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 					      const LatticeExprNode& arg2) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
-    if (itsSval == "atan2") {
+    String val(itsSval);
+    val.downcase();
+    if (val == "atan2") {
 	return atan2(arg1, arg2);
-    } else if (itsSval == "pow") {
+    } else if (val == "pow") {
 	return pow(arg1, arg2);
-    } else if (itsSval == "fmod") {
+    } else if (val == "fmod") {
 	return fmod(arg1, arg2);
-    } else if (itsSval == "min") {
+    } else if (val == "min") {
 	return min(arg1, arg2);
-    } else if (itsSval == "max") {
+    } else if (val == "max") {
 	return max(arg1, arg2);
-    } else if (itsSval == "complex") {
+    } else if (val == "complex") {
 	return formComplex(arg1, arg2);
-    } else if (itsSval == "length") {
+    } else if (val == "length") {
 	return length(arg1, arg2);
-    } else if (itsSval == "amp") {
+    } else if (val == "amp") {
 	return amp(arg1, arg2);
-    } else if (itsSval == "pa") {
+    } else if (val == "pa") {
 	return pa(arg1, arg2);
-    } else if (itsSval == "spectralindex") {
+    } else if (val == "spectralindex") {
 	return spectralindex(arg1, arg2);
-    } else if (itsSval == "fractile") {
+    } else if (val == "fractile") {
 	return fractile(arg1, arg2);
-    } else if (itsSval == "fractilerange") {
+    } else if (val == "fractilerange") {
 	return fractileRange(arg1, arg2);
-    } else if (itsSval == "replace") {
+    } else if (val == "replace") {
 	return replace(arg1, arg2);
-    } else if (itsSval == "rebin") {
+    } else if (val == "rebin") {
 	return rebin(arg1, makeBinning(arg2));
     } else {
 	throw (AipsError ("2-argument function " + itsSval + " is unknown"));
@@ -368,9 +374,11 @@ LatticeExprNode ImageExprParse::makeFuncNode (const LatticeExprNode& arg1,
 					      const LatticeExprNode& arg3) const
 {
     AlwaysAssert (itsType == TpString, AipsError);
-    if (itsSval == "iif") {
+    String val(itsSval);
+    val.downcase();
+    if (val == "iif") {
 	return iif(arg1, arg2, arg3);
-    } else if (itsSval == "fractilerange") {
+    } else if (val == "fractilerange") {
 	return fractileRange(arg1, arg2, arg3);
     } else {
 	throw (AipsError ("3-argument function " + itsSval + " is unknown"));
