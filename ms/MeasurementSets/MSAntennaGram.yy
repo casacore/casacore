@@ -346,7 +346,7 @@ blength:     LT flint
                free($1);
                free($3);
              }
-           | flint DASH flint UNIT
+           | FLOAT DASH FLOAT UNIT
              {
                double factor = MSAntennaParse::getUnitFactor ($4);
                $$ = new std::vector<double>();
