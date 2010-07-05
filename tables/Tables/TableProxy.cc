@@ -1640,8 +1640,14 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 	  return False;
 	}
       }
+      // Set maximum string length.
       if (maxlen > 0) {
 	tabdesc.rwColumnDesc(nrdone).setMaxLength (maxlen);
+      }
+      // Define the keywords if needed.
+      if (cold.isDefined ("keywords")) {
+        putKeyValues (tabdesc.rwColumnDesc(nrdone).rwKeywordSet(),
+                      cold.asRecord("keywords"));
       }
     }
     nrdone++;
