@@ -86,6 +86,7 @@ UQSTRING   \"[^\"\n]*\n
 UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
+STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
 BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
 LIKE      [Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
@@ -165,6 +166,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 ">"       { recordGramPosition() += yyleng; return GT; }
 "<="      { recordGramPosition() += yyleng; return LE; }
 "<"       { recordGramPosition() += yyleng; return LT; }
+{STYLE}   { recordGramPosition() += yyleng; return STYLE; }
 {BETWEEN} { recordGramPosition() += yyleng; return BETWEEN; }
 {LIKE}    { recordGramPosition() += yyleng; return LIKE; }
 "&&"      { recordGramPosition() += yyleng; return AND; }
@@ -173,8 +175,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {OR}      { recordGramPosition() += yyleng; return OR; }
 "!"       { recordGramPosition() += yyleng; return NOT; }
 {NOT}     { recordGramPosition() += yyleng; return NOT; }
- /* "^"       { recordGramPosition() += yyleng; return BITXOR; } was POWER */
-"^"       { throw TableInvExpr ("^ is deprecated; will be XOR in next relese"); }
+"^"       { recordGramPosition() += yyleng; return BITXOR; }
 "**"      { recordGramPosition() += yyleng; return POWER; }
 "*"       { recordGramPosition() += yyleng; return TIMES; }
 "/"       { recordGramPosition() += yyleng; return DIVIDE; }

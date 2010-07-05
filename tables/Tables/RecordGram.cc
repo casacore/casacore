@@ -220,11 +220,11 @@ TableExprNode RecordGram::handleFunc (const String& name,
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
     return TableParseSelect::makeFuncNode (name, arguments,
 					   ignoreFuncs, Table(),
-					   TaQLStyle());
+					   theirTaQLStyle);
   }
   return TableParseSelect::makeFuncNode (name, arguments,
 					 Vector<Int>(), *theirTabPtr,
-					 TaQLStyle());
+					 theirTaQLStyle);
 }
 
 TableExprNode RecordGram::handleRegex (const TableExprNode& left,
