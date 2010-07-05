@@ -265,12 +265,6 @@ class TableColumn;
 template<class VirtualType, class StoredType> class BaseMappedArrayEngine : public VirtualColumnEngine, public VirtualArrayColumn<VirtualType>
 {
 public:
-    // Adding rows is possible for this engine.
-    virtual Bool canAddRow() const;
-
-    // Deleting rows is possible for this engine.
-    virtual Bool canRemoveRow() const;
-
     // Get the virtual column name.
     const String& virtualName() const;
 
@@ -361,9 +355,6 @@ protected:
     virtual void addRow (uInt nrrow);
     virtual void addRowInit (uInt startRow, uInt nrrow);
     // </group>
-
-    // Deleting rows is possible and is a no-op for this engine.
-    virtual void removeRow (uInt rownr);
 
     // Set the shape of the FixedShape arrays in the column.
     // This function only gets called if the column has FixedShape arrays.
