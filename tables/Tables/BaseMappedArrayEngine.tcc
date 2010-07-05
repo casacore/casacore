@@ -202,20 +202,6 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::reopenRW()
     }
 }
 
-
-//# By default addition and removal of rows is allowed.
-//# Deletion is a no-op.
-template<class VirtualType, class StoredType>
-Bool BaseMappedArrayEngine<VirtualType, StoredType>::canAddRow() const
-    { return True; }
-template<class VirtualType, class StoredType>
-Bool BaseMappedArrayEngine<VirtualType, StoredType>::canRemoveRow() const
-    { return True; }
-
-template<class VirtualType, class StoredType>
-void BaseMappedArrayEngine<VirtualType, StoredType>::removeRow (uInt)
-{}
-
 //# Add nrrow rows to the end of the table.
 //# Set the shape if virtual is FixedShape and stored is non-FixedShape.
 template<class VirtualType, class StoredType>

@@ -108,12 +108,6 @@ public:
   // (i.e. its class name VirtualTaQLColumn).
   virtual String dataManagerType() const;
 
-  // Adding rows is possible for this engine.
-  virtual Bool canAddRow() const;
-
-  // Deleting rows is possible for this engine.
-  virtual Bool canRemoveRow() const;
-
   // Register the class name and the static makeObject "constructor".
   // This will make the engine known to the table system.
   static void registerClass();
@@ -153,12 +147,6 @@ private:
 
   // Prepare compiles the expression.
   virtual void prepare();
-
-  // Add a row (does nothing).
-  virtual void addRow (uInt nrrow);
-
-  // Delete a row (does nothing).
-  virtual void removeRow (uInt rownr);
 
   //# We could also define the getBlockXXV functions, but
   //# that is not required. The default implementation gets

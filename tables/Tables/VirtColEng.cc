@@ -38,6 +38,14 @@ VirtualColumnEngine::~VirtualColumnEngine()
 Bool VirtualColumnEngine::isStorageManager() const
     { return False; }
 
+Bool VirtualColumnEngine::canAddRow() const
+    { return True; }
+void VirtualColumnEngine::addRow (uInt)
+    {}
+Bool VirtualColumnEngine::canRemoveRow() const
+    { return True; }
+void VirtualColumnEngine::removeRow (uInt)
+    {}
 
 //# Create, open, prepare and close do nothing unless implemented in the
 // derived class.

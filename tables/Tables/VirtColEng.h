@@ -129,7 +129,21 @@ private:
     VirtualColumnEngine& operator= (const VirtualColumnEngine&);
 
     // The data manager is not a storage manager?
-    Bool isStorageManager() const;
+    virtual Bool isStorageManager() const;
+
+    // Does the data manager allow to add rows? (default no)
+    virtual Bool canAddRow() const;
+
+    // Does the data manager allow to delete rows? (default no)
+    virtual Bool canRemoveRow() const;
+
+    // Add rows to all columns.
+    // The default implementation does nothing.
+    virtual void addRow (uInt nrrow);
+
+    // Delete a row from all columns.
+    // The default implementation does nothing.
+    virtual void removeRow (uInt rownr);
 
     // Flush the data in the engine object.
     // If the object contains persistent data, this is the place to write them.

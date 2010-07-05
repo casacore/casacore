@@ -57,19 +57,6 @@ template<class T>
 String VSCEngine<T>::dataManagerType() const
     { return dataTypeId() + "VSCEngine"; }
 
-template<class T>
-Bool VSCEngine<T>::canAddRow() const
-    { return True; }
-template<class T>
-void VSCEngine<T>::addRow (uInt)
-{}
-template<class T>
-Bool VSCEngine<T>::canRemoveRow() const
-    { return True; }
-template<class T>
-void VSCEngine<T>::removeRow (uInt)
-{}
-
 // The column is in principle writable.
 template<class T>
 Bool VSCEngine<T>::isWritable() const
