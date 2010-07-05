@@ -42,10 +42,8 @@
 #include <casa/OS/Path.h>
 #include <casa/Utilities/Assert.h>
 
-using namespace casa;
 
-
-namespace LOFAR {
+namespace casa {
 
 DerivedMSCal::DerivedMSCal()
   : itsLastCalInx  (-1)
