@@ -143,16 +143,16 @@ public:
     // By default no data can be put in a virtual column.
     virtual Bool isWritable() const;
 
-protected:
-    // The class can handle a get/putScalarColumn.
-    Bool canAccessScalarColumn (Bool& reask) const;
-
     // Get the scalar value in the given row.
     virtual void get (uInt rownr, T& data) = 0;
 
     // Put the scalar value into the given row.
     // The default implementation throws an exception.
     virtual void put (uInt rownr, const T& data);
+
+protected:
+    // The class can handle a get/putScalarColumn.
+    Bool canAccessScalarColumn (Bool& reask) const;
 
     // Get all scalar values in the column.
     // The argument dataPtr is in fact a Vector<T>*, but a void*
@@ -254,78 +254,20 @@ private:
 // <synopsis>
 // </synopsis>
 // <group name=getVirtualScalarColumn>
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    Bool* dataPtr, const Bool*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    uChar* dataPtr, const uChar*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    Short* dataPtr, const Short*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    uShort* dataPtr, const uShort*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    Int* dataPtr, const Int*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    uInt* dataPtr, const uInt*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    float* dataPtr, const float*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    double* dataPtr, const double*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    Complex* dataPtr, const Complex*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    DComplex* dataPtr, const DComplex*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    String* dataPtr, const String*)
-    { col->get (rownr, dataPtr); }
-inline void getVirtualScalarColumn (DataManagerColumn* col, uInt,
-				    void*, const void*)
+template<class T>
+inline void getVirtualScalarColumn (VirtualScalarColumn<T>* col,
+                                    uInt rownr, T* dataPtr)
+    { col->get (rownr, *dataPtr); }
+inline void getVirtualScalarColumn (DataManagerColumn* col,
+				    uInt, void*)
     { col->throwGet(); }
 
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const Bool* dataPtr, const Bool*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const uChar* dataPtr, const uChar*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const Short* dataPtr, const Short*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const uShort* dataPtr, const uShort*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const Int* dataPtr, const Int*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const uInt* dataPtr, const uInt*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const float* dataPtr, const float*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const double* dataPtr, const double*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const Complex* dataPtr, const Complex*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const DComplex* dataPtr, const DComplex*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt rownr,
-				    const String* dataPtr, const String*)
-    { col->put (rownr, dataPtr); }
-inline void putVirtualScalarColumn (DataManagerColumn* col, uInt,
-				    const void*, const void*)
+template<class T>
+inline void putVirtualScalarColumn (VirtualScalarColumn<T>* col,
+                                    uInt rownr, const T* dataPtr)
+    { col->put (rownr, *dataPtr); }
+inline void putVirtualScalarColumn (DataManagerColumn* col,
+				    uInt, const void*)
     { col->throwPut(); }
 // </group>
 

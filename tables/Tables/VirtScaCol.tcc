@@ -66,11 +66,11 @@ Bool VirtualScalarColumn<T>::canAccessScalarColumn (Bool& reask) const
 #define VIRTUALSCALARCOLUMN_GETPUT(TP,NM) \
 template<class T> \
 void VirtualScalarColumn<T>::aips_name2(get,NM) (uInt rownr, TP* dataPtr) \
-    { getVirtualScalarColumn (this, rownr, dataPtr, static_cast<T*>(0)); } \
+    { getVirtualScalarColumn (this, rownr, dataPtr); } \
 template<class T> \
 void VirtualScalarColumn<T>::aips_name2(put,NM) (uInt rownr, \
                                                  const TP* dataPtr) \
-    { putVirtualScalarColumn (this, rownr, dataPtr, static_cast<T*>(0)); }
+    { putVirtualScalarColumn (this, rownr, dataPtr); }
 
 VIRTUALSCALARCOLUMN_GETPUT(Bool,BoolV)
 VIRTUALSCALARCOLUMN_GETPUT(uChar,uCharV)
