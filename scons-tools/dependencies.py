@@ -13,6 +13,7 @@ def generate(env):
                 'casa_components': ['casa_coordinates'],
                 'casa_lattices': ['casa_tables', 'casa_scimath'],
                 'casa_ms': ['casa_measures'],
+                'casa_derivedmscal': ['casa_ms'],
                 'casa_images': ['casa_components', 'casa_lattices', 'casa_mirlib'],
                 'casa_msfits': ['casa_ms', 'casa_fits'],
                 }
