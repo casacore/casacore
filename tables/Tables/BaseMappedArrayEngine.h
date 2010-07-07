@@ -458,6 +458,15 @@ protected:
 				      const Slicer& slicer,
 				      const Array<VirtualType>& data);
 
+    // Map the virtual shape to the stored shape.
+    // By default is returns the virtual shape.
+    virtual IPosition getStoredShape (uInt rownr,
+                                      const IPosition& virtualShape);
+
+    // Map the slicerfor a virtual shape to a stored shape.
+    // By default it returns the virtualinput slicer.
+    virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
+
     // Map StoredType array to VirtualType array.
     // This is meant when reading an array from the stored column.
     // The default implementation throws an exception.

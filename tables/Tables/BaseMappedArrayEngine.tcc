@@ -283,7 +283,7 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getArray
 (uInt rownr, Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     roColumn().baseGet (rownr, target);
     mapOnGet (array, target);
   }
@@ -291,7 +291,7 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putArray
 (uInt rownr, const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     mapOnPut (array, target);
     rwColumn().basePut (rownr, target);
   }
@@ -300,24 +300,24 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getSlice
 (uInt rownr, const Slicer& slicer, Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
-    roColumn().getSlice (rownr, slicer, target);
+    Array<StoredType> target(getStoredShape(rownr, array.shape()));
+    roColumn().getSlice (rownr, getStoredSlicer(slicer), target);
     mapOnGet (array, target);
   }
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putSlice
 (uInt rownr, const Slicer& slicer, const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(rownr, array.shape()));
     mapOnPut (array, target);
-    rwColumn().putSlice (rownr, slicer, target);
+    rwColumn().putSlice (rownr, getStoredSlicer(slicer), target);
   }
 
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getArrayColumn
 (Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     roColumn().getColumn (target);
     mapOnGet (array, target);
   }
@@ -325,7 +325,7 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putArrayColumn
 (const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     mapOnPut (array, target);
     rwColumn().putColumn (target);
   }
@@ -334,7 +334,7 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getArrayColumnCells
 (const RefRows& rownrs, Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     roColumn().getColumnCells (rownrs, target);
     mapOnGet (array, target);
   }
@@ -342,7 +342,7 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putArrayColumnCells
 (const RefRows& rownrs, const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     mapOnPut (array, target);
     rwColumn().putColumnCells (rownrs, target);
   }
@@ -351,35 +351,49 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getColumnSlice
 (const Slicer& slicer, Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
-    roColumn().getColumn (slicer, target);
+    Array<StoredType> target(getStoredShape(0, array.shape()));
+    roColumn().getColumn (getStoredSlicer(slicer), target);
     mapOnGet (array, target);
   }
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putColumnSlice
 (const Slicer& slicer, const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     mapOnPut (array, target);
-    rwColumn().putColumn (slicer, target);
+    rwColumn().putColumn (getStoredSlicer(slicer), target);
   }
 
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::getColumnSliceCells
 (const RefRows& rownrs, const Slicer& slicer, Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
-    roColumn().getColumnCells (rownrs, slicer, target);
+    Array<StoredType> target(getStoredShape(0, array.shape()));
+    roColumn().getColumnCells (rownrs, getStoredSlicer(slicer), target);
     mapOnGet (array, target);
   }
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::putColumnSliceCells
 (const RefRows& rownrs, const Slicer& slicer, const Array<VirtualType>& array)
   {
-    Array<StoredType> target(array.shape());
+    Array<StoredType> target(getStoredShape(0, array.shape()));
     mapOnPut (array, target);
-    rwColumn().putColumnCells (rownrs, slicer, target);
+    rwColumn().putColumnCells (rownrs, getStoredSlicer(slicer), target);
   }
+
+template<class VirtualType, class StoredType>
+IPosition BaseMappedArrayEngine<VirtualType, StoredType>::getStoredShape
+(uInt, const IPosition& virtualShape)
+{
+  return virtualShape;
+}
+
+template<class VirtualType, class StoredType>
+Slicer BaseMappedArrayEngine<VirtualType, StoredType>::getStoredSlicer
+(const Slicer& virtualSlicer) const
+{
+  return virtualSlicer;
+}
 
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnGet
