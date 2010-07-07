@@ -23,4 +23,11 @@
   echo $AIPSDEMO
   echo $FITS
   echo $MS
+
+  if [ ! -e $FITS ]
+  then
+     echo "UNTESTED: tfits2ms.run ($FITS not found)"
+     exit 3
+  fi
+
   tfits2ms fits=$FITS ms=$MS
