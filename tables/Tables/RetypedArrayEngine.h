@@ -553,6 +553,14 @@ private:
     IPosition checkShape (const Array<VirtualType>& source,
 			  const Array<StoredType>& target);
 
+    // Map the virtual shape to the stored shape.
+    // By default is returns the virtual shape.
+    virtual IPosition getStoredShape (uInt rownr,
+                                      const IPosition& virtualShape);
+
+    // Convert the Slicer for a virtual to a Slicer for the stored.
+    virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
+
     // Copy the stored array to the virtual array.
     // It tries to optimize as much as possible.
     virtual void mapOnGet (Array<VirtualType>& array,
@@ -562,13 +570,6 @@ private:
     // It tries to optimize as much as possible.
     virtual void mapOnPut (const Array<VirtualType>& array,
                            Array<StoredType>& stored);
-
-    // Determine the shape of a cell in the stored column from the
-    // shape of the cell in the virtual column.
-    IPosition storedShape (uInt rownr, const IPosition& virtualShape);
-
-    // Convert the Slicer for a virtual to a Slicer for the stored.
-    Slicer storedSlicer (const Slicer& virtualSlicer) const;
 
     //# Now define the data members.
     IPosition shape_p;             //# shape of a virtual element in the stored

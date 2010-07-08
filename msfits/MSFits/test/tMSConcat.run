@@ -25,4 +25,15 @@
   MS1=`echo $IN1 | sed 's/.fits/_tmp.ms/'`
   MS2=`echo $IN2 | sed 's/.fits/_tmp.ms/'`
 
+  if [ ! -e $FITS1 ]
+  then
+     echo "UNTESTED: tMSConcat.run ($FITS1 not found)"
+     exit 3
+  fi
+  if [ ! -e $FITS2 ]
+  then
+     echo "UNTESTED: tMSConcat.run ($FITS2 not found)"
+     exit 3
+  fi
+
   tMSConcat fits=$FITS1 ms=$MS1 fitsappend=$FITS2 append=$MS2

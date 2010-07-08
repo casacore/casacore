@@ -46,11 +46,11 @@ int main()
     }
     {
 	// Make sure the sizes are OK.
-	AlwaysAssertExit(sizeof(Int) >= 4 &&
-			 sizeof(uInt) == sizeof(Int) &&
-			 sizeof(Short) == 2 && sizeof(uShort) == 2 &&
-			 sizeof(Float) >= 4 && sizeof(Double) >= 8 &&
-			 sizeof(lDouble) >= sizeof(Double));
+      AlwaysAssertExit(sizeof(Int) == 4 && sizeof(uInt) == 4 &&
+                       sizeof(Short) == 2 && sizeof(uShort) == 2 &&
+                       sizeof(Int64) == 8 && sizeof(uInt64) == 8 &&
+                       sizeof(Float) == 4 && sizeof(Double) == 8 &&
+                       sizeof(lDouble) >= sizeof(Double));
     }
 
     return 0;

@@ -49,6 +49,10 @@ int main(int argc, char **argv)
 
     String root = Aipsrc::aipsRoot();
     String name = root + "/data/demo/Images/test_image.fits";
+    if (!File(name).exists()) {
+      cout << "fits2image: " + name + " does not exist" << endl;
+      return 3;    // untested
+    }
     inp.create("in", name, "Input FITS file name", "string");
     inp.create("out", "fits2image_tmp.out", "Output AIPS++ Image name",
 	       "string");

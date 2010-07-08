@@ -23,4 +23,11 @@
   echo $AIPSDEMO
   echo $FITS
   echo $MS
+
+  if [ ! -e $FITS ]
+  then
+     echo "UNTESTED: tMSSelection.run ($FITS not found)"
+     exit 3
+  fi
+
   ./tMSSelection fits=$FITS ms=$MS

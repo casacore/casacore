@@ -64,6 +64,12 @@ def generate(env):
         env.CLOptions.add_option("--enable-hdf5", dest="enable_hdf5",
                                  action="store_true", default=False,
                                  help="Enable the HDF5 library")
+        env.CLOptions.add_option("--enable-fftw3", dest="enable_fftw3",
+                                 action="store_true", default=False,
+                                 help="Enable the FFTW3 library")
+        env.CLOptions.add_option("--disable-fftw3-threads", dest="disable_fftw3_threads",
+                                 action="store_true", default=False,
+                                 help="Disable use of threads in the FFTW3 library")
         env.CLOptions.add_option("--disable-dl", dest="disable_dl",
                                  action="store_true", default=False,
                                  help="Disable the use of dlopen")
@@ -78,6 +84,8 @@ def generate(env):
                                  help="Build optimized 'opt' (default) or debug 'dbg'")
 
         env.CLOptions.add_pkg_option("hdf5")
+        env.CLOptions.add_pkg_option("fftw3")
+        env.CLOptions.add_pkg_option("fftw3-threads")
         env.CLOptions.add_pkg_option("dl")
         env.CLOptions.add_pkg_option("readline")
         env.CLOptions.add_pkg_option("blas")
