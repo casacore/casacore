@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: FFTServer.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
 #include <scimath/Mathematics/FFTServer.h>
 #include <casa/Arrays/Array.h>
@@ -35,6 +35,9 @@
 #include <scimath/Mathematics/FFTPack.h>
 #include <casa/Utilities/Assert.h>
 
+//# This file contains the templated functions dependent on uisng FFTW3
+//# or FFTPack. They are not in the .tcc file to make that independent
+//# of the underlying package used.
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

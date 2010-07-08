@@ -30,8 +30,10 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <scimath/Mathematics/FFTW.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Containers/Block.h>
+#include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -46,11 +48,15 @@ template <class S> class Matrix;
 class FFTEnums {
 public:
   enum TransformType {
-    // Complex to Complex transforms.
+    // Forward Complex to Complex transforms.
     COMPLEX,
+    // Inverse Complex to Complex transforms.
+    INVCOMPLEX,
     // Real to Complex or Complex to Real transforms.
     REALTOCOMPLEX,
-    // Real to Real transforms with symmetric Arrays.
+    // Real to Complex or Complex to Real transforms.
+    COMPLEXTOREAL,
+    // Real to Real transforms with symmetric Arrays (not used)
     REALSYMMETRIC
   };
 };
@@ -337,28 +343,36 @@ public:
   void flip(Array<T> & rData, const Bool toZero, const Bool isHermitian);
   void flip(Array<S> & cData, const Bool toZero, const Bool isHermitian);
   // </group>
-private:
-  // function instead of flip for complex data only
-  Int phaseRotate(Matrix<S> & cData, Bool toZero);
 
+private:
   //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
-  //# The size of the last FFT done by this object
+
+  //# Data members.
+  // The size of the last FFT done by this object
   IPosition itsSize;
-  //# Whether the last FFT was complex<->complex or not
+  // Whether the last FFT was complex<->complex or not
   FFTEnums::TransformType itsTransformType;
   //# twiddle factors and factorisations used by fftpack
   PtrBlock<Block<T> *> itsWork;
-  //# buffer for copying non-contigious arrays to contigious ones. This is done
-  //# so that the FFT's have a better chance of fitting into cache and hence
-  //# going faster. 
-  //# This buffer is also used as temporary storage when flipping the data.
+  // buffer for copying non-contigious arrays to contigious ones. This is done
+  // so that the FFT's have a better chance of fitting into cache and hence
+  // going faster. 
+  // This buffer is also used as temporary storage when flipping the data.
   Block<S> itsBuffer;
+  // FFTW specific members. Do not harm if FFTPack is used.
+  FFTW           itsFFTW;
+  std::vector<T> itsWorkIn;
+  std::vector<S> itsWorkOut;
+  std::vector<S> itsWorkC2C;
 };
 
 } //# NAMESPACE CASA - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/FFTServer.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+//# Do NOT include the .tcc file here like done for other templated classes.
+//# The instantiations are done explicitly.
+//# In this way the HAVE_FFTW ifdef is only used in .cc files and does
+//# not appear in headers, so othert packages using FFTServer do not need
+//# to (un)set HAVE_FFTW.
+
 #endif
