@@ -33,12 +33,9 @@
 // in the AIPS++ command language.
 
 #include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSAntennaGram.h>
 #include <ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
-#include <tables/Tables/TableParse.h>       // routines used by bison actions
-#include <tables/Tables/TableError.h>
 #include <ms/MeasurementSets/MSAntennaIndex.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 
@@ -62,44 +59,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-  int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command, 
-				 Vector<Int>& selectedAnts1,
-				 Vector<Int>& selectedAnts2,
-				 Matrix<Int>& selectedBaselines) 
+  TableExprNode msAntennaGramParseCommand (const MeasurementSet* ms,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
 {
-  try 
-    {
-      Int ret;
-      MSAntennaGramrestart (MSAntennaGramin);
-      yy_start = 1;
-      strpMSAntennaGram = command.chars();     // get pointer to command string
-      posMSAntennaGram  = 0;                   // initialize string position
-      MSAntennaParse parser(ms);               // setup measurement set
-      MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
-      parser.reset();
-      ret=MSAntennaGramparse();                // parse command string
-
-      selectedAnts1 = parser.selectedAnt1();
-      selectedAnts2 = parser.selectedAnt2();
-      selectedBaselines = parser.selectedBaselines();
-      return ret;
-    }
-    catch (MSSelectionAntennaError &x)
-      {
-	String newMesgs;
-	newMesgs = constructMessage(msAntennaGramPosition(),command);
-	x.addMessage(newMesgs);
-	throw;
-      }
-}
-
-//# Give the table expression node
-const TableExprNode* msAntennaGramParseNode()
-{
-    return MSAntennaParse::node();
-}
-void msAntennaGramParseDeleteNode()
-{
+  try {
+    MSAntennaGramrestart (MSAntennaGramin);
+    yy_start = 1;
+    strpMSAntennaGram = command.chars();     // get pointer to command string
+    posMSAntennaGram  = 0;                   // initialize string position
+    MSAntennaParse parser(ms);               // setup measurement set
+    MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
+    MSAntennaGramparse();                    // parse command string
+    
+    selectedAnts1.reference (parser.selectedAnt1());
+    selectedAnts2.reference (parser.selectedAnt2());
+    selectedBaselines.reference (parser.selectedBaselines());
+    return parser.node();
+  } catch (MSSelectionAntennaError& x) {
+    String newMesgs;
+    newMesgs = constructMessage(msAntennaGramPosition(),command);
+    x.addMessage(newMesgs);
+    throw;
+  }
 }
 
 //# Give the string position.

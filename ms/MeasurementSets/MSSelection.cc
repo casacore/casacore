@@ -316,8 +316,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     for(uInt i=0; i<exprOrder_p.nelements(); i++)
       {
-	const TableExprNode *node = 0x0;
-	TableExprNode ten;
+	TableExprNode node;
 	switch(exprOrder_p[i])
 	  {
 	  case ANTENNA_EXPR:
@@ -325,12 +324,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      antenna1IDs_p.resize(0);
 	      antenna2IDs_p.resize(0);
 	      baselineIDs_p.resize(0,2);
-	      if(antennaExpr_p != "" &&
-		 msAntennaGramParseCommand(ms, antennaExpr_p, 
-					   antenna1IDs_p, 
-					   antenna2IDs_p,
-					   baselineIDs_p)==0)
-		node = msAntennaGramParseNode();
+	      if(antennaExpr_p != "") {
+                node = msAntennaGramParseCommand(ms, antennaExpr_p, 
+                                                 antenna1IDs_p, 
+                                                 antenna2IDs_p,
+                                                 baselineIDs_p);
+              }
 	      break;
 	    }
 	  case FIELD_EXPR:
@@ -338,7 +337,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      fieldIDs_p.resize(0);
 	      if(fieldExpr_p != "" &&
 		 msFieldGramParseCommand(ms, fieldExpr_p,fieldIDs_p) == 0)
-		node = msFieldGramParseNode();
+		node = *(msFieldGramParseNode());
 	      break;
 	    }
 	  case SPW_EXPR:
@@ -346,7 +345,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      spwIDs_p.resize(0);
 	      if (spwExpr_p != "" &&
 		  msSpwGramParseCommand(ms, spwExpr_p,spwIDs_p, chanIDs_p) == 0)
-		node = msSpwGramParseNode();
+		node = *(msSpwGramParseNode());
 	      break;
 	    }
 	  case SCAN_EXPR:
@@ -354,7 +353,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      scanIDs_p.resize(0);
 	      if(scanExpr_p != "" && 
 		 msScanGramParseCommand(ms, scanExpr_p, scanIDs_p, maxScans_p) == 0)
-		node = msScanGramParseNode();
+		node = *(msScanGramParseNode());
 	      break;
 	    }
 	  case ARRAY_EXPR:
@@ -362,14 +361,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      arrayIDs_p.resize(0);
 	      if(arrayExpr_p != "" &&
 		 msArrayGramParseCommand(ms, arrayExpr_p, arrayIDs_p, maxArray_p) == 0)
-		node = msArrayGramParseNode();
+		node = *(msArrayGramParseNode());
 	      break;
 	    }
 	    /*
 	      case TIME_EXPR:
 	      if(timeExpr_p != "" &&
 	      msTimeGramParseCommand(ms, timeExpr_p) == 0)
-	      node = msTimeGramParseNode();
+	      node = *(msTimeGramParseNode());
 	      break;
 	    */
 	  case UVDIST_EXPR:
@@ -380,7 +379,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		 msUvDistGramParseCommand(ms, uvDistExpr_p, 
 					  selectedUVRange_p, 
 					  selectedUVUnits_p) == 0)
-		node = msUvDistGramParseNode();
+		node = *(msUvDistGramParseNode());
 	      break;
 	    }
 	  case TAQL_EXPR:
@@ -388,8 +387,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      if(taqlExpr_p != "")
 		{
 		  //	      taql = tableCommand(taqlExpr_p).node();
-		  ten = RecordGram::parse(*ms,taqlExpr_p);
-		  node = &ten;
+		  node = RecordGram::parse(*ms,taqlExpr_p);
 		}
 	      break;
 	    }
@@ -399,11 +397,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		{
 		  msPolnGramParseCommand(ms, 
 					 polnExpr_p,
-					 ten,
+					 node,
 					 ddIDs_p,
 					 selectedPolMap_p,
 					 selectedSetupMap_p);
-		  node = &ten;
 		}
 	      break;
 	    }
@@ -411,13 +408,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  default:  break;
 	  } // Switch
 	
-	if(node && !node->isNull()) {
-	  if(condition.isNull()) {
-	    condition = *node;
-	  } else {
-	    condition = condition && *node;
-	  }
-	}
+        condition = condition && node;
       }//For
     //
     // Now parse the time expression.  Internally use the condition
@@ -441,7 +432,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     
     fullTEN_p = condition;
-    msAntennaGramParseDeleteNode();
     msArrayGramParseDeleteNode();
     msCorrGramParseDeleteNode();
     msFieldGramParseDeleteNode();
