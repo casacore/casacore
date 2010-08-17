@@ -86,67 +86,79 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     
   public:
+    // Define the operator types (&, &&, and &&&).
     enum BaselineListType {AutoCorrOnly=0, AutoCorrAlso, CrossOnly};
+
     // Default constructor
-    MSAntennaParse ();
+    MSAntennaParse();
     
-    // Associate the ms and the shorthand.
+    // Associate the ms.
     MSAntennaParse (const MeasurementSet* ms);
-    
+
+    // Add the given antennae selection.
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds, 
-					  BaselineListType autoCorr=CrossOnly, Bool negate=False);
+					  BaselineListType autoCorr=CrossOnly,
+                                          Bool negate=False);
+
+    // Add the given baseline selection.
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
                                           const Vector<Int>& antennaIds2, 
-					  //  Bool autoCorr=False, Bool negate=False);
-					  BaselineListType autoCorr=CrossOnly, Bool negate=False);
-    
+					  BaselineListType autoCorr=CrossOnly,
+                                          Bool negate=False);
+
+    // Select by name or station number.
     const TableExprNode* selectNameOrStation(const Vector<String>& antenna,
-// 					     Bool autoCorr=False, Bool negate=False);
- 					     BaselineListType autoCorr=CrossOnly, Bool negate=False);
+ 					     BaselineListType autoCorr=CrossOnly,
+                                             Bool negate=False);
     const TableExprNode* selectNameOrStation(const Vector<String>& antenna1,
                                              const Vector<String>& antenna2, 
- 					     BaselineListType autoCorr=CrossOnly, Bool negate=False);
-// 					     Bool autoCorr=False, Bool negate=False);
+ 					     BaselineListType autoCorr=CrossOnly,
+                                             Bool negate=False);
+
     const TableExprNode* selectNameOrStation(const String& antenna1,
                                              const String& antenna2, 
- 					     BaselineListType autoCorr=CrossOnly, Bool negate=False);
-// 					     Bool autoCorr=False, Bool negate=False);
+ 					     BaselineListType autoCorr=CrossOnly,
+                                             Bool negate=False);
     
-    // selection from antenna and CP
-    const TableExprNode* selectFromIdsAndCPs(const Int index, const String& cp);
-    const TableExprNode* selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, 
-					     const Int secondIndex, const String& secondcp);
     // Selection on baseline length
     const TableExprNode* selectLength(const std::vector<double>& lengths,
                                       Bool negate=False);
-    // Get table expression node object.
-    static const TableExprNode* node();
+
+    // Get a pointer to the table expression node object.
+    TableExprNode node() const
+      { return node_p; }
+    const Vector<Int>& selectedAnt1() const
+      { return ant1List; }
+    const Vector<Int>& selectedAnt2() const
+      { return ant2List; }
+    const Matrix<Int>& selectedBaselines() const
+      { return baselineList; }
+
     // Get the factor to convert the given unit to m.
     static double getUnitFactor (const char* unit);
-    static MSAntennaParse* thisMSAParser;
-    static Vector<Int> selectedAnt1() {return ant1List;};
-    static Vector<Int> selectedAnt2() {return ant2List;};
-    static Matrix<Int> selectedBaselines() {return baselineList;};
-    static void reset(){ant1List.resize(0);ant2List.resize(0);baselineList.resize(0,2);};
+
   private:
-    
-    static TableExprNode node_p;
-    const String colName1, colName2;
-//     void setTEN(TableExprNode& condition, Bool autoCorr=False, Bool negate=False);
-     void setTEN(TableExprNode& condition, 
-		 BaselineListType autoCorr=CrossOnly,
-		 Bool negate=False);
+    const TableExprNode* setTEN(TableExprNode& condition, 
+                                BaselineListType autoCorr=CrossOnly,
+                                Bool negate=False);
     Matrix<double> getBaselineLengths();
     void makeBaselineList(const Vector<Int>&a1, const Vector<Int>&a2, Matrix<Int>&b, 
-			  //			  Bool autoCorr=False, 
 			  BaselineListType autoCorr=CrossOnly,
 			  Bool negate=False);
-    void makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList, Bool negate=False);
-    Bool addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2, 
+    void makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList,
+                         Bool negate=False);
+    Bool addBaseline(const Matrix<Int>& baselist,
+                     const Int ant1, const Int ant2, 
  		     BaselineListType autoCorr=CrossOnly);
-// 		     Bool autoCorr=False);
-    static  Vector<Int> ant1List, ant2List;
-    static Matrix<Int> baselineList;
+
+    //# Data members.
+  public:
+    static MSAntennaParse* thisMSAParser;
+  private:
+    TableExprNode node_p;
+    const String colName1, colName2;
+    Vector<Int> ant1List, ant2List;
+    Matrix<Int> baselineList;
   };
   
 } //# NAMESPACE CASA - END

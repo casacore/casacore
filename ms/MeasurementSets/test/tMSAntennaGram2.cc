@@ -51,9 +51,9 @@ int main(int argc, const char* argv[])
 	  cout << "Parsing expression: " << argv[i] << endl;
 	  mss.setAntennaExpr(String(argv[i]));
 	}
-      TableExprNode node=mss.toTableExprNode(&ms);
+      TableExprNode node = mss.toTableExprNode(&ms);
       
-      MeasurementSet * mssel;
+      MeasurementSet* mssel = 0;
       cout << "Original table has rows " << ms.nrow() << endl;
       if(node.isNull()) 
 	{

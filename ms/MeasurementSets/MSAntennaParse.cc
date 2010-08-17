@@ -35,17 +35,15 @@
 #include <ms/MeasurementSets/MSSelectionTools.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  MSAntennaParse* MSAntennaParse::thisMSAParser = 0x0; // Global pointer to the parser object
-  TableExprNode MSAntennaParse::node_p;
-  Vector<Int> MSAntennaParse::ant1List(0);
-  Vector<Int> MSAntennaParse::ant2List(0);
-  Matrix<Int> MSAntennaParse::baselineList(0,2);
+ // Global pointer to the parser object
+  MSAntennaParse* MSAntennaParse::thisMSAParser = 0;
   
   //# Constructor
   MSAntennaParse::MSAntennaParse ()
     : MSParse(),
       colName1(MS::columnName(MS::ANTENNA1)),
-      colName2(MS::columnName(MS::ANTENNA2))
+      colName2(MS::columnName(MS::ANTENNA2)),
+      baselineList(0,2)
   {
   }
   
@@ -53,16 +51,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MSAntennaParse::MSAntennaParse (const MeasurementSet* myms)
     : MSParse(myms, "Antenna"),
       colName1(MS::columnName(MS::ANTENNA1)),
-      colName2(MS::columnName(MS::ANTENNA2))
+      colName2(MS::columnName(MS::ANTENNA2)),
+      baselineList(0,2)
   {
   }
 
   // Add the current condition to the TableExprNode tree.  Mask auto
   // correlations if autoCorr==False
   // 
-  void MSAntennaParse::setTEN(TableExprNode& condition, 
-			      BaselineListType autoCorr,
-			      Bool negate)
+  const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, 
+                                              BaselineListType autoCorr,
+                                              Bool negate)
   {
     if (autoCorr==CrossOnly) {
       TableExprNode noAutoCorr = (ms()->col(colName1) != ms()->col(colName2));
@@ -74,6 +73,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     } else {
       node_p = node_p || condition;
     }
+    return &node_p;
   }
 
   const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds, 
@@ -110,8 +110,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         makeBaselineList(antennaIds,a2,baselineList,autoCorr, negate);
       }
     }
-    setTEN(condition,AutoCorrAlso , negate);
-    return node();
+    return setTEN(condition, AutoCorrAlso, negate);
   }
 
   void MSAntennaParse::makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList,
@@ -150,8 +149,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     } else {
       makeBaselineList(antennaIds1,antennaIds2,baselineList,autoCorr, negate);
     }
-    setTEN(condition,autoCorr,negate);
-    return node();
+    return setTEN(condition,autoCorr,negate);
   }
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna, 
@@ -164,8 +162,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     TableExprNode condition =(ms()->col(colName1).in(ant) || ms()->col(colName2).in(ant));
     
-    setTEN(condition,autoCorr,negate);
-    return node();
+    return setTEN(condition,autoCorr,negate);
   }
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna1,
@@ -182,8 +179,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       (ms()->col(colName1).in(a1) && ms()->col(colName2).in(a2)) ||
       (ms()->col(colName1).in(a2) && ms()->col(colName2).in(a1));
     
-    setTEN(condition,autoCorr,negate);
-    return node();
+    return setTEN(condition,autoCorr,negate);
   }
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
@@ -195,34 +191,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       (ms()->col(colName1) >= antenna1 && ms()->col(colName2) <= antenna2) ||
       (ms()->col(colName2) >= antenna1 && ms()->col(colName1) <= antenna2);
     
-    setTEN(condition,autoCorr,negate);
-    return node();
+    return setTEN(condition,autoCorr,negate);
   }
   
-  const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int, const String&)
-  {
-    LogIO os(LogOrigin("MSAntennaParse", "selectFromIdsAndCPs()", WHERE));
-    os << " selectFromIdsAndCPs is not available "  << LogIO::POST;
-    
-    TableExprNode condition;
-    
-    setTEN(condition);
-    return node();
-  }
-  
-  const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int, 
-							   const String&, 
-							   const Int, 
-							   const String&)
-  {
-    LogIO os(LogOrigin("MSAntennaParse", "selectFromIdsAndCPs()", WHERE));
-    os << " selectFromIdsAndCPs is not available "  << LogIO::POST;
-    
-    TableExprNode condition;
-    
-    setTEN(condition);
-    return node();
-  }
   
   const TableExprNode* MSAntennaParse::selectLength
   (const std::vector<double>& lengths, Bool negate)
@@ -244,11 +215,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
     }
     vector<Int> ant1, ant2;
-    for (Int j=0; j<blength.shape()[1]; ++j) {
-      for (Int i=0; i<blength.shape()[0]; ++i) {
+    for (Int i=0; i<blength.shape()[0]; ++i) {
+      for (Int j=0; j<blength.shape()[1]; ++j) {
         if (match(i,j)) {
           ant1.push_back (i);
           ant2.push_back (j);
+          if (addBaseline (baselineList, i, j, AutoCorrAlso)) {
+            IPosition newSize = baselineList.shape();
+            int nb = newSize[0];
+            newSize[0] = nb+1;
+            baselineList.resize (newSize,True);
+            baselineList(nb,0) = i;
+            baselineList(nb,1) = j;
+          }
         }
       }
     }
@@ -259,9 +238,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       condition = TableExprNode(any((ms()->col(colName1) == arrAnt1  &&
                                      ms()->col(colName2) == arrAnt2)));
     }
-    setTEN (condition, AutoCorrAlso, negate);
-    cout << "created node" << endl;
-    return node();
+    return setTEN (condition, AutoCorrAlso, negate);
   }
 
   Matrix<double> MSAntennaParse::getBaselineLengths()
@@ -301,12 +278,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return q.getValue (unit);
   }
 
-  const TableExprNode* MSAntennaParse::node()
-  {
-    return &node_p;
-  }
-
-  Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist, const Int ant1, const Int ant2, 
+  Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist,
+                                   const Int ant1, const Int ant2, 
  				   BaselineListType autoCorr)
   {
     Bool doAutoCorr;
@@ -325,11 +298,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   //
-  // Method to make a list of unique baselines, give a list of
+  // Method to make a list of unique baselines, given a list of
   // antenna1 and antenna2.  The baselines list is appended to the
   // existing list.  The required sizing could be done better.
   //
-  void MSAntennaParse::makeBaselineList(const Vector<Int>& a1, const Vector<Int>&a2, 
+  void MSAntennaParse::makeBaselineList(const Vector<Int>& a1,
+                                        const Vector<Int>& a2, 
 					Matrix<Int>& baselist, 
 					BaselineListType autoCorr,
 					Bool /*negate*/)

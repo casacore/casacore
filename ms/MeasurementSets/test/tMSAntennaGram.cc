@@ -46,36 +46,33 @@ int main(int argc, const char* argv[])
     MeasurementSet ms(msName);
     MSSelection mss;
     mss.setAntennaExpr(String(argv[2]));
-    TableExprNode node=mss.toTableExprNode(&ms);
+    TableExprNode node = mss.toTableExprNode(&ms);
 
-    MeasurementSet * mssel;
+    MeasurementSet* mssel = 0;
     cout << "Original table has rows " << ms.nrow() << endl;
     Vector<Int> selectedAnt1, selectedAnt2;
     Matrix<Int> selectedBaselines;
-    if(msAntennaGramParseCommand(&ms, argv[2],selectedAnt1, selectedAnt2, selectedBaselines)==0) {
-      const TableExprNode *node = msAntennaGramParseNode();
-      if(node->isNull()) {
-	cout << "NULL node " << endl;
-	return 0;
-      }
-      cout << "TableExprNode has rows = " << node->nrow() << endl;
-      Table tablesel(ms.tableName(), Table::Update);
-      mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
-      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
-      mssel->flush();
-      if(mssel->nrow()==0) {
-        cout << "Check your input, No data selected" << endl;
-      }
-      else {
-        cout << "selected table has rows " << mssel->nrow() << endl;
-	cout << "selected ant1 = " << selectedAnt1 << endl
-	     << "selected ant2 = " << selectedAnt2 << endl;
-      }
-      delete mssel;
+    node = msAntennaGramParseCommand(&ms, argv[2],
+                                     selectedAnt1, selectedAnt2,
+                                     selectedBaselines);
+    if(node.isNull()) {
+      cout << "NULL node " << endl;
+      return 0;
+    }
+    cout << "TableExprNode has rows = " << node.nrow() << endl;
+    Table tablesel(ms.tableName(), Table::Update);
+    mssel = new MeasurementSet(tablesel(node, node.nrow() ));
+    mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+    mssel->flush();
+    if(mssel->nrow()==0) {
+      cout << "Check your input, No data selected" << endl;
     }
     else {
-      cout << "failed to parse expression" << endl;
+      cout << "selected table has rows " << mssel->nrow() << endl;
+      cout << "selected ant1 = " << selectedAnt1 << endl
+           << "selected ant2 = " << selectedAnt2 << endl;
     }
+    delete mssel;
   } catch (AipsError x) {
     cout << "ERROR: " << x.getMesg() << endl;
     return 1;
