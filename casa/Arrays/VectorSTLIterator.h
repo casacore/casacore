@@ -46,9 +46,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // added). <br>
 // The following comments hold:
 // <ul>
-// <li> The Array class <src>begin()</src> and <src>end()</src> functions
-// create different objects.  This class can handle comparisons with the
-// <src> end()</src>
 // <li> A VectorSTLIterator can be created from a <src>Vector</src> (non-STL)
 // It is the same as using <src>Vector.begin()</src>
 // <li> No contiguous iterator is provided. Its construction is not necessary,
@@ -64,6 +61,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> needs probably some 'const' fine tuning; and the <src>-></src> operator
 // </ul>
 // </synopsis>
+
 template <class T>
 class VectorSTLIterator
 : public std::iterator<std::random_access_iterator_tag, T> {
@@ -139,11 +137,11 @@ class VectorSTLIterator
   iterator operator+(difference_type i) const {
     VectorSTLIterator<T> t = *this; return t+=i; };
   iterator operator-(difference_type i) const {
-    iterator t = *this; return t-=i; };
+    VectorSTLIterator<T> t = *this; return t-=i; };
   // </group>
   // Size related
   // <group>
-  difference_type operator-(VectorSTLIterator<T> &x) const {
+  difference_type operator-(const VectorSTLIterator<T> &x) const {
     return (iter_p-x.iter_p)/step_p; };
   // </group>
   // Comparisons
