@@ -123,9 +123,8 @@ if not env.GetOption('clean') and not env.GetOption("help"):
             libstr= deflib
         libname = libstr.split(",")
         conf.env.AddCustomPackage(pkgname)
-        for l in libname:
-            if not conf.CheckLib(l, autoadd=0):
-                env.Exit(1)
+        if not conf.CheckLib(libname, autoadd=0):
+            env.Exit(1)
         env.PrependUnique(LIBS=[libname])
         env.Append(CPPFLAGS=['-DHAVE_FFTW3'])
     else:
