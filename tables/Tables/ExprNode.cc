@@ -31,11 +31,13 @@
 #include <tables/Tables/ExprMathNode.h>
 #include <tables/Tables/ExprLogicNode.h>
 #include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprUDFNode.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
 #include <tables/Tables/ExprMathNodeArray.h>
 #include <tables/Tables/ExprLogicNodeArray.h>
 #include <tables/Tables/ExprFuncNodeArray.h>
+#include <tables/Tables/ExprUDFNodeArray.h>
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableColumn.h>
@@ -1247,6 +1249,31 @@ TableExprNode TableExprNode::newFunctionNode
 							  resVT, set,
 							  style);
 	return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
+    }
+}
+
+TableExprNode TableExprNode::newUDFNode (const String& name,
+                                         const TableExprNodeSet& set,
+                                         const Table& table,
+                                         const TaQLStyle& style)
+{
+    // Create the correct UDF object. An exception is thrown if unknown.
+    SPtrHolder<UDFBase> udf(UDFBase::createUDF (name));
+    // Convert the set to a PtrBlock of the values in the set elements.
+    // This requires that the set has single values.
+    if (! set.isSingle()) {
+	throw (TableInvExpr ("A function parameter cannot be an interval"));
+    }
+    uInt npar = set.nelements();
+    PtrBlock<TableExprNodeRep*> par(npar);
+    for (uInt i=0; i<npar; i++) {
+        par[i] = const_cast<TableExprNodeRep*>(set[i].start());
+    }
+    udf->init (par, table, style);
+    if (udf->ndim() == 0) {
+        return new TableExprUDFNode (udf.transfer(), set);
+    } else {
+        return new TableExprUDFNodeArray (udf.transfer(), set);
     }
 }
 

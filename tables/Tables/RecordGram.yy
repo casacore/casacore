@@ -337,6 +337,11 @@ simbexpr:  LPAREN orexpr RPAREN
 	       delete $1;
 	       delete $3;
 	   }
+         | FLDNAME LPAREN elemlist RPAREN {
+               $$ = new TableExprNode (RecordGram::handleFunc ($1->str, *$3));
+               delete $1;
+               delete $3;
+	   }
          | NAME {
 	       $$ = new TableExprNode (RecordGram::handleField ($1->str));
 	       delete $1;

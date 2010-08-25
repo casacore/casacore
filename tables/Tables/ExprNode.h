@@ -958,6 +958,12 @@ public:
 					  const TableExprNodeSet& axes);
     // </group>
 
+    // Create a user defined function node.
+    static TableExprNode newUDFNode (const String& name,
+                                     const TableExprNodeSet& set,
+                                     const Table& table,
+                                     const TaQLStyle& = TaQLStyle(0));
+
     // Create cone function node of the given type with the given arguments.
     // <group>
     static TableExprNode newConeNode (TableExprFuncNode::FunctionType,

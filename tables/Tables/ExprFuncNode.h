@@ -286,10 +286,6 @@ public:
 				PtrBlock<TableExprNodeRep*>& nodes,
 				const Block<Int>& dtypeOper);
 
-    // Fill the unit of the node for the functions with a predefined unit
-    // (like asin).
-    static void fillUnit (TableExprNodeRep& node, FunctionType func);
-
     // Set unit scale factor (needed for sqrt).
     void setScale (Double scale)
         { scale_p = scale; }
