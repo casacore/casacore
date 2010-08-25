@@ -433,7 +433,6 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   TableExprFuncNode::FunctionType ftype = TableExprFuncNode::piFUNC;
   String funcName (name);
   funcName.downcase();
-  Bool ok = True;
   if (funcName == "pi") {
     ftype = TableExprFuncNode::piFUNC;
   } else if (funcName == "e") {
@@ -694,16 +693,15 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   } else if (funcName == "iif") {
     ftype = TableExprFuncNode::iifFUNC;
   } else {
-    ok = False;
+    // unknown name can be a user-defined function.
+    ftype = TableExprFuncNode::NRFUNC;
   }
   // Functions to be ignored are incorrect.
-  if (ok) {
-    Bool found;
-    linearSearch (found, ignoreFuncs, Int(ftype), ignoreFuncs.nelements());
-    ok = !found;
-  }
-  if (!ok) {
-    throw (TableInvExpr ("Function '" + funcName + "' is unknown"));
+  Bool found;
+  linearSearch (found, ignoreFuncs, Int(ftype), ignoreFuncs.nelements());
+  if (found) {
+    throw (TableInvExpr ("Function '" + funcName +
+                         "' can only be used in TaQL"));
   }
   return ftype;
 }
@@ -739,6 +737,10 @@ TableExprNode TableParseSelect::makeFuncNode
   TableExprFuncNode::FunctionType ftype = findFunc (name,
 						    arguments.nelements(),
 						    ignoreFuncs);
+  if (ftype == TableExprFuncNode::NRFUNC) {
+    // The function can be a user defined one (or unknown).
+    return TableExprNode::newUDFNode (name, arguments, table, style);
+  }
   // The axes of functions like SUMS can be given as a set or as
   // individual values. Turn it into an Array object.
   uInt axarg = 1;

@@ -296,7 +296,7 @@ void TableExprFuncNode::fillChildNodes (TableExprFuncNode* thisNode,
 {
     uInt i;
     // Copy block of children.
-    // Determine if common argument type is Double or Complex.
+    // Determine if common argument type is Int, Double or Complex.
     // (this is used by some functions like near and norm).
     thisNode->operands_p.resize (nodes.nelements());
     thisNode->argDataType_p = NTInt;

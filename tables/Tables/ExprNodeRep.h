@@ -612,15 +612,14 @@ public:
     const PtrBlock<TableExprNodeRep*>& getChildren() const
       { return operands_p; }
 
-protected:
-    PtrBlock<TableExprNodeRep*> operands_p;
-
-
     // Check datatype of nodes and return output type.
     // It also sets the expected data type of the operands (from dtIn).
     static NodeDataType checkDT (Block<Int>& dtypeOper,
 				 NodeDataType dtIn, NodeDataType dtOut,
 				 const PtrBlock<TableExprNodeRep*>& nodes);
+
+protected:
+    PtrBlock<TableExprNodeRep*> operands_p;
 };
 
 

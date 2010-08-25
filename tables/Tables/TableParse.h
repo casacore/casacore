@@ -451,13 +451,6 @@ public:
 				     const Table& table,
 				     const TaQLStyle&);
 
-  // Find the function code belonging to a function name.
-  // Functions to be ignored can be given (as function type values).
-  static TableExprFuncNode::FunctionType findFunc
-                                   (const String& name,
-				    uInt narguments,
-				    const Vector<Int>& ignoreFuncs);
-
   // Add a column to the list of column names.
   void handleColumn (Int type, const String& name, const TableExprNode& expr,
 		     const String& newName, const String& newDtype);
@@ -479,6 +472,14 @@ public:
 
 
 private:
+  // Find the function code belonging to a function name.
+  // Functions to be ignored can be given (as function type values).
+  // If the function name is unknown, NRFUNC is returned.
+  static TableExprFuncNode::FunctionType findFunc
+                                   (const String& name,
+				    uInt narguments,
+				    const Vector<Int>& ignoreFuncs);
+
   // Do the update step.
   void doUpdate (Table& updTable, const Table& inTable);
 

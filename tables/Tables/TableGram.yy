@@ -1035,6 +1035,11 @@ simbexpr:  LPAREN orexpr RPAREN
                     new TaQLFuncNodeRep ($1->getString(), *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
+         | FLDNAME LPAREN elemlist RPAREN {
+	       $$ = new TaQLNode(
+                    new TaQLFuncNodeRep ($1->getString(), *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          | ALL LPAREN elemlist RPAREN {
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ("ALL", *$3));
