@@ -29,16 +29,8 @@
 #define DERIVEDMSCAL_DERIVEDMSCAL_H
 
 //# Includes
+#include <derivedmscal/DerivedMC/MSCalEngine.h>
 #include <tables/Tables/VirtColEng.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MBaseline.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <casa/vector.h>
-#include <casa/stdmap.h>
 
 namespace casa {
 
@@ -145,7 +137,10 @@ public:
 
   // Clone this object.
   virtual DataManager* clone() const;
-  
+
+  // Prepare the object. It sets the Table object in the engine.
+  virtual void prepare();
+
   // Get the type name of the data manager (i.e. DerivedMSCal).
   virtual String dataManagerType() const;
   
@@ -168,21 +163,6 @@ public:
   // Register the class name and the static makeObject "constructor".
   // This will make the engine known to the table system.
   static void registerClass();
-
-  // Get the hourangle in the given row.
-  double getHA (Int antnr, uInt rownr);
-
-  // Get the parallatic angle in the given row.
-  double getPA (Int antnr, uInt rownr);
-
-  // Get the local sidereal time in the given row.
-  double getLAST (Int antnr, uInt rownr);
-
-  // Get the azimuth/elevation in the given row.
-  void getAzEl (Int antnr, uInt rownr, Array<Double>&);
-
-  // Get the UVW in J2000 in the given row.
-  void getUVWJ2000 (uInt rownr, Array<Double>&);
 
 private:
   // Copy constructor cannot be used.
@@ -212,55 +192,9 @@ private:
 					       const String& aDataTypeID);
   // </group>
 
-  // Set the data in the measure converter machines.
-  // It returns the mount of the antenna.
-  Int setData (Int antnr, uInt rownr);
-
-  // Initialize the column objects, etc.
-  void init();
-
-  // Fill the CalDesc info for calibration tables.
-  void fillCalDesc();
-
-  // Fill or update the antenna positions from the ANTENNA subtable at
-  // row calDescId. It is stored in the calInx-th entry of itsAntPos/itsMount.
-  void fillAntPos (Int calDescId, Int calInx);
-
-  // Fill or update the field directions from the FIELD subtable at
-  // row calDescId. It is stored in the calInx-th entry of itsFieldDir.
-  void fillFieldDir (Int calDescId, Int calInx);
-
-  // Get a calibration MS subtable for the given id.
-  Table getSubTable (Int calDescId, const String& subTabName,
-                     Bool mustExist=True);
-
   //# Declare member variables.
-  Int                         itsLastCalInx;   //# id of CAL_DESC last used
-  Int                         itsLastFieldId;  //# id of the field last used
-  Int                         itsLastAntId;    //# -1 is array position used
-  Double                      itsLastTime;
+  MSCalEngine                 itsEngine;
   vector<DataManagerColumn*>  itsColumns;
-  ROScalarColumn<Int>         itsAntCol[2];    //# ANTENNA1 and ANTENNA2
-  ROScalarColumn<Int>         itsFeedCol[2];   //# FEED1 and FEED2
-  ROScalarColumn<Int>         itsFieldCol;     //# FIELD_ID
-  ROScalarColumn<Double>      itsTimeCol;      //# TIME
-  ROScalarMeasColumn<MEpoch>  itsTimeMeasCol;  //# TIME as Measure
-  ROScalarColumn<Int>         itsCalCol;       //# CAL_DESC_ID
-  map<string,int>             itsCalMap;       //# map of MS name to index
-  vector<Int>                 itsCalIdMap;     //# map of calId to index
-  MPosition                   itsArrayPos;
-  vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
-  vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
-  vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions
-  vector<vector<MBaseline> >  itsAntMB;        //# J2000 MBaseline per antenna
-  vector<vector<Vector<double> > > itsAntUvw;  //# J2000 UVW per antenna
-  vector<Block<bool> >        itsUvwFilled;    //# is UVW filled for antenna i?
-  MDirection::Convert         itsRADecToAzEl;  //# converter ra/dec to az/el
-  MDirection::Convert         itsPoleToAzEl;   //# converter pole to az/el
-  MDirection::Convert         itsRADecToHADec; //# converter ra/dec to ha/dec
-  MEpoch::Convert             itsUTCToLAST;    //# converter UTC to LAST
-  MBaseline::Convert          itsBLToJ2000;    //# convert ITRF to J2000
-  MeasFrame                   itsFrame;        //# frame used by the converters
 };
 
 

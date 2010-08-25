@@ -29,7 +29,8 @@
 #define DERIVEDMSCAL_REGISTER_H
 
 // <group name=DerivedMSCal>
-// This function registers the DerivedMSCal virtual column engine.
+// This function registers the DerivedMSCal virtual column engine and
+// the UDFMSCal UDFs.
 // It is called when the dynamic library derivedmscal.so/dylib is loaded.
 
 extern "C" {
