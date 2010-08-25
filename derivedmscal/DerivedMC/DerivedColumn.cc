@@ -34,21 +34,21 @@ namespace casa {
   {}
   void HourangleColumn::get (uInt rowNr, Double& data)
   {
-    data = itsParent->getHA (itsAntNr, rowNr);
+    data = itsEngine->getHA (itsAntNr, rowNr);
   }
 
   ParAngleColumn::~ParAngleColumn()
   {}
   void ParAngleColumn::get (uInt rowNr, Double& data)
   {
-    data = itsParent->getPA (itsAntNr, rowNr);
+    data = itsEngine->getPA (itsAntNr, rowNr);
   }
 
   LASTColumn::~LASTColumn()
   {}
   void LASTColumn::get (uInt rowNr, Double& data)
   {
-    data = itsParent->getLAST (itsAntNr, rowNr);
+    data = itsEngine->getLAST (itsAntNr, rowNr);
   }
 
   AzElColumn::~AzElColumn()
@@ -59,7 +59,7 @@ namespace casa {
   }
   void AzElColumn::getArray (uInt rowNr, Array<Double>& data)
   {
-    itsParent->getAzEl (itsAntNr, rowNr, data);
+    itsEngine->getAzEl (itsAntNr, rowNr, data);
   }
 
   UVWJ2000Column::~UVWJ2000Column()
@@ -70,7 +70,7 @@ namespace casa {
   }
   void UVWJ2000Column::getArray (uInt rowNr, Array<Double>& data)
   {
-    itsParent->getUVWJ2000 (rowNr, data);
+    itsEngine->getUVWJ2000 (rowNr, data);
   }
 
 } //# end namespace

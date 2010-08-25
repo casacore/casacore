@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <derivedmscal/DerivedMC/DerivedMSCal.h>
+#include <derivedmscal/DerivedMC/MSCalEngine.h>
 #include <tables/Tables/VirtScaCol.h>
 #include <tables/Tables/VirtArrCol.h>
 
@@ -42,15 +42,15 @@ namespace casa {
   class HourangleColumn : public VirtualScalarColumn<Double>
   {
   public:
-    explicit HourangleColumn (DerivedMSCal* parent, Int antnr)
-      : itsParent (parent),
+    explicit HourangleColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~HourangleColumn();
     virtual void get (uInt rowNr, Double& data);
   private:
-    DerivedMSCal* itsParent;
-    Int           itsAntNr;    //# -1=array 0=antenna1 1=antenna2
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
   };
 
 
@@ -59,15 +59,15 @@ namespace casa {
   class LASTColumn : public VirtualScalarColumn<Double>
   {
   public:
-    explicit LASTColumn (DerivedMSCal* parent, Int antnr)
-      : itsParent (parent),
+    explicit LASTColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~LASTColumn();
     virtual void get (uInt rowNr, Double& data);
   private:
-    DerivedMSCal* itsParent;
-    Int           itsAntNr;    //# -1=array 0=antenna1 1=antenna2
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
   };
 
 
@@ -76,15 +76,15 @@ namespace casa {
   class ParAngleColumn : public VirtualScalarColumn<Double>
   {
   public:
-    explicit ParAngleColumn (DerivedMSCal* parent, Int antnr)
-      : itsParent (parent),
+    explicit ParAngleColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~ParAngleColumn();
     virtual void get (uInt rowNr, Double& data);
   private:
-    DerivedMSCal* itsParent;
-    Int           itsAntNr;    //# 0=antenna1 1=antenna2
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
@@ -93,16 +93,16 @@ namespace casa {
   class AzElColumn : public VirtualArrayColumn<Double>
   {
   public:
-    explicit AzElColumn (DerivedMSCal* parent, Int antnr)
-      : itsParent (parent),
+    explicit AzElColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~AzElColumn();
     virtual IPosition shape (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
-    DerivedMSCal* itsParent;
-    Int           itsAntNr;    //# 0=antenna1 1=antenna2
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
@@ -111,14 +111,14 @@ namespace casa {
   class UVWJ2000Column : public VirtualArrayColumn<Double>
   {
   public:
-    explicit UVWJ2000Column (DerivedMSCal* parent)
-      : itsParent (parent)
+    explicit UVWJ2000Column (MSCalEngine* engine)
+      : itsEngine (engine)
     {}
     virtual ~UVWJ2000Column();
     virtual IPosition shape (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
-    DerivedMSCal* itsParent;
+    MSCalEngine* itsEngine;
   };
 
 
