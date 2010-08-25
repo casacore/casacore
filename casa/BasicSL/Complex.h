@@ -236,13 +236,17 @@ inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p))
 // QMath needs these operators * and / (on SGI).
 // <group>
 inline Complex operator*(const Complex& val, Double f) { return val*Float(f); }
+inline Complex operator*(Double f, const Complex& val) { return val*Float(f); }
 inline Complex operator/(const Complex& val, Double f) { return val/Float(f); }
+inline Complex operator/(Double f, const Complex& val) { return Float(f)/val; }
 // </group>
 // These operators are useful, otherwise both Float and Double are applicable
 // for Ints.
 // <group>
 inline Complex operator*(const Complex& val, Int f) { return val*Float(f); }
+inline Complex operator*(Int f, const Complex& val) { return val*Float(f); }
 inline Complex operator/(const Complex& val, Int f) { return val/Float(f); }
+inline Complex operator/(Int f, const Complex& val) { return Float(f)/val; }
 // </group>
 // </group>
 
