@@ -35,7 +35,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <module>
 //
 // <summary>
-// Virtual column engine for derived MS values like hourangle.
+// Derived MS and CalTable columns
 // </summary>
 
 // <prerequisite>
@@ -57,6 +57,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // them. The class description of the engine shows which columns can be handled
 // and gives an example how to add them.
 //
+// Class UDFMSCal contains TaQL user defined functions for these virtual
+// columns. In this way the columns do not need to be added to the table,
+// but can be used directly in a TaQL command. For example:
+// <srcblock>
+//     select from my.ms where derivedmscal.ha1() > 10deg
+// </srcblock>
+// to select the rows where the hourangle of ANTENNA1 fulfills the condition.
+// If HA1 was added as a virtual column (which is more intrusive), the
+// command could look like:
+// <srcblock>
+//     select from my.ms where HA1 > 10deg
+// </srcblock>
+//
 // UVW coordinates are already stored in an MS, but the virtual UVW_J2000
 // column makes it possible to calculate them on the fly.
 //
@@ -69,10 +82,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ol>
 //  <li> It needs to be linked in if the DerivedMSCal class is used. This
 //       mode will probably be used rarely.
-//  <l>  It will be loaded dynamically when a table is opened with columns
-//       using this data manager or when a column is added to a table using
-//       this data manager by name (thus without an object).
-// <ol>
+//  <li> It will be loaded dynamically when a table is opened with columns
+//       using this data manager, when a column is added to a table using
+//       this data manager by name (thus without an object), or when
+//       such a TaQL user defined function is used.
+// </ol>
 // <note> For the second reason above it is important that the library
 // and the other casacore libraries are built shared.
 // </note>

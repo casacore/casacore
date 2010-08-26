@@ -100,7 +100,6 @@ namespace casa {
   //  </td>
   // </tr>
   // <tr>
-  // <tr>
   //  <td><src>getXXX</src></td>
   //  <td>there are virtual get functions for each possible data type. The
   //      get functions matching the data types that can be set by the setup
@@ -123,7 +122,7 @@ namespace casa {
   //       a shared library using the library name part. The libraries tried
   //       to be loaded are lib<library>.so and libcasa_<library>.so.
   //       On Mac .dylib will be tried. If loaded successfully, a special
-  //       function 'register_<library>' will be called first.It should
+  //       function 'register_libname' will be called first. It should
   //       register each UDF in the shared library using UDFBase::register.
   // </ul>
   // </synopsis>
@@ -151,7 +150,7 @@ namespace casa {
   // };
   // </srcblock>
   // This example returns True if the function argument matches 1.
-  // It can be seen that it checks if thr argument is an integer scalar.
+  // It can be seen that it checks if the argument is an integer scalar.
   // </example>
 
   class UDFBase

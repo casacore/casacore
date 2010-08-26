@@ -27,9 +27,14 @@
 
 //# Includes
 #include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/UDFBase.h>
+#include <casa/Utilities/Assert.h>
 
 using namespace casa;
 
@@ -49,20 +54,37 @@ public:
   Bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
 };
 
+void makeTable()
+{
+  TableDesc td;
+  td.addColumn (ScalarColumnDesc<Int>("ANTENNA1"));
+  SetupNewTable newtab("tExprNodeUDF_tmp.tab", td, Table::New);
+  Table tab(newtab);
+  ScalarColumn<Int> ant1(tab, "ANTENNA1");
+  tab.addRow (10);
+  for (uInt i=0; i<tab.nrow(); ++i) {
+    ant1.put (i, i%3);
+  }
+}
+
 int main()
 {
   try {
     UDFBase::registerUDF ("TestUDF", TestUDF::makeObject);
-    Table tab("~/GER.MS");
+    makeTable();
+    Table tab("tExprNodeUDF_tmp.tab");
     TableExprNode node1(tab.col("ANTENNA1"));
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(node1));
     TableExprNode node2(TableExprNode::newUDFNode ("TestUDF", set, tab));
     Table seltab(tab(node2));
     cout << "selected " << seltab.nrow() << " rows" << endl; 
+    AlwaysAssertExit (seltab.nrow() == 3);
     Table seltab2 = tab(tab.col("ANTENNA1")==1);
     Table seltab3 = seltab(seltab.col("ANTENNA1")==1);
     cout << "selected " << seltab2.nrow() <<' '<<seltab3.nrow()<< " rows" << endl;
+    AlwaysAssertExit (seltab2.nrow() == 3);
+    AlwaysAssertExit (seltab3.nrow() == 3);
   } catch (std::exception& x) {
     cout << "Unexpected exception " << x.what() << endl;
     return 1;
