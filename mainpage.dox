@@ -122,6 +122,13 @@ namespace casa {
 ///   </td>
 ///   </tr>
 ///   <tr>
+///   <td><a href="group__derivedmscal.html">derivedmscal</a></td>
+///   <td>
+///   Derived MeasurementSet quantities (like hourangle) that can be
+///   used as virtual table columns or as TaQL user defined functions.
+///   </td>
+///   </tr>
+///   <tr>
 ///   <td><a href="group__msfits.html">msfits</a></td>
 ///   <td>
 ///   Mapping of MeasurementSets to/from FITS.
@@ -180,6 +187,10 @@ namespace casa {
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__ms.html">ms</a></td>
+///   <td>measures tables scimath casa</td>
+///   </tr>
+///   <tr>
+///   <td><a href="group__derivedmscal.html">derivedmscal</a></td>
 ///   <td>measures tables scimath casa</td>
 ///   </tr>
 ///   <tr>
