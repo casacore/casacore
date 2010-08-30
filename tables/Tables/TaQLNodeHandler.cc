@@ -465,14 +465,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     visitNode     (node.itsGiving);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
-    if (! node.itsNoExecute) {
+    if (! node.getNoExecute()) {
       if (outer) {
 	curSel->execute (False);
 	hrval->setTable (curSel->getTable());
 	hrval->setNames (new Vector<String>(curSel->getColumnNames()));
 	hrval->setString ("select");
       } else {
-	if (node.itsFromExecute) {
+	if (node.getFromExecute()) {
 	  hrval->setTable (curSel->doFromQuery());
 	} else {
 	  hrval->setExpr (curSel->doSubQuery());
@@ -550,17 +550,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitCountNode (const TaQLCountNodeRep& node)
   {
+    Bool outer = itsStack.empty();
     TableParseSelect* curSel = pushStack (TableParseSelect::PCOUNT);
     handleTables  (node.itsTables);
     visitNode     (node.itsColumns);
     handleWhere   (node.itsWhere);
     curSel->handleCount();
-    curSel->execute (False);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
-    hrval->setTable (curSel->getTable());
-    hrval->setNames (new Vector<String>(curSel->getColumnNames()));
-    hrval->setString ("count");
+    AlwaysAssert (! node.getNoExecute(), AipsError);
+    if (outer) {
+      curSel->execute (False);
+      hrval->setTable (curSel->getTable());
+      hrval->setNames (new Vector<String>(curSel->getColumnNames()));
+      hrval->setString ("count");
+    } else {
+      AlwaysAssert (node.getFromExecute(), AipsError);
+      hrval->setTable (curSel->doFromQuery());
+    }
     popStack();
     return res;
   }

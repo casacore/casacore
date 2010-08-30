@@ -759,6 +759,52 @@ public:
 
 
 // <summary>
+// Raw TaQL parse tree node defining a selection command.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is an abstract TaQLNodeRep for a selection command that can
+// also be used as a subquery.
+// It holds flags telling if and how the select command must be
+// executed when the node is visited for TaQLNodeHandler.
+// </synopsis> 
+
+class TaQLQueryNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLQueryNodeRep (int nodeType);
+  virtual ~TaQLQueryNodeRep();
+  void setBrackets()
+    { itsBrackets = True; }
+  void setNoExecute()
+    { itsNoExecute = True; }
+  void setFromExecute()
+    { itsFromExecute = True; }
+  Bool getBrackets() const
+    { return itsBrackets; }
+  Bool getNoExecute() const
+    { return itsNoExecute; }
+  Bool getFromExecute() const
+    { return itsFromExecute; }
+  virtual void show (std::ostream& os) const;
+protected:
+  virtual void saveSuper (AipsIO& aio) const;
+  virtual void restoreSuper (AipsIO& aio);
+private:
+  virtual void showDerived (std::ostream& os) const = 0;
+  Bool itsBrackets;
+  Bool itsNoExecute;    //# no execute in EXISTS operator
+  Bool itsFromExecute;  //# special execute in FROM
+};
+
+
+// <summary>
 // Raw TaQL parse tree node defining a select command.
 // </summary>
 // <use visibility=local>
@@ -775,32 +821,20 @@ public:
 // executed when the node is visited for TaQLNodeHandler.
 // </synopsis> 
 
-class TaQLSelectNodeRep: public TaQLNodeRep
+class TaQLSelectNodeRep: public TaQLQueryNodeRep
 {
 public:
   TaQLSelectNodeRep (const TaQLNode& columns, const TaQLMultiNode& tables,
 		     const TaQLNode& join, const TaQLNode& where,
 		     const TaQLNode& groupby, const TaQLNode& having,
 		     const TaQLNode& sort, const TaQLNode& limitoff,
-		     const TaQLNode& giving,
-		     Bool brackets=False,
-		     Bool noExecute=False,
-		     Bool fromExecute=False);
+		     const TaQLNode& giving);
   virtual ~TaQLSelectNodeRep();
-  void setBrackets()
-    { itsBrackets = True; }
-  void setNoExecute()
-    { itsNoExecute = True; }
-  void setFromExecute()
-    { itsFromExecute = True; }
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
+  virtual void showDerived (std::ostream& os) const;
   virtual void save (AipsIO& aio) const;
   static TaQLSelectNodeRep* restore (AipsIO& aio);
 
-  Bool          itsBrackets;
-  Bool          itsNoExecute;    //# no execute in EXISTS operator
-  Bool          itsFromExecute;  //# special execute in FROM
   TaQLNode      itsColumns;
   TaQLMultiNode itsTables;
   TaQLNode      itsJoin;
@@ -810,6 +844,37 @@ public:
   TaQLNode      itsSort;
   TaQLNode      itsLimitOff;
   TaQLNode      itsGiving;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a count command.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the parts for a count command.
+// </synopsis> 
+
+class TaQLCountNodeRep: public TaQLQueryNodeRep
+{
+public:
+  TaQLCountNodeRep (const TaQLNode& columns, const TaQLMultiNode& tables,
+                    const TaQLNode& where);
+  virtual ~TaQLCountNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void showDerived (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLCountNodeRep* restore (AipsIO& aio);
+
+  TaQLNode      itsColumns;
+  TaQLMultiNode itsTables;
+  TaQLNode      itsWhere;
 };
 
 
@@ -919,39 +984,6 @@ public:
   TaQLNode      itsWhere;
   TaQLNode      itsSort;
   TaQLNode      itsLimitOff;
-};
-
-
-// <summary>
-// Raw TaQL parse tree node defining a count command.
-// </summary>
-// <use visibility=local>
-// <reviewed reviewer="" date="" tests="tTaQLNode">
-// </reviewed>
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
-// </prerequisite>
-// <synopsis> 
-// This class is a TaQLNodeRep holding the parts for a count command.
-// </synopsis> 
-
-class TaQLCountNodeRep: public TaQLNodeRep
-{
-public:
-  TaQLCountNodeRep (const TaQLNode& columns, const TaQLMultiNode& tables,
-                    const TaQLNode& where)
-    : TaQLNodeRep (TaQLNode_Count),
-      itsColumns(columns), itsTables(tables), itsWhere(where) {}
-  virtual ~TaQLCountNodeRep();
-  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
-  virtual void show (std::ostream& os) const;
-  virtual void save (AipsIO& aio) const;
-  static TaQLCountNodeRep* restore (AipsIO& aio);
-
-  TaQLNode      itsColumns;
-  TaQLMultiNode itsTables;
-  TaQLNode      itsWhere;
 };
 
 

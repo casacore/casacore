@@ -257,22 +257,22 @@ void TaQLMultiNode::setPPFix (const String& prefix, const String& postfix)
 
 
 
-TaQLSelectNode::TaQLSelectNode (TaQLSelectNodeRep* rep)
+TaQLQueryNode::TaQLQueryNode (TaQLQueryNodeRep* rep)
   : TaQLNode(rep),
     itsNRep (rep)
 {}
 
-void TaQLSelectNode::setBrackets()
+void TaQLQueryNode::setBrackets()
 {
   itsNRep->setBrackets();
 }
 
-void TaQLSelectNode::setNoExecute()
+void TaQLQueryNode::setNoExecute()
 {
   itsNRep->setNoExecute();
 }
 
-void TaQLSelectNode::setFromExecute()
+void TaQLQueryNode::setFromExecute()
 {
   itsNRep->setFromExecute();
 }

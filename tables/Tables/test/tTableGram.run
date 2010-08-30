@@ -20,6 +20,7 @@
 ./tTableGram 0
 
 # Now execute all kind of commands.
+echo "testing select ..."
 $1 ./tTableGram 'select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab'
 
 $1 ./tTableGram 'select distinct ab+1,ac as ac2 from tTableGram_tmp.tab'
@@ -125,8 +126,9 @@ $1 ./tTableGram 'select ab from tTableGram_tmp.tab where any(cones([ab,ab],array
 $1 ./tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]'
 $1 ./tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
 $1 ./tTableGram 'calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])'
-echo ""
 
+echo ""
+echo "testing calc ..."
 $1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
 $1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
 $1 ./tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'
@@ -138,7 +140,14 @@ $1 ./tTableGram 'calc from tTableGram_tmp.tab calc ab&0x000b'
 $1 ./tTableGram 'calc from tTableGram_tmp.tab calc (ab|2)&~0x0001'
 
 echo ""
+echo "testing count ..."
+$1 ./tTableGram 'count ab from tTableGram_tmp.tab'
+$1 ./tTableGram 'count af from tTableGram_tmp.tab where ab<6'
+$1 ./tTableGram 'count ab,af from tTableGram_tmp.tab where ac<4'
+$1 ./tTableGram 'count ab*2 as ab1,ac from [count ab,ac from tTableGram_tmp.tab] where _COUNT_<2 && ab<6'
 
+echo ""
+echo "testing update ..."
 $1 ./tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 where ac>3'
 $1 ./tTableGram 'select ab from tTableGram_tmp.tab'
 $1 ./tTableGram 'update tTableGram_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTableGram_tmp.tabc where ac>3 orderby ac limit 5'
@@ -147,6 +156,8 @@ $1 ./tTableGram 'update tTableGram_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offs
 $1 ./tTableGram 'update tTableGram_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3'
 $1 ./tTableGram 'update tTableGram_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3'
 
+echo ""
+echo "testing insert/delete ..."
 $1 ./tTableGram 'delete from tTableGram_tmp.tab limit 3 offset 2'
 $1 ./tTableGram 'delete from tTableGram_tmp.tab orderby desc ab limit 1 offset 2'
 $1 ./tTableGram 'select ab from tTableGram_tmp.tab'
@@ -167,6 +178,8 @@ $1 ./tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([
 $1 ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
 
 # Test create and insert with a unit.
+echo ""
+echo "testing create ..."
 $1 ./tTableGram 'create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
 $1 ./tTableGram 'select col1,col2 from tTableGram_tmp.tab2'
 $1 ./tTableGram 'insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(1,[2,3])dam, F)'
@@ -174,6 +187,8 @@ $1 ./tTableGram 'insert into tTableGram_tmp.tab2 (col1,col2) VALUES (array(5,[2,
 $1 ./tTableGram 'calc sum([select sum(col1) from tTableGram_tmp.tab2])'
 
 # Some tests of styles.
+echo ""
+echo "testing styles ..."
 $1 ./tTableGram 'using style python update tTableGram_tmp.tab set arr1 = array(1,4,3,2) where rownumber()==5'
 $1 ./tTableGram 'using style python calc [3:6][1]'
 $1 ./tTableGram 'using style glish  calc [3:6][3]'
@@ -198,6 +213,8 @@ $1 ./tTableGram 'calc -4.1//2'
 $1 ./tTableGram 'calc -4**2'
 
 # Some tests of units.
+echo ""
+echo "testing units ..."
 $1 ./tTableGram 'calc sum([select ab d as ABDAY from tTableGram_tmp.tab])'
 $1 ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab \in]])'
 $1 ./tTableGram 'select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4'
