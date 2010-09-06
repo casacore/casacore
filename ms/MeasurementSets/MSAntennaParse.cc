@@ -94,7 +94,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
     } else {
       condition =
-	(ms()->col(colName1).in(antennaIds) || ms()->col(colName2).in(antennaIds));
+	(ms()->col(colName1).in(antennaIds) ||
+         ms()->col(colName2).in(antennaIds)) &&
+        ms()->col(colName1) != ms()->col(colName2);
     }
     {
       Int nrows_p = ms()->antenna().nrow();
