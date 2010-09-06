@@ -144,7 +144,7 @@ void StManArrayFile::setpos (Int64 pos)
 void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 			  const Float* data)
 {
-    setpos (fileOff + arrayOff*sizeFloat_p);
+    setpos (fileOff + Int64(arrayOff)*sizeFloat_p);
     iofil_p->write (nr, data);
     hasPut_p = True;
 }
@@ -155,7 +155,7 @@ uInt StManArrayFile::putShape (const IPosition& shape, Int64& offset,
 
 void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr, Float* data)
 {
-    setpos (fileOff + arrayOff*sizeFloat_p);
+    setpos (fileOff + Int64(arrayOff)*sizeFloat_p);
     iofil_p->read (nr, data);
 }
 
@@ -168,7 +168,7 @@ void StManArrayFile::copyArrayFloat (Int64 to, Int64 from, uInt nr)
 void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr, \
 			  const T* data) \
 { \
-    setpos (fileOff + arrayOff*SIZEDTYPE); \
+    setpos (fileOff + Int64(arrayOff)*SIZEDTYPE); \
     iofil_p->write (nr, data); \
     hasPut_p = True; \
 } \
@@ -177,7 +177,7 @@ uInt StManArrayFile::putShape (const IPosition& shape, Int64& offset, \
     { return putRes (shape, offset, SIZEDTYPE); } \
 void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr, T* data) \
 { \
-    setpos (fileOff + arrayOff*SIZEDTYPE); \
+    setpos (fileOff + Int64(arrayOff)*SIZEDTYPE); \
     iofil_p->read (nr, data); \
 } \
 void StManArrayFile::aips_name2(copyArray,T) (Int64 to, Int64 from, uInt nr)\
@@ -274,14 +274,14 @@ uInt StManArrayFile::putShape (const IPosition& shape, Int64& offset,
 void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 			  const Complex* data)
 {
-    setpos (fileOff + arrayOff*2*sizeFloat_p);
+    setpos (fileOff + Int64(arrayOff)*2*sizeFloat_p);
     iofil_p->write (2*nr, (const Float*)data);
     hasPut_p = True;
 }
 void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 			  const DComplex* data)
 {
-    setpos (fileOff + arrayOff*2*sizeDouble_p);
+    setpos (fileOff + Int64(arrayOff)*2*sizeDouble_p);
     iofil_p->write (2*nr, (const Double*)data);
     hasPut_p = True;
 }
@@ -292,13 +292,15 @@ void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 {
     //# Get file offset for string offset array.
     //# Allocate a buffer to hold 4096 string offsets.
-    uInt offs = fileOff + arrayOff*sizeuInt_p;
+    Int64 offs = fileOff + Int64(arrayOff)*sizeuInt_p;
     uInt buf[4096];
     uInt i, n;
     while (nr > 0) {
 	n = (nr < 4096  ?  nr : 4096);
 	setpos (leng_p);                            // position at end of file
 	for (i=0; i<n; i++) {
+            // Note: this should be fixed one time.
+            AlwaysAssert (leng_p < Int64(65536)*65536, DataManError);
 	    buf[i] = leng_p;
                 //
                 // Converted the string->lenght into an uInt so
@@ -322,13 +324,13 @@ void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr,
 			  Complex* data)
 {
-    setpos (fileOff + arrayOff*2*sizeFloat_p);
+    setpos (fileOff + Int64(arrayOff)*2*sizeFloat_p);
     iofil_p->read (2*nr, (Float*)data);
 }
 void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr,
 			  DComplex* data)
 {
-    setpos (fileOff + arrayOff*2*sizeDouble_p);
+    setpos (fileOff + Int64(arrayOff)*2*sizeDouble_p);
     iofil_p->read (2*nr, (Double*)data);
 }
 
@@ -338,7 +340,7 @@ void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr,
 {
     //# Get file offset for string offset array.
     //# Allocate a buffer to hold 4096 string offsets.
-    Int64 offs = fileOff + arrayOff*sizeuInt_p;
+    Int64 offs = fileOff + Int64(arrayOff)*sizeuInt_p;
     uInt buf[4096];
     uInt i, n, l;
     while (nr > 0) {
@@ -417,7 +419,7 @@ uInt StManArrayFile::putRes (const IPosition& shape, Int64& offset,
     // Add length of shape and of entire array to file length.
     // Take care of rounding (needed for Bool case).
     leng_p += n;
-    leng_p += Int (shape.product() * lenElem + 0.95);
+    leng_p += Int64 (double(shape.product()) * lenElem + 0.95);
     setpos (leng_p - 1);
     Char c = 0;
     iofil_p->write (1, &c);
@@ -471,4 +473,3 @@ void StManArrayFile::putRefCount (uInt refCount, Int64 offset)
 }
 
 } //# NAMESPACE CASA - END
-
