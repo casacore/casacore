@@ -636,16 +636,28 @@ void Table::removeColumn (const String& columnName)
 Vector<uInt> Table::rowNumbers () const
     { return baseTabPtr_p->rowNumbers(); }
 
-Vector<uInt> Table::rowNumbers (const Table& that) const
+Vector<uInt> Table::rowNumbers (const Table& that, Bool tryFast) const
 {
+    Vector<uInt> thisRows(rowNumbers());
     const uInt highValue = 4294967295u;
     // If that is the root table of this, we can simply use rowNumbers().
-    if (that.baseTabPtr_p == baseTabPtr_p->root()) {
-        return rowNumbers();
+    // The same is true if empty.
+    if (that.baseTabPtr_p == baseTabPtr_p->root()  ||  nrow() == 0) {
+      return thisRows;
     }
-    // Get the rowNumbers of that and transform it to a vector
+    // Get the rowNumbers of that.
+    Vector<uInt> thatRows(that.rowNumbers());
+    // Try if a fast conversion can be done.
+    // That is the case if this is not a superset of that and if orders match.
+    if (tryFast) {
+      Vector<uInt> outRows;
+      if (fastRowNumbers (thisRows, thatRows, outRows)) {
+        return outRows;
+      }
+    }
+    // Alas, we have to do it the hard way.
+    // Transform the rowNumbers of that to a vector
     // mapping rownr in root to rownr in that.
-    Vector<uInt> thatRows = that.rowNumbers();
     uInt nrthat = thatRows.nelements();
     uInt maxv = nrthat;
     Vector<uInt> rownrs(thatRows);
@@ -659,7 +671,7 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
     Bool deleteIt;
     uInt* rownrsData = rownrs.getStorage (deleteIt);
     // Now make the mapping.
-    // thatRows is not needed anymore, sp resize at the end to reclaim memory.
+    // thatRows is not needed anymore, so resize at the end to reclaim memory.
     if (! that.isRootTable()) {
         Bool deleteThat;
         const uInt* thatRowData = thatRows.getStorage (deleteThat);
@@ -672,7 +684,7 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
     // Use the first mapping to map the rownrs in this to rownrs in that.
     // First get the rownrs of this in root to achieve it.
     // Use a very high value if the rownr is too high.
-    Vector<uInt> thisRows = rowNumbers().copy();
+    thisRows.unique();
     Bool deleteThis;
     uInt* thisRowData = thisRows.getStorage (deleteThis);
     uInt nrthis = thisRows.nelements();
@@ -688,6 +700,42 @@ Vector<uInt> Table::rowNumbers (const Table& that) const
                                         // by the SGI compiler.
     rownrs.freeStorage (dummy, deleteIt);
     return thisRows;
+}
+
+Bool Table::fastRowNumbers (const Vector<uInt>& v1, const Vector<uInt>& v2,
+                            Vector<uInt>& rows) const
+{
+  // v1 cannot be a superset of v2.
+  if (v1.size() > v2.size()) {
+    return False;
+  }
+  rows.resize (v1.size());
+  if (v1.empty()) {
+    return True;
+  }
+  Bool d1,d2,d3;
+  const uInt* r1 = v1.getStorage (d1);
+  const uInt* r2 = v2.getStorage (d2);
+  uInt* routc = rows.getStorage (d3);
+  uInt* rout = routc;
+  uInt i1=0;
+  uInt i2=0;
+  Bool ok = True;
+  while (ok) {
+    if (r1[i1] == r2[i2]) {
+      *rout++ = i2;
+      if (++i1 >= v1.size()) {
+        break;
+      }
+    }
+    if (++i2 >= v2.size()) {
+      ok = False;
+    }
+  }
+  v1.freeStorage (r1, d1);
+  v2.freeStorage (r2, d2);
+  rows.putStorage (routc, d3);
+  return ok;
 }
 
 //# Sort on a single column.

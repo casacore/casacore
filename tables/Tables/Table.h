@@ -825,8 +825,15 @@ public:
     // <note role=caution>This function is in principle meant for cases
     // where this table is a subset of that table. However, it can be used
     // for any table. In that case the returned vector contains a very high
-    // number for rows in this table which are not part of that table.
+    // number (max_uint) for rows in this table not part of that table.
     // In that way they are invalid if used elsewhere.
+    // <br>In the general case creating the row number vector can be slowish,
+    // because it has to do two mappings. However, if this table is a subset
+    // of that table and if they are in the same order, the mapping can be done
+    // in a more efficient way. The argument <src>tryFast</src> can be used to
+    // tell the function to try a fast conversion first. If that cannot be done,
+    // it reverts to the slower way at the expense of an unsuccessful fast
+    // attempt.
     // </note>
     // <srcblock>
     // Table tab("somename");
@@ -839,7 +846,7 @@ public:
     // <br> <src>    Vector<uInt> rownrs = subset.rowNumbers()</src>
     // does not give the row numbers in <src>tab</src>, but in the root table
     // (which is probably not what you want).
-    Vector<uInt> rowNumbers (const Table& that) const;
+  Vector<uInt> rowNumbers (const Table& that, Bool tryFast=False) const;
 
     // Add a column to the table.
     // The data manager used for the column depend on the function used.
@@ -994,6 +1001,10 @@ private:
     BaseTable* lookCache (const String& name, int tableOption,
 			  const TableLock& tableInfo);
 
+    // Try if v1 is a subset of v2 and fill rows with its indices in v2.
+    // Return False if not a proper subset.
+    Bool fastRowNumbers (const Vector<uInt>& v1, const Vector<uInt>& v2,
+                         Vector<uInt>& rows) const;
 };
 
 
