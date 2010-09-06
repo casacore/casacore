@@ -77,8 +77,8 @@ void TableCache::remove (const String& tableName)
 	// Throwing an exception causes an immediate crash (probably by
 	// Table destructors).
 	// So write a message on stderr;
-	std::cerr << "Cannot remove the table from the table cache;"
-	  "suggest restarting" << std::endl;
+	std::cerr << "Cannot remove table " << tableName
+                  << " from the table cache; suggest restarting" << std::endl;
       }
     }
 }
