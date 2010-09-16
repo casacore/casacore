@@ -1,0 +1,5 @@
+foreach(prog ms2uvfits)
+    add_executable (${prog}  ${prog}.cc)
+    target_link_libraries (${prog} casa_msfits)
+    install(TARGETS ${prog} DESTINATION bin)
+endforeach(prog ms2uvfits)

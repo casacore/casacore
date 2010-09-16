@@ -1,0 +1,5 @@
+foreach(prog msselect)
+    add_executable (${prog}  ${prog}.cc)
+    target_link_libraries (${prog} casa_ms)
+    install(TARGETS ${prog} DESTINATION bin)
+endforeach(prog msselect)

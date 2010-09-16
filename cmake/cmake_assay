@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# This script executes a casacore test program using casacore_assay.
+# It copies the possible source files (run,py,in,out) needed by the test
+# to the working directory and removes them afterwards.
+# 
+# It returns 0 for the UNTESTED status (3), otherwise cmake sees it as an error.
+
+
+# Get the source root directory.
+rootdir=`echo $0 | sed -e 's%/cmake/cmake_assay%%'`
+
+# Get the package directory (is always the last 3 levels).
+pkg=`pwd | sed -e 's%.*\(/[^/][^/]*/[^/][^/]*/[^/][^/]*\)$%\1%'`
+srcroot=$rootdir$pkg
+
+# Copy possible files needed for the test.
+for TYP in run py in out
+do
+  if [ -e $srcroot/$1.$TYP ]; then
+    cp $srcroot/$1.$TYP .
+  fi
+done
+for FIL in $srcroot/$1.in_*
+do
+  cp -r $FIL .
+done >& /dev/null       # avoid error message if no such files
+for FIL in $srcroot/*.data_*
+do
+  cp -r $FIL .
+done >& /dev/null       # avoid error message if no such files
+
+# Execute the test.
+$rootdir/scons-tools/casacore_assay "$@"
+status=$?
+
+# Remove the possibly copied files.
+rm -rf $1.{run,py,in,out} $1.in_* *.data_*
+
+# Return status 0 if untested (otherwise cmake sees it as an error).
+if [ $status = 3 ]; then
+  status=0
+fi
+exit $status
