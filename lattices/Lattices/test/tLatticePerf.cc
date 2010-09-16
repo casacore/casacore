@@ -50,10 +50,12 @@ void makeCube (bool useHDF, const IPosition& cubeShape,
   if (useHDF) {
     cout << "Creating tLatticePerf_tmp.hdf with shape " << cubeShape
          << " and tile shape " << tileShape << endl;
+    cout << "HDF5    ";
     lattice = new HDF5Lattice<Float>(tshape, "tLatticePerf_tmp.hdf");
   } else {
     cout << "Creating tLatticePerf_tmp.tab with shape " << cubeShape
          << " and tile shape " << tileShape << endl;
+    cout << "CCTS    ";
     lattice = new PagedArray<Float> (tshape, "tLatticePerf_tmp.tab");
   }
   Timer timer;
@@ -100,18 +102,25 @@ void getTiles (const Lattice<Float>& lattice)
 void getCube (const Lattice<Float>& lattice, const String& trav)
 {
   if (trav == "x") {
+    cout << "x  ";
     getLine (lattice, 0);
   } else if (trav == "y") {
+    cout << "y  ";
     getLine (lattice, 1);
   } else if (trav == "z") {
+    cout << "z  ";
     getLine (lattice, 2);
   } else if (trav == "xy") {
+    cout << "xy ";
     getPlane (lattice, 2);
   } else if (trav == "xz") {
+    cout << "xz ";
     getPlane (lattice, 1);
   } else if (trav == "yz") {
+    cout << "yz ";
     getPlane (lattice, 0);
   } else {
+    cout << "   ";
     getTiles (lattice);
   } 
 }
@@ -139,8 +148,10 @@ int main (int argc, char* argv[])
     } else {
       Bool useHDF = (argc > 2  &&  argv[2][0] == '1');
       if (useHDF) {
+        cout << "HDF5 ";
         getCube (HDF5Lattice<Float>("tLatticePerf_tmp.hdf"), argv[1]);
       } else {
+        cout << "CCTS ";
         getCube (PagedArray<Float>("tLatticePerf_tmp.tab"), argv[1]);
       }
     }
