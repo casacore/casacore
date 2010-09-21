@@ -2,10 +2,6 @@
 # CASA Scimath
 #
 
-if (FFTW3_FOUND)
-    add_definitions(-DHAVE_FFTW3)
-endif (FFTW3_FOUND)
-
 add_library (casa_scimath
 Fitting/LSQFit.cc
 Fitting/LSQFit3.cc
