@@ -2,10 +2,6 @@
 # CASA Tables
 #
 
-if (READLINE_FOUND)
-    add_definitions(-DHAVE_READLINE)
-endif (READLINE_FOUND)
-
 set (
 parser_inputs
 RecordGram

@@ -2,10 +2,6 @@
 # CASA casa
 #
 
-if (HDF5_FOUND)
-    add_definitions(-DHAVE_HDF5)
-endif (HDF5_FOUND)
-
 add_library (casa_casa
 Arrays/Array2Math.cc
 Arrays/ArrayUtil2.cc
