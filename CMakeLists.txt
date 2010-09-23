@@ -21,8 +21,8 @@ endif (ENABLE_SHARED)
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.
 # Casacore uses longlong, so no warnings for it.
 if (NOT CMAKE_CXX_FLAGS)
-    set (CMAKE_CXX_FLAGS "-W -Wall -Wpointer-arith -pedantic -Wno-long-long")
-    ##set (CMAKE_CXX_FLAGS "-W -Wall")
+##    set (CMAKE_CXX_FLAGS "-W -Wall -Wpointer-arith -pedantic -Wno-long-long")
+    set (CMAKE_CXX_FLAGS "-W -Wall")
 endif (NOT CMAKE_CXX_FLAGS)
 
 # Set build type if not given.
