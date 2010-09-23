@@ -12,6 +12,7 @@ option (BUILD_SHARED_LIBS "" YES)
 
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give many warnings.
+# Casacore uses longlong, so no warnings for it.
 ##set (CMAKE_CXX_FLAGS "-W -Wall -Wpointer-arith -pedantic -Wno-long-long")
 set (CMAKE_CXX_FLAGS "-W -Wall")
 # Use debug mode if -DDEBUG=ON is given
