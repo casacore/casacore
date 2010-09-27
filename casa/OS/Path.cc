@@ -288,11 +288,11 @@ String Path::expandName (const String& inString) const
     uInt i = 0;
     Bool flag = True;
     uInt count = 0;
-    // Flag is set True when an environment variable is detected. When this 
+    // Flag is set True if an environment variable is detected. When this 
     // happens more then 25 times, there is probably a recursive variable set.
     // In that case an exception will be thrown.
     while (flag && count<25) {  
-	// flag is False, when there is not an environment variable
+	// flag is False, if there is not an environment variable
 	// the name will not be checked again
 	flag = False;     
 	count++;          // count is increased when the string is 
@@ -300,7 +300,7 @@ String Path::expandName (const String& inString) const
 	// Replace tilde with the name of the home directory
 	if (tempString.firstchar() == '~') {
 	    if (tempString.length() == 1  ||  tempString[1] == '/') {
-	      // To get the homedirectory, environment variable HOME is used.
+	      // To get the home directory, environment variable HOME is used.
 		String name (EnvironmentVariable::get("HOME"));
 		if (! name.empty()) {
 		    tempString.del ("~",0);
@@ -328,31 +328,47 @@ String Path::expandName (const String& inString) const
 #endif
 	    }
 	}
-	cursor = 0;
 	i = 0;
+        if (tempString.size() > 0  &&  tempString[0] == '/') {
+            i = 1;
+        }
 	while (i < tempString.length()) {
+            cursor = i;
 	    getNextName (tempString, i);      // i is set on the next name   
-	    if (tempString[cursor] == '$') {  // Environment variable detected
-		String dName (tempString.at (Int(cursor+1), Int((i-cursor)-1)));
-		String name (EnvironmentVariable::get(dName));
-		if (! name.empty()) {
-		    String res (name);
-		    res.prepend (tempString.before(Int(cursor)));
-		    res += tempString.after (Int(i-1));
-		    tempString = res;
-		    // name is placed in the new string and the old name is 
-		    // gone
-		    // flag is set True, so the name will be checked again for 
-		    // environment variables
-		    flag = True;
+            // See if an env.var is given
+            String::size_type dpos = tempString.find ('$', cursor);
+            if (dpos != String::npos) {
+                String::size_type last = i;
+		String dName (tempString.at (Int(dpos+1), Int((i-dpos)-1)));
+                if (dName[0] == '{') {
+                    String::size_type bracePos = dName.find ('}');
+                    if (bracePos != std::string::npos) {
+                        last = dpos+1+bracePos+1;
+                        dName = dName.substr(1, bracePos-1);
+                    } else {
+                        dpos = String::npos;
+                    }
+                }
+                if (dpos != String::npos) {
+                    String name (EnvironmentVariable::get(dName));
+                    if (! name.empty()) {
+		        String res (name);
+                        res.prepend (tempString.before(Int(dpos)));
+                        res += tempString.after (Int(last-1));
+                        // Update the index for the changed part.
+                        i = last + Int(res.size()) - Int(tempString.size());
+                        tempString = res;
+                        // flag is set True, so the name will be checked again
+                        // for environment variables
+                        flag = True;
+                    }
 		}
 	    }	
-	    cursor = i + 1;
-	    i++;
+	    i++;    // go past slash
 	}
     }
     if (flag) {
-	// An exception is thrown when the string is checked more then 25 times
+	// An exception is thrown if the string is checked more then 25 times
 	throw (AipsError ("Path::expandName: recursive environment variable"));
     }
     return tempString;
