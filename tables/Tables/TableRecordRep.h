@@ -186,11 +186,11 @@ public:
 
     // Put the description and data of the Record.
     // It also puts the fixedFlag attribute (of the mother object).
-    void putRecord (AipsIO& os, int recordType, const TableAttr&) const;
+    void putRecord (AipsIO& os, Int recordType, const TableAttr&) const;
 
     // Get the description and data of the Record.
     // It also gets the fixedFlag attribute (of the mother object).
-    void getRecord (AipsIO& os, int& recordType, const TableAttr&);
+    void getRecord (AipsIO& os, Int& recordType, const TableAttr&);
 
     // Put the data of a record.
     // This is used to write a subrecord, whose description has

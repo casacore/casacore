@@ -181,7 +181,7 @@ public:
 
     // Get the description and data of the Record.
     // It also gets the fixedFlag attribute (of the mother object).
-    void getRecord (AipsIO& os, int& recordType);
+    void getRecord (AipsIO& os, Int& recordType);
 
     // Put the data of a record.
     // This is used to write a subrecord, whose description has

@@ -297,7 +297,7 @@ void Record::getRecord (AipsIO& os)
     notify (RecordNotice (RecordNotice::DETACH, 0));
     // Reading the record type back means casting it from an int
     // to the correct type.
-    int type;
+    Int type;
     rwRef().getRecord (os, type);
     recordType() = (RecordInterface::RecordType)type;
 }

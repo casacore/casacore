@@ -1220,7 +1220,7 @@ void RecordRep::putData (AipsIO& os) const
     }
 }
 
-void RecordRep::getRecord (AipsIO& os, int& recordType)
+void RecordRep::getRecord (AipsIO& os, Int& recordType)
 {
     // Support reading scalar and array keyword sets as records.
     // They are the very old way of storing keywords, since long replaced
