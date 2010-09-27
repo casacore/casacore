@@ -366,18 +366,19 @@ public:
   // Optionally the maximum nr of rows to be selected can be given.
   // It will be used as the default value for the LIMIT clause.
   // 0 = no maximum.
-  void execute (Bool setInGiving, Bool mustSelect=True, uInt maxRow=0);
+  void execute (Bool showTimings, Bool setInGiving,
+                Bool mustSelect, uInt maxRow);
 
   // Execute a query in a from clause resulting in a Table.
-  Table doFromQuery();
+  Table doFromQuery (Bool showTimings);
 
   // Execute a subquery and create an appropriate node for the result.
-  TableExprNode doSubQuery();
+  TableExprNode doSubQuery (Bool showTimings);
 
   // Test if a subquery has sufficient elements.
   // It uses default LIMIT=1, but that can be overidden in the subquery.
   // The flag tells if NOT EXISTS or EXISTS was given.
-  TableExprNode doExists (Bool noexists);
+  TableExprNode doExists (Bool noexists, Bool showTimings);
 
   // Show the expression tree.
   void show (ostream& os) const;
@@ -481,35 +482,35 @@ private:
 				    const Vector<Int>& ignoreFuncs);
 
   // Do the update step.
-  void doUpdate (Table& updTable, const Table& inTable);
+  void doUpdate (Bool showTimings, Table& updTable, const Table& inTable);
 
   // Do the insert step and return a selection containing the new rows.
-  Table doInsert (Table& table);
+  Table doInsert (Bool showTimings, Table& table);
 
   // Do the delete step.
-  void doDelete (Table& table, const Table& sel);
+  void doDelete (Bool showTimings, Table& table, const Table& sel);
 
   // Do the count step returning a memory table containing the unique
   // column values and the counts of the column values.
-  Table doCount (const Table&);
+  Table doCount (Bool showTimings, const Table&);
 
   // Do the projection step returning a table containing the projection.
-  Table doProject (const Table&);
+  Table doProject (Bool showTimings, const Table&);
 
   // Do the projection containing column expressions.
   Table doProjectExpr (const Table&);
 
   // Do the sort step.
-  Table doSort (const Table& table);
+  Table doSort (Bool showTimings, const Table& table);
 
   // Do the limit/offset step.
-  Table doLimOff (const Table& table);
+  Table doLimOff (Bool showTimings, const Table& table);
 
   // Do the 'select distinct' step.
-  Table doDistinct (const Table& table);
+  Table doDistinct (Bool showTimings, const Table& table);
 
   // Finish the table (rename, copy, and/or flush).
-  Table doFinish (Table& table);
+  Table doFinish (Bool showTimings, Table& table);
 
   // Update the values in the columns (helpers of doUpdate).
   // <group>
@@ -533,6 +534,9 @@ private:
   // Get the order for this key. Use the default order_p if not
   // explicitly given with the key.
   Sort::Order getOrder (const TableParseSort& key) const;
+
+  // Make an array from the contents of a column in a subquery.
+  TableExprNode getColSet();
 
   // Make a set from the results of the subquery.
   TableExprNode makeSubSet() const;

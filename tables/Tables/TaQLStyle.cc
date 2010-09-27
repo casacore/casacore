@@ -58,4 +58,10 @@ void TaQLStyle::set (const String& value)
   }
 }
 
+void TaQLStyle::reset()
+{
+  set ("GLISH"); 
+  itsDoTiming = False;
+}
+
 } //# NAMESPACE CASA - END

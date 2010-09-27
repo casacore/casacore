@@ -94,6 +94,7 @@ UNION     [Uu][Nn][Ii][Oo][Nn]
 INTERSECT [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
 EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
 STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
+TIMEWORD  [Tt][Ii][Mm][Ee]
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
@@ -135,6 +136,7 @@ OR        [Oo][Rr]
 XOR       [Xx][Oo][Rr]
 NOT       [Nn][Oo][Tt]
 ALL       [Aa][Ll][Ll]
+ALLFUNC   {ALL}{WHITE}"("
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
@@ -348,7 +350,6 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->valre = new TaQLRegexNode(
                 new TaQLRegexNodeRep (String(TableGramtext,yyleng)));
             TaQLNode::theirNodesCreated.push_back (lvalp->valre);
-            BEGIN(EXPRstate);
 	    return REGEX;
 	  }
 
@@ -490,6 +491,21 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return LITERAL;
 	  }
 
+ /* In the Exprstate the word TIME is a normal column or function name.
+    Otherwise it is the TIME keyword (to show timings).
+ */
+<EXPRstate>{TIMEWORD} { 
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return NAME;
+	  }
+{TIMEWORD}    {
+            tableGramPosition() += yyleng;
+	    return TIMING;
+	  }
+            
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
     Note that this rule could also be done by NAMEFLD. However, in the
@@ -497,6 +513,14 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     ALL is a special name, because it can also be used instead of DISTINCT
     in the SELECT clause (note that ALL is also a function name).
  */
+{ALLFUNC} {
+            yyless(3);     /* unput everything but ALL */
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (String("ALL")));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return NAME;
+	  }
 {ALL}     {
             tableGramPosition() += yyleng;
 	    return ALL;

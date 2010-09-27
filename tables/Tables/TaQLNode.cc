@@ -43,7 +43,7 @@ TaQLStyle TaQLNode::theirStyle;
 
 TaQLNode TaQLNode::parse (const String& command)
 {
-  // Reset to default TaQL style.
+  // Reset to default TaQL style and no timings.
   theirStyle.reset();
   // Add a newline if not present.
   String str(command);
