@@ -183,6 +183,15 @@ namespace casa {
     // Get the coordinate system.
     Record coordSys() const;
 
+    // Convert a pixel coordinate to world coordinates.
+    // if <src>reverseAxes=True</src> the input and output vector will be
+    // reversed (as needed for pyrap).
+    Vector<Double> toWorld (const Vector<Double>& pixel,
+                            Bool reverseAxes);
+
+    //#// Convert world coordinates to pixel coordinates.
+    //#Vector<Double> topixel (Record& value);
+
     // Get the image info.
     Record imageInfo() const;
 
@@ -273,7 +282,6 @@ namespace casa {
 
     Vector<Double> topixel(Record& value);
 
-    Record toworld(const Vector<double>& value, const String& format = "n");
     */
 
     LatticeBase* getLattice() const
