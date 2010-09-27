@@ -875,7 +875,13 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case cmonthFUNC:
 	return operands_p[0]->getDate(id).monthName();
     case cdowFUNC:
-	return operands_p[0]->getDate(id).dayName();
+        return operands_p[0]->getDate(id).dayName();
+    case ctodFUNC:
+        return stringDateTime (operands_p[0]->getDate(id), 9);
+    case cdateFUNC:
+        return stringDate (operands_p[0]->getDate(id));
+    case ctimeFUNC:
+        return stringTime (operands_p[0]->getDate(id), 9);
     case iifFUNC:
         return operands_p[0]->getBool(id)  ?
 	       operands_p[1]->getString(id) : operands_p[2]->getString(id);
@@ -929,6 +935,27 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
 			     "unknown function"));
     }
     return MVTime();
+}
+
+String TableExprFuncNode::stringDT (const MVTime& dt, Int prec,
+                                    MVTime::formatTypes type)
+{
+  MVTime::setFormat (type, prec);
+  ostringstream ostr;
+  ostr << dt;
+  return ostr.str();
+}
+String TableExprFuncNode::stringDateTime (const MVTime& dt, Int prec)
+{
+  return stringDT (dt, prec, MVTime::YMD);
+}
+String TableExprFuncNode::stringDate (const MVTime& dt)
+{
+  return stringDT (dt, 0, MVTime::formatTypes(MVTime::DMY+MVTime::NO_TIME));
+}
+String TableExprFuncNode::stringTime (const MVTime& dt, Int prec)
+{
+  return stringDT (dt, prec, MVTime::TIME);
 }
 
 
@@ -1165,6 +1192,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return dtout;
     case cmonthFUNC:
     case cdowFUNC:
+    case ctodFUNC:
+    case cdateFUNC:
+    case ctimeFUNC:
 	if (checkNumOfArg (0, 1, nodes) == 1) {
 	    return checkDT (dtypeOper, NTDate, NTString, nodes);
 	}

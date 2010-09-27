@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <tables/Tables/TaQLNodeHandler.h>
+#include <tables/Tables/TaQLNode.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/Utilities/StringDistance.h>
@@ -152,7 +153,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case TaQLUnaryNodeRep::U_BITNOT:
       return new TaQLNodeHRValue (~expr);
     }
-    TableExprNode exres(topStack()->doExists (notexists));
+    TableExprNode exres(topStack()->doExists (notexists,
+                                              node.style().doTiming()));
     popStack();
     return new TaQLNodeHRValue(exres);
   }
@@ -467,15 +469,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeResult res(hrval);
     if (! node.getNoExecute()) {
       if (outer) {
-	curSel->execute (False);
+	curSel->execute (node.style().doTiming(), False, True, 0);
 	hrval->setTable (curSel->getTable());
 	hrval->setNames (new Vector<String>(curSel->getColumnNames()));
 	hrval->setString ("select");
       } else {
 	if (node.getFromExecute()) {
-	  hrval->setTable (curSel->doFromQuery());
+	  hrval->setTable (curSel->doFromQuery(node.style().doTiming()));
 	} else {
-	  hrval->setExpr (curSel->doSubQuery());
+	  hrval->setExpr (curSel->doSubQuery(node.style().doTiming()));
 	}
       }
       popStack();
@@ -492,7 +494,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     handleWhere   (node.itsWhere);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
-    curSel->execute (False);
+    curSel->execute (node.style().doTiming(), False, True, 0);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     hrval->setTable (curSel->getTable());
@@ -519,7 +521,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       curSel->handleInsert (topStack());
       addedSel = True;
     }
-    curSel->execute (False);
+    curSel->execute (node.style().doTiming(), False, True, 0);
     if (addedSel) {
       popStack();        // remove insert subquery
     }
@@ -539,7 +541,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     handleWhere   (node.itsWhere);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
-    curSel->execute (False);
+    curSel->execute (node.style().doTiming(), False, True, 0);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     hrval->setTable (curSel->getTable());
@@ -560,13 +562,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeResult res(hrval);
     AlwaysAssert (! node.getNoExecute(), AipsError);
     if (outer) {
-      curSel->execute (False);
+      curSel->execute (node.style().doTiming(), False, True, 0);
       hrval->setTable (curSel->getTable());
       hrval->setNames (new Vector<String>(curSel->getColumnNames()));
       hrval->setString ("count");
     } else {
       AlwaysAssert (node.getFromExecute(), AipsError);
-      hrval->setTable (curSel->doFromQuery());
+      hrval->setTable (curSel->doFromQuery(node.style().doTiming()));
     }
     popStack();
     return res;

@@ -644,7 +644,7 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::imagFUNC;
   } else if (funcName == "int"  ||  funcName == "integer") {
     ftype = TableExprFuncNode::intFUNC;
-  } else if (funcName == "datetime"  ||  funcName == "ctod") {
+  } else if (funcName == "datetime") {
     ftype = TableExprFuncNode::datetimeFUNC;
   } else if (funcName == "mjdtodate") {
     ftype = TableExprFuncNode::mjdtodateFUNC;
@@ -652,6 +652,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::mjdFUNC;
   } else if (funcName == "date") {
     ftype = TableExprFuncNode::dateFUNC;
+  } else if (funcName == "time") {
+    ftype = TableExprFuncNode::timeFUNC;
   } else if (funcName == "weekday"   ||  funcName == "dow") {
     ftype = TableExprFuncNode::weekdayFUNC;
   } else if (funcName == "year") {
@@ -666,8 +668,12 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::cdowFUNC;
   } else if (funcName == "week") {
     ftype = TableExprFuncNode::weekFUNC;
-  } else if (funcName == "time") {
-    ftype = TableExprFuncNode::timeFUNC;
+  } else if (funcName == "cdatetime"  ||  funcName == "ctod") {
+    ftype = TableExprFuncNode::ctodFUNC;
+  } else if (funcName == "cdate") {
+    ftype = TableExprFuncNode::cdateFUNC;
+  } else if (funcName == "ctime") {
+    ftype = TableExprFuncNode::ctimeFUNC;
   } else if (funcName == "strlength" ||  funcName == "len") {
     ftype = TableExprFuncNode::strlengthFUNC;
   } else if (funcName == "upcase"    ||  funcName == "upper"  ||
@@ -1126,51 +1132,53 @@ Block<String> TableParseSelect::getStoredColumns (const Table& tab) const
 }
 
 //# Execute a query in the FROM clause and return the resulting table.
-Table TableParseSelect::doFromQuery()
+Table TableParseSelect::doFromQuery (Bool showTimings)
 {
-#if defined(AIPS_TRACE)
   Timer timer;
-#endif
   // Execute the nested command.
-  execute (False);
-#if defined(AIPS_TRACE)
-  timer.show ("Fromquery");
-#endif
+  execute (False, False, True, 0);
+  if (showTimings) {
+    timer.show ("  From query  ");
+  }
   return table_p;
 }
 
 //# Execute a subquery for an EXISTS operator.
-TableExprNode TableParseSelect::doExists (Bool notexists)
+TableExprNode TableParseSelect::doExists (Bool notexists, Bool showTimings)
 {
-#if defined(AIPS_TRACE)
   Timer timer;
-#endif
   // Execute the nested command.
   // Default limit_p is 1.
-  execute (True, True, 1);
-#if defined(AIPS_TRACE)
-  timer.show ("Subquery");
-#endif
+  execute (False, True, True, 1);
+  if (showTimings) {
+    timer.show ("  Exists query");
+  }
   // Flag notexists tells if NOT EXISTS or EXISTS was given.
   return TableExprNode (notexists == (table_p.nrow() < limit_p));
 }
 
 //# Execute a subquery and create the correct node object for it.
-TableExprNode TableParseSelect::doSubQuery()
+TableExprNode TableParseSelect::doSubQuery (Bool showTimings)
 {
-#if defined(AIPS_TRACE)
   Timer timer;
-#endif
   // Execute the nested command.
-  execute (True);
-#if defined(AIPS_TRACE)
-  timer.show ("Subquery");
-#endif
-  // Handle a set when that is given.
+  execute (False, True, True, 0);
+  TableExprNode result;
   if (resultSet_p != 0) {
-    return makeSubSet();
+    // A set specification was given, so make the set.
+    result = makeSubSet();
+  } else {
+    // A single column was given, so get its data.
+    result = getColSet();
   }
-  // Otherwise a column should be given.
+  if (showTimings) {
+    timer.show ("  Subquery    ");
+  }
+  return result;
+}
+
+TableExprNode TableParseSelect::getColSet()
+{
   // Check if there is only one column which has to contain a scalar.
   const TableDesc& tableDesc = table_p.tableDesc();
   if (tableDesc.ncolumn() != 1) {
@@ -1329,8 +1337,10 @@ void TableParseSelect::handleCount()
 }
 
 //# Execute the updates.
-void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
+void TableParseSelect::doUpdate (Bool showTimings,
+                                 Table& updTable, const Table& inTable)
 {
+  Timer timer;
   AlwaysAssert (updTable.nrow() == inTable.nrow(), AipsError);
   //# If the table is empty, return immediately.
   //# (the code below will fail for empty tables)
@@ -1562,6 +1572,9 @@ void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
       }
     }
   }
+  if (showTimings) {
+    timer.show ("  Update      ");
+  }
 }
 
 template<typename T>
@@ -1669,8 +1682,9 @@ void TableParseSelect::updateValue2 (const TableExprId& rowid,
 
 
 //# Execute the inserts.
-Table TableParseSelect::doInsert (Table& table)
+Table TableParseSelect::doInsert (Bool showTimings, Table& table)
 {
+  Timer timer;
   // Reopen the table for write.
   table.reopenRW();
   if (! table.isWritable()) {
@@ -1683,12 +1697,12 @@ Table TableParseSelect::doInsert (Table& table)
     rowvec(0) = table.nrow();
     table.addRow();
     Table sel = table(rowvec);
-    doUpdate (sel, sel);
+    doUpdate (False, sel, sel);
     return sel;
   }
   // Handle the inserts from another selection.
   // Do the selection.
-  insSel_p->execute (False, False);
+  insSel_p->execute (False, False, False, 0);
   Table sel = insSel_p->getTable();
   if (sel.nrow() == 0) {
     return Table();
@@ -1733,17 +1747,22 @@ Table TableParseSelect::doInsert (Table& table)
   for (uInt i=0; i<sel.nrow(); i++) {
     rowto.put (i, rowfrom.get(i), False);
   }
+  if (showTimings) {
+    timer.show ("  Insert      ");
+  }
   return tab;
 }
 
 
 //# Execute the deletes.
-void TableParseSelect::doDelete (Table& table, const Table& sel)
+void TableParseSelect::doDelete (Bool showTimings,
+                                 Table& table, const Table& sel)
 {
   //# If the selection is empty, return immediately.
   if (sel.nrow() == 0) {
     return;
   }
+  Timer timer;
   // Reopen the table for write.
   table.reopenRW();
   if (! table.isWritable()) {
@@ -1753,14 +1772,18 @@ void TableParseSelect::doDelete (Table& table, const Table& sel)
   // Delete all those rows.
   Vector<uInt> rownrs = sel.rowNumbers (table);
   table.removeRow (rownrs);
+  if (showTimings) {
+    timer.show ("  Delete      ");
+  }
 }
 
 
 //# Execute the counts.
-Table TableParseSelect::doCount (const Table& table)
+Table TableParseSelect::doCount (Bool showTimings, const Table& table)
 {
+  Timer timer;
   // First do the column projection.
-  Table intab = doProject(table);
+  Table intab = doProject (False, table);
   // Create an empty memory table with the same description as the input table.
   Table tab = TableCopy::makeEmptyMemoryTable ("", intab, True);
   // Add the uInt _COUNT_ column.
@@ -1783,18 +1806,22 @@ Table TableParseSelect::doCount (const Table& table)
     countCol.put (rownr, tabfrom.nrow());
     iter++;
   }
+  if (showTimings) {
+    timer.show ("  Count       ");
+  }
   return tab;
 }
 
 
 //# Execute the sort.
-Table TableParseSelect::doSort (const Table& table)
+Table TableParseSelect::doSort (Bool showTimings, const Table& table)
 {
     //# If the table is empty, return it immediately.
     //# (the code below will fail for empty tables)
     if (table.nrow() == 0) {
 	return table;
     }
+    Timer timer;
     uInt i;
     uInt nrkey = sort_p.size();
     //# First check if the sort keys are correct.
@@ -1974,12 +2001,16 @@ Table TableParseSelect::doSort (const Table& table)
 	    AlwaysAssert (False, AipsError);
 	}
     }
+    if (showTimings) {
+      timer.show ("  Orderby     ");
+    }
     return table(rownrs);
 }
 
 
-Table TableParseSelect::doLimOff (const Table& table)
+Table TableParseSelect::doLimOff (Bool showTimings, const Table& table)
 {
+  Timer timer;
   Vector<uInt> rownrs;
   if (table.nrow() > offset_p) {
     uInt nrleft = table.nrow() - offset_p;
@@ -1989,12 +2020,17 @@ Table TableParseSelect::doLimOff (const Table& table)
     rownrs.resize (nrleft);
     indgen (rownrs, offset_p);
   }
-  return table(rownrs);
+  Table result = table(rownrs);
+  if (showTimings) {
+    timer.show ("  Limit/Offset");
+  }
+  return result;
 }
 
 
-Table TableParseSelect::doProject (const Table& table)
+Table TableParseSelect::doProject (Bool showTimings, const Table& table)
 {
+  Timer timer;
   Table tabp;
   if (nrSelExprUsed_p > 0) {
     // Expressions used, so make a real table.
@@ -2009,8 +2045,11 @@ Table TableParseSelect::doProject (const Table& table)
       }
     }
   }
+  if (showTimings) {
+    timer.show ("  Projection  ");
+  }
   if (distinct_p) {
-    tabp = doDistinct (tabp);
+    tabp = doDistinct (showTimings, tabp);
   }
   return tabp;
 }
@@ -2073,17 +2112,19 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
     }
   }
   // Fill the columns in the table.
-  doUpdate (tabp, inTable);
+  doUpdate (False, tabp, inTable);
   tabp.flush();
   // Indicate that no table needs to be created anymore.
   resultName_p = "";
   return tabp;
 }
 
-Table TableParseSelect::doFinish (Table& table)
+Table TableParseSelect::doFinish (Bool showTimings, Table& table)
 {
+  Timer timer;
+  Table result;
   if (resultType_p == 1) {
-    return table.copyToMemoryTable (resultName_p);
+    result = table.copyToMemoryTable (resultName_p);
   } else if (resultType_p > 0){
     Table::EndianFormat tendf = Table::AipsrcEndian;
     if (resultType_p == 3) {
@@ -2094,12 +2135,17 @@ Table TableParseSelect::doFinish (Table& table)
       tendf = Table::LocalEndian;
     }
     table.deepCopy (resultName_p, Table::New, True, tendf);
-    return Table (resultName_p);
+    result = Table(resultName_p);
+  } else {
+    // Normal reference table.
+    table.rename (resultName_p, Table::New);
+    table.flush();
+    result = table;
   }
-  // Normal reference table.
-  table.rename (resultName_p, Table::New);
-  table.flush();
-  return table;
+  if (showTimings) {
+    timer.show ("  Giving      ");
+  }
+  return result;
 }
 
 DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
@@ -2290,24 +2336,29 @@ void TableParseSelect::addColumnDesc (TableDesc& td,
   }
 }
 
-Table TableParseSelect::doDistinct (const Table& table)
+Table TableParseSelect::doDistinct (Bool showTimings, const Table& table)
 {
-  Vector<uInt> rownrs;
-  {
-    // Sort the table uniquely on all columns.
-    // Exit immediately if already unique.
-    Table tabs = table.sort (columnNames_p, Sort::Ascending,
-			     Sort::QuickSort|Sort::NoDuplicates);
-    if (tabs.nrow() == table.nrow()) {
-      return table;
-    }
+  Timer timer;
+  Table result;
+  // Sort the table uniquely on all columns.
+  Table tabs = table.sort (columnNames_p, Sort::Ascending,
+                           Sort::QuickSort|Sort::NoDuplicates);
+  if (tabs.nrow() == table.nrow()) {
+    // Everything was already unique.
+    result = table;
+  } else {
     // Get the rownumbers.
-    Vector<uInt> rows(tabs.rowNumbers(table));
-    rownrs.reference (rows);
+    // Make sure it does not reference an internal array.
+    Vector<uInt> rownrs(tabs.rowNumbers(table));
+    rownrs.unique(); 
+    // Put the rownumbers back in the original order.
+    GenSort<uInt>::sort (rownrs);
+    result = table(rownrs);
   }
-  // Put the rownumbers in the original order.
-  GenSort<uInt>::sort (rownrs);
-  return table(rownrs);
+  if (showTimings) {
+    timer.show ("  Distinct    ");
+  }
+  return result;
 }
 
 
@@ -2325,7 +2376,7 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 
 
 //# Execute all parts of a TaQL command doing some selection.
-void TableParseSelect::execute (Bool setInGiving,
+void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
 				Bool mustSelect, uInt maxRow)
 {
   //# A selection query consists of:
@@ -2421,38 +2472,42 @@ void TableParseSelect::execute (Bool setInGiving,
 //#//	    cout << rang[i].getColumn().columnDesc().name() << rang[i].start()
 //#//		 << rang[i].end() << endl;
 //#//	}
+    Timer timer;
     table = table(node_p, nrmax);
+    if (showTimings) {
+      timer.show ("  Where       ");
+    }
   }
   //# Then do the sort and the limit/offset.
   if (sort_p.size() > 0) {
-    table = doSort (table);
+    table = doSort (showTimings, table);
   }
   if (offset_p > 0  ||  limit_p > 0) {
-    table = doLimOff (table);
+    table = doLimOff (showTimings, table);
   }
   //# Then do the update, delete, insert, or projection and so.
   if (commandType_p == PUPDATE) {
-    doUpdate (table, table);
+    doUpdate (showTimings, table, table);
     table.flush();
   } else if (commandType_p == PINSERT) {
-    Table tabNewRows = doInsert (table);
+    Table tabNewRows = doInsert (showTimings, table);
     table.flush();
     table = tabNewRows;
   } else if (commandType_p == PDELETE) {
     Table origTab = fromTables_p[0].table();
-    doDelete (origTab, table);
+    doDelete (showTimings, origTab, table);
     origTab.flush();
     ///table = origTab;
   } else if (commandType_p == PCOUNT) {
-    table = doCount (table);
+    table = doCount (showTimings, table);
   } else {
     //# Then do the projection.
     if (columnNames_p.nelements() > 0) {
-      table = doProject (table);
+      table = doProject (showTimings, table);
     }
     //# Finally rename or copy using the given name (and flush it).
     if (! resultName_p.empty()) {
-      table = doFinish (table);
+      table = doFinish (showTimings, table);
     }
   }
   //# Keep the table for later.
@@ -2514,11 +2569,9 @@ TaQLResult tableCommand (const String& str,
 			 String& commandType)
 {
   commandType = "error";
-#if defined(AIPS_TRACE)
-  Timer timer;
-#endif
   // Do the first parse step. It returns a raw parse tree
   // (or throws an exception).
+  Timer timer;
   TaQLNode tree = TaQLNode::parse(str);
   // Now process the raw tree and get the final ParseSelect object.
   try {
@@ -2527,6 +2580,9 @@ TaQLResult tableCommand (const String& str,
     const TaQLNodeHRValue& hrval = TaQLNodeHandler::getHR(res);
     commandType = hrval.getString();
     TableExprNode expr = hrval.getExpr();
+    if (tree.style().doTiming()) {
+      timer.show (" Total time   ");
+    }
     if (! expr.isNull()) {
       return TaQLResult(expr);                 // result of CALC command
     }

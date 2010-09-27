@@ -50,21 +50,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // In order to let the user choose between styles, one can define the
 // style in a TaQL command.
 // The default style is Glish.
+//
+// The class is also used to tell the TaQL execution engine if timings
+// of the various parts of the TaQL command need to be done.
 // </synopsis> 
 
 class TaQLStyle
 {
 public:
-  // Default style is Glish.
-  TaQLStyle (uInt origin=1)
+  // Default style is Glish and no timings.
+  explicit TaQLStyle (uInt origin=1)
     : itsOrigin  (origin),
       itsEndExcl (False),
-      itsCOrder  (False)
+      itsCOrder  (False),
+      itsDoTiming(False)
     {}
 
-  // Reset to the default Glish style.
-  void reset()
-    { set ("GLISH"); }
+  // Reset to the default Glish style and no timings.
+  void reset();
 
   // Set the style according to the (case-insensitive) value.
   // Possible values are Glish, Python, Base0, Base1, FortranOrder, Corder,
@@ -81,10 +84,19 @@ public:
     { return itsCOrder; }
   // </group>
 
+  // Set if timing needs to be done.
+  void setTiming (Bool doTiming)
+    { itsDoTiming = doTiming; }
+
+  // Should timing be done?
+  Bool doTiming() const
+    { return itsDoTiming; }
+
 private:
   uInt itsOrigin;
   Bool itsEndExcl;
   Bool itsCOrder;
+  Bool itsDoTiming;
 };
 
 

@@ -244,6 +244,9 @@ class TableExprNode;
     TableExprNode cmonth    (const TableExprNode& node);
     TableExprNode weekday   (const TableExprNode& node);
     TableExprNode cdow      (const TableExprNode& node);
+    TableExprNode ctod      (const TableExprNode& node);
+    TableExprNode cdate     (const TableExprNode& node);
+    TableExprNode ctime     (const TableExprNode& node);
     TableExprNode week	    (const TableExprNode& node);
     TableExprNode time      (const TableExprNode& node);
   // </group>
@@ -638,6 +641,9 @@ class TableExprNode
     friend TableExprNode cmonth    (const TableExprNode& node);
     friend TableExprNode weekday   (const TableExprNode& node);
     friend TableExprNode cdow      (const TableExprNode& node);
+    friend TableExprNode ctod      (const TableExprNode& node);
+    friend TableExprNode cdate     (const TableExprNode& node);
+    friend TableExprNode ctime     (const TableExprNode& node);
     friend TableExprNode week	   (const TableExprNode& node);
     friend TableExprNode time      (const TableExprNode& node);
     friend TableExprNode isNaN (const TableExprNode& node);
@@ -1197,7 +1203,7 @@ inline TableExprNode TableExprNode::in (const TableExprNode& right) const
 inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
 {
     // C++ indexing is 0-based.
-    return newArrayPartNode (*this, indices, 0);
+    return newArrayPartNode (*this, indices, TaQLStyle(0));
 }
 
 inline TableExprNode near (const TableExprNode& left,
@@ -1477,6 +1483,18 @@ inline TableExprNode weekday (const TableExprNode& node)
 inline TableExprNode cdow (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::cdowFUNC, node);
+}
+inline TableExprNode ctod (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ctodFUNC, node);
+}
+inline TableExprNode cdate (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::cdateFUNC, node);
+}
+inline TableExprNode ctime (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ctimeFUNC, node);
 }
 inline TableExprNode week (const TableExprNode& node)
 {

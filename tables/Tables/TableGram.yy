@@ -39,6 +39,7 @@ using namespace casa;
 %pure_parser                /* make parser re-entrant */
 
 %token STYLE
+%token TIMING
 %token SELECT
 %token UPDATE
 %token UPDSET
@@ -62,7 +63,7 @@ using namespace casa;
 %token LIMIT
 %token OFFSET
 %token DMINFO
-%token ALL                  /* ALL (in SELECT ALL) or name of function */
+%token ALL                  /* ALL (in SELECT ALL) */
 %token <val> NAME           /* name of function, field, table, or alias */
 %token <val> FLDNAME        /* name of field or table */
 %token <val> TABNAME        /* table name */
@@ -123,7 +124,6 @@ using namespace casa;
 %type <node> wildcol
 %type <node> colspec
 %type <nodelist> columns
-%type <nodelist> acolumns
 %type <nodelist> nmcolumns
 %type <nodelist> colspecs
 %type <node> updrow
@@ -197,7 +197,14 @@ int TableGramlex (YYSTYPE*);
 
 %%
 topcomm:   command
-         | stylecoms command
+         | sttimcoms command
+         ;
+
+sttimcoms: TIMING
+             { TaQLNode::theirStyle.setTiming (True); }
+         | stylecoms
+         | stylecoms TIMING
+             { TaQLNode::theirStyle.setTiming (True); }
          ;
 
 stylecoms: stylecoms stylecomm
@@ -274,7 +281,7 @@ selrow:    selcol FROM tables whexpr groupby having order limitoff given {
 selcol:    normcol {
                $$ = $1;
            }
-         | ALL acolumns {
+         | ALL columns {
                $$ = new TaQLNode(
                     new TaQLColumnsNodeRep (False, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -586,44 +593,6 @@ columns:   {          /* no column names given (thus take all) */
                $$->add (*$1);
 	   }
          | columns COMMA colexpr {
-	       $$ = $1;
-               $$->add (*$3);
-	   }
-         ;
-
-/* If ALL is used in column list, the first column must be a name or *.
-   Otherwise there is an ambiguity in e.g. ALL(COL)
-   which can be function ALL with argument COL
-   or can be the SELECT qualifier ALL with orexpr (COL).
-*/
-acolumns:  {          /* no column names given (thus take all) */
-               $$ = new TaQLMultiNode();
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | NAME {
-               $$ = new TaQLMultiNode(False);
-	       TaQLNode::theirNodesCreated.push_back ($$);
-               TaQLNode p (new TaQLKeyColNodeRep ($1->getString()));
-               $$->add (new TaQLColNodeRep (p, "", ""));
-	   }
-         | NAME AS NAME {
-               $$ = new TaQLMultiNode(False);
-	       TaQLNode::theirNodesCreated.push_back ($$);
-               TaQLNode p (new TaQLKeyColNodeRep ($1->getString()));
-               $$->add (new TaQLColNodeRep (p, $3->getString(), ""));
-	   }
-         | NAME AS NAME NAME {
-               $$ = new TaQLMultiNode(False);
-	       TaQLNode::theirNodesCreated.push_back ($$);
-               TaQLNode p (new TaQLKeyColNodeRep ($1->getString()));
-               $$->add (new TaQLColNodeRep (p, $3->getString(), $4->getString()));
-	   }
-         | wildcol {
-               $$ = new TaQLMultiNode(False);
-	       TaQLNode::theirNodesCreated.push_back ($$);
-               $$->add (*$1);
-           }
-         | acolumns COMMA colexpr {
 	       $$ = $1;
                $$->add (*$3);
 	   }
@@ -1052,11 +1021,6 @@ simbexpr:  LPAREN orexpr RPAREN
          | FLDNAME LPAREN elemlist RPAREN {
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ($1->getString(), *$3));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | ALL LPAREN elemlist RPAREN {
-	       $$ = new TaQLNode(
-                    new TaQLFuncNodeRep ("ALL", *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | COUNT LPAREN elemlist RPAREN {

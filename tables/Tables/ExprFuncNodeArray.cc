@@ -1483,6 +1483,9 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
       }
     case TableExprFuncNode::cmonthFUNC:
     case TableExprFuncNode::cdowFUNC:	
+    case TableExprFuncNode::ctodFUNC:	
+    case TableExprFuncNode::cdateFUNC:	
+    case TableExprFuncNode::ctimeFUNC:	
       {
 	Array<MVTime> values (operands()[0]->getArrayDate(id));
 	Array<String> strings(values.shape());
@@ -1500,6 +1503,21 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	case TableExprFuncNode::cdowFUNC:	
 	    for (i=0; i<n; i++) {
 		str[i] = val[i].dayName();
+	    }
+	    break;
+	case TableExprFuncNode::ctodFUNC:	
+	    for (i=0; i<n; i++) {
+                str[i] = TableExprFuncNode::stringDateTime (val[i], 9);
+	    }
+	    break;
+	case TableExprFuncNode::cdateFUNC:	
+	    for (i=0; i<n; i++) {
+                str[i] = TableExprFuncNode::stringDate (val[i]);
+	    }
+	    break;
+	case TableExprFuncNode::ctimeFUNC:	
+	    for (i=0; i<n; i++) {
+                str[i] = TableExprFuncNode::stringTime (val[i], 9);
 	    }
 	    break;
 	default:
