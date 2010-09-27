@@ -259,16 +259,20 @@ DataManagerCtor DataManager::getCtor (const String& type)
         return *fp;
     }
     // Try to load the data manager from a dynamic library with that name
-    // (without possible template extension).
-    String tp(type);
-    tp.downcase();
-    string::size_type pos = tp.find ('<');
+    // (in lowercase without possible template extension).
+    // A < denotes a template name which is discarded.
+    // A dot can be used to have a specific library name (so multiple
+    // data managers can use the same library).
+    String libname(type);
+    libname.downcase();
+    string::size_type pos = libname.find_first_of (".<");
     if (pos != string::npos) {
-        tp = tp.substr (0, pos);
+        libname = libname.substr (0, pos);
     }
-    // Try to load the dynamic library and see if registered now.
-    DynLib dl(tp, string("libcasa_"), "register_"+tp, False);
+    // Try to load and initialize the dynamic library.
+    DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
     if (dl.getHandle()) {
+        // See if registered now.
         fp = registerMap.isDefined (type);
         if (fp) {
             return *fp;
