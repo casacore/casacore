@@ -399,7 +399,7 @@ void TableRecordRep::print (std::ostream& os, Int maxNrValues,
     }
 }
 
-void TableRecordRep::putRecord (AipsIO& os, int recordType,
+void TableRecordRep::putRecord (AipsIO& os, Int recordType,
 				const TableAttr& parentAttr) const
 {
     os.putstart ("TableRecord", 1);              // version 1
@@ -428,7 +428,7 @@ void TableRecordRep::putData (AipsIO& os, const TableAttr& parentAttr) const
     }
 }
 
-void TableRecordRep::getRecord (AipsIO& os, int& recordType,
+void TableRecordRep::getRecord (AipsIO& os, Int& recordType,
 				const TableAttr& parentAttr)
 {
     // Support reading scalar, array, and table keyword sets as records.

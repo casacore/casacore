@@ -400,7 +400,7 @@ void TableRecord::getRecord (AipsIO& os, const TableAttr& parentAttr)
     notify (RecordNotice (RecordNotice::DETACH, 0));
     // Reading the record type back means casting it from an int
     // to the correct type.
-    int type;
+    Int type;
     rwRef().getRecord (os, type, parentAttr);
     recordType() = (RecordInterface::RecordType)type;
 }
