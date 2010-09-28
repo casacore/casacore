@@ -11,7 +11,6 @@ tTable_2.data_v1/table.f0i0
 tTable_2.data_v1/table.f1
 tTable_2.data_v1/table.f2
 tTable_2.data_v1/table.info
-tTable_2.data_v1/table.lock
 )
 
 foreach (file ${datafiles})
