@@ -43,7 +43,7 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 				const String& dataManType,
 				const String& dataManGroup,
 				DataType dt, const String& dtId,
-				int opt, uInt ndim, const IPosition& shape,
+				Int opt, uInt ndim, const IPosition& shape,
 				Bool isScalar, Bool isArray, Bool isTable)
 : colName_p     (name),
   comment_p     (comment),
@@ -215,7 +215,7 @@ void BaseColumnDesc::setShape (const IPosition& shape, Bool directOption)
     }
 }
 
-void BaseColumnDesc::setOptions (int options)
+void BaseColumnDesc::setOptions (Int options)
 {
     option_p = options;
     //# Option Direct forces FixedShape.
@@ -267,11 +267,11 @@ void BaseColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
     ios << comment_p;
     ios << dataManType_p;
     ios << dataManGroup_p;
-    int dt = dtype_p;
+    Int dt = dtype_p;
     ios << dt;
     ios << option_p;
     ios << nrdim_p;
-    if (!isScalar_p > 0) {
+    if (!isScalar_p) {
 	ios << shape_p;
     }
     ios << maxLength_p;
@@ -288,7 +288,7 @@ void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
     ios >> comment_p;
     ios >> dataManType_p;
     ios >> dataManGroup_p;
-    int dtype;
+    Int dtype;
     ios >> dtype;
     if (dtype != dtype_p) {
 	throw (TableInternalError ("BaseColumnDesc: data type read mismatch"));

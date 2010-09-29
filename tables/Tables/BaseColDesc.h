@@ -118,7 +118,7 @@ public:
 		    const String& dataManagerType,
 		    const String& dataManagerGroup,
 		    DataType, const String& dataTypeId,
-		    int options, uInt ndim, const IPosition& shape,
+		    Int options, uInt ndim, const IPosition& shape,
 		    Bool isScalar, Bool isArray, Bool isTable);
 
     // Copy constructor (copy semantics).
@@ -181,7 +181,7 @@ public:
 	{ return comment_p; }
 
     // Get the options.
-    int options() const
+    Int options() const
 	{ return option_p; }
 
     // Test if column is scalar, array or table.
@@ -227,7 +227,7 @@ public:
     // Option <src>ColumnDesc::Direct</src> forces <src>FixedShape</src>.
     // If <src>FixedShape</src> is not given (implicitly or explicitly),
     // the column can have no shape, so its shape is cleared.
-    void setOptions (int options);
+    void setOptions (Int options);
 
     // Get the maximum value length.
     uInt maxLength() const
@@ -256,7 +256,7 @@ protected:
     String         dataManGroup_p;       //# data manager group
     DataType       dtype_p;              //# datatype
     String         dtypeId_p;            //# datatype id for TpOther
-    int            option_p;             //# column options
+    Int            option_p;             //# column options
     Int            nrdim_p;              //# #dimensions (<0 = unknown)
     IPosition      shape_p;              //# table array shape
     uInt           maxLength_p;          //# maximum value length (for strings)
