@@ -1027,12 +1027,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // opened. All data managers mentioned below are part of the system and
 // pre-registered.
 // It is, however, also possible to load data managers on demand. If a data
-// manager is not registered it is tried to load a dynamic library with the
-// name of the data manager (in lowercase).
-// E.g. if <src>BitFlagsEngine<uChar></src> was not registered, the dynamic
+// manager is not registered it is tried to load a shared library with the
+// part of the data manager name (in lowercase) before a dot or left arrow.
+// The dot makes it possible to have multiple data managers in a shared library,
+// while the left arrow is meant for templated data manager classes.
+// <br>E.g. if <src>BitFlagsEngine<uChar></src> was not registered, the shared
 // library <src>libbitflagsengine.so</src> (or .dylib) will be loaded. If
 // successful, its function <src>register_bitflagsengine()</src> will be
-// executed which can register the data manager. Thereafter it is known
+// executed which should register the data manager(s). Thereafter it is known
 // and will be used. For example in a file Register.h and Register.cc:
 // <srcblock>
 //   // Declare in .h file as C function, so no name mangling is done.

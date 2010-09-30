@@ -37,8 +37,10 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # If given, add the data directory as compile variable.
+# If it contains a single $, it needs to be doubled for make purposes.
 if (DATA_DIR)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA=${DATA_DIR}")
+    string(REGEX REPLACE [$] $$ DATA_DIRX ${DATA_DIR})
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA='\"${DATA_DIRX}\"'")
 endif (DATA_DIR)
 
 # For the sake of consistency
