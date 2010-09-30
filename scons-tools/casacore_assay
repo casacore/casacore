@@ -62,6 +62,11 @@
 # Original: 1995/11/01 by Mark Calabretta, ATNF
 # $Id: assay,v 19.11 2006/10/17 03:41:50 gvandiep Exp $
 #=============================================================================
+
+# Find the path used to start the script. It is used for other scripts.
+  pgmpath=`dirname $0`
+  pgmpath=`cd $pgmpath > /dev/null 2>&1  &&  pwd`
+
 # Also set PYTHONPATH.
   if [ "$PYTHONPATH" = "" ]
   then
@@ -177,7 +182,7 @@ EOF
      exit
   fi
   # Not fully equal. Check with floating point accuracy.
-  casacore_floatcheck ${1}_tmp.out ${1}_tmpo.out 1e-5
+  $pgmpath/casacore_floatcheck ${1}_tmp.out ${1}_tmpo.out 1e-5
   stat=$?
   case $stat in
   0)
