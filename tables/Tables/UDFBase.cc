@@ -85,6 +85,7 @@ namespace casa {
       AlwaysAssert (Int(shape.size()) == itsNDim, AipsError);
     }
     itsShape = shape;
+    itsNDim  = itsShape.size();
   }
 
   void UDFBase::setUnit (const String& unit)

@@ -184,6 +184,10 @@ namespace casa {
     virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
 
+    // Get the unit.
+    const String& getUnit() const
+      { return itsUnit; }
+
   private:
     // Set up the function object.
     virtual void setup (const Table& table,

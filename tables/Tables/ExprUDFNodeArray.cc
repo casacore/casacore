@@ -34,7 +34,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                                 const TableExprNodeSet&)
     : TableExprNodeArray (udf->dataType(), OtFunc),
       itsUDF (udf)
-  {}
+  {
+    // The source may be empty which causes the expression type
+    // to be made constant. Force it to be variable.
+    exprtype_p = Variable; 
+    // Set the unit (is also fine if undefined).
+    setUnit (Unit(udf->getUnit()));
+  }
 
   TableExprUDFNodeArray::~TableExprUDFNodeArray()
   {

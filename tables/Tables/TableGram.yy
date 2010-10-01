@@ -920,7 +920,7 @@ relexpr:   arithexpr {
            }
          ;
 
-arithexpr: inxexpr {
+arithexpr: simexpr {
 	       $$= $1;
            }
          | arithexpr PLUS  arithexpr {
@@ -992,23 +992,23 @@ arithexpr: inxexpr {
 	   }
          ;
 
-inxexpr:   simexpr {
-               $$ = $1;
-           }
-         | simexpr LBRACKET subscripts RBRACKET {
-	       $$ = new TaQLNode(
-	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_INDEX, *$1, *$3));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         ;
-
-simexpr:   simbexpr
+simexpr:   inxexpr
                { $$ = $1; }
-         | simbexpr unit {
+         | inxexpr unit {
 	       $$ = new TaQLNode(
                     new TaQLUnitNodeRep ($2->getString(), *$1));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         ;
+
+inxexpr:   simbexpr {
+               $$ = $1;
+           }
+         | simbexpr LBRACKET subscripts RBRACKET {
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_INDEX, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          ;
 
 simbexpr:  LPAREN orexpr RPAREN
