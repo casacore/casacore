@@ -488,6 +488,7 @@ Quanta/QMath.tcc
 Quanta/Quantum.h
 Quanta/Quantum.tcc
 Quanta/QuantumHolder.h
+Quanta/QuantumType.h
 Quanta/RotMatrix.h
 Quanta/UnitDim.h
 Quanta/Unit.h
