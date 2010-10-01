@@ -70,12 +70,15 @@ namespace casa {
     case PA:
     case LAST:
       setNDim (0);
+      setUnit ("rad");
       break;
     case AZEL:
       setShape (IPosition(1,2));
+      setUnit ("rad");
       break;
     case UVW:
       setShape (IPosition(1,3));
+      setUnit ("m");
       break;
     }
   }

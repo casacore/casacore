@@ -680,16 +680,13 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
         // Select no rows.
         return select(Vector<uInt>());
     }
-    //# Now check if this table has been used for all columns.
-    //# This also catches a case like:  tab(True);
-    //# where True will be converted to a TabExprNode by the constructor
-    //# and which type is also a Bool, but it has no table.
-    //# It also catches:  tab(tab.key(name) > 5);
-    //# since that also has no table (a keyword is converted to a constant).
-    if (node.table().baseTablePtr() != this) {
-	throw (TableInvExpr ("expression uses different table"));
+    // Now check if this table has been used for all columns.
+    // Accept that the expression has no table, which can be the case for
+    // UDFs in derivedmscal (since they have no function arguments).
+    if (!node.table().isNull()  &&  node.table().baseTablePtr() != this) {
+        throw (TableInvExpr ("expression uses different table"));
     }
-    //# Create an reference table, which will be in row order.
+    //# Create a reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.
     //# Add the rownr of the root table (one may search a reference table).
     //# Adjust the row numbers to reflect row numbers in the root table.
