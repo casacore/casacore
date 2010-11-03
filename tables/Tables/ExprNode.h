@@ -135,6 +135,15 @@ class TableExprNode;
 			   const TableExprNode& tolerance);
   // </group>
 
+  // Angular distance between positions.
+  // Both arguments have to be arrays. If both arrays contain 2 values
+  // (ra and dec), the result is a scalar.
+  // Otherwise the arrays have to contain a multiple of 2 values and the
+  // result is a 2-dim array giving the distance of each position in the
+  // first array to each position in the second array.
+    TableExprNode angdist (const TableExprNode& pos1,
+                           const TableExprNode& pos2);
+
   // Cone search; test if the position of a source is inside a cone.
   // <br>Argument <src>sourcePos</src> must be a double array
   // containing two values (ra and dec of source) in radians.
@@ -580,6 +589,8 @@ class TableExprNode
     friend TableExprNode nearAbs (const TableExprNode& left,
 				  const TableExprNode& right,
 				  const TableExprNode& tolerance);
+    friend TableExprNode angdist (const TableExprNode& pos1,
+                                  const TableExprNode& pos2);
     friend TableExprNode cones (const TableExprNode& sourcePos,
 				const TableExprNode& cones);
     friend TableExprNode anyCone (const TableExprNode& sourcePos,
@@ -1231,6 +1242,12 @@ inline TableExprNode nearAbs (const TableExprNode& left,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs3FUNC,
 					   left, right, tolerance);
+}
+inline TableExprNode angdist (const TableExprNode& pos1,
+                              const TableExprNode& pos2)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::angdistFUNC,
+					   pos1, pos2);
 }
 inline TableExprNode cones (const TableExprNode& sourcePos,
 			    const TableExprNode& cones)

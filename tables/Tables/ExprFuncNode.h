@@ -227,6 +227,8 @@ public:
 	rowidFUNC,
             // special function resembling if statement
 	iifFUNC,
+            // angular distance returning radians
+        angdistFUNC,
 	    // other functions, implemented in derived class
 	conesFUNC,
 	cones3FUNC,
@@ -316,6 +318,10 @@ public:
     static String stringDate (const MVTime& dt);
     static String stringTime (const MVTime& dt, Int prec);
     // </group>
+
+    // Get the angular distance between two positions on a sphere.
+    static double angdist (double ra1, double dec1, double ra2, double dec2)
+      { return acos (sin(dec1)*sin(dec2) + cos(dec1)*cos(dec2)*cos(ra1-ra2)); }
 
 private:
     // Try if the function gives a constant result.

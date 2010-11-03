@@ -336,13 +336,14 @@ Array<Bool> TableExprConeNode::getArrayBool (const TableExprId& id)
       Bool* res = resArr.data();
       for (uInt j=0; j<srcArr.nelements(); j+=2) {
 	const double ra  = src[j];
-	const double dec = src[j+1];
+	const double sindec = sin(src[j+1]);
+	const double cosdec = cos(src[j+1]);
 	for (uInt i=0; i<coneArr.nelements(); i+=3) {
 	  const double raCone  = cone[i];
 	  const double decCone = cone[i+1];
 	  const double radius  = cone[i+2];
-	  *res++ = cos(radius) <= sin(decCone) * sin(dec) +
-	                          cos(decCone) * cos(dec) * cos(raCone-ra);
+	  *res++ = cos(radius) <= sin(decCone) * sindec +
+	                          cos(decCone) * cosdec * cos(raCone-ra);
 	}
       }
       srcArr.freeStorage (src, deleteSrc);
