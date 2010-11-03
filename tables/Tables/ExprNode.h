@@ -242,6 +242,8 @@ class TableExprNode;
   // </group>
 
   // Functions for date-values. Defined for scalars and arrays.
+  //# Note, ctod is called ctodt, because Mac OS-X defines a macro
+  //# ctod in param.h
   // <group>
     TableExprNode datetime  (const TableExprNode& node);
     TableExprNode mjdtodate (const TableExprNode& node);
@@ -253,7 +255,7 @@ class TableExprNode;
     TableExprNode cmonth    (const TableExprNode& node);
     TableExprNode weekday   (const TableExprNode& node);
     TableExprNode cdow      (const TableExprNode& node);
-    TableExprNode ctod      (const TableExprNode& node);
+    TableExprNode ctodt     (const TableExprNode& node);
     TableExprNode cdate     (const TableExprNode& node);
     TableExprNode ctime     (const TableExprNode& node);
     TableExprNode week	    (const TableExprNode& node);
@@ -652,7 +654,7 @@ class TableExprNode
     friend TableExprNode cmonth    (const TableExprNode& node);
     friend TableExprNode weekday   (const TableExprNode& node);
     friend TableExprNode cdow      (const TableExprNode& node);
-    friend TableExprNode ctod      (const TableExprNode& node);
+    friend TableExprNode ctodt     (const TableExprNode& node);
     friend TableExprNode cdate     (const TableExprNode& node);
     friend TableExprNode ctime     (const TableExprNode& node);
     friend TableExprNode week	   (const TableExprNode& node);
@@ -1501,7 +1503,7 @@ inline TableExprNode cdow (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::cdowFUNC, node);
 }
-inline TableExprNode ctod (const TableExprNode& node)
+inline TableExprNode ctodt (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::ctodFUNC, node);
 }
