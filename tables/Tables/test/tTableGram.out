@@ -884,6 +884,12 @@ calc -4.1//2
 calc -4**2
     has been executed
 [-16]
+calc angdist([10,12],[10,12,13,14])
+    has been executed
+Unit: rad
+  row 0:  Axis Lengths: [1, 2]  (NB: Matrix in Row/Column order)
+[0, 2.27282]
+
 
 testing units ...
 calc sum([select ab d as ABDAY from tTableGram_tmp.tab])

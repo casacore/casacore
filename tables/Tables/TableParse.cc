@@ -698,6 +698,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::randFUNC;
   } else if (funcName == "iif") {
     ftype = TableExprFuncNode::iifFUNC;
+  } else if (funcName == "angdist"  ||  funcName == "angulardistance") {
+    ftype = TableExprFuncNode::angdistFUNC;
   } else {
     // unknown name can be a user-defined function.
     ftype = TableExprFuncNode::NRFUNC;
