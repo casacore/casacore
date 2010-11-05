@@ -24,11 +24,11 @@ done
 for FIL in $srcroot/$1.in_*
 do
   cp -r $FIL .
-done >& /dev/null       # avoid error message if no such files
+done > /dev/null 2>&1       # avoid error message if no such files
 for FIL in $srcroot/*.data_*
 do
   cp -r $FIL .
-done >& /dev/null       # avoid error message if no such files
+done > /dev/null 2>&1       # avoid error message if no such files
 
 # Execute the test.
 $rootdir/scons-tools/casacore_assay "$@"
