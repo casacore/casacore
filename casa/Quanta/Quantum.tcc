@@ -27,6 +27,7 @@
 
 //# Includes
 #include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/QuantumType.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Arrays/IPosition.h>
@@ -345,12 +346,12 @@ QBase *Quantum<Qtype>::clone() const {
 
 template <class Qtype>
 uInt Quantum<Qtype>::type() const {
-  return Register(static_cast<Quantum<Qtype> *>(0));
+  return quantumType (static_cast<Quantum<Qtype> *>(0));
 }
 
 template <class Qtype>
 uInt Quantum<Qtype>::myType() {
-  return Register(static_cast<Quantum<Qtype> *>(0));
+  return quantumType (static_cast<Quantum<Qtype> *>(0));
 }
 
 

@@ -405,7 +405,7 @@ template <class Qtype> class Quantum : public QBase{
   virtual QBase *clone() const;
   // Print a Quantum
   virtual void print(ostream &os) const;
-  // Get the type (== Register()) of derived Quantum (faster than Strings)
+  // Get the type (using QuantumType) of derived Quantum (faster than Strings)
   // <group>
   virtual uInt type() const;
   static uInt myType();
