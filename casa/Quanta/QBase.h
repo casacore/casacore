@@ -129,7 +129,7 @@ public:
   virtual const Unit &getFullUnit() const = 0;
   // Print a Quantum
   virtual void print(ostream &os) const = 0;
-  // Get the type (== Register() of derived Quantum (faster than Strings)
+  // Get the type of derived Quantum (using QuantumType).
   // All should have:
   // static uInt myType();
   virtual uInt type() const = 0;
