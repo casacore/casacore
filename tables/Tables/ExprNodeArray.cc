@@ -1171,7 +1171,7 @@ void TableExprNodeIndex::convertConstIndex()
 		if (val < 0) {
 		    end_p = Slicer::MimicSource;
 		}else{
-		    end_p(i) = val - origin_p;
+		    end_p(i) = val - endMinus_p;
 		}
 	    }else{
 		varIndex_p[j] = True;
