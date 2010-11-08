@@ -112,6 +112,7 @@ using namespace casa;
 %type <node> selcol
 %type <node> normcol
 %type <nodelist> tables
+%type <nodelist> ctables
 %type <node> whexpr
 %type <node> groupby
 %type <nodelist> exprlist
@@ -406,13 +407,21 @@ calccomm:  CALC FROM tables CALC orexpr {
                     new TaQLCalcNodeRep (*$3, *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | CALC orexpr {
+         | CALC orexpr ctables {
 	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (0, *$2));
+                    new TaQLCalcNodeRep (*$3, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+
+ctables:   FROM tables {
+               $$ = $2;
+           }
+           |  /* no tables */ {
+               $$ = new TaQLMultiNode ((TaQLMultiNodeRep*)0);
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
-           
+
 cretabcomm: CREATETAB tabname colspecs dminfo {
 	       $$ = new TaQLNode(
                     new TaQLCreTabNodeRep ($2->getString(), *$3, *$4));
