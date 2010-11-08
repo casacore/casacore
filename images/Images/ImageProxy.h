@@ -183,14 +183,17 @@ namespace casa {
     // Get the coordinate system.
     Record coordSys() const;
 
-    // Convert a pixel coordinate to world coordinates.
+    // Convert a pixel coordinate to world coordinate.
     // if <src>reverseAxes=True</src> the input and output vector will be
     // reversed (as needed for pyrap).
     Vector<Double> toWorld (const Vector<Double>& pixel,
                             Bool reverseAxes);
 
-    //#// Convert world coordinates to pixel coordinates.
-    //#Vector<Double> topixel (Record& value);
+    // Convert a world coordinate to pixel coordinate.
+    // if <src>reverseAxes=True</src> the input and output vector will be
+    // reversed (as needed for pyrap).
+    Vector<Double> toPixel (const Vector<Double>& world,
+                            Bool reverseAxes);
 
     // Get the image info.
     Record imageInfo() const;

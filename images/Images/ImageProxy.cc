@@ -753,6 +753,30 @@ namespace casa { //# name space casa begins
     return coord;  
   }
 
+  Vector<Double> ImageProxy::toPixel (const Vector<Double>& world,
+                                      Bool reverseAxes)           
+  {                                                               
+    Vector<Double> coord(world.size());                           
+    if (!reverseAxes) {                                           
+      coord = world;                                              
+    } else {                                                      
+      for (uInt i=0; i<world.size(); ++i) {                       
+        coord[i] = world[world.size()-i-1];
+      }
+    }
+    Vector<Double> pixel;
+    if (! itsCoordSys->toPixel (pixel, coord)) {
+      throw AipsError (itsCoordSys->errorMessage());
+    }
+    if (!reverseAxes) {
+      return pixel;
+    }
+    for (uInt i=0; i<pixel.size(); ++i) {
+      coord[i] = pixel[pixel.size()-i-1];
+    }
+    return coord;
+  }
+
   Record ImageProxy::imageInfo() const
   {
     Record rec;
