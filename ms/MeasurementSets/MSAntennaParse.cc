@@ -57,7 +57,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   // Add the current condition to the TableExprNode tree.  Mask auto
-  // correlations if autoCorr==False
+  // correlations if autoCorr==CrossOnly
   // 
   const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, 
                                               BaselineListType autoCorr,
@@ -93,10 +93,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         }
       }
     } else {
-      condition =
-	(ms()->col(colName1).in(antennaIds) ||
-         ms()->col(colName2).in(antennaIds)) &&
-        ms()->col(colName1) != ms()->col(colName2);
+      condition = (ms()->col(colName1).in(antennaIds) ||
+                   ms()->col(colName2).in(antennaIds));
     }
     {
       Int nrows_p = ms()->antenna().nrow();
@@ -112,7 +110,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         makeBaselineList(antennaIds,a2,baselineList,autoCorr, negate);
       }
     }
-    return setTEN(condition, AutoCorrAlso, negate);
+    return setTEN(condition, autoCorr, negate);
   }
 
   void MSAntennaParse::makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList,

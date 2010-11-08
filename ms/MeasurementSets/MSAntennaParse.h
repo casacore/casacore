@@ -86,7 +86,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     
   public:
-    // Define the operator types (&, &&, and &&&).
+    // Define the operator types (&&&, &&, and &).
     enum BaselineListType {AutoCorrOnly=0, AutoCorrAlso, CrossOnly};
 
     // Default constructor
