@@ -36,6 +36,7 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MPosition.h>
 #include <tables/Tables/ScalarColumn.h>
+#include <casa/Utilities/Compare.h>
 #include <casa/BasicSL/String.h>
 #include <scimath/Mathematics/SquareMatrix.h>
 #include <scimath/Mathematics/RigidVector.h>
@@ -53,14 +54,17 @@ class TableIterator;
 // Small helper class to specify an 'interval' comparison for table iteration
 // by time interval.
 // </synopsis>
-class MSInterval {
+class MSInterval : public BaseCompare
+{
 public:
-    static void setOffset(Double offset) {offset_p=offset;}
-    static void setInterval(Double interval) {interval_p=interval;}
-    static Int compare(const void * obj1, const void * obj2);
+  explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
+    virtual ~MSInterval() {};
+    virtual int comp(const void * obj1, const void * obj2) const;
+    void setOffset(Double offset) {offset_p=offset;}
+    void setInterval(Double interval) {interval_p=interval;}
 private:
-    static Double interval_p;
-    static Double offset_p;
+    Double interval_p;
+    mutable Double offset_p;
 };
 
 // <summary> 
@@ -78,16 +82,14 @@ private:
 // </etymology>
 //
 // <synopsis> 
-// An MSIter is a class to traverse a MeasurementSet in various orders.
-// It automatically adds four predefined sort columns to your selection
-// of sort columns (see constructor) so that it
-// can keep track of changes in frequency or polarization setup, 
-// field position and sub-array. Note that this can cause iterations
-// to occur in a different way from what you would expect, see examples below.
-// MSIter implements iteration by time interval
-// for the use of e.g., calibration tasks that want to calculate solutions over
-// some interval of time. You can iteratate over multiple MeasurementSets
-// with this class
+// An MSIter is a class to traverse a MeasurementSet in various orders.  It
+// automatically adds four predefined sort columns to your selection of sort
+// columns (see constructor) so that it can keep track of changes in frequency
+// or polarization setup, field position and sub-array.  Note that this can
+// cause iterations to occur in a different way from what you would expect, see
+// examples below.  MSIter implements iteration by time interval for the use of
+// e.g., calibration tasks that want to calculate solutions over some interval
+// of time.  You can iterate over multiple MeasurementSets with this class.
 // </synopsis> 
 //
 // <example>

@@ -63,7 +63,7 @@ int main(int argc, const char* argv[])
       cout << "TableExprNode has rows = " << node.nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(node, node.nrow() ));
-      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::New);
       mssel->flush();
       if(mssel->nrow()==0) 
         cout << "Check your input, No data selected" << endl;
