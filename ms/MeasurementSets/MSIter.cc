@@ -47,19 +47,24 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-Double MSInterval::interval_p;
-Double MSInterval::offset_p;
  
-Int MSInterval::compare(const void * obj1, const void * obj2)
+int MSInterval::comp(const void * obj1, const void * obj2) const
 {
-
-  // Set offset_p to current initial timestamp
-  if (offset_p==0.0) offset_p=*(Double*)obj2;
-
-  Double t1;
-  t1 = *(const Double*)obj1 - offset_p;
-  
-  return (( floor(t1/interval_p)==(Double)0.0 ) ? 0 : (t1 < (Double)0.0) ? -1 : 1);
+  double v1 = *(const Double*)obj1;
+  double v2 = *(const Double*)obj2;
+  // Initialize offset_p to first timestamp.
+  // Subtract a bit to avoid rounding problems.
+  // Note that a time is the middle of an interval; ideally half that width
+  // should be subtracted, but we don't know the width.
+  if (offset_p == 0.0) {
+    offset_p = v2 - 0.01;
+  }
+  // Shortcut if values are equal.
+  if (v1 == v2) return 0;
+  // The times are binned in bins with a width of interval_p.
+  double t1 = floor((v1 - offset_p) / interval_p);
+  double t2 = floor((v2 - offset_p) / interval_p);
+  return (t1==t2 ? 0 : (t1<t2 ? -1 : 1));
 }
  
 
@@ -72,7 +77,6 @@ MSIter::MSIter(const MeasurementSet& ms,
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
   allBeamOffsetsZero_p(True)
 {
-  interval_p=0.999999*interval_p;
   bms_p.resize(1); 
   bms_p[0]=ms;
   construct(sortColumns,addDefaultSortColumns);
@@ -191,16 +195,12 @@ void MSIter::construct(const Block<Int>& sortColumns,
       columns[iCol++]=MS::columnName(MS::TIME);
     }
   }
-  MSInterval::setInterval(interval_p);
-  MSInterval::setOffset(0.0);
   
   // now find the time column and set the compare function
-  PtrBlock<ObjCompareFunc*> objCompFuncs(columns.nelements());
+  Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
   for (uInt i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
-      objCompFuncs[i]=MSInterval::compare;
-    } else {
-      objCompFuncs[i]=static_cast<ObjCompareFunc*>(0);
+      objComp[i] = new MSInterval(interval_p);
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
@@ -246,7 +246,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     if (!useIn && !useSorted) {
       // we have to resort the input
       if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
-      sorted = bms_p[i].sort(columns);
+      sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
     
     if (store) {
@@ -265,10 +265,10 @@ void MSIter::construct(const Block<Int>& sortColumns,
     // at this stage either the input is sorted already or we are using
     // the sorted table, so the iterator can avoid sorting.
     if (useIn) {
-      tabIter_p[i] = new TableIterator(bms_p[i],columns,objCompFuncs,orders,
+      tabIter_p[i] = new TableIterator(bms_p[i],columns,objComp,orders,
 				       TableIterator::NoSort);
     } else {
-      tabIter_p[i] = new TableIterator(sorted,columns,objCompFuncs,orders,
+      tabIter_p[i] = new TableIterator(sorted,columns,objComp,orders,
 				       TableIterator::NoSort);
     } 
     tabIterAtStart_p[i]=True;
@@ -325,14 +325,11 @@ const MS& MSIter::ms(const uInt id) const {
 void MSIter::setInterval(Double timeInterval)
 {
   interval_p=timeInterval;
-  MSInterval::setInterval(interval_p);
 }
 
 void MSIter::origin()
 {
   curMS_p=0;
-  MSInterval::setInterval(interval_p);
-  MSInterval::setOffset(0.0);
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p=newArray_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
@@ -357,10 +354,6 @@ void MSIter::advance()
 {
   newMS_p=newArray_p=newSpectralWindow_p=newPolarizationId_p=
     newDataDescId_p=newField_p=checkFeed_p=False;
-  // make sure we've still got the right interval
-  MSInterval::setInterval(interval_p);
-  // reset origin to 0.0 so that MSInterval::compare will set it properly
-  MSInterval::setOffset(0.0);
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
   if (tabIter_p[curMS_p]->pastEnd()) {
@@ -509,7 +502,7 @@ void MSIter::setFeedInfo()
   //     (using a pointer or reference to avoid unnecessary copying)
   //     and make sure that critical times are known to MSInterval before
   //     tabIter_p[curMS_p]->next() in MSIter::advance
-  //  4. Change MSInterval::compare to break iteration (i.e. return -1 or +1)
+  //  4. Change MSInterval::comp to break iteration (i.e. return -1 or +1)
   //     if any critical time lies in between  *obj1 and *obj2.
   //     A sorted vector of critical times can speed up the search.
   //  5. Add an additional condition to
