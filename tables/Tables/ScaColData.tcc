@@ -180,7 +180,7 @@ void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 
 template<class T>
 void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
-				       ObjCompareFunc* cmpFunc,
+				       CountedPtr<BaseCompare>& cmpObj,
 				       Int order,
 				       const void*& dataSave)
 {
@@ -205,12 +205,12 @@ void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
 	autoReleaseLock();
     }
     dataSave = vecPtr;
-    fillSortKey (vecPtr, sortobj, cmpFunc, order);
+    fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
 
 template<class T>
 void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
-					  ObjCompareFunc* cmpFunc,
+                                          CountedPtr<BaseCompare>& cmpObj,
 					  Int order,
 					  const Vector<uInt>& rownrs,
 					  const void*& dataSave)
@@ -235,13 +235,13 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
 	autoReleaseLock();
     }
     dataSave = vecPtr;
-    fillSortKey (vecPtr, sortobj, cmpFunc, order);
+    fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
 
 template<class T>
 void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
 				       Sort& sortobj,
-				       ObjCompareFunc* cmpFunc,
+                                       CountedPtr<BaseCompare>& cmpObj,
 				       Int order)
 {
     //# Pass the real vector storage as the sort data.
@@ -250,10 +250,10 @@ void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
     //# an unknown data type.
     Bool deleteIt;
     const T* datap = vecPtr->getStorage (deleteIt);
-    if (cmpFunc == 0) {
-	cmpFunc = ObjCompare<T>::compare;
+    if (cmpObj.null()) {
+        cmpObj = new ObjCompare<T>();
     }
-    sortobj.sortKey (datap, cmpFunc, sizeof(T),
+    sortobj.sortKey (datap, cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending
 		                                 : Sort::Ascending);
     vecPtr->freeStorage (datap, deleteIt);
@@ -270,7 +270,7 @@ void ScalarColumnData<T>::freeSortKey (const void*& dataSave)
 
 template<class T>
 void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
-					ObjCompareFunc*& cmpFunc)
+					CountedPtr<BaseCompare>& cmpObj)
 {
     T* valp = new T[2];
     if (valp == 0) {
@@ -278,8 +278,8 @@ void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
     }
     lastVal = valp;
     curVal  = valp + 1;
-    if (cmpFunc == 0) {
-	cmpFunc = ObjCompare<T>::compare;
+    if (cmpObj.null()) {
+	cmpObj = new ObjCompare<T>;
     }
 }
 

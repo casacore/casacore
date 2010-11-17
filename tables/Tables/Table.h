@@ -50,7 +50,7 @@ class DataManager;
 class IPosition;
 template<class T> class Vector;
 template<class T> class Block;
-template<class T> class PtrBlock;
+template<class T> class CountedPtr;
 
 
 // <summary>
@@ -799,11 +799,11 @@ public:
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     // The order can be given per column.
-    // Provide some special compare functions via a function pointer.
-    // A zero function pointer means using the standard compare function
+    // Provide some special comparisons via CountedPtrs of compare objects.
+    // A null CountedPtr means using the standard compare object
     // from class <linkto class="ObjCompare:description">ObjCompare</linkto>.
     Table sort (const Block<String>& columnNames,
-		const PtrBlock<ObjCompareFunc*>& compareFunctionPointers,
+		const Block<CountedPtr<BaseCompare> >& compareObjects,
 		const Block<Int>& sortOrders,
 		int = Sort::HeapSort) const;
     // </group>

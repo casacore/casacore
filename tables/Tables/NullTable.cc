@@ -268,7 +268,7 @@ Bool NullTable::adjustRownrs (uInt, Vector<uInt>&,
 }
 
 BaseTable* NullTable::doSort (PtrBlock<BaseColumn*>&,
-			      const PtrBlock<ObjCompareFunc*>&,
+			      const Block<CountedPtr<BaseCompare> >&,
 			      const Block<Int>&,
 			      int)
 {

@@ -759,17 +759,17 @@ Table Table::sort (const Block<String>& names,
 Table Table::sort (const Block<String>& names,
 		   const Block<Int>& orders, int option) const
 {
-    //# Insert a block with zero compare function pointers.
+    //# Insert a block with null compare objects.
     return sort (names,
-	      PtrBlock<ObjCompareFunc*>(names.nelements(), static_cast<ObjCompareFunc*>(0)),
-	      orders, option);
+                 Block<CountedPtr<BaseCompare> >(names.nelements()),
+                 orders, option);
 }
 
 //# Sort on multiple columns and orders with given functions.
 Table Table::sort (const Block<String>& names,
-		   const PtrBlock<ObjCompareFunc*>& cmpFuncs,
+		   const Block<CountedPtr<BaseCompare> >& cmpObjs,
 		   const Block<Int>& orders, int option) const
-    { return Table(baseTabPtr_p->sort (names, cmpFuncs, orders, option)); }
+    { return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option)); }
 
 
 //# Create an expression node to handle a keyword.

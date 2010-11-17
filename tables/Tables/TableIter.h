@@ -68,7 +68,7 @@ template<class T> class Block;
 // by iterating over columns time and baseline (as shown in the example).
 // The main iteration column must be given first.
 // It is possible to define an iteration order per column.
-// It is also possible to define a compare function per column.
+// It is also possible to define a compare object per column.
 // This can, for example, be used to iterate in intervals by treating
 // a range of values as equal (e.g. iterate in 60 seconds time intervals).
 //
@@ -107,13 +107,9 @@ template<class T> class Block;
 // This can perfectly be done with an iterator.
 // </motivation>
 
-// <todo asof="$DATE:$">
+//# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-//   <li> maybe add the possibility to specify an object which
-//          determines if a value is equal. This allows for iterating
-//          in intervals in a more flexible way than can be achieved
-//          with the compare functions.
-// </todo>
+//# </todo>
 
 
 class TableIterator
@@ -140,7 +136,7 @@ public:
     // Each iteration step results in a Table containing all
     // rows in which the values in each given column is equal.
     // An iteration order can be given; it defaults to Ascending.
-    // Per column a compare function can be given to use other compare
+    // Per column a compare object can be given to use other compare
     // functions than the standard ones defined in Compare.h.
     // The compare functions are used for both the sort and the iteration.
     // The option argument makes it possible to choose from various
@@ -160,10 +156,10 @@ public:
     TableIterator (const Table&, const Block<String>& columnNames,
 		   const Block<Int>& orders, Option = HeapSort);
     // Give the iteration order per column.
-    // Give an optional compare function per column.
+    // Give an optional compare object per column.
     // A zero pointer means that the default compare function will be used.
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const PtrBlock<ObjCompareFunc*>&,
+		   const Block<CountedPtr<BaseCompare> >&,
 		   const Block<Int>& orders, Option = HeapSort);
     // </group>
 

@@ -202,17 +202,17 @@ void RefColumn::setMaximumCacheSize (uInt nbytes)
     { colPtr_p->setMaximumCacheSize (nbytes); }
 
 
-void RefColumn::makeSortKey (Sort& sortobj, ObjCompareFunc* cmpFunc,
+void RefColumn::makeSortKey (Sort& sortobj, CountedPtr<BaseCompare>& cmpObj,
 			     Int order, const void*& dataSave)
-    { colPtr_p->makeRefSortKey (sortobj, cmpFunc, order,
+    { colPtr_p->makeRefSortKey (sortobj, cmpObj, order,
 				refTabPtr_p->rowNumbers(), dataSave); }
 
 void RefColumn::freeSortKey (const void*& dataSave)
     { colPtr_p->freeSortKey (dataSave); }
 
 void RefColumn::allocIterBuf (void*& lastVal, void*& curVal,
-			      ObjCompareFunc*& cmpFunc)
-    { colPtr_p->allocIterBuf (lastVal, curVal, cmpFunc); }
+			      CountedPtr<BaseCompare>& cmpObj)
+    { colPtr_p->allocIterBuf (lastVal, curVal, cmpObj); }
 
 void RefColumn::freeIterBuf (void*& lastVal, void*& curVal)
     { colPtr_p->freeIterBuf (lastVal, curVal); }

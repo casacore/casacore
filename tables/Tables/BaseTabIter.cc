@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 BaseTableIterator::BaseTableIterator (BaseTable* btp,
 				      const Block<String>& keys,
-				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
+				      const Block<CountedPtr<BaseCompare> >& cmp,
 				      const Block<Int>& order,
 				      int option)
 : lastRow_p (0),
@@ -52,10 +52,9 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
   lastVal_p (keys.nelements()),
   curVal_p  (keys.nelements()),
   colPtr_p  (keys.nelements()),
-  cmpFunc_p (cmpFunc)
+  cmpObj_p  (cmp)
 {
     // If needed sort the table in order of the iteration keys.
-    // Sort comparison functions are not used.
     // The passed in compare functions are for the iteration.
     if (option == TableIterator::NoSort) {
 	sortTab_p = btp;
@@ -72,14 +71,14 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 		ord[i] = Sort::Descending;
 	    }
 	}
-	sortTab_p = (RefTable*) (btp->sort (keys, cmpFunc_p, ord, sortopt));
+	sortTab_p = (RefTable*) (btp->sort (keys, cmpObj_p, ord, sortopt));
     }
     sortTab_p->link();
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
     for (uInt i=0; i<nrkeys_p; i++) {
 	colPtr_p[i] = sortTab_p->getColumn (keys[i]);
-	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpFunc_p[i]);
+	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
 }
 
@@ -100,12 +99,12 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
   lastVal_p (that.nrkeys_p),
   curVal_p  (that.nrkeys_p),
   colPtr_p  (that.colPtr_p),
-  cmpFunc_p (that.cmpFunc_p)
+  cmpObj_p  (that.cmpObj_p)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
     for (uInt i=0; i<nrkeys_p; i++) {
-	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpFunc_p[i]);
+	colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
     // Link against the table (ie. increase its ref.count).
     sortTab_p = that.sortTab_p;
@@ -149,7 +148,7 @@ BaseTable* BaseTableIterator::next()
 	match = True;
 	for (i=0; i<nrkeys_p; i++) {
 	    colPtr_p[i]->get (lastRow_p, curVal_p[i]);
-	    if (cmpFunc_p[i] (curVal_p[i], lastVal_p[i])  != 0) {
+	    if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
 		match = False;
 		break;
 	    }

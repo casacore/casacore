@@ -46,8 +46,8 @@ TableIterator::TableIterator (const Table& tab,
 {
     Block<String> keys(1, key);
     Block<Int> ord(1, order);
-    PtrBlock<ObjCompareFunc*> cmpFunc(1, static_cast<ObjCompareFunc*>(0));
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+    Block<CountedPtr<BaseCompare> > cmpObj(1, 0);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
     next();                            // get first subtable
 }
@@ -59,8 +59,8 @@ TableIterator::TableIterator (const Table& tab,
 : tabIterPtr_p (0)
 {
     Block<Int> ord(keys.nelements(), order);
-    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+    Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements(), 0);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
     next();                            // get first subtable
 }
@@ -71,20 +71,20 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
+    Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements(), 0);
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     orders, option);
     next();                            // get first subtable
 }
 
 TableIterator::TableIterator (const Table& tab,
 			      const Block<String>& keys,
-			      const PtrBlock<ObjCompareFunc*>& cmpFuncs,
+			      const Block<CountedPtr<BaseCompare> >& cmpObjs,
 			      const Block<Int>& orders,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFuncs,
+    tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObjs,
 						     orders, option);
     next();                            // get first subtable
 }

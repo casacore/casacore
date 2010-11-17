@@ -209,7 +209,7 @@ void ScalarRecordColumnData::putRecord (uInt rownr, const TableRecord& rec)
 
 
 void ScalarRecordColumnData::makeSortKey (Sort&,
-					  ObjCompareFunc*,
+					  CountedPtr<BaseCompare>&,
 					  Int,
 					  const void*&)
 {
@@ -218,7 +218,7 @@ void ScalarRecordColumnData::makeSortKey (Sort&,
 }
 
 void ScalarRecordColumnData::makeRefSortKey (Sort&,
-					     ObjCompareFunc*,
+                                             CountedPtr<BaseCompare>&,
 					     Int,
 					     const Vector<uInt>&,
 					     const void*&)
@@ -233,7 +233,7 @@ void ScalarRecordColumnData::freeSortKey (const void*& dataSave)
 }
 
 void ScalarRecordColumnData::allocIterBuf (void*&, void*&,
-					   ObjCompareFunc*&)
+                                           CountedPtr<BaseCompare>&)
 {
     throw (TableError ("Iterating on a column containing records "
 		       "is not possible"));

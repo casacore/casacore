@@ -34,11 +34,11 @@
 #include <casa/Utilities/ValType.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/Compare.h>
+#include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class AipsIO;
 template<class T> class Vector;
 
 // <summary> Define a Sort key </summary>
@@ -51,9 +51,8 @@ template<class T> class Vector;
 // It holds the following information about a sort key:
 // <ul>
 //  <li> Address of the data array containing the sort key;
-//  <li> Address of the comparison function to be used -- this must be
-//       a function with the signature 
-//       <linkto group="Compare.h#ObjCompareFunc">ObjCompareFunc</linkto>;
+//  <li> A CountedPtr to a comparison object to be used
+//       (of a class derived from the abstract base class BaseCompare).
 //  <li> Increment for the next data point -- this lets you specify a
 //       stride for keys embedded in a struct;
 //  <li> Sort order -- ascending or descending;
@@ -66,8 +65,9 @@ public:
     friend class Sort;
 
     // Define a sort key in a given data array using the indicated
-    // comparison function, stride and sort order.
-    SortKey (const void* data, ObjCompareFunc*, uInt increment, int order);
+    // comparison object, stride and sort order.
+    SortKey (const void* data, const CountedPtr<BaseCompare>&,
+             uInt increment, int order);
 
     // Copy constructor (copy semantics).
     SortKey (const SortKey&);
@@ -89,8 +89,10 @@ protected:
     const void*       data_p;
     // increment for next data point
     uInt              incr_p;
-    // ptr to comparison routine
-    ObjCompareFunc*   cmpFunc_p;
+    // comparison object; use CountedPtr for memory management
+    CountedPtr<BaseCompare> ccmpObj_p;
+    // comparison object; use raw ponter for performance
+    BaseCompare* cmpObj_p;
 };
 
 
@@ -137,10 +139,10 @@ protected:
 //  <li> Construct the <src>Sort</src> object.
 //  <li> Define the sort keys. The function <src>sortKey</src> must be
 //       called for each sort key (the most significant one first).
-//       The comparison function can be passed in directly, or a 
+//       The comparison object can be passed in directly, or a 
 //       <linkto group="DataType.h#DataType">basic data type</linkto>
-//       can be given. In the latter case the appropriate comparison
-//       function will be selected.
+//       can be given. In the latter case the appropriate ObjCompare
+//       comparison object will be created.
 //  <li> Sort the data. The function <src>sort</src> returns an index
 //       array, which is allocated when needed.
 //  <li> Destruct the <src>Sort</src> object (usually done automatically)
@@ -206,18 +208,15 @@ protected:
 //    sort.sort (nrts, inx);
 // </srcblock>
 //
-// Finally, we could provide a comparison function for the struct.
-// (The function is shown inline, but should be implemented out-of-line.)
-// This method is not recommended, because it means more work for the user.
-// Moreover, the descending sort on the string has to be coded in the
-// comparison function, which is not very flexible.
+// Finally, we could provide a comparison object for the struct.
 // <srcblock>
 //    struct Ts {
 //         String as;
 //         double ad;
 //    }
-//    int compareTs (const void* val1, const void* val2)
-//    {
+//    class MyCompare: public BaseCompare {
+//      virtual int comp (const void* val1, const void* val2) const
+//      {
 //        const Ts& t1 = *(Ts*)val1;
 //        const Ts& t2 = *(Ts*)val2;
 //        if (t1.ad < t2.ad) return -1;
@@ -225,7 +224,8 @@ protected:
 //        if (t1.as < t2.as) return 1;    // string must be descending
 //        if (t1.as > t2.as) return -1;
 //        return 0;
-//    }
+//      }
+//    };
 //    uInt* inx=0;
 //    Sort sort;
 //    sort.sortKey (tsarr, compareTs, sizeof(Ts)); 
@@ -291,33 +291,23 @@ public:
     // <li> A pointer to the start of the data array. --- When structs are
     //   sorted on an element in the struct, the pointer must point to
     //   that element in the first struct.
-    // <li> A pointer to the comparison function to be used. --- The
-    //   comparison function can be specified in two ways:
+    // <li> A pointer to the comparison object to be used. --- The
+    //   comparison object can be specified in two ways:
     //   <ul>
     //   <li> by giving a
     //     <linkto group="DataType.h#DataType">basic data type</linkto>,
-    //     in which case the appropriate comparison function will be
-    //     selected automatically, or
-    //   <li> by pointing directly to a comparison function with the
-    //     signature
-    //     <linkto group="Compare.h#ObjCompareFunc">ObjCompareFunc</linkto>.
-    //     You may want to use the templated comparison function
-    //     <linkto class=ObjCompare>ObjCompare::compare</linkto>(),
-    //     but you are free to use any other function that can be called as:
-    //     <ul>
-    //     <li> int (const void* value1, const void* value2)
-    //     </ul>
-    //     and returns:
-    //     <ul>
-    //     <li> -1  if value1 &lt; value2
-    //     <li>  1  if value1 &gt; value2
-    //     <li>  0  if value1 == value2.
-    //     </ul>
+    //     in which case the appropriate comparison object will be
+    //     created automatically, or
+    //   <li> by a CountedPtr of a comparison object.
+    //     You may want to use the templated comparison classes
+    //     <linkto class=ObjCompare>ObjCompare</linkto>(),
+    //     but you are free to use any other class derived from BaseCompare
+    //     that implements the <src>comp</src> function.
     //   </ul>
     // <li> The increment from one data element to the next. --- When
     //   structs are sorted on an element in the struct, the increment
-    //   should be the size of the struct. When the comparison function is
-    //   automatically determined from the data type specified, the default
+    //   should be the size of the struct. If the comparison object is
+    //   automatically created using the data type specified, the default
     //   increment is the size of the data type.
     // <li> The sort order. --- <src>Ascending</src> (default) or 
     //   <src>Descending</src>;
@@ -330,10 +320,11 @@ public:
     // <group>
     void sortKey (const void* data, DataType, uInt increment = 0,
 		  Order = Ascending);
-    void sortKey (const void* data, ObjCompareFunc*, uInt increment,
-		  Order = Ascending);
+    void sortKey (const void* data, const CountedPtr<BaseCompare>&,
+                  uInt increment, Order = Ascending);
     void sortKey (uInt offset, DataType, Order = Ascending);
-    void sortKey (uInt offset, ObjCompareFunc*, Order = Ascending);
+    void sortKey (uInt offset, const CountedPtr<BaseCompare>&,
+                  Order = Ascending);
     // </group>
 
     // Sort the data array of <src>nrrec</src> records.
@@ -365,10 +356,10 @@ private:
     // Copy that Sort object to this.
     void copy (const Sort& that);
 
-    // Add a sort key giving a data type or a compare function.
+    // Add a sort key giving a data type or the sort key.
     // <group>
     void addKey (const void* data, DataType, uInt nr, int options);
-    void addKey (const void* data, ObjCompareFunc*, uInt nr, int options);
+    void addKey (SortKey*);
     // </group>
 
     // Do an insertion sort, optionally skipping duplicates.
@@ -401,10 +392,10 @@ private:
     inline void swap (Int index1, Int index2, uInt* indices) const;
 
 
-    Block<void*>    keys_p;                       //# keys to sort on
-    uInt            nrkey_p;                      //# #sort-keys
-    const void*     data_p;                       //# pointer to data records
-    uInt            size_p;                       //# size of data record
+    PtrBlock<SortKey*> keys_p;                    //# keys to sort on
+    uInt               nrkey_p;                   //# #sort-keys
+    const void*        data_p;                    //# pointer to data records
+    uInt               size_p;                    //# size of data record
 };
 
 

@@ -30,10 +30,27 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T>
+ObjCompare<T>::~ObjCompare()
+{}
+
+template<class T>
 int ObjCompare<T>::compare (const void* obj1, const void* obj2)
 {
     return (*(const T*)obj1  < *(const T*)obj2  ?  -1 :
 	   (*(const T*)obj1 == *(const T*)obj2  ?  0 : 1));
+}
+
+template<class T>
+int ObjCompare<T>::comp (const void* obj1, const void* obj2) const
+{
+    return (*(const T*)obj1  < *(const T*)obj2  ?  -1 :
+	   (*(const T*)obj1 == *(const T*)obj2  ?  0 : 1));
+}
+
+template<class T>
+DataType ObjCompare<T>::dataType() const
+{
+    return whatType ((T*)0);
 }
 
 } //# NAMESPACE CASA - END

@@ -127,7 +127,7 @@ public:
   virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
 			     Bool determineOrder) const;
   virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
-			     const PtrBlock<ObjCompareFunc*>&,
+			     const Block<CountedPtr<BaseCompare> >&,
 			     const Block<Int>& sortOrder,
 			     int sortOption);
   virtual void renameSubTables (const String& newName,

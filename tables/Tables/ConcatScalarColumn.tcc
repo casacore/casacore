@@ -125,7 +125,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   template<class T>
   void ConcatScalarColumn<T>::makeSortKey (Sort& sortobj,
-					   ObjCompareFunc* cmpFunc,
+                                           CountedPtr<BaseCompare>& cmpObj,
 					   Int order,
 					   const void*& dataSave)
   {
@@ -137,12 +137,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Vector<T>* vecPtr = new Vector<T>;
     col.getColumn (*vecPtr);
     dataSave = vecPtr;
-    fillSortKey (vecPtr, sortobj, cmpFunc, order);
+    fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
 
   template<class T>
   void ConcatScalarColumn<T>::makeRefSortKey (Sort& sortobj,
-					      ObjCompareFunc* cmpFunc,
+                                              CountedPtr<BaseCompare>& cmpObj,
 					      Int order,
 					      const Vector<uInt>& rownrs,
 					      const void*& dataSave)
@@ -154,25 +154,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Vector<T>* vecPtr = new Vector<T>;
     col.getColumnCells (RefRows(rownrs), *vecPtr);
     dataSave = vecPtr;
-    fillSortKey (vecPtr, sortobj, cmpFunc, order);
+    fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
 
   template<class T>
   void ConcatScalarColumn<T>::fillSortKey (const Vector<T>* vecPtr,
 					   Sort& sortobj,
-					   ObjCompareFunc* cmpFunc,
+                                           CountedPtr<BaseCompare>& cmpObj,
 					   Int order)
   {
     //# Pass the real vector storage as the sort data.
-    //# Use the compare function if given, otherwise pass data type.
+    //# Use the compare object if given, otherwise pass data type.
     //# Throw an exception if no compare function is given for
     //# an unknown data type.
     Bool deleteIt;
     const T* datap = vecPtr->getStorage (deleteIt);
-    if (cmpFunc == 0) {
-      cmpFunc = ObjCompare<T>::compare;
+    if (cmpObj.null()) {
+      cmpObj = new ObjCompare<T>();
     }
-    sortobj.sortKey (datap, cmpFunc, sizeof(T),
+    sortobj.sortKey (datap, cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending
 		     : Sort::Ascending);
     vecPtr->freeStorage (datap, deleteIt);

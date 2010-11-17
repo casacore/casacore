@@ -200,8 +200,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
   void ConcatColumn::allocIterBuf (void*& lastVal, void*& curVal,
-				   ObjCompareFunc*& cmpFunc)
-    { refColPtr_p[0]->allocIterBuf (lastVal, curVal, cmpFunc); }
+                                   CountedPtr<BaseCompare>& cmpObj)
+    { refColPtr_p[0]->allocIterBuf (lastVal, curVal, cmpObj); }
 
   void ConcatColumn::freeIterBuf (void*& lastVal, void*& curVal)
     { refColPtr_p[0]->freeIterBuf (lastVal, curVal); }

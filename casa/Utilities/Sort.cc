@@ -40,12 +40,13 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-SortKey::SortKey (const void* dat, ObjCompareFunc* cmpfunc, uInt inc,
-		  int opt)
+SortKey::SortKey (const void* dat, const CountedPtr<BaseCompare>& cmpobj,
+                  uInt inc, int opt)
 : order_p   (opt),
   data_p    (dat),
   incr_p    (inc),
-  cmpFunc_p (cmpfunc)
+  ccmpObj_p (cmpobj),
+  cmpObj_p  (cmpobj.operator->())
 {
     if (order_p != Sort::Descending) {
 	order_p = Sort::Ascending;        // make sure order has correct value
@@ -56,7 +57,8 @@ SortKey::SortKey (const SortKey& that)
 : order_p   (that.order_p),
   data_p    (that.data_p),
   incr_p    (that.incr_p),
-  cmpFunc_p (that.cmpFunc_p)
+  ccmpObj_p (that.ccmpObj_p),
+  cmpObj_p  (that.cmpObj_p)
 {}
 
 SortKey::~SortKey()
@@ -68,7 +70,8 @@ SortKey& SortKey::operator= (const SortKey& that)
 	order_p   = that.order_p;
 	data_p    = that.data_p;
 	incr_p    = that.incr_p;
-	cmpFunc_p = that.cmpFunc_p;
+        ccmpObj_p = that.ccmpObj_p;
+	cmpObj_p  = that.cmpObj_p;
     }
     return *this;
 }
@@ -76,32 +79,33 @@ SortKey& SortKey::operator= (const SortKey& that)
 uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 {
     Sort::Order ord = (order_p < 0  ?  Sort::Ascending : Sort::Descending);
-    if (cmpFunc_p == ObjCompare<Double>::compare) {
+    DataType dtype = cmpObj_p->dataType();
+    if (dtype == TpDouble) {
 	if (incr_p == sizeof(Double)) {
 	    return GenSortIndirect<Double>::sort (indexVector, (Double*)data_p,
 						  nrrec, ord, opt);
 	}
-    } else if (cmpFunc_p == ObjCompare<Float>::compare) {
+    } else if (dtype == TpFloat) {
 	if (incr_p == sizeof(Float)) {
 	    return GenSortIndirect<Float>::sort (indexVector, (Float*)data_p,
 						 nrrec, ord, opt);
 	}
-    } else if (cmpFunc_p == ObjCompare<uInt>::compare) {
+    } else if (dtype == TpUInt) {
 	if (incr_p == sizeof(uInt)) {
 	    return GenSortIndirect<uInt>::sort (indexVector, (uInt*)data_p,
 						nrrec, ord, opt);
 	}
-    } else if (cmpFunc_p == ObjCompare<Int>::compare) {
+    } else if (dtype == TpInt) {
 	if (incr_p == sizeof(Int)) {
 	    return GenSortIndirect<Int>::sort (indexVector, (Int*)data_p,
 					       nrrec, ord, opt);
 	}
-    } else if (cmpFunc_p == ObjCompare<Int64>::compare) {
+    } else if (dtype == TpInt64) {
 	if (incr_p == sizeof(Int64)) {
 	    return GenSortIndirect<Int64>::sort (indexVector, (Int64*)data_p,
                                                  nrrec, ord, opt);
 	}
-    } else if (cmpFunc_p == ObjCompare<String>::compare) {
+    } else if (dtype == TpString) {
 	if (incr_p == sizeof(String)) {
 	    return GenSortIndirect<String>::sort (indexVector, (String*)data_p,
 						  nrrec, ord, opt);
@@ -136,7 +140,7 @@ Sort::Sort (const Sort& that)
 Sort::~Sort()
 {
     for (uInt i=0; i<nrkey_p; i++) {
-	delete (SortKey*)(keys_p[i]);
+	delete keys_p[i];
     }
 }
 
@@ -152,12 +156,12 @@ void Sort::copy (const Sort& that)
 {
     uInt i;
     for (i=0; i<nrkey_p; i++) {
-	delete (SortKey*)(keys_p[i]);
+	delete keys_p[i];
     }
     nrkey_p = that.nrkey_p;
     keys_p.resize (nrkey_p);
     for (i=0; i<nrkey_p; i++) {
-	keys_p = new SortKey (*(SortKey*)(that.keys_p[i]));
+	keys_p = new SortKey (*(that.keys_p[i]));
     }
     data_p = that.data_p;
     size_p = that.size_p;
@@ -167,9 +171,10 @@ void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
 {
     addKey (dat, dt, inc, ord);
 }
-void Sort::sortKey (const void* dat, ObjCompareFunc* cmp, uInt inc, Order ord)
+void Sort::sortKey (const void* dat, const CountedPtr<BaseCompare>& cmp,
+                    uInt inc, Order ord)
 {
-    addKey (dat, cmp, inc, ord);
+    addKey (new SortKey(dat, cmp, inc, ord));
 }
 void Sort::sortKey (uInt off, DataType dt, Order ord)
 {
@@ -178,12 +183,12 @@ void Sort::sortKey (uInt off, DataType dt, Order ord)
     }
     addKey ((char*)data_p+off, dt, size_p, ord);
 }
-void Sort::sortKey (uInt off, ObjCompareFunc* cmp, Order ord)
+void Sort::sortKey (uInt off, const CountedPtr<BaseCompare>& cmp, Order ord)
 {
     if (data_p == 0) {
 	throw SortNoData();
     }
-    addKey ((char*)data_p+off, cmp, size_p, ord);
+    addKey (new SortKey ((char*)data_p+off, cmp, size_p, ord));
 }
 
 
@@ -196,20 +201,16 @@ void Sort::addKey (const void* dat, DataType dt, uInt inc, int ord)
 	}
 	sz = inc;
     }
-    addKey (dat, ValType::getCmpFunc(dt), sz, ord);
+    addKey (new SortKey (dat, ValType::getCmpObj(dt), sz, ord));
 }
 
 
-void Sort::addKey (const void* dat, ObjCompareFunc* cmp, uInt inc, int ord)
+void Sort::addKey (SortKey* key)
 {
     if (nrkey_p >= keys_p.nelements()) {
 	keys_p.resize (keys_p.nelements() + 32);
     }
-    SortKey* skptr = new SortKey (dat, cmp, inc, ord);
-    if (skptr == 0) {
-	throw (AllocError ("SortKey",1));
-    }
-    keys_p[nrkey_p++] = skptr;
+    keys_p[nrkey_p++] = key;
 }
 
 
@@ -254,7 +255,7 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 {
     //# Try if we can use the faster GenSort when we have one key only.
     if (nrkey_p == 1) {
-	uInt n = ((SortKey*)(keys_p[0]))->tryGenSort (indexVector, nrrec, opt);
+	uInt n = keys_p[0]->tryGenSort (indexVector, nrrec, opt);
 	if (n > 0) {
 	    return n;
 	}
@@ -458,10 +459,9 @@ int Sort::compare (uInt i1, uInt i2) const
     int seq;
     SortKey* skp;
     for (uInt i=0; i<nrkey_p; i++) {
-	skp = (SortKey*)(keys_p[i]);        // cast from void* to SortKey*
-	seq = skp->cmpFunc_p (
-	              (char*)skp->data_p + i1*skp->incr_p,
-	              (char*)skp->data_p + i2*skp->incr_p);
+	skp = keys_p[i];
+        seq = skp->cmpObj_p->comp ((char*)skp->data_p + i1*skp->incr_p,
+                                   (char*)skp->data_p + i2*skp->incr_p);
 	if (seq == skp->order_p)
 	    return 2;                       // in order
 	if (seq != 0) {

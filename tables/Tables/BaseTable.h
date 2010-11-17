@@ -34,6 +34,7 @@
 #include <tables/Tables/TableInfo.h>
 #include <tables/Tables/TableDesc.h>
 #include <casa/Utilities/Compare.h>
+#include <casa/Utilities/CountedPtr.h>
 #include <casa/BasicSL/String.h>
 #include <casa/IO/FileLocker.h>
 
@@ -357,12 +358,12 @@ public:
 
     // Sort a table on one or more columns of scalars.
     BaseTable* sort (const Block<String>& columnNames,
-		     const PtrBlock<ObjCompareFunc*>& compareFunctionPointers,
+		     const Block<CountedPtr<BaseCompare> >& compareObjects,
 		     const Block<Int>& sortOrder, int sortOption);
 
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
-				     const PtrBlock<ObjCompareFunc*>&,
+                                     const Block<CountedPtr<BaseCompare> >&,
 				     const Block<Int>& orders, int option);
 
     // Add one or more columns to the table.
@@ -438,7 +439,7 @@ public:
     // The default implementation is suitable for almost all cases.
     // Only in RefTable a smarter implementation is provided.
     virtual BaseTable* doSort (PtrBlock<BaseColumn*>&,
-			       const PtrBlock<ObjCompareFunc*>&,
+                               const Block<CountedPtr<BaseCompare> >&,
 			       const Block<Int>& sortOrder,
 			       int sortOption);
 
