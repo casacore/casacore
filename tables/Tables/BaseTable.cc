@@ -578,7 +578,7 @@ Vector<uInt>* BaseTable::rowStorage()
 
 //# Sort a table.
 BaseTable* BaseTable::sort (const Block<String>& names,
-			    const PtrBlock<ObjCompareFunc*>& cmpFunc,
+			    const Block<CountedPtr<BaseCompare> >& cmpObj,
                             const Block<Int>& order, int option)
 {
     AlwaysAssert (!isNull(), AipsError);
@@ -599,12 +599,12 @@ BaseTable* BaseTable::sort (const Block<String>& names,
 	}
     }
     // Return the result as a table.
-    return doSort (sortCol, cmpFunc, order, option);
+    return doSort (sortCol, cmpObj, order, option);
 }
 
 //# Do the actual sort.
 BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
-			      const PtrBlock<ObjCompareFunc*>& cmpFunc,
+			      const Block<CountedPtr<BaseCompare> >& cmpObj,
                               const Block<Int>& order, int option)
 {
     uInt i;
@@ -613,8 +613,9 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     //# Pass all keys (and their data) to it.
     Sort sortobj;
     PtrBlock<const void*> dataSave(nrkey);          // to remember data blocks
+    Block<CountedPtr<BaseCompare> > cmp(cmpObj);
     for (i=0; i<nrkey; i++) {
-	sortCol[i]->makeSortKey (sortobj, cmpFunc[i], order[i], dataSave[i]);
+	sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], dataSave[i]);
     }
     //# Create a reference table.
     //# This table will NOT be in row order.
@@ -922,17 +923,18 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 }
 
 
-BaseTableIterator* BaseTable::makeIterator (const Block<String>& names,
-				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
-				      const Block<Int>& order, int option)
+BaseTableIterator* BaseTable::makeIterator
+(const Block<String>& names,
+ const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<Int>& order, int option)
 {
     AlwaysAssert (!isNull(), AipsError);
     if (names.nelements() != order.nelements()
-    ||  names.nelements() != cmpFunc.nelements()) {
+    ||  names.nelements() != cmpObj.nelements()) {
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
     BaseTableIterator* bti = new BaseTableIterator (this, names,
-						    cmpFunc, order, option);
+						    cmpObj, order, option);
     if (bti == 0) {
 	throw (AllocError ("BaseTable::makeIterator", 1));
     }

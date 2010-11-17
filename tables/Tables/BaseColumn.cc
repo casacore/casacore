@@ -158,14 +158,15 @@ void BaseColumn::putColumnSliceCells (const RefRows&,
     { throw (TableInvOper ("putColumnCells(Slicer&) only valid for an array")); }
 
 
-void BaseColumn::makeSortKey (Sort&, ObjCompareFunc*, Int, const void*&)
+void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
+                              const void*&)
     { throw (TableInvOper ("makeSortKey only valid for a scalar")); }
-void BaseColumn::makeRefSortKey (Sort&, ObjCompareFunc*, Int,
+void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
 				 const Vector<uInt>&, const void*&)
     { throw (TableInvOper ("makeSortKey(rownrs) not valid")); }
 void BaseColumn::freeSortKey (const void*&)
     { throw (TableInvOper ("freeSortKey only valid for a scalar")); }
-void BaseColumn::allocIterBuf (void*&, void*&, ObjCompareFunc*&)
+void BaseColumn::allocIterBuf (void*&, void*&, CountedPtr<BaseCompare>&)
     { throw (TableInvOper ("allocIterBuf only valid for a scalar")); }
 void BaseColumn::freeIterBuf (void*&, void*&)
     { throw (TableInvOper ("freeIterBuf only valid for a scalar")); }

@@ -227,7 +227,7 @@ Bool sortall (Int* arr, uInt nr, uInt type)
     return success;
 }
 
-Bool sortarr (Int* arr, uInt nr, int opt)
+Bool sortarr1 (Int* arr, uInt nr, int opt)
 {
     Bool success = True;
     Sort sort;
@@ -249,4 +249,34 @@ Bool sortarr (Int* arr, uInt nr, int opt)
 	}
     }
     return success;
+}
+
+Bool sortarr2 (Int* arr, uInt nr, int opt)
+{
+    Bool success = True;
+    Sort sort;
+    sort.sortKey (arr, CountedPtr<BaseCompare>(new ObjCompare<Int>), 4);
+    Vector<uInt> ptr;
+    Timer tim;
+    sort.sort (ptr,nr,opt);
+    tim.show("  with obj");
+    for (uInt i=1; i<nr; i++) {
+	if (arr[ptr(i)] < arr[ptr(i-1)]) {
+	    cout << "Out of order " <<arr[ptr(i)] << "," <<arr[ptr(i-1)]<<endl;
+	    success = False;
+	    break;
+	}
+	if (arr[ptr(i)] == arr[ptr(i-1)]  &&  ptr(i) <= ptr(i-1)) {
+	    cout << "not stable " << ptr(i) << "<=" << ptr(i-1) << endl;
+	    success = False;
+	    break;
+	}
+    }
+    return success;
+}
+
+Bool sortarr (Int* arr, uInt nr, int opt)
+{
+  //    return sortarr1(arr,nr,opt) && sortarr2(arr,nr,opt);
+    return sortarr2(arr,nr,opt);
 }

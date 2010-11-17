@@ -81,6 +81,8 @@ TIME      {DTIMEHM}|{POSDM}|{POSD}
 /*
      positions/times with colons cannot be allowed, because they interfere
      with the interval syntax. It is only possible when preceeded by a date.
+     Furthermore, a colon is sometimes also used for degrees (in declinations),
+     so it's better to stick to hms and dms.
 */
 
 

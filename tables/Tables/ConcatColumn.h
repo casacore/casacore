@@ -235,7 +235,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Also get a comparison function if undefined.
     // The function freeIterBuf must be called to free the buffers.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       ObjCompareFunc*& cmpFunc);
+			       CountedPtr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

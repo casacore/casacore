@@ -105,17 +105,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Handle the creation and deletion of sort keys.
     // <group>
     virtual void makeSortKey (Sort& sortobj,
-			      ObjCompareFunc* cmpFunc,
+                              CountedPtr<BaseCompare>& cmpObj,
 			      Int order,
 			      const void*& dataSave);
     virtual void makeRefSortKey (Sort& sortobj,
-				 ObjCompareFunc* cmpFunc,
+                                 CountedPtr<BaseCompare>& cmpObj,
 				 Int order,
 				 const Vector<uInt>& rownrs,
 				 const void*& dataSave);
     virtual void fillSortKey (const Vector<T>* vecPtr,
 			      Sort& sortobj,
-			      ObjCompareFunc* cmpFunc,
+                              CountedPtr<BaseCompare>& cmpObj,
 			      Int order);
     virtual void freeSortKey (const void*& dataSave);
     // </group>

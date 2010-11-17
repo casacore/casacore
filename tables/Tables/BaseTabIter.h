@@ -75,11 +75,9 @@ class String;
 // rows with equal key values.
 // </synopsis> 
 
-// <todo asof="$DATE:$">
+//# <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-//   <li> better support of user-supplied compare functions,
-//          maybe using special classes.
-// </todo>
+//# </todo>
 
 
 class BaseTableIterator
@@ -87,12 +85,11 @@ class BaseTableIterator
 public:
 
     // Create the table iterator to iterate through the given
-    // columns in the given order. The given compare functions
+    // columns in the given order. The given compare objects
     // will be used for the sort and to compare if values are equal.
-    // If a function pointer is zero, the default compare function
-    // from ObjCompare<T> will be used.
+    // If a comare object is null, the default ObjCompare<T> will be used.
     BaseTableIterator (BaseTable*, const Block<String>& columnNames,
-		       const PtrBlock<ObjCompareFunc*>&,
+		       const Block<CountedPtr<BaseCompare> >&,
 		       const Block<Int>& orders,
 		       int option);
 
@@ -114,7 +111,7 @@ protected:
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
-    PtrBlock<ObjCompareFunc*> cmpFunc_p;  //# comparison routine per column
+    Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column
 
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);

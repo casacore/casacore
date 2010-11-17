@@ -34,6 +34,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Compare.h>
+#include <casa/Utilities/CountedPtr.h>
 #include <casa/OS/Conversion.h>
 #include <casa/IO/AipsIO.h>
 #include <casa/iosfwd.h>
@@ -181,6 +182,9 @@ public:
 
     // Get the pointer to the routine which compares two values.
     static ObjCompareFunc* getCmpFunc (DataType);
+
+    // Get the object which compares two values.
+    static CountedPtr<BaseCompare> getCmpObj (DataType);
 
     // Put the value into <src>AipsIO</src>.
     // The <src>void*</src> function is not doing anything and is for
