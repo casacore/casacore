@@ -24,6 +24,7 @@ tLatticeHistograms
 tLatticeIndexer
 tLatticeIterator
 tLatticeLocker
+tLatticePerf
 tLatticeRegion
 tLatticeSlice1D
 tLatticeStatistics
