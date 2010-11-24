@@ -33,7 +33,7 @@
 if(NOT CFITSIO_FOUND)
 
   find_path(CFITSIO_INCLUDE_DIR fitsio.h
-    PATHS ${CFITSIO_ROOT_DIR} PATH_SUFFIXES include)
+    PATHS ${CFITSIO_ROOT_DIR} PATH_SUFFIXES include include/cfitsio)
   find_library(CFITSIO_LIBRARY cfitsio
     PATHS ${CFITSIO_ROOT_DIR} PATH_SUFFIXES lib)
   find_library(M_LIBRARY m)
