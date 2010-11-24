@@ -17,6 +17,10 @@ else (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
 
+# By default do not use HDF5 and FFTW3
+option (USE_HDF5 "" NO)
+option (USE_FFTW3 "" NO)
+
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.
 # Casacore uses longlong, so no warnings for it.
@@ -43,7 +47,7 @@ if (DATA_DIR)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA='\"${DATA_DIRX}\"'")
 endif (DATA_DIR)
 
-# For the sake of consistency
+# FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
     set (ENV{HDF5_ROOT} ${HDF5_ROOT_DIR})
 endif (HDF5_ROOT_DIR)
@@ -79,29 +83,33 @@ endif (NOT ${MODULE} STREQUAL "casa")
 
 # Determine which external packages to use.
 include (CTest)
-include (FindDL)
-include (FindReadline)
-include (FindHDF5)
+find_package (DL)
+find_package (Readline)
+if (USE_HDF5)
+    find_package (HDF5 REQUIRED)
+endif (USE_HDF5)
 if (_usebison STREQUAL YES)
-    include (FindFLEX REQUIRED)
-    include (FindBISON REQUIRED)
+    find_package (FLEX REQUIRED)
+    find_package (BISON REQUIRED)
 endif (_usebison STREQUAL YES)
 if (_uselapack STREQUAL YES)
-    include (FindBLAS REQUIRED)
-    include (FindLAPACK REQUIRED)
-    if (FFTW3_DISABLE_THREADS)
-        find_package (FFTW3 COMPONENTS single double)
-    else (FFTW3_DISABLE_THREADS)
-        find_package (FFTW3 COMPONENTS single double threads)
-    endif (FFTW3_DISABLE_THREADS)
+    find_package (BLAS REQUIRED)
+    find_package (LAPACK REQUIRED)
+    if (USE_FFTW3)
+        if (FFTW3_DISABLE_THREADS)
+            find_package (FFTW3 COMPONENTS single double REQUIRED)
+        else (FFTW3_DISABLE_THREADS)
+            find_package (FFTW3 COMPONENTS single double threads)
+        endif (FFTW3_DISABLE_THREADS)
+    endif (USE_FFTW3)
 endif (_uselapack STREQUAL YES)
 if (_usefits STREQUAL YES)
-    include (FindCFITSIO REQUIRED)
+    find_package (CFITSIO REQUIRED)
 endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
-    include (FindWCSLIB REQUIRED)
+    find_package (WCSLIB REQUIRED)
 endif (_usewcs STREQUAL YES)
-
+ 
 # Set the include directories and HAVE compiler variables
 include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 if (WCSLIB_FOUND)
