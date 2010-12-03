@@ -218,7 +218,7 @@ Bool MultiTermLatticeCleaner<T>::getresidual(int order, Lattice<T> & residual)
 
 /* Do the deconvolution */
 template <class T>
-Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
+Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "mtclean()", WHERE));
   if(adbg)os << "SOLVER for Multi-Frequency Synthesis deconvolution" << LogIO::POST;
