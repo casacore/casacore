@@ -365,7 +365,7 @@ void testLogSink()
     // void postThenThrow(const LogMessage &message);
     Bool caught = False;
     try {
-        sink5.postThenThrow(message);
+        sink5.postThenThrow(message, AipsError());
     } catch (AipsError x) {
         caught = True;
 	AlwaysAssertExit(x.getMesg().contains("test"));
@@ -461,10 +461,27 @@ void testLogIO()
 	} catch (AipsError x) {
 	    caught = True;
 	} 
-
 	AlwaysAssert(caught, AipsError);
 	String s(ostr);
 	AlwaysAssert(s.contains("SHOULD"), AipsError);
+	//     ~LogIO();
+    }
+    {
+	ostringstream ostr;
+	LogSink sls(LogMessage::NORMAL, &ostr);
+	LogIO os(sls);
+	Bool caught = False;
+	try {
+	    //     void postThenThrow();
+            os << "This SHOULD post";
+            os.postThenThrow (DuplError("duplicate"));
+	} catch (DuplError& x) {
+	    caught = True;
+	} 
+	AlwaysAssert(caught, AipsError);
+	String s(ostr);
+	AlwaysAssert(s.contains("SHOULD"), AipsError);
+	AlwaysAssert(s.contains("duplicate"), AipsError);
 	//     ~LogIO();
     }
 }

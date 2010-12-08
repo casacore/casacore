@@ -91,9 +91,13 @@ public:
   AipsError::Category getCategory( ) const
     { return(category); }
 
-  //
+  // Append a message. This is used by LogIO when an exception is logged.
+  // The message is const to be able to use it for a temporary exception.
+  void setMessage (const String& msg) const
+    { const_cast<AipsError*>(this)->message = msg; }
+
   // Creates an AipsError and initializes the error message from
-  // the parameter
+  // the parameter.
   // <group>
   AipsError (const Char *str, Category c = GENERAL);
   AipsError (const String &str, Category c = GENERAL);

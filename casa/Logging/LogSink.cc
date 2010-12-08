@@ -34,7 +34,6 @@
 #include <casa/Logging/MemoryLogSink.h>
 #include <casa/Logging/StreamLogSink.h>
 
-#include <casa/Utilities/PtrHolder.h>
 #include <casa/Utilities/Assert.h>
 
 #include <casa/iostream.h>
@@ -161,19 +160,20 @@ Bool LogSink::postGlobally(const LogMessage &message)
     return posted;
 }
 
-void LogSink::postThenThrow(const LogMessage &message) 
+void LogSink::preparePostThenThrow(const LogMessage &message,
+                                   const AipsError& x) 
 {
     // Try not to copy message since a severe error might be caused by
     // out of memory
     if (message.priority() == LogMessage::SEVERE) {
         post(message);
 	flush();
-	throw(AipsError(message.toString()));
+        x.setMessage (message.toString());
     } else {
         LogMessage messageCopy(message);
 	messageCopy.priority(LogMessage::SEVERE);
 	post(messageCopy);
-	throw(AipsError(messageCopy.toString()));
+        x.setMessage (messageCopy.toString());
     }
 }
 

@@ -65,7 +65,7 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
   if (shape.nelements() != 1) {                                          // 8
     logMessage.priority(LogMessage::SEVERE).line(__LINE__).message(      // 9
 	     "Illegal Shape! Must be one dimensional.");                 // 10
-      log_sink_p.postThenThrow(logMessage);                              // 11
+    log_sink_p.postThenThrow(logMessage, AipsError());                   // 11
   }                                                                      // 12
                                                                          // 13
   data_p.resize(shape(0));                                               // 14
