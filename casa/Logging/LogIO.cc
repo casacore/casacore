@@ -102,8 +102,11 @@ void LogIO::postLocally()
     msg_p.priority(LogMessage::NORMAL);
 }
 
-void LogIO::postThenThrow()
+void LogIO::preparePostThenThrow (const AipsError& x)
 {
+    if (! x.getMesg().empty()) {
+        output() << "; " << x.getMesg();
+    }
     if (text_p == 0) {
 	output() << "Unknown error!";
     }
@@ -113,7 +116,6 @@ void LogIO::postThenThrow()
     msg_p.priority(LogMessage::NORMAL);
     delete text_p;
     text_p = 0;
-    sink_p.postThenThrow(msg_p);
 }
 
 void LogIO::priority(LogMessage::Priority which)
@@ -152,7 +154,7 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
 {
     switch (item) {
     case LogIO::POST:          os.post(); break;
-    case LogIO::EXCEPTION:     os.postThenThrow(); break;
+    case LogIO::EXCEPTION:     os.postThenThrow(AipsError()); break;
     case LogIO::SEVERE:        os.priority(LogMessage::SEVERE); break;
     case LogIO::WARN:          os.priority(LogMessage::WARN); break;
     case LogIO::NORMAL:        os.priority(LogMessage::NORMAL); break;
@@ -161,13 +163,21 @@ LogIO &operator<<(LogIO &os, LogIO::Command item)
     case LogIO::NORMAL3:       os.priority(LogMessage::NORMAL3); break;
     case LogIO::NORMAL4:       os.priority(LogMessage::NORMAL4); break;
     case LogIO::NORMAL5:       os.priority(LogMessage::NORMAL5); break;
-    case LogIO::DEBUG1:       os.priority(LogMessage::DEBUG1); break;
-    case LogIO::DEBUG2:       os.priority(LogMessage::DEBUG2); break;
+    case LogIO::DEBUG1:        os.priority(LogMessage::DEBUG1); break;
+    case LogIO::DEBUG2:        os.priority(LogMessage::DEBUG2); break;
     case LogIO::DEBUGGING:     os.priority(LogMessage::DEBUGGING); break;
     default:
 	AlwaysAssert(0 != 0, AipsError); // NOTREACHED
     }
     return os;
+}
+
+void operator<< (LogIO &os, const AipsError& x)
+{
+    if (! x.getMesg().empty()) {
+        os.output() << "; " << x.getMesg();
+    }
+    os.postThenThrow (x);
 }
 
 LogIO &operator<<(LogIO &os, const SourceLocation *item)

@@ -33,7 +33,7 @@
 #include <casa/Logging/LogSinkInterface.h>
 
 #include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/PtrHolder.h>
+#include <casa/Exceptions/Error.h>
 #include <casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -200,7 +200,9 @@ public:
   // <src>SEVERE</src> priority message, no matter what 
   // <src>message.priority()</src> says.
   // <group>
-  void postThenThrow (const LogMessage &message);
+  template<typename EXC> void postThenThrow (const LogMessage &message,
+                                             const EXC& exc)
+    { preparePostThenThrow(message, exc); throw exc; }
   static void postGloballyThenThrow (const LogMessage &message);
   // </group>
 
@@ -257,6 +259,8 @@ public:
   String id( ) const;
 
 private:
+  // Prepare for postThenThrow function.
+  void preparePostThenThrow(const LogMessage &message, const AipsError& x) ;
 
   CountedPtr<LogSinkInterface> local_sink_p;
   static CountedPtr<LogSinkInterface> *global_sink_p;
