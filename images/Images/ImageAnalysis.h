@@ -31,6 +31,7 @@
 #include <lattices/LatticeMath/Fit2D.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <casa/Arrays/AxesSpecifier.h>
+#include <casa/Utilities/PtrHolder.h>
 
 namespace casa {
 
