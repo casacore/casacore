@@ -313,7 +313,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
   IPosition cellShape = arrShape.getFirst (lastAxis);
   uInt chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt nrinc = 0;
-  uInt lastRow = 0;
+  Int  lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -330,16 +330,17 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
+      Int hcRowPos = rowpos(lastAxis);
       Bool doIt = False;
-      if (hypercube != lastCube  ||  rownr <= lastRow) {
+      if (hypercube != lastCube  ||  hcRowPos <= lastRowPos) {
 	doIt = True;
       } else {
 	// The same hypercube. Check if the stride is the same.
 	// The first time the stride has to be determined.
 	if (nrinc == 0) {
-	  incr(lastAxis) = rowpos(lastAxis) - end(lastAxis);
+	  incr(lastAxis) = hcRowPos - end(lastAxis);
 	} else {
-	  if (rowpos(lastAxis) - end(lastAxis) != incr(lastAxis)) {
+	  if (hcRowPos - end(lastAxis) != incr(lastAxis)) {
 	    doIt = True;
 	  }
 	}
@@ -356,8 +357,8 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	  }
 	}
 	lastCube = hypercube;
-	start(lastAxis) = rowpos(lastAxis);
-	end(lastAxis)   = rowpos(lastAxis);
+	start(lastAxis) = hcRowPos;
+	end(lastAxis)   = hcRowPos;
 	incr(lastAxis)  = 1;
 	nrinc = 0;
 	// Each new hypercube might have a different shape, while it is
@@ -370,11 +371,11 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	  }
 	}
       } else {
-	end(lastAxis) = rowpos(lastAxis);
+	end(lastAxis) = hcRowPos;
 	nrinc++;
 
       }
-      lastRow = rownr;
+      lastRowPos = hcRowPos;
       rownr += irow;
     }
     iter++;
@@ -394,7 +395,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
   uInt lastAxis  = arrShape.nelements() - 1;
   uInt chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt nrinc = 0;
-  uInt lastRow = 0;
+  Int  lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -411,16 +412,17 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
+      Int hcRowPos = rowpos(lastAxis);
       Bool doIt = False;
-      if (hypercube != lastCube  ||  rownr <= lastRow) {
+      if (hypercube != lastCube  ||  hcRowPos <= lastRowPos) {
 	doIt = True;
       } else {
 	// The same hypercube. Check if the stride is the same.
 	// The first time the stride has to be determined.
 	if (nrinc == 0) {
-	  incr(lastAxis) = rowpos(lastAxis) - end(lastAxis);
+	  incr(lastAxis) = hcRowPos - end(lastAxis);
 	} else {
-	  if (rowpos(lastAxis) - end(lastAxis) != incr(lastAxis)) {
+	  if (hcRowPos - end(lastAxis) != incr(lastAxis)) {
 	    doIt = True;
 	  }
 	}
@@ -439,15 +441,15 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 	  }
 	}
 	lastCube = hypercube;
-	start(lastAxis) = rowpos(lastAxis);
-	end(lastAxis)   = rowpos(lastAxis);
+	start(lastAxis) = hcRowPos;
+	end(lastAxis)   = hcRowPos;
 	incr(lastAxis)  = 1;
 	nrinc = 0;
       } else {
-	end(lastAxis) = rowpos(lastAxis);
+	end(lastAxis) = hcRowPos;
 	nrinc++;
       }
-      lastRow = rownr;
+      lastRowPos = hcRowPos;
       rownr += irow;
     }
     iter++;
