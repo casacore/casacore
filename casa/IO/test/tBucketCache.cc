@@ -129,13 +129,16 @@ void a (Bool)
     BucketCache cache (&file, 512, 32768, 5, 10, 0, aToLocal, aFromLocal,
 		       aInitBuffer, aDeleteBuffer);
     uInt i;
-    char buf[32768];
+    union {
+      char buf[32768];
+      Int  bufi[32768/4];
+    };
     for (i=0; i<32768; i++) {
 	buf[i] = 0;
     }
     for (i=0; i<100; i++) {
-	*(Int*)buf = i+1;
-	*(Int*)(buf+32760) = i+10;
+	bufi[0] = i+1;
+	bufi[32760/4] = i+10;
 	char* ptr = new char[32768];
 	memcpy (ptr, buf, 32768);
 	cache.addBucket (ptr);
