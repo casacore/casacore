@@ -598,7 +598,7 @@ int main() {
       }
       for (uInt i3=0; (Int)i3<(Int)i2/2; i3++) {
 	cout << "Constraint(" << i3 << ")";
-	for (uInt i4=0; i4<2*N; i4++) {
+	for (uInt i4=0; i4<N; i4++) {
 	  cout << ": " << vcceq[i3][i4];
 	}
 	cout << endl;
