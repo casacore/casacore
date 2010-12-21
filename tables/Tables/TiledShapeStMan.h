@@ -211,6 +211,9 @@ public:
     // Get the type name of the data manager (i.e. TiledShapeStMan).
     virtual String dataManagerType() const;
 
+    // Return a record containing data manager specifications and info.
+    virtual Record dataManagerSpec() const;
+
     // TiledShapeStMan can access a column if there are 2 hypercubes
     // and the first one is empty.
     // reask is set to True (because next time things might be different).

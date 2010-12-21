@@ -100,6 +100,13 @@ String TiledShapeStMan::dataManagerType() const
     { return "TiledShapeStMan"; }
 
 
+Record TiledShapeStMan::dataManagerSpec() const
+{
+    Record rec = TiledStMan::dataManagerSpec();
+    rec.define ("INDEXSIZE", nrUsedRowMap_p);
+    return rec;
+}
+
 IPosition TiledShapeStMan::defaultTileShape() const
 {
     return defaultTileShape_p;
@@ -504,4 +511,3 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
 }
 
 } //# NAMESPACE CASA - END
-
