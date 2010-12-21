@@ -127,7 +127,7 @@ public:
 
     void setDataManagerName (const String& newHypercolumnName);
 
-    // Record a record containing data manager specifications.
+    // Return a record containing data manager specifications.
     virtual Record dataManagerSpec() const;
 
     // Set the flag to "data has changed since last flush".
