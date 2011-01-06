@@ -37,6 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 template <class T> class Quantum;
 template <class T> class Vector;
+template <class T> class Matrix;
 template <class T> class Array;
 
 // <summary> Get an integer type for a Qunatum<T> </summary>
@@ -90,6 +91,16 @@ template <class T> class Array;
    { return 14; }
  inline uInt quantumType (const Quantum< Array<Complex> >*)
    { return 15; }
+ inline uInt quantumType (const Quantum< Matrix<Double> >*)
+   { return 16; }
+ inline uInt quantumType (const Quantum< Matrix<Float> >*)
+   { return 17; }
+ inline uInt quantumType (const Quantum< Matrix<Int> >*)
+   { return 18; }
+ inline uInt quantumType (const Quantum< Matrix<DComplex> >*)
+   { return 19; }
+ inline uInt quantumType (const Quantum< Matrix<Complex> >*)
+   { return 20; }
 
 // </group>
 
