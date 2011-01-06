@@ -241,6 +241,10 @@ public:
     // the correct data manager.
     virtual String dataManagerType() const = 0;
 
+    // Add SEQNR and SPEC (containing DataManagerSpec record) to the info.
+    // The default implementation returns an empty record.
+    void dataManagerInfo (Record& info) const;
+
     // Record a record containing data manager specifications.
     // The default implementation returns an empty record.
     virtual Record dataManagerSpec() const;

@@ -39,8 +39,10 @@
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/ContainerIO.h>
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Record.h>
+#include <casa/Containers/ValueHolder.h>
 #include <casa/Utilities/Sort.h>
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/BasicSL/String.h>
@@ -341,7 +343,7 @@ void BaseTable::prepareCopyRename (const String& newName,
     }else{
 	// The table must exist for Update.
 	if (tableOption == Table::Update) {
-	    throw (TableNoFile(newName));
+            throw (TableNoFile(newName));
 	}
     }   
 }
@@ -983,6 +985,156 @@ void BaseTable::checkRowNumberThrow (uInt rownr) const
 		       " exceeds #rows " +
 		       String::toString(nrrow_p+nrrowToAdd_p)
 		       + " in table " + tableName()));
+}
+
+void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
+                               Bool showSubTables, Bool sortColumns)
+{
+  TableDesc tdesc = actualTableDesc();
+  Record dminfo = dataManagerInfo();
+  os << endl << "Structure of table " << tableName()
+     << endl << "------------------ ";
+  os << info_p.type();
+  if (! info_p.subType().empty()) {
+    os << " (" << info_p.subType() << ')';
+  }
+  os << endl;
+  os << nrow() << " rows, " << tdesc.ncolumn() << " columns (using "
+     << dminfo.nfields() << " data managers)" <<endl;
+  showStructureExtra (os);
+  uInt maxl = 0;
+  for (uInt i=0; i<tdesc.ncolumn(); ++i) {
+    if (tdesc[i].name().size() > maxl) {
+      maxl = tdesc[i].name().size();
+    }
+  }
+  if (!showDataMans) {
+    os << endl;
+    showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+  } else {
+    for (uInt i=0; i<dminfo.nfields(); ++i) {
+      os << endl << " ";
+      const Record& dm = dminfo.subRecord(i);
+      Record spec;
+      if (dm.isDefined("SPEC")) {
+        spec = dm.subRecord("SPEC");
+      }
+      os << dm.asString("TYPE");
+      os << " file=table.f" << dm.asInt("SEQNR") << " ";
+      os << " name=" << dm.asString("NAME");
+      if (spec.isDefined("BUCKETSIZE")) {
+        os << "  bucketsize=" << spec.asInt("BUCKETSIZE");
+      }
+      os << endl;
+      if (spec.isDefined("HYPERCUBES")) {
+        os << "    hypercubes:" << endl;
+        const Record& hcubes = spec.subRecord("HYPERCUBES");
+        for (uInt k=0; k<hcubes.nfields(); ++k) {
+          const Record& hcube = hcubes.subRecord(k);
+          os << "      bucketsize=" << hcube.asInt("BucketSize");
+          os << " tileshape=";
+          showContainer (os, hcube.asArrayInt("TileShape"));
+          os << " cellshape=";
+          showContainer (os, hcube.asArrayInt("CellShape"));
+          os << " cubeshape=";
+          showContainer (os, hcube.asArrayInt("CubeShape"));
+          os << endl;
+        }
+      }
+      Bool extra = False;
+      for (uint j=0; j<spec.nfields(); j++) {
+        const String& name = spec.name(j);
+        if (name != "SEQNR" && name != "BUCKETSIZE" && name != "HYPERCUBES") {
+          if (!extra) {
+            os << "   ";
+            extra = True;
+          }
+          os << ' '<< name << '=' << spec.asValueHolder(j);
+        }
+      }
+      if (extra) {
+        os << endl;
+      }
+      if (showColumns) {
+        showColumnInfo (os, tdesc, maxl, dm.asArrayString ("COLUMNS"),
+                        sortColumns);
+      }
+    }
+  }
+  TableRecord keywords = keywordSet();
+  Bool hasSub = False;
+  for (uInt i=0; i<keywords.nfields(); ++i) {
+    if (keywords.dataType(i) == TpTable) {
+      if (!hasSub) {
+        os << endl << " SubTables:" << endl;
+        hasSub = True;
+      }
+      os << "    " << keywords.asTable(i).tableName() << endl;
+    }
+  }
+  if (hasSub && showSubTables) {
+    for (uInt i=0; i<keywords.nfields(); ++i) {
+      if (keywords.dataType(i) == TpTable) {
+        Table tab = keywords.asTable(i);
+        // Do not show if the subtable has the same root as this table.
+        // This is needed to avoid endless recursion in case of SORTED_TABLE
+        // in a MeasurementSet.
+        if (! tab.isSameRoot (Table(this, False))) {
+          tab.showStructure (os, showDataMans, showColumns,
+                             showSubTables, sortColumns);
+        }
+      }
+    }
+  }
+}
+
+void BaseTable::showStructureExtra (ostream&) const
+{}
+
+void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
+                                uInt maxl, const Array<String>& columnNames,
+                                Bool sort) const
+{
+  Vector<String> columns(columnNames);
+  if (sort) {
+    GenSort<String>::sort (columns);
+  }
+  for (uInt j=0; j<columns.size(); ++j) {
+    const ColumnDesc& cdesc = tdesc[columns[j]];
+    TableRecord keywords = cdesc.keywordSet();
+    os << "  " << cdesc.name();
+    for (uInt k=0; k<=maxl - cdesc.name().size(); ++k) {
+      os << ' ';
+    }
+    os << ValType::getTypeStr(cdesc.dataType());
+    if (cdesc.isScalar()) {
+      os << " scalar";
+    } else if (cdesc.isArray()) {
+      if (cdesc.options() & ColumnDesc::FixedShape) {
+        os << " shape=";
+        showContainer (os, cdesc.shape());
+      } else if (cdesc.ndim() > 0) {
+        os << " ndim=" << cdesc.ndim();
+      } else {
+        os << " array";
+      }
+    }
+    if (keywords.isDefined("UNIT") && !keywords.asString("UNIT").empty()) {
+      os << " unit=" << keywords.asString("UNIT");
+    } else if (keywords.isDefined("QuantumUnits")) {
+      os << " unit=";
+      showContainer (os, keywords.asArrayString("QuantumUnits"));
+    }
+    if (keywords.isDefined("MEASINFO")) {
+      const TableRecord& meas = keywords.subRecord("MEASINFO");
+      os << " measure=" << meas.asString("type") << ','
+         << meas.asString("Ref");
+    }
+    if (cdesc.options() & ColumnDesc::Direct) {
+      os << " directly stored";
+    }
+    os << endl;
+  }
 }
 
 } //# NAMESPACE CASA - END

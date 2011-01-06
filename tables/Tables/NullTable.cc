@@ -180,7 +180,7 @@ void NullTable::removeRow (uInt)
   throwError ("removeRow");
 }
 
-DataManager* NullTable::findDataManager (const String&) const
+DataManager* NullTable::findDataManager (const String&, Bool) const
 {
   throwError ("findDataManager");
   return 0;

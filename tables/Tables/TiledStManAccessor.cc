@@ -37,14 +37,16 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
-					    const String& dataManagerName)
-: dataManPtr_p (0)
+					    const String& name,
+                                            Bool byColumn)
+  : RODataManAccessor (table, name, byColumn),
+    dataManPtr_p (0)
 {
-    DataManager* dmptr = findDataManager (table, dataManagerName);
-    dataManPtr_p = dynamic_cast<TiledStMan*>(dmptr);
+    dataManPtr_p = dynamic_cast<TiledStMan*>(baseDataManager());
     if (dataManPtr_p == 0) {
-	throw (DataManError ("Data manager " + dataManagerName + " has type "
-			     + dmptr->dataManagerType() +
+	throw (DataManError ("ROTiledStManAccessor " + name +
+                             " constructed for data manager type "
+			     + baseDataManager()->dataManagerType() +
 			     "; expected Tiled*StMan"));
     }
 }

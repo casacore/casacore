@@ -313,9 +313,10 @@ void MemoryTable::renameHypercolumn (const String& newName, const String& oldNam
   tdescPtr_p->renameHypercolumn (newName, oldName);
 }
 
-DataManager* MemoryTable::findDataManager (const String& dataManagerName) const
+DataManager* MemoryTable::findDataManager (const String& name,
+                                           Bool byColumn) const
 {
-  return colSetPtr_p->findDataManager (dataManagerName);
+  return colSetPtr_p->findDataManager (name, byColumn);
 }
 
 } //# NAMESPACE CASA - END

@@ -286,7 +286,7 @@ void TiledStMan::setDataManagerName(const String& newHypercolumnName)
 
 Record TiledStMan::dataManagerSpec() const
 {
-    Record rec;
+    Record rec = getProperties();
     rec.define ("DEFAULTTILESHAPE", defaultTileShape().asVector());
     rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
     Record subrec;
@@ -306,6 +306,21 @@ Record TiledStMan::dataManagerSpec() const
     rec.define ("SEQNR", sequenceNr());
     return rec;
 }
+
+Record TiledStMan::getProperties() const
+{
+    Record rec;
+    rec.define ("ActualMaxCacheSize", Int(maxCacheSize_p));
+    return rec;
+}
+
+void TiledStMan::setProperties (const Record& rec)
+{
+    if (rec.isDefined("ActualMaxCacheSize")) {
+        setMaximumCacheSize (rec.asInt("ActualCacheSize"));
+    }
+}
+
 
 void TiledStMan::setShape (uInt, TSMCube*, const IPosition&, const IPosition&)
 {

@@ -728,9 +728,10 @@ void PlainTable::renameHypercolumn (const String& newName, const String& oldName
 }
 
 
-DataManager* PlainTable::findDataManager (const String& dataManagerName) const
+DataManager* PlainTable::findDataManager (const String& name,
+                                          Bool byColumn) const
 {
-    return colSetPtr_p->findDataManager (dataManagerName);
+  return colSetPtr_p->findDataManager (name, byColumn);
 }
 
 

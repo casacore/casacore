@@ -291,8 +291,7 @@ public:
   // Test if a table is writable.
   Bool isWritable() const;
 
-  // Set the maximum cache size for the given column in the
-  // table with the given id.
+  // Set the maximum cache size for the given column in the table.
   void setMaximumCacheSize (const String& columnName,
 			    Int nbytes);
 
@@ -522,15 +521,22 @@ public:
   // or Error -- unexpected column type
   String columnArrayType (const String& columnName);
 
-  // Get the data manager info of the table with the given id.
+  // Get the data manager info of the table.
   Record getDataManagerInfo();
 
-  // Get the table description of the table with the given id.
+  // Get the properties of a data manager given by column or data manager name.
+  Record getProperties (const String& name, Bool byColumn);
+
+  // Set the properties of a data manager given by column or data manager name.
+  void setProperties (const String& name, Bool byColumn,
+                      const Record& properties);
+
+  // Get the table description of the table.
   // It returns a record containing the description.
   Record getTableDescription (Bool actual,         //# use actual description?
 			      Bool cOrder=False);
 
-  // Get the column description of a column in the table with the given id.
+  // Get the column description of a column in the table.
   // It returns a record containing the description.
   Record getColumnDescription (const String& columnName,
 			       Bool actual,        //# use actual description?
@@ -541,6 +547,10 @@ public:
 
   // Get result of possible CALC statement.
   Record getCalcResult() const;
+
+  // Show the structure of a table.
+  String showStructure (Bool showDataMan=True, Bool showColumns=True,
+                        Bool showSubTables=False, Bool sortColumns=False) const;
 
   // Return the table object.
   // <group>

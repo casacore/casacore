@@ -72,6 +72,12 @@ DataManager::~DataManager()
 String DataManager::dataManagerName() const
     { return String(); }
 
+void DataManager::dataManagerInfo (Record& info) const
+{
+    info.define ("SEQNR", seqnr_p);
+    info.defineRecord ("SPEC", dataManagerSpec());
+}
+
 Record DataManager::dataManagerSpec() const
     { return Record(); }
 

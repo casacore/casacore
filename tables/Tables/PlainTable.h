@@ -236,8 +236,9 @@ public:
     virtual void renameHypercolumn (const String& newName,
 				    const String& oldName);
 
-    // Find the data manager with the given name.
-    virtual DataManager* findDataManager (const String& dataManagerName) const;
+    // Find the data manager with the given name or for the given column.
+    virtual DataManager* findDataManager (const String& name,
+                                          Bool byColumn) const;
 
 
     static TableCache tableCache;           //# cache of open (plain) tables

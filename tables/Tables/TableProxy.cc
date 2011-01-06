@@ -44,7 +44,7 @@
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableAttr.h>
-#include <tables/Tables/TiledStManAccessor.h>
+#include <tables/Tables/DataManAccessor.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/TableError.h>
 #include <casa/BasicSL/Complex.h>
@@ -60,6 +60,7 @@
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/Slice.h>
 #include <casa/Arrays/Slicer.h>
+#include <casa/Logging/LogIO.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 #include <casa/stdio.h>                  // needed for sprintf
@@ -825,6 +826,19 @@ Record TableProxy::getDataManagerInfo()
   return table_p.dataManagerInfo();
 }
 
+Record TableProxy::getProperties (const String& name, Bool byColumn)
+{
+  RODataManAccessor acc (table_p, name, byColumn);
+  return acc.getProperties();
+}
+
+void TableProxy::setProperties (const String& name, Bool byColumn,
+                                const Record& properties)
+{
+  RODataManAccessor acc (table_p, name, byColumn);
+  acc.setProperties (properties);
+}
+
 Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
   // Get the table description.
@@ -874,6 +888,15 @@ String TableProxy::getAsciiFormat() const
 Record TableProxy::getCalcResult() const
 {
   return calcResult_p;
+}
+
+String TableProxy::showStructure (Bool showDataMan, Bool showColumns,
+                                  Bool showSubTables, Bool sortColumns) const
+{
+  ostringstream ostr;
+  table_p.showStructure (ostr, showDataMan, showColumns, showSubTables,
+                         sortColumns);
+  return ostr.str();
 }
 
 Int TableProxy::nrows()

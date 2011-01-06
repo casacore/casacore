@@ -119,16 +119,26 @@ public:
     // setting a maximum cache.
     TiledStMan (const String& hypercolumnName, uInt maximumCacheSize);
 
-    ~TiledStMan();
+    virtual ~TiledStMan();
 
     // Get the name given to the storage manager.
     // This is the name of the hypercolumn.
-    String dataManagerName() const;
+    virtual String dataManagerName() const;
 
     void setDataManagerName (const String& newHypercolumnName);
 
     // Return a record containing data manager specifications.
     virtual Record dataManagerSpec() const;
+
+    // Get data manager properties that can be modified.
+    // It is only ActualCacheSize (the actual cache size in buckets).
+    // It is a subset of the data manager specification.
+    virtual Record getProperties() const;
+
+    // Modify data manager properties.
+    // Only ActualCacheSize can be used. It is similar to function setCacheSize
+    // with <src>canExceedNrBuckets=False</src>.
+    virtual void setProperties (const Record& spec);
 
     // Set the flag to "data has changed since last flush".
     void setDataChanged();

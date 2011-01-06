@@ -257,6 +257,13 @@ public:
     // Get the data manager info.
     virtual Record dataManagerInfo() const = 0;
 
+    // Show the table structure (implementation of Table::showStructure).
+    void showStructure (std::ostream&,
+                        Bool showDataMan,
+                        Bool showColumns,
+                        Bool showSubTables,
+                        Bool sortColumns);
+
     // Get readonly access to the table keyword set.
     virtual TableRecord& keywordSet() = 0;
 
@@ -317,9 +324,9 @@ public:
     void removeRow (const Vector<uInt>& rownrs);
     // </group>
 
-    // Find the data manager with the given name.
-    virtual DataManager* findDataManager
-	              (const String& dataManagerName) const = 0;
+    // Find the data manager with the given name or for the given column.
+    virtual DataManager* findDataManager (const String& name,
+                                          Bool byColumn) const = 0;
 
     // Select rows using the given expression.
     BaseTable* select (const TableExprNode&, uInt maxRow);
@@ -521,6 +528,15 @@ private:
     // some more knowledge (like table name of result).
     // Declaring it private, makes it unusable.
     BaseTable& operator= (const BaseTable&);
+
+    // Show a possible extra table structure header.
+    // It is used by e.g. RefTable to show which table is referenced.
+    virtual void showStructureExtra (std::ostream&) const;
+
+    // Show the info of the given columns.
+    // Sort the columns if needed.
+    void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
+                         const Array<String>& columnNames, Bool sort) const;
 
     // Throw an exception for checkRowNumber.
     void checkRowNumberThrow (uInt rownr) const;

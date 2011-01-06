@@ -35,20 +35,19 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-ROStandardStManAccessor::ROStandardStManAccessor (const Table& aTable,
-					    const String& aDataManagerName)
-: itsSSMPtr (0)
+ROStandardStManAccessor::ROStandardStManAccessor (const Table& table,
+                                                  const String& name,
+                                                  Bool byColumn)
+  : RODataManAccessor (table, name, byColumn),
+    itsSSMPtr (0)
 {
-    DataManager* aDmPtr = findDataManager (aTable, aDataManagerName);
-    SSMBase aDataMan;
-    if (aDmPtr->dataManagerType() != aDataMan.dataManagerType()) {
-	throw (DataManError ("Data manager " + aDataManagerName + " has type "
-			     + aDmPtr->dataManagerType() + "; expected "
-			     + aDataMan.dataManagerType()));
+    itsSSMPtr = dynamic_cast<SSMBase*>(baseDataManager());
+    if (itsSSMPtr == 0) {
+	throw (DataManError ("ROStandardStManAccessor " + name +
+                             " constructed for data manager type "
+			     + baseDataManager()->dataManagerType() +
+			     "; expected StandardStMan"));
     }
-    // The types match, so it is now safe to cast.
-    itsSSMPtr = dynamic_cast<SSMBase*>(aDmPtr);
-    AlwaysAssert(itsSSMPtr != 0, AipsError);
 }
 
 ROStandardStManAccessor::~ROStandardStManAccessor()

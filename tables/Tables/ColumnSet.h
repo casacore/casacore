@@ -244,10 +244,11 @@ public:
     // Check if no double data manager names have been given.
     void checkDataManagerNames (const String& tableName) const;
 
-    // Find the data manager with the given name.
-    // When the data manager is unknown, an exception is thrown.
+    // Find the data manager with the given name or for the given column.
+    // If the data manager or column is unknown, an exception is thrown.
     // A blank name means the data manager is unknown.
-    DataManager* findDataManager (const String& dataManagerName) const;
+    DataManager* findDataManager (const String& name,
+                                  Bool byColumn=False) const;
 
     // Make a unique data manager name by appending a suffix _n if needed
     // where n is a number that makes the name unique.
