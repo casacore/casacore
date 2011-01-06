@@ -36,6 +36,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class DataManager;
 class Table;
+class Record;
 class String;
 
 
@@ -80,36 +81,33 @@ class String;
 
 class RODataManAccessor
 {
+public:
+    // Construct an empty object.
+    RODataManAccessor()
+      : itsDataManager(0)
+    {}
+
+    // Construct the accessor object for a data manager in the table.
+    // An exception is thrown if the name of the data manager or column is
+    // unknown.
+    RODataManAccessor (const Table& table, const String& name,
+                       Bool byColumn);
+
+    // Set data manager properties using the fields in the record.
+    // Each data manager has its specific set of properties.
+    void setProperties (const Record&) const;
+
+    // Get data manager properties as a record.
+    Record getProperties() const;
+
 protected:
-    // Construct the object.
-    RODataManAccessor();
+    // Get the data manager for the given data manager or column name.
+    DataManager* baseDataManager() const
+      { return itsDataManager; }
 
-    ~RODataManAccessor();
-
-    // Copy constructor (copy semantics).
-    RODataManAccessor (const RODataManAccessor& that);
-
-    // Assignment (copy semantics).
-    RODataManAccessor& operator= (const RODataManAccessor& that);
-
-    // Get the data manager for the given data manager name.
-    DataManager* findDataManager (const Table& table,
-				  const String& dataManagerName) const;
+private:
+    DataManager* itsDataManager;
 };
-
-
-
-inline RODataManAccessor::RODataManAccessor()
-{}
-inline RODataManAccessor::~RODataManAccessor()
-{}
-inline RODataManAccessor::RODataManAccessor (const RODataManAccessor&)
-{}
-inline RODataManAccessor& RODataManAccessor::operator=
-                                            (const RODataManAccessor&)
-{ return *this; }
-
-
 
 
 } //# NAMESPACE CASA - END

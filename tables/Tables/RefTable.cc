@@ -605,6 +605,13 @@ Record RefTable::dataManagerInfo() const
     return dmi;
 }
 
+void RefTable::showStructureExtra (ostream& os) const
+{
+  os << "out of " << baseTabPtr_p->tableName() << " (" 
+     << baseTabPtr_p->nrow() << " rows, "
+     << baseTabPtr_p->tableDesc().ncolumn() << " columns)" << endl;
+}
+
 //# Get the keyword set.
 TableRecord& RefTable::keywordSet()
     { return baseTabPtr_p->keywordSet(); }
@@ -772,9 +779,14 @@ void RefTable::renameHypercolumn (const String& newName, const String& oldName)
 }
 
 
-DataManager* RefTable::findDataManager (const String& dataManagerName) const
+DataManager* RefTable::findDataManager (const String& name, Bool byColumn) const
 {
-    return baseTabPtr_p->findDataManager (dataManagerName);
+    String origName(name);
+    if (byColumn) {
+        // A column can be renamed, so use the original name.
+        origName = nameMap_p(name);
+    }
+    return baseTabPtr_p->findDataManager (origName, byColumn);
 }
 
 
@@ -949,4 +961,3 @@ void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
 }
 
 } //# NAMESPACE CASA - END
-

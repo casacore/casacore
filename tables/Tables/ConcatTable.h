@@ -279,8 +279,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual void renameHypercolumn (const String& newName,
 				    const String& oldName);
 
-    // Find the data manager with the given name.
-    virtual DataManager* findDataManager (const String& dataManagerName) const;
+    // Find the data manager with the given name or for the given column.
+    virtual DataManager* findDataManager (const String& name,
+                                          Bool byColumn) const;
 
     // Get the rows object.
     const ConcatRows& rows() const
@@ -303,6 +304,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // some more knowledge (like table name of result).
     // Declaring it private, makes it unusable.
     ConcatTable& operator= (const ConcatTable&);
+
+    // Show the extra table structure info (names of used tables).
+    void showStructureExtra (std::ostream&) const;
 
     // Open all tables in the required way.
     void openTables (const Block<String>& tableNames, Int option,

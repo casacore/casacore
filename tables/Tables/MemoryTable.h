@@ -214,9 +214,10 @@ public:
   virtual void renameHypercolumn (const String& newName,
 				  const String& oldName);
 
-  // Find the data manager with the given name.
+  // Find the data manager with the given name or for the given column.
   // There is only one storage manager (MemoryStMan) with name MSM.
-  virtual DataManager* findDataManager (const String& dataManagerName) const;
+  virtual DataManager* findDataManager (const String& name,
+                                        Bool byColumn) const;
 
 
 private:

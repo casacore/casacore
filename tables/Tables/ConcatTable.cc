@@ -526,9 +526,20 @@ void ConcatTable::addColumn (const TableDesc& tableDesc,
   }
 
 
-  DataManager* ConcatTable::findDataManager (const String& dataManagerName) const
+  DataManager* ConcatTable::findDataManager (const String& name,
+                                             Bool byColumn) const
   {
-    return baseTabPtr_p[0]->findDataManager (dataManagerName);
+    return baseTabPtr_p[0]->findDataManager (name, byColumn);
+  }
+
+  void ConcatTable::showStructureExtra (std::ostream& os) const
+  {
+    for (uInt i=0; i<baseTabPtr_p.size(); ++i) {
+      os << (i==0 ? "concat " : "       ");
+      os << baseTabPtr_p[i]->tableName() << " (" 
+         << baseTabPtr_p[i]->nrow() << " rows, "
+         << baseTabPtr_p[i]->tableDesc().ncolumn() << " columns)" << endl;
+    }
   }
 
 } //# NAMESPACE CASA - END

@@ -104,11 +104,12 @@ class ROStandardStManAccessor : public RODataManAccessor
 {
 public:
 
-    // Construct the object for the data manager in the table.
-    // An exception is thrown if the data manager type does not
-    // match the type of this ROStandardStManAccessor object.
-    ROStandardStManAccessor (const Table& aTable,
-			     const String& aDataManagerName);
+    // Construct the object for a data manager in the table given the name
+    // of the data manager or the column.
+    // An exception is thrown if the data manager type is not the incremental
+    // storage manager.
+    ROStandardStManAccessor (const Table& table, const String& name,
+                             Bool byColumn=False);
 
     ~ROStandardStManAccessor();
 

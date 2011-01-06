@@ -115,8 +115,8 @@ ISMBase::ISMBase (const String& dataManagerName, const Record& spec)
     if (spec.isDefined ("CHECKBUCKETSIZE")) {
         checkBucketSize_p = spec.asBool ("CHECKBUCKETSIZE");
     }
-    if (spec.isDefined ("CACHESIZE")) {
-        persCacheSize_p = spec.asInt ("CACHESIZE");
+    if (spec.isDefined ("PERSCACHESIZE")) {
+        persCacheSize_p = spec.asInt ("PERSCACHESIZE");
     }
 }
 
@@ -168,12 +168,26 @@ String ISMBase::dataManagerName() const
 
 Record ISMBase::dataManagerSpec() const
 {
-  // Make sure the cache is initialized, so the header is certainly read.
+  Record rec = getProperties();
+  rec.define ("BUCKETSIZE", Int(bucketSize_p));
+  rec.define ("PERSCACHESIZE", Int(persCacheSize_p));
+  return rec;
+}
+
+Record ISMBase::getProperties() const
+{
+  // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<ISMBase*>(this)->getCache();
   Record rec;
-  rec.define ("BUCKETSIZE", Int(bucketSize_p));
-  rec.define ("CACHESIZE", Int(persCacheSize_p));
+  rec.define ("ActualCacheSize", Int(cacheSize_p));
   return rec;
+}
+
+void ISMBase::setProperties (const Record& rec)
+{
+  if (rec.isDefined("ActualCacheSize")) {
+    setCacheSize (rec.asInt("ActualCacheSize"), False);
+  }
 }
 
 void ISMBase::clearCache()

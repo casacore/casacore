@@ -103,7 +103,7 @@ String TiledShapeStMan::dataManagerType() const
 Record TiledShapeStMan::dataManagerSpec() const
 {
     Record rec = TiledStMan::dataManagerSpec();
-    rec.define ("INDEXSIZE", nrUsedRowMap_p);
+    rec.define ("IndexSize", nrUsedRowMap_p);
     return rec;
 }
 

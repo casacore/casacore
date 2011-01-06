@@ -105,7 +105,8 @@ public:
   virtual void addRow (uInt nrrow, Bool initialize);
   virtual Bool canRemoveRow() const;
   virtual void removeRow (uInt rownr);
-  virtual DataManager* findDataManager (const String& dataManagerName) const;
+  virtual DataManager* findDataManager (const String& name,
+                                        Bool byColumn) const;
   virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
 			  const String& dataManager, Bool byName,

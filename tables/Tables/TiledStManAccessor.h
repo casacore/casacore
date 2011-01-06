@@ -161,10 +161,12 @@ public:
     // until a 'true' ROTiledStManAccessor object is assigned to it.
     ROTiledStManAccessor ();
 
-    // Construct the object for the data manager in the table.
-    // An exception is thrown if the data manager type does not
-    // match the type of this TiledDataStManAccessor object.
-    ROTiledStManAccessor (const Table& table, const String& dataManagerName);
+    // Construct the object for a data manager in the table given the name
+    // of the data manager or the column.
+    // An exception is thrown if the data manager type is not any tiled
+    // storage manager.
+    ROTiledStManAccessor (const Table& table, const String& name,
+                          Bool byColumn=False);
 
     ~ROTiledStManAccessor();
 

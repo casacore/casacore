@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
 #define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
 
-// Tweaked for SUN NTV compiler, used const_cast<void *> trick
+// Tweaked for SUN NTV compiler, used static_cast<void *> trick
 
 ColumnSet::ColumnSet (TableDesc* tdesc)
 : tdescPtr_p      (tdesc),
@@ -564,18 +564,21 @@ void ColumnSet::renameColumn (const String& newName, const String& oldName)
 
 
 
-DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
+DataManager* ColumnSet::findDataManager (const String& name,
+                                         Bool byColumn) const
 {
+    if (byColumn) {
+        return COLMAPNAME(name)->dataManager();
+    }
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         DataManager* dmp = BLOCKDATAMANVAL(i);
-	if (dataManagerName == dmp->dataManagerName()) {
-	    return dmp;
-	}
+        if (name == dmp->dataManagerName()) {
+            return dmp;
+        }
     }
-    throw (TableInvOper ("Data manager " + dataManagerName +
-			 " is unknown in table " +
-			 baseTablePtr_p->tableName()));
-    return 0;
+    throw (TableInvOper ("Data manager " + name +
+                         " is unknown in table " +
+                         baseTablePtr_p->tableName()));
 }
 
 void ColumnSet::checkDataManagerNames (const String& tableName) const
@@ -649,7 +652,8 @@ Record ColumnSet::dataManagerInfo (Bool virtualOnly) const
 	    Record subrec;
 	    subrec.define ("TYPE", dmPtr->dataManagerType());
 	    subrec.define ("NAME", dmPtr->dataManagerName());
-	    subrec.defineRecord ("SPEC", dmPtr->dataManagerSpec());
+            // Add info of the data manager to the record.
+            dmPtr->dataManagerInfo (subrec);
 	    // Loop through all columns with this data manager and add
 	    // its name to the vector.
 	    uInt ncol = colMap_p.ndefined();

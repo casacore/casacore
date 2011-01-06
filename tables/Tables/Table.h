@@ -481,6 +481,15 @@ public:
     // An empty object is returned when the table is unknown.
     static TableInfo tableInfo (const String& tableName);
 
+    // Show the structure of the table.
+    // It shows the columns (with types), the data managers, and the subtables.
+    // Optionally the columns can be sorted alphabetically.
+    void showStructure (std::ostream&,
+                        Bool showDataMans=True,
+                        Bool showColumns=True,
+                        Bool showSubTables=False,
+                        Bool sortColumns=False) const;
+
     // Test if a table with the given name exists and is writable.
     static Bool isWritable (const String& tableName);
 
@@ -952,8 +961,9 @@ public:
     // This only shows its name and number of columns and rows.
     friend ostream& operator<< (ostream&, const Table&);
 
-    // Find the data manager with the given name.
-    DataManager* findDataManager (const String& datamanagerName) const;
+    // Find the data manager with the given name or for the given column name.
+    DataManager* findDataManager (const String& name,
+                                  Bool byColumn=False) const;
 
 
 protected:
@@ -1005,6 +1015,11 @@ private:
     // Return False if not a proper subset.
     Bool fastRowNumbers (const Vector<uInt>& v1, const Vector<uInt>& v2,
                          Vector<uInt>& rows) const;
+
+    // Show the info of the given columns.
+    // Sort the columns if needed.
+    void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
+                         const Array<String>& columnNames, Bool sort) const;
 };
 
 
@@ -1132,10 +1147,19 @@ inline void Table::renameColumn (const String& newName, const String& oldName)
 inline void Table::renameHypercolumn (const String& newName, const String& oldName)
     { baseTabPtr_p->renameHypercolumn (newName, oldName); }
 
-inline DataManager* Table::findDataManager (const String& name) const
+inline DataManager* Table::findDataManager (const String& name,
+                                            Bool byColumn) const
 {
-    return baseTabPtr_p->findDataManager (name);
+  return baseTabPtr_p->findDataManager (name, byColumn);
 }
+
+inline void Table::showStructure (std::ostream& os,
+                                  Bool showDataMans,
+                                  Bool showColumns,
+                                  Bool showSubTables,
+                                  Bool sortColumns) const
+    { baseTabPtr_p->showStructure (os, showDataMans, showColumns,
+                                   showSubTables, sortColumns); }
 
 
 

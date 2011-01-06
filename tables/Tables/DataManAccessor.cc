@@ -27,23 +27,41 @@
 
 //# Includes
 #include <tables/Tables/DataManAccessor.h>
+#include <tables/Tables/DataManager.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/DataManError.h>
+#include <casa/Containers/Record.h>
 #include <casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-DataManager* RODataManAccessor::findDataManager (const Table& table,
-					  const String& dataManagerName) const
-{
-    DataManager* dmptr = table.findDataManager (dataManagerName);
-    if (dmptr == 0) {
-	throw (DataManError ("Data manager name " + dataManagerName +
-			     " does not exist in table " + table.tableName()));
+  RODataManAccessor::RODataManAccessor (const Table& table,
+                                        const String& name,
+                                        Bool byColumn)
+    : itsDataManager(0)
+  {
+    itsDataManager = table.findDataManager (name, byColumn);
+  }
+
+  void RODataManAccessor::setProperties (const Record& prop) const
+  {
+    if (itsDataManager) {
+      itsDataManager->setProperties (prop);
+    } else {
+      throw DataManError ("setProperties cannot be used on a default "
+                          "RODataManAccessor object");
     }
-    return dmptr;
-}
+  }
+
+  Record RODataManAccessor::getProperties() const
+  {
+    if (itsDataManager) {
+      return itsDataManager->getProperties();
+    }
+    throw DataManError ("getProperties cannot be used on a default "
+                        "RODataManAccessor object");
+  }
 
 } //# NAMESPACE CASA - END
 

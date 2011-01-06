@@ -751,9 +751,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // There is, however, another way. Strings containing selection and
 // sorting commands can be used.
 // The syntax of these commands is based on SQL and is described in the
-// <a href="../notes/199.html">Table Query Language</a> (TaQL).
-// <br>Such a command can be executed with the static function
-// <src>TableParse::tableCommand</src> defined in class
+// <a href="../notes/199.html">Table Query Language</a> (TaQL) note 199.
+// The language supports UDFs (User Defined Functions) in dynamically
+// loadable libraries as explained in the note.
+// <br>A TaQL command can be executed with the static function
+// <src>tableCommand</src> defined in class
 // <linkto class=TableParse>TableParse</linkto>.
 
 // <ANCHOR NAME="Tables:concatenation">
@@ -1049,6 +1051,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     BitFlagsEngine<Int>::registerClass();
 //   }
 // </srcblock>
+// There are several functions that can give information which data managers
+// are used for which columns and to obtain the characteristics and properties
+// of them. Class RODataManAccessor and derived classes can be used for it
+// as well as the functions <src>dataManagerInfo</src> and
+// <src>showStructure</src> in class Table.
 
 // <ANCHOR NAME="Tables:storage managers">
 // <h3>Storage Managers</h3></ANCHOR>

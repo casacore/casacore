@@ -95,18 +95,6 @@ String TiledColumnStMan::dataManagerType() const
     return "TiledColumnStMan";
 }
 
-Record TiledColumnStMan::dataManagerSpec() const
-{
-    Record rec;
-    rec.define ("DEFAULTTILESHAPE", tileShape_p.asVector());
-    rec.define ("MAXIMUMCACHESIZE", Int(persMaxCacheSize_p));
-    if (cubeSet_p.nelements() > 0) {
-        rec.define ("TILESHAPE", cubeSet_p[0]->tileShape().asVector());
-    }
-    rec.define ("SEQNR", sequenceNr());
-    return rec;
-}
-
 Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
 {
     reask = False;
@@ -204,6 +192,11 @@ void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
     }
 }
 
+
+IPosition TiledColumnStMan::defaultTileShape() const
+{
+    return tileShape_p;
+}
 
 void TiledColumnStMan::addRow (uInt nrow)
 {

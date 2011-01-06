@@ -866,7 +866,7 @@ Bool Table::isReadable (const String& tableName)
 	if (ios.getNextType() != "Table") {
 	    valid = False;
 	}
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	valid = False;
     } 
     return valid;

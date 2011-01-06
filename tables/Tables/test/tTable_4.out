@@ -48,7 +48,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c5]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c5]
 Table has 1 rows
 
  Reopened table
@@ -156,10 +156,10 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
- Type=IncrementalStMan Name=IncrementalStMan #Spec=2 Columns=[c2, c6]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1, c5]
+ Type=IncrementalStMan Name=IncrementalStMan #Spec=3 Columns=[c2, c6]
  Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c4]
 Table has 1 rows
 
  Removed columns c2,c6
@@ -191,9 +191,9 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1, c5]
  Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c4]
 Table has 1 rows
 
  Checked all data
@@ -225,9 +225,9 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c5]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1, c5]
  Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c3]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c4]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c4]
 Table has 1 rows
 
 tTable_4 is for interactive playing with tables
@@ -317,11 +317,11 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c2]
- Type=StandardStMan Name=ssm2 #Spec=2 Columns=[c3]
- Type=IncrementalStMan Name=IncrementalStMan #Spec=2 Columns=[c4]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1, c2]
+ Type=StandardStMan Name=ssm2 #Spec=4 Columns=[c3]
+ Type=IncrementalStMan Name=IncrementalStMan #Spec=3 Columns=[c4]
  Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c5]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c6, c7]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c6, c7]
 Table has 0 rows
 
  Added and initialized 1 row
@@ -344,8 +344,8 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c7]
 Table has 1 rows
 
  Checked all data
@@ -367,8 +367,8 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c7]
 Table has 1 rows
 
  Checked all data
@@ -392,8 +392,8 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=4 Columns=[c7]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=5 Columns=[c7]
 Table has 0 rows
 
 tTable_4 is for interactive playing with tables
@@ -431,7 +431,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1]
 Table has 2 rows
 
  Checked all data
@@ -476,8 +476,8 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
- Type=TiledColumnStMan Name=tsm1 #Spec=4 Columns=[c2, c3]
+ Type=StandardStMan Name=StandardStMan #Spec=4 Columns=[c1]
+ Type=TiledColumnStMan Name=tsm1 #Spec=5 Columns=[c2, c3]
 Table has 2 rows
 
  Checked all data
