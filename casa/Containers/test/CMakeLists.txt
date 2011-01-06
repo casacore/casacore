@@ -1,5 +1,6 @@
 set (tests
 tBlock
+tContainerIO
 tHashMap
 tHashMapIO
 tHashMapIter
