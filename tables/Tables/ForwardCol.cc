@@ -133,8 +133,9 @@ void ForwardColumnEngine::removeColumn (DataManagerColumn* colp)
 	    delete refColumns_p[i];
 	    decrementNcolumn();
 	    for (; i<ncolumn(); i++) {
-		refColumns_p[i-1] = refColumns_p[i];
+		refColumns_p[i] = refColumns_p[i+1];
 	    }
+            refColumns_p[i] = 0;
 	    return;
 	}
     }
