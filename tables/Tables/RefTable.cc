@@ -393,7 +393,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
 	if (rootDesc.isColumn (*mapValPtr)) {
 	    desc.addColumn (rootDesc.columnDesc (*mapValPtr));
 	    if (name != *mapValPtr) {
-		desc.renameColumn (nameMap.getKey(i), nameMap.getVal(i));
+		desc.renameColumn (name, *mapValPtr);
 	    }
 	}else{
 	    unknownCol.define (name, static_cast<void*>(0));
