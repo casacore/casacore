@@ -405,9 +405,11 @@ Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
       break;
     case TpUChar:
     case TpShort:
+    case TpUShort:
       oss << "S";
       break;
     case TpInt:
+    case TpUInt:
       oss << "I";
       break;
     case TpFloat:
@@ -1633,6 +1635,9 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 	} else if (valtype == "short") {
 	  tabdesc.addColumn (ScalarColumnDesc<Short>
 			     (name, comment, dmtype, dmgrp, 0, option));
+	} else if (valtype == "ushort") {
+	  tabdesc.addColumn (ScalarColumnDesc<uShort>
+			     (name, comment, dmtype, dmgrp, 0, option));
 	} else if (valtype == "integer"  ||  valtype == "int") {
 	  tabdesc.addColumn (ScalarColumnDesc<Int>
 			     (name, comment, dmtype, dmgrp, 0, option));
@@ -1734,6 +1739,14 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
       tabdesc.addColumn (ArrayColumnDesc<Short>
 			 (name, comment, dmtype, dmgrp, ndim, option));
     }
+  } else if (valtype == "ushort") {
+    if (shp.nelements() > 0) {
+      tabdesc.addColumn (ArrayColumnDesc<uShort>
+			 (name, comment, dmtype, dmgrp, shp, option));
+    }else{
+      tabdesc.addColumn (ArrayColumnDesc<uShort>
+			 (name, comment, dmtype, dmgrp, ndim, option));
+    }
   } else if (valtype == "integer"  ||  valtype == "int") {
     if (shp.nelements() > 0) {
       tabdesc.addColumn (ArrayColumnDesc<Int>
@@ -1803,6 +1816,14 @@ String TableProxy::getTypeStr (DataType dtype)
   switch (dtype) {
   case TpBool:
     return "boolean";
+  case TpUChar:
+    return "uchar";
+  case TpShort:
+    return "short";
+  case TpUShort:
+    return "ushort";
+  case TpUInt:
+    return "uint";
   case TpFloat:
     return "float";
   case TpDouble:
@@ -1818,7 +1839,7 @@ String TableProxy::getTypeStr (DataType dtype)
   default:
     break;
   }
-  return "integer";
+  return "int";
 }
 
 Record TableProxy::recordColumnDesc (const ColumnDesc& cold, Bool cOrder)
