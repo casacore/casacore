@@ -106,18 +106,21 @@ void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
       cols(nrcol++) = columns(i);
     }
   }
-  cols.resize (nrcol, True);
-  // Add rows as needed.
-  if (startout + nrrow > out.nrow()) {
-    out.addRow (startout + nrrow - out.nrow());
-  }
-  ROTableRow inrow(in, cols);
-  for (uInt i=0; i<nrrow; i++) {
-    inrow.get (startin + i);
-    outrow.put (startout + i, inrow.record(), inrow.getDefined(), False);
-  }
-  if (flush) {
-    out.flush();
+  if (nrcol > 0) {
+    cols.resize (nrcol, True);
+    // Add rows as needed.
+    if (startout + nrrow > out.nrow()) {
+      out.addRow (startout + nrrow - out.nrow());
+    }
+    ROTableRow inrow(in, cols);
+    outrow = TableRow(out, cols);
+    for (uInt i=0; i<nrrow; i++) {
+      inrow.get (startin + i);
+      outrow.put (startout + i, inrow.record(), inrow.getDefined(), False);
+    }
+    if (flush) {
+      out.flush();
+    }
   }
 }
 
