@@ -168,6 +168,7 @@ System/PGPlotterNull.cc
 System/ObjectID.cc
 System/Choice.cc
 System/ProgressMeter.cc
+System/Casarc.cc
 Utilities/cregex.cc
 Utilities/RecordTransformable.cc
 Utilities/DynBuffer.cc
@@ -181,6 +182,7 @@ Utilities/ValType.cc
 Utilities/StringDistance.cc
 Utilities/Notice.cc
 Utilities/MUString.cc
+Utilities/Precision.cc
 Utilities/Regex.cc
 Utilities/BitVector.cc
 Utilities/Fallible2.cc
@@ -507,6 +509,7 @@ System/AipsrcValue.tcc
 System/AipsrcVector.h
 System/AipsrcVector.tcc
 System/AppInfo.h
+System/Casarc.h
 System/Choice.h
 System/ObjectID.h
 System/PGPlotter.h
@@ -544,6 +547,7 @@ Utilities/LinearSearch.h
 Utilities/LinearSearch.tcc
 Utilities/MUString.h
 Utilities/Notice.h
+Utilities/Precision.h
 Utilities/PtrHolder.h
 Utilities/PtrHolder.tcc
 Utilities/RecordTransformable.h

@@ -130,6 +130,57 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
   return True;
 }
 
+Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
+                     const Vector<String>& prepends,
+                     const Vector<String>& appends,
+                     Bool useStds)
+{
+  // Setup a string that is either "/" + lastPart or blank.
+  String myLastPart("");
+  if (lastPart != "") {
+    myLastPart += "/" + lastPart;
+  }
+  // Note that this function returns as soon as possible, i.e. it goes until it
+  // matches or runs out of possibilities.
+  for (uInt i = 0; i < prepends.nelements(); ++i) {
+    foundDir = prepends[i] + myLastPart;
+    File testPath(foundDir);
+    if (testPath.isDirectory()) {
+      return True;
+    }
+  }
+  if (useStds) {
+    // Test . using lastPart or ., not "".
+    if (lastPart!= "") {
+      foundDir = lastPart;
+    } else {
+      foundDir = ".";
+    }
+    File testDot(foundDir);
+    if (testDot.isDirectory()) {
+      return True;
+    }
+    foundDir = aipsHome() + myLastPart;
+    File testAipsHome(foundDir);
+    if (testAipsHome.isDirectory()) {
+      return True;
+    }
+    foundDir = aipsRoot() + myLastPart;
+    File testAipsRoot(foundDir);
+    if (testAipsRoot.isDirectory()) {
+      return True;
+    }
+  }
+  for (uInt i = 0; i < appends.nelements(); ++i) {
+    foundDir = appends[i] + myLastPart;
+    File testPath(foundDir);
+    if (testPath.isDirectory()) {
+      return True;
+    }
+  }
+  return False;
+}
+
 void Aipsrc::reRead() {
   parse();
 }
@@ -354,6 +405,7 @@ uInt Aipsrc::parse() {
     // Otherwise use CASAPATH.
     // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
     filelist = fillAips(uhome) + String("/.casarc:");
+    filelist += fillAips(uhome) + String("/.casa/rc:");
     filelist += fillAips(uhome) + String("/.aipsrc:");
     filelist += (root + String("/.aipsrc:"));
     filelist += (host + String("/aipsrc:"));

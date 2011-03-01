@@ -61,6 +61,11 @@ void doIt (Bool doExcp)
     File isDir2("tFile_tmp/isDir2");             // directory
     File test3("tFile_tmp/isDir2/testFile");     // testFile does not exist
 
+    File bin("/bin");
+    File nocreate("/bin/afsferwrfasd");
+    File creatable("tFile_tmp/idaasdfasdfa");
+    File creatable2("tFile_tmp/xxxx/idaasdfasdfa");
+
     // Test assignment.
     File isFile2;
     isFile2 = isFile;
@@ -158,6 +163,12 @@ void doIt (Bool doExcp)
     cout << isFile.accessTime () << endl;
     cout << isFile.modifyTime () << endl;
     cout << isFile.statusChangeTime () << endl;
+
+    AlwaysAssertExit (bin.getWriteStatus() == File::NOT_OVERWRITABLE);
+    AlwaysAssertExit (nocreate.getWriteStatus() == File::NOT_CREATABLE);
+    AlwaysAssertExit (creatable.getWriteStatus() == File::CREATABLE);
+    AlwaysAssertExit (creatable2.getWriteStatus() == File::NOT_CREATABLE);
+    AlwaysAssertExit (isFile.getWriteStatus() == File::OVERWRITABLE);
 
     cout << "<<<" << endl;
 }

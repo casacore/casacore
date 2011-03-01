@@ -292,9 +292,20 @@ void setInf(Double& val) {
   val = doubleInf();
 }
 
-// Local Variables: 
-// compile-command: "gmake Math"
-// End: 
+Double roundDouble(Double val, Double ndigit) {
+  Double sign = 1;
+  if (val == 0) {
+    return 0;
+  } else if (val < 0) {
+    sign = -1;
+  }
+  val *= sign;
+  Double lgr = log10(val) - ndigit;
+  // E.g. log10(0.1) gives -0.9999999, so add little number when truncating.
+  Int i = Int(lgr >= 0  ?  lgr + 1.000001 : lgr - 0.000001);
+  Double temp = val * pow(10.0, -i);
+  return sign*round(temp)*pow(10.0, i);
+}
 
 } //# NAMESPACE CASA - END
 

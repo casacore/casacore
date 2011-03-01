@@ -102,6 +102,18 @@ class File
 {
 public: 
 
+	enum FileWriteStatus {
+		// file exists and can be overwritten
+		OVERWRITABLE,
+		// file exists but cannot be overwritten
+		NOT_OVERWRITABLE,
+		// file does not exist and is creatable
+		CREATABLE,
+		// file does not exist but cannot be created
+		NOT_CREATABLE
+	};
+
+
     // Construct a File object whose Path is set to the current working 
     // directory. 
     File();
@@ -229,6 +241,14 @@ public:
     //    p.newUniqueName ("/home/me")  -->  "/home/me/AAA00xxb0"
     // </srcblock>
     static Path newUniqueName (const String& directory); 
+
+
+    // get write status of the file.
+    // OVERWRITABLE - file exists and can be overwritten
+    // NOT_OVERWRITABLE - file exists but cannot be overwritten
+    // CREATABLE - File does not exist and can be created
+    // NOT_CREATABLE - file does not exist and cannot be created.
+    FileWriteStatus getWriteStatus() const;
 
 protected:
     // This function is used by <linkto class=RegularFile>RegularFile</linkto> 

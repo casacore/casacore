@@ -58,7 +58,7 @@ FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
 3000288
 FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
 Length=3000555
-AipsIO::getNextType: no magic value found
+AipsIO::getNextType: tAipsIO_tmp.data - no magic value found
 AipsIO::getstart: found object type abcdefghij, expected aa
 TryErrOpen
 AipsIO: already open
@@ -147,7 +147,7 @@ MemoryIO::read beyond end-of-buffer
 3000288
 MemoryIO::read beyond end-of-buffer
 Length=3000547
-AipsIO::getNextType: no magic value found
+AipsIO::getNextType: tAipsIO_tmp.data - no magic value found
 AipsIO::getstart: found object type abcdefghij, expected aa
 <<<
 end
