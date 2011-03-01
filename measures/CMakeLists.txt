@@ -2,6 +2,13 @@
 # CASA measures
 #
 
+# If given, add the data directory as compile variable.
+# If it contains a single $, it needs to be doubled for make purposes.
+if (DATA_DIR)
+    string(REGEX REPLACE [$] $$ DATA_DIRX ${DATA_DIR})
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA='\"${DATA_DIRX}\"'")
+endif (DATA_DIR)
+
 add_library (casa_measures
 Measures/Aberration.cc
 Measures/EarthField.cc
