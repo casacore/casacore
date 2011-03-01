@@ -151,10 +151,10 @@ public:
   // Default type for differentiation
   typedef AutoDiff<T> DiffType;
   // Get the value
-  static const T &getValue(const T &in) { return in; };
+  static const T &getValue(const T &in) { return in; }
   // Set a value (and possible derivative)
   static void setValue(T &out, const T &val, const uInt,
-		       const uInt) { out = val; };
+		       const uInt) { out = val; }
 };
 
 //# Following are specializations. Naming only for documentation
@@ -181,10 +181,10 @@ public:
   typedef AutoDiff<T> DiffType;
   // Get the value
   static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); };
+    return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
   static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); };
+		       const uInt i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_P
@@ -210,10 +210,10 @@ public:
   typedef AutoDiffA<T> DiffType;
   // Get the value
   static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); };
+    return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
   static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); };
+		       const uInt i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_PA
@@ -239,10 +239,10 @@ public:
   typedef AutoDiffX<T> DiffType;
   // Get the value
   static const T &getValue(const Type &in) {
-    return FunctionTraits<T>::getValue(in.value()); };
+    return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
   static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); };
+		       const uInt i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_PX

@@ -57,7 +57,7 @@ method_p(type), fixedEpoch_p(catepoch), lres_p(0) {
 Precession &Precession::operator=(const Precession &other) {
   if ( this != &other) {
     copy(other);
-  };
+  }
   return *this;
 }
 
@@ -84,7 +84,7 @@ const Euler &Precession::operator()(Double epoch) {
   lres_p++; lres_p %= 4;
   for (uInt i=0; i<3; ++i) {
     result_p[lres_p](i) = pval_p[i] + dt*dval_p[i];
-  };
+  }
   return result_p[lres_p];
 }
 
@@ -108,7 +108,7 @@ void Precession::copy(const Precession &other) {
     zeta_p[i] = other.zeta_p[i];
     pval_p[i] = other.pval_p[i];
     dval_p[i] = other.dval_p[i];
-  };
+  }
   for (uInt i=0; i<4; ++i) result_p[i] = other.result_p[i];
 }
 
@@ -119,7 +119,7 @@ void Precession::fillEpoch() {
       AipsrcValue<Double>::registerRC(String("measures.precession.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Precession::INTV);
-  };
+  }
   
   checkEpoch_p = 1e30;
   switch (method_p) {
@@ -131,7 +131,7 @@ void Precession::fillEpoch() {
     refEpoch_p = MeasData::MJD2000;
     cent_p = MeasData::JDCEN;
     break;
-  };
+  }
   if (fixedEpoch_p == 0) {
     switch (method_p) {
     case B1950:
@@ -140,8 +140,8 @@ void Precession::fillEpoch() {
     default:
       fixedEpoch_p = refEpoch_p;
       break;
-    };
-  };
+    }
+  }
   switch (method_p) {
   case IAU2000:
     for (uInt i=0; i<3; ++i) zeta_p[i] = Polynomial<Double>(5);
@@ -181,7 +181,7 @@ void Precession::calcPrec(Double t) {
     default:
       t = (t - fixedEpoch_p)/cent_p;
       break;
-    };
+    }
     for (uInt i=0; i<3; ++i) {
       pval_p[i] = (zeta_p[i])(t);
       dval_p[i] = ((zeta_p[i]).derivative())(t);
@@ -192,8 +192,8 @@ void Precession::calcPrec(Double t) {
       default:
 	dval_p[i] = dval_p[i]/MeasData::JDCEN;
 	break;
-      };
-    };
+      }
+    }
   }
 }
 

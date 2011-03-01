@@ -122,7 +122,7 @@ public:
     // Enum used internally to optimize operations.
     enum {General, Diagonal, ScalarId};
     // Destructor
-    ~SquareMatrix() {};
+    ~SquareMatrix() {}
     // Default constructor - creates a unity matrix at present, this may not
     // be what we want (non-intuitive?)
     SquareMatrix() : type_p(ScalarId) {a_p[0][0]=T(1);}

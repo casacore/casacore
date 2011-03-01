@@ -122,14 +122,14 @@ class RecordInterface;
 //     Sinusoid<T> &operator=(const Sinusoid<T> &other) {
 //         if (this != &other) param_p = other.param_p;
 //         return *this; }
-//     virtual ~Sinusoid() {};
+//     virtual ~Sinusoid() {}
 //     // Dimensionality
-//     virtual uInt ndim() const { return 2; };
+//     virtual uInt ndim() const { return 2; }
 //     // Evaluate
 //     virtual T eval(Function<T>::FunctionArg x) const {
-//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); };
+//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); }
 //     // Copy it
-//     virtual Function<T> *clone() const { return new Sinusoid<T>(param_p); };
+//     virtual Function<T> *clone() const { return new Sinusoid<T>(param_p); }
 //   };
 // </srcblock>
 // The following will calculate the value and the derivative for 
@@ -155,11 +155,11 @@ class RecordInterface;
 //    public:
 //     enum { AMPL=0, FREQ };
 //     Sinusoid() : Function<T>(2){param_p[AMPL] T(1);param_p[FREQ]=T(1);}
-//     virtual ~Sinusoid() {};
-//     virtual uInt ndim() const { return 2; };
+//     virtual ~Sinusoid() {}
+//     virtual uInt ndim() const { return 2; }
 //     virtual T eval(Function<T>::FunctionArg x) const {
-//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); };
-//     virtual Function<T> *clone() const { return new Sinusoid<T>param_p; };
+//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); }
+//     virtual Function<T> *clone() const { return new Sinusoid<T>param_p; }
 //   };
 // </srcblock>
 // The following will calculate the value and the derivative for 
@@ -209,16 +209,16 @@ class RecordInterface;
      //# Constructors
      // Constructors
      // <group>
-     Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {};
+     Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {}
      explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False),
-     locked_p(False) {};
+     locked_p(False) {}
      explicit Function(const Vector<T> &in) : param_p(in), arg_p(0),
-     parset_p(False), locked_p(False) {};
+     parset_p(False), locked_p(False) {}
      Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
-     parset_p(False), locked_p(False) {};
+     parset_p(False), locked_p(False) {}
      template <class W, class X>
      Function(const Function<W,X> &other) : param_p(other.parameters()),
-     arg_p(0), parset_p(other.parsetp()), locked_p(False) {};
+     arg_p(0), parset_p(other.parsetp()), locked_p(False) {}
      Function(const Function<T,U> &other) :
        Functional<typename FunctionTraits<T>::ArgType, U>        (other),
        Functional<Vector<typename FunctionTraits<T>::ArgType>, U>(other),
@@ -226,16 +226,16 @@ class RecordInterface;
        arg_p(other.arg_p),
        parset_p(other.parset_p),
        locked_p(False)
-     {};
+     {}
      // </group>
      
      // Destructor
-     virtual ~Function() {};
+     virtual ~Function() {}
      
      // Returns the number of dimensions of function
      virtual uInt ndim() const = 0;
      // Returns the number of parameters
-     uInt nparameters() const { return param_p.nelements(); };
+     uInt nparameters() const { return param_p.nelements(); }
      
      // Evaluate the function object
      virtual U eval(FunctionArg x) const = 0;
@@ -244,19 +244,19 @@ class RecordInterface;
      // Manipulate the nth parameter (0-based) with no index check
      // <group>
      T &operator[](const uInt n) { parset_p |= !locked_p;
-     return param_p[n]; };
-     const T &operator[](const uInt n) const { return param_p[n]; };
+     return param_p[n]; }
+     const T &operator[](const uInt n) const { return param_p[n]; }
      // </group>
      // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
      // The length of <src>x</src> must be greater than or equal to
      // <src>ndim()</src>.
      // <group>
      virtual U operator()() const {
-       DebugAssert(ndim()==0, AipsError); return eval(FunctionArg(0)); };
+       DebugAssert(ndim()==0, AipsError); return eval(FunctionArg(0)); }
      virtual U operator()(const ArgType &x) const {
-       DebugAssert(ndim()<=1, AipsError); return eval(&x); };
+       DebugAssert(ndim()<=1, AipsError); return eval(&x); }
      virtual U operator()(const Vector<ArgType> &x) const;
-     virtual U operator()(FunctionArg x) const { return eval(x); };
+     virtual U operator()(FunctionArg x) const { return eval(x); }
      virtual U operator()(const ArgType &x, const ArgType &y) const;
      virtual U operator()(const ArgType &x, const ArgType &y,
 			  const ArgType &z) const;
@@ -272,19 +272,19 @@ class RecordInterface;
      // Note: no index check.
      // <group>
      Bool &mask(const uInt n) { parset_p |= !locked_p;
-     return param_p.mask(n); };
-     const Bool &mask(const uInt n) const { return param_p.mask(n); };
+     return param_p.mask(n); }
+     const Bool &mask(const uInt n) const { return param_p.mask(n); }
      // </group>
      // Return the parameter interface
      // <group>
-     const FunctionParam<T> &parameters() const { return param_p; };
-     FunctionParam<T> &parameters() { parset_p = True; return param_p; };
+     const FunctionParam<T> &parameters() const { return param_p; }
+     FunctionParam<T> &parameters() { parset_p = True; return param_p; }
      // </group>
      // Get <src>arg_p</src> and <src>parset_p</src>. Necessary for reasons
      // of protection in the copying of non-conforming Functions.
      // <group>
-     const Vector<ArgType> &argp() const { return arg_p; };
-     Bool parsetp() const { return parset_p; };
+     const Vector<ArgType> &argp() const { return arg_p; }
+     Bool parsetp() const { return parset_p; }
      // </group>
      // Compiler cannot always find the correct 'const' version of parameter
      // access. In cases where this would lead to excessive overheads in
@@ -292,8 +292,8 @@ class RecordInterface;
      // parameter changing can be set to be locked, and no changes are
      // assumed.
      // <group>
-     void lockParam()   { locked_p = True; };
-     void unlockParam() { locked_p = False; };
+     void lockParam()   { locked_p = True; }
+     void unlockParam() { locked_p = False; }
      // </group>
      
      // get/set the function mode.  These provide an interface to 
@@ -320,7 +320,7 @@ class RecordInterface;
      virtual Bool hasMode() const;
      
      // Print the function (i.e. the parameters)
-     ostream &print(ostream &os) const { return param_p.print(os); };
+     ostream &print(ostream &os) const { return param_p.print(os); }
      // Return a copy of this object from the heap. The caller is responsible 
      // for deleting this pointer. The <src>cloneAD</src> will return a clone
      // with an <src>AutoDef<T></src>; the <src>cloneNonAD</src> a clone
@@ -357,7 +357,7 @@ ostream &operator<<(ostream &os, const Function<T,U> &fun);
 //# Inlines
 template<class T, class U>
 inline ostream &operator<<(ostream &os, const Function<T,U> &fun) {
-  return fun.print(os); };
+  return fun.print(os); }
 
 } //# NAMESPACE CASA - END
 

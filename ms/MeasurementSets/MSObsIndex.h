@@ -87,7 +87,7 @@ public:
   MSObservationIndex(const MSObservation& observationTable);
 
   // Null destructor
-  virtual ~MSObservationIndex() {};
+  virtual ~MSObservationIndex() {}
 
   // Look up OBSERVATION_ID's for a given project code
   Vector<Int> matchProjectCode(const String& projectCode);

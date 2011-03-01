@@ -95,7 +95,7 @@ MCBaseline::MCBaseline() : measMath() {
     MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
 		      MBaseline::N_Types, MCBaseline::N_Routes,
 		      MCBaseline::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -118,8 +118,8 @@ void MCBaseline::getConvert(MConvertBase &mc,
       iin = ToRef_p[tmp][1];
       mc.addMethod(tmp);
       initConvert(tmp, mc);
-    };
-  };
+    }
+  }
 }
 
 void MCBaseline::clearConvert() {
@@ -447,8 +447,8 @@ void MCBaseline::doConvert(MVBaseline &in,
     default:
       break;
       
-    };	// switch
-  };	// for
+    }	// switch
+  }	// for
 }
 
 String MCBaseline::showState() {
@@ -457,7 +457,7 @@ String MCBaseline::showState() {
     MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
 		      MBaseline::N_Types, MCBaseline::N_Routes,
 		      MCBaseline::ToRef_p);
-  };
+  }
   return MCBase::showState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
 			   MBaseline::N_Types, MCBaseline::N_Routes,
 			   MCBaseline::ToRef_p);

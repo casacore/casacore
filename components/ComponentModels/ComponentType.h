@@ -30,9 +30,12 @@
 #define COMPONENTS_COMPONENTTYPE_H
 
 #include <casa/aips.h>
+
+//# Forward Declaration
 namespace casac {
       class componentlist;
-};
+}
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class String;

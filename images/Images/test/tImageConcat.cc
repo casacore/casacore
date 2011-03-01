@@ -369,7 +369,7 @@ int main() {
   } 
   cout << "OK" << endl;
   return 0;
-};
+}
 
 
 void check (uInt axis, MaskedLattice<Float>& ml,

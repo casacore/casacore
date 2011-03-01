@@ -97,7 +97,7 @@ void MRadialVelocity::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MRadialVelocity *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MRadialVelocity::showMe()));
-  };
+  }
 }
 
 MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
@@ -163,7 +163,7 @@ const String* MRadialVelocity::allTypes(Int &nall, Int &nextra,
 
 void MRadialVelocity::checkTypes() const {
   MRadialVelocity::checkMyTypes();
-};
+}
 
 void MRadialVelocity::checkMyTypes() {
   static Bool first(True);
@@ -179,13 +179,13 @@ void MRadialVelocity::checkMyTypes() {
 	 tp == Int(typ[i]) &&
 	 MRadialVelocity::getType(tp, tps[i]) &&
 	 tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MRadialVelocity::getType(tp,
 					    MRadialVelocity::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
@@ -206,9 +206,9 @@ Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
   else {
     mr = MRadialVelocity::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MRadialVelocity::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MRadialVelocity *>(0))) return False;
@@ -221,7 +221,7 @@ Bool MRadialVelocity::setRefString(const String &in) {
   if (MRadialVelocity::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MRadialVelocity::DEFAULT);
   return False;
 }

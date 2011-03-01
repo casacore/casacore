@@ -87,7 +87,7 @@ public:
   MSSpWindowIndex(const MSSpectralWindow& spectralWindow);
 
   // Null destructor
-  virtual ~MSSpWindowIndex() {};
+  virtual ~MSSpWindowIndex() {}
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group or groups
   Vector<Int> matchFreqGrp(const Int& freqGrp);

@@ -481,8 +481,8 @@ void MSIter::setArrayInfo()
   newArray_p=(lastArray_p!=curArray_p);
   if (newArray_p) {
     lastArray_p=curArray_p;
-  };
-};
+  }
+}
 
 void MSIter::setFeedInfo()
 { 
@@ -661,10 +661,10 @@ void MSIter::setFieldInfo()
 	if (sourceId(i)==curSource_p) {
 	  found=True;
 	  curSourceName_p=msc_p->source().name()(i);
-	};
+	}
 	i++;
-      };
-    };
+      }
+    }
   }
 }
 

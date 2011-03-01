@@ -57,7 +57,7 @@ MSPolarizationIndex::MSPolarizationIndex(const MSPolarization&
   nrows_p = msPolarizationCols_p.nrow();
   polarizationIds_p.resize(nrows_p);
   indgen(polarizationIds_p);
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -94,14 +94,14 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 			  rowCorrType(i) == corrType(i) &&
 			  rowCorrProduct(0,i) == corrProduct(0,i) &&
 			  rowCorrProduct(1,i) == corrProduct(1,i));
-      };
-    };
-  };
+      }
+    }
+  }
 
   LogicalArray maskArray(corrMatch);
   MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);
   return maskRowNumbers.getCompressedArray();
-};
+}
 
 // Add for MS selection 
   Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool exactMatch)
@@ -135,12 +135,12 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 	      if (rowCorrType(j) == corrType(i)) {allMatch(i)=True;break;}
 	  corrMatch(row)=allTrue(allMatch);
 	}
-    };
+    }
 
   LogicalArray maskArray(corrMatch);
   MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);
   return maskRowNumbers.getCompressedArray();
-};
+}
 
 
 //-------------------------------------------------------------------------

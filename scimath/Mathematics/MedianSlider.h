@@ -105,7 +105,7 @@ public:
 
 // Returns the difference between the current median and the value
 // at window center. Optionally, also returns flag of median center
-  Float diff ( Bool &flag )       { return midpoint(flag) - median(); };
+  Float diff ( Bool &flag )       { return midpoint(flag) - median(); }
   Float diff ()                   
            { Bool dum; return diff(dum); }
 

@@ -58,15 +58,15 @@ void MCBase::makeState(Bool &made, uInt *state,
     for (uInt i=0; i<ntyp; i++) {
       mcnt[i*ntyp + j]  = 100*nrout;
       state[i*ntyp + j] = nrout;
-    };
-  };
+    }
+  }
   for (uInt i=0; i<nrout; i++) {
     tree[list[i][0]*ntyp + tcnt[list[i][0]]] = i;
     tcnt[list[i][0]]++;
     // Fill one-step transitions
     mcnt[list[i][0]*ntyp + list[i][1]] = 1 + list[i][2];
     state[list[i][0]*ntyp + list[i][1]] = i;
-  };
+  }
   // Find shortest route
   for (uInt i=0; i<ntyp; i++) {
     for (uInt j=0; j<ntyp; j++) {
@@ -76,9 +76,9 @@ void MCBase::makeState(Bool &made, uInt *state,
 	findState(len, state, mcnt, okall,
 		  visit, tcnt, tree,
 		  i, j, ntyp, nrout, list);
-      };
-    };
-  };
+      }
+    }
+  }
   // delete trees
   delete [] tcnt;
   delete [] tree;
@@ -110,16 +110,16 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
 	if (loclen < minlen) {
 	  minlen = loclen;
 	  res = tree[in*ntyp+i];
-	};
+	}
       } else okall = False;
-    };
+    }
     visit[in] = False;
-  };
+  }
   if (minlen == 100*nrout) return False;
   if (len == 0 || okall) {
     mcnt[in*ntyp + out] = minlen;
     state[in*ntyp + out]= res;
-  };
+  }
   len += minlen;
   return True;
 }
@@ -139,15 +139,15 @@ String MCBase::showState(Bool &made, uInt *state,
     for (uInt j=0; j<ntyp; j++) {
       if (i == j) oss << " --"; 
       else oss << setw(3) << state[i*ntyp+j];
-    };
+    }
     oss << "\n";
     oss << "   |";
     for (uInt k=0; k<ntyp; k++) {
       if (i == k) oss << "   ";
       else oss << setw(3) << list[state[i*ntyp+k]][1];
-    };
+    }
     oss << "\n";
-  };
+  }
   return String(oss);
 }
 

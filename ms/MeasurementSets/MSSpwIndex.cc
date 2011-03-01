@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int nrows = msSpwSubTable_p.nrow();
     spwIDs.resize(nrows);
     indgen(spwIDs);
-  };
+  }
 
   //-------------------------------------------------------------------------
   
@@ -81,7 +81,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MaskedArray<Int> maskSpwId(spwIDs, maskArray);
 
     return maskSpwId.getCompressedArray();
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   
@@ -90,7 +90,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Vector<Int> IDs;
     IDs = set_intersection(sourceId,spwIDs);
     return IDs;
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, 
@@ -249,7 +249,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  }
       }
     return IDs;
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   Vector<Int> MSSpwIndex::matchIDLT(const Int n)
@@ -259,7 +259,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       ((spwIDs < n));// && (!msSpwSubTable_p.flagRow().getColumn()));
     MaskedArray<Int> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
-  };
+  }
 
   //-------------------------------------------------------------------------
   Vector<Int> MSSpwIndex::matchIDGT(const Int n)
@@ -268,7 +268,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       ((spwIDs > n));// && (!msSpwSubTable_p.flagRow().getColumn()));
     MaskedArray<Int> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
-  };
+  }
   //-------------------------------------------------------------------------
   
   Vector<Int> MSSpwIndex::matchIDGTAndLT(const Int n0, const Int n1)
@@ -277,7 +277,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       ((spwIDs > n0) && (spwIDs < n1));// &&(!msSpwSubTable_p.flagRow().getColumn()));
     MaskedArray<Int> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
-  };
+  }
   //-------------------------------------------------------------------------
   Vector<Float> MSSpwIndex::convertToMKS(const Float f0, const Float f1, 
 					 const String& unit)
@@ -293,7 +293,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     freqs(0) = f0*factor;
     freqs(1) = f1*factor;
     return freqs;
-  };
+  }
   //-------------------------------------------------------------------------
   Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, 
 						const Vector<Float>& freqList,

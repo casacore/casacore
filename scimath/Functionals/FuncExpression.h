@@ -96,23 +96,23 @@ class FuncExpression {
   FuncExpression &operator=(const FuncExpression &other);
 
   // Destructor
-  ~FuncExpression() {};
+  ~FuncExpression() {}
 
   //# Member functions
   // Create an executable program
   Bool create(const String &prog);
   // Get the current error message
-  const String &errorMessage() { return error_p; };
+  const String &errorMessage() { return error_p; }
   // Get the executable program
   const vector<FuncExprData::ExprOperator> &getCode() const;
   // Get the number of parameters in executable program
-  uInt getNpar() const { return npar_p; };
+  uInt getNpar() const { return npar_p; }
   // Get the number of dimensions of executable program
-  uInt getNdim() const {return ndim_p; };
+  uInt getNdim() const {return ndim_p; }
   // Get reference to the compiled program
-  const vector<FuncExprData::ExprOperator> &getCode() { return code_p; };
+  const vector<FuncExprData::ExprOperator> &getCode() { return code_p; }
   // Get reference to compiled constants
-  const vector<Double> &getConst() { return const_p; };
+  const vector<Double> &getConst() { return const_p; }
   // Execute the program
   Bool exec(Double &res) const;
   // Print the stack information (mainly for debugging)

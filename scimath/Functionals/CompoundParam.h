@@ -117,11 +117,11 @@ public:
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
-    };
+    }
     for (uInt i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
-    };
+    }
   }
   template <class W>
     CompoundParam(const CompoundParam<W> &other) :
@@ -133,11 +133,11 @@ public:
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
       paroff_p[i] = other.parameterOffset(i);
-    };
+    }
     for (uInt i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
-    };
+    }
   }
   template <class W>
     CompoundParam(const CompoundParam<W> &other, Bool) :
@@ -149,11 +149,11 @@ public:
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
       paroff_p[i] = other.parameterOffset(i);
-    };
+    }
     for (uInt i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
-    };
+    }
   }
   CompoundParam<T> &operator=(const CompoundParam<T> &other);
   // </group>
@@ -165,7 +165,7 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("compound");
-    return x; };
+    return x; }
   
   // Add a function to the sum. All functions must have the same 
   // <src>ndim()</src> as the first one. Returns the (zero relative) number 
@@ -173,29 +173,29 @@ public:
   uInt addFunction(const Function<T> &newFunction);
   
   // Return the number of functions in the sum.
-  uInt nFunctions() const { return functionPtr_p.nelements(); };
+  uInt nFunctions() const { return functionPtr_p.nelements(); }
   
   // Return a reference to a specific Function.
   // <group>
   const Function<T> &function(uInt which) const {
     DebugAssert(nFunctions() > which, AipsError);
-    return *(functionPtr_p[which]); };
+    return *(functionPtr_p[which]); }
   // </group>
   // Get the offset in function parameterlist for function which
   uInt parameterOffset(uInt which) const {
-    DebugAssert(nFunctions() > which, AipsError); return paroff_p[which]; };
+    DebugAssert(nFunctions() > which, AipsError); return paroff_p[which]; }
   // Get the function number belonging to parameter list element which
   uInt parameterFunction(uInt which) const {
     DebugAssert(nparameters() > which, AipsError);
     return funpar_p[which];
-  };
+  }
   // Return locpar
   uInt parameterLocation(uInt which) const {
     DebugAssert(nparameters() > which, AipsError);
     return locpar_p[which];
-  };
+  }
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; };
+  virtual uInt ndim() const { return ndim_p; }
 
 private:
   //# Data

@@ -112,18 +112,18 @@ public:
   //# Constructors
   // Construct an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialised to zero, and <src>m=0</src>
-  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {;};
+  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {;}
   // Copy constructor/assignment (deep copy)
   // <group>
-  HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {};
+  HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {}
   template <class W>
-    HyperPlane(const HyperPlane<W> &other) : HyperPlaneParam<T>(other) {};
+    HyperPlane(const HyperPlane<W> &other) : HyperPlaneParam<T>(other) {}
   HyperPlane<T> &operator=(const HyperPlane<T> &other) {
-    HyperPlaneParam<T>::operator=(other); return *this; };
+    HyperPlaneParam<T>::operator=(other); return *this; }
   // </group>
 
   // Destructor
-  virtual ~HyperPlane() {};
+  virtual ~HyperPlane() {}
 
   //# Operators    
   // Evaluate the hyper plane function at
@@ -133,11 +133,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new HyperPlane<T>(*this); };
+  virtual Function<T> *clone() const { return new HyperPlane<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new HyperPlane<typename FunctionTraits<T>::DiffType>(*this); };
+    return new HyperPlane<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new HyperPlane<typename FunctionTraits<T>::BaseType>(*this); };
+    return new HyperPlane<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -165,21 +165,21 @@ public:
   // Constructors an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
   explicit HyperPlane_PS(const uInt m=0) :
-    HyperPlaneParam<AutoDiff<T> >(m) {};
+    HyperPlaneParam<AutoDiff<T> >(m) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   HyperPlane_PS(const HyperPlane_PS<AutoDiff<T> > &other) :
-    HyperPlaneParam<AutoDiff<T> >(other) {};
+    HyperPlaneParam<AutoDiff<T> >(other) {}
   template <class W>
     HyperPlane_PS(const HyperPlane_PS<W> &other) :
-    HyperPlaneParam<AutoDiff<T> >(other) {};
+    HyperPlaneParam<AutoDiff<T> >(other) {}
   HyperPlane_PS<AutoDiff<T> > &
     operator=(const HyperPlane_PS<AutoDiff<T> > &other) {
-    HyperPlaneParam<AutoDiff<T> >::operator=(other); return *this; };
+    HyperPlaneParam<AutoDiff<T> >::operator=(other); return *this; }
   // </group>
   
   // Destructor
-  virtual ~HyperPlane() {};
+  virtual ~HyperPlane() {}
   
   //# Operators    
   // Evaluate the hyper plane function at
@@ -191,15 +191,15 @@ public:
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new HyperPlane_PS<AutoDiff<T> >(*this); };
+    return new HyperPlane_PS<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new HyperPlane<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new HyperPlane<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

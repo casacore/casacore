@@ -70,7 +70,7 @@ Bool MeasIERS::get(Double &returnValue,
     forcepredict_reg = 
       AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
 				    False);
-  };
+  }
   if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) return True;
   Bool res = True;
   Double f;
@@ -80,14 +80,14 @@ Bool MeasIERS::get(Double &returnValue,
       (dateNow - date) <= 
       AipsrcValue<Double>::get(MeasIERS::predicttime_reg)) {
     res = False;			// do predict
-  };
+  }
   MeasIERS::Files which = MeasIERS::MEASURED;
   if (res) {
     res = initMeas(which);
     if (res) {
       res = fillMeas(which, date);
-    };
-  };
+    }
+  }
   if (!res) {				// Retry for predicted
     which = MeasIERS::PREDICTED;
     if (!initMeas(which)) return False;
@@ -102,10 +102,10 @@ Bool MeasIERS::get(Double &returnValue,
 		 "the IERS table data range."
 		 "\nCalculations will proceed with less precision") << 
 	  LogIO::POST;
-      };
+      }
       return False;
-    };
-  };
+    }
+  }
   // Interpolation fraction
   f = date - ldat[which][0];
   returnValue = ldat[which+N_Files][type]*f - ldat[which][type]*(f-1.0);
@@ -149,7 +149,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
 	  "\nCalculations will proceed with lower precision" << 
 	LogIO::POST;
       return False;
-    };
+    }
     MeasIERS::openNote(&MeasIERS::closeMeas);
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000)
       ok = False;
@@ -161,21 +161,21 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
 	ok = False;
       } else {
 	mjdl[which] = mjd0[which] + n;
-      };
-    };
+      }
+    }
     if (!ok) {
       LogIO os(LogOrigin("MeasIERS",
 			 String("initMeas(MeasIERS::Files)"),
 			 WHERE));
       os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
-    };
+    }
     measured[which] = True;
     for (Int i = 0; i < MeasIERS::N_Types; i++) {
       for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
 	ldat[j][i] = 0;
-      };
-    }; 
-  };
+      }
+    } 
+  }
   return (measured[which]);
 }
 
@@ -189,8 +189,8 @@ void MeasIERS::closeMeas() {
       mjdl[i] = 0;
       msgDone = False;
       t[i] = Table();
-    };
-  };
+    }
+  }
 }
 
 void MeasIERS::openNote(CLOSEFUN fun) {
@@ -200,13 +200,13 @@ void MeasIERS::openNote(CLOSEFUN fun) {
       tmp = new CLOSEFUN[sizeNote];
       for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
       delete [] toclose; toclose = 0;
-    };
+    }
     toclose = new CLOSEFUN[sizeNote+10];
     for (uInt i=0; i<sizeNote; ++i) toclose[i] = tmp[i];
     for (uInt i=sizeNote; i<sizeNote+10; ++i) toclose[i] = 0;
     sizeNote += 10;
     delete [] tmp; tmp = 0;
-  };
+  }
   toclose[nNote++] = fun;
 }
 
@@ -215,11 +215,11 @@ void MeasIERS::closeTables() {
     for (uInt i=sizeNote; i-1 != 0; --i) {
       if (toclose[i-1] != 0) toclose[i-1]();
       toclose[i-1] = 0;
-    };
+    }
     delete [] toclose; toclose = 0;
     sizeNote = 0;
     nNote = 0;
-  };
+  }
 }
 
 
@@ -273,14 +273,14 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
               if (Table::isReadable(ldir + name)) {
                 found = True;
                 break;
-              };
+              }
               ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
               searched.resize(searched.nelements()+1, True);
               searched[searched.nelements()-1] = ldir;
               if (Table::isReadable(ldir + name)) {
                 found = True;
                 break;
-              };
+              }
               Path cdatapath(String(CASADATA));
               ldir = cdatapath.absoluteName() + path[i];
               searched.resize(searched.nelements()+1, True);
@@ -288,7 +288,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
               if (Table::isReadable(ldir + name)) {
                 found = True;
                 break;
-              };
+              }
               ldir = cdatapath.absoluteName() + "/share/casacore/data/" \
                 + path[i];
               ldir = cdatapath.absoluteName() + path[i];
@@ -297,12 +297,12 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
               if (Table::isReadable(ldir + name)) {
                 found = True;
                 break;
-              };              
+              }              
             }
-          };
-        };
-      };
-    };
+          }
+        }
+      }
+    }
     if (!Table::isReadable(ldir + name)) {
       LogIO os(LogOrigin("MeasIERS",
 			 String("fillMeas(MeasIERS::Files, Double)"),
@@ -313,7 +313,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       for (uInt i=0; i<searched.nelements(); ++i) os << searched[i] << "\n";
       os << LogIO::POST;
       return False;
-    };
+    }
     tab = Table(ldir + name);
   } else tab = *tabin;
 
@@ -322,7 +322,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
       (tab.tableInfo().type() != String("IERS"))) {
     ok = False;
-  };
+  }
   if (ok) {
     Quantity ldt;
     if (MVTime::read(ldt, ks.asString("VS_DATE"))) {
@@ -330,16 +330,16 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       vs = ks.asString("VS_VERSION");
     } else {
       ok = False;
-    };
-  };
+    }
+  }
   ROTableRow rw(tab);
   if (ok) {
     for (Int i=0; i < N; i++) {
       if (!rw.record().isDefined(rfn[i])) {
 	ok = False; break;
-      };
-    };
-  };
+      }
+    }
+  }
   if (!ok) {
     LogIO os(LogOrigin("MeasIERS",
 		       String("getTable(Table &, TableRecord &, "
@@ -352,7 +352,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       " table has been read that seems corrupted"
       "\nNotify the CASA system manager about it" << LogIO::EXCEPTION;
     return False;
-  };
+  }
   table = tab;
   kws = ks;
   row = rw;
@@ -365,7 +365,7 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
   Int ut = ifloor(utf);
   if (ut < mjd0[which] + 1 || ut >= mjdl[which]) {
     return False;
-  };
+  }
   if (utf >= ldat[which][0] &&
       utf <= ldat[which+N_Files][0]) {
     // Already there
@@ -375,7 +375,7 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
       // Shift one
       for (Int i=0; i<MeasIERS::N_Types; i++) {
 	ldat[which][i] = ldat[which+N_Files][i];
-      };
+      }
       // For end points
       ut = Int(ldat[which][0]);
     } else {
@@ -383,13 +383,13 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
       row[which].get(ut-mjd0[which]-1);
       for (Int i=0; i<MeasIERS::N_Types; i++) {
 	ldat[which][i] = *(rfp[which][i]);
-      };
-    };
+      }
+    }
     // Read second line
     row[which].get(Int(ldat[which][0])-mjd0[which]);
     for (Int i=0; i<MeasIERS::N_Types; i++) {
       ldat[which+N_Files][i] = *(rfp[which][i]);
-    };
+    }
     if (ldat[which][0] != ut || ldat[which+N_Files][0] != ut+1) {
       LogIO os(LogOrigin("MeasIERS",
 			 String("fillMeas(MeasIERS::Files, Double)"),
@@ -398,8 +398,8 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
 	String("The IERS table ") + tp[which] +
 	" has been corrupted: regenerate" <<
 	LogIO::EXCEPTION;
-    };
-  };
+    }
+  }
   return True;
 }
   

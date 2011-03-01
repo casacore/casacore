@@ -122,50 +122,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   public:
     //# Constructors
     // Construct a constant with a value of zero.  Zero derivatives.
-    SparseDiffA() : SparseDiff<T>() {};
+    SparseDiffA() : SparseDiff<T>() {}
 
     // Construct a constant with a value of v.  Zero derivatives.
-    SparseDiffA(const T &v) : SparseDiff<T>(v) {};
+    SparseDiffA(const T &v) : SparseDiff<T>(v) {}
 
     // A function f(x0,x1,...,xn,...) with a value of v.
     // The nth derivative is one, and all others are zero. 
     SparseDiffA(const T &v, const uInt n) :
-      SparseDiff<T>(v, n) {}; 
+      SparseDiff<T>(v, n) {} 
 
     // A function f(x0,x1,...,xn,...) with a value of v.  The 
     // nth derivative is der, and all other derivatives are zero. 
     SparseDiffA(const T &v, const uInt n, const T &der) :
-      SparseDiff<T>(v, n, der) {}; 
+      SparseDiff<T>(v, n, der) {} 
 
     // Construct one from another
-    SparseDiffA(const SparseDiff<T> &other) : SparseDiff<T>(other) {};
+    SparseDiffA(const SparseDiff<T> &other) : SparseDiff<T>(other) {}
 
-    ~SparseDiffA() {};
+    ~SparseDiffA() {}
 
     // Assignment operator.  Assign a constant to variable.  All derivatives
     // are zero.
     SparseDiffA<T> &operator=(const T &v) {
       SparseDiff<T>::operator=(v);
       return *this;
-    };
+    }
 
     // Assignment operator.  Add a gradient to variable.
     SparseDiffA<T> &operator=(const pair<uInt, T> &der) {
       SparseDiff<T>::operator=(der);
       return *this;
-    };
+    }
 
     // Assignment operator.  Assign gradients to variable.
     SparseDiffA<T> &operator=(const vector<pair<uInt, T> > &der) {
       SparseDiff<T>::operator=(der);
       return *this;
-    };
+    }
 
     // Assign one to another (deep copy).
     SparseDiffA<T> &operator=(const SparseDiff<T> &other) {
       SparseDiff<T>::operator=(other);
       return *this;
-    };
+    }
 
   private:
     //# Data

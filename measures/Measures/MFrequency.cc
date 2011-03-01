@@ -88,7 +88,7 @@ void MFrequency::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MFrequency *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MFrequency::showMe()));
-  };
+  }
 }
 
 MFrequency::Types MFrequency::castType(uInt tp) {
@@ -169,7 +169,7 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
 
 void MFrequency::checkTypes() const {
   MFrequency::checkMyTypes();
-};
+}
 
 void MFrequency::checkMyTypes() {
   static Bool first(True);
@@ -184,12 +184,12 @@ void MFrequency::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MFrequency::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MFrequency::getType(tp, MFrequency::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
@@ -198,9 +198,9 @@ Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
   else {
     mr = MFrequency::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MFrequency::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MFrequency *>(0))) return False;
@@ -213,7 +213,7 @@ Bool MFrequency::setRefString(const String &in) {
   if (MFrequency::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MFrequency::DEFAULT);
   return False;
 }

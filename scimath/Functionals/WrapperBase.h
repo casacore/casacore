@@ -67,12 +67,12 @@ template<class T> class WrapperBase {
  public:
   //# Constructors
   // Default constructor: zero dimension
-  WrapperBase() : ndim_p(0), arg_p(0) {};
+  WrapperBase() : ndim_p(0), arg_p(0) {}
   // Standard constructor
-  explicit WrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {};
+  explicit WrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {}
 
   // Destructor
-  virtual ~WrapperBase() {};
+  virtual ~WrapperBase() {}
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -83,7 +83,7 @@ template<class T> class WrapperBase {
 
   //# Member functions
   // Get the dimensionality
-  virtual uInt ndim() const { return ndim_p; };
+  virtual uInt ndim() const { return ndim_p; }
 
  protected:
   //# Data

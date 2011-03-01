@@ -122,43 +122,43 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
  public:
   //# Constructors
   // Construct a constant with a value of zero.  Zero derivatives.
-  AutoDiffA() : AutoDiff<T>() {};
+  AutoDiffA() : AutoDiff<T>() {}
 
   // Construct a constant with a value of v.  Zero derivatives.
-  AutoDiffA(const T &v) : AutoDiff<T>(v) {};
+  AutoDiffA(const T &v) : AutoDiff<T>(v) {}
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs, the nth derivative is one, and all 
   // others are zero. 
   AutoDiffA(const T &v, const uInt ndiffs, const uInt n) :
-    AutoDiff<T>(v, ndiffs, n) {}; 
+    AutoDiff<T>(v, ndiffs, n) {} 
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs.
   // All derivatives are zero. 
-  AutoDiffA(const T &v, const uInt ndiffs) : AutoDiff<T>(v, ndiffs) {};
+  AutoDiffA(const T &v, const uInt ndiffs) : AutoDiff<T>(v, ndiffs) {}
 
   // Construct one from another
-  AutoDiffA(const AutoDiff<T> &other) : AutoDiff<T>(other) {};
+  AutoDiffA(const AutoDiff<T> &other) : AutoDiff<T>(other) {}
 
   // Construct a function f(x0,x1,...,xn) of a value v and a vector of 
   // derivatives derivs(0) = df/dx0, derivs(1) = df/dx1, ...
-  AutoDiffA(const T &v, const Vector<T> &derivs) : AutoDiff<T>(v, derivs) {};
+  AutoDiffA(const T &v, const Vector<T> &derivs) : AutoDiff<T>(v, derivs) {}
 
-  ~AutoDiffA() {};
+  ~AutoDiffA() {}
 
   // Assignment operator.  Assign a constant to variable.  All derivatives
   // are zero.
   AutoDiffA<T> &operator=(const T &v) {
     AutoDiff<T>::operator=(v);
     return *this;
-  };
+  }
 
   // Assign one to another.
   AutoDiffA<T> &operator=(const AutoDiff<T> &other) {
     AutoDiff<T>::operator=(other);
     return *this;
-  };
+  }
 
  private:
   //# Data

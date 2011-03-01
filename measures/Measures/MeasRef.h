@@ -179,10 +179,10 @@ private:
   public:
     // Constructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
-    RefRep() : type(Ms::DEFAULT), offmp(0), frame(), cnt(1) {};
+    RefRep() : type(Ms::DEFAULT), offmp(0), frame(), cnt(1) {}
     // Destructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
-    ~RefRep() {delete offmp;}; 
+    ~RefRep() {delete offmp;} 
     // The actual data
     // <group>
     // Type of reference

@@ -234,7 +234,7 @@ public:
   // When using the default constructor the psf MUST be specified using the
   // setPsf function prior to doing any convolution. 
   // <group>
-  Convolver(){};
+  Convolver(){}
   // </group>
   // Create the cached Transfer function assuming that circular convolution
   // will be done

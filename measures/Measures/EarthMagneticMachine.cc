@@ -50,10 +50,10 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
   hgt_p = hgt.getValue("m");
   if (!frame.getITRF(pos_p)) {
     throw(AipsError("No position in frame for EarthMagneticMachine"));
-  };
+  }
   if (!frame.getTDB(epo_p)) {
     throw(AipsError("No epoch in frame for EarthMagneticMachine"));
-  };
+  }
   fil_p = 15;
   init();
 }
@@ -80,10 +80,10 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
   rin_p = dir;
   if (!frame.getITRF(pos_p)) {
     throw(AipsError("No position in frame for EarthMagneticMachine"));
-  };
+  }
   if (!frame.getTDB(epo_p)) {
     throw(AipsError("No epoch in frame for EarthMagneticMachine"));
-  };
+  }
   fil_p = 29;
   init();
 }
@@ -112,7 +112,7 @@ EarthMagneticMachine
   if (this != &other) {
     copy(other);
     reCalculate();
-  };
+  }
   return *this;
 }
 
@@ -202,11 +202,11 @@ void EarthMagneticMachine::set(const MVDirection &dir) {
 Double EarthMagneticMachine::getLOSField() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
-  };
+  }
   if (!fex_p) {
     fex_p = True;
     los_p = fld_p * in_p;
-  };
+  }
   return los_p;
 }
 
@@ -250,7 +250,7 @@ Quantum<Double> EarthMagneticMachine::getLOSField(const Double in,
 const MVEarthMagnetic &EarthMagneticMachine::getField() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
-  };
+  }
   return fld_p;
 }
 
@@ -262,11 +262,11 @@ const MVEarthMagnetic &EarthMagneticMachine::getField(const MVDirection &in) {
 Double EarthMagneticMachine::getLong() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
-  };
+  }
   if (!pex_p) {
     pex_p = True;
     pl_p = sub_p.get();
-  };
+  }
   return pl_p(1);
 }
 
@@ -288,7 +288,7 @@ Quantum<Double> EarthMagneticMachine::getLong(const MVDirection &in,
 const MVPosition &EarthMagneticMachine::getPosition() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
-  };
+  }
   return sub_p;
 }
 
@@ -339,12 +339,12 @@ void EarthMagneticMachine::init() {
       in_p = rin_p;
       in_p.adjust();
       in_p = conv_p(in_p).getValue();
-    };
+    }
     fil_p = 0;
     pex_p = False;
     fex_p = False;
     clx_p = False;
-  };
+  }
 }
 
 void EarthMagneticMachine::copy(const EarthMagneticMachine &other) {

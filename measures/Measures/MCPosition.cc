@@ -51,7 +51,7 @@ MCPosition::MCPosition() :
     MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
 		      MPosition::N_Types, MCPosition::N_Routes,
 		      MCPosition::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -75,7 +75,7 @@ void MCPosition::getConvert(MConvertBase &mc,
     iin = ToRef_p[tmp][1];
     mc.addMethod(tmp);
     initConvert(tmp, mc);
-  };
+  }
 }
 
 void MCPosition::clearConvert() {
@@ -93,7 +93,7 @@ void MCPosition::initConvert(uInt which, MConvertBase &mc) {
 
   default:
     break;
-  };
+  }
 }
 
 void MCPosition::doConvert(MeasValue &in,
@@ -109,7 +109,7 @@ void MCPosition::doConvert(MVPosition &in,
 			   MRBase &outref,
 			   const MConvertBase &mc) {
     
-  if (False) { inref.getType(); outref.getType(); }; // to stop warnings
+  if (False) { inref.getType(); outref.getType(); } // to stop warnings
 
   Double g1, g2, g3, g4;
 
@@ -135,7 +135,7 @@ void MCPosition::doConvert(MVPosition &in,
 	  (*DVEC1)(2) = atan(((*DVEC1)(2))/d2);
 	} else {
 	  (*DVEC1)(2) = ((*DVEC1)(2) >= 0) ? C::pi_2 : - C::pi_2;
-	};
+	}
       }
       while ( !nearAbs((*DVEC1)(2), g2, 1e-10));
       (*DVEC1)(0) = d2/cos((*DVEC1)(2)) - MeasTable::WGS84(0) * g3;
@@ -171,15 +171,15 @@ void MCPosition::doConvert(MVPosition &in,
 	g2 *= g3;
 	// Apply
 	in(2) = g2;
-      };
+      }
     }	
     break;
 
     default:
       break;
 	
-    }; //switch
-  }; // for
+    } //switch
+  } // for
 }
 
 String MCPosition::showState() {
@@ -188,7 +188,7 @@ String MCPosition::showState() {
     MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
 		      MPosition::N_Types, MCPosition::N_Routes,
 		      MCPosition::ToRef_p);
-  };
+  }
   return MCBase::showState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
 			   MPosition::N_Types, MCPosition::N_Routes,
 			   MCPosition::ToRef_p);

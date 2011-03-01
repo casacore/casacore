@@ -84,24 +84,24 @@ public:
   // Constructs the GNoise, Defaults:
   // mean=0, var=1.0
   // <group>
-  GNoiseFunction() : GNoiseParam<T>() {};
+  GNoiseFunction() : GNoiseParam<T>() {}
   GNoiseFunction(const Double &mean, const Double &var) :
-    GNoiseParam<T>(mean, var) {};
+    GNoiseParam<T>(mean, var) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  GNoiseFunction(const GNoiseFunction<T> &other) : GNoiseParam<T>(other) {};
+  GNoiseFunction(const GNoiseFunction<T> &other) : GNoiseParam<T>(other) {}
   template <class W>
-    GNoiseFunction(const GNoiseFunction<W> &other) : GNoiseParam<T>(other) {};
+    GNoiseFunction(const GNoiseFunction<W> &other) : GNoiseParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   GNoiseFunction<T> &operator=(const GNoiseFunction<T> &other) {
-    GNoiseParam<T>::operator=(other); return *this; };
+    GNoiseParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~GNoiseFunction() {};
+  virtual ~GNoiseFunction() {}
 
   //# Operators    
   // Evaluate the GNoise at <src>x</src>.
@@ -114,7 +114,7 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new GNoiseFunction<T>(*this); };
+  virtual Function<T> *clone() const { return new GNoiseFunction<T>(*this); }
   // </group>
 
   //# Make members of parent classes known.

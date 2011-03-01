@@ -87,7 +87,7 @@ MPosition &MPosition::operator=(const MPosition &other) {
     MeasBase<MVPosition, MPosition::Ref> &This = *this;
     const MeasBase<MVPosition, MPosition::Ref> &Other = other;
     This = Other;
-  };
+  }
   return *this;
 }
 
@@ -115,7 +115,7 @@ void MPosition::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MPosition *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MPosition::showMe()));
-  };
+  }
 }
 
 const String* MPosition::allMyTypes(Int &nall, Int &nextra,
@@ -144,7 +144,7 @@ const String* MPosition::allTypes(Int &nall, Int &nextra,
 
 void MPosition::checkTypes() const {
   MPosition::checkMyTypes();
-};
+}
 
 void MPosition::checkMyTypes() {
   static Bool first(True);
@@ -159,12 +159,12 @@ void MPosition::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MPosition::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MPosition::getType(tp, MPosition::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 MPosition::Types MPosition::castType(uInt tp) {
@@ -204,9 +204,9 @@ Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
   else {
     mr = MPosition::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MPosition::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MPosition *>(0))) return False;
@@ -219,7 +219,7 @@ Bool MPosition::setRefString(const String &in) {
   if (MPosition::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MPosition::DEFAULT);
   return False;
 }

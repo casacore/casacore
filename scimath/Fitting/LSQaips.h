@@ -106,7 +106,7 @@ class LSQaips : public LSQFit {
   // Assignment (deep copy)
   LSQaips &operator=(const LSQaips &other) {
   if (this != &other) LSQFit::operator=(other);
-  return *this; };
+  return *this; }
   
   //# Destructor
   ~LSQaips() {;}
@@ -118,15 +118,15 @@ class LSQaips : public LSQFit {
   // The solution will be given in <src>sol</src>.
   // <group>
   template <class U>
-  void solve(U *sol) { LSQFit::solve(sol); };
+  void solve(U *sol) { LSQFit::solve(sol); }
   template <class U>
-  void solve(std::complex<U> *sol) { LSQFit::solve(sol); };
+  void solve(std::complex<U> *sol) { LSQFit::solve(sol); }
   template <class U>
-  void solve(U &sol) { LSQFit::solve(sol); };
+  void solve(U &sol) { LSQFit::solve(sol); }
   template <class U>
   void solve(Vector<U> &sol) {
     sol.resize(nUnknowns()/LSQTraits<U>::size);
-    LSQFit::solve(sol.data()); };
+    LSQFit::solve(sol.data()); }
   // </group>
   // Solve a Levenberg-Marquardt loop. Note that the solution <src>sol</src>
   // is used both and input and output. No check on the size is done.
@@ -167,10 +167,10 @@ class LSQaips : public LSQFit {
   // <group>
   template <class U>
   Bool getCovariance(U *covar) {
-    return LSQFit::getCovariance(covar); };
+    return LSQFit::getCovariance(covar); }
   template <class U>
   Bool getCovariance(std::complex<U> *covar) {
-    return LSQFit::getCovariance(covar); };
+    return LSQFit::getCovariance(covar); }
   template <class U>
   Bool getCovariance(Array<U> &covar);
   // </group>  
@@ -178,17 +178,17 @@ class LSQaips : public LSQFit {
   // <group>
   template <class U>
   Bool getErrors(U *errors) {
-    return LSQFit::getErrors(errors); };
+    return LSQFit::getErrors(errors); }
   template <class U>
   Bool getErrors(std::complex<U> *errors) {
-    return LSQFit::getErrors(errors); };
+    return LSQFit::getErrors(errors); }
   template <class U>
   Bool getErrors(U &errors) {
-    return LSQFit::getErrors(errors); };
+    return LSQFit::getErrors(errors); }
   template <class U>
   Bool getErrors(Vector<U> &errors) {
     errors.resize(nUnknowns()/LSQTraits<U>::size);
-    return LSQFit::getErrors(errors.data()); };
+    return LSQFit::getErrors(errors.data()); }
   // </group>
   
 private:

@@ -44,7 +44,7 @@ MSDopplerUtil::MSDopplerUtil(const MeasurementSet& ms)
 // Output to private data:
 //    ms_p                 MeasurementSet              Private MS copy
 //
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ MSDopplerUtil::~MSDopplerUtil()
 {
 // Null default destructor
 //
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -107,19 +107,19 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 		for (uInt k=0; k<restFrequency.nelements(); k++) {
 		  if (restFrq(transId)==restFrequency(k)) {
 		    exists = True;
-		  };
-		};
+		  }
+		}
 		if (!exists) {
 		  restFrequency.resize(restFrequency.nelements()+1, True);
 		  restFrequency(nRestFreq) = restFrq(transId);
 		  nRestFreq++;
 		  found = True;
-		};
+		}
 	      }
-	    }; // for (Int irow=0..)
-        }; // if (!ms_p.source().isNull())
-      }; // if (msc.doppler().dopplerId()..)
-    }; // for (Int idoprow=0;..)
+	    } // for (Int irow=0..)
+        } // if (!ms_p.source().isNull())
+      } // if (msc.doppler().dopplerId()..)
+    } // for (Int idoprow=0;..)
   } else if (!ms_p.source().isNull()) {
     if((ms_p.source().nrow() > 0)){
       // use just the source table if it exists
@@ -137,14 +137,14 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 	      for (uInt k=0; k<restFrequency.nelements(); k++) {
 		if (restFrq(transId)==restFrequency(k)) {
 		  exists = True;
-		};
-	      };
+		}
+	      }
 	      if (!exists) {
 		restFrequency.resize(restFrequency.nelements()+1, True);
 		restFrequency(nRestFreq) = restFrq(transId);
 		nRestFreq++;
 		found = True;
-	      };
+	      }
 	    }
 	  } 
 	} // for (Int irow=0..)
@@ -152,7 +152,7 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
     }
   }
   return found;
-};
+}
 
 //----------------------------------------------------------------------------
 

@@ -188,8 +188,8 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 	    nRowSel++;
 	    rowsel.resize(nRowSel, True);
 	    rowsel(nRowSel-1) = row;
-	  };
-	};
+	  }
+	}
 	if(nRowSel == 0)
 	  rowsel.resize(nRowSel, True);
       }
@@ -202,8 +202,8 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 	    nRowSel++;
 	    rowsel.resize(nRowSel, True);
 	    rowsel(nRowSel-1) = row;
-	  };
-	};
+	  }
+	}
 	if(nRowSel == 0)
 	  rowsel.resize(nRowSel, True);
       }

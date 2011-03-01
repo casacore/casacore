@@ -99,7 +99,7 @@ template<class Ms>
 MeasRef<Ms>::~MeasRef() {
   if (rep && --rep->cnt <= 0) {
     delete rep;
-  };
+  }
 }
 
 //# Operators
@@ -144,7 +144,7 @@ const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1,
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
-  };
+  }
   return ref2.getFrame();
 }
 
@@ -157,7 +157,7 @@ const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1,
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
-  };
+  }
   return ref2.getFrame();
 }
 
@@ -170,7 +170,7 @@ const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1,
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
-  };
+  }
   return ref2.getFrame();
 }
 
@@ -183,7 +183,7 @@ const MeasFrame &MeasRef<Ms>::frameRadialVelocity(MRBase &ref1,
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
-  };
+  }
   return ref2.getFrame();
 }
 
@@ -196,7 +196,7 @@ const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
   } else {
     throw(AipsError("No MeasFrame specified for conversion of " + 
 		    Ms::showMe()));
-  };
+  }
   return ref2.getFrame();
 }
 
@@ -221,7 +221,7 @@ void MeasRef<Ms>::set(const Ms &ep) {
   create();
   if (rep->offmp) {
     delete rep->offmp; rep->offmp = 0;
-  };
+  }
   rep->offmp = new Ms(ep);
 }
 
@@ -230,7 +230,7 @@ void MeasRef<Ms>::set(const Measure &ep) {
   create();
   if (rep->offmp) {
     delete rep->offmp; rep->offmp = 0;
-  };
+  }
   rep->offmp = ep.clone();
 }
 
@@ -256,11 +256,11 @@ void MeasRef<Ms>::print(ostream &os) const {
   os << " with Type: " << Ms::showType(getType());
   if (offset()) {
     os << ", Offset: " << *(offset());
-  };
+  }
   // Get rid of const
   if (!((MeasRef<Ms> *)(this))->getFrame().empty()) {
     os << "," << endl << ((MeasRef<Ms> *)(this))->getFrame();
-  };
+  }
 }
 
 } //# NAMESPACE CASA - END

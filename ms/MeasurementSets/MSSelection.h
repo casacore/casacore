@@ -241,10 +241,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p.copy();}
     
     inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedPolMap_p;};
+    {getTEN(ms); return selectedPolMap_p;}
 
     inline OrderedMap<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedSetupMap_p;};
+    {getTEN(ms); return selectedSetupMap_p;}
 
     // Methods to convert the maps return by getChanList and
     // getCorrMap to a list of Slice which can be directly used by
@@ -272,8 +272,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool getSelectedMS(MeasurementSet& selectedMS,
 		       const String& outMSName="");
     
-    void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;};
-    void resetTEN() {fullTEN_p=TableExprNode();};
+    void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;}
+    void resetTEN() {fullTEN_p=TableExprNode();}
     
     void reset(const MeasurementSet& ms,
 	       const MSSMode& mode=PARSE_NOW,
@@ -287,7 +287,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	       const String& scanExpr="",
 	       const String& arrayExpr="");
     
-    void setMaxScan(const Int& n) {maxScans_p=n;};
+    void setMaxScan(const Int& n) {maxScans_p=n;}
     
   private:
     // Set into the order of the selection expression
@@ -301,7 +301,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool definedAndSet(const Record& inpRec, const String& fieldName);
     
     // Convert an MS select string to TaQL
-    //   const String msToTaQL(const String& msSelect) {};
+    //   const String msToTaQL(const String& msSelect) {}
     
     TableExprNode fullTEN_p;
     const MeasurementSet *ms_p;

@@ -237,13 +237,13 @@ public:
   static const Double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 0; };
+  static uInt  size() { return 0; }
   // Set the imaginary part of a complex value only (a NOP for reals)
-  static void setImag(T &, const BaseType &) {;};
+  static void setImag(T &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const T &, const uInt) { return 0; };
+  static BaseType getValue(const T &, const uInt) { return 0; }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(T &, const BaseType &, const uInt) {;};
+  static void setValue(T &, const BaseType &, const uInt) {;}
 };
 
 #if defined NumericTraits_F
@@ -270,15 +270,15 @@ public:
   static const Double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 1; };
+  static uInt  size() { return 1; }
   // Set the imaginary part of a complex value only (a NOP for reals)
-  static void setImag(value_type &, const BaseType &) {;};
+  static void setImag(value_type &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
   static BaseType getValue(const value_type &other, const uInt) {
-    return other; };
+    return other; }
   // Set the <src>n%size()-th</src> numeric value
   static void setValue(value_type &other, const BaseType &val, const uInt) {
-    other = val; };
+    other = val; }
 };
 
 #undef NumericTraits_F
@@ -307,15 +307,15 @@ public:
   static const Double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 1; };
+  static uInt  size() { return 1; }
   // Set the imaginary part of a complex value only (a NOP for reals)
-  static void setImag(value_type &, const BaseType &) {;};
+  static void setImag(value_type &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
   static BaseType getValue(const value_type &other, const uInt) {
-    return other; };
+    return other; }
   // Set the <src>n%size()-th</src> numeric value
   static void setValue(value_type &other, const BaseType &val, const uInt) {
-    other = val; };
+    other = val; }
 };
 
 #undef NumericTraits_D
@@ -344,17 +344,17 @@ public:
   static const Double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 2; };
+  static uInt  size() { return 2; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &other, const BaseType &val) {
-    other = value_type(other.real(), val); };
+    other = value_type(other.real(), val); }
   // Get the <src>n%size()-th</src> numeric value
   static BaseType getValue(const value_type &other, const uInt n) {
-    return ((n%2 == 0) ? other.real() : other.imag()); };
+    return ((n%2 == 0) ? other.real() : other.imag()); }
   // Set the <src>n%size()-th</src> numeric value
   static void setValue(value_type &other, const BaseType &val, const uInt n) {
     other = (n%2 == 0) ? value_type(val, other.imag()) :
-      value_type(other.real(), val); };
+      value_type(other.real(), val); }
 };
 
 #undef NumericTraits_C
@@ -383,17 +383,17 @@ public:
   static const Double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 2; };
+  static uInt  size() { return 2; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &other, const BaseType &val) {
-    other = value_type(other.real(), val); };
+    other = value_type(other.real(), val); }
   // Get the <src>n%size()-th</src> numeric value
   static BaseType getValue(const value_type &other, const uInt n) {
-    return ((n%2 == 0) ? other.real() : other.imag()); };
+    return ((n%2 == 0) ? other.real() : other.imag()); }
   // Set the <src>n%size()-th</src> numeric value
   static void setValue(value_type &other, const BaseType &val, const uInt n) {
     other = (n%2 == 0) ? value_type(val, other.imag()) :
-      value_type(other.real(), val); };
+      value_type(other.real(), val); }
 };
 
 #undef NumericTraits_DC

@@ -351,7 +351,7 @@ void MSLister::selectvis(const String& timerange,
     if (pMSSel_p) {
       delete pMSSel_p;
       pMSSel_p=0;
-    };
+    }
     
     // Assume no selection, for starters
     pMSSel_p = new MeasurementSet(*pMS_p);
@@ -495,7 +495,7 @@ void MSLister::selectvis(const String& timerange,
     // initialize(*pMS_p,False);
     throw(AipsError("Error in MSLister::selectvis()"));
   }
-}; // end selectvis
+} // end selectvis
 
 void MSLister::listData(const int pageRows, 
                         const String listfile)

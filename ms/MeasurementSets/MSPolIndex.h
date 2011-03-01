@@ -87,7 +87,7 @@ public:
   MSPolarizationIndex(const MSPolarization& polarizationTable);
 
   // Null destructor
-  virtual ~MSPolarizationIndex() {};
+  virtual ~MSPolarizationIndex() {}
 
   // Look up POLARIZATION_ID's for a given set of polarization correlation
   // types and receptor cross-products

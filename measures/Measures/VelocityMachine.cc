@@ -94,7 +94,7 @@ VelocityMachine &VelocityMachine::operator=(const VelocityMachine &other) {
   if (this != &other) {
     copy(other);
     init();
-  };
+  }
   return *this;
 }
 
@@ -122,7 +122,7 @@ const Quantum<Double> &VelocityMachine::operator()(const Quantum<Double> &in) {
   if (in.getFullUnit().getValue() == Velocity ||
       in.getFullUnit().getValue() == UnitVal::NODIM) {
     return this->operator()(MVDoppler(in));
-  };
+  }
   return this->operator()(MVFrequency(in));
 }
 
@@ -151,7 +151,7 @@ makeVelocity(const Vector<Double> &in) {
     t *= t;
     vresv_p.getValue()[i] = cvvo_p(MVDoppler((1-t)/(1+t))).
       getValue().getValue()* C::c / vfac_p;
-  };
+  }
   return vresv_p;
 }
 
@@ -166,7 +166,7 @@ makeFrequency(const Vector<Double> &in) {
 					       getValue()).
 					getValue().getValue()).get(fun_p).
       getValue();
-  };
+  }
   return vresf_p;
 }
 
@@ -187,7 +187,7 @@ void VelocityMachine::set(const Unit &in) {
     vun_p = in;
   } else {
     fun_p = in;
-  };
+  }
   init();
 }
 

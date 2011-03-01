@@ -73,11 +73,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //	String error;		// error message
 //	if (!FunctionHolder(dir).toRecord(error, rec)) {
 //		cout << error << endl;
-//	};
+//	}
 //	Record grec;		// a Record
 //	if (!FunctionHolder(dir).toRecord(error, grec)) {  // make record
 //		cout << error << endl;
-//	};
+//	}
 // // Note that for GlishRecords use can be made of the
 // // GlishRecord::to/fromrecord() methods.
 // </srcblock>

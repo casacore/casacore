@@ -160,7 +160,7 @@ ostream &operator<<(ostream &os, const FunctionOrder<T> &par);
 //# Inlines
 template<class T>
 inline ostream &operator<<(ostream &os, const FunctionOrder<T> &par) {
-  return par.print(os); };
+  return par.print(os); }
 
 
 } //# NAMESPACE CASA - END

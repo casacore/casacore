@@ -124,30 +124,30 @@ public:
   // OddPolynomials are equal if they are the same order
   // <group>
   Bool operator==(const OddPolynomialParam<T> &other) const {
-    return (param_p == other.param_p); };
+    return (param_p == other.param_p); }
   Bool operator!=(const OddPolynomialParam<T> &other) const {
-    return (param_p != other.param_p); };
+    return (param_p != other.param_p); }
   // </group>
 
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("oddpolynomial");
-    return x; };
+    return x; }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return 2*param_p.nelements() - 1; };
+  uInt order() const { return 2*param_p.nelements() - 1; }
   
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n/2.
   T coefficient(uInt which) const {
-    DebugAssert(which<=order(), AipsError); return param_p[which]; };
+    DebugAssert(which<=order(), AipsError); return param_p[which]; }
   
   // Return all the coefficients as a vector.
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
   void setCoefficient(uInt which, const T value) {
-    DebugAssert(which<=order(), AipsError); param_p[which] = value; };
+    DebugAssert(which<=order(), AipsError); param_p[which] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);

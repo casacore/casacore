@@ -92,7 +92,7 @@ public:
   
   // Associate the ms and the shorthand.
   MSScanParse (const MeasurementSet* ms);
-  //  ~MSScanParse() {if (node_p) delete node_p;node_p=0x0;};
+  //  ~MSScanParse() {if (node_p) delete node_p;node_p=0x0;}
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectScanIds(const Vector<Int>& scanids);
@@ -105,11 +105,11 @@ public:
   static const TableExprNode* node();
 
   static MSScanParse* thisMSSParser;
-  static Vector<Int> selectedIDs() {return idList;};
-  static void reset(){idList.resize(0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static Vector<Int> selectedIDs() {return idList;}
+  static void reset(){idList.resize(0);}
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
-  void setMaxScan(const Int& n) {maxScans_p=n;};
+  void setMaxScan(const Int& n) {maxScans_p=n;}
 private:
   static TableExprNode* node_p;
   static Vector<Int> idList;

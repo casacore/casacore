@@ -148,7 +148,7 @@ public:
 protected:
 
   LogSink logSink_p;
-  virtual LogSink& logSink() {return logSink_p;};
+  virtual LogSink& logSink() {return logSink_p;}
 
   // the A matrix data member
   Matrix<FType> AMatrix;

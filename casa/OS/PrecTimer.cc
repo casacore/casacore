@@ -99,7 +99,7 @@ double PrecTimer::get_CPU_speed_in_MHz()
 
 double PrecTimer::getReal() const
 {
-  double time = total_time / 1e6;
+  double time = u1.total_time / 1e6;
   if (CPU_speed_in_MHz > 0) {
     time /= CPU_speed_in_MHz;
   }
@@ -113,21 +113,21 @@ void PrecTimer::show() const
 
 void PrecTimer::show (ostream& os) const
 {
-  if (count == 0) {
+  if (u2.count == 0) {
     os << "not used\n";
   } else {
-    double total = static_cast<double>(total_time);
+    double total = static_cast<double>(u1.total_time);
     if (CPU_speed_in_MHz == 0) {
-      os << "avg = " << total / static_cast<double>(count);
-      os << ", total = " << total_time << " cycles";
+      os << "avg = " << total / static_cast<double>(u2.count);
+      os << ", total = " << u1.total_time << " cycles";
     } else {
       total /= 1e6 * CPU_speed_in_MHz;
       os << "avg = ";
-      print_time(os, total / static_cast<double>(count));
+      print_time(os, total / static_cast<double>(u2.count));
       os << ", total = ";
       print_time(os, total);
     }
-    os << ", count = " << setw(9) << count << endl;
+    os << ", count = " << setw(9) << u2.count << endl;
   }
 }
 

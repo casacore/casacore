@@ -90,7 +90,7 @@ const Vector<Double> &EarthField::operator()(const MVPosition &pos) {
   for (Int i=0; i<3; i++) {
     result_p[lres_p](i) = pval_p[i] +
       dx(0)*dval_p[0][i] + dx(1)*dval_p[1][i] + dx(2)*dval_p[2][i];
-  };
+  }
   return result_p[lres_p];
 }
 
@@ -102,8 +102,8 @@ const Vector<Double> *EarthField::derivative(const MVPosition &pos) {
     lres_p++; lres_p %= 4;
     for (Int i=0; i<3; i++) {
       result_p[lres_p](i) = dval_p[j][i];
-    };
-  };
+    }
+  }
   return &result_p[1];
 }
 
@@ -115,10 +115,10 @@ void EarthField::copy(const EarthField &other) {
   for (Int i=0; i<3; i++) {
     pval_p[i] = other.pval_p[i];
     for (Int k=0; k<3; k++) dval_p[i][k] = other.dval_p[i][k];
-  };
+  }
   for (Int j=0; j<4; j++) {
     result_p[j] = other.result_p[j];
-  };
+  }
 }
 
 void EarthField::fillField() {
@@ -129,7 +129,7 @@ void EarthField::fillField() {
       AipsrcValue<Double>::registerRC(String("measures.earthfield.d_interval"),
 				      Unit("km"), Unit("m"),
 				      EarthField::INTV);
-  };
+  }
 
   checkPos_p = MVPosition(1e30, 1e30, 1e30);
   switch (method_p) {
@@ -141,15 +141,15 @@ void EarthField::fillField() {
     cl_p.resize(2*PQ_LEN);
     sl_p.resize(2*PQ_LEN);
     break;
-  };
+  }
   for (Int j=0; j<4; j++) {
     result_p[j].resize(3);
     for (Int k=0; k<3; ++k) result_p[j][k] = 0;
-  };
+  }
   for (Int j=0; j<3; ++j) {
     pval_p[j] = 0;
     for (Int k=0; k<3; ++k) dval_p[j][k] = 0;
-  };
+  }
 }
 
 void EarthField::refresh() {
@@ -169,7 +169,7 @@ void EarthField::calcField(const MVPosition &pos) {
       for (uInt j=0; j<3; j++) {
 	pval_p[j] =0;
 	for (uInt i=0; i<3; i++) dval_p[j][i] =0;
-      };
+      }
     }
     break;
     default: {
@@ -207,7 +207,7 @@ void EarthField::calcField(const MVPosition &pos) {
 	    n++;
 	    rr = pow(ratio, Double(n+2));
 	    fn = n;
-	  };
+	  }
 	  fm = m+1;
 	  if (k-4 >=0) {
 	    if (m+1-n == 0) {
@@ -227,8 +227,8 @@ void EarthField::calcField(const MVPosition &pos) {
 				   two/(fn-1.0) * p_p(j));
 	      q_p(k) = three * (slat * q_p(i) - clat/fn * p_p(i)) -
 		two * q_p(j);
-	    };
-	  };
+	    }
+	  }
 	  //
 	  // Synthesise X,Y,Z in geocentric coordinates
 	  //
@@ -248,11 +248,11 @@ void EarthField::calcField(const MVPosition &pos) {
 	    } else {
 	      y = y + (one * sl_p(m) -
 		       two * cl_p(m)) * q_p(k) * slat;
-	    };
+	    }
 	    l += 2;
-	  };
+	  }
 	  m++;
-	}; // calculation loop
+	} // calculation loop
 	// Rotate from local vertical/meridian to ITRF one
 	if (lp == 0) {
 	  pval_p[0] = +x*slat*clong + z*clat*clong + y*slong;
@@ -265,17 +265,17 @@ void EarthField::calcField(const MVPosition &pos) {
 			     pval_p[1])/DER_INTV;
 	  dval_p[lp-1][2] = (-x*clat + z*slat -
 			     pval_p[2])/DER_INTV;
-	};
+	}
 	if (lp < 3) {
 	  if (lp != 0) posmv(lp-1) -= DER_INTV;
 	  posmv(lp) += DER_INTV;
 	  posv = MVPosition(posmv).get();
-	};
-      }; // derivative loop
+	}
+      } // derivative loop
     }
     break;
-    };
-  };
+    }
+  }
 }
 
 } //# NAMESPACE CASA - END

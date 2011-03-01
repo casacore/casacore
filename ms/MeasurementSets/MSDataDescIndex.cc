@@ -51,7 +51,7 @@ MSDataDescIndex::MSDataDescIndex(const MSDataDescription& dataDescription)
   nrows_p = msDataDescCols_p.nrow();
   dataDescIds_p.resize(nrows_p);
   indgen(dataDescIds_p);
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Int& spwId)
      !msDataDescCols_p.flagRow().getColumn());
   MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -90,10 +90,10 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds)
       matchedDataDescIds.resize(matchedDataDescIds.nelements() +
 				currentMatch.nelements(), True);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
-    };
-  };
+    }
+  }
   return matchedDataDescIds;
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ Vector<Int> MSDataDescIndex::matchPolId(const Int& polId)
      !msDataDescCols_p.flagRow().getColumn());
   MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -132,10 +132,10 @@ Vector<Int> MSDataDescIndex::matchPolId(const Vector<Int>& polIds)
       matchedDataDescIds.resize(matchedDataDescIds.nelements() +
 				currentMatch.nelements(), True);
       matchedDataDescIds = concatenateArray(temp, currentMatch);
-    };
-  };
+    }
+  }
   return matchedDataDescIds;
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -155,7 +155,7 @@ Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId,
      !msDataDescCols_p.flagRow().getColumn());
   MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
   return maskDataDescId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 

@@ -148,9 +148,9 @@ Vector<Int> MSFeedIndex::matchFeedPolznAndAngle (const Int& antennaId,
 			      nearAbs(Quantity(receptorAngle(i),"deg"), 
 				      rowAngle(i), tol) &&
 			      rowType(i)==polznType(i));
-      };
-    };
-  };
+      }
+    }
+  }
 
   LogicalArray maskArray = (msFeedCols_p->antennaId().getColumn()==antennaId &&
 			    receptorMatch);
@@ -160,7 +160,7 @@ Vector<Int> MSFeedIndex::matchFeedPolznAndAngle (const Int& antennaId,
   rowNumbers = maskRowNumbers.getCompressedArray();
   MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
   return maskFeedIds.getCompressedArray();
-};
+}
 
 
 Vector<Int> MSFeedIndex::matchAntennaId (const Int& antennaId,
@@ -177,10 +177,7 @@ Vector<Int> MSFeedIndex::matchAntennaId (const Int& antennaId,
   rowNumbers = maskRowNumbers.getCompressedArray();
   MaskedArray<Int> maskFeedIds(msFeedCols_p->feedId().getColumn(), maskArray);
   return maskFeedIds.getCompressedArray();
-};
-
-
-
+}
 
 
 } //# NAMESPACE CASA - END

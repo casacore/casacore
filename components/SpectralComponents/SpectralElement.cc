@@ -60,7 +60,7 @@ SpectralElement::SpectralElement(SpectralElement::Types tp, const Double ampl,
   if (tp != GAUSSIAN) {
     throw(AipsError("SpectralElement: Only GAUSSIAN can have ampl, "
 		    "center and sigma"));
-  };
+  }
   par_p(0) = ampl;
   par_p(1) = center;
   par_p(2) = abs(sigma);
@@ -88,7 +88,7 @@ SpectralElement::SpectralElement(const String &str,
   if (param.nelements() != par_p.nelements()) {
     throw(AipsError("SpectralElement: COMPILED number of parameters "
 		    "disagress with given number of parameters"));
-  };
+  }
   par_p = param;
 }
 
@@ -101,16 +101,16 @@ SpectralElement::SpectralElement(SpectralElement::Types tp,
     if (param.nelements() != 3) {
       throw(AipsError("SpectralElement: GAUSSIAN must have "
 		      "3 parameters"));
-    };
+    }
     n = 3;
   } else if (tp_p == POLYNOMIAL) {
     if (param.nelements() == 0) {
       throw(AipsError("SpectralElement: POLYNOMIAL must have "
 		      "at least 1 parameter"));
-    };
+    }
     n_p = param.nelements()-1;
     n = n_p+1;
-  };
+  }
   par_p.resize(n);
   err_p.resize(n);
   fix_p.resize(n);
@@ -132,7 +132,7 @@ SpectralElement::SpectralElement(const SpectralElement &other) :
   check();
 }
 
-SpectralElement::~SpectralElement() {};
+SpectralElement::~SpectralElement() {}
 
 SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
   if (this != &other) {
@@ -144,33 +144,33 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
     err_p = other.err_p;
     fix_p = other.fix_p;
     check();
-  };
+  }
   return *this;
 }
 
 Double SpectralElement::operator()(const Double x) const {
   if (tp_p == GAUSSIAN) {
     return par_p(0)*exp(-0.5 * (x-par_p(1))*(x-par_p(1)) / par_p(2)/par_p(2));
-  };
+  }
   Double s = par_p(n_p);
   if (tp_p == POLYNOMIAL) {
     for (uInt i=n_p-1; i<n_p; i--) {
       s *= x; s += par_p(i); 
-    };
-  };
+    }
+  }
   if (tp_p == COMPILED) {
     CompiledFunction<Double> comp;
     comp.setFunction(str_p);
     comp.parameters().setParameters(par_p);
     s = comp(x);
-  };
+  }
   return s;
 }
 
 Double SpectralElement::operator[](const uInt n) const {
   if (n >= par_p.nelements()) {
       throw(AipsError("SpectralElement: Illegal index for parameter"));
-  };
+  }
   return par_p(n);
 }
 
@@ -216,17 +216,17 @@ Bool SpectralElement::toType(SpectralElement::Types &tp,
 Double SpectralElement::getAmpl() const {
   checkGauss();
   return par_p(0);
-};
+}
 
 Double SpectralElement::getCenter() const {
   checkGauss();
   return par_p(1);
-};
+}
 
 Double SpectralElement::getSigma() const {
   checkGauss();
   return par_p(2);
-};
+}
 
 Double SpectralElement::getFWHM() const {
   checkGauss();
@@ -241,17 +241,17 @@ void SpectralElement::get(Vector<Double> &param) const {
 Double SpectralElement::getAmplErr() const {
   checkGauss();
   return err_p(0);
-};
+}
 
 Double SpectralElement::getCenterErr() const {
   checkGauss();
   return err_p(1);
-};
+}
 
 Double SpectralElement::getSigmaErr() const {
   checkGauss();
   return err_p(2);
-};
+}
 
 Double SpectralElement::getFWHMErr() const {
   checkGauss();
@@ -266,19 +266,19 @@ void SpectralElement::getError(Vector<Double> &err) const {
 uInt SpectralElement::getDegree() const {
   checkPoly();
   return n_p;
-};
+}
 
 const String &SpectralElement::getCompiled() const {
   checkCompiled();
   return str_p;
-};
+}
 
 
 void SpectralElement::setError(const Vector<Double> &err) {
     if (err.nelements() != err_p.nelements()) {
       throw(AipsError("SpectralElement: setting incorrect number of errors "
 		      "in the element"));
-    };
+    }
     err_p = err;
 }
 
@@ -350,7 +350,7 @@ void SpectralElement::fix(const Vector<Bool> &fix) {
     if (fix.nelements() != fix_p.nelements()) {
       throw(AipsError("SpectralElement: setting incorrect number of fixed "
 		      "in the element"));
-    };
+    }
     fix_p = fix;
 }
 
@@ -386,36 +386,36 @@ const String &SpectralElement::ident() const {
 void SpectralElement::checkGauss() const {
   if (tp_p != GAUSSIAN) {
     throw(AipsError("SpectralElement: GAUSSIAN element expected"));
-  };
+  }
 }
 
 void SpectralElement::checkPoly() const {
   if (tp_p != POLYNOMIAL) {
     throw(AipsError("SpectralElement: POLYNOMIAL element expected"));
-  };
+  }
 }
 
 void SpectralElement::checkCompiled() const {
   if (tp_p != COMPILED) {
     throw(AipsError("SpectralElement: COMPILED element expected"));
-  };
+  }
 }
 
 void SpectralElement::check() {
   if (tp_p == GAUSSIAN && par_p(2) <= 0.0) {
     throw(AipsError("SpectralElement: An illegal zero sigma was "
 		    "specified for a Gaussian SpectralElement"));
-  };
+  }
   if (tp_p == COMPILED) {
     CompiledFunction<Double> comp;
     if (!comp.setFunction(str_p)) {
       throw(AipsError("SpectralElement: An illegal functional string "
 		      "was specified for a compiled SpectralElement"));
-    };
+    }
     par_p.resize(comp.nparameters());
     err_p.resize(comp.nparameters());
     fix_p.resize(comp.nparameters());
-  };
+  }
 }
 
 ostream &operator<<(ostream &os, const SpectralElement &elem) {
@@ -436,15 +436,15 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
   case SpectralElement::COMPILED:
     if (elem.getType() == SpectralElement::COMPILED) {
       os << "  Function:    " << elem.getCompiled() << endl;
-    };
+    }
   default:
     for (uInt i=0; i<elem.getOrder(); i++) {
       os << "  Parameter " << i << ":" << elem[i];
       if (elem.fixed()(i)) os << " (fixed)";
       os << endl;
-    };
+    }
     break;
-  };
+  }
 
   return os;
 }

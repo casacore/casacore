@@ -88,21 +88,21 @@ public:
   
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
-  SPolynomial() : SPolynomialParam<T>() {};
+  SPolynomial() : SPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero, and height, center, width to 1,0,1.
-  explicit SPolynomial(uInt order) : SPolynomialParam<T>(order) {};
+  explicit SPolynomial(uInt order) : SPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
-  SPolynomial(const SPolynomial<T> &other) : SPolynomialParam<T>(other) {};
+  SPolynomial(const SPolynomial<T> &other) : SPolynomialParam<T>(other) {}
   template <class W>
-    SPolynomial(const SPolynomial<W> &other) : SPolynomialParam<T>(other) {};
+    SPolynomial(const SPolynomial<W> &other) : SPolynomialParam<T>(other) {}
   SPolynomial<T> &operator=(const SPolynomial<T> &other) {
-    SPolynomialParam<T>::operator=(other); return *this; };
+    SPolynomialParam<T>::operator=(other); return *this; }
   // </group>
   
   // Destructor
-  virtual ~SPolynomial() {};
+  virtual ~SPolynomial() {}
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
@@ -113,11 +113,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new SPolynomial<T>(*this); };
+  virtual Function<T> *clone() const { return new SPolynomial<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new SPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+    return new SPolynomial<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new SPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
+    return new SPolynomial<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.

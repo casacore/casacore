@@ -105,7 +105,7 @@ public:
   
   // Set maximum amount of data (bytes) to be written into any one
   // scratch column hypercube
-  void setMaxData(const Double maxData=2e9) {maxData_p=maxData;};
+  void setMaxData(const Double maxData=2e9) {maxData_p=maxData;}
   
   // set the antenna and array data. These are written immediately to the
   // existing MS. The same model is used for the other init infor.
@@ -168,7 +168,7 @@ public:
 private:
 
   // Prevent use of default constructor
-  NewMSSimulator() {};
+  NewMSSimulator() {}
 
 //# Data Members
   Double fractionBlockageLimit_p;

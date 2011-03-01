@@ -54,12 +54,12 @@ SpectralList::SpectralList(const SpectralList &other) :
   nmax_p(other.nmax_p), list_p(other.list_p.nelements()) {
   for (uInt i=0; i<list_p.nelements(); i++) {
     list_p[i] = new SpectralElement(*other.list_p[i]);
-  };
+  }
 }
 
 SpectralList::~SpectralList() {
   clear();
-};
+}
 
 SpectralList &SpectralList::operator=(const SpectralList &other) {
   if (this != &other) {
@@ -68,8 +68,8 @@ SpectralList &SpectralList::operator=(const SpectralList &other) {
     list_p.resize(other.list_p.nelements());
     for (uInt i=0; i<list_p.nelements(); i++) {
       list_p[i] = new SpectralElement(*other.list_p[i]);
-    };
-  };
+    }
+  }
   return *this;
 }
 
@@ -82,14 +82,14 @@ Double SpectralList::operator()(const Double x) const {
 const SpectralElement &SpectralList::operator[](const uInt n) const {
   if (n >= list_p.nelements()) {
       throw(AipsError("SpectralList: Illegal index for element"));
-  };
+  }
   return *list_p[n];
 }
 
 SpectralElement &SpectralList::operator[](const uInt n) {
   if (n >= list_p.nelements()) {
       throw(AipsError("SpectralList: Illegal index for element"));
-  };
+  }
   return *list_p[n];
 }
 
@@ -111,7 +111,7 @@ void SpectralList::insert(const SpectralElement &in) {
   uInt i;
   for (i=0; i<n; i++) {
     if (compar(in, *list_p[i]) > 0) break;
-  };
+  }
   if (i == n) add(in);
   else {
     if (nmax_p != 0 && n >= nmax_p) {
@@ -119,10 +119,10 @@ void SpectralList::insert(const SpectralElement &in) {
     } else {
       list_p.resize(n+1);
       list_p[n++] = 0;
-    };
+    }
     for (uInt j=n-1; j>i; j--) list_p[j] = list_p[j-1];
     list_p[i] = new SpectralElement(in);
-  };
+  }
 }
 
 void SpectralList::insert(const SpectralList &in) {
@@ -142,7 +142,7 @@ Bool SpectralList::set(const SpectralElement &in, const uInt which) {
 void SpectralList::clear() {
   for (uInt i=0; i<list_p.nelements(); i++) {
     delete list_p[i]; list_p[i] = 0;
-  };
+  }
   list_p.resize(0, True);
 }
 
@@ -150,9 +150,9 @@ void SpectralList::set(const uInt nmax) {
   if (nmax != 0 && nmax < list_p.nelements()) {
     for (uInt i=nmax; i<list_p.nelements(); i++) {
       delete list_p[i]; list_p[i] = 0;
-    };
+    }
     list_p.resize(nmax, True);
-  };
+  }
   nmax_p = nmax;
 }
 
@@ -198,9 +198,9 @@ void SpectralList::sort() {
 	x = list_p[j-1];
 	list_p[j-1] = list_p[j];
 	list_p[j] = x;
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 Int SpectralList::compar(const SpectralElement &p1,

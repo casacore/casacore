@@ -210,23 +210,23 @@ public:
   FuncExprData();
 
   // Destructor
-  ~FuncExprData() {};
+  ~FuncExprData() {}
 
   //# Member functions
   // Accessors of the various maps
   // <group>
-  map<String, ExprOperator> &unary2() { return una2_p; };
-  const map<String, ExprOperator> &unary2() const { return una2_p; };
-  map<String, ExprOperator> &unary1() { return una1_p; };
-  const map<String, ExprOperator> &unary1() const { return una1_p; };
-  map<String, ExprOperator> &binary2() { return bin2_p; };
-  const map<String, ExprOperator> &binary2() const { return bin2_p; };
-  map<String, ExprOperator> &binary1() { return bin1_p; };
-  const map<String, ExprOperator> &binary1() const { return bin1_p; };
-  map<String, ExprOperator> &special() { return spop_p; };
-  const map<String, ExprOperator> &special() const { return spop_p; };
-  map<String, ExprOperator> &function() { return func_p; };
-  const map<String, ExprOperator> &function() const { return func_p; };
+  map<String, ExprOperator> &unary2() { return una2_p; }
+  const map<String, ExprOperator> &unary2() const { return una2_p; }
+  map<String, ExprOperator> &unary1() { return una1_p; }
+  const map<String, ExprOperator> &unary1() const { return una1_p; }
+  map<String, ExprOperator> &binary2() { return bin2_p; }
+  const map<String, ExprOperator> &binary2() const { return bin2_p; }
+  map<String, ExprOperator> &binary1() { return bin1_p; }
+  const map<String, ExprOperator> &binary1() const { return bin1_p; }
+  map<String, ExprOperator> &special() { return spop_p; }
+  const map<String, ExprOperator> &special() const { return spop_p; }
+  map<String, ExprOperator> &function() { return func_p; }
+  const map<String, ExprOperator> &function() const { return func_p; }
   // </group>
   // Print an operator map
   void print(ostream &os,

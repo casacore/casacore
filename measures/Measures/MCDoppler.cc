@@ -50,7 +50,7 @@ MCDoppler::MCDoppler() {
     MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
 		      MDoppler::N_Types, MCDoppler::N_Routes,
 		      MCDoppler::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -74,7 +74,7 @@ void MCDoppler::getConvert(MConvertBase &mc,
     iin = ToRef_p[tmp][1];
     mc.addMethod(tmp);
     initConvert(tmp, mc);
-  };
+  }
 }
 
 void MCDoppler::clearConvert() {
@@ -89,7 +89,7 @@ void MCDoppler::initConvert(uInt which, MConvertBase &mc) {
     
   default:
     break;
-  };
+  }
 }
 
 void MCDoppler::doConvert(MeasValue &in,
@@ -105,7 +105,7 @@ void MCDoppler::doConvert(MVDoppler &in,
 			  MRBase &outref,
 			  const MConvertBase &mc) {
 
-  if (False) {inref.getType(); outref.getType(); }; // to stop warning
+  if (False) {inref.getType(); outref.getType(); } // to stop warning
     
   Double t = (Double) in;
 
@@ -147,9 +147,9 @@ void MCDoppler::doConvert(MVDoppler &in,
 
     default:
       break;
-    }; // switch
+    } // switch
     in = t;
-  }; // for
+  } // for
 }
 
 String MCDoppler::showState() {
@@ -158,7 +158,7 @@ String MCDoppler::showState() {
     MCBase::makeState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
 		      MDoppler::N_Types, MCDoppler::N_Routes,
 		      MCDoppler::ToRef_p);
-  };
+  }
   return MCBase::showState(MCDoppler::stateMade_p, MCDoppler::FromTo_p[0],
 			   MDoppler::N_Types, MCDoppler::N_Routes,
 			   MCDoppler::ToRef_p);

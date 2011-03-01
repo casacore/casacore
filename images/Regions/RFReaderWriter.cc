@@ -59,7 +59,7 @@ void RFReaderWriter::setFile(const String& filename) {
 
 void RFReaderWriter::setName(const String& regionName) {
     pRegionName_p = new String( regionName );
-};
+}
 
 
 const RFError& RFReaderWriter::lastError() const{ return lastError_p; }

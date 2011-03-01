@@ -101,7 +101,7 @@ MCDirection::MCDirection() :
     MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 		      MDirection::N_Types, MCDirection::N_Routes,
 		      MCDirection::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -138,8 +138,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	  mc.addMethod(MCDirection::R_COMET);
 	  initConvert(MCDirection::R_COMET, mc);
 	  iin = MDirection::APP;
-	};
-      };
+	}
+      }
       if (oplan) iout = MDirection::J2000;
       Int tmp;
       while (iin != iout) {
@@ -147,8 +147,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	iin = ToRef_p[tmp][1];
 	mc.addMethod(tmp);
 	initConvert(tmp, mc);
-      };
-    };
+      }
+    }
 }
 
 void MCDirection::clearConvert() {
@@ -509,7 +509,7 @@ void MCDirection::doConvert(MVDirection &in,
 	for (Int j=0; j<3; j++) {
 	  (*MVPOS1)(j) = (*VEC61)(j) - (*VEC62)(j);		// P
 	  (*MVPOS2)(j) = (*VEC61)(j) - (*VEC63)(j);		// Q
-	};
+	}
 	MVPOS1->adjust(lengthE);
 	lengthP = Quantity(lengthE, "AU").getBaseValue();
 	MVPOS2->adjust(g1);
@@ -528,7 +528,7 @@ void MCDirection::doConvert(MVDirection &in,
 	g1 = 2*MeasTable::Planetary(MeasTable::GMS) / g2;
 	g1 /= (1.0 + (*MVPOS2)*(*MVPOS3));
 	in += g1 * ((in*(*MVPOS2))* *MVPOS3 - ((*MVPOS3)*in)* *MVPOS2);
-      };
+      }
       in.adjust();
     }
     break;
@@ -579,7 +579,7 @@ void MCDirection::doConvert(MVDirection &in,
       if (!MDirection::Ref::frameComet(inref, outref).
 	  getComet(*MVPOS1)) {
 	throw(AipsError("No or outside range comet table specified"));
-      };
+      }
       MVPOS1->adjust(lengthP);
       in = *MVPOS1;
     }
@@ -588,8 +588,8 @@ void MCDirection::doConvert(MVDirection &in,
     default:
       break;
       
-    };	// switch
-  };	// for
+    }	// switch
+  }	// for
 }
 
 String MCDirection::showState() {
@@ -598,7 +598,7 @@ String MCDirection::showState() {
     MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 		      MDirection::N_Types, MCDirection::N_Routes,
 		      MCDirection::ToRef_p);
-  };
+  }
   return MCBase::showState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
 			   MDirection::N_Types, MCDirection::N_Routes,
 			   MCDirection::ToRef_p);

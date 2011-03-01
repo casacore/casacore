@@ -123,7 +123,7 @@ class ComponentUpdate {
     // Solve for I and l,m
     ILM=0,
     // Number of solvable parameters
-    N_Solve,
+    N_Solve
   };
     
 public:

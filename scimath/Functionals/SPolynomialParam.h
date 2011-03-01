@@ -126,36 +126,36 @@ public:
   // SPolynomials are equal if they are of the same order
   // <group>
   Bool operator==(const SPolynomialParam<T> &other) const {
-    return (param_p == other.param_p); };
+    return (param_p == other.param_p); }
   Bool operator!=(const SPolynomialParam<T> &other) const {
-    return (param_p != other.param_p); };
+    return (param_p != other.param_p); }
   // </group>
 
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("spolynomial");
-    return x; };
+    return x; }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return param_p.nelements() - 4; };
+  uInt order() const { return param_p.nelements() - 4; }
   
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
   T coefficient(uInt which) const {
-    DebugAssert(which<=order(), AipsError); return param_p[which+3]; };
+    DebugAssert(which<=order(), AipsError); return param_p[which+3]; }
   
   // Return all the coefficients as a vector.
   Vector<T> coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
   void setCoefficient(uInt which, const T value) {
-    DebugAssert(which<=order(), AipsError); param_p[which+3] = value; };
+    DebugAssert(which<=order(), AipsError); param_p[which+3] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return 1; };
+  virtual uInt ndim() const { return 1; }
 
   //# Make members of parent classes known.
 protected:

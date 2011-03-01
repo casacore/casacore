@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     nrows_p = msFieldCols_p.nrow();
     fieldIds_p.resize(nrows_p);
     indgen(fieldIds_p);
-  };
+  }
   
   //-------------------------------------------------------------------------
   
@@ -107,7 +107,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
     return maskFieldID.getCompressedArray();
-  }; 
+  } 
 
   Vector<Int> MSFieldIndex::maskFieldIDs(const Vector<Int>& ids)
   {
@@ -143,7 +143,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
     return maskFieldID.getCompressedArray();
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   Vector<Int> MSFieldIndex::matchFieldNameOrCode(const String& name)
@@ -169,7 +169,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
 
     return maskFieldId.getCompressedArray();
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   
@@ -185,7 +185,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   
@@ -208,7 +208,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  }; 
+  } 
   
   
   //-------------------------------------------------------------------------
@@ -231,10 +231,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	matchedFieldIds.resize(matchedFieldIds.nelements() +
 			       currentMatch.nelements(), True);
 	matchedFieldIds = concatenateArray(temp, currentMatch);
-      };
-    };
+      }
+    }
     return matchedFieldIds;
-  };
+  }
   
   //-------------------------------------------------------------------------
   
@@ -251,7 +251,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  }; 
+  } 
   
   //-------------------------------------------------------------------------
   
@@ -273,10 +273,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	matchedFieldIds.resize(matchedFieldIds.nelements() +
 			       currentMatch.nelements(), True);
 	matchedFieldIds = concatenateArray(temp, currentMatch);
-      };
-    };
+      }
+    }
     return matchedFieldIds;
-  };
+  }
   
   //-------------------------------------------------------------------------
   Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n)
@@ -287,7 +287,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  };
+  }
 
   //-------------------------------------------------------------------------
   Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n)
@@ -298,7 +298,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  };
+  }
   //-------------------------------------------------------------------------
   
   Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1)
@@ -311,7 +311,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
-  };
+  }
   //-------------------------------------------------------------------------
   
 } //# NAMESPACE CASA - END

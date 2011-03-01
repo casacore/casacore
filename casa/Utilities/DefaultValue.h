@@ -100,7 +100,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template <class T> inline void defaultValue(T &theValue)
 {
   theValue = T(0);
-};
+}
 
 // </group>
 
@@ -108,8 +108,3 @@ template <class T> inline void defaultValue(T &theValue)
 } //# NAMESPACE CASA - END
 
 #endif
-
-
-
-
-

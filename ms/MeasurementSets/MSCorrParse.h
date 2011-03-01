@@ -92,13 +92,13 @@ public:
   // Associate the ms and the shorthand.
   MSCorrParse (const MeasurementSet* ms);
   
-  //  ~MSCorrParse() {if (node_p) delete node_p;node_p=0x0;};
+  //  ~MSCorrParse() {if (node_p) delete node_p;node_p=0x0;}
   // MS selection
   const TableExprNode * selectCorrType(const String& corrType);
   
   // Get table expression node object.
   static const TableExprNode* node();
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
   
 private:
     static TableExprNode *node_p;

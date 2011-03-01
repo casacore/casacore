@@ -299,7 +299,7 @@ public:
 	ChebyshevParam<T>::operator=(other); return *this; }
   
     // Destructor
-    virtual ~Chebyshev() {};
+    virtual ~Chebyshev() {}
   
     //# Operators    
     // Evaluate the Chebyshev at <src>x</src>.

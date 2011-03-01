@@ -102,12 +102,12 @@ public:
   virtual ~GNoiseParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 0; };
+  virtual uInt ndim() const { return 0; }
 
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("gaussnoise");
-    return x; };
+    return x; }
 
 protected:
   //# Data

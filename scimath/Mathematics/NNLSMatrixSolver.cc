@@ -45,7 +45,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 extern "C" {
   void nnls(FType*,int*,int*,int*,FType*,FType*,float*,FType*,FType*,int*,int*,int*);
-};
+}
 
 // Default Constructor
 NNLSMatrixSolver::NNLSMatrixSolver(): MatrixSolver() {}

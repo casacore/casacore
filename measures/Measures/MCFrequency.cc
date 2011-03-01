@@ -65,7 +65,7 @@ MCFrequency::MCFrequency() :
     MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
 		      MFrequency::N_Types, MCFrequency::N_Routes,
 		      MCFrequency::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -89,7 +89,7 @@ void MCFrequency::getConvert(MConvertBase &mc,
     iin = ToRef_p[tmp][1];
     mc.addMethod(tmp);
     initConvert(tmp, mc);
-  };
+  }
 }
 
 void MCFrequency::clearConvert() {
@@ -350,8 +350,8 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     default:
       break;
-    }; // switch
-  }; //for
+    } // switch
+  } //for
 }
 
 String MCFrequency::showState() {
@@ -360,7 +360,7 @@ String MCFrequency::showState() {
     MCBase::makeState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
 		      MFrequency::N_Types, MCFrequency::N_Routes,
 		      MCFrequency::ToRef_p);
-  };
+  }
   return MCBase::showState(MCFrequency::stateMade_p, MCFrequency::FromTo_p[0],
 			   MFrequency::N_Types, MCFrequency::N_Routes,
 			   MCFrequency::ToRef_p);

@@ -70,7 +70,7 @@ MCEpoch::MCEpoch() :
     MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
 		      MEpoch::N_Types, MCEpoch::N_Routes,
 		      MCEpoch::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -97,10 +97,10 @@ void MCEpoch::getConvert(MConvertBase &mc,
 	iin = ToRef_p[tmp][1];
 	mc.addMethod(tmp);
 	initConvert(tmp, mc);
-    };
+    }
     if (iraze) {
 	mc.addMethod(MCEpoch::RAZING);
-    };
+    }
 }
 
 void MCEpoch::clearConvert() {
@@ -134,7 +134,7 @@ void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
 
   default:
     break;
-  };
+  }
 }
 
 void MCEpoch::doConvert(MeasValue &in,
@@ -160,28 +160,28 @@ void MCEpoch::doConvert(MVEpoch &in,
       MEpoch::Ref::framePosition(inref, outref).
 	getLong(locLong);
       in -= locLong/C::circle;
-    };
+    }
       break;
       
     case GAST_LAST: {
       MEpoch::Ref::framePosition(outref, inref).
 	getLong(locLong);
       in += locLong/C::circle;
-    };
+    }
       break;
       
     case LMST_GMST1: {
       MEpoch::Ref::framePosition(inref, outref).
 	getLong(locLong);
       in -= locLong/C::circle;
-    };
+    }
       break;
       
     case GMST1_LMST: {
       MEpoch::Ref::framePosition(outref, inref).
 	getLong(locLong);
       in += locLong/C::circle;
-    };
+    }
       break;
       
     case GMST1_UT1: {
@@ -202,8 +202,8 @@ void MCEpoch::doConvert(MVEpoch &in,
 	  in += MVEpoch(tt);
 	  i++;
 	} while (abs(tt) > 1e-7 && i<10);
-      };
-    };
+      }
+    }
       break;
       
     case UT1_GMST1: {
@@ -215,9 +215,9 @@ void MCEpoch::doConvert(MVEpoch &in,
 	in += MeasTable::GMST00(ut, in.get())/C::_2pi;
       } else {
 	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
-      };
+      }
       in += mve6713;
-    };
+    }
       break;
       
     case GAST_UT1: {
@@ -232,7 +232,7 @@ void MCEpoch::doConvert(MVEpoch &in,
       ut = in.get();
       in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
       in -= mve6713;
-    };
+    }
       break;
       
     case UT1_GAST: {
@@ -243,7 +243,7 @@ void MCEpoch::doConvert(MVEpoch &in,
       // Equation of equinoxes
       eqox = NUTATFROM->eqox(ut);
       in += eqox/C::circle;
-    };
+    }
       break;
       
     case UT1_UTC:
@@ -304,8 +304,8 @@ void MCEpoch::doConvert(MVEpoch &in,
       
     default:
       break;
-    }; // switch
-  }; //for
+    } // switch
+  } //for
 }
   
   String MCEpoch::showState() {
@@ -314,7 +314,7 @@ void MCEpoch::doConvert(MVEpoch &in,
       MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
 			MEpoch::N_Types, MCEpoch::N_Routes,
 			MCEpoch::ToRef_p);
-    };
+    }
     return MCBase::showState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
 			     MEpoch::N_Types, MCEpoch::N_Routes,
 			     MCEpoch::ToRef_p);

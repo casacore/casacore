@@ -51,7 +51,7 @@ MSSpWindowIndex::MSSpWindowIndex(const MSSpectralWindow& spectralWindow)
   nrows_p = msSpWindowCols_p.nrow();
   spWindowIds_p.resize(nrows_p);
   indgen(spWindowIds_p);
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Int& freqGrp)
      !msSpWindowCols_p.flagRow().getColumn());
   MaskedArray<Int> maskSpWindowId(spWindowIds_p, maskArray);
   return maskSpWindowId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -90,10 +90,10 @@ Vector<Int> MSSpWindowIndex::matchFreqGrp(const Vector<Int>& freqGrps)
       matchedSpWindowIds.resize(matchedSpWindowIds.nelements() +
 				currentMatch.nelements(), True);
       matchedSpWindowIds = concatenateArray(temp, currentMatch);
-    };
-  };
+    }
+  }
   return matchedSpWindowIds;
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ Vector<Int> MSSpWindowIndex::matchFreqGrpName(const String& freqGrpName)
      !msSpWindowCols_p.flagRow().getColumn());
   MaskedArray<Int> maskSpWindowId(spWindowIds_p, maskArray);
   return maskSpWindowId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -146,27 +146,16 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
 			  chanFreq(chan).getValue().
 			  nearAbs(rowChanFreq(chan).getValue(), tol) &&
 			  chanWidth(chan).nearAbs(rowChanWidth(chan), tol));
-      };
-    };
-  };
+      }
+    }
+  }
 
   // Return matching row numbers
   LogicalArray maskArray(freqMatch);
   MaskedArray<Int> maskSpwId(spWindowIds_p, maskArray);
   return maskSpwId.getCompressedArray();
-};
+}
 
 //-------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
 } //# NAMESPACE CASA - END
-

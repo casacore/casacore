@@ -93,7 +93,7 @@ public:
   // Associate the ms and the shorthand.
   MSArrayParse (const MeasurementSet* ms);
 
-  //  ~MSArrayParse() {if (node_p) delete node_p;node_p=0x0;};
+  //  ~MSArrayParse() {if (node_p) delete node_p;node_p=0x0;}
 
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
@@ -107,11 +107,11 @@ public:
   static const TableExprNode* node();
 
   static MSArrayParse* thisMSSParser;
-  static Vector<Int> selectedIDs() {return idList;};
-  static void reset(){idList.resize(0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static Vector<Int> selectedIDs() {return idList;}
+  static void reset(){idList.resize(0);}
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
-  void setMaxArray(const Int& n) {maxArrays_p=n;};
+  void setMaxArray(const Int& n) {maxArrays_p=n;}
 private:
   static TableExprNode* node_p;
   static Vector<Int> idList;
