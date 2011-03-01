@@ -31,7 +31,6 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <assert.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 #include <casa/Arrays/IPosition.h>
@@ -50,62 +49,62 @@ int main()
     
     Int nrit = 0;
     for (IPosition::const_iterator iter=ip.begin(); iter!=ip.end(); iter++) {
-      assert(*iter == ip[nrit++]);
+      AlwaysAssertExit(*iter == ip[nrit++]);
     }
-    assert(nrit == 3);
-    assert(ip.nelements() == 3);
-    assert(ip.size() == 3);
-    assert(!ip.empty());
-    assert(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
-    assert(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
+    AlwaysAssertExit(nrit == 3);
+    AlwaysAssertExit(ip.nelements() == 3);
+    AlwaysAssertExit(ip.size() == 3);
+    AlwaysAssertExit(!ip.empty());
+    AlwaysAssertExit(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
+    AlwaysAssertExit(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
 
     std::vector<Int> vec(ip.begin(), ip.end());
-    assert(vec.size() == 3);
-    assert(vec[0] == 0 && vec[1] == 1 && vec[2] == 2);
+    AlwaysAssertExit(vec.size() == 3);
+    AlwaysAssertExit(vec[0] == 0 && vec[1] == 1 && vec[2] == 2);
 
     ip[2] = 21;
-    assert(ip(2) == 21);
+    AlwaysAssertExit(ip(2) == 21);
     ip(2) = 22;
-    assert(ip(2) == 22);
+    AlwaysAssertExit(ip(2) == 22);
 
     IPosition ip2;
-    assert(ip2.nelements() == 0);
-    assert(ip2.size() == 0);
-    assert(ip2.empty());
+    AlwaysAssertExit(ip2.nelements() == 0);
+    AlwaysAssertExit(ip2.size() == 0);
+    AlwaysAssertExit(ip2.empty());
 
     ip2 = ip;
-    assert(ip2 == ip);
-    assert(ip2(0) == 0 && ip2(1) == 1 && ip2(2) == 22);
+    AlwaysAssertExit(ip2 == ip);
+    AlwaysAssertExit(ip2(0) == 0 && ip2(1) == 1 && ip2(2) == 22);
 
     ip2 += 2;
     ip2 = ip2 - 1;
     ip2 -= 1;
-    assert(ip2(0) == 0 && ip2(1) == 1 && ip2(2) == 22);
+    AlwaysAssertExit(ip2(0) == 0 && ip2(1) == 1 && ip2(2) == 22);
 
     ip2 = 5;
-    assert(ip2 == 5);
-    assert(ip2 == ip2);
-    assert(ip2 != ip);
+    AlwaysAssertExit(ip2 == 5);
+    AlwaysAssertExit(ip2 == ip2);
+    AlwaysAssertExit(ip2 != ip);
 
     ip2.resize(10);
     ip2 = 10;
     ip.resize(0);
     ip = ip2;
-    assert (ip == 10);
-    assert(ip.nelements() == 10);
+    AlwaysAssertExit (ip == 10);
+    AlwaysAssertExit(ip.nelements() == 10);
     ip = ip * ip2;
-    assert(ip == 100);
-    assert (ip > ip2);
-    assert (ip >= ip2);
-    assert (ip2 < ip);
-    assert (ip2 <= ip);
-    assert (ip2 != ip);
+    AlwaysAssertExit(ip == 100);
+    AlwaysAssertExit (ip > ip2);
+    AlwaysAssertExit (ip >= ip2);
+    AlwaysAssertExit (ip2 < ip);
+    AlwaysAssertExit (ip2 <= ip);
+    AlwaysAssertExit (ip2 != ip);
 
     IPosition ip3(5,0,1,2,3,4);
 
     nrit = 0;
     for (IPosition::const_iterator iter=ip3.begin(); iter!=ip3.end(); iter++) {
-      assert(*iter == ip3[nrit++]);
+      AlwaysAssertExit(*iter == ip3[nrit++]);
     }
     
     AipsIO io("tIPosition_tmp.data", ByteIO::New);
@@ -114,7 +113,7 @@ int main()
     io.open("tIPosition_tmp.data", ByteIO::Old);
     IPosition ip4;
     io >> ip4;
-    assert (ip4 == ip3);
+    AlwaysAssertExit (ip4 == ip3);
     io.close();
     io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
@@ -125,162 +124,162 @@ int main()
     Int i;
 
     IPosition ip1;                             // IPosition()
-    assert(ip1.nelements() == 0);              // nelements()
+    AlwaysAssertExit(ip1.nelements() == 0);              // nelements()
     IPosition ip2(5);                          // IPosition(uInt);
-    assert(ip2.nelements() == 5);
+    AlwaysAssertExit(ip2.nelements() == 5);
     IPosition ip3(5, 0, 1, 2, 3, 4);           // IPosition(uInt, Int, ...)
-    assert(ip3.nelements() == 5);
+    AlwaysAssertExit(ip3.nelements() == 5);
     const IPosition &rip3 = ip3;
     for (i=0; i<5; i++) {
-	assert(ip3(i) == i);                   // operator()(uInt)
-	assert(rip3(i) == i);                  // operator()(uInt) const
+	AlwaysAssertExit(ip3(i) == i);         // operator()(uInt)
+	AlwaysAssertExit(rip3(i) == i);        // operator()(uInt) const
     }
     IPosition ip4(ip3);                        // IPosition(const IPosition &)
-    assert(ip4.nelements() == 5);
+    AlwaysAssertExit(ip4.nelements() == 5);
     for (i=0; i<5; i++) {
-	assert(ip4(i) == i);
+	AlwaysAssertExit(ip4(i) == i);
     }
     ip1 = ip4;                                 // operator=(const IPosition &);
-    assert(ip1.nelements() == 5);
+    AlwaysAssertExit(ip1.nelements() == 5);
     for (i=0; i<5; i++) {
-	assert(ip1(i) == i);
+	AlwaysAssertExit(ip1(i) == i);
     }
     ip1 = ip1;
     for (i=0; i<5; i++) {
-	assert(ip1(i) == i);
+	AlwaysAssertExit(ip1(i) == i);
     }
 
     ip1 = 1;                                   // operator=(Int);
-    assert(ip1.nelements() == 5);
+    AlwaysAssertExit(ip1.nelements() == 5);
     for (i=0; i<5; i++) {
-	assert(ip1(i) == 1);
+	AlwaysAssertExit(ip1(i) == 1);
     }
     ip1 = ip4;
-    assert(ip1.nelements() == 5);
+    AlwaysAssertExit(ip1.nelements() == 5);
     for (i=0; i<5; i++) {
-	assert(ip1(i) == i);
+	AlwaysAssertExit(ip1(i) == i);
     }
 
     ip1.resize(10);                            // resize(uInt)
-    assert(ip1.nelements() == 10);
+    AlwaysAssertExit(ip1.nelements() == 10);
 
-    assert(ip1.conform(ip4) == False);         // conform
-    assert(ip4.conform(ip3) == True);
+    AlwaysAssertExit(ip1.conform(ip4) == False); // conform
+    AlwaysAssertExit(ip4.conform(ip3) == True);
 
     IPosition ipf (2,3,4);
     IPosition ipl (3,14,15,16);
     IPosition ipr (5,3,4,14,15,16);
     IPosition ipp0 (ipf);
     ipp0.append (ipl);
-    assert (ipp0 == ipr);
+    AlwaysAssertExit (ipp0 == ipr);
     IPosition ipp1 (ipl);
     ipp1.prepend (ipf);
-    assert (ipp1 == ipr);
-    assert (ipf.concatenate (ipl) == ipr);
+    AlwaysAssertExit (ipp1 == ipr);
+    AlwaysAssertExit (ipf.concatenate (ipl) == ipr);
     IPosition ipgf = ipr.getFirst (2);
-    assert (ipgf == ipf);
+    AlwaysAssertExit (ipgf == ipf);
     IPosition ipgl = ipr.getLast (3);
-    assert (ipgl == ipl);
+    AlwaysAssertExit (ipgl == ipl);
     ipp0.setFirst (ipl);
-    assert (ipp0 == IPosition(5,14,15,16,15,16));
+    AlwaysAssertExit (ipp0 == IPosition(5,14,15,16,15,16));
     ipp1.setLast (ipf);
-    assert (ipp1 == IPosition(5,3,4,14,3,4));
+    AlwaysAssertExit (ipp1 == IPosition(5,3,4,14,3,4));
 
 
                                                // Member fn arithmetic
     ip1 = 1;
     ip1 += 5;
-    assert(ip1 == 6);
+    AlwaysAssertExit(ip1 == 6);
     ip1 -= 1;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip1 *= 2;
-    assert(ip1 == 10);
+    AlwaysAssertExit(ip1 == 10);
     ip1 /= 2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip2.resize(10);
     ip2 = 1;
     ip1 += ip2;
-    assert(ip1 == 6);
+    AlwaysAssertExit(ip1 == 6);
     ip1 -= ip2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip2 = 2;
     ip1 *= ip2;
-    assert(ip1 == 10);
+    AlwaysAssertExit(ip1 == 10);
     ip1 /= ip2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
                                                // Global fn arithmetic
     ip1 = ip1 + ip2;
-    assert(ip1 == 7);
+    AlwaysAssertExit(ip1 == 7);
     ip1 = ip1 - ip2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip1 = ip2 * ip1;
-    assert(ip1 == 10);
+    AlwaysAssertExit(ip1 == 10);
     ip1 = ip1 / ip2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip1 = ip1 + 1;
-    assert(ip1 == 6);
+    AlwaysAssertExit(ip1 == 6);
     ip1 = ip1 - 1;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip1 = ip1 * 2;
-    assert(ip1 == 10);
+    AlwaysAssertExit(ip1 == 10);
     ip1 = ip1 / 2;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
     ip1 = 1 + ip1;
-    assert(ip1 == 6);
+    AlwaysAssertExit(ip1 == 6);
     ip1 = 1 - ip1;
-    assert(ip1 == -5);
+    AlwaysAssertExit(ip1 == -5);
     ip1 = -2 * ip1;
-    assert(ip1 == 10);
+    AlwaysAssertExit(ip1 == 10);
     ip1 = 50 / ip1;
-    assert(ip1 == 5);
+    AlwaysAssertExit(ip1 == 5);
                                                // Global fn logicals
     ip2.resize(ip1.nelements());
     ip2 = 6;
-    assert(ip1 == ip1);
-    assert((ip1 == ip2) == False);
-    assert (ip1.isEqual(ip1));
-    assert (ip1.isEqual(ip2) == False);
-    assert(ip1 != ip2);
-    assert((ip1 != ip1) == False);
-    assert(ip1 < ip2);
-    assert((ip1 < ip1) == False);
-    assert(ip1 <= ip2);
-    assert((ip1 <= ip1));
+    AlwaysAssertExit(ip1 == ip1);
+    AlwaysAssertExit((ip1 == ip2) == False);
+    AlwaysAssertExit (ip1.isEqual(ip1));
+    AlwaysAssertExit (ip1.isEqual(ip2) == False);
+    AlwaysAssertExit(ip1 != ip2);
+    AlwaysAssertExit((ip1 != ip1) == False);
+    AlwaysAssertExit(ip1 < ip2);
+    AlwaysAssertExit((ip1 < ip1) == False);
+    AlwaysAssertExit(ip1 <= ip2);
+    AlwaysAssertExit((ip1 <= ip1));
     ip2(0) = 0;
-    assert((ip1 <= ip2) == False);
-    assert(ip1 + 1 > ip1);
-    assert((ip1  > ip1) == False);
-    assert((ip2 > ip1) == False);
-    assert(ip1 + 1 >= ip1);
-    assert(ip1 >= ip1);
-    assert((ip2 >= ip1) == False);
-    assert(ip1 == 5);
-    assert((ip1 == 6) == False);
-    assert(5 == ip1);
-    assert((6 == ip1) == False);
-    assert(ip1 != 6);
-    assert((ip1 != 5) == False);
-    assert(6 != ip1);
-    assert((5 != ip1) == False);
-    assert(ip1 < 6);
-    assert((ip1 < 5) == False);
-    assert(4 < ip1);
-    assert((5 < ip1) == False);
-    assert(ip1 <= 6);
-    assert(ip1 <= 5);
-    assert((ip1 <= 4) == False);
-    assert(4 <= ip1);
-    assert(5 <= ip1);
-    assert((6 <= ip1) == False);
-    assert(ip1 > 4);
-    assert((ip1 > 5) == False);
-    assert(ip1 >= 4);
-    assert((ip1 >= 5));
-    assert((ip1 >= 6) == False);
-    assert(6 > ip1);
-    assert(( 5 > ip1) == False);
-    assert(5 >= ip1);
-    assert((4 >= ip1) == False);
+    AlwaysAssertExit((ip1 <= ip2) == False);
+    AlwaysAssertExit(ip1 + 1 > ip1);
+    AlwaysAssertExit((ip1  > ip1) == False);
+    AlwaysAssertExit((ip2 > ip1) == False);
+    AlwaysAssertExit(ip1 + 1 >= ip1);
+    AlwaysAssertExit(ip1 >= ip1);
+    AlwaysAssertExit((ip2 >= ip1) == False);
+    AlwaysAssertExit(ip1 == 5);
+    AlwaysAssertExit((ip1 == 6) == False);
+    AlwaysAssertExit(5 == ip1);
+    AlwaysAssertExit((6 == ip1) == False);
+    AlwaysAssertExit(ip1 != 6);
+    AlwaysAssertExit((ip1 != 5) == False);
+    AlwaysAssertExit(6 != ip1);
+    AlwaysAssertExit((5 != ip1) == False);
+    AlwaysAssertExit(ip1 < 6);
+    AlwaysAssertExit((ip1 < 5) == False);
+    AlwaysAssertExit(4 < ip1);
+    AlwaysAssertExit((5 < ip1) == False);
+    AlwaysAssertExit(ip1 <= 6);
+    AlwaysAssertExit(ip1 <= 5);
+    AlwaysAssertExit((ip1 <= 4) == False);
+    AlwaysAssertExit(4 <= ip1);
+    AlwaysAssertExit(5 <= ip1);
+    AlwaysAssertExit((6 <= ip1) == False);
+    AlwaysAssertExit(ip1 > 4);
+    AlwaysAssertExit((ip1 > 5) == False);
+    AlwaysAssertExit(ip1 >= 4);
+    AlwaysAssertExit((ip1 >= 5));
+    AlwaysAssertExit((ip1 >= 6) == False);
+    AlwaysAssertExit(6 > ip1);
+    AlwaysAssertExit(( 5 > ip1) == False);
+    AlwaysAssertExit(5 >= ip1);
+    AlwaysAssertExit((4 >= ip1) == False);
 
     IPosition ip7 (ip1.nelements());
     IPosition ip8 (ip1.nelements() + 1);
@@ -290,27 +289,33 @@ int main()
         ip7(ipindex) = ip1(ipindex);
         ip8(ipindex) = ip1(ipindex);
     }
-    assert (ip7.isEqual(ip1));
-    assert (ip7.isEqual(ip8) == False);
+    AlwaysAssertExit (ip7.isEqual(ip1));
+    AlwaysAssertExit (ip7.isEqual(ip8) == False);
 
-    assert (! IPosition(1,1).isEqual (IPosition(), False));
-    assert (IPosition(1,1).isEqual (IPosition(), True));
-    assert (IPosition(1,1).isEqual (IPosition(1,1), True));
-    assert (IPosition(1,1).isEqual (IPosition(2,1,1), True));
-    assert (IPosition(2,1,1).isEqual (IPosition(2,1,1), True));
-    assert (IPosition(2,1,1).isEqual (IPosition(1,1), True));
-    assert (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(3,2,3,4), True));
-    assert (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,1,1,2,3,4), True));
-    assert (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,2,3,4,1,1), True));
-    assert (IPosition(3,2,3,4).isEqual (IPosition(5,2,1,3,1,4), True));
+    AlwaysAssertExit (! IPosition(1,1).isEqual (IPosition(), False));
+    AlwaysAssertExit (IPosition(1,1).isEqual (IPosition(), True));
+    AlwaysAssertExit (IPosition(1,1).isEqual (IPosition(1,1), True));
+    AlwaysAssertExit (IPosition(1,1).isEqual (IPosition(2,1,1), True));
+    AlwaysAssertExit (IPosition(2,1,1).isEqual (IPosition(2,1,1), True));
+    AlwaysAssertExit (IPosition(2,1,1).isEqual (IPosition(1,1), True));
+    AlwaysAssertExit (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(3,2,3,4),
+                                                        True));
+    AlwaysAssertExit (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,1,1,2,3,4),
+                                                        True));
+    AlwaysAssertExit (IPosition(6,2,1,1,3,1,4).isEqual (IPosition(5,2,3,4,1,1),
+                                                        True));
+    AlwaysAssertExit (IPosition(3,2,3,4).isEqual (IPosition(5,2,1,3,1,4),
+                                                  True));
 
-    assert (IPosition(3,2,3,4).nonDegenerate().isEqual (IPosition(3,2,3,4)));
-    assert (IPosition(4,1,2,3,4).nonDegenerate().isEqual (IPosition(3,2,3,4)));
-    assert (IPosition(5,1,1,2,3,4).nonDegenerate().isEqual
+    AlwaysAssertExit (IPosition(3,2,3,4).nonDegenerate().isEqual
+                                                     (IPosition(3,2,3,4)));
+    AlwaysAssertExit (IPosition(4,1,2,3,4).nonDegenerate().isEqual
+                                                     (IPosition(3,2,3,4)));
+    AlwaysAssertExit (IPosition(5,1,1,2,3,4).nonDegenerate().isEqual
 	                                             (IPosition(3,2,3,4)));
-    assert (IPosition(6,1,1,2,3,1,4).nonDegenerate().isEqual
+    AlwaysAssertExit (IPosition(6,1,1,2,3,1,4).nonDegenerate().isEqual
 	                                             (IPosition(3,2,3,4)));
-    assert (IPosition(6,1,1,2,3,1,4).nonDegenerate(2).isEqual
+    AlwaysAssertExit (IPosition(6,1,1,2,3,1,4).nonDegenerate(2).isEqual
 	                                             (IPosition(5,1,1,2,3,4)));
 
     AipsIO io("tIPosition_tmp.data", ByteIO::New);   // AipsIO << and >>
@@ -320,11 +325,11 @@ int main()
     io.open("tIPosition_tmp.data", ByteIO::Old);
     IPosition iptmp2;
     io >> iptmp2;
-    assert (ip1 == iptmp2);
+    AlwaysAssertExit (ip1 == iptmp2);
     io >> iptmp2;
-    assert (ip2 == iptmp2);
+    AlwaysAssertExit (ip2 == iptmp2);
     io >> iptmp2;
-    assert (iptmp1 == iptmp2);
+    AlwaysAssertExit (iptmp1 == iptmp2);
     io.close();
     io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
@@ -336,7 +341,7 @@ int main()
     ostringstream os;                            // ostream &operator<<
     os << ip1;
     String string (os.str());
-    assert(string == "[5, 5, 5, 5, 5, 5, 5, 5, 5, 5]");
+    AlwaysAssertExit(string == "[5, 5, 5, 5, 5, 5, 5, 5, 5, 5]");
 
 {
                                                // Check out exceptions
@@ -346,53 +351,57 @@ int main()
     IPosition ip2(3);  // ip1.conform(ip2) == False
     ip1 = 5; ip2 = 6;
     caught = False;
-    try {ip1+=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
+    try {ip1+=ip2;} catch (AipsError& x) {caught = True;}
+    AlwaysAssertExit(caught);
     caught = False;
-    try {ip1-=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
+    try {ip1-=ip2;} catch (AipsError& x) {caught = True;}
+    AlwaysAssertExit(caught);
     caught = False;
-    try {ip1*=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
+    try {ip1*=ip2;} catch (AipsError& x) {caught = True;}
+    AlwaysAssertExit(caught);
     caught = False;
-    try {ip1/=ip2;} catch (AipsError x) {caught = True;}  assert(caught);
+    try {ip1/=ip2;} catch (AipsError& x) {caught = True;}
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1+ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1+ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1-ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1-ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1*ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1*ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1/ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1/ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1==ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1==ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1!=ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1!=ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1<ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1<ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1<=ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1<=ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1>ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1>ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1>=ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1>=ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
     caught = False;
-    try {(void)(ip1=ip2);} catch (AipsError x) {caught = True;} 
-    assert(caught);
+    try {(void)(ip1=ip2);} catch (AipsError& x) {caught = True;} 
+    AlwaysAssertExit(caught);
 }    
                                                // ~IPosition tested implicitly
                                                // at end of block
 {
      IPosition x;
      IPosition y(5,1,2,3,4,5);
-     assert(x.product() == 0 && y.product() == 120);
+     AlwaysAssertExit(x.product() == 0 && y.product() == 120);
 }
 {
     Vector<Int> vi;
