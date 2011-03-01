@@ -40,13 +40,6 @@ if (NOT CMAKE_BUILD_TYPE)
     endif("_cmpvar" STREQUAL "dbg" OR "_cmpvar" STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# If given, add the data directory as compile variable.
-# If it contains a single $, it needs to be doubled for make purposes.
-if (DATA_DIR)
-    string(REGEX REPLACE [$] $$ DATA_DIRX ${DATA_DIR})
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCASADATA='\"${DATA_DIRX}\"'")
-endif (DATA_DIR)
-
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
     set (ENV{HDF5_ROOT} ${HDF5_ROOT_DIR})
