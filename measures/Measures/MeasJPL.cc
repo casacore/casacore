@@ -52,10 +52,10 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
   Double intv;
   if (!initMeas(file)) {
     return False;
-  };
+  }
   if (!fillMeas(intv, file, date)) {
     return False;
-  };
+  }
   // Interpolation fraction
   Bool dIt;
   Bool mulfr = True;
@@ -80,7 +80,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
       for (uInt i=0; i<6; i++) res[i] -= res1[i]/emrat[file];
     } else {
       for (uInt i=0; i<6; i++) res[i] += res1[i];
-    };
+    }
   } else if (type == MeasJPL::NUTATION) {
     if (idx[file][1][MeasJPL::BARYSOLAR-1] == 0) return False;
     interMeas(res, file, intv,
@@ -100,7 +100,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
 	      dmjd[file], idx[file][1][type-1], 3,
 	      idx[file][2][type-1],
 	      dta + idx[file][0][type-1]);
-  };
+  }
   dval[file].freeStorage(dta, dIt);
   if (mulfr) {
     for (uInt i=0; i<6; i++)
@@ -108,7 +108,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
   } else {
     for (uInt i=0; i<6; i++)
       returnValue(i) = res[i];
-  };
+  }
   
   return True;
 }
@@ -118,7 +118,7 @@ Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
   if (initMeas(which)) {
     res = cn[which][what];
     return True;
-  };
+  }
   return False;
 }
 
@@ -129,8 +129,8 @@ Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
     if (tr.isDefined(nam)) {
       res = tr.asDouble(nam);
       return True;
-    };
-  };
+    }
+  }
   return False;
 }
 
@@ -153,7 +153,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 			    tplc[which],
 			    "ephemerides")) {
       return False;
-    };
+    }
     MeasIERS::openNote(&MeasIERS::closeMeas);
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
 	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
@@ -186,8 +186,8 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 	ok = False;
       } else {
 	mjdl[which] = mjd0[which] + n*dmjd[which];
-      };
-    };
+      }
+    }
     if (ok) {
       const TableRecord &tr = t[which].tableDesc().columnDesc("x").
 	keywordSet();
@@ -200,23 +200,23 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 	  for (uInt j=0; j<13; j++) {
 	    idx[which][i][j] = xx(IPosition(1,k++));
 	    if (i == 0) idx[which][i][j] -= 3;
-	  };
-	};
+	  }
+	}
 	acc[Int(which)].attach(t[which], "x");
-      };
-    };
+      }
+    }
     if (!ok) {
       LogIO os(LogOrigin("MeasJPL",
 			 String("initMeas(MeasJPL::Files)"),
 			 WHERE));
       os << String("Corrupted JPL table ") + tp[which] << LogIO::EXCEPTION;
-    };
+    }
     measured[which] = True;
     chc[0] = 1;
     chc[1] = 0;
     chcv[0] = 0;
     chcv[1] = 1;
-  };
+  }
   return (measured[which]);
 }
 
@@ -235,8 +235,8 @@ void MeasJPL::closeMeas() {
       twot = 0.0;
       vfac = 0.0;
       t[i] = Table();
-    };
-  };
+    }
+  }
 }
 
 Bool MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,
@@ -244,7 +244,7 @@ Bool MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,
   Int ut = Int(utf.getDay());
   if (ut < mjd0[which] + dmjd[which] || ut >= mjdl[which] + dmjd[which]) {
     return False;
-  };
+  }
   ut = (ut-mjd0[which])/dmjd[which];
   intv = ((utf.getDay() - (ut*dmjd[which] + mjd0[which]))
 	   + utf.getDayFraction())/dmjd[which];
@@ -264,35 +264,35 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv,
     np = 2;
     nv =3;
     twot = 2*tc;
-  };
+  }
   if (np < ncf) {
     for (Int i=np; i<ncf; i++) chc[i] = twot*chc[i-1] - chc[i-2];
     np = ncf;
-  };
+  }
   vfac = 2.0*Double(na)/ivf;
   chcv[2] = 2.0*twot;
   if (nv < ncf) {
     for (Int i=nv; i<ncf; i++) {
       chcv[i] = twot*chcv[i-1] + 2.0*chc[i-1] - chcv[i-2];
-    };
+    }
     nv = ncf;
-  };
+  }
   { // Position
     for (Int i=0; i<ncm; i++) {
       res[i] = 0;
       for (Int j=ncf-1; j>=0; j--) {
 	res[i] += chc[j]*buf[(l*ncm+i)*ncf+j];
-      };
-    };
+      }
+    }
   }
   { // Velocity
     for (Int i=0; i<ncm; i++) {
       res[i+ncm] = 0;
       for (Int j=ncf-1; j>0; j--) {
 	res[i+ncm] += chcv[j]*buf[(l*ncm+i)*ncf+j];
-      };
+      }
       res[i+ncm] *= vfac;
-    };
+    }
   }
 }
 

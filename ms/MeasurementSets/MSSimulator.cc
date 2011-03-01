@@ -173,7 +173,7 @@ void MSSimulator::local2global(Vector<Double>& xGeo,
     zGeo(i) = cosLat * yLocal(i)  + sinLat * zLocal(i)  + xyz(2);
   }
 
-};
+}
 
 void MSSimulator::longlat2global(Vector<Double>&,
 				 Vector<Double>&,
@@ -185,7 +185,7 @@ void MSSimulator::longlat2global(Vector<Double>&,
 {
   LogIO os(LogOrigin("MSSimulator", "longlat2global()", WHERE));
   os <<  LogIO::SEVERE << "MSSimulator::longlat2global not yet implemented" << LogIO::POST;
-};
+}
 
 
 void MSSimulator::initFields(const uInt nSources,
@@ -226,7 +226,7 @@ void MSSimulator::initFields(const uInt nSources,
     os << "Source "<<i<<": name:"<<srcName_p(i)<<", ra:"<<radec_p(0,i)<<
     ", dec:"<<radec_p(1,i)<<", #integrations: "<<nIntFld_p(i)<<LogIO::POST;
   }
-};
+}
 
 void MSSimulator::setTimes(const Quantity& qIntegrationTime, 
 			   const Quantity& qGapTime, 
@@ -378,7 +378,7 @@ void MSSimulator::initFeeds(const String& mode)
       polResp_p.xyPlane(n)=polResp_p.xyPlane(j);
     }
   }
-};
+}
 
 
 MSSimulator::~MSSimulator() 
@@ -996,7 +996,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
     os << nSubElevation << " visibilities flagged due to elevation limit of " << 
       elevationLimit_p.getValue("deg") << " degrees " << LogIO::POST;
 
-};
+}
 
 // Calculates the fractional blockage of one antenna by another
 // We will want to put this somewhere else eventually, but I don't yet know where!
@@ -1040,7 +1040,7 @@ void MSSimulator::blockage(Double &fraction1, Double &fraction2,
   if (uvw(2) < 0.0) fraction1 = 0.0;
 
   return;
-};
+}
 
 
 

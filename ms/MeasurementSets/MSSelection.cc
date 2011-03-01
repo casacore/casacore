@@ -498,7 +498,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		case TAQL_EXPR:    taqlExpr_p    = "";break;
 		case POLN_EXPR:    polnExpr_p    = "";break;
 		default:;
-		};
+		}
 	    }
 	if (!fullTEN_p.isNull()) resetTEN();
       }
@@ -846,8 +846,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       // Now check if AIPS++ unset
       //    if (inpRec.dataType(fieldName) == TpRecord) {
       //      retval = !Unset::isUnset(inpRec.subRecord(fieldName));
-      //    };
-    };
+      //    }
+    }
     return retval;
   }
   

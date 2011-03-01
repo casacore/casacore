@@ -52,7 +52,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
   nrows_p = msAntennaCols_p.nrow();
   antennaIds_p.resize(nrows_p);
   indgen(antennaIds_p);
-};
+}
 
 //-------------------------------------------------------------------------
   
@@ -61,7 +61,7 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
     Vector<Int> IDs;
     IDs = set_intersection(sourceId,antennaIds_p);
     return IDs;
-  }; 
+  } 
 
 //-------------------------------------------------------------------------
 
@@ -97,7 +97,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
   
   MaskedArray<Int> maskAntennaID(antennaIds_p,maskArray);
   return maskAntennaID.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -133,7 +133,7 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const String& name)
 	}
       return maskAntennaId.getCompressedArray();
     }
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -155,10 +155,10 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const Vector<String>& names)
       matchedAntennaIds.resize(matchedAntennaIds.nelements() +
 			     currentMatch.nelements(), True);
       matchedAntennaIds = concatenateArray(temp, currentMatch);
-    };
-  };
+    }
+  }
   return matchedAntennaIds;
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ Vector<Int> MSAntennaIndex::matchAntennaStation(const String& station)
     MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
     return maskAntennaId.getCompressedArray();
   }
-}; 
+} 
 
 //-------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ Vector<Int> MSAntennaIndex::matchAntennaNameAndStation(const String& name,
   //  && !msAntennaCols_p.flagRow().getColumn());
   MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
   return maskAntennaId.getCompressedArray();
-}; 
+} 
 
 //-------------------------------------------------------------------------
 

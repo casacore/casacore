@@ -74,7 +74,7 @@ MEarthMagnetic &MEarthMagnetic::operator=(const MEarthMagnetic &other) {
     MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref> &This = *this;
     const MeasBase<MVEarthMagnetic, MEarthMagnetic::Ref> &Other = other;
     This = Other;
-  };
+  }
   return *this;
 }
 
@@ -102,7 +102,7 @@ void MEarthMagnetic::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEarthMagnetic::showMe()));
-  };
+  }
 }
 
 MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
@@ -113,7 +113,7 @@ MEarthMagnetic::Types MEarthMagnetic::castType(uInt tp) {
     AlwaysAssert((tp & ~MEarthMagnetic::EXTRA) < 
 		 (MEarthMagnetic::N_Models - MEarthMagnetic::IGRF),
 		 AipsError);
-  };
+  }
   return static_cast<MEarthMagnetic::Types>(tp);
 }
 
@@ -235,7 +235,7 @@ Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
 
 void MEarthMagnetic::checkTypes() const {
   MEarthMagnetic::checkMyTypes();
-};
+}
 
 void MEarthMagnetic::checkMyTypes() {
   static Bool first(True);
@@ -250,16 +250,16 @@ void MEarthMagnetic::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MEarthMagnetic::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) &&
 		   tp == i, AipsError);
-    };
+    }
     for (Int i=IGRF; i<N_Models; i++) {
       AlwaysAssert(MEarthMagnetic::getType(tp, MEarthMagnetic::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
@@ -268,9 +268,9 @@ Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
   else {
     mr = MEarthMagnetic::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MEarthMagnetic::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MEarthMagnetic *>(0))) return False;
@@ -283,7 +283,7 @@ Bool MEarthMagnetic::setRefString(const String &in) {
   if (MEarthMagnetic::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MEarthMagnetic::DEFAULT);
   return False;
 }

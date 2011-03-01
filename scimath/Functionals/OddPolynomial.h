@@ -88,23 +88,23 @@ public:
   
   //# Constructors
   // Constructs a first order polynomial, with a coeficcient of 0.0.
-  OddPolynomial() : OddPolynomialParam<T>() {};
+  OddPolynomial() : OddPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit OddPolynomial(uInt order) : OddPolynomialParam<T>(order) {};
+  explicit OddPolynomial(uInt order) : OddPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   OddPolynomial(const OddPolynomial<T> &other) :
-    OddPolynomialParam<T>(other) {};
+    OddPolynomialParam<T>(other) {}
   template <class W>
     OddPolynomial(const OddPolynomial<W> &other) :
-    OddPolynomialParam<T>(other) {};
+    OddPolynomialParam<T>(other) {}
   OddPolynomial<T> &operator=(const OddPolynomial<T> &other) {
-    OddPolynomialParam<T>::operator=(other); return *this; };
+    OddPolynomialParam<T>::operator=(other); return *this; }
   // </group>
   
   // Destructor
-  virtual ~OddPolynomial() {};
+  virtual ~OddPolynomial() {}
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
@@ -114,11 +114,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new OddPolynomial<T>(*this); };
+  virtual Function<T> *clone() const { return new OddPolynomial<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new OddPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+    return new OddPolynomial<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new OddPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
+    return new OddPolynomial<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -145,26 +145,26 @@ public:
   //# Constructors
   // Constructs one dimensional OddPolynomials.
   // <group>
-  OddPolynomial_PS() : OddPolynomialParam<AutoDiff<T> >() {};
+  OddPolynomial_PS() : OddPolynomialParam<AutoDiff<T> >() {}
   explicit OddPolynomial_PS(uInt order) :
-    OddPolynomialParam<AutoDiff<T> >(order) {};
+    OddPolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   OddPolynomial_PS(const OddPolynomial_PS<AutoDiff<T> > &other) :
-  OddPolynomialParam<AutoDiff<T> >(other) {};
+  OddPolynomialParam<AutoDiff<T> >(other) {}
   template <class W>
     OddPolynomial_PS(const OddPolynomial_PS<W> &other) :
-    OddPolynomialParam<AutoDiff<T> >(other) {};
+    OddPolynomialParam<AutoDiff<T> >(other) {}
   // </group>
   // Copy assignment (deep copy)
   OddPolynomial_PS<AutoDiff<T> > &
     operator=(const OddPolynomial_PS<AutoDiff<T> > &other) {
-    OddPolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
+    OddPolynomialParam<AutoDiff<T> >::operator=(other); return *this; }
     
   // Destructor
-  virtual ~OddPolynomial_PS() {};
+  virtual ~OddPolynomial_PS() {}
 
   //# Operators    
   // Evaluate the polynomial and its derivatives at <src>x</src> <em>wrt</em>
@@ -178,15 +178,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new OddPolynomial<AutoDiff<T> >(*this); };
+    return new OddPolynomial<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new OddPolynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new OddPolynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

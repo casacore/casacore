@@ -229,7 +229,7 @@ public:
   // Get method
   virtual uInt getMethod(uInt which) const;
   // Is the conversion engine empty?
-  Bool isNOP() { return crout.nelements() == 0; };
+  Bool isNOP() { return crout.nelements() == 0; }
   // Print conversion engine
   virtual void print(ostream &os) const;
   

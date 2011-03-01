@@ -128,27 +128,27 @@ template <class T> class CompiledParam : public Function<T> {
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("compiled");
-    return x; };
+    return x; }
 
   // Set a function. The return will be False (and an error message will be
   // set) if a compilation error occurs 
   Bool setFunction(const String &newFunction);
 
   // Return the error message of the compilation
-  const String &errorMessage() const { return msg_p; };
+  const String &errorMessage() const { return msg_p; }
 
   // Return the expression
   const FuncExpression &function() const;
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return ndim_p; };
+  virtual uInt ndim() const { return ndim_p; }
 
   // Returns the text of the function string
-  const String &getText() const { return text_p; };
+  const String &getText() const { return text_p; }
 
   // Returns the function pointer (for debugging)
   const FuncExpression* getFunctionPtr() const {
-    return functionPtr_p; };
+    return functionPtr_p; }
 
 protected:
   //# Data

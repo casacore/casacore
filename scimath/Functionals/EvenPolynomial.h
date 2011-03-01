@@ -88,23 +88,23 @@ public:
   
   //# Constructors
   // Constructs a zeroth order polynomial, with a coeficcient of 0.0.
-  EvenPolynomial() : EvenPolynomialParam<T>() {};
+  EvenPolynomial() : EvenPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit EvenPolynomial(uInt order) : EvenPolynomialParam<T>(order) {};
+  explicit EvenPolynomial(uInt order) : EvenPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   EvenPolynomial(const EvenPolynomial<T> &other) :
-    EvenPolynomialParam<T>(other) {};
+    EvenPolynomialParam<T>(other) {}
   template <class W>
     EvenPolynomial(const EvenPolynomial<W> &other) :
-    EvenPolynomialParam<T>(other) {};
+    EvenPolynomialParam<T>(other) {}
   EvenPolynomial<T> &operator=(const EvenPolynomial<T> &other) {
-    EvenPolynomialParam<T>::operator=(other); return *this; };
+    EvenPolynomialParam<T>::operator=(other); return *this; }
   // </group>
   
   // Destructor
-  virtual ~EvenPolynomial() {};
+  virtual ~EvenPolynomial() {}
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
@@ -114,11 +114,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new EvenPolynomial<T>(*this); };
+  virtual Function<T> *clone() const { return new EvenPolynomial<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new EvenPolynomial<typename FunctionTraits<T>::DiffType>(*this); };
+    return new EvenPolynomial<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new EvenPolynomial<typename FunctionTraits<T>::BaseType>(*this); };
+    return new EvenPolynomial<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -145,26 +145,26 @@ public:
   //# Constructors
   // Constructs one dimensional EvenPolynomials.
   // <group>
-  EvenPolynomial_PS() : EvenPolynomialParam<AutoDiff<T> >() {};
+  EvenPolynomial_PS() : EvenPolynomialParam<AutoDiff<T> >() {}
   explicit EvenPolynomial_PS(uInt order) :
-    EvenPolynomialParam<AutoDiff<T> >(order) {};
+    EvenPolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   EvenPolynomial_PS(const EvenPolynomial_PS<AutoDiff<T> > &other) :
-    EvenPolynomialParam<AutoDiff<T> >(other) {};
+    EvenPolynomialParam<AutoDiff<T> >(other) {}
   template <class W>
     EvenPolynomial_PS(const EvenPolynomial_PS<W> &other) :
-    EvenPolynomialParam<AutoDiff<T> >(other) {};
+    EvenPolynomialParam<AutoDiff<T> >(other) {}
   // </group>
   // Copy assignment (deep copy)
   EvenPolynomial_PS<AutoDiff<T> > &
     operator=(const EvenPolynomial_PS<AutoDiff<T> > &other) {
-    EvenPolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
+    EvenPolynomialParam<AutoDiff<T> >::operator=(other); return *this; }
 
   // Destructor
-  virtual ~EvenPolynomial_PS() {};
+  virtual ~EvenPolynomial_PS() {}
 
   //# Operators    
   // Evaluate the polynomial and its derivatives at <src>x</src> <em>wrt</em>
@@ -178,15 +178,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new EvenPolynomial<AutoDiff<T> >(*this); };
+    return new EvenPolynomial<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new EvenPolynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new EvenPolynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

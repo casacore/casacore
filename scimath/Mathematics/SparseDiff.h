@@ -115,7 +115,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //	template <class T> f {
   //	public:
   //	  T operator()(const T &x, const T &a, const T &b) {
-  //	  	return a*b*x; };
+  //	  	return a*b*x; }
   // 	};
   //      // Instantiate the following versions:
   //	template class f<Double>;
@@ -331,11 +331,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     void operator+=(const SparseDiff<T> &other);
     void operator-=(const SparseDiff<T> &other);
     void operator*=(const T other) { rep_p->operator*=(other);
-    value() *= other; };
+    value() *= other; }
     void operator/=(const T other) { rep_p->operator/=(other);
-    value() /= other; };
-    void operator+=(const T other) { value() += other; };
-    void operator-=(const T other) { value() -= other; };
+    value() /= other; }
+    void operator+=(const T other) { value() += other; }
+    void operator-=(const T other) { value() -= other; }
     // </group>
 
     // Convert to an AutoDiff of length <em>n</em>
@@ -343,36 +343,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Returns the pointer to the structure of value and derivatives.
     // <group>
-    SparseDiffRep<T> *theRep() { return rep_p; };
-    const SparseDiffRep<T> *theRep() const { return rep_p; };
+    SparseDiffRep<T> *theRep() { return rep_p; }
+    const SparseDiffRep<T> *theRep() const { return rep_p; }
     // </group>
 
     // Returns the value of the function
     // <group>
-    T &value() { return rep_p->val_p; };
-    const T &value() const { return rep_p->val_p; };
+    T &value() { return rep_p->val_p; }
+    const T &value() const { return rep_p->val_p; }
     // </group>
   
     // Returns a vector of the derivatives of a SparseDiff
     // <group>
     vector<pair<uInt, T> > &derivatives() const;
     void derivatives(vector<pair<uInt, T> > &res) const;
-    const vector<pair<uInt, T> > &grad() const { return rep_p->grad_p; };
-    vector<pair<uInt, T> > &grad() { return rep_p->grad_p; };
+    const vector<pair<uInt, T> > &grad() const { return rep_p->grad_p; }
+    vector<pair<uInt, T> > &grad() { return rep_p->grad_p; }
     // </group>
 
     // Returns a specific derivative. No check for a valid which.
     // <group>
-    pair<uInt, T> &derivative(uInt which) { return rep_p->grad_p[which]; };
+    pair<uInt, T> &derivative(uInt which) { return rep_p->grad_p[which]; }
     const pair<uInt, T> &derivative(uInt which) const {
-      return rep_p->grad_p[which]; };
+      return rep_p->grad_p[which]; }
     // </group>
   
     // Return total number of derivatives
-    uInt nDerivatives() const { return rep_p->grad_p.size(); };
+    uInt nDerivatives() const { return rep_p->grad_p.size(); }
   
     // Is it a constant, i.e., with zero derivatives?
-    Bool isConstant() const { return rep_p->grad_p.empty(); };
+    Bool isConstant() const { return rep_p->grad_p.empty(); }
 
     // Sort criterium
     static Bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);

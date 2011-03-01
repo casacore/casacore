@@ -56,7 +56,7 @@ template<class M>
 MeasConvert<M> &MeasConvert<M>::operator=(const MeasConvert<M> &other) {
   if (this != &other) {
     copy(other);
-  };
+  }
   return *this;
 }
 
@@ -215,7 +215,7 @@ const M &MeasConvert<M>::operator()(Double val) {
     *locres = WHATEVER_TYPENAME M::MVType(val);
   } else {
     *locres = WHATEVER_TYPENAME M::MVType(Quantity(val,unit));
-  };
+  }
   return operator()(*locres);
 }
 
@@ -306,7 +306,7 @@ void MeasConvert<M>::clear() {
   delete locres; locres = 0;
   for (Int j=0; j < 4; j++) {
     delete result[j]; result[j] = 0;
-  };
+  }
 }
 
 template<class M>
@@ -358,8 +358,8 @@ void MeasConvert<M>::create() {
       offin = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
       offin = new typename M::MVType(*ptmp);
-    };
-  };
+    }
+  }
   delete offout; offout = 0;
   if (outref.offset()) {
     typename M::MVType *ptmp =
@@ -371,15 +371,15 @@ void MeasConvert<M>::create() {
       offout = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
       offout = new typename M::MVType(*ptmp);
-    };
-  };
+    }
+  }
   crout.resize(0, True);
   crtype = 0;
   // Make sure a reference given
   if (model && model->getRefPtr()->empty()) {
     ((MeasBase<typename M::MVType, typename M::Ref > *)model)
       ->set(typename M::Ref(M::DEFAULT));
-  };
+  }
   if (outref.empty()) outref = WHATEVER_TYPENAME M::Ref(M::DEFAULT);
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
@@ -396,8 +396,8 @@ void MeasConvert<M>::create() {
       delete reftmp;
     } else {
       cvdat->getConvert(*this, *model->getRefPtr(), outref);
-    };
-  };
+    }
+  }
 }
 
 template<class M>
@@ -459,7 +459,7 @@ void MeasConvert<M>::set(const MeasValue &val) {
   } else {
     model = new M(&val);
     create();
-  };
+  }
 }
 
 template<class M>

@@ -87,7 +87,7 @@ public:
   MSFieldIndex(const MSField &field);
 
   // Null destructor
-  virtual ~MSFieldIndex() {};
+  virtual ~MSFieldIndex() {}
 
   // Look up a single name in FIELD.NAME or FIELD.CODE
   Vector<Int> matchFieldNameOrCode(const String& name);

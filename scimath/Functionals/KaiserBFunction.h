@@ -87,24 +87,25 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  KaiserBFunction() : KaiserBParam<T>() {};
+  KaiserBFunction() : KaiserBParam<T>() {}
   explicit KaiserBFunction(const T &kbpar) :
-    KaiserBParam<T>(kbpar) {};
+    KaiserBParam<T>(kbpar) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  KaiserBFunction(const KaiserBFunction<T> &other) : KaiserBParam<T>(other) {};  template <class W>
-  KaiserBFunction(const KaiserBFunction<W> &other) : KaiserBParam<T>(other) {};
+  KaiserBFunction(const KaiserBFunction<T> &other) : KaiserBParam<T>(other) {}
+  template <class W>
+    KaiserBFunction(const KaiserBFunction<W> &other) : KaiserBParam<T>(other) {}
   // </group>
 
 
   // Copy assignment (deep copy)
   KaiserBFunction<T> &operator=(const KaiserBFunction<T> &other) {
-    KaiserBParam<T>::operator=(other); return *this; };
+    KaiserBParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~KaiserBFunction() {};
+  virtual ~KaiserBFunction() {}
 
   //# Operators    
   // Evaluate the KaiserB at <src>x</src>.
@@ -117,10 +118,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new KaiserBFunction<T>(*this); };  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new KaiserBFunction<typename FunctionTraits<T>::DiffType>(*this); };
+  virtual Function<T> *clone() const { return new KaiserBFunction<T>(*this); }
+  virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
+    return new KaiserBFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new KaiserBFunction<typename FunctionTraits<T>::BaseType>(*this); };
+    return new KaiserBFunction<typename FunctionTraits<T>::BaseType>(*this); }
 
   // </group>
 

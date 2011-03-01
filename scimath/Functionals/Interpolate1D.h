@@ -180,7 +180,7 @@ public:
 
   // Name of function
   virtual const String &name() const { static String x("interpolate1d");
-    return x; };
+    return x; }
 
   // Interpolation is done using the () operator (see example above). Actual
   // use is through the virtual <src>eval()</src> function.

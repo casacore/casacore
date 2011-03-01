@@ -55,7 +55,7 @@ MeasMath::MeasMath() :
     frameOK_p[i] = False;
     applyFrame_p[i] = 0;
     deapplyFrame_p[i] = 0;
-  };
+  }
 }
 
 //# Destructor
@@ -109,15 +109,15 @@ void MeasMath::getFrame(FrameType i) {
       applyFrame_p[i] = outFrame_p;
     } else {
       frameOK_p[i] = False;
-    };
+    }
     if (frameOK_p[i]) {
       if (outOK_p && (outFrame_p->*frameInfo[i])()) {
 	deapplyFrame_p[i] = outFrame_p;
       } else {
 	deapplyFrame_p[i] = inFrame_p;
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 // Precession
@@ -127,8 +127,8 @@ void MeasMath::createPrecession() {
       PRECESIAU = new Precession(Precession::IAU2000);
     } else {
       PRECESIAU = new Precession(Precession::IAU1976);
-    };
-  };
+    }
+  }
 }
 
 void MeasMath::applyPrecession(MVPosition &in) {
@@ -139,7 +139,7 @@ void MeasMath::applyPrecession(MVPosition &in) {
     } else {
       getInfo(TDB);
       in *= (*PRECESIAU)(info_p[TDB]);
-    };
+    }
 }
 
 void MeasMath::deapplyPrecession(MVPosition &in) {
@@ -150,7 +150,7 @@ void MeasMath::deapplyPrecession(MVPosition &in) {
   } else {
     getInfo(TDB);
     in = (*PRECESIAU)(info_p[TDB]) * in;
-  };
+  }
 }
 
 void MeasMath::createPrecessionB1950() {
@@ -175,11 +175,11 @@ void MeasMath::createNutation() {
 	NUTATIAU = new Nutation(Nutation::IAU2000A);
       } else {
 	NUTATIAU = new Nutation(Nutation::IAU2000B);
-      };
+      }
     } else {
       NUTATIAU = new Nutation(Nutation::IAU1980);
-    };
-  };
+    }
+  }
 }
 
 void MeasMath::applyNutation(MVPosition &in) {
@@ -189,7 +189,7 @@ void MeasMath::applyNutation(MVPosition &in) {
   } else {
     getInfo(TDB);
     in *= (*NUTATIAU)(info_p[TDB]);
-  };
+  }
 }
 
 void MeasMath::deapplyNutation(MVPosition &in) {
@@ -199,7 +199,7 @@ void MeasMath::deapplyNutation(MVPosition &in) {
   } else {
     getInfo(TDB);
     in = (*NUTATIAU)(info_p[TDB]) * in;
-  };
+  }
 }
 
 void MeasMath::createNutationB1950() {
@@ -231,7 +231,7 @@ void MeasMath::applyPrecNutat(MVPosition &in) {
     getInfo(TDB);
     in *= (RotMatrix((*PRECESIAU)(info_p[TDB])) *
 	   RotMatrix((*NUTATIAU)(info_p[TDB])));
-  };
+  }
 }
 
 void MeasMath::deapplyPrecNutat(MVPosition &in) {
@@ -243,7 +243,7 @@ void MeasMath::deapplyPrecNutat(MVPosition &in) {
     getInfo(TDB);
     in = (RotMatrix((*PRECESIAU)(info_p[TDB])) *
 	  RotMatrix((*NUTATIAU)(info_p[TDB]))) * in;
-  };
+  }
 }
 
 void MeasMath::createPrecNutatB1950() {
@@ -282,7 +282,7 @@ void MeasMath::applyAberration(MVPosition &in, Bool doin) {
   else {
     getInfo(J2000DIR);
     MVPOS4 = infomvd_p[J2000DIR-N_FrameDInfo];
-  };
+  }
   g2 = MVPOS4 * MVPOS1;
   // Shift
   MVPOS2 = ((g1-1.0-g2)*MVPOS4 + (1+g2/(1+g1)) * MVPOS1)*(1.0/(1.0+g2));
@@ -302,7 +302,7 @@ void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
   else {
     getInfo(J2000DIR);
     MVPOS4 = infomvd_p[J2000DIR-N_FrameDInfo];
-  };
+  }
   // First guess
   MVPOS2 = MVPOS4 - MVPOS1;
   // Solve for aberration solution
@@ -317,7 +317,7 @@ void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
 	(MVPOS3(j) - MVPOS4(j))/
 	(((g1+g3*g3/(1+g1))-
 	  g3 * MVPOS3(j))/(1+g2));
-    };
+    }
     MVPOS3 -= MVPOS4;
   } while (MVPOS3.radius() > 1e-10);
   MVPOS2 -= MVPOS4;
@@ -360,7 +360,7 @@ void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
   else {
     getInfo(J2000DIR);
     MVPOS2 = infomvd_p[J2000DIR-N_FrameDInfo];
-  }; 
+  } 
   g2 = MVPOS2 * MVPOS1;
   // Check if near sun
   if (!nearAbs(g2, 1.0,
@@ -368,7 +368,7 @@ void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
     MVPOS1 -= g2 * MVPOS2;
     MVPOS1 *= (g1 / (1.0 - g2));
     rotateShift(in, MVPOS1, J2000LONG, J2000LAT, doin);
-  };
+  }
 }
 
 void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
@@ -382,7 +382,7 @@ void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
   else {
     getInfo(J2000DIR);
     MVPOS4 = infomvd_p[J2000DIR-N_FrameDInfo];
-  };
+  }
   g2 = MVPOS4 * MVPOS1;
   // Check if near sun
   if (!nearAbs(g2, 1.0,
@@ -400,7 +400,7 @@ void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
 	  (1 + (g3 * MVPOS3(j) -
 		g1 * (g2 + g3 *
 		      MVPOS2(j)))/(1-g2));
-      };
+      }
       g2 = MVPOS2 * MVPOS1;
       MVPOS3 += MVPOS2;
       MVPOS3 -= MVPOS4;
@@ -408,7 +408,7 @@ void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
     // Correction
     MVPOS2 -= MVPOS4;
     rotateShift(in, MVPOS2, J2000LONG, J2000LAT, doin);
-  };
+  }
 }
 
 // Various conversions
@@ -449,7 +449,7 @@ void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
     b1950_reg_p = 
       AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
-  };
+  }
   Double epo;
   if (getInfo(UT1, True)) {
     epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
@@ -484,7 +484,7 @@ void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
     b1950_reg_p = 
       AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
-  };
+  }
   Double epo;
   if (getInfo(UT1, True)) {
     epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
@@ -515,7 +515,7 @@ void MeasMath::applyETerms(MVPosition &in, Bool doin, Double epo) {
   else {
     getInfo(B1950DIR);
     MVPOS2 = infomvd_p[B1950DIR-N_FrameDInfo];
-  }; 
+  } 
   g1 = MVPOS2 * MVPOS1;
   MVPOS1 = g1 * MVPOS2 - MVPOS1;
   rotateShift(in, MVPOS1, B1950LONG, B1950LAT, doin);
@@ -531,7 +531,7 @@ void MeasMath::deapplyETerms(MVPosition &in, Bool doin, Double epo) {
   else {
     getInfo(B1950DIR);
     MVPOS4 = infomvd_p[B1950DIR-N_FrameDInfo];
-  };
+  }
   MVPOS2 = MVPOS4;
   do {
     g1 = MVPOS2 * MVPOS1;
@@ -672,7 +672,7 @@ void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len,
 	      MVPosition(Quantity(info_p[RADIUS], "m"),
 			 info_p[LONG], info_p[LAT])) * (1.0/len);
     rotateShift(in, -MVPOS1, APPLONG, APPLAT, doin);
-  };
+  }
 }
 
 void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
@@ -688,7 +688,7 @@ void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
 	      MVPosition(Quantity(info_p[RADIUS], "m"),
 			 info_p[LONG], info_p[LAT])) * (1.0/len);
     rotateShift(in, MVPOS1, APPLONG, APPLAT, doin);
-  };
+  }
 }
 
 // General support
@@ -729,14 +729,14 @@ Bool MeasMath::getInfo(FrameInfo i, Bool ret) {
       } else {
 	(applyFrame_p[InfoType[i]]->*InfoMVDFrame[i-N_FrameDInfo])
 	  (infomvd_p[i-N_FrameDInfo]);
-      };
+      }
     } else {
       if (ret) return False;
       throw(AipsError(String("Missing information in Frame ") +
 		      "specified for conversion"));
-    };
+    }
     infoOK_p[i] = True;
-  };
+  }
   return True;
 }
 
@@ -756,7 +756,7 @@ void MeasMath::rotateShift(MVPosition &in, const MVPosition &shft,
     // Rotate over correction
     in = ((RotMatrix(Euler((ROTMAT1*shft).getValue()(0), 2u)) *
 	   ROTMAT1) * in) * ROTMAT1;
-  };
+  }
 }
 
 void MeasMath::getAPP(MVPosition &out) {

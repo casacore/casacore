@@ -86,7 +86,7 @@ public:
   MSDataDescIndex(const MSDataDescription& dataDescription);
 
   // Null destructor
-  virtual ~MSDataDescIndex() {};
+  virtual ~MSDataDescIndex() {}
 
   // Look up DATA_DESC_ID's for a given spectral window id
   Vector<Int> matchSpwId(const Int& spwId);

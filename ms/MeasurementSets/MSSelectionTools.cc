@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     return loc;
      
-  };
+  }
   //
   //----------------------------------------------------------------------------
   //
@@ -76,7 +76,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
 
     return loc;
-  };
+  }
   //
   //----------------------------------------------------------------------------
   //
@@ -213,4 +213,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return (int)(tokens.nelements());
     */
   }
-};
+}

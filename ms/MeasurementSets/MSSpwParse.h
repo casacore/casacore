@@ -88,7 +88,7 @@ class MSSpwParse : public MSParse
 public:
   // Default constructor
   MSSpwParse ();
-  //  ~MSSpwParse() {if (node_p) delete node_p;node_p=0x0;};
+  //  ~MSSpwParse() {if (node_p) delete node_p;node_p=0x0;}
 
   // Associate the ms and the shorthand.
   MSSpwParse (const MeasurementSet* ms);
@@ -110,8 +110,8 @@ public:
   static MSSpwParse* thisMSSParser;
   static Vector<Int> selectedIDs() {return idList;}
   static Matrix<Int> selectedChanIDs() {return chanList;}
-  static void reset() {idList.resize(0);chanList.resize(0,0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static void reset() {idList.resize(0);chanList.resize(0,0);}
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 private:
   static TableExprNode* node_p;
   static Vector<Int> idList;

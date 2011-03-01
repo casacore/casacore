@@ -62,7 +62,7 @@ Muvw &Muvw::operator=(const Muvw &other) {
     MeasBase<MVuvw, Muvw::Ref> &This = *this;
     const MeasBase<MVuvw, Muvw::Ref> &Other = other;
     This = Other;
-  };
+  }
   return *this;
 }
 
@@ -90,7 +90,7 @@ void Muvw::assure(const Measure &in) {
   if (in.type() != Register(static_cast<Muvw *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    Muvw::showMe()));
-  };
+  }
 }
 
 Muvw::Types Muvw::castType(uInt tp) {
@@ -217,19 +217,19 @@ void Muvw::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   Muvw::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(Muvw::getType(tp, Muvw::showType(i)) &&
 		   tp == i, AipsError);
-    };
+    }
     // Check if uvw types are identical to direction types
     AlwaysAssert(static_cast<Int>(Muvw::N_Types) == 
 		 static_cast<Int>(MDirection::N_Types), AipsError);
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(Muvw::showType(i) == MDirection::showType(i),
 		   AipsError);
-    };
-  };
+    }
+  }
 }
 
 Muvw::Types Muvw::fromDirType(const MDirection::Types in) {
@@ -260,9 +260,9 @@ Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
   else {
     mr = Muvw::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool Muvw::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<Muvw *>(0))) return False;
@@ -275,7 +275,7 @@ Bool Muvw::setRefString(const String &in) {
   if (Muvw::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(Muvw::DEFAULT);
   return False;
 }

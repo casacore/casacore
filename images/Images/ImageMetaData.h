@@ -74,7 +74,7 @@ class ImageMetaData {
 
     public:
         template <class T> ImageMetaData(const ImageInterface<T>& image) :
-            itsCoordinates (image.coordinates()), itsShape(image.shape()) {};
+            itsCoordinates (image.coordinates()), itsShape(image.shape()) {}
 
         // Get the axis number of the spectral axis of this image (0-based).
         Int spectralAxisNumber() const; 

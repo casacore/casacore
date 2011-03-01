@@ -41,7 +41,7 @@ T EvenPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
     accum *= x[0];
     accum *= x[0];
     accum += param_p[j];
-  };
+  }
   return accum;
 }
 

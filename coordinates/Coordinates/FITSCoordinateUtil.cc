@@ -498,7 +498,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		header[i][3]=='P' && header[i][4]=='E' &&
 		(header[i][5]=='1'|| header[i][5]=='2') &&
 		header[i][14]=='-' && header[i][18]==' ') {
-		char tmp[hsize];
+		char tmp[81];
 		strncpy(tmp,header[i].c_str(),hsize+1);
 		tmp[18]=tmp[17];tmp[17]=tmp[16];tmp[16]=tmp[15];tmp[15]=tmp[14];
 		all = all.append(tmp);
@@ -510,7 +510,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		       (header[i][5]=='1'|| header[i][5]=='2') &&
 		       header[i][15]=='-' && header[i][16]=='F' &&
 		       header[i][17]=='L' && header[i][18]=='T') {
-		char tmp[hsize];
+		char tmp[81];
 		strncpy(tmp,header[i].c_str(),hsize+1);
 		tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
 		all = all.append(tmp);
@@ -522,7 +522,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		       (header[i][5]=='1'|| header[i][5]=='2') &&
 		       header[i][15]==' ' && header[i][16]==' ' &&
 		       header[i][17]==' ' && header[i][18]==' ') {
-		char tmp[hsize];
+		char tmp[81];
 		strncpy(tmp,header[i].c_str(),hsize+1);
 		tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
 		all = all.append(tmp);
@@ -533,7 +533,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		       header[i][3]=='F' && header[i][4]=='R' &&
 		       header[i][5]=='E' && header[i][6]=='Q' &&
 		       header[i][7]==' ') {
-		char tmp[hsize];
+		char tmp[81];
 		strncpy(tmp,header[i].c_str(),hsize+1);
 		tmp[0]='R'; tmp[1]='E'; tmp[2]='S'; tmp[3]='T';
 		tmp[4]='F'; tmp[5]='R'; tmp[6]='Q'; tmp[7]=' ';
@@ -547,7 +547,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		       header[i][19]=='-' && header[i][20]=='S' && 
 		       header[i][21]=='I' && header[i][22]=='P' && 
 		       header[i][23]=='\'') {
-		char tmp[hsize];
+		char tmp[81];
 		strncpy(tmp,header[i].c_str(),hsize+1);
 		tmp[19]='\'';tmp[20]=tmp[21]=tmp[22]=tmp[23]=' ';
 		all = all.append(tmp);
@@ -1663,7 +1663,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Specific keywords to be located 
 
 	const uInt nKeyIds = 0;
-	::fitskeyid keyids[nKeyIds];
+	::fitskeyid keyids[1];     // ISO C++ requires C-array of size > 0
 
 // Parse the header
 

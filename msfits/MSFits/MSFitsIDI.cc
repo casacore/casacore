@@ -70,7 +70,7 @@ MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut,
 //
   init(tapeDevice.absoluteName(), FITS::Tape9, msOut, overWrite);
 //
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut,
 //
   init(inFile, FITS::Disk, msOut, overWrite);
 //
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -116,8 +116,8 @@ MSFitsIDI::~MSFitsIDI()
 //
   if (itsMS) {
     delete (itsMS);
-  };
-};
+  }
+}
 
 //----------------------------------------------------------------------------
 
@@ -134,8 +134,8 @@ void MSFitsIDI::selectFiles(const Vector<Int>& files)
   itsSelectedFiles = files;
   if (itsSelectedFiles.nelements() > 0) {
     itsAllFilesSelected = False;
-  };
-};
+  }
+}
 
 //----------------------------------------------------------------------------
 
@@ -148,14 +148,14 @@ Bool MSFitsIDI::fillMS()
   // Delete the MS if it already exits and overwrite selected
   if (itsMSExists && itsOverWrite) {
     Table::deleteTable(itsMSOut);
-  };
+  }
 
   // Create a new MS or attach to the existing MS
   if (!itsMSExists || itsOverWrite) {
     createOutputMS();
   } else {
     //    itsMS = new MeasurementSet(itsMSOut);
-  };
+  }
 
   //
   // Tape input: loop over all selected input files
@@ -173,7 +173,7 @@ Bool MSFitsIDI::fillMS()
       } else {
 	atEnd = (fileIndex >= itsSelectedFiles.nelements()-1);
 	if (!atEnd) fileno = itsSelectedFiles(fileIndex++);
-      };
+      }
 
       if (!atEnd) {
 	// Advance tape if necessary
@@ -182,24 +182,24 @@ Bool MSFitsIDI::fillMS()
 	  TapeIO tapeDev(itsDataSource);
 	  tapeDev.skip(nskip);
 	  currentFile = currentFile + nskip;
-	};
+	}
 
 	// Read and process the selected input file
 	readFITSFile(atEnd);
 
 	// Increment file counter
 	currentFile = currentFile + 1;
-      };
-    }; 
+      }
+    } 
       
     //
     // Disk input:
     //
   } else if (itsDeviceType == FITS::Disk) {
     readFITSFile(atEnd);
-  };
+  }
   return True;
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -233,7 +233,7 @@ void MSFitsIDI::init(const String& dataSource,
       !File(sourcePath).isReadable()) {
     os << LogIO::SEVERE << "FITS-IDI data source is not readable"
        << LogIO::EXCEPTION;
-  };
+  }
 
   itsDataSource = sourcePath.absoluteName();
   itsDeviceType = deviceType;
@@ -244,17 +244,17 @@ void MSFitsIDI::init(const String& dataSource,
 
   if (itsMSExists && !File(msPath).isWritable()) {
     os << LogIO::SEVERE << "Output MS is not writable" << LogIO::EXCEPTION;
-  };
+  }
 
   if (!itsMSExists && !File(msPath).canCreate()) {
     os << LogIO::SEVERE << "Output MS cannot be created" << LogIO::EXCEPTION;
-  };
+  }
   itsMSOut = msOut;
   itsOverWrite = overWrite;
 
   // Set remaining default parameters
   itsAllFilesSelected = True;
-};
+}
 
 //----------------------------------------------------------------------------
 
@@ -271,7 +271,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   FitsInput infits(itsDataSource.chars(), itsDeviceType);
   if (infits.err() != FitsIO::OK) {
     os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
-  };
+  }
 
   // Regular expression for trailing blanks
   Regex trailing(" *$");
@@ -309,17 +309,17 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 	  subTableNr++;
 	  subTableName.resize(subTableNr+1, True);
 	  subTableName(subTableNr) = hduName;
-	};
+	}
 
 	// Process the FITS-IDI input
 	bintab.readFitsFile(tableName);
 	if (infits.err() != FitsIO::OK) {
 	  os << LogIO::SEVERE << "Error reading FITS input" 
 	     << LogIO::EXCEPTION;
-	};
-      };
-    };
-  }; // end while
+	}
+      }
+    }
+  } // end while
 
   // Move the subtables in the proper place and add the subtable
   // references to the main table description.
@@ -372,7 +372,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   }
   //tmpDir.remove();
   //commentwas here
-};
+}
   
 //----------------------------------------------------------------------------
 
@@ -381,7 +381,7 @@ void MSFitsIDI::createOutputMS()
 // Create a new, empty output MS
 //
   LogIO os(LogOrigin("MSFitsIDI", "createOutputMS()", WHERE));
-};
+}
 
 //----------------------------------------------------------------------------
 

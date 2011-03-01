@@ -123,7 +123,7 @@ public:
     functionPtr_p(other.functionPtr_p.nelements()) { 
     for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
-    };
+    }
   }
   template <class W>
     CombiParam(const CombiParam<W> &other) :
@@ -131,7 +131,7 @@ public:
     functionPtr_p(other.nFunctions()) { 
     for (uInt i=0; i<nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
-    };
+    }
   }
   template <class W>
     CombiParam(const CombiParam<W> &other, Bool) :
@@ -139,7 +139,7 @@ public:
     functionPtr_p(other.nFunctions()) { 
     for (uInt i=0; i<nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
-    };
+    }
   }
   // </group>
   // Make this object a (deep) copy of other.
@@ -152,7 +152,7 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("combi");
-    return x; };
+    return x; }
 
   // Add a function.  All functions must have the same <src>ndim()</src>
   // as the first one.  Returns the (zero relative) number (<src>i</src>)
@@ -163,20 +163,20 @@ public:
 
   // Return the total number of functions.  The number is equal to the
   // number of functions that have been added.  
-  uInt nFunctions() const { return nparameters(); };
+  uInt nFunctions() const { return nparameters(); }
 
   // Return a reference to a specific Function in the combination.
   // <group>
   const Function<T> &function(uInt which) const {
     DebugAssert(nFunctions() > which, AipsError);
-    return *(functionPtr_p[which]); };
+    return *(functionPtr_p[which]); }
   const Function<T> &function(uInt which) {
     DebugAssert(nFunctions() > which, AipsError);
-    return *(functionPtr_p[which]); };
+    return *(functionPtr_p[which]); }
   // </group>
 
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; };
+  virtual uInt ndim() const { return ndim_p; }
 
 protected:
   //# Data

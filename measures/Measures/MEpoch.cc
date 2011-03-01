@@ -85,7 +85,7 @@ void MEpoch::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MEpoch *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MEpoch::showMe()));
-  };
+  }
 }
 
 MEpoch::Types MEpoch::castType(uInt tp) {
@@ -173,7 +173,7 @@ const String* MEpoch::allTypes(Int &nall, Int &nextra,
 
 void MEpoch::checkTypes() const {
   MEpoch::checkMyTypes();
-};
+}
 
 void MEpoch::checkMyTypes() {
   static Bool first(True);
@@ -188,12 +188,12 @@ void MEpoch::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MEpoch::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
@@ -214,9 +214,9 @@ Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
   else {
     mr = MEpoch::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MEpoch::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MEpoch *>(0))) return False;
@@ -231,15 +231,15 @@ Bool MEpoch::setRefString(const String &in) {
   if (x.before(2) == "r_" || x.before(2) == "R_") {
     raze = True;
     x = x.from(2);
-  };
+  }
   if (MEpoch::getType(tp, x)) {
     if (raze) {
       ref.setType(tp | MEpoch::RAZE);
     } else {
       ref.setType(tp);
-    };
+    }
     return True;
-  };
+  }
   ref.setType(MEpoch::DEFAULT);
   return False;
 }

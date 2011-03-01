@@ -57,7 +57,7 @@ namespace {
     // Axis number
     uInt N;
   };
-};
+}
 
 // <summary> Axis independent base for the ArrayAccessor classes </summary>
 // <use visibility=local>

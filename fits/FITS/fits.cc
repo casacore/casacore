@@ -2576,7 +2576,7 @@ Bool FitsFPUtil::isFP(const void *) {return False;}
 
 void FitsFPUtil::setNaN(double &val)
 {
-    char *cptr = (char *)(&val);
+    unsigned char *cptr = (unsigned char *)(&val);
     for (unsigned int i=0; i<sizeof(double); i++) {
 	cptr[i] = 0xff;
     }
@@ -2584,7 +2584,7 @@ void FitsFPUtil::setNaN(double &val)
 
 void FitsFPUtil::setNaN(float &val)
 {
-    char *cptr = (char *)(&val);
+    unsigned char *cptr = (unsigned char *)(&val);
     for (unsigned int i=0; i<sizeof(float); i++) {
 	cptr[i] = 0xff;
     }

@@ -93,7 +93,7 @@ public:
   MSSpwIndex(const MSSpectralWindow& msSpw);
 
   // Null destructor
-  virtual ~MSSpwIndex() {};
+  virtual ~MSSpwIndex() {}
 
   // Look up FIELD_ID's for a given field name, or set of field names
   Vector<Int> matchName(const String& name);

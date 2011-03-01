@@ -93,21 +93,21 @@ public:
   
   //# Constructors
   // Constructs a zero'th order polynomial, with a coeficcient of 0.0.
-  Polynomial() : PolynomialParam<T>() {};
+  Polynomial() : PolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit Polynomial(uInt order) : PolynomialParam<T>(order) {};
+  explicit Polynomial(uInt order) : PolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
-  Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {};
+  Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {}
   template <class W>
-  Polynomial(const Polynomial<W> &other) : PolynomialParam<T>(other) {};
+  Polynomial(const Polynomial<W> &other) : PolynomialParam<T>(other) {}
   Polynomial<T> &operator=(const Polynomial<T> &other) {
-    PolynomialParam<T>::operator=(other); return *this; };
+    PolynomialParam<T>::operator=(other); return *this; }
   // </group>
   
   // Destructor
-  virtual ~Polynomial() {};
+  virtual ~Polynomial() {}
   
   //# Operators    
   // Evaluate the polynomial at <src>x</src>.
@@ -121,11 +121,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new Polynomial<T>(*this); };
+  virtual Function<T> *clone() const { return new Polynomial<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new Polynomial<typename FunctionTraits<T>::DiffType>(*this); };
+    return new Polynomial<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new Polynomial<typename FunctionTraits<T>::BaseType>(*this); };
+    return new Polynomial<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -153,27 +153,27 @@ public:
   //# Constructors
   // Constructs one dimensional Polynomials.
   // <group>
-  Polynomial_PS() : PolynomialParam<AutoDiff<T> >() {};
+  Polynomial_PS() : PolynomialParam<AutoDiff<T> >() {}
   explicit Polynomial_PS(uInt order) :
-    PolynomialParam<AutoDiff<T> >(order) {};
+    PolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   Polynomial_PS(const Polynomial_PS<AutoDiff<T> > &other) :
-    PolynomialParam<AutoDiff<T> >(other) {};
+    PolynomialParam<AutoDiff<T> >(other) {}
   template <class W>
   Polynomial_PS(const Polynomial_PS<W> &other) :
-    PolynomialParam<AutoDiff<T> >(other) {};
+    PolynomialParam<AutoDiff<T> >(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Polynomial_PS<AutoDiff<T> > &
     operator=(const Polynomial_PS<AutoDiff<T> > &other) {
-    PolynomialParam<AutoDiff<T> >::operator=(other); return *this; };
+    PolynomialParam<AutoDiff<T> >::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Polynomial_PS() {};
+  virtual ~Polynomial_PS() {}
 
   //# Operators    
   // Evaluate the polynomial and its derivatives at <src>x</src> <em>wrt</em>
@@ -187,15 +187,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new Polynomial<AutoDiff<T> >(*this); };
+    return new Polynomial<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new Polynomial<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new Polynomial<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

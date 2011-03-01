@@ -144,24 +144,24 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("sinusoid1d");
-    return x; };
+    return x; }
 
   // Get or set the amplitude of the Sinusoid
   // <group>
-  T amplitude() const { return param_p[AMPLITUDE]; };
-  void setAmplitude(const T &amplitude) { param_p[AMPLITUDE] = amplitude; };
+  T amplitude() const { return param_p[AMPLITUDE]; }
+  void setAmplitude(const T &amplitude) { param_p[AMPLITUDE] = amplitude; }
   // </group>
 
   // Get or set the x0 of the Sinusoid, the location of a peak.
   // <group>
-  T x0() const { return param_p[X0]; };
-  void setX0(const T &x0) { param_p[X0] = x0; };
+  T x0() const { return param_p[X0]; }
+  void setX0(const T &x0) { param_p[X0] = x0; }
   // </group>
 
   // Get or set the period of the Sinusoid in full cycles.
   // <group>
-  T period() const { return param_p[PERIOD]; };
-  void setPeriod(const T &period) { param_p[PERIOD] = period; };
+  T period() const { return param_p[PERIOD]; }
+  void setPeriod(const T &period) { param_p[PERIOD] = period; }
   // </group>
 
   //# Make members of parent classes known.

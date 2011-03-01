@@ -116,12 +116,12 @@ public:
   virtual ~UnaryParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 1; };
+  virtual uInt ndim() const { return 1; }
 
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("unary");
-    return x; };
+    return x; }
 
   //# Make members of parent classes known.
 protected:

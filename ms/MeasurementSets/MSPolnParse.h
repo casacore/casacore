@@ -92,7 +92,7 @@ class MSPolnParse : public MSParse
 public:
   // Default constructor
   MSPolnParse ();
-  //  ~MSPolnParse() {cleanup();};
+  //  ~MSPolnParse() {cleanup();}
 
   // Associate the ms and the shorthand.
   MSPolnParse (const MeasurementSet* ms);
@@ -102,8 +102,8 @@ public:
   // Get table expression node object.
   const TableExprNode node();
   //  static MSPolnParse* thisMSSParser;
-  void reset() {polMap_p.clear(); ddIDList_p.resize(0);};
-  void cleanup() {/*if (node_p) delete node_p;node_p=0x0;*/};
+  void reset() {polMap_p.clear(); ddIDList_p.resize(0);}
+  void cleanup() {/*if (node_p) delete node_p;node_p=0x0;*/}
   Int theParser(const String& command); 
 		// Vector<Int>& selectedDDIDs, 
 		// Matrix<Int>& selectedSpwPolnMap);

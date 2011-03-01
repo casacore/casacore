@@ -118,7 +118,7 @@ public:
   FunctionWrapper<T> &operator=(const FunctionWrapper<T> &other);
 
   // Destructor
-  virtual ~FunctionWrapper() {};
+  virtual ~FunctionWrapper() {}
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -133,7 +133,7 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<T> *clone() const {
-    return new FunctionWrapper<T>(*this); };
+    return new FunctionWrapper<T>(*this); }
   // </group>
 
 protected:

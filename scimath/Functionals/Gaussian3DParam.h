@@ -200,10 +200,10 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("gaussian3d");
-  return x; };
+  return x; }
 
   // Return dimensionality
-  virtual uInt ndim() const {return 3;};
+  virtual uInt ndim() const {return 3;}
 
   // Get or set the peak height of the Gaussian
   // <group>

@@ -186,7 +186,7 @@ public:
     // </group>
   
     // Destructor
-    virtual ~MarshallableChebyshev() {};
+    virtual ~MarshallableChebyshev() {}
   
     // store the state of this Function into a Record
     virtual void store(Record& gr) const;
@@ -195,7 +195,7 @@ public:
     // deleting the pointer. 
     virtual Function<T> *clone() const { 
 	return new MarshallableChebyshev<T>(*this); 
-    };
+    }
 };
 
 

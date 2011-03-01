@@ -96,7 +96,7 @@ MCEarthMagnetic::MCEarthMagnetic() :
 		      MCEarthMagnetic::FromTo_p[0],
 		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
 		      MCEarthMagnetic::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -124,7 +124,7 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc,
       mc.addMethod(MCEarthMagnetic::R_MODEL);
       initConvert(MCEarthMagnetic::R_MODEL, mc);
       iin = MEarthMagnetic::ITRF;
-    };
+    }
     if (oplan) iout = MEarthMagnetic::ITRF;
     Int tmp;
     while (iin != iout) {
@@ -132,8 +132,8 @@ void MCEarthMagnetic::getConvert(MConvertBase &mc,
       iin = ToRef_p[tmp][1];
       mc.addMethod(tmp);
       initConvert(tmp, mc);
-    };
-  };
+    }
+  }
 }
 
 void MCEarthMagnetic::clearConvert() {
@@ -477,7 +477,7 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 	MEarthMagnetic::Ref::frameEpoch(inref, outref).
 	  getTDB(tdbTime);
 	EFIELD = new EarthField(modID, tdbTime);
-      };
+      }
       MEarthMagnetic::Ref::framePosition(outref, inref).
 	getITRF(*MVPOS1);
       in = EFIELD->operator()(*MVPOS1);
@@ -490,8 +490,8 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     default:
       break;
       
-    };	// switch
-  };	// for
+    }	// switch
+  }	// for
 }
 
 String MCEarthMagnetic::showState() {
@@ -501,7 +501,7 @@ String MCEarthMagnetic::showState() {
 		      MCEarthMagnetic::FromTo_p[0],
 		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
 		      MCEarthMagnetic::ToRef_p);
-  };
+  }
   return MCBase::showState(MCEarthMagnetic::stateMade_p,
 			   MCEarthMagnetic::FromTo_p[0],
 			   MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,

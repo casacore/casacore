@@ -108,7 +108,7 @@ void MDirection::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MDirection *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDirection::showMe()));
-  };
+  }
 }
 
 MDirection::Types MDirection::castType(uInt tp) {
@@ -118,7 +118,7 @@ MDirection::Types MDirection::castType(uInt tp) {
   } else {
     AlwaysAssert((tp & ~MDirection::EXTRA) < 
 		 (MDirection::N_Planets - MDirection::MERCURY), AipsError);
-  };
+  }
   return static_cast<MDirection::Types>(tp);
 }
 
@@ -260,7 +260,7 @@ const String* MDirection::allTypes(Int &nall, Int &nextra,
 
 void MDirection::checkTypes() const {
   MDirection::checkMyTypes();
-};
+}
 
 void MDirection::checkMyTypes() {
   static Bool first(True);
@@ -275,16 +275,16 @@ void MDirection::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MDirection::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
 		   tp == i, AipsError);
-    };
+    }
     for (Int i=MERCURY; i<N_Planets; i++) {
       AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MDirection::getType(MDirection::Types &tp, const String &in) {
@@ -305,9 +305,9 @@ Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
   else {
     mr = MDirection::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 
@@ -350,7 +350,7 @@ Bool MDirection::setRefString(const String &in) {
   if (MDirection::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MDirection::DEFAULT);
   return False;
 }

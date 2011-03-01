@@ -100,7 +100,7 @@ public:
 //   {
 //     if (node_p) delete node_p;node_p=0x0;
 //     if (otherTens_p) delete otherTens_p;otherTens_p=0x0;
-//   };
+//   }
 
   const TableExprNode *selectTime(const MEpoch& time,
 				  bool daytime = false);
@@ -111,7 +111,7 @@ public:
   const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
 				       const MEpoch& upboundTime,
 				       bool daytime = false);
-  Matrix<Double> selectedTimes() {return timeList;};
+  Matrix<Double> selectedTimes() {return timeList;}
   const TableExprNode *addCondition(TableExprNode& condition);
 
   /*
@@ -131,18 +131,18 @@ public:
   // Get table expression node object.
   static const TableExprNode* node();
 
-  Int year0() {return defaultYear;};
-  Int month0() {return defaultMonth;};
-  Int day0() {return defaultDay;};
-  Int hour0() {return defaultHour;};
-  Int minute0() {return defaultMinute;};
-  Int second0() {return defaultSeconds;};
-  Int fractionalsec0() {return defaultFractionalSec;};
-  Double defaultInteg() {return defaultExposure;};
+  Int year0() {return defaultYear;}
+  Int month0() {return defaultMonth;}
+  Int day0() {return defaultDay;}
+  Int hour0() {return defaultHour;}
+  Int minute0() {return defaultMinute;}
+  Int second0() {return defaultSeconds;}
+  Int fractionalsec0() {return defaultFractionalSec;}
+  Double defaultInteg() {return defaultExposure;}
 
   static void validate(const TimeFields& tf);
-  static void reset(){timeList.resize(2,0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static void reset(){timeList.resize(2,0);}
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
   static TableExprNode* node_p;
   //private:

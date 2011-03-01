@@ -237,7 +237,7 @@ public:
 
 // // The following are needed for Image<RigidVector>
 
-//   static IPosition shape() {return IPosition(1,n);};
+//   static IPosition shape() {return IPosition(1,n);}
 
 //   static void* newCopyInfo (const TableRecord& record,
 // 			    const IPosition& sourceElementShape);

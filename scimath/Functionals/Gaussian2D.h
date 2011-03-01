@@ -188,29 +188,29 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  Gaussian2D() : Gaussian2DParam<T>() {};
+  Gaussian2D() : Gaussian2DParam<T>() {}
   Gaussian2D(const T &height, const Vector<T> &center, 
 	       const Vector<T> &width, const T &pa) :
-    Gaussian2DParam<T>(height, center, width, pa) {};
+    Gaussian2DParam<T>(height, center, width, pa) {}
   Gaussian2D(const T &height, const T &xCenter, const T &yCenter,
 	       const T &majorAxis, const T &axialRatio, const T &pa) :
     Gaussian2DParam<T>(height, xCenter, yCenter, majorAxis,
-		       axialRatio, pa) {};
+		       axialRatio, pa) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  Gaussian2D(const Gaussian2D<T> &other) : Gaussian2DParam<T>(other) {};
+  Gaussian2D(const Gaussian2D<T> &other) : Gaussian2DParam<T>(other) {}
   template <class W>
-    Gaussian2D(const Gaussian2D<W> &other) : Gaussian2DParam<T>(other) {};
+    Gaussian2D(const Gaussian2D<W> &other) : Gaussian2DParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Gaussian2D<T> &operator=(const Gaussian2D<T> &other) {
-    Gaussian2DParam<T>::operator=(other); return *this; };
+    Gaussian2DParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Gaussian2D() {};
+  virtual ~Gaussian2D() {}
 
   //# Operators  
   // Evaluate the Gaussian at <src>x</src>.
@@ -222,11 +222,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const { return new Gaussian2D<T>(*this); };
+  virtual Function<T> *clone() const { return new Gaussian2D<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new Gaussian2D<typename FunctionTraits<T>::DiffType>(*this); };
+    return new Gaussian2D<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new Gaussian2D<typename FunctionTraits<T>::BaseType>(*this); };
+    return new Gaussian2D<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -263,35 +263,35 @@ public:
   //# Constructors
   // Constructs two dimensional Gaussians.
   // <group>
-  Gaussian2D_PS() : Gaussian2DParam<AutoDiff<T> >() {};
+  Gaussian2D_PS() : Gaussian2DParam<AutoDiff<T> >() {}
   Gaussian2D_PS(const AutoDiff<T> &height,
 		  const Vector<AutoDiff<T> > &center, 
 		  const Vector<AutoDiff<T> > &width,
 		  const AutoDiff<T> &pa) :
-    Gaussian2DParam<AutoDiff<T> >(height, center, width, pa) {};
+    Gaussian2DParam<AutoDiff<T> >(height, center, width, pa) {}
   Gaussian2D_PS(const AutoDiff<T> &height, const AutoDiff<T> &xCenter,
 		  const AutoDiff<T> &yCenter, const AutoDiff<T> &majorAxis,
 		  const AutoDiff<T> &axialRatio, const AutoDiff<T> &pa) :
     Gaussian2DParam<AutoDiff<T> >(height, xCenter, yCenter, majorAxis,
-		       axialRatio, pa) {};
+		       axialRatio, pa) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   Gaussian2D_PS(const Gaussian2D_PS &other) :
-    Gaussian2DParam<AutoDiff<T> >(other) {};
+    Gaussian2DParam<AutoDiff<T> >(other) {}
   template <class W>
   Gaussian2D_PS(const Gaussian2D_PS<W> &other) :
-    Gaussian2DParam<AutoDiff<T> >(other) {};
+    Gaussian2DParam<AutoDiff<T> >(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Gaussian2D_PS<AutoDiff<T> > &
     operator=(const Gaussian2D_PS<AutoDiff<T> > &other) {
-    Gaussian2DParam<AutoDiff<T> >::operator=(other); return *this; };
+    Gaussian2DParam<AutoDiff<T> >::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Gaussian2D_PS() {};
+  virtual ~Gaussian2D_PS() {}
 
   //# Operators    
   // Evaluate the Gaussian and its derivatives at <src>x</src>.
@@ -304,15 +304,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new Gaussian2D<AutoDiff<T> >(*this); };
+    return new Gaussian2D<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new Gaussian2D<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new Gaussian2D<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

@@ -47,7 +47,7 @@ public:
   // Constructor
   FrameRep() :
     epval(0), posval(0), dirval(0), radval(0), comval(0),
-    mymcf(0), cnt(1) {;};
+    mymcf(0), cnt(1) {}
   // Destructor
   ~FrameRep() {
     delete epval;
@@ -118,7 +118,7 @@ MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
     if (other.rep) other.rep->cnt++;
     if (rep && rep->cnt && --rep->cnt == 0) delete rep;
     rep = other.rep;
-  };
+  }
   return *this;
 }
 
@@ -178,7 +178,7 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
     rep->mymcf->resetEpoch();
   } else {
     errorReset(String("Epoch"));
-  };
+  }
 }
 
 void MeasFrame::resetEpoch(const Measure &val) {
@@ -191,7 +191,7 @@ void MeasFrame::resetEpoch(const Measure &val) {
     makeEpoch();
   } else {
     errorReset(String("Epoch"));
-  };
+  }
 }
 
 void MeasFrame::resetPosition(const Vector<Double> &val) {
@@ -208,7 +208,7 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
     rep->mymcf->resetPosition();
   } else {
     errorReset(String("Position"));
-  };
+  }
 }
 
 void MeasFrame::resetPosition(const Measure &val) {
@@ -221,7 +221,7 @@ void MeasFrame::resetPosition(const Measure &val) {
     makePosition();
   } else {
     errorReset(String("Position"));
-  };
+  }
 }
 
 void MeasFrame::resetDirection(const Vector<Double> &val) {
@@ -238,7 +238,7 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
     rep->mymcf->resetDirection();
   } else {
     errorReset(String("Direction"));
-  };
+  }
 }
 
 void MeasFrame::resetDirection(const Measure &val) {
@@ -251,7 +251,7 @@ void MeasFrame::resetDirection(const Measure &val) {
     makeDirection();
   } else {
     errorReset(String("Direction"));
-  };
+  }
 }
 
 void MeasFrame::resetRadialVelocity(const Vector<Double> &val) {
@@ -268,7 +268,7 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
     rep->mymcf->resetRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
-  };
+  }
 }
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
@@ -281,7 +281,7 @@ void MeasFrame::resetRadialVelocity(const Measure &val) {
     makeRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
-  };
+  }
 }
 
 void MeasFrame::resetComet(const MeasComet &val) {
@@ -289,7 +289,7 @@ void MeasFrame::resetComet(const MeasComet &val) {
     fill(&val);
   } else {
     errorReset(String("Comet"));
-  };
+  }
 }
 
 const Measure* MeasFrame::epoch() const{
@@ -465,7 +465,7 @@ void MeasFrame::create() {
     lock(locker);
     rep->mymcf = new MCFrame(*this);
     unlock(locker);
-  };
+  }
 }
 
 void MeasFrame::fill(const Measure *in) {
@@ -498,8 +498,8 @@ void MeasFrame::fill(const Measure *in) {
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
 		      in->tellMe()));
-    };
-  };
+    }
+  }
 }
 
 void MeasFrame::fill(const MeasComet *in) {
@@ -509,14 +509,14 @@ void MeasFrame::fill(const MeasComet *in) {
       rep->comval = in->clone();
       if (!rep->comval->ok()) {
 	delete rep->comval; rep->comval = 0;
-      };
-    };
+      }
+    }
     if (rep->comval) {
       makeComet();
     } else {
       throw(AipsError("Unknown or illegal MeasComet given for MeasFrame"));
-    };
-  };
+    }
+  }
 }
 
 void MeasFrame::makeEpoch() {
@@ -551,7 +551,7 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
     if (mf.getTDB(tmp) && mf.getUT1(tmp1) && mf.getTT(tmp2)) 
       os << " (TDB = " << tmp << ", UT1 = " << tmp1 << ", TT = " << tmp2 <<
 	")";
-  };
+  }
   if (mf.rep && mf.rep->posval) {
     if (mf.rep && mf.rep->epval) os << endl << "       ";
     os << *(mf.rep->posval);
@@ -559,8 +559,8 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
       os << endl << "        (Longitude = " << tmp;
       mf.getLat(tmp);
       os << " Latitude = " << tmp << ")";
-    };
-  };
+    }
+  }
   if (mf.rep && mf.rep->dirval) {
     if (mf.rep && (mf.rep->epval || mf.rep->posval)) 
       os << endl << "       ";
@@ -569,29 +569,29 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
     if (mf.getJ2000(tmp)) {
       os << endl << "        (J2000 = " << 
 	tmp.getAngle("deg") << ")";
-    };
-  };
+    }
+  }
   if (mf.rep && mf.rep->radval) {
     if (mf.rep && (mf.rep->epval || mf.rep->posval ||
 		   mf.rep->dirval)) {
       os << endl << "       ";
-    };
+    }
     os << *(mf.rep->radval);
     if (mf.getLSR(tmp)) {
       tmp /= 1000.;
       os << endl << "        (LSR velocity = " << 
 	Quantity(tmp,"km/s") << ")";
-    };
-  };
+    }
+  }
   if (mf.rep && mf.rep->comval) {
     if (mf.rep && (mf.rep->epval || mf.rep->posval ||
 		   mf.rep->dirval || mf.rep->radval)) {
       os << endl << "       ";
-    };
+    }
     os << mf.rep->comval->getName() << " comet between MJD " <<
       mf.rep->comval->getStart() << " and " <<
       mf.rep->comval->getEnd();
-  };
+  }
   return os;
 }
 

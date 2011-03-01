@@ -122,28 +122,28 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  Sinusoid1D() : Sinusoid1DParam<T>() {};
+  Sinusoid1D() : Sinusoid1DParam<T>() {}
   explicit Sinusoid1D(const T &amplitude) :
-    Sinusoid1DParam<T>(amplitude) {};
+    Sinusoid1DParam<T>(amplitude) {}
   Sinusoid1D(const T &amplitude, const T &period) :
-    Sinusoid1DParam<T>(amplitude, period) {};
+    Sinusoid1DParam<T>(amplitude, period) {}
   Sinusoid1D(const T &amplitude, const T &period, const T &x0) :
-    Sinusoid1DParam<T>(amplitude, period, x0) {};
+    Sinusoid1DParam<T>(amplitude, period, x0) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  Sinusoid1D(const Sinusoid1D &other) : Sinusoid1DParam<T>(other) {};
+  Sinusoid1D(const Sinusoid1D &other) : Sinusoid1DParam<T>(other) {}
   template <class W>
-    Sinusoid1D(const Sinusoid1D<W> &other) : Sinusoid1DParam<T>(other) {};
+    Sinusoid1D(const Sinusoid1D<W> &other) : Sinusoid1DParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Sinusoid1D<T> &operator=(const Sinusoid1D<T> &other) {
-    Sinusoid1DParam<T>::operator=(other); return *this; };
+    Sinusoid1DParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Sinusoid1D() {};
+  virtual ~Sinusoid1D() {}
 
   //# Operators    
   // Evaluate the Sinusoid at <src>x</src>.
@@ -156,11 +156,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new Sinusoid1D<T>(*this); };
+  virtual Function<T> *clone() const { return new Sinusoid1D<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new Sinusoid1D<typename FunctionTraits<T>::DiffType>(*this); };
+    return new Sinusoid1D<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new Sinusoid1D<typename FunctionTraits<T>::BaseType>(*this); };
+    return new Sinusoid1D<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -190,32 +190,32 @@ public:
   //# Constructors
   // Constructs one dimensional Sinusoids.
   // <group>
-  Sinusoid1D_PS() : Sinusoid1DParam<AutoDiff<T> >() {};
+  Sinusoid1D_PS() : Sinusoid1DParam<AutoDiff<T> >() {}
   explicit Sinusoid1D_PS(const AutoDiff<T> &amplitude) :
-    Sinusoid1DParam<AutoDiff<T> >(amplitude) {};
+    Sinusoid1DParam<AutoDiff<T> >(amplitude) {}
   Sinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period) :
-    Sinusoid1DParam<AutoDiff<T> >(amplitude, period) {};
+    Sinusoid1DParam<AutoDiff<T> >(amplitude, period) {}
   Sinusoid1D_PS(const AutoDiff<T> &amplitude, const AutoDiff<T> &period,
 		  const AutoDiff<T> &x0) :
-    Sinusoid1DParam<AutoDiff<T> >(amplitude, period, x0) {};
+    Sinusoid1DParam<AutoDiff<T> >(amplitude, period, x0) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   Sinusoid1D_PS(const Sinusoid1D_PS &other) :
-    Sinusoid1DParam<AutoDiff<T> >(other) {};
+    Sinusoid1DParam<AutoDiff<T> >(other) {}
   template <class W>
   Sinusoid1D_PS(const Sinusoid1D_PS<W> &other) :
-    Sinusoid1DParam<AutoDiff<T> >(other) {};
+    Sinusoid1DParam<AutoDiff<T> >(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Sinusoid1D_PS<AutoDiff<T> > &
     operator=(const Sinusoid1D_PS<AutoDiff<T> > &other) {
-    Sinusoid1DParam<AutoDiff<T> >::operator=(other); return *this; };
+    Sinusoid1DParam<AutoDiff<T> >::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Sinusoid1D_PS() {};
+  virtual ~Sinusoid1D_PS() {}
     
   //# Operators    
   // Evaluate the Sinusoid at <src>x</src>.
@@ -229,15 +229,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new Sinusoid1D<AutoDiff<T> >(*this); };
+    return new Sinusoid1D<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new Sinusoid1D<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new Sinusoid1D<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
 protected:

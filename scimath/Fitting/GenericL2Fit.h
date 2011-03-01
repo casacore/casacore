@@ -188,7 +188,7 @@ template <class T, class U> class Function;
 //    	for (uInt i=1; i < nPrimes; i++) {
 //        primesTable(i) =
 //	   Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
-//      };   
+//      }   
 //	Vector<Double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
@@ -239,7 +239,7 @@ template<class T> class GenericL2Fit : public LSQaips {
   // of the function are taken as the initial guess for the non-linear fitting.
   template <class U>  
     void setFunction(const Function<U,U> &function) { resetFunction();
-    ptr_derive_p = function.cloneAD(); setFunctionEx(); };
+    ptr_derive_p = function.cloneAD(); setFunctionEx(); }
 
   // Set the possible constraint functions. The <src>addConstraint</src>
   // will add one; the <src>setConstraint</src> will [re-]set the
@@ -259,7 +259,7 @@ template<class T> class GenericL2Fit : public LSQaips {
 	ptr_derive_p->nparameters() != function.nparameters() ||
 	function.ndim() != x.nelements()) return False;
     delete constrFun_p[n]; constrFun_p[n] = 0;
-    constrFun_p[n] = function.cloneAD(); return setConstraintEx(n, x, y); };
+    constrFun_p[n] = function.cloneAD(); return setConstraintEx(n, x, y); }
   Bool setConstraint(const uInt n,
 		     const Vector<typename FunctionTraits<T>::BaseType> &x,
 		     const typename FunctionTraits<T>::BaseType y=
@@ -286,7 +286,7 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Set sigma values to be interpreted as weight (i.e. 1/sigma/sigma).
   // A value of zero or -1 will be skipped. The switch will stay in effect
   // until set False again explicitly. Default is False.
-  void asWeight(const Bool aswgt) { asweight_p = aswgt; };
+  void asWeight(const Bool aswgt) { asweight_p = aswgt; }
 
   // Set the use of SVD or not (default). When set the default collinearity
   // is set as well.
@@ -297,22 +297,22 @@ template<class T> class GenericL2Fit : public LSQaips {
   // <group>
   Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType> *fittedFunction() {
-    return ptr_derive_p; };
+    return ptr_derive_p; }
   const Function<typename FunctionTraits<T>::DiffType,
                  typename FunctionTraits<T>::DiffType>*
-    fittedFunction() const { return ptr_derive_p; };
+    fittedFunction() const { return ptr_derive_p; }
   // </group>
   // Return the number of fitted parameters
-  uInt fittedNumber() const { return aCount_ai; };
+  uInt fittedNumber() const { return aCount_ai; }
 
   // Return the number of constraints, and pointers to constraint functions.
   // A <src>0-pointer</src> will be returned if no such constraint present.
   // This pointer should never be destroyed.
   // <group>
-  uInt NConstraints() { return constrFun_p.nelements(); };
+  uInt NConstraints() { return constrFun_p.nelements(); }
   Function<typename FunctionTraits<T>::DiffType,
     typename FunctionTraits<T>::DiffType> *getConstraint(const uInt n) {
-    return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]); };
+    return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]); }
   // </group>
 
   // Return the nth constraint equation derived from SVD
@@ -386,7 +386,7 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Obtain the chi squared. It has already been calculated during the
   // fitting process.
   // <group>
-  Double chiSquare() const { return getChi(); };
+  Double chiSquare() const { return getChi(); }
   // </group>
 
   // Get the errors on the solved values
@@ -453,7 +453,7 @@ template<class T> class GenericL2Fit : public LSQaips {
   // double that number in the complex case). For SVD solutions the
   // rank could be less.
   uInt getRank() const {
-    return (solved_p ? nUnknowns()-getDeficiency() : 0); };
+    return (solved_p ? nUnknowns()-getDeficiency() : 0); }
 
  protected:
   //#Data

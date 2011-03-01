@@ -117,29 +117,29 @@ public:
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  CompoundFunction() : CompoundParam<T>() {};
+  CompoundFunction() : CompoundParam<T>() {}
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
   // <group>
   CompoundFunction(const CompoundFunction<T> &other) :
-    CompoundParam<T>(other) {};
+    CompoundParam<T>(other) {}
   CompoundFunction(const CompoundFunction<T> &other, Bool) :
-    CompoundParam<T>(other, True) {};
+    CompoundParam<T>(other, True) {}
   template <class W>
     CompoundFunction(const CompoundFunction<W> &other) :
-    CompoundParam<T>(other) {};
+    CompoundParam<T>(other) {}
   template <class W>
     CompoundFunction(const CompoundFunction<W> &other, Bool) :
-    CompoundParam<T>(other, True) {};
+    CompoundParam<T>(other, True) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction<T> &operator=(const CompoundFunction<T> &other) {
     other.fromParam_p();
-    CompoundParam<T>::operator=(other); return *this; };
+    CompoundParam<T>::operator=(other); return *this; }
   
   // Destructor
-  virtual ~CompoundFunction() {};
+  virtual ~CompoundFunction() {}
   
   //# Operators
   // Evaluate the function at <src>x</src>.
@@ -151,17 +151,17 @@ public:
   // necessary before and after the setting of <em>local</em> parameters; i.e.
   // the parameters of the individual functions.
   CompoundFunction<T> &consolidate() { fromParam_p();
-  toParam_p(); return *this; };
+    toParam_p(); return *this; }
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { fromParam_p();
-    return new CompoundFunction<T>(*this); };
+    return new CompoundFunction<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new CompoundFunction<typename FunctionTraits<T>::DiffType>(*this); };
+    return new CompoundFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
     return new CompoundFunction<typename FunctionTraits<T>::BaseType>
-      (*this, True); };
+      (*this, True); }
   // </group>
   
 private:
@@ -203,25 +203,25 @@ public CompoundParam<AutoDiff<T> >
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  CompoundFunction_PS() : CompoundParam<AutoDiff<T> >() {};
+  CompoundFunction_PS() : CompoundParam<AutoDiff<T> >() {}
   // Make this object a (deep) copy of other. If parameters have been set
   // without an intervening calculation, a <src>consolidate()</src> could
   // be necessary on <em>other</em> first.
   // <group>
   CompoundFunction_PS(const CompoundFunction_PS<AutoDiff<T> > &other) :
-    CompoundParam<AutoDiff<T> >(other) {};
+    CompoundParam<AutoDiff<T> >(other) {}
   template <class W>
     CompoundFunction_PS(const CompoundFunction_PS<W> &other) :
-    CompoundParam<AutoDiff<T> >(other) {};
+    CompoundParam<AutoDiff<T> >(other) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction_PS<AutoDiff<T> > &
     operator=(const CompoundFunction_PS<AutoDiff<T> > &other) {
     fromParam_p();
-    CompoundParam<AutoDiff<T> >::operator=(other); return *this; };
+    CompoundParam<AutoDiff<T> >::operator=(other); return *this; }
 
   // Destructor
-  virtual ~CompoundFunction_PS() {};
+  virtual ~CompoundFunction_PS() {}
 
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
@@ -239,20 +239,20 @@ public CompoundParam<AutoDiff<T> >
   // necessary before and after the setting of <em>local</em> parameters; i.e.
   // the parameters of the individual functions.
   CompoundFunction_PS<AutoDiff<T> > &consolidate() { fromParam_p();
-  toParam_p(); return *this; };
+    toParam_p(); return *this; }
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const { fromParam_p();
-    return new CompoundFunction<AutoDiff<T> >(*this); };
+    return new CompoundFunction<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new CompoundFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new CompoundFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this, True); };
+      (*this, True); }
   // </group>
 
 private:

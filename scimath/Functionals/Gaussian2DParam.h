@@ -216,7 +216,7 @@ public:
   template <class W>
     Gaussian2DParam(const Gaussian2DParam<W> &other) :
     Function<T>(other),
-    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) { majorAxis(); setPA(PA()); };
+    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) { majorAxis(); setPA(PA()); }
   // </group>
 
   // Copy assignment (deep copy)
@@ -228,17 +228,17 @@ public:
   //# Operators    
  
   // Variable dimensionality
-  virtual uInt ndim() const { return 2; };
+  virtual uInt ndim() const { return 2; }
 
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("gaussian2d");
-    return x; };
+    return x; }
 
   // Get or set the peak height of the Gaussian
   // <group>
-  T height() const { return param_p[HEIGHT]; };
-  void setHeight(const T &height) { param_p[HEIGHT] = height; };
+  T height() const { return param_p[HEIGHT]; }
+  void setHeight(const T &height) { param_p[HEIGHT] = height; }
   // </group>
 
   // Get or set the analytical integrated area underneath the Gaussian.
@@ -252,10 +252,10 @@ public:
   // <group>
   Vector<T> center() const;
   void setCenter(const Vector<T> &center);
-  T xCenter() const { return param_p[XCENTER]; };
-  void setXcenter(const T &cnter) { param_p[XCENTER] = cnter; };
-  T yCenter() const { return param_p[YCENTER]; };
-  void setYcenter(const T &cnter) { param_p[YCENTER] = cnter; };
+  T xCenter() const { return param_p[XCENTER]; }
+  void setXcenter(const T &cnter) { param_p[XCENTER] = cnter; }
+  T yCenter() const { return param_p[YCENTER]; }
+  void setYcenter(const T &cnter) { param_p[YCENTER] = cnter; }
   // </group>
 
   // Set or get the FWHM of the Gaussian.

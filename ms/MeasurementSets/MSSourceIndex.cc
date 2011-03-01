@@ -92,9 +92,9 @@ Vector<Int> MSSourceIndex::matchSourceName(const String& name)
     MaskedArray<Int> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
 				  maskArray);
     retval = maskSourceId.getCompressedArray();
-  };
+  }
   return retval;
-}; 
+} 
 
 Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
 {
@@ -110,9 +110,9 @@ Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
     MaskedArray<Int> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
 				  maskArray);
     retval = maskSourceId.getCompressedArray();
-  };
+  }
   return retval;
-}; 
+} 
 
 Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
 {
@@ -132,10 +132,10 @@ Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
       matchedSourceIds.resize(matchedSourceIds.nelements() +
 			     currentMatch.nelements(), True);
       matchedSourceIds = concatenateArray(temp, currentMatch);
-    };
-  };
+    }
+  }
   return matchedSourceIds;
-};
+}
 
 Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
                             const Block<void*>& dataPtrs,

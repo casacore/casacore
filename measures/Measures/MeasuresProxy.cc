@@ -68,7 +68,7 @@ Bool MeasuresProxy::doFrame(const MeasureHolder &in) {
       in.isMEpoch() || in.isMRadialVelocity()) {
     frame_p.set(in.asMeasure());
     return True;
-  };
+  }
   return False;
 }
 
@@ -128,7 +128,7 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
       if (x.before(2) == "r_" || x.before(2) == "R_") {
 	raze = True;
 	x = x.from(2);
-      };
+      }
       if (MEpoch::getType(tp, x)) {
 	if (raze) outRef.setType(tp | MEpoch::RAZE);
 	else outRef.setType(tp);
@@ -139,8 +139,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MEpoch::Convert mcvt(MEpoch::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -149,8 +149,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMPosition()) {
       MPosition::Ref outRef;
       MPosition::Types tp;
@@ -162,8 +162,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MPosition::Convert mcvt(MPosition::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -172,8 +172,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMDirection()) {
       MDirection::Ref outRef;
       MDirection::Types tp;
@@ -185,8 +185,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MDirection::Convert mcvt(MDirection::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -195,8 +195,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 			       (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
    } else if (in.isMFrequency()) {
       MFrequency::Ref outRef;
       MFrequency::Types tp;
@@ -208,8 +208,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MFrequency::Convert mcvt(MFrequency::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -218,8 +218,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 			       (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMDoppler()) {
       MDoppler::Ref outRef;
       MDoppler::Types tp;
@@ -231,8 +231,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MDoppler::Convert mcvt(MDoppler::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -241,8 +241,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMRadialVelocity()) {
       MRadialVelocity::Ref outRef;
       MRadialVelocity::Types tp;
@@ -254,8 +254,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MRadialVelocity::Convert
 	mcvt(MRadialVelocity::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
@@ -265,8 +265,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMBaseline()) {
       MBaseline::Ref outRef;
       MBaseline::Types tp;
@@ -278,8 +278,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MBaseline::Convert mcvt(MBaseline::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -288,8 +288,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMuvw()) {
       Muvw::Ref outRef;
       Muvw::Types tp;
@@ -301,8 +301,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       Muvw::Convert mcvt(Muvw::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
       out.makeMV(in.nelements());
@@ -311,8 +311,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
+	}
+      }
     } else if (in.isMEarthMagnetic()) {
       MEarthMagnetic::Ref outRef;
       MEarthMagnetic::Types tp;
@@ -324,8 +324,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 	else {
 	  error += "Non-conforming offset measure type\n";
 	  return False;
-	};
-      };
+	}
+      }
       MEarthMagnetic::Convert
 	mcvt(MEarthMagnetic::Convert(in.asMeasure(), outRef));
       out = MeasureHolder(mcvt());
@@ -335,17 +335,17 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
                                (*in.getMV(i))).getValue())) {
 	  error += "Cannot get extra measure value in DOmeasures::measures\n";
 	  return False;
-	};
-      };
-    };
+	}
+      }
+    }
     if (out.isEmpty()) {
       error += "No measure created; probably unknow measure type\n";
       return False;
-    };
+    }
   } catch (AipsError (x)) {
     error += "Cannot convert due to missing frame information\n";
     return False;
-  };
+  }
   return True;
 }
 
@@ -380,28 +380,28 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out,
       dot[0] = -sd*xyz[1] + cd*xyz[2];
       dot[1] = +sd*xyz[0];
       dot[2] = -cd*xyz[0];
-    };
+    }
     for (uInt i=0; i<3*in.nelements(); i+=3) {
       const MVuvw &mv = MVuvw(mcvt(dynamic_cast<const MVBaseline &>
 				   (*in.getMV(i/3))).getValue(), dir2000);
       if (!out.setMV(i/3, mv)) {
 	error += "Cannot get extra baseline value in DOmeasures::toUvw\n";
 	return False;
-      };
+      }
       for (uInt j=0; j<3; ++j) xyz[i+j] = mv.getValue()[j];
       dot[i+0] = -sd*xyz[i+1] + cd*xyz[i+2];
       dot[i+1] = +sd*xyz[i+0];
       dot[i+2] = -cd*xyz[i+0];
-    };
+    }
     for (uInt j=0; j<3*nel; ++j) {
       dot[j] *= C::pi/180/240./1.002737909350795;
-    };
+    }
 
   } catch (AipsError(x)) {
     error += "Cannot convert baseline to uvw: frame "
       "information missing";
     return False;
-  };
+  }
   return True;
 }
 
@@ -412,7 +412,7 @@ Bool MeasuresProxy::expandIt(String &error, MeasureHolder &out,
   if (!in.isMuvw()) {
     error += "Trying to expand non-baseline type\n";
     return False;
-  };
+  }
   const MVuvw &uvw2000 = in.asMuvw().getValue();
   if (in.nelements() < 2) {
     xyz.resize(3);
@@ -429,16 +429,16 @@ Bool MeasuresProxy::expandIt(String &error, MeasureHolder &out,
 	if (k == 0) {
 	  out = MeasureHolder(Muvw(mv, Muvw::J2000));
 	  out.makeMV(nel);
-	};
+	}
 	if (!out.setMV(k, mv)) {
 	  error += "Cannot expand baseline value in DOmeasures::expand\n";
 	  return False;
-	};
+	}
 	for (uInt j=0; j<3; ++j) xyz[3*k+j] = mv.getValue()[j];
 	++k;
-      };
-    };
-  };
+      }
+    }
+  }
   return True;
 }
 
@@ -639,7 +639,7 @@ Record MeasuresProxy::observatory(const String& str)
   MPosition obs;
   if (!MeasTable::Observatory(obs, str)) {
     throw(AipsError("Unknown observatory asked for."));
-  };
+  }
   MeasureHolder mh(obs);
   return mh2rec(mh);
 }
@@ -649,7 +649,7 @@ Record MeasuresProxy::source(const String& str)
   MDirection src;
   if (!MeasTable::Source(src, str)) {
     throw(AipsError("Unknown source asked for."));
-  };
+  }
   MeasureHolder mh(src);
   return mh2rec(mh);
 }
@@ -667,7 +667,7 @@ Record MeasuresProxy::source(const String& str)
 	val().asMeasure().getData()->getXRecordValue();
       returnval().resize(IPosition());
       returnval() = res;
-    };
+    }
   }
   break;
 */
@@ -701,7 +701,7 @@ Record MeasuresProxy::line(const String& str)
   MFrequency line;
   if (!MeasTable::Line(line, str)) {
     throw(AipsError("Unknown line asked for."));
-  };
+  }
   MeasureHolder mh(line);
   return mh2rec(mh);
 }
@@ -739,7 +739,7 @@ Quantum<Vector<Double> > MeasuresProxy::separation(const Record& lrec, const Rec
   if (x.getRefPtr()->getType() != y.getRefPtr()->getType()) {
 	y = MDirection::Convert(y, MDirection::castType
 				(x.getRefPtr()->getType()))();
-  };
+  }
   return \
     Quantum<Vector<Double> >(
 			     Vector<Double>(1, x.getValue().separation(y.getValue(), "deg").getValue()), "deg");
@@ -806,7 +806,7 @@ Record MeasuresProxy::expand(const Record& mhrec)
     if (runMethod) {
       if (pcomet_p) returnval() = pcomet_p->getName();
       else return error("No Comet table present\n");
-    };
+    }
   }
   break;
 
@@ -819,8 +819,8 @@ Record MeasuresProxy::expand(const Record& mhrec)
 	returnval() = pcomet_p->getTopo().getValue();
       } else {
 	return error("No Topocentric Comet table present\n");
-      };
-    };
+      }
+    }
   }
   break;
 
@@ -834,11 +834,11 @@ Record MeasuresProxy::expand(const Record& mhrec)
 	  returnval() = String("TOPO");
 	} else {
 	  returnval() = String("APP");
-	};
+	}
       } else {
 	returnval() = String("none");
-      };
-    };
+      }
+    }
   }
   break;
 */

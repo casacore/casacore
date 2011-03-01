@@ -107,7 +107,7 @@ public:
   // Return the total size of the data set.
   virtual uInt nelements() const = 0;
   // The virtual destructor does nothing
-  virtual ~SampledFunctional(){};
+  virtual ~SampledFunctional(){}
 };
 
 

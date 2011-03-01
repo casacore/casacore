@@ -41,7 +41,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // make a portable float to float sqrt for use in Array<Float>::apply
 extern "C" {
     static float floatsqrt(float val) {return sqrt(val);}
-};
+}
 
 StokesConverter::StokesConverter() {}
 

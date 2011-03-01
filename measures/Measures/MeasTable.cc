@@ -82,7 +82,7 @@ Bool MeasTable::useIAU2000() {
     iau2000_reg =
       AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
                                     False);
-  };
+  }
   return AipsrcValue<Bool>::get(MeasTable::iau2000_reg);
 }
 
@@ -91,7 +91,7 @@ Bool MeasTable::useIAU2000A() {
     iau2000a_reg =
       AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
                                     False);
-  };
+  }
   return AipsrcValue<Bool>::get(MeasTable::iau2000a_reg);
 }
 
@@ -156,10 +156,10 @@ void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
       Polynomial<Double> poly(2-j);
       for (uInt k=0; k<3-j; k++, l++) {
 	poly.setCoefficient(k,coef[i][l]);
-      };
+      }
       result[i].setCoefficient(j+1,m*poly(T) * C::arcsec);
-    };
-  };
+    }
+  }
 }
 
 void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
@@ -169,8 +169,8 @@ void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
     m = -m;
     for (uInt j=0; j<6; j++) {
       result[i].setCoefficient(j, m*coef[i][j] * C::arcsec);
-    };
-  };
+    }
+  }
 }
 
 const Polynomial<Double> &MeasTable::fundArg(uInt which) {
@@ -249,9 +249,9 @@ void MeasTable::calcFundArg(Bool &need,
       result[i] = Polynomial<Double>(3);
       for (j=0; j<4; j++) {
 	result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
-      };
-    };
-  };
+      }
+    }
+  }
 }    
 
 void MeasTable::calcFundArg00(Bool &need, 
@@ -264,9 +264,9 @@ void MeasTable::calcFundArg00(Bool &need,
       result[i] = Polynomial<Double>(4);
       for (j=0; j<5; j++) {
 	result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
-      };
-    };
-  };
+      }
+    }
+  }
 }    
 
 void MeasTable::calcPlanArg00(Bool &need, 
@@ -280,13 +280,13 @@ void MeasTable::calcPlanArg00(Bool &need,
       result[i] = Polynomial<Double>(1);
       for (uInt j=0; j<2; j++) {
 	result[i].setCoefficient(j, coeff[i-5][j]);
-      };
-    };
+      }
+    }
     result[13] = Polynomial<Double>(2);
     for (uInt j=0; j<3; j++) {
       result[13].setCoefficient(j, APA[j]);
-    };    
-  };
+    }    
+  }
 }    
 
 const Vector<Char> &MeasTable::mulArg(uInt which) {
@@ -2049,9 +2049,9 @@ void MeasTable::calcMulArg(Bool &need, Vector<Char> result[],
       result[i].resize(5);
       for (j=0; j<5; j++) {
 	result[i](j) = coeff[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 void MeasTable::calcMulPlanArg(Bool &need, Vector<Char> result[],
@@ -2063,9 +2063,9 @@ void MeasTable::calcMulPlanArg(Bool &need, Vector<Char> result[],
       result[i].resize(14);
       for (j=0; j<14; j++) {
 	result[i](j) = coeff[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
 }
 
 const Vector<Double> &MeasTable::mulSC(uInt which, Double T) {
@@ -3880,18 +3880,18 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
 				   coeffTD[i][1+2*j]*C::arcsec*1e-4);
 	poly[2*i+j].setCoefficient(1,
 				   coeffTD[i][2+2*j]*C::arcsec*1e-5);
-      };
-    };
+      }
+    }
     for (i=0; i<resrow; i++) {
       result[i].resize(4);
       for (j=0; j<2; j++) {
 	result[i](j) = coeffSC[i][j] * C::arcsec*1e-4;
-      };
+      }
       for (j=2; j<4; j++) {
 	result[i](j) = 0;
-      };
-    };
-  };
+      }
+    }
+  }
   if (check != T) {
     check = T;
     Int i; Long j;
@@ -3901,8 +3901,8 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
       result[j](1) = poly[2*i+1](T);
       result[j](2) = (poly[2*i+0].derivative())(T);
       result[j](3) = (poly[2*i+1].derivative())(T);
-    };
-  };
+    }
+  }
 }
 
 void MeasTable::calcMulSC2000(Bool &need, Double &check, Double T,
@@ -3916,22 +3916,22 @@ void MeasTable::calcMulSC2000(Bool &need, Double &check, Double T,
 	poly[2*i+j] = Polynomial<Double>(2);
 	poly[2*i+j].setCoefficient(0, coeffSC[i][0+3*j]*C::arcsec*1e-7);
 	poly[2*i+j].setCoefficient(1, coeffSC[i][1+3*j]*C::arcsec*1e-7);
-      };
+      }
       result[i].resize(6);
       for (uInt j=0; j<2; j++) result[i](j) = 0;
       result[i](2) = coeffSC[i][1]*C::arcsec*1e-7;
       result[i](3) = coeffSC[i][4]*C::arcsec*1e-7;
       result[i](4) = coeffSC[i][2]*C::arcsec*1e-7;
       result[i](5) = coeffSC[i][5]*C::arcsec*1e-7;
-    };
-  };
+    }
+  }
   if (check != T) {
     check = T;
     for (uInt i=0; i<resrow; i++) {
       result[i](0) = poly[2*i+0](T);
       result[i](1) = poly[2*i+1](T);
-    };
-  };
+    }
+  }
 }
 
 void MeasTable::calcMulSCPlan(Bool &need,
@@ -3942,8 +3942,8 @@ void MeasTable::calcMulSCPlan(Bool &need,
     for (uInt i=0; i<resrow; i++) {
       result[i].resize(4);
       for (uInt j=0; j<4; j++) result[i](j) = coeffSC[i][j]*C::arcsec*1e-7;
-    };
-  };
+    }
+  }
 }
 
 void MeasTable::calcMulSCPlan(Bool &need,
@@ -3954,8 +3954,8 @@ void MeasTable::calcMulSCPlan(Bool &need,
     for (uInt i=0; i<resrow; i++) {
       result[i].resize(2);
       for (uInt j=0; j<2; j++) result[i](j) = coeffSC[i][j];
-    };
-  };
+    }
+  }
 }
 
 Double MeasTable::dPsiEps(uInt which, Double T) {
@@ -3975,8 +3975,8 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 	  String("No requested nutation data available from IERS tables. "
 		 "\nProceeding with probably less precision.") <<
 	  LogIO::POST;
-      };
-    };
+      }
+    }
     break;
   default:
     if (!MeasIERS::get(r, MeasIERS::MEASURED, MeasIERS::dPsi,
@@ -3990,10 +3990,10 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 	  String("No requested nutation data available from IERS tables. "
 		 "\nProceeding with probably less precision.") <<
 	  LogIO::POST;
-      };
-    };
+      }
+    }
     break;
-  };
+  }
   return (r * C::arcsec);
 }
 
@@ -4010,7 +4010,7 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
     Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
 		  String("DE200"));
     fil = (MeasJPL::Files)t;
-  };
+  }
   if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
 		    MVEpoch(T))) {
     LogIO os(LogOrigin("MeasTable",
@@ -4018,7 +4018,7 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
 		       WHERE));
     os << String("Cannot find the planetary data table ") +
       tnam[fil] << LogIO::EXCEPTION;
-  };
+  }
   return res;
 }
 
@@ -4042,9 +4042,9 @@ const Double &MeasTable::Planetary(MeasTable::JPLconst what) {
 			   WHERE));
 	os << String("Cannot find the planetary data table ") +
 	  tnam[fil] << LogIO::EXCEPTION;
-      };
-    };
-  };
+      }
+    }
+  }
   return cn[what];
 }
 
@@ -4066,14 +4066,14 @@ void MeasTable::initObservatories() {
 			 String("initObservatories()"),
 			 WHERE));
       os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
-    };
+    }
     Int N = t.nrow();
     if (N<1) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initObservatories()"),
 			 WHERE));
       os << "No entries in table of Observatories" << LogIO::EXCEPTION;
-    };
+    }
     obsNams.resize(N);
     obsPos.resize(N);
     MPosition::Ref mr;
@@ -4086,12 +4086,12 @@ void MeasTable::initObservatories() {
 			   String("initObservatories()"),
 			   WHERE));
 	os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
-      };
+      }
       obsPos(i) = MPosition(MVPosition(Quantity(*(rfp[2]), "m"),
 				       Quantity(*(rfp[0]), "deg"),
 				       Quantity(*(rfp[1]), "deg")), mr);
-    };
-  };
+    }
+  }
 }
 
 const Vector<String> &MeasTable::Observatories() {
@@ -4105,7 +4105,7 @@ Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos(i);
     return True;
-  };
+  }
   return False;
 }
 
@@ -4127,14 +4127,14 @@ void MeasTable::initLines() {
 			 String("initLines()"),
 			 WHERE));
       os << "Cannot read table of spectral Lines" << LogIO::EXCEPTION;
-    };
+    }
     Int N = t.nrow();
     if (N<1) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initLines()"),
 			 WHERE));
       os << "No entries in table of spectral Lines" << LogIO::EXCEPTION;
-    };
+    }
     lineNams.resize(N);
     linePos.resize(N);
     MFrequency::Ref mr(MFrequency::REST);
@@ -4144,8 +4144,8 @@ void MeasTable::initLines() {
       lineNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
       linePos(i) = MFrequency(MVFrequency(Quantity(*(rfp[0]), "GHz")), mr);
       if (lineNams(i) == "HI") linePos(i) = MFrequency(QC::HI, mr);
-    };
-  };
+    }
+  }
 }
 
 const Vector<String> &MeasTable::Lines() {
@@ -4159,7 +4159,7 @@ Bool MeasTable::Line(MFrequency &obs, const String &nam) {
   if (i < MeasTable::lineNams.nelements()) {
     obs = MeasTable::linePos(i);
     return True;
-  };
+  }
   return False;
 }
 
@@ -4181,14 +4181,14 @@ void MeasTable::initSources() {
 			 String("initSources()"),
 			 WHERE));
       os << "Cannot read table of Sources" << LogIO::EXCEPTION;
-    };
+    }
     Int N = t.nrow();
     if (N<1) {
       LogIO os(LogOrigin("MeasTable",
 			 String("initSources()"),
 			 WHERE));
       os << "No entries in table of Sources" << LogIO::EXCEPTION;
-    };
+    }
     srcNams.resize(N);
     srcPos.resize(N);
     MDirection::Ref mr;
@@ -4201,11 +4201,11 @@ void MeasTable::initSources() {
 			   String("initSources()"),
 			   WHERE));
 	os << "Illegal direction type in Sources" << LogIO::EXCEPTION;
-      };
+      }
       srcPos(i) = MDirection(MVDirection(Quantity(*(rfp[0]), "deg"),
 					 Quantity(*(rfp[1]), "deg")), mr);
-    };
-  };
+    }
+  }
 }
 
 const Vector<String> &MeasTable::Sources() {
@@ -4219,7 +4219,7 @@ Bool MeasTable::Source(MDirection &obs, const String &nam) {
   if (i < MeasTable::srcNams.nelements()) {
     obs = MeasTable::srcPos(i);
     return True;
-  };
+  }
   return False;
 }
 
@@ -4241,7 +4241,7 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
 			 String("IGRF(Double)"),
 			 WHERE));
       os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
-    };
+    }
     Int N = t.nrow();
     if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
 	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
@@ -4249,7 +4249,7 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
 			 String("IGRF(Double)"),
 			 WHERE));
       os << "Incorrect entries in table of IGRF models" << LogIO::EXCEPTION;
-    };
+    }
     Double m0 = kws.asDouble("MJD0");
     dtimeIGRF= kws.asDouble("dMJD");
     Int indx = Int((tm-m0)/dtimeIGRF);
@@ -4265,11 +4265,11 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
     accd.attach(t, "dCOEF");
     coefIGRF = acc(indx);
     dIGRF = accd(indx);
-  };
+  }
   if (abs(tm-timeIGRF) > 5) {
     resIGRF = coefIGRF + dIGRF * (5*(tm-time0IGRF)/dtimeIGRF);
     timeIGRF = tm;
-  };
+  }
   return resIGRF;
 }
 
@@ -4300,8 +4300,8 @@ const Polynomial<Double> &MeasTable::aberArg(uInt which) {
       for (j=0; j<2; j++) {
 	polyArray[i].setCoefficient(j,
 				    ABERFUND[i][j]);
-      };
-    };
+      }
+    }
   }
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
@@ -4332,9 +4332,9 @@ const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
       for (j=0; j<4; j++) {
 	polyArray[i].setCoefficient(j,
 				    ABERFUND[i][j]*C::arcsec);
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
@@ -4431,9 +4431,9 @@ const Vector<Char> &MeasTable::mulAberArg(uInt which) {
       argArray[i].resize(6);
       for (j=0; j<6; j++) {
 	argArray[i](j) = ABERARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 80, AipsError);
   return argArray[which];
 }
@@ -4583,9 +4583,9 @@ const Vector<Char> &MeasTable::mulAber1950Arg(uInt which) {
       argArray[i].resize(12);
       for (j=0; j<12; j++) {
 	argArray[i](j) = ABERARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 132, AipsError);
   return argArray[which];
 }
@@ -4619,9 +4619,9 @@ const Vector<Char> &MeasTable::mulAberSunArg(uInt which) {
       argArray[i].resize(7);
       for (j=0; j<7; j++) {
 	argArray[i](j) = ABERSUNARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
@@ -4655,9 +4655,9 @@ const Vector<Char> &MeasTable::mulAberEarthArg(uInt which) {
       argArray[i].resize(5);
       for (j=0; j<5; j++) {
 	argArray[i](j) = ABEREARTHARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
@@ -4772,19 +4772,19 @@ const Vector<Double> &MeasTable::mulAber(uInt which, Double T) {
 	for (k=0; k<3; k++) {
 	  polyArray[6*i+j].setCoefficient(k,
 					  MABERTD[i][k+3*j]*factor);
-	};
-      };
-    };
+	}
+      }
+    }
     for (i=0; i<80; i++) {
       argArray[i].resize(12);
       for (j=0; j<6; j++) {
 	argArray[i](j) = MABER[i][j] * factor;
-      };
+      }
       for (j=6; j<12; j++) {
 	argArray[i](j) = 0;
-      };
-    };
-  };
+      }
+    }
+  }
   if (checkT != T) {
     checkT = T;
     Int i, j;
@@ -4792,9 +4792,9 @@ const Vector<Double> &MeasTable::mulAber(uInt which, Double T) {
       for (j=0; j<6; j++) {
 	argArray[i](j) = polyArray[6*i+j](T);
 	argArray[i](j+6) = (polyArray[6*i+j].derivative())(T);
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 80, AipsError);
   return argArray[which];
 }
@@ -4961,21 +4961,21 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
       argArray[i].resize(12);
       for (j=0; j<6; j++) {
 	argArray[i](j) = MABER[i][j] * factor;
-      };
+      }
       for (j=6; j<12; j++) {
 	argArray[i](j) = 0;
-      };
-    };
+      }
+    }
     for (i=0; i<2; i++) {
       argArray[130+i].resize(12);
       for (j=0; j<6; j++) {
 	argArray[130+i](j) = ABERSPEC[i][j] * factor;
-      };
+      }
       for (j=6; j<12; j++) {
 	argArray[130+i](j) = 0;
-      };
-    };
-  };
+      }
+    }
+  }
   if (checkT != T) {
     checkT = T;
     Int i, j, k;
@@ -4984,23 +4984,23 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
       for (j=0; j<6; j++) {
 	argArray[k](j) = MABER[k][j] * factor * T;
 	argArray[k](j+6) = MABER[k][j] * factor;
-      };
-    };
+      }
+    }
     for (i=0; i<2; i++) {	// get fundamental argument coefficients
       k = ABERT2T[i];
       for (j=0; j<6; j++) {
 	argArray[k](j) *= T;
 	argArray[k](j+6) *= 2*T;
-      };
-    };
+      }
+    }
     for (i=0; i<1; i++) {	// get fundamental argument coefficients
       k = ABERT3T[i];
       for (j=0; j<6; j++) {
 	argArray[k](j) *= T;
 	argArray[k](j+6) *= 1.5*T;
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 132, AipsError);
   return argArray[which];
 }
@@ -5037,9 +5037,9 @@ const Vector<Double> &MeasTable::mulSunAber(uInt which) {
       argArray[i].resize(6);
       for (j=0; j<6; j++) {
 	argArray[i](j) = MSUNABER[i][j] * factor;
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
@@ -5076,9 +5076,9 @@ const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
       argArray[i].resize(3);
       for (j=0; j<3; j++) {
 	argArray[i](j) = MEARTHABER[i][j] * factor;
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
@@ -5095,14 +5095,14 @@ const Vector<Double> &MeasTable::AberETerm(uInt which) {
     Int i;
     for (i=0; i<2; i++) {
       termArray[i].resize(3);
-    }; 
+    } 
     for (i=0; i<3; i++) {
       termArray[0](i) = TERM[0][i] * 1e-6;
-    };
+    }
     for (i=0; i<3; i++) {
       termArray[1](i) = TERM[1][i] * 1e-3;
-    };
-  };
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return termArray[which];
 }
@@ -5130,9 +5130,9 @@ const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
@@ -5152,9 +5152,9 @@ const Vector<Double> &MeasTable::velocityLSR(uInt which) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
@@ -5174,9 +5174,9 @@ const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
@@ -5196,9 +5196,9 @@ const Vector<Double> &MeasTable::velocityLGROUP(uInt which) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LGROUP[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
@@ -5218,9 +5218,9 @@ const Vector<Double> &MeasTable::velocityCMB(uInt which) {
       argArray[i].resize(3);
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * CMB[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
@@ -5251,9 +5251,9 @@ const Polynomial<Double> &MeasTable::posArg(uInt which) {
       for (j=0; j<2; j++) {
 	polyArray[i].setCoefficient(j,
 				    POSFUND[i][j]*C::degree);
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
@@ -5461,9 +5461,9 @@ const Vector<Char> &MeasTable::mulPosEarthXYArg(uInt which) {
       argArray[i].resize(12);
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSXYARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 189, AipsError);
   return argArray[which];
 }
@@ -5514,9 +5514,9 @@ const Vector<Char> &MeasTable::mulPosEarthZArg(uInt which) {
       argArray[i].resize(12);
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSZARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 32, AipsError);
   return argArray[which];
 }
@@ -5633,9 +5633,9 @@ const Vector<Char> &MeasTable::mulPosSunXYArg(uInt which) {
       argArray[i].resize(12);
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSXYARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 98, AipsError);
   return argArray[which];
 }
@@ -5683,9 +5683,9 @@ const Vector<Char> &MeasTable::mulPosSunZArg(uInt which) {
       argArray[i].resize(12);
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSZARG[i][j];
-      };
-    };
-  };
+      }
+    }
+  }
   DebugAssert(which < 29, AipsError);
   return argArray[which];
 }
@@ -5901,9 +5901,9 @@ const Vector<Double> &MeasTable::mulPosEarthXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor;
       for (Int j=4; j<8; j++) {
 	argArray[i](j) = 0;
-      };
-    };
-  };
+      }
+    }
+  }
   if (checkT != T) {
     checkT = T;
     Int i;
@@ -5912,14 +5912,14 @@ const Vector<Double> &MeasTable::mulPosEarthXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor * T;
       argArray[i](5) = MPOSXY[i][1] * factor;
       argArray[i](7) = MPOSXY[i][3] * factor;
-    };
+    }
     for (i=186; i<189; i++) { // get fundamental argument coefficients
       argArray[i](1) *= T;
       argArray[i](3) *= T;
       argArray[i](5) *= 2*T;
       argArray[i](7) *= 2*T;
-    };
-  };
+    }
+  }
   DebugAssert(which < 189, AipsError);
   return argArray[which];
 }
@@ -5977,20 +5977,20 @@ const Vector<Double> &MeasTable::mulPosEarthZ(uInt which, Double T) {
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
       argArray[i](3) = 0;
-    };
-  };
+    }
+  }
   if (checkT != T) {
     checkT = T;
     Int i;
     for (i=28; i<32; i++) { // get fundamental argument coefficients
       argArray[i](1) = MPOSZ[i][1] * factor * T;
       argArray[i](3) = MPOSZ[i][1] * factor;
-    };
+    }
     for (i=31; i<32; i++) { // get fundamental argument coefficients
       argArray[i](1) *= T;
       argArray[i](3) *= 2*T;
-    };
-  };
+    }
+  }
   DebugAssert(which < 189, AipsError);
   return argArray[which];
 }
@@ -6115,9 +6115,9 @@ const Vector<Double> &MeasTable::mulPosSunXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor;
       for (Int j=4; j<8; j++) {
 	argArray[i](j) = 0;
-      };
-    };
-  };
+      }
+    }
+  }
   if (checkT != T) {
     checkT = T;
     for (Int i=84; i<98; i++) { // get fundamental argument coefficients
@@ -6125,8 +6125,8 @@ const Vector<Double> &MeasTable::mulPosSunXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor * T;
       argArray[i](5) = MPOSXY[i][1] * factor;
       argArray[i](7) = MPOSXY[i][3] * factor;
-    };
-  };
+    }
+  }
   DebugAssert(which < 98, AipsError);
   return argArray[which];
 }
@@ -6180,16 +6180,16 @@ const Vector<Double> &MeasTable::mulPosSunZ(uInt which, Double T) {
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
       argArray[i](3) = 0;
-    };
-  };
+    }
+  }
   if (checkT != T) {
     checkT = T;
     Int i;
     for (i=26; i<29; i++) { // get fundamental argument coefficients
       argArray[i](1) = MPOSZ[i][1] * factor * T;
       argArray[i](3) = MPOSZ[i][1] * factor;
-    };
-  };
+    }
+  }
   DebugAssert(which < 29, AipsError);
   return argArray[which];
 }
@@ -6201,7 +6201,7 @@ const RotMatrix &MeasTable::posToRect() {
     needInit = False;
     Euler ang(+84381.4091 * C::arcsec, 1, -0.0930 * C::arcsec, 3);
     rot = RotMatrix(ang);
-  };
+  }
   return rot;
 }
 
@@ -6212,7 +6212,7 @@ const RotMatrix &MeasTable::rectToPos() {
     needInit = False;
     rot = MeasTable::posToRect();
     rot.transpose();
-  };
+  }
   return rot;
 }
 
@@ -6223,7 +6223,7 @@ const RotMatrix &MeasTable::galToSupergal() {
     needInit = False;
     Euler ang( -90*C::degree, 3, -83.68*C::degree, 2, -47.37*C::degree, 3);
     rot = RotMatrix(ang);
-  };
+  }
   return rot;
 }
 
@@ -6234,7 +6234,7 @@ const RotMatrix &MeasTable::ICRSToJ2000() {
     needInit = False;;
     rot = MeasTable::frameBias00();
     rot.transpose();
-  };
+  }
   return rot;
 }
 
@@ -6267,11 +6267,11 @@ const Euler &MeasTable::polarMotion(Double ut) {
 	  String("No requested polar motion data available from IERS tables. "
 		 "\nProceeding with probably less precision.") <<
 	  LogIO::POST;
-      };
-    };
+      }
+    }
     res(0) *= -C::arcsec;
     res(1) *= -C::arcsec;
-  };
+  }
   return res;
 }
 
@@ -6294,14 +6294,14 @@ Double MeasTable::dUTC(Double utc) {
 			 String("dUTC(Double)"),
 			 WHERE));
       os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
-    };
+    }
     N = t.nrow();
     if (N < 35) {
       LogIO os(LogOrigin("MeasTable",
 			 String("dUTC(Double)"),
 			 WHERE));
       os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
-    };
+    }
     if (Time().modifiedJulianDay() - dt > 180) {
       LogIO os(LogOrigin("MeasTable",
 			 String("dUTC(Double)"),
@@ -6310,15 +6310,15 @@ Double MeasTable::dUTC(Double utc) {
 	String("Leap second table TAI_UTC seems out-of-date. \n") +
 	"Until table is updated (see aips++ manager) times and coordinates\n" +
 	"derived from UTC could be wrong by 1s or more." << LogIO::POST;
-    };
+    }
     LEAP = (Double (*)[4])(new Double[4*N]);
     for (Int i=0; i < N; i++) {
       row.get(i);
       for (Int j=0; j < 4; j++) {
 	LEAP[i][j] = *(rfp[j]);
-      };
-    };
-  }; 
+      }
+    }
+  } 
   Double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
@@ -6328,11 +6328,11 @@ Double MeasTable::dUTC(Double utc) {
 	val = LEAP[i][1];
 	if (LEAP[i][3] != 0) {
 	  val += (utc - LEAP[i][2])*LEAP[i][3];
-	};
+	}
 	break;
-      };
-    };
-  };
+      }
+    }
+  }
   return val;
 }
 
@@ -6362,7 +6362,7 @@ Double MeasTable::GMST0(Double ut1) {
     stPoly.setCoefficient(1, 8640184.812866);
     stPoly.setCoefficient(2, 0.093104);	
     stPoly.setCoefficient(3, -6.2e-6);
-  };
+  }
   return (stPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
@@ -6376,7 +6376,7 @@ Double MeasTable::GMST00(Double ut1, Double tt) {
     stPoly.setCoefficient(2, + 1.39667721*C::arcsec);	
     stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
     stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
-  };
+  }
   return (stPoly((tt-MeasData::MJD2000)/MeasData::JDCEN) +
 	  MeasTable::ERA00(ut1));
 }
@@ -6388,7 +6388,7 @@ Double MeasTable::ERA00(Double ut1) {
     needInit = False;
     stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);	
     stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
-  };
+  }
   ut1 -= MeasData::MJD2000;
   return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
 }
@@ -6406,7 +6406,7 @@ Double MeasTable::GMUT0(Double gmst1) {
     stPoly.setCoefficient(1, -235.90946916710752);
     stPoly.setCoefficient(2, -0.00000252822553597972);
     stPoly.setCoefficient(3, 0.0000000001679);
-  };
+  }
   return (stPoly((gmst1-MeasData::MJD2000-6713.)/MeasData::JDCEN));
 }
 
@@ -6439,9 +6439,9 @@ Double MeasTable::dUT1(Double utc) {
 	  String("No requested dUT1 data available from IERS tables. "
 		 "\nProceeding with probably less precision.") <<
 	  LogIO::POST;
-      };
-    };
-  };
+      }
+    }
+  }
   return res;
 }
 

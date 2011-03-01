@@ -93,7 +93,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Associate the ms and the shorthand.
     MSUvDistParse (const MeasurementSet* ms);
     
-    //    ~MSUvDistParse() {if (node_p) delete node_p;node_p=0x0;};
+    //    ~MSUvDistParse() {if (node_p) delete node_p;node_p=0x0;}
     
     const TableExprNode *selectUVRange(const Double& startUV,
                                        const Double& endUV, 
@@ -101,9 +101,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 				       Bool doSlow=False);
     
     Vector<Bool> selectedUnits() {return meterUnits_p;}
-    Matrix<Double> selectedUV() {return selectedUV_p;};
-    static void reset(){selectedUV_p.resize(2,0);meterUnits_p.resize(0);};
-    static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+    Matrix<Double> selectedUV() {return selectedUV_p;}
+    static void reset(){selectedUV_p.resize(2,0);meterUnits_p.resize(0);}
+    static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
     // Get table expression node object.
     static const TableExprNode* node();

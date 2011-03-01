@@ -68,12 +68,12 @@ String removeDir (const String& msg)
 Float const_arg_func(const Float& val)
 {
   return 3.0*val;
-};
+}
 
 Float func(Float val)
 {
   return 2.0*val*val;
-};
+}
 
 Table makeScrTable(const String& name)
 {

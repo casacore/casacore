@@ -52,7 +52,7 @@ MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
   nrows_p = msObservationCols_p.nrow();
   observationIds_p.resize(nrows_p);
   indgen(observationIds_p);
-};
+}
 
 //-------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode)
 			 projectCode);
   MaskedArray<Int> maskObsIds(observationIds_p, maskArray);
   return maskObsIds.getCompressedArray();
-};
+}
 
 //-------------------------------------------------------------------------
 

@@ -79,7 +79,7 @@ public:
 
 protected:
 
-  Int nint(Double val) {return Int(std::floor(val+0.5));};
+  Int nint(Double val) {return Int(std::floor(val+0.5));}
 
   virtual void fillCorrectionVectors();
 

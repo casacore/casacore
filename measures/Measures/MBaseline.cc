@@ -64,7 +64,7 @@ MBaseline &MBaseline::operator=(const MBaseline &other) {
     MeasBase<MVBaseline, MBaseline::Ref> &This = *this;
     const MeasBase<MVBaseline, MBaseline::Ref> &Other = other;
     This = Other;
-  };
+  }
   return *this;
 }
 
@@ -92,7 +92,7 @@ void MBaseline::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MBaseline *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MBaseline::showMe()));
-  };
+  }
 }
 
 MBaseline::Types MBaseline::castType(uInt tp) {
@@ -219,19 +219,19 @@ void MBaseline::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MBaseline::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(i)) &&
 		   tp == i, AipsError);
-    };
+    }
     // Check if baseline types are identical to direction types
     AlwaysAssert(static_cast<Int>(MBaseline::N_Types) == 
 		 static_cast<Int>(MDirection::N_Types), AipsError);
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MBaseline::showType(i) == MDirection::showType(i),
 		   AipsError);
-    };
-  };
+    }
+  }
 }
 
 MBaseline::Types MBaseline::fromDirType(const MDirection::Types in) {
@@ -262,9 +262,9 @@ Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
   else {
     mr = MBaseline::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MBaseline::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MBaseline *>(0))) return False;
@@ -277,7 +277,7 @@ Bool MBaseline::setRefString(const String &in) {
   if (MBaseline::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MBaseline::DEFAULT);
   return False;
 }

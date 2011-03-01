@@ -257,7 +257,7 @@ public:
     //   which is the coefficient order (i.e. 0 refers to the constant offset).
     //     If which is out of range, zero is returned.
     T getCoefficient(const uInt which) const {
-	return ((which < nparameters()) ? param_p[which] : T(0)); };
+	return ((which < nparameters()) ? param_p[which] : T(0)); }
   
     // return the number of coeefficients currently loaded.  This does not
     // guarantee that the coefficients are non-zero
@@ -272,7 +272,7 @@ public:
     //      of this function outside the set range.
     void setInterval(T xmin, T xmax) {
 	if (xmin < xmax) { minx_p = xmin; maxx_p = xmax;
-	} else { minx_p = xmax; maxx_p = xmin; }; };   
+	} else { minx_p = xmax; maxx_p = xmin; } }   
 
     // return the minimum value for the currently Chebyshev interval.
     // See setInterval() for additional details.
@@ -304,7 +304,7 @@ public:
 
     // return the order of this polynomial.  This returns the value of 
     // nCoefficients()-1;
-    uInt order() const { return param_p.nelements() - 1; };
+    uInt order() const { return param_p.nelements() - 1; }
 
     // transform a set of Chebyshev polynomial coefficients into a set 
     // representing the series' derivative.  coeffs should be assuming
@@ -329,7 +329,7 @@ public:
 
     // Give name of function
     virtual const String &name() const { static String x("chebyshev");
-    return x; };
+    return x; }
 
 protected:
 

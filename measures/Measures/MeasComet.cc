@@ -84,7 +84,7 @@ MeasComet::MeasComet(const MeasComet &other) :
 MeasComet &MeasComet::operator=(const MeasComet &other) {
   if (this != &other) {
     initMeas(other.tp_p);
-  };
+  }
   return *this;
 }
 
@@ -93,15 +93,15 @@ MeasComet::~MeasComet() {}
 //# Member functions
 const String &MeasComet::getName() const {
   return name_p;
-};
+}
 
 const MVPosition &MeasComet::getTopo() const {
   return topo_p;
-};
+}
 
 MDirection::Types MeasComet::getType() const {
   return mtype_p;
-};
+}
 
 Double MeasComet::getStart() const {
   return mjd0_p + dmjd_p;
@@ -113,7 +113,7 @@ Double MeasComet::getEnd() const {
 
 Int MeasComet::nelements() const {
   return nrow_p;
-};
+}
 
 Bool MeasComet::get(MVPosition &returnValue, Double date) const {
   returnValue = MVPosition();
@@ -176,7 +176,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 			    tplc,
       			    String("ephemerides"), tabin)) {
       return False;
-    };
+    }
     if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
 	!kws.isDefined("dMJD") || kws.asDouble("dMJD") <= 0 ||
 	!kws.isDefined("NAME")) ok = False;
@@ -194,16 +194,16 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 	ok = False;
       } else {
 	mjdl_p = mjd0_p + nrow_p*dmjd_p;
-      };
-    };
+      }
+    }
     if (!ok) {
       LogIO os(LogOrigin("MeasComet",
 			 String("initMeas(String)"),
 			 WHERE));
       os << String("Corrupted Comet table ") + tp_p << LogIO::EXCEPTION;
-    };
+    }
     measured_p = True;
-  };
+  }
   return (measured_p);
 }
 
@@ -219,7 +219,7 @@ void MeasComet::closeMeas() {
     msgDone_p = False;
     for (uInt i=0; i<2; ++i)  lnr_p[i] = -1;
     tab_p = Table();
-  };
+  }
 }
 
 Bool MeasComet::fillMeas(Double utf) const {
@@ -235,16 +235,16 @@ Bool MeasComet::fillMeas(Double utf) const {
       row_p.get(ut);
       for (Int i=0; i<MeasComet::N_Columns; i++) {
 	ldat_p[0][i] = *(rfp_p[i]);
-      };
+      }
       lnr_p[0] = ut;
-    };
+    }
     // Read second line
     row_p.get(ut+1);
     for (Int i=0; i<MeasComet::N_Columns; i++) {
       ldat_p[1][i] = *(rfp_p[i]);
-    };
+    }
     lnr_p[1] = ut+1;
-  };
+  }
   return True;
 }
 

@@ -109,34 +109,34 @@ void MCFrame::resetPosition() {
     delete posITRFp; posITRFp = 0;
     delete posLongGeop; posLongGeop = 0;
     delete posGeop; posGeop = 0;
-  };
+  }
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
-  };
+  }
 }
 
 void MCFrame::resetDirection() {
   if (j2000Longp) {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
-  };
+  }
   if (b1950Longp) {
     delete b1950Longp; b1950Longp = 0;
     delete dirB1950p; dirB1950p = 0;
-  };
+  }
   if (appLongp) {
     delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
-  };
+  }
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
 }
 
 void MCFrame::resetRadialVelocity() {
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
 }
 
 void MCFrame::resetComet() {
@@ -149,10 +149,10 @@ Bool MCFrame::getTDB(Double &tdb) {
       *epTDBp = static_cast<MEpoch::Convert *>(epConvTDB)->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
-    };
+    }
     tdb = *epTDBp;
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -164,10 +164,10 @@ Bool MCFrame::getUT1(Double &tdb) {
       *epUT1p = static_cast<MEpoch::Convert *>(epConvUT1)->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
-    };
+    }
     tdb = *epUT1p;
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -179,10 +179,10 @@ Bool MCFrame::getTT(Double &tdb) {
       *epTTp = static_cast<MEpoch::Convert *>(epConvTT)->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
-    };
+    }
     tdb = *epTTp;
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -196,10 +196,10 @@ Bool MCFrame::getLong(Double &tdb) {
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
       *posLongp = posITRFp->get();
-    };
+    }
     tdb = MVAngle(posLongp->operator()(1))(-0.5);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -213,10 +213,10 @@ Bool MCFrame::getLat(Double &tdb) {
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
       *posLongp = posITRFp->get();
-    };
+    }
     tdb = posLongp->operator()(2);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -230,10 +230,10 @@ Bool MCFrame::getLatGeo(Double &tdb) {
         (*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
         getValue();
       *posLongGeop = posGeop->get();
-    };
+    }
     tdb = posLongGeop->operator()(2);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -247,10 +247,10 @@ Bool MCFrame::getITRF(MVPosition &tdb) {
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
       *posLongp = posITRFp->get();
-    };
+    }
     tdb = *posITRFp;
     return True;
-  };
+  }
   tdb = MVPosition(0.0);
   return False;
 }
@@ -264,10 +264,10 @@ Bool MCFrame::getRadius(Double &tdb) {
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
       *posLongp = posITRFp->get();
-    };
+    }
     tdb = posLongp->operator()(0);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -279,10 +279,10 @@ Bool MCFrame::getLAST(Double &tdb) {
       *epLASTp = static_cast<MEpoch::Convert *>(epConvLAST)->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
-    };
+    }
     tdb = fmod(*epLASTp, 1.0);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -302,10 +302,10 @@ Bool MCFrame::getJ2000Long(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
-    };
+    }
     tdb = j2000Longp->operator()(0);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -319,10 +319,10 @@ Bool MCFrame::getJ2000Lat(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
-    };
+    }
     tdb = j2000Longp->operator()(1);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -336,10 +336,10 @@ Bool MCFrame::getJ2000(MVDirection &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *j2000Longp = dirJ2000p->get();
-    };
+    }
     tdb = *dirJ2000p;
     return True;
-  };
+  }
   tdb = MVDirection(0.0);
   return False;
 }
@@ -353,10 +353,10 @@ Bool MCFrame::getB1950Long(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
-    };
+    }
     tdb = b1950Longp->operator()(0);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -370,10 +370,10 @@ Bool MCFrame::getB1950Lat(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
-    };
+    }
     tdb = b1950Longp->operator()(1);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -387,10 +387,10 @@ Bool MCFrame::getB1950(MVDirection &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *b1950Longp = dirB1950p->get();
-    };
+    }
     tdb = *dirB1950p;
     return True;
-  };
+  }
   tdb = MVDirection(0.0);
   return False;
 }
@@ -404,10 +404,10 @@ Bool MCFrame::getAppLong(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *appLongp = dirAppp->get();
-    };
+    }
     tdb = appLongp->operator()(0);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -421,10 +421,10 @@ Bool MCFrame::getAppLat(Double &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *appLongp = dirAppp->get();
-    };
+    }
     tdb = appLongp->operator()(1);
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -438,10 +438,10 @@ Bool MCFrame::getApp(MVDirection &tdb) {
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
       *appLongp = dirAppp->get();
-    };
+    }
     tdb = *dirAppp;
     return True;
-  };
+  }
   tdb = MVDirection(0.0);
   return False;
 }
@@ -454,10 +454,10 @@ Bool MCFrame::getLSR(Double &tdb) {
 	(*dynamic_cast<const MVRadialVelocity *const>(myf.radialVelocity()->
 						      getData())).
 	getValue();
-    };
+    }
     tdb = *radLSRp;
     return True;
-  };
+  }
   tdb = 0.0;
   return False;
 }
@@ -466,7 +466,7 @@ Bool MCFrame::getCometType(uInt &tdb) {
   if (myf.comet()) {
     tdb = static_cast<uInt>(myf.comet()->getType());
     return True;
-  };
+  }
   tdb = 0;
   return False;
 }
@@ -475,7 +475,7 @@ Bool MCFrame::getComet(MVPosition &tdb) {
   if (myf.comet()) {
     Double x(0);
     if (getTDB(x) && myf.comet()->get(tdb, x)) return True;
-  };
+  }
   tdb = MVPosition(0.0);
   return False;
 }
@@ -493,31 +493,31 @@ void MCFrame::makeEpoch() {
   uInt locker = 0;			// locking assurance
   if (epTDBp) {
     delete epTDBp; epTDBp = 0;
-  };
+  }
   if (epUT1p) {
     delete epUT1p; epUT1p = 0;
-  };
+  }
   if (epTTp) {
     delete epTTp; epTTp = 0;
-  };
+  }
   myf.lock(locker);
   if (epConvLAST) {
     delete static_cast<MEpoch::Convert *>(epConvLAST);
     epConvLAST = 0;
-  };
+  }
   epConvLAST = new MEpoch::Convert(*(myf.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, this->myf));
   myf.unlock(locker);
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
-  };
+  }
   if (appLongp) {
     delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
-  };
+  }
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
 }
 
 void MCFrame::makePosition() {
@@ -529,13 +529,13 @@ void MCFrame::makePosition() {
   if (posLongp) {
     delete posLongp; posLongp = 0;
     delete posITRFp; posITRFp = 0;
-  };
+  }
   if (epLASTp) {
     delete epLASTp; epLASTp = 0;
-  };
+  }
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
   static const MPosition::Ref REFGEO
     = MPosition::Ref(MPosition::WGS84);
   delete static_cast<MPosition::Convert *>(posConvLongGeo);
@@ -544,7 +544,7 @@ void MCFrame::makePosition() {
   if (posLongGeop) {
     delete posLongGeop; posLongGeop = 0;
     delete posGeop; posGeop = 0;
-  };
+  }
 }
 
 void MCFrame::makeDirection() {
@@ -554,7 +554,7 @@ void MCFrame::makeDirection() {
   if (dirConvJ2000) {
     delete static_cast<MDirection::Convert *>(dirConvJ2000);
     dirConvJ2000 = 0;
-  };
+  }
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::J2000,
 							 this->myf));
@@ -565,7 +565,7 @@ void MCFrame::makeDirection() {
   if (dirConvB1950) {
     delete static_cast<MDirection::Convert *>(dirConvB1950);
     dirConvB1950 = 0;
-  };
+  }
   dirConvB1950 = new MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::B1950,
 							 this->myf));
@@ -574,7 +574,7 @@ void MCFrame::makeDirection() {
   if (dirConvApp) {
     delete static_cast<MDirection::Convert *>(dirConvApp);
     dirConvApp = 0;
-  };
+  }
   dirConvApp = new MDirection::Convert(*(myf.direction()),
 				       MDirection::Ref(MDirection::APP,
 						       this->myf));
@@ -582,18 +582,18 @@ void MCFrame::makeDirection() {
   if (j2000Longp) {
     delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
-  };
+  }
   if (b1950Longp) {
     delete b1950Longp; b1950Longp = 0;
     delete dirB1950p; dirB1950p = 0;
-  };
+  }
   if (appLongp) {
     delete appLongp; appLongp = 0;
     delete dirAppp; dirAppp = 0;
-  };
+  }
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
 }
 
 void MCFrame::makeRadialVelocity() {
@@ -604,7 +604,7 @@ void MCFrame::makeRadialVelocity() {
 					    REFLSR);
   if (radLSRp) {
     delete radLSRp; radLSRp = 0;
-  };
+  }
 }
 
 void MCFrame::makeComet() {;}

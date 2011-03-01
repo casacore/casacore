@@ -161,12 +161,12 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("gaussian1d");
-    return x; };
+    return x; }
 
   // Get or set the peak height of the Gaussian
   // <group>
-  T height() const { return param_p[HEIGHT]; };
-  void setHeight(const T &height) { param_p[HEIGHT] = height; };
+  T height() const { return param_p[HEIGHT]; }
+  void setHeight(const T &height) { param_p[HEIGHT] = height; }
   // </group>
 
   // Get or set the analytical integrated area underneath the Gaussian.
@@ -178,14 +178,14 @@ public:
 
   // Get or set the center ordinate of the Gaussian
   // <group>
-  T center() const { return param_p[CENTER]; };
-  void setCenter(const T &cnter) { param_p[CENTER] = cnter; };
+  T center() const { return param_p[CENTER]; }
+  void setCenter(const T &cnter) { param_p[CENTER] = cnter; }
   // </group>
 
   // Get or set the FWHM of the Gaussian.
   // <group>
-  T width() const { return param_p[WIDTH]; };
-  void setWidth(const T &width) { param_p[WIDTH] = width; };
+  T width() const { return param_p[WIDTH]; }
+  void setWidth(const T &width) { param_p[WIDTH] = width; }
   // </group>
 
 protected:

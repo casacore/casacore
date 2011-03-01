@@ -108,7 +108,7 @@ template <class T> class AutoDiff;
 //	template <class T> f {
 //	public:
 //	  T operator()(const T &x, const T &a, const T &b) {
-//	  	return a*b*x; };
+//	  	return a*b*x; }
 // 	};
 //      // Instantiate the following versions:
 //	template class f<Double>;
@@ -317,14 +317,14 @@ template <class T> class AutoDiff {
 
   // Returns the pointer to the structure of value and derivatives.
   // <group>
-  AutoDiffRep<T> *theRep() { return rep_p; };
-  const AutoDiffRep<T> *theRep() const { return rep_p; };
+  AutoDiffRep<T> *theRep() { return rep_p; }
+  const AutoDiffRep<T> *theRep() const { return rep_p; }
   // </group>
 
   // Returns the value of the function
   // <group>
-  T &value() { return rep_p->val_p; };
-  const T &value() const { return rep_p->val_p; };
+  T &value() { return rep_p->val_p; }
+  const T &value() const { return rep_p->val_p; }
   // </group>
   
   // Returns a vector of the derivatives of an AutoDiff
@@ -336,22 +336,22 @@ template <class T> class AutoDiff {
   // Returns a specific derivative. The second set does not check for
   // a valid which; the first set does through Vector addressing.
   // <group>
-  T &derivative(uInt which) { return rep_p->grad_p(which); };
-  const T &derivative(uInt which) const { return rep_p->grad_p(which); };
-  T &deriv(uInt which) { return rep_p->grad_p[which]; };
-  const T &deriv(uInt which) const { return rep_p->grad_p[which]; };
+  T &derivative(uInt which) { return rep_p->grad_p(which); }
+  const T &derivative(uInt which) const { return rep_p->grad_p(which); }
+  T &deriv(uInt which) { return rep_p->grad_p[which]; }
+  const T &deriv(uInt which) const { return rep_p->grad_p[which]; }
   // </group>
   
   // Return total number of derivatives
-  uInt nDerivatives() const { return rep_p->nd_p; };
+  uInt nDerivatives() const { return rep_p->nd_p; }
   
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return rep_p->nd_p == 0; };
+  Bool isConstant() const { return rep_p->nd_p == 0; }
 
   // Indicate that we are going to use a temporary value for the last time
   // (e.g. at the of a function returning by value). This way superfluous
   // copying can be circumvented.
-  const AutoDiff<T> &ref() { rep_p->nocopy_p = True; return *this; };
+  const AutoDiff<T> &ref() { rep_p->nocopy_p = True; return *this; }
   
  private:
   //# Data
@@ -365,7 +365,7 @@ template <class T> class AutoDiff {
   void release() {
     if (!rep_p->nocopy_p) pool.release(rep_p, rep_p->nd_p);
     else rep_p->nocopy_p = False;
-  };
+  }
 
 };
 

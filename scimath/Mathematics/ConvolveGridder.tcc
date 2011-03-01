@@ -106,7 +106,7 @@ extern "C" {
    void ddgrd3d(Int*, Int*, Int *, Int*, Int*, Int *, const Double*,
 		 Double*, Int*, Int*, Double*, Double*, Double*,
 		 Double*);
-};
+}
 
 // Double versions
 

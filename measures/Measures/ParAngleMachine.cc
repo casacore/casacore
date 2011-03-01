@@ -73,7 +73,7 @@ ParAngleMachine &ParAngleMachine::operator=(const ParAngleMachine &other) {
     if (other.frame_p) frame_p = new MeasFrame(*other.frame_p);
     defintvl_p = other.defintvl_p;
     init();
-  };
+  }
   return *this;
 }
 
@@ -171,7 +171,7 @@ void ParAngleMachine::set(const MDirection &in) {
   indir_p = new MDirection(in);
   if (!in.getRef().getFrame().empty()) {
     delete frame_p; frame_p = 0;
-  };
+  }
   init();
 }
 
@@ -192,7 +192,7 @@ void ParAngleMachine::init() {
   if (indir_p) {
     if (!frame_p) set(indir_p->getRef().getFrame());
     if (indir_p->isModel()) defintvl_p = 0;
-  };
+  }
 }
 
 void ParAngleMachine::initConv() const {
@@ -200,7 +200,7 @@ void ParAngleMachine::initConv() const {
   if (!frame_p->epoch() || !frame_p->position()) {
     throw(AipsError("A ParAngle Machine has no frame, or a frame without\n"
 		    "an Epoch(to get time type) or Position"));
-  };
+  }
   lastep_p = -1.1e20;
   if (indir_p->isModel()) defintvl_p = 0;
   intvl_p = defintvl_p;
@@ -227,9 +227,9 @@ Double ParAngleMachine::calcAngle(const Double ep) const {
       longoff_p = mvdir_p.getLong() - zenith_p.getLong();
       slat1_p = mvdir_p.getValue()[2];
       clat1_p = sqrt(fabs(1.0 - square(slat1_p)));
-    };
+    }
     return -mvdir_p.positionAngle(zenith_p);
-  };
+  }
 }
 
 } //# NAMESPACE CASA - END

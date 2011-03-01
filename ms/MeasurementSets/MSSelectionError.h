@@ -62,7 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Construct with given message.
     void changeMessage(String& message);
     void addMessage(String& message);
-    void reset() {message="";};
+    void reset() {message="";}
     MSSelectionError (const String& message,Category c=GENERAL);
     ~MSSelectionError () throw();
     Bool hasMessage;

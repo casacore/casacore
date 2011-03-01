@@ -28,6 +28,8 @@
 #include <casa/aips.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
+#include <casa/fstream.h>
+#include <casa/vector.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayUtil.h>
@@ -37,7 +39,6 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
 #include <casa/Exceptions/Error.h>
-#include <casa/fstream.h>
 #include <casa/Logging/LogFilter.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
@@ -616,12 +617,12 @@ ImageAnalysis::imagefromascii(const String& outfile, const String& infile,
     Vector<Float> a(n, 0.0);
     int idx = 0;
     string line;
-    string line2[2*nx];
+    vector<string> line2(2*nx);
     uInt iline = 0;
     uInt nl = 1;
     while (nl > 0) {
       getline(inFile, line, '\n');
-      nl = split(line, line2, 2*nx, sep);
+      nl = split(line, &(line2[0]), 2*nx, sep);
       if (nl > 0) {
 	if (nl != nx) {
 	  *itsLog << LogIO::SEVERE

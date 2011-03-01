@@ -161,7 +161,7 @@ extern "C" {
       void zpotri(const char *uplo, const int *n, DComplex *a, 
 		  const int *lda, int *info);
 
-};
+}
 
 //# Overloaded versions of the above to make templating work more easily
 inline void getrf(const int *m, const int *n, float *a, const int *lda,

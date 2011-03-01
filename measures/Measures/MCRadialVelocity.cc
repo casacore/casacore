@@ -64,7 +64,7 @@ MCRadialVelocity::MCRadialVelocity() :
     MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
 		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 		      MCRadialVelocity::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -88,7 +88,7 @@ void MCRadialVelocity::getConvert(MConvertBase &mc,
     iin = ToRef_p[tmp][1];
     mc.addMethod(tmp);
     initConvert(tmp, mc);
-  };
+  }
 }
 
 void MCRadialVelocity::clearConvert() {
@@ -144,7 +144,7 @@ void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
 
   default:
     break;
-  };
+  }
 }
 
 void MCRadialVelocity::doConvert(MeasValue &in,
@@ -323,8 +323,8 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     default:
       break;
-    }; // switch
-  }; // for
+    } // switch
+  } // for
 }
 
 String MCRadialVelocity::showState() {
@@ -333,7 +333,7 @@ String MCRadialVelocity::showState() {
     MCBase::makeState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
 		      MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 		      MCRadialVelocity::ToRef_p);
-  };
+  }
   return MCBase::showState(MCRadialVelocity::stateMade_p, MCRadialVelocity::FromTo_p[0],
 			   MRadialVelocity::N_Types, MCRadialVelocity::N_Routes,
 			   MCRadialVelocity::ToRef_p);

@@ -116,25 +116,25 @@ template <class T> class CombiFunction : public CombiParam<T> {
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  CombiFunction() : CombiParam<T>() {};
+  CombiFunction() : CombiParam<T>() {}
   // Make this object a (deep) copy of other.
   // <group>
   CombiFunction(const CombiFunction<T> &other) :
-    CombiParam<T>(other) {};
+    CombiParam<T>(other) {}
   CombiFunction(const CombiFunction<T> &other, Bool) :
-    CombiParam<T>(other, True) {};
+    CombiParam<T>(other, True) {}
   template <class W>
-    CombiFunction(const CombiFunction<W> &other) : CombiParam<T>(other) {};
+    CombiFunction(const CombiFunction<W> &other) : CombiParam<T>(other) {}
   template <class W>
     CombiFunction(const CombiFunction<W> &other, Bool) :
-    CombiParam<T>(other, True) {};
+    CombiParam<T>(other, True) {}
   // </group>
   // Make this object a (deep) copy of other.
   CombiFunction<T> &operator=(const CombiFunction<T> &other) {
-    CombiParam<T>::operator=(other); return *this; };
+    CombiParam<T>::operator=(other); return *this; }
 
   // Destructor
-  virtual ~CombiFunction() {};
+  virtual ~CombiFunction() {}
 
   //# Operators
   // Evaluate the function at <src>x</src>.
@@ -144,12 +144,12 @@ template <class T> class CombiFunction : public CombiParam<T> {
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   // <group>
-  virtual Function<T> *clone() const { return new CombiFunction<T>(*this); };
+  virtual Function<T> *clone() const { return new CombiFunction<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new CombiFunction<typename FunctionTraits<T>::DiffType>(*this); };
+    return new CombiFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
     return new CombiFunction<typename FunctionTraits<T>::BaseType>
-      (*this, True); };
+      (*this, True); }
   // </group>
 
   //# Make members of parent classes known.
@@ -173,22 +173,22 @@ public CombiParam<AutoDiff<T> > {
   //# Constructors
   // The default constructor -- no functions, no parameters, nothing, the
   // function operator returns a 0.
-  CombiFunction_PS() : CombiParam<AutoDiff<T> >() {};
+  CombiFunction_PS() : CombiParam<AutoDiff<T> >() {}
   // Make this object a (deep) copy of other.
   // <group>
   CombiFunction_PS(const CombiFunction_PS<AutoDiff<T> > &other) :
-    CombiParam<AutoDiff<T> >(other) {};
+    CombiParam<AutoDiff<T> >(other) {}
   template <class W>
     CombiFunction_PS(const CombiFunction_PS<W> &other) :
-    CombiParam<AutoDiff<T> >(other) {};
+    CombiParam<AutoDiff<T> >(other) {}
   // </group>
   // Make this object a (deep) copy of other.
   CombiFunction_PS<AutoDiff<T> > &
     operator=(const CombiFunction_PS<AutoDiff<T> > &other) {
-    CombiParam<AutoDiff<T> >::operator=(other); return *this; };
+    CombiParam<AutoDiff<T> >::operator=(other); return *this; }
 
   // Destructor
-  virtual ~CombiFunction_PS() {};
+  virtual ~CombiFunction_PS() {}
 
   //# Operators
   // Evaluate the function and its derivatives at <src>x</src> <em>wrt</em>
@@ -200,15 +200,15 @@ public CombiParam<AutoDiff<T> > {
   // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new CombiFunction_PS<AutoDiff<T> >(*this); };
+    return new CombiFunction_PS<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new CombiFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new CombiFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this, True); };
+      (*this, True); }
   // </group>
 
   //# Make members of parent classes known.

@@ -87,7 +87,7 @@ void MDoppler::assure(const Measure &in) {
   if (in.type() != Register(static_cast<MDoppler *>(0))) {
     throw(AipsError("Illegal Measure type argument: " +
 		    MDoppler::showMe()));
-  };
+  }
 }
 
 MDoppler::Types MDoppler::castType(uInt tp) {
@@ -150,7 +150,7 @@ const String* MDoppler::allTypes(Int &nall, Int &nextra,
 
 void MDoppler::checkTypes() const {
   MDoppler::checkMyTypes();
-};
+}
 
 void MDoppler::checkMyTypes() {
   static Bool first(True);
@@ -165,12 +165,12 @@ void MDoppler::checkMyTypes() {
 		   tp == Int(typ[i]) &&
 		   MDoppler::getType(tp, tps[i]) &&
 		   tp == Int(typ[i]), AipsError);
-    };
+    }
     for (Int i=0; i<N_Types; i++) {
       AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(i)) &&
 		   tp == i, AipsError);
-    };
-  };
+    }
+  }
 }
 
 Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
@@ -191,9 +191,9 @@ Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
   else {
     mr = MDoppler::Ref();
     return False;
-  };
+  }
   return True;
-};
+}
 
 Bool MDoppler::setOffset(const Measure &in) {
   if (in.type() != Register(static_cast<MDoppler *>(0))) return False;
@@ -206,7 +206,7 @@ Bool MDoppler::setRefString(const String &in) {
   if (MDoppler::getType(tp, in)) {
     ref.setType(tp);
     return True;
-  };
+  }
   ref.setType(MDoppler::DEFAULT);
   return False;
 }
@@ -245,10 +245,10 @@ MDoppler::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
   for (uInt i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
 			 factor;
-  };
+  }
   for (uInt i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
-  };
+  }
   return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }
 

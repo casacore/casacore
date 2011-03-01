@@ -95,7 +95,7 @@ MCuvw::MCuvw() : measMath() {
     MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 		      Muvw::N_Types, MCuvw::N_Routes,
 		      MCuvw::ToRef_p);
-  };
+  }
 }
 
 //# Destructor
@@ -120,8 +120,8 @@ void MCuvw::getConvert(MConvertBase &mc,
       iin = ToRef_p[tmp][1];
       mc.addMethod(tmp);
       initConvert(tmp, mc);
-    };
-  };
+    }
+  }
 }
 
 void MCuvw::clearConvert() {
@@ -217,7 +217,7 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
   default:
     break;
     
-  };
+  }
 }
 
 void MCuvw::doConvert(MeasValue &in,
@@ -647,10 +647,10 @@ void MCuvw::doConvert(MVuvw &in,
     default:
       break;
       
-    };	// switch
+    }	// switch
     // Get in correct direction
     fromPole(in);
-  };	// for
+  }	// for
 }
 
 String MCuvw::showState() {
@@ -659,7 +659,7 @@ String MCuvw::showState() {
     MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 		      Muvw::N_Types, MCuvw::N_Routes,
 		      MCuvw::ToRef_p);
-  };
+  }
   return MCBase::showState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 			   Muvw::N_Types, MCuvw::N_Routes,
 			   MCuvw::ToRef_p);

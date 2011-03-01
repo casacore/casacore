@@ -175,7 +175,7 @@ class Interpolate2D {
   // </group>
   
   // Recover interpolation method
-  Method interpolationMethod() const {return itsMethod;};
+  Method interpolationMethod() const {return itsMethod;}
   
   // Convert string ("nearest", "linear", "cubic") to interpolation method
   // Minimum match will do.

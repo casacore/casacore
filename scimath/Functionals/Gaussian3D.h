@@ -164,7 +164,7 @@ public:
   // <group>
   Gaussian3D(const Gaussian3D<T> &other);
   template <class W>
-    Gaussian3D(const Gaussian3D<W> &other) : Gaussian3DParam<T>(other) {};
+    Gaussian3D(const Gaussian3D<W> &other) : Gaussian3DParam<T>(other) {}
   // </group>
 
   // Destructor
@@ -181,9 +181,9 @@ public:
   // <group>
   virtual Function<T> *clone() const;
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new Gaussian3D<typename FunctionTraits<T>::DiffType>(*this); };
+    return new Gaussian3D<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new Gaussian3D<typename FunctionTraits<T>::BaseType>(*this); };
+    return new Gaussian3D<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
 private:
@@ -248,7 +248,7 @@ public:
   Gaussian3D_PS(const Gaussian3D_PS<AutoDiff<T> > &other);
   template <class W>
   Gaussian3D_PS(const Gaussian3D_PS<W> &other) :
-    Gaussian3DParam<AutoDiff<T> >(other) {};
+    Gaussian3DParam<AutoDiff<T> >(other) {}
    virtual ~Gaussian3D_PS();
 //
   Gaussian3D_PS<AutoDiff<T> > &operator=(const Gaussian3D_PS<AutoDiff<T> > &other);
@@ -258,11 +258,11 @@ public:
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new Gaussian3D<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new Gaussian3D<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
 
 private:
   T sq(T v) const;  

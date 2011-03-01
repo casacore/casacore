@@ -187,32 +187,32 @@ public:
   // variance defaults to 1.0, 
   // covariance defaults to 0.0, 
   // <group>
-  GaussianND() : GaussianNDParam<T>() {};
+  GaussianND() : GaussianNDParam<T>() {}
   explicit GaussianND(uInt ndim) :
-    GaussianNDParam<T>(ndim) {};
+    GaussianNDParam<T>(ndim) {}
   GaussianND(uInt ndim, const T &height) :
-    GaussianNDParam<T>(ndim, height) {};
+    GaussianNDParam<T>(ndim, height) {}
   GaussianND(uInt ndim, const T &height, const Vector<T> &mean) :
-    GaussianNDParam<T>(ndim, height, mean) {};
+    GaussianNDParam<T>(ndim, height, mean) {}
   GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
 	     const Vector<T> &variance) :
-    GaussianNDParam<T>(ndim, height, mean, variance) {};
+    GaussianNDParam<T>(ndim, height, mean, variance) {}
   GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
 	     const Matrix<T> &covar) :
-    GaussianNDParam<T>(ndim, height, mean, covar) {};
+    GaussianNDParam<T>(ndim, height, mean, covar) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  GaussianND(const GaussianND &other) : GaussianNDParam<T>(other) {};
+  GaussianND(const GaussianND &other) : GaussianNDParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   GaussianND<T> &operator=(const GaussianND<T> &other) {
-    GaussianNDParam<T>::operator=(other); return *this; };
+    GaussianNDParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~GaussianND() {};
+  virtual ~GaussianND() {}
 
   //# Operators    
   // Evaluate the Gaussian at <src>x</src>.
@@ -224,7 +224,7 @@ public:
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const { return new GaussianND<T>(*this); };
+  virtual Function<T> *clone() const { return new GaussianND<T>(*this); }
   // </group>
 
   //# Make members of parent classes known.

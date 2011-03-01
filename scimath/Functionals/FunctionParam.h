@@ -108,9 +108,9 @@ template<class T> class FunctionParam {
 	setValue(param_p[i],
 		 FunctionTraits<W>::getValue(other.getParameters()[i]),
 		 npar_p, i);
-    };
+    }
     mask_p = other.getParamMasks();
-  };
+  }
 
   // Destructor
   virtual ~FunctionParam();
@@ -120,8 +120,8 @@ template<class T> class FunctionParam {
   FunctionParam &operator=(const FunctionParam<T> &other);
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n) { return param_p[n]; };
-  const T &operator[](const uInt n) const { return param_p[n]; };
+  T &operator[](const uInt n) { return param_p[n]; }
+  const T &operator[](const uInt n) const { return param_p[n]; }
   // </group>
   // Compare two parameter sets for equal size, values and masks.
   // <group>
@@ -131,11 +131,11 @@ template<class T> class FunctionParam {
 
   //# Member functions
   // Return the number of parameters
-  uInt nelements() const { return param_p.nelements(); };
+  uInt nelements() const { return param_p.nelements(); }
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &parameter(const uInt n) { return param_p[n]; };
-  const T &parameter(const uInt n) const{ return param_p[n]; };
+  T &parameter(const uInt n) { return param_p[n]; }
+  const T &parameter(const uInt n) const{ return param_p[n]; }
   // </group>
 
   // Manipulate the mask associated with the nth parameter
@@ -143,12 +143,12 @@ template<class T> class FunctionParam {
   // Note no index check.
   // <group>
   Bool &mask(const uInt n);
-  const Bool &mask(const uInt n) const { return mask_p[n]; };
+  const Bool &mask(const uInt n) const { return mask_p[n]; }
   // </group>
 
   // Get all parameters at once.  Returns zero length
   // Vector if there are no parameters.
-  const Vector<T> &getParameters() const { return param_p; };
+  const Vector<T> &getParameters() const { return param_p; }
   
   // Set all the parameters at once. Only the minimum of the input number and
   // the object number of parameters will be set.
@@ -156,7 +156,7 @@ template<class T> class FunctionParam {
 
   // Get all parameter masks at once.  Returns zero length
   // Vector if there are no parameters.
-  const Vector<Bool> &getParamMasks() const { return mask_p; };
+  const Vector<Bool> &getParamMasks() const { return mask_p; }
     
   // Set all parameter masks at once. Only the minimum of the input number and
   // the object number of parameters will be set.
@@ -207,7 +207,7 @@ ostream &operator<<(ostream &os, const FunctionParam<T> &par);
 //# Inlines
 template<class T>
 inline ostream &operator<<(ostream &os, const FunctionParam<T> &par) {
-  return par.print(os); };
+  return par.print(os); }
 
 
 } //# NAMESPACE CASA - END

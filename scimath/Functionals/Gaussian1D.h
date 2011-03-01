@@ -142,27 +142,27 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  Gaussian1D() : Gaussian1DParam<T>() {};
-  explicit Gaussian1D(const T &height) : Gaussian1DParam<T>(height) {};
+  Gaussian1D() : Gaussian1DParam<T>() {}
+  explicit Gaussian1D(const T &height) : Gaussian1DParam<T>(height) {}
   Gaussian1D(const T &height, const T &center) :
-    Gaussian1DParam<T>(height, center) {};
+    Gaussian1DParam<T>(height, center) {}
   Gaussian1D(const T &height, const T &center, const T &width) :
-    Gaussian1DParam<T>(height, center, width) {};
+    Gaussian1DParam<T>(height, center, width) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  Gaussian1D(const Gaussian1D<T> &other) : Gaussian1DParam<T>(other) {};
+  Gaussian1D(const Gaussian1D<T> &other) : Gaussian1DParam<T>(other) {}
   template <class W>
-    Gaussian1D(const Gaussian1D<W> &other) : Gaussian1DParam<T>(other) {};
+    Gaussian1D(const Gaussian1D<W> &other) : Gaussian1DParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Gaussian1D<T> &operator=(const Gaussian1D<T> &other) {
-    Gaussian1DParam<T>::operator=(other); return *this; };
+    Gaussian1DParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Gaussian1D() {};
+  virtual ~Gaussian1D() {}
 
   //# Operators    
   // Evaluate the Gaussian at <src>x</src>.
@@ -174,11 +174,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const { return new Gaussian1D<T>(*this); };
+  virtual Function<T> *clone() const { return new Gaussian1D<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new Gaussian1D<typename FunctionTraits<T>::DiffType>(*this); };
+    return new Gaussian1D<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new Gaussian1D<typename FunctionTraits<T>::BaseType>(*this); };
+    return new Gaussian1D<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.
@@ -209,32 +209,32 @@ public:
   //# Constructors
   // Constructs one dimensional Gaussians.
   // <group>
-  Gaussian1D_PS() : Gaussian1DParam<AutoDiff<T> >() {};
+  Gaussian1D_PS() : Gaussian1DParam<AutoDiff<T> >() {}
   explicit Gaussian1D_PS(const AutoDiff<T> &height) :
-    Gaussian1DParam<AutoDiff<T> >(height) {};
+    Gaussian1DParam<AutoDiff<T> >(height) {}
   Gaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center) :
-    Gaussian1DParam<AutoDiff<T> >(height, center) {};
+    Gaussian1DParam<AutoDiff<T> >(height, center) {}
   Gaussian1D_PS(const AutoDiff<T> &height, const AutoDiff<T> &center,
 		  const AutoDiff<T> &width) :
-    Gaussian1DParam<AutoDiff<T> >(height, center, width) {};
+    Gaussian1DParam<AutoDiff<T> >(height, center, width) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
   Gaussian1D_PS(const Gaussian1D_PS &other) :
-    Gaussian1DParam<AutoDiff<T> >(other) {};
+    Gaussian1DParam<AutoDiff<T> >(other) {}
   template <class W>
   Gaussian1D_PS(const Gaussian1D_PS<W> &other) :
-    Gaussian1DParam<AutoDiff<T> >(other) {};
+    Gaussian1DParam<AutoDiff<T> >(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   Gaussian1D_PS<AutoDiff<T> > &
     operator=(const Gaussian1D_PS<AutoDiff<T> > &other) {
-    Gaussian1DParam<AutoDiff<T> >::operator=(other); return *this; };
+    Gaussian1DParam<AutoDiff<T> >::operator=(other); return *this; }
     
   // Destructor
-  virtual ~Gaussian1D_PS() {};
+  virtual ~Gaussian1D_PS() {}
 
   //# Operators    
   // Evaluate the Gaussian and its derivatives at <src>x</src>.
@@ -247,15 +247,15 @@ public:
   // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
-    return new Gaussian1D<AutoDiff<T> >(*this); };
+    return new Gaussian1D<AutoDiff<T> >(*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
     *cloneAD() const {
     return new Gaussian1D<typename FunctionTraits<AutoDiff<T> >::DiffType>
-      (*this); };
+      (*this); }
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new Gaussian1D<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this); };
+      (*this); }
   // </group>
 
   //# Make members of parent classes known.

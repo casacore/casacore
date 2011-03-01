@@ -44,7 +44,7 @@ public:
   NNGridder(const IPosition& shape, const Vector<Domain>& scale,
 	    const Vector<Domain>& offset);
 
-  virtual ~NNGridder() {};
+  virtual ~NNGridder() {}
 
   virtual Bool grid(Array<Range>& gridded,
 		    const Vector<Domain>& position,

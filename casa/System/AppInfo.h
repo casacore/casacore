@@ -141,7 +141,7 @@ private:
 //# Inlines
 
 inline Double AppInfo::timeZone() {if (need_init_p) init();
-	                  return AipsrcValue<Double>::get(tz_r);};
+	                  return AipsrcValue<Double>::get(tz_r);}
 
 
 } //# NAMESPACE CASA - END

@@ -203,7 +203,7 @@ class UVWMachine {
   // Return the new phase center coordinates
   const MDirection &phaseCenter() const;
   // Return if the engine is an effective NOP
-  Bool isNOP() { return nop_p; };
+  Bool isNOP() { return nop_p; }
   // Return a rotation matrix that can be used to convert UVW coordinates:
   // UVW(new) = UVW(old) * rotationUVW()
   const RotMatrix &rotationUVW() const;

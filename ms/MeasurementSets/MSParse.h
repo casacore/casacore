@@ -119,7 +119,7 @@ public:
     // Get ms object.
     MeasurementSet* ms();
 
-  void setMS(MeasurementSet* ms) {ms_p=ms;};
+  void setMS(MeasurementSet* ms) {ms_p=ms;}
   static MeasurementSet *ms_p;
 private:
     String shorthand_p;

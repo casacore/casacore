@@ -72,12 +72,12 @@ public:
   WrapperData();
 
   // Destructor
-  virtual ~WrapperData() {};
+  virtual ~WrapperData() {}
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
   // <group>
-  virtual T eval(typename Function<T>::FunctionArg x, const V &par) const {};
+  virtual T eval(typename Function<T>::FunctionArg x, const V &par) const {}
   // </group>
 
   //# Member functions
@@ -107,10 +107,10 @@ public:
   //# Constructors
   // Standard constructor
   explicit WrapperData_TT(T(*f)(const T&, const T&), uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
+    WrapperBase<T>(dim), pf_p(f) {}
 
   // Destructor
-  virtual ~WrapperData_TT() {};
+  virtual ~WrapperData_TT() {}
 
   //# Operators    
   // Evaluate the function at <src>x</src>.
@@ -120,8 +120,8 @@ public:
       return
 	pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)),
 	     par[0]);
-    };
-    return T(0); };
+    }
+    return T(0); }
 
   //# Member functions
 
@@ -162,14 +162,14 @@ class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T>
 
 public:
   explicit WrapperData_VT(T(*f)(const Vector<T>&, const T&), uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
-  virtual ~WrapperData_VT() {};
+    WrapperBase<T>(dim), pf_p(f) {}
+  virtual ~WrapperData_VT() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
-      return pf_p(arg_p, par[0]); };
-    return T(0); };
+      return pf_p(arg_p, par[0]); }
+    return T(0); }
 
 protected:
   T (*pf_p)(const Vector<T>&, const T&);
@@ -203,15 +203,15 @@ class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T>
 
 public:
   explicit WrapperData_TV(T(*f)(const T&, const Vector<T>&), uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
-  virtual ~WrapperData_TV() {};
+    WrapperBase<T>(dim), pf_p(f) {}
+  virtual ~WrapperData_TV() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
       return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)),
 		  par);
-    };
-    return T(0); };
+    }
+    return T(0); }
 
 protected:
   T (*pf_p)(const T&, const Vector<T>&);
@@ -247,14 +247,14 @@ public WrapperBase<T>
 public:
   explicit WrapperData_VV(T(*f)(const Vector<T>&, const Vector<T>&),
 			    uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
-  virtual ~WrapperData_VV() {};
+    WrapperBase<T>(dim), pf_p(f) {}
+  virtual ~WrapperData_VV() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
-      return pf_p(arg_p, par); };
-    return T(0); };
+      return pf_p(arg_p, par); }
+    return T(0); }
 
 protected:
   T (*pf_p)(const Vector<T>&, const Vector<T>&);
@@ -288,12 +288,12 @@ class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T>
 
 public:
   explicit WrapperData_FT(T(*f)(const T&)) :
-    WrapperBase<T>(0), pf_p(f) {};
-  virtual ~WrapperData_FT() {};
+    WrapperBase<T>(0), pf_p(f) {}
+  virtual ~WrapperData_FT() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par[0]);
-    return T(0); };
+    return T(0); }
 
 protected:
   T (*pf_p)(const T&);
@@ -327,12 +327,12 @@ class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T>
 
 public:
   explicit WrapperData_FV(T(*f)(const Vector<T>&)) :
-    WrapperBase<T>(0), pf_p(f) {};
-  virtual ~WrapperData_FV() {};
+    WrapperBase<T>(0), pf_p(f) {}
+  virtual ~WrapperData_FV() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par);
-    return T(0); };
+    return T(0); }
 
 protected:
   T (*pf_p)(const Vector<T>&);
@@ -366,14 +366,14 @@ class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T>
 
 public:
   explicit WrapperData_TF(T(*f)(const T&), uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
-  virtual ~WrapperData_TF() {};
+    WrapperBase<T>(dim), pf_p(f) {}
+  virtual ~WrapperData_TF() {}
   virtual T eval(typename Function<T>::FunctionArg x, 
 		 const Vector<T> &par) const {
     if (pf_p) {
       return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)));
-    };
-    return T(0); };
+    }
+    return T(0); }
 
 protected:
   T (*pf_p)(const T&);
@@ -407,14 +407,14 @@ class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T>
 
 public:
   explicit WrapperData_VF(T(*f)(const Vector<T>&), uInt dim=1) :
-    WrapperBase<T>(dim), pf_p(f) {};
-  virtual ~WrapperData_VF() {};
+    WrapperBase<T>(dim), pf_p(f) {}
+  virtual ~WrapperData_VF() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &) const {
     if (pf_p) {
       for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
-      return pf_p(arg_p); };
-    return T(0); };
+      return pf_p(arg_p); }
+    return T(0); }
 
 protected:
   T (*pf_p)(const Vector<T>&);
@@ -448,12 +448,12 @@ class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T>
 
 public:
   explicit WrapperData_FF(T(*f)()) :
-    WrapperBase<T>(0), pf_p(f) {};
-  virtual ~WrapperData_FF() {};
+    WrapperBase<T>(0), pf_p(f) {}
+  virtual ~WrapperData_FF() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p();
-    return T(0); };
+    return T(0); }
 
 protected:
   T (*pf_p)();

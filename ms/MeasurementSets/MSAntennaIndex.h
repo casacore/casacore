@@ -86,7 +86,7 @@ public:
   MSAntennaIndex(const MSAntenna &antenna);
 
   // Null destructor
-  virtual ~MSAntennaIndex() {};
+  virtual ~MSAntennaIndex() {}
 
   // Look up ANTENNA_ID's for a given a regular expression or pattern
   Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const Bool regex=False);

@@ -55,7 +55,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 MeasureHolder::MeasureHolder() 
   : hold_p(), mvhold_p(0), convertmv_p(False) {
   createMV(0);
-};
+}
 
 MeasureHolder::MeasureHolder(const Measure &in) 
   : hold_p(in.clone()), mvhold_p(0), convertmv_p(False) {}
@@ -68,7 +68,7 @@ MeasureHolder::MeasureHolder(const MeasureHolder &other)
   createMV(other.mvhold_p.nelements());
   for (uInt i=0; i<mvhold_p.nelements(); i++) {
     mvhold_p[i] = other.mvhold_p[i]->clone();
-  };
+  }
 }
 
 //# Destructor
@@ -83,12 +83,12 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
       hold_p.set(other.hold_p.ptr()->clone());
     } else {
       hold_p.clear();
-    };
+    }
     createMV(other.mvhold_p.nelements());
     for (uInt i=0; i<mvhold_p.nelements(); i++) {
       mvhold_p[i] = other.mvhold_p[i]->clone();
-    };
-  };
+    }
+  }
   return *this;
 }
 
@@ -140,70 +140,70 @@ Bool MeasureHolder::isMEarthMagnetic() const {
 const Measure &MeasureHolder::asMeasure() const {
   if (!hold_p.ptr()) {
     throw(AipsError("Empty MeasureHolder argument for asMeasure"));
-  };
+  }
   return *hold_p.ptr();
 }
 
 const MDirection &MeasureHolder::asMDirection() const {
   if (!hold_p.ptr() || !isMDirection()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDirection"));
-  };
+  }
   return dynamic_cast<const MDirection &>(*hold_p.ptr());
 }
 
 const MDoppler &MeasureHolder::asMDoppler() const {
   if (!hold_p.ptr() || !isMDoppler()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMDoppler"));
-  };
+  }
   return dynamic_cast<const MDoppler &>(*hold_p.ptr());
 }
 
 const MEpoch &MeasureHolder::asMEpoch() const {
   if (!hold_p.ptr() || !isMEpoch()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEpoch"));
-  };
+  }
   return dynamic_cast<const MEpoch &>(*hold_p.ptr());
 }
 
 const MFrequency &MeasureHolder::asMFrequency() const {
   if (!hold_p.ptr() || !isMFrequency()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMFrequency"));
-  };
+  }
   return dynamic_cast<const MFrequency &>(*hold_p.ptr());
 }
 
 const MPosition &MeasureHolder::asMPosition() const {
   if (!hold_p.ptr() || !isMPosition()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMPosition"));
-  };
+  }
   return dynamic_cast<const MPosition &>(*hold_p.ptr());
 }
 
 const MRadialVelocity &MeasureHolder::asMRadialVelocity() const {
   if (!hold_p.ptr() || !isMRadialVelocity()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMRadialVelocity"));
-  };
+  }
   return dynamic_cast<const MRadialVelocity &>(*hold_p.ptr());
 }
 
 const MEarthMagnetic &MeasureHolder::asMEarthMagnetic() const {
   if (!hold_p.ptr() || !isMEarthMagnetic()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMEarthMagnetic"));
-  };
+  }
   return dynamic_cast<const MEarthMagnetic &>(*hold_p.ptr());
 }
 
 const MBaseline &MeasureHolder::asMBaseline() const {
   if (!hold_p.ptr() || !isMBaseline()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMBaseline"));
-  };
+  }
   return dynamic_cast<const MBaseline &>(*hold_p.ptr());
 }
 
 const Muvw &MeasureHolder::asMuvw() const {
   if (!hold_p.ptr() || !isMuvw()) {
     throw(AipsError("Empty or wrong MeasureHolder for asMuvw"));
-  };
+  }
   return dynamic_cast<const Muvw &>(*hold_p.ptr());
 }
 
@@ -216,7 +216,7 @@ Bool MeasureHolder::fromRecord(String &error,
     if (!getType(error, in)) {
       error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
       return False;
-    };
+    }
     String rf;
     in.get(RecordFieldId("refer"), rf);
     if (!hold_p.ptr()->setRefString(rf)) {
@@ -230,42 +230,42 @@ Bool MeasureHolder::fromRecord(String &error,
 	  " definition. DEFAULT (" + 
 	  hold_p.ptr()->getDefaultType() + ") assumed." <<
 	  LogIO::POST;
-      };
-    };
+      }
+    }
     if (in.isDefined(String("offset")) &&
 	in.type(in.idToNumber(RecordFieldId("offset"))) == TpRecord) {
       MeasureHolder x;
       if (!x.fromRecord(error, in.asRecord(RecordFieldId("offset")))) {
 	return False;
-      };
+      }
       if (!hold_p.ptr()->setOffset(x.asMeasure())) {
 	error += String("Unmatched offset type in MeasureHolder::fromRecord\n");
 	return False;
-      };
-    };
+      }
+    }
     QuantumHolder q0, q1, q2;
     uInt n(0);
     if (in.isDefined(String("m0")) &&
 	in.type(in.idToNumber(RecordFieldId("m0"))) == TpRecord) {
       if (!q0.fromRecord(error, in.asRecord(RecordFieldId("m0")))) {
 	return False;
-      };
+      }
       n = 1;
       if (in.isDefined(String("m1")) &&
 	  in.type(in.idToNumber(RecordFieldId("m1"))) == TpRecord) {
 	if (!q1.fromRecord(error, in.asRecord(RecordFieldId("m1")))) {
 	  return False;
-	};
+	}
 	n = 2;
 	if (in.isDefined(String("m2")) &&
 	    in.type(in.idToNumber(RecordFieldId("m2"))) == TpRecord) {
 	  if (!q2.fromRecord(error, in.asRecord(RecordFieldId("m2")))) {
 	    return False;
-	  };
+	  }
 	  n = 3;
-	};
-      };
-    };
+	}
+      }
+    }
     Vector<Quantity> vq(n);
     if (n > 0) vq(0) = Quantity(q0.asQuantumVectorDouble().getValue()(0),
 				q0.asQuantumVectorDouble().getFullUnit());
@@ -276,17 +276,17 @@ Bool MeasureHolder::fromRecord(String &error,
     if (!hold_p.ptr()->putValue(vq)) {
       error += String("Illegal quantity in MeasureHolder::fromRecord\n");
       return False;
-    };
+    }
     uInt nel(0);
     if (n>0) nel = q0.asQuantumVectorDouble().getValue().nelements();
     if (n>1 && nel != q1.asQuantumVectorDouble().getValue().nelements()) {
       error += String("Illegal number of values in MeasureHolder m1\n");
       return False;
-    };
+    }
     if (n>2 && nel != q2.asQuantumVectorDouble().getValue().nelements()) {
       error += String("Illegal number of values in MeasureHolder m2\n");
       return False;
-    };
+    }
     if (nel>1) {
       makeMV(nel);
       for (uInt i=nel-1; i<nel; i--) {
@@ -299,16 +299,16 @@ Bool MeasureHolder::fromRecord(String &error,
 	if (!hold_p.ptr()->putValue(vq)) {
 	  error += String("Illegal quantity in MeasureHolder value\n");
 	  return False;
-	};
+	}
 	if (!setMV(i, *hold_p.ptr()->getData())) {
 	  error += String("Illegal MeasValue in MeasureHolder value\n");
 	  return False;
-	};
-      };
-    };
+	}
+      }
+    }
     convertmv_p = False;
     return True;
-  };
+  }
   error += String("Illegal Measure record in MeasureHolder::fromRecord\n");
   return False;
 }
@@ -318,7 +318,7 @@ Bool MeasureHolder::fromString(String &error,
   if (!getType(error, in)) {
     error += String("Unknown Measure type in MeasureHolder::fromString\n");
     return False;
-  };
+  }
   return True;
 }
 
@@ -330,7 +330,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
       Record offs;
       if (!MeasureHolder(*off).toRecord(error, offs)) return False;
       out.defineRecord(RecordFieldId("offset"), offs);
-    };
+    }
     // Make sure units available
     Vector<Quantum<Double> > res = hold_p.ptr()->getData()->getRecordValue();
     uInt n(res.nelements());
@@ -341,15 +341,15 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
       if (n > 2) {
 	if (!QuantumHolder(res(2)).toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m2"), val);
-      };
+      }
       if (n > 1) {
 	if (!QuantumHolder(res(1)).toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m1"), val);
-      };
+      }
       if (n > 0) {
 	if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m0"), val);
-      };
+      }
     } else {			// multiple values
       Vector<Double> m2(nel);
       Vector<Double> m1(nel);
@@ -358,33 +358,33 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
 	if (!mvhold_p[i]) {
 	  error += String("No value specified in MeasureHolder::toRecord\n");
 	  return False;
-	};
+	}
 	res = mvhold_p[i]->getRecordValue();
 	if (n>2) m2(i) = res(2).getValue();
 	if (n>1) m1(i) = res(1).getValue();
 	if (n>0) m0(i) = res(0).getValue();
-      };
+      }
       if (n > 2) {
 	if (!QuantumHolder(Quantum<Vector<Double> >(m2,
 						    res(2).getFullUnit())).
 	    toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m2"), val);
-      };
+      }
       if (n > 1) {
 	if (!QuantumHolder(Quantum<Vector<Double> >(m1,
 						    res(1).getFullUnit())).
 	    toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m1"), val);
-      };
+      }
       if (n > 0) {
 	if (!QuantumHolder(Quantum<Vector<Double> >(m0,
 						    res(0).getFullUnit())).
 	    toRecord(error, val)) return False;
 	out.defineRecord(RecordFieldId("m0"), val);
-      };
-    };
+      }
+    }
     return True;
-  };
+  }
   error += String("No Measure specified in MeasureHolder::toRecord\n");
   return False;
 }
@@ -401,9 +401,9 @@ Bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
     if (!getType(error, in)) {
       error += String("Unknown Measure record in MeasureHolder::fromType\n");
       return False;
-    };
+    }
     return True;
-  };
+  }
   error += String("Illegal Measure record in MeasureHolder::fromType\n");
   return False;
 }
@@ -469,7 +469,7 @@ Bool MeasureHolder::getType(String &error, const String &in) {
 void MeasureHolder::createMV(uInt n) {
   for (uInt i=0; i<mvhold_p.nelements(); i++) {
     delete mvhold_p[i]; mvhold_p[i] = 0;
-  };
+  }
   mvhold_p.resize(n);
   for (uInt i=0; i<mvhold_p.nelements(); i++) mvhold_p[i] = 0;
 }

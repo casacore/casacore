@@ -106,17 +106,17 @@ cout<< " The header card images are( testing kwlist_str()): " << endl; \
 }
 
 // now actually make the necessary versions of the above
-DOGROUP(unsigned char);
-DOGROUP(short);
-DOGROUP(FitsLong);
-DOGROUP(float);
-DOGROUP(double);
+DOGROUP(unsigned char)
+DOGROUP(short)
+DOGROUP(FitsLong)
+DOGROUP(float)
+DOGROUP(double)
 
-DOARRAY(unsigned char);
-DOARRAY(short);
-DOARRAY(FitsLong);
-DOARRAY(float);
-DOARRAY(double);
+DOARRAY(unsigned char)
+DOARRAY(short)
+DOARRAY(FitsLong)
+DOARRAY(float)
+DOARRAY(double)
 
 #undef DOGROUP
 #undef DOARRAY

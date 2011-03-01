@@ -48,7 +48,7 @@ public:
 
   virtual void setConvolutionFunction(const String& type);
 
-  virtual ~ConvolveGridder() {};
+  virtual ~ConvolveGridder() {}
 
   virtual Bool grid(Array<Range>& gridded,
 		    const Vector<Domain>& position,

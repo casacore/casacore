@@ -92,28 +92,28 @@ public:
   // <note role=warning> Could not use default arguments
   // that worked both with gcc and IRIX </note>
   // <group>
-  SincFunction() : SincParam<T>() {};
+  SincFunction() : SincParam<T>() {}
   explicit SincFunction(const T &height) :
-    SincParam<T>(height) {};
+    SincParam<T>(height) {}
   SincFunction(const T &height, const T &center) :
-    SincParam<T>(height, center) {};
+    SincParam<T>(height, center) {}
   SincFunction(const T &height, const T &center, const T &width) :
-    SincParam<T>(height, center, width) {};
+    SincParam<T>(height, center, width) {}
   // </group>
 
   // Copy constructor (deep copy)
   // <group>
-  SincFunction(const SincFunction<T> &other) : SincParam<T>(other) {};
+  SincFunction(const SincFunction<T> &other) : SincParam<T>(other) {}
   template <class W>
-    SincFunction(const SincFunction<W> &other) : SincParam<T>(other) {};
+    SincFunction(const SincFunction<W> &other) : SincParam<T>(other) {}
   // </group>
 
   // Copy assignment (deep copy)
   SincFunction<T> &operator=(const SincFunction<T> &other) {
-    SincParam<T>::operator=(other); return *this; };
+    SincParam<T>::operator=(other); return *this; }
     
   // Destructor
-  virtual ~SincFunction() {};
+  virtual ~SincFunction() {}
 
   //# Operators    
   // Evaluate the Sinc at <src>x</src>.
@@ -126,11 +126,11 @@ public:
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer. 
   // <group>
-  virtual Function<T> *clone() const { return new SincFunction<T>(*this); };
+  virtual Function<T> *clone() const { return new SincFunction<T>(*this); }
   virtual Function<typename FunctionTraits<T>::DiffType> *cloneAD() const {
-    return new SincFunction<typename FunctionTraits<T>::DiffType>(*this); };
+    return new SincFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
-    return new SincFunction<typename FunctionTraits<T>::BaseType>(*this); };
+    return new SincFunction<typename FunctionTraits<T>::BaseType>(*this); }
   // </group>
 
   //# Make members of parent classes known.

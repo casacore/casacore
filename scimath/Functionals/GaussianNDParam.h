@@ -224,15 +224,15 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("gaussiannd");
-  return x; };
+  return x; }
 
    // Variable dimensionality
-  virtual uInt ndim() const { return itsDim; };
+  virtual uInt ndim() const { return itsDim; }
 
   // Get or set the peak height of the Gaussian
   // <group>
-  T height() const { return param_p[HEIGHT]; };
-  void setHeight(const T &height) { param_p[HEIGHT] = height; };
+  T height() const { return param_p[HEIGHT]; }
+  void setHeight(const T &height) { param_p[HEIGHT] = height; }
   // </group>
 
   // The analytical integrated area underneath the Gaussian. Use these 

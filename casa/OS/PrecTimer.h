@@ -135,27 +135,34 @@ class String;
   private:
     void print_time (std::ostream&, double time) const;
 
-    union {
-      long long	   total_time;
-      struct {
+    struct TimeStruct {
 #if defined __PPC__
-	int	   total_time_high, total_time_low;
+      int	   total_time_high, total_time_low;
 #else
-	int	   total_time_low, total_time_high;
+      int	   total_time_low, total_time_high;
 #endif
-      };
+    };
+    union Union1 {
+      long long	   total_time;
+      TimeStruct   s1;
     };
 
 #if defined __i386__ && defined __INTEL_COMPILER && defined _OPENMP
-    union {
+    struct CountStruct {
+      int count_low, count_high;
+    };
+    union Union2 {
       unsigned long long count;
-      struct {
-	int count_low, count_high;
-      };
+      CountStruct        s2;
     };
 #else
-    unsigned long long count;
+    struct Union2 {
+      unsigned long long count;
+    };
 #endif
+
+    Union1 u1;
+    Union2 u2;
 
     static double CPU_speed_in_MHz;
     static double get_CPU_speed_in_MHz();
@@ -165,13 +172,13 @@ class String;
 
   inline void PrecTimer::reset()
   {
-    total_time = 0;
-    count      = 0;
+    u1.total_time = 0;
+    u2.count      = 0;
   }
 
   inline unsigned long long PrecTimer::getCount() const
   {
-    return count;
+    return u2.count;
   }
 
   inline PrecTimer::PrecTimer()
@@ -193,7 +200,7 @@ class String;
 	"leaq (%%rax,%%rdx),%%rax\n\t"
 	"lock;subq %%rax,%0"
     :
-	"+m" (total_time)
+	"+m" (u1.total_time)
     :
     :
 	"rax", "rdx"
@@ -205,7 +212,7 @@ class String;
 	"lock;subl %%eax,%0\n\t"
 	"lock;sbbl %%edx,%1"
     :
-	"+m" (total_time_low), "+m" (total_time_high)
+	"+m" (u1.s1.total_time_low), "+m" (u1.s1total_time_high)
     :
     :
 	"eax", "edx"
@@ -215,7 +222,7 @@ class String;
 
     asm volatile ("rdtsc" : "=a" (eax), "=d" (edx));
 
-    total_time -= ((unsigned long long) edx << 32) + eax;
+    u1.total_time -= ((unsigned long long) edx << 32) + eax;
 #elif (defined __i386__ || defined __x86_64__) && (defined __GNUC__ || defined __INTEL_COMPILER)
     asm volatile
     (
@@ -223,17 +230,17 @@ class String;
 	"subl %%eax, %0\n\t"
 	"sbbl %%edx, %1"
     :
-	"+m" (total_time_low), "+m" (total_time_high)
+	"+m" (u1.s1.total_time_low), "+m" (u1.s1.total_time_high)
     :
     :
 	"eax", "edx"
     );
 #elif defined __ia64__ && defined __INTEL_COMPILER
-    total_time -= __getReg(_IA64_REG_AR_ITC);
+    u1.total_time -= __getReg(_IA64_REG_AR_ITC);
 #elif defined __ia64__ && defined __GNUC__
     long long time;
     asm volatile ("mov %0=ar.itc" : "=r" (time));
-    total_time -= time;
+    u1.total_time -= time;
 #elif defined __PPC__ && (defined __GNUC__ || defined __xlC__)
     int high, low, retry;
 
@@ -249,9 +256,9 @@ class String;
 	"subfe %4,%0,%4"
     :
 	"=r" (high), "=r" (low), "=r" (retry),
-	"=r" (total_time_low), "=r" (total_time_high)
+	"=r" (u1.s1.total_time_low), "=r" (u1.s1.total_time_high)
     :
-	"3" (total_time_low), "4" (total_time_high)
+	"3" (u1.s1.total_time_low), "4" (u1.s1.total_time_high)
     );
 #endif
   }
@@ -267,7 +274,7 @@ class String;
 	"leaq (%%rax,%%rdx),%%rax\n\t"
 	"lock;addq %%rax,%0"
     :
-	"+m" (total_time)
+	"+m" (u1.total_time)
     :
     :
 	"rax", "rdx"
@@ -279,7 +286,7 @@ class String;
 	"lock;addl %%eax, %0\n\t"
 	"lock;adcl %%edx, %1"
     :
-	"+m" (total_time_low), "+m" (total_time_high)
+	"+m" (u1.s1.total_time_low), "+m" (u1.s1.total_time_high)
     :
     :
 	"eax", "edx"
@@ -288,7 +295,7 @@ class String;
     unsigned eax, edx;
 
     asm volatile ("rdtsc\n\t" : "=a" (eax), "=d" (edx));
-    total_time += ((unsigned long long) edx << 32) + eax;
+    u1.total_time += ((unsigned long long) edx << 32) + eax;
 #elif (defined __i386__ || defined __x86_64__) && (defined __GNUC__ || defined __INTEL_COMPILER)
     asm volatile
     (
@@ -296,17 +303,17 @@ class String;
 	"addl %%eax, %0\n\t"
 	"adcl %%edx, %1"
     :
-	"+m" (total_time_low), "+m" (total_time_high)
+	"+m" (u1.s1.total_time_low), "+m" (u1.s1.total_time_high)
     :
     :
 	"eax", "edx"
     );
 #elif defined __ia64__ && defined __INTEL_COMPILER
-    total_time += __getReg(_IA64_REG_AR_ITC);
+    u1.total_time += __getReg(_IA64_REG_AR_ITC);
 #elif defined __ia64__ && defined __GNUC__
     long long time;
     asm volatile ("mov %0=ar.itc" : "=r" (time));
-    total_time += time;
+    u1.total_time += time;
 #elif defined __PPC__ && (defined __GNUC__ || defined __xlC__)
     int high, low, retry;
 
@@ -322,24 +329,24 @@ class String;
 	"adde %4,%4,%0"
     :
 	"=r" (high), "=r" (low), "=r" (retry),
-	"=r" (total_time_low), "=r" (total_time_high)
+	"=r" (u1.s1.total_time_low), "=r" (u1.s1.total_time_high)
     :
-	"3" (total_time_low), "4" (total_time_high)
+	"3" (u1.s1.total_time_low), "4" (u1.s1.total_time_high)
     );
 #endif
 
 #if defined __x86_64__ && defined __INTEL_COMPILER && defined _OPENMP
-    asm volatile ("lock;addq $1,%0" : "+m" (count));
+    asm volatile ("lock;addq $1,%0" : "+m" (u2.count));
 #elif defined __i386__ && defined __INTEL_COMPILER && defined _OPENMP
     asm volatile
     (
 	"lock;addl $1,%0\n\t"
 	"lock;adcl $0,%1"
     :
-	"+m" (count_low), "+m" (count_high)
+	"+m" (u2.s2.count_low), "+m" (u2.s2.count_high)
     );
 #else
-    ++count;
+    ++u2.count;
 #endif
   }
 

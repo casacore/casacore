@@ -104,7 +104,7 @@ public:
   //# Member functions
   // Give name of function
   virtual const String &name() const { static String x("wrapper");
-    return x; };
+    return x; }
 
 protected:
   //# Make members of parent classes known.
