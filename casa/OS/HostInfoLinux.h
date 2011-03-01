@@ -176,7 +176,7 @@ void HostMachineInfo::update_info( )
     {
 	char *p;
 	int ret;
-	unsigned long mem_total, mem_free, swp_total, swp_free;
+	unsigned long mem_total, mem_free, mem_cached, swp_total, swp_free;
 
 	fd = open(MEMINFO, O_RDONLY);
 	len = read(fd, buffer, sizeof(buffer)-1);
@@ -184,11 +184,17 @@ void HostMachineInfo::update_info( )
 	buffer[len] = '\0';
 
 	p = strstr(buffer, "MemTotal:");
+
 	if ((ret = sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
 			   &mem_total, &mem_free)) != 2)
 	  cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
+
+	p = strstr (buffer, "Cached:");
+	if ((ret = sscanf (p,"Cached: %lu kB\n", &mem_cached)) != 1)
+	  cerr << "Error parsing Cached in /proc/meminfo\n";
+
 	memory_total = mem_total;
-	memory_free = mem_free;
+	memory_free = mem_free + mem_cached;
 	memory_used = memory_total - memory_free;
 
 	p = strstr (buffer, "SwapTotal:");

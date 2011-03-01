@@ -233,7 +233,7 @@ DComplex log10(const DComplex &val);
 // ArrayMath::pow needs this pow function (on SGI).
 inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p)); }
 
-// QMath needs these operators * and / (on SGI).
+// QMath and scimath need these operators * and / 
 // <group>
 inline Complex operator*(const Complex& val, Double f) { return val*Float(f); }
 inline Complex operator*(Double f, const Complex& val) { return val*Float(f); }

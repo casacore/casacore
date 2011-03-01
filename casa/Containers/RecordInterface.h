@@ -94,12 +94,12 @@ class IPosition;
 //       However, they are a bit less efficient than the second way.
 //  <li> Through the class
 //       <linkto class="RecordFieldPtr">RecordFieldPtr</linkto>.
-//       This is a bit less convenient. However, it is more efficient when
+//       This is a bit less convenient. However, it is more efficient if
 //       the same field is accessed multiple times.
 // </ol>
 // The structure of a record can be fixed or variable.
-// When fixed, it is not possible to change the structure once the
-// record has been instantiated. When variable, the record can be
+// If fixed, it is not possible to change the structure once the
+// record has been instantiated. If variable, the record can be
 // restructured or fields can be added/removed.
 // <br>
 // When a field gets added, it is possible to check if its name and
@@ -108,8 +108,8 @@ class IPosition;
 // and columns in a table do not have the same name.
 // <p>
 // Arrays in a record description can be fixed or variable shaped.
-// When fixed shaped, only arrays with that shape can be stored
-// in that field in the record. When variable shaped, any array
+// If fixed shaped, only arrays with that shape can be stored
+// in that field in the record. If variable shaped, any array
 // can be stored.
 // <br> However, note there is a difference between assign and define.
 // Assign invokes the array assignment operator which checks for
@@ -157,7 +157,7 @@ public:
     // record classes.
     // This function merges the fields from that record (description)
     // into this one.
-    // DuplicatesFlag determines what to do when a field already exists.
+    // DuplicatesFlag determines what to do if a field already exists.
     enum DuplicatesFlag {
 	// Rename a name from the other set to name_n,
 	// where n is the first positive number making the name unique.
@@ -165,7 +165,7 @@ public:
 	// Skip duplicate names from the other set.
 	SkipDuplicates,
 	// Overwrite the value of a duplicate keyword
-	// This will also happen when their types differ.
+	// This will also happen if their types differ.
 	OverwriteDuplicates,
 	// Throw an exception.
 	ThrowOnDuplicates};
@@ -176,7 +176,7 @@ public:
     // The function can check if the name and/or data type are valid.
     // The extra argument is the argument given to the Record constructor
     // which can be used to pass non-Record information.
-    // The function should return False when name or data type is invalid.
+    // The function should return False if name or data type is invalid.
     // In that case it can fill the message string, which will be added
     // to the message in the thrown exception.
     typedef Bool CheckFieldFunction (const String& fieldName,
@@ -237,7 +237,7 @@ public:
     virtual Int fieldNumber (const String& fieldName) const = 0;
 
     // Get the field number for the given field id.
-    // It throws an exception when an unknown name was given.
+    // It throws an exception if id is unrecognized (e.g. an unknown name).
     Int idToNumber (const RecordFieldId&) const;
 
     // Test if a field name exists.
@@ -271,7 +271,7 @@ public:
     // newDescription</src>. Any existing RecordFieldPtr objects are
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
-    // <br>When the new description contains subrecords, those subrecords
+    // <br>If the new description contains subrecords, those subrecords
     // will be restructured if <src>recursive=True</src> is given.
     // Otherwise the subrecord is a variable empty record.
     // Subrecords will be variable if their description is empty (i.e. does
@@ -291,11 +291,11 @@ public:
 
     // Define a value for the given field.
     // Array conformance rules will not be applied for variable shaped arrays.
-    // When the field and value data type mismatch, type promotion
+    // If the field and value data type mismatch, type promotion
     // of scalars will be done if possible. If not possible, an exception
     // is thrown.
     // <br>
-    // When the field does not exist, it will be added to the record.
+    // If the field does not exist, it will be added to the record.
     // This results in an exception for fixed structured records.
     // The field is checked by a possible field checking function
     // before it gets added.
@@ -340,10 +340,10 @@ public:
     // </group>
 
     // Get the value of the given field.
-    // When the field and value data type mismatch, type promotion
+    // If the field and value data type mismatch, type promotion
     // of scalars will be done if possible. If not possible, an exception
     // is thrown.
-    // When the value argument is an array, it will be reshaped if needed.
+    // If the value argument is an array, it will be reshaped if needed.
     // <group>
     void get (const RecordFieldId&, Bool& value) const;
     void get (const RecordFieldId&, uChar& value) const;
@@ -510,7 +510,7 @@ protected:
     // </group>
 
     // Get the field number for the given field id.
-    // It returns -1 when an unknown name was given.
+    // It returns -1 if an unknown name was given.
     Int newIdToNumber (const RecordFieldId&) const;
 
     // Add a scalar field with the given type and value.

@@ -123,18 +123,30 @@ HostMachineInfo::HostMachineInfo( ) : valid(1) {
     /* we only need the amount of log(2)1024 for our conversion */
     pageshift -= LOG1024;
 
-    ret = host_info( mach_host_self(), HOST_BASIC_INFO, (host_info_t) &basic_info, &count );
+#ifdef AIPS_64B
+       ret = host_info( mach_host_self(), HOST_BASIC_INFO, (host_info64_t) &basic_info, &count );
+#else
+       ret = host_info( mach_host_self(), HOST_BASIC_INFO, (host_info_t) &basic_info, &count );
+#endif
     if ( ret != KERN_SUCCESS ) {
 	valid = 0;
     } else {
+#ifdef AIPS_64B
+	memory_total = basic_info.max_mem / 1024;
+#else
 	memory_total = basic_info.memory_size / 1024;
+#endif
 	cpus = basic_info.avail_cpus;
     }
 }
 
 void HostMachineInfo::update_info( ) {
 
+#ifdef AIPS_64B
+    struct vm_statistics64 vmstats;
+#else
     struct vm_statistics vmstats;
+#endif
     kern_return_t kr;
     unsigned int count;
 
@@ -145,8 +157,11 @@ void HostMachineInfo::update_info( ) {
     /* Change: dont use zero filled. */
     count = sizeof(vmstats)/sizeof(integer_t);
 
-    kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t) &vmstats, &count );
-
+#ifdef AIPS_64B
+       kr = host_statistics64( mach_host_self(), HOST_VM_INFO64, (host_info64_t) &vmstats, &count );
+#else
+       kr = host_statistics( mach_host_self(), HOST_VM_INFO, (host_info_t) &vmstats, &count );
+#endif
     if ( kr != KERN_SUCCESS ) {
       valid = 0;
       return;

@@ -31,12 +31,11 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
-
+#include <casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
-template <class T> class Vector;
 template <class T> class AipsrcValue;
 template <class T> class AipsrcVector;
 class Aipsrc;
@@ -107,6 +106,7 @@ typedef AipsrcVector<String> AipsrcVString;
 // given order):
 // <srcblock>
 //   ~/.casarc
+//   ~/.casa/rc
 //   ~/.aipsrc
 //   $AIPSROOT/.aipsrc
 //   $AIPSHOST/aipsrc
@@ -260,6 +260,17 @@ public:
   static Bool find(uInt &value, const String &keyword,
 		   const Vector<String> &tname, const String &deflt);
   // </group>
+
+  // Sets foundDir to the first /firstPart/lastPart path that it finds
+  // present on the system, where /firstPart comes from, in order,
+  // this list:
+  //   contents of prepends
+  //   + useStd ? (., aipsHome(), aipsRoot()) : ()
+  //   + contents of appends
+  static Bool findDir(String& foundDir, const String& lastPart="",
+                      const Vector<String>& prepends=Vector<String>(),
+                      const Vector<String>& appends=Vector<String>(),
+                      Bool useStds=True);
 
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().

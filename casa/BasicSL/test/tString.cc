@@ -380,6 +380,24 @@ void toFloat() {
     assert(y < 1e-316 && y > -1e-316);
 }
 
+void toInt() {
+    String x = "4";
+    Int y = String::toInt(x);
+    assert(y == 4);
+    x = "-12";
+    y = String::toInt(x);
+    assert(y == -12);
+    x = "6.9999";
+    y = String::toInt(x);
+    assert(y == 6);
+    x = "-8.9999";
+    y = String::toInt(x);
+    assert(y == -8);
+    x = "elrond";
+    y = String::toInt(x);
+    assert(y == 0);
+}
+
 void trim() {
     String myString = "\t  \t  \n\r  my string \n\r \t ";
     myString.trim();
@@ -393,9 +411,16 @@ void trim() {
     myString = "\n \t\t\r  ";
     myString.trim();
     assert(myString.empty());
-    myString = "";
+    myString = "    ";
     myString.trim();
     assert(myString.empty());
+}
+
+void startsWith() {
+    String myString = "Gozer the Destroyer";
+    assert(myString.startsWith("G"));
+    assert(myString.startsWith("Gozer t"));
+    assert(! myString.startsWith("oz"));
 }
 
 /* void hashtest()
@@ -439,7 +464,9 @@ int main() {
   iotest();
   toDouble();
   toFloat();
+  toInt();
   trim();
+  startsWith();
   cout << "\nEnd of test\n";
   return(0);
 }

@@ -301,6 +301,16 @@ inline Bool isNaN(Double val)
 }
 // </group>
 
+// Round a number to <src>ndigit</src> significant digits, usually used
+// for formatting for printing.
+// <br>A non-integer <src>ndigit=N+F<src>, with integer N and fraction F,
+// is interpreted as follows. 
+// For <src>x = A*10^B</src>, where B is an integer, A is rounded to N digits
+// if <src>A > 10^F</src>, otherwise N+1 digits.
+// <br>For the default 2.5, a value of 32157 is rounded to 32000,
+// while 22157 is rounded to 22200.
+Double roundDouble(Double val, Double ndigit=2.5);
+
 // Functions that return IEEE NaN's. The specific NaN returned has all bits
 // set. This is 'quiet' NaN, and because the sign bit is set it may be
 // considered a negative number (but NaN's are not numbers!).

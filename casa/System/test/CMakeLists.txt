@@ -2,6 +2,7 @@ set (tests
 tAipsrc
 tAipsrcValue
 tAppInfo
+tCasarc01
 tChoice
 tObjectID
 )
