@@ -145,6 +145,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // for output and not marked for delete.
     virtual ~ConcatTable();
 
+    // Get the names of the tables this table consists of.
+    virtual void getPartNames (Block<String>& names, Bool recursive) const;
+
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
     // information required is read from the table, thus it is much

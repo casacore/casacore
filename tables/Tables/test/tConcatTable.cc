@@ -52,6 +52,10 @@
 
 void doIt (const Table& tab)
 {
+  cout << ">>> -------------------" << endl;
+  cout << "partNamesF " << tab.getPartNames() << endl;
+  cout << "partNamesT " << tab.getPartNames(True) << endl;
+  cout << "<<<" << endl;
   ROScalarColumn<Int> ab2(tab,"ab");
   ROScalarColumn<Int> ac (tab,"ac");
   ROScalarColumn<uInt> ad(tab,"ad");

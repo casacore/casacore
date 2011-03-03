@@ -343,6 +343,9 @@ private:
     // Declaring it private, makes it unusable.
     RefTable& operator= (const RefTable&);
 
+    // Get the names of the tables this table consists of.
+    virtual void getPartNames (Block<String>& names, Bool recursive) const;
+
     // Show the extra table structure info (name of root table).
     void showStructureExtra (std::ostream&) const;
 

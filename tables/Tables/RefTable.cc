@@ -175,6 +175,17 @@ RefTable::~RefTable()
 }
 
 
+void RefTable::getPartNames (Block<String>& names, Bool recursive) const
+{
+  if (recursive) {
+    baseTabPtr_p->getPartNames (names, recursive);
+  } else {
+    uInt inx = names.size();
+    names.resize (inx + 1);
+    names[inx] = baseTabPtr_p->tableName();
+  }
+}
+
 uInt* RefTable::getStorage (Vector<uInt>& rownrs)
 {
     Bool deleteIt;

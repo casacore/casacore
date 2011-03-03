@@ -134,6 +134,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
+  void ConcatTable::getPartNames (Block<String>& names, Bool recursive) const
+  {
+    if (recursive) {
+      for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
+        baseTabPtr_p[i]->getPartNames (names, recursive);
+      }
+    } else {
+      uInt inx = names.size();
+      names.resize (inx + baseTabPtr_p.nelements());
+      for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
+        names[inx+i] = baseTabPtr_p[i]->tableName();
+      }
+    }
+  }
+
   void ConcatTable::reopenRW()
   {
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {

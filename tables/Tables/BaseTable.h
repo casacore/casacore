@@ -179,6 +179,10 @@ public:
     const String& tableName() const
 	{ return name_p; }
 
+    // Get the names of the tables this table consists of.
+    // The default implementation adds the name of this table to the block.
+    virtual void getPartNames (Block<String>& names, Bool recursive) const;
+
     // Rename the table.
     // The following options can be given:
     // <dl>

@@ -882,6 +882,11 @@ String TableProxy::tableName()
   return table_p.tableName();
 }
 
+Vector<String> TableProxy::getPartNames (Bool recursive)
+{
+  return Vector<String>(table_p.getPartNames (recursive));
+}
+
 String TableProxy::getAsciiFormat() const
 {
   return asciiFormat_p;
