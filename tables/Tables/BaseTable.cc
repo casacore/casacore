@@ -222,6 +222,13 @@ int BaseTable::tableType() const
   return Table::Plain;
 }
 
+void BaseTable::getPartNames (Block<String>& names, Bool) const
+{
+  uInt inx = names.size();
+  names.resize (inx + 1);
+  names[inx] = name_p;
+}
+
 TableInfo BaseTable::tableInfo (const String& tableName)
 {
     return TableInfo (tableName + "/table.info");

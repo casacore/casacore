@@ -487,6 +487,9 @@ public:
   // Get table name.
   String tableName();
 
+  // Get the names of the parts the table consists of (e.g. for a ConcatTable).
+  Vector<String> getPartNames (Bool recursive);
+
   // Get #columns of the table.
   Int ncolumns();
 

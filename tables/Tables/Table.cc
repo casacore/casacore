@@ -276,6 +276,13 @@ Table& Table::operator= (const Table& that)
 }
 
 
+Block<String> Table::getPartNames (Bool recursive) const
+{
+    Block<String> names;
+    baseTabPtr_p->getPartNames (names, recursive);
+    return names;
+}
+
 void Table::closeSubTables() const
 {
   return keywordSet().closeTables();

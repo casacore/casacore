@@ -248,8 +248,8 @@ public:
     // Make a new empty table (plain (scratch) or memory type).
     // Columns should be added to make it a real one.
     // Note that the endian format is only relevant for plain tables.
-  explicit Table (TableType, EndianFormat = Table::AipsrcEndian,
-                  const TSMOption& = TSMOption());
+    explicit Table (TableType, EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
 
     // Make a table object for a new table, which can thereafter be used
     // for reading and writing.
@@ -327,6 +327,14 @@ public:
 
     // Assignment (reference semantics).
     Table& operator= (const Table&);
+
+    // Get the names of the tables this table consists of.
+    // For a plain table it returns its name,
+    // for a RefTable the name of the parent, and
+    // for a ConcatTable the names of all its parts.
+    // <br>Note that a part can be any type of table (e.g. a ConcatTable).
+    // The recursive switch tells how to deal with that.
+    Block<String> getPartNames (Bool recursive=False) const;
 
     // Is the root table of this table the same as that of the other one?
     Bool isSameRoot (const Table& other) const;
