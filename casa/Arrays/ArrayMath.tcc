@@ -216,7 +216,7 @@ void minMaxMasked(T &minVal, T &maxVal,
   }
   size_t minp = 0;
   size_t maxp = 0;
-  T minv = array.data()[0];
+  T minv = array.data()[0] * weight.data()[0];
   T maxv = minv;
   if (array.contiguousStorage()  &&  weight.contiguousStorage()) {
     typename Array<T>::const_contiter iter = array.cbegin();
