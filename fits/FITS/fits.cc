@@ -1453,14 +1453,12 @@ int FITS::get_comment(const char *s, int len, int &begpos) {
 	    if (i < len) {
 		begpos = i;
 		return trim_comment(&s[i],(len - i));
-	    } else {
-		begpos = 0;
-		return 0;
 	    }
-	} else {
-	    begpos = 0;
-	    return trim_comment(s,len);
-	}
+            begpos = 0;
+            return 0;
+        }
+        begpos = 0;
+        return trim_comment(s,len);
 }
 
 void FITS::fstr2str(char *target, const char *source, int len) {

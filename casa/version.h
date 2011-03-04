@@ -35,6 +35,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // Get the casacore version.
   const std::string getVersion();
 
+  // Get the version of casacore on CASA's vendor branch
+  // Note: CASA's private version of casacore has a lifecycle
+  // which is not necessarily identical to versions of casacore
+  // elsewhere. This function returns the version of casacore
+  // on CASA's vendor branch.
+  const std::string getVersionCASA();
+
 } //# NAMESPACE CASA - END
 
 #endif
