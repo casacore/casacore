@@ -75,6 +75,7 @@ ROArrayMeasColumn<M>::ROArrayMeasColumn (const Table& tab,
   // Determine the number of values in the Measure.
   M tMeas;
   itsNvals = tMeas.getValue().getTMRecordValue().nelements();
+  AlwaysAssert (itsNvals <= tmDesc.getUnits().size(), AipsError);
 
   // Set up the reference code component of the MeasRef. It can be variable
   // and therefore stored in a column which may be either an array or scalar
