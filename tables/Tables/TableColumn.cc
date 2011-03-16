@@ -96,6 +96,16 @@ void ROTableColumn::throwIfNull() const
 }
 
 
+TableRecord& ROTableColumn::rwKeywordSet()
+{
+    if (! baseTabPtr_p->isWritable()) {
+	throw (TableError ("ROTableColumn::rwKeywordSet cannot be used: table "
+			   + baseTabPtr_p->tableName() + " is not writable"));
+    }
+    return baseColPtr_p->rwKeywordSet();
+}
+
+
 const ColumnDesc& ROTableColumn::columnDesc() const
     { return baseColPtr_p->columnDesc(); }
 
