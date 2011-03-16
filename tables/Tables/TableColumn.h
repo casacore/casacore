@@ -167,9 +167,13 @@ public:
     // if function isNull() is True.
     void throwIfNull() const;
 
-    // Get const access to the column keyword set.
+    // Get readonly access to the column keyword set.
     const TableRecord& keywordSet() const
 	{ return baseColPtr_p->keywordSet(); }
+
+    // Get read/write access to the column keyword set.
+    // An exception is thrown if the table is not writable.
+    TableRecord& rwKeywordSet();
 
     // Get const access to the column description.
     // ColumnDesc functions have to be used to get the data type, etc..
@@ -419,10 +423,6 @@ public:
     void attach (const Table& table, uInt columnIndex)
 	{ reference (TableColumn (table, columnIndex)); }
     // </group>
-
-    // Get access to the column keyword set.
-    TableRecord& rwKeywordSet()
-	{ return baseColPtr_p->rwKeywordSet(); }
 
     // Copy the value of a cell of that column to a cell of this column.
     // This function only works for the standard data types.

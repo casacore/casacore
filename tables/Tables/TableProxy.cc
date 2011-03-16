@@ -1343,7 +1343,7 @@ void TableProxy::putKeyword (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   } else {
-    TableColumn tabColumn (table_p, columnName);
+    ROTableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   RecordFieldId fieldid(0);
@@ -1363,7 +1363,7 @@ void TableProxy::putKeywordSet (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   } else {
-    TableColumn tabColumn (table_p, columnName);
+    ROTableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   putKeyValues (*keySet, valueSet);
@@ -1377,7 +1377,7 @@ void TableProxy::removeKeyword (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   }else{
-    TableColumn tabColumn (table_p, columnName);
+    ROTableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   RecordFieldId fieldid(0);
