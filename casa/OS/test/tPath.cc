@@ -130,6 +130,21 @@ void doIt (Bool doExcp, Bool& success)
     check ("$tPath_Env_Test1/$HOME", home + "/" +  home,
 	   home + home, success);
 
+    // Check resolvedName.
+    String tpDir = Path("$tPath_Env_Curr/tPath_tmpdir").absoluteName();
+    AlwaysAssertExit (Path("$tPath_Env_Curr/tPath_tmpdir//d1/../d1/.//d2/").
+                      resolvedName() == tpDir + "/d1/d2");
+    if (doExcp) {
+      Bool ok = True;
+	try {
+            Path("/a/b").resolvedName();
+	} catch (AipsError x) {
+            cout << ">>> " << x.getMesg() << endl << "<<<" << endl;
+            ok = False;
+	}
+        AlwaysAssertExit (!ok);
+    }
+
     // Check copy ctor and assignment (also self-assignment).
     String str;
     Path test1 ("~");

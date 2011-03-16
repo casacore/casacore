@@ -166,6 +166,13 @@ public:
     // the working directory when needed.
     const String& absoluteName () const;
 
+    // Return the realpath which is the absolute pathname with possible
+    // symlinks resolved. It also resolves //, /./, /../ and trailing /.
+    // <br>The path must be an existing file or directory.
+    // It uses the system's realpath function. In case it fails,
+    // an exception is thrown.
+    String resolvedName() const;
+
     // Check if pathname is valid. This function checks for: double slashes, 
     // non-printable characters, pathname length and filename lenghts, this 
     // function is more OS-specific.
