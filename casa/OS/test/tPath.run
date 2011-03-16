@@ -17,6 +17,9 @@ tPath_Env_Curr=`pwd`
 export tPath_Env_Curr
 tPath_Env_Test1='$HOME'
 export tPath_Env_Test1
+mkdir tPath_tmpdir
+mkdir tPath_tmpdir/d1
+mkdir tPath_tmpdir/d1/d2
 
 if [ $# != 0 ]
 then

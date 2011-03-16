@@ -37,6 +37,9 @@
 #include <unistd.h>                 // needed for pathconf
 #include <limits.h>                 // needed for PATH_MAX, etc.
 #include <ctype.h>                  // needed for isprint
+#include <stdlib.h>                 // needed for realpath
+#include <errno.h>                  // needed for errno
+#include <casa/string.h>            // needed for strerror
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -136,6 +139,17 @@ const String& Path::absoluteName() const
 	itsAbsolutePathName = removeDots (makeAbsoluteName (expandedName()));
     }
     return itsAbsolutePathName;
+}
+
+String Path::resolvedName() const
+{
+    char name[PATH_MAX+1];
+    char* ptr = realpath (absoluteName().c_str(), name);
+    if (ptr == 0) {
+        throw AipsError("resolvedName(" + absoluteName() + ") failed: " +
+                        strerror(errno));
+    }
+    return String(name);
 }
 
 Bool Path::isValid() const
