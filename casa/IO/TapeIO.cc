@@ -36,9 +36,18 @@
 #include <casa/string.h>          // needed for strerror
 
 #ifndef CASA_NOTAPE
-// No tape support on Cray XT3 or OSX 10.6
-#  if defined(AIPS_CRAY_PGI) || defined(__MAC_10_6)
+// No tape support on Cray XT3 and OS-X 10.6
+#  if defined(AIPS_CRAY_PGI)
 #    define CASA_NOTAPE 1
+#  endif
+#  if defined(__APPLE__)
+// MAC_OS_X_VERSION_MAX_ALLOWED reflects the version of the SDK being used
+#    include <AvailabilityMacros.h>
+#    if defined(MAC_OS_X_VERSION_10_6)
+#      if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+#        define CASA_NOTAPE 1
+#      endif
+#    endif
 #  endif
 #endif
 #ifndef CASA_NOTAPE
