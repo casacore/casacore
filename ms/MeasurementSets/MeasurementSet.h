@@ -348,6 +348,11 @@ public:
 		      const String& scan="", const String& uvrange="", 
 		      const String& taql="");
 
+protected:
+  // Get access to the table lock object (for a derived class).
+  TableLock& mainLock()
+    { return mainLock_p; }
+
 private:
 
   // temporary function to add the CATEGORY keyword to the FLAG_CATEGORY
