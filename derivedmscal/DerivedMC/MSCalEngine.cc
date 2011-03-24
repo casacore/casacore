@@ -312,7 +312,7 @@ void MSCalEngine::fillFieldDir (Int calDescId, Int calInx)
   } else {
     tab = getSubTable (calDescId, "FIELD");
   }
-  ROArrayMeasColumn<MDirection> dirCol(tab, "DELAY_DIR");
+  ROArrayMeasColumn<MDirection> dirCol(tab, "PHASE_DIR");
   vector<MDirection>& fieldDir = itsFieldDir[calInx];
   fieldDir.reserve (tab.nrow());
   for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {
