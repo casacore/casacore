@@ -340,7 +340,8 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
 			} else {
 			    cre = cr;
 			}
-		    } else if (ptrY[i+1] > yfs  &&  ptrY[i+1] < yfe) {
+		    }
+                    if (ptrY[i+1] > yfs  &&  ptrY[i+1] < yfe) {
 		        Int cr = Int(ptrX[i+1] + 0.5) - blcx;
 			if (ptrY[i+1] < ptrY[i]) {
 			    crs = cr;
