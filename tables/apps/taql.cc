@@ -27,12 +27,16 @@
 
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/Table.h>
+#include <tables/Tables/TableProxy.h>
+#include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableColumn.h>
 #include <tables/Tables/ExprNodeArray.h>
-#include <casa/Arrays/Matrix.h>
+#include <casa/Containers/ValueHolder.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayIO.h>
+#include <casa/Quanta/MVPosition.h>
+#include <casa/Quanta/MVAngle.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
@@ -123,6 +127,94 @@ void showTime (const MVTime& time)
   }
 }
 
+void showTime (double time, const String& unit)
+{
+  showTime (MVTime (Quantity(time, unit)));
+}
+
+void showTime (const Array<double>& times, const String& unit)
+{
+  Quantity q(0., unit);
+  Bool firstTime = True;
+  cout << '[';
+  Array<double>::const_iterator endIter = times.end();
+  for (Array<double>::const_iterator iter= times.begin();
+       iter != endIter; ++iter) {
+    if (!firstTime) {
+      cout << ", ";
+      firstTime = False;
+    }
+    q.setValue (*iter);
+    showTime (q);
+  }
+  cout << ']';
+}
+
+void showPos (const Array<double>& pos, const Vector<String>& units)
+{
+  AlwaysAssert (pos.size() % units.size() == 0, AipsError);
+  Vector<Quantity> q(units.size());
+  for (uInt i=0; i< units.size(); ++i) {
+    q[i] = Quantity(0., units[i]);
+  }
+  Bool firstTime = True;
+  if (pos.size() != units.size()) {
+    cout << '[';
+  }
+  Array<double>::const_iterator endIter = pos.end();
+  for (Array<double>::const_iterator iter= pos.begin(); iter != endIter;) {
+    if (!firstTime) {
+      cout << ", ";
+      firstTime = False;
+    }
+    for (uInt i=0; i<units.size(); ++i) {
+      q[i].setValue (*iter);
+      iter++;
+    }
+    MVPosition pos(q);
+    cout << q;
+  }
+  if (pos.size() != units.size()) {
+    cout << ']';
+  }
+}
+
+void showDir (const Array<double>& dir, const Vector<String>& units)
+{
+  AlwaysAssert (dir.size() % units.size() == 0, AipsError);
+  Vector<Quantity> q(units.size());
+  for (uInt i=0; i< units.size(); ++i) {
+    q[i] = Quantity(0., units[i]);
+  }
+  Bool firstTime = True;
+  if (dir.size() != units.size()) {
+    cout << '[';
+  }
+  Array<double>::const_iterator endIter = dir.end();
+  for (Array<double>::const_iterator iter= dir.begin(); iter != endIter;) {
+    if (!firstTime) {
+      cout << ", ";
+      firstTime = False;
+    }
+    cout << '[';
+    for (uInt i=0; i<units.size(); ++i) {
+      q[i].setValue (*iter);
+      MVAngle angle(q[i]);
+      if (i == 0)  {
+        angle.print (cout, MVAngle::Format(MVAngle::TIME, 9));
+      } else {
+        cout << ", ";
+        angle.print (cout, MVAngle::Format(MVAngle::ANGLE, 9));
+      }
+      iter++;
+    }
+    cout << ']';
+  }
+  if (dir.size() != units.size()) {
+    cout << ']';
+  }
+}
+
 // Show an array of values enclosed in square brackets.
 // Omit square brackets if only one value.
 template<typename T>
@@ -156,10 +248,13 @@ template<> void showArray (const Array<MVTime>& arr)
 
 // Show the required columns.
 // First test if they exist and contain scalars or arrays.
-void showTable (const Table& tab, const Vector<String>& colnam)
+void showTable (const Table& tab, const Vector<String>& colnam, bool printMeas)
 {
   uInt nrcol = 0;
   PtrBlock<ROTableColumn*> tableColumns(colnam.nelements());
+  Block<Vector<String> > timeUnit(colnam.nelements());
+  Block<Vector<String> > posUnit(colnam.nelements());
+  Block<Vector<String> > dirUnit(colnam.nelements());
   uInt i;
   for (i=0; i<colnam.nelements(); i++) {
     if (! tab.tableDesc().isColumn (colnam(i))) {
@@ -173,6 +268,26 @@ void showTable (const Table& tab, const Vector<String>& colnam)
 	     << endl;
 	delete tableColumns[nrcol];
       }else{
+        // If needed, see if it is a Measure type we know of.
+        if (printMeas) {
+          const TableRecord& keys = tableColumns[nrcol]->keywordSet();
+          if (keys.isDefined ("MEASINFO")) {
+            const TableRecord& meas = keys.subRecord("MEASINFO");
+            if (keys.isDefined ("QuantumUnits")) {
+              Vector<String> units (keys.asArrayString("QuantumUnits"));
+              if (meas.isDefined ("type")) {
+                String type = meas.asString("type");
+                if (type == "epoch") {
+                  timeUnit[nrcol] = units;
+                } else if (type == "position") {
+                  posUnit[nrcol] = units;
+                } else if (type == "direction") {
+                  dirUnit[nrcol] = units;
+                }
+              }
+            }
+          }
+        }
 	nrcol++;
       }
     }
@@ -180,30 +295,30 @@ void showTable (const Table& tab, const Vector<String>& colnam)
   if (nrcol == 0) {
     return;
   }
-  
+  // Use TableProxy, so we can be type-agnostic.
+  TableProxy proxy(tab);
   for (i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
-      if (tableColumns[j]->columnDesc().isArray()) {
-        if (tableColumns[j]->isDefined (i)) {
-          cout << " shape=" << tableColumns[j]->shape (i);
-        }else{
-          cout << " no_array";
+      if (j > 0) {
+        cout << "\t";
+      }
+      if (! tableColumns[j]->isDefined (i)) {
+        cout << " no_array";
+      } else {
+        ValueHolder vh(proxy.getCell (tableColumns[j]->columnDesc().name(), i));
+        if (! timeUnit[j].empty()) {
+          if (tableColumns[j]->columnDesc().isScalar()) {
+            showTime (vh.asDouble(), timeUnit[j][0]);
+          } else {
+            showTime (vh.asArrayDouble(), timeUnit[j][0]);
+          }
+        } else if (! posUnit[j].empty()) {
+          showPos (vh.asArrayDouble(), posUnit[j]);
+        } else if (! dirUnit[j].empty()) {
+          showDir (vh.asArrayDouble(), dirUnit[j]);
+        } else {
+          cout << vh;
         }
-      }else{
-	switch (tableColumns[j]->columnDesc().dataType()) {
-	case TpBool:
-	  cout << " " << tableColumns[j]->asBool (i);
-	  break;
-	case TpString:
-	  cout << " " << tableColumns[j]->asString (i);
-	  break;
-	case TpComplex:
-	case TpDComplex:
-	  cout << " " << tableColumns[j]->asDComplex (i);
-	  break;
-	default:
-	  cout << " " << tableColumns[j]->asdouble (i);
-	}
       }
     }
     cout << endl;
@@ -322,7 +437,8 @@ void showExpr(const TableExprNode& expr)
 
 
 // Sort and select data.
-Table doCommand (bool printCommand, bool printSelect, bool printRows,
+Table doCommand (bool printCommand, bool printSelect, bool printMeas,
+                 bool printRows,
                  const String& varName, const String& prefix, const String& str,
                  const vector<const Table*>& tempTables)
 {
@@ -363,7 +479,6 @@ Table doCommand (bool printCommand, bool printSelect, bool printRows,
     cout << strc << endl;
     cout << "    has been executed" << endl;
   }
-  // Set default format for printing datetime.
   if (result.isTable()) {
     tabp = result.table();
     if (printRows) {
@@ -378,7 +493,7 @@ Table doCommand (bool printCommand, bool printSelect, bool printRows,
       }
       cout << endl;
       // Show the contents of the columns.
-      showTable (tabp, colNames);
+      showTable (tabp, colNames, printMeas);
     }
   } else {
     showExpr (result.node());
@@ -425,11 +540,13 @@ void showHelp()
   cerr << "taql can be started with a few options:" << endl;
   cerr << " -s or --style defines the TaQL style." << endl;
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
-  cerr << " -h  or --help         shows this help and exits." << endl;
-  cerr << " -pc or --printcommand shows the (expanded) TaQL command." << endl;
-  cerr << " -ps or --printselect  shows the values of selected columns." << endl;
-  cerr << " -pr or --printrows    shows the number of rows selected, updated, etc." << endl;
-  cerr << "The default for the latter 3 options is on for interactive mode, otherwise off." << endl;
+  cerr << " -h  or --help          show this help and exits." << endl;
+  cerr << " -ps or --printselect   show the values of selected columns." << endl;
+  cerr << " -pm or --printmeasure  if possible, show values as measures" << endl;
+  cerr << " -pc or --printcommand  show the (expanded) TaQL command." << endl;
+  cerr << " -pr or --printrows     show the number of rows selected, updated, etc." << endl;
+  cerr << "The default for the latter 2 options is on for interactive mode, otherwise off." << endl;
+  cerr << "The default for -ps and -pm is on." << endl;
   cerr << endl;
 }
 
@@ -569,8 +686,8 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
 }
 
 // Ask and execute commands till quit or ^D is given.
-void askCommands (bool printCommand, bool printSelect, bool printRows,
-                  const String& prefix)
+void askCommands (bool printCommand, bool printSelect, bool printMeas,
+                  bool printRows, const String& prefix)
 {
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   Regex assRE("[ \t]*=");
@@ -627,8 +744,8 @@ void askCommands (bool printCommand, bool printSelect, bool printRows,
             // Note that CALC commands can omit CALC.
             String command(str);
             vector<const Table*> tabs = replaceVars (str, tables);
-            Table tab = doCommand (printCommand, printSelect, printRows,
-                                   varName, prefix, str, tabs);
+            Table tab = doCommand (printCommand, printSelect, printMeas,
+                                   printRows, varName, prefix, str, tabs);
             if (!varName.empty()  &&  !tab.isNull()) {
               // Keep the resulting table if a variable was given.
               tables[varName] = make_pair(tab, command);
@@ -648,7 +765,8 @@ int main (int argc, const char* argv[])
   try {
     string style = "python";
     int printCommand = -1;
-    int printSelect  = -1;
+    int printSelect  = 1;
+    int printMeas    = 1;
     int printRows    = -1;
     int st;
     for (st=1; st<argc; ++st) {
@@ -669,12 +787,16 @@ int main (int argc, const char* argv[])
         printCommand = 1;
       } else if (arg == "-ps"  ||  arg == "--printselect") {
         printSelect = 1;
+      } else if (arg == "-pm"  ||  arg == "--printmeasure") {
+        printMeas = 1;
       } else if (arg == "-pr"  ||  arg == "--printrows") {
         printRows = 1;
       } else if (arg == "-nopc"  ||  arg == "--noprintcommand") {
         printCommand = 0;
       } else if (arg == "-nops"  ||  arg == "--noprintselect") {
         printSelect = 0;
+      } else if (arg == "-nopm"  ||  arg == "--noprintmeasure") {
+        printMeas = 0;
       } else if (arg == "-nopr"  ||  arg == "--noprintrows") {
         printRows = 0;
       } else if (arg == "-h"  ||  arg == "--help") {
@@ -694,12 +816,13 @@ int main (int argc, const char* argv[])
     prefix = "using style " + style + ' ';
     if (st < argc) {
       // Execute the given command.
-      doCommand (printCommand==1, printSelect==1, printRows==1,
+      doCommand (printCommand==1, printSelect==1, printMeas==1, printRows==1,
                  String(), prefix, argv[st], vector<const Table*>());
     } else {
     // Ask the user for commands.
       cout << "Using default TaQL style " << style << endl;
-      askCommands (printCommand!=0, printSelect!=0, printRows!=0, prefix);
+      askCommands (printCommand!=0, printSelect!=0, printMeas!=0,
+                   printRows!=0, prefix);
     }
   } catch (AipsError& x) {
     cerr << "\nCaught an exception: " << x.getMesg() << endl;
