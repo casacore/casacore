@@ -815,8 +815,9 @@ TableExprNode TableParseSelect::makeFuncNode
 	  const TableExprNodeSetElem& arg = arguments[i];
 	  const TableExprNodeRep* rep = arg.start();
 	  if (rep == 0  ||  !arg.isSingle()
-	  ||  rep->valueType() != TableExprNodeRep::VTScalar
-	  ||  rep->dataType() != TableExprNodeRep::NTInt) {
+              ||  rep->valueType() != TableExprNodeRep::VTScalar
+              ||  (rep->dataType() != TableExprNodeRep::NTInt
+                   &&  rep->dataType() != TableExprNodeRep::NTDouble)) {
 	    throw TableInvExpr ("Axes/shape arguments " +
 				String::toString(i+1) +
 				" are not one or more scalars"
