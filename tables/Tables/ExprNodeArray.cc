@@ -1003,7 +1003,7 @@ TableExprNodeIndex::TableExprNodeIndex (const TableExprNodeSet& indices,
   isCOrder_p         (style.isCOrder()),
   isSingle_p         (True)
 {
-  if (style.isEndExcl()) ++endMinus_p;
+    if (style.isEndExcl()) ++endMinus_p;
     fillIndex (indices);
 }
 
