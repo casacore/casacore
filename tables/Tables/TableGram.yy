@@ -149,6 +149,8 @@ using namespace casa;
 %type <node> elem
 %type <node> subsrange
 %type <node> colonrange
+%type <node> colonrangeinterval
+%type <node> colonrangeindex
 %type <node> range
 %type <node> sortexpr
 %type <nodelist> sortlist
@@ -1121,7 +1123,7 @@ singlerange: range {
            }
          ;
 
-range:     colonrange {
+range:     colonrangeinterval {
                $$ = $1;
            }
          | LT arithexpr COMMA arithexpr GT {
@@ -1261,10 +1263,48 @@ subsrange: arithexpr {
                     new TaQLIndexNodeRep (*$1, 0, 0));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | colonrange {
+         | colonrangeindex {
                $$ = $1;
 	   }
          ;
+
+colonrangeinterval: colonrange {
+               $$ = $1;
+            }
+         |  arithexpr COLON {
+	       $$ = new TaQLNode(
+                    new TaQLIndexNodeRep (*$1, 0, 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
+         |  arithexpr COLON COLON {
+	       $$ = new TaQLNode(
+                    new TaQLIndexNodeRep (*$1, 0, 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
+         |  arithexpr COLON COLON arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLIndexNodeRep (*$1, 0, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
+
+colonrangeindex: colonrange {
+               $$ = $1;
+            }
+         |  arithexpr COLON {
+	       $$ = new TaQLNode (new TaQLIndexNodeRep
+                    (*$1, TaQLConstNode(new TaQLConstNodeRep(Int64(-1))), 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
+         |  arithexpr COLON COLON {
+	       $$ = new TaQLNode (new TaQLIndexNodeRep
+                    (*$1, TaQLConstNode(new TaQLConstNodeRep(Int64(-1))), 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
+         |  arithexpr COLON COLON arithexpr {
+	       $$ = new TaQLNode (new TaQLIndexNodeRep
+                    (*$1, TaQLConstNode(new TaQLConstNodeRep(Int64(-1))), *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+            }
 
 colonrange: arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
@@ -1274,16 +1314,6 @@ colonrange: arithexpr COLON arithexpr {
          |  arithexpr COLON arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (*$1, *$3, *$5));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-            }
-         |  arithexpr COLON {
-	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, 0));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-            }
-         |  arithexpr COLON COLON arithexpr {
-	       $$ = new TaQLNode(
-                    new TaQLIndexNodeRep (*$1, 0, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
             }
          |  COLON arithexpr {
