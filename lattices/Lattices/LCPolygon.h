@@ -169,8 +169,15 @@ private:
     void fillMask (Bool* mask, Int nx, Int ny, Int blcx, Int blcy,
 		   const Float* ptrX, const Float* ptrY, uInt nrline);
 
-    // Fill a line in the mask between y1 and y2.
-    void fillLine (Bool* mask, Int nx, Int ny, Int x, Int y1, Int y2);
+    // Truncate a start value to a pixel point.
+    // A pixel point is taken if near the value, otherwise floor(value+1).
+    // The returned value is never < 0.
+    Int truncateStart (Float v);
+
+    // Truncate an end value to a pixel point.
+    // A pixel point is taken if near the value, otherwise floor(value).
+    // The returned value is never > maxEnd.
+    Int truncateEnd (Float v, Int maxEnd);
 
     
     Vector<Float> itsX;
