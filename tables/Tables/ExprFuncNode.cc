@@ -315,11 +315,17 @@ void TableExprFuncNode::fillChildNodes (TableExprFuncNode* thisNode,
     }
     // Convert String to Date if needed
     for (i=0; i<nodes.nelements(); i++) {
-	if (nodes[i]->dataType() == NTString  &&  dtypeOper[i] == NTDate) {
-	    TableExprNode dNode = datetime (thisNode->operands_p[i]);
-	    unlink (thisNode->operands_p[i]);
-	    thisNode->operands_p[i] = getRep (dNode)->link();
-	}
+	if (dtypeOper[i] == NTDate) {
+            if (nodes[i]->dataType() == NTString) {
+                TableExprNode dNode = datetime (thisNode->operands_p[i]);
+                unlink (thisNode->operands_p[i]);
+                thisNode->operands_p[i] = getRep (dNode)->link();
+            } else if (nodes[i]->dataType() == NTDouble) {
+                TableExprNode dNode = mjdtodate (thisNode->operands_p[i]);
+                unlink (thisNode->operands_p[i]);
+                thisNode->operands_p[i] = getRep (dNode)->link();
+            }
+        }
     }
 }
 
@@ -404,7 +410,8 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
 	       operands_p[1]->getBool(id) : operands_p[2]->getBool(id);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getBool, "
-			     "unknown function"));
+			     "unknown function " +
+                             String::toString(funcType_p)));
     }
     return True;
 }
@@ -531,7 +538,8 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	       operands_p[1]->getInt(id) : operands_p[2]->getInt(id);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getInt, "
-			     "unknown function"));
+			     "unknown function " +
+                             String::toString(funcType_p)));
     }
     return 0;
 }
@@ -650,10 +658,6 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case fmodFUNC:
 	return fmod     (operands_p[0]->getDouble(id),
 			 operands_p[1]->getDouble(id));
-        ///    case datetimeFUNC:
-        ///    case mjdtodateFUNC:
-        ///    case dateFUNC:
-        ///        return Double (getDate(id));
     case mjdFUNC:
 	return operands_p[0]->getDate(id).day();
     case timeFUNC:                                       //# return in radians
@@ -848,7 +852,8 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	       operands_p[1]->getDComplex(id) : operands_p[2]->getDComplex(id);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getDComplex, "
-			     "unknown function"));
+			     "unknown function " +
+                             String::toString(funcType_p)));
     }
     return DComplex(0., 0.);
 }
@@ -904,7 +909,8 @@ String TableExprFuncNode::getString (const TableExprId& id)
 	       operands_p[1]->getString(id) : operands_p[2]->getString(id);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getString, "
-			     "unknown function"));
+			     "unknown function " +
+                             String::toString(funcType_p)));
     }
     return "";
 }
@@ -925,7 +931,8 @@ TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
       break;
     }
     throw (TableInvExpr ("TableExprFuncNode::getRegex, "
-                         "unknown function"));
+                         "unknown function " +
+                         String::toString(funcType_p)));
 }
 
 MVTime TableExprFuncNode::getDate (const TableExprId& id)
@@ -949,7 +956,8 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
 	       operands_p[1]->getDate(id) : operands_p[2]->getDate(id);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getDate, "
-			     "unknown function"));
+			     "unknown function " +
+                             String::toString(funcType_p)));
     }
     return MVTime();
 }

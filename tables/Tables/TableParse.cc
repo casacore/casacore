@@ -2202,6 +2202,10 @@ DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
     throw TableInvExpr ("Datatype " + dtstr + " of column " + colName +
 			" is invalid");
   }
+  if (dtype == TpOther) {
+    throw TableInvExpr ("Datatype " + dtstr + " of column " + colName +
+			" is invalid");
+  }
   return dtype;
 }
 

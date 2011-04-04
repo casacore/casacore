@@ -389,6 +389,12 @@ public:
     // Create a empty range object.
     static void createRange (Block<TableExprRange>&);
 
+    // Convert a NodeDataType to a string.
+    static String typeString (NodeDataType);
+
+    // Convert a ValueType to a string.
+    static String typeString (ValueType);
+
 protected:
     uInt              count_p;       //# Reference count
     Table             table_p;       //# Table from which node is "derived"

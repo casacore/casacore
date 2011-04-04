@@ -481,11 +481,11 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
   }
   if (result.isTable()) {
     tabp = result.table();
-    if (printRows) {
+    if (printRows  ||  (printSelect && showResult && colNames.size() > 0)) {
       cout << "    " << cmd << " result of " << tabp.nrow()
            << " rows" << endl;
     }
-    if (printSelect  &&  showResult  &&  colNames.nelements() > 0) {
+    if (printSelect && showResult && colNames.size() > 0) {
       // Show the selected column names.
       cout << colNames.nelements() << " selected columns: ";
       for (i=0; i<colNames.nelements(); i++) {

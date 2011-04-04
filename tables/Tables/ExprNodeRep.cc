@@ -693,6 +693,15 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
     if (leftDtype == NTString  &&  rightDtype == NTDate) {
 	leftDtype = NTDate;
     }
+    // A double will be promoted to Date when using with a Date in a comparison.
+    if (opt >= OtEQ  &&  opt <= OtIN) {
+        if (leftDtype == NTDate  &&  rightDtype == NTDouble) {
+            rightDtype = NTDate;
+        }
+        if (leftDtype == NTDouble  &&  rightDtype == NTDate) {
+            leftDtype = NTDate;
+        }
+    }      
     // Date - Date will get Double
     if (leftDtype == NTDate  &&  rightDtype == NTDate  &&  opt == OtMinus) {
 	return NTDouble;
@@ -713,9 +722,11 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
 	    return NTDate;
 	}
     }
-    TableExprNode::throwInvDT("TableExprNodeBinary::getDT cannot derive "
-                              "resulting data type");
-    return NTComplex;                  // compiler satisfaction
+    TableExprNode::throwInvDT("TableExprNodeBinary::getDT cannot combine "
+                              "arguments with data type " +
+                              typeString(leftDtype) + " and " +
+                              typeString(rightDtype));
+    return NTComplex; // compiler satisfaction
 }
 
 TableExprNodeRep TableExprNodeBinary::getTypes (const TableExprNodeRep& left,
@@ -816,17 +827,42 @@ TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
 	    thisNode->rnode_p = left;
 	}
 
-	// If expression with date and string, convert string to date
-	if (left->dataType() == NTDate  &&  right->dataType() == NTString) {
-	    TableExprNode dNode = datetime (right);
-	    unlink (right);
-	    thisNode->rnode_p = getRep(dNode)->link();
-	}
-	if (left->dataType() == NTString  &&  right->dataType() == NTDate) {
-	    TableExprNode dNode = datetime (left);
-	    unlink (left);
-	    thisNode->lnode_p = getRep(dNode)->link();
-	}
+	// If expression with date and double or string, convert to date
+	if (left->dataType() == NTDate) {
+            if (right->dataType() == NTString) {
+                TableExprNode dNode = datetime (right);
+	        unlink (right);
+	        thisNode->rnode_p = getRep(dNode)->link();
+            } else if (right->dataType() == NTDouble) {
+                TableExprNode dNode = mjdtodate (right);
+	        unlink (right);
+	        thisNode->rnode_p = getRep(dNode)->link();
+            }
+        }
+	if (right->dataType() == NTDate) {
+            if (left->dataType() == NTString) {
+                TableExprNode dNode = datetime (left);
+                unlink (left);
+                thisNode->lnode_p = getRep(dNode)->link();
+            } else if (left->dataType() == NTDouble) {
+                TableExprNode dNode = mjdtodate (left);
+                unlink (left);
+                thisNode->lnode_p = getRep(dNode)->link();
+            }
+        }
+        // date-date results in double, so convert if needed.
+        if (thisNode->dataType() == NTDouble) {
+            if (left->dataType() == NTDate) {
+                TableExprNode dNode = mjd (left);
+                unlink (left);
+                thisNode->lnode_p = getRep(dNode)->link();
+            }
+            if (right->dataType() == NTDate) {
+                TableExprNode dNode = mjd (right);
+                unlink (right);
+                thisNode->rnode_p = getRep(dNode)->link();
+            }
+        }
     }
     // Check and adapt units.
     thisNode->handleUnits();
@@ -1037,12 +1073,18 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
     } else {
 	// Data types of the nodes must match dtIn
 	for (i=0; i<nelem; i++) {
-	    // String to Date conversion is possible.
+	    // Double or String to Date conversion is possible.
 	    if (nodes[i]->dataType() != dtIn) {
-		if (nodes[i]->dataType() != NTString  ||  dtIn != NTDate) {
-		    TableExprNode::throwInvDT("function argument is not "
-                                              "string or date");
-		}
+                if (dtIn == NTDate) {
+                    if (nodes[i]->dataType() != NTString  &&
+                        nodes[i]->dataType() != NTDouble) {
+                      TableExprNode::throwInvDT("function argument is not "
+                                                "date, string or real");
+                    }
+                } else {
+                    TableExprNode::throwInvDT("function argument is not " +
+                                              typeString(dtIn));
+                }
 	    }
 	}
     }
@@ -1058,6 +1100,54 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
         resultType = dtOut;
     }
     return resultType;
+}
+
+String TableExprNodeRep::typeString (NodeDataType type)
+{
+  switch (type) {
+  case NTBool:
+    return "Bool";
+  case NTInt:
+    return "Integer";
+  case NTDouble:
+    return "Double";
+  case NTComplex:
+    return "Complex";
+  case NTString:
+    return "String";
+  case NTRegex:
+    return "Regex";
+  case NTDate:
+    return "DateTime";
+  case NTReal:
+    return "Real";
+  case NTDouCom:
+    return "Double/Complex";
+  case NTNumeric:
+    return "Numeric";
+  case NTAny:
+    return "Any";
+  }
+  throw AipsError("TableExprNodeRep::typeString NodeDataType");
+}
+
+String TableExprNodeRep::typeString (ValueType type)
+{
+  switch (type) {
+  case VTScalar:
+    return "Scalar";
+  case VTArray:
+    return "Array";
+  case VTRecord:
+    return "Record";
+  case VTSetElem:
+    return "SetElement";
+  case VTSet:
+    return "Set";
+  case VTIndex:
+    return "Index";
+  }
+  throw AipsError("TableExprNodeRep::typeString ValueType");
 }
 
 } //# NAMESPACE CASA - END
