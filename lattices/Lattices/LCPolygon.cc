@@ -57,10 +57,10 @@ LCPolygon::LCPolygon (const Vector<Double>& x, const Vector<Double>& y,
   itsY (y.nelements())
 {
     for (uInt i=0; i<x.nelements(); i++) {
-	itsX(i) = x(i);
+	itsX[i] = x[i];
 	if (i < y.nelements()) {
            // define box will catch unequal lengths x and y
-           itsY(i) = y(i);  
+           itsY[i] = y[i];  
         }
                                                 
     }
@@ -138,8 +138,8 @@ LCRegion* LCPolygon::doTranslate (const Vector<Float>& translateVector,
     y = itsY;
     uInt n = x.nelements();
     for (uInt i=0; i<n; i++) {
-        x(i) += translateVector(0);
-        y(i) += translateVector(1);
+        x[i] += translateVector[0];
+        y[i] += translateVector[1];
     }
     return new LCPolygon (x, y, newLatticeShape);
 }
@@ -221,13 +221,13 @@ void LCPolygon::defineBox()
 			  "can only be used as a 2-dim region"));
     }
     // If the last point is not equal to the first one, add it.
-    if (!near (itsX(nrp-1), itsX(0))  ||  !near(itsY(nrp-1), itsY(0))) {
+    if (!near (itsX[nrp-1], itsX[0])  ||  !near(itsY[nrp-1], itsY[0])) {
 	itsX.resize (nrp+1, True);
 	itsY.resize (nrp+1, True);
 	nrp++;
     }
-    itsX(nrp-1) = itsX(0);        // Make sure they are always equal.
-    itsY(nrp-1) = itsY(0);
+    itsX[nrp-1] = itsX[0];        // Make sure they are always equal.
+    itsY[nrp-1] = itsY[0];
     if (nrp < 3) {
 	throw (AipsError ("LCPolygon::LCPolygon - "
 			  "at least 3 different points have to be specified"));
@@ -235,18 +235,18 @@ void LCPolygon::defineBox()
     // Determine the maximum and minimum x,y.
     // They form the bounding box.
     // Check if at least one point is inside lattice.
-    Float minx = itsX(0);
-    Float maxx = itsX(0);
-    Float miny = itsY(0);
-    Float maxy = itsY(0);
+    Float minx = itsX[0];
+    Float maxx = itsX[0];
+    Float miny = itsY[0];
+    Float maxy = itsY[0];
     Bool inside = False;
     for (i=1; i<nrp; i++) {
-	if (itsX(i) < minx) minx = itsX(i);
-	if (itsX(i) > maxx) maxx = itsX(i);
-	if (itsY(i) < miny) miny = itsY(i);
-	if (itsY(i) > maxy) maxy = itsY(i);
-	if (itsX(i) >= 0  &&  itsX(i) <= shape(0)-1
-        &&  itsY(i) >= 0  &&  itsY(i) <= shape(1)-1) {
+	if (itsX[i] < minx) minx = itsX[i];
+	if (itsX[i] > maxx) maxx = itsX[i];
+	if (itsY[i] < miny) miny = itsY[i];
+	if (itsY[i] > maxy) maxy = itsY[i];
+	if (itsX[i] >= 0  &&  itsX[i] <= shape[0]-1
+        &&  itsY[i] >= 0  &&  itsY[i] <= shape[1]-1) {
 	    inside = True;
 	}
     }
@@ -267,7 +267,7 @@ void LCPolygon::defineBox()
 void LCPolygon::defineMask()
 {
     // Create and initialize the mask.
-    const IPosition& blc = boundingBox().start();
+    IPosition blc = boundingBox().start();
     const IPosition& shape = boundingBox().length();
     Matrix<Bool> mask(shape);
     mask = False;
@@ -281,10 +281,31 @@ void LCPolygon::defineMask()
     // This is usually most efficient; however if ny>>nx it might be
     // more efficient to call fillMask with x and y swapped. That also
     // means that the mask should be transposed after fillMask.
-    fillMask (ptrM, shape(1), shape(0), blc(1), blc(0), ptrY, ptrX, nrline);
+    fillMask (ptrM, shape[1], shape[0], blc[1], blc[0], ptrY, ptrX, nrline);
     itsX.freeStorage (ptrX, delX);
     itsY.freeStorage (ptrY, delY);
     mask.putStorage (ptrM, delM);
+    // Test if rows/columns at the edges are all False.
+    // If so, remove them and adjust the bounding box.
+    Int stx = 0;
+    Int sty = 0;
+    Int endx = shape[0];
+    Int endy = shape[1];
+    for (; stx<endx && allEQ(mask.row(stx), False); ++stx);
+    for (; endx-1>stx && allEQ(mask.row(endx-1), False); --endx);
+    for (; sty<endy && allEQ(mask.column(sty), False); ++sty);
+    for (; endy-1>sty && allEQ(mask.column(endy-1), False); --endy);
+    if (stx>0 || sty>0 || endx<shape[0] || endy<shape[1]) {
+      if (stx >= endx  ||  sty >> endy) {
+        throw AipsError ("polygon does not contain any pixel");
+      }
+      Matrix<Bool> mask2;
+      mask2 = mask(Slice(stx,endx-stx), Slice(sty,endy-sty));
+      mask.reference (mask2);
+      blc[0] += stx;
+      blc[1] += sty;
+      setBoundingBox (Slicer(blc, mask.shape()));
+    }
     setMask (mask);
 }
 
