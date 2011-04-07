@@ -28,7 +28,7 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
-
+#include <casa/string.h>      //# needed for strerror
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -63,6 +63,28 @@ IndexError::~IndexError() throw()
 
 DuplError::~DuplError() throw()
 {}
+
+
+SystemCallError::SystemCallError(const String& funcName, int error, Category c)
+  : AipsError("Error in " + funcName + ": " + errorMessage(error), c),
+    itsError (error)
+{}
+SystemCallError::~SystemCallError() throw()
+{}
+String SystemCallError::errorMessage(int error)
+{
+  // Use strerror_r for thread-safety.
+  char buffer[128];
+  // There are two incompatible versions of versions of strerror_r()
+#if !__linux__ || (!_GNU_SOURCE && (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600))
+  if (strerror_r(error, buffer, sizeof buffer) == 0) {
+    return String(buffer);
+  }
+  return "errno " + String::toString(error);
+#else
+  return strerror_r(error, buffer, sizeof buffer);
+#endif
+}
 
 
 // Exception which causes an abort instead of continuing

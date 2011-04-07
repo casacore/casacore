@@ -241,7 +241,9 @@ public:
                                           Bool byColumn) const;
 
 
-    static TableCache tableCache;           //# cache of open (plain) tables
+    // Get accessto the TableCache.
+    static TableCache& tableCache()
+      { return *theirTableCache; }
 
 private:
     // Copy constructor is forbidden, because copying a table requires
@@ -293,6 +295,8 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
+    //# cache of open (plain) tables
+    static TableCache* theirTableCache;
 };
 
 
