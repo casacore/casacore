@@ -332,6 +332,39 @@ public:
 };
 
 
+// <summary>Exception for an error in a system call</summary>
+// <use visibility=export>
+//
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
+//
+// <synopsis>
+// This error is to be used for if a system call returns an error.
+// It uses strerror to get the system error message.
+// </synopsis>
+
+class SystemCallError : public AipsError
+{
+public:
+  // This constructs a "SystemCallError" from the system call function name
+  // and the errno.
+  SystemCallError(const String &funcName, int error, Category c=GENERAL);
+
+  // Destructor which does nothing.
+  ~SystemCallError() throw();
+
+  // Get the errno.
+  int error() const
+    { return itsError; }
+
+  // Get the message belonging to an error.
+  static String errorMessage(int error);
+
+private:
+  int itsError;
+};
+
+
 // <summary>Exception which halts execution</summary>
 // <use visibility=export>
 //

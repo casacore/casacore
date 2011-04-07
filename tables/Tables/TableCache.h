@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Containers/SimOrdMap.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -120,10 +121,17 @@ public:
     void rename (const String& newName, const String& oldName);
 
 private:
+    // The copy constructor is forbidden.
+    TableCache (const TableCache&);
+    // The assignment operator is forbidden.
+    TableCache& operator= (const TableCache&);
+
     //# void* iso. PlainTable* is used in the map declaration
     //# to reduce the number of template instantiations.
     //# The .cc file will use (fully safe) casts.
     SimpleOrderedMap<String,void*> tableMap_p;
+    //# A mutex to synchronize access to the cache.
+    mutable Mutex itsMutex;
 };
 
 

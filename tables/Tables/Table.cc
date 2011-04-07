@@ -504,7 +504,7 @@ BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
     //# Exit if table is not in cache yet.
-    PlainTable* btp = PlainTable::tableCache(name);
+    PlainTable* btp = PlainTable::tableCache()(name);
     if (btp == 0) {
 	return btp;
     }
@@ -543,7 +543,7 @@ void Table::throwIfNull() const
 
 Bool Table::isOpened (const String& tableName)
 {
-    return  (PlainTable::tableCache (Path(tableName).absoluteName()) != 0);
+    return (PlainTable::tableCache()(Path(tableName).absoluteName()) != 0);
 }
 
 
@@ -571,7 +571,7 @@ Bool Table::hasDataChanged()
 uInt Table::nAutoLocks()
 {
     uInt n=0;
-    const TableCache& cache = PlainTable::tableCache;
+    const TableCache& cache = PlainTable::tableCache();
     uInt ntab = cache.ntable();
     for (uInt i=0; i<ntab; i++) {
 	const PlainTable& table = *(cache(i));
@@ -587,7 +587,7 @@ uInt Table::nAutoLocks()
 
 void Table::relinquishAutoLocks (Bool all)
 {
-    TableCache& cache = PlainTable::tableCache;
+    TableCache& cache = PlainTable::tableCache();
     uInt ntab = cache.ntable();
     for (uInt i=0; i<ntab; i++) {
 	PlainTable& table = *(cache(i));
@@ -608,7 +608,7 @@ Vector<String> Table::getLockedTables (FileLocker::LockType lockType,
                                        int lockOption)
 {
     vector<String> names;
-    TableCache& cache = PlainTable::tableCache;
+    TableCache& cache = PlainTable::tableCache();
     uInt ntab = cache.ntable();
     for (uInt i=0; i<ntab; i++) {
 	PlainTable& table = *(cache(i));

@@ -46,7 +46,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Initialize the static TableCache object.
-TableCache PlainTable::tableCache = TableCache();
+TableCache* PlainTable::theirTableCache = new TableCache();
 
 
 PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
@@ -75,13 +75,13 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 	             ("SetupNewTable object already used for another Table"));
     }
     //# Check if a table with this name is not in the table cache.
-    if (tableCache(name_p) != 0) {
+    if (tableCache()(name_p) != 0) {
         // OK it's in the cache but is it really there?
         if(File(name_p).exists()){
 	   throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
         } else {
-	    tableCache.remove (name_p);
+          tableCache().remove (name_p);
         }
     }
     //# If the table already exists, exit if it is in use.
@@ -136,7 +136,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     //# The destructor can (in principle) write.
     noWrite_p = False;
     //# Add it to the table cache.
-    tableCache.define (name_p, this);
+    tableCache().define (name_p, this);
   } catch (AipsError) {
     delete lockPtr_p;
     lockPtr_p = 0;
@@ -251,7 +251,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     noWrite_p = False;
     //# Add it to the table cache.
     if (addToCache) {
-	tableCache.define (name_p, this);
+      tableCache().define (name_p, this);
     }
 }
 
@@ -295,7 +295,7 @@ void PlainTable::closeObject()
     }
     //# Remove it from the table cache (if added).
     if (addToCache_p) {
-	tableCache.remove (name_p);
+      tableCache().remove (name_p);
     }
     //# Delete everything.
     delete colSetPtr_p;

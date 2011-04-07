@@ -171,7 +171,7 @@ void TableKeyword::flush (Bool fsync) const
 	} else {
 	    // The table is not open here, but might be open elsewhere.
 	    // So only flush if open elsewhere, thus in the TableCache.
-	    PlainTable* ptab = PlainTable::tableCache (attr_p.name());
+            PlainTable* ptab = PlainTable::tableCache() (attr_p.name());
 	    if (ptab) {
 	        ptab->flush (fsync, True);
 	    }

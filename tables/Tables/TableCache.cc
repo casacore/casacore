@@ -49,17 +49,20 @@ PlainTable* TableCache::operator() (const String& tableName) const
 
 PlainTable* TableCache::operator() (uInt index) const
 {
+    ScopedLock sc(itsMutex);
     return (PlainTable*) (tableMap_p.getVal (index));
 }
 
 uInt TableCache::ntable() const
 {
+    ScopedLock sc(itsMutex);
     return tableMap_p.ndefined();
 }
 
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
+    ScopedLock sc(itsMutex);
     tableMap_p.define (tableName, tab);
 }
 
@@ -69,6 +72,7 @@ void TableCache::remove (const String& tableName)
     // deleted before the Table.
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
+    ScopedLock sc(itsMutex);
     if (tableMap_p.ndefined() > 0) {
       try {
 	tableMap_p.remove (tableName);
@@ -85,6 +89,7 @@ void TableCache::remove (const String& tableName)
 
 void TableCache::rename (const String& newName, const String& oldName)
 {
+    ScopedLock sc(itsMutex);
     if (tableMap_p.isDefined (oldName)) {
 	tableMap_p.rename (newName, oldName);
     }
