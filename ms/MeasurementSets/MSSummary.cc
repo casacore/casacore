@@ -219,7 +219,12 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
     // Make objects
     ROMSColumns msc(*pMS);
     Double startTime, stopTime;
-    minMax(startTime, stopTime, msc.time().getColumn());
+    IPosition startPos, endPos;
+    minMax(startTime, stopTime, startPos, endPos, msc.time().getColumn());
+    // Actual start/end time is at the edges of the interval.
+    // Assume that first row contains 
+    startTime -= 0.5 * msc.interval()(startPos[0]);
+    endTime   += 0.5 * msc.interval()(endPos[0]);
     Double exposTime = stopTime - startTime;
     //    Double exposTime = sum(msc.exposure().getColumn());
     MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
