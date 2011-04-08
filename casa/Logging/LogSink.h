@@ -154,8 +154,10 @@ public:
   // <src>os</src> will last as long as the <src>LogSink</src>s that use it.
   // Normally you would use <src>&cerr</src> as the argument.
   // <group>
-  LogSink (LogMessage::Priority filter, ostream *os);
-  LogSink (const LogFilterInterface &filter, ostream *os);
+  LogSink (LogMessage::Priority filter, ostream *os,
+           Bool useGlobalSink = True);
+  LogSink (const LogFilterInterface &filter, ostream *os,
+           Bool useGlobalSink = True);
   // </group>
 
   // Log to the given sink.
@@ -270,6 +272,7 @@ private:
   // reference to it is destroyed. This can happen if you have a static
   // LogSink (or LogIO).
   CountedPtr<LogSinkInterface> local_ref_to_global_p;
+  Bool useGlobalSink_p;
 };
 
 

@@ -52,7 +52,8 @@ String LogSink::id( ) const {
 }
 
 LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
-: LogSinkInterface(LogFilter(filter))
+  : LogSinkInterface(LogFilter(filter)),
+    useGlobalSink_p (True)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -68,7 +69,8 @@ LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
 }
 
 LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
-: LogSinkInterface(filter)
+  : LogSinkInterface(filter),
+    useGlobalSink_p (True)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -83,9 +85,11 @@ LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-LogSink::LogSink(LogMessage::Priority filter, ostream *os)
+LogSink::LogSink(LogMessage::Priority filter, ostream *os,
+                 Bool useGlobalSink)
   : LogSinkInterface(LogFilter(filter)), 
-    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os))
+    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
+    useGlobalSink_p (useGlobalSink)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -95,9 +99,11 @@ LogSink::LogSink(LogMessage::Priority filter, ostream *os)
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-LogSink::LogSink(const LogFilterInterface &filter, ostream *os)
+LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
+                 Bool useGlobalSink)
   : LogSinkInterface(filter), 
-    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os))
+    local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
+    useGlobalSink_p (useGlobalSink)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -110,7 +116,8 @@ LogSink::LogSink(const LogFilterInterface &filter, ostream *os)
 LogSink::LogSink (const LogFilterInterface &filter,
 		  const CountedPtr<LogSinkInterface>& sink)
   : LogSinkInterface(filter),
-    local_sink_p(sink)
+    local_sink_p(sink),
+    useGlobalSink_p (True)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -119,7 +126,8 @@ LogSink::LogSink (const LogFilterInterface &filter,
 }
 
 LogSink::LogSink(const LogSink &other) 
-  : LogSinkInterface(other), local_sink_p(other.local_sink_p)
+  : LogSinkInterface(other), local_sink_p(other.local_sink_p),
+    useGlobalSink_p (other.useGlobalSink_p)
 {
     if ( ! LogSink::global_sink_p )
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
@@ -132,6 +140,7 @@ LogSink &LogSink::operator=(const LogSink &other)
     if (this != &other) {
 	local_ref_to_global_p = other.local_ref_to_global_p;
         local_sink_p = other.local_sink_p;
+        useGlobalSink_p = other.useGlobalSink_p;
 	LogSinkInterface &This = *this;
 	This = other;
     }
@@ -145,8 +154,11 @@ LogSink::~LogSink()
 
 Bool LogSink::post(const LogMessage &message) 
 {
-    Bool postedLocally =   postLocally(message);
-    Bool postedGlobally =  postGlobally(message);
+    Bool postedLocally  =  postLocally(message);
+    Bool postedGlobally =  False;
+    if (useGlobalSink_p) {
+      postedGlobally = postGlobally(message);
+    }
     return (postedLocally || postedGlobally);
 }
 
