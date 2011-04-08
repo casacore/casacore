@@ -109,6 +109,8 @@ public:
 
 // List all header information.
    void list (LogIO& os, Bool verbose=False) const;
+//Return some useful info in a record too along with os
+   void list (LogIO& os, Record& outRec,  Bool verbose=False, Bool fillRecord=True) const;
 
 // List a title for the Summary.
    void listTitle (LogIO& os) const;
@@ -119,18 +121,22 @@ public:
 
 // List what was observed (Field and Main tables)
    void listWhat (LogIO& os, Bool verbose=False) const;
-
+   void listWhat (LogIO& os, Record& outRec,  Bool verbose=False, Bool fillRecord=True) const;
 // List how data were obtained (SpectralWindow, Feed, and Antenna tables)
    void listHow (LogIO& os, Bool verbose=False) const;
 
 // List main table
    void listMain (LogIO& os, Bool verbose=False) const;
+//Return some useful info in a record too along with os
+   void listMain (LogIO& os, Record& outRec, Bool verbose=False, Bool fillRecord=True) const;
 
 // List subtables
 // <group>
    void listAntenna (LogIO& os, Bool verbose=False) const;
    void listFeed (LogIO& os, Bool verbose=False) const;
    void listField (LogIO& os, Bool verbose=False) const;
+   void listField (LogIO& os, Record& outRec, Bool verbose=False,
+		   Bool fillRecord=True) const;
    void listObservation (LogIO& os, Bool verbose=False) const;
    void listHistory (LogIO& os) const;
    void listPolarization (LogIO& os, Bool verbose=False) const;
