@@ -456,6 +456,7 @@ OS/malloc.h
 OS/Memory.h
 OS/ModcompConversion.h
 OS/ModcompDataConversion.h
+OS/Mutex.h
 OS/Path.h
 OS/PrecTimer.h
 OS/RawDataConversion.h
