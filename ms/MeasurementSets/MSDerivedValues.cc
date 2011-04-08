@@ -172,16 +172,19 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
   if (nAnt>0) {
     mount_p.resize(nAnt);
     for (Int i=0; i<nAnt; i++) {
-      if (mount(i)=="alt-az" || mount(i)=="ALT-AZ" || mount(i)=="") 
+      if (mount(i)=="alt-az" || mount(i)=="ALT-AZ" || mount(i)=="")  {
 	mount_p(i)=0;
-      else if (mount(i)=="alt-az+rotator" || mount(i)=="ALT-AZ+ROTATOR")
+      } else if (mount(i)=="alt-az+rotator" || mount(i)=="ALT-AZ+ROTATOR") {
         mount_p(i)=0; // a temporary mount type, behaves as alt-az in general
-      else if (mount(i)=="equatorial" || mount(i)=="EQUATORIAL") mount_p(i)=1;
-      else if (mount(i)=="X-Y" || mount(i)=="x-y") mount_p(i)=2;
-      else if (mount(i)=="orbiting" || mount(i)=="ORBITING") mount_p(i)=3;
-      else if (mount(i)=="bizarre" || mount(i)=="BIZARRE") mount_p(i)=4;
-      else throw(AipsError("MSDerivedValues::setAntennaMount() - "
-			   "Unrecognized mount type"));
+      } else if (mount(i)=="equatorial" || mount(i)=="EQUATORIAL") {
+        mount_p(i)=1;
+      } else if (mount(i)=="X-Y" || mount(i)=="x-y") {
+        mount_p(i)=2;
+      } else if (mount(i)=="orbiting" || mount(i)=="ORBITING") {
+        mount_p(i)=3;
+      } else {
+        mount_p(i)=4;
+      }
     }
   }
   return *this;
