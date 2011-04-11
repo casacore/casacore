@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/iosfwd.h>
+#include <vector>
 #include <unistd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -57,7 +58,7 @@ template<class T> class Vector;
 // </etymology>
 
 // <synopsis> 
-// IPosition is "logically" a Vector<Int> constrained so that it's origin
+// IPosition is "logically" a Vector<Int> constrained so that its origin
 // is zero-based, and in fact that used to be the way it was implemented.
 // It was split out into a separate class to make the inheritance from
 // Arrays simpler (since Arrays use IPositions). The
@@ -90,6 +91,11 @@ template<class T> class Vector;
 // contains the line number and source file of the failure (it is thrown
 // by the lAssert macro defined in aips/Assert.h).
 //
+// Constructors and functions exist to construct an IPosition directly from
+// a Vector or std::vector object or to convert to it. Furthermore the
+// <src>fill</src> and <src>copy</src> can be used to fill from or copy to
+// any STL-type iterator.
+//
 // <example>
 // <srcblock>
 // IPosition blc(5), trc(5,1,2,3,4,5);
@@ -103,6 +109,7 @@ template<class T> class Vector;
 // }
 // //...
 // trc += 5;           // make the box 5 larger in all dimensions
+// std::vector<Int> vec(trc.toStdVector());
 // </srcblock>
 // </example>
 
@@ -162,6 +169,34 @@ public:
     IPosition(const Array<Int>& other);
     Vector<Int> asVector() const;
     // </group>
+
+    // Convert an IPosition to and from an Array<Int>. In either case, the
+    // array must be one dimensional.
+    // <group>
+    IPosition(const std::vector<Int>& other);
+    std::vector<Int> asStdVector() const;
+    // </group>
+
+    // Resize and fill this IPosition object.
+    template<typename InputIterator>
+    void fill (uInt size, InputIterator iter)
+    {
+      resize (size);
+      for (uInt i=0; i<size; ++i, ++iter) {
+        data_p[i] = *iter;
+      }
+    }
+
+    // Copy the contents of this IPosition object to the output iterator.
+    // The size of the output must be sufficient.
+    template<typename OutputIterator>
+    void copy (OutputIterator iter) const
+    {
+      for (uInt i=0; i<size_p; ++i, ++iter) {
+        *iter = data_p[i];
+      }
+    }
+  
 
     // This member functions return an IPosition which has
     // degenerate (length==1) axes removed and the dimensionality reduced 
