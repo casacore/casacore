@@ -41,35 +41,40 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 IPosition::IPosition (const Array<Int> &other)
-: size_p (other.nelements()),
-  data_p (0)
+  : size_p (0),
+    data_p (0)
 {
-    if (size_p == 0) {
-	return;        // Be slightly loose about conformance checking
+    if (other.size() > 0) {
+        if (other.ndim() != 1) {
+            throw(AipsError("IPosition::IPosition(const Array<Int> &other) - "
+                            "other is not one-dimensional"));
+        }
+        fill (other.size(), other.begin());
     }
-    if (other.ndim() != 1) {
-	throw(AipsError("IPosition::IPosition(const Array<Int> &other) - "
-			"other is not one-dimensional"));
-    }
-    allocateBuffer();
-    Bool del;
-    const Int *storage = other.getStorage(del);
-    for (uInt i=0; i<size_p; ++i) {
-      data_p[i] = storage[i];
-    }
-    other.freeStorage (storage, del);
     DebugAssert(ok(), AipsError);
 }
 
 Vector<Int> IPosition::asVector() const
 {
     DebugAssert(ok(), AipsError);
-    // Make an array which is the correct size.
     Vector<Int> retval(nelements());
-    for (uInt i=0; i<nelements(); i++) {
-        AlwaysAssert (data_p[i] <= 2147483647, AipsError);
-	retval[i] = data_p[i];
-    }
+    copy (retval.begin());
+    return retval;
+}
+
+  IPosition::IPosition (const std::vector<Int> &other)
+  : size_p (0),
+    data_p (0)
+{
+    fill (other.size(), other.begin());
+    DebugAssert(ok(), AipsError);
+}
+
+std::vector<Int> IPosition::asStdVector() const
+{
+    DebugAssert(ok(), AipsError);
+    std::vector<Int> retval(nelements());
+    copy (retval.begin());
     return retval;
 }
 

@@ -420,6 +420,20 @@ int main()
     AlwaysAssertExit(IPosition(3,1).allOne());
     AlwaysAssertExit(! IPosition(3,0).allOne());
 }
+{
+    std::vector<Int> vi;
+    IPosition ip(3, 1, 2, 3);
+    IPosition ip2(6, 1, 2, 3, 4, 5, 6);
+    vi = ip.asStdVector();
+    AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3);
+    vi.resize(6);
+    vi = ip2.asStdVector();
+    AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3 && vi[3] == 4 &&
+		     vi[4] == 5 && vi[5] == 6);
+    IPosition ip3(vi);
+    AlwaysAssertExit(ip3[0] == 1 && ip3[1] == 2 && ip3[2] == 3 && ip3[3] == 4 &&
+		     ip3[4] == 5 && ip3[5] == 6);
+}
 
 }
 
