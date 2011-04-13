@@ -732,7 +732,7 @@ void  LSQFit::set(Double factor, Double LMFactor) {
   startnon_p = LMFactor;
 }
 
-const std::string &LSQFit::readyText() {
+const std::string &LSQFit::readyText() const {
   static std::string txt[LSQFit::N_ReadyCode] =
     { "Not ready",
       "Incremental solution too small",

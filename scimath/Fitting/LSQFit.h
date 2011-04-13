@@ -741,13 +741,13 @@ class LSQFit {
   // Set maximum number of iterations
   void setMaxIter(uInt maxiter=0) { maxiter_p = maxiter; };
   // Get number of iterations done
-  uInt nIterations() { return (maxiter_p>0 ? maxiter_p-niter_p : 0); };
+  uInt nIterations() const { return (maxiter_p>0 ? maxiter_p-niter_p : 0); };
   // Set the expected form of the normal equations
   void setBalanced(Bool balanced=False) { balanced_p = balanced; };
   // Ask the state of the non-linear solutions
   // <group>
-  LSQFit::ReadyCode isReady() { return ready_p; };
-  const std::string &readyText();
+  LSQFit::ReadyCode isReady() const { return ready_p; };
+  const std::string &readyText() const;
   // </group>  
 // Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
