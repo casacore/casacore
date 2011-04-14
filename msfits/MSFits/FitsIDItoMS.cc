@@ -2362,10 +2362,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     */
 
     Float test_baseline;
-    memcpy(&test_baseline,fitsrow,sizeof(Long));
+    memcpy(&test_baseline,fitsrow,sizeof(Float));
     //cout << "*****TEST_BASELINE FITS=" << test_baseline << endl;
 
-    memcpy(&test_baseline,table,sizeof(Long));
+    memcpy(&test_baseline,table,sizeof(Float));
     //cout << "*****TEST_BASELINE TABLE=" << test_baseline << endl;
 
     Long new_baseline;
