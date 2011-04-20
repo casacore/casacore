@@ -86,6 +86,9 @@
   SCRIPTUSED=0
   set $@
 
+# Get the current directory.
+  curdir=`pwd`
+
 # If there is a .run file then use it.
 # Note that in this way the run file is used if there is a .run and .py file.
 # Still the .py file is copied and removed as needed, so the .run file
@@ -170,7 +173,8 @@ EOF
   fi
 
 # Strip out demarked text.
-  sed -e '/^>>>/,/^<<</d' ${1}_tmp.out > ${1}_tmp.out2
+# Remove the current directory from the output (to avoid system dependencies).
+  sed -e '/^>>>/,/^<<</d' ${1}_tmp.out | sed -e "s%$curdir/%%g" > ${1}_tmp.out2
   mv -f ${1}_tmp.out2 ${1}_tmp.out
 
 # Compare with the expected output.
