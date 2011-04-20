@@ -29,6 +29,7 @@
 #define CASA_SEQUENCE_H
 
 #include <casa/aips.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,14 +66,16 @@ public:
 class uIntSequence : public Sequence<uInt> {
 
 public:
-    // Get the next <src>uInt</src> value in the sequence.
+    // Get the next <src>uInt</src> value in the sequence (thread-safe).
     // <group>
-    uInt getNext();
-    static uInt SgetNext() {return ++num;}
+    uInt getNext()
+      { return SgetNext(); }
+    static uInt SgetNext();
     // </group>
 
 private:
     static uInt num;
+    static Mutex theirMutex;
 };
 
 

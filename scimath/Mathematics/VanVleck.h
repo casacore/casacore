@@ -33,6 +33,7 @@
 #include <casa/Arrays/Matrix.h>
 #include <scimath/Functionals/Interpolate1D.h>
 #include <casa/BasicSL/Constants.h>
+#include <casa/OS/Mutex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -186,7 +187,10 @@ private:
     static Matrix<Double> itsQx0Qy0;
     // This is (Qx1[i+1]-Qx1[i])*(Qy1[j+1]*Qy1[j])
     static Matrix<Double> itsQx1Qy1diffs;
-    
+    // The mutex to make the functions thread-safe.
+    static Mutex theirMutex;
+
+
     // The fortran numerical integration function will call this.
     // For a given rho and quantization functions, this computes,
     // via Price's theorem, the value dr/drho of the derivative,
@@ -229,11 +233,6 @@ private:
     static Bool dcoff3(Double &dcoffset, Double &threshold,
 		       Double zerolag, Double bias);
 };
-
-inline 
-Double VanVleck::r(const Double rho)
-{ return (*itsInterp)(rho);}
-
 
 
 } //# NAMESPACE CASA - END

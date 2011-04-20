@@ -55,11 +55,7 @@ SubTableDesc::SubTableDesc (const String& name, const String& comment,
   byName_p      (False),
   allocSelf_p   (True),
   shallowCopy_p (False)
-{
-    if (tabDescPtr_p == 0) {
-	throw (AllocError ("SubTableDesc::SubTableDesc", 1));
-    }
-}
+{}
   
 SubTableDesc::SubTableDesc (const String& name, const String& comment,
 			    TableDesc* descptr, int opt)
@@ -72,15 +68,6 @@ SubTableDesc::SubTableDesc (const String& name, const String& comment,
   shallowCopy_p (True)
 {}
   
-//# Register the makeDesc function.
-SubTableDesc::SubTableDesc (
-     SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>& map)
-: BaseColumnDesc("", "", "", "", TpTable, "", 0, 0, IPosition(),
-		 False, False, True),
-  tabDescPtr_p  (0),
-  allocSelf_p   (False)
-    { map.define (className(), makeDesc); }
-
 SubTableDesc::SubTableDesc (const SubTableDesc& that)
 : BaseColumnDesc(that),
   tabDescPtr_p  (0),
@@ -92,9 +79,6 @@ SubTableDesc::SubTableDesc (const SubTableDesc& that)
 BaseColumnDesc* SubTableDesc::makeDesc (const String&)
 {
     BaseColumnDesc* ptr = new SubTableDesc("", "", TableDesc());
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::makeDesc",1));
-    }
     return ptr;
 }
 
@@ -125,9 +109,6 @@ SubTableDesc& SubTableDesc::operator= (const SubTableDesc& that)
     }else if (that.tabDescPtr_p != 0) {
 	tabDescPtr_p = new TableDesc (*that.tabDescPtr_p,
 				      "", "", TableDesc::Scratch);
-	if (tabDescPtr_p == 0) {
-	    throw (AllocError ("SubTableDesc::operator=", 1));
-	}
     }
     return *this;
 }
@@ -137,15 +118,12 @@ SubTableDesc& SubTableDesc::operator= (const SubTableDesc& that)
 BaseColumnDesc* SubTableDesc::clone() const
 {
     SubTableDesc* ptr = new SubTableDesc(*this);
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::clone",1));
-    }
     return ptr;
 }
 
 
 //# Return the class name.
-String SubTableDesc::className () const
+String SubTableDesc::className() const
     { return "SubTableDesc"; }
 
 
@@ -205,9 +183,6 @@ Bool SubTableDesc::readTableDesc()
 	tabDescPtr_p = 0;
 	if (TableDesc::isReadable (tabDescTyp_p)) {
 	    tabDescPtr_p = new TableDesc(tabDescTyp_p);
-	    if (tabDescPtr_p == 0) {
-		throw (AllocError ("SubTableDesc::readTableDesc", 1));
-	    }
 	}else{
 	    success = False;
 	}

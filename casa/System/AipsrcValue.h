@@ -220,6 +220,7 @@ private:
   //# Data
   // The global AipsrcValue object
   static AipsrcValue myp_p;
+  static Mutex theirMutex;
   // Register list
   // <group>
   Block<T> tlst;
@@ -263,6 +264,7 @@ public:
   static void save(uInt keyword);
 private:
   static AipsrcValue_Bool myp_p;
+  static Mutex theirMutex;
   Block<Bool> tlst;
   Block<String> ntlst;
   AipsrcValue_Bool<Bool> &operator=(const AipsrcValue_Bool<Bool> &other);

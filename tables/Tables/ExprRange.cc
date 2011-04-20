@@ -44,9 +44,6 @@ TableExprRange::TableExprRange(const ROTableColumn& col, double stval,
   tabColPtr_p(0)
 {
     tabColPtr_p = new ROTableColumn(col);
-    if (tabColPtr_p == 0) {
-	throw (AllocError ("TableExprRange::TableExprRange", 1));
-    }
     sval_p(0) = stval;
     eval_p(0) = endval;
 }
@@ -58,9 +55,6 @@ TableExprRange::TableExprRange (const TableExprRange& that)
 {
     if (that.tabColPtr_p != 0) {
 	tabColPtr_p = new ROTableColumn (*(that.tabColPtr_p));
-	if (tabColPtr_p == 0) {
-	    throw (AllocError ("TableExprRange::TableExprRange", 1));
-	}
     }
 }
 
@@ -75,9 +69,6 @@ TableExprRange& TableExprRange::operator= (const TableExprRange& that)
 	delete tabColPtr_p;
 	if (that.tabColPtr_p != 0) {
 	    tabColPtr_p = new ROTableColumn (*(that.tabColPtr_p));
-	    if (tabColPtr_p == 0) {
-		throw (AllocError ("TableExprRange::operator=", 1));
-	    }
 	}
     }
     return *this;

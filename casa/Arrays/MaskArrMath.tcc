@@ -1520,12 +1520,6 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted,
 	// Make a copy of the masked elements.
 
 	T *copy = new T[nelem];
-	if (copy == 0) {
-            left.freeArrayStorage(leftarrStorage, leftarrDelete);
-            left.freeMaskStorage(leftmaskStorage, leftmaskDelete);
-	    throw (AllocError("T ::median(const Array<T> &) - sort buffer",
-			      nelem));
-	}
         T *copyS = copy;
 
         uInt ntotal = nelem;

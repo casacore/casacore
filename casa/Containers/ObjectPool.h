@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <casa/Containers/PoolStack.h>
 #include <casa/Containers/SimOrdMap.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -141,6 +142,7 @@ private:
   PoolStack<T, Key> *defStack_p;
   Key cacheKey_p;
   PoolStack<T, Key> *cacheStack_p;
+  Mutex mutex_p;
   // </group>
 
   // The pool map

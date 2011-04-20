@@ -56,17 +56,6 @@ ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name,
 		  0, IPosition(), True, False, False)
 {}
   
-// Register the makeDesc function.
-ScalarRecordColumnDesc::ScalarRecordColumnDesc (
-    SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>& map)
-: BaseColumnDesc ("", "", "", "",
-		  TpRecord, "TableRecord", 0,
-		  0, IPosition(),
-		  True, False, False)
-{
-    map.define (className(), makeDesc);
-}
-
 ScalarRecordColumnDesc::ScalarRecordColumnDesc
                                           (const ScalarRecordColumnDesc& that)
 : BaseColumnDesc (that)

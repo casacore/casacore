@@ -35,19 +35,13 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//# Initialize the static variable for the DataManager registration.
-Bool ColumnDescSet::registrationDone_p = False;
-
 
 ColumnDescSet::ColumnDescSet()
 : cols_p   (ColumnDesc()),
   colSeq_p (0)
 {
-    //# Register the DataManagers if not done yet.
-    if (!registrationDone_p) {
-	DataManager::registerAllCtor();
-	registrationDone_p = True;
-    }
+    //# Register the main DataManagers if not done yet.
+    DataManager::registerMainCtor();
 }
 
 ColumnDescSet::ColumnDescSet (const ColumnDescSet& that)

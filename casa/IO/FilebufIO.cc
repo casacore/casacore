@@ -174,9 +174,10 @@ void FilebufIO::writeBuffer (Int64 offset, const char* buf, Int size)
       itsSeekOffset = offset;
     }
     if (::traceWRITE (itsFile, const_cast<char*>(buf), size) != size) {
+      int error = errno;
       itsSeekOffset = -1;
       throw AipsError (String("FilebufIO: write error for file ")
-		       + fileName() + ": " + strerror(errno));
+		       + fileName() + ": " + strerror(error));
     }
     itsSeekOffset += size;
   }
@@ -190,6 +191,7 @@ uInt FilebufIO::readBuffer (Int64 offset, char* buf, uInt size,
     itsSeekOffset = offset;
   }
   Int bytesRead = ::traceREAD (itsFile, buf, size);
+  int error = errno;
   if (bytesRead > Int(size)) { // Should never be executed
     itsSeekOffset = -1;
     throw AipsError ("FilebufIO::read - read returned a bad value"
@@ -204,11 +206,13 @@ uInt FilebufIO::readBuffer (Int64 offset, char* buf, uInt size,
     if (bytesRead < 0) {
       itsSeekOffset = -1;
       throw AipsError (String("FilebufIO::read error for file ")
-			      + fileName() + ": " + strerror(errno));
+			      + fileName() + ": " + strerror(error));
     } else if (bytesRead < Int(size)) {
       itsSeekOffset = -1;
-      throw AipsError ("FilebufIO::read - incorrect number of bytes"
-		       " read for file " + fileName());
+      throw AipsError ("FilebufIO::read - incorrect number of bytes ("
+		       + String::toString(bytesRead) + " out of "
+                       + String::toString(size) + ") read for file "
+                       + fileName());
     }
   }
   itsSeekOffset += bytesRead;
@@ -220,7 +224,7 @@ void FilebufIO::write (uInt size, const void* buf)
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw AipsError ("FilebufIO object (file " + fileName()
-		     + "} is not writable");
+		     + ") is not writable");
   }
   const char* bufc = static_cast<const char*>(buf);
   // Determine blocknr of first and last full block.
@@ -266,7 +270,7 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError ("FilebufIO object (file " + fileName()
-		     + "} is not readable");
+		     + ") is not readable");
   }
   char* bufc = static_cast<char*>(buf);
   // Determine blocknr of first and last full block.

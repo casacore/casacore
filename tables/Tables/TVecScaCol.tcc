@@ -41,9 +41,6 @@ TabVecScaCol<T>::TabVecScaCol (const ROTableColumn& column)
     //# Construct a scalar column.
     //# This will check the type, etc. and link to the BaseTable object.
     colPtr_p = new ROScalarColumn<T> (column);
-    if (colPtr_p == 0) {
-	throw (AllocError ("TabVecScaCol::TabVecScaCol", 1));
-    }
     tag_p  = TagScaCol;
     nrel_p = -1;                                 // #rows is #nelements
 }
@@ -56,9 +53,6 @@ TabVecScaCol<T>::TabVecScaCol (const TableColumn& column)
     //# This will check the type, etc. and link to the BaseTable object.
     colPtrPut_p = new ScalarColumn<T> (column);
     colPtr_p    = colPtrPut_p;
-    if (colPtr_p == 0) {
-	throw (AllocError ("TabVecScaCol::TabVecScaCol", 1));
-    }
     tag_p  = TagScaCol;
     nrel_p = -1;                                 // #rows is #nelements
 }

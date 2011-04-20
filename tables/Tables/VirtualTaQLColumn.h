@@ -108,9 +108,21 @@ public:
   // (i.e. its class name VirtualTaQLColumn).
   virtual String dataManagerType() const;
 
+  // Return the name of the class.
+  static String className();
+
   // Register the class name and the static makeObject "constructor".
   // This will make the engine known to the table system.
   static void registerClass();
+
+  // Define the "constructor" to construct this engine when a
+  // table is read back.
+  // This "constructor" has to be registered by the user of the engine.
+  // If the engine is commonly used, its registration can be added
+  // into the registerAllCtor function in DataManReg.cc. 
+  // This function gets automatically invoked by the table system.
+  static DataManager* makeObject (const String& dataManagerName,
+				  const Record& spec);
 
   // Return the TaQL expression used.
   const String& expression() const
@@ -153,15 +165,6 @@ private:
   //# one value. Possible optimization can be done by
   //# implementing it here.
   //# The same is true for getColumn.
-
-  // Define the "constructor" to construct this engine when a
-  // table is read back.
-  // This "constructor" has to be registered by the user of the engine.
-  // If the engine is commonly used, its registration can be added
-  // into the registerAllCtor function in DataManReg.cc. 
-  // This function gets automatically invoked by the table system.
-  static DataManager* makeObject (const String& dataManagerName,
-				  const Record& spec);
 
   // Get the scalar value in the given row.
   // The default implementation throws an "invalid operation" exception.

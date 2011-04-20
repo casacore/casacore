@@ -768,9 +768,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, Bool*& var)
 {
     operator>> (nrv);
     var = new Bool[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get Bool", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -779,9 +776,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, Char*& var)
 {
     operator>> (nrv);
     var = new Char[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get Char", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -790,9 +784,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, uChar*& var)
 {
     operator>> (nrv);
     var = new uChar[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get uChar", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -801,9 +792,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, short*& var)
 {
     operator>> (nrv);
     var = new short[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get short", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -812,9 +800,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, unsigned short*& var)
 {
     operator>> (nrv);
     var = new unsigned short[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get ushort", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -823,9 +808,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, int*& var)
 {
     operator>> (nrv);
     var = new int[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get int", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -834,9 +816,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, unsigned int*& var)
 {
     operator>> (nrv);
     var = new unsigned int[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get uint", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -845,9 +824,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, Int64*& var)
 {
     operator>> (nrv);
     var = new Int64[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get Int64", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -856,9 +832,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, uInt64*& var)
 {
     operator>> (nrv);
     var = new uInt64[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get uInt64", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -867,9 +840,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, float*& var)
 {
     operator>> (nrv);
     var = new float[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get float", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -878,9 +848,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, double*& var)
 {
     operator>> (nrv);
     var = new double[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get double", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -889,9 +856,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, Complex*& var)
 {
     operator>> (nrv);
     var = new Complex[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get Complex", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -900,9 +864,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, DComplex*& var)
 {
     operator>> (nrv);
     var = new DComplex[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get DComplex", nrv));
-    }
     get (nrv, var);
     return (*this);
 }
@@ -911,9 +872,6 @@ AipsIO& AipsIO::getnew (uInt& nrv, String*& var)
 {
     operator>> (nrv);
     var = new String[nrv];
-    if (var == 0) {
-	throw (AllocError ("AipsIO get String", nrv));
-    }
     get (nrv, var);
     return (*this);
 }

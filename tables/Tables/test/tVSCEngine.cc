@@ -71,7 +71,7 @@ void a() {
     // First register the virtual column engine.
     VSCExampleVSCEngine::registerClass();
     // Add ScalarColumnDesc<VSCExample> to column type map.
-    ScalarColumnDesc<VSCExample> tmp(ColumnDesc::registerMap);
+    ScalarColumnDesc<VSCExample>("x").registerClass();
 
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);

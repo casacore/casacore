@@ -180,6 +180,11 @@ class MUString;
 // formats. <br>
 // For other formatting practice, the output can be written to a String with
 // the string() member function.<br>
+// Note that using a temporary format is inherently thread-unsafe because
+// the format is kept in a static variable. Another thread may overwrite
+// the format just set. The only thread-safe way to format an MVTime is using
+// a <src>print</src> or <src>string</src> that accepts a Format object.
+//
 // Strings and input can be converted to an MVAngle (or Quantity) by
 // <src>Bool read(Quantity &out, const String &in)</src> and
 // <src> istream >> MVAngle &</src>. In the latter case the actual
@@ -344,6 +349,11 @@ class MVAngle {
   Quantity get(const Unit &inunit) const;
   // </group>
   // Output data
+  // <note role=warning>
+  // The first function below is thread-unsafe because it uses the result of
+  // the setFormat function which changes a static class member.
+  // The other functions are thread-safe because the format is directly given.
+  // </note>
   // <group>
   String string() const;
   String string(MVAngle::formatTypes intyp, uInt inprec = 0) const;
@@ -354,6 +364,11 @@ class MVAngle {
   void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
   // </group>
   // Set default format
+  // <note role=warning>
+  // It is thread-unsafe to print using the setFormat functions because they
+  // change a static class member. The only thred-safe way to print a time is
+  // to use the print function above. 
+  // </note>
   // <group>
   static Format setFormat(MVAngle::formatTypes intyp, 
 			  uInt inprec = 0);
@@ -389,6 +404,7 @@ class MVAngle {
 // <group name=output>
 ostream &operator<<(ostream &os, const MVAngle &meas);
 istream &operator>>(istream &is, MVAngle &meas);
+// Set a temporary format (thread-unsafe).
 ostream &operator<<(ostream &os, const MVAngle::Format &form);
 // </group>
 

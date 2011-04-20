@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/vector.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -58,6 +59,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // with the <linkto class=AutoDiff>AutoDiff</linkto>
   // classes, but can be used independently. The stack works best with small
   // object sizes, or letter/envelope classes.
+  //
+  // The class is fully thread-safe, thus the same object can be used safely
+  // in multiple threads.
   //
   // </synopsis>
   //
@@ -116,6 +120,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //# Data
     // The Stack
     vector<T*> stack_p;
+    Mutex      mutex_p;
 
     //# Constructors
     // All ctor and assignment constructors and assignment (not implemented)

@@ -33,6 +33,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TaQLStyle.h>
 #include <casa/Containers/Block.h>
+#include <casa/OS/Mutex.h>
 #include <casa/stdmap.h>
 
 
@@ -218,7 +219,7 @@ namespace casa {
     void setUnit (const String& unit);
 
   public:
-    // Register a the name and construction function of a UDF.
+    // Register a the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
     // construction function.
     static void registerUDF (const String& name, MakeUDFObject* func);
@@ -240,7 +241,7 @@ namespace casa {
     const IPosition& shape() const
       { return itsShape; }
 
-    // Create a UDF object.
+    // Create a UDF object (thread-safe).
     static UDFBase* createUDF (const String& name);
 
   private:
@@ -250,7 +251,8 @@ namespace casa {
     Int                            itsNDim;
     IPosition                      itsShape;
     String                         itsUnit;
-    static map<String, MakeUDFObject*> itsRegistry;
+    static map<String, MakeUDFObject*> theirRegistry;
+    static Mutex                       theirMutex;
   };
 
 } // end namespace

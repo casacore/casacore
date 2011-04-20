@@ -37,6 +37,18 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+// Throw an exception with a string composed of various arguments.
+// E.g.
+// <srcblock>
+//    CASATHROW (AipsError, "integer=" << myint << ", float=" << myfloat)
+// </srcblock>
+#define CASATHROW(exc, arg) do {     \
+    std::ostringstream casa_log_oss; \
+    casa_log_oss << arg;             \
+    throw exc(casa_log_oss.str());   \
+  } while (0)
+
+
 // <summary>Base class for all AIPS++ library errors</summary>
 // <use visibility=export>
 //

@@ -326,6 +326,9 @@ public:
     // Record a record containing data manager specifications.
     virtual Record dataManagerSpec() const;
 
+    // Return the name of the class.
+    static String className();
+
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     static void registerClass();

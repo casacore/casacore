@@ -29,7 +29,9 @@
 #define CASA_MUTEX_H
 
 #include <casa/aips.h>
-#include <pthread.h>
+#ifdef USE_THREADS
+# include <pthread.h>
+#endif
 #include <errno.h>
 #include <casa/Exceptions/Error.h>
 
@@ -52,8 +54,14 @@ namespace casa {
   class Mutex
   {
   public:
+    // Define the type of mutex.
+    // (see phtread_mutexattr_settype for their meaning).
+    // In Debug mode, type Auto will use PTHREAD_MUTEX_ERRORCHECK,
+    // otherwise PTHREAD_MUTEX_DEFAULT.
+    enum Type {Normal, ErrorCheck, Recursive, Default, Auto};
+
     // Create the mutex.
-    Mutex();
+    Mutex (Type type=Auto);
 
     // Destroy the mutex.
     ~Mutex();
@@ -73,7 +81,9 @@ namespace casa {
     // Forbid assignment.
     Mutex& operator= (const Mutex&);
 
+#ifdef USE_THREADS
     pthread_mutex_t itsMutex;
+#endif
   };
 
 
@@ -104,42 +114,23 @@ namespace casa {
     // Forbid assignment.
     ScopedLock& operator= (const ScopedLock&);
 
-    Mutex& itsMutex;
+    Mutex& itsMutexRef;
   };
 
 
   //# Implementation.
-
-  inline Mutex::Mutex()
-  {
-    int error = pthread_mutex_init (&itsMutex, 0);
-    if (error != 0) {
-      throw SystemCallError ("pthread_mutex_init", error);
-    }
-  }
-
-  inline Mutex::~Mutex()
-  {
-    int error = pthread_mutex_destroy (&itsMutex);
-    if (error != 0) {
-      throw SystemCallError ("pthread_mutex_destroy", error);
-    }
-  }
+#ifdef USE_THREADS
 
   inline void Mutex::lock()
   {
     int error = pthread_mutex_lock (&itsMutex);
-    if (error != 0) {
-      throw SystemCallError ("pthread_mutex_lock", error);
-    }
+    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
   }
 
   inline void Mutex::unlock()
   {
     int error = pthread_mutex_unlock (&itsMutex);
-    if (error != 0) {
-      throw SystemCallError ("pthread_mutex_unlock", error);
-    }
+    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
   }
 
   inline Bool Mutex::trylock()
@@ -155,16 +146,28 @@ namespace casa {
     }
   }
 
+#else
+  inline Mutex::Mutex (Mutex::Type)
+  {}
+  inline Mutex::~Mutex()
+  {}
+  inline void Mutex::lock()
+  {}
+  inline void Mutex::unlock()
+  {}
+  inline Bool Mutex::trylock()
+  { return True; }
+#endif
 
   inline ScopedLock::ScopedLock(Mutex &mutex)
-  : itsMutex(mutex)
+  : itsMutexRef(mutex)
   {
-    itsMutex.lock();
+    itsMutexRef.lock();
   }
   
   inline ScopedLock::~ScopedLock()
   {
-    itsMutex.unlock();
+    itsMutexRef.unlock();
   }
 
 

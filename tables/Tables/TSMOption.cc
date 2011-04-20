@@ -67,15 +67,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (itsMaxCacheSize <= -2) {
       AipsrcValue<Int>::find (itsMaxCacheSize, "table.tsm.maxcachesizemb", -1);
     }
-    // Default is to use mmap for existing files on 64 bit systems.
-    // Otherwise the old caching behaviour
+    // Default is to use the old caching behaviour
+    // Abandoned default to use mmap for existing files on 64 bit systems.
     if (itsOption == TSMOption::Default) {
       itsOption = TSMOption::Cache;
-#ifdef AIPS_64B
-      if (!newTable) {
-        itsOption = TSMOption::MMap;
-      }
-#endif
+      ///#ifdef AIPS_64B
+      ///      if (!newTable) {
+      ///        itsOption = TSMOption::MMap;
+      ///      }
+      ///#endif
     }
   }
 

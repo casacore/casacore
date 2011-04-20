@@ -32,6 +32,7 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/VectorIter.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa {
 
@@ -95,6 +96,7 @@ private:
   static Bool is_initialized_fftw;  // FFTW needs initialization
                                     // only once per process
                                     // not once per object
+  static Mutex theirMutex;          // Initialization mutex
 };    
     
 } //# NAMESPACE CASA - END

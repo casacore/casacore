@@ -1026,18 +1026,12 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
     } else {
 	throw (TableInvExpr (name, " must be a Scalar or Array column"));
     }
-    if (tsnptr == 0) {
-	throw (AllocError ("TableExprNode::newColumnNode", 1));
-    }
     return tsnptr;
 }
 
 
 //# Create a constant node for a keyword on behalf of the Table class.
 //# The constructor reads in the value and stores it as a constant.
-// <throw>
-//   <li> AllocError
-// </thrown>
 TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
 					  const Vector<String>& fieldNames)
 {

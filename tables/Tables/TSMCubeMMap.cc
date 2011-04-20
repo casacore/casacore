@@ -287,9 +287,22 @@ void TSMCubeMMap::accessSection (const IPosition& start, const IPosition& end,
       expandedTileShape_p.offsetIncrement (dataLength);
     IPosition sectionIncr = localPixelSize *
       expandedSectionShape.offsetIncrement (dataLength);
-    uInt nrval     = dataLength(0) * nrConvElem;
-    uInt localSize = dataLength(0) * localPixelSize;
-    uInt dataSize  = dataLength(0) * dataPixelSize;
+
+    // Calculate the largest number of pixels, nSec
+    // that are consequtive in data and in section
+    uInt nSec = dataLength(0);
+    uInt secDim = 1;
+    while (secDim < nrdim_p &&
+           dataLength(secDim-1) == tileShape_p(secDim-1) &&
+           dataLength(secDim-1) == sectionShape(secDim-1)) {
+
+        nSec *= dataLength(secDim);
+        secDim++;
+    }
+
+    uInt nrval     = nSec * nrConvElem;
+    uInt localSize = nSec * localPixelSize;
+    uInt dataSize  = nSec * dataPixelSize;
 
     // Loop through the data in the tile.
     // Handle Bool specifically because they are stored as bits.
@@ -318,7 +331,7 @@ void TSMCubeMMap::accessSection (const IPosition& start, const IPosition& end,
         dataOffset    += dataSize;
         sectionOffset += localSize;
         uInt j;
-        for (j=1; j<nrdim_p; j++) {
+        for (j=secDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {
@@ -350,7 +363,7 @@ void TSMCubeMMap::accessSection (const IPosition& start, const IPosition& end,
         dataOffset    += dataSize;
         sectionOffset += localSize;
         uInt j;
-        for (j=1; j<nrdim_p; j++) {
+        for (j=secDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {

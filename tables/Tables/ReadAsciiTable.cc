@@ -1354,9 +1354,6 @@ Table ReadAsciiTable::makeTab (String& formatString,
     }
 
     TableColumn* tabcol = new TableColumn[nrcol];
-    if (tabcol == 0) {
-	throw AllocError ("readAsciiTable", nrcol);
-    }
     for (Int i=0; i<nrcol; i++) {
 	tabcol[i].reference (TableColumn (tab, nameOfColumn[i]));
     }

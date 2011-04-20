@@ -30,8 +30,10 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 uInt RegSequence::num = 0;
+Mutex RegSequence::theirMutex;
 
 uInt RegSequence::getNext() {
+  ScopedLock lock(theirMutex);
   return ++num;
 }
 

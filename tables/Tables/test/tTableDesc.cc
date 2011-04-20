@@ -52,8 +52,8 @@
 void a (Bool doExcp)
 {
     // Add Scalar/ArrayColumnDesc<ExampleDesc> to column type map.
-    ScalarColumnDesc<ExampleDesc> tmp0(ColumnDesc::registerMap);
-    ArrayColumnDesc<ExampleDesc>  tmp1(ColumnDesc::registerMap);
+    ScalarColumnDesc<ExampleDesc>("x").registerClass();
+    ArrayColumnDesc<ExampleDesc>("x").registerClass();
 
     // First build the description of a subtable.
     // Do it in separate scope to destruct it (thus to write it).

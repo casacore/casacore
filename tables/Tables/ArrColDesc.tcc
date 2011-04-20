@@ -140,19 +140,6 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
     }
 }
 
-//# Register the makeDesc function.
-template<class T>
-ArrayColumnDesc<T>::ArrayColumnDesc (
-    SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>& map)
-: BaseColumnDesc ("", "", "", "",
-		  ValType::getType(static_cast<T*>(0)),
-		  valDataTypeId(static_cast<T*>(0)),
-		  0, 0, IPosition(),
-		  False, True, False)
-{
-    map.define (className(), makeDesc);
-}
-
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const ArrayColumnDesc<T>& that)
 : BaseColumnDesc (that)
@@ -163,10 +150,7 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const ArrayColumnDesc<T>& that)
 template<class T>
 BaseColumnDesc* ArrayColumnDesc<T>::makeDesc(const String&)
 {
-  BaseColumnDesc* ptr = new ArrayColumnDesc<T>(String());
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::makeDesc",1));
-    }
+    BaseColumnDesc* ptr = new ArrayColumnDesc<T>(String());
     return ptr;
 }
 
@@ -188,17 +172,21 @@ template<class T>
 BaseColumnDesc* ArrayColumnDesc<T>::clone() const
 {
     BaseColumnDesc* ptr = new ArrayColumnDesc<T>(*this);
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::clone",1));
-    }
     return ptr;
 }
 
 
 //# Return the class name.
 template<class T>
-String ArrayColumnDesc<T>::className () const
+String ArrayColumnDesc<T>::className() const
     { return "ArrayColumnDesc<" + dataTypeId(); }
+
+//# Register the makeDesc function.
+template<class T>
+void ArrayColumnDesc<T>::registerClass() const
+{
+    ColumnDesc::registerCtor (className(), makeDesc);
+}
 
 
 //# Put the object.
@@ -255,9 +243,6 @@ template<class T>
 PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
 {
     PlainColumn* bcp = new ArrayColumnData<T> (this, csp);
-    if (bcp == 0) {
-	throw (AllocError ("ArrayColumnDesc::makeColumn", 1));
-    }
     return bcp;
 }
 

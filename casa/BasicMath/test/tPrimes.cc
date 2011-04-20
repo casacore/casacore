@@ -53,45 +53,6 @@ void largerPrimesTest (uInt number, uInt next, uInt closest)
 
 }
 
-void compareTables ()
-{
-    Primes::initializeCache();
-    Block<uInt> table(30), table2 = Primes::cachedPrimes();
-    table[0] = 3;
-    table[1] = 5;
-    table[2] = 11;
-    table[3] = 17;
-    table[4] = 37;
-    table[5] = 67;
-    table[6] = 131;
-    table[7] = 257;
-    table[8] = 521;
-    table[9] = 1031;
-    table[10] = 2053;
-    table[11] = 4099;
-    table[12] = 8209;
-    table[13] = 16411;
-    table[14] = 32771;
-    table[15] = 65537;
-    table[16] = 131101;
-    table[17] = 262147;
-    table[18] = 524309;
-    table[19] = 1048583;
-    table[20] = 2097169;
-    table[21] = 4194319;
-    table[22] = 8388617;
-    table[23] = 16777259;
-    table[24] = 33554467;
-    table[25] = 67108879;
-    table[26] = 134217757;
-    table[27] = 268435459;
-    table[28] = 536870923;
-    table[29] = 1073741827;
-  
-    for ( uInt i = 0; i < Primes::nCachedPrimes(); i++ ) {
-	AlwaysAssertExit( table[i] == table2[i] );
-    }
-}
     
 int main()
 {
@@ -111,8 +72,6 @@ int main()
                                                         //cached prime
     largerPrimesTest (0, 3, 2);                  
     largerPrimesTest (0, 2, 2);                         //"2" is now in cache
-
-    compareTables();
 
     cout << "OK" << endl;
     return 0;

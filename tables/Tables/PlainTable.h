@@ -241,9 +241,9 @@ public:
                                           Bool byColumn) const;
 
 
-    // Get accessto the TableCache.
+    // Get access to the TableCache.
     static TableCache& tableCache()
-      { return *theirTableCache; }
+      { return theirTableCache; }
 
 private:
     // Copy constructor is forbidden, because copying a table requires
@@ -286,6 +286,9 @@ private:
     // Determine and set the endian format (big or little).
     void setEndian (int endianFormat);
 
+    // Throw an exception if the table is not writable.
+    void checkWritable (const char* func) const;
+
 
     ColumnSet*     colSetPtr_p;        //# pointer to set of columns
     Bool           tableChanged_p;     //# Has the main data changed?
@@ -296,7 +299,7 @@ private:
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
     //# cache of open (plain) tables
-    static TableCache* theirTableCache;
+    static TableCache theirTableCache;
 };
 
 

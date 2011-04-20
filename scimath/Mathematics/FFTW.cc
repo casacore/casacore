@@ -44,6 +44,7 @@
 namespace casa {
 
   Bool FFTW::is_initialized_fftw = False;
+  Mutex FFTW::theirMutex;
 
 
 #ifdef HAVE_FFTW3
@@ -93,22 +94,25 @@ namespace casa {
       itsPlanC2CB  (0)
   {
     if (!is_initialized_fftw) {
-      int numCPUs = HostInfo::numCPUs();
-      int nthreads = 1;
-      // cerr << "Number of threads is " << numCPUs << endl;
-      if (numCPUs > 1) {
-	nthreads = numCPUs;
-      }
+      ScopedLock lock(theirMutex);
+      if (!is_initialized_fftw) {
+        int numCPUs = HostInfo::numCPUs();
+        int nthreads = 1;
+        // cerr << "Number of threads is " << numCPUs << endl;
+        if (numCPUs > 1) {
+          nthreads = numCPUs;
+        }
       
-      //    std::cout << "init threads " << fftwf_init_threads() << std::endl;
-      //    std::cout << "init threads " << fftw_init_threads() << std::endl;
+        //    std::cout << "init threads " << fftwf_init_threads() << std::endl;
+        //    std::cout << "init threads " << fftw_init_threads() << std::endl;
 #ifdef HAVE_FFTW3_THREADS
-      fftwf_init_threads();
-      fftw_init_threads();
-      fftwf_plan_with_nthreads(nthreads);
-      fftw_plan_with_nthreads(nthreads);
+        fftwf_init_threads();
+        fftw_init_threads();
+        fftwf_plan_with_nthreads(nthreads);
+        fftw_plan_with_nthreads(nthreads);
 #endif
-      is_initialized_fftw = True;
+        is_initialized_fftw = True;
+      }
     }
     //    std::cerr << "will use " << nthreads << " threads " << std::endl;
 

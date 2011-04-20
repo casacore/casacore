@@ -37,6 +37,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Data
 template <class T>
 AipsrcValue<T> AipsrcValue<T>::myp_p;
+template <class T>
+Mutex AipsrcValue<T>::theirMutex;
 
 //# Constructor
 template <class T>
@@ -91,6 +93,7 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword,
 template <class T>
 uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const T &deflt) {
+  ScopedLock lock(theirMutex);
   uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
@@ -101,6 +104,7 @@ template <class T>
 uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const Unit &defun, const Unit &resun,
 				const T &deflt) {
+  ScopedLock lock(theirMutex);
   uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, defun, resun, deflt);
@@ -109,21 +113,27 @@ uInt AipsrcValue<T>::registerRC(const String &keyword,
 
 template <class T>
 const T &AipsrcValue<T>::get(uInt keyword) {
+  ScopedLock lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
 template <class T>
 void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
+  ScopedLock lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
 template <class T>
 void AipsrcValue<T>::save(uInt keyword) {
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;
-  oss << (myp_p.tlst)[keyword-1];
+  {
+    ScopedLock lock(theirMutex);
+    AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+    oss << (myp_p.tlst)[keyword-1];
+  }
+  // Unlock has to be done before save, because MVTime uses AipsrcValue.
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 

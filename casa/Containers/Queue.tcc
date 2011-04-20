@@ -77,9 +77,6 @@ template<class T> void Queue<T>::compress()
 
     T *oldstorage = data_p.storage();
     T *newstorage = new T[n];
-    if (newstorage == 0) {
-	throw(AllocError("Queue<T>::compress()", n*sizeof(T)));
-    }
     objcopy(newstorage, oldstorage + first_p, n);
     // The data_p Block now takes over responsibility for deleting newStorage.
     data_p.replaceStorage(n, newstorage, True);

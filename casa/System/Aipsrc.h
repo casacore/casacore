@@ -32,6 +32,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -375,6 +376,7 @@ protected:
   
 private:
   //# Data
+  static Mutex theirMutex;
   // Indicate files read
   static Bool doInit;
   // Last time data was (re)read
@@ -412,8 +414,8 @@ private:
   //# General member functions
   // Read in the aipsrc files, returning the number of lines found
   // <group>
-  static uInt parse();
-  static uInt parse(String &fileList);
+  static void parse(Bool force=False);
+  static void doParse(String &fileList);
   // </group>
   
   // The following parse function can be used for any list of files. It will

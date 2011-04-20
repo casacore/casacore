@@ -157,9 +157,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      {
 //          DataManager* dmPtr = new AVSCEngine (sourceColumnName(),
 //					 xTargetName_p, yTargetName_p);
-//          if (dmPtr == 0) {
-//              throw (AllocError ("AVSCEngine::clone()", 1));
-//          }
 //          return dmPtr;
 //      }
 //
@@ -238,9 +235,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      static DataManager* makeObject (const String& dataManagerType)
 //      {
 //          DataManager* dmPtr = new AVSCEngine();
-//          if (dmPtr == 0) {
-//              throw (AllocError ("AVSCEngine::makeObject()", 1));
-//          }
 //          return dmPtr;
 //      }
 //  };

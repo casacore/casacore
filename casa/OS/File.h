@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/OS/Path.h>
+#include <casa/OS/Mutex.h>
 #include <casa/BasicSL/String.h>
 
 
@@ -295,10 +296,11 @@ private:
     void getstat (const File& file, void* buf) const;
 
 
-    // A sequence number to generate unique file names.
-    static uInt uniqueSeqnr_p;
     // Full pathname of the file.
     Path itsPath;
+    // A sequence number to generate unique file names.
+    static uInt uniqueSeqnr_p;
+    static Mutex theirMutex;
 };
 
 

@@ -47,12 +47,8 @@ DynBuffer::DynBuffer (uInt bsz)
 {
     allocstart ();
     bufptr_p[0] = new Char[bufsz_p];
-    if (bufptr_p[0] == 0) {
-	throw (AllocError("DynBuffer constructor", bufsz_p));
-    }else{
-        totlen_p[0] = bufsz_p;
-        nrbuf_p = 1;
-    }
+    totlen_p[0] = bufsz_p;
+    nrbuf_p = 1;
 }
 
 
@@ -105,10 +101,6 @@ uInt DynBuffer::newbuf (uInt nr, uInt valsz)
 	    }
 	    totlen_p[nrbuf_p] = (nr*valsz > bufsz_p ? nr*valsz : bufsz_p);
 	    bufptr_p[nrbuf_p] = new Char[totlen_p[nrbuf_p]];
-	    if (bufptr_p[nrbuf_p] == 0) {
-		throw (AllocError("DynBuffer", totlen_p[nrbuf_p]));
-		return 0;
-	    }
 	    nrbuf_p++;
 	}
 

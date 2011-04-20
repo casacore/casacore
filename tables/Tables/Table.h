@@ -222,14 +222,14 @@ public:
 
     // Create a table object for an existing table.
     // The only options allowed are Old, Update, and Delete.
-    // When the name of a table description is given, it is checked
+    // If the name of a table description is given, it is checked
     // if the table has that description.
     // Locking options can be given (see class
     // <linkto class=TableLock>TableLock</linkto>.
-    // When the table with this name was already opened in this process,
+    // If the table with this name was already opened in this process,
     // the existing and new locking options are merged using
     // <src>TableLock::merge</src>.
-    // The default locking mechanism is DefaultLocking. When the table
+    // The default locking mechanism is DefaultLocking. If the table
     // is not open yet, it comes to AutoLocking with an inspection interval
     // of 5 seconds. Otherwise DefaultLocking keeps the locking options
     // of the already open table.
@@ -296,10 +296,10 @@ public:
     // Locking options can be given (see class
     // <linkto class=TableLock>TableLock</linkto>.
     // They apply to all underlying tables.
-    // When a table was already opened in this process,
+    // If a table was already opened in this process,
     // the existing and new locking options are merged using
     // <src>TableLock::merge</src>.
-    // The default locking mechanism is DefaultLocking. When the table
+    // The default locking mechanism is DefaultLocking. If the table
     // is not open yet, it comes to AutoLocking with an inspection interval
     // of 5 seconds. Otherwise DefaultLocking keeps the locking options
     // of the already open table.
@@ -393,11 +393,11 @@ public:
 
     // Try to lock the table for read or write access (default is write).
     // The number of attempts (default = forever) can be specified when
-    // acquiring the lock does not succeed immediately. When nattempts>1,
+    // acquiring the lock does not succeed immediately. If nattempts>1,
     // the system waits 1 second between each attempt, so nattempts
     // is more or less equal to a wait period in seconds.
-    // The return value is false when acquiring the lock failed.
-    // When <src>PermanentLocking</src> is in effect, a lock is already
+    // The return value is false if acquiring the lock failed.
+    // If <src>PermanentLocking</src> is in effect, a lock is already
     // present, so nothing will be done.
     // <group>
     Bool lock (FileLocker::LockType = FileLocker::Write, uInt nattempts = 0);
@@ -406,7 +406,7 @@ public:
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.
-    // When <src>PermanentLocking</src> is in effect, nothing will be done.
+    // If <src>PermanentLocking</src> is in effect, nothing will be done.
     void unlock();
 
     // Determine the number of locked tables opened with the AutoLock option
@@ -431,12 +431,12 @@ public:
     // (or is being changed) since the last time this function was called.
     Bool hasDataChanged();
 
-    // Flush the table, i.e. write out the buffers. When <src>sync=True</src>,
+    // Flush the table, i.e. write out the buffers. If <src>sync=True</src>,
     // it is ensured that all data are physically written to disk.
     // Nothing will be done if the table is not writable.
-    // At any time a flush can be executed, even when the table is marked
+    // At any time a flush can be executed, even if the table is marked
     // for delete.
-    // When the table is marked for delete, the destructor will remove
+    // If the table is marked for delete, the destructor will remove
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
@@ -474,7 +474,8 @@ public:
     static String fileName (const String& tableName);
 
     // Test if a table with the given name exists and is readable.
-    static Bool isReadable (const String& tableName);
+    // If not, an exception is thrown if <src>throwIf==True</src.
+    static Bool isReadable (const String& tableName, bool throwIf=False);
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
@@ -486,7 +487,7 @@ public:
     static uInt getLayout (TableDesc& desc, const String& tableName);
 
     // Get the table info of the table with the given name.
-    // An empty object is returned when the table is unknown.
+    // An empty object is returned if the table is unknown.
     static TableInfo tableInfo (const String& tableName);
 
     // Show the structure of the table.
@@ -499,7 +500,7 @@ public:
                         Bool sortColumns=False) const;
 
     // Test if a table with the given name exists and is writable.
-    static Bool isWritable (const String& tableName);
+    static Bool isWritable (const String& tableName, bool throwIf=False);
 
     // Find the non-writable files in a table.
     static Vector<String> nonWritableFiles (const String& tableName);
@@ -524,13 +525,13 @@ public:
     // </group>
 
     // Get readonly access to the table keyword set.
-    // When UserLocking is used, it will automatically acquire
-    // and release a read lock when the table is not locked.
+    // If UserLocking is used, it will automatically acquire
+    // and release a read lock if the table is not locked.
     const TableRecord& keywordSet() const;
 
     // Get read/write access to the table keyword set.
     // This requires that the table is locked (or it gets locked
-    // when using AutoLocking mode).
+    // if using AutoLocking mode).
     TableRecord& rwKeywordSet();
 
     // Get access to the TableInfo object.
@@ -542,7 +543,7 @@ public:
     // Write the TableInfo object.
     // Usually this is not necessary, because it is done automatically
     // when the table gets written (by table destructor or flush function).
-    // This function is only useful when the table info has to be written
+    // This function is only useful if the table info has to be written
     // before the table gets written (e.g. when another process reads
     // the table while it gets filled).
     void flushTableInfo() const;
@@ -582,11 +583,11 @@ public:
     //      overwritten. When succesfully renamed, the table is unmarked
     //      for delete (if necessary).
     // <dt> Table::New
-    // <dd> When a table with this name exists, it will be overwritten.
+    // <dd> If a table with this name exists, it will be overwritten.
     //      When succesfully renamed, the table is unmarked
     //      for delete (if necessary).
     // <dt> Table::NewNoReplace
-    // <dd> When a table with this name already exists, an exception
+    // <dd> If a table with this name already exists, an exception
     //      is thrown. When succesfully renamed, the table
     //      is unmarked for delete (if necessary).
     // <dt> Table::Scratch
@@ -609,9 +610,9 @@ public:
     // <br>The following options can be given:
     // <dl>
     // <dt> Table::New
-    // <dd> When a table with this name exists, it will be overwritten.
+    // <dd> If a table with this name exists, it will be overwritten.
     // <dt> Table::NewNoReplace
-    // <dd> When a table with this name already exists, an exception
+    // <dd> If a table with this name already exists, an exception
     //      is thrown.
     // <dt> Table::Scratch
     // <dd> Same as Table::New, but followed by markForDelete().
@@ -867,23 +868,23 @@ public:
 
     // Add a column to the table.
     // The data manager used for the column depend on the function used.
-    // Exceptions are thrown when the column already exist or when the
+    // Exceptions are thrown if the column already exist or if the
     // table is not writable.
     // <br>If this table is a reference table (result of selection) and if
     // <src>addToParent=True</src> the column is also added to the parent
     // table.
     // <group>
     // Use the first appropriate existing storage manager.
-    // When there is none, a data manager is created using the default
+    // If there is none, a data manager is created using the default
     // data manager in the column description.
     void addColumn (const ColumnDesc& columnDesc,
                     Bool addToParent = True);
     // Use an existing data manager with the given name or type.
-    // When the flag byName is True, a name is given, otherwise a type.
-    // When a name is given, an exception is thrown if the data manager is
+    // If the flag byName is True, a name is given, otherwise a type.
+    // If a name is given, an exception is thrown if the data manager is
     // unknown or does not allow addition of columns.
-    // When a type is given, a storage manager of the given type will be
-    // created when there is no such data manager allowing addition of rows.
+    // If a type is given, a storage manager of the given type will be
+    // created if there is no such data manager allowing addition of rows.
     void addColumn (const ColumnDesc& columnDesc,
 		    const String& dataManager, Bool byName,
                     Bool addToParent = True);

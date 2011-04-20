@@ -31,6 +31,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
+#include <casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -50,19 +51,12 @@ IPosition::~IPosition()
     }
 }
 
-// <thrown>
-//    <item> AllocError
-// </thrown>
 void IPosition::allocateBuffer()
 {
     if (size_p <= BufferLength) {
         data_p = buffer_p;
     } else {
 	data_p = new ssize_t[size_p];
-	if (data_p == 0) {
-	    throw(AllocError("IPosition::allocateBuffer() - "
-			     "Cannot allocate storage", size_p));
-	}
     }
     DebugAssert(ok(), AipsError);
 }
@@ -120,9 +114,6 @@ IPosition::IPosition (uInt length, ssize_t val0, ssize_t val1, ssize_t val2,
     DebugAssert(ok(), AipsError);
 }
 
-// <thrown>
-//    <item> AllocError
-// </thrown>
 IPosition::IPosition (const IPosition& other)
 : size_p (other.size_p),
   data_p (buffer_p)
@@ -185,9 +176,6 @@ IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
     return nondegenerateIP;
 }
 
-// <thrown>
-//    <item> AllocError
-// </thrown>
 void IPosition::resize (uInt newSize, Bool copy)
 {
     DebugAssert(ok(), AipsError);
@@ -986,6 +974,13 @@ Bool operator >= (ssize_t val, const IPosition& right)
 	}
     }
     return result;
+}
+
+String IPosition::toString() const
+{
+  ostringstream oss;
+  oss << *this;
+  return oss.str();
 }
 
 std::ostream& operator<< (std::ostream& os, const IPosition& ip)

@@ -194,9 +194,6 @@ private:
     //# This is in fact a Block<ColumnDesc*>, but a void* is used
     //# to reduce the number of template instantiations.
     Block<void*> colSeq_p;
-    // A switch indicating if the registration of the DataManagers
-    // has been done (False = not done yet).
-    static Bool registrationDone_p;
 };
 
 

@@ -313,9 +313,6 @@ void StManColumnIndArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
 	    *dpa = 0;
 	}else{
 	    *dpa = new StIndArray (offset);
-	    if (*dpa == 0) {
-		throw (AllocError ("StManColumnIndArrayAipsIO::getData",1));
-	    }
 	}
 	dpa++;
     }

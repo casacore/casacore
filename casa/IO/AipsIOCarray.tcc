@@ -56,9 +56,6 @@ void getnewAipsIO (AipsIO& ios, uInt& n, T** data)
 {
     ios >> n;
     *data = new T[n];
-    if (*data == 0) {
-	throw (AllocError ("getnewAipsIO", n));
-    }
     getAipsIO (ios, n, *data);
 }
 

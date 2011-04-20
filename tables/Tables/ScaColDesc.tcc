@@ -87,17 +87,6 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
   defaultVal_p   (defaultVal)
 {}
   
-// Register the makeDesc function.
-template<class T>
-ScalarColumnDesc<T>::ScalarColumnDesc (
-    SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>& map)
-: BaseColumnDesc ("", "", "", "",
-		  ValType::getType(&defaultVal_p),
-		  valDataTypeId(&defaultVal_p),
-		  0, 0, IPosition(),
-		  True, False, False)
-    { map.define (className(), makeDesc); }
-
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const ScalarColumnDesc<T>& that)
 : BaseColumnDesc (that),
@@ -108,11 +97,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const ScalarColumnDesc<T>& that)
 template<class T>
 BaseColumnDesc* ScalarColumnDesc<T>::makeDesc (const String&)
 {
-  BaseColumnDesc* ptr = new ScalarColumnDesc<T>(String());
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::makeDesc",1));
-    }
-    return ptr;
+  return new ScalarColumnDesc<T>(String());
 }
 
 template<class T>
@@ -134,9 +119,6 @@ template<class T>
 BaseColumnDesc* ScalarColumnDesc<T>::clone() const
 {
     BaseColumnDesc* ptr = new ScalarColumnDesc<T>(*this);
-    if (ptr == 0) {
-	throw (AllocError("ColumnDesc::clone",1));
-    }
     return ptr;
 }
 
@@ -145,6 +127,13 @@ BaseColumnDesc* ScalarColumnDesc<T>::clone() const
 template<class T>
 String ScalarColumnDesc<T>::className() const
     { return "ScalarColumnDesc<" + dataTypeId(); }
+
+//# Register the makeDesc function.
+template<class T>
+void ScalarColumnDesc<T>::registerClass() const
+{
+  ColumnDesc::registerCtor (className(), makeDesc);
+}
 
 
 // Put the object.
@@ -194,9 +183,6 @@ template<class T>
 PlainColumn* ScalarColumnDesc<T>::makeColumn (ColumnSet* csp) const
 {
     PlainColumn* bcp = new ScalarColumnData<T> (this, csp);
-    if (bcp == 0) {
-	throw (AllocError ("ScalarColumnDesc::makeColumn", 1));
-    }
     return bcp;
 }
 

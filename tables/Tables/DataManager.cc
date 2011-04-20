@@ -117,6 +117,7 @@ DataManagerColumn* DataManager::createScalarColumn (const String& columnName,
 {
     DataManagerColumn* colPtr = makeScalarColumn (columnName, dataType,
 						  dataTypeId);
+    colPtr->setColumnName (columnName);
     checkDataType (colPtr, columnName, dataType, dataTypeId);
     colPtr->setIsFixedShape (True);
     nrcol_p++;
@@ -130,6 +131,7 @@ DataManagerColumn* DataManager::createIndArrColumn (const String& columnName,
 {
     DataManagerColumn* colPtr = makeIndArrColumn (columnName, dataType,
 						  dataTypeId);
+    colPtr->setColumnName (columnName);
     checkDataType (colPtr, columnName, dataType, dataTypeId);
     nrcol_p++;
     return colPtr;
@@ -142,6 +144,7 @@ DataManagerColumn* DataManager::createDirArrColumn (const String& columnName,
 {
     DataManagerColumn* colPtr = makeDirArrColumn (columnName, dataType,
 						  dataTypeId);
+    colPtr->setColumnName (columnName);
     checkDataType (colPtr, columnName, dataType, dataTypeId);
     nrcol_p++;
     return colPtr;
@@ -239,18 +242,28 @@ void DataManager::removeColumn (DataManagerColumn*)
     { throw (DataManInvOper ("DataManager::removeColumn not allowed")); }
 
 
+
 //# Initialize the static map of "constructors".
+// Use a recursive mutex, because loading from a shared library can cause
+// a nested lock.
+Bool DataManager::theirMainRegistrationDone = False;
 SimpleOrderedMap<String,DataManagerCtor>
-        DataManager::registerMap (DataManager::unknownDataManager);
+        DataManager::theirRegisterMap (DataManager::unknownDataManager);
+Mutex DataManager::theirMutex(Mutex::Recursive);
+
 
 //# Register a mapping.
 void DataManager::registerCtor (const String& type, DataManagerCtor func)
-    { registerMap.define (type, func); }
+{
+    ScopedLock lock(theirMutex);
+    unlockedRegisterCtor (type, func);
+}
 
 //# Test if the data manager is registered.
 Bool DataManager::isRegistered (const String& type)
 {
-    if (registerMap.isDefined(type)) {
+    ScopedLock lock(theirMutex);
+    if (theirRegisterMap.isDefined(type)) {
 	return True;
     }
     return False;
@@ -260,7 +273,8 @@ Bool DataManager::isRegistered (const String& type)
 //# Return default function if the data manager is undefined.
 DataManagerCtor DataManager::getCtor (const String& type)
 {
-    DataManagerCtor* fp = registerMap.isDefined (type);
+    ScopedLock lock(theirMutex);
+    DataManagerCtor* fp = theirRegisterMap.isDefined (type);
     if (fp) {
         return *fp;
     }
@@ -279,7 +293,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
     DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
     if (dl.getHandle()) {
         // See if registered now.
-        fp = registerMap.isDefined (type);
+        fp = theirRegisterMap.isDefined (type);
         if (fp) {
             return *fp;
         }
@@ -307,13 +321,14 @@ void DataManagerColumn::setMaxLength (uInt)
 
 void DataManagerColumn::setShapeColumn (const IPosition&)
 {
-    throw (DataManInvOper
-	             ("setShapeColumn only allowed for FixedShape arrays"));
+    throw DataManInvOper ("setShapeColumn only allowed for FixedShape arrays"
+                          " in column " + columnName());
 }
 
 void DataManagerColumn::setShape (uInt, const IPosition&)
 {
-    throw (DataManInvOper("setShape only allowed for non-FixedShape arrays"));
+    throw DataManInvOper("setShape only allowed for non-FixedShape arrays"
+                         " in column " + columnName());
 }
 
 void DataManagerColumn::setShapeTiled (uInt rownr, const IPosition& shape,
@@ -384,9 +399,11 @@ Bool DataManagerColumn::isWritable() const
     { return True; }
 
 void DataManagerColumn::throwGet() const
-    { throw (DataManInvOper ("DataManagerColumn::get not allowed")); }
+    { throw (DataManInvOper ("DataManagerColumn::get not allowed in column "
+                             + columnName())); }
 void DataManagerColumn::throwPut() const
-    { throw (DataManInvOper ("DataManagerColumn::put not allowed")); }
+    { throw (DataManInvOper ("DataManagerColumn::put not allowed in column "
+                             + columnName())); }
 
 
 #define DATAMANAGER_GETPUT(T,NM) \
@@ -409,51 +426,109 @@ DATAMANAGER_GETPUT(String,StringV)
 
 
 void DataManagerColumn::getOtherV (uInt, void*)
-  { throw (DataManInvOper ("DataManagerColumn::getOtherV not allowed")); }
+{
+  throw (DataManInvOper ("DataManagerColumn::getOtherV not allowed"
+                         " in column " + columnName()));
+}
 void DataManagerColumn::putOtherV (uInt, const void*)
-  { throw (DataManInvOper ("DataManagerColumn::putOtherV not allowed")); }
+{
+  throw (DataManInvOper ("DataManagerColumn::putOtherV not allowed"
+                         " in column " + columnName()));
+}
 
 void DataManagerColumn::getScalarColumnV (void*)
-  { throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putScalarColumnV (const void*)
-  { throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getScalarColumnCellsV (const RefRows&, void*)
-  { throw (DataManInvOper("DataManagerColumn::getScalarColumnCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getScalarColumnCells not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putScalarColumnCellsV (const RefRows&, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putScalarColumnCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putScalarColumnCells not allowed"
+                        " in column " + columnName()));
+}
 uInt DataManagerColumn::getBlockV (uInt, uInt, void*)
 {
-    throw (DataManInvOper("DataManagerColumn::getBlock not allowed"));
-    return 0;
+  throw (DataManInvOper("DataManagerColumn::getBlock not allowed"
+                        " in column " + columnName()));
+  return 0;
 }
 void DataManagerColumn::putBlockV (uInt, uInt, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putBlock not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putBlock not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getArrayV (uInt, void*)
-  { throw (DataManInvOper("DataManagerColumn::getArray not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getArray not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putArrayV (uInt, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putArray not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putArray not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getArrayColumnV (void*)
-  { throw (DataManInvOper("DataManagerColumn::getArrayColumn not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getArrayColumn not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putArrayColumnV (const void*)
-  { throw (DataManInvOper("DataManagerColumn::putArrayColumn not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putArrayColumn not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getArrayColumnCellsV (const RefRows&, void*)
-  { throw (DataManInvOper("DataManagerColumn::getArrayColumnCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getArrayColumnCells not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putArrayColumnCellsV (const RefRows&, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putArrayColumnCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putArrayColumnCells not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getSliceV (uInt, const Slicer&, void*)
-  { throw (DataManInvOper("DataManagerColumn::getSlice not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getSlice not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putSliceV (uInt, const Slicer&, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putSlice not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putSlice not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getColumnSliceV (const Slicer&, void*)
-  { throw (DataManInvOper("DataManagerColumn::getColumnSlice not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getColumnSlice not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putColumnSliceV (const Slicer&, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putColumnSlice not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putColumnSlice not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::getColumnSliceCellsV (const RefRows&,
 					      const Slicer&, void*)
-  { throw (DataManInvOper("DataManagerColumn::getColumnSliceCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::getColumnSliceCells not allowed"
+                        " in column " + columnName()));
+}
 void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 					      const Slicer&, const void*)
-  { throw (DataManInvOper("DataManagerColumn::putColumnSliceCells not allowed")); }
+{
+  throw (DataManInvOper("DataManagerColumn::putColumnSliceCells not allowed"
+                        " in column " + columnName()));
+}
 
 
 
@@ -462,25 +537,38 @@ void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 //# Register all mappings of the names of classes derived from
 //# DataManager to a static function calling the default constructor.
 //# The class name is the name as returned by the function dataManagerType.
-void DataManager::registerAllCtor ()
+void DataManager::doRegisterMainCtor()
 {
-    registerCtor ("StManAipsIO", StManAipsIO::makeObject);
-    registerCtor ("StandardStMan", StandardStMan::makeObject);
-    registerCtor ("IncrementalStMan", IncrementalStMan::makeObject);
-    registerCtor ("TiledDataStMan", TiledDataStMan::makeObject);
-    registerCtor ("TiledCellStMan", TiledCellStMan::makeObject);
-    registerCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
-    registerCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
-    registerCtor ("MemoryStMan", MemoryStMan::makeObject);
-    CompressFloat::registerClass();
-    CompressComplex::registerClass();
-    CompressComplexSD::registerClass();
-    MappedArrayEngine<Complex,DComplex>::registerClass();
-    ForwardColumnEngine::registerClass();
-    VirtualTaQLColumn::registerClass();
-    BitFlagsEngine<uChar>::registerClass();
-    BitFlagsEngine<Short>::registerClass();
-    BitFlagsEngine<Int>::registerClass();
+    ScopedLock lock(theirMutex);
+    if (!theirMainRegistrationDone) {
+        unlockedRegisterCtor ("StManAipsIO", StManAipsIO::makeObject);
+        unlockedRegisterCtor ("StandardStMan", StandardStMan::makeObject);
+        unlockedRegisterCtor ("IncrementalStMan", IncrementalStMan::makeObject);
+        unlockedRegisterCtor ("TiledDataStMan", TiledDataStMan::makeObject);
+        unlockedRegisterCtor ("TiledCellStMan", TiledCellStMan::makeObject);
+        unlockedRegisterCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
+        unlockedRegisterCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
+        unlockedRegisterCtor ("MemoryStMan", MemoryStMan::makeObject);
+        unlockedRegisterCtor (CompressFloat::className(),
+                              CompressFloat::makeObject);
+        unlockedRegisterCtor (CompressComplex::className(),
+                              CompressComplex::makeObject);
+        unlockedRegisterCtor (CompressComplexSD::className(),
+                              CompressComplexSD::makeObject);
+        unlockedRegisterCtor (MappedArrayEngine<Complex,DComplex>::className(),
+                              MappedArrayEngine<Complex,DComplex>::makeObject);
+        unlockedRegisterCtor (ForwardColumnEngine::className(),
+                              ForwardColumnEngine::makeObject);
+        unlockedRegisterCtor (VirtualTaQLColumn::className(),
+                              VirtualTaQLColumn::makeObject);
+        unlockedRegisterCtor (BitFlagsEngine<uChar>::className(),
+                              BitFlagsEngine<uChar>::makeObject);
+        unlockedRegisterCtor (BitFlagsEngine<Short>::className(),
+                              BitFlagsEngine<Short>::makeObject);
+        unlockedRegisterCtor (BitFlagsEngine<Int>::className(),
+                              BitFlagsEngine<Int>::makeObject);
+        theirMainRegistrationDone = True;
+    }
 }
 
 } //# NAMESPACE CASA - END

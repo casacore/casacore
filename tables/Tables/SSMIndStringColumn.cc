@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <tables/Tables/SSMIndStringColumn.h>
+#include <tables/Tables/Table.h>
 #include <tables/Tables/SSMStringHandler.h>
 #include <tables/Tables/DataManError.h>
 #include <casa/Arrays/Array.h>
@@ -72,7 +73,9 @@ IPosition SSMIndStringColumn::shape (uInt aRowNr)
 					    buf[2]);
   } else {
     throw (DataManInvOper ("SSMIndStringColumn::getShape: no array in row "+
-			   String::toString(aRowNr)));
+			   String::toString(aRowNr) + " of column "
+                           + columnName()
+                           + " in table " + itsSSMPtr->table().tableName()));
   }
   return aShape;
 }
@@ -110,7 +113,8 @@ void SSMIndStringColumn::getArrayStringV (uInt aRowNr,
     if ( buf[2] == 0 ) {
       throw (DataManInvOper (
                  "SSMIndStringColumn::getArrayStringV: no array in row "
-		 + String::toString(aRowNr)));
+		 + String::toString(aRowNr) + " of column " + columnName()
+                 + " in table " + itsSSMPtr->table().tableName()));
     } else {
 
       itsSSMPtr->getStringHandler()->get(*aDataPtr, buf[0], buf[1], 

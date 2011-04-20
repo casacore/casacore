@@ -63,6 +63,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 
+uInt File::uniqueSeqnr_p = 0;      // Initialization
+Mutex File::theirMutex;
+
+
 File::File () 
 {
     // Sets itsPath on the current working directory
@@ -256,14 +260,18 @@ void File::setPermissions(uInt permissions)
     chmod ((itsPath.expandedName()).chars(),long (permissions));
 }
 
-uInt File::uniqueSeqnr_p = 0;      // Initialization
 
 Path File::newUniqueName (const String& directory, const String& prefix)
 {
-    //  creats an new unique name 
+    // create an new unique name 
     char str[32];
     // fill str with the pid and the unique number
-    sprintf (str, "%i_%i", Int(getpid()), uniqueSeqnr_p++);
+    uInt seqnr;
+    {
+      ScopedLock lock(theirMutex); 
+      seqnr = uniqueSeqnr_p++;
+    }
+    sprintf (str, "%i_%i", Int(getpid()), seqnr);
     if (directory.empty()  ||  directory.lastchar() == '/') {
 	return Path (directory + prefix + str);
     }

@@ -219,7 +219,7 @@ void a (Bool doExcp)
     // First register the virtual column engine.
     RetypedArrayEngine<RetypedArrayEx1,float>::registerClass();
     // Add ArrayColumnDesc<RetypedArrayEx1> to column type map.
-    ArrayColumnDesc<RetypedArrayEx1> tmp(ColumnDesc::registerMap);
+    ArrayColumnDesc<RetypedArrayEx1>("x").registerClass();
 
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
@@ -311,7 +311,7 @@ void c()
     // First register the virtual column engine.
     RetypedArrayEngine<RetypedArrayEx2,DComplex>::registerClass();
     // Add ArrayColumnDesc<RetypedArrayEx2> to column type map.
-    ArrayColumnDesc<RetypedArrayEx2> tmp(ColumnDesc::registerMap);
+    ArrayColumnDesc<RetypedArrayEx2>("x").registerClass();
 
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);

@@ -160,23 +160,16 @@ public:
     // Show the column.
     virtual void show (ostream& os) const;
 
-private:
     // Create the object from AipsIO (this function is registered
     // by ColumnDesc.cc).
     static BaseColumnDesc* makeDesc (const String& name);
 
+private:
     // Put the object.
     virtual void putDesc (AipsIO&) const;
 
     // Get the object.
     virtual void getDesc (AipsIO&);
-
-public:
-    // The purpose of this constructor is to register the makeDesc
-    // function of this class and map it to a name.
-    // ColumnDesc.cc registers such functions by using these constructors.
-    ScalarRecordColumnDesc
-      (SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>&);
 };
 
 

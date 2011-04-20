@@ -39,9 +39,6 @@ TabVecTemp<T>::TabVecTemp (const Vector<T>& vec)
 {
     nrel_p   = vec.nelements();
     vecPtr_p = new Vector<T>(vec);
-    if (vecPtr_p == 0) {
-	throw (AllocError("TabVecTemp vector", nrel_p));
-    }
     tag_p = TagTemp;
 }
 
@@ -51,9 +48,6 @@ TabVecTemp<T>::TabVecTemp (uInt leng)
 {
     nrel_p   = leng;
     vecPtr_p = new Vector<T>(nrel_p);
-    if (vecPtr_p == 0) {
-	throw (AllocError("TabVecTemp vector", nrel_p));
-    }
     tag_p = TagTemp;
 }
 

@@ -137,11 +137,14 @@ public:
 // </ul>
 
 // This class does transforms using the widely used FORTRAN fftpack
-// package.<br>
+// package or the highly optimized FFTW package (to be chosen at build time).
+// <br>
 // <em> P.N. Swarztrauber, Vectorizing the FFTs, in Parallel Computations
 // (G. Rodrigue, ed.), Academic Press, 1982, pp. 51--83. </em><br>
-// This package only does one dimensional transforms and this class decomposes
-// multi-dimensional transforms into a series of 1-dimensional ones.
+// The fftpack package only does one dimensional transforms and this class
+// decomposes multi-dimensional transforms into a series of 1-dimensional ones.
+// <br>If at build time it is chosen to use FFTW in a multi-threaded way,
+// it will try to use as many cores as possible.
 
 // In this class a forward transform is defined as one that goes from the real
 // to the complex (or the time to frequency) domain. In a forward transform the
@@ -157,13 +160,14 @@ public:
 // <src>[nx/2,ny/2,...]</src> were the indexing begins at zero. Because the
 // fftpack software assumes the origin of the transform is at the first element
 // ie.,<src>[0,0,...]</src> this class flips the data in the Array around to
-// compensate. This flipping currently takes about one 20% of the total
-// transform time and can be avoided by using the <src>fft0</src> member
+// compensate. For fftpack this flipping takes about one 20% of the total
+// transform time, while for FFTW it can easily exceed the transform time.
+// Flipping can be avoided by using the <src>fft0</src> member
 // functions which do not flip the data.
 
 // Some of the member functions in this class scramble the input Array,
 // possibly by flipping the quandrants of the data although this is not
-// guaranteed. Modifification of the input Array can be avoided, at the expense
+// guaranteed. Modification of the input Array can be avoided, at the expense
 // of copying the data to temporary storage, by either:
 // <ul> <li> Ensuring the input Array is a const Array.
 //      <li> Setting the constInput Flag to True.
@@ -255,7 +259,7 @@ public:
 
   // Modify the FFTServer object to do transforms of the supplied shape. The
   // amount of internal storage, and the initialisation, depends on the type of
-  // transform that will be done. Th etransform type is specified with the
+  // transform that will be done. The transform type is specified with the
   // TransformTypes enumerator. Currently there is no difference in
   // initialisation for the COMPLEXTOREAL and REALTOCOMPLEX transforms. The
   // shape argument is the shape of the real array (or complex one if complex
@@ -312,7 +316,7 @@ public:
   // The <src>fft0</src> functions are equivalent to the <src>fft</src>
   // functions described above except that the origin of the transform is the
   // first element of the Array, ie. [0,0,0...], rather than the centre
-  // element, ie [nx/2, ny/2, nz/2, ...]. As the underlying FORTRAN functions
+  // element, ie [nx/2, ny/2, nz/2, ...]. As the underlying functions
   // assume that the origin of the transform is the first element these
   // routines are in general faster than the equivalent ones with the origin
   // at the centre of the Array.
@@ -344,6 +348,35 @@ public:
   void flip(Array<S> & cData, const Bool toZero, const Bool isHermitian);
   // </group>
 
+  // N-D in-place complex->complex FFT shift (FFT - phase-mult - inverse FFT)
+  // If toFrequency is true, the first FFT will be from time to frequency. 
+  // relshift is the freq shift normalised to the bandwidth.
+  // Only transform over selected dimension. Iterate over the others. 
+  void fftshift(Array<S> & cValues, const uInt& whichAxis, 
+		const Double& relshift, const Bool toFrequency=True);
+
+  // N-D complex->complex FFT shift (FFT - phase-mult - inverse FFT)
+  // with flagging.
+  // If toFrequency is true, the first FFT will be from time to frequency. 
+  // relshift is the freq shift normalised to the bandwidth.
+  // Only transform over selected dimension. Iterate over the others. 
+  void fftshift(Array<S> & outValues, Array<Bool> & outFlags,
+		const Array<S> & cValues, const Array<Bool>& inFlags,
+		const uInt& whichAxis, 
+		const Double& relshift, 
+		const Bool goodIsTrue=False,
+		const Bool toFrequency=True);
+
+  // N-D real->real FFT shift (FFT to complex - phase-mult - inverse FFT)
+  // with flagging.
+  // relshift is the freq shift normalised to the bandwidth.
+  // Only transform over selected dimension. Iterate over the others. 
+  void fftshift(Array<T> & outValues, Array<Bool> & outFlags,
+		const Array<T> & rValues, const Array<Bool>& inFlags,
+		const uInt& whichAxis, 
+		const Double& relshift, 
+		const Bool goodIsTrue=False);
+
 private:
   //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
@@ -367,12 +400,13 @@ private:
   std::vector<S> itsWorkC2C;
 };
 
+
 } //# NAMESPACE CASA - END
 
 //# Do NOT include the .tcc file here like done for other templated classes.
 //# The instantiations are done explicitly.
 //# In this way the HAVE_FFTW ifdef is only used in .cc files and does
-//# not appear in headers, so othert packages using FFTServer do not need
+//# not appear in headers, so other packages using FFTServer do not need
 //# to (un)set HAVE_FFTW.
 
 #endif

@@ -121,7 +121,7 @@ subtype = testsubtype
 first readme line
 second test readme line
 
-Invalid Table operation: Table::addColumn; table is not writable
+Invalid Table operation: Table::addColumn; table tTable_tmp.data is not writable
 1 arr1.shapeColumn() = [2, 3, 4]
 0 arr2.shapeColumn() = []
 1 arr3.shapeColumn() = [2, 3, 4]

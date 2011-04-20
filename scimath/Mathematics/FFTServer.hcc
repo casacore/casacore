@@ -31,13 +31,16 @@
 #include <casa/Arrays/VectorIter.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/Constants.h>
 #include <scimath/Mathematics/NumericTraits.h>
 #include <scimath/Mathematics/FFTPack.h>
 #include <casa/Utilities/Assert.h>
 
-//# This file contains the templated functions dependent on uisng FFTW3
-//# or FFTPack. They are not in the .tcc file to make that independent
-//# of the underlying package used.
+//# This file contains the templated functions dependent on using FFTW3
+//# or FFTPack.
+//# Note that the file is called .hcc (and not. tcc) to emphasize that it
+//# should not be used for automatic template instantiation (that knowledge
+//# about using FFTW3 or FFTPack is only needed when building casacore).
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -756,5 +759,221 @@ flip(Array<T> & rData, const Bool toZero, const Bool isHermitian)
   }
   rData.putStorage(dataPtr, dataIsAcopy);
 }
+
+template<class T, class S> void FFTServer<T,S>::
+fftshift(Array<S> & cValues, const uInt& whichAxis,
+	 const Double& relshift, const Bool toFrequency)
+{
+  const IPosition arrayShape = cValues.shape();
+  const uInt vsize = arrayShape[whichAxis];
+  DebugAssert(vsize > 0, AipsError);
+      
+  // relshift is the freq shift normalised to the bandwidth
+  const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
+      
+  ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), True); // axes are the cursor  
+  while(!ait.pastEnd()){
+    Array<S> cv = ait.array(); // reference
+    fft0(cv, toFrequency);
+    for(uInt i=0; i<vsize; i++){
+      cv(IPosition(1,i)) *= exp(Double(i)*exponent);
+    }
+    fft0(cv, !toFrequency);
+    ait.next();
+  }
+}
+
+template<class T, class S> void FFTServer<T,S>::
+fftshift(Array<S> & outValues, Array<Bool> & outFlags,
+	 const Array<S> & cValues, const Array<Bool> & inFlags,
+	 const uInt& whichAxis, 
+	 const Double& relshift, 
+	 const Bool goodIsTrue,
+	 const Bool toFrequency){
+
+  const IPosition arrayShape = cValues.shape();
+  const Int vsize = arrayShape[whichAxis];
+
+  if(vsize<2){ // nothing to do
+    return;
+  }
+
+  const IPosition fArrayShape = inFlags.shape();
+  AlwaysAssert(arrayShape==fArrayShape, AipsError);
+  AlwaysAssert(abs(relshift)<1.,AipsError);
+  
+  outValues.assign(cValues);
+  outFlags.assign(inFlags);
+    
+  // relshift is the freq shift normalised to the bandwidth
+  const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
+
+  Int numToFlag = ceil(vsize*fabs(relshift));
+  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Bool flagNeighbour = (numToFlag2<numToFlag);
+      
+  ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
+  ArrayIterator<Bool> fait(outFlags, IPosition(1,whichAxis), True); // axes are the cursor  
+  while(!ait.pastEnd()){
+    Array<S> cv = ait.array(); // reference
+    Array<Bool> flags = fait.array(); // reference
+
+    // set flagged channels to average of neighbours to avoid ringing from sharp features
+    if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 
+      cv(IPosition(1,0)) = cv(IPosition(1,1));
+    }
+    for(Int i=1; i<vsize-1; i++){
+      if(flags(IPosition(1,i))!=goodIsTrue){ // this channel is flagged
+	cv(IPosition(1,i)) = (cv(IPosition(1,i-1))+cv(IPosition(1,i+1)))/2.; 
+      }
+    }
+    if(flags(IPosition(1,vsize-1))!=goodIsTrue){ // last channel is flagged 
+      cv(IPosition(1,vsize-1)) = cv(IPosition(1,vsize-1));
+    }
+
+    // apply shift
+    fft0(cv, toFrequency);
+    for(Int i=0; i<vsize; i++){
+      cv(IPosition(1,i)) *= exp(Double(i)*exponent);
+    }
+    fft0(cv, !toFrequency);
+
+    // generate the new flags
+    if(relshift>0.){
+      for(Int i=vsize-1-numToFlag; i>=0; i--){
+	if( (flags(IPosition(1,i))!=goodIsTrue) && (i+numToFlag < vsize)){ // this channel is flagged
+	  flags(IPosition(1,i+numToFlag)) = !goodIsTrue;
+	  flags(IPosition(1,i)) = goodIsTrue;
+	  if(flagNeighbour && i+numToFlag2>=0){
+	    flags(IPosition(1,i+numToFlag2)) = !goodIsTrue;
+	  }
+	}
+      }
+    }
+    else{
+      for(Int i=numToFlag; i<vsize; i++){
+	if( (flags(IPosition(1,i))!=goodIsTrue) && (0 <= i-numToFlag) ){ // this channel is flagged
+	  flags(IPosition(1,i-numToFlag)) = !goodIsTrue;
+	  flags(IPosition(1,i)) = goodIsTrue;
+	  if(flagNeighbour && i-numToFlag2<vsize){
+	    flags(IPosition(1,i-numToFlag2)) = !goodIsTrue;
+	  }
+	}
+      }
+    }      
+    // flag the edge channels which were wrapped by the shift
+    if(relshift>0.){ // start at bottom
+      for(Int i=0; i<numToFlag; i++){
+	flags(IPosition(1,i)) = !goodIsTrue;
+      }
+    }
+    else{ // start at top
+      for(Int i=vsize-1; i>vsize-1-numToFlag; i--){
+	flags(IPosition(1,i)) = !goodIsTrue;
+      }
+    }      
+
+    ait.next();
+    fait.next();
+  } 
+
+}
+
+template<class T, class S> void FFTServer<T,S>::
+fftshift(Array<T> & outValues, Array<Bool> & outFlags,
+	 const Array<T> & rValues, const Array<Bool> & inFlags,
+	 const uInt& whichAxis, 
+	 const Double& relshift, 
+	 const Bool goodIsTrue){
+
+  const IPosition arrayShape = rValues.shape();
+  const Int vsize = arrayShape[whichAxis];
+
+  if(vsize<2){ // nothing to do
+    return;
+  }
+
+  const IPosition fArrayShape = inFlags.shape();
+  AlwaysAssert(arrayShape==fArrayShape, AipsError);
+  AlwaysAssert(abs(relshift)<1.,AipsError);
+  
+  outValues.assign(rValues);
+  outFlags.assign(inFlags);
+    
+  // relshift is the freq shift normalised to the bandwidth
+  const Complex exponent =  -2.*C::pi*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case  
+
+  Int numToFlag = ceil(vsize*fabs(relshift));
+  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Bool flagNeighbour = (numToFlag2<numToFlag);
+      
+  ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
+  ArrayIterator<Bool> fait(outFlags, IPosition(1,whichAxis), True); // axes are the cursor  
+  while(!ait.pastEnd()){
+    Array<T> rv = ait.array(); // reference
+    Array<Bool> flags = fait.array(); // reference
+
+    // set flagged channels to average of neighbours to avoid ringing from sharp features
+    if(flags(IPosition(1,0))!=goodIsTrue){ // first channel is flagged 
+      rv(IPosition(1,0)) = rv(IPosition(1,1));
+    }
+    for(Int i=1; i<vsize-1; i++){
+      if(flags(IPosition(1,i))!=goodIsTrue){ // this channel is flagged
+	rv(IPosition(1,i)) = (rv(IPosition(1,i-1))+rv(IPosition(1,i+1)))/2.; 
+      }
+    }
+    if(flags(IPosition(1,vsize-1))!=goodIsTrue){ // last channel is flagged 
+      rv(IPosition(1,vsize-1)) = rv(IPosition(1,vsize-1));
+    }
+
+    // apply shift
+    Array<S> cResult;
+    fft0(cResult, rv);
+    for(uInt i=0; i<cResult.size(); i++){
+      cResult(IPosition(1,i)) *= exp(Double(i)*exponent);
+    }
+    fft0(rv, cResult);
+
+    // generate the new flags
+    if(relshift>0.){
+      for(Int i=vsize-1-numToFlag; i>=0; i--){
+	if( (flags(IPosition(1,i))!=goodIsTrue) && (i+numToFlag < vsize)){ // this channel is flagged
+	  flags(IPosition(1,i+numToFlag)) = !goodIsTrue;
+	  flags(IPosition(1,i)) = goodIsTrue;
+	  if(flagNeighbour && i+numToFlag2>=0){
+	    flags(IPosition(1,i+numToFlag2)) = !goodIsTrue;
+	  }
+	}
+      }
+    }
+    else{
+      for(Int i=numToFlag; i<vsize; i++){
+	if( (flags(IPosition(1,i))!=goodIsTrue) && (0 <= i-numToFlag) ){ // this channel is flagged
+	  flags(IPosition(1,i-numToFlag)) = !goodIsTrue;
+	  flags(IPosition(1,i)) = goodIsTrue;
+	  if(flagNeighbour && i-numToFlag2<vsize){
+	    flags(IPosition(1,i-numToFlag2)) = !goodIsTrue;
+	  }
+	}
+      }
+    }      
+    // flag the edge channels which were wrapped by the shift
+    if(relshift>0.){ // start at bottom
+      for(Int i=0; i<numToFlag; i++){
+	flags(IPosition(1,i)) = !goodIsTrue;
+      }
+    }
+    else{ // start at top
+      for(Int i=vsize-1; i>vsize-1-numToFlag; i--){
+	flags(IPosition(1,i)) = !goodIsTrue;
+      }
+    }      
+
+    ait.next();
+    fait.next();
+  } 
+
+}
+
 
 } //# NAMESPACE CASA - END
