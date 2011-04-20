@@ -215,7 +215,6 @@ Mathematics/DFTServer.h
 Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
-Mathematics/FFTServer.tcc
 Mathematics/FFTW.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc
