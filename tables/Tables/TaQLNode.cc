@@ -40,18 +40,19 @@ TaQLNode TaQLNode::theirNode;
 std::vector<TaQLNode*> TaQLNode::theirNodesCreated;
 // Initialize the TaQL style.
 TaQLStyle TaQLNode::theirStyle;
+Mutex TaQLNode::theirMutex;
+
 
 TaQLNode TaQLNode::parse (const String& command)
 {
-  // Reset to default TaQL style and no timings.
-  theirStyle.reset();
   // Add a newline if not present.
   String str(command);
   if (str.length() == 0  ||  str[str.length()-1] != '\n') {
     str += '\n';
   }
-  // Set mutex if multi-threading is used.
-  /// itsMutex.set()     /// pseudo-code
+  ScopedLock lock(theirMutex);
+  // Reset to default TaQL style and no timings.
+  theirStyle.reset();
   try {
     tableGramParseCommand (str);
   } catch (std::exception& x) {
@@ -71,7 +72,6 @@ void TaQLNode::clearNodesCreated()
   }
   theirNodesCreated.resize (0);
   theirNode = TaQLNode();
-  /// itsMutex.clear()    /// pseudo-code
 }
 
 void TaQLNode::save (AipsIO& aio) const

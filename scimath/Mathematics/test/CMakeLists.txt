@@ -2,12 +2,15 @@ set (tests
 dAutoDiff
 dSparseDiff
 tAutoDiff
+tCombinatorics
 tConvolver
 tFFTServer
+tFFTServer2
 tHistAcc
 tMathFunc
 tMatrixMathLA
 tMedianSlider
+tSmooth
 tSparseDiff
 tStatAcc
 tVanVleck

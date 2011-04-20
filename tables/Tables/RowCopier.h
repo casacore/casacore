@@ -159,7 +159,6 @@ public:
     // array columns)
     // <thrown>
     //  <li> TableError
-    //  <li> AllocError
     // </thrown>
     RowCopier (Table &out, const Table &in);
 
@@ -172,7 +171,6 @@ public:
     // (not the same type and not both scalar or both array columns)
     // <thrown>
     //  <li> TableError
-    //  <li> AllocError
     // </thrown>
     RowCopier (Table &out, const Table &in, const Vector<String>& outNames,
 	       const Vector<String>& inNames);

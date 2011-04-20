@@ -31,6 +31,7 @@
 //# Includes
 #include <tables/Tables/TaQLNodeRep.h>
 #include <tables/Tables/TaQLStyle.h>
+#include <casa/OS/Mutex.h>
 #include <vector>
 #include <iostream>
 
@@ -157,6 +158,8 @@ public:
   static std::vector<TaQLNode*> theirNodesCreated;
   // Keep the TaQL style to use.
   static TaQLStyle theirStyle;
+  // Use a mutex to guard the statics.
+  static Mutex theirMutex;
 };
 
 

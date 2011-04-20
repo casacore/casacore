@@ -46,7 +46,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Initialize the static TableCache object.
-TableCache* PlainTable::theirTableCache = new TableCache();
+TableCache PlainTable::theirTableCache;
 
 
 PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
@@ -137,7 +137,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     noWrite_p = False;
     //# Add it to the table cache.
     tableCache().define (name_p, this);
-  } catch (AipsError) {
+  } catch (AipsError&) {
     delete lockPtr_p;
     lockPtr_p = 0;
     delete colSetPtr_p;
@@ -183,9 +183,6 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     Block<Bool> dmChanged;
     lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
     tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
-    if (tdescPtr_p == 0) {
-	throw (AllocError ("PlainTable::PlainTable",1));
-    }
 
     //# Reopen the file to be sure that the internal stdio buffer is not reused.
     //# This is a terrible hack, but it works.
@@ -213,7 +210,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     tdescPtr_p->getFile (ios, attr);            // read description
     // Check if the given table type matches the type in the file.
     if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
-	throw (TableInvType (type, tdescPtr_p->getType()));
+        throw (TableInvType (tableName(), type, tdescPtr_p->getType()));
 	return;
     }
     // In the older Table files the keyword set was written separately
@@ -228,9 +225,6 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
     colSetPtr_p = new ColumnSet (tdescPtr_p);
-    if (colSetPtr_p == 0) {
-	throw (AllocError ("PlainTable(AipsIO&)", 1));
-    }
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
@@ -402,8 +396,9 @@ Bool PlainTable::lock (FileLocker::LockType type, uInt nattempts)
 		tableChanged = False;
 	    } else {
 		if (ncolumn != tableDesc().ncolumn()) {
-		    throw (TableError ("Table::lock cannot sync; another "
-				     "process changed the number of columns"));
+		    throw (TableError ("Table::lock cannot sync table "
+                                       + tableName() + "; another process "
+                                       "changed the number of columns"));
 		}
 		nrrow_p = colSetPtr_p->resync (nrrow, False);
 		if (tableChanged  &&  ncolumn > 0) {
@@ -484,8 +479,9 @@ void PlainTable::resync()
         tableChanged = False;
     } else {
         if (ncolumn != tableDesc().ncolumn()) {
-	    throw (TableError ("Table::resync cannot sync; another "
-			       "process changed the number of columns"));
+            throw (TableError ("Table::resync cannot sync table " +
+                               tableName() + "; another process "
+			       "changed the number of columns"));
 	}
 	nrrow_p = colSetPtr_p->resync (nrrow, True);
 	if (tableChanged  &&  ncolumn > 0) {
@@ -627,9 +623,7 @@ Bool PlainTable::canRenameColumn (const String& columnName) const
 void PlainTable::addRow (uInt nrrw, Bool initialize)
 {
     if (nrrw > 0) {
-        if (! isWritable()) {
-	    throw (TableInvOper ("Table::addRow; table is not writable"));
-	}
+        checkWritable("addRow");
 	//# Locking has to be done here, otherwise nrrow_p is not up-to-date
 	//# when autoReleaseLock releases the lock and writes the data.
 	nrrowToAdd_p = nrrw;
@@ -646,9 +640,7 @@ void PlainTable::addRow (uInt nrrw, Bool initialize)
 
 void PlainTable::removeRow (uInt rownr)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::removeRow; table is not writable"));
-    }
+    checkWritable("rowmoveRow");
     //# Locking has to be done here, otherwise nrrow_p is not up-to-date
     //# when autoReleaseLock releases the lock and writes the data.
     colSetPtr_p->checkWriteLock (True);
@@ -659,9 +651,7 @@ void PlainTable::removeRow (uInt rownr)
 
 void PlainTable::addColumn (const ColumnDesc& columnDesc, Bool)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::addColumn; table is not writable"));
-    }
+    checkWritable("addColumn");
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, bigEndian_p, tsmOption_p, tab);
     tableChanged_p = True;
@@ -669,9 +659,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc, Bool)
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const String& dataManager, Bool byName, Bool)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::addColumn; table is not writable"));
-    }
+    checkWritable("addColumn");
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, dataManager, byName, bigEndian_p,
                             tsmOption_p, tab);
@@ -680,9 +668,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 void PlainTable::addColumn (const ColumnDesc& columnDesc,
 			    const DataManager& dataManager, Bool)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::addColumn; table is not writable"));
-    }
+    checkWritable("addColumn");
     Table tab(this, False);
     colSetPtr_p->addColumn (columnDesc, dataManager, bigEndian_p,
                             tsmOption_p, tab);
@@ -691,9 +677,7 @@ void PlainTable::addColumn (const ColumnDesc& columnDesc,
 void PlainTable::addColumn (const TableDesc& tableDesc,
 			    const DataManager& dataManager, Bool)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::addColumn; table is not writable"));
-    }
+    checkWritable("addColumn");
     Table tab(this, False);
     colSetPtr_p->addColumn (tableDesc, dataManager, bigEndian_p,
                             tsmOption_p, tab);
@@ -702,27 +686,21 @@ void PlainTable::addColumn (const TableDesc& tableDesc,
 
 void PlainTable::removeColumn (const Vector<String>& columnNames)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::removeColumn; table is not writable"));
-    }
+    checkWritable("removeColumn");
     colSetPtr_p->removeColumn (columnNames);
     tableChanged_p = True;
 }
 
 void PlainTable::renameColumn (const String& newName, const String& oldName)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::renameColumn; table is not writable"));
-    }
+    checkWritable("renameColumn");
     colSetPtr_p->renameColumn (newName, oldName);
     tableChanged_p = True;
 }
 
 void PlainTable::renameHypercolumn (const String& newName, const String& oldName)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::renameColumn; table is not writable"));
-    }
+    checkWritable("renameHyperColumn");
     tdescPtr_p->renameHypercolumn (newName, oldName);
     tableChanged_p = True;
 }
@@ -779,6 +757,14 @@ void PlainTable::setEndian (int endianFormat)
 	if (endOpt == Table::LittleEndian) {
 	    bigEndian_p = False;
 	}
+    }
+}
+
+void PlainTable::checkWritable (const char* func) const
+{
+    if (! isWritable()) {
+        throw (TableInvOper ("Table::" + String(func) + "; table "
+                             + tableName() + " is not writable"));
     }
 }
 

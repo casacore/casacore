@@ -167,6 +167,44 @@ public:
 };
 
 
+// Table error; path is not a directory
+// </summary>
+// <use visibility=export>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <synopsis> 
+// Table directory with this name could not be found.
+// </synopsis> 
+
+class TableNoDir : public TableError {
+public:
+    // This constructor generates a message telling that the 
+    // table directory with the given name does not exist.
+    TableNoDir (const String& name,Category c=INVALID_ARGUMENT);
+    ~TableNoDir () throw();
+};
+
+// <summary>
+// Table error; table.dat file not found
+// </summary>
+// <use visibility=export>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <synopsis> 
+// The table.dat file for this table could not be found.
+// </synopsis> 
+
+class TableNoDatFile : public TableError {
+public:
+    // This constructor generates a message telling that the a table
+    // or datription file does not exist.
+    TableNoDatFile (const String& filename,Category c=INVALID_ARGUMENT);
+    ~TableNoDatFile () throw();
+};
+
+
 // <summary>
 // Table error; table type mismatch
 // </summary>
@@ -183,7 +221,9 @@ class TableInvType : public TableError {
 public:
     // This constructor generates a message that the in table type
     // mismatches the table type in the file.
-    TableInvType (const String& typeIn, const String& typeFile, Category c=CONFORMANCE);
+    TableInvType (const String& tablename,
+                  const String& typeIn, const String& typeFile,
+                  Category c=CONFORMANCE);
     ~TableInvType () throw();
 };
 

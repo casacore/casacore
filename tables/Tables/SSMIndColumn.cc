@@ -27,6 +27,7 @@
 
 //# Includes
 #include <tables/Tables/SSMIndColumn.h>
+#include <tables/Tables/Table.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/Slicer.h>
@@ -144,8 +145,10 @@ StIndArray* SSMIndColumn::getShape (uInt aRowNr)
 {
     StIndArray* aPtr = getArrayPtr (aRowNr);
     if (aPtr == 0) {
-	throw (DataManInvOper ("SSMIndColumn::getShape: no array in row "+
-			       String::toString(aRowNr)));
+      throw (DataManInvOper ("SSMIndColumn::getShape: no array in row "+
+                             String::toString(aRowNr) + " of column "
+                             + columnName()
+                             + " in table " + itsSSMPtr->table().tableName()));
     }
     aPtr->getShape (*itsIosFile);
     return aPtr;

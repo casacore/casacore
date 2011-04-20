@@ -399,6 +399,9 @@ public:
     // Get the suffix to be used for names.
     const String& suffix() const;
 
+    // Return the name of the class.
+    static String className();
+
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     static void registerClass();

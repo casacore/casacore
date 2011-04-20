@@ -787,7 +787,8 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
 
     if (rowsPerBucket < 1) {
       // The BucketSize is too small to contain data.
-      throw (DataManError ("StandardStMan::addColumn  bucketsize too small"));
+      throw (DataManError ("StandardStMan::addColumn  bucketsize too small"
+                           " for adding column " + aColumn->columnName()));
     }
 
     uInt nrIdx=itsPtrIndex.nelements();

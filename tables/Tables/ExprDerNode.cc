@@ -130,9 +130,6 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
 {
     //# Create a table column object and check if the column is a scalar.
     tabColPtr_p = new ROTableColumn (table, name);
-    if (tabColPtr_p == 0) {
-	throw (AllocError ("TableExprNodeColumn",1));
-    }
     if (! tabColPtr_p->columnDesc().isScalar()) {
 	throw (TableInvExpr (name, " is no scalar column"));
     }

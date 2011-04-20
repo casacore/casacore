@@ -447,6 +447,26 @@ void Table::open (const String& name, const String& type, int tableOption,
     if (btp != 0) {
 	baseTabPtr_p = btp;
     }else{
+        //# Check if the table directory exists.
+        File dir(absName);
+        if (!dir.exists()) {
+            throw TableNoFile(absName);
+        }
+        if (!dir.isDirectory()) {
+            throw TableNoDir(absName);
+        }
+        //# Check if the table.dat file exists.
+        String desc = Table::fileName(absName);
+        File file (desc);
+        if (!file.exists()) {
+            throw TableNoDatFile(desc);
+        }
+        //# Read the file type and verify that it is a table
+        AipsIO ios (desc);
+        String t = ios.getNextType();
+        if (t != "Table") {
+            throw TableInvType(absName, "Table", t);
+        }
 	//# Check if the table exists.
 	if (! Table::isReadable (absName)) {
 	    throw (TableNoFile (absName));
@@ -454,9 +474,6 @@ void Table::open (const String& name, const String& type, int tableOption,
 	// Create the BaseTable object and add a PlainTable to the cache.
 	baseTabPtr_p = makeBaseTable (absName, type, tableOption,
 				      lockOptions, tsmOpt, True, 0);
-	if (baseTabPtr_p == 0) {
-	    throw (AllocError("Table::open",1));
-	}
     }
     baseTabPtr_p->link();
     if (deleteOpt) {
@@ -857,36 +874,64 @@ Table Table::operator! () const
 
 
 //# Test if table exists and is readable.
-Bool Table::isReadable (const String& tableName)
+Bool Table::isReadable (const String& tableName, Bool throwIf)
 {
     String tabName = Path(tableName).absoluteName();
-    //# Test if the table file exists.
-    File file (Table::fileName(tabName));
+    //# Check if the table directory exists.
+    File dir(tabName);
+    if (!dir.exists()) {
+        if (throwIf) {
+            throw TableNoFile(tabName);
+        }
+        return False;
+    }
+    if (!dir.isDirectory()) {
+        if (throwIf) {
+            throw TableNoDir(tabName);
+        }
+        return False;
+    }
+    //# Test if the table.dat file exists.
+    String datFile = Table::fileName(tabName);
+    File file (datFile);
     if (!file.exists()) {
-	return False;
+        if (throwIf) {
+            throw TableNoDatFile(tabName);
+        }
+        return False;
     }
     //# Open the table file and get its type.
-    //# An exception may be thrown, but chances are very low.
+    //# An exception might be thrown, but chances are very low.
     AipsIO ios (Table::fileName(tabName));
     Bool valid = True;
     try {
 	if (ios.getNextType() != "Table") {
+            if (throwIf) {
+                throw TableInvType(tabName, "Table", tabName);
+            }
 	    valid = False;
 	}
     } catch (AipsError& x) {
+        if (throwIf) {
+            throw;
+        }
 	valid = False;
     } 
     return valid;
 }
 //# Test if table exists and is writable.
-Bool Table::isWritable (const String& tableName)
+Bool Table::isWritable (const String& tableName, Bool throwIf)
 {
     String tabName = Path(tableName).absoluteName();
-    if (! isReadable (tabName)) {
+    if (! isReadable (tabName, throwIf)) {
 	return False;
     }
     File file (Table::fileName(tabName));
-    return file.isWritable();
+    Bool wb = file.isWritable();
+    if (throwIf  &&  !wb) {
+        throw TableError("Table " + tableName + " is not writable");
+    }
+    return wb;
 }
 
 

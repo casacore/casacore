@@ -191,9 +191,6 @@ void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
     dataSave = 0;
     uInt nrrow = nrow();
     Vector<T>* vecPtr = new Vector<T>(nrrow);
-    if (vecPtr == 0) {
-	throw (AllocError ("ScalarColumnData::makeSortKey", 1));
-    }
     Bool reask;
     if (canAccessScalarColumn (reask)) {
 	getScalarColumn (vecPtr);
@@ -221,9 +218,6 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
     dataSave = 0;
     uInt nrrow = rownrs.nelements();
     Vector<T>* vecPtr = new Vector<T>(nrrow);
-    if (vecPtr == 0) {
-	throw (AllocError ("ScalarColumnData::makeRefSortKey", 1));
-    }
     Bool reask;
     if (canAccessScalarColumnCells (reask)) {
 	getScalarColumnCells (rownrs, vecPtr);
@@ -273,9 +267,6 @@ void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
 					CountedPtr<BaseCompare>& cmpObj)
 {
     T* valp = new T[2];
-    if (valp == 0) {
-	throw (AllocError ("ScalarColumnData::AllocIterBuf", 1));
-    }
     lastVal = valp;
     curVal  = valp + 1;
     if (cmpObj.null()) {

@@ -32,8 +32,11 @@
 
 namespace casa {
 
-  // Define the static object.
-  map<String,UDFBase::MakeUDFObject*> UDFBase::itsRegistry;
+  // Define the static objects.
+  // Use a recursive mutex, because loading from a shared library can cause
+  // a nested lock.
+  map<String,UDFBase::MakeUDFObject*> UDFBase::theirRegistry;
+  Mutex UDFBase::theirMutex(Mutex::Recursive);
 
 
   UDFBase::UDFBase()
@@ -124,9 +127,10 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    map<String,MakeUDFObject*>::iterator iter = itsRegistry.find (fname);
-    if (iter == itsRegistry.end()) {
-      itsRegistry[fname] = func;
+    ScopedLock lock(theirMutex);
+    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+    if (iter == theirRegistry.end()) {
+      theirRegistry[fname] = func;
     } else {
       // Already defined, but allow double definition of the same.
       if (iter->second != func) {
@@ -140,8 +144,9 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    map<String,MakeUDFObject*>::iterator iter = itsRegistry.find (fname);
-    if (iter != itsRegistry.end()) {
+    ScopedLock lock(theirMutex);
+    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+    if (iter != theirRegistry.end()) {
       return iter->second (fname);
     }
     // Not found. See if it can be loaded dynamically.
@@ -152,8 +157,8 @@ namespace casa {
       // Try to load the dynamic library and see if registered now.
       DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
       if (dl.getHandle()) {
-        map<String,MakeUDFObject*>::iterator iter = itsRegistry.find (fname);
-        if (iter != itsRegistry.end()) {
+        map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+        if (iter != theirRegistry.end()) {
           return iter->second (fname);
         }
       }

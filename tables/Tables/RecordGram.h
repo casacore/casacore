@@ -33,6 +33,7 @@
 #include <tables/Tables/TableGram.h>
 #include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/Table.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -216,6 +217,7 @@ private:
     static const RecordInterface* theirRecPtr;
     static const Table*           theirTabPtr;
     static TableExprNode*         theirNodePtr;
+    static Mutex                  theirMutex;
 };
 
 

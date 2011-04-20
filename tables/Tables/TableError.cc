@@ -64,6 +64,21 @@ TableNoFile::~TableNoFile () throw()
 {}
 
 
+TableNoDir::TableNoDir (const String& name,Category c)
+: TableError(name + " is not a directory",c)
+{}
+TableNoDir::~TableNoDir () throw()
+{}
+
+
+TableNoDatFile::TableNoDatFile (const String& filename,Category c)
+: TableError(filename.empty() ? String("No table name given at open") :
+	                      "Table file " + filename + " does not exist",c)
+{}
+TableNoDatFile::~TableNoDatFile () throw()
+{}
+
+
 TableDescNoName::TableDescNoName (Category c)
 : TableError ("No name for table description",c)
 {}
@@ -78,8 +93,10 @@ TableInvOpt::~TableInvOpt () throw()
 {}
 
 
-TableInvType::TableInvType (const String& tpin, const String& tpfil,Category c)
-: TableError ("Expected type " + tpin + ", found " + tpfil,c)
+TableInvType::TableInvType (const String& tableName,
+                            const String& tpin, const String& tpfil,Category c)
+: TableError ("Table file " + tableName + "is incorrect: Expected type "
+              + tpin + ", found " + tpfil, c)
 {}
 TableInvType::~TableInvType () throw()
 {}

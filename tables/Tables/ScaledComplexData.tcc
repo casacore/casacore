@@ -141,9 +141,6 @@ template<class S, class T>
 DataManager* ScaledComplexData<S,T>::clone() const
 {
     DataManager* dmPtr = new ScaledComplexData<S,T> (*this);
-    if (dmPtr == 0) {
-	throw (AllocError ("ScaledComplexData::clone()", 1));
-    }
     return dmPtr;
 }
 
@@ -229,15 +226,9 @@ void ScaledComplexData<S,T>::prepare()
     //# Allocate column objects to get scale and offset.
     if (! fixedScale_p) {
 	scaleColumn_p = new ROScalarColumn<S> (table(), scaleName_p);
-	if (scaleColumn_p == 0) {
-	    throw (AllocError ("ScaledComplexData::prepare", 1));
-	}
     }
     if (! fixedOffset_p) {
 	offsetColumn_p = new ROScalarColumn<S> (table(), offsetName_p);
-	if (offsetColumn_p == 0) {
-	    throw (AllocError ("ScaledComplexData::prepare", 1));
-	}
     }
 }
 

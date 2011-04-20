@@ -265,15 +265,13 @@ public:
     // Show the column.
     void show (ostream& os) const;
 
-public:
-    // Construct the object to register its class.
-    ArrayColumnDesc
-      (SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>&);
+    // Register the construction function of this class.
+    void registerClass() const;
 
-protected:
     // Create the object from AipsIO (this function is registered).
     static BaseColumnDesc* makeDesc(const String& name);
 
+protected:
     // Put the object.
     virtual void putDesc (AipsIO&) const;
 

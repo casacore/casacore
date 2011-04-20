@@ -219,14 +219,17 @@ DataManager* ForwardColumnEngine::makeObject (const String& dataManagerName,
 }
 void ForwardColumnEngine::registerClass()
 {
-    DataManager::registerCtor ("ForwardColumnEngine",
-			       ForwardColumnEngine::makeObject);
+    DataManager::registerCtor (className(), makeObject);
 }
 String ForwardColumnEngine::dataManagerName() const
 {
     return dataManName_p;
 }
 String ForwardColumnEngine::dataManagerType() const
+{
+    return className();
+}
+String ForwardColumnEngine::className()
 {
     return "ForwardColumnEngine";
 }

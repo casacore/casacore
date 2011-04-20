@@ -191,9 +191,8 @@ void ColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     //# First register all subclasses if not done yet.
-    if (!registrationDone_p) {
-	registerColumnDesc();
-	registrationDone_p = True;
+    if (!theirMainRegistrationDone) {
+	registerMainCtor();
     }
     uInt version;
     ios >> version;
@@ -203,10 +202,7 @@ void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 	delete colPtr_p;
     }
     allocated_p = True;
-    colPtr_p = registerMap(tp)(tp);
-    if (colPtr_p == 0) {
-	throw (AllocError ("ColumnDesc(AipsIO&)",1));
-    }
+    colPtr_p = theirRegisterMap(tp)(tp);
     colPtr_p->getFile (ios, parentAttr);
 }
 
@@ -229,9 +225,10 @@ void ColumnDesc::show (ostream& os) const
 
 
 //# Initialize the static variables for the class registration.
-Bool ColumnDesc::registrationDone_p = False;
+Bool ColumnDesc::theirMainRegistrationDone = False;
+Mutex ColumnDesc::theirMutex(Mutex::ErrorCheck);
 SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>
-                      ColumnDesc::registerMap (ColumnDesc::unknownColumnDesc);
+                  ColumnDesc::theirRegisterMap (ColumnDesc::unknownColumnDesc);
 
 //# The default "ctor" function for unknown types.
 BaseColumnDesc* ColumnDesc::unknownColumnDesc (const String& name)
@@ -240,41 +237,82 @@ BaseColumnDesc* ColumnDesc::unknownColumnDesc (const String& name)
     return 0;
 }
 
-
-
-
-
-
-//# Register the "static AipsIO constructors" of all XColumnDesc classes.
-void ColumnDesc::registerColumnDesc()
+//# Register a mapping.
+void ColumnDesc::registerCtor (const String& name, ColumnDescCtor* func)
 {
-    ScalarColumnDesc<Bool>     scdb (registerMap);
-    ScalarColumnDesc<uChar>    scduc(registerMap);
-    ScalarColumnDesc<Short>    scds (registerMap);
-    ScalarColumnDesc<uShort>   scdus(registerMap);
-    ScalarColumnDesc<Int>      scdi (registerMap);
-    ScalarColumnDesc<uInt>     scdui(registerMap);
-    ScalarColumnDesc<float>    scdf (registerMap);
-    ScalarColumnDesc<double>   scdd (registerMap);
-    ScalarColumnDesc<Complex>  scdcx(registerMap);
-    ScalarColumnDesc<DComplex> scddx(registerMap);
-    ScalarColumnDesc<String>   scdst(registerMap);
-    ScalarRecordColumnDesc     srcd (registerMap);
+    ScopedLock lock(theirMutex);
+    unlockedRegisterCtor (name, func);
+}
 
-    ArrayColumnDesc<Bool>     acdb (registerMap);
-    ArrayColumnDesc<uChar>    acduc(registerMap);
-    ArrayColumnDesc<Short>    acds (registerMap);
-    ArrayColumnDesc<uShort>   acdus(registerMap);
-    ArrayColumnDesc<Int>      acdi (registerMap);
-    ArrayColumnDesc<uInt>     acdui(registerMap);
-    ArrayColumnDesc<float>    acdf (registerMap);
-    ArrayColumnDesc<double>   acdd (registerMap);
-    ArrayColumnDesc<Complex>  acdcx(registerMap);
-    ArrayColumnDesc<DComplex> acddx(registerMap);
-    ArrayColumnDesc<String>   acdst(registerMap);
+//# Get a ColumnDesc constructor.
+//# Return default function if undefined.
+ColumnDesc::ColumnDescCtor* ColumnDesc::getCtor (const String& name)
+{
+    ScopedLock lock(theirMutex);
+    return *(theirRegisterMap.isDefined (name));
+}
 
-    SubTableDesc std(registerMap);
+//# Register the main "static constructors" of all XColumnDesc classes.
+void ColumnDesc::doRegisterMainCtor()
+{
+    // Use a Mutex to make it thread-safe.
+    // After obtaining the lock, test again if the filling needs to be done
+    // because it might have been filled in the mean time.
+    ScopedLock lock(theirMutex);
+    if (!theirMainRegistrationDone) {
+        ScalarColumnDesc<Bool>     scdb("x");
+        unlockedRegisterCtor (scdb.className(), scdb.makeDesc);
+        ScalarColumnDesc<uChar>    scduc("x");
+        unlockedRegisterCtor (scduc.className(), scduc.makeDesc);
+        ScalarColumnDesc<Short>    scds("x");
+        unlockedRegisterCtor (scds.className(), scds.makeDesc);
+        ScalarColumnDesc<uShort>   scdus("x");
+        unlockedRegisterCtor (scdus.className(), scdus.makeDesc);
+        ScalarColumnDesc<Int>      scdi("x");
+        unlockedRegisterCtor (scdi.className(), scdi.makeDesc);
+        ScalarColumnDesc<uInt>     scdui("x");
+        unlockedRegisterCtor (scdui.className(), scdui.makeDesc);
+        ScalarColumnDesc<float>    scdf("x");
+        unlockedRegisterCtor (scdf.className(), scdf.makeDesc);
+        ScalarColumnDesc<double>   scdd("x");
+        unlockedRegisterCtor (scdd.className(), scdd.makeDesc);
+        ScalarColumnDesc<Complex>  scdcx("x");
+        unlockedRegisterCtor (scdcx.className(), scdcx.makeDesc);
+        ScalarColumnDesc<DComplex> scddx("x");
+        unlockedRegisterCtor (scddx.className(), scddx.makeDesc);
+        ScalarColumnDesc<String>   scdst("x");
+        unlockedRegisterCtor (scdst.className(), scdst.makeDesc);
+
+        ScalarRecordColumnDesc     srcd ("x");
+        unlockedRegisterCtor (srcd.className(), srcd.makeDesc);
+
+        ArrayColumnDesc<Bool>     acdb("x");
+        unlockedRegisterCtor (acdb.className(), acdb.makeDesc);
+        ArrayColumnDesc<uChar>    acduc("x");
+        unlockedRegisterCtor (acduc.className(), acduc.makeDesc);
+        ArrayColumnDesc<Short>    acds("x");
+        unlockedRegisterCtor (acds.className(), acds.makeDesc);
+        ArrayColumnDesc<uShort>   acdus("x");
+        unlockedRegisterCtor (acdus.className(), acdus.makeDesc);
+        ArrayColumnDesc<Int>      acdi("x");
+        unlockedRegisterCtor (acdi.className(), acdi.makeDesc);
+        ArrayColumnDesc<uInt>     acdui("x");
+        unlockedRegisterCtor (acdui.className(), acdui.makeDesc);
+        ArrayColumnDesc<float>    acdf("x");
+        unlockedRegisterCtor (acdf.className(), acdf.makeDesc);
+        ArrayColumnDesc<double>   acdd("x");
+        unlockedRegisterCtor (acdd.className(), acdd.makeDesc);
+        ArrayColumnDesc<Complex>  acdcx("x");
+        unlockedRegisterCtor (acdcx.className(), acdcx.makeDesc);
+        ArrayColumnDesc<DComplex> acddx("x");
+        unlockedRegisterCtor (acddx.className(), acddx.makeDesc);
+        ArrayColumnDesc<String>   acdst("x");
+        unlockedRegisterCtor (acdst.className(), acdst.makeDesc);
+
+        SubTableDesc std("x", "", TableDesc());
+        unlockedRegisterCtor (std.className(), std.makeDesc);
+        theirMainRegistrationDone = True;
+    }
 }
 
 } //# NAMESPACE CASA - END
-

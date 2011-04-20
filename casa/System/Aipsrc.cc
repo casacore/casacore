@@ -182,7 +182,7 @@ Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
 }
 
 void Aipsrc::reRead() {
-  parse();
+  parse(True);
 }
 
 Double Aipsrc::lastRead() {
@@ -394,41 +394,45 @@ void Aipsrc::save(const String keyword, const String val) {
   delete [] buf;
 }
   
-uInt Aipsrc::parse() {
-  // Refill basic data
-  filled = False;
-  // If defined use setting of CASARCFILES. Make sure it's ended by a colon.
-  String filelist = EnvironmentVariable::get("CASARCFILES");
-  if (! filelist.empty()) {
-    filelist += ':';
-  } else {
-    // Otherwise use CASAPATH.
-    // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
-    filelist = fillAips(uhome) + String("/.casarc:");
-    filelist += fillAips(uhome) + String("/.casa/rc:");
-    filelist += fillAips(uhome) + String("/.aipsrc:");
-    filelist += (root + String("/.aipsrc:"));
-    filelist += (host + String("/aipsrc:"));
-    filelist += (site + String("/aipsrc:"));
-    filelist += (arch + String("/aipsrc:"));
+void Aipsrc::parse(Bool force) {
+  // Thread-safety. Note that when the lock is acquired,
+  // parse might have been done already in another thread.
+  ScopedLock lock(theirMutex);
+  if (doInit || force) {
+    // Refill basic data
+    filled = False;
+    // If defined use setting of CASARCFILES. Make sure it's ended by a colon.
+    String filelist = EnvironmentVariable::get("CASARCFILES");
+    if (! filelist.empty()) {
+      filelist += ':';
+    } else {
+      // Otherwise use CASAPATH.
+      // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
+      filelist = fillAips(uhome) + String("/.casarc:");
+      filelist += fillAips(uhome) + String("/.casa/rc:");
+      filelist += fillAips(uhome) + String("/.aipsrc:");
+      filelist += (root + String("/.aipsrc:"));
+      filelist += (host + String("/aipsrc:"));
+      filelist += (site + String("/aipsrc:"));
+      filelist += (arch + String("/aipsrc:"));
+    }
+    doParse(filelist);
+    doInit = False;		 // Indicate parse done (before call to find)
+    String x;
+    if (find(x, String("user.aipsdir"), String("/aips++"))) {
+      home = x;
+    } else {
+      home = uhome + x;
+    }
   }
-  uInt i = parse(filelist);
-  String x;
-  if (find(x, String("user.aipsdir"), String("/aips++"))) {
-    home = x;
-  } else {
-    home = uhome + x;
-  }
-  return i;
 }
 
-uInt Aipsrc::parse(String &fileList) {
-  doInit = False;		 // Indicate parse done
+void Aipsrc::doParse(String &fileList) {
   Time x;
   lastParse = x.modifiedJulianDay();	// Save time of parse
   Int nkw = Aipsrc::genParse(Aipsrc::keywordPattern,
-			     Aipsrc::keywordValue, 
-			     Aipsrc::fileEnd, fileList);
+                             Aipsrc::keywordValue, 
+                             Aipsrc::fileEnd, fileList);
   const String gs00(".");	// make correct patterns
   const String gs01("\\.");
   const String gs10("*");
@@ -440,7 +444,6 @@ uInt Aipsrc::parse(String &fileList) {
     keyword.gsub(gs10, gs11);
     keywordPattern[i] = String("^") + keyword + String("$");
   }
-  return nkw;
 }
 
 uInt Aipsrc::genParse(Block<String> &keywordPattern, 
@@ -620,6 +623,7 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
 
   // Static Initializations -- Only really want to read the files once
 
+  Mutex Aipsrc::theirMutex;
   Bool Aipsrc::doInit = True;
   Double Aipsrc::lastParse = 0;
   Block<String> Aipsrc::keywordPattern(0);

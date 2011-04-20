@@ -30,8 +30,13 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 uInt uIntSequence::num = 0;
+Mutex uIntSequence::theirMutex;
 
-uInt uIntSequence::getNext() {return ++num;}
+uInt uIntSequence::SgetNext()
+{
+  ScopedLock lock(theirMutex);
+  return ++num;
+}
 
 } //# NAMESPACE CASA - END
 

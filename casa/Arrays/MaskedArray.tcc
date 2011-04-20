@@ -55,23 +55,11 @@ MaskedArray<T>::setData (const Array<T> &data,
     pArray = 0;
   }
   pArray = new Array<T>(data);
-  if (!pArray) {
-    throw (AllocError ("MaskedArray<T>::setData (const Array<T> &,"
-		       " const LogicalArray &, Bool)"
-		       " new() for pArray failed",
-		       1));
-  }
   if (pMask) {
     delete pMask; 
     pMask = 0;
   }
   pMask = new LogicalArray (mask.copy());
-  if (!pMask) {
-    throw (AllocError ("MaskedArray<T>::setData (const Array<T> &,"
-		       " const LogicalArray &, Bool)"
-		       " new() for pMask failed",
-		       1));
-  }
   nelemValid = 0;
   nelemValidIsOK = False;
   isRO  = isReadOnly; 
@@ -86,23 +74,11 @@ MaskedArray<T>::setData (const MaskedArray<T> & array,
     pArray = 0;
   }
   pArray = new Array<T>(array.getArray());
-  if (!pArray) {
-    throw (AllocError ("MaskedArray<T>::setData (const MaskedArray<T> &,"
-		       " Bool)"
-		       " new() for pArray failed",
-		       1));
-  }
   if (pMask) {
     delete pMask;
     pMask = 0;
   }
   pMask = new LogicalArray(array.getMask().copy());
-  if (!pMask) {
-    throw (AllocError ("MaskedArray<T>::setData (const MaskedArray<T> &,"
-		       " Bool)"
-		       " new() for pMask failed",
-		       1));
-  }
   nelemValid = 0;
   nelemValidIsOK = False;
   isRO  = isReadOnly; 
@@ -126,23 +102,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
     }
 
     pArray = new Array<T> (inarray);
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const Array<T> &,"
-            " const LogicalArray &, Bool)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inmask.shape());
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const Array<T> &,"
-            " const LogicalArray &)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = inmask;
 
     DebugAssert(ok(), ArrayError);
@@ -164,23 +124,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
     }
 
     pArray = new Array<T> (inarray);
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const Array<T> &,"
-            " const LogicalArray &)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inmask.shape());
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const Array<T> &,"
-            " const LogicalArray &)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = inmask;
 
     DebugAssert(ok(), ArrayError);
@@ -205,23 +149,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 
 
     pArray = new Array<T> (inarray.getArray());
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
-            " const LogicalArray &, Bool)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inmask.shape());
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
-            " const LogicalArray &, Bool)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask && inarray.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -245,23 +173,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 
 
     pArray = new Array<T> (inarray.getArray());
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
-            " const LogicalArray &)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inmask.shape());
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
-            " const LogicalArray &)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask && inarray.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -285,23 +197,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
     }
 
     pArray = new Array<T> (inarray);
-    if (!pArray) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
-          " const MaskedLogicalArray &inmask, Bool isreadonly)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inarray.shape());
-    if (!pMask) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
-          " const MaskedLogicalArray &inmask, Bool isreadonly)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask.getArray() && inmask.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -323,23 +219,7 @@ MaskedArray<T>::MaskedArray (const Array<T> &inarray,
     }
 
     pArray = new Array<T> (inarray);
-    if (!pArray) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
-          " const MaskedLogicalArray &inmask)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inarray.shape());
-    if (!pMask) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray(const Array<T> &inarray,"
-          " const MaskedLogicalArray &inmask)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask.getArray() && inmask.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -363,23 +243,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 
 
     pArray = new Array<T> (inarray.getArray());
-    if (!pArray) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
-          " const MaskedLogicalArray &inmask)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inarray.shape());
-    if (!pMask) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
-          " const MaskedLogicalArray &inmask)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask.getArray() && inmask.getMask() && inarray.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -404,23 +268,7 @@ MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 
 
     pArray = new Array<T> (inarray.getArray());
-    if (!pArray) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
-          " const MaskedLogicalArray &inmask, Bool isreadonly)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (inarray.shape());
-    if (!pMask) {
-        throw (AllocError (
-          "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
-          " const MaskedLogicalArray &inmask, Bool isreadonly)"
-            " new() for pMask failed",
-            1));
-    }
-
     *pMask = (inmask.getArray() && inmask.getMask() && inarray.getMask());
 
     DebugAssert(ok(), ArrayError);
@@ -436,20 +284,7 @@ template<class T> MaskedArray<T>::MaskedArray(const MaskedArray<T> &other,
 {
 
     pArray = new Array<T> (*(other.pArray));
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &, Bool)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (*(other.pMask));
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &, Bool)"
-            " new() for pMask failed",
-            1));
-    }
 
     DebugAssert(ok(), ArrayError);
 
@@ -463,20 +298,7 @@ template<class T> MaskedArray<T>::MaskedArray(const MaskedArray<T> &other)
 {
 
     pArray = new Array<T> (*(other.pArray));
-    if (!pArray) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &)"
-            " new() for pArray failed",
-            1));
-    }
-
     pMask = new LogicalArray (*(other.pMask));
-    if (!pMask) {
-        throw (AllocError (
-            "MaskedArray<T>::MaskedArray (const MaskedArray<T> &)"
-            " new() for pMask failed",
-            1));
-    }
 
     DebugAssert(ok(), ArrayError);
 

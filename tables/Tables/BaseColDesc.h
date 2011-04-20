@@ -111,9 +111,6 @@ friend class ColumnDesc;
 
 public:
     // Construct the column base object.
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     BaseColumnDesc (const String& name, const String& comment,
 		    const String& dataManagerType,
 		    const String& dataManagerGroup,

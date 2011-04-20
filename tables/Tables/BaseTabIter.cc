@@ -86,9 +86,6 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 BaseTableIterator* BaseTableIterator::clone() const
 {
     BaseTableIterator* newbti = new BaseTableIterator (*this);
-    if (newbti == 0) {
-	throw (AllocError ("BaseTableIterator::clone", 1));
-    }
     return newbti;
 }
 

@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <casa/Containers/Block.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -155,21 +156,22 @@ public:
     static Block<uInt> factor(uInt number);
 
     // This function returns the number of primes stored in the primes table.
-    static uInt nCachedPrimes()
-	{ return cacheTable.nelements(); }
+  //    static uInt nCachedPrimes()
+  //	{ return cacheTable.nelements(); }
+
+    //This function returns the table of prime numbers.
+    //static Block<uInt> cachedPrimes()
+  //	{ return cacheTable; }
+    
+private:
 
     //This function resets the table of prime numbers to contain 31 prime 
     //numbers to avoid consuming too much memory.
     static void initializeCache();
 
-    //This function returns the table of prime numbers.
-    static Block<uInt> cachedPrimes()
-	{ return cacheTable; }
-    
-private:
-
     //This is the table which stores the prime numbers.
     static Block<uInt> cacheTable;
+    static Mutex       theirMutex;
 };
 
 

@@ -64,6 +64,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // Objects are not initialised when popped. The user should never delete the
 // object returned by get; but return it to the pool.
+//
+// PoolStack is not thread-safe, but ObjectPool is.
 // </synopsis>
 //
 // <example>

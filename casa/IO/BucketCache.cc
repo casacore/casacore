@@ -76,9 +76,6 @@ BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
     // Allocate a buffer (for data in external format).
     // Initialize it to prevent "uninitialized memory errors" when writing.
     its_Buffer = new char[bucketSize];
-    if (its_Buffer == 0) {
-	throw (AllocError ("BucketCache::BucketCache", bucketSize));
-    }
     for (uInt i=0; i<bucketSize; i++) {
 	its_Buffer[i] = 0;
     }

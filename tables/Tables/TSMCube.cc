@@ -400,9 +400,6 @@ void TSMCube::makeCache()
                                    bucketSize_p, nrTiles_p, 1, this,
                                    readCallBack, writeCallBack,
                                    initCallBack, deleteCallBack);
-        if (cache_p == 0) {
-            throw (AllocError ("TSMCube::TSMCube", 1));
-        }
     }
 }
 
@@ -691,9 +688,6 @@ char* TSMCube::readCallBack (void* owner, const char* external)
 char* TSMCube::readTile (const char* external)
 {
     char* local = new char[localTileLength_p];
-    if (local == 0) {
-        throw (AllocError ("TSMCube::readCallBack", localTileLength_p));
-    }
     stmanPtr_p->readTile (local, localOffset_p, external, externalOffset_p,
 			  tileSize_p);
     return local;
@@ -715,9 +709,6 @@ char* TSMCube::initCallBack (void* owner)
 {
     uInt size = ((TSMCube*)owner)->localTileLength();
     char* buffer = new char[size];
-    if (buffer == 0) {
-        throw (AllocError ("TSMCube::initCallBack", size));
-    }
     for (uInt i=0; i<size; i++) {
         buffer[i] = 0;
     }
@@ -1477,6 +1468,10 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
                 sectionOffset += localSize;
             }
             for (j=1; j<nrdim_p; j++) {
+              // Catch attempt to increment dataOffset below 0
+                DebugAssert(dataIncr(j) >= 0 ||
+                            dataOffset >= static_cast<uInt>(-dataIncr(j)),
+                            DataManError);
                 dataOffset    += dataIncr(j);
                 sectionOffset += sectionIncr(j);
                 dataPos(j) += stride(j);

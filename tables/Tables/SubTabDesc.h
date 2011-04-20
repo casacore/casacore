@@ -194,14 +194,10 @@ public:
     // Show the column.
     void show (ostream& os) const;
 
-protected:
-    // Construct the object to register its class.
-    SubTableDesc
-       (SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>&);
-
     // Create the object from AipsIO (this function is registered).
     static BaseColumnDesc* makeDesc(const String& name);
 
+protected:
     // Put the object.
     virtual void putDesc (AipsIO&) const;
 
@@ -218,9 +214,6 @@ private:
 
     // Read table description (if passed by name).
     // If the table description is not found, a False value is returned.
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     Bool readTableDesc();
 
     // Handle the addition of the subtable description (clear the flag).

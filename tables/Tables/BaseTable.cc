@@ -647,9 +647,6 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
 RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 {
     RefTable* rtp = new RefTable(this, rowOrder, initialNrrow);
-    if (rtp == 0) {
-	throw (AllocError ("BaseTable::makeRefTable", 1));
-    }
     return rtp;
 }
 
@@ -721,9 +718,6 @@ BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, rownrs);
-    if (rtp == 0) {
-	throw (AllocError ("Table::operator() (rownrs)", 1));
-    }
     return rtp;
 }
 
@@ -731,9 +725,6 @@ BaseTable* BaseTable::select (const Block<Bool>& mask)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<Bool>(mask));
-    if (rtp == 0) {
-	throw (AllocError ("Table::operator() (mask)", 1));
-    }
     return rtp;
 }
 
@@ -741,9 +732,6 @@ BaseTable* BaseTable::project (const Block<String>& names)
 {
     AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<String>(names));
-    if (rtp == 0) {
-	throw (AllocError ("BaseTable::project", 1));
-    }
     return rtp;
 }
 
@@ -944,9 +932,6 @@ BaseTableIterator* BaseTable::makeIterator
     }
     BaseTableIterator* bti = new BaseTableIterator (this, names,
 						    cmpObj, order, option);
-    if (bti == 0) {
-	throw (AllocError ("BaseTable::makeIterator", 1));
-    }
     return bti;
 }
 

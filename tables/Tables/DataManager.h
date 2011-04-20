@@ -37,6 +37,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/IO/ByteIO.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -166,7 +167,7 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType,
 //   maps the class name to a static class constructor function (usually
 //   called makeObject). This requires that the type name and constructor
 //   for each possible data manager are registered before the table
-//   is opened. The DataManager function registerAllCtor (implemented
+//   is opened. The DataManager function registerMainCtor (implemented
 //   in DataManager.cc) is called before a table is opened, so registration
 //   of data managers should, in principle, be done there.
 //   <br>However, for unknown data managers it is tried to load a shared
@@ -485,33 +486,11 @@ private:
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
-    static SimpleOrderedMap<String,DataManagerCtor> registerMap;
+    static Bool theirMainRegistrationDone;
+    static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
+    static Mutex theirMutex;
 
 public:
-    // Register a mapping of a data manager type to its static "constructor".
-    static void registerCtor (const String& dataManagerType,
-			      DataManagerCtor fn);
-
-    // Get the "constructor" of a data manager.
-    static DataManagerCtor getCtor (const String& dataManagerType);
-
-    // Test if the data manager is registered.
-    static Bool isRegistered (const String& dataManagerType);
-
-    // Register all mappings.
-    // This will be a bunch of register calls. It is implemented in
-    // DataManReg.cc. In this way it is easier to add new functions
-    // to it (or maybe eventually automate that process).
-    static void registerAllCtor();
-
-    // Serve as default function for registerMap, which catches all
-    // unknown data manager types.
-    // <thrown>
-    //   <li> TableUnknownDataManager
-    // </thrown>
-    static DataManager* unknownDataManager (const String& dataManagerType,
-					    const Record& spec);
-
     // Has the object already been cloned?
     DataManager* getClone() const
         { return clone_p; }
@@ -519,6 +498,38 @@ public:
     // Set the pointer to the clone.
     void setClone (DataManager* clone) const
         { clone_p = clone; }
+
+    // Register a mapping of a data manager type to its static construction
+    // function. It is fully thread-safe.
+    static void registerCtor (const String& type, DataManagerCtor func);
+
+    // Get the "constructor" of a data manager (thread-safe).
+    static DataManagerCtor getCtor (const String& dataManagerType);
+
+    // Test if a data manager is registered (thread-safe).
+    static Bool isRegistered (const String& dataManagerType);
+
+    // Register the main data managers (if not done yet).
+    // It is fully thread-safe.
+    static void registerMainCtor()
+      { if (!theirMainRegistrationDone) doRegisterMainCtor(); }
+
+    // Serve as default function for theirRegisterMap, which catches all
+    // unknown data manager types.
+    // <thrown>
+    //   <li> TableUnknownDataManager
+    // </thrown>
+    static DataManager* unknownDataManager (const String& dataManagerType,
+					    const Record& spec);
+
+private:
+    // Register a data manager constructor.
+    static void unlockedRegisterCtor (const String& type,
+                                      DataManagerCtor func)
+      { theirRegisterMap.define (type, func); }
+
+    // Do the actual (thread-safe) registration of the main data managers.
+    static void doRegisterMainCtor();
 };
 
 
@@ -957,6 +968,14 @@ public:
     // implementation of put.
     void throwPut() const;
 
+    // Set the column name.
+    void setColumnName (const String& colName)
+      { colName_p = colName; }
+
+    // Get rhe column name.
+    const String& columnName() const
+      { return colName_p; }
+
 protected:
     // Get the scalar value in the given row.
     // The default implementation throws an "invalid operation" exception.
@@ -996,6 +1015,7 @@ protected:
 
 private:
     Bool        isFixedShape_p;
+    String      colName_p;
     ColumnCache colCache_p;
 
     // Set the shape of all (fixed-shaped) arrays in the column.

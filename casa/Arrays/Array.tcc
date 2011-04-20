@@ -121,10 +121,13 @@ template<class T> void Array<T>::assign (const Array<T>& other)
 template<class T> void Array<T>::reference(const Array<T> &other)
 {
     DebugAssert(ok(), ArrayError);
-    baseCopy (other);
+    // First copy data, then meta data.
+    // This is better in case of multi-threading because it makes it possible
+    // to test the size and be sure that the data is there.
     data_p  = other.data_p;
     begin_p = other.begin_p;
     end_p   = other.end_p;
+    baseCopy (other);
 }
 
 template<class T> Array<T> Array<T>::copy() const

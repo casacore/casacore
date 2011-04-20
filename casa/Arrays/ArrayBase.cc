@@ -284,7 +284,7 @@ size_t ArrayBase::makeSubset (ArrayBase& out,
   if (b.nelements() != ndim() || e.nelements() != ndim() ||
       i.nelements() != ndim()) {
     throw(ArrayError("ArrayBase::operator()(b,e,i) - ndim() differs from"
-		     " an iposition size"));
+		     " the array ndim"));
   }
   uInt j;
   for (j=0; j < ndim(); j++) {

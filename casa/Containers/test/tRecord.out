@@ -4,10 +4,10 @@ Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
 RecordRep::defineDataField - incorrect data type used for field TpShort
 RecordRep::createDataField: unknown data type
-ArrayBase::validateConformance
-ArrayBase::validateConformance
-ArrayBase::validateConformance
-ArrayBase::validateConformance
+ArrayBase::validateConformance shape [3] differs from [1]
+ArrayBase::validateConformance shape [3] differs from [1]
+ArrayBase::validateConformance shape [3] differs from [1]
+ArrayBase::validateConformance shape [3] differs from [1]
 Record::define - fixed array conformance error for field TpArrayString2
 Record::define - fixed array conformance error for field TpBool
 Record cannot be changed (fixed structure)

@@ -32,6 +32,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Block.h>
 #include <casa/System/Aipsrc.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -139,6 +140,7 @@ public:
 private:
   //# Data
   static AipsrcVector myp_p;
+  static Mutex theirMutex;
   // register list
   // <group>
   Block<Vector<T> > tlst;
@@ -179,6 +181,7 @@ template <> class AipsrcVector_String<String> : public Aipsrc {
 
 private:
   static AipsrcVector_String myp_p;
+  static Mutex theirMutex;
   Block<Vector<String> > tlst;
   Block<String> ntlst;
   AipsrcVector_String<String>
@@ -212,6 +215,7 @@ template <> class AipsrcVector_Bool<Bool> : public Aipsrc {
 
 private:
   static AipsrcVector_Bool myp_p;
+  static Mutex theirMutex;
   Block<Vector<Bool> > tlst;
   Block<String> ntlst;
   AipsrcVector_Bool<Bool>

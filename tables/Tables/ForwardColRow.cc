@@ -140,10 +140,13 @@ DataManager* ForwardColumnIndexedRowEngine::makeObject
 }
 void ForwardColumnIndexedRowEngine::registerClass()
 {
-    DataManager::registerCtor ("ForwardColumnIndexedRowEngine",
-			       ForwardColumnIndexedRowEngine::makeObject);
+    DataManager::registerCtor (className(), makeObject);
 }
 String ForwardColumnIndexedRowEngine::dataManagerType() const
+{
+    return className();
+}
+String ForwardColumnIndexedRowEngine::className()
 {
     return "ForwardColumnIndexedRowEngine";
 }

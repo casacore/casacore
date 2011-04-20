@@ -266,7 +266,7 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
     // Note that for Bools it counts external in bits.
     for (uInt i=0; i<nrdim_p; i++) {
       dataLength(i) = 1 + endPixel(i) - startPixel(i);
-      dataPos(i)    = startPixel(i);
+      dataPos   (i) = startPixel(i);
       sectionPos(i) = tilePos(i) * tileShape_p(i)
         + startPixel(i) - startSection(i);
     }
@@ -277,52 +277,98 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
     IPosition sectionIncr = localPixelSize *
       expandedSectionShape.offsetIncrement (dataLength);
 
-    // Calculate the largest number of pixels
-    // that are consecutive in data and in section.
-    uInt n = dataLength(0);
-    uInt incrDim = 1;
-    for (uInt j = 1; j < nrdim_p; j++) {
-      if (dataLength(j-1) == tileShape_p(j-1)  &&
-          dataLength(j-1) == sectionShape(j-1)) {
-        n *= dataLength(j);
-        incrDim = j+1;
-      } else {
-        break;
-      }
+    // Calculate the largest number of pixels, nSec
+    // that are consequtive in data and in section
+    uInt nSec = dataLength(0);
+    uInt secDim = 1;
+    while (secDim < nrdim_p &&
+           dataLength(secDim-1) == tileShape_p(secDim-1)  &&
+           dataLength(secDim-1) == sectionShape(secDim-1)) {
+
+        nSec *= dataLength(secDim);
+        secDim++;
     }
-    uInt nrval     = n * nrConvElem;
-    uInt localSize = n * localPixelSize;
-    uInt dataSize  = n * dataPixelSize;
+
+    // Calculate the largest number of pixels, nData
+    // that are consequtive in data. This is used to
+    // reduce the number of read/write calls as much as
+    // possible
+    uInt nData = nSec;
+    uInt dataDim = secDim;
+    while (dataDim < nrdim_p &&
+           dataLength(dataDim-1) == tileShape_p(dataDim-1)) {
+
+        nData *= dataLength(dataDim);
+        dataDim++;
+    }
+
+    uInt nrvalData = nData * nrConvElem;
+    uInt nrvalSec  = nSec  * nrConvElem;
+    uInt dataSize  = nData * dataPixelSize;
+    uInt localSize = nSec  * localPixelSize;
 
     // Loop through the data in the tile. Handle Bool specifically.
     // On read, it converts the data from the external to the local format.
     // On write it does the opposite.
+    //
+    // The data is read (written) in as large chunks as possible (length
+    // is given by nData). After (before) that, the data is converted nSec
+    // values at a time. First versions of this code used nData=nSec=
+    // dataLength(0) which resulted in too much function call overhead 
+    // (most, if dataLength(0)=1).
     if (useBool) {
       while (True) {
         // Determine start and length in the bucket.
         uInt offset = tileOffset + dataOffset/8;
         uInt stBit = dataOffset % 8;             // bit to start
-        uInt nBytes = (stBit+nrval+7) / 8;
+        uInt nBytes = (stBit+nrvalData+7) / 8;
         if (writeFlag) {
           // Read first and/or last byte if no full byte is used.
-          if (stBit > 0  ||  nrval < 8) {
-            cachePtr->read (tileNr, offset, 1);
+          if (stBit > 0 || nrvalData < 8) {
+              cachePtr->read (tileNr, offset, 1);
           }
-          if (nBytes > 1  &&  (stBit+nrval) % 8 != 0) {
-            cachePtr->read (tileNr, offset+nBytes-1, 1, nBytes-1);
+          if (nBytes > 1  &&  (stBit+nrvalData) % 8 != 0) {
+              cachePtr->read (tileNr, offset+nBytes-1, 1, nBytes-1);
           }
-          Conversion::boolToBit (cachePtr->getBuffer(), section+sectionOffset,
-                                 stBit, nrval);
+
+          for (uInt n = 0; n < nData; n += nSec) {
+              Conversion::boolToBit(cachePtr->getBuffer() + (stBit + n)/8, 
+                                    section+sectionOffset,
+                                    (stBit + n) % 8, nrvalSec);
+              sectionOffset += localSize;
+              
+              for (uInt j = secDim; j < dataDim; j++) {
+                  sectionOffset += sectionIncr(j);
+                  if (++dataPos(j) <= endPixel(j)) {
+                      break;
+                  }
+                  dataPos(j) = startPixel(j);
+              }
+          }
+          
           cachePtr->write (tileNr, offset, nBytes);
-        }else{
+
+        } else {
           cachePtr->read (tileNr, offset, nBytes);
-          Conversion::bitToBool (section+sectionOffset, cachePtr->getBuffer(),
-                                 stBit, nrval);
+          for (uInt n = 0; n < nData; n += nSec) {
+              Conversion::bitToBool(section+sectionOffset, 
+                                    cachePtr->getBuffer() + (stBit + n)/8,
+                                    (stBit + n) % 8, nrvalSec);
+              sectionOffset += localSize;
+
+              for (uInt j = secDim; j < dataDim; j++) {
+                  sectionOffset += sectionIncr(j);
+                  if (++dataPos(j) <= endPixel(j)) {
+                      break;
+                  }
+                  dataPos(j) = startPixel(j);
+              }
+          }
         }
         dataOffset    += dataSize;
-        sectionOffset += localSize;
+
         uInt j;
-        for (j=incrDim; j<nrdim_p; j++) {
+        for (j=dataDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {
@@ -339,16 +385,40 @@ void TSMCubeBuff::accessSection (const IPosition& start, const IPosition& end,
       dataOffset += tileOffset;
       while (True) {
         if (writeFlag) {
-          convertFunc (cachePtr->getBuffer(), section+sectionOffset, nrval);
-          cachePtr->write (tileNr, dataOffset, dataSize);
+            for (uInt n = 0; n < nData; n += nSec) {
+                convertFunc (cachePtr->getBuffer() + n*dataPixelSize, 
+                             section+sectionOffset, nrvalSec);
+                sectionOffset += localSize;
+
+                for (uInt j = secDim; j < dataDim; j++) {
+                    sectionOffset += sectionIncr(j);
+                    if (++dataPos(j) <= endPixel(j)) {
+                        break;
+                    }
+                    dataPos(j) = startPixel(j);
+                }
+            }
+            cachePtr->write (tileNr, dataOffset, dataSize);
         } else {
-          cachePtr->read (tileNr, dataOffset, dataSize);
-          convertFunc (section+sectionOffset, cachePtr->getBuffer(), nrval);
+            cachePtr->read (tileNr, dataOffset, dataSize);
+
+            for (uInt n = 0; n < nData; n += nSec) {
+                convertFunc (section+sectionOffset, 
+                             cachePtr->getBuffer() + n*dataPixelSize, nrvalSec);
+                sectionOffset += localSize;
+                
+                for (uInt j = secDim; j < dataDim; j++) {
+                    sectionOffset += sectionIncr(j);
+                    if (++dataPos(j) <= endPixel(j)) {
+                        break;
+                    }
+                    dataPos(j) = startPixel(j);
+                }
+            }
         }
         dataOffset    += dataSize;
-        sectionOffset += localSize;
         uInt j;
-        for (j=incrDim; j<nrdim_p; j++) {
+        for (j=dataDim; j<nrdim_p; j++) {
           dataOffset    += dataIncr(j);
           sectionOffset += sectionIncr(j);
           if (++dataPos(j) <= endPixel(j)) {

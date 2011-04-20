@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/iosfwd.h>
+#include <casa/BasicSL/String.h>
 #include <vector>
 #include <unistd.h>
 
@@ -314,6 +315,9 @@ public:
     // or are degenerated in the other and if the remaining axes are
     // in the same order.
     Bool isSubSet (const IPosition& other) const;
+
+    // Write the IPosition into a String.
+    String toString() const;
 
     // Write an IPosition to an ostream in a simple text form.
     friend std::ostream& operator<<(std::ostream& os, const IPosition& ip);

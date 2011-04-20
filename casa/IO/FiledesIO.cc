@@ -31,7 +31,7 @@
 #include <casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>                // needed for errno
+#include <errno.h>                     // needed for errno
 #include <casa/string.h>               // needed for strerror
 
 #ifdef PABLO_IO
@@ -113,8 +113,9 @@ void FiledesIO::write (uInt size, const void* buf)
                          + "is not writable");
     }
     if (::traceWRITE(itsFile, (Char *)buf, size) != Int(size)) {
+        int error = errno;
 	throw AipsError ("FiledesIO: write error in "
-                         + itsFileName + ": " + strerror(errno));
+                         + itsFileName + ": " + strerror(error));
     }
 }
 
@@ -126,6 +127,7 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
                      + " - is not readable");
   }
   Int bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
+  int error = errno;
   if (bytesRead > Int(size)) { // Should never be executed
     throw AipsError ("FiledesIO::read " + itsFileName
                      + " - read returned a bad value");
@@ -134,10 +136,12 @@ Int FiledesIO::read (uInt size, void* buf, Bool throwException)
     if (bytesRead < 0) {
       throw AipsError ("FiledesIO::read " + itsFileName +
                        " - error returned by system call: " + 
-                       strerror(errno));
+                       strerror(error));
     } else if (bytesRead < Int(size)) {
-      throw AipsError ("FiledesIO::read " + itsFileName +
-                       " - incorrect number of bytes read");
+      throw AipsError ("FiledesIO::read - incorrect number of bytes ("
+		       + String::toString(bytesRead) + " out of "
+                       + String::toString(size) + ") read for file "
+                       + itsFileName);
     }
   }
   return bytesRead;
@@ -191,9 +195,10 @@ Bool FiledesIO::isSeekable() const
 int FiledesIO::create (const Char* name, int mode)
 {
     int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
+    int error = errno;
     if (fd == -1) {
       throw AipsError ("FiledesIO: file " + String(name) +
-                       " could not be created: " + strerror(errno));
+                       " could not be created: " + strerror(error));
     }
     return fd;
 }
@@ -205,17 +210,19 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
     }else{
 	fd = ::trace2OPEN ((Char *)name, O_RDONLY);
     }
+    int error = errno;
     if (throwExcp  &&  fd == -1) {
 	throw AipsError ("FiledesIO: file " + String(name) +
-                         " could not be opened: " + strerror(errno));
+                         " could not be opened: " + strerror(error));
     }
     return fd;
 }
 void FiledesIO::close (int fd)
 {
     if (::traceCLOSE (fd)  == -1) {
+      int error = errno;
 	throw AipsError (String("FiledesIO: file could not be closed: ")
-                         + strerror(errno));
+                         + strerror(error));
     }
 }
 

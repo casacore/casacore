@@ -198,13 +198,16 @@ DataManager* VirtualTaQLColumn::makeObject (const String&,
 
 void VirtualTaQLColumn::registerClass()
 {
-  DataManager::registerCtor ("VirtualTaQLColumn",
-			     VirtualTaQLColumn::makeObject);
+  DataManager::registerCtor (className(), makeObject);
 }
 
-String VirtualTaQLColumn::dataManagerType() const
+String VirtualTaQLColumn::className()
 {
   return "VirtualTaQLColumn";
+}
+String VirtualTaQLColumn::dataManagerType() const
+{
+  return className();
 }
 
 Record VirtualTaQLColumn::dataManagerSpec() const

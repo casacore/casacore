@@ -13,6 +13,7 @@ Functionals/FuncExprData.cc
 Functionals/FunctionFactoryErrors.cc
 Functionals/FunctionalProxy.cc
 Functionals/SerialHelper.cc
+Mathematics/Combinatorics.cc
 Mathematics/MathFunc2.cc
 Mathematics/Interpolate2D.cc
 Mathematics/FFTPack.cc
@@ -205,6 +206,7 @@ Mathematics/AutoDiffMath.tcc
 Mathematics/AutoDiffRep.h
 Mathematics/AutoDiffRep.tcc
 Mathematics/AutoDiffX.h
+Mathematics/Combinatorics.h
 Mathematics/ConvolveGridder.h
 Mathematics/ConvolveGridder.tcc
 Mathematics/Convolver.h
@@ -237,6 +239,8 @@ Mathematics/NumericTraits2.h
 Mathematics/RigidVector.h
 Mathematics/RigidVector.tcc
 Mathematics/SCSL.h
+Mathematics/Smooth.h
+Mathematics/Smooth.tcc
 Mathematics/SparseDiff.h
 Mathematics/SparseDiff.tcc
 Mathematics/SparseDiffA.h

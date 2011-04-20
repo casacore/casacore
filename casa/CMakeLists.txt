@@ -113,6 +113,7 @@ OS/Timer.cc
 OS/DataConversion.cc
 OS/VAXConversion.cc
 OS/malloc.cc
+OS/Mutex.cc
 OS/EnvVar.cc
 OS/RegularFile.cc
 OS/DOos.cc

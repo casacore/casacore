@@ -48,6 +48,7 @@ ObjectPool<T, Key>::~ObjectPool() {
 
 template <class T, class Key>
 PoolStack<T, Key> &ObjectPool<T, Key>::getStack(const Key key) {
+  ScopedLock lock(mutex_p);
   if (key == cacheKey_p && cacheStack_p) return *cacheStack_p;
   else if (key == defKey_p) return *defStack_p;
   PoolStack<T, Key> **v0;
@@ -61,6 +62,7 @@ PoolStack<T, Key> &ObjectPool<T, Key>::getStack(const Key key) {
 
 template <class T, class Key>
 void ObjectPool<T, Key>::release(T *obj, const Key key) {
+  ScopedLock lock(mutex_p);
   if (key == cacheKey_p && cacheStack_p) cacheStack_p->release(obj);
   else if (key == defKey_p) defStack_p->release(obj);
   else {
@@ -71,11 +73,13 @@ void ObjectPool<T, Key>::release(T *obj, const Key key) {
 
 template <class T, class Key>
 void ObjectPool<T, Key>::clearStacks() {
+  ScopedLock lock(mutex_p);
   for (uInt i=0; i<map_p.ndefined(); i++) clearStack(map_p.getKey(i));
 }
 
 template <class T, class Key>
 void ObjectPool<T, Key>::clearStack(const Key key) {
+  ScopedLock lock(mutex_p);
   PoolStack<T, Key> **v0;
   if ((v0 = map_p.isDefined(key))) (*v0)->clear();
 }
@@ -83,6 +87,7 @@ void ObjectPool<T, Key>::clearStack(const Key key) {
 template <class T, class Key>
 void ObjectPool<T, Key>::clear() {
   clearStacks();
+  ScopedLock lock(mutex_p);
   for (uInt i=0; i<map_p.ndefined(); i++) {
     if (map_p.getVal(i)->nelements() == 0) {
       delete map_p.getVal(i);
