@@ -17,9 +17,10 @@ else (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
 
-# By default do not use HDF5 and FFTW3
+# By default do not use HDF5, FFTW3, threads
 option (USE_HDF5 "" NO)
 option (USE_FFTW3 "" NO)
+option (USE_THREADS "" NO)
 
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.
@@ -129,6 +130,23 @@ if (READLINE_FOUND)
     add_definitions(-DHAVE_READLINE)
 endif (READLINE_FOUND)
 
+# Thread support.
+set(_errmsg "FIXME: Don't know how to enable thread support for ")
+find_package(Pthreads REQUIRED)
+if(CMAKE_COMPILER_IS_GNUCC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
+else(CMAKE_COMPILER_IS_GNUCC)
+    message(FATAL_ERROR "${_errmsg} ${CMAKE_C_COMPILER}")
+endif(CMAKE_COMPILER_IS_GNUCC)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+else(CMAKE_COMPILER_IS_GNUCXX)
+    message(FATAL_ERROR "${_errmsg} ${CMAKE_CXX_COMPILER}")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+if(USE_THREADS)
+    add_definitions(-DUSE_THREADS)
+endif(USE_THREADS)
+
 # Add the modules to be built.
 foreach (module ${_modules})
     add_subdirectory (${module})
@@ -147,6 +165,7 @@ message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "DL library?       ..... = ${DL_LIBRARIES}")
+message (STATUS "Pthreads library? ..... = ${PTHREADS_LIBRARIES}")
 message (STATUS "Readline library? ..... = ${READLINE_LIBRARIES}")
 message (STATUS "BLAS library? ......... = ${BLAS_LIBRARIES}")
 message (STATUS "LAPACK library? ....... = ${LAPACK_LIBRARIES}")
