@@ -31,8 +31,6 @@
 
 namespace casa {
 
-#ifdef USE_THREADS
-
   Mutex::Mutex (Mutex::Type type)
   {
     // Set the type of mutex.
@@ -80,7 +78,5 @@ namespace casa {
     int error = pthread_mutex_destroy (&itsMutex);
     if (error != 0) throw SystemCallError ("pthread_mutex_destroy", error);
   }
-
-#endif
 
 } // namespace casa

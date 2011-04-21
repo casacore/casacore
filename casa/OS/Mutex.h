@@ -29,9 +29,7 @@
 #define CASA_MUTEX_H
 
 #include <casa/aips.h>
-#ifdef USE_THREADS
-# include <pthread.h>
-#endif
+#include <pthread.h>
 #include <errno.h>
 #include <casa/Exceptions/Error.h>
 
@@ -81,9 +79,8 @@ namespace casa {
     // Forbid assignment.
     Mutex& operator= (const Mutex&);
 
-#ifdef USE_THREADS
+    //# Data members
     pthread_mutex_t itsMutex;
-#endif
   };
 
 
@@ -147,10 +144,6 @@ namespace casa {
   }
 
 #else
-  inline Mutex::Mutex (Mutex::Type)
-  {}
-  inline Mutex::~Mutex()
-  {}
   inline void Mutex::lock()
   {}
   inline void Mutex::unlock()
