@@ -33,6 +33,7 @@ namespace casa {
 
   Mutex::Mutex (Mutex::Type type)
   {
+    /*
     // Set the type of mutex.
     // Use default ERRORCHECK if in debug mode.
     int ptype = PTHREAD_MUTEX_DEFAULT;
@@ -71,12 +72,15 @@ namespace casa {
       error = pthread_mutexattr_destroy (&attr);
       if (error != 0) throw SystemCallError ("pthread_mutexattr_destroy",error);
     }
+    */
   }
 
   Mutex::~Mutex()
   {
+    /*
     int error = pthread_mutex_destroy (&itsMutex);
     if (error != 0) throw SystemCallError ("pthread_mutex_destroy", error);
+    */
   }
 
 } // namespace casa

@@ -80,7 +80,7 @@ namespace casa {
     Mutex& operator= (const Mutex&);
 
     //# Data members
-    pthread_mutex_t itsMutex;
+    ///    pthread_mutex_t itsMutex;
   };
 
 
@@ -120,26 +120,26 @@ namespace casa {
 
   inline void Mutex::lock()
   {
-    int error = pthread_mutex_lock (&itsMutex);
-    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
+    ///    int error = pthread_mutex_lock (&itsMutex);
+    ///    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
   }
 
   inline void Mutex::unlock()
   {
-    int error = pthread_mutex_unlock (&itsMutex);
-    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
+    ///    int error = pthread_mutex_unlock (&itsMutex);
+    ///    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
   }
 
   inline Bool Mutex::trylock()
   {
-    int error = pthread_mutex_trylock(&itsMutex);
-    switch (error) {
-    case 0:
-      return True;
-    case EBUSY:
-      return False;
-    default:
-      throw SystemCallError ("pthread_mutex_trylock", error);
+    ///    int error = pthread_mutex_trylock(&itsMutex);
+    ///    switch (error) {
+    ///    case 0:
+          return True;
+    ///    case EBUSY:
+    ///      return False;
+    ///default:
+	  ///      throw SystemCallError ("pthread_mutex_trylock", error);
     }
   }
 
