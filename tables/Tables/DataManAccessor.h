@@ -30,15 +30,9 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <tables/Tables/DataManager.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward Declarations
-class DataManager;
-class Table;
-class Record;
-class String;
-
 
 // <summary>
 // Base class for the Data Manager Accessor classes.
@@ -99,6 +93,14 @@ public:
 
     // Get data manager properties as a record.
     Record getProperties() const;
+
+    // Get the data manager type.
+    String dataManagerType() const
+      { return itsDataManager->dataManagerType(); } 
+
+    // Get the data manager name.
+    String dataManagerName() const
+      { return itsDataManager->dataManagerName(); } 
 
 protected:
     // Get the data manager for the given data manager or column name.
