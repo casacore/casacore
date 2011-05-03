@@ -1,5 +1,5 @@
 //# measuresdata.cc: Program to read IERS and other data for Measure conversion
-//# Copyright (C) 2007-2008
+//# Copyright (C) 2007-2008,2011
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@
 
 
 // Version
-const string PROG_VS = "20081102wnb";
+const string PROG_VS = "20110502wnb";
 
 
 // Using
@@ -437,7 +437,7 @@ const tableProperties allProperties[] = {
     "IERS EOPC04_05 Earth Orientation Data from IERS",	"eop97",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04_05", "eopc04.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.xx" } },
 
   //**********************************************************************//
 
@@ -449,7 +449,7 @@ const tableProperties allProperties[] = {
     "IERS EOP2000C04_05 Earth Orientation Data IAU2000","eop2000",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04_05", "eopc04_IAU2000.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04_IAU2000.xx" } },
 
   //**********************************************************************//
 
