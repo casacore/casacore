@@ -664,7 +664,7 @@ public:
                           uInt worldAxis,
                           Bool isAbsolute=True,
                           Bool showAsAbsolute=True,
-                          Int precision=-1);
+                          Int precision=-1) const;
 
     // Miscellaneous information related to an observation, for example the
     // observation date.
@@ -722,7 +722,8 @@ public:
 		      Bool oneRelative, 
 		      Char prefix = 'c', Bool writeWCS=True,
 		      Bool preferVelocity=True, 
-		      Bool opticalVelocity=True) const;
+		      Bool opticalVelocity=True,
+		      Bool preferWavelength=False) const;
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
@@ -759,6 +760,48 @@ public:
    Vector<String> list(LogIO& os, MDoppler::Types doppler,
                        const IPosition& latticeShape,
                        const IPosition& tileShape, Bool postLocally=False) const;
+
+   // Does this coordinate system have a spectral axis?
+   Bool hasSpectralAxis() const;
+
+   // what number is the spectral axis? Returns -1 if no spectral axis exists.
+   Int spectralAxisNumber() const;
+
+   // does this coordinate system have a polarizaion/stokes axis?
+   Bool hasPolarizationAxis() const;
+
+   // Given a stokes or polarization parameter, find the pixel location.
+   // Note the client is responsible for any boundedness checks
+   // (eg finite number of stokes in an image).
+   Int stokesPixelNumber(const String& stokesString) const;
+
+   // what is the number of the polarization/stokes coordinate?
+   // Returns -1 if no stokes coordinate exists.
+   Int polarizationCoordinateNumber() const;
+
+   // what is the number of the polarization/stokes axis?
+   // Returns -1 if no stokes axis exists.
+   Int polarizationAxisNumber() const;
+
+   Int directionCoordinateNumber() const;
+
+   Bool hasDirectionCoordinate() const;
+
+   Vector<Int> directionAxesNumbers() const;
+
+   String stokesAtPixel(const uInt pixel) const;
+
+   Int linearCoordinateNumber() const;
+
+   Bool hasLinearCoordinate() const;
+
+   Vector<Int> linearAxesNumbers() const;
+
+   // Get the 0 based order of the minimal match strings specified in <src>order</src>.
+   // If <src>requireAll</src> is True, checks are done to ensure that all axes in
+   // the coordinate system are uniquely specified in <src>order</src>.
+   Vector<Int> getWorldAxisOrder(Vector<String>& myNames, const Bool requireAll) const;
+
 
 private:
     // Where we store copies of the coordinates we are created with.
@@ -874,6 +917,9 @@ private:
     Bool velocityIncrement(Double& velocityInc,  SpectralCoordinate& sc,
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
+
+    void _downcase(Vector<String>& vec) const;
+
 };
 
 } //# NAMESPACE CASA - END

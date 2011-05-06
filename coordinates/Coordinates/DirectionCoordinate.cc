@@ -603,6 +603,9 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
        return False;
     }
 //
+    //cout << "refPix[0]=" << refPix[0]
+    //     << " refPix[1]=" << refPix[1]
+    //     << endl;
     wcs_p.crpix[0] = refPix[0];
     wcs_p.crpix[1] = refPix[1];
     set_wcs(wcs_p);
@@ -679,6 +682,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
+	case MDirection::ICRS:
 	    names[0] = "RA";
 	    names[1] = "DEC";
 	    break;
@@ -722,6 +726,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
+	case MDirection::ICRS:
 	    names[0] = "Right Ascension";
 	    names[1] = "Declination";
 	    break;
@@ -821,7 +826,7 @@ String DirectionCoordinate::format(String& units,
                                    uInt worldAxis,
                                    Bool isAbsolute,
                                    Bool showAsAbsolute,
-                                   Int precision)
+                                   Int precision) const
 {
    DebugAssert(worldAxis< nWorldAxes(), AipsError);
    DebugAssert(nWorldAxes()==2, AipsError);

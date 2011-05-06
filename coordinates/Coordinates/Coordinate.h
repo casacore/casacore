@@ -437,7 +437,7 @@ public:
                           uInt axis, 
                           Bool isAbsolute=True,
                           Bool showAsAbsolute=True,
- 			  Int precision=-1);
+ 			  Int precision=-1) const;
     String formatQuantity(String& units,
                           Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 

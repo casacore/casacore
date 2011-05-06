@@ -210,7 +210,7 @@ private:
     Projection::Type which_p;
     Vector<Double> parameters_p;
 
-    void validate();
+    void validate(const Bool verbose=False);
     Projection::Type type (String& ctypeLong, String& ctypeLat) const;
 };
 

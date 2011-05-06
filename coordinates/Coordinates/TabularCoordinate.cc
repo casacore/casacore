@@ -746,57 +746,83 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
 {
     const uInt n = pixelValues.nelements();
 
-    if (n <= 1 || n != worldValues.nelements()) {
+    if (n < 1 || n != worldValues.nelements()) {
 	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
-			"(length 0 or 1 or n(pixelvalues) != n(worldvalues)"));
+			"(length 0 or n(pixelvalues) != n(worldvalues)"));
     }
-    if (pixelValues(n-1) - pixelValues(0) == 0) {
+
+    if(n==1){ // trivial case
+
+      // Work out "global" crval etc.
+      crval_p = worldValues(0);
+      crpix_p = pixelValues(0);
+      cdelt_p = 0.;
+      matrix_p = 1.0;
+
+      Vector<Double> averagePixel(1,pixelValues(0));
+
+      ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
+      channel_corrector_p = 
+	new Interpolate1D<Double,Double>(in, avg, True, True);
+      channel_corrector_rev_p = 
+	new Interpolate1D<Double,Double>(avg, in, True, True);
+      AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0,
+		   AipsError);
+
+      channel_corrector_p->setMethod(Interpolate1D<Double,Double>::nearestNeighbour);
+      channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::nearestNeighbour);
+
+    }
+    else{ // n>1
+
+      if (pixelValues(n-1) - pixelValues(0) == 0) {
 	throw(AipsError("TabularCoordinate::TabularCoordinate - illegal table "
 			"first and last pixel values are the same"));
-    }
+      }
 
-
-    // Work out "global" crval etc.
-    crval_p = worldValues(0);
-    crpix_p = pixelValues(0);
-    cdelt_p = (worldValues(n-1) - worldValues(0)) /
-              (pixelValues(n-1) - pixelValues(0));
-    matrix_p = 1.0;
-
-    if (cdelt_p == 0.0) {
+      // Work out "global" crval etc.
+      crval_p = worldValues(0);
+      crpix_p = pixelValues(0);
+      cdelt_p = (worldValues(n-1) - worldValues(0)) /
+	(pixelValues(n-1) - pixelValues(0));
+      matrix_p = 1.0;
+      
+      if (cdelt_p == 0.0) {
         throw(AipsError("TabularCoordinate - start and "
                         "end values in table must differ"));
-    }
-
-    Double signworld = ((worldValues(n-1) - worldValues(0))  > 0 ? 1.0 : -1.0);
-    Double signpixel = ((pixelValues(n-1) - pixelValues(0))  > 0 ? 1.0 : -1.0);
-
-    // Check that the pixel values and values monotonically increase or decrease
-    // and if so, work out the difference between the actual supplied pixel and
-    // the "average" pixel value.
-    Vector<Double> averagePixel(n);
-    for (uInt i=0; i<n; i++) {
+      }
+      
+      Double signworld = ((worldValues(n-1) - worldValues(0))  > 0 ? 1.0 : -1.0);
+      Double signpixel = ((pixelValues(n-1) - pixelValues(0))  > 0 ? 1.0 : -1.0);
+      
+      // Check that the pixel values and values monotonically increase or decrease
+      // and if so, work out the difference between the actual supplied pixel and
+      // the "average" pixel value.
+      Vector<Double> averagePixel(n);
+      for (uInt i=0; i<n; i++) {
  	if (i>1) {
-	    Double diffworld = signworld*(worldValues(i) - worldValues(i-1));
-	    Double diffpixel = signpixel*(pixelValues(i) - pixelValues(i-1));
-	    if (diffworld <= 0 || diffpixel <= 0) {
-		throw(AipsError("TabularCoordinate - pixel and world values "
-				"must increase or decrease monotonically"));
-	    }
+	  Double diffworld = signworld*(worldValues(i) - worldValues(i-1));
+	  Double diffpixel = signpixel*(pixelValues(i) - pixelValues(i-1));
+	  if (diffworld <= 0 || diffpixel <= 0) {
+	    throw(AipsError("TabularCoordinate - pixel and world values "
+			    "must increase or decrease monotonically"));
+	  }
 	}
 	averagePixel(i) = (worldValues(i) - crval_p)/cdelt_p + crpix_p;
-    }
-
-    ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
-    channel_corrector_p = 
+      }
+      
+      ScalarSampledFunctional<Double> in(pixelValues), avg(averagePixel);
+      channel_corrector_p = 
 	new Interpolate1D<Double,Double>(in, avg, True, True);
-    channel_corrector_rev_p = 
+      channel_corrector_rev_p = 
 	new Interpolate1D<Double,Double>(avg, in, True, True);
-    AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0,
-		 AipsError);
+      AlwaysAssert(channel_corrector_p != 0 && channel_corrector_rev_p != 0,
+		   AipsError);
+      
+      channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
+      channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
+    } // endif
 
-    channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
-    channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
 }
 
 
