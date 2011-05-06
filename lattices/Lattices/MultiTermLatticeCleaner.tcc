@@ -76,7 +76,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class T> MultiTermLatticeCleaner<T>::MultiTermLatticeCleaner():
   ntaylor_p(2),donePSF_p(False),donePSP_p(False),doneCONV_p(False)
   {
-	  adbg=True;
+	  adbg=False;
   }
 
 template <class T> MultiTermLatticeCleaner<T>::
@@ -152,7 +152,21 @@ Bool MultiTermLatticeCleaner<T>::initialise(Int nx, Int ny)
   return True;
 }
 
-/* Input : PSFs */
+template <class T>
+Bool MultiTermLatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
+				   const Int niter,
+				   const Float gain,
+				   const Quantity& aThreshold,
+				   const Bool choose)
+{
+  itsCleanType=cleanType;
+  itsMaxNiter=niter;
+  itsGain=gain;
+  itsThreshold=aThreshold;
+  totalIters_p=0;
+  return True;
+}
+
 template <class T>
 Bool MultiTermLatticeCleaner<T>::setpsf(int order, Lattice<T> & psf)
 {
@@ -183,6 +197,7 @@ Bool MultiTermLatticeCleaner<T>::setmodel(int order, Lattice<T> & model)
 	AlwaysAssert((order>=(int)0 && order<(int)vecModel_p.nelements()), AipsError);
 	//AlwaysAssert(model, AipsError);
 	vecModel_p[order]->copyData(LatticeExpr<Float>(model));
+	totalTaylorFlux_p[order] = (sum( LatticeExpr<Float>(*vecModel_p[order]) )).getFloat();
   return True;
 }
 
@@ -216,16 +231,25 @@ Bool MultiTermLatticeCleaner<T>::getresidual(int order, Lattice<T> & residual)
   return True;
 }
 
+/* Output Hessian matrix */
+template <class T>
+Bool MultiTermLatticeCleaner<T>::getinvhessian(Matrix<Double> & invhessian)
+{
+        invhessian.resize((*invMatA_p[0]).shape());
+	invhessian = (*invMatA_p[0]); //*(*matA_p[0])(0,0);
+  return True;
+}
+
 /* Do the deconvolution */
 template <class T>
-Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
+Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "mtclean()", WHERE));
   if(adbg)os << "SOLVER for Multi-Frequency Synthesis deconvolution" << LogIO::POST;
   
   Int convergedflag = 0;
-  static Bool choosespec = True;
-  static Int totalIters=0;
+  Bool choosespec = True;
+  //static Int totalIters=0;
   
   /* Set up the Mask image */
   setupUserMask();
@@ -234,8 +258,8 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
   Float zmaxval=0.0;
   IPosition zmaxpos;
   findMaxAbsLattice((*mask_p),(*vecDirty_p[0]),zmaxval,zmaxpos);
-  os << "Initial Max Residual at iteration " << totalIters << " : " << zmaxval << "  at " << zmaxpos << LogIO::POST;
-  if(totalIters==0)
+  os << "Initial Max Residual at iteration " << totalIters_p << " : " << zmaxval << "  at " << zmaxpos << LogIO::POST;
+  if(totalIters_p==0)
   {
     for(Int i=0;i<2*ntaylor_p-1;i++)
     {
@@ -245,7 +269,9 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
   }
  
   /* Compute all convolutions and the matrix A */
-  computeMatrixA();
+  /* If matrix is not invertible, return ! */
+  if( computeMatrixA() == -2 )
+	  return -2;
   
   /* Compute the convolutions of the current residual with all PSFs and scales */
   computeRHS();
@@ -262,9 +288,20 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
   IPosition maxpos(4,0),globalmaxpos(4,0);
   Int maxscaleindex=0;
   Int niters = itsMaxNiter;
-  
+ 
   /********************** START MINOR CYCLE ITERATIONS ***********************/
-  Int numiters = MIN(20,niters-totalIters);
+  //Int numiters = MIN(40,niters-totalIters_p);
+  Int numiters = niters-totalIters_p;
+  //cout << "niters,itsMaxiter : " << niters << " ,totalIters_p : " << totalIters_p << " , numiters : " << numiters << endl;
+  
+  /* If no iterations */
+  if(numiters<=0) 
+  {
+    os << "Reached max number of iterations" << LogIO::POST;
+    convergedflag=-1;
+    return (convergedflag);
+  }
+
   for(Int itercount=0;itercount<numiters;itercount++)
   {
     globalmaxval=-1e+10;
@@ -304,19 +341,22 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
     Float rmaxval = maxres*norma;
     
     /* Print out coefficients at each iteration */
-    if(adbg)
+    //if(adbg)
     {
-      //os << "[" << totalIters << "] Res: " << rmaxval << " Max: " << globalmaxval;
-      os << "[" << totalIters << "] Res: " << rmaxval;
+      //os << "[" << totalIters_p << "] Res: " << rmaxval << " Max: " << globalmaxval;
+      os << "[" << totalIters_p << "] Res: " << rmaxval;
       os << " Pos: " <<  globalmaxpos << " Scale: " << scaleSizes_p[maxscaleindex];
       os << " Coeffs: ";
       for(Int taylor=0;taylor<ntaylor_p;taylor++)
 	      os << (*matCoeffs_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos) << "  ";
+      //os << " OrigRes: ";
+      //for(Int taylor=0;taylor<ntaylor_p;taylor++)
+      //      os << (*matR_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos) << "  ";
       os << LogIO::POST;
     }
     
     /* Increment iteration count */
-    totalIters++;
+    totalIters_p++;
     
     /* Check for convergence */
     convergedflag = checkConvergence(choosespec,thresh,fluxlimit);
@@ -331,20 +371,21 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress*)
       convergedflag = 0;
       break;
     }
-    if(totalIters==itsMaxNiter) 
+    if(totalIters_p==itsMaxNiter) 
     {
-      os << "Failed to reach stopping threshold" << LogIO::POST;
+      os << "Reached max number of iterations. Failed to reach stopping threshold" << LogIO::POST;
       convergedflag=-1;
       break;
     }
     
   }
+
   /********************** END MINOR CYCLE ITERATIONS ***********************/		
   
   /* Print out flux counts so far */
-  if(adbg)
+  //if(adbg)
   {
-     for(Int scale=0;scale<nscales_p;scale++) os << "Scale " << scale+1 << " with " << scaleSizes_p[scale] << " pixels has total flux = " << totalScaleFlux_p[scale] << LogIO::POST;
+     for(Int scale=0;scale<nscales_p;scale++) os << "Scale " << scale+1 << " with " << scaleSizes_p[scale] << " pixels has total flux = " << totalScaleFlux_p[scale] << " (in this run) " << LogIO::POST;
      for(Int taylor=0;taylor<ntaylor_p;taylor++) os << "Taylor " << taylor << " has total flux = " << totalTaylorFlux_p[taylor] << LogIO::POST;
   }
   
@@ -389,19 +430,23 @@ template <class T>
 Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "manageMemory()", WHERE));
+	// Define max memory usage for all TempLattices. (half of available);
+	memoryMB_p = Double(HostInfo::memoryTotal()/1024)/(2.0); // ? /(16.0) ?
+	Int ntemp = numberOfTempLattices(nscales_p,ntaylor_p);
+	Int numMB = nx_p*ny_p*4*ntemp/(1024*1024);
+	memoryMB_p = MIN(memoryMB_p, numMB);
 	if(direction)
 	{
-		// Define max memory usage for all TempLattices. (half of available);
-		memoryMB_p = Double(HostInfo::memoryTotal()/1024)/(2.0); // ? /(16.0) ?
-		Int ntemp = numberOfTempLattices(nscales_p,ntaylor_p);
-		Int numMB = nx_p*ny_p*4*ntemp/(1024*1024);
-		os << "This algorithm needs " << numMB << " MBytes for " << ntemp << " TempLattices " << LogIO::POST;
-		memoryMB_p = MIN(memoryMB_p, numMB);
-		os << "Allocating " << memoryMB_p << " MBytes." << LogIO::POST;
+		os << "This algorithm is allocating " << numMB << " MBytes for " << ntemp << " TempLattices " << LogIO::POST;
+		if(adbg)os << "Allocating " << memoryMB_p << " MBytes." << LogIO::POST;
 		
 	}
-	if(adbg && direction)os << "Allocating mem ... " ;
-	if(adbg && !direction)os << "Freeing mem ... " ;
+	else
+	{
+		os << "Releasing " << numMB << " MBytes " << LogIO::POST;
+	}
+	if(adbg && direction)os << "Allocating memory ... " ;
+	if(adbg && !direction)os << "Freeing memory ... " ;
 	
 	Int ntotal4d = (nscales_p*(nscales_p+1)/2) * (ntaylor_p*(ntaylor_p+1)/2);
 	
@@ -692,7 +737,7 @@ Int MultiTermLatticeCleaner<T>::setupBlobs()
 	{
 		// Compute h(s1), h(s2),... depending on the number of scales chosen.
 		// NSCALES = 1;
-		os << "Calculating scales and their FTs " << LogIO::POST;
+		if(adbg) os << "Calculating scales and their FTs " << LogIO::POST;
 			
 		for (Int scale=0; scale<nscales_p;scale++) 
 		{
@@ -770,6 +815,7 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
       
       IPosition wip(4,0,0,0,0);
       wip[0]=(nx_p/2); wip[1]=(ny_p/2);
+      Int stopnow=False;
       for (Int scale=0; scale<nscales_p;scale++) 
       {
 	      // Fill up A
@@ -777,20 +823,65 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
 	      for (Int taylor2=0; taylor2<ntaylor_p;taylor2++) 
 	      {
                 (*matA_p[scale])(taylor1,taylor2) = (*cubeA_p[IND4(taylor1,taylor2,scale,scale)])(wip);
+		/* Check for exact zeros. Usually indicative of error */
+		if( fabs( (*matA_p[scale])(taylor1,taylor2) )  == 0.0 ) stopnow = True;
 	      }
 	      
-	      if(adbg)os << "The Matrix A is : " << (*matA_p[scale]) << LogIO::POST;
+	      os << "The Matrix [A] is : " << (*matA_p[scale]) << LogIO::POST;
 	      
+	      if(stopnow)
+	      {
+                os << "Multi-Term Hessian has exact zeros. Not proceeding further." << LogIO::WARN << endl;
+	        return -2;
+	      }
+
+	      /* If all elements are non-zero, check by brute-force if the rows/cols 
+		 are nearly linearly dependant, making the matrix nearly singular. */
+	       Vector<Float> ratios(ntaylor_p);
+	       Float tsum=0.0;
+	       for(Int taylor1=0; taylor1<ntaylor_p-1; taylor1++)
+	       {
+	           for(Int taylor2=0; taylor2<ntaylor_p; taylor2++)
+		     ratios[taylor2] = (*matA_p[scale])(taylor1,taylor2) / (*matA_p[scale])(taylor1+1,taylor2);
+                   tsum=0.0;
+		   for(Int taylor2=0; taylor2<ntaylor_p-1; taylor2++)
+		      tsum += fabs(ratios[taylor2] - ratios[taylor2+1]);
+		   tsum /= ntaylor_p-1;
+		   if(tsum < 1e-04) stopnow=True;
+
+		   //cout << "Ratios for row " << taylor1 << " are " << ratios << endl;
+		   //cout << "tsum : " << tsum << endl;
+	       }
+
+	      if(stopnow)
+	      {
+                os << "Multi-Term Hessian has linearly-dependent rows/cols. Not proceeding further." << LogIO::WARN << endl;
+	        return -2;
+	      }
+	          
+	      /* Try to invert the matrix. If it fails, return. 
+	         The invertSymPosDef will check if it's positive definite or not. 
+	         By construction, it should be pos-def. */
 	      // Compute inv(A) 
 	      // Use MatrixMathLA::invert
-	      // of Use invertSymPosDef...
+	      // or Use invertSymPosDef...
 	      //
-	      Double deter=0.0;
-	      ////MatrixMathLA::invert((*invMatA_p[scale]),deter,(*matA_p[scale]));
-	      invertSymPosDef((*invMatA_p[scale]),deter,(*matA_p[scale]));
-	      if(adbg)os << "A matrix determinant : " << deter << LogIO::POST;
-	      //if(fabs(deter) < 1.0e-08) os << "SINGULAR MATRIX !! STOP!! " << LogIO::EXCEPTION;
-	      if(adbg)os << "Lapack Cholesky Decomp Matrix inv(A) is : " << (*invMatA_p[scale]) << LogIO::POST;
+	      try
+	      {
+	             Double deter=0.0;
+	             //invert((*invMatA_p[scale]),deter,(*matA_p[scale]));
+	             //os << "Matrix Inverse : inv(A) : " << (*invMatA_p[scale]) << LogIO::POST;
+	      
+	             invertSymPosDef((*invMatA_p[scale]),deter,(*matA_p[scale]));
+	             os << "Lapack Cholesky Decomposition Inverse of [A] is : " << (*invMatA_p[scale]) << LogIO::POST;
+	             //if(adbg)os << "A matrix determinant : " << deter << LogIO::POST;
+	             //if(fabs(deter) < 1.0e-08) os << "SINGULAR MATRIX !! STOP!! " << LogIO::EXCEPTION;
+	      }
+	      catch(AipsError &x)
+	      {
+		      os << "Cannot Invert matrix : " << x.getMesg() << LogIO::WARN;
+		      return -2;
+	      }
 	      
       }
       
@@ -823,7 +914,7 @@ Int MultiTermLatticeCleaner<T>::computeRHS()
 	//storeAsImg("temp_residual_1",residualspec(0,1));
 	
 	/* I_D * (PSF * scale) -> matR_p [nx_p,ny_p,ntaylor,nscales] */
-	//os << "Calculating I_D * PSF_i * Scale_j " << LogIO::POST;
+	os << "Calculating convolutions of dirty image with scales and PSFs " << LogIO::POST;
 	for (Int taylor=0; taylor<ntaylor_p;taylor++) 
 	{
 	   /* Compute FT of dirty image */
@@ -856,23 +947,27 @@ Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float thresho
 
 	// Find max residual ( from all scale and taylor convos of the residual image )
 	// Find max ext PSF value ( from all scale convos of all the PSFs )
-	// factor = 0.5;
+	// factor = 0.01;
 	// fluxlimit = maxRes * maxExtPsf * factor;
 	
+  /*
 	Float maxRes=0.0;
 	Float maxExtPsf=0.0;
 	Float tmax=0.0;
 	IPosition tmaxpos;
 	Float ffactor=0.01;
 	Int maxscale=0;
-	
+
+
 	for(Int taylor=0;taylor<ntaylor_p;taylor++)
 	for(Int scale=0; scale<nscales_p;scale++)
 	{
 		findMaxAbsLattice((*mask_p),(*matR_p[IND2(taylor,scale)]),tmax,tmaxpos);
 		if(tmax > maxRes) maxscale = scale;
 		maxRes = MAX(maxRes,tmax);
+		cout << "MaxRes for taylor " << taylor << " and scale " << scale << " : " << maxRes << endl;
 	}
+
 	for (Int taylor1=0; taylor1<ntaylor_p;taylor1++) 
 	for (Int taylor2=0; taylor2<=taylor1;taylor2++) 
 	for (Int scale1=0; scale1<nscales_p;scale1++) 
@@ -880,13 +975,24 @@ Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float thresho
 	{
 		findMaxAbsLattice((*mask_p),(*cubeA_p[IND4(taylor1,taylor2,scale1,scale2)]),tmax,tmaxpos, True);
 		maxExtPsf = MAX(maxExtPsf,tmax);
+		cout << "MaxExtPSF for taylor " << taylor1 << "," << taylor2 << " and scale " << scale1 << "," << scale2 << " : " << maxExtPsf << endl;
 	}
+        
+	Float norma1 = sqrt((1.0/(*matA_p[maxscale])(0,0)));
+	fluxlimit = max(threshold, (maxRes*norma1) * ffactor);
 	
-	Float norma = sqrt((1.0/(*matA_p[maxscale])(0,0)));
-	
-	fluxlimit = max(threshold, (maxRes*norma) * ffactor);
-	
-	if(adbg)os << "Max Res : " << maxRes*norma << " FluxLimit : " << fluxlimit << LogIO::POST;
+	os << "Max Residual : " << maxRes*norma1 << " FluxLimit : " << fluxlimit << LogIO::POST;
+	cout << "Old : Max Residual : " << maxRes*norma1 << " FluxLimit : " << fluxlimit << endl;
+*/
+
+	Float maxres=0.0;
+	IPosition maxrespos;
+	findMaxAbsLattice((*mask_p),(*matR_p[IND2(0,0)]),maxres,maxrespos);
+	Float norma = (1.0/(*matA_p[0])(0,0));
+	Float rmaxval = maxres*norma;
+
+	fluxlimit = max(threshold, rmaxval/10.0);
+	os << "Max Residual : " << rmaxval << " Flux Limit for this major cycle : " <<  fluxlimit  << endl;
 	
 	return 0;
 }/* end of computeFluxLimit() */

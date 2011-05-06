@@ -278,7 +278,11 @@ public:
 // Display the statistics by listing and/or plotting them.  If you don't call
 // this function then you won't see anything !  A return value of <src>False</src>
 // indicates an invalid plotting device, or that the internal state of the class is bad.
-   Bool display ();
+
+   Bool display();
+   Bool getLayerStats(String& stats, Double area, 
+                      Int zAxis=-1, Int zLayer=-1, 
+                      Int hAxis=-1, Int hLayer=-1); 
 
 // CLose plotter
    void closePlotting();
@@ -386,6 +390,9 @@ protected:
 // have to do.
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<AccumType>& ord);
+   virtual Bool listLayerStats (Double hasBeam, 
+             const Matrix<AccumType>& ord,
+             ostringstream& rslt, Int zLayer); 
 
 // Gets labels for higher order axes and x axis.
 // dPos is the location of the start of the cursor in the
@@ -420,9 +427,12 @@ private:
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats();
-   virtual void displayStats( AccumType nPts, AccumType sum, AccumType median,
-	   AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
-	   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax );
+
+	   virtual void displayStats(
+		   AccumType nPts, AccumType sum, AccumType median,
+		   AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
+		   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax
+	   );
 
 // Calculate statistic from storage lattice and return in an array
    Bool calculateStatistic (Array<AccumType>& slice, 
@@ -634,6 +644,10 @@ private:
     Block<U> *pSum_p;
     Block<U> *pSumSq_p;
     Block<U>* pNPts_p;
+    Block<U>* pMean_p;
+
+    Block<U>* pVariance_p;
+
     Block<T>* pMin_p;
     Block<T>* pMax_p;
     Block<Bool>* pInitMinMax_p;

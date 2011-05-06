@@ -511,9 +511,8 @@ Bool LatticeStatistics<T>::getStatistic (Array<AccumType>& stats,
    if (!goodParameterStatus_p) {
      return False;
    }
-//
+
    if (needStorageLattice_p) generateStorageLattice();
-//
    if (type==LatticeStatsBase::NPTS) {
       return retrieveStorageStatistic(stats, NPTS, dropDeg);
    } else if (type==LatticeStatsBase::SUM) {
@@ -543,9 +542,12 @@ Bool LatticeStatistics<T>::getStatistic (Array<AccumType>& stats,
    } else if (type==LatticeStatsBase::MAX) {
       return retrieveStorageStatistic(stats, MAX, dropDeg);
    } else if (type==LatticeStatsBase::MEAN) {
-      return calculateStatistic (stats, MEAN, dropDeg);
+	   // we prefer to calculate the mean rather than use the accumulated value
+	   	   // because the accumulated value may include accumulated finite precision errors
+	     // return retrieveStorageStatistic(stats, MEAN, dropDeg);
+	   return calculateStatistic(stats, MEAN, dropDeg);
    } else if (type==LatticeStatsBase::VARIANCE) {
-      return calculateStatistic (stats, VARIANCE, dropDeg);
+	      return retrieveStorageStatistic(stats, VARIANCE, dropDeg);
    } else if (type==LatticeStatsBase::SIGMA) {
       return calculateStatistic (stats, SIGMA, dropDeg);
    } else if (type==LatticeStatsBase::RMS) {
@@ -591,9 +593,9 @@ Bool LatticeStatistics<T>::getStats(Vector<AccumType>& stats,
       return  True;
    }
 //
-   stats(MEAN) = LattStatsSpecialize::getMean(stats(SUM), n);
-   stats(VARIANCE) = LattStatsSpecialize::getVariance(stats(SUM),
-                                                      stats(SUMSQ), n);
+   //stats(MEAN) = LattStatsSpecialize::getMean(stats(SUM), n);
+   //stats(VARIANCE) = LattStatsSpecialize::getVariance(stats(SUM),
+   //                                                   stats(SUMSQ), n);
    stats(SIGMA) = LattStatsSpecialize::getSigma(stats(VARIANCE));
    stats(RMS) =  LattStatsSpecialize::getRms(stats(SUMSQ), n);  
 //
@@ -618,11 +620,9 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
    }
 
 // Generate storage lattice if required
-
    if (needStorageLattice_p) {
       if (!generateStorageLattice()) return False;
    }
-//
    if (displayAxes_p.nelements() == 0) {
       minPos.resize(minPos_p.nelements());
       minPos = minPos_p;
@@ -677,11 +677,9 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
    slice.resize(IPosition(0,0));
 
 // Generate storage lattice if required
-
    if (needStorageLattice_p) {
       if (!generateStorageLattice()) return False;
    }
-
 // Return asap if no good points
 
    if (!someGoodPoints()) return True;
@@ -704,29 +702,29 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
    Array<AccumType> sum;
    Array<AccumType> sumSq;
    if (type==MEAN) {
-       retrieveStorageStatistic (sum, SUM, dropDeg);
+	   retrieveStorageStatistic (sum, SUM, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumIt(sum);
-//
        while (!nPtsIt.pastEnd()) {
-          for (uInt i=0; i<n1; i++) {
-             sliceIt.vector()(i) = 
-                LattStatsSpecialize::getMean(sumIt.vector()(i),
-                                             nPtsIt.vector()(i));
-          }
-          nPtsIt.next();
-          sumIt.next();
-          sliceIt.next();
+    	   for (uInt i=0; i<n1; i++) {
+    		   sliceIt.vector()(i) =
+    				   LattStatsSpecialize::getMean(sumIt.vector()(i),
+    						   nPtsIt.vector()(i));
+    	   }
+    	   nPtsIt.next();
+    	   sumIt.next();
+    	   sliceIt.next();
        }
-   } else if (type==FLUX) {
+   }
+   else if (type==FLUX) {
        Double beamArea;
        if (!getBeamArea(beamArea)) {
           slice.resize(IPosition(0,0));
           return False;
        }
-//
+
        retrieveStorageStatistic (sum, SUM, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumIt(sum);
-//
+
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
              if (LattStatsSpecialize::hasSomePoints(nPtsIt.vector()(i))) {
@@ -740,10 +738,10 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
     } else if (type==SIGMA) {
        retrieveStorageStatistic (sum, SUM, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumIt(sum);
-//
+
        retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
-//
+
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
              sliceIt.vector()(i) = 
@@ -756,26 +754,9 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
           sumSqIt.next();
           sliceIt.next();
        }
-    } else if (type==VARIANCE) {
-       retrieveStorageStatistic (sum, SUM, dropDeg);
-       ReadOnlyVectorIterator<AccumType> sumIt(sum);
-//
-       retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
-       ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
-//
-       while (!nPtsIt.pastEnd()) {
-          for (uInt i=0; i<n1; i++) {
-             sliceIt.vector()(i) = 
-                LattStatsSpecialize::getVariance(sumIt.vector()(i),
-                                                 sumSqIt.vector()(i),
-                                                 nPtsIt.vector()(i));
-          }
-          nPtsIt.next();
-          sumIt.next();
-          sumSqIt.next();
-          sliceIt.next();
-       }
-    } else if (type==RMS) {
+    }
+
+    else if (type==RMS) {
        retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
 //
@@ -801,7 +782,7 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
 
 template <class T>
 Bool LatticeStatistics<T>::generateStorageLattice()
-//
+
 // Iterate through the lattice and generate the storage lattice
 // The shape of the storage lattice is n1, n2, ..., NACCUM
 // where n1, n2 etc are the display axes
@@ -840,10 +821,11 @@ Bool LatticeStatistics<T>::generateStorageLattice()
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-//
+
     if (pStoreLattice_p != 0) delete pStoreLattice_p;
     pStoreLattice_p = new TempLattice<AccumType>(TiledShape(storeLatticeShape,
                                                  tileShape), useMemory);
+
 // Set up min/max location variables
 
     minPos_p.resize(pInLattice_p->shape().nelements());
@@ -861,6 +843,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 // Output has to be a MaskedLattice, so make a writable SubLattice.
 
     Int newOutAxis = pStoreLattice_p->ndim()-1;
+
     SubLattice<AccumType> outLatt (*pStoreLattice_p, True);
     LatticeApply<T,AccumType>::tiledApply(outLatt, *pInLattice_p, 
                                           collapser, IPosition(cursorAxes_p),
@@ -869,14 +852,15 @@ Bool LatticeStatistics<T>::generateStorageLattice()
        delete pProgressMeter;
        pProgressMeter = 0;
     }
+
     collapser.minMaxPos(minPos_p, maxPos_p);
 
 // Do robust statistics separately as required.
 
     generateRobust();
+
     needStorageLattice_p = False;     
     doneSomeGoodPoints_p = False;
-//
     return True;
 }
 
@@ -885,14 +869,14 @@ void LatticeStatistics<T>::generateRobust ()
 {
    Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
    if (showMsg) os_p << LogIO::NORMAL1 << "Computing robust statistics" << LogIO::POST;
-//
+
    const uInt nCursorAxes = cursorAxes_p.nelements();
    const IPosition latticeShape(pInLattice_p->shape());
    IPosition cursorShape(pInLattice_p->ndim(),1);
    for (uInt i=0; i<nCursorAxes; i++) {
       cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
    }
-//
+
    IPosition axisPath = cursorAxes_p;
    axisPath.append(displayAxes_p);
    LatticeStepper stepper(latticeShape, cursorShape, axisPath);
@@ -900,7 +884,6 @@ void LatticeStatistics<T>::generateRobust ()
       IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
       IPosition pos2 = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDABSDEVMED);
       IPosition pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
-//
       if (doRobust_p) {
 
 // Create SubLattice from chunk
@@ -912,6 +895,7 @@ void LatticeStatistics<T>::generateRobust ()
 
          LatticeExprNode node(median(subLat));
          T dummy = 0;
+
          T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
          LatticeExprNode node2(median(abs((subLat)-lelMed)));
          T lelMed2 = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
@@ -923,14 +907,11 @@ void LatticeStatistics<T>::generateRobust ()
          AccumType val;
          convertScalar (val, lelMed);
          pStoreLattice_p->putAt(val, pos);
-//
          convertScalar (val, lelMed2);
          pStoreLattice_p->putAt(val, pos2);
-//
          convertScalar (val, iqr);
          pStoreLattice_p->putAt(val, pos3);
       } else {
-
 // Stick zero in storage lattice (it's not initialized)
 
          AccumType val(0);
@@ -946,10 +927,9 @@ template <class T>
 void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
                                       ostringstream& osMax,
                                       Int oWidth, DataType type)
-//
+
 // Min/max locations only meaningful for Float images currently.
 // We report locations relative to the start of the parent lattice
-//
 {
    if (!fixedMinMax_p) {
        os_p << LogIO::NORMAL << "Minimum value ";
@@ -958,7 +938,6 @@ void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
          os_p <<  " at " << blcParent_p + minPos_p+1;
       }
       os_p.post();
-//
       os_p << "Maximum value ";
       os_p.output() << setw(oWidth) << String(osMax);
       if (type==TpFloat) {
@@ -1061,7 +1040,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os_p << "Hyper-cube ";
       len0 = 11;
    }
-//
+
    os_p.output() << setw(oDWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
@@ -1082,7 +1061,6 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os00 << stats.column(NPTS)(j);
       os_p.output() << setw(oDWidth)   << os00.str();
 
-//
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
 // Convert to strings.
@@ -1092,7 +1070,6 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
          setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
          setStream(os9, oPrec); 
-//
 
          os0 << stats.column(SUM)(j);
          if (hasBeam) os1 << stats.column(FLUX)(j);
@@ -1102,7 +1079,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
          os6 << stats.column(MAX)(j);
-//
+
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
          os_p.output() << setw(oDWidth)   << String(os2);
@@ -1119,6 +1096,326 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    return True;
 }
 
+template <class T>
+Bool LatticeStatistics<T>::getLayerStats(
+        String& stats, Double area, 
+        Int zAxis, Int zLayer, Int hAxis, Int hLayer) { 
+
+   if (!goodParameterStatus_p) {
+     return False;
+   }
+
+   if (needStorageLattice_p) {
+       if (!generateStorageLattice()) { 
+         cout << "could not generate storage lattice" << endl;
+         return False;
+      }
+   }
+
+   if (displayAxes_p.nelements() == 0) {
+
+      const IPosition shape = statsSliceShape();
+      Array<AccumType> statsV(shape);
+      pStoreLattice_p->getSlice (statsV, IPosition(1,0), shape, IPosition(1,1));
+      IPosition pos(1);
+      pos(0) = NPTS;
+      AccumType nPts = statsV(pos);
+      pos(0) = SUM;
+      AccumType  sum = statsV(pos);
+      pos(0) = MEDIAN;
+      AccumType  median = statsV(pos);
+      pos(0) = MEDABSDEVMED;
+      AccumType  medAbsDevMed = statsV(pos);
+      pos(0) = QUARTILE;
+      AccumType  quartile= statsV(pos);
+      pos(0) = SUMSQ;
+      AccumType  sumSq = statsV(pos);
+      // pos(0) = MEAN;
+      // AccumType  mean = statsV(pos);
+      pos(0) = VARIANCE;
+      AccumType  var = statsV(pos);
+
+      // prefer the calculated mean over the accumulated mean because
+      // the accumulated mean can have accumulated precision errors
+      AccumType  mean = LattStatsSpecialize::getMean(sum, nPts);
+      // AccumType  var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
+      AccumType  rms = LattStatsSpecialize::getRms(sumSq, nPts);
+      AccumType  sigma = LattStatsSpecialize::getSigma(var);
+
+      pos(0) = MIN;
+      AccumType  dMin = statsV(pos);
+      pos(0) = MAX;
+      AccumType  dMax = statsV(pos);
+
+      if (!LattStatsSpecialize::hasSomePoints(nPts)) 
+          return False;
+
+      stringstream os;
+      const Int oPrec = 6;
+      Int oDWidth = 15;
+      T* dummy = 0;
+      DataType type = whatType(dummy);
+      if (type==TpComplex) {
+         oDWidth = 2*oDWidth + 3; 
+      }
+
+      os.setf(ios::left, ios::adjustfield);
+      os << setw(10) << "Npts";
+      os << setw(oDWidth) << "Sum";
+      if (area > 0) 
+         os << setw(oDWidth) << "Flux (Jy)";
+      os << setw(oDWidth) << "Mean";  
+      if (doRobust_p) 
+         os << setw(oDWidth) << "Median"; 
+      os << setw(oDWidth) << "Rms";
+      os << setw(oDWidth) << "Std dev";
+      os << setw(oDWidth) << "Minimum";
+      os << setw(oDWidth) << "Maximum" << endl;
+
+      os.fill(' '); 
+      os.precision(0);
+      os.setf(ios::fixed, ios::floatfield);
+      os.setf(ios::left, ios::adjustfield);
+      os << setw(10)
+         << nPts;
+
+      setStream(os, oPrec);
+      os << setw(oDWidth)
+         << sum;
+      if (area > 0) { 
+            setStream(os, oPrec);
+            os << setw(oDWidth)
+               << sum / area;
+       }
+       setStream(os, oPrec);
+       os << setw(oDWidth)
+          << mean;
+       if (doRobust_p){ 
+          setStream(os, oPrec);
+          os << setw(oDWidth)
+             << median;
+       }
+       setStream(os, oPrec);
+       os << setw(oDWidth)
+          << rms;
+       setStream(os, oPrec);
+       os << setw(oDWidth)
+          << sigma;
+       setStream(os, oPrec);
+       os << setw(oDWidth)
+          << dMin;
+       setStream(os, oPrec);
+       os << setw(oDWidth)
+          << dMax;
+
+      /*
+      if (!fixedMinMax_p) {
+         os << "Minimum value ";
+         os << setw(oWidth) << String(os6);
+         if (type==TpFloat) {
+            os <<  " at " << blcParent_p + minPos_p+1;
+         }
+
+         os << "Maximum value ";
+         os << setw(oWidth) << String(os7);
+         if (type==TpFloat) {
+            os <<  " at " << blcParent_p + maxPos_p+1 << endl;
+         }
+      }
+      */
+
+      stats += os.str();
+      stats += '\n';
+      return True;
+   }
+
+   const uInt n1 = pStoreLattice_p->shape()(0);
+
+   Matrix<AccumType> ord(n1,NSTATS);
+
+   IPosition cursorShape(pStoreLattice_p->ndim(),1);
+   cursorShape(0) = pStoreLattice_p->shape()(0);
+   cursorShape(pStoreLattice_p->ndim()-1) = 
+       pStoreLattice_p->shape()(pStoreLattice_p->ndim()-1);
+   IPosition matrixAxes(2);
+   matrixAxes(0) = 0; 
+   matrixAxes(1) = pStoreLattice_p->ndim()-1;
+
+   LatticeStepper 
+       stepper(pStoreLattice_p->shape(), cursorShape, matrixAxes, 
+                IPosition::makeAxisPath(pStoreLattice_p->ndim()));
+   RO_LatticeIterator<AccumType> 
+       pixelIterator(*pStoreLattice_p, stepper);
+   uInt zAx = -1;
+   uInt hAx = -1;
+   for (uInt j=0; j<displayAxes_p.nelements(); j++) {
+      if (zAxis == displayAxes_p(j))
+         zAx = j;
+      if (hAxis == displayAxes_p(j))
+         hAx = j;
+   }
+
+   Int layer = 0;
+   ostringstream os;
+   for (pixelIterator.reset(); 
+        !pixelIterator.atEnd(); pixelIterator++) {
+      IPosition dPos = pixelIterator.position();
+      if (displayAxes_p.nelements() == 2) {
+          if (zAx == 1) 
+          if (dPos[1] != zLayer) 
+                continue;
+          else
+                layer = hLayer;
+          if (hAx == 1)
+          if (dPos[1] != hLayer) 
+                continue;
+          else
+                layer = zLayer;
+      }
+      if (displayAxes_p.nelements() == 1)
+         layer = zLayer;
+
+      Matrix<AccumType>  matrix(pixelIterator.matrixCursor());  
+      for (uInt i=0; i<n1; i++) {
+         const AccumType& nPts = matrix(i,NPTS);
+         if (LattStatsSpecialize::hasSomePoints(nPts)) {
+            ord(i,MEAN) = 
+               LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
+            if (area > 0) ord(i,FLUX) = matrix(i,SUM) / area;
+            /*
+            ord(i,VARIANCE) = LattStatsSpecialize::getVariance(
+                              matrix(i,SUM), matrix(i,SUMSQ), nPts);
+                              */
+            ord(i,SIGMA) = LattStatsSpecialize::getSigma(
+                              ord(i,VARIANCE));
+            ord(i,RMS) =  LattStatsSpecialize::getRms(
+                              matrix(i,SUMSQ), nPts);  
+          }
+      }
+
+      for (uInt i=0; i<LatticeStatsBase::NACCUM; i++) {
+         for (uInt j=0; j<n1; j++) ord(j,i) = matrix(j,i);
+      }
+
+      listLayerStats(area, ord, os, layer);
+      break;
+   }
+   stats += os.str();
+   stats += '\n';
+
+   return True;
+}
+
+template <class T>
+Bool LatticeStatistics<T>::listLayerStats (Double beamArea, 
+    const Matrix<AccumType>& stats, ostringstream& os, Int zLayer) 
+{
+
+   //const uInt nDisplayAxes = displayAxes_p.nelements();
+   const uInt n1 = stats.shape()(0);
+
+   Int oDWidth = 15;
+   T* dummy = 0;
+   DataType type = whatType(dummy);
+   if (type==TpComplex) {
+      oDWidth = 2*oDWidth + 3; 
+   }
+
+   Int oPrec = 6;   
+
+   setStream(os, oPrec);
+   Vector<String> sWorld(1);
+   Vector<Double> pixels(1);
+   pixels(0) = 1.0;
+   IPosition blc(pInLattice_p->ndim(),0);
+   IPosition trc(pInLattice_p->shape()-1);
+
+   /* 
+   Int len0;
+   if (nStatsAxes == 1) {
+      len0 = 8;
+      os << setw(len0) << "Profile ";
+   }
+   else if (nStatsAxes == 2) {
+      len0 = 6;
+      os << setw(len0) << "Plane ";
+   }
+   else if (nStatsAxes == 3) {
+      len0 = 5;
+      os << setw(len0) << "Cube ";
+   }
+   else {
+      len0 = 11;
+      os << setw(len0) << "Hyper-cube ";
+   }
+   */
+   
+
+   os << setw(10) << "Npts";
+   os << setw(oDWidth) << "Sum";
+   if (beamArea > 0) 
+      os << setw(oDWidth) << "Flux (Jy)";
+   os << setw(oDWidth) << "Mean";  
+   if (doRobust_p) 
+      os << setw(oDWidth) << "Median"; 
+   os << setw(oDWidth) << "Rms";
+   os << setw(oDWidth) << "Std dev";
+   os << setw(oDWidth) << "Minimum";
+   os << setw(oDWidth) << "Maximum" << endl;
+
+   //Write statistics to logger.  We write the pixel location
+   //relative to the parent lattice
+   for (uInt j=0; j<n1; j++) {
+      if (zLayer == (Int)j || n1 == 1)  {
+
+      //os << setw(len0)     
+      //   << j+blcParent_p(displayAxes_p(0));
+
+      //setStream(os, oPrec);
+      os.fill(' '); 
+      os.precision(0);
+      os.setf(ios::fixed, ios::floatfield);
+      os.setf(ios::left, ios::adjustfield);
+      os << setw(10)
+         << stats.column(NPTS)(j);
+
+      if(LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))){
+
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(SUM)(j);
+         if (beamArea > 0) { 
+            setStream(os, oPrec);
+            os << setw(oDWidth)
+               << stats.column(FLUX)(j);
+         }
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(MEAN)(j);
+         if (doRobust_p){ 
+            setStream(os, oPrec);
+            os << setw(oDWidth)
+               << stats.column(MEDIAN)(j);
+         }
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(RMS)(j);
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(SIGMA)(j);
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(MIN)(j);
+         setStream(os, oPrec);
+         os << setw(oDWidth)
+            << stats.column(MAX)(j);
+      }
+      os << endl;
+      }
+   }
+   
+   return True;
+}
 
 template <class T>
 IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition,
@@ -1154,11 +1451,10 @@ IPosition LatticeStatistics<T>::locInStorageLattice(const IPosition& latticePosi
    if (iType >= uInt(LatticeStatsBase::NACCUM)) {
       throw(AipsError("Illegal statistics accumulation type"));
    }
-//
+
    const uInt nDim = pStoreLattice_p->ndim();
    IPosition pos(nDim,0);
    pos(nDim-1) = iType;
-//
    for (uInt j=0; j<displayAxes_p.nelements(); j++) {
       pos(j) = latticePosition(displayAxes_p(j));
    }
@@ -1205,11 +1501,12 @@ void LatticeStatistics<T>::minMax (Bool& none,
 
 template <class T>
 Bool LatticeStatistics<T>::display()
-// 
+
 // This function displays (plotting and listing) the requested
 // statistics as a function of the display axes
-//
+
 {
+
    if (!goodParameterStatus_p) {
      return False;
    }
@@ -1237,9 +1534,7 @@ Bool LatticeStatistics<T>::display()
    if (needStorageLattice_p) {
       if (!generateStorageLattice()) return False;
    }
-
 // If we don't have any display axes just summarise the lattice statistics
-
    if (displayAxes_p.nelements() == 0) {
      summStats ();
      
@@ -1288,8 +1583,6 @@ Bool LatticeStatistics<T>::display()
          if (LattStatsSpecialize::hasSomePoints(nPts)) {
             ord(i,MEAN) = LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
             if (hasBeam) ord(i,FLUX) = matrix(i,SUM) / beamArea;
-            ord(i,VARIANCE) = LattStatsSpecialize::getVariance(matrix(i,SUM),
-                                                                   matrix(i,SUMSQ), nPts);
             ord(i,SIGMA) = LattStatsSpecialize::getSigma(ord(i,VARIANCE));
             ord(i,RMS) =  LattStatsSpecialize::getRms(matrix(i,SUMSQ), nPts);  
           }
@@ -1316,6 +1609,8 @@ Bool LatticeStatistics<T>::display()
          if (!listStats(hasBeam, pixelIterator.position(), ord)) return False;
       }
    }
+
+
 
 
 // Finish up
@@ -1577,7 +1872,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
 // Find extrema.  Return if there were no valid points to plot
 
-   AccumType yMin=0, yMax=0, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
+   AccumType yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
    minMax(none, xMin, xMax, abc, stats.column(NPTS));
    if (none) return True;
 
@@ -2145,7 +2440,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
       if (!generateStorageLattice()) return False;
    }
 
-
 // Were there some good points ?  
 
    const Int nDim = pStoreLattice_p->ndim();
@@ -2159,7 +2453,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
       IPosition sliceShape(pStoreLattice_p->shape());
       sliceShape(nDim-1) = 1;
 
-// 
       Int ISTAT = Int(type);
       IPosition pos(nDim,0);
       pos(nDim-1) = ISTAT;
@@ -2213,7 +2506,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Vector<AccumType>& slice,
    if (needStorageLattice_p) {
       if (!generateStorageLattice()) return False;
    }
-
 
 // Get accumulation sums slice from storage lattice.
 // Last axis is statistics axis
@@ -2352,18 +2644,16 @@ void LatticeStatistics<T>::summStats ()
    const IPosition shape = statsSliceShape();
    Array<AccumType> stats(shape);
    pStoreLattice_p->getSlice (stats, IPosition(1,0), shape, IPosition(1,1));
-//
+
    IPosition pos(1);
-//
    pos(0) = NPTS;
    AccumType nPts = stats(pos);
-//
    pos(0) = SUM;
    AccumType  sum = stats(pos);
-//
+
    pos(0) = MEDIAN;
    AccumType  median = stats(pos);
-//
+
    pos(0) = MEDABSDEVMED;
    AccumType  medAbsDevMed = stats(pos);
 //
@@ -2372,9 +2662,15 @@ void LatticeStatistics<T>::summStats ()
 //
    pos(0) = SUMSQ;
    AccumType  sumSq = stats(pos);
+
+   pos(0) = MEAN;
+   AccumType  mean = stats(pos);
+
+   pos(0) = VARIANCE;
+   AccumType  var = stats(pos);
 //                         
-   AccumType  mean = LattStatsSpecialize::getMean(sum, nPts);
-   AccumType  var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
+  // AccumType  mean = LattStatsSpecialize::getMean(sum, nPts);
+  //  AccumType  var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
    AccumType  rms = LattStatsSpecialize::getRms(sumSq, nPts);
    AccumType  sigma = LattStatsSpecialize::getSigma(var);
 //
@@ -2384,18 +2680,23 @@ void LatticeStatistics<T>::summStats ()
    AccumType  dMax = stats(pos);
 
    // Do this check so that we only print the stats when we have values.   
-   if (LattStatsSpecialize::hasSomePoints(nPts)) 
-       displayStats( nPts, sum, median, medAbsDevMed, quartile, sumSq, mean, var, rms, sigma, dMin, dMax );
+   if (LattStatsSpecialize::hasSomePoints(nPts)) {
+	   displayStats(
+           nPts, sum, median, medAbsDevMed, quartile, sumSq,
+    	   mean, var, rms, sigma, dMin, dMax
+       );
+   }
    
 }
    
 template <class T>
-void LatticeStatistics<T>::displayStats (AccumType nPts, AccumType sum, AccumType median, 
-                                         AccumType medAbsDevMed, AccumType quartile,
-                                         AccumType /*sumSq*/, AccumType mean, 
-                                         AccumType var, AccumType rms, AccumType sigma,
-                                         AccumType dMin, AccumType dMax)
-{
+void LatticeStatistics<T>::displayStats (
+	AccumType nPts, AccumType sum, AccumType median,
+    AccumType medAbsDevMed, AccumType quartile,
+    AccumType /*sumSq*/, AccumType mean,
+    AccumType var, AccumType rms, AccumType sigma,
+    AccumType dMin, AccumType dMax
+) {
 
 // Get beam
 
@@ -2533,7 +2834,6 @@ void LatticeStatistics<T>::setStream (ostream& os, Int oPrec)
 
 
 
-
 // StatsTiledCollapser
 
 
@@ -2562,6 +2862,9 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
    pSum_p = new Block<U>(n1*n3);
    pSumSq_p = new Block<U>(n1*n3);
    pNPts_p = new Block<U>(n1*n3);
+   pMean_p = new Block<U>(n1*n3);
+   pVariance_p = new Block<U>(n1*n3);
+
    pMin_p = new Block<T>(n1*n3);
    pMax_p = new Block<T>(n1*n3);
    pInitMinMax_p = new Block<Bool>(n1*n3);
@@ -2569,6 +2872,8 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
    pSum_p->set(0);
    pSumSq_p->set(0);
    pNPts_p->set(0);
+   pMean_p->set(0);
+   pVariance_p->set(0);
    pMin_p->set(0);
    pMax_p->set(0);
    pInitMinMax_p->set(True);
@@ -2579,157 +2884,180 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::process (uInt index1,
-                                        uInt index3,
-                                        const T* pInData, 
-                                        const Bool* pInMask, 
-                                        uInt inIncr, 
-                                        uInt nrval,
-                                        const IPosition& startPos, 
-                                        const IPosition& shape)
-//
-// Process the data in the current chunk.   Everything in this
-// chunk belongs in one output location in the storage
-// lattices
-//
-{
-   uInt index = index1 + index3*n1_p;
-   U& sum = (*pSum_p)[index];
-   U& sumSq = (*pSumSq_p)[index];
-   U& nPts = (*pNPts_p)[index];
-   T& dataMin = (*pMin_p)[index];
-   T& dataMax = (*pMax_p)[index];
-   Bool& minMaxInit = (*pInitMinMax_p)[index];
+		uInt index3,
+		const T* pInData,
+		const Bool* pInMask,
+		uInt inIncr,
+		uInt nrval,
+		const IPosition& startPos,
+		const IPosition& shape)
+		//
+		// Process the data in the current chunk.   Everything in this
+		// chunk belongs in one output location in the storage
+		// lattices
+		//
+		{
+	uInt index = index1 + index3*n1_p;
+	U& sum = (*pSum_p)[index];
+	U& sumSq = (*pSumSq_p)[index];
+	U& nPts = (*pNPts_p)[index];
+	T& dataMin = (*pMin_p)[index];
+	T& dataMax = (*pMax_p)[index];
+	U& mean = (*pMean_p)[index];
+	U& variance = (*pVariance_p)[index];
+	U nvariance = 0;
+	Bool& minMaxInit = (*pInitMinMax_p)[index];
 
-// If these are != -1 after the accumulating, then
-// the min and max were updated
+	// If these are != -1 after the accumulating, then
+	// the min and max were updated
 
-   Int minLoc = -1;
-   Int maxLoc = -1;
-// 
-   T useIt;
-   if (pInMask == 0) {
+	Int minLoc = -1;
+	Int maxLoc = -1;
+	//
+	T useIt;
+	if (pInMask == 0) {
 
-// All pixels are good
+		// All pixels are good
 
-      if (!noInclude_p) {
-          
-// Inclusion range
-     
-         T datum;
-         for (uInt i=0; i<nrval; i++) {
-            datum = *pInData;
-            useIt = LattStatsSpecialize::usePixelInc (range_p(0), range_p(1), datum);
-            LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                   dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                   fixedMinMax_p, datum, i, useIt);
-            pInData += inIncr;
-         }
-         if (fixedMinMax_p) {
-            dataMin = range_p(0);
-            dataMax = range_p(1);
-         }
-      } else if (!noExclude_p) {
+		if (!noInclude_p) {
 
-// Exclusion range
+			// Inclusion range
 
-         T datum;
-         for (uInt i=0; i<nrval; i++) {
-            datum = *pInData;
-            useIt = LattStatsSpecialize::usePixelExc (range_p(0), range_p(1), datum);
-            LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                  dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                  False, datum, i, useIt);
-            pInData += inIncr;
-         }
-      } else {
- 
-// All data accepted
+			T datum;
+			for (uInt i=0; i<nrval; i++) {
+				datum = *pInData;
+				useIt = LattStatsSpecialize::usePixelInc (range_p(0), range_p(1), datum);
 
-         LattStatsSpecialize::setUseItTrue(useIt);
-         for (uInt i=0; i<nrval; i++) {
-            LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                 dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                 False, *pInData, i, useIt);
-            pInData += inIncr;
-         }
-      }
-   } else {
+				LattStatsSpecialize::accumulate(
+										nPts, sum, mean, nvariance, variance, sumSq,
+										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+										False, *pInData, i, useIt
+									);
+				pInData += inIncr;
+			}
+			if (fixedMinMax_p) {
+				dataMin = range_p(0);
+				dataMax = range_p(1);
+			}
+		} else if (!noExclude_p) {
 
-// Some pixels are bad
+			// Exclusion range
 
-      if (!noInclude_p) {
-          
-// Inclusion range
-     
-         T datum;
-         Bool mask;
-         for (uInt i=0; i<nrval; i++) {
-            datum = *pInData;
-            mask = *pInMask;
-            if (mask) {
-               useIt = LattStatsSpecialize::usePixelInc (range_p(0), range_p(1), datum);
-               LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                    dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                    False, datum, i, useIt);
-            }
-            pInData += inIncr;
-            pInMask += inIncr;
-         }
-         if (fixedMinMax_p) {
-            dataMin = range_p(0);
-            dataMax = range_p(1);
-         }
-      } else if (!noExclude_p) {
+			T datum;
+			for (uInt i=0; i<nrval; i++) {
+				datum = *pInData;
+				useIt = LattStatsSpecialize::usePixelExc (range_p(0), range_p(1), datum);
 
-// Exclusion range
+				LattStatsSpecialize::accumulate(
+										nPts, sum, mean, nvariance, variance, sumSq,
+										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+										False, *pInData, i, useIt
+									);
+				pInData += inIncr;
+			}
+		} else {
 
-         T datum;
-         Bool mask;
-         for (uInt i=0; i<nrval; i++) {
-            datum = *pInData;
-            mask = *pInMask;
-            if (mask) {
-              useIt = LattStatsSpecialize::usePixelExc (range_p(0), range_p(1), datum);
-              LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                    dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                    False, datum, i, useIt);
-            }
-            pInData += inIncr;
-            pInMask += inIncr;
-         }
-      } else {
+			// All data accepted
 
-// All data accepted
+			LattStatsSpecialize::setUseItTrue(useIt);
+			for (uInt i=0; i<nrval; i++) {
+				LattStatsSpecialize::accumulate(
+										nPts, sum, mean, nvariance, variance, sumSq,
+										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+										False, *pInData, i, useIt
+									);
+				pInData += inIncr;
+			}
+		}
+	} else {
+		// Some pixels are bad
 
-         LattStatsSpecialize::setUseItTrue(useIt);
-         for (uInt i=0; i<nrval; i++) {
-            if (*pInMask) {
-               LattStatsSpecialize::accumulate(nPts, sum, sumSq, 
-                     dataMin, dataMax, minLoc, maxLoc, minMaxInit, 
-                     False, *pInData, i, useIt);
-            }
-            pInData += inIncr;
-            pInMask += inIncr;
-         }
-      }
-   }
+		if (!noInclude_p) {
 
-// Update overall min and max location.  These are never updated
-// if fixedMinMax is true.  These values are only meaningful for
-// Float images.  For Complex they are useless currently.
+			// Inclusion range
 
-   T* dummy = 0;
-   DataType type = whatType(dummy);
-//
-   if (type==TpFloat) {
-      if (minLoc != -1) {
-        minPos_p = startPos + toIPositionInArray(minLoc, shape);
-      }
-      if (maxLoc != -1) {
-        maxPos_p = startPos + toIPositionInArray(maxLoc, shape);
-      }
-   }
-}
+			T datum;
+			Bool mask;
+			for (uInt i=0; i<nrval; i++) {
+				datum = *pInData;
+				mask = *pInMask;
+				if (mask) {
+
+					useIt = LattStatsSpecialize::usePixelInc (range_p(0), range_p(1), datum);
+					LattStatsSpecialize::accumulate(
+											nPts, sum, mean, nvariance, variance, sumSq,
+											dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+											False, *pInData, i, useIt
+										);
+				}
+				pInData += inIncr;
+				pInMask += inIncr;
+			}
+			if (fixedMinMax_p) {
+
+				dataMin = range_p(0);
+				dataMax = range_p(1);
+			}
+		} else if (!noExclude_p) {
+
+			// Exclusion range
+
+			T datum;
+			Bool mask;
+			for (uInt i=0; i<nrval; i++) {
+				datum = *pInData;
+				mask = *pInMask;
+				if (mask) {
+					useIt = LattStatsSpecialize::usePixelExc (range_p(0), range_p(1), datum);
+					/*
+					LattStatsSpecialize::accumulate(nPts, sum, sumSq,
+							dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+							False, datum, i, useIt);
+							*/
+					LattStatsSpecialize::accumulate(
+											nPts, sum, mean, nvariance, variance, sumSq,
+											dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+											False, *pInData, i, useIt
+										);
+				}
+				pInData += inIncr;
+				pInMask += inIncr;
+			}
+		} else {
+
+			// All data accepted
+
+			LattStatsSpecialize::setUseItTrue(useIt);
+			for (uInt i=0; i<nrval; i++) {
+				if (*pInMask) {
+					LattStatsSpecialize::accumulate(
+						nPts, sum, mean, nvariance, variance, sumSq,
+						dataMin, dataMax, minLoc, maxLoc, minMaxInit,
+						False, *pInData, i, useIt
+					);
+				}
+				pInData += inIncr;
+				pInMask += inIncr;
+			}
+		}
+	}
+
+	// Update overall min and max location.  These are never updated
+	// if fixedMinMax is true.  These values are only meaningful for
+	// Float images.  For Complex they are useless currently.
+
+	T* dummy = 0;
+	DataType type = whatType(dummy);
+	//
+	if (type==TpFloat) {
+		if (minLoc != -1) {
+			minPos_p = startPos + toIPositionInArray(minLoc, shape);
+		}
+		if (maxLoc != -1) {
+			maxPos_p = startPos + toIPositionInArray(maxLoc, shape);
+		}
+	}
+		}
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::endAccumulator(Array<U>& result,
@@ -2753,44 +3081,55 @@ void StatsTiledCollapser<T,U>::endAccumulator(Array<U>& result,
     U* sumPtr = pSum_p->storage();
     U* sumSqPtr = pSumSq_p->storage();
     U* nPtsPtr = pNPts_p->storage();
+    U* meanPtr = pMean_p->storage();
+    U* variancePtr = pVariance_p->storage();
     const T* minPtr = pMin_p->storage();
     const T* maxPtr = pMax_p->storage();
-//
+
     uInt i,j;
     U* resptr_root = resptr;
     for (i=0; i<n3_p; i++) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * n1_p);
        objcopy (resptr, nPtsPtr, n1_p);
        nPtsPtr += n1_p;
-//
+
        resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
        objcopy (resptr, sumPtr, n1_p);
        sumPtr += n1_p;
-//
+
        resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
        objcopy (resptr, sumSqPtr, n1_p);
        sumSqPtr += n1_p;
-//
+
+       resptr = resptr_root + (Int(LatticeStatsBase::MEAN) * n1_p);
+       objcopy (resptr, meanPtr, n1_p);
+       meanPtr += n1_p;
+
+       resptr = resptr_root + (Int(LatticeStatsBase::VARIANCE) * n1_p);
+       objcopy (resptr, variancePtr, n1_p);
+       variancePtr += n1_p;
+
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * n1_p);
        for (j=0; j<n1_p; j++) {   
           convertScalar (*resptr++, *minPtr++);
        }
-//
+
        resptr = resptr_root + (Int(LatticeStatsBase::MAX) * n1_p);
        for (j=0; j<n1_p; j++) {   
           convertScalar (*resptr++, *maxPtr++);
        }
-//
+
        resptr_root += n1_p * Int(LatticeStatsBase::NACCUM);
     }
-//
+
     delete pSum_p;
     delete pSumSq_p;
     delete pNPts_p;
     delete pMin_p;
     delete pMax_p;
     delete pInitMinMax_p;
-//
+    delete pMean_p;
+    delete pVariance_p;
     result.putStorage (res, deleteRes);
 }
 
@@ -2803,6 +3142,9 @@ void StatsTiledCollapser<T,U>::minMaxPos(IPosition& minPos, IPosition& maxPos)
    maxPos.resize(maxPos_p.nelements());
    maxPos = maxPos_p;
 }
+
+
+
 
 } //# NAMESPACE CASA - END
 
