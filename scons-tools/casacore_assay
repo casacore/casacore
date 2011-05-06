@@ -30,17 +30,18 @@
 #-----------------------------------------------------------------------------
 # Usage: assay <testexe and arguments>
 #-----------------------------------------------------------------------------
-# assay invokes an AIPS++ test program.  If the test program has an associated
+# assay invokes a casacore test program. If the test program has an associated
 # .run file then it simply invokes it.  Otherwise assay invokes the test
 # executable directly, and, if there is a corresponding .out file, compares
 # its output with that.
 #
+# The env.var. CASACORE_CHECK can be defined to do checking using tools
+# like valgrind. It defines a script that will execute the command. The
+# script can invoke the checking tool. If set to 1, yes, or YES, the script
+# casacore_memcheck will be used that uses valgrind's memcheck tool.
+#
 # If there is a .in file associated with the test program then assay will
 # redirect stdin from it.
-#
-# assay recognizes Glish test scripts via their .g suffix and invokes glish
-# on them.
-# Similarly Python test scripts are recognized via their .py suffix.
 #
 # Options:
 #   none
@@ -76,27 +77,33 @@
   fi
   CLEANUP=
 
+# Determine if a program checker (like valgrind) has to be used.
+  ccchecker=$CASACORE_CHECK
+  # Empty or no means no checker.
+  if test "$ccchecker" = "0" -o "$ccchecker" = "no" -o "$ccchecker" = "NO"; then
+     ccchecker=
+  fi
+  # Default checker is casacore_memcheck (using valgrind).
+  if test "$ccchecker" = "1" -o "$ccchecker" = "yes" -o "$ccchecker" = "YES"; then
+     ccchecker=$pgmpath/casacore_memcheck
+  fi
+
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
         trap - 0 ; \
         exit $STATUS' 0 1 2 3 15
 
-# Check if command is a glish or python script.
-  COMMAND="$@"
-  SCRIPTUSED=0
+# Get the command.
+  COMMAND="$ccchecker $@"
   set $@
 
 # Get the current directory.
   curdir=`pwd`
 
-# If there is a .run file then use it.
-# Note that in this way the run file is used if there is a .run and .py file.
-# Still the .py file is copied and removed as needed, so the .run file
-# can use the .py file.
+# If there is a .run file then use it without checker.
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"
-     SCRIPTUSED=1
   fi
 
 # If there is a .in file then use it as input.
@@ -104,6 +111,9 @@
   then
      COMMAND="$COMMAND < $1.in"
   fi
+
+  # Remove possible old output files.
+  rm -rf ${1}_tmp*
 
   # If running on a Cray cluster, we have to use qsub and yod.
   # If found, the result is a path, thus starts with a slash.

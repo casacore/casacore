@@ -241,6 +241,12 @@ public:
   static const Vector<String> &Observatories();
   // Get position of observatory nam (False if not present)
   static Bool Observatory(MPosition &obs, const String &nam);
+  // Get _absolute_ path to AntennaResponses table of observatory nam (False if no _valid_ path
+  // can be found or the observatory is unknown; if the observatory is known, antRespPath will 
+  // be set to the entry in the AntennaResponses column of the Observatories table even
+  // if it doesn't describe a valid path; if the entry is not an absolute path, the
+  // data directory name will be prepended and validity verified)  
+  static Bool AntennaResponsesPath(String &antRespPath, const String &nam);
   // </group>
 
   // Source list positions
@@ -476,6 +482,7 @@ private:
   static Bool obsNeedInit;
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
+  static Vector<String> antResponsesPath;
   // </group>
   // Spectral line table data
   // <group>

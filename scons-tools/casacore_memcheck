@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Use valgrind's memcheck tool on a program.
+# Filter out possible errors to give an overview.
+
+# For now, simply execute the command.
+"$@"

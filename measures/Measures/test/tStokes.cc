@@ -34,82 +34,96 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
-int main() 
-{
-    
-    Int polint;
-    String polstr;
-    
-    polint=5;
-    cout << "polint = " << polint
-	<< ", Stokes::type(polint) = " << Stokes::type(polint)
-	<<",  Stokes::type(Stokes::type(polint)) = "
-	<< Stokes::type(Stokes::type(polint)) 
-	<< endl  
-	<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint)) 
-	<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint)) 
-	<< endl;
+int main() {
 
-    polint=-1;
-    try {
-	cout << "polint = " << polint;
-	cout << ", Stokes::type(polint) = " << Stokes::type(polint);
-	cout << ", Stokes::type(Stokes::type(polint)) = ";
-	cout << Stokes::type(Stokes::type(polint));
-	cout << endl;
-	cout <<  " --- receptor1 = ";
-	cout << Stokes::receptor1(Stokes::type(polint));
-	cout <<  " --- receptor2 = ";
-	cout << Stokes::receptor2(Stokes::type(polint));
-	cout << endl;
-    } catch(AipsError x) {
-	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
-    } 
-    
-    polstr="XY";
-    cout << "polstr = " << polstr
-	 << ", Stokes::type(polstr) = " << Stokes::type(polstr)
-	 << ", Stokes::type(Stokes::type(polstr)) = "
-         << Stokes::type(Stokes::type(polstr))
-         << endl  
-	 <<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr)) 
-	 <<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr)) 
-	 << endl;
+	try {
+		Int polint;
+		String polstr;
 
-    polstr="LX";
-    cout << "polstr = " << polstr
-         << ", Stokes::type(polstr) = " << Stokes::type(polstr)
-         << ", Stokes::type(Stokes::type(polstr)) = "
-         << Stokes::type(Stokes::type(polstr))
-         << endl  
-	 <<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr)) 
-	 <<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr)) 
-	 << endl;
-    
-	     
-    try {
-    polstr="AB";
-    cout << "polstr = " << polstr;
-    cout << ", Stokes::type(polstr) = " << Stokes::type(polstr);
-    cout << ", Stokes::type(Stokes::type(polstr)) = ";
-    cout << Stokes::type(Stokes::type(polstr));
-    cout << endl  ;
-    cout <<  " --- receptor1 = ";
-    cout << Stokes::receptor1(Stokes::type(polstr)) ;
-    cout <<  " --- receptor2 = ";
-    cout << Stokes::receptor2(Stokes::type(polstr)) ;
-    cout << endl;
-    } catch(AipsError x) {
-	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
-    } 
-    for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
-	if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
-	    != Stokes::type(i)) {
-	    cerr << "Stokes FITS value conversion failed" << endl;
-	    cerr << "  FITSValue(" << i << ") = " << Stokes::FITSValue(Stokes::type(i)) << endl;
-	    cerr << "  fromFITSValue of that value = "
-		 << Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i))) << endl;
+		polint=5;
+		cout << "polint = " << polint
+				<< ", Stokes::type(polint) = " << Stokes::type(polint)
+		<<",  Stokes::type(Stokes::type(polint)) = "
+		<< Stokes::type(Stokes::type(polint))
+		<< endl
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint))
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint))
+		<< endl;
+
+		polint=-1;
+		try {
+			cout << "polint = " << polint;
+			cout << ", Stokes::type(polint) = " << Stokes::type(polint);
+			cout << ", Stokes::type(Stokes::type(polint)) = ";
+			cout << Stokes::type(Stokes::type(polint));
+			cout << endl;
+			cout <<  " --- receptor1 = ";
+			cout << Stokes::receptor1(Stokes::type(polint));
+			cout <<  " --- receptor2 = ";
+			cout << Stokes::receptor2(Stokes::type(polint));
+			cout << endl;
+		} catch(AipsError x) {
+			cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
+		}
+
+		polstr="XY";
+		cout << "polstr = " << polstr
+				<< ", Stokes::type(polstr) = " << Stokes::type(polstr)
+		<< ", Stokes::type(Stokes::type(polstr)) = "
+		<< Stokes::type(Stokes::type(polstr))
+		<< endl
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr))
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr))
+		<< endl;
+
+		polstr="LX";
+		cout << "polstr = " << polstr
+				<< ", Stokes::type(polstr) = " << Stokes::type(polstr)
+		<< ", Stokes::type(Stokes::type(polstr)) = "
+		<< Stokes::type(Stokes::type(polstr))
+		<< endl
+		<<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr))
+		<<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr))
+		<< endl;
+
+
+		try {
+			polstr="AB";
+			cout << "polstr = " << polstr;
+			cout << ", Stokes::type(polstr) = " << Stokes::type(polstr);
+			cout << ", Stokes::type(Stokes::type(polstr)) = ";
+			cout << Stokes::type(Stokes::type(polstr));
+			cout << endl  ;
+			cout <<  " --- receptor1 = ";
+			cout << Stokes::receptor1(Stokes::type(polstr)) ;
+			cout <<  " --- receptor2 = ";
+			cout << Stokes::receptor2(Stokes::type(polstr)) ;
+			cout << endl;
+		} catch(AipsError x) {
+			cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
+		}
+		for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
+			if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
+			!= Stokes::type(i)) {
+				cerr << "Stokes FITS value conversion failed" << endl;
+				cerr << "  FITSValue(" << i << ") = " << Stokes::FITSValue(Stokes::type(i)) << endl;
+				cerr << "  fromFITSValue of that value = "
+						<< Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i))) << endl;
+			}
+		}
+		Vector<String> allNames = Stokes::allNames();
+		cout << "All names: ";
+		for (uInt i=0; i<allNames.size(); i++) {
+			cout << allNames[i] << " ";
+		}
+		cout << endl;
+		AlwaysAssert(Stokes::allNames(False).size() == Stokes::NumberOfTypes - 1, AipsError);
+		AlwaysAssert(Stokes::allNames(True).size() == Stokes::NumberOfTypes, AipsError);
+		cout << "ok" << endl;
 	}
-    }
- return 0;
+	catch (AipsError) {
+		cout << "fail" << endl;
+
+	}
+	return 0;
 }

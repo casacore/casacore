@@ -199,7 +199,49 @@ int main()
     cout << "Name:           " << comet.getName() << endl;
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
-  } 
+  }
+
+  try {
+    cout << "-----------------------------------------" << endl;
+    cout << "Read a table without DiskLong or DiskLat." << endl;
+    cout << "-----------------------------------------" << endl;
+    MeasComet comet("JPL-Horizons/Ariel_55438-56292dUTC.tab");
+    cout << "Opened JPL-Horizons/Ariel_55438-56292dUTC.tab" << endl;
+    cout << "--------------------------------------" << endl;
+    cout << "Name:           " << comet.getName() << endl;
+    cout << "Type:           " << 
+      MDirection::showType(comet.getType()) << endl;
+    cout << "Topography:     " << comet.getTopo() << endl;
+    cout << "Start:          " <<
+      MVTime(comet.getStart()).string(MVTime::YMD) << endl;
+    cout << "End:            " <<
+      MVTime(comet.getEnd()).string(MVTime::YMD) << endl;
+    cout << "Entries:        " << comet.nelements() << endl;
+    cout << "--------------------------------------" << endl;
+    cout << "Some radial velocities:" << endl;
+    for(Double x= 55555.75; x < 56000.0625; x += 40.0){
+      MVRadialVelocity y;
+      cout << MVTime(x).string(MVTime::YMD) << " " <<
+	comet.getRadVel(y, x) << ": " << y << endl;
+    };
+    cout << "--------------------------------------" << endl;
+    cout << "Some positions:" << endl;
+    for(Double x=55444.75; x < 56030.0625; x += 40.0){
+      MVPosition y;
+      cout << MVTime(x).string(MVTime::YMD) << " " <<
+	comet.get(y, x) << ": " << y << endl;
+    };
+    cout << "--------------------------------------" << endl;
+    cout << "A disk longitude and latitude\n"
+	 << "(should fail gracefully by showing 0:):" << endl;
+    Double x = 55444.75;
+    MVDirection y;
+    cout << MVTime(x).string(MVTime::YMD) << " "
+	 << comet.getDisk(y, x) << ": " << y << endl;
+  }
+  catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  }
   
   return 0;
 }

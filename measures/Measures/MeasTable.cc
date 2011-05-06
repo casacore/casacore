@@ -37,6 +37,7 @@
 #include <measures/Measures/MeasIERS.h>
 #include <measures/Measures/MeasJPL.h>
 #include <casa/OS/Time.h>
+#include <casa/OS/Path.h>
 #include <casa/Quanta/UnitVal.h>
 #include <casa/Quanta/RotMatrix.h>
 #include <casa/Quanta/Euler.h>
@@ -53,12 +54,18 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+#ifndef CASADATA
+#define CASADATA "/usr/local"
+#endif
+
+
 //# Constants
 
 //# Data
 Bool MeasTable::obsNeedInit = True;
 Vector<String> MeasTable::obsNams(0);
 Vector<MPosition> MeasTable::obsPos(0);
+Vector<String> MeasTable::antResponsesPath(0);
 Bool MeasTable::lineNeedInit = True;
 Vector<String> MeasTable::lineNams(0);
 Vector<MFrequency> MeasTable::linePos(0);
@@ -3971,9 +3978,8 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("dPsiEps(uInt, Double)"),
 			   WHERE));
-	os <<
-	  String("No requested nutation data available from IERS tables. "
-		 "\nProceeding with probably less precision.") <<
+	os << LogIO::NORMAL3 << 
+	  String("High precision nutation information not available.") <<
 	  LogIO::POST;
       }
     }
@@ -3986,9 +3992,8 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("dPsiEps(uInt, Double)"),
 			   WHERE));
-	os <<
-	  String("No requested nutation data available from IERS tables. "
-		 "\nProceeding with probably less precision.") <<
+	os << LogIO::NORMAL3 << 
+	  String("High precision nutation information not available.") <<
 	  LogIO::POST;
       }
     }
@@ -4016,8 +4021,10 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
     LogIO os(LogOrigin("MeasTable",
 		       String("Planetary(MeasTable::Types, Double)"),
 		       WHERE));
-    os << String("Cannot find the planetary data table ") +
-      tnam[fil] << LogIO::EXCEPTION;
+    os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
+       << " at UT day " << T << " in table "
+       << tnam[fil] << LogIO::WARN;
+    res = 0.;
   }
   return res;
 }
@@ -4076,11 +4083,20 @@ void MeasTable::initObservatories() {
     }
     obsNams.resize(N);
     obsPos.resize(N);
+    antResponsesPath.resize(N);
+    Bool hasAntResp = False;
+    if(row.record().isDefined("AntennaResponses")){
+      hasAntResp = True;
+    }
+
     MPosition::Ref mr;
     MPosition tmp;
     for (Int i=0; i<N; i++) {
       row.get(i);
       obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
+      if(hasAntResp){
+	antResponsesPath(i) = *RORecordFieldPtr<String>(row.record(), "AntennaResponses");
+      }
       if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("initObservatories()"),
@@ -4107,6 +4123,60 @@ Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
     return True;
   }
   return False;
+}
+
+Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
+  MeasTable::initObservatories();
+  uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
+  if (i < MeasTable::obsNams.nelements()) {
+    antRespPath = MeasTable::antResponsesPath(i);
+    if(antRespPath.empty()){ // i.e. there is no table for this observatory
+      return False; 
+    }
+    else if(antRespPath[0] == '/'){ // path is absolute
+      Path lPath(antRespPath);
+      if(!Table::isReadable(lPath.absoluteName())){
+	return False;
+      }
+    }
+    else{ // path is relative
+      // find and prepend the path to the data repository
+      String absPathName;
+      Bool isValid = False;
+      {
+	String mdir;
+	Aipsrc::find(mdir, "measures.directory");
+	Path lPath(mdir + "/" + antRespPath);
+	absPathName = lPath.absoluteName();
+	isValid = Table::isReadable(absPathName);
+      }
+      if(!isValid){
+	Path lPath(Aipsrc::aipsHome() + "/data/" + antRespPath);
+	isValid = Table::isReadable(absPathName);
+      }
+      if(!isValid){
+	Path lPath(Aipsrc::aipsRoot() + "/data/" + antRespPath);
+	absPathName = lPath.absoluteName();
+	isValid = Table::isReadable(absPathName);
+      }
+      if(!isValid){
+	Path lPath(String(CASADATA) + "/" + antRespPath);
+	absPathName = lPath.absoluteName();
+	isValid = Table::isReadable(absPathName);
+      }
+      if(!isValid){
+	Path lPath(String(CASADATA)+ "/share/casacore/data/" + antRespPath);
+	absPathName = lPath.absoluteName();
+	isValid = Table::isReadable(absPathName);
+      }
+      if(!isValid){
+	return False; // table not found
+      }
+      antRespPath = absPathName;
+    }
+    return True;
+  }
+  return False; // observatory not found
 }
 
 // Source data
@@ -4805,11 +4875,13 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
   static Vector<Double> argArray[132];
   static Double factor = 0;
   static const Short MABER[130][6] = {
-    // Order: sin(x), cos(x), sin(y), cos(y), sin(z), cos(z)
-    {	1,	0,	0,	-157,	0,	358},
+    // Order:
+    //  Delta xdot       Delta ydot     Delta zdot
+    // sin,    cos,    sin,     cos,   sin,     cos
+    {	1,	0,	0,	-157,	0,	358},   // T
     {	715,	0,	0,	-656,	0,	-285},
     {	543,	0,	0,	-498,	0,	-216},
-    {	-72,	0,	0,	63,	0,	35},
+    {	-72,	0,	0,	63,	0,	35},    // T
     {	-60,	0,	0,	55,	0,	24},
     {	38,	0,	0,	-35,	0,	-15},
     {	0,	-31,	28,	0,	12,	0},
@@ -4822,15 +4894,15 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     {	16,	0,	0,	15,	0,	6},
     {	0,	16,	14,	0,	6,	0},
     {	0,	16,	14,	0,	6,	0},
-    {	0,	12,	-1,	0,	-5,	0},
+    {	0,	12,	-11,	0,	-5,	0},
     {	-12,	0,	0,	11,	0,	5},
     {	11,	0,	0,	10,	0,	4},
     {	11,	0,	0,	-10,	0,	-4},
     {	-11,	0,	0,	-10,	0,	-4},	// 20
     {	-10,	0,	0,	-9,	0,	-4},
     {	-10,	0,	0,	9,	0,	4},
-    {	0,	0,	8,	-8,	0,	-3},
-    {	0,	0,	8,	-8,	0,	-3},
+    {	0,	8,	-8,	0,	-3,	0},
+    {	0,	8,	-8,	0,	-3,	0},
     {	-8,	0,	0,	7,	0,	3},
     {	-8,	0,	0,	-7,	0,	-3},
     {	0,	8,	7,	0,	3,	0},
@@ -4839,7 +4911,7 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     {	0,	7,	6,	0,	3,	0},	// 30
     {	7,	0,	0,	6,	0,	3},
     {	0,	6,	-6,	0,	-3,	0},
-    {	-6,	0,	6,	0,	3,	0},
+    {	-6,	0,	0,	6,	0,	3},
     {	6,	0,	0,	-5,	0,	-2},
     {	-6,	0,	0,	5,	0,	2},
     {	0,	5,	5,	0,	2,	0},
@@ -4850,7 +4922,7 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     {	0,	0,	0,	0,	0,	-2},
     {	0,	4,	4,	0,	2,	0},
     {	0,	-4,	-3,	0,	-1,	0},
-    {	0,	-4,	-3,	0,	-1,	0},
+    {	0,	-4,	-3,	0,	-1,	0},     // T**2
     {	0,	3,	3,	0,	1,	0},
     {	0,	3,	-3,	0,	-1,	0},
     {	0,	3,	3,	0,	1,	0},
@@ -4860,8 +4932,8 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     {	3,	0,	0,	-3,	0,	-1},
     {	0,	-3,	-3,	0,	-1,	0},
     {	-3,	0,	0,	3,	0,	1},
-    {	-3,	0,	0,	2,	0,	1},
-    {	0,	-3,	2,	0,	1,	0},
+    {	-3,	0,	0,	2,	0,	1},     // T
+    {	0,	3,	2,	0,	1,	0},     // T**3
     {	-3,	0,	0,	2,	0,	1},
     {	3,	0,	0,	-2,	0,	-1},
     {	-3,	0,	0,	2,	0,	1},
@@ -4920,29 +4992,29 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     {	0,	158,	152,	0,	48,	0},	// 110
     {	0,	159,	147,	0,	61,	0},
     {	34,	0,	0,	-31,	0,	-14},
-    {	0,	20,	18,	0,	8,	0},
+    {	0,	20,	18,	0,	8,	0},     // T
     {	-17,	0,	0,	16,	0,	7},
-    {	0,	12,	11,	0,	4,	0},
+    {	0,	12,	11,	0,	0,	4},
     {	11,	0,	0,	-10,	0,	-4},
     {	0,	9,	8,	0,	3,	0},
-    {	0,	8,	7,	2,	0,	0},
-    {	-5,	0,	0,	5,	0,	2},
-    {	-5,	0,	0,	4,	0,	2},	// 120
-    {	0,	4,	3,	2,	0,	0},
+    {	0,	8,	7,	0,	2,	0},
+    {	-5,	0,	0,	5,	0,	2},     // T
+    {	-5,	0,	0,	4,	0,	2},	// 120, T
+    {	0,	4,	3,	0,	2,	0},
     {	-3,	0,	0,	3,	0,	1},
     {	0,	3,	2,	0,	1,	0},
     {	-3,	0,	0,	5,	0,	-5},
     {	2,	0,	0,	-2,	0,	-1},
     {	-1,	0,	0,	0,	0,	1},
     {	0,	1,	1,	0,	0,	0},
-    {	0,	1,	1,	0,	0,	0},
-    {	0,	-1,	0,	0,	0,	0},
+    {	0,	1,	1,	0,	0,	0},     // T
+    {	0,	-1,	0,	0,	0,	0},     // T
   };
-  static const Short ABERT1T[10] = {
-    0,3,44,54,55,113,119,120,128,129
-  };
+  static const Short ABERT1T[10] = { // Includes ABERT2T and ABERT3T,
+    0,3,44,54,55,113,119,120,128,129 // which will end up as T**2 and
+  };                                 // T**3 respectively.
   static const Short ABERT2T[2] = {
-    44,55
+    44, 55
   };
   static const Short ABERT3T[1] = {
     55
@@ -4983,21 +5055,21 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
       k = ABERT1T[i];
       for (j=0; j<6; j++) {
 	argArray[k](j) = MABER[k][j] * factor * T;
-	argArray[k](j+6) = MABER[k][j] * factor;
+	argArray[k](j+6) = MABER[k][j] * factor;        // d/dT
       }
     }
     for (i=0; i<2; i++) {	// get fundamental argument coefficients
       k = ABERT2T[i];
       for (j=0; j<6; j++) {
-	argArray[k](j) *= T;
-	argArray[k](j+6) *= 2*T;
+	argArray[k](j) *= T;            // Already multiplied by T in ABERT1T
+	argArray[k](j+6) *= 2*T;        // d/dT
       }
     }
     for (i=0; i<1; i++) {	// get fundamental argument coefficients
       k = ABERT3T[i];
       for (j=0; j<6; j++) {
-	argArray[k](j) *= T;
-	argArray[k](j+6) *= 1.5*T;
+	argArray[k](j) *= T;        // Already multiplied by T**2 in ABERT2T
+	argArray[k](j+6) *= 1.5*T;  // d/dT: 1.5 * T * 2 * T = 3 * T**2
       }
     }
   }
@@ -5977,20 +6049,20 @@ const Vector<Double> &MeasTable::mulPosEarthZ(uInt which, Double T) {
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
       argArray[i](3) = 0;
-    }
-  }
+    };
+  };
   if (checkT != T) {
     checkT = T;
     Int i;
     for (i=28; i<32; i++) { // get fundamental argument coefficients
       argArray[i](1) = MPOSZ[i][1] * factor * T;
       argArray[i](3) = MPOSZ[i][1] * factor;
-    }
+    };
     for (i=31; i<32; i++) { // get fundamental argument coefficients
       argArray[i](1) *= T;
       argArray[i](3) *= 2*T;
-    }
-  }
+    };
+  };
   DebugAssert(which < 189, AipsError);
   return argArray[which];
 }
@@ -6115,9 +6187,9 @@ const Vector<Double> &MeasTable::mulPosSunXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor;
       for (Int j=4; j<8; j++) {
 	argArray[i](j) = 0;
-      }
-    }
-  }
+      };
+    };
+  };
   if (checkT != T) {
     checkT = T;
     for (Int i=84; i<98; i++) { // get fundamental argument coefficients
@@ -6125,8 +6197,8 @@ const Vector<Double> &MeasTable::mulPosSunXY(uInt which, Double T) {
       argArray[i](3) = MPOSXY[i][3] * factor * T;
       argArray[i](5) = MPOSXY[i][1] * factor;
       argArray[i](7) = MPOSXY[i][3] * factor;
-    }
-  }
+    };
+  };
   DebugAssert(which < 98, AipsError);
   return argArray[which];
 }
@@ -6180,16 +6252,16 @@ const Vector<Double> &MeasTable::mulPosSunZ(uInt which, Double T) {
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
       argArray[i](3) = 0;
-    }
-  }
+    };
+  };
   if (checkT != T) {
     checkT = T;
     Int i;
     for (i=26; i<29; i++) { // get fundamental argument coefficients
       argArray[i](1) = MPOSZ[i][1] * factor * T;
       argArray[i](3) = MPOSZ[i][1] * factor;
-    }
-  }
+    };
+  };
   DebugAssert(which < 29, AipsError);
   return argArray[which];
 }
@@ -6201,7 +6273,7 @@ const RotMatrix &MeasTable::posToRect() {
     needInit = False;
     Euler ang(+84381.4091 * C::arcsec, 1, -0.0930 * C::arcsec, 3);
     rot = RotMatrix(ang);
-  }
+  };
   return rot;
 }
 
@@ -6212,7 +6284,7 @@ const RotMatrix &MeasTable::rectToPos() {
     needInit = False;
     rot = MeasTable::posToRect();
     rot.transpose();
-  }
+  };
   return rot;
 }
 
@@ -6223,7 +6295,7 @@ const RotMatrix &MeasTable::galToSupergal() {
     needInit = False;
     Euler ang( -90*C::degree, 3, -83.68*C::degree, 2, -47.37*C::degree, 3);
     rot = RotMatrix(ang);
-  }
+  };
   return rot;
 }
 
@@ -6234,7 +6306,7 @@ const RotMatrix &MeasTable::ICRSToJ2000() {
     needInit = False;;
     rot = MeasTable::frameBias00();
     rot.transpose();
-  }
+  };
   return rot;
 }
 
@@ -6263,15 +6335,14 @@ const Euler &MeasTable::polarMotion(Double ut) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("PolarMotion(Double)"),
 			   WHERE));
-	os <<
-	  String("No requested polar motion data available from IERS tables. "
-		 "\nProceeding with probably less precision.") <<
+	os << LogIO::NORMAL3 << 
+	  String("High precision polar motion information not available.") <<
 	  LogIO::POST;
-      }
-    }
+      };
+    };
     res(0) *= -C::arcsec;
     res(1) *= -C::arcsec;
-  }
+  };
   return res;
 }
 
@@ -6294,14 +6365,14 @@ Double MeasTable::dUTC(Double utc) {
 			 String("dUTC(Double)"),
 			 WHERE));
       os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
-    }
+    };
     N = t.nrow();
     if (N < 35) {
       LogIO os(LogOrigin("MeasTable",
 			 String("dUTC(Double)"),
 			 WHERE));
       os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
-    }
+    };
     if (Time().modifiedJulianDay() - dt > 180) {
       LogIO os(LogOrigin("MeasTable",
 			 String("dUTC(Double)"),
@@ -6310,15 +6381,15 @@ Double MeasTable::dUTC(Double utc) {
 	String("Leap second table TAI_UTC seems out-of-date. \n") +
 	"Until table is updated (see aips++ manager) times and coordinates\n" +
 	"derived from UTC could be wrong by 1s or more." << LogIO::POST;
-    }
+    };
     LEAP = (Double (*)[4])(new Double[4*N]);
     for (Int i=0; i < N; i++) {
       row.get(i);
       for (Int j=0; j < 4; j++) {
 	LEAP[i][j] = *(rfp[j]);
-      }
-    }
-  } 
+      };
+    };
+  }; 
   Double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
@@ -6328,11 +6399,11 @@ Double MeasTable::dUTC(Double utc) {
 	val = LEAP[i][1];
 	if (LEAP[i][3] != 0) {
 	  val += (utc - LEAP[i][2])*LEAP[i][3];
-	}
+	};
 	break;
-      }
-    }
-  }
+      };
+    };
+  };
   return val;
 }
 
@@ -6362,7 +6433,7 @@ Double MeasTable::GMST0(Double ut1) {
     stPoly.setCoefficient(1, 8640184.812866);
     stPoly.setCoefficient(2, 0.093104);	
     stPoly.setCoefficient(3, -6.2e-6);
-  }
+  };
   return (stPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
@@ -6376,7 +6447,7 @@ Double MeasTable::GMST00(Double ut1, Double tt) {
     stPoly.setCoefficient(2, + 1.39667721*C::arcsec);	
     stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
     stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
-  }
+  };
   return (stPoly((tt-MeasData::MJD2000)/MeasData::JDCEN) +
 	  MeasTable::ERA00(ut1));
 }
@@ -6388,7 +6459,7 @@ Double MeasTable::ERA00(Double ut1) {
     needInit = False;
     stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);	
     stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
-  }
+  };
   ut1 -= MeasData::MJD2000;
   return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
 }
@@ -6406,7 +6477,7 @@ Double MeasTable::GMUT0(Double gmst1) {
     stPoly.setCoefficient(1, -235.90946916710752);
     stPoly.setCoefficient(2, -0.00000252822553597972);
     stPoly.setCoefficient(3, 0.0000000001679);
-  }
+  };
   return (stPoly((gmst1-MeasData::MJD2000-6713.)/MeasData::JDCEN));
 }
 
@@ -6435,13 +6506,12 @@ Double MeasTable::dUT1(Double utc) {
 	LogIO os(LogOrigin("MeasTable",
 			   String("dUT1(Double)"),
 			   WHERE));
-	os <<
-	  String("No requested dUT1 data available from IERS tables. "
-		 "\nProceeding with probably less precision.") <<
+	os << LogIO::NORMAL3 << 
+	  String("High precision dUT1 information not available.") <<
 	  LogIO::POST;
-      }
-    }
-  }
+      };
+    };
+  };
   return res;
 }
 

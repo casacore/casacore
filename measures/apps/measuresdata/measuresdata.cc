@@ -86,7 +86,7 @@ using std::map;
 // <item> call the program measuresdata. The program can have arguments (see
 // later, but the defaults suffice. The program will produce a cout log.
 // <item> the program will return with either a failure status or with
-// success status. In latter case a resource file (measuresdata.link) will
+// success status. In latter case a resource file (measuresdata.rc) will
 // be present. This file will have format:
 // <li>
 // <item> status: [end|cont]

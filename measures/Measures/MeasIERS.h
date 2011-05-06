@@ -181,11 +181,12 @@ public:
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
-  // Returned are an open table, a row record, pointers (rfp) to row data,
-  // and the table keywordset (kws). Lookup for name is bypassed if the
-  // Table address tabin is provided.
+  // Returned are an open table, the table keywordset (kws), a row record,
+  // pointers (rfp) to row data, the table version (vs), dt, and, directly,
+  // whether or not it was successful.
+  // Lookup for name is bypassed if the Table address tabin is provided.
   // <thrown>
-  //  <li> AipsError if missing VS_ keywords, or type is not IERS
+  //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
   static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
 		       RORecordFieldPtr<Double> rfp[],
@@ -194,6 +195,35 @@ public:
 		       const String &name,
 		       const String &rc, const String &dir,
 		       const Table *tabin = 0);
+
+  // Find and open table tab, using the rc variable, the dir and the name.
+  // reqcols gives the names (in order) of the columns which must be present.
+  // optcols gives the names of columns which should be added, in order after
+  // reqcols, if they are present.
+  // Returned are an open table, the table keywordset (kws), a row record,
+  // pointers (rfp) to row data, the table version (vs), dt, and, directly,
+  // whether or not it was successful.  optcols is set to the optional columns
+  // that were found.
+  // Lookup for name is bypassed if the Table address tabin is provided.
+  // <thrown>
+  //  <li> AipsError if missing VS_ keywords, required columns, or the type is not IERS.
+  // </thrown>
+  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+  		       Vector<RORecordFieldPtr<Double> >& rfp,
+  		       String &vs, Double &dt,
+  		       const Vector<String>& reqcols,
+  		       Vector<String>& optcols,
+  		       const String &name,
+  		       const String &rc, const String &dir,
+  		       const Table *tabin = 0);
+
+  // A helper function for getTable() which is conceivably usable outside it,
+  // for finding a table in the same way, but not requiring it to fit the IERS
+  // mold.
+  // Finds a Table for tab, by looking in tabin, rc, dir, and name.
+  // Returns whether or not it was successful.
+  static Bool findTab(Table& tab, const Table *tabin, const String &rc,
+		      const String &dir, const String &name);
 
   // Notify that a table has successfully been opened with getTable()
   static void openNote(CLOSEFUN fun);
@@ -224,6 +254,14 @@ private:
   static Bool initMeas(MeasIERS::Files which);
   // Fill Table lines
   static Bool fillMeas(MeasIERS::Files which, Double utf);
+
+  // A helper function for getTable() which is not likely usable outside it.
+  // Sets dt and vs (the table version), and checks that 
+  //  ks has VS_DATE, VS_VERSION, VS_CREATE, and VS_TYPE,
+  //  and that tab's type is IERS in its info.
+  // Returns whether or not it was successful.
+  static Bool handle_keywords(Double &dt, String &vs,
+			      const TableRecord& ks, const Table& tab);
 
   //# Data members
   // Measured data readable
