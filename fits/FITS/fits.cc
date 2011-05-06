@@ -885,7 +885,7 @@ int FITS::get_value_id(const char *s, int l, int &pos) {
 	// If there is a value_id, 1 is returned; otherwise, 0 is returned.
 	// If a value_id is present, its position is recorded in pos.
 	int i;
-	for (i = 0; i < l && *s == ' '; ++i, ++s) ; // skip spaces
+	for (i = 0; (i < l) && *s == ' '; ++i, ++s) ; // skip spaces
 	if (i == l || *s != '=') {
 	    pos = 0;
 	    return 0;
@@ -1456,7 +1456,7 @@ int FITS::get_comment(const char *s, int len, int &begpos) {
 	    }
             begpos = 0;
             return 0;
-        }
+	}
         begpos = 0;
         return trim_comment(s,len);
 }
@@ -2574,7 +2574,7 @@ Bool FitsFPUtil::isFP(const void *) {return False;}
 
 void FitsFPUtil::setNaN(double &val)
 {
-    unsigned char *cptr = (unsigned char *)(&val);
+    char *cptr = (char *)(&val);
     for (unsigned int i=0; i<sizeof(double); i++) {
 	cptr[i] = 0xff;
     }
@@ -2582,7 +2582,7 @@ void FitsFPUtil::setNaN(double &val)
 
 void FitsFPUtil::setNaN(float &val)
 {
-    unsigned char *cptr = (unsigned char *)(&val);
+    char *cptr = (char *)(&val);
     for (unsigned int i=0; i<sizeof(float); i++) {
 	cptr[i] = 0xff;
     }

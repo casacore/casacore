@@ -43,7 +43,7 @@
 
 namespace casa {
 
-  Bool FFTW::is_initialized_fftw = False;
+  volatile Bool FFTW::is_initialized_fftw = False;
   Mutex FFTW::theirMutex;
 
 
