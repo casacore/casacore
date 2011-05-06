@@ -183,6 +183,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     const String& imageUnitName = imageUnit.getName();
     UnitMap::putUser("pixel", UnitVal(pixelLatSize.radian() * 
 				      pixelLongSize.radian(), "rad.rad"));
+    // redefine is required to reset Unit Cache 
     const Unit pixel("pixel");
     if (imageUnitName.contains("pixel")) {
       // Get the new definition of the imageUnit which uses the new
@@ -215,10 +216,16 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 			 beamUnit.getValue() * fudgeFactor);
       fluxUnits.setName(imageUnitName + String(".") + beamUnit.getName());
     }
+    // 20101013 the code above for Jy/pixel doesn't work, since Unit doesn't
+    // understand that Jy/pixel.pixel == Jy.
     const Unit jy("Jy");
+    os << "Adding components to image with units [" << fluxUnits.getName() << "]" << LogIO::POST;
+    if (fluxUnits.getName()=="Jy/pixel.pixel") {
+      fluxUnits=jy;
+    }
     if (fluxUnits != jy) {
       os << LogIO::WARN 
-	 << "Image units are not dimensionally equivalent to "
+	 << "Image units [" << fluxUnits.getName() << "] are not dimensionally equivalent to "
 	 << "Jy/pixel or Jy/beam " << endl
 	 << "Ignoring the specified units and proceeding on the assumption"
 	 << " they are Jy/pixel" << LogIO::POST;

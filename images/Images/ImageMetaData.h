@@ -68,13 +68,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // image metadata without polluting the ImageInterface and CoordinateSystem
 // classes with these methods.
 // </motivation>
+// <todo>
+// Merge ImageInfo class into this class.
+// </todo>
 
 
 class ImageMetaData {
 
     public:
         template <class T> ImageMetaData(const ImageInterface<T>& image) :
-            itsCoordinates (image.coordinates()), itsShape(image.shape()) {}
+			itsInfo(image.imageInfo()), itsUnits(image.units()),
+            itsCoordinates(image.coordinates()), itsShape(image.shape()) {}
 
         // Get the axis number of the spectral axis of this image (0-based).
         Int spectralAxisNumber() const; 
@@ -125,6 +129,11 @@ class ImageMetaData {
  
         Int stokesPixelNumber(const String& stokesString) const;
 
+        // get the stokes parameter at the specified pixel value on the polarization axis.
+        // returns "" if the specified pixel is out of range or if no polarization axis.
+
+        String stokesAtPixel(const uInt pixel) const;
+
         // Get the number of stokes parameters in this image.
 	    uInt nStokes() const;
 
@@ -155,10 +164,21 @@ class ImageMetaData {
             String& message, const uInt chan, const String& stokesString
         ) const;
 
-        private:
-            const CoordinateSystem& itsCoordinates;
-            IPosition itsShape;
-    };
+        // Get beam volume if possible. Return true if beam area was determined.
+        Bool getBeamArea(Quantity& beamArea) const;
+
+        // Get the solid angle subtended by a direction pixel (eg ra,dec or lat, long)
+        // Return False if this value cannot be determined.
+        Bool getDirectionPixelArea(Quantity& pixelArea) const;
+
+    private:
+        const ImageInfo itsInfo;
+        const Unit itsUnits;
+        const CoordinateSystem& itsCoordinates;
+        const IPosition itsShape;
+
+
+};
 
 } //# NAMESPACE CASA - END
 #endif

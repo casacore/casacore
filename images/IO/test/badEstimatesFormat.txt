@@ -1,0 +1,5 @@
+# my estimates
+     
+5.0Jy,452, 131 , 4arcsec, 3arcsec, 60deg
+BAD LINE
+

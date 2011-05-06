@@ -27,14 +27,18 @@
 
 #include <images/Regions/ImageRegion.h>
 #include <images/Regions/WCRegion.h>
+#include <images/Regions/WCLELMask.h>
 #include <images/Regions/WCUnion.h>
 #include <images/Regions/WCIntersection.h>
 #include <images/Regions/WCDifference.h>
 #include <images/Regions/WCComplement.h>
+#include <images/Images/ImageExprParse.h>
 #include <lattices/Lattices/LCRegion.h>
+#include <lattices/Lattices/LatticeExprNode.h>
 #include <lattices/Lattices/LCSlicer.h>
 #include <lattices/Lattices/RegionType.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/CoordinateUtil.h>
 #include <tables/Tables/TableRecord.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
@@ -119,6 +123,69 @@ Bool ImageRegion::operator== (const LattRegionHolder& other) const
 	return (*itsWC == *other.asWCRegionPtr());
     }
     return True;
+}
+
+ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression)
+{
+  if (latticeExpression.empty()) {
+    return 0;
+  }
+  // Get LatticeExprNode (tree) from parser.  Substitute possible
+  // object-id's by a sequence number, while creating a
+  // LatticeExprNode for it.  Convert the Record containing
+  // regions to a PtrBlock<const ImageRegion*>.
+  Block<LatticeExprNode> tempLattices;
+  String expr = latticeExpression;
+  Int pos = expr.find_last_of("/", 10000);
+  String imageName = expr.after(pos);
+  // hmmm I can't make the ternary operator work for this
+  String directory = "";
+  if (pos > 0) {
+    directory = expr.before(pos);
+  }
+  PtrBlock<const ImageRegion*> tempRegs;
+  LatticeExprNode node = ImageExprParse::command(imageName, tempLattices,
+                                                 tempRegs, directory);
+  WCLELMask region(node);
+  return new ImageRegion(region);
+}
+
+ImageRegion* ImageRegion::fromRecord(LogIO* logger,
+                                     const CoordinateSystem& coords,
+                                     const IPosition& imShape,
+                                     const Record& regionRecord)
+{
+  if (logger != 0) {
+    *logger << LogOrigin("ImageRegion", __FUNCTION__);
+  }
+  ImageRegion* pRegion = 0;
+  if (regionRecord.nfields() == 0) {
+    IPosition blc(imShape.nelements(), 0);
+    IPosition trc(imShape - 1);
+    LCSlicer slicer(blc, trc, RegionType::Abs);
+    pRegion = new ImageRegion(slicer);
+    if (logger != 0) {
+      *logger << LogIO::NORMAL << "Selected bounding box : " << endl;
+      *logger << LogIO::NORMAL << "    " << blc << " to " << trc << "  ("
+              << CoordinateUtil::formatCoordinate(blc, coords) << " to "
+              << CoordinateUtil::formatCoordinate(trc, coords) << ")"
+              << LogIO::POST;
+    }
+  } else {
+    pRegion = ImageRegion::fromRecord(TableRecord(regionRecord), "");
+    if (logger != 0) {
+      LatticeRegion latRegion = pRegion->toLatticeRegion(coords, imShape);
+      Slicer sl = latRegion.slicer();
+      *logger << LogIO::NORMAL << "Selected bounding box : " << endl;
+      *logger << LogIO::NORMAL << "    " << sl.start() << " to " << sl.end()
+              << "  ("
+              << CoordinateUtil::formatCoordinate(sl.start(), coords)
+              << " to "
+              << CoordinateUtil::formatCoordinate(sl.end(), coords)
+              << ")" << LogIO::POST;
+    }
+  }
+  return pRegion;
 }
 
 Bool ImageRegion::isWCRegion() const

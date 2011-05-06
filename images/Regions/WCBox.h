@@ -363,7 +363,19 @@ public:
 
    // Return region type.  Returns the class name 
    virtual String type() const;
- 
+
+   // Convert from/to boxit format string
+   String toBoxString() const;
+   static WCBox* fromBoxString(const String&, 
+                               const CoordinateSystem& cSys, String& err);
+
+   // get/set chan extension
+   void setChanExt(const Double, const Double);
+   Bool getChanExt(Double&, Double&);
+
+   // get/set pol extension
+   void setPolExt(const Double, const Double);
+   Bool getPolExt(Double&, Double&);
 
 private:
    Vector<Quantum<Double> > itsBlc;

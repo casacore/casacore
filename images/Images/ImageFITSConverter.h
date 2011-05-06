@@ -221,7 +221,8 @@ public:
 			    Bool allowOverwrite=False,
                             Bool degenerateLast=False,
                             Bool verbose=True,
-			    Bool stokesLast=False);
+			    Bool stokesLast=False,
+			    Bool preferWavelength=False);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

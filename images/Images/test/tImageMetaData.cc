@@ -93,6 +93,13 @@ int main() {
         }
 
         {
+        	// stokesAtPixel
+        	AlwaysAssert(twoAxesImageMetaData.stokesAtPixel(0).empty(), AipsError);
+        	AlwaysAssert(fourAxesImageMetaData.stokesAtPixel(0) == "I", AipsError);
+        	AlwaysAssert(fourAxesImageMetaData.stokesAtPixel(1).empty(), AipsError);
+
+        }
+        {
             // TODO test image without a direction coordinate
             AlwaysAssert(fourAxesImageMetaData.directionCoordinateNumber() == 0, AipsError);
             AlwaysAssert(twoAxesImageMetaData.directionCoordinateNumber() == 0, AipsError);
@@ -132,6 +139,25 @@ int main() {
             AlwaysAssert(! fourAxesImageMetaData.areChannelAndStokesValid(message, 15, "I"), AipsError);
             AlwaysAssert(! fourAxesImageMetaData.areChannelAndStokesValid(message, 1, "Q"), AipsError);
             AlwaysAssert(! twoAxesImageMetaData.areChannelAndStokesValid(message, 0, "I"), AipsError);
+        }
+        {
+        	// getBeamArea
+        	Quantity beamArea;
+        	AlwaysAssert( fourAxesImageMetaData.getBeamArea(beamArea), AipsError);
+        	beamArea.convert(Unit("arcsec.arcsec"));
+        	Double expectedArea = 2769.2432412865101;
+        	AlwaysAssert(near(beamArea.getValue(), expectedArea, 1e-8), AipsError);
+        	FITSImage noBeam("jyperpixelimage.fits");
+        	ImageMetaData noBeamMD = ImageMetaData(noBeam);
+        	AlwaysAssert(! noBeamMD.getBeamArea(beamArea), AipsError);
+        }
+        {
+        	// getPixelArea
+        	Quantity pixelArea;
+        	AlwaysAssert(fourAxesImageMetaData.getDirectionPixelArea(pixelArea), AipsError);
+        	pixelArea.convert(Unit("arcsec.arcsec"));
+        	Double expectedValue = 225.0;
+        	AlwaysAssert(near(pixelArea.getValue(), expectedValue, 1e-8), AipsError);
         }
 
         cout<< "ok"<< endl;

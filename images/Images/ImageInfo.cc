@@ -115,6 +115,59 @@ ImageInfo& ImageInfo::setRestoringBeam(const Vector<Quantum<Double> >& beam)
     return *this;
 }
 
+
+ImageInfo& ImageInfo::setRestoringBeam(const Record& inRecord) {
+	if (! inRecord.isDefined("restoringbeam")) {
+		throw (AipsError("Input record must have a 'restoringbeam' field"));
+	}
+	Bool ok;
+	QuantumHolder qh;
+	Vector<Quantum<Double> > restoringBeam(3);
+	const RecordInterface& subRec = inRecord.asRecord("restoringbeam");
+	String error;
+	if (subRec.nfields()!=3) {
+		throw AipsError("Restoring beam record does not contain 3 fields");
+	}
+	if (subRec.isDefined("major")) {
+		const RecordInterface& subRec0 = subRec.asRecord("major");
+		ok = qh.fromRecord(error, subRec0);
+		if (ok) {
+			restoringBeam(0) = qh.asQuantumDouble();
+		}
+		else {
+			throw AipsError(error);
+		}
+	} else {
+		throw AipsError("Field major missing from restoring beam record");
+	}
+	if (subRec.isDefined("minor")) {
+		const RecordInterface& subRec1 = subRec.asRecord("minor");
+		ok = qh.fromRecord(error, subRec1);
+		if (ok) {
+			restoringBeam(1) = qh.asQuantumDouble();
+		}
+		else {
+			throw AipsError(error);
+		}
+	} else {
+		throw AipsError("Field minor missing from restoring beam record");
+	}
+	if (subRec.isDefined("positionangle")) {
+		const RecordInterface& subRec2 = subRec.asRecord("positionangle");
+		ok = qh.fromRecord(error, subRec2);
+		if (ok) {
+			restoringBeam(2) = qh.asQuantumDouble();
+		}
+		else {
+			throw AipsError(error);
+		}
+	} else {
+		throw AipsError("Field positionangle missing from restoring beam record");
+	}
+	setRestoringBeam(restoringBeam);
+	return *this;
+}
+
 ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
                                        const Quantum<Double>& minor,
                                        const Quantum<Double>& pa)
@@ -147,7 +200,6 @@ ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
 // should be converted to some standard P.A. range
 //
    itsRestoringBeam(2) = pa;
-//
    return *this;
 }
 
@@ -334,69 +386,30 @@ Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
     return ok;
 }
 
-Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
-//
+Bool ImageInfo::fromRecord(String& error, const RecordInterface& inRecord)
 // Returns default object if none in record
-//
 {
-// Make sure we are "empty" first
+	// Make sure we are "empty" first
 
-    ImageInfo tmp;
-    (*this) = tmp; 
-//
-    error = "";
-    QuantumHolder qh;
-    Bool ok = True;
-//
-    if (inRecord.isDefined("restoringbeam")) {
-       Vector<Quantum<Double> > restoringBeam(3);
-       const RecordInterface& subRec = inRecord.asRecord("restoringbeam");
-       if (subRec.nfields()!=3) {
-          error = "Restoring beam record does not contain 3 fields";
-          return False;
-       }
-//
-       if (subRec.isDefined("major")) {
-          const RecordInterface& subRec0 = subRec.asRecord("major");
-          ok = qh.fromRecord(error, subRec0);
-          if (ok) restoringBeam(0) = qh.asQuantumDouble();
-       } else {
-          error = "Field major missing from restoring beam record";
-          return False;
-       }
-//
-       if (subRec.isDefined("minor")) {
-          const RecordInterface& subRec1 = subRec.asRecord("minor");
-          ok = qh.fromRecord(error, subRec1);
-          if (ok) restoringBeam(1) = qh.asQuantumDouble();
-       } else {
-          error = "Field minor missing from restoring beam record";
-          return False;
-       }
-//
-       if (subRec.isDefined("positionangle")) {
-          const RecordInterface& subRec2 = subRec.asRecord("positionangle");
-          ok = qh.fromRecord(error, subRec2);
-          if (ok) restoringBeam(2) = qh.asQuantumDouble();
-       } else {
-          error = "Field positionangle missing from restoring beam record";
-          return False;
-       }
-//
-       setRestoringBeam(restoringBeam);
-   }
-//
-   if (inRecord.isDefined("imagetype")) {
-      String type = inRecord.asString("imagetype");
-      setImageType (ImageInfo::imageType(type));
-   }
-//
-   if (inRecord.isDefined("objectname")) {
-      String objectName = inRecord.asString("objectname");
-      setObjectName (objectName);
-   }
-//
-   return ok;
+	ImageInfo tmp;
+	(*this) = tmp;
+
+	error = "";
+	QuantumHolder qh;
+	Bool ok = True;
+
+	if (inRecord.isDefined("restoringbeam")) {
+		setRestoringBeam(inRecord);
+	}
+	if (inRecord.isDefined("imagetype")) {
+		String type = inRecord.asString("imagetype");
+		setImageType (ImageInfo::imageType(type));
+	}
+	if (inRecord.isDefined("objectname")) {
+		String objectName = inRecord.asString("objectname");
+		setObjectName (objectName);
+	}
+	return ok;
 }
 
 Bool ImageInfo::toFITS(String & error, RecordInterface & outRecord) const

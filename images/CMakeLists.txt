@@ -33,6 +33,7 @@ Regions/WCBox.cc
 Regions/AipsIOReaderWriter.cc
 Regions/WCComplement.cc
 Regions/RegionHandlerHDF5.cc
+Images/AntennaResponses.cc
 Images/ImageInfo.cc
 Images/ImageMetaData.cc
 Images/ImagePolarimetry.cc
@@ -40,7 +41,10 @@ Images/ImageExprGram.cc
 Images/MaskSpecifier.cc
 Images/ImageMomentsProgress.cc
 Images/ImageAnalysis.cc
+Images/ImageCollapser.cc
+Images/ImageInputProcessor.cc
 Images/FITSImage.cc
+Images/FITSImgParser.cc
 Images/PagedImage2.cc
 Images/ImagePolProxy.cc
 Images/ImageProfileFit.cc
@@ -54,6 +58,12 @@ Images/MIRIADImage.cc
 Images/HDF5Image2.cc
 Images/ImageProxy.cc
 Images/ComponentImager.cc
+Images/ImageCollapser.cc
+Images/ImageInputProcessor.cc
+Images/ImageReorderer.cc
+Images/ImageFitter.cc
+Images/ImageProfileFitter.cc
+IO/FitterEstimatesFileParser.cc
 Wnbt/ComponentUpdate.cc
 ${BISON_ImageExprGram_OUTPUTS}
 ${FLEX_ImageExprGram_OUTPUTS}
@@ -77,6 +87,7 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 )
 
 install (FILES
+Images/AntennaResponses.h
 Images/ComponentImager.h
 Images/CurvedImage2D.h
 Images/CurvedImage2D.tcc
@@ -84,15 +95,18 @@ Images/ExtendImage.h
 Images/ExtendImage.tcc
 Images/FITS2Image.tcc
 Images/FITSImage.h
+Images/FITSImgParser.h
 Images/HDF5Image.h
 Images/HDF5Image.tcc
 Images/Image2DConvolver.h
 Images/Image2DConvolver.tcc
 Images/ImageAnalysis.h
+Images/ImageCollapser.h
 Images/ImageConcat.h
 Images/ImageConcat.tcc
 Images/ImageConvolver.h
 Images/ImageConvolver.tcc
+Images/ImageCollapser.h
 Images/ImageDecomposer.h
 Images/ImageDecomposer.tcc
 Images/ImageExpr.h
@@ -102,11 +116,13 @@ Images/ImageExprParse.h
 Images/ImageFFT.h
 Images/ImageFITSConverter.h
 Images/ImageFITSConverter.tcc
+Images/ImageFitter.h
 Images/ImageFit1D.h
 Images/ImageFit1D.tcc
 Images/ImageHistograms.h
 Images/ImageHistograms.tcc
 Images/ImageInfo.h
+Images/ImageInputProcessor.h
 Images/ImageInterface.h
 Images/ImageInterface.tcc
 Images/ImageMetaData.h
@@ -117,10 +133,11 @@ Images/ImageOpener.h
 Images/ImagePolProxy.h
 Images/ImagePolarimetry.h
 Images/ImageProfileFit.h
+Images/ImageProfileFitter.h
 Images/ImageProxy.h
-Images/ImageRegion.h
 Images/ImageRegrid.h
 Images/ImageRegrid.tcc
+Images/ImageReorderer.h
 Images/ImageSourceFinder.h
 Images/ImageSourceFinder.tcc
 Images/ImageStatistics.h
@@ -136,6 +153,8 @@ Images/MIRIADImage.h
 Images/MaskSpecifier.h
 Images/MomentCalculator.h
 Images/MomentCalculator.tcc
+Images/MomentsBase.h
+Images/MomentsBase.tcc
 Images/PagedImage.h
 Images/PagedImage.tcc
 Images/RebinImage.h
@@ -171,6 +190,11 @@ Regions/WCPolygon.h
 Regions/WCRegion.h
 Regions/WCUnion.h
 DESTINATION include/casacore/images/Regions
+)
+
+install (FILES
+IO/FitterEstimatesFileParser.h
+DESTINATION include/casacore/images/IO
 )
 
 install (FILES

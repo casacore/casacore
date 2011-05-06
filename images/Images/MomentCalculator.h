@@ -42,7 +42,9 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
+template <class T> class MomentsBase;
 template <class T> class ImageMoments;
+template <class T> class MSMoments;
 
 // <summary>
 // Abstract base class for moment calculator classes
@@ -52,14 +54,16 @@ template <class T> class ImageMoments;
 // </reviewed>
 //
 // <prerequisite>
+//   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
+//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
 //
 // <synopsis>
 //  This class, its concrete derived classes, and the classes LineCollapser,
-//  ImageMoments and LatticeApply are connected as follows.   LatticeApply offers 
+//  ImageMoments, MSMoments, and LatticeApply are connected as follows.   LatticeApply offers 
 //  functions so that the application programmer does not need to worry about how 
 //  to optimally iterate through a Lattice; it deals with tiling and to a 
 //  lesser extent memory.    LatticeApply functions are used by offering a class 
@@ -84,20 +88,22 @@ template <class T> class ImageMoments;
 //  extracts vectors, and offers them up to functions implemented in the derived 
 //  MomentCalculator classes to compute the moments.   As well as that, we need some
 //  class to actually construct the MomentCalculator classes and to feed them to 
-//  LatticeApply.   This is the role of the ImageMoments class.  It is a high level 
+//  LatticeApply.   This is the role of the ImageMoments or MSMoments classes.  
+//  They are a high level 
 //  class which takes control information from users specifying which moments they 
-//  would like to calculate and how.   It also provides the ancilliary masking lattice to 
+//  would like to calculate and how. They also provide the ancilliary masking lattice to 
 //  the MomentCalculator constructors. The actual computational work is done by the 
-//  MomentCalculator classes. So ImageMoments, MomentCalcBase and its derived 
+//  MomentCalculator classes. So MomentsBase, MomentCalcBase and their derived 
 //  MomentCalculator classes are really one unit; none of them are useful without 
 //  the others.  The separation of functionality is caused by having the
 //  LatticeApply class that knows all about optimally iterating through Lattices.
 //
-//  The coupling between these classes is done partly by the "friendship".   ImageMoments
-//  grants friendship to MomentCalcBase so that the latter has access to the private data and 
-//  private functions of ImageMoments.  MomentCalcBase then operates as an interface between 
-//  its derived MomentCalculator classes and ImageMoments. It retrieves private data 
-//  from ImageMoments, and also activates private functions in ImageMoments, on behalf 
+//  The coupling between these classes is done partly by the "friendship".   MomentsBase and 
+//  its inheritances 
+//  grant friendship to MomentCalcBase so that the latter has access to the private data and 
+//  private functions of the formers.  MomentCalcBase then operates as an interface between 
+//  its derived MomentCalculator classes and ImageMoments or MSMoments. It retrieves private data 
+//  from these classes, and also activates private functions in these classes, on behalf 
 //  of the MomentCalculator classes. The rest of the coupling is done via the constructors 
 //  of the derived MomentCalculator classes.  
 //
@@ -109,7 +115,9 @@ template <class T> class ImageMoments;
 //  classes to give the MomentCalcBase protected data objects values.
 //
 //  For discussion about different moments and algorithms to compute them see the 
-//  discussion in <linkto class="ImageMoments">ImageMoments</linkto> and also in
+//  discussion in <linkto class="MomentsBase">MomentsBase</linkto>, 
+//  <linkto class="ImageMoments">ImageMoments</linkto>, 
+//  <linkto class="MSMoments">MSMoments</linkto> and also in
 //  the derived classes documentation.
 // </synopsis>
 //
@@ -122,7 +130,7 @@ template <class T> class ImageMoments;
 // We were desirous of writing functions to optimally iterate through Lattices
 // so that the application programmer did not have to know anything about tiling
 // or memory if possible.   These are the LatticeApply functions. To incorporate 
-// ImageMoments into this scheme required some of it to be shifted into 
+// MomentsBase and its inheritances into this scheme required some of it to be shifted into 
 // MomentCalcBase and its derived classes.
 // </motivation>
 //
@@ -154,7 +162,7 @@ protected:
    CoordinateSystem cSys_p;
 
 // This vector is a container for all the possible moments that
-// can be calculated.  They are in the order given by the ImageMoments
+// can be calculated.  They are in the order given by the MomentsBase
 // enum MomentTypes
    Vector<T> calcMoments_p;
    Vector<Bool> calcMomentsMask_p;
@@ -246,26 +254,26 @@ protected:
 
 // Find out from the selectMoments array whether we want
 // to compute the more expensive moments
-   void costlyMoments(ImageMoments<T>& iMom,
+   void costlyMoments(MomentsBase<T>& iMom,
                       Bool& doMedianI,  
                       Bool& doMedianV,
                       Bool& doAbsDev) const;
 
-// Return reference plotting device from ImageMoments object
-   PGPlotter& device(ImageMoments<T>& iMom) const;
+// Return reference plotting device from ImageMoments or MSMoments object
+   PGPlotter& device(MomentsBase<T>& iMom) const;
 
-// Return automatic/interactive switch from the ImageMoments object
-   Bool doAuto(const ImageMoments<T>& iMom) const;
+// Return automatic/interactive switch from the ImageMoments or MSMoments object
+   Bool doAuto(const MomentsBase<T>& iMom) const;
 
 // Return the Bool saying whether we need to compute coordinates
 // or not for the requested moments
    void doCoordCalc(Bool& doCoordProfile,
                     Bool& doCoordRandom,
-                    const ImageMoments<T>& iMom) const;
+                    const MomentsBase<T>& iMom) const;
 
-// Return the Bool from the ImageMoments object saying whether we 
+// Return the Bool from the ImageMoments or MSMoments object saying whether we 
 // are going to fit Gaussians to the profiles or not.
-   Bool doFit(const ImageMoments<T>& iMom) const;
+   Bool doFit(const MomentsBase<T>& iMom) const;
 
 // Draw a horizontal line across the full x range of the plot
    void drawHorizontal(const T& y,
@@ -322,8 +330,8 @@ protected:
                      const T levelGuess) const;
                         
 // Return the fixed Y-plotting limits switch from the
-// ImageMoments object
-   Bool fixedYLimits(const ImageMoments<T>& iMom) const;
+// ImageMoments or MSMoments object
+   Bool fixedYLimits(const MomentsBase<T>& iMom) const;
 
 // Automatically fit a Gaussian to a spectrum, including finding the
 // starting guesses.
@@ -394,7 +402,7 @@ protected:
                PGPlotter& plotter) const;
                         
 // Compute the world coordinate for the given moment axis pixel   
-   Double getMomentCoord(ImageMoments<T>& iMom,
+   Double getMomentCoord(MomentsBase<T>& iMom,
                          Vector<Double>& pixelIn,
                          Vector<Double>& worldOut,
                          const Double momentPixel) const;
@@ -410,34 +418,34 @@ protected:
    void makeAbcissa(Vector<T>& x,
                     const Int& n) const;
 
-// Return the moment axis from the ImageMoments object
-   Int& momentAxis(ImageMoments<T>& iMom) const;
+// Return the moment axis from the ImageMoments or MSMoments object
+   Int& momentAxis(MomentsBase<T>& iMom) const;
 
 // Return the name of the moment/profile axis
    String momentAxisName(const CoordinateSystem&,
-                         const ImageMoments<T>& iMom) const;
+                         const MomentsBase<T>& iMom) const;
 
-// Return the number of moments that the ImageMoments class can calculate
+// Return the number of moments that the ImageMoments or MSMoments class can calculate
    uInt nMaxMoments() const;
 
 // Return the peak SNR for determination of all noise spectra from
-// the ImageMoments object
-   T& peakSNR(ImageMoments<T>& iMom) const;
+// the ImageMoments or MSMoments object
+   T& peakSNR(MomentsBase<T>& iMom) const;
 
-// Return the selected pixel intensity range from the ImageMoments 
+// Return the selected pixel intensity range from the ImageMoments or MSMoments
 // object and the Bools describing whether it is inclusion or exclusion
    void selectRange(Vector<T>& pixelRange,                
                     Bool& doInclude,
                     Bool& doExlude,
-                    ImageMoments<T>& iMom) const;
+                    MomentsBase<T>& iMom) const;
 
 // The MomentCalculators compute a vector of all possible moments.
 // This function returns a vector which selects the desired moments from that
 // "all moment" vector.
-   Vector<Int> selectMoments(ImageMoments<T>& iMom) const;
+   Vector<Int> selectMoments(MomentsBase<T>& iMom) const;
 
 // Fill the ouput moments array
-   void setCalcMoments (ImageMoments<T>& iMom,
+   void setCalcMoments (MomentsBase<T>& iMom,
                         Vector<T>& calcMoments,
                         Vector<Bool>& calcMomentsMask,
                         Vector<Double>& pixelIn,
@@ -464,11 +472,11 @@ protected:
 // Install CoordinateSystem and SpectralCoordinate
 // in protected data members
    void setCoordinateSystem (CoordinateSystem& cSys,
-                             const ImageMoments<T>& iMom);
+                             MomentsBase<T>& iMom);
 
 // Set up separable moment axis coordinate vector and
 // conversion vectors if not separable
-   void setUpCoords (ImageMoments<T>& iMom,
+   void setUpCoords (MomentsBase<T>& iMom,
                      Vector<Double>& pixelIn,
                      Vector<Double>& worldOut,
                      Vector<Double>& sepWorldCoord,
@@ -495,17 +503,16 @@ protected:
               const Vector<T>& profile,
               const Vector<Bool>& mask) const;
                  
-// Return standard deviation of image from ImageMoments object
-   T& stdDeviation(ImageMoments<T>& iMom) const;
+// Return standard deviation of image from ImageMoments or MSMoments object
+   T& stdDeviation(MomentsBase<T>& iMom) const;
  
-// Return the auto y min and max from the ImageMoments object
+// Return the auto y min and max from the ImageMoments or MSMoments object
    void yAutoMinMax(T& yMin, 
                     T& yMax, 
-                    ImageMoments<T>& iMom) const;
+                    MomentsBase<T>& iMom) const;
 
 protected:
 // Check if #pixels is indeed 1.
-
    virtual void init (uInt nOutPixelsPerCollapse);
 };
 
@@ -518,7 +525,9 @@ protected:
 // </reviewed>
 // 
 // <prerequisite>
+//   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
+//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -526,8 +535,8 @@ protected:
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
-//  which provides an interface layer to the ImageMoments driver class.
-//  ImageMoments creates a MomentClip object and passes it to the LatticeApply
+//  which provides an interface layer to the ImageMoments or MSMoments driver class.
+//  ImageMoments or MSMoments creates a MomentClip object and passes it to the LatticeApply
 //  function, lineMultiApply. This function iterates through a given lattice, 
 //  and invokes the <src>multiProcess</src> member function of MomentClip on each vector 
 //  of pixels that it extracts from the input lattice.  The <src>multiProcess</src>
@@ -539,19 +548,22 @@ protected:
 //  or exclusion range can be applied.   It can also compute a mask based on the 
 //  inclusion or exclusion ranges applied to an ancilliary lattice (the ancilliary 
 //  vector corresponding to the primary vector is extracted).  This mask is then 
-//  applied to the primary vector for moment computation (ImageMoments offers
+//  applied to the primary vector for moment computation (ImageMoments or MSMoments offers
 //  a smoothed version of the primary lattice as the ancilliary lattice)
 //
-//  The constructor takes an ImageMoments object; the one that is constructing
+//  The constructor takes an MomentsBase object that is actually an ImageMoments or 
+//  an MSMoments object; the one that is constructing
 //  the MomentClip object of course.   There is much control information embodied  
-//  in the state of the ImageMoments object.  This information is extracted by the 
+//  in the state of the ImageMoments or MSMoments object.  This information is extracted by the 
 //  MomentCalcBase class and passed on to MomentClip for consumption.
 //
-//  Note that the ancilliary lattice is only accessed if the ImageMoments 
+//  Note that the ancilliary lattice is only accessed if the ImageMoments or MSMoments 
 //  object indicates that a pixel inclusion or exclusion range has been 
 //  given as well as the pointer to the lattice having a non-zero value.
 //
-//  See the <linkto class="ImageMoments">ImageMoments</linkto>
+//  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
+//  <linkto class="ImageMoments">ImageMoments</linkto>, and 
+//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //
 // </synopsis>
@@ -600,10 +612,10 @@ public:
 
 // Constructor.  The pointer is to an ancilliary  lattice used as a mask.
 // If no masking lattice is desired, the pointer value must be zero.  We also 
-// need the ImageMoments object which is calling us, the ImageMoments 
-// logger, and the number of output lattices ImageMoments has created.
+// need the ImageMoments or MSMoments object which is calling us, its
+// logger, and the number of output lattices it has created.
    MomentClip(Lattice<T>* pAncilliaryLattice,
-              ImageMoments<T>& iMom,
+              MomentsBase<T>& iMom,
               LogIO& os,
               const uInt nLatticeOut);
 
@@ -619,7 +631,7 @@ public:
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
-// object passed into the constructor.
+// or MSMoments object passed into the constructor.
    virtual void multiProcess(Vector<T>& out,
                              Vector<Bool>& outMask,
                              const Vector<T>& in,
@@ -632,7 +644,7 @@ public:
 private:
 
    Lattice<T>* pAncilliaryLattice_p; 
-   ImageMoments<T>& iMom_p;
+   MomentsBase<T>& iMom_p;
    LogIO os_p;
 
    const Vector<T>* pProfileSelect_p;
@@ -679,7 +691,9 @@ protected:
 // </reviewed>
 // 
 // <prerequisite>
+//   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
+//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -687,8 +701,8 @@ protected:
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
-//  which provides an interface layer to the ImageMoments driver class.
-//  ImageMoments creates a MomentWindow object and passes it to the LatticeApply
+//  which provides an interface layer to the ImageMoments or MSMoments driver class.
+//  ImageMoments or MSMoments creates a MomentWindow object and passes it to the LatticeApply
 //  function lineMultiApply.  This function iterates through a given lattice, 
 //  and invokes the <src>multiProcess</src> member function of MomentWindow on each profile
 //  of pixels that it extracts from the input lattice.  The <src>multiProcess</src> function 
@@ -699,7 +713,7 @@ protected:
 //  input profile.  This subset is a simple index range, or window.  The window is
 //  selected, for each profile, that is thought to surround the spectral feature 
 //  of interest.  This window can be found from the primary lattice, or from an 
-//  ancilliary lattice (ImageMoments offers a smoothed version of the primary 
+//  ancilliary lattice (ImageMoments or MSMoments offers a smoothed version of the primary 
 //  lattice as the ancilliary lattice).  The moments are always computed from 
 //  primary lattice data.   
 //
@@ -710,15 +724,18 @@ protected:
 //  mean algorithm is used, or an automatically  fit Gaussian +/- 3-sigma window
 //  is returned.
 // 
-//  The constructor takes an ImageMoments object; the one that is constructing
+//  The constructor takes an MomentsBase object that is actually an ImageMoments or 
+//  an MSMoments object; the one that is constructing
 //  the MomentWindow object of course.   There is much control information embodied  
-//  in the state  of the ImageMoments object.  This information is extracted by the
-//  MomentCalcBase class and passed on to MomentClip for consumption.
+//  in the state  of the ImageMoments or MSMoments object.  This information is extracted by the
+//  MomentCalcBase class and passed on to MomentWindow for consumption.
 //
 //  Note that the ancilliary lattice is only accessed if the pointer to it
 //  is non zero.
 //  
-//  See the <linkto class="ImageMoments">ImageMoments</linkto>
+//  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
+//  <linkto class="ImageMoments">ImageMoments</linkto>, and 
+//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //  
 // </synopsis>
@@ -768,11 +785,11 @@ template <class T> class MomentWindow : public MomentCalcBase<T>
 public:
 
 // Constructor.  The pointer is to a lattice containing the masking
-// lattice (created by ImageMoments).   We also need the 
-// ImageMoments object which is calling us, the ImageMoments logger,
-// and the number of output lattices ImageMoments has created.
+// lattice (created by ImageMoments or MSMoments).   We also need the 
+// ImageMoments or MSMoments object which is calling us, its logger,
+// and the number of output lattices it has created.
    MomentWindow(Lattice<T>* pAncilliaryLattice,
-                ImageMoments<T>& iMom,
+                MomentsBase<T>& iMom,
                 LogIO& os,
                 const uInt nLatticeOut);
 
@@ -788,7 +805,7 @@ public:
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
-// object passed into the constructor.
+// or MSMoments object passed into the constructor.
    virtual void multiProcess(Vector<T>& out,
                              Vector<Bool>& outMask,
                              const Vector<T>& in,
@@ -799,7 +816,7 @@ public:
 private:
 
    Lattice<T>* pAncilliaryLattice_p; 
-   ImageMoments<T>& iMom_p;
+   MomentsBase<T>& iMom_p;
    LogIO os_p;
 
    const Vector<T>* pProfileSelect_p;
@@ -925,7 +942,9 @@ protected:
 // </reviewed>
 // 
 // <prerequisite>
+//   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
+//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -933,8 +952,8 @@ protected:
 //
 // <synopsis>
 //  This concrete class is derived from the abstract base class MomentCalcBase
-//  which provides an interface layer to the ImageMoments driver class.  
-//  ImageMoments creates a MomentFit object and passes it to the LatticeApply
+//  which provides an interface layer to the ImageMoments or MSMoments driver class.  
+//  ImageMoments or MSMoments creates a MomentFit object and passes it to the LatticeApply
 //  function, lineMultiApply. This function iterates through a given lattice,
 //  and invokes the <src>multiProcess</src> member function of MomentFit on each vector
 //  of pixels that it extracts from the input lattice.  The <src>multiProcess</src>
@@ -945,12 +964,15 @@ protected:
 //  moments are then computed from that fit.   The fitting can be done either
 //  interactively or automatically.
 // 
-//  The constructor takes an ImageMoments object; the one that is constructing
+//  The constructor takes MomentsBase object that is actually an ImageMoments or 
+//  an MSMoments object; the one that is constructing
 //  the MomentFit object of course.   There is much control information embodied
 //  in the state of the ImageMoments object.  This information is extracted by the
 //  MomentCalcBase class and passed on to MomentFit for consumption.
 //   
-//  See the <linkto class="ImageMoments">ImageMoments</linkto>
+//  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
+//  <linkto class="ImageMoments">ImageMoments</linkto>, and 
+//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //  
 // </synopsis>
@@ -997,10 +1019,9 @@ template <class T> class MomentFit : public MomentCalcBase<T>
 {
 public:
 
-// Constructor.  We need the ImageMoments object which is calling us, 
-// the ImageMoments logger, and the number of output lattices 
-// ImageMoments has created.
-   MomentFit(ImageMoments<T>& iMom,
+// Constructor.  We need the ImageMoments or MSMoments object which is calling us, 
+// its logger, and the number of output lattices it has created.
+   MomentFit(MomentsBase<T>& iMom,
              LogIO& os,
              const uInt nLatticeOut);
 
@@ -1016,7 +1037,7 @@ public:
 
 // This function returns a vector of numbers from each input vector.
 // the output vector contains the moments known to the ImageMoments
-// object passed into the constructor.
+// or MSMoments object passed into the constructor.
    virtual void multiProcess(Vector<T>& out,
                              Vector<Bool>& outMask,
                              const Vector<T>& in,
@@ -1024,7 +1045,7 @@ public:
                              const IPosition& pos);
 
 private:
-   ImageMoments<T>& iMom_p;
+   MomentsBase<T>& iMom_p;
    LogIO os_p;
    T stdDeviation_p, peakSNR_p;
    Bool doAuto_p, doFit_p;
@@ -1114,18 +1135,18 @@ inline void MomentCalcBase<T>::accumSums
 template<class T>
 inline Float MomentCalcBase<T>::convertT(const T value)
 {
-  return ImageMoments<T>::convertT(value);
+  return MomentsBase<T>::convertT(value);
 }
 
 template<class T>
 inline T MomentCalcBase<T>::convertF(const Float value)
 {
-  return ImageMoments<T>::convertF(value);
+  return MomentsBase<T>::convertF(value);
 }
 
 // Compute the world coordinate for the given moment axis pixel   
 template<class T>
-inline Double MomentCalcBase<T>::getMomentCoord(ImageMoments<T>& iMom,
+inline Double MomentCalcBase<T>::getMomentCoord(MomentsBase<T>& iMom,
 						Vector<Double>& pixelIn,
 						Vector<Double>& worldOut,
 						const Double momentPixel) const

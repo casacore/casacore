@@ -324,7 +324,8 @@ void doFits()
    uInt axis = 0;
    uInt nGauss = 0;
    Int poly = 1;
-   ImageUtilities::fitProfiles(pFit, pResid, im, pWeight,
+   String xUnit;
+   ImageUtilities::fitProfiles(pFit, pResid, xUnit, im,
                                axis, nGauss, poly, True);
    if (pWeight) delete pWeight;
 
@@ -360,6 +361,36 @@ void doFits()
    }
 }
 
+void doDeconvolveFromBeam() {
+	LogOrigin lor("tImageUtilities", "doDeconvolveFromBeam()", WHERE);
+	LogIO os(lor);
+	Quantity maj(5, "arcsec");
+	Quantity min(5, "arcsec");
+	Quantity pa(0, "deg");
+	Bool fitSuccess = False;
+	Vector<Quantity> beam(3);
+	beam[0] = Quantity(4, "arcsec");
+	beam[1] = Quantity(4, "arcsec");
+	beam[2] = Quantity(0, "deg");
+
+	Bool isPointSource = ImageUtilities::deconvolveFromBeam(maj, min, pa, fitSuccess, os, beam);
+	AlwaysAssert(! isPointSource, AipsError);
+	AlwaysAssert(fitSuccess, AipsError);
+	AlwaysAssert(maj.getValue("arcsec") == 3, AipsError);
+	AlwaysAssert(min.getValue("arcsec") == 3, AipsError);
+	AlwaysAssert(pa.getValue("deg") == 0, AipsError);
+
+	// make beam larger than the source so the fit fails
+	beam[0] = Quantity(6, "arcsec");
+	beam[1] = Quantity(6, "arcsec");
+	beam[2] = Quantity(0, "deg");
+
+	isPointSource = ImageUtilities::deconvolveFromBeam(maj, min, pa, fitSuccess, os, beam);
+	AlwaysAssert(! fitSuccess, AipsError);
+
+	// TODO test for point source, I can't figure out how to actually set parameters so the method
+	// returns true
+}
   
 int main()
 {
@@ -368,6 +399,7 @@ int main()
     doBin();
     doTypes();
     doOpens();
+    doDeconvolveFromBeam();
 //    doConversions();
   } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
