@@ -58,7 +58,7 @@ class MSInterval : public BaseCompare
 {
 public:
   explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
-    virtual ~MSInterval() {};
+    virtual ~MSInterval() {}
     virtual int comp(const void * obj1, const void * obj2) const;
     void setOffset(Double offset) {offset_p=offset;}
     void setInterval(Double interval) {interval_p=interval;}

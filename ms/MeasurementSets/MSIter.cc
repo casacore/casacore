@@ -367,8 +367,8 @@ void MSIter::advance()
 
 void MSIter::setState()
 {
-  checkFeed_p = newMS_p;
   setMSInfo();
+  checkFeed_p = newMS_p;
   curTable_p=tabIter_p[curMS_p]->table();
   colArray_p.attach(curTable_p,MS::columnName(MS::ARRAY_ID));
   colDataDesc_p.attach(curTable_p,MS::columnName(MS::DATA_DESC_ID));

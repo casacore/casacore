@@ -134,6 +134,32 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return antennaId_p.nrow();}
 
+  // Returns the last row that contains a feed with the specified values.
+  // If no matching row can be found, but a match is possible if the validity
+  // time interval is widened, return that row and the suggestion for the
+  // new time information.
+  // If no change to time is necessary, newTimeQ and newIntervalQ are zero.
+  // Returns -1 if no match could be found.
+  // Ignore the Feed table rows contained in vector ignoreRows. 
+  // focusLengthQ is only compared if this optional column is present and
+  // if the value of focusLengthQ is not dimensionless.
+  Int matchFeed(Quantum<Double>& newTimeQ,
+		Quantum<Double>& newIntervalQ,
+		const Int& antId,
+		const Int& fId, // feedId
+		const Int& spwId, 
+		const Quantum<Double>& timeQ,
+		const Quantum<Double>& intervalQ,
+		const Int& numRec,
+		const Array<Quantum<Double> >& beamOffsetQ,
+		const Array<String>& polType,
+		const Array<Complex>& polResp,
+		const Array<Quantum<Double> >& positionQ,
+		const Array<Quantum<Double> >& receptorAngleQ,
+		const Vector<uInt>& ignoreRows,
+		const Quantum<Double>& focusLengthQ=Quantum<Double>() 
+		);
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
