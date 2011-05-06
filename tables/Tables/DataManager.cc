@@ -246,7 +246,7 @@ void DataManager::removeColumn (DataManagerColumn*)
 //# Initialize the static map of "constructors".
 // Use a recursive mutex, because loading from a shared library can cause
 // a nested lock.
-Bool DataManager::theirMainRegistrationDone = False;
+volatile Bool DataManager::theirMainRegistrationDone = False;
 SimpleOrderedMap<String,DataManagerCtor>
         DataManager::theirRegisterMap (DataManager::unknownDataManager);
 Mutex DataManager::theirMutex(Mutex::Recursive);

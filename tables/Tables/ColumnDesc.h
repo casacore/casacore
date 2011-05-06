@@ -374,7 +374,7 @@ private:
     // The map is filled with the main XXColumnDesc construction functions
     // by the function registerColumnDesc upon the first call of
     // <src>ColumnDesc::getFile</src>.
-    static Bool  theirMainRegistrationDone;
+    static volatile Bool theirMainRegistrationDone;
     static Mutex theirMutex;
     static SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)> theirRegisterMap;
 

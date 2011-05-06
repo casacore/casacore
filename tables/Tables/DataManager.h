@@ -242,11 +242,10 @@ public:
     // the correct data manager.
     virtual String dataManagerType() const = 0;
 
-    // Add SEQNR and SPEC (containing DataManagerSpec record) to the info.
-    // The default implementation returns an empty record.
+    // Add SEQNR and SPEC (the DataManagerSpec subrecord) to the info.
     void dataManagerInfo (Record& info) const;
 
-    // Record a record containing data manager specifications.
+    // Return a record containing data manager specifications.
     // The default implementation returns an empty record.
     virtual Record dataManagerSpec() const;
 
@@ -486,7 +485,7 @@ private:
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
-    static Bool theirMainRegistrationDone;
+    static volatile Bool theirMainRegistrationDone;
     static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
     static Mutex theirMutex;
 

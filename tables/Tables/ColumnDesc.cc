@@ -225,7 +225,7 @@ void ColumnDesc::show (ostream& os) const
 
 
 //# Initialize the static variables for the class registration.
-Bool ColumnDesc::theirMainRegistrationDone = False;
+volatile Bool ColumnDesc::theirMainRegistrationDone = False;
 Mutex ColumnDesc::theirMutex(Mutex::ErrorCheck);
 SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>
                   ColumnDesc::theirRegisterMap (ColumnDesc::unknownColumnDesc);
