@@ -69,6 +69,59 @@ void ROMSStateColumns::attach(const MSState& msState)
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
 
+Int ROMSStateColumns::matchState(const Quantum<Double>& stateCalQ,
+				 const Quantum<Double>& stateLoadQ,
+				 const String& stateObsMode,
+				 const Bool& stateRef,
+				 const Bool& stateSig,
+				 const Int& stateSubScan,
+				 const Quantum<Double>& tolerance,
+				 Int tryRow){
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the temperatures and tolerance to Kelvin
+  const Unit k("K");
+  DebugAssert(tolerance.check(k.getValue()), AipsError);
+  DebugAssert(stateCalQ.check(k.getValue()), AipsError);
+  DebugAssert(stateLoadQ.check(k.getValue()), AipsError);
+  const Double tolInK = tolerance.getValue(k);
+  const Double calInK = stateCalQ.getValue(k);
+  const Double loadInK = stateLoadQ.getValue(k);
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("ROMSStateColumns::matchState(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr)
+	&& fabs(calQuant()(tr).getValue(k) - calInK) < tolInK
+	&& fabs(loadQuant()(tr).getValue(k) - loadInK) < tolInK
+	&& obsMode()(tr) == stateObsMode
+	&& ref()(tr) == stateRef
+	&& sig()(tr) == stateSig
+	&& subScan()(tr) == stateSubScan) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r)
+	&& fabs(calQuant()(r).getValue(k) - calInK) < tolInK
+	&& fabs(loadQuant()(r).getValue(k) - loadInK) < tolInK
+	&& obsMode()(r) == stateObsMode
+	&& ref()(r) == stateRef
+	&& sig()(r) == stateSig
+	&& subScan()(r) == stateSubScan) {
+      return r;
+    }
+  }
+  return -1;
+}
+
+
+
 MSStateColumns::MSStateColumns(MSState& msState):
   ROMSStateColumns(msState),
   cal_p(msState, MSState::columnName(MSState::CAL)),
@@ -110,6 +163,8 @@ void MSStateColumns::attach(MSState& msState)
   calQuant_p.attach(msState, MSState::columnName(MSState::CAL));
   loadQuant_p.attach(msState, MSState::columnName(MSState::LOAD));
 }
+
+
 // Local Variables: 
 // compile-command: "gmake MSStateColumns"
 // End: 

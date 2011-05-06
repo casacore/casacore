@@ -218,7 +218,7 @@ private:
   void listData(const int pageRows=50, const String listfile="");
 
   // Column header line for pagination of output.
-  void listColumnHeader();
+  void listColumnHeader(ostream& myout);
 
   // Setup class polarization information for specified MS.
   // pols_p holds the polarization names contained in the MS
@@ -240,7 +240,7 @@ private:
 
   // Output stream
   LogIO logStream_p;
-
+  
   // A formatting string for convenience
   const String dashline_p;
 
@@ -292,8 +292,8 @@ private:
   // for assigning desired columns from the ms
   Vector <String> items_p;
 
-  // Bools for column showing
-  Bool doFld_p, doSpW_p, doChn_p;
+  // Bools for column showing and to identify FLOAT_DATA column of single dish
+  Bool doFld_p, doSpW_p, doChn_p, is_float;
 
   // Data selections
   // data --> "amplitude", "phase"

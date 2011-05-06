@@ -257,22 +257,6 @@ Record MSRange::range(const Vector<Int>& keys,
     case MSS::OBS_RESIDUAL_IMAGINARY:
       want(Imag,fld-MSS::IMAGINARY)=True;
       break;
-    case MSS::IMAGING_WEIGHT:
-      {
-	if (checkShapes()) {
-	  if (!msc.imagingWeight().isNull()) {
-	    Vector<Float> range(2);
-	    ::casa::minMax(range(0),range(1),msc.imagingWeight().getColumn());
-	    out.define(keyword,range);
-	  } else {
-	    os << LogIO::WARN << "IMAGING_WEIGHT column doesn't exist"<< 
-	      LogIO::POST;
-	  }
-	} else {
-	  shapeChangesWarning=True;
-	}
-      }
-      break;
     case MSS::NUM_CORR:
       {
 	checkShapes();

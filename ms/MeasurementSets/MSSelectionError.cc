@@ -184,5 +184,20 @@ MSSelectionPolnParseError::MSSelectionPolnParseError (const String& str,Category
 MSSelectionPolnParseError::~MSSelectionPolnParseError () throw()
 {}
 
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionStateError::MSSelectionStateError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionStateError::~MSSelectionStateError () throw()
+{}
+
+MSSelectionStateParseError::MSSelectionStateParseError (const String& str,Category c)
+: MSSelectionStateError(str,c)
+{}
+MSSelectionStateParseError::~MSSelectionStateParseError () throw()
+{}
+
 } //# NAMESPACE CASA - END
 

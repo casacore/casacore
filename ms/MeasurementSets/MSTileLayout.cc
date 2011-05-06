@@ -35,25 +35,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 				  Int observationType, Int nIfr, Int)
 {
-  const Int ioBlockSize = 16384; // 16384 * sizeOf(Complex) = 128 kByte
+  const Int ioBlockSize = 131072; // 131072 * sizeOf(Complex) = 1 MB
   IPosition tileShape(3,0,0,0);
   if (dataShape.nelements()==2 && dataShape(0)>0 && dataShape(1)>0) {
     // Always read all polarizations, since we'll often want to do conversion
     Int corrSize = dataShape(0);     
-    // Read about 10% of channels, that way reading a single channel will
-    // only read 10% of the data
-    Int chanSize = dataShape(1)/10 + 1;
+    // Read all channels, in order to minimize the overhead of the
+    // i/o layer
+    Int chanSize = dataShape(1);
     // Read as many rows as needed to make up the ioBlockSize for efficient
     // io and caching
     Int rowSize  = max(1, ioBlockSize/corrSize/chanSize);
-    // if we're doing fast mosaicing, use fewer rows, because the extra
-    // rows would not be used if we're reading in the common field_id order.
-    // Use the whole spectrum in this case.
-    if (observationType == FastMosaic) {
-      chanSize = dataShape(1);
-      rowSize = max(1, ioBlockSize/corrSize/chanSize);
-      if (nIfr > 0) rowSize = min(nIfr,rowSize);
-    }
+
+    (void) observationType;  // not used
+    (void) nIfr;
+
     tileShape(0)=corrSize; 
     tileShape(1)=chanSize;
     tileShape(2)=rowSize;

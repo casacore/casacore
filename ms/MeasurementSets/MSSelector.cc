@@ -240,7 +240,7 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 	<< LogIO::POST;
     }
     selectPolarization(polSel);
-    os<< LogIO::NORMAL << "Selection initialized ok"<< LogIO::POST;
+    os<< LogIO::DEBUG1 << "Selection initialized ok"<< LogIO::POST;
   }
   return constantShape;
 }
@@ -313,7 +313,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
       }
     }
   }
-  os << LogIO::NORMAL<< "Channel selection: #chan="<<nChan<<
+  os << LogIO::DEBUG1 << "Channel selection: #chan="<<nChan<<
     ", start="<<start+1<<", width="<<width<<", incr="<<incr<<LogIO::POST;
   return True;
 }
@@ -413,7 +413,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
   useSlicer_p=(!polSlice_p.all()||!chanSlice_p.all());
   if (useSlicer_p) slicer_p=Slicer(polSlice_p,chanSlice_p);
   polSelection_p.resize(wantedPol.nelements()); polSelection_p=wantedPol;
-  os << LogIO::NORMAL<< "Polarization selection: "<< wantedPol << LogIO::POST;
+  os << LogIO::DEBUG1<< "Polarization selection: "<< wantedPol << LogIO::POST;
   return True;
 }
 
@@ -1057,38 +1057,6 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     case MSS::OBS_RESIDUAL_IMAGINARY:
       want(Imag,fld-MSS::IMAGINARY)=True;
       break;
-    case MSS::IMAGING_WEIGHT:
-      {
-	if (!msc.imagingWeight().isNull()) {
-	  // averaging doesn't make sense here
-	  // but we should apply channel selection
-	  Array<Float> weight;
-	  if (useSlicer_p) {
-	    Slice mySlice(chanSel_p(1),chanSel_p(0),chanSel_p(3));
-	    Slicer slicer(mySlice);
-	    weight=msc.imagingWeight().getColumn(slicer);
-	  }
-	  else weight=msc.imagingWeight().getColumn(); 
-	  if (doIfrAxis) {
-	    Array<Float> weight3d; weight3d.set(0);
-	    IPosition start(2,0,0),end(2,chanSel_p(0),0);
-	    IPosition start2(3,0,0,0),end2(3,chanSel_p(0),0,0);
-	    for (Int k=0; k<nRow; k++) {
-	      start(1)=end(1)=k;
-	      start2(1)=end2(1)=ifrIndex(k);
-	      start2(2)=end2(2)=slot(k);
-	      weight3d(start2,end2).nonDegenerate()=
-		weight(start,end).nonDegenerate();
-	    }
-	    out.define(item,weight3d);
-	  } else {
-	    out.define(item,weight);
-	  }
-	} else {
-	  os << LogIO::WARN << "IMAGING_WEIGHT column doesn't exist"<< LogIO::POST;
-	}
-      }
-      break;
     case MSS::FLOAT_DATA:
       want(Data,ObsFloat)=True;
       break;
@@ -1575,25 +1543,6 @@ Bool MSSelector::putData(const Record& items)
 	    msc.flagRow().putColumn(flagRow);
 	  }
 	// }
-      }
-      break;
-    case MSS::IMAGING_WEIGHT:
-      {
-	// averaging not supported
-	if (chanSel_p(2)>1) {
-	  os << LogIO::SEVERE << "Averaging not supported when writing data"
-	     << LogIO::POST;
-	  break;
-	}
-	Array<Float> weight = items.toArrayFloat(RecordFieldId(i));
-	if (weight.ndim()==2 && !msc.imagingWeight().isNull()) {
-	  if (useSlicer_p) {
-	    Slice mySlice(chanSel_p(1),chanSel_p(0),chanSel_p(3));
-	    Slicer slicer(mySlice);
-	    msc.imagingWeight().putColumn(slicer, weight);
-	  }
-	  else msc.imagingWeight().putColumn(weight); 
-	}
       }
       break;
     case MSS::SIGMA:

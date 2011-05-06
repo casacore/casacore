@@ -281,9 +281,9 @@ void MeasurementSet::init()
 	// FLOAT_DATA
 	colMapDef(FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
 		  "Floating point data - for single dish","","");
-	// IMAGING_WEIGHT
-	colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
-		  "Weight set by imaging task (e.g. uniform weighting)","","");
+        // IMAGING_WEIGHT
+        colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
+                  "Weight set by imaging task (e.g. uniform weighting)","","");
 	// INTERVAL
 	colMapDef(INTERVAL, "INTERVAL", TpDouble, 
 		  "The sampling interval","s","");
@@ -882,13 +882,23 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   Vector<Int> scanlist=thisSelection.getScanList();
   Vector<Int> antenna1list=thisSelection.getAntenna1List();
   Vector<Int> antenna2list=thisSelection.getAntenna2List();
-  Matrix<Int>  chanlist=thisSelection.getChanList();
+  Matrix<Int> chanlist=thisSelection.getChanList();
+  Matrix<Int> baselinelist=thisSelection.getBaselineList();
+  Vector<Int> ddIDList=thisSelection.getDDIDList();
+  OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
+  OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+
   retval.define("spw", spwlist);
   retval.define("field", fieldlist);
   retval.define("scan",scanlist);
   retval.define("antenna1", antenna1list);
   retval.define("antenna2", antenna2list);
+  retval.define("baselines",baselinelist);
   retval.define("channel", chanlist);
+  retval.define("dd",ddIDList);
+  //  retval.define("polmap",polMap);
+  // retrval.define("corrmap",corrMap);
+
   return retval;
 
 }
