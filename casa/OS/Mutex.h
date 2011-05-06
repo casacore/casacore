@@ -29,9 +29,6 @@
 #define CASA_MUTEX_H
 
 #include <casa/aips.h>
-#include <pthread.h>
-#include <errno.h>
-#include <casa/Exceptions/Error.h>
 
 //# Mostly copied from the LOFAR software.
 
@@ -80,7 +77,8 @@ namespace casa {
     Mutex& operator= (const Mutex&);
 
     //# Data members
-    ///    pthread_mutex_t itsMutex;
+    //# Use void*, because we cannot forward declare pthread_mutex_t.
+    void* itsMutex;
   };
 
 
@@ -115,42 +113,6 @@ namespace casa {
   };
 
 
-  //# Implementation.
-#ifdef USE_THREADS
-
-  inline void Mutex::lock()
-  {
-    ///    int error = pthread_mutex_lock (&itsMutex);
-    ///    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
-  }
-
-  inline void Mutex::unlock()
-  {
-    ///    int error = pthread_mutex_unlock (&itsMutex);
-    ///    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
-  }
-
-  inline Bool Mutex::trylock()
-  {
-    ///    int error = pthread_mutex_trylock(&itsMutex);
-    ///    switch (error) {
-    ///    case 0:
-          return True;
-    ///    case EBUSY:
-    ///      return False;
-    ///default:
-	  ///      throw SystemCallError ("pthread_mutex_trylock", error);
-    }
-  }
-
-#else
-  inline void Mutex::lock()
-  {}
-  inline void Mutex::unlock()
-  {}
-  inline Bool Mutex::trylock()
-  { return True; }
-#endif
 
   inline ScopedLock::ScopedLock(Mutex &mutex)
   : itsMutexRef(mutex)

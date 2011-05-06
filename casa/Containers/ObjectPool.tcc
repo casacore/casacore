@@ -74,12 +74,17 @@ void ObjectPool<T, Key>::release(T *obj, const Key key) {
 template <class T, class Key>
 void ObjectPool<T, Key>::clearStacks() {
   ScopedLock lock(mutex_p);
-  for (uInt i=0; i<map_p.ndefined(); i++) clearStack(map_p.getKey(i));
+  for (uInt i=0; i<map_p.ndefined(); i++) doClearStack(map_p.getKey(i));
 }
 
 template <class T, class Key>
 void ObjectPool<T, Key>::clearStack(const Key key) {
   ScopedLock lock(mutex_p);
+  doClearStack (key);
+}
+
+template <class T, class Key>
+void ObjectPool<T, Key>::doClearStack(const Key key) {
   PoolStack<T, Key> **v0;
   if ((v0 = map_p.isDefined(key))) (*v0)->clear();
 }

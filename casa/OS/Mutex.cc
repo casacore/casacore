@@ -29,11 +29,16 @@
 #include <errno.h>
 #include <casa/Exceptions/Error.h>
 
+//# Define a macro to cast the void* to pthread_mutex_t*.
+#define ITSMUTEX \
+  (static_cast<pthread_mutex_t*>(itsMutex))
+
 namespace casa {
+
+#ifdef USE_THREADS
 
   Mutex::Mutex (Mutex::Type type)
   {
-    /*
     // Set the type of mutex.
     // Use default ERRORCHECK if in debug mode.
     int ptype = PTHREAD_MUTEX_DEFAULT;
@@ -56,9 +61,10 @@ namespace casa {
       break;
     }
     // Create the mutex.
+    itsMutex = new pthread_mutex_t;
     int error;
     if (ptype == PTHREAD_MUTEX_DEFAULT) {
-      error = pthread_mutex_init (&itsMutex, 0);
+      error = pthread_mutex_init (ITSMUTEX, 0);
       if (error != 0) throw SystemCallError ("pthread_mutex_init",error);
     } else {
       pthread_mutexattr_t attr;
@@ -66,21 +72,59 @@ namespace casa {
       if (error != 0) throw SystemCallError ("pthread_mutexattr_init",error);
       error = pthread_mutexattr_settype (&attr, ptype);
       if (error != 0) throw SystemCallError ("pthread_mutexattr_settype",error);
-      error = pthread_mutex_init (&itsMutex, &attr);
+      error = pthread_mutex_init (ITSMUTEX, &attr);
       if (error != 0) throw SystemCallError ("pthread_mutex_init",error);
       // The attribute can be destroyed right after the init.
       error = pthread_mutexattr_destroy (&attr);
       if (error != 0) throw SystemCallError ("pthread_mutexattr_destroy",error);
     }
-    */
   }
 
   Mutex::~Mutex()
   {
-    /*
-    int error = pthread_mutex_destroy (&itsMutex);
+    int error = pthread_mutex_destroy (ITSMUTEX);
     if (error != 0) throw SystemCallError ("pthread_mutex_destroy", error);
-    */
+    delete ITSMUTEX;
   }
+
+  void Mutex::lock()
+  {
+    int error = pthread_mutex_lock (ITSMUTEX);
+    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
+  }
+
+  void Mutex::unlock()
+  {
+    int error = pthread_mutex_unlock (ITSMUTEX);
+    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
+  }
+
+  Bool Mutex::trylock()
+  {
+    int error = pthread_mutex_trylock(ITSMUTEX);
+    switch (error) {
+    case 0:
+      return True;
+    case EBUSY:
+      return False;
+    default:
+      throw SystemCallError ("pthread_mutex_trylock", error);
+    }
+  }
+
+#else
+
+  Mutex::Mutex (Mutex::Type)
+    : itsMutex(0) {}
+  Mutex::~Mutex()
+  {}
+  void Mutex::lock()
+  {}
+  void Mutex::unlock()
+  {}
+  Bool Mutex::trylock()
+  { return True; }
+
+#endif
 
 } // namespace casa

@@ -378,7 +378,7 @@ private:
   //# Data
   static Mutex theirMutex;
   // Indicate files read
-  static Bool doInit;
+  static volatile Bool doInit;
   // Last time data was (re)read
   static Double lastParse; 
   // List of values belonging to keywords found

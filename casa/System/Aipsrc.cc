@@ -624,7 +624,7 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   // Static Initializations -- Only really want to read the files once
 
   Mutex Aipsrc::theirMutex;
-  Bool Aipsrc::doInit = True;
+  volatile Bool Aipsrc::doInit = True;
   Double Aipsrc::lastParse = 0;
   Block<String> Aipsrc::keywordPattern(0);
   Block<String> Aipsrc::keywordValue(0);
