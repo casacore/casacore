@@ -94,7 +94,8 @@ class MSConcat: public MSColumns
 {
 public:
   MSConcat(MeasurementSet& ms);
-  void concatenate(const MeasurementSet& otherMS);
+  void concatenate(const MeasurementSet& otherMS,
+		   const Bool dontModifyMain=False); // if true, MAIN is not touched
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
 private:
   MSConcat();
@@ -110,6 +111,7 @@ private:
                              // by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
+  Block<uInt> copyState(const MSState& otherState);
   Block<uInt> copyField(const MSField& otherFld);
   Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
 			    const MSPolarization& otherPol,
