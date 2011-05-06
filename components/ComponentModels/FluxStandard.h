@@ -29,13 +29,17 @@
 #ifndef COMPONENTS_FLUXSTANDARD_H
 #define COMPONENTS_FLUXSTANDARD_H
 
-//# include directives
 #include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MFrequency.h>
 #include <components/ComponentModels/Flux.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+// Forward declarations
+class String;        //#include <casa/BasicSL/String.h>
+class MDirection;    //#include <measures/Measures/MDirection.h>
+class MEpoch;        //#include <measures/Measures/MEpoch.h>
+class MFrequency;    //#include <measures/Measures/MFrequency.h>
+class SpectralModel; //#include <components/ComponentModels/SpectralModel.h>
 
 // <summary> 
 // FluxStandard: Compute flux densities for standard reference sources
@@ -58,7 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // densities for specified non-variable sources on a standard
 // flux density scale, such as that established by Baars or
 // Perley and Taylor.
-// </etymology>
+// </synopsis>
 //
 // <example>
 // <srcblock>
@@ -76,11 +80,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class FluxStandard
 {
  public:
-  // Flux scale types
+  // Flux scale types.
+  // Standards which do not include resolution info must come before
+  // HAS_RESOLUTION_INFO, and those with it must come after.
   enum FluxScale {
-
     // Perley (1990); plus Reynolds (1934-638; 7/94); Baars (3C138)
-    PERLEY_90,
+    PERLEY_90 = 0,
 
     // Perley and Taylor (1995.2); plus Reynolds (1934-638; 7/94)
     PERLEY_TAYLOR_95,
@@ -89,16 +94,83 @@ class FluxStandard
     PERLEY_TAYLOR_99,
 
     // Baars scale
-    BAARS};
+    // Baars J. W. M., Genzel R., Pauliny-Toth I. I. K., et al., 1977,
+    // A&A, 61, 99
+    // http://cdsads.u-strasbg.fr/abs/1977A%26A....61...99B
+    BAARS,
+
+    // Perley-Butler 2010 Scale (using VLA [not EVLA!] data)
+    PERLEY_BUTLER_2010,
+
+    HAS_RESOLUTION_INFO,
+
+    // Estimate the flux density for a Solar System object using a JPL Horizons
+    // ephemeris/data page and model provided by Bryan Butler.
+    SS_JPL_BUTLER = HAS_RESOLUTION_INFO,
+
+    // The number of standards in this enumerator.
+    NUMBER_STANDARDS
+  };
 
   // Default constructor, and destructor
-  FluxStandard (FluxStandard::FluxScale scale = 
-		FluxStandard::PERLEY_TAYLOR_99);
+  FluxStandard(const FluxStandard::FluxScale scale =
+               FluxStandard::PERLEY_TAYLOR_99);
   ~FluxStandard();
 
   // Compute the flux density for a specified source at a specified frequency
   Bool compute (const String& sourceName, const MFrequency& mfreq,
-		Flux <Double>& value, Flux<Double>& error);
+		Flux<Double>& value, Flux<Double>& error) const;
+
+  // Compute the flux densities and their uncertainties for a specified source
+  // at a set of specified frequencies.
+  Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
+	       Vector<Flux<Double> >& values,
+               Vector<Flux<Double> >& errors) const;
+
+  // Compute the flux densities and their uncertainties for a specified source
+  // for a set of sets of specified frequencies, i.e. mfreqs[spw] is a set of
+  // frequencies for channels in spectral window spw, and values and errors are
+  // arranged the same way.
+  Bool compute(const String& sourceName,
+               const Vector<Vector<MFrequency> >& mfreqs,
+               Vector<Vector<Flux<Double> > >& values,
+               Vector<Vector<Flux<Double> > >& errors) const;
+
+  // Like compute, but it also saves a set of ComponentLists for the source to
+  // disk and puts the paths (sourceName_mfreq_mtime.cl) in clnames, making it
+  // suitable for resolved sources.
+  // mtime is ignored for nonvariable objects.
+  // Solar System objects are typically resolved and variable!
+  // The ComponentList names are formed from prefix, sourceName, the
+  // frequencies, and times.
+  Bool computeCL(const String& sourceName, const Vector<Vector<MFrequency> >& mfreqs,
+                 const MEpoch& mtime, const MDirection& position,
+                 Vector<Vector<Flux<Double> > >& values,
+                 Vector<Vector<Flux<Double> > >& errors,
+                 Vector<String>& clnames, const String& prefix="") const;
+
+  // Take a component cmp and save it to a ComponentList on disk, returning the
+  // pathname.  ("" if unsuccessful, sourceName_mfreqGHzDateTime.cl otherwise)
+  //
+  // This is also used outside of FluxStandard, but it is declared here instead
+  // of in ComponentList because it is somewhat specialized, mainly in setting
+  // up the pathname.  The ComponentList name is formed from prefix, sourceName,
+  // mfreq, and mtime.
+  //
+  static String makeComponentList(const String& sourceName, const MFrequency& mfreq,
+                                  const MEpoch& mtime, const Flux<Double>& fluxval,
+                                  const ComponentShape& cmp,
+                                  const SpectralModel& spectrum,
+				  const String& prefix="");
+
+  // Variation of the above that will fill a TabularSpectrum with mfreqs and
+  // values if appropriate.
+  static String makeComponentList(const String& sourceName,
+                                  const Vector<MFrequency>& mfreqs,
+                                  const MEpoch& mtime,
+                                  const Vector<Flux<Double> >& values,
+                                  const ComponentShape& cmp,
+                                  const String& prefix="");
 
   // Decode a string representation of the standard or catalog name
   static Bool matchStandard(const String& name, 
@@ -111,9 +183,7 @@ class FluxStandard
  private:
   // Flux scale in use
   FluxStandard::FluxScale itsFluxScale;
-
 };
-
 
 } //# NAMESPACE CASA - END
 

@@ -27,13 +27,32 @@
 //----------------------------------------------------------------------------
 
 #include <components/ComponentModels/FluxStandard.h>
+#include <components/ComponentModels/FluxStdsQS.h>
+#include <components/ComponentModels/FluxCalc_SS_JPL_Butler.h>
+#include <components/ComponentModels/ComponentType.h>
+#include <components/ComponentModels/ComponentList.h>
+#include <components/ComponentModels/SkyComponent.h>
+#include <components/ComponentModels/ConstantSpectrum.h>
+#include <components/ComponentModels/TabularSpectrum.h>
+#include <components/ComponentModels/PointShape.h>
+#include <components/ComponentModels/DiskShape.h>
 #include <casa/BasicMath/Math.h>
+#include <casa/BasicSL/String.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/OS/File.h>
+#include <casa/OS/Path.h>
+#include <casa/Utilities/CountedPtr.h>
+#include <casa/sstream.h>
+#include <casa/iomanip.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //----------------------------------------------------------------------------
 
-FluxStandard::FluxStandard (FluxStandard::FluxScale scale) : 
+FluxStandard::FluxStandard(const FluxStandard::FluxScale scale) : 
   itsFluxScale(scale)
 {
 // Default constructor
@@ -53,204 +72,262 @@ FluxStandard::~FluxStandard()
 //----------------------------------------------------------------------------
 
 Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
-			    Flux <Double>& value, Flux <Double>& error)
+			    Flux <Double>& value, Flux <Double>& error) const
 {
-// Compute the flux density for a specified source at a specified frequency
-// Inputs:
-//    sourceName       const String&             Source name
-//    mfreq            const MFrequency&         Desired frequency
-// Output:
-//    value            Flux&                     Computed total flux density
-//    error            Flux&                     Flux density error;
-//                                               (0=> not known).
-//    compute          Bool                      False if source not recognized
-//                                               as a standard reference.
-//
-  Bool found = False;
-  Double fluxDensity = 0.0;
-  Double fluxError = 0.0;
-  Double fluxCoeff = 0.0;
-  Double coeffErr = 0.0;
+  // I refuse to duplicate the monstrosity below to skip a short for loop.
+  Vector<Flux<Double> > fluxes(1);
+  Vector<Flux<Double> > errors(1);
+  Vector<MFrequency> mfreqs(1);
   
-  // Get frequency in MHz
-  Quantity mvfreq = mfreq.get ("MHz");
-  // Flux density polynomials expressed in terms of log_10 (f/MHz)
-  Double dt = log10 (mvfreq.getValue());
-  // Perley_Taylor 1999.2 coefficients are for GHz
-  Double dt3 = dt - 3.0;
+  mfreqs[0] = mfreq;
+  Bool success = compute(sourceName, mfreqs, fluxes, errors);
+  
+  value = fluxes[0];
+  error = errors[0];
+  return success;
+}
 
-  // Select on the source name
+Bool FluxStandard::compute(const String& sourceName, 
+                           const Vector<Vector<MFrequency> >& mfreqs,
+                           Vector<Vector<Flux<Double> > >& values,
+                           Vector<Vector<Flux<Double> > >& errors) const
+{
+  Bool success = True;
+  uInt nspws = mfreqs.nelements();
 
-  // *** 3C286 ***
+  for(uInt spw = 0; spw < nspws; ++spw)
+    success &= compute(sourceName, mfreqs[spw], values[spw], errors[spw]);
 
-  if (sourceName.contains("3C286") || sourceName.contains("1328+307") || 
-      sourceName.contains("1331+305")) {
+  return success;
+}
 
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = 1.480 + dt * (0.292 + dt * (-0.124));
-      coeffErr = square (0.018) + square (0.006*dt) + square (0.001*dt*dt);
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = 1.35899 + dt * (0.3599 + dt * (-0.13338));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = 0.50344 + dt * (1.05026 + dt * (-0.31666 + dt * 0.01602));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      fluxCoeff =1.23734 + dt3 * (-0.43276 + dt3 * (-0.14223 + dt3 * 0.00345));
-      break;
-    }
-    }
+Bool FluxStandard::compute(const String& sourceName, 
+                           const Vector<MFrequency>& mfreqs,
+                           Vector<Flux<Double> >& values,
+                           Vector<Flux<Double> >& errors) const
+{
+// Compute the flux density for a specified source at a specified set of
+// frequencies.
+// Inputs:
+//    sourceName  Source name
+//    mfreqs      Desired frequencies
+// Output:
+//    values      Computed total flux densities
+//    errors      Flux density uncertainties; 0 => not known.
+//    compute     False if sourceName is not recognized
+//                as a standard reference.
+//
+  LogIO os(LogOrigin("FluxStandard", "compute"));
 
-    // *** 3C48 ***
+  // There used to be a big
+  // if(string == 'dfa" || string == "bla" || ...)
+  // ...else if...else... 
+  // chain here, with a similar
+  // switch(standard) statement inside each if clause.  Finally, inside each
+  // switch case came the actual calculation, usually a 2nd or 3rd order
+  // polynomial in log(freq).
+  //
+  // This meant that the chain of string comparisons and case selections,
+  // typically more expensive than the actual calculation, was repeated for
+  // each frequency.  It would have been better to do the source and standard
+  // determination at the start, and then do the calculation like
+  // ans = coeffs[std][src][0] + lf * (coeffs[std][src][1] + lf * ...),
+  // but:
+  //   * std and src would naturally be enums, and thus not quite 
+  //     natural indices for an array.
+  //   * The standards do not necessarily use the same set, or number,
+  //     of sources.
+  // Both of those could be gotten around by using a std::map, but then
+  // accessing the coeffs entails a function call.  Also, it ties the
+  // functional form of the standards to a low-order polynomial in
+  // log(freq).
+  //
+  // If a function call will be used anyway, why not use a functor to cache the
+  // (std, src) state?  It is more convenient than adding a loop over
+  // log10(frequency) inside each switch case.
 
-  } else if (sourceName.contains("3C48") || sourceName.contains("0134+329") 
-	     || sourceName.contains("0137+331")) {
+  CountedPtr<FluxCalcQS> fluxStdPtr;
 
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = 2.345 + dt * (0.071 + dt * (-0.138));
-      coeffErr = square (0.03) + square (0.001*dt) + square (0.001*dt*dt);
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = 2.0868 + dt * (0.20889 + dt * (-0.15498));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = 1.16801 + dt * (1.07526 + dt * (-0.42254 + dt * 0.02699));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      fluxCoeff =1.31752 + dt3 * (-0.74090 + dt3 * (-0.16708 + dt3 * 0.01525));
-      break;
-    }
-    }
+  if(itsFluxScale == BAARS)
+    fluxStdPtr = new FluxStdBaars;
+  else if(itsFluxScale == PERLEY_90)
+    fluxStdPtr = new FluxStdPerley90;
+  else if(itsFluxScale == PERLEY_TAYLOR_95)
+    fluxStdPtr = new FluxStdPerleyTaylor95;
+  else if(itsFluxScale == PERLEY_TAYLOR_99)
+    fluxStdPtr = new FluxStdPerleyTaylor99;
+  else if(itsFluxScale == PERLEY_BUTLER_2010)
+    fluxStdPtr = new FluxStdPerleyButler2010;
+  else{
+    os << LogIO::SEVERE
+       << "Flux standard " << standardName(itsFluxScale)
+       << " cannot be used this way.  (Does it require a time?)"
+       << LogIO::POST;
+    return false;
+  };
 
-    // *** 3C147 ***
-
-  } else if (sourceName.contains("3C147") || sourceName.contains("0538+498")
-	     || sourceName.contains("0542+498")) {
-
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = 1.766 + dt * (0.447 + dt * (-0.184));
-      coeffErr = square (0.017) + square (0.006*dt) + square (0.001*dt*dt);
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = 1.92641 + dt * (0.36072 + dt * (-0.17389));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = 0.05702 + dt * (2.09340 + dt * (-0.7076 + dt * 0.05477));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      fluxCoeff =1.44856 + dt3 * (-0.67252 + dt3 * (-0.21124 + dt3 * 0.04077));
-      break;
-    }
-    }
-
-    // *** 3C138 ***
-
-  } else if (sourceName.contains("3C138") || sourceName.contains("0518+165") 
-	     || sourceName.contains("0521+166")) {
-
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = 2.009 + dt * (-0.07176 + dt * (-0.0862));
-      // No flux density error specified
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = 2.009 + dt * (-0.07176 + dt * (-0.0862));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = 1.97498 + dt * (-0.23918 + dt * (0.01333 + dt * -0.01389));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      fluxCoeff =1.00761 + dt3 * (-0.55629 + dt3 * (-0.11134 + dt3 * -0.0146));
-      break;
-    }
-    }
-
-    // *** 1934-638 ***
-
-  } else if (sourceName.contains("1934-638")) {
-
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = -23.839 + dt * (19.569 + dt * (-4.8168 + dt * 0.35836));
-      // No flux density error specified
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      if (dt<=4) 
-        fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
-      else
-        fluxCoeff = -202.6259 + dt * (149.7321 + dt * (-36.4943 + dt * 2.9372));
-      break;
-    }
-    }
-
-    // *** 3C295 ***
-
-  } else if (sourceName.contains("3C295") || sourceName.contains("1409+524")
-	     || sourceName.contains("1411+522")) {
-
-    found = True;
-    switch (itsFluxScale) {
-    case BAARS: {
-      fluxCoeff = 1.485 + dt * (0.759 + dt * (-0.255));
-      coeffErr = square (0.013) + square (0.009*dt) + square (0.001*dt*dt);
-      break;
-    }
-    case PERLEY_90: {
-      fluxCoeff = 1.485 + dt * (0.759 + dt * (-0.255));
-      break;
-    }
-    case PERLEY_TAYLOR_95: {
-      fluxCoeff = 1.28872 + dt * (0.94172 + dt * (-0.31113 + dt * 0.00569));
-      break;
-    }
-    case PERLEY_TAYLOR_99: {
-      fluxCoeff = 1.46744 + dt3 * (-0.7735 + dt3 * (-0.25912 + dt3 * 0.00752));
-      break;
-    }
-    }
+  // Set the source or fail.
+  if(!fluxStdPtr->setSource(sourceName)){
+    os << LogIO::SEVERE
+       << sourceName << " is not recognized by " << standardName(itsFluxScale)
+       << LogIO::POST;
+    // TODO?: Look for another standard that does recognize sourceName?
+    return false;
   }
 
-  // Compute the flux density value and its error
-  fluxDensity = pow (10.0, fluxCoeff);
-  if (coeffErr > 0) {
-    fluxError = log (10.0) * fluxDensity * sqrt (coeffErr);
+  // Compute the flux density values and their uncertainties, returning whether
+  // or not it worked.
+  return (*fluxStdPtr)(values, errors, mfreqs);
+}
+
+// Like compute, but it also saves a ComponentList for the source to disk
+// and returns the name (sourceName_mfreqGHzmtime.cl), making it suitable for
+// resolved sources.
+// mtime is ignored for nonvariable objects.
+// Solar System objects are typically resolved and variable!
+//
+// Currently each component "list" only has 1 or 0 components.
+//
+// Inputs:
+//    sourceName  const String&              Source name
+//    mfreqs      const Vector<MFrequency>&  Desired frequencies
+//    mtime       const MEpoch&              Desired time
+// Output:
+//    values      Vector<Flux>&              Computed total flux densities
+//    errors      Vector<Flux>&              Flux density errors;
+//                                           (0 => unknown).
+//    clnames     Vector<String>&            Pathnames of the
+//                                           ComponentLists.  "" if no
+//                                           components were made.
+//
+Bool FluxStandard::computeCL(const String& sourceName,
+                             const Vector<Vector<MFrequency> >& mfreqs,
+                             const MEpoch& mtime, const MDirection& position,
+                             Vector<Vector<Flux<Double> > >& values,
+                             Vector<Vector<Flux<Double> > >& errors,
+                             Vector<String>& clpaths,
+			     const String& prefix) const
+{
+  LogIO os(LogOrigin("FluxStandard", "computeCL"));
+  uInt nspws = mfreqs.nelements();
+
+  if(itsFluxScale < FluxStandard::HAS_RESOLUTION_INFO){
+    if(this->compute(sourceName, mfreqs, values, errors)){
+      // Create a point component with the specified flux density.
+      PointShape point(position);
+
+      for(uInt spw = 0; spw < nspws; ++spw){
+        clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
+                                         values[spw], point, prefix);
+      }
+    }
   }
+  else if(itsFluxScale == FluxStandard::SS_JPL_BUTLER){
+    FluxCalc_SS_JPL_Butler ssobj(sourceName, mtime);
+    Double angdiam;
 
-  // Set flux density value and its error
-  value.setValue (fluxDensity);
-  error.setValue (fluxError);
+    for(uInt spw = 0; spw < nspws; ++spw){
+      ComponentType::Shape cmpshape = ssobj.compute(values[spw], errors[spw], angdiam,
+                                                    mfreqs[spw]);
+    
+      switch(cmpshape){
+      case ComponentType::DISK:
+        {
+          // Create a uniform disk component with the specified flux density.
+          DiskShape disk;
 
-  return found;
+          // Should we worry about tracking position?
+          disk.setRefDirection(position);
+
+          disk.setWidthInRad(angdiam, angdiam, 0.0);
+
+          clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
+                                           values[spw], disk, prefix);
+          break;
+        };
+      default: {
+        ostringstream oss;
+
+        oss << ComponentType::name(cmpshape) << " is not a supported component type.";
+        throw(AipsError(String(oss)));
+      };
+      };
+    }
+  }
+  return true;
+}
+
+String FluxStandard::makeComponentList(const String& sourceName,
+                                       const Vector<MFrequency>& mfreqs,
+                                       const MEpoch& mtime,
+                                       const Vector<Flux<Double> >& values,
+                                       const ComponentShape& cmp,
+				       const String& prefix)
+{
+  LogIO os(LogOrigin("FluxStandard", "makeComponentList"));
+  uInt nchans = mfreqs.nelements();
+
+  if(nchans > 1){
+    Vector<MVFrequency> freqvals(nchans);
+
+    for(uInt c = 0; c < nchans; ++c)
+      freqvals[c] = mfreqs[c].getValue();
+
+    TabularSpectrum ts(mfreqs[0], freqvals, values, mfreqs[0].getRef());
+          
+    return makeComponentList(sourceName, mfreqs[0], mtime,
+                             values[0], cmp, ts, prefix);
+  }
+  else{
+    ConstantSpectrum cspectrum;
+
+    return makeComponentList(sourceName, mfreqs[0], mtime,
+                             values[0], cmp, cspectrum, prefix);
+  }
+}
+
+String FluxStandard::makeComponentList(const String& sourceName,
+                                       const MFrequency& mfreq,
+                                       const MEpoch& mtime,
+                                       const Flux<Double>& fluxval,
+                                       const ComponentShape& cmp,
+                                       const SpectralModel& spectrum,
+				       const String& prefix)
+{
+  LogIO os(LogOrigin("FluxStandard", "makeComponentList"));
+
+  // Make up the ComponentList's pathname.
+  ostringstream oss;
+  oss << prefix << sourceName << "_" //<< setprecision(1)
+      << mfreq.get("GHz").getValue() << "GHz";
+  //  String datetime;  // to nearest minute.
+  oss << mtime.get("d").getValue() << "d.cl";
+  String clpath(oss);
+  uInt nspaces = clpath.gsub(" ", "_");
+
+  os << LogIO::DEBUG1
+     << "sourceName: " << sourceName
+     << "\nmfreq: " << mfreq.get("GHz").getValue() << "GHz"
+     << "\nmtime: " << mtime.get("d").getValue() << "d"
+     << "\nclpath: " << clpath << " (replaced " << nspaces
+     << " spaces)"
+     << LogIO::POST;
+
+  // If clpath already exists on disk, assume our work here is done, and don't
+  // try to redo it.  It's not just laziness - it avoids collisions.
+  // This happens when a continuum spw has the same center freq as a spectral
+  // spw that is not being scaled by channel.
+  File testExistence(clpath);
+  if(!testExistence.isDirectory()){
+    // Create a component list containing cmp, and force a call to its d'tor
+    // using scoping rules.
+    ComponentList cl;
+    SkyComponent skycomp(fluxval, cmp, spectrum);
+	
+    cl.add(skycomp);
+    cl.rename(clpath, Table::New);
+  }
+  return clpath;
 }
 
 //----------------------------------------------------------------------------
@@ -271,6 +348,7 @@ Bool FluxStandard::matchStandard (const String& name,
 //
   // Set default enum
   stdEnum = FluxStandard::PERLEY_TAYLOR_99;
+  //  stdEnum = FluxStandard::PERLEY_BUTLER_2010;   // Not yet!
 
   // Local lowercase copy of input string
   String lname = name;
@@ -294,13 +372,23 @@ Bool FluxStandard::matchStandard (const String& name,
       (lname.contains("99") || lname.contains("1999"))) {
     stdEnum = FluxStandard::PERLEY_TAYLOR_99;
   }
+  // Perley-Butler (2010)
+  else if (lname.contains("perley") && lname.contains("butler") &&
+      (lname.contains("10") || lname.contains("2010"))) {
+    stdEnum = FluxStandard::PERLEY_BUTLER_2010;
+  }
   // Baars
   else if (lname.contains("baars")) {
     stdEnum = FluxStandard::BAARS;
-  } else {
-    //
-    matched = False;
   }
+  else if (lname.contains("baars")) {
+    stdEnum = FluxStandard::BAARS;
+  }
+  else if(lname.contains("jpl") || lname.contains("horizons")){
+    stdEnum = FluxStandard::SS_JPL_BUTLER;
+  }
+  else
+    matched = False;
 
   // Retrieve standard descriptor
   stdName = standardName (stdEnum);
@@ -338,14 +426,26 @@ String FluxStandard::standardName (const FluxStandard::FluxScale& stdEnum)
     stdName = "Perley-Taylor 99";
     break;
   }
+  case PERLEY_BUTLER_2010: {
+    stdName = "Perley-Butler 2010";
+    break;
+  }
+  case SS_JPL_BUTLER: 
+    {
+      stdName = "JPL-Butler Solar System Object";
+      break;
+    }
+  default: 
+    {
+      stdName = "unrecognized standard";
+    }
   }
   return stdName;
 }
 
 //----------------------------------------------------------------------------
-
-
-
+// End of FluxStandard definition.
+//----------------------------------------------------------------------------
 
 } //# NAMESPACE CASA - END
 

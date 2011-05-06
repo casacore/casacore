@@ -30,13 +30,19 @@
 #include <components/ComponentModels/Flux.h>
 #include <components/ComponentModels/SkyCompRep.h>
 #include <components/ComponentModels/SpectralModel.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Exceptions/Error.h>
+#include <casa/iomanip.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Utilities/Precision.h>
+
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
+
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
@@ -235,6 +241,102 @@ Bool SkyComponent::ok() const {
   }
   return True;
 }
+
+String SkyComponent::summarize(const CoordinateSystem * const coordinates) const {
+	ostringstream summary;
+	summary << "SUMMARY OF COMPONENT " << label() << endl;
+	summary << "Shape: " << shape().ident() << endl;
+	const Flux<Double> myFlux = flux();
+	Quantum<Vector<std::complex<double> > > fluxValue;
+	myFlux.value(fluxValue);
+	summary << "Flux density: " << fluxValue << " +/- " << myFlux.errors() << endl;
+	summary << "Spectral model: " << spectrum().ident() << endl;
+	summary << "Position: " <<  positionToString(coordinates) << endl;
+	summary << "Size: " << endl << shape().sizeToString() << endl;
+	return summary.str();
+}
+
+String SkyComponent::positionToString(const CoordinateSystem * const coordinates) const {
+	// FIXME essentially cut and paste of Gareth's python code. Needs work.
+	ostringstream position;
+	MDirection mdir = shape().refDirection();
+
+	Quantity lat = mdir.getValue().getLat("rad");
+	String dec = MVAngle(lat).string(MVAngle::ANGLE_CLEAN, 8);
+
+	Quantity longitude = mdir.getValue().getLong("rad");
+	String ra = MVTime(longitude).string(MVTime::TIME, 9);
+
+	Quantity ddec = shape().refDirectionErrorLat();
+	ddec.convert("rad");
+
+	Quantity dra = shape().refDirectionErrorLong();
+	dra.convert("rad");
+
+	// choose a unified error for both axes
+	Double delta = 0;
+	if ( dra.getValue() == 0 && ddec.getValue() == 0 ) {
+		delta = 0;
+	}
+	else if ( dra.getValue() == 0 ) {
+		delta = fabs(ddec.getValue());
+	}
+	else if ( ddec.getValue() == 0 ) {
+		delta = fabs(dra.getValue());
+	}
+	else {
+		delta = sqrt(dra.getValue()*dra.getValue() + ddec.getValue()*ddec.getValue() );
+	}
+
+	// Add error estimates to ra/dec strings if an error is given (either >0)
+
+	uInt precision = 1;
+	if ( delta != 0 ) {
+		dra.convert("s");
+		ddec.convert("arcsec");
+		Double drasec  = roundDouble(dra.getValue());
+		Double ddecarcsec = roundDouble(ddec.getValue());
+		Vector<Double> dravec(2), ddecvec(2);
+		dravec.set(drasec);
+		ddecvec.set(ddecarcsec);
+		precision = precisionForValueErrorPairs(dravec,ddecvec);
+		ra = MVTime(longitude).string(MVTime::TIME, 6+precision);
+		dec =  MVAngle(lat).string(MVAngle::ANGLE, 6+precision);
+	}
+	position << "Position ---" << endl;
+	position << "       --- ra:    " << ra << " +/- " << std::fixed
+		<< setprecision(precision) << dra << " (" << dra.getValue("arcsec")
+		<< " arcsec)" << endl;
+	position << "       --- dec: " << dec << " +/- " << ddec << endl;
+
+	if (coordinates) {
+		Vector<Double> world(coordinates->nWorldAxes(), 0), pixel(coordinates->nPixelAxes(), 0);
+        coordinates->toWorld(world, pixel);
+		world[0] = longitude.getValue();
+		world[1] = lat.getValue();
+		// TODO do the pixel computations in another method
+		if (coordinates->toPixel(pixel, world)) {
+			const DirectionCoordinate dCoord = coordinates->directionCoordinate(
+				coordinates->findCoordinate(CoordinateSystem::DIRECTION)
+			);
+			Vector<Double> increment = dCoord.increment();
+			Double raPixErr = dra.getValue("rad")/increment[0];
+			Double decPixErr = ddec.getValue("rad")/increment[1];
+			Vector<Double> raPix(2), decPix(2);
+			raPix.set(roundDouble(raPixErr));
+			decPix.set(roundDouble(decPixErr));
+			precision = precisionForValueErrorPairs(raPix, decPix);
+			position << setprecision(precision);
+			position << "       --- ra:   " << pixel[0] << " +/- " << raPixErr << " pixels" << endl;
+			position << "       --- dec:  " << pixel[1] << " +/- " << decPixErr << " pixels" << endl;
+		}
+		else {
+			position << "unable to determine position in pixels" << endl;
+		}
+	}
+	return position.str();
+}
+
 // Local Variables: 
 // compile-command: "gmake SkyComponent"
 // End: 

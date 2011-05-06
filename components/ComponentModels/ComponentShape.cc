@@ -154,6 +154,23 @@ void ComponentShape::visibility(Vector<DComplex>& scale,
   }
 }
 
+void ComponentShape::visibility(Matrix<DComplex>& scale, 
+				const Matrix<Double>& uvw,
+				const Vector<Double>& frequencies) const {
+  DebugAssert(ComponentShape::ok(), AipsError);
+  const uInt nuvw = uvw.ncolumn();
+  DebugAssert(uvw.ncolumn() == nSamples, AipsError);
+  DebugAssert(uvw.nrow() == 3, AipsError);
+  const uInt nfreq=frequencies.nelements();
+  DebugAssert(nfreq >0 , AipsError);
+  scale.resize(nuvw, nfreq);
+  for (uInt j =0 ; j < nfreq; ++j){
+    for (uInt i = 0; i < nuvw; i++) {
+      scale(i,j) = visibility(uvw.column(i), frequencies[j]);
+    }
+  }  
+}
+
 Bool ComponentShape::fromRecord(String& errorMessage,
 				const RecordInterface& record) {
   const String dirString("direction");
