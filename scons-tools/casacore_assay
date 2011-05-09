@@ -78,15 +78,17 @@
   CLEANUP=
 
 # Determine if a program checker (like valgrind) has to be used.
-  ccchecker=$CASACORE_CHECK
+  cc_checker=$CASACORE_CHECK
   # Empty or no means no checker.
-  if test "$ccchecker" = "0" -o "$ccchecker" = "no" -o "$ccchecker" = "NO"; then
-     ccchecker=
+  if test "$cc_checker" = "0" -o "$cc_checker" = "no" -o "$cc_checker" = "NO"; then
+     cc_checker=
   fi
   # Default checker is casacore_memcheck (using valgrind).
-  if test "$ccchecker" = "1" -o "$ccchecker" = "yes" -o "$ccchecker" = "YES"; then
-     ccchecker=$pgmpath/casacore_memcheck
+  if test "$cc_checker" = "1" -o "$cc_checker" = "yes" -o "$cc_checker" = "YES"; then
+     cc_checker=$pgmpath/casacore_memcheck
   fi
+  # Export, so it can be used in possible .run files.
+  export cc_checker
 
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
@@ -94,7 +96,7 @@
         exit $STATUS' 0 1 2 3 15
 
 # Get the command.
-  COMMAND="$ccchecker $@"
+  COMMAND="$cc_checker $@"
   set $@
 
 # Get the current directory.

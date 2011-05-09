@@ -39,12 +39,8 @@
 
 #include <casa/namespace.h>
 
-#define AIPSRCENV "CASARCFILES=aipsrc"
-
 int main()
 {
-
-    putenv(strdup(AIPSRCENV));
     cout << "Host: " << HostInfo::hostName() << endl;
     cout << "Process ID: " << HostInfo::processID() << endl;
     Double s = HostInfo::secondsFrom1970();

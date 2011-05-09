@@ -1872,7 +1872,9 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
 // Find extrema.  Return if there were no valid points to plot
 
-   AccumType yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
+   AccumType yMin=AccumType();
+   AccumType yMax=AccumType();
+   AccumType xMin, xMax, yLMin, yLMax, yRMin, yRMax;
    minMax(none, xMin, xMax, abc, stats.column(NPTS));
    if (none) return True;
 
