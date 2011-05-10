@@ -140,7 +140,7 @@ namespace casa {
     ///      return False;
     ///default:
 	  ///      throw SystemCallError ("pthread_mutex_trylock", error);
-    }
+          ///}
   }
 
 #else
