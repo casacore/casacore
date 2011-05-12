@@ -77,18 +77,20 @@
   fi
   CLEANUP=
 
-# Determine if a program checker (like valgrind) has to be used.
-  cc_checker=$CASACORE_CHECK
-  # Empty or no means no checker.
-  if test "$cc_checker" = "0" -o "$cc_checker" = "no" -o "$cc_checker" = "NO"; then
-     cc_checker=
+# Determine if a program checktool (like valgrind) has to be used.
+  casa_checktool=$CASACORE_CHECK
+# Empty or no means no checktool.
+  if test "$casa_checktool" = "0" -o "$casa_checktool" = "no" -o "$casa_checktool" = "NO"; then
+     casa_checktool=
   fi
-  # Default checker is casacore_memcheck (using valgrind).
-  if test "$cc_checker" = "1" -o "$cc_checker" = "yes" -o "$cc_checker" = "YES"; then
-     cc_checker=$pgmpath/casacore_memcheck
+# Default checktool is casacore_memcheck (using valgrind).
+  if test "$casa_checktool" = "1" -o "$casa_checktool" = "yes" -o "$casa_checktool" = "YES"; then
+     casa_checktool=$pgmpath/casacore_memcheck
   fi
-  # Export, so it can be used in possible .run files.
-  export cc_checker
+# Export, so it can be used in possible .run files.
+  export casa_checktool
+# Delete possible already existing checktool output.
+  rm -rf $1.checktool*
 
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
@@ -96,13 +98,13 @@
         exit $STATUS' 0 1 2 3 15
 
 # Get the command.
-  COMMAND="$cc_checker $@"
+  COMMAND="$casa_checktool $@"
   set $@
 
 # Get the current directory.
   curdir=`pwd`
 
-# If there is a .run file then use it without checker.
+# If there is a .run file then use it without checktool.
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"

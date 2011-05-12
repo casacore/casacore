@@ -10,19 +10,20 @@ shift
 
 # Use valgrind's memcheck tool on a program.
 # Filter out possible errors to give an overview.
+rm -f ${pgm}_tmp.valgrind
 #valgrind --tool=memcheck --num-callers=50 --workaround-gcc296-bugs=yes --leak-check=yes --track-fds=yes --suppressions=$pgmpath/casacore_memcheck.supp "$@"
 valgrind --tool=memcheck --num-callers=50 --workaround-gcc296-bugs=yes --leak-check=yes --track-fds=yes --log-file=${pgm}_tmp.valgrind $pgm "$@"
 
 # Check if any error, definite or possible leak, or open fd is found.
 # If so, list the file and rename to keep it.
 # Note that fd 0,1,2 are always open (stdin,stdout,stderr).
-# Furthermore 4 is open for the valgrind log file and 3 is open for ctest output.
-rm -f $pgm.valgrind
+# Furthermore 3 and/or 4 can be open for the valgrind log file and
+# the ctest output.
 errors=`(grep "ERROR SUMMARY: " ${pgm}_tmp.valgrind | grep -v " 0 errors ") || echo ""`
 deflost=`(grep "definitely lost: " ${pgm}_tmp.valgrind | grep -v " 0 bytes ") || echo ""`
 poslost=`(grep "possibly lost: " ${pgm}_tmp.valgrind | grep -v " 0 bytes ") || echo ""`
 openfds=`(grep " Open file descriptor " ${pgm}_tmp.valgrind | grep -v "descriptor [01234]:") || echo ""`
 if test "$errors" != "" -o "$deflost" != "" -o "$poslost" != "" -o "$openfds" != "";
 then
-    mv ${pgm}_tmp.valgrind $pgm.valgrind
+    cat ${pgm}_tmp.valgrind >> $pgm.checktool.valgrind
 fi
