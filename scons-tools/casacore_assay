@@ -77,6 +77,12 @@
   fi
   CLEANUP=
 
+# Set testsrcdir to . if undefined.
+  if [ "$testsrcdir" = "" ]
+  then
+     testsrcdir=.
+  fi
+
 # Determine if a program checktool (like valgrind) has to be used.
   casa_checktool=$CASACORE_CHECK
 # Empty or no means no checktool.
@@ -105,9 +111,14 @@
   curdir=`pwd`
 
 # If there is a .run file then use it without checktool.
+# Start it using sh if not executable.
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"
+     if [ -x "$1.run" ]
+     then
+        COMMAND="$1.run"
+     fi
   fi
 
 # If there is a .in file then use it as input.

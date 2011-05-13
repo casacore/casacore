@@ -168,7 +168,7 @@ int main() {
 		);
 		testException(
 			"test non-writable output image will throw an exception",
-			goodInputImage, "012", "/x.im"
+			goodInputImage, "012", "/blahxxx/x.im"
 		);
 		testException(
 			"test file exists with specified output image will throw an exception",

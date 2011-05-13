@@ -43,6 +43,7 @@ image_input_processor.im/table.f0_TSM0
 image_input_processor.im/table.f0
 imfit_stokes.fits
 jyperbeamkmpersec.fits
+jyperpixelimage.fits
 mexinputtest.fits
 ngc5921.clean.fits
 ngc5921.clean.no_freq.no_stokes.fits

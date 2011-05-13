@@ -10,7 +10,7 @@
 # Use table tTable_2.data_v0 as the input by creating a link to its directory.
   rm -rf tTableGram_tmp.tab*
   mkdir tTableGram_tmp.tab
-  cp -r tTable_2.data_v0/table.* tTableGram_tmp.tab
+  cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
   chmod 644 tTableGram_tmp.tab/*
   cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
 
