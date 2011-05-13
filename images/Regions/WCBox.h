@@ -369,10 +369,12 @@ public:
    static WCBox* fromBoxString(const String&, 
                                const CoordinateSystem& cSys, String& err);
 
+   // FIXME: refactor to someplace more appropriate
    // get/set chan extension
    void setChanExt(const Double, const Double);
    Bool getChanExt(Double&, Double&);
 
+   // FIXME: refactor to someplace more appropriate
    // get/set pol extension
    void setPolExt(const Double, const Double);
    Bool getPolExt(Double&, Double&);

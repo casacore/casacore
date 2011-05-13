@@ -449,7 +449,7 @@ namespace casa {
         	}
         }
 
-        uInt polNum;
+        uInt polNum = 0;
     	for(uInt i=0; i<ncomps; i++) {
     		_results.getFlux(fluxQuant, i);
     		// TODO there is probably a better way to get the flux component we want...

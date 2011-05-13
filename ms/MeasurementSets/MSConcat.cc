@@ -68,7 +68,7 @@ MSConcat::MSConcat(MeasurementSet& ms):
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc())), 
   newSourceIndex_p(-1), newSourceIndex2_p(-1), newSPWIndex_p(-1),
-  newObsIndexA_p(-1), newObsIndexB_p(-1)
+  newObsIndexA_p(-1), newObsIndexB_p(-1), solSystObjects_p(-1)
 {
   itsDirTol=Quantum<Double>(1.0, "mas");
   itsFreqTol=Quantum<Double>(1.0, "Hz");
@@ -191,8 +191,30 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // merge STATE
   Block<uInt> newStateIndices;
   Bool doState = False;
-  // STATE is a required subtable but can be empty
-  if(otherMS.state().nrow()>0){
+  // STATE is a required subtable but can be empty in which case the state id in the main table is -1
+  Bool itsStateNull = (itsMS.state().isNull() || (itsMS.state().nrow() == 0));
+  Bool otherStateNull = (otherMS.state().isNull() || (otherMS.state().nrow() == 0));
+
+  if(itsStateNull && otherStateNull){
+    log << LogIO::NORMAL << "No valid state tables present. Result won't have one either." << LogIO::POST;
+  }
+  else if(itsStateNull && !otherStateNull){
+    log << LogIO::WARN << itsMS.tableName() << " does not have a valid state table," << endl
+	<< "  the MS to be appended, however, has one. Result won't have one." 
+	<< LogIO::POST;
+    doState = True; // i.e. the appended MS Main table state id will have to be set to -1
+  }
+  else if(!itsStateNull && otherStateNull){
+    log << LogIO::WARN << itsMS.tableName() << " does have a valid state table," << endl
+	<< "  the MS to be appended, however, doesn't. Result won't have one." 
+	<< LogIO::POST;
+    doState = True; // i.e. itsMS Main table state id will have to be set to -1
+
+    Vector<uInt> delrows(itsMS.state().nrow());
+    indgen(delrows);
+    itsMS.state().removeRow(delrows); 
+  }
+  else{ // both state tables are filled
     const uInt oldStateRows = itsMS.state().nrow();
     newStateIndices = copyState(otherMS.state());
     const uInt addedRows = itsMS.state().nrow() - oldStateRows;
@@ -382,6 +404,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       }
     }
   }  
+  
+  if(doState && otherStateNull){ // the state ids for the first table will have to be set to -1
+    for(uInt r = 0; r < curRow; r++) {
+      thisStateId.put(r, -1);
+    }
+  }  
      
   // SCAN NUMBER
   // find the distinct ObsIds in use in this MS
@@ -484,7 +512,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     }
 
     if(doState){
-      thisStateId.put(curRow, newStateIndices[otherStateId(r)]);
+      if(itsStateNull || otherStateNull){
+	thisStateId.put(curRow, -1);
+      }
+      else{
+	thisStateId.put(curRow, newStateIndices[otherStateId(r)]);
+      }
     }
     else{
       thisStateId.put(curRow, otherStateId, r);
@@ -616,24 +649,18 @@ void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
   const uInt nCat = cat.nelements();
   if (nCat != otherCat.nelements()) {
     os << LogIO::WARN 
-       <<"Flag category columns do match in these two ms's\n" 
-       <<"This is not important as Flag category is being deprecated"
+       <<"Flag category column shape does not match in these two MSs.\n" 
+       <<"This may not be important as Flag category is being deprecated. Will try to continue ..."
        << LogIO::POST;
     return;
-    //throw(AipsError(String("MSConcat::checkCategories\n") + 
-    //		    String("cannot concatenate this measurement set as ") +
-    //		    String("it has a different number of flag categories")));
   }
   for (uInt c = 0; c < nCat; c++) {
     if (cat(c) != otherCat(c)) {
       os << LogIO::WARN 
-	 <<"Flag category columns do match in these two ms's\n" 
-	 <<"This is not important as Flag category is being deprecated"
+	 <<"Flag category column shape does not match in these two MSs.\n" 
+	 <<"This may not be important as Flag category is being deprecated. Will try to continue ..."
 	 << LogIO::POST;
       return;
-      //throw(AipsError(String("MSConcat::checkCategories\n") + 
-      //		      String("cannot concatenate this measurement set as ") +
-      //		      String("it has different flag categories")));
     }
   }
 }
@@ -642,15 +669,22 @@ void MSConcat::checkCategories(const ROMSMainColumns& otherCols) const {
 Bool MSConcat::copyPointing(const MSPointing& otherPoint,const 
 			    Block<uInt>& newAntIndices ){
 
-  LogIO os(LogOrigin("MSConcat", "concatenate"));
+  LogIO os(LogOrigin("MSConcat", "copyPointing"));
 
-  if((itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0))
-     && (otherPoint.isNull() || (otherPoint.nrow() == 0))
-     ){ // neither of the two MSs do have valid pointing tables
+  Bool itsPointingNull = (itsMS.pointing().isNull() || (itsMS.pointing().nrow() == 0));
+  Bool otherPointingNull = (otherPoint.isNull() || (otherPoint.nrow() == 0));
+
+  if(itsPointingNull &&  otherPointingNull){ // neither of the two MSs do have valid pointing tables
     os << LogIO::NORMAL << "No valid pointing tables present. Result won't have one either." << LogIO::POST;
     return True;
   }
-  else if(otherPoint.isNull() || (otherPoint.nrow() == 0)){
+  else if(itsPointingNull && !otherPointingNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid pointing table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one." 
+       << LogIO::POST;
+    return False;
+  }
+  else if(!itsPointingNull && otherPointingNull){
     os << LogIO::WARN << "MS to be appended does not have a valid pointing table, "
        << itsMS.tableName() << ", however, has one. Result won't have one." << LogIO::POST;
              
@@ -728,7 +762,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
   if(remRedunObsId){ // remove redundant rows
     MSObservationColumns& obsCol = observation();
     Vector<Bool> rowToBeRemoved(obs.nrow(), False);
-    vector<uInt> rowsToBeRemoved;
+    vector<uint> rowsToBeRemoved;
     for(uInt j=0; j<obs.nrow(); j++){ // loop over OBS table rows
       for (uInt k=j+1; k<obs.nrow(); k++){ // loop over remaining OBS table rows
 	if(obsRowsEquivalent(obsCol, j, k)){ // rows equivalent?
@@ -742,7 +776,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
 
     // create final maps
     // map for first table
-    for(Int i=0; i<originalNrow; i++){ // loop over rows of old first table
+    for(uInt i=0; i<originalNrow; i++){ // loop over rows of old first table
       if(tempObsIndex2.isDefined(i)){ // ID changed because of removal
 	  newObsIndexA_p.define(i,tempObsIndex2(i));
 	  doObsA_p = True;
@@ -1066,6 +1100,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
     else{
       maxSrcId=max(sourceCol.sourceId().getColumn());
     }
+
     TableRecord sourceRecord;
     newSourceIndex_p.clear();
     Int numrows=otherSource.nrow();
@@ -1098,13 +1133,31 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
     }
 
     doSource_p=True;
+
+    solSystObjects_p.clear();
+
+    const ROMSFieldColumns otherFieldCols(otherms.field());
+    const ROMSFieldColumns fieldCols(itsMS.field());
+    for(uInt i=0; i<itsMS.field().nrow(); i++){
+      MDirection::Types refType = MDirection::castType(fieldCols.phaseDirMeas(i).getRef().getType());
+      if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
+	solSystObjects_p.define(fieldCols.sourceId()(i), (Int) refType);
+      }
+    }
+    for(uInt i=0; i<otherms.field().nrow(); i++){
+      MDirection::Types refType = MDirection::castType(otherFieldCols.phaseDirMeas(i).getRef().getType());
+      if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
+	solSystObjects_p.define(otherFieldCols.sourceId()(i)+maxSrcId+1, (Int) refType);
+      }
+    }
+
   }
 
   return doSource_p;
 }
 
 Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPol 
-                              //   but before copyField!
+                               //   but before copyField!
 
   doSource2_p = False;
 
@@ -1115,7 +1168,7 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 
     // the number of rows in the source table
     Int numrows_this=newSource.nrow();
-
+    
     if(numrows_this > 0){  // the source table is not empty
 
       TableRecord sourceRecord;
@@ -1158,11 +1211,14 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // loop over the columns of the merged source table 
       Vector<Bool> rowToBeRemoved(numrows_this, False);
       vector<uInt> rowsToBeRemoved;
-      for (Int j=0 ; j < numrows_this ; ++j){
+      for (uint j=0 ; j < numrows_this ; ++j){
 	// check if row j has an equivalent row somewhere else in the table
-	for (Int k=0 ; k < numrows_this ; ++k){
+	for (uint k=0 ; k < numrows_this ; ++k){
 	  if (k!=j && !rowToBeRemoved(j) && !rowToBeRemoved(k)){
-	    if( sourceRowsEquivalent(sourceCol, j, k) ){ // all columns are the same (not testing source, spw id, time, and interval)
+	    Int reftypej = solSystObjects_p(thisId(j));
+	    Int reftypek = solSystObjects_p(thisId(k));
+	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
+	    if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) ){ // all columns are the same (not testing source, spw id, time, and interval)
 	      if(areEQ(sourceCol.spectralWindowId(),j, k)){ // also the SPW id is the same
 		//cout << "Found SOURCE rows " << j << " and " << k << " to be identical." << endl;
 
@@ -1226,14 +1282,17 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // give equivalent rows the same source id 
       Bool rowsRenamed(False);
       Int nDistinctSources = newNumrows_this;
-      for (Int j=0 ; j < newNumrows_this ; ++j){
+      for (uint j=0 ; j < newNumrows_this ; ++j){
 	// check if row j has an equivalent row somewhere down in the table
-	for (Int k=j+1 ; k < newNumrows_this ; ++k){
-	  if( sourceRowsEquivalent(sourceCol, j, k) && 
+	for (uint k=j+1 ; k < newNumrows_this ; ++k){
+	    Int reftypej = solSystObjects_p(thisId(j));
+	    Int reftypek = solSystObjects_p(thisId(k));
+	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
+	  if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) && 
 	      !areEQ(sourceCol.sourceId(),j, k)){ // all columns are the same except source id (not testing spw id),
 	                                          // spw id must be different, otherwise row would have been deleted above
-// 	    cout << "Found SOURCE rows " << j << " and " << k << " to be identical except for the SPW ID and source id. "
-// 		 << newThisId(k) << " mapped to " << newThisId(j) << endl;
+ 	    //cout << "Found SOURCE rows " << j << " and " << k << " to be identical except for the SPW ID and source id. "
+	    //	 << newThisId(k) << " mapped to " << newThisId(j) << endl;
 	    // give same source id
 	    // make entry in map for (k, j) and rename k
 	    tempSourceIndex3.define(newThisId(k), newThisId(j));
@@ -1307,7 +1366,8 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 }
 
 
-Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt& rowi, const uInt& rowj){
+Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt& rowi, const uInt& rowj,
+				    const Bool dontTestDirection){
   // check if the two SOURCE table rows are identical IGNORING SOURCE_ID, SPW_ID, time, and interval
 
   Bool areEquivalent(False);
@@ -1319,7 +1379,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
      areEQ(sourceCol.numLines(), rowi, rowj) &&
      // do NOT test SPW ID!
      // areEQ(sourceCol.spectralWindowId(), rowi, rowj) &&
-     areEQ(sourceCol.direction(), rowi, rowj) &&
+     (areEQ(sourceCol.direction(), rowi, rowj) || dontTestDirection) &&
      areEQ(sourceCol.properMotion(), rowi, rowj)
      ){
     
@@ -1327,7 +1387,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
 
     // test the optional columns next
     areEquivalent = True;
-    if(!(sourceCol.position().isNull())){
+    if(!(sourceCol.position().isNull()) && !dontTestDirection){
       try {
 	areEquivalent = areEQ(sourceCol.position(), rowi, rowj);
       }

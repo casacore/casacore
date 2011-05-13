@@ -41,6 +41,7 @@ image_input_processor.im/table.lock
 image_input_processor.im/table.dat
 image_input_processor.im/table.f0_TSM0
 image_input_processor.im/table.f0
+image_input_processor.im/mybox.rgn
 imfit_stokes.fits
 jyperbeamkmpersec.fits
 jyperpixelimage.fits

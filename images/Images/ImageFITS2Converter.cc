@@ -340,7 +340,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
        for (uInt i=0; i<ndim; i++) {
 	   cursorOrder(i) = order(i);
-	   if(order(i)!=Int(i)){
+	   if(order(i)!=(Int)i){
 	       needNonOptimalCursor=True;
 	   }
        }

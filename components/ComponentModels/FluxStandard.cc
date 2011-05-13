@@ -96,7 +96,8 @@ Bool FluxStandard::compute(const String& sourceName,
   uInt nspws = mfreqs.nelements();
 
   for(uInt spw = 0; spw < nspws; ++spw)
-    success &= compute(sourceName, mfreqs[spw], values[spw], errors[spw]);
+    success &= compute(sourceName, mfreqs[spw], values[spw], errors[spw],
+                       spw == 0);
 
   return success;
 }
@@ -104,7 +105,8 @@ Bool FluxStandard::compute(const String& sourceName,
 Bool FluxStandard::compute(const String& sourceName, 
                            const Vector<MFrequency>& mfreqs,
                            Vector<Flux<Double> >& values,
-                           Vector<Flux<Double> >& errors) const
+                           Vector<Flux<Double> >& errors,
+                           const Bool verbose) const
 {
 // Compute the flux density for a specified source at a specified set of
 // frequencies.
@@ -159,18 +161,20 @@ Bool FluxStandard::compute(const String& sourceName,
   else if(itsFluxScale == PERLEY_BUTLER_2010)
     fluxStdPtr = new FluxStdPerleyButler2010;
   else{
-    os << LogIO::SEVERE
-       << "Flux standard " << standardName(itsFluxScale)
-       << " cannot be used this way.  (Does it require a time?)"
-       << LogIO::POST;
+    if(verbose)
+      os << LogIO::SEVERE
+         << "Flux standard " << standardName(itsFluxScale)
+         << " cannot be used this way.  (Does it require a time?)"
+         << LogIO::POST;
     return false;
-  };
+  }
 
   // Set the source or fail.
   if(!fluxStdPtr->setSource(sourceName)){
-    os << LogIO::SEVERE
-       << sourceName << " is not recognized by " << standardName(itsFluxScale)
-       << LogIO::POST;
+    if(verbose)
+      os << LogIO::SEVERE
+         << sourceName << " is not recognized by " << standardName(itsFluxScale)
+         << LogIO::POST;
     // TODO?: Look for another standard that does recognize sourceName?
     return false;
   }
@@ -210,6 +214,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
 {
   LogIO os(LogOrigin("FluxStandard", "computeCL"));
   uInt nspws = mfreqs.nelements();
+  Bool success = False;
 
   if(itsFluxScale < FluxStandard::HAS_RESOLUTION_INFO){
     if(this->compute(sourceName, mfreqs, values, errors)){
@@ -220,6 +225,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
         clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
                                          values[spw], point, prefix);
       }
+      success = True;
     }
   }
   else if(itsFluxScale == FluxStandard::SS_JPL_BUTLER){
@@ -243,18 +249,19 @@ Bool FluxStandard::computeCL(const String& sourceName,
 
           clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
                                            values[spw], disk, prefix);
+          success = True;
           break;
-        };
+        }
       default: {
         ostringstream oss;
 
         oss << ComponentType::name(cmpshape) << " is not a supported component type.";
         throw(AipsError(String(oss)));
-      };
-      };
+      }
+      }
     }
   }
-  return true;
+  return success;
 }
 
 String FluxStandard::makeComponentList(const String& sourceName,

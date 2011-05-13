@@ -268,19 +268,17 @@ Bool ImageAnalysis::addnoise(const String& type, const Vector<Double>& pars,
 	bool rstat(False);
 	*itsLog << LogOrigin("ImageAnalysis", "addnoise");
 
-	Record *pRegion = &region;
-
 	// Make SubImage
 	String mask;
 	ImageRegion* pRegionRegion = 0;
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
-		pRegionRegion, pMaskRegion, *pImage_p, region,
+		pRegionRegion, pMaskRegion, *pImage_p,
+		region,
 		mask, itsLog, True
 	);
 	delete pRegionRegion;
 	delete pMaskRegion;
-	//delete pRegion;
 
 	// Zero subimage if requested
 	if (zeroIt)
@@ -768,7 +766,7 @@ Bool ImageAnalysis::adddegaxes(const String& outfile, PtrHolder<ImageInterface<
 ImageInterface<Float> *
 ImageAnalysis::convolve(const String& outFile, Array<Float>& kernelArray,
 		const String& kernelFileName, const Double in_scale, Record& region,
-		String& mask, const Bool overwrite, const Bool async) {
+		String& mask, const Bool overwrite, const Bool) {
 
 	*itsLog << LogOrigin("ImageAnalysis", "convolve");
 
@@ -800,7 +798,8 @@ ImageAnalysis::convolve(const String& outFile, Array<Float>& kernelArray,
 	ImageRegion* pRegionRegion = 0;
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
-		pRegionRegion, pMaskRegion, *pImage_p, region,
+		pRegionRegion, pMaskRegion, *pImage_p,
+		region,
 		mask, itsLog, False
 	);
 	delete pRegionRegion;
@@ -859,7 +858,8 @@ ImageAnalysis::boundingbox(const Record& Region) {
 	// Find the bounding box of this region
 	Record tmpR(Region);
 	const ImageRegion* pRegion = ImageRegion::fromRecord(
-		0, pImage_p->coordinates(), pImage_p->shape(), tmpR
+		0, pImage_p->coordinates(), pImage_p->shape(),
+		tmpR
 	);
 	LatticeRegion latRegion = pRegion->toLatticeRegion(pImage_p->coordinates(),
 			pImage_p->shape());
@@ -1382,16 +1382,11 @@ ImageInterface<Float>* ImageAnalysis::convolve2d(
 
 	// Make the convolver
 	Image2DConvolver<Float> ic;
-    try {
         ic.convolve(
             *itsLog, *pImOut, subImage, kernelType, axes3,
             parameters, autoScale, scale, True
         );
-    }
-    catch (AipsError x) {
-        delete pImOut;
-        RETHROW(x);
-    }
+
 	// Return image
 	return pImOut;
 }
@@ -2385,7 +2380,7 @@ ComponentList ImageAnalysis::fitsky(
 	Fit2D fitter(*itsLog);
 
     // Set pixel range depending on Stokes type and min/max
-    _setFitSkyIncludeExclude(includepix, excludepix, stokes, minVal, maxVal, fitter);
+    _setFitSkyIncludeExclude(includepix, excludepix, fitter);
 	*itsLog << origin;
 
     // Recover just single component estimate if desired and bug out
@@ -2622,7 +2617,6 @@ void ImageAnalysis::_fitskyExtractBeam(
 
 void ImageAnalysis::_setFitSkyIncludeExclude(
     const Vector<Float>& includepix, const Vector<Float>& excludepix,
-    const Stokes::StokesTypes& stokes, const Float minVal, const Float maxVal,
     Fit2D& fitter 
 ) const {
     *itsLog << LogOrigin("ImageAnalysis", "_setFitSkyIncludeExclude");
@@ -2947,7 +2941,7 @@ Vector<Bool> ImageAnalysis::haslock() {
 Bool ImageAnalysis::histograms(Record& histout, const Vector<Int>& axes,
 		Record& regionRec, const String& sMask, const Int nbins, const Vector<
 				Double>& includepix, const Bool gauss, const Bool cumu,
-		const Bool log, const Bool list, const String& plotterdev,
+		const Bool log, const Bool list, const String&,
 		const Int nx, const Int ny, const Vector<Int>& size, const Bool force,
 		const Bool disk) {
 
@@ -3176,21 +3170,6 @@ ImageAnalysis::insert(const String& infile, Record& Region,
 
 }
 
-//bool
-//image::isopen()
-//{
-//  bool rstat(false);
-//  try {
-//    *itsLog << LogOrigin("ImageAnalysis", "isopen");
-//
-//    if (pImage_p != 0) rstat = true;
-
-//  } catch (AipsError x) {
-//    *itsLog << LogIO::SEVERE << "Exception Reported: " << x.getMesg() << LogIO::POST;
-//    RETHROW(x);
-//  }
-//  return rstat;
-//}
 
 Bool ImageAnalysis::ispersistent() {
 	*itsLog << LogOrigin("ImageAnalysis", "ispersistent");
@@ -3414,7 +3393,7 @@ Bool ImageAnalysis::modify(Record& Model, Record& Region, const String& mask,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, (list ? itsLog : 0), True
 	);
 	delete pRegionRegion;
@@ -3546,7 +3525,7 @@ ImageAnalysis::moments(const Vector<Int>& whichmoments, const Int axis,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, itsLog, False
 	);
 	delete pRegionRegion;
@@ -3823,7 +3802,7 @@ Bool ImageAnalysis::putchunk(const Array<Float>& pixelsArray,
 
 Bool ImageAnalysis::putregion(const Array<Float>& pixels,
 		const Array<Bool>& mask, Record& region, const Bool list,
-		const Bool usemask, const Bool locking, const Bool replicateArray) {
+		const Bool usemask, const Bool, const Bool replicateArray) {
 	*itsLog << LogOrigin("ImageAnalysis", "putregion");
 
 	// used to verify array dimension
@@ -4093,7 +4072,7 @@ ImageAnalysis::rebin(const String& outFile, const Vector<Int>& factors,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, itsLog, False, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -4190,7 +4169,7 @@ ImageAnalysis::regrid(const String& outFile, const Vector<Int>& inshape,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, itsLog, False, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -4348,7 +4327,7 @@ ImageAnalysis::rotate(const String& outFile, const Vector<Int>& shape,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, itsLog, False, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -4580,7 +4559,7 @@ Bool ImageAnalysis::replacemaskedpixels(const String& pixels, Record& pRegion,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                pRegion,
+		pRegion,
 		maskRegion, (list ? itsLog : 0), True
 	);
 	delete pRegionRegion;
@@ -4679,7 +4658,7 @@ ImageAnalysis::sepconvolve(const String& outFile,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                pRegion,
+		pRegion,
 		mask, itsLog, False
 	);
 	delete pRegionRegion;
@@ -4765,7 +4744,7 @@ Bool ImageAnalysis::set(const String& lespixels, const Int pixelmask,
 	Record *tmpRegion = new Record(p_Region);
 	const ImageRegion* pRegion = ImageRegion::fromRecord(
 		(list ? itsLog : 0), pImage_p->coordinates(), pImage_p->shape(),
-                *tmpRegion
+		*tmpRegion
 	);
 	delete tmpRegion;
 	SubImage<Float> subImage(*pImage_p, *pRegion, True);
@@ -4960,7 +4939,7 @@ Bool ImageAnalysis::statistics(
 	Record& statsout, const Vector<Int>& axes,
 	Record& regionRec, const String& mask, const Vector<String>& plotstats,
 	const Vector<Float>& includepix, const Vector<Float>& excludepix,
-	const String& plotterdev, const Int nx, const Int ny, const Bool list,
+	const String&, const Int nx, const Int ny, const Bool list,
 	const Bool force, const Bool disk, const Bool robust,
 	const Bool verbose
 ) {
@@ -4974,7 +4953,7 @@ Bool ImageAnalysis::statistics(
 		mtmp = "";
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                regionRec,
+		regionRec,
 		mtmp, (verbose ? itsLog : 0), False
 	);
 
@@ -5248,7 +5227,7 @@ Bool ImageAnalysis::twopointcorrelation(const String& outFile,
 	ImageRegion* pMaskRegion = 0;
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                theRegion,
+		theRegion,
 		mask, itsLog, False, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -5313,7 +5292,7 @@ ImageAnalysis::subimage(const String& outfile, Record& Region,
 	}
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                Region,
+		Region,
 		mask, itsLog, True, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -5412,7 +5391,7 @@ Vector<String> ImageAnalysis::summary(Record& header, const String& doppler,
 Bool ImageAnalysis::tofits(const String& fitsfile, const Bool velocity,
 			   const Bool optical, const Int bitpix, const Double minpix,
 			   const Double maxpix, Record& pRegion, const String& mask,
-			   const Bool overwrite, const Bool dropDeg, const Bool degLast,
+			   const Bool overwrite, const Bool dropDeg, const Bool,
 			   const Bool dropStokes, const Bool stokesLast, const Bool wavelength) {
 
 	*itsLog << LogOrigin("ImageAnalysis", "tofits");
@@ -5473,7 +5452,7 @@ Bool ImageAnalysis::tofits(const String& fitsfile, const Bool velocity,
 
 	SubImage<Float> subImage = SubImage<Float>::createSubImage(
 		pRegionRegion, pMaskRegion, *pImage_p,
-                pRegion,
+		pRegion,
 		mask, itsLog, False, axesSpecifier
 	);
 	delete pRegionRegion;
@@ -5568,7 +5547,7 @@ Bool ImageAnalysis::toASCII(const String& outfile, Record& region,
 	return True;
 }
 
-Vector<Double> ImageAnalysis::topixel(Record& value) {
+Vector<Double> ImageAnalysis::topixel(Record&) {
 
 	/*  std::vector<double> rstat;
 	 *itsLog << LogOrigin("ImageAnalysis", "topixel");
@@ -5689,7 +5668,7 @@ Bool ImageAnalysis::haveRegionsChanged(ImageRegion* pNewRegionRegion,
 }
 
 void ImageAnalysis::makeRegionBlock(PtrBlock<const ImageRegion*>& regions,
-		const Record& Regions, LogIO& os) {
+		const Record& Regions, LogIO& ) {
 
 	// Trying to mimick  a glishRegion by a Record of Records
 
@@ -5881,8 +5860,8 @@ Bool ImageAnalysis::deconvolveFromBeam(Quantity& majorFit, Quantity& minorFit,
 Vector<Double> ImageAnalysis::singleParameterEstimate(Fit2D& fitter,
 		Fit2D::Types model, const MaskedArray<Float>& pixels, Float minVal,
 		Float maxVal, const IPosition& minPos, const IPosition& maxPos,
-		Stokes::StokesTypes stokes, const ImageInterface<Float>& im,
-		Bool xIsLong, LogIO& os) const
+		Stokes::StokesTypes , const ImageInterface<Float>& ,
+		Bool , LogIO& os) const
 //
 // position angle +x -> +y
 //
@@ -6235,12 +6214,10 @@ bool ImageAnalysis::maketestimage(const String& outfile, const Bool overwrite,
 		const String& imagetype) {
 	bool rstat(false);
 	*itsLog << LogOrigin("ImageAnalysis", "maketestimage");
-	try {
-#ifdef CASA_USECASAPATH
-		String var (EnvironmentVariable::get("CASAPATH"));
-#else
-		String var(EnvironmentVariable::get("AIPSPATH"));
-#endif
+	String var = EnvironmentVariable::get("CASAPATH");
+	if (var.empty()) {
+		var = EnvironmentVariable::get("AIPSPATH");
+	}
 		if (!var.empty()) {
 			String fields[4];
 			Int num = split(var, fields, 4, String(" "));
@@ -6256,30 +6233,15 @@ bool ImageAnalysis::maketestimage(const String& outfile, const Bool overwrite,
 				Bool zeroblanks = False;
 				rstat = ImageAnalysis::imagefromfits(outfile, fitsfile,
 						whichrep, whichhdu, zeroblanks, overwrite);
-			} else {
-#ifdef CASA_USECASAPATH
-				*itsLog << LogIO::WARN
-				<< "Environment variable CASAPATH=["
-#else
-				*itsLog << LogIO::WARN << "Environment variable AIPSPATH=["
-#endif		
-						<< var << "] malformed." << LogIO::POST;
 			}
-		} else {
-#ifdef CASA_USECASAPATH
-			*itsLog << LogIO::WARN << "Environment variable CASAPATH undefined."
-			<< LogIO::POST;
-#else
-			*itsLog << LogIO::WARN
-					<< "Environment variable AIPSPATH undefined."
-					<< LogIO::POST;
-#endif
+			else {
+				*itsLog << LogIO::EXCEPTION << "Bad environment variable";
+			}
 		}
-	} catch (AipsError x) {
-		*itsLog << LogIO::SEVERE << "Exception Reported: " << x.getMesg()
-				<< LogIO::POST;
-		RETHROW(x);
-	}
+		else {
+			*itsLog << LogIO::EXCEPTION << "Environment variable undefined, can't get data path";
+		}
+
 	return rstat;
 }
 
@@ -6288,7 +6250,6 @@ ImageAnalysis::newimage(const String& infile, const String& outfile,
 		Record& region, const String& Mask, const bool dropdeg,
 		const bool overwrite) {
 	ImageInterface<Float>* outImage = 0;
-	try {
 		*itsLog << LogOrigin("ImageAnalysis", "newimage");
 
 		// Open
@@ -6306,7 +6267,7 @@ ImageAnalysis::newimage(const String& infile, const String& outfile,
 			axesSpecifier = AxesSpecifier(False);
 		SubImage<Float> subImage = SubImage<Float>::createSubImage(
 			pRegionRegion, pMaskRegion, *pInImage,
-                        region,
+			region,
 			Mask, itsLog, True, axesSpecifier
 		);
 		delete pRegionRegion;
@@ -6342,11 +6303,7 @@ ImageAnalysis::newimage(const String& infile, const String& outfile,
 			// Copy data and mask
 			LatticeUtilities::copyDataAndMask(*itsLog, *outImage, subImage);
 		}
-	} catch (AipsError x) {
-		*itsLog << LogIO::SEVERE << "Exception Reported: " << x.getMesg()
-				<< LogIO::POST;
-		RETHROW(x);
-	}
+
 	return outImage;
 }
 
@@ -6356,7 +6313,6 @@ ImageAnalysis::newimagefromfile(const String& fileName) {
 	if (itsLog == 0)
 		itsLog = new LogIO();
 
-	try {
 		*itsLog << LogOrigin("ImageAnalysis", "newimagefromfile");
 
 		// Check whether infile exists
@@ -6378,11 +6334,7 @@ ImageAnalysis::newimagefromfile(const String& fileName) {
 		if (outImage == 0) {
 			*itsLog << "Failed to create image tool" << LogIO::EXCEPTION;
 		}
-	} catch (AipsError x) {
-		*itsLog << LogIO::SEVERE << "Exception Reported: " << x.getMesg()
-				<< LogIO::POST;
-		RETHROW(x);
-	}
+
 	return outImage;
 }
 
@@ -6557,8 +6509,7 @@ ImageAnalysis::newimagefromfits(const String& outfile, const String& fitsfile,
 		const Int whichrep, const Int whichhdu, const Bool zeroBlanks,
 		const Bool overwrite) {
 	ImageInterface<Float>* outImage = 0;
-	try {
-		*itsLog << LogOrigin("ImageAnalysis", "newimagefromfits");
+		*itsLog << LogOrigin("ImageAnalysis", __FUNCTION__);
 
 		// Check output file
 		if (!overwrite && !outfile.empty()) {
@@ -6588,11 +6539,7 @@ ImageAnalysis::newimagefromfits(const String& outfile, const String& fitsfile,
 		if (outImage == 0) {
 			*itsLog << "Failed to create image tool" << LogIO::EXCEPTION;
 		}
-	} catch (AipsError x) {
-		*itsLog << LogIO::SEVERE << "Exception Reported: " << x.getMesg()
-				<< LogIO::POST;
-		RETHROW(x);
-	}
+
 	return outImage;
 }
 
@@ -6697,8 +6644,8 @@ Bool ImageAnalysis::getSpectralAxisVal(const String& specaxis,
 Bool ImageAnalysis::getFreqProfile(const Vector<Double>& xy, 
 				   Vector<Float>& zxaxisval, Vector<Float>& zyaxisval,
 				   const String& xytype, 
-				   const String& specaxis, const Int& whichStokes,
-				   const Int& whichTabular, const Int& whichLinear, 
+				   const String& specaxis, const Int& ,
+				   const Int& , const Int& ,
 				   const String& xunits, const String& specFrame) {
 
 	String whatXY = xytype;

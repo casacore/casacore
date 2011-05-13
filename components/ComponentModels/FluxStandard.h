@@ -125,7 +125,8 @@ class FluxStandard
   // at a set of specified frequencies.
   Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
 	       Vector<Flux<Double> >& values,
-               Vector<Flux<Double> >& errors) const;
+               Vector<Flux<Double> >& errors,
+               const Bool verbose=True) const;
 
   // Compute the flux densities and their uncertainties for a specified source
   // for a set of sets of specified frequencies, i.e. mfreqs[spw] is a set of

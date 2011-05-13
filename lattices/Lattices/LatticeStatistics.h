@@ -647,6 +647,7 @@ private:
     Block<U>* pMean_p;
 
     Block<U>* pVariance_p;
+    Block<U>* pNVariance_p;
 
     Block<T>* pMin_p;
     Block<T>* pMax_p;

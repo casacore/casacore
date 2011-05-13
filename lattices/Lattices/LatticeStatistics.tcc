@@ -736,22 +736,17 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
           sliceIt.next();
        }
     } else if (type==SIGMA) {
-       retrieveStorageStatistic (sum, SUM, dropDeg);
-       ReadOnlyVectorIterator<AccumType> sumIt(sum);
-
-       retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
-       ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
+       Array<AccumType> variance;
+       retrieveStorageStatistic (variance, VARIANCE, dropDeg);
+       ReadOnlyVectorIterator<AccumType> varianceIt(variance);
 
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
-             sliceIt.vector()(i) = 
-                LattStatsSpecialize::getSigma(sumIt.vector()(i),
-                                              sumSqIt.vector()(i),
-                                              nPtsIt.vector()(i));
+              sliceIt.vector()(i) =
+                 LattStatsSpecialize::getSigma(varianceIt.vector()(i));
           }
           nPtsIt.next();
-          sumIt.next();
-          sumSqIt.next();
+          varianceIt.next();
           sliceIt.next();
        }
     }
@@ -1040,7 +1035,6 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os_p << "Hyper-cube ";
       len0 = 11;
    }
-
    os_p.output() << setw(oDWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
@@ -1113,7 +1107,6 @@ Bool LatticeStatistics<T>::getLayerStats(
    }
 
    if (displayAxes_p.nelements() == 0) {
-
       const IPosition shape = statsSliceShape();
       Array<AccumType> statsV(shape);
       pStoreLattice_p->getSlice (statsV, IPosition(1,0), shape, IPosition(1,1));
@@ -1287,7 +1280,7 @@ Bool LatticeStatistics<T>::getLayerStats(
                               matrix(i,SUM), matrix(i,SUMSQ), nPts);
                               */
             ord(i,SIGMA) = LattStatsSpecialize::getSigma(
-                              ord(i,VARIANCE));
+                              matrix(i,VARIANCE));
             ord(i,RMS) =  LattStatsSpecialize::getRms(
                               matrix(i,SUMSQ), nPts);  
           }
@@ -2866,6 +2859,7 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
    pNPts_p = new Block<U>(n1*n3);
    pMean_p = new Block<U>(n1*n3);
    pVariance_p = new Block<U>(n1*n3);
+   pNVariance_p = new Block<U>(n1*n3);
 
    pMin_p = new Block<T>(n1*n3);
    pMax_p = new Block<T>(n1*n3);
@@ -2876,6 +2870,8 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
    pNPts_p->set(0);
    pMean_p->set(0);
    pVariance_p->set(0);
+   pNVariance_p->set(0);
+
    pMin_p->set(0);
    pMax_p->set(0);
    pInitMinMax_p->set(True);
@@ -2907,7 +2903,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 	T& dataMax = (*pMax_p)[index];
 	U& mean = (*pMean_p)[index];
 	U& variance = (*pVariance_p)[index];
-	U nvariance = 0;
+	U& nvariance = (*pNVariance_p)[index];
 	Bool& minMaxInit = (*pInitMinMax_p)[index];
 
 	// If these are != -1 after the accumulating, then
@@ -2929,7 +2925,6 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 			for (uInt i=0; i<nrval; i++) {
 				datum = *pInData;
 				useIt = LattStatsSpecialize::usePixelInc (range_p(0), range_p(1), datum);
-
 				LattStatsSpecialize::accumulate(
 										nPts, sum, mean, nvariance, variance, sumSq,
 										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
@@ -2949,7 +2944,6 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 			for (uInt i=0; i<nrval; i++) {
 				datum = *pInData;
 				useIt = LattStatsSpecialize::usePixelExc (range_p(0), range_p(1), datum);
-
 				LattStatsSpecialize::accumulate(
 										nPts, sum, mean, nvariance, variance, sumSq,
 										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
@@ -3016,6 +3010,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 							dataMin, dataMax, minLoc, maxLoc, minMaxInit,
 							False, datum, i, useIt);
 							*/
+
 					LattStatsSpecialize::accumulate(
 											nPts, sum, mean, nvariance, variance, sumSq,
 											dataMin, dataMax, minLoc, maxLoc, minMaxInit,
@@ -3132,6 +3127,8 @@ void StatsTiledCollapser<T,U>::endAccumulator(Array<U>& result,
     delete pInitMinMax_p;
     delete pMean_p;
     delete pVariance_p;
+    delete pNVariance_p;
+
     result.putStorage (res, deleteRes);
 }
 

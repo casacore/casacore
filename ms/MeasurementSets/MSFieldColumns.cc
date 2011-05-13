@@ -152,17 +152,21 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
 		      "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
-	numPoly()(tr) == 0 &&
-	matchReferenceDir(tr, referenceDirVal, tolInRad, mdir, mvdir) &&
-	matchDelayDir(tr, delayDirVal, tolInRad, mdir, mvdir) &&
-	matchPhaseDir(tr, phaseDirVal, tolInRad, mdir, mvdir)) {
-      // Get the reference frame and check if it matches
+	numPoly()(tr) == 0){
+      // Get the reference frame
       const MDirection::Types refType = 
 	MDirection::castType(referenceDirMeas(tr).getRef().getType());
-      if ((MDirection::castType(referenceDirection.getRef().getType())==refType) &&
-	  (MDirection::castType(delayDirection.getRef().getType()) == refType) &&
-	  (MDirection::castType(phaseDirection.getRef().getType()) == refType)) {
-	return tr;
+      // for a solar system object only the frame has to match
+      if((refType>=MDirection::MERCURY && refType<MDirection::N_Planets) ||
+	 (matchReferenceDir(tr, referenceDirVal, tolInRad, mdir, mvdir) &&
+	  matchDelayDir(tr, delayDirVal, tolInRad, mdir, mvdir) &&
+	  matchPhaseDir(tr, phaseDirVal, tolInRad, mdir, mvdir))
+	 ) {
+	if ((MDirection::castType(referenceDirection.getRef().getType())==refType) &&
+	    (MDirection::castType(delayDirection.getRef().getType()) == refType) &&
+	    (MDirection::castType(phaseDirection.getRef().getType()) == refType)) {
+	  return tr;
+	}
       }
     }
     if (tr == r-1) r--;
@@ -170,17 +174,21 @@ Int ROMSFieldColumns::matchDirection(const MDirection& referenceDirection,
   while (r > 0) {
     r--;
     if (!flagRow()(r) &&
-	numPoly()(r) == 0 &&
-	matchReferenceDir(r, referenceDirVal, tolInRad, mdir, mvdir) &&
-	matchDelayDir(r, delayDirVal, tolInRad, mdir, mvdir) &&
-	matchPhaseDir(r, phaseDirVal, tolInRad, mdir, mvdir)) {
-      // Get the reference frame and check it matches
+	numPoly()(r) == 0){
+      // Get the reference frame
       const MDirection::Types refType = 
 	MDirection::castType(referenceDirMeas(r).getRef().getType());
-      if ((MDirection::castType(referenceDirection.getRef().getType())==refType) &&
-	  (MDirection::castType(delayDirection.getRef().getType()) == refType) &&
-	  (MDirection::castType(phaseDirection.getRef().getType()) == refType)) {
-	return r;
+      // for a solar system object only the frame has to match
+      if((refType>=MDirection::MERCURY && refType<MDirection::N_Planets) ||
+	 (matchReferenceDir(r, referenceDirVal, tolInRad, mdir, mvdir) &&
+	  matchDelayDir(r, delayDirVal, tolInRad, mdir, mvdir) &&
+	  matchPhaseDir(r, phaseDirVal, tolInRad, mdir, mvdir))
+	  ) {
+	if ((MDirection::castType(referenceDirection.getRef().getType())==refType) &&
+	    (MDirection::castType(delayDirection.getRef().getType()) == refType) &&
+	    (MDirection::castType(phaseDirection.getRef().getType()) == refType)) {
+	  return r;
+	}
       }
     }
   }

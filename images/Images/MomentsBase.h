@@ -181,7 +181,7 @@ enum MomentTypes {
 // call this function, the default state of the class is to set the 
 // moment axis to the spectral axis if it can find one.  Otherwise 
 // an error will result.
-   virtual Bool setMomentAxis (const Int& momentAxis) ;
+   virtual Bool setMomentAxis (const Int&) ;
 
 // The <src>enum MethodTypes</src> is provided for use with the
 // <src>setWinFitMethod</src> function.  It gives the allowed moment
@@ -239,9 +239,9 @@ enum MethodTypes {
 // class is to do no smoothing.  The kernel types are specified with
 // the VectorKernel::KernelTypes enum
 // <group>
-   virtual Bool setSmoothMethod(const Vector<Int>& smoothAxes,
-                                const Vector<Int>& kernelTypes,
-                                const Vector<Quantum<Double> >& kernelWidths);
+   virtual Bool setSmoothMethod(const Vector<Int>&,
+                                const Vector<Int>&,
+                                const Vector<Quantum<Double> >&);
    Bool setSmoothMethod(const Vector<Int>& smoothAxes,
                         const Vector<Int>& kernelTypes,
                         const Vector<Double>& kernelWidths);

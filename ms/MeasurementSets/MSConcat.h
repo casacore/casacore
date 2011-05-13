@@ -119,7 +119,8 @@ private:
   Bool copySource(const MeasurementSet& otherms);
   Bool updateSource();
   Bool sourceRowsEquivalent(const MSSourceColumns& sourceCol, 
-			   const uInt& rowi, const uInt& rowj);
+			    const uInt& rowi, const uInt& rowj,
+			    const Bool dontTestDirection=False);
 
   Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
 			 const uInt& rowi, const uInt& rowj);
@@ -137,6 +138,7 @@ private:
   SimpleOrderedMap <Int, Int> newSPWIndex_p;
   SimpleOrderedMap <Int, Int> newObsIndexA_p;
   SimpleOrderedMap <Int, Int> newObsIndexB_p;
+  SimpleOrderedMap <Int, Int> solSystObjects_p;
 
   Bool doSource_p;
   Bool doSource2_p;

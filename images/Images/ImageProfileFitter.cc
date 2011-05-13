@@ -611,7 +611,10 @@ String ImageProfileFitter::_gaussianToString(
 	Double fwhm = gauss.getFWHM();
 	Double fwhmErr = gauss.getFWHMErr();
 
-	Double pCenter, pCenterErr, pFWHM, pFWHMErr;
+	Double pCenter = 0;
+	Double pCenterErr = 0;
+	Double pFWHM = 0;
+	Double pFWHMErr = 0;
 	Int specCoordIndex = csys.findCoordinate(Coordinate::SPECTRAL);
 	Bool convertedCenterToPix = True;
 	Bool convertedFWHMToPix = True;

@@ -31,13 +31,13 @@
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <lattices/LatticeMath/Fit2D.h>
 #include <casa/Quanta.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <measures/Measures/Stokes.h>
 #include <images/Images/ImageFit1D.h>
 #include <images/Images/ImageInfo.h>
 #include <images/Images/ImageInterface.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <casa/Arrays/AxesSpecifier.h>
-#include <casa/Utilities/PtrHolder.h>
 #include <measures/Measures/Stokes.h>
 
 namespace casa {
@@ -739,7 +739,6 @@ class ImageAnalysis
   
     void _setFitSkyIncludeExclude(
         const Vector<Float>& includepix, const Vector<Float>& excludepix,
-        const Stokes::StokesTypes& stokes, const Float minVal, const Float maxVal,
         Fit2D& fitter
     ) const;
 

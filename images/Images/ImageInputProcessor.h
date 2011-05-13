@@ -163,8 +163,7 @@ private:
     ) const;
 
     String _stokesFromRecord(
-    	const Record& region, const CoordinateSystem& csys,
-    	const IPosition& shape
+    	const Record& region, const CoordinateSystem& csys
     ) const;
 
     String _pairsToString(const Vector<uInt>& pairs) const;

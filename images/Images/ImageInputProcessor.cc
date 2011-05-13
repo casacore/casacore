@@ -153,8 +153,7 @@ uInt ImageInputProcessor::nSelectedChannels() const {
 }
 
 String ImageInputProcessor::_stokesFromRecord(
-	const Record& region, const CoordinateSystem& csys,
-	const IPosition& shape
+	const Record& region, const CoordinateSystem& csys
 ) const {
 	// FIXME This implementation is incorrect for complex, recursive records
     String stokes = "";
