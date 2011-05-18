@@ -30,6 +30,8 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/Regex.h>
+#include <casa/OS/malloc.h>
+#include <string.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -128,7 +130,7 @@ void Unit::setName(const String &in) {
 //#  uName.gsub(ep, ebp);
 //#  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-static inline void pass_one( char *source, char *dest ) {
+static inline void pass_one( const char *source, char *dest ) {
     while( *source ) { 
 	switch ( *source ) {
 	case '^': ++source;
@@ -205,7 +207,7 @@ void Unit::check() {
   };
 
   char *b1 = strdup(uName.c_str());
-  char *b2 = (char*) malloc((strlen(b1)+1)*sizeof(char));
+  char *b2 = (char*) malloc((uName.size()+1)*sizeof(char));
   pass_one(b1,b2);
   pass_two(b2,b1);
   uName = b1;
