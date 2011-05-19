@@ -108,19 +108,22 @@ protected:
 // Duplicates can be skipped by giving the option
 // <src>Sort::NoDuplicates</src>. Only in this case the number of output
 // elements can be different from the number of input elements.
-// <br>The <src>unique</src> offers another way of getting unique values,
+// <br>The <src>unique</src> function offers another way of getting
+// unique values.
 // <p>
 // Class <src>Sort</src> does not sort the data themselves, but
 // returns an index to them. This gives more flexibility and
 // allows the sort to be stable; but it is slower.
-// Very fast sorting of the data themselves can be done with the
+// <br>Very fast sorting of the data themselves can be done with the
 // functions in class <linkto class=GenSort>GenSort</linkto>.
+// If sorting on a single key with a standard data type is done,
+// Sort will use GenSortIndirect to speed up the sort.
 // <br>
 // Three sort algorithms are provided:
 // <DL>
 //  <DT> <src>Sort::InsSort</src>
 //  <DD> Insertion sort has O(n*n) behaviour, thus is very slow.  It
-//       will only be very fast when the array is already (almost) in the
+//       will only be very fast if the array is already (almost) in the
 //       right order.
 //  <DT> <src>Sort::QuickSort</src>
 //  <DD> Care has been taken to solve the well-known quicksort problems
@@ -128,8 +131,8 @@ protected:
 //       behaviour is O(n*log(n)) in all the cases tested, even in
 //       degenerated cases where the SUN Solaris qsort algorithm is O(n*n).
 //  <DT> <src>Sort::HeapSort</src>
-//  <DD> Heapsort has O(n*log(n)) behaviour. Its speed is higher than
-//       that of QuickSort, so it is the default algorithm.
+//  <DD> Heapsort has O(n*log(n)) behaviour. Its speed is lower than
+//       that of QuickSort, so QuickSort is the default algorithm.
 // </DL>
 // All sort algorithms are <em>stable</em>, which means that the original
 // order is kept when keys are equal.
@@ -164,16 +167,14 @@ protected:
 //    Sort sort;
 //    sort.sortKey (idata, TpInt);                       // define 1st sort key
 //    sort.sortKey (ddata, TpDouble,0,Sort::Descending); // define 2nd sort key
-//    uInt* inx=0;
-//    sort.sort (nrdata, inx);
+//    Vector<uInt> inx;
+//    sort.sort (inx, nrdata);
 //    for (uInt i=0; i<nrdata; i++) {                    // show sorted data
 //        cout << idata[inx[i]] << " " << ddata[inx[i]] << endl;
 //    }
-//    delete inx;
 // </srcblock>
 // Now <src>nr</src> contains the nr of records (=<src>nrdata</src>)
 // and <src>inx</src> an array of (sorted) indices.
-// The index array <src>inx</src> has to be deleted by the user.
 //
 // In the second example we sort the data stored in an array of structs
 // on the double (ascending) and the string (descending). We can pass
@@ -184,28 +185,28 @@ protected:
 //         String as;
 //         double ad;
 //    }
-//    uInt* inx=0;
+//    Vector<uInt> inx;
 //    Sort sort (tsarr, sizeof(Ts));
 //    sort.sortKey ((char*)&tsarr[0].ad - (char*)tsarr, TpDouble);
 //    sort.sortKey ((char*)&tsarr[0].as - (char*)tsarr, TpString,
 //                                                       Sort::Descending);
-//    sort.sort (nrts, inx);
+//    sort.sort (inx, nrts);
 // </srcblock>
 // Note that the first argument in function <src>sortKey</src> gives
 // the offset of the variable in the struct.
 //
 // Alternatively, and probably slightly easier, we could pass the data
-// to the <src>sortKey</src> function:
+// to the <src>sortKey</src> function and use an increment:
 // <srcblock>
 //    struct Ts {
 //         String as;
 //         double ad;
 //    }
-//    uInt* inx=0;
+//    Vector<uInt> inx;
 //    Sort sort;
 //    sort.sortKey (&tsarr[0].ad, TpDouble, sizeof(Ts));
 //    sort.sortKey (&tsarr[0].as, TpString, sizeof(Ts), Sort::Descending);
-//    sort.sort (nrts, inx);
+//    sort.sort (inx, nrts);
 // </srcblock>
 //
 // Finally, we could provide a comparison object for the struct.
@@ -226,32 +227,11 @@ protected:
 //        return 0;
 //      }
 //    };
-//    uInt* inx=0;
+//    Vector<uInt> inx;
 //    Sort sort;
 //    sort.sortKey (tsarr, compareTs, sizeof(Ts)); 
-//    sort.sort (nrts, inx);
+//    sort.sort (inx, nrts);
 // </srcblock>
-//
-// The last example illustrates the use of the
-// <src>Sort::NoDuplicates</src> flag and an input index array.
-// First we remove duplicate strings, and then sort the result.
-// <srcblock>
-//    struct Ts {
-//         String as;
-//         double ad;
-//    }
-//    uInt* inxNoDup=0;
-//    Sort sort;
-//    sort.sortKey (&tsarr[0].as, TpString, sizeof(Ts));
-//    uInt nrout = sort.sort (nrts, inxNoDup, Sort::NoDuplicates);
-//    Sort sort2;
-//    sort2.sortKey (&tsarr[0].ad, TpDouble, sizeof(Ts));
-//    sort2.sortKey (&tsarr[0].as, TpString, sizeof(Ts), Sort::Descending);
-//    uInt* inx=0;
-//    sort2.sort (nrout, inxNoDup, inx);
-// </srcblock>
-// </example>
-
 
 class Sort
 {
@@ -332,7 +312,7 @@ public:
     // It returns the number of resulting records. The indices array
     // is resized to that number.
     uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-	       int options = HeapSort) const;
+	       int options = QuickSort) const;
 
     // Get all unique records in a sorted array. The array order is
     // given in the indexVector (as possibly returned by the sort function).
