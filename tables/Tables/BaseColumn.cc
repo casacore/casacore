@@ -27,6 +27,7 @@
 
 #include <tables/Tables/BaseColumn.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/ValType.h>
 #include <tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -46,33 +47,43 @@ BaseColumn::~BaseColumn()
 //# to ensure they are called correctly.
 
 void BaseColumn::setShape (uInt, const IPosition&)
-    { throw (TableInvOper ("setShape() only valid for an array")); }
+{
+  throw (TableInvOper ("invalid setShape() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+}
 
 void BaseColumn::setShape (uInt, const IPosition&, const IPosition&)
-    { throw (TableInvOper ("setShape() only valid for an array")); }
+{
+  throw (TableInvOper ("invalid setShape() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+}
 
 uInt BaseColumn::ndimColumn() const
 {
-    throw (TableInvOper ("ndimColumn() only valid for an array"));
-    return 0;
+  throw (TableInvOper ("invalid ndimColumn() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+  return 0;
 }
 
 IPosition BaseColumn::shapeColumn() const
 {
-    throw (TableInvOper ("shapeColumn() only valid for an array"));
-    return IPosition(0);
+  throw (TableInvOper ("invalid shapeColumn() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+  return IPosition(0);
 }
 
 uInt BaseColumn::ndim (uInt) const
 {
-    throw (TableInvOper ("ndim() only valid for an array"));
-    return 0;
+  throw (TableInvOper ("invalid ndim() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+  return 0;
 }
 
 IPosition BaseColumn::shape (uInt) const
 {
-    throw (TableInvOper ("shape() only valid for an array"));
-    return IPosition(0);
+  throw (TableInvOper ("invalid shape() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+  return IPosition(0);
 }
 
 
@@ -114,110 +125,167 @@ Bool BaseColumn::canAccessColumnSlice (Bool& reask) const
 
 
 void BaseColumn::getSlice (uInt, const Slicer&, void*) const
-    { throw (TableInvOper ("getSlice() only valid for an array")); }
+{
+  throw (TableInvOper ("getSlice() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::getScalarColumn (void*) const
-    { throw (TableInvOper ("getScalarColumn() not implemented")); }
+{
+  throw (TableInvOper ("getScalarColumn() not implemented for column " +
+                       colDesc_p.name() + "; only valid for a scalar"));
+}
 
 void BaseColumn::getArrayColumn (void*) const
-    { throw (TableInvOper ("getArrayColumn() not implemented")); }
+{
+  throw (TableInvOper ("getArrayColumn() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::getScalarColumnCells (const RefRows&, void*) const
-    { throw (TableInvOper ("getScalarColumnCells() not implemented")); }
+{
+  throw (TableInvOper ("getScalarColumnCells() not implemented for column " +
+                       colDesc_p.name() + "; only valid for a scalar"));
+}
 
 void BaseColumn::getArrayColumnCells (const RefRows&, void*) const
-    { throw (TableInvOper ("getArrayColumnCells() not implemented")); }
+{
+  throw (TableInvOper ("getArrayColumnCells() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::getColumnSliceCells (const RefRows&,
 				      const Slicer&, void*) const
-    { throw (TableInvOper ("getColumnCells(Slicer&) only valid for an array")); }
+{
+  throw (TableInvOper ("getColumnCells(Slicer&) not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::getColumnSlice (const Slicer&, void*) const
-    { throw (TableInvOper ("getColumn(Slicer&) only valid for an array")); }
+{
+  throw (TableInvOper ("getColumn(Slicer&) not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::putSlice (uInt, const Slicer&, const void*)
-    { throw (TableInvOper ("putSlice() only valid for an array")); }
+{
+  throw (TableInvOper ("putSlice() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::putScalarColumn (const void*)
-    { throw (TableInvOper ("putScalarColumn() not implemented")); }
+{
+  throw (TableInvOper ("putScalarColumn() not implemented for column " +
+                       colDesc_p.name() + "; only valid for a scalar"));
+}
 
 void BaseColumn::putArrayColumn (const void*)
-    { throw (TableInvOper ("putArrayColumn() not implemented")); }
+{
+  throw (TableInvOper ("putArrayColumn() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::putScalarColumnCells (const RefRows&, const void*)
-    { throw (TableInvOper ("putScalarColumnCells() not implemented")); }
+{
+  throw (TableInvOper ("putScalarColumnCells() not implemented for column " +
+                       colDesc_p.name() + "; only valid for a scalar"));
+}
 
 void BaseColumn::putArrayColumnCells (const RefRows&, const void*)
-    { throw (TableInvOper ("putArrayColumnCells() not implemented")); }
+{
+  throw (TableInvOper ("putArrayColumnCells() not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::putColumnSlice (const Slicer&, const void*)
-    { throw (TableInvOper ("putColumn(Slicer&) only valid for an array")); }
+{
+  throw (TableInvOper ("putColumn(Slicer&) not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 void BaseColumn::putColumnSliceCells (const RefRows&,
 				      const Slicer&, const void*)
-    { throw (TableInvOper ("putColumnCells(Slicer&) only valid for an array")); }
+{
+  throw (TableInvOper ("putColumnCells(Slicer&) not implemented for column " +
+                       colDesc_p.name() + "; only valid for an array"));
+}
 
 
 void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
                               const void*&)
-    { throw (TableInvOper ("makeSortKey only valid for a scalar")); }
+{
+  throw (TableInvOper ("makeSortKey() for column " + colDesc_p.name() +
+                       " is only valid for a scalar"));
+}
 void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
 				 const Vector<uInt>&, const void*&)
-    { throw (TableInvOper ("makeSortKey(rownrs) not valid")); }
+{
+  throw (TableInvOper ("makeSortKey(rownrs) for column " + colDesc_p.name() +
+                       " is only valid for a scalar"));
+}
 void BaseColumn::freeSortKey (const void*&)
-    { throw (TableInvOper ("freeSortKey only valid for a scalar")); }
+{
+  throw (TableInvOper ("freeSortKey() for column " + colDesc_p.name() +
+                       " is only valid for a scalar"));
+}
 void BaseColumn::allocIterBuf (void*&, void*&, CountedPtr<BaseCompare>&)
-    { throw (TableInvOper ("allocIterBuf only valid for a scalar")); }
+{
+  throw (TableInvOper ("allocIterBuf() for column " + colDesc_p.name() +
+                       " is only valid for a scalar"));
+}
 void BaseColumn::freeIterBuf (void*&, void*&)
-    { throw (TableInvOper ("freeIterBuf only valid for a scalar")); }
+{
+  throw (TableInvOper ("freeIterBuf() for column " + colDesc_p.name() +
+                       " is only valid for a scalar"));
+}
 
 
 void BaseColumn::getScalar (uInt rownr, Bool& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpBool:
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(Bool)"));
+        throwGetType("Bool");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, uChar& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(uChar)"));
+        throwGetType("uChar");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, Short& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpShort:
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(Short)"));
+        throwGetType("Short");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, uShort& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -229,14 +297,14 @@ void BaseColumn::getScalar (uInt rownr, uShort& value) const
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(uShort)"));
+        throwGetType("uShort");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, Int& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpShort:
@@ -248,14 +316,14 @@ void BaseColumn::getScalar (uInt rownr, Int& value) const
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(Int)"));
+        throwGetType("Int");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, uInt& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -272,14 +340,14 @@ void BaseColumn::getScalar (uInt rownr, uInt& value) const
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(uInt)"));
+        throwGetType("uInt");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, Int64& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -308,14 +376,14 @@ void BaseColumn::getScalar (uInt rownr, Int64& value) const
         value = valui;
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(Int64)"));
+        throwGetType("Int64");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, float& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -352,14 +420,14 @@ void BaseColumn::getScalar (uInt rownr, float& value) const
 	value = vald;
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(float)"));
+        throwGetType("float");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, double& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -396,14 +464,14 @@ void BaseColumn::getScalar (uInt rownr, double& value) const
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(double)"));
+        throwGetType("double");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, Complex& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -451,14 +519,14 @@ void BaseColumn::getScalar (uInt rownr, Complex& value) const
 	}
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(Complex)"));
+        throwGetType("Complex");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, DComplex& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -505,35 +573,35 @@ void BaseColumn::getScalar (uInt rownr, DComplex& value) const
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(DComplex)"));
+        throwGetType("DComplex");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, String& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpString:
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(String)"));
+        throwGetType("String");
     }
 }
 
 void BaseColumn::getScalar (uInt rownr, TableRecord& value) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpRecord:
 	get (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in getScalar(TableRecord)"));
+        throwGetType("TableRecord");
     }
 }
 
@@ -541,11 +609,11 @@ void BaseColumn::getScalar (uInt rownr, void* value,
 			    const String& dataTypeId) const
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("getScalar only possible for scalars"));
+        throwGetScalar();
     }
     if (colDescPtr_p->dataType() != TpOther
     ||  colDescPtr_p->dataTypeId() != dataTypeId) {
-	throw (TableInvDT ("invalid type promotion in getScalar(void*)"));
+        throwGetType("void*");
     }
     get (rownr, value);
 }
@@ -554,21 +622,21 @@ void BaseColumn::getScalar (uInt rownr, void* value,
 void BaseColumn::putScalar (uInt rownr, const Bool& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpBool:
 	put (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(Bool)"));
+        throwPutType("Bool");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const uChar& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
@@ -603,14 +671,14 @@ void BaseColumn::putScalar (uInt rownr, const uChar& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(uChar)"));
+        throwPutType("uChar");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const Short& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpShort:
@@ -640,14 +708,14 @@ void BaseColumn::putScalar (uInt rownr, const Short& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(Short)"));
+        throwPutType("Short");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const uShort& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUShort:
@@ -677,14 +745,14 @@ void BaseColumn::putScalar (uInt rownr, const uShort& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(uShort)"));
+        throwPutType("uShort");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const Int& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpInt:
@@ -709,14 +777,14 @@ void BaseColumn::putScalar (uInt rownr, const Int& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(Int)"));
+        throwPutType("Int");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const uInt& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUInt:
@@ -741,14 +809,14 @@ void BaseColumn::putScalar (uInt rownr, const uInt& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(uInt)"));
+        throwPutType("uInt");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const float& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpFloat:
@@ -768,14 +836,14 @@ void BaseColumn::putScalar (uInt rownr, const float& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(float)"));
+        throwPutType("float");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const double& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpFloat:
@@ -795,14 +863,14 @@ void BaseColumn::putScalar (uInt rownr, const double& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(double)"));
+        throwPutType("double");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const Complex& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpComplex:
@@ -813,14 +881,14 @@ void BaseColumn::putScalar (uInt rownr, const Complex& value)
 	  put (rownr, &valdc); }
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(Complex)"));
+        throwPutType("Complex");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const DComplex& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpComplex:
@@ -831,36 +899,62 @@ void BaseColumn::putScalar (uInt rownr, const DComplex& value)
 	put (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(DComplex)"));
+      throwPutType("DComplex");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const String& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpString:
 	put (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(String)"));
+        throwPutType("String");
     }
 }
 
 void BaseColumn::putScalar (uInt rownr, const TableRecord& value)
 {
     if (!colDescPtr_p->isScalar()) {
-	throw (TableInvOper ("putScalar only possible for scalars"));
+        throwPutScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpRecord:
 	put (rownr, &value);
 	return;
     default:
-	throw (TableInvDT ("invalid type promotion in putScalar(TableRecord)"));
+        throwPutType("TableRecord");
     }
+}
+
+void BaseColumn::throwGetScalar() const
+{
+    throw (TableInvOper ("invalid getScalar() for column " + colDesc_p.name() +
+                         "; only possible for a scalar"));
+}
+
+void BaseColumn::throwPutScalar() const
+{
+    throw (TableInvOper ("invalid putScalar() for column " + colDesc_p.name() +
+                         "; only possible for a scalar"));
+}
+
+void BaseColumn::throwGetType (const String& type) const
+{
+    throw (TableInvDT ("invalid type promotion in getScalar(" + type +
+                       ") for column " + colDesc_p.name() + " with type "
+                       + ValType::getTypeStr(colDesc_p.dataType())));
+}
+
+void BaseColumn::throwPutType (const String& type) const
+{
+    throw (TableInvDT ("invalid type promotion in putScalar(" + type +
+                       ") for column " + colDesc_p.name() + " with type "
+                       + ValType::getTypeStr(colDesc_p.dataType())));
 }
 
 } //# NAMESPACE CASA - END

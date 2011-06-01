@@ -65,10 +65,7 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
     }
     // A shape can only be given for a FixedShape array.
     if (shape_p.nelements() > 0) {
-	if ((option_p & ColumnDesc::FixedShape)  !=  ColumnDesc::FixedShape) {
-	    throw (TableInvColumnDesc (name,
-			          "Shape only allowed for FixedShape arrays"));
-	}
+	option_p |= ColumnDesc::FixedShape;
     }
     // Option Undefined can only be set for standard types.
     if (dtype_p == TpOther) {
@@ -291,7 +288,8 @@ void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
     Int dtype;
     ios >> dtype;
     if (dtype != dtype_p) {
-	throw (TableInternalError ("BaseColumnDesc: data type read mismatch"));
+	throw (TableInternalError ("BaseColumnDesc: data type read mismatch"
+                                   " for column " + colName_p));
     }
     ios >> option_p;
     ios >> nrdim_p;

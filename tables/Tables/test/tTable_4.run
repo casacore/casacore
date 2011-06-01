@@ -3,7 +3,7 @@
 # Script to run Table_4 in various ways
 #=============================================================================
 
-./tTable_4 1 << 'EOF'
+$casa_checktool ./tTable_4 1 << 'EOF'
 1
 c1,s
 1
@@ -31,7 +31,7 @@ c5
 0
 EOF
 
-./tTable_4 1 << 'EOF'
+$casa_checktool ./tTable_4 1 << 'EOF'
 1
 c1,s
 1
@@ -59,7 +59,7 @@ c2,c6
 0
 EOF
 
-./tTable_4 1 << 'EOF'
+$casa_checktool ./tTable_4 1 << 'EOF'
 1
 c1
 1
@@ -91,7 +91,7 @@ c1,c7
 0
 EOF
 
-./tTable_4 1 << 'EOF'
+$casa_checktool ./tTable_4 1 << 'EOF'
 0
 4
 4

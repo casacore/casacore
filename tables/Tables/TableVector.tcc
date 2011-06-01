@@ -46,7 +46,7 @@ template<class T>
 ROTableVector<T>::ROTableVector (const Vector<T>& vec)
 {
     tabVecPtr_p = new TabVecTemp<T>(vec);
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 //# Copy constructor (reference semantics).
@@ -65,28 +65,19 @@ ROTableVector<T>::ROTableVector (const Table& tab,
 				 const String& columnName)
 {
     tabVecPtr_p = new TabVecScaCol<T> (ROTableColumn (tab, columnName));
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 template<class T>
 ROTableVector<T>::ROTableVector (const ROTableColumn& column)
 {
     tabVecPtr_p = new TabVecScaCol<T> (column);
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 template<class T>
 ROTableVector<T>::~ROTableVector()
     { destruct(); }
-
-template<class T>
-void ROTableVector<T>::checkLink ()
-{
-    if (tabVecPtr_p == 0) {
-	throw (AllocError ("(RO)TableVector", 1));
-    }
-    tabVecPtr_p->link();
-}
 
 template<class T>
 void ROTableVector<T>::destruct ()
@@ -148,7 +139,7 @@ TableVector<T>::TableVector (uInt leng)
 : ROTableVector<T>()
 {
     tabVecPtr_p = new TabVecTemp<T>(leng);
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 //# Copy constructor (reference semantics).
@@ -163,7 +154,7 @@ TableVector<T>::TableVector (const Table& tab, const String& columnName)
 : ROTableVector<T>()
 {
     tabVecPtr_p = new TabVecScaCol<T> (TableColumn (tab, columnName));
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 template<class T>
@@ -171,7 +162,7 @@ TableVector<T>::TableVector (const TableColumn& column)
 : ROTableVector<T>()
 {
     tabVecPtr_p = new TabVecScaCol<T> (column);
-    checkLink();
+    tabVecPtr_p->link();
 }
 
 template<class T>
