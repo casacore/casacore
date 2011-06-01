@@ -30,7 +30,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicSL/IComplex.h>
 
-#include <assert.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/stdio.h>
 #include <casa/iostream.h>
 #include <casa/fstream.h>
@@ -208,49 +208,49 @@ int main() {
   f1 = 0;
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
 
-  assert(near(Complex(0,10000), Complex(0,10001), 1.01e-4));
-  assert(!near(Complex(0,10000), Complex(0,10001), 0.99e-4));
-  assert(!near(Complex(10000,0), Complex(0,10001), 1.01e-4));
-  assert(nearAbs(Complex(0,10000), Complex(0,10001), 1.01));
-  assert(!nearAbs(Complex(0,10000), Complex(0,10001), 0.99));
-  assert(!nearAbs(Complex(10000,0), Complex(0,10001), 1.01));
+  AlwaysAssertExit(near(Complex(0,10000), Complex(0,10001), 1.01e-4));
+  AlwaysAssertExit(!near(Complex(0,10000), Complex(0,10001), 0.99e-4));
+  AlwaysAssertExit(!near(Complex(10000,0), Complex(0,10001), 1.01e-4));
+  AlwaysAssertExit(nearAbs(Complex(0,10000), Complex(0,10001), 1.01));
+  AlwaysAssertExit(!nearAbs(Complex(0,10000), Complex(0,10001), 0.99));
+  AlwaysAssertExit(!nearAbs(Complex(10000,0), Complex(0,10001), 1.01));
 
-  assert(allNear(Complex(0,10000), Complex(0,10001), 1.01e-4));
-  assert(!allNear(Complex(0,10000), Complex(0,10001), 0.99e-4));
-  assert(!allNear(Complex(10000,0), Complex(0,10001), 1.01e-4));
-  assert(allNearAbs(Complex(0,10000), Complex(0,10001), 1.01));
-  assert(!allNearAbs(Complex(0,10000), Complex(0,10001), 0.99));
-  assert(!allNearAbs(Complex(10000,0), Complex(0,10001), 1.01));
+  AlwaysAssertExit(allNear(Complex(0,10000), Complex(0,10001), 1.01e-4));
+  AlwaysAssertExit(!allNear(Complex(0,10000), Complex(0,10001), 0.99e-4));
+  AlwaysAssertExit(!allNear(Complex(10000,0), Complex(0,10001), 1.01e-4));
+  AlwaysAssertExit(allNearAbs(Complex(0,10000), Complex(0,10001), 1.01));
+  AlwaysAssertExit(!allNearAbs(Complex(0,10000), Complex(0,10001), 0.99));
+  AlwaysAssertExit(!allNearAbs(Complex(10000,0), Complex(0,10001), 1.01));
 
-  assert(near(DComplex(0,10000), DComplex(0,10001), 1.01e-4));
-  assert(!near(DComplex(0,10000), DComplex(0,10001), 0.99e-4));
-  assert(!near(DComplex(10000,0), DComplex(0,10001), 1.01e-4));
-  assert(nearAbs(DComplex(0,10000), DComplex(0,10001), 1.01));
-  assert(!nearAbs(DComplex(0,10000), DComplex(0,10001), 0.99));
-  assert(!nearAbs(DComplex(10000,0), DComplex(0,10001), 1.01));
+  AlwaysAssertExit(near(DComplex(0,10000), DComplex(0,10001), 1.01e-4));
+  AlwaysAssertExit(!near(DComplex(0,10000), DComplex(0,10001), 0.99e-4));
+  AlwaysAssertExit(!near(DComplex(10000,0), DComplex(0,10001), 1.01e-4));
+  AlwaysAssertExit(nearAbs(DComplex(0,10000), DComplex(0,10001), 1.01));
+  AlwaysAssertExit(!nearAbs(DComplex(0,10000), DComplex(0,10001), 0.99));
+  AlwaysAssertExit(!nearAbs(DComplex(10000,0), DComplex(0,10001), 1.01));
 
-  assert(allNear(DComplex(0,10000), DComplex(0,10001), 1.01e-4));
-  assert(!allNear(DComplex(0,10000), DComplex(0,10001), 0.99e-4));
-  assert(!allNear(DComplex(10000,0), DComplex(0,10001), 1.01e-4));
-  assert(allNearAbs(DComplex(0,10000), DComplex(0,10001), 1.01));
-  assert(!allNearAbs(DComplex(0,10000), DComplex(0,10001), 0.99));
-  assert(!allNearAbs(DComplex(10000,0), DComplex(0,10001), 1.01));
+  AlwaysAssertExit(allNear(DComplex(0,10000), DComplex(0,10001), 1.01e-4));
+  AlwaysAssertExit(!allNear(DComplex(0,10000), DComplex(0,10001), 0.99e-4));
+  AlwaysAssertExit(!allNear(DComplex(10000,0), DComplex(0,10001), 1.01e-4));
+  AlwaysAssertExit(allNearAbs(DComplex(0,10000), DComplex(0,10001), 1.01));
+  AlwaysAssertExit(!allNearAbs(DComplex(0,10000), DComplex(0,10001), 0.99));
+  AlwaysAssertExit(!allNearAbs(DComplex(10000,0), DComplex(0,10001), 1.01));
 
   Complex c1; DComplex c2;
   setNaN(c1); setNaN(c2);
-  assert(isNaN(c1) && isNaN(c2));
+  AlwaysAssertExit(isNaN(c1) && isNaN(c2));
   c1 = Complex(0.0, c1.imag()); c2 = DComplex(c2.real(), 0.0);
-  assert(isNaN(c1) && isNaN(c2));
+  AlwaysAssertExit(isNaN(c1) && isNaN(c2));
   c1 = Complex(0.0); c2 = DComplex(0.0);
-  assert((!isNaN(c1)) && (!isNaN(c2)));
+  AlwaysAssertExit((!isNaN(c1)) && (!isNaN(c2)));
 
   {
       // Test min/max
       Complex c1(0,1), c2(2,0);
       Complex c3 = min(c1,c2);
-      assert(near(c1,c3));
+      AlwaysAssertExit(near(c1,c3));
       Complex c4 = max(c1,c2);
-      assert(near(c2,c4));
+      AlwaysAssertExit(near(c2,c4));
   }
 
   return(0);

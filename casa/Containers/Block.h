@@ -37,6 +37,8 @@
 #include <casa/Exceptions/Error.h>
 #endif
 
+#include <stddef.h>   // for ptrdiff_t
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>simple 1-D array</summary>

@@ -87,14 +87,13 @@ int main()
 	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
 	AlwaysAssertExit(file.contains(Regex("/foo_")));
 
-	Bool caught = False;
+	///Bool caught = False;
 	try {
 	    cerr << "=====Expect a single SEVERE level message\n";
 	    file = AppInfo::workFileName(1000000);
 	} catch (AipsError& x) {
-	    caught = True;
+            ///caught = True;
 	} 
-	cerr << "=====There should be no more messages\n\n";
         // Do not check if it failed or succeeded, because that is
         // system dependent (same reason as workDirectories test).
 	///AlwaysAssertExit(caught);

@@ -123,11 +123,9 @@ void testNormal()
 {
   cout << "Test NORMAL ..." << endl;
   Mutex mutex(Mutex::Normal);
-  Bool caught = True;
   // Usually an an unlock does not fail.
   try {
     mutex.unlock();
-    caught = False;
   } catch (AipsError& x) {
     cout << x.what() << endl;
   }

@@ -33,7 +33,7 @@
 #include <casa/iosfwd.h>
 #include <casa/BasicSL/String.h>
 #include <vector>
-#include <unistd.h>
+#include <stddef.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

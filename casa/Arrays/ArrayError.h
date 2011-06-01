@@ -43,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // ArrayError is the base class for all the Array-specific exception classes,
 // i.e. if it is caught you will catch (through inheritance) all Array-specific
 // exceptions. Note that (presently, anyway) the Array classes will throw
-// a few non-Array exceptions, in particular AllocError.
+// a few non-Array exceptions.
 // <srcblock>
 // try {
 //    // Some lines, functions, ...

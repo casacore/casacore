@@ -26,8 +26,8 @@ if [ $# != 0 ]
 then
     if [ $1 != 0 ]
     then
-        ./tRegularFile $2
+        $casa_checktool ./tRegularFile $2
     fi
 else
-    ./tRegularFile
+    $casa_checktool ./tRegularFile
 fi

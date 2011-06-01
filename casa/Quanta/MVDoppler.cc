@@ -178,11 +178,9 @@ Vector<Quantum<Double> > MVDoppler::getRecordValue() const {
 Bool MVDoppler::putValue(const Vector<Quantum<Double> > &in) {
   static Bool needInit = True;
   static UnitVal Velocity;
-  static Double LVel;
   if (needInit) {
     needInit = False;
     Velocity = UnitVal::LENGTH/UnitVal::TIME;
-    LVel = (QC::c).getBaseValue();
   }
   uInt i = in.nelements();
   if (i == 0) {

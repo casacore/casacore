@@ -64,12 +64,10 @@ int LargeRegularFileIO::openCreate (const RegularFile& file,
                                     ByteIO::OpenOption option)
 {
     const String& name = file.path().expandedName();
-    Bool writable = True;
     Bool create = False;
     Int stropt;
     switch (option) {
     case ByteIO::Old:
-	writable = False;
 	stropt = O_RDONLY;
 	break;
     case ByteIO::NewNoReplace:
