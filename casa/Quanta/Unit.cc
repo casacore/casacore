@@ -177,36 +177,38 @@ void pass_one( const char *source, char *dest )
 void pass_two( char *source, char *dest )
 {
   while ( *source == '.' ) ++source;     /** bp **/
-  for ( char *end = source + strlen(source) - 1; end != source; --end ) {
-    if ( *end == '.' ) {
-      *end = '\0';                       /** ep **/
-    } else {
-      break;
-    }
-  }
-  while ( *source ) {                    /** f6 **/
-    switch ( *source ) {
-    case '.': {
-      bool go = true;
-      char dotslash = '.';
-      while ( *source && go ) {
-        switch ( *source ) {
-        case '/':
-          dotslash = '/';     // fall through
-        case '.':
-          ++source;
-          continue;
-        default:
-          go = false;
-          continue;
-        }
+  if ( *source ) {
+    for ( char *end = source + strlen(source) - 1; end != source; --end ) {
+      if ( *end == '.' ) {
+	*end = '\0';                     /** ep **/
+      } else {
+	break;
       }
-      *dest++ = dotslash;                /** f4, pd **/
-      continue;
     }
-    default:
-      *dest++ = *source++;
-      continue;
+    while ( *source ) {                  /** f6 **/
+      switch ( *source ) {
+      case '.': {
+	bool go = true;
+	char dotslash = '.';
+	while ( *source && go ) {
+	  switch ( *source ) {
+	  case '/':
+	    dotslash = '/';     // fall through
+	  case '.':
+	    ++source;
+	    continue;
+	  default:
+	    go = false;
+	    continue;
+	  }
+	}
+	*dest++ = dotslash;              /** f4, pd **/
+	continue;
+      }
+      default:
+	*dest++ = *source++;
+	continue;
+      }
     }
   }
   *dest = '\0';
