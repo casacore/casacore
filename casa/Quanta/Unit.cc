@@ -69,7 +69,7 @@ Unit::~Unit() {}
 
 Unit &Unit::operator=(const Unit &other) {
     if (this != &other) {
-	uName = other.uName;
+        uName = other.uName;
 	uVal = other.uVal;
     }
     return *this;
@@ -130,82 +130,95 @@ void Unit::setName(const String &in) {
 //#  uName.gsub(ep, ebp);
 //#  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-static inline void pass_one( const char *source, char *dest ) {
-    while( *source ) { 
-	switch ( *source ) {
-	case '^': ++source;
-	          continue;                       /** f2 **/
-	case '*':
-	    switch ( *++source ) {
-	    case '*': ++source;
-	              continue;                   /** f1 **/
-	    default: *dest++ = '.';               /** f3 **/
-	             continue;
-	    }
-	case ' ': {
-	    bool found_slash = false;
-	    while ( *source == ' ' || *source == '/' ) { if ( *source++ == '/' ) found_slash = true; }
-	    *dest++ = found_slash ? '/' : '.';    /** f4 **/
-	                                          /** sp **/
-	    continue;
-	}
-	case '/':
-	    switch( *++source ) {
-	    case '/':
-	        ++source;
-		*dest++ = '.';
-		continue;                         /** f5 **/
-	    default:
-		*dest++ = '/';
-		continue;
-	    }
-	default: *dest++ = *source++;
-	}
+void pass_one( const char *source, char *dest )
+{
+  while ( *source ) { 
+    switch ( *source ) {
+    case '^':
+      ++source;
+      continue;                          /** f2 **/
+    case '*':
+      switch ( *++source ) {
+      case '*':
+        ++source;
+        continue;                        /** f1 **/
+      default:
+        *dest++ = '.';                   /** f3 **/
+        continue;
+      }
+    case ' ': {
+      char dotslash = '.';
+      while ( *source == ' ' || *source == '/' ) {
+        if ( *source++ == '/' ) {
+          dotslash = '/';
+        }
+      }
+      *dest++ = dotslash;                /** f4, sp **/
+      continue;
     }
-    *dest = '\0';
+    case '/':
+      switch ( *++source ) {
+      case '/':
+        ++source;
+        *dest++ = '.';
+        continue;                        /** f5 **/
+      default:
+        *dest++ = '/';
+        continue;
+      }
+    default:
+      *dest++ = *source++;
+      continue;
+    }
+  }
+  *dest = '\0';
 }
 
-static inline void pass_two( char *source, char *dest ) {
-    while( *source == '.' ) ++source;		/** bp **/
-    for ( char *end = source + strlen(source) - 1; end != source; --end ) {
-	if ( *end == '.' )
-	    *end = '\0';			/** ep **/
-	else
-	    break;
+void pass_two( char *source, char *dest )
+{
+  while ( *source == '.' ) ++source;     /** bp **/
+  for ( char *end = source + strlen(source) - 1; end != source; --end ) {
+    if ( *end == '.' ) {
+      *end = '\0';                       /** ep **/
+    } else {
+      break;
     }
-    while ( *source ) {				/** f6 **/
-	switch( *source ) {
-	case '.': {
-	    bool go = true;
-	    bool found_slash = false;
-	    while ( *source && go ) {
-		switch ( *source ) {
-	        case '/':
-		    found_slash = true;
-		case '.':
-		    ++source;
-		    continue;
-		default: go = false;
-		}
-	    }
-	    *dest++ = (found_slash ? '/' : '.');
-	}
-	default:
-	    *dest++ = *source++;
-	}
+  }
+  while ( *source ) {                    /** f6 **/
+    switch ( *source ) {
+    case '.': {
+      bool go = true;
+      char dotslash = '.';
+      while ( *source && go ) {
+        switch ( *source ) {
+        case '/':
+          dotslash = '/';     // fall through
+        case '.':
+          ++source;
+          continue;
+        default:
+          go = false;
+          continue;
+        }
+      }
+      *dest++ = dotslash;                /** f4, pd **/
+      continue;
     }
-    *dest = '\0';
+    default:
+      *dest++ = *source++;
+      continue;
+    }
+  }
+  *dest = '\0';
 }
-	    
 
 
-void Unit::check() {
-
+void Unit::check()
+{
   if (!UnitVal::check(uName, uVal)) {
     throw (AipsError("Unit::check Illegal unit string '" +
 		     uName + "'"));
-  };
-
+  }
   char *b1 = strdup(uName.c_str());
   char *b2 = (char*) malloc((uName.size()+1)*sizeof(char));
   pass_one(b1,b2);
