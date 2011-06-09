@@ -679,18 +679,35 @@ template<class T> T fractile(const Array<T> &a, Block<T> &tmp, Float fraction,
 			     Bool sorted = False, Bool inPlace = False);
 
 
-// Methods for element-by-element scaling of Complex by Float
+// Methods for element-by-element scaling of complex and real.
+// Note that Complex and DComplex are typedefs for std::complex.
 //<group>
-void operator*= (Array<Complex> &left, const Array<Float> &other);
-void operator*= (Array<Complex> &left, const Float &other);
-void operator/= (Array<Complex> &left, const Array<Float> &other);
-void operator/= (Array<Complex> &left, const Float &other);
-Array<Complex> operator* (const Array<Complex> &left, const Array<Float> &right);
-Array<Complex> operator* (const Array<Complex> &left, const Float &right);
-Array<Complex> operator* (const Complex &left, const Array<Float> &right);
-Array<Complex> operator/ (const Array<Complex> &left, const Array<Float> &right);
-Array<Complex> operator/ (const Array<Complex> &left, const Float &right);
-Array<Complex> operator/ (const Complex &left, const Array<Float> &right);
+template<typename T>
+void operator*= (Array<std::complex<T> > &left, const Array<T> &other);
+template<typename T>
+void operator*= (Array<std::complex<T> > &left, const T &other);
+template<typename T>
+void operator/= (Array<std::complex<T> > &left, const Array<T> &other);
+template<typename T>
+void operator/= (Array<std::complex<T> > &left, const T &other);
+template<typename T>
+Array<std::complex<T> > operator* (const Array<std::complex<T> > &left,
+                                   const Array<T> &right);
+template<typename T>
+Array<std::complex<T> > operator* (const Array<std::complex<T> > &left,
+                                   const T &right);
+template<typename T>
+Array<std::complex<T> > operator* (const std::complex<T> &left,
+                                   const Array<T> &right);
+template<typename T>
+Array<std::complex<T> > operator/ (const Array<std::complex<T> > &left,
+                                   const Array<T> &right);
+template<typename T>
+Array<std::complex<T> > operator/ (const Array<std::complex<T> > &left,
+                                   const T &right);
+template<typename T>
+Array<std::complex<T> > operator/ (const std::complex<T> &left,
+                                   const Array<T> &right);
 // </group>
 
 // Returns the complex conjugate of a complex array.
