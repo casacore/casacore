@@ -87,6 +87,8 @@ namespace casa { //# name space casa begins
 
   ImageProxy::ImageProxy (const ValueHolder& values, const ValueHolder& mask,
                           const Record& coordinates,
+                          const Vector<double>& crval,
+                          const Vector<double>& cdelta,
                           const String& fileName, Bool overwrite, Bool asHDF5,
                           const String& maskName,
                           const IPosition& tileShape)
@@ -109,22 +111,22 @@ namespace casa { //# name space casa begins
     case TpArrayUInt:
     case TpArrayFloat:
       makeImage (values.asArrayFloat(), mask.asArrayBool(),
-                 IPosition(), coordinates,
+                 IPosition(), coordinates, crval, cdelta,
                  fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayDouble:
       makeImage (values.asArrayDouble(), mask.asArrayBool(),
-                 IPosition(), coordinates,
+                 IPosition(), coordinates, crval, cdelta,
                  fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayComplex:
       makeImage (values.asArrayComplex(), mask.asArrayBool(),
-                 IPosition(), coordinates,
+                 IPosition(), coordinates, crval, cdelta,
                  fileName, asHDF5, maskName, tileShape);
       break;
     case TpArrayDComplex:
       makeImage (values.asArrayDComplex(), mask.asArrayBool(),
-                 IPosition(), coordinates,
+                 IPosition(), coordinates, crval, cdelta,
                  fileName, asHDF5, maskName, tileShape);
       break;
     default:
@@ -134,6 +136,8 @@ namespace casa { //# name space casa begins
 
   ImageProxy::ImageProxy (const IPosition& shape, const ValueHolder& value,
                           const Record& coordinates,
+                          const Vector<double>& crval,
+                          const Vector<double>& cdelta,
                           const String& fileName, Bool overwrite, Bool asHDF5,
                           const String& maskName,
                           const IPosition& tileShape, Int)
@@ -156,19 +160,19 @@ namespace casa { //# name space casa begins
     case TpUInt:
     case TpFloat:
       makeImage (Array<Float>(), Array<Bool>(), shape, coordinates,
-                 fileName, asHDF5, maskName, tileShape);
+                 crval, cdelta, fileName, asHDF5, maskName, tileShape);
       break;
     case TpDouble:
       makeImage (Array<Double>(), Array<Bool>(), shape, coordinates,
-                 fileName, asHDF5, maskName, tileShape);
+                 crval, cdelta, fileName, asHDF5, maskName, tileShape);
       break;
     case TpComplex:
       makeImage (Array<Complex>(), Array<Bool>(), shape, coordinates,
-                 fileName, asHDF5, maskName, tileShape);
+                 crval, cdelta, fileName, asHDF5, maskName, tileShape);
       break;
     case TpDComplex:
       makeImage (Array<DComplex>(), Array<Bool>(), shape, coordinates,
-                 fileName, asHDF5, maskName, tileShape);
+                 crval, cdelta, fileName, asHDF5, maskName, tileShape);
       break;
     default:
       throw AipsError ("ImageProxy: invalid data type");
@@ -291,6 +295,8 @@ namespace casa { //# name space casa begins
                               const Array<Bool>& mask,
                               const IPosition& shape,
                               const Record& coordinates,
+                              const Vector<double>& crval,
+                              const Vector<double>& cdelta,
                               const String& name, Bool asHDF5,
                               const String& maskName,
                               const IPosition& tileShape)
@@ -310,7 +316,7 @@ namespace casa { //# name space casa begins
     CoordinateSystem cSys;
     if (coordinates.empty()) {
       cSys = CoordinateUtil::makeCoordinateSystem (shp, False);
-      centreRefPix(cSys, shp);
+      centreRefPix(cSys, shp, crval, cdelta);
     } else {
       cSys = makeCoordinateSystem (coordinates, shp);
     }
@@ -460,7 +466,9 @@ namespace casa { //# name space casa begins
  }
 
   void ImageProxy::centreRefPix (CoordinateSystem& cSys, 
-                                 const IPosition& shape) const
+                                 const IPosition& shape,
+                                 const Vector<double>& crval,
+                                 const Vector<double>& cdelta) const
   {
     // Center all axes except Stokes.
     Int after = -1;
@@ -470,12 +478,22 @@ namespace casa { //# name space casa begins
       sP = cSys.pixelAxes(iS)[0];
     }
     Vector<Double> refPix = cSys.referencePixel();
+    Vector<Double> refVal = cSys.referenceValue();
+    Vector<Double> delta  = cSys.increment();
     for (uInt i=0; i<refPix.nelements(); ++i) {
       if (Int(i) != sP) {
-        refPix(i) = Double(shape(i) / 2);
+        refPix[i] = Double(shape[i] / 2);
+        if (i < crval.size()) {
+          refVal[i] = crval[i];
+        }
+        if (i < cdelta.size()) {
+          delta[i] = cdelta[i];
+        }
       }
     }
     cSys.setReferencePixel (refPix);
+    cSys.setReferenceValue (refVal);
+    cSys.setIncrement      (delta);
   }
 
   Bool ImageProxy::isPersistent() const
