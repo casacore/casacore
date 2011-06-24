@@ -176,9 +176,10 @@ void ArrayBase::baseReform (ArrayBase& tmp, const IPosition& len) const
 }
 
 
-void ArrayBase::baseNonDegenerate (ArrayBase& other,
+void ArrayBase::baseNonDegenerate (const ArrayBase& other,
 				   const IPosition& ignoreAxes)
 {
+  AlwaysAssert (this != &other, AipsError);
   AlwaysAssert(other.ndim() > 0, AipsError);
   // These data members are the same irrespective of the degenerate axes. 
   nels_p       = other.nels_p;

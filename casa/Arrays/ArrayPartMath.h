@@ -239,7 +239,7 @@ Array<T> boxedArrayMath (const Array<T>& array,
 // Apply for each element in the array the given ArrayMath reduction function
 // object to the box around that element. The full box is 2*halfBoxSize + 1.
 // It can be used for arrays and boxes of any dimensionality; missing
-// halfBoxSize values are set to 1.
+// halfBoxSize values are set to 0.
 // <example>
 // Determine for each element in the array the median of a box
 // with size [51,51] around that element:

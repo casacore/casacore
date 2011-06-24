@@ -225,6 +225,11 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
     IPosition incr(2,s1,s2);
     return this->operator()(blc,trc,incr);
 }
+template<class T> const Matrix<T> Matrix<T>::operator()
+  (const Slice &sliceX, const Slice &sliceY) const
+{
+    return const_cast<Matrix<T>*>(this)->operator() (sliceX, sliceY);
+}
 
 // <thrown>
 //   <item> ArrayConformanceError
@@ -367,7 +372,8 @@ template<class T> void Matrix<T>::makeIndexingConstants()
 
 
 template<class T>
-void Matrix<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+void Matrix<T>::doNonDegenerate (const Array<T> &other,
+                                 const IPosition &ignoreAxes)
 {
     Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);
