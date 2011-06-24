@@ -1603,8 +1603,7 @@ void SpectralCoordinate::restoreRestFrequencies (SpectralCoordinate*& pSpectral,
 // Multiple rest frequencies were added after initial deployment
 
     if (subrec.isDefined("restfreqs")) {                   // optional
-       Vector<Double> restFreqs;
-       subrec.get("restfreqs", restFreqs);
+        Vector<Double> restFreqs(subrec.toArrayDouble("restfreqs"));
 
 // Old images might have a negative restfreq. Don't propagate that
 
@@ -1695,25 +1694,21 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 		 header.shape("ctype").nelements() == 1 &&
                  header.shape("ctype")(0) > Int(whichAxis), AipsError);
     AlwaysAssert(header.isDefined("crval") && 
-                 header.dataType("crval") == TpArrayDouble &&
 		 header.shape("crval").nelements() == 1 && 
                  header.shape("crval")(0) > Int(whichAxis), AipsError);
     AlwaysAssert(header.isDefined("crpix") && 
-		 header.dataType("crpix") == TpArrayDouble &&
 		 header.shape("crpix").nelements() == 1 &&
 		 header.shape("crpix")(0) > Int(whichAxis), AipsError);
     AlwaysAssert(header.isDefined("cdelt") && 
-		 header.dataType("cdelt") == TpArrayDouble &&
 		 header.shape("cdelt").nelements() == 1 &&
 		 header.shape("cdelt")(0) > Int(whichAxis), AipsError);
 
     Vector<String> ctype, cunit;
-    Vector<Double> crval, cdelt, crpix;
 
     header.get("ctype", ctype);
-    header.get("crval", crval);
-    header.get("crpix", crpix);
-    header.get("cdelt", cdelt);
+    Vector<Double> crval(header.toArrayDouble("crval"));
+    Vector<Double> crpix(header.toArrayDouble("crpix"));
+    Vector<Double> cdelt(header.toArrayDouble("cdelt"));
 
     if (header.isDefined("cunit")) {
 	AlwaysAssert(header.dataType("cunit") == TpArrayString &&
@@ -1758,11 +1753,9 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     else{
       uInt nEl = 0;
       if(header.isDefined("naxis") && 
-	 header.dataType("naxis") == TpArrayInt &&
 	 header.shape("naxis").nelements() == 1 &&
 	 header.shape("naxis")(0) > Int(whichAxis)){
-	Vector<Int> naxis;
-	header.get("naxis",naxis);
+        Vector<Int> naxis(header.toArrayInt("naxis"));
 	nEl = naxis(whichAxis);
       }
       pixel.resize(nEl);

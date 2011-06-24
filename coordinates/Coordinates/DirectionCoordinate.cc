@@ -1271,33 +1271,28 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     }
     String projname;
     subrec.get("projection", projname);
-    Vector<Double> projparms;
-    subrec.get("projection_parameters", projparms);
+    Vector<Double> projparms(subrec.toArrayDouble("projection_parameters"));
     Projection proj(Projection::type(projname), projparms);
 //
     if (!subrec.isDefined("crval")) {
 	return 0;
     }
-    Vector<Double> crval;
-    subrec.get("crval", crval);
+    Vector<Double> crval(subrec.toArrayDouble("crval"));
 //
     if (!subrec.isDefined("crpix")) {
 	return 0;
     }
-    Vector<Double> crpix;
-    subrec.get("crpix", crpix);
+    Vector<Double> crpix(subrec.toArrayDouble("crpix"));
 //
     if (!subrec.isDefined("cdelt")) {
 	return 0;
     }
-    Vector<Double> cdelt;
-    subrec.get("cdelt", cdelt);
+    Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 //
     if (!subrec.isDefined("pc")) {
 	return 0;
     }
-    Matrix<Double> pc;
-    subrec.get("pc", pc);
+    Matrix<Double> pc(subrec.toArrayDouble("pc"));
 //
     Double longPole, latPole;
     longPole = latPole = 999.0;            // Optional

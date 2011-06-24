@@ -2615,18 +2615,17 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 //
 	ostringstream onum;
 	onum << i;
-	Vector<Int> dummy;
 	String num(onum), name;
 	name = String("worldmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->world_maps_p[i]));
+	Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->world_maps_p[i]));
 	name = String("worldreplace") + num;
-	subrec.get(name, *(retval->world_replacement_values_p[i]));
+	retval->world_replacement_values_p[i]->reference
+          (subrec.toArrayDouble(name));
 	name = String("pixelmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->pixel_maps_p[i]));
+	Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->pixel_maps_p[i]));
 	name = String("pixelreplace") + num;
-	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
+	retval->pixel_replacement_values_p[i]->reference
+          (subrec.toArrayDouble(name));
     }
 //
 // Get the obsinfo

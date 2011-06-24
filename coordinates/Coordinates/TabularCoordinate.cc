@@ -608,26 +608,22 @@ TabularCoordinate* TabularCoordinate::restore(const RecordInterface &container,
     if (!subrec.isDefined("crval")) {
 	return 0;
     }
-    Vector<Double> crval;
-    subrec.get("crval", crval);
+    Vector<Double> crval(subrec.toArrayDouble("crval"));
 
     if (!subrec.isDefined("crpix")) {
 	return 0;
     }
-    Vector<Double> crpix;
-    subrec.get("crpix", crpix);
+    Vector<Double> crpix(subrec.toArrayDouble("crpix"));
 
     if (!subrec.isDefined("cdelt")) {
 	return 0;
     }
-    Vector<Double> cdelt;
-    subrec.get("cdelt", cdelt);
+    Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 
     if (!subrec.isDefined("pc")) {
 	return 0;
     }
-    Matrix<Double> pc;
-    subrec.get("pc", pc);
+    Matrix<Double> pc(subrec.toArrayDouble("pc"));
 
     
     if (!subrec.isDefined("axes")) {
@@ -645,9 +641,8 @@ TabularCoordinate* TabularCoordinate::restore(const RecordInterface &container,
     if (!subrec.isDefined("pixelvalues") || !subrec.isDefined("worldvalues")) {
 	return 0;
     }
-    Vector<Double> world, pixels;
-    subrec.get("pixelvalues", pixels);
-    subrec.get("worldvalues", world);
+    Vector<Double> pixels(subrec.toArrayDouble("pixelvalues"));
+    Vector<Double> world (subrec.toArrayDouble("worldvalues"));
 
     TabularCoordinate *retval = 0;
     if (pixels.nelements() > 0) {

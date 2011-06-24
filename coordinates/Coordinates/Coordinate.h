@@ -130,7 +130,6 @@ class Projection;
 //
 // <thrown>
 //   <li>  AipsError
-//   <li>  AllocError
 // </thrown>
 //
 // <todo asof="1997/1/13">

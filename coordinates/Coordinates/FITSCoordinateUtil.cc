@@ -1734,13 +1734,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		os << "Ignoring redundant " << sprefix << "rota in favour of "
 		    "pc matrix." << LogIO::NORMAL << LogIO::POST;
 	    }
-	    header.get("pc", pc);
+	    pc.reference (header.toArrayDouble("pc"));
 	    if (pc.ncolumn() != pc.nrow()) {
 		os << "The PC matrix must be square" << LogIO::EXCEPTION;
 	    }
 	} else if (header.isDefined(sprefix + "rota")) {
-	    Vector<Double> crota;
-	    header.get(sprefix + "rota", crota);
+            Vector<Double> crota(header.toArrayDouble(sprefix + "rota"));
 
 // Turn crota into PC matrix
 
