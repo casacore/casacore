@@ -294,7 +294,6 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
       Int widthetime = 10;
       Int widthFieldId = 5;
       Int widthField = 20;
-      Int widthObsMode = 20;
       Int widthnrow = 7;
       Int widthInttim = 7;
 
@@ -660,14 +659,13 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
   ROMSColumns msc(*pMS);
   Double startTime, stopTime;
   minMax(startTime, stopTime, msc.time().getColumn());
-  Double exposTime = stopTime - startTime;
   
   MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
 
   ROMSMainColumns msmc(*pMS);
   String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
   //outRec.define("numrecords", nrow());
-  //outRec.define("IntegrationTime", exposTime);
+  //outRec.define("IntegrationTime", stopTime-startTime);
   //outRec.define("BeginTime", startTime/C::day);
   //outRec.define("EndTime", stopTime/C::day);
   //outRec.define("timeref", timeref);
@@ -702,7 +700,7 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
   TableIterator obsarriter(mstab,icols);
   //Limiting record length
   Int recLength=0;
-  const Int maxRecLength=10000; //limiting for speed and size sake
+
   // Iterate:
   while (!obsarriter.pastEnd()) {
 
@@ -710,10 +708,10 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
     Table obsarrtab(obsarriter.table());
 	
     // Extract (zero-based) OBSID and ARRID for this iteration:
-    ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
-    Int obsid(obsidcol(0));
-    ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
-    Int arrid(arridcol(0));
+//    ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
+//    Int obsid(obsidcol(0));
+//    ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
+//    Int arrid(arridcol(0));
   
     // Report OBSID and ARRID, and header for listing:
 // 	os << endl << "   ObservationID = " << obsid;

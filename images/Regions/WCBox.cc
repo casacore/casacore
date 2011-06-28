@@ -634,7 +634,7 @@ WCBox* WCBox::fromRecord (const TableRecord& rec,
 
 // Get the pixelAxes.  Pixel things must be converted to zero rel
 
-   Vector<Int> axes = Vector<Int>(rec.asArrayInt ("pixelAxes"));
+   Vector<Int> axes = Vector<Int>(rec.toArrayInt ("pixelAxes"));
    const uInt nAxes = axes.nelements();
    IPosition pixelAxes(nAxes);
    for (uInt i=0; i<nAxes; i++) {
@@ -644,7 +644,7 @@ WCBox* WCBox::fromRecord (const TableRecord& rec,
 
 // Get the absRel vector
 
-   Vector<Int> absRel = Vector<Int>(rec.asArrayInt ("absrel"));
+   Vector<Int> absRel = Vector<Int>(rec.toArrayInt ("absrel"));
    uInt nAbsRel = absRel.nelements();
 
 // Get the blc and trc quantity vectors

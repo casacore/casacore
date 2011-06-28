@@ -144,13 +144,45 @@ void testNormal()
   mutex.unlock();
 }
 
+void testMutexedInitFunc (void* arg)
+{
+  int* count = static_cast<int*>(arg);
+  (*count)++;
+}
+
+// Test serially.
+void testMutexedInitSerial()
+{
+  int count=0;
+  MutexedInit safeInit (testMutexedInitFunc, &count);
+  for (int i=0; i<16; ++i) {
+    safeInit.exec();
+  }
+  AlwaysAssertExit (count==1);
+}
+
+// Test parallel.
+void testMutexedInitParallel()
+{
+  int count=0;
+  MutexedInit safeInit (testMutexedInitFunc, &count);
+#pragma omp parallel for
+  for (int i=0; i<16; ++i) {
+    safeInit.exec();
+  }
+  AlwaysAssertExit (count==1);
+}
+
+
 int main()
 {
   try {
+    testMutexedInitSerial();
 #ifdef USE_THREADS
     testErrorCheck();
     testRecursive();
     testNormal();
+    testMutexedInitParallel();
 #endif
   } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;

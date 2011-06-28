@@ -318,7 +318,7 @@ void LogSink::flush (Bool global)
 
 void LogSink::createGlobalSink()
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     if ( ! LogSink::global_sink_p ) {
         LogSink::global_sink_p = new CountedPtr<LogSinkInterface>
           (new StreamLogSink(LogMessage::NORMAL, &cerr));

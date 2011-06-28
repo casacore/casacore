@@ -41,12 +41,9 @@ MCBase::~MCBase() {}
 //# Operators
 
 //# Member functions
-void MCBase::makeState(Bool &made, uInt *state,
+void MCBase::makeState(uInt *state,
 		       const uInt ntyp, const uInt nrout,
 		       const uInt list[][3]) {
-  if (made) return;
-  made = True;
-
   // Make trees
   uInt *tcnt = new uInt[ntyp];
   uInt *tree = new uInt[ntyp*ntyp];
@@ -124,27 +121,32 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
   return True;
 }
 
-String MCBase::showState(Bool &made, uInt *state,
+String MCBase::showState(uInt *state,
 			 const uInt ntyp, const uInt,
 			 const uInt list[][3]) {
-  if (!made) return String("No state made yet");
   ostringstream oss;
   oss << "   |";
-  for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;;
+  for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;
   oss << "\n";
   for (uInt j=0; j<3*ntyp+4; j++) oss << '-'; 
   oss << "\n";
   for (uInt i=0; i<ntyp; i++) {
     oss << setw(3) << i << '|';
     for (uInt j=0; j<ntyp; j++) {
-      if (i == j) oss << " --"; 
-      else oss << setw(3) << state[i*ntyp+j];
+      if (i == j) {
+        oss << " --"; 
+      } else {
+        oss << setw(3) << state[i*ntyp+j];
+      }
     }
     oss << "\n";
     oss << "   |";
     for (uInt k=0; k<ntyp; k++) {
-      if (i == k) oss << "   ";
-      else oss << setw(3) << list[state[i*ntyp+k]][1];
+      if (i == k) {
+        oss << "   ";
+      } else {
+        oss << setw(3) << list[state[i*ntyp+k]][1];
+      }
     }
     oss << "\n";
   }

@@ -397,7 +397,7 @@ void Aipsrc::save(const String keyword, const String val) {
 void Aipsrc::parse(Bool force) {
   // Thread-safety. Note that when the lock is acquired,
   // parse might have been done already in another thread.
-  ScopedLock lock(theirMutex);
+  ScopedMutexLock lock(theirMutex);
   if (doInit || force) {
     // Refill basic data
     filled = False;

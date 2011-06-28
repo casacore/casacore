@@ -47,7 +47,7 @@ Bool Primes::isPrime(uInt number)
 
 uInt Primes::aLargerPrimeThan( uInt number ) 
 {    
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     // If number is equal to or larger than the last (and largest) element in 
     // the table of primes, this function returns zero; otherwise, this 
     // function returns the next higher prime in the table.
@@ -67,7 +67,7 @@ uInt Primes::aLargerPrimeThan( uInt number )
 
 uInt Primes::nextLargerPrimeThan( uInt number ) 
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     uInt i;
     // This function increments number until it is prime.  It finds the next
     // entry in the table of primes which is larger, and stores this entry's

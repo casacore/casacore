@@ -79,8 +79,6 @@ namespace casa {
     ImageProxy (const ValueHolder& values,
                 const ValueHolder& mask,
                 const Record& coordinates,
-                const Vector<double>& crval,
-                const Vector<double>& cdelta,
                 const String& imageName = String(),
                 Bool overwrite = True,
                 Bool asHDF5 = False,
@@ -95,8 +93,6 @@ namespace casa {
     ImageProxy (const IPosition& shape,
                 const ValueHolder& value,
                 const Record& coordinates,
-                const Vector<double>& crval,
-                const Vector<double>& cdelta,
                 const String& imageName = String(),
                 Bool overwrite = True,
                 Bool asHDF5 = False,
@@ -307,7 +303,6 @@ namespace casa {
     template<typename T>
     void makeImage (const Array<T>& array, const Array<Bool>& mask,
                     const IPosition& shape, const Record& coordinates,
-                    const Vector<double>& crval, const Vector<double>& cdelta,
                     const String& fileName, Bool asHDF5,
                     const String& maskName,
                     const IPosition& tileShape);
@@ -326,9 +321,7 @@ namespace casa {
 
     // Centre all axes except the Stokes one.
     void centreRefPix (CoordinateSystem& cSys, 
-                       const IPosition& shape,
-                       const Vector<double>& crval,
-                       const Vector<double>& cdelta) const;
+                       const IPosition& shape) const;
 
     // Put the mask and create it if needed.
     template<typename T>

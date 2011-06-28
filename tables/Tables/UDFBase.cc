@@ -127,7 +127,7 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter == theirRegistry.end()) {
       theirRegistry[fname] = func;
@@ -144,7 +144,7 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter != theirRegistry.end()) {
       return iter->second (fname);

@@ -36,6 +36,7 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <scimath/Functionals/Polynomial.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -418,18 +419,14 @@ public:
 
 private:
   
-  //# Constructors
-  // Default constructor, NOT defined
-  MeasTable();
-  
   // Copy assign, NOT defined
   MeasTable &operator=(const MeasTable &other);
   
-  //# Destructor
-  //  Destructor, NOT defined and not declared to stop warning
-  // ~MeasTable();
-
   //# General member functions
+
+  static void doInitObservatories (void*);
+  static void doInitLines (void*);
+  static void doInitSources (void*);
 
   // Calculate precessionCoef
   // <group>
@@ -441,58 +438,58 @@ private:
 
   // Calculate fundArg
   // <group>
-  static void calcFundArg(Bool &need, Polynomial<Double> result[6],
+  static void calcFundArg(volatile Bool &need, Polynomial<Double> result[6],
 			  const Double coeff[6][4]); 
-  static void calcFundArg00(Bool &need, Polynomial<Double> result[6],
+  static void calcFundArg00(volatile Bool &need, Polynomial<Double> result[6],
 			    const Double coeff[6][5]); 
-  static void calcPlanArg00(Bool &need, 
+  static void calcPlanArg00(volatile Bool &need, 
 			    Polynomial<Double> result[14],
 			    const Double coeff[8][2]);
   // </group>
 
   // Calculate mulArg
   // <group>
-  static void calcMulArg(Bool &need, Vector<Char> result[],
+  static void calcMulArg(volatile Bool &need, Vector<Char> result[],
 			 const Char coeff[][5], Int row); 
-  static void calcMulPlanArg(Bool &need, Vector<Char> result[],
+  static void calcMulPlanArg(volatile Bool &need, Vector<Char> result[],
 			     const Char coeff[][14], Int row); 
   // </group>
 
   // Calculate mulSC
   // <group>
-  static void calcMulSC(Bool &need, Double &check, Double T,
+  static void calcMulSC(volatile Bool &need, Double &check, Double T,
 			Vector<Double> result[], Int resrow,
 			Polynomial<Double> poly[],
 			const Long coeffTD[][5], Int TDrow,
 			const Short coeffSC[][2]);
-  static void calcMulSC2000(Bool &need, Double &check, Double T,
+  static void calcMulSC2000(volatile Bool &need, Double &check, Double T,
 			    Vector<Double> result[], uInt resrow,
 			    Polynomial<Double> poly[],
 			    const Long coeffSC[][6]);
-  static void calcMulSCPlan(Bool &need,
+  static void calcMulSCPlan(volatile Bool &need,
 			    Vector<Double> result[], uInt resrow,
 			    const Short coeffSC[][4]);
-  static void calcMulSCPlan(Bool &need,
+  static void calcMulSCPlan(volatile Bool &need,
 			    Vector<Double> result[], uInt resrow,
 			    const Double coeffSC[][2]);
   // </group>
   //# Data
   // Observatories table data
   // <group>
-  static Bool obsNeedInit;
+  static MutexedInit obsMutexedInit;
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
   static Vector<String> antResponsesPath;
   // </group>
   // Spectral line table data
   // <group>
-  static Bool lineNeedInit;
+  static MutexedInit lineMutexedInit;
   static Vector<String> lineNams;
   static Vector<MFrequency> linePos;
   // </group>
   // Sources table data
   // <group>
-  static Bool srcNeedInit;
+  static MutexedInit srcMutexedInit;
   static Vector<String> srcNams;
   static Vector<MDirection> srcPos;
   // </group>
@@ -513,7 +510,8 @@ private:
   static uInt iau2000_reg;
   static uInt iau2000a_reg;
   // </group>
-
+  // Mutex for thread-safety.
+  static Mutex theirMutex;
 };
 
 

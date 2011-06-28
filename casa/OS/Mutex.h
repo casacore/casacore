@@ -42,8 +42,8 @@ namespace casa {
   //
   // <synopsis>
   // This class is a wrapper around a phtreads mutex.
-  // <br>Normally class ScopedLock should be used to obtain a lock, because
-  // it makes locking exception-safe.
+  // <br>Although the Mutex class has a lock function, class ScopedMutexLock
+  // should be used to obtain a lock, because it makes locking exception-safe.
   // </synopsis>
 
   class Mutex
@@ -94,36 +94,102 @@ namespace casa {
   // unlocking a mutex and is mutex locking fully exception-safe
   // </synopsis>
 
-  class ScopedLock
+  class ScopedMutexLock
   {
   public:
     // Create a lock on the mutex.
-    ScopedLock (Mutex&);
+    ScopedMutexLock (Mutex& mutex)
+      : itsMutexRef(mutex)
+      { itsMutexRef.lock(); }
 
     // The destructor automatically unlocks the mutex.
-    ~ScopedLock();
+    ~ScopedMutexLock()
+      { itsMutexRef.unlock(); }
     
   private:
     // Forbid copy constructor.
-    ScopedLock (const ScopedLock&);
+    ScopedMutexLock (const ScopedMutexLock&);
     // Forbid assignment.
-    ScopedLock& operator= (const ScopedLock&);
+    ScopedMutexLock& operator= (const ScopedMutexLock&);
 
     Mutex& itsMutexRef;
   };
 
 
+  // <summary>Thread-safe initialization of global variables</summary>
+  // <use visibility=export>
+  //
+  // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+  // </reviewed>
+  //
+  // <synopsis>
+  // This class does a double checked lock.
+  // <br>
+  // Often data needs to be initialized once and accessed many times. To do
+  // this in a thread-safe way, a mutex lock needs to be used. However, that
+  // is relatively expensive.
+  // The double checked lock idiom overcomes this problem. A Bool flag tells
+  // if an operation needs to be done. If so, a lock is set and the flag is
+  // tested again in case another thread happened to do the operation between
+  // the test and acquiring the lock.
+  // At the end of the operation the flag is cleared.
+  // 
+  //
+  // The flag needs to be declared volatile to avoid execution ordering
+  // problems in case a compiler optimizes too much.
+  // <note role-warning>
+  // This idiom is not fully portable, because on more exotic machines the
+  // caches in different cores may not be synchronized well.
+  // </note>
+  // </synopsis>
+  //
+  // <example>
+  // <srcblock>
+  // // Declare static variables.
+  // static volatile Bool needInit = True;
+  // static Mutex mutex;
+  // // Execute the code in a scope, so the destructor is called automatically.
+  // {
+  //   CheckedMutexLock locker(mutex, needInit);
+  //   if (locker.doIt()) {
+  //      .. do the initialization
+  //   }
+  // }
+  // </srcblock>
+  // </example>
 
-  inline ScopedLock::ScopedLock(Mutex &mutex)
-  : itsMutexRef(mutex)
+  class MutexedInit
   {
-    itsMutexRef.lock();
-  }
-  
-  inline ScopedLock::~ScopedLock()
-  {
-    itsMutexRef.unlock();
-  }
+  public:
+    // Define the initialization function to call.
+    typedef void InitFunc (void*);
+
+    // Create the mutex and set that the initialization should be done.
+    MutexedInit (InitFunc* func, void* arg=0, Mutex::Type type=Mutex::Auto);
+
+    // Execute the initialization function if not done yet.
+    void exec()
+      { if (itsDoExec) doExec(); }
+
+    // Get the mutex (to make it possible to lock for other purposes).
+    Mutex& mutex()
+      { return itsMutex; }
+
+  private:
+    // Forbid copy constructor.
+    MutexedInit (const MutexedInit&);
+    // Forbid assignment.
+    MutexedInit& operator= (const MutexedInit&);
+
+    // Thread-safe execution of the initialization function (if still needed).
+    void doExec();
+
+    //# Data members
+    Mutex         itsMutex;
+    InitFunc*     itsFunc;
+    void*         itsArg;
+    volatile Bool itsDoExec;
+  };
 
 
 } // namespace casa

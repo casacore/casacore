@@ -485,9 +485,8 @@ private:
 
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
-    static volatile Bool theirMainRegistrationDone;
     static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
-    static Mutex theirMutex;
+    static MutexedInit theirMutexedInit;
 
 public:
     // Has the object already been cloned?
@@ -511,7 +510,7 @@ public:
     // Register the main data managers (if not done yet).
     // It is fully thread-safe.
     static void registerMainCtor()
-      { if (!theirMainRegistrationDone) doRegisterMainCtor(); }
+      { theirMutexedInit.exec(); }
 
     // Serve as default function for theirRegisterMap, which catches all
     // unknown data manager types.
@@ -528,7 +527,7 @@ private:
       { theirRegisterMap.define (type, func); }
 
     // Do the actual (thread-safe) registration of the main data managers.
-    static void doRegisterMainCtor();
+    static void doRegisterMainCtor (void*);
 };
 
 

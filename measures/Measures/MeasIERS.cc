@@ -141,67 +141,76 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
     "DdPsi",
     "DdEps"};
   static const String tplc[N_Files] = {"measures.ierseop97.directory",
-				 "measures.ierspredict.directory"};
+                                       "measures.ierspredict.directory"};
 
-  if (!measured[which] && measFlag[which]) {
-    measFlag[which] = False;
-    TableRecord kws;
-    Double dt;
-    String vs;
-    Bool ok = True;
-    if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
-			    rfp[Int(which)], vs, dt, 
-			    N_Types, names, tp[which],
-			    tplc[which],
-			    "geodetic")) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("initMeas(MeasIERS::Files)"),
-			 WHERE));
-      os << LogIO::NORMAL1
-         << "Cannot read IERS (Earth axis data) table " << tp[which]
-         << "\nCalculations will proceed with lower precision"
-         << LogIO::POST;
-      return False;
-    }
-    MeasIERS::openNote(&MeasIERS::closeMeas);
-    if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000)
-      ok = False;
-    if (ok) {
-      mjd0[which] = Int(kws.asDouble("MJD0"));
-      Int n = t[which].nrow();
-      row[which].get(n-1);
-      if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
-	ok = False;
-      } else {
-	mjdl[which] = mjd0[which] + n;
+  if (measFlag[which]) {
+    ScopedMutexLock locker(theirMutex);
+    if (measFlag[which]) {
+      TableRecord kws;
+      Double dt;
+      String vs;
+      Bool ok = True;
+      if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
+                              rfp[Int(which)], vs, dt, 
+                              N_Types, names, tp[which],
+                              tplc[which],
+                              "geodetic")) {
+        LogIO os(LogOrigin("MeasIERS",
+                           String("initMeas(MeasIERS::Files)"),
+                           WHERE));
+        os << LogIO::NORMAL1
+           << "Cannot read IERS (Earth axis data) table " << tp[which]
+           << "\nCalculations will proceed with lower precision"
+           << LogIO::POST;
+        ok = False;
       }
-    }
-    if (!ok) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("initMeas(MeasIERS::Files)"),
-			 WHERE));
-      os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
-    }
-    measured[which] = True;
-    for (Int i = 0; i < MeasIERS::N_Types; i++) {
-      for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
-	ldat[j][i] = 0;
+      if (ok) {
+        MeasIERS::openNote(&MeasIERS::closeMeas);
+        if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000) {
+          ok = False;
+        }
       }
-    } 
+      if (ok) {
+        mjd0[which] = Int(kws.asDouble("MJD0"));
+        Int n = t[which].nrow();
+        row[which].get(n-1);
+        if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
+          ok = False;
+        } else {
+          mjdl[which] = mjd0[which] + n;
+        }
+      }
+      if (!ok) {
+        LogIO os(LogOrigin("MeasIERS",
+                           String("initMeas(MeasIERS::Files)"),
+                           WHERE));
+        os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
+      }
+      for (Int i = 0; i < MeasIERS::N_Types; i++) {
+        for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
+          ldat[j][i] = 0;
+        }
+      }
+      measFlag[which] = False;
+    }
   }
-  return (measured[which]);
+  return (! t[which].isNull());
 }
 
 void MeasIERS::closeMeas() {
   for (uInt i=0; i<N_Files; ++i) {
-    if (Table::isOpened(tp[i]) || measured[i] || !measFlag[i]) {
-      measFlag[i] = True;
-      measured[i] = False;
-      dateNow = 0.0;
-      mjd0[i] = 0;
-      mjdl[i] = 0;
-      msgDone = False;
-      t[i] = Table();
+    if (!measFlag[i]) {
+      ScopedMutexLock locker(theirMutex);
+      if (!measFlag[i]) {
+        if (! t[i].isNull()) {
+          dateNow = 0.0;
+          mjd0[i] = 0;
+          mjdl[i] = 0;
+          msgDone = False;
+          t[i] = Table();
+        }
+        measFlag[i] = True;
+      }
     }
   }
 }
@@ -532,8 +541,7 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
   return True;
 }
   
-Bool MeasIERS::measFlag[MeasIERS::N_Files] = {True, True};
-Bool MeasIERS::measured[MeasIERS::N_Files] = {False, False};
+volatile Bool MeasIERS::measFlag[MeasIERS::N_Files] = {True, True};
 Double MeasIERS::dateNow = 0.0;
 Table MeasIERS::t[MeasIERS::N_Files];
 ROTableRow MeasIERS::row[MeasIERS::N_Files];
@@ -546,6 +554,6 @@ const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
 uInt MeasIERS::sizeNote = 0;
 uInt MeasIERS::nNote = 0;
 MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
+Mutex MeasIERS::theirMutex;
 
 } //# NAMESPACE CASA - END
-

@@ -621,8 +621,12 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    case TpArrayBool:
 		header.define(miscname, image.miscInfo().asArrayBool(i));
 		break;
+	    case TpArrayChar:
+	    case TpArrayUShort:
 	    case TpArrayInt:
-		header.define(miscname, image.miscInfo().asArrayInt(i));
+	    case TpArrayUInt:
+	    case TpArrayInt64:
+		header.define(miscname, image.miscInfo().toArrayInt(i));
 		break;
 	    case TpArrayFloat:
 		header.define(miscname, image.miscInfo().asArrayfloat(i));

@@ -234,7 +234,7 @@ namespace casa {
 
     const HashMap<uInt, Float (*)(const Array<Float>&)>* ImageCollapser::funcMap() {
     	if (! _funcMap) {
-    		_funcMap = new HashMap<uInt, Float (*)(const Array<Float>&)>(casa::mean);
+                _funcMap = new HashMap<uInt, Float (*)(const Array<Float>&)>(casa::mean<Float>);
     		_funcMap->define((uInt)AVDEV, casa::avdev);
     		_funcMap->define((uInt)MAX, casa::max);
     		_funcMap->define((uInt)MEAN, casa::mean);

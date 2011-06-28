@@ -34,6 +34,7 @@
 #include <tables/Tables/TableRow.h>
 #include <tables/Tables/TableRecord.h>
 #include <casa/Containers/RecordField.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -264,10 +265,8 @@ private:
 			      const TableRecord& ks, const Table& tab);
 
   //# Data members
-  // Measured data readable
-  static Bool measFlag[N_Files];
-  // Measured data present
-  static Bool measured[N_Files];
+  // Measured data read
+  static volatile Bool measFlag[N_Files];
   // Current date
   static Double dateNow;
   // Open tables
@@ -298,6 +297,8 @@ private:
   static CLOSEFUN *toclose;
   // Number of close notifications
   static uInt nNote;
+  // Mutex for thread-safety.
+  static Mutex theirMutex;
 };
 
 //# Inline Implementations

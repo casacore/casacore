@@ -127,4 +127,25 @@ namespace casa {
 
 #endif
 
+
+  MutexedInit::MutexedInit (InitFunc* func, void* arg, Mutex::Type type)
+    : itsMutex  (type),
+      itsFunc   (func),
+      itsArg    (arg),
+      itsDoExec (True)
+  {}
+
+  void MutexedInit::doExec()
+  {
+    // The exec function said we have to execute the initializion function.
+    // Obtain a lock and test the flag again to see if another thread hasn't
+    // executed the function in the mean time.
+    ScopedMutexLock locker(itsMutex);
+    if (itsDoExec) {
+      itsFunc (itsArg);
+      itsDoExec = False;
+    }
+  }
+
+
 } // namespace casa

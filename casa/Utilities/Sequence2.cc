@@ -34,7 +34,7 @@ Mutex uIntSequence::theirMutex;
 
 uInt uIntSequence::SgetNext()
 {
-  ScopedLock lock(theirMutex);
+  ScopedMutexLock lock(theirMutex);
   return ++num;
 }
 

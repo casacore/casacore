@@ -762,7 +762,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
   if(remRedunObsId){ // remove redundant rows
     MSObservationColumns& obsCol = observation();
     Vector<Bool> rowToBeRemoved(obs.nrow(), False);
-    vector<uint> rowsToBeRemoved;
+    vector<uInt> rowsToBeRemoved;
     for(uInt j=0; j<obs.nrow(); j++){ // loop over OBS table rows
       for (uInt k=j+1; k<obs.nrow(); k++){ // loop over remaining OBS table rows
 	if(obsRowsEquivalent(obsCol, j, k)){ // rows equivalent?
@@ -776,7 +776,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
 
     // create final maps
     // map for first table
-    for(uInt i=0; i<originalNrow; i++){ // loop over rows of old first table
+    for(Int i=0; i<originalNrow; i++){ // loop over rows of old first table
       if(tempObsIndex2.isDefined(i)){ // ID changed because of removal
 	  newObsIndexA_p.define(i,tempObsIndex2(i));
 	  doObsA_p = True;
@@ -1211,9 +1211,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // loop over the columns of the merged source table 
       Vector<Bool> rowToBeRemoved(numrows_this, False);
       vector<uInt> rowsToBeRemoved;
-      for (uint j=0 ; j < numrows_this ; ++j){
+      for (int j=0 ; j < numrows_this ; ++j){
 	// check if row j has an equivalent row somewhere else in the table
-	for (uint k=0 ; k < numrows_this ; ++k){
+	for (int k=0 ; k < numrows_this ; ++k){
 	  if (k!=j && !rowToBeRemoved(j) && !rowToBeRemoved(k)){
 	    Int reftypej = solSystObjects_p(thisId(j));
 	    Int reftypek = solSystObjects_p(thisId(k));
@@ -1282,9 +1282,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // give equivalent rows the same source id 
       Bool rowsRenamed(False);
       Int nDistinctSources = newNumrows_this;
-      for (uint j=0 ; j < newNumrows_this ; ++j){
+      for (int j=0 ; j < newNumrows_this ; ++j){
 	// check if row j has an equivalent row somewhere down in the table
-	for (uint k=j+1 ; k < newNumrows_this ; ++k){
+	for (int k=j+1 ; k < newNumrows_this ; ++k){
 	    Int reftypej = solSystObjects_p(thisId(j));
 	    Int reftypek = solSystObjects_p(thisId(k));
 	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);

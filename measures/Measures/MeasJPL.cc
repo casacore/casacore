@@ -139,102 +139,114 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
     "MJD",
     "x" };
   static const String tplc[N_Files] = {"measures.DE200.directory",
-				 "measures.DE405.directory"};
+                                       "measures.DE405.directory"};
 
-  if (!measured[which] && measFlag[which]) {
+  if (measFlag[which]) {
+    ScopedMutexLock locker(theirMutex);
+    if (measFlag[which]) {
+      TableRecord kws;
+      Double dt;
+      String vs;
+      Bool ok = True;
+      if (!MeasIERS::getTable(MeasJPL::t[which], kws, row[which],
+                              rfp[Int(which)], vs, dt, 
+                              1, names, tp[which],
+                              tplc[which],
+                              "ephemerides")) {
+        ok = False;
+      }
+      if (ok) {
+        MeasIERS::openNote(&MeasIERS::closeMeas);
+        if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
+            !kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
+            !kws.isDefined("AU") || kws.asDouble("AU") < 1e8 ||
+            !kws.isDefined("CLIGHT") || kws.asDouble("CLIGHT") < 2e5 ||
+            !kws.isDefined("GMS") || kws.asDouble("GMS") < 2e-4 ||
+            !((kws.isDefined("RADS") && kws.asDouble("RADS") > 6e5) ||
+              (kws.isDefined("ASUN") && kws.asDouble("ASUN") > 6e5))||
+            !kws.isDefined("EMRAT") || kws.asDouble("EMRAT") < 10 ) {
+          ok = False;
+        }
+      }
+      if (ok) {
+        mjd0[which] = Int(kws.asDouble("MJD0"));
+        dmjd[which] = Int(kws.asDouble("dMJD"));
+        cn[which][MeasJPL::AU] = kws.asDouble("AU");
+        aufac[which] = 1./cn[which][MeasJPL::AU];
+        emrat[which] = 1.+kws.asDouble("EMRAT");
+        cn[which][MeasJPL::CAU] = 86400 * kws.asDouble("CLIGHT")/
+          cn[which][MeasJPL::AU];
+        if (kws.isDefined("RADS")) {
+          cn[which][MeasJPL::RADS] = kws.asDouble("RADS")/
+            cn[which][MeasJPL::AU];
+        } else {
+          cn[which][MeasJPL::RADS] = kws.asDouble("ASUN")/
+            cn[which][MeasJPL::AU];
+        }
+        cn[which][MeasJPL::GMS] = kws.asDouble("GMS")/
+          cn[which][MeasJPL::CAU]/cn[which][MeasJPL::CAU];
+        Int n = t[which].nrow();
+        row[which].get(n-1);
+        if (*(rfp[Int(which)][0]) != mjd0[which] + n*dmjd[which]) { 
+          ok = False;
+        } else {
+          mjdl[which] = mjd0[which] + n*dmjd[which];
+        }
+      }
+      if (ok) {
+        const TableRecord &tr = t[which].tableDesc().columnDesc("x").
+          keywordSet();
+        if (tr.asInt("Rows") != 3 || tr.asInt("Columns") != 13) {
+          ok = False;
+        } else {
+          Array<Int> xx = tr.asArrayInt("Description");
+          uInt k = 0;
+          for (uInt i=0; i<3; i++) {
+            for (uInt j=0; j<13; j++) {
+              idx[which][i][j] = xx(IPosition(1,k++));
+              if (i == 0) idx[which][i][j] -= 3;
+            }
+          }
+          acc[Int(which)].attach(t[which], "x");
+        }
+      }
+      if (!ok) {
+        // Close table if open.
+        t[which] = Table();
+        LogIO os(LogOrigin("MeasJPL",
+                           String("initMeas(MeasJPL::Files)"),
+                           WHERE));
+        os << String("Corrupted JPL table ") + tp[which] << LogIO::EXCEPTION;
+      }
+      chc[0] = 1;
+      chc[1] = 0;
+      chcv[0] = 0;
+      chcv[1] = 1;
+    }
     measFlag[which] = False;
-    TableRecord kws;
-    Double dt;
-    String vs;
-    Bool ok = True;
-    if (!MeasIERS::getTable(MeasJPL::t[which], kws, row[which],
-			    rfp[Int(which)], vs, dt, 
-			    1, names, tp[which],
-			    tplc[which],
-			    "ephemerides")) {
-      return False;
-    }
-    MeasIERS::openNote(&MeasIERS::closeMeas);
-    if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
-	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
-	!kws.isDefined("AU") || kws.asDouble("AU") < 1e8 ||
-	!kws.isDefined("CLIGHT") || kws.asDouble("CLIGHT") < 2e5 ||
-	!kws.isDefined("GMS") || kws.asDouble("GMS") < 2e-4 ||
-	!((kws.isDefined("RADS") && kws.asDouble("RADS") > 6e5) ||
-	(kws.isDefined("ASUN") && kws.asDouble("ASUN") > 6e5))||
-	!kws.isDefined("EMRAT") || kws.asDouble("EMRAT") < 10 )
-      ok = False;
-    if (ok) {
-      mjd0[which] = Int(kws.asDouble("MJD0"));
-      dmjd[which] = Int(kws.asDouble("dMJD"));
-      cn[which][MeasJPL::AU] = kws.asDouble("AU");
-      aufac[which] = 1./cn[which][MeasJPL::AU];
-      emrat[which] = 1.+kws.asDouble("EMRAT");
-      cn[which][MeasJPL::CAU] = 86400 * kws.asDouble("CLIGHT")/
-	cn[which][MeasJPL::AU];
-      if (kws.isDefined("RADS"))
-	cn[which][MeasJPL::RADS] = kws.asDouble("RADS")/
-	cn[which][MeasJPL::AU];
-      else
-	cn[which][MeasJPL::RADS] = kws.asDouble("ASUN")/
-	cn[which][MeasJPL::AU];
-      cn[which][MeasJPL::GMS] = kws.asDouble("GMS")/
-	cn[which][MeasJPL::CAU]/cn[which][MeasJPL::CAU];
-      Int n = t[which].nrow();
-      row[which].get(n-1);
-      if (*(rfp[Int(which)][0]) != mjd0[which] + n*dmjd[which]) { 
-	ok = False;
-      } else {
-	mjdl[which] = mjd0[which] + n*dmjd[which];
-      }
-    }
-    if (ok) {
-      const TableRecord &tr = t[which].tableDesc().columnDesc("x").
-	keywordSet();
-      if (tr.asInt("Rows") != 3 || tr.asInt("Columns") != 13) {
-	ok = False;
-      } else {
-	Array<Int> xx = tr.asArrayInt("Description");
-	uInt k = 0;
-	for (uInt i=0; i<3; i++) {
-	  for (uInt j=0; j<13; j++) {
-	    idx[which][i][j] = xx(IPosition(1,k++));
-	    if (i == 0) idx[which][i][j] -= 3;
-	  }
-	}
-	acc[Int(which)].attach(t[which], "x");
-      }
-    }
-    if (!ok) {
-      LogIO os(LogOrigin("MeasJPL",
-			 String("initMeas(MeasJPL::Files)"),
-			 WHERE));
-      os << String("Corrupted JPL table ") + tp[which] << LogIO::EXCEPTION;
-    }
-    measured[which] = True;
-    chc[0] = 1;
-    chc[1] = 0;
-    chcv[0] = 0;
-    chcv[1] = 1;
   }
-  return (measured[which]);
+  return (! t[which].isNull());
 }
 
 void MeasJPL::closeMeas() {
   for (uInt i=0; i<N_Files; ++i) {
-    if (Table::isOpened(tp[i]) || measured[i] || !measFlag[i]) {
-      measFlag[i] = True;
-      measured[i] = False;
-      mjd0[i] = 0;
-      mjdl[i] = 0;
-      dmjd[i] = 0;
-      ldat[i] = 0;
-      msgDone = False;
-      np = 2;
-      nv = 3;
-      twot = 0.0;
-      vfac = 0.0;
-      t[i] = Table();
+    if (!measFlag[i]) {
+      ScopedMutexLock locker(theirMutex);
+      if (!measFlag[i]) {
+        if (! t[i].isNull()) {
+          mjd0[i] = 0;
+          mjdl[i] = 0;
+          dmjd[i] = 0;
+          ldat[i] = 0;
+          msgDone = False;
+          np = 2;
+          nv = 3;
+          twot = 0.0;
+          vfac = 0.0;
+          t[i] = Table();
+        }
+        measFlag[i] = True;
+      }
     }
   }
 }
@@ -296,8 +308,7 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv,
   }
 }
 
-Bool MeasJPL::measFlag[MeasJPL::N_Files] = {True, True};
-Bool MeasJPL::measured[MeasJPL::N_Files] = {False, False};
+volatile Bool MeasJPL::measFlag[MeasJPL::N_Files] = {True, True};
 Table MeasJPL::t[MeasJPL::N_Files];
 ROTableRow MeasJPL::row[MeasJPL::N_Files];
 RORecordFieldPtr<Double> MeasJPL::rfp[MeasJPL::N_Files][MeasJPL::N_Types];
@@ -319,6 +330,7 @@ Int MeasJPL::np = 2;
 Int MeasJPL::nv = 3;
 Double MeasJPL::twot = 0.;
 Double MeasJPL::vfac = 0.;
+Mutex MeasJPL::theirMutex;
 
 } //# NAMESPACE CASA - END
 
