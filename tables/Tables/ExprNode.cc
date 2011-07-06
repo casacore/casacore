@@ -1265,9 +1265,9 @@ TableExprNode TableExprNode::newUDFNode (const String& name,
     }
     udf->init (par, table, style);
     if (udf->ndim() == 0) {
-        return new TableExprUDFNode (udf.transfer(), set);
+        return new TableExprUDFNode (udf.transfer(), table, set);
     } else {
-        return new TableExprUDFNodeArray (udf.transfer(), set);
+        return new TableExprUDFNodeArray (udf.transfer(), table, set);
     }
 }
 

@@ -51,6 +51,8 @@ public:
     setDataType (TableExprNodeRep::NTBool);
     setNDim (0);   //scalar
   }
+  virtual void replaceTable (const Table&)
+  {}
   Bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
 };
 

@@ -52,7 +52,15 @@ MSCalEngine::~MSCalEngine()
 
 void MSCalEngine::setTable (const Table& table)
 {
+  // Set a new table.
   itsTable = table;
+  // Clear everything, so it can be re-initialized.
+  itsLastCalInx = -1;
+  itsAntPos.clear();
+  itsMount.clear();
+  itsAntMB.clear();
+  itsFieldDir.clear();
+  itsCalIdMap.clear();
 }
 
 double MSCalEngine::getHA (Int antnr, uInt rownr)

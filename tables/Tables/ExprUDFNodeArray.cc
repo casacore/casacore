@@ -30,11 +30,13 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   
-  TableExprUDFNodeArray::TableExprUDFNodeArray (UDFBase* udf,
+  TableExprUDFNodeArray::TableExprUDFNodeArray (UDFBase* udf, const Table& tab,
                                                 const TableExprNodeSet&)
     : TableExprNodeArray (udf->dataType(), OtFunc),
       itsUDF (udf)
   {
+    // Set the table. This is needed for ExprNode::checkReplaceTable to work.
+    table_p = tab;
     // The source may be empty which causes the expression type
     // to be made constant. Force it to be variable.
     exprtype_p = Variable; 

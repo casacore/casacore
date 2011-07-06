@@ -101,6 +101,13 @@ namespace casa {
   //  </td>
   // </tr>
   // <tr>
+  //  <td><src>replaceTable</src></td>
+  //  <td>The possible Table to use is set by the setup function. However,
+  //      the table to use might change which is done by thos function.
+  //      It needs to be implemented, even if no Table object is kept.
+  //  </td>
+  // </tr>
+  // <tr>
   //  <td><src>getXXX</src></td>
   //  <td>there are virtual get functions for each possible data type. The
   //      get functions matching the data types that can be set by the setup
@@ -188,6 +195,9 @@ namespace casa {
     // Get the unit.
     const String& getUnit() const
       { return itsUnit; }
+
+    // Replace the Table in this node.
+    virtual void replaceTable (const Table&) = 0;
 
   private:
     // Set up the function object.

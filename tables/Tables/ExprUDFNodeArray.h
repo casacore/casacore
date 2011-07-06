@@ -76,7 +76,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   public:
 
     // Constructor
-    TableExprUDFNodeArray (UDFBase* udf, const TableExprNodeSet& source);
+    TableExprUDFNodeArray (UDFBase* udf, const Table&,
+                           const TableExprNodeSet& source);
 
     // Destructor
     virtual ~TableExprUDFNodeArray();
