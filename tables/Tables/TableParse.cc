@@ -1617,13 +1617,16 @@ void TableParseSelect::updateValue1 (const TableExprId& rowid,
       }
     }
   } else {
-    Array<T> value;
-    node.get (rowid, value);
-    ArrayColumn<T> acol(col);
-    if (slicerPtr == 0) {
-      acol.put (row, value);
-    } else {
-      acol.putSlice (row, *slicerPtr, value);
+    // Only put an array if defined.
+    if (node.isResultDefined (rowid)) {
+      Array<T> value;
+      node.get (rowid, value);
+      ArrayColumn<T> acol(col);
+      if (slicerPtr == 0) {
+        acol.put (row, value);
+      } else if (acol.isDefined(row)) {
+        acol.putSlice (row, *slicerPtr, value);
+      }
     }
   }
 }
@@ -1649,36 +1652,42 @@ void TableParseSelect::updateValue2 (const TableExprId& rowid,
     } else {
       // The column contains an array which will be set to the scalar.
       // If a slice is given, only that slice of the array is set and put.
+      // Only put if the row contains a data array.
       ArrayColumn<TCOL> acol(col);
-      Array<TCOL> arr;
-      if (slicerPtr == 0) {
-        arr.resize (acol.shape(row));
-        arr = value;
-        acol.put (row, arr);
-      } else {
-        if (slicerPtr->isFixed()) {
-          arr.resize (slicerPtr->length());
+      if (acol.isDefined(row)) {
+        Array<TCOL> arr;
+        if (slicerPtr == 0) {
+          arr.resize (acol.shape(row));
+          arr = value;
+          acol.put (row, arr);
         } else {
-          // Unbound slicer, so derive from array shape.
-          arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
-                                                       blc, trc, inc));
+          if (slicerPtr->isFixed()) {
+            arr.resize (slicerPtr->length());
+          } else {
+            // Unbound slicer, so derive from array shape.
+            arr.resize (slicerPtr->inferShapeFromSource (acol.shape(row),
+                                                         blc, trc, inc));
+          }
+          arr = value;
+          acol.putSlice (row, *slicerPtr, arr);
         }
-        arr = value;
-        acol.putSlice (row, *slicerPtr, arr);
       }
     }
   } else {
     // The expression node contains an array, so put it in the column array or
     // a slice of it. Note that putSlice takes care of possibly unbound slicers.
-    Array<TNODE> val;
-    node.get (rowid, val);
-    Array<TCOL> value(val.shape());
-    convertArray (value, val);
-    ArrayColumn<TCOL> acol(col);
-    if (slicerPtr == 0) {
-      acol.put (row, value);
-    } else {
-      acol.putSlice (row, *slicerPtr, value);
+    // Only put if defined.
+    if (node.isResultDefined(rowid)) {
+      Array<TNODE> val;
+      node.get (rowid, val);
+      Array<TCOL> value(val.shape());
+      convertArray (value, val);
+      ArrayColumn<TCOL> acol(col);
+      if (slicerPtr == 0) {
+        acol.put (row, value);
+      } else if (acol.isDefined(row)) {
+        acol.putSlice (row, *slicerPtr, value);
+      }
     }
   }
 }

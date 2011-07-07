@@ -849,6 +849,11 @@ public:
     uInt nrow() const
       { return node_p->nrow(); }
 
+    // Is the result value defined?
+    // Normally it is, but not for a column with an undefined value.
+    Bool isResultDefined (const TableExprId& id) const
+      { return node_p->isDefined (id); }
+
     // Get a value for this node in the given row.
     // These functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
