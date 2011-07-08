@@ -431,6 +431,9 @@ public:
 		 const vector<const Table*> tempTables,
 		 const vector<TableParseSelect*>& stack);
 
+  // Replace the first table (used by CALC command).
+  void replaceTable (const Table& table);
+
   // Find the keyword or column name and create a TableExprNode from it.
   TableExprNode handleKeyCol (const String& name);
 

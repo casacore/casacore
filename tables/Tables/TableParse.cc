@@ -211,6 +211,13 @@ void TableParseSelect::addTable (Int tabnr, const String& name,
   fromTables_p.push_back (TableParse(table, shorthand));
 }
 
+void TableParseSelect::replaceTable (const Table& table)
+{
+  AlwaysAssert (!fromTables_p.empty(), AipsError);
+  // Replace table, but use same shorthand.
+  fromTables_p[0] = TableParse(table, fromTables_p[0].shorthand());
+}
+
 Table TableParseSelect::tableKey (const String& shorthand,
 				  const String& columnName,
 				  const Vector<String>& fieldNames,

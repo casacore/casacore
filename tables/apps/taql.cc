@@ -443,9 +443,10 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                  const vector<const Table*>& tempTables)
 {
   // If no command is given, assume it is CALC.
-  // Only show results for SELECT and CALC.
+  // Only show results for SELECT, COUNT and CALC.
   String::size_type spos = str.find_first_not_of (' ');
   Bool addCalc = False;
+  Bool doCount = False;
   Bool showResult = False;
   if (spos != String::npos) {
     String::size_type epos = str.find (' ', spos);
@@ -459,6 +460,10 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                   s=="delete" || s=="create" || s=="createtable" ||
                   s=="count"  || s=="using"  || s=="usingstyle" || s=="time");
       showResult = (s=="select");
+      if (s=="count") {
+        doCount    = True;
+        showResult = True;
+      }
     }
   }
   String strc(str);
@@ -472,6 +477,11 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
   String cmd;
   TaQLResult result;
   result = tableCommand (strc, tempTables, colNames, cmd);
+  // Show result of COUNT as well.
+  if (doCount) {
+    colNames.resize (colNames.size() + 1, True);
+    colNames[colNames.size() - 1] = "_COUNT_";
+  }
   if (printCommand) {
     if (!varName.empty()) {
       cout << varName << " = ";

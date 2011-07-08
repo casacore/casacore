@@ -112,7 +112,6 @@ using namespace casa;
 %type <node> selcol
 %type <node> normcol
 %type <nodelist> tables
-%type <nodelist> ctables
 %type <node> whexpr
 %type <node> groupby
 %type <nodelist> exprlist
@@ -406,23 +405,22 @@ delcomm:   DELETE FROM tables whexpr order limitoff {
 
 calccomm:  CALC FROM tables CALC orexpr {
 	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (*$3, *$5));
+                    new TaQLCalcNodeRep (*$3, *$5,
+                                         TaQLNode(), TaQLNode(), TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | CALC orexpr ctables {
+         | CALC orexpr {
+               TaQLMultiNode tabNode((TaQLMultiNodeRep*)0);
 	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (*$3, *$2));
+               new TaQLCalcNodeRep (tabNode, *$2,
+                                    TaQLNode(), TaQLNode(), TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-
-ctables:   FROM tables {
-               $$ = $2;
-           }
-           |  /* no tables */ {
-               $$ = new TaQLMultiNode ((TaQLMultiNodeRep*)0);
+         | CALC orexpr FROM tables whexpr order limitoff {
+	       $$ = new TaQLNode(
+                    new TaQLCalcNodeRep (*$4, *$2, *$5, *$6, *$7));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         ;
 
 cretabcomm: CREATETAB tabname colspecs dminfo {
 	       $$ = new TaQLNode(
