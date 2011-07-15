@@ -26,8 +26,6 @@
 //#
 //# $Id$
 
-//#include <casa/version.h>
-
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageInfo.h>
@@ -62,7 +60,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/System/ProgressMeter.h>
-#include <casa/Version.h>
+#include <casa/version.h>
 
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
