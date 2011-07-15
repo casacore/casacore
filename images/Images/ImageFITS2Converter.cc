@@ -62,6 +62,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/System/ProgressMeter.h>
+#include <casa/Version.h>
 
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
@@ -219,7 +220,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     Int BITPIX, Float minPix, Float maxPix,
 				     Bool allowOverwrite, Bool degenerateLast,
                                      Bool verbose, Bool stokesLast,
-				     Bool preferWavelength)
+				     Bool preferWavelength,
+                                     const String& origin)
 {
 //
 // Make a logger
@@ -669,11 +671,11 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // ORIGIN
 //
-    ostringstream buffer;
-    buffer << "CASA casacore alma-evla ";
-    // VersionInfo::report(buffer);
-    header.define("ORIGIN", String(buffer));
-
+    if (origin.empty()) {
+      header.define("ORIGIN", "casacore-" + getVersion());
+    } else {
+      header.define("ORIGIN", origin);
+    }
     // Set up the FITS header
     FitsKeywordList kw = FITSKeywordUtil::makeKeywordList();
     ok = FITSKeywordUtil::addKeywords(kw, header);
