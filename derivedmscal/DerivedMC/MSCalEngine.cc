@@ -44,7 +44,8 @@
 namespace casa {
 
 MSCalEngine::MSCalEngine()
-  : itsLastCalInx (-1)
+  : itsLastCalInx   (-1),
+    itsReadFieldDir (True)
 {}
 
 MSCalEngine::~MSCalEngine()
@@ -59,7 +60,9 @@ void MSCalEngine::setTable (const Table& table)
   itsAntPos.clear();
   itsMount.clear();
   itsAntMB.clear();
-  itsFieldDir.clear();
+  if (itsReadFieldDir) {
+    itsFieldDir.clear();
+  }
   itsCalIdMap.clear();
 }
 
@@ -122,6 +125,15 @@ void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
   }
 }
 
+void MSCalEngine::setDirection (const MDirection& dir)
+{
+  // Direction is explicitly given, so do not read from FIELD table.
+  itsFieldDir.resize (1);
+  itsFieldDir[0].resize (1);
+  itsFieldDir[0][0] = dir;
+  itsReadFieldDir = False;
+}
+
 Int MSCalEngine::setData (Int antnr, uInt rownr)
 {
   // Initialize if not done yet.
@@ -147,7 +159,7 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
   }
   itsLastCalInx = calInx;
   // Get the array or antenna position and put into the measure frame.
-  // Also get mount type (alt-az or else).
+  // Also get mount type (alt-az or other).
   Int mount = 0;
   if (antnr < 0) {
     // Set the array position if needed.
@@ -171,9 +183,12 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
     }
     mount = itsMount[calInx][antId];
   }
-  // Get the direction and put into the measure frame.
+  // If needed, get the direction and put into the measure frame.
   // Get field id from the table; update the field positions if needed.
-  Int fieldId = itsFieldCol(rownr);
+  Int fieldId = 0;
+  if (itsReadFieldDir) {
+    fieldId = itsFieldCol(rownr);
+  }
   if (fieldId != itsLastFieldId) {
     if (fieldId >= Int(itsFieldDir[calInx].size())) {
       fillFieldDir (calDescId, calInx);
@@ -231,7 +246,9 @@ void MSCalEngine::init()
     itsAntMB.resize    (1);
     itsAntUvw.resize   (1);
     itsUvwFilled.resize(1);
-    itsFieldDir.resize (1);
+    if (itsReadFieldDir) {
+      itsFieldDir.resize (1);
+    }
     itsCalIdMap = vector<Int>(1,0);
     if (itsTable.keywordSet().isDefined("OBSERVATION")) {
       obsTab = itsTable.keywordSet().asTable("OBSERVATION");
@@ -314,18 +331,26 @@ void MSCalEngine::fillAntPos (Int calDescId, Int calInx)
 
 void MSCalEngine::fillFieldDir (Int calDescId, Int calInx)
 {
-  Table tab;
-  if (itsCalCol.isNull()) {
-    tab = itsTable.keywordSet().asTable("FIELD");
+  // If direction is explicitly given, copy from the first one.
+  if (!itsReadFieldDir) {
+    if (calInx > 0) {
+      itsFieldDir[calInx] = itsFieldDir[0];
+    }
   } else {
-    tab = getSubTable (calDescId, "FIELD");
-  }
-  ROArrayMeasColumn<MDirection> dirCol(tab, "PHASE_DIR");
-  vector<MDirection>& fieldDir = itsFieldDir[calInx];
-  fieldDir.reserve (tab.nrow());
-  for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {
-    // Get first value of MDirection array in this row.
-    fieldDir.push_back (dirCol(i).data()[0]);
+    // Read the directions from the FIELD subtable.
+    Table tab;
+    if (itsCalCol.isNull()) {
+      tab = itsTable.keywordSet().asTable("FIELD");
+    } else {
+      tab = getSubTable (calDescId, "FIELD");
+    }
+    ROArrayMeasColumn<MDirection> dirCol(tab, "PHASE_DIR");
+    vector<MDirection>& fieldDir = itsFieldDir[calInx];
+    fieldDir.reserve (tab.nrow());
+    for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {
+      // Get first value of MDirection array in this row.
+      fieldDir.push_back (dirCol(i).data()[0]);
+    }
   }
 }
 

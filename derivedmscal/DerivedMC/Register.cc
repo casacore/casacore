@@ -49,4 +49,5 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.AZEL1", UDFMSCal::makeAZEL1);
   UDFBase::registerUDF ("derivedmscal.AZEL2", UDFMSCal::makeAZEL2);
   UDFBase::registerUDF ("derivedmscal.UVW",   UDFMSCal::makeUVW);
+  UDFBase::registerUDF ("derivedmscal.STOKES",UDFMSCal::makeStokes);
 }

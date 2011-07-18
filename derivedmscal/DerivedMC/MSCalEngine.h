@@ -115,6 +115,9 @@ public:
   // Use the given table (MS or CalTable) in the engine.
   void setTable (const Table&);
 
+  // Set the direction to be used instead of a direction from the FIELD table.
+  void setDirection (const MDirection&);
+
   // Get the hourangle for the given row.
   double getHA (Int antnr, uInt rownr);
 
@@ -177,6 +180,7 @@ private:
   vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
   vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
   vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions
+  Bool                        itsReadFieldDir; //# False: explicit directions
   vector<vector<MBaseline> >  itsAntMB;        //# J2000 MBaseline per antenna
   vector<vector<Vector<double> > > itsAntUvw;  //# J2000 UVW per antenna
   vector<Block<bool> >        itsUvwFilled;    //# is UVW filled for antenna i?
