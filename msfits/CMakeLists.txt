@@ -7,6 +7,7 @@ MSFits/FitsIDItoMS.cc
 MSFits/MSFitsIDI.cc
 MSFits/MSFitsInput.cc
 MSFits/MSFitsOutput.cc
+MSFits/MSFitsOutputAstron.cc
 MSFits/SDAntennaHandler.cc
 MSFits/SDDataDescHandler.cc
 MSFits/SDFeedHandler.cc
@@ -39,6 +40,7 @@ MSFits/FitsIDItoMS.h
 MSFits/MSFitsIDI.h
 MSFits/MSFitsInput.h
 MSFits/MSFitsOutput.h
+MSFits/MSFitsOutputAstron.h
 MSFits/SDAntennaHandler.h
 MSFits/SDDataDescHandler.h
 MSFits/SDFITSHandler.h
