@@ -49,6 +49,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     delete itsUDF;
   }
 
+  void TableExprUDFNodeArray::replaceTablePtr (const Table& table)
+  {
+    itsUDF->replaceTable (table);
+  }
+
   Array<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
     { return itsUDF->getArrayBool (id); }
   Array<Int64>    TableExprUDFNodeArray::getArrayInt     (const TableExprId& id)

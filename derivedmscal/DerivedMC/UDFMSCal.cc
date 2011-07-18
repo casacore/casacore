@@ -174,7 +174,6 @@ namespace casa {
     for (uInt i=0; i<types.size(); ++i) {
       outTypes[i] = Stokes::type (types[i]);
     }
-    cout << inTypes<<outTypes<<endl;
     itsStokesConv.setConversion (outTypes, inTypes, rescale);
     // Get the input shape.
     IPosition shape = operands[0]->shape();
@@ -189,7 +188,9 @@ namespace casa {
 
   void UDFMSCal::replaceTable (const Table& table)
   {
-    if (itsType != STOKES) {
+    if (itsType == STOKES) {
+      itsDataNode.checkReplaceTable (table);
+    } else {
       itsEngine.setTable (table);
     }
   }
@@ -265,13 +266,11 @@ namespace casa {
     Array<Complex> outf, dataf;
     Array<DComplex> outd, datad;
     itsDataNode.get (id, datad);
-    cout <<datad;
     dataf.resize (datad.shape());
     convertArray (dataf, datad);
     itsStokesConv.convert (outf, dataf);
     outd.resize (outf.shape());
     convertArray (outd, outf);
-    cout <<dataf<<outf<<outd;
     return outd;
   }
 

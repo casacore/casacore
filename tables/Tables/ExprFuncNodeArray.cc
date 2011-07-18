@@ -125,6 +125,11 @@ void TableExprFuncNodeArray::tryToConst()
     }
 }
 
+void TableExprFuncNodeArray::replaceTablePtr (const Table& table)
+{
+  node_p.replaceTablePtr (table);
+}
+
 
 const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
 							 Int ndim, uInt axarg)
