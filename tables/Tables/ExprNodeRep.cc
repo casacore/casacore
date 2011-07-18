@@ -163,8 +163,9 @@ void TableExprNodeRep::checkTablePtr (Table& table,
 	    table = node->table();
 	}else{
 	    if (!node->table().isNull()
-            &&  node->table().baseTablePtr() != table.baseTablePtr()) {
-		throw (TableInvExpr ("subexpressions use different tables"));
+            &&  node->table().nrow() != table.nrow()) {
+		throw (TableInvExpr
+                       ("expression uses differently sized tables"));
 	    }
 	}
     }

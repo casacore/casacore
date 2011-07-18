@@ -695,10 +695,10 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     // Now check if this table has been used for all columns.
     // Accept that the expression has no table, which can be the case for
     // UDFs in derivedmscal (since they have no function arguments).
-    if (!node.table().isNull()  &&  node.table().baseTablePtr() != this) {
+    if (!node.table().isNull()  &&  node.table().nrow() != this->nrow()) {
       throw (TableInvExpr ("select expression for table " +
                            node.table().tableName() +
-                           " is used on another table " + name_p));
+                           " is used on a differently sized table " + name_p));
     }
     //# Create a reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.
