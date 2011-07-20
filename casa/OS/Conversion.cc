@@ -432,11 +432,11 @@ unsigned int Conversion::bitToBool (void* to, const void* from,
     const uint8_t* bits = (const uint8_t*)from;
     const size_t bits_per_loop = 8;
     const size_t nwords = nvalues / bits_per_loop;
-#if defined(USE_THREADS) && defined(USE_MULTI_THREADS)
+#ifdef USE_MULTI_THREADING
 # pragma omp parallel if (nwords >= 1024*2)
 #endif
     {
-#if defined(USE_THREADS) && defined(USE_MULTI_THREADS)
+#ifdef USE_MULTI_THREADING
 # pragma omp for
 #endif
 	for (size_t i = 0; i < nwords; i++) {

@@ -224,5 +224,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 #endif
 
+// Only use multi-threading if USE_THREADS is defined.
+#ifndef USE_THREADS
+# ifdef USE_MULTI_THREADING
+#  undef USE_MULTI_THREADING
+# endif
+#endif
+
 } //# NAMESPACE CASA - END
 #endif
