@@ -144,6 +144,12 @@ public:
     // Also added this for HPUX11 (2b provided in the makedefs)
     // (because they do not use an unsigned int for nbytes).
     static void* mymemcpy (void* to, const void* from, unsigned int nbytes);
+
+private:
+    // Copy bits to Bool in an unoptimized way needed when 'to' is not
+    // aligned properly.
+    static unsigned int bitToBool_ (void* to, const void* from,
+                                    unsigned int nvalues);
 };
 
 
