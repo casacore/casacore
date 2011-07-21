@@ -45,7 +45,8 @@ namespace casa {
 
 MSCalEngine::MSCalEngine()
   : itsLastCalInx   (-1),
-    itsReadFieldDir (True)
+    itsReadFieldDir (True),
+    itsDirColName   ("PHASE_DIR")
 {}
 
 MSCalEngine::~MSCalEngine()
@@ -132,6 +133,12 @@ void MSCalEngine::setDirection (const MDirection& dir)
   itsFieldDir[0].resize (1);
   itsFieldDir[0][0] = dir;
   itsReadFieldDir = False;
+}
+
+void MSCalEngine::setDirColName (const String& colName)
+{
+  itsDirColName = colName;
+  itsReadFieldDir = True;
 }
 
 Int MSCalEngine::setData (Int antnr, uInt rownr)
@@ -224,11 +231,13 @@ void MSCalEngine::init()
   } else {
     itsAntCol[1].attach (itsTable, "ANTENNA1");
   }
-  itsFeedCol[0].attach (itsTable, "FEED1");
-  if (td.isColumn("FEED2")) {
-    itsFeedCol[1].attach (itsTable, "FEED2");
-  } else {
-    itsFeedCol[1].attach (itsTable, "FEED1");
+  if (td.isColumn("FEED1")) {
+    itsFeedCol[0].attach (itsTable, "FEED1");
+    if (td.isColumn("FEED2")) {
+      itsFeedCol[1].attach (itsTable, "FEED2");
+    } else {
+      itsFeedCol[1].attach (itsTable, "FEED1");
+    }
   }
   itsFieldCol.attach (itsTable, "FIELD_ID");
   itsTimeCol.attach (itsTable, "TIME");
@@ -257,6 +266,7 @@ void MSCalEngine::init()
   // Fill the antenna positions of the first CAL_DESC_ID.
   fillAntPos (0, 0);
   // Find observatory position.
+  // Get it from the OBSERVATION subtable; otherwise try keyword TELESCOPE_NAME.
   // If not found, set it to the position of the middle antenna.
   Bool fndObs = False;
   if (! obsTab.isNull()) {
@@ -264,6 +274,10 @@ void MSCalEngine::init()
       String telescope = ROScalarColumn<String>(obsTab, "TELESCOPE_NAME")(0);
       fndObs = MeasTable::Observatory (itsArrayPos, telescope);
     }
+  }
+  if (!fndObs  &&  itsTable.keywordSet().isDefined("TELESCOPE_NAME")) {
+    String telescope = itsTable.keywordSet().asString("TELESCOPE_NAME");
+    fndObs = MeasTable::Observatory (itsArrayPos, telescope);
   }
   if (!fndObs  &&  itsAntPos.size() > 0) {
     uInt nant = itsAntPos[0].size();
@@ -344,7 +358,7 @@ void MSCalEngine::fillFieldDir (Int calDescId, Int calInx)
     } else {
       tab = getSubTable (calDescId, "FIELD");
     }
-    ROArrayMeasColumn<MDirection> dirCol(tab, "PHASE_DIR");
+    ROArrayMeasColumn<MDirection> dirCol(tab, itsDirColName);
     vector<MDirection>& fieldDir = itsFieldDir[calInx];
     fieldDir.reserve (tab.nrow());
     for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {

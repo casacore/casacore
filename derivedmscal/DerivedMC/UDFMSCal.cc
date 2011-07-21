@@ -67,9 +67,13 @@ namespace casa {
     if (table.isNull()) {
       throw AipsError ("UDFMSCal can only be used on a table");
     }
+    // Function Stokes is handled by this class, all others by the engine.
     if (itsType != STOKES) {
       itsEngine.setTable (table);
-      AlwaysAssert (operands().size() < 2, AipsError);
+      if (operands().size() > 1) {
+        throw AipsError("More than 1 argument given to DERIVEDMSCAL function");
+      }
+      // Setup the direction if an argument is given.
       if (operands().size() == 1) {
         setupDir (operands()[0]);
       }
@@ -91,8 +95,8 @@ namespace casa {
       setUnit ("m");
       break;
     case STOKES:
-      setDataType (TableExprNodeRep::NTComplex);
       setupStokes (table, operands());
+      setDataType (operands()[0]->dataType());
       break;
     }
   }
@@ -101,63 +105,102 @@ namespace casa {
   {
     // Make sure the operand is a constant double array
     // or a single string (e.g. MOON).
-    AlwaysAssert (operand->isConstant(), AipsError);
-    MDirection mdir;
+    if (! operand->isConstant()) {
+      throw AipsError("Only a constant value can be given as a DERIVEDMSCAL "
+                      "function argument");
+    }
+    // In principle type NTInt could also be allowed, but that makes no sense
+    // for direction values. So it's better to be a bit strict.
     if (operand->dataType() == TableExprNodeRep::NTDouble) {
       // Get direction (given in J2000).
-      AlwaysAssert (operand->valueType() == TableExprNodeRep::VTArray,
-                    AipsError);
+      if (operand->valueType() != TableExprNodeRep::VTArray) { 
+        throw AipsError ("Argument to DERIVEDMSCAL function is not an array "
+                         "of 2 values");
+      }
       // Make sure the unit is rad.
       // Turn the array into a vector.
       TableExprNodeUnit::adaptUnit (operand, "rad");
       Array<Double> dirs(operand->getArrayDouble(0));
-      AlwaysAssert (dirs.size() == 2, AipsError);
+      if (dirs.size() != 2) {
+        throw AipsError ("Argument to DERIVEDMSCAL function is not an array "
+                         "of 2 values");
+      }
       Vector<Double> dirVec(dirs.reform(IPosition(1,dirs.size())));
-      mdir = MDirection(Quantity(dirVec[0], "rad"),
-                        Quantity(dirVec[1], "rad"),
-                        MDirection::J2000);
+      itsEngine.setDirection (MDirection(Quantity(dirVec[0], "rad"),
+                                         Quantity(dirVec[1], "rad"),
+                                         MDirection::J2000));
     } else if (operand->dataType() == TableExprNodeRep::NTString) {
+      // First try the string as a planetary object.
+      // In the future comets can be supported like COMET:cometname.
       String str = operand->getString(0);
       MDirection::Types refType;
       Bool fnd = MDirection::getType (refType, str);
-      if (!fnd || refType<=MDirection::N_Types || refType>MDirection::N_Planets
-          || refType==MDirection::COMET) { 
-        throw AipsError ("UDFMSCal: " + str + " is an invalid (planet) name");
+      if (fnd && refType>MDirection::N_Types && refType<=MDirection::N_Planets
+          && refType!=MDirection::COMET) {
+        itsEngine.setDirection (MDirection(refType));
+      } else {
+        // Now do it as a FIELD column name.
+        // Skip possible leading backslash (escape char).
+        if (str.size() > 0  &&  str[0] == '\\') {
+          str = str.from(1);
+        }
+        if (str.empty()) {
+          throw AipsError ("An empty string given to a DERIVEDMSCAL function");
+        }
+        itsEngine.setDirColName (str);
       }
-      mdir = MDirection(refType);
+    } else {
+      throw AipsError ("Argument to DERIVEDMSCAL function must be double or "
+                       "string");
     }
-    itsEngine.setDirection (mdir);
   }
 
   void UDFMSCal::setupStokes (const Table& table,
                               PtrBlock<TableExprNodeRep*>& operands)
   {
-    // There must be at leat 1 argument (data).
-    AlwaysAssert (operands.size() > 0 && operands.size() < 4, AipsError);
+    // There must be at least 1 argument (data).
+    if (operands.size() == 0  ||  operands.size() > 3) {
+      throw AipsError ("1, 2, or 3 arguments must be given to "
+                       "DERIVEDMSCAL.STOKES");
+    }
     itsDataNode = TableExprNode(operands[0]);
-    AlwaysAssert (operands[0]->valueType() == TableExprNodeRep::VTArray,
-                  AipsError);
+    if (operands[0]->valueType() != TableExprNodeRep::VTArray  ||
+        !(operands[0]->dataType() == TableExprNodeRep::NTBool  ||
+          operands[0]->dataType() == TableExprNodeRep::NTDouble  ||
+          operands[0]->dataType() == TableExprNodeRep::NTComplex)) {
+      throw AipsError ("First argument of DERIVEDMSCAL.STOKES must be a "
+                       "Complex, Double or Bool array");
+    }
     // The optional second argument gives the output correlation types.
     // Default is iquv.
     String type = "IQUV";
     if (operands.size() > 1) {
-      AlwaysAssert (operands[1]->isConstant(), AipsError);
-      AlwaysAssert (operands[1]->dataType() == TableExprNodeRep::NTString,
-                    AipsError);
+      if (! operands[1]->isConstant()  ||
+          operands[1]->valueType() != TableExprNodeRep::VTScalar  ||
+          operands[1]->dataType() != TableExprNodeRep::NTString) {
+        throw AipsError ("Second argument of DERIVEDMSCAL.STOKES must be a "
+                         "constant String scalar");
+      }
       type = operands[1]->getString(0);
       type.upcase();
     }
     // The optional third argument tells if a factor 2 must be applied to I.
     Bool rescale = False;
     if (operands.size() > 2) {
-      AlwaysAssert (operands[2]->isConstant(), AipsError);
-      AlwaysAssert (operands[2]->dataType() == TableExprNodeRep::NTBool,
-                    AipsError);
+      if (! operands[2]->isConstant()  ||
+          operands[2]->valueType() != TableExprNodeRep::VTScalar  ||
+          operands[2]->dataType() != TableExprNodeRep::NTBool) {
+        throw AipsError ("Second argument of DERIVEDMSCAL.STOKES must be a "
+                         "constant Bool scalar");
+      }
       rescale = operands[2]->getBool(0);
     }
     // Open the POLARIZATION subtable and get the input correlation types.
     Table polTable (table.keywordSet().asTable("POLARIZATION"));
-    AlwaysAssert (polTable.nrow() > 0, AipsError);
+    if (polTable.nrow() == 0) {
+      throw AipsError("POLARIZATION subtable of " + table.tableName() +
+                      " is empty");
+    }
     Vector<Int> inTypes (ROArrayColumn<Int>(polTable, "CORR_TYPE")(0));
     // Convert the output string types to ints.
     // First convert abbrevs.
@@ -169,7 +212,10 @@ namespace casa {
       type  = "XX,XY,YX,YY";
     }
     Vector<String> types = stringToVector(type);
-    AlwaysAssert (types.size() > 0, AipsError);
+    if (types.empty()) {
+      throw AipsError("No polarization types given in second argument of "
+                      "DERIVEDMSCAL.STOKES");
+    }
     Vector<Int> outTypes(types.size());
     for (uInt i=0; i<types.size(); ++i) {
       outTypes[i] = Stokes::type (types[i]);
@@ -233,11 +279,10 @@ namespace casa {
       return itsTmpUVW;
     case STOKES:
       {
-        // Unfortunately stokes weight conversion is only defined for type Float,
+        // Unfortunately stokes weight conversion is only defined for Float,
         // while TableExprNode only has Double.
         // So conversions are necessary for the time being.
-        // In the future we can add Double support to StokesConverter
-        // or Float support to TableExprNode.
+        // In the future we can add Double support to StokesConverter.
         Array<Float> outf, dataf;
         Array<Double> outd, datad;
         itsDataNode.get (id, datad);
