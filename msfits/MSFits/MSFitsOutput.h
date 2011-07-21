@@ -77,25 +77,25 @@ public:
                             const Bool padWithFlags=false);
 
 private:
-  /** Write the main table.
-      @param refPixelFreq 
-      @param refFreq      
-      @param chanbw       
-      @param outFITSFile  
-      @param rawms        
-      @param spwidMap       spwidMap[inp_spw] = output_spw, if inp_spw is selected
-                                                -1 otherwise.
-      @param nrspw          # of selected spws.
-      @param startchan      First channel
-      @param nchan          # of channels
-      @param stepchan       channel stride
-      @param fieldidMap     fieldidMap[inp_fld] = output_fld, if inp_fld is selected
-                                                  -1 otherwise.
-      @param asMultiSource  If true, write a multisource UVFITS file.
-      @param combineSpw     If true, export the spectral window(s) as IF(s).
-      @param padWithFlags   If true && combineSpw==true, pad the spws with
-                            flags as necessary to fit the IF structure.
-   */
+  // Write the main table.
+  //    @param refPixelFreq 
+  //    @param refFreq      
+  //    @param chanbw       
+  //    @param outFITSFile  
+  //    @param rawms        
+  //    @param column         data column to write
+  //    @param spwidMap       spwidMap[inp_spw] = output_spw, if inp_spw is selected
+  //                                              -1 otherwise.
+  //    @param nrspw          # of selected spws.
+  //    @param startchan      First channel
+  //    @param nchan          # of channels
+  //    @param stepchan       channel stride
+  //    @param fieldidMap     fieldidMap[inp_fld] = output_fld, if inp_fld is selected
+  //                                                -1 otherwise.
+  //    @param asMultiSource  If true, write a multisource UVFITS file.
+  //    @param combineSpw     If true, export the spectral window(s) as IF(s).
+  //    @param padWithFlags   If true && combineSpw==true, pad the spws with
+  //                          flags as necessary to fit the IF structure.
   static FitsOutput *writeMain(Int& refPixelFreq, Double& refFreq,
 			       Double& chanbw,
 			       const String& outFITSFile,
@@ -156,36 +156,36 @@ private:
   static Table handleSysCal (const MeasurementSet& ms,
 			     const Vector<Int>& spwids, Bool isSubset);
 
-  /** Determine which ids are selected in the main table
-      (used for fields and spectral-window).
-      @param map    (Really an output here, not an input.)
-                    spwidMap[inp_id] = output_id, if inp_id is selected
-                                       -1 otherwise.
-      @param selids (Really an output here, not an input.)
-                    A list of the selected input IDs.
-      @param allids (Really is an input, not an output!)
-                    IDs to consider.
-      @return number of selected IDs in allids
-  */
+  // Determine which ids are selected in the main table
+  // (used for fields and spectral-window).
+  //    @param map    (Really an output here, not an input.)
+  //                  spwidMap[inp_id] = output_id, if inp_id is selected
+  //                                     -1 otherwise.
+  //    @param selids (Really an output here, not an input.)
+  //                  A list of the selected input IDs.
+  //    @param allids (Really is an input, not an output!)
+  //                  IDs to consider.
+  //    @return number of selected IDs in allids
+
   static Int makeIdMap (Block<Int>& map, Vector<Int>& selids,
 			const Vector<Int>& allids);
 
-  /** Find the end of a group of rows with the same
-      time(_centroid) (within 0.25 * ininterval(rownr)), 
-      baseline #,
-      and, if asMultiSource, field ID.
-      @param rownr          Row # to start from.
-      @param nrow           # of rows in the columns.
-      @param timec          time(_centroid) col
-      @param ininterval     used to set tolerance on changes in timec.
-      @param ant1           ID of baseline's antenna 1.
-      @param ant2           ID of baseline's antenna 2.
-      @param asMultiSource  If false, treat fieldid as unattached + prone to segfault
-      @param fieldid        
-      @return Last row # with the same time, baseline, and apparent field as rownr.
-      @warning Assumes that the columns are sorted by time(_centroid), ant1,
-               ant2 (, field, DDID).
-  */
+  // Find the end of a group of rows with the same
+  // time(_centroid) (within 0.25 * ininterval(rownr)), 
+  // baseline #,
+  // and, if asMultiSource, field ID.
+  //    @param rownr          Row # to start from.
+  //    @param nrow           # of rows in the columns.
+  //    @param nif            # of IFs
+  //    @param timec          time(_centroid) col
+  //    @param ininterval     used to set tolerance on changes in timec.
+  //    @param ant1           ID of baseline's antenna 1.
+  //    @param ant2           ID of baseline's antenna 2.
+  //    @param asMultiSource  If false, treat fieldid as unattached + prone to segfault
+  //    @param fieldid        
+  //    @return Last row # with the same time, baseline, and apparent field as rownr.
+  //    @warning Assumes that the columns are sorted by time(_centroid), ant1,
+  //             ant2 (, field, DDID).
   static uInt get_tbf_end(const uInt rownr, const uInt nrow, const uInt nif,
                           const ROScalarColumn<Double>& timec,
                           const ROScalarColumn<Double>& ininterval,

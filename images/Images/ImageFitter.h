@@ -97,6 +97,7 @@ namespace casa {
             // <li> excludepix - Pixel value range to exclude from fit</li>
             // <li> residualInp - Name of residual image to save. Blank means do not save residual image</li>
             // <li> modelInp - Name of the model image to save. Blank means do not save model image</li>
+      // </ul>
 
 			// DEPRECATED, DO NOT USE FOR NEW CODE AND CHANGE OLD CODE TO USE ONE OF THE CONSTRUCTORS BELOW
             ImageFitter(

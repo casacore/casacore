@@ -58,7 +58,6 @@ class Unit;
 
 // <prerequisite>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>   
-//   <li> <linkto class="MSMoments">MSMoments</linkto>   
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 // </prerequisite>

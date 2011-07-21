@@ -32,7 +32,7 @@
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MFrequency.h>
 
-// Handy for passing anonymous arrays to functions.
+//# Handy for passing anonymous arrays to functions.
 #include <scimath/Mathematics/RigidVector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

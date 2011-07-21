@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <use visibility=export>
 
-// <author>Dave Mehringer</author>
+//# <author>Dave Mehringer</author>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 

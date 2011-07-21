@@ -56,7 +56,6 @@ template <class T> class MSMoments;
 // <prerequisite>
 //   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
-//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
 // </prerequisite>
@@ -117,7 +116,6 @@ template <class T> class MSMoments;
 //  For discussion about different moments and algorithms to compute them see the 
 //  discussion in <linkto class="MomentsBase">MomentsBase</linkto>, 
 //  <linkto class="ImageMoments">ImageMoments</linkto>, 
-//  <linkto class="MSMoments">MSMoments</linkto> and also in
 //  the derived classes documentation.
 // </synopsis>
 //
@@ -527,7 +525,6 @@ protected:
 // <prerequisite>
 //   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
-//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -563,7 +560,6 @@ protected:
 //
 //  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
 //  <linkto class="ImageMoments">ImageMoments</linkto>, and 
-//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //
 // </synopsis>
@@ -693,7 +689,6 @@ protected:
 // <prerequisite>
 //   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
-//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -735,7 +730,6 @@ protected:
 //  
 //  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
 //  <linkto class="ImageMoments">ImageMoments</linkto>, and 
-//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //  
 // </synopsis>
@@ -944,7 +938,6 @@ protected:
 // <prerequisite>
 //   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="ImageMoments">ImageMoments</linkto>
-//   <li> <linkto class="MSMoments">MSMoments</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 //   <li> <linkto class="LineCollapser">LineCollapser</linkto>
@@ -972,7 +965,6 @@ protected:
 //   
 //  See the <linkto class="MomentsBase">MomentsBase</linkto>, 
 //  <linkto class="ImageMoments">ImageMoments</linkto>, and 
-//  <linkto class="MSMoments">MSMoments</linkto>
 //  for discussion about the moments that are available for computation.
 //  
 // </synopsis>

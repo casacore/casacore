@@ -73,7 +73,7 @@ public:
 	// <src>chans</src> - Zero-based channel range on which to do the fit.
 	// <src>stokes</src> - Stokes plane on which to do the fit. Only a single Stokes parameter can be
 	// specified.
-	// <src>mask</src> - Mask (as LEL) to use as a way to specify which pixels to use </src>
+	// <src>mask</src> - Mask (as LEL) to use as a way to specify which pixels to use
 	// <src>axis</src> - axis along which to do the fits. If <0, use spectral axis, and if no spectral
 	// axis, use zeroth axis.
 	// <src>multiFit</src> True means do fit on each pixel in the specified region or box. False means

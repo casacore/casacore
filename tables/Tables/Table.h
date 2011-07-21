@@ -474,7 +474,7 @@ public:
     static String fileName (const String& tableName);
 
     // Test if a table with the given name exists and is readable.
-    // If not, an exception is thrown if <src>throwIf==True</src.
+    // If not, an exception is thrown if <src>throwIf==True</src>.
     static Bool isReadable (const String& tableName, bool throwIf=False);
 
     // Return the layout of a table (i.e. description and #rows).

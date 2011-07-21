@@ -54,7 +54,6 @@ template <class T> class PtrHolder;
 class IPosition;
 class String;
 class Unit;
-//template <class T> class MomentsBase;
 
 // <summary>
 // This class generates moments from an image.

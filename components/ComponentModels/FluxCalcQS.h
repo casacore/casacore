@@ -31,7 +31,7 @@
 #include <components/ComponentModels/FluxStandard.h>
 #include <casa/BasicSL/String.h>
 
-// Handy for passing anonymous arrays to functions.
+//# Handy for passing anonymous arrays to functions.
 #include <scimath/Mathematics/RigidVector.h>
 
 #include <map>

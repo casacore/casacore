@@ -45,10 +45,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="" date="" tests="tFitterEstimatesFileParser" demos="">
 // </reviewed>
 
-// <prerequisite> 
-//    <li> <linkto class=RegularFilebufIO>FilebufIO</linkto> class
-// </prerequisite>
-
 // <synopsis> 
 // Used for reading files containing initial estimates of models for 2-D fitting.
 // The expected format is:
