@@ -94,7 +94,7 @@ namespace casa {
       itsPlanC2CB  (0)
   {
     if (!is_initialized_fftw) {
-      ScopedLock lock(theirMutex);
+      ScopedMutexLock lock(theirMutex);
       if (!is_initialized_fftw) {
         int numCPUs = HostInfo::numCPUs();
         int nthreads = 1;
