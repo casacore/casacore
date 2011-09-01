@@ -34,6 +34,7 @@
 #include <casa/BasicSL/String.h>
 #include <vector>
 #include <unistd.h>
+#include <cstddef>                  // for ptrdiff_t
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
