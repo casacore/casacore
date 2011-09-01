@@ -33,7 +33,7 @@
 #include <casa/iosfwd.h>
 #include <casa/BasicSL/String.h>
 #include <vector>
-#include <stddef.h>
+#include <cstddef>                  // for ptrdiff_t
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

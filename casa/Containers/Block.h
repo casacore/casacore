@@ -29,15 +29,13 @@
 #define CASA_BLOCK_H
 
 #include <casa/aips.h>
-///#include <casa/Containers/BlockIO.h>
 #include <casa/Utilities/Copy.h>
+#include <cstddef>                  // for ptrdiff_t
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 #include <casa/Exceptions/Error.h>
 #endif
-
-#include <stddef.h>   // for ptrdiff_t
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

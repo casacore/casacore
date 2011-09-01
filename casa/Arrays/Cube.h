@@ -160,7 +160,26 @@ public:
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
       { return Array<T>::operator()(i); }
+
     T &operator()(uInt i1, uInt i2, uInt i3)
+      {
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
+#endif
+	return this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+      }
+
+    const T &operator()(uInt i1, uInt i2, uInt i3) const
+      {
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
+#endif
+	return this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+      }
+
+  //# Have function at (temporarily) to check if test on contiguous is
+  //# indeed slower than always using multiplication in operator()
+    T &at(uInt i1, uInt i2, uInt i3)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -169,7 +188,7 @@ public:
                               this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
 
-    const T &operator()(uInt i1, uInt i2, uInt i3) const
+    const T &at(uInt i1, uInt i2, uInt i3) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -246,16 +265,16 @@ public:
     // </group>
 
 
-    // Extract a plane as a cube. We could have xzPlane, etc also if that
-    // would be of use to anyone. Of course you could also use a Matrix
+    // Extract a plane as a matrix referencing the original data.
+    // Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
     Matrix<T> xyPlane(uInt zplane); 
     const  Matrix<T> xyPlane(uInt zplane) const; 
-    Matrix<T> xzPlane(uInt zplane); 
-    const  Matrix<T> xzPlane(uInt zplane) const; 
-    Matrix<T> yzPlane(uInt zplane); 
-    const  Matrix<T> yzPlane(uInt zplane) const; 
+    Matrix<T> xzPlane(uInt yplane); 
+    const  Matrix<T> xzPlane(uInt yplane) const; 
+    Matrix<T> yzPlane(uInt xplane); 
+    const  Matrix<T> yzPlane(uInt xplane) const; 
     // </group>
 
     // The length of each axis of the cube.
