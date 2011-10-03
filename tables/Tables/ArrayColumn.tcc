@@ -154,6 +154,14 @@ Array<T> ROArrayColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T>
+Array<T> ROArrayColumn<T>::get (uInt rownr) const
+{
+    Array<T> arr;
+    get (rownr, arr);
+    return arr;
+}
+
+template<class T>
 void ROArrayColumn<T>::get (uInt rownr, Array<T>& arr, Bool resize) const
 {
     TABLECOLUMNCHECKROW(rownr);
