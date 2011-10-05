@@ -266,6 +266,10 @@ class TableExprNode;
   // It results in a Bool scalar or array.
     TableExprNode isNaN (const TableExprNode& node);
 
+  // Function to test if a scalar or array is finite.
+  // It results in a Bool scalar or array.
+    TableExprNode isFinite (const TableExprNode& node);
+
   // Minimum or maximum of 2 nodes.
   // Makes sense for numeric and String values. For Complex values
   // the norm is compared.
@@ -659,7 +663,8 @@ class TableExprNode
     friend TableExprNode ctime     (const TableExprNode& node);
     friend TableExprNode week	   (const TableExprNode& node);
     friend TableExprNode time      (const TableExprNode& node);
-    friend TableExprNode isNaN (const TableExprNode& node);
+    friend TableExprNode isNaN     (const TableExprNode& node);
+    friend TableExprNode isFinite  (const TableExprNode& node);
     friend TableExprNode min (const TableExprNode& a, const TableExprNode& b);
     friend TableExprNode max (const TableExprNode& a, const TableExprNode& b);
     friend TableExprNode conj (const TableExprNode& node);
@@ -1543,6 +1548,15 @@ inline TableExprNode rtrim (const TableExprNode& node)
 inline TableExprNode isNaN (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::isnanFUNC, node);
+}
+inline TableExprNode isInf (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::isinfFUNC, node);
+}
+inline TableExprNode isFinite (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::isfiniteFUNC,
+                                           node);
 }
 inline TableExprNode min (const TableExprNode& node)
 {

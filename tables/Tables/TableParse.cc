@@ -629,6 +629,10 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrayFUNC;
   } else if (funcName == "isnan") {
     ftype = TableExprFuncNode::isnanFUNC;
+  } else if (funcName == "isinf") {
+    ftype = TableExprFuncNode::isinfFUNC;
+  } else if (funcName == "isfinite") {
+    ftype = TableExprFuncNode::isfiniteFUNC;
   } else if (funcName == "isdefined") {
     ftype = TableExprFuncNode::isdefFUNC;
   } else if (funcName == "nelements"  ||  funcName == "count") {
