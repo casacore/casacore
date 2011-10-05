@@ -164,6 +164,7 @@ Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
 Bool isInf (const Complex& val);
 void setInf(Complex& val);
+Bool isFinite(const Complex& val);
 // </group>
 
 // <summary>Complex comparisons </summary>
@@ -191,6 +192,7 @@ Bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
 Bool isInf (const DComplex& val);
 void setInf(DComplex& val);
+Bool isFinite(const DComplex& val);
 // </group>
 
 // <summary> DComplex comparisons </summary>

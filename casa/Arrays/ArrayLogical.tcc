@@ -579,6 +579,14 @@ LogicalArray isInf (const Array<T> &array)
 }
 
 template<class T>
+LogicalArray isFinite (const Array<T> &array)
+{
+  LogicalArray result(array.shape());
+  arrayContTransform (array, result, casa::IsFinite<T>());
+  return result;
+}
+
+template<class T>
 LogicalArray near (const Array<T> &l, const Array<T>& r, Double tol)
 {
   checkArrayShapes (l, r, "near");
