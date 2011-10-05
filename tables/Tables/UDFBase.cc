@@ -40,8 +40,9 @@ namespace casa {
 
 
   UDFBase::UDFBase()
-    : itsDataType  (TableExprNodeRep::NTAny),
-      itsNDim      (-2)
+    : itsDataType   (TableExprNodeRep::NTAny),
+      itsNDim       (-2),
+      itsIsConstant (False)
   {}
 
   UDFBase::~UDFBase()
@@ -94,6 +95,11 @@ namespace casa {
   void UDFBase::setUnit (const String& unit)
   {
     itsUnit = unit;
+  }
+
+  void UDFBase::setConstant (Bool isConstant)
+  {
+    itsIsConstant = isConstant;
   }
 
   Bool      UDFBase::getBool     (const TableExprId&)
