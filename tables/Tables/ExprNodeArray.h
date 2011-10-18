@@ -779,7 +779,11 @@ public:
     Array<String>   getColumnString();
 
     // Get the index node.
-  const TableExprNodeIndex* getIndexNode() const;
+    const TableExprNodeIndex* getIndexNode() const;
+
+    // Get the array column node.
+    // It returns 0 if the parent object is no array column.
+    const TableExprNodeArrayColumn* getColumnNode() const;
 
 private:
     TableExprNodeIndex*       indexNode_p;
@@ -816,6 +820,11 @@ inline const TableExprNodeIndex* TableExprNodeArrayPart::getIndexNode() const
     return indexNode_p;
 }
 
+inline const TableExprNodeArrayColumn*
+TableExprNodeArrayPart::getColumnNode() const
+{ 
+    return colNode_p;
+}
 
 
 

@@ -55,12 +55,10 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
   itsRegularFile (regularFile)
 {
     const String& name = itsRegularFile.path().expandedName();
-    Bool writable = True;
     Bool create = False;
     Int stropt;
     switch (option) {
     case ByteIO::Old:
-	writable = False;
 	stropt = O_RDONLY;
 	break;
     case ByteIO::NewNoReplace:

@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <components/ComponentModels/TwoSidedShape.h>
+#include <casa/iomanip.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Containers/Record.h>
@@ -41,6 +42,7 @@
 #include <casa/Quanta/QuantumHolder.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Utilities/Assert.h>
+#include <casa/Utilities/Precision.h>
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -154,6 +156,12 @@ void TwoSidedShape::sample(Vector<Double>& scale,
 void TwoSidedShape::visibility(Vector<DComplex>& scale,
 			       const Matrix<Double>& uvw,
 			       const Double& frequency) const {
+  ComponentShape::visibility(scale, uvw, frequency);
+}
+
+void TwoSidedShape::visibility(Matrix<DComplex>& scale,
+			       const Matrix<Double>& uvw,
+			       const Vector<Double>& frequency) const {
   ComponentShape::visibility(scale, uvw, frequency);
 }
 
@@ -633,6 +641,79 @@ MDirection TwoSidedShape::directionFromCartesian (Double width, Double pa,
    }
 //
    return dir;
+}
+
+String TwoSidedShape::sizeToString(
+		Quantity major, Quantity minor, Quantity posangle,
+		Bool includeUncertainties, Quantity majorErr,
+		Quantity minorErr, Quantity posanErr
+) {
+	// Inputs all as angle quanta
+	Vector<String> angUnits(5);
+	angUnits[0] = "deg";
+	angUnits[1] = "arcmin";
+	angUnits[2] = "arcsec";
+	angUnits[3] = "marcsec";
+	angUnits[4] = "uarcsec";
+	// First force position angle to be between 0 and 180 deg
+	if(posangle.getValue() < 0) {
+		posangle += Quantity(180, "deg");
+	}
+
+	String prefUnits;
+	Quantity vmax(max(fabs(major.getValue("arcsec")), fabs(minor.getValue("arcsec"))), "arcsec");
+
+	for (uInt i=0; i<angUnits.size(); i++) {
+		prefUnits = angUnits[i];
+		if(vmax.getValue(prefUnits) > 1) {
+			break;
+		}
+	}
+	major.convert(prefUnits);
+	minor.convert(prefUnits);
+	majorErr.convert(prefUnits);
+	minorErr.convert(prefUnits);
+
+	Double vmaj = major.getValue();
+	Double vmin = minor.getValue();
+
+	// Formatting as "value +/- err" for symmetric errors
+
+	Double dmaj = majorErr.getValue();
+	Double dmin = minorErr.getValue();
+	// position angle is always in degrees cuz users like that
+	Double pa  = posangle.getValue("deg");
+	Double dpa = posanErr.getValue("deg");
+
+	Vector<Double> majVec(2), minVec(2), paVec(2);
+	majVec[0] = vmaj;
+	majVec[1] = dmaj;
+	minVec[0] = vmin;
+	minVec[1] = dmin;
+	paVec[0] = pa;
+	paVec[1] = dpa;
+	uInt precision1 = precisionForValueErrorPairs(majVec, minVec);
+	uInt precision2 = precisionForValueErrorPairs(paVec, Vector<Double>(0));
+
+	ostringstream summary;
+	summary << std::fixed << setprecision(precision1);
+	summary << "       --- major axis FWHM:     " << major.getValue();
+	if (includeUncertainties) {
+		summary << " +/- " << majorErr.getValue();
+	}
+	summary << " " << prefUnits << endl;
+	summary << "       --- minor axis FWHM:     " << minor.getValue();
+	if (includeUncertainties) {
+		summary << " +/- " << minorErr.getValue();
+	}
+	summary << " "<< prefUnits << endl;
+	summary << setprecision(precision2);
+	summary << "       --- position angle: " << pa;
+	if (includeUncertainties) {
+		summary << " +/- " << dpa;
+	}
+	summary << " deg" << endl;
+	return summary.str();
 }
 
 

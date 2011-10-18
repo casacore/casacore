@@ -435,6 +435,8 @@ TestBinary(*, testTimesDComplex, DComplex, DComplex)
 TestBinary(*, testTimesComplex, Complex, Complex)
 TestBinary(/, testDivideCF, Complex, Float)
 TestBinary(*, testTimesCF, Complex, Float)
+TestBinary(/, testDivideCD, DComplex, Double)
+TestBinary(*, testTimesCD, DComplex, Double)
 TestUnary(+, testUPlusInt, Int)
 TestUnary(-, testUMinusInt, Int)
 TestUnary(~, testUNegateInt, Int)
@@ -502,6 +504,8 @@ int main()
     testTimesComplex();
     testDivideCF();
     testTimesCF();
+    testDivideCD();
+    testTimesCD();
     testUPlusInt();
     testUMinusInt();
     testUNegateInt();

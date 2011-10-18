@@ -209,9 +209,6 @@ template<class T>
 Function<AutoDiff<T> >* Gaussian3D<AutoDiff<T> >::clone() const 
 {
   Function<AutoDiff<T> > *tmp = new Gaussian3D<AutoDiff<T> >(*this);
-  if (!tmp)
-    throw(AllocError("Gaussian3D<AutoDiff<T> >::cloneFunctionND()"
-                     " - new failed", sizeof(Gaussian3D<T>)));
   return tmp;
 }
 

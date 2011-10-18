@@ -74,15 +74,25 @@ template <class M> class ROScalarMeasColumn;
 // <srcblock>
 //	#include <measures/Measures.h>
 //	#include <measures/Measures/MEpoch.h>
+//	#include <measures/Measures/MCEpoch.h>
+//      #include <casa/logging/LogIO.h>
+//      
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),
 //		                MEpoch::Ref(MEpoch::TAI))() <<
 //		endl;
+//      LogIO os(LogOrigin("FluxCalc_SS_JPL_Butler", "readEphem"));
+//      os << LogIO::DEBUG1 << " at ";
+//      os.output() << MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
+//			               MEpoch::Ref(MEpoch::UTC)),
+//		                MEpoch::Ref(MEpoch::TAI))();
+//      os << LogIO::POST;
 // </srcblock>
 // Results in:
 // <srcblock>
-//	TAI for UTC = MJD(50237.29): Epoch: 50237::06:58:06.0000
+//	TAI for UTC = MJD(50237.29): Epoch: 50237::06:58:06.0000 (on stdout)
+//       at Epoch: 50237::06:58:06.0000 (in logger)
 // </srcblock>
 // </example>
 //

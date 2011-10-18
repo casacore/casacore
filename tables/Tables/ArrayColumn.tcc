@@ -154,6 +154,14 @@ Array<T> ROArrayColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T>
+Array<T> ROArrayColumn<T>::get (uInt rownr) const
+{
+    Array<T> arr;
+    get (rownr, arr);
+    return arr;
+}
+
+template<class T>
 void ROArrayColumn<T>::get (uInt rownr, Array<T>& arr, Bool resize) const
 {
     TABLECOLUMNCHECKROW(rownr);
@@ -316,8 +324,10 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
 	        Array<T>& darr = iter.array();
 		if (! darr.shape().isEqual (baseColPtr_p->shape (rownr))) {
-		  throw TableArrayConformanceError("ArrayColumn::getColumn - "
-						   "varying array shapes");
+		  throw TableArrayConformanceError
+                    ("ArrayColumn::getColumn cannot be done for column " +
+                     baseColPtr_p->columnDesc().name() +
+                     "; the array shapes vary");
 		}
 	        baseColPtr_p->get (rownr, &darr);
 		iter.next();
@@ -567,7 +577,9 @@ void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape)
     }else{
 	if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
 	    throw (TableInvOper
-		   ("ArrayColumn::setShape; shape cannot be changed"));
+		   ("ArrayColumn::setShape; shape cannot be changed for row " +
+                    String::toString(rownr) + " column " +
+                    baseColPtr_p->columnDesc().name()));	
 	}
     }
 }
@@ -584,8 +596,10 @@ void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape,
     }else{
 	if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
 	    throw (TableInvOper
-		   ("ArrayColumn::setShape; shape cannot be changed"));
-	}
+		   ("ArrayColumn::setShape; shape cannot be changed for row " +
+                    String::toString(rownr) + " column " +
+                    baseColPtr_p->columnDesc().name()));	
+        }
     }
 }
 	
@@ -600,8 +614,10 @@ void ArrayColumn<T>::put (uInt rownr, const Array<T>& arr)
     }else{
 	if (! arr.shape().isEqual (baseColPtr_p->shape (rownr))) {
 	    if (!canChangeShape_p) {
-		throw (TableArrayConformanceError("ArrayColumn::put"));
-	    }
+		throw (TableArrayConformanceError
+                       ("ArrayColumn::put for row " + String::toString(rownr) +
+                        " in column " + baseColPtr_p->columnDesc().name()));
+    }
 	    baseColPtr_p->setShape (rownr, arr.shape());
 	}
     }
@@ -618,7 +634,9 @@ void ArrayColumn<T>::putSlice (uInt rownr, const Slicer& arraySection,
     IPosition blc,trc,inc;
     IPosition shp = arraySection.inferShapeFromSource (arrayShape, blc,trc,inc);
     if (! shp.isEqual (arr.shape())) {
-	throw (TableArrayConformanceError("ArrayColumn::putSlice"));
+	throw (TableArrayConformanceError
+               ("ArrayColumn::putSlice for row " + String::toString(rownr) +
+                " in column " + baseColPtr_p->columnDesc().name()));
     }
     //# Ask if we can access the slice (if that is not known yet).
     if (reaskAccessSlice_p) {
@@ -648,7 +666,9 @@ void ArrayColumn<T>::putSlice (uInt rownr,
   Slicer slicer;
   IPosition shp = Slice::checkSlices (slices, slicer, colShp);
   if (! shp.isEqual (arr.shape())) {
-    throw (TableArrayConformanceError("ArrayColumn::putSlice"));
+    throw (TableArrayConformanceError
+           ("ArrayColumn::putSlice for row " + String::toString(rownr) +
+            " in column " + baseColPtr_p->columnDesc().name()));
   }
   // Now loop through all the slices and fill the array in parts.
   IPosition arrEnd (slicer.length() - 1);
@@ -672,7 +692,9 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
     IPosition shp  = arr.shape();
     uInt last = shp.nelements() - 1;
     if (shp(last) != Int(nrrow)) {
-	throw (TableArrayConformanceError("ArrayColumn::putColumn (nrrow)"));
+	throw (TableArrayConformanceError
+               ("ArrayColumn::putColumn for column " +
+                baseColPtr_p->columnDesc().name()));
     }
     //# Remove #rows from shape to get the shape of each cell.
     shp.resize (last);
@@ -680,7 +702,9 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	if (! shp.isEqual (shapeColumn())) {
-	    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+	    throw (TableArrayConformanceError
+                   ("ArrayColumn::putColumn for column " +
+                    baseColPtr_p->columnDesc().name()));
 	}
     }else{
 	//# Otherwise set the shape of each cell (as far as needed).
@@ -716,8 +740,9 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
     IPosition arrshp = arr.shape();
     uInt last = arrshp.nelements() - 1;
     if (arrshp(last) != Int(nrrow)) {
-	throw (TableArrayConformanceError(
-	                              "ArrayColumn::putColumn (nrrow)"));
+	throw (TableArrayConformanceError
+               ("ArrayColumn::putColumn for column " +
+                baseColPtr_p->columnDesc().name()));
     }
     //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
@@ -728,7 +753,9 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
 	IPosition shp = arraySection.inferShapeFromSource (shapeColumn(),
 							   blc,trc,inc);
 	if (! shp.isEqual(arrshp)) {
-	    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+	    throw (TableArrayConformanceError
+                   ("ArrayColumn::putColumn for column " +
+                    baseColPtr_p->columnDesc().name()));
 	}
     }
     //# Ask if we can access the column slice (if that is not known yet).
@@ -769,7 +796,9 @@ void ArrayColumn<T>::putColumn (const Vector<Vector<Slice> >& arraySlices,
   shp.append (IPosition(1,nrrow));
   // Check array conformance.
   if (! shp.isEqual (arr.shape())) {
-    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+    throw (TableArrayConformanceError
+           ("ArrayColumn::putColumn for column " +
+            baseColPtr_p->columnDesc().name()));
   }
   // Now loop through all the slices and fill the array in parts.
   IPosition arrEnd (slicer.length() - 1);
@@ -803,8 +832,9 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
     IPosition arrshp  = arr.shape();
     uInt last = arrshp.nelements() - 1;
     if (arrshp(last) != Int(nrrow)) {
-	throw (TableArrayConformanceError(
-	                              "ArrayColumn::putColumnCells (nrrow)"));
+	throw (TableArrayConformanceError
+               ("ArrayColumn::putColumnCells for column " +
+                baseColPtr_p->columnDesc().name()));
     }
     //# Remove #rows from shape to get the shape of each cell.
     arrshp.resize (last);
@@ -812,7 +842,9 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
 	if (! arrshp.isEqual (shapeColumn())) {
-	    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+	    throw (TableArrayConformanceError
+                   ("ArrayColumn::putColumnCells for column " +
+                    baseColPtr_p->columnDesc().name()));
 	}
     }else{
 	//# Otherwise set the shape of each cell (as far as needed).
@@ -858,8 +890,9 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
     IPosition arrshp = arr.shape();
     uInt last = arrshp.nelements() - 1;
     if (arrshp(last) != Int(nrrow)) {
-	throw (TableArrayConformanceError(
-	                              "ArrayColumn::putColumnCells (nrrow)"));
+	throw (TableArrayConformanceError
+               ("ArrayColumn::putColumnCells for column " +
+                baseColPtr_p->columnDesc().name()));
     }
     //# If the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
@@ -870,7 +903,9 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
 	arrshp2 = arraySection.inferShapeFromSource (shapeColumn(),
 						     arrblc, arrtrc, arrinc);
 	if (! arrshp.isEqual(arrshp2)) {
-	    throw (TableArrayConformanceError("ArrayColumn::putColumnRange"));
+	    throw (TableArrayConformanceError
+                   ("ArrayColumn::putColumnCells for column " +
+                    baseColPtr_p->columnDesc().name()));
 	}
     }
     //# Put the entire array.
@@ -904,7 +939,9 @@ void ArrayColumn<T>::putColumn (const ROArrayColumn<T>& that)
     //# Check the column lengths.
     uInt nrrow = nrow();
     if (nrrow != that.nrow()) {
-	throw (TableConformanceError ("ArrayColumn<T>::putColumn"));
+      throw (TableConformanceError
+             ("Nr of rows differ in ArrayColumn::putColumn for column " +
+              baseColPtr_p->columnDesc().name()));
     }
     for (uInt i=0; i<nrrow; i++) {
 	put (i, that, i);

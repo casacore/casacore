@@ -1359,28 +1359,21 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
   itsLog << LogOrigin("MSFitsInput", "fillAntennaTable");
   const Regex trailing(" *$"); // trailing blanks
   TableRecord btKeywords=bt.getKeywords();
-  Int nAnt;
-  Int nAntMax=0;
-  Bool itsEVLA=((array_p=="VLA") || (array_p=="EVLA"));
-  if (itsEVLA)
-    {
-      nAntMax=nAnt_p;
-      if (nAnt_p != bt.nrows())
-	itsLog << array_p 
-	       << " telescope quirk detected.  Filler purports to construct the full"
-	       << " ANTENNA table with possible blank entries." 
-	       << LogIO::WARN << LogIO::POST;
-    }
-  else 
-    if (nAnt_p>bt.nrows()) 
-      {
-	itsLog << "Not all antennas found in antenna table:"
-	       << " expected " << nAnt_p << ", found " << bt.nrows()
-	       << LogIO::EXCEPTION;
-      }
-  nAnt=bt.nrows();
+  Int nAnt, nAntMax;
+  Bool missingAnts = False;
+  nAntMax=nAnt_p;
+  if (nAnt_p != bt.nrows()){
+    itsLog << array_p 
+	   << " telescope quirk detected.  Filler purports to construct the full"
+	   << " ANTENNA table with possible blank entries." 
+	   << LogIO::NORMAL1 << LogIO::POST;
+    missingAnts = True;
+  }
 
-  if (itsEVLA) receptorAngle_p.resize(2*(nAntMax+1));
+  nAnt=bt.nrows();
+  if (nAnt-1 > nAntMax) nAntMax=nAnt-1;
+
+  if (missingAnts) receptorAngle_p.resize(2*(nAntMax+1));
   else receptorAngle_p.resize(2*nAnt);
   receptorAngle_p=0.0;
   Vector<Double> arrayXYZ(3);
@@ -1441,6 +1434,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    if (doSMA) diameter=6;
    if (array_p=="ATA") diameter=6.1;
    if (array_p=="HATCREEK" || array_p=="BIMA") diameter=6.1;
+   if (array_p=="GMRT") diameter=45.0;
    
    //   Table anTab=bt.fullTable("",Table::Scratch);
    Table anTab=bt.fullTable();
@@ -1504,21 +1498,22 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
    ant.setPositionRef(MPosition::ITRF);
    Int row=ms_p.antenna().nrow();
 
-   if (itsEVLA && (row < nAntMax))
-     {
-       Int n=nAntMax - row + 1;
-       for(Int i=0; i<n; i++)
-	 {ms_p.antenna().addRow(); row++;}
-     }
+   if (missingAnts && (row < nAntMax)){
+     Int n=nAntMax - row + 1;
+     for(Int i=0; i<n; i++)
+       {ms_p.antenna().addRow(); row++;}
+   }
    row = ms_p.antenna().nrow()-1;
    for(uInt i=0;i<ms_p.antenna().nrow();i++)
      ant.flagRow().put(i,True);
 
    for (Int i=0; i<nAnt; i++) {
-     if (!itsEVLA)
-       {ms_p.antenna().addRow(); row++;}
-     else
+     if (!missingAnts){
+       ms_p.antenna().addRow(); row++;
+     }
+     else{
        row=id(i)-1;
+     }
 
      ant.dishDiameter().put(row,antDiams(i)); 
      String mount;

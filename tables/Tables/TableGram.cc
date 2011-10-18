@@ -29,8 +29,6 @@
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on tables.
-// This is a preliminary version; eventually it has to be incorporated
-// in the AIPS++ command language.
 
 
 #include <tables/Tables/TableGram.h>

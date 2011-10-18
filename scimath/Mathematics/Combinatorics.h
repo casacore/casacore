@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <use visibility=export>
 
-// <author>Dave Mehringer</author>
+//# <author>Dave Mehringer</author>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
@@ -73,7 +73,7 @@ class Combinatorics {
   static uInt factorial(const uInt n)
   {
     //# This test is thread-safe.
-    if (n >= _factorialCache.size()) fillCache(n);
+    if (n >= _factorialCacheSize) fillCache(n);
     return _factorialCache[n];
   }
   
@@ -85,6 +85,7 @@ class Combinatorics {
   static void fillCache(const uInt n);
 
   static Vector<uInt> _factorialCache;
+  static volatile uInt _factorialCacheSize; //# volatile for double checked lock
   static Mutex theirMutex;
 };
 } //# NAMESPACE CASA - END

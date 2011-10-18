@@ -438,6 +438,16 @@ int main() {
       cout << "Passed the record handling test" << endl;
     }
     delete shapePtr;
+    {
+    	GaussianShape myGaussian(
+    		MDirection(), Quantity(4.0, "arcsec"), Quantity(2.5, "arcsec"),
+    		Quantity(60.0, "deg")
+    	);
+    	Double expectedArea = 2.663263603293828e-10;
+    	Double area = myGaussian.getArea().getValue();
+    	AlwaysAssert(near(area, expectedArea, 1e-10), AipsError);
+    	cout << "Passed getArea test" << endl;
+    }
 
 // pixel<->world conversions
 

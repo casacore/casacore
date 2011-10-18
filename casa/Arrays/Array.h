@@ -338,9 +338,10 @@ public:
     
     // These member functions remove degenerate (ie. length==1) axes from
     // Arrays.  Only axes greater than startingAxis are considered (normally
-    // one wants to remove trailing axes. The first two of these function
-    // return an Array reference with axes removed. The last of these functions
-    // returns a reference to the 'other' array with degenerated axes removed.
+    // one wants to remove trailing axes). The first two of these functions
+    // return an Array reference with axes removed. The latter two functions
+    // let this Array object reference the 'other' array with degenerated axes
+    // removed.
     // <br>
     // Unless throwIfError is False, an exception will be thrown if
     // startingAxis exceeds the array's dimensionality.
@@ -354,24 +355,30 @@ public:
     // in a correct number of axes.
     // </note>
     // <group>
-    Array<T> nonDegenerate(uInt startingAxis=0, Bool throwIfError=True);
-    const Array<T> nonDegenerate(uInt startingAxis=0,
-				 Bool throwIfError=True) const;
-    void nonDegenerate(Array<T> &other, uInt startingAxis=0,
+    Array<T> nonDegenerate(uInt startingAxis=0, Bool throwIfError=True) const;
+    Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
+    void nonDegenerate(const Array<T> &other, uInt startingAxis=0,
 		       Bool throwIfError=True);
-    Array<T> nonDegenerate(const IPosition& ignoreAxes);
-    const Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
-    void nonDegenerate(Array<T> &other, const IPosition &ignoreAxes)
+    void nonDegenerate(const Array<T> &other, const IPosition &ignoreAxes)
         { doNonDegenerate (other, ignoreAxes); }
     // </group> 
 
-    // These member functions return an Array reference with the specified
+    // Remove degenerate axes from this Array object.
+    // Note it does not make sense to use these functions on a derived object
+    // like Matrix, because it is not possible to remove axes from them.
+    // <group>
+    void removeDegenerate(uInt startingAxis=0,
+                          Bool throwIfError=True);
+    void removeDegenerate(const IPosition &ignoreAxes);
+    // </group>
+
+    // This member function returns an Array reference with the specified
     // number of extra axes, all of length one, appended to the end of the
     // Array. Note that the <src>reform</src> function can also be
     // used to add extra axes.
-    // <group> 
-    Array<T> addDegenerate(uInt numAxes);
+    // <group>
     const Array<T> addDegenerate(uInt numAxes) const;
+    Array<T> addDegenerate(uInt numAxes);
     // </group>
 
     // Make this array a different shape. If <src>copyValues==True</src>
@@ -402,16 +409,27 @@ public:
     const T &operator()(const IPosition &) const;
     // </group>
 
-    // Get a reference to an array which extends from "start" to end."
+    // Get a reference to an array section extending
+    // from start to end (inclusive).
     // <group>
-    Array<T> operator()(const IPosition &start, const IPosition &end);
+    Array<T> operator()(const IPosition &start,
+                        const IPosition &end);
+    const Array<T> operator()(const IPosition &start,
+                              const IPosition &end) const;
     // Along the ith axis, every inc[i]'th element is chosen.
-    Array<T> operator()(const IPosition &start, const IPosition &end,
+    Array<T> operator()(const IPosition &start,
+                        const IPosition &end,
 			const IPosition &inc);
+    const Array<T> operator()(const IPosition &start,
+                              const IPosition &end,
+                              const IPosition &inc) const;
     // </group>
 
-    // Get a reference to an array using a Slicer.
+    // Get a reference to an array section using a Slicer.
+    // <group>
     Array<T> operator()(const Slicer&);
+    const Array<T> operator()(const Slicer&) const;
+    // </group>
 
     // Get a reference to a section of an array.
     // This is the same as operator().
@@ -430,7 +448,7 @@ public:
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.
     // <group>
-    MaskedArray<T> operator() (const LogicalArray &mask) const;
+    const MaskedArray<T> operator() (const LogicalArray &mask) const;
     MaskedArray<T> operator() (const LogicalArray &mask);
     // </group>
 
@@ -439,7 +457,7 @@ public:
     // and the internal mask of the MaskedLogicalArray.
     // The MaskedLogicalArray must conform to the array.
     // <group>
-    MaskedArray<T> operator() (const MaskedLogicalArray &mask) const;
+    const MaskedArray<T> operator() (const MaskedLogicalArray &mask) const;
     MaskedArray<T> operator() (const MaskedLogicalArray &mask);
     // </group>
 
@@ -727,7 +745,8 @@ protected:
     // This is the implementation of the nonDegenerate functions.
     // It has a different name to be able to make it virtual without having
     // the "hide virtual function" message when compiling derived classes.
-    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
+    virtual void doNonDegenerate(const Array<T> &other,
+                                 const IPosition &ignoreAxes);
 
 
     // Reference counted block that contains the storage.

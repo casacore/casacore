@@ -93,6 +93,8 @@ String ComponentType::name(ComponentType::SpectralShape spectralEnum) {
     return "Constant";
   case ComponentType::SPECTRAL_INDEX:
     return "Spectral Index";
+  case ComponentType::TABULAR_SPECTRUM:
+    return "Tabular Spectrum";
   default:
     return "Unknown";
   };

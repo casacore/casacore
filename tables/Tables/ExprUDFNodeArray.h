@@ -76,7 +76,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   public:
 
     // Constructor
-    TableExprUDFNodeArray (UDFBase* udf, const TableExprNodeSet& source);
+    TableExprUDFNodeArray (UDFBase* udf, const Table&,
+                           const TableExprNodeSet& source);
 
     // Destructor
     virtual ~TableExprUDFNodeArray();
@@ -90,6 +91,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual Array<String>   getArrayString   (const TableExprId& id);
     virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
+
+    // Replace the Table pointer in this node.
+    virtual void replaceTablePtr (const Table&);
 
   private:
     UDFBase* itsUDF;

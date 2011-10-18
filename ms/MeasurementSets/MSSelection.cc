@@ -36,6 +36,7 @@
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
 #include <ms/MeasurementSets/MSPolnGram.h>
+#include <ms/MeasurementSets/MSStateGram.h>
 #include <ms/MeasurementSets/MSRange.h>
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/RecordGram.h>
@@ -52,7 +53,7 @@
 #include <ms/MeasurementSets/MSSelectionError.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Exceptions/Error.h>
-
+#include <casa/Utilities/GenSort.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //----------------------------------------------------------------------------
@@ -60,7 +61,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MSSelection::MSSelection() : 
     fullTEN_p(),ms_p(NULL), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""), taqlExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR),
+    polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""),exprOrder_p(MAX_EXPR, NO_EXPR),
     antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), 
     scanIDs_p(),arrayIDs_p(), ddIDs_p(), baselineIDs_p(),selectedTimesList_p(),
     selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
@@ -94,10 +95,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			   const String& taqlExpr,
 			   const String& polnExpr,
 			   const String& scanExpr,
-			   const String& arrayExpr):
+			   const String& arrayExpr,
+			   const String& stateExpr):
     fullTEN_p(), ms_p(&ms), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""),taqlExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR),
+    polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""),exprOrder_p(MAX_EXPR, NO_EXPR),
     antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), 
     scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
     selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
@@ -118,7 +120,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  taqlExpr,
 	  polnExpr,
 	  scanExpr,
-	  arrayExpr);
+	  arrayExpr,
+	  stateExpr);
   }
   
   
@@ -134,7 +137,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			  const String& taqlExpr,
 			  const String& polnExpr,
 			  const String& scanExpr,
-			  const String& arrayExpr)
+			  const String& arrayExpr,
+			  const String& stateExpr)
   {
     //
     // Do not initialize the private string variables directly. Instead
@@ -153,7 +157,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     setUvDistExpr(uvDistExpr);
     setPolnExpr(polnExpr);
     setTaQLExpr(taqlExpr);
-    
+    setStateExpr(stateExpr);
+
     if (mode==PARSE_NOW)
       fullTEN_p = toTableExprNode(ms_p);
   }
@@ -171,7 +176,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MSSelection::MSSelection(const Record& selectionItem) : 
     antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""),taqlExpr_p(""),antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
+    polnExpr_p(""),taqlExpr_p(""),stateExpr_p(""),antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
     spwIDs_p(),ddIDs_p(),baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)),
     selectedSetupMap_p(Vector<Vector<Int> >(0))
     
@@ -214,6 +219,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       this->uvDistExpr_p  = other.uvDistExpr_p;
       this->taqlExpr_p    = other.taqlExpr_p;
       this->polnExpr_p    = other.polnExpr_p;
+      this->stateExpr_p   = other.stateExpr_p;
       this->exprOrder_p   = other.exprOrder_p;
     }
   }
@@ -237,6 +243,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       this->uvDistExpr_p  = other.uvDistExpr_p;
       this->taqlExpr_p    = other.taqlExpr_p;
       this->polnExpr_p    = other.polnExpr_p;
+      this->stateExpr_p   = other.stateExpr_p;
       this->exprOrder_p   = other.exprOrder_p;
     }
     
@@ -404,6 +411,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	      break;
 	    }
+	  case STATE_EXPR:
+	    {
+	      stateObsModeIDs_p.resize(0);
+	      if(stateExpr_p != "" &&
+		 msStateGramParseCommand(ms, stateExpr_p,stateObsModeIDs_p) == 0)
+		node = *(msStateGramParseNode());
+	      break;
+	    }
 	  case NO_EXPR:break;
 	  default:  break;
 	  } // Switch
@@ -439,6 +454,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     msSpwGramParseDeleteNode();
     msTimeGramParseDeleteNode();
     msUvDistGramParseDeleteNode();
+    msStateGramParseDeleteNode();
     
     return condition;
   }
@@ -447,6 +463,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, 
 				  const String& outMSName)
   {
+    if ((ms_p == NULL) || ms_p->isNull())
+      throw(MSSelectionError("MSSelection::getSelectedMS() called without setting the parent MS. "
+			     "Hint: Need to use MSSelection::resetMS() perhaps?"));
     Bool newRefMS=False;
     if (fullTEN_p.isNull()) fullTEN_p=toTableExprNode(ms_p);
     if ((!fullTEN_p.isNull()) && (fullTEN_p.nrow() > 0))
@@ -478,6 +497,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	uvDistExpr_p  = "";
 	taqlExpr_p    = "";
 	polnExpr_p    = "";
+	stateExpr_p    = "";
 	exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
       }
     else
@@ -497,6 +517,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		case UVDIST_EXPR:  uvDistExpr_p  = "";break;
 		case TAQL_EXPR:    taqlExpr_p    = "";break;
 		case POLN_EXPR:    polnExpr_p    = "";break;
+		case STATE_EXPR:   stateExpr_p   = "";break;
 		default:;
 		}
 	    }
@@ -664,6 +685,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //----------------------------------------------------------------------------
   
+  Bool MSSelection::setStateExpr(const String& stateExpr)
+  {
+    // Set the state table Obs_mode selection expression
+    // Input:
+    //    stateExpr        const String&  Supplementary state obs_mode expression
+    // Output to private data:
+    //    stateExpr_p      String         Supplementary state obs_mode expression
+    //
+    if(setOrder(STATE_EXPR))
+      {
+	stateExpr_p = stateExpr;
+	resetTEN();
+	return True;
+      }
+    
+    return False;
+  }
+  
+  //----------------------------------------------------------------------------
+  
   Bool MSSelection::setTaQLExpr(const String& taqlExpr)
   {
     // Set the TaQL expression
@@ -700,7 +741,51 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     return False;
   }
-  
+  //----------------------------------------------------------------------------
+  // This function also optionally sorts the matrix of SPWIDs and
+  // associated channel selection indices in ascending order of
+  // SPWIDs.
+  //
+  Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int defaultStep,
+				       const Bool sorted) 
+    {
+      if (chanIDs_p.nelements() <= 0) getTEN(ms); 
+      uInt nrows=chanIDs_p.nrow(), ncols=chanIDs_p.ncolumn();
+      Matrix<Int> chanIDList;
+      if (nrows > 0)
+	{
+	  if (sorted)
+	    {
+	      Vector<Int> spwIDList(chanIDs_p.column(0));//Extract the SPW IDs
+	      Vector<uInt> sortedNdx;
+	      //
+	      // Make a list of indices which will sort the chanID_p Matrix on
+	      // SPW ID (the first column of each row).
+	      //
+	      Bool deleteit;
+	      Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
+	      sort.sortKey((uInt)0, TpInt);
+	      sort.sort(sortedNdx, nrows);
+	      //
+	      // Using the sorted indices, copy from the unsorted private
+	      // ChaIDs_p to the output (sorted) Matrix chandIDList.
+	      //
+	      chanIDList.resize(chanIDs_p.shape());
+	      for(uInt targetRow=0; targetRow<nrows; targetRow++)
+		for (uInt j=0; j<ncols; j++)
+		  chanIDList(targetRow,j)=chanIDs_p(sortedNdx(targetRow),j);
+	    }
+	  else
+	    chanIDList = chanIDs_p;
+
+	  for(uInt targetRow=0; targetRow<nrows; targetRow++)
+	    if (chanIDList(targetRow,ncols-1) < 1) 
+	      chanIDList(targetRow,ncols-1)=defaultStep;
+	}
+
+
+      return chanIDList.copy();
+    }
   //----------------------------------------------------------------------------
 
   void MSSelection::getChanSlices(Vector<Vector<Slice> >& chanslices,

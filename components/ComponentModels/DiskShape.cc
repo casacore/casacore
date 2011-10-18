@@ -27,7 +27,11 @@
 
 #include <components/ComponentModels/DiskShape.h>
 #include <components/ComponentModels/Flux.h>
+#include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Arrays/VectorIter.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Array.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Logging/LogOrigin.h>
@@ -207,6 +211,19 @@ DComplex DiskShape::visibility(const Vector<Double>& uvw,
   return DComplex(calcVis(u, v, C::pi * frequency/C::c), 0.0);
 }
 
+void DiskShape::visibility(Matrix<DComplex>& scale,
+			   const Matrix<Double>& uvw,
+			   const Vector<Double>& frequency) const {
+
+  scale.resize(uvw.ncolumn(), frequency.nelements());
+
+  VectorIterator<DComplex> iter(scale, 0);
+  for ( uInt k =0 ; k < frequency.nelements() ; ++k){
+    visibility(iter.vector(), uvw, frequency(k));
+    iter.next(); 
+  }
+}
+
 void DiskShape::visibility(Vector<DComplex>& scale,
 			   const Matrix<Double>& uvw,
 			   const Double& frequency) const {
@@ -229,16 +246,16 @@ void DiskShape::visibility(Vector<DComplex>& scale,
   for (uInt i = 0; i < nSamples; i++) {
     u = uvw(0, i);
     v = uvw(1, i);
-    DComplex& thisVis = scale(i);
+    // DComplex& thisVis = scale(i);
     ///    thisVis.imag() = 0.0;
     if (near(u + v, 0.0)) {
       ///      thisVis.real() = 1.0; // avoids dividing by zero in calcVis(...)
-      thisVis = DComplex(1.0, 0.0); // avoids dividing by zero
+      scale[i] = DComplex(1.0, 0.0); // avoids dividing by zero
       // in calcVis(...)
     } else {
       if (doRotation) rotateVis(u, v, cpa, spa);
       ///      thisVis.real() = calcVis(u, v, factor);
-      thisVis = DComplex(calcVis(u, v, factor), 0.0);
+      scale[i] = DComplex(calcVis(u, v, factor), 0.0);
     }
   }
 }
@@ -319,6 +336,15 @@ Double DiskShape::calcSample(const MDirection::MVType& compDirValue,
     }
   }
   return 0.0;
+}
+
+String DiskShape::sizeToString() const {
+	return TwoSidedShape::sizeToString(
+		Quantity(itsMajValue, "rad"),
+		Quantity(itsMinValue, "rad"),
+		Quantity(itsPaValue, "rad"),
+		False
+	);
 }
 
 // Local Variables: 

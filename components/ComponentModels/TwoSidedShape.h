@@ -247,6 +247,10 @@ public:
   virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const = 0;
 
+  // same as above but with many frequencies
+ virtual void visibility(Matrix<DComplex>& scale, const Matrix<Double>& uvw,
+			  const Vector<Double>& frequency) const = 0; 
+
   // determine whether the shape is symmetric or not. Always returns True.
   virtual Bool isSymmetric() const;
 
@@ -309,6 +313,15 @@ public:
   // axis (in world coordinates), else False.
   virtual Bool fromPixel (const Vector<Double>& parameters,
                           const DirectionCoordinate& dirCoord);
+
+  // Get the string containing the various size quantities of a component.
+  virtual String sizeToString() const = 0;
+
+  // Format the string containing the various size quantities of a component.
+  static String sizeToString(
+    	Quantity major, Quantity minor, Quantity posangle,
+    	Bool includeUncertainties = True, Quantity majorErr = 0,
+    	Quantity minorErr = 0, Quantity posanErr = 0);
 
 protected:
   // The constructors and assignment operator are protected as only derived

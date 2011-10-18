@@ -237,6 +237,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return isInf (value); }
   };
 
+  // Functor to test for finiteness.
+  template<typename T>
+  struct IsFinite : public std::unary_function<T,bool>
+  {
+    bool operator() (T value) const
+      { return isFinite (value); }
+  };
+
   // Functor to test if two values are relatively near each other.
   // It can be used in something like:
   // <srcblock>

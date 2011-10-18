@@ -129,6 +129,8 @@ public:
 // major axis, minor axis, position angle.
 // <group>
     Vector<Quantum<Double> > restoringBeam() const;
+
+    ImageInfo& setRestoringBeam(const Record& inRecord);
     ImageInfo& setRestoringBeam(const Vector<Quantum<Double> >& beam);
     ImageInfo& setRestoringBeam(const Quantum<Double>& major,
                                 const Quantum<Double>& minor,
@@ -164,8 +166,8 @@ public:
 // backwards compatibility - null values should be supplied instead.
 // The record field names are: "restoringbeam, imagetype, objectname".
 // <group>
-    virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
-    virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
+    virtual Bool toRecord(String& error, RecordInterface& outRecord) const;
+    virtual Bool fromRecord(String& error, const RecordInterface& inRecord);
 // </group>
 
 // In some circumstances it might be useful to know what the defaults for

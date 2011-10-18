@@ -353,7 +353,6 @@ public:
     //
     // <thrown>
     //    <li> ArrayConformanceError
-    //    <li> AllocError
     // </thrown>
     //
     // <group>
@@ -380,7 +379,6 @@ public:
     //
     // <thrown>
     //    <li> ArrayConformanceError
-    //    <li> AllocError
     // </thrown>
     //
     // <group>
@@ -404,7 +402,6 @@ public:
     //
     // <thrown>
     //    <li> ArrayConformanceError
-    //    <li> AllocError
     // </thrown>
     //
     // <group>
@@ -432,7 +429,6 @@ public:
     //
     // <thrown>
     //    <li> ArrayConformanceError
-    //    <li> AllocError
     // </thrown>
     //
     // <group>
@@ -458,10 +454,6 @@ public:
     // the MaskedArray returned is readonly.  If <src>isreadonly</src> is
     // <src>False</src> and the input MaskedArray is readonly, then the
     // constructed MaskedArray is readonly.
-    //
-    // <thrown>
-    //    <li> AllocError
-    // </thrown>
     //
     // <group>
     MaskedArray(const MaskedArray<T> &other, Bool isreadonly);

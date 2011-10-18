@@ -158,6 +158,85 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const M
    return True;
 }
 
+Bool SpectralCoordinate::frequencyToWavelength (Vector<Double>& wavelength, const Vector<Double>& frequency) const
+{
+   wavelength.resize(frequency.nelements());
+
+   // wave = C::c/freq * 1/to_hz_p * 1/to_m_p
+   Double factor = C::c/to_hz_p/to_m_p;
+   for(uInt i=0; i<frequency.nelements(); i++){
+     if(frequency(i)>0.){
+       wavelength(i) = factor/frequency(i);
+     }
+     else{
+       wavelength(i) = HUGE_VAL;
+     }
+   }
+   return True;
+}
+
+Double SpectralCoordinate::refractiveIndex(const Double& lambda_um){
+     Double lambda2 = lambda_um * lambda_um;
+     // based on Greisen et al., 2006, A&A, 464, 746 
+     Double nOfLambda = 1.;
+     if(lambda2 > 0.){
+       nOfLambda = 1. + 1E-6 * (287.6155 + 1.62887/lambda2 
+				  + 0.01360/lambda2/lambda2);	
+     }
+     //cout << "ref index " << nOfLambda << endl; 
+     return nOfLambda;
+}
+  
+Bool SpectralCoordinate::frequencyToAirWavelength (Vector<Double>& wavelength, const Vector<Double>& frequency) const
+{
+   wavelength.resize(frequency.nelements());
+
+   // airwave = C::c/freq * 1/to_hz_p * 1/to_m_p/refractive_index
+   Double factor = C::c/to_hz_p/to_m_p;
+   for(uInt i=0; i<frequency.nelements(); i++){
+     if(frequency(i)>0.){
+       Double vacWave = factor/frequency(i);
+       //cout << "toWave: vacWave " << vacWave << " to_m_p " << to_m_p << endl;
+       wavelength(i) = vacWave/refractiveIndex(vacWave* 1E6 * to_m_p);
+       //cout << "toWave air wave " << wavelength(i) << endl;
+     }
+     else{
+       wavelength(i) = HUGE_VAL;
+     }
+   }
+   return True;
+}
+
+
+Bool SpectralCoordinate::airWavelengthToFrequency (Vector<Double>& frequency, const Vector<Double>& airWavelength) const
+{
+   frequency.resize(airWavelength.nelements());
+
+   // freq = C::c/wave * 1/to_hz_p * 1/to_m_p, wave = n(airwave)*airwave
+   Double factor = C::c/to_hz_p/to_m_p;
+
+   for(uInt i=0; i<airWavelength.nelements(); i++){
+  
+     if(airWavelength(i)>0.){
+       Double lambda_um = airWavelength(i) * 1E6L * to_m_p; // in micrometers
+       frequency(i) = factor/airWavelength(i)/refractiveIndex(lambda_um);
+       //cout << "toFreq: air wave " << airWavelength(i) << " lambda_um " << lambda_um << endl;
+       //cout << "toFreq: freq " << frequency(i) << endl;
+     }
+     else{
+       frequency(i) = HUGE_VAL;
+     }
+   }
+   return True;
+}
+
+Bool SpectralCoordinate::wavelengthToFrequency (Vector<Double>& frequency, const Vector<Double>& wavelength) const
+{
+   // since the functional form of the conversion is identical, we can reuse the inverse function
+  return frequencyToWavelength(frequency,wavelength);
+}
+
+
 Bool SpectralCoordinate::velocityToPixel (Double& pixel, Double velocity) const
 {
    Double frequency;

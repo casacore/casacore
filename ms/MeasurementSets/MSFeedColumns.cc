@@ -137,6 +137,100 @@ void ROMSFeedColumns::attachOptionalCols(const MSFeed& msFeed)
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
 
+Int ROMSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
+			       Quantum<Double>& newIntervalQ,
+			       const Int& antId,
+			       const Int& fId,
+			       const Int& spwId,
+			       const Quantum<Double>& timeQ,
+			       const Quantum<Double>& intervalQ,
+			       const Int& numRec,
+			       const Array<Quantum<Double> >& beamOffsetQ,
+			       const Array<String>& polType,
+			       const Array<Complex>& polResp,
+			       const Array<Quantum<Double> >& positionQ,
+			       const Array<Quantum<Double> >& receptorAngleQ,
+			       const Vector<uInt>& ignoreRows,
+			       const Quantum<Double>& focusLengthQ
+			       ){
+
+  const Unit d("deg");
+  const Unit s("s");
+  const Unit m("m");
+
+  newTimeQ = newIntervalQ = Quantum<Double>(0.,s);
+
+  uInt r = nrow();
+  if (r == 0) return -1;
+
+  const Double timeInS = timeQ.getValue(s);
+  const Double intervalInS = intervalQ.getValue(s);
+  const Double pos0InM = positionQ(IPosition(1,0)).getValue(m);
+  const Double pos1InM = positionQ(IPosition(1,1)).getValue(m);
+  const Double pos2InM = positionQ(IPosition(1,2)).getValue(m);
+  Double fLengthM;
+
+  if(focusLengthQuant().isNull() && !(focusLengthQ.getFullUnit()==Unit(""))){
+    throw(AipsError("ROMSFeedColumns::matchFeed: Optional column FOCUS_LENGTH only present in the first of the two Feed tables.")); 
+  }
+
+  fLengthM = focusLengthQ.getValue(m);
+
+  // Matching loop
+  while (r > 0) {
+    r--;
+    Bool ignore = False;
+    for(uInt i=0; i<ignoreRows.nelements(); i++){
+      if(ignoreRows(i)==r){
+	ignore = True;
+	break;
+      }
+    }
+    if (!ignore
+	&& antennaId()(r)== antId
+	&& feedId()(r)== fId
+	&& spectralWindowId()(r)== spwId
+	&& numReceptors()(r) == numRec
+	&& positionQuant()(r)(IPosition(1,0)).getValue(m) == pos0InM
+	&& positionQuant()(r)(IPosition(1,1)).getValue(m) == pos1InM
+	&& positionQuant()(r)(IPosition(1,2)).getValue(m) == pos2InM
+	&& (focusLengthQuant().isNull() || focusLengthQuant()(r).getValue(m) == fLengthM)
+	){
+      Bool matches=True;
+      for(Int i=0; i<numRec; i++){ // compare all receptors
+	if(!(beamOffsetQuant()(r)(IPosition(2,0,i)).getValue(d) == beamOffsetQ(IPosition(2,0,i)).getValue(d)
+	     && beamOffsetQuant()(r)(IPosition(2,1,i)).getValue(d) == beamOffsetQ(IPosition(2,1,i)).getValue(d)
+	     && polarizationType()(r)(IPosition(1,i)) == polType(IPosition(1,i))
+	     && receptorAngleQuant()(r)(IPosition(1,i)).getValue(d) == receptorAngleQ(IPosition(1,i)).getValue(d)
+	     && allEQ(polResponse()(r),polResp)
+	     )
+	   ){
+	  matches = False;
+	  break;
+	}
+      }
+      if(matches){
+	Double modIntervalInS = intervalQuant()(r).getValue(s);
+	if(modIntervalInS==0.){ // to accomodate certain misuses of the MS, treat 0 as inf
+	  modIntervalInS = 5E17; // the age of the universe, roughly
+	}
+	if(!(timeQuant()(r).getValue(s)-modIntervalInS <= timeInS-intervalInS
+	     && timeQuant()(r).getValue(s)+modIntervalInS >= timeInS+intervalInS)
+	   ){ // only difference is the validity time
+	  newTimeQ = (timeQuant()(r)+timeQ)/2.;
+	  Double maxTime = max(timeQuant()(r).getValue(s)+modIntervalInS,
+			       timeInS+intervalInS);
+	  newIntervalQ = Quantum<Double>(2*(maxTime-newTimeQ.getValue(s)), s);
+	}
+	return r;
+      }
+    }
+  }
+  return -1;
+}
+
+
+
 MSFeedColumns::MSFeedColumns(MSFeed& msFeed):
   ROMSFeedColumns(msFeed),
   antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),
@@ -257,6 +351,7 @@ void MSFeedColumns::attachOptionalCols(MSFeed& msFeed)
   const String& phasedFeedId =MSFeed::columnName(MSFeed::PHASED_FEED_ID);
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
+
 
 // Local Variables: 
 // compile-command: "gmake MSFeedColumns"

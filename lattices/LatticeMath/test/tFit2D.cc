@@ -221,7 +221,8 @@ int main(int argc, const char *argv[])
       }
 //
       Array<Float> resid;
-      fitter.residual(resid, pixels);
+      Array<Float> model;
+      fitter.residual(resid, model, pixels);
       cout << "Residual min and max = " << min(resid) << " " << max(resid) << endl;
    } else {
      logger << fitter.errorMessage() << endl;

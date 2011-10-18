@@ -11,6 +11,6 @@
 #-----------------------------------------------------------------------------
 
 # Fundamentals.
-  TABLES="tTable_2.data_v*"
+  TABLES="$testsrcdir/tTable_2.data_v*"
 
-  ./tTable_2 $TABLES
+  $casa_checktool ./tTable_2 $TABLES

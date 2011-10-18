@@ -133,7 +133,7 @@ enum StatisticsTypes {
 
 // The total number of accumulation image items (not for general use:
 // note that the accumulation items MUST come first in this enum)
-   NACCUM = MAX+1
+   NACCUM = VARIANCE+1
 };
 
 // Helper function to convert a String containing a list of desired statistics to

@@ -61,6 +61,9 @@ namespace casa {
 //  <li> HA is the hourangle of the array center (observatory position).
 //  <li> HA1 is the hourangle of ANTENNA1.
 //  <li> HA2 is the hourangle of ANTENNA2.
+//  <li> HADEC is the hourangle/DEC of the array center (observatory position).
+//  <li> HADEC1 is the hourangle/DEC of ANTENNA1.
+//  <li> HADEC2 is the hourangle/DEC of ANTENNA2.
 //  <li> LAST is the local sidereal time of the array center.
 //  <li> LAST1 is the local sidereal time of ANTENNA1.
 //  <li> LAST2 is the local sidereal time of ANTENNA2.
@@ -70,8 +73,8 @@ namespace casa {
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
 //  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
 // </ul>
-// All columns have data type double and unit radian (except UVW). The AZEL
-// and UVW columns are array columnns while the others are scalar columns.
+// All columns have data type double and unit radian (except UVW). The HADEC,
+// AZEL, and UVW columns are array columnns while the others are scalar columns.
 //
 // This engine is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the

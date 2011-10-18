@@ -46,11 +46,9 @@ int main() {
     cout << "---------------------------------------------------" << endl;
 
     // Some poolobjectsList of pool objects;
-    Bool ok = True;
-    
     for (uInt i=0; i<10000; ++i) {
-    vector<vector<Double>*> list;
-    vector<vector<Int>*> listInt;
+      vector<vector<Double>*> list;
+      vector<vector<Int>*> listInt;
       for (uInt j=0; j<10; ++j) {
 	// Get some objects
 	list.push_back(ObjectStack<vector<Double> >::stack().get());

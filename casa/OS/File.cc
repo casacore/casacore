@@ -268,7 +268,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     // fill str with the pid and the unique number
     uInt seqnr;
     {
-      ScopedLock lock(theirMutex); 
+      ScopedMutexLock lock(theirMutex); 
       seqnr = uniqueSeqnr_p++;
     }
     sprintf (str, "%i_%i", Int(getpid()), seqnr);

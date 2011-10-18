@@ -69,20 +69,28 @@ class IPosition;
 class LattStatsSpecialize
 {
 public:
-//
-   static void accumulate (Double& nPts, Double& sum,
-                           Double& sumSq, Float& dataMin,
-                           Float& dataMax, Int& minPos,
-                           Int& maxPos, Bool& minMaxInit,
-                           Bool fixedMinMax, Float datum,
-                           uInt& pos, Float useIt);
+
+   // in this version we maintain a running mean and variance to avoid catastrophic round-off
+   // issues that can happen in some cases, CAS-2226. Removing old versions in which these
+	// quantities were not accumulated - dmehring 2011mar01
+   static void accumulate (
+		Double& nPts, Double& sum,
+   		Double& mean, Double& nvariance, Double& variance,
+   		Double& sumSq, Float& dataMin,
+   		Float& dataMax, Int& minPos,
+   		Int& maxPos, Bool& minMaxInit,
+   		const Bool fixedMinMax, const Float datum,
+   		const uInt& pos, const Float useIt
+   	);
+
    static void accumulate (DComplex& nPts, DComplex& sum,
+						   DComplex& mean, DComplex& nvariance,DComplex& variance,
                            DComplex& sumSq, Complex& dataMin,
-                           Complex& dataMax, Int& minPos,
-                           Int& maxPos, Bool& minMaxInit,
-                           Bool fixedMinMax, Complex datum,
-                           uInt& pos, Complex useIt);
-//
+                           Complex& dataMax, const Int& minPos,
+                           const Int& maxPos, Bool& minMaxInit,
+                           const Bool fixedMinMax, const Complex datum,
+                           const uInt& pos, const Complex useIt);
+
    static Bool hasSomePoints (Double npts);
    static Bool hasSomePoints (DComplex npts);
 //

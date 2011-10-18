@@ -36,7 +36,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Statics
-Bool MCuvw::stateMade_p = False;
 uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::GALACTIC,	 	Muvw::J2000,	0},
   {Muvw::GALACTIC,		Muvw::B1950,	2},
@@ -87,15 +86,11 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::ICRS,			Muvw::J2000,	0},
   {Muvw::J2000,			Muvw::ICRS,	0} };
 uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
+MutexedInit MCuvw::theirMutexedInit (MCuvw::doFillState);
 
 //# Constructors
 MCuvw::MCuvw() : measMath() {
-  if (!stateMade_p) {
-    Muvw::checkMyTypes();
-    MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
-		      Muvw::N_Types, MCuvw::N_Routes,
-		      MCuvw::ToRef_p);
-  }
+    fillState();
 }
 
 //# Destructor
@@ -654,15 +649,15 @@ void MCuvw::doConvert(MVuvw &in,
 }
 
 String MCuvw::showState() {
-  if (!stateMade_p) {
-    Muvw::checkMyTypes();
-    MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
-		      Muvw::N_Types, MCuvw::N_Routes,
-		      MCuvw::ToRef_p);
-  }
-  return MCBase::showState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
+  fillState();
+  return MCBase::showState(MCuvw::FromTo_p[0],
 			   Muvw::N_Types, MCuvw::N_Routes,
 			   MCuvw::ToRef_p);
+}
+
+void MCuvw::doFillState (void*) {
+  Muvw::checkMyTypes();
+  MCBase::makeState(FromTo_p[0], Muvw::N_Types, N_Routes, ToRef_p);
 }
 
 void MCuvw::getAPP() {

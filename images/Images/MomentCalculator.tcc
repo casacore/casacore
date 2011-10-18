@@ -35,6 +35,7 @@
 #include <scimath/Fitting/NonLinearFitLM.h>
 #include <scimath/Functionals/Polynomial.h>
 #include <scimath/Functionals/CompoundFunction.h>
+#include <images/Images/MomentsBase.h>
 #include <images/Images/ImageMoments.h>
 #include <lattices/Lattices/LatticeStatsBase.h>
 #include <casa/BasicMath/Math.h>
@@ -120,7 +121,7 @@ void MomentCalcBase<T>::constructorCheck(Vector<T>& calcMoments,
 
 
 template <class T>
-void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
+void MomentCalcBase<T>::costlyMoments(MomentsBase<T>& iMom,
                                       Bool& doMedianI,
                                       Bool& doMedianV,
                                       Bool& doAbsDev) const
@@ -128,7 +129,7 @@ void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
    doMedianI = False;
    doMedianV = False;
    doAbsDev = False;
-   typedef ImageMoments<Float> IM;
+   typedef MomentsBase<Float> IM;
 //
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::MEDIAN) doMedianI = True;
@@ -138,7 +139,7 @@ void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
 }
 
 template <class T>
-Bool MomentCalcBase<T>::doAuto(const ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::doAuto(const MomentsBase<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -147,7 +148,7 @@ Bool MomentCalcBase<T>::doAuto(const ImageMoments<T>& iMom) const
 
 
 template <class T>
-Bool MomentCalcBase<T>::doFit(const ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::doFit(const MomentsBase<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -157,7 +158,7 @@ Bool MomentCalcBase<T>::doFit(const ImageMoments<T>& iMom) const
 
 
 template <class T>
-PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom) const
+PGPlotter& MomentCalcBase<T>::device(MomentsBase<T>& iMom) const
 {
    return iMom.plotter_p;
 }
@@ -166,7 +167,7 @@ PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom) const
 template <class T>
 void MomentCalcBase<T>::doCoordCalc(Bool& doCoordProfile,
                                     Bool& doCoordRandom,
-                                    const ImageMoments<T>& iMom) const
+                                    const MomentsBase<T>& iMom) const
 //
 // doCoordProfile - we need the coordinate for each pixel of the profile
 // doCoordRandom  - we need the coordinate for occaisional use
@@ -177,7 +178,7 @@ void MomentCalcBase<T>::doCoordCalc(Bool& doCoordProfile,
 
    doCoordProfile = False;
    doCoordRandom  = False;
-   typedef ImageMoments<Float> IM;
+   typedef MomentsBase<Float> IM;
 //
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
       if (iMom.moments_p(i) == IM::WEIGHTED_MEAN_COORDINATE ||
@@ -221,7 +222,7 @@ void MomentCalcBase<T>::drawLine (const Vector<T>& x,
 {
 // Pass it on to ImageMoments who has to do this too
 
-   ImageMoments<T>::drawLine(x, y, plotter);
+   MomentsBase<T>::drawLine(x, y, plotter);
 } 
 
 
@@ -353,7 +354,7 @@ void MomentCalcBase<T>::drawVertical (const T loc,
 {  
 // Pass it on to ImageMoments
 
-   ImageMoments<T>::drawVertical(loc, yMin, yMax, plotter);
+   MomentsBase<T>::drawVertical(loc, yMin, yMax, plotter);
 }
   
 
@@ -500,7 +501,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
 
 
 template <class T>
-Bool MomentCalcBase<T>::fixedYLimits(const ImageMoments<T>& iMom) const
+Bool MomentCalcBase<T>::fixedYLimits(const MomentsBase<T>& iMom) const
 {
    return iMom.fixedYLimits_p;
 }
@@ -657,7 +658,7 @@ void MomentCalcBase<T>::getButton(Bool& ditch,
    Float x = (minMax(0)+minMax(1))/2;
    Float y = (minMax(2)+minMax(3))/2;
    String str;
-   ImageMoments<T>::readCursor (plotter, x, y, str);
+   MomentsBase<T>::readCursor (plotter, x, y, str);
    str.upcase();
    ditch = False;
    redo = False;  
@@ -824,7 +825,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    Float yCurLocF = (minMax(2)+minMax(3))/2;
    Bool miss=True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
+     MomentsBase<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
@@ -859,7 +860,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    plotter.message("Mark location of the FWHM - click right to reject spectrum");
    miss = True;   
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
+     MomentsBase<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
@@ -889,7 +890,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    plotter.message("Mark location of fit window; right to reject spectrum, middle fits whole spectrum");
    miss=True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
+     MomentsBase<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
@@ -917,7 +918,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
    
    miss = True;
    while (miss) {
-     ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
+     MomentsBase<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
      str.upcase();
      if (str == "X") {
         miss = False;
@@ -991,7 +992,7 @@ Bool MomentCalcBase<T>::getLoc (T& x,
    Float xCurLocF = convertT(x);
    Float yCurLocF = 0.0;
    String str;
-   ImageMoments<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
+   MomentsBase<T>::readCursor(plotter, xCurLocF, yCurLocF, str);
        
 // Interpret location and character
 
@@ -1088,7 +1089,7 @@ void MomentCalcBase<T>::makeAbcissa (Vector<T>& x,
 
 
 template <class T>
-Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom) const
+Int& MomentCalcBase<T>::momentAxis(MomentsBase<T>& iMom) const
 {
 // Get it from ImageMoments private data
    return iMom.momentAxis_p;
@@ -1096,7 +1097,7 @@ Int& MomentCalcBase<T>::momentAxis(ImageMoments<T>& iMom) const
 
 template <class T>
 String MomentCalcBase<T>::momentAxisName(const CoordinateSystem& cSys,
-                                         const ImageMoments<T>& iMom) const 
+                                         const MomentsBase<T>& iMom) const 
 {
 // Return the name of the moment/profile axis
 
@@ -1111,13 +1112,13 @@ uInt MomentCalcBase<T>::nMaxMoments() const
 
 // Get it from ImageMoments enum
 
-   uInt i = ImageMoments<T>::NMOMENTS;
+   uInt i = MomentsBase<T>::NMOMENTS;
    return i;
 }
 
 
 template <class T>
-T& MomentCalcBase<T>::peakSNR(ImageMoments<T>& iMom) const
+T& MomentCalcBase<T>::peakSNR(MomentsBase<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1129,7 +1130,7 @@ template <class T>
 void MomentCalcBase<T>::selectRange(Vector<T>& pixelRange,
                                     Bool& doInclude,
                                     Bool& doExclude, 
-                                    ImageMoments<T>& iMom) const
+                                    MomentsBase<T>& iMom) const
 {
 // Get it from ImageMoments private data
 
@@ -1140,12 +1141,12 @@ void MomentCalcBase<T>::selectRange(Vector<T>& pixelRange,
 
 
 template <class T>
-Vector<Int> MomentCalcBase<T>::selectMoments(ImageMoments<T>& iMom) const
+Vector<Int> MomentCalcBase<T>::selectMoments(MomentsBase<T>& iMom) const
 //
 // Fill the moment selection vector according to what the user requests
 //
 {
-   typedef ImageMoments<Float> IM;
+   typedef MomentsBase<Float> IM;
    Vector<Int> sel(IM::NMOMENTS);
 
    uInt j = 0;
@@ -1197,13 +1198,13 @@ void MomentCalcBase<T>::setPosLabel (String& title,
 
 template <class T>
 void MomentCalcBase<T>::setCoordinateSystem (CoordinateSystem& cSys, 
-                                             const ImageMoments<T>& iMom) 
+                                             MomentsBase<T>& iMom) 
 {
-   cSys = iMom.pInImage_p->coordinates();
+  cSys = iMom.coordinates() ;
 }
 
 template <class T>
-void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
+void MomentCalcBase<T>::setUpCoords (MomentsBase<T>& iMom,
                                      Vector<Double>& pixelIn,
                                      Vector<Double>& worldOut,
                                      Vector<Double>& sepWorldCoord,
@@ -1231,7 +1232,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
    Bool doIntScaleFactor = False;
    integratedScaleFactor = 1.0;
    for (uInt i=0; i<iMom.moments_p.nelements(); i++) {
-      if (iMom.moments_p(i) == ImageMoments<Float>::INTEGRATED) {
+      if (iMom.moments_p(i) == MomentsBase<Float>::INTEGRATED) {
          doIntScaleFactor = True;
          break;
       }
@@ -1264,7 +1265,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
    if (nPixelAxes == 1 && nWorldAxes == 1) {
       pixelIn = cSys_p.referencePixel();
 //
-      Vector<Double> frequency(iMom.pInImage_p->shape()(axis));
+      Vector<Double> frequency(iMom.getShape()(axis));
       if (doCoordProfile) {
          for (uInt i=0; i<frequency.nelements(); i++) {
             frequency(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
@@ -1438,7 +1439,7 @@ Bool MomentCalcBase<T>::stats(T& dMin,
 
 
 template <class T>
-T& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom) const
+T& MomentCalcBase<T>::stdDeviation(MomentsBase<T>& iMom) const
 {
    return iMom.stdDeviation_p;
 }
@@ -1447,7 +1448,7 @@ T& MomentCalcBase<T>::stdDeviation(ImageMoments<T>& iMom) const
 template <class T>
 void MomentCalcBase<T>::yAutoMinMax(T& yMin, 
                                     T& yMax, 
-                                    ImageMoments<T>& iMom) const
+                                    MomentsBase<T>& iMom) const
 {
    yMin = iMom.yMin_p;
    yMax = iMom.yMax_p;
@@ -1459,7 +1460,7 @@ void MomentCalcBase<T>::yAutoMinMax(T& yMin,
 // Fill the ouput moments array
 template<class T>
 void MomentCalcBase<T>::setCalcMoments
-                       (ImageMoments<T>& iMom,
+                       (MomentsBase<T>& iMom,
                         Vector<T>& calcMoments,
                         Vector<Bool>& calcMomentsMask,
                         Vector<Double>& pixelIn,
@@ -1487,12 +1488,12 @@ void MomentCalcBase<T>::setCalcMoments
 //   calcMoments The moments
 //
 {
-	
+       
 // Short hand to fish ImageMoments enum values out   
 // Despite being our friend, we cannot refer to the
 // enum values as just, say, "AVERAGE"
      
-   typedef ImageMoments<Float> IM;
+   typedef MomentsBase<Float> IM;
            
 // Normalize and fill moments
 
@@ -1570,7 +1571,7 @@ void MomentCalcBase<T>::setCalcMoments
 
 template <class T>
 MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
-                          ImageMoments<T>& iMom,
+                          MomentsBase<T>& iMom,
                           LogIO& os,
                           const uInt nLatticeOut)
 : pAncilliaryLattice_p(pAncilliaryLattice),
@@ -2009,7 +2010,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
 template <class T>
 MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
-                              ImageMoments<T>& iMom,
+                              MomentsBase<T>& iMom,
                               LogIO& os,
                               const uInt nLatticeOut)
 : pAncilliaryLattice_p(pAncilliaryLattice),
@@ -2748,7 +2749,7 @@ Bool MomentWindow<T>::setNSigmaWindow (Vector<Int>& window,
 // Derived class MomentFit
 
 template <class T>
-MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
+MomentFit<T>::MomentFit(MomentsBase<T>& iMom,
                         LogIO& os,
                         const uInt nLatticeOut)
 : iMom_p(iMom),

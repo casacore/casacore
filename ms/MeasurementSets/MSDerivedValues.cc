@@ -56,10 +56,21 @@ MSDerivedValues&
 MSDerivedValues::operator=(const MSDerivedValues& other) 
 {
   antenna_p=other.antenna_p;
+
   // should copy all data here, for now, just init
   init();
+
+  radialVelocityType_p = other.radialVelocityType_p;
+
   return *this;
 }
+
+const Vector<MPosition> &
+MSDerivedValues::getAntennaPositions () const
+{
+    return mAntPos_p;
+}
+
 
 Int MSDerivedValues::setAntennas(const ROMSAntennaColumns& ac)
 {
@@ -172,10 +183,10 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
   if (nAnt>0) {
     mount_p.resize(nAnt);
     for (Int i=0; i<nAnt; i++) {
-      if (mount(i)=="alt-az" || mount(i)=="ALT-AZ" || mount(i)=="")  {
+      if (mount(i)=="alt-az" || mount(i)=="ALT-AZ" || mount(i)=="") {
 	mount_p(i)=0;
       } else if (mount(i)=="alt-az+rotator" || mount(i)=="ALT-AZ+ROTATOR") {
-        mount_p(i)=0; // a temporary mount type, behaves as alt-az in general
+	mount_p(i)=0;
       } else if (mount(i)=="equatorial" || mount(i)=="EQUATORIAL") {
         mount_p(i)=1;
       } else if (mount(i)=="X-Y" || mount(i)=="x-y") {
@@ -278,8 +289,15 @@ Double MSDerivedValues::parAngle()
   return pa;
 }
 
+MRadialVelocity::Types
+MSDerivedValues::getRadialVelocityType () const
+{
+    return radialVelocityType_p;
+}
+
 MSDerivedValues& MSDerivedValues::setVelocityFrame(MRadialVelocity::Types vType)
 {
+  radialVelocityType_p = vType;
   cTOPOToLSR_p.setOut(vType);
   return *this;
 }
@@ -365,7 +383,7 @@ void MSDerivedValues::init()
 				   MRadialVelocity::Ref(MRadialVelocity::TOPO,
 							fAntFrame_p)),
 		   MRadialVelocity::Ref(MRadialVelocity::LSRK));
-
+  radialVelocityType_p = MRadialVelocity::LSRK;
   frqref_p= MFrequency::Ref(MFrequency::LSRK);
   velref_p=MDoppler::Ref(MDoppler::RADIO);
   restFreq_p=Quantity(0.0, "Hz");

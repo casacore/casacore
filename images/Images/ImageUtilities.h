@@ -137,20 +137,29 @@ public:
                     const MaskedArray<T>& in, const Coordinate& coordIn,
                     uInt axis, uInt bin);
 
-// Fit all profiles in image.  The output images must be already
-// created; if the pointer is 0, that image won't be filled.
-// The mask from the input image is transferred to the output
-// images.    If the weights image is pointer is non-zero, the
-// values from it will be used to weight the data points in the
-// fit.  You can fit some combination of gaussians and a polynomial
-// (-1 means no polynomial).  Initial estimates are not required.
+   // Fit all profiles in image.  The output images must be already
+   // created; if the pointer is 0, that image won't be filled.
+   // The mask from the input image is transferred to the output
+   // images.    If the weights image is pointer is non-zero, the
+   // values from it will be used to weight the data points in the
+   // fit.  You can fit some combination of gaussians and a polynomial
+   // (-1 means no polynomial).  Initial estimates are not required.
+   // Fits are done in image space to provide astronomer friendly results,
+   // but pixel space is better for the fitter when fitting polynomials.
+   // Thus, atm, callers should be aware that fitting polynomials may
+   // fail even when the data lie exactly on a polynomial curve.
+   // This will probably be fixed in the future by doing the fits
+   // in pixel space here and requiring the caller to deal with converting
+   // to something astronomer friendly if it so desires.
+
    template <typename T>
-   static void fitProfiles (ImageInterface<T>* &pFit,
-                            ImageInterface<T>* &pResid,
-                            const ImageInterface<T>& inImage,
-                            ImageInterface<T>*& pWeight,
-                            uInt axis, uInt nGauss=1, 
-                            Int poly=-1, Bool showProgress=False);
+   static Vector<ImageFit1D<T> > fitProfiles (
+	   ImageInterface<T>* &pFit,
+       ImageInterface<T>* &pResid, String& xUnit,
+       const ImageInterface<T>& inImage,
+       const uInt axis, const uInt nGauss=1,
+       const Int poly=-1, const Bool showProgress=False
+   );
 
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
@@ -206,13 +215,67 @@ public:
                                           Stokes::StokesTypes stokes,
                                           Bool xIsLong);
 
-   static Vector<Double> decodeSkyComponent (const SkyComponent& sky,
-                                             const ImageInfo& ii,
-                                             const CoordinateSystem& cSys,
-                                             const Unit& brightnessUnit,
-                                             Stokes::StokesTypes stokes,
-                                             Bool xIsLong);
+    // for some reason, this method was in ImageAnalysis but also belongs here.
+    // Obviously hugely confusing to have to methods with the same name and
+    // which presumably are for the same thing in two different classes. I'm
+    // moving ImageAnalysis' method here and also moving that implamentation to
+    // here as well and also being consistent regarding callers (ie those that
+    // called the ImageAnalysis method will now call this method). I couldn't
+    // tell you which of the two implementations is the better one to use
+    // for new code, but this version does call the version that already existed
+    // in ImageUtilities, so this version seems to do a bit more.
+    // I also hate having a class with anything like Utilities in the name,
+    // but I needed to move this somewhere and can only tackle one issue
+    // at a time.
+    static casa::SkyComponent encodeSkyComponent(
+        casa::LogIO& os, casa::Double& fluxRatio,
+        const casa::ImageInterface<casa::Float>& im, 
+        casa::ComponentType::Shape modelType,
+        const casa::Vector<casa::Double>& parameters,
+        casa::Stokes::StokesTypes stokes,
+        casa::Bool xIsLong, casa::Bool deconvolveIt
+    );
+
+    // Deconvolve SkyComponent from beam
+    // moved from ImageAnalysis. this needs to be moved to a more appropriate class at some point
+    static casa::SkyComponent deconvolveSkyComponent(
+        casa::LogIO& os, const casa::SkyComponent& skyIn,
+        const casa::Vector<casa::Quantum<casa::Double> >& beam,
+        const casa::DirectionCoordinate& dirCoord
+    );
+
+    // moved from ImageAnalysis. this needs to be moved to a more appropriate class at some point
+    // Put beam into +x -> +y frame
+    static casa::Vector<casa::Quantum<casa::Double> >putBeamInXYFrame (
+        const casa::Vector<casa::Quantum<casa::Double> >& beam,
+        const casa::DirectionCoordinate& dirCoord
+    );
+
+    // moved from ImageAnalysis. this needs to be moved to a more appropriate class at some point
+    static Vector<Double> decodeSkyComponent (
+        const SkyComponent& sky, const ImageInfo& ii,
+        const CoordinateSystem& cSys, const Unit& brightnessUnit,
+        Stokes::StokesTypes stokes, Bool xIsLong
+    );
 // </group>
+
+    // moved from ImageAnalysis. this needs to be moved to a more appropriate class at some point
+    // Deconvolve from beam
+    // Returns True if the deconvolved source is a point source, False otherwise.
+    // The returned value of successFit will be True if the deconvolved size could be determined, False otherwise.
+    static Bool deconvolveFromBeam(
+        Quantity& majorFit, casa::Quantity& minorFit,
+        Quantity& paFit, Bool& successFit, LogIO& os,
+        const Vector<Quantity>& beam, const Bool verbose=True
+    );
+
+    static Bool deconvolveFromBeam(
+        Quantity& majorFit, Quantity& minorFit,
+        Quantity& paFit, casa::Bool& successFit, casa::LogIO& os,
+        const Vector<Quantity>& sourceIn, const Vector<Quantity>& beam,
+        const Bool verbose=True
+    );
+
 //
 // Convert 2d shape from world (world parameters=x, y, major axis, 
 // minor axis, position angle) to pixel (major, minor, pa).  
@@ -232,6 +295,7 @@ public:
                                    const IPosition& pixelAxes,
                                    Bool doRef=False); 
 
+
 // Convert 2d shape  from pixels (parameters=x,y, major axis, 
 // minor axis, position angle) to world (major, minor, pa)
 // at specified location. pixelAxes describes which
@@ -249,6 +313,22 @@ public:
                                    const IPosition& pixelAxes,
                                    Bool doRef=False); 
 
+   // write the specified image and add the specified pixels to it.
+   // Currently no checks are done to ensure the pixel array size and
+   // mapShape are compatible; the caller is responsible for this check.
+   static void writeImage(
+   		const TiledShape& mapShape,
+   		const CoordinateSystem& coordinateInfo,
+   		const String& imageName,
+   		const Array<Float>& pixels, LogIO& log
+   );
+
+   static Vector<Quantity> makeFakeBeam(LogIO& logIO, const CoordinateSystem& csys, Bool suppressWarnings = False);
+
+   static void getUnitAndDoppler(
+	   String& xUnit, String& doppler,
+	   const uInt axis, const CoordinateSystem& csys
+   );
 
 private:
 
@@ -271,6 +351,8 @@ private:
                                     const Quantum<Double>& length,
                                     const CoordinateSystem& cSys,
                                     const IPosition& pixelAxes);
+
+
 
    static Quantum<Double> pixelWidthToWorld (LogIO& os, Double positionAngle,
                                              Double length,

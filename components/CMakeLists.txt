@@ -19,9 +19,14 @@ ComponentModels/DiskShape.cc
 ComponentModels/SkyComponent.cc
 ComponentModels/ComponentShape.cc
 ComponentModels/FluxStandard.cc
+ComponentModels/FluxCalcLogFreqPolynomial.cc
+ComponentModels/FluxCalcQS.cc
+ComponentModels/FluxStdsQS.cc
+ComponentModels/FluxCalc_SS_JPL_Butler.cc
 ComponentModels/SkyCompBase.cc
 ComponentModels/ComponentList.cc
 ComponentModels/ConstantSpectrum.cc
+ComponentModels/TabularSpectrum.cc
 ComponentModels/ComponentType2.cc
 )
 
@@ -37,6 +42,7 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 
 install (FILES
 ComponentModels/ConstantSpectrum.h
+ComponentModels/TabularSpectrum.h
 ComponentModels/ComponentList.h
 ComponentModels/ComponentShape.h
 ComponentModels/SkyComponent.h
@@ -50,6 +56,11 @@ ComponentModels/SkyCompBase.h
 ComponentModels/TwoSidedShape.h
 ComponentModels/SpectralModel.h
 ComponentModels/FluxStandard.h
+ComponentModels/FluxCalcLogFreqPolynomial.h
+ComponentModels/FluxCalcLogFreqPolynomial.tcc
+ComponentModels/FluxCalcQS.h
+ComponentModels/FluxCalc_SS_JPL_Butler.h
+ComponentModels/FluxStdsQS.h
 ComponentModels/Flux.h
 ComponentModels/Flux.tcc
 DESTINATION include/casacore/components/ComponentModels

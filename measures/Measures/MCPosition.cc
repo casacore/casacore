@@ -37,21 +37,16 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Statics
-Bool MCPosition::stateMade_p = False;
 uInt MCPosition::ToRef_p[N_Routes][3] = {
   {MPosition::ITRF,	MPosition::WGS84,	0},
   {MPosition::WGS84,	MPosition::ITRF,	0} };
 uInt MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
+MutexedInit MCPosition::theirMutexedInit (MCPosition::doFillState);
 
 //# Constructors
 MCPosition::MCPosition() :
   DVEC1(0) {
-  if (!stateMade_p) {
-    MPosition::checkMyTypes();
-    MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
-		      MPosition::N_Types, MCPosition::N_Routes,
-		      MCPosition::ToRef_p);
-  }
+    fillState();
 }
 
 //# Destructor
@@ -183,15 +178,15 @@ void MCPosition::doConvert(MVPosition &in,
 }
 
 String MCPosition::showState() {
-  if (!stateMade_p) {
-    MPosition::checkMyTypes();
-    MCBase::makeState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
-		      MPosition::N_Types, MCPosition::N_Routes,
-		      MCPosition::ToRef_p);
-  }
-  return MCBase::showState(MCPosition::stateMade_p, MCPosition::FromTo_p[0],
+  fillState();
+  return MCBase::showState(MCPosition::FromTo_p[0],
 			   MPosition::N_Types, MCPosition::N_Routes,
 			   MCPosition::ToRef_p);
+}
+
+void MCPosition::doFillState (void*) {
+  MPosition::checkMyTypes();
+  MCBase::makeState(FromTo_p[0], MPosition::N_Types, N_Routes, ToRef_p);
 }
 
 } //# NAMESPACE CASA - END

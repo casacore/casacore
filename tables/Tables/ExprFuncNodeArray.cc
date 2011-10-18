@@ -125,6 +125,11 @@ void TableExprFuncNodeArray::tryToConst()
     }
 }
 
+void TableExprFuncNodeArray::replaceTablePtr (const Table& table)
+{
+  node_p.replaceTablePtr (table);
+}
+
 
 const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
 							 Int ndim, uInt axarg)
@@ -371,10 +376,22 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	return res;
       }
     case TableExprFuncNode::isnanFUNC:
-	if (argDataType() == NTDouble) {
-            return isNaN (operands()[0]->getArrayDouble(id));
-	} else {
+	if (argDataType() == NTComplex) {
             return isNaN (operands()[0]->getArrayDComplex(id));
+	} else {
+            return isNaN (operands()[0]->getArrayDouble(id));
+        }
+    case TableExprFuncNode::isinfFUNC:
+	if (argDataType() == NTComplex) {
+            return isInf (operands()[0]->getArrayDComplex(id));
+	} else {
+            return isInf (operands()[0]->getArrayDouble(id));
+        }
+    case TableExprFuncNode::isfiniteFUNC:
+	if (argDataType() == NTComplex) {
+            return isFinite (operands()[0]->getArrayDComplex(id));
+	} else {
+            return isFinite (operands()[0]->getArrayDouble(id));
         }
     case TableExprFuncNode::iifFUNC:
       {

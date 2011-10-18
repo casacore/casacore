@@ -708,8 +708,7 @@ const SpectralCoordinate& CoordinateSystem::spectralCoordinate(uInt which) const
     return dynamic_cast<const SpectralCoordinate &>(*(coordinates_p[which]));
 }
 
-const StokesCoordinate& CoordinateSystem::stokesCoordinate(uInt which) const
-{
+const StokesCoordinate& CoordinateSystem::stokesCoordinate(uInt which) const {
     AlwaysAssert(which < nCoordinates() && 
 		 coordinates_p[which]->type() == Coordinate::STOKES, AipsError);
     return dynamic_cast<const StokesCoordinate &>(*(coordinates_p[which]));
@@ -947,7 +946,13 @@ uInt CoordinateSystem::nPixelAxes() const
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-    AlwaysAssert(pixel.nelements() == nPixelAxes(), AipsError);
+    if(pixel.nelements() != nPixelAxes()){
+	ostringstream oss;
+	oss << "pixel.nelements() != nPixelAxes(): "
+	    << pixel.nelements() << ", " << nPixelAxes();
+	throw (AipsError(String(oss)));
+    }
+
     if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
 
     const uInt nc = coordinates_p.nelements();
@@ -2097,6 +2102,8 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 
 Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 {
+    //cout << "refPix.nelements()=" << refPix.nelements() << endl;
+    //cout << "nPixelAxes()=" << nPixelAxes() << endl;
     Bool ok = (refPix.nelements()==nPixelAxes());
     if (!ok) {
       set_error("ref. pix vector must be of length nPixelAxes()");
@@ -2452,7 +2459,7 @@ String CoordinateSystem::format(String& units,
                                 uInt worldAxis,
                                 Bool isAbsolute,
                                 Bool showAsAbsolute,
-                                Int precision)
+                                Int precision) const
 {
     AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
 // 
@@ -2608,18 +2615,17 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 //
 	ostringstream onum;
 	onum << i;
-	Vector<Int> dummy;
 	String num(onum), name;
 	name = String("worldmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->world_maps_p[i]));
+	Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->world_maps_p[i]));
 	name = String("worldreplace") + num;
-	subrec.get(name, *(retval->world_replacement_values_p[i]));
+	retval->world_replacement_values_p[i]->reference
+          (subrec.toArrayDouble(name));
 	name = String("pixelmap") + num;
-	subrec.get(name, dummy);
-	dummy.toBlock(*(retval->pixel_maps_p[i]));
+	Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->pixel_maps_p[i]));
 	name = String("pixelreplace") + num;
-	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
+	retval->pixel_replacement_values_p[i]->reference
+          (subrec.toArrayDouble(name));
     }
 //
 // Get the obsinfo
@@ -2644,13 +2650,15 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 				    Bool oneRelative,
 				    Char prefix, Bool writeWCS,
 				    Bool preferVelocity, 
-				    Bool opticalVelocity) const
+				    Bool opticalVelocity,
+				    Bool preferWavelength) const
 {
    FITSCoordinateUtil fcu;
    return fcu.toFITSHeader(header, shape, *this, 
                            oneRelative, prefix,
-                           writeWCS, preferVelocity,
-                           opticalVelocity);
+                           writeWCS, 
+			   preferVelocity, opticalVelocity,
+			   preferWavelength);
 }
 
 
@@ -4241,6 +4249,167 @@ void CoordinateSystem::deleteTemps (const uInt which)
 //
    delete worldMax_tmps_p[which]; 
    worldMax_tmps_p[which] = 0;
+}
+
+Bool CoordinateSystem::hasSpectralAxis() const {
+    Int spectralCoordNum = findCoordinate(Coordinate::SPECTRAL);
+    return (spectralCoordNum >= 0 && spectralCoordNum < (Int)nCoordinates());
+}
+
+Int CoordinateSystem::spectralAxisNumber() const {
+    if (! hasSpectralAxis()) {
+        return -1;
+    }
+    Int specIndex = findCoordinate(Coordinate::SPECTRAL);
+    return pixelAxes(specIndex)[0];
+}
+
+
+Bool CoordinateSystem::hasPolarizationAxis() const {
+    Int polarizationCoordNum = findCoordinate(Coordinate::STOKES);
+    return (
+        polarizationCoordNum >= 0
+        && polarizationCoordNum < (Int)nCoordinates()
+    );
+}
+
+Int CoordinateSystem::polarizationCoordinateNumber() const {
+    // don't do hasPolarizationAxis check or you will go down an infinite recursion path :)
+    return findCoordinate(Coordinate::STOKES);
+}
+
+Int CoordinateSystem::polarizationAxisNumber() const {
+    if (! hasPolarizationAxis()) {
+        return -1;
+    }
+    return pixelAxes(polarizationCoordinateNumber())[0];
+}
+
+Int CoordinateSystem::stokesPixelNumber(const String& stokesString) const {
+    if (! hasPolarizationAxis()) {
+        return -1;
+    }
+    Int polCoordNum = findCoordinate(Coordinate::STOKES);
+    StokesCoordinate stokesCoord = stokesCoordinate(polCoordNum);
+    Int stokesPix = -1;
+    stokesCoord.toPixel(stokesPix, Stokes::type(stokesString));
+    if (stokesPix < 0) {
+        return -1;
+    }
+    return stokesPix;
+}
+
+String CoordinateSystem::stokesAtPixel(const uInt pixel) const {
+    if (! hasPolarizationAxis()) {
+         return "";
+    }
+    Int polCoordNum = polarizationCoordinateNumber();
+    StokesCoordinate stokesCoord = stokesCoordinate(polCoordNum);
+    Int stokes = stokesCoord.stokes()[pixel];
+    Stokes::StokesTypes stokesType = Stokes::type(stokes);
+    return Stokes::name(stokesType);
+}
+
+Int CoordinateSystem::directionCoordinateNumber() const {
+    // don't do a hasDirectionCoordinate() check or you will go down an infinite recursion path
+    return findCoordinate(Coordinate::DIRECTION);
+}
+
+Bool CoordinateSystem::hasDirectionCoordinate() const {
+    Int directionCoordNum = directionCoordinateNumber();
+    return (
+        directionCoordNum >= 0
+        && directionCoordNum < (Int)nCoordinates()
+    );
+}
+
+Vector<Int> CoordinateSystem::directionAxesNumbers() const {
+    if (! hasDirectionCoordinate()) {
+      return Vector<Int>();
+    }
+    return pixelAxes(directionCoordinateNumber());
+}
+
+Int CoordinateSystem::linearCoordinateNumber() const {
+    // don't do a hasLinearCoordinate() check or you will go down an infinite recursion path
+    return findCoordinate(Coordinate::LINEAR);
+}
+
+Bool CoordinateSystem::hasLinearCoordinate() const {
+    Int linearCoordNum = linearCoordinateNumber();
+    return (
+        linearCoordNum >= 0
+        && linearCoordNum < (Int)nCoordinates()
+    );
+}
+
+Vector<Int> CoordinateSystem::linearAxesNumbers() const {
+    if (! hasLinearCoordinate()) {
+      return Vector<Int>();
+    }
+    return pixelAxes(linearCoordinateNumber());
+}
+
+Vector<Int> CoordinateSystem::getWorldAxisOrder(Vector<String>& myNames, const Bool requireAll) const {
+	uInt naxes = nWorldAxes();
+	uInt raxes = myNames.size();
+	if (requireAll && raxes != naxes) {
+		ostringstream oss;
+		oss << "Image has " << naxes << " axes but " << raxes
+				<< " were given for reordering. Number of axes to reorder must match the number of image axes";
+		throw AipsError(oss.str());
+	}
+	Vector<String> axisNames = worldAxisNames();
+	_downcase(axisNames);
+	_downcase(myNames);
+	Vector<Int> myorder(raxes);
+
+	Vector<String> matchMap(naxes,"");
+	for (uInt i=0; i<myNames.size(); i++) {
+		String spec = myNames[i];
+		Regex orderRE("^" + spec + ".*");
+		Vector<String> matchedNames(0);
+		Vector<uInt> matchedNumbers(0);
+		for (uInt j=0; j<axisNames.size(); j++) {
+			if (axisNames[j].matches(orderRE)) {
+				uInt oldSize = matchedNames.size();
+				matchedNames.resize(oldSize + 1, True);
+				matchedNames[oldSize] = axisNames[j];
+				matchedNumbers.resize(oldSize + 1, True);
+				matchedNumbers[oldSize] = j;
+			}
+		}
+		if(matchedNames.size() == 0) {
+			ostringstream oss;
+			oss << "No axis matches requested axis " << spec
+				<< ". Image axis names are " << axisNames;
+			throw AipsError(oss.str());
+		}
+		else if (matchedNames.size() > 1) {
+			ostringstream oss;
+			oss << "Multiple axes " << matchedNames << " match requested axis "
+				<< spec;
+			throw AipsError(oss.str());
+		}
+		uInt axisIndex = matchedNumbers[0];
+		if (matchMap[axisIndex].empty()) {
+			myorder[i] = axisIndex;
+			matchMap[axisIndex] = spec;
+		}
+		else {
+			ostringstream oss;
+			oss << "Ambiguous axis specification. Both " << matchMap[axisIndex]
+			    << " and " << spec << " match image axis name " << matchedNames[0];
+			throw AipsError(oss.str());
+		}
+	}
+	return myorder;
+}
+
+void CoordinateSystem::_downcase(Vector<String>& vec) const {
+	for (Vector<String>::iterator iter = vec.begin(); iter != vec.end(); iter++) {
+		iter->downcase();
+	}
 }
 
 } //# NAMESPACE CASA - END

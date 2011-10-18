@@ -239,7 +239,7 @@ enum regexpcode
 
 /* Store NUMBER in two contiguous bytes starting at DESTINATION.  */
 #define STORE_NUMBER(destination, number)				\
-  { (destination)[0] = (number) & 0377;					\
+  { (destination)[0] = (signed char)((number) & 0377);                  \
     (destination)[1] = (signed char)((number) >> 8); }
   
 /* Same as STORE_NUMBER, except increment the destination pointer to
@@ -1684,7 +1684,7 @@ struct register_info
 
 #define PUSH_FAILURE_POINT(pattern_place, string_place)			\
   {									\
-    short last_used_reg, this_reg;					\
+    long last_used_reg, this_reg;					\
 									\
     /* Find out how many registers are active or have been matched.	\
        (Aside from register zero, which is only set at the end.)  */	\

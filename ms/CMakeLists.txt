@@ -12,6 +12,7 @@ MSScanGram
 MSSpwGram
 MSTimeGram
 MSUvDistGram
+MSStateGram
 )
 
 if (APPLE)
@@ -77,6 +78,7 @@ MeasurementSets/MSSpwGram.cc
 MeasurementSets/MSFeedIndex.cc
 MeasurementSets/MSUvDistGram.cc
 MeasurementSets/MSFieldIndex.cc
+MeasurementSets/MSStateIndex.cc
 MeasurementSets/MSSelectionError.cc
 MeasurementSets/MSObservation.cc
 MeasurementSets/MSSelectionTools.cc
@@ -113,6 +115,7 @@ MeasurementSets/MSSpwIndex.cc
 MeasurementSets/MSTimeGram.cc
 MeasurementSets/MSDataDescription.cc
 MeasurementSets/MSFieldParse.cc
+MeasurementSets/MSStateParse.cc
 MeasurementSets/MSTileLayout.cc
 MeasurementSets/MSFreqOffColumns.cc
 MeasurementSets/MSFieldColumns.cc
@@ -124,6 +127,7 @@ MeasurementSets/MSPolarization.cc
 MeasurementSets/MSSpWindowColumns.cc
 MeasurementSets/MSIter.cc
 MeasurementSets/MSFieldGram.cc
+MeasurementSets/MSStateGram.cc
 ${BISON_MSAntennaGram_OUTPUTS}
 ${FLEX_MSAntennaGram_OUTPUTS}
 ${BISON_MSArrayGram_OUTPUTS}
@@ -140,6 +144,8 @@ ${BISON_MSTimeGram_OUTPUTS}
 ${FLEX_MSTimeGram_OUTPUTS}
 ${BISON_MSUvDistGram_OUTPUTS}
 ${FLEX_MSUvDistGram_OUTPUTS}
+${BISON_MSStateGram_OUTPUTS}
+${FLEX_MSStateGram_OUTPUTS}
 )
 
 target_link_libraries (casa_ms casa_measures)

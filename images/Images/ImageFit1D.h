@@ -124,6 +124,7 @@ public:
 
     // Default Constructor (no image or axis set, so cannot be used).
     // You must call <src>setImage</src> to use this object.
+    // FIXME if I cannot use it, why is it public?
     ImageFit1D();
 
     // Constructor.  Fitting weights are assumed all unity.
@@ -157,10 +158,14 @@ public:
     // <src>doAbs</src> (absolute coordinates).  The CoordinateSystem in
     // the image is used to convert from pixels to world values.
     // <group>
-    Bool setData (const IPosition& pos, ImageFit1D<T>::AbcissaType type,
-                  Bool doAbs=True);
-    Bool setData (const ImageRegion& region, ImageFit1D<T>::AbcissaType type,
-                  Bool doAbs=True);
+    Bool setData (
+    	const IPosition& pos, const ImageFit1D<T>::AbcissaType type,
+        const Bool doAbs=True
+    );
+    Bool setData (
+    	const ImageRegion& region, const ImageFit1D<T>::AbcissaType type,
+        Bool doAbs=True
+    );
     // </group>
 
     // Set a SpectralList of SpectralElements to fit for.    These elements
@@ -223,6 +228,12 @@ public:
     // Get Total Mask (data and range mask)
     Vector<Bool> getTotalMask () const {return itsFitter.getTotalMask();};
 
+    // did the fit succeed? should only be called after fit().
+    Bool succeeded() const;
+
+    // did the fit converge? should only be called after fit().
+    Bool converged() const;
+
     // Recover the error message
     String errorMessage () const {return itsError;};
 
@@ -231,6 +242,9 @@ public:
     static Bool setAbcissaState (String& errMsg, ImageFit1D<T>::AbcissaType& type,
                                  CoordinateSystem& cSys, const String& xUnit,
                                  const String& doppler, uInt pixelAxis);
+
+
+
 private:
    ImageInterface<T>* itsImagePtr;
    ImageInterface<T>* itsWeightPtr;
@@ -242,9 +256,8 @@ private:
    typedef typename NumericTraits<T>::PrecisionType FitterType;
    ProfileFit1D<FitterType> itsFitter;
    CoordinateSystem itsCS;
-//
    mutable String itsError;                // Error message
-
+   Bool _converged, _success;
 // Functions
    
    void check() const;

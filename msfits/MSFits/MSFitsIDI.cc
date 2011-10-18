@@ -35,21 +35,26 @@
 #include <casa/OS/File.h>
 #include <casa/OS/Directory.h>
 #include <casa/IO/TapeIO.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSTileLayout.h>
+#include <tables/Tables/IncrementalStMan.h>
+#include <tables/Tables/StandardStMan.h>
+#include <tables/Tables/TiledColumnStMan.h>
+#include <tables/Tables/TiledShapeStMan.h>
+#include <tables/Tables/SetupNewTab.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //----------------------------------------------------------------------------
 
 MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut, 
-		     const Bool& overWrite) :
+		     const Bool& overWrite, const Int& obsType) :
   itsDataSource(""),
   itsDeviceType(FITS::Tape9),
   itsMSOut(""),
-  itsMS(0),
   itsMSExists(False),
-  itsOverWrite(False),
-  itsSelectedFiles(0),
-  itsAllFilesSelected(True)
+  itsSelectedFiles(0)
 {
 // Construct from a tape device and output MS file name
 // Input:
@@ -61,29 +66,28 @@ MSFitsIDI::MSFitsIDI(const Path& tapeDevice, const String& msOut,
 //    itsDataSource        String             Tape name or input file name
 //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
 //    itsMSOut             String             Output MS name
-//    itsMS                MeasurementSet*    Pointer to output MS
+//DP//    itsMS                MeasurementSet*    Pointer to output MS
 //    itsMSExists          Bool               True if output MS already exists
-//    itsOverWrite         Bool               True if existing MS is to 
-//                                            be overwritten
+//DP//    itsOverWrite         Bool               True if existing MS is to 
+//DP//                                            be overwritten
 //    itsSelectedFiles     Vector<Int>        Input file numbers selected
 //    itsAllFilesSelected  Bool               True if all files selected
 //
-  init(tapeDevice.absoluteName(), FITS::Tape9, msOut, overWrite);
+  init(tapeDevice.absoluteName(), FITS::Tape9, msOut, overWrite, obsType);
 //
 }
 
 //----------------------------------------------------------------------------
 
 MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut, 
-		     const Bool& overWrite) :
+		     const Bool& overWrite, const Int& obsType) :
   itsDataSource(""),
   itsDeviceType(FITS::Disk),
   itsMSOut(""),
-  itsMS(0),
+  //DP  itsMS(0),
   itsMSExists(False),
-  itsOverWrite(False),
-  itsSelectedFiles(0),
-  itsAllFilesSelected(True)
+  //DP itsOverWrite(False),
+  itsSelectedFiles(0)
 {
 // Construct from an input FITS-IDI file name and an output MS file name
 // Input:
@@ -95,14 +99,14 @@ MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut,
 //    itsDataSource        String             Tape name or input file name
 //    itsDeviceType        FITS::DeviceType   FITS device type (disk or tape)
 //    itsMSOut             String             Output MS name
-//    itsMS                MeasurementSet*    Pointer to output MS
+//DP//    itsMS                MeasurementSet*    Pointer to output MS
 //    itsMSExists          Bool               True if output MS already exists
-//    itsOverWrite         Bool               True if existing MS is to 
+//DP//    itsOverWrite         Bool               True if existing MS is to 
 //                                            be overwritten
 //    itsSelectedFiles     Vector<Int>        Input file numbers selected
 //    itsAllFilesSelected  Bool               True if all files selected
 //
-  init(inFile, FITS::Disk, msOut, overWrite);
+  init(inFile, FITS::Disk, msOut, overWrite, obsType);
 //
 }
 
@@ -110,13 +114,13 @@ MSFitsIDI::MSFitsIDI(const String& inFile, const String& msOut,
 
 MSFitsIDI::~MSFitsIDI()
 {
-// Default desctructor
-// Output to private data:
-//    itsMS                MeasurementSet*    Pointer to output MS
-//
-  if (itsMS) {
-    delete (itsMS);
-  }
+//DP // Default desctructor
+//DP // Output to private data:
+//DP //    itsMS                MeasurementSet*    Pointer to output MS
+//DP //
+//DP   if (itsMS) {
+//DP     delete (itsMS);
+//DP   }
 }
 
 //----------------------------------------------------------------------------
@@ -146,16 +150,11 @@ Bool MSFitsIDI::fillMS()
   LogIO os(LogOrigin("MSFitsIDI", "fillMS()", WHERE));
   
   // Delete the MS if it already exits and overwrite selected
-  if (itsMSExists && itsOverWrite) {
-    Table::deleteTable(itsMSOut);
+  if (itsMSExists){
+      Table::deleteTable(itsMSOut);
   }
 
-  // Create a new MS or attach to the existing MS
-  if (!itsMSExists || itsOverWrite) {
-    createOutputMS();
-  } else {
-    //    itsMS = new MeasurementSet(itsMSOut);
-  }
+  // new MS will be created within readFITSFile
 
   //
   // Tape input: loop over all selected input files
@@ -205,7 +204,7 @@ Bool MSFitsIDI::fillMS()
 
 void MSFitsIDI::init(const String& dataSource, 
 		     const FITS::FitsDevice& deviceType, const String& msOut,
-		     const Bool& overWrite) 
+		     const Bool& overWrite, const Int& obsType) 
 {
 // Initialization (called by all constructors)
 // Input:
@@ -242,15 +241,20 @@ void MSFitsIDI::init(const String& dataSource,
   Path msPath(msOut);
   itsMSExists = File(msPath).exists();
 
-  if (itsMSExists && !File(msPath).isWritable()) {
-    os << LogIO::SEVERE << "Output MS is not writable" << LogIO::EXCEPTION;
+  if (itsMSExists){
+    if(!overWrite){
+      os << LogIO::SEVERE << "Output MS exists and should not be overwritten." << LogIO::EXCEPTION;
+    }
+    else if(!File(msPath).isWritable()){
+      os << LogIO::SEVERE << "Output MS is not writable" << LogIO::EXCEPTION;
+    }
   }
-
-  if (!itsMSExists && !File(msPath).canCreate()) {
+  else if(!File(msPath).canCreate()){
     os << LogIO::SEVERE << "Output MS cannot be created" << LogIO::EXCEPTION;
   }
   itsMSOut = msOut;
-  itsOverWrite = overWrite;
+  //DP  itsOverWrite = overWrite;
+  itsObsType = obsType;
 
   // Set remaining default parameters
   itsAllFilesSelected = True;
@@ -286,11 +290,12 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   Table maintab;
   
   // Loop over all HDU in the FITS-IDI file
+  Bool initFirstMain = True;
   while (infits.err() == FitsIO::OK && !infits.eof()) {
 
     // Skip non-binary table HDU's
     if (infits.hdutype() != FITS::BinaryTableHDU) {
-      os << LogIO::WARN << "Skipping non-binary table HDU" << LogIO::POST;
+      os << LogIO::DEBUG1 << "Skipping non-binary table HDU" << LogIO::POST;
       infits.skip_hdu();
 
     } else if (infits.rectype() == FITS::SpecialRecord) {
@@ -299,23 +304,31 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
     } else {
       // Process the FITS-IDI input from the position of this binary table
-      FITSIDItoMS1 bintab(infits);
+      FITSIDItoMS1 bintab(infits, itsObsType, initFirstMain);
+      initFirstMain = False;
       String hduName = bintab.extname();
       hduName = hduName.before(trailing);
       String tableName = itsMSOut;
       if (hduName != "") {
 	if (hduName != "UV_DATA") {
 	  tableName = tableName + "_tmp/" + hduName;
-	  subTableNr++;
-	  subTableName.resize(subTableNr+1, True);
-	  subTableName(subTableNr) = hduName;
 	}
 
 	// Process the FITS-IDI input
-	bintab.readFitsFile(tableName);
+	Bool success  = bintab.readFitsFile(tableName);
 	if (infits.err() != FitsIO::OK) {
 	  os << LogIO::SEVERE << "Error reading FITS input" 
 	     << LogIO::EXCEPTION;
+	}
+	if(success){
+	  if (hduName != "UV_DATA") {
+	    subTableNr++;
+	    subTableName.resize(subTableNr+1, True);
+	    subTableName(subTableNr) = hduName;	  
+	  }
+	}
+	else{ // ignore this subtable
+	  infits.skip_all(FITS::BinaryTableHDU);
 	}
       }
     }
@@ -324,11 +337,10 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   // Move the subtables in the proper place and add the subtable
   // references to the main table description.
   //
-  cout << "Subtables found: " << subTableName << endl;
+  os << LogIO::NORMAL << "Subtables found: " << subTableName << LogIO::POST;
   // Open the main table to be updated.
   Table msmain (itsMSOut, Table::Update);
   // Loop over all subtables.
-  cout << "Nr of subtables = " << subTableNr+1 << endl;
   for (Int isub=0; isub<=subTableNr; isub++) {
     //cout << "renaming subtable " << subTableName(isub) << endl;
     // Open the subtable to be updated.
@@ -370,22 +382,10 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
     }
     
   }
-  //tmpDir.remove();
-  //commentwas here
+  tmpDir.removeRecursive(False);
+
 }
   
-//----------------------------------------------------------------------------
-
-void MSFitsIDI::createOutputMS()
-{
-// Create a new, empty output MS
-//
-  LogIO os(LogOrigin("MSFitsIDI", "createOutputMS()", WHERE));
-}
-
-//----------------------------------------------------------------------------
-
-
 
 } //# NAMESPACE CASA - END
 

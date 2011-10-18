@@ -603,6 +603,9 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
        return False;
     }
 //
+    //cout << "refPix[0]=" << refPix[0]
+    //     << " refPix[1]=" << refPix[1]
+    //     << endl;
     wcs_p.crpix[0] = refPix[0];
     wcs_p.crpix[1] = refPix[1];
     set_wcs(wcs_p);
@@ -679,6 +682,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
+	case MDirection::ICRS:
 	    names[0] = "RA";
 	    names[1] = "DEC";
 	    break;
@@ -722,6 +726,7 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	case MDirection::B1950_VLA:
 	case MDirection::BMEAN:
 	case MDirection::BTRUE:
+	case MDirection::ICRS:
 	    names[0] = "Right Ascension";
 	    names[1] = "Declination";
 	    break;
@@ -821,7 +826,7 @@ String DirectionCoordinate::format(String& units,
                                    uInt worldAxis,
                                    Bool isAbsolute,
                                    Bool showAsAbsolute,
-                                   Int precision)
+                                   Int precision) const
 {
    DebugAssert(worldAxis< nWorldAxes(), AipsError);
    DebugAssert(nWorldAxes()==2, AipsError);
@@ -1266,33 +1271,28 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     }
     String projname;
     subrec.get("projection", projname);
-    Vector<Double> projparms;
-    subrec.get("projection_parameters", projparms);
+    Vector<Double> projparms(subrec.toArrayDouble("projection_parameters"));
     Projection proj(Projection::type(projname), projparms);
 //
     if (!subrec.isDefined("crval")) {
 	return 0;
     }
-    Vector<Double> crval;
-    subrec.get("crval", crval);
+    Vector<Double> crval(subrec.toArrayDouble("crval"));
 //
     if (!subrec.isDefined("crpix")) {
 	return 0;
     }
-    Vector<Double> crpix;
-    subrec.get("crpix", crpix);
+    Vector<Double> crpix(subrec.toArrayDouble("crpix"));
 //
     if (!subrec.isDefined("cdelt")) {
 	return 0;
     }
-    Vector<Double> cdelt;
-    subrec.get("cdelt", cdelt);
+    Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 //
     if (!subrec.isDefined("pc")) {
 	return 0;
     }
-    Matrix<Double> pc;
-    subrec.get("pc", pc);
+    Matrix<Double> pc(subrec.toArrayDouble("pc"));
 //
     Double longPole, latPole;
     longPole = latPole = 999.0;            // Optional

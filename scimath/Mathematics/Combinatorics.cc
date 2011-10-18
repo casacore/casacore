@@ -32,29 +32,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Initialize factorial with first 2 values (0! and 1! are both 1).
     Vector<uInt> Combinatorics::_factorialCache(2,1);
+    volatile uInt Combinatorics::_factorialCacheSize = 2;
     Mutex Combinatorics::theirMutex;
 
     void Combinatorics::fillCache(const uInt n) {
         // Make updating the cache thread-safe.
         // After acquiring a lock, test again if an update needs to be done
         // because another thread might have done it in the mean time.
-        ScopedLock lock(theirMutex);
-        if (n >= _factorialCache.size()) {
-          uInt oldSize = _factorialCache.size();
+        ScopedMutexLock lock(theirMutex);
+        if (n >= _factorialCacheSize) {
           // Create a new cache vector.
           // Note: do not resize the existing one, because that makes
-          // the first test on size non thread-safe (because resize is done
-          // before the vector is filled).
+          // simultaneous read-access non thread-safe.
           Vector<uInt> newCache(n+1);
-          for (uInt i=0; i<oldSize; ++i) {
+          for (uInt i=0; i<_factorialCacheSize; ++i) {
             newCache[i] = _factorialCache[i];
           }
-          for (uInt i=oldSize; i<=n; ++i) {
+          for (uInt i=_factorialCacheSize; i<=n; ++i) {
             newCache[i] = i * newCache[i-1];
           }
-          // Note that reference first copies the data pointer, thereafter the
-          // size. So the test in the .h file on size() is thread-safe.
           _factorialCache.reference (newCache);
+          _factorialCacheSize = _factorialCache.size();
         }
     }
 

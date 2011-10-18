@@ -31,6 +31,7 @@
 #define IMAGES_IMAGEFITSCONVERTER_H
 
 #include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 
 #ifndef WCSLIB_GETWCSTAB
  #define WCSLIB_GETWCSTAB
@@ -42,7 +43,6 @@ template<class T> class PagedImage;
 template<class T> class ImageInterface;
 template<class T> class Vector;
 class IPosition;
-class String;
 class File;
 class ImageInfo;
 class CoordinateSystem;
@@ -209,6 +209,8 @@ public:
     //        overwritten if it already exists.
     //   <li> <src>degenerateLast</src> If True, axes of length 1 will be written
     //        last to the header.
+    //   <li> <src>origin</src> gives the origin, i.e., the name of the package.
+    //        If empty, it defaults to "casacore-"getVersion().
     //   </ul>
     static Bool ImageToFITS(String &error,
 			    ImageInterface<Float> &image,
@@ -221,7 +223,9 @@ public:
 			    Bool allowOverwrite=False,
                             Bool degenerateLast=False,
                             Bool verbose=True,
-			    Bool stokesLast=False);
+			    Bool stokesLast=False,
+			    Bool preferWavelength=False,
+                            const String& origin = String());
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

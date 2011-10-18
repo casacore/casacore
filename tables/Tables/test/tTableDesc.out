@@ -62,7 +62,6 @@ TableDesc tTableDesc_tmp1   version    (Directory ./)
 
 Invalid description of column ab: column already exists
 Invalid description of column af: Option Undefined only allowed for standard data types
-Invalid description of column Arr3: Shape only allowed for FixedShape arrays
 Invalid Table operation: setNdim: column ab is no array
 Invalid Table operation: setShape: column ab is no array
 Invalid Table operation: setNdim(): dimensionality of column Arr3 already defined

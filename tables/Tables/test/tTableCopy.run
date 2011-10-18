@@ -3,7 +3,7 @@
 # Script to test the tTableCopy test program.
 #=============================================================================
 
-./tTableCopy
-./tTableCopy m
-./tTableCopy p n
-./tTableCopy m n
+$casa_checktool ./tTableCopy
+$casa_checktool ./tTableCopy m
+$casa_checktool ./tTableCopy p n
+$casa_checktool ./tTableCopy m n

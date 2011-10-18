@@ -271,7 +271,10 @@ public:
     // //...
     // vd(Slice(0,10),Slice(10,10)) = -1.0; // 10x10 sub-matrix set to -1.0
     // </srcblock>
+    // <group>
     Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY);
+    const Matrix<T> operator()(const Slice &sliceX, const Slice &sliceY) const;
+    // </group>
 
     // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
@@ -279,9 +282,16 @@ public:
     Array<T> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
       { return Array<T>::operator()(blc,trc,incr); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc,
+                              const IPosition &incr) const
+      { return Array<T>::operator()(blc,trc,incr); }
     Array<T> operator()(const IPosition &blc, const IPosition &trc)
       { return Array<T>::operator()(blc,trc); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc) const
+      { return Array<T>::operator()(blc,trc); }
     Array<T> operator()(const Slicer& slicer)
+      { return Array<T>::operator()(slicer); }
+    const Array<T> operator()(const Slicer& slicer) const
       { return Array<T>::operator()(slicer); }
     // </group>
 
@@ -319,7 +329,8 @@ protected:
     // Remove the degenerate axes from other and store result in this matrix.
     // An exception is thrown if removing degenerate axes does not result
     // in a matrix.
-    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
+    virtual void doNonDegenerate(const Array<T> &other,
+                                 const IPosition &ignoreAxes);
 
 private:
     // Cached constants to improve indexing.

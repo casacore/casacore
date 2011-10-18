@@ -56,8 +56,8 @@ NRQ       [^\\\n\/]+
 /*
 NAME        ([A-za-z0-0_'{''}''+''-'])
 */
-IDENTIFIER  ([A-Za-z0-9_\{\}\+\-\.]+|STRING)
-SIDENTIFIER ({WHITE}[A-Za-z0-9_'+''-''{''}''*''?' ]+{WHITE})
+IDENTIFIER  ([A-Za-z0-9_\{\}\+\-\.\= ]+|STRING)
+SIDENTIFIER ({WHITE}[A-Za-z0-9_'+''-''{''}''*''?']+{WHITE})
 
 %x QS RS ESC
 /* rules */
@@ -115,9 +115,8 @@ SIDENTIFIER ({WHITE}[A-Za-z0-9_'+''-''{''}''*''?' ]+{WHITE})
 
 {IDENTIFIER} { msFieldGramPosition() += yyleng;
                lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
-               strcpy(lvalp->str, MSFieldGramtext);
+               strcpy(lvalp->str, stripWhite(MSFieldGramtext).c_str());
 	       // cout << "ID = \"" << MSFieldGramtext << "\" \"" << lvalp->str << "\"" << endl;
-
                return IDENTIFIER;
              }
 {SIDENTIFIER} { msFieldGramPosition() += yyleng;

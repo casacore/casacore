@@ -160,7 +160,26 @@ public:
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
       { return Array<T>::operator()(i); }
+
     T &operator()(uInt i1, uInt i2, uInt i3)
+      {
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
+#endif
+	return this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+      }
+
+    const T &operator()(uInt i1, uInt i2, uInt i3) const
+      {
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+        this->validateIndex(i1, i2, i3);   // Throws an exception on failure
+#endif
+	return this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+      }
+
+  //# Have function at (temporarily) to check if test on contiguous is
+  //# indeed slower than always using multiplication in operator()
+    T &at(uInt i1, uInt i2, uInt i3)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -169,7 +188,7 @@ public:
                               this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
 
-    const T &operator()(uInt i1, uInt i2, uInt i3) const
+    const T &at(uInt i1, uInt i2, uInt i3) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -187,8 +206,12 @@ public:
     // //...
     // vd(Slice(0,10),Slice(10,10,Slice(0,10))) = -1.0; // sub-cube set to -1.0
     // </srcblock>
+    // <group>
     Cube<T> operator()(const Slice &sliceX, const Slice &sliceY,
 		       const Slice &sliceZ);
+    const Cube<T> operator()(const Slice &sliceX, const Slice &sliceY,
+                             const Slice &sliceZ) const;
+    // </group>
 
     // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
@@ -196,9 +219,16 @@ public:
     Array<T> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
       { return Array<T>::operator()(blc,trc,incr); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc,
+                              const IPosition &incr) const
+      { return Array<T>::operator()(blc,trc,incr); }
     Array<T> operator()(const IPosition &blc, const IPosition &trc)
       { return Array<T>::operator()(blc,trc); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc) const
+      { return Array<T>::operator()(blc,trc); }
     Array<T> operator()(const Slicer& slicer)
+      { return Array<T>::operator()(slicer); }
+    const Array<T> operator()(const Slicer& slicer) const
       { return Array<T>::operator()(slicer); }
     // </group>
 
@@ -208,7 +238,7 @@ public:
     // <group>
 
     // Return a MaskedArray.
-    MaskedArray<T> operator() (const LogicalArray &mask) const
+    const MaskedArray<T> operator() (const LogicalArray &mask) const
       { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
@@ -225,7 +255,7 @@ public:
     // <group>
 
     // Return a MaskedArray.
-    MaskedArray<T> operator() (const MaskedLogicalArray &mask) const
+    const MaskedArray<T> operator() (const MaskedLogicalArray &mask) const
       { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
@@ -235,16 +265,16 @@ public:
     // </group>
 
 
-    // Extract a plane as a cube. We could have xzPlane, etc also if that
-    // would be of use to anyone. Of course you could also use a Matrix
+    // Extract a plane as a matrix referencing the original data.
+    // Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
     Matrix<T> xyPlane(uInt zplane); 
     const  Matrix<T> xyPlane(uInt zplane) const; 
-    Matrix<T> xzPlane(uInt zplane); 
-    const  Matrix<T> xzPlane(uInt zplane) const; 
-    Matrix<T> yzPlane(uInt zplane); 
-    const  Matrix<T> yzPlane(uInt zplane) const; 
+    Matrix<T> xzPlane(uInt yplane); 
+    const  Matrix<T> xzPlane(uInt yplane) const; 
+    Matrix<T> yzPlane(uInt xplane); 
+    const  Matrix<T> yzPlane(uInt xplane) const; 
     // </group>
 
     // The length of each axis of the cube.
@@ -285,7 +315,8 @@ protected:
     // Remove the degenerate axes from other and store result in this cube.
     // An exception is thrown if removing degenerate axes does not result
     // in a cube.
-    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
+    virtual void doNonDegenerate(const Array<T> &other,
+                                 const IPosition &ignoreAxes);
 
 private:
     // Cached constants to improve indexing.

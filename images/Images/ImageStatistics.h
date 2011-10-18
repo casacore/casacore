@@ -134,12 +134,22 @@ public:
 // image had an invalid type or that the internal state of the class is bad.
    Bool setNewImage (const ImageInterface<T>& image);
 
+   void setPrecision(Int precision);
+
+   void setBlc(const IPosition& blc);
+
+   IPosition getBlc() const;
+
+   Int getPrecision() const;
+
 private:
 
 // Data
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
+   IPosition blc_;
+   Int precision_;
 
 // Virtual functions.  See LatticeStatistics for more information
 // about these, or see the implementation.
@@ -160,9 +170,13 @@ private:
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
                            const Matrix<AccumType>& ord);
 
-   virtual void displayStats( AccumType nPts, AccumType sum, AccumType median,
-           AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
-           AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax );
+   virtual void displayStats(
+		   AccumType nPts, AccumType sum, AccumType median,
+           AccumType medAbsDevMed, AccumType quartile,
+           AccumType sumSq, AccumType mean, AccumType var,
+           AccumType rms, AccumType sigma, AccumType dMin,
+           AccumType dMax
+   );
 
 
   //# Make members of parent class known.

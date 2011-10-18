@@ -3,9 +3,9 @@
 # Script to test tIncrementalStMan by running it in various ways.
 #=============================================================================
 
-  ./tIncrementalStMan 1000
-  ./tIncrementalStMan 2000
-  ./tIncrementalStMan 3000
-  ./tIncrementalStMan 4000
-  ./tIncrementalStMan 5000
-  ./tIncrementalStMan 0
+  $casa_checktool ./tIncrementalStMan 1000
+  $casa_checktool ./tIncrementalStMan 2000
+  $casa_checktool ./tIncrementalStMan 3000
+  $casa_checktool ./tIncrementalStMan 4000
+  $casa_checktool ./tIncrementalStMan 5000
+  $casa_checktool ./tIncrementalStMan 0

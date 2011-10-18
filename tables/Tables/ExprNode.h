@@ -266,6 +266,10 @@ class TableExprNode;
   // It results in a Bool scalar or array.
     TableExprNode isNaN (const TableExprNode& node);
 
+  // Function to test if a scalar or array is finite.
+  // It results in a Bool scalar or array.
+    TableExprNode isFinite (const TableExprNode& node);
+
   // Minimum or maximum of 2 nodes.
   // Makes sense for numeric and String values. For Complex values
   // the norm is compared.
@@ -659,7 +663,8 @@ class TableExprNode
     friend TableExprNode ctime     (const TableExprNode& node);
     friend TableExprNode week	   (const TableExprNode& node);
     friend TableExprNode time      (const TableExprNode& node);
-    friend TableExprNode isNaN (const TableExprNode& node);
+    friend TableExprNode isNaN     (const TableExprNode& node);
+    friend TableExprNode isFinite  (const TableExprNode& node);
     friend TableExprNode min (const TableExprNode& a, const TableExprNode& b);
     friend TableExprNode max (const TableExprNode& a, const TableExprNode& b);
     friend TableExprNode conj (const TableExprNode& node);
@@ -849,6 +854,11 @@ public:
     uInt nrow() const
       { return node_p->nrow(); }
 
+    // Is the result value defined?
+    // Normally it is, but not for a column with an undefined value.
+    Bool isResultDefined (const TableExprId& id) const
+      { return node_p->isDefined (id); }
+
     // Get a value for this node in the given row.
     // These functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
@@ -877,6 +887,16 @@ public:
     Array<Double>   getArrayDouble   (const TableExprId& id) const;
     Array<DComplex> getArrayDComplex (const TableExprId& id) const;
     Array<String>   getArrayString   (const TableExprId& id) const;
+    // Get a value as an array, even it it is a scalar.
+    // This is useful in case one can give an argument as scalar or array.
+    // <group>
+    Array<Bool>     getBoolAS     (const TableExprId& id) const;
+    Array<Int64>    getIntAS      (const TableExprId& id) const;
+    Array<Double>   getDoubleAS   (const TableExprId& id) const;
+    Array<DComplex> getDComplexAS (const TableExprId& id) const;
+    Array<String>   getStringAS   (const TableExprId& id) const;
+    // </group>
+
     // </group>
 
     // Get the data type for doing a getColumn on the expression.
@@ -1114,6 +1134,16 @@ inline Array<DComplex> TableExprNode::getArrayDComplex (const TableExprId& id) c
     { return node_p->getArrayDComplex (id); }
 inline Array<String> TableExprNode::getArrayString (const TableExprId& id) const
     { return node_p->getArrayString (id); }
+inline Array<Bool> TableExprNode::getBoolAS (const TableExprId& id) const
+    { return node_p->getBoolAS (id); }
+inline Array<Int64> TableExprNode::getIntAS (const TableExprId& id) const
+    { return node_p->getIntAS (id); }
+inline Array<Double> TableExprNode::getDoubleAS (const TableExprId& id) const
+    { return node_p->getDoubleAS (id); }
+inline Array<DComplex> TableExprNode::getDComplexAS (const TableExprId& id) const
+    { return node_p->getDComplexAS (id); }
+inline Array<String> TableExprNode::getStringAS (const TableExprId& id) const
+    { return node_p->getStringAS (id); }
 
 inline Array<Bool>      TableExprNode::getColumnBool() const
     { return node_p->getColumnBool(); }
@@ -1538,6 +1568,15 @@ inline TableExprNode rtrim (const TableExprNode& node)
 inline TableExprNode isNaN (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::isnanFUNC, node);
+}
+inline TableExprNode isInf (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::isinfFUNC, node);
+}
+inline TableExprNode isFinite (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::isfiniteFUNC,
+                                           node);
 }
 inline TableExprNode min (const TableExprNode& node)
 {

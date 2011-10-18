@@ -117,12 +117,13 @@ public:
 	       const Vector<Double>& offset,
 	       const Vector<String>& mount,
 	       const Vector<String>& name,
+	       const Vector<String>& padname,
 	       const String& coordsystem,
 	       const MPosition& mRefLocation);
   // get the info back 
   bool getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ, 
 	      Vector<Double>& antDiam, Vector<Double>& offset,
-	      Vector<String>& mount, Vector<String>& name,
+	      Vector<String>& mount, Vector<String>& name, Vector<String>& padname,
 	      String& coordsystem, MPosition& mRefLocation );
 
   // set the observed fields
@@ -130,8 +131,15 @@ public:
 		  const MDirection& sourceDirection,
 		  const String& calCode);
 
+  bool getFields(Int& nField,
+		 Vector<String>& sourceName, 
+		 Vector<MDirection>& sourceDirection,
+		 Vector<String>& calCode);
+
   // set the Feeds;  brain dead version
   void initFeeds(const String& mode);
+
+  bool getFeedMode(String& mode);
 
   // set the Feeds;  Smart version
   void initFeeds(const String& mode,
@@ -146,6 +154,13 @@ public:
 		     const Quantity& freqInc,
 		     const Quantity& freqRes,
 		     const String& stokesString);
+
+  bool getSpWindows(Int& nSpw,
+		    Vector<String>& spWindowName,
+		    Vector<Int>& nChan,
+		    Vector<Quantity>& startFreq,
+		    Vector<Quantity>& freqInc,
+		    Vector<String>& stokesString);
 
   void setFractionBlockageLimit(const Double fraclimit) 
     { fractionBlockageLimit_p = fraclimit; }
@@ -163,7 +178,33 @@ public:
   void observe(const String& sourceName,
 	       const String& spWindowName,
 	       const Quantity& qStartTime, 
-	       const Quantity& qStopTime);
+	       const Quantity& qStopTime,
+	       const Bool add_observation,
+	       const Bool state_sig,
+	       const Bool state_ref,
+	       const double& state_cal,
+	       const double& state_load,
+	       const unsigned int state_sub_scan,
+	       const String& state_obs_mode,
+	       const String& observername,
+	       const String& projectname);
+
+
+  void observe(const Vector<String>& sourceNames,
+	       const String& spWindowName,
+	       const Vector<Quantity>& qStartTimes, 
+	       const Vector<Quantity>& qStopTimes,
+	       const Vector<MDirection>& directions,
+	       const Bool add_observation,
+	       const Bool state_sig,
+	       const Bool state_ref,
+	       const double& state_cal,
+	       const double& state_load,
+	       const unsigned int state_sub_scan,
+	       const String& state_obs_mode,
+	       const String& observername,
+	       const String& projectname);
+
 
 private:
 
@@ -188,7 +229,7 @@ private:
 
   MeasurementSet* ms_p;
 
-  TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p, imweightAcc_p;
+  TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 
   Double maxData_p;
 

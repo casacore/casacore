@@ -1,1 +1,1 @@
-./tChoice < tChoice.in
+$casa_checktool ./tChoice < tChoice.in

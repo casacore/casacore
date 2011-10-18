@@ -577,7 +577,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitCalcNode (const TaQLCalcNodeRep& node)
   {
     TableParseSelect* curSel = pushStack (TableParseSelect::PCALC);
-    handleTables  (node.itsTables);
+    handleTables (node.itsTables);
+    // If where, orderby, limit and/or offset is given, handle as FROM query.
+    if (node.itsWhere.isValid() || node.itsSort.isValid() ||
+        node.itsLimitOff.isValid()) {
+      handleWhere (node.itsWhere);
+      visitNode   (node.itsSort);
+      visitNode   (node.itsLimitOff);
+      Table tab = curSel->doFromQuery(node.style().doTiming());
+      // Replace with the resulting table.
+      curSel->replaceTable (tab);
+    }
     TaQLNodeResult eres = visitNode (node.itsExpr);
     curSel->handleCalcComm (getHR(eres).getExpr());
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();

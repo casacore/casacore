@@ -129,6 +129,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   const Unit Hz("Hz");
   DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
   const Double bandwidthInHz = bandwidth.getValue(Hz);
+
   // Convert the tolerance to Hz
   DebugAssert(tolerance.check(Hz.getValue()), AipsError);
   const Double tolInHz = tolerance.getValue(Hz);
@@ -143,7 +144,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 	matchNumChan(tr, nChan) &&
 	matchIfConvChain(tr, ifChain) &&
 	//matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4) &&
+	matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
  	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
 		 return tr;
     }
@@ -155,7 +156,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 	matchNumChan(r, nChan) &&
 	matchIfConvChain(r, ifChain) &&
 	//matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4) &&
+	matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
  	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
       return r;
     }
@@ -188,7 +189,7 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
 	      matchNumChan(tr, nChan) &&
 	      matchIfConvChain(tr, ifChain) &&
   	      //matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
-			matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4) &&
+			matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
 	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
 	      matchRefFreqCnvtrd(tr, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
 		   return tr;
@@ -201,7 +202,7 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
 	      matchNumChan(r, nChan) &&
 	      matchIfConvChain(r, ifChain) &&
 	      //matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
-			matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4) &&
+			matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
 	      ( /*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
 	        matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
          return r;
@@ -233,11 +234,12 @@ allMatchedSpw(const MFrequency& refFreq, uInt nChan,
   Int numMatch=0;
   for (uInt k=0; k < r; ++k){
     
+
     if (!flagRow()(k) &&
 	matchNumChan(k, nChan) &&
 	matchIfConvChain(k, ifChain) &&
 	//matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/4) &&
-	matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz/4) &&
+	matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz/4.) &&
  	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
 	//matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
       ++numMatch;
@@ -552,7 +554,7 @@ Bool ROMSSpWindowColumns::
 matchTotalBandwidth(uInt row, Double bandwidthInHz,
 		    Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
-  return nearAbs(totalBandwidth()(row), bandwidthInHz, tolInHz);
+  return nearAbs(totalBandwidth()(row), bandwidthInHz, fabs(tolInHz));
 }
 
 Bool ROMSSpWindowColumns::

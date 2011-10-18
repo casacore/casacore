@@ -246,23 +246,23 @@ void DataManager::removeColumn (DataManagerColumn*)
 //# Initialize the static map of "constructors".
 // Use a recursive mutex, because loading from a shared library can cause
 // a nested lock.
-Bool DataManager::theirMainRegistrationDone = False;
 SimpleOrderedMap<String,DataManagerCtor>
         DataManager::theirRegisterMap (DataManager::unknownDataManager);
-Mutex DataManager::theirMutex(Mutex::Recursive);
+MutexedInit DataManager::theirMutexedInit(doRegisterMainCtor, 0,
+                                          Mutex::Recursive);
 
 
 //# Register a mapping.
 void DataManager::registerCtor (const String& type, DataManagerCtor func)
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutexedInit.mutex());
     unlockedRegisterCtor (type, func);
 }
 
 //# Test if the data manager is registered.
 Bool DataManager::isRegistered (const String& type)
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutexedInit.mutex());
     if (theirRegisterMap.isDefined(type)) {
 	return True;
     }
@@ -273,7 +273,7 @@ Bool DataManager::isRegistered (const String& type)
 //# Return default function if the data manager is undefined.
 DataManagerCtor DataManager::getCtor (const String& type)
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutexedInit.mutex());
     DataManagerCtor* fp = theirRegisterMap.isDefined (type);
     if (fp) {
         return *fp;
@@ -537,38 +537,34 @@ void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 //# Register all mappings of the names of classes derived from
 //# DataManager to a static function calling the default constructor.
 //# The class name is the name as returned by the function dataManagerType.
-void DataManager::doRegisterMainCtor()
+void DataManager::doRegisterMainCtor (void*)
 {
-    ScopedLock lock(theirMutex);
-    if (!theirMainRegistrationDone) {
-        unlockedRegisterCtor ("StManAipsIO", StManAipsIO::makeObject);
-        unlockedRegisterCtor ("StandardStMan", StandardStMan::makeObject);
-        unlockedRegisterCtor ("IncrementalStMan", IncrementalStMan::makeObject);
-        unlockedRegisterCtor ("TiledDataStMan", TiledDataStMan::makeObject);
-        unlockedRegisterCtor ("TiledCellStMan", TiledCellStMan::makeObject);
-        unlockedRegisterCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
-        unlockedRegisterCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
-        unlockedRegisterCtor ("MemoryStMan", MemoryStMan::makeObject);
-        unlockedRegisterCtor (CompressFloat::className(),
-                              CompressFloat::makeObject);
-        unlockedRegisterCtor (CompressComplex::className(),
-                              CompressComplex::makeObject);
-        unlockedRegisterCtor (CompressComplexSD::className(),
-                              CompressComplexSD::makeObject);
-        unlockedRegisterCtor (MappedArrayEngine<Complex,DComplex>::className(),
-                              MappedArrayEngine<Complex,DComplex>::makeObject);
-        unlockedRegisterCtor (ForwardColumnEngine::className(),
-                              ForwardColumnEngine::makeObject);
-        unlockedRegisterCtor (VirtualTaQLColumn::className(),
-                              VirtualTaQLColumn::makeObject);
-        unlockedRegisterCtor (BitFlagsEngine<uChar>::className(),
-                              BitFlagsEngine<uChar>::makeObject);
-        unlockedRegisterCtor (BitFlagsEngine<Short>::className(),
-                              BitFlagsEngine<Short>::makeObject);
-        unlockedRegisterCtor (BitFlagsEngine<Int>::className(),
-                              BitFlagsEngine<Int>::makeObject);
-        theirMainRegistrationDone = True;
-    }
+  unlockedRegisterCtor ("StManAipsIO", StManAipsIO::makeObject);
+  unlockedRegisterCtor ("StandardStMan", StandardStMan::makeObject);
+  unlockedRegisterCtor ("IncrementalStMan", IncrementalStMan::makeObject);
+  unlockedRegisterCtor ("TiledDataStMan", TiledDataStMan::makeObject);
+  unlockedRegisterCtor ("TiledCellStMan", TiledCellStMan::makeObject);
+  unlockedRegisterCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
+  unlockedRegisterCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
+  unlockedRegisterCtor ("MemoryStMan", MemoryStMan::makeObject);
+  unlockedRegisterCtor (CompressFloat::className(),
+                        CompressFloat::makeObject);
+  unlockedRegisterCtor (CompressComplex::className(),
+                        CompressComplex::makeObject);
+  unlockedRegisterCtor (CompressComplexSD::className(),
+                        CompressComplexSD::makeObject);
+  unlockedRegisterCtor (MappedArrayEngine<Complex,DComplex>::className(),
+                        MappedArrayEngine<Complex,DComplex>::makeObject);
+  unlockedRegisterCtor (ForwardColumnEngine::className(),
+                        ForwardColumnEngine::makeObject);
+  unlockedRegisterCtor (VirtualTaQLColumn::className(),
+                        VirtualTaQLColumn::makeObject);
+  unlockedRegisterCtor (BitFlagsEngine<uChar>::className(),
+                        BitFlagsEngine<uChar>::makeObject);
+  unlockedRegisterCtor (BitFlagsEngine<Short>::className(),
+                        BitFlagsEngine<Short>::makeObject);
+  unlockedRegisterCtor (BitFlagsEngine<Int>::className(),
+                        BitFlagsEngine<Int>::makeObject);
 }
 
 } //# NAMESPACE CASA - END

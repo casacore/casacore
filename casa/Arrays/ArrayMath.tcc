@@ -643,6 +643,116 @@ Array<T> operator^ (const T &left, const Array<T> &right)
 }
 
 
+// Mixed-type *=, /=, *, & / operators:
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<typename T>
+void operator*= (Array<std::complex<T> > &left,
+                 const Array<T> &other)
+{
+  checkArrayShapes (left, other, "*=");
+  arrayTransformInPlace (left, other,
+                         casa::Multiplies<std::complex<T>,T>());
+}
+
+template<typename T>
+void operator*= (Array<std::complex<T> > &left,
+                 const T &other)
+{
+  arrayTransformInPlace (left, other,
+                         casa::Multiplies<std::complex<T>,T>());
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<typename T>
+void operator/= (Array<std::complex<T> > &left,
+                 const Array<T> &other)
+{
+  checkArrayShapes (left, other, "/=");
+  arrayTransformInPlace (left, other,
+                         casa::Divides<std::complex<T>,T>());
+}
+
+template<typename T>
+void operator/= (Array<std::complex<T> > &left,
+                 const T &other)
+{
+  arrayTransformInPlace (left, other,
+                         casa::Divides<std::complex<T>,T>());
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<typename T>
+Array<std::complex<T> > operator*(const Array<std::complex<T> > &left,
+                                  const Array<T> &other)
+{
+  checkArrayShapes (left, other, "*");
+  Array<std::complex<T> > result(left.shape());
+  arrayContTransform (left, other, result,
+                      casa::Multiplies<std::complex<T>,T>());
+  return result;
+}
+
+// <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<typename T>
+Array<std::complex<T> > operator/(const Array<std::complex<T> > &left,
+                                  const Array<T> &other)
+{
+  checkArrayShapes (left, other, "/");
+  Array<std::complex<T> > result(left.shape());
+  arrayContTransform (left, other, result,
+                      casa::Divides<std::complex<T>,T>());
+  return result;
+}
+
+template<typename T>
+Array<std::complex<T> > operator* (const Array<std::complex<T> > &left,
+                                   const T &other)
+{
+  Array<std::complex<T> > result(left.shape());
+  arrayContTransform (left, other, result,
+                      casa::Multiplies<std::complex<T>,T>());
+  return result;
+}
+
+template<typename T>
+Array<std::complex<T> > operator/ (const Array<std::complex<T> > &left,
+                                   const T &other)
+{
+  Array<std::complex<T> > result(left.shape());
+  arrayContTransform (left, other, result,
+                      casa::Divides<std::complex<T>,T>());
+  return result;
+}
+
+template<typename T>
+Array<std::complex<T> > operator*(const std::complex<T> &left,
+                                  const Array<T> &other)
+{
+  Array<std::complex<T> > result(other.shape());
+  arrayContTransform (left, other, result,
+                      casa::Multiplies<std::complex<T>,T>());
+  return result;
+}
+
+template<typename T>
+Array<std::complex<T> > operator/(const std::complex<T> &left,
+                                  const Array<T> &other)
+{
+  Array<std::complex<T> > result(other.shape());
+  arrayContTransform (left, other, result,
+                      casa::Divides<std::complex<T>,T>());
+  return result;
+}
+
+
 // <thrown>
 //   </item> ArrayError
 // </thrown>

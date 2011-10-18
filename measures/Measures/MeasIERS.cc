@@ -93,15 +93,28 @@ Bool MeasIERS::get(Double &returnValue,
     if (!initMeas(which)) return False;
     if (!fillMeas(which, date)) {
       if (!msgDone) {
-	msgDone = True;
 	LogIO os(LogOrigin("MeasIERS",
 			   String("fillMeas(MeasIERS::Files, Double)"),
 			   WHERE));
-	os <<
-	  String("Requested JD ") << date << String(" is outside "
-		 "the IERS table data range."
-		 "\nCalculations will proceed with less precision") << 
-	  LogIO::POST;
+        Time now;       // current time
+        
+        if(date > now.modifiedJulianDay()){
+          // People using times from the future are almost certainly simulating
+          // data, and, even if they would be upset by the IERS table not being
+          // available, there is not much they can do about it.
+          os << LogIO::NORMAL3
+             << "High precision Earth axis data is not yet available for requested JD "
+             << date
+             << LogIO::POST;
+        }
+        else{
+          os << LogIO::NORMAL
+             << "Requested JD " << date
+             << " is outside the range of the IERS (Earth axis data) table." 	 
+             << "\nCalculations will proceed with less precision"
+             << LogIO::POST;
+        }
+	msgDone = True;
       }
       return False;
     }
@@ -128,67 +141,76 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
     "DdPsi",
     "DdEps"};
   static const String tplc[N_Files] = {"measures.ierseop97.directory",
-				 "measures.ierspredict.directory"};
+                                       "measures.ierspredict.directory"};
 
-  if (!measured[which] && measFlag[which]) {
-    measFlag[which] = False;
-    TableRecord kws;
-    Double dt;
-    String vs;
-    Bool ok = True;
-    if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
-			    rfp[Int(which)], vs, dt, 
-			    N_Types, names, tp[which],
-			    tplc[which],
-			    "geodetic")) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("initMeas(MeasIERS::Files)"),
-			 WHERE));
-      os <<
-	String("Cannot read IERS table ") + tp[which] +
-	  "\nCalculations will proceed with lower precision" << 
-	LogIO::POST;
-      return False;
-    }
-    MeasIERS::openNote(&MeasIERS::closeMeas);
-    if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000)
-      ok = False;
-    if (ok) {
-      mjd0[which] = Int(kws.asDouble("MJD0"));
-      Int n = t[which].nrow();
-      row[which].get(n-1);
-      if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
-	ok = False;
-      } else {
-	mjdl[which] = mjd0[which] + n;
+  if (measFlag[which]) {
+    ScopedMutexLock locker(theirMutex);
+    if (measFlag[which]) {
+      TableRecord kws;
+      Double dt;
+      String vs;
+      Bool ok = True;
+      if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
+                              rfp[Int(which)], vs, dt, 
+                              N_Types, names, tp[which],
+                              tplc[which],
+                              "geodetic")) {
+        LogIO os(LogOrigin("MeasIERS",
+                           String("initMeas(MeasIERS::Files)"),
+                           WHERE));
+        os << LogIO::NORMAL1
+           << "Cannot read IERS (Earth axis data) table " << tp[which]
+           << "\nCalculations will proceed with lower precision"
+           << LogIO::POST;
+        ok = False;
       }
-    }
-    if (!ok) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("initMeas(MeasIERS::Files)"),
-			 WHERE));
-      os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
-    }
-    measured[which] = True;
-    for (Int i = 0; i < MeasIERS::N_Types; i++) {
-      for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
-	ldat[j][i] = 0;
+      if (ok) {
+        MeasIERS::openNote(&MeasIERS::closeMeas);
+        if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000) {
+          ok = False;
+        }
       }
-    } 
+      if (ok) {
+        mjd0[which] = Int(kws.asDouble("MJD0"));
+        Int n = t[which].nrow();
+        row[which].get(n-1);
+        if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
+          ok = False;
+        } else {
+          mjdl[which] = mjd0[which] + n;
+        }
+      }
+      if (!ok) {
+        LogIO os(LogOrigin("MeasIERS",
+                           String("initMeas(MeasIERS::Files)"),
+                           WHERE));
+        os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
+      }
+      for (Int i = 0; i < MeasIERS::N_Types; i++) {
+        for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
+          ldat[j][i] = 0;
+        }
+      }
+      measFlag[which] = False;
+    }
   }
-  return (measured[which]);
+  return (! t[which].isNull());
 }
 
 void MeasIERS::closeMeas() {
   for (uInt i=0; i<N_Files; ++i) {
-    if (Table::isOpened(tp[i]) || measured[i] || !measFlag[i]) {
-      measFlag[i] = True;
-      measured[i] = False;
-      dateNow = 0.0;
-      mjd0[i] = 0;
-      mjdl[i] = 0;
-      msgDone = False;
-      t[i] = Table();
+    if (!measFlag[i]) {
+      ScopedMutexLock locker(theirMutex);
+      if (!measFlag[i]) {
+        if (! t[i].isNull()) {
+          dateNow = 0.0;
+          mjd0[i] = 0;
+          mjdl[i] = 0;
+          msgDone = False;
+          t[i] = Table();
+        }
+        measFlag[i] = True;
+      }
     }
   }
 }
@@ -222,7 +244,6 @@ void MeasIERS::closeTables() {
   }
 }
 
-
 // Table handling
 Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 			RORecordFieldPtr<Double> rfp[],
@@ -232,96 +253,239 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 			const String &rc, const String &dir,
 			const Table *tabin) {
   Table tab;
-  Bool ok = True;
-  if (!tabin) {				// No table object given: search name
-    const String path[2] = {
-      "/ephemerides/",
-      "/geodetic/" };
+  Bool ok = findTab(tab, tabin, rc, dir, name);
+
+  if(!ok)
+    return false;            // findTab logs its own errors.
+  
+  LogIO os(LogOrigin("MeasIERS",
+		     String("getTable(Table &, TableRecord &, "
+			    "ROTableRow &, RORecordFieldPtr<Double> *, "
+			    "String &vs, Double &dt, "
+			    "Int N, const String *, const String &, "
+			    "const String &, const String &)"),
+		     WHERE));
+
+  TableRecord ks(tab.keywordSet());
+
+  ok = handle_keywords(dt, vs, ks, tab);
+  
+  ROTableRow rw(tab);
+  if (ok) {
+    // Check that the table is not missing any expected columns.
+    for (Int i=0; i < N; i++) {
+      if (!rw.record().isDefined(rfn[i])) {
+	os << LogIO::SEVERE
+	   << "Column " << rfn[i] << " is missing."
+	   << LogIO::POST;
+	ok = False;// break;
+      }
+    }
+  }
+  if (!ok) {
+    os << name + " has an incompatible format."
+       << "\nYou may want to notify the CASA system manager about it."
+       << LogIO::EXCEPTION;
+    return False;
+  }
+  table = tab;
+  kws = ks;
+  row = rw;
+  for (Int i=0; i < N; i++)
+    rfp[i] = RORecordFieldPtr<Double>(row.record(), rfn[i]);
+  return True;
+}
+
+Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
+			Vector<RORecordFieldPtr<Double> >& rfp,
+			String &vs, Double &dt,
+			const Vector<String>& reqcols,
+			Vector<String>& optcols,
+			const String &name,
+			const String &rc, const String &dir,
+			const Table *tabin)
+{
+  Table tab;
+  Bool ok = findTab(tab, tabin, rc, dir, name);
+
+  if(!ok)
+    return false;            // findTab logs its own errors.
+  
+  LogIO os(LogOrigin("MeasIERS", "getTable(Vector<String>& optcols)",
+		     WHERE));
+
+  TableRecord ks(tab.keywordSet());
+
+  ok = handle_keywords(dt, vs, ks, tab);
+  
+  ROTableRow rw(tab);
+  if(ok){
+    // Check that the table is not missing any required columns.
+    for(Int i = reqcols.nelements(); i--;){
+      if(!rw.record().isDefined(reqcols[i])){
+	os << LogIO::SEVERE
+	   << "Required column " << reqcols[i] << " is missing."
+	   << LogIO::POST;
+	ok = False;// break;
+      }
+    }
+  }
+  if(!ok){
+    os << name + " has an incompatible format."
+       << "\nYou may want to notify the CASA system manager about it."
+       << LogIO::EXCEPTION;
+    return False;
+  }
+
+  // Now look for optional columns.
+  Vector<String> foundoptcols;
+  uInt noptcolsfound = 0;
+  for(uInt i = 0; i < optcols.nelements(); ++i){
+    if(rw.record().isDefined(optcols[i])){
+      ++noptcolsfound;
+      foundoptcols.resize(noptcolsfound, true);
+      foundoptcols[noptcolsfound - 1] = optcols[i];
+    }
+  }
+
+  // Together these are equiv. to optcols.assign(foundoptcols), but I find this clearer.
+  optcols.resize(noptcolsfound);
+  optcols = foundoptcols;
+  
+  table = tab;
+  kws = ks;
+  row = rw;
+  rfp.resize(reqcols.nelements() + noptcolsfound);
+  for(uInt i = 0; i < reqcols.nelements(); ++i)
+    rfp[i] = RORecordFieldPtr<Double>(row.record(), reqcols[i]);
+  for(uInt i = 0; i < noptcolsfound; ++i)
+    rfp[reqcols.nelements() + i] = RORecordFieldPtr<Double>(row.record(), optcols[i]);
+  return True;
+}
+
+// Helper function for getTable().
+Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
+		       const String &dir, const String &name)
+{
+  Bool ok = true;
+  LogIO os(LogOrigin("MeasIERS", "findTab", WHERE));
+  
+  if(!tabin){				// No table object given: search name
     String ldir;
     Vector<String> searched;
-    if (Aipsrc::find(ldir, rc)) {
-      ldir += '/';
-      searched.resize(searched.nelements()+1, True);
-      searched[searched.nelements()-1] = ldir;
-    } else {
-      String udir;
-      if (!dir.empty()) udir = dir + '/';
-      ldir = "./";
-      searched.resize(searched.nelements()+1, True);
-      searched[searched.nelements()-1] = ldir;
-      if (!Table::isReadable(ldir + name)) {
-	ldir = "./data/";
+
+    if(name[0] == '/'){			// Absolute path given.
+      ldir = "";
+    }
+    else{
+      const String path[2] = {
+	"/ephemerides/",
+	"/geodetic/"
+      };
+
+      if (Aipsrc::find(ldir, rc)){
+	ldir += '/';
+	searched.resize(searched.nelements() + 1, True);
+	searched[searched.nelements() - 1] = ldir;
+      }
+      else{
+	String udir;
+
+	if(!dir.empty())
+	  udir = dir + '/';
+	ldir = "./";
 	searched.resize(searched.nelements()+1, True);
 	searched[searched.nelements()-1] = ldir;
 	if (!Table::isReadable(ldir + name)) {
-          Bool found = False;
-          String mdir;
-          if (Aipsrc::find(mdir, "measures.directory")) {
-            mdir += "/";
-            ldir = mdir + udir;
-            searched.resize(searched.nelements()+1, True);
-            searched[searched.nelements()-1] = ldir;                        
-            if  (Table::isReadable(ldir + name)) {
-              found = True;
-            }
-          }
-          if (!found) {
-            for (Int i=0; i<2; i++) {
-              ldir = Aipsrc::aipsHome() + "/data/" + path[i];
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if (Table::isReadable(ldir + name)) {
-                found = True;
-                break;
-              }
-              ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if (Table::isReadable(ldir + name)) {
-                found = True;
-                break;
-              }
-              Path cdatapath(String(CASADATA));
-              ldir = cdatapath.absoluteName() + path[i];
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if (Table::isReadable(ldir + name)) {
-                found = True;
-                break;
-              }
-              ldir = cdatapath.absoluteName() + "/share/casacore/data/" \
-                + path[i];
-              ldir = cdatapath.absoluteName() + path[i];
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if (Table::isReadable(ldir + name)) {
-                found = True;
-                break;
-              }              
-            }
-          }
-        }
+	  ldir = "./data/";
+	  searched.resize(searched.nelements() + 1, True);
+	  searched[searched.nelements()-1] = ldir;
+	  if (!Table::isReadable(ldir + name)) {
+	    Bool found = False;
+	    String mdir;
+	    if (Aipsrc::find(mdir, "measures.directory")) {
+	      mdir += "/";
+	      ldir = mdir + udir;
+	      searched.resize(searched.nelements()+1, True);
+	      searched[searched.nelements()-1] = ldir;                        
+	      if  (Table::isReadable(ldir + name)) {
+		found = True;
+	      }
+	    }
+	    if (!found) {
+	      for (Int i=0; i<2; i++) {
+		ldir = Aipsrc::aipsHome() + "/data/" + path[i];
+		searched.resize(searched.nelements()+1, True);
+		searched[searched.nelements()-1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}
+		ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
+		searched.resize(searched.nelements()+1, True);
+		searched[searched.nelements()-1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}
+		Path cdatapath(String(CASADATA));
+		ldir = cdatapath.absoluteName() + path[i];
+		searched.resize(searched.nelements() + 1, True);
+		searched[searched.nelements() - 1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}
+		ldir = cdatapath.absoluteName() + "/share/casacore/data/" \
+		  + path[i];
+		ldir = cdatapath.absoluteName() + path[i];
+		searched.resize(searched.nelements() + 1, True);
+		searched[searched.nelements() - 1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}              
+	      }
+	    }
+	  }
+	}
       }
     }
-    if (!Table::isReadable(ldir + name)) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("fillMeas(MeasIERS::Files, Double)"),
-			 WHERE));
+    if(!Table::isReadable(ldir + name)){
       os << LogIO::WARN <<
 	String("Requested data table ") << name <<
 	String(" cannot be found in the searched directories:\n");
-      for (uInt i=0; i<searched.nelements(); ++i) os << searched[i] << "\n";
+      for(uInt i = 0; i < searched.nelements(); ++i)
+	os << searched[i] << "\n";
       os << LogIO::POST;
       return False;
     }
     tab = Table(ldir + name);
-  } else tab = *tabin;
+  }
+  else
+    tab = *tabin;
 
-  TableRecord ks(tab.keywordSet());
-  if (!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
-      !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
-      (tab.tableInfo().type() != String("IERS"))) {
+  return ok;
+}
+
+// Helper function for getTable().
+Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
+			       const Table& tab)
+{
+  LogIO os(LogOrigin("MeasIERS", "handle_keywords", WHERE));
+  Bool ok = true;
+  
+  if(!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
+     !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
+     (tab.tableInfo().type() != String("IERS"))){
     ok = False;
+    os << LogIO::DEBUG1
+       << "ks.isDefined(VS_DATE) " << ks.isDefined("VS_DATE")
+       << "\nks.isDefined(VS_VERSION) " << ks.isDefined("VS_VERSION")
+       << "\nks.isDefined(VS_CREATE) " << ks.isDefined("VS_CREATE")
+       << "\nks.isDefined(VS_TYPE) " << ks.isDefined("VS_TYPE")
+       << "\ntab.tableInfo().type() " << tab.tableInfo().type()
+       << LogIO::POST;
   }
   if (ok) {
     Quantity ldt;
@@ -332,33 +496,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       ok = False;
     }
   }
-  ROTableRow rw(tab);
-  if (ok) {
-    for (Int i=0; i < N; i++) {
-      if (!rw.record().isDefined(rfn[i])) {
-	ok = False; break;
-      }
-    }
-  }
-  if (!ok) {
-    LogIO os(LogOrigin("MeasIERS",
-		       String("getTable(Table &, TableRecord &, "
-			      "ROTableRow &, RORecordFieldPtr<Double> *, "
-			      "String &vs, Double &dt, "
-			      "Int N, const String *, const String &, "
-			      "const String &, const String &)"),
-		       WHERE));
-    os << String("A ") + name + 
-      " table has been read that seems corrupted"
-      "\nNotify the CASA system manager about it" << LogIO::EXCEPTION;
-    return False;
-  }
-  table = tab;
-  kws = ks;
-  row = rw;
-  for (Int i=0; i < N; i++)
-    rfp[i] = RORecordFieldPtr<Double>(row.record(), rfn[i]);
-  return True;
+  return ok;
 }
 
 Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
@@ -403,8 +541,7 @@ Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
   return True;
 }
   
-Bool MeasIERS::measFlag[MeasIERS::N_Files] = {True, True};
-Bool MeasIERS::measured[MeasIERS::N_Files] = {False, False};
+volatile Bool MeasIERS::measFlag[MeasIERS::N_Files] = {True, True};
 Double MeasIERS::dateNow = 0.0;
 Table MeasIERS::t[MeasIERS::N_Files];
 ROTableRow MeasIERS::row[MeasIERS::N_Files];
@@ -417,6 +554,6 @@ const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
 uInt MeasIERS::sizeNote = 0;
 uInt MeasIERS::nNote = 0;
 MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
+Mutex MeasIERS::theirMutex;
 
 } //# NAMESPACE CASA - END
-

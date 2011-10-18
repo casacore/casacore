@@ -232,6 +232,10 @@ public:
   virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 
+  // as above but with many frequencies
+  virtual void visibility(Matrix<DComplex>& scale, const Matrix<Double>& uvw,
+			  const Vector<Double>& frequency) const;
+
   // Return a pointer to a copy of this object upcast to a ComponentShape
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
@@ -245,6 +249,12 @@ public:
   // return a pointer to this object.
   virtual const ComponentShape* getPtr() const; 
 
+  // TODO This probably should be made a pure virtual method in TwoSidedShape
+  // Return the effective area of the Gaussian (pi/(4*ln(2))*maj*min.
+  // Units of the returned Quantity are steradians.
+  virtual Quantity getArea() const;
+
+  virtual String sizeToString() const;
 
 private:
   //# Updates the parameters of the itsFT object

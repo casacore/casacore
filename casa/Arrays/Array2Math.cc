@@ -41,86 +41,6 @@ void throwArrayShapes (const char* name)
 }
 
 
-// Mixed-type *=, /=, *, & / operators:
-// <thrown>
-//   </item> ArrayConformanceError
-// </thrown>
-void operator*= (Array<Complex> &left, const Array<Float> &other)
-{
-  checkArrayShapes (left, other, "*=");
-  arrayTransformInPlace (left, other, casa::Multiplies<Complex,Float>());
-}
-
-void operator*= (Array<Complex> &left, const Float &other)
-{
-  arrayTransformInPlace (left, other, casa::Multiplies<Complex,Float>());
-}
-
-// <thrown>
-//   </item> ArrayConformanceError
-// </thrown>
-void operator/= (Array<Complex> &left, const Array<Float> &other)
-{
-  checkArrayShapes (left, other, "/=");
-  arrayTransformInPlace (left, other, casa::Divides<Complex,Float>());
-}
-
-void operator/= (Array<Complex> &left, const Float &other)
-{
-  arrayTransformInPlace (left, other, casa::Divides<Complex,Float>());
-}
-
-
-// <thrown>
-//   </item> ArrayConformanceError
-// </thrown>
-Array<Complex> operator*(const Array<Complex> &left, const Array<Float> &other)
-{
-  checkArrayShapes (left, other, "*");
-  Array<Complex> result(left.shape());
-  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
-  return result;
-}
-
-// <thrown>
-//   </item> ArrayConformanceError
-// </thrown>
-Array<Complex> operator/(const Array<Complex> &left, const Array<Float> &other)
-{
-  checkArrayShapes (left, other, "/");
-  Array<Complex> result(left.shape());
-  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
-  return result;
-}
-
-Array<Complex> operator* (const Array<Complex> &left, const Float &other)
-{
-  Array<Complex> result(left.shape());
-  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
-  return result;
-}
-
-Array<Complex> operator/ (const Array<Complex> &left, const Float &other)
-{
-  Array<Complex> result(left.shape());
-  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
-  return result;
-}
-
-Array<Complex> operator*(const Complex &left, const Array<Float> &other)
-{
-  Array<Complex> result(other.shape());
-  arrayContTransform (left, other, result, casa::Multiplies<Complex,Float>());
-  return result;
-}
-
-Array<Complex> operator/(const Complex &left, const Array<Float> &other)
-{
-  Array<Complex> result(other.shape());
-  arrayContTransform (left, other, result, casa::Divides<Complex,Float>());
-  return result;
-}
-
 //# We could use macros to considerably reduce the number of lines, however
 //# that makes it harder to debug, understand, etc.
 
@@ -203,7 +123,6 @@ void phase(Array<Double> &rarray, const Array<DComplex> &carray)
   checkArrayShapes (carray, rarray, "phase");
   arrayTransform (carray, rarray, casa::CArg<DComplex,Double>());
 }
-
 
 Array<Float> real(const Array<Complex> &carray)
 {

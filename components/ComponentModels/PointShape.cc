@@ -150,6 +150,13 @@ void PointShape::visibility(Vector<DComplex>& scale,
   scale = DComplex(1.0, 0.0);
 }
 
+void PointShape::visibility(Matrix<DComplex>& scale, const Matrix<Double>& uvw,
+			    const Vector<Double> & freq) const {
+  DebugAssert(ok(), AipsError);
+  scale.resize(uvw.ncolumn(), freq.nelements());
+  scale = DComplex(1.0, 0.0);
+}
+
 Bool PointShape::isSymmetric() const {
   DebugAssert(ok(), AipsError);
   return True;
@@ -233,6 +240,10 @@ Double PointShape::dirIsInPixel (Double longSize, Double latSize, Double nearSiz
      }
   }
   return retVal;
+}
+
+String PointShape::sizeToString() const {
+	return "Point";
 }
 
 

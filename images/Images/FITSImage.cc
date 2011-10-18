@@ -27,6 +27,7 @@
 
 #include <images/Images/FITSImage.h>
 
+#include <images/Images/FITSImgParser.h>
 #include <fits/FITS/hdu.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/FITSKeywordUtil.h>
@@ -61,9 +62,10 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-FITSImage::FITSImage (const String& name, uInt whichRep)
+FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
 : ImageInterface<Float>(),
   name_p      (name),
+  fullname_p  (name),
   pTiledFile_p(0),
   pPixelMask_p(0),
   scale_p     (1.0),
@@ -74,14 +76,16 @@ FITSImage::FITSImage (const String& name, uInt whichRep)
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
-  whichRep_p(whichRep)
+  whichRep_p(whichRep),
+  whichHDU_p(whichHDU)
 {
    setup();
 }
 
-FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt whichRep)
+FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt whichRep, uInt whichHDU)
 : ImageInterface<Float>(),
   name_p      (name),
+  fullname_p  (name),
   maskSpec_p  (maskSpec),
   pTiledFile_p(0),
   pPixelMask_p(0),
@@ -93,7 +97,8 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
-  whichRep_p(whichRep)
+  whichRep_p(whichRep),
+  whichHDU_p(whichHDU)
 {
    setup();
 }
@@ -101,6 +106,7 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
 FITSImage::FITSImage (const FITSImage& other)
 : ImageInterface<Float>(other),
   name_p      (other.name_p),
+  fullname_p  (other.fullname_p),
   maskSpec_p  (other.maskSpec_p),
   pTiledFile_p(other.pTiledFile_p),
   pPixelMask_p(0),
@@ -113,7 +119,8 @@ FITSImage::FITSImage (const FITSImage& other)
   dataType_p  (other.dataType_p),
   fileOffset_p(other.fileOffset_p),
   isClosed_p  (other.isClosed_p),
-  whichRep_p(other.whichRep_p)
+  whichRep_p(other.whichRep_p),
+  whichHDU_p(other.whichHDU_p)
 {
    if (other.pPixelMask_p != 0) {
       pPixelMask_p = other.pPixelMask_p->clone();
@@ -138,6 +145,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
 //
       shape_p     = other.shape_p;
       name_p      = other.name_p;
+      fullname_p  = other.fullname_p;
       maskSpec_p  = other.maskSpec_p;
       scale_p     = other.scale_p;
       offset_p    = other.offset_p;
@@ -148,6 +156,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       fileOffset_p= other.fileOffset_p;
       isClosed_p  = other.isClosed_p;
       whichRep_p = other.whichRep_p;
+      whichHDU_p = other.whichHDU_p;
    }
    return *this;
 } 
@@ -170,6 +179,146 @@ void FITSImage::registerOpenFunction()
 					  &openFITSImage);
 }
 
+//
+String FITSImage::get_fitsname(const String &fullname)
+{
+	String fullname_l;
+	String fitsname;
+	Int close_bracepos, open_bracepos, fullname_length;
+
+	fullname_l = fullname;
+	fullname_l.trim();
+	fullname_length = fullname_l.length();
+
+	//cerr << "Initial name: " << fullname_l << endl;
+	// check whether the strings ends with "]"
+	if (fullname_l.compare(fullname_length-1, 1, "]", 1))
+	{
+		// check for an open brace
+		open_bracepos = fullname_l.rfind("[", fullname_length);
+		if (open_bracepos > 0) {
+
+			// check for a closing brace
+			close_bracepos = fullname_l.rfind("]", fullname_length);
+
+			// an open brace at the end indicates a mal-formed name
+			if (close_bracepos < 0 || (open_bracepos > close_bracepos))
+				throw (AipsError(fullname_l + " has opening brace, but no closing brace."));
+		}
+
+		// just copy the input
+		fitsname = fullname_l;
+	}
+	else
+	{
+		// check for the last "["
+		open_bracepos = fullname_l.rfind("[", fullname_length);
+		if (open_bracepos < 0) {
+			throw (AipsError(fullname_l + " has closing brace, but no opening brace."));
+		}
+		else {
+			// separate the filename an the extension name
+			//extexpr_p = String(fullname_l, open_bracepos+1, fullname_length-open_bracepos-2);
+			fitsname =String(fullname_l, 0, open_bracepos);
+		}
+	}
+	//cerr << "FITS name: " << fitsname <<endl;
+
+	return fitsname;
+}
+
+//
+uInt FITSImage::get_hdunum(const String &fullname)
+{
+	String extname=String("");
+
+	String fullname_l;
+	String fitsname;
+	String extstring;
+	Int fullname_length, comma_pos;
+
+	Int  extver=-1;
+	Int  extindex=-1;
+	Int fitsindex=-1;
+	uInt hduindex=0;
+
+	fullname_l = fullname;
+	fullname_l.trim();
+	fullname_length = fullname_l.length();
+
+	// determine the FITS name
+	fitsname = FITSImage::get_fitsname(fullname_l);
+
+	// check whether there is an extension
+	// specification in the full name
+	if (fitsname != fullname_l) {
+
+		// isolate the extension specification
+		extstring = String(fullname_l, fitsname.length()+1, fullname_length-fitsname.length()-2);
+
+		// check for the comma
+		comma_pos = extstring.rfind(",", extstring.length());
+		if (comma_pos < 0) {
+			extstring.trim();
+
+			// check whether an index is given
+			if (String::toInt(extstring)){
+				// get the index
+				extindex = String::toInt(extstring);
+			}
+			// explicitly check for the literal "0"
+			else if (!extstring.compare(0, 1, "0", 1)){
+				extindex = 0;
+			}
+			else {
+				// just copy the extension name
+				extname = extstring;
+			}
+		}
+		else {
+			// separate the extension name
+			extname = String(extstring, 0, comma_pos);
+
+			// find the extension version
+			extver = String::toInt(String(extstring, comma_pos+1, extstring.length()-1));
+
+			if (!extver){
+				throw (AipsError(String(extstring, comma_pos+1, extstring.length()-1) + " Extension version not an integer"));
+				//cerr << "Extension version not an Integer: " << String(extstring, comma_pos+1, extstring.length()-1)<< endl;
+				//exit(0);
+			}
+			else if (extver < 0) {
+				throw (AipsError(extstring + " Extension version must be >0."));
+				//cerr << "Extension version must be >0: " << extver << endl;
+				//exit(0);
+			}
+
+		}
+		// make it pretty
+		extname.trim();
+		extname.upcase();
+	}
+
+	//cerr << "Opening image parser with: "<< fitsname <<endl;
+	FITSImgParser fip = FITSImgParser(fitsname);
+
+	if (extname.length() > 0 || extindex > -1) {
+		FITSExtInfo   fei = FITSExtInfo(fip.fitsname(True), extindex, extname, extver, True);
+		fitsindex = fip.get_index(fei);
+		if (fitsindex > -1)
+			hduindex = (uInt)fitsindex;
+		else
+			throw (AipsError("Extension " + extstring + " does not exist in " + fitsname));
+	}
+	else {
+		hduindex = fip.get_firstdata_index();
+		if (hduindex > 1 || hduindex == fip.get_numhdu())
+			throw (AipsError("No data in the zeroth or first extension of " + fitsname));
+	}
+
+	// return the index
+	return hduindex;
+}
 
 ImageInterface<Float>* FITSImage::cloneII() const
 {
@@ -378,6 +527,35 @@ void FITSImage::showCacheStatistics (ostream& os) const
 
 void FITSImage::setup()
 {
+// Separate the FITS filename from any
+// possible extension specification
+
+   name_p = get_fitsname(fullname_p);
+
+// Determine the HDU index from the extension specification
+   uInt HDUnum = get_hdunum(fullname_p);
+
+
+// Compare the HDU index given directly and
+// the one extracted from the name
+   if (HDUnum != whichHDU_p){
+
+// if an extension information was given,
+// the index extracted from it wins
+	   if (name_p != fullname_p){
+		   whichHDU_p = HDUnum;
+	   }
+	   else {
+
+// if the index given directly is zero (which means the default),
+// the zeroth index might be emptied and the index retrieved
+// in the method above (which is 1) is used
+		   if (!whichHDU_p) {
+			   whichHDU_p = HDUnum;
+		   }
+	   }
+   }
+
    if (name_p.empty()) {
       throw AipsError("FITSImage: given file name is empty");
    }
@@ -403,7 +581,7 @@ void FITSImage::setup()
 
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                       recsize, recno, dataType, scale_p, offset_p, shortMagic_p,
-                      longMagic_p, hasBlanks_p, fullName,  whichRep_p);
+                      longMagic_p, hasBlanks_p, fullName,  whichRep_p, whichHDU_p);
    setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
@@ -421,8 +599,10 @@ void FITSImage::setup()
 // I don't understand why I have to subtract one, as the
 // data should begin in the NEXT record. BobG surmises
 // the FITS classes read ahead...
-
-   fileOffset_p = (recno - 1) * recsize;
+// MK: I think there is an additional read() and hence
+// count-up of recno when the file is first accessed and
+// then for every skipped hdu, thats where the "-1 - whichHDU comes from"
+   fileOffset_p += (recno - 1 - whichHDU_p) * recsize;
 //
    dataType_p = TpFloat;
    if (dataType == FITS::DOUBLE) {
@@ -496,12 +676,12 @@ void FITSImage::open()
 void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     IPosition& shape, ImageInfo& imageInfo,
                                     Unit& brightnessUnit,
-				    RecordInterface& miscInfo, 
+                                    RecordInterface& miscInfo,
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
                                     Float& scale, Float& offset, Short& shortMagic,
                                     Int& longMagic, Bool& hasBlanks, const String& name,
-                                    uInt whichRep)
+                                    uInt whichRep, uInt whichHDU)
 {
 // Open sesame
 
@@ -523,27 +703,31 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     }
     recordsize = infile.fitsrecsize();
 
-// Check type
-
-    dataType = infile.datatype();
-    if (dataType != FITS::FLOAT && 
-        dataType != FITS::DOUBLE &&
-        dataType != FITS::SHORT && 
-        dataType != FITS::LONG) {
-       throw AipsError("FITS file " + name +
-		       " should contain float, double, short or long data");
-    }
 
 //
 // Advance to the right HDU
 //
-    uInt whichHDU = 0;
     for (uInt i=0; i<whichHDU; i++) {
         infile.skip_hdu();
         if (infile.err()) {
             throw(AipsError("Error advancing to image in file " + name));
         }
+        // add the size of the skipped HDU
+        // to the fileOffset
+        fileOffset_p += infile.getskipsize();
     }
+
+// Check type
+	dataType = infile.datatype();
+	if (dataType != FITS::FLOAT &&
+		dataType != FITS::DOUBLE &&
+		dataType != FITS::SHORT &&
+		dataType != FITS::LONG) {
+	   throw AipsError("FITS file " + name +
+			   " should contain float, double, short or long data");
+	}
+
+
 // 
 // Make sure the current spot in the FITS file is an image
 //
@@ -553,27 +737,49 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
         throw (AipsError("No image at specified location in file " + name));
     }
 
-// Only handle PrimaryArray
-
-    if (infile.hdutype()!= FITS::PrimaryArrayHDU) { 
-       throw (AipsError("The image must be stored in the PrimaryArray of"
+// Check that the header type fits to the extension number
+    if (!whichHDU && infile.hdutype()!= FITS::PrimaryArrayHDU) {
+    	throw (AipsError("The first extension of the image must be a PrimaryArray in "
+			"FITS file " + name));
+    }
+    else if (whichHDU && infile.hdutype()!=FITS::ImageExtensionHDU)
+    {
+    	throw (AipsError("The image must be stored in an ImageExtension of"
 			"FITS file " + name));
     }
 
 // Crack header
-
-    if (dataType==FITS::FLOAT) {
-	crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
-			   offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-    } else if (dataType==FITS::DOUBLE) {
-	crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-			    offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-    } else if (dataType==FITS::LONG) {
-	crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-			 offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-    } if (dataType==FITS::SHORT) {
-	crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-			   offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    if (!whichHDU_p)
+    {
+    	if (dataType==FITS::FLOAT) {
+    		crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::DOUBLE) {
+    		crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::LONG) {
+    		crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} if (dataType==FITS::SHORT) {
+    		crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	}
+    }
+    else
+    {
+    	if (dataType==FITS::FLOAT) {
+    		crackExtHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::DOUBLE) {
+    		crackExtHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::LONG) {
+    		crackExtHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} if (dataType==FITS::SHORT) {
+    		crackExtHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	}
     }
 //  }
 

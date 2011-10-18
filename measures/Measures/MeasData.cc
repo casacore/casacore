@@ -55,13 +55,13 @@ const RotMatrix &MeasData::GALtoB1950() {
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
-    needInit = False;
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[i][j];
       }
     }
+    needInit = False;
   }
   return rot;
 }
@@ -75,13 +75,13 @@ const RotMatrix &MeasData::B1950toGAL() {
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
-    needInit = False;
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[j][i];
       }
     }
+    needInit = False;
   }
   return rot;
 }
@@ -98,13 +98,13 @@ const RotMatrix &MeasData::GALtoJ2000() {
     { -0.4838350026, +0.7469822433, +0.4559837919}
   };
   if (needInit) {
-    needInit = False;
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[i][j];
       }
     }
+    needInit = False;
   }
   return rot;
 }
@@ -121,13 +121,13 @@ const RotMatrix &MeasData::J2000toGAL() {
     { -0.4838350026, +0.7469822433, +0.4559837919}
   };
   if (needInit) {
-    needInit = False;
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[j][i];
       }
     }
+    needInit = False;
   }
   return rot;
 }
@@ -159,7 +159,6 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
       {-0.0048579477,	-0.0000271765,	+0.9999881998}}
   };
   if (needInit) {
-    needInit = False;
     Int i,j,k;
     for (i=0; i<5; i++) {
       for (j=0; j<3; j++) {
@@ -168,6 +167,7 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
 	}
       }
     }
+    needInit = False;
   }
   DebugAssert(which < 5, AipsError);
   return rot[which];
@@ -195,7 +195,6 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
       {+0.00485767,	-0.00002714,	+1.00000956}}
   };
   if (needInit) {
-    needInit = False;
     Int i,j,k;
     for (i=0; i<4; i++) {
       for (j=0; j<3; j++) {
@@ -204,6 +203,7 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
 	}
       }
     }
+    needInit = False;
   }
   
   DebugAssert(which < 4, AipsError);

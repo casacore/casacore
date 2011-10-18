@@ -10,5 +10,5 @@
   else
      exit 3
   fi
-  ./tHashMap | egrep -v '^size:'
+  $casa_checktool ./tHashMap | egrep -v '^size:'
 

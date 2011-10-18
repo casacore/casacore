@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
   Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);
 
-  // Collective selection 
+  // Collective selection returning a selected MS.
   Bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  const String& outMSName="",
@@ -50,7 +50,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& taQLExpr="",
 		  const String& polnExpr="",
 		  const String& scanExpr="",
-		  const String& arrayExpr=""
+		  const String& arrayExpr="",
+		  const String& stateExpr="",
+		  MSSelection *mss=NULL
 		  );
   // Collective selection also returning in-row (corr/chan) slices
   Bool mssSetData(const MeasurementSet& ms, 
@@ -67,12 +69,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& polnExpr="",
 		  const String& scanExpr="",
 		  const String& arrayExpr="",
-		  const Int defaultChanStep=1
+		  const String& stateExpr="",
+		  const Int defaultChanStep=1,
+		  MSSelection *mss=NULL
 		  );
+  
+  Record mssSelectedIndices(MSSelection& mss, const MeasurementSet *ms);
 
   String stripWhite(const String& str, Bool onlyends=True);
   int tokenize(const String& str, const String& sep, Vector<String>& tokens,Bool upCase=False);
-
-}  //# end namespace
+  Vector<String> &split(const String &s, char delim, Vector<String> &elems);
+}
 
 #endif

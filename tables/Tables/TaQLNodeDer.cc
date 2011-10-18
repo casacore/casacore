@@ -1149,23 +1149,34 @@ TaQLNodeResult TaQLCalcNodeRep::visit (TaQLNodeVisitor& visitor) const
 void TaQLCalcNodeRep::show (std::ostream& os) const
 {
   os << "CALC ";
-  if (itsTables.isValid()) {
-    os << "FROM ";
-    itsTables.show (os);
-    os << " CALC ";
-  }
   itsExpr.show (os);
+  if (itsTables.isValid()) {
+    os << " FROM ";
+    itsTables.show (os);
+  }
+  if (itsWhere.isValid()) {
+    os << " WHERE ";
+    itsWhere.show (os);
+  }
+  itsSort.show (os);
+  itsLimitOff.show (os);
 }
 void TaQLCalcNodeRep::save (AipsIO& aio) const
 {
   itsTables.saveNode (aio);
   itsExpr.saveNode (aio);
+  itsWhere.saveNode (aio);
+  itsSort.saveNode (aio);
+  itsLimitOff.saveNode (aio);
 }
 TaQLCalcNodeRep* TaQLCalcNodeRep::restore (AipsIO& aio)
 {
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode expr = TaQLNode::restoreNode (aio);
-  return new TaQLCalcNodeRep (tables, expr);
+  TaQLNode where = TaQLNode::restoreNode (aio);
+  TaQLNode sort = TaQLNode::restoreNode (aio);
+  TaQLNode limitoff = TaQLNode::restoreNode (aio);
+  return new TaQLCalcNodeRep (tables, expr, where, sort, limitoff);
 }
 
 TaQLCreTabNodeRep::~TaQLCreTabNodeRep()

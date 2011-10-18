@@ -235,6 +235,12 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
     return this->operator()(blc,trc,incr);
 }
 
+template<class T> const Cube<T> Cube<T>::operator()
+  (const Slice &sliceX, const Slice &sliceY, const Slice &sliceZ) const
+{
+    return const_cast<Cube<T>*>(this)->operator() (sliceX, sliceY, sliceZ);
+}
+
 template<class T> void Cube<T>::makeIndexingConstants()
 {
     // No lAssert since the Cube often isn't constructed yet when
@@ -246,7 +252,8 @@ template<class T> void Cube<T>::makeIndexingConstants()
 
 
 template<class T>
-void Cube<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+void Cube<T>::doNonDegenerate (const Array<T> &other,
+                               const IPosition &ignoreAxes)
 {
     Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);

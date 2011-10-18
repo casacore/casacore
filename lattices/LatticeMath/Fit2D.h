@@ -207,11 +207,11 @@ public:
 
     // Find the residuals to the fit.   
     //<group>
-    Fit2D::ErrorTypes residual(Array<Float>& resid,
+    Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
                                const Array<Float>& data);
-    Fit2D::ErrorTypes residual(Array<Float>& resid,
+    Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
                                const MaskedLattice<Float>& data);
-    Fit2D::ErrorTypes residual(Array<Float>& resid,
+    Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
                                const Lattice<Float>& data);
     //</group>
     // If function fit failed, you will find a message here

@@ -457,7 +457,8 @@ void BaseTable::copy (const String& newName, int tableOption) const
 	//# Throw an exception when directories do not exist yet.
 	if (!madeDir_p) {
 	    throw (TableError
-		   ("BaseTable::copy: no input table files exist"));
+		   ("BaseTable::copy: no input table files exist for " +
+                    name_p));
 	}
 	//# Flush the data and subtables.
 	//# (cast is necessary to bypass non-constness).
@@ -509,10 +510,10 @@ Bool BaseTable::canRemoveRow() const
     { return False; }
 
 void BaseTable::addRow (uInt, Bool)
-    { throw (TableInvOper ("Table: cannot add a row")); }
+    { throw (TableInvOper ("Table: cannot add a row to table " + name_p)); }
 
 void BaseTable::removeRow (uInt)
-    { throw (TableInvOper ("Table: cannot remove a row")); }
+    { throw (TableInvOper ("Table: cannot remove a row from table " + name_p)); }
 
 void BaseTable::removeRow (const Vector<uInt>& rownrs)
 {
@@ -528,13 +529,13 @@ void BaseTable::removeRow (const Vector<uInt>& rownrs)
 }
 
 void BaseTable::addColumn (const ColumnDesc&, Bool)
-    { throw (TableInvOper ("Table: cannot add a column")); }
+    { throw (TableInvOper ("Table: cannot add a column to table " + name_p)); }
 void BaseTable::addColumn (const ColumnDesc&, const String&, Bool, Bool)
-    { throw (TableInvOper ("Table: cannot add a column")); }
+    { throw (TableInvOper ("Table: cannot add a column to table " + name_p)); }
 void BaseTable::addColumn (const ColumnDesc&, const DataManager&, Bool)
-    { throw (TableInvOper ("Table: cannot add a column")); }
+    { throw (TableInvOper ("Table: cannot add a column to table " + name_p)); }
 void BaseTable::addColumn (const TableDesc&, const DataManager&, Bool)
-    { throw (TableInvOper ("Table: cannot add a column")); }
+    { throw (TableInvOper ("Table: cannot add a column to table " + name_p)); }
 
 void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
                             Bool addToParent)
@@ -555,7 +556,8 @@ void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
     addColumn (desc, *dataMan, addToParent);
     delete dataMan;
   } else {
-    throw TableError ("Invalid dmInfo record given in Table::addColumn");
+    throw TableError ("Invalid dmInfo record given in Table::addColumn"
+                      " for table " + name_p);
   }
 }
 
@@ -580,7 +582,8 @@ Bool BaseTable::rowOrder() const
 //# By the default the table cannot return the storage of rownrs.
 Vector<uInt>* BaseTable::rowStorage()
 {
-    throw (TableInvOper ("rowStorage() only possible for RefTable"));
+    throw (TableInvOper ("rowStorage() not possible; table " + name_p +
+                         " is no RefTable"));
     return 0;
 }
 
@@ -595,7 +598,8 @@ BaseTable* BaseTable::sort (const Block<String>& names,
     uInt nrkey = names.nelements();
     if (nrkey != order.nelements()) {
 	throw (TableInvSort
-	          ("Length of column sort names and order vectors mismatch"));
+               ("Length of column sort names and order vectors mismatch"
+                " for table " + name_p));
     }
     //# Get the Column pointers.
     //# Check if a sort key is indeed a column of scalars.
@@ -603,8 +607,8 @@ BaseTable* BaseTable::sort (const Block<String>& names,
     for (uInt i=0; i<nrkey; i++) {
 	sortCol[i] = getColumn (names[i]);         // get BaseColumn object
 	if (!sortCol[i]->columnDesc().isScalar()) {
-	    throw (TableInvSort ("Sort column " + names[i]
-				                + " is not a scalar"));
+	    throw (TableInvSort ("Sort column " + names[i] + " in table " +
+                                 name_p + " is not a scalar"));
 	}
     }
     // Return the result as a table.
@@ -676,7 +680,8 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     }
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool  ||  !node.isScalar()) {
-	throw (TableInvExpr ("expression result is not Bool scalar"));
+	throw (TableInvExpr ("select expression result on table " + name_p +
+                             " is not Bool scalar"));
     }
     // Accept a const bool expression.
     if (node.getNodeRep()->isConstant()) {
@@ -690,8 +695,10 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     // Now check if this table has been used for all columns.
     // Accept that the expression has no table, which can be the case for
     // UDFs in derivedmscal (since they have no function arguments).
-    if (!node.table().isNull()  &&  node.table().baseTablePtr() != this) {
-        throw (TableInvExpr ("expression uses different table"));
+    if (!node.table().isNull()  &&  node.table().nrow() != this->nrow()) {
+      throw (TableInvExpr ("select expression for table " +
+                           node.table().tableName() +
+                           " is used on a differently sized table " + name_p));
     }
     //# Create a reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.
@@ -953,7 +960,8 @@ Bool BaseTable::checkRemoveColumn (const Vector<String>& columnNames,
         if (! tdescPtr_p->isColumn (columnNames(i))) {
 	    if (throwException) {
 	        throw TableInvOper ("Table::removeColumn - column " +
-				    columnNames(i) + " does not exist");
+				    columnNames(i) + " does not exist"
+                                    " in table " + name_p);
 	    }
 	    return False;
 	}

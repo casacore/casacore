@@ -94,6 +94,23 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return cal_p.nrow();}
 
+  // Returns the last row that contains a state with the specified values.
+  // For Cal and Load, the tolerance is applied in the match.
+  // Returns -1 if no match could be found. Flagged rows can never match. 
+  // If tryRow is non-negative, then that row is tested
+  // to see if it matches before any others are tested. Setting tryRow to a
+  // positive value greater than the table length will throw an exception
+  // (AipsError), when compiled in debug mode.
+  Int matchState(const Quantum<Double>& stateCalQ,
+		 const Quantum<Double>& stateLoadQ,
+		 const String& stateObsMode,
+		 const Bool& stateRef,
+		 const Bool& stateSig,
+		 const Int& stateSubScan,
+		 const Quantum<Double>& tolerance,
+		 Int tryRow=-1);
+
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

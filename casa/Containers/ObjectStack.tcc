@@ -48,7 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Member functions
   template <class T>
   T *ObjectStack<T>::get() {
-    ScopedLock lock(mutex_p);
+    ScopedMutexLock lock(mutex_p);
     if (stack_p.empty()) stack_p.push_back(new T);
     stack_p.pop_back();
     return *stack_p.end();
@@ -56,7 +56,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   template <class T>
   void ObjectStack<T>::clear() {
-    ScopedLock lock(mutex_p);
+    ScopedMutexLock lock(mutex_p);
     vector<T*>(stack_p).swap(stack_p);
   }
 

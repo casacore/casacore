@@ -51,6 +51,17 @@ namespace casa {
     data = itsEngine->getLAST (itsAntNr, rowNr);
   }
 
+  HaDecColumn::~HaDecColumn()
+  {}
+  IPosition HaDecColumn::shape (uInt)
+  {
+    return IPosition(1,2);
+  }
+  void HaDecColumn::getArray (uInt rowNr, Array<Double>& data)
+  {
+    itsEngine->getHaDec (itsAntNr, rowNr, data);
+  }
+
   AzElColumn::~AzElColumn()
   {}
   IPosition AzElColumn::shape (uInt)

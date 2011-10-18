@@ -31,6 +31,7 @@
 
 #include <casa/aips.h>
 #include <casa/Utilities/CountedPtr.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/SkyCompBase.h>
 #include <measures/Measures/Stokes.h>
@@ -38,7 +39,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class ComponentShape;
-class CoordinateSystem;
 class MDirection;
 class MFrequency;
 class MVAngle;
@@ -264,9 +264,17 @@ public:
 
   // </group>
 
+  // Get a nicely formatted string summarizing the component.
+  virtual String summarize(const CoordinateSystem * const coordinates = 0) const;
+
+  // If the <src>coordinates</src> parameter is specified, also return the corresponding world
+  // coordinates.
+  String positionToString(const CoordinateSystem * const coordinates = 0) const;
+
 
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
+
 };
 
 } //# NAMESPACE CASA - END

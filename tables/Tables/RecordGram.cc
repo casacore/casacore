@@ -112,7 +112,7 @@ void RecordGramerror (const char*)
 TableExprNode RecordGram::parse (const RecordInterface& record,
 				 const String& expression)
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     theirRecPtr = &record;
     theirTabPtr = 0;
     return doParse (expression);
@@ -121,7 +121,7 @@ TableExprNode RecordGram::parse (const RecordInterface& record,
 TableExprNode RecordGram::parse (const Table& table,
 				 const String& expression)
 {
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     theirRecPtr = 0;
     theirTabPtr = &table;
     return doParse (expression);
