@@ -35,7 +35,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Statics
-Bool MCEpoch::stateMade_p = False;
 uInt MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::LAST,	MEpoch::GAST,	2},
   {MEpoch::GAST,	MEpoch::LAST,	2},
@@ -61,16 +60,12 @@ uInt MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::TCB,		MEpoch::TDB,	0} };
 
 uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
+MutexedInit MCEpoch::theirMutexedInit (MCEpoch::doFillState);
 
 //# Constructors
 MCEpoch::MCEpoch() :
   NUTATFROM(0), NUTATTO(0) {
-  if (!stateMade_p) {
-    MEpoch::checkMyTypes();
-    MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
-		      MEpoch::N_Types, MCEpoch::N_Routes,
-		      MCEpoch::ToRef_p);
-  }
+    fillState();
 }
 
 //# Destructor
@@ -308,17 +303,17 @@ void MCEpoch::doConvert(MVEpoch &in,
   } //for
 }
   
-  String MCEpoch::showState() {
-    if (!stateMade_p) {
-      MEpoch::checkMyTypes();
-      MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
-			MEpoch::N_Types, MCEpoch::N_Routes,
-			MCEpoch::ToRef_p);
-    }
-    return MCBase::showState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
-			     MEpoch::N_Types, MCEpoch::N_Routes,
-			     MCEpoch::ToRef_p);
-  }
+String MCEpoch::showState() {
+  fillState();
+  return MCBase::showState(MCEpoch::FromTo_p[0],
+                           MEpoch::N_Types, MCEpoch::N_Routes,
+                           MCEpoch::ToRef_p);
+}
   
+void MCEpoch::doFillState (void*) {
+  MEpoch::checkMyTypes();
+  MCBase::makeState(FromTo_p[0], MEpoch::N_Types, N_Routes, ToRef_p);
+}
+
 } //# NAMESPACE CASA - END
 

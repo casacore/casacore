@@ -57,8 +57,7 @@ void MeasValue::adjust(Double &val) {
   val = 1.0;
 }
 
-void MeasValue::readjust(Double val) {
-  val = 1.0; // Only to suppress warning message
+void MeasValue::readjust(Double) {
 }
 
 //# Global functions

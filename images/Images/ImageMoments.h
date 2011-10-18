@@ -39,6 +39,7 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/iosfwd.h>
+#include <images/Images/MomentsBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,6 +66,7 @@ class Unit;
 
 // <prerequisite>
 //   <li> <linkto class="ImageInterface">ImageInterface</linkto>
+//   <li> <linkto class="MomentsBase">MomentsBase</linkto>
 //   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
 //   <li> <linkto class="MomentCalcBase">MomentCalcBase</linkto>
 // </prerequisite>
@@ -241,7 +243,7 @@ class Unit;
 // </todo>
  
 
-template <class T> class ImageMoments
+template <class T> class ImageMoments : public MomentsBase<T>
 {
 public:
 
@@ -273,117 +275,12 @@ public:
 // Assignment operator. USes copy semantics.
    ImageMoments<T> &operator=(const ImageMoments<T> &other);
 
-// This <src>enum MomentTypes</src> is provided for use with the
-// <src>setMoments</src> function.  It gives the allowed moment
-// types that you can ask for. 
-
-enum MomentTypes {
-
-// The average intensity
-   AVERAGE,
-
-// The integrated intensity
-   INTEGRATED,
-
-// The intensity weighted mean coordinate (usually velocity)
-   WEIGHTED_MEAN_COORDINATE,
-
-// The intensity weighted coordinate (usually velocity) dispersion
-   WEIGHTED_DISPERSION_COORDINATE,
-
-// The median intensity
-   MEDIAN,
-
-// The median coordinate (usually velocity). Treat the spectrum as
-// a probability distribution, generate the cumulative distribution, 
-// and find the coordinate corresponding to the 50% value.
-   MEDIAN_COORDINATE,
-
-// The standard deviation about the mean of the intensity
-   STANDARD_DEVIATION,
-
-// The rms of the intensity
-   RMS,
-
-// The absolute mean deviation of the intensity
-   ABS_MEAN_DEVIATION,
-
-// The maximum value of the intensity
-   MAXIMUM,
-
-// The coordinate (usually velocity) of the maximum value of the intensity
-   MAXIMUM_COORDINATE,
-
-// The minimum value of the intensity
-   MINIMUM,
-
-// The coordinate (usually velocity) of the minimum value of the intensity
-   MINIMUM_COORDINATE,
-
-// Total number
-   NMOMENTS,
-
-// Default value is the integrated intensity
-   DEFAULT = INTEGRATED};
-
-// Set the desired moments via an <src>Int</src> array.  Each <src>Int</src>
-// specifies a different moment; the allowed values and their meanings
-// are given by the <src>enum MomentTypes</src>.   A return value
-// of <src>False</src> indicates you asked for an out of range 
-// moment.  If you don't call this function, the default state of the 
-// class is to request the integrated intensity.
-   Bool setMoments (const Vector<Int>& moments);
-
 // Set the moment axis (0 relative).  A return value of <src>False</src> 
 // indicates that the axis was not contained in the image. If you don't
 // call this function, the default state of the class is to set the 
 // moment axis to the spectral axis if it can find one.  Otherwise 
 // an error will result.
    Bool setMomentAxis (const Int& momentAxis);
-
-// The <src>enum MethodTypes</src> is provided for use with the
-// <src>setWinFitMethod</src> function.  It gives the allowed moment
-// methods which are available with this function.  The use of these
-// methods is described further with the description of this function
-// as well as in the general documentation earlier.
-enum MethodTypes {
-
-// Invokes the spectral windowing method
-   WINDOW,
-
-// Invokes Gaussian fitting
-   FIT,
-
-// Invokes interactive methods
-   INTERACTIVE,
-
-   NMETHODS};
-
-
-// The method by which you compute the moments is specified by calling
-// (or not calling) the <src>setWinFitMethod</src> and
-// <src>setSmoothMethod</src> functions.  The default state of the class 
-// is to compute directly on all (or some according to <src>setInExClude</src>) 
-// of the pixels in the spectrum.  Calling these functions modifies the 
-// computational state to something more complicated. 
-// 
-// The <src>setWinMethod</src> function requires an <src>Int</src> array
-// as its argument.  Each <src>Int</src> specifies a different method
-// that you can invoke (either separately or in combination).  The
-// allowed values and their meanings are given by the 
-// <src>enum MethodTypes</src>.
-//
-// Both the windowing and fitting methods have interactive modes. The
-// windowing method also has a fitting flavour, so if you set both 
-// ImageMoments::WINDOW and ImageMoments::FIT, you would be invoking the 
-// windowing method but determining the window by fitting Gaussians 
-// automatically (as ImageMoments::INTERACTIVE) was not given.
-//               
-// If you don't call this function, then neither the windowing nor fitting
-// methods are invoked.  A return value of <src>False</src> indicates
-// that you asked for an illegal method.
-   Bool setWinFitMethod(const Vector<Int>& method);
-
 
 // This function invokes smoothing of the input image.  Give <src>Int</src> 
 // arrays for the axes (0 relative) to be smoothed and the smoothing kernel 
@@ -396,94 +293,12 @@ enum MethodTypes {
 // parameters.  If you don't call this function the default state of the
 // class is to do no smoothing.  The kernel types are specified with
 // the VectorKernel::KernelTypes enum
-// <group>
    Bool setSmoothMethod(const Vector<Int>& smoothAxes,
                         const Vector<Int>& kernelTypes,
                         const Vector<Quantum<Double> >& kernelWidths);
    Bool setSmoothMethod(const Vector<Int>& smoothAxes,
-                        const Vector<Int>& kernelTypes,
-                        const Vector<Double>& kernelWidths);
-// </group>
-
-// You may specify a pixel intensity range as either one for which
-// all pixels in that range are included in the moment calculation,
-// or one for which all pixels in that range are excluded from the moment
-// calculations.  One or the other of <src>include</src> and <src>exclude</src>
-// must therefore be a zero length vector if you call this function.
-// A return value of <src>False</src> indicates that you have given both
-// an <src>include</src> and an <src>exclude</src> range.  If you don't call
-// this function, the default state of the class is to include all pixels.
-   Bool setInExCludeRange(const Vector<T>& include,
-                          const Vector<T>& exclude);
-
-// This function is used to help assess whether a spectrum along the moment 
-// axis is all noise or not.  If it is all noise, there is not a lot of point
-// to trying to computing the moment.  This is only needed for the automatic
-// window or fit methods.  If you are using an interactive nethod, you assess
-// yourself whether the spectrum contains signal or not.
-// 
-// <src>peakSNR</src> is the signal-to-noise ratio of the peak value in the
-// spectrum below which the spectrum is considered pure noise.  
-// <src>stdDeviation</src> is the standard deviation of the noise for the
-// input image.  
-//
-// Default values for one or the other parameter are indicated by giving zero.
-//
-// The default state of the class then is to set <src>peakSNR=3</src>
-// and/or to work out the noise level from a Gaussian fit to a histogram
-// (above 25%) of the entire image (it is very hard to get an accurate 
-// estimate of the noise a single spectrum).  If you have specified a 
-// plotting device (see <src>setPlotting</src>) then you get to interact with 
-// the fitting procedure if you want to.  A return value of <src>False</src> 
-// indicates you have set invalid values.  
-   Bool setSnr(const T& peakSNR, 
-               const T& stdDeviation);
-
-// This is the output file name for the smoothed image.   It can be useful
-// to have access this to this image when trying to get the pixel
-// <src>include</src> or <src>exclude</src> range correct for the smooth-clip
-// method.  The default state of the class is to not output the smoothed image. 
-   Bool setSmoothOutName(const String& smOut);
-
-// This sets the name of the PGPLOT plotting device, the number of
-// subplots in x and y per page and whether each spectrum plot is 
-// autoscaled individually (<src>yInd=False</src>) or they are 
-// plotted with the same range automatically determined from the image.
-// Plotting is not invoked for all states of the class.  It is only
-// needed for the interactive methods.  If you ask for a method that
-// needs to determine the noise from the image, and you set the
-// plotting device, then this will be done interactively.  Similarly,
-// if you invoke the automatic window or fit methods, but set the
-// plotting device, then you will see plots of the spectra and
-// the selected windows and fits, respectively.
-//
-// The default state of the class is that no plotting characteristics are set.
-// However, if you set <src>device</src> but offer a zero length array for
-// <src>nxy</src> then the latter is set to [1,1].   A return value
-// of <src>False</src> indicates that you gave roo many values in the
-// <src>nxy</src> vector.
-   Bool setPlotting(PGPlotter& device,
-                    const Vector<Int>& nxy,
-                    const Bool yInd=False);
-
-// Set Velocity type.  This is used for moments for which the moment axis is
-// a spectral axis for which the coordinate is traditionally presented in
-// km/s   You can select the velocity definition. The default state of the
-// class is to use the radio definition.
-   void setVelocityType (MDoppler::Types type);
-
-// CLose plotter
-   void closePlotting();
-
-// Reset argument error condition.  If you specify invalid arguments to
-// one of the above functions, an internal flag will be set which will
-// prevent the <src>createMoments</src> function from doing anything
-// (should you have chosen to igmore the Boolean return values of the functions).
-// This function allows you to reset that internal state to good.
-   void resetError () {goodParameterStatus_p = True; error_p = "";};
-
-// Recover last error message
-   String errorMessage() const {return error_p;};
+			const Vector<Int>& kernelTypes,
+			const Vector<Double>& kernelWidths);
 
 // This is the function that does all the computational work.  It should be called
 // after the <src>set</src> functions.  A return value of  <src>False</src>
@@ -507,7 +322,7 @@ enum MethodTypes {
 // variable, the default state of the class is to set the output name root to 
 // the name of the input file.  
    Bool createMoments(PtrBlock<MaskedLattice<T>* >& images,
-                      Bool doTemp, const String& outFileName,                   
+                      Bool doTemp, const String& outFileName, 
                       Bool removeAxes=True);
 
 // Set a new image.  A return value of <src>False</src> indicates the 
@@ -515,98 +330,15 @@ enum MethodTypes {
    Bool setNewImage (ImageInterface<T>& image);
 
 // Get CoordinateSystem
-   CoordinateSystem coordinates() const {return pInImage_p->coordinates();};
+   CoordinateSystem coordinates() {return pInImage_p->coordinates();};
 
-// Helper function to convert a string containing a list of desired methods to
-// the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
-// This may be usful if your user interface involves strings rather than integers.
-// A new value is added to the output vector (which is resized appropriately) if any of the 
-// substrings "window", "fit" or "interactive" (actually "win", "box" and 
-// "inter" will do) is present.
-   static Vector<Int> toMethodTypes (const String& methods);
 
+// Get shape 
+   IPosition getShape() { return pInImage_p->shape() ; } ;
 
 private:
 
-   LogIO os_p;
    ImageInterface<T>* pInImage_p;
-   Bool showProgress_p;
-   Int momentAxisDefault_p;
-   T peakSNR_p;
-   T stdDeviation_p;
-   T yMin_p, yMax_p;
-   String out_p;
-   String smoothOut_p;
-   Bool goodParameterStatus_p;
-   Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
-   Bool fixedYLimits_p;
-
-   Int momentAxis_p;
-   Int worldMomentAxis_p;
-   Vector<Int> kernelTypes_p;
-   Vector<Quantum<Double> > kernelWidths_p;   
-   Vector<Int> nxy_p;
-   Vector<Int> moments_p;
-   Vector<T> selectRange_p;
-   Vector<Int> smoothAxes_p;
-   PGPlotter plotter_p;
-   Bool overWriteOutput_p;
-   String error_p;
-   Bool convertToVelocity_p;
-   MDoppler::Types velocityType_p;
-
-// Check that the combination of methods that the user has requested is valid
-// List a handy dandy table if not.
-   Bool checkMethod();
-
-// Plot a histogram                     
-   static void drawHistogram  (const Vector<T>& values,
-                               const Vector<T>& counts,
-                               PGPlotter& plotter);
-
-// Plot a line 
-   static void drawLine       (const Vector<T>& x,
-                               const Vector<T>& y,
-                               PGPlotter& plotter);
-                     
-// Draw a vertical line of the given length at a given abcissa 
-   static void drawVertical   (const T& x,
-                               const T& yMin,
-                               const T& yMax,
-                               PGPlotter& plotter);
-
-// Read the cursor and return its coordinates 
-   static Bool getLoc (T& x,
-                       T& y,
-                       PGPlotter& plotter);
-
-// Convert a <tt>T</tt> to a <tt>Float</tt> for plotting
-   static Float convertT (const T value) {return Float(real(value));};
-
-// Convert a <tt>Float</tt> (from plotting) to a <tt>T</tt> 
-   static T convertF (const Float value) {return T(value);};
-
-// Fish out cursor values
-   static Bool readCursor (PGPlotter& plotter, 
-                           Float& x,
-                           Float& y, 
-                           String& ch);
-
-// Take the user's data inclusion and exclusion data ranges and
-// generate the range and Booleans to say what sort it is
-   Bool setIncludeExclude (Vector<T>& range,
-                           Bool& noInclude,
-                           Bool& noExclude,
-                           const Vector<T>& include,
-                           const Vector<T>& exclude,
-                           ostream& os);
-
-// Set the output image suffixes and units
-   Bool setOutThings(String& suffix,
-                     Unit& momentUnits,
-                     const Unit& imageUnits,
-                     const String& momentAxisUnits,
-                     const Int moment, Bool convertToVelocity);
 
 // Smooth an image   
    Bool smoothImage (PtrHolder<ImageInterface<T> >& pSmoothedImage,
@@ -618,11 +350,38 @@ private:
    Bool whatIsTheNoise (T& noise,
                         ImageInterface<T>& image);
 
-// Make output Coordinates
-   CoordinateSystem makeOutputCoordinates (IPosition& outShape,
-                                           const CoordinateSystem& cSysIn,
-                                           const IPosition& inShape,
-                                           Int momentAxis, Bool removeAxis);
+protected:
+  using MomentsBase<T>::os_p;
+  using MomentsBase<T>::showProgress_p;
+  using MomentsBase<T>::momentAxisDefault_p;
+  using MomentsBase<T>::peakSNR_p;
+  using MomentsBase<T>::stdDeviation_p;
+  using MomentsBase<T>::yMin_p;
+  using MomentsBase<T>::yMax_p;
+  using MomentsBase<T>::out_p;
+  using MomentsBase<T>::smoothOut_p;
+  using MomentsBase<T>::goodParameterStatus_p;
+  using MomentsBase<T>::doWindow_p; 
+  using MomentsBase<T>::doFit_p;
+  using MomentsBase<T>::doAuto_p;
+  using MomentsBase<T>::doSmooth_p;
+  using MomentsBase<T>::noInclude_p;
+  using MomentsBase<T>::noExclude_p;
+  using MomentsBase<T>::fixedYLimits_p;
+  using MomentsBase<T>::momentAxis_p;
+  using MomentsBase<T>::worldMomentAxis_p;
+  using MomentsBase<T>::kernelTypes_p;
+  using MomentsBase<T>::kernelWidths_p;   
+  using MomentsBase<T>::nxy_p;
+  using MomentsBase<T>::moments_p;
+  using MomentsBase<T>::selectRange_p;
+  using MomentsBase<T>::smoothAxes_p;
+  using MomentsBase<T>::plotter_p;
+  using MomentsBase<T>::overWriteOutput_p;
+  using MomentsBase<T>::error_p;
+  using MomentsBase<T>::convertToVelocity_p;
+  using MomentsBase<T>::velocityType_p;
+  using MomentsBase<T>::checkMethod;
 };
 
 

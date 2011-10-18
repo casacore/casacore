@@ -163,8 +163,9 @@ void TableExprNodeRep::checkTablePtr (Table& table,
 	    table = node->table();
 	}else{
 	    if (!node->table().isNull()
-            &&  node->table().baseTablePtr() != table.baseTablePtr()) {
-		throw (TableInvExpr ("subexpressions use different tables"));
+            &&  node->table().nrow() != table.nrow()) {
+		throw (TableInvExpr
+                       ("expression uses differently sized tables"));
 	    }
 	}
     }
@@ -292,6 +293,60 @@ Array<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
     return Array<MVTime>();
 }
 
+Array<Bool> TableExprNodeRep::getBoolAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayBool(id);
+  }
+  Vector<Bool> res(1);
+  res[0] = getBool(id);
+  return res;
+}
+Array<Int64> TableExprNodeRep::getIntAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayInt(id);
+  }
+  Vector<Int64> res(1);
+  res[0] = getInt(id);
+  return res;
+}
+Array<Double> TableExprNodeRep::getDoubleAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayDouble(id);
+  }
+  Vector<Double> res(1);
+  res[0] = getDouble(id);
+  return res;
+}
+Array<DComplex> TableExprNodeRep::getDComplexAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayDComplex(id);
+  }
+  Vector<DComplex> res(1);
+  res[0] = getDComplex(id);
+  return res;
+}
+Array<String> TableExprNodeRep::getStringAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayString(id);
+  }
+  Vector<String> res(1);
+  res[0] = getString(id);
+  return res;
+}
+Array<MVTime> TableExprNodeRep::getDateAS (const TableExprId& id)
+{
+  if (valueType() == VTArray) {
+    return getArrayDate(id);
+  }
+  Vector<MVTime> res(1);
+  res[0] = getDate(id);
+  return res;
+}
 
 Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
 {

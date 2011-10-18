@@ -40,8 +40,9 @@ namespace casa {
 
 
   UDFBase::UDFBase()
-    : itsDataType  (TableExprNodeRep::NTAny),
-      itsNDim      (-2)
+    : itsDataType   (TableExprNodeRep::NTAny),
+      itsNDim       (-2),
+      itsIsConstant (False)
   {}
 
   UDFBase::~UDFBase()
@@ -96,6 +97,11 @@ namespace casa {
     itsUnit = unit;
   }
 
+  void UDFBase::setConstant (Bool isConstant)
+  {
+    itsIsConstant = isConstant;
+  }
+
   Bool      UDFBase::getBool     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getBool not implemented"); }
   Int64     UDFBase::getInt      (const TableExprId&)
@@ -127,7 +133,7 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter == theirRegistry.end()) {
       theirRegistry[fname] = func;
@@ -144,7 +150,7 @@ namespace casa {
   {
     String fname(name);
     fname.downcase();
-    ScopedLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter != theirRegistry.end()) {
       return iter->second (fname);

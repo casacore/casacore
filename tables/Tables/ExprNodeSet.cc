@@ -1069,8 +1069,8 @@ void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
     // Set and adapt unit as needed.
     if (unit().empty()) {
         setUnit (elem.unit());
-    } else {
-        itsElems[n]->adaptSetUnits (unit());
+        ///   } else {
+        ///        itsElems[n]->adaptSetUnits (unit());
     }
     // See if the set properties change.
     if (! elem.isSingle()) {
@@ -1156,7 +1156,24 @@ TableExprNodeRep* TableExprNodeSet::setOrArray() const
 {
     // The set should not contain array elements.
     if (hasArrays()) {
-	throw (TableInvExpr ("A set cannot contain elements having arrays"));
+        return new TableExprNodeSet (*this);
+///	throw (TableInvExpr ("A set cannot contain elements having arrays"));
+    }
+    // A set where elements have different units cannot be turned into an array.
+    if (! unit().empty()) {
+        Quantity q(1., unit());
+	uInt n = nelements();
+	for (uInt i=0; i<n; i++) {
+              if (! itsElems[i]->unit().empty()) {
+                  if (! q.isConform (itsElems[i]->unit())) {
+                      return new TableExprNodeSet (*this);
+                  }
+              }
+	}
+        // No different units, so adapt elements to known one.
+	for (uInt i=0; i<n; i++) {
+            itsElems[i]->adaptSetUnits (unit());
+        }
     }
     // When discrete, all start values should be filled in.
     if (itsDiscrete) {

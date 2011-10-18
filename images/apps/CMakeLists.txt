@@ -1,5 +1,5 @@
-foreach(prog image2fits imagecalc imageregrid imageslice)
+foreach(prog image2fits imagecalc imageregrid imageslice imcollapse imfit imreorder)
     add_executable (${prog}  ${prog}.cc)
     target_link_libraries (${prog} casa_images)
     install(TARGETS ${prog} DESTINATION bin)
-endforeach(prog image2fits imagecalc imageregrid imageslice)
+endforeach(prog image2fits imagecalc imageregrid imageslice imcollapse imfit imreorder)

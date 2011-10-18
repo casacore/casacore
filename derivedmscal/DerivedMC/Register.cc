@@ -41,6 +41,9 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.HA",    UDFMSCal::makeHA);
   UDFBase::registerUDF ("derivedmscal.HA1",   UDFMSCal::makeHA1);
   UDFBase::registerUDF ("derivedmscal.HA2",   UDFMSCal::makeHA2);
+  UDFBase::registerUDF ("derivedmscal.HADEC", UDFMSCal::makeHADEC);
+  UDFBase::registerUDF ("derivedmscal.HADEC1",UDFMSCal::makeHADEC1);
+  UDFBase::registerUDF ("derivedmscal.HADEC2",UDFMSCal::makeHADEC2);
   UDFBase::registerUDF ("derivedmscal.PA1",   UDFMSCal::makePA1);
   UDFBase::registerUDF ("derivedmscal.PA2",   UDFMSCal::makePA2);
   UDFBase::registerUDF ("derivedmscal.LAST",  UDFMSCal::makeLAST);
@@ -49,4 +52,5 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.AZEL1", UDFMSCal::makeAZEL1);
   UDFBase::registerUDF ("derivedmscal.AZEL2", UDFMSCal::makeAZEL2);
   UDFBase::registerUDF ("derivedmscal.UVW",   UDFMSCal::makeUVW);
+  UDFBase::registerUDF ("derivedmscal.STOKES",UDFMSCal::makeStokes);
 }

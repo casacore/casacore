@@ -498,12 +498,18 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     String baseCROTA;
 
     Int naxis = -1;
+    Int maxis = -1;
 
     while(key) {
 	String name = downcase(key->name());
 	if (name == "naxis" && !key->isindexed()) {
 	    if (key->type()==FITS::LONG) {
 		naxis = key->asInt();
+	    }
+        }
+	if (name == "maxis" && !key->isindexed()) {
+	    if (key->type()==FITS::LONG) {
+		maxis = key->asInt();
 	    }
         }
 //
@@ -545,8 +551,15 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	if (naxis==-1) {
 	    os << LogIO::SEVERE << "Failed to decode naxis keyword" << LogIO::EXCEPTION;
 	}
-	min1D(baseCROTA) = 1;
-	max1D(baseCROTA) = naxis;
+	if (maxis==-1) {
+	  min1D(baseCROTA) = 1;
+	  max1D(baseCROTA) = naxis;
+	}
+	else{ // apparently a FITS-IDI file
+	  min1D(baseCROTA) = 1;
+	  max1D(baseCROTA) = maxis;
+	}
+
     }
 
     // OK, now step through actually writing all the keywords
@@ -556,9 +569,9 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     while(key) {
 	String fullName = downcase(key->name());
 
-	// Naxis is special - it is both a scalar keywords and an
+	// Naxis and Maxis are special - it is both a scalar keywords and an
 	// indexed keyword. If we have both ignore the scalar version.
-	if (fullName == "naxis" && !key->isindexed()) {
+	if ((fullName == "naxis" || fullName == "maxis") && !key->isindexed()) {
 	    key = in.next();
 	    continue;
 	}
@@ -575,11 +588,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    }
 	    
 	    Int offset = num - min1D(base);
+	    Int nelm = 0;
 	    Int fnum = out.fieldNumber(base);
 	    switch (key->type()) {
 	    case FITS::LOGICAL:
 		if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -592,14 +606,22 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Bool> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asBool();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asBool();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    case FITS::STRING : 
 		{
 		    if (fnum >= 0 && out.type(fnum) != TpArrayString) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			os << LogIO::WARN << "Ignoring field '" << fullName <<
 			    "' because its type does not match already created" <<
 			    " field " << base << ". Continuing." << LogIO::POST;
 			break;
@@ -618,14 +640,22 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    } else {
 			Vector<String> vec;
 			out.get(base, vec);
-			vec(offset) = tmp;
-			out.define(base, vec);
+			vec.shape(nelm);
+			if(offset<nelm){
+			  vec(offset) = tmp;
+			  out.define(base, vec);
+			}
+			else{
+			  os << LogIO::WARN << "Ignoring field '" << fullName << 
+			    "' because the maximum permitted number " << nelm << 
+			    " is already reached. Continuing." << LogIO::POST;
+			}
 		    }
 		}
 		break;
 	    case FITS::FLOAT :  // Convert to DOUBLE!!
 		if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -638,13 +668,21 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asFloat();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asFloat();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    case FITS::DOUBLE : 
 		if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -657,13 +695,21 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asDouble();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asDouble();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    case FITS::LONG : 
 		if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -676,13 +722,21 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Int> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asInt();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asInt();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    case FITS::COMPLEX : 
 		if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -695,13 +749,21 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Complex> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asComplex();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asComplex();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    case FITS::DCOMPLEX : 
 		if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
-		    os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+		    os << LogIO::WARN << "Ignoring field '" << fullName <<
 			"' because its type does not match already created" <<
 			" field " << base << ". Continuing." << LogIO::POST;
 		    break;
@@ -714,8 +776,16 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<DComplex> vec;
 		    out.get(base, vec);
-		    vec(offset) = key->asDComplex();
-		    out.define(base, vec);
+		    vec.shape(nelm);
+		    if(offset<nelm){
+		      vec(offset) = key->asDComplex();
+		      out.define(base, vec);
+		    }
+		    else{
+		      os << LogIO::WARN << "Ignoring field '" << fullName << 
+			"' because the maximum permitted number " << nelm <<
+			" is already reached. Continuing." << LogIO::POST;
+		    }
 		}
 		break;
 	    default:

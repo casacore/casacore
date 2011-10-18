@@ -10,10 +10,10 @@ DATAFILE=`echo $AIPSPATH | awk '{print $1}'`/data/demo/dishdemo/dishdemo1.fits
 
 if [ -f $DATAFILE ]
 then
-   ./sdfits2ms $DATAFILE tMSReader_tmp.ms
+   $casa_checktool ./sdfits2ms $DATAFILE tMSReader_tmp.ms
    if [ -d tMSReader_tmp.ms ]
    then
-      ./tMSReader tMSReader_tmp.ms
+      $casa_checktool ./tMSReader tMSReader_tmp.ms
    else
       echo "FAIL: tMSReader, could not create tMSReader.ms from" $DATAFILE
       exit 3

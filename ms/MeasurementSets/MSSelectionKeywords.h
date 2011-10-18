@@ -168,8 +168,6 @@ public:
     RESIDUAL_IMAGINARY,
     // the (range of the) imaginary part of the observed residual visibilities
     OBS_RESIDUAL_IMAGINARY,
-    // imaging weights
-    IMAGING_WEIGHT,
     // Local Apparent Sidereal Time
     LAST,
     // the number of correlation products (polarizations) for selected spectral window

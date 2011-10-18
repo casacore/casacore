@@ -29,7 +29,7 @@
 
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Regex.h>
-#include <assert.h>
+#include <casa/Utilities/Assert.h>
 // Next one for atoi and atof
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
@@ -47,48 +47,48 @@ Regex  r = String("e[a-z]*o");
 void decltest() {
   String x;
   cout << "an empty String:" << x << endl;
-  assert(x == "");
+  AlwaysAssertExit(x == "");
 
   String y = "Hello";
   cout << "A string initialized to Hello:" << y << endl;
-  assert(y == "Hello");
+  AlwaysAssertExit(y == "Hello");
 
   if (y[y.length()-1] == 'o') y = y + '\n';
-  assert(y == "Hello\n");
+  AlwaysAssertExit(y == "Hello\n");
   y = "Hello";
 
   String a = y;
   cout << "A string initialized to previous string:" << a << endl;
-  assert(a == "Hello");
-  assert(a == y);
+  AlwaysAssertExit(a == "Hello");
+  AlwaysAssertExit(a == y);
 
   String b (a.at(1, 2));
   cout << "A string initialized to previous string.at(1, 2):" << b << endl;
-  assert(b == "el");
+  AlwaysAssertExit(b == "el");
 
   Char ch = '@';
   String z(ch);
   cout << "A string initialized to @:" << z << endl;
-  assert(z == "@");
+  AlwaysAssertExit(z == "@");
 
   String n = "20";
   cout << "A string initialized to dec(20):" << n << endl;
-  assert(n == "20");
+  AlwaysAssertExit(n == "20");
 
   Int i = atoi(n.chars());
   Double f = atof(n.chars());
   cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
-  assert(i == 20);
-  assert(f == 20);
+  AlwaysAssertExit(i == 20);
+  AlwaysAssertExit(f == 20);
 
   /*
-  assert(X.OK());
-  assert(Y.OK());
-  assert(x.OK());
-  assert(y.OK());
-  assert(z.OK());
-  assert(n.OK());
-  assert(r.OK());
+  AlwaysAssertExit(X.OK());
+  AlwaysAssertExit(Y.OK());
+  AlwaysAssertExit(x.OK());
+  AlwaysAssertExit(y.OK());
+  AlwaysAssertExit(z.OK());
+  AlwaysAssertExit(n.OK());
+  AlwaysAssertExit(r.OK());
   */
 }
 
@@ -97,23 +97,23 @@ void cattest() {
   String y = Y;
   String z = x + y;
   cout << "z = x + y = " << z << endl;
-  assert(z == "Helloworld");
+  AlwaysAssertExit(z == "Helloworld");
 
   x += y;
   cout << "x += y; x = " << x << endl;
-  assert(x == "Helloworld");
+  AlwaysAssertExit(x == "Helloworld");
 
   y = Y;
   x = X;
   y.prepend(x);
   cout << "y.prepend(x); y = " << y << endl;
-  assert(y == "Helloworld");
+  AlwaysAssertExit(y == "Helloworld");
 
   x = X;
   y = Y;
   z = x + s + ' ' + y.at("w") + y.after("w") + ".";
   cout << "z = x + s +  + y.at(w) + y.after(w) + . = " << z << endl;
-  assert(z == "Hello, world.");
+  AlwaysAssertExit(z == "Hello, world.");
 }
 
 void comparetest() {
@@ -122,35 +122,35 @@ void comparetest() {
   String n = N;
   String z = x + y;
 
-  assert(x != y);
-  assert(x == "Hello");
-  assert(x != z.at(0, 4));
-  assert (x < y);
-  assert(!(x >= z.at(0, 6)));
-  assert(x.contains("He"));
-  assert (z.contains(x));
-  assert(x.contains(r));
+  AlwaysAssertExit(x != y);
+  AlwaysAssertExit(x == "Hello");
+  AlwaysAssertExit(x != z.at(0, 4));
+  AlwaysAssertExit (x < y);
+  AlwaysAssertExit(!(x >= z.at(0, 6)));
+  AlwaysAssertExit(x.contains("He"));
+  AlwaysAssertExit (z.contains(x));
+  AlwaysAssertExit(x.contains(r));
   
-  assert(!(x.matches(r)));
-  assert(x.matches(RXalpha));
-  assert(!(n.matches(RXalpha)));
-  assert(n.matches(RXint));
-  assert(n.matches(RXdouble));
+  AlwaysAssertExit(!(x.matches(r)));
+  AlwaysAssertExit(x.matches(RXalpha));
+  AlwaysAssertExit(!(n.matches(RXalpha)));
+  AlwaysAssertExit(n.matches(RXint));
+  AlwaysAssertExit(n.matches(RXdouble));
   
-  assert(x.index("lo") == 3);
-  assert(x.index("l", 2) == 2);
-  assert(x.index("l", -1) == 3); // negative pos!
-  assert(x.index(r)  == 1);
-  assert(x.index(r, -2) == 1);
+  AlwaysAssertExit(x.index("lo") == 3);
+  AlwaysAssertExit(x.index("l", 2) == 2);
+  AlwaysAssertExit(x.index("l", -1) == 3); // negative pos!
+  AlwaysAssertExit(x.index(r)  == 1);
+  AlwaysAssertExit(x.index(r, -2) == 1);
 
-  assert(x.contains("el", 1));
-  assert(x.contains("el"));
+  AlwaysAssertExit(x.contains("el", 1));
+  AlwaysAssertExit(x.contains("el"));
   
-  assert(common_prefix(x, "Help") == "Hel");
-  assert(common_suffix(x, "to") == "o");
+  AlwaysAssertExit(common_prefix(x, "Help") == "Hel");
+  AlwaysAssertExit(common_suffix(x, "to") == "o");
   
-  assert(fcompare(x, "hELlo") == 0);
-  assert(fcompare(x, "hElp") < 0);
+  AlwaysAssertExit(fcompare(x, "hELlo") == 0);
+  AlwaysAssertExit(fcompare(x, "hElp") < 0);
 }
 
 void substrtest() {
@@ -158,75 +158,75 @@ void substrtest() {
 
   Char ch = x[0];
   cout << "ch = x[0] = " << ch << endl;
-  assert(ch == 'H');
+  AlwaysAssertExit(ch == 'H');
 
   String z = x.at(2, 3);
   cout << "z = x.at(2, 3) = " << z << endl;
-  assert(z.length() == 3);
-  assert(z == "llo");
+  AlwaysAssertExit(z.length() == 3);
+  AlwaysAssertExit(z == "llo");
 
   String z1 = x.at(2, 4);
   cout << "z1 = x.at(2, 4) = " << z1 << endl;
-  assert(z1.length() == 3);
-  assert(z1 == "llo");
+  AlwaysAssertExit(z1.length() == 3);
+  AlwaysAssertExit(z1 == "llo");
 
   String z2 = x.at(5, 3);
   cout << "z2 = x.at(5, 3) = " << z2 << endl;
-  assert(z2.length() == 0);
-  assert(z2 == "");
+  AlwaysAssertExit(z2.length() == 0);
+  AlwaysAssertExit(z2 == "");
 
   x.at(2, 2) = "r";
   cout << "x.at(2, 2) = r; x = " << x << endl;
-  assert(x == "Hero");
+  AlwaysAssertExit(x == "Hero");
 
   x = X;
   x.at(0, 1) = "j";
   cout << "x.at(0, 1) = j; x = " << x << endl;
-  assert(x == "jello");
+  AlwaysAssertExit(x == "jello");
 
   x = X;
   x.at("He") = "je";
   cout << "x.at(He) = je; x = " << x << endl;
-  assert(x == "jello");
+  AlwaysAssertExit(x == "jello");
   
   x = X;
   x.at("l", -1) = "i";
   cout << "x.at(l, -1) = i; x = " << x << endl;
-  assert(x == "Helio");
+  AlwaysAssertExit(x == "Helio");
   
   x = X;
   z = x.at(r);
   cout << "z = x.at(r) = " << z << endl;
-  assert(z == "ello");
+  AlwaysAssertExit(z == "ello");
   
   z = x.before("o");
   cout << "z = x.before(o) = " << z << endl;
-  assert(z == "Hell");
+  AlwaysAssertExit(z == "Hell");
   x.before("ll") = "Bri";
   cout << "x.before(ll) = Bri; x = " << x << endl;
-  assert(x == "Brillo");
+  AlwaysAssertExit(x == "Brillo");
 
   x = X;
   z = x.before(2);
   cout << "z = x.before(2) = " << z << endl;
-  assert(z == "He");
+  AlwaysAssertExit(z == "He");
 
   z = x.after("Hel");
   cout << "z = x.after(Hel) = " << z << endl;
-  assert(z == "lo");
+  AlwaysAssertExit(z == "lo");
   x.after("Hel") = "p";
   cout << "x.after(Hel) = p; x = " << x << endl;
-  assert(x == "Help");
+  AlwaysAssertExit(x == "Help");
 
   x = X;
   z = x.after(3);
   cout << "z = x.after(3) = " << z << endl;
-  assert(z == "o");
+  AlwaysAssertExit(z == "o");
 
   z = "  a bc";
   z  = z.after(RXwhite);
   cout << "z =   a bc; z = z.after(RXwhite); z =" << z << endl;
-  assert(z == "a bc");
+  AlwaysAssertExit(z == "a bc");
 }
 
 void utiltest() {
@@ -235,50 +235,50 @@ void utiltest() {
   Int matches = x.gsub("l", "ll");
   
   cout << "x.gsub(l, ll); x = " << x << endl;
-  assert(matches == 2);
-  assert(x == "Hellllo");
+  AlwaysAssertExit(matches == 2);
+  AlwaysAssertExit(x == "Hellllo");
 
   x = X;
   matches = x.gsub(r, "ello should have been replaced by this string");
   cout << "x.gsub(r, ...); x = " << x << endl;
-  assert(matches == 1);
-  assert(x == "Hello should have been replaced by this string");
+  AlwaysAssertExit(matches == 1);
+  AlwaysAssertExit(x == "Hello should have been replaced by this string");
 
   matches = x.gsub(RXwhite, "#");
   cout << "x.gsub(RXwhite, #); x = " << x << endl;
-  assert(matches == 7);
+  AlwaysAssertExit(matches == 7);
   
   String z = X + Y;
   z.del("loworl");
   cout << "z = x+y; z.del(loworl); z = " << z << endl;
-  assert(z == "Held");
+  AlwaysAssertExit(z == "Held");
 
   x = X;
   z = reverse(x);
   cout << "reverse(x) = " << z << endl;
-  assert(z == "olleH");
+  AlwaysAssertExit(z == "olleH");
 
   x.reverse();
   cout << "x.reverse() = " << x << endl;
-  assert(x == z);
+  AlwaysAssertExit(x == z);
 
   x = X;
   z = upcase(x);
   cout << "upcase(x) = " << z << endl;
-  assert(z == "HELLO");
+  AlwaysAssertExit(z == "HELLO");
 
   z = downcase(x);
   cout << "downcase(x) = " << z << endl;
-  assert(z == "hello");
+  AlwaysAssertExit(z == "hello");
 
   z = capitalize(x);
   cout << "capitalize(x) = " << z << endl;
-  assert(z == "Hello");
+  AlwaysAssertExit(z == "Hello");
 
   z = replicate('*', 10);
   cout << "z = replicate(*, 10) = " << z << endl;
-  assert(z == "**********");
-  assert(z.length() == 10);
+  AlwaysAssertExit(z == "**********");
+  AlwaysAssertExit(z.length() == 10);
 }
 
 void splittest() {
@@ -286,21 +286,21 @@ void splittest() {
   cout << "z = " << z << endl;
   String w[10];
   Int nw = split(z, w, 10, RXwhite);
-  assert(nw == 5);
+  AlwaysAssertExit(nw == 5);
   cout << "from split(z, RXwhite, w, 10), n words = " << nw << ":\n";
   for (Int i = 0; i < nw; ++i) {
     cout << w[i] << endl;
   }
-  assert(w[0] == "This");
-  assert(w[1] == "string");
-  assert(w[2] == "has");
-  assert(w[3] == "five");
-  assert(w[4] == "words");
-  assert(w[5] == "");
+  AlwaysAssertExit(w[0] == "This");
+  AlwaysAssertExit(w[1] == "string");
+  AlwaysAssertExit(w[2] == "has");
+  AlwaysAssertExit(w[3] == "five");
+  AlwaysAssertExit(w[4] == "words");
+  AlwaysAssertExit(w[5] == "");
 
   z = join(w, nw, "/");
   cout << "z = join(w, nw, /); z =" << z << endl;
-  assert(z == "This/string/has/five/words");
+  AlwaysAssertExit(z == "This/string/has/five/words");
 }
 
 void iotest() {
@@ -318,35 +318,35 @@ void identitytest(String a, String b) {
   String y = b;
   x += b;
   y.prepend(a);
-  assert((a + b) == x);
-  assert((a + b) == y);
-  assert(x == y);
-  assert(x.after(a) == b);
-  assert(x.before(b, -1) == a);
-  assert(x.from(a) == x);
-  assert(x.through(b, -1) == x);
-  assert(x.at(a) == a);
-  assert(x.at(b) == b);
+  AlwaysAssertExit((a + b) == x);
+  AlwaysAssertExit((a + b) == y);
+  AlwaysAssertExit(x == y);
+  AlwaysAssertExit(x.after(a) == b);
+  AlwaysAssertExit(x.before(b, -1) == a);
+  AlwaysAssertExit(x.from(a) == x);
+  AlwaysAssertExit(x.through(b, -1) == x);
+  AlwaysAssertExit(x.at(a) == a);
+  AlwaysAssertExit(x.at(b) == b);
 
-  assert(reverse(x) == reverse(b) + reverse(a));
+  AlwaysAssertExit(reverse(x) == reverse(b) + reverse(a));
 
-  assert((a + b + a) == (a + (b + a)));
+  AlwaysAssertExit((a + b + a) == (a + (b + a)));
   
   ///  x.del(b, -1);
   x.del(b);
-  assert(x == a);
+  AlwaysAssertExit(x == a);
 
   y.before(b, -1) = b;
-  assert(y == (b + b));
+  AlwaysAssertExit(y == (b + b));
   y.at(b) = a;
-  assert(y == (a + b));
+  AlwaysAssertExit(y == (a + b));
   
   x = a + reverse(a);
   for (Int i = 0; i < 7; ++i) {
     y = x;
     x += x;
-    assert(x == reverse(x));
-    assert(x.index(y) == 0);
+    AlwaysAssertExit(x == reverse(x));
+    AlwaysAssertExit(x.index(y) == 0);
   }
 }
 
@@ -354,73 +354,73 @@ void identitytest(String a, String b) {
 void freqtest() {
   String x = "Hello World";
   String y = x.at(0,5);
-  assert(x.freq('l') == 3);	// Char
-  assert(x.freq("lo") == 1);	// Char*
-  assert(x.freq(x) == 1);	// String
-  assert(x.freq(y) == 1);	// SubString
+  AlwaysAssertExit(x.freq('l') == 3);	// Char
+  AlwaysAssertExit(x.freq("lo") == 1);	// Char*
+  AlwaysAssertExit(x.freq(x) == 1);	// String
+  AlwaysAssertExit(x.freq(y) == 1);	// SubString
 }
 
 void toDouble() {
     String x = "1.5";
     Double y = String::toDouble(x);
-    assert(y == 1.5);
+    AlwaysAssertExit(y == 1.5);
     x = "frodo";
     y = String::toDouble(x);
     // should be 0, but account for finite machine precision
-    assert(y < 1e-316 && y > -1e-316);
+    AlwaysAssertExit(y < 1e-316 && y > -1e-316);
 }
 
 void toFloat() {
     String x = "1.5";
     Float y = String::toFloat(x);
-    assert(y == 1.5);
+    AlwaysAssertExit(y == 1.5);
     x = "frodo";
     y = String::toFloat(x);
     // should be 0, but account for finite machine precision
-    assert(y < 1e-316 && y > -1e-316);
+    AlwaysAssertExit(y < 1e-316 && y > -1e-316);
 }
 
 void toInt() {
     String x = "4";
     Int y = String::toInt(x);
-    assert(y == 4);
+    AlwaysAssertExit(y == 4);
     x = "-12";
     y = String::toInt(x);
-    assert(y == -12);
+    AlwaysAssertExit(y == -12);
     x = "6.9999";
     y = String::toInt(x);
-    assert(y == 6);
+    AlwaysAssertExit(y == 6);
     x = "-8.9999";
     y = String::toInt(x);
-    assert(y == -8);
+    AlwaysAssertExit(y == -8);
     x = "elrond";
     y = String::toInt(x);
-    assert(y == 0);
+    AlwaysAssertExit(y == 0);
 }
 
 void trim() {
     String myString = "\t  \t  \n\r  my string \n\r \t ";
     myString.trim();
-    assert(myString == "my string");
+    AlwaysAssertExit(myString == "my string");
     myString = "\t  \t  \n\r  my string";
     myString.trim();
-    assert(myString == "my string");
+    AlwaysAssertExit(myString == "my string");
     myString = "my string \n\r \t ";
     myString.trim();
-    assert(myString == "my string");
+    AlwaysAssertExit(myString == "my string");
     myString = "\n \t\t\r  ";
     myString.trim();
-    assert(myString.empty());
+    AlwaysAssertExit(myString.empty());
     myString = "    ";
     myString.trim();
-    assert(myString.empty());
+    AlwaysAssertExit(myString.empty());
 }
 
 void startsWith() {
     String myString = "Gozer the Destroyer";
-    assert(myString.startsWith("G"));
-    assert(myString.startsWith("Gozer t"));
-    assert(! myString.startsWith("oz"));
+    AlwaysAssertExit(myString.startsWith("G"));
+    AlwaysAssertExit(myString.startsWith("Gozer t"));
+    AlwaysAssertExit(! myString.startsWith("oz"));
 }
 
 /* void hashtest()

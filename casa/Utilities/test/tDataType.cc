@@ -315,9 +315,8 @@ void simpleTests()
 void excpAsScalar(DataType type)
 {
     Bool hadExcp = False;
-    DataType dummy;
     try {
-	dummy = asScalar(type);
+	asScalar(type);
     } catch (AipsError x) {
 	hadExcp = True;
     } 
@@ -327,9 +326,8 @@ void excpAsScalar(DataType type)
 void excpAsArray(DataType type)
 {
     Bool hadExcp = False;
-    DataType dummy;
     try {
-	dummy = asArray(type);
+	asArray(type);
     } catch (AipsError x) {
 	hadExcp = True;
     } 

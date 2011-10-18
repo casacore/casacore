@@ -236,7 +236,7 @@ public:
                           uInt worldAxis,
                           Bool isAbsolute=True,
                           Bool showAsAbsolute=True,
-                          Int precision = -1);
+                          Int precision = -1) const;
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     

@@ -454,26 +454,22 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
 // they become useful again
 
 /*
-    Vector<Double> crval;
-    subrec.get("crval", crval);
+    Vector<Double> crval(subrec.toArrayDouble("crval"));
 
     if (!subrec.isDefined("crpix")) {
         return 0;
     }
-    Vector<Double> crpix;
-    subrec.get("crpix", crpix);
+    Vector<Double> crpix(subrec.toArrayDouble("crpix"));
     
     if (!subrec.isDefined("cdelt")) {
         return 0;
     }
-    Vector<Double> cdelt;
-    subrec.get("cdelt", cdelt);
+    Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 
     if (!subrec.isDefined("pc")) {
         return 0;
     }
-    Matrix<Double> pc;
-    subrec.get("pc", pc);
+    Matrix<Double> pc(subrec.toArrayDouble("pc"));
 */
 
     StokesCoordinate* retval = new StokesCoordinate(istokes);
@@ -502,7 +498,7 @@ String StokesCoordinate::format(String& units,
                                 Coordinate::formatType,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool, Bool, Int)
+                                Bool, Bool, Int) const
 //
 // world  abs=rel for Stokes
 //

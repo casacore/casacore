@@ -1,5 +1,16 @@
+set (datafiles
+imregion.fits
+imregion_dironly.fits
+imregion_nospec.fits
+)
+
+foreach (file ${datafiles})
+    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
+endforeach (file)
+
 set (tests
 tRegionHandler
+tRegionManager
 tWCBox
 tWCExtension
 tWCLELMask

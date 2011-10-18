@@ -7,6 +7,8 @@ tComponentList
 tComponentType
 tConstantSpectrum
 tDiskShape
+tFluxStandard
+tFluxStandard2
 tGaussianComponent
 tGaussianShape
 tPointComponent

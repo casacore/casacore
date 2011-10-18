@@ -12,7 +12,7 @@ if [ -f $DATAFILE ]
 then
   # make sure things are cleaned up
   rm -rf tBinTable_tmp.table.0
-  ./tBinTable inputFile=$DATAFILE baseName=tBinTable_tmp
+  $casa_checktool ./tBinTable inputFile=$DATAFILE baseName=tBinTable_tmp
 else
   echo "UNTESTED: tBinTable, could not find the test data" $DATAFILE
   exit 3

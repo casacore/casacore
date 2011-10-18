@@ -156,6 +156,8 @@ private:
   // </group>
 
   //# Member functions
+  // Do the actual clearing of the stack (without a lock).
+  void doClearStack(const Key key);
 };
 
 

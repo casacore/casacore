@@ -60,7 +60,7 @@
 #include <casa/Utilities/LinearSearch.h>
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/iostream.h>
-
+#include <coordinates/Coordinates/GaussianConvert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -214,43 +214,212 @@ String ImageUtilities::shortAxisName (const String& axisName)
 }
 
 
-SkyComponent ImageUtilities::encodeSkyComponent(LogIO&, Double& facToJy,
-                                                const ImageInfo& ii,
-                                                const CoordinateSystem& cSys,
-                                                const Unit& brightnessUnit,
-                                                ComponentType::Shape type,
-                                                const Vector<Double>& parameters,
-                                                Stokes::StokesTypes stokes,
-                                                Bool xIsLong)
-// Input:
-//   pars(0) = FLux     image units  (e.g. peak flux in Jy/beam)
-//   pars(1) = x cen    abs pix
-//   pars(2) = y cen    abs pix
-//   pars(3) = major    pix
-//   pars(4) = minor    pix
-//   pars(5) = pa radians (pos +x -> +y)
-//
-{
-   SkyComponent sky;
+SkyComponent ImageUtilities::encodeSkyComponent(
+    LogIO& logIO, Double& facToJy, const ImageInfo& ii,
+    const CoordinateSystem& cSys, const Unit& brightnessUnit,
+    ComponentType::Shape type, const Vector<Double>& parameters,
+    Stokes::StokesTypes stokes, Bool xIsLong
+) {
+    // Input:
+    //   pars(0) = FLux     image units  (e.g. peak flux in Jy/beam)
+    //   pars(1) = x cen    abs pix
+    //   pars(2) = y cen    abs pix
+    //   pars(3) = major    pix
+    //   pars(4) = minor    pix
+    //   pars(5) = pa radians (pos +x -> +y)
+    
+    SkyComponent sky;
   
-// Account for the fact that 'x' could be longitude or latitude.  Urk.
+    // Account for the fact that 'x' could be longitude or latitude.  Urk.
 
-   Vector<Double> pars = parameters.copy();
-   if (!xIsLong) {
-      Double tmp = pars(0);
-      pars(0) = pars(1);
-      pars(1) = tmp;
-//
-      Double pa0 = pars(5);
-      MVAngle pa(pa0 + C::pi_2);
-      pa();                         // +/- pi
-      pars(5) = pa.radian();
-   }
-//
-   Vector<Quantum<Double> > beam = ii.restoringBeam();
-   sky.fromPixel(facToJy, pars, brightnessUnit, beam, cSys, type, stokes);
-   return sky;
+    Vector<Double> pars = parameters.copy();
+    if (!xIsLong) {
+        Double tmp = pars(0);
+
+        pars(0) = pars(1);
+        pars(1) = tmp;
+
+        Double pa0 = pars(5);
+        MVAngle pa(pa0 + C::pi_2);
+        pa();                         // +/- pi
+        pars(5) = pa.radian();
+    }
+
+    Vector<Quantity> beam = ii.restoringBeam();
+    if (brightnessUnit.getName().contains("beam") && beam.size() != 3) {
+    	beam = makeFakeBeam(logIO, cSys);
+    }
+    sky.fromPixel(facToJy, pars, brightnessUnit, beam, cSys, type, stokes);
+
+    return sky;
 } 
+
+Vector<Quantity> ImageUtilities::makeFakeBeam(
+		LogIO& logIO, const CoordinateSystem& csys, Bool suppressWarnings
+	) {
+    Int dirCoordinate = csys.findCoordinate(Coordinate::DIRECTION);
+    if (dirCoordinate==-1) {
+        logIO << "CoordinateSystem does not contain "
+            << "a DirectionCoordinate" << LogIO::EXCEPTION;
+    }
+    const DirectionCoordinate& dirCoord = csys.directionCoordinate(dirCoordinate);
+
+    Vector<Quantity> beam;
+    beam.resize(3);
+    Vector<Double> inc = dirCoord.increment();
+    beam[0] = Quantity(abs(inc[0]), "rad");
+    beam[1] = Quantity(abs(inc[1]), "rad");
+    beam[2] = Quantity(0,"rad");
+    if (! suppressWarnings) {
+    	logIO << LogIO::WARN
+    			<< "No restoring beam defined even though the "
+    			<< "image brightness units contain a beam. Assuming "
+    			<< "the restoring beam is one pixel. To avoid this non-fatal message "
+    			<< "and subsequent related messages, add a restoring beam to your image's "
+    			<< "header."
+    			<< LogIO::POST;
+    }
+    return beam;
+}
+
+// moved from ImageAnalysis. See comments in ImageUtilities.h
+SkyComponent ImageUtilities::encodeSkyComponent(
+    LogIO& os, Double& facToJy,
+    const ImageInterface<Float>& subIm, ComponentType::Shape model,
+    const Vector<Double>& parameters, Stokes::StokesTypes stokes,
+    Bool xIsLong, Bool deconvolveIt
+) {
+    //
+    // This function takes a vector of doubles and converts them to
+    // a SkyComponent.   These doubles are in the 'x' and 'y' frames
+    // (e.g. result from Fit2D). It is possible that the
+    // x and y axes of the pixel array are lat/long rather than
+    // long/lat if the CoordinateSystem has been reordered.  So we have
+    // to take this into account before making the SkyComponent as it
+    // needs to know long/lat values.  The subImage holds only the sky
+
+    // Input
+    //   pars(0) = Flux     image units
+    //   pars(1) = x cen    abs pix
+    //   pars(2) = y cen    abs pix
+    //   pars(3) = major    pix
+    //   pars(4) = minor    pix
+    //   pars(5) = pa radians (pos +x -> +y)
+    // Output
+    //   facToJy = converts brightness units to Jy
+    //
+
+	const ImageInfo& ii = subIm.imageInfo();
+	const CoordinateSystem& cSys = subIm.coordinates();
+	const Unit& bU = subIm.units();
+	SkyComponent sky = ImageUtilities::encodeSkyComponent(
+		os, facToJy, ii, cSys, bU, model,
+		parameters, stokes, xIsLong
+	);
+	if (!deconvolveIt) {
+		return sky;
+    }
+	
+    Vector<Quantum<Double> > beam = ii.restoringBeam();
+	if (beam.nelements() == 0) {
+		os << LogIO::WARN
+				<< "This image does not have a restoring beam so no deconvolution possible"
+				<< LogIO::POST;
+		return sky;
+	}
+	Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+	if (dirCoordinate == -1) {
+		os << LogIO::WARN
+			<< "This image does not have a DirectionCoordinate so no deconvolution possible"
+			<< LogIO::POST;
+		return sky;
+	}
+
+	const DirectionCoordinate& dirCoord = cSys.directionCoordinate(
+			dirCoordinate
+	);
+	return ImageUtilities::deconvolveSkyComponent(os, sky, beam, dirCoord);
+}
+
+// moved from ImageAnalysis. See comments in ImageUtilities.h
+SkyComponent ImageUtilities::deconvolveSkyComponent(LogIO& os,
+        const SkyComponent& skyIn, const Vector<Quantum<Double> >& beam,
+        const DirectionCoordinate& dirCoord) {
+    SkyComponent skyOut;
+    skyOut = skyIn.copy();
+    const ComponentShape& shapeIn = skyIn.shape();
+    ComponentType::Shape type = shapeIn.type();
+
+    // Put beam p.a. into XY frame
+    Vector<Quantum<Double> > beam2 = putBeamInXYFrame(beam, dirCoord);
+    if (type == ComponentType::POINT) {
+        // do nothing apparently
+    } else if (type == ComponentType::GAUSSIAN) {
+        // Recover shape
+        const TwoSidedShape& ts = dynamic_cast<const TwoSidedShape&> (shapeIn);
+        Quantum<Double> major = ts.majorAxis();
+        Quantum<Double> minor = ts.minorAxis();
+        Quantum<Double> pa = ts.positionAngle();
+        // Adjust position angle to XY pixel frame  (pos +x -> +y)
+        Vector<Double> p = ts.toPixel(dirCoord);
+        // Deconvolve.
+        Quantum<Double> paXYFrame(p(4), Unit("rad"));
+        Quantum<Double> paXYFrame2(paXYFrame);
+        Bool fitSuccess;
+        // TODO atm we do not check for fit success, but probably should. fitSuccess is new
+        // and part of unrelated work.
+        ImageUtilities::deconvolveFromBeam(major, minor, paXYFrame, fitSuccess, os, beam2);
+
+        // Account for frame change of position angle
+        Quantum<Double> diff = paXYFrame2 - paXYFrame;
+        pa -= diff;
+        const MDirection dirRefIn = shapeIn.refDirection();
+        GaussianShape shapeOut(dirRefIn, major, minor, pa);
+        skyOut.setShape(shapeOut);
+    } else {
+        os << "Cannot deconvolve components of type " << shapeIn.ident()
+                << LogIO::EXCEPTION;
+    }
+    return skyOut;
+}
+
+Vector<Quantum<Double> > ImageUtilities::putBeamInXYFrame(
+    const Vector<Quantum<Double> >& beam, const DirectionCoordinate& dirCoord
+)
+// moved from ImageAnalysis
+//
+// The beam is spatially invariant across an image, and its position
+// must be fit in the pixel coordinate system to make any sense.
+// However, its position angle is positive N->E which means
+// some attempt to look at the increments has been made...
+// We want positive +x -> +y  so have to try and do this.
+{
+    Vector<Quantum<Double> > beam2 = beam.copy();
+    Vector<Double> inc = dirCoord.increment();
+    Double pa = beam(2).getValue(Unit("rad"));
+    Double pa2 = beam2(2).getValue(Unit("rad"));
+    //
+    if (inc(1) > 0) {
+        if (inc(0) < 0) {
+            pa2 = C::pi_2 + pa;
+        } else {
+            pa2 = C::pi_2 - pa;
+        }
+    } else {
+        if (inc(0) < 0) {
+            pa2 = C::pi + C::pi_2 - pa;
+        } else {
+            pa2 = C::pi + C::pi_2 + pa;
+        }
+    }
+    //
+    Double pa3 = fmod(pa2, C::pi);
+    if (pa3 < 0.0)
+        pa3 += C::pi;
+    beam2(2).setValue(pa3);
+    beam2(2).setUnit(Unit("rad"));
+    return beam2;
+}
 
 
 Vector<Double> ImageUtilities::decodeSkyComponent (const SkyComponent& sky,
@@ -298,6 +467,64 @@ Vector<Double> ImageUtilities::decodeSkyComponent (const SkyComponent& sky,
    return pars;
 }
 
+Bool ImageUtilities::deconvolveFromBeam(
+    Quantity& majorFit, Quantity& minorFit,
+    Quantity& paFit, Bool& successFit, LogIO& os, const Vector<Quantity >& beam,
+    const Bool verbose
+   ) {
+    // moved from ImageAnalysis
+
+    // The position angle of the component is measured in the frame
+    // of the local coordinate system.  Since the restoring beam
+    // is invariant over the image, we need to rotate the restoring
+    // beam into the same coordinate system as the component.
+    //
+    Bool isPointSource = False;
+    Quantum<Double> majorOut;
+    Quantum<Double> minorOut;
+    Quantum<Double> paOut;
+    try {
+        isPointSource = GaussianConvert::deconvolve(majorOut, minorOut, paOut,
+                majorFit, minorFit, paFit, beam(0), beam(1), beam(2));
+    } catch (AipsError x) {
+    	successFit = False;
+    	if (verbose) {
+    		os << LogIO::WARN << "Could not deconvolve beam from source - "
+                << x.getMesg() << endl;
+    		ostringstream oss;
+    		oss << "Model = " << majorFit << ", " << minorFit << ", " << paFit
+    			<< endl;
+    		oss << "Beam  = " << beam(0) << ", " << beam(1) << ", " << beam(2)
+            	<< endl;
+    		os << String(oss) << LogIO::POST;
+    	}
+        return False;
+    }
+    majorFit = majorOut;
+    minorFit = minorOut;
+    paFit = paOut;
+    successFit = True;
+    return isPointSource;
+}
+
+Bool ImageUtilities::deconvolveFromBeam(
+    Quantity& majorOut, Quantity& minorOut,
+    Quantity& paOut, Bool& successFit, LogIO& os,
+    const Vector<Quantity>& sourceIn, const Vector<Quantity>& beam,
+    const Bool verbose
+) {
+	Quantity tmpMaj = sourceIn[0];
+	Quantity tmpMin = sourceIn[1];
+	Quantity tmpPA = sourceIn[2];
+
+	Bool isPointSource = deconvolveFromBeam(
+	    tmpMaj, tmpMin, tmpPA, successFit, os, beam, verbose
+	);
+	majorOut = tmpMaj;
+	minorOut = tmpMin;
+	paOut = tmpPA;
+	return isPointSource;
+}
 
 
 void ImageUtilities::worldWidthsToPixel (LogIO& os,
@@ -668,162 +895,151 @@ Quantum<Double> ImageUtilities::pixelWidthToWorld (LogIO& os,
    return q;
 }
 
+void ImageUtilities::addDegenerateAxes(
+	LogIO& os, PtrHolder<ImageInterface<Float> >& outImage,
+	ImageInterface<Float>& inImage, const String& outFile,
+	Bool direction, Bool spectral, const String& stokes,
+	Bool linear, Bool tabular, Bool overwrite
+) {
+	// Verify output file
+	if (!overwrite && !outFile.empty()) {
+		NewFile validfile;
+		String errmsg;
+		if (!validfile.valueOK(outFile, errmsg)) {
+			os << errmsg << LogIO::EXCEPTION;
+		}
+	}
+	IPosition shape = inImage.shape();
+	CoordinateSystem cSys = inImage.coordinates();
+	IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
+	Int afterCoord;
+	uInt nExtra = 0;
+	if (direction) {
+		afterCoord = -1;
+		Int iC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
+		if (iC<0) {
+			CoordinateUtil::addDirAxes(cSys);
+			nExtra += 2;
+		} else {
+			os << "Image already contains a DirectionCoordinate" << LogIO::EXCEPTION;
+		}
+	}
 
-void ImageUtilities::addDegenerateAxes (LogIO& os, 
-                                        PtrHolder<ImageInterface<Float> >& outImage,
-                                        ImageInterface<Float>& inImage,
-                                        const String& outFile, Bool direction,
-                                        Bool spectral, const String& stokes,
-                                        Bool linear, Bool tabular, Bool overwrite)
-{
-// Verify output file
-      
-   if (!overwrite && !outFile.empty()) {
-      NewFile validfile;
-      String errmsg;
-      if (!validfile.valueOK(outFile, errmsg)) {
-          os << errmsg << LogIO::EXCEPTION;
-      }
-   }
-//
-   IPosition shape = inImage.shape();
-   CoordinateSystem cSys = inImage.coordinates();
-   IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
-   Int afterCoord;
-   uInt nExtra = 1;
-//
-   Bool didSomething = False;
-   if (direction) {
-      afterCoord = -1;
+	if (spectral) {
+		afterCoord = -1;
+		Int iC = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
+		if (iC<0) {
+			CoordinateUtil::addFreqAxis(cSys);
+			nExtra++;
+		} else {
+			os << "Image already contains a SpectralCoordinate" << LogIO::EXCEPTION;
+		}
+	}
 
-      Int iC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
-      if (iC<0) {
-         CoordinateUtil::addDirAxes(cSys);
-         nExtra = 2;
-         didSomething = True;
-      } else {
-         os << "Image already contains a DirectionCoordinate" << LogIO::EXCEPTION;
-      }
-   }
-//
-   if (spectral) {
-      afterCoord = -1;
-      Int iC = cSys.findCoordinate(Coordinate::SPECTRAL, afterCoord);
-      if (iC<0) {
-         CoordinateUtil::addFreqAxis(cSys);
-         didSomething = True;
-      } else {
-         os << "Image already contains a SpectralCoordinate" << LogIO::EXCEPTION;
-      }
-   }
-//
-   if (!stokes.empty()) {
-      afterCoord = -1;
-      Int iC = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
-      if (iC<0) {
-         Vector<Int> which(1);
-         String tmp = upcase(stokes);
-         which(0) = Stokes::type(tmp);
-         StokesCoordinate sc(which);
-         cSys.addCoordinate(sc);
-//
-         didSomething = True;
-      } else {
-         os << "Image already contains a StokesCoordinate" << LogIO::EXCEPTION;
-      }
-   }
-   if (linear) {
-      afterCoord = -1;
-      Int iC = cSys.findCoordinate(Coordinate::LINEAR, afterCoord);
-      if (iC<0) {
-         Vector<String> names(1);
-         Vector<String> units(1);
-         Vector<Double> refVal(1);
-         Vector<Double> refPix(1);
-         Vector<Double> incr(1);
-         names(0) = "Axis1";
-         units(0) = "km";
-         refVal(0) = 0.0;
-         refPix(0) = 0.0;
-         incr(0) = 1.0;
-         Matrix<Double> pc(1,1);
-         pc.set(0.0);
-         pc.diagonal() = 1.0;
-         LinearCoordinate lc(names, units, refVal, incr, pc, refPix);
-         cSys.addCoordinate(lc);
-//  
-         didSomething = True;
-      } else {
-         os << "Image already contains a LinearCoordinate" << LogIO::EXCEPTION;
-      }
-   }
-//
-   if (tabular) {
-      afterCoord = -1;
-      Int iC = cSys.findCoordinate(Coordinate::TABULAR, afterCoord);
-      if (iC<0) {
-         TabularCoordinate tc;
-         cSys.addCoordinate(tc);
-//  
-         didSomething = True;
-      } else {
-         os << "Image already contains a TabularCoordinate" << LogIO::EXCEPTION;
-      }
-   }
-//
-   if (didSomething) {
-      uInt n = shape.nelements();
-      shape.resize(n+nExtra,True);
-      for (uInt i=0; i<nExtra; i++) {
-         shape(n+i) = 1;
-      }
-   } else {
-      os << "No degenerate axes specified" << LogIO::EXCEPTION;
-   }
-//       
-   if (outFile.empty()) {
-      os << LogIO::NORMAL << "Creating (temp)image of shape "
-         << shape << LogIO::POST;
-      outImage.set(new TempImage<Float>(shape, cSys));
-   } else {
-      os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
-         << shape << LogIO::POST;
-      outImage.set(new PagedImage<Float>(shape, cSys, outFile));
-   }   
-   ImageInterface<Float>* pOutImage = outImage.ptr();
-         
-// Generate output masks
-         
-   Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
-   const uInt nMasks = maskNames.nelements();
-   if (nMasks > 0) { 
-      for (uInt i=0; i<nMasks; i++) {
-         pOutImage->makeMask(maskNames(i), True, False, True);
-      }
-   }
-   pOutImage->setDefaultMask(inImage.getDefaultMask());
+	if (!stokes.empty()) {
+		afterCoord = -1;
+		Int iC = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
+		if (iC<0) {
+			Vector<Int> which(1);
+			String tmp = upcase(stokes);
+			which(0) = Stokes::type(tmp);
+			StokesCoordinate sc(which);
+			cSys.addCoordinate(sc);
+			nExtra++;
+		} else {
+			os << "Image already contains a StokesCoordinate" << LogIO::EXCEPTION;
+		}
+	}
+	if (linear) {
+		afterCoord = -1;
+		Int iC = cSys.findCoordinate(Coordinate::LINEAR, afterCoord);
+		if (iC<0) {
+			Vector<String> names(1);
+			Vector<String> units(1);
+			Vector<Double> refVal(1);
+			Vector<Double> refPix(1);
+			Vector<Double> incr(1);
+			names(0) = "Axis1";
+			units(0) = "km";
+			refVal(0) = 0.0;
+			refPix(0) = 0.0;
+			incr(0) = 1.0;
+			Matrix<Double> pc(1,1);
+			pc.set(0.0);
+			pc.diagonal() = 1.0;
+			LinearCoordinate lc(names, units, refVal, incr, pc, refPix);
+			cSys.addCoordinate(lc);
+			nExtra++;
+		} else {
+			os << "Image already contains a LinearCoordinate" << LogIO::EXCEPTION;
+		}
+	}
 
-// Generate SubImage to copy the data into
-   
-   AxesSpecifier axesSpecifier(keepAxes);
-   SubImage<Float> subImage(*pOutImage, True, axesSpecifier);
+	if (tabular) {
+		afterCoord = -1;
+		Int iC = cSys.findCoordinate(Coordinate::TABULAR, afterCoord);
+		if (iC<0) {
+			TabularCoordinate tc;
+			cSys.addCoordinate(tc);
+			nExtra++;
+		} else {
+			os << "Image already contains a TabularCoordinate" << LogIO::EXCEPTION;
+		}
+	}
 
-// Copy masks (directly, can't do via SubImage)
-      
-   if (nMasks > 0) {
-      for (uInt i=0; i<nMasks; i++) {
-         ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i),
-                                  axesSpecifier);  
-      }  
-   }
-   
-// Copy data
-    
-   subImage.copyData(inImage);
- 
-// Copy miscellaneous
-   
-   ImageUtilities::copyMiscellaneous(*pOutImage, inImage);
+	if (nExtra > 0) {
+		uInt n = shape.nelements();
+		shape.resize(n+nExtra,True);
+		for (uInt i=0; i<nExtra; i++) {
+			shape(n+i) = 1;
+		}
+	} else {
+		os << "No degenerate axes specified" << LogIO::EXCEPTION;
+	}
+	if (outFile.empty()) {
+		os << LogIO::NORMAL << "Creating (temp)image of shape "
+			<< shape << LogIO::POST;
+		outImage.set(new TempImage<Float>(shape, cSys));
+	}
+	else {
+		os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
+			<< shape << LogIO::POST;
+		outImage.set(new PagedImage<Float>(shape, cSys, outFile));
+	}
+	ImageInterface<Float>* pOutImage = outImage.ptr();
+
+	// Generate output masks
+
+	Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
+	const uInt nMasks = maskNames.nelements();
+	if (nMasks > 0) {
+		for (uInt i=0; i<nMasks; i++) {
+			pOutImage->makeMask(maskNames(i), True, False, True);
+		}
+	}
+	pOutImage->setDefaultMask(inImage.getDefaultMask());
+
+	// Generate SubImage to copy the data into
+
+	AxesSpecifier axesSpecifier(keepAxes);
+	SubImage<Float> subImage(*pOutImage, True, axesSpecifier);
+
+	// Copy masks (directly, can't do via SubImage)
+
+	if (nMasks > 0) {
+		for (uInt i=0; i<nMasks; i++) {
+			ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i),
+					axesSpecifier);
+		}
+	}
+
+	// Copy data
+
+	subImage.copyData(inImage);
+
+	// Copy miscellaneous
+
+	ImageUtilities::copyMiscellaneous(*pOutImage, inImage);
 }
 
 
@@ -856,6 +1072,49 @@ void ImageUtilities::copyMask (ImageInterface<Float>& out,
                             maskIter.cursorShape()),  maskIter.position());
    }   
 }  
+
+void ImageUtilities::writeImage(
+		const TiledShape& mapShape,
+		const CoordinateSystem& coordinateInfo,
+		const String& imageName,
+		const Array<Float>& pixels, LogIO& log
+) {
+
+	// using pattern from ImageProxy
+	PagedImage<Float> *newImage = new PagedImage<Float>(
+			mapShape, coordinateInfo, imageName
+	);
+	newImage->put(pixels);
+	if (newImage == 0) {
+		log << "Failed to create image "
+			 << imageName << LogIO::EXCEPTION;
+	}
+	else {
+		log << LogIO::NORMAL << "Created image "
+			 << imageName << LogIO::POST;
+	}
+	delete newImage;
+}
+
+void ImageUtilities::getUnitAndDoppler(
+	String& xUnit, String& doppler,
+	const uInt axis, const CoordinateSystem& csys
+) {
+    xUnit = csys.worldAxisUnits()[axis];
+    doppler = "";
+	Int specCoordIndex = csys.findCoordinate(Coordinate::SPECTRAL);
+    if (
+    	specCoordIndex >= 0
+    	&& axis == (uInt)csys.pixelAxes(specCoordIndex)[0]
+    	&& ! csys.spectralCoordinate(specCoordIndex).velocityUnit().empty()
+    ) {
+    	SpectralCoordinate specCoord = csys.spectralCoordinate(specCoordIndex);
+    	xUnit = specCoord.velocityUnit();
+    	doppler = MDoppler::showType(
+    		specCoord.velocityDoppler()
+    	);
+    }
+}
 
 
 } //# NAMESPACE CASA - END

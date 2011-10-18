@@ -88,6 +88,24 @@ namespace casa {
   };
 
 
+  // <summary>Hourangle/declination derived from TIME, etc.</summary>
+  // <use visibility=local>
+  class HaDecColumn : public VirtualArrayColumn<Double>
+  {
+  public:
+    explicit HaDecColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
+        itsAntNr  (antnr)
+    {}
+    virtual ~HaDecColumn();
+    virtual IPosition shape (uInt rownr);
+    virtual void getArray (uInt rowNr, Array<Double>& data);
+  private:
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+  };
+
+
   // <summary>Azimuth/elevation derived from TIME, etc.</summary>
   // <use visibility=local>
   class AzElColumn : public VirtualArrayColumn<Double>
@@ -106,7 +124,7 @@ namespace casa {
   };
 
 
-  // <summary>Azimuth/elevation derived from TIME, etc.</summary>
+  // <summary>UVW J2000 derived from TIME, etc.</summary>
   // <use visibility=local>
   class UVWJ2000Column : public VirtualArrayColumn<Double>
   {

@@ -55,16 +55,15 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
 {
    
 // Shape
+   PrimaryArray<T> fitsImage(infile);
+   Int ndim = fitsImage.dims();
 
-    PrimaryArray<T> fitsImage(infile);
-    Int ndim = fitsImage.dims();
-    shape.resize(ndim);
-    for (Int i=0; i<ndim; i++) {
+   shape.resize(ndim);
+   for (Int i=0; i<ndim; i++) {
        shape(i) = fitsImage.dim(i);
-    }
+   }
 
 // Get header as Vector of strings
-
    Vector<String> header = fitsImage.kwlist_str(True);
    
 // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
@@ -120,6 +119,160 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
        headerRec.removeField("bzero");
     }
     scale = s; 
+    offset = o;
+
+// Will only be present for Int and Short
+
+    hasBlanks = False;
+    if (headerRec.isDefined("blank")) {
+       subRec = headerRec.asRecord("blank");
+       Int m;
+       subRec.get("value", m);
+       headerRec.removeField("blank");
+       if (dataType==TpShort) {
+          magicShort = m;
+       } else if (dataType==TpInt) {
+          magicInt = m;
+       } else {
+          magicShort = m;
+          magicInt = m;
+       }
+       hasBlanks = True;
+    }
+
+// Brightness Unit
+
+    brightnessUnit = ImageFITSConverter::getBrightnessUnit(headerRec, os);
+
+// ImageInfo
+
+    imageInfo = ImageFITSConverter::getImageInfo(headerRec);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
+
+// Get rid of anything else we don't want to end up in MiscInfo
+// that will have passed through the FITS parsing process
+
+    Vector<String> ignore(9);
+    ignore(0) = "^datamax$";
+    ignore(1) = "^datamin$";
+    ignore(2) = "^origin$";
+    ignore(3) = "^extend$";
+    ignore(4) = "^blocked$";
+    ignore(5) = "^blank$";
+    ignore(6) = "^simple$";
+    ignore(7) = "bscale";
+    ignore(8) = "bzero";
+    FITSKeywordUtil::removeKeywords(headerRec, ignore);
+
+// MiscInfo is whats left
+
+    ImageFITSConverter::extractMiscInfo(miscInfo, headerRec);
+
+// Get and store history.
+
+    Vector<String> lines;
+    String groupType;
+    ConstFitsKeywordList kw = fitsImage.kwlist();
+    kw.first();
+
+// Set the contents of the ImageInterface logger object (history)
+
+    LoggerHolder& log = logger();
+    ImageFITSConverter::restoreHistory(log, kw);
+
+// Try and find the restoring beam in the history cards if
+// its not in the header
+
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(log);
+    }
+}
+
+
+template <typename T>
+void FITSImage::crackExtHeader (CoordinateSystem& cSys,
+		                     IPosition& shape, ImageInfo& imageInfo,
+                             Unit& brightnessUnit, RecordInterface& miscInfo,
+                             Float& scale, Float& offset, Short& magicShort,
+                             Int& magicInt, Bool& hasBlanks,
+                             LogIO& os, FitsInput& infile, uInt whichRep)
+{
+
+// Shape
+
+	ImageExtension<T> fitsImage(infile);
+    Int ndim = fitsImage.dims();
+
+    shape.resize(ndim);
+    for (Int i=0; i<ndim; i++) {
+       shape(i) = fitsImage.dim(i);
+    }
+
+// Get header as Vector of strings
+
+   Vector<String> header = fitsImage.kwlist_str(True);
+
+// Get Coordinate System.  Return un-used FITS cards in a Record for further use.
+
+    Record headerRec;
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header,
+                                                   os, whichRep, shape, dropStokes);
+    ndim = shape.nelements();
+
+// BITPIX
+
+    T* t=0;
+    DataType dataType = whatType(t);
+//
+    Int bitpix;
+    Record subRec = headerRec.asRecord("bitpix");
+    subRec.get("value", bitpix);
+    headerRec.removeField("bitpix");
+    if (dataType==TpFloat) {
+       if (bitpix != -32) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -32"));
+       }
+    } else if (dataType==TpDouble) {
+       if (bitpix != -64) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = -64"));
+       }
+    } else if (dataType==TpInt) {
+       if (bitpix != 32) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 32"));
+       }
+    } else if (dataType==TpShort) {
+       if (bitpix != 16) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
+       }
+    } else {
+       throw (AipsError("Unsupported Template type; Float & Double only are supported"));
+    }
+
+// Scale and blank (will only be present for Int and Short)
+
+    Double s = 1.0;
+    Double o = 0.0;
+    if (headerRec.isDefined("bscale")) {
+       subRec = headerRec.asRecord("bscale");
+       subRec.get("value", s);
+       headerRec.removeField("bscale");
+    }
+    if (headerRec.isDefined("bzero")) {
+       subRec = headerRec.asRecord("bzero");
+       subRec.get("value", o);
+       headerRec.removeField("bzero");
+    }
+    scale = s;
     offset = o;
 
 // Will only be present for Int and Short

@@ -284,7 +284,7 @@ void deleteRow(const uInt aRow)
   ScalarColumn<DComplex> aa(aTable,"Col-1");
 
   // Make sure ColumnCache is filled.
-  DComplex val = aa(0);
+  aa(0);
 
   aTable.removeRow(aRow);
   
@@ -306,7 +306,7 @@ void deleteRows(const Vector<uInt>& aNrRows)
   ScalarColumn<DComplex> ae(aTable,"Col-5");
 
   // Make sure ColumnCache is filled.
-  DComplex val= ae(0);
+  ae(0);
 
   aTable.removeRow(aNrRows);
   

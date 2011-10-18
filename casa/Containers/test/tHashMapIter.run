@@ -10,5 +10,5 @@
   else
      exit 3
   fi
-  ./tHashMapIter
+  $casa_checktool ./tHashMapIter
 

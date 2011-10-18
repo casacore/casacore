@@ -365,7 +365,7 @@ WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
 
 // Get pixel axes and convert to zero rel.  
 
-   Vector<Int> tmp = Vector<Int>(rec.asArrayInt ("pixelAxes"));
+   Vector<Int> tmp = Vector<Int>(rec.toArrayInt ("pixelAxes"));
    IPosition pixelAxes(tmp);
    if (oneRel) pixelAxes -= 1;
 

@@ -104,19 +104,8 @@ void a (Bool doExcp)
 
     td.addColumn (ArrayColumnDesc<Complex> ("Arr1","comment for Arr1",0));
     td.addColumn (ArrayColumnDesc<Int> ("A2r1","comment for Arr1",3));
-    if (doExcp) {
-	try {
-	    td.addColumn (ArrayColumnDesc<uInt> ("Arr3","comment for Arr1",
-						 IPosition(2,3,4)));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;     // shape for non-fixedShape array
-	} 
-    }
     ArrayColumnDesc<uInt> coldes("Arr3","comment for Arr1",
 				 IPosition(2,3,4), ColumnDesc::Direct);
-    Matrix<uInt> defmat(3,4);
-    defmat = 0;
-    Matrix<uInt> defmat2(4,4);
     td.addColumn (coldes);
 
     // Set the shape of some columns.

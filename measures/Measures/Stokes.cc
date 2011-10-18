@@ -121,6 +121,20 @@ String Stokes::name(StokesTypes stokesType)
    return stokesName;
 }
 
+Vector<String> Stokes::allNames(Bool includeUndefined) {
+	uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
+	Vector<String> names(size);
+	uInt idx = 0;
+	for (uInt i=0; i<NumberOfTypes; i++) {
+		if (includeUndefined || (StokesTypes)i != Undefined) {
+			names[idx] = name((StokesTypes)i);
+			idx++;
+		}
+	}
+	return names;
+}
+
+
 Fallible<Int> Stokes::receptor1(StokesTypes stokesType)
 {
     Int rec1 = (stokesType-1)%4; 

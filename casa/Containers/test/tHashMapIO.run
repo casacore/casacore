@@ -11,7 +11,7 @@
      exit 3
   fi
 
-  if ./tHashMapIO; then
+  if $casa_checktool ./tHashMapIO; then
      if test -f tHashMapIO_tmp.1st && \
 	test -f tHashMapIO_tmp.2nd && \
 	test -f tHashMapIO_tmp.3rd

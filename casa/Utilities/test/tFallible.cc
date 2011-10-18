@@ -66,8 +66,7 @@ int main()
     AlwaysAssertExit(caught);
     caught = False;
     try {
-      Int x;
-      x = fi5.value();
+        fi5.value();
     } catch (AipsError x) {
 	caught = True;
     } 

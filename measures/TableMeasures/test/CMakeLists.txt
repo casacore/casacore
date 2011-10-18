@@ -1,6 +1,7 @@
 set (tests
-tTableMeasures
 tTableQuantum
+tTableMeasures
+dVarRefMdirCol
 )
 
 foreach (test ${tests})

@@ -257,6 +257,17 @@ public:
     virtual Array<MVTime> getArrayDate       (const TableExprId& id);
     // </group>
 
+    // Get a value as an array, even it it is a scalar.
+    // This is useful if one could given an argument as scalar or array.
+    // <group>
+    Array<Bool> getBoolAS         (const TableExprId& id);
+    Array<Int64> getIntAS         (const TableExprId& id);
+    Array<Double> getDoubleAS     (const TableExprId& id);
+    Array<DComplex> getDComplexAS (const TableExprId& id);
+    Array<String> getStringAS     (const TableExprId& id);
+    Array<MVTime> getDateAS       (const TableExprId& id);
+    // </group>
+
     // Does a value occur in an array or set?
     // The default implementation tests if it is in an array.
     // <group>

@@ -36,6 +36,7 @@
 #include <measures/Measures/MCBase.h>
 #include <measures/Measures/MConvertBase.h>
 #include <measures/Measures/MDoppler.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -140,12 +141,16 @@ private:
   //# Cached Data
 
   //# State machine data
-  // Has state matrix been made
-  static Bool stateMade_p;
   // Transition list
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
+  // Mutex for thread-safety.
+  static MutexedInit theirMutexedInit;
+
+  // Fill the global state in a thread-safe way.
+  static void fillState()
+    { theirMutexedInit.exec(); }
   
   //# Member functions
   
@@ -171,6 +176,9 @@ private:
 		 MRBase &outref,
 		 const MConvertBase &mc);
   
+private:
+  // Fill the global state in a thread-safe way.
+  static void doFillState (void*);  
 };
 
 

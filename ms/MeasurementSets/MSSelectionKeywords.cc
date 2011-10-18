@@ -100,7 +100,6 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
     map.define("ratio_imaginary",RATIO_IMAGINARY);
     map.define("residual_imaginary",RESIDUAL_IMAGINARY);
     map.define("obs_residual_imaginary",OBS_RESIDUAL_IMAGINARY);
-    map.define("imaging_weight",IMAGING_WEIGHT);
     map.define("last",LAST);
     map.define("num_corr",NUM_CORR);
     map.define("num_chan",NUM_CHAN);

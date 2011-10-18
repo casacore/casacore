@@ -28,6 +28,9 @@
 #include <components/ComponentModels/ComponentList.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/Flux.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ScaRecordColDesc.h>
 #include <components/ComponentModels/ComponentShape.h>
 #include <components/ComponentModels/SpectralModel.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
@@ -89,6 +92,7 @@ const String shapeErrName = "Shape_Error";
 const String spectrumName = "Spectrum_Shape";
 const String refFreqName = "Reference_Frequency";
 const String freqErrName = "Frequency_Error";
+const String spectralRecordName = "Spectral_Record";
 const String freqErrUnitName = "Frequency_Error_Units";
 const String spectParName = "Spectral_Parameters";
 const String spectErrName = "Spectral_Error";
@@ -299,7 +303,7 @@ void ComponentList::setLabel(const Vector<Int>& which,
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::getFlux(Vector<Quantity>& fluxQuant, const Int& which) {
+void ComponentList::getFlux(Vector<Quantity>& fluxQuant, const Int& which) const {
    SkyComponent comp = component(which);
    // each element in the returned vector represents a different polarization.
    // NumericTraits::Conjugate is just a confusing way of saying Complex if you
@@ -337,7 +341,7 @@ void ComponentList::setFlux(const Vector<Int>& which,
   DebugAssert(ok(), AipsError);
 }
 
-Vector<String> ComponentList::getStokes(const Int& which) {
+Vector<String> ComponentList::getStokes(const Int& which) const {
     SkyComponent comp = component(which);
     ComponentType::Polarisation stokesType = comp.flux().pol();
     Vector<String> polarization(4);
@@ -436,8 +440,8 @@ void ComponentList::convertRefDirection(const Vector<Int>& which,
   DebugAssert(ok(), AipsError);
 }
 
-MDirection ComponentList::getRefDirection(Int which) {
-    ComponentShape& compShape = component(which).shape();
+MDirection ComponentList::getRefDirection(Int which) const {
+    const ComponentShape& compShape = component(which).shape();
     MDirection refDir = compShape.refDirection();
     return refDir;
 }
@@ -861,15 +865,20 @@ void ComponentList::writeTable() {
   ArrayColumn<Double> shapeParmCol(itsTable, shapeParName);
   ScalarColumn<String> specShapeCol(itsTable, spectrumName);
   MFrequency::ScalarColumn freqCol(itsTable, refFreqName);
-  ArrayColumn<Double> specShapeParmCol(itsTable, spectParName);
+  ArrayColumn<Double> specShapeParmCol(itsTable, spectParName); 
   ScalarColumn<String> labelCol(itsTable, labelName);
   ArrayColumn<DComplex> fluxErrCol;
   ArrayQuantColumn<Double> dirErrCol;
   ArrayColumn<Double> shapeErrCol;
   ScalarQuantColumn<Double> freqErrCol;
   ArrayColumn<Double> spectErrCol;
+  ScalarColumn<TableRecord> specRecord;
   {
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
+    if (!cds.isDefined(spectralRecordName)) {
+      itsTable.addColumn(ScalarRecordColumnDesc(spectralRecordName));
+    }
+    specRecord.attach(itsTable, spectralRecordName);
     if (!cds.isDefined(fluxErrName)) {
       itsTable.addColumn
 	(ArrayColumnDesc<DComplex>(fluxErrName, "Flux errors", IPosition(1,4), 
@@ -944,6 +953,10 @@ void ComponentList::writeTable() {
     {
       const SpectralModel& compSpectrum = component(i).spectrum();
       specShapeCol.put(i, compSpectrum.ident());
+      TableRecord rec;
+      String err;
+      if(compSpectrum.toRecord(err, rec))
+	specRecord.put(i,rec);
       freqCol.put(i, compSpectrum.refFrequency());
       if (!freqErrCol.isNull()) {
 	freqErrCol.put(i, compSpectrum.refFrequencyError());
@@ -986,6 +999,7 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
   ROArrayColumn<Double> shapeErrCol;
   ROScalarQuantColumn<Double> freqErrCol;
   ROArrayColumn<Double> spectralErrCol;
+  ROScalarColumn<TableRecord> specRecord;
   {// Old componentlist tables may not have the error columns
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
     if (cds.isDefined(fluxErrName)) {
@@ -1003,6 +1017,9 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     if (cds.isDefined(spectErrName)) {
       spectralErrCol.attach(itsTable, spectErrName);
     }
+    if (cds.isDefined(spectralRecordName)) {
+      specRecord.attach(itsTable, spectralRecordName);
+    }
   }
 
   SkyComponent currentComp;
@@ -1017,6 +1034,7 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
   for (uInt i = 0; i < nComp; i++) {
     shapeCol.get(i, compName);
     specShapeCol.get(i, compSpectrum);
+    //cout << "CompSpec " << compSpectrum << " shape " <<ComponentType::spectralShape(compSpectrum) <<  endl;
     currentComp = SkyComponent(ComponentType::shape(compName),
  			       ComponentType::spectralShape(compSpectrum));
     {
@@ -1052,6 +1070,14 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
       freqCol.get(i, compFreq);
       SpectralModel& compSpectrum = currentComp.spectrum();
       compSpectrum.setRefFrequency(compFreq);
+      if (!specRecord.isNull()) {
+	if(specRecord.isDefined(i)){
+	  TableRecord rec;
+	  specRecord.get(i, rec);
+	  String err;
+	  compSpectrum.fromRecord(err, rec);
+	}
+      }
       if (!freqErrCol.isNull()) {
 	freqErrCol.get(i, newFreqErr);
 	compSpectrum.setRefFrequencyError(newFreqErr);
@@ -1071,7 +1097,7 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
   itsROFlag = readOnly;
 }
 
-Bool ComponentList::toRecord(String& error, RecordInterface& outRec){
+Bool ComponentList::toRecord(String& error, RecordInterface& outRec) const {
 
   Bool retval=True;
 
@@ -1089,36 +1115,44 @@ Bool ComponentList::toRecord(String& error, RecordInterface& outRec){
 
 Bool ComponentList::fromRecord(String& error, const RecordInterface& inRec){
 
-  Bool retval= True;
-  if(itsNelements > 0){
-    LogIO logErr(LogOrigin("ComponentList", "fromRecord()"));
-    logErr << LogIO::SEVERE 
-	   << "Trying to overwrite a non-empty componentList  from Record"
-           << LogIO::POST;
-     return False;
+	Bool retval= True;
+	if(itsNelements > 0){
+		LogIO logErr(LogOrigin("ComponentList", "fromRecord()"));
+		logErr << LogIO::SEVERE
+		<< "Trying to overwrite a non-empty componentList  from Record"
+		<< LogIO::POST;
+		return False;
 
-  }  
+	}
 
-  uInt nelements=0;
-  if (inRec.isDefined("nelements")) {
-    inRec.get("nelements", nelements);
-    if(nelements >0){
-      for(uInt k=0; k < nelements; ++k){
-	String componentId=String("component")+String::toString(k);
-	Record componentRecord=inRec.asRecord(componentId);
-	SkyComponent  tempComponent;
-	retval=(retval && tempComponent.fromRecord(error, componentRecord));
-	if(retval){
-	  add(tempComponent);
+	uInt nelements=0;
+	if (inRec.isDefined("nelements")) {
+		inRec.get("nelements", nelements);
+		if(nelements >0){
+			for(uInt k=0; k < nelements; ++k){
+				String componentId=String("component")+String::toString(k);
+				Record componentRecord=inRec.asRecord(componentId);
+				SkyComponent  tempComponent;
+				retval=(retval && tempComponent.fromRecord(error, componentRecord));
+				if(retval){
+					add(tempComponent);
+				}
+				else{
+					return retval;
+				}
+			}
+		}
 	}
-	else{
-	  return retval;
-	}
-      }
-    }
-  }
-  return retval;
+	return retval;
 }
+
+String ComponentList::summarize(uInt index) const {
+	  AlwaysAssert(index < nelements(), AipsError);
+	  DebugAssert(ok(), AipsError);
+	  return component(index).summarize();
+}
+
+
 // Local Variables: 
 // compile-command: "gmake ComponentList"
 // End: 

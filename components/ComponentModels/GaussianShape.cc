@@ -226,6 +226,12 @@ void GaussianShape::visibility(Vector<DComplex>& scale,
   ComponentShape::visibility(scale, uvw, frequency);
 }
 
+void GaussianShape::visibility(Matrix<DComplex>& scale,
+			       const Matrix<Double>& uvw,
+			       const Vector<Double>& frequency) const {
+  ComponentShape::visibility(scale, uvw, frequency);
+}
+
 ComponentShape* GaussianShape::clone() const {
   DebugAssert(ok(), AipsError);
   ComponentShape* tmpPtr = new GaussianShape(*this);
@@ -260,6 +266,13 @@ const ComponentShape* GaussianShape::getPtr() const {
     return this;
 }
 
+Quantity GaussianShape::getArea() const {
+	Double majorAxis = itsShape.majorAxis();
+	Double minorAxis = itsShape.minorAxis();
+
+	Quantity area(C::pi/(4*C::ln2) * majorAxis * minorAxis, "sr");
+	return area;
+}
 
 void GaussianShape::updateFT() {
   const Double factor = 4.0*C::ln2/C::pi;
@@ -269,6 +282,20 @@ void GaussianShape::updateFT() {
   itsFT.setWidth(width);
   itsFT.setPA(itsShape.PA() + C::pi_2);
 }
+
+String GaussianShape::sizeToString() const {
+	return TwoSidedShape::sizeToString(
+		Quantity(itsShape.majorAxis(), "rad"),
+		Quantity(itsShape.minorAxis(), "rad"),
+		Quantity(itsShape.PA(), "rad"), True,
+		majorAxisError(), minorAxisError(),
+		positionAngleError()
+	);
+}
+
+
+
+
 
 // Local Variables: 
 // compile-command: "gmake GaussianShape"

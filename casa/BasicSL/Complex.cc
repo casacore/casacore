@@ -134,6 +134,18 @@ void setInf(DComplex &val)
   val = DComplex(x, y);
 }
 
+
+// Finite functions
+
+Bool isFinite(const Complex &val)
+{
+  return isFinite(val.real()) || isFinite(val.imag());
+}
+Bool isFinite(const DComplex &val)
+{
+  return isFinite(val.real()) || isFinite(val.imag());
+}
+
 // fmod functions
 
 DComplex fmod(const DComplex &in, const DComplex &f) {

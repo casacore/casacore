@@ -127,6 +127,7 @@ public:
   // Set antenna positions, index in vector is antenna number
   // for calls below.
   MSDerivedValues& setAntennaPositions(const Vector<MPosition>& antPosition);
+  const Vector<MPosition> & getAntennaPositions () const;
   
   // Set the observatory position. Note that setAntennas will reset this.
   MSDerivedValues& setObservatoryPosition(const MPosition& obsPosition);
@@ -154,6 +155,7 @@ public:
 
   // Set the velocity frame type (e.g., MRDoppler::RADIO) 
   MSDerivedValues& setVelocityReference(MDoppler::Types dopType);
+  MRadialVelocity::Types getRadialVelocityType () const;
 
   // Set the frequency frame  (e.g., MFrequency::LSRK) 
   MSDerivedValues& setFrequencyReference(MFrequency::Types frqType);
@@ -222,6 +224,8 @@ private:
   Quantity restFreq_p;
   Vector<Int> mount_p;
   MeasurementSet ms_p;
+  MRadialVelocity::Types radialVelocityType_p;
+
   //  Vector<Double> receptorAngle_p;
  
 

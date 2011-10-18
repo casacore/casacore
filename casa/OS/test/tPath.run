@@ -25,8 +25,8 @@ if [ $# != 0 ]
 then
     if [ $1 != 0 ]
     then
-        ./tPath $2
+        $casa_checktool ./tPath $2
     fi
 else
-    ./tPath
+    $casa_checktool ./tPath
 fi

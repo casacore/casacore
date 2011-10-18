@@ -36,4 +36,4 @@
      exit 3
   fi
 
-  tMSConcat fits=$FITS1 ms=$MS1 fitsappend=$FITS2 append=$MS2
+  $casa_checktool ./tMSConcat fits=$FITS1 ms=$MS1 fitsappend=$FITS2 append=$MS2

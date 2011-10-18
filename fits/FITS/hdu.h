@@ -136,8 +136,8 @@ class HeaderDataUnit {
 		return kwlist_(n,i); }
 	const FitsKeyword *nextkw(FITS::ReservedName &n, int i) { 
 		return kwlist_.next(n,i); }
-	const FitsKeyword *kw(char *n) { return kwlist_(n); }
-	const FitsKeyword *nextkw(char *n) { return kwlist_.next(n); }
+	const FitsKeyword *kw(const char *n) { return kwlist_(n); }
+	const FitsKeyword *nextkw(const char *n) { return kwlist_.next(n); }
 	void mk(FITS::ReservedName k, Bool v, const char *c = 0);
 	void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
 	void mk(FITS::ReservedName k, Int v, const char *c = 0);

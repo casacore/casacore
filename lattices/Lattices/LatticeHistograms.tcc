@@ -1067,7 +1067,7 @@ template <class T>
 void LatticeHistograms<T>::makeHistograms()
 {
    if (haveLogger_p) {
-      os_p << LogIO::NORMAL << "Creating new histogram storage lattice" << LogIO::POST;
+      os_p << LogIO::DEBUG1 << "Creating new histogram storage lattice" << LogIO::POST;
    }
 
 // Set storage lattice shape.  The first axis is the histogram axis 

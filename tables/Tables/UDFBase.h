@@ -92,12 +92,23 @@ namespace casa {
   //         <li>A function like 'asin' will have a result in radians.
   //          Such a UDF should set its result unit to rad.
   //         <li>A function like 'min' wants its arguments to have the same
-  //          unit and set its result unit to it. It can be done like:
+  //          unit and will set its result unit to it. It can be done like:
   //          <src>setUnit (TableExprFuncNode::makeEqualUnits
   //                        (operands(), 0, operands().size()));</src>
+  //      <li>Optionally define if the result is a constant value using
+  //          <src>setConstant</src>. It means that the function is not
+  //          dependent on the row number in the table being queried.
+  //          This is usually the case if all UDF arguments are constant.
   //        </ul>
   //        See class TableExprFuncNode for more info about these functions.
   //   </ul>
+  //  </td>
+  // </tr>
+  // <tr>
+  //  <td><src>replaceTable</src></td>
+  //  <td>The possible Table to use is set by the setup function. However,
+  //      the table to use might change which is done by thos function.
+  //      It needs to be implemented, even if no Table object is kept.
   //  </td>
   // </tr>
   // <tr>
@@ -144,7 +155,9 @@ namespace casa {
   //     AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar,
   //                   AipsError);
   //     setDataType (TableExprNodeRep::NTBool);
-  //     setNDim (0);                              // scalar result
+  //     setNDim (0);                                 // scalar result
+  //     setConstant (operands()[0].isConstant());    // constant result?
+  //        
   //   }
   //   Bool getBool (const TableExprId& id)
   //     { return operands()[0]->getInt(id) == 1; }
@@ -189,6 +202,9 @@ namespace casa {
     const String& getUnit() const
       { return itsUnit; }
 
+    // Replace the Table in this node.
+    virtual void replaceTable (const Table&) = 0;
+
   private:
     // Set up the function object.
     virtual void setup (const Table& table,
@@ -218,6 +234,11 @@ namespace casa {
     // class, the result has no unit.
     void setUnit (const String& unit);
 
+    // Define if the result is constant (e.g. if all arguments are constant).
+    // If this function is not called by the setup function of the derived
+    // class, the result is not constant.
+    void setConstant (Bool isConstant);
+
   public:
     // Register a the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
@@ -241,6 +262,10 @@ namespace casa {
     const IPosition& shape() const
       { return itsShape; }
 
+    // Tell if the UDF gives a constant result.
+    Bool isConstant() const
+      { return itsIsConstant; }
+
     // Create a UDF object (thread-safe).
     static UDFBase* createUDF (const String& name);
 
@@ -251,6 +276,7 @@ namespace casa {
     Int                            itsNDim;
     IPosition                      itsShape;
     String                         itsUnit;
+    Bool                           itsIsConstant;
     static map<String, MakeUDFObject*> theirRegistry;
     static Mutex                       theirMutex;
   };

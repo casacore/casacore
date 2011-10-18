@@ -189,9 +189,6 @@ public:
 protected:
     TabVecRep<T>* tabVecPtr_p;
 
-    // Check if a new TabxxxVec succeeded; if so, link to it.
-    void checkLink();
-
     // Destruct the object. It decreases the reference count in the
     // underlying object.
     void destruct();
@@ -272,7 +269,6 @@ class TableVector : public ROTableVector<T>
 {
   //# Make members of parent class known.
 protected:
-  using ROTableVector<T>::checkLink;
   using ROTableVector<T>::tabVecPtr_p;
 
 public:

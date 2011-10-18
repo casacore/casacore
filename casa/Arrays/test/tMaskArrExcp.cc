@@ -654,14 +654,13 @@ int main ()
     {
       Vector<Int> ba(11);
       LogicalArray b(IPosition(1,11));
-      Int result (0);
       indgen (ba);
       b = False;
       MaskedArray<Int> mbab (ba,b);
 
       try {
 	cout << "\nTest insufficient elements, ::min (MaskedArray)";
-	result = min (mbab);
+	min (mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -782,7 +781,6 @@ int main ()
     {
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -790,7 +788,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::sum (const MaskedArray &)";
-	result = sum (ma);
+        sum (ma);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -801,7 +799,6 @@ int main ()
     {
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -809,7 +806,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::sumsquares (const MaskedArray &)";
-	result = sumsquares (ma);
+	sumsquares (ma);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -820,7 +817,6 @@ int main ()
     {
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -828,7 +824,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::product (const MaskedArray &)";
-	result = product (ma);
+	product (ma);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -839,7 +835,6 @@ int main ()
     {
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -847,7 +842,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::mean (const MaskedArray &)";
-	result = mean (ma);
+	mean (ma);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -859,7 +854,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
       Int mean (0);
-      Int result (0);
       indgen (a);
       b = False;
       b(IPosition(1,0)) = True;
@@ -868,7 +862,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::variance (const MaskedArray &, T)";
-	result = variance (ma, mean);
+	variance (ma, mean);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -880,7 +874,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
       Int mean (0);
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -888,7 +881,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::avdev (const MaskedArray &, T)";
-	result = avdev (ma, mean);
+	avdev (ma, mean);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -899,7 +892,6 @@ int main ()
     {
       Vector<Int> a(10);
       LogicalArray b(IPosition(1,10));
-      Int result (0);
       indgen (a);
       b = False;
       MaskedArray<Int> ma (a,b);
@@ -907,7 +899,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	     << " ::median (const MaskedArray &, Bool)";
-	result = median (ma, False);
+        median (ma, False);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -929,7 +921,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(11);
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = 0;
       ba = 1;
       b = True;
@@ -937,7 +928,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::allLE (MaskedArray, Array)";
-	result = allLE (mbab, a);
+	allLE (mbab, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -949,7 +940,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(10);
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = 0;
       ba = 1;
       b = False;
@@ -958,7 +948,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allLE (MaskedArray, Array)";
-	result = allLE (mbab, a);
+	allLE (mbab, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -970,7 +960,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(11);
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = 0;
       ba = 1;
       b = True;
@@ -978,7 +967,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::allLE (Array, MaskedArray)";
-	result = allLE (a, mbab);
+        allLE (a, mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -990,7 +979,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(10);
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = 0;
       ba = 1;
       b = False;
@@ -999,7 +987,7 @@ int main ()
       try {
 	cout << "\nTest insuficient elements,"
 	  " ::allLE (Array, MaskedArray)";
-	result = allLE (a, mbab);
+	allLE (a, mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1012,7 +1000,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       Vector<Int> ba(11);
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = 0;
       ab = True;
       ba = 1;
@@ -1023,7 +1010,7 @@ int main ()
       try {
 	cout << "\nTest conformance, ::allLE (MaskedArray,"
 	     << " MaskedArray)";
-	result = allLE (maab, mbab);
+	allLE (maab, mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1036,7 +1023,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       Vector<Int> ba(10);
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = 0;
       ab = False;
       ba = 1;
@@ -1047,7 +1033,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allLE (MaskedArray, MaskedArray)";
-	result = allLE (maab, mbab);
+	allLE (maab, mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1059,7 +1045,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = True;
       c = False;
       b = True;
@@ -1067,7 +1052,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::anyAND (MaskedArray, Array)";
-	result = anyAND (mcb, a);
+	anyAND (mcb, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1079,7 +1064,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = True;
       c = False;
       b = False;
@@ -1088,7 +1072,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyAND (MaskedArray, Array)";
-	result = anyAND (mcb, a);
+	anyAND (mcb, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1100,7 +1084,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = True;
       c = False;
       b = True;
@@ -1108,7 +1091,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::anyAND (Array, MaskedArray)";
-	result = anyAND (a, mcb);
+	anyAND (a, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1120,7 +1103,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = False;
       c = True;
       b = False;
@@ -1129,7 +1111,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyAND (Array, MaskedArray)";
-	result = anyAND (a, mcb);
+	anyAND (a, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1142,7 +1124,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = False;
       ab = True;
       c = True;
@@ -1153,7 +1134,7 @@ int main ()
       try {
 	cout << "\nTest conformance, ::anyAND (MaskedArray,"
 	     << " MaskedArray)";
-	result = anyAND (maab, mcb);
+	anyAND (maab, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1166,7 +1147,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = False;
       ab = True;
       c = True;
@@ -1177,7 +1157,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyAND (MaskedArray, MaskedArray)";
-	result = anyAND (maab, mcb);
+	anyAND (maab, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1189,7 +1169,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = False;
       c = True;
       b = True;
@@ -1197,7 +1176,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::anyOR (MaskedArray, Array)";
-	result = anyOR (mcb, a);
+        anyOR (mcb, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1209,7 +1188,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = False;
       c = True;
       b = False;
@@ -1218,7 +1196,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyOR (MaskedArray, Array)";
-	result = anyOR (mcb, a);
+        anyOR (mcb, a);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1230,7 +1208,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = False;
       c = True;
       b = True;
@@ -1238,7 +1215,7 @@ int main ()
 
       try {
 	cout << "\nTest conformance, ::anyOR (Array, MaskedArray)";
-	result = anyOR (a, mcb);
+	anyOR (a, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1250,7 +1227,6 @@ int main ()
       LogicalArray a(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = False;
       c = True;
       b = False;
@@ -1259,7 +1235,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyOR (Array, MaskedArray)";
-	result = anyOR (a, mcb);
+	anyOR (a, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1272,7 +1248,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       LogicalArray c(IPosition(1,11));
       LogicalArray b(IPosition(1,11));
-      Bool result;
       a = False;
       ab = True;
       c = True;
@@ -1283,7 +1258,7 @@ int main ()
       try {
 	cout << "\nTest conformance, ::anyOR (MaskedArray,"
 	     << " MaskedArray)";
-	result = anyOR (maab, mcb);
+	anyOR (maab, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayConformanceError e) {
 	cout << "\nCaught an ArrayConformanceError:\n";
@@ -1296,7 +1271,6 @@ int main ()
       LogicalArray ab(IPosition(1,10));
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = False;
       ab = False;
       c = True;
@@ -1307,7 +1281,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements"
 	  " ::anyOR (MaskedArray, MaskedArray)";
-	result = anyOR (maab, mcb);
+	anyOR (maab, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1386,7 +1360,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1395,7 +1368,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allAND (MaskedArray, scalar)";
-	result = allAND (mcb, True);
+        allAND (mcb, True);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1407,7 +1380,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1416,7 +1388,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allAND (scalar, MaskedArray)";
-	result = allAND (True, mcb);
+	allAND (True, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1428,7 +1400,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1437,7 +1408,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allOR (MaskedArray, scalar)";
-	result = allOR (mcb, False);
+        allOR (mcb, False);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1449,7 +1420,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1458,7 +1428,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allOR (scalar, MaskedArray)";
-	result = allOR (False, mcb);
+        allOR (False, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1470,7 +1440,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(10);
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = 0;
       ba = 1;
       b = False;
@@ -1479,7 +1448,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::allLE (MaskedArray, scalar)";
-	result = allLE (mbab, 7);
+        allLE (mbab, 7);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1491,7 +1460,6 @@ int main ()
       Vector<Int> a(10);
       Vector<Int> ba(10);
       LogicalArray b(IPosition(1,10));
-      Bool result;
       a = 0;
       ba = 1;
       b = False;
@@ -1500,7 +1468,7 @@ int main ()
       try {
 	cout << "\nTest insuficient elements,"
 	  " ::allLE (scalar, MaskedArray)";
-	result = allLE (7, mbab);
+        allLE (7, mbab);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1512,7 +1480,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1521,7 +1488,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyAND (MaskedArray, scalar)";
-	result = anyAND (mcb, True);
+        anyAND (mcb, True);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1533,7 +1500,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1542,7 +1508,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyAND (scalar, MaskedArray)";
-	result = anyAND (True, mcb);
+        anyAND (True, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1554,7 +1520,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1563,7 +1528,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyOR (MaskedArray, scalar)";
-	result = anyOR (mcb, False);
+        anyOR (mcb, False);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";
@@ -1575,7 +1540,6 @@ int main ()
       Vector<Int> a(10);
       LogicalArray c(IPosition(1,10));
       LogicalArray b(IPosition(1,10));
-      Bool result;
       indgen (a);
       c = (a<5);
       b = False;
@@ -1584,7 +1548,7 @@ int main ()
       try {
 	cout << "\nTest insufficient elements,"
 	  " ::anyOR (scalar, MaskedArray)";
-	result = anyOR (False, mcb);
+        anyOR (False, mcb);
 	cout << "\nFAILED" << endl;
       } catch (ArrayError e) {
 	cout << "\nCaught an ArrayError:\n";

@@ -1,5 +1,5 @@
 //# Conversion.cc: A class with static functions to convert canonical format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2011
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,11 @@
 //# $Id$
 
 
+#include <stdint.h>
+#include <assert.h>
 #include <casa/aips.h>
 #include <casa/OS/Conversion.h>
+#include <casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -119,8 +122,8 @@ void Conversion::boolToBit (void* to, const void* from,
     }
 }
 
-unsigned int Conversion::bitToBool (void* to, const void* from,
-				    unsigned int nvalues)
+unsigned int Conversion::bitToBool_ (void* to, const void* from,
+                                     unsigned int nvalues)
 {
     Bool* data = (Bool*)to;
     const unsigned char* bits = (const unsigned char*)from;
@@ -144,6 +147,304 @@ unsigned int Conversion::bitToBool (void* to, const void* from,
 	}
     }
     return nbytes;
+}
+
+
+//# July 2011: Optimization made by Kohji Nakamura
+//# and slightly adapted by Ger van Diepen
+
+// Define 
+typedef union {
+    // __m64d wide;
+    Bool b[8];   // must be the first member for the initialization below.
+    double d;
+} m64d_t;
+
+// Define all flag patterns for values 0 till 255.
+static m64d_t conv_tab[256] __attribute__ ((aligned (8))) = {
+  {False, False, False, False, False, False, False, False},
+  {True , False, False, False, False, False, False, False},
+  {False, True , False, False, False, False, False, False},
+  {True , True , False, False, False, False, False, False},
+  {False, False, True , False, False, False, False, False},
+  {True , False, True , False, False, False, False, False},
+  {False, True , True , False, False, False, False, False},
+  {True , True , True , False, False, False, False, False},
+  {False, False, False, True , False, False, False, False},
+  {True , False, False, True , False, False, False, False},
+  {False, True , False, True , False, False, False, False},
+  {True , True , False, True , False, False, False, False},
+  {False, False, True , True , False, False, False, False},
+  {True , False, True , True , False, False, False, False},
+  {False, True , True , True , False, False, False, False},
+  {True , True , True , True , False, False, False, False},
+  {False, False, False, False, True , False, False, False},
+  {True , False, False, False, True , False, False, False},
+  {False, True , False, False, True , False, False, False},
+  {True , True , False, False, True , False, False, False},
+  {False, False, True , False, True , False, False, False},
+  {True , False, True , False, True , False, False, False},
+  {False, True , True , False, True , False, False, False},
+  {True , True , True , False, True , False, False, False},
+  {False, False, False, True , True , False, False, False},
+  {True , False, False, True , True , False, False, False},
+  {False, True , False, True , True , False, False, False},
+  {True , True , False, True , True , False, False, False},
+  {False, False, True , True , True , False, False, False},
+  {True , False, True , True , True , False, False, False},
+  {False, True , True , True , True , False, False, False},
+  {True , True , True , True , True , False, False, False},
+  {False, False, False, False, False, True , False, False},
+  {True , False, False, False, False, True , False, False},
+  {False, True , False, False, False, True , False, False},
+  {True , True , False, False, False, True , False, False},
+  {False, False, True , False, False, True , False, False},
+  {True , False, True , False, False, True , False, False},
+  {False, True , True , False, False, True , False, False},
+  {True , True , True , False, False, True , False, False},
+  {False, False, False, True , False, True , False, False},
+  {True , False, False, True , False, True , False, False},
+  {False, True , False, True , False, True , False, False},
+  {True , True , False, True , False, True , False, False},
+  {False, False, True , True , False, True , False, False},
+  {True , False, True , True , False, True , False, False},
+  {False, True , True , True , False, True , False, False},
+  {True , True , True , True , False, True , False, False},
+  {False, False, False, False, True , True , False, False},
+  {True , False, False, False, True , True , False, False},
+  {False, True , False, False, True , True , False, False},
+  {True , True , False, False, True , True , False, False},
+  {False, False, True , False, True , True , False, False},
+  {True , False, True , False, True , True , False, False},
+  {False, True , True , False, True , True , False, False},
+  {True , True , True , False, True , True , False, False},
+  {False, False, False, True , True , True , False, False},
+  {True , False, False, True , True , True , False, False},
+  {False, True , False, True , True , True , False, False},
+  {True , True , False, True , True , True , False, False},
+  {False, False, True , True , True , True , False, False},
+  {True , False, True , True , True , True , False, False},
+  {False, True , True , True , True , True , False, False},
+  {True , True , True , True , True , True , False, False},
+  {False, False, False, False, False, False, True , False},
+  {True , False, False, False, False, False, True , False},
+  {False, True , False, False, False, False, True , False},
+  {True , True , False, False, False, False, True , False},
+  {False, False, True , False, False, False, True , False},
+  {True , False, True , False, False, False, True , False},
+  {False, True , True , False, False, False, True , False},
+  {True , True , True , False, False, False, True , False},
+  {False, False, False, True , False, False, True , False},
+  {True , False, False, True , False, False, True , False},
+  {False, True , False, True , False, False, True , False},
+  {True , True , False, True , False, False, True , False},
+  {False, False, True , True , False, False, True , False},
+  {True , False, True , True , False, False, True , False},
+  {False, True , True , True , False, False, True , False},
+  {True , True , True , True , False, False, True , False},
+  {False, False, False, False, True , False, True , False},
+  {True , False, False, False, True , False, True , False},
+  {False, True , False, False, True , False, True , False},
+  {True , True , False, False, True , False, True , False},
+  {False, False, True , False, True , False, True , False},
+  {True , False, True , False, True , False, True , False},
+  {False, True , True , False, True , False, True , False},
+  {True , True , True , False, True , False, True , False},
+  {False, False, False, True , True , False, True , False},
+  {True , False, False, True , True , False, True , False},
+  {False, True , False, True , True , False, True , False},
+  {True , True , False, True , True , False, True , False},
+  {False, False, True , True , True , False, True , False},
+  {True , False, True , True , True , False, True , False},
+  {False, True , True , True , True , False, True , False},
+  {True , True , True , True , True , False, True , False},
+  {False, False, False, False, False, True , True , False},
+  {True , False, False, False, False, True , True , False},
+  {False, True , False, False, False, True , True , False},
+  {True , True , False, False, False, True , True , False},
+  {False, False, True , False, False, True , True , False},
+  {True , False, True , False, False, True , True , False},
+  {False, True , True , False, False, True , True , False},
+  {True , True , True , False, False, True , True , False},
+  {False, False, False, True , False, True , True , False},
+  {True , False, False, True , False, True , True , False},
+  {False, True , False, True , False, True , True , False},
+  {True , True , False, True , False, True , True , False},
+  {False, False, True , True , False, True , True , False},
+  {True , False, True , True , False, True , True , False},
+  {False, True , True , True , False, True , True , False},
+  {True , True , True , True , False, True , True , False},
+  {False, False, False, False, True , True , True , False},
+  {True , False, False, False, True , True , True , False},
+  {False, True , False, False, True , True , True , False},
+  {True , True , False, False, True , True , True , False},
+  {False, False, True , False, True , True , True , False},
+  {True , False, True , False, True , True , True , False},
+  {False, True , True , False, True , True , True , False},
+  {True , True , True , False, True , True , True , False},
+  {False, False, False, True , True , True , True , False},
+  {True , False, False, True , True , True , True , False},
+  {False, True , False, True , True , True , True , False},
+  {True , True , False, True , True , True , True , False},
+  {False, False, True , True , True , True , True , False},
+  {True , False, True , True , True , True , True , False},
+  {False, True , True , True , True , True , True , False},
+  {True , True , True , True , True , True , True , False},
+  {False, False, False, False, False, False, False, True },
+  {True , False, False, False, False, False, False, True },
+  {False, True , False, False, False, False, False, True },
+  {True , True , False, False, False, False, False, True },
+  {False, False, True , False, False, False, False, True },
+  {True , False, True , False, False, False, False, True },
+  {False, True , True , False, False, False, False, True },
+  {True , True , True , False, False, False, False, True },
+  {False, False, False, True , False, False, False, True },
+  {True , False, False, True , False, False, False, True },
+  {False, True , False, True , False, False, False, True },
+  {True , True , False, True , False, False, False, True },
+  {False, False, True , True , False, False, False, True },
+  {True , False, True , True , False, False, False, True },
+  {False, True , True , True , False, False, False, True },
+  {True , True , True , True , False, False, False, True },
+  {False, False, False, False, True , False, False, True },
+  {True , False, False, False, True , False, False, True },
+  {False, True , False, False, True , False, False, True },
+  {True , True , False, False, True , False, False, True },
+  {False, False, True , False, True , False, False, True },
+  {True , False, True , False, True , False, False, True },
+  {False, True , True , False, True , False, False, True },
+  {True , True , True , False, True , False, False, True },
+  {False, False, False, True , True , False, False, True },
+  {True , False, False, True , True , False, False, True },
+  {False, True , False, True , True , False, False, True },
+  {True , True , False, True , True , False, False, True },
+  {False, False, True , True , True , False, False, True },
+  {True , False, True , True , True , False, False, True },
+  {False, True , True , True , True , False, False, True },
+  {True , True , True , True , True , False, False, True },
+  {False, False, False, False, False, True , False, True },
+  {True , False, False, False, False, True , False, True },
+  {False, True , False, False, False, True , False, True },
+  {True , True , False, False, False, True , False, True },
+  {False, False, True , False, False, True , False, True },
+  {True , False, True , False, False, True , False, True },
+  {False, True , True , False, False, True , False, True },
+  {True , True , True , False, False, True , False, True },
+  {False, False, False, True , False, True , False, True },
+  {True , False, False, True , False, True , False, True },
+  {False, True , False, True , False, True , False, True },
+  {True , True , False, True , False, True , False, True },
+  {False, False, True , True , False, True , False, True },
+  {True , False, True , True , False, True , False, True },
+  {False, True , True , True , False, True , False, True },
+  {True , True , True , True , False, True , False, True },
+  {False, False, False, False, True , True , False, True },
+  {True , False, False, False, True , True , False, True },
+  {False, True , False, False, True , True , False, True },
+  {True , True , False, False, True , True , False, True },
+  {False, False, True , False, True , True , False, True },
+  {True , False, True , False, True , True , False, True },
+  {False, True , True , False, True , True , False, True },
+  {True , True , True , False, True , True , False, True },
+  {False, False, False, True , True , True , False, True },
+  {True , False, False, True , True , True , False, True },
+  {False, True , False, True , True , True , False, True },
+  {True , True , False, True , True , True , False, True },
+  {False, False, True , True , True , True , False, True },
+  {True , False, True , True , True , True , False, True },
+  {False, True , True , True , True , True , False, True },
+  {True , True , True , True , True , True , False, True },
+  {False, False, False, False, False, False, True , True },
+  {True , False, False, False, False, False, True , True },
+  {False, True , False, False, False, False, True , True },
+  {True , True , False, False, False, False, True , True },
+  {False, False, True , False, False, False, True , True },
+  {True , False, True , False, False, False, True , True },
+  {False, True , True , False, False, False, True , True },
+  {True , True , True , False, False, False, True , True },
+  {False, False, False, True , False, False, True , True },
+  {True , False, False, True , False, False, True , True },
+  {False, True , False, True , False, False, True , True },
+  {True , True , False, True , False, False, True , True },
+  {False, False, True , True , False, False, True , True },
+  {True , False, True , True , False, False, True , True },
+  {False, True , True , True , False, False, True , True },
+  {True , True , True , True , False, False, True , True },
+  {False, False, False, False, True , False, True , True },
+  {True , False, False, False, True , False, True , True },
+  {False, True , False, False, True , False, True , True },
+  {True , True , False, False, True , False, True , True },
+  {False, False, True , False, True , False, True , True },
+  {True , False, True , False, True , False, True , True },
+  {False, True , True , False, True , False, True , True },
+  {True , True , True , False, True , False, True , True },
+  {False, False, False, True , True , False, True , True },
+  {True , False, False, True , True , False, True , True },
+  {False, True , False, True , True , False, True , True },
+  {True , True , False, True , True , False, True , True },
+  {False, False, True , True , True , False, True , True },
+  {True , False, True , True , True , False, True , True },
+  {False, True , True , True , True , False, True , True },
+  {True , True , True , True , True , False, True , True },
+  {False, False, False, False, False, True , True , True },
+  {True , False, False, False, False, True , True , True },
+  {False, True , False, False, False, True , True , True },
+  {True , True , False, False, False, True , True , True },
+  {False, False, True , False, False, True , True , True },
+  {True , False, True , False, False, True , True , True },
+  {False, True , True , False, False, True , True , True },
+  {True , True , True , False, False, True , True , True },
+  {False, False, False, True , False, True , True , True },
+  {True , False, False, True , False, True , True , True },
+  {False, True , False, True , False, True , True , True },
+  {True , True , False, True , False, True , True , True },
+  {False, False, True , True , False, True , True , True },
+  {True , False, True , True , False, True , True , True },
+  {False, True , True , True , False, True , True , True },
+  {True , True , True , True , False, True , True , True },
+  {False, False, False, False, True , True , True , True },
+  {True , False, False, False, True , True , True , True },
+  {False, True , False, False, True , True , True , True },
+  {True , True , False, False, True , True , True , True },
+  {False, False, True , False, True , True , True , True },
+  {True , False, True , False, True , True , True , True },
+  {False, True , True , False, True , True , True , True },
+  {True , True , True , False, True , True , True , True },
+  {False, False, False, True , True , True , True , True },
+  {True , False, False, True , True , True , True , True },
+  {False, True , False, True , True , True , True , True },
+  {True , True , False, True , True , True , True , True },
+  {False, False, True , True , True , True , True , True },
+  {True , False, True , True , True , True , True , True },
+  {False, True , True , True , True , True , True , True },
+  {True , True , True , True , True , True , True , True }
+};
+
+
+unsigned int Conversion::bitToBool (void* to, const void* from,
+				    unsigned int nvalues)
+{
+    if (sizeof(Bool) != sizeof(char)  ||  (7 & (unsigned long long)to)) {
+	return bitToBool_(to, from, nvalues);
+    }
+    double* __attribute__ ((aligned (8))) data =
+	(double __attribute__ ((aligned (8)))*)to;
+    const uint8_t* bits = (const uint8_t*)from;
+    const size_t bits_per_loop = 8;
+    const size_t nwords = nvalues / bits_per_loop;
+#ifdef USE_MULTI_THREADING
+# pragma omp parallel if (nwords >= 1024*2)
+#endif
+    {
+#ifdef USE_MULTI_THREADING
+# pragma omp for
+#endif
+	for (size_t i = 0; i < nwords; i++) {
+	    data[i] = conv_tab[bits[i]].d;
+	}
+    }
+    return nwords * (bits_per_loop / 8)
+	+ bitToBool_(&data[nwords], &bits[nwords], nvalues - (nwords * bits_per_loop));
 }
 
 void Conversion::bitToBool (void* to, const void* from,

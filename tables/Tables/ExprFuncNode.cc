@@ -363,10 +363,20 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
 	}
 	return operands_p[0]->getBool (id);
     case isnanFUNC:
-	if (argDataType_p == NTDouble) {
-	    return isNaN(operands_p[0]->getDouble(id));
+	if (argDataType_p == NTComplex) {
+            return isNaN(operands_p[0]->getDComplex(id));
 	}
-	return isNaN(operands_p[0]->getDComplex(id));
+        return isNaN(operands_p[0]->getDouble(id));
+    case isinfFUNC:
+	if (argDataType_p == NTComplex) {
+            return isInf(operands_p[0]->getDComplex(id));
+	}
+        return isInf(operands_p[0]->getDouble(id));
+    case isfiniteFUNC:
+        if (argDataType_p == NTComplex) {
+            return isFinite(operands_p[0]->getDComplex(id));
+	}
+        return isFinite(operands_p[0]->getDouble(id));
     case isdefFUNC:
 	return operands_p[0]->isDefined (id);
     case near2FUNC:
@@ -1311,6 +1321,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTReal, NTComplex, nodes);
     case isnanFUNC:
+    case isinfFUNC:
+    case isfiniteFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     case iifFUNC:

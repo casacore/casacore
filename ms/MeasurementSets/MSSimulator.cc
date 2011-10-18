@@ -876,10 +876,6 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 		    msc.correctedData().put(row,data);
 		    msc.modelData().setShape(row,data.shape());
 		    msc.modelData().put(row, data);
-		    Vector<Float> dummywgt(nChan_p(SpWId));
-		    dummywgt.set(1.0);
-		    msc.imagingWeight().setShape(row, data.shape().getLast(1));
-		    msc.imagingWeight().put(row, dummywgt);
 		  }
 		  // Deal with differing diameter case
 		  Float sigma1 = diamMax2/(antDiam_p(ant1) * antDiam_p(ant2));

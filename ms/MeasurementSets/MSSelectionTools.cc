@@ -26,9 +26,11 @@
 //# $Id$
 //# Includes
 #include <casa/aips.h>
+#include <casa/Containers/Record.h>
 #include <casa/Arrays/Vector.h>
 #include <ms/MeasurementSets/MSSelection.h>
 #include <string.h>
+#include <iostream>
 namespace casa { //# NAMESPACE CASA - BEGIN
   //
   //----------------------------------------------------------------------------
@@ -91,7 +93,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& taQLExpr,
 		  const String& polnExpr,
 		  const String& scanExpr,
-		  const String& arrayExpr
+		  const String& arrayExpr,
+		  const String& stateExpr,
+		  MSSelection *mymss
 		  )
   {
     //
@@ -99,9 +103,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // internally.
     //
 	
-    MSSelection *mss = new MSSelection(ms,MSSelection::PARSE_NOW,
-				       timeExpr,antennaExpr,fieldExpr,spwExpr,
-				       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr);
+    MSSelection *mss=mymss;
+    if (mss == NULL) mss= new MSSelection();
+
+    mss->reset(ms,MSSelection::PARSE_NOW,
+	       timeExpr,antennaExpr,fieldExpr,spwExpr,
+	       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
+	       stateExpr);
     //
     // Apply the internal accumulated TEN to the MS and produce the
     // selected MS.  
@@ -110,7 +118,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // return True.
     //
     Bool rstat = mss->getSelectedMS(selectedMS,outMSName);
-    delete mss;
+    if (mymss==NULL) delete mss;
     return rstat;
   }
   //
@@ -130,17 +138,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& polnExpr,
 		  const String& scanExpr,
 		  const String& arrayExpr,
-		  const Int defaultChanStep
+		  const String& stateExpr,
+		  const Int defaultChanStep,
+		  MSSelection *mymss
 		  )
   {
     //
     // Parse the various expressions and produce the accmuluated TEN
     // internally.
     //
-	
-    MSSelection *mss = new MSSelection(ms,MSSelection::PARSE_NOW,
-				       timeExpr,antennaExpr,fieldExpr,spwExpr,
-				       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr);
+    MSSelection *mss=mymss;
+    if (mss == NULL) mss = new MSSelection();
+
+    mss->reset(ms,MSSelection::PARSE_NOW,
+	       timeExpr,antennaExpr,fieldExpr,spwExpr,
+	       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
+	       stateExpr);
     //
     // Apply the internal accumulated TEN to the MS and produce the
     // selected MS.  
@@ -154,7 +167,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     mss->getChanSlices(chanSlices,&ms,defaultChanStep);
     mss->getCorrSlices(corrSlices,&ms);
 
-    delete mss;
+    if (mymss == NULL) delete mss;
     return rstat;
   }
   //
@@ -162,14 +175,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   String stripWhite(const String& str, Bool onlyends)
   {
+    //if ((str == "" ) || (str.length() <=0)) return str;
     Int j0,j1;
     j0=0;j1=str.length()-1;
     if (onlyends)
       {
-	while(str[j0] == ' ') j0++;
-	while(str[j1] == ' ') j1--;
+	while((j0 <= j1) && (str[j0] == ' ')) j0++;
+	while((j1 >= j0) && (str[j1] == ' ')) j1--;
       }
     return str.substr(j0,j1-j0+1);
+  }
+  //
+  //----------------------------------------------------------------------------
+  //
+  Record mssSelectedIndices(MSSelection& thisSelection, const MeasurementSet *ms)
+  {
+    Record retval;
+    TableExprNode exprNode=thisSelection.toTableExprNode(ms);
+    Vector<Int> fieldlist=thisSelection.getFieldList();
+    Vector<Int> spwlist=thisSelection.getSpwList();
+    Vector<Int> scanlist=thisSelection.getScanList();
+    Vector<Int> antenna1list=thisSelection.getAntenna1List();
+    Vector<Int> antenna2list=thisSelection.getAntenna2List();
+    Matrix<Int> chanlist=thisSelection.getChanList();
+    Matrix<Int> baselinelist=thisSelection.getBaselineList();
+    Vector<Int> ddIDList=thisSelection.getDDIDList();
+    Vector<Int> stateIDList=thisSelection.getStateObsModeList();
+    OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
+    OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+
+    retval.define("spw", spwlist);
+    retval.define("field", fieldlist);
+    retval.define("scan",scanlist);
+    retval.define("antenna1", antenna1list);
+    retval.define("antenna2", antenna2list);
+    retval.define("baselines",baselinelist);
+    retval.define("channel", chanlist);
+    retval.define("dd",ddIDList);
+    retval.define("stateid",stateIDList);
+
+    return retval;
   }
   //
   //----------------------------------------------------------------------------
@@ -212,5 +257,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     return (int)(tokens.nelements());
     */
+  }
+  //
+  //----------------------------------------------------------------------------
+  // Split a give string at delimiter delim and return the restul elems.
+  //
+  Vector<String> &split(const String &s, char delim, Vector<String> &elems) 
+  {
+    std::stringstream ss(s);
+    std::string item;
+    vector<string> tmp;
+    while(std::getline(ss, item, delim))   tmp.push_back(item);
+
+    elems.resize(tmp.size());
+    for (uInt i=0;i<tmp.size();i++) elems[i]=tmp[i];
+    return elems;
   }
 }

@@ -443,9 +443,10 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                  const vector<const Table*>& tempTables)
 {
   // If no command is given, assume it is CALC.
-  // Only show results for SELECT and CALC.
+  // Only show results for SELECT, COUNT and CALC.
   String::size_type spos = str.find_first_not_of (' ');
   Bool addCalc = False;
+  Bool doCount = False;
   Bool showResult = False;
   if (spos != String::npos) {
     String::size_type epos = str.find (' ', spos);
@@ -459,6 +460,10 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                   s=="delete" || s=="create" || s=="createtable" ||
                   s=="count"  || s=="using"  || s=="usingstyle" || s=="time");
       showResult = (s=="select");
+      if (s=="count") {
+        doCount    = True;
+        showResult = True;
+      }
     }
   }
   String strc(str);
@@ -472,6 +477,11 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
   String cmd;
   TaQLResult result;
   result = tableCommand (strc, tempTables, colNames, cmd);
+  // Show result of COUNT as well.
+  if (doCount) {
+    colNames.resize (colNames.size() + 1, True);
+    colNames[colNames.size() - 1] = "_COUNT_";
+  }
   if (printCommand) {
     if (!varName.empty()) {
       cout << varName << " = ";
@@ -542,11 +552,11 @@ void showHelp()
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
   cerr << " -h  or --help          show this help and exits." << endl;
   cerr << " -ps or --printselect   show the values of selected columns." << endl;
-  cerr << " -pm or --printmeasure  if possible, show values as measures" << endl;
+  cerr << " -pm or --printmeasure  if possible, show values as formatted measures" << endl;
   cerr << " -pc or --printcommand  show the (expanded) TaQL command." << endl;
   cerr << " -pr or --printrows     show the number of rows selected, updated, etc." << endl;
-  cerr << "The default for the latter 2 options is on for interactive mode, otherwise off." << endl;
-  cerr << "The default for -ps and -pm is on." << endl;
+  cerr << "The default for -pc is on for interactive mode, otherwise off." << endl;
+  cerr << "The default for -pr, -ps, and -pm is on." << endl;
   cerr << endl;
 }
 
@@ -767,7 +777,7 @@ int main (int argc, const char* argv[])
     int printCommand = -1;
     int printSelect  = 1;
     int printMeas    = 1;
-    int printRows    = -1;
+    int printRows    = 1;
     int st;
     for (st=1; st<argc; ++st) {
       string arg(argv[st]);

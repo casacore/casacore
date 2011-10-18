@@ -57,7 +57,7 @@ void list (const RecordInterface& record);
 
 int main()
 {
-  try {
+try {
 
 
 // Create default Coordinate System, [ra, dec, freq]
@@ -450,11 +450,11 @@ int main()
 //   cout << endl;
 
 
-  } catch (AipsError& x) {
-    cerr << "aipserror: error " << x.getMesg() << endl;
-    cout << "not ok" << endl; 
-    return 1;
-  }
+} catch (AipsError x) {
+      cerr << "aipserror: error " << x.getMesg() << endl;
+      cout << "not ok" << endl; 
+      return 1;
+}
 
   cout << "ok" << endl; 
   return 0;

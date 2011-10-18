@@ -67,8 +67,15 @@ template <class T> class Vector;
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // Tables are assumed to have the
-// VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,
-// else an exception will be thrown.<br>
+// VS_VERSION, VS_DATE, VS_CREATE, VS_TYPE,
+// MJD0 (first MJD in table - 1.0 * dMJD, >= 10000),
+// dMJD (increment between successive MJDs, in days, > 0),
+// and NAME
+// keywords, be gapless (constant dMJD), and be of type IERS,
+// or else an exception will be thrown.<br>
+// They are also assumed to have the MJD, RA, DEC, Rho, and RadVel columns.
+// The DiskLong and DiskLat columns can be used if they are present, but they
+// are no longer expected.
 // The <src>get()</src> method will obtain data from the cometary
 // tables. The data obtained will be in the specified frame.
 // Note that the normal usage of these tables is through the Measures system.
@@ -83,6 +90,7 @@ template <class T> class Vector;
 // </synopsis>
 //
 // <example>
+// See test/tMeasComet.cc.
 // <srcblock>
 //   tbd
 // </srcblock>
@@ -148,16 +156,30 @@ class MeasComet {
   Int nelements() const;
   // Get a comet position
   Bool get(MVPosition &returnValue, Double date) const;
-  // Get the local on-disk direction
+  // Get the local on-disk direction.  Returns False if the time or sub-observer
+  // longitude and latitude are unavailable, True on success.
   Bool getDisk(MVDirection &returnValue, Double date) const;
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
   Bool getRadVel(MVRadialVelocity &returnValue, Double date) const;
+
+  // Return the temperature in K, or -1 if the table does not have it.
+  // If squawk is true an error message will also be posted.
+  Double getTemperature(const Bool squawk);
+
+  // Return the mean radius in AU, or -1 if the table does not have it.
+  // If squawk is true an error message will also be posted.
+  Double getMeanRad(const Bool squawk);  
+
   // Create a clone
   MeasComet *clone() const;
 
   // Close the Comet tabls only
   void closeMeas();
 
+  // Convenience function that returns ks[kw] in units of unit, setting
+  // success.
+  static Double get_Quantity_keyword(const TableRecord& ks, const String& kw,
+				     const Unit& unit, Bool& success);
  private:
   
   //# General member functions
@@ -166,7 +188,22 @@ class MeasComet {
   // Fill Table lines
   Bool fillMeas(Double utf) const;
 
+  // Helper functions for accessing ldat_p.  index should be either 0 or 1, but
+  // that isn't checked!
+  MVPosition getRelPosition(const uInt index) const;
+  MVDirection getDiskLongLat(const uInt index) const;  // Must not be called if !haveDiskLongLat_p
+
+  // Try to read mean_rad_p and temperature_p, returning whether or not it was
+  // successful.  (but the real mark of success is whether or not they are
+  // positive.)
+  // It sets haveTriedExtras_p to true and will return right away if it is
+  // already true.
+  Bool getExtras();
+
   //# Data members
+
+  // Initialized in the "initialization list" of the c'tors, so maintain order:
+
   // Actual table
   Table tab_p;
   // Measured data readable
@@ -175,9 +212,7 @@ class MeasComet {
   Bool measured_p;
   // Row descriptions
   ROTableRow row_p;
-  // Field pointers
-  RORecordFieldPtr<Double> rfp_p[MeasComet::N_Columns];
-  // First (-1) MJD in list
+  // First MJD in list - 1.0 * dmjd_p
   Double mjd0_p;
   // Last MJD in list
   Double mjdl_p;
@@ -189,17 +224,31 @@ class MeasComet {
   String name_p;
   // Position on Earth
   MVPosition topo_p;
-  // Type of ccordinates
+  // Type of coordinates
   MDirection::Types mtype_p;
-  // Lines in memory
-  mutable Int lnr_p[2];
-  // Last read data (measlow - meashigh)
-  mutable Double ldat_p[2][N_Columns];
   // Message given
   Bool msgDone_p;
   // File names
   String tp_p;
 
+  // Whether or not the sub-observer longitude and latitude are available.
+  Bool haveDiskLongLat_p;
+
+  uInt ncols_p;	// # of columns.
+
+  // These may be initialized _inside_ the c'tors, but the order here is
+  // unimportant:
+
+  // Field pointers
+  Vector<RORecordFieldPtr<Double> > rfp_p;
+  // Lines in memory
+  mutable Int lnr_p[2];			    // Why are these mutables here?
+  // Last read data (measlow - meashigh)
+  mutable Vector<Double> ldat_p[2];         // They allow declaring a const
+					    // which isn't.
+  Bool haveTriedExtras_p;
+  Double temperature_p;
+  Double mean_rad_p;
 };
 
 //# Inline Implementations

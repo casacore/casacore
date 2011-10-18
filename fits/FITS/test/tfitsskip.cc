@@ -385,6 +385,7 @@ int main(int argc, const char* argv[])
 	cout<<"argv[1]="<<argv[1]<<endl;
 	FitsInput fin(argv[1],FITS::Disk);
 	cout<<"FitsInput object created ok."<<endl;
+	cout<<"The number of HDU's: " << fin.getnumhdu() <<endl;
 	
 	if (fin.err() == FitsIO::IOERR) {
 	    cout << "Error opening FITS input.\n";

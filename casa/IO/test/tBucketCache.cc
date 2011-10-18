@@ -222,10 +222,9 @@ void c (uInt)
     BucketCache cache (&file, 512, 32768, rec[0], 10, 0, aToLocal, aFromLocal,
 		       aInitBuffer, aDeleteBuffer);
     cache.get ((char*)rec, 512, 512 + cache.nBucket()*32768);
-    char* buf;
     for (uInt j=0; j<25; j++) {
 	for (i=0; i<100; i++) {
-	    buf = cache.getBucket(i);
+	    cache.getBucket(i);
 	}
     }
     cout << "read 25x" << cache.nBucket() << " buckets with swap" << endl;

@@ -65,13 +65,12 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
-  pInImage_p(0)
+  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)), precision_(-1)
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
    }
 }
-
 
 template <class T>
 ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
@@ -81,7 +80,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
-  pInImage_p(0)
+  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)), precision_(-1)
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -95,30 +94,26 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
 // Copy constructor.  Storage image is not copied.
 //
 : LatticeStatistics<T>(other),
-  pInImage_p(0)
+  pInImage_p(0), blc_(other.getBlc()), precision_(other.getPrecision())
 {
-   if (pInImage_p!=0) delete pInImage_p;
    pInImage_p = other.pInImage_p->cloneII();
 }
 
+// Assignment operator.  Storage image is not copied
 
 template <class T>
-ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other)
-//
-// Assignment operator.  Storage image is not copied
-//
-{
+ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other) {
    if (this != &other) {
       LatticeStatistics<T>::operator=(other);
-//
-      if (pInImage_p!=0) delete pInImage_p;
+      if (pInImage_p!=0) {
+    	  delete pInImage_p;
+      }
       pInImage_p = other.pInImage_p->cloneII();
+      precision_ = other.getPrecision();
+      blc_ = other.getBlc();
    }
    return *this;
 }
-
-
- 
 
 template <class T>
 ImageStatistics<T>::~ImageStatistics()
@@ -141,7 +136,9 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 
 // Make a clone of the image
 
-   if (pInImage_p!=0) delete pInImage_p;
+   if (pInImage_p!=0) {
+	   delete pInImage_p;
+   }
    pInImage_p = image.cloneII();
 
 
@@ -156,10 +153,10 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 
 template <class T>
 Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
-//
+
 // Get beam volume if present.  ALl this beamy stuff should go to
 // a class called GaussianBeam and be used by GaussianCOnvert as well
-//
+
 {
    beamArea = -1.0;
    ImageInfo ii = pInImage_p->imageInfo();
@@ -167,21 +164,23 @@ Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
    CoordinateSystem cSys = pInImage_p->coordinates();
    String imageUnits = pInImage_p->units().getName();
    imageUnits.upcase();
-//
+
    Int afterCoord = -1;   
    Int dC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
-   if (beam.nelements()==3 && dC!=-1 && imageUnits==String("JY/BEAM")) {
+   // use contains() not == so moment maps are dealt with nicely
+   if (beam.nelements()==3 && dC!=-1 && imageUnits.contains("JY/BEAM")) {
       DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
       Vector<String> units(2);
-      units(0) = "rad"; units(1) = "rad";
+      units(0) = units(1) = "rad";
       dCoord.setWorldAxisUnits(units);
       Vector<Double> deltas = dCoord.increment();
-//
+
       Double major = beam(0).getValue(Unit("rad"));
       Double minor = beam(1).getValue(Unit("rad"));
-      beamArea = 1.1331 * major * minor / abs(deltas(0) * deltas(1));
+      beamArea = C::pi/(4*log(2)) * major * minor / abs(deltas(0) * deltas(1));
       return True;
-   } else {
+   }
+   else {
       return False;
    }
 }
@@ -346,82 +345,129 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 }
 
 template <class T>
-void ImageStatistics<T>::displayStats( AccumType nPts, AccumType sum, AccumType median, 
-	AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean, 
-	AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax )
-{
-    if ( ! doList_p ) {
-	// Nothing to display, listing data is turned off.
-	return;
-    }
-    
+void ImageStatistics<T>::displayStats(
+		AccumType nPts, AccumType sum, AccumType median,
+		AccumType medAbsDevMed, AccumType quartile, AccumType sumSq,
+		AccumType mean, AccumType var, AccumType rms, AccumType sigma,
+		AccumType dMin, AccumType dMax
+) {
+	if ( ! doList_p ) {
+		// Nothing to display, listing data is turned off.
+		return;
+	}
 
-    // Get beam
-    Double beamArea;
-    Bool hasBeam = getBeamArea(beamArea);
 
-    // Find world coordinates of min and max. We list pixel coordinates
-    // of min/max relative to the start of the parent lattice
-    //if (!fixedMinMax_p) {
+	// Get beam
+	Double beamArea;
+	Bool hasBeam = getBeamArea(beamArea);
 
-    CoordinateSystem cSys(pInImage_p->coordinates());
-    String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys);
-    String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys);
+	// Find world coordinates of min and max. We list pixel coordinates
+	// of min/max relative to the start of the parent lattice
+	//if (!fixedMinMax_p) {
+
+	CoordinateSystem cSys(pInImage_p->coordinates());
+	String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys, precision_);
+	String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys, precision_);
 	//}
-    
 
-    // Have to convert LogIO object to ostream before can apply
-    // the manipulators.  Also formatting Complex numbers with
-    // the setw manipulator fails, so I go to a lot of trouble
-    // with ostringstreams (which are useable only once).
-    const Int oPrec = 6;
-    Int oWidth = 14;
-    T* dummy = 0;
-    DataType type = whatType(dummy);
-    if (type==TpComplex) {
-	oWidth = 32;
-    }
-    setStream(os_p.output(), oPrec);
-    
-    ///////////////////////////////////////////////////////////////////////
-    //                 Do Values Section
-    ///////////////////////////////////////////////////////////////////////
-    os_p << "Values --- " << LogIO::POST;
-    if ( hasBeam ) {
-	os_p << "         -- flux density [flux]:     " << sum/beamArea << " Jy" << LogIO::POST;
-    }
-    
-    if (LattStatsSpecialize::hasSomePoints(nPts)) {
-	os_p << "         -- number of points [npts]:                " << nPts << LogIO::POST;
-	os_p << "         -- maximum value [max]:                    " << dMax << LogIO::POST;
-	os_p << "         -- minimum value [min]:                    " << dMin << LogIO::POST;
-	os_p << "         -- position of max value (pixel) [maxpos]: " << maxPos_p << LogIO::POST;
-	os_p << "         -- position of min value (pixel) [minpos]: " << minPos_p << LogIO::POST;
-	os_p << "         -- position of max value (world) [maxposf]: " << maxPosString << LogIO::POST;
-	os_p << "         -- position of min value (world) [maxposf]: " << minPosString << LogIO::POST;
-	os_p << "         -- Sum of pixel values [sum]:               " << sum << LogIO::POST;
-	os_p << "         -- Sum of squared pixel values [sumsq]:     " << sumSq << LogIO::POST;
-    }
-    
-    
 
-    ///////////////////////////////////////////////////////////////////////
-    //                 Do Statistical Section
-    ///////////////////////////////////////////////////////////////////////
-    os_p << "\nStatistics --- " << LogIO::POST;
-    if (LattStatsSpecialize::hasSomePoints(nPts)) {
-	os_p << "        -- Mean of the pixel values [mean]:         " << mean << LogIO::POST;
-	os_p << "        -- Variance of the pixel values :           " << var << LogIO::POST;
-	os_p << "        -- Standard deviation of the Mean [sigma]:  " << sigma << LogIO::POST;
-	os_p << "        -- Root mean square [rms]:                  " << rms << LogIO::POST;
-	os_p << "        -- Median of the pixel values [median]:     " << median << LogIO::POST;
-	os_p << "        -- Median of the deviations [medabsdevmed]: " << medAbsDevMed << LogIO::POST;
-	os_p << "        -- Quartile [quartile]:                     " << quartile << LogIO::POST;
-    } else {
-	os_p << LogIO::WARN << "No valid points found " << LogIO::POST;
-    }
+	// Have to convert LogIO object to ostream before can apply
+	// the manipulators.  Also formatting Complex numbers with
+	// the setw manipulator fails, so I go to a lot of trouble
+	// with ostringstreams (which are useable only once).
+	const Int oPrec = 6;
+	Int oWidth = 14;
+	T* dummy = 0;
+	DataType type = whatType(dummy);
+	if (type==TpComplex) {
+		oWidth = 32;
+	}
+	setStream(os_p.output(), oPrec);
+
+	Unit bunit = pInImage_p->units();
+	String sbunit = bunit.getName();
+	Quantity uSquared(1, bunit);
+	uSquared *= uSquared;
+	String bunitSquared = uSquared.getUnit();
+
+	///////////////////////////////////////////////////////////////////////
+	//                 Do Values Section
+	///////////////////////////////////////////////////////////////////////
+	os_p << "Values --- " << LogIO::POST;
+	if ( hasBeam ) {
+		// normalisation of units with "beam" in them is not (well) implemented, so brute force it
+		Int iBeam = sbunit.find("/beam");
+		String fUnit = (iBeam >= 0)
+			? sbunit.substr(0, iBeam) + sbunit.substr(iBeam+5)
+			: "Jy";
+		os_p << "         -- flux density [flux]:     " << sum/beamArea
+			<< " " << fUnit << LogIO::POST;
+	}
+
+	IPosition myMaxPos = maxPos_p;
+	IPosition myMinPos = minPos_p;
+	myMaxPos += blc_;
+	myMinPos += blc_;
+
+	if (LattStatsSpecialize::hasSomePoints(nPts)) {
+		os_p << "         -- number of points [npts]:                " << nPts << LogIO::POST;
+		os_p << "         -- maximum value [max]:                    " << dMax << " " << sbunit << LogIO::POST;
+		os_p << "         -- minimum value [min]:                    " << dMin << " " << sbunit << LogIO::POST;
+		os_p << "         -- position of max value (pixel) [maxpos]: " << myMaxPos << LogIO::POST;
+		os_p << "         -- position of min value (pixel) [minpos]: " << myMinPos << LogIO::POST;
+		os_p << "         -- position of max value (world) [maxposf]: " << maxPosString << LogIO::POST;
+		os_p << "         -- position of min value (world) [maxposf]: " << minPosString << LogIO::POST;
+		os_p << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit << LogIO::POST;
+		os_p << "         -- Sum of squared pixel values [sumsq]:     " << sumSq
+				<< " " << bunitSquared << LogIO::POST;
+	}
+
+
+
+	///////////////////////////////////////////////////////////////////////
+	//                 Do Statistical Section
+	///////////////////////////////////////////////////////////////////////
+	os_p << "\nStatistics --- " << LogIO::POST;
+	if (LattStatsSpecialize::hasSomePoints(nPts)) {
+		os_p << "        -- Mean of the pixel values [mean]:         " << mean << " "
+				<< sbunit << LogIO::POST;
+		os_p << "        -- Variance of the pixel values :           " << var << " "
+				<< sbunit << LogIO::POST;
+		os_p << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
+				<< sbunit <<  LogIO::POST;
+		os_p << "        -- Root mean square [rms]:                  " << rms << " "
+				<< sbunit << LogIO::POST;
+		os_p << "        -- Median of the pixel values [median]:     " << median <<
+				" " << sbunit << LogIO::POST;
+		os_p << "        -- Median of the deviations [medabsdevmed]: " << medAbsDevMed
+				<< " " << sbunit << LogIO::POST;
+		os_p << "        -- Quartile [quartile]:                     " << quartile << " " <<
+				sbunit <<LogIO::POST;
+	} else {
+		os_p << LogIO::WARN << "No valid points found " << LogIO::POST;
+	}
 }
 
+
+template <class T>
+void ImageStatistics<T>::setPrecision(Int precision) {
+	precision_ = precision;
+}
+
+template <class T>
+void ImageStatistics<T>::setBlc(const IPosition& blc) {
+	blc_ = blc;
+}
+
+template <class T>
+IPosition ImageStatistics<T>::getBlc() const {
+	return blc_;
+}
+
+template <class T>
+Int ImageStatistics<T>::getPrecision() const {
+	return precision_;
+}
 
 template <class T>
 void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const

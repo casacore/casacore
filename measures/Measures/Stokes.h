@@ -31,7 +31,7 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Fallible.h>
-
+#include <casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -139,7 +139,8 @@ public:
 //		"??".
 	static String name(StokesTypes stokesType);
 
-
+	// get all recognized stokes names in no guaranteed order.
+	static Vector<String> allNames(Bool includeUndefined = False);
 
 //              map StokesTypes to receptor number (0 or 1) for the
 //              interferometric correlation products.

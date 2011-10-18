@@ -58,11 +58,13 @@ try {
 
    Input inputs(1);
    inputs.create("in", "", "Input FITS file");
+   inputs.create("hdunum", "0", "HDU number");
    inputs.create("print", "F", "Print some data");
    inputs.create("size", "5", "Size to print");
 //
    inputs.readArguments(argc, argv);
    String in = inputs.getString("in");
+   const uInt hdunum = (uInt)inputs.getInt("hdunum");
    const Bool print = inputs.getBool("print");
    const Int size = inputs.getInt("size");
 //
@@ -73,7 +75,7 @@ try {
 
 // Open FITSImage
 
-   FITSImage fitsImage(in);
+   FITSImage fitsImage(in, 0, hdunum);
    fitsImage.tempClose();
    AlwaysAssert(fitsImage.imageType()=="FITSImage", AipsError);
    Unit unit("Jy/beam");

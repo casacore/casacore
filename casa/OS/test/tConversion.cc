@@ -28,6 +28,7 @@
 
 #include <casa/aips.h>
 #include <casa/OS/Conversion.h>
+#include <casa/OS/Timer.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
@@ -36,6 +37,53 @@
 #include <casa/namespace.h>
 // This program tests the class Conversion.
 
+// Check optimized conversions.
+void checkAll()
+{
+  cout << "checkAll ..." << endl;
+  uChar bits[256];
+  for (uInt i=0; i<256; ++i) {
+    bits[i]= i;
+  }
+  Bool flagArr[8*260];
+  // Make sure to use an aligned array.
+  Bool* flags = flagArr;
+  cout << "unaligned flag pointer " << flags << endl;
+  flags = (Bool*)(8 * (((unsigned long long)flags-1)/8 + 1));
+  cout << "  aligned flag pointer " << flags << endl;
+  Conversion::bitToBool (flags, bits, 8*256);
+  for (uInt i=0; i<256; ++i) {
+    uInt val = 0;
+    uInt tmp = 1;
+    for (uInt j=0; j<8;++j) {
+      if (flags[i*8 + j]) {
+        val += tmp;
+      }
+      tmp *= 2;
+    }
+    AlwaysAssertExit (val == bits[i]);
+  }
+  uChar out[256];
+  Conversion::boolToBit (out, flags, 8*256);
+  for (uInt i=0; i<256; ++i) {
+    AlwaysAssertExit (out[i] == bits[i]);
+  }
+  // Time difference between old and optimized version.
+  {
+    Timer timer;
+    for (int i=0; i<100000; ++i) {
+      Conversion::bitToBool (flags+1, bits, 8*256);
+    }
+    timer.show("unaligned");
+  }
+  {
+    Timer timer;
+    for (int i=0; i<100000; ++i) {
+      Conversion::bitToBool (flags, bits, 8*256);
+    }
+    timer.show("aligned  ");
+  }
+}
 
 int main()
 {
@@ -120,6 +168,8 @@ int main()
 	 
     delete [] data;
     delete [] bits;
+
+    checkAll();
     cout << "OK" << endl;
     return 0;
 }

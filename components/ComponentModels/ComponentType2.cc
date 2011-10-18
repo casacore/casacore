@@ -33,6 +33,7 @@
 #include <components/ComponentModels/PointShape.h>
 #include <components/ComponentModels/SpectralIndex.h>
 #include <components/ComponentModels/SpectralModel.h>
+#include <components/ComponentModels/TabularSpectrum.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -61,6 +62,8 @@ construct(ComponentType::SpectralShape spectralEnum) {
     return new ConstantSpectrum;
   case ComponentType::SPECTRAL_INDEX:
     return new SpectralIndex;
+  case ComponentType::TABULAR_SPECTRUM:
+    return new TabularSpectrum;
   default:
     return reinterpret_cast<SpectralModel*>(0);
   };

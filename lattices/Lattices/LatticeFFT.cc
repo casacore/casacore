@@ -55,7 +55,9 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt nx = slabShape(0) = latticeShape(0);
   const uInt ny = slabShape(1) = latticeShape(1);
   // use 1/8 of memory for FFT of a plane at most 
-  Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
+  //Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
+  //use aipsrc value for memory size if exists
+  Long cacheSize = (HostInfo::memoryTotal(true)/(sizeof(Complex)*8))*1024;
 
   // For small transforms, we do everything in one plane
   if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
@@ -63,6 +65,36 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
     LatticeStepper ls(latticeShape, cursorShape);
     LatticeIterator<Complex> li(cLattice, ls);
     FFTServer<Float,Complex> ffts(cursorShape);
+    for (li.reset(); !li.atEnd(); li++) {
+      ffts.fft(li.rwMatrixCursor(), toFrequency);
+    }
+  } // For large transforms , we do line by line FFT's
+  else {
+    Vector<Bool> whichAxes(ndim, False);
+    whichAxes(0) = whichAxes(1) = True;
+    LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
+  }
+}
+
+void LatticeFFT::cfft2d(Lattice<DComplex>& cLattice, const Bool toFrequency) {
+  const uInt ndim = cLattice.ndim();
+  DebugAssert(ndim > 1, AipsError);
+  const IPosition& latticeShape = cLattice.shape();
+  const uInt maxPixels = cLattice.advisedMaxPixels();
+  IPosition slabShape = cLattice.niceCursorShape(maxPixels);
+  const uInt nx = slabShape(0) = latticeShape(0);
+  const uInt ny = slabShape(1) = latticeShape(1);
+  // use 1/8 of memory for FFT of a plane at most 
+  //Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
+  //use aipsrc value for memory size if exists
+  Long cacheSize = (HostInfo::memoryTotal(true)/(sizeof(Complex)*8))*1024;
+
+  // For small transforms, we do everything in one plane
+  if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
+    const IPosition cursorShape(2, nx, ny);
+    LatticeStepper ls(latticeShape, cursorShape);
+    LatticeIterator<DComplex> li(cLattice, ls);
+    FFTServer<Double,DComplex> ffts(cursorShape);
     for (li.reset(); !li.atEnd(); li++) {
       ffts.fft(li.rwMatrixCursor(), toFrequency);
     }
@@ -94,7 +126,32 @@ void LatticeFFT::cfft(Lattice<Complex>& cLattice,
   }
 }
 
+void LatticeFFT::cfft(Lattice<DComplex>& cLattice,
+		     const Vector<Bool>& whichAxes, const Bool toFrequency) {
+  const uInt ndim = cLattice.ndim();
+  DebugAssert(ndim > 0, AipsError);
+  DebugAssert(ndim == whichAxes.nelements(), AipsError);
+  FFTServer<Double,DComplex> ffts;
+  const IPosition latticeShape = cLattice.shape();
+  const IPosition tileShape = cLattice.niceCursorShape();
+
+  for (uInt dim = 0; dim < ndim; dim++) {
+    if (whichAxes(dim) == True) {
+      TiledLineStepper ts(latticeShape, tileShape, dim);
+      LatticeIterator<DComplex> li(cLattice, ts);
+      for (li.reset(); !li.atEnd(); li++) {
+	ffts.fft(li.rwVectorCursor(), toFrequency);
+      }
+    }
+  }
+}
+
 void LatticeFFT::cfft(Lattice<Complex>& cLattice, const Bool toFrequency) {
+  const Vector<Bool> whichAxes(cLattice.ndim(), True);
+  LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
+}
+
+void LatticeFFT::cfft(Lattice<DComplex>& cLattice, const Bool toFrequency) {
   const Vector<Bool> whichAxes(cLattice.ndim(), True);
   LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
 }

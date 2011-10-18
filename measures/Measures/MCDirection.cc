@@ -40,7 +40,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Statics
-Bool MCDirection::stateMade_p = False;
 uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::GALACTIC,	MDirection::J2000,	0},
   {MDirection::GALACTIC,	MDirection::B1950,	2},
@@ -91,17 +90,13 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::ICRS,		MDirection::J2000,	0},
   {MDirection::J2000,		MDirection::ICRS,	0} };
 uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
+MutexedInit MCDirection::theirMutexedInit (MCDirection::doFillState);
 
 //# Constructors
 MCDirection::MCDirection() :
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   VEC61(0), VEC62(0), VEC63(0), measMath() {
-  if (!stateMade_p) {
-    MDirection::checkMyTypes();
-    MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
-		      MDirection::N_Types, MCDirection::N_Routes,
-		      MCDirection::ToRef_p);
-  }
+    fillState();
 }
 
 //# Destructor
@@ -593,15 +588,15 @@ void MCDirection::doConvert(MVDirection &in,
 }
 
 String MCDirection::showState() {
-  if (!stateMade_p) {
-    MDirection::checkMyTypes();
-    MCBase::makeState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
-		      MDirection::N_Types, MCDirection::N_Routes,
-		      MCDirection::ToRef_p);
-  }
-  return MCBase::showState(MCDirection::stateMade_p, MCDirection::FromTo_p[0],
+  fillState();
+  return MCBase::showState(MCDirection::FromTo_p[0],
 			   MDirection::N_Types, MCDirection::N_Routes,
 			   MCDirection::ToRef_p);
+}
+
+void MCDirection::doFillState (void*) {
+  MDirection::checkMyTypes();
+  MCBase::makeState(FromTo_p[0],  MDirection::N_Types, N_Routes, ToRef_p);
 }
 
 } //# NAMESPACE CASA - END

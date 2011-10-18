@@ -209,8 +209,7 @@ try {
     } 
     
     try {
-	Bool loc;
-	loc = A<D;
+        A<D;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } 

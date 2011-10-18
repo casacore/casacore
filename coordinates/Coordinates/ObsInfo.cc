@@ -293,12 +293,7 @@ Bool ObsInfo::fromRecord(String & error, const RecordInterface & inRecord)
         Vector<Double> v;
         Int field2 = rec.fieldNumber("value");
         if (field2 >= 0) {
-   	   if (rec.type(field2) != TpArrayDouble) {
-              error = "pointingcenter.value field is not ArrayDouble";
-              return False;
-           } else {
-              v = Vector<Double>(rec.asArrayDouble(field2));
-           }
+           v = Vector<Double>(rec.toArrayDouble(field2));
         } else {
            error = "field pointingcenter does not contain subfield 'value'";
            return False;

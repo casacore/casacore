@@ -397,7 +397,7 @@ void Aipsrc::save(const String keyword, const String val) {
 void Aipsrc::parse(Bool force) {
   // Thread-safety. Note that when the lock is acquired,
   // parse might have been done already in another thread.
-  ScopedLock lock(theirMutex);
+  ScopedMutexLock lock(theirMutex);
   if (doInit || force) {
     // Refill basic data
     filled = False;
@@ -624,7 +624,7 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   // Static Initializations -- Only really want to read the files once
 
   Mutex Aipsrc::theirMutex;
-  Bool Aipsrc::doInit = True;
+  volatile Bool Aipsrc::doInit = True;
   Double Aipsrc::lastParse = 0;
   Block<String> Aipsrc::keywordPattern(0);
   Block<String> Aipsrc::keywordValue(0);

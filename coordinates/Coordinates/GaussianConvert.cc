@@ -520,7 +520,7 @@ Bool GaussianConvert::deconvolve(Quantum<Double>& majorAxisModel,
          minorAxisModel = minorAxisBeam;
          positionAngleModel = positionAngleBeam;
       } else {
-         throw(AipsError(String("Illegal gaussian parameters")));
+         throw AipsError("Source may be only (slightly) resolved in one direction");
       }
    } else {
       majorAxisModel.setValue(sqrt(0.5*(s+t)));

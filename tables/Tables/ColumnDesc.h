@@ -359,7 +359,7 @@ public:
     // Register the main data managers (if not done yet).
     // It is fully thread-safe.
     static void registerMainCtor()
-      { if (!theirMainRegistrationDone) doRegisterMainCtor(); }
+      { theirMutexedInit.exec(); }
 
 private:
     // Register a constructor without doing a mutex lock.
@@ -374,8 +374,7 @@ private:
     // The map is filled with the main XXColumnDesc construction functions
     // by the function registerColumnDesc upon the first call of
     // <src>ColumnDesc::getFile</src>.
-    static Bool  theirMainRegistrationDone;
-    static Mutex theirMutex;
+    static MutexedInit theirMutexedInit;
     static SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)> theirRegisterMap;
 
     // Serve as default function for theirRegisterMap (see below),
@@ -386,7 +385,7 @@ private:
     static BaseColumnDesc* unknownColumnDesc (const String& name);
 
     // Do the actual (thread-safe) registration of the main data managers.
-    static void doRegisterMainCtor();
+    static void doRegisterMainCtor (void*);
 
 private:
     // Construct from a pointer (for class BaseColumn).

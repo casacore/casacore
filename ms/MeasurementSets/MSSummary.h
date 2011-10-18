@@ -129,6 +129,8 @@ public:
    void listMain (LogIO& os, Bool verbose=False) const;
 //Return some useful info in a record too along with os
    void listMain (LogIO& os, Record& outRec, Bool verbose=False, Bool fillRecord=True) const;
+   // Return a Record with information derived from the main table
+   void getScanSummary (Record& outRec) const;
 
 // List subtables
 // <group>

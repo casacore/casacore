@@ -91,12 +91,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <example>
 // <srcblock>
-//    Sinusoid<Double> sf(5.0, 25.0, 7);
-//    sf(25);            // = -4.911
+//    Sinusoid1D<Double> sf(5.0, 25.0, 7);
+//    sf(25);              // = -0.9369
 //    sf.setAmplitude(1.0);
 //    sf[PERIOD] = 2.0;                
 //    sf.setX0(0.0);
-//    sf(0.5);             // = 1.0
+//    sf(0.5);             // = 0.0
 // </srcblock>
 // </example>
 

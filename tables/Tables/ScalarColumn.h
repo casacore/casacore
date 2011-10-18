@@ -146,6 +146,12 @@ public:
 	    baseColPtr_p->get (rownr, &value);
 	}
     }
+    T get (uInt rownr) const
+    {
+	T value;
+	get (rownr, value);
+	return value;
+    }
     T operator() (uInt rownr) const
     {
 	T value;

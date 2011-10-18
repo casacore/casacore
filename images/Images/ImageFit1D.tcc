@@ -46,7 +46,8 @@ template <class T>
 ImageFit1D<T>::ImageFit1D()
  : itsImagePtr(0),
    itsWeightPtr(0),
-   itsAxis(0)
+   itsAxis(0),
+   _converged(False), _success(False)
 {
    checkType();
 }
@@ -55,7 +56,8 @@ template <class T>
 ImageFit1D<T>::ImageFit1D(const ImageInterface<T>& image, uInt pixelAxis)
  : itsImagePtr(0),
    itsWeightPtr(0),
-   itsAxis(0)
+   itsAxis(0), _converged(False),
+   _success(False)
 {
    checkType();
    setImage(image, pixelAxis);
@@ -67,7 +69,7 @@ ImageFit1D<T>::ImageFit1D(const ImageInterface<T>& image,
                           uInt pixelAxis)
  : itsImagePtr(0),
    itsWeightPtr(0),
-   itsAxis(0)
+   itsAxis(0), _converged(False), _success(False)
 {
    checkType();
    setImage(image, pixelAxis);
@@ -79,7 +81,7 @@ template <class T>
 ImageFit1D<T>::ImageFit1D(const ImageFit1D<T>& other)
  : itsImagePtr(0),
    itsWeightPtr(0),
-   itsAxis(0)
+   itsAxis(0), _converged(False), _success(False)
 {
    checkType();
    copy(other);
@@ -124,110 +126,109 @@ void ImageFit1D<T>::setImage (const ImageInterface<T>& image,
 }
 
 
-template <class T> 
-Bool ImageFit1D<T>::setData (const IPosition& pos, 
-                             ImageFit1D<T>::AbcissaType abcissaType,
-                             Bool doAbs)
+template <class T>  Bool ImageFit1D<T>::setData (
+	const IPosition& pos,
+	const ImageFit1D<T>::AbcissaType abcissaType,
+	const Bool doAbs
+)
 {
-   const uInt nDim = itsImagePtr->ndim();
-   AlwaysAssert (pos.nelements()==nDim, AipsError);
-//
-   IPosition start(nDim);
-   IPosition shape(itsImagePtr->shape());
-   start(itsAxis) = 0;
-   for (uInt i=0; i<nDim; i++) {
-      if (i!=itsAxis) {
-        start(i) = pos(i);
-        shape(i) = 1;
-      }
-   }
+	const uInt nDim = itsImagePtr->ndim();
+	AlwaysAssert (pos.nelements()==nDim, AipsError);
+	//
+	IPosition start(nDim);
+	IPosition shape(itsImagePtr->shape());
+	start(itsAxis) = 0;
+	for (uInt i=0; i<nDim; i++) {
+		if (i!=itsAxis) {
+			start(i) = pos(i);
+			shape(i) = 1;
+		}
+	}
 
-// Get ordinate data
+	// Get ordinate data
 
-   Bool remDeg = True;
-   Vector<T> y;
-   y = itsImagePtr->getSlice(start, shape, remDeg);
+	Vector<T> y;
+	y = itsImagePtr->getSlice(start, shape, True);
 
-// Mask
+	// Mask
 
-   Vector<Bool> mask;
-   mask = itsImagePtr->getMaskSlice(start, shape, remDeg);
+	Vector<Bool> mask;
+	mask = itsImagePtr->getMaskSlice(start, shape, True);
 
-// Weights
+	// Weights
 
-   Vector<T> weights(y.nelements());
-   weights = 1.0;
-   if (itsWeightPtr) weights = itsWeightPtr->getSlice(start, shape, remDeg);
+	Vector<T> weights(y.nelements());
+	if (itsWeightPtr) {
+		weights = itsWeightPtr->getSlice(start, shape, True);
+	}
+	else {
+		weights = 1.0;
+	}
 
-// Generate Abcissa
+	// Generate Abcissa
 
-   Vector<Double> x;
-   if (!makeAbcissa(x, abcissaType, doAbs)) return False;
-  
-// Set data in fitter; we need to use a Double fitter at present
+	Vector<Double> x;
+	if (!makeAbcissa(x, abcissaType, doAbs)) {
+		return False;
+	}
 
-   Vector<FitterType> y2(y.shape());
-   convertArray(y2, y);
-//
-   Vector<Double> w2(weights.shape());
-   convertArray(w2, weights);
-//
-   if (!itsFitter.setData (x, y2, mask, w2)) {
-      itsError = itsFitter.errorMessage();
-      return False;
-   }
-//
-   return True;
+	// Set data in fitter; we need to use a Double fitter at present
+
+	Vector<FitterType> y2(y.shape());
+	convertArray(y2, y);
+	Vector<Double> w2(weights.shape());
+	convertArray(w2, weights);
+	if (!itsFitter.setData (x, y2, mask, w2)) {
+		itsError = itsFitter.errorMessage();
+		return False;
+	}
+	return True;
 }
 
 
-template <class T> 
-Bool ImageFit1D<T>::setData (const ImageRegion& region, 
-                             ImageFit1D<T>::AbcissaType abcissaType,
-                             Bool doAbs)
-{
+template <class T> Bool ImageFit1D<T>::setData (
+		const ImageRegion& region,
+		const ImageFit1D<T>::AbcissaType abcissaType,
+		const Bool doAbs)
+		{
 
-// Make SubImage
+	// Make SubImage
 
-   const SubImage<T> subImage(*itsImagePtr, region, False);
+	const SubImage<T> subImage(*itsImagePtr, region, False);
 
-// Average over non-profile axes 
+	// Average over non-profile axes
 
-   const uInt nDim = subImage.ndim();
-   IPosition axes = IPosition::otherAxes(nDim, IPosition(1,itsAxis));
-   Bool dropDeg = True;
-//
-   Vector<T> y;
-   Vector<Bool> mask;
-   LatticeUtilities::collapse (y, mask, axes, subImage, dropDeg);
+	const uInt nDim = subImage.ndim();
+	IPosition axes = IPosition::otherAxes(nDim, IPosition(1,itsAxis));
+	Bool dropDeg = True;
+	Vector<T> y;
+	Vector<Bool> mask;
+	LatticeUtilities::collapse (y, mask, axes, subImage, dropDeg);
 
-// Weights
+	// Weights
 
-   Vector<T> weights(y.nelements());
-   weights = 1.0;
-   if (itsWeightPtr) {
-      LatticeUtilities::collapse (weights, axes, *itsWeightPtr, dropDeg);
-   }
+	Vector<T> weights(y.nelements());
+	weights = 1.0;
+	if (itsWeightPtr) {
+		LatticeUtilities::collapse (weights, axes, *itsWeightPtr, dropDeg);
+	}
 
-// Generate Abcissa
+	// Generate Abcissa
 
-   Vector<Double> x;
-   if (!makeAbcissa(x, abcissaType, doAbs)) return False;
-  
-// Set data in fitter; we need to use a Double fitter at present
+	Vector<Double> x;
+	if (!makeAbcissa(x, abcissaType, doAbs)) return False;
 
-   Vector<FitterType> y2(y.shape());
-   convertArray(y2, y);
-//
-   Vector<Double> w2(weights.shape());
-   convertArray(w2, weights);
-//
-   if (!itsFitter.setData (x, y2, mask, w2)) {
-      itsError = itsFitter.errorMessage();
-      return False;
-   }
-// 
-   return True;
+	// Set data in fitter; we need to use a Double fitter at present
+
+	Vector<FitterType> y2(y.shape());
+	convertArray(y2, y);
+	Vector<Double> w2(weights.shape());
+	convertArray(w2, weights);
+	if (!itsFitter.setData (x, y2, mask, w2)) {
+		itsError = itsFitter.errorMessage();
+		return False;
+	}
+	return True;
 }
 
 
@@ -252,11 +253,22 @@ template <class T>
 Bool ImageFit1D<T>::fit ()
 {
    check();
-//
-   return itsFitter.fit();
+   _converged = itsFitter.fit();
+   _success = True;
+   return _converged;
 }
 
 template <class T> 
+Bool ImageFit1D<T>::succeeded() const {
+	return _success;
+}
+
+template <class T>
+Bool ImageFit1D<T>::converged() const {
+	return _converged;
+}
+
+template <class T>
 Bool ImageFit1D<T>::setAbcissaState (String& errMsg, ImageFit1D<T>::AbcissaType& type,
                                      CoordinateSystem& cSys, const String& xUnit,
                                      const String& doppler, uInt pixelAxis)
@@ -394,6 +406,9 @@ void ImageFit1D<T>::copy(const ImageFit1D<T>& other)
 //
    itsFitter = other.itsFitter;
    itsError = other.itsError;
+
+   _converged = other._converged;
+   _success = other._success;
 }
 
 

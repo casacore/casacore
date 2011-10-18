@@ -271,8 +271,15 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     return vp;
 }
 
+template<class T> const Vector<T> Vector<T>::operator()
+  (const Slice &slice) const
+{
+    return const_cast<Vector<T>*>(this)->operator() (slice);
+}
+
 template<class T>
-void Vector<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+void Vector<T>::doNonDegenerate (const Array<T> &other,
+                                 const IPosition &ignoreAxes)
 {
     Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);

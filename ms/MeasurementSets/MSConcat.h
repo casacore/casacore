@@ -94,7 +94,8 @@ class MSConcat: public MSColumns
 {
 public:
   MSConcat(MeasurementSet& ms);
-  void concatenate(const MeasurementSet& otherMS);
+  void concatenate(const MeasurementSet& otherMS,
+		   const Bool dontModifyMain=False); // if true, MAIN is not touched
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
 private:
   MSConcat();
@@ -110,6 +111,7 @@ private:
                              // by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
+  Block<uInt> copyState(const MSState& otherState);
   Block<uInt> copyField(const MSField& otherFld);
   Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
 			    const MSPolarization& otherPol,
@@ -117,7 +119,8 @@ private:
   Bool copySource(const MeasurementSet& otherms);
   Bool updateSource();
   Bool sourceRowsEquivalent(const MSSourceColumns& sourceCol, 
-			   const uInt& rowi, const uInt& rowj);
+			    const uInt& rowi, const uInt& rowj,
+			    const Bool dontTestDirection=False);
 
   Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
 			 const uInt& rowi, const uInt& rowj);
@@ -135,6 +138,7 @@ private:
   SimpleOrderedMap <Int, Int> newSPWIndex_p;
   SimpleOrderedMap <Int, Int> newObsIndexA_p;
   SimpleOrderedMap <Int, Int> newObsIndexB_p;
+  SimpleOrderedMap <Int, Int> solSystObjects_p;
 
   Bool doSource_p;
   Bool doSource2_p;

@@ -29,6 +29,7 @@
 
 #include <casa/OS/Timer.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
@@ -52,9 +53,11 @@ int main(void)
     niter = 400;
 // loop a few times
      for (nloop = 1; nloop < niter; nloop++) {
-       for (i =0; i < n; i++) x[i] = 0;
-       for (i =0; i < n; i++) w[i] = 0;
-	}
+       for (i=0; i < n; i++) x[i] = 0;
+       for (i=0; i < n; i++) w[i] = 0;
+       // Use x and w, otherwise the compiler gives a warning.
+       AlwaysAssertExit (x[0] == 0  &&  w[0] == 0);
+     }
 
      user = tvec.user() ;
      system = tvec.system() ;
@@ -63,12 +66,13 @@ int main(void)
 
      cout << " tvec user " << user << "  system " << system << endl;
      cout << " real time " << real << endl;
-} 
-     cout << " total real time "<< sum << endl;
-     user = total.user_usec();
-     system = total.all_usec();
+  } 
+  cout << " total real time "<< sum << endl;
+  user = total.user_usec();
+  system = total.all_usec();
 
-     total.show ("Total");
-     cout << " total user microseconds " << user << "  all " << system << endl;
+  total.show ("Total");
+  cout << " total user microseconds " << user << "  all " << system << endl;
+
   return 0;
 }

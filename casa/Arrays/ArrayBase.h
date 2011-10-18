@@ -171,7 +171,7 @@ protected:
   // This is the implementation of the nonDegenerate functions.
   // It has a different name to be able to make it virtual without having
   // the "hide virtual function" message when compiling derived classes.
-  void baseNonDegenerate (ArrayBase& other, const IPosition& ignoreAxes);
+  void baseNonDegenerate (const ArrayBase& other, const IPosition& ignoreAxes);
     
   // These member functions return an Array reference with the specified
   // number of extra axes, all of length one, appended to the end of the

@@ -450,8 +450,8 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 // Convert an absolute pixel coordinate to world and format with 
 // default Coordinate formatting
 // <group>
-   static String formatCoordinate(const IPosition& pixel, CoordinateSystem& cSys);
-   static String formatCoordinate(const Vector<Double>& pixel, CoordinateSystem& cSys);
+   static String formatCoordinate(const IPosition& pixel, const CoordinateSystem& cSys, Int precision = -1);
+   static String formatCoordinate(const Vector<Double>& pixel, const CoordinateSystem& cSys, Int precision = -1);
 // </group>
 
 // Generate axis label String from coordinate. Specify coordinate axis,

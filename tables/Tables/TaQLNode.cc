@@ -50,7 +50,7 @@ TaQLNode TaQLNode::parse (const String& command)
   if (str.length() == 0  ||  str[str.length()-1] != '\n') {
     str += '\n';
   }
-  ScopedLock lock(theirMutex);
+  ScopedMutexLock lock(theirMutex);
   // Reset to default TaQL style and no timings.
   theirStyle.reset();
   try {

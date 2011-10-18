@@ -42,6 +42,8 @@
 #include <images/Images/ImageExpr.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/HDF5Image.h>
+#include <images/Images/FITSImage.h>
+#include <images/Images/MIRIADImage.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
@@ -82,6 +84,9 @@ namespace casa { //# name space casa begins
       itsImageComplex  (0),
       itsImageDComplex (0)
   {
+    // Register the functions to create a FITSImage or MIRIADImage object.
+    FITSImage::registerOpenFunction();
+    MIRIADImage::registerOpenFunction();
     openImage (name, mask, images);
   }
 
@@ -472,7 +477,7 @@ namespace casa { //# name space casa begins
     Vector<Double> refPix = cSys.referencePixel();
     for (uInt i=0; i<refPix.nelements(); ++i) {
       if (Int(i) != sP) {
-        refPix(i) = Double(shape(i) / 2);
+        refPix[i] = Double(shape[i] / 2);
       }
     }
     cSys.setReferencePixel (refPix);

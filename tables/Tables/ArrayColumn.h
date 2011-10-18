@@ -166,6 +166,7 @@ public:
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
     void get (uInt rownr, Array<T>& array, Bool resize = False) const;
+    Array<T> get (uInt rownr) const;
     Array<T> operator() (uInt rownr) const;
     // </group>
 

@@ -31,14 +31,20 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   
-  TableExprUDFNode::TableExprUDFNode (UDFBase* udf,
+  TableExprUDFNode::TableExprUDFNode (UDFBase* udf, const Table& tab,
                                       const TableExprNodeSet& source)
     : TableExprNodeMulti (udf->dataType(), VTScalar, OtFunc, source),
       itsUDF (udf)
   {
+    // Set the table. This is needed for ExprNode::checkReplaceTable to work.
+    table_p = tab;
     // The source may be empty which causes the expression type
-    // to be made constant. Force it to be variable.
-    exprtype_p = Variable; 
+    // to be made constant. Force it to be variable if needed.
+    if (udf->isConstant()) {
+      exprtype_p = Constant;
+    } else {
+      exprtype_p = Variable;
+    }
     // Set the unit (is also fine if undefined).
     setUnit (Unit(udf->getUnit()));
  }
@@ -46,6 +52,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TableExprUDFNode::~TableExprUDFNode()
   {
     delete itsUDF;
+  }
+
+  void TableExprUDFNode::replaceTablePtr (const Table& table)
+  {
+    itsUDF->replaceTable (table);
   }
 
   Bool      TableExprUDFNode::getBool     (const TableExprId& id)

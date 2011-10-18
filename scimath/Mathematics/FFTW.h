@@ -93,9 +93,9 @@ private:
   
   unsigned flags;
 
-  static Bool is_initialized_fftw;  // FFTW needs initialization
-                                    // only once per process
-                                    // not once per object
+  static volatile Bool is_initialized_fftw;  // FFTW needs initialization
+                                             // only once per process,
+                                             // not once per object
   static Mutex theirMutex;          // Initialization mutex
 };    
     

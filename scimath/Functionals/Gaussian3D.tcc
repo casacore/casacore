@@ -102,9 +102,6 @@ template<class T>
 Function<T>* Gaussian3D<T>::clone() const 
 {
   Function<T> *tmp = new Gaussian3D<T>(*this);
-  if (!tmp)
-    throw(AllocError("Gaussian3D<T>::cloneFunctionND() - new failed",  
-		     sizeof(Gaussian3D<T>)));
   return tmp;
 }
 

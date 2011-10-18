@@ -30,17 +30,18 @@
 #-----------------------------------------------------------------------------
 # Usage: assay <testexe and arguments>
 #-----------------------------------------------------------------------------
-# assay invokes an AIPS++ test program.  If the test program has an associated
+# assay invokes a casacore test program. If the test program has an associated
 # .run file then it simply invokes it.  Otherwise assay invokes the test
 # executable directly, and, if there is a corresponding .out file, compares
 # its output with that.
 #
+# The env.var. CASACORE_CHECK can be defined to do checking using tools
+# like valgrind. It defines a script that will execute the command. The
+# script can invoke the checking tool. If set to 1, yes, or YES, the script
+# casacore_memcheck will be used that uses valgrind's memcheck tool.
+#
 # If there is a .in file associated with the test program then assay will
 # redirect stdin from it.
-#
-# assay recognizes Glish test scripts via their .g suffix and invokes glish
-# on them.
-# Similarly Python test scripts are recognized via their .py suffix.
 #
 # Options:
 #   none
@@ -76,27 +77,48 @@
   fi
   CLEANUP=
 
+# Set testsrcdir to . if undefined.
+  if [ "$testsrcdir" = "" ]
+  then
+     testsrcdir=.
+  fi
+
+# Determine if a program checktool (like valgrind) has to be used.
+  casa_checktool=$CASACORE_CHECK
+# Empty or no means no checktool.
+  if test "$casa_checktool" = "0" -o "$casa_checktool" = "no" -o "$casa_checktool" = "NO"; then
+     casa_checktool=
+  fi
+# Default checktool is casacore_memcheck (using valgrind).
+  if test "$casa_checktool" = "1" -o "$casa_checktool" = "yes" -o "$casa_checktool" = "YES"; then
+     casa_checktool=$pgmpath/casacore_memcheck
+  fi
+# Export, so it can be used in possible .run files.
+  export casa_checktool
+# Delete possible already existing checktool output.
+  rm -rf $1.checktool*
+
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
         trap - 0 ; \
         exit $STATUS' 0 1 2 3 15
 
-# Check if command is a glish or python script.
-  COMMAND="$@"
-  SCRIPTUSED=0
+# Get the command.
+  COMMAND="$casa_checktool $@"
   set $@
 
 # Get the current directory.
   curdir=`pwd`
 
-# If there is a .run file then use it.
-# Note that in this way the run file is used if there is a .run and .py file.
-# Still the .py file is copied and removed as needed, so the .run file
-# can use the .py file.
+# If there is a .run file then use it without checktool.
+# Start it using sh if not executable.
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"
-     SCRIPTUSED=1
+     if [ -x "$1.run" ]
+     then
+        COMMAND="$1.run"
+     fi
   fi
 
 # If there is a .in file then use it as input.
@@ -104,6 +126,9 @@
   then
      COMMAND="$COMMAND < $1.in"
   fi
+
+  # Remove possible old output files.
+  rm -rf ${1}_tmp*
 
   # If running on a Cray cluster, we have to use qsub and yod.
   # If found, the result is a path, thus starts with a slash.

@@ -108,37 +108,52 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
 }
 
 
-Int ROMSPointingColumns::pointingIndex(Int antenna, Double ptime) const
+  Int ROMSPointingColumns::pointingIndex(Int antenna, Double ptime, Int guessRow) const
 {
+  if((this->nrow()) < 1)
+    return -1;
   // return the first row matching the requirements
   const Int nrow = antennaId().nrow();
-  for (Int i=0; i<nrow; i++) {
-    if (antennaId()(i)==antenna) {
-     Double halfInt=0.0;  
-     if(interval()(i)==0){
-       Int counter=0;
-       Int adder=1;
- 
-       while(time()(i+counter)==time()(i)){
-	 counter=counter+adder;
-	 if(nrow <= i+counter){
-	   adder=-1; 
-	   counter=0;
-	 }        
-       }       
-       halfInt = abs(time()(i+counter)-time()(i))/2.0;
-     }
-     else{
-       halfInt = interval()(i)/2.0;
-     }
-     if (halfInt>0.0) {
-       if (time()(i) >= ptime - halfInt && time()(i) <= ptime + halfInt) {
-	 return i;
-       }
-     } else {
- 	// valid for all times (we should also handle interval<0 -> timestamps)
-       return i;
-     }
+  //take up from where we left last time
+  //hopefully time is monotonic
+  //otherwise it will go through the table each time
+  if(guessRow <0)
+    guessRow=0;
+  for (Int k=0; k< 2; ++k){
+    Int start=guessRow;
+    Int end=nrow;
+    if(k==1){
+      start=0;
+      end=guessRow;
+    }
+    for (Int i=start; i<end; i++) {
+      if (antennaId()(i)==antenna) {
+	Double halfInt=0.0;  
+	if(interval()(i)==0){
+	  Int counter=0;
+	  Int adder=1;
+	  
+	  while(time()(i+counter)==time()(i)){
+	    counter=counter+adder;
+	    if(nrow <= i+counter){
+	      adder=-1; 
+	      counter=0;
+	    }        
+	  }       
+	  halfInt = abs(time()(i+counter)-time()(i))/2.0;
+	}
+	else{
+	  halfInt = interval()(i)/2.0;
+	}
+	if (halfInt>0.0) {
+	  if (time()(i) >= ptime - halfInt && time()(i) <= ptime + halfInt) {
+	    return i;
+	  }
+	} else {
+	  // valid for all times (we should also handle interval<0 -> timestamps)
+	  return i;
+	}
+      }
     }
   }
   return -1;

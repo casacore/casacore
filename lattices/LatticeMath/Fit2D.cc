@@ -350,7 +350,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
 	   "have the same shape" << LogIO::EXCEPTION;
       }
    }
-//
+
    Matrix<Double> pos;
    Vector<Double> values;
    Vector<Double> weights;
@@ -358,14 +358,15 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
       itsErrorMessage = String("There were no selected data points");
       return Fit2D::NOGOOD;
    }
-//
+
    return fitData(values, pos, weights);
 
 }
 
-Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
-                                  const Array<Float>& data)
-{
+Fit2D::ErrorTypes Fit2D::residual(
+		Array<Float>& resid, Array<Float>& model,
+        const Array<Float>& data
+) {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
       return Fit2D::NOMODELS;
@@ -380,14 +381,25 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
    }
    IPosition shape = data.shape();
 //
+
    if (resid.nelements() ==0) {
-      resid.resize(shape);
+       resid.resize(shape);
    } else {
-      if (!shape.isEqual(resid.shape())) {
-         itsLogger << "Fit2D::fit - Residual and pixel arrays must "
-	   "have the same shape" << LogIO::EXCEPTION;
-      }
+       if (!shape.isEqual(resid.shape())) {
+          itsLogger << "Fit2D::fit - Residual and pixel arrays must "
+          << "have the same shape" << LogIO::EXCEPTION;
+       }
    }
+
+   if (model.nelements() ==0) {
+       model.resize(shape);
+   }
+   else {
+       if (!shape.isEqual(model.shape())) {
+          itsLogger << "Fit2D::fit - Residual and pixel arrays must "
+          << "have the same shape" << LogIO::EXCEPTION;
+       }
+    }
 //
 // Create a functional with the solution (no axis conversion
 // necessary because functional interface takes axial ratio)
@@ -400,25 +412,26 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
      loc(1) = j;
       for (Int i=0; i<shape(0); i++) {
          loc(0) = i;
-         resid(loc) = data(loc) - (*sumFunction)(Double(i), Double(j)).value();
+         model(loc) = (*sumFunction)(Double(i), Double(j)).value();
+         resid(loc) = data(loc) - model(loc);
       }
    }
    delete sumFunction;
    return Fit2D::OK;
 }
 
-Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
+Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
                                   const MaskedLattice<Float>& data)
 {
    Array<Float> pixels = data.get(True);
-   return residual(resid, pixels);
+   return residual(resid, model, pixels);
 }
 
-Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
+Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
                                   const Lattice<Float>& data)
 {
    Array<Float> pixels = data.get(True);
-   return residual(resid, pixels);
+   return residual(resid, model, pixels);
 }
 
 void Fit2D::setIncludeRange (Double minVal, Double maxVal)

@@ -78,24 +78,15 @@ public:
     explicit SimpleOrderedMap (const V& defaultValue);
 
     // Creates a map from another one; use copy semantics.
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     SimpleOrderedMap (const SimpleOrderedMap<K,V>&);
 
     // Removes a map.
     ~SimpleOrderedMap ();
 
     // Assigns this SimpleOrderedMap to another with copy semantics.
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     SimpleOrderedMap<K,V>& operator= (const SimpleOrderedMap<K,V>&);
 
     // Defines a mapping (ie. create a key value mapping)
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     V &define (const K&, const V&);
 
     // This is the mapping function which maps keys to values. If the
@@ -211,9 +202,6 @@ protected:
     uInt findKey (const K&, Bool&) const;
 
     // Copy from another Block of OrderedPair's.
-    // <thrown>
-    //   <li> AllocError
-    // </thrown>
     void copyBlock (const SimpleOrderedMap<K,V>&);
 };
 

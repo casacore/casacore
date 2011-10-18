@@ -186,6 +186,8 @@ public:
 	arrayFUNC,
 	    // for Int, Double or DComplex array returning Bool
 	isnanFUNC,
+	isinfFUNC,
+        isfiniteFUNC,
 	    // for any array returning Bool scalar
 	isdefFUNC,
 	    // for any array returning Int scalar

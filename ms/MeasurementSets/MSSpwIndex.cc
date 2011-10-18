@@ -130,7 +130,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  Int counter=0;
 	  while((chanfreq(counter)+0.5*chanwidth(counter)) < f0)
 	    ++counter;
-	  start(nmatch-1)=counter;
+	  start(nmatch-1)= counter > 0 ? counter-1 : 0;
 	}
 	else{
 	  start(nmatch-1)=0;
@@ -174,6 +174,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool Found;
     Int mode;
     Vector<Int> IDs;
+    Float localStep;
     mode=RANGE;
     if ((f1 < 0) || (f0==f1)) mode=EXACT;
     if (approx) mode=APPROX;
@@ -183,10 +184,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for(Int n=0;n<nSpwRows;n++)
       {
 	Float totalBandWidth, refFreq;
-
+	
 	Vector<Double> cw;
 	chanWidth.get(n,cw,True);
 	Double maxChanWidth = max(cw);
+	if (f3 < 0) localStep=min(cw);
+	else localStep = f3;
 
 	Found = False;
 	if (approx) totalBandWidth = msSpwSubTable_p.totalBandwidth()(n);
@@ -221,7 +224,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	      else
 		{
-		  for(Float freq=f0;freq <=f1; freq+=f3)
+		  for(Float freq=f0;freq <=f1; freq+=localStep)
 		    if (fabs(freq - refFreq) < maxChanWidth) {Found = True;break;}
 		  break;
 		}

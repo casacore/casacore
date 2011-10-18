@@ -59,7 +59,7 @@ namespace casa {
 // <synopsis>
 // MSCalEngine is a class used to calculate derived MeasurementSet
 // values hourangle, parallactic angle, azimuth/elevation,
-// and local sidereal time.
+// local sidereal time, and UVW coordinates.
 // It is used by the DerivedMSCal virtual columns and UDFs, but can
 // be used by other software as well.
 //
@@ -68,6 +68,9 @@ namespace casa {
 //  <li> HA is the hourangle of the array center (observatory position).
 //  <li> HA1 is the hourangle of ANTENNA1.
 //  <li> HA2 is the hourangle of ANTENNA2.
+//  <li> HADEC is the hourangle/DEC of the array center (observatory position).
+//  <li> HADEC1 is the hourangle/DEC of ANTENNA1.
+//  <li> HADEC2 is the hourangle/DEC of ANTENNA2.
 //  <li> LAST is the local sidereal time of the array center.
 //  <li> LAST1 is the local sidereal time of ANTENNA1.
 //  <li> LAST2 is the local sidereal time of ANTENNA2.
@@ -77,21 +80,27 @@ namespace casa {
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
 //  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
 // </ul>
-// All values have data type double and unit radian (except UVW). The AZEL
-// and UVW cvalues are arrays while the others are scalars.
+// All values have data type double and unit radian (except UVW). The HADEC,
+// AZEL, and UVW cvalues are arrays while the others are scalars.
 //
 // This engine is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the
 // main table (ANTENNA1 and/or ANTENNA2, FIELD_ID, and TIME).
+// It also looks if columns FEED1 and/or FEED2 exist. They are not used yet,
+// but might be in the future for support of multi-feed arrays.
 // <br>In principle the array center is the Observatory position, which is
 // taken from the Measures Observatory table using the telescope name found
-// in the OBSERVATION subtable. However, if the subtable is not defined or
-// empty or if the telescope name is unknown, the position of the first antenna
-// is used as the array position.
+// in the OBSERVATION subtable or in the table keyword TELESCOPE_NAME.
+// However, if the telescope name cannot be found or is unknown, the position
+// of the middle antenna is used as the array position.
 //
-// The engine can also be used for a CASA Calibration Table. It understands
-// how it references the MeasurementSets. Because calibration tables contain
-// no ANTENNA2 columns, columns XX2 are the same as XX1.
+// The new CASA Calibration Table format obeys the rules mentioned above,
+// so these tables are fully supported. Note they do not contain an
+// OBSERVATION subtable, but use keyword TELESCOPE_NAME.
+//
+// The engine can also be used for old CASA Calibration Tables. It understands
+// how they reference the MeasurementSets. Because these calibration tables
+// contain no ANTENNA2 columns, columns XX2 are the same as XX1.
 // </synopsis>
 
 // <motivation>
@@ -115,8 +124,17 @@ public:
   // Use the given table (MS or CalTable) in the engine.
   void setTable (const Table&);
 
+  // Set the direction to be used instead of a direction from the FIELD table.
+  void setDirection (const MDirection&);
+
+  // Set the direction column name to use in the FIELD table.
+  void setDirColName (const String& colName);
+
   // Get the hourangle for the given row.
   double getHA (Int antnr, uInt rownr);
+
+  // Get the hourangle/DEC for the given row.
+  void getHaDec (Int antnr, uInt rownr, Array<Double>&);
 
   // Get the parallatic angle for the given row.
   double getPA (Int antnr, uInt rownr);
@@ -177,6 +195,8 @@ private:
   vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
   vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
   vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions
+  Bool                        itsReadFieldDir; //# False: explicit directions
+  String                      itsDirColName;   //# FIELD DIR column to read
   vector<vector<MBaseline> >  itsAntMB;        //# J2000 MBaseline per antenna
   vector<vector<Vector<double> > > itsAntUvw;  //# J2000 UVW per antenna
   vector<Block<bool> >        itsUvwFilled;    //# is UVW filled for antenna i?

@@ -275,8 +275,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
@@ -658,8 +658,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
@@ -1041,8 +1041,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
@@ -1421,8 +1421,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
@@ -1799,8 +1799,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
@@ -2177,8 +2177,8 @@ arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 arr4 = Axis Lengths: [1, 20]  (NB: Matrix in Row/Column order)
 [z, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a]
 
-ArrayColumn::put: Table array conformance error
-ArrayColumn::put: Table array conformance error
+ArrayColumn::put for row 0 in column arr1: Table array conformance error
+ArrayColumn::put for row 0 in column arr7: Table array conformance error
 #Rows 20
 (0,0), (2,0), (2,0), (4,0), (4,0), (6,0), (6,0), (8,0), (8,0), (10,0), (10,0), (12,0), (12,0), (14,0), (14,0), (16,0), (16,0), (18,0), (18,0), (20,0)
 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19

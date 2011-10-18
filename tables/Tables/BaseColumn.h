@@ -325,6 +325,15 @@ public:
     virtual void freeIterBuf (void*& lastVal, void*& curVal);
 
 protected:
+    // Throw exceptions for invalid scalar get or put.
+    // <group>
+    void throwGetScalar() const;
+    void throwPutScalar() const;
+    void throwGetType (const String& type) const;
+    void throwPutType (const String& type) const;
+    // </group>
+
+    //# Data members
     const BaseColumnDesc*  colDescPtr_p;
     //# This ColumnDesc object is created to be able to return 
     //# a const ColumnDesc& by function columnDesc().

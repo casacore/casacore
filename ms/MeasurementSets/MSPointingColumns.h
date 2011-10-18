@@ -139,7 +139,9 @@ public:
 
   // return the first matching row index for this time and antenna, 
   // returns -1 if no match was found
-  Int pointingIndex(Int antenna, Double time) const;
+  // For long tables you may give a guess row...the last return
+  // is usually a good one.
+  Int pointingIndex(Int antenna, Double time, Int guessRow=0) const;
 
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return antennaId_p.nrow();}

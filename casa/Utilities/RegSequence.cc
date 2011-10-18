@@ -33,7 +33,7 @@ uInt RegSequence::num = 0;
 Mutex RegSequence::theirMutex;
 
 uInt RegSequence::getNext() {
-  ScopedLock lock(theirMutex);
+  ScopedMutexLock lock(theirMutex);
   return ++num;
 }
 

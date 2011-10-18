@@ -67,16 +67,20 @@ class LatticeFFT
 public: 
   // 2-D in-place complex->complex FFT. Transforms over the first two
   // dimensions and iterates over all the others. The Lattice must have two or
-  // more dimensions otherwise and AipsError is thrown.
+  // more dimensions otherwise an AipsError is thrown.
+  static void cfft2d(Lattice<DComplex> & cLattice, const Bool toFrequency=True);
   static void cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency=True);
   
   // N-D in-place complex->complex FFT. Only transform over selected
   // dimensions. Iterate over the others. whichAxes must be the same length as
   // the number of dimensions in the Lattice otherwise an AipsError is thrown.
+  static void cfft(Lattice<DComplex> & cLattice,
+  		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
   static void cfft(Lattice<Complex> & cLattice,
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
   // N-D in-place complex->complex FFT. Transform over all axes.
+  static void cfft(Lattice<DComplex> & cLattice, const Bool toFrequency=True);
   static void cfft(Lattice<Complex> & cLattice, const Bool toFrequency=True);
 
   // N-D real->complex FFT. Only one half of the Hermition result is

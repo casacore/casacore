@@ -533,7 +533,7 @@ public:
                           uInt axis, 
                           Bool isAbsolute,
                           Bool showAsAbsolute,
-                          Int precision=-1);
+                          Int precision=-1) const;
     //</group>
 
     // Fix cylindrical coordinates to put the longitude in [-180,180] range.
