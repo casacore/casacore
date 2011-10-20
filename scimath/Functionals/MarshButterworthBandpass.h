@@ -87,9 +87,6 @@ template<class T>
 class MarshButterworthBandpass : public SimButterworthBandpass<T>, 
 			      public FunctionMarshallable 
 {
-private:
-    static const String modenames[];
-
 public:
     static const String FUNCTYPE;
     static const String FUNCFIELDS[];

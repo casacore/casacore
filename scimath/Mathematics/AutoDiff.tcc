@@ -35,45 +35,73 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Statics
 template <class T>
-ObjectPool<AutoDiffRep<T>, uInt> AutoDiff<T>::pool;
+ObjectPool<AutoDiffRep<T>, uInt> AutoDiff<T>::theirPool;
+template <class T>
+Mutex AutoDiff<T>::theirMutex;
+
 
 template <class T>
-AutoDiff<T>::AutoDiff() : rep_p(pool.get(0)) {}
+AutoDiff<T>::AutoDiff() : rep_p(0)
+{
+  ScopedMutexLock locker(theirMutex);
+  rep_p = theirPool.get(0);
+}
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v) : rep_p(pool.get(0)) {
+AutoDiff<T>::AutoDiff(const T &v) : rep_p(0)
+{
+  {
+    ScopedMutexLock locker(theirMutex);
+    rep_p = theirPool.get(0);
+  }
   rep_p->val_p = v; 
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt n) :
-  rep_p(pool.get(ndiffs)) {
+AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs, const uInt n) : rep_p(0)
+{
+  {
+    ScopedMutexLock locker(theirMutex);
+    rep_p = theirPool.get(ndiffs);
+  }
   rep_p->val_p = v;
   rep_p->grad_p = T(0);
   rep_p->grad_p[n] = T(1);
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs) :
-  rep_p(pool.get(ndiffs)) {
+AutoDiff<T>::AutoDiff(const T &v, const uInt ndiffs) : rep_p(0)
+{
+  {
+    ScopedMutexLock locker(theirMutex);
+    rep_p = theirPool.get(ndiffs);
+  }
   rep_p->val_p = v;
   rep_p->grad_p = T(0);
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const AutoDiff<T> &other) :
-  rep_p(0) {
-  if (other.rep_p->nocopy_p) rep_p = other.rep_p;
-  else {
-    rep_p = pool.get(other.rep_p->nd_p);
+AutoDiff<T>::AutoDiff(const AutoDiff<T> &other) : rep_p(0)
+{
+  if (other.rep_p->nocopy_p) {
+    rep_p = other.rep_p;
+  } else {
+    {
+      ScopedMutexLock locker(theirMutex);
+      rep_p = theirPool.get(other.rep_p->nd_p);
+    }
     rep_p->val_p = other.rep_p->val_p;
     rep_p->grad_p = other.rep_p->grad_p;
   }
 }
 
 template <class T>
-AutoDiff<T>::AutoDiff(const T &v, const Vector<T> &derivs) :
-  rep_p(pool.get(derivs.nelements())) {
+AutoDiff<T>::AutoDiff(const T &v, const Vector<T> &derivs) : rep_p(0)
+{
+  {
+    ScopedMutexLock locker(theirMutex);
+    rep_p = theirPool.get(derivs.nelements());
+  }
   rep_p->val_p = v;
   rep_p->grad_p = derivs;
 }
@@ -87,7 +115,10 @@ template <class T>
 AutoDiff<T> &AutoDiff<T>::operator=(const T &v) {
   if (rep_p->nd_p != 0) {
     release();
-    rep_p = pool.get(0);
+    {
+      ScopedMutexLock locker(theirMutex);
+      rep_p = theirPool.get(0);
+    }
   }
   rep_p->val_p = v;
   return *this;
@@ -97,7 +128,10 @@ template <class T>
 AutoDiff<T> &AutoDiff<T>::operator=(const AutoDiff<T> &other) { 
   if (this != &other) {
     release();
-    rep_p = pool.get(other.rep_p->nd_p);
+    {
+      ScopedMutexLock locker(theirMutex);
+      rep_p = theirPool.get(other.rep_p->nd_p);
+    }
     rep_p->val_p = other.rep_p->val_p;
     rep_p->grad_p = other.rep_p->grad_p;
   }
@@ -110,7 +144,10 @@ void AutoDiff<T>::operator*=(const AutoDiff<T> &other) {
     if (rep_p->nd_p == 0) {
       T v = rep_p->val_p;
       release();
-      rep_p = pool.get(other.rep_p->nd_p);
+      {
+        ScopedMutexLock locker(theirMutex);
+        rep_p = theirPool.get(other.rep_p->nd_p);
+      }
       rep_p->grad_p = other.rep_p->grad_p;
       rep_p->grad_p *= v;
       rep_p->val_p = v; 
@@ -133,9 +170,12 @@ void AutoDiff<T>::operator/=(const AutoDiff<T> &other) {
     if (rep_p->nd_p == 0) {
       T v = rep_p->val_p;
       release();
-      rep_p = pool.get(other.rep_p->nd_p);
-	rep_p->grad_p = other.rep_p->grad_p;
- 	rep_p->grad_p *= (-v/temp);
+      {
+        ScopedMutexLock locker(theirMutex);
+        rep_p = theirPool.get(other.rep_p->nd_p);
+      }
+      rep_p->grad_p = other.rep_p->grad_p;
+      rep_p->grad_p *= (-v/temp);
       rep_p->val_p = other.rep_p->val_p;
     } else {
       for (uInt i=0; i<rep_p->nd_p ; i++) {
@@ -155,7 +195,10 @@ void AutoDiff<T>::operator+=(const AutoDiff<T> &other) {
     if (rep_p->nd_p == 0) {
       T v = rep_p->val_p;
       release();
-      rep_p = pool.get(other.rep_p->nd_p);
+      {
+        ScopedMutexLock locker(theirMutex);
+        rep_p = theirPool.get(other.rep_p->nd_p);
+      }
       rep_p->grad_p = other.rep_p->grad_p;
       rep_p->val_p = v;
     } else {
@@ -171,7 +214,10 @@ void AutoDiff<T>::operator-=(const AutoDiff<T> &other) {
     if (rep_p->nd_p == 0) {
       T v = rep_p->val_p;
       release();
-      rep_p = pool.get(other.rep_p->nd_p);
+      {
+        ScopedMutexLock locker(theirMutex);
+        rep_p = theirPool.get(other.rep_p->nd_p);
+      }
       rep_p->grad_p = -other.rep_p->grad_p;
       rep_p->val_p = v;
     } else {

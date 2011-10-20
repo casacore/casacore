@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <scimath/Mathematics/AutoDiffRep.h>
 #include <casa/Containers/ObjectPool.h>
+#include <casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -356,15 +357,21 @@ template <class T> class AutoDiff {
  private:
   //# Data
   // Pool of data blocks
-  static ObjectPool<AutoDiffRep<T>, uInt> pool;
+  static ObjectPool<AutoDiffRep<T>, uInt> theirPool;
+  // Mutex for thread-safe access to theirPool.
+  static Mutex theirMutex;
   // Value representation
   AutoDiffRep<T> *rep_p;
 
   //# Methods
   // Release a struct of value and derivative data
   void release() {
-    if (!rep_p->nocopy_p) pool.release(rep_p, rep_p->nd_p);
-    else rep_p->nocopy_p = False;
+    if (!rep_p->nocopy_p) {
+      ScopedMutexLock locker(theirMutex);
+      theirPool.release(rep_p, rep_p->nd_p);
+    } else {
+      rep_p->nocopy_p = False;
+    }
   }
 
 };
