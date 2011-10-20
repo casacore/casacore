@@ -63,6 +63,14 @@ public:
 
   // Set control parameters.
   Bool setcontrol(CleanEnums::CleanType cleanType,const Int niter,const Float gain,const Quantity& aThreshold,const Bool choose);
+  //# This function is defined in the base class LatticeCleaner, but was not
+  //# defined in the new MultiTermLatticeCleaner.
+  //# I (GvD) have added it for the time being.
+  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
+		  const Float gain, const Quantity& aThreshold,
+		  const Quantity& /*fThreshold*/,
+		  const Bool choose=True)
+    { return setcontrol (cleanType, niter, gain, aThreshold, choose); }
 
   // Input : psfs and dirty images
   Bool setpsf(int order, Lattice<T> & psf);
