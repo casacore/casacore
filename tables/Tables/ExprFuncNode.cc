@@ -35,6 +35,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/QMath.h>
 #include <casa/OS/Time.h>
@@ -229,6 +230,9 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case sinFUNC:
     case cosFUNC:
     case tanFUNC:
+    case hmsFUNC:
+    case dmsFUNC:
+    case hdmsFUNC:
       // These functions return no unit, but their child must be in radians.
       if (! childUnit.empty()) {
 	TableExprNodeUnit::adaptUnit (nodes[0], "rad");
@@ -914,6 +918,10 @@ String TableExprFuncNode::getString (const TableExprId& id)
         return stringDate (operands_p[0]->getDate(id));
     case ctimeFUNC:
         return stringTime (operands_p[0]->getDate(id), 9);
+    case hmsFUNC:
+        return stringHMS (operands_p[0]->getDouble(id), 9);
+    case dmsFUNC:
+        return stringDMS (operands_p[0]->getDouble(id), 9);
     case iifFUNC:
         return operands_p[0]->getBool(id)  ?
 	       operands_p[1]->getString(id) : operands_p[2]->getString(id);
@@ -980,6 +988,14 @@ String TableExprFuncNode::stringDT (const MVTime& dt, Int prec,
   ostr << dt;
   return ostr.str();
 }
+String TableExprFuncNode::stringAngle (double val, Int prec,
+                                       MVAngle::formatTypes type)
+{
+  MVAngle::setFormat (type, prec);
+  ostringstream ostr;
+  ostr << MVAngle(val);
+  return ostr.str();
+}
 String TableExprFuncNode::stringDateTime (const MVTime& dt, Int prec)
 {
   return stringDT (dt, prec, MVTime::YMD);
@@ -991,6 +1007,34 @@ String TableExprFuncNode::stringDate (const MVTime& dt)
 String TableExprFuncNode::stringTime (const MVTime& dt, Int prec)
 {
   return stringDT (dt, prec, MVTime::TIME);
+}
+String TableExprFuncNode::stringHMS (double val, Int prec)
+{
+  // Replace : by h and m.
+  String s = stringAngle (val, prec, MVAngle::TIME);
+  char r = 'h';
+  for (uInt i=0; i<s.size(); ++i) {
+    if (s[i] == ':') {
+      s[i] = r;
+      r    = 'm';
+    }
+  }
+  return s;
+}
+String TableExprFuncNode::stringDMS (double val, Int prec)
+{
+  String s = stringAngle (val, prec, MVAngle::ANGLE);
+  char r = 'd';
+  for (uInt i=0; i<s.size(); ++i) {
+    if (s[i] == '.') {
+      s[i] = r;
+      if (r == 'm') {
+        break;
+      }
+      r = 'm';
+    }
+  }
+  return s;
 }
 
 
@@ -1250,6 +1294,14 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	nodes.resize (1);
 	nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
 	return NTString;
+    case hmsFUNC:
+    case dmsFUNC:
+    case hdmsFUNC:
+        checkNumOfArg (1, 1, nodes);
+        if (fType == hdmsFUNC  &&  nodes[0]->valueType() != VTArray) {
+            throw TableInvExpr("Argument of function HDMS has to be an array");
+        }
+        return checkDT (dtypeOper, NTReal, NTString, nodes);
     case sinFUNC:
     case sinhFUNC:
     case cosFUNC:
