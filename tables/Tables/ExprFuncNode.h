@@ -30,6 +30,7 @@
 
 //# Includes
 #include <tables/Tables/ExprNodeRep.h>
+#include <casa/Quanta/MVAngle.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -221,6 +222,12 @@ public:
         ctodFUNC,              //# returning String
         cdateFUNC,             //# returning String
         ctimeFUNC,             //# returning String
+            // return angles as hms strings
+        hmsFUNC,
+            // return angles as dms strings
+        dmsFUNC,
+            // return angles as hms/dms strings
+        hdmsFUNC,
 	    // special function returning a random Double number
 	randFUNC,
             // special function returning Int row number
@@ -319,6 +326,14 @@ public:
     static String stringDateTime (const MVTime& dt, Int prec);
     static String stringDate (const MVTime& dt);
     static String stringTime (const MVTime& dt, Int prec);
+    // </group>
+
+    // Convert angle to a string (hms or dms).
+    // <group>
+    static String stringAngle (double val, Int prec,
+                               MVAngle::formatTypes type);
+    static String stringHMS (double val, Int prec);
+    static String stringDMS (double val, Int prec);
     // </group>
 
     // Get the angular distance between two positions on a sphere.

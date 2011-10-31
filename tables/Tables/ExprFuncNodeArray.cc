@@ -1569,6 +1569,46 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	values.freeStorage (val, deleteVal);
 	strings.putStorage (str, deleteStr);
 	return strings;
+        break;
+      }
+    case TableExprFuncNode::hmsFUNC:
+    case TableExprFuncNode::dmsFUNC:
+    case TableExprFuncNode::hdmsFUNC:
+      {
+	Array<Double> values (operands()[0]->getArrayDouble(id));
+	Array<String> strings(values.shape());
+	Bool deleteVal, deleteStr;
+	const Double* val = values.getStorage (deleteVal);
+	String* str = strings.getStorage (deleteStr);
+	size_t n = values.nelements();
+        switch (funcType()) {
+        case TableExprFuncNode::hmsFUNC:
+          for (size_t i=0; i<n; i++) {
+            str[i] = TableExprFuncNode::stringHMS (val[i], 9);
+          }
+          break;
+        case TableExprFuncNode::dmsFUNC:
+          for (size_t i=0; i<n; i++) {
+            str[i] = TableExprFuncNode::stringDMS (val[i], 9);
+          }
+          break;
+        case TableExprFuncNode::hdmsFUNC:
+          for (size_t i=0; i<n; i++) {
+            if (i%2 == 0) {
+              str[i] = TableExprFuncNode::stringHMS (val[i], 9);
+            } else {
+              str[i] = TableExprFuncNode::stringDMS (val[i], 9);
+            }
+          }
+          break;
+        default:
+	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
+				 "unhandled angle-string function"));
+        }
+	values.freeStorage (val, deleteVal);
+	strings.putStorage (str, deleteStr);
+        return strings;
+        break;
       }
     case TableExprFuncNode::arrayFUNC:
       {

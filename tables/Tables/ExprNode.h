@@ -262,6 +262,14 @@ class TableExprNode;
     TableExprNode time      (const TableExprNode& node);
   // </group>
 
+  // Functions for angle-values. Defined for scalars and arrays.
+  // dhms converts pairs of values to hms and dms and only works for arrays.
+  // <group>
+    TableExprNode hms  (const TableExprNode& node);
+    TableExprNode dms  (const TableExprNode& node);
+    TableExprNode hdms (const TableExprNode& node);
+  // </group>
+
   // Function to test if a scalar or array is NaN (not-a-number).
   // It results in a Bool scalar or array.
     TableExprNode isNaN (const TableExprNode& node);
@@ -1544,6 +1552,18 @@ inline TableExprNode cdate (const TableExprNode& node)
 inline TableExprNode ctime (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::ctimeFUNC, node);
+}
+inline TableExprNode hms (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::hmsFUNC, node);
+}
+inline TableExprNode dms (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::dmsFUNC, node);
+}
+inline TableExprNode hdms (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::hdmsFUNC, node);
 }
 inline TableExprNode week (const TableExprNode& node)
 {
