@@ -41,7 +41,6 @@ Images/ImageExprGram.cc
 Images/MaskSpecifier.cc
 Images/ImageMomentsProgress.cc
 Images/ImageAnalysis.cc
-Images/ImageCollapser.cc
 Images/FITSImage.cc
 Images/FITSImgParser.cc
 Images/PagedImage2.cc
