@@ -147,11 +147,9 @@ namespace casa {
     TableExprNode   itsDataNode;   //# for stokes conversion
     ColType         itsType;
     Int             itsAntNr;
-    //# Preallocate vectors to avoid having to construct them too often.
+    //# Preallocate vector to avoid having to construct them too often.
     //# Makes it thread-unsafe though.
-    Vector<Double>  itsTmpHaDec;
-    Vector<Double>  itsTmpAzEl;
-    Vector<Double>  itsTmpUVW;
+    Vector<Double>  itsTmpVector;
   };
 
 } //end namespace
