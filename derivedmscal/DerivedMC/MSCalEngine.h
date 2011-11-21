@@ -203,9 +203,11 @@ private:
   MDirection::Convert         itsRADecToAzEl;  //# converter ra/dec to az/el
   MDirection::Convert         itsPoleToAzEl;   //# converter pole to az/el
   MDirection::Convert         itsRADecToHADec; //# converter ra/dec to ha/dec
+  MDirection::Convert         itsDirToJ2000;   //# converter direction to J2000
   MEpoch::Convert             itsUTCToLAST;    //# converter UTC to LAST
   MBaseline::Convert          itsBLToJ2000;    //# convert ITRF to J2000
   MeasFrame                   itsFrame;        //# frame used by the converters
+  MDirection                  itsLastDirJ2000; //# itsLastFieldId dir in J2000
 };
 
 

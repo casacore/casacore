@@ -110,7 +110,6 @@ void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
   if (ant1 == ant2) {
     data = 0.;
   } else {
-    vector<MDirection>& fieldDir    = itsFieldDir[itsLastCalInx];
     vector<MBaseline>& antMB        = itsAntMB[itsLastCalInx];
     vector<Vector<Double> >& antUvw = itsAntUvw[itsLastCalInx];
     Block<Bool>& uvwFilled          = itsUvwFilled[itsLastCalInx];
@@ -121,7 +120,7 @@ void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
       if (!uvwFilled[ant]) {
         itsBLToJ2000.setModel (antMB[ant]);
         MVBaseline bas = itsBLToJ2000().getValue();
-        MVuvw jvguvw(bas, fieldDir[itsLastFieldId].getValue());
+        MVuvw jvguvw(bas, itsLastDirJ2000.getValue());
         antUvw[ant] = Muvw(jvguvw, Muvw::J2000).getValue().getVector();
         uvwFilled[ant] = true;
       }
@@ -208,17 +207,33 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
     }
     AlwaysAssert (fieldId < Int(itsFieldDir[calInx].size()), AipsError);
     const MDirection& dir = itsFieldDir[calInx][fieldId];
-    itsRADecToAzEl.setModel (dir);
-    itsRADecToHADec.setModel(dir);
-    itsFrame.resetDirection (dir);
+    itsDirToJ2000.setModel (dir);
+    // We can already convert the direction to J2000 if it is not a model
+    // (thus not time dependent).
+    // Otherwise force the time to change, so the J2000 is calculated there.
+    if (dir.isModel()) {
+      itsLastTime = -1e30;
+    } else {
+      itsLastDirJ2000 = itsDirToJ2000();
+      itsRADecToAzEl.setModel (itsLastDirJ2000);
+      itsRADecToHADec.setModel(itsLastDirJ2000);
+      itsFrame.resetDirection (itsLastDirJ2000);
+    }
+    /// or better set above models to dir??? Ask Wim. *****
     itsLastFieldId = fieldId;
   }
   // Set the epoch in the measure frame.
   Double time = itsTimeCol(rownr);
   if (time != itsLastTime) {
     MEpoch epoch = itsTimeMeasCol(rownr);
-    itsUTCToLAST.setModel (epoch);
     itsFrame.resetEpoch (epoch);
+    if (itsFieldDir[calInx][fieldId].isModel()) {
+      itsLastDirJ2000 = itsDirToJ2000();
+      itsRADecToAzEl.setModel (itsLastDirJ2000);
+      itsRADecToHADec.setModel(itsLastDirJ2000);
+      itsFrame.resetDirection (itsLastDirJ2000);
+    }
+    itsUTCToLAST.setModel (epoch);
     itsLastTime = time;
     itsUvwFilled[calInx] = False;
   }
@@ -303,6 +318,8 @@ void MSCalEngine::init()
   itsRADecToAzEl.set (MDirection(), MDirection::Ref(MDirection::AZEL,itsFrame));
   // Idem RaDec to HaDec.
   itsRADecToHADec.set (MDirection(), rHADec);
+  // Idem direction to J2000.
+  itsDirToJ2000.set (MDirection(), MDirection::Ref(MDirection::J2000,itsFrame));
   // Idem UTC to LAST.
   itsUTCToLAST.set (MEpoch(), MEpoch::Ref(MEpoch::LAST,itsFrame));
   // Idem MBaseline ITRF to J2000.

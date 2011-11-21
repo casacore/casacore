@@ -95,10 +95,12 @@ namespace casa {
     case HADEC:
     case AZEL:
       setShape (IPosition(1,2));
+      itsTmpVector.resize (2);
       setUnit ("rad");
       break;
     case UVW:
       setShape (IPosition(1,3));
+      itsTmpVector.resize (3);
       setUnit ("m");
       break;
     case STOKES:
@@ -279,14 +281,14 @@ namespace casa {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case HADEC:
-      itsEngine.getHaDec (itsAntNr, id.rownr(), itsTmpHaDec);
-      return itsTmpHaDec;
+      itsEngine.getHaDec (itsAntNr, id.rownr(), itsTmpVector);
+      return itsTmpVector;
     case AZEL:
-      itsEngine.getAzEl (itsAntNr, id.rownr(), itsTmpAzEl);
-      return itsTmpAzEl;
+      itsEngine.getAzEl (itsAntNr, id.rownr(), itsTmpVector);
+      return itsTmpVector;
     case UVW:
-      itsEngine.getUVWJ2000 (id.rownr(), itsTmpUVW);
-      return itsTmpUVW;
+      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
+      return itsTmpVector;
     case STOKES:
       {
         // Unfortunately stokes weight conversion is only defined for Float,
