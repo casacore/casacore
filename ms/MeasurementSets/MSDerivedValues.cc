@@ -283,7 +283,7 @@ Double MSDerivedValues::parAngle()
     LogMessage message(LogOrigin("MSDerivedValues","parAngle"));
     LogSink logSink;
     message.message("unhandled mount type");
-    message.priority(LogMessage::SEVERE);
+    message.priority(LogMessage::WARN);
     logSink.post(message);
   }
   return pa;
