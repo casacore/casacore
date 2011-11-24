@@ -1,4 +1,5 @@
 set (tests
+tMVTime
 tQuantum
 tQuantumHolder
 tUnit

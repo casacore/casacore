@@ -478,7 +478,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   } else {
     in.pop(); return False;
   }
-  if (in.tSkipChar('/') || in.tSkipChar('-')) {
+  if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
     if (MVAngle::read(res, in, chk)) {
       res = Quantity(res.get("deg").getValue()/360., "d");
     } else {
