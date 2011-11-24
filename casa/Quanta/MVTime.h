@@ -207,7 +207,9 @@ class Time;
 // The following input formats (note no blanks allowed) are supported
 // (+stands for an optional + or -; v for an unsigned integer; dv for a
 // floating number. [] indicate optional values. Separating codes are
-// case insensitive), numbers(like yyyy) can be of any length:
+// case insensitive), numbers(like yyyy) can be of any length.
+// The separator between date and time part can be a slash (as shown below),
+// a hyphen, or one or more spaces.
 // <ul>
 //   <li> today		    -- (UT) time now
 //   <li> today/[time]	    -- time on today (0:0:0 if omitted)
@@ -235,11 +237,11 @@ class Time;
 // <linkto class=MVAngle>MVAngle</linkto>
 // Examples of valid strings:
 // <srcblock>
-//	ToDay		note case independence
-//	1996/11/20	20 November 1996 0h UT
-//	1996/11/20/5:20 20 November 1996 at 5h20m
-//	20Nov96-5h20m	same (again no case dependence)
-//	1996-11-20T5:20 same (FITS format, case dependent)
+//	ToDay		   note case independence
+//	1996/11/20	   20 November 1996 0h UT
+//	1996/11/20/5:20    20 November 1996 at 5h20m
+//	20Nov96-5h20m	   same (again no case dependence)
+//	1996-11-20T5:20    same (FITS format, case dependent)
 // </srcblock>
 // </synopsis>
 //
