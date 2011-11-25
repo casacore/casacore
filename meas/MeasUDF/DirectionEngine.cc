@@ -82,10 +82,6 @@ namespace casa {
         handleDirType (args[nargnr]);
         nargnr++;
       }
-      // Use J2000 if no reference type is given.
-      if (itsRefType == MDirection::N_Types) {
-        itsRefType = MDirection::J2000;
-      }
       // Process as two scalars or as array.
       if (asScalar) {
         handleScalars (args[argnr], args[argnr+1]);
@@ -139,6 +135,9 @@ namespace casa {
     Unit u2 = e2->unit();
     if (u1.empty()) u1 = "rad";
     if (u2.empty()) u2 = "rad";
+    if (itsRefType == MDirection::N_Types) {
+      itsRefType = MDirection::J2000;
+    }
     itsConstants.resize (IPosition(1,1));
     itsConstants.data()[0] = MDirection(Quantity(v1, u1),
                                         Quantity(v2, u2),
@@ -247,6 +246,9 @@ namespace casa {
   void DirectionEngine::handleConstant (TableExprNodeRep* operand)
   {
     AlwaysAssert (operand->valueType() != TableExprNodeRep::VTSet, AipsError);
+    if (itsRefType == MDirection::N_Types) {
+      itsRefType = MDirection::J2000;
+    }
     TableExprNode node(operand);
     handleValues (node, 0, itsConstants);
   }
