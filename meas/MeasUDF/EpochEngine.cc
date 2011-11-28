@@ -29,6 +29,7 @@
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprNodeSet.h>
+//#include <tables/Tables/ExprNode.h>
 #include <casa/Arrays/ArrayIO.h>
 
 namespace casa {
@@ -51,8 +52,15 @@ namespace casa {
   void EpochEngine::handleEpoch (PtrBlock<TableExprNodeRep*>& args,
                                  uInt& argnr)
   {
-    // Type is unknown.
+    // Initialize type to unknown.
     itsRefType = MEpoch::N_Types;
+    // Convert a string epoch argument to a date.
+    if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
+      TableExprNode dNode = datetime (args[argnr]);
+      TableExprNodeRep::unlink (args[argnr]);
+      args[argnr] = const_cast<TableExprNodeRep*>(dNode.getNodeRep())->link();
+    }
+    // Check if the value is a date or double.
     if (args[argnr]->dataType() != TableExprNodeRep::NTDouble  &&
         args[argnr]->dataType() != TableExprNodeRep::NTDate) {
       throw AipsError ("Invalid or integer epoch given in a MEAS function");
@@ -111,8 +119,8 @@ namespace casa {
          operand->dataType() != TableExprNodeRep::NTDate)  ||
         (operand->valueType() != TableExprNodeRep::VTScalar  &&
          operand->valueType() != TableExprNodeRep::VTArray)) {
-      throw AipsError ("A double given as epoch in a MEAS function "
-                       "must be a double or datetime scalar or array");
+      throw AipsError ("An epoch given in a MEAS function "
+                       "must be a double, string, or datetime scalar or array");
     }
     if (operand->isConstant()) {
       handleConstant (operand);
