@@ -66,7 +66,7 @@ int main (int argc, char* argv[])
            << " is " << perm << "write-locked in process " << pid << endl;
     } else {
       cout << "Table " <<  tablename
-           << " is not used in another process" << endl;
+           << " is neither opened nor locked in another process" << endl;
     }
   } catch (std::exception& x) {
     cerr << x.what() << endl;
