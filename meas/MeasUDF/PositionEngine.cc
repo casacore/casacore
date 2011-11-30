@@ -428,17 +428,6 @@ namespace casa {
     }
   }
 
-  void PositionEngine::replaceTable (const Table& table)
-  {
-    if (! itsExprNode.isNull()) {
-      itsExprNode.checkReplaceTable (table);
-    }
-    if (! itsMeasCol.isNull()) {
-      itsMeasCol.reference (ROArrayMeasColumn<MPosition>
-                            (table, itsMeasCol.columnName()));
-    }
-  }
-
   Array<MPosition> PositionEngine::getPositions (const TableExprId& id)
   {
     if (itsConstants.size() > 0) {

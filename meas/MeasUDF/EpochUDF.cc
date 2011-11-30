@@ -83,11 +83,6 @@ namespace casa {
     setConstant (itsEngine.isConstant());
   }
 
-  void EpochUDF::replaceTable (const Table& table)
-  {
-    itsEngine.replaceTable (table);
-  }
-
   Double EpochUDF::getDouble (const TableExprId& id)
   {
     return itsEngine.getArrayDouble (id).data()[0];

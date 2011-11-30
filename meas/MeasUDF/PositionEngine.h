@@ -143,9 +143,6 @@ namespace casa {
     // Handle a position reference type and optional suffix.
     void handlePosType (TableExprNodeRep* operand);
 
-    // Replace the Table in this node.
-    void replaceTable (const Table&);
-
   private:
     void makeDefaults (const Unit& unit);
     // Make an MPosition from xyz or angles,height.
