@@ -132,9 +132,6 @@ namespace casa {
     // It can be done only once.
     void setPositionEngine (PositionEngine& engine);
 
-    // Replace the Table in this node.
-    void replaceTable (const Table&);
-
   private:
     void handleEpochArray (TableExprNodeRep* operand);
     void handleConstant (TableExprNodeRep* operand);

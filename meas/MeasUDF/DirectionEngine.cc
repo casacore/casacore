@@ -320,23 +320,6 @@ namespace casa {
     itsConverter = MDirection::Convert (toType, ref);
   }
 
-  void DirectionEngine::replaceTable (const Table& table)
-  {
-    if (! itsExprNode.isNull()) {
-      itsExprNode.checkReplaceTable (table);
-    }
-    if (! itsMeasCol.isNull()) {
-      itsMeasCol.reference (ROArrayMeasColumn<MDirection>
-                            (table, itsMeasCol.columnName()));
-    }
-    if (itsEpochEngine) {
-      itsEpochEngine->replaceTable (table);
-    }
-    if (itsPositionEngine) {
-      itsPositionEngine->replaceTable (table);
-    }
-  }
-
   Array<MDirection> DirectionEngine::getDirections (const TableExprId& id)
   {
     if (itsConstants.size() > 0) {

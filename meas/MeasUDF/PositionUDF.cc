@@ -108,11 +108,6 @@ namespace casa {
     setConstant (itsEngine.isConstant());
   }
 
-  void PositionUDF::replaceTable (const Table& table)
-  {
-    itsEngine.replaceTable (table);
-  }
-
   Double PositionUDF::getDouble (const TableExprId& id)
   {
     return itsEngine.getArrayDouble (id, itsRefType, itsValueType).data()[0];

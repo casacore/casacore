@@ -112,9 +112,6 @@ namespace casa {
     // Setup the object.
     virtual void setup (const Table&, const TaQLStyle&);
 
-    // Replace the Table in this node.
-    virtual void replaceTable (const Table&);
-
     // Get the value.
     virtual Double getDouble (const TableExprId& id);
     virtual Array<Double> getArrayDouble (const TableExprId& id);

@@ -241,15 +241,6 @@ namespace casa {
     }
   }
 
-  void UDFMSCal::replaceTable (const Table& table)
-  {
-    if (itsType == STOKES) {
-      itsDataNode.checkReplaceTable (table);
-    } else {
-      itsEngine.setTable (table);
-    }
-  }
-
   Double UDFMSCal::getDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);

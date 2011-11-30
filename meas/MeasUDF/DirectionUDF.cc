@@ -126,9 +126,4 @@ namespace casa {
     return itsEngine.getArrayDouble (id);
   }
 
-  void DirectionUDF::replaceTable (const Table& table)
-  {
-    itsEngine.replaceTable (table);
-  }
-
 } //end namespace

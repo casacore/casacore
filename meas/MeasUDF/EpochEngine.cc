@@ -246,20 +246,6 @@ namespace casa {
     itsConverter = MEpoch::Convert (toType, ref);
   }
 
-  void EpochEngine::replaceTable (const Table& table)
-  {
-    if (! itsExprNode.isNull()) {
-      itsExprNode.checkReplaceTable (table);
-    }
-    if (! itsMeasCol.isNull()) {
-      itsMeasCol.reference (ROArrayMeasColumn<MEpoch>
-                            (table, itsMeasCol.columnName()));
-    }
-    if (itsPositionEngine) {
-      itsPositionEngine->replaceTable (table);
-    }
-  }
-
   Array<MEpoch> EpochEngine::getEpochs (const TableExprId& id)
   {
     if (itsConstants.size() > 0) {
