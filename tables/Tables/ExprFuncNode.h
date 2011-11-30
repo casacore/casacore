@@ -79,6 +79,7 @@ public:
     enum FunctionType {
 	piFUNC,
 	eFUNC,
+        cFUNC,
 	    // for Int, or Double or Complex returning Bool
 	    // (2 is with default tolerance)
 	near2FUNC,
@@ -203,6 +204,7 @@ public:
 	trimFUNC,              //# returning String
 	ltrimFUNC,             //# returning String
 	rtrimFUNC,             //# returning String
+	substrFUNC,            //# returning String
 	regexFUNC,             //# returning TaqlRegex
 	patternFUNC,           //# returning TaqlRegex
 	sqlpatternFUNC,        //# returning TaqlRegex

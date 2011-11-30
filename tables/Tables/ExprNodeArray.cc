@@ -315,67 +315,78 @@ Array<MVTime> TableExprNodeArray::getSliceDate (const TableExprId& id,
     return arr(start, end, incr);
 }
 
-Array<Bool>     TableExprNodeArray::getElemColumnBool (const Slicer&)
+Array<Bool>     TableExprNodeArray::getElemColumnBool (const Vector<uInt>&,
+                                                       const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnBool(Slicer) not implemented)");
     return Array<Bool>();
 }
-Array<uChar>    TableExprNodeArray::getElemColumnuChar (const Slicer&)
+Array<uChar>    TableExprNodeArray::getElemColumnuChar (const Vector<uInt>&,
+                                                        const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnuChar(Slicer) not implemented)");
     return Array<uChar>();
 }
-Array<Short>    TableExprNodeArray::getElemColumnShort (const Slicer&)
+Array<Short>    TableExprNodeArray::getElemColumnShort (const Vector<uInt>&,
+                                                        const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnShort(Slicer) not implemented)");
     return Array<Short>();
 }
-Array<uShort>   TableExprNodeArray::getElemColumnuShort (const Slicer&)
+Array<uShort>   TableExprNodeArray::getElemColumnuShort (const Vector<uInt>&,
+                                                         const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnuShort(Slicer) not implemented)");
     return Array<uShort>();
 }
-Array<Int>      TableExprNodeArray::getElemColumnInt (const Slicer&)
+Array<Int>      TableExprNodeArray::getElemColumnInt (const Vector<uInt>&,
+                                                      const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnInt(Slicer) not implemented)");
     return Array<Int>();
 }
-Array<uInt>     TableExprNodeArray::getElemColumnuInt (const Slicer&)
+Array<uInt>     TableExprNodeArray::getElemColumnuInt (const Vector<uInt>&,
+                                                       const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnuInt(Slicer) not implemented)");
     return Array<uInt>();
 }
-Array<Float>    TableExprNodeArray::getElemColumnFloat (const Slicer&)
+Array<Float>    TableExprNodeArray::getElemColumnFloat (const Vector<uInt>&,
+                                                        const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnFloat(Slicer) not implemented)");
     return Array<Float>();
 }
-Array<Double>   TableExprNodeArray::getElemColumnDouble (const Slicer&)
+Array<Double>   TableExprNodeArray::getElemColumnDouble (const Vector<uInt>&,
+                                                         const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnDouble(Slicer) not implemented)");
     return Array<Double>();
 }
-Array<Complex>  TableExprNodeArray::getElemColumnComplex (const Slicer&)
+Array<Complex>  TableExprNodeArray::getElemColumnComplex (const Vector<uInt>&,
+                                                          const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnComplex(Slicer) not implemented)");
     return Array<Complex>();
 }
-Array<DComplex> TableExprNodeArray::getElemColumnDComplex (const Slicer&)
+Array<DComplex> TableExprNodeArray::getElemColumnDComplex (const Vector<uInt>&,
+                                                           const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnDComplex(Slicer) not implemented)");
     return Array<DComplex>();
 }
-Array<String>   TableExprNodeArray::getElemColumnString (const Slicer&)
+Array<String>   TableExprNodeArray::getElemColumnString (const Vector<uInt>&,
+                                                         const Slicer&)
 {
     TableExprNode::throwInvDT
                        ("(getElemColumnString(Slicer) not implemented)");
@@ -458,13 +469,6 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
 TableExprNodeArrayColumn::~TableExprNodeArrayColumn()
 {}
 
-void TableExprNodeArrayColumn::replaceTablePtr (const Table& table)
-{
-    String name = tabCol_p.columnDesc().name();
-    tabCol_p.reference (ROTableColumn (table, name));
-    table_p = table;
-}
-
 const IPosition& TableExprNodeArrayColumn::getShape (const TableExprId& id)
 {
     varShape_p.resize (0);
@@ -492,12 +496,6 @@ TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
 {}
 TableExprNodeArrayColumnBool::~TableExprNodeArrayColumnBool()
 {}
-void TableExprNodeArrayColumnBool::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Bool> (tabCol_p));
-}
 
 Bool TableExprNodeArrayColumnBool::getElemBool (const TableExprId& id,
 						const Slicer& index)
@@ -519,9 +517,9 @@ Array<Bool> TableExprNodeArrayColumnBool::getSliceBool (const TableExprId& id,
     return col_p.getSlice (id.rownr(), index);
 }
 Array<Bool> TableExprNodeArrayColumnBool::getElemColumnBool
-                                                       (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
@@ -532,12 +530,6 @@ TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
 {}
 TableExprNodeArrayColumnuChar::~TableExprNodeArrayColumnuChar()
 {}
-void TableExprNodeArrayColumnuChar::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<uChar> (tabCol_p));
-}
 
 Int64 TableExprNodeArrayColumnuChar::getElemInt (const TableExprId& id,
                                                  const Slicer& index)
@@ -567,9 +559,9 @@ Array<Int64> TableExprNodeArrayColumnuChar::getSliceInt
     return out;
 }
 Array<uChar> TableExprNodeArrayColumnuChar::getElemColumnuChar
-                                                    (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
@@ -580,12 +572,6 @@ TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
 {}
 TableExprNodeArrayColumnShort::~TableExprNodeArrayColumnShort()
 {}
-void TableExprNodeArrayColumnShort::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Short> (tabCol_p));
-}
 
 Int64 TableExprNodeArrayColumnShort::getElemInt (const TableExprId& id,
                                                  const Slicer& index)
@@ -615,9 +601,9 @@ Array<Int64> TableExprNodeArrayColumnShort::getSliceInt
     return out;
 }
 Array<Short> TableExprNodeArrayColumnShort::getElemColumnShort
-                                                    (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
@@ -628,12 +614,6 @@ TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
 {}
 TableExprNodeArrayColumnuShort::~TableExprNodeArrayColumnuShort()
 {}
-void TableExprNodeArrayColumnuShort::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<uShort> (tabCol_p));
-}
 
 Int64 TableExprNodeArrayColumnuShort::getElemInt (const TableExprId& id,
                                                   const Slicer& index)
@@ -663,9 +643,9 @@ Array<Int64> TableExprNodeArrayColumnuShort::getSliceInt
     return out;
 }
 Array<uShort> TableExprNodeArrayColumnuShort::getElemColumnuShort
-                                                     (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
@@ -676,12 +656,6 @@ TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
 {}
 TableExprNodeArrayColumnInt::~TableExprNodeArrayColumnInt()
 {}
-void TableExprNodeArrayColumnInt::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Int> (tabCol_p));
-}
 
 Int64 TableExprNodeArrayColumnInt::getElemInt (const TableExprId& id,
                                                const Slicer& index)
@@ -710,9 +684,10 @@ Array<Int64> TableExprNodeArrayColumnInt::getSliceInt
     convertArray (out, arr);
     return out;
 }
-Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt (const Slicer& index)
+Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
@@ -723,12 +698,6 @@ TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
 {}
 TableExprNodeArrayColumnuInt::~TableExprNodeArrayColumnuInt()
 {}
-void TableExprNodeArrayColumnuInt::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<uInt> (tabCol_p));
-}
 
 Int64 TableExprNodeArrayColumnuInt::getElemInt (const TableExprId& id,
                                                 const Slicer& index)
@@ -758,9 +727,9 @@ Array<Int64> TableExprNodeArrayColumnuInt::getSliceInt
     return out;
 }
 Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
-                                                   (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
@@ -771,12 +740,6 @@ TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
 {}
 TableExprNodeArrayColumnFloat::~TableExprNodeArrayColumnFloat()
 {}
-void TableExprNodeArrayColumnFloat::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Float> (tabCol_p));
-}
 
 Double TableExprNodeArrayColumnFloat::getElemDouble (const TableExprId& id,
 						     const Slicer& index)
@@ -806,9 +769,9 @@ Array<Double> TableExprNodeArrayColumnFloat::getSliceDouble
     return out;
 }
 Array<Float> TableExprNodeArrayColumnFloat::getElemColumnFloat
-                                                    (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
@@ -819,12 +782,6 @@ TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
 {}
 TableExprNodeArrayColumnDouble::~TableExprNodeArrayColumnDouble()
 {}
-void TableExprNodeArrayColumnDouble::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Double> (tabCol_p));
-}
 
 Double TableExprNodeArrayColumnDouble::getElemDouble (const TableExprId& id,
 						      const Slicer& index)
@@ -848,9 +805,9 @@ Array<Double> TableExprNodeArrayColumnDouble::getSliceDouble
     return col_p.getSlice (id.rownr(), index);
 }
 Array<Double> TableExprNodeArrayColumnDouble::getElemColumnDouble
-                                                     (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
@@ -861,12 +818,6 @@ TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
 {}
 TableExprNodeArrayColumnComplex::~TableExprNodeArrayColumnComplex()
 {}
-void TableExprNodeArrayColumnComplex::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<Complex> (tabCol_p));
-}
 
 DComplex TableExprNodeArrayColumnComplex::getElemDComplex
                                                      (const TableExprId& id,
@@ -898,9 +849,9 @@ Array<DComplex> TableExprNodeArrayColumnComplex::getSliceDComplex
     return out;
 }
 Array<Complex> TableExprNodeArrayColumnComplex::getElemColumnComplex
-                                                     (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
@@ -911,12 +862,6 @@ TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
 {}
 TableExprNodeArrayColumnDComplex::~TableExprNodeArrayColumnDComplex()
 {}
-void TableExprNodeArrayColumnDComplex::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<DComplex> (tabCol_p));
-}
 
 DComplex TableExprNodeArrayColumnDComplex::getElemDComplex
                                                      (const TableExprId& id,
@@ -941,9 +886,9 @@ Array<DComplex> TableExprNodeArrayColumnDComplex::getSliceDComplex
     return col_p.getSlice (id.rownr(), index);
 }
 Array<DComplex> TableExprNodeArrayColumnDComplex::getElemColumnDComplex
-                                                      (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
@@ -954,12 +899,6 @@ TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
 {}
 TableExprNodeArrayColumnString::~TableExprNodeArrayColumnString()
 {}
-void TableExprNodeArrayColumnString::replaceTablePtr (const Table& table)
-{
-    // First replace in base class and use that ROTableColumn.
-    TableExprNodeArrayColumn::replaceTablePtr (table);
-    col_p.reference (ROArrayColumn<String> (tabCol_p));
-}
 
 String TableExprNodeArrayColumnString::getElemString (const TableExprId& id,
 						      const Slicer& index)
@@ -983,9 +922,9 @@ Array<String> TableExprNodeArrayColumnString::getSliceString
     return col_p.getSlice (id.rownr(), index);
 }
 Array<String> TableExprNodeArrayColumnString::getElemColumnString
-                                                     (const Slicer& index)
+(const Vector<uInt>& rownrs, const Slicer& index)
 {
-    return col_p.getColumn (index);
+    return col_p.getColumnCells (rownrs, index);
 }
 
 
@@ -1332,83 +1271,82 @@ Array<MVTime> TableExprNodeArrayPart::getArrayDate (const TableExprId& id)
     return arrNode_p->getSliceDate (id, indexNode_p->getSlicer(id));
 }
 
-Array<Bool> TableExprNodeArrayPart::getColumnBool()
+Array<Bool> TableExprNodeArrayPart::getColumnBool (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnBool();
+	return TableExprNodeRep::getColumnBool (rownrs);
     }
-    return colNode_p->getElemColumnBool
-                                   (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnBool (rownrs, indexNode_p->getSlicer(0));
 }
-Array<uChar>    TableExprNodeArrayPart::getColumnuChar()
+Array<uChar>    TableExprNodeArrayPart::getColumnuChar (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuChar();
+	return TableExprNodeRep::getColumnuChar (rownrs);
     }
-    return colNode_p->getElemColumnuChar (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnuChar (rownrs, indexNode_p->getSlicer(0));
 }
-Array<Short>    TableExprNodeArrayPart::getColumnShort()
+Array<Short>    TableExprNodeArrayPart::getColumnShort (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnShort();
+	return TableExprNodeRep::getColumnShort (rownrs);
     }
-    return colNode_p->getElemColumnShort (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnShort (rownrs, indexNode_p->getSlicer(0));
 }
-Array<uShort>   TableExprNodeArrayPart::getColumnuShort()
+Array<uShort>   TableExprNodeArrayPart::getColumnuShort (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuShort();
+	return TableExprNodeRep::getColumnuShort (rownrs);
     }
-    return colNode_p->getElemColumnuShort (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnuShort (rownrs, indexNode_p->getSlicer(0));
 }
-Array<Int>      TableExprNodeArrayPart::getColumnInt()
+Array<Int>      TableExprNodeArrayPart::getColumnInt (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnInt();
+	return TableExprNodeRep::getColumnInt (rownrs);
     }
-    return colNode_p->getElemColumnInt (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnInt (rownrs, indexNode_p->getSlicer(0));
 }
-Array<uInt>     TableExprNodeArrayPart::getColumnuInt()
+Array<uInt>     TableExprNodeArrayPart::getColumnuInt (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnuInt();
+	return TableExprNodeRep::getColumnuInt (rownrs);
     }
-    return colNode_p->getElemColumnuInt (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnuInt (rownrs, indexNode_p->getSlicer(0));
 }
-Array<Float>    TableExprNodeArrayPart::getColumnFloat()
+Array<Float>    TableExprNodeArrayPart::getColumnFloat (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnFloat();
+	return TableExprNodeRep::getColumnFloat (rownrs);
     }
-    return colNode_p->getElemColumnFloat (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnFloat (rownrs, indexNode_p->getSlicer(0));
 }
-Array<Double>   TableExprNodeArrayPart::getColumnDouble()
+Array<Double>   TableExprNodeArrayPart::getColumnDouble (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnDouble();
+	return TableExprNodeRep::getColumnDouble (rownrs);
     }
-    return colNode_p->getElemColumnDouble (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnDouble (rownrs, indexNode_p->getSlicer(0));
 }
-Array<Complex>  TableExprNodeArrayPart::getColumnComplex()
+Array<Complex>  TableExprNodeArrayPart::getColumnComplex (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnComplex();
+	return TableExprNodeRep::getColumnComplex (rownrs);
     }
-    return colNode_p->getElemColumnComplex (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnComplex (rownrs, indexNode_p->getSlicer(0));
 }
-Array<DComplex> TableExprNodeArrayPart::getColumnDComplex()
+Array<DComplex> TableExprNodeArrayPart::getColumnDComplex (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnDComplex();
+	return TableExprNodeRep::getColumnDComplex (rownrs);
     }
-    return colNode_p->getElemColumnDComplex (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnDComplex (rownrs, indexNode_p->getSlicer(0));
 }
-Array<String>   TableExprNodeArrayPart::getColumnString()
+Array<String>   TableExprNodeArrayPart::getColumnString (const Vector<uInt>& rownrs)
 {
     if (colNode_p == 0) {
-	return TableExprNodeRep::getColumnString();
+	return TableExprNodeRep::getColumnString (rownrs);
     }
-    return colNode_p->getElemColumnString (indexNode_p->getSlicer(0));
+    return colNode_p->getElemColumnString (rownrs, indexNode_p->getSlicer(0));
 }
 
 } //# NAMESPACE CASA - END

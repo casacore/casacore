@@ -271,20 +271,6 @@ void TableExprNodeSetElem::checkTable()
     fillExprType (itsIncr);
 }
 
-void TableExprNodeSetElem::replaceTablePtr (const Table& table)
-{
-    table_p = table;
-    if (itsStart != 0) {
-	itsStart->replaceTablePtr (table);
-    }
-    if (itsEnd != 0) {
-	itsEnd->replaceTablePtr (table);
-    }
-    if (itsIncr != 0) {
-	itsIncr->replaceTablePtr (table);
-    }
-}
-
 TableExprNodeSetElem* TableExprNodeSetElem::evaluate
                                            (const TableExprId& id) const
 {
@@ -705,9 +691,10 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
     }
 }
 
-TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSet& set)
+TableExprNodeSet::TableExprNodeSet (const Vector<uInt>& rownrs,
+                                    const TableExprNodeSet& set)
 : TableExprNodeRep (set.dataType(), VTSet, OtUndef, Table()),
-  itsElems         (n*set.nelements()),
+  itsElems         (rownrs.size() * set.nelements()),
   itsSingle        (set.isSingle()),
   itsDiscrete      (set.isDiscrete()),
   itsBounded       (set.isBounded()),
@@ -717,13 +704,13 @@ TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSet& set)
 {
     // Fill in all values.
     uInt nrel = set.nelements();
-    for (uInt i=0; i<n; i++) {
+    for (uInt i=0; i<rownrs.size(); i++) {
         for (uInt j=0; j<nrel; j++) {
-	    itsElems[j+i*nrel] = set[j].evaluate (i);
+	    itsElems[j+i*nrel] = set[j].evaluate (rownrs[i]);
 	}
     }
     // Try to combine multiple intervals; it can improve performance a lot.
-    if (n>1  &&  !isSingle()  &&  !isDiscrete()) {
+    if (rownrs.size() > 1  &&  !isSingle()  &&  !isDiscrete()) {
         if (set.dataType() == NTInt) {
 	    combineIntIntervals();
         } else if (set.dataType() == NTDouble) {
@@ -1141,15 +1128,6 @@ Bool TableExprNodeSet::hasArrays() const
 	}
     }
     return False;
-}
-
-void TableExprNodeSet::replaceTablePtr (const Table& table)
-{
-    table_p = table;
-    uInt n = nelements();
-    for (uInt i=0; i<n; i++) {
-	itsElems[i]->replaceTablePtr (table);
-    }
 }
 
 TableExprNodeRep* TableExprNodeSet::setOrArray() const

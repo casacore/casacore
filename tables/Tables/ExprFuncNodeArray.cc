@@ -125,11 +125,6 @@ void TableExprFuncNodeArray::tryToConst()
     }
 }
 
-void TableExprFuncNodeArray::replaceTablePtr (const Table& table)
-{
-  node_p.replaceTablePtr (table);
-}
-
 
 const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
 							 Int ndim, uInt axarg)
@@ -1477,10 +1472,11 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     case TableExprFuncNode::trimFUNC:
     case TableExprFuncNode::ltrimFUNC:
     case TableExprFuncNode::rtrimFUNC:
+    case TableExprFuncNode::substrFUNC:
       {
         static Regex leadingWS("^[ \t]*");
         static Regex trailingWS("[ \t]*$");
-	Array<String> strings (operands()[0]->getArrayString(id));
+	Array<String> strings (operands()[0]->getArrayString(id).copy());
 	Bool deleteStr;
 	String* str = strings.getStorage (deleteStr);
 	size_t n = strings.nelements();
@@ -1498,23 +1494,32 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	    break;
 	case TableExprFuncNode::trimFUNC:
 	    for (i=0; i<n; i++) {
-		String& s = str[i];
-                s.gsub (leadingWS, string());
-                s.gsub (trailingWS, string());
+                str[i].gsub (leadingWS, string());
+                str[i].gsub (trailingWS, string());
 	    }
 	    break;
 	case TableExprFuncNode::ltrimFUNC:
 	    for (i=0; i<n; i++) {
-		String& s = str[i];
-                s.gsub (leadingWS, string());
+                str[i].gsub (leadingWS, string());
 	    }
 	    break;
 	case TableExprFuncNode::rtrimFUNC:
 	    for (i=0; i<n; i++) {
-		String& s = str[i];
-                s.gsub (trailingWS, string());
+                str[i].gsub (trailingWS, string());
 	    }
 	    break;
+        case TableExprFuncNode::substrFUNC:
+            {
+              size_t st = std::max (Int64(0), operands()[1]->getInt (id));
+              size_t sz = String::npos;
+              if (operands().size() > 2) {
+                sz = std::max (Int64(0), operands()[2]->getInt (id));
+              }
+              for (i=0; i<n; i++) {
+                str[i] = str[i].substr (st, sz);
+              }
+            }
+            break;
 	default:
 	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
 				 "unhandled string function"));

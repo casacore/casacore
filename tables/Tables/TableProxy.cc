@@ -738,49 +738,51 @@ TableProxy TableProxy::selectRows (const Vector<Int>& rownrs,
 void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 {
   if (expr.isScalar()) {
+    Vector<uInt> rownrs(expr.nrow());
+    indgen (rownrs);
     switch (expr.getColumnDataType()) {
     case TpBool:
-      rec.define ("values", expr.getColumnBool());
+      rec.define ("values", expr.getColumnBool (rownrs));
       break;
     case TpUChar:
-      rec.define ("values", expr.getColumnuChar());
+      rec.define ("values", expr.getColumnuChar (rownrs));
       break;
     case TpShort:
-      rec.define ("values", expr.getColumnShort());
+      rec.define ("values", expr.getColumnShort (rownrs));
       break;
     case TpUShort:
     {
-      Vector<uShort> vs = expr.getColumnuShort();
+      Vector<uShort> vs = expr.getColumnuShort (rownrs);
       Vector<Int> vi(vs.nelements());
       convertArray (vi, vs);
       rec.define ("values", vi);
       break;
     }
     case TpInt:
-      rec.define ("values", expr.getColumnInt());
+      rec.define ("values", expr.getColumnInt (rownrs));
       break;
     case TpUInt:
     {
-      Vector<uInt> vs = expr.getColumnuInt();
+      Vector<uInt> vs = expr.getColumnuInt (rownrs);
       Vector<Int> vi(vs.nelements());
       convertArray (vi, vs);
       rec.define ("values", vi);
       break;
     }
     case TpFloat:
-      rec.define ("values", expr.getColumnFloat());
+      rec.define ("values", expr.getColumnFloat (rownrs));
       break;
     case TpDouble:
-      rec.define ("values", expr.getColumnDouble());
+      rec.define ("values", expr.getColumnDouble (rownrs));
       break;
     case TpComplex:
-      rec.define ("values", expr.getColumnComplex());
+      rec.define ("values", expr.getColumnComplex (rownrs));
       break;
     case TpDComplex:
-      rec.define ("values", expr.getColumnDComplex());
+      rec.define ("values", expr.getColumnDComplex (rownrs));
       break;
     case TpString:
-      rec.define ("values", expr.getColumnString());
+      rec.define ("values", expr.getColumnString (rownrs));
       break;
     default:
       throw AipsError("Unknown calc expression scalar type");

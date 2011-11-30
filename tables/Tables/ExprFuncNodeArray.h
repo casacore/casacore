@@ -104,9 +104,6 @@ private:
     // If so, set the expression type to Constant.
     void tryToConst();
 
-    // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&);
-
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
     const PtrBlock<TableExprNodeRep*>& operands() const

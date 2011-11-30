@@ -92,9 +92,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
 
-    // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&);
-
   private:
     UDFBase* itsUDF;
   };

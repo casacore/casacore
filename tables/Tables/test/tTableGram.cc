@@ -240,39 +240,41 @@ void showExpr(const TableExprNode& expr)
     cout << "Unit: " << unit.getName() << endl;
   }
   if (expr.isScalar()) {
+    Vector<uInt> rownrs(expr.nrow());
+    indgen (rownrs);
     switch (expr.getColumnDataType()) {
     case TpBool:
-      cout << expr.getColumnBool();
+      cout << expr.getColumnBool (rownrs);
       break;
     case TpUChar:
-      cout << expr.getColumnuChar();
+      cout << expr.getColumnuChar (rownrs);
       break;
     case TpShort:
-      cout << expr.getColumnShort();
+      cout << expr.getColumnShort (rownrs);
       break;
     case TpUShort:
-      cout << expr.getColumnuShort();
+      cout << expr.getColumnuShort (rownrs);
       break;
     case TpInt:
-      cout << expr.getColumnInt();
+      cout << expr.getColumnInt (rownrs);
       break;
     case TpUInt:
-      cout << expr.getColumnuInt();
+      cout << expr.getColumnuInt (rownrs);
       break;
     case TpFloat:
-      cout << expr.getColumnFloat();
+      cout << expr.getColumnFloat (rownrs);
       break;
     case TpDouble:
-      cout << expr.getColumnDouble();
+      cout << expr.getColumnDouble (rownrs);
       break;
     case TpComplex:
-      cout << expr.getColumnComplex();
+      cout << expr.getColumnComplex (rownrs);
       break;
     case TpDComplex:
-      cout << expr.getColumnDComplex();
+      cout << expr.getColumnDComplex (rownrs);
       break;
     case TpString:
-      cout << expr.getColumnString();
+      cout << expr.getColumnString (rownrs);
       break;
     default:
       cout << "Unknown expression scalar type " << expr.getColumnDataType();

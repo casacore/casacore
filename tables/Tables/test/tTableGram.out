@@ -402,7 +402,7 @@ select ab,ac from tTableGram_tmp.tab where ac in [select from tTableGram_tmp.tab
 2 selected columns:  ab ac
  2 3
  4 5
-select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+arr1[1,1,1]%2,3])) == 19
+select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+int(arr1[1,1,1]%2),3])) == 19
     has been executed
     select result of 1 rows
 1 selected columns:  ab
@@ -650,7 +650,7 @@ select ab from tTableGram_tmp.tab
  5480
 delete from tTableGram_tmp.tab
     has been executed
-    delete result of 0 rows
+    delete result of 6 rows
 0 selected columns: 
 select ab from tTableGram_tmp.tab
     has been executed
@@ -921,3 +921,130 @@ select ab1,ac1 from tTableGram_tmp.tab_abac
  61 17
  63 19
  65 21
+
+Testing multiple tables ...
+select from tTableGram_tmp.tab orderby ab desc giving tTableGram_tmp.rev as plain
+    has been executed
+    select result of 10 rows
+0 selected columns: 
+select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2
+    has been executed
+    select result of 10 rows
+2 selected columns:  ab1 ab2
+ 0 9
+ 1 8
+ 2 7
+ 3 6
+ 4 5
+ 5 4
+ 6 3
+ 7 2
+ 8 1
+ 9 0
+select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where abs(t1.ab - t2.ab) < 4
+    has been executed
+    select result of 4 rows
+2 selected columns:  ab1 ab2
+ 3 6
+ 4 5
+ 5 4
+ 6 3
+select t1.ab as ab1, t1.ac, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab
+    has been executed
+    select result of 5 rows
+3 selected columns:  ab1 ac ab2
+ 5 6 4
+ 6 7 3
+ 7 8 2
+ 8 9 1
+ 9 10 0
+select ab1,ab2 from [select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where abs(t1.ab - t2.ab) < 4]
+    has been executed
+    select result of 4 rows
+2 selected columns:  ab1 ab2
+ 3 6
+ 4 5
+ 5 4
+ 6 3
+select ab from tTableGram_tmp.tab where ab in [select t2.ab from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab]
+    has been executed
+    select result of 5 rows
+1 selected columns:  ab
+ 0
+ 1
+ 2
+ 3
+ 4
+select ab from tTableGram_tmp.tab where ac in [select ab from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab]
+    has been executed
+    select result of 5 rows
+1 selected columns:  ab
+ 4
+ 5
+ 6
+ 7
+ 8
+update tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 set ab=ab+1, ac=t2.ac
+    has been executed
+    update result of 10 rows
+2 selected columns:  ab ac
+ 1 10
+ 2 9
+ 3 8
+ 4 7
+ 5 6
+ 6 5
+ 7 4
+ 8 3
+ 9 2
+ 10 1
+select ab,ac from tTableGram_tmp.tab
+    has been executed
+    select result of 10 rows
+2 selected columns:  ab ac
+ 1 10
+ 2 9
+ 3 8
+ 4 7
+ 5 6
+ 6 5
+ 7 4
+ 8 3
+ 9 2
+ 10 1
+update tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 set ac=t2.ac+10 where ab=t2.ab
+    has been executed
+    update result of 1 rows
+1 selected columns:  ac
+ 16
+select ab,ac from tTableGram_tmp.tab
+    has been executed
+    select result of 10 rows
+2 selected columns:  ab ac
+ 1 10
+ 2 9
+ 3 8
+ 4 7
+ 5 16
+ 6 5
+ 7 4
+ 8 3
+ 9 2
+ 10 1
+delete from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where ab=t2.ab
+    has been executed
+    delete result of 1 rows
+0 selected columns: 
+select ab,ac from tTableGram_tmp.tab
+    has been executed
+    select result of 9 rows
+2 selected columns:  ab ac
+ 1 10
+ 2 9
+ 3 8
+ 4 7
+ 6 5
+ 7 4
+ 8 3
+ 9 2
+ 10 1

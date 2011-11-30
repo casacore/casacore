@@ -229,6 +229,11 @@ class TableExprNode;
     TableExprNode trim      (const TableExprNode& node);
     TableExprNode ltrim     (const TableExprNode& node);
     TableExprNode rtrim     (const TableExprNode& node);
+    TableExprNode substr    (const TableExprNode& str,
+                             const TableExprNode& pos);
+    TableExprNode substr    (const TableExprNode& str,
+                             const TableExprNode& pos,
+                             const TableExprNode& npos);
   // </group>
 
   // Functions for regular expression matching and 
@@ -652,7 +657,12 @@ class TableExprNode
     friend TableExprNode downcase  (const TableExprNode& node);
     friend TableExprNode trim      (const TableExprNode& node);
     friend TableExprNode ltrim     (const TableExprNode& node);
-    friend TableExprNode ttrim     (const TableExprNode& node);
+    friend TableExprNode rtrim     (const TableExprNode& node);
+    friend TableExprNode substr    (const TableExprNode& str,
+                                    const TableExprNode& pos);
+    friend TableExprNode substr    (const TableExprNode& str,
+                                    const TableExprNode& pos,
+                                    const TableExprNode& npos);
     friend TableExprNode regex     (const TableExprNode& node);
     friend TableExprNode pattern   (const TableExprNode& node);
     friend TableExprNode sqlpattern(const TableExprNode& node);
@@ -908,7 +918,7 @@ public:
     // </group>
 
     // Get the data type for doing a getColumn on the expression.
-    // This is the data type of the column when the expression
+    // This is the data type of the column if the expression
     // consists of a single column only.
     // Otherwise it is the expression data type as returned by
     // function <src>dataType</src>.
@@ -918,17 +928,17 @@ public:
     // The data of function called should match the data type as
     // returned by function <src>getColumnDataType</src>.
     // <group>
-    Array<Bool>     getColumnBool() const;
-    Array<uChar>    getColumnuChar() const;
-    Array<Short>    getColumnShort() const;
-    Array<uShort>   getColumnuShort() const;
-    Array<Int>      getColumnInt() const;
-    Array<uInt>     getColumnuInt() const;
-    Array<Float>    getColumnFloat() const;
-    Array<Double>   getColumnDouble() const;
-    Array<Complex>  getColumnComplex() const;
-    Array<DComplex> getColumnDComplex() const;
-    Array<String>   getColumnString() const;
+    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs) const;
+    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs) const;
+    Array<Short>    getColumnShort (const Vector<uInt>& rownrs) const;
+    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs) const;
+    Array<Int>      getColumnInt (const Vector<uInt>& rownrs) const;
+    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const;
+    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const;
+    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs) const;
+    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs) const;
+    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs) const;
+    Array<String>   getColumnString (const Vector<uInt>& rownrs) const;
     // </group>
 
     // Show the tree.
@@ -945,19 +955,9 @@ public:
     // using && or ||.
     void ranges (Block<TableExprRange>&);
 
-    // Check if the table used in the expression matches the given
-    // Table. This is used by the Table selection to check if it is correct.
-    Bool checkTable (const Table& table) const;
-
-    // Same as checkTable, but the given table only needs to have the
-    // same description as the table in the expression. This is used by
-    // sorting/updating which parse the expression with the original table,
-    // but have to operate on the output of the selection process.
-    // If the tables are different, the table pointers in the expression
-    // are replaced.
-    // If <src>canbeConst==True</src>, the expression can be constant,
-    // thus does not need a table column in it.
-    Bool checkReplaceTable (const Table& table, Bool canBeConst=False) const;
+    // Check if tables used in expression have the same number of
+    // rows as the given table.
+    Bool checkTableSize (const Table& table, Bool canBeConst) const;
 
     // Get table. This gets the Table object to which a
     // TableExprNode belongs. A TableExprNode belongs to the Table to
@@ -1153,28 +1153,28 @@ inline Array<DComplex> TableExprNode::getDComplexAS (const TableExprId& id) cons
 inline Array<String> TableExprNode::getStringAS (const TableExprId& id) const
     { return node_p->getStringAS (id); }
 
-inline Array<Bool>      TableExprNode::getColumnBool() const
-    { return node_p->getColumnBool(); }
-inline Array<uChar>     TableExprNode::getColumnuChar() const
-    { return node_p->getColumnuChar(); }
-inline Array<Short>     TableExprNode::getColumnShort() const
-    { return node_p->getColumnShort(); }
-inline Array<uShort>    TableExprNode::getColumnuShort() const
-    { return node_p->getColumnuShort(); }
-inline Array<Int>       TableExprNode::getColumnInt() const
-    { return node_p->getColumnInt(); }
-inline Array<uInt>      TableExprNode::getColumnuInt() const
-    { return node_p->getColumnuInt(); }
-inline Array<Float>     TableExprNode::getColumnFloat() const
-    { return node_p->getColumnFloat(); }
-inline Array<Double>    TableExprNode::getColumnDouble() const
-    { return node_p->getColumnDouble(); }
-inline Array<Complex>   TableExprNode::getColumnComplex() const
-    { return node_p->getColumnComplex(); }
-inline Array<DComplex>  TableExprNode::getColumnDComplex() const
-    { return node_p->getColumnDComplex(); }
-inline Array<String>    TableExprNode::getColumnString() const
-    { return node_p->getColumnString(); }
+inline Array<Bool>      TableExprNode::getColumnBool (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnBool (rownrs); }
+inline Array<uChar>     TableExprNode::getColumnuChar (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnuChar (rownrs); }
+inline Array<Short>     TableExprNode::getColumnShort (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnShort (rownrs); }
+inline Array<uShort>    TableExprNode::getColumnuShort (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnuShort (rownrs); }
+inline Array<Int>       TableExprNode::getColumnInt (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnInt (rownrs); }
+inline Array<uInt>      TableExprNode::getColumnuInt (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnuInt (rownrs); }
+inline Array<Float>     TableExprNode::getColumnFloat (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnFloat (rownrs); }
+inline Array<Double>    TableExprNode::getColumnDouble (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnDouble (rownrs); }
+inline Array<Complex>   TableExprNode::getColumnComplex (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnComplex (rownrs); }
+inline Array<DComplex>  TableExprNode::getColumnDComplex (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnDComplex (rownrs); }
+inline Array<String>    TableExprNode::getColumnString (const Vector<uInt>& rownrs) const
+    { return node_p->getColumnString (rownrs); }
 
 
 inline TableExprNode operator+ (const TableExprNode& left,
@@ -1584,6 +1584,19 @@ inline TableExprNode ltrim (const TableExprNode& node)
 inline TableExprNode rtrim (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::rtrimFUNC, node);
+}
+inline TableExprNode substr (const TableExprNode& node,
+                             const TableExprNode& pos)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::substrFUNC,
+                                           node, pos);
+}
+inline TableExprNode substr (const TableExprNode& node,
+                             const TableExprNode& pos,
+                             const TableExprNode& npos)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::substrFUNC,
+                                           node, pos, npos);
 }
 inline TableExprNode isNaN (const TableExprNode& node)
 {
