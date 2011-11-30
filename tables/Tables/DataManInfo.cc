@@ -197,6 +197,7 @@ Record DataManInfo::adjustStMan (const Record& dminfo, const String& dmType,
       rec.define ("TYPE", dmType);
       rec.define ("NAME", exName);
     }
+    delete dmptr;
     newdm.defineRecord (j, rec);
   }
   return newdm;
