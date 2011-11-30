@@ -271,32 +271,17 @@ DataType TableExprNode::getColumnDataType() const
     return dataType();
 }
 
-
-Bool TableExprNode::checkTable (const Table& table) const
+Bool TableExprNode::checkTableSize (const Table& table, Bool canBeConst) const
 {
-    return  (table.baseTablePtr() == node_p->table().baseTablePtr());
-}
-
-Bool TableExprNode::checkReplaceTable (const Table& table,
-				       Bool canBeConst) const
-{
-    if (table.baseTablePtr() == node_p->table().baseTablePtr()) {
-	return True;
+    // Always correct if no original table.
+    if (table.isNull()) {
+        return True;
     }
     if (node_p->table().isNull()) {
 	return canBeConst;
     }
-    Bool equalDataTypes;
-    if (! table.tableDesc().columnDescSet().isEqual
-	                 (node_p->table().tableDesc().columnDescSet(),
-			  equalDataTypes)
-    ||  !equalDataTypes) {
-	return False;
-    }
-    node_p->replaceTablePtr (table);
-    return True;
+    return (table.nrow() == node_p->nrow());
 }
-
 
 void TableExprNode::throwInvDT (const String& message)
     { throw (TableInvExpr ("invalid operand data type; " + message)); }

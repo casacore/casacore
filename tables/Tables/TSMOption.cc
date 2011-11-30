@@ -42,7 +42,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Get variables from aipsrc if needed.
     if (itsOption == TSMOption::Aipsrc) {
       String opt;
-      AipsrcValue<String>::find (opt, "table.tsm.option", "default");
+      AipsrcValue<String>::find (opt, "table.tsm.option", "buffer");
       opt.downcase();
       if (opt == "map"  ||  opt == "mmap") {
         itsOption = TSMOption::MMap;

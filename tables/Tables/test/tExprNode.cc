@@ -1026,6 +1026,11 @@ void doIt()
   checkScaString ("trim(ss)", exprid, trim(TableExprNode("a b")), "a b");
   checkScaString ("ltrim(ss)", exprid, rtrim(TableExprNode("  a b  ")), "  a b");
   checkScaString ("rtrim(ss)", exprid, ltrim(TableExprNode("  a b  ")), "a b  ");
+  checkScaString ("substr(ss,2)", exprid, substr(TableExprNode("abcdef"),2), "cdef");
+  checkScaString ("substr(ss,2,10)", exprid, substr(TableExprNode("abcdef"),2,10), "cdef");
+  checkScaString ("substr(ss,3,2)", exprid, substr(TableExprNode("abcdef"),3,2), "de");
+  checkArrString ("substr(trim(as),-1,2)", exprid, substr(trim(earrs1),-1,2), Vector<String>(arrs1.size(), "a1"));
+  checkArrString ("substr(as,-1,-1)", exprid, substr(earrs1,-1,-1), Vector<String>(arrs1.size(), ""));
   checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("s.*")), True);
   checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("as.*")), False);
   checkScaBool ("ss==patt", exprid, ess1==pattern(TableExprNode("s*")), True);

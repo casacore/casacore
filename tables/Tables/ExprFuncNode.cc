@@ -73,6 +73,7 @@ Bool TableExprFuncNode::isSingleValue() const
   switch (funcType_p) {
   case piFUNC:
   case eFUNC:
+  case cFUNC:
   case randFUNC:
     return True;
   case arrsumFUNC:
@@ -132,6 +133,9 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
                                      FunctionType func)
 {
   Double scale = 1;
+  if (func == cFUNC) {
+    node->setUnit ("m/s");
+  }
   if (nodes.nelements() > 0) {
     const Unit& childUnit = nodes[0]->unit();
     switch (func) {
@@ -565,6 +569,8 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return C::pi;
     case eFUNC:
 	return C::e;
+    case cFUNC:
+	return C::c;
     case sinFUNC:
 	return sin      (operands_p[0]->getDouble(id));
     case sinhFUNC:
@@ -908,6 +914,16 @@ String TableExprFuncNode::getString (const TableExprId& id)
         str.gsub (trailingWS, string());
 	return str;
       }
+    case substrFUNC:
+      {
+	String str = operands_p[0]->getString (id);
+        size_t st = std::max (Int64(0), operands()[1]->getInt (id));
+        size_t sz = String::npos;
+        if (operands_p.size() > 2) {
+          sz = std::max (Int64(0), operands()[2]->getInt (id));
+        }
+        return str.substr (st, sz);
+      }
     case cmonthFUNC:
 	return operands_p[0]->getDate(id).monthName();
     case cdowFUNC:
@@ -1190,7 +1206,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         resVT = VTArray;
         checkNumOfArg (axarg+1, axarg+1, nodes);
 	dtypeOper.resize(axarg+1);
-	dtypeOper = NTInt;
+	dtypeOper = NTReal;
 	// Check for XXXs and run/boxXXX functions if first argument is array.
 	if (fType != arrayFUNC) {
 	    if (nodes[0]->valueType() != VTArray) {
@@ -1204,16 +1220,21 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	Block<Int> dtypeTmp;    // Gets filled in by checkDT
 	dtout = checkDT (dtypeTmp, dtin, dtout, nodeTmp);
 	dtypeOper[0] = dtypeTmp[0];
-	// If more arguments are needed, they have to be Int scalars.
+	// If more arguments are needed, they have to be Real scalars.
 	if (axarg > 1) {
 	  for (uInt i=1; i<axarg; i++) {
-	    if (nodes[i]->valueType() != VTScalar
-	    &&  nodes[i]->dataType() != NTInt) {
-	      throw TableInvExpr ("2nd argument of runningXXX, boxedXXX, or "
-				  "XXXs function has to be an integer scalar");
+	    if (nodes[i]->valueType() != VTScalar  ||
+                (nodes[i]->dataType() != NTInt  &&
+                 nodes[i]->dataType() != NTDouble)) {
+	      throw TableInvExpr ("2nd argument of fractile functions "
+				  "has to be an real scalar");
 	    }
 	  }
 	}
+        if (nodes[axarg]->dataType() != NTInt) {
+          throw TableInvExpr ("The axes arguments of runningXXX, boxedXXX, or "
+                              "XXXs function have to be integers");
+        }
 	// The last argument forms the axes as an array object.
 	AlwaysAssert (nodes[axarg]->valueType() == VTArray, AipsError);
 	return dtout;
@@ -1244,6 +1265,23 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case rtrimFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTString, NTString, nodes);
+    case substrFUNC:
+	checkNumOfArg (2, 3, nodes);
+        if (nodes[0]->dataType() != NTString) {
+          throw TableInvExpr ("1st argument of substr "
+                              "function has to be a string");
+        }
+        for (uInt i=1; i<nodes.size(); i++) {
+          if (nodes[i]->valueType() != VTScalar
+              ||  nodes[i]->dataType() != NTInt) {
+            throw TableInvExpr ("2nd and optional 3rd argument of substr "
+                                "function has to be an integer scalar");
+          }
+        }
+	dtypeOper.resize (nodes.size());
+	dtypeOper = NTInt;
+	dtypeOper[0] = NTString;
+        return NTString;
     case datetimeFUNC:
 	if (checkNumOfArg (0, 1, nodes) == 1) {
 	    return checkDT (dtypeOper, NTString, NTDate, nodes);
@@ -1411,6 +1449,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case randFUNC:
     case piFUNC:
     case eFUNC:
+    case cFUNC:
 	checkNumOfArg (0, 0, nodes);
 	return NTDouble;
     case regexFUNC:

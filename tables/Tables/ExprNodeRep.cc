@@ -132,11 +132,6 @@ Bool TableExprNodeRep::isSingleValue() const
   return isConstant();
 }
 
-void TableExprNodeRep::replaceTablePtr (const Table& table)
-{
-    table_p = table;
-}
-
 void TableExprNodeRep::adaptSetUnits (const Unit&)
 {}
 
@@ -407,87 +402,87 @@ Array<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
 }
 
 
-Array<Bool>     TableExprNodeRep::getColumnBool()
+Array<Bool>     TableExprNodeRep::getColumnBool (const Vector<uInt>& rownrs)
 {
-    uInt nrrow = nrow();
+    uInt nrrow = rownrs.size();
     Vector<Bool> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec(i) = getBool (i);
+	vec[i] = getBool (rownrs[i]);
     }
     return vec;
 }
-Array<uChar>    TableExprNodeRep::getColumnuChar()
+Array<uChar>    TableExprNodeRep::getColumnuChar (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuChar not implemented)");
     return Array<uChar>();
 }
-Array<Short>    TableExprNodeRep::getColumnShort()
+Array<Short>    TableExprNodeRep::getColumnShort (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnShort not implemented)");
     return Array<Short>();
 }
-Array<uShort>   TableExprNodeRep::getColumnuShort()
+Array<uShort>   TableExprNodeRep::getColumnuShort (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuShort not implemented)");
     return Array<uShort>();
 }
-Array<Int>      TableExprNodeRep::getColumnInt()
+Array<Int>      TableExprNodeRep::getColumnInt (const Vector<uInt>& rownrs)
 {
-    uInt nrrow = nrow();
+    uInt nrrow = rownrs.size();
     Vector<Int> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec(i) = getInt (i);
+      vec[i] = getInt (rownrs[i]);
     }
     return vec;
 }
-Array<uInt>     TableExprNodeRep::getColumnuInt()
+Array<uInt>     TableExprNodeRep::getColumnuInt (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuInt not implemented)");
     return Array<uInt>();
 }
-// Array<Int64>    TableExprNodeRep::getColumnInt64()
+// Array<Int64>    TableExprNodeRep::getColumnInt64 (const Vector<uInt>& rownrs)
 // {
-//     uInt nrrow = nrow();
+//     uInt nrrow = rownrs.size();
 //     Vector<Int64> vec (nrrow);
 //     for (uInt i=0; i<nrrow; i++) {
-// 	vec(i) = getInt (i);
+// 	vec[i] = getInt (rownrs[i]);
 //     }
 //     return vec;
 // }
-Array<Float>    TableExprNodeRep::getColumnFloat()
+Array<Float>    TableExprNodeRep::getColumnFloat (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnFloat not implemented)");
     return Array<Float>();
 }
-Array<Double>   TableExprNodeRep::getColumnDouble()
+Array<Double>   TableExprNodeRep::getColumnDouble (const Vector<uInt>& rownrs)
 {
-    uInt nrrow = nrow();
+    uInt nrrow = rownrs.size();
     Vector<Double> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec(i) = getDouble (i);
+	vec[i] = getDouble (rownrs[i]);
     }
     return vec;
 }
-Array<Complex>  TableExprNodeRep::getColumnComplex()
+Array<Complex>  TableExprNodeRep::getColumnComplex (const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnComplex not implemented)");
     return Array<Complex>();
 }
-Array<DComplex> TableExprNodeRep::getColumnDComplex()
+Array<DComplex> TableExprNodeRep::getColumnDComplex (const Vector<uInt>& rownrs)
 {
-    uInt nrrow = nrow();
+    uInt nrrow = rownrs.size();
     Vector<DComplex> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec(i) = getDComplex (i);
+	vec[i] = getDComplex (rownrs[i]);
     }
     return vec;
 }
-Array<String>   TableExprNodeRep::getColumnString()
+Array<String>   TableExprNodeRep::getColumnString (const Vector<uInt>& rownrs)
 {
-    uInt nrrow = nrow();
+    uInt nrrow = rownrs.size();
     Vector<String> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec(i) = getString (i);
+	vec[i] = getString (rownrs[i]);
     }
     return vec;
 }
@@ -543,9 +538,6 @@ TableExprNodeRep* TableExprNodeBinary::shortcutOrAnd ()
 	    return *otherNode;
 	}
     }
-    // Put a BaseTable in the node, so the expression analyzer
-    // knows the constant comes from a Table.
-    (**constNode).replaceTablePtr (Table(), thisNode->baseTablePtr());
     return *constNode;
 
     // In the calling routine something like the following has to be done.
@@ -627,9 +619,6 @@ TableExprNodeRep* TableExprNodeRep::convertNode (TableExprNodeRep* thisNode,
 	    TableExprNode::throwInvDT ("in convertNode"); // should never occur
 	}
     }
-    // Put a BaseTable in it, so the expression analyzer knows the constant
-    // comes from a Table.
-    newNode->replaceTablePtr (thisNode->table());
     newNode->setUnit (thisNode->unit());
     delete thisNode;
     return newNode;
@@ -696,17 +685,6 @@ Bool TableExprNodeBinary::isSingleValue() const
   }
   // Binary; both children must be single.
   return rnode_p->isSingleValue() && rnode_p->isSingleValue();
-}
-
-void TableExprNodeBinary::replaceTablePtr (const Table& table)
-{
-    table_p = table;
-    if (lnode_p != 0) {
-	lnode_p->replaceTablePtr (table);
-    }
-    if (rnode_p != 0) {
-	rnode_p->replaceTablePtr (table);
-    }
 }
 
 // Check the datatypes and get the common one.
@@ -1008,9 +986,6 @@ void TableExprNodeBinary::convertConstChild()
 	                                    ((**constNode).getArrayDouble(0));
       }
     }
-    // Put a BaseTable in it, so the expression analyzer knows the constant
-    // comes from a Table.
-    newNode->replaceTablePtr ((**constNode).table());
     newNode->setUnit ((**constNode).unit());
     unlink (*constNode);
     *constNode = newNode->link();
@@ -1046,16 +1021,6 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     for (uInt j=0; j<operands_p.nelements(); j++) {
 	if (operands_p[j] != 0) {
 	    operands_p[j]->show (os, indent+2);
-	}
-    }
-}
-
-void TableExprNodeMulti::replaceTablePtr (const Table& table)
-{
-    table_p = table;
-    for (uInt i=0; i<operands_p.nelements(); i++) {
-	if (operands_p[i] != 0) {
-	    operands_p[i]->replaceTablePtr (table);
 	}
     }
 }

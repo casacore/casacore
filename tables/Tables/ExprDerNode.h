@@ -301,9 +301,6 @@ public:
     TableExprNodeColumn (const Table&, const String& columnName);
     ~TableExprNodeColumn();
 
-    // Replace the Table pointer in this node.
-    virtual void replaceTablePtr (const Table&);
-
     Bool     getBool     (const TableExprId& id);
     Int64    getInt      (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
@@ -314,17 +311,17 @@ public:
     // Get the data type of this scalar column.
     Bool getColumnDataType (DataType&) const;
 
-    Array<Bool>     getColumnBool();
-    Array<uChar>    getColumnuChar();
-    Array<Short>    getColumnShort();
-    Array<uShort>   getColumnuShort();
-    Array<Int>      getColumnInt();
-    Array<uInt>     getColumnuInt();
-    Array<Float>    getColumnFloat();
-    Array<Double>   getColumnDouble();
-    Array<Complex>  getColumnComplex();
-    Array<DComplex> getColumnDComplex();
-    Array<String>   getColumnString();
+    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
+    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
+    Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
+    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
+    Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
+    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
+    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
+    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
+    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
+    Array<String>   getColumnString (const Vector<uInt>& rownrs);
 
     // Get the column unit (can be empty).
     static Unit getColumnUnit (const ROTableColumn&);

@@ -485,13 +485,16 @@ private:
 				    const Vector<Int>& ignoreFuncs);
 
   // Do the update step.
-  void doUpdate (Bool showTimings, Table& updTable, const Table& inTable);
+  // Rows 0,1,2,.. in UpdTable are updated from the expression result
+  // for the rows in the given rownrs vector.
+  void doUpdate (Bool showTimings, const Table& origTable,
+                 Table& updTable, const Vector<uInt>& rownrs);
 
   // Do the insert step and return a selection containing the new rows.
   Table doInsert (Bool showTimings, Table& table);
 
   // Do the delete step.
-  void doDelete (Bool showTimings, Table& table, const Table& sel);
+  void doDelete (Bool showTimings, Table& table);
 
   // Do the count step returning a memory table containing the unique
   // column values and the counts of the column values.
@@ -501,13 +504,14 @@ private:
   Table doProject (Bool showTimings, const Table&);
 
   // Do the projection containing column expressions.
-  Table doProjectExpr (const Table&);
+  // Projection is done for the selected rownrs.
+  Table doProjectExpr();
 
   // Do the sort step.
-  Table doSort (Bool showTimings, const Table& table);
+  void doSort (Bool showTimings, const Table& origTable);
 
   // Do the limit/offset step.
-  Table doLimOff (Bool showTimings, const Table& table);
+  void doLimOff (Bool showTimings);
 
   // Do the 'select distinct' step.
   Table doDistinct (Bool showTimings, const Table& table);
@@ -518,12 +522,12 @@ private:
   // Update the values in the columns (helpers of doUpdate).
   // <group>
   template<typename TCOL, typename TNODE>
-  void updateValue2 (const TableExprId& rowid, Bool isScalarCol,
+  void updateValue2 (uInt row, const TableExprId& rowid, Bool isScalarCol,
                      const TableExprNode& node, TableColumn& col,
                      const Slicer* slicerPtr,
                      IPosition& blc, IPosition& trc, IPosition& inc);
   template<typename T>
-  void updateValue1 (const TableExprId& rowid, Bool isScalarCol,
+  void updateValue1 (uInt row, const TableExprId& rowid, Bool isScalarCol,
                      const TableExprNode& node, TableColumn& col,
                      const Slicer* slicerPtr,
                      IPosition& blc, IPosition& trc, IPosition& inc);
@@ -542,7 +546,7 @@ private:
   TableExprNode getColSet();
 
   // Make a set from the results of the subquery.
-  TableExprNode makeSubSet() const;
+  TableExprNode makeSubSet (const Table& origTable) const;
 
   // Evaluate an int scalar expression.
   Int64 evalIntScaExpr (const TableExprNode& expr) const;
@@ -637,6 +641,8 @@ private:
   Sort::Order order_p;
   //# The resulting table.
   Table table_p;
+  //# The resulting row numbers.
+  Vector<uInt> rownrs_p;
 };
 
 

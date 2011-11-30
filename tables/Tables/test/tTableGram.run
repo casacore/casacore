@@ -7,12 +7,18 @@
 # One argument can be given to this script, which will preceed the tTableGram
 # command. This can be used to run e.g. valgrind on it.
 
-# Use table tTable_2.data_v0 as the input by creating a link to its directory.
-  rm -rf tTableGram_tmp.tab*
-  mkdir tTableGram_tmp.tab
-  cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
-  chmod 644 tTableGram_tmp.tab/*
-  cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
+# Set default testsrcdir if undefined.
+if test "$testsrcdir" = ""; then
+  testsrcdir=../../../../../casacore/tables/Tables/test
+fi
+
+# Use table tTable_2.data_v0 as the input bycopying it (twice).
+rm -rf tTableGram_tmp.tab*
+mkdir tTableGram_tmp.tab
+cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
+chmod 644 tTableGram_tmp.tab/*
+cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
+
 
 # Whitespace around * had to be removed to avoid file name expansion by shell.
 
@@ -107,7 +113,7 @@ $casa_checktool ./tTableGram 'select ab,ac from [select from tTableGram_tmp.tab 
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ac in [select from tTableGram_tmp.tab where ac in 4:6:2 giving [rowid()]]'
 
-$casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+arr1[1,1,1]%2,3])) == 19'
+$casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where min(maxs(arr1,[1+int(arr1[1,1,1]%2),3])) == 19'
 
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where min(1+maxs(arr1-1,1,3)) == 19'
 
@@ -221,3 +227,29 @@ $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [a
 $casa_checktool ./tTableGram 'select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4'
 $casa_checktool ./tTableGram 'update tTableGram_tmp.tab_abac set ab1=1min+ab1, ac1=1.5cm+ac1'
 $casa_checktool ./tTableGram 'select ab1,ac1 from tTableGram_tmp.tab_abac'
+
+
+echo
+echo "Testing multiple tables ..."
+# Now do some test that uses two tables.
+# Use table tTable_2.data_v0 again.
+rm -rf tTableGram_tmp.tab*
+mkdir tTableGram_tmp.tab
+cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
+chmod 644 tTableGram_tmp.tab/*
+# Make a deep copy in reversed order.
+$casa_checktool ./tTableGram 'select from tTableGram_tmp.tab orderby ab desc giving tTableGram_tmp.rev as plain'
+
+# Do a select from these two tables.
+$casa_checktool ./tTableGram 'select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2'
+$casa_checktool ./tTableGram 'select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where abs(t1.ab - t2.ab) < 4'
+$casa_checktool ./tTableGram 'select t1.ab as ab1, t1.ac, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab'
+$casa_checktool ./tTableGram 'select ab1,ab2 from [select t1.ab as ab1, t2.ab as ab2 from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where abs(t1.ab - t2.ab) < 4]'
+$casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where ab in [select t2.ab from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab]'
+$casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where ac in [select ab from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where t1.ab > t2.ab]'
+$casa_checktool ./tTableGram 'update tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 set ab=ab+1, ac=t2.ac'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
+$casa_checktool ./tTableGram 'update tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 set ac=t2.ac+10 where ab=t2.ab'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
+$casa_checktool ./tTableGram 'delete from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where ab=t2.ab'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'

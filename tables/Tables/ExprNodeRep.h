@@ -306,17 +306,17 @@ public:
     // The data of function called should match the data type as
     // returned by function <src>getColumnDataType</src>.
     // <group>
-    virtual Array<Bool>     getColumnBool();
-    virtual Array<uChar>    getColumnuChar();
-    virtual Array<Short>    getColumnShort();
-    virtual Array<uShort>   getColumnuShort();
-    virtual Array<Int>      getColumnInt();
-    virtual Array<uInt>     getColumnuInt();
-    virtual Array<Float>    getColumnFloat();
-    virtual Array<Double>   getColumnDouble();
-    virtual Array<Complex>  getColumnComplex();
-    virtual Array<DComplex> getColumnDComplex();
-    virtual Array<String>   getColumnString();
+    virtual Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
+    virtual Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
+    virtual Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
+    virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
+    virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
+    virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
+    virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
+    virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
+    virtual Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
+    virtual Array<String>   getColumnString (const Vector<uInt>& rownrs);
     // </group>
 
     // Convert the tree to a number of range vectors which at least
@@ -385,9 +385,6 @@ public:
     Table& table();
     const Table& table() const;
     // </group>
-
-    // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&);
 
     // Let a set node convert itself to the given unit.
     // The default implementation does nothing.
@@ -542,9 +539,6 @@ public:
     // done for each get.
     void convertConstChild();
 
-    // Replace the Table in this node and all its children.
-    virtual void replaceTablePtr (const Table&);
-
     // Get the child nodes.
     // <group>
     const TableExprNodeRep* getLeftChild() const
@@ -622,9 +616,6 @@ public:
     static uInt checkNumOfArg (uInt low, uInt high,
 			       const PtrBlock<TableExprNodeRep*>& nodes);
     
-    // Replace the Table pointer in this node and all its children.
-    virtual void replaceTablePtr (const Table&);
-
     // Get the child nodes.
     const PtrBlock<TableExprNodeRep*>& getChildren() const
       { return operands_p; }
