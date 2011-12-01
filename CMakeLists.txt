@@ -21,7 +21,7 @@ endif (ENABLE_SHARED)
 option (USE_HDF5 "" NO)
 option (USE_FFTW3 "" NO)
 option (USE_THREADS "" NO)
-option (ENABLE_MULTI_THREADING "" NO)
+option (USE_OPENMP "" NO)
 
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.
@@ -147,9 +147,10 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 if(USE_THREADS)
     add_definitions(-DUSE_THREADS)
 endif(USE_THREADS)
-if(ENABLE_MULTI_THREADING)
+if(USE_OPENMP)
     add_definitions(-DUSE_MULTI_THREADING)
-endif(ENABLE_MULTI_THREADING)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+endif(USE_OPENMP)
 
 # Add the modules to be built.
 foreach (module ${_modules})
