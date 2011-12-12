@@ -1473,6 +1473,7 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     case TableExprFuncNode::ltrimFUNC:
     case TableExprFuncNode::rtrimFUNC:
     case TableExprFuncNode::substrFUNC:
+    case TableExprFuncNode::replaceFUNC:
       {
         static Regex leadingWS("^[ \t]*");
         static Regex trailingWS("[ \t]*$");
@@ -1517,6 +1518,25 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
               }
               for (i=0; i<n; i++) {
                 str[i] = str[i].substr (st, sz);
+              }
+            }
+            break;
+        case TableExprFuncNode::replaceFUNC:
+            {
+              String repl;
+              if (operands().size() > 2) {
+                repl = operands()[2]->getString (id);
+              }
+              if (operands()[1]->dataType() == TableExprNodeRep::NTString) {
+                String patt = operands()[1]->getString(id);
+                for (i=0; i<n; i++) {
+                  str[i].gsub (patt, repl);
+                }
+              } else {
+                Regex patt = operands()[1]->getRegex(id).regex();
+                for (i=0; i<n; i++) {
+                  str[i].gsub (patt, repl);
+                }
               }
             }
             break;

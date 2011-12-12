@@ -89,6 +89,10 @@ public:
         itsDist.match(str) : str.matches(itsRegex);
     }
 
+  // Return the regular expression.
+  const Regex& regex() const
+    { return itsRegex; }
+
 private:
   Regex          itsRegex;
   StringDistance itsDist;

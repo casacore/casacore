@@ -205,6 +205,7 @@ public:
 	ltrimFUNC,             //# returning String
 	rtrimFUNC,             //# returning String
 	substrFUNC,            //# returning String
+        replaceFUNC,           //# returning String
 	regexFUNC,             //# returning TaqlRegex
 	patternFUNC,           //# returning TaqlRegex
 	sqlpatternFUNC,        //# returning TaqlRegex
