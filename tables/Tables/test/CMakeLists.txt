@@ -64,6 +64,7 @@ tTable_2
 tTable_3
 tTable_4
 tTable
+tTableAccess
 tTableCopy
 tTableDesc
 tTableDescHyper

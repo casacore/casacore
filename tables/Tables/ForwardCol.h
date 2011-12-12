@@ -236,6 +236,22 @@ private:
     // (which is guaranteed by the ScalarColumn putColumn function).
     void putScalarColumnV (const void* dataPtr);
 
+    // Get some scalar values in the column.
+    // The argument dataPtr is in fact a Vector<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    virtual void getScalarColumnCellsV (const RefRows& rownrs,
+					void* dataPtr);
+
+    // Put some scalar values in the column.
+    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ScalarColumn getColumn function).
+    virtual void putScalarColumnCellsV (const RefRows& rownrs,
+					const void* dataPtr);
+
     // Get the array value in the given row.
     // The argument dataPtr is in fact a Array<T>*, but a void*
     // is needed to be generic.
@@ -278,6 +294,22 @@ private:
     // (which is guaranteed by the ScalarColumn putColumn function).
     void putArrayColumnV (const void* dataPtr);
 
+    // Get some array values in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    virtual void getArrayColumnCellsV (const RefRows& rownrs,
+				       void* dataPtr);
+
+    // Put some array values in the column.
+    // The argument dataPtr is in fact an const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The vector pointed to by dataPtr has to have the correct length
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    virtual void putArrayColumnCellsV (const RefRows& rownrs,
+				       const void* dataPtr);
+
     // Get a section of all arrays in the column.
     // The argument dataPtr is in fact a Array<T>*, but a void*
     // is needed to be generic.
@@ -291,6 +323,23 @@ private:
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putColumn function).
     void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+
+    // Get a section of some arrays in the column.
+    // The argument dataPtr is in fact an Array<T>*, but a void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn getColumn function).
+    virtual void getColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer, void* dataPtr);
+
+    // Put into a section of some arrays in the column.
+    // The argument dataPtr is in fact a const Array<T>*, but a const void*
+    // is needed to be generic.
+    // The array pointed to by dataPtr has to have the correct shape
+    // (which is guaranteed by the ArrayColumn putColumn function).
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer,
+				       const void* dataPtr);
 
 
     //# Now define the data members.
