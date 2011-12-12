@@ -707,8 +707,10 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::ltrimFUNC;
   } else if (funcName == "rtrim") {
     ftype = TableExprFuncNode::rtrimFUNC;
-  } else if (funcName == "substr"  ||  funcName == "substr") {
+  } else if (funcName == "substr"  ||  funcName == "substring") {
     ftype = TableExprFuncNode::substrFUNC;
+  } else if (funcName == "replace") {
+    ftype = TableExprFuncNode::replaceFUNC;
   } else if (funcName == "regex") {
     ftype = TableExprFuncNode::regexFUNC;
   } else if (funcName == "pattern") {
@@ -899,20 +901,25 @@ void TableParseSelect::handleColumn (Int stringType,
       } else {
 	oldName = str.after(inx);
       }
-      // Make an expression of the column name.
-      // If a data type or shorthand is given, the column must be handled
-      // as an expression.
-      // The same is true if the same column is already used. In such a case
-      // the user probably wants to duplicate the column with a different name.
+      // Make an expression of the column or keyword name.
       columnExpr_p[nrcol] = handleKeyCol (str);
-      columnOldNames_p[nrcol] = oldName;
-      if (!newDtype.empty()  ||  inx >= 0) {
-	nrSelExprUsed_p++;
+      if (columnExpr_p[nrcol].table().isNull()) {
+        // A keyword was given which is returned as a constant.
+        nrSelExprUsed_p++;
       } else {
-        for (Int i=0; i<nrcol-1; ++i) {
-          if (str == columnOldNames_p[i]) {
-            nrSelExprUsed_p++;
-            break;
+        // If a data type or shorthand is given, the column must be handled
+        // as an expression.
+        // The same is true if the same column is already used. In such a case
+        // the user likely wants to duplicate the column with a different name.
+        columnOldNames_p[nrcol] = oldName;
+        if (!newDtype.empty()  ||  inx >= 0) {
+          nrSelExprUsed_p++;
+        } else {
+          for (Int i=0; i<nrcol-1; ++i) {
+            if (str == columnOldNames_p[i]) {
+              nrSelExprUsed_p++;
+              break;
+            }
           }
         }
       }
@@ -1039,7 +1046,7 @@ void TableParseSelect::handleColumnFinish (Bool distinct)
 	dtypes[nr]   = columnDtypes_p[i];
 	// Create a Expr object if needed.
 	if (exprs[nr].isNull()) {
-	  // That can only be the case if no old name if filled in.
+	  // That can only be the case if no old name is filled in.
 	  AlwaysAssert (oldNames[nr].empty(), AipsError);
 	  String name = names[nr];
 	  Int j = name.index('.');

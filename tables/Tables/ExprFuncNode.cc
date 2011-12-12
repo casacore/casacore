@@ -917,12 +917,26 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case substrFUNC:
       {
 	String str = operands_p[0]->getString (id);
-        size_t st = std::max (Int64(0), operands()[1]->getInt (id));
+        size_t st = std::max (Int64(0), operands_p[1]->getInt (id));
         size_t sz = String::npos;
         if (operands_p.size() > 2) {
-          sz = std::max (Int64(0), operands()[2]->getInt (id));
+          sz = std::max (Int64(0), operands_p[2]->getInt (id));
         }
         return str.substr (st, sz);
+      }
+    case replaceFUNC:
+      {
+	String str = operands_p[0]->getString (id);
+        String repl;
+        if (operands_p.size() > 2) {
+          repl = operands_p[2]->getString (id);
+        }
+        if (operands_p[1]->dataType() == NTString) {
+          str.gsub (operands_p[1]->getString(id), repl);
+        } else {
+          str.gsub (operands_p[1]->getRegex(id).regex(), repl);
+        }
+        return str;
       }
     case cmonthFUNC:
 	return operands_p[0]->getDate(id).monthName();
@@ -1281,6 +1295,29 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	dtypeOper.resize (nodes.size());
 	dtypeOper = NTInt;
 	dtypeOper[0] = NTString;
+        return NTString;
+    case replaceFUNC:
+	checkNumOfArg (2, 3, nodes);
+        if (nodes[0]->dataType() != NTString) {
+          throw TableInvExpr ("1st argument of replace "
+                              "function has to be a string");
+        }
+        if (nodes[1]->valueType() != VTScalar
+            ||  (nodes[1]->dataType() != NTString  &&
+                 nodes[1]->dataType() != NTRegex)) {
+          throw TableInvExpr ("2nd argument of replace "
+                              "function has to be a string or regex scalar");
+        }
+        if (nodes.size() == 3) {
+          if (nodes[2]->valueType() != VTScalar
+              ||  nodes[2]->dataType() != NTString) {
+            throw TableInvExpr ("Optional 3rd argument of replace "
+                                "function has to be a string scalar");
+          }
+        }
+	dtypeOper.resize (nodes.size());
+	dtypeOper = NTString;
+	dtypeOper[1] = nodes[1]->dataType();
         return NTString;
     case datetimeFUNC:
 	if (checkNumOfArg (0, 1, nodes) == 1) {

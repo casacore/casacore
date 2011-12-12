@@ -234,6 +234,11 @@ class TableExprNode;
     TableExprNode substr    (const TableExprNode& str,
                              const TableExprNode& pos,
                              const TableExprNode& npos);
+    TableExprNode replace   (const TableExprNode& str,
+                             const TableExprNode& patt);
+    TableExprNode replace   (const TableExprNode& str,
+                             const TableExprNode& patt,
+                             const TableExprNode& repl);
   // </group>
 
   // Functions for regular expression matching and 
@@ -663,6 +668,11 @@ class TableExprNode
     friend TableExprNode substr    (const TableExprNode& str,
                                     const TableExprNode& pos,
                                     const TableExprNode& npos);
+    friend TableExprNode replace   (const TableExprNode& str,
+                                    const TableExprNode& patt);
+    friend TableExprNode replace   (const TableExprNode& str,
+                                    const TableExprNode& patt,
+                                    const TableExprNode& repl);
     friend TableExprNode regex     (const TableExprNode& node);
     friend TableExprNode pattern   (const TableExprNode& node);
     friend TableExprNode sqlpattern(const TableExprNode& node);
@@ -1597,6 +1607,19 @@ inline TableExprNode substr (const TableExprNode& node,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::substrFUNC,
                                            node, pos, npos);
+}
+inline TableExprNode replace (const TableExprNode& node,
+                              const TableExprNode& patt)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::replaceFUNC,
+                                           node, patt);
+}
+inline TableExprNode replace (const TableExprNode& node,
+                              const TableExprNode& patt,
+                              const TableExprNode& repl)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::replaceFUNC,
+                                           node, patt, repl);
 }
 inline TableExprNode isNaN (const TableExprNode& node)
 {
