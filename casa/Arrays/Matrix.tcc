@@ -148,9 +148,9 @@ template<class T> Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other)
     if (this == &other)
         return *this;
 
-    Bool Conform = conform(other);
+    Bool Conform = this->conform(other);
     if (Conform == False && this->nelements() != 0)
-	validateConformance(other);  // We can't overwrite, so throw exception
+	this->validateConformance(other);  // We can't overwrite, so throw exception
 
     Array<T>::operator=(other);
     if (!Conform) {
@@ -163,7 +163,7 @@ template<class T> Matrix<T> &Matrix<T>::operator=(const Matrix<T> &other)
 template<class T> Array<T> &Matrix<T>::operator=(const Array<T> &a)
 {
     DebugAssert(ok(), ArrayError);
-    Bool Conform = conform(a);
+    Bool Conform = this->conform(a);
     if (a.ndim() == 2) {
 	Array<T>::operator=(a);
 	if (!Conform) {

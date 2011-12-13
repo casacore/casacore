@@ -52,9 +52,9 @@ RebinImage<T>::RebinImage (const ImageInterface<T>& image,
      CoordinateUtil::makeBinnedCoordinateSystem (factors, image.coordinates(), True);
   setCoordsMember (cSys);
 //
-  setImageInfoMember (itsImagePtr->imageInfo());
-  setMiscInfoMember (itsImagePtr->miscInfo());
-  setUnitMember (itsImagePtr->units());
+  this->setImageInfoMember (itsImagePtr->imageInfo());
+  this->setMiscInfoMember (itsImagePtr->miscInfo());
+  this->setUnitMember (itsImagePtr->units());
   logger().addParent (itsImagePtr->logger());
 }
 

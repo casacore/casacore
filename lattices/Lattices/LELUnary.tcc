@@ -98,7 +98,7 @@ LELUnary<T>::LELUnary(const LELUnaryEnums::Operation op,
 		      const CountedPtr<LELInterface<T> >& pExpr)
 : op_p(op), pExpr_p(pExpr)
 {
-   setAttr(pExpr->getAttribute());
+   this->setAttr(pExpr->getAttribute());
 
 #if defined(AIPS_TRACE)
    cout << "LELUnary:: constructor" << endl;

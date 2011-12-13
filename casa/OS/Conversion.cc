@@ -427,8 +427,7 @@ unsigned int Conversion::bitToBool (void* to, const void* from,
     if (sizeof(Bool) != sizeof(char)  ||  (7 & (unsigned long long)to)) {
 	return bitToBool_(to, from, nvalues);
     }
-    double* __attribute__ ((aligned (8))) data =
-	(double __attribute__ ((aligned (8)))*)to;
+    double* __attribute__ ((aligned (8))) data = static_cast<double*>(to);
     const uint8_t* bits = (const uint8_t*)from;
     const size_t bits_per_loop = 8;
     const size_t nwords = nvalues / bits_per_loop;

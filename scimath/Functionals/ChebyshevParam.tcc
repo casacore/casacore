@@ -219,9 +219,9 @@ void ChebyshevParamModeImpl<T>::setMode(const RecordInterface& in) {
 	    Vector<T> intv;
 	    in.get(fld, intv);
 	    if (intv(0) < intv(1)) 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	    else 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	}
     }
 
@@ -236,7 +236,7 @@ void ChebyshevParamModeImpl<T>::setMode(const RecordInterface& in) {
 	{
 	    T def;
 	    in.get(fld, def);
-	    setDefault(def);
+	    this->setDefault(def);
 	}
     }
 
@@ -283,9 +283,9 @@ void ChebyshevParamModeImpl<AutoDiff<T> >::setMode(const RecordInterface& in) {
 	    Vector<T> intv;
 	    in.get(fld, intv);
 	    if (intv(0) < intv(1)) 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	    else 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	}
     }
 
@@ -300,7 +300,7 @@ void ChebyshevParamModeImpl<AutoDiff<T> >::setMode(const RecordInterface& in) {
 	{
 	    T def;
 	    in.get(fld, def);
-	    setDefault(def);
+	    this->setDefault(def);
 	}
     }
 
@@ -348,9 +348,9 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::setMode(const RecordInterface& in) {
 	    Vector<T> intv;
 	    in.get(fld, intv);
 	    if (intv(0) < intv(1)) 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	    else 
-		setInterval(intv(0), intv(1));
+		this->setInterval(intv(0), intv(1));
 	}
     }
 
@@ -365,7 +365,7 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::setMode(const RecordInterface& in) {
 	{
 	    T def;
 	    in.get(fld, def);
-	    setDefault(def);
+	    this->setDefault(def);
 	}
     }
 

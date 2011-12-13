@@ -76,12 +76,12 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   while (curiter_p > 0 && (!this->isReady() || curiter_p == maxiter_p)) {
     setMaskedParameterValues(sol_p);
     // Build normal equations
-    buildMatrix(x, y, sigma, mask);
+    this->buildMatrix(x, y, sigma, mask);
     // Build constraint equations
     buildConstraint();
     // Do an LM loop
     VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);
-    if (!solveLoop(nr_p, csolit)) {
+    if (!this->solveLoop(nr_p, csolit)) {
       throw(AipsError("NonLinearFitLM: error in loop solution"));
     }
     curiter_p--;
@@ -91,12 +91,12 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   
   // Solve last time
   setMaskedParameterValues(sol_p);
-  buildMatrix(x, y, sigma, mask);
+  this->buildMatrix(x, y, sigma, mask);
   buildConstraint();
-  invert(nr_p, True);
-  solve(condEq_p);
+  this->invert(nr_p, True);
+  this->solve(condEq_p);
   sol_p += condEq_p;
-  getErrors(err_p);
+  this->getErrors(err_p);
   errors_p = True;
   for (uInt i=0, k=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];

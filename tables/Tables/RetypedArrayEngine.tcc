@@ -186,7 +186,7 @@ void RetypedArrayEngine<S,T>::create (uInt initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
-    TableColumn thisCol (makeTableColumn (virtualName()));
+    TableColumn thisCol (this->makeTableColumn (virtualName()));
     thisCol.rwKeywordSet().define ("_RetypedArrayEngine_Shape",
 				   shape_p.asVector());
     thisCol.rwKeywordSet().defineRecord ("_RetypedArrayEngine_Record",

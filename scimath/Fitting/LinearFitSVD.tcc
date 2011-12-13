@@ -33,7 +33,7 @@ template<class T>
 LinearFitSVD<T>::LinearFitSVD() :
   LinearFit<T>() {
   svd_p = True;
-  set(COLLINEARITY);
+  this->set(COLLINEARITY);
 }
 
 template<class T>

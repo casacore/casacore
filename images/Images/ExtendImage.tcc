@@ -58,9 +58,9 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
   }
   itsExtLatPtr = new ExtendLattice<T> (image, newShape, newAxes, stretchAxes);
   setCoordsMember (newCsys);
-  setImageInfoMember (itsImagePtr->imageInfo());
-  setMiscInfoMember (itsImagePtr->miscInfo());
-  setUnitMember (itsImagePtr->units());
+  this->setImageInfoMember (itsImagePtr->imageInfo());
+  this->setMiscInfoMember (itsImagePtr->miscInfo());
+  this->setUnitMember (itsImagePtr->units());
   logger().addParent (itsImagePtr->logger());
 }
 

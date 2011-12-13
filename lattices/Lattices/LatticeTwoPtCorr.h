@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/BasicMath/Math.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
