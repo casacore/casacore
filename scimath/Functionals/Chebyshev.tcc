@@ -91,7 +91,7 @@ template <class T>
 Chebyshev<T> Chebyshev<T>::derivative() const {
     Vector<T> ce(this->nparameters());
     ce = this->parameters().getParameters();
-    derivativeCoeffs(ce, this->minx_p, this->maxx_p);
+    this->derivativeCoeffs(ce, this->minx_p, this->maxx_p);
     return Chebyshev<T>(ce, this->minx_p, this->maxx_p, this->mode_p, T(0));
 }
 

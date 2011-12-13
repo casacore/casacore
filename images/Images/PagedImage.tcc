@@ -538,7 +538,7 @@ PagedImage<T>& PagedImage<T>::operator+= (const Lattice<T>& other)
   check_conformance(other);
   // Use LEL, so a mask is also handled.
   LatticeExpr<T> expr(*this + other);
-  copyData (expr);
+  this->copyData (expr);
   return *this;
 }
 

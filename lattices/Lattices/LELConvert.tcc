@@ -45,7 +45,7 @@ LELConvert<T,F>::LELConvert(const CountedPtr<LELInterface<F> >& expr)
 // T is the type we are converting to.
 //
 {
-   setAttr (expr->getAttribute());
+   this->setAttr (expr->getAttribute());
 
 #if defined(AIPS_TRACE)
    cout << "LELConvert:: constructor" << endl;

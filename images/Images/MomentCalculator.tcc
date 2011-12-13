@@ -1580,7 +1580,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 {
 // Set moment selection vector
 
-   selectMoments_p = selectMoments(iMom_p);
+   selectMoments_p = this->selectMoments(iMom_p);
 
 // Set/check some dimensionality
 
@@ -1588,7 +1588,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
 // Fish out moment axis
 
-   Int momAxis = momentAxis(iMom_p);
+   Int momAxis = this->momentAxis(iMom_p);
 
 // Set up slice shape for extraction from masking lattice
 
@@ -1600,33 +1600,33 @@ MomentClip<T>::MomentClip(Lattice<T>* pAncilliaryLattice,
 
 // Make all plots with same y range ?
 
-   fixedYLimits_p = fixedYLimits(iMom_p);
-   yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
+   fixedYLimits_p = this->fixedYLimits(iMom_p);
+   this->yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
 
 // Fish out pixel selection range
 
-   selectRange(range_p, doInclude_p, doExclude_p, iMom_p);
+   this->selectRange(range_p, doInclude_p, doExclude_p, iMom_p);
 
 // Are we computing the expensive moments ?
 
-   costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
+   this->costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
 
 // Are we plotting ?
 
-   plotter_p = device(iMom_p);
+   plotter_p = this->device(iMom_p);
 
 // Are we computing coordinate-dependent moments.  If so
 // precompute coordinate vector if moment axis separable
 
-   setCoordinateSystem (cSys_p, iMom_p);
-   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
-   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+   this->setCoordinateSystem (cSys_p, iMom_p);
+   this->doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   this->setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
                integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
                doCoordRandom_p);
 
 // What is the axis type of the moment axis
 
-   momAxisType_p = momentAxisName(cSys_p, iMom_p);
+   momAxisType_p = this->momentAxisName(cSys_p, iMom_p);
 
 
 // Number of failed Gaussian fits 
@@ -1691,7 +1691,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 // Plot spectrum if asked
 
    if (plotter_p.isAttached()) {
-      makeAbcissa(abcissa_p, pProfileSelect_p->nelements());
+      this->makeAbcissa(abcissa_p, pProfileSelect_p->nelements());
       String xLabel;
       if (momAxisType_p.empty()) {
          xLabel = "x (pixels)";
@@ -1702,7 +1702,7 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
       String title;
       setPosLabel (title, inPos);
 
-      if (!drawSpectrum (abcissa_p, *pProfileSelect_p, profileInMask, 
+      if (!this->drawSpectrum(abcissa_p, *pProfileSelect_p, profileInMask, 
                          fixedYLimits_p, yMinAuto_p, yMaxAuto_p, xLabel, 
                          yLabel, title, True, plotter_p)) {
 
@@ -1724,12 +1724,12 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
 
       if (doInclude_p || doExclude_p) {
          plotter_p.sci (5);
-         drawHorizontal(range_p(0), plotter_p);
-         drawHorizontal(range_p(1), plotter_p);
+         this->drawHorizontal(range_p(0), plotter_p);
+         this->drawHorizontal(range_p(1), plotter_p);
       
 
-         Float y1F = convertT(range_p(0));
-         Float y2F = convertT(range_p(1));
+         Float y1F = this->convertT(range_p(0));
+         Float y2F = this->convertT(range_p(1));
 
          Vector<Float> minMax(4);
          minMax = plotter_p.qwin();
@@ -1793,10 +1793,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                if (preComp) {
                   coord = sepWorldCoord_p(i);              
                } else if (doCoordProfile_p) {
-                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                  coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));       
                }
-               accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
+               this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
                          dMin, dMax, i, profileIn(i), coord);
                selectedData_p(j) = profileIn(i);
                selectedDataIndex_p(j) = i;
@@ -1811,10 +1811,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
                } else if (doCoordProfile_p) {
-                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                  coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
-               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+               this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                          dMin, dMax, i, profileIn(i), coord);
                selectedData_p(j) = profileIn(i);
                selectedDataIndex_p(j) = i;
@@ -1827,10 +1827,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             if (preComp) {
                coord = sepWorldCoord_p(i);
             } else if (doCoordProfile_p) {
-               coord = getMomentCoord(iMom_p, pixelIn_p,
+               coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                       worldOut_p, Double(i));
             }
-            accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+            this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                       dMin, dMax, i, profileIn(i), coord);
             selectedData_p(i) = profileIn(i);
             selectedDataIndex_p(i) = i;
@@ -1852,10 +1852,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                if (preComp) {
                   coord = sepWorldCoord_p(i);              
                } else if (doCoordProfile_p) {
-                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                  coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));       
                }
-               accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
+               this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,     
                          dMin, dMax, i, profileIn(i), coord);
                selectedData_p(j) = profileIn(i);
                selectedDataIndex_p(j) = i;
@@ -1870,10 +1870,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
                } else if (doCoordProfile_p) {
-                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                  coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
-               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+               this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                          dMin, dMax, i, profileIn(i), coord);
                selectedData_p(j) = profileIn(i);
                selectedDataIndex_p(j) = i;
@@ -1886,10 +1886,10 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
                if (preComp) {
                   coord = sepWorldCoord_p(i);
                } else if (doCoordProfile_p) {
-                  coord = getMomentCoord(iMom_p, pixelIn_p,
+                  coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                          worldOut_p, Double(i));
                }
-               accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+               this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                          dMin, dMax, i, profileIn(i), coord);
                selectedData_p(j) = profileIn(i);
                selectedDataIndex_p(j) = i;
@@ -1981,14 +1981,14 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
  
 // Find world coordinate of that pixel on the moment axis
 
-         vMedian = getMomentCoord(iMom_p, pixelIn_p,
+         vMedian = this->getMomentCoord(iMom_p, pixelIn_p,
                                   worldOut_p, interpPixel);
       }   
    }
  
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, worldOut_p, 
+   this->setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, worldOut_p, 
                   doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
@@ -2019,7 +2019,7 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 {
 // Set moment selection vector
 
-   selectMoments_p = selectMoments(iMom_p);
+   selectMoments_p = this->selectMoments(iMom_p);
 
 // Set/check some dimensionality
 
@@ -2027,7 +2027,7 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 
 // Fish out moment axis
 
-   Int momAxis = momentAxis(iMom_p);
+   Int momAxis = this->momentAxis(iMom_p);
 
 // Set up slice shape for extraction from masking lattice
 
@@ -2039,39 +2039,39 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pAncilliaryLattice,
 
 // Make all plots with same y range ?
 
-   fixedYLimits_p = fixedYLimits(iMom_p);
-   yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
+   fixedYLimits_p = this->fixedYLimits(iMom_p);
+   this->yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
 
 // Are we computing the expensive moments ?
 
-   costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
+   this->costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
 
 // Are we plotting ?
 
-   plotter_p = device(iMom_p);
+   plotter_p = this->device(iMom_p);
 
 // Are we computing coordinate-dependent moments.  If
 // so precompute coordinate vector is momebt axis separable
 
-   setCoordinateSystem (cSys_p, iMom_p);
-   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
-   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+   this->setCoordinateSystem (cSys_p, iMom_p);
+   this->doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   this->setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
                integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
                doCoordRandom_p);
 
 // What is the axis type of the moment axis
    
-   momAxisType_p = momentAxisName(cSys_p, iMom_p);
+   momAxisType_p = this->momentAxisName(cSys_p, iMom_p);
 
 // Are we fitting, automatically or interactively ?
 
-   doAuto_p = doAuto(iMom_p);
-   doFit_p = doFit(iMom_p);
+   doAuto_p = this->doAuto(iMom_p);
+   doFit_p = this->doFit(iMom_p);
 
 // Values to assess if spectrum is all noise or not
 
-   peakSNR_p = peakSNR(iMom_p);
-   stdDeviation_p = stdDeviation(iMom_p);
+   peakSNR_p = this->peakSNR(iMom_p);
+   stdDeviation_p = this->stdDeviation(iMom_p);
 
 // Number of failed Gaussian fits 
 
@@ -2138,7 +2138,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
    static Vector<Int> window(2);  
    static Int nPts = 0;
       
-   makeAbcissa (abcissa_p, pProfileSelect_p->nelements());
+   this->makeAbcissa (abcissa_p, pProfileSelect_p->nelements());
    String xLabel;
    if (momAxisType_p.empty()) {
       xLabel = "x (pixels)";
@@ -2187,7 +2187,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
             nPts = 0;
          }
       } else if (nPts != 0) {
-         if (drawSpectrum (abcissa_p, *pProfileSelect_p, profileInMask,
+         if (this->drawSpectrum (abcissa_p, *pProfileSelect_p, profileInMask,
                            fixedYLimits_p, yMinAuto_p, yMaxAuto_p, xLabel, 
                            yLabel, title, True, plotter_p)) {
             drawWindow (window, plotter_p);
@@ -2261,10 +2261,10 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
          if (preComp) {
             coord = sepWorldCoord_p(i);
          } else if (doCoordProfile_p) {
-            coord = getMomentCoord(iMom_p, pixelIn_p,
+            coord = this->getMomentCoord(iMom_p, pixelIn_p,
                                    worldOut_p, Double(i));
          }
-         accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+         this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                    dMin, dMax, i, profileIn(i), coord);
          selectedData_p(j) = profileIn(i);
          j++;
@@ -2304,7 +2304,7 @@ void MomentWindow<T>::multiProcess(Vector<T>& moments,
 // Fill all moments array
    
    T vMedian = 0;   
-   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
+   this->setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
                   worldOut_p, doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq, 
                   sumAbsDev, dMin, dMax, iMin, iMax);
@@ -2334,9 +2334,9 @@ void MomentWindow<T>::drawWindow(const Vector<Int>& window,
    T yMax = convertF(minMax(3));
 
    T x = window(0);
-   drawVertical (x, yMin, yMax, plotter);
+   this->drawVertical (x, yMin, yMax, plotter);
    x = window(1);
-   drawVertical (x, yMin, yMax, plotter);
+   this->drawVertical (x, yMin, yMax, plotter);
 }
 
 
@@ -2376,7 +2376,7 @@ Bool MomentWindow<T>::getAutoWindow (uInt& nFailed,
 {
    if (doFit) {
       Vector<T> gaussPars(4);
-      if (!getAutoGaussianFit (nFailed, gaussPars, x, y, mask, peakSNR, stdDeviation, 
+      if (!this->getAutoGaussianFit (nFailed, gaussPars, x, y, mask, peakSNR, stdDeviation, 
                                plotter, fixedYLimits, yMinAuto, yMaxAuto, 
                                xLabel, yLabel, title)) {
          window = 0;
@@ -2436,7 +2436,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
  
 // First plot the spectrum
    
-   if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+   if (!this->drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
                       xLabel, yLabel, title, True, plotter)) return False;
 
 
@@ -2456,7 +2456,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
       Bool final = False;
       T x1 = convertF(Float(nPts))/2;
       allSubsequent = True;
-      while (!getLoc(x1, allSubsequent, ditch, redo, final, plotter)) {};
+      while (!this->getLoc(x1, allSubsequent, ditch, redo, final, plotter)) {};
       if (ditch) {
          window = 0;
          return False;
@@ -2467,7 +2467,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
          tX = window(0);
          tY1 = minMax(2);
          tY2 = minMax(3);
-         drawVertical (tX, tY1, tY2, plotter);
+         this->drawVertical (tX, tY1, tY2, plotter);
   
 
 // Get and draw second location
@@ -2475,18 +2475,18 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
          T x2 = window(0);
          final = True;
          allSubsequent = True;
-         while (!getLoc(x2, allSubsequent, ditch, redo, final, plotter)) {};
+         while (!this->getLoc(x2, allSubsequent, ditch, redo, final, plotter)) {};
          if (ditch) {
             window = 0;
             return False;
          } else if (redo) {
             plotter.eras();
-            drawSpectrum  (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+            this->drawSpectrum  (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
                           xLabel, yLabel, title, False, plotter);
          } else {
             window(1) = min(nPts-1,uInt(x2+0.5));
             tX = window(1);
-            drawVertical (tX, tY1, tY2, plotter);
+            this->drawVertical (tX, tY1, tY2, plotter);
          
 // Set window
          
@@ -2500,7 +2500,7 @@ Bool MomentWindow<T>::getInterDirectWindow (Bool& allSubsequent,
             if (window(0) == window(1)) {
                os << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
                plotter.eras();
-               drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+               this->drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
                             xLabel, yLabel, title, False, plotter);
 
             } else
@@ -2551,7 +2551,7 @@ Bool MomentWindow<T>::getInterWindow(uInt& nFailed,
 // We interactively fit a Gaussian and choose +/- 3 sigma limits as the range
       
       Vector<T> gaussPars(4);
-      if (!getInterGaussianFit (nFailed, gaussPars, os, x, y, mask, fixedYLimits, 
+      if (!this->getInterGaussianFit (nFailed, gaussPars, os, x, y, mask, fixedYLimits, 
                                 yMinAuto, yMaxAuto, xLabel, yLabel, 
                                 title, plotter)) {
          window = 0;
@@ -2570,7 +2570,7 @@ Bool MomentWindow<T>::getInterWindow(uInt& nFailed,
 // Mark window on plot
          
          plotter.eras ();
-         drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto, 
+         this->drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto, 
                        xLabel, yLabel, title, False, plotter);
          drawWindow (window, plotter);
       }
@@ -2621,7 +2621,7 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
    
 // Plot spectrum 
       
-      if (!drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
+      if (!this->drawSpectrum (x, y, mask, fixedYLimits, yMinAuto, yMaxAuto,
                         xLabel, yLabel, title, True, plotter)) return False;
    }
 
@@ -2630,14 +2630,14 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
 // Return straight away if all maske
 
    T dMean;
-   uInt iNoise = allNoise(dMean, y, mask, peakSNR, stdDeviation);
+   uInt iNoise = this->allNoise(dMean, y, mask, peakSNR, stdDeviation);
    if (iNoise == 2) return False;
 
 
 // Draw on mean and sigma
  
    if (plotter.isAttached()) {
-      drawMeanSigma (dMean, stdDeviation, plotter);
+      this->drawMeanSigma (dMean, stdDeviation, plotter);
       if (iNoise==1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }
    if (iNoise==1) {
@@ -2650,7 +2650,7 @@ Bool MomentWindow<T>::getBosmaWindow (Vector<Int>& window,
 
    uInt minPos, maxPos;
    T yMin, yMax, yMean;
-   stats(yMin, yMax, minPos, maxPos, yMean, y, mask);
+   this->stats(yMin, yMax, minPos, maxPos, yMean, y, mask);
 
    const Int nPts = y.nelements(); 
    Int iMin = max(0,Int(maxPos)-2);   
@@ -2757,7 +2757,7 @@ MomentFit<T>::MomentFit(MomentsBase<T>& iMom,
 {
 // Set moment selection vector
 
-   selectMoments_p = selectMoments(iMom_p);
+   selectMoments_p = this->selectMoments(iMom_p);
 
 // Set/check some dimensionality
 
@@ -2765,38 +2765,38 @@ MomentFit<T>::MomentFit(MomentsBase<T>& iMom,
 
 // Make all plots with same y range ?
 
-   fixedYLimits_p = fixedYLimits(iMom_p);
-   yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
+   fixedYLimits_p = this->fixedYLimits(iMom_p);
+   this->yAutoMinMax(yMinAuto_p, yMaxAuto_p, iMom_p);
 
 // Are we computing the expensive moments ?
 
-   costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
+   this->costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
 
 // Are we plotting ?
-   plotter_p = device(iMom_p);
+   plotter_p = this->device(iMom_p);
 
 // Are we computing coordinate-dependent moments.  If so
 // precompute coordinate vector if moment axis is separable
 
-   setCoordinateSystem (cSys_p, iMom_p);
-   doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
-   setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
+   this->setCoordinateSystem (cSys_p, iMom_p);
+   this->doCoordCalc(doCoordProfile_p, doCoordRandom_p, iMom_p);
+   this->setUpCoords(iMom_p, pixelIn_p, worldOut_p, sepWorldCoord_p, os_p,
                integratedScaleFactor_p, cSys_p, doCoordProfile_p, 
                doCoordRandom_p);
 
 // What is the axis type of the moment axis
 
-   momAxisType_p = momentAxisName(cSys_p, iMom_p);
+   momAxisType_p = this->momentAxisName(cSys_p, iMom_p);
 
 // Are we fitting, automatically or interactively ?
    
-   doAuto_p = doAuto(iMom_p);
-   doFit_p = doFit(iMom_p);
+   doAuto_p = this->doAuto(iMom_p);
+   doFit_p = this->doFit(iMom_p);
          
 // Values to assess if spectrum is all noise or not
 
-   peakSNR_p = peakSNR(iMom_p);
-   stdDeviation_p = stdDeviation(iMom_p);
+   this->peakSNR_p = this->peakSNR(iMom_p);
+   this->stdDeviation_p = this->stdDeviation(iMom_p);
 
 // Number of failed Gaussian fits 
 
@@ -2837,7 +2837,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
        
    Int nPts = profileIn.nelements();
    Vector<T> gaussPars(4);
-   makeAbcissa (abcissa_p, nPts);
+   this->makeAbcissa (abcissa_p, nPts);
    String xLabel;
    if (momAxisType_p.empty())
       xLabel = "x (pixels)";
@@ -2854,7 +2854,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 
 // Automatic
 
-      if (!getAutoGaussianFit (nFailed_p, gaussPars, abcissa_p, profileIn, profileInMask, 
+      if (!this->getAutoGaussianFit (nFailed_p, gaussPars, abcissa_p, profileIn, profileInMask, 
                                peakSNR_p, stdDeviation_p, plotter_p, fixedYLimits_p,
                                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title)) {
          moments = 0;   
@@ -2866,7 +2866,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
 
 // Interactive
    
-       if (!getInterGaussianFit(nFailed_p, gaussPars, os_p, abcissa_p, profileIn, profileInMask,
+       if (!this->getInterGaussianFit(nFailed_p, gaussPars, os_p, abcissa_p, profileIn, profileInMask,
                                 fixedYLimits_p, yMinAuto_p, yMaxAuto_p,
                                 xLabel, yLabel, title, plotter_p)) {
          moments = 0;   
@@ -2922,10 +2922,10 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
          if (preComp) {
             coord = sepWorldCoord_p(i);
          } else if (doCoordProfile_p) {
-            coord = getMomentCoord(iMom_p, pixelIn_p, 
+            coord = this->getMomentCoord(iMom_p, pixelIn_p, 
                                    worldOut_p, Double(i));
          }
-         accumSums(s0, s0Sq, s1, s2, iMin, iMax,
+         this->accumSums(s0, s0Sq, s1, s2, iMin, iMax,
                    dMin, dMax, i, gData(j), coord);
          j++;
       }
@@ -2962,7 +2962,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
        
 // Fill all moments array
    
-   setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
+   this->setCalcMoments(iMom_p, calcMoments_p, calcMomentsMask_p, pixelIn_p, 
                   worldOut_p, doCoordRandom_p, integratedScaleFactor_p,
                   dMedian, vMedian, nPts, s0, s1, s2, s0Sq,
                   sumAbsDev, dMin, dMax, iMin, iMax);

@@ -100,7 +100,7 @@ Vector<T> product (const Matrix<T> &A, const Vector<T> &x) {
 template <class T> 
 Vector<T> directProduct(const Vector<T>& x, const Vector<T>& y) 
 {
-  Int nx=x.nelements(), ny=y.nelements();
+  uInt nx=x.nelements(), ny=y.nelements();
   Vector<T> res(nx*ny);
   for (uInt i=0; i<nx*ny; i++) {
       res(i) = x(i/ny) * y(i%ny);

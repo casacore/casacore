@@ -114,7 +114,7 @@ Bool ImageHistograms<T>::setNewImage(const ImageInterface<T>& image)
       
 // Pass it on to LatticeHistograms
    
-   goodParameterStatus_p = setNewLattice(image);
+   goodParameterStatus_p = this->setNewLattice(image);
 //  
    return goodParameterStatus_p;
 }

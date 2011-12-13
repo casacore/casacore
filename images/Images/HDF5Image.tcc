@@ -332,7 +332,7 @@ HDF5Image<T>& HDF5Image<T>::operator+= (const Lattice<T>& other)
 {
   check_conformance(other);
   LatticeExpr<T> expr(*this + other);
-  copyData (expr);
+  this->copyData (expr);
   return *this;
 }
 

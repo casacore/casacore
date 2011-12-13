@@ -482,7 +482,7 @@ Bool ImageMoments<T>::createMoments(PtrBlock<MaskedLattice<T>* >& outPt,
 // Set output images shape and coordinates.
    
    IPosition outImageShape;
-   CoordinateSystem cSysOut = makeOutputCoordinates (outImageShape, cSys, 
+   CoordinateSystem cSysOut = this->makeOutputCoordinates (outImageShape, cSys, 
                                                      pInImage_p->shape(),
                                                      momentAxis_p, removeAxis);
 
@@ -504,7 +504,7 @@ Bool ImageMoments<T>::createMoments(PtrBlock<MaskedLattice<T>* >& outPt,
 // Value of goodUnits is the same for each output moment image
 
       Unit momentUnits;
-      goodUnits = setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, 
+      goodUnits = this->setOutThings(suffix, momentUnits, imageUnits, momentAxisUnits, 
                                moments_p(i), convertToVelocity_p);
 //   
 // Create output image(s).    Either PagedImage or TempImage
@@ -767,14 +767,14 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
    T xMin, xMax, yMin, yMax;
    xMin = values(0) - binWidth;
    xMax = values(nBins-1) + binWidth;
-   Float xMinF = convertT(xMin);
-   Float xMaxF = convertT(xMax);
+   Float xMinF = this->convertT(xMin);
+   Float xMaxF = this->convertT(xMax);
    LatticeStatsBase::stretchMinMax(xMinF, xMaxF);
 
    IPosition yMinPos(1), yMaxPos(1);
    minMax (yMin, yMax, yMinPos, yMaxPos, counts);
    Float yMinF = 0.0;
-   Float yMaxF = convertT(yMax);
+   Float yMaxF = this->convertT(yMax);
    yMaxF += yMaxF/20;
 
    if (plotter_p.isAttached()) {
@@ -792,7 +792,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
       if (plotter_p.isAttached()) {
          plotter_p.page();
-         drawHistogram (values, counts, plotter_p);
+         this->drawHistogram (values, counts, plotter_p);
       }
 
       Int iMin = 0;
@@ -829,8 +829,8 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
          if (plotter_p.isAttached()) {
             x1 = values(iMin);
             x2 = values(iMax);
-            drawVertical (x1, yMin, yMax, plotter_p);
-            drawVertical (x2, yMin, yMax, plotter_p);
+            this->drawVertical (x1, yMin, yMax, plotter_p);
+            this->drawVertical (x2, yMin, yMax, plotter_p);
          }
 
       } else if (plotter_p.isAttached()) {
@@ -845,21 +845,21 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
   
          plotter_p.message("Mark the locations for the window");
          while (i1==i2) {
-            while (!getLoc(x1, y1, plotter_p)) {};
+            while (!this->getLoc(x1, y1, plotter_p)) {};
             i1 = Int((x1 - (values(0) - binWidth/2))/binWidth);
             i1 = min(Int(nBins-1),max(0,i1));
-            drawVertical (values(i1), yMin, yMax, plotter_p);
+            this->drawVertical (values(i1), yMin, yMax, plotter_p);
 
             T x2 = x1;
-            while (!getLoc(x2, y1, plotter_p)) {};
+            while (!this->getLoc(x2, y1, plotter_p)) {};
             i2 = Int((x2 - (values(0) - binWidth/2))/binWidth);
             i2 = min(Int(nBins-1),max(0,i2));
-            drawVertical (values(i2), yMin, yMax, plotter_p);
+            this->drawVertical (values(i2), yMin, yMax, plotter_p);
 
             if (i1 == i2) {
                plotter_p.message("Degenerate window, try again");
                plotter_p.eras ();
-               drawHistogram (values, counts, plotter_p);
+               this->drawHistogram (values, counts, plotter_p);
             }
          }
 
@@ -941,7 +941,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
                yG(i) = gauss(xx) * yMax;
             }
             plotter_p.sci (7);
-            drawLine (xG, yG, plotter_p);
+            this->drawLine (xG, yG, plotter_p);
             plotter_p.sci (1);
          }
       } else {
@@ -955,10 +955,10 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       if (plotter_p.isAttached()) {
          plotter_p.message("Accept (click left), redo (click middle), give up (click right)");
 
-         Float xx = convertT(xMin+xMax)/2;
-         Float yy = convertT(yMin+yMax)/2;
+         Float xx = this->convertT(xMin+xMax)/2;
+         Float yy = this->convertT(yMin+yMax)/2;
          String str;
-         readCursor(plotter_p, xx, yy, str);
+         this->readCursor(plotter_p, xx, yy, str);
          str.upcase();
  
          if (str == "D") {

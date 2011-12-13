@@ -148,7 +148,7 @@ template<class T> Cube<T> &Cube<T>::operator=(const Cube<T> &other)
     if (this == &other)
         return *this;
 
-    Bool Conform = conform(other);
+    Bool Conform = this->conform(other);
     Array<T>::operator=(other);
     if (!Conform) {
 	makeIndexingConstants();
@@ -161,7 +161,7 @@ template<class T> Array<T> &Cube<T>::operator=(const Array<T> &a)
 {
     DebugAssert(ok(), ArrayError);
     if (a.ndim() == 3) {
-	Bool Conform = conform(a);
+	Bool Conform = this->conform(a);
 	Array<T>::operator=(a);
 	if (!Conform) {
 	    makeIndexingConstants();

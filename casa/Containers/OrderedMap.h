@@ -264,7 +264,7 @@ public:
   //  Assigns this OrderedMap to another with copy semantics.
   //
   OrderedMap<key,value>& operator= (const OrderedMap<key,value>& other) {
-    SetRep(other.Rep->Clone());
+    this->SetRep(other.Rep->Clone());
     return *this;
   }
 

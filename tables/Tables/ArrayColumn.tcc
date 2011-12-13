@@ -412,7 +412,7 @@ void ROArrayColumn<T>::getColumn (const Vector<Vector<Slice> >& arraySlices,
   IPosition arrEnd (slicer.length() - 1);
   arrEnd.append (IPosition(1,nrrow-1));
   GetColumnSlices<T> functor(*this);
-  handleSlices (slices, functor, slicer, arrEnd, arr);
+  this->handleSlices (slices, functor, slicer, arrEnd, arr);
 }
 
 
@@ -674,7 +674,7 @@ void ArrayColumn<T>::putSlice (uInt rownr,
   IPosition arrEnd (slicer.length() - 1);
   PutCellSlices<T> functor(*this, rownr);
   Array<T> arrc(arr);     // make non-const
-  handleSlices (slices, functor, slicer, arrEnd, arrc);
+  this->handleSlices (slices, functor, slicer, arrEnd, arrc);
 }
 
 template<class T>
@@ -805,7 +805,7 @@ void ArrayColumn<T>::putColumn (const Vector<Vector<Slice> >& arraySlices,
   arrEnd.append (IPosition(1,nrrow-1));
   PutColumnSlices<T> functor(*this);
   Array<T> arrc(arr);     // make non-const
-  handleSlices (slices, functor, slicer, arrEnd, arrc);
+  this->handleSlices (slices, functor, slicer, arrEnd, arrc);
 }
 
 template<class T>
