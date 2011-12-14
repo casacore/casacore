@@ -330,6 +330,11 @@ public:
   // rows. Trying to do so at other times will throw an exception.
   void setDirectionRef(MDirection::Types ref);
 
+  // set the direction offset for the REFERENCE_DIR, DELAY_DIR &
+  // PHASE_DIR columns. This can only be done when the table has no
+  // rows. Trying to do so at other times will throw an exception.
+  void setDirectionOffset(const MDirection& offset);
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
