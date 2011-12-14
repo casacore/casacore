@@ -345,6 +345,12 @@ void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
   phaseDirMeas_p.setDescRefCode(ref); 
   referenceDirMeas_p.setDescRefCode(ref);
 }
+
+void MSFieldColumns::setDirectionOffset(const MDirection& offset) {
+  delayDirMeas_p.setDescOffset(offset);
+  phaseDirMeas_p.setDescOffset(offset); 
+  referenceDirMeas_p.setDescOffset(offset);
+}
 // Local Variables: 
 // compile-command: "gmake MSFieldColumns"
 // End: 
