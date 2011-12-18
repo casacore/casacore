@@ -142,7 +142,7 @@ ALLFUNC   {ALL}{WHITE}"("
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
-NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
+NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
 REGEX3    m#[^#]+#
