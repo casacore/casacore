@@ -511,7 +511,8 @@ private:
   void doSort (Bool showTimings, const Table& origTable);
 
   // Do the limit/offset step.
-  void doLimOff (Bool showTimings);
+  void  doLimOff (Bool showTimings);
+  Table doLimOff (Bool showTimings, const Table& table);
 
   // Do the 'select distinct' step.
   Table doDistinct (Bool showTimings, const Table& table);
@@ -626,9 +627,9 @@ private:
   //# The WHERE expression tree.
   TableExprNode node_p;
   //# The possible limit (= max nr of selected rows) (0 means no limit).
-  uInt limit_p;
+  Int64 limit_p;
   //# The possible offset (= nr of selected rows to skip).
-  uInt offset_p;
+  Int64 offset_p;
   //# The update or insert expression list.
   std::vector<TableParseUpdate*> update_p;
   //# The table selection to be inserted.

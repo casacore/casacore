@@ -239,6 +239,25 @@ select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4
  7 8
  8 9
  9 10
+select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4 limit -1
+    has been executed
+    select result of 2 rows
+2 selected columns:  ab ac
+ 2 3
+ 3 4
+select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4 offset -1
+    has been executed
+    select result of 1 rows
+2 selected columns:  ab ac
+ 4 5
+select distinct max(ab,3) from tTableGram_tmp.tab limit 4
+    has been executed
+    select result of 4 rows
+1 selected columns:  Col_1
+ 3
+ 4
+ 5
+ 6
 select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
     has been executed
     select result of 7 rows
