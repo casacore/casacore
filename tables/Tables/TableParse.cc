@@ -717,7 +717,7 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::patternFUNC;
   } else if (funcName == "sqlpattern") {
     ftype = TableExprFuncNode::sqlpatternFUNC;
-  } else if (funcName == "rownumber") {
+  } else if (funcName == "rownumber"  ||  funcName == "rownr") {
     ftype = TableExprFuncNode::rownrFUNC;
   } else if (funcName == "rowid") {
     ftype = TableExprFuncNode::rowidFUNC;
@@ -1309,17 +1309,12 @@ TableExprNode TableParseSelect::makeSubSet (const Table& origTable) const
 
 void TableParseSelect::handleLimit (const TableExprNode& expr)
 {
-  Int64 val = evalIntScaExpr (expr);
-  if (val < 1) {
-      throw TableInvExpr ("LIMIT must have a value >= 1");
-  }
-  limit_p = val;
+  limit_p = evalIntScaExpr (expr);
 }
 
 void TableParseSelect::handleOffset (const TableExprNode& expr)
 {
-  Int64 val = evalIntScaExpr (expr);
-  offset_p = (val<0  ?  0 : val);
+  offset_p = evalIntScaExpr (expr);
 }
 
 Int64 TableParseSelect::evalIntScaExpr (const TableExprNode& expr) const
@@ -2064,14 +2059,32 @@ void TableParseSelect::doLimOff (Bool showTimings)
 {
   Timer timer;
   Vector<uInt> newRownrs;
-  if (offset_p < rownrs_p.size()) {
-    uInt nrleft = rownrs_p.size() - offset_p;
+  // Negative values mean from the end (a la Python indexing).
+  Int64 nrow = rownrs_p.size();
+  if (limit_p  < 0) limit_p  = nrow+limit_p;
+  if (offset_p < 0) offset_p = nrow+offset_p;
+  if (limit_p  < 0) limit_p  = 0;
+  if (offset_p < 0) offset_p = 0;
+  if (offset_p < nrow) {
+    uInt nrleft = nrow - offset_p;
     if (limit_p > 0  &&  limit_p < nrleft) {
       nrleft = limit_p;
     }
     newRownrs.reference (rownrs_p(Slice(offset_p, nrleft)).copy());
   }
   rownrs_p.reference (newRownrs);
+  if (showTimings) {
+    timer.show ("  Limit/Offset");
+  }
+}
+
+Table TableParseSelect::doLimOff (Bool showTimings, const Table& table)
+{
+  Timer timer;
+  rownrs_p.resize (table.nrow());
+  indgen (rownrs_p);
+  doLimOff (False);
+  return table(rownrs_p);
   if (showTimings) {
     timer.show ("  Limit/Offset");
   }
@@ -2486,7 +2499,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   if (mustSelect  &&  commandType_p == PSELECT
   &&  node_p.isNull()  &&  sort_p.size() == 0
   &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-  &&  limit_p <= 0  &&  offset_p <= 0) {
+  &&  limit_p == 0  &&  offset_p == 0) {
     throw (TableError
 	   ("TableParse error: no projection, selection, sorting, "
 	    "limit, offset, or giving-set given in SELECT command"));
@@ -2514,9 +2527,10 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
     }
   }
   //# Determine if we can pre-empt the selection loop.
-  //# That is possible if a limit is given without sorting.
+  //# That is possible if a positive limit and offset are given
+  //# without sorting or select distinct.
   uInt nrmax=0;
-  if (sort_p.size() == 0  &&  limit_p > 0) {
+  if (sort_p.size() == 0  &&  limit_p > 0  &&  offset_p > 0  &&  !distinct_p) {
     nrmax = limit_p + offset_p;
   }
   //# First do the where selection.
@@ -2537,11 +2551,12 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   // Get the row numbers of the result of the possible first step.
   rownrs_p.reference (resultTable.rowNumbers(table));
-  //# Then do the sort and the limit/offset.
+  //# Then do the sort.
   if (sort_p.size() > 0) {
     doSort (showTimings, table);
   }
-  if (offset_p > 0  ||  limit_p > 0) {
+  // If select distinct is given, limit/offset can only be done thereafter.
+  if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
     doLimOff (showTimings);
   }
   resultTable = table(rownrs_p);
@@ -2562,6 +2577,10 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
     //# Then do the projection.
     if (columnNames_p.nelements() > 0) {
       resultTable = doProject (showTimings, table);
+    }
+    // If select distinct is given, limit/offset must be done at the end.
+    if (distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
+      resultTable = doLimOff (showTimings, resultTable);
     }
     //# Finally rename or copy using the given name (and flush it).
     if (! resultName_p.empty()) {

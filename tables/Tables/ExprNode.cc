@@ -1198,7 +1198,7 @@ TableExprNode TableExprNode::newFunctionNode
     // need their own objects and the table.
     if (ftype == TableExprFuncNode::rownrFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
-	return table.nodeRownr (style.origin());     // first rownr is 0 or 1
+	return newRownrNode (table, style.origin());  // first rownr is 0 or 1
     }
     if (ftype == TableExprFuncNode::rowidFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
@@ -1206,7 +1206,7 @@ TableExprNode TableExprNode::newFunctionNode
     }
     if (ftype == TableExprFuncNode::randFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
-	return table.nodeRandom();
+	return newRandomNode (table);
     }
     // Check all the operands and get the resulting data type and value type
     // of the function.

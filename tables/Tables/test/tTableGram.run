@@ -76,6 +76,10 @@ $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4'
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT BETWEEN 2 AND 4'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4 limit -1'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab BETWEEN 2 AND 4 offset -1'
+# Check that distinct is done before limit.
+$casa_checktool ./tTableGram 'select distinct max(ab,3) from tTableGram_tmp.tab limit 4'
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]'
 
