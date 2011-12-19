@@ -201,6 +201,24 @@ select ab,ac from tTableGram_tmp.tab where ab < mean([3:6,ab])
  2 3
  3 4
  4 5
+select ab from tTableGram_tmp.tab where ab in [select ab+5 from tTableGram_tmp.tab]
+    has been executed
+    select result of 5 rows
+1 selected columns:  ab
+ 5
+ 6
+ 7
+ 8
+ 9
+select rowid() from tTableGram_tmp.tab where ab+235 in [select arr1 from tTableGram_tmp.tab]
+    has been executed
+    select result of 5 rows
+1 selected columns:  Col_1
+ 0
+ 1
+ 2
+ 3
+ 4
 select ab,ac from tTableGram_tmp.tab where ab < 4 && EXISTS (select from tTableGram_tmp.tab)
     has been executed
     select result of 4 rows

@@ -1222,65 +1222,114 @@ TableExprNode TableParseSelect::doSubQuery (Bool showTimings)
 
 TableExprNode TableParseSelect::getColSet()
 {
-  // Check if there is only one column which has to contain a scalar.
+  // Check if there is only one column.
   const TableDesc& tableDesc = table_p.tableDesc();
   if (tableDesc.ncolumn() != 1) {
     throw (TableInvExpr ("Nested query should select 1 column"));
   }
   const ColumnDesc& colDesc = tableDesc.columnDesc(0);
-  if (! colDesc.isScalar()) {
-    throw (TableInvExpr ("Nested query should select a scalar column"));
-  }
   ROTableColumn tabcol (table_p, colDesc.name());
-  TableExprNodeRep* tsnptr;
-  switch (colDesc.dataType()) {
-  case TpBool:
-    tsnptr = new TableExprNodeArrayConstBool
-                        (ROScalarColumn<Bool>(tabcol).getColumn());
-    break;
-  case TpUChar:
-    tsnptr = new TableExprNodeArrayConstInt
-                        (ROScalarColumn<uChar>(tabcol).getColumn());
-    break;
-  case TpShort:
-    tsnptr = new TableExprNodeArrayConstInt
-                        (ROScalarColumn<Short>(tabcol).getColumn());
-    break;
-  case TpUShort:
-    tsnptr = new TableExprNodeArrayConstInt
-                        (ROScalarColumn<uShort>(tabcol).getColumn());
-    break;
-  case TpInt:
-    tsnptr = new TableExprNodeArrayConstInt
-                        (ROScalarColumn<Int>(tabcol).getColumn());
-    break;
-  case TpUInt:
-    tsnptr = new TableExprNodeArrayConstInt
-                        (ROScalarColumn<uInt>(tabcol).getColumn());
-    break;
-  case TpFloat:
-    tsnptr = new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Float>(tabcol).getColumn());
-    break;
-  case TpDouble:
-    tsnptr = new TableExprNodeArrayConstDouble
-                        (ROScalarColumn<Double>(tabcol).getColumn());
-    break;
-  case TpComplex:
-    tsnptr = new TableExprNodeArrayConstDComplex
-                        (ROScalarColumn<Complex>(tabcol).getColumn());
-    break;
-  case TpDComplex:
-    tsnptr = new TableExprNodeArrayConstDComplex
-                        (ROScalarColumn<DComplex>(tabcol).getColumn());
-    break;
-  case TpString:
-    tsnptr = new TableExprNodeArrayConstString
-                        (ROScalarColumn<String>(tabcol).getColumn());
-    break;
-  default:
-    throw (TableInvExpr ("Nested query column " + colDesc.name() +
-			 " has unknown data type"));
+  TableExprNodeRep* tsnptr=0;
+  if (colDesc.isScalar()) {
+    switch (colDesc.dataType()) {
+    case TpBool:
+      tsnptr = new TableExprNodeArrayConstBool
+        (ROScalarColumn<Bool>(tabcol).getColumn());
+      break;
+    case TpUChar:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROScalarColumn<uChar>(tabcol).getColumn());
+      break;
+    case TpShort:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROScalarColumn<Short>(tabcol).getColumn());
+      break;
+    case TpUShort:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROScalarColumn<uShort>(tabcol).getColumn());
+      break;
+    case TpInt:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROScalarColumn<Int>(tabcol).getColumn());
+      break;
+    case TpUInt:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROScalarColumn<uInt>(tabcol).getColumn());
+      break;
+    case TpFloat:
+      tsnptr = new TableExprNodeArrayConstDouble
+        (ROScalarColumn<Float>(tabcol).getColumn());
+      break;
+    case TpDouble:
+      tsnptr = new TableExprNodeArrayConstDouble
+        (ROScalarColumn<Double>(tabcol).getColumn());
+      break;
+    case TpComplex:
+      tsnptr = new TableExprNodeArrayConstDComplex
+        (ROScalarColumn<Complex>(tabcol).getColumn());
+      break;
+    case TpDComplex:
+      tsnptr = new TableExprNodeArrayConstDComplex
+        (ROScalarColumn<DComplex>(tabcol).getColumn());
+      break;
+    case TpString:
+      tsnptr = new TableExprNodeArrayConstString
+        (ROScalarColumn<String>(tabcol).getColumn());
+      break;
+    default:
+      throw (TableInvExpr ("Nested query column " + colDesc.name() +
+                           " has unknown data type"));
+    }
+  } else {
+    switch (colDesc.dataType()) {
+    case TpBool:
+      tsnptr = new TableExprNodeArrayConstBool
+        (ROArrayColumn<Bool>(tabcol).getColumn());
+      break;
+    case TpUChar:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROArrayColumn<uChar>(tabcol).getColumn());
+      break;
+    case TpShort:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROArrayColumn<Short>(tabcol).getColumn());
+      break;
+    case TpUShort:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROArrayColumn<uShort>(tabcol).getColumn());
+      break;
+    case TpInt:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROArrayColumn<Int>(tabcol).getColumn());
+      break;
+    case TpUInt:
+      tsnptr = new TableExprNodeArrayConstInt
+        (ROArrayColumn<uInt>(tabcol).getColumn());
+      break;
+    case TpFloat:
+      tsnptr = new TableExprNodeArrayConstDouble
+        (ROArrayColumn<Float>(tabcol).getColumn());
+      break;
+    case TpDouble:
+      tsnptr = new TableExprNodeArrayConstDouble
+        (ROArrayColumn<Double>(tabcol).getColumn());
+      break;
+    case TpComplex:
+      tsnptr = new TableExprNodeArrayConstDComplex
+        (ROArrayColumn<Complex>(tabcol).getColumn());
+      break;
+    case TpDComplex:
+      tsnptr = new TableExprNodeArrayConstDComplex
+        (ROArrayColumn<DComplex>(tabcol).getColumn());
+      break;
+    case TpString:
+      tsnptr = new TableExprNodeArrayConstString
+        (ROArrayColumn<String>(tabcol).getColumn());
+      break;
+    default:
+      throw (TableInvExpr ("Nested query column " + colDesc.name() +
+                           " has unknown data type"));
+    }
   }
   //# Fill in the column unit (if defined).
   tsnptr->setUnit (TableExprNodeColumn::getColumnUnit (tabcol));
