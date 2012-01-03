@@ -303,9 +303,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   void ConcatTable::initialize()
   {
-    //# Copy the table description of the first table.
-    tdescPtr_p = new TableDesc (baseTabPtr_p[0]->tableDesc(),
-				TableDesc::Scratch);
     // Check if all tables have the same description.
     TableDesc actualDesc (baseTabPtr_p[0]->actualTableDesc(),
 			  TableDesc::Scratch);
@@ -319,6 +316,29 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
       throw TableError("All tables in ConCatTable must have same description");
     }
+    // For fixed shaped arrays check if all tables have the same shape.
+    // If not, clear dimensionality and options.
+    for (uInt i=0; i<actualDesc.ncolumn(); ++i) {
+      ColumnDesc& colDesc = actualDesc.rwColumnDesc(i);
+      if (colDesc.isArray()  &&
+          (colDesc.options() & ColumnDesc::FixedShape) != 0) {
+        Bool sameShape = true;
+        for (uInt j=1; j<baseTabPtr_p.nelements(); ++j) {
+          const ColumnDesc& cd = baseTabPtr_p[j]->actualTableDesc()[i];
+          if ((cd.options() & ColumnDesc::FixedShape) == 0  ||
+              ! colDesc.shape().isEqual (cd.shape())) {
+            sameShape = False;
+            break;
+          }
+        }
+        if (!sameShape) {
+          colDesc.setNdim (0);
+          colDesc.setOptions (0);
+        }
+      }
+    }
+    //# Use the table description.
+    tdescPtr_p = new TableDesc (actualDesc, TableDesc::Scratch);
     keywordSet_p = baseTabPtr_p[0]->keywordSet();
     // Create the concatColumns.
     makeConcatCol();
