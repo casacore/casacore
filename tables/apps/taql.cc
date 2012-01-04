@@ -142,6 +142,7 @@ void showTime (const Array<double>& times, const String& unit)
        iter != endIter; ++iter) {
     if (!firstTime) {
       cout << ", ";
+    } else {
       firstTime = False;
     }
     q.setValue (*iter);
@@ -165,6 +166,7 @@ void showPos (const Array<double>& pos, const Vector<String>& units)
   for (Array<double>::const_iterator iter= pos.begin(); iter != endIter;) {
     if (!firstTime) {
       cout << ", ";
+    } else {
       firstTime = False;
     }
     for (uInt i=0; i<units.size(); ++i) {
@@ -194,6 +196,7 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
   for (Array<double>::const_iterator iter= dir.begin(); iter != endIter;) {
     if (!firstTime) {
       cout << ", ";
+    } else {
       firstTime = False;
     }
     cout << '[';
@@ -238,6 +241,7 @@ template<> void showArray (const Array<MVTime>& arr)
          iter != endIter; ++iter) {
       if (!firstTime) {
         cout << ", ";
+      } else {
         firstTime = False;
       }
       showTime (*iter);

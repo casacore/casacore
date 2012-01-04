@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <tables/Tables/ExprMathNodeArray.h>
+#include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
@@ -166,6 +167,42 @@ void TableExprNodeArrayPlusString::concString (String* to,
     }
 }
 
+TableExprNodeArrayPlusDate::TableExprNodeArrayPlusDate
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArrayPlus (NTDate, node)
+{}
+TableExprNodeArrayPlusDate::~TableExprNodeArrayPlusDate()
+{}
+void TableExprNodeArrayPlusDate::handleUnits()
+{
+    if (lnode_p->dataType() == NTDouble) {
+        TableExprNodeUnit::adaptUnit (lnode_p, "d");
+    } else if (rnode_p->dataType() == NTDouble) {
+        TableExprNodeUnit::adaptUnit (rnode_p, "d");
+    }
+}
+Array<Double> TableExprNodeArrayPlusDate::getArrayDouble
+                                            (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+        return lnode_p->getArrayDouble(id) + rnode_p->getDouble(id);
+    case ScaArr:
+        return lnode_p->getDouble(id) + rnode_p->getArrayDouble(id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayDouble(id) + rnode_p->getArrayDouble(id);
+}
+Array<MVTime> TableExprNodeArrayPlusDate::getArrayDate
+                                            (const TableExprId& id)
+{
+    Array<Double> tmp(getArrayDouble(id));
+    Array<MVTime> res(tmp.shape());
+    convertArray (res, tmp);
+    return res;
+}
+
 
 TableExprNodeArrayMinus::TableExprNodeArrayMinus (NodeDataType dt,
 						  const TableExprNodeRep& node)
@@ -232,6 +269,39 @@ Array<DComplex> TableExprNodeArrayMinusDComplex::getArrayDComplex
 	break;
     }
     return lnode_p->getArrayDComplex (id) - rnode_p->getArrayDComplex (id);
+}
+
+TableExprNodeArrayMinusDate::TableExprNodeArrayMinusDate
+                                            (const TableExprNodeRep& node)
+: TableExprNodeArrayMinus (NTDate, node)
+{}
+TableExprNodeArrayMinusDate::~TableExprNodeArrayMinusDate()
+{}
+void TableExprNodeArrayMinusDate::handleUnits()
+{
+    // Right hand side must be in days.
+    TableExprNodeUnit::adaptUnit (rnode_p, "d");
+}
+Array<Double> TableExprNodeArrayMinusDate::getArrayDouble
+                                            (const TableExprId& id)
+{
+    switch (argtype_p) {
+    case ArrSca:
+        return lnode_p->getArrayDouble(id) - rnode_p->getDouble(id);
+    case ScaArr:
+        return lnode_p->getDouble(id) - rnode_p->getArrayDouble(id);
+    default:
+	break;
+    }
+    return lnode_p->getArrayDouble(id) - rnode_p->getArrayDouble(id);
+}
+Array<MVTime> TableExprNodeArrayMinusDate::getArrayDate
+                                            (const TableExprId& id)
+{
+    Array<Double> tmp(getArrayDouble(id));
+    Array<MVTime> res(tmp.shape());
+    convertArray (res, tmp);
+    return res;
 }
 
 

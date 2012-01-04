@@ -120,15 +120,21 @@ private:
     void setScale (Double scale)
         { node_p.setScale (scale); }
 
-    // Get the collapseAxes for the partial functions.
+    // Get the collapse axes for the partial functions.
     // It compares the values with the #dim and removes them if too high.
     // axarg gives the argument nr of the axes.
-    const IPosition& getCollapseAxes (const TableExprId& id,
-				      Int ndim, uInt axarg=1);
+    IPosition getAxes (const TableExprId& id,
+                       Int ndim, uInt axarg=1, Bool swapRemove=True);
+
+    // Remove axes exceeding ndim.
+    IPosition removeAxes (const IPosition& axes, Int ndim) const;
 
     // Get the shape for the array function.
     // axarg gives the argument nr of the shape.
     const IPosition& getArrayShape (const TableExprId& id, uInt axarg=1);
+
+    // Get the transpose order of the array axes.
+    IPosition getOrder (const TableExprId& id, Int ndim);
 
     TableExprFuncNode node_p;
     Int               origin_p;        //# axes origin
@@ -136,9 +142,6 @@ private:
     Bool              constAxes_p;     //# True = collapse axes are constant
     IPosition         ipos_p;          //# the (maybe constant) axes or shape
     IPosition         iposN_p;         //# the non-reversed axes or shape
-    IPosition         corrCollAxes_p;  //# the possibly corrected collapse axes
-                                       //# (in case an axis exceeds ndim)
-    uInt              lastNdim_p;      //# last ndim used in getCollapseAxes
 };
 
 

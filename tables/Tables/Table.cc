@@ -275,6 +275,56 @@ Table& Table::operator= (const Table& that)
     return *this;
 }
 
+Table Table::openTable (const String& tableName,
+                        TableOption option,
+                        const TSMOption& tsmOption)
+{
+  return openTable (tableName, TableLock(), option, tsmOption);
+}
+
+Table Table::openTable (const String& tableName,
+                        const TableLock& lockOptions,
+                        TableOption option,
+                        const TSMOption& tsmOption)
+{
+  // See if the table can be opened as such.
+  if (Table::isReadable(tableName)) {
+    return Table(tableName, lockOptions, option, tsmOption);
+  }
+  // Try to open the table using subtables by splitting at ::
+  Table tab;
+  String name = tableName;
+  String msg;
+  int j = name.index("::");
+  if (j >= 0) {
+    String tabName (name.before(j));
+    name = name.after(j+1);
+    if (Table::isReadable (tabName)) {
+      tab = Table(tabName, lockOptions, option, tsmOption);
+      while (! name.empty()) {
+        j = name.index("::");
+        if (j >= 0) {
+          tabName = name.before(j);
+          name = name.after(j+1);
+        } else {
+          tabName = name;
+          name = String();
+        }
+        if (! tab.keywordSet().isDefined(tabName)) {
+          msg = " (subtable " + tabName + " is unknown)";
+          tab = Table();
+          break;
+        }
+        tab = tab.keywordSet().asTable (tabName);
+      }
+    }
+  }
+  if (tab.isNull()) {
+    throw TableError ("Table " + tableName + " does not exist" + msg);
+  }
+  return tab;
+}
+
 
 Block<String> Table::getPartNames (Bool recursive) const
 {

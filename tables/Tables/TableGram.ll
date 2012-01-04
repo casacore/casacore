@@ -373,6 +373,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 ">"       { tableGramPosition() += yyleng; return GT; }
 "<="      { tableGramPosition() += yyleng; return LE; }
 "<"       { tableGramPosition() += yyleng; return LT; }
+"~="      { tableGramPosition() += yyleng; return EQNEAR; }
+"!~="     { tableGramPosition() += yyleng; return NENEAR; }
 {BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
 {EXISTS}  { tableGramPosition() += yyleng; return EXISTS; }
 {LIKE}    { tableGramPosition() += yyleng; return LIKE; }

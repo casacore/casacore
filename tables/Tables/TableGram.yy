@@ -165,7 +165,7 @@ using namespace casa;
 /* This defines the precedence order of the operators (low to high) */
 %left OR
 %left AND
-%nonassoc EQ EQASS GT GE LT LE NE
+%nonassoc EQ EQASS GT GE LT LE NE EQNEAR NENEAR
 %left BITOR
 %left BITXOR
 %left BITAND
@@ -838,6 +838,24 @@ relexpr:   arithexpr {
          | arithexpr NE arithexpr {
 	       $$ = new TaQLNode(
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr EQNEAR arithexpr {
+   	       TaQLMultiNode set(False);
+               set.add (*$1);
+               set.add (*$3);
+               set.add (TaQLConstNode(new TaQLConstNodeRep(1e-5)));
+               $$ = new TaQLNode (new TaQLFuncNodeRep("NEAR", set));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr NENEAR arithexpr {
+   	       TaQLMultiNode set(False);
+               set.add (*$1);
+               set.add (*$3);
+               set.add (TaQLConstNode(new TaQLConstNodeRep(1e-5)));
+               TaQLNode ref (new TaQLFuncNodeRep("NEAR", set));
+	       $$ = new TaQLNode(
+                    new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | arithexpr REGEX {

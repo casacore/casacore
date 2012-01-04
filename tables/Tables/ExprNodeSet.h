@@ -213,7 +213,7 @@ private:
     TableExprNodeRep* itsStart;
     TableExprNodeRep* itsEnd;
     TableExprNodeRep* itsIncr;
-    Int  itsMinusEnd;
+    Bool itsEndExcl;
     Bool itsLeftClosed;
     Bool itsRightClosed;
     Bool itsDiscrete;

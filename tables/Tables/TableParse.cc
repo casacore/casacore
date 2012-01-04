@@ -187,7 +187,7 @@ void TableParseSelect::addTable (Int tabnr, const String& name,
     String shand, columnName;
     Vector<String> fieldNames;
     if (splitName (shand, columnName, fieldNames, name, False)) { 
-      table = tableKey (shand, columnName, fieldNames, stack);
+      table = tableKey (name, shand, columnName, fieldNames, stack);
     } else {
       // If no or equal shorthand is given, try to see if the
       // given name is already used as a shorthand.
@@ -218,12 +218,13 @@ void TableParseSelect::replaceTable (const Table& table)
   fromTables_p[0] = TableParse(table, fromTables_p[0].shorthand());
 }
 
-Table TableParseSelect::tableKey (const String& shorthand,
+Table TableParseSelect::tableKey (const String& name,
+                                  const String& shorthand,
 				  const String& columnName,
 				  const Vector<String>& fieldNames,
 				  const vector<TableParseSelect*>& stack)
 {
-  //# Find the given shorthand on all levels.
+  //# Try to find the given shorthand on all levels.
   for (Int i=stack.size()-1; i>=0; i--) {
     Table tab = stack[i]->findTable (shorthand);
     if (! tab.isNull()) {
@@ -233,9 +234,9 @@ Table TableParseSelect::tableKey (const String& shorthand,
       }
     }
   }
-  throw (TableInvExpr ("Keyword " + columnName + "::" + fieldNames(0) +
-		       " not found in tables in outer SELECTs"));
-  return Table();
+  // Apparently it is no keyword in an outer table.
+  // Try to open the table using subtables by splitting at the ::.
+  return Table::openTable (name);
 }
 
 Table TableParseSelect::findTableKey (const Table& table,
@@ -629,6 +630,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::nfalsesFUNC;
   } else if (funcName == "array") {
     ftype = TableExprFuncNode::arrayFUNC;
+  } else if (funcName == "transpose") {
+    ftype = TableExprFuncNode::transposeFUNC;
   } else if (funcName == "isnan") {
     ftype = TableExprFuncNode::isnanFUNC;
   } else if (funcName == "isinf") {
@@ -727,6 +730,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::iifFUNC;
   } else if (funcName == "angdist"  ||  funcName == "angulardistance") {
     ftype = TableExprFuncNode::angdistFUNC;
+  } else if (funcName == "angdistx"  ||  funcName == "angulardistancex") {
+    ftype = TableExprFuncNode::angdistxFUNC;
   } else {
     // unknown name can be a user-defined function.
     ftype = TableExprFuncNode::NRFUNC;
@@ -818,22 +823,32 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::boxanyFUNC:
   case TableExprFuncNode::boxallFUNC:
   case TableExprFuncNode::arrayFUNC:
-    if (arguments.nelements() > axarg) {
+  case TableExprFuncNode::transposeFUNC:
+    if (arguments.nelements() >= axarg) {
       TableExprNodeSet parms;
-      // Add normal arguments to the parms.
+      // Add first argument(s) to the parms.
       for (uInt i=0; i<axarg; i++) {
-	parms.add (arguments[i]);
+        parms.add (arguments[i]);
       }
-      // Now add the axes arguments.
-      // They can be given as one single array or as individual scalars.
+      // Now handle the axes arguments.
+      // The can be given as a set or as individual scalar values.
       Bool axesIsArray = False;
-      if (arguments.nelements() == axarg+1
-      &&  arguments[axarg].isSingle()) {
-	const TableExprNodeSetElem& arg = arguments[axarg];
-	if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
-	  parms.add (arg);
-	  axesIsArray = True;
-	}
+      if (arguments.nelements() == axarg) {
+        // No axes given. Add default one for transpose.
+        axesIsArray = True;
+        if (ftype == TableExprFuncNode::transposeFUNC) {
+          // Add an empty vector if no transpose arguments given.
+          TableExprNodeSetElem arg((TableExprNode(Vector<Int>())));
+          parms.add (arg);
+        }
+      } else if (arguments.nelements() == axarg+1
+                 &&  arguments[axarg].isSingle()) {
+        // A single set given; see if it is an array.
+        const TableExprNodeSetElem& arg = arguments[axarg];
+        if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
+          parms.add (arg);
+          axesIsArray = True;
+        }
       }
       if (!axesIsArray) {
 	// Combine all axes in a single set and add to parms.
@@ -1349,8 +1364,8 @@ TableExprNode TableParseSelect::makeSubSet (const Table& origTable) const
   // the object.
   resultSet_p->link();
   if (! TableExprNode(resultSet_p).checkTableSize (origTable, False)) {
-    throw (TableInvExpr ("Tables with different sizes used in "
-                         "GIVING set expression"));
+    throw TableInvExpr ("Tables with different sizes used in "
+                        "GIVING set expression (mismatches first table)");
   }
   TableExprNodeSet set(rownrs_p, *resultSet_p);
   return set.setOrArray();
@@ -1452,12 +1467,14 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
     //# A constant expression can be given.
     if (! key.node().checkTableSize (origTable, True)) {
       throw TableInvExpr ("Table(s) with incorrect size used in the "
-                          "UPDATE expr of column " + colName);
+                          "UPDATE expr of column " + colName +
+                          " (mismatches first table)");
     }
     if (key.indexPtr() != 0) {
       if (! key.indexNode().checkTableSize (updTable, True)) {
       	throw TableInvExpr ("Table(s) with incorrect size used in the "
-                            "index expr in UPDATE of column " + colName);
+                            "index expr in UPDATE of column " + colName +
+                          " (mismatches first table)");
       }
     }
     //# This throws an exception for unknown data types (datetime, regex).
@@ -1920,8 +1937,9 @@ void TableParseSelect::doSort (Bool showTimings, const Table& origTable)
 	const TableParseSort& key = sort_p[i];
 	//# Check if the correct table is used in the sort key expression.
         if (! key.node().checkTableSize (origTable, False)) {
-            throw (TableInvExpr ("Table(s) with incorrect size used "
-                                 "in sort key " + String::toString(i)));
+            throw TableInvExpr ("Table(s) with incorrect size used "
+                                "in sort key " + String::toString(i) +
+                                " (mismatches first table)");
         }
 	//# This throws an exception for unknown data types (datetime, regex).
 	key.node().getColumnDataType();
@@ -2170,8 +2188,14 @@ Table TableParseSelect::doProject (Bool showTimings, const Table& table)
 Table TableParseSelect::doProjectExpr()
 {
   // Make a column description for all expressions.
+  // Check if all tables involved have the same nr of rows as the first one.
   TableDesc td;
   for (uInt i=0; i<columnExpr_p.nelements(); i++) {
+    if (! columnExpr_p[i].checkTableSize (fromTables_p[0].table(), True)) {
+      throw TableInvExpr ("Table(s) with incorrect size used in "
+                          "selected column " + columnNames_p[i] +
+                          " (mismatches first table)");
+    }
     // If no new name is given, make one (unique).
     String newName = columnNames_p[i];
     if (newName.empty()) {
@@ -2560,21 +2584,6 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   //# The first table in the list is the source table.
   Table table = fromTables_p[0].table();
-  //# Check if all selected columns exist.
-  for (uInt i=0; i<columnNames_p.nelements(); i++) {
-    String nm = columnNames_p[i];        // name in update,insert
-    if (columnOldNames_p.nelements() > 0) {
-      nm = columnOldNames_p[i];          // possible name in select
-    }
-    if (! nm.empty()) {
-      if (! table.tableDesc().isColumn (nm)) {
-	throw (TableError ("TableParse: projected column " +
-			   nm +
-			   " does not exist in table " +
-			   table.tableName()));
-      }
-    }
-  }
   //# Determine if we can pre-empt the selection loop.
   //# That is possible if a positive limit and offset are given
   //# without sorting or select distinct.
