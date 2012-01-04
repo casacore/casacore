@@ -320,9 +320,16 @@ int main() {
     	ok = False;
         cerr << "Exception caught: " << x.getMesg() << endl;
     }
+
+        // Try to remove the created files.
+    try {
 	if(workdir.exists()) {
 		workdir.removeRecursive();
 	}
+    } catch (AipsError x) {
+        cerr << "Remove exception caught: " << x.getMesg() << endl;
+    }
+
 	return ok ? 0 : 1;
 }
 
