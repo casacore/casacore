@@ -142,12 +142,13 @@ namespace casa {
       // First try the string as a planetary object.
       // In the future comets can be supported like COMET:cometname.
       String str = operand->getString(0);
-      MDirection::Types refType;
-      Bool fnd = MDirection::getType (refType, str);
-      if (fnd && refType>MDirection::N_Types && refType<=MDirection::N_Planets
-          && refType!=MDirection::COMET) {
-        itsEngine.setDirection (MDirection(refType));
-      } else {
+      Bool fnd = True;
+      try {
+        itsEngine.setDirection (MDirection::makeMDirection(str));
+      } catch (std::exception&) {
+        fnd = False;
+      }
+      if (!fnd) {
         // Now do it as a FIELD column name.
         // Skip possible leading backslash (escape char).
         if (str.size() > 0  &&  str[0] == '\\') {

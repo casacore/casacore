@@ -287,6 +287,10 @@ public:
 //# Destructor
     virtual ~MDirection();
 
+// Make an MDirection object given the name of a moving source (SUN, etc.)
+// or of a known standard source (CygA, etc.).
+    static MDirection makeMDirection(const String& sourceName);
+
 //# Operators
 
 //# General Member Functions
