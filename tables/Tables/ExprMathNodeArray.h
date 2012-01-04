@@ -204,6 +204,39 @@ private:
 };
 
 
+// <summary>
+// Date Array addition in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents an addition in a table select expression tree.
+// Strings can also be added (ie. concatenated).
+// Numeric data types will be promoted if possible, so for instance
+// an addition of Int and Complex is possible.
+// </synopsis> 
+
+class TableExprNodeArrayPlusDate : public TableExprNodeArrayPlus
+{
+public:
+    TableExprNodeArrayPlusDate (const TableExprNodeRep&);
+    ~TableExprNodeArrayPlusDate();
+    virtual void handleUnits();
+    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<MVTime> getArrayDate   (const TableExprId& id);
+};
+
+
 
 // <summary>
 // Array addition in table select expression tree
@@ -319,6 +352,38 @@ public:
     TableExprNodeArrayMinusDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDComplex();
     Array<DComplex> getArrayDComplex (const TableExprId& id);
+};
+
+
+// <summary>
+// Date Array subtraction in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+//   <li> TableExprNodeRep
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a subtraction in a table select expression tree.
+// Numeric data types will be promoted if possible, so for instance
+// a subtraction of Int and Complex is possible.
+// </synopsis> 
+
+class TableExprNodeArrayMinusDate : public TableExprNodeArrayMinus
+{
+public:
+    TableExprNodeArrayMinusDate (const TableExprNodeRep&);
+    ~TableExprNodeArrayMinusDate();
+    virtual void handleUnits();
+    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<MVTime> getArrayDate   (const TableExprId& id);
 };
 
 

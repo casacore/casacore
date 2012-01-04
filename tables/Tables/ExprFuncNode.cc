@@ -258,18 +258,18 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case nearabs3FUNC:
       makeEqualUnits (nodes, 0, 3);
       break;
+    case angdistFUNC:
+    case angdistxFUNC:
+      node->setUnit ("rad");
+      // fall through
     case conesFUNC:
     case cones3FUNC:
     case anyconeFUNC:
     case anycone3FUNC:
     case findconeFUNC:
     case findcone3FUNC:
-    case angdistFUNC:
       for (uInt i=0; i<nodes.nelements(); ++i) {
 	TableExprNodeUnit::adaptUnit (nodes[i], "rad");
-      }
-      if (func == angdistFUNC) {
-        node->setUnit ("rad");
       }
       break;
     default:
@@ -764,20 +764,25 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
         return operands_p[0]->getBool(id)  ?
 	       operands_p[1]->getDouble(id) : operands_p[2]->getDouble(id);
     case angdistFUNC:
+    case angdistxFUNC:
       {
         Array<double> a1 = operands_p[0]->getArrayDouble(id);
         Array<double> a2 = operands_p[1]->getArrayDouble(id);
         if (!(a1.size() == 2  &&  a1.contiguousStorage()  &&
               a2.size() == 2  &&  a2.contiguousStorage())) {
-          throw TableInvExpr ("Arguments of angdist function must have a "
+          throw TableInvExpr ("Arguments of angdist(x) function must have a "
                               "multiple of 2 values");
         }
         const double* d1 = a1.data();
         const double* d2 = a2.data();
         return angdist (d1[0], d1[1], d2[0], d2[1]);
       }
+    case datetimeFUNC:
+    case mjdtodateFUNC:
+    case dateFUNC:
+      return getDate(id);    // automatic conversion of MVTime to double
     default:
-        // Functions like MJD are implemented as Int only.
+        // Functions like YEAR are implemented as Int.
         return getInt(id);
     }
     return 0;
@@ -1127,10 +1132,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTAny, NTBool, nodes);
     case angdistFUNC:
+    case angdistxFUNC:
         checkNumOfArg (2, 2, nodes);
         if (nodes[0]->valueType() != VTArray  ||
             nodes[1]->valueType() != VTArray) {
-          throw TableInvExpr ("Arguments of angdist function "
+          throw TableInvExpr ("Arguments of angdist(x) function "
                               "have to be arrays");
         }
         if (nodes[0]->shape().product() != 2  ||
@@ -1182,6 +1188,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxanyFUNC:
     case boxallFUNC:
     case arrayFUNC:
+    case transposeFUNC:
       {
         // Most functions can have Int or Double in and result in Double.
         dtin = NTReal;
@@ -1210,6 +1217,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             dtout = NTInt;
 	    break;
 	case arrayFUNC:
+        case transposeFUNC:
 	    dtin = dtout = NTAny;
 	    break;
 	default:
@@ -1221,11 +1229,12 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         checkNumOfArg (axarg+1, axarg+1, nodes);
 	dtypeOper.resize(axarg+1);
 	dtypeOper = NTReal;
-	// Check for XXXs and run/boxXXX functions if first argument is array.
+	// Check if first argument is array.
 	if (fType != arrayFUNC) {
 	    if (nodes[0]->valueType() != VTArray) {
-	        throw TableInvExpr ("1st argument of xxxS function "
-				    "has to be an array");
+	        throw TableInvExpr ("1st argument of function " +
+                                    String::toString(fType) +
+				    " has to be an array");
 	    }
 	}
 	// Check if first argument has correct type.
@@ -1240,14 +1249,16 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    if (nodes[i]->valueType() != VTScalar  ||
                 (nodes[i]->dataType() != NTInt  &&
                  nodes[i]->dataType() != NTDouble)) {
-	      throw TableInvExpr ("2nd argument of fractile functions "
+	      throw TableInvExpr ("2nd argument of fractile function "
 				  "has to be an real scalar");
 	    }
 	  }
 	}
         if (nodes[axarg]->dataType() != NTInt) {
           throw TableInvExpr ("The axes arguments of runningXXX, boxedXXX, or "
-                              "XXXs function have to be integers");
+                              "XXXs function " +
+                              String::toString(fType) +
+                              " have to be integers");
         }
 	// The last argument forms the axes as an array object.
 	AlwaysAssert (nodes[axarg]->valueType() == VTArray, AipsError);
@@ -1264,8 +1275,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	if (vt == VTArray) {
 	    resVT = vt;
 	} else if (vt != VTScalar) {
-	    throw (TableInvExpr
-                          ("Function has to have a scalar or array argument"));
+	    throw TableInvExpr ("Function " + String::toString(fType) +
+                                " has to have a scalar or array argument");
 	}
     }
     switch (fType) {
@@ -1475,7 +1486,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars only (or no arguments).
     for (i=0; i< nodes.nelements(); i++) {
 	if (nodes[i]->valueType() != VTScalar) {
-	    throw (TableInvExpr ("Function has to have a scalar argument"));
+	    throw TableInvExpr ("Function " + String::toString(fType) +
+                                " has to have a scalar argument");
 	}
     }
     switch (fType) {
@@ -1496,7 +1508,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return checkDT (dtypeOper, NTString, NTRegex, nodes);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::checkOperands, "
-			     "function not contained in switch statement"));
+			     "function " + String::toString(fType) +
+                             " not contained in switch statement"));
     }
     return NTNumeric;
 }

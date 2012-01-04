@@ -157,6 +157,7 @@ void doDiscreteInt()
     vec[1] = -1;
     uInt cnt=2;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     Vector<Int64> exp(51);
     indgen (exp, Int64(-3), Int64(2));
     AlwaysAssertExit (allEQ(exp, vec));
@@ -171,6 +172,7 @@ void doDiscreteInt()
     Vector<Int64> vec(98);
     uInt cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     Vector<Int64> exp(98);
     indgen (exp, Int64(1));
     AlwaysAssertExit (allEQ(exp, vec));
@@ -197,6 +199,7 @@ void doDiscreteInt()
     Vector<Int64> vec;
     uInt cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     Vector<Int64> exp(100);
     indgen (exp);
     AlwaysAssertExit (allEQ(exp, vec));
@@ -249,6 +252,7 @@ void doDiscreteDouble()
     Vector<Double> vec;
     uInt cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     Vector<Double> exp(46);
     indgen (exp, 1., 0.2);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
@@ -267,7 +271,8 @@ void doDiscreteDouble()
     vec[1] = 0.8;
     uInt cnt=2;
     tset.fillVector (vec, cnt, 0);
-    Vector<Double> exp(43);
+    vec.resize (cnt, True);
+    Vector<Double> exp(48);
     indgen (exp, 0.6, 0.2);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
@@ -281,7 +286,8 @@ void doDiscreteDouble()
     Vector<Double> vec;
     uInt cnt=0;
     tset.fillVector (vec, cnt, 0);
-    Vector<Double> exp(9);
+    vec.resize (cnt, True);
+    Vector<Double> exp(10);
     indgen (exp, 1., 1.);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
@@ -421,6 +427,7 @@ void doDiscreteDate()
     Vector<MVTime> vect;
     uInt cnt=0;
     tset.fillVector (vect, cnt, 0);
+    vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
     Vector<Double> exp(32);
@@ -437,6 +444,7 @@ void doDiscreteDate()
     Vector<MVTime> vect;
     uInt cnt=0;
     tset.fillVector (vect, cnt, 0);
+    vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
     AlwaysAssertExit (allNear(Vector<Double>(1, 54926.5), vec, 1e-13));
@@ -451,6 +459,7 @@ void doDiscreteDate()
     Vector<MVTime> vect;
     uInt cnt=0;
     tset.fillVector (vect, cnt, 0);
+    vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
     AlwaysAssertExit (allNear(Vector<Double>(1, 54926.5), vec, 1e-13));

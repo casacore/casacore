@@ -435,7 +435,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TableDesc ConcatTable::actualTableDesc() const
   {
-    return baseTabPtr_p[0]->actualTableDesc();
+    return *tdescPtr_p;
   }
 
   Record ConcatTable::dataManagerInfo() const

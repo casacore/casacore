@@ -75,8 +75,8 @@ TableProxy::TableProxy (const String& tableName,
 			const Record& lockOptions,
 			int option)
 {
-  table_p = Table (tableName, makeLockOptions(lockOptions),
-		   Table::TableOption(option));
+  table_p = Table::openTable (tableName, makeLockOptions(lockOptions),
+                              Table::TableOption(option));
 }
 
 TableProxy::TableProxy (const String& tableName,

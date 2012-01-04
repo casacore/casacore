@@ -326,6 +326,9 @@ TableExprNodeRep* TableExprNode::newPlus (TableExprNodeRep* right) const
 	case TableExprNodeRep::NTString:
 	    tsnptr = new TableExprNodeArrayPlusString (node);
 	    break;
+	case TableExprNodeRep::NTDate:
+	    tsnptr = new TableExprNodeArrayPlusDate (node);
+	    break;
 	default:
 	    throwInvDT("in array operator+");
 	}
@@ -365,6 +368,9 @@ TableExprNodeRep* TableExprNode::newMinus (TableExprNodeRep* right) const
 	    break;
 	case TableExprNodeRep::NTComplex:
 	    tsnptr = new TableExprNodeArrayMinusDComplex (node);
+	    break;
+	case TableExprNodeRep::NTDate:
+	    tsnptr = new TableExprNodeArrayMinusDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator-");

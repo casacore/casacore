@@ -726,7 +726,7 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
     if (leftDtype == NTString  &&  rightDtype == NTDate) {
 	leftDtype = NTDate;
     }
-    // A double will be promoted to Date when using with a Date in a comparison.
+    // A double will be promoted to Date when used with a Date in a comparison.
     if (opt >= OtEQ  &&  opt <= OtIN) {
         if (leftDtype == NTDate  &&  rightDtype == NTDouble) {
             rightDtype = NTDate;
@@ -740,6 +740,7 @@ TableExprNodeRep::NodeDataType TableExprNodeBinary::getDT
 	return NTDouble;
     }
     // Date matches Date; Date+Date is not allowed
+    // Note that date/date or date*date has been catched earlier.
     if (leftDtype == NTDate  &&  rightDtype == NTDate  &&  opt != OtPlus) {
 	return NTDate;
     }
@@ -848,12 +849,11 @@ TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
 						 Bool convertConstType)
 {
     // Fill the children and link to them.
+    // If needed, change the children to get matching data types.
     thisNode->lnode_p = left->link();
     if (right != 0) {
 	thisNode->rnode_p = right->link();
-    }
-    // Change the children when needed.
-    if (right != 0) {
+
 	// NTRegex will always be placed in the right node 
 	if (left->dataType() == NTRegex) {
 	    thisNode->lnode_p = right;
@@ -866,7 +866,8 @@ TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
                 TableExprNode dNode = datetime (right);
 	        unlink (right);
 	        thisNode->rnode_p = getRep(dNode)->link();
-            } else if (right->dataType() == NTDouble) {
+            } else if (right->dataType() == NTDouble  ||
+                       right->dataType() == NTInt) {
                 TableExprNode dNode = mjdtodate (right);
 	        unlink (right);
 	        thisNode->rnode_p = getRep(dNode)->link();
@@ -877,7 +878,8 @@ TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
                 TableExprNode dNode = datetime (left);
                 unlink (left);
                 thisNode->lnode_p = getRep(dNode)->link();
-            } else if (left->dataType() == NTDouble) {
+            } else if (left->dataType() == NTDouble  ||
+                       left->dataType() == NTInt) {
                 TableExprNode dNode = mjdtodate (left);
                 unlink (left);
                 thisNode->lnode_p = getRep(dNode)->link();

@@ -110,7 +110,7 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::ntruesFUNC:
     case TableExprFuncNode::nfalsesFUNC:
         if (operands()[axarg]->isConstant()) {
-	    ipos_p = getCollapseAxes (0, -1, axarg);
+	    ipos_p = getAxes (0, -1, axarg);
 	    constAxes_p = True;
 	}
         break;
@@ -120,23 +120,30 @@ void TableExprFuncNodeArray::tryToConst()
 	    constAxes_p = True;
 	}
         break;
+    case TableExprFuncNode::transposeFUNC:
+        if (operands()[axarg]->isConstant()) {
+            ipos_p = getAxes (0, -1, axarg, False);
+	    constAxes_p = True;
+	}
+        break;
     default:
 	break;
     }
 }
 
 
-const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
-							 Int ndim, uInt axarg)
+IPosition TableExprFuncNodeArray::getAxes (const TableExprId& id,
+                                           Int ndim, uInt axarg,
+                                           bool swapRemove)
 {
   // Get the axes if not constant (or not known).
   if (!constAxes_p) {
-    Array<Double> ax(operands()[axarg]->getArrayDouble(id));
+    Array<Int64> ax(operands()[axarg]->getArrayInt(id));
     AlwaysAssert (ax.ndim() == 1, AipsError);
     AlwaysAssert (ax.contiguousStorage(), AipsError);
     ipos_p.resize (ax.nelements());
     for (uInt i=0; i<ax.nelements(); i++) {
-      ipos_p(i) = Int(ax.data()[i]) - origin_p;
+      ipos_p(i) = ax.data()[i] - origin_p;
     }
     iposN_p = ipos_p;
   }
@@ -144,31 +151,51 @@ const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
   uInt nr = 0;
   for (uInt i=0; i<ipos_p.nelements(); i++) {
     if (ipos_p(i) < 0) {
-        throw TableInvExpr ("collapseAxis < 0 used in xxxs function");
+        throw TableInvExpr ("axis < 0 used in xxxs function");
     }
     if (ndim < 0) {
       nr = ipos_p.nelements();
     } else {
       if (ipos_p(i) < ndim) {
 	// Correct for possible specification in C-order.
-	// Note that the collapse axes order is not important.
-	if (isCOrder_p) ipos_p(i) = ndim - iposN_p(i) - 1;
+	// Note that for collapse the axes order is not important,
+        // but it is for transpose.
+	if (isCOrder_p && swapRemove) {
+          ipos_p(i) = ndim - iposN_p(i) - 1;
+        }
         nr++;
       }
     }
   }
-  if (nr == ipos_p.nelements()) {
+  if (nr == ipos_p.nelements()  ||  !swapRemove) {
     return ipos_p;
   }
   // Remove axes exceeding dimensionality.
-  corrCollAxes_p.resize(nr);
-  uInt j=0;
-  for (uInt i=0; i<ipos_p.nelements(); i++) {
-    if (ipos_p(i) < ndim) {
-      corrCollAxes_p(j++) = ipos_p(i);
+  return removeAxes (ipos_p, ndim);
+}
+
+IPosition TableExprFuncNodeArray::removeAxes (const IPosition& axes, 
+                                              Int ndim) const
+{
+  // Count axes not exceeding ndim.
+  uInt nr=0;
+  for (uInt i=0; i<axes.size(); ++i) {
+    if (axes[i] < ndim) {
+      nr++;
     }
   }
-  return corrCollAxes_p;
+  if (nr == axes.size()) {
+    return axes;
+  }
+  // Remove the too high axes.
+  IPosition newAxes(nr);
+  uInt j=0;
+  for (uInt i=0; i<axes.size(); ++i) {
+    if (ipos_p[i] < ndim) {
+      newAxes[j++] = ipos_p[i];
+    }
+  }
+  return newAxes;
 }
 			   
 const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
@@ -176,24 +203,40 @@ const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
 {
   // Get the shape if not constant.
   if (!constAxes_p) {
-    Array<Double> ax(operands()[axarg]->getArrayDouble(id));
+    Array<Int64> ax(operands()[axarg]->getArrayInt(id));
     AlwaysAssert (ax.ndim() == 1, AipsError);
     AlwaysAssert (ax.contiguousStorage(), AipsError);
     uInt ndim = ax.nelements();
     ipos_p.resize (ndim);
     if (isCOrder_p) {
       for (uInt i=0; i<ndim; i++) {
-	ipos_p(i) = Int(ax.data()[ndim-i-1]);
+	ipos_p(i) = ax.data()[ndim-i-1];
       }
     } else {
       for (uInt i=0; i<ndim; i++) {
-	ipos_p(i) = Int(ax.data()[i]);
+	ipos_p(i) = ax.data()[i];
       }
     }
   }
   return ipos_p;
 }
-			   
+
+IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
+{
+  IPosition order = getAxes(id, ndim, 1, False);
+  cout <<"order="<< order<<endl;
+  if (order.empty()) {
+    // Default is to transpose the full array.
+    order.resize (ndim);
+    for (int i=0; i<ndim; ++i) {
+      order[i] = ndim-i-1;
+    }
+    return order;
+  }
+  // Remove possibly too high axes.
+  return removeAxes (order, ndim);
+}
+
 
 Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 {
@@ -317,13 +360,13 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
     case TableExprFuncNode::anysFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	Array<uInt> res (partialNTrue (arr, getCollapseAxes(id, arr.ndim())));
+	Array<uInt> res (partialNTrue (arr, getAxes(id, arr.ndim())));
 	return res > 0u;
       }
     case TableExprFuncNode::allsFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	Array<uInt> res (partialNFalse (arr, getCollapseAxes(id, arr.ndim())));
+	Array<uInt> res (partialNFalse (arr, getAxes(id, arr.ndim())));
 	return res == 0u;
       }
     case TableExprFuncNode::runallFUNC:
@@ -369,6 +412,11 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	  arr.freeStorage (arrd, delArr);
 	}
 	return res;
+      }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
     case TableExprFuncNode::isnanFUNC:
 	if (argDataType() == NTComplex) {
@@ -463,8 +511,9 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	return result;
       }
     default:
-	throw (TableInvExpr ("TableExprFuncNodeArray::getArrayBool, "
-			     "unknown function"));
+	throw TableInvExpr ("TableExprFuncNodeArray::getArrayBool, "
+                            "unknown function " +
+                            String::toString(funcType()));
     }
     return Array<Bool>();
 }
@@ -564,8 +613,9 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	    }
 	    break;
 	default:
-	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
-				 "unhandled date/time function"));
+	    throw TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
+                                "unhandled date/time function " +
+                                String::toString(funcType()));
 	}
 	values.freeStorage (val, deleteVal);
 	res.putStorage (resp, deleteRes);
@@ -607,27 +657,27 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     case TableExprFuncNode::arrsumsFUNC:
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
-	return partialSums (arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrproductsFUNC:
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
-	return partialProducts (arr, getCollapseAxes(id, arr.ndim()));
+	return partialProducts (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrsumsqrsFUNC:
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
-	return partialSums (arr*arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr*arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrminsFUNC:
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
-	return partialMins (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMins (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrmaxsFUNC:
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
-	return partialMaxs (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMaxs (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::runminFUNC:
       {
@@ -652,7 +702,7 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     case TableExprFuncNode::ntruesFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	Array<uInt> res(partialNTrue (arr, getCollapseAxes(id, arr.ndim())));
+	Array<uInt> res(partialNTrue (arr, getAxes(id, arr.ndim())));
 	Array<Int64> resd(res.shape());
 	convertArray (resd, res);
 	return resd;
@@ -660,7 +710,7 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
     case TableExprFuncNode::nfalsesFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	Array<uInt> res(partialNFalse (arr, getCollapseAxes(id, arr.ndim())));
+	Array<uInt> res(partialNFalse (arr, getAxes(id, arr.ndim())));
 	Array<Int64> resd(res.shape());
 	convertArray (resd, res);
 	return resd;
@@ -689,6 +739,11 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	  arr.freeStorage (arrd, delArr);
 	}
 	return res;
+      }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<Int64> arr (operands()[0]->getArrayInt(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
     case TableExprFuncNode::iifFUNC:
       {
@@ -765,8 +820,9 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	return result;
       }
     default:
-	throw (TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
-			     "unknown function"));
+	throw TableInvExpr ("TableExprFuncNodeArray::getArrayInt, "
+                            "unknown function " +
+                            String::toString(funcType()));
     }
     return Array<Int64>();
 }
@@ -954,63 +1010,63 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
     case TableExprFuncNode::arrsumsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialSums (arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrproductsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialProducts (arr, getCollapseAxes(id, arr.ndim()));
+	return partialProducts (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrsumsqrsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialSums (arr*arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr*arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrminsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialMins (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMins (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrmaxsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialMaxs (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMaxs (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrmeansFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialMeans (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMeans (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrvariancesFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialVariances (arr, getCollapseAxes(id, arr.ndim()));
+	return partialVariances (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrstddevsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialStddevs (arr, getCollapseAxes(id, arr.ndim()));
+	return partialStddevs (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arravdevsFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialAvdevs (arr, getCollapseAxes(id, arr.ndim()));
+	return partialAvdevs (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrrmssFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialRmss (arr, getCollapseAxes(id, arr.ndim()));
+	return partialRmss (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrmediansFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
-	return partialMedians (arr, getCollapseAxes(id, arr.ndim()));
+	return partialMedians (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrfractilesFUNC:
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
 	return partialFractiles (arr,
-				 getCollapseAxes(id, arr.ndim(), 2),
+				 getAxes(id, arr.ndim(), 2),
 				 operands()[1]->getDouble(id));
       }
     case TableExprFuncNode::runminFUNC:
@@ -1117,6 +1173,11 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	}
 	return res;
       }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -1195,8 +1256,38 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
         Array<double> a1 = operands()[0]->getArrayDouble(id);
         Array<double> a2 = operands()[1]->getArrayDouble(id);
+        // Treat an array of size 2 as scalar, so allow scalar-array operations
+        // which is handled by angdistxFUNC.
+        if (a1.size() != 2  &&  a2.size() != 2) {
+          if (a1.size() != a2.size()) {
+            throw TableInvExpr ("Arguments of angdist function must have "
+                                "equal length");
+          }
+          if (a1.size() %2 != 0) {
+            throw TableInvExpr ("Arguments of angdist function must have a "
+                                "multiple of 2 values");
+          }
+          Array<double> result(IPosition(1, a1.size()/2));
+          double* res = result.data();
+          Array<double>::const_iterator p2   = a2.begin();
+          Array<double>::const_iterator end1 = a1.end();
+          for (Array<double>::const_iterator p1 = a1.begin(); p1!=end1; ++p1) {
+            double ra1 = *p1;
+            ++p1;
+            double ra2 = *p2;
+            ++p2;
+            *res++ = acos (sin(*p1)*sin(*p2) + cos(*p1)*cos(*p2)*cos(ra1-ra2));
+            ++p2;
+          }
+          return result;
+        }  // fall through if either arrays have size 2
+      }
+    case TableExprFuncNode::angdistxFUNC:
+      {
+        Array<double> a1 = operands()[0]->getArrayDouble(id);
+        Array<double> a2 = operands()[1]->getArrayDouble(id);
         if (!(a1.size() %2 == 0  &&  a2.size() %2 == 0)) {
-          throw TableInvExpr ("Arguments of angdist function must have a "
+          throw TableInvExpr ("Arguments of angdistx function must have a "
                               "multiple of 2 values");
         }
         Array<double>::const_iterator end1 = a1.end();
@@ -1216,9 +1307,18 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
         }
         return result;
       }
+    case TableExprFuncNode::datetimeFUNC:
+    case TableExprFuncNode::mjdtodateFUNC:
+    case TableExprFuncNode::dateFUNC:
+      {
+        Array<MVTime> arr (getArrayDate(id));
+        Array<Double> res(arr.shape());
+        convertArray (res, arr);
+        return res;
+      }
     default:
       {
-        // Functions like MJD are implemented as Int only.
+        // Functions like YEAR are implemented as Int only.
         Array<Int64> arr (getArrayInt(id));
         Array<Double> res(arr.shape());
         convertArray (res, arr);
@@ -1299,17 +1399,17 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
     case TableExprFuncNode::arrsumsFUNC:
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
-	return partialSums (arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrproductsFUNC:
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
-	return partialProducts (arr, getCollapseAxes(id, arr.ndim()));
+	return partialProducts (arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrsumsqrsFUNC:
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
-	return partialSums (arr*arr, getCollapseAxes(id, arr.ndim()));
+	return partialSums (arr*arr, getAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrayFUNC:
       {
@@ -1334,6 +1434,11 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	  arr.freeStorage (arrd, delArr);
 	}
 	return res;
+      }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
     case TableExprFuncNode::complexFUNC:
       {
@@ -1458,8 +1563,9 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	return result;
       }
     default:
-	throw (TableInvExpr ("TableExprFuncNodeArray::getArrayDComplex, "
-			     "unknown function"));
+	throw TableInvExpr ("TableExprFuncNodeArray::getArrayDComplex, "
+                            "unknown function " +
+                            String::toString(funcType()));
     }
     return Array<DComplex>();
 }
@@ -1541,8 +1647,9 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
             }
             break;
 	default:
-	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
-				 "unhandled string function"));
+	    throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
+                                "unhandled string function " +
+                                String::toString(funcType()));
 	}
 	strings.putStorage (str, deleteStr);
 	return strings;
@@ -1588,8 +1695,9 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	    }
 	    break;
 	default:
-	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
-				 "unhandled date-string function"));
+	    throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
+                                "unhandled date-string function " +
+                                String::toString(funcType()));
 	}
 	values.freeStorage (val, deleteVal);
 	strings.putStorage (str, deleteStr);
@@ -1627,8 +1735,9 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
           }
           break;
         default:
-	    throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
-				 "unhandled angle-string function"));
+	    throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
+                                "unhandled angle-string function " +
+                                String::toString(funcType()));
         }
 	values.freeStorage (val, deleteVal);
 	strings.putStorage (str, deleteStr);
@@ -1658,6 +1767,11 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	  arr.freeStorage (arrd, delArr);
 	}
 	return res;
+      }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<String> arr (operands()[0]->getArrayString(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
     case TableExprFuncNode::iifFUNC:
       {
@@ -1734,8 +1848,9 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	return result;
       }
     default:
-	throw (TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
-			     "unknown function"));
+	throw TableInvExpr ("TableExprFuncNodeArray::getArrayString, "
+                            "unknown function " +
+                            String::toString(funcType()));
     }
     return Array<String>();
 }
@@ -1816,6 +1931,11 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
 	}
 	return res;
       }
+    case TableExprFuncNode::transposeFUNC:
+      {
+	Array<MVTime> arr (operands()[0]->getArrayDate(id));
+	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -1891,8 +2011,9 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
 	return result;
       }
     default:
-	throw (TableInvExpr ("TableExprFuncNodeArray::getArrayDate, "
-			     "unknown function"));
+	throw TableInvExpr ("TableExprFuncNodeArray::getArrayDate, "
+                            "unknown function " +
+                            String::toString(funcType()));
     }
     return Array<MVTime>();
 }

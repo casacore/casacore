@@ -588,7 +588,8 @@ private:
   // Try to find the keyword representing a table in one of the tables
   // in any select block (from inner to outer).
   // If not found, an exception is thrown.
-  static Table tableKey (const String& shorthand, const String& columnName,
+  static Table tableKey (const String& fullName,
+                         const String& shorthand, const String& columnName,
 			 const Vector<String>& fieldNames,
 			 const vector<TableParseSelect*>& stack);
 
