@@ -1847,11 +1847,11 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     if (cunit.nelements() > 0) {
 	if (Ctype.contains("VELO") || Ctype.contains("FELO")|| 
 	    Ctype.contains("VRAD")|| Ctype.contains("VOPT")) {
-	    cunit(whichAxis) = "M/S";
+	    cunit(whichAxis) = "m/s";
 	} else if (Ctype.contains("FREQ")) {
-	    cunit(whichAxis) = "HZ";
+	    cunit(whichAxis) = "Hz";
 	} else if (Ctype.contains("WAVE")|| Ctype.contains("AWAV")) {
-	    cunit(whichAxis) = "M";
+	    cunit(whichAxis) = "m";
 	} else {
 	    AlwaysAssert(0, AipsError); // NOTREACHED
 	}
