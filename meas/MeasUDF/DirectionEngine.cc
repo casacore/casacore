@@ -152,16 +152,8 @@ namespace casa {
     }
     Array<String> names = operand->getStringAS(0);
     itsConstants.resize (names.shape());
-    MDirection::Types refType;
     for (uInt i=0; i<names.size(); ++i) {
-      Bool fnd = MDirection::getType (refType, names.data()[i]);
-      if (fnd && refType>MDirection::N_Types && refType<=MDirection::N_Planets
-          && refType!=MDirection::COMET) {
-        itsConstants.data()[i] = MDirection(refType);
-      } else {
-        throw AipsError ("An unknown object name " + names.data()[i] +
-                         " is given as direction in a MEAS function");
-      }
+      itsConstants.data()[i] = MDirection::makeMDirection (names.data()[i]);
     }
   }
 

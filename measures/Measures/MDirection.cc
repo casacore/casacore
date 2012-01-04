@@ -87,6 +87,43 @@ MDirection::MDirection(MDirection::Types rf) :
 //# Destructor
 MDirection::~MDirection() {}
 
+MDirection MDirection::makeMDirection (const String& sourceName)
+{
+    // Look if it is a known moving source.
+    MDirection::Types refType;
+    if (MDirection::getType (refType, sourceName)) {
+      // Only planetary objects are valid.
+      if (refType > MDirection::N_Types  &&  refType < MDirection::COMET) {
+        return MDirection(refType);
+      }
+    }
+    // Now see if it is a known standard source.
+    MVDirection mvdir;
+    // Make it case-insensitive.
+    String name(sourceName);
+    name.upcase();
+    if (name == "CASA") {
+      mvdir = MVDirection (6.123487680622104,  1.0265153995604648);
+    } else if (name == "CYGA") {
+      mvdir = MVDirection (5.233686575770755,  0.7109409582180791);
+    } else if (name == "TAUA") {
+      mvdir = MVDirection (1.4596748493730913, 0.38422502335921294);
+    } else if (name == "VIRA") {
+      mvdir = MVDirection (3.276086511413598,  0.21626589533567378);
+    } else if (name == "HERA") {
+      mvdir = MVDirection (4.4119087330382163, 0.087135562905816893);
+    } else if (name == "HYDA") {
+      mvdir = MVDirection (2.4351466,         -0.21110706);
+    } else if (name == "PERA") {
+      mvdir = MVDirection (0.87180363,         0.72451580);
+    } else {
+      throw AipsError ("MDirection: " + sourceName +
+                       " is an unknown source name");
+    }
+    return MDirection (mvdir, MDirection::J2000);
+}
+
+
 //# Operators
 
 //# Member functions
