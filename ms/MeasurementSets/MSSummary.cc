@@ -1152,7 +1152,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
     os.output().width(widthName);	os << "Name";
     os.output().width(widthRA);	        os << "RA";
     os.output().width(widthDec);	os << "Decl";
-    os.output().width(widthType);	os << "Epoch";
+    os.output().width(widthType);	os << "RefType";
     if (srcok) {os.output().width(widthSrc);	os << "SrcId";}
     if (nVisPerField_.nelements()>0) 
       {os.output().width(widthnVis);	os << "nVis";}
@@ -1172,10 +1172,15 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         os.output().width(widthField);	os << (fld);
 	os.output().width(widthCode);   os << msFC.code()(fld);
 	os.output().width(widthName);	os << name.at(0,20);
-	os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,10);
-	os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,10);
-	os.output().width(widthType);
-	os << MDirection::showType(mRaDec.getRefPtr()->getType());
+        uInt refType = mRaDec.getRefPtr()->getType();
+        if (refType < MDirection::N_Types) {
+          os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,10);
+          os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,10);
+        } else {
+          os.output().width(widthRA);	os << MDirection::showType(refType);
+          os.output().width(widthDec);	os << MDirection::showType(refType);
+        }
+        os.output().width(widthType); os << MDirection::showType(refType);
         if (srcok) {os.output().width(widthSrc);	os << msFC.sourceId()(fld);}
         if (nVisPerField_.nelements()>fld) 
 	  {os.output().width(widthnVis);	os << nVisPerField_(fld);}
