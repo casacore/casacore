@@ -136,6 +136,8 @@ class Time;
 //	precede the time with 'dd-Mon-yyyy/'.<br>
 //	The <src>MVTime::FITS</src> format implies TIME, and will
 //	precede the time with 'ccyy-mm-ddT'.
+//      The <src>BOOST</src> format implies DMY and USE_SPACE (space instead
+//      of slash between date and time).
 //	<br>
 //	The output format can be modified with modifiers (specify as
 //	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)). 
@@ -156,7 +158,7 @@ class Time;
 //	 <li> <src>MVTime::NO_HM</src> (or <src>NO_DM</src>), to
 //		suppress the degrees and minutes.
 //       <li> <src>MVTime::DAY</src> will precede the output with
-//		'Day-' (e.g. Wed-)
+//		'Day-' (e.g. Wed-). Space delimiter is used for USE_SPACE.
 //	 <li> <src>MVTime::NO_TIME</src> will suppress printing of time.
 //	</ul>
 //	Output in formats like <src>20'</src> can be done via the standard
@@ -169,6 +171,8 @@ class Time;
 //	  <li> MVTime::[ANGLE|TIME][_CLEAN]_NO_[D|H][M] in format with
 //		leading zero fields left empty.
 //	  <li> MVTime::CLEAN modifier for suppressing superfluous periods
+//        <li> MVTime::USE_SPACE to use a space instead of a slash
+//             as delimiter between date and time.
 //	  <li> MVTime::NO_[D|H][M] modifier to suppress first field(s)
 //	  <li> MVTime::DIG2 modifier to get +dd.mm.ss.ttt in angle or
 //		time format(i.e. in range -90 - +90 or -12 - +12)
@@ -277,6 +281,8 @@ class MVTime {
 	DIG2			= 1024,
 	FITS			= TIME+2048,
 	LOCAL			= 4096,
+        USE_SPACE               = 8192,
+        BOOST                   = DMY + USE_SPACE,
 	NO_H 			= NO_D,
 	NO_HM 			= NO_DM,
 	ANGLE_CLEAN 		= ANGLE + CLEAN,
@@ -290,7 +296,8 @@ class MVTime {
 	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
 	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM,
 	YMD_ONLY		= YMD + NO_TIME,
-	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 + LOCAL
+	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 +
+                                  LOCAL + USE_SPACE
     };
 
 //# Local structure

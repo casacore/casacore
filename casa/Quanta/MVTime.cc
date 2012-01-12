@@ -262,7 +262,7 @@ MVTime::Format MVTime::getFormat() {
 }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
-  const Int N_name = 13;
+  const Int N_name = 14;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -277,6 +277,7 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     "DIG2",
     "FITS",
     "LOCAL",
+    "USE_SPACE"
   };
   static MVTime::formatTypes nam[N_name] = {
     MVTime::ANGLE,
@@ -292,6 +293,7 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     MVTime::DIG2,
     MVTime::FITS,
     MVTime::LOCAL,
+    MVTime::USE_SPACE
   };
   Int t = MUString::minimaxNC(in, N_name, tab);
   return (t<N_name ? nam[t] : (MVTime::formatTypes) 0);
@@ -349,7 +351,11 @@ void MVTime::print(ostream &oss,
       if (i1 == MVTime::YMD || i1 == MVTime::DMY ||
 	  i1 == MVTime::MJD ||
 	  (intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
-	oss << '-';
+        if (intyp & MVTime::USE_SPACE) {
+          oss << ' ';
+        } else {
+          oss << '-';
+        }
       }
     }
     if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
@@ -372,6 +378,8 @@ void MVTime::print(ostream &oss,
     if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	if (i1 == MVTime::FITS) {
 	  oss << "T";
+        } else if (intyp & MVTime::USE_SPACE) {
+          oss << ' ';
 	} else {
 	  oss << "/";
 	}
