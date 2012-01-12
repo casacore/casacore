@@ -32,6 +32,11 @@
 
 #include <casa/namespace.h>
 
+void showTime (MVTime time, uInt format, uInt prec)
+{
+  cout << MVTime::Format(format,prec) << time << endl;
+}
+
 int main ()
 {
   try {
@@ -47,6 +52,20 @@ int main ()
     AlwaysAssertExit (MVTime::read (q, "1996/11/20/5:20"));
     AlwaysAssertExit (MVTime::read (q, "20Nov96-5h20m"));
     AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20"));
+    AlwaysAssertExit (MVTime::read (q, "25-Jan-2012/13:45:32.8187"));
+    MVTime time(q);
+    showTime (q, MVTime::ANGLE, 9);
+    showTime (q, MVTime::TIME, 9);
+    showTime (q, MVTime::BOOST, 0);
+    showTime (q, MVTime::FITS, 10);
+    showTime (q, MVTime::YMD, 5);
+    showTime (q, MVTime::DMY, 4);
+    showTime (q, MVTime::DMY+MVTime::CLEAN, 4);
+    showTime (q, MVTime::DAY, 9);
+    showTime (q, MVTime::DAY+MVTime::NO_TIME, 9);
+    showTime (q, MVTime::DAY+MVTime::DMY+MVTime::USE_SPACE, 9);
+    showTime (q, MVTime::MJD, 9);
+    showTime (q, MVTime::NO_TIME+MVTime::MJD, 9);
   } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
