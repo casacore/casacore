@@ -1,3 +1,9 @@
+foreach(prog findmeastable)
+    add_executable (${prog}  ${prog}.cc)
+    target_link_libraries (${prog} casa_measures)
+    install(TARGETS ${prog} DESTINATION bin)
+endforeach(prog findmeastable)
+
 add_executable (measuresdata  measuresdata/measuresdata.cc)
 target_link_libraries (measuresdata casa_measures)
 install(TARGETS measuresdata DESTINATION bin)
