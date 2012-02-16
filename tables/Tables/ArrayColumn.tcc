@@ -309,30 +309,30 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
     shp.append (IPosition(1,nrrow));
     // Check array conformance and resize if needed and possible.
     checkShape (shp, arr, resize, "ArrayColumn::getColumn");
-    //# Ask if we can access the column (if that is not known yet).
-    if (reaskAccessColumn_p) {
+    if (!arr.empty()) {
+      //# Ask if we can access the column (if that is not known yet).
+      if (reaskAccessColumn_p) {
 	canAccessColumn_p = baseColPtr_p->canAccessArrayColumn
-	                                           (reaskAccessColumn_p);
-    }
-    //# Access the column if possible.
-    //# Otherwise fill the entire array by looping through all cells.
-    if (canAccessColumn_p) {
+          (reaskAccessColumn_p);
+      }
+      //# Access the column if possible.
+      //# Otherwise fill the entire array by looping through all cells.
+      if (canAccessColumn_p) {
 	baseColPtr_p->getArrayColumn (&arr);
-    }else{
-        if (arr.nelements() > 0) {
-	    ArrayIterator<T> iter(arr, arr.ndim()-1);
-	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        Array<T>& darr = iter.array();
-		if (! darr.shape().isEqual (baseColPtr_p->shape (rownr))) {
-		  throw TableArrayConformanceError
-                    ("ArrayColumn::getColumn cannot be done for column " +
-                     baseColPtr_p->columnDesc().name() +
-                     "; the array shapes vary");
-		}
-	        baseColPtr_p->get (rownr, &darr);
-		iter.next();
-	    }
+      }else{
+        ArrayIterator<T> iter(arr, arr.ndim()-1);
+        for (uInt rownr=0; rownr<nrrow; rownr++) {
+          Array<T>& darr = iter.array();
+          if (! darr.shape().isEqual (baseColPtr_p->shape (rownr))) {
+            throw TableArrayConformanceError
+              ("ArrayColumn::getColumn cannot be done for column " +
+               baseColPtr_p->columnDesc().name() +
+               "; the array shapes vary");
+          }
+          baseColPtr_p->get (rownr, &darr);
+          iter.next();
 	}
+      }
     }
 }
 
@@ -359,24 +359,24 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
     shp.append (IPosition(1,nrrow));
     // Check array conformance and resize if needed and possible.
     checkShape (shp, arr, resize, "ArrayColumn::getColumn");
-    //# Ask if we can access the column slice (if that is not known yet).
-    if (reaskAccessColumnSlice_p) {
+    if (!arr.empty()) {
+      //# Ask if we can access the column slice (if that is not known yet).
+      if (reaskAccessColumnSlice_p) {
 	canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
 	                                       (reaskAccessColumnSlice_p);
-    }
-    //# Access the column slice if possible.
-    //# Otherwise fill the entire array by looping through all cells.
-    Slicer defSlicer (blc, trc, inc, Slicer::endIsLast);
-    if (canAccessColumnSlice_p) {
+      }
+      //# Access the column slice if possible.
+      //# Otherwise fill the entire array by looping through all cells.
+      Slicer defSlicer (blc, trc, inc, Slicer::endIsLast);
+      if (canAccessColumnSlice_p) {
         baseColPtr_p->getColumnSlice (defSlicer, &arr);
-    }else{
-        if (arr.nelements() > 0) {
-	    ArrayIterator<T> iter(arr, arr.ndim()-1);
-	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        getSlice (rownr, defSlicer, iter.array());
-		iter.next();
-	    }
-	}
+      }else{
+        ArrayIterator<T> iter(arr, arr.ndim()-1);
+        for (uInt rownr=0; rownr<nrrow; rownr++) {
+          getSlice (rownr, defSlicer, iter.array());
+          iter.next();
+        }
+      }
     }
 }
 
