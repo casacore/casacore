@@ -753,6 +753,70 @@ void testResizeCopy()
 }
 
 
+void checkRCDVec (const Vector<Int>& v1, const Vector<Int>& v2)
+{
+  AlwaysAssertExit (allEQ(v1,v2));
+  Array<Int>::const_iterator iter1 = v1.begin();
+  Array<Int>::const_iterator iter2 = v2.begin();
+  for (uint i=0; i<v1.size(); ++i, ++iter1, ++iter2) {
+    AlwaysAssertExit (v1[i] == v2[i]);
+    AlwaysAssertExit (iter1 != v1.end());
+    AlwaysAssertExit (iter2 != v2.end());
+    AlwaysAssertExit (v1[i] == *iter1);
+    AlwaysAssertExit (v2[i] == *iter2);
+  }
+  AlwaysAssertExit (iter1 == v1.end());
+  AlwaysAssertExit (iter2 == v2.end());
+}
+
+void checkRCD (const Vector<Int>& vn, const Vector<Int>& vc)
+{
+  Slice sl(1,3,2);  // start=1,n=3,inc=2
+  cout << "  check vn,vc" << endl;
+  checkRCDVec (vn, vc);
+  cout << "  check vn(sl),vc(sl)" << endl;
+  checkRCDVec (vn(sl), vc(sl));
+  cout << "  check vn(sei),vn(sl)" << endl;
+  checkRCDVec (vn(IPosition(1,1), IPosition(1,5), IPosition(1,2)), vn(sl));
+  cout << "  check vc(sei),vc(sl)" << endl;
+  checkRCDVec (vc(IPosition(1,1), IPosition(1,5), IPosition(1,2)), vc(sl));
+}
+
+void doRowColDiag (const Matrix<Int>& m)
+{
+  // Make contiguous copy of matrix.
+  Matrix<Int> cm(m.copy());
+  AlwaysAssertExit (cm.contiguousStorage());
+  // Check row selection and subsetting.
+  Vector<Int> r0(m.row(1));
+  Vector<Int> cr0(cm.row(1));
+  AlwaysAssertExit (!r0.contiguousStorage() && !cr0.contiguousStorage());
+  checkRCD (r0, cr0);
+  // Check column selection and subsetting.
+  Vector<Int> c0(m.column(1));
+  Vector<Int> cc0(cm.column(1));
+  AlwaysAssertExit (cc0.contiguousStorage());
+  checkRCD (c0, cc0);
+  // Check diagonal selection and subsetting.
+  Vector<Int> d0(m.diagonal());
+  Vector<Int> cd0(cm.diagonal());
+  AlwaysAssertExit (!d0.contiguousStorage() && !cd0.contiguousStorage());
+  checkRCD (d0, cd0);
+}
+
+void testRowColDiag()
+{
+  Matrix<Int> m(18,18);
+  indgen (m);
+  cout << "Testing contiguous matrix ..." << endl;
+  doRowColDiag (m);
+  cout << "Testing non-contiguous matrix ..." << endl;
+  doRowColDiag (m(IPosition(2,1,1), IPosition(2,12,12), IPosition(2,1,1)));
+  doRowColDiag (m(IPosition(2,1,1), IPosition(2,12,12), IPosition(2,2,2)));
+  doRowColDiag (m(IPosition(2,1,2), IPosition(2,17,12), IPosition(2,3,2)));
+}
+
+
 int main()
 {
     try {
@@ -954,6 +1018,8 @@ int main()
 	testVector();
 	// Test the resize with copy.
 	testResizeCopy();
+        // Test getting row, column, diagonal
+        testRowColDiag();
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;
