@@ -243,10 +243,10 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
     Matrix<T> tmp((*this)(n, Slice())); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p(0) = tmp.length_p(1);
-    tmp.inc_p(0) = this->inc_p(1)*this->length_p(0)*this->inc_p(0);
+    tmp.inc_p(0) = this->steps_p(1);
     // "Lie" about the original length so that ok() doesn't spuriously fail
     // the test length[i] < originalLength (basically we've "swapped" axes).
-    tmp.originalLength_p(0) = tmp.length_p(0)*tmp.inc_p(0);
+    tmp.originalLength_p(0) = tmp.originalLength_p(1);
     tmp.length_p.resize (1);
     tmp.inc_p.resize (1);
     tmp.originalLength_p.resize (1);
@@ -310,7 +310,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
     if (tmp.nels_p > 1) {
-        tmp.inc_p(0) += this->inc_p(0)*this->length_p(0);
+        tmp.inc_p(0) = this->steps_p(0) + this->steps_p(1);
 	tmp.contiguous_p = False;
     }
     tmp.makeSteps();

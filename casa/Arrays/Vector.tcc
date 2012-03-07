@@ -261,7 +261,7 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     Vector<T> vp(*this);
 
     // Increment vp's begin so that it is at the selected position
-    vp.begin_p += b;
+    vp.begin_p += b*this->steps()[0];
     vp.inc_p(0) *= s;
     vp.length_p(0) = l;
     vp.nels_p = l;
