@@ -1196,13 +1196,13 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
     const T* storage = a.data();
     if (!(a.contiguousStorage() && inPlace)) {
       tmp.resize (a.size(), False, False);
+      storage = tmp.storage();
       if (a.contiguousStorage()) {
 	objcopy (tmp.storage(), a.data(), a.size());
       } else {
-      // A non-contiguous array, so do the assignment through an array.
+        // A non-contiguous array, so do the assignment through an array.
 	Array<T> tmpa(a.shape(), tmp.storage(), SHARE);
 	tmpa = a;
-	storage = tmp.storage();
       }
     }
     T* data = const_cast<T*>(storage);
