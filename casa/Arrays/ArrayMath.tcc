@@ -66,11 +66,9 @@ void arrayTransform (const Array<L>& left, R right,
     arrayContTransform (left, right, result, op);
   } else {
     if (left.contiguousStorage()) {
-      std::transform (left.cbegin(), left.cend(),
-                      result.begin(), bind2nd(op, right));
+      myrtransform (left.cbegin(), left.cend(), result.begin(), right, op);
     } else {
-      std::transform (left.begin(), left.end(),
-                      result.begin(), bind2nd(op, right));
+      myrtransform (left.begin(), left.end(), result.begin(), right, op);
     }
   }
 }
@@ -83,11 +81,9 @@ void arrayTransform (L left, const Array<R>& right,
     arrayContTransform (left, right, result, op);
   } else {
     if (right.contiguousStorage()) {
-      std::transform (right.cbegin(), right.cend(),
-                      result.begin(), bind1st(op, left));
+      myltransform (right.cbegin(), right.cend(), result.begin(), left, op);
     } else {
-      std::transform (right.begin(), right.end(),
-                      result.begin(), bind1st(op, left));
+      myltransform (right.begin(), right.end(), result.begin(), left, op);
     }
   }
 }
