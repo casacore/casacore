@@ -305,6 +305,29 @@ IPosition IPosition::getLast (uInt n) const
     return tmp;
 }
 
+IPosition IPosition::removeAxes (const IPosition& axes) const
+{
+  // Get the axes to keep.
+  // It also checks if axes are specified correctly.
+  IPosition resAxes = IPosition::otherAxes (size_p, axes);
+  uInt ndimRes = resAxes.nelements();
+  // Create the result shape.
+  IPosition resShape(ndimRes);
+  if (ndimRes == 0) {
+    resShape.resize(1);
+    resShape[0] = 1;
+  } else {
+    for (uInt i=0; i<ndimRes; ++i) {
+      resShape[i] = data_p[resAxes[i]];
+    }
+  }
+  return resShape;
+}
+
+IPosition IPosition::keepAxes (const IPosition& axes) const
+{
+  return removeAxes (otherAxes(size_p, axes));
+}
 
 // <thrown>
 //    <item> ArrayConformanceError
