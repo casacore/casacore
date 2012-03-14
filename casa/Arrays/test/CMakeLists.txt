@@ -31,6 +31,7 @@ tMaskArrMath1
 tMaskArrMath2
 tMaskedArray
 tMatrixMath
+tMedianSmooth
 tPerfTransform
 tSlice
 tSlicer
