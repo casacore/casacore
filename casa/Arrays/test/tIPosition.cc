@@ -42,6 +42,17 @@
 #include <vector>
 
 #include <casa/namespace.h>
+
+void testKeepRemove()
+{
+  IPosition p1(4,2,3,4,5);
+  IPosition p2 (p1.removeAxes(IPosition(2,0,3)));
+  AlwaysAssertExit (p2.size()==2 && p2[0]==3 && p2[1]==4);
+  IPosition p3 (p1.keepAxes(IPosition(2,2,1)));
+  AlwaysAssertExit (p2.size()==2 && p2[0]==3 && p2[1]==4);
+}
+
+
 int main()
 {
 {
@@ -57,6 +68,9 @@ int main()
     AlwaysAssertExit(!ip.empty());
     AlwaysAssertExit(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
     AlwaysAssertExit(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
+    AlwaysAssertExit (ip.last() == 2);
+    AlwaysAssertExit (ip.last(1) == 1);
+    AlwaysAssertExit (ip.last(2) == 0);
 
     std::vector<Int> vec(ip.begin(), ip.end());
     AlwaysAssertExit(vec.size() == 3);
@@ -64,7 +78,10 @@ int main()
 
     ip[2] = 21;
     AlwaysAssertExit(ip(2) == 21);
-    ip(2) = 22;
+    ip(2) = 23;
+    AlwaysAssertExit(ip(2) == 23);
+    AlwaysAssertExit (ip.last() == 23);
+    ip.last() = 22;
     AlwaysAssertExit(ip(2) == 22);
 
     IPosition ip2;
@@ -436,6 +453,8 @@ int main()
 }
 
 }
+
+    testKeepRemove();
 
     cout << "OK\n";
     return 0;

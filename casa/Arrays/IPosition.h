@@ -227,6 +227,15 @@ public:
     ssize_t operator()  (uInt index) const;
     // </group>
 
+    // Index into the IPosition from the end.
+    // By default the last value is returned.
+    // If the preprocessor symbol AIPS_ARRAY_INDEX_CHECK is defined, it will
+    // check if the index is not out of bounds.
+    // <group>
+    ssize_t& last (uInt index=0);
+    ssize_t last (uInt index=0) const;
+    // </group>
+
     // Get the storage.
     const ssize_t *storage() const;
 
@@ -256,6 +265,12 @@ public:
     // IPosition.
     // An exception is thrown if <src>n</src> is too high.
     IPosition getLast (uInt n) const;
+
+    // Return an IPosition where the given axes are reoved.
+    IPosition removeAxes (const IPosition& axes) const;
+
+    // Return an IPosition containing the given axes only.
+    IPosition keepAxes (const IPosition& axes) const;
 
     // The number of elements in this IPosition. Since IPosition
     // objects use zero-based indexing, the maximum available index is
@@ -541,6 +556,26 @@ inline ssize_t IPosition::operator()(uInt index) const
     }
 #endif
     return data_p[index];
+}
+
+inline ssize_t& IPosition::last (uInt index)
+{
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+    if (size_p - index <= 0) {
+	throwIndexError();
+    }
+#endif
+    return data_p[size_p-index-1];
+}
+
+inline ssize_t IPosition::last (uInt index) const
+{
+#if defined(AIPS_ARRAY_INDEX_CHECK)
+    if (size_p - index <= 0) {
+	throwIndexError();
+    }
+#endif
+    return data_p[size_p-index-1];
 }
 
 inline const ssize_t *IPosition::storage() const
