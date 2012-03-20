@@ -43,6 +43,7 @@
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
+%s CRETABstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -174,7 +175,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     followed by whitespace and an alphanumeric name. That 2nd name
     serves as a shorthand for possible later use in the field name.
     A table name can be given in the FROM part and in the giving PART.
-    These are indicated by the FROM/GIVINGstate, because a table name
+    These are indicated by the FROM/GIVING/CRETABstate, because a table name
     can contain special characters like -. In the FROMstate a table name
     can also be $nnn indicating a temporary table.
     In a subquery care must be taken that the state is switched back to
@@ -241,10 +242,12 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {CREATETAB} {
             tableGramPosition() += yyleng;
+	    BEGIN(CRETABstate);
 	    return CREATETAB;
 	  }
 {DMINFO}  {
             tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
 	    return DMINFO;
 	  }
 {FROM}    {
@@ -554,8 +557,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return TABNAME;
 	  }
 
- /* A table file name can be given in the UPDATE, FROM or GIVING clause */
-<FROMstate,GIVINGstate>{NAMETAB} {
+ /* A table file name can be given in the UPDATE, FROM, GIVING, CRETAB clause */
+<FROMstate,CRETABstate,GIVINGstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
