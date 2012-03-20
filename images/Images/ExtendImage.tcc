@@ -177,6 +177,12 @@ String ExtendImage<T>::name (Bool stripPath) const
 }
   
 template<class T>
+ImageAttrHandler& ExtendImage<T>::attrHandler (Bool createHandler)
+{
+  return itsImagePtr->attrHandler (createHandler);
+}
+
+template<class T>
 Bool ExtendImage<T>::doGetSlice (Array<T>& buffer,
 			      const Slicer& section)
 {

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/HDF5/HDF5Object.h>
+#include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -62,11 +63,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5Group (const HDF5Object& parentHid,
 	       const String& name,
 	       bool mustExist=false, bool mustNotExist=false)
-    { init (parentHid, parentHid.getName(), name, mustExist, mustNotExist); }
+      { init (parentHid, parentHid.getName(), name, mustExist, mustNotExist); }
     HDF5Group (hid_t parentHid,
 	       const String& name,
 	       bool mustExist=false, bool mustNotExist=false)
-    { init (parentHid, String(), name, mustExist, mustNotExist); }
+      { init (parentHid, String(), name, mustExist, mustNotExist); }
     // </group>
 
     // The destructor closes the hid.
@@ -74,6 +75,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Close the hid if valid.
     virtual void close();
+
+    // Get the names of all links at the given hid.
+    static std::vector<String> linkNames (const HDF5Object& parentHid);
+
+    // Test if the group at the given hid exists.
+    static bool exists (const HDF5Object& parentHid, const String& name);
 
     // Delete group at the given hid if it exists.
     static void remove (const HDF5Object& parentHid, const String& name);

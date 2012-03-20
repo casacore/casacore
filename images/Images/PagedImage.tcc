@@ -772,6 +772,7 @@ void PagedImage<T>::resync()
 template<class T>
 void PagedImage<T>::flush()
 {
+  itsAttrHandler.flush();
   map_p.flush();
   logger().flush();
   if (regionPtr_p != 0) {
@@ -850,6 +851,12 @@ void PagedImage<T>::restoreImageInfo (const TableRecord& rec)
          << "; " << error << LogIO::POST;
     }
   }
+}
+
+template<class T>
+ImageAttrHandler& PagedImage<T>::attrHandler (Bool createHandler)
+{
+  return itsAttrHandler.attachTable (table(), createHandler);
 }
 
 } //# NAMESPACE CASA - END

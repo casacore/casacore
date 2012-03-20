@@ -70,6 +70,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
+  // The callback function for function linkNames.
+  herr_t doAddLinkName (hid_t, const char* name,
+                        const H5L_info_t*, void* arg)
+  {
+    static_cast<std::vector<String>*>(arg)->push_back (String(name));
+    return 0;
+  }
+
+  std::vector<String> HDF5Group::linkNames (const HDF5Object& parentHid)
+  {
+    // Now read all subrecords.
+    //# Use INDEX_NAME (using INDEX_CRT_ORDER results in a return of -1).
+    std::vector<String> names;
+    names.reserve (16);
+    hsize_t idx=0;
+    H5Literate (parentHid, H5_INDEX_NAME, H5_ITER_NATIVE, &idx,
+		&doAddLinkName, &names);
+    return names;
+  }
+
+  bool HDF5Group::exists (const HDF5Object& parentHid, const String& name)
+  {
+    return H5Lexists (parentHid, name.c_str(), H5P_LINK_ACCESS_DEFAULT) == 1;
+  }
+
   void HDF5Group::remove (const HDF5Object& parentHid, const String& name)
   {
     // The delete fails if the group does not exist, but that is no problem.
@@ -90,6 +115,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   void HDF5Group::close()
   {}
+
+  std::vector<String> HDF5Group::linkNames (const HDF5Object&)
+  {
+    return std::vector<String>();
+  }
+
+  bool HDF5Group::exists (const HDF5Object&, const String&)
+  {
+    return false;
+  }
 
   void HDF5Group::remove (const HDF5Object&, const String&)
   {

@@ -43,6 +43,7 @@ namespace casa {
   template<typename T> class ImageInterface;
   class LatticeExprNode;
   class CoordinateSystem;
+  class ImageAttrHandler;
 
   // <synopsis>
   // </synopsis>
@@ -138,6 +139,9 @@ namespace casa {
     // Get the data type of the image.
     String dataType() const;
 
+    // Get the image type (PagedImage, HDF5Image, etc.)
+    String imageType() const;
+
     // Get a chunk of data.
     ValueHolder getData (const IPosition& blc,
                          const IPosition& trc, 
@@ -170,6 +174,33 @@ namespace casa {
 
     // Release the lock acquired by lock().
     void unlock();
+
+    // Get the names of the attribute groups.
+    Vector<String> attrGroupNames() const;
+
+    // Create a new attribute group.
+    void createAttrGroup (const String& groupName);
+
+    // Get the names of all attributes in a group.
+    Vector<String> attrNames (const String& groupName) const;
+
+    // Get the value of an attribute in a group.
+    ValueHolder getAttr (const String& groupName,
+                         const String& attrName) const;
+
+    // Get the unit(s) of an attribute in a group.
+    Vector<String> getAttrUnit(const String& groupName,
+                               const String& attrName) const;
+
+    // Get the measinfo of an attribute in a group.
+    Vector<String> getAttrMeas(const String& groupName,
+                               const String& attrName) const;
+
+    // Put the value, unit, and measinfo of an attribute in a group.
+    void putAttr (const String& groupName, const String& attrName,
+                  const ValueHolder& value,
+                  const Vector<String>& units,
+                  const Vector<String>& measInfo);
 
     // Form a new (virtual) image being a subset of the image.
     ImageProxy subImage (const IPosition& blc,
@@ -381,6 +412,7 @@ namespace casa {
     ImageInterface<Complex>*  itsImageComplex;
     ImageInterface<DComplex>* itsImageDComplex;
     const CoordinateSystem*   itsCoordSys;
+    ImageAttrHandler*         itsAttrHandler;
   };
 
 } // end namespace casa

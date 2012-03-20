@@ -54,6 +54,7 @@ class IPosition;
 class LogIO;
 class Unit;
 class AxesSpecifier;
+class ImageAttrHandler;
 
 
 //
@@ -103,7 +104,8 @@ public:
                           const String& fileName, LogIO& os);
 //  </group>
 
-// Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
+// Copy MiscInfo, ImageInfo, brightness unit, attributes, and logger (history)
+// from in to out
    template <typename T, typename U>
    static void copyMiscellaneous (ImageInterface<T>& out,
                                   const ImageInterface<U>& in);
@@ -113,6 +115,10 @@ public:
                          const ImageInterface<Float>& in,
                          const String& maskOut, const String& maskIn,
                          AxesSpecifier axesSpecifier);
+
+  // Copy the attributes from one image to another.
+  static void copyAttributes (ImageAttrHandler& out,
+                              ImageAttrHandler& in);
 
 // Add one degenerate axis for each of the specified coordinate types.
 // If the outfile string is given the new image is a PagedImage.

@@ -283,14 +283,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5Lattice<T>::openArray (const String& arrayName,
 				  const String& groupName)
   {
-    // Determine the parent Hid (file or group).
-    const HDF5Object* parent = &(*itsFile);
-    if (!groupName.empty()) {
+    if (groupName.empty()) {
+      // Use root group.
+      itsGroup = new HDF5Group(*itsFile, "/", true);
+    } else {
       itsGroup = new HDF5Group(*itsFile, groupName, true);
-      parent = &(*itsGroup);
     }
     // Open the data set.
-    itsDataSet = new HDF5DataSet (*parent, arrayName, (const T*)0);
+    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, (const T*)0);
   }
 
   template <typename T>
@@ -300,15 +300,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     // Make sure the table is writable.
     checkWritable();
-    // Determine the parent Hid (file or group).
-    const HDF5Object* parent = &(*itsFile);
-    if (!groupName.empty()) {
+    if (groupName.empty()) {
+      // Use root group.
+      itsGroup = new HDF5Group(*itsFile, "/", true);
+    } else {
       // Create group if not existing yet.
       itsGroup = new HDF5Group(*itsFile, groupName);
-      parent = &(*itsGroup);
     }
     // Create the data set.
-    itsDataSet = new HDF5DataSet (*parent, arrayName, shape.shape(),
+    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, shape.shape(),
 				  shape.tileShape(), (const T*)0);
   }
 

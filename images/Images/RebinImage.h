@@ -149,6 +149,12 @@ public:
   // Check class invariants.
   virtual Bool ok() const;
 
+  // Get access to the attribute handler (of the parent image).
+  // If a handler keyword does not exist yet, it is created if
+  // <src>createHandler</src> is set.
+  // Otherwise the handler is empty and no groups can be created for it.
+  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+
   // Do the actual getting of an array of values.
   // Non-unit strides are not yet supported.
   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);

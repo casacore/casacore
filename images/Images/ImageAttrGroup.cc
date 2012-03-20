@@ -1,5 +1,5 @@
-//# HDF5Image2.cc: non-templated function in HDF5Image
-//# Copyright (C) 2008
+//# ImageAttrGroup.cc: Abstract base class for an image attributes group
+//# Copyright (C) 2012
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,42 +25,12 @@
 //#
 //# $Id$
 
-#include <images/Images/HDF5Image.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/Exceptions/Error.h>
+//# Includes
+#include <images/Images/ImageAttrGroup.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa {
 
-  DataType hdf5imagePixelType (const String& fileName)
-  {
-    DataType retval = TpOther;
-    if (HDF5File::isHDF5(fileName)) {
-      try {
-	HDF5File file(fileName);
-	HDF5Group gid(file, "/", true);
-	retval = HDF5DataSet::getDataType (gid.getHid(), "map");
-      } catch (AipsError& x) {
-	// Nothing
-      } 
-    }
-    return retval;
-  }
-
-  Bool isHDF5Image (const String& fileName)
-  {
-    // It is an image if it is an HDF5 file with group /coordinfo.
-    Bool retval = False;
-    if (HDF5File::isHDF5(fileName)) {
-      try {
-	HDF5File file(fileName);
-	HDF5Group gid1(file, "/", true);
-	HDF5Group gid2(gid1, "coordinfo", true);
-	retval = True;
-      } catch (AipsError& x) {
-	// Nothing
-      } 
-    }
-    return retval;
-  }
+  ImageAttrGroup::~ImageAttrGroup()
+  {}
 
 } //# NAMESPACE CASA - END

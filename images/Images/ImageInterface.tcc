@@ -356,4 +356,10 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    return True;
 }
 
+template<class T>
+ImageAttrHandler& ImageInterface<T>::attrHandler (Bool)
+{
+  return itsBaseAttrHandler;
+}
+
 } //# NAMESPACE CASA - END

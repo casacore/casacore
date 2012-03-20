@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casa/HDF5/HDF5Record.h>
+#include <casa/HDF5/HDF5Group.h>
 #include <casa/HDF5/HDF5File.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Array.h>
@@ -272,6 +273,11 @@ int main()
     HDF5Record::writeRecord (file, "test", rec3);
     check (file);
 
+    // Check a group exists.
+    AlwaysAssertExit (HDF5Group::exists (file, "test"));
+    // Get the group names in the file.
+    vector<String> names = HDF5Group::linkNames (file);
+    AlwaysAssertExit (names.size() == 1  &&  names[0] == "test");
     // Delete the record.
     HDF5Record::remove (file, "test");
     // Read back and check it is empty.
