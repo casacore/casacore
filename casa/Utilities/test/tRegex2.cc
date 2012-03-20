@@ -70,6 +70,10 @@ String::size_type doMatch (const Regex& exp, const char* str, uInt pos)
 // First do some simple Regex things.
 void a() {
   //  Regex exp(Regex::fromPattern("a"));
+  Regex exp22(Regex::fromPattern("[CR]T[^ab]*"));
+  cout << "RTa " << String("RTa").matches(exp22) << endl;
+  cout << "RTb " << String("RTb").matches(exp22) << endl;
+  cout << "RTc " << String("RTc").matches(exp22) << endl;
   Regex exp(Regex::fromPattern("{a,b,c,d,e,f,g}"));
   cout << String("a").matches(exp) << endl;
   cout << String("b").matches(exp) << endl;
