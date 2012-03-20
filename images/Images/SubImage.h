@@ -205,6 +205,12 @@ public:
   // include in the cursor of an iterator.
   virtual uInt advisedMaxPixels() const;
 
+  // Get access to the attribute handler (of the parent image).
+  // If a handler keyword does not exist yet, it is created if
+  // <src>createHandler</src> is set.
+  // Otherwise the handler is empty and no groups can be created for it.
+  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+
   // Get or put a single element in the lattice.
   // <group>
   virtual T getAt (const IPosition& where) const;

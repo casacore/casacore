@@ -30,6 +30,7 @@
 
 //# Includes
 #include <images/Images/ImageInterface.h>
+#include <images/Images/ImageAttrHandlerHDF5.h>
 #include <lattices/Lattices/HDF5Lattice.h>
 
 //# Forward Declarations
@@ -247,6 +248,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // It can fail if, e.g., the underlying file is not writable.
     virtual Bool setImageInfo(const ImageInfo& info);
 
+    // Get access to the attribute handler.
+    // If a handler keyword does not exist yet, it is created if
+    // <src>createHandler</src> is set.
+    // Otherwise the handler is empty and no groups can be created for it.
+    virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+
     // Remove a region/mask belonging to the image from the given group
     // (which can be Any).
     // If a mask removed is the default mask, the image gets unmasked.
@@ -292,6 +299,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //# Data members.
     HDF5Lattice<T> map_p;
     LatticeRegion* regionPtr_p;
+    ImageAttrHandlerHDF5 itsAttrHandler;
 
     //# Make members of parent class known.
   public:

@@ -71,6 +71,7 @@ endforeach (file)
 
 
 set (tests
+tImageAttrHandler
 dImageHistograms
 dImageInterface
 dImageMoments

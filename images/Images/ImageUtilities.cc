@@ -46,6 +46,7 @@
 #include <images/Regions/ImageRegion.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/TempImage.h>
+#include <images/Images/ImageAttrHandler.h>
 #include <lattices/Lattices/LCRegion.h>
 #include <lattices/Lattices/LatticeIterator.h>
 #include <lattices/Lattices/SubLattice.h>
@@ -1116,5 +1117,23 @@ void ImageUtilities::getUnitAndDoppler(
     }
 }
 
+void ImageUtilities::copyAttributes (ImageAttrHandler& out,
+                                     ImageAttrHandler& in)
+{
+  Vector<String> groupNames = in.groupNames();
+  for (uInt i=0; i<groupNames.size(); ++i) {
+    ImageAttrGroup& inGroup  = in.openGroup (groupNames[i]);
+    ImageAttrGroup& outGroup = out.createGroup (groupNames[i]);
+    Vector<String> attrNames = inGroup.attrNames();
+    for (uInt j=0; j<attrNames.size(); ++j) {
+      outGroup.putData (attrNames[j],
+                        inGroup.getData (attrNames[j]),
+                        inGroup.getUnit (attrNames[j]),
+                        inGroup.getMeasInfo (attrNames[j]));
+    }
+    in.closeGroup (groupNames[i]);
+    out.closeGroup (groupNames[i]);
+  }
+}
 
 } //# NAMESPACE CASA - END

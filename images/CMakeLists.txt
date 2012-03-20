@@ -13,6 +13,12 @@ endif (APPLE)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_images
+Images/ImageAttrGroup.cc
+Images/ImageAttrGroupCasa.cc
+Images/ImageAttrGroupHDF5.cc
+Images/ImageAttrHandler.cc
+Images/ImageAttrHandlerCasa.cc
+Images/ImageAttrHandlerHDF5.cc
 Regions/WCPolygon.cc
 Regions/RegionManager.cc
 Regions/WCLELMask.cc

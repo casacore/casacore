@@ -188,6 +188,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     const CountedPtr<HDF5File>& file() const
       { return itsFile; }
 
+    // Return the current HDF5Group object.
+    const CountedPtr<HDF5Group>& group() const
+      { return itsGroup; }
+
     // Returns the name of this HDF5Lattice.
     const String& arrayName() const
       { return itsDataSet->getName(); }

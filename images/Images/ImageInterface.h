@@ -34,6 +34,7 @@
 #include <images/Regions/RegionHandler.h>
 #include <images/Images/MaskSpecifier.h>
 #include <images/Images/ImageInfo.h>
+#include <images/Images/ImageAttrHandler.h>
 #include <lattices/Lattices/MaskedLattice.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <tables/LogTables/LoggerHolder.h>
@@ -243,6 +244,12 @@ public:
   virtual Bool setImageInfo (const ImageInfo& info);
   // </group>
 
+  // Get access to the attribute handler.
+  // By default an empty handler is returned where no groups can be added to.
+  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler() const
+    { return const_cast<ImageInterface<T>*>(this)->attrHandler(False); }
+
   // Can the image handle region definition?
   Bool canDefineRegion() const
     { return regHandPtr_p->canDefineRegion(); }
@@ -381,6 +388,8 @@ private:
   // The region handling object.
   RegionHandler* regHandPtr_p;
 
+  // The attribute handling object.
+  ImageAttrHandler itsBaseAttrHandler;
 };
 
 

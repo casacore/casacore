@@ -174,6 +174,12 @@ String RebinImage<T>::name (Bool stripPath) const
 }
   
 template<class T>
+ImageAttrHandler& RebinImage<T>::attrHandler (Bool createHandler)
+{
+  return itsImagePtr->attrHandler (createHandler);
+}
+
+template<class T>
 Bool RebinImage<T>::doGetSlice (Array<T>& buffer,
     			        const Slicer& section)
 {

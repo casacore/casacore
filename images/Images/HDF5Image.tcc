@@ -67,7 +67,7 @@ HDF5Image<T>::HDF5Image (const TiledShape& shape,
 : ImageInterface<T>(RegionHandlerHDF5(getFile, this)),
   regionPtr_p      (0)
 {
-  map_p = HDF5Lattice<T>(shape, fileName, "map");
+  map_p = HDF5Lattice<T>(shape, fileName, "map", "/");
   attach_logtable();
   AlwaysAssert(setCoordinateInfo(coordinateInfo), AipsError);
 }
@@ -78,7 +78,7 @@ HDF5Image<T>::HDF5Image (const String& fileName,
 : ImageInterface<T>(RegionHandlerHDF5(getFile, this)),
   regionPtr_p      (0)
 {
-  map_p = HDF5Lattice<T>(fileName, "map");
+  map_p = HDF5Lattice<T>(fileName, "map", "/");
   attach_logtable();
   restoreAll();
   applyMaskSpecifier (spec);
@@ -360,19 +360,19 @@ template <class T>
 void HDF5Image<T>::restoreAll()
 {
   // Restore the coordinates.
-  Record rec = HDF5Record::readRecord (*map_p.file(), "coordinfo");
+  Record rec = HDF5Record::readRecord (*map_p.group(), "coordinfo");
   CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   setCoordsMember (*restoredCoords);
   delete restoredCoords;
   // Restore the image info.
-  rec = HDF5Record::readRecord (*map_p.file(), "imageinfo");
+  rec = HDF5Record::readRecord (*map_p.group(), "imageinfo");
   restoreImageInfo (rec);
   // Restore the units.
-  rec = HDF5Record::readRecord (*map_p.file(), "unitinfo");
+  rec = HDF5Record::readRecord (*map_p.group(), "unitinfo");
   restoreUnits (rec);
   // Restore the miscinfo.
-  rec = HDF5Record::readRecord (*map_p.file(), "miscinfo");
+  rec = HDF5Record::readRecord (*map_p.group(), "miscinfo");
   restoreMiscInfo (rec);
   // Restore the mask/region info.
   dynamic_cast<RegionHandlerHDF5*>(this->getRegionHandler())->restore();
@@ -385,7 +385,7 @@ Bool HDF5Image<T>::setCoordinateInfo (const CoordinateSystem& coords)
   if (ok) {
     Record rec;
     AlwaysAssert (coordinates().save(rec, "coords"), AipsError);
-    HDF5Record::writeRecord (*map_p.file(), "coordinfo", rec);
+    HDF5Record::writeRecord (*map_p.group(), "coordinfo", rec);
   }
   return ok;
 }
@@ -403,7 +403,7 @@ template<class T>
 Bool HDF5Image<T>::setMiscInfo (const RecordInterface& newInfo)
 {
   setMiscInfoMember (newInfo);
-  HDF5Record::writeRecord (*map_p.file(), "miscinfo", newInfo);
+  HDF5Record::writeRecord (*map_p.group(), "miscinfo", newInfo);
   return True;
 }
 
@@ -413,7 +413,7 @@ Bool HDF5Image<T>::setUnits(const Unit& newUnits)
   setUnitMember (newUnits);
   Record rec;
   rec.define("units", newUnits.getName());
-  HDF5Record::writeRecord (*map_p.file(), "unitinfo", rec);
+  HDF5Record::writeRecord (*map_p.group(), "unitinfo", rec);
   return True;
 }
 
@@ -466,7 +466,7 @@ Bool HDF5Image<T>::setImageInfo (const ImageInfo& info)
     Record rec;
     String error;
     if (imageInfo().toRecord(error, rec)) {
-      HDF5Record::writeRecord (*map_p.file(), "imageinfo", rec);
+      HDF5Record::writeRecord (*map_p.group(), "imageinfo", rec);
     } else {
       LogIO os;
       os << LogIO::SEVERE << "Error saving ImageInfo in record because " 
@@ -535,8 +535,16 @@ void HDF5Image<T>::flush()
   if (regionPtr_p != 0) {
     regionPtr_p->flush();
   }
+  itsAttrHandler.flush();
   // Save the mask/region info.
   dynamic_cast<RegionHandlerHDF5*>(this->getRegionHandler())->save();
+}
+
+template<class T>
+ImageAttrHandler& HDF5Image<T>::attrHandler (Bool createHandler)
+{
+  return itsAttrHandler.attachHid (*map_p.group(), createHandler,
+                                   map_p.isWritable());
 }
 
 } //# NAMESPACE CASA - END

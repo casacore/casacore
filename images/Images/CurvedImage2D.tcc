@@ -185,6 +185,12 @@ String CurvedImage2D<T>::name (Bool stripPath) const
 }
   
 template<class T>
+ImageAttrHandler& CurvedImage2D<T>::attrHandler (Bool createHandler)
+{
+  return itsImagePtr->attrHandler (createHandler);
+}
+
+template<class T>
 Bool CurvedImage2D<T>::doGetSlice (Array<T>& buffer,
 				   const Slicer& section)
 {

@@ -44,6 +44,7 @@
 #include <images/Images/HDF5Image.h>
 #include <images/Images/FITSImage.h>
 #include <images/Images/MIRIADImage.h>
+#include <images/Images/ImageUtilities.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
@@ -206,20 +207,27 @@ namespace casa { //# name space casa begins
 
   ImageProxy::ImageProxy (const ImageProxy& that)
     : itsLattice       (that.itsLattice),
-      itsImageFloat    (that.itsImageFloat),
-      itsImageDouble   (that.itsImageDouble),
-      itsImageComplex  (that.itsImageComplex),
-      itsImageDComplex (that.itsImageDComplex)
-  {}
+      itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    if (! itsLattice.null()) {
+      setup (itsLattice.operator->());
+    }
+  }
 
   ImageProxy& ImageProxy::operator= (const ImageProxy& that)
   {
     if (this != &that) {
       itsLattice       = that.itsLattice;
-      itsImageFloat    = that.itsImageFloat;
-      itsImageDouble   = that.itsImageDouble;
-      itsImageComplex  = that.itsImageComplex;
-      itsImageDComplex = that.itsImageDComplex;
+      itsImageFloat    = 0;
+      itsImageDouble   = 0;
+      itsImageComplex  = 0;
+      itsImageDComplex = 0;
+      if (! itsLattice.null()) {
+        setup (itsLattice.operator->());
+      }
     }
     return *this;
   }
@@ -452,13 +460,17 @@ namespace casa { //# name space casa begins
       throw AipsError ("Image has an invalid data type");
     }
     if (itsImageFloat) {
-      itsCoordSys = &itsImageFloat->coordinates();
+      itsCoordSys    = &itsImageFloat->coordinates();
+      itsAttrHandler = &itsImageFloat->attrHandler();
     } else if (itsImageDouble) {
-      itsCoordSys = &itsImageDouble->coordinates();
+      itsCoordSys    = &itsImageDouble->coordinates();
+      itsAttrHandler = &itsImageDouble->attrHandler();
     } else if (itsImageComplex) {
-      itsCoordSys = &itsImageComplex->coordinates();
+      itsCoordSys    = &itsImageComplex->coordinates();
+      itsAttrHandler = &itsImageComplex->attrHandler();
     } else if (itsImageDComplex) {
-      itsCoordSys = &itsImageDComplex->coordinates();
+      itsCoordSys    = &itsImageDComplex->coordinates();
+      itsAttrHandler = &itsImageDComplex->attrHandler();
     } else {
       throw AipsError ("The lattice does not appear to be an image");
     }
@@ -513,6 +525,65 @@ namespace casa { //# name space casa begins
     ostringstream ostr;
     ostr << itsLattice->dataType();
     return ostr.str();
+  }
+
+  String ImageProxy::imageType() const
+  {
+    // LatticeBase does not have a fileType function or so.
+    // So alas we have to use the one in the Image object.
+    if (itsImageFloat) {
+      return itsImageFloat->imageType();
+    } else if (itsImageDouble) {
+      return itsImageDouble->imageType();
+    } else if (itsImageComplex) {
+      return itsImageComplex->imageType();
+    } else if (itsImageDComplex) {
+      return itsImageDComplex->imageType();
+    }
+    throw AipsError ("ImageProxy does not contain an image object");
+  }
+
+  Vector<String> ImageProxy::attrGroupNames() const
+  {
+    return itsAttrHandler->groupNames();
+  }
+
+  void ImageProxy::createAttrGroup (const String& groupName)
+  {
+    itsAttrHandler->createGroup (groupName);
+  }
+
+  Vector<String> ImageProxy::attrNames (const String& groupName) const
+  {
+    return itsAttrHandler->openGroup(groupName).attrNames();
+  }
+
+  ValueHolder ImageProxy::getAttr (const String& groupName,
+                                   const String& attrName) const
+  {
+    return itsAttrHandler->openGroup(groupName).getData (attrName);
+  }
+
+  Vector<String> ImageProxy::getAttrUnit(const String& groupName,
+                                         const String& attrName) const
+  {
+    return itsAttrHandler->openGroup(groupName).getUnit (attrName);
+  }
+
+  Vector<String> ImageProxy::getAttrMeas(const String& groupName,
+                                         const String& attrName) const
+  {
+    return itsAttrHandler->openGroup(groupName).getMeasInfo (attrName);
+  }
+
+  void ImageProxy::putAttr (const String& groupName,
+                            const String& attrName,
+                            const ValueHolder& value,
+                            const Vector<String>& units,
+                            const Vector<String>& measInfo)
+  {
+    itsAttrHandler->openGroup(groupName).putData (attrName, value,
+                                                  units, measInfo);
   }
 
   ValueHolder ImageProxy::getData (const IPosition& blc,
@@ -921,11 +992,8 @@ namespace casa { //# name space casa begins
     } else {
       newImage = new PagedImage<T> (tiledShape, image.coordinates(), fileName);
     }
-    newImage->copyData     (image);
-    newImage->setMiscInfo  (image.miscInfo());
-    newImage->setImageInfo (image.imageInfo());
-    newImage->setUnits     (image.units());
-    newImage->appendLog    (image.logger());
+    newImage->copyData (image);
+    ImageUtilities::copyMiscellaneous (*newImage, image);
     if (copyMask  &&  image.isMasked()) {
       // Generate mask name if not given
       String maskName = newMaskName;

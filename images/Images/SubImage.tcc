@@ -384,6 +384,12 @@ IPosition SubImage<T>::doNiceCursorShape (uInt maxPixels) const
 }
 
 template<class T>
+ImageAttrHandler& SubImage<T>::attrHandler (Bool createHandler)
+{
+  return itsImagePtr->attrHandler (createHandler);
+}
+
+template<class T>
 T SubImage<T>::getAt (const IPosition& where) const
 {
   return itsSubLatPtr->getAt (where);
