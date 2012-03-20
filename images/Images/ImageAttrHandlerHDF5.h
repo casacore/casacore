@@ -33,7 +33,7 @@
 #include <images/Images/ImageAttrHandler.h>
 #include <images/Images/ImageAttrGroupHDF5.h>
 #include <casa/HDF5/HDF5Group.h>
-#include <casa/Utilities/CountedPtr.h>>
+#include <casa/Utilities/CountedPtr.h>
 #include <map>
 
 namespace casa {
