@@ -13,12 +13,6 @@ endif (APPLE)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_images
-Images/ImageAttrGroup.cc
-Images/ImageAttrGroupCasa.cc
-Images/ImageAttrGroupHDF5.cc
-Images/ImageAttrHandler.cc
-Images/ImageAttrHandlerCasa.cc
-Images/ImageAttrHandlerHDF5.cc
 Regions/WCPolygon.cc
 Regions/RegionManager.cc
 Regions/WCLELMask.cc
@@ -50,6 +44,12 @@ Images/ImageAnalysis.cc
 Images/FITSImage.cc
 Images/FITSImgParser.cc
 Images/PagedImage2.cc
+Images/ImageAttrGroup.cc
+Images/ImageAttrGroupCasa.cc
+Images/ImageAttrGroupHDF5.cc
+Images/ImageAttrHandler.cc
+Images/ImageAttrHandlerCasa.cc
+Images/ImageAttrHandlerHDF5.cc
 Images/ImagePolProxy.cc
 Images/ImageProfileFit.cc
 Images/ImageExprParse.cc
@@ -105,6 +105,12 @@ Images/HDF5Image.tcc
 Images/Image2DConvolver.h
 Images/Image2DConvolver.tcc
 Images/ImageAnalysis.h
+Images/ImageAttrGroup.h
+Images/ImageAttrGroupCasa.h
+Images/ImageAttrGroupHDF5.h
+Images/ImageAttrHandler.h
+Images/ImageAttrHandlerCasa.h
+Images/ImageAttrHandlerHDF5.h
 Images/ImageConcat.h
 Images/ImageConcat.tcc
 Images/ImageConvolver.h
