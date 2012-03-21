@@ -246,9 +246,11 @@ public:
 
   // Get access to the attribute handler.
   // By default an empty handler is returned where no groups can be added to.
+  // <group>
   virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
-  virtual ImageAttrHandler& attrHandler() const
+  ImageAttrHandler& roAttrHandler() const
     { return const_cast<ImageInterface<T>*>(this)->attrHandler(False); }
+  // </group>
 
   // Can the image handle region definition?
   Bool canDefineRegion() const
