@@ -60,7 +60,7 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
     out.setImageInfo(in.imageInfo());
     out.setUnits(in.units());
     out.appendLog(in.logger());
-    copyAttributes (out.attrHandler(True), in.attrHandler());
+    copyAttributes (out.attrHandler(True), in.roAttrHandler());
 }
 
 

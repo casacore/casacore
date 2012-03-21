@@ -71,7 +71,6 @@ endforeach (file)
 
 
 set (tests
-tImageAttrHandler
 dImageHistograms
 dImageInterface
 dImageMoments
@@ -87,6 +86,7 @@ tFITSImgParser
 tFITSExtImage
 tFITSExtImageII
 tHDF5Image
+tImageAttrHandler
 tImageCollapser
 tImageConcat
 tImageConvolver

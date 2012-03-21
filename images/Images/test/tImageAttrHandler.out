@@ -73,6 +73,25 @@ attr2: Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
  2, 5, 8, 11]
   [rad]  [direction, J2000]
 
+testSub tImageAttrHandler_tmp.img1 to tImageAttrHandler_tmp.img1_sub
+>>> to Casa<<<
+
+image = tImageAttrHandler_tmp.img1_sub
+Attribute group testGroup1  nvalues=1
+attr1: [aa]  []  []
+attr2: Axis Lengths: [4, 1]  (NB: Matrix in Row/Column order)
+[0
+ 1
+ 2
+ 3]
+  []  []
+Attribute group testGroup2  nvalues=4
+attr2: Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[0, 3, 6, 9
+ 1, 4, 7, 10
+ 2, 5, 8, 11]
+  [rad]  [direction, J2000]
+
 >>> Test HDF5 image <<<
 testCreate ...
 GOT HANDLER
@@ -132,6 +151,25 @@ testCopy tImageAttrHandler_tmp.img2 to tImageAttrHandler_tmp.img2_cp2
 >>> to HDF5<<<
 
 image = tImageAttrHandler_tmp.img2_cp2
+Attribute group testGroup1  nvalues=1
+attr1: [aa]  []  []
+attr2: Axis Lengths: [4, 1]  (NB: Matrix in Row/Column order)
+[0
+ 1
+ 2
+ 3]
+  []  []
+Attribute group testGroup2  nvalues=4
+attr2: Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[0, 3, 6, 9
+ 1, 4, 7, 10
+ 2, 5, 8, 11]
+  [rad]  [direction, J2000]
+
+testSub tImageAttrHandler_tmp.img2 to tImageAttrHandler_tmp.img2_sub
+>>> to Casa<<<
+
+image = tImageAttrHandler_tmp.img2_sub
 Attribute group testGroup1  nvalues=1
 attr1: [aa]  []  []
 attr2: Axis Lengths: [4, 1]  (NB: Matrix in Row/Column order)

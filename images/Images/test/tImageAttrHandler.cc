@@ -29,6 +29,7 @@
 #include <images/Images/HDF5Image.h>
 #include <images/Images/ImageOpener.h>
 #include <images/Images/ImageUtilities.h>
+#include <images/Images/SubImage.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/ArrayMath.h>
@@ -109,7 +110,7 @@ void testUpdate (const String& imageName)
   delete image;
 }
 
-void testCopy (const String& nameIn, const String& nameOut, bool hdf5)
+void testCopy (const String& nameIn, const String& nameOut, Bool hdf5)
 {
   cout << endl << "testCopy " << nameIn << " to " << nameOut << endl;
   ImageInterface<Float>* image = doOpen(nameIn);
@@ -125,6 +126,28 @@ void testCopy (const String& nameIn, const String& nameOut, bool hdf5)
   }
   newImage->copyData (*image);
   ImageUtilities::copyMiscellaneous (*newImage, *image);
+  delete image;
+  delete newImage;
+}
+
+void testSub (const String& nameIn, const String& nameOut, Bool hdf5)
+{
+  cout << endl << "testSub " << nameIn << " to " << nameOut << endl;
+  ImageInterface<Float>* image = doOpen(nameIn);
+  IPosition shp = image->shape();
+  SubImage<Float> subimg (*image, Slicer(IPosition(shp.size(), 0), (shp+1)/2));
+  ImageInterface<Float>* newImage = 0;
+  if (hdf5) {
+    cout << ">>> to HDF5<<<" << endl;
+    newImage = new HDF5Image<Float>  (subimg.shape(), subimg.coordinates(),
+                                      nameOut);
+  } else {
+    cout << ">>> to Casa<<<" << endl;
+    newImage = new PagedImage<Float> (subimg.shape(), subimg.coordinates(),
+                                      nameOut);
+  }
+  newImage->copyData (subimg);
+  ImageUtilities::copyMiscellaneous (*newImage, subimg);
   delete image;
   delete newImage;
 }
@@ -156,10 +179,12 @@ void testAll (const String& imageName, Bool hasHDF5)
   showAll    (imageName);
   testUpdate (imageName);
   showAll    (imageName);
-  testCopy   (imageName, imageName + "_cp1", false);
+  testCopy   (imageName, imageName + "_cp1", False);
   showAll    (imageName + "_cp1");
   testCopy   (imageName, imageName + "_cp2", hasHDF5);
   showAll    (imageName + "_cp2");
+  testSub    (imageName, imageName + "_sub", False);
+  showAll    (imageName + "_sub");
 }
 
 int main (int argc, char* argv[])
@@ -185,6 +210,8 @@ int main (int argc, char* argv[])
       showAll (argv[1]);
       testCopy (argv[1], argv[1] + String("_cp"), True);
       showAll (argv[1] + String("_cp"));
+      testSub (argv[1], argv[1] + String("_sub"), False);
+      showAll (argv[1] + String("_sub"));
     }
   } catch (std::exception& x) {
     cout << "Uncaught exception: " << x.what() << endl;
