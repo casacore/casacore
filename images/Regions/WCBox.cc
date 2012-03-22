@@ -746,7 +746,7 @@ void WCBox::setChanExt (const Double chanStart, const Double chanEnd) {
    //of couse, can change to use freq 
    Double a;
    Double b;
-   if (wSp >= 0 & wSp < nAxes) {
+   if (wSp >= 0 && wSp < nAxes) {
       if (spCoord.toWorld(a, chanStart) && 
           spCoord.toWorld(b, chanEnd)) {
          itsBlc(wSp).setUnit("s-1");
@@ -772,7 +772,7 @@ Bool WCBox::getChanExt (Double& chanStart, Double& chanEnd) {
 
    const Int nAxes = itsPixelAxes.nelements();
 
-   if (wSp >= 0 & wSp < nAxes) {
+   if (wSp >= 0 && wSp < nAxes) {
         //cout << "blc=" << itsBlc(wSp).getValue() 
         //     << " " << itsBlc(wSp).getUnit() << endl; 
         //cout << "trc=" << itsTrc(wSp).getValue()
