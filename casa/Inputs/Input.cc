@@ -48,8 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 
 Input::Input (Int createEnv) 
-: version_id("1999/07/30 BEG/TPPR/PJT/GvD"),
-  is_closed(False),
+: is_closed(False),
   do_prompt(False),
   debug_level(0),
   p_count(0)
