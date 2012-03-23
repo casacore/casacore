@@ -88,6 +88,10 @@ Functionals/CompoundFunction.h
 Functionals/CompoundFunction.tcc
 Functionals/CompoundParam.h
 Functionals/CompoundParam.tcc
+Functionals/ConstantND.h
+Functionals/ConstantND.tcc
+Functionals/ConstantNDParam.h
+Functionals/ConstantNDParam.tcc
 Functionals/DiracDFunction.h
 Functionals/DiracDFunction.tcc
 Functionals/DiracDParam.h
@@ -150,6 +154,11 @@ Functionals/KaiserBFunction.h
 Functionals/KaiserBFunction.tcc
 Functionals/KaiserBParam.h
 Functionals/KaiserBParam.tcc
+Functionals/Lorentzian1D.h
+Functionals/Lorentzian1D.tcc
+Functionals/Lorentzian1D2.tcc
+Functionals/Lorentzian1DParam.h
+Functionals/Lorentzian1DParam.tcc
 Functionals/MarshButterworthBandpass.h
 Functionals/MarshButterworthBandpass.tcc
 Functionals/MarshallableChebyshev.h
