@@ -304,12 +304,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void ConcatTable::initialize()
   {
     // Check if all tables have the same description.
-    TableDesc actualDesc (baseTabPtr_p[0]->actualTableDesc(),
-			  TableDesc::Scratch);
+    vector<CountedPtr<TableDesc> > actualDesc;
+    actualDesc.reserve (baseTabPtr_p.nelements());
     Bool equalDataTypes;
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
-      if (baseTabPtr_p[i]->actualTableDesc().columnDescSet().isEqual
-	  (actualDesc.columnDescSet(), equalDataTypes)) {
+      actualDesc.push_back (new TableDesc (baseTabPtr_p[i]->actualTableDesc()));
+      if (actualDesc[i]->columnDescSet().isEqual
+	  (actualDesc[0]->columnDescSet(), equalDataTypes)) {
 	if (equalDataTypes) {
 	  continue;
 	}
@@ -318,13 +319,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     // For fixed shaped arrays check if all tables have the same shape.
     // If not, clear dimensionality and options.
-    for (uInt i=0; i<actualDesc.ncolumn(); ++i) {
-      ColumnDesc& colDesc = actualDesc.rwColumnDesc(i);
+    for (uInt i=0; i<actualDesc[0]->ncolumn(); ++i) {
+      ColumnDesc& colDesc = actualDesc[0]->rwColumnDesc(i);
       if (colDesc.isArray()  &&
           (colDesc.options() & ColumnDesc::FixedShape) != 0) {
         Bool sameShape = true;
         for (uInt j=1; j<baseTabPtr_p.nelements(); ++j) {
-          const ColumnDesc& cd = baseTabPtr_p[j]->actualTableDesc()[i];
+          const ColumnDesc& cd = actualDesc[j]->columnDesc(i);
           if ((cd.options() & ColumnDesc::FixedShape) == 0  ||
               ! colDesc.shape().isEqual (cd.shape())) {
             sameShape = False;
@@ -338,7 +339,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
     }
     //# Use the table description.
-    tdescPtr_p = new TableDesc (actualDesc, TableDesc::Scratch);
+    tdescPtr_p = new TableDesc (*(actualDesc[0]), TableDesc::Scratch);
     keywordSet_p = baseTabPtr_p[0]->keywordSet();
     // Create the concatColumns.
     makeConcatCol();
