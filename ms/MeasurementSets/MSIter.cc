@@ -233,7 +233,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	  // check if #rows in input table is the same as the base table
 	  // i.e., this is the entire table, if so, use sorted version instead
 	  String anttab = bms_p[i].antenna().tableName(); // see comments below
-	  Table base (anttab.before("/ANTENNA"));
+	  Table base (anttab.erase(anttab.length()-8));
 	  if (base.nrow()==bms_p[i].nrow()) {
 	    useSorted = True;
 	  } else {
@@ -255,7 +255,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 	// There is no table function to get this, so we use the name of
 	// the antenna subtable to get at it.
 	String anttab = bms_p[i].antenna().tableName();
-	sorted.rename(anttab.before("ANTENNA")+"SORTED_TABLE",Table::New); 
+	sorted.rename(anttab.erase(anttab.length()-7)+"SORTED_TABLE",Table::New); 
 	sorted.flush();
 	bms_p[i].rwKeywordSet().defineTable("SORTED_TABLE",sorted);
 	bms_p[i].rwKeywordSet().define("SORT_COLUMNS", Vector<String>(columns));
@@ -330,10 +330,11 @@ void MSIter::setInterval(Double timeInterval)
 void MSIter::origin()
 {
   curMS_p=0;
+  checkFeed_p=True;
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p=newArray_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
-    newDataDescId_p=more_p=checkFeed_p=True;
+    newDataDescId_p=more_p=True;
 }
 
 MSIter & MSIter::operator++(int)
@@ -356,6 +357,7 @@ void MSIter::advance()
     newDataDescId_p=newField_p=checkFeed_p=False;
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
+
   if (tabIter_p[curMS_p]->pastEnd()) {
     if (++curMS_p >= nMS_p) {
       curMS_p--;
@@ -368,13 +370,15 @@ void MSIter::advance()
 void MSIter::setState()
 {
   setMSInfo();
-  checkFeed_p = newMS_p;
+  if(newMS_p)
+    checkFeed_p=True;
   curTable_p=tabIter_p[curMS_p]->table();
   colArray_p.attach(curTable_p,MS::columnName(MS::ARRAY_ID));
   colDataDesc_p.attach(curTable_p,MS::columnName(MS::DATA_DESC_ID));
   colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
   // msc_p is already defined here (it is set in setMSInfo)
-  msc_p->antenna().mount().getColumn(antennaMounts_p,True);
+  if(newMS_p)
+    msc_p->antenna().mount().getColumn(antennaMounts_p,True);
   setDataDescInfo();
   setArrayInfo();
   setFeedInfo();
@@ -522,7 +526,7 @@ void MSIter::setFeedInfo()
     timeDepFeed_p=True;
     // if all interval values are <= zero or very large, 
     // there is no time dependence
-    if (allLE(interval,0.0)||allGE(interval,1.e10)) timeDepFeed_p=False;
+    if (allLE(interval,0.0)||allGE(interval,1.e9)) timeDepFeed_p=False;
     else { 
       // check if any antennas appear more than once
       // check for each spectral window and feed in turn..
@@ -567,6 +571,7 @@ void MSIter::setFeedInfo()
     if (maxNumReceptors>2)
         throw AipsError("Can't handle more than 2 receptors");    
     receptorAngles_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
+    receptorAnglesFeed0_p.resize(maxNumReceptors,maxAntId+1);
     beamOffsets_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
     allBeamOffsetsZero_p=True; 
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
@@ -606,7 +611,9 @@ void MSIter::setFeedInfo()
 
     // a bit ugly construction
     // to preserve the old interface (feed=0 only)
+    receptorAnglesFeed0_p.resize();
     receptorAnglesFeed0_p=receptorAngles_p.xyPlane(0); 
+    CJonesFeed0_p.resize();
     CJonesFeed0_p=CJones_p.column(0);
     //
   }
