@@ -202,7 +202,7 @@ else()
                 ${HDF5_${LANGUAGE}_INCLUDE_FLAGS}
                 ENV
                     HDF5_ROOT
-            PATHS 
+            HINTS 
                 $ENV{HOME}/.local/include
             PATH_SUFFIXES
                 include
