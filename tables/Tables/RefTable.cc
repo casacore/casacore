@@ -467,6 +467,7 @@ void RefTable::addRefCol (const ColumnDesc& columnDesc)
     // BaseColumnDesc which is disastrous for the temporary columnDesc.
     colMap_p.define (cd.name(), cd.makeRefColumn
                      (this, baseTabPtr_p->getColumn(nameMap_p(cd.name()))));
+    changed_p = True;
 }
 void RefTable::addRefCol (const TableDesc& tdesc)
 {
