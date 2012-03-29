@@ -47,7 +47,7 @@ C
       double precision sumwt(npol, nchan)
       integer irow
       integer support, sampling
-      integer chanmap(nvischan), polmap(nvischan)
+      integer chanmap(nvischan), polmap(nvispol)
       integer dowt
 
       complex nvalue
@@ -215,5 +215,128 @@ C
       integer nx, ny, loc(2), support
       ogridsd=(loc(1)-support.ge.1).and.(loc(1)+support.le.nx).and.
      $     (loc(2)-support.ge.1).and.(loc(2)+support.le.ny)
+      return
+      end
+C
+C Grid a number of visibility records: single dish gridding
+C but with complex images including additional process for
+C min/max clipping 
+C
+      subroutine ggridsd2 (xy, values, nvispol, nvischan,
+     $   dowt, flag, rflag, weight, nrow, irow,
+     $   grid, wgrid, 
+     $   npoints, gmin, wmin, cmin, gmax, wmax, cmax,
+     $   nx, ny, npol, nchan, 
+     $   support, sampling, convFunc, chanmap, polmap, sumwt)
+
+      implicit none
+      integer nx, ny, npol, nchan, nvispol, nvischan, nrow
+      complex values(nvispol, nvischan, nrow)
+      complex grid(nx, ny, npol, nchan)
+      real wgrid(nx, ny, npol, nchan)
+      integer npoints(nx, ny, npol)
+      complex gmin(nx, ny, npol, nchan)
+      complex gmax(nx, ny, npol, nchan)
+      real wmin(nx, ny, npol, nchan)
+      real wmax(nx, ny, npol, nchan)
+      real cmax(nx, ny, npol, nchan)
+      real cmin(nx, ny, npol, nchan)
+      double precision xy(2,nrow)
+      integer flag(nvispol, nvischan, nrow)
+      integer rflag(nrow)
+      real weight(nvischan, nrow)
+      double precision sumwt(npol, nchan)
+      integer irow
+      integer support, sampling
+      integer chanmap(nvischan), polmap(nvispol)
+      integer dowt
+
+      real convFunc(*)
+      real norm
+      real wt, wtx, wty
+
+      logical ogridsd
+
+      real pos(2), rloc(2)
+      integer loc(2), off(2)
+      integer rbeg, rend, irad
+      integer ix, iy, ipol, ichan
+      integer apol, achan
+      integer ax, ay
+
+      if(irow.ge.0) then
+         rbeg=irow+1
+         rend=irow+1
+      else 
+         rbeg=1
+         rend=nrow
+      end if
+
+      do irow=rbeg, rend
+         if(rflag(irow).eq.0) then
+         call sgridsd(xy(1,irow), sampling, pos, loc, off)
+         if (ogridsd(nx, ny, loc, support)) then
+            do ichan=1, nvischan
+               achan=chanmap(ichan)+1
+               if((achan.ge.1).and.(achan.le.nchan).and.
+     $              (weight(ichan,irow).gt.0.0)) then
+                  do ipol=1, nvispol
+                     apol=polmap(ipol)+1
+                     if((flag(ipol,ichan,irow).ne.1).and.
+     $                    (apol.ge.1).and.(apol.le.npol)) then
+                        norm=0.0
+                        do iy=-support,support
+                           ay=loc(2)+iy
+                           rloc(2)=sampling*iy+off(2)
+                           do ix=-support,support
+                              ax=loc(1)+ix
+                              rloc(1)=sampling*ix+off(1)
+                              irad=sqrt(rloc(1)**2+rloc(2)**2)+1
+                              wt=convFunc(irad)
+                              grid(ax,ay,apol,achan)=
+     $                             grid(ax,ay,apol,achan)+
+     $                             weight(ichan,irow)*wt*
+     $                             conjg(values(ipol,ichan,irow))
+                              wgrid(ax,ay,apol,achan)=
+     $                          wgrid(ax,ay,apol,achan)+
+     $                          weight(ichan,irow)*wt
+                              norm=norm+wt
+C-------------------------------------------------------------------
+C update variables for clipping
+C-------------------------------------------------------------------
+                              if (wt .gt. 0.0) then
+                                 if (ichan .eq. 1) then
+                                    npoints(ax,ay,apol)=
+     $                                   npoints(ax,ay,apol)+1
+                                 end if
+                                 if (real(values(ipol,ichan,irow)) .lt. 
+     $                                real(gmin(ax,ay,apol,achan))) then
+                                    gmin(ax,ay,apol,achan)=
+     $                                   conjg(values(ipol,ichan,irow))
+                                    wmin(ax,ay,apol,achan)=
+     $                                   weight(ichan,irow)
+                                    cmin(ax,ay,apol,achan)=wt
+                                 end if
+                                 if (real(values(ipol,ichan,irow)) .gt. 
+     $                                real(gmax(ax,ay,apol,achan))) then
+                                    gmax(ax,ay,apol,achan)=
+     $                                   conjg(values(ipol,ichan,irow))
+                                    wmax(ax,ay,apol,achan)=
+     $                                   weight(ichan,irow)
+                                    cmax(ax,ay,apol,achan)=wt
+                                 end if
+                              end if
+C-------------------------------------------------------------------
+                           end do
+                        end do
+                        sumwt(apol,achan)=sumwt(apol,achan)+
+     $                       weight(ichan,irow)*norm
+                     end if
+                  end do
+               end if
+            end do
+         end if
+         end if
+      end do
       return
       end
