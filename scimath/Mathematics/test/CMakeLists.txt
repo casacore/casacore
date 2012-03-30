@@ -7,6 +7,7 @@ tConvolver
 tFFTServer
 tFFTServer2
 tHistAcc
+tInterpolateArray1D
 tMathFunc
 tMatrixMathLA
 tMedianSlider
