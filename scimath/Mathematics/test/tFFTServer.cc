@@ -1783,7 +1783,7 @@ public:
 	  for(uInt j=0; j<10; j++){
 	    DComplex diff = inVal(IPosition(2,i,j))-expect(IPosition(2,i,j));
 	    cout << i << " " << j << " " << inVal(IPosition(2,i,j)) << " " << expect(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((abs(diff.real())<1E-5) && (abs(diff.imag())<1E-5), AipsError);
+	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	  }
 	}
       }
@@ -1818,7 +1818,7 @@ public:
 	  for(uInt j=0; j<10; j++){
 	    DComplex diff = b(IPosition(2,j,i))-expect(IPosition(2,i,j));
 	    cout << i << " " << j << " " << b(IPosition(2,j,i)) << " " << expect(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((abs(diff.real())<1E-5) && (abs(diff.imag())<1E-5), AipsError);
+	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	  }
 	}
       }
@@ -1842,7 +1842,7 @@ public:
 	    DComplex diff = outVal(IPosition(2,i,j))-expect(IPosition(2,i,j));
 	    cout << i << " " << j << " " << outVal(IPosition(2,i,j)) << " " << expect(IPosition(2,i,j)) << endl;
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflagsb(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((abs(diff.real())<1E-5) && (abs(diff.imag())<1E-5), AipsError);
+	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflagsb(IPosition(2,i,j)), AipsError);
 	  }
 	}
@@ -1861,7 +1861,7 @@ public:
 	    DComplex diff = outVal(IPosition(2,i,j))-expectb(IPosition(2,i,j));
 	    cout << i << " " << j << " " << outVal(IPosition(2,i,j)) << " " << expectb(IPosition(2,i,j)) << endl;
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflags(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((abs(diff.real())<1E-5) && (abs(diff.imag())<1E-5), AipsError);
+	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflags(IPosition(2,i,j)), AipsError);
 	  }
 	}
@@ -1903,7 +1903,7 @@ public:
 	    DComplex diff = outVal(IPosition(2,i,j))-expectd(IPosition(2,i,j));
 	    cout << i << " " << j << " " << outVal(IPosition(2,i,j)) << " " << expectd(IPosition(2,i,j)) << endl;
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflagsc(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<1E-5), AipsError);
+	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflagsc(IPosition(2,i,j)), AipsError);
 	  }
 	}
@@ -2007,7 +2007,7 @@ public:
 	    Double diff = routVal(IPosition(2,i,j))-rexpect(IPosition(2,i,j));
 	    cout << i << " " << j << " " << routVal(IPosition(2,i,j)) << " " << rexpect(IPosition(2,i,j)) << endl;
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflagsb(IPosition(2,i,j)) << endl;
-	    AlwaysAssert((fabs(diff)<1E-5), AipsError);
+	    AlwaysAssert((fabs(diff)<2E-5), AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflagsb(IPosition(2,i,j)), AipsError);
 	  }
 	}
@@ -2026,7 +2026,7 @@ public:
 	    Double diff = routVal(IPosition(2,i,j))-rexpectb(IPosition(2,i,j));
 	    cout << i << " " << j << " " << routVal(IPosition(2,i,j)) << " " << rexpectb(IPosition(2,i,j)) << endl;
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflags(IPosition(2,i,j)) << endl;
-	    AlwaysAssert(fabs(diff)<1E-5, AipsError);
+	    AlwaysAssert(fabs(diff)<2E-5, AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflags(IPosition(2,i,j)), AipsError);
 	  }
 	}

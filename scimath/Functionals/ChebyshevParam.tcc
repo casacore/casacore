@@ -60,7 +60,7 @@ ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 				  const T &defval) :
   Function1D<T>(1), def_p(defval), mode_p(mode) {
   param_p[0] = 1;
-  setInterval(min, max);
+  this->setInterval(min, max);
 }
 
 template <class T>
