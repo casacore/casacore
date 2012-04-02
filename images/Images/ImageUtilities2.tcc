@@ -43,7 +43,7 @@
 #include <lattices/Lattices/TempLattice.h>
 #include <lattices/Lattices/TiledLineStepper.h>
 #include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <components/SpectralComponents/SpectralElement.h>
+#include <components/SpectralComponents/PolynomialSpectralElement.h>
 #include <casa/System/ProgressMeter.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Quanta/Unit.h>
@@ -237,7 +237,7 @@ Vector<ImageFit1D<T> > ImageUtilities::fitProfiles (
 		throw AipsError(errMsg);
 	}
 
-	SpectralElement polyEl(poly);
+	PolynomialSpectralElement polyEl(poly);
 
 	IPosition inTileShape = inImage.niceCursorShape();
 	TiledLineStepper stepper (inImage.shape(), inTileShape, axis);
