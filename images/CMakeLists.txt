@@ -194,8 +194,3 @@ if (BUILD_TESTING)
     add_subdirectory (Wnbt/test)
     add_subdirectory (Regions/test)
 endif (BUILD_TESTING)
-
-The MSSS HBA observations should only use the inner 24 tiles of the remote stations, while the core stations should be used in dual mode. Thus need a new mode HBA_DUAL_INNER needs to be supported.
-At the same time future modes HBA_JOINED_INNER, HBA_ZERO_INNER, and HBA_ONE_INNER could be added as well.
-
-Add support for HBA_DUAL_INNER and other inner modes
