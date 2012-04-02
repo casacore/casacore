@@ -31,6 +31,12 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
 #include <casa/Utilities/Assert.h>
+#include <components/SpectralComponents/CompiledSpectralElement.h>
+#include <components/SpectralComponents/GaussianSpectralElement.h>
+#include <components/SpectralComponents/PolynomialSpectralElement.h>
+
+
+#include <memory>
 
 namespace casa { //#Begin namespace casa
 
@@ -74,9 +80,12 @@ const SpectralList& SpectralEstimate::estimate(const Vector<MT>& x,
   estimate(y);
   // Convert
   for (uInt i=0; i<slist_p.nelements(); i++) {
-     const SpectralElement& elIn = slist_p[i];
-     SpectralElement elOut = convertElement (x, elIn);
-     slist_p.set(elOut, i);
+	  if (slist_p[i]->getType() != SpectralElement::GAUSSIAN) {
+		  throw AipsError("Non-gaussian spectral types cannot be estimated");
+	  }
+	  const GaussianSpectralElement elIn = *dynamic_cast<const GaussianSpectralElement *>(slist_p[i]);
+	  GaussianSpectralElement elOut = convertElement (x, elIn);
+	  slist_p.set(elOut, i);
   }
   return slist_p;
 }
@@ -161,8 +170,7 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
   Int ichi(windowLow_p);
   // Peak counter
   Int nmax = 0;
-  SpectralElement tspel;
-
+  GaussianSpectralElement tspel;
   while (++i < windowEnd_p) {
     if (deriv_p[i] > 0.0) {
       // At edge?
@@ -185,7 +193,6 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
       Double m0(0);
       Double m1(0);
       Double m2(0);
-      
       ichi = i;
       // Do Schwarz' calculation
       Double b = deriv_p[iclo];
@@ -201,7 +208,6 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
       Double det = m2*m0 - m1*m1;
       if (det > 0.0 && fabs(m0m) >  FLT_EPSILON) {
 	Double   xm = m1/m0;
-	
 	Double sg = 1.69*sqrt(det) / fabs(m0);
 	// Width above critical?
 	if (sg > sigmin_p) {
@@ -236,10 +242,10 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
 }
 
 template <class MT>
-SpectralElement SpectralEstimate::convertElement (const Vector<MT>& x, 
-                                                  const SpectralElement& el) const
+GaussianSpectralElement SpectralEstimate::convertElement (const Vector<MT>& x,
+                                                  const GaussianSpectralElement& el) const
 {
-   SpectralElement elOut(el);
+	GaussianSpectralElement elOut = el;
    const Int& idxMax = x.nelements()-1;
 
 // Get current (pars are amp, center, width as the SpectralElement
@@ -281,11 +287,8 @@ SpectralElement SpectralEstimate::convertElement (const Vector<MT>& x,
    par[2] = abs(par[2] * incX);
    err[2] = abs(err[2] * incX);
 
-// Set new
-
    elOut.set(par);
    elOut.setError(err);
-//
    return elOut;
 }
 

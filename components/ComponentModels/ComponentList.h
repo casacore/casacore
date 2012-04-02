@@ -207,6 +207,13 @@ public:
   // not be updated with new component.  
   void add(SkyComponent component);
 
+  // Add a SkyComponents in a ComponentList to the end of this ComponentList. The list length is
+  // increased by the number of components in the added list. By default the newly added
+  // components are not selected.  Note that it is possible to add a component list
+  // to a list that was opened read-only; however, the table on disk will
+  // not be updated with new components.
+  void addList(const ComponentList& list);
+
   // Remove the specified SkyComponent(s) from the ComponentList. After
   // removing a component all the components with an indices greater than this
   // one will be reduced by one. For example in a five element list removing

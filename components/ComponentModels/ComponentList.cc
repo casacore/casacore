@@ -222,6 +222,13 @@ void ComponentList::add(SkyComponent component) {
   itsNelements++;
 }
 
+void ComponentList::addList(const ComponentList& list) {
+	for (uInt i=0; i<list.nelements(); i++) {
+		add(list.component(i));
+	}
+}
+
+
 void ComponentList::remove(const uInt& index) {
 //  AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);

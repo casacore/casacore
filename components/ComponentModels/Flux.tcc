@@ -55,7 +55,6 @@ FluxRep()
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = 1;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -66,7 +65,6 @@ FluxRep(T i)
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = i;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -80,7 +78,6 @@ FluxRep(T i, T q, T u, T v)
   itsVal(1) = q;
   itsVal(2) = u;
   itsVal(3) = v;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -98,7 +95,6 @@ FluxRep(typename NumericTraits<T>::ConjugateType xx,
   itsVal(1) = xy;
   itsVal(2) = yx;
   itsVal(3) = yy;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -108,11 +104,9 @@ FluxRep(const Vector<T>& flux)
    itsUnit("Jy"),
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
-  DebugAssert(flux.nelements() == 4, AipsError);
   for (uInt i = 0 ; i < 4; i++) {
     itsVal(i) = flux(i);
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -123,7 +117,6 @@ FluxRep(const Vector<typename NumericTraits<T>::ConjugateType>& flux,
    itsUnit("Jy"),
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -134,9 +127,7 @@ FluxRep(const Quantum<Vector<T> >& flux)
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
   const Vector<T>& fluxVal(flux.getValue());
-  DebugAssert(fluxVal.nelements() == 4, AipsError);
   convertArray(itsVal, fluxVal);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -147,7 +138,6 @@ FluxRep(const Quantum<Vector<typename NumericTraits<T>::ConjugateType> >& flux,
    itsUnit(flux.getFullUnit()),
    itsErr(4, typename NumericTraits<T>::ConjugateType(0,0))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
@@ -157,12 +147,10 @@ FluxRep(const FluxRep<T>& other)
    itsUnit(other.itsUnit),
    itsErr(other.itsErr)
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>::
 ~FluxRep() {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> FluxRep<T>& FluxRep<T>::
@@ -173,26 +161,22 @@ operator=(const FluxRep<T>& other) {
     itsUnit = other.itsUnit;
     itsErr = other.itsErr;
   }
-  DebugAssert(ok(), AipsError);
   return *this;
 }
 
 template<class T> const Unit& FluxRep<T>::
 unit() const {
-  DebugAssert(ok(), AipsError);
   return itsUnit;
 }
 
 template<class T> void FluxRep<T>::
 unit(Unit& unit) const {
   unit = itsUnit;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setUnit(const Unit& unit) {
   itsUnit = unit;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -205,25 +189,21 @@ convertUnit(const Unit& unit) {
     }
     itsUnit = unit;
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> ComponentType::Polarisation FluxRep<T>::
 pol() const {
-  DebugAssert(ok(), AipsError);
   return itsPol;
 }
 
 template<class T> void FluxRep<T>::
 pol(ComponentType::Polarisation& pol) const {
   pol = itsPol;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setPol(ComponentType::Polarisation pol) {
   itsPol = pol;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -268,40 +248,32 @@ convertPol(ComponentType::Polarisation pol) {
 	     << LogIO::POST;
     }
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T>
 const Vector<typename NumericTraits<T>::ConjugateType>& FluxRep<T>::
 value() const {
-  DebugAssert(ok(), AipsError);
   return itsVal;
 }
 
 template<class T>
 const typename NumericTraits<T>::ConjugateType& FluxRep<T>::
 value(uInt p) const {
-  DebugAssert(p < 4, AipsError);
-  DebugAssert(ok(), AipsError);
   return itsVal(p);
 }
 
 template<class T> void FluxRep<T>::
 value(Vector<T>& value) {
   const uInt len = value.nelements();
-  DebugAssert (len == 4 || len == 0, AipsError);
   if (len == 0) value.resize(4);
   convertPol(ComponentType::STOKES);
   for (uInt s = 0 ; s < 4; s++) {
     value(s) = itsVal(s).real();
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 value(Vector<typename NumericTraits<T>::ConjugateType>& value) const {
-  DebugAssert(ok(), AipsError);
-  DebugAssert (value.nelements() == 4 || value.nelements() == 0, AipsError);
   value = itsVal;
 }
 
@@ -317,7 +289,6 @@ value(Quantum<Vector<T> >& value) {
   for (uInt s = 0 ; s < 4; s++) {
     newValue(s) = itsVal(s).real();
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Quantum<T>  FluxRep<T>::
@@ -377,7 +348,6 @@ value(Quantum<Vector<typename NumericTraits<T>::ConjugateType> >&
   for (uInt s = 0 ; s < 4; s++) {
     newValue(s) = itsVal(s);
   }
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -387,47 +357,38 @@ setValue(T value) {
   }
   itsVal(0) = value;
   itsPol = ComponentType::STOKES;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setValue(const Vector<T>& value) {
-  DebugAssert (value.nelements() == 4, AipsError);
   for (uInt i = 0; i < 4; i++) {
     itsVal(i) = value(i);
   }
   itsPol = ComponentType::STOKES;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setValue(const Vector<typename NumericTraits<T>::ConjugateType>& value) {
-  DebugAssert (value.nelements() == 4, AipsError);
   itsVal = value;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setValue(const Quantum<Vector<T> >& value) {
-  DebugAssert (value.getValue().nelements() == 4, AipsError);
   const Vector<T>& val = value.getValue();
   for (uInt s = 0; s < 4; s++) {
     itsVal(s) = val(s);
   }
   itsUnit = value.getFullUnit();
   itsPol = ComponentType::STOKES;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 setValue(const
 	 Quantum<Vector<typename NumericTraits<T>::ConjugateType> >& value,
 	 ComponentType::Polarisation pol) {
-  DebugAssert (value.getValue().nelements() == 4, AipsError);
   itsVal = value.getValue();
   itsUnit = value.getFullUnit();
   itsPol = pol;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::setValue(
@@ -476,7 +437,6 @@ template<class T> void FluxRep<T>::setValue(
 template<class T> void FluxRep<T>::
 scaleValue(const T& factor) {
   itsVal(0) *= factor;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -486,13 +446,11 @@ scaleValue(const T& factor0, const T& factor1,
   itsVal(1) *= factor1;
   itsVal(2) *= factor2;
   itsVal(3) *= factor3;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
 scaleValue(const typename  NumericTraits<T>::ConjugateType& factor) {
   itsVal(0) *= factor;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -504,7 +462,6 @@ scaleValue(const typename NumericTraits<T>::ConjugateType& factor0,
   itsVal(1) *= factor1;
   itsVal(2) *= factor2;
   itsVal(3) *= factor3;
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void FluxRep<T>::
@@ -741,21 +698,18 @@ template<class T> Flux<T>::
 Flux()
   :itsFluxPtr(new FluxRep<T>)
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
 Flux(T i)
   :itsFluxPtr(new FluxRep<T>(i))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
 Flux(T i, T q, T u, T v)
  :itsFluxPtr(new FluxRep<T>(i, q, u, v))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
@@ -766,14 +720,12 @@ Flux(typename NumericTraits<T>::ConjugateType xx,
      ComponentType::Polarisation pol)  
   :itsFluxPtr(new FluxRep<T>(xx, xy, yx, yy, pol))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
 Flux(const Vector<T>& flux)
   :itsFluxPtr(new FluxRep<T>(flux))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
@@ -781,26 +733,22 @@ Flux(const Vector<typename NumericTraits<T>::ConjugateType>& flux,
      ComponentType::Polarisation pol)
   :itsFluxPtr(new FluxRep<T>(flux, pol))
 {
-  DebugAssert(ok(), AipsError);
 }
   
 template<class T> Flux<T>::
 Flux(const Quantum<Vector<T> >& flux)
   :itsFluxPtr(new FluxRep<T>(flux))
 {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
 Flux(const Flux<T>& other) 
   :itsFluxPtr(other.itsFluxPtr)
 { 
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>::
 ~Flux() {
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> Flux<T>& Flux<T>::
@@ -808,13 +756,11 @@ operator=(const Flux<T>& other) {
   if (this != &other) {
     itsFluxPtr = other.itsFluxPtr;
   }
-  DebugAssert(ok(), AipsError);
   return *this;
 }
 
 template<class T> Flux<T> Flux<T>::
 copy() const {
-  DebugAssert(ok(), AipsError);
   Flux<T> newFlux(value(), pol());
   newFlux.setUnit(unit());
   return newFlux;
@@ -822,93 +768,78 @@ copy() const {
 
 template<class T> const Unit& Flux<T>::
 unit() const {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->unit();
 }
 
 template<class T> void Flux<T>::
 unit(Unit& unit) const {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->unit(unit);
 }
 
 template<class T> void Flux<T>::
 setUnit(const Unit& unit) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setUnit(unit);
 }
 
 template<class T> void Flux<T>::
 convertUnit(const Unit& unit) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->convertUnit(unit);
 }
 
 template<class T> ComponentType::Polarisation Flux<T>::
 pol() const {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->pol();
 }
 
 template<class T> void Flux<T>::
 pol(ComponentType::Polarisation& pol) const {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->pol(pol);
 }
 
 template<class T> void Flux<T>::
 setPol(ComponentType::Polarisation pol) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setPol(pol);
 }
 
 template<class T> void Flux<T>::
 convertPol(ComponentType::Polarisation pol) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->convertPol(pol);
 }
 
 template<class T> const
 Vector<typename NumericTraits<T>::ConjugateType>& Flux<T>::value() const {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->value();
 }
 
 template<class T> const typename NumericTraits<T>::ConjugateType& Flux<T>::
 value(uInt p) const {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->value(p);
 }
 
 template<class T> void Flux<T>::
 value(Vector<T>& value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->value(value);
 }
 
 template<class T> void Flux<T>::
 value(Vector<typename NumericTraits<T>::ConjugateType>& value) const {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->value(value);
 }
 
 template<class T> void Flux<T>::
 value(Quantum<Vector<T> >& value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->value(value);
 }
 
 template<class T> void Flux<T>::
 value(Quantum<Vector<typename NumericTraits<T>::ConjugateType> >&
       value) const {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->value(value);
 }
 
 template<class T> Quantum<T>  Flux<T>::
 value (Stokes::StokesTypes stokes, Bool toJy) 
 {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->value(stokes, toJy);
 }
 
@@ -916,25 +847,21 @@ value (Stokes::StokesTypes stokes, Bool toJy)
 
 template<class T> void Flux<T>::
 setValue(T value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value);
 }
 
 template<class T> void Flux<T>::
 setValue(const Vector<T>& value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value);
 }
 
 template<class T> void Flux<T>::
 setValue(const Vector<typename NumericTraits<T>::ConjugateType>& value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value);
 }
 
 template<class T> void Flux<T>::
 setValue(const Quantum<Vector<T> >& value) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value);
 }
 
@@ -942,34 +869,29 @@ template<class T> void Flux<T>::
 setValue(const
 	 Quantum<Vector<typename NumericTraits<T>::ConjugateType> >& value,
 	 ComponentType::Polarisation pol) {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value, pol);
 }
 
 template<class T> void Flux<T>::
 setValue(const Quantum<T>& value, Stokes::StokesTypes stokes)
 {
-  DebugAssert(ok(), AipsError);
   itsFluxPtr->setValue(value, stokes);
 }
 
 template<class T> void Flux<T>::
 scaleValue(const T& factor) {
   itsFluxPtr->scaleValue(factor);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void Flux<T>::
 scaleValue(const T& factor0, const T& factor1, 
 	   const T& factor2, const T& factor3) {
   itsFluxPtr->scaleValue(factor0, factor1, factor2, factor3);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void Flux<T>::
 scaleValue(const typename NumericTraits<T>::ConjugateType& factor) {
   itsFluxPtr->scaleValue(factor);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void Flux<T>::
@@ -978,7 +900,6 @@ scaleValue(const typename NumericTraits<T>::ConjugateType& factor0,
 	   const typename NumericTraits<T>::ConjugateType& factor2,
 	   const typename NumericTraits<T>::ConjugateType& factor3) {
   itsFluxPtr->scaleValue(factor0, factor1, factor2, factor3);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void Flux<T>::
@@ -987,14 +908,12 @@ setErrors(const typename NumericTraits<T>::ConjugateType& error0,
 	  const typename NumericTraits<T>::ConjugateType& error2,
 	  const typename NumericTraits<T>::ConjugateType& error3) {
   itsFluxPtr->setErrors(error0, error1, error2, error3);
-  DebugAssert(ok(), AipsError);
 }
 
 template<class T> void Flux<T>::setErrors(
 	const Vector<typename NumericTraits<T>::ConjugateType>& errors
 ) {
 	itsFluxPtr->setErrors(errors);
-	DebugAssert(ok(), AipsError);
 }
 
 
@@ -1005,13 +924,11 @@ Vector<typename NumericTraits<T>::ConjugateType>& Flux<T>::errors() const {
 
 template<class T> Bool Flux<T>::
 fromRecord(String& errorMessage, const RecordInterface& record) {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->fromRecord(errorMessage, record);
 }
 
 template<class T> Bool Flux<T>::
 toRecord(String& errorMessage, RecordInterface& record) const {
-  DebugAssert(ok(), AipsError);
   return itsFluxPtr->toRecord(errorMessage, record);
 }
 
@@ -1035,8 +952,6 @@ ok() const {
 template<class T> void Flux<T>::
 stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 		 const Vector<T>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const T i = in(0);
   const T q = in(1);
   const T u = in(2);
@@ -1050,8 +965,6 @@ stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType i = in(0);
   const typename NumericTraits<T>::ConjugateType q = in(1);
   const typename NumericTraits<T>::ConjugateType& u = in(2);
@@ -1066,8 +979,6 @@ stokesToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 circularToStokes(Vector<T>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const T rr = in(0).real();
   const typename NumericTraits<T>::ConjugateType rl = in(1);
   const typename NumericTraits<T>::ConjugateType lr = in(2);
@@ -1082,8 +993,6 @@ circularToStokes(Vector<T>& out,
 template<class T> void Flux<T>::
 circularToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out,
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType rr = in(0);
   const typename NumericTraits<T>::ConjugateType rl = in(1);
   const typename NumericTraits<T>::ConjugateType lr = in(2);
@@ -1099,8 +1008,6 @@ circularToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 	       const Vector<T>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const T i = in(0);
   const T q = in(1);
   const T u = in(2);
@@ -1114,8 +1021,6 @@ stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 	       const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType i = in(0);
   const typename NumericTraits<T>::ConjugateType q = in(1);
   const typename NumericTraits<T>::ConjugateType u = in(2);
@@ -1130,8 +1035,6 @@ stokesToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 linearToStokes(Vector<T>& out, 
 	       const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const T xx = in(0).real();
   const typename NumericTraits<T>::ConjugateType xy = in(1);
   const typename NumericTraits<T>::ConjugateType yx = in(2);
@@ -1146,8 +1049,6 @@ linearToStokes(Vector<T>& out,
 template<class T> void Flux<T>::
 linearToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 	       const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType xx = in(0);
   const typename NumericTraits<T>::ConjugateType xy = in(1);
   const typename NumericTraits<T>::ConjugateType yx = in(2);
@@ -1163,8 +1064,6 @@ linearToStokes(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 linearToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType xx = in(0);
   const typename NumericTraits<T>::ConjugateType& xy = in(1);
   const typename NumericTraits<T>::ConjugateType jxy(-xy.imag(), xy.real());
@@ -1181,8 +1080,6 @@ linearToCircular(Vector<typename NumericTraits<T>::ConjugateType>& out,
 template<class T> void Flux<T>::
 circularToLinear(Vector<typename NumericTraits<T>::ConjugateType>& out, 
 		 const Vector<typename NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
   const typename NumericTraits<T>::ConjugateType rr = in(0);
   const typename NumericTraits<T>::ConjugateType rl = in(1);
   const typename NumericTraits<T>::ConjugateType lr = in(2);

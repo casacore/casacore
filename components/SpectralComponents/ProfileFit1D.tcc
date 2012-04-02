@@ -287,10 +287,8 @@ Bool ProfileFit1D<T>::fit ()
    }
 
 // Set list in fitter
-
    itsFitter.clear();
    itsFitter.addFitElement (itsList);
-
 // Do the fit with the total mask
 
    Bool converged(False);
@@ -299,7 +297,6 @@ Bool ProfileFit1D<T>::fit ()
    } else {
       converged = itsFitter.fit (itsWeight, itsY, itsX, makeTotalMask());
    }
-//
    return converged;
 }
 
@@ -396,16 +393,13 @@ Vector<T> ProfileFit1D<T>::getResidual (Int which, Bool fit)  const
 template <class T> 
 SpectralList ProfileFit1D<T>::getSubsetList (const SpectralList& list, Int which)  const
 {
-   const Int n = list.nelements();
-//
-   if (which+1 > n) {
-      throw (AipsError("Illegal spectral element index"));
-   }
-//
-   const SpectralElement el(list[which]);
-   SpectralList listOut;
-   listOut.add(el);
-   return listOut;
+	const Int n = list.nelements();
+	if (which+1 > n) {
+		throw AipsError("Illegal spectral element index");
+	}
+	SpectralList listOut;
+	listOut.add(*list[which]);
+	return listOut;
 }
 
 template <class T> 

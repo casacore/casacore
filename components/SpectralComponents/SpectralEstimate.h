@@ -29,7 +29,6 @@
 #ifndef COMPONENTS_SPECTRALESTIMATE_H
 #define COMPONENTS_SPECTRALESTIMATE_H
 
-//# Includes
 #include <casa/aips.h>
 #include <components/SpectralComponents/SpectralElement.h>
 #include <components/SpectralComponents/SpectralList.h>
@@ -37,6 +36,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
+class GaussianSpectralElement;
 template <class T> class Vector;
 
 // <summary>
@@ -214,8 +214,8 @@ class SpectralEstimate {
     void findga(const Vector<MT> &prof);
   // Convert the parameters of the components in the list from 
   // pixel-based indices to the given abcissa-vector space.
-  template <class MT> SpectralElement convertElement (const Vector<MT>& abcissa,
-                                                      const SpectralElement& el) const;
+  template <class MT> GaussianSpectralElement convertElement (const Vector<MT>& abcissa,
+                                                      const GaussianSpectralElement& el) const;
 };
 
 

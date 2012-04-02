@@ -35,7 +35,6 @@
 #include <casa/Containers/Record.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
-#include <components/SpectralComponents/SpectralElement.h>
 #include <components/SpectralComponents/SpectralEstimate.h>
 #include <components/SpectralComponents/SpectralFit.h>
 #include <components/SpectralComponents/SpectralList.h>
@@ -51,41 +50,36 @@ int main()
     cout << "Test RecordInterface" << endl;
     cout << "---------------------------------------------------" << endl;
     SpectralList list;
-    SpectralElement gEl(SpectralElement::GAUSSIAN, 1.0, 10.0, 2.0);
-    SpectralElement pEl(1);
+    GaussianSpectralElement gEl(1.0, 10.0, 2.0);
+    PolynomialSpectralElement pEl(1);
     list.add (gEl);
     list.add(pEl);
-//
+
     cout << "toRecord" << endl;
     Record rec;    
     list.toRecord(rec);
-//
     cout << "fromRecord" << endl;
     SpectralList list2;
     String errMsg;
     if (!list2.fromRecord(errMsg, rec)) {
        throw(AipsError(errMsg));
     }
-//
     Double tol(1.0e-6);
     AlwaysAssert(list.nelements()==list.nelements(),AipsError);
     for (uInt i=0; i<list.nelements(); i++) {
-       AlwaysAssert (list[i].getType()==list2[i].getType(), AipsError);
-//
+       AlwaysAssert (list[i]->getType()==list2[i]->getType(), AipsError);
        Vector<Double> p1,p2;
-       list[i].get(p1);
-       list2[i].get(p2);
+       list[i]->get(p1);
+       list2[i]->get(p2);
        AlwaysAssert(allNear(p1,p2,tol),AipsError);
     }
     cout << endl;
   }
 
-   
   // get estimates
   {
     cout << "Test SpectralEstimate" << endl;
     cout << "---------------------------------------------------" << endl;
-
     const Int NPAR = 9;
     const Int NPTS = 100;
     uInt q = 2;
@@ -116,7 +110,7 @@ int main()
     };
     cout << "Made spectrum with components: " << endl;
     for (uInt i=0; i<3; i++) {
-      cout << SpectralElement(SpectralElement::GAUSSIAN,
+      cout << GaussianSpectralElement(
 			      par[3*i+0], par[3*i+1], par[3*i+2]) << endl;
     };
     {
@@ -128,7 +122,7 @@ int main()
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
       Vector<Float> res(NPTS);
       res = y;
@@ -136,8 +130,10 @@ int main()
       cout << "Minimum, Maximum residuals: " << min(res) << ", " <<
 	max(res) << endl;
       for (Int j=0; j<r; j++) {
-	for (Int i = 0; i<n; i++) res(i) = slist[j](i);
-      };
+    	  for (Int i = 0; i<n; i++) {
+    		  res(i) = slist[j]->operator()(i);
+    	  }
+      }
     }
     {
       SpectralEstimate est(rms, cutoff, minsig);
@@ -148,7 +144,7 @@ int main()
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
     }
     {
@@ -161,7 +157,7 @@ int main()
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
     }
     {
@@ -175,7 +171,7 @@ int main()
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
     }
     {
@@ -189,7 +185,7 @@ int main()
 	rms << ", " << cutoff << ", " << minsig << ", " << q << ") " <<
 	r << " estimates" << endl;
       for (Int i=0; i<r; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
     }
   }
@@ -215,14 +211,14 @@ int main()
       cout << "Test SpectralFit" << endl;
       cout << "---------------------------------------------------" << endl;
       
-      SpectralElement el[ncomp] = {
-	SpectralElement(SpectralElement::GAUSSIAN, ampl[0],
+      GaussianSpectralElement el[ncomp] = {
+	GaussianSpectralElement(ampl[0],
 			center[0]*10.+1400., sigma[0]*10./1024.),
-	SpectralElement(SpectralElement::GAUSSIAN, ampl[1],
+	GaussianSpectralElement(ampl[1],
 			center[1]*10.+1400., sigma[1]*10./1024.),
-	SpectralElement(SpectralElement::GAUSSIAN, ampl[2],
+	GaussianSpectralElement(ampl[2],
 			center[2]*10.+1400., sigma[2]*10./1024.),
-	SpectralElement(SpectralElement::GAUSSIAN, ampl[3],
+	GaussianSpectralElement(ampl[3],
 			center[3]*10.+1400., sigma[3]*10./1024.) };
       
       cout << "Spectral elements: " << endl;
@@ -251,7 +247,7 @@ int main()
       SpectralFit fitter;
       for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
       for (uInt i=0; i<fitter.list().nelements(); i++) {
-	cout << fitter.list()[i] << endl;
+	cout << *fitter.list()[i] << endl;
       };
 
       cout << "---------------------------------------------------" << endl;
@@ -260,10 +256,10 @@ int main()
       cout << "The results: " << endl;
       Vector<Double> tmp;
       for (uInt i=0; i<fitter.list().nelements(); i++) {
-	cout << fitter.list()[i];
-	fitter.list()[i].get(tmp);
+	cout << *fitter.list()[i];
+	fitter.list()[i]->get(tmp);
 	cout << "Parameters: " << tmp << endl;
-	fitter.list()[i].getError(tmp);
+	fitter.list()[i]->getError(tmp);
 	cout << "Errors:     " << tmp << endl << endl;
       };
       cout << ">>>" << endl;
@@ -276,7 +272,7 @@ int main()
 	SpectralFit fitter;
 	for (uInt i=0; i<ncomp; i++) fitter.addFitElement(el[i]);
 	for (uInt i=0; i<fitter.list().nelements(); i++) {
-	  cout << fitter.list()[i] << endl;
+	  cout << *fitter.list()[i] << endl;
 	};
 	
 	cout << "---------------------------------------------------" << endl;
@@ -285,10 +281,10 @@ int main()
 	cout << "The results: " << endl;
 	Vector<Double> tmp;
 	for (uInt i=0; i<fitter.list().nelements(); i++) {
-	  cout << fitter.list()[i];
-	  fitter.list()[i].get(tmp);
+	  cout << *fitter.list()[i];
+	  fitter.list()[i]->get(tmp);
 	  cout << "Parameters: " << tmp << endl;
-	  fitter.list()[i].getError(tmp);
+	  fitter.list()[i]->getError(tmp);
 	  cout << "Errors:     " << tmp << endl << endl;
 	};
 	cout << ">>>" << endl;
@@ -305,13 +301,13 @@ int main()
 	fitter.setFitElement(i, el[i]);
       };
       for (uInt i=0; i<fitter.list().nelements(); i++) {
-	cout << fitter.list()[i] << endl;
+	cout << *fitter.list()[i] << endl;
       };
       cout << "Execute the fitter, can do (1:Y): " <<
 	fitter.fit(dat, freq) << endl;
       cout << "The results: " << endl;
       for (uInt i=0; i<fitter.list().nelements(); i++) {
-	cout << fitter.list()[i] << endl;
+	cout << *fitter.list()[i] << endl;
       };
       cout << ">>>" << endl;
       cout << "Number of iterations: " << fitter.nIterations() << endl;
@@ -347,7 +343,7 @@ int main()
       Int mr = slist.nelements();
       cout << "Found " << mr << " estimates" << endl;
       for (Int i=0; i<mr; i++) {
-	cout << "Estimate " << i << ": " << slist[i] << endl;
+	cout << "Estimate " << i << ": " << *slist[i] << endl;
       };
       fxdat= fdat;
       slist.residual(fxdat);
@@ -364,7 +360,7 @@ int main()
 	Int mr = slist.nelements();
 	cout << "Found " << mr << " estimates" << endl;
 	for (Int i=0; i<mr; i++) {
-	  cout << "Estimate " << i << ": " << slist[i] << endl;
+	  cout << "Estimate " << i << ": " << *slist[i] << endl;
 	};
 	fxdat= fdat;
 	slist.residual(fxdat);

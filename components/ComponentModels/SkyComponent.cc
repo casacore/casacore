@@ -51,101 +51,77 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 SkyComponent::SkyComponent()
   :itsCompPtr(new SkyCompRep) 
-{
-  DebugAssert(ok(), AipsError);
-}
+{}
 
 SkyComponent::SkyComponent(const ComponentType::Shape& shape)   
   :itsCompPtr(new SkyCompRep(shape))
-{
-  DebugAssert(ok(), AipsError);
-}
+{}
 
 SkyComponent::SkyComponent(const ComponentType::Shape& shape,
 			   const ComponentType::SpectralShape& spectralModel) 
   :itsCompPtr(new SkyCompRep(shape, spectralModel))
-{
-  DebugAssert(ok(), AipsError);
-}
+{}
 
 SkyComponent::SkyComponent(const Flux<Double>& flux,
 			   const ComponentShape& shape, 
 			   const SpectralModel& spectrum)
   :itsCompPtr(new SkyCompRep(flux, shape, spectrum))
-{
-  DebugAssert(ok(), AipsError);
-}
+{}
 
 SkyComponent::SkyComponent(const SkyComponent& other) 
   :SkyCompBase(other),
    itsCompPtr (other.itsCompPtr)
-{ 
-  DebugAssert(ok(), AipsError);
-}
+{}
 
-SkyComponent::~SkyComponent() {
-  DebugAssert(ok(), AipsError);
-}
+SkyComponent::~SkyComponent() {}
 
 SkyComponent& SkyComponent::operator=(const SkyComponent& other) {
   if (this != &other)
     itsCompPtr = other.itsCompPtr;
-  DebugAssert(ok(), AipsError);
   return *this;
 }
 
 Flux<Double>& SkyComponent::flux() {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
 
 const Flux<Double>& SkyComponent::flux() const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
 
 const ComponentShape& SkyComponent::shape() const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->shape();
 }
 
 ComponentShape& SkyComponent::shape() {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->shape();
 }
 
 void SkyComponent::setShape(const ComponentShape& newShape) {
-  DebugAssert(ok(), AipsError);
   itsCompPtr->setShape(newShape);
 }
 
 const SpectralModel& SkyComponent::spectrum() const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
 }
 
 SpectralModel& SkyComponent::spectrum() {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->spectrum();
 }
 
 void SkyComponent::setSpectrum(const SpectralModel& newSpectrum) {
-  DebugAssert(ok(), AipsError);
   itsCompPtr->setSpectrum(newSpectrum);
 }
 
 String& SkyComponent::label() {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->label();
 }
 
 const String& SkyComponent::label() const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->label();
 }
 
 Bool SkyComponent::isPhysical() const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->isPhysical();
 }
 
@@ -153,7 +129,6 @@ Flux<Double> SkyComponent::sample(const MDirection& direction,
 			      const MVAngle& pixelLatSize, 
 			      const MVAngle& pixelLongSize, 
 			      const MFrequency& centerFrequency) const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->sample(direction, pixelLatSize, pixelLongSize, 
 			    centerFrequency);
 }
@@ -165,7 +140,6 @@ void SkyComponent::sample(Cube<Double>& samples, const Unit& reqUnit,
 			  const MVAngle& pixelLongSize, 
 			  const Vector<MVFrequency>& frequencies,
 			  const MeasRef<MFrequency>& freqRef) const {
-  DebugAssert(ok(), AipsError);
   itsCompPtr->sample(samples, reqUnit,
 		     directions, dirRef, pixelLatSize, pixelLongSize,
 		     frequencies, freqRef);
@@ -173,31 +147,26 @@ void SkyComponent::sample(Cube<Double>& samples, const Unit& reqUnit,
 
 Flux<Double> SkyComponent::visibility(const Vector<Double>& uvw,
  				      const Double& frequency) const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->visibility(uvw, frequency);
 }
 
 void SkyComponent::visibility(Cube<DComplex>& visibilities,
 			      const Matrix<Double>& uvws,
 			      const Vector<Double>& frequencies) const {
-  DebugAssert(ok(), AipsError);
   itsCompPtr->visibility(visibilities, uvws, frequencies);
 }
 
 Bool SkyComponent::fromRecord(String& errorMessage, 
  			      const RecordInterface& record) {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->fromRecord(errorMessage, record);
 }
 
 Bool SkyComponent::toRecord(String& errorMessage,
  			    RecordInterface& record) const {
-  DebugAssert(ok(), AipsError);
   return itsCompPtr->toRecord(errorMessage, record);
 }
 
 SkyComponent SkyComponent::copy() const {
-  DebugAssert(ok(), AipsError);
   SkyComponent newComp(flux().copy(), shape(), spectrum());
   newComp.label() = label();
   return newComp;
@@ -242,7 +211,7 @@ Bool SkyComponent::ok() const {
   return True;
 }
 
-String SkyComponent::summarize(const CoordinateSystem * const coordinates) const {
+String SkyComponent::summarize(const CoordinateSystem *const &coordinates) const {
 	ostringstream summary;
 	summary << "SUMMARY OF COMPONENT " << label() << endl;
 	summary << "Shape: " << shape().ident() << endl;
@@ -256,7 +225,7 @@ String SkyComponent::summarize(const CoordinateSystem * const coordinates) const
 	return summary.str();
 }
 
-String SkyComponent::positionToString(const CoordinateSystem * const coordinates) const {
+String SkyComponent::positionToString(const CoordinateSystem *const &coordinates) const {
 	// FIXME essentially cut and paste of Gareth's python code. Needs work.
 	ostringstream position;
 	MDirection mdir = shape().refDirection();
@@ -285,7 +254,10 @@ String SkyComponent::positionToString(const CoordinateSystem * const coordinates
 		delta = fabs(dra.getValue());
 	}
 	else {
-		delta = sqrt(dra.getValue()*dra.getValue() + ddec.getValue()*ddec.getValue() );
+		delta = sqrt(
+			dra.getValue()*dra.getValue()
+			+ ddec.getValue()*ddec.getValue()
+		);
 	}
 
 	// Add error estimates to ra/dec strings if an error is given (either >0)
@@ -309,19 +281,18 @@ String SkyComponent::positionToString(const CoordinateSystem * const coordinates
 		<< " arcsec)" << endl;
 	position << "       --- dec: " << dec << " +/- " << ddec << endl;
 
-	if (coordinates) {
-		Vector<Double> world(coordinates->nWorldAxes(), 0), pixel(coordinates->nPixelAxes(), 0);
-        coordinates->toWorld(world, pixel);
+	if (coordinates && coordinates->hasDirectionCoordinate()) {
+		const DirectionCoordinate& dirCoord =
+                  coordinates->directionCoordinate
+                    (coordinates->findCoordinate(CoordinateSystem::DIRECTION));
+		Vector<Double> world(dirCoord.nWorldAxes(), 0), pixel(dirCoord.nPixelAxes(), 0);
 		world[0] = longitude.getValue();
 		world[1] = lat.getValue();
 		// TODO do the pixel computations in another method
-		if (coordinates->toPixel(pixel, world)) {
-			const DirectionCoordinate dCoord = coordinates->directionCoordinate(
-				coordinates->findCoordinate(CoordinateSystem::DIRECTION)
-			);
-			Vector<Double> increment = dCoord.increment();
-			Double raPixErr = dra.getValue("rad")/increment[0];
-			Double decPixErr = ddec.getValue("rad")/increment[1];
+		if (dirCoord.toPixel(pixel, world)) {
+			Vector<Double> increment = dirCoord.increment();
+			Double raPixErr = abs(dra.getValue("rad")/increment[0]);
+			Double decPixErr = abs(ddec.getValue("rad")/increment[1]);
 			Vector<Double> raPix(2), decPix(2);
 			raPix.set(roundDouble(raPixErr));
 			decPix.set(roundDouble(decPixErr));
@@ -331,15 +302,11 @@ String SkyComponent::positionToString(const CoordinateSystem * const coordinates
 			position << "       --- dec:  " << pixel[1] << " +/- " << decPixErr << " pixels" << endl;
 		}
 		else {
-			position << "unable to determine position in pixels" << endl;
+			position << "unable to determine position in pixels:" << coordinates->errorMessage() << endl;
 		}
 	}
 	return position.str();
 }
-
-// Local Variables: 
-// compile-command: "gmake SkyComponent"
-// End: 
 
 } //# NAMESPACE CASA - END
 

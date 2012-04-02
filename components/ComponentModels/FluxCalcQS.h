@@ -30,6 +30,7 @@
 
 #include <components/ComponentModels/FluxStandard.h>
 #include <casa/BasicSL/String.h>
+#include <measures/Measures/MDirection.h>
 
 //# Handy for passing anonymous arrays to functions.
 #include <scimath/Mathematics/RigidVector.h>
@@ -116,6 +117,8 @@ public:
 
   FCQS::Source getSrcEnum();
 
+  MDirection getDirection() {return directions_p[srcEnum_p];}
+
 protected:
   FluxCalcQS();   // Initializes names_p.
 
@@ -124,6 +127,9 @@ private:
 
   // A map from an FS::Source enum to a list of recognized names for it.
   std::map<FCQS::Source, Vector<String> > names_p;
+
+  // A map from an FS::Source enum to its J2000 direction.
+  std::map<FCQS::Source, MDirection> directions_p;
 };
 
 } //# NAMESPACE CASA - END
