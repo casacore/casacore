@@ -31,12 +31,12 @@
 
 #include <casa/aips.h>
 #include <components/ComponentModels/Flux.h>
+#include <measures/Measures/MDirection.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Forward declarations
 class String;        //#include <casa/BasicSL/String.h>
-class MDirection;    //#include <measures/Measures/MDirection.h>
 class MEpoch;        //#include <measures/Measures/MEpoch.h>
 class MFrequency;    //#include <measures/Measures/MFrequency.h>
 class SpectralModel; //#include <components/ComponentModels/SpectralModel.h>
@@ -119,14 +119,14 @@ class FluxStandard
 
   // Compute the flux density for a specified source at a specified frequency
   Bool compute (const String& sourceName, const MFrequency& mfreq,
-		Flux<Double>& value, Flux<Double>& error) const;
+		Flux<Double>& value, Flux<Double>& error);
 
   // Compute the flux densities and their uncertainties for a specified source
   // at a set of specified frequencies.
   Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
 	       Vector<Flux<Double> >& values,
                Vector<Flux<Double> >& errors,
-               const Bool verbose=True) const;
+               const Bool verbose=True);
 
   // Compute the flux densities and their uncertainties for a specified source
   // for a set of sets of specified frequencies, i.e. mfreqs[spw] is a set of
@@ -135,7 +135,7 @@ class FluxStandard
   Bool compute(const String& sourceName,
                const Vector<Vector<MFrequency> >& mfreqs,
                Vector<Vector<Flux<Double> > >& values,
-               Vector<Vector<Flux<Double> > >& errors) const;
+               Vector<Vector<Flux<Double> > >& errors);
 
   // Like compute, but it also saves a set of ComponentLists for the source to
   // disk and puts the paths (sourceName_mfreq_mtime.cl) in clnames, making it
@@ -148,7 +148,7 @@ class FluxStandard
                  const MEpoch& mtime, const MDirection& position,
                  Vector<Vector<Flux<Double> > >& values,
                  Vector<Vector<Flux<Double> > >& errors,
-                 Vector<String>& clnames, const String& prefix="") const;
+                 Vector<String>& clnames, const String& prefix="");
 
   // Take a component cmp and save it to a ComponentList on disk, returning the
   // pathname.  ("" if unsuccessful, sourceName_mfreqGHzDateTime.cl otherwise)
@@ -184,6 +184,10 @@ class FluxStandard
  private:
   // Flux scale in use
   FluxStandard::FluxScale itsFluxScale;
+
+  Bool has_direction_p;
+
+  MDirection direction_p;
 };
 
 } //# NAMESPACE CASA - END

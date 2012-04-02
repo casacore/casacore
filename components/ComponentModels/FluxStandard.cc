@@ -45,6 +45,7 @@
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
+#include <measures/Measures/MDirection.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MFrequency.h>
 
@@ -53,7 +54,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //----------------------------------------------------------------------------
 
 FluxStandard::FluxStandard(const FluxStandard::FluxScale scale) : 
-  itsFluxScale(scale)
+  itsFluxScale(scale),
+  has_direction_p(False)
 {
 // Default constructor
 // Output to private data:
@@ -72,7 +74,7 @@ FluxStandard::~FluxStandard()
 //----------------------------------------------------------------------------
 
 Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
-			    Flux <Double>& value, Flux <Double>& error) const
+			    Flux <Double>& value, Flux <Double>& error)
 {
   // I refuse to duplicate the monstrosity below to skip a short for loop.
   Vector<Flux<Double> > fluxes(1);
@@ -90,7 +92,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 Bool FluxStandard::compute(const String& sourceName, 
                            const Vector<Vector<MFrequency> >& mfreqs,
                            Vector<Vector<Flux<Double> > >& values,
-                           Vector<Vector<Flux<Double> > >& errors) const
+                           Vector<Vector<Flux<Double> > >& errors)
 {
   Bool success = True;
   uInt nspws = mfreqs.nelements();
@@ -106,7 +108,7 @@ Bool FluxStandard::compute(const String& sourceName,
                            const Vector<MFrequency>& mfreqs,
                            Vector<Flux<Double> >& values,
                            Vector<Flux<Double> >& errors,
-                           const Bool verbose) const
+                           const Bool verbose)
 {
 // Compute the flux density for a specified source at a specified set of
 // frequencies.
@@ -178,6 +180,10 @@ Bool FluxStandard::compute(const String& sourceName,
     // TODO?: Look for another standard that does recognize sourceName?
     return false;
   }
+  else{
+    direction_p = fluxStdPtr->getDirection();
+    has_direction_p = True;
+  }
 
   // Compute the flux density values and their uncertainties, returning whether
   // or not it worked.
@@ -210,7 +216,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
                              Vector<Vector<Flux<Double> > >& values,
                              Vector<Vector<Flux<Double> > >& errors,
                              Vector<String>& clpaths,
-			     const String& prefix) const
+			     const String& prefix)
 {
   LogIO os(LogOrigin("FluxStandard", "computeCL"));
   uInt nspws = mfreqs.nelements();
@@ -219,11 +225,14 @@ Bool FluxStandard::computeCL(const String& sourceName,
   if(itsFluxScale < FluxStandard::HAS_RESOLUTION_INFO){
     if(this->compute(sourceName, mfreqs, values, errors)){
       // Create a point component with the specified flux density.
-      PointShape point(position);
+      MDirection dummy;
+      PointShape point(position.getValue().separation(dummy.getValue()) < 1e-7 &&
+		       position.getRef() == dummy.getRef() ? direction_p : position);
 
       for(uInt spw = 0; spw < nspws; ++spw){
         clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
-                                         values[spw], point, prefix);
+                                         values[spw], point,
+					 prefix + "spw" + String(spw) + "_");
       }
       success = True;
     }
@@ -234,21 +243,25 @@ Bool FluxStandard::computeCL(const String& sourceName,
 
     for(uInt spw = 0; spw < nspws; ++spw){
       ComponentType::Shape cmpshape = ssobj.compute(values[spw], errors[spw], angdiam,
-                                                    mfreqs[spw]);
+                                                    mfreqs[spw], spw == 0);
     
       switch(cmpshape){
       case ComponentType::DISK:
         {
           // Create a uniform disk component with the specified flux density.
+	  MDirection dummy;
           DiskShape disk;
 
           // Should we worry about tracking position?
-          disk.setRefDirection(position);
+          disk.setRefDirection(position.getValue().separation(dummy.getValue()) < 1e-7 &&
+			       position.getRef() == dummy.getRef() ? ssobj.getDirection() :
+			       position);
 
           disk.setWidthInRad(angdiam, angdiam, 0.0);
 
           clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
-                                           values[spw], disk, prefix);
+                                           values[spw], disk,
+					   prefix + "spw" + String::toString(spw) + "_");
           success = True;
           break;
         }

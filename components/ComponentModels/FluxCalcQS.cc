@@ -26,6 +26,7 @@
 #include <components/ComponentModels/FluxCalcQS.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
+#include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 
 // Handy for passing anonymous arrays to functions.
@@ -40,18 +41,33 @@ FluxCalcQS::FluxCalcQS() :
   srcEnum_p(FluxCalcQS::UNKNOWN_SOURCE)
 {
   names_p[FCQS::THREEC286] = RVS4("3C286", "1328+307", "1331+305", "J1331+3030").vector();
+  directions_p[FCQS::THREEC286] = MDirection(MVDirection(3.539257626070549, 0.5324850225220917),
+					     MDirection::J2000);
   names_p[FCQS::THREEC48]  = RVS4("3C48", "0134+329",
                                   "0137+331",              // Together these match 33d09m35s
                                   "J0137+3309").vector();  // for dd.d or ddmm with a margin.
+  directions_p[FCQS::THREEC48] = MDirection(MVDirection(0.4262457643630985, 0.5787463318245085),
+					    MDirection::J2000);
   names_p[FCQS::THREEC147] = RVS4("3C147", "0538+498", "0542+498", 
                                   "J0542+4951").vector();          // Jhhmm+ddmm, CAS-2020
+  directions_p[FCQS::THREEC147] = MDirection(MVDirection(1.4948817765383597, 0.8700805690768509),
+					     MDirection::J2000);
   names_p[FCQS::THREEC138] = RVS4("3C138", "0518+165", "0521+166",
                                   "J0521+1638").vector();          // Jhhmm+ddmm, CAS-2020
+  directions_p[FCQS::THREEC138] = MDirection(MVDirection(1.401346673041897, 0.2904130912582342),
+					     MDirection::J2000);
   names_p[FCQS::NINETEEN34M638] = RigidVector<String, 1>("1934-638").vector();
+  directions_p[FCQS::NINETEEN34M638] = MDirection(MVDirection(5.146176021557448, -1.1119977478136984),
+						  MDirection::J2000);
   names_p[FCQS::THREEC295] = RVS4("3C295", "1409+524", "1411+522",
                                   "J1411+5212").vector();          // Jhhmm+ddmm, CAS-2020
+  directions_p[FCQS::THREEC295] = MDirection(MVDirection(3.7146787856873478, 0.9111103509091509),
+					     MDirection::J2000);
   names_p[FCQS::THREEC196] = RVS4("3C196", "0809+483", "0813+482",
                                   "J0813+4813").vector();          // Jhhmm+ddmm, CAS-2020
+  directions_p[FCQS::THREEC196] = MDirection(MVDirection(2.1537362969610023, 0.8415541320803659),
+					     MDirection::J2000);
+  directions_p[FCQS::UNKNOWN_SOURCE] = MDirection();	// Default.
 }
 
 // Defined even though it's pure virtual; see http://www.gotw.ca/gotw/031.htm

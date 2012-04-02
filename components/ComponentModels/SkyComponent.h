@@ -265,11 +265,11 @@ public:
   // </group>
 
   // Get a nicely formatted string summarizing the component.
-  virtual String summarize(const CoordinateSystem * const coordinates = 0) const;
+  virtual String summarize(const CoordinateSystem *const &coordinates = 0) const;
 
   // If the <src>coordinates</src> parameter is specified, also return the corresponding world
   // coordinates.
-  String positionToString(const CoordinateSystem * const coordinates = 0) const;
+  String positionToString(const CoordinateSystem *const &coordinates = 0) const;
 
 
 private:

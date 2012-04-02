@@ -29,12 +29,9 @@
 #ifndef COMPONENTS_SPECTRALELEMENT_H
 #define COMPONENTS_SPECTRALELEMENT_H
 
-//# Includes
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Utilities/RecordTransformable.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iosfwd.h>
+#include <casa/Containers/RecordInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -49,7 +46,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <prerequisite>
 //   <li> <linkto module=Functionals>Functionals</linkto> module
-//   <li> <linkto class=RecordInterface>RecordInterface</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -57,18 +53,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </etymology>
 //
 // <synopsis>
-// The SpectralElement class is a container for a spectral line descriptor.
-// It can contain a single line (like a Gaussian profile), or a set of
-// related lines (like a doublet or so).
+// The SpectralElement class is the abstract base class for classes
+// describing spectral components (Gaussian, Polynonomial, etc).
 //
 // The element can be used in the
 // <linkto class=SpectralFit>SpectralFit</linkto> class and in the
 // <linkto class=SpectralEstimate>SpectralEstimate</linkto> class.
-//
-// The default type is a Gaussian, defined as:
-// <srcblock>
-//	AMPL.exp[ -(x-CENTER)<sup>2</sup>/2 SIGMA<sup>2</sup>]
-// </srcblock>
 //
 // </synopsis>
 //
@@ -83,292 +73,127 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li> add more profile types
 // </todo>
 
-class SpectralElement : public RecordTransformable {
- public:
+class SpectralElement { // : public RecordTransformable {
+public:
 
-  //# Enumerations
-  // Types of spectral lines known
-  enum Types {
-    // A gaussian profile
-    GAUSSIAN,
-    // A polynomial baseline
-    POLYNOMIAL,
-    // Any compiled string functional
-    COMPILED,
-    N_Types
-  };
+	//# Enumerations
+	// Types of spectral lines known
+	enum Types {
+		// A gaussian profile
+		GAUSSIAN,
+		// A polynomial baseline
+		POLYNOMIAL,
+		// Any compiled string functional
+		COMPILED,
+		// Gaussian multiplet
+		GMULTIPLET,
+		// Lorentzian
+		LORENTZIAN,
+		N_Types
+	};
 
-  //# Constants
-  // Sigma to FWHM conversion factor
-  static const Double SigmaToFWHM;
+	virtual ~SpectralElement();
 
-  //# Constructors
-  // Default constructor creates a default Gaussian element with an amplitude
-  // of 1; an integral <src>(sigma=2sqrt(ln2)/pi)</src> of 1;
-  // a central frequency of zero.
-  SpectralElement();
-  // Construct with given type and values
-  // <thrown>
-  //   <li> AipsError if sigma == 0.0
-  //   <li> AipsError if type not GAUSSIAN
-  // </thrown>
-  SpectralElement(SpectralElement::Types tp, const Double ampl,
-		  const Double center, const Double sigma);
-  // Construct an n-degree polynomial
-  explicit SpectralElement(const uInt n);
-  // Construct a compiled string
-  explicit SpectralElement(const String &str, const Vector<Double> &param);
-  // Construct the given tp with the given param
-  // <thrown>
-  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
-  //   <li> AipsError if sigma == 0.0
-  // </thrown>
-  SpectralElement(SpectralElement::Types tp, const Vector<Double> &param);
-  // Copy constructor (deep copy)
-  // <thrown>
-  //   <li> AipsError if sigma == 0.0
-  // </thrown>
-  SpectralElement(const SpectralElement &other);
+	virtual SpectralElement* clone() const = 0;
 
-  //#Destructor
-  // Destructor
-  ~SpectralElement();
+	// Evaluate the value of the element at x
+	virtual Double operator()(const Double x) const = 0;
 
-  //# Operators
-  // Assignment (copy semantics)
-  // <thrown>
-  //   <li> AipsError if sigma == 0.0
-  // </thrown>
-  SpectralElement &operator=(const SpectralElement &other);
-  // Evaluate the value of the element at x
-  Double operator()(const Double x) const;
-  // Get parameter n
-  // <thrown>
-  //  <li> AipsError if illegal n
-  // </thrown>
-  Double operator[](const uInt n) const;
+	virtual Bool operator==(const SpectralElement& other) const;
 
-  //# Member functions
-  // Get all the types available as String and codes, and number available
-  static const String* allTypes(Int &nall,
-                                const SpectralElement::Types *&typ);
-  // Get a string from the type
-  static const String &fromType(SpectralElement::Types tp);
-  // Get a type from a (non-case sensitive; minimum match) String
-  static Bool toType(SpectralElement::Types &tp,
-		     const String &typName);
+	// Get parameter n
+	// <thrown>
+	//  <li> AipsError if illegal n
+	// </thrown>
+	virtual Double operator[](const uInt n) const;
 
-  // Get the data for this element
-  // <thrown>
-  //  <li> AipsError if element does not have data
-  //	   (e.g. amplitude for POLYNOMIAL)
-  // </thrown>
-  // <group>
-  // Get type of this element
-  SpectralElement::Types getType() const { return tp_p; }
-  // Get amplitude
-  Double getAmpl() const;
-  // Get center value
-  Double getCenter() const;
-  // Get the width
-  // <group>
-  Double getSigma() const;
-  Double getFWHM() const;
-  // </group>
-  // Get all parameters
-  void get(Vector<Double> &param) const;
-  // Get amplitude error estimate
-  Double getAmplErr() const;
-  // Get center value error estimate
-  Double getCenterErr() const;
-  // Get the width error estimate
-  // <group>
-  Double getSigmaErr() const;
-  Double getFWHMErr() const;
-  // </group>
-  // Get error estimates of parameters
-  void getError(Vector<Double> &err) const;
-  // Get the degree of e.g. polynomial
-  uInt getDegree() const;
-  // Get the string of a compiled functional
-  const String &getCompiled() const;
-  // </group>
-  // Get the order (i.e. the number of parameters)
-  uInt getOrder() const { return par_p.nelements(); };
+	// Get all the types available as String and codes, and number available
+	static const String* allTypes(Int &nall,
+			const SpectralElement::Types *&typ);
+	// Get a string from the type
+	static const String &fromType(SpectralElement::Types tp);
+	// Get a type from a (non-case sensitive; minimum match) String
+	static Bool toType(SpectralElement::Types &tp,
+			const String &typName);
 
-  // Set data for element
-  // <group>
-  // Set all data
-  // <thrown>
-  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
-  //   <li> AipsError if sigma == 0.0
-  // </thrown>
-  // <group>
-  // Reset a complete element
-  // <group>
-  template <class MT>
-    void set(SpectralElement::Types tp, const Vector<MT> &param);
-  // </group>
-  // Reset the parameter values only (i.e zero errors and nothing fixed)
-  // <group>
-  template <class MT>
-    void set(const Vector<MT> &param);
-  // </group>
-  // </group>
-  // Set the error fields
-  void setError(const Vector<Double> &err);
-  // Set amplitude
-  // <thrown>
-  //   <li> AipsError if non GAUSSIAN
-  // </thrown>
-  void setAmpl(Double ampl);
-  // Set center
-  // <thrown>
-  //   <li> AipsError if non GAUSSIAN
-  // </thrown>
-  void setCenter(Double center);
-  // Set width
-  // <thrown>
-  //   <li> AipsError if non GAUSSIAN
-  //   <li> AipsError if sigma == 0.0
-  // </thrown>
-  // <group>
-  void setSigma(Double sigma);
-  void setFWHM(Double fwhm);
-  // </group>
-  // </group>
-  // Set degree
-  // <thrown>
-  //   <li> AipsError if non POLYNOMIAL
-  // </thrown>
-  void setDegree(uInt n);
-  // Set a new compiled string
-  // <thrown>
-  //   <li> AipsError if non COMPILED and illegal string
-  // </thrown>
-  void setCompiled(const String &str);
+	// Get the data for this element
+	// <thrown>
+	//  <li> AipsError if element does not have data
+	//	   (e.g. amplitude for POLYNOMIAL)
+	// </thrown>
+	// <group>
+	// Get type of this element
+	SpectralElement::Types getType() const { return tp_p; }
 
-  // Set fixed parameters (True) or unset them (False)
-  // <thrown>
-  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
-  // </thrown>
-  // <group>
-  void fixAmpl(const Bool fix=True);
-  void fixCenter(const Bool fix=True);
-  void fixSigma(const Bool fix=True);
-  void fixFWHM(const Bool fix=True);
-  // Fix/unfix all in one go
-  void fix(const Vector<Bool> &fix);
-  // </group>
+	// Get all parameters
+	void get(Vector<Double>& params) const;
 
-  // Get the fix state[s]
-  // <thrown>
-  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
-  // </thrown>
-  // <group>
-  Bool fixedAmpl() const;
-  Bool fixedCenter() const;
-  Bool fixedSigma() const;
-  Bool fixedFWHM() const;
-  const Vector<Bool> &fixed() const;
-  // </group>
+	Vector<Double> get() const;
 
-  // Construct from record.  Must hold fields "type" (String) and 
-  // "parameters" (Vector<Double>).  For type=GAUSSIAN, parameters
-  // holds amplitude, center and sigma. For type=POLYNOMIAL,
-  // parameters(0) holds the degree.
-  static SpectralElement* fromRecord(const RecordInterface &container);
+	// Get error estimates of parameters
+	void getError(Vector<Double> &err) const;
+	Vector<Double> getError() const;
 
-  // Create a SpectralElement from a record.
-  // An error message is generated, and False
-  // returned if an invalid record is given. A valid record will return True.
-  // A valid record contains the following fields (any additional fields are
-  // ignored):
-  // <ul>
-  // <li> type = TpString: type of element (gaussian etc; case
-  //	 insensitive)
-  // <li> parameters = TpVector(Double): one or more values giving the parameters
-  //		for the type
-  // </ul>
-  // A SpectralElement can be created from a string. In that case the string
-  // will only indicate the type of element (like gaussian), and will
-  // create a default element of that given type.
-  // Error messages are postfixed to error.
-  // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
-  // </group>
+	// Get the order (i.e. the number of parameters)
+	uInt getOrder() const { return par_p.nelements(); };
 
-  // Save to a record.  The return will be False and an error
-  // message generated only if the SpectralElement is illegal (could not happen)
-  // Error messages are postfixed to error.   For Gaussian elements,
-  // the width is defined as a FWHM in the record interface.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+	// Set the error fields
+	virtual void setError(const Vector<Double> &err);
 
-  // Get the identification of a record
-  virtual const String &ident() const;
+	// Set fixed parameters (True) or unset them (False)
+	// <thrown>
+	//   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
+	// </thrown>
 
- private:
-  //#Data
-  // type of element
-  SpectralElement::Types tp_p;
-  // A number (like polynomial degree or number of doublet lines)
-  uInt n_p;
-  // The string value for compiled functional
-  String str_p;
-  // The parameters of the function. I.e. the polynomial coefficients;
-  // amplitude, center and sigma of a Gaussian.
-  Vector<Double> par_p;
-  // The errors of the parameters
-  Vector<Double> err_p;
-  // The indication if the parameter has to be fixed (True) or solved (False).
-  // Solved is the default.
-  Vector<Bool> fix_p;
+	// Fix/unfix all in one go
+	virtual void fix(const Vector<Bool>& fix);
 
-  //# Member functions
-  // Check if GAUSSIAN type
-  // <thrown>
-  //   <li> AipsError if non-Gaussian
-  // </thrown>
-  void checkGauss() const;
-  // Check if POLYNOMIAL type
-  // <thrown>
-  //   <li> AipsError if non-polynomial
-  // </thrown>
-  void checkPoly() const;
-  // Check if COMPILED type
-  // <thrown>
-  //   <li> AipsError if non-compiled
-  // </thrown>
-  void checkCompiled() const;
-  // Check if sigma non-equal to zero and positive if a GAUSSIAN;
-  // if COMPILED check for correct string
-  // <thrown>
-  //   <li> AipsError if illegal sigm
-  // </thrown>
-  void check();
+	// Get the fix state[s]
+	const Vector<Bool> &fixed() const;
 
-  // Sigma to FWHM
-  // Convert from sigma to FWHM and vice versa
-  // <group>
-  static Double sigmaToFWHM (const Double sigma);
-  static Double sigmaFromFWHM (const Double fwhm);
-  // </group>
+	// Save to a record.
+	virtual Bool toRecord(RecordInterface& out) const;
 
+	// set parameters
+	virtual void set(const Vector<Double>& params);
+
+protected:
+	SpectralElement() {}
+
+	SpectralElement(const SpectralElement& other);
+
+	SpectralElement &operator=(const SpectralElement& other);
+
+	void _construct(const Types type, const Vector<Double>& params);
+
+	void _set(const Vector<Double>& params);
+
+	void _setType(const Types type);
+
+private:
+	//#Data
+	// type of element
+	Types tp_p;
+
+	// The parameters of the function. I.e. the polynomial coefficients;
+	// amplitude, center and sigma of a Gaussian.
+	Vector<Double> par_p;
+	// The errors of the parameters
+	Vector<Double> err_p;
+	// The indication if the parameter has to be fixed (True) or solved (False).
+	// Solved is the default.
+	Vector<Bool> fix_p;
 
 };
 
-//# Global functions
-// <summary> Global functions </summary>
-// <group name=Output>
-// Output declaration
-ostream &operator<<(ostream &os, const SpectralElement &elem);
-// </group>
+ostream &operator<<(ostream& os, const SpectralElement& elem);
+
+Bool near(const SpectralElement& s1, const SpectralElement& s2, const Double tol);
+
+Bool nearAbs(const SpectralElement& s1, const SpectralElement& s2, const Double tol);
 
 
 } //# NAMESPACE CASA - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <components/SpectralComponents/Spectral4Element.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
+

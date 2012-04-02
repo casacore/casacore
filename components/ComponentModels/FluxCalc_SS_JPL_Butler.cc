@@ -41,6 +41,7 @@
 #include <measures/Measures.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MeasComet.h>
 #include <scimath/Mathematics/InterpolateArray1D.h>
@@ -58,7 +59,10 @@ FluxCalc_SS_JPL_Butler::FluxCalc_SS_JPL_Butler(const String& objname,
   time_p(time),
   hasTime_p(true),
   hasEphemInfo_p(false),
-  hertz_p("Hz")
+  hertz_p("Hz"),
+  has_ra_p(false),
+  has_dec_p(false),
+  has_illu_p(false)
 {
   hasObjNum_p = setObjNum();
 }
@@ -183,6 +187,28 @@ ComponentType::Shape FluxCalc_SS_JPL_Butler::getShape(Double& angdiam)
   return ComponentType::DISK;
 }
 
+MDirection FluxCalc_SS_JPL_Butler::getDirection()
+{
+  if((!hasEphemInfo_p && !readEphem()) || !(has_ra_p && has_dec_p))
+    return MDirection();
+  
+  return MDirection(MVDirection(Quantity(ra_p, "deg"),
+				Quantity(dec_p, "deg")), MDirection::J2000);
+}
+
+Double FluxCalc_SS_JPL_Butler::getHeliocentricDist()
+{
+  Double dist;
+
+  if(!hasEphemInfo_p && !readEphem())
+    dist = -1.0;
+  if(!has_r_p)
+    dist = -1.0;
+  else
+    dist = r_p;
+  return dist;
+}
+
 uInt FluxCalc_SS_JPL_Butler::n_known() const
 {
   return N_KNOWN;
@@ -205,67 +231,87 @@ Bool FluxCalc_SS_JPL_Butler::readEphem()
   // There may be more than one because of overlapping date ranges.
   const String tabpat(Regex::makeCaseInsensitive(name_p +
                                                  "_[-0-9.]+-[-0-9.]+[ydhms].+\\.tab"));
+
+  // Look for tabpat, in order, in '.', user.ephemerides.directory, and
+  // Aipsrc::findDir(horpath, "data/ephemerides/JPL-Horizons").
+  uInt nephdirs = 1;
+  String userpath;
+  Bool foundUserDir = Aipsrc::find(userpath, "user.ephemerides.directory");
+  if(foundUserDir)
+    ++nephdirs;
   String horpath;
   Bool foundStd = Aipsrc::findDir(horpath, "data/ephemerides/JPL-Horizons");
-  if(!foundStd)
-    horpath = ".";
+  if(foundStd)
+    ++nephdirs;
   
-  os << LogIO::NORMAL
-     << "Looking for an ephemeris table matching " << tabpat
-     << "\n\tin " << horpath
-     << LogIO::POST;
-  
-  Directory hordir(horpath);
-  DirectoryIterator dirIter(hordir, tabpat);
+  Vector<String> ephdirs(nephdirs);
+  ephdirs[0] = ".";
+  if(foundUserDir)
+    ephdirs[1] = userpath;
+  if(foundStd)
+    ephdirs[nephdirs - 1] = horpath;  // nephdirs = 2 + foundUserDir
+
   Bool foundObj = false;
-  Bool found = false;        // = foundObj && right time.
-  uInt firstTimeStart = name_p.length() + 1;  // The + 1 is for the _.
-  Regex timeUnitPat("[ydhms]");
-  Path path;
-
-  while(!dirIter.pastEnd()){
-    path = dirIter.name();
-    foundObj = true;
-    String basename(path.baseName());
-
-    // Look for, respectively, the positions of '--', 'd', and '.' in
-    // '-12345--67890dUTC.tab'.  Note that, just to be tricky, the times in
-    // this example are negative. 
-    uInt firstTimeLen = basename.find('-', firstTimeStart + 1) - firstTimeStart;
-    uInt lastTimeLen = basename.find(timeUnitPat,
-                                     firstTimeStart + firstTimeLen + 1)
-                       - firstTimeStart - firstTimeLen - 1;
-    uInt unitPos  = firstTimeStart + firstTimeLen + 1 + lastTimeLen;
-    
-    Double firstTime = String::toDouble(basename.substr(firstTimeStart, firstTimeLen));
-    Double lastTime = String::toDouble(basename.substr(firstTimeStart + firstTimeLen + 1,
-						       lastTimeLen));
-    Unit unit(basename[unitPos]);
-    String ref(basename.substr(unitPos + 1,
-			       basename.find('.', unitPos + 1) - unitPos - 1));
-    
-    os << LogIO::DEBUG1
-       << basename << ": (first, last)time = ("
-       << firstTime << ", " << lastTime << ")" << unit.getName()
-       << " " << ref
+  Bool found = false;        // = foundObj && right time. 	 
+  Path path; 	 
+  String edir("."); 	 
+  for(uInt pathnum = 0; pathnum < nephdirs && !found; ++pathnum){ 	 
+    edir = ephdirs[pathnum]; 	 
+	  	 
+    os << LogIO::NORMAL2
+       << "Looking for an ephemeris table matching " << tabpat
+       << "\n\tin " << edir
        << LogIO::POST;
-    
-    MEpoch::Types refEnum;
-    Bool refIsValid = MEpoch::getType(refEnum, ref);
-    
-    if(refIsValid){
-      MEpoch::Convert mtimeToDirFrame(time_p, MEpoch::Ref(refEnum));
-      MEpoch mtimeInDirFrame(mtimeToDirFrame());
-      Double dtime = mtimeInDirFrame.get(unit).getValue();
+  
+    Directory hordir(edir);
+    DirectoryIterator dirIter(hordir, tabpat);
+    uInt firstTimeStart = name_p.length() + 1;  // The + 1 is for the _.
+    Regex timeUnitPat("[ydhms]");
 
-      if(dtime <= lastTime && dtime >= firstTime){
-        found = true;
-        break;
+    while(!dirIter.pastEnd()){
+      path = dirIter.name();
+      foundObj = true;
+      String basename(path.baseName());
+
+      // Look for, respectively, the positions of '--', 'd', and '.' in
+      // '-12345--67890dUTC.tab'.  Note that, just to be tricky, the times in
+      // this example are negative. 
+      uInt firstTimeLen = basename.find('-', firstTimeStart + 1) - firstTimeStart;
+      uInt lastTimeLen = basename.find(timeUnitPat,
+				       firstTimeStart + firstTimeLen + 1)
+	- firstTimeStart - firstTimeLen - 1;
+      uInt unitPos  = firstTimeStart + firstTimeLen + 1 + lastTimeLen;
+    
+      Double firstTime = String::toDouble(basename.substr(firstTimeStart, firstTimeLen));
+      Double lastTime = String::toDouble(basename.substr(firstTimeStart + firstTimeLen + 1,
+							 lastTimeLen));
+      Unit unit(basename[unitPos]);
+      String ref(basename.substr(unitPos + 1,
+				 basename.find('.', unitPos + 1) - unitPos - 1));
+    
+      os << LogIO::DEBUG1
+	 << basename << ": (first, last)time = ("
+	 << firstTime << ", " << lastTime << ")" << unit.getName()
+	 << " " << ref
+	 << LogIO::POST;
+    
+      MEpoch::Types refEnum;
+      Bool refIsValid = MEpoch::getType(refEnum, ref);
+    
+      if(refIsValid){
+	MEpoch::Convert mtimeToDirFrame(time_p, MEpoch::Ref(refEnum));
+	MEpoch mtimeInDirFrame(mtimeToDirFrame());
+	Double dtime = mtimeInDirFrame.get(unit).getValue();
+
+	if(dtime <= lastTime && dtime >= firstTime){
+	  found = true;
+	  break;
+	}
       }
-    }
-    // else maybe tabpat isn't specific enough.  Don't panic yet.
+      // else maybe tabpat isn't specific enough.  Don't panic yet.
 
-    ++dirIter;
+      ++dirIter;
+    }
   }
 
   if(!found){
@@ -289,7 +335,7 @@ Bool FluxCalc_SS_JPL_Butler::readEphem()
 
   // path.absoluteName() is liable to give something like cwd +
   // path.baseName(), because path was never given horpath.
-  const String abspath(horpath + "/" + path.baseName());
+  const String abspath(edir + "/" + path.baseName());
 
   if(!Table::isReadable(abspath)){
     os << LogIO::SEVERE
@@ -327,38 +373,91 @@ Bool FluxCalc_SS_JPL_Butler::readEphem()
     return false;
   }
 
-  // Distance from Earth to the object, in AU.  JPL calls it delta, and MeasComet
-  // calls it Rho.
-  ROScalarColumn<Double> delta(tab, "Rho");
   Double tm1 = mjd(rowbef);
   Double t0  = mjd(rowclosest);
   Double tp1 = mjd(rowaft);
-  Double delta_m1 = delta(rowbef);
-  Double delta_0  = delta(rowclosest);
-  Double delta_p1 = delta(rowaft);
   Double f = time_p.get("d").getValue() - t0;
   Double dt = tp1 - tm1;
-  Double d2y = 0.0;
+  Double tp1mt0 = tp1 - t0;
+  Double t0mtm1 = t0 - tm1;
 
-  if(dt > 0){
-    f /= dt;
-    if(tm1 < t0 && t0 < tp1){
-      d2y = (delta_p1 - delta_0) / (tp1 - t0);
-      d2y -= (delta_0 - delta_m1) / (t0 - tm1);
-      d2y *= dt;
-    }
-  }
-  else{
-    os << LogIO::WARN
-       << "The table is not long enough for quadratic interpolation.\n"
-       << "Nearest neighbor will be used."
-       << LogIO::POST;
-    f = 0.0;
-  }
-  delta_p = delta_0 + f * (delta_p1 - delta_m1 + f * d2y);
+  // The distance from Earth to the object, in AU, is mandatory.
+  // JPL calls it delta, and MeasComet calls it Rho.
+  hasEphemInfo_p = found && get_interpolated_value(delta_p, "Rho",
+                                                   tab, rowbef, rowclosest,
+                                                   rowaft, f, dt, tp1mt0,
+                                                   t0mtm1, True);
 
-  hasEphemInfo_p = found;
+  // Heliocentric distance, in AU.
+  has_r_p = get_interpolated_value(r_p, "r", tab, rowbef, rowclosest, rowaft,
+                                   f, dt, tp1mt0, t0mtm1, False);
+
+  // Illumination, in %.
+  has_illu_p = get_interpolated_value(illu_p, "illu", tab, rowbef, rowclosest,
+                                      rowaft, f, dt, tp1mt0, t0mtm1, False);
+  if(has_illu_p)
+    has_illu_p *= 0.01;  // Convert it to a fraction.
+
+  // RA, in deg.
+  has_ra_p = get_interpolated_value(ra_p, "RA", tab, rowbef, rowclosest,
+                                    rowaft, f, dt, tp1mt0, t0mtm1, False);
+
+  // Declination, in deg.
+  has_dec_p = get_interpolated_value(dec_p, "DEC", tab, rowbef, rowclosest,
+                                     rowaft, f, dt, tp1mt0, t0mtm1, False);
+
   return found;
+}
+
+Bool FluxCalc_SS_JPL_Butler::get_interpolated_value(Double& val,
+                                                    const String& colname,
+                                                    const Table& tab,
+                                                    const uInt rowbef,
+                                                    const uInt rowclosest,
+                                                    const uInt rowaft,
+                                                    const Double f,
+                                                    const Double dt,
+                                                    const Double tp1mt0,
+                                                    const Double t0mtm1,
+                                                    const Bool verbose)
+{
+  Bool foundIt = False;
+  LogIO os(LogOrigin("FluxCalc_SS_JPL_Butler", "get_interpolated_value"));
+
+  if(tab.actualTableDesc().isColumn(colname)){
+    Double myf = f;
+    Double d2y = 0.0;
+
+    ROScalarColumn<Double> col(tab, colname);
+    Double col_m1 = col(rowbef);
+    Double col_0  = col(rowclosest);
+    Double col_p1 = col(rowaft);
+    
+    if(dt > 0){
+      myf /= dt;
+      if(t0mtm1 > 0.0 && tp1mt0 > 0.0){
+        d2y = (col_p1 - col_0) / tp1mt0;
+        d2y -= (col_0 - col_m1) / t0mtm1;
+        d2y *= dt;
+      }
+    }
+    else{
+      if(verbose){
+        os << LogIO::NORMAL
+           << "The table is not long enough for quadratic interpolation.\n"
+           << "Nearest neighbor will be used."
+           << LogIO::POST;
+      }
+      myf = 0.0;
+    }
+    val = col_0 + myf * (col_p1 - col_m1 + myf * d2y);
+    foundIt = True;
+  }
+  else
+    os << LogIO::NORMAL
+       << "The table does not have a " << colname << " column."
+       << LogIO::POST;
+  return foundIt;
 }
 
 Bool FluxCalc_SS_JPL_Butler::get_row_numbers(uInt& rowbef, uInt& rowclosest,
@@ -462,7 +561,8 @@ Bool FluxCalc_SS_JPL_Butler::get_row_numbers(uInt& rowbef, uInt& rowclosest,
 ComponentType::Shape FluxCalc_SS_JPL_Butler::compute(Vector<Flux<Double> >& values,
                                                      Vector<Flux<Double> >& errors,
                                                      Double& angdiam,
-                                                     const Vector<MFrequency>& mfreqs)
+                                                     const Vector<MFrequency>& mfreqs,
+						     const Bool report)
 {
   // LogIO os(LogOrigin("FluxCalc_SS_JPL_Butler", "compute"));
 
@@ -491,7 +591,8 @@ ComponentType::Shape FluxCalc_SS_JPL_Butler::compute(Vector<Flux<Double> >& valu
     compute_neptune(values, errors, angdiam, mfreqs);
     break;
   default:
-    Bool success = compute_constant_temperature(values, errors, angdiam, mfreqs);
+    Bool success = compute_constant_temperature(values, errors, angdiam, mfreqs,
+						report);
     if(!success)
       return ComponentType::UNKNOWN_SHAPE;
   };
@@ -710,11 +811,16 @@ void FluxCalc_SS_JPL_Butler::compute_jupiter(Vector<Flux<Double> >& values,
     Double freq = mfreqs[f].get(hertz_p).getValue();
     Double lambdacm = 100.0 * C::c / freq;      // Wavelength in cm.
 
-    if(lambdacm < 0.1 || lambdacm > 6.2){
+    if(lambdacm < 0.1){
       outOfFreqRange = true;
-      temps[f] = temperature_p;
+      lambdacm = 0.1;
     }
-    else if(lambdacm < 0.44){
+    else if(lambdacm > 6.2){
+      outOfFreqRange = true;
+      lambdacm = 6.2;
+    }
+
+    if(lambdacm < 0.44){
       temps[f] = 170.0;
     }
     else if(lambdacm < 0.7){
@@ -733,8 +839,8 @@ void FluxCalc_SS_JPL_Butler::compute_jupiter(Vector<Flux<Double> >& values,
   if(outOfFreqRange)
     os << LogIO::WARN
        << "At least one of the wavelengths went outside the nominal range\n"
-       << "of 1mm to 6.2cm, so the ephemeris value ("
-       << temperature_p << ") was used."
+       << "of 1mm to 6.2cm, so the wavelength was clamped to 1mm or 6.2cm for\n"
+       << "calculating the effective temperature of Jupiter."
        << LogIO::POST;
 
   compute_GB(values, errors, angdiam, mfreqs, temps);
@@ -754,11 +860,16 @@ void FluxCalc_SS_JPL_Butler::compute_uranus(Vector<Flux<Double> >& values,
     Double freq = mfreqs[f].get(hertz_p).getValue();
     Double lambdacm = 100.0 * C::c / freq;      // Wavelength in cm.
 
-    if(lambdacm < 0.07 || lambdacm > 6.2){
+    if(lambdacm < 0.07){
       outOfFreqRange = true;
-      temps[f] = temperature_p;
+      lambdacm = 0.07;
     }
-    else if(lambdacm < 0.4){
+    else if(lambdacm > 6.2){
+      outOfFreqRange = true;
+      lambdacm = 6.2;
+    }
+
+    if(lambdacm < 0.4){
       // 32.46063842 = 40.0 / ln(4.0)
       temps[f] = 90.0 + 32.46063842 * log(10.0 * lambdacm);
     }
@@ -772,8 +883,8 @@ void FluxCalc_SS_JPL_Butler::compute_uranus(Vector<Flux<Double> >& values,
   if(outOfFreqRange)
     os << LogIO::WARN
        << "At least one of the wavelengths went outside the nominal range\n"
-       << "of 0.7mm to 6.2cm, so the ephemeris value ("
-       << temperature_p << ") was used."
+       << "of 0.7mm to 6.2cm, so the wavelength was clamped at either 0.7mm or 6.2cm\n"
+       << "for calculating the effective temperature of Uranus."
        << LogIO::POST;
 
   compute_GB(values, errors, angdiam, mfreqs, temps);
@@ -805,11 +916,16 @@ void FluxCalc_SS_JPL_Butler::compute_neptune(Vector<Flux<Double> >& values,
     //  Neptune to NH3.  Uranus has barely any, at least while we're looking at
     //  its pole.)
     //
-    if(freq < 4.0 || freq > 1000.0){
+    if(freq < 4.0){
       outOfFreqRange = true;
-      temps[f] = temperature_p;
+      freq = 4.0;
     }
-    else if(freq < 70.0){
+    else if(freq > 1000.0){
+      outOfFreqRange = true;
+      freq = 1000.0;
+    }
+    
+    if(freq < 70.0){
       // 30.083556662 = 80.0 / ln(1000.0 / 70.0)
       temps[f] = 140.0 - 30.083556662 * log(freq / 70.0);
     }
@@ -821,8 +937,8 @@ void FluxCalc_SS_JPL_Butler::compute_neptune(Vector<Flux<Double> >& values,
   if(outOfFreqRange)
     os << LogIO::WARN
        << "At least one of the frequencies went outside the nominal range\n"
-       << "of 4 to 1000 GHz, so the ephemeris value ("
-       << temperature_p << ") was used."
+       << "of 4 to 1000 GHz for Neptune, so it was clamped to 4 or 1000 GHz\n"
+       << "for calculating the effective temperature."
        << LogIO::POST;
 
   compute_GB(values, errors, angdiam, mfreqs, temps);
@@ -831,7 +947,8 @@ void FluxCalc_SS_JPL_Butler::compute_neptune(Vector<Flux<Double> >& values,
 Bool FluxCalc_SS_JPL_Butler::compute_constant_temperature(Vector<Flux<Double> >& values,
 							  Vector<Flux<Double> >& errors,
 							  const Double angdiam,
-							  const Vector<MFrequency>& mfreqs)
+							  const Vector<MFrequency>& mfreqs,
+							  const Bool report)
 {
   LogIO os(LogOrigin("FluxCalc_SS_JPL_Butler", "compute_constant_temperature"));
 
@@ -840,106 +957,136 @@ Bool FluxCalc_SS_JPL_Butler::compute_constant_temperature(Vector<Flux<Double> >&
 
   switch(objnum_p){
   case FluxCalc_SS_JPL_Butler::Pluto:
-    // Using the value from:
-    //   Altenhoff, W. J., R. Chini, H. Hein, E. Kreysa, P. G. Mezger, 
-    //      C. Salter, and J. B. Schraml, First radio astronomical estimate 
-    //      of the temperature of Pluto, A&ALett, 190, L15-L17, 1988
-    // which is: Tb = 35 K at 1.27 mm.  this is a correction from the 
-    // value of 39 K in the paper, due to the incorrect geometric mean size 
-    // used for Pluto and Charon (1244 km vs the correct 1320 km).  this is
-    // similar to the value found in:
-    //   Stern, S. A., D. A. Weintraub, and M. C. Festou, Evidence for a Low 
-    //      Surface Temperature on Pluto from Millimeter-Wave Thermal
-    //      Emission Measurements, Science, 261, 1713-1716, 1993
-    // and is a good match to the physical temperature reported in:
-    //   Tryka, K. A., R. H. Brown, D. P. Cruikshank, T. C. Owen, T. R.
-    //      Geballe, and C. DeBergh, Temperature of Nitrogen Ice on Pluto and
-    //      Its Implications for Flux Measurements, Icarus, 112, 513-527, 
-    //      1994
-    // where they give a surface temperature of 40+-2 K.  this would imply
-    // an emissivity of 0.875, which is certainly reasonable.  
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Using the value from:"
+	 << "  Altenhoff, W. J., R. Chini, H. Hein, E. Kreysa, P. G. Mezger, "
+	 << "     C. Salter, and J. B. Schraml, First radio astronomical estimate "
+	 << "     of the temperature of Pluto, A&ALett, 190, L15-L17, 1988"
+	 << "which is: Tb = 35 K at 1.27 mm.  this is a correction from the "
+	 << "value of 39 K in the paper, due to the incorrect geometric mean size "
+	 << "used for Pluto and Charon (1244 km vs the correct 1320 km).  this is"
+	 << "similar to the value found in:"
+	 << "  Stern, S. A., D. A. Weintraub, and M. C. Festou, Evidence for a Low "
+	 << "     Surface Temperature on Pluto from Millimeter-Wave Thermal"
+	 << "     Emission Measurements, Science, 261, 1713-1716, 1993"
+	 << "and is a good match to the physical temperature reported in:"
+	 << "  Tryka, K. A., R. H. Brown, D. P. Cruikshank, T. C. Owen, T. R."
+	 << "     Geballe, and C. DeBergh, Temperature of Nitrogen Ice on Pluto and"
+	 << "     Its Implications for Flux Measurements, Icarus, 112, 513-527, "
+	 << "     1994"
+	 << "where they give a surface temperature of 40+-2 K.  this would imply"
+	 << "an emissivity of 0.875, which is certainly reasonable."
+	 << LogIO::POST;
     temperature_p = 35.0;
     break;
   case FluxCalc_SS_JPL_Butler::Io:
-    os << LogIO::NORMAL1
-       << "Reference for Io's temperature (110K):\n"
-       << "Rathbun, J.A., Spencer, J.R. Tamppari, L.K., Martin, T.Z., Barnard, L.,\n"
-       << "Travis, L.D. (2004). \"Mapping of Io's thermal radiation by the Galileo\n"
-       << "photopolarimeter-radiometer (PPR) instrument\". Icarus 169:127-139.\n"
-       << "doi:10.1016/j.icarus.2003.12.021\n"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Io's temperature (110K):\n"
+	 << "Rathbun, J.A., Spencer, J.R. Tamppari, L.K., Martin, T.Z., Barnard, L.,\n"
+	 << "Travis, L.D. (2004). \"Mapping of Io's thermal radiation by the Galileo\n"
+	 << "photopolarimeter-radiometer (PPR) instrument\". Icarus 169:127-139.\n"
+	 << "doi:10.1016/j.icarus.2003.12.021\n"
+	 << LogIO::POST;
     temperature_p = 110.0;
     break;
   case FluxCalc_SS_JPL_Butler::Ganymede:
-    os << LogIO::NORMAL1
-       << "Reference for Ganymede's temperature (110K):\n"
-       << "Delitsky, Mona L., Lane, Arthur L. (1998). \"Ice chemistry of Galilean satellites\"\n"
-       << "J. of Geophys. Res. 103 (E13): 31,391-31,403. doi:10.1029/1998/JE900020\n"
-       << "http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/20675/1/98-1725.pdf"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Ganymede's temperature (110K):\n"
+	 << "Delitsky, Mona L., Lane, Arthur L. (1998). \"Ice chemistry of Galilean satellites\"\n"
+	 << "J. of Geophys. Res. 103 (E13): 31,391-31,403. doi:10.1029/1998/JE900020\n"
+	 << "http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/20675/1/98-1725.pdf"
+	 << LogIO::POST;
     temperature_p = 110.0;
     break;
   case FluxCalc_SS_JPL_Butler::Callisto:
-    os << LogIO::NORMAL1
-       << "Reference for Callisto's temperature (134 +- 11 K):\n"
-       << "Moore, Jeffrey M., Chapman, Clark R., Bierhaus, Edward B. et al\n"
-       << "(2004). \"Callisto\" In Bagenal, F., Dowling, T.E., McKinnon, W.B.,\n"
-       << "\"Jupiter: The Planet, Satellites, and Magnetosphere\". Cambridge Univ. Press"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Callisto's temperature (134 +- 11 K):\n"
+	 << "Moore, Jeffrey M., Chapman, Clark R., Bierhaus, Edward B. et al\n"
+	 << "(2004). \"Callisto\" In Bagenal, F., Dowling, T.E., McKinnon, W.B.,\n"
+	 << "\"Jupiter: The Planet, Satellites, and Magnetosphere\". Cambridge Univ. Press"
+	 << LogIO::POST;
     temperature_p = 134.0;   	// +- 11.
     break;
   case FluxCalc_SS_JPL_Butler::Europa:
-    os << LogIO::NORMAL1
-       << "Reference for Europa's temperature (109 K):\n"
-       << "http://science.nasa.gov/science-news/science-at-nasa/1998/ast03dec98_1/"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Europa's temperature (109 K):\n"
+	 << "http://science.nasa.gov/science-news/science-at-nasa/1998/ast03dec98_1/"
+	 << LogIO::POST;
     temperature_p = 109.0;
     break;
   case FluxCalc_SS_JPL_Butler::Titan:
     temperature_p = 76.6;
     break;
   case FluxCalc_SS_JPL_Butler::Triton:
-    os << LogIO::NORMAL1
-       << "Reference for Triton's temperature (38 K):\n"
-       << "http://solarsystem.nasa.gov/planets/profile.cfm?Object=Triton"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Triton's temperature (38 K):\n"
+	 << "http://solarsystem.nasa.gov/planets/profile.cfm?Object=Triton"
+	 << LogIO::POST;
     temperature_p = 38.0;
     break;
   case FluxCalc_SS_JPL_Butler::Ceres:
-    os << LogIO::NORMAL1
-       << "Reference for Ceres' mean temperature (167K):\n"
-       << "Saint-Pe, O., Combes, N., Rigaut, F. (1993). \"Ceres surface properties\n"
-       << "by high-resolution imaging from Earth\" Icarus 105:271-281.\n"
-       << "doi:10.1006/icar.1993.1125"
-       << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL1
+	 << "Reference for Ceres' mean temperature (167K):\n"
+	 << "Saint-Pe, O., Combes, N., Rigaut, F. (1993). \"Ceres surface properties\n"
+	 << "by high-resolution imaging from Earth\" Icarus 105:271-281.\n"
+	 << "doi:10.1006/icar.1993.1125"
+	 << LogIO::POST;
     temperature_p = 167.0;
     break;
   case FluxCalc_SS_JPL_Butler::Pallas:
-    os << LogIO::WARN
-       << "The orbit of Pallas has an eccentricity of 0.231.  This is not yet accounted\n"
-       << "for when calculating its temperature (taken to be 164K)."
-       << LogIO::POST;
+    if(report)
+      os << LogIO::WARN
+	 << "The orbit of Pallas has an eccentricity of 0.231.  This is not yet accounted\n"
+	 << "for when calculating its temperature (taken to be 164K)."
+	 << LogIO::POST;
     temperature_p = 164.0;
     break;
   case FluxCalc_SS_JPL_Butler::Juno:
-    os << LogIO::WARN
-       << "Juno has a large crater and temperature changes."
-       << LogIO::POST;
-    os << LogIO::NORMAL1
-       << "Reference for Juno's mean temperature (163K):\n"
-       << "Lim, Lucy F., McConnochie, Timothy H., Bell, James F., Hayward, Thomas L. (2005).\n"
-       << "\"Thermal infrared (8-13 um) spectra of 29 asteroids: the Cornell Mid-Infrared\n"
-       << "Asteroid Spectroscopy (MIDAS) Survey\" Icarus 173:385-408.\n"
-       << "doi:10.1016/j.icarus.2004.08.005."
-       << LogIO::POST;
+    if(report){
+      os << LogIO::WARN
+	 << "Juno has a large crater and temperature changes that CASA does not fully account for."
+	 << LogIO::POST;
+      os << LogIO::NORMAL1
+	 << "Reference for Juno's mean temperature (163K):\n"
+	 << "Lim, Lucy F., McConnochie, Timothy H., Bell, James F., Hayward, Thomas L. (2005).\n"
+	 << "\"Thermal infrared (8-13 um) spectra of 29 asteroids: the Cornell Mid-Infrared\n"
+	 << "Asteroid Spectroscopy (MIDAS) Survey\" Icarus 173:385-408.\n"
+	 << "doi:10.1016/j.icarus.2004.08.005."
+	 << LogIO::POST;
+    }
     temperature_p = 163.0;
+    break;
+  case FluxCalc_SS_JPL_Butler::Vesta:
+    if(report){
+      os << LogIO::WARN
+	 << "Vesta has a large crater, and its mean emissivity varies from\n"
+         << "0.6 in the submm to 0.7 in the mm.  Its mean submm brightness temperature varies\n"
+         << "from ~116 to 173K and its rotation period is 5.342h.\n "
+         << "CASA does not yet account for these variations."
+	 << LogIO::POST;
+      os << LogIO::NORMAL1
+	 << "Reference for Vesta's mean brightness temperature (160K):\n"
+	 << "Chamberlain et al., (2009).\n"
+	 << "\"Submillimeter photometry and lightcurves of Ceres and other large asteroids\"\n"
+         << "Icarus 202:487-501.\n"
+	 << LogIO::POST;
+    }
+    temperature_p = 160.0;
     break;
   default:
     break;
   };
     
   if(temperature_p > 0.0){
-    os << LogIO::NORMAL << "Using blackbody model." << LogIO::POST;
+    if(report)
+      os << LogIO::NORMAL << "Using blackbody model." << LogIO::POST;
     compute_BB(values, errors, angdiam, mfreqs);
   }
   else{

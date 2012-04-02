@@ -3,11 +3,18 @@
 #
 
 add_library (casa_components
+SpectralComponents/CompiledSpectralElement.cc
+SpectralComponents/GaussianSpectralElement.cc
+SpectralComponents/LorentzianSpectralElement.cc
+SpectralComponents/GaussianMultipletSpectralElement.cc
+SpectralComponents/PCFSpectralElement.cc
+SpectralComponents/PolynomialSpectralElement.cc
 SpectralComponents/SpectralFit.cc
 SpectralComponents/SpectralEstimate.cc
-SpectralComponents/Spectral2Element.cc
 SpectralComponents/SpectralList.cc
 SpectralComponents/SpectralElement.cc
+SpectralComponents/SpectralElement2.cc
+SpectralComponents/SpectralElementFactory.cc
 ComponentModels/GaussianShape.cc
 ComponentModels/TwoSidedShape.cc
 ComponentModels/SpectralModel.cc
@@ -67,12 +74,18 @@ DESTINATION include/casacore/components/ComponentModels
 )
 
 install (FILES
+SpectralComponents/CompiledSpectralElement.h
+SpectralComponents/GaussianSpectralElement.h
+SpectralComponents/GaussianMultipletSpectralElement.h
+SpectralComponents/LorentzianSpectralElement.h
+SpectralComponents/PCFSpectralElement.h
 SpectralComponents/ProfileFit1D.h
 SpectralComponents/ProfileFit1D.tcc
+SpectralComponents/PolynomialSpectralElement.h
 SpectralComponents/SpectralEstimate.h
 SpectralComponents/Spectral2Estimate.tcc
 SpectralComponents/SpectralElement.h
-SpectralComponents/Spectral4Element.tcc
+SpectralComponents/SpectralElementFactory.h
 SpectralComponents/SpectralFit.h
 SpectralComponents/SpectralFit2.tcc
 SpectralComponents/SpectralList.h

@@ -68,7 +68,8 @@ SkyCompRep::SkyCompRep()
    itsFlux(),
    itsLabel()
 {
-  AlwaysAssert(ok(), AipsError);
+	AlwaysAssert(ok(), AipsError);
+
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape& shape)
@@ -77,7 +78,7 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape& shape)
    itsFlux(),
    itsLabel()
 {
-  AlwaysAssert(ok(), AipsError);
+	AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape& shape,
@@ -87,7 +88,7 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape& shape,
    itsFlux(),
    itsLabel()
 {
-  AlwaysAssert(ok(), AipsError);
+	AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const Flux<Double>& flux,
@@ -111,9 +112,7 @@ SkyCompRep::SkyCompRep(const SkyCompRep& other)
   AlwaysAssert(ok(), AipsError);
 }
 
-SkyCompRep::~SkyCompRep() {
-  DebugAssert(ok(), AipsError);
-}
+SkyCompRep::~SkyCompRep() {}
 
 SkyCompRep& SkyCompRep::operator=(const SkyCompRep& other) {
   if (this != &other) {
@@ -127,12 +126,10 @@ SkyCompRep& SkyCompRep::operator=(const SkyCompRep& other) {
 }
 
 const Flux<Double>& SkyCompRep::flux() const {
-  DebugAssert(ok(), AipsError);
   return itsFlux;
 }
 
 Flux<Double>& SkyCompRep::flux() {
-  DebugAssert(ok(), AipsError);
   return itsFlux;
 }
 
@@ -142,37 +139,30 @@ const ComponentShape& SkyCompRep::shape() const {
 }
 
 ComponentShape& SkyCompRep::shape() {
-  DebugAssert(ok(), AipsError);
   return *itsShapePtr;
 }
 
 void SkyCompRep::setShape(const ComponentShape& newShape) {
-  DebugAssert(ok(), AipsError);
   itsShapePtr = newShape.clone();
 }
 
 SpectralModel& SkyCompRep::spectrum() {
-  DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
 }
 
 const SpectralModel& SkyCompRep::spectrum() const {
-  DebugAssert(ok(), AipsError);
   return *itsSpectrumPtr;
 }
 
 void SkyCompRep::setSpectrum(const SpectralModel& newSpectrum) {
-  DebugAssert(ok(), AipsError);
   itsSpectrumPtr = newSpectrum.clone();
 }
 
 String& SkyCompRep::label() {
-  DebugAssert(ok(), AipsError);
   return itsLabel;
 }
 
 const String& SkyCompRep::label() const {
-  DebugAssert(ok(), AipsError);
   return itsLabel;
 }
 
@@ -201,7 +191,6 @@ Flux<Double> SkyCompRep::sample(const MDirection& direction,
 				const MVAngle& pixelLatSize,
 				const MVAngle& pixelLongSize,
 				const MFrequency& centerFrequency) const {
-  DebugAssert(ok(), AipsError);
   Double scale = itsShapePtr->sample(direction, pixelLatSize, pixelLongSize);
   scale *= itsSpectrumPtr->sample(centerFrequency);
   Flux<Double> flux = itsFlux.copy();
@@ -216,14 +205,8 @@ void SkyCompRep::sample(Cube<Double>& samples, const Unit& reqUnit,
 			const MVAngle& pixelLongSize, 
 			const Vector<MVFrequency>& frequencies,
 			const MeasRef<MFrequency>& freqRef) const {
-  DebugAssert(ok(), AipsError);
   const uInt nDirSamples = directions.nelements();
-  DebugAssert(samples.nrow() == 4, AipsError);
-  DebugAssert(samples.ncolumn() == nDirSamples, AipsError);
   const uInt nFreqSamples = frequencies.nelements();
-  DebugAssert(samples.nplane() == nFreqSamples, AipsError);
-  DebugAssert(pixelLatSize.radian() > 0.0, AipsError);
-  DebugAssert(pixelLongSize.radian() > 0.0, AipsError);
   
   Flux<Double> f = itsFlux.copy();
   f.convertUnit(reqUnit);
@@ -254,7 +237,6 @@ void SkyCompRep::sample(Cube<Double>& samples, const Unit& reqUnit,
 
 Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
 				    const Double& frequency) const {
-  DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
   Double scale = itsShapePtr->visibility(uvw, frequency).real();
   MFrequency freq(Quantity(frequency, "Hz"));
@@ -266,14 +248,8 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
 void SkyCompRep::visibility(Cube<DComplex>& visibilities,
 			    const Matrix<Double>& uvws,
 			    const Vector<Double>& frequencies) const {
-  DebugAssert(ok(), AipsError);
-  DebugAssert(uvws.nrow() == 3, AipsError);
-  DebugAssert(visibilities.nrow() == 4, AipsError);
   const uInt nFreq = frequencies.nelements();
-  DebugAssert(visibilities.ncolumn() == nFreq, AipsError);
   const uInt nVis = uvws.ncolumn();
-  DebugAssert(visibilities.nplane() == nVis, AipsError);
-  DebugAssert(itsShapePtr->isSymmetric(), AipsError);
 
   Vector<Double> uvw(3);
   Block<DComplex> flux(4);
@@ -467,7 +443,6 @@ Bool SkyCompRep::toRecord(String& errorMessage,
     record.defineRecord(RecordFieldId("spectrum"), spectrumRec);
   }
   record.define(RecordFieldId("label"), itsLabel);
-  DebugAssert(ok(), AipsError);
   return True;
 }
 

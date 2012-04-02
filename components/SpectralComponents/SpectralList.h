@@ -105,8 +105,8 @@ class SpectralList {
   //  <li> AipsError if illegal n
   // </thrown>
   // <group>
-  const SpectralElement &operator[](const uInt n) const;
-  SpectralElement &operator[](const uInt n);
+  const SpectralElement* operator[](const uInt n) const;
+  SpectralElement* operator[](const uInt n);
   // </group>
 
   //# Member functions
@@ -173,7 +173,7 @@ class SpectralList {
 
   //# Member functions
   // Compare two elements
-  Int compar(const SpectralElement &p1, const SpectralElement &p2);
+  Int compar(const SpectralElement &p1, const SpectralElement &p2) const;
 
 };
 

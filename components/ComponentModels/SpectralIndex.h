@@ -57,7 +57,7 @@ template <class T> class Vector;
 
 // This class like the other spectral models becomes more useful when used
 // through the <linkto class=SkyComponent>SkyComponent</linkto> class, which
-// incorperates the flux and spatial variation of the emission, or through the
+// incorporates the flux and spatial variation of the emission, or through the
 // <linkto class=ComponentList>ComponentList</linkto> class, which handles
 // groups of SkyComponent objects.
 

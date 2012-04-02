@@ -17,7 +17,7 @@
 //# along with this library; if not, write to the Free Software Foundation,
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
-//# Correspondence concerning AIPS++ should be adressed as follows:
+//# Correspondence concerning AIPS++ should be addressed as follows:
 //#        Internet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
@@ -33,6 +33,7 @@
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MEpoch.h>
 //#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MDirection.h>
 #include <components/ComponentModels/Flux.h>
 #include <tables/Tables/ScalarColumn.h>
 
@@ -109,9 +110,15 @@ class FluxCalc_SS_JPL_Butler
   Bool getTime(MEpoch& output) const;
   //Bool getFreq(MFrequency& output) const;
 
+  // Returns the default direction (N. Pole) on failure.
+  MDirection getDirection();
+
   // Sets angdiam to the source's angular diameter in radians and returns the
   // object's component type (i.e. DISK), or UNKNOWN_SHAPE on failure.
   ComponentType::Shape getShape(Double& angdiam);
+
+  // Returns the distance from the object to the Sun in AU, or -1 if unknown.
+  Double getHeliocentricDist();
 
   // returns the number of objects supported by this class.
   uInt n_known() const;
@@ -124,13 +131,17 @@ class FluxCalc_SS_JPL_Butler
   //    the model's shape, or UNKNOWN_SHAPE on failure.
   // Inputs:
   //    must be already set, or it returns UNKNOWN_SHAPE.
+  //    report: If False, suppress logger messages like e.g. references for the
+  //            temperature.  Intended for use in a loop, i.e. print the
+  //            messages for the 1st spw but do not repeat them for the others.
   // Output args:
   //    value: the calculated flux.
   //    error: the estimated uncertainty of value.
   //    angdiam: angular diameter in radians
   ComponentType::Shape compute(Vector<Flux<Double> >& values,
                                Vector<Flux<Double> >& errors, Double& angdiam,
-                               const Vector<MFrequency>& mfreqs);
+                               const Vector<MFrequency>& mfreqs,
+			       const Bool report=True);
 
   // Same as the above, but for a set of sets of frequencies, i.e.
   // mfreqs[spw] is a set of frequencies for channels in spectral window spw.
@@ -206,15 +217,30 @@ class FluxCalc_SS_JPL_Butler
                      const Vector<MFrequency>& mfreqs);
 
   // Uses objnum_p to look up a mean temperature, and uses that.
+  // report: If False, suppress logger messages like references for the
+  // temperature.  Intended for use in a loop, i.e. print the
+  // messages for the 1st spw but do not repeat them for the others.
   // Returns whether or not it was successful.
   Bool compute_constant_temperature(Vector<Flux<Double> >& values,
-				    Vector<Flux<Double> >& errors, const Double angdiam,
-				    const Vector<MFrequency>& mfreqs);  
+				    Vector<Flux<Double> >& errors,
+				    const Double angdiam,
+				    const Vector<MFrequency>& mfreqs,
+				    const Bool report=True);  
 
   // Find the row in mjd closest to time_p, and the rows just before and after
   // it, taking boundaries into account.
   Bool get_row_numbers(uInt& rowbef, uInt& rowclosest, uInt& rowaft,
 		       const ROScalarColumn<Double>& mjd);
+
+  // Put a quadratic, linear, or nearest neighbor interpolation of colname into
+  // val.  Returns whether or not it did it.
+  // verbose: Send a message to the logger if nearest neighbor is used.
+  static Bool get_interpolated_value(Double& val, const String& colname,
+                                     const Table& tab, const uInt rowbef,
+                                     const uInt rowclosest, const uInt rowaft,
+                                     const Double f, const Double dt,
+                                     const Double tp1mt0, const Double t0mtm1,
+                                     const Bool verbose=True);
 
   // Data members which are initialized in the c'tor's initialization list:
   String     name_p;
@@ -225,6 +251,9 @@ class FluxCalc_SS_JPL_Butler
   // Bool       hasFreq_p;
   Bool       hasEphemInfo_p;
   Unit       hertz_p;           // make it static and/or const?
+  Bool       has_ra_p;
+  Bool       has_dec_p;
+  Bool       has_illu_p;
 
   // These are also initialized by the c'tor, but not in the initialization
   // list:
@@ -237,6 +266,10 @@ class FluxCalc_SS_JPL_Butler
   Double r_p;           // heliocentric distance in AU
   Double delta_p;       // geocentric distance in AU
   Double phang_p;       // Phase angle in radians.
+  Bool   has_r_p;
+  Double illu_p;        // Illumination, as a fraction.
+  Double ra_p;          // RA, in deg.
+  Double dec_p;         // Declination, in deg.
 };
 
 

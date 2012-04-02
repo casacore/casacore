@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
       return retval;
     }
   }
+  Double reltol = 1.0e-5;
   
   try {
     String fluxScaleName;
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
     returnFluxErrs[1].resize(1);
     Vector<String> tempCLs(nspws);
     
-    const uInt nSSobjs = 10;
+    const uInt nSSobjs = 11;
     Vector<String> objnames(nSSobjs);
 
     // Expected flux densities (Jy)  They will be used in a relative
@@ -138,8 +139,7 @@ int main(int argc, char* argv[])
     expads[2] = 1.70287e-06;
     objnames[3] = "Jupiter";
     expfds[3][0] = 1438.55;	// 115 GHz
-    expfds[3][1] = 2.78922;	// 345 GHz, outside model limit (lambda >= 1mm),
-				// so it uses the CMB temperature with a warning.
+    expfds[3][1] = 12529.0;	// 345 GHz, outside model limit (lambda >= 1mm)
     expads[3] = 0.000164169;
     objnames[4] = "Ganymede";
     expfds[4][0] = 1.33757;	// 115 GHz
@@ -165,6 +165,10 @@ int main(int argc, char* argv[])
     expfds[9][0] = 0.00250031;	// 115 GHz
     expfds[9][1] = 0.0190617;	// 345 GHz
     expads[9] = 4.92412e-07;
+    objnames[10] = "Vesta";
+    expfds[10][0] = 0.0522284;	// 115 GHz
+    expfds[10][1] = 0.453937;	// 345 GHz
+    expads[10] = 1.02016e-06;
 
     // Not tested; essentially a dummy.
     const MDirection fieldDir;
@@ -213,7 +217,7 @@ int main(int argc, char* argv[])
 	    cout << "\tcalculated major axis: "
 		 << ((TwoSidedShape*)(cl.getShape(0)))->majorAxisInRad()
 		 << " radians" << endl;
-	    AlwaysAssert(fabs(((TwoSidedShape*)(cl.getShape(0)))->majorAxisInRad() / expads[i] - 1.0) < 0.001,
+	    AlwaysAssert(fabs(((TwoSidedShape*)(cl.getShape(0)))->majorAxisInRad() / expads[i] - 1.0) < reltol,
 			 AipsError);
 	    cout << "\tPassed angular diameter test." << endl;
 	  }
@@ -222,7 +226,7 @@ int main(int argc, char* argv[])
 	  cout << "\tcalculated flux density at "
 	       << 1.0e-9 * spws[spwInd][0].get(hertz).getValue() << " GHz: "
 	       << fluxUsed[0] << " Jy" << endl;
-	  AlwaysAssert(fabs(fluxUsed[0] / expfds[i][spwInd] - 1.0) < 0.001,
+	  AlwaysAssert(fabs(fluxUsed[0] / expfds[i][spwInd] - 1.0) < reltol,
 	  	       AipsError);
 	  cout << "\tPassed flux density test." << endl;
 	  if(tempCLs[spwInd] != ""){
@@ -262,7 +266,7 @@ int main(int argc, char* argv[])
              << ((TwoSidedShape*)(cl.getShape(0)))->majorAxisInRad()
              << " radians" << endl;
         AlwaysAssert(fabs(((TwoSidedShape*)(cl.getShape(0)))->majorAxisInRad() /
-                          expads[0] - 1.0) < 0.001,
+                          expads[0] - 1.0) < reltol,
                      AipsError);
         cout << "\tPassed TabularSpectrum angular diameter test." << endl;
 
@@ -273,7 +277,7 @@ int main(int argc, char* argv[])
           cout << "\tcalculated flux density at "
                << 1.0e-9 * onespw[0][freqInd].get(hertz).getValue() << " GHz: "
                << fluxUsed[0] << " Jy" << endl;
-          AlwaysAssert(fabs(fluxUsed[0] / expfds[0][freqInd] - 1.0) < 0.001,
+          AlwaysAssert(fabs(fluxUsed[0] / expfds[0][freqInd] - 1.0) < reltol,
                        AipsError);
           cout << "\tPassed TabularSpectrum flux density test." << endl;
         }
