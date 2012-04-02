@@ -802,7 +802,24 @@ namespace casa { //# name space casa begins
   {
     Record rec;
     itsCoordSys->save (rec, "x");
-    return rec.subRecord("x");
+    Record& coord = rec.rwSubRecord("x");
+    // Add the pixel axes info, so it can be used in coordinates.py.
+    // Give the info in C-order (thus reverse values).
+    // Also add the axes lengths.
+    IPosition shape = itsLattice->shape();
+    for (uInt i=0; i<itsCoordSys->nCoordinates(); ++i) {
+      Vector<Int> paxes = itsCoordSys->pixelAxes(i);
+      Vector<Int> axes(paxes.size());
+      Vector<Int> axshp(paxes.size());
+      for (uInt j=0; j<paxes.size(); ++j) {
+        axes[j]  = shape.size() - paxes[paxes.size()-j-1] - 1;
+        axshp[j] = shape[paxes[j]];
+      }
+      Record& coordRec = coord.rwSubRecord (itsCoordSys->coordRecordName(i));
+      coordRec.define ("_image_axes", axes);
+      coordRec.define ("_axes_sizes", axshp);
+    }
+    return coord;
   }
 
   Vector<Double> ImageProxy::toWorld (const Vector<Double>& pixel,
