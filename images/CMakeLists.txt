@@ -1,6 +1,7 @@
 #
 # CASA Images
 #
+
 BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
 FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
 
@@ -34,7 +35,6 @@ Images/ImagePolarimetry.cc
 Images/ImageExprGram.cc
 Images/MaskSpecifier.cc
 Images/ImageMomentsProgress.cc
-Images/ImageAnalysis.cc
 Images/FITSImage.cc
 Images/FITSImgParser.cc
 Images/PagedImage2.cc
@@ -45,7 +45,6 @@ Images/ImageAttrHandler.cc
 Images/ImageAttrHandlerCasa.cc
 Images/ImageAttrHandlerHDF5.cc
 Images/ImagePolProxy.cc
-Images/ImageProfileFit.cc
 Images/ImageExprParse.cc
 Images/ImageOpener.cc
 Images/LELImageCoord.cc
@@ -56,12 +55,7 @@ Images/MIRIADImage.cc
 Images/HDF5Image2.cc
 Images/ImageProxy.cc
 Images/ComponentImager.cc
-Images/ImageCollapser.cc
-Images/ImageInputProcessor.cc
 Images/ImageReorderer.cc
-Images/ImageFitter.cc
-Images/ImageProfileFitter.cc
-IO/FitterEstimatesFileParser.cc
 Wnbt/ComponentUpdate.cc
 ${BISON_ImageExprGram_OUTPUTS}
 ${FLEX_ImageExprGram_OUTPUTS}
@@ -98,7 +92,6 @@ Images/HDF5Image.h
 Images/HDF5Image.tcc
 Images/Image2DConvolver.h
 Images/Image2DConvolver.tcc
-Images/ImageAnalysis.h
 Images/ImageAttrGroup.h
 Images/ImageAttrGroupCasa.h
 Images/ImageAttrGroupHDF5.h
@@ -109,7 +102,6 @@ Images/ImageConcat.h
 Images/ImageConcat.tcc
 Images/ImageConvolver.h
 Images/ImageConvolver.tcc
-Images/ImageCollapser.h
 Images/ImageDecomposer.h
 Images/ImageDecomposer.tcc
 Images/ImageExpr.h
@@ -119,13 +111,11 @@ Images/ImageExprParse.h
 Images/ImageFFT.h
 Images/ImageFITSConverter.h
 Images/ImageFITSConverter.tcc
-Images/ImageFitter.h
 Images/ImageFit1D.h
 Images/ImageFit1D.tcc
 Images/ImageHistograms.h
 Images/ImageHistograms.tcc
 Images/ImageInfo.h
-Images/ImageInputProcessor.h
 Images/ImageInterface.h
 Images/ImageInterface.tcc
 Images/ImageMetaData.h
@@ -135,8 +125,6 @@ Images/ImageMomentsProgress.h
 Images/ImageOpener.h
 Images/ImagePolProxy.h
 Images/ImagePolarimetry.h
-Images/ImageProfileFit.h
-Images/ImageProfileFitter.h
 Images/ImageProxy.h
 Images/ImageRegrid.h
 Images/ImageRegrid.tcc
@@ -196,11 +184,6 @@ DESTINATION include/casacore/images/Regions
 )
 
 install (FILES
-IO/FitterEstimatesFileParser.h
-DESTINATION include/casacore/images/IO
-)
-
-install (FILES
 Regions.h
 Images.h
 DESTINATION include/casacore/images
@@ -211,3 +194,8 @@ if (BUILD_TESTING)
     add_subdirectory (Wnbt/test)
     add_subdirectory (Regions/test)
 endif (BUILD_TESTING)
+
+The MSSS HBA observations should only use the inner 24 tiles of the remote stations, while the core stations should be used in dual mode. Thus need a new mode HBA_DUAL_INNER needs to be supported.
+At the same time future modes HBA_JOINED_INNER, HBA_ZERO_INNER, and HBA_ONE_INNER could be added as well.
+
+Add support for HBA_DUAL_INNER and other inner modes

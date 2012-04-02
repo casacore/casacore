@@ -74,7 +74,6 @@ set (tests
 dImageHistograms
 dImageInterface
 dImageMoments
-dImageProfileFit
 dImageStatistics
 dImageSummary
 dPagedImage
@@ -87,7 +86,6 @@ tFITSExtImage
 tFITSExtImageII
 tHDF5Image
 tImageAttrHandler
-tImageCollapser
 tImageConcat
 tImageConvolver
 tImageDecomposer
@@ -97,13 +95,10 @@ tImageExpr3Gram
 tImageExprGram
 tImageExprParse_addDir
 tImageFFT
-tImageFit1D
-tImageFitter
+#tImageFit1D
 tImageInfo
-tImageInputProcessor
 tImageMetaData
 tImagePolarimetry
-tImageProfileFitter
 tImageRegrid
 tImageReorderer
 tImageSourceFinder
