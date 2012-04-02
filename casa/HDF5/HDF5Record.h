@@ -94,8 +94,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     static void remove (const HDF5Object& parentHid,
 			const String& recordName);
 
-    // Read back a (nested) record.
+    // Read the (possibly nested) record values from the given group hid.
     static Record doReadRecord (hid_t parentHid);
+
+    // Write the (possibly nested) record values into the given group hid.
+    static void doWriteRecord (const HDF5Object& groupHid,
+			       const RecordInterface& rec);
 
   private:
     // Read a scalar value and add it to the record.
@@ -144,10 +148,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Read fixed length values from an attribute (scalar and array).
     static void read (hid_t attrId, void* value,
 		      const HDF5DataType& dtype);
-
-    // Write a (nested) record.
-    static void doWriteRecord (const HDF5Object& groupHid,
-			       const RecordInterface& rec);
 
     // Write a fixed length scalar value as attribute.
     static void writeScalar (hid_t parentHid, const String& name,
