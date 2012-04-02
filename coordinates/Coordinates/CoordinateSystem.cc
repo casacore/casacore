@@ -2480,6 +2480,24 @@ void CoordinateSystem::setObsInfo(const ObsInfo &obsinfo)
     obsinfo_p = obsinfo;
 }
 
+String CoordinateSystem::coordRecordName(uInt which) const
+{
+  // Write each string into a field it's type plus coordinate
+  // number, e.g. direction0
+  string basename = "unknown";
+  switch (coordinates_p[which]->type()) {
+  case Coordinate::LINEAR:    basename = "linear"; break;
+  case Coordinate::DIRECTION: basename = "direction"; break;
+  case Coordinate::SPECTRAL:  basename = "spectral"; break;
+  case Coordinate::STOKES:    basename = "stokes"; break;
+  case Coordinate::TABULAR:   basename = "tabular"; break;
+  case Coordinate::COORDSYS:  basename = "coordsys"; break;
+  }
+  ostringstream onum;
+  onum << which;
+  return basename + onum.str();
+}
+
 Bool CoordinateSystem::save(RecordInterface &container,
 			    const String &fieldName) const
 {
@@ -2513,20 +2531,11 @@ Bool CoordinateSystem::save(RecordInterface &container,
     {
 	// Write each string into a field it's type plus coordinate
 	// number, e.g. direction0
-	String basename = "unknown";
-	switch (coordinates_p[i]->type()) {
-	case Coordinate::LINEAR:    basename = "linear"; break;
-	case Coordinate::DIRECTION: basename = "direction"; break;
-	case Coordinate::SPECTRAL:  basename = "spectral"; break;
-	case Coordinate::STOKES:    basename = "stokes"; break;
-	case Coordinate::TABULAR:    basename = "tabular"; break;
-	case Coordinate::COORDSYS:  basename = "coordsys"; break;
-	}
-	ostringstream onum;
-	onum << i;
-	String num = onum;
-	String name = basename + num;
+        String name = coordRecordName(i);
 	coordinates_p[i]->save(subrec, name);
+        ostringstream onum;
+        onum << i;
+        String num(onum.str());
 	name = String("worldmap") + num;
 	subrec.define(name, Vector<Int>(*world_maps_p[i]));
 	name = String("worldreplace") + num;

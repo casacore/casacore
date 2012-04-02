@@ -418,6 +418,9 @@ public:
     // removed). 
     Int worldAxisToPixelAxis(uInt worldAxis) const;
 
+    // Return the name of the record field in which the coordinate is stored.
+    String coordRecordName(uInt which) const;
+
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
 
