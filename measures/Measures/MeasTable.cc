@@ -4182,7 +4182,9 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
       {
 	String mdir;
 	Aipsrc::find(mdir, "measures.directory");
-	Path lPath(mdir + "/" + antRespPath);
+	mdir.trim();
+	Path lPath(mdir);
+	lPath.append(antRespPath);
 	absPathName = lPath.absoluteName();
 	isValid = Table::isReadable(absPathName);
       }
