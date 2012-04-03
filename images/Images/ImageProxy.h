@@ -184,9 +184,17 @@ namespace casa {
     // Get the names of all attributes in a group.
     Vector<String> attrNames (const String& groupName) const;
 
-    // Get the value of an attribute in a group.
+    // Get the number of rows in an attribute group.
+    uInt attrNrows (const String& groupName) const;
+
+    // Get the value of an attribute in a group row.
     ValueHolder getAttr (const String& groupName,
-                         const String& attrName) const;
+                         const String& attrName,
+                         uInt rownr) const;
+
+    // Get all attributes in a group row.
+    Record getAttrRow (const String& groupName,
+                       uInt rownr) const;
 
     // Get the unit(s) of an attribute in a group.
     Vector<String> getAttrUnit(const String& groupName,
@@ -196,8 +204,9 @@ namespace casa {
     Vector<String> getAttrMeas(const String& groupName,
                                const String& attrName) const;
 
-    // Put the value, unit, and measinfo of an attribute in a group.
-    void putAttr (const String& groupName, const String& attrName,
+    // Put the value, unit, and measinfo of an attribute in a group row.
+    // The attribute or row is added if new.
+    void putAttr (const String& groupName, const String& attrName, uInt rownr,
                   const ValueHolder& value,
                   const Vector<String>& units,
                   const Vector<String>& measInfo);

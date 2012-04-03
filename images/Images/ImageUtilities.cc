@@ -1125,11 +1125,13 @@ void ImageUtilities::copyAttributes (ImageAttrHandler& out,
     ImageAttrGroup& inGroup  = in.openGroup (groupNames[i]);
     ImageAttrGroup& outGroup = out.createGroup (groupNames[i]);
     Vector<String> attrNames = inGroup.attrNames();
-    for (uInt j=0; j<attrNames.size(); ++j) {
-      outGroup.putData (attrNames[j],
-                        inGroup.getData (attrNames[j]),
-                        inGroup.getUnit (attrNames[j]),
-                        inGroup.getMeasInfo (attrNames[j]));
+    for (uInt rownr=0; rownr<inGroup.nrows(); ++rownr) {
+      for (uInt j=0; j<attrNames.size(); ++j) {
+        outGroup.putData (attrNames[j], rownr,
+                          inGroup.getData (attrNames[j], rownr),
+                          inGroup.getUnit (attrNames[j]),
+                          inGroup.getMeasInfo (attrNames[j]));
+      }
     }
     in.closeGroup (groupNames[i]);
     out.closeGroup (groupNames[i]);

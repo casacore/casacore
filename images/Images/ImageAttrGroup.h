@@ -121,9 +121,8 @@ public:
 
   virtual ~ImageAttrGroup();
 
-  // Get the number of values of the group.
-  // This is the number of elements in an attribute.
-  virtual uInt nvalues() const = 0;
+  // Get the number of rows in the group.
+  virtual uInt nrows() const = 0;
 
   // Test if an attribute exists.
   virtual Bool hasAttr (const String& attrName) const = 0;
@@ -135,8 +134,11 @@ public:
   // It returns TpOther if the attribute is not defined.
   virtual DataType dataType (const String& attrName) const = 0;
 
-  // Get the data of the given attribute.
-  virtual ValueHolder getData (const String& attrName) = 0;
+  // Get the data of the given attribute in the given row
+  virtual ValueHolder getData (const String& attrName, uInt rownr) = 0;
+
+  // Get the data of all attributes in a rows.
+  virtual Record getDataRow (uInt rownr) = 0;
 
   // Get the possible units of the values.
   // An empty vector is returned if no units.
@@ -146,12 +148,13 @@ public:
   // An empty vector is returned if no MEASINFO exists.
   virtual Vector<String> getMeasInfo (const String& attrName) = 0;
 
-  // Put the data of the given attribute.
-  // If the table does not contain data yet, it will be sized to the size
-  // of the vector. Otherwise the vector size has to match the table size.
+  // Put the data of the given attribute in the given row.
+  // If the row or attribute is new, it will be added. Note that the
+  // new row must be directly after the last row in the group.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, const ValueHolder& data,
+  virtual void putData (const String& attrName, uInt rownr,
+                        const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>()) = 0;
 };

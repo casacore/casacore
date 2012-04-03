@@ -73,9 +73,8 @@ public:
   // Flush the attibrutes if needed.
   void flush();
 
-  // Get the number of values of the group.
-  // This is the number of elements in an attribute.
-  virtual uInt nvalues() const;
+  // Get the number of rows in the group.
+  virtual uInt nrows() const;
 
   // Test if an attribute exists.
   virtual Bool hasAttr (const String& attrName) const;
@@ -88,7 +87,10 @@ public:
   virtual DataType dataType (const String& attrName) const;
 
   // Get the data of the given attribute.
-  virtual ValueHolder getData (const String& attrName);
+  virtual ValueHolder getData (const String& attrName, uInt rownr);
+
+  // Get the data of all attributes in a rows.
+  virtual Record getDataRow (uInt rownr);
 
   // Get the possible units of the values.
   // An empty vector is returned if no units.
@@ -103,7 +105,8 @@ public:
   // of the vector. Otherwise the vector size has to match the table size.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, const ValueHolder& data,
+  virtual void putData (const String& attrName, uInt rownr,
+                        const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>());
 
@@ -112,8 +115,8 @@ private:
   // Add rows if the table is still empty.
   void checkRows (const String& attrName, uInt size);
 
-  // Add a column for the given attribute for the data type in the value.
-  void addColumn (const String& attrName, const ValueHolder&);
+  // Add a new column for the given attribute for the data type in the value.
+  Bool addNewColumn (const String& attrName, const ValueHolder&);
 
   //# Data members.
   TableProxy itsTable;
