@@ -30,6 +30,7 @@
 #include <casa/HDF5/HDF5Group.h>
 #include <casa/HDF5/HDF5Record.h>
 #include <casa/Exceptions/Error.h>
+#include <iomanip>
 
 namespace casa {
 
@@ -37,13 +38,9 @@ namespace casa {
                                           const String& attrName,
                                           Bool isWritable)
     : itsChanged  (False),
-      itsCanWrite (isWritable),
-      itsNValues  (0)
+      itsCanWrite (isWritable)
   {
     itsRecord = HDF5Record::readRecord (image, attrName);
-    if (! itsRecord.empty()) {
-      itsNValues = itsRecord.shape(0).last();
-    }
   }
 
   ImageAttrGroupHDF5::~ImageAttrGroupHDF5()
@@ -57,32 +54,33 @@ namespace casa {
     }
   }
 
-  uInt ImageAttrGroupHDF5::nvalues() const
+  uInt ImageAttrGroupHDF5::nrows() const
   {
-    if (itsRecord.empty()) {
-      return 0;
-    }
-    // Return the length of the first attribute.
-    // Assert it is not a UNIT or MEASINFO.
-    IPosition shape (itsRecord.shape(0));
-    return shape[shape.size()-1];
+    return itsRecord.nfields();
   }
 
   Bool ImageAttrGroupHDF5::hasAttr (const String& attrName) const
   {
-    return itsRecord.isDefined (attrName);
+    if (itsRecord.empty()) {
+      return False;
+    }
+    return itsRecord.subRecord(0).isDefined (attrName);
   }
 
   Vector<String> ImageAttrGroupHDF5::attrNames() const
   {
-    Vector<String> names(itsRecord.size());
+    if (itsRecord.empty()) {
+      return Vector<String>();
+    }
+    const Record& subRecord = itsRecord.subRecord(0);
+    Vector<String> names(subRecord.size());
     uInt nr = 0;
     for (uInt i=0; i<names.size(); ++i) {
       // Only names not ending in _UNIT or _MEASINFO
-      String name = itsRecord.name(i);
+      String name = subRecord.name(i);
       if (!((name.size() >= 5  &&  name.substr(name.size()-5) == "_UNIT")  ||
             (name.size() >= 9  &&  name.substr(name.size()-9) == "_MEASINFO"))){
-        names[nr++] = itsRecord.name(i);
+        names[nr++] = subRecord.name(i);
       }
     }
     names.resize (nr, True);
@@ -91,34 +89,59 @@ namespace casa {
 
   DataType ImageAttrGroupHDF5::dataType (const String& attrName) const
   {
-    if (itsRecord.isDefined (attrName)) {
-      return itsRecord.dataType (attrName);
+    if (itsRecord.empty()) {
+      return TpOther;
+    }
+    const Record& subRecord = itsRecord.subRecord(0);
+    if (subRecord.isDefined (attrName)) {
+      return subRecord.dataType (attrName);
     }
     return TpOther;
   }
 
-  ValueHolder ImageAttrGroupHDF5::getData (const String& attrName)
+  ValueHolder ImageAttrGroupHDF5::getData (const String& attrName, uInt rownr)
   {
-    return itsRecord.asValueHolder (attrName);
+    if (rownr >= itsRecord.nfields()) {
+      throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
+                      " does not exist");
+    }
+    const Record& subRecord = itsRecord.subRecord(rownr);
+    return subRecord.asValueHolder (attrName);
+  }
+
+  Record ImageAttrGroupHDF5::getDataRow (uInt rownr)
+  {
+    if (rownr >= itsRecord.nfields()) {
+      throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
+                      " does not exist");
+    }
+    return itsRecord.subRecord(rownr);
   }
 
   Vector<String> ImageAttrGroupHDF5::getUnit (const String& attrName)
   {
-    if (itsRecord.isDefined (attrName + "_UNIT")) {
-      return itsRecord.asArrayString(attrName + "_UNIT");
+    if (! itsRecord.empty()) {
+      const Record& subRecord = itsRecord.subRecord(0);
+      if (subRecord.isDefined (attrName + "_UNIT")) {
+        return subRecord.asArrayString(attrName + "_UNIT");
+      }
     }
     return Vector<String>();
   }
 
   Vector<String> ImageAttrGroupHDF5::getMeasInfo (const String& attrName)
   {
-    if (itsRecord.isDefined (attrName + "_MEASINFO")) {
-      return itsRecord.asArrayString(attrName + "_MEASINFO");
+    if (! itsRecord.empty()) {
+      const Record& subRecord = itsRecord.subRecord(0);
+      if (subRecord.isDefined (attrName + "_MEASINFO")) {
+        return subRecord.asArrayString(attrName + "_MEASINFO");
+      }
     }
     return Vector<String>();
   }
 
   void ImageAttrGroupHDF5::putData (const String& attrName,
+                                    uInt rownr,
                                     const ValueHolder& data,
                                     const Vector<String>& units,
                                     const Vector<String>& measInfo)
@@ -126,30 +149,38 @@ namespace casa {
     if (!itsCanWrite) {
       throw AipsError("ImageAttrGroupHDF5: attribute data cannot be written");
     }
-    itsRecord.defineFromValueHolder (attrName, data);
-    checkSize (attrName);
+    checkRows(attrName, rownr);
+    Record& subRecord = itsRecord.rwSubRecord(rownr);
+    subRecord.defineFromValueHolder (attrName, data);
     if (!units.empty()) {
-      itsRecord.define (attrName + "_UNIT", units);
+      subRecord.define (attrName + "_UNIT", units);
     }
     if (!measInfo.empty()) {
       AlwaysAssert (measInfo.size() == 2, AipsError);
-      itsRecord.define (attrName + "_MEASINFO", measInfo);
+      subRecord.define (attrName + "_MEASINFO", measInfo);
     }
     itsChanged = True;
   }
 
-  void ImageAttrGroupHDF5::checkSize (const String& attrName)
+  String makeRowName (uInt rownr)
   {
-    IPosition shape (itsRecord.shape(attrName));
-    uInt size = shape(shape.size() - 1);
-    if (itsNValues == 0) {
-      itsNValues = size;
-    } else if (size != itsNValues) {
-      throw AipsError("ImageAttrGroupHDF5: cannot put " +
-                      String::toString(size) +
-                      " elements of attr " + attrName +
-                      " into group containing " +
-                      String::toString(itsNValues) + " rows");
+    ostringstream ostr;
+    ostr << std::setfill('0') << std::setw(5) << rownr;
+    return ostr.str();
+  }
+
+  void ImageAttrGroupHDF5::checkRows (const String& attrName, uInt rownr)
+  {
+    uInt nrow = itsRecord.nfields();
+    // A new row can only be added right after the last row.
+    if (rownr > nrow) {
+      throw AipsError("ImageAttrGroupHDF5: row " + String::toString(rownr) +
+                      " of attribute " + attrName +
+                      " cannot be added; beyond current #rows " +
+                      String::toString(nrow));
+    }
+    if (rownr == nrow) {
+      itsRecord.defineRecord (makeRowName(rownr), Record());
     }
   }
 

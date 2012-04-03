@@ -47,12 +47,12 @@ void testCreate (ImageInterface<Float>& image)
   cout << attrHand.groupNames()<<endl;
   cout << attrHand.hasGroup("testGroup1")<<endl;
   ImageAttrGroup& group = attrHand.createGroup ("testGroup1");
-  cout << "GOT GROUP "<<group.nvalues()<<' '<<group.attrNames()<<endl;
+  cout << "GOT GROUP "<<group.nrows()<<' '<<group.attrNames()<<endl;
   cout << attrHand.hasGroup("testGroup1")<<endl;
   cout << attrHand.groupNames()<<endl;
-  group.putData ("attr1", ValueHolder(Vector<String>(1,"aa")));
-  cout << "GOT GROUP "<<group.nvalues()<<' '<<group.attrNames()<<endl;
-  cout<<group.attrNames() << endl;
+  group.putData ("attr1", 0, ValueHolder("aa"));
+  cout << "GOT GROUP "<<group.nrows()<<' '<<group.attrNames()<<endl;
+  cout <<group.attrNames() << endl;
 }
 
 void testCreateCasa (const String& imageName)
@@ -86,7 +86,7 @@ void testRead (const String& imageName)
   ImageAttrHandler& attrHand (image->attrHandler());
   cout << attrHand.groupNames()<<endl;
   ImageAttrGroup& group = attrHand.openGroup ("testGroup1");
-  cout << "GOT GROUP "<<group.nvalues()<<' '<<group.attrNames()<<endl;
+  cout << "GOT GROUP "<<group.nrows()<<' '<<group.attrNames()<<endl;
   delete image;
 }
 
@@ -96,17 +96,20 @@ void testUpdate (const String& imageName)
   ImageInterface<Float>* image = doOpen(imageName);
   ImageAttrHandler& attrHand (image->attrHandler());
   ImageAttrGroup& group1 = attrHand.openGroup ("testGroup1");
-  Array<Int> arr1(IPosition(2,4,1));
+  Array<Int> arr1(IPosition(1,4));
   indgen (arr1);
-  group1.putData ("attr2", ValueHolder(arr1));
+  group1.putData ("attr2", 0, ValueHolder(arr1));
   ImageAttrGroup& group2 = attrHand.createGroup ("testGroup2");
-  Array<Int> arr2(IPosition(2,3,4));
+  Array<Int> arr2(IPosition(1,3));
   indgen (arr2);
   Vector<String> measInfo(2);
   measInfo[0] = "direction";
   measInfo[1] = "J2000";
-  group2.putData ("attr2", ValueHolder(arr2),
-                  Vector<String>(1,"rad"), measInfo);
+  for (uInt rownr=0; rownr<4; ++rownr) {
+    group2.putData ("attr2", rownr, ValueHolder(arr2),
+                    Vector<String>(1,"rad"), measInfo);
+    arr2 += 3;
+  }
   delete image;
 }
 
@@ -160,13 +163,15 @@ void showAll (const String& imageName)
   Vector<String> groupNames = attrHand.groupNames();
   for (uInt i=0; i<groupNames.size(); ++i) {
     ImageAttrGroup& group = attrHand.openGroup (groupNames[i]);
-    cout << "Attribute group " << groupNames[i] << "  nvalues="
-         << group.nvalues() << endl;
+    cout << "Attribute group " << groupNames[i] << "  nrows="
+         << group.nrows() << endl;
     Vector<String> attrNames = group.attrNames();
     for (uInt j=0; j<attrNames.size(); ++j) {
-      cout << attrNames[j] << ": "
-           << group.getData(attrNames[j]) << "  "
-           << group.getUnit(attrNames[j]) << "  "
+      cout << attrNames[j] << ": ";
+      for (uInt rownr=0; rownr<group.nrows(); ++rownr) {
+        cout << group.getData(attrNames[j], rownr) << ",";
+      }
+      cout << "  " << group.getUnit(attrNames[j]) << "  "
            << group.getMeasInfo(attrNames[j]) << endl;
     }
   }

@@ -60,8 +60,7 @@ public:
   // The default constructor creates a null object.
   explicit ImageAttrGroupHDF5 (Bool isWritable=False)
     : itsChanged  (False),
-      itsCanWrite (isWritable),
-      itsNValues  (0)
+      itsCanWrite (isWritable)
   {}
 
   // Construct the object for an attribute group in the image.
@@ -78,9 +77,8 @@ public:
   // Flush the attibrutes if needed.
   void flush (HDF5Group& image, const String& attrGroupName);
 
-  // Get the number of values of the group.
-  // This is the number of elements in an attribute.
-  virtual uInt nvalues() const;
+  // Get the number of rows in the group.
+  virtual uInt nrows() const;
 
   // Test if an attribute exists.
   virtual Bool hasAttr (const String& attrName) const;
@@ -92,8 +90,11 @@ public:
   // It returns TpOther if the attribute is not defined.
   virtual DataType dataType (const String& attrName) const;
 
-  // Get the data of the given attribute.
-  virtual ValueHolder getData (const String& attrName);
+  // Get the data of the given attribute in the given row.
+  virtual ValueHolder getData (const String& attrName, uInt rownr);
+
+  // Get the data of all attributes in a rows.
+  virtual Record getDataRow (uInt rownr);
 
   // Get the possible units of the values (stored as <name>_UNIT).
   // An empty vector is returned if no units.
@@ -108,19 +109,19 @@ public:
   // of the vector. Otherwise the vector size has to match the table size.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, const ValueHolder& data,
+  virtual void putData (const String& attrName, uInt rownr,
+                        const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>());
 
 private:
-  // Check if the value size is correct.
-  void checkSize (const String& attrName);
+  // Check the rownr and add a row if needed.
+  void checkRows (const String& attrName, uInt rownr);
 
   //# Data members.
-  Record itsRecord;     //# Record containing all attributes
+  Record itsRecord;     //# Record containing all attributes (subrecord per row)
   Bool   itsChanged;    //# Has the Record changed?
   Bool   itsCanWrite;   //# Can attributes be written?
-  uInt   itsNValues;    //# Number of values per attribute; 0 = unknown yet
 };
 
 } //# NAMESPACE CASA - END

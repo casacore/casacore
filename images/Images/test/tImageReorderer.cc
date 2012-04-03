@@ -132,9 +132,9 @@ void test201Reordering(const String& imagename, const String& outname) {
 	vector<Float> inVec, outVec;
 	inData.tovector(inVec);
 	outData.tovector(outVec);
-	for(uInt i=0; i<inShape[0]; i++) {
-		for(uInt j=0; j<inShape[1]; j++) {
-			for(uInt k=0; k<inShape[2]; k++) {
+	for(Int i=0; i<inShape[0]; i++) {
+		for(Int j=0; j<inShape[1]; j++) {
+			for(Int k=0; k<inShape[2]; k++) {
 				AlwaysAssert(inCube(i,j,k) == outCube(k,i,j), AipsError);
 			}
 		}

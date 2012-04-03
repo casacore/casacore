@@ -558,10 +558,22 @@ namespace casa { //# name space casa begins
     return itsAttrHandler->openGroup(groupName).attrNames();
   }
 
-  ValueHolder ImageProxy::getAttr (const String& groupName,
-                                   const String& attrName) const
+  uInt ImageProxy::attrNrows (const String& groupName) const
   {
-    return itsAttrHandler->openGroup(groupName).getData (attrName);
+    return itsAttrHandler->openGroup(groupName).nrows();
+  }
+
+  ValueHolder ImageProxy::getAttr (const String& groupName,
+                                   const String& attrName,
+                                   uInt rownr) const
+  {
+    return itsAttrHandler->openGroup(groupName).getData (attrName, rownr);
+  }
+
+  Record ImageProxy::getAttrRow (const String& groupName,
+                                 uInt rownr) const
+  {
+    return itsAttrHandler->openGroup(groupName).getDataRow (rownr);
   }
 
   Vector<String> ImageProxy::getAttrUnit(const String& groupName,
@@ -578,11 +590,12 @@ namespace casa { //# name space casa begins
 
   void ImageProxy::putAttr (const String& groupName,
                             const String& attrName,
+                            uInt rownr,
                             const ValueHolder& value,
                             const Vector<String>& units,
                             const Vector<String>& measInfo)
   {
-    itsAttrHandler->openGroup(groupName).putData (attrName, value,
+    itsAttrHandler->openGroup(groupName).putData (attrName, rownr, value,
                                                   units, measInfo);
   }
 

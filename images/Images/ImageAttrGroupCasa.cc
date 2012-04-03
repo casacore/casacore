@@ -28,6 +28,7 @@
 //# Includes
 #include <images/Images/ImageAttrGroupCasa.h>
 #include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableRow.h>
 #include <tables/Tables/TableColumn.h>
 #include <tables/Tables/ArrColDesc.h>
 #include <tables/Tables/ScaColDesc.h>
@@ -52,7 +53,7 @@ namespace casa {
     }
   }
   
-  uInt ImageAttrGroupCasa::nvalues() const
+  uInt ImageAttrGroupCasa::nrows() const
   {
     return itsTable.table().nrow();
   }
@@ -76,13 +77,20 @@ namespace casa {
     return TpOther;
   }
 
-  ValueHolder ImageAttrGroupCasa::getData (const String& attrName)
+  ValueHolder ImageAttrGroupCasa::getData (const String& attrName, uInt rownr)
   {
-    ValueHolder value (itsTable.getColumn (attrName, 0, -1, 1));
+    ValueHolder value (itsTable.getCell (attrName, rownr));
     if (value.isNull()) {
       value = ValueHolder (Array<Int>());
     }
     return value;
+  }
+
+  Record ImageAttrGroupCasa::getDataRow (uInt rownr)
+  {
+    ROTableRow tabrow (itsTable.table());
+    // Transform TableRecord to Record.
+    return ValueHolder(tabrow.get(rownr)).asRecord();
   }
 
   Vector<String> ImageAttrGroupCasa::getUnit (const String& attrName)
@@ -108,149 +116,117 @@ namespace casa {
   }
 
   void ImageAttrGroupCasa::putData (const String& attrName,
+                                    uInt rownr,
                                     const ValueHolder& data,
                                     const Vector<String>& units,
                                     const Vector<String>& measInfo)
   {
     itsTable.reopenRW();
-    addColumn (attrName, data);
-    TableColumn col(itsTable.table(), attrName);
-    if (!units.empty()) {
-      itsTable.putKeyword (attrName, "QuantumUnits", -1, False,
-                           ValueHolder(units));
-    }
-    if (!measInfo.empty()) {
-      AlwaysAssert (measInfo.size() == 2, AipsError);
-      // Define MEASINFO if not defined yet.
-      if (! col.rwKeywordSet().isDefined("MEASINFO")) {
-        TableRecord rec;
-        col.rwKeywordSet().defineRecord ("MEASINFO", rec);
+    // If needed, add the column for the attribute.
+    if (addNewColumn (attrName, data)) {
+    // Units and MEASINFO are supposed to be the same for all rows,
+    // so only put them for the first time, thus if the column has been added.
+      TableColumn col(itsTable.table(), attrName);
+      if (!units.empty()) {
+        itsTable.putKeyword (attrName, "QuantumUnits", -1, False,
+                             ValueHolder(units));
       }
-      itsTable.putKeyword (attrName, "MEASINFO.type", -1, False,
-                           ValueHolder(measInfo[0]));
-      itsTable.putKeyword (attrName, "MEASINFO.Ref",  -1, False,
-                           ValueHolder(measInfo[1]));
+      if (!measInfo.empty()) {
+        AlwaysAssert (measInfo.size() == 2, AipsError);
+        // Define MEASINFO if not defined yet.
+        if (! col.rwKeywordSet().isDefined("MEASINFO")) {
+          TableRecord rec;
+          col.rwKeywordSet().defineRecord ("MEASINFO", rec);
+        }
+        itsTable.putKeyword (attrName, "MEASINFO.type", -1, False,
+                             ValueHolder(measInfo[0]));
+        itsTable.putKeyword (attrName, "MEASINFO.Ref",  -1, False,
+                             ValueHolder(measInfo[1]));
+      }
     }
-    itsTable.putColumn (attrName, 0, -1 , 1, data);
+    checkRows (attrName, rownr);
+    itsTable.putCell (attrName, Vector<Int>(1,rownr), data);
   }
 
-  void ImageAttrGroupCasa::checkRows (const String& attrName, uInt size)
+  void ImageAttrGroupCasa::checkRows (const String& attrName, uInt rownr)
   {
     uInt nrow = itsTable.nrows();
-    if (nrow == 0) {
-      itsTable.addRow (size);
-    } else if (size != nrow) {
-      throw AipsError("ImageAttrGroupCasa: cannot put " +
-                      String::toString(size) +
-                      " elements of attr " + attrName +
-                      " into table containing " +
-                      String::toString(nrow) + " rows");
+    // A new row can only be added right after the last row.
+    if (rownr > nrow) {
+      throw AipsError("ImageAttrGroupCasa: row " + String::toString(rownr) +
+                      " of attribute " + attrName +
+                      " cannot be added; beyond current #rows " +
+                      String::toString(nrow));
+    }
+    if (rownr == nrow) {
+      itsTable.addRow(1);
     }
   }
 
-  void ImageAttrGroupCasa::addColumn (const String& attrName,
-                                      const ValueHolder& data)
+  Bool ImageAttrGroupCasa::addNewColumn (const String& attrName,
+                                         const ValueHolder& data)
   {
     Table& tab = itsTable.table();
-    Bool doAdd = !tab.tableDesc().isColumn(attrName);
+    if (tab.tableDesc().isColumn(attrName)) {
+      // Column already exists.
+      return False;
+    }
+    // Add the column with the correct type.
+    // Assume arrays can have varying shapes.
     IPosition colShape(1,1);
     switch (data.dataType()) {
-    case TpArrayBool:
-      colShape.resize(0);
-      colShape = data.asArrayBool().shape();   // fall through
     case TpBool:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<Bool>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<Bool>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ScalarColumnDesc<Bool>(attrName));
+      break;
+    case TpArrayBool:
+      tab.addColumn (ArrayColumnDesc<Bool> (attrName));
+      break;
+    case TpChar:
+    case TpUChar:
+    case TpShort:
+    case TpUShort:
+    case TpInt:
+    case TpUInt:
+      tab.addColumn (ScalarColumnDesc<Int>(attrName));
       break;
     case TpArrayInt:
-      colShape.resize(0);
-      colShape = data.asArrayInt().shape();   // fall through
-    case TpInt:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<Int>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<Int>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<Int> (attrName));
+      break;
+    case TpFloat:
+      tab.addColumn (ScalarColumnDesc<Float>(attrName));
       break;
     case TpArrayFloat:
-      colShape.resize(0);
-      colShape = data.asArrayFloat().shape();   // fall through
-    case TpFloat:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<Float>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<Float>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<Float> (attrName));
+      break;
+    case TpDouble:
+      tab.addColumn (ScalarColumnDesc<Double>(attrName));
       break;
     case TpArrayDouble:
-      colShape.resize(0);
-      colShape = data.asArrayDouble().shape();   // fall through
-    case TpDouble:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<Double>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<Double>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<Double> (attrName));
+      break;
+    case TpComplex:
+      tab.addColumn (ScalarColumnDesc<Complex>(attrName));
       break;
     case TpArrayComplex:
-      colShape.resize(0);
-      colShape = data.asArrayComplex().shape();   // fall through
-    case TpComplex:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<Complex>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<Complex>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<Complex> (attrName));
+      break;
+    case TpDComplex:
+      tab.addColumn (ScalarColumnDesc<DComplex>(attrName));
       break;
     case TpArrayDComplex:
-      colShape.resize(0);
-      colShape = data.asArrayDComplex().shape();   // fall through
-    case TpDComplex:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<DComplex>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<DComplex>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<DComplex> (attrName));
+      break;
+    case TpString:
+      tab.addColumn (ScalarColumnDesc<String>(attrName));
       break;
     case TpArrayString:
-      colShape.resize(0);
-      colShape = data.asArrayString().shape();   // fall through
-    case TpString:
-      if (doAdd) {
-        if (colShape.size() == 1) {
-          tab.addColumn (ScalarColumnDesc<String>(attrName));
-        } else{
-          tab.addColumn (ArrayColumnDesc<String>
-                         (attrName, colShape.getFirst(colShape.size()-1)));
-        }
-      }
+      tab.addColumn (ArrayColumnDesc<String> (attrName));
       break;
     default:
-      throw AipsError("ImageAttrGroupCasa::addColumn: Unknown datatype " +
+      throw AipsError("ImageAttrGroupCasa::addNewColumn: Unknown datatype " +
                       String::toString(data.dataType()));
     }
-    checkRows (attrName, colShape[colShape.size()-1]);
+    return True;
   }
 
 } //# NAMESPACE CASA - END
