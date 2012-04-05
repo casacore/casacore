@@ -213,7 +213,7 @@ namespace casa { //# name space casa begins
       itsImageDComplex (0)
   {
     if (! itsLattice.null()) {
-      setup (itsLattice.operator->());
+      setup();
     }
   }
 
@@ -226,7 +226,7 @@ namespace casa { //# name space casa begins
       itsImageComplex  = 0;
       itsImageDComplex = 0;
       if (! itsLattice.null()) {
-        setup (itsLattice.operator->());
+        setup();
       }
     }
     return *this;
@@ -443,6 +443,13 @@ namespace casa { //# name space casa begins
   void ImageProxy::setup (LatticeBase* lattice)
   {
     itsLattice = lattice;
+    setup();
+  }
+
+  void ImageProxy::setup()
+  {
+    // Get raw pointer from the CountedPtr.
+    LatticeBase* lattice = &(*itsLattice);
     switch (lattice->dataType()) {
     case TpFloat:
       itsImageFloat = dynamic_cast<ImageInterface<Float>*>(lattice);
@@ -734,6 +741,7 @@ namespace casa { //# name space casa begins
                   adjustTrc(trc, shp),
                   adjustInc(inc, shp),
                   Slicer::endIsLast);
+    cout << "make subimage "<<blc<<trc<<endl;
     if (itsImageFloat) {
       return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer,
                                             True, axesSpec));

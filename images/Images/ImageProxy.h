@@ -357,6 +357,10 @@ namespace casa {
     // </group>
 
     // Setup the pointers for the various image data types.
+    void setup();
+
+    // Setup the pointers for the various image data types.
+    // It takes over the lattice pointer.
     void setup (LatticeBase* lattice);
 
     // Centre all axes except the Stokes one.
