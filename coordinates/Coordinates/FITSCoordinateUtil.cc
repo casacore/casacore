@@ -836,11 +836,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		    ok = False;
 		}
 	    }
-	}
-
 // Clean up
-
-	wcsfree (&wcsDest);
+            wcsfree (&wcsDest);
+	}
 	return ok;
     }
 
@@ -898,11 +896,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		    ok = False;
 		}
 	    }
-	}
-
 // Clean up
-
-	wcsfree (&wcsDest);
+            wcsfree (&wcsDest);
+	}
 	return ok;
     }
 
@@ -959,11 +955,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		os << LogIO::WARN << errMsg << LogIO::POST;
 		ok = False;
 	    }
-	}
-
 // Clean up
-
-	wcsfree (&wcsDest);
+            wcsfree (&wcsDest);
+	}
 	return ok;
     }
 
@@ -1181,13 +1175,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		    }     
 		}
 	    }
+            // Clean up
+            wcsfree (&wcsDest);
 	} else {
 	  //os << LogIO::DEBUG1 << "passing empty or nonexistant spectral Coordinate axis" << LogIO::POST;
 	  os << "passing empty or nonexistant spectral Coordinate axis" << LogIO::POST;
 	}
-
-	// Clean up
-	wcsfree (&wcsDest);
 	return ok;
     }
 
