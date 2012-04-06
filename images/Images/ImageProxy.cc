@@ -741,7 +741,6 @@ namespace casa { //# name space casa begins
                   adjustTrc(trc, shp),
                   adjustInc(inc, shp),
                   Slicer::endIsLast);
-    cout << "make subimage "<<blc<<trc<<endl;
     if (itsImageFloat) {
       return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer,
                                             True, axesSpec));
