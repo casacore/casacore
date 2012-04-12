@@ -93,11 +93,11 @@ public:
   virtual Record getDataRow (uInt rownr);
 
   // Get the possible units of the values.
-  // An empty vector is returned if no units.
+  // An empty vector is returned if the attribute has no units.
   virtual Vector<String> getUnit (const String& attrName);
 
   // Get the possible measure info as type and Ref.
-  // An empty vector is returned if no MEASINFO.
+  // An empty vector is returned if the attribute has no MEASINFO.
   virtual Vector<String> getMeasInfo (const String& attrName);
 
   // Put the data of the given attribute.

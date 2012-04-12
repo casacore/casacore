@@ -45,9 +45,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto module=SpectralElement>SpectralElement</linkto> module
-//   <li> <linkto module=GaussianSpectralElement>CompiledSpectralElement</linkto> module
-//   <li> <linkto module=CompiledSpectralElement>CompiledSpectralElement</linkto> module
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto class=GaussianSpectralElement>CompiledSpectralElement</linkto> class
+//   <li> <linkto class=CompiledSpectralElement>CompiledSpectralElement</linkto> class
 // </prerequisite>
 //
 // <etymology>
