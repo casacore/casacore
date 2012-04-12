@@ -66,7 +66,7 @@ namespace casa {
 // the attributes of a group. It can get and put the attribute values, as well
 // as their unit and measure info (type and reference frame type).
 // For HDF5 images the unit is stored in attribute <src>attrname>_UNIT</src>
-// and the measure info in <rc>attrname>_MEASINFO</src>. For casacore images
+// and the measure info in <src>attrname>_MEASINFO</src>. For casacore images
 // that info is stored as TableMeasure info in the column keywords.
 //
 // All attributes in a group must have the same number of values, where each
@@ -141,11 +141,11 @@ public:
   virtual Record getDataRow (uInt rownr) = 0;
 
   // Get the possible units of the values.
-  // An empty vector is returned if no units.
+  // An empty vector is returned if the attribute has no units.
   virtual Vector<String> getUnit (const String& attrName) = 0;
 
   // Get the possible measure info as type and Ref.
-  // An empty vector is returned if no MEASINFO exists.
+  // An empty vector is returned if the attribute has no MEASINFO.
   virtual Vector<String> getMeasInfo (const String& attrName) = 0;
 
   // Put the data of the given attribute in the given row.
