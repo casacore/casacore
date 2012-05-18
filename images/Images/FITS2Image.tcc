@@ -49,7 +49,8 @@ template <typename T>
 void FITSImage::crackHeader (CoordinateSystem& cSys,
                              IPosition& shape, ImageInfo& imageInfo,
                              Unit& brightnessUnit, RecordInterface& miscInfo,
-                             Float& scale, Float& offset, Short& magicShort, 
+                             Float& scale, Float& offset, 
+			     uChar& magicUChar, Short& magicShort, 
                              Int& magicInt, Bool& hasBlanks, 
                              LogIO& os, FitsInput& infile, uInt whichRep)
 {
@@ -100,6 +101,10 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
        if (bitpix != 16) {
           throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
        }  
+    } else if (dataType==TpUChar) {
+       if (bitpix != 8) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 8"));
+       }  
     } else {
        throw (AipsError("Unsupported Template type; Float & Double only are supported"));
     }
@@ -121,7 +126,7 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
     scale = s; 
     offset = o;
 
-// Will only be present for Int and Short
+// Will only be present for Int and Short and uChar
 
     hasBlanks = False;
     if (headerRec.isDefined("blank")) {
@@ -129,11 +134,14 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
        Int m;
        subRec.get("value", m);
        headerRec.removeField("blank");
-       if (dataType==TpShort) {
+       if (dataType==TpUChar) {
+          magicUChar = m;
+       } else if (dataType==TpShort) {
           magicShort = m;
        } else if (dataType==TpInt) {
           magicInt = m;
        } else {
+          magicUChar = m;
           magicShort = m;
           magicInt = m;
        }
@@ -199,11 +207,12 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
 
 template <typename T>
 void FITSImage::crackExtHeader (CoordinateSystem& cSys,
-		                     IPosition& shape, ImageInfo& imageInfo,
-                             Unit& brightnessUnit, RecordInterface& miscInfo,
-                             Float& scale, Float& offset, Short& magicShort,
-                             Int& magicInt, Bool& hasBlanks,
-                             LogIO& os, FitsInput& infile, uInt whichRep)
+				IPosition& shape, ImageInfo& imageInfo,
+				Unit& brightnessUnit, RecordInterface& miscInfo,
+				Float& scale, Float& offset, uChar& magicUChar,
+				Short& magicShort,
+				Int& magicInt, Bool& hasBlanks,
+				LogIO& os, FitsInput& infile, uInt whichRep)
 {
 
 // Shape
@@ -254,6 +263,10 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
        if (bitpix != 16) {
           throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
        }
+    }  else if (dataType==TpUChar) {
+       if (bitpix != 8) {
+          throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
+       }
     } else {
        throw (AipsError("Unsupported Template type; Float & Double only are supported"));
     }
@@ -283,11 +296,14 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
        Int m;
        subRec.get("value", m);
        headerRec.removeField("blank");
-       if (dataType==TpShort) {
+       if (dataType==TpUChar) {
+          magicUChar = m;
+       } else if (dataType==TpShort) {
           magicShort = m;
        } else if (dataType==TpInt) {
           magicInt = m;
        } else {
+          magicUChar = m;
           magicShort = m;
           magicInt = m;
        }

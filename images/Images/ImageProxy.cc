@@ -156,6 +156,7 @@ namespace casa { //# name space casa begins
       }
     }
     switch (value.dataType()) {
+    case TpUChar:
     case TpShort:
     case TpUShort:
     case TpInt:

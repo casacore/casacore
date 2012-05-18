@@ -71,6 +71,7 @@ FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
   scale_p     (1.0),
   offset_p    (0.0),
   shortMagic_p (0),
+  uCharMagic_p (0),
   longMagic_p (0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
@@ -92,6 +93,7 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   scale_p     (1.0),
   offset_p    (0.0),
   shortMagic_p (0),
+  uCharMagic_p (0),
   longMagic_p (0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
@@ -114,6 +116,7 @@ FITSImage::FITSImage (const FITSImage& other)
   scale_p     (other.scale_p),
   offset_p    (other.offset_p),
   shortMagic_p (other.shortMagic_p),
+  uCharMagic_p (other.uCharMagic_p),
   longMagic_p (other.longMagic_p),
   hasBlanks_p (other.hasBlanks_p),
   dataType_p  (other.dataType_p),
@@ -150,6 +153,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       scale_p     = other.scale_p;
       offset_p    = other.offset_p;
       shortMagic_p = other.shortMagic_p;
+      uCharMagic_p = other.uCharMagic_p;
       longMagic_p = other.longMagic_p;
       hasBlanks_p = other.hasBlanks_p;
       dataType_p  = other.dataType_p;
@@ -378,6 +382,9 @@ Bool FITSImage::doGetSlice(Array<Float>& buffer,
    } else if (pTiledFile_p->dataType() == TpShort) {
       pTiledFile_p->get (buffer, section, scale_p, offset_p,
 			 shortMagic_p, hasBlanks_p);
+   } else if (pTiledFile_p->dataType() == TpUChar) {
+      pTiledFile_p->get (buffer, section, scale_p, offset_p,
+			uCharMagic_p, hasBlanks_p);
    }
    return False;                            // Not a reference
 } 
@@ -580,7 +587,8 @@ void FITSImage::setup()
 // hasBlanks only relevant to Integer images.  Says if 'blank' value defined in header
 
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                      recsize, recno, dataType, scale_p, offset_p, shortMagic_p,
+                      recsize, recno, dataType, scale_p, offset_p, 
+		      uCharMagic_p, shortMagic_p,
                       longMagic_p, hasBlanks_p, fullName,  whichRep_p, whichHDU_p);
    setMiscInfoMember (miscInfo);
 
@@ -611,6 +619,8 @@ void FITSImage::setup()
       dataType_p = TpShort;
    } else if (dataType == FITS::LONG) {
       dataType_p = TpInt;
+   } else if (dataType == FITS::BYTE) {
+      dataType_p = TpUChar;
    }
 
 // See if there is a mask specifier.  Defaults to apply mask.
@@ -658,6 +668,9 @@ void FITSImage::open()
          pPixelMask_p = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpDouble) {
          pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+      } else if (dataType_p == TpUChar) {
+         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+   				      uCharMagic_p, hasBlanks_p);
       } else if (dataType_p == TpShort) {
          pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
    				      shortMagic_p, hasBlanks_p);
@@ -679,7 +692,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     RecordInterface& miscInfo,
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
-                                    Float& scale, Float& offset, Short& shortMagic,
+                                    Float& scale, Float& offset, 
+				    uChar& uCharMagic, Short& shortMagic,
                                     Int& longMagic, Bool& hasBlanks, const String& name,
                                     uInt whichRep, uInt whichHDU)
 {
@@ -720,9 +734,11 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // Check type
 	dataType = infile.datatype();
 	if (dataType != FITS::FLOAT &&
-		dataType != FITS::DOUBLE &&
-		dataType != FITS::SHORT &&
-		dataType != FITS::LONG) {
+	    dataType != FITS::DOUBLE &&
+	    dataType != FITS::SHORT &&
+	    dataType != FITS::LONG &&
+	    dataType != FITS::BYTE)	  
+	  {
 	   throw AipsError("FITS file " + name +
 			   " should contain float, double, short or long data");
 	}
@@ -753,32 +769,42 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     {
     	if (dataType==FITS::FLOAT) {
     		crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::DOUBLE) {
     		crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::LONG) {
     		crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-    	} if (dataType==FITS::SHORT) {
-    		crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::SHORT) {
+	  crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, 
+			     miscInfo, scale, offset, uCharMagic, shortMagic, 
+			     longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::BYTE) {
+	  crackHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, 
+			     miscInfo, scale, offset, uCharMagic, shortMagic, 
+			     longMagic, hasBlanks, os, infile, whichRep);
     	}
     }
     else
     {
     	if (dataType==FITS::FLOAT) {
     		crackExtHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::DOUBLE) {
     		crackExtHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::LONG) {
     		crackExtHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
-    	} if (dataType==FITS::SHORT) {
-    		crackExtHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
-    				offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::SHORT) {
+	  crackExtHeader<Short>(cSys, shape, imageInfo, brightnessUnit, 
+				miscInfo, scale, offset, uCharMagic, shortMagic, 
+				longMagic, hasBlanks, os, infile, whichRep);
+    	} else if (dataType==FITS::BYTE) {
+	  crackExtHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, 
+				miscInfo, scale, offset, uCharMagic, shortMagic, 
+				longMagic, hasBlanks, os, infile, whichRep);
     	}
     }
 //  }

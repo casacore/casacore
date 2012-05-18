@@ -56,6 +56,10 @@ TiledFileHelper::TiledFileHelper (const String& fileName,
     itsDesc.addColumn (ArrayColumnDesc<Bool> ("DATA", shape,
 					      ColumnDesc::FixedShape));
     break;
+  case TpUChar:
+    itsDesc.addColumn (ArrayColumnDesc<uChar> ("DATA", shape,
+					      ColumnDesc::FixedShape));
+    break;
   case TpShort:
     itsDesc.addColumn (ArrayColumnDesc<Short> ("DATA", shape,
 					       ColumnDesc::FixedShape));

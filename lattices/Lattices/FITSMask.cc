@@ -45,6 +45,7 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile)
 : itsTiledFilePtr(tiledFile),
   itsScale(1.0),
   itsOffset(0.0),
+  itsUCharMagic(0),
   itsShortMagic(0),
   itsLongMagic(0),
   itsHasIntBlanks(False)
@@ -55,10 +56,24 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile)
 }
 
 FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
+                    uChar magic, Bool hasBlanks)
+: itsTiledFilePtr(tiledFile),
+  itsScale(scale),
+  itsOffset(offset),
+  itsUCharMagic(magic),
+  itsShortMagic(0),
+  itsLongMagic(0),
+  itsHasIntBlanks(hasBlanks)
+{
+   AlwaysAssert(itsTiledFilePtr->dataType()==TpUChar, AipsError);
+}
+
+FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
                     Short magic, Bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
+  itsUCharMagic(0),
   itsShortMagic(magic),
   itsLongMagic(0),
   itsHasIntBlanks(hasBlanks)
@@ -71,6 +86,7 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
+  itsUCharMagic(0),
   itsShortMagic(0),
   itsLongMagic(magic),
   itsHasIntBlanks(hasBlanks)
@@ -84,6 +100,7 @@ FITSMask::FITSMask (const FITSMask& other)
   itsTiledFilePtr(other.itsTiledFilePtr),
   itsScale(other.itsScale),
   itsOffset(other.itsOffset),
+  itsUCharMagic(other.itsUCharMagic),
   itsShortMagic(other.itsShortMagic),
   itsLongMagic(other.itsLongMagic),
   itsHasIntBlanks(other.itsHasIntBlanks)
@@ -100,6 +117,7 @@ FITSMask& FITSMask::operator= (const FITSMask& other)
     itsBuffer = other.itsBuffer.copy();
     itsScale = other.itsScale;
     itsOffset = other.itsOffset;
+    itsUCharMagic = other.itsUCharMagic;
     itsShortMagic = other.itsShortMagic;
     itsLongMagic = other.itsLongMagic;
     itsHasIntBlanks = other.itsHasIntBlanks;
@@ -140,6 +158,9 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
    } else if (itsTiledFilePtr->dataType()==TpShort) {
       itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
                            itsShortMagic, itsHasIntBlanks);
+   } else if (itsTiledFilePtr->dataType()==TpUChar) {
+      itsTiledFilePtr->get(itsBuffer, section, itsScale, itsOffset, 
+                           itsUCharMagic, itsHasIntBlanks);
    }
 //
    Bool deletePtrD;
