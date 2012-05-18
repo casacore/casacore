@@ -25,6 +25,7 @@ gaussian_model_with_noise.fits
 gaussian_model_with_noise_model.fits
 gaussian_model_with_noise_resid.fits
 gauss_no_pol.fits
+imageStats.fits
 imagetestimage.fits
 input_image_processor_dont_replace_me
 image_input_processor.im/mask0/table.info
