@@ -122,6 +122,7 @@ public:
   // The Array object is resized if needed.
   // <group>
   Array<Bool>     getBool     (const Slicer& section);
+  Array<uChar>    getUChar    (const Slicer& section);
   Array<Short>    getShort    (const Slicer& section);
   Array<Int>      getInt      (const Slicer& section);
   Array<Float>    getFloat    (const Slicer& section);
@@ -129,6 +130,7 @@ public:
   Array<Complex>  getComplex  (const Slicer& section);
   Array<DComplex> getDComplex (const Slicer& section);
   void get (Array<Bool>&, const Slicer& section);
+  void get (Array<uChar>&, const Slicer& section);
   void get (Array<Short>&, const Slicer& section);
   void get (Array<Int>&, const Slicer& section);
   void get (Array<Float>&, const Slicer& section);
@@ -138,14 +140,19 @@ public:
   // </group>
 
   // Get the array and scale/offset the data using the given values.
-  // It is meant for FITS, so for now they can only be used for TpShort
+  // It is meant for FITS, so for now they can only be used for TpUChar, TpShort
   // or TpInt TiledFileAccess objects.
   // A deleteValue is set to a NaN without being scaled.
   // <group>
   Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
+			 uChar deleteValue, Bool examineForDeleteValues=True);
+  Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
 			 Short deleteValue, Bool examineForDeleteValues=True);
   Array<Float> getFloat (const Slicer& section, Float scale, Float offset,
 			 Int deleteValue, Bool examineForDeleteValues=True);
+  void get (Array<Float>&, const Slicer& section,
+	    Float scale, Float offset, uChar deleteValue,
+            Bool examineForDeleteValues=True);
   void get (Array<Float>&, const Slicer& section,
 	    Float scale, Float offset, Short deleteValue,
             Bool examineForDeleteValues=True);
@@ -157,6 +164,7 @@ public:
   // Put part of the array.
   // <group>
   void put (const Array<Bool>&, const Slicer& section);
+  void put (const Array<uChar>&, const Slicer& section);
   void put (const Array<Short>&, const Slicer& section);
   void put (const Array<Int>&, const Slicer& section);
   void put (const Array<Float>&, const Slicer& section);

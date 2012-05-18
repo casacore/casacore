@@ -262,6 +262,7 @@ private:
   Float          scale_p;
   Float          offset_p;
   Short          shortMagic_p;
+  uChar          uCharMagic_p;
   Int            longMagic_p;
   Bool           hasBlanks_p;
   DataType       dataType_p;
@@ -286,7 +287,8 @@ private:
                             Unit& brightnessUnit, RecordInterface& miscInfo, 
                             Int& recsize, Int& recno,
                             FITS::ValueType& dataType,
-                            Float& scale, Float& offset, Short& shortMagic, 
+                            Float& scale, Float& offset, 
+			    uChar& uCharMagic, Short& shortMagic, 
                             Int& longMagic, Bool& hasBlanks, const String& name,
                             uInt whichRep, uInt whichHDU);
 
@@ -294,7 +296,7 @@ private:
    template <typename T>
    void crackHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                      Unit& brightnessUnit, RecordInterface& miscInfo,
-                     Float& scale, Float& offset, Short& magicShort,
+                     Float& scale, Float& offset, uChar& magicUChar, Short& magicShort,
                      Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
                      uInt whichRep);
 
@@ -302,7 +304,8 @@ private:
    template <typename T>
    void crackExtHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                         Unit& brightnessUnit, RecordInterface& miscInfo,
-                        Float& scale, Float& offset, Short& magicShort,
+                        Float& scale, Float& offset, uChar& uCharMagic,
+			Short& magicShort,
                         Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
                         uInt whichRep);
 		     

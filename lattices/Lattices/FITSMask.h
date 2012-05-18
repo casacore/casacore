@@ -101,6 +101,12 @@ public:
   // just copied.  
   FITSMask (TiledFileAccess* tiledFileAccess);
 
+  // Constructor (for 8 bit integers).  The pointer is not cloned, just copied
+  // The scale, offset, magic blanking values must come from
+  // the FITS header ('bscale', 'bzero', 'blank')
+  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
+            uChar magic, Bool hasBlanks);
+
   // Constructor (for 16 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
@@ -151,6 +157,7 @@ private:
   TiledFileAccess* itsTiledFilePtr;
   Array<Float> itsBuffer;
   Float itsScale, itsOffset;
+  Short itsUCharMagic;
   Short itsShortMagic;
   Int itsLongMagic;
   Bool itsHasIntBlanks;
