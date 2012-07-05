@@ -135,9 +135,9 @@ void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
       } else if (bin >= Int(nbins)) {
 	hist[nbins-1]++;
       } else {
-	if (dataPtr[i] < boundaries[bin]) {
+	if (dataPtr[i] < boundaries[bin]  &&  bin > 0) {
 	  bin--;
-	} else if (dataPtr[i] >= boundaries[bin+1]) {
+	} else if (dataPtr[i] >= boundaries[bin+1]  &&  bin < Int(nbins)-1) {
 	  bin++;
 	}
 	hist[bin]++;
@@ -203,9 +203,9 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 	} else if (bin >= Int(nbins)) {
 	  hist[nbins-1]++;
 	} else {
-	  if (dataPtr[i] < boundaries[bin]) {
+	  if (dataPtr[i] < boundaries[bin]  &&  bin > 0) {
 	    bin--;
-	  } else if (dataPtr[i] >= boundaries[bin+1]) {
+	  } else if (dataPtr[i] >= boundaries[bin+1]  &&  bin < Int(nbins)-1) {
 	    bin++;
 	  }
 	  hist[bin]++;
