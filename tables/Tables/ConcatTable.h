@@ -119,18 +119,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
   public:
 
-    // Create a reference table object referencing the
-    // given BaseTable object.
-    // If the BaseTable is actually another ConcatTable, it will reference
-    // its referenced table (thus the original table) and it will
-    // take its vector of row numbers and projected column names
-    // into account. Thus if a select is done on a projected table,
-    // the resulting ConcatTable will have the same projection.
+    // Create a virtual table as the concatenation of the given tables.
+    // It checks if the table descriptions of the tables are the same.
+    // Subtables with the given names will be concatenated as well.
+    // It is assumed that the other subtables are the same for all tables,
+    // so the ones of the first table are used.
+    // <br>The option can be Table::Old or Table::Update.
+    // <br>If a non-empty subdirectory name is given, the tables will
+    // be moved to that subdirectory when the concatenated table is written
+    // (by writeConcatTable).
     // <group>
     ConcatTable (const Block<BaseTable*>& tables,
-		 const Block<String>& subTables);
+		 const Block<String>& subTables,
+                 const String& subDirName);
     ConcatTable (const Block<String>& tableNames,
 		 const Block<String>& subTables,
+                 const String& subDirName,
 		 int option,
 		 const TableLock& lockOptions,
                  const TSMOption& tsmOption);
@@ -312,7 +316,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     void showStructureExtra (std::ostream&) const;
 
     // Open all tables in the required way.
-    void openTables (const Block<String>& tableNames, Int option,
+    void openTables (const Block<String>& tableNames, int option,
 		     const TableLock& lockOptions, const TSMOption& tsmOption);
 
     // Initialize.
@@ -344,6 +348,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     //# Data members
     Block<String>     subTableNames_p;
+    String            subDirName_p;
     Block<BaseTable*> baseTabPtr_p;        //# pointers to parent tables
     SimpleOrderedMap<String,ConcatColumn*> colMap_p; //# map name to column
     TableRecord       keywordSet_p;
