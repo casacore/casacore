@@ -192,7 +192,8 @@ Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
 }
 
 Table::Table (const Block<Table>& tables,
-	      const Block<String>& subTables)
+	      const Block<String>& subTables,
+              const String& subDirName)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
@@ -201,18 +202,19 @@ Table::Table (const Block<Table>& tables,
     for (uInt i=0; i<tables.nelements(); ++i) {
       btab[i] = tables[i].baseTablePtr();
     }
-    baseTabPtr_p = new ConcatTable (btab, subTables);
+    baseTabPtr_p = new ConcatTable (btab, subTables, subDirName);
     baseTabPtr_p->link();
 }
 
 Table::Table (const Block<String>& tableNames,
 	      const Block<String>& subTables,
-	      TableOption option, const TSMOption& tsmOpt)
+	      TableOption option, const TSMOption& tsmOpt,
+              const String& subDirName)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    baseTabPtr_p = new ConcatTable (tableNames, subTables,
+  baseTabPtr_p = new ConcatTable (tableNames, subTables, subDirName,
 				    option, TableLock(), tsmOpt);
     baseTabPtr_p->link();
 }
@@ -225,7 +227,7 @@ Table::Table (const Block<String>& tableNames,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    baseTabPtr_p = new ConcatTable (tableNames, subTables,
+  baseTabPtr_p = new ConcatTable (tableNames, subTables, String(),
 				    option, lockOptions, tsmOpt);
     baseTabPtr_p->link();
 }

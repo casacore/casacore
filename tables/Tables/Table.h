@@ -295,6 +295,10 @@ public:
     // of the subtables that have to be concantenated as well.
     // <br>In this way a concatenation of multiple MS-s can be made, where it
     // can be specified that, say, the SYSCAL table has to be concatenated too.
+    // <br> When a concatenated table is written and if a non-empty
+    // <src>subDirName</src> is given, the tables to be concatenated will be
+    // moved to that subdirectory in the directory of the concatenated table.
+    // This option is mainly used by the MSS structure used in CASA.
     // <br>
     // The only open options allowed are Old and Update.
     // Locking options can be given (see class
@@ -309,10 +313,12 @@ public:
     // of the already open table.
     // <group>
     explicit Table (const Block<Table>& tables,
-		    const Block<String>& subTables = Block<String>());
+		    const Block<String>& subTables = Block<String>(),
+                    const String& subDirName = String());
     explicit Table (const Block<String>& tableNames,
 		    const Block<String>& subTables = Block<String>(),
-		    TableOption = Table::Old, const TSMOption& = TSMOption());
+		    TableOption = Table::Old, const TSMOption& = TSMOption(),
+                    const String& subDirName = String());
     Table (const Block<String>& tableNames,
 	   const Block<String>& subTables,
 	   const TableLock& lockOptions,
