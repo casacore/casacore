@@ -334,6 +334,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // <br>Create the initial TableInfo as a copy of the original BaseTable.
     void setup (BaseTable* btp, const Vector<String>& columnNames);
 
+    // Add lines containing the concatenated tables to the info.
+    void addInfo();
+
     // Create the ConcatColumn objects for all columns in the description.
     void makeConcatCol();
 
