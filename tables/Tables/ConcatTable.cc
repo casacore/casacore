@@ -82,13 +82,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     nrrow_p = rows_p.nrow();
     initialize();
-    //# The initial table info is a copy of the original.
-    tableInfo() = baseTabPtr_p[0]->tableInfo();
-    // Add a line for each table.
-    tableInfo().readmeAddLine ("Concatenation of the following tables:");
-    for (uInt i=0; i<tables.nelements(); ++i) {
-      tableInfo().readmeAddLine ("  " + tables[i]->tableName());
-    }
+    addInfo();
     noWrite_p = False;
   }
 
@@ -110,13 +104,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     openTables (tableNames, option, lockOptions, tsmOption);
     initialize();
-    //# The initial table info is a copy of the original.
-    tableInfo() = baseTabPtr_p[0]->tableInfo();
-    // Add a line for each table.
-    tableInfo().readmeAddLine ("Concatenation of the following tables:");
-    for (uInt i=0; i<tableNames.nelements(); ++i) {
-      tableInfo().readmeAddLine ("  " + tableNames[i]);
-    }
+    addInfo();
     noWrite_p = False;
   }
 
@@ -138,6 +126,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
+
+  void ConcatTable::addInfo()
+  {
+    //# The initial table info is a copy of the original.
+    tableInfo() = baseTabPtr_p[0]->tableInfo();
+    // Add a line for each table.
+    tableInfo().readmeAddLine ("Virtual concatenation of the following tables:");
+    for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
+      if (subDirName_p.empty()) {
+	tableInfo().readmeAddLine ("  " + baseTabPtr_p[i]->tableName());
+      } else {
+	tableInfo().readmeAddLine ("  " + subDirName_p + "/" +
+                                   Path(baseTabPtr_p[i]->tableName()).baseName());
+      }	
+    }
+  }
 
   void ConcatTable::getPartNames (Block<String>& names, Bool recursive) const
   {
