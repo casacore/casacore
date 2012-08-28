@@ -368,13 +368,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 
       if (doWsrt && meas_freq_ref(0) != 5 && i ==0 ) {
         f0_org = f0;
-	if (!rawms.keywordSet().isDefined ("NFRA_TMS_PARAMETERS")) {
-  
-	  cout << "ERROR - No NFRA_TMS_PARAMETERS table - cannot process this MS.\n";
-	  return false;
-
-	} else {
-
+	if (rawms.keywordSet().isDefined ("NFRA_TMS_PARAMETERS")) {
 	  Table tmsParm = rawms.keywordSet().asTable ("NFRA_TMS_PARAMETERS");
 	  Table sel;
 	  ROTableColumn tc(tmsParm, "NAME");
