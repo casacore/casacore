@@ -5397,10 +5397,12 @@ const Vector<Double> &MeasTable::AberETerm(uInt which) {
 
 // Diurnal Aberration factor
 Double MeasTable::diurnalAber(Double radius, Double T) {
-  static Double res;
-  res = C::_2pi * radius / MeasData::SECinDAY *
+  ///  static Double res;
+  ///  res = C::_2pi * radius / MeasData::SECinDAY *
+  ///    MeasTable::UTtoST(T)/C::c;
+  ///  return res;
+  return C::_2pi * radius / MeasData::SECinDAY *
     MeasTable::UTtoST(T)/C::c;
-  return res;
 }
 
 // LSR velocity (kinematical)
@@ -6618,48 +6620,53 @@ const Euler &MeasTable::polarMotion(Double ut) {
 
 // Time functions
 Double MeasTable::dUTC(Double utc) {
+  static volatile Bool needInit = True;
   static Int N = 0;
   static Double (*LEAP)[4];
-  if (N == 0) {
-    Table t;
-    ROTableRow row;
-    TableRecord kws;
-    String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
-    RORecordFieldPtr<Double> rfp[4];
-    Double dt;
-    String vs;
-    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
-			    "measures.tai_utc.directory",
-			    "geodetic")) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("dUTC(Double)"),
-			 WHERE));
-      os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
-    }
-    N = t.nrow();
-    if (N < 35) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("dUTC(Double)"),
-			 WHERE));
-      os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
-    }
-    if (Time().modifiedJulianDay() - dt > 180) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("dUTC(Double)"),
-			 WHERE));
-      os << LogIO::SEVERE <<
-	String("Leap second table TAI_UTC seems out-of-date. \n") +
-	"Until table is updated (see aips++ manager) times and coordinates\n" +
-	"derived from UTC could be wrong by 1s or more." << LogIO::POST;
-    }
-    LEAP = (Double (*)[4])(new Double[4*N]);
-    for (Int i=0; i < N; i++) {
-      row.get(i);
-      for (Int j=0; j < 4; j++) {
-	LEAP[i][j] = *(rfp[j]);
+  if (needInit) {
+    ScopedMutexLock locker(theirMutex);
+    if (needInit) {
+      Table t;
+      ROTableRow row;
+      TableRecord kws;
+      String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
+      RORecordFieldPtr<Double> rfp[4];
+      Double dt;
+      String vs;
+      if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
+			      "measures.tai_utc.directory",
+			      "geodetic")) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("dUTC(Double)"),
+			   WHERE));
+	os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
       }
+      N = t.nrow();
+      if (N < 35) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("dUTC(Double)"),
+			   WHERE));
+	os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
+      }
+      if (Time().modifiedJulianDay() - dt > 180) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("dUTC(Double)"),
+			   WHERE));
+	os << LogIO::SEVERE <<
+	  String("Leap second table TAI_UTC seems out-of-date. \n") +
+	  "Until table is updated (see aips++ manager) times and coordinates\n" +
+	  "derived from UTC could be wrong by 1s or more." << LogIO::POST;
+      }
+      LEAP = (Double (*)[4])(new Double[4*N]);
+      for (Int i=0; i < N; i++) {
+	row.get(i);
+	for (Int j=0; j < 4; j++) {
+	  LEAP[i][j] = *(rfp[j]);
+	}
+      }
+      needInit = False;
     }
-  } 
+  }
   Double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
@@ -6782,6 +6789,7 @@ Double MeasTable::dUT1(Double utc) {
   static Bool msgDone = False;
   static Double res = 0;
   static Double checkT = -1e6;
+  ScopedMutexLock locker(theirMutex);
   if ( !nearAbs(utc, checkT, 0.04)) {
     checkT = utc;
     if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1,
