@@ -55,6 +55,7 @@ tRowCopier
 tScalarRecordColumn
 tScaledArrayEngine
 tScaledComplexData
+tSSMAddRemove
 tSSMStringHandler
 tStandardStMan
 tStArrayFile
