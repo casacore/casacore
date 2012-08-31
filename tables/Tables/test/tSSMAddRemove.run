@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -rf tSSMAddRemove_tmp.tab
+tar zxf tSSMAddRemove.in
+$casa_checktool ./tSSMAddRemove

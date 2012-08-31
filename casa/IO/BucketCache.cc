@@ -285,8 +285,7 @@ void BucketCache::removeBucket()
     uInt bucketNr = its_BucketNr[its_ActualSlot];
     CanonicalConversion::fromLocal (its_Buffer, its_FirstFree);
     its_file->seek (its_StartOffset + Int64(bucketNr) * its_BucketSize);
-    its_file->write (its_Buffer,
-                  CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
+    its_file->write (its_Buffer, its_BucketSize);
     its_Dirty[its_ActualSlot] = 0;
     its_FirstFree = bucketNr;
     its_NrOfFree++;
