@@ -108,9 +108,10 @@ public:
    Bool setMS (const MeasurementSet& ms);
 
 // List all header information.
-   void list (LogIO& os, Bool verbose=False) const;
+  void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
 //Return some useful info in a record too along with os
-   void list (LogIO& os, Record& outRec,  Bool verbose=False, Bool fillRecord=True) const;
+   void list (LogIO& os, Record& outRec,  Bool verbose=False,
+              Bool fillRecord=True, Bool oneBased=True) const;
 
 // List a title for the Summary.
    void listTitle (LogIO& os) const;
@@ -123,7 +124,7 @@ public:
    void listWhat (LogIO& os, Bool verbose=False) const;
    void listWhat (LogIO& os, Record& outRec,  Bool verbose=False, Bool fillRecord=True) const;
 // List how data were obtained (SpectralWindow, Feed, and Antenna tables)
-   void listHow (LogIO& os, Bool verbose=False) const;
+  void listHow (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
 
 // List main table
    void listMain (LogIO& os, Bool verbose=False) const;
@@ -135,7 +136,7 @@ public:
 // List subtables
 // <group>
    void listAntenna (LogIO& os, Bool verbose=False) const;
-   void listFeed (LogIO& os, Bool verbose=False) const;
+   void listFeed (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
    void listField (LogIO& os, Bool verbose=False) const;
    void listField (LogIO& os, Record& outRec, Bool verbose=False,
 		   Bool fillRecord=True) const;
@@ -144,7 +145,8 @@ public:
    void listPolarization (LogIO& os, Bool verbose=False) const;
    void listSource (LogIO& os, Bool verbose=False) const;
    void listSpectralWindow (LogIO& os, Bool verbose=False) const;
-   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False) const;
+  void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
+                               Bool oneBased=True) const;
    void listSysCal (LogIO& os, Bool verbose=False) const;
    void listWeather (LogIO& os, Bool verbose=False) const;
 // </group>
@@ -153,14 +155,15 @@ public:
    void listTables (LogIO& os, Bool verbose=False) const;
 
 private:
+// Clear formatting flags
+   void clearFlags (LogIO& os) const;
+
+//# Data members.
 // Pointer to MS
    const MeasurementSet* pMS;
 
 // Formatting strings
    const String dashlin1, dashlin2;
-
-// Clear formatting flags
-   void clearFlags (LogIO& os) const;
 
 // For keeping track of the number of vis per field
    mutable Vector<Int> nVisPerField_;
