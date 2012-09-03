@@ -120,13 +120,14 @@ Bool MSSummary::setMS (const MeasurementSet& ms)
 //
 // List information about an ms to the logger
 //
-void MSSummary::list (LogIO& os, Bool verbose) const
+void MSSummary::list (LogIO& os, Bool verbose, Bool oneBased) const
 {
   Record dummy;
-  list(os, dummy, verbose, False);
+  list(os, dummy, verbose, False, oneBased);
 }
 
-  void MSSummary::list (LogIO& os, Record& outRec, Bool verbose, Bool fillRecord) const
+void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
+                      Bool fillRecord, Bool oneBased) const
 {
   // List a title for the Summary
   listTitle (os);
@@ -134,7 +135,7 @@ void MSSummary::list (LogIO& os, Bool verbose) const
   // List the main table as well as the subtables in a useful order and format
   listWhere (os,verbose);
   listWhat (os,outRec, verbose, fillRecord);
-  listHow (os,verbose);
+  listHow (os,verbose, oneBased);
 
   // These aren't really useful (yet?)
   //  listSource (os,verbose);
@@ -190,13 +191,13 @@ void MSSummary::listWhat (LogIO& os, Bool verbose) const
 }
 
 
-void MSSummary::listHow (LogIO& os, Bool verbose) const
+void MSSummary::listHow (LogIO& os, Bool verbose, Bool oneBased) const
 {
   // listSpectralWindow (os,verbose);
   // listPolarization (os,verbose);
-  listSpectralAndPolInfo(os, verbose);
+  listSpectralAndPolInfo(os, verbose, oneBased);
   listSource (os,verbose);
-  //  listFeed (os,verbose);
+  //  listFeed (os,verbose, oneBased);
   listAntenna (os,verbose);
 }
 
@@ -208,13 +209,11 @@ void MSSummary::listHow (LogIO& os, Bool verbose) const
   {
     Record dummy;
     listMain(os, dummy, verbose, False);
-    
   }
 
   void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                             Bool fillRecord) const
 {
-
 
   if (nrow()<=0) {
     os << "The MAIN table is empty: there are no data!!!" << endl;
@@ -1057,7 +1056,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 }
 
 
-void MSSummary::listFeed (LogIO& os, Bool verbose) const 
+void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const 
 {
   // Do nothing in terse mode
   if (verbose) {
@@ -1093,7 +1092,7 @@ void MSSummary::listFeed (LogIO& os, Bool verbose) const
 	os.output().width(widthLead);	os << "  ";
 	os.output().width(widthAnt);	os << (msFC.antennaId()(row)+1);
         Int spwId = msFC.spectralWindowId()(row);
-	if (spwId >= 0) spwId = spwId + 1;
+	if (oneBased  &&  spwId >= 0) spwId = spwId + 1;
 	os.output().width(widthSpWinId);os << spwId;
 	os.output().width(widthNumRec);	os << msFC.numReceptors()(row);
 	os.output().width(widthPolType);os << msFC.polarizationType()(row);
@@ -1551,7 +1550,8 @@ void MSSummary::listPolarization (LogIO& os, Bool verbose) const
   os << LogIO::POST;
 }
 
-void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
+void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
+                                        Bool oneBased) const
 {
   // Create a MS-spwin-columns object
   ROMSSpWindowColumns msSWC(pMS->spectralWindow());
@@ -1609,7 +1609,12 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     os.output().width(widthNumChan);	os << "#Chans" << " ";
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthFrame);      os << "Frame";
-    os.output().width(widthFreq);	os << "Ch1(MHz)";
+    os.output().width(widthFreq);
+    if (oneBased) {
+      os << "Ch1(MHz)";
+    } else {
+      os << "Ch0(MHz)";
+    }
     os.output().width(widthFreq);	os << "ChanWid(kHz)";
     os.output().width(widthFreq);	os << "TotBW(kHz)";
     os.output().width(widthFreq);	os << "Ref(MHz)";
@@ -1634,7 +1639,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthFrame);
       os<< msSWC.refFrequencyMeas()(spw).getRefString();
-      // 2nd column: Chan 1 freq (may be at high freq end of band!)
+      // 2nd column: Chan 0 freq (may be at high freq end of band!)
       os.output().width(widthFrqNum);
       os<< msSWC.chanFreq()(spw)(IPosition(1,0))/1.0e6;
       // 4th column: channel resolution
