@@ -36,8 +36,8 @@
 #include <tables/Tables/ColumnDesc.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Containers/Block.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MArray.h>
+#include <casa/Arrays/MArrayLogical.h>
 #include <casa/iostream.h>
 
 
@@ -255,92 +255,92 @@ MVTime TableExprNodeRep::getDate (const TableExprId&)
     TableExprNode::throwInvDT ("(getDate not implemented)");
     return MVTime(0.);
 }
-Array<Bool> TableExprNodeRep::getArrayBool (const TableExprId&)
+MArray<Bool> TableExprNodeRep::getArrayBool (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayBool not implemented)");
-    return Array<Bool>();
+    return MArray<Bool>();
 }
-Array<Int64> TableExprNodeRep::getArrayInt (const TableExprId&)
+MArray<Int64> TableExprNodeRep::getArrayInt (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayInt not implemented)");
-    return Array<Int64>();
+    return MArray<Int64>();
 }
-Array<Double> TableExprNodeRep::getArrayDouble (const TableExprId& id)
+MArray<Double> TableExprNodeRep::getArrayDouble (const TableExprId& id)
 {
-    Array<Int64> tmp(getArrayInt(id));
-    Array<Double> res(tmp.shape());
-    convertArray (res, tmp);
+    MArray<Int64> tmp(getArrayInt(id));
+    MArray<Double> res;
+    res.fill (tmp);
     return res;
 }
-Array<DComplex> TableExprNodeRep::getArrayDComplex (const TableExprId&)
+MArray<DComplex> TableExprNodeRep::getArrayDComplex (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayDComplex not implemented)");
-    return Array<DComplex>();
+    return MArray<DComplex>();
 }
-Array<String> TableExprNodeRep::getArrayString (const TableExprId&)
+MArray<String> TableExprNodeRep::getArrayString (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayString not implemented)");
-    return Array<String>();
+    return MArray<String>();
 }
-Array<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
+MArray<MVTime> TableExprNodeRep::getArrayDate (const TableExprId&)
 {
     TableExprNode::throwInvDT ("(getArrayDate not implemented)");
-    return Array<MVTime>();
+    return MArray<MVTime>();
 }
 
-Array<Bool> TableExprNodeRep::getBoolAS (const TableExprId& id)
+MArray<Bool> TableExprNodeRep::getBoolAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayBool(id);
   }
   Vector<Bool> res(1);
   res[0] = getBool(id);
-  return res;
+  return MArray<Bool>(res);
 }
-Array<Int64> TableExprNodeRep::getIntAS (const TableExprId& id)
+MArray<Int64> TableExprNodeRep::getIntAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayInt(id);
   }
   Vector<Int64> res(1);
   res[0] = getInt(id);
-  return res;
+  return MArray<Int64>(res);
 }
-Array<Double> TableExprNodeRep::getDoubleAS (const TableExprId& id)
+MArray<Double> TableExprNodeRep::getDoubleAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayDouble(id);
   }
   Vector<Double> res(1);
   res[0] = getDouble(id);
-  return res;
+  return MArray<Double>(res);
 }
-Array<DComplex> TableExprNodeRep::getDComplexAS (const TableExprId& id)
+MArray<DComplex> TableExprNodeRep::getDComplexAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayDComplex(id);
   }
   Vector<DComplex> res(1);
   res[0] = getDComplex(id);
-  return res;
+  return MArray<DComplex>(res);
 }
-Array<String> TableExprNodeRep::getStringAS (const TableExprId& id)
+MArray<String> TableExprNodeRep::getStringAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayString(id);
   }
   Vector<String> res(1);
   res[0] = getString(id);
-  return res;
+  return MArray<String>(res);
 }
-Array<MVTime> TableExprNodeRep::getDateAS (const TableExprId& id)
+MArray<MVTime> TableExprNodeRep::getDateAS (const TableExprId& id)
 {
   if (valueType() == VTArray) {
     return getArrayDate(id);
   }
   Vector<MVTime> res(1);
   res[0] = getDate(id);
-  return res;
+  return MArray<MVTime>(res);
 }
 
 Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
@@ -370,33 +370,33 @@ Bool TableExprNodeRep::hasDate     (const TableExprId& id,
 {
     return (value == getDate(id));
 }
-Array<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
-					    const Array<Bool>& value)
+MArray<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
+                                             const MArray<Bool>& value)
 {
     return (getBool(id) == value);
 }
-Array<Bool> TableExprNodeRep::hasArrayInt (const TableExprId& id,
-                                           const Array<Int64>& value)
+MArray<Bool> TableExprNodeRep::hasArrayInt (const TableExprId& id,
+                                            const MArray<Int64>& value)
 {
     return (getInt(id) == value);
 }
-Array<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
-					      const Array<Double>& value)
+MArray<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
+                                               const MArray<Double>& value)
 {
     return (getDouble(id) == value);
 }
-Array<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
-						const Array<DComplex>& value)
+MArray<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
+                                                 const MArray<DComplex>& value)
 {
     return (getDComplex(id) == value);
 }
-Array<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
-					      const Array<String>& value)
+MArray<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
+                                               const MArray<String>& value)
 {
     return (getString(id) == value);
 }
-Array<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
-					    const Array<MVTime>& value)
+MArray<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
+                                             const MArray<MVTime>& value)
 {
     return (getDate(id) == value);
 }

@@ -116,17 +116,17 @@ namespace casa {
     { throw TableInvExpr ("UDFBase::getRegex not implemented"); }
   MVTime    UDFBase::getDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getDate not implemented"); }
-  Array<Bool>     UDFBase::getArrayBool     (const TableExprId&)
+  MArray<Bool>     UDFBase::getArrayBool     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayBool not implemented"); }
-  Array<Int64>    UDFBase::getArrayInt      (const TableExprId&)
+  MArray<Int64>    UDFBase::getArrayInt      (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayInt not implemented"); }
-  Array<Double>  UDFBase:: getArrayDouble   (const TableExprId&)
+  MArray<Double>  UDFBase:: getArrayDouble   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDouble not implemented"); }
-  Array<DComplex> UDFBase::getArrayDComplex (const TableExprId&)
+  MArray<DComplex> UDFBase::getArrayDComplex (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDComplex not implemented"); }
-  Array<String>  UDFBase:: getArrayString   (const TableExprId&)
+  MArray<String>  UDFBase:: getArrayString   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayString not implemented"); }
-  Array<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
+  MArray<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDate not implemented"); }
 
   void UDFBase::registerUDF (const String& name, MakeUDFObject* func)

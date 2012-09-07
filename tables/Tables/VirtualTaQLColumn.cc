@@ -365,84 +365,96 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   IPosition shp;
   switch (itsDataType) {
   case TpBool:
-    itsNode->get (rownr, *static_cast<Array<Bool>*>(dataPtr));
-    shp = static_cast<Array<String>*>(dataPtr)->shape();
-    break;
+    {
+      MArray<Bool> arr (*static_cast<Array<Bool>*>(dataPtr));
+      itsNode->get (rownr, arr);
+      shp = arr.shape();
+      break;
+    }
   case TpUChar:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
+      MArray<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uChar>& out = *static_cast<Array<uChar>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
+      MArray<Int64> arr = itsNode->getArrayInt (rownr);
       Array<Short>& out = *static_cast<Array<Short>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpUShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
+      MArray<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uShort>& out = *static_cast<Array<uShort>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
+      MArray<Int64> arr = itsNode->getArrayInt (rownr);
       Array<Int>& out = *static_cast<Array<Int>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpUInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
+      MArray<Int64> arr = itsNode->getArrayInt (rownr);
       Array<uInt>& out = *static_cast<Array<uInt>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpFloat:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      MArray<Double> arr = itsNode->getArrayDouble (rownr);
       Array<Float>& out = *static_cast<Array<Float>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpDouble:
-    itsNode->get (rownr, *static_cast<Array<Double>*>(dataPtr));
-    shp = static_cast<Array<String>*>(dataPtr)->shape();
-    break;
+    {
+      MArray<Double> arr (*static_cast<Array<Double>*>(dataPtr));
+      itsNode->get (rownr, arr);
+      shp = arr.shape();
+      break;
+    }
   case TpComplex:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
+      MArray<Double> arr = itsNode->getArrayDouble (rownr);
       Array<Complex>& out = *static_cast<Array<Complex>*>(dataPtr);
       out.resize (arr.shape());
-      convertArray (out, arr);
+      convertArray (out, arr.array());
       shp = out.shape();
       break;
     }
   case TpDComplex:
-    itsNode->get (rownr, *static_cast<Array<DComplex>*>(dataPtr));
-    shp = static_cast<Array<String>*>(dataPtr)->shape();
-    break;
+    {
+      MArray<DComplex> arr (*static_cast<Array<DComplex>*>(dataPtr));
+      itsNode->get (rownr, arr);
+      shp = arr.shape();
+      break;
+    }
   case TpString:
-    itsNode->get (rownr, *static_cast<Array<String>*>(dataPtr));
-    shp = static_cast<Array<String>*>(dataPtr)->shape();
-    break;
+    {
+      MArray<String> arr (*static_cast<Array<String>*>(dataPtr));
+      itsNode->get (rownr, arr);
+      shp = arr.shape();
+      break;
+    }
   default:
     throw DataManError ("VirtualTaQLColumn::getResult - unknown data type");
   }
@@ -451,4 +463,3 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
 
 
 } //# NAMESPACE CASA - END
-

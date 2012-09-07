@@ -249,6 +249,16 @@ template<> void showArray (const Array<MVTime>& arr)
     cout << ']';
   }
 }
+// Show a masked array.
+template<typename T>
+void showArray (const MArray<T>& arr)
+{
+  showArray (arr.array());
+  if (arr.hasMask()) {
+    cout << "  mask=";
+    showArray (arr.mask());
+  }
+}
 
 // Show the required columns.
 // First test if they exist and contain scalars or arrays.
@@ -429,7 +439,7 @@ void showExpr(const TableExprNode& expr)
         break;
       default:
         if (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate) {
-          Array<MVTime> arr;
+          MArray<MVTime> arr;
           expr.get (i, arr);
           showArray (arr);
         } else {
@@ -818,10 +828,8 @@ int main (int argc, const char* argv[])
       } else if (arg == "-h"  ||  arg == "--help") {
         showHelp();
         return 0;
-      } else if (arg[0] == '-') {
-        cerr << arg << " is an invalid option" << endl;
-        return 1;
       } else {
+        // Note that e.g. -1+2 is an expression, not an invalid option.
         break;
       }
     }

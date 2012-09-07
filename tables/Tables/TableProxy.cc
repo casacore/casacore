@@ -792,30 +792,30 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
     switch (expr.dataType()) {
     case TpBool:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<Bool> arr;
+	MArray<Bool> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
       }
       break;
     case TpDouble:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<Double> arr;
+	MArray<Double> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
       }
       break;
     case TpDComplex:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<DComplex> arr;
+	MArray<DComplex> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
       }
       break;
     case TpString:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<String> arr;
+	MArray<String> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
       }
       break;
     default:

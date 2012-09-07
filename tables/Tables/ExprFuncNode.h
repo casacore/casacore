@@ -106,10 +106,10 @@ public:
 	normFUNC,         //# 21
 	absFUNC,          //# 22
 	argFUNC,          //# 23
-            // for Int, Double or DComplex returning Double
+            // for Int, Double, DComplex, Bool or String returning Double
 	realFUNC,         //# 24
 	imagFUNC,         //# 25
-            // for Int or Double returning Int (using floor)
+            // for Int, Double, Bool or String returning Int (using floor)
         intFUNC,          //# 26
             // for Int or Double returning Double
 	asinFUNC,         //# 27
@@ -181,7 +181,7 @@ public:
 	    // for Bool array returning Int scalar
 	ntrueFUNC,        //# 87
 	ntruesFUNC,       //# 88
-	gnfalseFUNC,      //# 89
+	gnfalseFUNC,      //# 89      /// unused; must be an accidental addition
 	nfalseFUNC,       //# 90
 	nfalsesFUNC,      //# 91
 	    // for any type returning array of that type
@@ -243,13 +243,20 @@ public:
             // angular distance returning radians
         angdistFUNC,      //# 134
         angdistxFUNC,     //# 135
-	    // other functions, implemented in derived class
+	    // cone search functions, implemented in derived class
 	conesFUNC,        //# 136
 	cones3FUNC,       //# 137
 	anyconeFUNC,      //# 138
 	anycone3FUNC,     //# 139
 	findconeFUNC,     //# 140
 	findcone3FUNC,    //# 141
+            // masked array functions
+        marrayFUNC,       //# 142
+        arrdataFUNC,      //# 143
+        arrmaskFUNC,      //# 144
+        arrflatFUNC,      //# 145
+            // for Int, Double, Complex or String returning Bool
+        boolFUNC,         //# 146
 	NRFUNC      //# should be last
 	};
 
@@ -344,6 +351,12 @@ public:
     // Get the angular distance between two positions on a sphere.
     static double angdist (double ra1, double dec1, double ra2, double dec2)
       { return acos (sin(dec1)*sin(dec2) + cos(dec1)*cos(dec2)*cos(ra1-ra2)); }
+
+    // Read a string as an integer, double, complex or bool.
+    static Int64 string2Int (const String&);
+    static Double string2Real (const String&);
+    static DComplex string2Complex (const String&);
+    static Bool string2Bool (const String&);
 
 private:
     // Try if the function gives a constant result.

@@ -33,6 +33,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableExprId.h>
 #include <tables/Tables/ExprRange.h>
+#include <casa/Arrays/MArray.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Quanta/MVTime.h>
 #include <casa/Quanta/Unit.h>
@@ -248,28 +249,62 @@ public:
     virtual MVTime getDate       (const TableExprId& id);
     // </group>
 
+    // Get scalar value as above, but in a way suitable for templates.
+    // <group>
+    Bool get (const TableExprId& id, Bool)
+      { return getBool(id); }
+    Int64 get (const TableExprId& id, Int64)
+      { return getInt(id); }
+    Double get (const TableExprId& id, Double)
+      { return getDouble(id); }
+    DComplex get (const TableExprId& id, DComplex)
+      { return getDComplex(id); }
+    String get (const TableExprId& id, String)
+      { return getString(id); }
+    TaqlRegex get (const TableExprId& id, TaqlRegex)
+      { return getRegex(id); }
+    MVTime get (const TableExprId& id, MVTime)
+      { return getDate(id); }
+    // </group>
+
     // Get an array value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
     // operator on the resulting values.
     // <group>
-    virtual Array<Bool> getArrayBool         (const TableExprId& id);
-    virtual Array<Int64> getArrayInt         (const TableExprId& id);
-    virtual Array<Double> getArrayDouble     (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String> getArrayString     (const TableExprId& id);
-    virtual Array<MVTime> getArrayDate       (const TableExprId& id);
+    virtual MArray<Bool> getArrayBool         (const TableExprId& id);
+    virtual MArray<Int64> getArrayInt         (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble     (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String> getArrayString     (const TableExprId& id);
+    virtual MArray<MVTime> getArrayDate       (const TableExprId& id);
+    // </group>
+
+    // Get scalar value as above, but in a way suitable for templates.
+    // <group>
+    MArray<Bool> getArray (const TableExprId& id, Bool)
+      { return getArrayBool(id); }
+    MArray<Int64> getArray (const TableExprId& id, Int64)
+       { return getArrayInt(id); }
+    MArray<Double> getArray (const TableExprId& id, Double)
+      { return getArrayDouble(id); }
+    MArray<DComplex> getArray (const TableExprId& id, DComplex)
+      { return getArrayDComplex(id); }
+    MArray<String> getArray (const TableExprId& id, String)
+      { return getArrayString(id); }
+    MArray< MVTime> getArray (const TableExprId& id, MVTime)
+      { return getArrayDate(id); }
     // </group>
 
     // Get a value as an array, even it it is a scalar.
-    // This is useful if one could given an argument as scalar or array.
+    // This is useful if one could give an argument as scalar or array.
     // <group>
-    Array<Bool> getBoolAS         (const TableExprId& id);
-    Array<Int64> getIntAS         (const TableExprId& id);
-    Array<Double> getDoubleAS     (const TableExprId& id);
-    Array<DComplex> getDComplexAS (const TableExprId& id);
-    Array<String> getStringAS     (const TableExprId& id);
-    Array<MVTime> getDateAS       (const TableExprId& id);
+    MArray<Bool> getBoolAS         (const TableExprId& id);
+    MArray<Int64> getIntAS         (const TableExprId& id);
+    MArray<Double> getDoubleAS     (const TableExprId& id);
+    MArray<DComplex> getDComplexAS (const TableExprId& id);
+    MArray<String> getStringAS     (const TableExprId& id);
+    MArray<MVTime> getDateAS       (const TableExprId& id);
     // </group>
 
     // Does a value occur in an array or set?
@@ -281,18 +316,18 @@ public:
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
-					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
-					  const Array<Int64>& value);
-    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
-					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
-					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (const TableExprId& id,
-					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
-					  const Array<MVTime>& value);
+    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
+                                           const MArray<Bool>& value);
+    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
+                                           const MArray<Int64>& value);
+    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
+                                           const MArray<Double>& value);
+    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
+                                           const MArray<DComplex>& value);
+    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
+                                           const MArray<String>& value);
+    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
+                                           const MArray<MVTime>& value);
     // </group>
 
     // Get the number of rows in the table associated with this expression.

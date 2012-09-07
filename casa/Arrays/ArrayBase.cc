@@ -602,6 +602,12 @@ ArrayBase* ArrayBase::getSection (const Slicer&)
   throw ArrayError ("ArrayBase::getSection cannot be used");
 }
 
+void throwArrayShapes (const char* name)
+{
+  throw ArrayConformanceError ("ArrayMath/Logical function " + String(name) +
+                               ": arrays not conformant");
+}
+
 
 } //# NAMESPACE CASA - END
 

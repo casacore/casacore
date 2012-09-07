@@ -121,26 +121,26 @@ template <class T> class Cube;
 // Determine if the comparisons between corresponding array elements yield True.
 // <group>
 template<typename T, typename CompareOperator>
-bool arrayCompareAll (const Array<T>& left, const Array<T>& right,
+Bool arrayCompareAll (const Array<T>& left, const Array<T>& right,
                       CompareOperator op);
 template<typename T, typename CompareOperator>
-bool arrayCompareAll (const Array<T>& left, T right,
+Bool arrayCompareAll (const Array<T>& left, T right,
                       CompareOperator op);
 template<typename T, typename CompareOperator>
-bool arrayCompareAll (T left, const Array<T>& right,
+Bool arrayCompareAll (T left, const Array<T>& right,
                       CompareOperator op);
 // </group>
 
 // Determine if the comparisons between corresponding array elements yield True.
 // <group>
 template<typename T, typename CompareOperator>
-bool arrayCompareAny (const Array<T>& left, const Array<T>& right,
+Bool arrayCompareAny (const Array<T>& left, const Array<T>& right,
                       CompareOperator op);
 template<typename T, typename CompareOperator>
-bool arrayCompareAny (const Array<T>& left, T right,
+Bool arrayCompareAny (const Array<T>& left, T right,
                       CompareOperator op);
 template<typename T, typename CompareOperator>
-bool arrayCompareAny (T left, const Array<T>& right,
+Bool arrayCompareAny (T left, const Array<T>& right,
                       CompareOperator op);
 // </group>
 
@@ -390,9 +390,15 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 inline Bool allTrue (const Array<Bool>& array)
   { return allEQ (array, True); }
 
-// Is any all element true?
+// Is any element true?
 inline Bool anyTrue (const Array<Bool>& array)
   { return anyEQ (array, True); }
+
+// The same functions as above, but for selected axes.
+Array<Bool> partialAllTrue (const Array<Bool>& array,
+                            const IPosition& collapseAxes);
+Array<Bool> partialAnyTrue (const Array<Bool>& array,
+                            const IPosition& collapseAxes);
 
 // 
 // Determine the number of true or false elements.
@@ -424,26 +430,6 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 // </group>
 
-// </group>
-
-// Define logical Functors.
-// <group>
-class AllFunc {
-public:
-  Bool operator() (const Array<Bool>& arr) const { return allTrue(arr); }
-};
-class AnyFunc {
-public:
-  Bool operator() (const Array<Bool>& arr) const { return anyTrue(arr); }
-};
-template<typename T> class NTrueFunc {
-public:
-  T operator() (const Array<T>& arr) const { return ntrue(arr); }
-};
-template<typename T> class NFalseFunc {
-public:
-  T operator() (const Array<T>& arr) const { return nfalse(arr); }
-};
 // </group>
 
 

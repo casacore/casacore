@@ -181,19 +181,6 @@ template<class T> class Matrix;
   // </group>
 
 
-// Function to check the shapes. It throws an exception if not equal.
-// <group>
-void throwArrayShapes (const char* name);
-inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
-                              const char* name)
-{
-  if (! left.shape().isEqual (right.shape())) {
-    throwArrayShapes (name);
-  }
-}
-// </group>
-
-
 // Functions to apply a binary or unary operator to arrays.
 // They are modeled after std::transform.
 // They do not check if the shapes conform; as in std::transform the
@@ -595,6 +582,9 @@ template<class T>  void indgen(Array<T> &a, T start);
 // Sum of every element of the array.
 template<class T> T sum(const Array<T> &a);
 // 
+// Sum the square of every element of the array.
+template<class T> T sumsqr(const Array<T> &a);
+// 
 // Product of every element of the array. This could of course easily
 // overflow.
 template<class T> T product(const Array<T> &a);
@@ -728,6 +718,10 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray);
 // and std::complex<double>, so the result is in fact one of these types.
 template<typename T>
 Array<std::complex<T> > makeComplex(const Array<T> &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const T &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &real, const T& imag);
 
 // Set the real part of the left complex array to the right real array.
 template<typename L, typename R>

@@ -23,6 +23,7 @@ tConvertArray
 tExtendSpecifier
 tIPosition
 tLinAlgebra
+tMArrayMath
 tMaskArrExcp
 tMaskArrIO
 tMaskArrLogi

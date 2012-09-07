@@ -77,8 +77,8 @@ public:
   // <group>
   Bool  getBool (const TableExprId& id);
   Int64 getInt  (const TableExprId& id);
-  Array<Bool>  getArrayBool (const TableExprId& id);
-  Array<Int64> getArrayInt  (const TableExprId& id);
+  MArray<Bool>  getArrayBool (const TableExprId& id);
+  MArray<Int64> getArrayInt  (const TableExprId& id);
   // </group>
 
   // Check the data and value types of the operands.

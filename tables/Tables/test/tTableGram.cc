@@ -286,30 +286,30 @@ void showExpr(const TableExprNode& expr)
       switch (expr.dataType()) {
       case TpBool:
 	{
-	  Array<Bool> arr;
+	  MArray<Bool> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpDouble:
 	{
-	  Array<Double> arr;
+	  MArray<Double> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpDComplex:
 	{
-	  Array<DComplex> arr;
+	  MArray<DComplex> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpString:
 	{
-	  Array<String> arr;
+	  MArray<String> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       default:

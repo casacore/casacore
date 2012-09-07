@@ -32,8 +32,8 @@
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casa/Arrays/MArrayMath.h>
+#include <casa/Arrays/MArrayLogical.h>
 #include <casa/Quanta/MVTime.h>
 #include <casa/Quanta/MVAngle.h>
 #include <casa/Quanta/Quantum.h>
@@ -360,19 +360,46 @@ void TableExprFuncNode::tryToConst()
 Bool TableExprFuncNode::getBool (const TableExprId& id)
 {
     switch (funcType_p) {
+    case boolFUNC:
+      if (operands_p[0]->dataType() == NTBool) {
+        return operands_p[0]->getBool(id);
+      } else if (operands_p[0]->dataType() == NTInt) {
+        return (operands_p[0]->getInt(id) != 0);
+      } else if (operands_p[0]->dataType() == NTDouble) {
+        return (operands_p[0]->getDouble(id) != 0);
+      } else if (operands_p[0]->dataType() == NTComplex) {
+        return (operands_p[0]->getDComplex(id) != DComplex());
+      } else if (operands_p[0]->dataType() == NTDate) {
+        return (operands_p[0]->getDouble(id) != 0);
+      }
+      return string2Bool (operands_p[0]->getString(id));
     case anyFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return anyTrue (operands_p[0]->getArrayBool(id));
+            MArray<Bool> tmp = operands_p[0]->getArrayBool(id);
+            if (tmp.hasMask()) {
+                return compareAnyRightMasked (tmp.array().begin(),
+                                              tmp.array().end(), True,
+                                              tmp.mask().begin(),
+                                              std::equal_to<bool>());
+            }
+            return anyTrue (tmp.array());
 	}
 	return operands_p[0]->getBool (id);
     case allFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return allTrue (operands_p[0]->getArrayBool(id));
+            MArray<Bool> tmp = operands_p[0]->getArrayBool(id);
+            if (tmp.hasMask()) {
+                return compareAllRightMasked (tmp.array().begin(),
+                                              tmp.array().end(), True,
+                                              tmp.mask().begin(),
+                                              std::equal_to<bool>());
+            }
+            return allTrue (tmp.array());
 	}
 	return operands_p[0]->getBool (id);
     case isnanFUNC:
 	if (argDataType_p == NTComplex) {
-            return isNaN(operands_p[0]->getDComplex(id));
+          return isNaN(operands_p[0]->getDComplex(id));
 	}
         return isNaN(operands_p[0]->getDouble(id));
     case isinfFUNC:
@@ -467,7 +494,11 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     case absFUNC:
         return abs (operands_p[0]->getInt(id));
     case intFUNC:
-	if (argDataType_p == NTDouble) {
+        if (operands_p[0]->dataType() == NTString) {
+            return string2Int (operands_p[0]->getString(id));
+        } else if (operands_p[0]->dataType() == NTBool) {
+            return operands_p[0]->getBool(id) ? 1:0;
+        } else if (argDataType_p == NTDouble) {
             return Int64 (operands_p[0]->getDouble(id));
         }
         return operands_p[0]->getInt(id);
@@ -504,12 +535,14 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	return operands_p[0]->getDate(id).yearweek();
     case arrminFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return min (operands_p[0]->getArrayInt (id));
-	}
+          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          return min(tmp);
+        }
 	return operands_p[0]->getInt (id);
     case arrmaxFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return max (operands_p[0]->getArrayInt (id));
+          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          return max(tmp);
 	}
 	return operands_p[0]->getInt (id);
     case arrsumFUNC:
@@ -524,10 +557,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	return operands_p[0]->getInt (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Int64> arr = operands_p[0]->getArrayInt (id);
-            AlwaysAssert (arr.contiguousStorage(), AipsError);
-            return std::accumulate(arr.cbegin(), arr.cend(), Int64(0),
-                                   casa::SumSqr<Int64>());
+	    return sumsqr (operands_p[0]->getArrayInt (id));
 	} else {
 	    Int64 val = operands_p[0]->getInt(id);
 	    return val * val;
@@ -628,11 +658,15 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	}
 	return arg (operands_p[0]->getDComplex(id));
     case realFUNC:
-	if (argDataType_p == NTInt) {
+        if (operands_p[0]->dataType() == NTString) {
+            return string2Real (operands_p[0]->getString(id));
+        } else if (operands_p[0]->dataType() == NTBool) {
+            return operands_p[0]->getBool(id) ? 1:0;
+	} else if (argDataType_p == NTInt) {
 	    return operands_p[0]->getInt(id);
 	} else if (argDataType_p == NTDouble) {
 	    return operands_p[0]->getDouble(id);
-	}
+        }
 	return operands_p[0]->getDComplex(id).real();
     case imagFUNC:
 	if (argDataType_p == NTDouble) {
@@ -704,10 +738,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return operands_p[0]->getDouble (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-            AlwaysAssert (arr.contiguousStorage(), AipsError);
-            return std::accumulate(arr.cbegin(), arr.cend(), Double(0),
-                                   casa::SumSqr<Double>());
+	    return sumsqr (operands_p[0]->getArrayDouble (id));
 	} else {
 	    Double val = operands_p[0]->getDouble(id);
 	    return val * val;
@@ -719,28 +750,16 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return operands_p[0]->getDouble (id);
     case arrvarianceFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.nelements() < 2) {
-	        return 0;
-	    }
-	    return variance (arr);
+	    return variance (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
     case arrstddevFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.nelements() < 2) {
-	        return 0;
-	    }
-	    return stddev (arr);
+	    return stddev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
     case arravdevFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.empty()) {
-	        return 0;
-	    }
 	    return avdev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
@@ -766,15 +785,15 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case angdistFUNC:
     case angdistxFUNC:
       {
-        Array<double> a1 = operands_p[0]->getArrayDouble(id);
-        Array<double> a2 = operands_p[1]->getArrayDouble(id);
-        if (!(a1.size() == 2  &&  a1.contiguousStorage()  &&
-              a2.size() == 2  &&  a2.contiguousStorage())) {
+        MArray<double> a1 = operands_p[0]->getArrayDouble(id);
+        MArray<double> a2 = operands_p[1]->getArrayDouble(id);
+        if (!(a1.size() == 2  &&  a1.array().contiguousStorage()  &&
+              a2.size() == 2  &&  a2.array().contiguousStorage())) {
           throw TableInvExpr ("Arguments of angdist(x) function must have a "
                               "multiple of 2 values");
         }
-        const double* d1 = a1.data();
-        const double* d2 = a2.data();
+        const double* d1 = a1.array().data();
+        const double* d2 = a2.array().data();
         return angdist (d1[0], d1[1], d2[0], d2[1]);
       }
     case datetimeFUNC:
@@ -844,6 +863,10 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	return val0;
       }
     case complexFUNC:
+        // A single argument is always a string.
+        if (operands_p.size() == 1) {
+            return string2Complex (operands_p[0]->getString(id));
+        }
 	return DComplex (operands_p[0]->getDouble (id),
 			 operands_p[1]->getDouble (id));
     case arrsumFUNC:
@@ -858,16 +881,7 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	return operands_p[0]->getDComplex (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<DComplex> arr = operands_p[0]->getArrayDComplex (id);
-	    Bool deleteIt;
-	    const DComplex* data = arr.getStorage (deleteIt);
-	    uInt nr = arr.nelements();
-	    DComplex result = 0;   
-	    for (uInt i=0; i < nr; i++) {
-	        result += data[i] * data[i];
-	    }
-	    arr.freeStorage (data, deleteIt);
-	    return result;
+	    return sumsqr (operands_p[0]->getArrayDComplex (id));
 	} else {
 	    DComplex val = operands_p[0]->getDComplex (id);
 	    return val * val;
@@ -1144,6 +1158,26 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
           resVT = VTArray;    // result is scalar if both arg have 2 values
         }
         return checkDT (dtypeOper, NTReal, NTDouble, nodes);
+    case marrayFUNC:
+        checkNumOfArg (2, 2, nodes);
+        resVT = VTArray;
+        if (nodes[1]->dataType() != NTBool) {
+          throw TableInvExpr("Second argument of marray function must be bool");
+        }
+        checkDT (dtypeOper, NTAny, NTBool, nodes);
+        return nodes[0]->dataType();
+        break;
+    case arrdataFUNC:
+    case arrflatFUNC:
+        checkNumOfArg (1, 1, nodes);
+        resVT = VTArray;
+	return checkDT (dtypeOper, NTAny, NTAny, nodes);
+        break;
+    case arrmaskFUNC:
+        checkNumOfArg (1, 1, nodes);
+        resVT = VTArray;
+	return checkDT (dtypeOper, NTAny, NTBool, nodes);
+        break;
     default:
 	break;
     }
@@ -1407,8 +1441,15 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case absFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTReal, nodes);
-    case argFUNC:
     case realFUNC:
+	checkNumOfArg (1, 1, nodes);
+        if (nodes[0]->dataType() == NTString) {
+          return checkDT (dtypeOper, NTString, NTDouble, nodes);
+        } else if (nodes[0]->dataType() == NTBool) {
+          return checkDT (dtypeOper, NTBool, NTDouble, nodes);
+        }
+	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
+    case argFUNC:
     case imagFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
@@ -1427,7 +1468,15 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return checkDT (dtypeOper, NTReal, NTReal, nodes);
     case intFUNC:
 	checkNumOfArg (1, 1, nodes);
+        if (nodes[0]->dataType() == NTString) {
+          return checkDT (dtypeOper, NTString, NTInt, nodes);
+        } else if (nodes[0]->dataType() == NTBool) {
+          return checkDT (dtypeOper, NTBool, NTInt, nodes);
+        }
 	return checkDT (dtypeOper, NTReal, NTInt, nodes);
+    case boolFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTAny, NTBool, nodes);
     case near2FUNC:
     case nearabs2FUNC:
 	checkNumOfArg (2, 2, nodes);
@@ -1456,6 +1505,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTReal, NTReal, nodes);
     case complexFUNC:
+        if (nodes.size() == 1  &&  nodes[0]->dataType() == NTString) {
+            return checkDT (dtypeOper, NTString, NTComplex, nodes);
+        }
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTReal, NTComplex, nodes);
     case isnanFUNC:
@@ -1513,5 +1565,53 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     }
     return NTNumeric;
 }
+
+Int64 TableExprFuncNode::string2Int (const String& str)
+{
+  istringstream istr(str);
+  // Initialize to 0 to make sure an empty string is handled correctly.
+  Int64 v=0;
+  istr >> v;
+  return v;
+}
+
+Double TableExprFuncNode::string2Real (const String& str)
+{
+  istringstream istr(str);
+  Double v=0;
+  istr >> v;
+  return v;
+}
+
+DComplex TableExprFuncNode::string2Complex (const String& str)
+{
+  istringstream istr(str);
+  Double r=0, i=0;
+  char c=' ';
+  istr >> c;
+  if (c == '(') {
+    // Like (12.3, 45.6)
+    istr >> r >> c >> i;
+  } else {
+    // Like 12.3, 45.6    or    12.3 + 45.6i
+    istringstream istr2(str);
+    istr2 >> r >> c >> i;
+  }
+  if (c == '-') i = -i;
+  return DComplex(r,i);
+}
+
+Bool TableExprFuncNode::string2Bool (const String& str)
+{
+  String s(str);
+  s.trim();
+  s.downcase();
+  if (s.empty()  ||  s == "f"  ||  s == "false"  ||  s == "0"  ||
+      s == "-"   ||  s == "n"  ||  s == "no") {
+    return False;
+  }
+  return True;
+}
+
 
 } //# NAMESPACE CASA - END

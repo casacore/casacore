@@ -43,6 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TableExprNodeSet;
+class TableExprNodeSetElem;
 class TableExprNodeIndex;
 class TableColumn;
 class AipsIO;
@@ -418,6 +419,9 @@ public:
   void handleSort (const std::vector<TableParseSort>& sortList,
 		   Bool noDuplicates, Sort::Order defaultSortOrder);
 
+  // Evaluate and keep limit/offset/stride given as start:end:incr
+  void handleLimit (const TableExprNodeSetElem& expr);
+
   // Evaluate and keep the limit value.
   void handleLimit (const TableExprNode& expr);
 
@@ -627,10 +631,15 @@ private:
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.
   TableExprNode node_p;
-  //# The possible limit (= max nr of selected rows) (0 means no limit).
+  //# The possible limit (= max nr of rows) (0 means no limit, can be <0).
   Int64 limit_p;
-  //# The possible offset (= nr of selected rows to skip).
+  //# The possible last row (0 means no end; can be <0).
+  //# limit_p and endrow_p cannot be both !=0.
+  Int64 endrow_p;
+  //# The possible offset (= nr of selected rows to skip); can be <0.
   Int64 offset_p;
+  //# The possible stride (= select every n rows). Must be >0.
+  Int64 stride_p;
   //# The update or insert expression list.
   std::vector<TableParseUpdate*> update_p;
   //# The table selection to be inserted.

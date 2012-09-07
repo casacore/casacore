@@ -80,7 +80,7 @@ public:
 
     // The default implementation of getArrayDComplex does
     // getArrayDouble and converts the result.
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
 
     // Does a value occur in the set?
     // <group>
@@ -90,18 +90,18 @@ public:
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
-					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
-					  const Array<Int64>& value);
-    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
-					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
-					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (const TableExprId& id,
-					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
-					  const Array<MVTime>& value);
+    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
+                                           const MArray<Bool>& value);
+    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
+                                           const MArray<Int64>& value);
+    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
+                                           const MArray<Double>& value);
+    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
+                                           const MArray<DComplex>& value);
+    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
+                                           const MArray<String>& value);
+    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
+                                           const MArray<MVTime>& value);
     // </group>
 
     // Get a single element from the array in the given row.
@@ -122,18 +122,18 @@ public:
 
     // Get a slice of the array in the given row.
     // <group>
-    virtual Array<Bool>     getSliceBool     (const TableExprId& id,
-					      const Slicer&);
-    virtual Array<Int64>    getSliceInt      (const TableExprId& id,
-					      const Slicer&);
-    virtual Array<Double>   getSliceDouble   (const TableExprId& id,
-					      const Slicer&);
-    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
-					      const Slicer&);
-    virtual Array<String>   getSliceString   (const TableExprId& id,
-					      const Slicer&);
-    virtual Array<MVTime>   getSliceDate     (const TableExprId& id,
-					      const Slicer&);
+    virtual MArray<Bool>     getSliceBool     (const TableExprId& id,
+                                                  const Slicer&);
+    virtual MArray<Int64>    getSliceInt      (const TableExprId& id,
+                                                  const Slicer&);
+    virtual MArray<Double>   getSliceDouble   (const TableExprId& id,
+                                                  const Slicer&);
+    virtual MArray<DComplex> getSliceDComplex (const TableExprId& id,
+                                                  const Slicer&);
+    virtual MArray<String>   getSliceString   (const TableExprId& id,
+                                                  const Slicer&);
+    virtual MArray<MVTime>   getSliceDate     (const TableExprId& id,
+                                                  const Slicer&);
     // </group>
 
     // Get a single element for the entire column (used by sort).
@@ -163,9 +163,9 @@ public:
     // </group>
 
     // Make an array with the given shape and fill it with the value.
-    static Array<Int64>    makeArray (const IPosition& shape, Int64 value);
-    static Array<Double>   makeArray (const IPosition& shape, Double value);
-    static Array<DComplex> makeArray (const IPosition& shape,
+    static MArray<Int64>    makeArray (const IPosition& shape, Int64 value);
+    static MArray<Double>   makeArray (const IPosition& shape, Double value);
+    static MArray<DComplex> makeArray (const IPosition& shape,
 				      const DComplex& value);
 
 protected:
@@ -247,8 +247,8 @@ public:
     ~TableExprNodeArrayColumnBool();
 
     virtual Bool getElemBool (const TableExprId& id, const Slicer& index);
-    virtual Array<Bool>  getArrayBool (const TableExprId& id);
-    virtual Array<Bool>  getSliceBool (const TableExprId& id, const Slicer&);
+    virtual MArray<Bool>  getArrayBool (const TableExprId& id);
+    virtual MArray<Bool>  getSliceBool (const TableExprId& id, const Slicer&);
     virtual Array<Bool>  getElemColumnBool (const Vector<uInt>& rownrs,
                                             const Slicer&);
 protected:
@@ -282,8 +282,8 @@ public:
     ~TableExprNodeArrayColumnuChar();
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Int64> getSliceInt (const TableExprId& id,
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uChar>  getElemColumnuChar (const Vector<uInt>& rownrs,
                                               const Slicer&);
@@ -318,8 +318,8 @@ public:
     ~TableExprNodeArrayColumnShort();
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Int64> getSliceInt (const TableExprId& id,
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Short>  getElemColumnShort (const Vector<uInt>& rownrs,
                                               const Slicer&);
@@ -354,8 +354,8 @@ public:
     ~TableExprNodeArrayColumnuShort();
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Int64> getSliceInt (const TableExprId& id,
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uShort> getElemColumnuShort (const Vector<uInt>& rownrs,
                                                const Slicer&);
@@ -390,8 +390,8 @@ public:
     ~TableExprNodeArrayColumnInt();
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Int64> getSliceInt (const TableExprId& id,
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Int>    getElemColumnInt (const Vector<uInt>& rownrs,
                                             const Slicer&);
@@ -426,8 +426,8 @@ public:
     ~TableExprNodeArrayColumnuInt();
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Int64> getSliceInt (const TableExprId& id,
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Int64> getSliceInt (const TableExprId& id,
 					  const Slicer&);
     virtual Array<uInt>   getElemColumnuInt (const Vector<uInt>& rownrs,
                                              const Slicer&);
@@ -462,8 +462,8 @@ public:
     ~TableExprNodeArrayColumnFloat();
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<Double> getSliceDouble (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Float>  getElemColumnFloat (const Vector<uInt>& rownrs,
                                               const Slicer&);
@@ -498,8 +498,8 @@ public:
     ~TableExprNodeArrayColumnDouble();
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<Double> getSliceDouble (const TableExprId& id,
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<Double> getSliceDouble (const TableExprId& id,
 					  const Slicer&);
     virtual Array<Double> getElemColumnDouble (const Vector<uInt>& rownrs,
                                                const Slicer&);
@@ -534,8 +534,8 @@ public:
     ~TableExprNodeArrayColumnComplex();
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<DComplex> getSliceDComplex (const TableExprId& id,
 					      const Slicer&);
     virtual Array<Complex>  getElemColumnComplex (const Vector<uInt>& rownrs,
                                                   const Slicer&);
@@ -570,8 +570,8 @@ public:
     ~TableExprNodeArrayColumnDComplex();
 
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<DComplex> getSliceDComplex (const TableExprId& id,
 					      const Slicer&);
     virtual Array<DComplex> getElemColumnDComplex (const Vector<uInt>& rownrs,
                                                    const Slicer&);
@@ -606,8 +606,8 @@ public:
     ~TableExprNodeArrayColumnString();
 
     virtual String getElemString (const TableExprId& id, const Slicer& index);
-    virtual Array<String> getArrayString (const TableExprId& id);
-    virtual Array<String> getSliceString (const TableExprId& id,
+    virtual MArray<String> getArrayString (const TableExprId& id);
+    virtual MArray<String> getSliceString (const TableExprId& id,
 					  const Slicer&);
     virtual Array<String> getElemColumnString (const Vector<uInt>& rownrs,
                                                const Slicer&);
@@ -741,12 +741,12 @@ public:
     String   getString   (const TableExprId& id);
     MVTime   getDate     (const TableExprId& id);
 
-    Array<Bool>     getArrayBool     (const TableExprId& id);
-    Array<Int64>    getArrayInt      (const TableExprId& id);
-    Array<Double>   getArrayDouble   (const TableExprId& id);
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
-    Array<String>   getArrayString   (const TableExprId& id);
-    Array<MVTime>   getArrayDate     (const TableExprId& id);
+    MArray<Bool>     getArrayBool     (const TableExprId& id);
+    MArray<Int64>    getArrayInt      (const TableExprId& id);
+    MArray<Double>   getArrayDouble   (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<String>   getArrayString   (const TableExprId& id);
+    MArray<MVTime>   getArrayDate     (const TableExprId& id);
 
     // Get the data type of this column (if possible).
     // It returns with a False status when the index is not constant

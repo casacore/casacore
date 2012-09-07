@@ -336,7 +336,7 @@ public:
     void checkEqualDataTypes() const;
 
     // Contains the set only single elements?
-    // Single means that only single values are given (thus no end nor incr).
+    // Single means that only single values are given (thus end nor incr).
     Bool isSingle() const;
 
     // Contains the set only discrete elements?
@@ -365,12 +365,12 @@ public:
 
     // Get an array value for this bounded set in the given row.
     // <group>
-    virtual Array<Bool> getArrayBool         (const TableExprId& id);
-    virtual Array<Int64> getArrayInt         (const TableExprId& id);
-    virtual Array<Double> getArrayDouble     (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String> getArrayString     (const TableExprId& id);
-    virtual Array<MVTime> getArrayDate       (const TableExprId& id);
+    virtual MArray<Bool> getArrayBool         (const TableExprId& id);
+    virtual MArray<Int64> getArrayInt         (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble     (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String> getArrayString     (const TableExprId& id);
+    virtual MArray<MVTime> getArrayDate       (const TableExprId& id);
     // </group>
 
     // Does a value occur in the set?
@@ -381,18 +381,18 @@ public:
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
-					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
-					  const Array<Int64>& value);
-    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
-					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
-					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (const TableExprId& id,
-					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
-					  const Array<MVTime>& value);
+    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
+                                           const MArray<Bool>& value);
+    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
+                                           const MArray<Int64>& value);
+    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
+                                           const MArray<Double>& value);
+    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
+                                           const MArray<DComplex>& value);
+    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
+                                           const MArray<String>& value);
+    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
+                                           const MArray<MVTime>& value);
     // </group>
 
     // Let a set node convert itself to the given unit.

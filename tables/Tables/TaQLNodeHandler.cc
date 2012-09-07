@@ -292,8 +292,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     const TableExprNode* se = start.isValid() ? &(getHR(start).getExpr()) : 0;
     const TableExprNode* ee =   end.isValid() ? &(getHR(  end).getExpr()) : 0;
     const TableExprNode* ie =  incr.isValid() ? &(getHR( incr).getExpr()) : 0;
-    TableExprNodeSetElem* elem = new TableExprNodeSetElem
-                                 (se, ee, ie, node.style().isEndExcl());
+    TableExprNodeSetElem* elem = 0;
+    // A single boolean node indicates a mask.
+    if (se && !ee && !ie && se->dataType() == TpBool) {
+      elem = new TableExprNodeSetElem (*se);
+    } else {
+      elem = new TableExprNodeSetElem (se, ee, ie, node.style().isEndExcl());
+    }
     hrval->setElem (elem);
     hrval->setExpr (TableExprNode(elem));  // Takes care of deleting elem
     return res;
@@ -414,7 +419,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (node.itsLimit.isValid()) {
       TaQLNodeResult result = visitNode (node.itsLimit);
       const TaQLNodeHRValue& res = getHR(result);
-      topStack()->handleLimit (res.getExpr());
+      // If start:end:incr is given, the result is a set element.
+      // Otherwise the result is an expression (for a single limit value).
+      if (res.getElem()) {
+        topStack()->handleLimit (*res.getElem());
+      } else {
+        topStack()->handleLimit (res.getExpr());
+      }
     }
     if (node.itsOffset.isValid()) {
       TaQLNodeResult result = visitNode (node.itsOffset);

@@ -138,11 +138,16 @@ void checkArrBool (const String& str, TableExprId& exprid,
 {
   cout << "checkArrBool " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpBool);
-  Array<Bool> val;
+  MArray<Bool> val;
   expr.get (exprid, val);
-  if (! allEQ (val, value)) {
+  if (val.hasMask()) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": should not result in a mask";
+  }
+  if (! allEQ (val.array(), value)) {
+    foundError = True;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -152,13 +157,18 @@ void checkArrInt (const String& str, TableExprId& exprid,
 {
   cout << "checkArrInt " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpInt);
-  Array<Int64> val64;
+  MArray<Int64> val64;
   expr.get (exprid, val64);
+  if (val64.hasMask()) {
+    foundError = True;
+    cout << str << ": should not result in a mask";
+  }
   Array<Int> val(val64.shape());
-  convertArray (val, val64);
+  convertArray (val, val64.array());
   if (! allEQ (val, value)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": found value " << val
+         << "; expected " << value << endl;
   }
 }
 
@@ -168,11 +178,16 @@ void checkArrDouble (const String& str, TableExprId& exprid,
 {
   cout << "checkArrDouble " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);
-  Array<Double> val;
+  MArray<Double> val;
   expr.get (exprid, val);
-  if (! allNear (val, value, 1.e-10)) {
+  if (val.hasMask()) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": should not result in a mask";
+  }
+  if (! allNear (val.array(), value, 1.e-10)) {
+    foundError = True;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -182,11 +197,16 @@ void checkArrDComplex (const String& str, TableExprId& exprid,
 {
   cout << "checkArrDComplex " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDComplex);
-  Array<DComplex> val;
+  MArray<DComplex> val;
   expr.get (exprid, val);
-  if (! allNear (val, value, 1.e-10)) {
+  if (val.hasMask()) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": should not result in a mask";
+  }
+  if (! allNear (val.array(), value, 1.e-10)) {
+    foundError = True;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -196,11 +216,16 @@ void checkArrString (const String& str, TableExprId& exprid,
 {
   cout << "checkArrString " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpString);
-  Array<String> val;
+  MArray<String> val;
   expr.get (exprid, val);
-  if (! allEQ (val, value)) {
+  if (val.hasMask()) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": should not result in a mask";
+  }
+  if (! allEQ (val.array(), value)) {
+    foundError = True;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -294,6 +319,11 @@ void doIt()
   for (Int i=0; i<shp[1]; ++i) {
     mats1[i] = arrs1;
   }
+  Vector<String> arrs3 = stringToVector("10, 8.9, -3.6, -2.3, 23.15");
+  Vector<Int> arrsi3(5);
+  arrsi3[0]=10; arrsi3[1]=8; arrsi3[2]=-3; arrsi3[3]=-2; arrsi3[4]=23;
+  Vector<Double> arrsd3(5);
+  arrsd3[0]=10; arrsd3[1]=8.9; arrsd3[2]=-3.6; arrsd3[3]=-2.3; arrsd3[4]=23.15;
   // Do the same for scalars.
   Bool sb1 = True;
   Bool sb2 = False;
@@ -354,6 +384,7 @@ void doIt()
   rec.define ("arrz2", arrz2);
   rec.define ("arrs1", arrs1);
   rec.define ("arrs2", arrs2);
+  rec.define ("arrs3", arrs3);
   // Now form expression nodes from the record fields.
   TableExprNode esb1 = makeRecordExpr (rec, "sb1");
   TableExprNode esb2 = makeRecordExpr (rec, "sb2");
@@ -379,6 +410,7 @@ void doIt()
   TableExprNode earrz2 = makeRecordExpr (rec, "arrz2");
   TableExprNode earrs1 = makeRecordExpr (rec, "arrs1");
   TableExprNode earrs2 = makeRecordExpr (rec, "arrs2");
+  TableExprNode earrs3 = makeRecordExpr (rec, "arrs3");
 
   // Use the record as the expression id.
   TableExprId exprid(rec);
@@ -779,13 +811,27 @@ void doIt()
   checkScaInt ("integer si", exprid, integer(esi1), si1);
   checkArrInt ("integer ai", exprid, integer(earri1), arri1);
   checkScaInt ("integer sd", exprid, integer(esd1), Int(sd1));
+  checkScaInt ("integer 10", exprid, integer("10"), 10);
   checkArrInt ("integer ad", exprid, integer(earrd1), arrdi1);
+  checkArrInt ("integer as", exprid, integer(earrs3), arrsi3);
   checkScaDComplex ("complex si", exprid, formComplex(esi1, 0), siz1);
   checkArrDComplex ("complex ai", exprid, formComplex(earri1, 0), arriz1);
   checkScaDComplex ("complex sd", exprid, formComplex(esd1, 0), sdz1);
   checkArrDComplex ("complex ad", exprid, formComplex(earrd1,arrdzero), arrdz1);
   checkArrDComplex ("complex ad-ad", exprid,
                     formComplex(real(earrz1),imag(earrz1)), arrz1);
+  checkScaDComplex ("complex ss1", exprid, formComplex("10.5"),
+                    DComplex(10.5, 0.));
+  checkScaDComplex ("complex ss2", exprid, formComplex(" -10.5 + -8i "),
+                    DComplex(-10.5, -8.));
+  checkScaDComplex ("complex ss3", exprid, formComplex(" -10.5 - 8i"),
+                    DComplex(-10.5, -8.));
+  checkArrDComplex ("complex as", exprid,
+                    formComplex(stringToVector("10.5+8i;(10.5,8);10.5+8j",';')),
+                    Vector<DComplex>(3, DComplex(10.5, 8.)));
+  checkScaBool ("bool ss", exprid, boolean("1"), True);
+  checkArrBool ("bool as", exprid, boolean(stringToVector("1,2")),
+                Vector<Bool>(2,True));
   checkScaInt ("norm si", exprid, norm(esi1), si1*si1);
   checkArrInt ("norm ai", exprid, norm(earri1), arri1*arri1);
   checkScaDouble ("norm sd", exprid, norm(esd1), sd1*sd1);
@@ -1005,6 +1051,18 @@ void doIt()
   checkScaBool ("isnan(ai)", exprid, any(isNaN(earri1)), False);
   checkScaBool ("isnan(ad)", exprid, any(isNaN(earrd1)), False);
   checkScaBool ("isnan(az)", exprid, any(isNaN(earrz1)), False);
+  checkScaBool ("isinf(si)", exprid, isInf(esi1), False);
+  checkScaBool ("isinf(sd)", exprid, isInf(esd1), False);
+  checkScaBool ("isinf(sz)", exprid, isInf(esz1), False);
+  checkScaBool ("isinf(ai)", exprid, any(isInf(earri1)), False);
+  checkScaBool ("isinf(ad)", exprid, any(isInf(earrd1)), False);
+  checkScaBool ("isinf(az)", exprid, any(isInf(earrz1)), False);
+  checkScaBool ("isfinite(si)", exprid, isFinite(esi1), True);
+  checkScaBool ("isfinite(sd)", exprid, isFinite(esd1), True);
+  checkScaBool ("isfinite(sz)", exprid, isFinite(esz1), True);
+  checkScaBool ("isfinite(ai)", exprid, all(isFinite(earri1)), True);
+  checkScaBool ("isfinite(ad)", exprid, all(isFinite(earrd1)), True);
+  checkScaBool ("isfinite(az)", exprid, all(isFinite(earrz1)), True);
 
   // Check array functions.
   checkScaInt ("array(ab2)", exprid, ntrue(array(esb1,shp)), 20);
@@ -1016,6 +1074,8 @@ void doIt()
   checkScaInt ("ndim(si)", exprid, ndim(esi1), 0);
   checkScaInt ("ndim(ad)", exprid, ndim(earrd1), shp.size());
   checkArrInt ("shape(az)", exprid, shape(earrz1), shpVec);
+  checkScaInt ("nelements(ad)", exprid, nelements(earrd1), shp.product());
+  checkArrInt ("transpose(ad)", exprid, transpose(transpose(earri1)), arri1);
 
   // Check string and pattern functions.
   checkScaInt ("strlength(ss)", exprid, strlength(ess1), ss1.size());
@@ -1097,11 +1157,44 @@ void doShow()
   expr2.show (cout);
 }
 
+void doFromString()
+{
+  AlwaysAssertExit (TableExprFuncNode::string2Int("12") == 12);
+  AlwaysAssertExit (TableExprFuncNode::string2Int("12a") == 12);
+  AlwaysAssertExit (TableExprFuncNode::string2Int("12.3") == 12);
+  AlwaysAssertExit (TableExprFuncNode::string2Int(" -12 ") == -12);
+  AlwaysAssertExit (TableExprFuncNode::string2Real(" -12") == -12);
+  AlwaysAssertExit (TableExprFuncNode::string2Real(" -1.2e1") == -12);
+  AlwaysAssertExit (TableExprFuncNode::string2Real(" -12.3 ") == -12.3);
+  AlwaysAssertExit (TableExprFuncNode::string2Real(" -12.3e-1 ") == -1.23);
+  AlwaysAssertExit (TableExprFuncNode::string2Complex("10.5") ==
+                    DComplex(10.5, 0.));
+  AlwaysAssertExit (TableExprFuncNode::string2Complex("-10.5+-8i") ==
+                    DComplex(-10.5, -8.));
+  AlwaysAssertExit (TableExprFuncNode::string2Complex("  -10.5  +  -8i  ") ==
+                    DComplex(-10.5, -8.));
+  AlwaysAssertExit (TableExprFuncNode::string2Complex("-10.5-8i") ==
+                    DComplex(-10.5, -8.));
+  AlwaysAssertExit (TableExprFuncNode::string2Complex("  -10.5  -  8i  ") ==
+                    DComplex(-10.5, -8.));
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("-12.3e-1") == true);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool(" ") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool(" 0 ") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("  f  ") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("false") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("n") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("no") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("-") == false);
+  AlwaysAssertExit (TableExprFuncNode::string2Bool("-0") == true);
+}
+
 int main()
 {
   try {
     doIt();
     doShow();
+    doFromString();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;

@@ -142,7 +142,9 @@ TableParseSelect::TableParseSelect (CommandType commandType)
     resultType_p    (0),
     resultSet_p     (0),
     limit_p         (0),
+    endrow_p        (0),
     offset_p        (0),
+    stride_p        (1),
     insSel_p        (0),
     noDupl_p        (False),
     order_p         (Sort::Ascending)
@@ -426,6 +428,14 @@ TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
 					     const TableExprNodeSet& indices,
 					     const TaQLStyle& style)
 {
+  // Create a masked array if a single bool element is given.
+  if (indices.isSingle()  &&  indices.nelements() == 1  &&
+      indices.dataType() == TableExprNodeRep::NTBool) {
+    if (! indices.hasArrays()) {
+      throw TableInvExpr ("Second argument of a masked array must be an array");
+    }
+    return marray (array, TableExprNode(indices[0].start()));
+  }
   return TableExprNode::newArrayPartNode (array, indices, style);
 }
  
@@ -646,7 +656,7 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::ndimFUNC;
   } else if (funcName == "shape") {
     ftype = TableExprFuncNode::shapeFUNC;
-  } else if (funcName == "complex") {
+  } else if (funcName == "complex"  ||  funcName == "formcomplex") {
     ftype = TableExprFuncNode::complexFUNC;
   } else if (funcName == "abs"  ||  funcName == "amplitude") {
     ftype = TableExprFuncNode::absFUNC;
@@ -660,6 +670,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::imagFUNC;
   } else if (funcName == "int"  ||  funcName == "integer") {
     ftype = TableExprFuncNode::intFUNC;
+  } else if (funcName == "bool"  ||  funcName == "boolean") {
+    ftype = TableExprFuncNode::boolFUNC;
   } else if (funcName == "datetime") {
     ftype = TableExprFuncNode::datetimeFUNC;
   } else if (funcName == "mjdtodate") {
@@ -732,6 +744,12 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::angdistFUNC;
   } else if (funcName == "angdistx"  ||  funcName == "angulardistancex") {
     ftype = TableExprFuncNode::angdistxFUNC;
+  } else if (funcName == "arraydata") {
+    ftype = TableExprFuncNode::arrdataFUNC;
+  } else if (funcName == "mask"  ||  funcName == "arraymask") {
+    ftype = TableExprFuncNode::arrmaskFUNC;
+  } else if (funcName == "flatten"  ||  funcName == "arrayflatten") {
+    ftype = TableExprFuncNode::arrflatFUNC;
   } else {
     // unknown name can be a user-defined function.
     ftype = TableExprFuncNode::NRFUNC;
@@ -1371,6 +1389,23 @@ TableExprNode TableParseSelect::makeSubSet (const Table& origTable) const
   return set.setOrArray();
 }
 
+void TableParseSelect::handleLimit (const TableExprNodeSetElem& expr)
+{
+  if (expr.start()) {
+    offset_p = evalIntScaExpr (TableExprNode(expr.start()));
+  }
+  if (expr.end()) {
+    endrow_p = evalIntScaExpr (TableExprNode(expr.end()));
+  }
+  if (expr.increment()) {
+    stride_p = evalIntScaExpr (TableExprNode(expr.increment()));
+    if (stride_p <= 0) {
+      throw TableInvExpr ("stride " + String::toString(stride_p) +
+                          " in the LIMIT clause must be positive");
+    }
+  }
+}
+
 void TableParseSelect::handleLimit (const TableExprNode& expr)
 {
   limit_p = evalIntScaExpr (expr);
@@ -1719,13 +1754,13 @@ void TableParseSelect::updateValue1 (uInt row, const TableExprId& rowid,
   } else {
     // Only put an array if defined.
     if (node.isResultDefined (rowid)) {
-      Array<T> value;
+      MArray<T> value;
       node.get (rowid, value);
       ArrayColumn<T> acol(col);
       if (slicerPtr == 0) {
-        acol.put (row, value);
+        acol.put (row, value.array());
       } else if (acol.isDefined(row)) {
-        acol.putSlice (row, *slicerPtr, value);
+        acol.putSlice (row, *slicerPtr, value.array());
       }
     }
   }
@@ -1777,10 +1812,10 @@ void TableParseSelect::updateValue2 (uInt row, const TableExprId& rowid,
     // a slice of it. Note that putSlice takes care of possibly unbound slicers.
     // Only put if defined.
     if (node.isResultDefined(rowid)) {
-      Array<TNODE> val;
+      MArray<TNODE> val;
       node.get (rowid, val);
       Array<TCOL> value(val.shape());
-      convertArray (value, val);
+      convertArray (value, val.array());
       ArrayColumn<TCOL> acol(col);
       if (slicerPtr == 0) {
         acol.put (row, value);
@@ -2128,16 +2163,24 @@ void TableParseSelect::doLimOff (Bool showTimings)
   Vector<uInt> newRownrs;
   // Negative values mean from the end (a la Python indexing).
   Int64 nrow = rownrs_p.size();
-  if (limit_p  < 0) limit_p  = nrow+limit_p;
-  if (offset_p < 0) offset_p = nrow+offset_p;
-  if (limit_p  < 0) limit_p  = 0;
-  if (offset_p < 0) offset_p = 0;
-  if (offset_p < nrow) {
-    uInt nrleft = nrow - offset_p;
-    if (limit_p > 0  &&  limit_p < nrleft) {
-      nrleft = limit_p;
-    }
-    newRownrs.reference (rownrs_p(Slice(offset_p, nrleft)).copy());
+  if (offset_p < 0) {
+    offset_p += nrow;
+    if (offset_p < 0) offset_p = 0;
+  }
+  // A limit (i.e. nr of rows) or an endrow can be given.
+  // Convert a limit to endrow.
+  if (limit_p != 0) {
+    if (limit_p  < 0) limit_p  += nrow;
+    endrow_p = offset_p + limit_p*stride_p;
+  } else if (endrow_p != 0) {
+    if (endrow_p < 0) endrow_p += nrow;
+  } else {
+    endrow_p = nrow;
+  }
+  if (endrow_p > nrow) endrow_p = nrow;
+  if (offset_p < endrow_p) {
+    Int64 nr = 1 + (endrow_p - offset_p - 1) / stride_p;
+    newRownrs.reference (rownrs_p(Slice(offset_p, nr, stride_p)).copy());
   }
   rownrs_p.reference (newRownrs);
   if (showTimings) {
@@ -2572,10 +2615,10 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   if (mustSelect  &&  commandType_p == PSELECT
   &&  node_p.isNull()  &&  sort_p.size() == 0
   &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-  &&  limit_p == 0  &&  offset_p == 0) {
+  &&  limit_p == 0  &&  offset_p == 0  &&  stride_p == 1) {
     throw (TableError
 	   ("TableParse error: no projection, selection, sorting, "
-	    "limit, offset, or giving-set given in SELECT command"));
+	    "limit/offset, or giving-set given in SELECT command"));
   }
   // Test if a "giving set" is possible.
   if (resultSet_p != 0  &&  !setInGiving) {
@@ -2584,12 +2627,16 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   //# The first table in the list is the source table.
   Table table = fromTables_p[0].table();
+  //# Set endrow_p if positive limit and positive or no offset.
+  if (offset_p >= 0  &&  limit_p > 0) {
+    endrow_p = offset_p + limit_p * stride_p;
+  }
   //# Determine if we can pre-empt the selection loop.
-  //# That is possible if a positive limit and offset are given
+  //# That is possible if there is a positive endrow
   //# without sorting or select distinct.
   uInt nrmax=0;
-  if (sort_p.size() == 0  &&  limit_p > 0  &&  offset_p > 0  &&  !distinct_p) {
-    nrmax = limit_p + offset_p;
+  if (endrow_p > 0  &&  sort_p.size() == 0  &&  !distinct_p) {
+    nrmax = endrow_p;
   }
   //# First do the where selection.
   Table resultTable(table);
@@ -2614,7 +2661,8 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
     doSort (showTimings, table);
   }
   // If select distinct is given, limit/offset can only be done thereafter.
-  if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
+  if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0  ||
+                        endrow_p != 0  || stride_p != 1)) {
     doLimOff (showTimings);
   }
   resultTable = table(rownrs_p);
@@ -2637,7 +2685,8 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
       resultTable = doProject (showTimings, table);
     }
     // If select distinct is given, limit/offset must be done at the end.
-    if (distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
+    if (distinct_p  &&  (offset_p != 0  ||  limit_p != 0  ||
+                         endrow_p != 0  || stride_p != 1)) {
       resultTable = doLimOff (showTimings, resultTable);
     }
     //# Finally rename or copy using the given name (and flush it).

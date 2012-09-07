@@ -131,11 +131,11 @@ public:
     virtual Bool isDefined (const TableExprId& id);
     virtual const IPosition& getShape (const TableExprId& id);
 
-    virtual Array<Bool>     getArrayBool     (const TableExprId& id);
-    virtual Array<Int64>    getArrayInt      (const TableExprId& id);
-    virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String>   getArrayString   (const TableExprId& id);
+    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
+    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String>   getArrayString   (const TableExprId& id);
 
 protected:
     Block<Int> fieldNrs_p;

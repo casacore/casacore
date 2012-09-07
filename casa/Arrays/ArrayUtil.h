@@ -270,4 +270,5 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casa/Arrays/ArrayUtil.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
+
 #endif

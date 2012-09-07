@@ -264,6 +264,19 @@ size_t ArrayIndexOffset (uInt Ndim, const ssize_t* Shape,
                          const ssize_t* Inc, const IPosition& Index);
 // </group>
 
+// Function to check the shapes. It throws an exception if not equal.
+// <group>
+void throwArrayShapes (const char* name);
+inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
+                              const char* name)
+{
+  if (! left.shape().isEqual (right.shape())) {
+    throwArrayShapes (name);
+  }
+}
+// </group>
+
+
 // </group>
 
 } //# NAMESPACE CASA - END

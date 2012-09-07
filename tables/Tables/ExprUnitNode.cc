@@ -28,6 +28,7 @@
 #include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/Arrays/MArray.h>
 #include <casa/Arrays/ArrayMath.h>
 
 
@@ -162,11 +163,17 @@ TableExprNodeArrayUnit::~TableExprNodeArrayUnit()
 Double TableExprNodeArrayUnit::getUnitFactor() const
   { return factor_p; }
 
-Array<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
-  { return factor_p * lnode_p->getArrayDouble(id); }
+MArray<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
+{ 
+  MArray<Double> arr = lnode_p->getArrayDouble(id);
+  return MArray<Double> (factor_p * arr.array(), arr.mask());
+}
 
-Array<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)
-  { return DComplex(factor_p) * lnode_p->getArrayDComplex(id); }
+MArray<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)
+{
+  MArray<DComplex> arr = lnode_p->getArrayDComplex(id);
+  return MArray<DComplex> (DComplex(factor_p) * arr.array(), arr.mask());
+}
 
 
 

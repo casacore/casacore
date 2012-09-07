@@ -164,8 +164,140 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return false;
   }
   // </group>
+
+  // Define a function to compare all unmasked elements of two sequences.
+  // It returns true if all unmasked elements compare true.
+  // An example compare operator is <src>std::equal_to</src>.
+  // <group>
+  template<typename InputIterator1, typename InputIterator2,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAllFalse (InputIterator1 first1, InputIterator1 last1,
+                               InputIterator2 first2,
+                               MaskIterator mask1, MaskIterator mask2,
+                               CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++first2, ++mask1, ++mask2) {
+      if (!*mask1  &&  !*mask2  &&  !op(*first1, *first2)) return false;
+    }
+    return true;
+  }
+  template<typename InputIterator1, typename InputIterator2,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAllFalse (InputIterator1 first1, InputIterator1 last1,
+                               InputIterator2 first2,
+                               MaskIterator mask,
+                               CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++first2, ++mask) {
+      if (!*mask  &&  !op(*first1, *first2)) return false;
+    }
+    return true;
+  }
+  // For use with a constant left value.
+  // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
+  // (see ArrayMath.h).
+  template<typename InputIterator1, typename T,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAllFalseLeft (InputIterator1 first1, InputIterator1 last1,
+                                   T left, MaskIterator mask,
+                                   CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++mask) {
+      if (!*mask  &&  !op(left, *first1)) return false;
+    }
+    return true;
+  }
+  // For use with a constant right value.
+  // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
+  // (see ArrayMath.h).
+  template<typename InputIterator1, typename T,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAllFalseRight (InputIterator1 first1, InputIterator1 last1,
+                                    T right, MaskIterator mask,
+                                    CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++mask) {
+      if (!*mask  &&  !op(*first1, right)) return false;
+    }
+    return true;
+  }
+  // </group>
+  
+  // Define a function to compare all unmasked elements of two sequences.
+  // It returns true if any unmasked element compares true.
+  // An example compare operator is <src>std::equal_to</src>.
+  // <group>
+  template<typename InputIterator1, typename InputIterator2,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAnyFalse (InputIterator1 first1, InputIterator1 last1,
+                               InputIterator2 first2,
+                               MaskIterator mask1, MaskIterator mask2,
+                               CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++first2, ++mask1, ++mask2) {
+      if (!*mask1  &&  !*mask2  &&  op(*first1, *first2)) return true;
+    }
+    return false;
+  }
+  template<typename InputIterator1, typename InputIterator2,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAnyFalse (InputIterator1 first1, InputIterator1 last1,
+                               InputIterator2 first2,
+                               MaskIterator mask,
+                               CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++first2, ++mask) {
+      if (!*mask  &&  op(*first1, *first2)) return true;
+    }
+    return false;
+  }
+  // For use with a constant left value.
+  // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
+  // (see ArrayMath.h).
+  template<typename InputIterator1, typename T,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAnyFalseLeft (InputIterator1 first1, InputIterator1 last1,
+                                   T left, MaskIterator mask,
+                                   CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++mask) {
+      if (!*mask  &&  op(left, *first1)) return true;
+    }
+    return false;
+  }
+  // For use with a constant right value.
+  // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
+  // (see ArrayMath.h).
+  template<typename InputIterator1, typename T,
+           typename MaskIterator, typename CompareOperator>
+  inline bool compareAnyFalseRight (InputIterator1 first1, InputIterator1 last1,
+                                    T right, MaskIterator mask,
+                                    CompareOperator op)
+  {
+    for (; first1!=last1; ++first1, ++mask) {
+      if (!*mask  &&  op(*first1, right)) return true;
+    }
+    return false;
+  }
+  // </group>
   
 
+
+  // Functor to add 1 if the value is true.
+  template <typename L, typename R=L, typename RES=L>
+  struct CountTrue : public std::binary_function<L,R,RES>
+  {
+    RES operator() (const L& x, const R& y) const
+      { return y ? RES(x)+RES(1) : RES(x); }
+  };
+
+  // Functor to add 1 if the value is false.
+  template <typename L, typename R=L, typename RES=L>
+  struct CountFalse : public std::binary_function<L,R,RES>
+  {
+    RES operator() (const L& x, const R& y) const
+      { return y ? RES(x) : RES(x)+RES(1); }
+  };
 
   // Functor to add variables of possible different types.
   // This is unlike std::plus which requires equal types.

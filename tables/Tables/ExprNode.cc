@@ -193,6 +193,67 @@ TableExprNode::TableExprNode (const Array<MVTime>& val)
     node_p->link();
 }
 
+TableExprNode::TableExprNode (const MArray<Bool>& val)
+{
+    node_p = new TableExprNodeArrayConstBool (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uChar>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Short>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uShort>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Int>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uInt>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Float>& val)
+{
+    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Double>& val)
+{
+    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Complex>& val)
+{
+    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<DComplex>& val)
+{
+    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<String>& val)
+{
+    node_p = new TableExprNodeArrayConstString (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<MVTime>& val)
+{
+    node_p = new TableExprNodeArrayConstDate (val);
+    node_p->link();
+}
+
 TableExprNode::TableExprNode (TableExprNodeRep* node)
 : node_p (node->link())
 {}

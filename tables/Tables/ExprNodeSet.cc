@@ -1300,29 +1300,29 @@ Array<MVTime> TableExprNodeSet::toArrayDate (const TableExprId& id) const
     return result;
 }
 
-Array<Bool> TableExprNodeSet::getArrayBool (const TableExprId& id)
+MArray<Bool> TableExprNodeSet::getArrayBool (const TableExprId& id)
 {
-    return toArrayBool (id);
+    return MArray<Bool> (toArrayBool (id));
 }
-Array<Int64> TableExprNodeSet::getArrayInt (const TableExprId& id)
+MArray<Int64> TableExprNodeSet::getArrayInt (const TableExprId& id)
 {
-    return toArrayInt (id);
+    return MArray<Int64> (toArrayInt (id));
 }
-Array<Double> TableExprNodeSet::getArrayDouble (const TableExprId& id)
+MArray<Double> TableExprNodeSet::getArrayDouble (const TableExprId& id)
 {
-    return toArrayDouble (id);
+    return MArray<Double> (toArrayDouble (id));
 }
-Array<DComplex> TableExprNodeSet::getArrayDComplex (const TableExprId& id)
+MArray<DComplex> TableExprNodeSet::getArrayDComplex (const TableExprId& id)
 {
-    return toArrayDComplex (id);
+    return MArray<DComplex> (toArrayDComplex (id));
 }
-Array<String> TableExprNodeSet::getArrayString (const TableExprId& id)
+MArray<String> TableExprNodeSet::getArrayString (const TableExprId& id)
 {
-    return toArrayString (id);
+    return MArray<String> (toArrayString (id));
 }
-Array<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
+MArray<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
 {
-    return toArrayDate (id);
+    return MArray<MVTime> (toArrayDate (id));
 }
 
 Bool TableExprNodeSet::findOpenOpen (Double value)
@@ -1454,113 +1454,107 @@ Bool TableExprNodeSet::hasDate (const TableExprId& id, const MVTime& value)
     }
     return result;
 }
-Array<Bool> TableExprNodeSet::hasArrayBool (const TableExprId& id,
-					    const Array<Bool>& value)
+MArray<Bool> TableExprNodeSet::hasArrayBool (const TableExprId& id,
+                                             const MArray<Bool>& value)
 {
-    Array<Bool> set = getArrayBool (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const Bool* in = value.getStorage (deleteIn);
+    const Bool* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchBool (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
-Array<Bool> TableExprNodeSet::hasArrayInt (const TableExprId& id,
-                                           const Array<Int64>& value)
+MArray<Bool> TableExprNodeSet::hasArrayInt (const TableExprId& id,
+                                            const MArray<Int64>& value)
 {
-    Array<Int64> set = getArrayInt (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const Int64* in = value.getStorage (deleteIn);
+    const Int64* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchInt (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
-Array<Bool> TableExprNodeSet::hasArrayDouble (const TableExprId& id,
-					      const Array<Double>& value)
+MArray<Bool> TableExprNodeSet::hasArrayDouble (const TableExprId& id,
+                                               const MArray<Double>& value)
 {
-    Array<Double> set = getArrayDouble (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const Double* in = value.getStorage (deleteIn);
+    const Double* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchDouble (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
-Array<Bool> TableExprNodeSet::hasArrayDComplex (const TableExprId& id,
-						const Array<DComplex>& value)
+MArray<Bool> TableExprNodeSet::hasArrayDComplex (const TableExprId& id,
+                                                 const MArray<DComplex>& value)
 {
-    Array<DComplex> set = getArrayDComplex (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const DComplex* in = value.getStorage (deleteIn);
+    const DComplex* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchDComplex (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
-Array<Bool> TableExprNodeSet::hasArrayString (const TableExprId& id,
-					      const Array<String>& value)
+MArray<Bool> TableExprNodeSet::hasArrayString (const TableExprId& id,
+                                               const MArray<String>& value)
 {
-    Array<String> set = getArrayString (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const String* in = value.getStorage (deleteIn);
+    const String* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchString (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
-Array<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
-					    const Array<MVTime>& value)
+MArray<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
+                                             const MArray<MVTime>& value)
 {
-    Array<MVTime> set = getArrayDate (id);
     Array<Bool> result(value.shape());
     result.set (False);
     Bool deleteIn, deleteOut;
-    const MVTime* in = value.getStorage (deleteIn);
+    const MVTime* in = value.array().getStorage (deleteIn);
     Bool* out = result.getStorage (deleteOut);
     uInt nval = value.nelements();
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	itsElems[i]->matchDate (out, in, nval, id);
     }
-    value.freeStorage (in, deleteIn);
+    value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return result;
+    return MArray<Bool> (result, value.mask());
 }
 
 } //# NAMESPACE CASA - END

@@ -125,8 +125,8 @@ public:
   TableExprNodeArrayUnit (TableExprNodeRep& child, const Unit& unit);
   ~TableExprNodeArrayUnit();
   virtual Double getUnitFactor() const;
-  virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-  virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+  virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+  virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
   Double factor_p;
 };

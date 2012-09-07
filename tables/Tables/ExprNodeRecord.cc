@@ -276,49 +276,49 @@ Bool TableExprNodeRecordFieldArray::isDefined (const TableExprId& id)
   return False;
 }
 
-Array<Bool> TableExprNodeRecordFieldArray::getArrayBool
+MArray<Bool> TableExprNodeRecordFieldArray::getArrayBool
                                                    (const TableExprId& id)
 {
   if (id.byData()) {
-    return id.data().getArrayBool (fieldNrs_p);
+    return MArray<Bool> (id.data().getArrayBool (fieldNrs_p));
   }
-  return getRecord(id).asArrayBool (fieldNrs_p[lastEntry_p]);
+  return MArray<Bool> (getRecord(id).asArrayBool (fieldNrs_p[lastEntry_p]));
 }
 
-Array<Int64> TableExprNodeRecordFieldArray::getArrayInt
+MArray<Int64> TableExprNodeRecordFieldArray::getArrayInt
                                                    (const TableExprId& id)
 {
   if (id.byData()) {
-    return id.data().getArrayInt (fieldNrs_p);
+    return MArray<Int64> (id.data().getArrayInt (fieldNrs_p));
   }
-  return getRecord(id).toArrayInt64 (fieldNrs_p[lastEntry_p]);
+  return MArray<Int64> (getRecord(id).toArrayInt64 (fieldNrs_p[lastEntry_p]));
 }
 
-Array<Double> TableExprNodeRecordFieldArray::getArrayDouble
+MArray<Double> TableExprNodeRecordFieldArray::getArrayDouble
                                                    (const TableExprId& id)
 {
   if (id.byData()) {
-    return id.data().getArrayDouble (fieldNrs_p);
+    return MArray<Double> (id.data().getArrayDouble (fieldNrs_p));
   }
-  return getRecord(id).toArrayDouble (fieldNrs_p[lastEntry_p]);
+  return MArray<Double> (getRecord(id).toArrayDouble (fieldNrs_p[lastEntry_p]));
 }
 
-Array<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
+MArray<DComplex> TableExprNodeRecordFieldArray::getArrayDComplex
                                                    (const TableExprId& id)
 {
   if (id.byData()) {
-    return id.data().getArrayDComplex (fieldNrs_p);
+    return MArray<DComplex> (id.data().getArrayDComplex (fieldNrs_p));
   }
-  return getRecord(id).toArrayDComplex (fieldNrs_p[lastEntry_p]);
+  return MArray<DComplex> (getRecord(id).toArrayDComplex (fieldNrs_p[lastEntry_p]));
 }
 
-Array<String> TableExprNodeRecordFieldArray::getArrayString
+MArray<String> TableExprNodeRecordFieldArray::getArrayString
                                                    (const TableExprId& id)
 {
   if (id.byData()) {
-    return id.data().getArrayString (fieldNrs_p);
+    return MArray<String> (id.data().getArrayString (fieldNrs_p));
   }
-  return getRecord(id).asArrayString (fieldNrs_p[lastEntry_p]);
+  return MArray<String> (getRecord(id).asArrayString (fieldNrs_p[lastEntry_p]));
 }
 
 const RecordInterface& TableExprNodeRecordFieldArray::getRecord

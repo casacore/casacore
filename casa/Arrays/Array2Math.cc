@@ -34,13 +34,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 
-void throwArrayShapes (const char* name)
-{
-  throw ArrayConformanceError ("ArrayMath/Logical function " + String(name) +
-                               ": arrays not conformant");
-}
-
-
 //# We could use macros to considerably reduce the number of lines, however
 //# that makes it harder to debug, understand, etc.
 

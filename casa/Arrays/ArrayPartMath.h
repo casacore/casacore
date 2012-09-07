@@ -29,6 +29,7 @@
 #define CASA_ARRAYPARTMATH_H
 
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayMathBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -104,6 +105,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <group>
 template<class T> Array<T> partialSums (const Array<T>& array,
 					const IPosition& collapseAxes);
+template<class T> Array<T> partialSumSqrs (const Array<T>& array,
+                                           const IPosition& collapseAxes);
 template<class T> Array<T> partialProducts (const Array<T>& array,
 					    const IPosition& collapseAxes);
 template<class T> Array<T> partialMins (const Array<T>& array,
@@ -156,68 +159,121 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
 
 
 
-template<typename T> class SumFunc {
-public:
-  T operator() (const Array<T>& arr) const { return sum(arr); }
-};
-template<typename T> class ProductFunc {
-public:
-  T operator() (const Array<T>& arr) const { return product(arr); }
-};
-template<typename T> class MinFunc {
-public:
-  T operator() (const Array<T>& arr) const { return min(arr); }
-};
-template<typename T> class MaxFunc {
-public:
-  T operator() (const Array<T>& arr) const { return max(arr); }
-};
-template<typename T> class MeanFunc {
-public:
-  T operator() (const Array<T>& arr) const { return mean(arr); }
-};
-template<typename T> class VarianceFunc {
-public:
-  T operator() (const Array<T>& arr) const { return variance(arr); }
-};
-template<typename T> class StddevFunc {
-public:
-  T operator() (const Array<T>& arr) const { return stddev(arr); }
-};
-template<typename T> class AvdevFunc {
-public:
-  T operator() (const Array<T>& arr) const { return avdev(arr); }
-};
-template<typename T> class RmsFunc {
-public:
-  T operator() (const Array<T>& arr) const { return rms(arr); }
-};
-template<typename T> class MedianFunc {
-public:
-  explicit MedianFunc (Bool sorted=False, Bool takeEvenMean=True,
-		       Bool inPlace = False)
-    : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
-  T operator() (const Array<T>& arr) const
-    { return median(arr, itsTmp, itsSorted, itsTakeEvenMean, itsInPlace); }
-private:
-  Bool     itsSorted;
-  Bool     itsTakeEvenMean;
-  Bool     itsInPlace;
-  mutable Block<T> itsTmp;
-};
-template<typename T> class FractileFunc {
-public:
-  explicit FractileFunc (Float fraction,
-			 Bool sorted = False, Bool inPlace = False)
-    : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
-  T operator() (const Array<T>& arr) const
-    { return fractile(arr, itsTmp, itsFraction, itsSorted, itsInPlace); }
-private:
-  float    itsFraction;
-  Bool     itsSorted;
-  Bool     itsInPlace;
-  mutable Block<T> itsTmp;
-};
+  // Define functors to perform a reduction function on an Array object.
+  // Use virtual functions instead of templates to avoid code bloat
+  // in partialArrayMath, etc.
+  template<typename T> class SumFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~SumFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return sum(arr); }
+  };
+  template<typename T> class SumSqrFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~SumSqrFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return sumsqr(arr); }
+  };
+  template<typename T> class ProductFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~ProductFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return product(arr); }
+  };
+  template<typename T> class MinFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~MinFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return min(arr); }
+  };
+  template<typename T> class MaxFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~MaxFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return max(arr); }
+  };
+  template<typename T> class MeanFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~MeanFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return mean(arr); }
+  };
+  template<typename T> class VarianceFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~VarianceFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return variance(arr); }
+  };
+  template<typename T> class StddevFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~StddevFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return stddev(arr); }
+  };
+  template<typename T> class AvdevFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~AvdevFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return avdev(arr); }
+  };
+  template<typename T> class RmsFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~RmsFunc() {}
+    virtual T operator() (const Array<T>& arr) const { return rms(arr); }
+  };
+  template<typename T> class MedianFunc : public ArrayFunctorBase<T> {
+  public:
+    explicit MedianFunc (Bool sorted=False, Bool takeEvenMean=True,
+                          Bool inPlace = False)
+      : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
+    virtual ~MedianFunc() {}
+    virtual T operator() (const Array<T>& arr) const
+      { return median(arr, itsTmp, itsSorted, itsTakeEvenMean, itsInPlace); }
+  private:
+    Bool     itsSorted;
+    Bool     itsTakeEvenMean;
+    Bool     itsInPlace;
+    mutable Block<T> itsTmp;
+  };
+  template<typename T> class FractileFunc : public ArrayFunctorBase<T> {
+  public:
+    explicit FractileFunc (Float fraction,
+                            Bool sorted = False, Bool inPlace = False)
+      : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
+    virtual ~FractileFunc() {}
+    virtual T operator() (const Array<T>& arr) const
+      { return fractile(arr, itsTmp, itsFraction, itsSorted, itsInPlace); }
+  private:
+    float    itsFraction;
+    Bool     itsSorted;
+    Bool     itsInPlace;
+    mutable Block<T> itsTmp;
+  };
+
+  // Define logical Functors.
+  // <group>
+  template<typename T> class AllFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~AllFunc() {}
+    Bool operator() (const Array<T>& arr) const { return allTrue(arr); }
+  };
+  template<typename T> class AnyFunc : public ArrayFunctorBase<T> {
+  public:
+    virtual ~AnyFunc() {}
+    Bool operator() (const Array<T>& arr) const { return anyTrue(arr); }
+  };
+  // </group>
+
+
+
+  // Do partial reduction of an Array object. I.e., perform the operation
+  // on a subset of the array axes (the collapse axes).
+  template<typename T>
+  inline Array<T> partialArrayMath (const Array<T>& a,
+                                    const IPosition& collapseAxes,
+                                    const ArrayFunctorBase<T>& funcObj)
+  {
+    Array<T> res;
+    partialArrayMath (res, a, collapseAxes, funcObj);
+    return res;
+  }
+  template<typename T, typename RES>
+  void partialArrayMath (Array<RES>& res,
+                         const Array<T>& a,
+                         const IPosition& collapseAxes,
+                         const ArrayFunctorBase<T,RES>& funcObj);
+
 
 // Apply the given ArrayMath reduction function objects
 // to each box in the array.
@@ -231,10 +287,20 @@ private:
 // The dimensionality of the array can be larger than the box; in that
 // case the missing axes of the box are assumed to have length 1.
 // A box axis length <= 0 means the full array axis.
-template <typename T, typename FuncType>
-Array<T> boxedArrayMath (const Array<T>& array,
-			 const IPosition& boxSize,
-			 const FuncType& funcObj);
+  template<typename T>
+  inline Array<T> boxedArrayMath (const Array<T>& a,
+                                  const IPosition& boxSize,
+                                  const ArrayFunctorBase<T>& funcObj)
+  {
+    Array<T> res;
+    boxedArrayMath (res, a, boxSize, funcObj);
+    return res;
+  }
+  template<typename T, typename RES>
+  void boxedArrayMath (Array<RES>&,
+                       const Array<T>& array,
+                       const IPosition& boxSize,
+                       const ArrayFunctorBase<T,RES>& funcObj);
 
 // Apply for each element in the array the given ArrayMath reduction function
 // object to the box around that element. The full box is 2*halfBoxSize + 1.
@@ -260,19 +326,34 @@ Array<T> boxedArrayMath (const Array<T>& array,
 // as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
 // it is much, much faster.
 // </note>
-//# Do not use this template definition, as it is stricter. It precludes use
-//# of double accumulators on float data.
-//# template <typename T, template <typename T> class FuncType>
-//# Array<T> slidingArrayMath (const Array<T>& array,
-//#			   const IPosition& halfBoxSize,
-//#			   const FuncType<T>& funcObj,
-//#			   Bool fillEdge=True);
-template <typename T, typename FuncType>
-Array<T> slidingArrayMath (const Array<T>& array,
-			   const IPosition& halfBoxSize,
-			   const FuncType& funcObj,
-			   Bool fillEdge=True);
+  template<typename T>
+  inline Array<T> slidingArrayMath (const Array<T>& a,
+                                    const IPosition& halfBoxSize,
+                                    const ArrayFunctorBase<T>& funcObj,
+                                    Bool fillEdge=True)
+  {
+    Array<T> res;
+    slidingArrayMath (res, a, halfBoxSize, funcObj, fillEdge);
+    return res;
+  }
+  template<typename T, typename RES>
+  void slidingArrayMath (Array<RES>& res,
+                         const Array<T>& array,
+                         const IPosition& halfBoxSize,
+                         const ArrayFunctorBase<T,RES>& funcObj,
+                         Bool fillEdge=True);
 
+// </group>
+
+// <group>
+// Helper functions for boxed and sliding functions.
+// Determine full box shape and shape of result for a boxed operation.
+void fillBoxedShape (const IPosition& shape, const IPosition& boxShape,
+                     IPosition& fullBoxShape, IPosition& resultShape);
+// Determine the box end and shape of result for a sliding operation.
+// It returns False if the result is empty.
+Bool fillSlidingShape (const IPosition& shape, const IPosition& halfBoxSize,
+                       IPosition& boxEnd, IPosition& resultShape);
 // </group>
 
 } //# NAMESPACE CASA - END

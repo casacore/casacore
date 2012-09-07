@@ -140,8 +140,8 @@ $casa_checktool ./tTaQLNode 'select ab from tTaQLNode_tmp.tab'
 $casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set ab=sum(arr1)+ac*2, arr1=arr1+2 from tTaQLNode_tmp.tabc where ac>3 orderby ac limit 5'
 
 $casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set arr1=2, ab=sum(arr1) limit 1 offset 3'
-$casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) limit 1 offset 3'
-$casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3'
+$casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set arr1[1,1,1]=3, arr1[2,2,2]=arr1[1,1,1], ab=sum(arr1) offset 3 limit 1'
+$casa_checktool ./tTaQLNode 'update tTaQLNode_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 3:10:2'
 
 $casa_checktool ./tTaQLNode 'delete from tTaQLNode_tmp.tab limit 3 offset 2'
 $casa_checktool ./tTaQLNode 'delete from tTaQLNode_tmp.tab orderby desc ab limit 1 offset 2'
