@@ -39,15 +39,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     String type = "create";
     if (mustNotExist) {
-      setHid (H5Gcreate(parentHid, name.c_str(), H5P_DEFAULT,
-			H5P_DEFAULT, H5P_DEFAULT));
+      setHid (H5Gcreate2(parentHid, name.c_str(), H5P_DEFAULT,
+			 H5P_DEFAULT, H5P_DEFAULT));
     } else {
       type = "open";
-      setHid (H5Gopen(parentHid, name.c_str(), H5P_DEFAULT));
+      setHid (H5Gopen2(parentHid, name.c_str(), H5P_DEFAULT));
       if (!isValid()  &&  !mustExist) {
 	type = "open or create";
-	setHid (H5Gcreate(parentHid, name.c_str(), H5P_DEFAULT,
-			  H5P_DEFAULT, H5P_DEFAULT));
+	setHid (H5Gcreate2(parentHid, name.c_str(), H5P_DEFAULT,
+			   H5P_DEFAULT, H5P_DEFAULT));
       }
     }
     if (! isValid()) {
