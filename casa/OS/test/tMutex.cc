@@ -129,19 +129,27 @@ void testNormal()
   } catch (AipsError& x) {
     cout << x.what() << endl;
   }
+  cout << 'a'<<endl;
   // First lock should succeed.
   mutex.lock();
+  cout << 'b'<<endl;
   // Doing another lock results in a deadlock, so we don't do that.
   // A trylock should fail.
   AlwaysAssertExit (! mutex.trylock());
+  cout << 'v'<<endl;
   // Unlock.
   mutex.unlock();
+  cout << 'd'<<endl;
   // A trylock should succeed.
   AlwaysAssertExit (mutex.trylock());
+  cout << 'e'<<endl;
   mutex.unlock();
+  cout << 'f'<<endl;
   // Lock should be fine here.
   mutex.lock();
+  cout << 'g'<<endl;
   mutex.unlock();
+  cout << 'h'<<endl;
 }
 
 void testMutexedInitFunc (void* arg)
@@ -153,6 +161,7 @@ void testMutexedInitFunc (void* arg)
 // Test serially.
 void testMutexedInitSerial()
 {
+  cout <<"Test serial init ..." << endl;
   int count=0;
   MutexedInit safeInit (testMutexedInitFunc, &count);
   for (int i=0; i<16; ++i) {
@@ -164,10 +173,12 @@ void testMutexedInitSerial()
 // Test parallel.
 void testMutexedInitParallel()
 {
+  cout<< "Test parallel init ..." << endl;
   int count=0;
   MutexedInit safeInit (testMutexedInitFunc, &count);
 #pragma omp parallel for
   for (int i=0; i<16; ++i) {
+    cout<<i<<endl;
     safeInit.exec();
   }
   AlwaysAssertExit (count==1);
@@ -181,7 +192,11 @@ int main()
 #ifdef USE_THREADS
     testErrorCheck();
     testRecursive();
-    testNormal();
+    try {
+      testNormal();
+    } catch (AipsError& x) {
+      cout << "testNormal should succeed, but got exception " << x.what() << endl;
+    }
     testMutexedInitParallel();
 #endif
   } catch (AipsError& x) {
