@@ -226,7 +226,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5Record::readEmptyArray (hid_t attrId,
 				   const String& name, RecordInterface& rec)
   {
-    Int values[3];
+    // Initialize to satisfy compiler; HDF5DataType does not use them.
+    Int values[] = {0,0,0};
     HDF5DataType dtype(values[1], values[2]);
     read (attrId, values, dtype);
     Int rank = values[1];
@@ -416,8 +417,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5HidDataSpace dsid (H5Screate_simple(0, NULL, NULL));
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.
-    HDF5HidAttribute id (H5Acreate(groupHid, name.c_str(), dtype.getHidFile(),
-				   dsid, H5P_DEFAULT, H5P_DEFAULT));
+    HDF5HidAttribute id (H5Acreate2(groupHid, name.c_str(), dtype.getHidFile(),
+				    dsid, H5P_DEFAULT, H5P_DEFAULT));
     AlwaysAssert (id.getHid()>=0, AipsError);
     AlwaysAssert (H5Awrite(id, dtype.getHidMem(), value)>=0, AipsError);
   }
@@ -435,8 +436,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.
     HDF5DataType dtype(val);
-    HDF5HidAttribute id (H5Acreate(groupHid, name.c_str(), dtype.getHidFile(),
-				   dsid, H5P_DEFAULT, H5P_DEFAULT));
+    HDF5HidAttribute id (H5Acreate2(groupHid, name.c_str(), dtype.getHidFile(),
+				    dsid, H5P_DEFAULT, H5P_DEFAULT));
     AlwaysAssert (id.getHid()>=0, AipsError);
     AlwaysAssert (H5Awrite(id, dtype.getHidMem(), val.c_str())>=0, AipsError);
   }
@@ -456,8 +457,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     HDF5HidDataSpace dsid (H5Screate_simple(rank, ls.storage(), NULL));
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.
-    HDF5HidAttribute id (H5Acreate(groupHid, name.c_str(), dtype.getHidFile(),
-				   dsid, H5P_DEFAULT, H5P_DEFAULT));
+    HDF5HidAttribute id (H5Acreate2(groupHid, name.c_str(), dtype.getHidFile(),
+				    dsid, H5P_DEFAULT, H5P_DEFAULT));
     AlwaysAssert (id.getHid()>=0, AipsError);
     AlwaysAssert (H5Awrite(id, dtype.getHidMem(), value)>=0, AipsError);
   }
@@ -496,8 +497,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.
     HDF5DataType dtype((String*)0);
-    HDF5HidAttribute id (H5Acreate(groupHid, name.c_str(), dtype.getHidFile(),
-				   dsid, H5P_DEFAULT, H5P_DEFAULT));
+    HDF5HidAttribute id (H5Acreate2(groupHid, name.c_str(), dtype.getHidFile(),
+				    dsid, H5P_DEFAULT, H5P_DEFAULT));
     AlwaysAssert (id.getHid()>=0, AipsError);
     AlwaysAssert (H5Awrite(id, dtype.getHidMem(), &(ptrs[0])) >= 0,
 		  AipsError);
