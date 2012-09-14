@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-// For sleep() and ssize_t.
+// For sleep().
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

@@ -31,7 +31,7 @@
 
 #include <casa/aips.h>
 #include <cstring>
-#include <unistd.h>
+#include <cstddef>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -118,17 +118,17 @@ public:
     // Get memory info (in KBytes).
     // Returns -1 if unable to determine memory info.
     // <group>
-    static ssize_t memoryTotal(bool use_aipsrc=false);
-    static ssize_t memoryUsed();
-    static ssize_t memoryFree();
+    static ptrdiff_t memoryTotal(bool use_aipsrc=false);
+    static ptrdiff_t memoryUsed();
+    static ptrdiff_t memoryFree();
     // </group>
 
     // Get swap space info (in KBytes).
     // Returns -1 if unable to determine swap info.
     // <group>
-    static ssize_t swapTotal();
-    static ssize_t swapUsed();
-    static ssize_t swapFree();
+    static ptrdiff_t swapTotal();
+    static ptrdiff_t swapUsed();
+    static ptrdiff_t swapFree();
     // </group>
 
 private:
