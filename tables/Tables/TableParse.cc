@@ -204,7 +204,7 @@ void TableParseSelect::addTable (Int tabnr, const String& name,
 	}
       }
       if (!foundSH) {
-	table = Table(name);
+	table = Table::openTable(name);
       }
     }
   }
