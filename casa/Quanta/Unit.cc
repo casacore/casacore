@@ -32,6 +32,7 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/OS/malloc.h>
 #include <string.h>
+#include <stdlib.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
