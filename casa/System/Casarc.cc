@@ -34,6 +34,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <cstdio>
+#include <unistd.h>
 
 #define USE_FLOCK 0
 #define CASARC_DEBUG 0
