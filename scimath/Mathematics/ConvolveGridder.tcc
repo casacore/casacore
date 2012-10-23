@@ -305,11 +305,11 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range> &gridded,
 				    const Vector<Domain>& p,
 				    const Range& value)
 {
-  loc=location(loc,p);
+  loc=this->location(loc,p);
   loc-=offsetVec;
   if(onGrid(loc,supportVec)) {
     Bool del;
-    posVec=position(posVec, p);
+    posVec=this->position(posVec, p);
     const IPosition& fs = gridded.shape();
     vector<Int> s(fs.begin(), fs.end());
     switch(loc.nelements()) {
@@ -345,10 +345,10 @@ Bool ConvolveGridder<Domain, Range>::degrid(const Array<Range> &gridded,
 				    const Vector<Domain>& p,
 				    Range& value)
 {
-  loc=location(loc,p); 
+  loc=this->location(loc,p); 
  if(onGrid(loc,supportVec)) {
     Bool del;
-    posVec=position(posVec, p);
+    posVec=this->position(posVec, p);
     const IPosition& fs = gridded.shape();
     vector<Int> s(fs.begin(), fs.end());
     switch(loc.nelements()) {
