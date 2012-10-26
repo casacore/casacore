@@ -162,7 +162,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
            << "Cannot read IERS (Earth axis data) table " << tp[which]
            << "\nCalculations will proceed with lower precision"
            << LogIO::POST;
-        ok = False;
+        return False;
       }
       if (ok) {
         MeasIERS::openNote(&MeasIERS::closeMeas);
