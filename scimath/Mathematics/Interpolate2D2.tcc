@@ -28,6 +28,7 @@
 #include <scimath/Mathematics/Interpolate2D.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -245,6 +246,67 @@ Bool Interpolate2D::interpCubic(T &result,
    }
    //
    return True;
+}
+
+template <typename T>
+Bool Interpolate2D::interpLanczos(T &result, 
+        const Vector<Double> &where, 
+        const Matrix<T> &data,
+        const Matrix<Bool>* &maskPtr) const {
+    //
+    // Lanczos 2D interpolation
+    //
+
+    // Hardcoded kernel size
+    const Double a = 3;
+
+    const IPosition& shape = data.shape();
+    const Double x = where[0];
+    const Double y = where[1];
+    const T floorx = floor(x);
+    const T floory = floor(y);
+
+    // Handle mask
+    if (anyBadMaskPixels(maskPtr, x-a+1, x+a, y-a+1, y+a)) return False;
+
+    // Where we can't sum over the full support of the kernel due to proximity
+    // to the edge, set the pixel value to zero. This is just one way of
+    // dealing with edge effects, another could be to revert to linear
+    // interpolation.
+    if (floorx < a || floorx >= shape[0] - a || floory < a || floory >= shape[1] - a) {
+        result = 0;
+        return True;
+    }
+
+    // Interpolate
+    result = 0;
+    for (T i = floorx - a + 1; i <= floorx + a; ++i) {
+        for (T j = floory - a + 1; j <= floory + a; ++j) {
+            result += data(i, j) * L(x - i, a) * L(y - j, a);
+        }
+    }
+
+    return True;
+}
+
+// Lanczos interpolation: helper function
+template <typename T>
+T Interpolate2D::sinc(const T x) const {
+    if (x == 0) {
+        return 1;
+    } else {
+        return sin(C::pi * x) / (C::pi * x);
+    }
+}
+
+// Lanczos interpolation: helper function
+template <typename T>
+T Interpolate2D::L(const T x, const Int a) const {
+    if (-a < x && x < a) {
+        return sinc(x) * sinc (x/a);
+    } else {
+        return 0;
+    }
 }
 
 } //# NAMESPACE CASA - END
