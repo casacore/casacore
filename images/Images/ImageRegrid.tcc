@@ -693,7 +693,9 @@ void ImageRegrid<T>::regridTwoAxisCoordinate (
 			cerr << "Method is linear" << endl;
 		} else if (method==Interpolate2D::CUBIC) {
 			cerr << "Method is cubic" << endl;
-		}
+		} else if (method==Interpolate2D::LANCZOS) {
+			cerr << "Method is Lanczos" << endl;
+        }
 	}
 
 	// We iterate through the output image by tile.  We iterate through
@@ -1750,6 +1752,8 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       if (itsShowLevel>0) {
          cerr << "Method = cubic spline" << endl;
       }
+   } else if (method==Interpolate2D::LANCZOS) {
+      throw(AipsError("Lanczos interpolation not implemented for 1D interpolations"));
    }
 
 // Progress meter

@@ -108,7 +108,10 @@ class Interpolate2D {
     LINEAR, 
     
     // Bicubic 
-    CUBIC};
+    CUBIC,
+
+    // Lanczos
+    LANCZOS};
   
   // Constructor
   Interpolate2D(Interpolate2D::Method method=Interpolate2D::LINEAR);
@@ -210,6 +213,20 @@ class Interpolate2D {
 		     const Matrix<Bool>* &maskPtr) const;
   Bool interpCubicBool(Bool &result, const Vector<Double> &where,
 		       const Matrix<Bool> &data) const;
+
+  // Lanczos interpolation
+  template <typename T>
+  Bool interpLanczos(T &result, const Vector<Double> &where,
+		     const Matrix<T> &data,
+		     const Matrix<Bool>* &maskPtr) const;
+  Bool interpLanczosBool(Bool &result, const Vector<Double> &where,
+		       const Matrix<Bool> &data) const;
+  // Lanczos interpolation: helper functions
+  template <typename T>
+  T sinc(const T x) const;
+  template <typename T>
+  T L(const T x, const Int a) const;
+
   // helping routine from numerical recipes
   void bcucof (Double c[4][4], const Double y[4],
 	       const Double y1[4], 
