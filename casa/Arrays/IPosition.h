@@ -265,7 +265,7 @@ public:
     // An exception is thrown if <src>n</src> is too high.
     IPosition getLast (uInt n) const;
 
-    // Return an IPosition where the given axes are reoved.
+    // Return an IPosition where the given axes are removed.
     IPosition removeAxes (const IPosition& axes) const;
 
     // Return an IPosition containing the given axes only.

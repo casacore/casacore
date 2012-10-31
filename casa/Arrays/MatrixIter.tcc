@@ -41,7 +41,7 @@ template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a,
 						    uInt cursorAxis1,
 						    uInt cursorAxis2)
-: ArrayIterator<T>(a, IPosition(1,cursorAxis1, cursorAxis2), True)
+: ArrayIterator<T>(a, IPosition(2,cursorAxis1, cursorAxis2), True)
 {
     // We need to ensure that ap points at a Matrix
     Matrix<T> *mp = new Matrix<T>(*this->ap_p); // reference

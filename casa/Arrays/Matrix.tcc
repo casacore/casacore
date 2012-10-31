@@ -282,6 +282,7 @@ template<class T> Vector<T> Matrix<T>::column(uInt n)
 // </thrown>
 template<class T> Vector<T> Matrix<T>::diagonal(Int n)
 {
+  /*
     DebugAssert(ok(), ArrayError);
     Int absn;
     if (n < 0) absn = -n; else absn = n;
@@ -315,6 +316,12 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     }
     tmp.makeSteps();
 	
+    return tmp;  // should match Vector<T>(const Array<T> &)
+  */
+    DebugAssert(ok(), ArrayError);
+    Matrix<T> tmp(*this);
+    tmp.begin_p += tmp.makeDiagonal (0, n);
+    tmp.makeSteps();
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
 

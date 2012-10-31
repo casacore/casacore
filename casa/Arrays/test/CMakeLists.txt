@@ -20,10 +20,12 @@ tAxesSpecifier
 tBoxedArrayMath
 tCompareBoxedPartial
 tConvertArray
+tDiagonal
 tExtendSpecifier
 tIPosition
 tLinAlgebra
 tMArrayMath
+tMArrayUtil
 tMaskArrExcp
 tMaskArrIO
 tMaskArrLogi

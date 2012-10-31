@@ -138,6 +138,7 @@ public:
 
   // Create an ArrayIterator object of the correct type.
   // This is implemented in the derived Array classes.
+  // The caller is responsible for deleting the iterator object.
   // <br>ArrayBase throws an exception.
   virtual ArrayPositionIterator* makeIterator (uInt byDim);
 
@@ -181,11 +182,17 @@ protected:
 
   // Make a subset of an array.
   // It checks if start,end,incr are within the array limits.
-  // It returns the offset of the subset in the array.
+  // It returns the offset of the subset in the (original) array.
   size_t makeSubset (ArrayBase& out,
                      const IPosition& b,
                      const IPosition& e,
                      const IPosition& i);
+
+  // Set the length and stride such that the diagonal of the matrices
+  // defined by two consecutive axes is formed.
+  // <src>diag</src> == 0 indicates the main diagonal, >0 above, <0 below.
+  // It returns the offset of the diagonal in the (original) array.
+  size_t makeDiagonal (uInt firstAxis, Int64 diag);
 
   // Are the shapes identical?
   Bool conform2 (const ArrayBase& other) const
