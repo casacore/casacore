@@ -257,6 +257,8 @@ public:
         arrflatFUNC,      //# 145
             // for Int, Double, Complex or String returning Bool
         boolFUNC,         //# 146
+	    // for any type returning array of that type
+	diagonalFUNC,     //# 147
 	NRFUNC      //# should be last
 	};
 

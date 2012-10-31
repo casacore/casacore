@@ -1188,6 +1188,25 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     return tsnptr;
 }
 
+TableExprNode diagonal (const TableExprNode& array,
+                        const TableExprNode& firstAxis)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(firstAxis));
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array, set);
+}
+TableExprNode diagonal (const TableExprNode& array,
+                        const TableExprNode& firstAxis,
+                        const TableExprNode& diag)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(firstAxis));
+    set.add (TableExprNodeSetElem(diag));
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array, set);
+}
+
 TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
 			          const TableExprNode& node)

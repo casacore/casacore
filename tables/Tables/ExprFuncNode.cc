@@ -375,26 +375,12 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
       return string2Bool (operands_p[0]->getString(id));
     case anyFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-            MArray<Bool> tmp = operands_p[0]->getArrayBool(id);
-            if (tmp.hasMask()) {
-                return compareAnyRightMasked (tmp.array().begin(),
-                                              tmp.array().end(), True,
-                                              tmp.mask().begin(),
-                                              std::equal_to<bool>());
-            }
-            return anyTrue (tmp.array());
+            return anyTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case allFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-            MArray<Bool> tmp = operands_p[0]->getArrayBool(id);
-            if (tmp.hasMask()) {
-                return compareAllRightMasked (tmp.array().begin(),
-                                              tmp.array().end(), True,
-                                              tmp.mask().begin(),
-                                              std::equal_to<bool>());
-            }
-            return allTrue (tmp.array());
+            return allTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case isnanFUNC:
@@ -1223,6 +1209,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxallFUNC:
     case arrayFUNC:
     case transposeFUNC:
+    case diagonalFUNC:
       {
         // Most functions can have Int or Double in and result in Double.
         dtin = NTReal;
@@ -1252,6 +1239,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    break;
 	case arrayFUNC:
         case transposeFUNC:
+        case diagonalFUNC:
 	    dtin = dtout = NTAny;
 	    break;
 	default:

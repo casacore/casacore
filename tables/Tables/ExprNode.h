@@ -457,6 +457,20 @@ class TableExprNode;
     TableExprNode transpose (const TableExprNode& array,
                              const TableExprNodeSet& axes);
 
+  // Get the diagonal of a (masked) array;
+  // If the array is not a Matrix, it will take the diagonals of the
+  // subarrays given by the two axes in the axes argument. Those
+  // axes have to have the same length (thus each subarray is a Matrix).
+  // If no axes are given, they default to the first two axes.
+  // <br>The <src>diag</src> argument tells which diagonal to take.
+  // 0 is the main diagonal, >0 is above main diagonal, <0 is below.
+    TableExprNode diagonal (const TableExprNode& array);
+    TableExprNode diagonal (const TableExprNode& array,
+                            const TableExprNode& firstAxis);
+    TableExprNode diagonal (const TableExprNode& array,
+                            const TableExprNode& firstAxis,
+                            const TableExprNode& diag);
+
   // Function operating on a field resulting in a bool scalar.
   // It can be used to test if a column has an array in the current row.
   // It can also be used to test if a record contains a field.
@@ -802,6 +816,12 @@ class TableExprNode
     friend TableExprNode transpose (const TableExprNode& array);
     friend TableExprNode transpose (const TableExprNode& array,
                                     const TableExprNodeSet& axes);
+    friend TableExprNode diagonal (const TableExprNode& array);
+    friend TableExprNode diagonal (const TableExprNode& array,
+                                   const TableExprNode& firstAxis);
+    friend TableExprNode diagonal (const TableExprNode& array,
+                                  const TableExprNode& firstAxis,
+                                  const TableExprNode& diag);
     friend TableExprNode isdefined (const TableExprNode& array);
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
@@ -2020,11 +2040,17 @@ inline TableExprNode transpose (const TableExprNode& array)
                                            array,
                                            TableExprNode(Vector<Int>()));
 }
-inline TableExprNode transpose (const TableExprNode& values,
+inline TableExprNode transpose (const TableExprNode& array,
                                 const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
-					   values, axes);
+					   array, axes);
+}
+inline TableExprNode diagonal (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array,
+                                           TableExprNode(Vector<Int>()));
 }
 inline TableExprNode isdefined (const TableExprNode& node)
 {

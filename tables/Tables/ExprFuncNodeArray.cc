@@ -269,9 +269,15 @@ void TableExprFuncNodeArray::tryToConst()
 	    constAxes_p = True;
 	}
         break;
+    case TableExprFuncNode::diagonalFUNC:
+        if (operands()[axarg]->isConstant()) {
+            getDiagonalArg (0, IPosition());
+	    constAxes_p = True;
+	}
+        break;
     case TableExprFuncNode::arrayFUNC:
         if (operands()[axarg]->isConstant()) {
-	    ipos_p = getArrayShape (0, axarg);
+	    getArrayShape (0, axarg);
 	    constAxes_p = True;
 	}
         break;
@@ -388,7 +394,6 @@ const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
 IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
 {
   IPosition order = getAxes(id, ndim, 1, False);
-  cout <<"order="<< order<<endl;
   if (order.empty()) {
     // Default is to transpose the full array.
     order.resize (ndim);
@@ -399,6 +404,57 @@ IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
   }
   // Remove possibly too high axes.
   return removeAxes (order, ndim);
+}
+
+const IPosition& TableExprFuncNodeArray::getDiagonalArg (const TableExprId& id,
+                                                         const IPosition& shp)
+{
+  // Get the arguments if not constant (or not known).
+  if (!constAxes_p) {
+    Array<Int64> ax(operands()[1]->getArrayInt(id).array());
+    AlwaysAssert (ax.ndim() == 1, AipsError);
+    AlwaysAssert (ax.contiguousStorage(), AipsError);
+    if (ax.size() > 0) {
+      ipos_p.resize (2);
+      ipos_p[0] = ax.data()[0] - origin_p;     // firstAxis
+      ipos_p[1] = 0;
+      if (ax.size() > 1) {
+        ipos_p[1] = ax.data()[1];              // diag
+      }
+      iposN_p = ipos_p;
+    }
+  }
+  // If there is a real array, check the arguments.
+  if (shp.size() > 0) {
+    // Check the arguments and reverse C-order if needed.
+    // The diagonals are taken for two consecutive axes.
+    // If the axes are given in C-order, the user has given the last axis,
+    // so we have to subtract one extra.
+    // Use defaults if no arguments given.
+    if (iposN_p.empty()) {
+      ipos_p.resize (2);
+      ipos_p[0] = ipos_p[1] = 0;
+    } else if (isCOrder_p) {
+      ipos_p[0] = shp.size() - iposN_p[0] - 2;
+    }
+    if (ipos_p[0] < 0  ||  ipos_p[0] >= Int(shp.size())-1) {
+      throw TableInvExpr ("Diagonals axes outside array with ndim=" +
+                          String::toString(shp.size()));
+    }
+    if (shp[ipos_p[0]] != shp[ipos_p[0]+1]) {
+      throw TableInvExpr ("Diagonals axis " + String::toString(ipos_p[0]) +
+                          " and " + String::toString(ipos_p[0]+1) +
+                          " should have equal length");
+    }
+    // Set offset to last one if exceeding.
+    if (abs(ipos_p[1]) > shp[ipos_p[0]] - 1) {
+      ipos_p[1] = shp[ipos_p[0]] - 1;
+      if (iposN_p[1] < 0) {
+        ipos_p[1] = -ipos_p[1];
+      }
+    }
+  }
+  return ipos_p;
 }
 
 
@@ -593,6 +649,16 @@ MArray<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<Bool>(arr.array().diagonals(parms[0], parms[1]),
+                              arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<Bool>(arr.array().diagonals(parms[0], parms[1]));
       }
     case TableExprFuncNode::isnanFUNC:
 	if (argDataType() == NTComplex) {
@@ -931,6 +997,16 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<Int64>(arr.array().diagonals(parms[0], parms[1]),
+                               arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<Int64>(arr.array().diagonals(parms[0], parms[1]));
       }
     case TableExprFuncNode::iifFUNC:
         return TEFNAiif<Int64> (operands(), id);
@@ -1313,6 +1389,16 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<Double>(arr.array().diagonals(parms[0], parms[1]),
+                                arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<Double>(arr.array().diagonals(parms[0], parms[1]));
+      }
     case TableExprFuncNode::iifFUNC:
         return TEFNAiif<Double> (operands(), id);
     case TableExprFuncNode::marrayFUNC:
@@ -1527,6 +1613,16 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<DComplex>(arr.array().diagonals(parms[0], parms[1]),
+                                  arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<DComplex>(arr.array().diagonals(parms[0], parms[1]));
       }
     case TableExprFuncNode::complexFUNC:
       {
@@ -1768,6 +1864,16 @@ MArray<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	MArray<String> arr (operands()[0]->getArrayString(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<String> arr (operands()[0]->getArrayString(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<String>(arr.array().diagonals(parms[0], parms[1]),
+                                arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<String>(arr.array().diagonals(parms[0], parms[1]));
+      }
     case TableExprFuncNode::iifFUNC:
         return TEFNAiif<String> (operands(), id);
     case TableExprFuncNode::marrayFUNC:
@@ -1858,6 +1964,16 @@ MArray<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
       {
 	MArray<MVTime> arr (operands()[0]->getArrayDate(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::diagonalFUNC:
+      {
+	MArray<MVTime> arr (operands()[0]->getArrayDate(id));
+        const IPosition parms = getDiagonalArg (id, arr.shape());
+        if (arr.hasMask()) {
+          return MArray<MVTime>(arr.array().diagonals(parms[0], parms[1]),
+                                arr.mask().diagonals(parms[0], parms[1]));
+        }
+        return MArray<MVTime>(arr.array().diagonals(parms[0], parms[1]));
       }
     case TableExprFuncNode::iifFUNC:
         return TEFNAiif<MVTime> (operands(), id);

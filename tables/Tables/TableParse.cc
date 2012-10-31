@@ -642,6 +642,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrayFUNC;
   } else if (funcName == "transpose") {
     ftype = TableExprFuncNode::transposeFUNC;
+  } else if (funcName == "diagonal"  ||  funcName == "diagonals") {
+    ftype = TableExprFuncNode::diagonalFUNC;
   } else if (funcName == "isnan") {
     ftype = TableExprFuncNode::isnanFUNC;
   } else if (funcName == "isinf") {
@@ -842,6 +844,7 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::boxallFUNC:
   case TableExprFuncNode::arrayFUNC:
   case TableExprFuncNode::transposeFUNC:
+  case TableExprFuncNode::diagonalFUNC:
     if (arguments.nelements() >= axarg) {
       TableExprNodeSet parms;
       // Add first argument(s) to the parms.
@@ -852,10 +855,11 @@ TableExprNode TableParseSelect::makeFuncNode
       // The can be given as a set or as individual scalar values.
       Bool axesIsArray = False;
       if (arguments.nelements() == axarg) {
-        // No axes given. Add default one for transpose.
+        // No axes given. Add default one for transpose and diagonal.
         axesIsArray = True;
-        if (ftype == TableExprFuncNode::transposeFUNC) {
-          // Add an empty vector if no transpose arguments given.
+        if (ftype == TableExprFuncNode::transposeFUNC  ||
+            ftype == TableExprFuncNode::diagonalFUNC) {
+          // Add an empty vector if no transpose/diagonal arguments given.
           TableExprNodeSetElem arg((TableExprNode(Vector<Int>())));
           parms.add (arg);
         }

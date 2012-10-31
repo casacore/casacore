@@ -136,6 +136,13 @@ private:
     // Get the transpose order of the array axes.
     IPosition getOrder (const TableExprId& id, Int ndim);
 
+    // Get the arguments for the diagonals function.
+    // They are checked and if needed adapted if the shape is not empty.
+    const IPosition& getDiagonalArg (const TableExprId& id,
+                                     const IPosition& shp);
+
+
+    //# Data members
     TableExprFuncNode node_p;
     Int               origin_p;        //# axes origin
     Bool              isCOrder_p;      //# axes order
