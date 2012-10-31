@@ -458,6 +458,15 @@ AipsIO& AipsIO::put (uInt nrv, const String* var, Bool putNR)
     return (*this);
 }
 
+AipsIO& AipsIO::put (const vector<Bool>& vec)
+{
+  // std::vector<bool> uses bits instead of bytes. So copy first.
+  Block<Bool> var(vec.size());
+  std::copy (vec.begin(), vec.end(), var.begin());
+  put (var.size(), var.storage(), True);
+  return *this;
+}
+
 
 // putstart starts writing an object.
 // This is not possible if there is no file, if the file is not opened
@@ -874,6 +883,17 @@ AipsIO& AipsIO::getnew (uInt& nrv, String*& var)
     var = new String[nrv];
     get (nrv, var);
     return (*this);
+}
+
+AipsIO& AipsIO::get (vector<Bool>& vec)
+{
+  uInt nrv;
+  Bool* var;
+  getnew (nrv, var);
+  vec.resize (nrv);
+  std::copy (var, var+nrv, vec.begin());
+  delete [] var;
+  return *this;
 }
 
 
