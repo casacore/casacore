@@ -101,6 +101,9 @@ namespace casa {
                 const IPosition& tileShape = IPosition(),
                 Int dummy=0);
 
+    // Construct from an existing image object.
+    ImageProxy (const CountedPtr<LatticeBase>&);
+
     // Copy constructor (reference semantics).
     ImageProxy (const ImageProxy&);
 

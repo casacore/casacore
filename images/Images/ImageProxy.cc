@@ -206,6 +206,18 @@ namespace casa { //# name space casa begins
     concatImages (images, axis);
   }
 
+  ImageProxy::ImageProxy (const CountedPtr<LatticeBase>& image)
+    : itsLattice       (image),
+      itsImageFloat    (0),
+      itsImageDouble   (0),
+      itsImageComplex  (0),
+      itsImageDComplex (0)
+  {
+    if (! itsLattice.null()) {
+      setup();
+    }
+  }
+
   ImageProxy::ImageProxy (const ImageProxy& that)
     : itsLattice       (that.itsLattice),
       itsImageFloat    (0),
