@@ -107,7 +107,7 @@ ComponentType::SpectralShape TabularSpectrum::type() const {
   return ComponentType::TABULAR_SPECTRUM;
 }
 
-const void TabularSpectrum::values(Vector<MFrequency::MVType>& freq, Vector<Flux<Double> >& flux) const {
+void TabularSpectrum::values(Vector<MFrequency::MVType>& freq, Vector<Flux<Double> >& flux) const {
    freq.resize(tabFreqVal_p.nelements());
    flux.resize(flux_p.nelements());
    flux=flux_p;
