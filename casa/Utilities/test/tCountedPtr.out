@@ -2,8 +2,8 @@ myobj(fred) ctor
 fred..fred..fred..fred..
 myobj(barney) ctor
 barney..fred..fred..fred..
-myobj(betty) ctor
+myobj(Don't delete me!) ctor
+Now explicitly delete object
+myobj(Don't delete me!) dtor
 myobj(fred) dtor
-barney..betty..betty..betty..
-myobj(betty) dtor
 myobj(barney) dtor

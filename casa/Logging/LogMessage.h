@@ -199,6 +199,7 @@ public:
     
     // Turn this entire LogMessage into a String.
     String toString() const;
+    String toTermString() const;
 
     // Map the given priority into a String - so, for example, it can be stored
     // in a table.

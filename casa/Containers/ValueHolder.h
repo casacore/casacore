@@ -108,21 +108,21 @@ public:
   // It takes over the pointer and deletes it in the destructor.
   explicit ValueHolder (ValueHolderRep* rep)
     : itsRep (rep)
-    { if (itsRep) itsRep->link(); }
+    {}
 
   // Copy constructor (reference semantics).
   ValueHolder (const ValueHolder&);
 
   // Destructor.
   ~ValueHolder()
-    { ValueHolderRep::unlink (itsRep); }
+  {}
 
   // Assignment (reference semantics).
   ValueHolder& operator= (const ValueHolder&);
 
   // Is this a null object?
   Bool isNull() const
-    { return itsRep == 0; }
+    { return itsRep.null(); }
 
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
@@ -209,7 +209,8 @@ public:
     { return vh.itsRep->write (os); }
 
 private:
-  ValueHolderRep* itsRep;
+
+  CountedPtr<ValueHolderRep> itsRep;
 };
 
 

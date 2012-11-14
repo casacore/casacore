@@ -383,6 +383,161 @@ Bool testReorderArray (Bool doExcp)
   return ok;
 }
 
+Bool testReverseArray()
+{
+  cout << "reverseArray..." << endl;
+  IPosition shape(3, 2, 3, 4);
+  Array<Int> arr(shape);
+  Bool res = True;
+  indgen(arr);
+  // Test if no reversal is fine.
+  IPosition axes(0);
+  Array<Int> rev = reverseArray(arr, axes);
+  res = res && allEQ(arr, rev);
+  // Test if reversal of axis 0 is fine.
+  rev = reverseArray(arr, 0);
+  for (Int i=0; i<shape[2]; i++) {
+    for (Int j=0; j<shape[1]; j++) {
+      for (Int k=0; k<shape[0]; k++) {
+        res = res  &&  (arr(IPosition(3, k, j, i))
+                        == rev(IPosition(3, shape[0] - 1 - k, j, i)));
+      }
+    }
+  }
+  // Test if reversing axis 1 in both ways works fine.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(arr, 1) : reverseArray(arr, IPosition(1, 1)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, k, shape[1] - 1 - j, i)));
+        }
+      }
+    }
+  }
+  // Test if reversing axis 2 in both ways works fine.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(arr, 2) : reverseArray(arr, IPosition(1,2)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, k, j, shape[2] - 1 - i)));
+        }
+      }
+    }
+  }
+  // Test if reversing axes 0 and 1 together is the same as first 0 and than 1
+  // and vice-versa.
+  for (uInt x=0; x<3; x++) {
+    rev = (x==0 ? reverseArray(reverseArray(arr, 0), 1)
+           : (x==1 ? reverseArray(arr, IPosition(2, 0, 1))
+              : reverseArray(arr, IPosition(2, 1, 0))));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, shape[0] - 1 - k,
+                                           shape[1] - 1 - j, i)));
+        }
+      }
+    }
+  }
+  // Test if reversing axes 0 and 2 works fine.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(reverseArray(arr, 0), 2)
+           : reverseArray(arr, IPosition(2, 0, 2)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, shape[0] - 1 - k,
+                                           j, shape[2] - 1 - i)));
+        }
+      }
+    }
+  }
+  // Test if reversing axes 1 and 2 works fine.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(reverseArray(arr, 1), 2)
+           : reverseArray(arr, IPosition(2, 1, 2)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, k, shape[1] - 1 - j,
+                                           shape[2] - 1 - i)));
+        }
+      }
+    }
+  }
+  // Test reversing of all axes.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(reverseArray(reverseArray(arr, 0), 1), 2)
+           : reverseArray(arr, IPosition(3, 0, 1, 2)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, shape[0] - 1 - k,
+                                           shape[1] - 1 - j,
+                                           shape[2] - 1 - i)));
+        }
+      }
+    }
+  }
+  // Reversing of all axes in different order should have the same result.
+  for (uInt x=0; x<2; x++) {
+    rev = (x==0 ? reverseArray(reverseArray(reverseArray(arr, 2), 0), 1)
+           : reverseArray(arr, IPosition(3, 2, 0, 1)));
+    for (Int i=0; i<shape[2]; i++) {
+      for (Int j=0; j<shape[1]; j++) {
+        for (Int k=0; k<shape[0]; k++) {
+          res = res  &&  (arr(IPosition(3, k, j, i))
+                          == rev(IPosition(3, shape[0] - 1 - k,
+                                           shape[1] - 1 - j,
+                                           shape[2] - 1 - i)));
+        }
+      }
+    }
+  }
+  {
+    cout << "arrayReverse 10 timings on [30,40,50,60] ..." << endl;
+    IPosition shape(4,30,40,50,60);
+    Array<Int> arr(shape);
+    indgen(arr);
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reverseArray (arr, 0);
+      }
+      tim.show ("0");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reverseArray (arr, 1);
+      }
+      tim.show ("1");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reverseArray (arr, 2);
+      }
+      tim.show ("2");
+    }
+    {
+      Timer tim;
+      for (Int i=0; i<10; i++) {
+	reverseArray (arr, 3);
+      }
+      tim.show ("3");
+    }
+  }
+  return res;
+}
 
 int main (int argc, const char*[])
 {
@@ -399,6 +554,9 @@ int main (int argc, const char*[])
     }
     if (! testReorderArray( (argc < 2))) {
       ok = False;
+    }
+    if (! testReverseArray()) {
+    	ok = False;
     }
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;

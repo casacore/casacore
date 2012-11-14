@@ -58,6 +58,7 @@ Convolver(const Convolver<FType>& other){
   theXfr = other.theXfr;
   thePsf = other.thePsf;
   theFFT = other.theFFT;
+  theIFFT = other.theIFFT;
   doFast_p=False;
 }
 
@@ -73,6 +74,7 @@ Convolver<FType>::operator=(const Convolver<FType> & other){
     thePsf.resize(other.thePsf.shape());
     thePsf = other.thePsf;
     theFFT = other.theFFT;
+    theIFFT = other.theIFFT;
     doFast_p=False;
   }
   return *this;
@@ -163,13 +165,13 @@ makePsf(Array<FType>& psf){
   validate();
   if (thePsf.nelements() == 0) {
     Array<FType> paddedPsf(theFFTSize);
-    //    theFFT.flip(paddedPsf, True, False);
+    //    theIFFT.flip(paddedPsf, True, False);
     if(doFast_p){
-      theFFT.fft0(paddedPsf, theXfr, True);
-      theFFT.flip(paddedPsf, False, False);
+      theIFFT.fft0(paddedPsf, theXfr, True);
+      theIFFT.flip(paddedPsf, False, False);
     }
     else{
-      theFFT.fft(paddedPsf, theXfr, True);
+      theIFFT.fft(paddedPsf, theXfr, True);
     }
     IPosition trc, blc;
     blc = (theFFTSize-thePsfSize)/2;
@@ -259,11 +261,11 @@ doConvolution(Array<FType>& result,
   // Do the inverse transform
   Array<FType> convolvedData(theFFTSize);
   if(doFast_p){
-    theFFT.fft0(convolvedData, fftModel);
-    theFFT.flip(convolvedData, False, False);
+    theIFFT.fft0(convolvedData, fftModel);
+    theIFFT.flip(convolvedData, False, False);
   }
   else{
-    theFFT.fft(convolvedData, fftModel);
+    theIFFT.fft(convolvedData, fftModel);
   }
   // Extract the required part of the convolved data
   IPosition trc, blc; 

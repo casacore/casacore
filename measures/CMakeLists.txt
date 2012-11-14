@@ -48,6 +48,7 @@ Measures/Muvw.cc
 Measures/Nutation.cc
 Measures/ParAngleMachine.cc
 Measures/Precession.cc
+Measures/Quality.cc
 Measures/SofaTest.cc
 Measures/SolarPos.cc
 Measures/Stokes.cc
@@ -119,6 +120,7 @@ Measures/Muvw.h
 Measures/Nutation.h
 Measures/ParAngleMachine.h
 Measures/Precession.h
+Measures/Quality.h
 Measures/SofaTest.h
 Measures/SolarPos.h
 Measures/Stokes.h

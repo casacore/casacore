@@ -142,6 +142,10 @@ void UnitMap::initUMCust3() {
 						 UnitVal(24.*3600.*365.25,"s"),
 						 "year")));
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
+			   ("adu",	UnitName("adu",
+						 UnitVal(1.,UnitDim::Dnon),
+						 "dimensionless ADC unit")));
+  UnitMap::mapCust->insert(map<String, UnitName>::value_type
 			   ("beam",	UnitName("beam",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "undefined beam area")));

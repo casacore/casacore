@@ -117,9 +117,9 @@ public:
 
     // Check a vector of slices.
     // If a vector of an axis is empty or missing, it is replaced by a Slice
-    // representing th entire axis.
+    // representing the entire axis.
     // It checks if the Slices do not exceed the array shape.
-    // It returns the shape of the combined slices and fills th Slicer
+    // It returns the shape of the combined slices and fills the Slicer
     // for the first array part defined by the slices.
     static IPosition checkSlices (Vector<Vector<Slice> >& slices, Slicer& first,
                                   const IPosition& shape);

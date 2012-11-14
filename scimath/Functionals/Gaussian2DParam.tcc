@@ -126,8 +126,8 @@ T Gaussian2DParam<T>::flux() const {
 template<class T>
 void Gaussian2DParam<T>::setFlux(const T &flux) {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  param_p[HEIGHT] = flux/abs(param_p[YWIDTH]*theXwidth*T(C::pi))/
-    fwhm2int/fwhm2int;
+  param_p[HEIGHT] = flux/(abs(param_p[YWIDTH]*theXwidth*T(C::pi))*
+			  fwhm2int*fwhm2int);
 }
 
 template<class T>

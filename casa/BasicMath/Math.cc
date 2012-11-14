@@ -116,22 +116,22 @@ Bool nearAbs(uInt val1, uInt val2, Double tol) {
   if (val1 == val2) {
     return True;
   } else if (val1 > val2) {
-    return (tol > Double(val1 - val2));
+    return (tol >= Double(val1 - val2));
   } else {
-    return (tol > Double(val2 - val1));
+    return (tol >= Double(val2 - val1));
   }
 }
 
 Bool nearAbs(Int val1, Int val2, Double tol) {
-  return (tol > Double(std::abs(val2 - val1)));
+  return (tol >= Double(std::abs(val2 - val1)));
 }
 
 Bool nearAbs(Float val1, Float val2, Double tol) {
-  return (tol > Double(fabs(val2 - val1)));
+  return (tol >= Double(fabs(val2 - val1)));
 }
 
 Bool nearAbs(Double val1, Double val2, Double tol) {
-  return (tol > fabs(val2 - val1));
+  return (tol >= fabs(val2 - val1));
 }
 
 

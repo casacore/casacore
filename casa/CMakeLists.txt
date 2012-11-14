@@ -44,6 +44,7 @@ Containers/StackError.cc
 Containers/ValueHolder.cc
 Containers/Record2Interface.cc
 Containers/Stack2.cc
+Exceptions/CasaErrorTools.cc
 Exceptions/Error2.cc
 HDF5/HDF5Record.cc
 HDF5/HDF5Error.cc
@@ -281,6 +282,7 @@ BasicMath/Functors.h
 BasicMath/Math.h
 BasicMath/Primes.h
 BasicMath/Random.h
+BasicMath/StdLogical.h
 DESTINATION include/casacore/casa/BasicMath
 )
 
@@ -356,6 +358,7 @@ DESTINATION include/casacore/casa/Containers
 )
 
 install (FILES
+Exceptions/CasaErrorTools.h
 Exceptions/Error.h
 Exceptions/Error.tcc
 DESTINATION include/casacore/casa/Exceptions

@@ -198,7 +198,7 @@ class SofaTest {
 #if NEED_FORTRAN_UNDERSCORES
 #define IAUR(x) iau_##x##_
 #else
-#define IAUR(x) iau_##x
+#define IAUR(x) iau_##x##
 #endif
 extern "C" void 
 IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id,

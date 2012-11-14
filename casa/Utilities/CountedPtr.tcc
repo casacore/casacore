@@ -27,8 +27,9 @@
 
 #include <casa/Utilities/CountedPtr.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+#if ! defined (USE_SHARED_PTR)
 
 template<class t> 
 void PtrRep<t>::freeVal() {
@@ -45,6 +46,7 @@ SimpleCountedConstPtr<t> &SimpleCountedConstPtr<t>::operator=(t *v) {
     delete ref;
   }
   ref = new PtrRep<t>(v);
+
   return *this;
 }
 
@@ -55,6 +57,8 @@ SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
     ref = 0;
   }
 }
+
+#endif
 
 //
 // All of these CountedPtr<t> ctors were moved out-of-line because

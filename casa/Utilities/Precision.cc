@@ -42,7 +42,7 @@ uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
     Double err2 = pair2[1];
     value = max(val1, val2);
     error = (err1 == 0 || err2 == 0)
-      ? max(fabs(err1), fabs(err1))
+      ? max(fabs(err1), fabs(err2))
       : min(fabs(err1), fabs(err2));
   }
 
@@ -77,9 +77,10 @@ uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
   error = 0.1*error;
 
   // Generate format
+  // Add little value for possible round-off error
   uInt after = 0;
   if ( log10(error) < 0 ) {
-    after = int(fabs(log10(error)))+1;
+    after = int(fabs(log10(error)) + 1e-8) + 1;
   }
   return after;
 }

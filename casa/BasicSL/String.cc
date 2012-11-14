@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <casa/string.h>
 #include <casa/sstream.h>
+#include <stdio.h>		// for vsnprintf( )
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -105,19 +106,59 @@ Int String::toInt(const String& string) {
     return var;
 }
 
-void String::trim() {
+String String::format (const char* picture, ...)
+{
+    const int BufferSize = 16384;
+    char buffer [BufferSize];
+    va_list vaList;
+    va_start (vaList, picture);
+    int nUsed = vsnprintf (buffer, BufferSize, picture, vaList);
+    va_end (vaList);
+    String result = buffer;
+    if (nUsed >= BufferSize){
+        result += "*TRUNCATED*";
+    }
+    return result;
+}
+
+void String::trim()
+{
+    char ws[4];
+    ws[0] = ' ';
+    ws[1] = '\t';
+    ws[2] = '\n';
+    ws[3] = '\r';
+    trim(ws, 4);
+}
+
+void String::trim(char c[], uInt n) {
     iterator iter = begin();
-    while (iter != end()  &&
-           (*iter == ' '  ||  *iter == '\t'  ||
-            *iter == '\n' ||  *iter == '\r')) {
+    while (iter != end()  &&  std::find(c, c+n, *iter) != c+n) {
         ++iter;
     }
     erase (begin(), iter);
     if (! empty()) {
         iter = end() - 1;
-        while (iter != begin()  &&
-               (*iter == ' '  ||  *iter == '\t'  ||
-                *iter == '\n' ||  *iter == '\r')) {
+        while (iter != begin()  &&  std::find(c, c+n, *iter) != c+n) {
+            --iter;
+        }
+        ++iter;
+        erase (iter, end());
+    }
+}
+
+void String::ltrim(char c) {
+    iterator iter = begin();
+    while (iter != end()  &&  *iter ==c) {
+         ++iter;
+    }
+    erase (begin(), iter);
+}
+
+void String::rtrim(char c) {
+    if (! empty()) {
+      iterator iter = end() - 1;
+        while (iter != begin()  &&  *iter == c) {
             --iter;
         }
         ++iter;

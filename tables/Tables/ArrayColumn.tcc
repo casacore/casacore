@@ -247,6 +247,96 @@ void ROArrayColumn<T>::getSlice (uInt rownr,
 }
 
 template<class T>
+void
+ROArrayColumn<T>::getColumnCells (const RefRows & rows,
+                                  const Vector<Vector<Slice> > & arraySlices,
+                                  Array<T>& destination,
+                                  Bool resize) const
+{
+    // Check to see if the data request makes sense.
+
+    IPosition columnShape = shape(rows.firstRow());
+
+    uInt nExpectedDims = arraySlices.nelements();
+
+    if (columnShape.nelements() != nExpectedDims){
+
+        String message = String::format ("Column has wrong number of dimensions; expected %d "
+                                         " had %d",
+                                         nExpectedDims,
+                                         columnShape.nelements());
+        throw (TableArrayConformanceError (message));
+    }
+
+    // Calculate the shape of the destination data.  This will be
+    // [s1, s2, ..., nR] where sI are the sum of the slice elements for
+    // that axis as contained in arraySlices [i].  nR is the number of rows
+    // in the RefRows object rows.  Resize the destination array to match.
+
+    IPosition destinationShape (columnShape.nelements() + 1);
+    destinationShape (destinationShape.nelements() - 1) = rows.nrows();
+
+    for (uInt i = 0; i < arraySlices.nelements(); i++){
+
+        Int n = 0;
+        if (arraySlices [i].nelements () == 0){
+            n = columnShape (i); // all elements
+        }
+        else{
+
+            // Count up the number of elements in each slice of this axis.
+
+            for (uInt j = 0; j < arraySlices [i].nelements(); j++){
+                n += arraySlices (i)(j).length();
+            }
+        }
+
+        destinationShape (i) = n; // Install the size of this dimension
+
+    }
+
+    checkShape (destinationShape, destination, resize,
+                "ArrayColumn::getSliceForRows");
+
+    // Fill the destination array one row at a time.
+
+    const Vector<uInt> & rowNumbers = rows.rowVector();
+
+    // If rows is not sliced then rowNumbers is simply a vector of the relevant
+    // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
+    // Thus we have two different ways of walking through the selected rows.
+
+    Bool useSlicing = rows.isSliced();
+    int row;
+    int increment;
+
+    if (useSlicing){
+
+        assert (rowNumbers.nelements() == 3);
+
+        increment = rowNumbers [2];
+        row = rowNumbers [0] - increment; // allows preincrement before first use
+    }
+
+    for (uInt i = 0; i < rows.nrows(); i++){
+
+        // Create a section of the destination array that will hold the
+        // data for this row ([s1, ...,sN, nR] --> [s1,...,sN].
+
+        Array<T> destinationSection = destination [i];
+
+        if (rows.isSliced()){
+            row += increment;
+        }
+        else{
+            row = rowNumbers (i);
+        }
+
+        getSlice (row, arraySlices, destinationSection, False);
+    }
+}
+
+template<class T>
 void ROArrayColumn<T>::handleSlices (const Vector<Vector<Slice> >& slices,
                                      BaseSlicesFunctor<T>& functor,
                                      const Slicer& slicer,
@@ -675,6 +765,47 @@ void ArrayColumn<T>::putSlice (uInt rownr,
   PutCellSlices<T> functor(*this, rownr);
   Array<T> arrc(arr);     // make non-const
   this->handleSlices (slices, functor, slicer, arrEnd, arrc);
+}
+
+template<class T>
+void ArrayColumn<T>::putColumnCells (const RefRows & rows,
+                                     const Vector<Vector<Slice> >& arraySlices,
+                                     const Array<T>& source)
+{
+    // Empty the destination array one row at a time.
+
+    const Vector<uInt>& rowNumbers = rows.rowVector();
+
+    // If rows is not sliced then rowNumbers is simply a vector of the relevant
+    // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
+    // Thus we have two different ways of walking through the selected rows.
+
+    int row;
+    int increment;
+    Bool useSlices = rows.isSliced();
+
+    if (useSlices){
+
+        assert (rowNumbers.nelements() == 3);
+
+        increment = rowNumbers [2];
+        row = rowNumbers [0] - increment; // allows increment before use inside loop
+    }
+
+    for (uInt i = 0; i < rows.nrows(); i++){
+
+        Array<T> sourceSection = source [i]; // this row's data as array
+
+        if (rows.isSliced()){
+            row += increment;
+        }
+        else{
+            row = rowNumbers (i);
+        }
+
+        putSlice (row, arraySlices, sourceSection);
+
+    }
 }
 
 template<class T>

@@ -4,6 +4,7 @@ dMeasure
 tEarthField
 tEarthMagneticMachine
 tMBaseline
+tMDirection
 tMEarthMagnetic
 tMeasComet
 tMeasJPL

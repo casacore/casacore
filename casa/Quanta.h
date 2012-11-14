@@ -587,6 +587,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    statH     (stathenry)                  899377374000 m2.kg.s-2.A-2
 //    statOhm   (statohm)                    899377374000 m2.kg.s-3.A-2
 //    statV     (statvolt)                   299.792458 m2.kg.s-3.A-1
+//    debye     (electric dipole moment)     10-18 statC·cm
 //    u         (atomic mass unit)           1.661e-27 kg
 //    yd        (yard)                       0.9144 m
 //    yr        (year)                       31557600 s

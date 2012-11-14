@@ -483,6 +483,30 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
    return expInNames;
 }
 
+#ifndef __APPLE__
+#include <sys/vfs.h>
+#include <linux//nfs_fs.h>
+#else
+#include <sys/param.h>
+#include <sys/mount.h>
+#include <sys/vnode.h>
+#endif
+
+Bool Directory::isNFSMounted() const
+{
+   struct statfs buf;
+   if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+      throw (AipsError ("Directory::isNFSMounted error on " +
+            itsFile.path().expandedName() +
+            ": " + strerror(errno)));
+   }
+#ifndef __APPLE__
+   return buf.f_type == NFS_SUPER_MAGIC;
+#else
+   return buf.f_type == VT_NFS;
+#endif
+
+}
 
 } //# NAMESPACE CASA - END
 

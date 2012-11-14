@@ -583,8 +583,24 @@ class String : public string {
   // an Int, 0 is returned.
   static Int toInt(const String& string);
 
+  // Create a formatted string using the given printf format string.
+  static String format (const char* picture, ...);
+
   // Remove beginning and ending whitespace.
   void trim();
+
+  // Remove specified chars from beginning and end of string.
+  void trim(char c[], uInt n);
+
+  // Remove specified character from beginning of string.
+  // If the character is repeated more than once on the left, all instances
+  // will be removed; e.g. ltrim(',') results in ",,xy" becoming "xy".
+  void ltrim(char c);
+
+  // Remove specified character from end of string.
+  // If the character is repeated more than once on the right, all instances
+  // will be removed; e.g. rtrim(',') results in "xy,," becoming "xy".
+  void rtrim(char c);
 
   // Does the string start with the specified string?
   Bool startsWith(const string& beginString) const

@@ -393,7 +393,8 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     case TpArrayString:
 	return new Array<String> (arrayShape);
     default:
-	throw (AipsError ("RecordRep::createDataField: unknown data type"));
+	throw (AipsError ("RecordRep::createDataField: unknown data type " +
+                          String::toString(int(type))));
     }
 }
 

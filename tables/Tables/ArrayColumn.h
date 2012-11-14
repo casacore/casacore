@@ -323,6 +323,17 @@ public:
 			     const Slicer& arraySection) const;
     // </group>
 
+    // Similar to getColumn (arraySlices, arr, resize) except it
+    // gets the slices for the given rows instead of all rows.
+    void getColumnCells (const RefRows& rows,
+                         const Vector<Vector<Slice> >& arraySlices,
+                         Array<T>& arr,
+                         Bool resize = False) const;
+    void getSliceForRows (const RefRows& rows,
+                          const Vector<Vector<Slice> >& arraySlices,
+                          Array<T>& destination) const
+      { getColumnCells (rows, arraySlices, destination, True); }
+ 
     // The get() function like above which does not check shapes, etc.
     // It is faster and can be used for performance reasons if one
     // knows for sure that the arguments are correct.
@@ -579,6 +590,18 @@ public:
 			 const Slicer& arraySection, const Array<T>& arr);
     void putColumnCells (const RefRows& rownrs,
 			 const Slicer& arraySection, const Array<T>& arr);
+    // </group>
+
+    // Same as putColumn(arraySlices, arr) except that it puts for the given
+    // rows instead of all rows.
+    // <group>
+    void putColumnCells (const RefRows& rows,
+                         const Vector<Vector<Slice> >& arraySlices,
+                         const Array<T>& arr);
+    void putSliceFromRows (const RefRows& rows,
+                           const Vector<Vector<Slice> >& arraySlices,
+                           const Array<T>& source)
+      { putColumnCells (rows, arraySlices, source); }
     // </group>
 
     // Put the same value in all cells of the column.

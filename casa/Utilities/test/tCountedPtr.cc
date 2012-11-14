@@ -39,6 +39,13 @@ const char *prt(CountedConstPtr<myobj> &obj) {
 }
 
 int main() {
+
+#if defined (USE_BOOST_SHARED_PTR)
+#warning "Using boost::shared_ptr"
+#else
+#warning "Not using boost::shared_ptr"
+#endif
+
   CountedPtr<myobj> var = new myobj("fred");
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
@@ -56,12 +63,32 @@ int main() {
     (*var3).name() << ".." <<
     (*var4).name() << ".." << endl;
 
-  var2.replace(new myobj("betty"));
+  // Check to see if the no-delete feature is honored
+  // by the copy constructor and the assignment operator
 
-  cout << var->name() << ".." <<
-    var2->name() << ".." << 
-    prt(var3) << ".." << 
-    var4->name() << ".." << endl;
+  myobj * doNotDelete = new myobj ("Don't delete me!");
+
+  {
+      CountedPtr<myobj> p1 (doNotDelete, False);
+      CountedPtr<myobj> p2 (p1);
+      CountedPtr<myobj> p3;
+
+      p3 = p1;
+  }
+
+  cout << "Now explicitly delete object" << endl;
+
+  delete doNotDelete;
+
+// Replace is deprecated and not possible when
+// using a boost or c++0x smart pointer implementation
+//
+//  var2.replace(new myobj("betty"));
+//
+//  cout << var->name() << ".." <<
+//    var2->name() << ".." <<
+//    prt(var3) << ".." <<
+//    var4->name() << ".." << endl;
 
   return 0;
 }

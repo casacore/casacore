@@ -102,6 +102,10 @@ public:
     String dataManagerName() const
       { return itsDataManager->dataManagerName(); } 
 
+    // Get the data manager sequence nr.
+    uInt dataManagerSeqNr() const
+      { return itsDataManager->sequenceNr(); } 
+
 protected:
     // Get the data manager for the given data manager or column name.
     DataManager* baseDataManager() const

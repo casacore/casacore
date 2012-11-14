@@ -769,6 +769,11 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
   DebugAssert(vsize > 0, AipsError);
       
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
       
   ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), True); // axes are the cursor  
@@ -806,6 +811,11 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
   outFlags.assign(inFlags);
     
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
 
   Int numToFlag = ceil(vsize*fabs(relshift));
@@ -901,6 +911,11 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
   outFlags.assign(inFlags);
     
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  -2.*C::pi*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case  
 
   Int numToFlag = ceil(vsize*fabs(relshift));

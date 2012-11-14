@@ -33,14 +33,16 @@
 #include <sys/types.h>
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
+#include <casa/OS/Mutex.h>
 #include <exception>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Throw an exception with a string composed of various arguments.
 // E.g.
 // <srcblock>
-//    CASATHROW (AipsError, "integer=" << myint << ", float=" << myfloat)
+//    CASATHROW (AipsError, "integer=" << myint << ", float=" << myfloat);
 // </srcblock>
 #define CASATHROW(exc, arg) do {     \
     std::ostringstream casa_log_oss; \
@@ -100,6 +102,7 @@ public:
     { return(message.c_str()); }
   const String &getMesg() const
     { return(message); }
+  String getStackTrace() const;
   AipsError::Category getCategory( ) const
     { return(category); }
 
@@ -115,7 +118,7 @@ public:
   AipsError (const String &str, Category c = GENERAL);
   AipsError (const String &msg, const String &filename, uInt lineNumber,
              Category c = GENERAL);
-  AipsError (Category c = GENERAL) : message(), category(c) {};
+  AipsError (Category c = GENERAL);
   // </group>
 
   //
@@ -123,10 +126,21 @@ public:
   //
   ~AipsError() throw();
 
+  // Get or clear the stacktrace info.
+  // <group>
+  static void getLastInfo (String & message, String & stackTrace);
+  static String getLastMessage ();
+  static String getLastStackTrace ();
+  static void clearLastInfo ();
+  // </group>
+
 protected:
+  // Add the stack trace to the message (if USE_STACKTRACE is set).
+  void addStackTrace ();
+
   String message;
   Category category;
-
+  String stackTrace;
 };
 
 

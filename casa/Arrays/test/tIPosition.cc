@@ -55,7 +55,7 @@ void testKeepRemove()
 
 int main()
 {
-{
+  {
     IPosition ip(3, 0, 1, 2);
     
     Int nrit = 0;
@@ -134,9 +134,9 @@ int main()
     io.close();
     io.open("tIPosition_tmp.data", ByteIO::Delete);
     io.close();
-}
+  }
 
-{
+  {
     // Now test the IPosition class more exhaustively
     Int i;
 
@@ -360,102 +360,107 @@ int main()
     String string (os.str());
     AlwaysAssertExit(string == "[5, 5, 5, 5, 5, 5, 5, 5, 5, 5]");
 
-{
-                                               // Check out exceptions
-    Bool caught = False;
+    {
+      // Check out exceptions
+      Bool caught = False;
 
-    IPosition ip1(2);
-    IPosition ip2(3);  // ip1.conform(ip2) == False
-    ip1 = 5; ip2 = 6;
-    caught = False;
-    try {ip1+=ip2;} catch (AipsError& x) {caught = True;}
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {ip1-=ip2;} catch (AipsError& x) {caught = True;}
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {ip1*=ip2;} catch (AipsError& x) {caught = True;}
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {ip1/=ip2;} catch (AipsError& x) {caught = True;}
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1+ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1-ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1*ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1/ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1==ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1!=ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1<ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1<=ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1>ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1>=ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-    caught = False;
-    try {(void)(ip1=ip2);} catch (AipsError& x) {caught = True;} 
-    AlwaysAssertExit(caught);
-}    
-                                               // ~IPosition tested implicitly
-                                               // at end of block
-{
-     IPosition x;
-     IPosition y(5,1,2,3,4,5);
-     AlwaysAssertExit(x.product() == 0 && y.product() == 120);
-}
-{
-    Vector<Int> vi;
-    IPosition ip(3, 1, 2, 3);
-    IPosition ip2(6, 1, 2, 3, 4, 5, 6);
-    vi = ip.asVector();
-    AlwaysAssertExit(vi(0) == 1 && vi(1) == 2 && vi(2) == 3);
-    vi.resize(6);
-    vi = ip2.asVector();
-    AlwaysAssertExit(vi(0) == 1 && vi(1) == 2 && vi(2) == 3 && vi(3) == 4 &&
-		     vi(4) == 5 && vi(5) == 6);
-    IPosition ip3(vi);
-    AlwaysAssertExit(ip3(0) == 1 && ip3(1) == 2 && ip3(2) == 3 && ip3(3) == 4 &&
-		     ip3(4) == 5 && ip3(5) == 6);
+      IPosition ip1(2);
+      IPosition ip2(3);  // ip1.conform(ip2) == False
+      ip1 = 5; ip2 = 6;
+      caught = False;
+      try {ip1+=ip2;} catch (AipsError& x) {caught = True;}
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {ip1-=ip2;} catch (AipsError& x) {caught = True;}
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {ip1*=ip2;} catch (AipsError& x) {caught = True;}
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {ip1/=ip2;} catch (AipsError& x) {caught = True;}
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1+ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1-ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1*ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1/ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1==ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1!=ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1<ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1<=ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1>ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1>=ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+      caught = False;
+      try {(void)(ip1=ip2);} catch (AipsError& x) {caught = True;} 
+      AlwaysAssertExit(caught);
+    }    
+    // ~IPosition tested implicitly
+    // at end of block
+    {
+      IPosition x;
+      IPosition y(5,1,2,3,4,5);
+      AlwaysAssertExit(x.product() == 0 && y.product() == 120);
+    }
+    {
+      Vector<Int> vi;
+      IPosition ip(3, 1, 2, 3);
+      IPosition ip2(6, 1, 2, 3, 4, 5, 6);
+      vi = ip.asVector();
+      AlwaysAssertExit(vi(0) == 1 && vi(1) == 2 && vi(2) == 3);
+      vi.resize(6);
+      vi = ip2.asVector();
+      AlwaysAssertExit(vi(0) == 1 && vi(1) == 2 && vi(2) == 3 && vi(3) == 4 &&
+                       vi(4) == 5 && vi(5) == 6);
+      IPosition ip3(vi);
+      AlwaysAssertExit(ip3(0) == 1 && ip3(1) == 2 && ip3(2) == 3 &&
+                       ip3(3) == 4 && ip3(4) == 5 && ip3(5) == 6);
+      
+      AlwaysAssertExit(IPosition(3,1).allOne());
+      AlwaysAssertExit(! IPosition(3,0).allOne());
+    }
+    {
+      std::vector<Int> vi;
+      IPosition ip(3, 1, 2, 3);
+      IPosition ip2(6, 1, 2, 3, 4, 5, 6);
+      vi = ip.asStdVector();
+      AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3);
+      vi.resize(6);
+      vi = ip2.asStdVector();
+      AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3 && vi[3] == 4 &&
+                       vi[4] == 5 && vi[5] == 6);
+      IPosition ip3(vi);
+      AlwaysAssertExit(ip3[0] == 1 && ip3[1] == 2 && ip3[2] == 3 &&
+                       ip3[3] == 4 && ip3[4] == 5 && ip3[5] == 6);
+    }
+    
+  }
+  
+  testKeepRemove();
 
-    AlwaysAssertExit(IPosition(3,1).allOne());
-    AlwaysAssertExit(! IPosition(3,0).allOne());
-}
-{
-    std::vector<Int> vi;
-    IPosition ip(3, 1, 2, 3);
-    IPosition ip2(6, 1, 2, 3, 4, 5, 6);
-    vi = ip.asStdVector();
-    AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3);
-    vi.resize(6);
-    vi = ip2.asStdVector();
-    AlwaysAssertExit(vi[0] == 1 && vi[1] == 2 && vi[2] == 3 && vi[3] == 4 &&
-		     vi[4] == 5 && vi[5] == 6);
-    IPosition ip3(vi);
-    AlwaysAssertExit(ip3[0] == 1 && ip3[1] == 2 && ip3[2] == 3 && ip3[3] == 4 &&
-		     ip3[4] == 5 && ip3[5] == 6);
-}
-
-}
-
-    testKeepRemove();
-
-    cout << "OK\n";
-    return 0;
+  // operator()(IPostion) tests
+  IPosition ipos(4,11,12,13,14);
+  AlwaysAssertExit(ipos(IPosition(4, 0,2,1,3)) == IPosition(4, 11,13,12,14));
+  AlwaysAssertExit(ipos(IPosition(3, 2,2,1)) == IPosition(3, 13,13,12));
+  
+  cout << "OK\n";
+  return 0;
 }

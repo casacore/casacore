@@ -319,5 +319,15 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left) {
     return (res);
 }
 
+template <class Qtype>
+Quantum<Qtype> min(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
+	return left < other ? left : other;
+}
+
+template <class Qtype>
+Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
+	return left > other ? left : other;
+}
+
 } //# NAMESPACE CASA - END
 

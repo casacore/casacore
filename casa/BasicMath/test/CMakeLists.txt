@@ -4,6 +4,7 @@ tMath
 tMathNaN
 tPrimes
 tRNG
+tStdLogical
 )
 
 foreach (test ${tests})
