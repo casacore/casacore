@@ -33,8 +33,13 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
-				  Int observationType, Int nIfr, Int)
+				  Int observationType, Int nIfr, Int nInt)
 {
+  //Try to bypass most stupid choices
+  if(nIfr<1) 
+    nIfr=100;
+  if(nInt<1)
+    nInt=1;
   const Int ioBlockSize = 131072; // 131072 * sizeOf(Complex) = 1 MB
   IPosition tileShape(3,0,0,0);
   if (dataShape.nelements()==2 && dataShape(0)>0 && dataShape(1)>0) {
@@ -42,13 +47,37 @@ IPosition MSTileLayout::tileShape(const IPosition& dataShape,
     Int corrSize = dataShape(0);     
     // Read all channels, in order to minimize the overhead of the
     // i/o layer
+    //Read all the channels for fast mosaic
     Int chanSize = dataShape(1);
-    // Read as many rows as needed to make up the ioBlockSize for efficient
-    // io and caching
-    Int rowSize  = max(1, ioBlockSize/corrSize/chanSize);
-
-    (void) observationType;  // not used
-    (void) nIfr;
+    Int rowSize=max(1, ioBlockSize/corrSize/chanSize);
+    if(observationType==0){
+      if(chanSize <100){
+	chanSize=max(1, ioBlockSize/corrSize/nIfr);
+      }
+      else if(chanSize < 10000) {
+	chanSize=Int(floor(sqrt(Float(chanSize)/99.9)))*10;
+      }
+      else{
+	chanSize=100;
+      }
+      Int elIOBlkSize=ioBlockSize;
+      while(((ioBlockSize/corrSize/chanSize) > 10*nIfr*nInt) && chanSize < dataShape(1)){
+	chanSize+=2;
+      } 
+      if((ioBlockSize/corrSize/chanSize) > 10*nIfr*nInt){
+	//we are still having too many blocks in one tile
+	elIOBlkSize=10*nIfr*nInt*corrSize*chanSize;
+      }
+      chanSize=(chanSize >=   dataShape(1)) ? dataShape(1) : chanSize; 
+      rowSize= max(1,elIOBlkSize/corrSize/chanSize);
+      
+    }
+    else{
+      //fast mosaic mode: no need to make people load several pointings
+      rowSize=nIfr*nInt;
+      chanSize=max(1, ioBlockSize/corrSize/rowSize);
+      chanSize=(chanSize >   dataShape(1)) ? dataShape(1) : chanSize; 
+    }
 
     tileShape(0)=corrSize; 
     tileShape(1)=chanSize;
@@ -61,12 +90,13 @@ IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 					 Int observationType, 
 					 const String& array)
 {
-  Int nIfr=100;
+  Int nIfr=200;
   if (array=="ATCA") nIfr=15;
   if (array=="VLA") nIfr=351;
   if (array=="WSRT") nIfr=91;
   if (array=="BIMA") nIfr=36;
   if (array=="DRAO") nIfr=21;
+  if (array=="SMA") nIfr=28;
   return tileShape(dataShape,observationType,nIfr);
 }
 

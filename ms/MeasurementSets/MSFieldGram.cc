@@ -53,133 +53,160 @@
 // Define the yywrap function for flex.
 int MSFieldGramwrap()
 {
-    return 1;
+  return 1;
 }
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSFieldGram = 0;
-static Int                   posMSFieldGram = 0;
+  
+  //# Declare a file global pointer to a char* for the input string.
+  static const char*           strpMSFieldGram = 0;
+  static Int                   posMSFieldGram = 0;
   // MSFieldGramwrap out of namespace
+  
+  //# Parse the command.
+  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet* ms, const String& command) 
+  // {
+  //   try 
+  //     {
+  // 	MSFieldGramrestart (MSFieldGramin);
+  // 	yy_start = 1;
+  // 	strpMSFieldGram = command.chars();     // get pointer to command string
+  // 	posMSFieldGram  = 0;                   // initialize string position
+  // 	MSFieldParse parser(ms);               // setup measurement set
+  // 	MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
+  // 	MSFieldParse::thisMSFParser->reset();
+  // 	//      fieldError.reset();
+  // 	MSFieldGramparse();                // parse command string
+  // 	return parser.node();
+  //     }
+  //   catch (MSSelectionFieldError &x)
+  //     {
+  // 	String newMesgs;
+  // 	newMesgs = constructMessage(msFieldGramPosition(), command);
+  // 	x.addMessage(newMesgs);
+  // 	throw;
+  //     }
+  // }
+  
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs)
+  // {
+  //   //    MSFieldParse *thisParser = new MSFieldParse(ms);
+  //   TableExprNode dummy,ten;
+  //   MSFieldParse *thisParser = new MSFieldParse(ms->field(),dummy);
+  //   ten=baseMSFieldGramParseCommand(thisParser, command, selectedIDs);
+  //   delete thisParser;
+  //   return ten;
+  // }
 
-//# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msFieldGramParseCommand (const MeasurementSet* ms, const String& command) 
-{
-  try 
-    {
-      Int ret;
-      MSFieldGramrestart (MSFieldGramin);
-      yy_start = 1;
-      strpMSFieldGram = command.chars();     // get pointer to command string
-      posMSFieldGram  = 0;                   // initialize string position
-      MSFieldParse parser(ms);               // setup measurement set
-      MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
-      MSFieldParse::thisMSFParser->reset();
-      //      fieldError.reset();
-      ret=MSFieldGramparse();                // parse command string
-      return ret;
-    }
-  catch (MSSelectionFieldError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msFieldGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
+  TableExprNode msFieldGramParseCommand (const MSField& msFieldSubTable, const TableExprNode& ten,
+					 const String& command, Vector<Int>& selectedIDs)
+  {
+    //    MSFieldParse *thisParser = new MSFieldParse(ms);
+    TableExprNode fieldTEN;
+    MSFieldParse *thisParser = new MSFieldParse(msFieldSubTable,ten);
+    try
+      {
+	fieldTEN=baseMSFieldGramParseCommand(thisParser, command, selectedIDs);
+      }
+    catch(MSSelectionFieldError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return fieldTEN;
+  }
 
-  int msFieldGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs)
-			       
-{
-  try 
-    {
-      Int ret;
-      MSFieldGramrestart (MSFieldGramin);
-      yy_start = 1;
-      strpMSFieldGram = command.chars();     // get pointer to command string
-      posMSFieldGram  = 0;                   // initialize string position
-      MSFieldParse parser(ms);               // setup measurement set
-      MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
-      parser.reset();
-      ret=MSFieldGramparse();                // parse command string
-      
-      selectedIDs=parser.selectedIDs();
-      return ret;
-    }
-  catch (MSSelectionFieldError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msFieldGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
-
-//# Give the table expression node
-const TableExprNode* msFieldGramParseNode()
-{
-  return MSFieldParse::node();
-}
-void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
-//# Give the string position.
-Int& msFieldGramPosition()
-{
+  TableExprNode baseMSFieldGramParseCommand (MSFieldParse* parser, const String& command, Vector<Int>& selectedIDs)
+  {
+    //    MSFieldParse parser(ms);               // setup measurement set
+    try 
+      {
+	MSFieldGramrestart (MSFieldGramin);
+	yy_start = 1;
+	strpMSFieldGram = command.chars();     // get pointer to command string
+	posMSFieldGram  = 0;                   // initialize string position
+	//	MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
+	MSFieldParse::thisMSFParser = parser; // The global pointer to the parser
+	parser->reset();
+	MSFieldGramparse();                // parse command string
+	
+	selectedIDs=parser->selectedIDs();
+	return *(msFieldGramParseNode());
+      }
+    catch (MSSelectionFieldError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msFieldGramPosition(), command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }
+  
+  //# Give the table expression node
+  const TableExprNode* msFieldGramParseNode()
+  {
+    return MSFieldParse::node();
+  }
+  void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
+  //# Give the string position.
+  Int& msFieldGramPosition()
+  {
     return posMSFieldGram;
-}
-
-//# Get the next input characters for flex.
-int msFieldGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msFieldGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSFieldGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSFieldGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSFieldGram++;
     }
     return nr;
-}
-
-void MSFieldGramerror (const char*)
-{
+  }
+  
+  void MSFieldGramerror (const char*)
+  {
     throw (MSSelectionFieldParseError ("Field Expression: Parse error at or near '" +
-		      String(MSFieldGramtext) + "'"));
-}
-
-// String msFieldGramRemoveEscapes (const String& in)
-// {
-//     String out;
-//     int leng = in.length();
-//     for (int i=0; i<leng; i++) {
-// 	if (in[i] == '\\') {
-// 	    i++;
-// 	}
-// 	out += in[i];
-//     }
-//     return out;
-// }
-
-// String msFieldGramRemoveQuotes (const String& in)
-// {
-//     //# A string is formed as "..."'...''...' etc.
-//     //# All ... parts will be extracted and concatenated into an output string.
-//     String out;
-//     String str = in;
-//     int leng = str.length();
-//     int pos = 0;
-//     while (pos < leng) {
-// 	//# Find next occurrence of leading ' or ""
-// 	int inx = str.index (str[pos], pos+1);
-// 	if (inx < 0) {
-// 	    throw (AipsError ("MSFieldParse - Ill-formed quoted string: " +
-// 			      str));
-// 	}
-// 	out += str.at (pos+1, inx-pos-1);             // add substring
-// 	pos = inx+1;
-//     }
-//     return out;
-// }
-
+				       String(MSFieldGramtext) + "'"));
+  }
+  
+  // String msFieldGramRemoveEscapes (const String& in)
+  // {
+  //     String out;
+  //     int leng = in.length();
+  //     for (int i=0; i<leng; i++) {
+  // 	if (in[i] == '\\') {
+  // 	    i++;
+  // 	}
+  // 	out += in[i];
+  //     }
+  //     return out;
+  // }
+  
+  // String msFieldGramRemoveQuotes (const String& in)
+  // {
+  //     //# A string is formed as "..."'...''...' etc.
+  //     //# All ... parts will be extracted and concatenated into an output string.
+  //     String out;
+  //     String str = in;
+  //     int leng = str.length();
+  //     int pos = 0;
+  //     while (pos < leng) {
+  // 	//# Find next occurrence of leading ' or ""
+  // 	int inx = str.index (str[pos], pos+1);
+  // 	if (inx < 0) {
+  // 	    throw (AipsError ("MSFieldParse - Ill-formed quoted string: " +
+  // 			      str));
+  // 	}
+  // 	out += str.at (pos+1, inx-pos-1);             // add substring
+  // 	pos = inx+1;
+  //     }
+  //     return out;
+  // }
+  
 } //# NAMESPACE CASA - END

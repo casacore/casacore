@@ -37,6 +37,7 @@
 #include <ms/MeasurementSets/MSUvDistGram.h>
 #include <ms/MeasurementSets/MSPolnGram.h>
 #include <ms/MeasurementSets/MSStateGram.h>
+#include <ms/MeasurementSets/MSObservationGram.h>
 #include <ms/MeasurementSets/MSRange.h>
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/RecordGram.h>
@@ -51,36 +52,29 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/iostream.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <ms/MeasurementSets/MSSelectableTable.h>
+#include <ms/MeasurementSets/MSAntennaParse.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/GenSort.h>
+#include <ms/MeasurementSets/MSColumns.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //----------------------------------------------------------------------------
   
   MSSelection::MSSelection() : 
-    fullTEN_p(),ms_p(NULL), antennaExpr_p(""), fieldExpr_p(""),
+    fullTEN_p(),ms_p(NULL),  antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""),exprOrder_p(MAX_EXPR, NO_EXPR),
-    antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), 
-    scanIDs_p(),arrayIDs_p(), ddIDs_p(), baselineIDs_p(),selectedTimesList_p(),
-    selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
-    selectedSetupMap_p(Vector<Vector<Int> >(0)),
-    maxScans_p(1000), maxArray_p(1000)
+    polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
+    exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
+    spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(), baselineIDs_p(),
+    selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
+    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
+    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), mssErrHandler_p(NULL), 
+    isMS_p(True), toTENCalled_p(False)
   {
     clear();
-    // Default null constructor 
-    // Output to private data:
-    //    antennaExpr_p             String   Antenna STaQL expression
-    //    polnExpr_p                String   Polarization STaQL expression
-    //    fieldExpr_p               String   Field STaQL expression
-    //    spwExpr_p                 String   SPW STaQL expression
-    //    scanExpr_p                String   Scan STaQL expression
-    //    arrayExpr_p               String   Array_ID STaQL expression
-    //    timeExpr_p                String   Time STaQL expression
-    //    uvDistExpr_p              String   UV Distribution STaQL expression
-    //    taqlExpr_p                String   TaQL expression
-    //
   }
   
   //----------------------------------------------------------------------------
@@ -96,15 +90,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			   const String& polnExpr,
 			   const String& scanExpr,
 			   const String& arrayExpr,
-			   const String& stateExpr):
+			   const String& stateExpr,
+			   const String& observationExpr):
     fullTEN_p(), ms_p(&ms), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""),exprOrder_p(MAX_EXPR, NO_EXPR),
-    antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), 
-    scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
+    polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
+    exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
+    spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
     selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
     selectedSetupMap_p(Vector<Vector<Int> >(0)),
-    maxScans_p(1000), maxArray_p(1000)
+    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), mssErrHandler_p(NULL), 
+    isMS_p(True), toTENCalled_p(False)
   {
     //
     // Do not initialize the private string variables directly. Instead
@@ -121,12 +117,51 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  polnExpr,
 	  scanExpr,
 	  arrayExpr,
-	  stateExpr);
+	  stateExpr,
+	  observationExpr);
   }
   
   
   //----------------------------------------------------------------------------
   
+  void MSSelection::reset(MSSelectableTable& msLike,
+			  const MSSMode& mode,
+			  const String& timeExpr,
+			  const String& antennaExpr,
+			  const String& fieldExpr,
+			  const String& spwExpr,
+			  const String& uvDistExpr,
+			  const String& taqlExpr,
+			  const String& polnExpr,
+			  const String& scanExpr,
+			  const String& arrayExpr,
+			  const String& stateExpr,
+			  const String& observationExpr)
+  {
+    ms_p=msLike.asMS();
+    isMS_p=msLike.isMS();
+    toTENCalled_p=False;
+    //
+    // Do not initialize the private string variables
+    // directly. Instead using the setExpr* methods to do that so that
+    // it keeps that state of the object consistent.
+    //
+    clear(); // Clear everything
+    setAntennaExpr(antennaExpr);
+    setFieldExpr(fieldExpr);
+    setSpwExpr(spwExpr);
+    setScanExpr(scanExpr);
+    setArrayExpr(arrayExpr);
+    setTimeExpr(timeExpr);
+    setUvDistExpr(uvDistExpr);
+    setPolnExpr(polnExpr);
+    setTaQLExpr(taqlExpr);
+    setStateExpr(stateExpr);
+    setObservationExpr(observationExpr);
+
+    if (mode==PARSE_NOW)
+      fullTEN_p = toTableExprNode(&msLike);
+  }
   void MSSelection::reset(const MeasurementSet& ms,
 			  const MSSMode& mode,
 			  const String& timeExpr,
@@ -138,13 +173,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			  const String& polnExpr,
 			  const String& scanExpr,
 			  const String& arrayExpr,
-			  const String& stateExpr)
+			  const String& stateExpr,
+			  const String& observationExpr)
   {
     //
     // Do not initialize the private string variables directly. Instead
     // using the setExpr* methods to do that keeps that state of the
     // object consistent.
     //
+    //    msFace_p.setTable(ms);
+    //    ms_p = msFace_p.asMS();
     ms_p = &ms;
     
     clear(); // Clear everything
@@ -158,6 +196,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     setPolnExpr(polnExpr);
     setTaQLExpr(taqlExpr);
     setStateExpr(stateExpr);
+    setObservationExpr(observationExpr);
 
     if (mode==PARSE_NOW)
       fullTEN_p = toTableExprNode(ms_p);
@@ -167,17 +206,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   MSSelection::~MSSelection()
   {
-    // Default desctructor
-    //
+    // If we created the error handler, we also take it out
+    deleteErrorHandlers();
+    deleteNodes();
   }
   
   //----------------------------------------------------------------------------
   
   MSSelection::MSSelection(const Record& selectionItem) : 
-    antennaExpr_p(""), fieldExpr_p(""),
-    spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-    polnExpr_p(""),taqlExpr_p(""),stateExpr_p(""),antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
-    spwIDs_p(),ddIDs_p(),baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)),
+    antennaExpr_p(""), fieldExpr_p(""), spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), 
+    timeExpr_p(""), uvDistExpr_p(""), polnExpr_p(""),taqlExpr_p(""),stateExpr_p(""), 
+    observationExpr_p(""), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(),
+    ddIDs_p(),baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)), 
     selectedSetupMap_p(Vector<Vector<Int> >(0))
     
   {
@@ -191,6 +231,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //    arrayExpr_p               String   Array_ID STaQL expression
     //    timeExpr_p                String   Time STaQL expression
     //    uvDistExpr_p              String   UV Distribution STaQL expression
+    //    observation_p             String   Observation ID STaQL expression
     //    taqlExpr_p                String   TaQL expression
     //
     // Extract fields from the selection item record
@@ -214,6 +255,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       this->fieldExpr_p   = other.fieldExpr_p;
       this->spwExpr_p     = other.spwExpr_p;
       this->scanExpr_p    = other.scanExpr_p;
+      this->observationExpr_p    = other.observationExpr_p;
       this->arrayExpr_p   = other.arrayExpr_p;
       this->timeExpr_p    = other.timeExpr_p;
       this->uvDistExpr_p  = other.uvDistExpr_p;
@@ -238,6 +280,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       this->fieldExpr_p   = other.fieldExpr_p;
       this->spwExpr_p     = other.spwExpr_p;
       this->scanExpr_p    = other.scanExpr_p;
+      this->observationExpr_p    = other.observationExpr_p;
       this->arrayExpr_p   = other.arrayExpr_p;
       this->timeExpr_p    = other.timeExpr_p;
       this->uvDistExpr_p  = other.uvDistExpr_p;
@@ -245,6 +288,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       this->polnExpr_p    = other.polnExpr_p;
       this->stateExpr_p   = other.stateExpr_p;
       this->exprOrder_p   = other.exprOrder_p;
+      this->isMS_p        = other.isMS_p;
     }
     
     return *this;
@@ -254,13 +298,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   TableExprNode MSSelection::getTEN(const MeasurementSet*ms)
   {
+
+    // if (ms!=NULL) {resetTEN();toTableExprNode(ms);}
+    // else if (ms_p==NULL) throw(MSSelectionError("MSSelection::getTEN() called without setting the MS"));
+    // else toTableExprNode(ms_p); 
+
+    if (isMS_p==False)
+      {
+	if (toTENCalled_p==True) return fullTEN_p;
+	else 
+	  throw(MSSelectionError("MSSelection::getTEN() called before calling MSSelection::toTableExprNode()"));
+      }
+
     if (ms==NULL) 
       if (ms_p==NULL)
 	throw(MSSelectionError("MSSelection::getTEN() called without setting the MS"));
       else toTableExprNode(ms_p); 
     else {resetTEN();toTableExprNode(ms);}
+
+
     return fullTEN_p;
-    
   }
   
   //----------------------------------------------------------------------------
@@ -305,6 +362,272 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //----------------------------------------------------------------------------
   
+  void MSSelection::deleteErrorHandlers()
+  {
+    if (mssErrHandler_p != NULL) 
+      {
+	delete mssErrHandler_p;
+	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
+      }
+    mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
+    //    mssErrHandler_p=NULL;
+  }
+  
+  void MSSelection::deleteNodes()
+  {
+    //    msArrayGramParseDeleteNode();
+    msCorrGramParseDeleteNode();
+    msFieldGramParseDeleteNode();
+    //    msScanGramParseDeleteNode();
+    msSpwGramParseDeleteNode();
+    msTimeGramParseDeleteNode();
+    msUvDistGramParseDeleteNode();
+    msStateGramParseDeleteNode();
+  }
+  
+  //----------------------------------------------------------------------------
+  const MeasurementSet* MSSelection::getMS(MSSelectableTable* msLike)
+  {
+    const MeasurementSet *ms=msLike->asMS();
+    isMS_p=msLike->isMS();
+    
+    //
+    // When msLike is CTInterface, msLike->asMS() will return NULL.
+    // In this case, *ms should also not be used anyway.
+    //
+    // When msLike is MSInterface, msLike->asMS() must return a usable
+    // *ms.
+    //
+    if (msLike->isMS() && (ms==NULL))
+      throw(MSSelectionError(String("MSSelection::toTableExprNode(MSSelectableTable*): "
+				    "MS pointer from MS-Like object is null")));
+
+    if (!msLike->isMS()         &&
+	(
+	 // (fieldExpr_p != "")     ||     
+	 // (antennaExpr_p != "")     || 
+	 (timeExpr_p != "") ||         // Will be opened-up for CalTables in the future
+	 // (spwExpr_p != "")  ||         // Will be opened-up for CalTables in the future
+	 (scanExpr_p != "") || (observationExpr_p != "") || (arrayExpr_p != "") || (uvDistExpr_p != "") ||
+	 (taqlExpr_p != "") || (polnExpr_p != "")        || (stateExpr_p != "")
+	 ))
+      throw(MSSelectionError(String("MSSelection::toTableExprNode(MSSelectableTable*): "
+				    "Only field-, spw- and antenna-selection is supported for CalTables")));
+    return ms;
+  }
+  //----------------------------------------------------------------------------
+  
+  TableExprNode MSSelection::toTableExprNode(MSSelectableTable* msLike)
+  {
+    // Convert the MS selection to a TableExprNode object, 
+    // representing a TaQL selection in C++.
+    // Input:
+    //    msLike           const MSSelectableTable&  MeasurementSet or CalTable 
+    //                                               to bind TaQL
+    // Output:
+    //    toTableExprNode  TableExprNode             Table expression node
+    //
+    // Interpret all expressions and produce a consolidated TEN.  
+    //
+    if (fullTEN_p.isNull()==False) return fullTEN_p;
+
+    const MeasurementSet *ms=getMS(msLike);
+    resetMS(*ms);
+    toTENCalled_p=True;
+    //    ms_p = msLike->asMS();
+
+
+    TableExprNode condition;
+
+    if (MSAntennaParse::thisMSAErrorHandler == NULL)
+      {
+	if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
+	setErrorHandler(ANTENNA_EXPR, mssErrHandler_p);
+      }
+    else
+      {
+	//mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
+	MSAntennaParse::thisMSAErrorHandler->reset();
+	//	mssErrHandler_p->reset();
+      }
+
+    try
+      {
+	for(uInt i=0; i<exprOrder_p.nelements(); i++)
+	  {
+	    TableExprNode node;
+	    switch(exprOrder_p[i])
+	      {
+	      case ANTENNA_EXPR:
+		{
+		  if(antennaExpr_p != "")
+		    {
+		      TableExprNode col1AsTEN = msLike->col(msLike->columnName(MS::ANTENNA1)),
+			col2AsTEN = msLike->col(msLike->columnName(MS::ANTENNA2));
+
+		      antenna1IDs_p.resize(0);
+		      antenna2IDs_p.resize(0);
+		      baselineIDs_p.resize(0,2);
+		      node = msAntennaGramParseCommand(msLike->antenna(), 
+						       col1AsTEN, col2AsTEN, antennaExpr_p, 
+						       antenna1IDs_p, antenna2IDs_p, baselineIDs_p);
+		    }
+		  // if(antennaExpr_p != "") 
+		  //   node = msAntennaGramParseCommand(ms, antennaExpr_p, 
+		  // 				     antenna1IDs_p, 
+		  // 				     antenna2IDs_p,
+		  // 				     baselineIDs_p);
+		  break;
+		}
+	      case FIELD_EXPR:
+		{
+		  if(fieldExpr_p != "")
+		    {
+		      fieldIDs_p.resize(0);
+		      // TableExprNode colTEN = msLike->col(String("FIELD_ID"));
+		      // TableExprNode colTEN = ms->col(MS::columnName(MS::FIELD_ID));
+
+		      TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::FIELD_ID));
+		      node = msFieldGramParseCommand(msLike->field(), colAsTEN, fieldExpr_p,fieldIDs_p);
+		      // colTEN.unlink();
+		    }
+		  break;
+		}
+	      case SPW_EXPR:
+		{
+		  if (spwExpr_p != "")
+		    {
+		      TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::DATA_DESC_ID));
+		      spwIDs_p.resize(0);
+		      // if (spwExpr_p != "" &&
+		      //     msSpwGramParseCommand(ms, spwExpr_p,spwIDs_p, chanIDs_p) == 0)
+		      if (msSpwGramParseCommand(msLike->spectralWindow(), 
+						msLike->dataDescription(),
+						colAsTEN, spwExpr_p,
+						spwIDs_p, chanIDs_p) == 0)
+			node = *(msSpwGramParseNode());
+		    }
+		  break;
+		}
+	      case SCAN_EXPR:
+		{
+		  scanIDs_p.resize(0);
+		  if(scanExpr_p != "")
+		    node = msScanGramParseCommand(ms, scanExpr_p, scanIDs_p, maxScans_p);
+		  //		node = *(msScanGramParseNode());
+		  break;
+		}
+	      case OBSERVATION_EXPR:
+		{
+		  observationIDs_p.resize(0);
+		  if(observationExpr_p != "")
+		    node = msObservationGramParseCommand(ms, msLike->observation(),
+							 observationExpr_p, 
+							 observationIDs_p, maxObs_p);
+		  break;
+		}
+	      case ARRAY_EXPR:
+		{
+		  arrayIDs_p.resize(0);
+		  if(arrayExpr_p != "")
+		    node = msArrayGramParseCommand(ms, arrayExpr_p, arrayIDs_p, maxArray_p);
+		  break;
+		}
+		/*
+		  case TIME_EXPR:
+		  if(timeExpr_p != "" &&
+		  msTimeGramParseCommand(ms, timeExpr_p) == 0)
+		  node = *(msTimeGramParseNode());
+		  break;
+		*/
+	      case UVDIST_EXPR:
+		{
+		  selectedUVRange_p.resize(2,0);
+		  selectedUVUnits_p.resize(0);
+		  if(uvDistExpr_p != "" &&
+		     msUvDistGramParseCommand(ms, uvDistExpr_p, 
+					      selectedUVRange_p, 
+					      selectedUVUnits_p) == 0)
+		    node = *(msUvDistGramParseNode());
+		  break;
+		}
+	      case TAQL_EXPR:
+		{
+		  if(taqlExpr_p != "")
+		    {
+		      //	      taql = tableCommand(taqlExpr_p).node();
+		      node = RecordGram::parse(*ms,taqlExpr_p);
+		    }
+		  break;
+		}
+	      case POLN_EXPR:
+		{
+		  // This expression is a pure in-row selection.  No
+		  // need to add to the tree of TENs (the condition
+		  // variable).
+		  if (polnExpr_p != "")
+		    {
+		      msPolnGramParseCommand(ms, 
+					     polnExpr_p,
+					     node,
+					     ddIDs_p,
+					     selectedPolMap_p,
+					     selectedSetupMap_p);
+		    }
+		  break;
+		}
+	      case STATE_EXPR:
+		{
+		  stateObsModeIDs_p.resize(0);
+		  if(stateExpr_p != "" &&
+		     msStateGramParseCommand(ms, stateExpr_p,stateObsModeIDs_p) == 0)
+		    node = *(msStateGramParseNode());
+		  break;
+		}
+	      case NO_EXPR:break;
+	      default:  break;
+	      } // Switch
+	    
+	    condition = condition && node;
+	  }//For
+	//
+	// Now parse the time expression.  Internally use the condition
+	// generated so far to find the first logical row to use to get
+	// value of the wild-card fields in the time expression. 
+	//
+	const TableExprNode *timeNode = 0x0;
+	TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::TIME));
+	selectedTimesList_p.resize(2,0);
+	if(timeExpr_p != "" &&
+	   msTimeGramParseCommand(ms, timeExpr_p, condition, selectedTimesList_p) == 0)
+	  timeNode = msTimeGramParseNode();
+	//
+	// Add the time-expression TEN to the condition
+	//
+	if(timeNode && !timeNode->isNull()) 
+	  {
+	    if(condition.isNull()) 
+	      condition = *timeNode;
+	    else 
+	      condition = condition && *timeNode;
+	  }
+	
+	fullTEN_p = condition;
+      }
+    catch(AipsError& x)
+      {
+	runErrorHandler();
+	deleteNodes();
+	deleteErrorHandlers();
+	throw(x);
+      }	
+
+    runErrorHandler();
+    deleteErrorHandlers();
+    deleteNodes();
+    return condition;
+  }
+
   TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
   {
     // Convert the MS selection to a TableExprNode object, 
@@ -316,170 +639,96 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     // Interpret all expressions in the MS selection
     //
+    // This method now is purely for backwards compatibility reasons.
+    // Its usage is discouraged.
+    //
+    // The original code using old-styled interface to the various
+    // parsers is available as comments in r19937 in the SVN repos.
+    //
     if (fullTEN_p.isNull()==False) return fullTEN_p;
     
-    resetMS(*ms);
-    TableExprNode condition;
-    
-    for(uInt i=0; i<exprOrder_p.nelements(); i++)
-      {
-	TableExprNode node;
-	switch(exprOrder_p[i])
-	  {
-	  case ANTENNA_EXPR:
-	    {
-	      antenna1IDs_p.resize(0);
-	      antenna2IDs_p.resize(0);
-	      baselineIDs_p.resize(0,2);
-	      if(antennaExpr_p != "") {
-                node = msAntennaGramParseCommand(ms, antennaExpr_p, 
-                                                 antenna1IDs_p, 
-                                                 antenna2IDs_p,
-                                                 baselineIDs_p);
-              }
-	      break;
-	    }
-	  case FIELD_EXPR:
-	    {
-	      fieldIDs_p.resize(0);
-	      if(fieldExpr_p != "" &&
-		 msFieldGramParseCommand(ms, fieldExpr_p,fieldIDs_p) == 0)
-		node = *(msFieldGramParseNode());
-	      break;
-	    }
-	  case SPW_EXPR:
-	    {
-	      spwIDs_p.resize(0);
-	      if (spwExpr_p != "" &&
-		  msSpwGramParseCommand(ms, spwExpr_p,spwIDs_p, chanIDs_p) == 0)
-		node = *(msSpwGramParseNode());
-	      break;
-	    }
-	  case SCAN_EXPR:
-	    {
-	      scanIDs_p.resize(0);
-	      if(scanExpr_p != "" && 
-		 msScanGramParseCommand(ms, scanExpr_p, scanIDs_p, maxScans_p) == 0)
-		node = *(msScanGramParseNode());
-	      break;
-	    }
-	  case ARRAY_EXPR:
-	    {
-	      arrayIDs_p.resize(0);
-	      if(arrayExpr_p != "" &&
-		 msArrayGramParseCommand(ms, arrayExpr_p, arrayIDs_p, maxArray_p) == 0)
-		node = *(msArrayGramParseNode());
-	      break;
-	    }
-	    /*
-	      case TIME_EXPR:
-	      if(timeExpr_p != "" &&
-	      msTimeGramParseCommand(ms, timeExpr_p) == 0)
-	      node = *(msTimeGramParseNode());
-	      break;
-	    */
-	  case UVDIST_EXPR:
-	    {
-	      selectedUVRange_p.resize(2,0);
-	      selectedUVUnits_p.resize(0);
-	      if(uvDistExpr_p != "" &&
-		 msUvDistGramParseCommand(ms, uvDistExpr_p, 
-					  selectedUVRange_p, 
-					  selectedUVUnits_p) == 0)
-		node = *(msUvDistGramParseNode());
-	      break;
-	    }
-	  case TAQL_EXPR:
-	    {
-	      if(taqlExpr_p != "")
-		{
-		  //	      taql = tableCommand(taqlExpr_p).node();
-		  node = RecordGram::parse(*ms,taqlExpr_p);
-		}
-	      break;
-	    }
-	  case POLN_EXPR:
-	    {
-	      if (polnExpr_p != "")
-		{
-		  msPolnGramParseCommand(ms, 
-					 polnExpr_p,
-					 node,
-					 ddIDs_p,
-					 selectedPolMap_p,
-					 selectedSetupMap_p);
-		}
-	      break;
-	    }
-	  case STATE_EXPR:
-	    {
-	      stateObsModeIDs_p.resize(0);
-	      if(stateExpr_p != "" &&
-		 msStateGramParseCommand(ms, stateExpr_p,stateObsModeIDs_p) == 0)
-		node = *(msStateGramParseNode());
-	      break;
-	    }
-	  case NO_EXPR:break;
-	  default:  break;
-	  } // Switch
-	
-        condition = condition && node;
-      }//For
-    //
-    // Now parse the time expression.  Internally use the condition
-    // generated so far to find the first logical row to use to get
-    // value of the wild-card fields in the time expression. 
-    //
-    const TableExprNode *timeNode = 0x0;
-    selectedTimesList_p.resize(2,0);
-    if(timeExpr_p != "" &&
-       msTimeGramParseCommand(ms, timeExpr_p, condition, selectedTimesList_p) == 0)
-      timeNode = msTimeGramParseNode();
-    //
-    // Add the time-expression TEN to the condition
-    //
-    if(timeNode && !timeNode->isNull()) {
-      if(condition.isNull()) {
-	condition = *timeNode;
-      } else {
-	condition = condition && *timeNode;
-      }
-    }
-    
-    fullTEN_p = condition;
-    msArrayGramParseDeleteNode();
-    msCorrGramParseDeleteNode();
-    msFieldGramParseDeleteNode();
-    msScanGramParseDeleteNode();
-    msSpwGramParseDeleteNode();
-    msTimeGramParseDeleteNode();
-    msUvDistGramParseDeleteNode();
-    msStateGramParseDeleteNode();
-    
-    return condition;
+    MSInterface msLike(*ms);
+    return toTableExprNode(&msLike);
+
   }
   
+  //----------------------------------------------------------------------------
+  void MSSelection::setErrorHandler(const MSExprType type,  MSSelectionErrorHandler* mssEH,
+				    const Bool overRide)
+  {
+    switch (type)
+      {
+      case ANTENNA_EXPR:
+	{
+	  if (overRide)
+	    MSAntennaParse::thisMSAErrorHandler = mssEH;
+	  else if (MSAntennaParse::thisMSAErrorHandler == NULL)
+	    MSAntennaParse::thisMSAErrorHandler = mssEH;
+	  break;
+	}
+      default: throw(MSSelectionError(String("Wrong MSExprType in MSSelection::setErrorHandler()")));
+      }
+  }
+
+  //----------------------------------------------------------------------------
+  void MSSelection::runErrorHandler()
+  {
+    MSSelectionAntennaParseError msAntException(String(""));
+    MSAntennaParse::thisMSAErrorHandler->handleError(msAntException);
+  }
+
   //----------------------------------------------------------------------------
   Bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, 
 				  const String& outMSName)
   {
-    if ((ms_p == NULL) || ms_p->isNull())
-      throw(MSSelectionError("MSSelection::getSelectedMS() called without setting the parent MS. "
-			     "Hint: Need to use MSSelection::resetMS() perhaps?"));
-    Bool newRefMS=False;
     if (fullTEN_p.isNull()) fullTEN_p=toTableExprNode(ms_p);
-    if ((!fullTEN_p.isNull()) && (fullTEN_p.nrow() > 0))
+    if ((ms_p == NULL) || ms_p->isNull())
+      throw(MSSelectionError("MSSelection::getSelectedMS() called without setting the parent MS.\n"
+  			     "Hint: Need to use MSSelection::resetMS() perhaps?"));
+    //    return baseGetSelectedMS_p(selectedMS, *ms_p, fullTEN_p, outMSName);
+    return getSelectedTable(selectedMS, *ms_p, fullTEN_p, outMSName);
+  }
+  
+  //----------------------------------------------------------------------------
+  
+  Bool MSSelection::exprIsNull(const MSExprType type)
+  {
+    Bool exprIsNull=False;
+    if (type == NO_EXPR)
+      for(uInt i=0; i<exprOrder_p.nelements();  i++)
+	{
+	  exprIsNull = 
+	    (antennaExpr_p     == "") & 
+	    (fieldExpr_p       == "") & 
+	    (spwExpr_p         == "") &
+	    (scanExpr_p        == "") & 
+	    (arrayExpr_p       == "") &
+	    (timeExpr_p        == "") & 
+	    (uvDistExpr_p      == "") & 
+	    (taqlExpr_p        == "") & 
+	    (polnExpr_p        == "") & 
+	    (stateExpr_p       == "") & 
+	    (observationExpr_p == "");
+	}
+    else
       {
-	selectedMS = MS((*ms_p)(fullTEN_p));
-	if (outMSName!="") selectedMS.rename(outMSName,Table::New);
-	selectedMS.flush();
-	newRefMS=True;
+	switch (type)
+	  {
+	  case ANTENNA_EXPR:     exprIsNull = (antennaExpr_p == "");break;
+	  case FIELD_EXPR:       exprIsNull = (fieldExpr_p   == "");break;
+	  case SPW_EXPR:         exprIsNull = (spwExpr_p     == "");break;
+	  case SCAN_EXPR:        exprIsNull = (scanExpr_p    == "");break;
+	  case ARRAY_EXPR:       exprIsNull = (arrayExpr_p   == "");break;
+	  case TIME_EXPR:        exprIsNull = (timeExpr_p    == "");break;
+	  case UVDIST_EXPR:      exprIsNull = (uvDistExpr_p  == "");break;
+	  case TAQL_EXPR:        exprIsNull = (taqlExpr_p    == "");break;
+	  case POLN_EXPR:        exprIsNull = (polnExpr_p    == "");break;
+	  case STATE_EXPR:       exprIsNull = (stateExpr_p   == "");break;
+	  case OBSERVATION_EXPR: exprIsNull = (observationExpr_p    == "");break;
+	  default:;
+	  }
       }
-    //     MSRange msr(selectedMS);
-    //     Vector<String> items(1); items(0)="SCAN_NUMBER";
-    //     Record scanRange=msr.range(items);
-    //     scanRange.get(scanRange.fieldNumber("scan_number"),scanIDs_p);
-    return newRefMS;
+    return exprIsNull;
   }
   
   //----------------------------------------------------------------------------
@@ -498,6 +747,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	taqlExpr_p    = "";
 	polnExpr_p    = "";
 	stateExpr_p    = "";
+	observationExpr_p    = "";
 	exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
       }
     else
@@ -518,6 +768,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		case TAQL_EXPR:    taqlExpr_p    = "";break;
 		case POLN_EXPR:    polnExpr_p    = "";break;
 		case STATE_EXPR:   stateExpr_p   = "";break;
+		case OBSERVATION_EXPR:    observationExpr_p    = "";break;
 		default:;
 		}
 	    }
@@ -539,7 +790,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    break;
 	  }
       }
-    
     return ret;
   }
   
@@ -636,6 +886,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if(setOrder(SCAN_EXPR))
       {
 	scanExpr_p = scanExpr;
+	resetTEN();
+	return True;
+      }
+    
+    return False;
+  }
+  
+  //----------------------------------------------------------------------------
+  
+  Bool MSSelection::setObservationExpr(const String& observationExpr)
+  {
+    // Set the scan
+    // Input:
+    //    scanExpr          const String&  Supplementary scan expression
+    // Output to private data:
+    //    scanExpr_p        String         Supplementary scan expression
+    //
+    if(setOrder(OBSERVATION_EXPR))
+      {
+	observationExpr_p = observationExpr;
 	resetTEN();
 	return True;
       }
@@ -748,46 +1018,83 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //
   Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int defaultStep,
 				       const Bool sorted) 
-    {
-      if (chanIDs_p.nelements() <= 0) getTEN(ms); 
-      uInt nrows=chanIDs_p.nrow(), ncols=chanIDs_p.ncolumn();
-      Matrix<Int> chanIDList;
-      if (nrows > 0)
-	{
-	  if (sorted)
-	    {
-	      Vector<Int> spwIDList(chanIDs_p.column(0));//Extract the SPW IDs
-	      Vector<uInt> sortedNdx;
-	      //
-	      // Make a list of indices which will sort the chanID_p Matrix on
-	      // SPW ID (the first column of each row).
-	      //
-	      Bool deleteit;
-	      Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
-	      sort.sortKey((uInt)0, TpInt);
-	      sort.sort(sortedNdx, nrows);
-	      //
-	      // Using the sorted indices, copy from the unsorted private
-	      // ChaIDs_p to the output (sorted) Matrix chandIDList.
-	      //
-	      chanIDList.resize(chanIDs_p.shape());
-	      for(uInt targetRow=0; targetRow<nrows; targetRow++)
-		for (uInt j=0; j<ncols; j++)
-		  chanIDList(targetRow,j)=chanIDs_p(sortedNdx(targetRow),j);
-	    }
-	  else
-	    chanIDList = chanIDs_p;
-
-	  for(uInt targetRow=0; targetRow<nrows; targetRow++)
-	    if (chanIDList(targetRow,ncols-1) < 1) 
-	      chanIDList(targetRow,ncols-1)=defaultStep;
-	}
-
-
-      return chanIDList.copy();
-    }
+  {
+    if (chanIDs_p.nelements() <= 0) getTEN(ms); 
+    uInt nrows=chanIDs_p.nrow(), ncols=chanIDs_p.ncolumn();
+    Matrix<Int> chanIDList;
+    if (nrows > 0)
+      {
+	if (sorted)
+	  {
+	    Vector<Int> spwIDList(chanIDs_p.column(0));//Extract the SPW IDs
+	    Vector<uInt> sortedNdx;
+	    //
+	    // Make a list of indices which will sort the chanID_p Matrix on
+	    // SPW ID (the first column of each row).
+	    //
+	    Bool deleteit;
+	    Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
+	    sort.sortKey((uInt)0, TpInt);
+	    sort.sort(sortedNdx, nrows);
+	    //
+	    // Using the sorted indices, copy from the unsorted private
+	    // ChaIDs_p to the output (sorted) Matrix chandIDList.
+	    //
+	    chanIDList.resize(chanIDs_p.shape());
+	    for(uInt targetRow=0; targetRow<nrows; targetRow++)
+	      for (uInt j=0; j<ncols; j++)
+		chanIDList(targetRow,j)=chanIDs_p(sortedNdx(targetRow),j);
+	  }
+	else
+	  chanIDList = chanIDs_p;
+	
+	for(uInt targetRow=0; targetRow<nrows; targetRow++)
+	  if (chanIDList(targetRow,ncols-1) < 1) 
+	    chanIDList(targetRow,ncols-1)=defaultStep;
+      }
+    
+    
+    return chanIDList;
+  }
   //----------------------------------------------------------------------------
+  // This function also optionally sorts the matrix of SPWIDs and
+  // associated channel selection indices in ascending order of
+  // SPWIDs.
+  //
+  Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, 
+					      const Bool sorted) 
+  {
+    LogIO log_l(LogOrigin("MSSelection", "getChanFreqList"));
 
+    if (chanIDs_p.nelements() == 0) getTEN(ms); 
+    Matrix<Int> chanList_l = getChanList(ms, 1, sorted);
+    Matrix<Double> freqList_l;
+    freqList_l.resize(chanList_l.shape());
+    
+    if (chanList_l.shape()(0) == 0) return freqList_l;
+
+    const ROMSSpWindowColumns msSpwSubTable(ms_p->spectralWindow());
+    if (msSpwSubTable.nrow() <= (uInt)max(chanList_l.column(0)))
+	throw(MSSelectionError(String("MSS::getChanFreqList:: Internal error:  Selected list of SPW IDs > "
+				      "no. of rows in the SPECTRAL_WINDOW sub-table.")));
+    Int spwID;
+    for (uInt i=0; i < chanList_l.shape()(0); i++)
+      {
+	spwID = chanList_l(i,0); // First column has the SPW ID
+	Array<Double> chanFreq(msSpwSubTable.chanFreq()(spwID));
+	Double avgChanWidth = sum(msSpwSubTable.chanWidth()(spwID))
+	  /msSpwSubTable.chanWidth()(spwID).nelements();
+	
+	freqList_l(i,0) = (Double)chanList_l(i,0);
+	freqList_l(i,1) = chanFreq(IPosition(1,chanList_l(i,1)));
+	freqList_l(i,2) = chanFreq(IPosition(1,chanList_l(i,2)));
+	freqList_l(i,3) = avgChanWidth;
+      }
+    
+    return freqList_l;
+  }
+  //----------------------------------------------------------------------------
+  
   void MSSelection::getChanSlices(Vector<Vector<Slice> >& chanslices,
 				  const MeasurementSet* ms,const Int defaultChanStep) {
     
@@ -814,12 +1121,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     
   }
-
-
+  
+  
   //----------------------------------------------------------------------------
   void MSSelection::getCorrSlices(Vector<Vector<Slice> >& corrslices,
 				  const MeasurementSet* ms) {
-
+    
     // The total number of polids
     Int npol=ms->polarization().nrow();
     
@@ -829,7 +1136,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     // Get the corr indices as an ordered map
     OrderedMap<Int, Vector<Vector<Int> > > corrmap(this->getCorrMap(ms));
-
+    
     // Iterate over the ordered map to fill the slices
     ConstMapIter<Int, Vector<Vector<Int> > > mi(corrmap);
     for (mi.toStart(); !mi.atEnd(); mi++) {
@@ -843,7 +1150,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     
   }
-
+  
   //----------------------------------------------------------------------------
   
   void MSSelection::fromSelectionItem(const Record& selectionItem)
@@ -889,6 +1196,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (definedAndSet(selectionItem,"scan")) {
       setScanExpr(selectionItem.asString("scan"));
       //    cout << scanExpr_p << ", scan" << endl;
+    }
+    
+    // Observation expression
+    if (definedAndSet(selectionItem,"obsrevation")) {
+      setObservationExpr(selectionItem.asString("observation"));
     }
     
     // Array expression

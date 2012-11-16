@@ -164,7 +164,7 @@ Int ROMSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
   if (r == 0) return -1;
 
   const Double timeInS = timeQ.getValue(s);
-  const Double intervalInS = intervalQ.getValue(s);
+  const Double halfIntervalInS = intervalQ.getValue(s)/2.;
   const Double pos0InM = positionQ(IPosition(1,0)).getValue(m);
   const Double pos1InM = positionQ(IPosition(1,1)).getValue(m);
   const Double pos2InM = positionQ(IPosition(1,2)).getValue(m);
@@ -210,16 +210,16 @@ Int ROMSFeedColumns::matchFeed(Quantum<Double>& newTimeQ,
 	}
       }
       if(matches){
-	Double modIntervalInS = intervalQuant()(r).getValue(s);
-	if(modIntervalInS==0.){ // to accomodate certain misuses of the MS, treat 0 as inf
-	  modIntervalInS = 5E17; // the age of the universe, roughly
+	Double modHalfIntervalInS = intervalQuant()(r).getValue(s)/2.;
+	if(modHalfIntervalInS==0.){ // to accomodate certain misuses of the MS, treat 0 as inf
+	  modHalfIntervalInS = 5E17; // the age of the universe, roughly
 	}
-	if(!(timeQuant()(r).getValue(s)-modIntervalInS <= timeInS-intervalInS
-	     && timeQuant()(r).getValue(s)+modIntervalInS >= timeInS+intervalInS)
+	if(!(timeQuant()(r).getValue(s)-modHalfIntervalInS <= timeInS-halfIntervalInS
+	     && timeQuant()(r).getValue(s)+modHalfIntervalInS >= timeInS+halfIntervalInS)
 	   ){ // only difference is the validity time
 	  newTimeQ = (timeQuant()(r)+timeQ)/2.;
-	  Double maxTime = max(timeQuant()(r).getValue(s)+modIntervalInS,
-			       timeInS+intervalInS);
+	  Double maxTime = max(timeQuant()(r).getValue(s)+modHalfIntervalInS,
+			       timeInS+halfIntervalInS);
 	  newIntervalQ = Quantum<Double>(2*(maxTime-newTimeQ.getValue(s)), s);
 	}
 	return r;

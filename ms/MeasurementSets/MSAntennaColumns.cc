@@ -175,6 +175,16 @@ Int ROMSAntennaColumns::matchAntenna(const String& antName,
 					const MPosition& antennaPos,
 					const Quantum<Double>& tolerance,
 					Int tryRow) {
+  return matchAntennaAndStation(antName, "",
+				antennaPos, tolerance, tryRow);
+
+}
+
+Int ROMSAntennaColumns::matchAntennaAndStation(const String& antName,
+					       const String& stationName,
+					       const MPosition& antennaPos,
+					       const Quantum<Double>& tolerance,
+					       Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -193,6 +203,7 @@ Int ROMSAntennaColumns::matchAntenna(const String& antName,
   const Double tolInM = tolerance.getValue(m);
   // Convert the position to meters
   const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
+
   // Main matching loop
   if (tryRow >= 0) {
     const uInt tr = tryRow;
@@ -200,7 +211,9 @@ Int ROMSAntennaColumns::matchAntenna(const String& antName,
       throw(AipsError("ROMSAntennaColumns::matchAntenna(...) - "
                       "the row you suggest is too big"));
     }
+    Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
     if (!flagRow()(tr) &&
+	stationMatches &&
 	matchName(tr, antName) &&
 	matchPosition(tr, antPosInM, tolInM)) {
       return tr;
@@ -209,7 +222,9 @@ Int ROMSAntennaColumns::matchAntenna(const String& antName,
   }
   while (r > 0) {
     r--;
+    Bool stationMatches = stationName.empty() || matchStation(r, stationName);
     if (!flagRow()(r) &&
+	stationMatches &&
 	matchName(r, antName) &&
 	matchPosition(r, antPosInM, tolInM)) {
       return r;
@@ -218,9 +233,15 @@ Int ROMSAntennaColumns::matchAntenna(const String& antName,
   return -1;
 }
 
+
 Bool ROMSAntennaColumns::matchName(uInt row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
   return antName.matches(name()(row));
+}
+
+Bool ROMSAntennaColumns::matchStation(uInt row, const String& stationName) const {
+  DebugAssert(row < nrow(), AipsError);
+  return stationName.matches(station()(row));
 }
 
 Bool ROMSAntennaColumns::

@@ -128,6 +128,7 @@ PATTERN   {PATT1}|{PATT2}
           }
 
 ";"       { msAntennaGramPosition() += yyleng; return SEMICOLON; }
+"@"       { msAntennaGramPosition() += yyleng; return AT; }
 "&"       { msAntennaGramPosition() += yyleng; return AMPERSAND; }
 "~"       { msAntennaGramPosition() += yyleng; return DASH; }
 ","       { msAntennaGramPosition() += yyleng; return COMMA;}

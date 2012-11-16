@@ -94,9 +94,23 @@ class MSConcat: public MSColumns
 {
 public:
   MSConcat(MeasurementSet& ms);
+
+  void virtualconcat(MeasurementSet& otherMS, 
+		     const Bool checkShapeAndCateg=True,
+		     const String& obsidAndScanTableName="");
+
   void concatenate(const MeasurementSet& otherMS,
-		   const Bool dontModifyMain=False); // if true, MAIN is not touched
+		   const uInt handling=0,   // 0 (default): complete concat of all tables
+                                            // 1 : don't concatenate the MAIN table
+                                            // 2 : don't concatenate the POINTING table
+                                            // 3 : neither concat MAIN nor POINTING table
+                   const String& destMSName=""); // support for virtual concat
+
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
+  void setWeightScale(const Float weightScale); 
+  void setRespectForFieldName(const Bool respectFieldName); // If True, fields of same direction are not merged
+                                                            // if their name is different
+
 private:
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
@@ -107,6 +121,7 @@ private:
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const ROMSMainColumns& otherCols) const;
   Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
+  Bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
                              // by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
@@ -126,12 +141,14 @@ private:
 			 const uInt& rowi, const uInt& rowj);
 
 
-  void updateModelDataKeywords();
+  void updateModelDataKeywords(MeasurementSet& ms);
 
   MeasurementSet itsMS;
   IPosition itsFixedShape;
   Quantum<Double> itsFreqTol;
   Quantum<Double> itsDirTol;
+  Float itsWeightScale;
+  Bool itsRespectForFieldName;
   Vector<Bool> itsChanReversed;
   SimpleOrderedMap <Int, Int> newSourceIndex_p;
   SimpleOrderedMap <Int, Int> newSourceIndex2_p;

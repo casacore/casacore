@@ -23,10 +23,10 @@ tMSFieldBuffer
 tMSFieldGram
 tMSIter
 tMSMainBuffer
+tMSMetaData
 tMSPolBuffer
 tMSReader
 tMSScanGram
-tMSSimulator
 tMSSpwGram
 tMSSummary
 tMSTimeGram

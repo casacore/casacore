@@ -59,8 +59,8 @@ static Int                   posMSScanGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-  int msScanGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
-			      Int maxScans) 
+  TableExprNode msScanGramParseCommand (const MeasurementSet* ms, const String& command, 
+					Vector<Int>& selectedIDs, Int maxScans) 
 {
   try
     {
@@ -72,10 +72,10 @@ static Int                   posMSScanGram = 0;
       MSScanParse::thisMSSParser = &parser; // The global pointer to the parser
       parser.reset();
       parser.setMaxScan(maxScans);
-      int ret=MSScanGramparse();                // parse command string
+      MSScanGramparse();                // parse command string
 
       selectedIDs=parser.selectedIDs();
-      return ret;
+      return parser.node();
     }
   catch (MSSelectionScanError &x)
     {
@@ -87,13 +87,15 @@ static Int                   posMSScanGram = 0;
 }
 
 //# Give the table expression node
-const TableExprNode* msScanGramParseNode()
-{
-    return MSScanParse::node();
-}
+// const TableExprNode* msScanGramParseNode()
+// {
+//   //    return MSScanParse::node();
+//     return &MSScanParse::thisMSSParser->node();
+// }
 void msScanGramParseDeleteNode()
 {
-    return MSScanParse::cleanup();
+  //    return MSScanParse::cleanup();
+    return MSScanParse::thisMSSParser->cleanup();
 }
 
 //# Give the string position.

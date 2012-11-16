@@ -47,24 +47,24 @@ int main(int argc, const char* argv[])
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
     Vector<Int> selectedIds;
-    if(msScanGramParseCommand(&ms, "1", selectedIds)==0) {
-      const TableExprNode *node = msScanGramParseNode();
-      cout << "TableExprNode has rows = " << node->nrow() << endl;
+    const TableExprNode node = msScanGramParseCommand(&ms, "1", selectedIds);
+    if (!node.isNull()) {
+      cout << "TableExprNode has rows = " << node.nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
-      mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
+      mssel = new MeasurementSet(tablesel(node, node.nrow() ));
       cout << "After mssel constructor called " << endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
       mssel->flush();
       if(mssel->nrow()==0) {
-        cout << "Check your input, No data selected" << endl;
+	cout << "Check your input, No data selected" << endl;
       }
       else {
-        cout << "selected table has rows " << mssel->nrow() << endl;
+	cout << "selected table has rows " << mssel->nrow() << endl;
       }
       delete mssel;
     }
     else {
-      cout << "failed to parse expression" << endl;
+      cout << "ERROR: failed to parse expression " << endl;
     }
   } catch (AipsError x) {
     cout << "ERROR: " << x.getMesg() << endl;

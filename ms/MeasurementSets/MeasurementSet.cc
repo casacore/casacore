@@ -50,6 +50,20 @@
 #include <tables/Tables/StandardStMan.h>
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
+#include <casa/Logging/LogIO.h>
+#include <casa/System/AipsrcValue.h>
+#include <stdarg.h>
+#include <algorithm>
+
+
+#define MrsDebugLog(level,message) \
+        { if ((level) <= mrsDebugLevel_p) { \
+            LogIO logIo (LogOrigin ("MS")); logIo << (message) << endl; logIo.post();\
+          }\
+        }
+
+#define ThrowIf(c,m) { if (c) { throw AipsError ((m), __FILE__, __LINE__); }}
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -112,7 +126,6 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
       PredefinedKeywords>(tableName, tableDescName, option),
       hasBeenDestroyed_p(False)
 {
-
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that the now opened table is valid 
     checkVersion();
@@ -145,7 +158,6 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
       PredefinedKeywords>(newTab, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
-
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
     // verify that the now opened table is valid
     addCat(); 
@@ -161,7 +173,6 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
       PredefinedKeywords>(newTab, lockOptions, nrrow, initialize), 
       hasBeenDestroyed_p(False)
 {
-
   mainLock_p=lockOptions;
     // verify that the now opened table is valid
     addCat(); 
@@ -170,35 +181,49 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 			 "table is not a valid MS"));
 }
 
-MeasurementSet::MeasurementSet(const Table &table)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(table), hasBeenDestroyed_p(False)
+MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherMs)
+: MSTable<PredefinedColumns, PredefinedKeywords>(table),
+  hasBeenDestroyed_p(False)
 {
+    mainLock_p=TableLock(TableLock::AutoNoReadLocking);
 
-  mainLock_p=TableLock(TableLock::AutoNoReadLocking);
-    // verify that the now opened table is valid 
-    checkVersion();
+    checkVersion(); // verify that the now opened table is valid
+
     addCat(); 
-    if (! validate(this->tableDesc()))
-	throw (AipsError("MS(const Table &) - "
-			 "table is not a valid MS"));
+
+    if (! validate(this->tableDesc())){
+        throw (AipsError("MS(const Table &) - "
+                "table is not a valid MS"));
+    }
+
+    if (otherMs != NULL){
+        copySubtables (* otherMs); // others will be handled by initRefs
+    }
+
     initRefs();
 }
 
 MeasurementSet::MeasurementSet(const MeasurementSet &other)
-    : MSTable<PredefinedColumns,
-      PredefinedKeywords>(other), hasBeenDestroyed_p(False)
+: MSTable<PredefinedColumns,
+  PredefinedKeywords>(other),
+  hasBeenDestroyed_p(False)
 {
+  copySubtables (other); // others will be handled by initRefs
 
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
-    // verify that other is valid
-    if (&other != this) {
-        addCat(); 
-	if (! validate(this->tableDesc()))
-	    throw (AipsError("MS(const MeasurementSet &) - "
-			     "MeasurementSet is not a valid MS"));
-    }
-    if (!isNull()) initRefs();
+
+  // verify that other is valid
+
+  if (&other != this) {
+      addCat();
+      if (! validate(this->tableDesc()))
+          throw (AipsError("MS(const MeasurementSet &) - "
+                  "MeasurementSet is not a valid MS"));
+  }
+
+  if (!isNull()){
+      initRefs();
+  }
 }
 
 MeasurementSet::~MeasurementSet()
@@ -217,18 +242,70 @@ MeasurementSet::~MeasurementSet()
     hasBeenDestroyed_p = True;
 }
 
-MeasurementSet& MeasurementSet::operator=(const MeasurementSet &other)
+MeasurementSet&
+MeasurementSet::operator=(const MeasurementSet &other)
 {
     if (&other != this) {
+
+        clearSubtables ();  // Make all subtables refer to null tables
+
 	MSTable<PredefinedColumns,PredefinedKeywords>::operator=(other);
+
+	// MRS related components
+
+	mrsEligibility_p = other.mrsEligibility_p;
+	mrsDebugLevel_p = other.mrsDebugLevel_p;
+	memoryResidentSubtables_p = other.memoryResidentSubtables_p;
+
+	copySubtables (other);
+
 	hasBeenDestroyed_p=other.hasBeenDestroyed_p;
-	// initRefs needs to be called even if the MS is null to ensure that
-	// the subtable references, which may have contained non-null
-	// subtables, are replaced with references to null-subtables.
-	initRefs(True);
+
+	initRefs();
     }
+
     return *this;
 }
+
+void
+MeasurementSet::copySubtables (const MeasurementSet & other)
+{
+  copySubtable (other.antenna_p, antenna_p);
+  copySubtable (other.dataDesc_p, dataDesc_p);
+  copySubtable (other.doppler_p, doppler_p);
+  copySubtable (other.feed_p, feed_p);
+  copySubtable (other.field_p, field_p);
+  copySubtable (other.flagCmd_p, flagCmd_p);
+  copySubtable (other.freqOffset_p, freqOffset_p);
+  copySubtable (other.history_p, history_p);
+  copySubtable (other.observation_p, observation_p);
+  copySubtable (other.pointing_p, pointing_p);
+  copySubtable (other.polarization_p, polarization_p);
+  copySubtable (other.processor_p, processor_p);
+  copySubtable (other.source_p, source_p);
+  copySubtable (other.spectralWindow_p, spectralWindow_p);
+  copySubtable (other.state_p, state_p);
+  copySubtable (other.sysCal_p, sysCal_p);
+  copySubtable (other.weather_p, weather_p);
+}
+
+
+void
+MeasurementSet::copySubtable (const Table & otherSubtable, Table & subTable)
+{
+    // If the other table is not null then assign
+    // it to the provided subtable
+
+    if (! otherSubtable.isNull ()){
+        subTable = otherSubtable;
+    }
+}
+
+MrsEligibility
+MeasurementSet::getMrsEligibility () const {
+    return mrsEligibility_p;
+}
+
 
 void MeasurementSet::init()
 {
@@ -281,9 +358,9 @@ void MeasurementSet::init()
 	// FLOAT_DATA
 	colMapDef(FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
 		  "Floating point data - for single dish","","");
-        // IMAGING_WEIGHT
-        colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
-                  "Weight set by imaging task (e.g. uniform weighting)","","");
+	// IMAGING_WEIGHT
+	colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
+		  "Imaging weight - for the imager","","");
 	// INTERVAL
 	colMapDef(INTERVAL, "INTERVAL", TpDouble, 
 		  "The sampling interval","s","");
@@ -459,6 +536,86 @@ MeasurementSet MeasurementSet::referenceCopy(const String& newTableName,
 			  referenceCopy(newTableName,writableColumns));
 }
 
+Bool
+MeasurementSet::isEligibleForMemoryResidency (const String & subtableName) const
+{
+    // Convert the name to an Id
+
+    MrsEligibility::SubtableId subtableId = keywordType (subtableName);
+
+   ThrowIf (subtableId == MSMainEnums::UNDEFINED_KEYWORD,
+            "No ID defined for subtable '" + subtableName + "'");
+
+    Bool isEligible = mrsEligibility_p.isEligible (subtableId);
+
+    return isEligible;
+}
+
+
+template <typename Subtable>
+void
+MeasurementSet::openMrSubtable (Subtable & subtable, const String & subtableName)
+{
+    if (this->keywordSet().isDefined (subtableName) &&  // exists in this MS
+        isEligibleForMemoryResidency (subtableName) &&  // is permitted to be MR
+        subtable.tableType() != Table::Memory){         // is not already MR
+
+        MrsDebugLog (2, tableName() + " ---> Converting " + subtable.tableName() + " to MR.");
+
+        // If the subtable is part of this measurement set and it is marked as eligible for
+        // memory residency, then replace the current, normal subtable object with a
+        // memory resident copy.  The caller will alreayd have checked to enusre that the
+        // MS is not writable and that the memory-resident subtable feature is enabled.
+
+        String mrSubtableName = subtable.tableName (); // + "_MR";
+        Subtable memoryResident (subtable.copyToMemoryTable (mrSubtableName));
+
+        // Replace the existing subtable with the memory resident one.
+
+        subtable = memoryResident;
+    }
+}
+
+void
+MeasurementSet::setMemoryResidentSubtables (const MrsEligibility & mrsEligibility)
+{
+    mrsEligibility_p = mrsEligibility;
+
+    // See if the memory resident subtable feature is enabled
+
+    AipsrcValue<Bool>::find (memoryResidentSubtables_p, getMrsAipsRcBase () + ".enable", False);
+    AipsrcValue<Int>::find (mrsDebugLevel_p, getMrsAipsRcBase () + ".debug.level", 0);
+
+    Bool mrsEnabled = memoryResidentSubtables_p;
+
+    MrsDebugLog (1, tableName() + " ---> MR Subtables " + (memoryResidentSubtables_p ? "enabled " : "disabled "));
+
+    // Attempt to open the subtables as memory resident if memory resident subtables
+    // are enabled.  Per table eligibility for memory residency is handled by openMrSubtable.
+
+    if (mrsEnabled) {
+
+        openMrSubtable (antenna_p, "ANTENNA");
+        openMrSubtable (dataDesc_p, "DATA_DESCRIPTION");
+        openMrSubtable (doppler_p, "DOPPLER");
+        openMrSubtable (feed_p, "FEED");
+        openMrSubtable (field_p, "FIELD");
+        openMrSubtable (flagCmd_p, "FLAG_CMD");
+        openMrSubtable (freqOffset_p, "FREQ_OFFSET");
+        openMrSubtable (history_p, "HISTORY");
+        openMrSubtable (observation_p, "OBSERVATION");
+        openMrSubtable (pointing_p, "POINTING");
+        openMrSubtable (polarization_p, "POLARIZATION");
+        openMrSubtable (processor_p, "PROCESSOR");
+        openMrSubtable (source_p, "SOURCE");
+        openMrSubtable (spectralWindow_p, "SPECTRAL_WINDOW");
+        openMrSubtable (state_p, "STATE");
+        openMrSubtable (sysCal_p, "SYSCAL");
+        openMrSubtable (weather_p, "WEATHER");
+    }
+}
+
+
 String MeasurementSet::antennaTableName() const
 {
   if (antenna_p.isNull()) {
@@ -579,10 +736,9 @@ String MeasurementSet::weatherTableName() const
   return weather_p.tableName();
 }
 
-void MeasurementSet::initRefs(Bool clear)
+void
+MeasurementSet::clearSubtables ()
 {
-  if (isNull()||clear) {
-    // clear subtable references
     antenna_p=MSAntenna();
     dataDesc_p=MSDataDescription();
     doppler_p=MSDoppler();
@@ -600,10 +756,39 @@ void MeasurementSet::initRefs(Bool clear)
     state_p=MSState();
     sysCal_p=MSSysCal();
     weather_p=MSWeather();
+}
+
+template <typename Subtable>
+void
+MeasurementSet::openSubtable (Subtable & subtable, const String & subtableName, Bool useLock)
+{
+    if (subtable.isNull() && this->keywordSet().isDefined (subtableName)){
+
+        // Only open a subtable if it does not already exist in this object and if
+        // the subtable is defined in the on-disk MeasurementSet
+
+        if (useLock){
+            subtable = Subtable (this->keywordSet().asTable(subtableName, mainLock_p));
+        }
+        else{ // scratch tables don't use the lock
+            subtable = Subtable (this->keywordSet().asTable(subtableName));
+        }
+    }
+}
+
+
+void MeasurementSet::initRefs(Bool clear)
+{
+  if (isNull()||clear) {
+
+    clearSubtables ();
   }
+
   if (!isNull()) {
+
     // write the table info if needed
     if (this->tableInfo().type()=="") {
+
       String reqdType=this->tableInfo().type(TableInfo::MEASUREMENTSET);
       this->tableInfo().setType(reqdType);
       String reqdSubType=this->tableInfo().subType(TableInfo::MEASUREMENTSET);
@@ -611,99 +796,30 @@ void MeasurementSet::initRefs(Bool clear)
       this->tableInfo().readmeAddLine("This is a MeasurementSet Table"
 				      " holding measurements from a Telescope");
     }
-    if(this->tableOption() != Table::Scratch){
-      if (this->keywordSet().isDefined("ANTENNA"))
-	antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA", mainLock_p));
-      if (this->keywordSet().isDefined("DATA_DESCRIPTION"))
-	dataDesc_p=MSDataDescription(this->keywordSet().
-				     asTable("DATA_DESCRIPTION", mainLock_p));
-      if (this->keywordSet().isDefined("DOPPLER"))
-	doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER", mainLock_p));
-      if (this->keywordSet().isDefined("FEED"))
-	feed_p=MSFeed(this->keywordSet().asTable("FEED", mainLock_p));
-      if (this->keywordSet().isDefined("FIELD"))
-	field_p=MSField(this->keywordSet().asTable("FIELD", mainLock_p));
-      if (this->keywordSet().isDefined("FLAG_CMD"))
-	flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD", 
-						       mainLock_p));
-      if (this->keywordSet().isDefined("FREQ_OFFSET"))
-	freqOffset_p=MSFreqOffset(this->keywordSet().
-				  asTable("FREQ_OFFSET", mainLock_p));
-      if (this->keywordSet().isDefined("HISTORY"))
-	history_p=MSHistory(this->keywordSet().asTable("HISTORY", mainLock_p));
-      if (this->keywordSet().isDefined("OBSERVATION"))
-	observation_p=MSObservation(this->keywordSet().
-				    asTable("OBSERVATION",mainLock_p));
-      if (this->keywordSet().isDefined("POINTING"))
-	pointing_p=MSPointing(this->keywordSet().
-			      asTable("POINTING", mainLock_p));
-      if (this->keywordSet().isDefined("POLARIZATION"))
-	polarization_p=MSPolarization(this->keywordSet().
-				      asTable("POLARIZATION",mainLock_p));
-      if (this->keywordSet().isDefined("PROCESSOR"))
-	processor_p=MSProcessor(this->keywordSet().
-				asTable("PROCESSOR", mainLock_p));
-      if (this->keywordSet().isDefined("SOURCE"))
-	source_p=MSSource(this->keywordSet().asTable("SOURCE", mainLock_p));
-      if (this->keywordSet().isDefined("SPECTRAL_WINDOW"))
-	spectralWindow_p=MSSpectralWindow(this->keywordSet().
-					  asTable("SPECTRAL_WINDOW",mainLock_p));
-      if (this->keywordSet().isDefined("STATE"))
-	state_p=MSState(this->keywordSet().asTable("STATE", mainLock_p));
-      if (this->keywordSet().isDefined("SYSCAL"))
-	sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL", mainLock_p));
-      if (this->keywordSet().isDefined("WEATHER"))
-	weather_p=MSWeather(this->keywordSet().asTable("WEATHER", mainLock_p));
-    }
-    else{ //if its scratch...don't bother about the lock as 
-          //We can't close and reopen subtables hence we can't use the version 
-      //of astable that does that.
-      if (this->keywordSet().isDefined("ANTENNA"))
-	antenna_p=MSAntenna(this->keywordSet().asTable("ANTENNA"));
-      if (this->keywordSet().isDefined("DATA_DESCRIPTION"))
-	dataDesc_p=MSDataDescription(this->keywordSet().
-				     asTable("DATA_DESCRIPTION"));
-      if (this->keywordSet().isDefined("DOPPLER"))
-	doppler_p=MSDoppler(this->keywordSet().asTable("DOPPLER"));
-      if (this->keywordSet().isDefined("FEED"))
-	feed_p=MSFeed(this->keywordSet().asTable("FEED"));
-      if (this->keywordSet().isDefined("FIELD"))
-	field_p=MSField(this->keywordSet().asTable("FIELD"));
-      if (this->keywordSet().isDefined("FLAG_CMD"))
-	flagCmd_p=MSFlagCmd(this->keywordSet().asTable("FLAG_CMD"));
-      if (this->keywordSet().isDefined("FREQ_OFFSET"))
-	freqOffset_p=MSFreqOffset(this->keywordSet().
-				  asTable("FREQ_OFFSET"));
-      if (this->keywordSet().isDefined("HISTORY"))
-	history_p=MSHistory(this->keywordSet().asTable("HISTORY"));
-      if (this->keywordSet().isDefined("OBSERVATION"))
-	observation_p=MSObservation(this->keywordSet().
-				    asTable("OBSERVATION"));
-      if (this->keywordSet().isDefined("POINTING"))
-	pointing_p=MSPointing(this->keywordSet().
-			      asTable("POINTING"));
-      if (this->keywordSet().isDefined("POLARIZATION"))
-	polarization_p=MSPolarization(this->keywordSet().
-				      asTable("POLARIZATION"));
-      if (this->keywordSet().isDefined("PROCESSOR"))
-	processor_p=MSProcessor(this->keywordSet().
-				asTable("PROCESSOR"));
-      if (this->keywordSet().isDefined("SOURCE"))
-	source_p=MSSource(this->keywordSet().asTable("SOURCE"));
-      if (this->keywordSet().isDefined("SPECTRAL_WINDOW"))
-	spectralWindow_p=MSSpectralWindow(this->keywordSet().
-					  asTable("SPECTRAL_WINDOW"));
-      if (this->keywordSet().isDefined("STATE"))
-	state_p=MSState(this->keywordSet().asTable("STATE"));
-      if (this->keywordSet().isDefined("SYSCAL"))
-	sysCal_p=MSSysCal(this->keywordSet().asTable("SYSCAL"));
-      if (this->keywordSet().isDefined("WEATHER"))
-	weather_p=MSWeather(this->keywordSet().asTable("WEATHER"));
 
+    Bool useLock = (this->tableOption() != Table::Scratch);
 
-    }
+    openSubtable (antenna_p, "ANTENNA", useLock);
+    openSubtable (dataDesc_p, "DATA_DESCRIPTION", useLock);
+    openSubtable (doppler_p, "DOPPLER", useLock);
+    openSubtable (feed_p, "FEED", useLock);
+    openSubtable (field_p, "FIELD", useLock);
+    openSubtable (flagCmd_p, "FLAG_CMD", useLock);
+    openSubtable (freqOffset_p, "FREQ_OFFSET", useLock);
+    openSubtable (history_p, "HISTORY", useLock);
+    openSubtable (observation_p, "OBSERVATION", useLock);
+    openSubtable (pointing_p, "POINTING", useLock);
+    openSubtable (polarization_p, "POLARIZATION", useLock);
+    openSubtable (processor_p, "PROCESSOR", useLock);
+    openSubtable (source_p, "SOURCE", useLock);
+    openSubtable (spectralWindow_p, "SPECTRAL_WINDOW", useLock);
+    openSubtable (state_p, "STATE", useLock);
+    openSubtable (sysCal_p, "SYSCAL", useLock);
+    openSubtable (weather_p, "WEATHER", useLock);
+
   }
 }
+
 
 void MeasurementSet::createDefaultSubtables(Table::TableOption option)
 {
@@ -864,9 +980,10 @@ void MeasurementSet::checkVersion()
 }
 
 Record MeasurementSet::msseltoindex(const String& spw, const String& field, 
-		      const String& baseline, const String& time, 
-		      const String& scan, const String& uvrange, 
-				    const String& taql){
+                                    const String& baseline, const String& time, 
+                                    const String& scan, const String& uvrange, 
+                                    const String& observation, const String& taql)
+{
   Record retval;
   MSSelection thisSelection;
   thisSelection.setSpwExpr(spw);
@@ -875,11 +992,13 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   thisSelection.setTimeExpr(time);
   thisSelection.setScanExpr(scan);
   thisSelection.setUvDistExpr(uvrange);
+  thisSelection.setObservationExpr(observation);
   thisSelection.setTaQLExpr(taql);
   TableExprNode exprNode=thisSelection.toTableExprNode(this);
   Vector<Int> fieldlist=thisSelection.getFieldList();
   Vector<Int> spwlist=thisSelection.getSpwList();
   Vector<Int> scanlist=thisSelection.getScanList();
+  Vector<Int> obslist=thisSelection.getObservationList();
   Vector<Int> antenna1list=thisSelection.getAntenna1List();
   Vector<Int> antenna2list=thisSelection.getAntenna2List();
   Matrix<Int> chanlist=thisSelection.getChanList();
@@ -890,19 +1009,185 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
 
   retval.define("spw", spwlist);
   retval.define("field", fieldlist);
-  retval.define("scan",scanlist);
+  retval.define("scan", scanlist);
+  retval.define("obsids", obslist);
   retval.define("antenna1", antenna1list);
   retval.define("antenna2", antenna2list);
-  retval.define("baselines",baselinelist);
+  retval.define("baselines", baselinelist);
   retval.define("channel", chanlist);
-  retval.define("dd",ddIDList);
+  retval.define("dd", ddIDList);
   //  retval.define("polmap",polMap);
   // retrval.define("corrmap",corrMap);
 
   return retval;
-
 }
 
+const MrsEligibility MrsEligibility::allSubtables_p = allEligible ();
+
+MrsEligibility
+MrsEligibility::allButTheseSubtables (SubtableId subtableId, ...)
+{
+    va_list vaList;
+
+    va_start (vaList, subtableId);
+
+    SubtableId id = subtableId;
+    MrsEligibility ineligible;
+
+    while (id > MSMainEnums::UNDEFINED_KEYWORD &&
+           id <= MSMainEnums::NUMBER_PREDEFINED_KEYWORDS){
+
+        ThrowIf (! isSubtable (id), "Invalid subtable ID: " + String::toString (id));
+
+        ineligible.eligible_p.insert (id);
+        id = (SubtableId) va_arg (vaList, int);
+    }
+
+    va_end (vaList);
+
+    // Get the set of all subtables and then subtract off the
+    // caller specified columns.  Return the result
+
+    MrsEligibility eligible;
+
+    set_difference (allSubtables_p.eligible_p.begin(), allSubtables_p.eligible_p.end(),
+                    ineligible.eligible_p.begin(), ineligible.eligible_p.end(),
+                    inserter (eligible.eligible_p, eligible.eligible_p.begin()));
+
+    return eligible;
+}
+
+MrsEligibility
+MrsEligibility::allEligible ()
+{
+    MrsEligibility all;
+
+    // Start out by putting in all of the keywords defined in
+    // the enum
+
+    for (int i = MSMainEnums::UNDEFINED_KEYWORD+1;
+         i <= MSMainEnums::NUMBER_PREDEFINED_KEYWORDS;
+         ++ i){
+        all.eligible_p.insert ((SubtableId) i);
+    }
+
+    // Remove any Ids known not to be subtables
+
+    all.eligible_p.erase (MSMainEnums::MS_VERSION);
+    all.eligible_p.erase (MSMainEnums::CAL_TABLES);
+    all.eligible_p.erase (MSMainEnums::SORT_COLUMNS);
+    all.eligible_p.erase (MSMainEnums::SORT_ORDER);
+    all.eligible_p.erase (MSMainEnums::SORTED_TABLES);
+
+    return all;
+}
+
+MrsEligibility
+MrsEligibility::defaultEligible ()
+{
+
+    // The following two subtables can become quite large
+    // and should normally not be made memory resident
+
+    MrsEligibility defaultSubtables = allButTheseSubtables (MSMainEnums::HISTORY,
+                                                            MSMainEnums::POINTING,
+                                                            MSMainEnums::SYSCAL,
+                                                            MSMainEnums::UNDEFINED_KEYWORD);
+    return defaultSubtables;
+}
+
+
+MrsEligibility
+MrsEligibility::eligibleSubtables (SubtableId subtableId, ...)
+{
+    va_list vaList;
+
+    va_start (vaList, subtableId);
+
+    SubtableId id = subtableId;
+    MrsEligibility eligible;
+
+    while (id > MSMainEnums::UNDEFINED_KEYWORD &&
+           id <= MSMainEnums::NUMBER_PREDEFINED_KEYWORDS){
+
+        ThrowIf (! isSubtable (id), "Invalid subtable ID: " + String::toString (id));
+
+        eligible.eligible_p.insert (id);
+        id = (SubtableId) va_arg (vaList, Int);
+    }
+
+    va_end (vaList);
+
+    return eligible;
+}
+
+Bool
+MrsEligibility::isSubtable (SubtableId subtableId)
+{
+    Bool result = allSubtables_p.eligible_p.find (subtableId) != allSubtables_p.eligible_p.end();
+
+    return result;
+}
+
+Bool
+MrsEligibility::isEligible(SubtableId subtableId) const
+{
+    Bool result = eligible_p.find (subtableId) != eligible_p.end();
+
+    return result;
+}
+
+
+MrsEligibility
+MrsEligibility::noneEligible ()
+{
+    return MrsEligibility ();
+}
+
+
+MrsEligibility
+operator- (const MrsEligibility & a, MrsEligibility::SubtableId subtableId)
+{
+    MrsEligibility result = a;
+
+    result.eligible_p.erase (subtableId);
+
+    return result;
+}
+
+MrsEligibility
+operator+ (const MrsEligibility & a, MrsEligibility::SubtableId subtableId)
+{
+    MrsEligibility result = a;
+
+    result.eligible_p.insert (subtableId);
+
+    return result;
+}
+
+MrsEligibility
+operator- (const MrsEligibility & a, const MrsEligibility & b)
+{
+    MrsEligibility result;
+
+    std::set_difference (a.eligible_p.begin(), a.eligible_p.end(),
+                         b.eligible_p.begin(), b.eligible_p.end(),
+                         inserter (result.eligible_p, result.eligible_p.begin()));
+
+    return result;
+}
+
+MrsEligibility
+operator+ (const MrsEligibility & a, const MrsEligibility & b)
+{
+    MrsEligibility result;
+
+    std::set_union (a.eligible_p.begin(), a.eligible_p.end(),
+                    b.eligible_p.begin(), b.eligible_p.end(),
+                    inserter (result.eligible_p, result.eligible_p.begin()));
+
+    return result;
+}
 
 } //# NAMESPACE CASA - END
 

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+dir=`echo $CASAPATH | awk '{print $1'}`
+name="${dir}/data/regression/unittest/MSMetaData/MSMetaData.ms"
+# Exit with skipped status if the MS cannot be found.
+test -e "$name"  ||  exit 3
+./tMSMetaData "$name"

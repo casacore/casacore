@@ -33,70 +33,74 @@
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward Declarations
-class MeasurementSet;
-class TableExprNode;
-
-// <summary>
-// Global functions for flex/bison scanner/parser for MSSpwGram
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="" date="" tests="">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//  <li> MSSpwGram.l and .y  (flex and bison grammar)
-// </prerequisite>
-
-// <synopsis> 
-// Global functions are needed to define the input of the flex scanner
-// and to start the bison parser.
-// The input is taken from a string.
-// </synopsis> 
-
-// <motivation>
-// It is necessary to be able to give an image expression in ASCII.
-// This can be used in glish.
-// </motivation>
-// <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-// </todo>
-
-
-// <group name=MSSpwGramFunctions>
-
-// Declare the bison parser (is implemented by bison command).
-int msSpwGramParseCommand (const MeasurementSet *ms, const String& command);
-int msSpwGramParseCommand (const MeasurementSet *ms, const String& command,
-			   Vector<Int>& selectedIDs, Matrix<Int>& selectedChanIDs);
-
-// The yyerror function for the parser.
-// It throws an exception with the current token.
-void MSSpwGramerror (const char*);
-
-// Give the table expression node.
-const TableExprNode *msSpwGramParseNode();
-void msSpwGramParseDeleteNode();
-
-// Give the current position in the string.
-// This can be used when parse errors occur.
-Int& msSpwGramPosition();
-
-// Declare the input routine for flex/bison.
-int msSpwGramInput (char* buf, int max_size);
-
-// A function to remove escaped characters.
-//String msSpwGramRemoveEscapes (const String& in);
-
-// A function to remove quotes from a quoted string.
-//String msSpwGramRemoveQuotes (const String& in);
-
-// </group>
-
+  
+  //# Forward Declarations
+  class MeasurementSet;
+  class TableExprNode;
+  
+  // <summary>
+  // Global functions for flex/bison scanner/parser for MSSpwGram
+  // </summary>
+  
+  // <use visibility=local>
+  
+  // <reviewed reviewer="" date="" tests="">
+  // </reviewed>
+  
+  // <prerequisite>
+  //# Classes you should understand before using this one.
+  //  <li> MSSpwGram.l and .y  (flex and bison grammar)
+  // </prerequisite>
+  
+  // <synopsis> 
+  // Global functions are needed to define the input of the flex scanner
+  // and to start the bison parser.
+  // The input is taken from a string.
+  // </synopsis> 
+  
+  // <motivation>
+  // It is necessary to be able to give an image expression in ASCII.
+  // This can be used in glish.
+  // </motivation>
+  // <todo asof="$DATE:$">
+  //# A List of bugs, limitations, extensions or planned refinements.
+  // </todo>
+  
+  
+  // <group name=MSSpwGramFunctions>
+  
+  // Declare the bison parser (is implemented by bison command).
+  int msSpwGramParseCommand (const MeasurementSet *ms, const String& command);
+  int msSpwGramParseCommand (const MeasurementSet *ms, const String& command,
+			     Vector<Int>& selectedIDs, Matrix<Int>& selectedChanIDs);
+  int msSpwGramParseCommand (const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable, 
+			     const TableExprNode& colAsTEN,
+			     const String& command,Vector<Int>& selectedIDs,
+			     Matrix<Int>& selectedChans) ;
+  
+  // The yyerror function for the parser.
+  // It throws an exception with the current token.
+  void MSSpwGramerror (const char*);
+  
+  // Give the table expression node.
+  const TableExprNode *msSpwGramParseNode();
+  void msSpwGramParseDeleteNode();
+  
+  // Give the current position in the string.
+  // This can be used when parse errors occur.
+  Int& msSpwGramPosition();
+  
+  // Declare the input routine for flex/bison.
+  int msSpwGramInput (char* buf, int max_size);
+  
+  // A function to remove escaped characters.
+  //String msSpwGramRemoveEscapes (const String& in);
+  
+  // A function to remove quotes from a quoted string.
+  //String msSpwGramRemoveQuotes (const String& in);
+  
+  // </group>
+  
 } //# NAMESPACE CASA - END
 
 #endif

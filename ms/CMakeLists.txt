@@ -8,6 +8,7 @@ MSAntennaGram
 MSArrayGram
 MSCorrGram
 MSFieldGram
+MSObservationGram
 MSScanGram
 MSSpwGram
 MSTimeGram
@@ -15,10 +16,18 @@ MSUvDistGram
 MSStateGram
 )
 
-foreach (src ${parser_inputs})
-    BISON_TARGET (${src} MeasurementSets/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src} --output-file=${src}.ycc")
-    FLEX_TARGET (${src} MeasurementSets/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
-endforeach (src)
+if (APPLE)
+    foreach (src ${parser_inputs})
+	    BISON_TARGET (${src} MeasurementSets/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src} COMPILE_FLAGS "-y -p ${src} --output-file=${src}.ycc")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${src} ${src}.ycc WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+	    FLEX_TARGET (${src} MeasurementSets/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+    endforeach (src)
+else (APPLE)
+    foreach (src ${parser_inputs})
+        BISON_TARGET (${src} MeasurementSets/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src} --output-file=${src}.ycc")
+        FLEX_TARGET (${src} MeasurementSets/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+    endforeach (src)
+endif (APPLE)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
@@ -37,6 +46,7 @@ MeasurementSets/MSDataDescIndex.cc
 MeasurementSets/MSPolColumns.cc
 MeasurementSets/MSSysCal.cc
 MeasurementSets/MSAntennaGram.cc
+MeasurementSets/MSObservationGram.cc
 MeasurementSets/MSScanGram.cc
 MeasurementSets/MSState.cc
 MeasurementSets/MSReader.cc
@@ -48,6 +58,7 @@ MeasurementSets/MSPointingColumns.cc
 MeasurementSets/MSSummary.cc
 MeasurementSets/MSSysCalIndex.cc
 MeasurementSets/MSAntenna.cc
+MeasurementSets/MSObservationParse.cc
 MeasurementSets/MSScanParse.cc
 MeasurementSets/MSSpWindowIndex.cc
 MeasurementSets/MSCorrGram.cc
@@ -71,7 +82,9 @@ MeasurementSets/MSFeedIndex.cc
 MeasurementSets/MSUvDistGram.cc
 MeasurementSets/MSFieldIndex.cc
 MeasurementSets/MSStateIndex.cc
+MeasurementSets/MSSelectableTable.cc
 MeasurementSets/MSSelectionError.cc
+MeasurementSets/MSSelectionErrorHandler.cc
 MeasurementSets/MSObservation.cc
 MeasurementSets/MSSelectionTools.cc
 MeasurementSets/MSSelectionKeywords.cc
@@ -113,13 +126,14 @@ MeasurementSets/MSFreqOffColumns.cc
 MeasurementSets/MSFieldColumns.cc
 MeasurementSets/MSCorrParse.cc
 MeasurementSets/MSSpectralWindow.cc
-MeasurementSets/MSSimulator.cc
 MeasurementSets/MSTableIndex.cc
 MeasurementSets/MSPolarization.cc
 MeasurementSets/MSSpWindowColumns.cc
 MeasurementSets/MSIter.cc
 MeasurementSets/MSFieldGram.cc
 MeasurementSets/MSStateGram.cc
+MeasurementSets/MSTable.cc
+MeasurementSets/MSMetaData.cc
 ${BISON_MSAntennaGram_OUTPUTS}
 ${FLEX_MSAntennaGram_OUTPUTS}
 ${BISON_MSArrayGram_OUTPUTS}
@@ -130,6 +144,8 @@ ${BISON_MSFieldGram_OUTPUTS}
 ${FLEX_MSFieldGram_OUTPUTS}
 ${BISON_MSScanGram_OUTPUTS}
 ${FLEX_MSScanGram_OUTPUTS}
+${BISON_MSObservationGram_OUTPUTS}
+${FLEX_MSObservationGram_OUTPUTS}
 ${BISON_MSSpwGram_OUTPUTS}
 ${FLEX_MSSpwGram_OUTPUTS}
 ${BISON_MSTimeGram_OUTPUTS}
@@ -201,10 +217,13 @@ MeasurementSets/MSIter.h
 MeasurementSets/MSLister.h
 MeasurementSets/MSMainColumns.h
 MeasurementSets/MSMainEnums.h
+MeasurementSets/MSMetaData.h
 MeasurementSets/MSObsColumns.h
 MeasurementSets/MSObsEnums.h
 MeasurementSets/MSObsIndex.h
 MeasurementSets/MSObservation.h
+MeasurementSets/MSObservationGram.h
+MeasurementSets/MSObservationParse.h
 MeasurementSets/MSParse.h
 MeasurementSets/MSPointing.h
 MeasurementSets/MSPointingColumns.h
@@ -228,11 +247,12 @@ MeasurementSets/MSSelUtil.tcc
 MeasurementSets/MSSelUtil2.h
 MeasurementSets/MSSelUtil2.tcc
 MeasurementSets/MSSelection.h
+MeasurementSets/MSSelectableTable.h
 MeasurementSets/MSSelectionError.h
+MeasurementSets/MSSelectionErrorHandler.h
 MeasurementSets/MSSelectionKeywords.h
 MeasurementSets/MSSelectionTools.h
 MeasurementSets/MSSelector.h
-MeasurementSets/MSSimulator.h
 MeasurementSets/MSSource.h
 MeasurementSets/MSSourceColumns.h
 MeasurementSets/MSSourceEnums.h

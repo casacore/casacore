@@ -52,8 +52,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Null constructor merely sets private formatting string
 //
 MSLister::MSLister ()
-  : dashline_p(replicate('-',80)),
-    mss_p()
+  : mss_p(),
+    dashline_p(replicate('-',80))
 {
   pMSSel_p = 0;
 }
@@ -68,8 +68,8 @@ MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
   //  : pMS_p(&ms),
   : pMS_p(const_cast<MeasurementSet*>(&ms)),
     logStream_p(os),
-    dashline_p(replicate('-',80)),
-    mss_p()
+    mss_p(),
+    dashline_p(replicate('-',80))
 {
   // Move these into initList()?
   // default precision (in case setPrecision is not called)
@@ -231,25 +231,25 @@ void MSLister::listHeader()
         logStream_p << LogIO::DEBUG1 << "End: MSLister::getRanges" << LogIO::POST;
     }
 
-  void MSLister::list (const String,
-                       const String datacolumn,
-                       const String field,
-                       const String spw,
-                       const String antenna,
-                       const String timerange,
-                       const String correlation,
-                       const String scan,
-                       const String,
-                       const String,
-                       const String uvrange,
-                       const String,
+  void MSLister::list (const String&,
+                       const String& datacolumn,
+                       const String& field,
+                       const String& spw,
+                       const String& antenna,
+                       const String& timerange,
+                       const String& correlation,
+                       const String& scan,
+                       const String&,
+                       const String&,
+                       const String& observation,
+                       const String& uvrange,
+                       const String&,
                        const bool  ,
-                       const String msSelect,
+                       const String& msSelect,
                        const long   pagerows,
-                       const String listfile)
+                       const String& listfile)
 {
   try{
-
     logStream_p << LogIO::DEBUG1 << "Begin: MSLister::list" << LogIO::POST;
 
     String chanmode;
@@ -293,7 +293,7 @@ void MSLister::listHeader()
               nchan, start, step, mStart,  mStep, correlation,
               // IGNORE PARAMETERS THAT ARE NOT YET IMPLEMENTED
               // array, msSelect);
-              "", msSelect);
+              "", observation, msSelect);
 
     // List the data
     listData(pagerows, listfile);
@@ -326,11 +326,10 @@ void MSLister::selectvis(const String& timerange,
                          const MRadialVelocity&,
                          const String& correlation,
                          const String& array,
+			 const String& observation,
                          const String& msSelect)
 {
-
   try {
-
     logStream_p << LogIO::DEBUG1 << "Begin: MSLister::selectvis" << LogIO::POST;
 
     // List input parameter values.
@@ -342,6 +341,7 @@ void MSLister::selectvis(const String& timerange,
     logStream_p << LogIO::DEBUG1 << "uvrange     = " << uvrange     << " , strlen = " << uvrange.length()     << endl;
     logStream_p << LogIO::DEBUG1 << "correlation = " << correlation << " , strlen = " << correlation.length() << endl;
     logStream_p << LogIO::DEBUG1 << "array       = " << array       << " , strlen = " << array.length()       << endl;
+    logStream_p << LogIO::DEBUG1 << "observation = " << observation << " , strlen = " << observation.length() << endl;
     logStream_p << LogIO::DEBUG1 << "msSelect    = " << uvrange     << " , strlen = " << msSelect.length()    << LogIO::POST;
     // logStream_p << "feed        = " << feed        << " , strlen = " << feed.length()        << endl;
     // logStream_p << "average     = " << uvrange     << " , strlen = " << average.length()     << endl;
@@ -350,8 +350,10 @@ void MSLister::selectvis(const String& timerange,
     // Apply selection to the original MeasurementSet
     if (!(timerange.empty() && spw.empty() && scan.empty() && field.empty() &&
           antenna.empty() && uvrange.empty() && correlation.empty() &&
-          msSelect.empty()) ) {
-      logStream_p << LogIO::NORMAL1 << "Performing selection on MeasurementSet" << LogIO::POST;
+          observation.empty() && msSelect.empty()) ) {
+      logStream_p << LogIO::NORMAL1 
+		  << "Performing selection on MeasurementSet"
+		  << LogIO::POST;
     } else {
       logStream_p << LogIO::NORMAL1 << "No selection requested." << LogIO::POST;
     }
@@ -378,14 +380,42 @@ void MSLister::selectvis(const String& timerange,
                            msSelect,             // taQLExpr
                            "", // correlation,          // corrExpr
                            scan,                 // scanExpr
-                           array);               // arrayExpr
+			   array,               // arrayExpr
+			   "", // stateExpr
+			   observation); // observationExpr
 
     // Check to see if selection returned any rows.
     Bool nonTrivial = pMSSelection->getSelectedMS(*pMSSel_p, "");
-
+    Vector<Int> selSPW = pMSSelection->getSpwList();
+	ROMSDataDescColumns ddCols(pMS_p->dataDescription());
+	ROScalarColumn<Int> ddpolIDs = ddCols.polarizationId();
+	ROScalarColumn<Int> spwIDs = ddCols.spectralWindowId();
+	Vector<Int> selDDIDs(selSPW.size());
+	uInt idx = 0;
+	for (uInt i=0; i<selSPW.size(); i++) {
+		for (uInt j=0; j<spwIDs.nrow(); j++) {
+			if (selSPW[i] == spwIDs(j)) {
+				selDDIDs[idx] = j;
+				idx++;
+				break;
+			}
+		}
+	}
+	uInt selDDID = selDDIDs[0];
+	if (selDDIDs.size() > 1) {
+		for (uInt i=1; i<selDDIDs.size(); i++) {
+			if (ddpolIDs(selDDIDs[i]) != selDDID) {
+				throw AipsError(
+					"The selection corresponds to multiple polarization configurations. Try reducing the number of selected spectral windows."
+				);
+			}
+		}
+    }
+    Int selPolID = ddpolIDs(selDDID);
     /* // Write the selected MS to disk
-    // This proved to be useful for investigating strange listvis output; its easier to snoop inside a small subset
-    // of an MS than to snoop inside the whole thing.
+    // This proved to be useful for investigating strange listvis output;
+    // it's easier to snoop inside a small subset of an MS than to snoop inside
+    // the whole thing.
     String selectedMS = "MSLister.selected.ms";
     logStream_p << LogIO::NORMAL1 << "Writing selected MS to disk (overwriting if necessary)." << LogIO::POST;
     cout << "Writing selected MS to disk (overwriting if necessary)." << endl;
@@ -475,7 +505,7 @@ void MSLister::selectvis(const String& timerange,
               << msSpWinC.numChan().getColumn()
               << LogIO::POST;
 
-    polarizationSetup(pMSSel_p);
+    _polarizationSetup(selPolID);
     logStream_p << LogIO::DEBUG2 << "polarizationSetup done." << LogIO::POST;
     // ROMSPolarizationColumns msPolC(pMSSel_p->polarization());
     // npols_p = msPolC.corrType()(0).nelements();
@@ -520,9 +550,7 @@ void MSLister::listData(const int pageRows,
   // **SPW**
 
   try{
-
     char cfill = cout.fill(' '); // fill character for terminal output
-
     Bool prompt=True;
 
     // Default myout as a synonym for cout.  (iostream makes it next to
@@ -625,7 +653,6 @@ void MSLister::listData(const int pageRows,
       //  appears to be necessary (instead of V-double) despite the get()
       //  function's claim to do type promotion.
       Vector <Double>       rowTime,uvdist;
-      Vector <Int>          datadescid;
       Vector <Int>          ant1,ant2,spwinid,fieldid;
       Array <Bool>          flag;
       Array <Float>         ampl,phase;
@@ -681,7 +708,7 @@ void MSLister::listData(const int pageRows,
       //  flag, uvdist, datadescid, fieldid
       flag = dataRecords_p.asArrayBool(RecordFieldId("flag"));
       uvdist = dataRecords_p.asArrayDouble(RecordFieldId("uvdist"));
-      datadescid = dataRecords_p.asArrayInt(RecordFieldId("data_desc_id"));
+      Vector<Int> datadescid = dataRecords_p.asArrayInt("data_desc_id");
       fieldid = dataRecords_p.asArrayInt(RecordFieldId("field_id"));
       uvw = dataRecords_p.asArrayDouble(RecordFieldId("uvw"));
       //  dataColSel(0) (the data identified by this variable)
@@ -724,6 +751,8 @@ void MSLister::listData(const int pageRows,
         uvdist(tableRow) = uvdist(tableRow)/(C::c/freqs_p(spwinid(tableRow)));
       }
 
+      /* List available units on the top of the output */
+      myout << "Units of columns are: Date/Time(YYMMDD/HH:MM:SS UT), UVDist(wavelength), Phase(deg), UVW(m)" << endl;
       // Add or adjust ranges_p to non-zero absolutes for non-index and/or
       // converted values (so we can use ranges_p for field width and
       // precision setting):
@@ -865,7 +894,7 @@ void MSLister::listData(const int pageRows,
       if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
 
       oUVW_p = (uInt)max(1,(Int)rint(log10(max(uvw))+0.5)); // order
-      if ( precUVW_p < 0 ) precUVW_p = 0;
+      if ( precUVW_p < 0 ) precUVW_p = 2;
       if ( precUVW_p > 0 ) oUVW_p++;  // add space for decimal
       oUVW_p++;  // add space for sign
 
@@ -908,7 +937,7 @@ void MSLister::listData(const int pageRows,
       wWeight_p = oWeight_p + precWeight_p;
 
       // Enforce minimum field widths,
-      // add leading space so columns nicely separated,
+      // add leading space so columns nicely separate,
       // and accumulate wTotal_p:
       wTotal_p = 0;  // initialize
       // wAnt_p    = max(wAnt_p,   (uInt)2);
@@ -927,7 +956,7 @@ void MSLister::listData(const int pageRows,
       if (!is_float) {wVis_p = wAmpl_p+wPhase_p+wWeight_p+wFlag_p;}
       else {wVis_p = wAmpl_p+wWeight_p+wFlag_p;}
       wTotal_p+=wTime_p+nIndexPols_p*wVis_p+1;
-      wUVW_p = max(wUVW_p, (uInt)4);               wUVW_p++; wTotal_p+=3*wUVW_p;
+      wUVW_p = max(wUVW_p, (uInt)9);               wUVW_p++; wTotal_p+=3*wUVW_p;
 
       // Make column-ated header rule according to total and field widths
 
@@ -992,7 +1021,7 @@ void MSLister::listData(const int pageRows,
 
       // WRITE THE DATA
       /* The data is written by looping through the selected MS. For each row of the
-       * MS, the SPW is determine and each of the channels selected for that SPW
+       * MS, the SPW is determined and each of the channels selected for that SPW
        * is accessed.
        */
 
@@ -1068,7 +1097,7 @@ void MSLister::listData(const int pageRows,
                 myout.setf(ios::right); myout.width(2);
                 if(flag(IPosition(3,indexPols_p(ipol),ichan,tableRow)))
                    myout << flagSym(1);
-                else 
+                else
                    myout << flagSym(0);
                 // Print all loop indices; useful for debugging these loops.
                 // myout << "ipol= " << ipol << " ichan= " << ichan << " rowCL= " << rowCL << " tableRow= " << tableRow;
@@ -1179,13 +1208,14 @@ Int MSLister::columnWidth(const Vector<String> antNames) {
   return maxWidth;
 }
 
-void MSLister::polarizationSetup(MeasurementSet *pMS) {
+void MSLister::_polarizationSetup(const uInt selPolID) {
+
 // Setup the class polarization information.
 // pols_p holds the polarization names, in the same order as the main
 // table data.
 
+	/*
   logStream_p << LogIO::DEBUG1 << "Begin: MSLister::polarizationSetup" << LogIO::POST;
-
   ROMSPolarizationColumns msPolC(pMS->polarization());
   npols_p = msPolC.corrType()(0).nelements();
   pols_p.resize(npols_p,False);
@@ -1193,6 +1223,16 @@ void MSLister::polarizationSetup(MeasurementSet *pMS) {
     // Store polarization strings in pols_p
     pols_p(i)=Stokes::name(Stokes::type(msPolC.corrType()(0)(IPosition(1,i))));
   }
+  */
+
+	// gauranteed to have 1 row here
+	ROMSPolarizationColumns polCols(pMS_p->polarization());
+	Array<Int> pols = polCols.corrType()(selPolID);
+	npols_p = pols.size();
+	pols_p.resize(npols_p);
+	for (uInt i=0; i<npols_p; i++) {
+		pols_p[i] = Stokes::name(Stokes::type(pols(IPosition(1,i))));
+	}
 }
 
 // Parse the correlation (polarization) selection string.
@@ -1201,94 +1241,94 @@ void MSLister::polarizationSetup(MeasurementSet *pMS) {
 // number of elements in indexPols_p.
 void MSLister::polarizationParse(String correlation) {
 
-  logStream_p << LogIO::DEBUG1 << "Begin: MSLister::polarizationParse" << LogIO::POST;
+	logStream_p << LogIO::DEBUG1 << "Begin: MSLister::polarizationParse" << LogIO::POST;
 
-  Regex alpha("[A-Za-z]"); // Any letter
-  if(correlation.empty() || !(correlation.contains(alpha))) {
-    // If correlation is empty (no correlation selection) select all
-    // polarizations by default.  Fill indexPols_p with indices 0
-    // through (npols_p - 1).
-    logStream_p << LogIO::NORMAL1
-                << "No correlation selection; selecting all by default."
-                << LogIO::POST;
-    nIndexPols_p = npols_p;
-    indexPols_p.resize(nIndexPols_p);
-    for(uInt i=0; i<nIndexPols_p; i++) { indexPols_p(i) = i; }
-    return;
-  }
-  correlation.upcase(); // transform to uppercase
+	Regex alpha("[A-Za-z]"); // Any letter
+	if(correlation.empty() || !(correlation.contains(alpha))) {
+		// If correlation is empty (no correlation selection) select all
+		// polarizations by default.  Fill indexPols_p with indices 0
+		// through (npols_p - 1).
+		logStream_p << LogIO::NORMAL1
+				<< "No correlation selection; selecting all by default."
+				<< LogIO::POST;
+		nIndexPols_p = npols_p;
+		indexPols_p.resize(nIndexPols_p);
+		for(uInt i=0; i<nIndexPols_p; i++) { indexPols_p(i) = i; }
+		return;
+	}
+	correlation.upcase(); // transform to uppercase
 
-  try {
-    // Parse correlation parameter value.  Put each substring into
-    // Vector<String> parseCorrs. nParseCorrs holds the number of
-    // elements in parseCorrs.
+	try {
+		// Parse correlation parameter value.  Put each substring into
+		// Vector<String> parseCorrs. nParseCorrs holds the number of
+		// elements in parseCorrs.
 
-    Vector<String> parseCorrs;
-    Int nParseCorrs=0;
-    // Use Regex to do the parsing.
-    Regex startRegex("^[^A-Za-z]"); // leading non-letter
-    Regex cRegex("^[A-Za-z]{1,2}"); // 1 polarization selection
-    // strip all leading whitespace
-    logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
-    while(correlation.contains(startRegex)) { correlation.del(startRegex); }
-    logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
-    // Acquire 1 polarization selection
-    while(correlation.contains(cRegex)) {
-      parseCorrs.shape(nParseCorrs); // get size of parseCorrs
-      parseCorrs.resize(++nParseCorrs,True); // append one element to parseCorrs
-      // Store polarization in parseCorrs
-      parseCorrs(nParseCorrs - 1) = correlation.through(cRegex);
-      correlation.del(cRegex); // remove polarization
-    logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
-      // strip all leading whitespace
-      while(correlation.contains(startRegex)) { correlation.del(startRegex); }
-    logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
-    }
+		Vector<String> parseCorrs;
+		Int nParseCorrs=0;
+		// Use Regex to do the parsing.
+		Regex startRegex("^[^A-Za-z]"); // leading non-letter
+		Regex cRegex("^[A-Za-z]{1,2}"); // 1 polarization selection
+		// strip all leading whitespace
+		logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
+		while(correlation.contains(startRegex)) { correlation.del(startRegex); }
+		logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
+		// Acquire 1 polarization selection
+		while(correlation.contains(cRegex)) {
+			parseCorrs.shape(nParseCorrs); // get size of parseCorrs
+			parseCorrs.resize(++nParseCorrs,True); // append one element to parseCorrs
+			// Store polarization in parseCorrs
+			parseCorrs(nParseCorrs - 1) = correlation.through(cRegex);
+			correlation.del(cRegex); // remove polarization
+			logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
+			// strip all leading whitespace
+			while(correlation.contains(startRegex)) { correlation.del(startRegex); }
+			logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
+		}
 
-    logStream_p << LogIO::NORMAL2 << "Correlation selections identified:" << endl
-                << parseCorrs << endl
-                << "Number of polarization selections = " << nParseCorrs
-                << LogIO::POST;
+		logStream_p << LogIO::NORMAL2 << "Correlation selections identified:" << endl
+				<< parseCorrs << endl
+				<< "Number of polarization selections = " << nParseCorrs
+				<< LogIO::POST;
 
-  // Query the number of elements of indexPols_p; store in nIndexPols_p.
-    nIndexPols_p = nParseCorrs;
-    indexPols_p.resize(nIndexPols_p);
+		// Query the number of elements of indexPols_p; store in nIndexPols_p.
+		nIndexPols_p = nParseCorrs;
+		indexPols_p.resize(nIndexPols_p);
 
-  // Verify that each polarization in parseCorrs actually exists
-  // in this data set.
-    for(Int i=0; i<nParseCorrs; i++) {
-      Bool verifyCorr = False;
-      for(uInt j=0; j<npols_p; j++) {
-        // REMOVE COMMENTED DEBUGGING MESSAGES LATER
-        ///logStream_p << LogIO::DEBUG2 << "index j = " << j << LogIO::POST;
-        if(parseCorrs(i) == pols_p(j)) {
-          logStream_p << LogIO::DEBUG2 << "parseCorrs(" << i << ") = "
-                      << parseCorrs(i) << ", and pols_p(" << j << ") = "
-                      << pols_p(j) << LogIO::POST;
-          verifyCorr = True;
-          // Build indexPols_p here.
-          ///logStream_p << LogIO::DEBUG2 << "verifyCorr assigned True." << LogIO::POST;
-          indexPols_p(i) = j;  // indexPols_p holds indices to pols_p
-          ///logStream_p << LogIO::DEBUG2 << "end of j loop" << LogIO::POST;
-        }
-      }
-      if(! verifyCorr) { // If polarization not found in data, throw exception
-        throw(AipsError("Selected correlation '" + parseCorrs(i)
-                        + "' does not exist."));
-      }
-    }
+		// Verify that each polarization in parseCorrs actually exists
+		// in this data set.
+		for(Int i=0; i<nParseCorrs; i++) {
+			Bool verifyCorr = False;
+			for(uInt j=0; j<npols_p; j++) {
+				// REMOVE COMMENTED DEBUGGING MESSAGES LATER
+				///logStream_p << LogIO::DEBUG2 << "index j = " << j << LogIO::POST;
+				if(parseCorrs(i) == pols_p(j)) {
+					logStream_p << LogIO::DEBUG2 << "parseCorrs(" << i << ") = "
+							<< parseCorrs(i) << ", and pols_p(" << j << ") = "
+							<< pols_p(j) << LogIO::POST;
+					verifyCorr = True;
+					// Build indexPols_p here.
+					///logStream_p << LogIO::DEBUG2 << "verifyCorr assigned True." << LogIO::POST;
+					indexPols_p(i) = j;  // indexPols_p holds indices to pols_p
+					///logStream_p << LogIO::DEBUG2 << "end of j loop" << LogIO::POST;
+				}
+			}
+			if(! verifyCorr) { // If polarization not found in data, throw exception
+				throw(AipsError("Selected correlation '" + parseCorrs(i)
+						+ "' does not exist."));
+			}
+		}
 
-    logStream_p << LogIO::DEBUG1 << "indexPols_p = " << indexPols_p << endl
-                << "pols_p = " << pols_p << LogIO::POST;
+		logStream_p << LogIO::DEBUG1 << "indexPols_p = " << indexPols_p << endl
+				<< "pols_p = " << pols_p << LogIO::POST;
 
-  } // end try
+	} // end try
 
-// Catch an exception if a selected correlation does not exist.
-  catch(AipsError x){
-    logStream_p << LogIO::SEVERE << "Caught exception: " << x.getMesg()
-                << LogIO::POST;
-    throw(AipsError("Error in MSLister::polarizationParse"));
-  }
+	// Catch an exception if a selected correlation does not exist.
+	catch(AipsError x){
+		logStream_p << LogIO::SEVERE << "Caught exception: " << x.getMesg()
+                		<< LogIO::POST;
+		throw(AipsError("Error in MSLister::polarizationParse"));
+	}
 }
 
 //

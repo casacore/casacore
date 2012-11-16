@@ -29,12 +29,21 @@
 #define MS_MSFIELDPARSE_H
 
 //# Includes
+#include <ms/MeasurementSets/MSField.h>
+#include <ms/MeasurementSets/MSFieldColumns.h>
 #include <ms/MeasurementSets/MSParse.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <ms/MeasurementSets/MSSelectableTable.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 
+
+// <motivation>
+// It is necessary to be able to give a ms command in ASCII.
+// This can be used in a CLI or in the table browser to get a subset
+// of a table or to sort a table.
+// </motivation>
 
 // <summary>
 // Class to hold values from field grammar parser
@@ -72,44 +81,128 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // This is, in fact, the only function to be used by a user.
 // </synopsis>
 
-// <motivation>
-// It is necessary to be able to give a ms command in ASCII.
-// This can be used in a CLI or in the table browser to get a subset
-// of a table or to sort a table.
-// </motivation>
-
-//# <todo asof="$DATE:$">
-//# A List of bugs, limitations, extensions or planned refinements.
-//# </todo>
-
-
-class MSFieldParse : public MSParse
-{
-
-public:
+  class MSFieldParse : public MSParse
+  {
+    
+  public:
     // Default constructor
     MSFieldParse ();
-  //  ~MSFieldParse() {idList.resize(0);}
-    // Associate the ms and the shorthand.
     MSFieldParse (const MeasurementSet* ms);
-  //~MSFieldParse() {if (node_p) delete node_p;node_p=0x0;}
+    MSFieldParse (const MSField& fieldSubTable, const TableExprNode& columnAsTEN);
+    ~MSFieldParse() {columnAsTEN_p=TableExprNode();}
 
-  const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
-  //    const TableExprNode *selectFieldOrSource(const String& fieldName);
-
+    const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+    
     // Get table expression node object.
     static const TableExprNode* node();
     static MSFieldParse* thisMSFParser;
     static Vector<Int> selectedIDs() {return idList;}
-    static void reset(){idList.resize(0);}
-    static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
-private:
+    static void reset();
+    static void cleanup() 
+    {if (node_p) delete node_p;node_p=0x0;}
+    MSField& subTable() {return msFieldSubTable_p;}
+  private:
     static TableExprNode* node_p;
     const String colName;
     static  Vector<Int> idList;
-
-};
-
+    MSField msFieldSubTable_p;
+    static TableExprNode columnAsTEN_p;
+  };
+  
 } //# NAMESPACE CASA - END
 
 #endif
+
+
+//---------------------OLD CODE START (Feb. 2012)-------------------
+// #ifndef MS_MSFIELDPARSE_H
+// #define MS_MSFIELDPARSE_H
+
+// //# Includes
+// #include <ms/MeasurementSets/MSParse.h>
+// #include <ms/MeasurementSets/MSSelectionError.h>
+// #include <ms/MeasurementSets/MSSelectableTable.h>
+// namespace casa { //# NAMESPACE CASA - BEGIN
+  
+//   //# Forward Declarations
+  
+  
+//   // <summary>
+//   // Class to hold values from field grammar parser
+//   // </summary>
+  
+//   // <use visibility=local>
+  
+//   // <reviewed reviewer="" date="" tests="">
+//   // </reviewed>
+  
+//   // <prerequisite>
+//   //# Classes you should understand before using this one.
+//   // </prerequisite>
+  
+//   // <etymology>
+//   // MSFieldParse is the class used to parse a field command.
+//   // </etymology>
+  
+//   // <synopsis>
+//   // MSFieldParse is used by the parser of field sub-expression statements.
+//   // The parser is written in Bison and Flex in files MSFieldGram.y and .l.
+//   // The statements in there use the routines in this file to act
+//   // upon a reduced rule.
+//   // Since multiple tables can be given (with a shorthand), the table
+//   // names are stored in a list. The variable names can be qualified
+//   // by the table name and will be looked up in the appropriate table.
+//   //
+//   // The class MSFieldParse only contains information about a table
+//   // used in the table command. Global variables (like a list and a vector)
+//   // are used in MSFieldParse.cc to hold further information.
+//   //
+//   // Global functions are used to operate on the information.
+//   // The main function is the global function msFieldCommand.
+//   // It executes the given STaQL command and returns the resulting ms.
+//   // This is, in fact, the only function to be used by a user.
+//   // </synopsis>
+  
+//   // <motivation>
+//   // It is necessary to be able to give a ms command in ASCII.
+//   // This can be used in a CLI or in the table browser to get a subset
+//   // of a table or to sort a table.
+//   // </motivation>
+  
+//   //# <todo asof="$DATE:$">
+//   //# A List of bugs, limitations, extensions or planned refinements.
+//   //# </todo>
+  
+  
+//   class MSFieldParse : public MSParse
+//   {
+    
+//   public:
+//     // Default constructor
+//     MSFieldParse ();
+//     //  ~MSFieldParse() {idList.resize(0);}
+//     // Associate the ms and the shorthand.
+//     MSFieldParse (const MeasurementSet* ms);
+//     MSFieldParse (MSSelectableTable* msLike);
+//     //~MSFieldParse() {if (node_p) delete node_p;node_p=0x0;}
+    
+//     const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+//     //    const TableExprNode *selectFieldOrSource(const String& fieldName);
+    
+//     // Get table expression node object.
+//     static const TableExprNode* node();
+//     static MSFieldParse* thisMSFParser;
+//     static Vector<Int> selectedIDs() {return idList;}
+//     static void reset();//{idList.resize(0);}
+//     static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
+//   private:
+//     static TableExprNode* node_p;
+//     const String colName;
+//     static  Vector<Int> idList;
+    
+//   };
+  
+// } //# NAMESPACE CASA - END
+
+// #endif
+//---------------------OLD CODE END (Feb. 2012)-------------------

@@ -92,8 +92,13 @@ public:
 
   // Associate the ms and the shorthand.
   MSSpwParse (const MeasurementSet* ms);
+  MSSpwParse (const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable,
+	      const TableExprNode& columnAsTEN);
+  ~MSSpwParse() {columnAsTEN_p=TableExprNode();}
 
-  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& spwIds);
+  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& spwIds, 
+					      const Bool addTen=True,
+					      const Bool addIDs=True);
   const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& spwIds,
 						const Float factor);
   void selectChannelsFromIDList(Vector<Int>& spwIds,
@@ -102,6 +107,7 @@ public:
 
   void selectChannelsFromDefaultList(Vector<Int>& spwIds,
                                      Vector<Int>& chanDefaultList);
+  const TableExprNode* endOfCeremony(const TableExprNode& ten);
 
   //    const TableExprNode *selectSpwOrSource(const String& fieldName);
 
@@ -112,10 +118,15 @@ public:
   static Matrix<Int> selectedChanIDs() {return chanList;}
   static void reset() {idList.resize(0);chanList.resize(0,0);}
   static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
+
+  MSSpectralWindow& subTable() {return spwSubTable_p;}
 private:
   static TableExprNode* node_p;
   static Vector<Int> idList;
   static Matrix<Int> chanList;
+  MSSpectralWindow spwSubTable_p;
+  MSDataDescription ddSubTable_p;
+  static TableExprNode columnAsTEN_p;
 };
 
 } //# NAMESPACE CASA - END

@@ -85,7 +85,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# A List of bugs, limitations, extensions or planned refinements.
 //# </todo>
 
-
 class MSTimeParse : public MSParse
 {
 
@@ -95,6 +94,9 @@ public:
 
   // Associate the ms and the shorthand.
   MSTimeParse (const MeasurementSet* ms,const TableExprNode& otherTens,const Bool honourRowFlags=True);
+  MSTimeParse (const TableExprNode& colAsTEN, const TableExprNode& otherTEN,
+	       const Bool honourRowFlags=True);
+  ~MSTimeParse() {columnAsTEN_p=TableExprNode();}
 
 //   ~MSTimeParse() 
 //   {
@@ -142,7 +144,7 @@ public:
 
   static void validate(const TimeFields& tf);
   static void reset(){timeList.resize(2,0);}
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
+  static void cleanup() {delete node_p; node_p=0x0;}
 
   static TableExprNode* node_p;
   //private:
@@ -162,7 +164,7 @@ public:
   static Matrix<Double> timeList;
   void accumulateTimeList(const Double t0, const Double t1);
   static MSTimeParse *thisMSTParser;
-
+  static TableExprNode columnAsTEN_p;
 };
 
 } //# NAMESPACE CASA - END

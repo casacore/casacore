@@ -94,6 +94,7 @@ public:
 // Constructor
    MSSummary (const MeasurementSet&);
    MSSummary (const MeasurementSet*);
+   MSSummary (const MeasurementSet* ms, const String& msname);
 
 // Destructor
   ~MSSummary();
@@ -145,8 +146,9 @@ public:
    void listPolarization (LogIO& os, Bool verbose=False) const;
    void listSource (LogIO& os, Bool verbose=False) const;
    void listSpectralWindow (LogIO& os, Bool verbose=False) const;
-  void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
-                               Bool oneBased=True) const;
+   void getSpectralWindowInfo(Record& outRec) const;
+   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
+                                Bool oneBased=True) const;
    void listSysCal (LogIO& os, Bool verbose=False) const;
    void listWeather (LogIO& os, Bool verbose=False) const;
 // </group>
@@ -161,6 +163,9 @@ private:
 //# Data members.
 // Pointer to MS
    const MeasurementSet* pMS;
+
+// Name of the MS used in the constructor
+   String msname_p;
 
 // Formatting strings
    const String dashlin1, dashlin2;

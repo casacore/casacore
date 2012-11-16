@@ -135,6 +135,13 @@ public:
   // match.
   Int matchAntenna(const String& antName, const MPosition& antennaPos,
 		   const Quantum<Double>& tolerance, Int tryRow=-1);
+
+  // Same as the previous function except that the station name must also
+  // match.
+  Int matchAntennaAndStation(const String& antName, 
+			     const String& stationName, // ignored when empty 
+			     const MPosition& antennaPos,
+			     const Quantum<Double>& tolerance, Int tryRow=-1);
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -155,6 +162,7 @@ private:
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
   Bool matchName(uInt row, const String& antName) const;
+  Bool matchStation(uInt row, const String& stationName) const;
   Bool matchPosition(uInt row, const Vector<Double>& antPosInM,	
 		     const Double tolInM) const;
 

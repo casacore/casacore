@@ -65,8 +65,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   //----------------------------------------------------------------------------
 
-  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens,
-			      Matrix<Double>& selectedTimeList)
+  int baseMSTimeGramParseCommand (MSTimeParse* parser, const String& command, 
+				  Matrix<Double>& selectedTimeList)
   {
     Int ret;
     try
@@ -75,11 +75,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	yy_start = 1;
 	strpMSTimeGram = command.chars();     // get pointer to command string
 	posMSTimeGram  = 0;                   // initialize string position
-	MSTimeParse parser(ms,otherTens);     // setup the parser and
-	parser.reset();  		      // global pointer to it
-	MSTimeParse::thisMSTParser = &parser;
+	parser->reset();  		      // global pointer to it
+	MSTimeParse::thisMSTParser = parser;
 	ret=MSTimeGramparse();                // parse command string
-	selectedTimeList = parser.selectedTimes();
+	selectedTimeList = parser->selectedTimes();
       } 
     catch (MSSelectionTimeError &x)
       {
@@ -89,6 +88,67 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	throw;
       }
     return ret;
+    
+  }
+
+  int msTimeGramParseCommand (const String& command, 
+			      const TableExprNode& colAsTEN,
+			      const TableExprNode& otherTens,
+			      Matrix<Double>& selectedTimeList)
+  {
+    MSTimeParse *thisParser = new MSTimeParse(colAsTEN,otherTens);
+    int ret;
+    try
+      {
+       ret = baseMSTimeGramParseCommand(thisParser, command, selectedTimeList);
+      }
+    catch (MSSelectionTimeError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
+
+  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, 
+			      const TableExprNode& otherTens,
+			      Matrix<Double>& selectedTimeList)
+  {
+    MSTimeParse *thisParser = new MSTimeParse(ms,otherTens);
+    int ret;
+    try
+      {
+       ret = baseMSTimeGramParseCommand(thisParser, command, selectedTimeList);
+      }
+    catch (MSSelectionTimeError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+    // Int ret;
+    // try
+    //   {
+    // 	MSTimeGramrestart (MSTimeGramin);
+    // 	yy_start = 1;
+    // 	strpMSTimeGram = command.chars();     // get pointer to command string
+    // 	posMSTimeGram  = 0;                   // initialize string position
+    // 	MSTimeParse parser(ms,otherTens);     // setup the parser and
+    // 	parser.reset();  		      // global pointer to it
+    // 	MSTimeParse::thisMSTParser = &parser;
+    // 	ret=MSTimeGramparse();                // parse command string
+    // 	selectedTimeList = parser.selectedTimes();
+    //   } 
+    // catch (MSSelectionTimeError &x)
+    //   {
+    // 	String newMesgs;
+    // 	newMesgs = constructMessage(msTimeGramPosition()+1, command);
+    // 	x.addMessage(newMesgs);
+    // 	throw;
+    //   }
+    // return ret;
   }
   int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens) 
   {

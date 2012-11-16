@@ -95,6 +95,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& scanExpr,
 		  const String& arrayExpr,
 		  const String& stateExpr,
+		  const String& obsExpr,
 		  MSSelection *mymss
 		  )
   {
@@ -102,22 +103,32 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Parse the various expressions and produce the accmuluated TEN
     // internally.
     //
-	
+    
     MSSelection *mss=mymss;
+    Bool rstat;
     if (mss == NULL) mss= new MSSelection();
+    
+    try
+      {
+	mss->reset(ms,MSSelection::PARSE_NOW,
+		   timeExpr,antennaExpr,fieldExpr,spwExpr,
+		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
+		   stateExpr, obsExpr);
+	//
+	// Apply the internal accumulated TEN to the MS and produce the
+	// selected MS.  
+	//
+	// If the accumulated TEN is NULL, this returns False.  Else
+	// return True.
+	//
+	rstat = mss->getSelectedMS(selectedMS,outMSName);
+      }
+    catch (AipsError& x)
+      {
+	if (mymss==NULL) delete mss;
+	throw(x);
+      }
 
-    mss->reset(ms,MSSelection::PARSE_NOW,
-	       timeExpr,antennaExpr,fieldExpr,spwExpr,
-	       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
-	       stateExpr);
-    //
-    // Apply the internal accumulated TEN to the MS and produce the
-    // selected MS.  
-    //
-    // If the accumulated TEN is NULL, this returns False.  Else
-    // return True.
-    //
-    Bool rstat = mss->getSelectedMS(selectedMS,outMSName);
     if (mymss==NULL) delete mss;
     return rstat;
   }
@@ -139,6 +150,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& scanExpr,
 		  const String& arrayExpr,
 		  const String& stateExpr,
+		  const String& obsExpr,
 		  const Int defaultChanStep,
 		  MSSelection *mymss
 		  )
@@ -148,25 +160,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // internally.
     //
     MSSelection *mss=mymss;
+    Bool rstat;
     if (mss == NULL) mss = new MSSelection();
 
-    mss->reset(ms,MSSelection::PARSE_NOW,
-	       timeExpr,antennaExpr,fieldExpr,spwExpr,
-	       uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
-	       stateExpr);
-    //
-    // Apply the internal accumulated TEN to the MS and produce the
-    // selected MS.  
-    //
-    // If the accumulated TEN is NULL, this returns False.  Else
-    // return True.
-    //
-    Bool rstat = mss->getSelectedMS(selectedMS,outMSName);
-
-    // Get in-row selection info
-    mss->getChanSlices(chanSlices,&ms,defaultChanStep);
-    mss->getCorrSlices(corrSlices,&ms);
-
+    try
+      {
+	mss->reset(ms,MSSelection::PARSE_NOW,
+		   timeExpr,antennaExpr,fieldExpr,spwExpr,
+		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
+		   stateExpr, obsExpr);
+	//
+	// Apply the internal accumulated TEN to the MS and produce the
+	// selected MS.  
+	//
+	// If the accumulated TEN is NULL, this returns False.  Else
+	// return True.
+	//
+	rstat = mss->getSelectedMS(selectedMS,outMSName);
+	
+	// Get in-row selection info
+	mss->getChanSlices(chanSlices,&ms,defaultChanStep);
+	mss->getCorrSlices(corrSlices,&ms);
+      }
+    catch (AipsError& x)
+      {
+	if (mymss == NULL) delete mss;
+	throw(x);
+      }
     if (mymss == NULL) delete mss;
     return rstat;
   }
@@ -201,6 +221,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Matrix<Int> baselinelist=thisSelection.getBaselineList();
     Vector<Int> ddIDList=thisSelection.getDDIDList();
     Vector<Int> stateIDList=thisSelection.getStateObsModeList();
+    Vector<Int> observationIDList=thisSelection.getObservationList();
     OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
     OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
 
@@ -213,6 +234,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     retval.define("channel", chanlist);
     retval.define("dd",ddIDList);
     retval.define("stateid",stateIDList);
+    retval.define("observationid",observationIDList);
 
     return retval;
   }
@@ -273,4 +295,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (uInt i=0;i<tmp.size();i++) elems[i]=tmp[i];
     return elems;
   }
+
+  Bool getSelectedTable(Table& selectedTab,
+			const Table& baseTab,
+			TableExprNode& fullTEN,
+			const String& outName)
+  {
+    Bool newRefTab=False;
+    if ((!fullTEN.isNull()) && (fullTEN.nrow() > 0))
+      {
+	selectedTab = Table((baseTab)(fullTEN));
+	// If the TEN was not NULL and at least one expression was
+	// non-blank, and still resulted in a zero selected rows.
+	if (selectedTab.nrow() == 0) 
+	  throw(MSSelectionNullSelection("MSSelectionNullSelection : The selected table has zero rows."));
+	if (outName!="") selectedTab.rename(outName,Table::New);
+	selectedTab.flush();
+	newRefTab=True;
+      }
+    
+    return newRefTab;
+  }
+
 }

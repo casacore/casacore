@@ -1,4 +1,4 @@
-//# NewMSSimulator.cc:  this defines NewMSSimulator, which simulates a MeasurementSet
+ //# NewMSSimulator.cc:  this defines NewMSSimulator, which simulates a MeasurementSet
 //# Copyright (C) 1995-2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -69,6 +69,7 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasData.h>
+#include <measures/Measures/MFrequency.h>
 #include <measures/Measures.h>
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Utilities/Assert.h>
@@ -693,6 +694,11 @@ void NewMSSimulator::initFields(const String& sourceName,
 
 }
 
+MeasurementSet *
+NewMSSimulator::getMs () const
+{
+    return ms_p;
+}
 
 
 void NewMSSimulator::initSpWindows(const String& spWindowName,
@@ -700,6 +706,7 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
 				   const Quantity& startFreq,
 				   const Quantity& freqInc,
 				   const Quantity&,
+				   const MFrequency::Types& freqType,
 				   const String& stokesString)
 {
   
@@ -742,7 +749,8 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   spwc.freqGroup().fillColumn(0);
   spwc.freqGroupName().fillColumn("Group 1");
   spwc.flagRow().fillColumn(False);
-  spwc.measFreqRef().fillColumn(MFrequency::TOPO);
+  //  spwc.measFreqRef().fillColumn(MFrequency::TOPO);
+  spwc.measFreqRef().fillColumn(freqType);
   polc.flagRow().fillColumn(False);
   ddc.flagRow().fillColumn(False);
   polc.numCorr().put(baseSpWID, nCorr);
@@ -880,10 +888,12 @@ void NewMSSimulator::initFeeds(const String& mode,
   }
   
   Int nFeed=x.nelements();
+
+  //  cout << "nFeed = " << nFeed << endl;
   
   String feedPol0="R", feedPol1="L";
   Bool isList=False;
-  if(nFeed>0) {
+  if(nFeed>1) {
     isList=True;
     if(x.nelements()!=y.nelements()) {
       os << "Feed x and y must be the same length" << LogIO::EXCEPTION;
@@ -901,6 +911,9 @@ void NewMSSimulator::initFeeds(const String& mode,
       feedPol1 = "Y";
     }
   }
+
+  //cout << "Mode in initFeeds = " << mode << endl;
+  //cout << "feedPol0,1 = " << feedPol0 << " " << feedPol1 << endl;
   
   Int nRow=nFeed*nAnt;
   Vector<Int> feedAntId(nRow);
@@ -1254,8 +1267,8 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Double Tstart, Tend, Tint;
   // number of pointings:
   uInt nPts=qStartTimes.shape()(0);
-  AlwaysAssert(Int(nPts)==qStopTimes.shape()(0),AipsError);
-  AlwaysAssert(Int(nPts)==sourceNames.shape()(0),AipsError);
+  AlwaysAssert(nPts==qStopTimes.shape()(0),AipsError);
+  AlwaysAssert(nPts==sourceNames.shape()(0),AipsError);
 
   
   Tint = qIntegrationTime_p.getValue("s");
@@ -1281,7 +1294,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     taiRefTime.get("s").getValue("s") + t_offset_p;
   os << "Full time range: " 
      << formatTime(Tstart) << " -- "
-     << formatTime(Tend) << " with int = " << Tint << endl;
+     << formatTime(Tend) << " TAI with int = " << Tint << LogIO::POST;
   
 
 

@@ -114,9 +114,12 @@ public:
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchId(const Vector<Int>& spwIds);
 
-  Vector<Int> matchIDLT(const Int n);
-  Vector<Int> matchIDGT(const Int n);
-  Vector<Int> matchIDGTAndLT(const Int n0, const int n1);
+  Vector<Int> matchLT(const Int n);
+  Vector<Int> matchGT(const Int n);
+  Vector<Int> matchGTAndLT(const Int n0, const int n1);
+  Vector<Int> matchLT(const Float*);
+  Vector<Int> matchGT(const Float*);
+  Vector<Int> matchGTAndLT(const Float* phyValMin, const Float *phyValMax);
   Vector<Float> convertToMKS(const Float f0, const Float f1, const String& unit); 
   Vector<Int> convertToChannelIndex(const Vector<Int>& spw, const Vector<Float>& freqList,
 				    Int& nFSpec);

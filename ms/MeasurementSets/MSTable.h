@@ -290,7 +290,7 @@ protected:
 
 } //# NAMESPACE CASA - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <ms/MeasurementSets/MSTable.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+//# #ifndef CASACORE_NO_AUTO_TEMPLATES
+//# #include <ms/MeasurementSets/MSTable.tcc>
+//# #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

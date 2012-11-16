@@ -67,6 +67,26 @@ String constructMessage(const Int pos, const String& command)
 //
 //------------------------Time selection expression parser exceptions----------------
 //
+MSSelectionNullSelection::MSSelectionNullSelection (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionNullSelection::~MSSelectionNullSelection () throw()
+{}
+
+MSSelectionNullExpr::MSSelectionNullExpr (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionNullExpr::~MSSelectionNullExpr () throw()
+{}
+
+MSSelectionNullTEN::MSSelectionNullTEN (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionNullTEN::~MSSelectionNullTEN () throw()
+{}
+//
+//------------------------Time selection expression parser exceptions----------------
+//
 MSSelectionTimeError::MSSelectionTimeError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
@@ -106,6 +126,13 @@ MSSelectionFieldParseError::MSSelectionFieldParseError (const String& str,Catego
 : MSSelectionFieldError(str,c)
 {}
 MSSelectionFieldParseError::~MSSelectionFieldParseError () throw()
+{}
+
+MSSelectionFieldWarning::MSSelectionFieldWarning (const String& str,Category c)
+: MSSelectionFieldError(str,c)
+{}
+
+MSSelectionFieldWarning::~MSSelectionFieldWarning () throw()
 {}
 //
 //------------------------UVDist selection expression parser exceptions--------------
@@ -197,6 +224,21 @@ MSSelectionStateParseError::MSSelectionStateParseError (const String& str,Catego
 : MSSelectionStateError(str,c)
 {}
 MSSelectionStateParseError::~MSSelectionStateParseError () throw()
+{}
+
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionObservationError::MSSelectionObservationError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionObservationError::~MSSelectionObservationError () throw()
+{}
+
+MSSelectionObservationParseError::MSSelectionObservationParseError (const String& str,Category c)
+: MSSelectionObservationError(str,c)
+{}
+MSSelectionObservationParseError::~MSSelectionObservationParseError () throw()
 {}
 
 } //# NAMESPACE CASA - END
