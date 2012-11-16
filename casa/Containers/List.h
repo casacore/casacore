@@ -633,7 +633,7 @@ public:
     // to create an initially invalid empty ListIter.  The instantiated
     // class will accept assignment and thus become valid later.
     //
-    ListIter() : ConstListIter<t>() {}
+    ListIter() : ConstListIter<t>(), own(False){}
 
 
     //
