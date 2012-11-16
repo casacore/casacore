@@ -184,7 +184,7 @@ void testMeanFloat()
   AlwaysAssertExit (near(rms(sa), rms(sb)));
 }
 
-#define TestFunc1(FUNC, NAME, T)\
+#define TestFunc1(FUNC, NAME, T, TOL)               \
 void NAME()\
 {\
   Array<T> a(IPosition(3,4,5,6));\
@@ -195,11 +195,11 @@ void NAME()\
     ap[i] = (i+1)/120.;\
     ep[i] = FUNC(ap[i]);\
   }\
-  AlwaysAssertExit (allNear(FUNC(a), e, 1e-13));\
+  AlwaysAssertExit (allNear(FUNC(a), e, TOL));\
   IPosition start(3,0,1,2);\
   IPosition end(3,2,3,4);\
   Array<T> sa(a(start,end));\
-  AlwaysAssertExit (allNear(FUNC(sa), e(start,end), 1e-13));\
+  AlwaysAssertExit (allNear(FUNC(sa), e(start,end), TOL));\
 }
 
 #define TestFunc2(FUNC,NAME,T)                        \
@@ -444,35 +444,35 @@ TestReduce(sum, +=, testSumInt, Int)
 TestReduce(product, *=, testProductInt, Int)
 TestMinMax(min, testMinInt, Int)
 TestMinMax(max, testMaxInt, Int)
-TestFunc1(sin, testSinDouble, Double)
-TestFunc1(sinh, testSinhDouble, Double)
-TestFunc1(cos, testCosFloat, Float)
-TestFunc1(cosh, testCoshFloat, Float)
-TestFunc1(square, testSqrDouble, Double)
-TestFunc1(cube, testCubeDouble, Double)
-TestFunc1(sqrt, testSqrtDouble, Double)
-TestFunc1(exp, testExpDouble, Double)
-TestFunc1(log, testLogDouble, Double)
-TestFunc1(log10, testLog10Double, Double)
-TestFunc1(sin, testSinComplex, Complex)
-TestFunc1(sinh, testSinhComplex, Complex)
-TestFunc1(cos, testCosDComplex, DComplex)
-TestFunc1(cosh, testCoshDComplex, DComplex)
-TestFunc1(square, testSqrComplex, Complex)
-TestFunc1(cube, testCubeComplex, Complex)
-TestFunc1(sqrt, testSqrtComplex, Complex)
-TestFunc1(exp, testExpComplex, Complex)
-TestFunc1(log, testLogComplex, Complex)
-TestFunc1(log10, testLog10Complex, Complex)
-TestFunc1(tan, testTanDouble, Double)
-TestFunc1(tanh, testTanhDouble, Double)
-TestFunc1(asin, testAsinDouble, Double)
-TestFunc1(acos, testAcosDouble, Double)
-TestFunc1(atan, testAtanDouble, Double)
-TestFunc1(ceil, testCeilDouble, Double)
-TestFunc1(fabs, testFabsDouble, Double)
-TestFunc1(abs, testAbsDouble, Double)
-TestFunc1(floor, testFloorDouble, Double)
+TestFunc1(sin, testSinDouble, Double, 1e-13)
+TestFunc1(sinh, testSinhDouble, Double, 1e-13)
+TestFunc1(cos, testCosFloat, Float, 1e-6)
+TestFunc1(cosh, testCoshFloat, Float, 1e-6)
+TestFunc1(square, testSqrDouble, Double, 1e-13)
+TestFunc1(cube, testCubeDouble, Double, 1e-13)
+TestFunc1(sqrt, testSqrtDouble, Double, 1e-13)
+TestFunc1(exp, testExpDouble, Double, 1e-13)
+TestFunc1(log, testLogDouble, Double, 1e-13)
+TestFunc1(log10, testLog10Double, Double, 1e-13)
+TestFunc1(sin, testSinComplex, Complex, 1e-6)
+TestFunc1(sinh, testSinhComplex, Complex, 1e-6)
+TestFunc1(cos, testCosDComplex, DComplex, 1e-13)
+TestFunc1(cosh, testCoshDComplex, DComplex, 1e-13)
+TestFunc1(square, testSqrComplex, Complex, 1e-6)
+TestFunc1(cube, testCubeComplex, Complex, 1e-6)
+TestFunc1(sqrt, testSqrtComplex, Complex, 1e-6)
+TestFunc1(exp, testExpComplex, Complex, 1e-6)
+TestFunc1(log, testLogComplex, Complex, 1e-6)
+TestFunc1(log10, testLog10Complex, Complex, 1e-6)
+TestFunc1(tan, testTanDouble, Double, 1e-13)
+TestFunc1(tanh, testTanhDouble, Double, 1e-13)
+TestFunc1(asin, testAsinDouble, Double, 1e-13)
+TestFunc1(acos, testAcosDouble, Double, 1e-13)
+TestFunc1(atan, testAtanDouble, Double, 1e-13)
+TestFunc1(ceil, testCeilDouble, Double, 1e-13)
+TestFunc1(fabs, testFabsDouble, Double, 1e-13)
+TestFunc1(abs, testAbsDouble, Double, 1e-13)
+TestFunc1(floor, testFloorDouble, Double, 1e-13)
 TestFunc2(atan2, testAtan2Double, Double)
 TestFunc2(pow, testPowDouble, Double)
 TestFunc2(fmod, testFmodDouble, Double)
