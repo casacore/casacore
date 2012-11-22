@@ -393,10 +393,7 @@ Bool HDF5Image<T>::setCoordinateInfo (const CoordinateSystem& coords)
 template<class T> 
 void HDF5Image<T>::restoreMiscInfo (const RecordInterface& rec)
 {
-  if (rec.isDefined("miscinfo")  &&
-      rec.dataType("miscinfo") == TpRecord) {
-    setMiscInfoMember (rec.asRecord ("miscinfo"));
-  }
+  setMiscInfoMember (rec);
 }
 
 template<class T> 
@@ -480,17 +477,15 @@ Bool HDF5Image<T>::setImageInfo (const ImageInfo& info)
 template<class T>
 void HDF5Image<T>::restoreImageInfo (const RecordInterface& rec)
 {
-  if (rec.isDefined("imageinfo")) {
-    String error;
-    ImageInfo info;
-    Bool ok = info.fromRecord (error, rec.asRecord("imageinfo"));
-    if (!ok) {
-      LogIO os;
-      os << LogIO::WARN << "Failed to restore the ImageInfo because " 
-         << error << LogIO::POST;
-    } else {
-      setImageInfoMember (info);
-    }
+  String error;
+  ImageInfo info;
+  Bool ok = info.fromRecord (error, rec);
+  if (!ok) {
+    LogIO os;
+    os << LogIO::WARN << "Failed to restore the ImageInfo because " 
+       << error << LogIO::POST;
+  } else {
+    setImageInfoMember (info);
   }
 }
 
