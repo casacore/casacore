@@ -303,6 +303,11 @@ public:
     // Get the AipsIO option of the underlying file.
     ByteIO::OpenOption fileOption() const;
 
+    // Is this a regular storage manager?
+    // It is regular if it allows addition of rows and writing dara in them.
+    // <br>The default implementation returns True.
+    virtual Bool isRegular() const;
+
     // Get the table this object is associated with.
     Table& table() const
 	{ return *table_p; }

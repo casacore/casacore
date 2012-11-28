@@ -191,7 +191,8 @@ Record DataManInfo::adjustStMan (const Record& dminfo, const String& dmType,
     String exName = rec.asString("NAME");
     String exType = rec.asString("TYPE");
     DataManager* dmptr = DataManager::getCtor(exType) (exName, Record());
-    if ((dmptr->isStorageManager()  &&  !dmptr->canAddRow())  ||
+    if ((dmptr->isStorageManager()  &&
+         !(dmptr->canAddRow()  ||  dmptr->isRegular()))  ||
         (replaceMSM  &&  exType == "MemoryStMan")) {
       // A non-writable storage manager; use given storage manager instead.
       rec.define ("TYPE", dmType);
