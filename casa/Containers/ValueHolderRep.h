@@ -101,17 +101,11 @@ public:
   // Destructor.
   ~ValueHolderRep();
 
-  void link()
-    { itsCount++; }
-
-  static void unlink (ValueHolderRep* rep)
-    { if (rep != 0 && --rep->itsCount == 0) delete rep; }
-
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
     
   // Get the value.
-  // It throws an exception if the data type is incorrect.
+  // If possible, it converts the the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -160,14 +154,10 @@ private:
   // </group>
 
 
-  Int      itsCount;
   uInt     itsNdim;
   DataType itsType;
   union {
     Bool   itsBool;
-    uChar  itsUChar;
-    Short  itsShort;
-    Int    itsInt;
     Int64  itsInt64;
     Float  itsFloat;
     Double itsDouble;

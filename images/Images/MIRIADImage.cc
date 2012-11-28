@@ -1091,7 +1091,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       Quantum<Double> qbmaj(bmaj,Unit("rad"));
       Quantum<Double> qbmin(bmin,Unit("rad"));
       Quantum<Double> qbpa(bpa,Unit("deg"));
-      imageInfo.setRestoringBeam(qbmaj, qbmin, qbpa);
+      imageInfo.setRestoringBeam(GaussianBeam(qbmaj, qbmin, qbpa));
    }
 
 // ObsInfo

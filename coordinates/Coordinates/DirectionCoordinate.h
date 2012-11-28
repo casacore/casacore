@@ -39,9 +39,9 @@
 #include <casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
-struct celprm;
-struct prjprm;
-struct wcsprm;
+class celprm;
+class prjprm;
+class wcsprm;
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -533,7 +533,7 @@ public:
                           uInt axis, 
                           Bool isAbsolute,
                           Bool showAsAbsolute,
-                          Int precision=-1) const;
+                          Int precision=-1, Bool usePrecForMixed=False) const;
     //</group>
 
     // Fix cylindrical coordinates to put the longitude in [-180,180] range.
@@ -653,29 +653,36 @@ private:
                  Double longPole, Double latPole);
     // </group>
 
-   Double putLongInPiRange (Double lon, const String& unit) const;
+    // Normalize each row of the PC matrix such that increment() will return the actual
+    // angular increment and any scale factors are removed from the PC matrix
+    // (modifies wcs_p.pc _and_ wcs_p.cdelt _and_ wcs_p.altlin,
+    // executes set_wcs() and hence wcsset() on the struct)
+    // See Greisen & Calabretta, A&A 395, 1061-1075 (2002), equation (4) 
+    void normalizePCMatrix();
 
-   // Set up conversion machine
-   void makeConversionMachines();
+    Double putLongInPiRange (Double lon, const String& unit) const;
 
-   // Convert from type_p -> conversionType_p
-   // <group>
-   virtual void convertTo (Vector<Double>& world) const;
-   virtual void convertFrom (Vector<Double>& world) const;
-   // </group>
+    // Set up conversion machine
+    void makeConversionMachines();
 
-   // Copy private data
-   void copy (const DirectionCoordinate& other);
+    // Convert from type_p -> conversionType_p
+    // <group>
+    virtual void convertTo (Vector<Double>& world) const;
+    virtual void convertFrom (Vector<Double>& world) const;
+    // </group>
 
-   // Set up the offset coordinate rotation matrix.  Units
-   // of long and lat are current world units
-   // <group>
-   void setRotationMatrix ();
-   void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
-   // </group>
-
-   // Return unit conversion vector for converting to current units
-   const Vector<Double> toCurrentFactors () const;
+    // Copy private data
+    void copy (const DirectionCoordinate& other);
+    
+    // Set up the offset coordinate rotation matrix.  Units
+    // of long and lat are current world units
+    // <group>
+    void setRotationMatrix ();
+    void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
+    // </group>
+    
+    // Return unit conversion vector for converting to current units
+    const Vector<Double> toCurrentFactors () const;
 };
 
 } //# NAMESPACE CASA - END

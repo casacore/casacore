@@ -13,6 +13,7 @@ tMeasure
 tMeasureHolder
 tMuvw
 tParAngleMachine
+tQuality
 tRecordTransformable
 tStokes
 tUVWMachine

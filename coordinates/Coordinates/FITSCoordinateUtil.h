@@ -116,7 +116,8 @@ public:
 		      Char prefix = 'c', Bool writeWCS=True,
 		      Bool preferVelocity=True, 
 		      Bool opticalVelocity=True,
-		      Bool preferWavelength=False) const;
+		      Bool preferWavelength=False,
+		      Bool airWavelength=False) const;
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.   On output, <src>stokesFITSValue</src>

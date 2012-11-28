@@ -30,7 +30,10 @@
 #ifndef FITS_FITSHISTORYUTIL_H
 #define FITS_FITSHISTORYUTIL_H
 
+#include <vector>
 #include <casa/aips.h>
+
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -134,7 +137,7 @@ public:
     // it might have garbage entries at the end. The strings may have embedded
     // newlines, but they must have no other non-printable characters.
     static void addHistoryGroup(FitsKeywordList &out,
-				const Vector<String> &strings,
+				const std::vector<String> &strings,
 				uInt nstrings, const String &groupType);
 
     // Some functions to help convert between log tables and FITS HISTORY cards.
@@ -167,7 +170,7 @@ public:
     // toHistory signals that it is done by setting nstrings to 0.
     // The returned value is firstLine + n_lines_read, i.e. use
     // it as firstLine in your next call.
-    static uInt toHISTORY(Vector<String>& history, Bool& aipsppFormat,
+    static uInt toHISTORY(std::vector<String>& history, Bool& aipsppFormat,
 			  uInt& nstrings, uInt firstLine, 
 			  const LoggerHolder& logSink);
     // </group>

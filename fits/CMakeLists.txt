@@ -21,6 +21,7 @@ FITS/FITSSpectralUtil.cc
 FITS/fitsio.cc
 FITS/BinTable.cc
 FITS/blockio.cc
+FITS/FITSReader.cc
 )
 
 target_link_libraries (casa_fits casa_measures ${CFITSIO_LIBRARIES})
@@ -60,6 +61,7 @@ FITS/FITSTimedTable.h
 FITS/hdu.h
 FITS/hdu.tcc
 FITS/SDFITSTable.h
+FITS/FITSReader.h
 DESTINATION include/casacore/fits/FITS
 )
 

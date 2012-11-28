@@ -158,7 +158,7 @@ public:
   // Copy constructor (copy semantics).
   ImageInterface (const ImageInterface& other);
 
-  ~ImageInterface();
+  virtual ~ImageInterface();
 
   // Make a copy of the derived object (reference semantics).
   // <group>
@@ -360,8 +360,7 @@ protected:
     { log_p = logger; }
 
   // Set the image info variable.
-  void setImageInfoMember (const ImageInfo& imageInfo)
-    { imageInfo_p = imageInfo; }
+  void setImageInfoMember (const ImageInfo& imageInfo);
 
   // Set the coordinate system variable.
   void setCoordsMember (const CoordinateSystem& coords)

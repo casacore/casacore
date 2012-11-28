@@ -82,6 +82,7 @@ public:
   // define many polynomial coefficients.
   typedef RigidVector<Float, 3> RVF3;
   typedef RigidVector<Float, 4> RVF4;
+  typedef RigidVector<Float, 5> RVF5;
   
   // Set the log10(frequency) polynomial coefficients for calculating the flux
   // density and its uncertainty, and the unit (typically "MHz" or "GHz") that

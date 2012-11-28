@@ -35,6 +35,7 @@
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Exceptions/Error.h>
 #include <scimath/Functionals/Gaussian2D.h>
+#include <scimath/Functionals/ConstantND.h>
 #include <lattices/Lattices/Lattice.h>
 #include <lattices/Lattices/MaskedLattice.h>
 #include <casa/Logging/LogIO.h>
@@ -126,11 +127,21 @@ uInt Fit2D::addModel (Fit2D::Types type,
    itsTypeList.resize(nModels,True);
 //
    if (type==Fit2D::LEVEL) {
-      itsLogger <<  "Fit2D - Level fitting not yet implemented" <<
-	LogIO::EXCEPTION;
+	   ConstantND<AutoDiff<Double> > myconst(2);
+	   myconst[0] = AutoDiff<Double>(parameters(0), 1, 0);
+	   myconst.mask(0) = parameterMask(0);
+	   itsFunction.addFunction(myconst);
+	   itsTypeList(nModels-1) = Fit2D::LEVEL;
    } else if (type==Fit2D::DISK) {
       itsLogger << "Fit2D - Disk fitting not yet implemented" <<
 	LogIO::EXCEPTION;
+   } else if (type==Fit2D::PLANE) {
+	   HyperPlane<AutoDiff<Double> > plane(3);
+	   if (parameters.nelements() != 3) {
+		   itsLogger << "Fit2D - illegal number of parameters in addModel" <<
+		   LogIO::EXCEPTION;
+	   }
+
    } else if (type==Fit2D::GAUSSIAN) {
 // 
 // Create functional
@@ -155,24 +166,24 @@ uInt Fit2D::addModel (Fit2D::Types type,
       Int ii = Gaussian2D<Float>::HEIGHT;
       gauss2d[ii] = AutoDiff<Double>(parameters(0), gauss2d.nparameters(), ii);   // flux
       gauss2d.mask(ii) = parameterMask(0);
-//
+
       ii = Gaussian2D<Float>::XCENTER;
       gauss2d[ii] = AutoDiff<Double>(parameters(1), gauss2d.nparameters(), ii);   // x
       gauss2d.mask(ii) = parameterMask(1);
-//
+
       ii = Gaussian2D<Float>::YCENTER;
       gauss2d[ii] = AutoDiff<Double>(parameters(2), gauss2d.nparameters(), ii);   // y
       gauss2d.mask(ii) = parameterMask(2);
-//
+
       ii = Gaussian2D<Float>::YWIDTH;
       gauss2d[ii] = AutoDiff<Double>(parameters(3), gauss2d.nparameters(), ii);   // major
       gauss2d.mask(ii) = parameterMask(3);
-//
+
       ii = Gaussian2D<Float>::RATIO;
       Double ratio = parameters(4) / parameters(3);
       gauss2d[ii] = AutoDiff<Double>(ratio, gauss2d.nparameters(), ii);           // ratio
       gauss2d.mask(ii) = parameterMask(4);
-//
+
       ii = Gaussian2D<Float>::PANGLE;
       Double pa = paToGauss2D(parameters(5));
       piRange(pa);
@@ -184,7 +195,6 @@ uInt Fit2D::addModel (Fit2D::Types type,
       itsFunction.addFunction(gauss2d);
       itsTypeList(nModels-1) = Fit2D::GAUSSIAN;
    }
-//
    itsValid = True;
    return nModels - 1;
 }
@@ -209,17 +219,35 @@ Vector<Bool> Fit2D::convertMask (const String mask,
                                    Fit2D::Types type)
 {
    Vector<Bool> parameterMask;
+   String cmask = mask;
+   cmask.downcase();
    if (type==Fit2D::LEVEL) {
-      throw (AipsError("Fit2D - Level fitting not yet implemented"));
+	   parameterMask.resize(1);
+	   parameterMask = True;
+	   if (cmask.contains("l")) {
+		   parameterMask(0) = False;
+	   }
    } else if (type==Fit2D::DISK || type==Fit2D::GAUSSIAN) {
       parameterMask.resize(6);
       parameterMask = True;
-      if (mask.contains("f")) parameterMask(0) = False;
-      if (mask.contains("x")) parameterMask(1) = False;
-      if (mask.contains("y")) parameterMask(2) = False;
-      if (mask.contains("a")) parameterMask(3) = False;
-      if (mask.contains("b")) parameterMask(4) = False;
-      if (mask.contains("p")) parameterMask(5) = False;
+      if (cmask.contains("f")) {
+    	  parameterMask(0) = False;
+      }
+      if (cmask.contains("x")) {
+    	  parameterMask(1) = False;
+      }
+      if (cmask.contains("y")) {
+    	  parameterMask(2) = False;
+      }
+      if (cmask.contains("a")) {
+    	  parameterMask(3) = False;
+      }
+      if (cmask.contains("b")) {
+    	  parameterMask(4) = False;
+      }
+      if (cmask.contains("p")) {
+    	  parameterMask(5) = False;
+      }
    }
    return parameterMask;
 }
@@ -374,13 +402,12 @@ Fit2D::ErrorTypes Fit2D::residual(
    if (!itsValidSolution) {
       return Fit2D::FAILED;
    }
-//
+
    if (data.ndim() !=2) {
       itsLogger << "Fit2D::fit - Array must be 2-dimensional" <<
 	LogIO::EXCEPTION;
    }
    IPosition shape = data.shape();
-//
 
    if (resid.nelements() ==0) {
        resid.resize(shape);
@@ -390,7 +417,6 @@ Fit2D::ErrorTypes Fit2D::residual(
           << "have the same shape" << LogIO::EXCEPTION;
        }
    }
-
    if (model.nelements() ==0) {
        model.resize(shape);
    }
@@ -400,13 +426,12 @@ Fit2D::ErrorTypes Fit2D::residual(
           << "have the same shape" << LogIO::EXCEPTION;
        }
     }
-//
+
 // Create a functional with the solution (no axis conversion
 // necessary because functional interface takes axial ratio)
-//
+
    Function<AutoDiff<Double> > *sumFunction(itsFunction.clone());
    for (uInt i=0; i<itsSolution.nelements(); i++) (*sumFunction)[i] = itsSolution[i];
-//
    IPosition loc(2);
    for (Int j=0; j<shape(1); j++) {
      loc(1) = j;

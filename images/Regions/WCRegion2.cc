@@ -27,7 +27,7 @@
 
 #include <images/Regions/WCRegion.h>
 #include <images/Regions/WCBox.h>
-///#include <trial/Images/WCEllipsoid.h>
+#include <images/Regions/WCEllipsoid.h>
 #include <images/Regions/WCPolygon.h>
 #include <images/Regions/WCLELMask.h>
 #include <images/Regions/WCUnion.h>
@@ -59,6 +59,9 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
 ///        regPtr = WCEllipsoid::fromRecord (rec, tableName);
     } else if (name == WCPolygon::className()) {
         regPtr = WCPolygon::fromRecord (rec, tableName);
+    }
+    else if (name == WCEllipsoid::className()) {
+        regPtr = WCEllipsoid::fromRecord (rec, tableName);
     } else if (name == WCLELMask::className()) {
         regPtr = WCLELMask::fromRecord (rec, tableName);
     } else if (name == WCUnion::className()) {
@@ -73,7 +76,8 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
         regPtr = WCExtension::fromRecord (rec, tableName);
     } else if (name == WCConcatenation::className()) {
         regPtr = WCConcatenation::fromRecord (rec, tableName);
-    } else {
+    }
+    else {
         throw (AipsError ("WCRegion::fromRecord - " + name +
                           " is unknown derived WCRegion class"));
     }

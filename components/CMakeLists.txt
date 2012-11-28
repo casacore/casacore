@@ -16,6 +16,7 @@ SpectralComponents/SpectralElement.cc
 SpectralComponents/SpectralElement2.cc
 SpectralComponents/SpectralElementFactory.cc
 ComponentModels/GaussianShape.cc
+ComponentModels/GaussianBeam.cc
 ComponentModels/TwoSidedShape.cc
 ComponentModels/SpectralModel.cc
 ComponentModels/SpectralIndex.cc
@@ -54,6 +55,7 @@ ComponentModels/ComponentList.h
 ComponentModels/ComponentShape.h
 ComponentModels/SkyComponent.h
 ComponentModels/GaussianShape.h
+ComponentModels/GaussianBeam.h
 ComponentModels/PointShape.h
 ComponentModels/DiskShape.h
 ComponentModels/ComponentType.h

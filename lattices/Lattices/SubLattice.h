@@ -96,6 +96,8 @@ public:
   // while for the non-const version one has to specify if the SubLattice
   // should be writable (if the original lattice is non-writable, the
   // SubLattice is always set to non-writable).
+  // <note>In the 2nd case the lattice could have been declared const,
+  // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const Lattice<T>& lattice, AxesSpecifier=AxesSpecifier());
   SubLattice (Lattice<T>& lattice, Bool writableIfPossible,
@@ -107,6 +109,8 @@ public:
   // while for the non-const version one has to specify if the SubLattice
   // should be writable (if the original lattice is non-writable, the
   // SubLattice is always set to non-writable).
+  // <note>In the 2nd case the lattice could have been declared const,
+  // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const MaskedLattice<T>& lattice, AxesSpecifier=AxesSpecifier());
   SubLattice (MaskedLattice<T>& lattice, Bool writableIfPossible,
@@ -119,6 +123,8 @@ public:
   // <linkto class=Slicer>Slicer</linkto> object (with an optional stride).
   // <br>An exception is thrown if the lattice shape used in the region
   // differs from the shape of the lattice.
+  // <note>In the 2nd and 4th case the lattice could have been declared const,
+  // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const Lattice<T>& lattice, const LatticeRegion& region,
 	      AxesSpecifier=AxesSpecifier());
@@ -133,6 +139,8 @@ public:
   // Create a SubLattice from the given (Masked)Lattice and slicer.
   // The slicer can be strided.
   // <br>An exception is thrown if the slicer exceeds the lattice shape.
+  // <note>In the 2nd and 4th case the lattice could have been declared const,
+  // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const Lattice<T>& lattice, const Slicer& slicer,
 	      AxesSpecifier=AxesSpecifier());

@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <derivedmscal/DerivedMC/UDFMSCal.h>
+#include <ms/MeasurementSets/MSAntennaGram.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <casa/Arrays/ArrayIO.h>
@@ -67,6 +68,8 @@ namespace casa {
     { return new UDFMSCal (UVW, -1); }
   UDFBase* UDFMSCal::makeStokes (const String&)
     { return new UDFMSCal (STOKES, -1); }
+  UDFBase* UDFMSCal::makeBaseline (const String&)
+    { return new UDFMSCal (BASELINE, -1); }
 
   void UDFMSCal::setup (const Table& table, const TaQLStyle&)
   {
@@ -107,6 +110,10 @@ namespace casa {
       setupStokes (table, operands());
       setDataType (operands()[0]->dataType());
       break;
+    case BASELINE:
+      setupBaseline (table, operands());
+      setNDim (0);
+      setDataType (TableExprNodeRep::NTBool);
     }
   }
 
@@ -239,6 +246,45 @@ namespace casa {
     } else {
       // Shape is unknown, so only set the dimensionality.
       setNDim (operands[0]->ndim());
+    }
+  }
+
+  void UDFMSCal::setupBaseline (const Table& table,
+                                PtrBlock<TableExprNodeRep*>& operands)
+  {
+    // There must be 1 argument (scalar string).
+    if (operands.size() != 1) {
+      throw AipsError ("1 argument must be given to DERIVEDMSCAL.BASELINE");
+    }
+    if (operands[0]->valueType() != TableExprNodeRep::VTScalar  ||
+        operands[0]->dataType()  != TableExprNodeRep::NTString  ||
+        !operands[0]->isConstant()) {
+      throw AipsError ("Argument of DERIVEDMSCAL.BASELINE must be a "
+                       "constant string scalar");
+    }
+    Table anttab(table.keywordSet().asTable("ANTENNA"));
+    TableExprNode a1 (table.col("ANTENNA1"));
+    TableExprNode a2 (a1);
+    if (table.tableDesc().isColumn("ANTENNA2")) {
+      a2 = TableExprNode (table.col("ANTENNA2"));
+    }
+    Vector<Int> selectedAnts1;
+    Vector<Int> selectedAnts2;
+    Matrix<Int> selectedBaselines;
+    String selStr(operands[0]->getString(0));
+    itsDataNode = msAntennaGramParseCommand (anttab, a1, a2, selStr, 
+                                             selectedAnts1, selectedAnts2,
+                                             selectedBaselines);
+  }
+
+  Bool UDFMSCal::getBool (const TableExprId& id)
+  {
+    DebugAssert (id.byRow(), AipsError);
+    switch (itsType) {
+    case BASELINE:
+      return itsDataNode.getBool (id);
+    default:
+      throw AipsError ("UDFMSCal: unexpected getBool function");
     }
   }
 

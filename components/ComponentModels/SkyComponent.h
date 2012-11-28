@@ -49,6 +49,7 @@ class SkyCompRep;
 class SpectralModel;
 class String;
 class Unit;
+class GaussianBeam;
 template<class Ms> class MeasRef;
 template<class T> class Flux;
 template<class T> class Cube;
@@ -252,12 +253,12 @@ public:
   // Convert from and to pixel vectors. See the SkyCompRep class for details.
   // <group>
    Vector<Double> toPixel (const Unit& brightnessUnitIn,
-                           const Vector<Quantum<Double> >& restoringBeam,
+                           const GaussianBeam& restoringBeam,
                            const CoordinateSystem& cSys,
                            Stokes::StokesTypes stokes) const;
   void fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
-                  const Vector<Quantum<Double> >& restoringBeam,
+                  const GaussianBeam& restoringBeam,
                   const CoordinateSystem& cSys,
                   ComponentType::Shape componentShape,
                   Stokes::StokesTypes stokes);

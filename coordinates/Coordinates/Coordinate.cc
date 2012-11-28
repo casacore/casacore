@@ -331,13 +331,12 @@ void Coordinate::getPrecision(Int &precision,
 }
    
 
-String Coordinate::format(String& units,
-                          Coordinate::formatType format, 
-                          Double worldValue, 
-                          uInt worldAxis, 
-                          Bool isAbsolute, 
-                          Bool showAsAbsolute,
-                          Int precision) const
+String Coordinate::format(
+	String& units, Coordinate::formatType format,
+	Double worldValue, uInt worldAxis,
+	Bool isAbsolute, Bool showAsAbsolute,
+	Int precision, Bool usePrecForMixed
+) const
 //
 // isAbsolute
 //    T means the worldValue is given as absolute
@@ -429,7 +428,10 @@ String Coordinate::format(String& units,
 // Format and get units.
   
    if (form == Coordinate::MIXED) {
-      oss << worldValue;
+	   if (usePrecForMixed) {
+		   oss << setprecision(prec);
+	   }
+	   oss << worldValue;
    } else if (form == Coordinate::SCIENTIFIC) {
       oss.setf(ios::scientific, ios::floatfield);
       if ( precision_set == false ) oss.precision(prec);
@@ -511,6 +513,8 @@ String Coordinate::typeToString (Coordinate::Type type)
       return String("Spectral");
    } else if (type==Coordinate::STOKES) {
       return String("Stokes");
+   } else if (type==Coordinate::QUALITY) {
+      return String("Quality");
    } else if (type==Coordinate::TABULAR) {
       return String("Tabular");
    } else if (type==Coordinate::COORDSYS) {      
@@ -586,6 +590,8 @@ void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInC
       }
    } else if (type==Coordinate::STOKES) {
       throw (AipsError("Cannot provide Fourier coordinate name for Stokes coordinate"));
+   } else if (type==Coordinate::QUALITY) {
+      throw (AipsError("Cannot provide Fourier coordinate name for Quality coordinate"));
    } else if (type==Coordinate::COORDSYS) {
       throw (AipsError("Cannot provide Fourier coordinate name for CoordinateSystem coordinate"));
    } else {

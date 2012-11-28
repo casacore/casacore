@@ -58,7 +58,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The center and the radii of the ellipsoid do not need to be pixel aligned.
 // The center of the ellipsoid must be inside the lattice.
 // The current implementation only supports ellipsoids with axes parallel
-// to the lattice axes.
+// to the lattice axes except in the case of a 2-D ellipse for which a
+// constructor is provided for specifying the angle between the x-axis
+// and major axis of the ellipse.
 // <p>
 // It can only be used for a lattice of any dimensionality as long as the
 // dimensionality of the (hyper-)ellipsoid matches the dimensionality of
@@ -71,7 +73,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <todo asof="1997/11/11">
-// <li> Arguments to have ellipsoid axes not parallel to lattice axes.
+// <li> Arguments to have ellipsoid axes not parallel to lattice axes for
+// dimensions greater than 2. This is a nontrivial problem because of the
+// complexity of the rotation matrices involved.
 // </todo>
 
 
@@ -104,6 +108,14 @@ public:
 		 const IPosition& latticeShape);
     // </group>
 
+    // Construct a two dimensional ellipse with theta being the angle from
+    // the x-axis to the major axis of the ellipse in radians.
+    LCEllipsoid (
+    	const Float xcenter, const Float ycenter,
+    	const Float majorAxis, const Float minorAxis,
+    	const Float theta, const IPosition& latticeShape
+    );
+
     // Copy constructor (reference semantics).
     LCEllipsoid (const LCEllipsoid& other);
 
@@ -123,6 +135,10 @@ public:
 
     // Get the radii.
     const Vector<Float>& radii() const;
+
+    // Get the angle of the major axis of the ellipse relative to the x-axis
+    // 2-D only, throws exception if ellipse is not 2-D.
+    const Float& theta() const;
 
     // Get the class name (to store in the record).
     static String className();
@@ -149,16 +165,29 @@ private:
     void fillCenter (const IPosition& center);
 
     // Make the bounding box from center, radii, and shape.
-    static Slicer makeBox (const Vector<Float>& center,
+    Slicer makeBox (const Vector<Float>& center,
 			   const Vector<Float>& radii,
 			   const IPosition& latticeShape);
+
+    Slicer _makeBox2D (
+    	const Vector<Float>& center,
+    	const Vector<Float>& radii,
+    	const IPosition& latticeShape
+    );
 
     // Define the mask to indicate which elements are inside the ellipsoid.
     void defineMask();
 
+    //for 2-D ellipse with non-zero theta
+    void _defineMask2D();
+
 
     Vector<Float> itsCenter;
     Vector<Float> itsRadii;
+    // small offset to guard against roundoff error
+    Vector<Float> _epsilon;
+    // for 2-D case only
+    Float _theta;
 };
 
 

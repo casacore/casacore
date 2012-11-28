@@ -115,7 +115,7 @@ void ImageRegrid<T>::regrid(
 	Bool replicate, uInt decimate, Bool showProgress,
 	Bool forceRegrid
 ) {
-	LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
+	LogIO os(LogOrigin("ImageRegrid", __FUNCTION__, WHERE));
 	Timer t0;
 	IPosition outShape = outImage.shape();
 	IPosition inShape = inImage.shape();
@@ -127,6 +127,28 @@ void ImageRegrid<T>::regrid(
 				"number of axes"
 			)
 		);
+	}
+	if (inImage.imageInfo().hasMultipleBeams()) {
+		if (
+			inImage.coordinates().hasSpectralAxis()
+			&& anyTrue(outPixelAxesU.asVector()
+				== inImage.coordinates().spectralAxisNumber())
+		) {
+			LogIO log;
+			log << LogOrigin("ImageRegrid", __FUNCTION__)
+				<< "This image has multiple beams. The spectral axis cannot be regridded"
+				<< LogIO::EXCEPTION;
+		}
+		if (
+			inImage.coordinates().hasPolarizationCoordinate()
+			&& anyTrue(outPixelAxesU.asVector()
+				== inImage.coordinates().polarizationAxisNumber())
+		) {
+			LogIO log;
+			log << LogOrigin("ImageRegrid", __FUNCTION__)
+				<< "This image has multiple beams. The polarization axis cannot be regridded"
+				<< LogIO::EXCEPTION;
+		}
 	}
 	const Bool outIsMasked = outImage.isMasked() && outImage.hasPixelMask()
 			&& outImage.pixelMask().isWritable();
@@ -578,73 +600,74 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    return True;
 }
 
+template<class T> CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(
+	LogIO& os, const CoordinateSystem& cSysTo,
+	const CoordinateSystem& cSysFrom,
+	const IPosition& outPixelAxes, const IPosition& inShape
+) {
+	os << LogOrigin("ImageRegrid<T>", __FUNCTION__, WHERE);
+	const uInt nCoordsFrom = cSysFrom.nCoordinates();
+	const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
+	if (inShape.nelements() > 0 && inShape.nelements() != nPixelAxesFrom) {
+		os << "Inconsistent size and csysFrom" << LogIO::EXCEPTION;
+	}
 
+	// Create output CS.  Copy the output ObsInfo over first.
 
+	CoordinateSystem cSysOut(cSysFrom);
 
+	// If specified axes are empty, set to all
 
-template<class T>
-CoordinateSystem
-ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
-				     const CoordinateSystem& cSysTo,
-				     const CoordinateSystem& cSysFrom,
-				     const IPosition& outPixelAxes)
-{
-   const uInt nCoordsFrom = cSysFrom.nCoordinates();
-   const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
+	IPosition outPixelAxes2 = outPixelAxes.nelements() == 0
+		? IPosition::makeAxisPath(nPixelAxesFrom)
+		: outPixelAxes;
 
-// Create output CS.  Copy the output ObsInfo over first.
+	// Loop over coordinates in the From CS
 
-   CoordinateSystem cSysOut(cSysFrom);
+	for (uInt i=0; i<nCoordsFrom; i++) {
+		Coordinate::Type typeFrom = cSysFrom.type(i);
+		// Are any of this coordinates axes being regridded ?
 
-// If specified axes are empty, set to all
+		Vector<Int> pixelAxes = cSysFrom.pixelAxes(i);
+		Bool regridIt = False;
+		for (uInt k=0; k<pixelAxes.nelements(); k++) {
+			if (
+				inShape.nelements() == 0
+				|| (inShape.nelements() > 0 && inShape[pixelAxes[k]] > 1)
+			) {
+				for (uInt j=0; j<outPixelAxes2.nelements(); j++) {
+					if (pixelAxes[k] == outPixelAxes2(j)) {
+						regridIt = True;
+					}
+				}
+			}
+		}
 
-   IPosition outPixelAxes2;
-   if (outPixelAxes.nelements()==0) {
-      outPixelAxes2 = IPosition::makeAxisPath(nPixelAxesFrom);
-   } else {
-      outPixelAxes2 = outPixelAxes;
-   }
+		// We are regridding some axis from this coordinate.
+		// Replace it from 'To' if we can find it.
 
-// Loop over coordinates in the From CS
+		if (regridIt) {
 
-   for (uInt i=0; i<nCoordsFrom; i++) {
-      Coordinate::Type typeFrom = cSysFrom.type(i);
+			// Trouble with multiple Coordinates of this type here.
 
-// Are any of this coordinates axes being regridded ?
-
-      Vector<Int> pixelAxes = cSysFrom.pixelAxes(i);
-      Bool regridIt = False;                 
-      for (uInt k=0; k<pixelAxes.nelements(); k++) {
-         for (uInt j=0; j<outPixelAxes2.nelements(); j++) {
-            if (Int(k)==outPixelAxes2(j)) {              
-               regridIt = True;  
-            }
-         }
-      }
-
-// We are regridding some axis from this coordinate.
-// Replace it from 'To' if we can find it.
-
-      if (regridIt) {
-
-// Trouble with multiple Coordinates of this type here.
-
-         Int afterCoord = -1;
-         Int iCoordTo = cSysTo.findCoordinate(typeFrom, afterCoord);    
-         if (cSysTo.pixelAxes(iCoordTo).nelements() != 
-	     cSysFrom.pixelAxes(i).nelements()) {
-            os << "Wrong number of pixel axes in 'To' CoordinateSystem for "
-	      "coordinate of type " <<
-	      cSysTo.showType(iCoordTo) << LogIO::EXCEPTION;
-         }
-//
-         if (iCoordTo >= 0) {
-            cSysOut.replaceCoordinate (cSysTo.coordinate(iCoordTo), i); 
-         }
-      }
-   }
-//
-   return cSysOut;
+			Int iCoordTo = cSysTo.findCoordinate(typeFrom, -1);
+			if (iCoordTo < 0) {
+				os << Coordinate::typeToString(typeFrom) << " coordinate is not present "
+					<< " in the output coordinate system, so it cannot be regridded"
+					<< endl;
+			}
+			if (
+				cSysTo.pixelAxes(iCoordTo).nelements()
+				!= cSysFrom.pixelAxes(i).nelements()
+			) {
+				os << "Wrong number of pixel axes in 'To' CoordinateSystem for "
+						"coordinate of type " <<
+						cSysTo.showType(iCoordTo) << LogIO::EXCEPTION;
+			}
+			cSysOut.replaceCoordinate (cSysTo.coordinate(iCoordTo), i);
+		}
+	}
+	return cSysOut;
 }
 
 
@@ -695,7 +718,7 @@ void ImageRegrid<T>::regridTwoAxisCoordinate (
 			cerr << "Method is cubic" << endl;
 		} else if (method==Interpolate2D::LANCZOS) {
 			cerr << "Method is Lanczos" << endl;
-        }
+		}
 	}
 
 	// We iterate through the output image by tile.  We iterate through
@@ -1753,7 +1776,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
          cerr << "Method = cubic spline" << endl;
       }
    } else if (method==Interpolate2D::LANCZOS) {
-      throw(AipsError("Lanczos interpolation not implemented for 1D interpolations"));
+      throw AipsError("Lanczos interpolation not implemented for 1D interpolations");
    }
 
 // Progress meter
@@ -1977,7 +2000,6 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
    if (outShape.nelements()==0) {
       os << "The output shape is illegal" << LogIO::EXCEPTION;
    }
-//
    Int n1 = outPixelAxes.nelements();
    const Int nOut = outShape.nelements();
    if (n1 > nOut) {
@@ -2025,8 +2047,8 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
 // Otherwise, regridding a one-pixel axis is useless.
 
             if (type!=Coordinate::DIRECTION) {
-              os << LogIO::WARN << "Cannot regrid axis " << outPixelAxes(i)+1 <<
-		" because it is of unit length - removing from list" << endl;
+              os << "Cannot regrid zero-based axis " << outPixelAxes(i) <<
+		" because it is of unit length - removing from list" << LogIO::POST;
               ok = False;
             }
          } 
@@ -2055,7 +2077,6 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
          found(outPixelAxes(i)) = True;
       }
    }
-
 // CHeck non-regriddded axis shapes are ok
 
    for (Int i=0; i<nOut; i++) {

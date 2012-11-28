@@ -1495,7 +1495,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
     // check antenna IDs
     Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
     Bool idsOK = True;
-    uInt maxID = newAntIndices.nelements()-1;
+    Int maxID = newAntIndices.nelements()-1;
     for (Int k=origNRow; k <  (origNRow+rowToBeAdded); ++k){
       if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
 	idsOK = False;
@@ -1566,7 +1566,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
     // check antenna IDs
     Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
     Bool idsOK = True;
-    uInt maxID = newAntIndices.nelements()-1;
+    Int maxID = newAntIndices.nelements()-1;
     for (Int k=0; k < rowToBeAdded; k++){
       if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
 	idsOK = False;
@@ -1641,7 +1641,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
 
     // create final maps
     // map for first table
-    for(uInt i=0; i<originalNrow; i++){ // loop over rows of old first table
+    for(Int i=0; i<originalNrow; i++){ // loop over rows of old first table
       if(tempObsIndex2.isDefined(i)){ // ID changed because of removal
 	  newObsIndexA_p.define(i,tempObsIndex2(i));
 	  doObsA_p = True;
@@ -2112,9 +2112,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // loop over the columns of the merged source table 
       Vector<Bool> rowToBeRemoved(numrows_this, False);
       vector<uInt> rowsToBeRemoved;
-      for (uint j=0 ; j < numrows_this ; ++j){
+      for (Int j=0 ; j < numrows_this ; ++j){
 	// check if row j has an equivalent row somewhere else in the table
-	for (uint k=0 ; k < numrows_this ; ++k){
+	for (Int k=0 ; k < numrows_this ; ++k){
 	  if (k!=j && !rowToBeRemoved(j) && !rowToBeRemoved(k)){
 	    Int reftypej = solSystObjects_p(thisId(j));
 	    Int reftypek = solSystObjects_p(thisId(k));
@@ -2183,9 +2183,9 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // give equivalent rows the same source id 
       Bool rowsRenamed(False);
       Int nDistinctSources = newNumrows_this;
-      for (uint j=0 ; j < newNumrows_this ; ++j){
+      for (Int j=0 ; j < newNumrows_this ; ++j){
 	// check if row j has an equivalent row somewhere down in the table
-	for (uint k=j+1 ; k < newNumrows_this ; ++k){
+	for (Int k=j+1 ; k < newNumrows_this ; ++k){
 	    Int reftypej = solSystObjects_p(thisId(j));
 	    Int reftypek = solSystObjects_p(thisId(k));
 	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
@@ -2441,7 +2441,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
       //cout << "counterpart found for other spw " << otherSpwId 
       //     << " found in this spw " << *newSpwPtr << endl;
       matchedSPW = True;
-      if(*newSpwPtr != otherSpwId){
+      if(*newSpwPtr != Int(otherSpwId)){
 	newSPWIndex_p.define(otherSpwId, *newSpwPtr);
       }
     }      

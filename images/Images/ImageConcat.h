@@ -253,19 +253,22 @@ private:
    LatticeConcat<T> latticeConcat_p;
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
    Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
-   Bool isContig_p;
+   Bool isContig_p, _warnBeam;
    Vector<Bool> isImage_p;
    Vector<Double> pixelValues_p;
    Vector<Double> worldValues_p;
    Coordinate::Type originalAxisType_p;
-//
+
    Double coordConvert(Int& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
                        uInt axis, Double pixelCoord) const;
-   void checkContiguous (Bool& isContig, Bool& warnContig, const IPosition& shape1,
-                         const CoordinateSystem& cSys1,
-                         const CoordinateSystem& cSys2,
-                         LogIO& os, uInt axis, Bool relax);
+   void _checkContiguous(
+		   Bool& isContig, Bool& warnContig, const IPosition& shape1,
+		   const CoordinateSystem& cSys1,
+		   const CoordinateSystem& cSys2,
+		   LogIO& os, uInt axis, Bool relax
+   );
+
    void checkNonConcatAxisCoordinates (Bool& warnRefPix, Bool& warnRefVal,
                                        Bool& warnInc, LogIO& os,
                                        const ImageInterface<T>& image,
@@ -273,6 +276,40 @@ private:
    Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
                              const Vector<Int>& stokes2);
    void setCoordinates();
+
+   void _doBeam(const ImageInterface<T>& image, const Bool relax);
+
+   void _doSingleBeam(const ImageInterface<T>& image, const Bool relax);
+
+   void _doMultiBeams(const ImageInterface<T>& image, const Bool relax);
+
+   static Bool _areBeamsEquivalent(
+		   const ImageInfo& infoThis, const ImageInfo& infoThat
+   );
+
+   /*
+   static Bool _areBeamsEqual(
+		   const Vector<Quantity>& beamThis,
+		   const Vector<Quantity>& beamThat
+   );
+   */
+
+   static Bool _areBeamsEqual(
+		const GaussianBeam& beamThis,
+		const ImageBeamSet& beamThat
+   );
+
+   /*
+   static Bool _areBeamsEqual(
+      		   const Array<Vector<Quantity> >& beamThis,
+      		   const Array<Vector<Quantity> >& beamThat
+         );
+	*/
+    void _logBeamMessages(
+		   const Bool relax, const String& msg1, const String msg2
+	);
+
+    void _appendBeams(const ImageInterface<T>& image);
 
   //# Make members of parent class known.
 public:

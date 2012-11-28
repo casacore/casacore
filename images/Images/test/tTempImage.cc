@@ -117,16 +117,16 @@ void doIt (TempImage<Int>& scratch)
   AlwaysAssertExit (scratch.units() == Unit("Jy"));
   // Test info handling.
   ImageInfo info = scratch.imageInfo();
-  AlwaysAssertExit (info.restoringBeam().nelements()==0);
-  Quantum<Double> a1(10.0,Unit("arcsec"));
-  Quantum<Double> a2(8.0,Unit("arcsec"));
-  Quantum<Double> a3(-45.0,Unit("deg"));
-  info.setRestoringBeam(a1, a2, a3);
+  AlwaysAssertExit (info.restoringBeam().isNull());
+  Quantity a1(10.0,Unit("arcsec"));
+  Quantity a2(8.0,Unit("arcsec"));
+  Quantity a3(-45.0,Unit("deg"));
+  info.setRestoringBeam(GaussianBeam(a1, a2, a3));
   scratch.setImageInfo(info);
   info = scratch.imageInfo();
-  AlwaysAssertExit (info.restoringBeam()(0)==a1);
-  AlwaysAssertExit (info.restoringBeam()(1)==a2);
-  AlwaysAssertExit (info.restoringBeam()(2)==a3);
+  AlwaysAssertExit (info.restoringBeam().getMajor()==a1);
+  AlwaysAssertExit (info.restoringBeam().getMinor()==a2);
+  AlwaysAssertExit (info.restoringBeam().getPA()==a3);
 }
 
 int main()
@@ -146,6 +146,39 @@ int main()
       AlwaysAssertExit (small.ok());
       AlwaysAssertExit (! small.isPaged());
       doIt (small);
+    }
+    {
+    	// per hyper-plane beam support
+    	TempImage<Int> temp((
+    		TiledShape(IPosition(4,64, 64, 4, 16))),
+    		CoordinateUtil::defaultCoords4D()
+    	);
+    	ImageInfo info = temp.imageInfo();
+    	Quantity maj(5, "arcsec");
+    	Quantity min(3, "arcsec");
+    	Quantity pa(30, "deg");
+    	info.setAllBeams(16, 4, GaussianBeam());
+    	Bool ok = True;
+    	try {
+    		temp.setImageInfo(info);
+    		ok = False;
+    	}
+    	catch (AipsError x) {
+    		cout << "Exception thrown as expected: "
+    			<< x.getMesg() << endl;
+    	}
+    	info.setBeam(0, 0, maj, min, pa);
+    	try {
+    		temp.setImageInfo(info);
+    		ok = False;
+    	}
+    	catch (AipsError x) {}
+    	for (uInt i=0; i<4; i++) {
+    		for (uInt j=0; j<16; j++) {
+    			info.setBeam(j, i, maj, min, pa);
+    		}
+    	}
+    	AlwaysAssert(temp.setImageInfo(info), AipsError);
     }
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;

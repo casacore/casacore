@@ -56,7 +56,7 @@ FluxCalcQS::FluxCalcQS() :
                                   "J0521+1638").vector();          // Jhhmm+ddmm, CAS-2020
   directions_p[FCQS::THREEC138] = MDirection(MVDirection(1.401346673041897, 0.2904130912582342),
 					     MDirection::J2000);
-  names_p[FCQS::NINETEEN34M638] = RigidVector<String, 1>("1934-638").vector();
+  names_p[FCQS::NINETEEN34M638] = RigidVector<String, 2>("1934-638","J1939-6342").vector();
   directions_p[FCQS::NINETEEN34M638] = MDirection(MVDirection(5.146176021557448, -1.1119977478136984),
 						  MDirection::J2000);
   names_p[FCQS::THREEC295] = RVS4("3C295", "1409+524", "1411+522",
@@ -66,6 +66,11 @@ FluxCalcQS::FluxCalcQS() :
   names_p[FCQS::THREEC196] = RVS4("3C196", "0809+483", "0813+482",
                                   "J0813+4813").vector();          // Jhhmm+ddmm, CAS-2020
   directions_p[FCQS::THREEC196] = MDirection(MVDirection(2.1537362969610023, 0.8415541320803659),
+					     MDirection::J2000);
+  // added for Perley-Butler 2013 4h 37m 4.375301s 29d 40' 13.819008" CAS-4489 (other alias:B0433+2934)
+  names_p[FCQS::THREEC123] = RVS4("3C123", "0433+295", "0437+296",
+                                  "J0437+2940").vector();
+  directions_p[FCQS::THREEC123] = MDirection(MVDirection(1.2089586878736391, 0.51784800786636209),
 					     MDirection::J2000);
   directions_p[FCQS::UNKNOWN_SOURCE] = MDirection();	// Default.
 }

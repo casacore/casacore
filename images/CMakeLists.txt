@@ -1,16 +1,22 @@
 #
 # CASA Images
 #
-
-BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
-FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
+if (APPLE)
+    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram COMPILE_FLAGS "-p ImageExprGram")
+    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ImageExprGram ImageExprGram.ycc WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
+else (APPLE)
+    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
+    FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
+endif (APPLE)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_images
-Regions/WCPolygon.cc
+Regions/WCEllipsoid.cc
 Regions/RegionManager.cc
 Regions/WCLELMask.cc
+Regions/WCPolygon.cc
 Regions/WCUnion.cc
 Regions/WCRegion2.cc
 Regions/RegionHandlerMemory.cc
@@ -28,35 +34,31 @@ Regions/WCBox.cc
 Regions/AipsIOReaderWriter.cc
 Regions/WCComplement.cc
 Regions/RegionHandlerHDF5.cc
-Images/AntennaResponses.cc
-Images/ImageInfo.cc
-Images/ImageMetaData.cc
-Images/ImagePolarimetry.cc
-Images/ImageExprGram.cc
-Images/MaskSpecifier.cc
-Images/ImageMomentsProgress.cc
+Images/FITSErrorImage.cc
 Images/FITSImage.cc
 Images/FITSImgParser.cc
-Images/PagedImage2.cc
+Images/FITSQualityImage.cc
+Images/FITSQualityMask.cc
+Images/HDF5Image2.cc
 Images/ImageAttrGroup.cc
 Images/ImageAttrGroupCasa.cc
 Images/ImageAttrGroupHDF5.cc
 Images/ImageAttrHandler.cc
 Images/ImageAttrHandlerCasa.cc
 Images/ImageAttrHandlerHDF5.cc
-Images/ImagePolProxy.cc
+Images/ImageBeamSet.cc
+Images/ImageExprGram.cc
 Images/ImageExprParse.cc
-Images/ImageOpener.cc
-Images/LELImageCoord.cc
-Images/ImageFFT.cc
-Images/ImageUtilities.cc
 Images/ImageFITS2Converter.cc
-Images/MIRIADImage.cc
-Images/HDF5Image2.cc
+Images/ImageInfo.cc
+Images/ImageMetaData.cc
+Images/ImageOpener.cc
 Images/ImageProxy.cc
-Images/ComponentImager.cc
-Images/ImageReorderer.cc
-Wnbt/ComponentUpdate.cc
+Images/ImageUtilities.cc
+Images/LELImageCoord.cc
+Images/MIRIADImage.cc
+Images/MaskSpecifier.cc
+Images/PagedImage2.cc
 ${BISON_ImageExprGram_OUTPUTS}
 ${FLEX_ImageExprGram_OUTPUTS}
 )
@@ -79,79 +81,48 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 )
 
 install (FILES
-Images/AntennaResponses.h
-Images/ComponentImager.h
 Images/CurvedImage2D.h
 Images/CurvedImage2D.tcc
 Images/ExtendImage.h
 Images/ExtendImage.tcc
 Images/FITS2Image.tcc
+Images/FITSErrorImage.h
 Images/FITSImage.h
 Images/FITSImgParser.h
+Images/FITSQualityImage.h
+Images/FITSQualityMask.h
 Images/HDF5Image.h
 Images/HDF5Image.tcc
-Images/Image2DConvolver.h
-Images/Image2DConvolver.tcc
-Images/ImageAttrGroup.h
-Images/ImageAttrGroupCasa.h
-Images/ImageAttrGroupHDF5.h
-Images/ImageAttrHandler.h
-Images/ImageAttrHandlerCasa.h
-Images/ImageAttrHandlerHDF5.h
+Images/ImageBeamSet.h
 Images/ImageConcat.h
 Images/ImageConcat.tcc
-Images/ImageConvolver.h
-Images/ImageConvolver.tcc
-Images/ImageDecomposer.h
-Images/ImageDecomposer.tcc
 Images/ImageExpr.h
 Images/ImageExpr.tcc
 Images/ImageExprGram.h
 Images/ImageExprParse.h
-Images/ImageFFT.h
 Images/ImageFITSConverter.h
 Images/ImageFITSConverter.tcc
-Images/ImageFit1D.h
-Images/ImageFit1D.tcc
-Images/ImageHistograms.h
-Images/ImageHistograms.tcc
 Images/ImageInfo.h
 Images/ImageInterface.h
 Images/ImageInterface.tcc
 Images/ImageMetaData.h
-Images/ImageMoments.h
-Images/ImageMoments.tcc
-Images/ImageMomentsProgress.h
 Images/ImageOpener.h
-Images/ImagePolProxy.h
-Images/ImagePolarimetry.h
 Images/ImageProxy.h
 Images/ImageRegrid.h
 Images/ImageRegrid.tcc
-Images/ImageReorderer.h
-Images/ImageSourceFinder.h
-Images/ImageSourceFinder.tcc
 Images/ImageStatistics.h
 Images/ImageStatistics.tcc
 Images/ImageSummary.h
 Images/ImageSummary.tcc
-Images/ImageTwoPtCorr.h
-Images/ImageTwoPtCorr.tcc
 Images/ImageUtilities.h
 Images/ImageUtilities2.tcc
 Images/LELImageCoord.h
 Images/MIRIADImage.h
 Images/MaskSpecifier.h
-Images/MomentCalculator.h
-Images/MomentCalculator.tcc
-Images/MomentsBase.h
-Images/MomentsBase.tcc
 Images/PagedImage.h
 Images/PagedImage.tcc
 Images/RebinImage.h
 Images/RebinImage.tcc
-Images/SepImageConvolver.h
-Images/SepImageConvolver.tcc
 Images/SubImage.h
 Images/SubImage.tcc
 Images/TempImage.h
@@ -174,6 +145,7 @@ Regions/WCComplement.h
 Regions/WCCompound.h
 Regions/WCConcatenation.h
 Regions/WCDifference.h
+Regions/WCEllipsoid.h
 Regions/WCExtension.h
 Regions/WCIntersection.h
 Regions/WCLELMask.h
@@ -191,6 +163,5 @@ DESTINATION include/casacore/images
 
 if (BUILD_TESTING)
     add_subdirectory (Images/test)
-    add_subdirectory (Wnbt/test)
     add_subdirectory (Regions/test)
 endif (BUILD_TESTING)

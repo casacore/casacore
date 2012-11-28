@@ -1267,8 +1267,8 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Double Tstart, Tend, Tint;
   // number of pointings:
   uInt nPts=qStartTimes.shape()(0);
-  AlwaysAssert(nPts==qStopTimes.shape()(0),AipsError);
-  AlwaysAssert(nPts==sourceNames.shape()(0),AipsError);
+  AlwaysAssert(Int(nPts)==qStopTimes.shape()(0),AipsError);
+  AlwaysAssert(Int(nPts)==sourceNames.shape()(0),AipsError);
 
   
   Tint = qIntegrationTime_p.getValue("s");

@@ -44,6 +44,7 @@
 #include <components/ComponentModels/ConstantSpectrum.h>
 #include <components/ComponentModels/Flux.h>
 #include <components/ComponentModels/GaussianShape.h>
+#include <components/ComponentModels/GaussianBeam.h>
 #include <components/ComponentModels/PointShape.h>
 #include <components/ComponentModels/SkyCompRep.h>
 #include <components/ComponentModels/SpectralIndex.h>
@@ -56,7 +57,7 @@
 
 #include <casa/namespace.h>
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
-                      const Vector<Quantum<Double> >& beam, const Unit& unit,
+                      const GaussianBeam& beam, const Unit& unit,
                       Double tol=1.0e-5);
 
 int main() {
@@ -207,10 +208,10 @@ int main() {
 
 // Make beam
 
-      Vector<Quantum<Double> > beam(3);
-      beam(0) = Quantum<Double>(10.0, "arcsec");
-      beam(1) = Quantum<Double>(5.0, "arcsec");
-      beam(2) = Quantum<Double>(-20.0, "deg");
+      // Vector<Quantum<Double> > beam(3);
+      GaussianBeam beam(
+    		  Quantity(10.0, "arcsec"), Quantity(5.0, "arcsec"), Quantity(-20.0, "deg")
+      );
       Unit unit("Jy/beam");
 
 // Now Flux and shape
@@ -249,12 +250,12 @@ int main() {
             Quantum<Double> peakFlux(1.0, brightnessUnit);
             Quantum<Double> integralFlux = 
                SkyCompRep::peakToIntegralFlux (dC, ComponentType::GAUSSIAN,
-                                               peakFlux, beam(0), beam(1),
+                                               peakFlux, beam.getMajor(), beam.getMinor(),
                                                beam);
             Quantum<Double> peakFlux2 = 
                 SkyCompRep::integralToPeakFlux (dC, ComponentType::GAUSSIAN,
                                                 integralFlux, brightnessUnit,
-                                                beam(0), beam(1), beam);
+                                                beam.getMajor(), beam.getMinor(), beam);
             AlwaysAssert(near(peakFlux.getValue(),peakFlux2.getValue()), AipsError);
          }
 
@@ -286,7 +287,7 @@ int main() {
 }
 
 Bool pixelReflection (const SkyCompRep& sky, const CoordinateSystem& cSys,
-                      const Vector<Quantum<Double> >& beam, const Unit& unit,
+                      const GaussianBeam& beam, const Unit& unit,
                       Double tol)
 {
    Vector<Double> pars1 = sky.toPixel(unit, beam, cSys, Stokes::I);

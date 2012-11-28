@@ -44,6 +44,7 @@
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <coordinates/Coordinates/LinearCoordinate.h>
 #include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/QualityCoordinate.h>
 #include <coordinates/Coordinates/TabularCoordinate.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <casa/Exceptions/Error.h>
@@ -56,6 +57,7 @@ DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
                                             MDirection::Types type=MDirection::J2000);
 SpectralCoordinate makeSpectralCoordinate ();
 StokesCoordinate makeStokesCoordinate(Bool silly=True);
+QualityCoordinate makeQualityCoordinate();
 LinearCoordinate makeLinearCoordinate(uInt nAxes=2);
 TabularCoordinate makeTabularCoordinate();
 CoordinateSystem makeCoordinateSystem(uInt& nCoords,
@@ -65,11 +67,13 @@ CoordinateSystem makeCoordinateSystem(uInt& nCoords,
                                       uInt& iSpC,
                                       uInt& iTC,
                                       uInt& iStC,
+                                      uInt& iQuC,
                                       uInt& iLC,
                                       DirectionCoordinate& dC,
                                       SpectralCoordinate& spC,
                                       TabularCoordinate& tC,
                                       StokesCoordinate& stC,
+                                      QualityCoordinate& quC,
                                       LinearCoordinate& lC);
 
 
@@ -80,11 +84,13 @@ void doit (CoordinateSystem& lc, uInt nCoords,
            const uInt iSpC,
            const uInt iTC,
            const uInt iStC,
+           const uInt iQuC,
            const uInt iLC,
            const DirectionCoordinate&,
            const SpectralCoordinate&,
            const TabularCoordinate&,
            const StokesCoordinate&,
+           const QualityCoordinate&,
            const LinearCoordinate&);
 void doit2 (CoordinateSystem& cSys);
 void doit3 (CoordinateSystem& cSys);
@@ -92,6 +98,7 @@ void doit4 ();
 void doit5 ();
 void doit6 ();
 void doit7 ();
+void verifyCAS3264 ();
 
 
 
@@ -105,25 +112,27 @@ int main()
       DirectionCoordinate dC;
       SpectralCoordinate spC;
       TabularCoordinate tC;
-      StokesCoordinate stC = makeStokesCoordinate();  // No default constrcutor
+      StokesCoordinate stC = makeStokesCoordinate();   // No default constrcutor
+      QualityCoordinate quC = makeQualityCoordinate(); // No default constrcutor
       LinearCoordinate lC;
       uInt iDC;
       uInt iSpC;
       uInt iTC;
       uInt iStC;
+      uInt iQuC;
       uInt iLC;
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
-                                                      iDC, iSpC, iTC, iStC, iLC,
-                                                      dC, spC, tC, stC, lC);
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
       }
       {
          CoordinateSystem cSys1 = makeCoordinateSystem(nCoords, types, sTypes,
-                                                       iDC, iSpC, iTC, iStC, iLC,
-                                                       dC, spC, tC, stC, lC);
+                                                       iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                       dC, spC, tC, stC, quC, lC);
          CoordinateSystem cSys2 = makeCoordinateSystem(nCoords, types, sTypes,
-                                                       iDC, iSpC, iTC, iStC, iLC,
-                                                       dC, spC, tC, stC, lC);
+                                                       iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                       dC, spC, tC, stC, quC, lC);
 
 // near tests
 
@@ -241,22 +250,36 @@ int main()
       }
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
-                                                      iDC, iSpC, iTC, iStC, iLC,
-                                                      dC, spC, tC, stC, lC);
-         doit(cSys, nCoords, types, sTypes, 
-              iDC, iSpC, iTC, iStC, iLC,
-              dC, spC, tC, stC, lC);
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
+
+         String oneStokes = cSys.stokesAtPixel((uInt)1);
+         if (oneStokes!="RL") {
+               throw(AipsError("Stokes value at pixel 1 is wrong!"));
+         }
+         String oneQual = cSys.qualityAtPixel((uInt)1);
+         if (oneQual!="ERROR") {
+               throw(AipsError("Quality value at pixel 1 is wrong!"));
+         }
       }
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
-                                                      iDC, iSpC, iTC, iStC, iLC,
-                                                      dC, spC, tC, stC, lC);
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
+         doit(cSys, nCoords, types, sTypes, 
+              iDC, iSpC, iTC, iStC, iQuC, iLC,
+              dC, spC, tC, stC, quC, lC);
+      }
+      {
+         CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
          doit2(cSys);
       }
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
-                                                      iDC, iSpC, iTC, iStC, iLC,
-                                                      dC, spC, tC, stC, lC);
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
          doit3(cSys);
       }
       {
@@ -270,13 +293,16 @@ int main()
       }
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
-                                                      iDC, iSpC, iTC, iStC, iLC,
-                                                      dC, spC, tC, stC, lC);
+                                                      iDC, iSpC, iTC, iStC, iQuC, iLC,
+                                                      dC, spC, tC, stC, quC, lC);
 //
          LogOrigin lO(String("tCoordinateSystem"), String("main()"), WHERE);
          LogIO os(lO);
          IPosition s1, s2;
          cSys.list(os, MDoppler::RADIO, s1, s2);
+      }
+      {
+    	  verifyCAS3264();
       }
 
 
@@ -297,16 +323,17 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
            const uInt iSpC,
            const uInt iTC,
            const uInt iStC,
+           const uInt iQuC,
            const uInt iLC,
            const DirectionCoordinate& dC,
            const SpectralCoordinate& spC,
            const TabularCoordinate& tC,
            const StokesCoordinate& stC,
+           const QualityCoordinate& quC,
            const LinearCoordinate& lC)
 {
 
 // Test copy constructor
-
    {
        CoordinateSystem cSys2(cSys);
        if (!cSys.near(cSys2)) {
@@ -395,10 +422,23 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    const Int stokesPixelAxis = cSys.pixelAxes(iC)(0);
    const Int stokesWorldAxis = cSys.worldAxes(iC)(0);
    const Int whichStokesCoordinate = iC;
+   //
+   iC = cSys.findCoordinate(Coordinate::QUALITY);
+   if (iC != Int(iQuC)) {
+	   throw(AipsError("Failed findCoordinate test 5"));
+   }
+   if (!quC.near(cSys.qualityCoordinate(uInt(iC)))) {
+	   msg = String("Failed qualityCoordinate test because ") +
+			   quC.errorMessage();
+	   throw(AipsError(msg));
+   }
+   const Int qualityPixelAxis = cSys.pixelAxes(iC)(0);
+   const Int qualityWorldAxis = cSys.worldAxes(iC)(0);
+   const Int whichQualityCoordinate = iC;
 //
    iC = cSys.findCoordinate(Coordinate::LINEAR);
    if (iC != Int(iLC)) {
-      throw(AipsError("Failed findCoordinate test 5"));
+      throw(AipsError("Failed findCoordinate test 6"));
    }
    if (!lC.near(cSys.linearCoordinate(uInt(iC)))) {
       msg = String("Failed linearCoordinate test because ") +   
@@ -579,8 +619,10 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    }
 //
    Double t = refValues(stokesWorldAxis);
-   refValues(0) = refValues(0)*2;
-   refValues(stokesWorldAxis) = t;
+   Double u = refValues(qualityWorldAxis);
+   refValues = refValues*(Double)2.0;
+   refValues(stokesWorldAxis)  = t;
+   refValues(qualityWorldAxis) = u;
    if (!cSys.setReferenceValue(refValues)) {
       throw(AipsError(String("Failed to set reference value because") 
             + cSys.errorMessage()));
@@ -590,8 +632,10 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    }
 //
    t = inc(stokesWorldAxis);
-   inc(0) = inc(0)*2;
-   inc(stokesWorldAxis) = t;
+   u = inc(qualityWorldAxis);
+   inc = inc*(Double)2.0;
+   inc(stokesWorldAxis)  = t;
+   inc(qualityWorldAxis) = u;
    if (!cSys.setIncrement(inc)) {
       throw(AipsError(String("Failed to set increment because") 
             + cSys.errorMessage()));
@@ -599,7 +643,18 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    if (!allNear(inc, cSys.increment(), 1e-6)) {
       throw(AipsError("Failed increment set/recovery test"));
    }
- //
+   //
+   t = inc(qualityWorldAxis);
+   inc(0) = inc(0)*2;
+   inc(qualityWorldAxis) = t;
+   if (!cSys.setIncrement(inc)) {
+	   throw(AipsError(String("Failed to set increment because")
+			   + cSys.errorMessage()));
+   }
+   if (!allNear(inc, cSys.increment(), 1e-6)) {
+	   throw(AipsError("Failed increment set/recovery test"));
+   }
+    //
    {
      iC = cSys.findCoordinate(Coordinate::DIRECTION);
      Vector<Int> worldAxes = cSys.worldAxes(iC);
@@ -631,8 +686,10 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       }
    }
    t = refPixels(stokesPixelAxis);
-   refPixels(0) = refPixels(0)*2;
+   u = refPixels(qualityPixelAxis);
+   refPixels = refPixels*(Double)2.0;
    refPixels(stokesPixelAxis) = t;
+   refPixels(qualityPixelAxis) = u;
    if (!cSys.setReferencePixel(refPixels)) {
       throw(AipsError(String("Failed to set reference pixel because") 
             + cSys.errorMessage()));
@@ -663,14 +720,29 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       }
    }
    Matrix<Double> xform = cSys.linearTransform();
-   xform(0,0) = 10.0;
+   xform(0,0) = 10.0; // this affects the direction coordinate which enforces that 
+                      // the linear transform rows pertaining to it obey 
+                      // for each i: xform(i,0)^2 + xform(i,1)^s == 1.0
+                      // The normalization is tranferred to the increment.
+   Matrix<Double> xformOut(cSys.nWorldAxes(), cSys.nWorldAxes());
+   xformOut = 0.;
+   xformOut.diagonal() = 1.0;
+   Vector<Double> cdeltOut; 
+   cdeltOut = cSys.increment();
+   cdeltOut(0) *= 10.;
+
    if (!cSys.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") 
             + cSys.errorMessage()));
    }
-   if (!allNear(xform, cSys.linearTransform(), 1e-6)) {
-      throw(AipsError("Failed linear transform set/recovery test"));
+
+   if (!allNear(xformOut, cSys.linearTransform(), 1e-6)) {
+      throw(AipsError("Failed linear transform set/recovery test (wrong resulting xform)"));
    }
+   if (!allNear(cdeltOut, cSys.increment(), 1E-6)) {
+      throw(AipsError("Failed linear transform set/recovery test (wrong resulting cdelt)"));
+   }
+
 //
 // Test FITS interface.  Do this with a CS without a TabularCoordinate
 // because that is not reflected back by the FITS  conversion
@@ -690,16 +762,21 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    {
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeDirectionCoordinate(False));
-      StokesCoordinate stokesCoord = makeStokesCoordinate(False);
+      StokesCoordinate  stokesCoord = makeStokesCoordinate(False);
       uInt shapeStokes = stokesCoord.stokes().nelements();
       uInt stokesAxis = 2;
+      QualityCoordinate qualCoord   = makeQualityCoordinate();
+      uInt shapeQual = qualCoord.quality().nelements();
+      uInt qualAxis  = 3;
       cSys2.addCoordinate(stokesCoord);
+      cSys2.addCoordinate(qualCoord);
       cSys2.addCoordinate(makeSpectralCoordinate());
       cSys2.addCoordinate(makeLinearCoordinate());
 //
       Record rec;
       IPosition shape(cSys2.nPixelAxes(),64);
       shape(stokesAxis) = shapeStokes;
+      shape(qualAxis)   = shapeQual;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
                         True, True)) {
          throw(AipsError(String("Failed to convert to FITS header (1)")));
@@ -873,6 +950,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       CoordinateSystem cSys2, cSys3;
       cSys2.addCoordinate(makeDirectionCoordinate());
       cSys2.addCoordinate(makeStokesCoordinate(False));
+      cSys2.addCoordinate(makeQualityCoordinate());
       cSys2.addCoordinate(makeLinearCoordinate());
       cSys3 = cSys2;
 //
@@ -956,7 +1034,8 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         }
         Vector<Double> pixel = cSys.referencePixel();
         Vector<Double> pixel2 = cSys2.referencePixel() + 1.0;
-        pixel2(stokesPixelAxis) = pixel(stokesPixelAxis);
+        pixel2(stokesPixelAxis)  = pixel(stokesPixelAxis);
+        pixel2(qualityPixelAxis) = pixel(qualityPixelAxis);
         if (!allNear(pixel, pixel2, 1e-6)) {
            throw(AipsError("Failed originShift test 1"));
         }   
@@ -967,14 +1046,15 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
            throw(AipsError("Failed originShift creation test 2"));
         }
         Vector<Double> pixel3 = cSys3.referencePixel() + 1.0;
-        pixel3(stokesPixelAxis) = pixel(stokesPixelAxis);
+        pixel3(stokesPixelAxis)  = pixel(stokesPixelAxis);
+        pixel3(qualityPixelAxis) = pixel(qualityPixelAxis);
         if (!allNear(pixel, pixel3, 1e-6)) {
            throw(AipsError("Failed originShift test 2"));
         }   
       }
 //
       {
-        originShift = 1.0;
+        originShift = 0.0;
         pixinc = 2.0;
         Vector<Int> newShape;
 //
@@ -982,12 +1062,20 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
            CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
            Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
            Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
-           Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
+           Vector<Int> oldQual   = cSys.qualityCoordinate(whichQualityCoordinate).quality();
+           Vector<Int> newQual   = cSys2.qualityCoordinate(whichQualityCoordinate).quality();
+           Vector<Int> newStokes2 = oldStokes(IPosition(1,0),
                                               IPosition(1,oldStokes.nelements()-1),
                                               IPosition(1,2));
+           Vector<Int> newQual2   = oldQual(IPosition(1,0),
+                   IPosition(1,oldQual.nelements()-1),
+                   IPosition(1,2));
            if (!allEQ(newStokes, newStokes2)) {
               throw(AipsError("Failed Stokes originShift Stokes test"));
            } 
+           if (!allEQ(newQual, newQual2)) {
+              throw(AipsError("Failed Quality originShift Quality test"));
+           }
         }
 //
         {
@@ -995,11 +1083,19 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
            cSys2.subImageInSitu (originShift, pixinc, newShape);
            Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
            Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
-           Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
+           Vector<Int> oldQual   = cSys.qualityCoordinate(whichQualityCoordinate).quality();
+           Vector<Int> newQual   = cSys2.qualityCoordinate(whichQualityCoordinate).quality();
+           Vector<Int> newStokes2 = oldStokes(IPosition(1,0),
                                               IPosition(1,oldStokes.nelements()-1),
                                               IPosition(1,2));
+           Vector<Int> newQual2   = oldQual(IPosition(1,0),
+                   IPosition(1,oldQual.nelements()-1),
+                   IPosition(1,2));
            if (!allEQ(newStokes, newStokes2)) {
               throw(AipsError("Failed Stokes originShift Stokes test"));
+           }
+           if (!allEQ(newQual, newQual2)) {
+              throw(AipsError("Failed Quality originShift Quality test"));
            }
          }
       }
@@ -1013,15 +1109,22 @@ void doit2 (CoordinateSystem& cSys)
    Int stokesWorldAxis = -1;
    Int iC = cSys.findCoordinate(Coordinate::STOKES);
    if (iC>=0) {
-      stokesPixelAxis = cSys.pixelAxes(iC)(0);
-      stokesWorldAxis = cSys.worldAxes(iC)(0);
+	   stokesPixelAxis = cSys.pixelAxes(iC)(0);
+	   stokesWorldAxis = cSys.worldAxes(iC)(0);
+   }
+   Int qualityPixelAxis = -1;
+   Int qualityWorldAxis = -1;
+   iC = cSys.findCoordinate(Coordinate::QUALITY);
+   if (iC>=0) {
+	   qualityPixelAxis = cSys.pixelAxes(iC)(0);
+	   qualityWorldAxis = cSys.worldAxes(iC)(0);
    }
 //
 // Test conversion
 //
    Vector<Double> pixel(cSys.referencePixel()), world;
    if (!cSys.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ")
+      throw(AipsError(String("toWorld #1 conversion failed because ")
              + cSys.errorMessage()));
    }
    if (!allNear(world, cSys.referenceValue(), 1e-6)) {
@@ -1039,11 +1142,11 @@ void doit2 (CoordinateSystem& cSys)
    pixel(0) = 123.0;
    Vector<Double> pixel2(pixel.copy());
    if (!cSys.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ")
+      throw(AipsError(String("toWorld #2 conversion failed because ")
              + cSys.errorMessage()));
    }
    if (!cSys.toPixel(pixel, world)) {
-      throw(AipsError(String("toPixel conversion failed because ")
+      throw(AipsError(String("toPixel #3 conversion failed because ")
              + cSys.errorMessage()));
    }
    if (!allNear(pixel2, pixel, 1e-6)) {
@@ -1052,15 +1155,16 @@ void doit2 (CoordinateSystem& cSys)
 //
    pixel = 2.0;
    pixel(stokesPixelAxis) = 0.0;
+   pixel(qualityPixelAxis)= 0.0;
    IPosition iPixel(pixel.nelements());
    for (uInt i=0; i<iPixel.nelements(); i++) iPixel(i) = Int(pixel(i));
    Vector<Double> world2;
    if (!cSys.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld conversion failed because ")
+      throw(AipsError(String("toWorld #4 conversion failed because ")
                      + cSys.errorMessage()));
    }
    if (!cSys.toWorld(world2, iPixel)) {
-      throw(AipsError(String("toWorld conversion failed because ")
+      throw(AipsError(String("toWorld #5 conversion failed because ")
                      + cSys.errorMessage()));
    }
    if (!allNear(world, world2, 1e-6)) {
@@ -1106,7 +1210,6 @@ void doit2 (CoordinateSystem& cSys)
             throw(AipsError("Coordinate makePixelRelative 1 gave wrong results"));
       }
 //
-
       pixel4 = refPix + 1.0;
       Vector<Double> tmp = pixel4.copy();
       cSys.makePixelRelative(pixel4);
@@ -1138,7 +1241,9 @@ void doit2 (CoordinateSystem& cSys)
       Vector<Double> refVal = cSys.referenceValue();
       Vector<Double> world4 = refVal.copy();
       cSys.makeWorldRelative(world4);
-      result = 0.0; result(stokesWorldAxis) = refVal(stokesWorldAxis);
+      result = 0.0;
+      result(stokesWorldAxis)  = refVal(stokesWorldAxis);
+      result(qualityWorldAxis) = refVal(qualityWorldAxis);
       if (!allNearAbs(world4, result, 1e-6)) {
             throw(AipsError("makeWorldRelative 1 gave wrong results"));
       }
@@ -1260,10 +1365,11 @@ void doit3 (CoordinateSystem& cSys)
    {
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeStokesCoordinate(False));
+      cSys2.addCoordinate(makeQualityCoordinate());
       cSys2.addCoordinate(makeDirectionCoordinate(False, MDirection::B1950));
       cSys2.addCoordinate(makeLinearCoordinate());
       CoordinateSystem cSys3 = cSys2;
-      cSys3.replaceCoordinate(makeDirectionCoordinate(False, MDirection::J2000),1);
+      cSys3.replaceCoordinate(makeDirectionCoordinate(False, MDirection::J2000),2);
 //
       Vector<Int> worldAxisMap, worldAxisTranspose;
       Vector<Int> pixelAxisMap, pixelAxisTranspose;
@@ -1280,8 +1386,8 @@ void doit3 (CoordinateSystem& cSys)
           !allEQ(wTranspose, worldAxisTranspose)) {
          throw(AipsError("Failed worldMap test 1a"));
       }
-      if (refChange(0)!=False || refChange(1)!=True ||
-          refChange(2)!=True || refChange(3)!=False) {
+      if (refChange(0)!=False || refChange(2)!=True ||
+          refChange(3)!=True || refChange(4)!=False) {
          throw(AipsError("Failed worldMap test 1b"));
       }
 //
@@ -1330,8 +1436,8 @@ void doit3 (CoordinateSystem& cSys)
           !allEQ(newTranspose, worldAxisTranspose)) {
          throw(AipsError("Failed worldMap test 2a"));
       }
-      if (refChange(0)!=False || refChange(1)!=True ||
-          refChange(2)!=True || refChange(3)!=False) {
+      if (refChange(0)!=False || refChange(2)!=True ||
+          refChange(3)!=True || refChange(4)!=False) {
          throw(AipsError("Failed worldMap test 2b"));
       }
       if (!allEQ(newMap, pixelAxisMap) ||
@@ -2023,6 +2129,15 @@ StokesCoordinate makeStokesCoordinate(Bool silly)
    }
 }
  
+QualityCoordinate makeQualityCoordinate()
+{
+	Vector<Int> whichQuality(2);
+	whichQuality(0) = Quality::DATA;
+	whichQuality(1) = Quality::ERROR;
+
+	//
+	return QualityCoordinate(whichQuality);
+}
 
 LinearCoordinate makeLinearCoordinate (uInt nAxes)
 {
@@ -2069,42 +2184,49 @@ CoordinateSystem makeCoordinateSystem(uInt& nCoords,
                                       uInt& iSpC,
                                       uInt& iTC,
                                       uInt& iStC,
+                                      uInt& iQuC,
                                       uInt& iLC,
                                       DirectionCoordinate& dC,
                                       SpectralCoordinate& spC,
                                       TabularCoordinate& tC,
                                       StokesCoordinate& stC,
+                                      QualityCoordinate& quC,
                                       LinearCoordinate& lC)
 {
    CoordinateSystem cSys;
-   dC = makeDirectionCoordinate();
+   dC  = makeDirectionCoordinate();
    spC = makeSpectralCoordinate();
-   tC = makeTabularCoordinate();
+   tC  = makeTabularCoordinate();
    stC = makeStokesCoordinate();
-   lC = makeLinearCoordinate();
+   quC = makeQualityCoordinate();
+   lC  = makeLinearCoordinate();
    cSys.addCoordinate(dC);
    cSys.addCoordinate(spC);
    cSys.addCoordinate(tC);
    cSys.addCoordinate(stC);
+   cSys.addCoordinate(quC);
    cSys.addCoordinate(lC);
-   iDC = 0;
+   iDC  = 0;
    iSpC = 1;
-   iTC = 2;
+   iTC  = 2;
    iStC = 3;
-   iLC = 4;
-   nCoords = 5;
-   types.resize(5);
+   iQuC = 4;
+   iLC  = 5;
+   nCoords = 6;
+   types.resize(6);
    types(0) = Coordinate::DIRECTION;
    types(1) = Coordinate::SPECTRAL;
    types(2) = Coordinate::TABULAR;
    types(3) = Coordinate::STOKES;
-   types(4) = Coordinate::LINEAR;
-   sTypes.resize(5);
+   types(4) = Coordinate::QUALITY;
+   types(5) = Coordinate::LINEAR;
+   sTypes.resize(6);
    sTypes(0) = "Direction";
    sTypes(1) = "Spectral";
    sTypes(2) = "Tabular";
    sTypes(3) = "Stokes";
-   sTypes(4) = "Linear";
+   sTypes(4) = "Quality";
+   sTypes(5) = "Linear";
    return cSys;
 }
 
@@ -2223,4 +2345,23 @@ void doit6 ()
       }
       delete pC;
    }
+
 }
+   void verifyCAS3264() {
+	   cout << __FUNCTION__ << endl;
+	   CoordinateSystem cSys;
+	   SpectralCoordinate spC = makeSpectralCoordinate();     // 0
+	   cSys.addCoordinate(spC);
+	   DirectionCoordinate dC = makeDirectionCoordinate();    // 1 & 2
+	   cSys.addCoordinate(dC);
+	   cout << cSys.nPixelAxes();
+	   Vector<Double> ftRef(3);
+	   Vector<Double> ref(3);
+	   ref(0)= 22.5;
+	   ref(1)= 18.2;
+	   ref(2) = 31.48;
+	   cerr << "Utils: ref = " << ref << endl;
+	   cSys.setReferencePixel(ref);
+	   cerr << "Utils coords.refpix: " << cSys.referencePixel() << endl;
+   }
+

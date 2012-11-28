@@ -108,11 +108,16 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
     return True;
 }
 
-FitsKeywordList FITSKeywordUtil::makeKeywordList()
+FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage)
 {
     FitsKeywordList retval;
-
-    retval.mk(FITS::SIMPLE, True, "Standard FITS");
+    if (primHead)
+   	 retval.mk(FITS::SIMPLE, True, "Standard FITS");
+    else
+   	 if (binImage)
+   		 retval.mk(FITS::XTENSION,"IMAGE   ","IMAGE extension");
+   	 else
+   		 retval.mk(FITS::XTENSION,"BINTABLE   ","TABLE extension");
     return retval;
 }
 

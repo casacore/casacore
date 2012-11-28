@@ -107,6 +107,7 @@ public:
       GAUSSIAN = 0,
       DISK = 1,
       LEVEL=2,
+      PLANE=3,
       nTypes
     };
 

@@ -114,6 +114,8 @@ int main(int argc, const char *argv[])
    Vector<Double> truePA(nModels);
 //
    Vector<Bool> saveMask;
+   Vector<Double> startParameters;
+   Vector<Bool> parameterMask;
    for (Int i=0; i<nModels; i++) {
 
 // Add model to data array
@@ -129,7 +131,7 @@ int main(int argc, const char *argv[])
 // Set Parameters mask
 
       Vector<Double> parameters(gauss2d.nparameters());
-      Vector<Bool> parameterMask(gauss2d.nparameters(), True);
+      parameterMask = Vector<Bool>(gauss2d.nparameters(), True);
       for (uInt j=0; j<parameters.nelements(); j++) {
          parameters(j) = gauss2d[j];
          if (mask[j]==0) {
@@ -149,7 +151,7 @@ int main(int argc, const char *argv[])
 
 // Set starting guess
 
-      Vector<Double> startParameters(parameters.copy());
+      startParameters = parameters.copy();
       for (uInt j=0; j<parameters.nelements(); j++) {
          startParameters(j) = parameters(j) * 0.9;
       }
@@ -260,9 +262,56 @@ int main(int argc, const char *argv[])
          cout << "Assignment test ok" << endl;
       }
    }
+
+
+   Fit2D fitter3(logger);
+   fitter3.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
+   Array<Float> pixels3 = pixels.copy();
+   pixels3.set(4.5);
+
+   Double noise3 = 1;
+   //cout << "noise " << noise3 << endl;
+
+
+   addNoise (pixels3, sigma, noise3);
+
+   fitter3.fit(pixels3, sigma);
+   cout << "const solution " << fitter3.availableSolution() << endl;
+   cout << "const error " << fitter3.availableErrors() << endl;
+   cout << "Chi squared = " << fitter3.chiSquared() << endl << endl;
+   cout << "Number of iterations = " << fitter3.numberIterations() << endl;
+   cout << "Number of points     = " << fitter3.numberPoints() << endl;
+
+   Fit2D fitter4(logger);
+   Array<Float> pixels4 = pixels3;
+   pixels4.set(5);
+   pixels4 += pixels.copy();
+
+   fitter4.addModel (Fit2D::GAUSSIAN, startParameters, parameterMask);
+   fitter4.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
+   fitter4.fit(pixels4, sigma);
+   cout << "const solution " << fitter4.availableSolution() << endl;
+   cout << "const error " << fitter4.availableErrors() << endl;
+   cout << "Chi squared = " << fitter4.chiSquared() << endl << endl;
+   cout << "Number of iterations = " << fitter4.numberIterations() << endl;
+   cout << "Number of points     = " << fitter4.numberPoints() << endl;
+
+
+/*
+   fitter.addModel(Fit2D::LEVEL, Vector<Double>(1, 4.5));
+   Array<Float> pixels4 = pixels + pixels3;
+   fitter.fit(pixels4, sigma);
+   cout << "const solution " << fitter.availableSolution() << endl;
+   cout << "const error " << fitter.availableErrors() << endl;
+   cout << "Chi squared = " << fitter.chiSquared() << endl << endl;
+   cout << "Number of iterations = " << fitter.numberIterations() << endl;
+   cout << "Number of points     = " << fitter.numberPoints() << endl;
+*/
+
  } catch (AipsError x) {
       cout << "Failed with message " << x.getMesg() << endl;
  }   
+
 }
 
 Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double xcen, Double ycen,

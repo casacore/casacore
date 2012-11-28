@@ -699,20 +699,43 @@ String TwoSidedShape::sizeToString(
 	summary << std::fixed << setprecision(precision1);
 	summary << "       --- major axis FWHM:     " << major.getValue();
 	if (includeUncertainties) {
-		summary << " +/- " << majorErr.getValue();
+		if (majorErr.getValue() == 0) {
+			summary << " " << prefUnits << " (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << majorErr.getValue()
+				<< " " << prefUnits << endl;
+		}
 	}
-	summary << " " << prefUnits << endl;
+	else {
+		summary << " " << prefUnits << endl;
+	}
 	summary << "       --- minor axis FWHM:     " << minor.getValue();
 	if (includeUncertainties) {
-		summary << " +/- " << minorErr.getValue();
+		if (minorErr.getValue() == 0) {
+			summary << " " << prefUnits << " (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << minorErr.getValue()
+				<< " " << prefUnits << endl;
+		}
 	}
-	summary << " "<< prefUnits << endl;
+	else {
+		summary << " " << prefUnits << endl;
+	}
 	summary << setprecision(precision2);
 	summary << "       --- position angle: " << pa;
 	if (includeUncertainties) {
-		summary << " +/- " << dpa;
+		if (dpa == 0) {
+			summary << "deg (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << dpa << " deg" << endl;
+		}
 	}
-	summary << " deg" << endl;
+	else {
+		summary << " deg" << endl;
+	}
 	return summary.str();
 }
 

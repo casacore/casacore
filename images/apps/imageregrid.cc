@@ -67,7 +67,7 @@ int main(int argc, const char* argv[]) {
     inputs.create("shape", "", "Output image shape", "Block<Int>");
     inputs.create("refval", "", "New center of the image in degrees (reference value)", 
 		  "Block<Double>");
-    inputs.create("interpolation", "linear", "Interpolation method (linear, nearest, cubic)");
+    inputs.create("interpolation", "linear", "Interpolation method (linear, nearest, cubic,lanczos)");
     inputs.readArguments(argc, argv);
 
     const String in = inputs.getString("in");

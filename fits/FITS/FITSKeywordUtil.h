@@ -128,11 +128,14 @@ template<class T> class Vector;
 class FITSKeywordUtil
 {
 public:
-    // Make an initial FitsKeywordList containing only "SIMPLE = T" which
-    // is required of any FITS keyword list. This is provided as a convenience
-    // so that you do not have to know anything about the class
+    // Make an initial FitsKeywordList for either a FITS primary header
+	 // or a FITS extension header (image or table). A primary header
+	 // requires "SIMPLE = T", an extension header "XTENSION = IMAGE "
+	 // or "XTENSION = BINTABLE " for image or table, respectively.
+    // This is required of any FITS keyword list. This is provided as
+	 // a convenience so that you do not have to know anything about the class
     // <linkto class=FitsKeywordList>FitsKeywordList</linkto>.
-    static FitsKeywordList makeKeywordList(); 
+    static FitsKeywordList makeKeywordList(Bool primHead=True, Bool binImage=True);
 
     // Add the fields from in to the out FitsKeywordList as keywords.
     // Upcases field names, turns arrays into indexed keywords, tries to interleave

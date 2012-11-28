@@ -58,6 +58,11 @@ int main()
         throw(AipsError("Failed typeToString for STOKES"));
      }
 //
+     type = Coordinate::typeToString(Coordinate::QUALITY);
+     if (type!=String("Quality")) {
+        throw(AipsError("Failed typeToString for QUALITY"));
+     }
+//
      type = Coordinate::typeToString(Coordinate::LINEAR);
      if (type!=String("Linear")) {
         throw(AipsError("Failed typeToString for LINEAR"));

@@ -130,6 +130,7 @@ class Projection;
 //
 // <thrown>
 //   <li>  AipsError
+//   <li>  AllocError
 // </thrown>
 //
 // <todo asof="1997/1/13">
@@ -154,6 +155,8 @@ public:
 	// A one-dimensional Cooordinate system, usually created from a table
         // although it can also be purely linear.
 	TABULAR,
+	// to mark DATA and ERROR values
+	QUALITY,
 	// A CoordinateSystem (a collection of Coordinates).
 	COORDSYS };
 
@@ -430,13 +433,17 @@ public:
                               Int defPrecScientific,
                               Int defPrecFixed,
                               Int defPrecTime) const;
-    virtual String format(String& units,
-                          Coordinate::formatType format, 
-                          Double worldValue, 
-                          uInt axis, 
-                          Bool isAbsolute=True,
-                          Bool showAsAbsolute=True,
- 			  Int precision=-1) const;
+    virtual String format(
+    	String& units,
+    	Coordinate::formatType format,
+    	Double worldValue,
+    	uInt axis,
+    	Bool isAbsolute=True,
+    	Bool showAsAbsolute=True,
+    	Int precision=-1,
+    	Bool usePrecForMixed=False
+    ) const;
+
     String formatQuantity(String& units,
                           Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 
@@ -458,7 +465,7 @@ public:
 
     // Comparison only made for specified axes in this and other Coordinate 
     // The default implementation should be ok for all Coordinate types
-    // except Stokes...
+    // except Stokes and Quality...
     virtual Bool doNearPixel (const Coordinate& other, 
                               const Vector<Bool>&  thisAxes,
                               const Vector<Bool>& otherAxes,

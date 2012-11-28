@@ -252,7 +252,8 @@ class FITS {
 	    OBJECT,   OBSERVER, ORIGIN,   PCOUNT,   PSCAL,    PTYPE,
 	    PZERO_FITS,    REFERENC, SIMPLE,   SPACES,   TBCOL,    TDIM,
 	    TDISP,    TELESCOP, TFIELDS,  TFORM,    THEAP,    TNULL,
-	    TSCAL,    TTYPE,    TUNIT,    TZERO,    XTENSION, ERRWORD
+	    TSCAL,    TTYPE,    TUNIT,    TZERO,    XTENSION, ERRWORD,
+            ALTRPIX, DATE_MAP
 	};
 
 	// Types of FITS Records
@@ -269,7 +270,8 @@ class FITS {
 	// Types of FITS Header-Data Units
 	enum HDUType {
 	    NotAHDU, PrimaryArrayHDU, PrimaryGroupHDU, AsciiTableHDU,
-	    BinaryTableHDU, ImageExtensionHDU, UnknownExtensionHDU
+	    BinaryTableHDU, ImageExtensionHDU, UnknownExtensionHDU,
+            PrimaryTableHDU
 	};
 
 	// Options on FITS array manipulations

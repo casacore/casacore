@@ -36,6 +36,10 @@
 #include <casa/Quanta/Quantum.h>
 #include <casa/BasicSL/String.h>
 
+#include <coordinates/Coordinates/CoordinateSystem.h>
+
+#include <images/Images/ImageBeamSet.h>
+
 //# Forward declarations
 #include <casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -59,12 +63,12 @@ class LoggerHolder;
 // This class is used to record information about an image.
 // At present it contains the following:
 // <ol>
-//    <li> The restoring beam
+//    <li> The restoring beam(s)
 //    <li> A parameter describing what quantity the image holds.
 //    <li> The image object name.
 // </ol>
-// This list can easily be extended if necessary.
 //
+// Support for per plane (eg channel) dependent beams have been added.
 // </synopsis>
 //
 // <example>
@@ -84,10 +88,6 @@ class LoggerHolder;
 // This sort of information needed a standard place to go with a
 // standard interface so it could be moved out of MiscInfo.
 // </motivation>
-//
-// <todo asof="2002/02/05">
-//   <li> Probably add the image min and max
-// </todo>
 
 class ImageInfo : public RecordTransformable
 {
@@ -125,27 +125,34 @@ public:
 // Assignment (copy semantics)
     ImageInfo &operator=(const ImageInfo &other);
 
-// Set and get the restoring beam.  Vector beam in order
-// major axis, minor axis, position angle.
-// <group>
-    Vector<Quantum<Double> > restoringBeam() const;
+    // Set and get the beam.  Zero-based <src>channel</src>
+    // and <src>polarization</src> are
+    // necessary and used if and only if the ImageBeamSet
+    // has multiple beams. If just a single beam, that beam
+    // is returned. If no (or a null) beam, a null beam is returned.
+    // <group>
+    GaussianBeam restoringBeam(
+    	const Int channel=-1, const Int polarization=-1
+    ) const;
 
-    ImageInfo& setRestoringBeam(const Record& inRecord);
-    ImageInfo& setRestoringBeam(const Vector<Quantum<Double> >& beam);
-    ImageInfo& setRestoringBeam(const Quantum<Double>& major,
-                                const Quantum<Double>& minor,
-                                const Quantum<Double>& pa);
-    ImageInfo& removeRestoringBeam();
+    // set the single global restoring beam. An exception will be
+    // thrown if this object already has multiple beams. In that case,
+    // the caller must call removeRestoringBeam() first.
+    void setRestoringBeam(const GaussianBeam& beam);
+
+    // Remove all beams (global or per plane) associated with this object.
+    void removeRestoringBeam();
 // </group>
 
-// Get the restoring beam from a LoggerHolder (where the history is stored)
-// as AIPS writes the beam in the FITS history rather than the header keywords.  
-// If there is no beam,  False is returned, and the internal state of the object
-// is unchanged.
-   Bool getRestoringBeam (LoggerHolder& logger);
+    // This method is not meant for common use. New code should not use it.
+    // Get the restoring beam from a LoggerHolder (where the history is stored)
+    // as AIPS writes the beam in the FITS history rather than the header keywords.
+    // If there is no beam,  False is returned, and the internal state of the object
+    // is unchanged.
+    Bool getRestoringBeam (LoggerHolder& logger);
 
-// Set and get the Image Type.  
-// <group>
+    // Set and get the Image Type.
+    // <group>
     ImageInfo::ImageTypes imageType () const;
     ImageInfo& setImageType(ImageTypes type);
     static String imageType(ImageInfo::ImageTypes type);
@@ -174,9 +181,10 @@ public:
 // the various values are so you can check if they have been set.
 // The default restoring beam is a null vector.
 // <group>
-    static Vector<Quantum<Double> > defaultRestoringBeam();
+//    static GaussianBeam defaultRestoringBeam();
     static ImageTypes defaultImageType();
     static String defaultObjectName();
+    static GaussianBeam defaultRestoringBeam();
 // </group>
 
 // Functions to interconvert between an ImageInfo and FITS keywords
@@ -193,11 +201,6 @@ public:
     Bool toFITS(String & error, RecordInterface & outRecord) const;
     Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
 // </group>
-
-// Old version
-//    Bool fromFITSOld(Vector<String>& error, const RecordInterface & inRecord);
-
-
 
 // This function takes an unofficial fitsValue found on the Stokes axis
 // and returns the appropriate ImageType.  The idea is that you 
@@ -218,13 +221,101 @@ public:
 // and so these will return Undefined.
    static ImageInfo::ImageTypes MiriadImageType (const String& type);
 
+   // get the beam set associated with this object
+   const ImageBeamSet& getBeamSet() const;
+
+    // <group>
+    // set the beam for a specific plane. A value of <src>channel</src> or <src>stokes</src>
+    // of less than 0 means that particular coordinate does not exist. Obviously, at least
+    // one of these must be zero or greater. The only consistency checking that is done is
+    // to ensure the values of <src>channel</src> and <src>stokes</src> are consistent with
+    // the size of the beam array
+    // Additional consistency checks are done when this object is added via
+    // ImageInterface<T>::setImageInfo().
+
+    void setBeam(
+    	const Int channel, const Int stokes, const Quantity& major,
+    	const Quantity& minor, const Quantity& pa
+    );
+
+    void setBeam(
+    	const Int channel, const Int stokes, const GaussianBeam& beam
+    );
+
+    // </group>
+
+    // does this object contain multiple beams?
+    Bool hasMultipleBeams() const;
+
+    // does this object conain a single beam
+    Bool hasSingleBeam() const;
+
+    // does this object contain one or more beams?
+    Bool hasBeam() const;
+
+    // inline const Array<Vector<Quantity> >& getHyperPlaneBeams() const { return _hyperplaneBeams; }
+
+    // <group>
+    // Number of channels and polarizations in per hyper-plane beam array
+    uInt nChannels() const;
+    uInt nStokes() const;
+    // </group>
+
+    // <group>
+
+    // initialize all per-plane beams to the same value
+    void setAllBeams(
+    	const uInt nChannels, const uInt nPolarizations,
+    	const GaussianBeam& beam
+    );
+    // set the per plane beams array directly. If the dimensionality of <src>beams</src>
+    // is 1, one <src>hasSpectral</src> or <src>hasPolarization</src> must be True and
+    // the other False. If the dimensionality of <src>beams</src> is 2,
+    // <src>hasSpectral</src> and <src>hasPolarization</src> are ignored.
+    void setBeams(const ImageBeamSet& beams);
+    // </group>
+
+    Record beamToRecord(const Int channel, const Int stokes) const;
+
+     // Create a new ImageInfo object in which the multi beam info is adapted
+    // to the image properties.
+    ImageInfo adaptMultiBeam (const CoordinateSystem& coords,
+                              const IPosition& shape,
+                              const String& imageName,
+                              LogIO& logSink) const;
+
 private:
-    Vector<Quantum<Double> > itsRestoringBeam;
+    // Vector<Quantum<Double> > itsRestoringBeam;
+    ImageBeamSet _beams;
     ImageInfo::ImageTypes itsImageType;
     String itsObjectName;
-
+   //  Array<Vector<Quantum<Double> > > _hyperplaneBeams;
+   // uInt _nStokes, _nChannels;
 // Common copy ctor/assignment operator code.
     void copy_other(const ImageInfo &other);
+
+    void _validateChannelStokes(Int& channel, Int& stokes) const;
+
+    // Get the beam for hyper plane for the corresponding channel and/or stokes. If no frequency
+    // axis, channel should be less than zero, if no polarization axis, stokes should be less
+    // than zero.
+    GaussianBeam _getBeam(const Int channel, const Int stokes) const;
+
+    IPosition _beamPosition(
+    	const Int channel, const Int polarization
+    ) const;
+
+    // determine what the shape of the _beams array should be
+    void _setUpBeamArray(const uInt nChan, const uInt nStokes);
+
+    // convenience method for getting number of channels and polarizations
+    // from the beam array
+    void _getChansAndStokes(uInt& nChannels, uInt& nStokes) const;
+
+    void _setRestoringBeam(const Record& inRecord);
+
+    inline static String _className() {static const String c = "ImageInfo"; return c; }
+
 };
 
 // <summary> Global functions </summary>

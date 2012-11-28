@@ -445,11 +445,19 @@ void doit2 (DirectionCoordinate& lc,
   }
 //       
    xform.diagonal() = -2.0;
+   Matrix<Double> xformOut(2,2);
+   xformOut = 0.;
+   xformOut.diagonal() = 1.0;
+   Vector<Double> cdeltOut; 
+   cdeltOut = cdelt * -2.0;
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform, lc.linearTransform())) {
-      throw(AipsError("Failed linear transform set/recovery test"));
+   if (!allEQ(xformOut, lc.linearTransform())) {
+      throw(AipsError("Failed linear transform set/recovery test (wrong resulting xform)"));
+   }
+   if (!allEQ(cdeltOut, lc.increment())) {
+      throw(AipsError("Failed linear transform set/recovery test (wrong resulting cdelt)"));
    }
 }
 

@@ -174,7 +174,7 @@ SkyComponent SkyComponent::copy() const {
 
 void SkyComponent::fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                               const Unit& brightnessUnitIn,
-                              const Vector<Quantum<Double> >& restoringBeam,
+                              const GaussianBeam& restoringBeam,
                               const CoordinateSystem& cSys,
                               ComponentType::Shape componentShape,
                               Stokes::StokesTypes stokes)
@@ -184,7 +184,7 @@ void SkyComponent::fromPixel (Double& fluxRatio, const Vector<Double>& parameter
 }
 
 Vector<Double> SkyComponent::toPixel (const Unit& brightnessUnitIn,
-                                      const Vector<Quantum<Double> >& restoringBeam,
+                                      const GaussianBeam& restoringBeam,
                                       const CoordinateSystem& cSys,
                                       Stokes::StokesTypes stokes) const
 {
@@ -276,30 +276,54 @@ String SkyComponent::positionToString(const CoordinateSystem *const &coordinates
 		dec =  MVAngle(lat).string(MVAngle::ANGLE, 6+precision);
 	}
 	position << "Position ---" << endl;
-	position << "       --- ra:    " << ra << " +/- " << std::fixed
-		<< setprecision(precision) << dra << " (" << dra.getValue("arcsec")
-		<< " arcsec)" << endl;
-	position << "       --- dec: " << dec << " +/- " << ddec << endl;
+	position << "       --- ra:    " << ra;
+	if (dra.getValue() == 0) {
+		position << " (fixed)" << endl;
+	}
+	else {
+		position << " +/- " << std::fixed
+			<< setprecision(precision) << dra << " ("
+			<< dra.getValue("arcsec") << " arcsec)" << endl;
+	}
+	position << "       --- dec: " << dec;
+	if (ddec.getValue() == 0) {
+		position << " (fixed)" << endl;
+	}
+	else {
+		position << " +/- " << ddec << endl;
+	}
 
 	if (coordinates && coordinates->hasDirectionCoordinate()) {
-		const DirectionCoordinate& dirCoord =
-                  coordinates->directionCoordinate
-                    (coordinates->findCoordinate(CoordinateSystem::DIRECTION));
+		const DirectionCoordinate dirCoord = coordinates->directionCoordinate();
 		Vector<Double> world(dirCoord.nWorldAxes(), 0), pixel(dirCoord.nPixelAxes(), 0);
 		world[0] = longitude.getValue();
 		world[1] = lat.getValue();
 		// TODO do the pixel computations in another method
 		if (dirCoord.toPixel(pixel, world)) {
 			Vector<Double> increment = dirCoord.increment();
-			Double raPixErr = abs(dra.getValue("rad")/increment[0]);
-			Double decPixErr = abs(ddec.getValue("rad")/increment[1]);
+			Double raPixErr = dra.getValue() == 0
+				? 0 :abs(dra.getValue("rad")/increment[0]);
+			Double decPixErr = ddec.getValue() == 0
+				? 0 :abs(ddec.getValue("rad")/increment[1]);
 			Vector<Double> raPix(2), decPix(2);
 			raPix.set(roundDouble(raPixErr));
 			decPix.set(roundDouble(decPixErr));
 			precision = precisionForValueErrorPairs(raPix, decPix);
 			position << setprecision(precision);
-			position << "       --- ra:   " << pixel[0] << " +/- " << raPixErr << " pixels" << endl;
-			position << "       --- dec:  " << pixel[1] << " +/- " << decPixErr << " pixels" << endl;
+			position << "       --- ra:   " << pixel[0];
+			if (dra.getValue() == 0) {
+				position << " (fixed)" << endl;
+			}
+			else {
+				position << " +/- " << raPixErr << " pixels" << endl;
+			}
+			position << "       --- dec:  " << pixel[1];
+			if (ddec.getValue() == 0) {
+				position << " (fixed)" << endl;
+			}
+			else {
+				position << " +/- " << decPixErr << " pixels" << endl;
+			}
 		}
 		else {
 			position << "unable to determine position in pixels:" << coordinates->errorMessage() << endl;

@@ -76,6 +76,9 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
                                                    os, whichRep, shape, dropStokes);
     ndim = shape.nelements();
 
+    _hasBeamsTable = headerRec.isDefined(ImageFITSConverter::CASAMBM)
+      && headerRec.asRecord(ImageFITSConverter::CASAMBM).asBool("value");
+
 // BITPIX
 
     T* t=0;
@@ -199,7 +202,7 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
 // Try and find the restoring beam in the history cards if
 // its not in the header
 
-    if (imageInfo.restoringBeam().nelements() != 3) {
+    if (! imageInfo.hasBeam()) {
        imageInfo.getRestoringBeam(log);
     }
 }
@@ -237,6 +240,8 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
     cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header,
                                                    os, whichRep, shape, dropStokes);
     ndim = shape.nelements();
+    _hasBeamsTable = headerRec.isDefined(ImageFITSConverter::CASAMBM)
+      && headerRec.asRecord(ImageFITSConverter::CASAMBM).asBool("value");
 
 // BITPIX
 
@@ -330,7 +335,7 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
 // Get rid of anything else we don't want to end up in MiscInfo
 // that will have passed through the FITS parsing process
 
-    Vector<String> ignore(9);
+    Vector<String> ignore(12);
     ignore(0) = "^datamax$";
     ignore(1) = "^datamin$";
     ignore(2) = "^origin$";
@@ -340,6 +345,9 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
     ignore(6) = "^simple$";
     ignore(7) = "bscale";
     ignore(8) = "bzero";
+    ignore(9) = "xtension";
+    ignore(10) = "pcount";
+    ignore(11) = "gcount";
     FITSKeywordUtil::removeKeywords(headerRec, ignore);
 
 // MiscInfo is whats left
@@ -361,7 +369,7 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
 // Try and find the restoring beam in the history cards if
 // its not in the header
 
-    if (imageInfo.restoringBeam().nelements() != 3) {
+    if (! imageInfo.hasSingleBeam()) {
        imageInfo.getRestoringBeam(log);
     }
 }

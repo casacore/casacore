@@ -45,7 +45,7 @@ namespace casa { //#Begin namespace casa
 template <class MT>
 const SpectralList &SpectralEstimate::estimate(const Vector<MT> &prof,
 					       Vector<MT> *der) {
-  if (prof.nelements() != lprof_p) {
+	  if (prof.nelements() != lprof_p) {
     delete [] deriv_p; deriv_p = 0; lprof_p = 0;
     lprof_p = prof.nelements();
     deriv_p = new Double[lprof_p];
@@ -63,6 +63,7 @@ const SpectralList &SpectralEstimate::estimate(const Vector<MT> &prof,
   };
   // Find the estimates (sorted)
   findga(prof);
+  // cout << slist_p << endl;
   return slist_p;
 }
 
@@ -164,81 +165,93 @@ void SpectralEstimate::findc2(const Vector<MT> &prof) {
 
 template <class MT>
 void SpectralEstimate::findga(const Vector<MT> &prof) {
-  Int i(windowLow_p-1);
-  // Window on Gaussian
-  Int iclo(windowLow_p);
-  Int ichi(windowLow_p);
-  // Peak counter
-  Int nmax = 0;
-  GaussianSpectralElement tspel;
-  while (++i < windowEnd_p) {
-    if (deriv_p[i] > 0.0) {
-      // At edge?
-      if (i > windowLow_p && i < windowEnd_p-1) {
-	// Peak in 2nd derivative
-	if (deriv_p[i-1] < deriv_p[i] && deriv_p[i+1] < deriv_p[i]) nmax++;
-	// At start
-      } else if (i == windowLow_p && deriv_p[i+1] < deriv_p[i]) nmax++;
-      // At end of window
-      else if (i == windowEnd_p-1 && deriv_p[i-1] < deriv_p[i]) nmax++;
-    };
-    switch (nmax) {
-      // Search for next peak
-    case 1: 
-      break;
-      // Found a Gaussian
-    case 2: {
-      // Some moments
-      Double m0m(0);
-      Double m0(0);
-      Double m1(0);
-      Double m2(0);
-      ichi = i;
-      // Do Schwarz' calculation
-      Double b = deriv_p[iclo];
-      Double a = (deriv_p[ichi] - b) / (ichi-iclo);
-      for (Int ic=iclo; ic<=ichi; ic++) {
-	m0m += min(deriv_p[ic], 0.0);
-	Double wi = deriv_p[ic] - a*(ic-iclo) - b;
-	m0 += wi;
-	m1 += wi*ic;
-	m2 += wi*ic*ic;
-      };
-      // determinant
-      Double det = m2*m0 - m1*m1;
-      if (det > 0.0 && fabs(m0m) >  FLT_EPSILON) {
-	Double   xm = m1/m0;
-	Double sg = 1.69*sqrt(det) / fabs(m0);
-	// Width above critical?
-	if (sg > sigmin_p) {
-	  Int is = Int(1.73*sg+0.5);
-	  Int im = Int(xm+0.5);
-	  Double yl(0);
-	  if ((im-is) >= 0) yl = prof(im-is);
-	  Double yh(0);
-	  if ((im + is) <= Int(lprof_p-1)) yh = prof(im+is);
-	  Double ym = prof(im);
-	  Double pg = (ym-0.5*(yh+yl))/(1.0-exp(-0.5*(is*is)/sg/sg));
-	  pg = min(pg, ym);
-	  // Above critical level? Add to list
-	  if (pg > cutoff_p) {
-	    tspel.setAmpl(pg);
-	    tspel.setCenter(xm);
-	    tspel.setSigma(sg);
-	    slist_p.insert(tspel);
-	  };
+	Int i(windowLow_p-1);
+	// Window on Gaussian
+	Int iclo(windowLow_p);
+	Int ichi(windowLow_p);
+	// Peak counter
+	Int nmax = 0;
+	GaussianSpectralElement tspel;
+	while (++i < windowEnd_p) {
+		if (deriv_p[i] > 0.0) {
+			// At edge?
+			if (i > windowLow_p && i < windowEnd_p-1) {
+				// Peak in 2nd derivative
+				if (deriv_p[i-1] < deriv_p[i] && deriv_p[i+1] < deriv_p[i]) nmax++;
+				// At start
+			} else if (i == windowLow_p && deriv_p[i+1] < deriv_p[i]) nmax++;
+			// At end of window
+			else if (i == windowEnd_p-1 && deriv_p[i-1] < deriv_p[i]) nmax++;
+		};
+		switch (nmax) {
+		// Search for next peak
+		case 1:
+			break;
+			// Found a Gaussian
+		case 2: {
+			// Some moments
+			Double m0m(0);
+			Double m0(0);
+			Double m1(0);
+			Double m2(0);
+			ichi = i;
+			// Do Schwarz' calculation
+			Double b = deriv_p[iclo];
+			Double a = (deriv_p[ichi] - b) / (ichi-iclo);
+			for (Int ic=iclo; ic<=ichi; ic++) {
+				m0m += min(deriv_p[ic], 0.0);
+				Double wi = deriv_p[ic] - a*(ic-iclo) - b;
+				m0 += wi;
+				m1 += wi*ic;
+				m2 += wi*ic*ic;
+			};
+			// determinant
+			Double det = m2*m0 - m1*m1;
+			if (det > 0.0 && fabs(m0m) >  FLT_EPSILON) {
+				Double   xm = m1/m0;
+				Double sg = 1.69*sqrt(det) / fabs(m0);
+				// Width above critical?
+				if (sg > sigmin_p) {
+					Int is = Int(1.73*sg+0.5);
+					Int im = Int(xm+0.5);
+					Double yl(0);
+					if ((im-is) >= 0) yl = prof(im-is);
+					Double yh(0);
+					if ((im + is) <= Int(lprof_p-1)) yh = prof(im+is);
+					Double ym = prof(im);
+                    // modified by dmehringer 2012apr03 to deal with 0 denominator
+                    // 0.0/0.0 produces NaN on Linux but 0 on OSX
+                    Double pg = (ym-0.5*(yh+yl));
+					if (pg != 0) {
+						Double denom = (1.0-exp(-0.5*(is*is)/sg/sg));
+						if (denom == 0) {
+							throw AipsError("Bailing because division by zero is undefined");
+						}
+						pg /= denom;
+					}
+                    // end dmehring mods
+					pg = min(pg, ym);
+					// cout << "pg " << pg << " cutoff " << cutoff_p << endl;
+					// Above critical level? Add to list
+					if (pg > cutoff_p) {
+					//	cout << pg << " " << xm << " " << sg << endl;
+						tspel.setAmpl(pg);
+						tspel.setCenter(xm);
+						tspel.setSigma(sg);
+						slist_p.insert(tspel);
+					};
+				};
+			};
+			// Next gaussian
+			iclo = ichi;
+			nmax--;
+			break;
+		}
+		default:
+			iclo = i+1;
+			break;
+		};
 	};
-      };
-      // Next gaussian
-      iclo = ichi;
-      nmax--;
-      break;
-    }
-    default:
-      iclo = i+1;
-      break;
-    };
-  };
 }
 
 template <class MT>

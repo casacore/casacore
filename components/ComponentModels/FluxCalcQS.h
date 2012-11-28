@@ -84,6 +84,7 @@ class FluxCalcQS
 public:
   typedef FluxCalcQS FCQS;
   typedef RigidVector<String, 4> RVS4;
+  typedef RigidVector<String, 5> RVS5;
 
   // Source identifiers.
   enum Source {
@@ -94,6 +95,7 @@ public:
     NINETEEN34M638,   // 1934-638
     THREEC295,
     THREEC196,
+    THREEC123,
     // The number of standards in this enumerator.
     NUMBER_SOURCES,
     UNKNOWN_SOURCE = NUMBER_SOURCES

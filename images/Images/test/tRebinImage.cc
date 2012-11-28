@@ -113,7 +113,8 @@ try {
       ImageInterface<Float>* pImOut = 0;
       if (save) {
          pImOut = new PagedImage<Float>(shapeOut, cSysOut, String("outFile"));
-      } else {
+      }
+      else {
          pImOut = new TempImage<Float>(shapeOut, cSysOut, maxMBInMemory);
       }
       cerr << "Nice shapes = " << rebinner.niceCursorShape() << pImOut->niceCursorShape() << endl;
@@ -122,18 +123,46 @@ try {
 
 // Do it
 
-      LogIO os(LogOrigin("tRebinImage", "main()", WHERE));
+      LogIO os(LogOrigin("tRebinImage", __FUNCTION__, WHERE));
       LatticeUtilities::copyDataAndMask (os, *pImOut, rebinner, False);
       delete pImOut;
     }
-//
+   {
+	   // verify a spectral axis cannot be regridded if the image has multiple beams
+	   CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
+	   TiledShape ts(IPosition(3, 10, 10, 10));
+	   TempImage<Float> image(ts, csys);
+	   ImageInfo info = image.imageInfo();
+	   info.setAllBeams(
+			   10, 0, GaussianBeam(
+					   Quantity(4, "arcsec"), Quantity(2, "arcsec"), Quantity(0, "deg")
+			   )
+	   );
+	   image.setImageInfo(info);
+
+	   // rebin non spectral axes should work
+	   IPosition axes(3, 2, 2, 1);
+	   RebinImage<Float> rb(image, axes);
+	   axes[2] = 2;
+	   Bool exception = False;
+	   try {
+		   RebinImage<Float> rb1(image, axes);
+	   }
+	   catch (AipsError x) {
+		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
+		   exception = True;
+	   }
+	   AlwaysAssert(exception, AipsError);
+   }
     delete pIm;
 
 } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
+     cout << "FAIL" << endl;
      return 1;
 } 
 
+cout << "OK" << endl;
 return 0;
 
 }

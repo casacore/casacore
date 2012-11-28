@@ -128,7 +128,7 @@ public:
   DataType dataType() const;
     
   // Get the value.
-  // It throws an exception if the data type is incorrect.
+  // If possible, it converts the the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -158,6 +158,7 @@ public:
   // </group>
 
   // Get the data in a way useful for templates.
+  // If possible, it converts the the data as needed.
   // <group>
   void getValue (Bool& value) const            { value = asBool(); }
   void getValue (uChar& value) const           { value = asuChar(); }

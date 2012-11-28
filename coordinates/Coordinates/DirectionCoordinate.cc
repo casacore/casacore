@@ -144,10 +144,10 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
    }
 
 // Initialize other things
-
-    initializeFactors();
-    setDefaultWorldMixRanges();
-    setRotationMatrix();
+   normalizePCMatrix();
+   initializeFactors();
+   setDefaultWorldMixRanges();
+   setRotationMatrix();
 }
 
 
@@ -626,6 +626,7 @@ Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
   
     xFormToPC (wcs_p, xform);
     set_wcs(wcs_p);
+    normalizePCMatrix();
 //      
     return True;
 }
@@ -826,7 +827,7 @@ String DirectionCoordinate::format(String& units,
                                    uInt worldAxis,
                                    Bool isAbsolute,
                                    Bool showAsAbsolute,
-                                   Int precision) const
+                                   Int precision, Bool) const
 {
    DebugAssert(worldAxis< nWorldAxes(), AipsError);
    DebugAssert(nWorldAxes()==2, AipsError);
@@ -1248,26 +1249,38 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
 						  const String &fieldName)
 {
     if (!container.isDefined(fieldName)) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "field " << fieldName << " is not defined.";
+    	throw AipsError(oss.str());
     }
     Record subrec(container.asRecord(fieldName));
     
     // We should probably do more type-checking as well as checking
     // for existence of the fields.
     if (! subrec.isDefined("system")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "system is not defined.";
+    	throw AipsError(oss.str());
     }
     String system;
     subrec.get("system", system);
     MDirection::Types sys;
-    Bool ok = MDirection::getType(sys, system);
-    if (!ok) {
-	return 0;
+    if (! MDirection::getType(sys, system)) {
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "Unknown reference frame ID " << system;
+    	throw AipsError(oss.str());
     }
+
     
     if (!subrec.isDefined("projection") || 
 	!subrec.isDefined("projection_parameters")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "Projection parameters are not defined.";
+    	throw AipsError(oss.str());
     }
     String projname;
     subrec.get("projection", projname);
@@ -1275,22 +1288,34 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     Projection proj(Projection::type(projname), projparms);
 //
     if (!subrec.isDefined("crval")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "crval is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> crval(subrec.toArrayDouble("crval"));
 //
     if (!subrec.isDefined("crpix")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "crpix is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> crpix(subrec.toArrayDouble("crpix"));
 //
     if (!subrec.isDefined("cdelt")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "cdelt is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 //
     if (!subrec.isDefined("pc")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "pc is not defined.";
+    	throw AipsError(oss.str());
     }
     Matrix<Double> pc(subrec.toArrayDouble("pc"));
 //
@@ -1306,13 +1331,19 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     }
 //    
     if (!subrec.isDefined("axes")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "axes is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<String> axes;
     subrec.get("axes", axes);
 //
     if (!subrec.isDefined("units")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "units is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<String> units;
     subrec.get("units", units);
@@ -1563,6 +1594,7 @@ void DirectionCoordinate::makeDirectionCoordinate(MDirection::Types directionTyp
             refLong*to_degrees_p[0], refLat*to_degrees_p[1],
             incLong*to_degrees_p[0], incLat*to_degrees_p[1],
             longPole2, latPole2);
+
 }
 
 
@@ -1966,6 +1998,53 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
 // Fill in the wcs structure
 
     set_wcs(wcs);
+
+// normalize the PC Matrix
+
+    normalizePCMatrix();    
+
+}
+
+
+void DirectionCoordinate::normalizePCMatrix()
+{
+    Bool changed(False);
+
+    // go over each of the two rows 
+    for (uInt i=0; i<2; i++) {
+       Double pcNorm = 0;
+       
+       // compute the factor
+       uInt jStart = i*2;
+       uInt jEnd   = jStart + 2;
+       uInt idiag =  jStart + i;
+       Double rowSign = wcs_p.pc[idiag]/fabs(wcs_p.pc[idiag]);
+
+       for (uInt j=jStart; j < jEnd; j++){
+	  pcNorm += wcs_p.pc[j]*wcs_p.pc[j];
+       }
+	
+       if (pcNorm != 0.0 && pcNorm != 1.0){
+	  changed=True;
+	  pcNorm = sqrt(pcNorm);
+	  // make diagonal element positive
+	  pcNorm *=rowSign; 
+	  
+	  // normalize all elements
+	  for (uInt j=jStart; j < jEnd; j++){
+	     wcs_p.pc[j] /= pcNorm;
+	  }
+	    
+	  // adjust the increment correspondingly
+	  wcs_p.cdelt[i] *= pcNorm;
+       }
+   }
+
+   // mark the changes in the wcs struct
+   if (changed){
+      wcs_p.altlin |= 1;
+      set_wcs(wcs_p);
+   }
 }
 
 

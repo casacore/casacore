@@ -1,5 +1,6 @@
 set (tests
 tDerivedMSCal
+tUDFMSCal
 )
 
 foreach (test ${tests})

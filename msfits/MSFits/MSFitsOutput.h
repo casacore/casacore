@@ -69,12 +69,12 @@ public:
                            support spws with different shapes.
   */
   static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
-			    const String& column, Int startchan=-1, 
-			    Int nchan=-1, Int stepchan=-1, 
+			    const String& column, Int startchan=0, 
+			    Int nchan=1, Int stepchan=1, 
 			    Bool writeSysCal = False,
 			    Bool asMultiSource = False, Bool combineSpw=False,
 			    Bool writeStation=False, Double sensitivity = 1.0,
-                            const Bool padWithFlags=false);
+                            const Bool padWithFlags=false, Int avgchan = 1);
 
 private:
   // Write the main table.
@@ -107,7 +107,8 @@ private:
 			       const Block<Int>& fieldidMap,
 			       Bool asMultiSource,
 			       const Bool combineSpw,
-                               const Bool padWithFlags=true);
+                               const Bool padWithFlags=true,
+                               Int avgchan=1);
 
   // Write the FQ table.
   // If combineSpw is True, all spectral-windows are written in one
@@ -115,7 +116,9 @@ private:
   static Bool writeFQ(FitsOutput *output, const MeasurementSet& ms, 
 		      const Block<Int>& spwidMap, Int nrspw,
 		      Double refFreq, Int refPixelFreq, 
-		      Double chanbw, Bool combineSpw);
+		      Double chanbw, Bool combineSpw, 
+                      Int chanstart = 0, Int nchan = -1, Int chanstep = 1, 
+                      Int avgchan = 1);
 
   // Write the AN table.
   static Bool writeAN(FitsOutput *output, const MeasurementSet& ms,

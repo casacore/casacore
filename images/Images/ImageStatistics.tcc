@@ -45,12 +45,10 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
 
-
 #include <casa/iostream.h>
 #include <casa/iomanip.h>
 #include <casa/stdlib.h>
 #include <casa/sstream.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,7 +63,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
-  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)), precision_(-1)
+  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
+  precision_(-1), _showRobust(False), _recordMessages(False), _messages(vector<String>(0))
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -80,7 +79,8 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 // Constructor
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
-  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)), precision_(-1)
+  pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
+  precision_(-1), _showRobust(False), _recordMessages(False), _messages(vector<String>(0))
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -94,7 +94,8 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
 // Copy constructor.  Storage image is not copied.
 //
 : LatticeStatistics<T>(other),
-  pInImage_p(0), blc_(other.getBlc()), precision_(other.getPrecision())
+  pInImage_p(0), blc_(other.getBlc()), precision_(other.getPrecision()),
+  _showRobust(other._showRobust)
 {
    pInImage_p = other.pInImage_p->cloneII();
 }
@@ -109,8 +110,9 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
     	  delete pInImage_p;
       }
       pInImage_p = other.pInImage_p->cloneII();
-      precision_ = other.getPrecision();
-      blc_ = other.getBlc();
+      precision_ = other.precision_;
+      blc_ = other.blc_;
+      _showRobust = other._showRobust;
    }
    return *this;
 }
@@ -151,38 +153,112 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 
 
 
-template <class T>
-Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
-
-// Get beam volume if present.  ALl this beamy stuff should go to
-// a class called GaussianBeam and be used by GaussianCOnvert as well
-
-{
-   beamArea = -1.0;
-   ImageInfo ii = pInImage_p->imageInfo();
-   Vector<Quantum<Double> > beam = ii.restoringBeam();
-   CoordinateSystem cSys = pInImage_p->coordinates();
-   String imageUnits = pInImage_p->units().getName();
-   imageUnits.upcase();
-
-   Int afterCoord = -1;   
-   Int dC = cSys.findCoordinate(Coordinate::DIRECTION, afterCoord);
-   // use contains() not == so moment maps are dealt with nicely
-   if (beam.nelements()==3 && dC!=-1 && imageUnits.contains("JY/BEAM")) {
-      DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
-      Vector<String> units(2);
-      units(0) = units(1) = "rad";
-      dCoord.setWorldAxisUnits(units);
-      Vector<Double> deltas = dCoord.increment();
-
-      Double major = beam(0).getValue(Unit("rad"));
-      Double minor = beam(1).getValue(Unit("rad"));
-      beamArea = C::pi/(4*log(2)) * major * minor / abs(deltas(0) * deltas(1));
-      return True;
-   }
-   else {
-      return False;
-   }
+template <class T> Bool ImageStatistics<T>::_getBeamArea(
+	Array<Double>& beamArea
+) const {
+	// Get beam volume if present.  ALl this beamy stuff should go to
+	// a class called GaussianBeam and be used by GaussianCOnvert as well
+	ImageInfo ii = pInImage_p->imageInfo();
+	Bool hasMultiBeams = ii.hasMultipleBeams();
+	Bool hasSingleBeam = ! hasMultiBeams && ii.hasBeam();
+	CoordinateSystem cSys = pInImage_p->coordinates();
+	String imageUnits = pInImage_p->units().getName();
+	imageUnits.upcase();
+	// use contains() not == so moment maps are dealt with nicely
+	if (
+		(hasMultiBeams || hasSingleBeam)
+		&& cSys.hasDirectionCoordinate()
+		&& imageUnits.contains("JY/BEAM")
+	) {
+		DirectionCoordinate dCoord = cSys.directionCoordinate();
+		Vector<String> units(2, "rad");
+		dCoord.setWorldAxisUnits(units);
+		Vector<Double> deltas = dCoord.increment();
+		IPosition beamAreaShape;
+		if (this->_storageLatticeShape().size() == 1) {
+			beamAreaShape.resize(1);
+			beamAreaShape[0] = 1;
+		}
+		else {
+			beamAreaShape.resize(this->_storageLatticeShape().size() - 1);
+			for (uInt i=0; i< beamAreaShape.size(); i++) {
+				beamAreaShape[i] = this->_storageLatticeShape()[i];
+			}
+		}
+		beamArea.resize(beamAreaShape);
+		beamArea.set(-1.0);
+		Double coeff = 1 / abs(deltas(0) * deltas(1));
+		if (hasSingleBeam) {
+			beamArea.set(
+				ii.restoringBeam(-1, -1).getArea("rad2") * coeff
+			);
+			return True;
+		}
+		else {
+			// per plane beams
+			// ensure both the spectral and polarization axes are display axes
+			Bool foundSpec = ! cSys.hasSpectralAxis() || False;
+			Bool foundPol = ! cSys.hasPolarizationCoordinate() || False;
+			Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
+			Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
+			Bool found = False;
+			const ImageBeamSet& beams = ii.getBeamSet();
+			Int storageSpecAxis = -1;
+			Int storagePolAxis = -1;
+			for (uInt i=0; i<displayAxes_p.size(); i++) {
+				if (displayAxes_p[i] == specAxis) {
+					foundSpec = True;
+					storageSpecAxis = i;
+				}
+				else if (displayAxes_p[i] == polAxis) {
+					foundPol = True;
+					storagePolAxis = i;
+				}
+				if (found = foundSpec && foundPol) {
+					break;
+				}
+			}
+			if (found) {
+				IPosition beamsShape = beams.shape();
+				if (cSys.hasSpectralAxis()) {
+					AlwaysAssert(
+						beamsShape[0] == beamAreaShape[storageSpecAxis],
+						AipsError
+					);
+				}
+				Int beamPolAxis = -1;
+				if (cSys.hasPolarizationCoordinate()) {
+					beamPolAxis = specAxis < 0 ? 0 : 1;
+					AlwaysAssert(
+						beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
+						AipsError
+					);
+				}
+				IPosition curPos(beamAreaShape.nelements(), 0);
+				GaussianBeam curBeam;
+				IPosition curBeamPos(beams.shape().nelements(), 0);
+				IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
+                ArrayPositionIterator iter(beamAreaShape, axisPath, False);
+				while (! iter.pastEnd()) {
+                    const IPosition curPos = iter.pos();
+                    if (storageSpecAxis >= 0) {
+						curBeamPos[0] = curPos[storageSpecAxis];
+					}
+					if (storagePolAxis >= 0) {
+						curBeamPos[beamPolAxis] = curPos[storagePolAxis];
+					}
+					curBeam = beams(curBeamPos);
+					beamArea(curPos) = coeff * curBeam.getArea("rad2");
+                    iter.next();
+				}
+             	return True;
+			}
+		}
+	}
+	// if per-plane beams, either the spectral axis and/or the
+	// polarization axis is not a display axis
+	// or else the image has no beam
+	return False;
 }
 
 
@@ -298,17 +374,14 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 
 // Write statistics to logger.  We write the pixel location
-// relative to the parent image
+// relative to the parent image (zero based)
 
    for (uInt j=0; j<n1; j++) {
-      os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
+      os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0));
       os_p.output() << setw(oCWidth)   << sWorld(j);
-//
       ostringstream os00; setStream(os00, oPrec);
       os00 << stats.column(NPTS)(j);   
-//
       os_p.output() << setw(oDWidth)   << String(os00);   
-//
       if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
 
 // Convert to strings.
@@ -345,6 +418,11 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 }
 
 template <class T>
+void ImageStatistics<T>::showRobust(const Bool show) {
+	_showRobust = show;
+}
+
+template <class T>
 void ImageStatistics<T>::displayStats(
 		AccumType nPts, AccumType sum, AccumType median,
 		AccumType medAbsDevMed, AccumType quartile, AccumType sumSq,
@@ -356,10 +434,6 @@ void ImageStatistics<T>::displayStats(
 		return;
 	}
 
-
-	// Get beam
-	Double beamArea;
-	Bool hasBeam = getBeamArea(beamArea);
 
 	// Find world coordinates of min and max. We list pixel coordinates
 	// of min/max relative to the start of the parent lattice
@@ -393,15 +467,25 @@ void ImageStatistics<T>::displayStats(
 	///////////////////////////////////////////////////////////////////////
 	//                 Do Values Section
 	///////////////////////////////////////////////////////////////////////
-	os_p << "Values --- " << LogIO::POST;
+	vector<String> messages;
+	messages.push_back("Values --- ");
+	// os_p << "Values --- " << LogIO::POST;
+	ostringstream oss;
+	Array<Double> beamArea;
+	Bool hasBeam = _getBeamArea(beamArea);
 	if ( hasBeam ) {
+		// beamArea guaranteed to only have one value in this method.
+
 		// normalisation of units with "beam" in them is not (well) implemented, so brute force it
 		Int iBeam = sbunit.find("/beam");
 		String fUnit = (iBeam >= 0)
 			? sbunit.substr(0, iBeam) + sbunit.substr(iBeam+5)
 			: "Jy";
-		os_p << "         -- flux density [flux]:     " << sum/beamArea
-			<< " " << fUnit << LogIO::POST;
+		oss << "         -- flux density [flux]:     " << sum/(*(beamArea.begin()))
+			<< " " << fUnit;
+		messages.push_back(oss.str());
+		oss.str("");
+
 	}
 
 	IPosition myMaxPos = maxPos_p;
@@ -410,41 +494,90 @@ void ImageStatistics<T>::displayStats(
 	myMinPos += blc_;
 
 	if (LattStatsSpecialize::hasSomePoints(nPts)) {
-		os_p << "         -- number of points [npts]:                " << nPts << LogIO::POST;
-		os_p << "         -- maximum value [max]:                    " << dMax << " " << sbunit << LogIO::POST;
-		os_p << "         -- minimum value [min]:                    " << dMin << " " << sbunit << LogIO::POST;
-		os_p << "         -- position of max value (pixel) [maxpos]: " << myMaxPos << LogIO::POST;
-		os_p << "         -- position of min value (pixel) [minpos]: " << myMinPos << LogIO::POST;
-		os_p << "         -- position of max value (world) [maxposf]: " << maxPosString << LogIO::POST;
-		os_p << "         -- position of min value (world) [maxposf]: " << minPosString << LogIO::POST;
-		os_p << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit << LogIO::POST;
-		os_p << "         -- Sum of squared pixel values [sumsq]:     " << sumSq
-				<< " " << bunitSquared << LogIO::POST;
+		oss << "         -- number of points [npts]:                " << nPts;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- maximum value [max]:                    " << dMax << " " << sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- minimum value [min]:                    " << dMin << " " << sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- position of max value (pixel) [maxpos]: " << myMaxPos;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- position of min value (pixel) [minpos]: " << myMinPos;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- position of max value (world) [maxposf]: " << maxPosString;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- position of min value (world) [minposf]: " << minPosString;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "         -- Sum of squared pixel values [sumsq]:     " << sumSq
+				<< " " << bunitSquared;
+		messages.push_back(oss.str());
+		oss.str("");
 	}
-
-
 
 	///////////////////////////////////////////////////////////////////////
 	//                 Do Statistical Section
 	///////////////////////////////////////////////////////////////////////
-	os_p << "\nStatistics --- " << LogIO::POST;
+	messages.push_back("Statistics --- ");
+	Vector<LogIO::Command> priorities(0);
 	if (LattStatsSpecialize::hasSomePoints(nPts)) {
-		os_p << "        -- Mean of the pixel values [mean]:         " << mean << " "
+		oss << "        -- Mean of the pixel values [mean]:         " << mean << " "
+				<< sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "        -- Variance of the pixel values :           " << var << " "
 				<< sbunit << LogIO::POST;
-		os_p << "        -- Variance of the pixel values :           " << var << " "
-				<< sbunit << LogIO::POST;
-		os_p << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
-				<< sbunit <<  LogIO::POST;
-		os_p << "        -- Root mean square [rms]:                  " << rms << " "
-				<< sbunit << LogIO::POST;
-		os_p << "        -- Median of the pixel values [median]:     " << median <<
-				" " << sbunit << LogIO::POST;
-		os_p << "        -- Median of the deviations [medabsdevmed]: " << medAbsDevMed
-				<< " " << sbunit << LogIO::POST;
-		os_p << "        -- Quartile [quartile]:                     " << quartile << " " <<
-				sbunit <<LogIO::POST;
-	} else {
-		os_p << LogIO::WARN << "No valid points found " << LogIO::POST;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
+				<< sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		oss << "        -- Root mean square [rms]:                  " << rms << " "
+				<< sbunit;
+		messages.push_back(oss.str());
+		oss.str("");
+		if (_showRobust) {
+			oss << "        -- Median of the pixel values [median]:     " << median <<
+				" " << sbunit;
+			messages.push_back(oss.str());
+			oss.str("");
+			oss << "        -- Median of the deviations [medabsdevmed]: " << medAbsDevMed
+				<< " " << sbunit;
+			messages.push_back(oss.str());
+			oss.str("");
+			oss << "        -- Quartile [quartile]:                     " << quartile << " " <<
+				sbunit;
+			messages.push_back(oss.str());
+			oss.str("");
+		}
+		priorities.resize(messages.size());
+		priorities = LogIO::NORMAL;
+	}
+	else {
+		messages.push_back("No valid points found ");
+		priorities.resize(messages.size());
+		priorities = LogIO::NORMAL;
+		priorities[priorities.size()-1] = LogIO::WARN;
+	}
+	Vector<LogIO::Command>::const_iterator jiter = priorities.begin();
+	for (
+		vector<String>::const_iterator iter=messages.begin();
+		iter!=messages.end(); iter++, jiter++
+	) {
+		os_p << *jiter << *iter << LogIO::POST;
+		if (_recordMessages) {
+			_messages.push_back(*iter);
+		}
 	}
 }
 
@@ -478,7 +611,7 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
 {
    CoordinateSystem cSys = pInImage_p->coordinates();
    xLabel = cSys.worldAxisNames()(displayAxes_p(0)) + " (pixels)";
-//
+
    hLabel =String("");
    const uInt nDisplayAxes = displayAxes_p.nelements();
    ostringstream oss;
@@ -487,18 +620,18 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
       Vector<Double> pixels(1);
       IPosition blc(pInImage_p->ndim(),0);
       IPosition trc(pInImage_p->shape()-1);
-//
+
       for (uInt j=1; j<nDisplayAxes; j++) {
          Int worldAxis = cSys.pixelAxisToWorldAxis(displayAxes_p(j));
          String name = cSys.worldAxisNames()(worldAxis);
          pixels(0) = Double(locInLattice(dPos,False)(j));
-//
+
          if (!ImageUtilities::pixToWorld (sWorld, cSys,
                                      displayAxes_p(j), cursorAxes_p,
                                      blc, trc, pixels, -1)) return;
-//
+
          oss <<  ImageUtilities::shortAxisName(name)
-             << " = " << locInLattice(dPos,True)(j)+1 << " (" << sWorld(0) << ")";
+             << " = " << locInLattice(dPos,True)(j) << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) oss << ", ";
       }
       hLabel = String(oss);

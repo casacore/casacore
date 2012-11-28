@@ -43,7 +43,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Logging/LogIO.h>
-
+#include <vector>
+#include <list>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -190,11 +191,10 @@ class IPosition;
 
 template <class T> class LatticeStatistics : public LatticeStatsBase
 {
-// TypeDef
-
-typedef typename NumericTraits<T>::PrecisionType AccumType;
 
 public:
+
+	typedef typename NumericTraits<T>::PrecisionType AccumType;
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
 // You can specify whether you want to see progress meters or not.
@@ -258,7 +258,7 @@ public:
 // a <src>LogIO</src> object, you won't see any listings, but no error
 // conditions will be generated.  The default state of the class is to 
 // not list the output when making a plot. 
-   Bool setList(const Bool& doList);
+   Bool setList(Bool doList);
 
 // This functions enable you to specify which statistics you would like to
 // plot, sets the name of the PGPLOT plotting device and the number of
@@ -284,13 +284,19 @@ public:
                       Int zAxis=-1, Int zLayer=-1, 
                       Int hAxis=-1, Int hLayer=-1); 
 
+   typedef std::pair<String,String> stat_element;
+   typedef std::list<stat_element> stat_list;
+   Bool getLayerStats( stat_list &stats, Double area, 
+                      Int zAxis=-1, Int zLayer=-1, 
+                      Int hAxis=-1, Int hLayer=-1); 
+
 // CLose plotter
    void closePlotting();
 
 
 // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
 // has been called, or if one of the active "display" or "get*" methods has been called. 
-   Vector<Int> displayAxes() const {return displayAxes_p;} 
+   const Vector<Int>& displayAxes() const {return displayAxes_p;} 
 
 // Recover the desired Statistic into an array.  If you choose to use
 // the T version, be aware that the values in the AccumType version of the
@@ -325,7 +331,7 @@ public:
 // indicates that the  internal state of the class is bad.
    Bool getStats (Vector<AccumType>&,
                   const IPosition& pos,
-                  const Bool posInLattice=False);
+                  Bool posInLattice=False);
 
 // Reset argument error condition.  If you specify invalid arguments to
 // one of the above <src>set</src> functions, an internal flag will be set which will
@@ -339,7 +345,7 @@ public:
    Bool getFullMinMax (T& dataMin, T& dataMax);
 
 // Recover last error message
-   String errorMessage() const {return error_p;};
+   const String& errorMessage() const {return error_p;};
 
 // Set a new MaskedLattice object.  A return value of <src>False</src> indicates the 
 // lattice had an invalid type or that the internal state of the class is bad.
@@ -370,8 +376,10 @@ protected:
 // See for example, class ImageStatistics.  When you provide
 // the beam, then the Flux statistic, if requested, can be
 // computed.  Returns False if beam not available, else True.
-// The implementation here returns False.
-   virtual Bool getBeamArea (Double& beamArea) const;
+// The implementation here returns False. Callers are responsible
+   // for deleting the <src>beamArea</src> pointer which is created
+
+   virtual Bool _getBeamArea (Array<Double>& beamArea) const;
 
    virtual void listMinMax (ostringstream& osMin,
                             ostringstream& osMax,
@@ -411,6 +419,10 @@ protected:
 // set stream manipulators
    void setStream (ostream& os, Int oPrec);
 
+// Get the storage lattice shape
+   IPosition _storageLatticeShape() const
+      { return pStoreLattice_p->shape(); }
+
 private:
    const MaskedLattice<T>* pInLattice_p;
    TempLattice<AccumType>* pStoreLattice_p;
@@ -444,10 +456,10 @@ private:
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
-                           const uInt& n,
+                           uInt n,
                            const Vector<AccumType>& mask,
-                           const uInt& iStart,
-                           const Bool& findGood) const;
+                           uInt iStart,
+                           Bool findGood) const;
 
 // Find the next label in a list of comma delimitered labels
    Bool findNextLabel     (String& subLabel,
@@ -477,7 +489,7 @@ private:
                            PGPlotter& plotter,
                            const String& LRLoc,
                            const Vector<uInt>& colours,
-                           const Int& nLabs) const;
+                           Int nLabs) const;
 
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
@@ -501,14 +513,14 @@ private:
 
 // Retrieve a statistic from the storage lattice and return in an array
    Bool retrieveStorageStatistic (Array<AccumType>& slice, 
-                                  LatticeStatsBase::StatisticsTypes type, 
+                                  const LatticeStatsBase::StatisticsTypes type,
                                   Bool dropDeg);
 
 // Retrieve a statistic from the storage lattice at the specified
 // location and return in an array
    Bool retrieveStorageStatistic (Vector<AccumType>& slice, 
                                   const IPosition& pos,
-                                  const Bool posInLattice);
+                                  Bool posInLattice);
 
 // Find the shape of slice from the statistics lattice at one
 // spatial pixel
@@ -520,6 +532,17 @@ private:
 
 // Stretch min and max by 5%
    void stretchMinMax (AccumType& dMin, AccumType& dMax) const;
+
+   // convert a position in the input lattice to the corresponding
+   // position in the stats storage lattice. The number of elements
+   // in storagePos will not be changed and only the first N elements
+   // will be modified where N = the number of elements in latticePos.
+   // <src>storagePos</src> must therefore have at least as many elements
+   // as <src>latticePos</src>. Returns False if
+   //<src>latticePos</src> is inconsistent with the input lattice.
+   void _latticePosToStoragePos(
+		 IPosition& storagePos, const IPosition& latticePos
+   );
 };
 
 

@@ -40,29 +40,16 @@
 
 
 #include <casa/namespace.h>
-void equalBeams(const Vector<Quantum<Double> >& b1, const Vector<Quantum<Double> >& b2)
-{
-    AlwaysAssertExit(b1.nelements()==b2.nelements());
-    AlwaysAssertExit(b1.nelements()==0 || b1.nelements()==3);
-    if (b1.nelements()==0) return;
-//
-    for (uInt i=0; i<b1.nelements(); i++) {
-       AlwaysAssertExit(b1(i) == b2(i));
-    }
-}
 
 
 void equal (const ImageInfo& ii1, const ImageInfo& ii2)
 {
-    const Vector<Quantum<Double> >& b1 = ii1.restoringBeam();
-    const Vector<Quantum<Double> >& b2 = ii2.restoringBeam();
-    equalBeams(b1, b2);
-//
+    const GaussianBeam& b1 = ii1.restoringBeam();
+    const GaussianBeam& b2 = ii2.restoringBeam();
+    AlwaysAssert(b1 == b2, AipsError);
     AlwaysAssertExit(ii1.imageType()==ii2.imageType());    
     AlwaysAssertExit(ii1.objectName()==ii2.objectName());  
 }
-
-
 
 int main()
 {
@@ -77,24 +64,25 @@ try {
 //
 // Restoring beam
 //
-    equalBeams(mii.restoringBeam(), mii.defaultRestoringBeam());
-    Vector<Quantum<Double> > beam;
-    equalBeams(mii.defaultRestoringBeam(), beam);
+    AlwaysAssert(mii.restoringBeam() == mii.defaultRestoringBeam(), AipsError);
+    GaussianBeam beam;
+    AlwaysAssert(mii.defaultRestoringBeam() == beam,  AipsError);
 //
-    beam.resize(3);
-    beam(0) = Quantum<Double>(45.0, "arcsec");
-    beam(1) = Quantum<Double>(45.0, "arcsec");
-    beam(2) = Quantum<Double>(-45.0, "deg");
+    beam = GaussianBeam(
+    	Quantum<Double>(45.0, "arcsec"),
+    	Quantum<Double>(45.0, "arcsec"),
+    	Quantum<Double>(-45.0, "deg")
+    );
     mii.setRestoringBeam(beam);
-    equalBeams(mii.restoringBeam(), beam);
-    mii.setRestoringBeam(beam(0), beam(1), beam(2));
-    equalBeams(mii.restoringBeam(), beam);
-    beam(0) = Quantum<Double>(1.0, "deg");
+    AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.setRestoringBeam(beam);
-    equalBeams(mii.restoringBeam(), beam);
-//
+
+    AlwaysAssert(mii.restoringBeam() == beam, AipsError);
+    beam.setMajorMinor(Quantum<Double>(1.0, "deg"), beam.getMinor());
+    mii.setRestoringBeam(beam);
+    AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.removeRestoringBeam();
-    AlwaysAssertExit(mii.restoringBeam().nelements()==0);
+    AlwaysAssertExit(mii.restoringBeam().isNull());
 //
 // ImageType
 //
@@ -121,16 +109,17 @@ try {
 //
 // Copy constructor and assignemnt
 //
-    mii.setRestoringBeam(beam(0), beam(1), beam(2));
+    mii.setRestoringBeam(beam);
     mii.setImageType(ImageInfo::SpectralIndex);
     mii.setObjectName(String("IC4296"));
     ImageInfo mii2(mii);
     equal(mii2, mii);
 //
-    Vector<Quantum<Double> > beam2(3);
-    beam2(0) = Quantum<Double>(7.2, "arcsec");
-    beam2(1) = Quantum<Double>(3.6, "arcsec");
-    beam2(2) = Quantum<Double>(-90.0, "deg");
+    GaussianBeam beam2(
+    	Quantum<Double>(7.2, "arcsec"),
+    	Quantum<Double>(3.6, "arcsec"),
+    	Quantum<Double>(-90.0, "deg")
+    );
     mii2.setRestoringBeam(beam2);
     mii2.setImageType(ImageInfo::Intensity);
     mii.setObjectName(String("NGC1399"));
@@ -142,7 +131,6 @@ try {
     Record rec;
     String error;
     AlwaysAssertExit(mii.toRecord(error, rec));
-//
     ImageInfo mii3;
     Bool ok = mii3.fromRecord(error, rec);
     if (!ok) cout << "Error = " << error << endl;
@@ -182,12 +170,99 @@ try {
     Vector<String> error2;
     AlwaysAssertExit(mii4.fromFITS(error2, headerb));
     equal(mii4, mii3);
-//
 // output stream
 //
     cout << mii3 << endl;
     cout << mii4 << endl;
+    {
+    	// per plane beam tests
+    	ImageInfo myinfo;
+    	Quantity majAx(5, "arcsec");
+    	Quantity minAx(3, "arcsec");
+    	Quantity pa(60, "deg");
+    	Bool ok = True;
+    	try {
+    		// no hyper plane beam shape throws exception
+    		myinfo.setBeam(1, 1, majAx, minAx, pa);
+    		ok = False;
+    	}
+    	catch (AipsError x) {}
+    	AlwaysAssert(ok, AipsError);
+    	myinfo = ImageInfo();
+    	myinfo.setAllBeams(2, 1, GaussianBeam());
+    	try {
+    		// inconsistent plane throws exception
+    		myinfo.setBeam(2, 1, majAx, minAx, pa);
+    		ok = False;
+    	}
+    	catch (AipsError x) {
+    		cout << "Exception thrown as expected: "
+    			<< x.getMesg() << endl;
+    	}
+    	AlwaysAssert(ok, AipsError);
+    	myinfo = ImageInfo();
+    	myinfo.setAllBeams(2, 1, GaussianBeam());
+    	try {
+    		// incorrect beam spec throws error
+    		myinfo.setBeam(0, 0, minAx, majAx, pa);
+    		ok = False;
+    	}
+    	catch (AipsError x) {
+    		cout << "Exception thrown as expected: "
+    			<< x.getMesg() << endl;
+    	}
+    	AlwaysAssert(ok, AipsError);
+    	myinfo = ImageInfo();
+    	myinfo.setAllBeams(2, 1, GaussianBeam());
+    	myinfo.setBeam(0, 0, majAx, minAx, pa);
+    	GaussianBeam beam = myinfo.restoringBeam(0, 0);
+    	AlwaysAssert(beam.getMajor() == majAx, AipsError);
+    	AlwaysAssert(beam.getMinor() == minAx, AipsError);
+    	AlwaysAssert(beam.getPA() == pa, AipsError);
+    	Record rec;
+    	String err;
+    	// not all beams have been set
+    	AlwaysAssert(! myinfo.toRecord(error, rec), AipsError);
+    	myinfo.setBeam(1, 0, majAx, minAx, pa);
+    	AlwaysAssert(myinfo.toRecord(error, rec), AipsError);
+    	ImageInfo myinfo2;
+    	myinfo2.fromRecord(err, rec);
+    	AlwaysAssert(myinfo2.fromRecord(err, rec), AipsError);
+    	beam = myinfo2.restoringBeam(1, 0);
+    	AlwaysAssert(beam.getMajor() == majAx, AipsError);
+    	AlwaysAssert(beam.getMinor() == minAx, AipsError);
+    	AlwaysAssert(beam.getPA() == pa, AipsError);
+    	cout << "myinfo2 " << myinfo2 << endl;
+    }
+    {
+    	Vector<ImageBeamSet::AxisType> axes(2);
+    	axes[0] = ImageBeamSet::POLARIZATION;
+    	axes[1] = ImageBeamSet::SPECTRAL;
+    	ImageBeamSet bset(IPosition(2, 10, 4), axes);
+    	ImageInfo myinfo = ImageInfo();
+    	Bool ok = False;
+    	try {
+    		myinfo.setBeams(bset);
+    		ok = False;
+		}
+    	catch (AipsError x) {
+    		cout << "Exception thrown as expected: " << x.getMesg() << endl;
+    		ok = True;
+    	}
+    	AlwaysAssert(ok, AipsError);
+    	axes[0] = ImageBeamSet::SPECTRAL;
+    	axes[1] = ImageBeamSet::POLARIZATION;
+    	ImageBeamSet bset2(IPosition(2, 10, 4), axes);
+    	myinfo.setBeams(bset2);
+    	AlwaysAssert(myinfo.getBeamSet() == bset2, AipsError);
+    	// check that we can set a different size beam set
+    	ImageBeamSet bset3(IPosition(2, 11, 4), axes);
+		myinfo.setBeams(bset3);
+    	AlwaysAssert(myinfo.getBeamSet() == bset3, AipsError);
 
+
+
+    }
 } catch (AipsError x) {
   cout << "Caught error " << x.getMesg() << endl;
   return 1;

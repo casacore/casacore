@@ -17,6 +17,7 @@ Coordinates/ObsInfo.cc
 Coordinates/Projection.cc
 Coordinates/Spectral2Coordinate.cc
 Coordinates/SpectralCoordinate.cc
+Coordinates/QualityCoordinate.cc
 Coordinates/StokesCoordinate.cc
 Coordinates/TabularCoordinate.cc
 )
@@ -36,6 +37,7 @@ Coordinates/LinearXform.h
 Coordinates/SpectralCoordinate.h
 Coordinates/Coordinate.h
 Coordinates/StokesCoordinate.h
+Coordinates/QualityCoordinate.h
 Coordinates/FITSCoordinateUtil.h
 Coordinates/CoordinateSystem.h
 Coordinates/FrequencyAligner.h

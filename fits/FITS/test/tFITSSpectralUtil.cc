@@ -43,7 +43,7 @@ int main()
 {
     try {
 	// to from FITSHeader
-	String ctype;
+	String ctype, cunit;
 	Double crval, cdelt, crpix, altrval, altrpix;
 	Int velref;
 	Bool haveAlt;
@@ -57,7 +57,7 @@ int main()
 	LogIO logger;
 	AlwaysAssertExit(FITSSpectralUtil::
 			 toFITSHeader(ctype, crval, cdelt,
-				      crpix, haveAlt, altrval,
+				      crpix, cunit, haveAlt, altrval,
 				      altrpix, velref, restFreq, 
 				      specsys, logger,
 				      refFreq, refPix, freqInc,
@@ -174,7 +174,7 @@ int main()
     }
     try { // same as above, however with wavelength spectral axis
 	// to from FITSHeader
-      String ctype, specsys;
+      String ctype, cunit, specsys;
 	Double crval, cdelt, crpix, altrval, altrpix;
 	Int velref;
 	Bool haveAlt;
@@ -187,7 +187,7 @@ int main()
 	LogIO logger;
 	AlwaysAssertExit(FITSSpectralUtil::
 			 toFITSHeader(ctype, crval, cdelt,
-				      crpix, haveAlt, altrval,
+				      crpix, cunit, haveAlt, altrval,
 				      altrpix, velref, restFreq, 
 				      specsys, logger,
 				      refFreq, refPix, freqInc,
@@ -226,13 +226,13 @@ int main()
 	crvalVec(0) = crval;
 	crpixVec(0) = crpix;
 	cdeltVec(0) = cdelt;
+	cunitVec(0) = cunit;
 	
 	ctypeVec(1) = "STOKES";
 	crvalVec(1) = 1;
 	crpixVec(1) = 1;
 	cdeltVec(1) = 1;
 	
-	cunitVec(0) = "m";
 	cunitVec(1) = "";
 	
 	// OK, put the primary header information back
@@ -272,6 +272,107 @@ int main()
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
+    }
+    try { // same as above, however with air wavelength spectral axis
+    	// to from FITSHeader
+    	String ctype, cunit, specsys;
+    	Double crval, cdelt, crpix, altrval, altrpix;
+    	Int velref;
+    	Bool haveAlt;
+    	Double restFreq = 1420.4058e6;
+    	Double refFreq = 1400.0e6;
+    	Double freqInc = 2.5e6;
+    	Double refPix = 512.0;
+    	MFrequency::Types refFrame = MFrequency::GALACTO;
+    	MDoppler::Types velPref = MDoppler::RADIO;
+    	LogIO logger;
+    	AlwaysAssertExit(FITSSpectralUtil::
+    			toFITSHeader(ctype, crval, cdelt,
+    					crpix, cunit, haveAlt, altrval,
+    					altrpix, velref, restFreq,
+    					specsys, logger,
+    					refFreq, refPix, freqInc,
+    					refFrame, False, velPref,
+    					True, True)); // air wavelength preferred
+    	// Actually construct the header record
+    	Record header;
+    	if (restFreq > 0) {
+    		header.define("restfreq",restFreq);
+    		header.setComment("restfreq","Rest Frequency (Hz)");
+    	}
+    	if (haveAlt) {
+    		header.define("altrval",altrval);
+    		header.setComment("altrval","Alternate frequency reference value");
+    		header.define("altrpix", altrpix);
+    		header.setComment("altrpix","Alternate frequency reference pixel");
+    		header.define("velref", velref);
+    		header.setComment("velref", "1 LSR, 2 HEL, 3 OBS, +256 Radio");
+    		// the following agree with the current usage in FITSSpectralUtil
+    		// which in turn follows from Greisen, Paper III.  On the other
+    		// hand, that usage as applied here, to VELREF, is unlikely to
+    		// be understood by other FITS readers.  Still, its better than
+    		// doing nothing for these rest frames until the convention in
+    		// Paper III or its successor is formally adopted.
+    		FITSKeywordUtil::
+    		addComment(header,
+    				"casacore non-standard usage: 4 LSD, 5 GEO, 6 SOU, 7 GAL");
+    	}
+    	header.define("specsys",specsys);
+
+    	// dummy primary header axes
+    	Vector<String> ctypeVec(2), cunitVec(2);
+    	Vector<Double> crvalVec(2), crpixVec(2), cdeltVec(2);
+
+    	ctypeVec(0) = ctype;
+    	crvalVec(0) = crval;
+    	crpixVec(0) = crpix;
+    	cdeltVec(0) = cdelt;
+    	cunitVec(0) = cunit;
+
+    	ctypeVec(1) = "STOKES";
+    	crvalVec(1) = 1;
+    	crpixVec(1) = 1;
+    	cdeltVec(1) = 1;
+
+    	cunitVec(1) = "";
+
+    	// OK, put the primary header information back
+    	header.define("ctype", ctypeVec);
+    	header.define("crval", crvalVec);
+    	header.define("crpix", crpixVec);
+    	header.define("cdelt", cdeltVec);
+    	header.define("cunit", cunitVec);
+
+    	// and the other direction
+    	Int whichAxis;
+    	Double refPixOut, refFreqOut, freqIncOut, restFreqOut;
+    	Vector<Double> freqs;
+    	MFrequency::Types refFrameOut = MFrequency::GALACTO;
+    	MDoppler::Types velPrefOut = MDoppler::RADIO;
+    	AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis,
+    			refPixOut,
+    			refFreqOut,
+    			freqIncOut,
+    			freqs,
+    			refFrameOut,
+    			velPrefOut,
+    			restFreqOut,
+    			logger,
+    			header,
+    			'c',
+    			False));
+    	AlwaysAssertExit(whichAxis==0);
+    	// note: the following is only true when onRelative==False in
+    	// fromFITSHeader
+    	AlwaysAssertExit(near(refPix,refPixOut));
+    	AlwaysAssertExit(near(refFreq,refFreqOut, 1E-11));
+    	AlwaysAssertExit(near(freqInc,freqIncOut, 3E-6));
+    	AlwaysAssertExit(refFrame==refFrameOut);
+    	AlwaysAssertExit(near(restFreq,restFreqOut));
+
+    } catch (AipsError x) {
+    	cout << "Caught an exception: " << x.getMesg() << endl;
+    	return 1;
     }
     return 0;
 }

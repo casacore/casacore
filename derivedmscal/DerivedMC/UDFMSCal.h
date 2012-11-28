@@ -73,6 +73,7 @@ namespace casa {
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
 //  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
 //  <li> STOKES makes it possible to convert Stokes of data, flag, or weight.
+//  <li> BASELINE is baseline selection using CASA syntax.
 // </ul>
 // All functions have data type double and unit radian (except UVW). The HADEC,
 // AZEL, and UVW functions return arrays while the others return scalars.
@@ -100,31 +101,33 @@ namespace casa {
   {
   public:
     // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, UVW, STOKES};
+    enum ColType {HA, HADEC, PA, LAST, AZEL, UVW, STOKES, BASELINE};
 
     explicit UDFMSCal (ColType, Int antnr);
 
     // Function to create an object.
-    static UDFBase* makeHA     (const String&);
-    static UDFBase* makeHA1    (const String&);
-    static UDFBase* makeHA2    (const String&);
-    static UDFBase* makeHADEC  (const String&);
-    static UDFBase* makeHADEC1 (const String&);
-    static UDFBase* makeHADEC2 (const String&);
-    static UDFBase* makePA1    (const String&);
-    static UDFBase* makePA2    (const String&);
-    static UDFBase* makeLAST   (const String&);
-    static UDFBase* makeLAST1  (const String&);
-    static UDFBase* makeLAST2  (const String&);
-    static UDFBase* makeAZEL1  (const String&);
-    static UDFBase* makeAZEL2  (const String&);
-    static UDFBase* makeUVW    (const String&);
-    static UDFBase* makeStokes (const String&);
+    static UDFBase* makeHA       (const String&);
+    static UDFBase* makeHA1      (const String&);
+    static UDFBase* makeHA2      (const String&);
+    static UDFBase* makeHADEC    (const String&);
+    static UDFBase* makeHADEC1   (const String&);
+    static UDFBase* makeHADEC2   (const String&);
+    static UDFBase* makePA1      (const String&);
+    static UDFBase* makePA2      (const String&);
+    static UDFBase* makeLAST     (const String&);
+    static UDFBase* makeLAST1    (const String&);
+    static UDFBase* makeLAST2    (const String&);
+    static UDFBase* makeAZEL1    (const String&);
+    static UDFBase* makeAZEL2    (const String&);
+    static UDFBase* makeUVW      (const String&);
+    static UDFBase* makeStokes   (const String&);
+    static UDFBase* makeBaseline (const String&);
 
     // Setup the object.
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
+    virtual Bool   getBool   (const TableExprId& id);
     virtual Double getDouble (const TableExprId& id);
     virtual Array<Bool> getArrayBool (const TableExprId& id);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -135,13 +138,17 @@ namespace casa {
     void setupStokes (const Table& table,
                       PtrBlock<TableExprNodeRep*>& operands);
 
+    // Setup the baseline selection.
+    void setupBaseline (const Table& table,
+                        PtrBlock<TableExprNodeRep*>& operands);
+
     // Setup direction conversion if a direction is explicitly given.
     void setupDir (TableExprNodeRep*& operand);
 
     //# Data members.
     MSCalEngine     itsEngine;
     StokesConverter itsStokesConv;
-    TableExprNode   itsDataNode;   //# for stokes conversion
+    TableExprNode   itsDataNode;   //# for stokes, baseline
     ColType         itsType;
     Int             itsAntNr;
     //# Preallocate vector to avoid having to construct them too often.

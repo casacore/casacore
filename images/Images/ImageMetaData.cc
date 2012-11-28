@@ -36,22 +36,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     Int ImageMetaData::spectralCoordinateNumber() const {
         // don't do a hasSpectralAxis() check or you will go down an infinite recursion path
-        return itsCoordinates.findCoordinate(Coordinate::SPECTRAL);
+        return _coordinates.findCoordinate(Coordinate::SPECTRAL);
     }
 
     Bool ImageMetaData::hasSpectralAxis() const {
-    	return itsCoordinates.hasSpectralAxis();
+    	return _coordinates.hasSpectralAxis();
     } 
 
     Int ImageMetaData::spectralAxisNumber() const {
-    	return itsCoordinates.spectralAxisNumber();
+    	return _coordinates.spectralAxisNumber();
     }    
 
     uInt ImageMetaData::nChannels() const {
         if (! hasSpectralAxis()) {
             return 0;
         }
-        return itsShape[spectralAxisNumber()];
+        return _shape[spectralAxisNumber()];
     }
 
     Bool ImageMetaData::isChannelNumberValid(const uInt chan) const {
@@ -62,26 +62,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
 
     Int ImageMetaData::polarizationCoordinateNumber() const {
-        return itsCoordinates.polarizationCoordinateNumber();
+        return _coordinates.polarizationCoordinateNumber();
     }
 
+    /*
     Bool ImageMetaData::hasPolarizationAxis() const {
     	return itsCoordinates.hasPolarizationAxis();
     } 
+    */
 
     Int ImageMetaData::polarizationAxisNumber() const {
-    	return itsCoordinates.polarizationAxisNumber();
+    	return _coordinates.polarizationAxisNumber();
     }       
 
     uInt ImageMetaData::nStokes() const {
-        if (! hasPolarizationAxis()) {
+        if (! _coordinates.hasPolarizationCoordinate()) {
             return 0;
         }
-        return itsShape[polarizationAxisNumber()];
+        return _shape[polarizationAxisNumber()];
     }
 
     Int ImageMetaData::stokesPixelNumber(const String& stokesString) const {
-    	Int pixNum = itsCoordinates.stokesPixelNumber(stokesString);
+    	Int pixNum = _coordinates.stokesPixelNumber(stokesString);
     	if (pixNum >= (Int)nStokes()) {
     		pixNum = -1;
     	}
@@ -89,14 +91,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
 
     String ImageMetaData::stokesAtPixel(const uInt pixel) const {
-        if (! hasPolarizationAxis() || pixel >= nStokes()) {
+        if (! _coordinates.hasPolarizationCoordinate() || pixel >= nStokes()) {
              return "";
         }
-        return itsCoordinates.stokesAtPixel(pixel);
+        return _coordinates.stokesAtPixel(pixel);
     }
 
     Bool ImageMetaData::isStokesValid(const String& stokesString) const {
-        if (! hasPolarizationAxis()) {
+        if (! _coordinates.hasPolarizationCoordinate()) {
             return False;
         }
         Int stokesPixNum = stokesPixelNumber(stokesString);
@@ -104,15 +106,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
 
     Int ImageMetaData::directionCoordinateNumber() const {
-        return itsCoordinates.directionCoordinateNumber();
+        return _coordinates.directionCoordinateNumber();
     }
 
     Bool ImageMetaData::hasDirectionCoordinate() const {
-    	return itsCoordinates.hasDirectionCoordinate();
+    	return _coordinates.hasDirectionCoordinate();
     } 
 
     Vector<Int> ImageMetaData::directionAxesNumbers() const {
-    	return itsCoordinates.directionAxesNumbers();
+    	return _coordinates.directionAxesNumbers();
     }    
 
     Vector<Int> ImageMetaData::directionShape() const {
@@ -121,8 +123,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
             return Vector<Int>();
         }
         Vector<Int> dirShape(2);
-        dirShape[0] = itsShape[dirAxesNums[0]];
-        dirShape[1] = itsShape[dirAxesNums[1]];
+        dirShape[0] = _shape[dirAxesNums[0]];
+        dirShape[1] = _shape[dirAxesNums[1]];
         return dirShape;
     }
 
@@ -148,35 +150,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         }    
         return areValid;
     }
-
+/*
     // This method was copied from ImageStatistics and modified.
-    Bool ImageMetaData::getBeamArea (Quantity& beamArea) const {
+    Bool ImageMetaData::getBeamArea(
+    	Double& beamArea, const Unit& unit, const Int channel,
+    	const Int polarization
+    ) const {
     	beamArea = -1.0;
     	if (! hasDirectionCoordinate() ) {
     		return False;
     	}
     	//TODO merge ImageInfo into ImageMetaData
-    	Vector<Quantum<Double> > beam = itsInfo.restoringBeam();
-    	String imageUnits = itsUnits.getName();
+    	GaussianBeam beam = _info.restoringBeam(channel, polarization);
+    	String imageUnits = _units.getName();
     	imageUnits.upcase();
 
-    	if (beam.nelements()==3 && imageUnits.contains("/BEAM")) {
-            beam[0].convert("rad");
-    		beam[1].convert("rad");
-    		beamArea = (C::pi/(4*log(2.0))) * beam[0].getValue() * beam[1].getValue();
-            beamArea.setUnit("sr");
+    	if (! beam.isNull() && imageUnits.contains("/BEAM")) {
+    		beamArea = beam.getArea(unit);
     		return True;
-    	} else {
+    	}
+    	else {
     		return False;
     	}
     }
-
+*/
     Bool ImageMetaData::getDirectionPixelArea(Quantity& pixelArea) const {
     	pixelArea = -1.0;
     	if (!hasDirectionCoordinate()) {
     		return False;
     	}
-    	DirectionCoordinate dCoord = itsCoordinates.directionCoordinate(directionCoordinateNumber());
+    	DirectionCoordinate dCoord = _coordinates.directionCoordinate(directionCoordinateNumber());
     	Vector<Double> increment = dCoord.increment();
     	pixelArea  = Quantity(fabs(increment[0]*increment[1]), String("sr"));
     	return True;

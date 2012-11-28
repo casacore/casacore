@@ -54,7 +54,8 @@ int main() {
 
     Vector<String> srcNames(2);
     srcNames[0] = "3C147";
-    srcNames[1] = "1934-638";    
+    //srcNames[1] = "1934-638";    
+    srcNames[1] = "PKS J1939-6342";    
 
     Vector<MFrequency> freqs(2);
     freqs[0] = MFrequency(Quantity(2.0, "GHz"));

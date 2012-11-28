@@ -162,6 +162,8 @@ Bool FluxStandard::compute(const String& sourceName,
     fluxStdPtr = new FluxStdPerleyTaylor99;
   else if(itsFluxScale == PERLEY_BUTLER_2010)
     fluxStdPtr = new FluxStdPerleyButler2010;
+  else if(itsFluxScale == PERLEY_BUTLER_2013)
+    fluxStdPtr = new FluxStdPerleyButler2013;
   else{
     if(verbose)
       os << LogIO::SEVERE
@@ -397,6 +399,11 @@ Bool FluxStandard::matchStandard (const String& name,
       (lname.contains("10") || lname.contains("2010"))) {
     stdEnum = FluxStandard::PERLEY_BUTLER_2010;
   }
+  // Perley-Butler (2013)
+  else if (lname.contains("perley") && lname.contains("butler") &&
+      (lname.contains("13") || lname.contains("2013"))) {
+    stdEnum = FluxStandard::PERLEY_BUTLER_2013;
+  }
   // Baars
   else if (lname.contains("baars")) {
     stdEnum = FluxStandard::BAARS;
@@ -448,6 +455,10 @@ String FluxStandard::standardName (const FluxStandard::FluxScale& stdEnum)
   }
   case PERLEY_BUTLER_2010: {
     stdName = "Perley-Butler 2010";
+    break;
+  }
+  case PERLEY_BUTLER_2013: {
+    stdName = "Perley-Butler 2013";
     break;
   }
   case SS_JPL_BUTLER: 

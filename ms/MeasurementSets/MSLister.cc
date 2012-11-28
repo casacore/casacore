@@ -52,8 +52,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Null constructor merely sets private formatting string
 //
 MSLister::MSLister ()
-  : mss_p(),
-    dashline_p(replicate('-',80))
+  : dashline_p(replicate('-',80)),
+    mss_p()
 {
   pMSSel_p = 0;
 }
@@ -68,8 +68,8 @@ MSLister::MSLister (const MeasurementSet& ms, LogIO& os)
   //  : pMS_p(&ms),
   : pMS_p(const_cast<MeasurementSet*>(&ms)),
     logStream_p(os),
-    mss_p(),
-    dashline_p(replicate('-',80))
+    dashline_p(replicate('-',80)),
+    mss_p()
 {
   // Move these into initList()?
   // default precision (in case setPrecision is not called)
@@ -401,7 +401,7 @@ void MSLister::selectvis(const String& timerange,
 			}
 		}
 	}
-	uInt selDDID = selDDIDs[0];
+	Int selDDID = selDDIDs[0];
 	if (selDDIDs.size() > 1) {
 		for (uInt i=1; i<selDDIDs.size(); i++) {
 			if (ddpolIDs(selDDIDs[i]) != selDDID) {

@@ -211,6 +211,7 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
 //
   {
      Vector<Double> tmp(1);
+     tmp[0] = 0.0;
      if (!(record.isDefined("error"))) {
         tmp[0] = 0.0;
      } else {
@@ -220,12 +221,11 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
           errorMessage += "The 'error' field must be a scalar\n";
           return False;
         }
-        Double errorVal;
         switch (record.dataType(error)) {
         case TpDouble:
         case TpFloat:
         case TpInt:
-          errorVal = record.asDouble(error);
+          tmp[0] = record.asDouble(error);
           break;
         default:
           errorMessage += "The 'error' field must be a real number\n";

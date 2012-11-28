@@ -1078,7 +1078,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	throw(MSSelectionError(String("MSS::getChanFreqList:: Internal error:  Selected list of SPW IDs > "
 				      "no. of rows in the SPECTRAL_WINDOW sub-table.")));
     Int spwID;
-    for (uInt i=0; i < chanList_l.shape()(0); i++)
+    for (Int i=0; i < chanList_l.shape()(0); i++)
       {
 	spwID = chanList_l(i,0); // First column has the SPW ID
 	Array<Double> chanFreq(msSpwSubTable.chanFreq()(spwID));

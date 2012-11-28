@@ -194,10 +194,19 @@ public:
   // For the axes not being regridded, it copies the coordinates from
   // cSysFrom.  This helps you build the cSys for function regrid.
   // The ObsInfo from cSysFrom is copied to the output CoordinateSystem.
-  static CoordinateSystem makeCoordinateSystem(LogIO& os,
-                                               const CoordinateSystem& cSysTo,
-                                               const CoordinateSystem& cSysFrom,
-                                               const IPosition& axes);
+  // If inShape has one or more elements it represenents the size of the
+  // image to be regridded. It this must have the same number of elements
+  // as the number of pixel axes in <src>cSysFrom</src>. If any of the values
+  // are unity (ie the axes are degenerate), and the corresponding axis in <src>csysFrom</src> is the only
+  // axis in its corresponding coordinate, this coordinate will not be replaced
+  // even if the axis is specified in <src>axes</src>.
+  static CoordinateSystem makeCoordinateSystem(
+		  LogIO& os,
+		  const CoordinateSystem& cSysTo,
+		  const CoordinateSystem& cSysFrom,
+		  const IPosition& axes,
+		  const IPosition& inShape=IPosition()
+  );
 
  private:
 

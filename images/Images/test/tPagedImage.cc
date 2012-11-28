@@ -283,16 +283,16 @@ int main()
        AlwaysAssert(cSys2.near(cSys3,1e-6), AipsError);
 //
        ImageInfo info = pIm.imageInfo();
-       AlwaysAssert(info.restoringBeam().nelements()==0, AipsError);
-       Quantum<Double> a1(10.0,Unit("arcsec"));
-       Quantum<Double> a2(8.0,Unit("arcsec"));
-       Quantum<Double> a3(-45.0,Unit("deg"));
-       info.setRestoringBeam(a1, a2, a3);
+       AlwaysAssert(info.restoringBeam().isNull(), AipsError);
+       Quantity a1(10.0,Unit("arcsec"));
+       Quantity a2(8.0,Unit("arcsec"));
+       Quantity a3(-45.0,Unit("deg"));
+       info.setRestoringBeam(GaussianBeam(a1, a2, a3));
        pIm.setImageInfo(info);
        info = pIm.imageInfo();
-       AlwaysAssert(info.restoringBeam()(0)==a1, AipsError);
-       AlwaysAssert(info.restoringBeam()(1)==a2, AipsError);
-       AlwaysAssert(info.restoringBeam()(2)==a3, AipsError);
+       AlwaysAssert(info.restoringBeam().getMajor()==a1, AipsError);
+       AlwaysAssert(info.restoringBeam().getMinor()==a2, AipsError);
+       AlwaysAssert(info.restoringBeam().getPA()==a3, AipsError);
      }
      Table::deleteTable(String("tPagedImage_tmp.img5"));
 //
@@ -458,7 +458,61 @@ int main()
           it++;
        }
    }
+   {
+	   // per plane beam support
+	   String name = "afsdf.im";
+	   PagedImage<Float> temp(
+			   TiledShape(IPosition(4, 64 ,64, 4, 16)),
+			   CoordinateUtil::defaultCoords4D(), name
+	   );
+	   ImageInfo info = temp.imageInfo();
+	   Quantity maj(5, "arcsec");
+	   Quantity min(3, "arcsec");
+	   Quantity pa(30, "deg");
+	   info.setAllBeams(16, 4, GaussianBeam());
+	   Bool ok = True;
+	   try {
+		   temp.setImageInfo(info);
+		   ok = False;
+	   }
+	   catch (AipsError x) {
+		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
+	   }
+	   AlwaysAssert(ok, AipsError);
+	   info.setBeam(0, 0, maj, min, pa);
+	   try {
+		   temp.setImageInfo(info);
+		   ok = False;
+	   }
+	   catch (AipsError x) {}
+	   AlwaysAssert(ok, AipsError);
+	   for (uInt i=0; i<4; i++) {
+		   for (uInt j=0; j<16; j++) {
+			   info.setBeam(j, i, maj, min, pa);
+		   }
+	   }
+	   AlwaysAssert(temp.setImageInfo(info), AipsError);
+	   ok = True;
+	   try {
+		   GaussianBeam beam = temp.imageInfo().restoringBeam();
+		   ok = False;
+	   }
+	   catch (AipsError x) {
+		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
+	   }
+	   AlwaysAssert(ok, AipsError);
 
+	   // AlwaysAssert(beam.size() == 0, AipsError);
+	   AlwaysAssert(temp.imageInfo().hasMultipleBeams(), AipsError);
+	   min = Quantity(min.getValue() + 0.1, min.getUnit());
+	   info.setBeam(2, 2, maj, min, pa);
+	   AlwaysAssert(temp.setImageInfo(info), AipsError);
+	   AlwaysAssert(temp.imageInfo().hasMultipleBeams(), AipsError);
+	   GaussianBeam beam = temp.imageInfo().restoringBeam(2, 2);
+	   AlwaysAssert(beam.getMajor() == maj, AipsError);
+	   AlwaysAssert(beam.getMinor() == min, AipsError);
+	   AlwaysAssert(beam.getPA() == pa, AipsError);
+   }
     cout<< "ok"<< endl;
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;

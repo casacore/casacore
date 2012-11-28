@@ -55,6 +55,7 @@ Lattices/LCStretch.cc
 Lattices/LELAttribute.cc
 Lattices/LCPagedMask.cc
 Lattices/LatticeProgress.cc
+Lattices/RegionType.cc
 LatticeMath/Fit2D.cc
 LatticeMath/LatticeFit.cc
 )

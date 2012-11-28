@@ -424,15 +424,21 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 // For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
-                                 const String& unit, const String& doppler);
+                                 const String& unit, const String& spcquant);
 
+// Set rest frequency of SpectralCoordinate in CoordinateSystem.
+// Unit must be consistent with Hz or m.
+// Returns False if invalid inputs (and CS not changed) and an error message.
+   static Bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+   		                        const String& unit,
+   		                        const Double& value);
 
 // Set velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent m/s and the doppler a valid MDoppler string.
 // For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
-                                 const String& unit, const String& doppler);
+                                 const String& unit, const String& spcquant);
 
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
@@ -445,7 +451,7 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 // Unit can be consistent with Hz or m/s
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setSpectralFormatting (String& errorMsg, CoordinateSystem& cSys, 
-                                      const String& unit, const String& doppler);
+                                      const String& unit, const String& spcquant);
 
 // Convert an absolute pixel coordinate to world and format with 
 // default Coordinate formatting

@@ -14,6 +14,7 @@ tObsInfo
 tProjection
 tSpectralCoordinate
 tStokesCoordinate
+tQualityCoordinate
 tTabularCoordinate
 )
 

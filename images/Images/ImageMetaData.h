@@ -77,8 +77,9 @@ class ImageMetaData {
 
     public:
         template <class T> ImageMetaData(const ImageInterface<T>& image) :
-			itsInfo(image.imageInfo()), itsUnits(image.units()),
-            itsCoordinates(image.coordinates()), itsShape(image.shape()) {}
+			_info(image.imageInfo()), _units(image.units()),
+            _coordinates(image.coordinates()), _shape(image.shape()) {
+        }
 
         // Get the axis number of the spectral axis of this image (0-based).
         Int spectralAxisNumber() const; 
@@ -119,7 +120,7 @@ class ImageMetaData {
         Int polarizationAxisNumber() const;
 
         // Does this image have a polarization axis?
-        Bool hasPolarizationAxis() const;
+       // Bool hasPolarizationAxis() const;
 
         // Get the pixel number on the polarization axis of the specified stokes parameter.
         // If the specified stokes parameter does not exist in the image, the value returned
@@ -165,17 +166,20 @@ class ImageMetaData {
         ) const;
 
         // Get beam volume if possible. Return true if beam area was determined.
-        Bool getBeamArea(Quantity& beamArea) const;
-
+        /*
+        Bool getBeamArea(
+        	Double& beamArea, const Unit& unit, const Int channel=-1, const Int polarization=-1
+        ) const;
+        */
         // Get the solid angle subtended by a direction pixel (eg ra,dec or lat, long)
         // Return False if this value cannot be determined.
         Bool getDirectionPixelArea(Quantity& pixelArea) const;
 
     private:
-        const ImageInfo itsInfo;
-        const Unit itsUnits;
-        const CoordinateSystem& itsCoordinates;
-        const IPosition itsShape;
+        const ImageInfo _info;
+        const Unit _units;
+        const CoordinateSystem& _coordinates;
+        const IPosition _shape;
 
 
 };

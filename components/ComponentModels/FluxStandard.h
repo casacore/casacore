@@ -102,6 +102,9 @@ class FluxStandard
     // Perley-Butler 2010 Scale (using VLA [not EVLA!] data)
     PERLEY_BUTLER_2010,
 
+    // Perley-Butler 2013 
+    PERLEY_BUTLER_2013,
+
     HAS_RESOLUTION_INFO,
 
     // Estimate the flux density for a Solar System object using a JPL Horizons

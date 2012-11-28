@@ -1550,9 +1550,11 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   tiledDataNames.resize(1);
   tiledDataNames[0] = hcolName;
   
-  // add this optional column because random group fits has a
-  // weight per visibility
-  MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
+  // Add this optional column (random group fits can have a
+  // weight per visibility) if the FITS IDI data actually contains it
+  if(uv_data_hasWeights_p){
+    MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
+  }
   
   if(mainTbl && useTSM) {
     td.defineHypercolumn("TiledDATA",3,
@@ -1561,8 +1563,10 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
 			 stringToVector(MS::columnName(MS::FLAG)));
     td.defineHypercolumn("TiledFlagCategory",4,
 			 stringToVector(MS::columnName(MS::FLAG_CATEGORY)));
-    td.defineHypercolumn("TiledWgtSpectrum",3,
-			 stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
+    if(uv_data_hasWeights_p){
+      td.defineHypercolumn("TiledWgtSpectrum",3,
+			   stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
+    }
     td.defineHypercolumn("TiledUVW",2,
 			 stringToVector(MS::columnName(MS::UVW)));
     td.defineHypercolumn("TiledWgt",2,
@@ -1646,7 +1650,9 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     
     newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan1f);
     newtab.bindColumn(MS::columnName(MS::FLAG_CATEGORY),tiledStMan1fc);
-    newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),tiledStMan2);
+    if(uv_data_hasWeights_p){
+      newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),tiledStMan2);
+    }
     
     newtab.bindColumn(MS::columnName(MS::UVW),tiledStMan3);
     newtab.bindColumn(MS::columnName(MS::WEIGHT),tiledStMan4);
@@ -1664,12 +1670,14 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   // Set up the subtables for the UVFITS MS
   ms.createDefaultSubtables(option);
  
-  // add the optional Source sub table to allow for 
-  // specification of the rest frequency
-  TableDesc sourceTD=MSSource::requiredTableDesc();
-  SetupNewTable sourceSetup(ms.sourceTableName(),sourceTD,option);
-  ms.rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
- 				 Table(sourceSetup,0));
+// Since the MS SOURCE table is presently not filled,
+// its creation is commented out here.
+//   // add the optional Source sub table to allow for 
+//   // specification of the rest frequency
+//   TableDesc sourceTD=MSSource::requiredTableDesc();
+//   SetupNewTable sourceSetup(ms.sourceTableName(),sourceTD,option);
+//   ms.rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
+//  				 Table(sourceSetup,0));
 
   // update the references to the subtable keywords
   ms.initRefs();
@@ -1950,9 +1958,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
     Float visReal = 0.;
     Float visImag = 0.;
-    Float visWeight = 0.;
+    Float visWeight = 1.;
 
-    //***temporal fix  
     Int nIF_p = 0;
     nIF_p = getIndex(coordType_p,"BAND");
     if (nIF_p>=0) {
@@ -2035,7 +2042,9 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
       }
 
-      msc.weightSpectrum().put(putrow,weightSpec); 
+      if(uv_data_hasWeights_p){
+	msc.weightSpectrum().put(putrow,weightSpec); 
+      }
       msc.flag().put(putrow,flag);
       msc.flagCategory().put(putrow,flagCat);
 
@@ -2693,6 +2702,8 @@ void FITSIDItoMS1::fillFieldTable()
   ROArrayColumn<Float> vflux;
   ROArrayColumn<Float> alpha;
   ROArrayColumn<Float> foffset;  
+  ROArrayColumn<Double> foffsetD;  
+  Bool foffsetIsDouble = False;
   ROArrayColumn<Double> sysvel;
   ROArrayColumn<Double> restfreq;
 
@@ -2710,8 +2721,15 @@ void FITSIDItoMS1::fillFieldTable()
     qflux.attach(suTab,"QFLUX"); // Q 
     uflux.attach(suTab,"UFLUX"); // U 
     vflux.attach(suTab,"VFLUX"); // V 
-    alpha.attach(suTab,"ALPHA"); // sp. index  
-    foffset.attach(suTab,"FREQOFF"); // fq. offset  
+    alpha.attach(suTab,"ALPHA"); // sp. index
+    try{
+      foffset.attach(suTab,"FREQOFF"); // fq. offset  
+    }
+    catch(AipsError x){
+      foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
+      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      foffsetIsDouble = True;
+    }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
   }
