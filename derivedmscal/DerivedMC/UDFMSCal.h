@@ -74,9 +74,20 @@ namespace casa {
 //  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
 //  <li> STOKES makes it possible to convert Stokes of data, flag, or weight.
 //  <li> BASELINE is baseline selection using CASA syntax.
+//  <li> TIME is baseline selection using CASA syntax.
+//  <li> UVDIST is UV-distance selection using CASA syntax.
+//  <li> SPW is spectral window selection using CASA syntax.
+//  <li> FIELD is field selection using CASA syntax.
+//  <li> ARRAY is array selection using CASA syntax.
+//  <li> SCAN is scan selection using CASA syntax.
+//  <li> STATE is state selection using CASA syntax.
+//  <li> OBS is observation selection using CASA syntax.
 // </ul>
-// All functions have data type double and unit radian (except UVW). The HADEC,
-// AZEL, and UVW functions return arrays while the others return scalars.
+// The first functions have data type double and unit radian (except UVW).
+// The HADEC, AZEL, and UVW functions return arrays while the others return
+// scalars.
+// <br>The STOKES function can have data type Complex, Double or Bool.
+// <br>The latter functions are selection functions and return a Bool scalar.
 //
 // This class is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the
@@ -101,9 +112,11 @@ namespace casa {
   {
   public:
     // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, UVW, STOKES, BASELINE};
+    enum ColType {HA, HADEC, PA, LAST, AZEL, UVW, STOKES, SELECTION};
+    // Define the possible selection types.
+    enum SelType {BASELINE, TIME, UVDIST, SPW, FIELD, ARRAY, SCAN, STATE, OBS};
 
-    explicit UDFMSCal (ColType, Int antnr);
+    explicit UDFMSCal (ColType, Int arg);
 
     // Function to create an object.
     static UDFBase* makeHA       (const String&);
@@ -122,6 +135,14 @@ namespace casa {
     static UDFBase* makeUVW      (const String&);
     static UDFBase* makeStokes   (const String&);
     static UDFBase* makeBaseline (const String&);
+    static UDFBase* makeTime     (const String&);
+    static UDFBase* makeUVDist   (const String&);
+    static UDFBase* makeSpw      (const String&);
+    static UDFBase* makeField    (const String&);
+    static UDFBase* makeArray    (const String&);
+    static UDFBase* makeScan     (const String&);
+    static UDFBase* makeState    (const String&);
+    static UDFBase* makeObs      (const String&);
 
     // Setup the object.
     virtual void setup (const Table&, const TaQLStyle&);
@@ -139,8 +160,8 @@ namespace casa {
                       PtrBlock<TableExprNodeRep*>& operands);
 
     // Setup the baseline selection.
-    void setupBaseline (const Table& table,
-                        PtrBlock<TableExprNodeRep*>& operands);
+    void setupSelection (const Table& table,
+                         PtrBlock<TableExprNodeRep*>& operands);
 
     // Setup direction conversion if a direction is explicitly given.
     void setupDir (TableExprNodeRep*& operand);
@@ -148,9 +169,9 @@ namespace casa {
     //# Data members.
     MSCalEngine     itsEngine;
     StokesConverter itsStokesConv;
-    TableExprNode   itsDataNode;   //# for stokes, baseline
+    TableExprNode   itsDataNode;   //# for stokes and selections
     ColType         itsType;
-    Int             itsAntNr;
+    Int             itsArg;        //# antnr or SelType
     //# Preallocate vector to avoid having to construct them too often.
     //# Makes it thread-unsafe though.
     Vector<Double>  itsTmpVector;

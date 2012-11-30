@@ -54,6 +54,14 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.UVW",     UDFMSCal::makeUVW);
   UDFBase::registerUDF ("derivedmscal.STOKES",  UDFMSCal::makeStokes);
   UDFBase::registerUDF ("derivedmscal.BASELINE",UDFMSCal::makeBaseline);
+  UDFBase::registerUDF ("derivedmscal.TIME",    UDFMSCal::makeTime);
+  UDFBase::registerUDF ("derivedmscal.SPW",     UDFMSCal::makeSpw);
+  UDFBase::registerUDF ("derivedmscal.UVDIST",  UDFMSCal::makeUVDist);
+  UDFBase::registerUDF ("derivedmscal.FIELD",   UDFMSCal::makeField);
+  UDFBase::registerUDF ("derivedmscal.ARRAY",   UDFMSCal::makeArray);
+  UDFBase::registerUDF ("derivedmscal.SCAN",    UDFMSCal::makeScan);
+  UDFBase::registerUDF ("derivedmscal.STATE",   UDFMSCal::makeState);
+  UDFBase::registerUDF ("derivedmscal.OBS",     UDFMSCal::makeObs);
   UDFBase::registerUDF ("mscal.HA",      UDFMSCal::makeHA);
   UDFBase::registerUDF ("mscal.HA1",     UDFMSCal::makeHA1);
   UDFBase::registerUDF ("mscal.HA2",     UDFMSCal::makeHA2);
@@ -70,4 +78,12 @@ void register_derivedmscal()
   UDFBase::registerUDF ("mscal.UVW",     UDFMSCal::makeUVW);
   UDFBase::registerUDF ("mscal.STOKES",  UDFMSCal::makeStokes);
   UDFBase::registerUDF ("mscal.BASELINE",UDFMSCal::makeBaseline);
+  UDFBase::registerUDF ("mscal.TIME",    UDFMSCal::makeTime);
+  UDFBase::registerUDF ("mscal.UVDIST",  UDFMSCal::makeUVDist);
+  UDFBase::registerUDF ("mscal.SPW",     UDFMSCal::makeSpw);
+  UDFBase::registerUDF ("mscal.FIELD",   UDFMSCal::makeField);
+  UDFBase::registerUDF ("mscal.ARRAY",   UDFMSCal::makeArray);
+  UDFBase::registerUDF ("mscal.SCAN",    UDFMSCal::makeScan);
+  UDFBase::registerUDF ("mscal.STATE",   UDFMSCal::makeState);
+  UDFBase::registerUDF ("mscal.OBS",     UDFMSCal::makeObs);
 }
