@@ -109,6 +109,9 @@ void DataManager::reopenRW()
 void DataManager::setMaximumCacheSize (uInt)
 {}
 
+void DataManager::showCacheStatistics (ostream&) const
+{}
+
 //# Create a column object for a scalar.
 //# Check its data type.
 DataManagerColumn* DataManager::createScalarColumn (const String& columnName,

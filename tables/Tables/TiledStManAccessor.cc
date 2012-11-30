@@ -189,10 +189,5 @@ void ROTiledStManAccessor::clearCaches()
     dataManPtr_p->emptyCaches();
 }
 
-void ROTiledStManAccessor::showCacheStatistics (ostream& os) const
-{
-    dataManPtr_p->showCacheStatistics (os);
-}
-
 } //# NAMESPACE CASA - END
 

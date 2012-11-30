@@ -111,7 +111,7 @@ public:
     ROStandardStManAccessor (const Table& table, const String& name,
                              Bool byColumn=False);
 
-    ~ROStandardStManAccessor();
+    virtual ~ROStandardStManAccessor();
 
     // Copy constructor (reference semantics).
     ROStandardStManAccessor (const ROStandardStManAccessor& that);
@@ -139,9 +139,6 @@ public:
     // It will flush the cache as needed and remove all buckets from it
     // resulting in a drop in memory used.
     void clearCache();
-
-    // Show the statistics for the cache used by this storage manager.
-    void showCacheStatistics (ostream& anOs) const;
 
     // Show the statistics for the base class.
     void showBaseStatistics (ostream& anOs) const;

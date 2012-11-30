@@ -83,11 +83,6 @@ void ROStandardStManAccessor::clearCache()
     itsSSMPtr->clearCache();
 }
 
-void ROStandardStManAccessor::showCacheStatistics (ostream& anOs) const
-{
-    itsSSMPtr->showCacheStatistics (anOs);
-}
-
 void ROStandardStManAccessor::showBaseStatistics (ostream& anOs) const
 {
     itsSSMPtr->showBaseStatistics (anOs);

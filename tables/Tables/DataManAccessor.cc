@@ -44,6 +44,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsDataManager = table.findDataManager (name, byColumn);
   }
 
+  RODataManAccessor::~RODataManAccessor()
+  {}
+
   void RODataManAccessor::setProperties (const Record& prop) const
   {
     if (itsDataManager) {

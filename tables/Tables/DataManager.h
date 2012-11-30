@@ -38,6 +38,7 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/IO/ByteIO.h>
 #include <casa/OS/Mutex.h>
+#include<iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -332,7 +333,10 @@ public:
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
     virtual void setMaximumCacheSize (uInt nbytes);
-    
+
+    // Show the data manager's IO statistics. By default it does nothing.
+    virtual void showCacheStatistics (std::ostream&) const;
+
     // Create a column in the data manager on behalf of a table column.
     // It calls makeXColumn and checks the data type.
     // <group>
