@@ -37,6 +37,7 @@
 #include <algorithm>
 
 #include <casa/namespace.h>
+
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 
 int main(int argc, const char* argv[])
@@ -131,7 +132,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
       if (!showFlag) {
 	cout << "<<<" << endl;
       }
-      cout << ">>> Indirect ";
+      cout << ">>> Indirect    ";
       tim1.show();
       cout << "<<<" << endl;
       if (ord == Sort::Ascending) {
@@ -185,7 +186,7 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     if (!showFlag) {
 	cout << "<<< Resulting number may vary" << endl;
     }
-    cout << ">>> GenSort  ";
+    cout << ">>> GenSort     ";
     tim.show();
     cout << "<<<" << endl;
     if (ord == Sort::Ascending) {
@@ -218,9 +219,24 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     if ((type & Sort::NoDuplicates) != 0) {
 	memcpy (cparr, arr, n*sizeof(Int));
     }
+    // First do it indirectly (for smaller arrays only).
+    if (nr <= 5000000) {
+        tim.mark();
+        uInt kth = GenSortIndirect<Int>::kthLargest (cparr, n, n/2);
+        cout << ">>> ind kthLar: ";
+        tim.show();
+        cout << "<<<" << endl;
+        uInt mid = n/2;
+        if (ord == Sort::Descending) {
+          mid = (n-1)/2;
+        }
+        if (cparr[kth] != arr[mid]) {
+          cout << "ind kthLargest is " << kth << "; should be " << mid << endl;
+        }
+    }
     tim.mark();
     Int kth = GenSort<Int>::kthLargest (cparr, n, n/2);
-    cout << ">>> kthLar:  ";
+    cout << ">>> kthLar:     ";
     tim.show();
     cout << "<<<" << endl;
     uInt mid = n/2;
@@ -230,7 +246,6 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     if (kth != arr[mid]) {
 	cout << "kthLargest is " << kth << "; should be " << arr[mid] << endl;
     }
-
     // Test STL algorithms.
     cout << ">>>" << endl;
     if ((type & Sort::NoDuplicates) != 0) {
@@ -240,14 +255,14 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     }
     tim.mark();
     std::nth_element (cparr, cparr+n/2, cparr+n);
-    tim.show ("STL-nth      ");
+    tim.show ("STL-nth         ");
     memcpy (cparr, cp2arr, nr*sizeof(Int));
     tim.mark();
     std::sort (cp2arr, cp2arr+nr);
-    tim.show ("STL-sort     ");
+    tim.show ("STL-sort        ");
     tim.mark();
     std::stable_sort (cparr, cparr+nr);
-    tim.show ("STL-stable   ");
+    tim.show ("STL-stable      ");
     cout << "<<<" << endl;
 
     delete [] cparr;

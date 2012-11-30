@@ -588,6 +588,58 @@ void GenSortIndirect<T>::quickSortDesc (uInt* inx, const T* data, Int nr)
     quickSortDesc (sf+1, data, nr-n-1);
 }
 
+// Find the k-th largest element using a partial quicksort.
+template<class T>
+uInt GenSortIndirect<T>::kthLargest (T* data, uInt nr, uInt k)
+{
+    if (k >= nr) {
+	throw (AipsError ("kthLargest(data, nr, k): k must be < nr"));
+    }
+    // Create and fill an index vector.
+    Vector<uInt> indexVector(nr);
+    indgen(indexVector);
+    uInt* inx = indexVector.data();
+    Int st = 0;
+    Int end = Int(nr) - 1;
+    // Partition until a set of 1 or 2 elements is left.
+    while (end > st+1) {
+	// Choose a partition element by taking the median of the
+	// first, middle and last element.
+	// Store the partition element at the end.
+	// Do not use Sedgewick\'s advise to store the partition element in
+	// data[nr-2]. This has dramatic results for reversed ordered arrays.
+	Int i = (st+end)/2;                      // middle element
+	uInt* sf = inx+st;                       // first element
+	uInt* sl = inx+end;                      // last element
+	if (data[inx[i]] < data[*sf])
+	    swapInx (inx[i], *sf);
+	if (data[*sl] < data[*sf])
+	    swapInx (*sl, *sf);
+	if (data[inx[i]] < data[*sl])
+	    swapInx (inx[i], *sl);
+        T partVal = data[*sl];                   // partition element
+	// Now partition until the pointers cross.
+	for (;;) {
+	    while (data[*++sf] < partVal) ;
+	    while (data[*--sl] > partVal) ;
+	    if (sf >= sl) break;
+	    swapInx (*sf, *sl);
+	}
+	swapInx (*sf, inx[end]);
+	// Determine index of partitioning and update the start and end
+	// to take left or right part.
+	i = sf-inx;
+	if (i <= Int(k)) st = i;
+	if (i >= Int(k)) end = i;
+    }
+    if (end == st+1) {
+      if (data[inx[st]] > data[inx[end]]) {
+	swapInx (inx[st], inx[end]);
+      }
+    }
+    return inx[k];
+}
+
 // Do an insertion sort in ascending order.
 template<class T>
 uInt GenSortIndirect<T>::insSortAsc (uInt* inx, const T* data,

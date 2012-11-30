@@ -208,6 +208,9 @@ public:
 		      Sort::Order = Sort::Ascending,
 		      int options = Sort::QuickSort);
 
+    // Find the index of the k-th largest value.
+    static uInt kthLargest (T* data, uInt nr, uInt k);
+
 private:
     // Sort container using quicksort.
     static uInt quickSort (uInt* inx, const T* data,
