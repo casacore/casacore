@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class String;
 class FitsOutput;
 class MeasurementSet;
-template<class T> class ROScalarColumn;
+template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
 template<class T> class Vector;
@@ -190,12 +190,12 @@ private:
   //    @warning Assumes that the columns are sorted by time(_centroid), ant1,
   //             ant2 (, field, DDID).
   static uInt get_tbf_end(const uInt rownr, const uInt nrow, const uInt nif,
-                          const ROScalarColumn<Double>& timec,
-                          const ROScalarColumn<Double>& ininterval,
-                          const ROScalarColumn<Int>& ant1,
-                          const ROScalarColumn<Int>& ant2,
+                          const ScalarColumn<Double>& timec,
+                          const ScalarColumn<Double>& ininterval,
+                          const ScalarColumn<Int>& ant1,
+                          const ScalarColumn<Int>& ant2,
                           const Bool asMultiSource,
-                          const ROScalarColumn<Int>& fieldid);
+                          const ScalarColumn<Int>& fieldid);
 };
 
 

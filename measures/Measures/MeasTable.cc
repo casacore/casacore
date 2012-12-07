@@ -4372,7 +4372,7 @@ const Vector<Double> &MeasTable::IGRF(Double tm) {
     lastIGRF = *(rfp[0]);
     row.get(indx);
     time0IGRF = *(rfp[0]);
-    ROArrayColumn<Double> acc, accd;
+    ArrayColumn<Double> acc, accd;
     acc.attach(t, "COEF");
     accd.attach(t, "dCOEF");
     coefIGRF = acc(indx);

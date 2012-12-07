@@ -56,17 +56,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <group name=vectorComparison>
 template<class T> inline
-    Bool allLE (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allLE (const TableVector<T>& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allLT (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allLT (const TableVector<T>& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allGE (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allGE (const TableVector<T>& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allGT (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allGT (const TableVector<T>& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allEQ (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allEQ (const TableVector<T>& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allNE (const ROTableVector<T>& left, const ROTableVector<T>& right);
+    Bool allNE (const TableVector<T>& left, const TableVector<T>& right);
 // </group>
 
 
@@ -90,29 +90,29 @@ template<class T> inline
 
 // <group name=scalarComparison>
 template<class T> inline
-    Bool allLE (const ROTableVector<T>& left, const T& right);
+    Bool allLE (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allLE (const T& left, const ROTableVector<T>& right);
+    Bool allLE (const T& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allLT (const ROTableVector<T>& left, const T& right);
+    Bool allLT (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allLT (const T& left, const ROTableVector<T>& right);
+    Bool allLT (const T& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allGE (const ROTableVector<T>& left, const T& right);
+    Bool allGE (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allGE (const T& left, const ROTableVector<T>& right);
+    Bool allGE (const T& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allGT (const ROTableVector<T>& left, const T& right);
+    Bool allGT (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allGT (const T& left, const ROTableVector<T>& right);
+    Bool allGT (const T& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allEQ (const ROTableVector<T>& left, const T& right);
+    Bool allEQ (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allEQ (const T& left, const ROTableVector<T>& right);
+    Bool allEQ (const T& left, const TableVector<T>& right);
 template<class T> inline
-    Bool allNE (const ROTableVector<T>& left, const T& right);
+    Bool allNE (const TableVector<T>& left, const T& right);
 template<class T> inline
-    Bool allNE (const T& left, const ROTableVector<T>& right);
+    Bool allNE (const T& left, const TableVector<T>& right);
 // </group>
 
 
@@ -121,14 +121,14 @@ template<class T> inline
 //#
 #define TABVECLOGICOPER(NAME) \
 template<class T> inline \
-Bool aips_name2(all,NAME) (const ROTableVector<T>& l, \
-			   const ROTableVector<T>& r) \
+Bool aips_name2(all,NAME) (const TableVector<T>& l, \
+			   const TableVector<T>& r) \
     { return aips_name2(tabVecReptv,NAME) (l.tabVec(), r.tabVec()); } \
 template<class T> inline \
-Bool aips_name2(all,NAME) (const T& val, const ROTableVector<T>& tv) \
+Bool aips_name2(all,NAME) (const T& val, const TableVector<T>& tv) \
     { return aips_name2(tabVecRepvall,NAME) (val, tv.tabVec()); } \
 template<class T> inline \
-Bool aips_name2(all,NAME) (const ROTableVector<T>& tv, const T& val) \
+Bool aips_name2(all,NAME) (const TableVector<T>& tv, const T& val) \
     { return aips_name2(tabVecRepvalr,NAME) (tv.tabVec(), val); }
 
 TABVECLOGICOPER(LE)
@@ -145,32 +145,32 @@ TABVECLOGICOPER(NE)
 // At some point operators will be available that return masks where the
 // comparison is true. The vectors must conform or an exception is thrown.
 template<class T> inline
-Bool anyLE (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyLE (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allGT (l, r)  ?  False : True);
 }
 template<class T> inline
-Bool anyLT (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyLT (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allGE (l, r)  ?  False : True);
 }
 template<class T> inline
-Bool anyGE (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyGE (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allLT (l, r)  ?  False : True);
 }
 template<class T> inline
-Bool anyGT (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyGT (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allLE (l, r)  ?  False : True);
 }
 template<class T> inline
-Bool anyEQ (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyEQ (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allNE (l, r)  ?  False : True);
 }
 template<class T> inline
-Bool anyNE (const ROTableVector<T>& l, const ROTableVector<T>& r)
+Bool anyNE (const TableVector<T>& l, const TableVector<T>& r)
 {
     return (allEQ (l, r)  ?  False : True);
 }
@@ -183,62 +183,62 @@ Bool anyNE (const ROTableVector<T>& l, const ROTableVector<T>& r)
 // At some point operators will be available that return masks where the
 // comparison is true.
 template<class T> inline
-Bool anyLE (const ROTableVector<T>& tv, const T &val)
+Bool anyLE (const TableVector<T>& tv, const T &val)
 {
     return (allGT (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyLE (const T &val, const ROTableVector<T>& tv)
+Bool anyLE (const T &val, const TableVector<T>& tv)
 {
     return (allGT (val, tv)  ?  False : True);
 }
 template<class T> inline
-Bool anyLT (const ROTableVector<T>& tv, const T &val)
+Bool anyLT (const TableVector<T>& tv, const T &val)
 {
     return (allGE (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyLT (const T &val, const ROTableVector<T>& tv)
+Bool anyLT (const T &val, const TableVector<T>& tv)
 {
     return (allGE (val, tv)  ?  False : True);
 }
 template<class T> inline
-Bool anyGE (const ROTableVector<T>& tv, const T &val)
+Bool anyGE (const TableVector<T>& tv, const T &val)
 {
     return (allLT (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyGE (const T &val, const ROTableVector<T>& tv)
+Bool anyGE (const T &val, const TableVector<T>& tv)
 {
     return (allLT (val, tv)  ?  False : True);
 }
 template<class T> inline
-Bool anyGT (const ROTableVector<T>& tv, const T &val)
+Bool anyGT (const TableVector<T>& tv, const T &val)
 {
     return (allLE (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyGT (const T &val, const ROTableVector<T>& tv)
+Bool anyGT (const T &val, const TableVector<T>& tv)
 {
     return (allLE (val, tv)  ?  False : True);
 }
 template<class T> inline
-Bool anyEQ (const ROTableVector<T>& tv, const T &val)
+Bool anyEQ (const TableVector<T>& tv, const T &val)
 {
     return (allNE (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyEQ (const T &val, const ROTableVector<T>& tv)
+Bool anyEQ (const T &val, const TableVector<T>& tv)
 {
     return (allNE (val, tv)  ?  False : True);
 }
 template<class T> inline
-Bool anyNE (const ROTableVector<T>& tv, const T &val)
+Bool anyNE (const TableVector<T>& tv, const T &val)
 {
     return (allEQ (tv, val)  ?  False : True);
 }
 template<class T> inline
-Bool anyNE (const T &val, const ROTableVector<T>& tv)
+Bool anyNE (const T &val, const TableVector<T>& tv)
 {
     return (allEQ (val, tv)  ?  False : True);
 }

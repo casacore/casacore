@@ -130,9 +130,9 @@ void ROArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
     // the variable units column could be either an Array or a Scalar
     String varColName = tqDesc->unitColumnName();
     if (tab.tableDesc().columnDesc(varColName).isScalar()) {
-      itsScaUnitsCol = new ROScalarColumn<String>(tab, varColName);	
+      itsScaUnitsCol = new ScalarColumn<String>(tab, varColName);	
     } else {
-      itsArrUnitsCol = new ROArrayColumn<String>(tab, varColName);
+      itsArrUnitsCol = new ArrayColumn<String>(tab, varColName);
     }
   } else {
     Vector<String> units = tqDesc->getUnits();
@@ -141,7 +141,7 @@ void ROArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
       itsUnit(i) = units(i);
     }
   }
-  itsDataCol = new ROArrayColumn<T>(tab, columnName);
+  itsDataCol = new ArrayColumn<T>(tab, columnName);
   delete tqDesc;
 }
 
@@ -155,13 +155,13 @@ void ROArrayQuantColumn<T>::reference (const ROArrayQuantColumn<T>& that)
   itsUnitOut = that.itsUnitOut;
   itsConvOut = that.itsConvOut;
   if (that.itsDataCol != 0) {
-    itsDataCol = new ROArrayColumn<T>(*that.itsDataCol);
+    itsDataCol = new ArrayColumn<T>(*that.itsDataCol);
   }
   if (that.itsArrUnitsCol != 0) {
-    itsArrUnitsCol = new ROArrayColumn<String>(*that.itsArrUnitsCol);
+    itsArrUnitsCol = new ArrayColumn<String>(*that.itsArrUnitsCol);
   }
   if (that.itsScaUnitsCol != 0) {
-    itsScaUnitsCol = new ROScalarColumn<String>(*that.itsScaUnitsCol);
+    itsScaUnitsCol = new ScalarColumn<String>(*that.itsScaUnitsCol);
   }
 }
 

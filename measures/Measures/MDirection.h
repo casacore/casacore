@@ -42,9 +42,7 @@ class MDirection;
 class MCDirection;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -249,10 +247,8 @@ public:
   typedef MeasRef<MDirection> Ref;
   // Measure Convert (i.e. MDirection::Convert)
   typedef MeasConvert<MDirection> Convert;
-  // Measure table Columns (e.g., MDirection::ROScalarColumn)
-  typedef ROScalarMeasColumn<MDirection> ROScalarColumn;
+  // Measure table Columns (e.g., MDirection::ScalarColumn)
   typedef ScalarMeasColumn<MDirection> ScalarColumn;
-  typedef ROArrayMeasColumn<MDirection> ROArrayColumn;
   typedef ArrayMeasColumn<MDirection> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MDirection) Types Types;

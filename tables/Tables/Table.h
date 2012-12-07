@@ -148,7 +148,7 @@ template<class T> class CountedPtr;
 
 class Table
 {
-friend class ROTableColumn;
+friend class TableColumn;
 friend class BaseTable;
 friend class PlainTable;
 friend class MemoryTable;

@@ -36,8 +36,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class Table;
-template <class T> class ROArrayColumn;
-template <class T> class ROScalarColumn;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
 class String;
@@ -56,7 +54,7 @@ class String;
 //# Classes you should understand before using this one.
 //   <li> <linkto class=TableQuantumDesc>TableQuantumDesc</linkto>
 //   <li> <linkto class=Table>Table</linkto>
-//   <li> <linkto class=ROArrayColumn>ROArrayColumn</linkto>
+//   <li> <linkto class=ArrayColumn>ArrayColumn</linkto>
 //   <li> <linkto class=Quantum>Quantum</linkto>
 // </prerequisite>
 
@@ -217,20 +215,20 @@ protected:
 
   // Get access to itsUnitsCol.
   // <group>
-  const ROArrayColumn<String>* arrUnitsCol() const
+  const ArrayColumn<String>* arrUnitsCol() const
     { return itsArrUnitsCol; }
-  const ROScalarColumn<String>* scaUnitsCol() const
+  const ScalarColumn<String>* scaUnitsCol() const
     { return itsScaUnitsCol; }
   // </group>
 
 
 private:
   //# The underlying data column stores the quantum column's data.
-  ROArrayColumn<T>* itsDataCol;
+  ArrayColumn<T>* itsDataCol;
   //# Variable units array column if applicable.
-  ROArrayColumn<String>*  itsArrUnitsCol;
+  ArrayColumn<String>*  itsArrUnitsCol;
   //# Variable units scalar column if applicable.
-  ROScalarColumn<String>* itsScaUnitsCol;
+  ScalarColumn<String>* itsScaUnitsCol;
   //# Units to retrieve the data in.
   Vector<Unit> itsUnitOut;
   //# Convert unit when getting data?

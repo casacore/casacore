@@ -305,88 +305,90 @@ namespace casa {
                                                  selectedBaselines);
       }
       break;
-    //case TIME:
-    //{
-    //  MeasurementSet ms(table);
-    //  if (msTimeGramParseCommand(ms, selStr) == 0) {
-    //    itsDataNode = *(msTimeGramParseNode());
-    //  }
-    //  MSTimeGramParseDeleteNode();
-    //}
-    //break;
-      case UVDIST:
-        {
-          MeasurementSet ms(table);
-          if (msUvDistGramParseCommand(&ms, selStr) == 0) {
-            itsDataNode = *(msUvDistGramParseNode());
-          }
-          msUvDistGramParseDeleteNode();
+    case TIME:
+      {
+        TableExprNode node (table.col("TIME"));
+        Matrix<Double> times;
+        if (msTimeGramParseCommand (selStr, TableExprNode(),
+                                    node, times) == 0) {
+          itsDataNode = *(msTimeGramParseNode());
         }
-        break;
-      case SPW:
-        {
-          Table ddtab (table.keywordSet().asTable("DATA_DESCRIPTION"));
-          Table spwtab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
-          TableExprNode colAsTEN = table.col("DATA_DESC_ID");
-          Vector<Int> spwid;
-          Matrix<Int> chanid;
-          if (msSpwGramParseCommand(MSSpectralWindow(spwtab),
-                                    MSDataDescription(ddtab),
-                                    colAsTEN, selStr, spwid, chanid) == 0) {
-            itsDataNode = *(msSpwGramParseNode());
-          }
-          msSpwGramParseDeleteNode();
-        }
-        break;
-      case FIELD:
-        {
-          Table fieldtab(table.keywordSet().asTable("FIELD"));
-          TableExprNode colAsTEN = table.col("FIELD_ID");
-          Vector<Int> fldid;
-          itsDataNode = msFieldGramParseCommand (fieldtab, colAsTEN, selStr,
-                                                 fldid);
-          msFieldGramParseDeleteNode();
-        }
-        break;
-      case ARRAY:
-        {
-          MeasurementSet ms(table);
-          Vector<Int> arrid;
-          Int maxArr=1000;
-          itsDataNode = msArrayGramParseCommand(&ms, selStr, arrid, maxArr);
-	}
-        break;
-      case SCAN:
-        {
-          MeasurementSet ms(table);
-          Vector<Int> scanid;
-          Int maxScan=1000;
-          itsDataNode = msScanGramParseCommand(&ms, selStr, scanid, maxScan);
-        }
-        break;
-      case STATE:
-        {
-          MeasurementSet ms(table);
-          Vector<Int> stateid;
-          if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
-            itsDataNode = *(msStateGramParseNode());
-          }
-          msStateGramParseDeleteNode();
-        }
-        break;
-      case OBS:
-        {
-          MeasurementSet ms(table);
-          Vector<Int> obsid;
-          Int maxObs=1000;
-          itsDataNode = msObservationGramParseCommand(&ms, ms.observation(),
-                                                      selStr, obsid, maxObs);
-        }
-        break;
-      default:
-        throw AipsError ("UDFMScal::setupSelection: unknown type " +
-                         String::toString(itsArg));
+        msTimeGramParseDeleteNode();
       }
+      break;
+    case UVDIST:
+      {
+        MeasurementSet ms(table);
+        if (msUvDistGramParseCommand(&ms, selStr) == 0) {
+          itsDataNode = *(msUvDistGramParseNode());
+        }
+        msUvDistGramParseDeleteNode();
+      }
+      break;
+    case SPW:
+      {
+        Table ddtab (table.keywordSet().asTable("DATA_DESCRIPTION"));
+        Table spwtab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
+        TableExprNode colAsTEN = table.col("DATA_DESC_ID");
+        Vector<Int> spwid;
+        Matrix<Int> chanid;
+        if (msSpwGramParseCommand(MSSpectralWindow(spwtab),
+                                  MSDataDescription(ddtab),
+                                  colAsTEN, selStr, spwid, chanid) == 0) {
+          itsDataNode = *(msSpwGramParseNode());
+        }
+        msSpwGramParseDeleteNode();
+      }
+      break;
+    case FIELD:
+      {
+        Table fieldtab(table.keywordSet().asTable("FIELD"));
+        TableExprNode colAsTEN = table.col("FIELD_ID");
+        Vector<Int> fldid;
+        itsDataNode = msFieldGramParseCommand (fieldtab, colAsTEN, selStr,
+                                               fldid);
+        msFieldGramParseDeleteNode();
+      }
+      break;
+    case ARRAY:
+      {
+        MeasurementSet ms(table);
+        Vector<Int> arrid;
+        Int maxArr=1000;
+        itsDataNode = msArrayGramParseCommand(&ms, selStr, arrid, maxArr);
+      }
+      break;
+    case SCAN:
+      {
+        MeasurementSet ms(table);
+        Vector<Int> scanid;
+        Int maxScan=1000;
+        itsDataNode = msScanGramParseCommand(&ms, selStr, scanid, maxScan);
+      }
+      break;
+    case STATE:
+      {
+        MeasurementSet ms(table);
+        Vector<Int> stateid;
+        if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
+          itsDataNode = *(msStateGramParseNode());
+        }
+        msStateGramParseDeleteNode();
+      }
+      break;
+    case OBS:
+      {
+        MeasurementSet ms(table);
+        Vector<Int> obsid;
+        Int maxObs=1000;
+        itsDataNode = msObservationGramParseCommand(&ms, ms.observation(),
+                                                    selStr, obsid, maxObs);
+      }
+      break;
+    default:
+      throw AipsError ("UDFMScal::setupSelection: unknown type " +
+                       String::toString(itsArg));
+    }
   }
 
   Bool UDFMSCal::getBool (const TableExprId& id)

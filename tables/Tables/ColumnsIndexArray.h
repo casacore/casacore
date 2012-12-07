@@ -39,7 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
-class ROTableColumn;
+class TableColumn;
 
 
 // <summary>
@@ -253,7 +253,7 @@ protected:
   // If the switch <src>arrayPossible</src> is True, the column can
   // be an array. Otherwise it has to be a scalar.
   void addColumnToDesc (RecordDesc& description,
-			const ROTableColumn& column);
+			const TableColumn& column);
 
   // Make the various internal <src>RecordFieldPtr</src> objects.
   void makeObjects (const RecordDesc& description);

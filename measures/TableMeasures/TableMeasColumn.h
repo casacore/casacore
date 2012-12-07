@@ -57,9 +57,9 @@ class TableMeasDescBase;
 // </prerequisite>
 
 // <synopsis>
-// ROTableMeasColumn is the base class for the templated classes
-// <linkto class=ROScalarMeasColumn>ROScalarMeasColumn</linkto> and
-// <linkto class=ROArrayMeasColumn>ROArrayMeasColumn</linkto>
+// TableMeasColumn is the base class for the templated classes
+// <linkto class=ScalarMeasColumn>ScalarMeasColumn</linkto> and
+// <linkto class=ArrayMeasColumn>ArrayMeasColumn</linkto>
 // which give access to table columns containing
 // <linkto module=Measures>measures</linkto>.
 //
@@ -73,7 +73,7 @@ class TableMeasDescBase;
 // <example>
 // <srcblock>
 //     // Create the object for measure column Time1.
-//     ROTableMeasColumn timeCol(tab, "Time1");
+//     TableMeasColumn timeCol(tab, "Time1");
 // 	
 //     // print some details about the column
 //     if (timeCol.measDesc().isRefCodeVariable()) {
@@ -94,27 +94,27 @@ class TableMeasDescBase;
 //# </todo>
 
 
-class ROTableMeasColumn
+class TableMeasColumn
 {
 public:
   // The default constructor creates a null object.  Useful for creating
-  // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
+  // arrays of ScalarMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
   // initialise the objects first by using attach().
-  // An ROScalarMeasColumn object can be tested if it is null by using the
+  // An ScalarMeasColumn object can be tested if it is null by using the
   // isNull() member.
-  ROTableMeasColumn();
+  TableMeasColumn();
 
   // Create the ScalarMeasColumn from the table and column Name.
-  ROTableMeasColumn (const Table& tab, const String& columnName);
+  TableMeasColumn (const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
-  ROTableMeasColumn (const ROTableMeasColumn& that);
+  TableMeasColumn (const TableMeasColumn& that);
 
-  virtual ~ROTableMeasColumn();
+  virtual ~TableMeasColumn();
 
   // Change the reference to another column.
-  void reference (const ROTableMeasColumn& that);
+  void reference (const TableMeasColumn& that);
 
   // Attach another column to the object.
   void attach (const Table& tab, const String& columnName);
@@ -162,7 +162,7 @@ protected:
   //# The Measure Column description.
   CountedPtr<TableMeasDescBase> itsDescPtr;
   //# The data column.
-  ROTableColumn itsTabDataCol;
+  TableColumn itsTabDataCol;
   //# Does the measure column have a variable reference or offset?
   Bool itsVarRefFlag;
   Bool itsVarOffFlag;
@@ -170,7 +170,7 @@ protected:
 private:
   // Assignment makes no sense in a readonly class.
   // Declaring this operator private makes it unusable.
-  ROTableMeasColumn& operator= (const ROTableMeasColumn& that);
+  TableMeasColumn& operator= (const TableMeasColumn& that);
 };
 
 

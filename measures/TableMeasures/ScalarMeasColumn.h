@@ -35,10 +35,8 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
-template <class T> class ROScalarColumn;
 
 
 // <summary>
@@ -58,16 +56,14 @@ template <class T> class ROScalarColumn;
 // </prerequisite>
 
 // <synopsis>
-// ROScalarMeasColumn and ScalarMeasColumn objects can be used to access
-// Scalar Measure Columns in tables.  The ROScalarMeasColumn provides read
-// only access whereas the ScalarMeasColumn object can be used for writing
-// and reading of Measures to and from a Table column.
+// ScalarMeasColumn objects can be used to access scalar Measure Columns
+// in tables, both for reading and writing (if the table is writable).
 //
 // Before a column can be accessed it must have previously been defined as
 // a Measure column by use of the
 // <linkto class="TableMeasDesc">TableMeasDesc</linkto> object.
 //
-// The (RO)ScalarMeasColumn class is templated on Measure type.
+// The ScalarMeasColumn class is templated on Measure type.
 // Typedefs exist in the various Measure classes
 // (e.g. <linkto class=MEpoch>MEpoch</linkto>) to make declaration
 // less long winded.
@@ -75,7 +71,6 @@ template <class T> class ROScalarColumn;
 // this:
 // <srcblock>
 // MEpoch::ScalarMeasColumn ec(table, "ColumnName);
-// MDoppler::ROScalarMeasColumn dc(table, "DopplerCol");
 // </srcblock>
 //
 // <h3>Reading and writing Measures</h3>
@@ -87,7 +82,7 @@ template <class T> class ROScalarColumn;
 // exist for reading Measures and the
 // <linkto class="ScalarMeasColumn#put">put()</linkto> member for adding
 // Measures to a column.  (put() is obviously not defined for
-// ROScalarMeasColumn objects.)  Each of these members accepts a row number
+// ScalarMeasColumn objects.)  Each of these members accepts a row number
 // as an argument.
 // The get() function gets the measure with the reference and offset as
 // it is stored in the column. Furthermore the convert() function is
@@ -124,7 +119,7 @@ template <class T> class ROScalarColumn;
 //
 //     // We could read from the column using timeCol but instead a read
 //     // only column object is created.
-//     MEpoch::ROScalarMeasColumn timeColRead(tab, "Time1");
+//     MEpoch::ScalarMeasColumn timeColRead(tab, "Time1");
 //     for (i=0; i<tab.nrow(); i++) {
 //         cout << timeColRead(i) << endl;
 //     }
@@ -132,7 +127,7 @@ template <class T> class ROScalarColumn;
 // </example>
 
 // <motivation>
-// The standard Aips++ Table system does not support Measures columns.
+// The standard Casacore Table system does not support Measures columns.
 // This class overcomes this limitation.
 // </motivation>
 //
@@ -144,27 +139,27 @@ template <class T> class ROScalarColumn;
 //# <todo asof="$DATE:$">
 //# </todo>
 
-template <class M> class ROScalarMeasColumn : public ROTableMeasColumn
+template <class M> class ScalarMeasColumn : public TableMeasColumn
 {
 public:
   // The default constructor creates a null object.  Useful for creating
-  // arrays of ROScalarMeasColumn objects.  Attempting to use a null object
+  // arrays of ScalarMeasColumn objects.  Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
   // initialize the objects first by using attach().
-  // An ROScalarMeasColumn object can be tested if it is null by using the
+  // An ScalarMeasColumn object can be tested if it is null by using the
   // isNull() member.
-  ROScalarMeasColumn();
+  ScalarMeasColumn();
 
   // Create the ScalarMeasColumn from the table and column Name.
-  ROScalarMeasColumn (const Table& tab, const String& columnName);
+  ScalarMeasColumn (const Table& tab, const String& columnName);
 
   // Copy constructor (copy semantics).
-  ROScalarMeasColumn (const ROScalarMeasColumn<M>& that);
+  ScalarMeasColumn (const ScalarMeasColumn<M>& that);
 
-  virtual ~ROScalarMeasColumn();
+  virtual ~ScalarMeasColumn();
 
   // Change the reference to another column.
-  void reference (const ROScalarMeasColumn<M>& that);
+  void reference (const ScalarMeasColumn<M>& that);
 
   // Attach a column to the object.
   void attach (const Table& tab, const String& columnName);
@@ -193,79 +188,6 @@ public:
   const MeasRef<M>& getMeasRef() const
     { return itsMeasRef; }
 
-protected:
-  // Make a MeasRef for the given row.
-  MeasRef<M> makeMeasRef (uInt rownr) const;
-
-
-  //# This is either the column's fixed Measure reference or the reference
-  //# of the last Measure read.
-  MeasRef<M> itsMeasRef;
-
-private:
-  //# Column which contains the Measure's actual data. An array column
-  //# is needed if the data component of the underlying Measure is
-  //# represented by more than 1 value
-  ROArrayColumn<Double>* itsArrDataCol;
-  ROScalarColumn<Double>* itsScaDataCol;
-  //# Its MeasRef code column when references are variable.
-  ROScalarColumn<Int>* itsRefIntCol;
-  ROScalarColumn<String>* itsRefStrCol;
-  //# Column containing its variable offsets. Only applicable if the
-  //# measure references have offsets and they are variable.
-  ROScalarMeasColumn<M>* itsOffsetCol;
-
-
-  // Assignment makes no sense in a readonly class.
-  // Declaring this operator private makes it unusable.
-  ROScalarMeasColumn& operator= (const ROScalarMeasColumn<M>& that);
-
-  //# Deletes allocated memory etc. Called by ~tor and any member which
-  //# needs to reallocate data.
-  void cleanUp();
-};
-
-
-
-// <summary>
-// Read write access to table scalar Measure columns.
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1999/12/23" tests="tTableMeasures.cc">
-// </reviewed>
-
-// <synopsis>
-// See description for
-// <linkto class="ROScalarMeasColumn">ROScalarMeasColumn</linkto>.
-// </synopsis>
-
-template <class M> class ScalarMeasColumn : public ROScalarMeasColumn<M>
-{
-public:
-  // The default constructor creates a null object.  Useful for creating
-  // arrays of ScalarMeasColumn objects.  Attempting to use a null object
-  // will produce a segmentation fault so care needs to be taken when
-  // initializing a null object by using the attach() member before any
-  // attempt is made to use it.  A ScalarMeasColumn object can be
-  // tested if it is null by using the isNull() member.
-  ScalarMeasColumn();
-
-  // Create the ScalarMeasColumn from the table and column Name.
-  ScalarMeasColumn (const Table& tab, const String& columnName);
-
-  // Copy constructor (copy semantics).
-  ScalarMeasColumn (const ScalarMeasColumn<M>& that);
-
-  virtual ~ScalarMeasColumn();
-
-  // Change the column reference to another column.
-  void reference (const ScalarMeasColumn<M>& that);
-
-  // Attach a column to the object.
-  void attach (const Table& tab, const String& columnName);
-
   // Reset the refCode, offset, or units.
   // It overwrites the value used when defining the TableMeasDesc.
   // Resetting the refCode and offset can only be done if they were
@@ -290,6 +212,10 @@ public:
   void put (uInt rownr, const M& meas);
   // </group>
 
+protected:
+  // Make a MeasRef for the given row.
+  MeasRef<M> makeMeasRef (uInt rownr) const;
+
 private:
   //# Whether conversion is needed during a put.  True if either
   //# the reference code or offset is fixed for the column
@@ -302,15 +228,16 @@ private:
   //# Its MeasRef code column when references are variable.
   ScalarColumn<Int>* itsRefIntCol;
   ScalarColumn<String>* itsRefStrCol;
-  //# Column containing its variable offsets.  Only applicable if the
+  //# Column containing its variable offsets. Only applicable if the
   //# measure references have offsets and they are variable.
   ScalarMeasColumn<M>* itsOffsetCol;
+  //# This is either the column's fixed Measure reference or the reference
+  //# of the last Measure read.
+  MeasRef<M> itsMeasRef;
 
 
+  // Assignment makes no sense in a readonly class.
   // Declaring this operator private makes it unusable.
-  // See class <linkto class="ScalarColumn">ScalarColumn</linkto> for an
-  // explanation as to why this operation is disallowed.  Use the reference
-  // function instead.
   ScalarMeasColumn& operator= (const ScalarMeasColumn<M>& that);
 
   // Check if refs have the same value (as opposed to being the same object).
@@ -319,22 +246,15 @@ private:
   //# Deletes allocated memory etc. Called by ~tor and any member which
   //# needs to reallocate data.
   void cleanUp();
-
-  //# Make members of parent class known.
-public:
-  using ROScalarMeasColumn<M>::measDesc;
-  using ROScalarMeasColumn<M>::table;
-protected:
-  using ROScalarMeasColumn<M>::itsDescPtr;
-  using ROScalarMeasColumn<M>::itsMeasRef;
-  using ROScalarMeasColumn<M>::itsNvals;
-  using ROScalarMeasColumn<M>::itsVarRefFlag;
 };
 
 
-
-
 } //# NAMESPACE CASA - END
+
+
+//# Make old name ROScalarMeasColumn still available.
+#define ROScalarMeasColumn ScalarMeasColumn
+
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <measures/TableMeasures/ScalarMeasColumn.tcc>

@@ -100,7 +100,7 @@ void ROScalarQuantColumn<T>::init (const Table& tab, const String& columnName)
   TableQuantumDesc* tqDesc = 
                 TableQuantumDesc::reconstruct (tab.tableDesc(), columnName);
   if (tqDesc->isUnitVariable()) {
-    itsUnitsCol = new ROScalarColumn<String>(tab, tqDesc->unitColumnName());
+    itsUnitsCol = new ScalarColumn<String>(tab, tqDesc->unitColumnName());
   } else {
     Vector<String> units (tqDesc->getUnits());
     if (units.nelements() > 0) {
@@ -111,7 +111,7 @@ void ROScalarQuantColumn<T>::init (const Table& tab, const String& columnName)
       itsUnit = units(0);
     }
   }
-  itsDataCol = new ROScalarColumn<T>(tab, columnName);
+  itsDataCol = new ScalarColumn<T>(tab, columnName);
   delete tqDesc;
 }
 
@@ -123,10 +123,10 @@ void ROScalarQuantColumn<T>::reference (const ROScalarQuantColumn<T>& that)
   itsUnitOut = that.itsUnitOut;
   itsConvOut = that.itsConvOut;
   if (that.itsDataCol != 0) {
-    itsDataCol = new ROScalarColumn<T>(*that.itsDataCol);
+    itsDataCol = new ScalarColumn<T>(*that.itsDataCol);
   }
   if (that.itsUnitsCol != 0) {
-    itsUnitsCol = new ROScalarColumn<String>(*that.itsUnitsCol);
+    itsUnitsCol = new ScalarColumn<String>(*that.itsUnitsCol);
   }
 }
 

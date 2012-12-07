@@ -37,14 +37,14 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-ROTableMeasColumn::ROTableMeasColumn()
+TableMeasColumn::TableMeasColumn()
 : itsNvals      (0),
   itsVarRefFlag (False),
   itsVarOffFlag (False)
 {}
 
-ROTableMeasColumn::ROTableMeasColumn (const Table& tab,
-				      const String& columnName)
+TableMeasColumn::TableMeasColumn (const Table& tab,
+                                  const String& columnName)
 : itsNvals      (0),
   itsTabDataCol (tab, columnName)
 {
@@ -53,7 +53,7 @@ ROTableMeasColumn::ROTableMeasColumn (const Table& tab,
   itsVarOffFlag = itsDescPtr->isOffsetVariable();
 }
 
-ROTableMeasColumn::ROTableMeasColumn (const ROTableMeasColumn& that)
+TableMeasColumn::TableMeasColumn (const TableMeasColumn& that)
 : itsNvals      (that.itsNvals),
   itsDescPtr    (that.itsDescPtr),
   itsTabDataCol (that.itsTabDataCol),
@@ -61,10 +61,10 @@ ROTableMeasColumn::ROTableMeasColumn (const ROTableMeasColumn& that)
   itsVarOffFlag (that.itsVarOffFlag)
 {}
 
-ROTableMeasColumn::~ROTableMeasColumn()
+TableMeasColumn::~TableMeasColumn()
 {}
  
-void ROTableMeasColumn::reference (const ROTableMeasColumn& that)
+void TableMeasColumn::reference (const TableMeasColumn& that)
 {
   itsNvals   = that.itsNvals;
   itsDescPtr = that.itsDescPtr;
@@ -73,34 +73,34 @@ void ROTableMeasColumn::reference (const ROTableMeasColumn& that)
   itsVarOffFlag = that.itsVarOffFlag;
 }
 
-void ROTableMeasColumn::attach (const Table& tab, const String& columnName)
+void TableMeasColumn::attach (const Table& tab, const String& columnName)
 {
-  reference (ROTableMeasColumn (tab, columnName));
+  reference (TableMeasColumn (tab, columnName));
 }
  
-const String& ROTableMeasColumn::columnName() const
+const String& TableMeasColumn::columnName() const
 {
   return itsDescPtr->columnName();
 }
 
-Bool ROTableMeasColumn::isDefined (uInt rownr) const
+Bool TableMeasColumn::isDefined (uInt rownr) const
 {
   return itsTabDataCol.isDefined (rownr);
 }
 
-void ROTableMeasColumn::throwIfNull() const
+void TableMeasColumn::throwIfNull() const
 {
   if (isNull()) {
-    throw (TableInvOper("ROMeasTableColumn object is null"));
+    throw (TableInvOper("MeasTableColumn object is null"));
   }
 }
 
-Table ROTableMeasColumn::table() const
+Table TableMeasColumn::table() const
 {
   return itsTabDataCol.table();
 }
 
-Bool ROTableMeasColumn::isScalar() const
+Bool TableMeasColumn::isScalar() const
 {
   if (itsTabDataCol.columnDesc().isScalar()) {
     return True;
@@ -115,4 +115,3 @@ Bool ROTableMeasColumn::isScalar() const
 }
 
 } //# NAMESPACE CASA - END
-

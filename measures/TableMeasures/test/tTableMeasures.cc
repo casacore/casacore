@@ -483,57 +483,57 @@ void testMain (Bool doExcep)
 
     // Check that columns are measures.
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "MDirColumn")));
+		      (TableColumn(tab, "MDirColumn")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "TimeOffset")));
+		      (TableColumn(tab, "TimeOffset")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time1")));
+		      (TableColumn(tab, "Time1")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "TimeVarOffset")));
+		      (TableColumn(tab, "TimeVarOffset")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "TimeRef")));
+		      (TableColumn(tab, "TimeRef")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "MEpochVarStr")));
+		      (TableColumn(tab, "MEpochVarStr")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "TimeRefStr")));
+		      (TableColumn(tab, "TimeRefStr")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time1Arr")));
+		      (TableColumn(tab, "Time1Arr")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "TimeArrRef")));
+		      (TableColumn(tab, "TimeArrRef")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time2Arr")));
+		      (TableColumn(tab, "Time2Arr")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time2ArrOffset")));
+		      (TableColumn(tab, "Time2ArrOffset")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time2ArrRef")));
+		      (TableColumn(tab, "Time2ArrRef")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time3Arr")));
+		      (TableColumn(tab, "Time3Arr")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time3ArrStrRef")));
+		      (TableColumn(tab, "Time3ArrStrRef")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time4Arr")));
+		      (TableColumn(tab, "Time4Arr")));
     AlwaysAssertExit (! TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time4StrRef")));
+		      (TableColumn(tab, "Time4StrRef")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "Time4ScaOffset")));
+		      (TableColumn(tab, "Time4ScaOffset")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "SpareCol1")));
+		      (TableColumn(tab, "SpareCol1")));
     AlwaysAssertExit (TableMeasDescBase::hasMeasures
-		      (ROTableColumn(tab, "SpareArrOffset")));
+		      (TableColumn(tab, "SpareArrOffset")));
 
-    AlwaysAssertExit (ROTableMeasColumn(tab, "MDirColumn").isScalar());
-    AlwaysAssertExit (ROTableMeasColumn(tab, "TimeOffset").isScalar());
-    AlwaysAssertExit (ROTableMeasColumn(tab, "Time1").isScalar());
-    AlwaysAssertExit (ROTableMeasColumn(tab, "TimeVarOffset").isScalar());
-    AlwaysAssertExit (ROTableMeasColumn(tab, "MEpochVarStr").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "Time1Arr").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "Time2Arr").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "Time2ArrOffset").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "Time3Arr").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "Time4Arr").isScalar());
-    AlwaysAssertExit (ROTableMeasColumn(tab, "Time4ScaOffset").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "SpareCol1").isScalar());
-    AlwaysAssertExit (! ROTableMeasColumn(tab, "SpareArrOffset").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "MDirColumn").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "TimeOffset").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "Time1").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "TimeVarOffset").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "MEpochVarStr").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "Time1Arr").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "Time2Arr").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "Time2ArrOffset").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "Time3Arr").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "Time4Arr").isScalar());
+    AlwaysAssertExit (TableMeasColumn(tab, "Time4ScaOffset").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "SpareCol1").isScalar());
+    AlwaysAssertExit (! TableMeasColumn(tab, "SpareArrOffset").isScalar());
 
     cout << "Create MEpochScaCol from column TimeOffset...\n";
     cout << "A column of MEpochs where the reference and offset are ";
@@ -555,11 +555,11 @@ void testMain (Bool doExcep)
     timeCol.setDescUnits (u);
 
     {
-      ROTableMeasColumn tmcol(tab, "Time1Arr");
+      TableMeasColumn tmcol(tab, "Time1Arr");
       AlwaysAssertExit (tmcol.columnName() == "Time1Arr");
       tmcol.attach (tab, "TimeOffset");
       AlwaysAssertExit (tmcol.columnName() == "TimeOffset");
-      tmcol.reference (ROTableMeasColumn(tab, "Time1Arr"));
+      tmcol.reference (TableMeasColumn(tab, "Time1Arr"));
       AlwaysAssertExit (tmcol.columnName() == "Time1Arr");
     }
 
@@ -611,7 +611,7 @@ void testMain (Bool doExcep)
     cout << "Reading the MEpochs back from TimeOffset...\n";
     // Create readonly measure column.  Create it null and then attach
     // a column (for coverage)
-    MEpoch::ROScalarColumn timeColRead;
+    MEpoch::ScalarColumn timeColRead;
     timeColRead.attach(tab, "TimeOffset");
     for (i=0; i<tabRows; i++) {
       AlwaysAssertExit (timeColRead.isDefined(i));
@@ -647,7 +647,7 @@ void testMain (Bool doExcep)
     if (doExcep) {
       try {
 	// try constructing with a non MeasureColumn
-	MEpoch::ROScalarColumn tScaCol(tab, "TimeRef");
+	MEpoch::ScalarColumn tScaCol(tab, "TimeRef");
       } catch (AipsError x) {
 	cout << "The following line should report an error ";
 	cout << "in reconstruct - invalid column exception.\n";
@@ -678,8 +678,8 @@ void testMain (Bool doExcep)
     // reopen the table RO and read the measures
     cout << "Reopening the table read-only and reading contents...\n";
     Table tab("tTableMeasures_tmp.tab", Table::Old);
-    MEpoch::ROScalarColumn timeColRead(tab, "TimeOffset");
-    ROScalarColumn<Double> timeColSimple(tab, "TimeOffset");
+    MEpoch::ScalarColumn timeColRead(tab, "TimeOffset");
+    ScalarColumn<Double> timeColSimple(tab, "TimeOffset");
     MEpoch tm;
     for (uInt i=0; i<tabRows; i++) {
       AlwaysAssertExit (timeColRead.isDefined(i));
@@ -751,7 +751,7 @@ void testMain (Bool doExcep)
   {
     Table tab("tTableMeasures_tmp.tab", Table::Update);
     // A column of MDirections
-    MDirection::ROScalarColumn mdirCol(tab, "MDirColumn");
+    MDirection::ScalarColumn mdirCol(tab, "MDirColumn");
     if (mdirCol.measDesc().isRefCodeVariable()) {
       cout << "Error: reference is variable!\n";
     }
@@ -953,10 +953,10 @@ void testMain (Bool doExcep)
   }
 
   {
-    cout << "Open table again in RO mode to test ROArrayMeasColumn...\n";
+    cout << "Open table again in RO mode to test ArrayMeasColumn...\n";
     Table tab("tTableMeasures_tmp.tab", Table::Old);
     cout << "Creating an MEpoch Array Column\n";
-    MEpoch::ROArrayColumn arrayCol(tab, "Time1Arr");	
+    MEpoch::ArrayColumn arrayCol(tab, "Time1Arr");	
     Vector<MEpoch> ew;
     arrayCol.get(0, ew, True);
     ew = arrayCol(0);
@@ -1001,7 +1001,7 @@ void testMain (Bool doExcep)
     }
 
     // attach
-    MEpoch::ROArrayColumn testAttach;
+    MEpoch::ArrayColumn testAttach;
     testAttach.attach(tab, "Time2Arr");
     Vector<MEpoch> outArr;
     testAttach.get(0, outArr, True);
@@ -1093,7 +1093,7 @@ void testMain (Bool doExcep)
     }
 
     // Check that the column can be accessed as a quantum.
-    ROArrayQuantColumn<Double> qcol(tab, "Time4Arr");
+    ArrayQuantColumn<Double> qcol(tab, "Time4Arr");
     Vector<Quantum<Double> > q = qcol(0);
     for (uInt i=0; i<10; i++) {
       AlwaysAssertExit (near (outArr(i).get("d"), q(i), 1.e-10));
@@ -1246,12 +1246,12 @@ void testRefCodeChg()
   // Check if the values are fine.
   {
     Table tab("tTableMeasures_tmp.tab");
-    MEpoch::ROScalarColumn tmpCol(tab, "Time");
-    MEpoch::ROArrayColumn tmpACol(tab, "ATime");
-    MEpoch::ROArrayColumn tmpBCol(tab, "BTime");
-    ROScalarColumn<Int> refCol(tab, "TimeRef");
-    ROScalarColumn<Int> refACol(tab, "ATimeRef");
-    ROArrayColumn<Int> refBCol(tab, "BTimeRef");
+    MEpoch::ScalarColumn tmpCol(tab, "Time");
+    MEpoch::ArrayColumn tmpACol(tab, "ATime");
+    MEpoch::ArrayColumn tmpBCol(tab, "BTime");
+    ScalarColumn<Int> refCol(tab, "TimeRef");
+    ScalarColumn<Int> refACol(tab, "ATimeRef");
+    ArrayColumn<Int> refBCol(tab, "BTimeRef");
     AlwaysAssertExit(refCol(0) == 0);
     AlwaysAssertExit(refCol(1) == 1);
     AlwaysAssertExit(refCol(2) == 2);
@@ -1289,12 +1289,12 @@ void testRefCodeChg()
   // Check the values again.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ROScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<Double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord ("MEASINFO");
     AlwaysAssertExit (! mkw.isDefined ("TabRefCodes"));
     AlwaysAssertExit (! mkw.isDefined ("TabRefTypes"));
-    MEpoch::ROScalarColumn tmpCol(tab, "Time");
+    MEpoch::ScalarColumn tmpCol(tab, "Time");
     AlwaysAssertExit(check(tmpCol(0),
 			   MEpoch(Quantity(0,"d"), MEpoch::Types(0))));
     AlwaysAssertExit(check(tmpCol(1),
@@ -1316,12 +1316,12 @@ void testRefCodeChg()
   // Make sure they exist again. Check the values.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ROScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<Double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord ("MEASINFO");
     AlwaysAssertExit (mkw.isDefined ("TabRefCodes"));
     AlwaysAssertExit (mkw.isDefined ("TabRefTypes"));
-    MEpoch::ROScalarColumn tmpCol(tab, "Time");
+    MEpoch::ScalarColumn tmpCol(tab, "Time");
     AlwaysAssertExit(check(tmpCol(0),
 			   MEpoch(Quantity(0,"d"), MEpoch::Types(0))));
     AlwaysAssertExit(check(tmpCol(1),
@@ -1346,14 +1346,14 @@ void testRefCodeChg()
   // Check the remapped values.
   {
     Table tab("tTableMeasures_tmp.tab");
-    ROScalarColumn<Double> timCol(tab, "Time");
+    ScalarColumn<Double> timCol(tab, "Time");
     const TableRecord& kw = timCol.keywordSet();
     const TableRecord& mkw = kw.subRecord ("MEASINFO");
     AlwaysAssertExit (mkw.isDefined ("TabRefCodes"));
     AlwaysAssertExit (mkw.isDefined ("TabRefTypes"));
-    MEpoch::ROScalarColumn tmpCol(tab, "Time");
-    MEpoch::ROArrayColumn tmpACol(tab, "ATime");
-    MEpoch::ROArrayColumn tmpBCol(tab, "BTime");
+    MEpoch::ScalarColumn tmpCol(tab, "Time");
+    MEpoch::ArrayColumn tmpACol(tab, "ATime");
+    MEpoch::ArrayColumn tmpBCol(tab, "BTime");
     AlwaysAssertExit(check(tmpCol(0),
 			   MEpoch(Quantity(0,"d"), MEpoch::Types(0))));
     AlwaysAssertExit(check(tmpCol(1),
@@ -1390,12 +1390,12 @@ void testRefCodeChg()
   // Check the values.
   {
     Table tab("tTableMeasures_tmp.tab");
-    MEpoch::ROScalarColumn tmpCol(tab, "Time");
-    MEpoch::ROArrayColumn tmpACol(tab, "ATime");
-    MEpoch::ROArrayColumn tmpBCol(tab, "BTime");
-    ROScalarColumn<Int> refCol(tab, "TimeRef");
-    ROScalarColumn<Int> refACol(tab, "ATimeRef");
-    ROArrayColumn<Int> refBCol(tab, "BTimeRef");
+    MEpoch::ScalarColumn tmpCol(tab, "Time");
+    MEpoch::ArrayColumn tmpACol(tab, "ATime");
+    MEpoch::ArrayColumn tmpBCol(tab, "BTime");
+    ScalarColumn<Int> refCol(tab, "TimeRef");
+    ScalarColumn<Int> refACol(tab, "ATimeRef");
+    ArrayColumn<Int> refBCol(tab, "BTimeRef");
     AlwaysAssertExit(refCol(0) == 0);
     AlwaysAssertExit(refCol(1) == 9);
     AlwaysAssertExit(refCol(2) == 2);

@@ -66,7 +66,10 @@ ROTiledStManAccessor::ROTiledStManAccessor
 ROTiledStManAccessor& ROTiledStManAccessor::operator=
 	                       (const ROTiledStManAccessor& that)
 {
-    dataManPtr_p = that.dataManPtr_p;
+    if (this != &that) {
+        RODataManAccessor::operator= (that);
+        dataManPtr_p = that.dataManPtr_p;
+    }
     return *this;
 }
 

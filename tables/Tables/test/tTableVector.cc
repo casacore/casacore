@@ -147,7 +147,7 @@ void dovec (Int nr) {
 
     Table tab ("tTableVector_tmp.data",Table::Update);
     TableVector<Int> tvec4(tab,"col1");
-    ROTableVector<float> tvecFloat(tab,"col3");
+    TableVector<float> tvecFloat(tab,"col3");
 //#    tvecFloat = 3;                            // Should fail when compiling
     cout << "got tvec4" << endl;
     cout << tvec4(1) << " (must be 99999)" << endl;

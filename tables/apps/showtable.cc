@@ -27,6 +27,8 @@
 
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableParse.h>
+#include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TableColumn.h>
 #include <casa/Inputs/Input.h>
 #include <stdexcept>
 #include <iostream>
@@ -34,14 +36,48 @@
 using namespace casa;
 using namespace std;
 
+
+void showKeys (const Table& table, Bool showtabkey, Bool showcolkey,
+               Int maxval)
+{
+  Bool shown = False;
+  if (showtabkey) {
+    if (table.keywordSet().size() > 0) {
+      cout << "  Table Keywords" << endl;
+      table.keywordSet().print (cout, maxval, "    ");
+      cout << endl;
+      shown = True;
+    }
+  }
+  if (showcolkey) {
+    Vector<String> colNames (table.tableDesc().columnNames());
+    for (uInt i=0; i<colNames.size(); ++i) {
+      TableRecord keys (ROTableColumn(table, colNames[i]).keywordSet());
+      if (keys.size() > 0) {
+        cout << "  Column " << colNames[i] << endl;
+        keys.print (cout, maxval, "    ");
+        cout << endl;
+        shown = True;
+      }
+    }
+  }
+  if (!shown) {
+    cout << endl;
+  }
+}
+
+
 int main (int argc, char* argv[])
 {
   // Read the input parameters.
   Input inputs(1);
-  inputs.version("2012Nov14GvD");
+  inputs.version("2012Dec14GvD");
   inputs.create("in", "", "Input table", "string");
   inputs.create("dm", "T", "Show data manager info?", "bool");
   inputs.create("col", "T", "Show column info?", "bool");
+  inputs.create("tabkey", "F", "Show table keywords?", "bool");
+  inputs.create("colkey", "F", "Show column keywords?", "bool");
+  inputs.create("maxval", "25", "Max nr of array values to show", "int");
   inputs.create("sub", "F", "Show info for all subtables?", "bool");
   inputs.create("sort", "F", "Sort columns in alphabetical order?", "bool");
   inputs.create("browse", "F", "Browse contents of table?", "bool");
@@ -55,11 +91,14 @@ int main (int argc, char* argv[])
   if (in.empty()) {
     throw AipsError(" an input table name must be given");
   }
-  Bool showdm  = inputs.getBool("dm");
-  Bool showcol = inputs.getBool("col");
-  Bool showsub = inputs.getBool("sub");
-  Bool sortcol = inputs.getBool("sort");
-  Bool browse  = inputs.getBool("browse");
+  Bool showdm     = inputs.getBool("dm");
+  Bool showcol    = inputs.getBool("col");
+  Bool showtabkey = inputs.getBool("tabkey");
+  Bool showcolkey = inputs.getBool("colkey");
+  Int  maxval     = inputs.getInt ("maxval");
+  Bool showsub    = inputs.getBool("sub");
+  Bool sortcol    = inputs.getBool("sort");
+  Bool browse     = inputs.getBool("browse");
   String selcol  (inputs.getString("selcol"));
   String selrow  (inputs.getString("selrow"));
   String selsort (inputs.getString("selsort"));
@@ -69,30 +108,49 @@ int main (int argc, char* argv[])
     Table table(in);
     Table seltab(table);
     if (! (selcol.empty() && selrow.empty() && selsort.empty())) {
-      if (!browse) {
-        clog << "selection ignored; it is only useful if browse=T" << endl;
-      } else {
-        String command ("select ");
-        if (!selcol.empty()) {
-          command += selcol;
-        }
-        command += " from " + in;
-        if (!selrow.empty()) {
-          command += " where " + selrow;
-        }
-        if (!selsort.empty()) {
-          command += " orderby " + selsort;
-        }
-        clog << "TaQL command = " << command << endl;
-        seltab = tableCommand (command);
-        if (seltab.tableName() != table.tableName()) {
-          char* tmpnm = tempnam("/tmp", "showtable_");
-          tmpName = tmpnm;
-          free (tmpnm);
+      String command ("select ");
+      if (!selcol.empty()) {
+        command += selcol;
+      }
+      command += " from " + in;
+      if (!selrow.empty()) {
+        command += " where " + selrow;
+      }
+      if (!selsort.empty()) {
+        command += " orderby " + selsort;
+      }
+      clog << "TaQL command = " << command << endl;
+      seltab = tableCommand (command);
+      if (seltab.tableName() != table.tableName()) {
+        char* tmpnm = tempnam("/tmp", "showtable_");
+        tmpName = tmpnm;
+        free (tmpnm);
+      }
+    }
+    // Show the table structure.
+    table.showStructure (cout, showdm, showcol, showsub, sortcol);
+    if (showtabkey || showcolkey) {
+      // Show table and/or column keywords.
+      cout << endl
+           << "Keywords of main table " << endl
+           << "----------------------" << endl;
+      showKeys (seltab, showtabkey, showcolkey, maxval);
+      if (showsub) {
+        // Also show them in the subtables.
+        TableRecord keyset (table.keywordSet());
+        for (uInt i=0; i<keyset.nfields(); ++i) {
+          if (keyset.dataType(i) == TpTable) {
+            Table tab(keyset.asTable(i));
+            // Do not show keywords if the subtable references the parent table.
+            if (! tab.isSameRoot (table)) {
+              cout << "Keywords of subtable " << keyset.name(i) << endl
+                   << "--------------------" << endl;
+              showKeys (keyset.asTable(i), showtabkey, showcolkey, maxval);
+            }
+          }
         }
       }
     }
-    table.showStructure (cout, showdm, showcol, showsub, sortcol);
     if (browse) {
       // Need to make table persistent for casabrowser.
       if (!tmpName.empty()) {

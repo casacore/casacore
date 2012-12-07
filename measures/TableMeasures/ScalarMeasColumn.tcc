@@ -43,25 +43,27 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class M>
-ROScalarMeasColumn<M>::ROScalarMeasColumn()
-: itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
+ScalarMeasColumn<M>::ScalarMeasColumn()
+  :  itsConvFlag  (False),
+     itsArrDataCol(0),
+     itsScaDataCol(0),
+     itsRefIntCol (0),
+     itsRefStrCol (0),
+     itsOffsetCol (0)
 {}
 
 template<class M>
-ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
-					   const String& columnName)
-: ROTableMeasColumn (tab, columnName),
-  itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
+ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
+                                       const String& columnName)
+  : TableMeasColumn (tab, columnName),
+    itsConvFlag  (False),
+    itsArrDataCol(0),
+    itsScaDataCol(0),
+    itsRefIntCol (0),
+    itsRefStrCol (0),
+    itsOffsetCol (0)
 {
-  const TableMeasDescBase& tmDesc = measDesc();
+  TableMeasDescBase& tmDesc = measDesc();
   AlwaysAssert(M::showMe() == tmDesc.type(), AipsError);
 
   // Create the data column. If the underlying measure can handle a
@@ -71,18 +73,18 @@ ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
   itsNvals = tMeas.getValue().getTMRecordValue().nelements();
   AlwaysAssert (itsNvals <= tmDesc.getUnits().size(), AipsError);
   if (itsNvals == 1) {
-    itsScaDataCol = new ROScalarColumn<Double>(tab, columnName);
+    itsScaDataCol = new ScalarColumn<Double>(tab, columnName);
   } else {
-    itsArrDataCol = new ROArrayColumn<Double>(tab, columnName);
+    itsArrDataCol = new ArrayColumn<Double>(tab, columnName);
   }
 
   // Set up the reference code component of the MeasRef
   if (tmDesc.isRefCodeVariable()) {
     const String& rcName = tmDesc.refColumnName();
     if ((tab.tableDesc().columnDesc(rcName).dataType() == TpString)) {
-      itsRefStrCol = new ROScalarColumn<String>(tab, rcName);
+      itsRefStrCol = new ScalarColumn<String>(tab, rcName);
     } else {
-      itsRefIntCol = new ROScalarColumn<Int>(tab, rcName);
+      itsRefIntCol = new ScalarColumn<Int>(tab, rcName);
     }
   } else {
     itsMeasRef.set (tmDesc.getRefCode());
@@ -92,201 +94,12 @@ ROScalarMeasColumn<M>::ROScalarMeasColumn (const Table& tab,
   if (tmDesc.hasOffset()) {
     if (tmDesc.isOffsetVariable()) {
       if (tmDesc.isOffsetArray()) {
-	throw(AipsError("ROScalarMeasColumn::ROScalarMeasColumn "
+	throw(AipsError("ScalarMeasColumn::ScalarMeasColumn "
 			"Offset column must be a ScalarMeasColumn."));
       }
-      itsOffsetCol = new ROScalarMeasColumn<M>(tab, tmDesc.offsetColumnName());
+      itsOffsetCol = new ScalarMeasColumn<M>(tab, tmDesc.offsetColumnName());
     } else {
       itsMeasRef.set (tmDesc.getOffset());
-    }
-  } 
-}
-
-template<class M>
-ROScalarMeasColumn<M>::ROScalarMeasColumn (const ROScalarMeasColumn<M>& that)
-: ROTableMeasColumn(),
-  itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
-{
-  reference (that);
-}
-
-template<class M>
-ROScalarMeasColumn<M>::~ROScalarMeasColumn()
-{
-  cleanUp();
-}
-
-template<class M>
-void ROScalarMeasColumn<M>::cleanUp()
-{
-  delete itsArrDataCol;
-  delete itsScaDataCol;
-  delete itsRefIntCol;
-  delete itsRefStrCol;
-  delete itsOffsetCol;
-}
-
-template<class M>
-void ROScalarMeasColumn<M>::reference (const ROScalarMeasColumn<M>& that)
-{   
-  cleanUp();
-  ROTableMeasColumn::reference (that);
-  itsArrDataCol = that.itsArrDataCol;
-  itsScaDataCol = that.itsScaDataCol;
-  itsRefIntCol  = that.itsRefIntCol;
-  itsRefStrCol  = that.itsRefStrCol;
-  itsOffsetCol  = that.itsOffsetCol;
-  itsMeasRef = that.itsMeasRef;
-  if (itsArrDataCol != 0) {
-    itsArrDataCol = new ROArrayColumn<Double>(*itsArrDataCol);
-  }
-  if (itsScaDataCol != 0) {
-    itsScaDataCol = new ROScalarColumn<Double>(*itsScaDataCol);
-  }
-  if (itsRefIntCol != 0) {
-    itsRefIntCol = new ROScalarColumn<Int>(*itsRefIntCol);
-  }
-  if (itsRefStrCol != 0) {
-    itsRefStrCol = new ROScalarColumn<String>(*itsRefStrCol);
-  }
-  if (itsOffsetCol != 0) {
-    itsOffsetCol = new ROScalarMeasColumn<M>(*itsOffsetCol);
-  }
-}
-
-template<class M>
-void ROScalarMeasColumn<M>::attach (const Table& tab, 
-				    const String& columnName)
-{
-  reference (ROScalarMeasColumn<M>(tab, columnName)); 
-}
-    
-template<class M>
-void ROScalarMeasColumn<M>::get (uInt rownr, M& meas) const
-{
-  Vector<Quantum<Double> > qvec(itsNvals);
-  const Vector<Unit>& units = measDesc().getUnits();
-  if (itsScaDataCol != 0) {
-    qvec(0).setValue ((*itsScaDataCol)(rownr));
-    qvec(0).setUnit (units(0));
-  } else {
-    Array<Double> tmpArr((*itsArrDataCol)(rownr));
-    Bool deleteData;
-    const Double* d_p = tmpArr.getStorage (deleteData);
-    for (uInt i=0; i<itsNvals; i++) {
-      qvec(i).setValue (d_p[i]);
-      qvec(i).setUnit (units(i));
-    }
-    tmpArr.freeStorage (d_p, deleteData);
-  }
-  typename M::MVType measVal (qvec);
-  meas.set (measVal, makeMeasRef(rownr));
-}
-    	
-template<class M> 
-M ROScalarMeasColumn<M>::convert (uInt rownr, const MeasRef<M>& measRef) const
-{
-  M tmp;
-  get (rownr, tmp);
-  return typename M::Convert(tmp, measRef)();
-}
-
-template<class M> 
-M ROScalarMeasColumn<M>::convert (uInt rownr, uInt refCode) const
-{
-  M tmp;
-  get (rownr, tmp);
-  return typename M::Convert(tmp, typename M::Types(refCode))();
-}
-
-template<class M> 
-M ROScalarMeasColumn<M>::operator() (uInt rownr) const
-{
-  M meas;
-  get (rownr, meas);
-  return meas;
-}
-
-template<class M>
-MeasRef<M> ROScalarMeasColumn<M>::makeMeasRef (uInt rownr) const
-{
-  // Fixed reference can be returned immediately.
-  if (!itsVarRefFlag  &&  itsOffsetCol == 0) {
-    return itsMeasRef;
-  }
-  MeasRef<M> locMRef (itsMeasRef);
-  if (itsVarRefFlag) {
-    // Get reference type as int (from a string or int column).
-    if (itsRefStrCol != 0) {
-      typename M::Types tp;
-      M::getType (tp, (*itsRefStrCol)(rownr));
-      locMRef.set (tp);
-    } else {
-      locMRef.set (measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
-    }
-  }
-  if (itsOffsetCol != 0) {
-    locMRef.set ((*itsOffsetCol)(rownr));
-  }
-  return locMRef;
-}
-
-
-
-
-template<class M>
-ScalarMeasColumn<M>::ScalarMeasColumn()
-: ROScalarMeasColumn<M>(),
-  itsConvFlag  (False),
-  itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
-{}
-
-template<class M>
-ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab, 
-				       const String& columnName)
-: ROScalarMeasColumn<M>(tab, columnName),
-  itsConvFlag  (False),
-  itsArrDataCol(0),
-  itsScaDataCol(0),
-  itsRefIntCol (0),
-  itsRefStrCol (0),
-  itsOffsetCol (0)
-{
-  TableMeasDescBase& tmDesc = measDesc();
-      
-  // Create the data column.  If the underlying measure can handle a
-  // single value for its data then use a ScalarColumn otherwise an
-  // ArrayColumn is needed to store the data component of the Measures.
-  if (itsNvals == 1) {
-    itsScaDataCol = new ScalarColumn<Double>(tab, columnName); 
-  } else {
-    itsArrDataCol = new ArrayColumn<Double>(tab, columnName);
- }
-      
-  // Set up the reference code component of the MeasRef.
-  if (tmDesc.isRefCodeVariable()) {
-    const String& refColName = tmDesc.refColumnName();
-    if ((tab.tableDesc().columnDesc(refColName).dataType() == TpString)) {
-      itsRefStrCol = new ScalarColumn<String>(tab, refColName);
-    } else {
-      itsRefIntCol = new ScalarColumn<Int>(tab, refColName);
-    }
-  }
-  
-  // Set up the offset component of the MeasRef
-  if (tmDesc.hasOffset()) {
-    if (tmDesc.isOffsetVariable()) {
-      // don't need to test whether the offsetColumn isArray() as this
-      // this is done in the RO class.
-      itsOffsetCol = new ScalarMeasColumn<M>(tab, tmDesc.offsetColumnName());
     }
   } 
 
@@ -294,12 +107,14 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
   // for the column is fixed.
   itsConvFlag = (itsVarRefFlag == False) || (itsOffsetCol == 0);
   // For an old table write the reference codes and types.
-  tmDesc.writeIfOld (tab);
+  if (tab.isWritable()) {
+    tmDesc.writeIfOld (tab);
+  }
 }
 
 template<class M>
 ScalarMeasColumn<M>::ScalarMeasColumn (const ScalarMeasColumn<M>& that)
-: ROScalarMeasColumn<M>(),
+: TableMeasColumn(),
   itsArrDataCol(0),
   itsScaDataCol(0),
   itsRefIntCol (0),
@@ -327,15 +142,16 @@ void ScalarMeasColumn<M>::cleanUp()
 
 template<class M>
 void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
-{
+{   
   cleanUp();
-  ROScalarMeasColumn<M>::reference(that);
+  TableMeasColumn::reference (that);
   itsConvFlag   = that.itsConvFlag;
   itsArrDataCol = that.itsArrDataCol;
   itsScaDataCol = that.itsScaDataCol;
   itsRefIntCol  = that.itsRefIntCol;
   itsRefStrCol  = that.itsRefStrCol;
   itsOffsetCol  = that.itsOffsetCol;
+  itsMeasRef = that.itsMeasRef;
   if (itsArrDataCol != 0) {
     itsArrDataCol = new ArrayColumn<Double>(*itsArrDataCol);
   }
@@ -355,10 +171,81 @@ void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
 
 template<class M>
 void ScalarMeasColumn<M>::attach (const Table& tab, 
-				  const String& columnName)
+                                  const String& columnName)
 {
-  reference (ScalarMeasColumn<M>(tab, columnName));
+  reference (ScalarMeasColumn<M>(tab, columnName)); 
 }
+    
+template<class M>
+void ScalarMeasColumn<M>::get (uInt rownr, M& meas) const
+{
+  Vector<Quantum<Double> > qvec(itsNvals);
+  const Vector<Unit>& units = measDesc().getUnits();
+  if (itsScaDataCol != 0) {
+    qvec(0).setValue ((*itsScaDataCol)(rownr));
+    qvec(0).setUnit (units(0));
+  } else {
+    Array<Double> tmpArr((*itsArrDataCol)(rownr));
+    Bool deleteData;
+    const Double* d_p = tmpArr.getStorage (deleteData);
+    for (uInt i=0; i<itsNvals; i++) {
+      qvec(i).setValue (d_p[i]);
+      qvec(i).setUnit (units(i));
+    }
+    tmpArr.freeStorage (d_p, deleteData);
+  }
+  typename M::MVType measVal (qvec);
+  meas.set (measVal, makeMeasRef(rownr));
+}
+    	
+template<class M> 
+M ScalarMeasColumn<M>::convert (uInt rownr, const MeasRef<M>& measRef) const
+{
+  M tmp;
+  get (rownr, tmp);
+  return typename M::Convert(tmp, measRef)();
+}
+
+template<class M> 
+M ScalarMeasColumn<M>::convert (uInt rownr, uInt refCode) const
+{
+  M tmp;
+  get (rownr, tmp);
+  return typename M::Convert(tmp, typename M::Types(refCode))();
+}
+
+template<class M> 
+M ScalarMeasColumn<M>::operator() (uInt rownr) const
+{
+  M meas;
+  get (rownr, meas);
+  return meas;
+}
+
+template<class M>
+MeasRef<M> ScalarMeasColumn<M>::makeMeasRef (uInt rownr) const
+{
+  // Fixed reference can be returned immediately.
+  if (!itsVarRefFlag  &&  itsOffsetCol == 0) {
+    return itsMeasRef;
+  }
+  MeasRef<M> locMRef (itsMeasRef);
+  if (itsVarRefFlag) {
+    // Get reference type as int (from a string or int column).
+    if (itsRefStrCol != 0) {
+      typename M::Types tp;
+      M::getType (tp, (*itsRefStrCol)(rownr));
+      locMRef.set (tp);
+    } else {
+      locMRef.set (measDesc().getRefDesc().tab2cur((*itsRefIntCol)(rownr)));
+    }
+  }
+  if (itsOffsetCol != 0) {
+    locMRef.set ((*itsOffsetCol)(rownr));
+  }
+  return locMRef;
+}
+
 
 template<class M>
 void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
@@ -493,4 +380,3 @@ Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
 }
 
 } //# NAMESPACE CASA - END
-

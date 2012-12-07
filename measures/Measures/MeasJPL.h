@@ -241,7 +241,7 @@ private:
   // Index in record
   static Int idx[N_Files][3][13];
   // Data column descriptor
-  static ROArrayColumn<Double> acc[N_Files];
+  static ArrayColumn<Double> acc[N_Files];
   // Data in current row
   static Vector<Double> dval[N_Files];
   // Current row

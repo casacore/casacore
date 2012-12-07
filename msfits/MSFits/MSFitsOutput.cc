@@ -146,9 +146,9 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
          First, determine which spwIDs are referenced from the MAIN table.
          */
 
-        Vector<Int> ddidcol(ROScalarColumn<Int> (ms, MS::columnName(
+        Vector<Int> ddidcol(ScalarColumn<Int> (ms, MS::columnName(
                 MS::DATA_DESC_ID)).getColumn());
-        Vector<Int> spwidcol(ROScalarColumn<Int> (ms.dataDescription(),
+        Vector<Int> spwidcol(ScalarColumn<Int> (ms.dataDescription(),
                 MSDataDescription::columnName(
                         MSDataDescription::SPECTRAL_WINDOW_ID)) .getColumn());
 
@@ -181,7 +181,7 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     Block<Int> fieldidMap;
     uInt nrfield;
     {
-        ROScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
+        ScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
         Vector<Int> fldid = fldidcol.getColumn();
         if (!asMultiSource) {
             if (!allEQ(fldid, fldid(0))) {
@@ -280,10 +280,10 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
 }
 
 uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
-        const uInt nif, const ROScalarColumn<Double>& intimec,
-        const ROScalarColumn<Double>& timewidthcol,
-        const ROScalarColumn<Int>& inant1, const ROScalarColumn<Int>& inant2,
-        const Bool asMultiSource, const ROScalarColumn<Int>& infieldid) {
+        const uInt nif, const ScalarColumn<Double>& intimec,
+        const ScalarColumn<Double>& timewidthcol,
+        const ScalarColumn<Int>& inant1, const ScalarColumn<Int>& inant2,
+        const Bool asMultiSource, const ScalarColumn<Int>& infieldid) {
     const Double maxTime = intimec(rownr) + 0.2 * timewidthcol(rownr);
     const Int startant1 = inant1(rownr);
     const Int startant2 = inant2(rownr);
@@ -323,7 +323,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     {
         MSObservation obsTable(rawms.observation());
         if (obsTable.nrow() > 0) {
-            ROScalarColumn<String> inarrayname(obsTable,
+            ScalarColumn<String> inarrayname(obsTable,
                     MSObservation::columnName(MSObservation::TELESCOPE_NAME));
             doWsrt = inarrayname(0) == "WSRT";
         }
@@ -378,27 +378,27 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         os << LogIO::SEVERE << "No polarization table in MS" << LogIO::POST;
         return 0;
     }
-    ROScalarColumn<Int> spwId(ddTable, MSDataDescription::columnName(
+    ScalarColumn<Int> spwId(ddTable, MSDataDescription::columnName(
             MSDataDescription::SPECTRAL_WINDOW_ID));
-    ROScalarColumn<Int> polId(ddTable, MSDataDescription::columnName(
+    ScalarColumn<Int> polId(ddTable, MSDataDescription::columnName(
             MSDataDescription::POLARIZATION_ID));
-    ROScalarColumn<Int> numcorr(polTable, MSPolarization::columnName(
+    ScalarColumn<Int> numcorr(polTable, MSPolarization::columnName(
             MSPolarization::NUM_CORR));
-    ROScalarColumn<Int> numchan(spectralTable, MSSpectralWindow::columnName(
+    ScalarColumn<Int> numchan(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::NUM_CHAN));
-    ROArrayColumn<Double> frequencies(spectralTable,
+    ArrayColumn<Double> frequencies(spectralTable,
             MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
-    ROArrayColumn<Int> stokesTypes(polTable, MSPolarization::columnName(
+    ArrayColumn<Int> stokesTypes(polTable, MSPolarization::columnName(
             MSPolarization::CORR_TYPE));
-    ROScalarColumn<Double> totalbw(spectralTable, MSSpectralWindow::columnName(
+    ScalarColumn<Double> totalbw(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::TOTAL_BANDWIDTH));
 
-    ROScalarColumn<Int> measFreq(spectralTable, MSSpectralWindow::columnName(
+    ScalarColumn<Int> measFreq(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::MEAS_FREQ_REF));
 
     Double restFreq(0.0);
     if (nsrc > 0) {
-        ROArrayColumn<Double> restfreqcol(srcTable, MSSource::columnName(
+        ArrayColumn<Double> restfreqcol(srcTable, MSSource::columnName(
             MSSource::REST_FREQUENCY));
         if (restfreqcol.isDefined(0) && restfreqcol(0).nelements() > 0) {
             IPosition ip = restfreqcol(0).shape();
@@ -628,7 +628,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     // BASELINE
     desc.addField("baseline", TpFloat);
     // FREQSEL
-    ROScalarColumn<Int> inddid(rawms, MS::columnName(MS::DATA_DESC_ID));
+    ScalarColumn<Int> inddid(rawms, MS::columnName(MS::DATA_DESC_ID));
     desc.addField("freqsel", TpFloat);
     // SOURCE and INTTIM only in multi-source table
     if (asMultiSource) {
@@ -643,7 +643,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     ek.define("bzero", 0.0);
     String bunit = "UNCALIB";
     {
-        ROTableColumn indata(rawms, columnName);
+        TableColumn indata(rawms, columnName);
         if (indata.keywordSet().isDefined("QuantumUnit")
                 && indata.keywordSet().dataType("QuantumUnit") == TpString) {
             indata.keywordSet().get("QuantumUnit", bunit);
@@ -750,7 +750,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
     // OBS-TIME
     {
-        ROScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
+        ScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
         ek.define("date-obs", toFITSDate(intm(0) / C::day)); // First time entry
     }
 
@@ -848,24 +848,24 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     Table sortTable = rawms.sort(sortNames);
 
     // Make objects for the various columns.
-    ROArrayColumn<Complex> indata(sortTable, columnName);
-    ROArrayColumn<Float> inweightscalar(sortTable, MS::columnName(MS::WEIGHT));
-    ROArrayColumn<Float> inweightarray;
+    ArrayColumn<Complex> indata(sortTable, columnName);
+    ArrayColumn<Float> inweightscalar(sortTable, MS::columnName(MS::WEIGHT));
+    ArrayColumn<Float> inweightarray;
     if (hasWeightArray) {
         inweightarray.attach(sortTable, MS::columnName(MS::WEIGHT_SPECTRUM));
     }
-    ROScalarColumn<Bool> inrowflag(sortTable, MS::columnName(MS::FLAG_ROW));
-    ROArrayColumn<Bool> indataflag(sortTable, MS::columnName(MS::FLAG));
-    ROArrayColumn<Double> inuvw(sortTable, MS::columnName(MS::UVW));
-    ROScalarColumn<Double>
+    ScalarColumn<Bool> inrowflag(sortTable, MS::columnName(MS::FLAG_ROW));
+    ArrayColumn<Bool> indataflag(sortTable, MS::columnName(MS::FLAG));
+    ArrayColumn<Double> inuvw(sortTable, MS::columnName(MS::UVW));
+    ScalarColumn<Double>
             intimec(sortTable, MS::columnName(MS::TIME_CENTROID));
-    ROScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
-    ROScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
-    ROScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
-    ROScalarColumn<Int> inspwinid(sortTable, MS::columnName(MS::DATA_DESC_ID));
+    ScalarColumn<Int> inant1(sortTable, MS::columnName(MS::ANTENNA1));
+    ScalarColumn<Int> inant2(sortTable, MS::columnName(MS::ANTENNA2));
+    ScalarColumn<Int> inarray(sortTable, MS::columnName(MS::ARRAY_ID));
+    ScalarColumn<Int> inspwinid(sortTable, MS::columnName(MS::DATA_DESC_ID));
 
-    ROScalarColumn<Double> inexposure;
-    ROScalarColumn<Int> infieldid;
+    ScalarColumn<Double> inexposure;
+    ScalarColumn<Int> infieldid;
     if (asMultiSource) {
         infieldid.attach(sortTable, MS::columnName(MS::FIELD_ID));
         // Why is exposure only done for multisource files?
@@ -878,7 +878,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     if (nif < 2)
         padWithFlags = false;
 
-    ROScalarColumn<Double> ininterval;
+    ScalarColumn<Double> ininterval;
     if (padWithFlags)
         ininterval.attach(sortTable, MS::columnName(MS::INTERVAL));
 
@@ -1402,11 +1402,11 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
         Int chanstart, Int nchan, Int chanstep, Int avgchan) {
     LogIO os(LogOrigin("MSFitsOutput", "writeFQ"));
     MSSpectralWindow specTable(ms.spectralWindow());
-    ROArrayColumn<Double> inchanfreq(specTable, MSSpectralWindow::columnName(
+    ArrayColumn<Double> inchanfreq(specTable, MSSpectralWindow::columnName(
             MSSpectralWindow::CHAN_FREQ));
-    ROScalarColumn<Double> intotbw(specTable, MSSpectralWindow::columnName(
+    ScalarColumn<Double> intotbw(specTable, MSSpectralWindow::columnName(
             MSSpectralWindow::TOTAL_BANDWIDTH));
-    ROScalarColumn<Int> insideband(specTable, MSSpectralWindow::columnName(
+    ScalarColumn<Int> insideband(specTable, MSSpectralWindow::columnName(
             MSSpectralWindow::NET_SIDEBAND));
 
     Bool doWsrt = False;
@@ -1414,7 +1414,7 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
     {
         MSObservation obsTable(ms.observation());
         if (obsTable.nrow() > 0) {
-            ROScalarColumn<String> inarrayname(obsTable,
+            ScalarColumn<String> inarrayname(obsTable,
                     MSObservation::columnName(MSObservation::TELESCOPE_NAME));
             doWsrt = inarrayname(0) == "WSRT";
             telescopeName = inarrayname(0);
@@ -1551,7 +1551,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         Double refFreq, Bool writeStation) {
     LogIO os(LogOrigin("MSFitsOutput", "writeAN"));
     MSObservation obsTable(ms.observation());
-    ROScalarColumn<String> inarrayname(obsTable, MSObservation::columnName(
+    ScalarColumn<String> inarrayname(obsTable, MSObservation::columnName(
             MSObservation::TELESCOPE_NAME));
 
     const uInt narray = obsTable.nrow();
@@ -1707,19 +1707,19 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         //(ms.antenna().col(MSAntenna::columnName(MSAntenna::ARRAY_ID)) ==
         //                  Int(arraynum));
 
-        ROScalarColumn<String> inantname(antennaCols.station());
-        ROScalarColumn<String> antid(antennaCols.name());
-        ROScalarColumn<String> inantmount(antennaCols.mount());
-        MPosition::ROScalarColumn inantposition(antennaCols.positionMeas());
-        ROArrayColumn<Double> inantoffset(antennaCols.offset());
+        ScalarColumn<String> inantname(antennaCols.station());
+        ScalarColumn<String> antid(antennaCols.name());
+        ScalarColumn<String> inantmount(antennaCols.mount());
+        MPosition::ScalarColumn inantposition(antennaCols.positionMeas());
+        ArrayColumn<Double> inantoffset(antennaCols.offset());
         const uInt nant = antennaTable.nrow();
         os << LogIO::NORMAL << "Found " << nant << " antennas in array #"
                 << arraynum + 1 << LogIO::POST;
 
         MSFeed feedTable = ms.feed();
         ROMSFeedColumns feedCols(feedTable);
-        ROArrayColumn<String> inpoltype(feedCols.polarizationType());
-        ROScalarColumn<Int> inantid(feedCols.antennaId());
+        ArrayColumn<String> inpoltype(feedCols.polarizationType());
+        ScalarColumn<Int> inantid(feedCols.antennaId());
 
         FITSTableWriter writer(output, desc, strlengths, nant, header, units,
                 False);
@@ -1869,8 +1869,8 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     // Basically we make the FIELD_ID the source ID.
     MSField fieldTable(ms.field());
     ROMSFieldColumns msfc(fieldTable);
-    const ROScalarColumn<Int>& insrcid = msfc.sourceId();
-    const ROScalarColumn<String>& inname = msfc.name();
+    const ScalarColumn<Int>& insrcid = msfc.sourceId();
+    const ScalarColumn<String>& inname = msfc.name();
 
     // If source table exists, access it
 
@@ -1906,7 +1906,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
         os << LogIO::SEVERE << "No spectral window table!" << LogIO::POST;
         return False;
     }
-    ROScalarColumn<Double> totalbw(spectralTable, MSSpectralWindow::columnName(
+    ScalarColumn<Double> totalbw(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::TOTAL_BANDWIDTH));
     Double totalBandwidth = totalbw(0);
     //    const uInt nsource = sourceTable.nrow(); // this is allowed to be 0
@@ -1920,7 +1920,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     String velDef;
     String velType;
     if (spectralTable.tableDesc().isColumn("NFRA_VELOCDEFINITION")) {
-        ROScalarColumn<String> velDefCol(spectralTable, "NFRA_VELOCDEFINITION");
+        ScalarColumn<String> velDefCol(spectralTable, "NFRA_VELOCDEFINITION");
         header.define("VELTYP", "");
         header.define("VELDEF", "");
     } else {
@@ -2602,8 +2602,8 @@ Table MSFitsOutput::handleSysCal(const MeasurementSet& ms,
     {
         // Find the maximum antenna number.
         // Assure that the minimum >= 0.
-        ROScalarColumn<Int> ant1col(ms, MS::columnName(MS::ANTENNA1));
-        ROScalarColumn<Int> ant2col(ms, MS::columnName(MS::ANTENNA2));
+        ScalarColumn<Int> ant1col(ms, MS::columnName(MS::ANTENNA1));
+        ScalarColumn<Int> ant2col(ms, MS::columnName(MS::ANTENNA2));
         Vector<Int> ant1 = ant1col.getColumn();
         Vector<Int> ant2 = ant2col.getColumn();
         Int minant1, minant2, maxant1, maxant2;
@@ -2630,7 +2630,7 @@ Table MSFitsOutput::handleSysCal(const MeasurementSet& ms,
     }
     {
         // Now skip all antennas in SYSCAL not present in the main table.
-        ROScalarColumn<Int> antcol(syscal, MSSysCal::columnName(
+        ScalarColumn<Int> antcol(syscal, MSSysCal::columnName(
                 MSSysCal::ANTENNA_ID));
         Vector<Int> ant = antcol.getColumn();
         Int minant, maxant;
@@ -2755,7 +2755,7 @@ void MSFitsOutput::handleAntNumbers(const MeasurementSet& ms,
         arrayName = obscol.telescopeName()(0);
 
     ROMSAntennaColumns antcol(ms.antenna());
-    ROScalarColumn<String> antname(antcol.name());
+    ScalarColumn<String> antname(antcol.name());
     Int nAnt = antcol.nrow();
 
     antnumbers.resize(nAnt);

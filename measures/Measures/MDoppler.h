@@ -42,9 +42,7 @@ class MDoppler;
 class MCDoppler;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 template <class T> class Vector;
 template <class T> class Quantum;
 
@@ -168,10 +166,8 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   typedef MeasRef<MDoppler> Ref;
   // Measure Convert (i.e. MDoppler::Convert)
   typedef MeasConvert<MDoppler> Convert;
-  // Measure table Columns (e.g., MDoppler::ROScalarColumn)
-  typedef ROScalarMeasColumn<MDoppler> ROScalarColumn;
+  // Measure table Columns (e.g., MDoppler::ScalarColumn)
   typedef ScalarMeasColumn<MDoppler> ScalarColumn;
-  typedef ROArrayMeasColumn<MDoppler> ROArrayColumn;
   typedef ArrayMeasColumn<MDoppler> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MDoppler) Types Types;

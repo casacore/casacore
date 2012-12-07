@@ -36,7 +36,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-template<class T> class ROArrayColumn;
 template<class T> class ArrayColumn;
 class TableColumn;
 
@@ -305,7 +304,7 @@ protected:
 
     // Give readonly access to the stored column.
     // This can be used by the derived classes to get data.
-    inline ROArrayColumn<StoredType>& roColumn();
+    inline ArrayColumn<StoredType>& roColumn();
 
     // Give read/write access to the stored column.
     // This can be used by the derived classes to put data.
@@ -338,10 +337,6 @@ protected:
     void prepare1();
     void prepare2();
     // </group>
-
-    // Reopen the engine for read/write access.
-    // It makes the column writable if the underlying column is writable.
-    virtual void reopenRW();
 
     // Rows are added to the end of the table.
     // If the virtual column has FixedShape arrays and the stored not,
@@ -488,8 +483,7 @@ private:
     uInt           initialNrrow_p;       //# initial #rows in case of create
     Bool           arrayIsFixed_p;       //# True = virtual is FixedShape array
     IPosition      shapeFixed_p;         //# shape in case FixedShape array
-    ROArrayColumn<StoredType>*  roColumn_p;    //# the stored column (for get)
-    ArrayColumn<StoredType>*    column_p;      //# the stored column (for put)
+    ArrayColumn<StoredType>* column_p;   //# the stored column
 };
 
 
@@ -519,9 +513,9 @@ BaseMappedArrayEngine<VirtualType, StoredType>::setWritable (Bool isWritable)
     { isWritable_p = isWritable; }
 
 template<class VirtualType, class StoredType>
-inline ROArrayColumn<StoredType>&
+inline ArrayColumn<StoredType>&
 BaseMappedArrayEngine<VirtualType, StoredType>::roColumn()
-    { return *roColumn_p; }
+    { return *column_p; }
 
 template<class VirtualType, class StoredType>
 inline ArrayColumn<StoredType>&

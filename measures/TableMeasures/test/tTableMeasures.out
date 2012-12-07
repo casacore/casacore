@@ -282,9 +282,9 @@ Epoch: 1::00:00:00.0000
 The following line should report an error in reconstruct - invalid column exception.
 TableMeasDescBase::reconstruct; MEASINFO record not found for column TimeRef
 The following line should be a null column exception.
-Invalid Table operation: ROMeasTableColumn object is null
+Invalid Table operation: MeasTableColumn object is null
 The following line should be an illegal offset column type exception.
-Invalid Table data type when accessing column in ROScalarColumn ctor for column SpareCol1
+Invalid Table data type when accessing column in ScalarColumn ctor for column SpareCol1
 Reopening the table read-only and reading contents...
 Filling the MDirection column MDirColumn
 put: Direction: [0.565521, 0.205833, 0.798636]
@@ -309,13 +309,13 @@ PASS - nothing in the measure array column row yet
 PASS - valid entry in array column row 0
 The following line should report an error in ScalarMeasColumn::setDescUnits - not allowed to put when the table is not empty.
 ArrayMeasColumn::setDescUnits cannot be done; the table is not empty
-Open table again in RO mode to test ROArrayMeasColumn...
+Open table again in RO mode to test ArrayMeasColumn...
 Creating an MEpoch Array Column
 Adding vectors to the test measure column
 Reference for ArrayMeasCol is variable
 Reference for the ArrayMeasCol is: Reference for an Epoch with Type: LAST
 The following line should be a null column exception.
-Invalid Table operation: ROMeasTableColumn object is null
+Invalid Table operation: MeasTableColumn object is null
 The following line should be a Table array conformance error exception.
-ROArrayMeasColumn::get: Table array conformance error
+ArrayMeasColumn::get: Table array conformance error
 Test completed normally...bye.
