@@ -50,9 +50,7 @@ CompressFloat::CompressFloat (const String& virtualColumnName,
   fixed_p         (True),
   autoScale_p     (False),
   scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
+  offsetColumn_p  (0)
 {}
 
 CompressFloat::CompressFloat (const String& virtualColumnName,
@@ -68,9 +66,7 @@ CompressFloat::CompressFloat (const String& virtualColumnName,
   fixed_p         (False),
   autoScale_p     (autoScale),
   scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
+  offsetColumn_p  (0)
 {}
 
 CompressFloat::CompressFloat (const Record& spec)
@@ -80,9 +76,7 @@ CompressFloat::CompressFloat (const Record& spec)
   fixed_p         (True),
   autoScale_p     (False),
   scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
+  offsetColumn_p  (0)
 {
   if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
     setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
@@ -109,17 +103,13 @@ CompressFloat::CompressFloat (const CompressFloat& that)
   fixed_p         (that.fixed_p),
   autoScale_p     (that.autoScale_p),
   scaleColumn_p   (0),
-  offsetColumn_p  (0),
-  rwScaleColumn_p (0),
-  rwOffsetColumn_p(0)
+  offsetColumn_p  (0)
 {}
 
 CompressFloat::~CompressFloat()
 {
   delete scaleColumn_p;
   delete offsetColumn_p;
-  delete rwScaleColumn_p;
-  delete rwOffsetColumn_p;
 }
 
 //# Clone the engine object.
@@ -188,7 +178,7 @@ void CompressFloat::create (uInt initialNrrow)
 void CompressFloat::prepare()
 {
   BaseMappedArrayEngine<Float,Short>::prepare1();
-  ROTableColumn thisCol (table(), virtualName());
+  TableColumn thisCol (table(), virtualName());
   thisCol.keywordSet().get ("_CompressFloat_Scale",      scale_p);
   thisCol.keywordSet().get ("_CompressFloat_Offset",     offset_p);
   thisCol.keywordSet().get ("_CompressFloat_ScaleName",  scaleName_p);
@@ -197,35 +187,22 @@ void CompressFloat::prepare()
   thisCol.keywordSet().get ("_CompressFloat_AutoScale",  autoScale_p);
   //# Allocate column objects to get scale and offset.
   if (! fixed_p) {
-    scaleColumn_p = new ROScalarColumn<Float> (table(), scaleName_p);
-    offsetColumn_p = new ROScalarColumn<Float> (table(), offsetName_p);
-    if (autoScale_p  &&  isWritable()) {
-      rwScaleColumn_p = new ScalarColumn<Float> (table(), scaleName_p);
-      rwOffsetColumn_p = new ScalarColumn<Float> (table(), offsetName_p);
-    }
+    scaleColumn_p = new ScalarColumn<Float> (table(), scaleName_p);
+    offsetColumn_p = new ScalarColumn<Float> (table(), offsetName_p);
   }
   // Do this at the end, because it might call addRow.
   BaseMappedArrayEngine<Float,Short>::prepare2();
 }
 
 void CompressFloat::reopenRW()
-{
-  // Create the writable ArrayColumn object if it does not exist
-  // yet and if the column is writable now.
-  if (!fixed_p  &&  rwScaleColumn_p == 0) {
-    if (autoScale_p  &&  isWritable()) {
-      rwScaleColumn_p = new ScalarColumn<Float> (table(), scaleName_p);
-      rwOffsetColumn_p = new ScalarColumn<Float> (table(), offsetName_p);
-    }
-  }
-}
+{}
 
 void CompressFloat::addRowInit (uInt startRow, uInt nrrow)
 {
   BaseMappedArrayEngine<Float,Short>::addRowInit (startRow, nrrow);
   if (autoScale_p) {
     for (uInt i=0; i<nrrow; i++) {
-      rwScaleColumn_p->put (startRow++, 0.);
+      scaleColumn_p->put (startRow++, 0.);
     }
   }
 }
@@ -365,7 +342,7 @@ void CompressFloat::getArray (uInt rownr, Array<Float>& array)
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
   }
-  roColumn().baseGet (rownr, buffer_p);
+  column().baseGet (rownr, buffer_p);
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
@@ -381,11 +358,11 @@ void CompressFloat::putArray (uInt rownr, const Array<Float>& array)
     findMinMax (minVal, maxVal, array);
     Float scale, offset;
     makeScaleOffset (scale, offset, minVal, maxVal);
-    rwScaleColumn_p->put (rownr, scale);
-    rwOffsetColumn_p->put (rownr, offset);
+    scaleColumn_p->put (rownr, scale);
+    offsetColumn_p->put (rownr, offset);
     scaleOnPut (scale, offset, array, buffer_p);
   }
-  rwColumn().basePut (rownr, buffer_p);
+  column().basePut (rownr, buffer_p);
 }
 
 void CompressFloat::getSlice (uInt rownr, const Slicer& slicer,
@@ -394,7 +371,7 @@ void CompressFloat::getSlice (uInt rownr, const Slicer& slicer,
   if (! array.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (array.shape());
   }
-  roColumn().getSlice (rownr, slicer, buffer_p);
+  column().getSlice (rownr, slicer, buffer_p);
   scaleOnGet (getScale(rownr), getOffset(rownr), array, buffer_p);
 }
 
@@ -406,7 +383,7 @@ void CompressFloat::putPart (uInt rownr, const Slicer& slicer,
     buffer_p.resize (array.shape());
   }
   scaleOnPut (scale, offset, array, buffer_p);
-  rwColumn().putSlice (rownr, slicer, buffer_p);
+  column().putSlice (rownr, slicer, buffer_p);
 }
 
 void CompressFloat::putFullPart (uInt rownr, const Slicer& slicer,
@@ -419,13 +396,13 @@ void CompressFloat::putFullPart (uInt rownr, const Slicer& slicer,
   subarr = partArray;
   Float scale, offset;
   makeScaleOffset (scale, offset, minVal, maxVal);
-  rwScaleColumn_p->put (rownr, scale);
-  rwOffsetColumn_p->put (rownr, offset);
+  scaleColumn_p->put (rownr, scale);
+  offsetColumn_p->put (rownr, offset);
   if (! fullArray.shape().isEqual (buffer_p.shape())) {
     buffer_p.resize (fullArray.shape());
   }
   scaleOnPut (scale, offset, fullArray, buffer_p);
-  rwColumn().basePut (rownr, buffer_p);
+  column().basePut (rownr, buffer_p);
 }
 
 void CompressFloat::putSlice (uInt rownr, const Slicer& slicer,
@@ -481,7 +458,7 @@ void CompressFloat::putSlice (uInt rownr, const Slicer& slicer,
 void CompressFloat::getArrayColumn (Array<Float>& array)
 {
   Array<Short> target(array.shape());
-  roColumn().getColumn (target);
+  column().getColumn (target);
   scaleColumnOnGet (array, target);
 }
 void CompressFloat::putArrayColumn (const Array<Float>& array)
@@ -489,7 +466,7 @@ void CompressFloat::putArrayColumn (const Array<Float>& array)
   Array<Short> target(array.shape());
   if (! autoScale_p) {
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (target);
+    column().putColumn (target);
   } else {
     ReadOnlyArrayIterator<Float> iter(array, array.ndim()-1);
     uInt nrrow = table().nrow();
@@ -504,7 +481,7 @@ void CompressFloat::getColumnSlice (const Slicer& slicer,
 				    Array<Float>& array)
 {
   Array<Short> target(array.shape());
-  roColumn().getColumn (slicer, target);
+  column().getColumn (slicer, target);
   scaleColumnOnGet (array, target);
 }
 
@@ -514,7 +491,7 @@ void CompressFloat::putColumnSlice (const Slicer& slicer,
   Array<Short> target(array.shape());
   if (! autoScale_p) {
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (slicer, target);
+    column().putColumn (slicer, target);
   } else {
     ReadOnlyArrayIterator<Float> iter(array, array.ndim()-1);
     uInt nrrow = table().nrow();

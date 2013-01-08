@@ -197,13 +197,13 @@ class TableExprNodeArrayColumn : public TableExprNodeArray
 {
 public:
     // Create the object for the given column and table.
-    TableExprNodeArrayColumn (const ROTableColumn& tablecol,
+    TableExprNodeArrayColumn (const TableColumn& tablecol,
 			      const Table& table);
 
     ~TableExprNodeArrayColumn();
 
-    // Get the ROTableColumn object.
-    const ROTableColumn& getColumn() const;
+    // Get the TableColumn object.
+    const TableColumn& getColumn() const;
 
     // Get the shape of the array in the given row.
     virtual const IPosition& getShape (const TableExprId& id);
@@ -216,7 +216,7 @@ public:
     virtual Bool getColumnDataType (DataType&) const;
 
 protected:
-    ROTableColumn tabCol_p;
+    TableColumn tabCol_p;
 };
 
 
@@ -242,7 +242,7 @@ protected:
 class TableExprNodeArrayColumnBool : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnBool (const ROTableColumn&,
+    TableExprNodeArrayColumnBool (const TableColumn&,
 				  const Table&);
     ~TableExprNodeArrayColumnBool();
 
@@ -252,7 +252,7 @@ public:
     virtual Array<Bool>  getElemColumnBool (const Vector<uInt>& rownrs,
                                             const Slicer&);
 protected:
-    ROArrayColumn<Bool> col_p;
+    ArrayColumn<Bool> col_p;
 };
 
 
@@ -277,7 +277,7 @@ protected:
 class TableExprNodeArrayColumnuChar : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnuChar (const ROTableColumn&,
+    TableExprNodeArrayColumnuChar (const TableColumn&,
 				   const Table&);
     ~TableExprNodeArrayColumnuChar();
 
@@ -288,7 +288,7 @@ public:
     virtual Array<uChar>  getElemColumnuChar (const Vector<uInt>& rownrs,
                                               const Slicer&);
 protected:
-    ROArrayColumn<uChar> col_p;
+    ArrayColumn<uChar> col_p;
 };
 
 
@@ -313,7 +313,7 @@ protected:
 class TableExprNodeArrayColumnShort : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnShort (const ROTableColumn&,
+    TableExprNodeArrayColumnShort (const TableColumn&,
 				   const Table&);
     ~TableExprNodeArrayColumnShort();
 
@@ -324,7 +324,7 @@ public:
     virtual Array<Short>  getElemColumnShort (const Vector<uInt>& rownrs,
                                               const Slicer&);
 protected:
-    ROArrayColumn<Short> col_p;
+    ArrayColumn<Short> col_p;
 };
 
 
@@ -349,7 +349,7 @@ protected:
 class TableExprNodeArrayColumnuShort : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnuShort (const ROTableColumn&,
+    TableExprNodeArrayColumnuShort (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnuShort();
 
@@ -360,7 +360,7 @@ public:
     virtual Array<uShort> getElemColumnuShort (const Vector<uInt>& rownrs,
                                                const Slicer&);
 protected:
-    ROArrayColumn<uShort> col_p;
+    ArrayColumn<uShort> col_p;
 };
 
 
@@ -385,7 +385,7 @@ protected:
 class TableExprNodeArrayColumnInt : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnInt (const ROTableColumn&,
+    TableExprNodeArrayColumnInt (const TableColumn&,
 				 const Table&);
     ~TableExprNodeArrayColumnInt();
 
@@ -396,7 +396,7 @@ public:
     virtual Array<Int>    getElemColumnInt (const Vector<uInt>& rownrs,
                                             const Slicer&);
 protected:
-    ROArrayColumn<Int> col_p;
+    ArrayColumn<Int> col_p;
 };
 
 
@@ -421,7 +421,7 @@ protected:
 class TableExprNodeArrayColumnuInt : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnuInt (const ROTableColumn&,
+    TableExprNodeArrayColumnuInt (const TableColumn&,
 				  const Table&);
     ~TableExprNodeArrayColumnuInt();
 
@@ -432,7 +432,7 @@ public:
     virtual Array<uInt>   getElemColumnuInt (const Vector<uInt>& rownrs,
                                              const Slicer&);
 protected:
-    ROArrayColumn<uInt> col_p;
+    ArrayColumn<uInt> col_p;
 };
 
 
@@ -457,7 +457,7 @@ protected:
 class TableExprNodeArrayColumnFloat : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnFloat (const ROTableColumn&,
+    TableExprNodeArrayColumnFloat (const TableColumn&,
 				   const Table&);
     ~TableExprNodeArrayColumnFloat();
 
@@ -468,7 +468,7 @@ public:
     virtual Array<Float>  getElemColumnFloat (const Vector<uInt>& rownrs,
                                               const Slicer&);
 protected:
-    ROArrayColumn<Float> col_p;
+    ArrayColumn<Float> col_p;
 };
 
 
@@ -493,7 +493,7 @@ protected:
 class TableExprNodeArrayColumnDouble : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnDouble (const ROTableColumn&,
+    TableExprNodeArrayColumnDouble (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnDouble();
 
@@ -504,7 +504,7 @@ public:
     virtual Array<Double> getElemColumnDouble (const Vector<uInt>& rownrs,
                                                const Slicer&);
 protected:
-    ROArrayColumn<Double> col_p;
+    ArrayColumn<Double> col_p;
 };
 
 
@@ -529,7 +529,7 @@ protected:
 class TableExprNodeArrayColumnComplex : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnComplex (const ROTableColumn&,
+    TableExprNodeArrayColumnComplex (const TableColumn&,
 				     const Table&);
     ~TableExprNodeArrayColumnComplex();
 
@@ -540,7 +540,7 @@ public:
     virtual Array<Complex>  getElemColumnComplex (const Vector<uInt>& rownrs,
                                                   const Slicer&);
 protected:
-    ROArrayColumn<Complex> col_p;
+    ArrayColumn<Complex> col_p;
 };
 
 
@@ -565,7 +565,7 @@ protected:
 class TableExprNodeArrayColumnDComplex : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnDComplex (const ROTableColumn&,
+    TableExprNodeArrayColumnDComplex (const TableColumn&,
 				      const Table&);
     ~TableExprNodeArrayColumnDComplex();
 
@@ -576,7 +576,7 @@ public:
     virtual Array<DComplex> getElemColumnDComplex (const Vector<uInt>& rownrs,
                                                    const Slicer&);
 protected:
-    ROArrayColumn<DComplex> col_p;
+    ArrayColumn<DComplex> col_p;
 };
 
 
@@ -601,7 +601,7 @@ protected:
 class TableExprNodeArrayColumnString : public TableExprNodeArrayColumn
 {
 public:
-    TableExprNodeArrayColumnString (const ROTableColumn&,
+    TableExprNodeArrayColumnString (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnString();
 
@@ -612,7 +612,7 @@ public:
     virtual Array<String> getElemColumnString (const Vector<uInt>& rownrs,
                                                const Slicer&);
 protected:
-    ROArrayColumn<String> col_p;
+    ArrayColumn<String> col_p;
 };
 
 
@@ -797,7 +797,7 @@ inline const Slicer& TableExprNodeIndex::getSlicer (const TableExprId& id)
     return slicer_p;
 }
 
-inline const ROTableColumn& TableExprNodeArrayColumn::getColumn() const
+inline const TableColumn& TableExprNodeArrayColumn::getColumn() const
 {
     return tabCol_p;
 }

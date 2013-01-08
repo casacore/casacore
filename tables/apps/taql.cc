@@ -255,7 +255,7 @@ template<> void showArray (const Array<MVTime>& arr)
 void showTable (const Table& tab, const Vector<String>& colnam, bool printMeas)
 {
   uInt nrcol = 0;
-  PtrBlock<ROTableColumn*> tableColumns(colnam.nelements());
+  PtrBlock<TableColumn*> tableColumns(colnam.nelements());
   Block<Vector<String> > timeUnit(colnam.nelements());
   Block<Vector<String> > posUnit(colnam.nelements());
   Block<Vector<String> > dirUnit(colnam.nelements());
@@ -264,7 +264,7 @@ void showTable (const Table& tab, const Vector<String>& colnam, bool printMeas)
     if (! tab.tableDesc().isColumn (colnam(i))) {
       cout << "Column " << colnam(i) << " does not exist" << endl;
     }else{
-      tableColumns[nrcol] = new ROTableColumn (tab, colnam(i));
+      tableColumns[nrcol] = new TableColumn (tab, colnam(i));
       if (! tableColumns[nrcol]->columnDesc().isScalar()
       &&  ! tableColumns[nrcol]->columnDesc().isArray()) {
 	cout << "Column " << colnam(i)

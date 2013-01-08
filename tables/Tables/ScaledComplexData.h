@@ -152,8 +152,7 @@ public:
 protected:
   using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
   using BaseMappedArrayEngine<VirtualType,StoredType>::table;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::roColumn;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::rwColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::column;
   using BaseMappedArrayEngine<VirtualType,StoredType>::setNames;
 
 public:

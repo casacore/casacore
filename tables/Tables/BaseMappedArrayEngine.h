@@ -302,13 +302,9 @@ protected:
     // Set the virtual and stored column name.
     void setNames (const String& virtualName, const String& storedName);
 
-    // Give readonly access to the stored column.
-    // This can be used by the derived classes to get data.
-    inline ArrayColumn<StoredType>& roColumn();
-
-    // Give read/write access to the stored column.
-    // This can be used by the derived classes to put data.
-    inline ArrayColumn<StoredType>& rwColumn();
+    // Give access to the stored column.
+    // This can be used by the derived classes to get/put data.
+    inline ArrayColumn<StoredType>& column();
 
     // Create the column object for the array column in this engine.
     // It will check if the given column name matches the virtual
@@ -514,12 +510,7 @@ BaseMappedArrayEngine<VirtualType, StoredType>::setWritable (Bool isWritable)
 
 template<class VirtualType, class StoredType>
 inline ArrayColumn<StoredType>&
-BaseMappedArrayEngine<VirtualType, StoredType>::roColumn()
-    { return *column_p; }
-
-template<class VirtualType, class StoredType>
-inline ArrayColumn<StoredType>&
-BaseMappedArrayEngine<VirtualType, StoredType>::rwColumn()
+BaseMappedArrayEngine<VirtualType, StoredType>::column()
     { return *column_p; }
 
 

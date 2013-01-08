@@ -247,7 +247,7 @@ Table TableParseSelect::findTableKey (const Table& table,
   if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
     const TableRecord* keyset =  columnName.empty()  ?
       &(table.keywordSet()) :
-      &(ROTableColumn (table, columnName).keywordSet());
+      &(TableColumn (table, columnName).keywordSet());
     // All fieldnames, except last one, should be records.
     uInt last = fieldNames.nelements() - 1;
     for (uInt i=0; i<last; i++) { 
@@ -418,7 +418,7 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name)
     return tab.key (fieldNames);
   }
   //# Otherwise we have a column keyword.
-  ROTableColumn col (tab, columnName);
+  TableColumn col (tab, columnName);
   return TableExprNode::newKeyConst (col.keywordSet(), fieldNames);
 }
 
@@ -1243,53 +1243,53 @@ TableExprNode TableParseSelect::getColSet()
     throw (TableInvExpr ("Nested query should select 1 column"));
   }
   const ColumnDesc& colDesc = tableDesc.columnDesc(0);
-  ROTableColumn tabcol (table_p, colDesc.name());
+  TableColumn tabcol (table_p, colDesc.name());
   TableExprNodeRep* tsnptr=0;
   if (colDesc.isScalar()) {
     switch (colDesc.dataType()) {
     case TpBool:
       tsnptr = new TableExprNodeArrayConstBool
-        (ROScalarColumn<Bool>(tabcol).getColumn());
+        (ScalarColumn<Bool>(tabcol).getColumn());
       break;
     case TpUChar:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROScalarColumn<uChar>(tabcol).getColumn());
+        (ScalarColumn<uChar>(tabcol).getColumn());
       break;
     case TpShort:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROScalarColumn<Short>(tabcol).getColumn());
+        (ScalarColumn<Short>(tabcol).getColumn());
       break;
     case TpUShort:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROScalarColumn<uShort>(tabcol).getColumn());
+        (ScalarColumn<uShort>(tabcol).getColumn());
       break;
     case TpInt:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROScalarColumn<Int>(tabcol).getColumn());
+        (ScalarColumn<Int>(tabcol).getColumn());
       break;
     case TpUInt:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROScalarColumn<uInt>(tabcol).getColumn());
+        (ScalarColumn<uInt>(tabcol).getColumn());
       break;
     case TpFloat:
       tsnptr = new TableExprNodeArrayConstDouble
-        (ROScalarColumn<Float>(tabcol).getColumn());
+        (ScalarColumn<Float>(tabcol).getColumn());
       break;
     case TpDouble:
       tsnptr = new TableExprNodeArrayConstDouble
-        (ROScalarColumn<Double>(tabcol).getColumn());
+        (ScalarColumn<Double>(tabcol).getColumn());
       break;
     case TpComplex:
       tsnptr = new TableExprNodeArrayConstDComplex
-        (ROScalarColumn<Complex>(tabcol).getColumn());
+        (ScalarColumn<Complex>(tabcol).getColumn());
       break;
     case TpDComplex:
       tsnptr = new TableExprNodeArrayConstDComplex
-        (ROScalarColumn<DComplex>(tabcol).getColumn());
+        (ScalarColumn<DComplex>(tabcol).getColumn());
       break;
     case TpString:
       tsnptr = new TableExprNodeArrayConstString
-        (ROScalarColumn<String>(tabcol).getColumn());
+        (ScalarColumn<String>(tabcol).getColumn());
       break;
     default:
       throw (TableInvExpr ("Nested query column " + colDesc.name() +
@@ -1299,47 +1299,47 @@ TableExprNode TableParseSelect::getColSet()
     switch (colDesc.dataType()) {
     case TpBool:
       tsnptr = new TableExprNodeArrayConstBool
-        (ROArrayColumn<Bool>(tabcol).getColumn());
+        (ArrayColumn<Bool>(tabcol).getColumn());
       break;
     case TpUChar:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROArrayColumn<uChar>(tabcol).getColumn());
+        (ArrayColumn<uChar>(tabcol).getColumn());
       break;
     case TpShort:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROArrayColumn<Short>(tabcol).getColumn());
+        (ArrayColumn<Short>(tabcol).getColumn());
       break;
     case TpUShort:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROArrayColumn<uShort>(tabcol).getColumn());
+        (ArrayColumn<uShort>(tabcol).getColumn());
       break;
     case TpInt:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROArrayColumn<Int>(tabcol).getColumn());
+        (ArrayColumn<Int>(tabcol).getColumn());
       break;
     case TpUInt:
       tsnptr = new TableExprNodeArrayConstInt
-        (ROArrayColumn<uInt>(tabcol).getColumn());
+        (ArrayColumn<uInt>(tabcol).getColumn());
       break;
     case TpFloat:
       tsnptr = new TableExprNodeArrayConstDouble
-        (ROArrayColumn<Float>(tabcol).getColumn());
+        (ArrayColumn<Float>(tabcol).getColumn());
       break;
     case TpDouble:
       tsnptr = new TableExprNodeArrayConstDouble
-        (ROArrayColumn<Double>(tabcol).getColumn());
+        (ArrayColumn<Double>(tabcol).getColumn());
       break;
     case TpComplex:
       tsnptr = new TableExprNodeArrayConstDComplex
-        (ROArrayColumn<Complex>(tabcol).getColumn());
+        (ArrayColumn<Complex>(tabcol).getColumn());
       break;
     case TpDComplex:
       tsnptr = new TableExprNodeArrayConstDComplex
-        (ROArrayColumn<DComplex>(tabcol).getColumn());
+        (ArrayColumn<DComplex>(tabcol).getColumn());
       break;
     case TpString:
       tsnptr = new TableExprNodeArrayConstString
-        (ROArrayColumn<String>(tabcol).getColumn());
+        (ArrayColumn<String>(tabcol).getColumn());
       break;
     default:
       throw (TableInvExpr ("Nested query column " + colDesc.name() +
@@ -1514,7 +1514,7 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
     dtypeCol[i] = coldesc.dataType();
     // If needed, make the expression's unit the same as the column unit.
     key.node().adaptUnit (TableExprNodeColumn::getColumnUnit
-			          (ROTableColumn(updTable, colName)));
+			          (TableColumn(updTable, colName)));
   }
   // IPosition objects in case slicer.inferShapeFromSource has to be used.
   IPosition trc,blc,inc;

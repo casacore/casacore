@@ -293,10 +293,8 @@ protected:
   Float          offset_p;             //# fixed offset value
   Bool           fixed_p;              //# scale/offset is fixed
   Bool           autoScale_p;          //# determine scale/offset automatically
-  ROScalarColumn<Float>* scaleColumn_p;  //# column with scale value
-  ROScalarColumn<Float>* offsetColumn_p; //# column with offset value
-  ScalarColumn<Float>* rwScaleColumn_p;  //# writable column with scale value
-  ScalarColumn<Float>* rwOffsetColumn_p; //# writable column with offset value
+  ScalarColumn<Float>* scaleColumn_p;  //# column with scale value
+  ScalarColumn<Float>* offsetColumn_p; //# column with offset value
   Array<Int>     buffer_p;             //# buffer to avoid Array constructions
                                        //# (makes multi-threading harder)
 

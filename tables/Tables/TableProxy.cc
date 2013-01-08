@@ -448,7 +448,7 @@ Bool TableProxy::getColInfo (const String& colName, Bool useBrackets,
       } else {
         // Show non-fixed shape of first row if no brackets are used.
         if (!colDesc.isFixedShape()  &&  table_p.nrow() > 0) {
-          colShape = ROTableColumn(table_p, colName).shape(0);
+          colShape = TableColumn(table_p, colName).shape(0);
         }
       }
       for (uInt i=0; i<colShape.size(); ++i) {
@@ -958,7 +958,7 @@ Vector<String> TableProxy::columnNames()
 void TableProxy::setMaximumCacheSize (const String& columnName,
 				      Int nbytes)
 {
-  ROTableColumn col (table_p, columnName);
+  TableColumn col (table_p, columnName);
   col.setMaximumCacheSize (nbytes);
 }
 
@@ -1066,7 +1066,7 @@ Record TableProxy::getVarColumn (const String& columnName,
   syncTable (table_p);
   nrow = checkRowColumn (table_p, columnName, row, nrow, incr,
 			 "TableProxy::getVarColumn");
-  ROTableColumn tabcol (table_p, columnName);
+  TableColumn tabcol (table_p, columnName);
   Record rec;
   char namebuf[16];
   for (Int i=0; i<nrow; i++) {
@@ -1274,7 +1274,7 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
     nrow = maxnrow;
   }
   Vector<String> result;
-  ROTableColumn col (table_p, columnName);
+  TableColumn col (table_p, columnName);
   IPosition shape = col.shapeColumn();
   if (shape.nelements() > 0) {
     //# This is a fixed shape, so return immediately.
@@ -1299,7 +1299,7 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
 Bool TableProxy::cellContentsDefined (const String& columnName,
 				      Int rownr)
 {
-  ROTableColumn tabColumn (table_p, columnName);
+  TableColumn tabColumn (table_p, columnName);
   return tabColumn.isDefined (rownr);
 }
 
@@ -1311,7 +1311,7 @@ ValueHolder TableProxy::getKeyword (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
   }else{
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.keywordSet());
   }
   RecordFieldId fieldid(0);
@@ -1329,7 +1329,7 @@ Record TableProxy::getKeywordSet (const String& columnName)
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
   }else{
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.keywordSet());
   }
   return getKeyValues (*keySet);
@@ -1345,7 +1345,7 @@ void TableProxy::putKeyword (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   } else {
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   RecordFieldId fieldid(0);
@@ -1365,7 +1365,7 @@ void TableProxy::putKeywordSet (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   } else {
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   putKeyValues (*keySet, valueSet);
@@ -1379,7 +1379,7 @@ void TableProxy::removeKeyword (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.rwKeywordSet());
   }else{
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
   RecordFieldId fieldid(0);
@@ -1400,7 +1400,7 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
   if (columnName.empty()) {
     keySet = &(table_p.keywordSet());
   }else{
-    ROTableColumn tabColumn (table_p, columnName);
+    TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.keywordSet());
   }
   RecordFieldId fieldid(0);
@@ -1937,7 +1937,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
     switch (dtype) {
     case TpBool: 
       {
-	ROScalarColumn<Bool> ac(table_p,colName);
+	ScalarColumn<Bool> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -1947,7 +1947,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUChar:
       {
-	ROScalarColumn<uChar> ac(table_p,colName); 
+	ScalarColumn<uChar> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -1957,7 +1957,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpShort:
       {
-	ROScalarColumn<Short> ac(table_p,colName); 
+	ScalarColumn<Short> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -1967,7 +1967,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUShort:
       {
-	ROScalarColumn<uShort> ac(table_p,colName); 
+	ScalarColumn<uShort> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -1977,7 +1977,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpInt:
       {
-	ROScalarColumn<Int> ac(table_p,colName); 
+	ScalarColumn<Int> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{ 
@@ -1987,7 +1987,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUInt:
       {
-	ROScalarColumn<uInt> ac(table_p,colName); 
+	ScalarColumn<uInt> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -1997,7 +1997,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpFloat:
       {
-	ROScalarColumn<Float> ac(table_p,colName); 
+	ScalarColumn<Float> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2007,7 +2007,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpDouble:
       {
-	ROScalarColumn<Double> ac(table_p,colName); 
+	ScalarColumn<Double> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2017,7 +2017,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpComplex:
       {
-	ROScalarColumn<Complex> ac(table_p,colName); 
+	ScalarColumn<Complex> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2027,7 +2027,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpDComplex:
       {
-	ROScalarColumn<DComplex> ac(table_p,colName); 
+	ScalarColumn<DComplex> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2037,7 +2037,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpString:
       {
-	ROScalarColumn<String> ac(table_p,colName); 
+	ScalarColumn<String> ac(table_p,colName); 
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2047,7 +2047,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpRecord:
       {
-	ROScalarColumn<TableRecord> ac(table_p,colName); 
+	ScalarColumn<TableRecord> ac(table_p,colName); 
 	if (isCell) {
 	  // Transform a TableRecord into a Record.
 	  return ValueHolder (getKeyValues(ac(rownr)));
@@ -2064,7 +2064,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
     switch (dtype) {
     case TpBool:
       {
-	ROArrayColumn<Bool> ac(table_p,colName);
+	ArrayColumn<Bool> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2074,7 +2074,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUChar:
       {
-	ROArrayColumn<uChar> ac(table_p,colName);
+	ArrayColumn<uChar> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2084,7 +2084,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpShort:
       {
-	ROArrayColumn<Short> ac(table_p,colName);
+	ArrayColumn<Short> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2094,7 +2094,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUShort:
       {
-	ROArrayColumn<uShort> ac(table_p,colName);
+	ArrayColumn<uShort> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2104,7 +2104,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpInt:
       {
-	ROArrayColumn<Int> ac(table_p,colName);
+	ArrayColumn<Int> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2114,7 +2114,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpUInt:
       {
-	ROArrayColumn<uInt> ac(table_p,colName);
+	ArrayColumn<uInt> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2124,7 +2124,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpFloat:
       {
-	ROArrayColumn<Float> ac(table_p,colName);
+	ArrayColumn<Float> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2134,7 +2134,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpDouble:
       {
-	ROArrayColumn<Double> ac(table_p,colName);
+	ArrayColumn<Double> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2144,7 +2144,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpComplex:
       {
-	ROArrayColumn<Complex> ac(table_p,colName);
+	ArrayColumn<Complex> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2154,7 +2154,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpDComplex:
       {
-	ROArrayColumn<DComplex> ac(table_p,colName);
+	ArrayColumn<DComplex> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2164,7 +2164,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       break;
     case TpString:
       {
-	ROArrayColumn<String> ac(table_p,colName);
+	ArrayColumn<String> ac(table_p,colName);
 	if (isCell) {
 	  return ValueHolder (ac(rownr));
 	}else{
@@ -2196,7 +2196,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
   switch(table_p.tableDesc().columnDesc(colName).dataType()) {
   case TpBool:
     {
-      ROArrayColumn<Bool> ac(table_p,colName);
+      ArrayColumn<Bool> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2207,7 +2207,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpUChar:
     {
-      ROArrayColumn<uChar> ac(table_p,colName);
+      ArrayColumn<uChar> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2218,7 +2218,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpShort:
     {
-      ROArrayColumn<Short> ac(table_p,colName);
+      ArrayColumn<Short> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2229,7 +2229,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpUShort:
     {
-      ROArrayColumn<uShort> ac(table_p,colName);
+      ArrayColumn<uShort> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2240,7 +2240,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpInt:
     {
-      ROArrayColumn<Int> ac(table_p,colName);
+      ArrayColumn<Int> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2251,7 +2251,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpUInt:
     {
-      ROArrayColumn<uInt> ac(table_p,colName);
+      ArrayColumn<uInt> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2262,7 +2262,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpFloat:
     {
-      ROArrayColumn<Float> ac(table_p,colName);
+      ArrayColumn<Float> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2273,7 +2273,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpDouble:
     {
-      ROArrayColumn<Double> ac(table_p,colName);
+      ArrayColumn<Double> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2284,7 +2284,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpComplex:
     {
-      ROArrayColumn<Complex> ac(table_p,colName);
+      ArrayColumn<Complex> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2295,7 +2295,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpDComplex:
     {
-      ROArrayColumn<DComplex> ac(table_p,colName);
+      ArrayColumn<DComplex> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{
@@ -2306,7 +2306,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
     break;
   case TpString:
     {
-      ROArrayColumn<String> ac(table_p,colName);
+      ArrayColumn<String> ac(table_p,colName);
       if (isCell) {
 	return ValueHolder (ac.getSlice(rownr, slicer));
       }else{

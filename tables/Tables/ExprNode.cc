@@ -961,7 +961,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
     //# the name is not a column.
     TableExprNodeRep* tsnptr = 0;
     const ColumnDesc& coldes = table.tableDesc().columnDesc (name);
-    ROTableColumn col(table, name);
+    TableColumn col(table, name);
     if (fieldNames.nelements() > 0  &&  coldes.dataType() != TpRecord) {
 	throw (TableInvExpr ("Column " + name + " does not contain records, "
 			     "so no subfields can be given for it"));

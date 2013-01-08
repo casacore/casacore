@@ -144,7 +144,7 @@ void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows,
       const String& name = outDesc[i].name();
       if (inDesc.isColumn(name)) {
 	TableColumn outCol(out, name);
-	ROTableColumn inCol(in, name);
+	TableColumn inCol(in, name);
 	copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
 		       out.tableName(), out.tableType(), in, noRows, omit);
       }

@@ -223,11 +223,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  // Prepare for reading the data back.
 //  // Note that time and baseline are in fact scalar columns. They are
 //  // superimposed dimensions on the hypercube.
-//  ROScalarColumn<float> time (table, "Time");
-//  ROScalarColumn<float> baseline (table, "Baseline");
-//  ROArrayColumn<float> freq (table, "Freq");
-//  ROArrayColumn<float> pol (table, "Pol");
-//  ROScalarColumn<String> id (table, "Id");
+//  ScalarColumn<float> time (table, "Time");
+//  ScalarColumn<float> baseline (table, "Baseline");
+//  ArrayColumn<float> freq (table, "Freq");
+//  ArrayColumn<float> pol (table, "Pol");
+//  ScalarColumn<String> id (table, "Id");
 //  float fValue;
 //  String sValue;
 //  for (i=0; i<table.nrow(); i++) {

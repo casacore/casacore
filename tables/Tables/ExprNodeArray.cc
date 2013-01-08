@@ -422,7 +422,7 @@ Array<DComplex> TableExprNodeArray::makeArray (const IPosition& shape,
 // ----------------------------------
 
 TableExprNodeArrayColumn::TableExprNodeArrayColumn
-                                           (const ROTableColumn& tablecol,
+                                           (const TableColumn& tablecol,
 					    const Table& table)
 : TableExprNodeArray (NTNumeric, OtColumn),
   tabCol_p           (tablecol)
@@ -489,7 +489,7 @@ Bool TableExprNodeArrayColumn::getColumnDataType (DataType& dt) const
 
 
 TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -523,7 +523,7 @@ Array<Bool> TableExprNodeArrayColumnBool::getElemColumnBool
 }
 
 TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -565,7 +565,7 @@ Array<uChar> TableExprNodeArrayColumnuChar::getElemColumnuChar
 }
 
 TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -607,7 +607,7 @@ Array<Short> TableExprNodeArrayColumnShort::getElemColumnShort
 }
 
 TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -649,7 +649,7 @@ Array<uShort> TableExprNodeArrayColumnuShort::getElemColumnuShort
 }
 
 TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -691,7 +691,7 @@ Array<Int> TableExprNodeArrayColumnInt::getElemColumnInt
 }
 
 TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -733,7 +733,7 @@ Array<uInt> TableExprNodeArrayColumnuInt::getElemColumnuInt
 }
 
 TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -775,7 +775,7 @@ Array<Float> TableExprNodeArrayColumnFloat::getElemColumnFloat
 }
 
 TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -811,7 +811,7 @@ Array<Double> TableExprNodeArrayColumnDouble::getElemColumnDouble
 }
 
 TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -855,7 +855,7 @@ Array<Complex> TableExprNodeArrayColumnComplex::getElemColumnComplex
 }
 
 TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)
@@ -892,7 +892,7 @@ Array<DComplex> TableExprNodeArrayColumnDComplex::getElemColumnDComplex
 }
 
 TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
-                                           (const ROTableColumn& col,
+                                           (const TableColumn& col,
 					    const Table& table)
 : TableExprNodeArrayColumn (col, table),
   col_p                    (col)

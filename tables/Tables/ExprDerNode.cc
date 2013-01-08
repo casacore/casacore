@@ -129,7 +129,7 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
 : TableExprNodeBinary (NTNumeric, VTScalar, OtColumn, table)
 {
     //# Create a table column object and check if the column is a scalar.
-    tabColPtr_p = new ROTableColumn (table, name);
+    tabColPtr_p = new TableColumn (table, name);
     if (! tabColPtr_p->columnDesc().isScalar()) {
 	throw (TableInvExpr (name, " is no scalar column"));
     }
@@ -155,7 +155,7 @@ TableExprNodeColumn::TableExprNodeColumn (const Table& table,
     setUnit (getColumnUnit(*tabColPtr_p));
 }
 
-Unit TableExprNodeColumn::getColumnUnit (const ROTableColumn& tabcol)
+Unit TableExprNodeColumn::getColumnUnit (const TableColumn& tabcol)
 {
     Unit unit;
     //# Get the unit (if defined).
@@ -174,8 +174,8 @@ Unit TableExprNodeColumn::getColumnUnit (const ROTableColumn& tabcol)
 TableExprNodeColumn::~TableExprNodeColumn()
     { delete tabColPtr_p; }
 
-//# Return the ROTableColumn.
-const ROTableColumn& TableExprNodeColumn::getColumn() const
+//# Return the TableColumn.
+const TableColumn& TableExprNodeColumn::getColumn() const
     { return *tabColPtr_p; }
 
 Bool TableExprNodeColumn::getBool (const TableExprId& id)
@@ -217,57 +217,57 @@ Bool TableExprNodeColumn::getColumnDataType (DataType& dt) const
 
 Array<Bool>     TableExprNodeColumn::getColumnBool (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Bool> col (*tabColPtr_p);
+    ScalarColumn<Bool> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<uChar>    TableExprNodeColumn::getColumnuChar (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<uChar> col (*tabColPtr_p);
+    ScalarColumn<uChar> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<Short>    TableExprNodeColumn::getColumnShort (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Short> col (*tabColPtr_p);
+    ScalarColumn<Short> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<uShort>   TableExprNodeColumn::getColumnuShort (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<uShort> col (*tabColPtr_p);
+    ScalarColumn<uShort> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<Int>      TableExprNodeColumn::getColumnInt (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Int> col (*tabColPtr_p);
+    ScalarColumn<Int> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<uInt> col (*tabColPtr_p);
+    ScalarColumn<uInt> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Float> col (*tabColPtr_p);
+    ScalarColumn<Float> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<Double>   TableExprNodeColumn::getColumnDouble (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Double> col (*tabColPtr_p);
+    ScalarColumn<Double> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<Complex>  TableExprNodeColumn::getColumnComplex (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<Complex> col (*tabColPtr_p);
+    ScalarColumn<Complex> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<DComplex> TableExprNodeColumn::getColumnDComplex (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<DComplex> col (*tabColPtr_p);
+    ScalarColumn<DComplex> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 Array<String>   TableExprNodeColumn::getColumnString (const Vector<uInt>& rownrs)
 {
-    ROScalarColumn<String> col (*tabColPtr_p);
+    ScalarColumn<String> col (*tabColPtr_p);
     return col.getColumnCells (rownrs);
 }
 

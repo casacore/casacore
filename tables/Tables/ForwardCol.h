@@ -347,7 +347,7 @@ private:
     String        colName_p;           //# The name of the column
     int           dataType_p;          //# data type of the column
     String        dataTypeId_p;        //# data type Id of the column
-    ROTableColumn refCol_p;            //# Column in referenced table
+    TableColumn   refCol_p;            //# Column in referenced table
     //#                                    This is only filled in when
     //#                                    a new table is created.
     Bool          writable_p;          //# True = column is writable

@@ -220,7 +220,7 @@ template<class S, class T>
 void ScaledArrayEngine<S,T>::prepare()
 {
     BaseMappedArrayEngine<S,T>::prepare();
-    ROTableColumn thisCol (table(), virtualName());
+    TableColumn thisCol (table(), virtualName());
     thisCol.keywordSet().get ("_ScaledArrayEngine_Scale",       scale_p);
     thisCol.keywordSet().get ("_ScaledArrayEngine_Offset",      offset_p);
     thisCol.keywordSet().get ("_ScaledArrayEngine_ScaleName",   scaleName_p);
@@ -229,10 +229,10 @@ void ScaledArrayEngine<S,T>::prepare()
     thisCol.keywordSet().get ("_ScaledArrayEngine_FixedOffset", fixedOffset_p);
     //# Allocate column objects to get scale and offset.
     if (! fixedScale_p) {
-	scaleColumn_p = new ROScalarColumn<S> (table(), scaleName_p);
+	scaleColumn_p = new ScalarColumn<S> (table(), scaleName_p);
     }
     if (! fixedOffset_p) {
-	offsetColumn_p = new ROScalarColumn<S> (table(), offsetName_p);
+	offsetColumn_p = new ScalarColumn<S> (table(), offsetName_p);
     }
 }
 
@@ -374,7 +374,7 @@ template<class S, class T>
 void ScaledArrayEngine<S,T>::getArray (uInt rownr, Array<S>& array)
 {
     Array<T> target(array.shape());
-    roColumn().get (rownr, target);
+    column().get (rownr, target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
@@ -382,7 +382,7 @@ void ScaledArrayEngine<S,T>::putArray (uInt rownr, const Array<S>& array)
 {
     Array<T> target(array.shape());
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
-    rwColumn().put (rownr, target);
+    column().put (rownr, target);
 }
 
 template<class S, class T>
@@ -390,7 +390,7 @@ void ScaledArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
 				       Array<S>& array)
 {
     Array<T> target(array.shape());
-    roColumn().getSlice (rownr, slicer, target);
+    column().getSlice (rownr, slicer, target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
@@ -399,14 +399,14 @@ void ScaledArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
 {
     Array<T> target(array.shape());
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
-    rwColumn().putSlice (rownr, slicer, target);
+    column().putSlice (rownr, slicer, target);
 }
 
 template<class S, class T>
 void ScaledArrayEngine<S,T>::getArrayColumn (Array<S>& array)
 {
     Array<T> target(array.shape());
-    roColumn().getColumn (target);
+    column().getColumn (target);
     scaleColumnOnGet (array, target);
 }
 template<class S, class T>
@@ -414,7 +414,7 @@ void ScaledArrayEngine<S,T>::putArrayColumn (const Array<S>& array)
 {
     Array<T> target(array.shape());
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (target);
+    column().putColumn (target);
 }
 
 template<class S, class T>
@@ -422,7 +422,7 @@ void ScaledArrayEngine<S,T>::getColumnSlice (const Slicer& slicer,
 					     Array<S>& array)
 {
     Array<T> target(array.shape());
-    roColumn().getColumn (slicer, target);
+    column().getColumn (slicer, target);
     scaleColumnOnGet (array, target);
 }
 template<class S, class T>
@@ -431,7 +431,7 @@ void ScaledArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
 {
     Array<T> target(array.shape());
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (slicer, target);
+    column().putColumn (slicer, target);
 }
 
 } //# NAMESPACE CASA - END

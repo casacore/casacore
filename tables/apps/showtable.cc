@@ -52,7 +52,7 @@ void showKeys (const Table& table, Bool showtabkey, Bool showcolkey,
   if (showcolkey) {
     Vector<String> colNames (table.tableDesc().columnNames());
     for (uInt i=0; i<colNames.size(); ++i) {
-      TableRecord keys (ROTableColumn(table, colNames[i]).keywordSet());
+      TableRecord keys (TableColumn(table, colNames[i]).keywordSet());
       if (keys.size() > 0) {
         cout << "  Column " << colNames[i] << endl;
         keys.print (cout, maxval, "    ");

@@ -37,13 +37,13 @@ TableExprRange::TableExprRange()
 : tabColPtr_p(0)
 {}
 
-TableExprRange::TableExprRange(const ROTableColumn& col, double stval,
+TableExprRange::TableExprRange(const TableColumn& col, double stval,
 			       double endval)
 : sval_p     (1),
   eval_p     (1),
   tabColPtr_p(0)
 {
-    tabColPtr_p = new ROTableColumn(col);
+    tabColPtr_p = new TableColumn(col);
     sval_p(0) = stval;
     eval_p(0) = endval;
 }
@@ -54,7 +54,7 @@ TableExprRange::TableExprRange (const TableExprRange& that)
   tabColPtr_p(0)
 {
     if (that.tabColPtr_p != 0) {
-	tabColPtr_p = new ROTableColumn (*(that.tabColPtr_p));
+	tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
     }
 }
 
@@ -68,13 +68,13 @@ TableExprRange& TableExprRange::operator= (const TableExprRange& that)
 	eval_p       = that.eval_p;
 	delete tabColPtr_p;
 	if (that.tabColPtr_p != 0) {
-	    tabColPtr_p = new ROTableColumn (*(that.tabColPtr_p));
+	    tabColPtr_p = new TableColumn (*(that.tabColPtr_p));
 	}
     }
     return *this;
 }
 
-const ROTableColumn& TableExprRange::getColumn() const
+const TableColumn& TableExprRange::getColumn() const
     { return *tabColPtr_p; }
 
 
