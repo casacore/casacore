@@ -374,10 +374,10 @@ void oldArrayTest()
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(x(i) == i);
 
-	AlwaysAssertExit(sum(x) == 10);
-	AlwaysAssertExit(product(y) == 120);
-	AlwaysAssertExit(mean(y) == median(y) && mean(y) == 3);
-
+ 	AlwaysAssertExit(sum(x) == 10);
+ 	AlwaysAssertExit(product(y) == 120);
+ 	AlwaysAssertExit(mean(y) == median(y) && mean(y) == 3);
+ 
         AlwaysAssertExit(anyLE(x, y) && anyLE(x, y-1) &&
 			 !anyLE(x, y-2));
         AlwaysAssertExit(anyLT(x, y) && !anyLT(x, y-1) &&

@@ -329,7 +329,7 @@ uInt Sort::parSort (uInt nrrec, uInt* inx) const
   nthr = omp_get_max_threads();
 #endif
   Block<uInt> index(nrrec+1);
-  Block<uInt> tinx(nthr);
+  Block<uInt> tinx(nthr+1);
   Block<uInt> np(nthr);
   // Determine ordered parts in the array.
   // It is done in parallel, whereafter the parts are combined.

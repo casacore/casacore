@@ -235,7 +235,7 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
   nthr = 1;
 #endif
   Block<uInt> index(nr+1);
-  Block<uInt> tinx(nthr);
+  Block<uInt> tinx(nthr+1);
   Block<uInt> np(nthr);
   // Determine ordered parts in the array.
   // It is done in parallel, whereafter the parts are combined.
@@ -415,6 +415,9 @@ uInt GenSort<T>::heapSort (T* data, uInt nr, Sort::Order ord, int opt)
 template<class T>
 uInt GenSort<T>::sort (T* data, uInt nr, Sort::Order ord, int opt)
 {
+  if (nr <= 32) {
+    return insSort (data, nr, ord, opt);
+  }
   return parSort (data, nr, ord, opt);
 }
 
@@ -470,7 +473,12 @@ uInt GenSortIndirect<T>::sort (Vector<uInt>& indexVector, const T* data,
     Bool del;
     uInt* inx = indexVector.getStorage (del);
     // Choose the sort required.
-    uInt n = parSort (inx, data, nr, ord, opt);
+    uInt n;
+    if (nr <= 32) {
+      n = insSort (inx, data, nr, ord, opt);
+    } else {
+      n = parSort (inx, data, nr, ord, opt);
+    }
     indexVector.putStorage (inx, del);
     // If n < nr, some duplicates have been deleted.
     // This means we have to resize the Vector.
@@ -536,7 +544,7 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
   nthr = 1;
 #endif
   Block<uInt> index(nr+1);
-  Block<uInt> tinx(nthr);
+  Block<uInt> tinx(nthr+1);
   Block<uInt> np(nthr);
   // Determine ordered parts in the array.
   // It is done in parallel, whereafter the parts are combined.
