@@ -71,7 +71,7 @@ template<class T> class Block;
 //   <dt> <src>Sort::Descending</src>.
 // </dl>
 //
-// A sort algorithm can be given in the options field:
+// Previously the sort algorithm to use could be given in the options field.
 // <dl>
 //   <dt> <src>Sort::QuickSort</src> (default)
 //   <dd> is the fastest. It is about 4-6 times faster
@@ -85,9 +85,15 @@ template<class T> class Block;
 //   <dd> is o(n*n) for random inputs. It is, however, the
 //     only stable sort (i.e. equal values remain in the original order).
 // </dl>
-// <src>Sort::NoDuplicates</src> in the options field indicates that
-// duplicate values should be removed. Multiple options can be given by
-// or-ing them, e.g. <src>Sort::HeapSort | Sort::NoDuplicates</src>.
+// However, these options are not used anymore because the sort now always
+// uses a merge sort that is equally fast for random input and much faster for
+// degenerated cases like an already ordered or reversely ordered array.
+// Furthermore, merge sort is always stable and will be parallelized if OpenMP
+// support is enabled giving a 6-fold speedup on 8 cores.
+// <br><src>Sort::NoDuplicates</src> in the options field indicates that
+// duplicate values will be removed (only the first occurrance is kept).
+// <br>The previous sort functionality is still available through the functions
+// quickSort, heapSort, and insSort.
 // <p>
 // All the sort functions return the number of values sorted as their
 // function value; when duplicate values have been removed, the number of
@@ -110,65 +116,76 @@ template<class T> class GenSort
 public:
 
     // Sort a C-array containing <src>nr</src> <src>T</src>-type objects.
-    // The sort is done in place.
+    // The sort is done in place and is always stable (thus equal keys keep
+    // their original order). It returns the number of values, which
+    // can be different if a NoDuplicates sort is done.
+    // <br>Insertion sort is used for short arrays (<50 elements). Otherwise,
+    // a merge sort is used which will be parallelized if casacore is built
+    // with OpenMP support.
+    // <group>
     static uInt sort (T*, uInt nr, Sort::Order = Sort::Ascending,
-		      int options = Sort::QuickSort);
+		      int options = 0);
 
-    // Sort an <src>Array</src> of <src>T</src>-type objects
-    // The sort is done in place.
     static uInt sort (Array<T>&, Sort::Order = Sort::Ascending,
-		      int options = Sort::QuickSort);
+		      int options = 0);
 
-    // Sort <src>nr</src> <src>T</src>-type objects in the <src>Block</src>.
-    // The sort is done in place.
     static uInt sort (Block<T>&, uInt nr, Sort::Order = Sort::Ascending,
-		      int options = Sort::QuickSort);
-
+		      int options = 0);
+    // <group>
+  
     // Find the k-th largest value.
-    // Note: it does a partial sort, thus the data array gets changed..
+    // <br>Note: it does a partial quicksort, thus the data array gets changed.
     static T kthLargest (T* data, uInt nr, uInt k);
 
-private:
     // Sort C-array using quicksort.
-    static uInt quickSort (T*, uInt nr, Sort::Order, int options);
+    static uInt quickSort (T*, uInt nr, Sort::Order = Sort::Ascending,
+                           int options = 0);
     // Sort C-array using heapsort.
-    static uInt heapSort  (T*, uInt nr, Sort::Order, int options);
+    static uInt heapSort   (T*, uInt nr, Sort::Order = Sort::Ascending,
+                           int options = 0);
     // Sort C-array using insertion sort.
-    static uInt insSort   (T*, uInt nr, Sort::Order, int options);
+    static uInt insSort    (T*, uInt nr, Sort::Order = Sort::Ascending,
+                           int options = 0);
+    // Sort C-array using parallel merge sort (using OpenMP).
+    // By default OpenMP determines the number of threads that can be used.
+    static uInt parSort    (T*, uInt nr, Sort::Order = Sort::Ascending,
+                            int options = 0, int nthread = 0);
 
     // Swap 2 elements in array.
     static inline void swap (T&, T&);
 
+    // Reverse the elements in <src>res</src> and put them into <src>data</src>.
+    // Care is taken if both pointers reference the same data.
+    static void reverse (T* data, const T* res, uInt nrrec);
+
+private:
+    // The<src>data</src> buffer is divided in <src>nparts</src> parts.
+    // In each part the values are in ascending order.
+    // The index tells the nr of elements in each part.
+    // Recursively each two subsequent parts are merged until only part is left
+    // (giving the sorted array). Alternately <src>data</src> and <src>tmp</src>
+    // are used for the merge result. The pointer containing the final result
+    // is returned.
+    // <br>If possible, merging the parts is done in parallel (using OpenMP).
+    static T* merge (T* data, T* tmp, uInt nrrec, uInt* index,
+                     uInt nparts);
+
     // Quicksort in ascending order.
     static void quickSortAsc (T*, Int);
-    // Quicksort in descending order.
-    static void quickSortDesc (T*, Int);
 
     // Heapsort in ascending order.
     static void heapSortAsc (T*, Int);
-    // Heapsort in descending order.
-    static void heapSortDesc (T*, Int);
     // Helper function for ascending heapsort.
     static void heapAscSiftDown (Int, Int, T*);
-    // Helper function for descending heapsort.
-    static void heapDescSiftDown (Int, Int, T*);
 
     // Insertion sort in ascending order.
     static uInt insSortAsc (T*, Int, int option);
-    // Insertion sort in descending order.
-    static uInt insSortDesc (T*, Int, int option);
     // Insertion sort in ascending order allowing duplicates.
     // This is also used by quicksort for its last steps.
     static uInt insSortAscDup (T*, Int);
-    // Insertion sort in descending order allowing duplicates.
-    // This is also used by quicksort for its last steps.
-    static uInt insSortDescDup (T*, Int);
     // Insertion sort in ascending order allowing no duplicates.
     // This is also used by the other sort algorithms to skip duplicates.
     static uInt insSortAscNoDup (T*, Int);
-    // Insertion sort in descending order allowing no duplicates.
-    // This is also used by the other sort algorithms to skip duplicates.
-    static uInt insSortDescNoDup (T*, Int);
 };
 
 
@@ -211,8 +228,11 @@ public:
     // Find the index of the k-th largest value.
     static uInt kthLargest (T* data, uInt nr, uInt k);
 
-private:
     // Sort container using quicksort.
+    // The argument <src>inx</src> gives the index defining the order of the
+    // values in the data array. Its length must be at least <src>nr</src>
+    // and it must be filled with the index values of the data.
+    // Usually this is 0..nr, but it could contain a selection of the data.
     static uInt quickSort (uInt* inx, const T* data,
 			   uInt nr, Sort::Order, int options);
     // Sort container using heapsort.
@@ -221,49 +241,47 @@ private:
     // Sort container using insertion sort.
     static uInt insSort (uInt* inx, const T* data,
 			 uInt nr, Sort::Order, int options);
+    // Sort container using parallel merge sort (using OpenMP).
+    // By default the maximum number of threads is used.
+    static uInt parSort (uInt* inx, const T* data,
+			 uInt nr, Sort::Order, int options, int nthreads=0);
 
+private:
     // Swap 2 indices.
     static inline void swapInx (uInt& index1, uInt& index2);
+
+    // The<src>data</src> buffer is divided in <src>nparts</src> parts.
+    // In each part the values are in ascending order.
+    // The index tells the nr of elements in each part.
+    // Recursively each two subsequent parts are merged until only part is left
+    // (giving the sorted array). Alternately <src>data</src> and <src>tmp</src>
+    // are used for the merge result. The pointer containing the final result
+    // is returned.
+    // <br>If possible, merging the parts is done in parallel (using OpenMP).
+    static uInt* merge (const T* data, uInt* inx, uInt* tmp, uInt nrrec,
+                        uInt* index, uInt nparts);
 
     // Check if 2 values are in ascending order.
     // When equal, the order is correct if index1<index2.
     static inline int isAscending (const T* data, Int index1, Int index2);
 
-    // Check if 2 values are in descending order.
-    // When equal, the order is correct if index1<index2.
-    static inline int isDescending (const T*, Int index1, Int index2);
-
 
     // Quicksort in ascending order.
     static void quickSortAsc (uInt* inx, const T*, Int nr);
-    // Quicksort in descending order.
-    static void quickSortDesc (uInt* inx, const T*, Int nr);
 
     // Heapsort in ascending order.
     static void heapSortAsc (uInt* inx, const T*, Int nr);
-    // Heapsort in descending order.
-    static void heapSortDesc (uInt* inx, const T*, Int nr);
     // Helper function for ascending heapsort.
     static void heapAscSiftDown (uInt* inx, Int, Int, const T*);
-    // Helper function for descending heapsort.
-    static void heapDescSiftDown (uInt* inx, Int, Int, const T*);
 
     // Insertion sort in ascending order.
     static uInt insSortAsc (uInt* inx, const T*, Int nr, int option);
-    // Insertion sort in descending order.
-    static uInt insSortDesc (uInt* inx, const T*, Int nr, int option);
     // Insertion sort in ascending order allowing duplicates.
     // This is also used by quicksort for its last steps.
     static uInt insSortAscDup (uInt* inx, const T*, Int nr);
-    // Insertion sort in descending order allowing duplicates.
-    // This is also used by quicksort for its last steps.
-    static uInt insSortDescDup (uInt* inx, const T*, Int nr);
     // Insertion sort in ascending order allowing no duplicates.
     // This is also used by the other sort algorithms to skip duplicates.
     static uInt insSortAscNoDup (uInt* inx, const T*, Int nr);
-    // Insertion sort in descending order allowing no duplicates.
-    // This is also used by the other sort algorithms to skip duplicates.
-    static uInt insSortDescNoDup (uInt* inx, const T*, Int nr);
 };
 
 
@@ -288,100 +306,30 @@ private:
 
 // <group name=genSortInPlace>
 
-// In-place sort in ascending order using QuickSort.
-// <group>
 template<class T>
 inline
-uInt genSort (T* data, uInt nr)
-    { return GenSort<T>::sort (data, nr, Sort::Ascending, Sort::QuickSort); }
+uInt genSort (T* data, uInt nr,
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSort<T>::sort (data, nr, order, options); }
 
 template<class T>
 inline
-uInt genSort (Array<T>& data)
-    { return GenSort<T>::sort (data, Sort::Ascending, Sort::QuickSort); }
+uInt genSort (Array<T>& data,
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSort<T>::sort (data, order, options); }
 
 template<class T>
 inline
-uInt genSort (Block<T>& data)
-    { return GenSort<T>::sort (data, data.nelements(), Sort::Ascending,
-			       Sort::QuickSort); }
+uInt genSort (Block<T>& data,
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSort<T>::sort (data, data.nelements(), order, options); }
 
 template<class T>
 inline
-uInt genSort (Block<T>& data, uInt nr)
-    { return GenSort<T>::sort (data, nr, Sort::Ascending, Sort::QuickSort); }
+uInt genSort (Block<T>& data, uInt nr,
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSort<T>::sort (data, nr, order, options); }
 // </group>
-
-// In-place sort in ascending order using given option.
-// This option gives the sort method (Sort::QuickSort, Sort::HeapSort
-// or Sort::InsSort) and/or the option Sort::NoDuplicates.
-// <group>
-template<class T>
-inline
-uInt genSort (T* data, uInt nr, int options)
-    { return GenSort<T>::sort (data, nr, Sort::Ascending, options); }
-template<class T>
-inline
-uInt genSort (Array<T>& data, int options)
-    { return GenSort<T>::sort (data, Sort::Ascending, options); }
-template<class T>
-inline
-uInt genSort (Block<T>& data, int options)
-    { return GenSort<T>::sort (data, data.nelements(), Sort::Ascending,
-			       options); }
-template<class T>
-inline
-uInt genSort (Block<T>& data, uInt nr, int options)
-    { return GenSort<T>::sort (data, nr, Sort::Ascending, options); }
-// </group>
-
-// In-place sort in given order using QuickSort.
-// The order must be Sort::Ascending or Sort::Descending.
-// <group>
-template<class T>
-inline
-uInt genSort (T* data, uInt nr, Sort::Order order)
-    { return GenSort<T>::sort (data, nr, order, Sort::QuickSort); }
-template<class T>
-inline
-uInt genSort (Array<T>& data, Sort::Order order)
-    { return GenSort<T>::sort (data, order, Sort::QuickSort); }
-template<class T>
-inline
-uInt genSort (Block<T>& data, Sort::Order order)
-    { return GenSort<T>::sort (data, data.nelements(), order,
-			       Sort::QuickSort); } 
-template<class T>
-inline
-uInt genSort (Block<T>& data, uInt nr, Sort::Order order)
-    { return GenSort<T>::sort (data, nr, order, Sort::QuickSort); }
-// </group>
-
-// In-place sort in given order using given option.
-// This option gives the sort method (Sort::QuickSort, Sort::HeapSort,
-// or Sort::InsSort) and/or the option Sort::NoDuplicates.
-// The order must be Sort::Ascending or Sort::Descending.
-// <group>
-template<class T>
-inline
-uInt genSort (T* data, uInt nr, Sort::Order order, int options)
-    { return GenSort<T>::sort (data, nr, order, options); }
-template<class T>
-inline
-uInt genSort (Array<T>& data, Sort::Order order, int options)
-    { return GenSort<T>::sort (data, order, options); }
-template<class T>
-inline
-uInt genSort (Block<T>& data, Sort::Order order, int options)
-    { return GenSort<T>::sort (data, data.nelements(), order, options); }
-template<class T>
-inline
-uInt genSort (Block<T>& data, uInt nr, Sort::Order order, int options)
-    { return GenSort<T>::sort (data, nr, order, options); }
-// </group>
-
-// </group>
-
 
 
 // <summary> Global indirect sort functions </summary>
@@ -391,10 +339,8 @@ uInt genSort (Block<T>& data, uInt nr, Sort::Order order, int options)
 // They do an indirect sort of data, thus the data themselves are not moved.
 // Rather an index vector is returned giving the sorted data indices.
 // <p>
-// The default sorting method is QuickSort, which is the fastest.
-// However, there are pathological cases where it can be slow.
-// HeapSort is about twice a slow, but its speed is guaranteed.
-// InsSort (insertion sort) can be very, very slow.
+// The sorting method used is merge sort, which is always stable.
+// It is the fastest, especially if it can use multiple threads.
 // <p>
 // Unlike the <linkto name=genSortInPlace> in-place sorting methods
 // </linkto>, all indirect sorting methods are stable (i.e. equal
@@ -406,121 +352,31 @@ uInt genSort (Block<T>& data, uInt nr, Sort::Order order, int options)
 
 // <group name=genSortIndirect>
 
-// Indirect sort in ascending order using QuickSort.
-// <group>
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const T* data, uInt nr)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr, Sort::Ascending,
-				       Sort::QuickSort); }
-
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Array<T>& data)
-    { return GenSortIndirect<T>::sort (indexVector, data, Sort::Ascending,
-				       Sort::QuickSort); }
-
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data)
-    { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
-				       Sort::Ascending, Sort::QuickSort); }
-
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr,
-				       Sort::Ascending, Sort::QuickSort); }
-// </group>
-
-// Indirect sort in ascending order using given option.
-// This option gives the sort method (Sort::QuickSort, Sort::HeapSort,
-// or Sort::InsSort) and/or the option Sort::NoDuplicates.
-// <group>
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const T* data, uInt nr, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr,
-				       Sort::Ascending, options); }
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Array<T>& data, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data,
-				       Sort::Ascending, options); }
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
-				       Sort::Ascending, options); }
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
-	      uInt nr, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr,
-				       Sort::Ascending, options); }
-// </group>
-
-// Indirect sort in given order using QuickSort.
-// The order must be Sort::Ascending or Sort::Descending.
-// <group>
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const T* data,
-	      uInt nr, Sort::Order order)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr, order,
-				       Sort::QuickSort); }
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Array<T>& data,
-	      Sort::Order order)
-    { return GenSortIndirect<T>::sort (indexVector, data, order,
-				       Sort::QuickSort); }
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
-	      Sort::Order order)
-    { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
-				       order, Sort::QuickSort); } 
-template<class T>
-inline
-uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
-	      uInt nr, Sort::Order order)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr, order,
-				       Sort::QuickSort); }
-// </group>
-
-// Indirect sort in given order using given option.
-// This option gives the sort method (Sort::QuickSort, Sort::HeapSort,
-// or Sort::InsSort) and/or the option Sort::NoDuplicates.
-// The order must be Sort::Ascending or Sort::Descending.
-// <group>
 template<class T>
 inline
 uInt genSort (Vector<uInt>& indexVector, const T* data, uInt nr,
-	      Sort::Order order, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr,
-				       order, options); }
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSortIndirect<T>::sort (indexVector, data, nr, order, options); }
+
 template<class T>
 inline
-uInt genSort (Vector<uInt>& indexVector, Array<T>& data,
-	      Sort::Order order, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, order, options); }
+uInt genSort (Vector<uInt>& indexVector, const Array<T>& data,
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSortIndirect<T>::sort (indexVector, data, order, options); }
+
 template<class T>
 inline
 uInt genSort (Vector<uInt>& indexVector, const Block<T>& data,
-	      Sort::Order order, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
-				       order, options); }
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSortIndirect<T>::sort (indexVector, data, data.nelements(),
+                                     order, options); }
+
 template<class T>
 inline
 uInt genSort (Vector<uInt>& indexVector, const Block<T>& data, uInt nr,
-	      Sort::Order order, int options)
-    { return GenSortIndirect<T>::sort (indexVector, data, nr,
-				       order, options); }
+              Sort::Order order = Sort::Ascending, int options=0)
+  { return GenSortIndirect<T>::sort (indexVector, data, nr, order, options); }
 // </group>
-
-// </group>
-
 
 
 
@@ -544,11 +400,6 @@ template<class T>
 inline int GenSortIndirect<T>::isAscending (const T* data, Int i, Int j)
 {
     return (data[i] > data[j]  ||  (data[i] == data[j]  &&  i > j));
-}
-template<class T>
-inline int GenSortIndirect<T>::isDescending (const T* data, Int i, Int j)
-{
-    return (data[i] < data[j]  ||  (data[i] == data[j]  &&  i > j));
 }
 
 

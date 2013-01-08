@@ -43,6 +43,7 @@ void sortit (int opt)
 {
     Int arr[10];
     Int64 ar2[10];
+    Int ar3[10];
     uInt i;
     double ard[10];
     struct Ts {
@@ -53,17 +54,20 @@ void sortit (int opt)
     for (i=0; i<10; i++) {
 	arr[i] = i;
 	ar2[i] = 10-i;
+        ar3[i] = 19-i;
 	ard[i] = i/3;
 	arts[i].ad = ard[i];
 	arts[i].as = "abc";
     }
+    // Note: ar3 is a specific test if 'last' in ParSort's merge works fine.
+    ar3[9] = 20;
     arts[2].as = "ABC";
     arts[5].as = "xyzabc";
 
     Sort sort;
-    sort.sortKey (arr,TpInt);                 // sort arr
+    sort.sortKey (arr,TpInt);                  // sort arr
     Vector<uInt> inxvec;
-    uInt nr = sort.sort (inxvec,10,opt);      // get indices back in inxvec
+    uInt nr = sort.sort (inxvec,10,opt,False); // get indices back in inxvec
     for (i=0; i<nr; i++) {
 	cout << " " << arr[inxvec(i)];
     }
@@ -73,7 +77,7 @@ void sortit (int opt)
     Sort sort2;
     sort2.sortKey (arr,TpInt,0,Sort::Descending);
     sort = sort2;
-    nr = sort.sort (inxvec,10,opt);           // same, but now descending
+    nr = sort.sort (inxvec,10,opt,False);      // same, but now descending
     for (i=0; i<nr; i++) {
 	cout << " " << arr[inxvec(i)];
     }
@@ -83,24 +87,32 @@ void sortit (int opt)
     Sort sort3(ar2,sizeof(Int64));
     sort3.sortKey (0,TpInt64,Sort::Ascending);
     Sort sort3a(sort3);
-    nr = sort3a.sort (inxvec,10,opt);         // same, but now with original
-    for (i=0; i<nr; i++) {                    // array in descending order
+    nr = sort3a.sort (inxvec,10,opt,False);    // same, but now with original
+    for (i=0; i<nr; i++) {                     // array in descending order
 	cout << " " << ar2[inxvec(i)];
     }
     cout << endl;
 
     Sort sort4;
     sort4.sortKey (ar2,TpInt64,0,Sort::Descending);
-    nr = sort4.sort (inxvec,10,opt);
+    nr = sort4.sort (inxvec,10,opt,False);
     for (i=0; i<nr; i++) {
 	cout << " " << ar2[inxvec(i)];
+    }
+    cout << endl;
+
+    Sort sort5;
+    sort5.sortKey (ar3,TpInt,0,Sort::Ascending);
+    nr = sort5.sort (inxvec,10,opt,False);
+    for (i=0; i<nr; i++) {
+	cout << " " << ar3[inxvec(i)];
     }
     cout << endl;
 
     Sort sort6(arr,sizeof(Int));
     sort6.sortKey (ard,TpDouble);
     sort6.sortKey (0,TpInt,Sort::Descending);
-    nr = sort6.sort (inxvec,10,opt);          // sort on 2 keys
+    nr = sort6.sort (inxvec,10,opt,False);     // sort on 2 keys
     for (i=0; i<nr; i++) {
 	cout << " " << ard[inxvec(i)] << "," << arr[inxvec(i)];
     }
@@ -111,12 +123,12 @@ void sortit (int opt)
     uInt distas = (char*)&arts[0].as - (char*)arts;
     sort7.sortKey (distad, TpDouble);
     sort7.sortKey (distas, TpString,Sort::Descending);
-    nr = sort7.sort (inxvec,10,opt);          // sort a struct, where the data
-    for (i=0; i<nr; i++) {                    // are combined in one record
+    nr = sort7.sort (inxvec,10,opt,False);     // sort a struct, where the data
+    for (i=0; i<nr; i++) {                     // are combined in one record
 	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
     cout << endl;
-    nr = sort7.sort (inxvec,10,opt|Sort::NoDuplicates);     // unique keys
+    nr = sort7.sort (inxvec,10,opt|Sort::NoDuplicates,False); // unique keys
     for (i=0; i<nr; i++) {
 	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
@@ -132,20 +144,26 @@ void sortdo (int options, Sort& sort, Sort::Order order,
     for (i=1; i<nr; i++) {
 	if (order == Sort::Ascending) {
 	    if (data[inxvec(i)] < data[inxvec(i-1)]) {
-		cout << "Order error on index " << i << endl;
+		cout << "Asc order error on index " << i << endl;
 	    }
 	}else{
 	    if (data[inxvec(i)] > data[inxvec(i-1)]) {
-		cout << "Order error on index " << i << endl;
+		cout << "Desc order error on index " << i << endl;
 	    }
 	}
 	if (data[inxvec(i)] == data[inxvec(i-1)]) {
 	    if ((options & Sort::NoDuplicates) != 0) {
 		cout << "Duplicate value on index" << i << endl;
 	    }else{
+              if (order == Sort::Ascending) {
 		if (inxvec(i) < inxvec(i-1)) {
-		    cout << "Equal order error on index " << i << endl;
+		    cout << "Asc equal order error on index " << i << endl;
 		}
+              }else{
+		if (inxvec(i) > inxvec(i-1)) {
+		    cout << "Desc equal order error on index " << i << endl;
+		}
+              }
 	    }
 	}
     }
@@ -175,7 +193,7 @@ void sortdo (int options, Sort& sort, Sort::Order order,
 // Test with 1 and 2 keys, because 1 key is short-circuited to GenSort.
 void sortall (int options, Sort::Order order)
 {
-    const uInt nrdata = 1000;
+    const uInt nrdata = 10;
     Int data[nrdata];
     Int data2[nrdata];
     Sort sort;
@@ -219,20 +237,25 @@ void sortall (int options, Sort::Order order)
 int main()
 {
     sortit (Sort::InsSort);
+    sortit (Sort::ParSort);
     sortit (Sort::QuickSort);
     sortit (Sort::HeapSort);
 
-    // Sort a longer array and test its result.
+    // Sort a longer array and check its result.
     sortall (Sort::InsSort, Sort::Ascending);
+    sortall (Sort::ParSort, Sort::Ascending);
     sortall (Sort::QuickSort, Sort::Ascending);
     sortall (Sort::HeapSort, Sort::Ascending);
     sortall (Sort::InsSort | Sort::NoDuplicates, Sort::Ascending);
+    sortall (Sort::ParSort | Sort::NoDuplicates, Sort::Ascending);
     sortall (Sort::QuickSort | Sort::NoDuplicates, Sort::Ascending);
     sortall (Sort::HeapSort | Sort::NoDuplicates, Sort::Ascending);
     sortall (Sort::InsSort, Sort::Descending);
+    sortall (Sort::ParSort, Sort::Descending);
     sortall (Sort::QuickSort, Sort::Descending);
     sortall (Sort::HeapSort, Sort::Descending);
     sortall (Sort::InsSort | Sort::NoDuplicates, Sort::Descending);
+    sortall (Sort::ParSort | Sort::NoDuplicates, Sort::Descending);
     sortall (Sort::QuickSort | Sort::NoDuplicates, Sort::Descending);
     sortall (Sort::HeapSort | Sort::NoDuplicates, Sort::Descending);
 
