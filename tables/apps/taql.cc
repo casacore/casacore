@@ -204,10 +204,24 @@ void showDir (const Array<double>& dir, const Vector<String>& units)
       q[i].setValue (*iter);
       MVAngle angle(q[i]);
       if (i == 0)  {
-        angle.print (cout, MVAngle::Format(MVAngle::TIME, 9));
+        ostringstream ostr;
+        angle.print (ostr, MVAngle::Format(MVAngle::TIME, 9));
+        string str(ostr.str());
+        string::size_type pos = str.find(':');
+        if (pos != string::npos) str[pos] = 'h';
+        pos = str.find(':');
+        if (pos != string::npos) str[pos] = 'm';
+        cout << str;
       } else {
         cout << ", ";
-        angle.print (cout, MVAngle::Format(MVAngle::ANGLE, 9));
+        ostringstream ostr;
+        angle.print (ostr, MVAngle::Format(MVAngle::ANGLE, 9));
+        string str(ostr.str());
+        string::size_type pos = str.find('.');
+        if (pos != string::npos) str[pos] = 'd';
+        pos = str.find('.');
+        if (pos != string::npos) str[pos] = 'm';
+        cout << str;
       }
       iter++;
     }
