@@ -528,11 +528,14 @@ void LatticeApply<T,U>::tiledApply (MaskedLattice<U>& latticeOut,
 	}
 	uInt nval = chunkShape.product();
 	const uInt axis = collapseAxes(0);
-	uInt incr = 1;
-	for (i=0; i<axis; i++) {
-	    incr *= cursorShape(i);
-	}
-	
+
+	IPosition p0(inDim, 0);
+	IPosition p1(inDim, 0);
+	p1[axis] = 1;
+	// general for Arrays with contiguous or non-contiguous storage.
+	uInt dataIncr = &(cursor(p1)) - &(cursor(p0));
+	uInt maskIncr = useMask ? &(mask(p1)) - &(mask(p0)) : 0;
+
 //	cout << " cursorShape " << cursorShape << endl;
 //	cout << " chunkShape  " << chunkShape << endl;
 //	cout << " incr        " << incr << endl;
@@ -549,11 +552,11 @@ void LatticeApply<T,U>::tiledApply (MaskedLattice<U>& latticeOut,
 		if (useMask) {
 		    collapser.process (index1, index3,
 				       &(cursor(curPos)), &(mask(curPos)),
-				       incr, nval, latPos, chunkShape);
+				       dataIncr, maskIncr, nval, latPos, chunkShape);
 		} else {
 		    collapser.process (index1, index3,
 				       &(cursor(curPos)), 0,
-				       incr, nval, latPos, chunkShape);
+				       dataIncr, maskIncr, nval, latPos, chunkShape);
 		}
 		// Increment a collapse axis until all axes are handled.
 		for (j=collStart; j<collDim; j++) {

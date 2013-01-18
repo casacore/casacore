@@ -123,24 +123,6 @@ public:
   // Copy constructor (reference semantics).
   SubImage (const SubImage<T>& other);
     
-  // Factory method to create a SubImage from a region and a WCLELMask string.
-  // <br><src>outRegion</src> Pointer to the corresponding region. Pointer is
-  // created internally by new(); it's the caller's responsibility to delete it.  // <br><src>outMask</src> Pointer to corresponding mask. Pointer is created
-  // internally via new(); it is the caller's responsibility to delete it.
-  // <br><src>inImage</src> input image for which a subimage is desired.
-  // <br><src>region</src> Input region record from which to make the subimage.
-  // <br><src>mask</src> LEL mask description.
-  // <br><src>os</src> Pointer to logger to which to log messages.
-  // If 0, no logging (except exceptions).
-  // <br><src>writableIfPossible</src> make the subimage writable.
-  // If input image is not writable, this will always be False.
-  // <br><src>axesSpecifier</src> Specifier for output axes (duh).
-  static SubImage<T>
-  createSubImage (ImageRegion*& outRegion, ImageRegion*& outMask,
-                  ImageInterface<T>& inImage, const Record& region,
-                  const String& mask, LogIO *os, Bool writableIfPossible,
-                  const AxesSpecifier& axesSpecifier=casa::AxesSpecifier());
-
   virtual ~SubImage();
 
   // Assignment (reference semantics).

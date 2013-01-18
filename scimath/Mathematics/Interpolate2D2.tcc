@@ -294,9 +294,8 @@ template <typename T>
 T Interpolate2D::sinc(const T x) const {
     if (x == 0) {
         return 1;
-    } else {
-        return sin(C::pi * x) / (C::pi * x);
     }
+    return sin(C::pi * x) / (C::pi * x);
 }
 
 // Lanczos interpolation: helper function
@@ -304,9 +303,8 @@ template <typename T>
 T Interpolate2D::L(const T x, const Int a) const {
     if (-a < x && x < a) {
         return sinc(x) * sinc (x/a);
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 } //# NAMESPACE CASA - END

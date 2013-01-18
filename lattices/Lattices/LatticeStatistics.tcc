@@ -1376,7 +1376,7 @@ Bool LatticeStatistics<T>::getLayerStats(
 
 	if ( area > 0 ) {
 	    sprintf( buffer, "%e", sum / area );
-	    stats.push_back(stat_element("Flux",buffer));
+	    stats.push_back(stat_element("FluxDensity",buffer));
 	}
 
 	sprintf( buffer, "%e", mean );
@@ -1494,7 +1494,7 @@ Bool LatticeStatistics<T>::getLayerStats(
 
 		    if (area > 0) {
 			sprintf( buffer, "%e", ord.column(FLUX)(j) );
-			stats.push_back(stat_element("Flux",buffer));
+			stats.push_back(stat_element("FluxDensity",buffer));
 		    }
 
 		    sprintf( buffer, "%e", ord.column(MEAN)(j) );
@@ -3147,7 +3147,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 		uInt index3,
 		const T* pInData,
 		const Bool* pInMask,
-		uInt inIncr,
+                uInt dataIncr, uInt maskIncr,
 		uInt nrval,
 		const IPosition& startPos,
 		const IPosition& shape)
@@ -3192,7 +3192,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
 										False, *pInData, i, useIt
 									);
-				pInData += inIncr;
+				pInData += dataIncr;
 			}
 			if (fixedMinMax_p) {
 				dataMin = range_p(0);
@@ -3211,7 +3211,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
 										False, *pInData, i, useIt
 									);
-				pInData += inIncr;
+				pInData += dataIncr;
 			}
 		} else {
 
@@ -3224,7 +3224,7 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 										dataMin, dataMax, minLoc, maxLoc, minMaxInit,
 										False, *pInData, i, useIt
 									);
-				pInData += inIncr;
+				pInData += dataIncr;
 			}
 		}
 	} else {
@@ -3248,8 +3248,8 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 											False, *pInData, i, useIt
 										);
 				}
-				pInData += inIncr;
-				pInMask += inIncr;
+				pInData += dataIncr;
+				pInMask += maskIncr;
 			}
 			if (fixedMinMax_p) {
 
@@ -3279,8 +3279,8 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 											False, *pInData, i, useIt
 										);
 				}
-				pInData += inIncr;
-				pInMask += inIncr;
+				pInData += dataIncr;
+				pInMask += maskIncr;
 			}
 		} else {
 
@@ -3295,8 +3295,8 @@ void StatsTiledCollapser<T,U>::process (uInt index1,
 						False, *pInData, i, useIt
 					);
 				}
-				pInData += inIncr;
-				pInMask += inIncr;
+				pInData += dataIncr;
+				pInMask += maskIncr;
 			}
 		}
 	}

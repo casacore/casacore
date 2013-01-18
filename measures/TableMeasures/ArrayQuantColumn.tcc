@@ -42,7 +42,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T>
-ROArrayQuantColumn<T>::ROArrayQuantColumn()
+ArrayQuantColumn<T>::ArrayQuantColumn()
 : itsDataCol    (0),
   itsArrUnitsCol(0),
   itsScaUnitsCol(0),
@@ -50,8 +50,8 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn()
 {}
 
 template<class T>
-ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
-					   const String& columnName)
+ArrayQuantColumn<T>::ArrayQuantColumn (const Table& tab,
+                                       const String& columnName)
 : itsDataCol    (0),
   itsArrUnitsCol(0),
   itsScaUnitsCol(0),
@@ -62,9 +62,9 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
 }
 
 template<class T>
-ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
-					   const String& columnName,
-					   const Unit& u)
+ArrayQuantColumn<T>::ArrayQuantColumn (const Table& tab,
+                                       const String& columnName,
+                                       const Unit& u)
 : itsDataCol    (0),
   itsArrUnitsCol(0),
   itsScaUnitsCol(0)
@@ -76,9 +76,9 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
 }
 
 template<class T>
-ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
-					   const String& columnName,
-					   const Vector<Unit>& u)
+ArrayQuantColumn<T>::ArrayQuantColumn (const Table& tab,
+                                       const String& columnName,
+                                       const Vector<Unit>& u)
 : itsDataCol    (0),
   itsArrUnitsCol(0),
   itsScaUnitsCol(0)
@@ -96,7 +96,7 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
 }
 
 template<class T>
-ROArrayQuantColumn<T>::ROArrayQuantColumn (const ROArrayQuantColumn<T>& that)
+ArrayQuantColumn<T>::ArrayQuantColumn (const ArrayQuantColumn<T>& that)
 : itsDataCol    (0),
   itsArrUnitsCol(0),
   itsScaUnitsCol(0)
@@ -105,13 +105,13 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const ROArrayQuantColumn<T>& that)
 }
 
 template<class T>
-ROArrayQuantColumn<T>::~ROArrayQuantColumn()
+ArrayQuantColumn<T>::~ArrayQuantColumn()
 {
   cleanUp();
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::cleanUp()
+void ArrayQuantColumn<T>::cleanUp()
 {
   delete itsDataCol;
   itsDataCol = 0;
@@ -122,7 +122,7 @@ void ROArrayQuantColumn<T>::cleanUp()
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
+void ArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
 {
   TableQuantumDesc* tqDesc =
     	TableQuantumDesc::reconstruct(tab.tableDesc(), columnName);
@@ -146,7 +146,7 @@ void ROArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::reference (const ROArrayQuantColumn<T>& that)
+void ArrayQuantColumn<T>::reference (const ArrayQuantColumn<T>& that)
 {
   cleanUp();
   itsUnit.resize (that.itsUnit.nelements());
@@ -166,30 +166,30 @@ void ROArrayQuantColumn<T>::reference (const ROArrayQuantColumn<T>& that)
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::attach (const Table& tab, 
-				    const String& columnName)
+void ArrayQuantColumn<T>::attach (const Table& tab, 
+                                  const String& columnName)
 {
-  reference(ROArrayQuantColumn<T> (tab, columnName)); 
+  reference(ArrayQuantColumn<T> (tab, columnName)); 
 }
  
 template<class T>
-void ROArrayQuantColumn<T>::attach (const Table& tab, 
-				    const String& columnName,
-				    const Unit& u)
+void ArrayQuantColumn<T>::attach (const Table& tab, 
+                                  const String& columnName,
+                                  const Unit& u)
 {
-  reference(ROArrayQuantColumn<T> (tab, columnName, u)); 
+  reference(ArrayQuantColumn<T> (tab, columnName, u)); 
 }
  
 template<class T>
-void ROArrayQuantColumn<T>::attach (const Table& tab, 
-				    const String& columnName,
-				    const Vector<Unit>& u)
+void ArrayQuantColumn<T>::attach (const Table& tab, 
+                                  const String& columnName,
+                                  const Vector<Unit>& u)
 {
-  reference(ROArrayQuantColumn<T> (tab, columnName, u)); 
+  reference(ArrayQuantColumn<T> (tab, columnName, u)); 
 }
  
 template<class T>
-Vector<String> ROArrayQuantColumn<T>::getUnits() const
+Vector<String> ArrayQuantColumn<T>::getUnits() const
 {
   Vector<String> names(itsUnit.nelements());
   for (uInt i=0; i<itsUnit.nelements(); i++) {
@@ -199,8 +199,8 @@ Vector<String> ROArrayQuantColumn<T>::getUnits() const
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q, 
-				     Bool resize) const
+void ArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q, 
+                                   Bool resize) const
 { 
   // Quantums are created and put into q by taking T data from 
   // itsDataCol and Quantum units from one of itsArrUnitsCol (if units
@@ -255,8 +255,8 @@ void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
-				 Bool resize) const
+void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+                               Bool resize) const
 {        
   if (itsConvOut) {
     get (rownr, q, itsUnitOut, resize);
@@ -266,8 +266,8 @@ void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
-				 const Unit& u, Bool resize) const
+void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+                               const Unit& u, Bool resize) const
 {        
   getData (rownr, q, resize);
   if (! u.getName().empty()) {
@@ -282,8 +282,8 @@ void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
-				 const Vector<Unit>& u, Bool resize) const
+void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+                               const Vector<Unit>& u, Bool resize) const
 {        
   getData (rownr, q, resize);
   Bool hasUnits = False;
@@ -310,15 +310,15 @@ void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
-				 const Quantum<T>& other, 
-	    	    	    	 Bool resize) const
+void ArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+                               const Quantum<T>& other, 
+                               Bool resize) const
 {
   get (rownr, q, other.getFullUnit(), resize);
 }
 
 template<class T> 
-Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr) const
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr) const
 {
   Array<Quantum<T> > q;
   get (rownr, q);
@@ -326,8 +326,8 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr) const
 }
 
 template<class T> 
-Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
-						      const Unit& u) const
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
+                                                    const Unit& u) const
 {
   Array<Quantum<T> > q;
   get (rownr, q, u);
@@ -335,8 +335,8 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
 }
 
 template<class T> 
-Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
-						   const Vector<Unit>& u) const
+Array<Quantum<T> > ArrayQuantColumn<T>::operator() (uInt rownr,
+                                                    const Vector<Unit>& u) const
 {
   Array<Quantum<T> > q;
   get (rownr, q, u);
@@ -344,7 +344,7 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator() (uInt rownr,
 }
 
 template<class T> 
-Array<Quantum<T> > ROArrayQuantColumn<T>::operator()
+Array<Quantum<T> > ArrayQuantColumn<T>::operator()
                                (uInt rownr, const Quantum<T>& other) const
 {
   Array<Quantum<T> > q;
@@ -353,89 +353,11 @@ Array<Quantum<T> > ROArrayQuantColumn<T>::operator()
 }
 
 template<class T>
-void ROArrayQuantColumn<T>::throwIfNull() const
+void ArrayQuantColumn<T>::throwIfNull() const
 {
   if (isNull()) {
     throw (TableInvOper("Quantum table column is null"));
   }
-}
-
-
- 
-template<class T>
-ArrayQuantColumn<T>::ArrayQuantColumn()
-: ROArrayQuantColumn<T>(),
-  itsDataCol    (0),
-  itsArrUnitsCol(0),
-  itsScaUnitsCol(0)
-{}
-
-template<class T>
-ArrayQuantColumn<T>::ArrayQuantColumn (const Table& tab,
-				       const String& columnName)
-: ROArrayQuantColumn<T>(tab, columnName),
-  itsDataCol    (0),
-  itsArrUnitsCol(0),
-  itsScaUnitsCol(0)
-{
-  itsDataCol = new ArrayColumn<T> (tab, columnName);
-  if (arrUnitsCol() != 0) {
-    itsArrUnitsCol = new ArrayColumn<String>
-                                (tab, arrUnitsCol()->columnDesc().name());
-  }
-  if (scaUnitsCol() != 0) {
-    itsScaUnitsCol = new ScalarColumn<String>
-                                (tab, scaUnitsCol()->columnDesc().name());
-  }
-}
-
-template<class T>
-ArrayQuantColumn<T>::ArrayQuantColumn (const ArrayQuantColumn<T>& that)
-: ROArrayQuantColumn<T>(),
-  itsDataCol    (0),
-  itsArrUnitsCol(0),
-  itsScaUnitsCol(0)
-{
-  reference (that);
-}
-
-template<class T>
-ArrayQuantColumn<T>::~ArrayQuantColumn()
-{
-  cleanUp();
-}
-
-template<class T>
-void ArrayQuantColumn<T>::cleanUp()
-{
-  delete itsDataCol;
-  itsDataCol = 0;
-  delete itsArrUnitsCol;
-  itsArrUnitsCol = 0;
-  delete itsScaUnitsCol;
-  itsScaUnitsCol = 0;
-}
-
-template<class T>
-void ArrayQuantColumn<T>::reference (const ArrayQuantColumn<T>& that)
-{
-  ROArrayQuantColumn<T>::reference (that);
-  if (that.itsDataCol != 0) {
-    itsDataCol = new ArrayColumn<T>(*that.itsDataCol);
-  }
-  if (that.itsArrUnitsCol != 0) {
-    itsArrUnitsCol = new ArrayColumn<String>(*that.itsArrUnitsCol);
-  }
-  if (that.itsScaUnitsCol != 0) {
-    itsScaUnitsCol = new ScalarColumn<String>(*that.itsScaUnitsCol);
-  }
-}
-
-template<class T>
-void ArrayQuantColumn<T>::attach (const Table& tab, 
-				  const String& columnName)
-{
-  reference (ArrayQuantColumn<T> (tab, columnName));
 }
  
 template<class T>

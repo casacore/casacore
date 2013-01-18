@@ -50,14 +50,13 @@ uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins
 }
 
 
-void LatticeHistSpecialize::process(const Float* pInData,
-                                  const Bool* pInMask,
-                                  Block<Float>* pHist,
-                                  const Vector<Float>& clip,
-                                  Float binWidth, uInt offset,
-                                  uInt nrval, uInt nBins,
-                                  uInt inIncr)
-{
+void LatticeHistSpecialize::process(
+	const Float* pInData, const Bool* pInMask,
+	Block<Float>* pHist, const Vector<Float>& clip,
+	Float binWidth, uInt offset,
+	uInt nrval, uInt nBins,
+	uInt dataIncr, uInt maskIncr
+) {
    Float datum;
    uInt rBin;
    uInt index;
@@ -71,7 +70,7 @@ void LatticeHistSpecialize::process(const Float* pInData,
             Float& hist = (*pHist)[index];
             hist += 1.0;
          }
-         pInData += inIncr;
+         pInData += dataIncr;
       }
    } else {
       for (uInt i=0; i<nrval; i++) {
@@ -83,20 +82,19 @@ void LatticeHistSpecialize::process(const Float* pInData,
             Float& hist = (*pHist)[index];
             hist += 1.0;
          }
-         pInData += inIncr;
-         pInMask += inIncr;
+         pInData += dataIncr;
+         pInMask += maskIncr;
       }
    }
 }
 
-void LatticeHistSpecialize::process(const Complex* pInData,
-                                  const Bool* pInMask,
-                                  Block<Complex>* pHist,
-                                  const Vector<Complex>& clip,
-                                  Complex binWidth, uInt offset,
-                                  uInt nrval, uInt nBins,
-                                  uInt inIncr)
-{
+void LatticeHistSpecialize::process(
+	const Complex* pInData, const Bool* pInMask,
+	Block<Complex>* pHist, const Vector<Complex>& clip,
+	Complex binWidth, uInt offset,
+	uInt nrval, uInt nBins,
+	uInt dataIncr, uInt maskIncr
+) {
    Complex datum, useIt;
    uInt rbin;
    uInt index;
@@ -120,7 +118,7 @@ void LatticeHistSpecialize::process(const Complex* pInData,
 	    ///            hist2.imag() += 1.0;
 	    hist2 += Complex(0.0, 1.0);
          }
-         pInData += inIncr;
+         pInData += dataIncr;
       }
    } else {
       for (uInt i=0; i<nrval; i++) {
@@ -142,8 +140,8 @@ void LatticeHistSpecialize::process(const Complex* pInData,
 	       hist2 += Complex(0.0, 1.0);
 	    }
          }
-         pInData += inIncr;
-         pInMask += inIncr;
+         pInData += dataIncr;
+         pInMask += maskIncr;
       }
    }
 }

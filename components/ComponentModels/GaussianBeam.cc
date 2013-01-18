@@ -144,7 +144,7 @@ void GaussianBeam::setMajorMinor(
 			<< majAx.getUnit() << " is not).";
 		throw AipsError(oss.str());
 	}
-	if (! majAx.isConform("rad")) {
+	if (! minAx.isConform("rad")) {
 		oss << ": Minor axis must have angular units ("
 			<< minAx.getUnit() << " is not).";
 		throw AipsError(oss.str());

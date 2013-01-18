@@ -115,8 +115,9 @@ void a (Bool doExcp)
     if (doExcp) {
 	try {
 	    newtab.setShapeColumn("arr2",IPosition(3,2,3,4));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // not FixedShape
+	} catch (AipsError& x) {
+            // not FixedShape
+	    cout << "Expected exception: "<< x.getMesg() << endl;
 	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
@@ -208,13 +209,15 @@ void a (Bool doExcp)
     if (doExcp) {
 	try {
 	    af.put (0, "12345678901");
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;         // value too long
+	} catch (AipsError& x) {
+            // value too long
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
 	try {
 	    arr1.put (0, vec2);
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;         // shape cannot change
+	} catch (AipsError& x) {
+            // shape cannot change
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
     }
 }
@@ -254,8 +257,9 @@ void b (Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // table not writable
+	} catch (AipsError& x) {
+            // table not writable
+          cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
     }
     ROScalarColumn<Int> ab2(tab,"ab");
@@ -612,23 +616,27 @@ void c (Bool doExcp)
 	    RegularFile file("tTable_tmp.file");
 	    file.create();
 	    tab.rename ("tTable_tmp.file", Table::NewNoReplace);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // exists as file
+	} catch (AipsError& x) {
+            // exists as file
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable_tmp.data", Table::NewNoReplace);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // already exists
+	} catch (AipsError& x) {
+            // already exists
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable.datx", Table::Update);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // does not exist
+	} catch (AipsError& x) {
+            // does not exist
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // column already exists
+	} catch (AipsError& x) {
+            // column already exists
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
     }
 
@@ -704,8 +712,9 @@ void c (Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.removeRow (7);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;   // row does not exist
+	} catch (AipsError& x) {
+            // row does not exist
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
     }
     cout << ab2.getColumn() << endl;
@@ -908,7 +917,7 @@ int main (int argc,const char*[])
 	b ( (argc<2));
 	c ( (argc<2));
         d ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

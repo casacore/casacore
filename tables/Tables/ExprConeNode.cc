@@ -187,7 +187,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id);
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First CONES argument "
-			   "should have 2 values");
+			   "must have 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id);
       if (coneArr.nelements() % 2 != 0) {
@@ -223,7 +223,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id);
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First FINDCONE argument "
-			   "should have 2 values");
+			   "must have 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id);
       if (coneArr.nelements() % 3 != 0) {
@@ -255,7 +255,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id);
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First FINDCONE argument "
-			   "should have 2 values");
+			   "must have 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id);
       if (coneArr.nelements() % 2 != 0) {
@@ -471,7 +471,7 @@ Array<Int64> TableExprConeNode::getArrayInt (const TableExprId& id)
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id);
       if (coneArr.nelements() % 2 != 0) {
-	throw TableInvExpr("Second FINDCONE argument "
+	throw TableInvExpr("Second FINDCONE3 argument "
 			   "must have multiple of 2 values");
       }
       // Radius can be a single value or an array.

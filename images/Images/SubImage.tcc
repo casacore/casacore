@@ -178,38 +178,6 @@ ImageInterface<T>* SubImage<T>::cloneII() const
 }
 
 template<class T>
-SubImage<T> SubImage<T>::createSubImage
-(ImageRegion*& outRegion, ImageRegion*& outMask,
- ImageInterface<T>& inImage, const Record& region,
- const String& mask, LogIO *os,
- Bool writableIfPossible, const AxesSpecifier& axesSpecifier)
-{
-  // The ImageRegion pointers must be null on entry
-  // either pointer may be null on exit
-  SubImage<T> subImage;
-  outMask = ImageRegion::fromLatticeExpression(mask);
-  // We can get away with no region processing if the region record
-  // is empty and the user is not dropping degenerate axes
-  if (region.nfields() == 0  &&  axesSpecifier.keep()) {
-    subImage = (outMask == 0)  ?
-        SubImage<T>(inImage, True)
-      : SubImage<T>(inImage, *outMask, writableIfPossible);
-  } else {
-    outRegion = ImageRegion::fromRecord (os, inImage.coordinates(),
-                                         inImage.shape(), region);
-    if (outMask == 0) {
-      subImage = SubImage<T> (inImage, *outRegion,
-                              writableIfPossible, axesSpecifier);
-    } else {
-      SubImage<T> subImage0 (inImage, *outMask, writableIfPossible);
-      subImage = SubImage<T>(subImage0, *outRegion,
-                             writableIfPossible, axesSpecifier);
-    }
-  }
-  return subImage;
-}
-
-template<class T>
 void SubImage<T>::setMembers (const ImageInterface<T>& image)
 {
   this->setImageInfoMember (image.imageInfo());

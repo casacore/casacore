@@ -959,4 +959,16 @@ void Array<T>::BaseIteratorSTL::increment()
   }
 }
 
+
+template<class T>
+vector<T> Array<T>::tovector() const {
+  Bool deleteIt;
+  const T *stor = this->getStorage(deleteIt);
+  vector<T> out;
+  out.assign(stor, stor+nelements());
+  this->freeStorage(stor, deleteIt);
+  return out;
+}
+
+
 } //#End casa namespace

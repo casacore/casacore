@@ -96,6 +96,13 @@ TableColumn* ArrayColumn<T>::clone() const
 }
 
 template<class T>
+ArrayColumn<T>& ArrayColumn<T>::operator= (const ArrayColumn<T>& that)
+{
+  reference (that);
+  return (*this);
+}
+
+template<class T>
 void ArrayColumn<T>::reference (const ArrayColumn<T>& that)
 {
     TableColumn::reference (that);

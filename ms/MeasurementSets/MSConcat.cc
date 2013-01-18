@@ -273,6 +273,13 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   const Block<uInt> newAntIndices = copyAntennaAndFeed(otherMS.antenna(), 
 						       otherMS.feed()); 
   Bool antIndexTrivial = True;
+  for(uint ii=0; ii<newAntIndices.size(); ii++){
+    //cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
+    if(newAntIndices[ii]!=ii){
+      antIndexTrivial=False;
+      break;
+    }
+  }
   {
     uInt addedRows = itsMS.antenna().nrow() - oldRows;
     uInt matchedRows = otherMS.antenna().nrow() - addedRows;
@@ -282,12 +289,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     addedRows = itsMS.feed().nrow() - oldFeedRows;
     log << "Added " << addedRows 
 	<< " rows to the feed subtable" << endl;
-    antIndexTrivial = (addedRows>0);
   }
 
-  //for(uint ii=0; ii<newAntIndices.size(); ii++){
-  //  cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
-  //}
 
   // FIELD
   oldRows = itsMS.field().nrow();
@@ -1715,6 +1718,16 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 
   RecordFieldId antField(antIndxName);
   RecordFieldId spwField(spwIndxName);
+
+
+  if(!feedCols.focusLengthQuant().isNull() && otherFeedCols.focusLengthQuant().isNull()){
+    os << LogIO::WARN << "MS appended to has optional column FOCUS_LENGTH in FEED table, but MS to be appended does not.\n" 
+       << "Potential new rows in FEED will have FOCUS_LENGTH zero." << LogIO::POST;
+  }
+  else if(feedCols.focusLengthQuant().isNull() && !otherFeedCols.focusLengthQuant().isNull()){
+    os << LogIO::WARN << "MS appended to does not have optional column FOCUS_LENGTH in FEED table, but MS to be appended does.\n" 
+       << "Output FEED table will not have a FOCUS_LENGTH column." << LogIO::POST;
+  }
   
   for (uInt a = 0; a < nAntIds; a++) {
     const Int newAntId = antCols.matchAntennaAndStation(otherAntCols.name()(a),

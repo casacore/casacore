@@ -168,6 +168,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // Translate string to reference code
   // <group>
   static Bool getType(MPosition::Types &tp, const String &in);
+  // this one throws an exception for an unrecognized String
+  static MPosition::Types getType(const String& in);
+
   Bool giveMe(MPosition::Ref &mr, const String &in);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)

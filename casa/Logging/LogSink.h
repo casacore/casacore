@@ -263,26 +263,37 @@ public:
 
 private:
 
-  // This class is needed to replace one LogSink by another, because
-  // replace cannot be done in the CountedPtr class.
+  // LsiIntermediate is a helper class to allow LogSinkInterface to implement
+  // semantics that allow causing all classes accessing the log sink to be
+  // aimed at a different sink object.  This used to be done by using an
+  // odd "replace" method in CountedPtr; however, this is functionality is
+  // being removed to CountedPtr as it is modernized so this class was
+  // created to serve this narrow purpose.
+
   class LsiIntermediate {
+
   public:
-    LsiIntermediate () : logSinkInterface_p (0) {}
-    LsiIntermediate (LogSinkInterface * lsi) : logSinkInterface_p (lsi) {}
-    ~LsiIntermediate () { delete logSinkInterface_p;}
 
-    LogSinkInterface & operator* () { return * logSinkInterface_p;}
-    LogSinkInterface * operator-> () { return logSinkInterface_p;}
-    Bool operator! () const { return ! logSinkInterface_p;}
 
-    void replace (LogSinkInterface * newLsi)
-      { delete logSinkInterface_p; logSinkInterface_p = newLsi;}
+      LsiIntermediate () : logSinkInterface_p (0) {}
+      LsiIntermediate (LogSinkInterface * lsi) : logSinkInterface_p (lsi) {}
+      ~LsiIntermediate () { delete logSinkInterface_p;}
+
+      LogSinkInterface & operator* () { return * logSinkInterface_p;}
+      LogSinkInterface * operator-> () { return logSinkInterface_p;}
+      Bool operator! () const { return ! logSinkInterface_p;}
+
+      void replace (LogSinkInterface * newLsi) { delete logSinkInterface_p; logSinkInterface_p = newLsi;}
 
   private:
-    LsiIntermediate (const LsiIntermediate&);
-    LsiIntermediate& operator= (const LsiIntermediate&);
 
-    LogSinkInterface * logSinkInterface_p;
+      // Copy ctor and op= are private and not defined to prevent double-delete.
+
+      LsiIntermediate (const LsiIntermediate &);
+      LsiIntermediate & operator= (const LsiIntermediate &);
+
+      LogSinkInterface * logSinkInterface_p;
+
   };
 
   // Prepare for postThenThrow function.

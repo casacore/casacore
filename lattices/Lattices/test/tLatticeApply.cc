@@ -127,7 +127,7 @@ public:
     virtual void initAccumulator (uInt n1, uInt n3);
     virtual void process (uInt index1, uInt index3,
 			  const Int* inData, const Bool* inMask,
-			  uInt inIncr, uInt nrval,
+			  uInt inDataIncr, uInt inMaskIncr, uInt nrval,
 			  const IPosition& pos, const IPosition& shape);
     virtual void endAccumulator (Array<Int>& result,
 				 Array<Bool>& resultMask,
@@ -166,7 +166,7 @@ Bool MyTiledCollapser::canHandleNullMask() const
 }
 void MyTiledCollapser::process (uInt index1, uInt index3,
 				const Int* inData, const Bool* inMask,
-				uInt inIncr, uInt nrval,
+				uInt inDataIncr, uInt inMaskIncr, uInt nrval,
 				const IPosition&, const IPosition&)
 {
     uInt& sum1 = (*itsSum1)(index1, index3);
@@ -178,8 +178,8 @@ void MyTiledCollapser::process (uInt index1, uInt index3,
 	    sum2 -= *inData;
 	    npts++;
 	}
-	inMask += inIncr;
-	inData += inIncr;
+	inMask += inMaskIncr;
+	inData += inDataIncr;
     }
 }
 void MyTiledCollapser::endAccumulator (Array<Int>& result,

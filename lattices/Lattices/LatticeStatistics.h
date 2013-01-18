@@ -638,7 +638,7 @@ public:
                           uInt accumIndex3, 
                           const T* inData, 
                           const Bool* inMask,
-                          uInt inIncr, 
+                          uInt dataIncr, uInt maskIncr,
                           uInt nrval,
                           const IPosition& startPos, 
                           const IPosition& shape);

@@ -49,6 +49,7 @@
 #include <ms/MeasurementSets.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSMetaDataOnDemand.h>
 #include <ms/MeasurementSets/MSSummary.h>
 #include <ms/MeasurementSets/MSRange.h>
 #include <ms/MeasurementSets/MSSelector.h>
@@ -228,446 +229,445 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 
 
 	if (nrow()<=0) {
-		os << "The MAIN table is empty: there are no data!!!" << endl;
+		os << "The MAIN table is empty: there are no data!!!" << endl << LogIO::POST;
+		return;
 	}
-	else {
-		// Make objects
-		ROMSColumns msc(*pMS);
-		Double startTime, stopTime;
-		minMax(startTime, stopTime, msc.time().getColumn());
-		Double exposTime = stopTime - startTime;
-		//    Double exposTime = sum(msc.exposure().getColumn());
-		MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
+	// Make objects
+	ROMSColumns msc(*pMS);
+	Double startTime, stopTime;
+	minMax(startTime, stopTime, msc.time().getColumn());
+	Double exposTime = stopTime - startTime;
+	//    Double exposTime = sum(msc.exposure().getColumn());
+	MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
 
-		ROMSMainColumns msmc(*pMS);
-		String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
+	ROMSMainColumns msmc(*pMS);
+	String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
 
-		// Output info
-		os << "Data records: " << nrow() << "       Total integration time = "
-				<< exposTime << " seconds" << endl
-				<< "   Observed from   " << MVTime(startTime/C::day).string(MVTime::DMY,7)  //startMVT.string()
-				<< "   to   " << MVTime(stopTime/C::day).string(MVTime::DMY,7)  // stopMVT.string()
-				<< " (" << timeref << ")"
-				<< endl << endl;
-		os << LogIO::POST;
+	// Output info
+	os << "Data records: " << nrow() << "       Total integration time = "
+			<< exposTime << " seconds" << endl
+			<< "   Observed from   " << MVTime(startTime/C::day).string(MVTime::DMY,7)  //startMVT.string()
+			<< "   to   " << MVTime(stopTime/C::day).string(MVTime::DMY,7)  // stopMVT.string()
+			<< " (" << timeref << ")"
+			<< endl << endl;
+	os << LogIO::POST;
 
-		if(fillRecord){
-			outRec.define("numrecords", nrow());
-			outRec.define("IntegrationTime", exposTime);
-			outRec.define("BeginTime", startTime/C::day);
-			outRec.define("EndTime", stopTime/C::day);
-			outRec.define("timeref", timeref);
+	if(fillRecord){
+		outRec.define("numrecords", nrow());
+		outRec.define("IntegrationTime", exposTime);
+		outRec.define("BeginTime", startTime/C::day);
+		outRec.define("EndTime", stopTime/C::day);
+		outRec.define("timeref", timeref);
+	}
+
+	//		if (verbose) {   // do "scan" listing
+
+	// Set up iteration over OBSID, ARRID, and SCAN_NUMBER:
+	//      Block<String> mssortcols(3);
+	//      mssortcols[0] = "OBSERVATION_ID";
+	//      mssortcols[1] = "ARRAY_ID";
+	//      mssortcols[2] = "SCAN_NUMBER";
+	//      MSIter msIter(const_cast<MeasurementSet&>(*pMS),mssortcols,0.0,False );
+
+	//      for (msIter.origin(); msIter.more(); msIter++) {
+	//      }
+
+
+	// the selected MS (all of it) as a Table tool:
+	//   MS is accessed as a generic table here because
+	//   the ms tool hard-wires iteration over SPWID, FLDID,
+	//   and TIME and this is not desired in this application.
+	//   It would be easier if the ms tool did not automatically
+	//   iterate over any indices, or if there were an ms.table()
+	//   function.
+	MSSelector mssel;
+	mssel.setMS(const_cast<MeasurementSet&>(*pMS));
+	mssel.initSelection(True);
+	Table mstab(mssel.selectedTable());
+
+	// Field names:
+	ROMSFieldColumns field(pMS->field());
+	Vector<String> fieldnames(field.name().getColumn());
+	nVisPerField_.resize(fieldnames.nelements());
+	nVisPerField_=0;
+
+	// Observing Mode (State Table)
+	ROMSStateColumns state(pMS->state());
+	Vector<String> obsModes(state.obsMode().getColumn());
+
+	// Spw Ids
+	ROMSDataDescColumns dd(pMS->dataDescription());
+	Vector<Int> specwindids(dd.spectralWindowId().getColumn());
+
+	// Field widths for printing:
+	Int widthLead  =  2;
+	Int widthScan  =  4;
+	Int widthbtime = 22;
+	Int widthetime = 10;
+	Int widthFieldId = 5;
+	Int widthField = 20;
+	Int widthnrow = 7;
+	Int widthInttim = 7;
+
+	// Set up iteration over OBSID and ARRID:
+	Block<String> icols(2);
+	icols[0] = "OBSERVATION_ID";
+	icols[1] = "ARRAY_ID";
+	TableIterator obsarriter(mstab,icols);
+	//Limiting record length
+	Int recLength=0;
+	const Int maxRecLength=10000; //limiting for speed and size sake
+	// Iterate:
+	while (!obsarriter.pastEnd()) {
+
+		// Table containing this iteration:
+		Table obsarrtab(obsarriter.table());
+
+		// Extract (zero-based) OBSID and ARRID for this iteration:
+		ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
+		Int obsid(obsidcol(0));
+		ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
+		Int arrid(arridcol(0));
+
+		if (verbose) {
+			// Report OBSID and ARRID, and header for listing:
+			os << endl << "   ObservationID = " << obsid;
+			os << "         ArrayID = " << arrid << endl;
+			String datetime="  Date        Timerange                ";
+			datetime.replace(24,1,"(");
+			datetime.replace(25,timeref.length(),timeref);
+			datetime.replace(25+timeref.length(),1,")");
+			os << datetime;
+			os << "Scan  FldId FieldName "
+					<<"          nRows   Int(s)   SpwIds      ScanIntent" << endl;
 		}
 
-		//		if (verbose) {   // do "scan" listing
+		/* CAS-2751. Sort the table by scan then field (not timestamp)
+		 * so that scans are not listed for every different DDID
+		 */
+		// Setup iteration over scan and field within this iteration:
+		Block<String> jcols(2);
+		jcols[0] = "SCAN_NUMBER";
+		jcols[1] = "FIELD_ID";
+		TableIterator stiter(obsarrtab,jcols);
 
-		// Set up iteration over OBSID, ARRID, and SCAN_NUMBER:
-		//      Block<String> mssortcols(3);
-		//      mssortcols[0] = "OBSERVATION_ID";
-		//      mssortcols[1] = "ARRAY_ID";
-		//      mssortcols[2] = "SCAN_NUMBER";
-		//      MSIter msIter(const_cast<MeasurementSet&>(*pMS),mssortcols,0.0,False );
-
-		//      for (msIter.origin(); msIter.more(); msIter++) {
-		//      }
-
-
-		// the selected MS (all of it) as a Table tool:
-		//   MS is accessed as a generic table here because
-		//   the ms tool hard-wires iteration over SPWID, FLDID,
-		//   and TIME and this is not desired in this application.
-		//   It would be easier if the ms tool did not automatically
-		//   iterate over any indices, or if there were an ms.table()
-		//   function.
-		MSSelector mssel;
-		mssel.setMS(const_cast<MeasurementSet&>(*pMS));
-		mssel.initSelection(True);
-		Table mstab(mssel.selectedTable());
-
-		// Field names:
-		ROMSFieldColumns field(pMS->field());
-		Vector<String> fieldnames(field.name().getColumn());
-		nVisPerField_.resize(fieldnames.nelements());
-		nVisPerField_=0;
-
-		// Observing Mode (State Table)
-		ROMSStateColumns state(pMS->state());
-		Vector<String> obsModes(state.obsMode().getColumn());
-
-		// Spw Ids
-		ROMSDataDescColumns dd(pMS->dataDescription());
-		Vector<Int> specwindids(dd.spectralWindowId().getColumn());
-
-		// Field widths for printing:
-		Int widthLead  =  2;
-		Int widthScan  =  4;
-		Int widthbtime = 22;
-		Int widthetime = 10;
-		Int widthFieldId = 5;
-		Int widthField = 20;
-		Int widthnrow = 7;
-		Int widthInttim = 7;
-
-		// Set up iteration over OBSID and ARRID:
-		Block<String> icols(2);
-		icols[0] = "OBSERVATION_ID";
-		icols[1] = "ARRAY_ID";
-		TableIterator obsarriter(mstab,icols);
-		//Limiting record length
-		Int recLength=0;
-		const Int maxRecLength=10000; //limiting for speed and size sake
-		// Iterate:
-		while (!obsarriter.pastEnd()) {
-
-			// Table containing this iteration:
-			Table obsarrtab(obsarriter.table());
-
-			// Extract (zero-based) OBSID and ARRID for this iteration:
-			ROTableVector<Int> obsidcol(obsarrtab,"OBSERVATION_ID");
-			Int obsid(obsidcol(0));
-			ROTableVector<Int> arridcol(obsarrtab,"ARRAY_ID");
-			Int arrid(arridcol(0));
-
-			if (verbose) {
-				// Report OBSID and ARRID, and header for listing:
-				os << endl << "   ObservationID = " << obsid;
-				os << "         ArrayID = " << arrid << endl;
-				String datetime="  Date        Timerange                ";
-				datetime.replace(24,1,"(");
-				datetime.replace(25,timeref.length(),timeref);
-				datetime.replace(25+timeref.length(),1,")");
-				os << datetime;
-				os << "Scan  FldId FieldName "
-						<<"          nRows   Int(s)   SpwIds      ScanIntent" << endl;
-			}
-
-			/* CAS-2751. Sort the table by scan then field (not timestamp)
-			 * so that scans are not listed for every different DDID
-			 */
-			// Setup iteration over scan and field within this iteration:
-			Block<String> jcols(2);
-			jcols[0] = "SCAN_NUMBER";
-			jcols[1] = "FIELD_ID";
-			TableIterator stiter(obsarrtab,jcols);
-
-			// Vars for keeping track of time, fields, and ddis
-			Int lastscan(-1);
-			Vector<Int> lastfldids;
-			Vector<Int> lastddids;
-			Vector<Int> laststids;
-			Vector<Int> fldids(1,0);
-			Vector<Int> ddids(1,0);
-			Vector<Int> stids(1,0); // State IDs
-			Vector<Int> spwids;
-			Int nfld(1);
-			Int nddi(1);
-			Int nst(1);
-			Double btime(0.0), etime(0.0);
-			Double lastday(0.0), day(0.0);
-			Bool firsttime(True);
-			Int thisnrow(0);
-			Double meanIntTim(0.0);
+		// Vars for keeping track of time, fields, and ddis
+		Int lastscan(-1);
+		Vector<Int> lastfldids;
+		Vector<Int> lastddids;
+		Vector<Int> laststids;
+		Vector<Int> fldids(1,0);
+		Vector<Int> ddids(1,0);
+		Vector<Int> stids(1,0); // State IDs
+		Vector<Int> spwids;
+		Int nfld(1);
+		Int nddi(1);
+		Int nst(1);
+		Double btime(0.0), etime(0.0);
+		Double lastday(0.0), day(0.0);
+		Bool firsttime(True);
+		Int thisnrow(0);
+		Double meanIntTim(0.0);
 
 
-			os.output().precision(3);
-			Int subsetscan=0;
-			// Iterate over scans/fields:
-			while (!stiter.pastEnd()) {
+		os.output().precision(3);
+		Int subsetscan=0;
+		// Iterate over scans/fields:
+		while (!stiter.pastEnd()) {
 
-				// ms table at this scan
-				Table t(stiter.table());
-				Int nrow=t.nrow();
+			// ms table at this scan
+			Table t(stiter.table());
+			Int nrow=t.nrow();
 
-				// relevant columns
-				ROTableVector<Double> timecol(t,"TIME");
-				ROTableVector<Double> inttim(t,"EXPOSURE");
-				ROTableVector<Int> scncol(t,"SCAN_NUMBER");
-				ROTableVector<Int> fldcol(t,"FIELD_ID");
-				ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
-				ROTableVector<Int> stidcol(t,"STATE_ID");
+			// relevant columns
+			ROTableVector<Double> timecol(t,"TIME");
+			ROTableVector<Double> inttim(t,"EXPOSURE");
+			ROTableVector<Int> scncol(t,"SCAN_NUMBER");
+			ROTableVector<Int> fldcol(t,"FIELD_ID");
+			ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
+			ROTableVector<Int> stidcol(t,"STATE_ID");
 
-				// this timestamp
-				Double thistime(timecol(0));
+			// this timestamp
+			Double thistime(timecol(0));
 
-				// this scan_number
-				Int thisscan(scncol(0));
+			// this scan_number
+			Int thisscan(scncol(0));
 
-				// First field and ddi at this timestamp:
-				fldids.resize(1,False);
-				fldids(0)=fldcol(0);
-				nfld=1;
+			// First field and ddi at this timestamp:
+			fldids.resize(1,False);
+			fldids(0)=fldcol(0);
+			nfld=1;
 
-				ddids.resize(1,False);
-				ddids(0)=ddicol(0);
-				nddi=1;
+			ddids.resize(1,False);
+			ddids(0)=ddicol(0);
+			nddi=1;
 
-				stids.resize(1, False);
-				stids(0) = stidcol(0);
-				nst=1;
+			stids.resize(1, False);
+			stids(0) = stidcol(0);
+			nst=1;
 
-				nVisPerField_(fldids(0))+=nrow;
+			nVisPerField_(fldids(0))+=nrow;
 
-				// fill field and ddi lists for this scan
-				for (Int i=1; i < nrow; i++) {
-					if ( !anyEQ(fldids,fldcol(i)) ) {
-						nfld++;
-						fldids.resize(nfld,True);
-						fldids(nfld-1)=fldcol(i);
-					}
-
-					if ( !anyEQ(ddids,ddicol(i)) ) {
-						nddi++;
-						ddids.resize(nddi,True);
-						ddids(nddi-1)=ddicol(i);
-					}
-
-					if ( !anyEQ(stids,stidcol(i)) ) {
-						nst++;
-						stids.resize(nst,True);
-						stids(nst-1)=stidcol(i);
-					}
-
+			// fill field and ddi lists for this scan
+			for (Int i=1; i < nrow; i++) {
+				if ( !anyEQ(fldids,fldcol(i)) ) {
+					nfld++;
+					fldids.resize(nfld,True);
+					fldids(nfld-1)=fldcol(i);
 				}
 
-				// If not first timestamp, check if scan changed, etc.
-				if (!firsttime) {
-					// Has state changed?
-					Bool samefld;
-					samefld=fldids.conform(lastfldids) && !anyNE(fldids,lastfldids);
+				if ( !anyEQ(ddids,ddicol(i)) ) {
+					nddi++;
+					ddids.resize(nddi,True);
+					ddids(nddi-1)=ddicol(i);
+				}
 
-					Bool sameddi;
-					sameddi=ddids.conform(lastddids) && !anyNE(ddids,lastddids);
+				if ( !anyEQ(stids,stidcol(i)) ) {
+					nst++;
+					stids.resize(nst,True);
+					stids(nst-1)=stidcol(i);
+				}
 
-					Bool samest;
-					samest=stids.conform(laststids) && !anyNE(stids,laststids);
+			}
 
-					Bool samescan;
-					samescan=(thisscan==lastscan);
+			// If not first timestamp, check if scan changed, etc.
+			if (!firsttime) {
+				// Has state changed?
+				Bool samefld;
+				samefld=fldids.conform(lastfldids) && !anyNE(fldids,lastfldids);
 
-					samescan = samescan && samefld && sameddi && samest;
-					//		samescan = samescan && samefld;
+				Bool sameddi;
+				sameddi=ddids.conform(lastddids) && !anyNE(ddids,lastddids);
 
-					// If state changed, then print out last scan's info
-					if (!samescan) {
-						//	      cout << "thisscan " << thisscan << "lastscan " << lastscan
-						// 		   << " fldids " << fldids << " lastfldids " << lastfldids
-						// 		   << " ddids " << ddids << " lastddids " << lastddids
-						// 		   << " samescan " << (thisscan==lastscan) <<  " samefld " << samefld << " sameddi " << sameddi
-						// 		   << " meanIntTim " << meanIntTim << " thisnrow " << thisnrow << " inttim.makeVector().size() "
-						// 		   <<  inttim.makeVector().size() << " meanIntTim/thisnrow " << meanIntTim/thisnrow << endl;
-						if (thisnrow>0){
-							meanIntTim/=thisnrow;
-						}
-						else {
-							meanIntTim=0.0;
-						}
+				Bool samest;
+				samest=stids.conform(laststids) && !anyNE(stids,laststids);
 
-						// this MJD
-						day=floor(MVTime(btime/C::day).day());
+				Bool samescan;
+				samescan=(thisscan==lastscan);
 
-						// Spws
-						spwids.resize(lastddids.nelements());
-						for (uInt iddi=0; iddi<spwids.nelements();++iddi)
-							spwids(iddi)=specwindids(lastddids(iddi));
+				samescan = samescan && samefld && sameddi && samest;
+				//		samescan = samescan && samefld;
 
-						String name=fieldnames(lastfldids(0));
-
-						if (verbose) {
-							// Print out last scan's times, fields, ddis
-							os.output().setf(ios::right, ios::adjustfield);
-							os.output().width(widthLead); os << "  ";
-							os.output().width(widthbtime);
-							if (day!=lastday) {     // print date
-								os << MVTime(btime/C::day).string(MVTime::DMY,7);
-							} else {                // omit date
-								os << MVTime(btime/C::day).string(MVTime::TIME,7);
-							}
-							os.output().width(3); os << " - ";
-							os.output().width(widthetime);
-							os << MVTime(etime/C::day).string(MVTime::TIME,7);
-							os.output().width(widthLead); os << "  ";
-							os.output().setf(ios::right, ios::adjustfield);
-							os.output().width(widthScan); os << lastscan;
-							os.output().width(widthLead); os << "  ";
-							os.output().setf(ios::right, ios::adjustfield);
-							os.output().width(widthFieldId); os << lastfldids(0) << " ";
-							os.output().setf(ios::left, ios::adjustfield);
-							if (name.length()>20) name.replace(19,1,'*');
-							os.output().width(widthField); os << name.at(0,20);
-
-							os.output().width(widthnrow); os << thisnrow;
-							os.output().width(widthInttim); os << meanIntTim;
-							os.output().width(widthLead); os << " ";
-							os << spwids;
-							if (spwids.size() <= 9) {
-								os.output().width(28 - (3*spwids.size())); os << " ";
-							}
-							// The Obsmode column can be empty only report them if it is not
-							String obsMode = "";
-							if (obsModes.size() > (unsigned int) 0) {
-								obsMode=obsModes(laststids(0));
-							}
-							os << obsMode;
-
-							os << endl;
-						}
-						if(fillRecord && (recLength < maxRecLength))  {
-							Record scanRecord;
-							Record subScanRecord;
-							String scanrecid=String("scan_")+String::toString(lastscan);
-							if(outRec.isDefined(scanrecid)){
-								scanRecord=outRec.asrwRecord(scanrecid);
-								outRec.removeField(scanrecid);
-							}
-
-							subScanRecord.define("BeginTime", btime/C::day);
-							subScanRecord.define("EndTime", etime/C::day);
-							subScanRecord.define("scanId", lastscan);
-							subScanRecord.define("FieldId", lastfldids(0));
-							subScanRecord.define("FieldName", name);
-							subScanRecord.define("StateId", laststids(0));
-							subScanRecord.define("nRow", thisnrow);
-							subScanRecord.define("IntegrationTime", meanIntTim);
-							subScanRecord.define("SpwIds", spwids);
-							scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
-							if(!outRec.isDefined(scanrecid)){
-								outRec.defineRecord(scanrecid, scanRecord);
-							}
-							if(lastscan == thisscan){
-								++subsetscan;
-							}
-							else{
-								subsetscan=0;
-							}
-						}
-
-						// new btime:
-						btime=thistime;
-						// next last day is this day
-						lastday=day;
-
-						thisnrow=0;
-						meanIntTim=0.;
-						++recLength;
+				// If state changed, then print out last scan's info
+				if (!samescan) {
+					//	      cout << "thisscan " << thisscan << "lastscan " << lastscan
+					// 		   << " fldids " << fldids << " lastfldids " << lastfldids
+					// 		   << " ddids " << ddids << " lastddids " << lastddids
+					// 		   << " samescan " << (thisscan==lastscan) <<  " samefld " << samefld << " sameddi " << sameddi
+					// 		   << " meanIntTim " << meanIntTim << " thisnrow " << thisnrow << " inttim.makeVector().size() "
+					// 		   <<  inttim.makeVector().size() << " meanIntTim/thisnrow " << meanIntTim/thisnrow << endl;
+					if (thisnrow>0){
+						meanIntTim/=thisnrow;
+					}
+					else {
+						meanIntTim=0.0;
 					}
 
-					//						etime=thistime;
-					etime=timecol(nrow-1);   //CAS-2751
+					// this MJD
+					day=floor(MVTime(btime/C::day).day());
 
-				} else {
-					// initialize btime and etime
+					// Spws
+					spwids.resize(lastddids.nelements());
+					for (uInt iddi=0; iddi<spwids.nelements();++iddi)
+						spwids(iddi)=specwindids(lastddids(iddi));
+
+					String name=fieldnames(lastfldids(0));
+
+					if (verbose) {
+						// Print out last scan's times, fields, ddis
+						os.output().setf(ios::right, ios::adjustfield);
+						os.output().width(widthLead); os << "  ";
+						os.output().width(widthbtime);
+						if (day!=lastday) {     // print date
+							os << MVTime(btime/C::day).string(MVTime::DMY,7);
+						} else {                // omit date
+							os << MVTime(btime/C::day).string(MVTime::TIME,7);
+						}
+						os.output().width(3); os << " - ";
+						os.output().width(widthetime);
+						os << MVTime(etime/C::day).string(MVTime::TIME,7);
+						os.output().width(widthLead); os << "  ";
+						os.output().setf(ios::right, ios::adjustfield);
+						os.output().width(widthScan); os << lastscan;
+						os.output().width(widthLead); os << "  ";
+						os.output().setf(ios::right, ios::adjustfield);
+						os.output().width(widthFieldId); os << lastfldids(0) << " ";
+						os.output().setf(ios::left, ios::adjustfield);
+						if (name.length()>20) name.replace(19,1,'*');
+						os.output().width(widthField); os << name.at(0,20);
+
+						os.output().width(widthnrow); os << thisnrow;
+						os.output().width(widthInttim); os << meanIntTim;
+						os.output().width(widthLead); os << " ";
+						os << spwids;
+						if (spwids.size() <= 9) {
+							os.output().width(28 - (3*spwids.size())); os << " ";
+						}
+						// The Obsmode column can be empty only report them if it is not
+						String obsMode = "";
+						if (obsModes.size() > (unsigned int) 0) {
+							obsMode=obsModes(laststids(0));
+						}
+						os << obsMode;
+
+						os << endl;
+					}
+					if(fillRecord && (recLength < maxRecLength))  {
+						Record scanRecord;
+						Record subScanRecord;
+						String scanrecid=String("scan_")+String::toString(lastscan);
+						if(outRec.isDefined(scanrecid)){
+							scanRecord=outRec.asrwRecord(scanrecid);
+							outRec.removeField(scanrecid);
+						}
+
+						subScanRecord.define("BeginTime", btime/C::day);
+						subScanRecord.define("EndTime", etime/C::day);
+						subScanRecord.define("scanId", lastscan);
+						subScanRecord.define("FieldId", lastfldids(0));
+						subScanRecord.define("FieldName", name);
+						subScanRecord.define("StateId", laststids(0));
+						subScanRecord.define("nRow", thisnrow);
+						subScanRecord.define("IntegrationTime", meanIntTim);
+						subScanRecord.define("SpwIds", spwids);
+						scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
+						if(!outRec.isDefined(scanrecid)){
+							outRec.defineRecord(scanrecid, scanRecord);
+						}
+						if(lastscan == thisscan){
+							++subsetscan;
+						}
+						else{
+							subsetscan=0;
+						}
+					}
+
+					// new btime:
 					btime=thistime;
-					//						etime=thistime;
-					etime=timecol(nrow-1);  //CAS-2751
-					// no longer first time thru
-					firsttime=False;
+					// next last day is this day
+					lastday=day;
+
+					thisnrow=0;
+					meanIntTim=0.;
+					++recLength;
 				}
 
-				thisnrow+=nrow;
+				//						etime=thistime;
+				etime=timecol(nrow-1);   //CAS-2751
 
-				meanIntTim+=sum(inttim.makeVector());
-
-				// for comparison at next timestamp
-				lastfldids.assign(fldids);
-				lastddids.assign(ddids);
-				laststids.assign(stids);
-				lastscan=thisscan;
-
-				// push iteration
-				stiter.next();
-			} // end of time iteration
-
-			if (thisnrow>0)
-				meanIntTim/=thisnrow;
-			else
-				meanIntTim=0.0;
-
-			// this MJD
-			day=floor(MVTime(btime/C::day).day());
-
-			// Spws
-			spwids.resize(lastddids.nelements());
-			for (uInt iddi=0; iddi<spwids.nelements();++iddi)
-				spwids(iddi)=specwindids(lastddids(iddi));
-
-			String name=fieldnames(lastfldids(0));
-			if (verbose) {
-				// Print out final scan's times, fields, ddis
-				os.output().setf(ios::right, ios::adjustfield);
-				os.output().width(widthLead); os << "  ";
-				os.output().width(widthbtime);
-				if (day!=lastday) {
-					os << MVTime(btime/C::day).string(MVTime::DMY,7);
-				} else {
-					os << MVTime(btime/C::day).string(MVTime::TIME,7);
-				}
-				os.output().width(widthLead);  os << " - ";
-				os.output().width(widthetime);
-				os << MVTime(etime/C::day).string(MVTime::TIME,7);
-				os.output().width(widthLead); os << "  ";
-				os.output().setf(ios::right, ios::adjustfield);
-				os.output().width(widthScan); os << lastscan;
-				os.output().width(widthLead);  os << "  ";
-				os.output().setf(ios::right, ios::adjustfield);
-				os.output().width(widthFieldId); os << lastfldids(0) << " ";
-				os.output().setf(ios::left, ios::adjustfield);
-				if (name.length()>20) name.replace(19,1,'*');
-				os.output().width(widthField); os << name.at(0,20);
-				os.output().width(widthnrow); os << thisnrow;
-				os.output().width(widthInttim); os << meanIntTim;
-				os.output().width(widthLead);  os << "  ";
-				os << spwids;
-				if (spwids.size() <= 9) {
-					os.output().width(28 - (3*spwids.size())); os << " ";
-				}
-				// The Obsmode column can be empty only report them if it is not
-				String obsMode = "";
-				if (obsModes.size() > (unsigned int) 0) {
-					obsMode=obsModes(laststids(0));
-				}
-				os << obsMode;
-				os << endl;
-			}
-			if(fillRecord  && (recLength < maxRecLength)){
-				Record scanRecord;
-				Record subScanRecord;
-				String scanrecid=String("scan_")+String::toString(lastscan);
-				if(outRec.isDefined(scanrecid)){
-					scanRecord=outRec.asrwRecord(scanrecid);
-					outRec.removeField(scanrecid);
-				}
-
-				subScanRecord.define("BeginTime", btime/C::day);
-				subScanRecord.define("EndTime", etime/C::day);
-				subScanRecord.define("scanId", lastscan);
-				subScanRecord.define("FieldId", lastfldids(0));
-				subScanRecord.define("FieldName", name);
-				subScanRecord.define("nRow", thisnrow);
-				subScanRecord.define("IntegrationTime", meanIntTim);
-				subScanRecord.define("SpwIds", spwids);
-				scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
-				if(!outRec.isDefined(scanrecid)){
-					outRec.defineRecord(scanrecid, scanRecord);
-				}
-				subsetscan=0;
-				++recLength;
+			} else {
+				// initialize btime and etime
+				btime=thistime;
+				//						etime=thistime;
+				etime=timecol(nrow-1);  //CAS-2751
+				// no longer first time thru
+				firsttime=False;
 			}
 
-			// post to logger
-			if (verbose) os << LogIO::POST;
+			thisnrow+=nrow;
 
-			// push OBS/ARR iteration
-			obsarriter.next();
-		} // end of OBS/ARR iteration
+			meanIntTim+=sum(inttim.makeVector());
 
-		if (verbose){
-			os << "           (nRows = Total number of rows per scan) " << endl;
-			os << LogIO::POST;
+			// for comparison at next timestamp
+			lastfldids.assign(fldids);
+			lastddids.assign(ddids);
+			laststids.assign(stids);
+			lastscan=thisscan;
+
+			// push iteration
+			stiter.next();
+		} // end of time iteration
+
+		if (thisnrow>0)
+			meanIntTim/=thisnrow;
+		else
+			meanIntTim=0.0;
+
+		// this MJD
+		day=floor(MVTime(btime/C::day).day());
+
+		// Spws
+		spwids.resize(lastddids.nelements());
+		for (uInt iddi=0; iddi<spwids.nelements();++iddi)
+			spwids(iddi)=specwindids(lastddids(iddi));
+
+		String name=fieldnames(lastfldids(0));
+		if (verbose) {
+			// Print out final scan's times, fields, ddis
+			os.output().setf(ios::right, ios::adjustfield);
+			os.output().width(widthLead); os << "  ";
+			os.output().width(widthbtime);
+			if (day!=lastday) {
+				os << MVTime(btime/C::day).string(MVTime::DMY,7);
+			} else {
+				os << MVTime(btime/C::day).string(MVTime::TIME,7);
+			}
+			os.output().width(widthLead);  os << " - ";
+			os.output().width(widthetime);
+			os << MVTime(etime/C::day).string(MVTime::TIME,7);
+			os.output().width(widthLead); os << "  ";
+			os.output().setf(ios::right, ios::adjustfield);
+			os.output().width(widthScan); os << lastscan;
+			os.output().width(widthLead);  os << "  ";
+			os.output().setf(ios::right, ios::adjustfield);
+			os.output().width(widthFieldId); os << lastfldids(0) << " ";
+			os.output().setf(ios::left, ios::adjustfield);
+			if (name.length()>20) name.replace(19,1,'*');
+			os.output().width(widthField); os << name.at(0,20);
+			os.output().width(widthnrow); os << thisnrow;
+			os.output().width(widthInttim); os << meanIntTim;
+			os.output().width(widthLead);  os << "  ";
+			os << spwids;
+			if (spwids.size() <= 9) {
+				os.output().width(28 - (3*spwids.size())); os << " ";
+			}
+			// The Obsmode column can be empty only report them if it is not
+			String obsMode = "";
+			if (obsModes.size() > (unsigned int) 0) {
+				obsMode=obsModes(laststids(0));
+			}
+			os << obsMode;
+			os << endl;
+		}
+		if(fillRecord  && (recLength < maxRecLength)){
+			Record scanRecord;
+			Record subScanRecord;
+			String scanrecid=String("scan_")+String::toString(lastscan);
+			if(outRec.isDefined(scanrecid)){
+				scanRecord=outRec.asrwRecord(scanrecid);
+				outRec.removeField(scanrecid);
+			}
+
+			subScanRecord.define("BeginTime", btime/C::day);
+			subScanRecord.define("EndTime", etime/C::day);
+			subScanRecord.define("scanId", lastscan);
+			subScanRecord.define("FieldId", lastfldids(0));
+			subScanRecord.define("FieldName", name);
+			subScanRecord.define("nRow", thisnrow);
+			subScanRecord.define("IntegrationTime", meanIntTim);
+			subScanRecord.define("SpwIds", spwids);
+			scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
+			if(!outRec.isDefined(scanrecid)){
+				outRec.defineRecord(scanrecid, scanRecord);
+			}
+			subsetscan=0;
+			++recLength;
 		}
 
-		//		} // end of verbose section
+		// post to logger
+		if (verbose) os << LogIO::POST;
 
-	} // end if any data in ms
+		// push OBS/ARR iteration
+		obsarriter.next();
+	} // end of OBS/ARR iteration
+
+	if (verbose){
+		os << "           (nRows = Total number of rows per scan) " << endl;
+		os << LogIO::POST;
+	}
+
+	//		} // end of verbose section
+
 
 
 	os << LogIO::POST;
@@ -1011,6 +1011,8 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 		Int diamprec=1;
 		uInt latwidth=13;
 		uInt longwidth=14;
+		uInt offsetwidth = 14;
+		uInt positionwidth = 16;
 
 		os.output().setf(ios::fixed, ios::floatfield);
 		os.output().setf(ios::left, ios::adjustfield);
@@ -1025,10 +1027,41 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 		os.output().width(diamwidth+4); os << "Diam.";
 		os.output().width(longwidth);   os << "Long.";
 		os.output().width(latwidth);    os << "Lat.";
+		os.output().width(3*offsetwidth);
+		os << "       Offset from array center (m)";
+		os.output().width(3*positionwidth);
+		os << "         ITRF Geocentric coordinates (m)";
 		os << endl;
+		os << indent;
+		os.output().width(
+			indwidth + namewidth + statwidth + diamwidth + 4
+			+ longwidth + latwidth
+		);
+		os << " ";
+		os.output().setf(ios::right, ios::adjustfield);
+		os.output().width(offsetwidth);
+		os << "East";
+		os.output().width(offsetwidth);
+		os << "North";
+		os.output().width(offsetwidth);
+		os << "Elevation";
+		os.output().width(positionwidth);
+		os << "x";
+		os.output().width(positionwidth);
+		os << "y";
+		os.output().width(positionwidth);
+		os << "z";
+		os << endl;
+
+
+		MSMetaDataOnDemand msmd(*pMS);
+		vector<MPosition> antPos = msmd.getAntennaPositions();
+		Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
+		vector<Quantum<Vector<Double> > > offsets = msmd.getAntennaOffsets(antPos);
 
 		// For each ant
 		for (Int i=0; i<nAnt; i++) {
+			os.output().setf(ios::left, ios::adjustfield);
 
 			Int ant=antIds(i);
 			// Get diameter
@@ -1039,7 +1072,12 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 			MPosition mLongLat=antCol.positionMeas()(ant);
 			MVAngle mvLong= mLongLat.getAngle().getValue()(0);
 			MVAngle mvLat= mLongLat.getAngle().getValue()(1);
-
+			Vector<Double> antOff = offsets[i].getValue("m");
+			if (posIsITRF) {
+				MeasConvert<MPosition> toItrf(antPos[i], MPosition::ITRF);
+				antPos[i] = toItrf(antPos[i]);
+			}
+			Vector<Double> xyz = antPos[i].get("m").getValue();
 			// write the row
 			os << indent;
 			os.output().width(indwidth);  os << ant;
@@ -1049,6 +1087,21 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 			os.output().width(diamwidth); os << diam.getValue(diamUnit)<<"m   ";
 			os.output().width(longwidth); os << mvLong.string(MVAngle::ANGLE,7);
 			os.output().width(latwidth);  os << mvLat.string(MVAngle::DIG2,7);
+			os.output().setf(ios::right, ios::adjustfield);
+			os.output().precision(4);
+			os.output().width(offsetwidth);
+			os << antOff[0];
+			os.output().width(offsetwidth);
+			os << antOff[1];
+			os.output().width(offsetwidth);
+			os << antOff[2];
+			os.output().precision(6);
+			os.output().width(positionwidth);
+			os << xyz[0];
+			os.output().width(positionwidth);
+			os << xyz[1];
+			os.output().width(positionwidth);
+			os << xyz[2];
 			os << endl;
 		}
 
@@ -1158,8 +1211,8 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
 		Int widthField =  5;
 		Int widthCode  =  5;
 		Int widthName  = 20;
-		Int widthRA    = 15;
-		Int widthDec   = 15;
+		Int widthRA    = 16;
+		Int widthDec   = 16;
 		Int widthType  =  8;
 		Int widthSrc   =  6;
 		Int widthnVis  =  7;
@@ -1195,8 +1248,8 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
 				os.output().width(widthField);	os << (fld);
 				os.output().width(widthCode);   os << msFC.code()(fld);
 				os.output().width(widthName);	os << name.at(0,20);
-				os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,11);
-				os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,10);
+				os.output().width(widthRA);	os << mvRa(0.0).string(MVAngle::TIME,12);
+				os.output().width(widthDec);	os << mvDec.string(MVAngle::DIG2,11);
 				os.output().width(widthType);
 				os << MDirection::showType(mRaDec.getRefPtr()->getType());
 				if (srcok) {os.output().width(widthSrc);	os << msFC.sourceId()(fld);}
@@ -1664,6 +1717,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		// Define the column widths
 		Int widthLead	=  2;
 		Int widthSpwId       =  7;
+		Int widthName = 10;
 		Int widthFrame      =  6;
 		Int widthFreq	= 12;
 		Int widthFrqNum	= 12;
@@ -1675,6 +1729,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		os.output().setf(ios::left, ios::adjustfield);
 		os.output().width(widthLead);	os << "  ";
 		os.output().width(widthSpwId);	os << "SpwID  ";
+		os.output().width(widthName);	os << "Name  ";
 		os.output().setf(ios::right, ios::adjustfield);
 		os.output().width(widthNumChan);	os << "#Chans" << " ";
 		os.output().setf(ios::left, ios::adjustfield);
@@ -1702,26 +1757,30 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 			os.output().width(widthLead);		os << "  ";
 			// 1th column: Spectral Window Id
 			os.output().width(widthSpwId); os << (spw);
-			// 2nd column: number of channels in the spectral window
+			// 2nd column: SPW name
+			os.output().width(widthName);
+			os << msSWC.name()(spw) << " ";
+
+			// 3rd column: number of channels in the spectral window
 			os.output().setf(ios::right, ios::adjustfield);
 			os.output().width(widthNumChan);		os << msSWC.numChan()(spw) << " ";
-			// 3rd column: Reference Frame info
+			// 4th column: Reference Frame info
 			os.output().setf(ios::left, ios::adjustfield);
 			os.output().width(widthFrame);
 			os<< msSWC.refFrequencyMeas()(spw).getRefString();
-			// 4th column: Chan 1 freq (may be at high freq end of band!)
+			// 5th column: Chan 1 freq (may be at high freq end of band!)
 			os.output().width(widthFrqNum);
 			os<< msSWC.chanFreq()(spw)(IPosition(1,0))/1.0e6;
-			// 5th column: channel resolution
+			// 6th column: channel resolution
 			os.output().width(widthFrqNum+2);
 			os << msSWC.chanWidth()(spw)(IPosition(1,0))/1000;
-			// 6th column: total bandwidth of the spectral window
+			// 7th column: total bandwidth of the spectral window
 			os.output().width(widthFrqNum);
 			os<< msSWC.totalBandwidth()(spw)/1000;
-			// 7th column: reference frequency
+			// 8th column: reference frequency
 			//			os.output().width(widthFrqNum);
 			//			os<< msSWC.refFrequency()(spw)/1.0e6;
-			// 7th column: the correlation type(s)
+			// 9th column: the correlation type(s)
 			for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
 				os.output().width(widthCorrType);
 				Int index = msPolC.corrType()(pol)(IPosition(1,j));

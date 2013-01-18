@@ -135,7 +135,7 @@ void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows,
                                const Block<String>& omit)
 {
   copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(),
-		 out.tableType(), in, noRows);
+		 out.tableType(), in, noRows, omit);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {

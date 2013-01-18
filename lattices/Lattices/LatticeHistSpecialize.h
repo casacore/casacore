@@ -104,19 +104,19 @@ public:
                     uInt whereLabel, uInt ci, Bool page);
 
 // Process data chunk creating histogram.
-   static void process  (const Float* pInData,
-                         const Bool* pInMask,
-                         Block<Float>* pHist, 
-                         const Vector<Float>& clip,
-                         Float binWidth, uInt offset,
-                         uInt nrval, uInt nBins, uInt inIncr);
+   static void process(
+		   const Float* pInData, const Bool* pInMask,
+		   Block<Float>* pHist, const Vector<Float>& clip,
+		   Float binWidth, uInt offset, uInt nrval,
+		   uInt nBins, uInt dataIncr, uInt maskIncr
+   );
 //
-   static void process (const Complex* pInData,
-                        const Bool* pInMask,
-                        Block<Complex>* pHist, 
-                        const Vector<Complex>& clip,
-                        Complex binWidth, uInt offset,
-                        uInt nrval, uInt nBins, uInt inIncr);
+   static void process (
+		   const Complex* pInData, const Bool* pInMask,
+		   Block<Complex>* pHist, const Vector<Complex>& clip,
+		   Complex binWidth, uInt offset, uInt nrval,
+		   uInt nBins, uInt dataIncr, uInt maskIncr
+   );
 
 // Set bin width.  For complex, real and imaginary treated separately
    static Float setBinWidth (Float dmin, Float dmax, uInt nBins);

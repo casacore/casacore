@@ -202,6 +202,7 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
     LogIO os(LogOrigin("MeasComet", String("initMeas(String, Table *)"),
 		       WHERE));
 
+    closeMeas(); // seems to need this to ensure full initialization (TT) 
     measFlag_p = False;
     tp_p = which;
     TableRecord kws;

@@ -40,7 +40,8 @@ String StreamLogSink::id( ) const {
     return String("StreamLogSink");
 }
 
-StreamLogSink::StreamLogSink(ostream *theStream) : stream_p(theStream)
+StreamLogSink::StreamLogSink(ostream *theStream, bool del)
+    : stream_p(theStream), deleteStream(del)
 {
     if (stream_p == 0) {
         stream_p = &cerr;
@@ -48,8 +49,8 @@ StreamLogSink::StreamLogSink(ostream *theStream) : stream_p(theStream)
 }
 
 StreamLogSink::StreamLogSink(LogMessage::Priority filter,
-			     ostream *theStream)
-  : LogSinkInterface(LogFilter(filter)), stream_p(theStream)
+			     ostream *theStream, bool del)
+    : LogSinkInterface(LogFilter(filter)), stream_p(theStream), deleteStream(del)
 {
     if (stream_p == 0) {
         stream_p = &cerr;
@@ -57,8 +58,8 @@ StreamLogSink::StreamLogSink(LogMessage::Priority filter,
 }
 
 StreamLogSink::StreamLogSink(const LogFilterInterface &filter,
-			     ostream *theStream)
-  : LogSinkInterface(filter), stream_p(theStream)
+			     ostream *theStream, bool del)
+    : LogSinkInterface(filter), stream_p(theStream), deleteStream(del)
 {
     if (stream_p == 0) {
         stream_p = &cerr;
@@ -66,7 +67,7 @@ StreamLogSink::StreamLogSink(const LogFilterInterface &filter,
 }
 
 StreamLogSink::StreamLogSink(const StreamLogSink &other)
-  : LogSinkInterface(other), stream_p(other.stream_p)
+    : LogSinkInterface(other), stream_p(other.stream_p), deleteStream(false)
 {
     // Nothing
 }
@@ -77,12 +78,14 @@ StreamLogSink &StreamLogSink::operator=(const StreamLogSink &other)
         LogSinkInterface &This = *this;
 	This = other;
 	stream_p = other.stream_p;
+        deleteStream = false;
     }
     return *this;
 }
 
 StreamLogSink::~StreamLogSink()
 {
+    if(deleteStream) delete stream_p;
     stream_p = 0;
 }
 

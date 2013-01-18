@@ -36,7 +36,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-struct SourceLocation;
+class SourceLocation;
 
 // <summary> 
 // LogOrigin: The source code location of the originator of a LogMessage.

@@ -120,7 +120,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                            Matrix<Int>& selectedBaselines) 
   {
     TableExprNode antennaTEN;
-    MSAntennaParse *thisParser = new MSAntennaParse(ms);
+    TableExprNode col1AsTEN = ms->col(ms->columnName(MS::ANTENNA1)),
+    col2AsTEN = ms->col(ms->columnName(MS::ANTENNA2));
+    MSAntennaParse *thisParser = new MSAntennaParse(ms->antenna(),col1AsTEN, col2AsTEN);
     try
       {
 	antennaTEN=baseMSAntennaGramParseCommand(thisParser, command, 

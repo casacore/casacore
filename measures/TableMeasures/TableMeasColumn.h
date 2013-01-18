@@ -173,7 +173,9 @@ private:
   TableMeasColumn& operator= (const TableMeasColumn& that);
 };
 
+// For backwards compatibility:
 
+#define ROTableMeasColumn TableMeasColumn
 
 } //# NAMESPACE CASA - END
 

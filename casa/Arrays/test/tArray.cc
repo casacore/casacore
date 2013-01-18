@@ -374,10 +374,10 @@ void oldArrayTest()
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(x(i) == i);
 
- 	AlwaysAssertExit(sum(x) == 10);
- 	AlwaysAssertExit(product(y) == 120);
- 	AlwaysAssertExit(mean(y) == median(y) && mean(y) == 3);
- 
+	AlwaysAssertExit(sum(x) == 10);
+	AlwaysAssertExit(product(y) == 120);
+	AlwaysAssertExit(mean(y) == median(y) && mean(y) == 3);
+
         AlwaysAssertExit(anyLE(x, y) && anyLE(x, y-1) &&
 			 !anyLE(x, y-2));
         AlwaysAssertExit(anyLT(x, y) && !anyLT(x, y-1) &&
@@ -1020,7 +1020,25 @@ int main()
 	testResizeCopy();
         // Test getting row, column, diagonal
         testRowColDiag();
-    } catch (AipsError x) {
+        {
+        	// tovector tests
+        	Vector<Int> x(3);
+        	x[0] = 20;
+        	x[1] = 33;
+        	x[2] = -20;
+        	vector<Int> tx;
+        	x.tovector(tx);
+        	Vector<Int> xx = x.tovector();
+        	AlwaysAssertExit(tx.size() == x.size());
+        	AlwaysAssertExit(tx.size() == xx.size());
+
+        	for (uInt i=0; i<x.size(); i++) {
+        		AlwaysAssertExit(x[i] == tx[i]);
+        		AlwaysAssertExit(x[i] == xx[i]);
+
+        	}
+        }
+    } catch (const AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

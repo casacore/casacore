@@ -106,6 +106,7 @@ namespace casa {
     case 0:
       return True;
     case EBUSY:
+    case EDEADLK: // returned by error_check mutexes
       return False;
     default:
       throw SystemCallError ("pthread_mutex_trylock", error);

@@ -169,7 +169,7 @@ public:
   // The copy constructor uses reference semantics.
   ArrayLattice (const ArrayLattice<T>& other);
 
-  ~ArrayLattice();
+  virtual ~ArrayLattice();
 
   // The assignment operator uses copy semantics.
   ArrayLattice<T>& operator= (const ArrayLattice<T>& other);

@@ -216,6 +216,9 @@ public:
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
   virtual Bool toRecord(String &error, RecordInterface &out) const;
+  // this version throws an exception rather than returning false
+  virtual void toRecord(RecordInterface &out) const;
+
   // Return identification
   virtual const String &ident() const;
 

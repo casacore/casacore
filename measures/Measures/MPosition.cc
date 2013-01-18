@@ -198,6 +198,14 @@ Bool MPosition::getType(MPosition::Types &tp, const String &in) {
   return True;
 }
 
+MPosition::Types MPosition::getType(const String& in) {
+	Types myType;
+	if (! getType(myType, in)) {
+		throw AipsError("MPosition::Types: Unrecognized type string " + in);
+	}
+	return myType;
+}
+
 Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
   MPosition::Types tp;
   if (MPosition::getType(tp, in)) mr = MPosition::Ref(tp);

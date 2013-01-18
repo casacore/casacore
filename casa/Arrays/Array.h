@@ -317,8 +317,12 @@ public:
     // details of the operation and its reverse (i.e. creating a 
     // <src>Vector</src> from a <src>vector</src>), and for details of
     // definition and instantiation.
+    // <group>
     template <class U>
     void tovector(vector<T, U> &out) const;
+
+    vector<T> tovector() const;
+    // </group>
 
     // It is occasionally useful to have an array which access the same
     // storage appear to have a different shape. For example,

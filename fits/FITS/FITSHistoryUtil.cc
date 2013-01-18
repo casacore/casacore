@@ -190,6 +190,8 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 				  const Vector<String> &history, 
 				  uInt nstrings, Bool aipsppFormat)
 {
+    LogIO os;
+    os << LogOrigin("FITSHistoryUtil", "fromHistory", WHERE);
     LogSink& sink = logger.sink();
     AlwaysAssert(nstrings <= history.nelements(), AipsError);
 //
@@ -258,7 +260,13 @@ void FITSHistoryUtil::fromHISTORY(LoggerHolder& logger,
 		objid = objid2.at(0, objid2.length() - 1);
 	    }
 //
-            sink.writeLocally(dtime, msg, priority, location, objid);
+	    try{
+	      sink.writeLocally(dtime, msg, priority, location, objid);
+	    }
+	    catch (const AipsError& x) {
+	      os << LogIO::WARN << "Problem while parsing image HISTORY: " << x.getMesg() 
+		 << endl << "Will try to continue ... " << LogIO::POST; 
+	    }
 	}
     } else {
 

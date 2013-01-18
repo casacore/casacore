@@ -389,6 +389,15 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   return False;
 }
 
+void MeasureHolder::toRecord(RecordInterface& out) const {
+	String error;
+	if (! toRecord(error, out)) {
+		throw AipsError(error);
+	}
+}
+
+
+
 Bool MeasureHolder::toType(String &error, RecordInterface &out) const {
   if (hold_p.ptr() && putType(error, out)) return True;
   error += String("No Measure specified in MeasureHolder::toType\n");
