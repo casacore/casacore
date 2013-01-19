@@ -89,7 +89,7 @@ public:
     // </group>
 
     // Get the function node.
-    const TableExprFuncNode* getChild() const
+    TableExprFuncNode* getChild()
       { return &node_p; }
 
     // Link the children to the node and convert the children
@@ -99,7 +99,7 @@ public:
 				       PtrBlock<TableExprNodeRep*>& nodes,
 				       const Block<Int>& dtypeOper);
 
-private:
+protected:
     // Try if the function gives a constant result.
     // If so, set the expression type to Constant.
     void tryToConst();
@@ -116,6 +116,7 @@ private:
         { return node_p.argDataType(); }
     // </group>
 
+private:
     // Set unit scale factor (needed for sqrt).
     void setScale (Double scale)
         { node_p.setScale (scale); }

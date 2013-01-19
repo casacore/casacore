@@ -36,10 +36,9 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
-				      ValueType vtype,
 				      const TableExprNodeSet& source,
 				      uInt origin)
-: TableExprFuncNode (ftype, dtype, vtype, source),
+: TableExprFuncNode (ftype, dtype, VTScalar, source),
   origin_p          (origin)
 {}
 
@@ -311,7 +310,123 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
   return 0;
 }
 
-Array<Bool> TableExprConeNode::getArrayBool (const TableExprId& id)
+
+TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
+                                 (Block<Int>& dtypeOper,
+				  ValueType& resVT, Block<Int>&,
+				  FunctionType fType,
+				  PtrBlock<TableExprNodeRep*>& nodes)
+{
+  int nrarg = 3;
+  switch (fType) {
+  // The 2 argument cone functions accept arrays only.
+  // The result is a Bool scalar or array.
+  case TableExprFuncNode::conesFUNC:
+  case TableExprFuncNode::anyconeFUNC:
+  case TableExprFuncNode::findconeFUNC:
+    nrarg = 2;      // fall through
+  // The 3 argument cone functions accept a scalar or array as the 3rd argument.
+  // The result is a Bool scalar or array.
+  case TableExprFuncNode::cones3FUNC:
+  case TableExprFuncNode::anycone3FUNC:
+  case TableExprFuncNode::findcone3FUNC:
+    {
+      checkNumOfArg (nrarg, nrarg, nodes);
+      for (Int i=0; i<2; i++) {
+	if (nodes[i]->valueType() != VTArray) {
+	  throw TableInvExpr
+	    ("First 2 arguments of CONE functions must be double arrays");
+	}
+      }
+      // Result is a scalar or array.
+      resVT = VTScalar;
+      // Check the number of elements in the position node.
+      Int nvalPos = findNelem (nodes[0]);
+      Int nvalCone = findNelem (nodes[1]);
+      // findcone returns an index value as integer.
+      // This is a scalar if there is one source.
+      if (fType == findconeFUNC  ||  fType == findcone3FUNC) {
+	if (nvalPos != 2) {
+	  resVT = VTArray;
+	}
+	return checkDT (dtypeOper, NTReal, NTInt, nodes);
+      }    
+      // cones returns an array if there is more than one cone or radius.
+      if (fType == conesFUNC) {
+	if (nvalCone != 3) {
+	  resVT = VTArray;
+	}
+      } else if (fType == cones3FUNC) {
+	if (nvalCone != 2  ||  nodes[2]->valueType() != VTScalar) {
+	  resVT = VTArray;
+	}
+      }
+      return checkDT (dtypeOper, NTReal, NTBool, nodes);
+    }
+  default:
+    throw (TableInvExpr ("TableExprConeNode::checkOperands, "
+			 "function not contained in switch statement"));
+  }
+}
+
+Int TableExprConeNode::findNelem (const TableExprNodeRep* node)
+{
+  Int nelem = -1;
+  if (node->valueType() == VTSet) {
+    const TableExprNodeSet* set = dynamic_cast<const TableExprNodeSet*>(node);
+    AlwaysAssert (set, AipsError);
+    TableExprNodeRep* arr = set->setOrArray();
+    if (arr->valueType() != VTArray) {
+      throw TableInvExpr ("CONES argument is a non-array set");
+    }
+    nelem = arr->shape().product();
+    delete arr;
+  } else {
+    nelem = node->shape().product();
+  }
+  return nelem;
+}
+
+
+
+TableExprConeNodeArray::TableExprConeNodeArray (TableExprFuncNode::FunctionType ftype,
+                                                NodeDataType dtype,
+                                                const TableExprNodeSet& source,
+                                                uInt origin)
+  : TableExprFuncNodeArray (ftype, dtype, VTArray, source, TaQLStyle()),
+  origin_p               (origin)
+{
+  ndim_p = -1;
+}
+
+TableExprConeNodeArray::~TableExprConeNodeArray()
+{}
+
+// Fill the children pointers of a node.
+// Also reduce the tree if possible by combining constants.
+// When one of the nodes is a constant, convert its type if
+// it does not match the other one.
+TableExprNodeRep* TableExprConeNodeArray::fillNode
+                                   (TableExprConeNodeArray* thisNode,
+				    PtrBlock<TableExprNodeRep*>& nodes,
+				    const Block<Int>& dtypeOper)
+{
+  return TableExprFuncNodeArray::fillNode (thisNode, nodes, dtypeOper);
+}
+
+// Fill the children pointers of a node.
+void TableExprConeNodeArray::fillChildNodes (TableExprConeNodeArray* thisNode,
+                                             PtrBlock<TableExprNodeRep*>& nodes,
+                                             const Block<Int>& dtypeOper)
+{
+  TableExprFuncNode::fillChildNodes (thisNode->getChild(), nodes, dtypeOper);
+}
+
+void TableExprConeNodeArray::tryToConst()
+{
+}
+
+Array<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::conesFUNC:
@@ -408,12 +523,12 @@ Array<Bool> TableExprConeNode::getArrayBool (const TableExprId& id)
       return resArr;
     }
   default:
-    throw (TableInvExpr ("TableExprConeNode::getArrayBool, "
+    throw (TableInvExpr ("TableExprConeNodeArray::getArrayBool, "
 			 "unknown function"));
   }
 }
 
-Array<Int64> TableExprConeNode::getArrayInt (const TableExprId& id)
+Array<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::findconeFUNC:
@@ -531,86 +646,10 @@ Array<Int64> TableExprConeNode::getArrayInt (const TableExprId& id)
       return resArr;
     }
   default:
-    throw (TableInvExpr ("TableExprConeNode::getArrayDouble, "
+    throw (TableInvExpr ("TableExprConeNodeArray::getArrayDouble, "
 			 "unknown function"));
   }
 }
 
-
-TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
-                                 (Block<Int>& dtypeOper,
-				  ValueType& resVT, Block<Int>&,
-				  FunctionType fType,
-				  PtrBlock<TableExprNodeRep*>& nodes)
-{
-  int nrarg = 3;
-  switch (fType) {
-  // The 2 argument cone functions accept arrays only.
-  // The result is a Bool scalar or array.
-  case TableExprFuncNode::conesFUNC:
-  case TableExprFuncNode::anyconeFUNC:
-  case TableExprFuncNode::findconeFUNC:
-    nrarg = 2;      // fall through
-  // The 3 argument cone functions accept a scalar or array as the 3rd argument.
-  // The result is a Bool scalar or array.
-  case TableExprFuncNode::cones3FUNC:
-  case TableExprFuncNode::anycone3FUNC:
-  case TableExprFuncNode::findcone3FUNC:
-    {
-      checkNumOfArg (nrarg, nrarg, nodes);
-      for (Int i=0; i<2; i++) {
-	if (nodes[i]->valueType() != VTArray) {
-	  throw TableInvExpr
-	    ("First 2 arguments of CONE functions must be double arrays");
-	}
-      }
-      // Result is a scalar or array.
-      resVT = VTScalar;
-      // Check the number of elements in the position node.
-      Int nvalPos = findNelem (nodes[0]);
-      Int nvalCone = findNelem (nodes[1]);
-      // findcone returns an index value as integer.
-      // This is a scalar if there is one source.
-      if (fType == findconeFUNC  ||  fType == findcone3FUNC) {
-	if (nvalPos != 2) {
-	  resVT = VTArray;
-	}
-	return checkDT (dtypeOper, NTReal, NTInt, nodes);
-      }    
-      // cones returns an array if there is more than one cone or radius.
-      if (fType == conesFUNC) {
-	if (nvalCone != 3) {
-	  resVT = VTArray;
-	}
-      } else if (fType == cones3FUNC) {
-	if (nvalCone != 2  ||  nodes[2]->valueType() != VTScalar) {
-	  resVT = VTArray;
-	}
-      }
-      return checkDT (dtypeOper, NTReal, NTBool, nodes);
-    }
-  default:
-    throw (TableInvExpr ("TableExprConeNode::checkOperands, "
-			 "function not contained in switch statement"));
-  }
-}
-
-Int TableExprConeNode::findNelem (const TableExprNodeRep* node)
-{
-  Int nelem = -1;
-  if (node->valueType() == VTSet) {
-    const TableExprNodeSet* set = dynamic_cast<const TableExprNodeSet*>(node);
-    AlwaysAssert (set, AipsError);
-    TableExprNodeRep* arr = set->setOrArray();
-    if (arr->valueType() != VTArray) {
-      throw TableInvExpr ("CONES argument is a non-array set");
-    }
-    nelem = arr->shape().product();
-    delete arr;
-  } else {
-    nelem = node->shape().product();
-  }
-  return nelem;
-}
 
 } //# NAMESPACE CASA - END

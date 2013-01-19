@@ -1309,9 +1309,14 @@ TableExprNode TableExprNode::newConeNode
     resDT = TableExprConeNode::checkOperands (dtypeOper, resVT, vtypeOper,
 					      ftype, par);
     // Create new function node and fill it.
-    TableExprConeNode* fnode = new TableExprConeNode (ftype, resDT,
-						      resVT, set, origin);
-    return TableExprConeNode::fillNode (fnode, par, dtypeOper);
+    if (resVT == TableExprNodeRep::VTScalar) {
+      TableExprConeNode* fnode = new TableExprConeNode (ftype, resDT,
+                                                        set, origin);
+      return TableExprConeNode::fillNode (fnode, par, dtypeOper);
+    }
+    TableExprConeNodeArray* fnode = new TableExprConeNodeArray (ftype, resDT,
+                                                                set, origin);
+    return TableExprConeNodeArray::fillNode (fnode, par, dtypeOper);
 }
 
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,

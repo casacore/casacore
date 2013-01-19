@@ -69,7 +69,7 @@ TableExprNodeRep* TableExprFuncNodeArray::fillNode
 				    const Block<Int>& dtypeOper)
 {
     // Fill child nodes as needed.
-    TableExprFuncNode::fillChildNodes (&(thisNode->node_p), nodes, dtypeOper);
+  TableExprFuncNode::fillChildNodes (thisNode->getChild(), nodes, dtypeOper);
     // Set the resulting unit.
     Double scale = TableExprFuncNode::fillUnits (thisNode, thisNode->rwOperands(),
                                                  thisNode->funcType());
