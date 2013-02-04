@@ -378,6 +378,10 @@ protected:
   RegionHandler* getRegionHandler()
     { return regHandPtr_p; }
 
+  // Get non-const access to the ImageInfo.
+  ImageInfo& rwImageInfo()
+    { return imageInfo_p; }
+
 private:
   // It is the job of the derived class to make these variables valid.
   CoordinateSystem coords_p;

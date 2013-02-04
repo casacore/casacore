@@ -133,11 +133,10 @@ try {
 	   TiledShape ts(IPosition(3, 10, 10, 10));
 	   TempImage<Float> image(ts, csys);
 	   ImageInfo info = image.imageInfo();
-	   info.setAllBeams(
-			   10, 0, GaussianBeam(
-					   Quantity(4, "arcsec"), Quantity(2, "arcsec"), Quantity(0, "deg")
-			   )
-	   );
+	   info.setAllBeams(10, 1,
+                            GaussianBeam(Quantity(4, "arcsec"),
+                                         Quantity(2, "arcsec"),
+                                         Quantity(0, "deg")));
 	   image.setImageInfo(info);
 
 	   // rebin non spectral axes should work
@@ -148,7 +147,7 @@ try {
 	   try {
 		   RebinImage<Float> rb1(image, axes);
 	   }
-	   catch (AipsError x) {
+	   catch (AipsError& x) {
 		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
 		   exception = True;
 	   }

@@ -194,67 +194,65 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
 			);
 			return True;
 		}
-		else {
-			// per plane beams
-			// ensure both the spectral and polarization axes are display axes
-			Bool foundSpec = ! cSys.hasSpectralAxis() || False;
-			Bool foundPol = ! cSys.hasPolarizationCoordinate() || False;
-			Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
-			Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
-			Bool found = False;
-			const ImageBeamSet& beams = ii.getBeamSet();
-			Int storageSpecAxis = -1;
-			Int storagePolAxis = -1;
-			for (uInt i=0; i<displayAxes_p.size(); i++) {
-				if (displayAxes_p[i] == specAxis) {
-					foundSpec = True;
-					storageSpecAxis = i;
-				}
-				else if (displayAxes_p[i] == polAxis) {
-					foundPol = True;
-					storagePolAxis = i;
-				}
-				if (found = foundSpec && foundPol) {
-					break;
-				}
-			}
-			if (found) {
-				IPosition beamsShape = beams.shape();
-				if (cSys.hasSpectralAxis()) {
-					AlwaysAssert(
-						beamsShape[0] == beamAreaShape[storageSpecAxis],
-						AipsError
-					);
-				}
-				Int beamPolAxis = -1;
-				if (cSys.hasPolarizationCoordinate()) {
-					beamPolAxis = specAxis < 0 ? 0 : 1;
-					AlwaysAssert(
-						beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
-						AipsError
-					);
-				}
-				IPosition curPos(beamAreaShape.nelements(), 0);
-				GaussianBeam curBeam;
-				IPosition curBeamPos(beams.shape().nelements(), 0);
-				IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
-                ArrayPositionIterator iter(beamAreaShape, axisPath, False);
-				while (! iter.pastEnd()) {
+                // per plane beams
+                // ensure both the spectral and polarization axes are display axes
+                Bool foundSpec = ! cSys.hasSpectralAxis() || False;
+                Bool foundPol = ! cSys.hasPolarizationCoordinate() || False;
+                Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
+                Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
+                Bool found = False;
+                const ImageBeamSet& beams = ii.getBeamSet();
+                Int storageSpecAxis = -1;
+                Int storagePolAxis = -1;
+                for (uInt i=0; i<displayAxes_p.size(); i++) {
+                  if (displayAxes_p[i] == specAxis) {
+                    foundSpec = True;
+                    storageSpecAxis = i;
+                  }
+                  else if (displayAxes_p[i] == polAxis) {
+                    foundPol = True;
+                    storagePolAxis = i;
+                  }
+                  if (found = foundSpec && foundPol) {
+                    break;
+                  }
+                }
+                if (found) {
+                  IPosition beamsShape = beams.shape();
+                  if (cSys.hasSpectralAxis()) {
+                    AlwaysAssert(
+                                 beamsShape[0] == beamAreaShape[storageSpecAxis],
+                                 AipsError
+                                 );
+                  }
+                  Int beamPolAxis = -1;
+                  if (cSys.hasPolarizationCoordinate()) {
+                    beamPolAxis = specAxis < 0 ? 0 : 1;
+                    AlwaysAssert(
+                                 beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
+                                 AipsError
+                                 );
+                  }
+                  IPosition curPos(beamAreaShape.nelements(), 0);
+                  GaussianBeam curBeam;
+                  IPosition curBeamPos(beams.shape().nelements(), 0);
+                  IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
+                  ArrayPositionIterator iter(beamAreaShape, axisPath, False);
+                  while (! iter.pastEnd()) {
                     const IPosition curPos = iter.pos();
                     if (storageSpecAxis >= 0) {
-						curBeamPos[0] = curPos[storageSpecAxis];
-					}
-					if (storagePolAxis >= 0) {
-						curBeamPos[beamPolAxis] = curPos[storagePolAxis];
-					}
-					curBeam = beams(curBeamPos);
-					beamArea(curPos) = coeff * curBeam.getArea("rad2");
+                      curBeamPos[0] = curPos[storageSpecAxis];
+                    }
+                    if (storagePolAxis >= 0) {
+                      curBeamPos[beamPolAxis] = curPos[storagePolAxis];
+                    }
+                    curBeam = beams(curBeamPos[0], curBeamPos[1]);
+                    beamArea(curPos) = coeff * curBeam.getArea("rad2");
                     iter.next();
-				}
-             	return True;
-			}
-		}
-	}
+                  }
+                  return True;
+                }
+        }
 	// if per-plane beams, either the spectral axis and/or the
 	// polarization axis is not a display axis
 	// or else the image has no beam

@@ -232,7 +232,6 @@ public:
     // the size of the beam array
     // Additional consistency checks are done when this object is added via
     // ImageInterface<T>::setImageInfo().
-
     void setBeam(
     	const Int channel, const Int stokes, const Quantity& major,
     	const Quantity& minor, const Quantity& pa
@@ -241,52 +240,106 @@ public:
     void setBeam(
     	const Int channel, const Int stokes, const GaussianBeam& beam
     );
-
     // </group>
 
     // does this object contain multiple beams?
-    Bool hasMultipleBeams() const;
+    Bool hasMultipleBeams() const
+      { return _beams.hasMultiBeam(); }
 
     // does this object conain a single beam
-    Bool hasSingleBeam() const;
+    Bool hasSingleBeam() const
+      { return _beams.hasSingleBeam(); }
 
-    // does this object contain one or more beams?
-    Bool hasBeam() const;
-
-    // inline const Array<Vector<Quantity> >& getHyperPlaneBeams() const { return _hyperplaneBeams; }
+    // Does this object contain one or more beams?
+    Bool hasBeam() const
+      { return ! _beams.empty(); }
 
     // <group>
     // Number of channels and polarizations in per hyper-plane beam array
-    uInt nChannels() const;
-    uInt nStokes() const;
+    uInt nChannels() const
+      { return _beams.nchan(); }
+    uInt nStokes() const
+      { return _beams.nstokes(); }
     // </group>
 
     // <group>
-
     // initialize all per-plane beams to the same value
     void setAllBeams(
     	const uInt nChannels, const uInt nPolarizations,
     	const GaussianBeam& beam
     );
-    // set the per plane beams array directly. If the dimensionality of <src>beams</src>
-    // is 1, one <src>hasSpectral</src> or <src>hasPolarization</src> must be True and
-    // the other False. If the dimensionality of <src>beams</src> is 2,
-    // <src>hasSpectral</src> and <src>hasPolarization</src> are ignored.
+
+    // set the per plane beams array directly.
     void setBeams(const ImageBeamSet& beams);
     // </group>
 
+    // Convert to given beam to a Record.
     Record beamToRecord(const Int channel, const Int stokes) const;
 
-     // Create a new ImageInfo object in which the multi beam info is adapted
-    // to the image properties.
-    ImageInfo adaptMultiBeam (const CoordinateSystem& coords,
-                              const IPosition& shape,
-                              const String& imageName,
-                              LogIO& logSink) const;
+    // Check if the beam set matches the coordinate axes sizes.
+    void checkBeamSet (const CoordinateSystem& coords,
+                       const IPosition& shape,
+                       const String& imageName,
+                       LogIO& logSink);
+
+    void appendBeams (ImageInfo& infoThat,
+                      Int axis, Bool relax, LogIO& os,
+                      const CoordinateSystem& csysThis,
+                      const CoordinateSystem& csysThat,
+                      const IPosition& shapeThis,
+                      const IPosition& shapeThat);
+
+    // Check if the beam shape matches the coordinates.
+    void checkBeamShape (uInt& nchan, uInt& npol,
+                         const ImageInfo& info,
+                         const IPosition& shape,
+                         const CoordinateSystem& csys) const;
+
+    // Combine beam sets for the concatenation of images.
+    // If channel or stokes is the concatenation axis, that beam axis
+    // is concatenated. Otherwise it is checked if both beam sets
+    // match and are merged.
+    // If relax=False, an exception is thrown if mismatching.
+    ImageBeamSet combineBeams (const ImageInfo& infoThat,
+                               const IPosition& shapeThis,
+                               const IPosition& shapeThat,
+                               const CoordinateSystem& csysThis,
+                               const CoordinateSystem& csysThat,
+                               Int axis,
+                               Bool relax,
+                               LogIO& os) const;
+
+    // Concatenate the beam sets along the frequency axis.
+    void concatFreqBeams (ImageBeamSet& beamsOut,
+                          const ImageInfo& infoThat,
+                          Int nchanThis,
+                          Int nchanThat,
+                          Bool relax,
+                          LogIO& os) const;
+
+    // Concatenate the beam sets along the stokes axis.
+    void concatPolBeams (ImageBeamSet& beamsOut,
+                         const ImageInfo& infoThat,
+                         Int npolThis,
+                         Int npolThat,
+                         Bool relax,
+                         LogIO& os) const;
+
+    // Merge the beam sets and check if they match.
+    void mergeBeams (ImageBeamSet& beamsOut,
+                     const ImageInfo& infoThat,
+                     Bool relax,
+                     LogIO& os) const;
+
+    // If relax=True, give a warning message if warn=True and set to False.
+    // Otherwise give an error showing msg1 only.
+    static void logMessage(Bool& warn, LogIO& os, Bool relax,
+                           const String& msg1, const String msg2=String());
 
 private:
     // Vector<Quantum<Double> > itsRestoringBeam;
     ImageBeamSet _beams;
+    mutable Bool _warnBeam;   //# tell if warning is already given
     ImageInfo::ImageTypes itsImageType;
     String itsObjectName;
    //  Array<Vector<Quantum<Double> > > _hyperplaneBeams;
@@ -301,21 +354,7 @@ private:
     // than zero.
     GaussianBeam _getBeam(const Int channel, const Int stokes) const;
 
-    IPosition _beamPosition(
-    	const Int channel, const Int polarization
-    ) const;
-
-    // determine what the shape of the _beams array should be
-    void _setUpBeamArray(const uInt nChan, const uInt nStokes);
-
-    // convenience method for getting number of channels and polarizations
-    // from the beam array
-    void _getChansAndStokes(uInt& nChannels, uInt& nStokes) const;
-
     void _setRestoringBeam(const Record& inRecord);
-
-    inline static String _className() {static const String c = "ImageInfo"; return c; }
-
 };
 
 // <summary> Global functions </summary>
@@ -329,7 +368,3 @@ ostream &operator<<(ostream &os, const ImageInfo &info);
 } //# NAMESPACE CASA - END
 
 #endif
-
-
-
-

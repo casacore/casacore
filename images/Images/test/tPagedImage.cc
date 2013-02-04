@@ -460,7 +460,7 @@ int main()
    }
    {
 	   // per plane beam support
-	   String name = "afsdf.im";
+	   String name = "tPagedImage_tmp_afsdf.im";
 	   PagedImage<Float> temp(
 			   TiledShape(IPosition(4, 64 ,64, 4, 16)),
 			   CoordinateUtil::defaultCoords4D(), name

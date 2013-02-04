@@ -1437,22 +1437,18 @@ void ImageFITSConverter::_writeBeamsTable(
 	RecordFieldPtr<Int> chan(writer.row(), "CHAN");
 	RecordFieldPtr<Int> pol(writer.row(), "POL");
 	const ImageBeamSet beamSet = info.getBeamSet();
-	Int specAxis = beamSet.getAxis(ImageBeamSet::SPECTRAL);
-	Int polAxis = beamSet.getAxis(ImageBeamSet::POLARIZATION);
-	Bool hasSpectral = specAxis >= 0;
-	Bool hasStokes = polAxis >= 0;
 	IPosition axisPath = IPosition::makeAxisPath(beamSet.ndim());
-    ArrayPositionIterator iter(beamSet.shape(), axisPath, False);
-    while (! iter.pastEnd()) {
-        const IPosition pos = iter.pos();
-		GaussianBeam beam = beamSet(pos);
-		*chan = hasSpectral ? pos[specAxis] : -1;
-		*pol = hasStokes ? pos[polAxis] : -1;
-		*bmaj = beam.getMajor().getValue();
-		*bmin = beam.getMinor().getValue();
-		*bpa = beam.getPA("deg", True);
-		writer.write();
-        iter.next();
+        ArrayPositionIterator iter(beamSet.shape(), axisPath, False);
+        while (! iter.pastEnd()) {
+          const IPosition pos = iter.pos();
+          GaussianBeam beam = beamSet(pos[0], pos[1]);
+          *chan = pos[0];
+          *pol  = pos[1];
+          *bmaj = beam.getMajor().getValue();
+          *bmin = beam.getMinor().getValue();
+          *bpa = beam.getPA("deg", True);
+          writer.write();
+          iter.next();
 	}
 }
 

@@ -235,39 +235,22 @@ try {
     	cout << "myinfo2 " << myinfo2 << endl;
     }
     {
-    	Vector<ImageBeamSet::AxisType> axes(2);
-    	axes[0] = ImageBeamSet::POLARIZATION;
-    	axes[1] = ImageBeamSet::SPECTRAL;
-    	ImageBeamSet bset(IPosition(2, 10, 4), axes);
+    	ImageBeamSet bset(IPosition(2, 10, 4));
     	ImageInfo myinfo = ImageInfo();
-    	Bool ok = False;
-    	try {
-    		myinfo.setBeams(bset);
-    		ok = False;
-		}
-    	catch (AipsError x) {
-    		cout << "Exception thrown as expected: " << x.getMesg() << endl;
-    		ok = True;
-    	}
-    	AlwaysAssert(ok, AipsError);
-    	axes[0] = ImageBeamSet::SPECTRAL;
-    	axes[1] = ImageBeamSet::POLARIZATION;
-    	ImageBeamSet bset2(IPosition(2, 10, 4), axes);
+        myinfo.setBeams(bset);
+    	ImageBeamSet bset2(IPosition(2, 10, 4));
     	myinfo.setBeams(bset2);
     	AlwaysAssert(myinfo.getBeamSet() == bset2, AipsError);
     	// check that we can set a different size beam set
-    	ImageBeamSet bset3(IPosition(2, 11, 4), axes);
-		myinfo.setBeams(bset3);
+    	ImageBeamSet bset3(IPosition(2, 11, 4));
+        myinfo.setBeams(bset3);
     	AlwaysAssert(myinfo.getBeamSet() == bset3, AipsError);
-
-
-
     }
-} catch (AipsError x) {
+ } catch (AipsError& x) {
   cout << "Caught error " << x.getMesg() << endl;
   return 1;
-} 
+ } 
   
-    cout << "OK" << endl;
-    return 0;
+ cout << "OK" << endl;
+ return 0;
 }

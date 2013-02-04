@@ -28,14 +28,15 @@ dImageStatistics
 dImageSummary
 dPagedImage
 tExtendImage
+tFITSErrorImage
 tFITSExtImage
 tFITSExtImageII
 tFITSImage
 tFITSImgParser
-tFITSErrorImage
 tFITSQualityImage
 tHDF5Image
 tImageAttrHandler
+tImageBeamSet
 tImageConcat
 tImageEmpty
 tImageExpr2Gram
@@ -54,7 +55,6 @@ tPagedImage2
 tRebinImage
 tSubImage
 tTempImage
-tImagebeamSet
 )
 
 foreach (test ${tests})

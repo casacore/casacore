@@ -274,11 +274,8 @@ String ImageInterface<T>::makeUniqueRegionName (const String& rootName,
 template<class T>
 void ImageInterface<T>::setImageInfoMember(const ImageInfo& info)
 {
-  if (info.hasMultipleBeams()) {
-    imageInfo_p = info.adaptMultiBeam(coords_p, shape(), name(), logSink());
-  } else {
-    imageInfo_p = info;
-  }
+  imageInfo_p = info;
+  imageInfo_p.checkBeamSet (coords_p, shape(), name(), logSink());
 }    
 
 template<class T>
