@@ -1429,19 +1429,24 @@ Bool LatticeStatistics<T>::getLayerStats(
     for ( pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++ ) {
 	IPosition dPos = pixelIterator.position();
 	if (displayAxes_p.nelements() == 2) {
-	    if (zAx == 1)
-		if (dPos[1] != zLayer)
-		    continue;
-		else
-		    layer = hLayer;
-	    if (hAx == 1)
-		if (dPos[1] != hLayer)
-		    continue;
-		else
-		    layer = zLayer;
+          if (zAx == 1) {
+            if (dPos[1] != zLayer) {
+              continue;
+            } else {
+              layer = hLayer;
+            }
+          }
+          if (hAx == 1) {
+            if (dPos[1] != hLayer) {
+              continue;
+            } else {
+              layer = zLayer;
+            }
+          }
 	}
-	if (displayAxes_p.nelements() == 1)
-	    layer = zLayer;
+	if (displayAxes_p.nelements() == 1) {
+          layer = zLayer;
+        }
 
 	Matrix<AccumType>  matrix(pixelIterator.matrixCursor());
 	for (uInt i=0; i<n1; i++) {
