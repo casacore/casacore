@@ -296,7 +296,7 @@ void Directory::copy (const Path& target, Bool overwrite,
     String command("cp -r '");
     command += itsFile.path().expandedName() + "' '" +
                targetName.expandedName() + "'";
-    system (command.chars());
+    AlwaysAssert (system(command.chars()) == 0, AipsError);
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
@@ -305,7 +305,7 @@ void Directory::copy (const Path& target, Bool overwrite,
 	command = "chmod -Rf u+w '";
 #endif
 	command += targetName.expandedName() + "'";
-	system (command.chars());
+	AlwaysAssert (system(command.chars()) == 0, AipsError);
     }
 #endif
 }

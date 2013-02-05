@@ -25,6 +25,8 @@
 //#
 
 #include <casa/System/Casarc.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -154,11 +156,14 @@ namespace casa {
 	    } else {
 		strftime( buf, 512, "# added %F %T\n", localtime(&tv.tv_sec) );
 	    }
-	    write(fd, buf, strlen(buf) );
-	    write(fd, keyword.c_str( ), keyword.length( ));
-	    write(fd, ": ", 2);
-	    write(fd, value.c_str( ), value.length( ));
-	    write(fd, "\n", 1);
+            Int lng = strlen(buf);
+	    AlwaysAssert (write(fd, buf, lng) == lng, AipsError);
+	    AlwaysAssert (write(fd, keyword.c_str(), keyword.length()) ==
+                          Int(keyword.length()), AipsError);
+	    AlwaysAssert (write(fd, ": ", 2) == 2, AipsError);
+	    AlwaysAssert (write(fd, value.c_str(), value.length()) ==
+                          Int(value.length()), AipsError);
+            AlwaysAssert (write(fd, "\n", 1) == 1, AipsError);
 	    unlock( fd );
 	} else {
 	    mapping->second = value;
