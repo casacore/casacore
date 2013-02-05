@@ -229,7 +229,7 @@ namespace casa {
 	    mapped_file_size = 0;
 
 	    int fd = lock( WRITE );
-	    write( fd, copy, off );
+	    AlwaysAssert (write( fd, copy, off) == off, AipsError);
 	    free( copy );
 	    unlock( fd );
 	}
@@ -478,7 +478,7 @@ namespace casa {
 	// --   Wed Nov 17 21:32:45 UTC 2010
 	//
 	if ( buf.st_size == 0 ) {
-	    write( fd, "\n", 1 );
+            AlwaysAssert (write( fd, "\n", 1) == 1, AipsError);
 	    lseek( fd, 0, SEEK_SET );
 	    if ( fstat( fd, &buf ) < 0 )
 		throw( "Casarc::read_file, internal error" );
