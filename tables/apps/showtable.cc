@@ -32,6 +32,8 @@
 #include <casa/Inputs/Input.h>
 #include <stdexcept>
 #include <iostream>
+#include <casa/string.h>    // for strerror
+#include <errno.h>
 
 using namespace casa;
 using namespace std;
@@ -157,7 +159,9 @@ int main (int argc, char* argv[])
         seltab.rename (tmpName, Table::New);
       }
       clog << "Starting casabrowser " << seltab.tableName() << " ..." << endl;
-      system (("casabrowser " + in).chars());
+      if (! system (("casabrowser " + in).chars())) {
+	clog << "Could not start casabrowser; " << strerror(errno) << endl;
+      }
       if (!tmpName.empty()) {
         clog << "Removing temporary table " << seltab.tableName() << endl;
         Table::deleteTable(tmpName);
