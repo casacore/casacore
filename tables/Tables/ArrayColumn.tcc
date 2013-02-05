@@ -36,6 +36,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/ValTypeId.h>
 #include <tables/Tables/TableError.h>
+#include <casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -319,7 +320,7 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
 
     if (useSlicing){
 
-        assert (rowNumbers.nelements() == 3);
+        AlwaysAssert (rowNumbers.nelements() == 3, AipsError);
 
         increment = rowNumbers [2];
         row = rowNumbers [0] - increment; // allows preincrement before first use
@@ -754,7 +755,7 @@ void ArrayColumn<T>::putColumnCells (const RefRows & rows,
 
     if (useSlices){
 
-        assert (rowNumbers.nelements() == 3);
+        AlwaysAssert (rowNumbers.nelements() == 3, AipsError);
 
         increment = rowNumbers [2];
         row = rowNumbers [0] - increment; // allows increment before use inside loop
