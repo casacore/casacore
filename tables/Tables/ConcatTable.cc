@@ -327,11 +327,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void ConcatTable::initialize()
   {
     // Check if all tables have the same description.
-    vector<CountedPtr<TableDesc> > actualDesc;
-    actualDesc.reserve (baseTabPtr_p.nelements());
+    // Note that we size the table instead of reserve, because push_back
+    // gives the following warning for CountedPtr:
+    //  "dereferencing pointer aonymous  does break strict-aliasing rule"
+    vector<CountedPtr<TableDesc> > actualDesc(baseTabPtr_p.nelements());;
     Bool equalDataTypes;
     for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
-      actualDesc.push_back (new TableDesc (baseTabPtr_p[i]->actualTableDesc()));
+      actualDesc[i] = CountedPtr<TableDesc> (new TableDesc
+					     (baseTabPtr_p[i]->actualTableDesc()));
       if (actualDesc[i]->columnDescSet().isEqual
 	  (actualDesc[0]->columnDescSet(), equalDataTypes)) {
 	if (equalDataTypes) {

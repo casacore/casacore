@@ -34,7 +34,7 @@
 #include <casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
-const char *prt(CountedConstPtr<myobj> &obj) {
+const char *prt(CountedPtr<myobj> &obj) {
   return obj->name();
 }
 
@@ -49,7 +49,7 @@ int main() {
   CountedPtr<myobj> var = new myobj("fred");
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
-  CountedConstPtr<myobj> var4 (var);
+  CountedPtr<myobj> var4 (var);
 
   cout << (*var).name() << ".." <<
     (*var2).name() << ".." <<

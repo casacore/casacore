@@ -41,7 +41,7 @@ void PtrRep<t>::freeVal() {
 }
 
 template<class t>
-SimpleCountedConstPtr<t> &SimpleCountedConstPtr<t>::operator=(t *v) {
+CountedPtr<t> &CountedPtr<t>::operator=(t * const v) {
   if (ref && --(*ref).count == 0){
     delete ref;
   }
@@ -51,7 +51,7 @@ SimpleCountedConstPtr<t> &SimpleCountedConstPtr<t>::operator=(t *v) {
 }
 
 template<class t>
-SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
+CountedPtr<t>::~CountedPtr() {
   if (ref && --(*ref).count == 0){
     delete ref;
     ref = 0;
@@ -60,32 +60,6 @@ SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
 
 #endif
 
-//
-// All of these CountedPtr<t> ctors were moved out-of-line because
-// the Sun Cfront compiler on Solaris generated statics for them.
-// At some point, these should be moved back in line and tried with
-// newer compilers.            (Tue Jan  3 15:30:07 EST 1995)
-//
-template<class t>
-CountedPtr<t>::CountedPtr()
-: SimpleCountedConstPtr<t>(),
-  SimpleCountedPtr<t>(),
-  CountedConstPtr<t>()
-{}
-
-template<class t>
-CountedPtr<t>::CountedPtr(t *val, Bool delit)
-: SimpleCountedConstPtr<t>(val,delit),
-  SimpleCountedPtr<t>(val,delit),
-  CountedConstPtr<t>(val,delit)
-{}
-
-template<class t>
-CountedPtr<t>::CountedPtr(const CountedPtr<t> &val)
-: SimpleCountedConstPtr<t>(val),
-  SimpleCountedPtr<t>(val),
-  CountedConstPtr<t>(val)
-{}
 
 } //# NAMESPACE CASA - END
 

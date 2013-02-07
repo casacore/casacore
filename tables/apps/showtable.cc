@@ -124,6 +124,7 @@ int main (int argc, char* argv[])
       clog << "TaQL command = " << command << endl;
       seltab = tableCommand (command);
       if (seltab.tableName() != table.tableName()) {
+	// g++ gives a deprecated warning for the following function. Ignore it.
         char* tmpnm = tempnam("/tmp", "showtable_");
         tmpName = tmpnm;
         free (tmpnm);

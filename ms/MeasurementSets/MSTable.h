@@ -265,7 +265,7 @@ protected:
     // The required TableDesc
     //# following fails in static initialization (segm. fault).
     //    static TableDesc requiredTD_p;
-    static SimpleCountedConstPtr<TableDesc> requiredTD_p;
+    static CountedPtr<TableDesc> requiredTD_p;
  
     // Define an entry in the column maps
     static void colMapDef(ColEnum col,

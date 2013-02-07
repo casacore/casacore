@@ -543,19 +543,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // if (localFoundSpwList.size() == 0)
     //   log_l << "No match found for SPW and CHAN combination" << LogIO::WARN << LogIO::POST;
     // else 
-    if (someMatchFailed)
-      if (localFoundSpwList.size() != 0)
+    if (someMatchFailed) {
+      if (localFoundSpwList.size() != 0) {
 	// log_l << "Found match for SPW(s) "  
 	//       << Vector<Int>(localFoundSpwList) 
 	//       << " for some sub-expression." 
 	//       << LogIO::WARN << LogIO::POST;
 	;
-      else
-	{
-	  ostringstream m;
-	  log_l << "Found no matching SPW(s) " << spw << LogIO::WARN << LogIO::POST;
-	  //	  log_l << m.str() << LogIO::WARN << LogIO::POST;
-	}
+      } else {
+	ostringstream m;
+	log_l << "Found no matching SPW(s) " << spw << LogIO::WARN << LogIO::POST;
+	//	  log_l << m.str() << LogIO::WARN << LogIO::POST;
+      }
+    }
 	
     
     return localFreqList;
