@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casa/OS/DynLib.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
@@ -61,21 +62,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (itsHandle  &&  !funcName.empty()) {
       // Found the dynamic library.
       // Now find and execute the given function.
-      void* initfunc = getFunc (funcName.c_str());
-      if (!initfunc) {
+      // Because a compiler like g++ gives a warning when casting a pointer to a
+      // function pointer, a union is used to achieve this.
+      // Ensure the pointer sizes are the same.
+      typedef void (*func_ptr)();
+      AlwaysAssert (sizeof(func_ptr) == sizeof(void*), AipsError);
+      typedef union {
+	func_ptr funcPtr;
+	void* ptr;
+      } ptrCastUnion;
+      ptrCastUnion ptrCast;
+      ptrCast.ptr = getFunc (funcName.c_str());
+      if (! ptrCast.ptr) {
         close();
         throw AipsError("Found dynamic library " + pref + library + ext +
                         ", but not its " + funcName + " function");
       }
-      // Execute the register function.
-      // We need to cast the void* from dlsym to a function pointer,
-      // a function without arguments returning void.
-      // This is not permitted as they are different kind of pointers,
-      // so the compiler might issue a warning.
-      // On RHEL4 gcc-3.4.6 gave an error for a reinterpret_cast,
-      // so we have to use a C-style cast.
-      ///      reinterpret_cast<void(*)()>(initfunc)();
-      ((void(*)())initfunc)();
+/// Note: the following is a g++ specific way to avoid the warning.
+///#ifdef __GNUC__
+///__extension__
+///#endif
+      ptrCast.funcPtr();
     }
   }
 
