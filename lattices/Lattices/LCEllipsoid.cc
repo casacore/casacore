@@ -402,7 +402,7 @@ void LCEllipsoid::defineMask() {
 			d = sqrt(d * radsq0);
 			d += _epsilon[0];
 			Int start = max(Int(center0 - d + 1 - _epsilon[i]), 0);
-			Int end = min(Int(center0 + d + _epsilon[i]), np);
+			Int end = min(Int(center0 + d + _epsilon[i]), np-1);
 			for (Int j=start; j<=end; j++) {
 				maskData[j] = True;
 			}
