@@ -637,6 +637,12 @@ void QuantumHolder::toRecord(RecordInterface &out) const {
 	}
 }
 
+Record QuantumHolder::toRecord() const {
+	Record r;
+	toRecord(r);
+	return r;
+}
+
 
 void QuantumHolder::toReal(const uInt &tp) {
   Double d1=0;

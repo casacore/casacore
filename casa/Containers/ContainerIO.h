@@ -31,65 +31,114 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/iostream.h>
+#include <vector>
+#include <set>
+#include <list>
+#include <map>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// <summary>
-//    Input/output operators for Containers.
-// </summary>
+  // <summary>
+  //    Input/output operators for Containers.
+  // </summary>
 
-// <use visibility=export>
+  // <use visibility=export>
 
-// <reviewed reviewer="Paul Shannon" date="1995/02/21" tests="" demos="">
-// </reviewed>
+  // <reviewed reviewer="Paul Shannon" date="1995/02/21" tests="" demos="">
+  // </reviewed>
 
-// <prerequisite>
-//   <li> STL container concept
-// </prerequisite>
+  // <prerequisite>
+  //   <li> STL container concept
+  // </prerequisite>
 
-// <synopsis> 
-// The function <src>showContainer</src> makes it possible to show
-// any STL-like container (having forward iterators) on an ostream.
-// This include casacore classes like Array, IPosition, and Block, but
-// also STL classes like vector. The separator, prefix, and postfix
-// can be defined at will (they default to , [ ]).
-//
-// The function <src>showDataIter</src> is similar to <src>showContainer</src>,
-// but uses iterators directly.
-// </synopsis>
+  // <synopsis> 
+  // The function <src>showContainer</src> makes it possible to show
+  // any STL-like container (having forward iterators) on an ostream.
+  // This include casacore classes like Array, IPosition, and Block, but
+  // also STL classes like vector. The separator, prefix, and postfix
+  // can be defined at will (they default to , [ ]).
+  //
+  // The function <src>showDataIter</src> is similar to
+  // <src>showContainer</src>, but uses iterators directly.
+  // </synopsis>
 
-// <example>
-// <srcblock>
-// IPosition shape (3,10,10,3);
-// showContainer (cout, shape);
-// </srcblock>
-//
-// <motivation>
-// Effortless input/output is clearly a big win.
-// </motivation>
-//
-// <group name="Container IO">
+  // <example>
+  // <srcblock>
+  // IPosition shape (3,10,10,3);
+  // showContainer (cout, shape);
+  // </srcblock>
+  //
+  // <motivation>
+  // Effortless input/output is clearly a big win.
+  // </motivation>
+  //
+  // <group name="Container IO">
 
-// Write out an ascii representation of any container using the
-// given begin and end iterator.
-// An arbitrary separator, prefix, and postfix can be given.
-// E.g. for separator ', ' the output looks like [1, 2, 3].
-template<class ITER> void showDataIter (ostream&,
-                                        ITER begin, const ITER& end,
-                                        const char* separator=",",
-                                        const char* prefix="[",
-                                        const char* postfix="]");
+  // Write out an ascii representation of any container using the
+  // given begin and end iterator.
+  // An arbitrary separator, prefix, and postfix can be given.
+  // E.g. for separator ', ' the output looks like [1, 2, 3].
+  template<class ITER> void showDataIter (ostream&,
+                                          ITER begin, const ITER& end,
+                                          const char* separator=",",
+                                          const char* prefix="[",
+                                          const char* postfix="]");
 
-// Write out an ascii representation of any container having a
-// forward iterator.
-// Note that a multi-dimensional Array object is linearized.
-// An arbitrary separator, prefix, and postfix can be given.
-// E.g. for separator ', ' the output looks like [1, 2, 3].
-template<class CONTAINER> void showContainer (ostream& os, const CONTAINER& c,
-                                              const char* separator=",",
-                                              const char* prefix="[",
-                                              const char* postfix="]")
-  { showDataIter (os, c.begin(), c.end(), separator, prefix, postfix); }
+  // Write out an ascii representation of any container having a
+  // forward iterator.
+  // Note that a multi-dimensional Array object is linearized.
+  // An arbitrary separator, prefix, and postfix can be given.
+  // E.g. for separator ', ' the output looks like [1, 2, 3].
+  template<class CONTAINER> void showContainer (ostream& os, const CONTAINER& c,
+                                                const char* separator=",",
+                                                const char* prefix="[",
+                                                const char* postfix="]")
+    { showDataIter (os, c.begin(), c.end(), separator, prefix, postfix); }
+
+  // Write a std::pair.
+  template <typename T, typename U>
+  inline ostream& operator<< (ostream& os, const std::pair<T,U>& p)
+  {
+    os << '<' << p.first << ',' << p.second << '>';
+    return os;
+  }
+
+  // Write the contents of a vector enclosed in square brackets, using a comma
+  // as separator.
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::vector<T>& v)
+  {
+    showContainer (os, v, ",", "[", "]");
+    return os;
+  }
+
+  // Write the contents of a set enclosed in square brackets, using a comma
+  // as separator.
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::set<T>& v)
+  {
+    showContainer (os, v, ",", "[", "]");
+    return os;
+  }
+
+  // Write the contents of a list enclosed in square brackets, using a comma
+  // as separator.
+  template<typename T>
+  inline ostream& operator<<(ostream& os, const std::list<T>& v)
+  {
+    showContainer (os, v, ",", "[", "]");
+    return os;
+  }
+
+  // Print the contents of a map enclosed in braces, using a comma
+  // as separator.
+  template<typename T, typename U>
+  inline ostream& operator<<(ostream& os, const std::map<T,U>& m)
+  {
+    showContainer (os, m, ", ", "{", "}");
+    return os;
+  }
+
 
 } //# NAMESPACE CASA - END
 
