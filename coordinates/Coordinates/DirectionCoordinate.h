@@ -570,6 +570,10 @@ public:
     // Not for general use.  Units are degrees.
     Vector<Double> longLatPoles() const;
 
+    // get the pixel area.
+    Quantity getPixelArea() const;
+
+
 private:
     // Direction type
     MDirection::Types type_p, conversionType_p;

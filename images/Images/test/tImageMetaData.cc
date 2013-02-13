@@ -155,18 +155,11 @@ int main() {
         	AlwaysAssert(! noBeamMD.getBeamArea(beamArea, "arcsec.arcsec"), AipsError);
             */
         }
-        {
-        	// getPixelArea
-        	Quantity pixelArea;
-        	AlwaysAssert(fourAxesImageMetaData.getDirectionPixelArea(pixelArea), AipsError);
-        	pixelArea.convert(Unit("arcsec.arcsec"));
-        	Double expectedValue = 225.0;
-        	AlwaysAssert(near(pixelArea.getValue(), expectedValue, 1e-8), AipsError);
-        }
+
 
         cout<< "ok"<< endl;
     }
-    catch (AipsError x) {
+    catch (const AipsError& x) {
         cerr << "Exception caught: " << x.getMesg() << endl;
         return 1;
     } 

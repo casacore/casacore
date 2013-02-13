@@ -252,7 +252,7 @@ void PagedImage<T>::restoreAll (const TableRecord& rec)
 template<class T>
 String PagedImage<T>::imageType() const
 {
-  return "PagedImage";
+  return className();
 }
 
 template<class T>

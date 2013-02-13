@@ -194,7 +194,11 @@ public:
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
 
-  // Get the image type (returns name of derived class).
+  // Return the name of this derived class.
+  String className() const
+    { return "PagedImage"; }
+
+  // Get the image type (returns name of this derived class).
   virtual String imageType() const;
 
   // A PagedImage is always persistent.

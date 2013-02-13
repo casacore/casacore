@@ -234,7 +234,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
       for(uInt spw = 0; spw < nspws; ++spw){
         clpaths[spw] = makeComponentList(sourceName, mfreqs[spw], mtime,
                                          values[spw], point,
-					 prefix + "spw" + String(spw) + "_");
+					 prefix + "spw" + String::toString(spw) + "_");
       }
       success = True;
     }

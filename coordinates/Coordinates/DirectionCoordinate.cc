@@ -1661,6 +1661,13 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
     return x;
 }
 
+Quantity DirectionCoordinate::getPixelArea() const
+{
+    Vector<Double> cdelt = increment();
+    Quantity forUnit = Quantity(1, units_p[0]) * Quantity(1, units_p[1]);
+    return Quantity(fabs(cdelt[0]*cdelt[1]), forUnit.getUnit());
+}
+
 // These world abs/rel functions are independent of the conversion direction type.
 
 void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const

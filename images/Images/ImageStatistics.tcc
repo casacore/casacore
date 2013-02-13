@@ -213,7 +213,8 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
                     foundPol = True;
                     storagePolAxis = i;
                   }
-                  if ((found = foundSpec && foundPol)) {
+                  found = foundSpec && foundPol;
+                  if (found) {
                     break;
                   }
                 }

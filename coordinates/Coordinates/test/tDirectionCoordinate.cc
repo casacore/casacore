@@ -270,7 +270,23 @@ int main()
       {
          doit10();
       }
-  } catch (AipsError x) {
+      {
+    	  // getPixelArea
+    	  DirectionCoordinate dc  = makeCoordinate(
+    	      MDirection::J2000, proj, crval, crpix,
+    	      cdelt, xform
+    	  );
+    	  cout << "cdelt " << cdelt << endl;
+    	  Quantity pixelArea = dc.getPixelArea();
+    	  AlwaysAssert(pixelArea.getValue() == fabs(cdelt[0]*cdelt[1]), AipsError);
+    	  Vector<String> units = dc.worldAxisUnits();
+    	  AlwaysAssert(
+    	      pixelArea.getUnit()
+    	      == (Quantity(1, units[0])*Quantity(1, units[1])).getUnit(),
+    	      AipsError
+    	  );
+     }
+  } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }

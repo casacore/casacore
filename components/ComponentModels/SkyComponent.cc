@@ -47,6 +47,8 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 
+#include <iomanip>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 SkyComponent::SkyComponent()
@@ -295,9 +297,11 @@ String SkyComponent::positionToString(const CoordinateSystem *const &coordinates
 
 	if (coordinates && coordinates->hasDirectionCoordinate()) {
 		const DirectionCoordinate dirCoord = coordinates->directionCoordinate();
+		const Vector<Int> dirAxes = coordinates->directionAxesNumbers();
+		const Vector<String> units = coordinates->worldAxisUnits();
 		Vector<Double> world(dirCoord.nWorldAxes(), 0), pixel(dirCoord.nPixelAxes(), 0);
-		world[0] = longitude.getValue();
-		world[1] = lat.getValue();
+		world[0] = longitude.getValue(units[dirAxes[0]]);
+		world[1] = lat.getValue(units[dirAxes[1]]);
 		// TODO do the pixel computations in another method
 		if (dirCoord.toPixel(pixel, world)) {
 			Vector<Double> increment = dirCoord.increment();
@@ -309,7 +313,7 @@ String SkyComponent::positionToString(const CoordinateSystem *const &coordinates
 			raPix.set(roundDouble(raPixErr));
 			decPix.set(roundDouble(decPixErr));
 			precision = precisionForValueErrorPairs(raPix, decPix);
-			position << setprecision(precision);
+			position << std::fixed <<  setprecision(precision);
 			position << "       --- ra:   " << pixel[0];
 			if (dra.getValue() == 0) {
 				position << " (fixed)" << endl;
