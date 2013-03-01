@@ -4046,16 +4046,16 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
       fil = (MeasJPL::Files)t;
       needInit = False;
     }
-  }
-  if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
-		    MVEpoch(T))) {
-    LogIO os(LogOrigin("MeasTable",
-		       String("Planetary(MeasTable::Types, Double)"),
-		       WHERE));
-    os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
-       << " at UT day " << T << " in table "
-       << tnam[fil] << LogIO::WARN;
-    res = 0.;
+    if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
+                      MVEpoch(T))) {
+      LogIO os(LogOrigin("MeasTable",
+                         String("Planetary(MeasTable::Types, Double)"),
+                         WHERE));
+      os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
+         << " at UT day " << T << " in table "
+         << tnam[fil] << LogIO::WARN;
+      res = 0.;
+    }
   }
   return res;
 }
