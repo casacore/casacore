@@ -82,6 +82,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (!isFile.isBlockSpecial());
     AlwaysAssertExit (!isFile.isPipe());
     AlwaysAssertExit (!isFile.isSocket());
+    AlwaysAssertExit (!isDir.isRegular());
 
     AlwaysAssertExit (isLink2.isSymLink());
 

@@ -163,7 +163,6 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const Int& obsType, const Bool& in
     itsMSKN(itsNrMSKs," "),
     itsMSKV(itsNrMSKs," "),
     itsgotMSK(itsNrMSKs,False),
-    infile_p(fitsin),
     itsObsType(obsType),
     msc_p(0)
 {
@@ -1520,7 +1519,7 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   
   Int nCorr = 0;
   Int nChan = 0;
-  Int nIF_p = 0;
+  nIF_p = 0;
 
   String telescop;
 
@@ -1960,7 +1959,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     Float visImag = 0.;
     Float visWeight = 1.;
 
-    Int nIF_p = 0;
+    nIF_p = 0;
     nIF_p = getIndex(coordType_p,"BAND");
     if (nIF_p>=0) {
       nIF_p=nPixel_p(nIF_p);
@@ -2537,7 +2536,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   String kwname;
   Int nCorr = 1;
   Int firstSTK = 0;
-  Int nIF_p = 0;
+  nIF_p = 0;
   Int nChan = 0;
   Double zeroRefFreq = 0.0;
   Double refChan = 0.0;

@@ -76,7 +76,7 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type &height,
 
 
 template<class Type> 
-Gaussian3DParam<Type>::Gaussian3DParam(Type height, 
+Gaussian3DParam<Type>::Gaussian3DParam(Type /*height*/, 
                                        const Vector<Type>& center, 
                                        const Vector<Type>& width, 
                                        Type T, Type P)

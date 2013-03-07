@@ -174,7 +174,9 @@ void testMutexedInitParallel()
 {
   int count=0;
   MutexedInit safeInit (testMutexedInitFunc, &count);
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for (int i=0; i<16; ++i) {
     safeInit.exec();
   }

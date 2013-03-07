@@ -359,15 +359,13 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    static Vector<Double> in_tmp;
    static Vector<Double> out_tmp;
 //
-   const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
-   if(nWorld == nWorld) {}	// (turn off compiler warning...).
-   DebugAssert(nWorld==nWorldAxes(), AipsError);
-   DebugAssert(nPixel==nPixelAxes(), AipsError);
-   DebugAssert(worldIn.nelements()==nWorld, AipsError);
-   DebugAssert(pixelIn.nelements()==nPixel, AipsError);
-   DebugAssert(worldMin.nelements()==nWorld, AipsError);
-   DebugAssert(worldMax.nelements()==nWorld, AipsError);
+   DebugAssert(worldAxes.nelements()==nWorldAxes(), AipsError);
+   DebugAssert(pixelAxes.nelements()==nPixelAxes(), AipsError);
+   DebugAssert(worldIn.nelements()==worldAxes.nelements(), AipsError);
+   DebugAssert(pixelIn.nelements()==pixelAxes.nelements(), AipsError);
+   DebugAssert(worldMin.nelements()==worldAxes.nelements(), AipsError);
+   DebugAssert(worldMax.nelements()==worldAxes.nelements(), AipsError);
 //
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {

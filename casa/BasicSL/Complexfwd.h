@@ -43,7 +43,7 @@
 // <group name=Complexfwd>
 
 namespace std {
-  template<class T> class complex;
+  template<typename T> struct complex;
 }
 
 namespace casa { //# NAMESPACE CASA - BEGIN

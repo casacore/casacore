@@ -162,8 +162,8 @@ void TapeIO::rewind() {
 #endif
 }
 
-void TapeIO::skip(uInt howMany) {
 #ifndef CASA_NOTAPE
+void TapeIO::skip(uInt howMany) {
   if (howMany > 0) {
     struct mtop tapeCommand;
     tapeCommand.mt_op = MTFSF;
@@ -174,11 +174,14 @@ void TapeIO::skip(uInt howMany) {
 		      + strerror(errno)));
     }
   }
-#endif
 }
+#else
+void TapeIO::skip(uInt) {
+}
+#endif
 
-void TapeIO::mark(uInt howMany) {
 #ifndef CASA_NOTAPE
+void TapeIO::mark(uInt howMany) {
   DebugAssert(isWritable(), AipsError);
   if (howMany > 0) {
     struct mtop tapeCommand;
@@ -190,8 +193,10 @@ void TapeIO::mark(uInt howMany) {
 		      + strerror(errno)));
     }
   }
-#endif
+#else
+void TapeIO::mark(uInt) {
 }
+#endif
 
 Bool TapeIO::fixedBlocks() const {
   return  (getBlockSize() != 0) ? True : False;

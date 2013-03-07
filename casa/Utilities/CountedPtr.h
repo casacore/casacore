@@ -30,38 +30,18 @@
 
 #include <casa/aips.h>
 
-//# Uncommenting out the following two lines will define USE_SHARED_PTR and
-//# cause the implementation of CountedPtr to use a thread-safe smart
-//# pointer implementation class inside (at this writing this will be
-//# boost::shared_ptr but will eventually be std::shared_ptr).
-//# Another effect is that portions of the measures framework will use
-//# boost::recursive_mutex to make those classes friendly to multithreading.
-//#
-//# N.B.: I would not recommend mixing defined/undefined for the two symbols.
-//#
-//# Changing the setting will causes a major rebuild of both the casacore
-//# and code projects since CountedPtr underlies most data structures and
-//# because of the template nature of CountedPtr. (jjacobs 7/19/12)
-//#
-//# #define USE_SHARED_PTR
-//# #define CASA_THREAD_NEUTRAL
-//#
-//# This switch is meant for the CASA group only.
-//# Once most compilers support shared_ptr in their libstdc++, CountedPtr
-//# will basically be typedef-ed to shared_ptr and SimpleCountedPtr, etc
-//# will be deprecated.
 
-#if ! defined (USE_SHARED_PTR)
+#if ! defined (HAVE_BOOST)
 
-//====================================================================
-//====================================================================
-//
-// This is the original, thread-hostile implementatlow ion.
-// For nonthreaded applications it's fine, though and as a bonus
-// it does not incur and dependencies on boost.
-//
-//====================================================================
-//====================================================================
+//#====================================================================
+//#====================================================================
+//#
+//# This is the original, thread-hostile implementation.
+//# For non-threaded applications it's fine, though and as a bonus
+//# it does not incur dependencies on boost.
+//#
+//#====================================================================
+//#====================================================================
 
 #include <casa/aips.h>
 
@@ -275,12 +255,15 @@ protected:
     PtrRep<t> *ref;
 };
 
+inline Bool countedPtrBoost()
+  { return False; }
+
 } //#End casa namespace
 
 
 //# Keep the include definitions local
 
-#else //# when defined (USE_SHARED_PTR) is true
+#else //# when defined (HAVE_BOOST) is true
 
 
 #include <boost/shared_ptr.hpp>
@@ -490,8 +473,11 @@ protected:
 
 } //#End casa namespace
 
+inline Bool countedPtrBoost()
+  { return True; }
 
-#endif // defined (USE_BOOST_SHARED_PTR)
+
+#endif  //# defined (HAVE_BOOST)
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES

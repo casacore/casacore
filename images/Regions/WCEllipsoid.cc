@@ -521,7 +521,6 @@ LCRegion* WCEllipsoid::doToLCRegion(
 	switch(_specType) {
 	case SPHERE:
 		return new LCEllipsoid(outCenter, outRadius[0], outShape);
-		break;
 	case ELLIPSE_2D:
 		// I'm pretty sure theta does not need to be mucked with
 		// if the order of the axes changes.
@@ -529,12 +528,10 @@ LCRegion* WCEllipsoid::doToLCRegion(
 			outCenter[0], outCenter[1], outRadius[0], outRadius[1],
 			_theta.getValue("rad"), outShape
 		);
-		break;
 	default:
-		return new LCEllipsoid(
-			outCenter, outRadius, outShape
-		);
+                break;
 	}
+        return new LCEllipsoid(outCenter, outRadius, outShape);
 }
 
 

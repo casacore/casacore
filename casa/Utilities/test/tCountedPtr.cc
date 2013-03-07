@@ -40,11 +40,13 @@ const char *prt(CountedPtr<myobj> &obj) {
 
 int main() {
 
-#if defined (USE_BOOST_SHARED_PTR)
-#warning "Using boost::shared_ptr"
-#else
-#warning "Not using boost::shared_ptr"
-#endif
+  cout << ">>>" << endl;
+  if (countedPtrBoost()) {
+    cout << "Using boost::shared_ptr" << endl;
+  } else {
+    cout << "Not using boost::shared_ptr" << endl;
+  }
+  cout << "<<<" << endl;
 
   CountedPtr<myobj> var = new myobj("fred");
   CountedPtr<myobj> var2 = var;

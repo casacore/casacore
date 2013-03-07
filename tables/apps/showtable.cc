@@ -125,7 +125,8 @@ int main (int argc, char* argv[])
       seltab = tableCommand (command);
       if (seltab.tableName() != table.tableName()) {
 	// g++ gives a deprecated warning for the following function. Ignore it.
-        char* tmpnm = tempnam("/tmp", "showtable_");
+        // Note second argument can be at most 5 char long.
+        char* tmpnm = tempnam("/tmp", "shtab");
         tmpName = tmpnm;
         free (tmpnm);
       }

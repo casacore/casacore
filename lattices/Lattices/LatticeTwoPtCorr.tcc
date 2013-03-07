@@ -59,7 +59,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation (MaskedLattice<T>& latOut,
 
 // Set up function pointer
 
-   FuncPtr funcPtr;
+   FuncPtr funcPtr=0;
    if (method==STRUCTUREFUNCTION) {
      funcPtr = &LatticeTwoPtCorr<T>::structureFunction;
    } else {

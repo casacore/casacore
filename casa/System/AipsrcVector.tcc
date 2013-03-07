@@ -103,7 +103,7 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
 
 template <class T>
 Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, 
-			   const Unit &defun, const Unit &resun,
+			   const Unit&, const Unit&,
 			   const Vector<T> &deflt) {
   return (find(value, keyword) ? True : (value = deflt, False));
 }

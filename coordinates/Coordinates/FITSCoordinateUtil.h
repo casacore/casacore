@@ -35,7 +35,7 @@
 #include <coordinates/Coordinates/ObsInfo.h>
 
 
-class wcsprm;
+struct wcsprm;
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -291,10 +291,10 @@ void LCPolygon::defineMask()
     Int sty = 0;
     Int endx = shape[0];
     Int endy = shape[1];
-    for (; stx<endx && allEQ(mask.row(stx), False); ++stx);
-    for (; endx-1>stx && allEQ(mask.row(endx-1), False); --endx);
-    for (; sty<endy && allEQ(mask.column(sty), False); ++sty);
-    for (; endy-1>sty && allEQ(mask.column(endy-1), False); --endy);
+    for (; stx<endx && allEQ(mask.row(stx), False); ++stx) {}
+    for (; endx-1>stx && allEQ(mask.row(endx-1), False); --endx) {}
+    for (; sty<endy && allEQ(mask.column(sty), False); ++sty) {}
+    for (; endy-1>sty && allEQ(mask.column(endy-1), False); --endy) {}
     if (stx>0 || sty>0 || endx<shape[0] || endy<shape[1]) {
       if (stx >= endx  ||  sty >> endy) {
         throw AipsError ("polygon does not contain any pixel");

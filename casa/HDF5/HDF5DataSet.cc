@@ -174,7 +174,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     H5Pset_chunk(itsPLid, rank, cs.storage());
     // Create the data set.
     setHid (H5Dcreate2(parentHid, name.chars(), itsDataType.getHidFile(),
-		       itsDSid, NULL, itsPLid, NULL));
+		       itsDSid, 0, itsPLid, 0));
     if (! isValid()) {
       throw HDF5Error("Data set array " + name + " could not be created");
     }
@@ -185,7 +185,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsParent = &parentHid;
     setName (name);
     // Open the dataset.
-    setHid (H5Dopen2(parentHid, name.chars(), NULL));
+    setHid (H5Dopen2(parentHid, name.chars(), 0));
     if (! isValid()) {
       throw HDF5Error("Data set array " + name + " does not exist");
     }
@@ -271,7 +271,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   DataType HDF5DataSet::getDataType (hid_t parentHid, const String& name)
   {
-    hid_t id = H5Dopen2(parentHid, name.chars(), NULL);
+    hid_t id = H5Dopen2(parentHid, name.chars(), 0);
     if (id < 0) {
       throw HDF5Error("Data set array " + name + " does not exist");
     }

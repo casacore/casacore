@@ -425,17 +425,17 @@ unsigned int Conversion::bitToBool (void* to, const void* from,
 				    unsigned int nvalues)
 {
     if (sizeof(Bool) != sizeof(char)  ||  (7 & (unsigned long long)to)) {
-	return bitToBool_(to, from, nvalues);
+	return bitToBool_ (to, from, nvalues);
     }
     double* __attribute__ ((aligned (8))) data = static_cast<double*>(to);
     const uint8_t* bits = (const uint8_t*)from;
     const size_t bits_per_loop = 8;
     const size_t nwords = nvalues / bits_per_loop;
-#ifdef USE_MULTI_THREADING
+#ifdef _OPENMP
 # pragma omp parallel if (nwords >= 1024*2)
 #endif
     {
-#ifdef USE_MULTI_THREADING
+#ifdef _OPENMP
 # pragma omp for
 #endif
 	for (size_t i = 0; i < nwords; i++) {
@@ -443,7 +443,8 @@ unsigned int Conversion::bitToBool (void* to, const void* from,
 	}
     }
     return nwords * (bits_per_loop / 8)
-	+ bitToBool_(&data[nwords], &bits[nwords], nvalues - (nwords * bits_per_loop));
+	+ bitToBool_ (&data[nwords], &bits[nwords],
+                      nvalues - (nwords * bits_per_loop));
 }
 
 void Conversion::bitToBool (void* to, const void* from,

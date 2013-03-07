@@ -528,7 +528,7 @@ namespace casa {
 
 	    off_t keystart = off;
 	    int keylen = 0;
-	    for ( ; ! isspace(mapped_file[keystart+keylen]) && mapped_file[keystart+keylen] != ':' && (keystart+keylen) < mapped_file_size; ++keylen );
+	    for ( ; ! isspace(mapped_file[keystart+keylen]) && mapped_file[keystart+keylen] != ':' && (keystart+keylen) < mapped_file_size; ++keylen ) {}
 
 	    if ( keylen == 0 || mapped_file[keystart+keylen] == '\n' ) {
 		char obuf[21];

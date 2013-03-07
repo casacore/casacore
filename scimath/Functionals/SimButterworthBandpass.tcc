@@ -117,7 +117,7 @@ Bool SimButterworthBandpass<T>::hasMode() const { return True; }
 
 template <class T>
 void SimButterworthBandpass<T>::setMode(const RecordInterface& in) {
-    uInt order;
+    uInt order=0;
 
     // min order
     if (in.isDefined(String("minOrder"))) {

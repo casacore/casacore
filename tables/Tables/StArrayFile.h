@@ -279,7 +279,6 @@ private:
     uInt            version_p;             //# Version of StArrayFile file
     Bool            swput_p;               //# True = put is possible
     Bool            hasPut_p;              //# True = put since last flush
-    uInt            sizeBool_p;
     uInt            sizeChar_p;
     uInt            sizeuChar_p;
     uInt            sizeShort_p;

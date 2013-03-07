@@ -159,9 +159,8 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
                                                    const Cube<Range>& yin,
                                                    Int method)
 {
-  const uInt ndim = yin.ndim();
   DebugAssert(ndim==3,AipsError);
-  Int nxin=xin.nelements(), nxout=xout.nelements();
+  Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
   //check the number of elements in y
   DebugAssert(nxin==yinShape(2),AipsError);
@@ -202,8 +201,7 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
                                                    Bool goodIsTrue,
 						   Bool extrapolate)
 {
-  const uInt ndim = yin.ndim();
-  Int nxin=xin.nelements(), nxout=xout.nelements();
+  Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
   DebugAssert(nxin==yinShape(ndim-1),AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);

@@ -248,7 +248,6 @@ protected:
   Vector<Bool>   itsgotMSK;
   
   
-  FitsInput &infile_p;
   String msFile_p;
   Vector<Int> nPixel_p,corrType_p;
   Block<Int> corrIndex_p;

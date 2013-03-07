@@ -1359,7 +1359,6 @@ Bool LatticeStatistics<T>::getLayerStats(
 	if (!LattStatsSpecialize::hasSomePoints(nPts))
 	    return False;
 
-	const Int oPrec = 6;
 	Int oDWidth = 15;
 	T* dummy = 0;
 	DataType type = whatType(dummy);
@@ -1475,8 +1474,6 @@ Bool LatticeStatistics<T>::getLayerStats(
 	if (type==TpComplex) {
 	    oDWidth = 2*oDWidth + 3;
 	}
-
-	Int oPrec = 6;
 
 	Vector<String> sWorld(1);
 	Vector<Double> pixels(1);
