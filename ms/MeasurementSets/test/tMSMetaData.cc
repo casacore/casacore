@@ -37,6 +37,7 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 
 #include <casa/Arrays/ArrayIO.h>
+#include <iomanip>
 
 #include <casa/namespace.h>
 
@@ -57,6 +58,8 @@ void _printSet(const std::set<uInt>& set) {
 void testIt(MSMetaData& md) {
 	cout << "*** test nStates()" << endl;
 	AlwaysAssert(md.nStates() == 43, AipsError);
+	cout << "*** cache size " << md.getCache() << endl;
+
 	cout << "*** test getScansForState()" << endl;
 	for (uInt stateID=0; stateID<md.nStates(); stateID++) {
 		std::set<uInt> scans = md.getScansForState(stateID);
@@ -91,13 +94,18 @@ void testIt(MSMetaData& md) {
 			exp.insert(myints, myints + 4);
 		}
 		AlwaysAssert(scans == exp, AipsError);
-
 	}
+	cout << "*** cache size " << md.getCache() << endl;
+
+	cout << "*** test getIntents()" << endl;
+	cout << "*** size " << md.getIntents().size() << endl;
+	cout << "*** size " << md.getIntents().size() << endl;
+
 	AlwaysAssert(md.getIntents().size() == 11, AipsError);
+	cout << "*** cache size " << md.getCache() << endl;
 
 	cout << "*** test getScanNumbers()" << endl;
 	std::set<uInt> scans = md.getScanNumbers();
-	cout << __FILE__ << " " << __LINE__ << endl;
 	uInt myints[] = {
 			1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
 			18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -106,6 +114,7 @@ void testIt(MSMetaData& md) {
 		std::set<uInt> exp;
 		exp.insert(myints, myints+32);
 		AlwaysAssert(scans == exp, AipsError);
+		cout << "*** cache size " << md.getCache() << endl;
 	}
 	std::set<String> uniqueIntents;
 	cout << "*** test getIntentsForScan()" << endl;
@@ -187,8 +196,6 @@ void testIt(MSMetaData& md) {
 		uniqueIntents.insert(exp.begin(), exp.end());
 		AlwaysAssert(intents == exp, AipsError);
 	}
-	cout << __FILE__ << " " << __LINE__ << endl;
-
 	AlwaysAssert(md.getIntents() == uniqueIntents, AipsError);
 	cout << "*** test getSpwsForIntent()" << endl;
 	for (
@@ -234,8 +241,9 @@ void testIt(MSMetaData& md) {
 		AlwaysAssert(md.getSpwsForIntent(*intent) == exp, AipsError);
 	}
 	cout << "*** test nSpw()" << endl;
-	uInt nSpw = md.nSpw();
+	uInt nSpw = md.nSpw(True);
 	AlwaysAssert(nSpw == 40, AipsError);
+	AlwaysAssert(md.nSpw(False) == 24, AipsError);
 	cout << "*** test getIntentsForSpw()" << endl;
 	for (uInt spw=0; spw<nSpw; spw++) {
 		std::set<String> exp;
@@ -319,9 +327,11 @@ void testIt(MSMetaData& md) {
 			}
 			AlwaysAssert(md.getSpwsForField(i) == exp, AipsError);
 			AlwaysAssert(md.getSpwsForField(names[i]) == exp, AipsError);
+			cout << "*** cache size " << md.getCache() << endl;
+
 		}
 		cout << "*** test getFieldIDsForSpw()" << endl;
-		for (uInt i=0; i<md.nSpw(); i++) {
+		for (uInt i=0; i<md.nSpw(True); i++) {
 			std::set<uInt> exp;
 			std::set<String> expNames;
 			if (i==0) {
@@ -400,7 +410,7 @@ void testIt(MSMetaData& md) {
 			AlwaysAssert(md.getSpwsForScan(*scan) == exp, AipsError);
 		}
 		cout << "*** test getScansForSpw()" << endl;
-		for (uInt i=0; i<md.nSpw(); i++) {
+		for (uInt i=0; i<md.nSpw(True); i++) {
 			std::set<uInt> exp;
 			if (i==0) {
 				uInt myints[] = {
@@ -448,17 +458,19 @@ void testIt(MSMetaData& md) {
 			for (uInt i=0; i<md.nAntennas(); i++) {
 				vector<uInt> ids(1);
 				ids[0] = i;
+				std::map<String, uInt> mymap;
 				AlwaysAssert(
-						md.getAntennaNames(ids)[0] == expnames[i],
-						AipsError
+					md.getAntennaNames(mymap, ids)[0] == expnames[i],
+					AipsError
 				);
 			}
 			cout << "*** test getAntennaID()" << endl;
+			std::map<String, uInt> mymap;
 			for (uInt i=0; i<md.nAntennas(); i++) {
 				vector<uInt> ids(1);
 				ids[0] = i;
 				AlwaysAssert(
-						md.getAntennaIDs(md.getAntennaNames(ids))[0]==i,
+						md.getAntennaIDs(md.getAntennaNames(mymap, ids))[0]==i,
 						AipsError
 				);
 			}
@@ -626,6 +638,8 @@ void testIt(MSMetaData& md) {
 				std::set<uInt> got = md.getStatesForScan(*curScan);
 				AlwaysAssert(got == expec, AipsError);
 			}
+			cout << "*** cache size " << md.getCache() << endl;
+
 		}
 		{
 			cout << "*** test getScansForIntent()" << endl;
@@ -808,6 +822,8 @@ void testIt(MSMetaData& md) {
 				}
 				AlwaysAssert(md.getScansForField(name) == expec, AipsError);
 			}
+			cout << "*** cache size " << md.getCache() << endl;
+
 		}
 		{
 			cout << "*** test getFieldsForScan() and getFieldsForScans()" << endl;
@@ -952,6 +968,8 @@ void testIt(MSMetaData& md) {
 					AipsError
 				);
 			}
+			cout << "*** cache size " << md.getCache() << endl;
+
 		}
 		{
 			cout << "*** test getFieldsForTime()" << endl;
@@ -992,9 +1010,11 @@ void testIt(MSMetaData& md) {
 			Vector<Double> angles = tPos.getAngle("deg").getValue();
 			AlwaysAssert(near(angles[0], -67.7549, 1e-6), AipsError);
 			AlwaysAssert(near(angles[1], -23.0229, 1e-6), AipsError);
+			cout << "*** cache size " << md.getCache() << endl;
+
 		}
 		{
-			cout << "*** getAntennaPosition()" << endl;
+			cout << "*** test getAntennaPosition()" << endl;
 			cout
 				<< Vector<MPosition>(
 					md.getAntennaPositions(vector<uInt>(1, 2))
@@ -1002,8 +1022,34 @@ void testIt(MSMetaData& md) {
 				<< endl;
 		}
 		{
-			cout << "*** getAntennaOffset()" << endl;
+			cout << "*** test getAntennaOffset()" << endl;
 			cout << md.getAntennaOffset(2) << endl;
+		}
+		/*
+		{
+			cout << "*** test getExposuresForTimes()" << endl;
+			std::map<Double, Double> exposuresForTimes = md.getExposuresForTimes();
+
+			for (
+				std::map<Double, Double>::const_iterator iter=exposuresForTimes.begin();
+				iter!=exposuresForTimes.end(); iter++
+			) {
+				cout << std::setprecision(11) << iter->first << ", " << iter->second << endl;
+			}
+
+		}
+		*/
+		{
+			cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
+			cout << md.getUniqueBaselines() << endl;
+			AlwaysAssert(md.nBaselines() == 21, AipsError);
+		}
+		{
+			cout << "*** test getEffectiveTotalExposureTime()" << endl;
+			cout << "effective exposure time is " << md.getEffectiveTotalExposureTime() << endl;
+		}
+		{
+			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
 }
@@ -1014,13 +1060,23 @@ int main() {
     	split(EnvironmentVariable::get("CASAPATH"), parts, 2, String(" "));
     	String datadir = parts[0] + "/data/";
     	casa::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
-    	cout << "*** test non-on-demand constructor" << endl;
+    	cout << "*** test preload constructor" << endl;
     	MSMetaDataPreload md(ms);
     	testIt(md);
 
     	cout << "*** test on-demand constructor" << endl;
-    	MSMetaDataOnDemand md1(ms);
+    	MSMetaDataOnDemand md1(&ms, 100);
+		cout << "*** cache size " << md1.getCache() << endl;
+
     	testIt(md1);
+    	// test after everything is cached
+    	testIt(md1);
+    	// test using no cache
+    	MSMetaDataOnDemand md2(&ms, 0);
+    	testIt(md2);
+    	AlwaysAssert(md2.getCache() == 0, AipsError);
+
+
     	cout << "OK" << endl;
     } 
     catch (const AipsError& x) {

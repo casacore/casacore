@@ -1054,7 +1054,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 		os << endl;
 
 
-		MSMetaDataOnDemand msmd(*pMS);
+		MSMetaDataOnDemand msmd(pMS, 50.);
 		vector<MPosition> antPos = msmd.getAntennaPositions();
 		Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
 		vector<Quantum<Vector<Double> > > offsets = msmd.getAntennaOffsets(antPos);
