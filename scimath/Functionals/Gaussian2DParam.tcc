@@ -253,6 +253,7 @@ void Gaussian2DParam<T>::setPA(const T &pa) {
   else param_p[PANGLE] = pa - T(C::pi_2);
   theCpa = cos(param_p[PANGLE]);
   theSpa = sin(param_p[PANGLE]);
+  thePA  = param_p[PANGLE];
 }
 
 } //# NAMESPACE CASA - END
