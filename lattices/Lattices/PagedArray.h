@@ -595,6 +595,7 @@ private:
           String    itsColumnName;
           uInt      itsRowNumber;
   mutable Bool      itsIsClosed;
+  mutable Bool      itsMarkDelete;
           String    itsTableName;
           Bool      itsWritable;
           TableLock itsLockOpt;
