@@ -207,6 +207,8 @@ Lattices/SubLattice.h
 Lattices/SubLattice.tcc
 Lattices/TempLattice.h
 Lattices/TempLattice.tcc
+Lattices/TempLatticeImpl.h
+Lattices/TempLatticeImpl.tcc
 Lattices/TileStepper.h
 Lattices/TiledCollapser.h
 Lattices/TiledCollapser.tcc
