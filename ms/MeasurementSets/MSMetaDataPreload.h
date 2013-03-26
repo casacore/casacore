@@ -59,6 +59,10 @@ public:
 	// get all intents, in no particular (nor guaranteed) order.
 	std::set<String> getIntents();
 
+	// get the set of intents corresponding to a specified field.
+	std::set<String> getIntentsForField(uInt fieldID);
+
+
 	// get a set of spectral windows for which the specified <src>intent</src>
 	// applies.
 	std::set<uInt> getSpwsForIntent(const String& intent);
@@ -284,7 +288,7 @@ private:
 		_dataColumnName;
 	vector<MSMetaData::SpwProperties> _spwInfo;
 	vector<std::set<uInt> > _spwToScansMap, _spwToFieldIDsMap;
-	vector<std::set<String> > _spwToIntentsMap;
+	vector<std::set<String> > _spwToIntentsMap, _fieldIDToIntentsMap;
 	std::set<uInt> _tdmspw, _fdmspw, _wvrspw, _avgspw;
 	vector<MPosition> _observatoryPositions, _antennaPositions;
 	vector<Quantum<Vector<Double> > > _antennaOffsets;
@@ -338,6 +342,8 @@ private:
 	void _makeSpwToFieldMap();
 
 	void _makeSpwToIntentsMap();
+
+	void _makeFieldIDToIntentsMap();
 
 	void _makeUniqueBaselines(const MeasurementSet& ms);
 

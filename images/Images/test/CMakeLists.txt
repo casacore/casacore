@@ -2,9 +2,9 @@ set (datafiles
 qualityimage.fits          # for tFITSQualityImage
 mexinputtest.fits         # for tFITSImgParser
 imageStats.fits             # for tImageStatistics
-ngc5921.clean.fits       # for tImageMetaData
-ngc5921.clean.no_freq.no_stokes.fits     # for tImageMetaData
-jyperpixelimage.fits     # for tImageMetaData
+#ngc5921.clean.fits       # for tImageMetaData
+#ngc5921.clean.no_freq.no_stokes.fits     # for tImageMetaData
+#jyperpixelimage.fits     # for tImageMetaData
 imagetestimage.fits     # for tFITSImage
 test_image.im/table.dat    # for dImageStatistics. image2fits
 test_image.im/table.f0
@@ -44,7 +44,6 @@ tImageExpr3Gram
 tImageExprGram
 tImageExprParse_addDir
 tImageInfo
-tImageMetaData
 tImageRegrid
 tImageStatistics
 tImageUtilities

@@ -349,6 +349,10 @@ public:
   void setShapeParms(const Vector<Int>& which,
 		     const ComponentShape& newShape);
 
+  
+  void setOptParms(const Vector<Int>& which,
+                   const ComponentShape& newShape);
+
   // set the spectrum on the specified components to the specified one.
   // <thrown>
   // <li> AipsError - If the index is equal to or larger than the number of
@@ -445,6 +449,7 @@ public:
 
 private:
   // Privarte function to create the Table which will hold the components
+  //void createTable(const Path& fileName, const Table::TableOption option, const Bool addOptCol);
   void createTable(const Path& fileName, const Table::TableOption option);
   // Private function to write the components to disk
   // <thrown>
@@ -464,6 +469,7 @@ private:
   Bool itsROFlag;
   Block<Bool> itsSelectedFlags;
   Block<uInt> itsOrder;
+  Bool itsAddOptCol;
 };
 
 } //# NAMESPACE CASA - END

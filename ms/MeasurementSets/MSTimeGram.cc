@@ -39,6 +39,7 @@
 #include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <casa/Arrays/Matrix.h>
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
@@ -91,12 +92,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
   }
 
-  int msTimeGramParseCommand (const String& command, 
+  int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, 
 			      const TableExprNode& colAsTEN,
+			      MSSelectableMainColumn& msMainColInterface,
 			      const TableExprNode& otherTens,
 			      Matrix<Double>& selectedTimeList)
   {
-    MSTimeParse *thisParser = new MSTimeParse(colAsTEN,otherTens);
+    MSTimeParse *thisParser = new MSTimeParse(ms,colAsTEN,msMainColInterface, otherTens);
     int ret;
     try
       {

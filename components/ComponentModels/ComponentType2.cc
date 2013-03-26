@@ -29,6 +29,7 @@
 #include <components/ComponentModels/ComponentShape.h>
 #include <components/ComponentModels/ConstantSpectrum.h>
 #include <components/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/LimbDarkenedDiskShape.h>
 #include <components/ComponentModels/GaussianShape.h>
 #include <components/ComponentModels/PointShape.h>
 #include <components/ComponentModels/SpectralIndex.h>
@@ -50,8 +51,10 @@ construct(ComponentType::Shape shapeEnum) {
     return new GaussianShape;
   case ComponentType::DISK:
     return new DiskShape;
+  case ComponentType::LDISK:
+    return new LimbDarkenedDiskShape;
   default:
-    return reinterpret_cast<ComponentShape*>(0);
+    return 0;
   };
 }
 
@@ -65,7 +68,7 @@ construct(ComponentType::SpectralShape spectralEnum) {
   case ComponentType::TABULAR_SPECTRUM:
     return new TabularSpectrum;
   default:
-    return reinterpret_cast<SpectralModel*>(0);
+    return 0;
   };
 }
 // Local Variables: 

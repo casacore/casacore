@@ -285,7 +285,41 @@ int main()
     	      == (Quantity(1, units[0])*Quantity(1, units[1])).getUnit(),
     	      AipsError
     	  );
-     }
+      }
+      {
+    	  cout << "*** Test rotate" << endl;
+    	  DirectionCoordinate dc  = makeCoordinate(
+    	      MDirection::J2000, proj, crval, crpix,
+    	      cdelt, xform
+    	  );
+    	  // No rotation
+    	  Coordinate *c = dc.rotate(Quantity(0, "deg"));
+    	  Vector<Double> p1(2);
+    	  p1[0] = 10;
+    	  p1[1] = 20;
+    	  Vector<Double> p2(2);
+    	  p2[0] = 200;
+    	  p2[1] = 240;
+    	  Vector<Double> got, exp;
+    	  c->toWorld(got, p1);
+    	  dc.toWorld(exp, p1);
+    	  Vector<Double> p1World = exp.copy();
+    	  AlwaysAssert(allTrue(got == exp), AipsError);
+    	  c->toWorld(got, p2);
+    	  dc.toWorld(exp, p2);
+    	  Vector<Double> p2World = exp.copy();
+
+    	  AlwaysAssert(allTrue(got == exp), AipsError);
+
+    	  // non-zero rotation
+    	  c = dc.rotate(Quantity(30, "deg"));
+    	  c->toPixel(got, p1World);
+    	  Vector<Double> orig;
+    	  dc.toPixel(orig, p1World);
+    	  exp[0] = 72.05771366;
+    	  exp[1] = -11.60254038;
+    	  AlwaysAssert(allNear(got, exp, 1e-8), AipsError);
+      }
   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);

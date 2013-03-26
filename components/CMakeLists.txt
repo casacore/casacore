@@ -24,6 +24,7 @@ ComponentModels/ComponentType.cc
 ComponentModels/PointShape.cc
 ComponentModels/SkyCompRep.cc
 ComponentModels/DiskShape.cc
+ComponentModels/LimbDarkenedDiskShape.cc
 ComponentModels/SkyComponent.cc
 ComponentModels/ComponentShape.cc
 ComponentModels/FluxStandard.cc
@@ -38,7 +39,10 @@ ComponentModels/TabularSpectrum.cc
 ComponentModels/ComponentType2.cc
 )
 
-target_link_libraries (casa_components casa_coordinates)
+target_link_libraries (
+casa_components casa_coordinates
+${GSL_LIBRARIES}
+)
 
 install (
 TARGETS casa_components
@@ -58,6 +62,7 @@ ComponentModels/GaussianShape.h
 ComponentModels/GaussianBeam.h
 ComponentModels/PointShape.h
 ComponentModels/DiskShape.h
+ComponentModels/LimbDarkenedDiskShape.h
 ComponentModels/ComponentType.h
 ComponentModels/SpectralIndex.h
 ComponentModels/SkyCompRep.h

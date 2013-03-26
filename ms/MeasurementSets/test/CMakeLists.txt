@@ -20,6 +20,7 @@ tMSCorrGram
 tMSDataDescBuffer
 tMSDerivedValues
 tMSFieldBuffer
+tMSFieldEphem
 tMSFieldGram
 tMSIter
 tMSMainBuffer

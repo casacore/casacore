@@ -163,7 +163,7 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
     throw(AipsError("Axis number and image dimension are inconsistent"));
   }
 
-  // Do Lattice relevant things. This makes shape checks and
+  // Do Lattice relevant things. This does shape checks and
   // sets the lattice pointers
   latticeConcat_p.setLattice(image);
 
@@ -183,6 +183,13 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
     rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
     this->setMiscInfoMember (rec);
 
+    // Combine the beams if possible.
+    // Should be done before the coordinates are merged.
+    this->rwImageInfo().combineBeams (image.imageInfo(),
+                                      oldShape, image.shape(),
+                                      this->coordinates(), image.coordinates(),
+                                      latticeConcat_p.axis(), relax, os);
+    
     // Compare the coordinates of this image with the current private
     // coordinates
     const CoordinateSystem& cSys0 = coordinates();
@@ -229,12 +236,6 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
                              ") will be used for the output image");
     }
 
-    // Combine the beams if possible.
-    this->rwImageInfo().combineBeams (image.imageInfo(),
-                                      this->shape(), image.shape(),
-                                      this->coordinates(), image.coordinates(),
-                                      latticeConcat_p.axis(), relax, os);
-    
     // Compare coordinates at end of last image and start of new image
     if (latticeConcat_p.isTempClose()) latticeConcat_p.reopen(nIm-1);
     const ImageInterface<T>* pImLast =

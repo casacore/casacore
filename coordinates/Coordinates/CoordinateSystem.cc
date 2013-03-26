@@ -1024,6 +1024,14 @@ Vector<Double> CoordinateSystem::toWorld(const Vector<Double> &pixel) const {
 	return world;
 }
 
+Vector<Double> CoordinateSystem::toWorld(const IPosition& pixel) const {
+	Vector<Double> world;
+	if (! toWorld(world, pixel)) {
+		throw AipsError("Cannot convert pixel to world coordinates");
+	}
+	return world;
+}
+ 
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
@@ -1089,10 +1097,8 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const IPosition &pixel) const
 {
-    static Vector<Double> pixel_tmp;
-    if (pixel_tmp.nelements()!=pixel.nelements()) pixel_tmp.resize(pixel.nelements());
-//
-    const uInt& n = pixel.nelements();
+    const uInt n = pixel.nelements();
+    Vector<Double> pixel_tmp(n);
     for (uInt i=0; i<n; i++) {
 	pixel_tmp(i) = pixel(i);
     }

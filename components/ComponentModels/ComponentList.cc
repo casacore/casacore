@@ -97,6 +97,7 @@ const String freqErrUnitName = "Frequency_Error_Units";
 const String spectParName = "Spectral_Parameters";
 const String spectErrName = "Spectral_Error";
 const String labelName = "Label";
+const String optParColName = "Optional_Parameters";
 
 
 ComponentList::ComponentList()
@@ -105,7 +106,8 @@ ComponentList::ComponentList()
    itsTable(),
    itsROFlag(False),
    itsSelectedFlags(),
-   itsOrder()
+   itsOrder(),
+   itsAddOptCol(False)
 {
   AlwaysAssert(ok(), AipsError);
 }
@@ -116,7 +118,8 @@ ComponentList::ComponentList(const Path& fileName, const Bool readOnly)
    itsTable(),
    itsROFlag(False),
    itsSelectedFlags(),
-   itsOrder()
+   itsOrder(),
+   itsAddOptCol(False)
 {
   readTable(fileName, readOnly);
   AlwaysAssert(ok(), AipsError);
@@ -128,7 +131,8 @@ ComponentList::ComponentList(const ComponentList& other)
    itsTable(other.itsTable),  
    itsROFlag(other.itsROFlag),
    itsSelectedFlags(other.itsSelectedFlags),
-   itsOrder(other.itsOrder)
+   itsOrder(other.itsOrder),
+   itsAddOptCol(other.itsAddOptCol)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -151,6 +155,7 @@ ComponentList& ComponentList::operator=(const ComponentList& other){
     itsROFlag = other.itsROFlag;
     itsSelectedFlags = other.itsSelectedFlags;
     itsOrder = other.itsOrder;
+    itsAddOptCol = other.itsAddOptCol;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -215,6 +220,10 @@ void ComponentList::add(SkyComponent component) {
     itsList.resize(newSize);
     itsSelectedFlags.resize(newSize);
     itsOrder.resize(newSize);
+  }
+  // for limb-darkened disk shape, add an optional col 
+  if (component.shape().type()==ComponentType::LDISK) {
+    itsAddOptCol=True;
   }
   itsList[itsNelements] = component;
   itsSelectedFlags[itsNelements] = False;
@@ -460,6 +469,10 @@ void ComponentList::setShape(const Vector<Int>& which,
     AlwaysAssert(which(i) >= 0, AipsError);
     c = which(i);
     component(c).setShape(newShape);
+    //for limb-darkened disk shape
+    if (newShape.type()==ComponentType::LDISK) {
+      itsAddOptCol=True;
+    }
   }
   DebugAssert(ok(), AipsError);
 }
@@ -480,6 +493,25 @@ void ComponentList::setShapeParms(const Vector<Int>& which,
     oldDir = comp.shape().refDirection();
     component(c).setShape(newShape);
     comp.shape().setRefDirection(oldDir);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+void ComponentList::setOptParms(const Vector<Int>& which,
+                                const ComponentShape& newShape) {
+  uInt c;
+  Vector<Double> optparms;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    SkyComponent& comp = component(c);
+    component(c).setShape(newShape);
+    if (comp.shape().type()==ComponentType::LDISK) {
+      optparms=comp.shape().optParameters(); 
+      comp.shape().setOptParameters(optparms);
+      itsAddOptCol=True;
+      //cerr<<"ComponentList::setOptParms optparms(0)="<<optparms[0]<<endl;
+    }
   }
   DebugAssert(ok(), AipsError);
 }
@@ -574,6 +606,7 @@ void ComponentList::rename(const Path& fileName,
   if (fileName.length() != 0) {
     // See if this list is associated with a Table. 
     if (itsTable.isNull()) {
+      //createTable(fileName, option, addOptCol_p);
       createTable(fileName, option);
     } else {
       if (!itsTable.isWritable()) itsTable.reopenRW();
@@ -726,6 +759,8 @@ Bool ComponentList::ok() const {
 
 void ComponentList::createTable(const Path& fileName,
 				const Table::TableOption option) {
+	//			const Table::TableOption option,
+                    //            const Bool addOptCol) {
   // Build a default table description
   TableDesc td("ComponentListDescription", "4", TableDesc::Scratch);  
   td.comment() = "A description of a component list";
@@ -837,6 +872,11 @@ void ComponentList::createTable(const Path& fileName,
       td.addColumn (labelCol);
     }
   }
+  if (itsAddOptCol) {
+    const ArrayColumnDesc<Double>
+      optParCol(optParColName,"optional parameter column",1);
+    td.addColumn (optParCol);
+  } 
   SetupNewTable newTable(fileName.absoluteName(), td, option);
   itsTable = Table(newTable, TableLock::AutoLocking, nelements(), False);
   {
@@ -880,6 +920,7 @@ void ComponentList::writeTable() {
   ScalarQuantColumn<Double> freqErrCol;
   ArrayColumn<Double> spectErrCol;
   ScalarColumn<TableRecord> specRecord;
+  ArrayColumn<Double> optParCol;
   {
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
     if (!cds.isDefined(spectralRecordName)) {
@@ -934,6 +975,16 @@ void ComponentList::writeTable() {
 				 "Error in the spectral parameters", 1));
     }
     spectErrCol.attach(itsTable, spectErrName);
+
+    if (itsAddOptCol) {
+      if (!cds.isDefined(optParColName)) {
+        itsTable.addColumn
+          (ArrayColumnDesc<Double>(optParColName,
+                                 "Optional parameters", 1));
+        //cerr<<"added optional parameter col"<<endl;
+      }
+      optParCol.attach(itsTable, optParColName); 
+    }
   }
   
   Vector<Quantum<Double> > dirErr(2);
@@ -974,6 +1025,10 @@ void ComponentList::writeTable() {
     {
       labelCol.put(i, component(i).label());
     }
+    if (itsAddOptCol) {
+      const ComponentShape& compShape2 = component(i).shape();
+      optParCol.put(i,compShape2.optParameters());
+    }
   }
 }
 
@@ -1007,6 +1062,7 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
   ROScalarQuantColumn<Double> freqErrCol;
   ROArrayColumn<Double> spectralErrCol;
   ROScalarColumn<TableRecord> specRecord;
+  ROArrayColumn<Double> optParmCol;
   {// Old componentlist tables may not have the error columns
     const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
     if (cds.isDefined(fluxErrName)) {
@@ -1027,12 +1083,16 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     if (cds.isDefined(spectralRecordName)) {
       specRecord.attach(itsTable, spectralRecordName);
     }
+    // new optional parameter column
+    if (cds.isDefined(optParColName)) {
+      optParmCol.attach(itsTable,optParColName);
+    }
   }
 
   SkyComponent currentComp;
   const uInt nComp = fluxValCol.nrow();
   Vector<DComplex> compFluxValue(4);
-  Vector<Double> shapeParms, spectralParms;
+  Vector<Double> shapeParms, spectralParms, optParms;
   String compName, compLabel, compFluxPol, compFluxUnit, compSpectrum;
   MDirection compDir;
   MFrequency compFreq;
@@ -1099,6 +1159,12 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     {
       labelCol.get(i, currentComp.label());
     }
+    {
+      if (!optParmCol.isNull()) {
+        optParmCol.get(i,optParms);
+      }
+    }
+  
     add(currentComp);
   }
   itsROFlag = readOnly;

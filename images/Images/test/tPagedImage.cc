@@ -235,7 +235,7 @@ int main()
        Bool ok = False;
        try {
           pIm.resize(shape0);
-       } catch (AipsError x) {
+       } catch (AipsError& x) {
 //          cout << "Caught error " << x.getMesg() << endl;
           ok = True;
        } 
@@ -475,7 +475,7 @@ int main()
 		   temp.setImageInfo(info);
 		   ok = False;
 	   }
-	   catch (AipsError x) {
+	   catch (AipsError& x) {
 		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
 	   }
 	   AlwaysAssert(ok, AipsError);
@@ -484,7 +484,7 @@ int main()
 		   temp.setImageInfo(info);
 		   ok = False;
 	   }
-	   catch (AipsError x) {}
+	   catch (AipsError& x) {}
 	   AlwaysAssert(ok, AipsError);
 	   for (uInt i=0; i<4; i++) {
 		   for (uInt j=0; j<16; j++) {
@@ -492,13 +492,14 @@ int main()
 		   }
 	   }
 	   AlwaysAssert(temp.setImageInfo(info), AipsError);
+           GaussianBeam beam2 = temp.imageInfo().restoringBeam(2,2);
 	   ok = True;
 	   try {
-		   GaussianBeam beam = temp.imageInfo().restoringBeam();
-		   ok = False;
+             GaussianBeam beam = temp.imageInfo().restoringBeam();
+             ok = False;
 	   }
-	   catch (AipsError x) {
-		   cout << "Exception thrown as expected: " << x.getMesg() << endl;
+	   catch (AipsError& x) {
+             cout << "Exception thrown as expected: " << x.getMesg() << endl;
 	   }
 	   AlwaysAssert(ok, AipsError);
 
@@ -514,7 +515,7 @@ int main()
 	   AlwaysAssert(beam.getPA() == pa, AipsError);
    }
     cout<< "ok"<< endl;
-  } catch (AipsError x) {
+  } catch (AipsError& x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
     return 1;
   } 

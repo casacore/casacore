@@ -158,7 +158,10 @@ ${BISON_MSStateGram_OUTPUTS}
 ${FLEX_MSStateGram_OUTPUTS}
 )
 
-target_link_libraries (casa_ms casa_measures)
+target_link_libraries (
+casa_ms casa_measures
+${BOOST_LIBRARIES}
+)
 
 add_subdirectory (apps)
 
@@ -251,6 +254,7 @@ MeasurementSets/MSSelUtil.tcc
 MeasurementSets/MSSelUtil2.h
 MeasurementSets/MSSelUtil2.tcc
 MeasurementSets/MSSelection.h
+MeasurementSets/MSSelectableColumn.h
 MeasurementSets/MSSelectableTable.h
 MeasurementSets/MSSelectionError.h
 MeasurementSets/MSSelectionErrorHandler.h

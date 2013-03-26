@@ -33,6 +33,11 @@
 
 namespace casa {
 
+//# Forward Declarations
+class CoordinateSystem;
+class Slicer;
+
+
 // <summary>
 // Represents a set of restoring beams associated with an image.
 // </summary>
@@ -90,17 +95,23 @@ namespace casa {
     // GaussianBeams initialized to <src>beam</src>.
     ImageBeamSet(uInt nchan, uInt nstokes, const GaussianBeam& beam);
 
-    // The copy constructor.
+    // The copy constructor (reference semantics).
     ImageBeamSet(const ImageBeamSet& other);
 
     ~ImageBeamSet();
 
-    // Assignment can change the shape.
+    // Assignment can change the shape (reference semantics).
     ImageBeamSet& operator=(const ImageBeamSet& other);
 
     // Beam sets are equal if the shapes and all beams are equal.
     Bool operator== (const ImageBeamSet& other) const;
     Bool operator!= (const ImageBeamSet& other) const;
+
+    // Beam sets are equivalent if both have no beams or if the
+    // expanded sets are equal. Expanded means that an axis can have
+    // length 1 and is (virtually) expanded to the length of the matching
+    // axis in the other beam set.
+    Bool equivalent (const ImageBeamSet& that) const;
 
     // Get the number of elements in the beam array.
     // <group>
@@ -162,6 +173,13 @@ namespace casa {
 
     // Resize the beam array.
     void resize(uInt nchan, uInt nstokes);
+
+    // Return a subset of the beam array.
+    // The slicer is usually the slicer used for a subimage.
+    // The slicer can contain multiple stokes or channels, even if the
+    // beam set has only one.
+    ImageBeamSet subset (const Slicer& imageSlicer,
+                         const CoordinateSystem& csys) const;
 
     // Get the beam array.
     const Matrix<GaussianBeam>& getBeams() const

@@ -150,7 +150,7 @@ void GaussianBeam::setMajorMinor(
 		throw AipsError(oss.str());
 	}
 	if (majAx < minAx) {
-		oss << ": Major axis must be greater or equal to minor axis";
+		oss << "Major axis must be greater or equal to minor axis";
 		throw AipsError(oss.str());
 	}
 	_major = majAx;

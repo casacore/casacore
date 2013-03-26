@@ -1,6 +1,4 @@
-// -*- C++ -*-
-//# MSSelectableTable.cc:  Implementation of the the generic MSSeletableTable interface
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
+//# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,22 +22,48 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
 
-#include <ms/MeasurementSets/MSSelectableTable.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/ostream.h>
+//# Includes
+#include <scimath/Functionals/PoissonParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  MSInterface::MSInterface(const Table& table)
-    :MSSelectableTable(table), msMainCols_p(NULL)
-  {}
+template<class T>
+PoissonParam<T>::PoissonParam() :
+  Function<T>(2) {
+  param_p[LAMBDA] = T(1.0);
+  param_p[HEIGHT] = T(1.0);
+}
 
-  // MSInterface::MSInterface(const MeasurementSet& ms)
-  //   :MSSelectableTable(ms) 
-  // {}
+template<class T>
+PoissonParam<T>::PoissonParam(const T &lambda) :
+  Function<T>(2) {
+  param_p[LAMBDA] = lambda;
+  param_p[HEIGHT] = T(1.0);
+}
+
+template<class T>
+PoissonParam<T>::PoissonParam( const T &lambda, const T &height ) :
+Function<T>(2){
+	param_p[LAMBDA] = lambda;
+	param_p[HEIGHT] = height;
+}
+
+template<class T>
+PoissonParam<T>::PoissonParam(const PoissonParam<T> &other) :
+  Function<T>(other) {}
+
+template<class T>
+PoissonParam<T>::~PoissonParam() {}
+
+//# Operators
+template<class T>
+PoissonParam<T> &PoissonParam<T>::operator=(const PoissonParam<T> &other) {
+  if (this != &other) Function<T>::operator=(other);
+  return *this;
+}
+
+
 
 } //# NAMESPACE CASA - END
 

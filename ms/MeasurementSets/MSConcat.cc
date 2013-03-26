@@ -887,12 +887,14 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     }
   }
 
+
   // DATA_DESCRIPTION
   uInt oldRows = itsMS.dataDescription().nrow();
   uInt oldSPWRows = itsMS.spectralWindow().nrow();
   const Block<uInt> newDDIndices = copySpwAndPol(otherMS.spectralWindow(),
 						 otherMS.polarization(),
 						 otherMS.dataDescription());
+
   {
     uInt addedRows = itsMS.dataDescription().nrow() - oldRows;
     uInt matchedRows = otherMS.dataDescription().nrow() - addedRows;
@@ -906,6 +908,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	<< " from the spectral window subtable" << LogIO::POST;
   }
 
+
   // correct the spw entries in the SOURCE table and remove redundant rows
   oldRows = itsMS.source().nrow();
   updateSource();
@@ -916,6 +919,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	  << " redundant rows from the source subtable" << LogIO::POST;
     }
   }
+
 
   // merge ANTENNA and FEED
   oldRows = itsMS.antenna().nrow();
@@ -937,6 +941,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   //  cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
   //}
 
+
   // FIELD
   oldRows = itsMS.field().nrow();
   const Block<uInt> newFldIndices = copyField(otherMS.field());
@@ -947,6 +952,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	<< " rows and matched " << matchedRows 
 	<< " from the field subtable" << LogIO::POST;
   }
+
 
   // OBSERVATION
   copyObservation(otherMS.observation(), True);
@@ -963,6 +969,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     indgen(delrows);
     itsMS.pointing().removeRow(delrows); 
   }
+
 
   //////////////////////////////////////////////////////
 
@@ -2112,12 +2119,14 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 	if(thisSPWId(j)<-1){ // came from the second input table
 	  sourceRecord = sourceRow.get(j);
 	  if(doSPW_p || newSPWIndex_p.isDefined(thisSPWId(j)+10000)){ // the SPW table was rearranged
-	    sourceRecord.define(sourceSPWId, newSPWIndex_p(thisSPWId(j)+10000) );
+	    sourceCol.spectralWindowId().put(j, newSPWIndex_p(thisSPWId(j)+10000) );
+	    //sourceRecord.define(sourceSPWId, newSPWIndex_p(thisSPWId(j)+10000) );
 	  }
 	  else { // the SPW table did not have to be rearranged, just revert changes to SPW from copySource
-	    sourceRecord.define(sourceSPWId, thisSPWId(j)+10000 );
+	    sourceCol.spectralWindowId().put(j,  thisSPWId(j)+10000 );
+	    //sourceRecord.define(sourceSPWId, thisSPWId(j)+10000 );
 	  }
-	  sourceRow.putMatchingFields(j, sourceRecord);
+	  //sourceRow.putMatchingFields(j, sourceRecord);
 	} // end for j
       }
 
@@ -2125,15 +2134,20 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // loop over the columns of the merged source table 
       Vector<Bool> rowToBeRemoved(numrows_this, False);
       vector<uInt> rowsToBeRemoved;
+      Vector<Int> thisSPWIdB=sourceCol.spectralWindowId().getColumn();
+
       for (Int j=0 ; j < numrows_this ; ++j){
+	if(rowToBeRemoved(j)){
+	  continue;
+	}
 	// check if row j has an equivalent row somewhere else in the table
-	for (Int k=0 ; k < numrows_this ; ++k){
-	  if (k!=j && !rowToBeRemoved(j) && !rowToBeRemoved(k)){
-	    Int reftypej = solSystObjects_p(thisId(j));
-	    Int reftypek = solSystObjects_p(thisId(k));
-	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
-	    if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) ){ // all columns are the same (not testing source, spw id, time, and interval)
-	      if(areEQ(sourceCol.spectralWindowId(),j, k)){ // also the SPW id is the same
+	Int reftypej = solSystObjects_p(thisId(j));
+	for (Int k=j+1 ; k < numrows_this ; ++k){
+	  if (!rowToBeRemoved(k)){
+	    if(thisSPWIdB(j)==thisSPWIdB(k)){ // the SPW id is the same
+	      Int reftypek = solSystObjects_p(thisId(k));
+	      Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
+	      if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) ){ // and all columns are the same (not testing source, spw id, time, and interval)
 		//cout << "Found SOURCE rows " << j << " and " << k << " to be identical." << endl;
 
 		// set the time and interval to a superset of the two
@@ -2151,17 +2165,10 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 		sourceCol.interval().put(j, newInterval);
 		sourceCol.interval().put(k, newInterval);
 
-		// delete one of the rows
-		if(j<k){ // make entry in map for (k, j) and delete k
-		  tempSourceIndex.define(thisId(k), thisId(j));
-		  rowToBeRemoved(k) = True;
-		  rowsToBeRemoved.push_back(k);
-		}
-		else{ // make entry in map for (j, k) and delete j
-		  tempSourceIndex.define(thisId(j), thisId(k));
-		  rowToBeRemoved(j) = True;
-		  rowsToBeRemoved.push_back(j);
-		}
+		// make entry in map for (k, j) and delete k
+		tempSourceIndex.define(thisId(k), thisId(j));
+		rowToBeRemoved(k) = True;
+		rowsToBeRemoved.push_back(k);
 	      }
 	    }
 	  }
@@ -2185,10 +2192,11 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       for (Int j=0 ; j < newNumrows_this ; ++j){
 	if(newThisId(j) > nnrow){ 
 	  nnrow++;
-	  sourceRecord = sourceRow.get(j);
+	  //sourceRecord = sourceRow.get(j);
+	  //sourceRecord.define(sourceIdId, nnrow );
+	  //sourceRow.putMatchingFields(j, sourceRecord);
 	  tempSourceIndex2.define(newThisId(j), nnrow);
-	  sourceRecord.define(sourceIdId, nnrow );
-	  sourceRow.putMatchingFields(j, sourceRecord);
+	  sourceCol.sourceId().put(j, nnrow);
 	  rowsRenumbered = True;
 	}
       }
@@ -2196,28 +2204,35 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       // give equivalent rows the same source id 
       Bool rowsRenamed(False);
       Int nDistinctSources = newNumrows_this;
+      Vector<Int> thisSourceId=sourceCol.sourceId().getColumn();
       for (Int j=0 ; j < newNumrows_this ; ++j){
 	// check if row j has an equivalent row somewhere down in the table
+	Int reftypej = solSystObjects_p(thisId(j));
 	for (Int k=j+1 ; k < newNumrows_this ; ++k){
-	    Int reftypej = solSystObjects_p(thisId(j));
+	  if(thisSourceId(j)!=thisSourceId(k)){
 	    Int reftypek = solSystObjects_p(thisId(k));
 	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
-	  if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) && 
-	      !areEQ(sourceCol.sourceId(),j, k)){ // all columns are the same except source id (not testing spw id),
+	    if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects)){ 
+	                                          // all columns are the same except source id (not testing spw id),
 	                                          // spw id must be different, otherwise row would have been deleted above
- 	    //cout << "Found SOURCE rows " << j << " and " << k << " to be identical except for the SPW ID and source id. "
-	    //	 << newThisId(k) << " mapped to " << newThisId(j) << endl;
-	    // give same source id
-	    // make entry in map for (k, j) and rename k
-	    tempSourceIndex3.define(newThisId(k), newThisId(j));
-	    sourceRecord = sourceRow.get(k);
-	    sourceRecord.define(sourceIdId, newThisId(j) );
-	    sourceRow.putMatchingFields(k, sourceRecord);
-	    rowsRenamed = True;
-	    nDistinctSources--;
+	      //cout << "Found SOURCE rows " << j << " and " << k << " to be identical except for the SPW ID and source id. "
+	      //	 << newThisId(k) << " mapped to " << newThisId(j) << endl;
+	      // give same source id
+	      // make entry in map for (k, j) and rename k
+	      tempSourceIndex3.define(newThisId(k), newThisId(j));
+	      //sourceRecord = sourceRow.get(k);
+	      //sourceRecord.define(sourceIdId, newThisId(j) );
+	      //sourceRow.putMatchingFields(k, sourceRecord);
+	      thisSourceId(k) = newThisId(j);
+	      rowsRenamed = True;
+	      nDistinctSources--;
+	    }
 	  } 
 	}
       } // end for j
+      if(rowsRenamed){
+	sourceCol.sourceId().putColumn(thisSourceId);
+      }
 
 //      cout << "Ndistinct = " << nDistinctSources << endl;
 
@@ -2421,7 +2436,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
 		otherDDCols.spectralWindowId()(d) < static_cast<Int>(otherSpw.nrow()), 
 		AipsError);
-    const uInt otherSpwId = static_cast<uInt>(otherDDCols.spectralWindowId()(d));
+    const Int otherSpwId = static_cast<uInt>(otherDDCols.spectralWindowId()(d));
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
 
     foundInDD(otherSpwId) = True;
@@ -2440,7 +2455,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
 				  otherFreqs, itsChanReversed[d]);
     
     if (*newSpwPtr < 0) {
-      //cout << "no counterpart found for other spw " << otherSpwId << endl;
+      // cout << "no counterpart found for other spw " << otherSpwId << endl;
       // need to add a new entry in the SPECTRAL_WINDOW subtable
       *newSpwPtr= spw.nrow();
       spw.addRow();
@@ -2451,10 +2466,10 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
       doSPW_p = True;      
     }
     else{
-      //cout << "counterpart found for other spw " << otherSpwId 
+      // cout << "counterpart found for other spw " << otherSpwId 
       //     << " found in this spw " << *newSpwPtr << endl;
       matchedSPW = True;
-      if(*newSpwPtr != Int(otherSpwId)){
+      if(*newSpwPtr != otherSpwId){
 	newSPWIndex_p.define(otherSpwId, *newSpwPtr);
       }
     }      
@@ -2524,7 +2539,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
 				      otherFreqs, chanReversed);
     
       if (newSpwId < 0) {
-	//cout << "Second iteration: no counterpart found for other spw " << otherSpwId << endl;
+	// cout << "Second iteration: no counterpart found for other spw " << otherSpwId << endl;
 	// need to add a new entry in the SPECTRAL_WINDOW subtable
 	newSpwId = spw.nrow();
 	spw.addRow();
@@ -2533,10 +2548,11 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
 	newSPWIndex_p.define(otherSpwId, newSpwId); 
 	doSPW_p = True;      
       }
-      //else{
-      //cout << "Second iteration: counterpart found for other spw " << otherSpwId 
+      // else{
+      // cout << "Second iteration: counterpart found for other spw " << otherSpwId 
       //     << " found in this spw " << newSpwId << endl;
-      //}
+      //	
+      // }
     
     } // endif
     

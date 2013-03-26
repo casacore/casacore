@@ -4158,7 +4158,7 @@ Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   MeasTable::initObservatories();
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
-    obs = MeasTable::obsPos(i);
+    obs = MeasTable::obsPos[i];
     return True;
   }
   return False;

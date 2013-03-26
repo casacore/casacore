@@ -33,6 +33,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   MSScanParse* MSScanParse::thisMSSParser = 0x0; // Global pointer to the parser object
+  TableExprNode MSScanParse::columnAsTEN_p;
   // TableExprNode* MSScanParse::node_p = 0x0;
   // Vector<Int> MSScanParse::idList;
   //  std::vector<Int> MSScanParse::parsedIDList_p;
@@ -76,6 +77,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     parsedIDList_p.resize(0);
   }
   
+  //# Constructor with given ms and main-column of interest supplied
+  //# as a TEN.  This allows making the parser generic to work for
+  //# both MS and CalTables.
+  MSScanParse::MSScanParse (const MeasurementSet* ms, const TableExprNode& colAsTEN)
+    : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)),
+      //      maxScans_p(std::numeric_limits<Int>::max())
+      maxScans_p(1000)
+  {
+    idList.resize(0);
+    parsedIDList_p.resize(0);
+    columnAsTEN_p = colAsTEN;
+  }
+  
   void MSScanParse::appendToIDList(const Vector<Int>& v)
   {
     Int currentSize = idList.nelements();
@@ -88,8 +102,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   const TableExprNode* MSScanParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
   {
-    TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
-					     (ms()->col(colName) < n1));
+    // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
+    // 					     (ms()->col(colName) < n1));
+    TableExprNode condition = TableExprNode( (columnAsTEN_p > n0) &&
+     					     (columnAsTEN_p < n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
@@ -108,8 +124,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSScanParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
   {
-    TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
-					     (ms()->col(colName) <= n1));
+    TableExprNode condition = TableExprNode( (columnAsTEN_p >= n0) &&
+					     (columnAsTEN_p <= n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
@@ -131,7 +147,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (scanids.size() > 0)
       {
 	//	cerr << "Selecting disjoint list: " << scanids << endl;
-	TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
+	TableExprNode condition = TableExprNode(columnAsTEN_p.in(scanids));
 	appendToIDList(scanids);
 	addCondition(node_p,condition);
       }
@@ -140,7 +156,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSScanParse::selectScanIdsGT(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
     
     Int n=maxScans_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
@@ -154,7 +171,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSScanParse::selectScanIdsLT(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
     Vector<Int> tmp(scanids[0]);
     for(Int i=0;i<scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
@@ -165,7 +183,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   const TableExprNode* MSScanParse::selectScanIdsGTEQ(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
     
     Int n=maxScans_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
@@ -179,7 +198,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSScanParse::selectScanIdsLTEQ(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
     Vector<Int> tmp(scanids[0]+1);
     for(Int i=0;i<=scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 #include <measures/Measures/MEpoch.h>
 #include <ms/MeasurementSets/MSTimeDefinitions.h>
 #include <casa/Containers/Block.h>
@@ -94,7 +95,9 @@ public:
 
   // Associate the ms and the shorthand.
   MSTimeParse (const MeasurementSet* ms,const TableExprNode& otherTens,const Bool honourRowFlags=True);
-  MSTimeParse (const TableExprNode& colAsTEN, const TableExprNode& otherTEN,
+  MSTimeParse (const MeasurementSet* ms,const TableExprNode& colAsTEN,
+	       MSSelectableMainColumn& msMainColInterface,
+	       const TableExprNode& otherTEN,
 	       const Bool honourRowFlags=True);
   ~MSTimeParse() {columnAsTEN_p=TableExprNode();}
 
@@ -144,7 +147,7 @@ public:
 
   static void validate(const TimeFields& tf);
   static void reset(){timeList.resize(2,0);}
-  static void cleanup() {delete node_p; node_p=0x0;}
+  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
   static TableExprNode* node_p;
   //private:
@@ -165,6 +168,7 @@ public:
   void accumulateTimeList(const Double t0, const Double t1);
   static MSTimeParse *thisMSTParser;
   static TableExprNode columnAsTEN_p;
+  static MSSelectableMainColumn *mainColumn_p;
 };
 
 } //# NAMESPACE CASA - END

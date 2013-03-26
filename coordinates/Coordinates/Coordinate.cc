@@ -45,18 +45,15 @@
 
 #include <casa/OS/Timer.h>
 
-
 #include <casa/iomanip.h>  
 #include <casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-
 Coordinate::Coordinate()
 : worldMin_p(0),
   worldMax_p(0)
 {}
-
 
 Coordinate::Coordinate(const Coordinate& other)
 : worldMin_p(0),
@@ -927,7 +924,36 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 }
 
 
+Coordinate* Coordinate::rotate(const Quantity& angle) const {
+	if (nPixelAxes() != 2) {
+		throw AipsError(
+			"Coordinate::rotate: This coordinate does not have exactly two pixel axes. Rotation is not possible."
+		);
+	}
+	Matrix<Double> xf = linearTransform();
 
+	// Generate rotation matrix components
+	Double angleRad = angle.getValue(Unit("rad"));
+	Matrix<Double> rotm(2, 2);
+	Double s = sin(-angleRad);
+	Double c = cos(-angleRad);
+	rotm(0, 0) = c;
+	rotm(0, 1) = s;
+	rotm(1, 0) = -s;
+	rotm(1, 1) = c;
+
+	// Create new linear transform matrix
+	Matrix<Double> xform(2, 2);
+	xform(0, 0) = rotm(0, 0) * xf(0, 0) + rotm(0, 1) * xf(1, 0);
+	xform(0, 1) = rotm(0, 0) * xf(0, 1) + rotm(0, 1) * xf(1, 1);
+	xform(1, 0) = rotm(1, 0) * xf(0, 0) + rotm(1, 1) * xf(1, 0);
+	xform(1, 1) = rotm(1, 0) * xf(0, 1) + rotm(1, 1) * xf(1, 1);
+
+	// Apply new linear transform matrix
+	Coordinate* result = clone();
+	result->setLinearTransform(xform);
+	return result;
+}
 
 Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
                              ::wcsprm& wcs) const

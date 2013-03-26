@@ -51,7 +51,6 @@ Images/ImageExprGram.cc
 Images/ImageExprParse.cc
 Images/ImageFITS2Converter.cc
 Images/ImageInfo.cc
-Images/ImageMetaData.cc
 Images/ImageOpener.cc
 Images/ImageProxy.cc
 Images/ImageUtilities.cc
@@ -105,7 +104,6 @@ Images/ImageFITSConverter.tcc
 Images/ImageInfo.h
 Images/ImageInterface.h
 Images/ImageInterface.tcc
-Images/ImageMetaData.h
 Images/ImageOpener.h
 Images/ImageProxy.h
 Images/ImageRegrid.h

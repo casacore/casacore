@@ -210,11 +210,8 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
   }
 //
   {
-     Vector<Double> tmp(1);
-     tmp[0] = 0.0;
-     if (!(record.isDefined("error"))) {
-        tmp[0] = 0.0;
-     } else {
+      Vector<Double> errorVals(1, 0.0);
+      if (record.isDefined("error")) {
         const RecordFieldId error("error");
         const IPosition shape(1,1);
         if (record.shape(error) != shape) {
@@ -225,7 +222,7 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
         case TpDouble:
         case TpFloat:
         case TpInt:
-          tmp[0] = record.asDouble(error);
+            errorVals[0] = record.asDouble(error);
           break;
         default:
           errorMessage += "The 'error' field must be a real number\n";
@@ -233,7 +230,7 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
         }
      }
 //
-     setErrors(tmp);
+     setErrors(errorVals);
   }
 //
   DebugAssert(ok(), AipsError);

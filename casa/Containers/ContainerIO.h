@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/iostream.h>
+#include <casa/Logging/LogIO.h>
 #include <vector>
 #include <set>
 #include <list>
@@ -138,6 +139,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     showContainer (os, m, ", ", "{", "}");
     return os;
   }
+
+  // Print the contents of a container on LogIO.
+  // <group>
+  template<typename T>
+  inline LogIO& operator<<(LogIO &os, const std::vector<T> &a)
+    { os.output() << a; return os; }
+  template<typename T>
+  inline LogIO& operator<<(LogIO &os, const std::set<T> &a)
+    { os.output() << a; return os; }
+  template<typename T>
+  inline LogIO& operator<<(LogIO &os, const std::list<T> &a)
+    { os.output() << a; return os; }
+  template<typename T, typename U>
+  inline LogIO& operator<<(LogIO& os, const std::map<T,U>& a)
+    { os.output() << a; return os; }
+  // </group>
 
 
 } //# NAMESPACE CASA - END

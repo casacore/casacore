@@ -325,14 +325,15 @@ String FluxStandard::makeComponentList(const String& sourceName,
   //  String datetime;  // to nearest minute.
   oss << mtime.get("d").getValue() << "d.cl";
   String clpath(oss);
-  uInt nspaces = clpath.gsub(" ", "_");
+  // allow space as a part of the path
+  //uInt nspaces = clpath.gsub(" ", "_");
 
   os << LogIO::DEBUG1
      << "sourceName: " << sourceName
      << "\nmfreq: " << mfreq.get("GHz").getValue() << "GHz"
      << "\nmtime: " << mtime.get("d").getValue() << "d"
-     << "\nclpath: " << clpath << " (replaced " << nspaces
-     << " spaces)"
+   //  << "\nclpath: " << clpath << " (replaced " << nspaces
+    // << " spaces)"
      << LogIO::POST;
 
   // If clpath already exists on disk, assume our work here is done, and don't

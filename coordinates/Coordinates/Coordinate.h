@@ -44,8 +44,6 @@ class IPosition;
 class RecordInterface;
 class Projection;
 
-
-
 // <summary>
 // Interface for converting between world and pixel coordinates.
 // </summary>
@@ -470,6 +468,14 @@ public:
                               const Vector<Bool>&  thisAxes,
                               const Vector<Bool>& otherAxes,
                               Double tol=1.0e-6) const;
+
+    // return the result of rotating the coordinate clockwise through the specified angle
+    // (or the pixels counterclockwise, keeping the coordinate fixed, however you want to
+    // look at it). Rotation occurs about the reference pixel.
+    // Coordinate must have exactly two pixel axes. The return type is the same
+    // as the input type. It is the caller's responsibility to delete the returned pointer
+    // when done with it to prevent a memory leak.
+    virtual Coordinate* rotate(const Quantum<Double>& angle) const;
 
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.

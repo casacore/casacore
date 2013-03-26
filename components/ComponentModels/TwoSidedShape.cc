@@ -214,6 +214,16 @@ Vector<Double> TwoSidedShape::errors() const {
   return compErrors;
 }
 
+Vector<Double> TwoSidedShape::optParameters() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(0);
+}
+
+void TwoSidedShape::setOptParameters(const Vector<Double>& newOptParms){
+  DebugAssert(ok(), AipsError);
+  if (&newOptParms == 0) {};
+}
+
 Bool TwoSidedShape::fromRecord(String& errorMessage,
 			       const RecordInterface& record) {
   if (!ComponentShape::fromRecord(errorMessage, record)) return False;

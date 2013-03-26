@@ -236,7 +236,8 @@ public:
     		Bool stokesLast=False,
     		Bool preferWavelength=False,
     		Bool airWavelength=False,
-    		const String& origin = String());
+		const String& origin = String(),
+		Bool history=True);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but
@@ -307,7 +308,8 @@ private:
   		 Bool airWavelength=False,
   		 Bool primHead=True,
   		 Bool allowAppend=False,
-  		 const String& origin = String()
+		 const String& origin = String(),
+		 Bool history=True  
    );
 
 // Put a CASA image with quality coordinate
@@ -316,7 +318,7 @@ private:
 // <ul>
 //   <li> <src>output</src> The FITS output to write to.
 // </ul>
-      static Bool QualImgToFITSOut(String &error,
+   static Bool QualImgToFITSOut(String &error,
       		LogIO &os,
       		ImageInterface<Float> &image,
       		FitsOutput *outfile,
@@ -328,7 +330,9 @@ private:
       		Bool verbose, Bool stokesLast,
       		Bool preferWavelength,
       		Bool airWavelength,
-      		const String& origin);
+		const String& origin,
+		Bool history
+   );
 
    static Bool removeFile (String& error, const File& outFile,
                            const String& outName, Bool allowOverwrite);

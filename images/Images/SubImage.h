@@ -246,11 +246,25 @@ private:
   // It removes world axes if the subimage has axes removed.
   void setCoords (const CoordinateSystem& coords);
 
-  // Set the other members in the parent.
-  void setMembers (const ImageInterface<T>& image);
+  // Set the other members to the one in itsImagePtr.
+  void setMembers();
+
+  // Set the members to the subset (in particular, the beamset).
+  void setMembers (const Slicer& slicer);
 
   // Helper
    void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
+
+  // Given an original image shape and coordinate system and a subimage shape
+  // and coordinate system, get the corresponding per plane beam array.
+  // The subimage coordinate system must have been made with
+  // origCoords.subimage() and both must have the same types of axes in the
+  // same order. The shapes must have the same number of dimensions and all
+  // members of <src>subShape</src> must be greater or equal to 1 and less
+  // than the corresponding members of <src>origShape</src>.
+   ImageBeamSet _beamsForSubImage(const IPosition& subShape,
+                                  const CoordinateSystem& subCoords);
+
 
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;

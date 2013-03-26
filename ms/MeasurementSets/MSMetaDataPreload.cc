@@ -66,6 +66,7 @@ MSMetaDataPreload::MSMetaDataPreload(const MeasurementSet& ms)
 	_makeSpwToScanMap();
 	_makeSpwToFieldMap();
 	_makeSpwToIntentsMap();
+	_makeFieldIDToIntentsMap();
 	_makeTotalEffectiveExposureTime(ms);
 	_makeRowStats(ms);
 }
@@ -254,6 +255,11 @@ std::set<String> MSMetaDataPreload::getIntentsForSpw(const uInt spw) {
 		);
 	}
 	return _spwToIntentsMap[spw];
+}
+
+std::set<String> MSMetaDataPreload::getIntentsForField(uInt fieldID) {
+	_checkFieldID(fieldID);
+	return _fieldIDToIntentsMap[fieldID];
 }
 
 uInt MSMetaDataPreload::nFields() {
@@ -1113,6 +1119,59 @@ void MSMetaDataPreload::_makeSpwToIntentsMap() {
 		_spwToIntentsMap[spw].insert(intents.begin(), intents.end());
 		checkedMap[*curDDID].insert(curState);
 	}
+}
+
+void MSMetaDataPreload::_makeFieldIDToIntentsMap() {
+	std::set<String> emptySet;
+	_fieldIDToIntentsMap.assign(nFields(), emptySet);
+	std::set<String> uniqueIntents = getIntents();
+
+	if (uniqueIntents.size() == 0) {
+		return;
+	}
+	std::set<String>::const_iterator end = uniqueIntents.end();
+	for (
+		std::set<String>::const_iterator iter=uniqueIntents.begin();
+		iter!=end; iter++
+	) {
+		std::set<uInt> fieldIDs = getFieldsForIntent(*iter);
+		std::set<uInt>::const_iterator fEnd = fieldIDs.end();
+		for (
+			std::set<uInt>::const_iterator fiter=fieldIDs.begin();
+			fiter!=fEnd; fiter++
+		) {
+			_fieldIDToIntentsMap[*fiter].insert(*iter);
+		}
+	}
+	/*
+	std::set<String> emptySet;
+	for (
+		uInt i=0; i<_nFields; i++
+	) {
+		_fieldIDToIntentsMap.push_back(emptySet);
+	}
+	if (_uniqueIntents.size() == 0) {
+		return;
+	}
+	vector<std::set<uInt> >::const_iterator end = _spwToFieldIDsMap.end();
+	uInt spw = 0;
+	for (
+		vector<std::set<uInt> >::const_iterator iter=_spwToFieldIDsMap.begin();
+		iter!=end; iter++, spw++
+	) {
+		std::set<uInt>::const_iterator send = iter->end();
+		std::set<String> intents = _spwToIntentsMap[spw];
+		for (
+			std::set<uInt>::const_iterator fieldID=iter->begin();
+			fieldID!=send; fieldID++
+		) {
+			if (*fieldID == 0) {
+				cout << "*** 0 " << intents << endl;
+			}
+			_fieldIDToIntentsMap[*fieldID].insert(intents.begin(), intents.end());
+		}
+	}
+	*/
 }
 
 void MSMetaDataPreload::_makeUniqueBaselines(const MeasurementSet& ms) {

@@ -203,6 +203,7 @@ endif (READLINE_FOUND)
 
 target_link_libraries (
 casa_casa
+${BOOST_LIBRARIES}
 ${de_libraries}
 ${libm}
 dl

@@ -445,6 +445,7 @@ public:
     // This is provided as a convenience since it is a very commonly desired
     // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
+    Vector<Double> toWorld(const IPosition& pixel) const;
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Returns False if any conversion

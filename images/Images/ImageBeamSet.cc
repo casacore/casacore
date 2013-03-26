@@ -25,6 +25,7 @@
 //#
 #include <casa/Arrays/ArrayMath.h>
 #include <images/Images/ImageBeamSet.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 
 // debug only
 ///#include <casa/Arrays/ArrayIO.h>
@@ -122,6 +123,7 @@ namespace casa {
   {
     if (nchan()   == 1)  chan  = 0;
     if (nstokes() == 1) stokes = 0;
+    // Note that chan=-1 can only be given if nchan()==1.
     AlwaysAssert (chan >=0  &&  chan < Int(nchan())  &&
                   stokes >= 0  &&  stokes < Int(nstokes()), AipsError);
     return _beams(chan, stokes);
@@ -130,7 +132,7 @@ namespace casa {
   Bool ImageBeamSet::operator== (const ImageBeamSet& other) const
   {
     return (this == &other  ||  (_beams.shape() == other._beams.shape()  &&
-                                 allTrue(_beams == other._beams)));
+                                 allEQ(_beams, other._beams)));
   }
 
   Bool ImageBeamSet::operator!= (const ImageBeamSet& other) const
@@ -299,5 +301,66 @@ namespace casa {
     return os;
   }
 
+  ImageBeamSet ImageBeamSet::subset(const Slicer& slicer,
+                                    const CoordinateSystem& csys) const
+  {
+    // This beamset can be used if it has a single beam.
+    if (nelements() < 2) {
+      return *this;
+    }
+    // Determine the relevant axis numbers in the coordinate system.
+    Int axes[2];
+    axes[0] = csys.spectralAxisNumber();
+    axes[1] = csys.polarizationAxisNumber();
+    IPosition ss(slicer.start());
+    IPosition se(slicer.end());
+    IPosition si(slicer.stride());
+    // If the beamset has no or a single freq or stokes, adjust the slicer.
+    IPosition beamss(2,0), beamse(2,0), beamsi(2,1);
+    for (Int i=0; i<2; ++i) {
+      if (axes[i] >= 0  &&  _beams.shape()[i] > 1) {
+        AlwaysAssert (_beams.shape()[i] > se[axes[i]], AipsError);
+        beamss[i] = ss[axes[i]];
+        beamse[i] = se[axes[i]];
+        beamsi[i] = si[axes[i]];
+      }
+    }
+    return ImageBeamSet (_beams(beamss, beamse, beamsi));
+  }
 
+  Bool ImageBeamSet::equivalent (const ImageBeamSet& that) const
+  {
+    if (empty() != that.empty()) {
+      return False;      // mismatch; only one has a beam.
+    } else if (empty()) {
+      return True;       // match; both have no beam.
+    }
+    uInt nc1 = nchan();
+    uInt np1 = nstokes();
+    uInt nc2 = that.nchan();
+    uInt np2 = that.nstokes();
+    if (!(nc1 == nc2  ||  nc1 == 1  ||  nc2 == 1)  ||
+        !(np1 == np2  ||  np1 == 1  ||  np2 == 1)) {
+      return False;      // shapes mismatch
+    }
+    uInt nc = max(nc1,nc2);
+    uInt np = max(np1,np2);
+    uInt incrc1 = (nc1==1 ? 0:1);
+    uInt incrp1 = (np1==1 ? 0:1);
+    uInt incrc2 = (nc2==1 ? 0:1);
+    uInt incrp2 = (np2==1 ? 0:1);
+    uInt c1=0, p1=0, c2=0, p2=0;
+    for (uInt p=0; p<np; ++p) {
+      for (uInt c=0; c<nc; ++c, c1+=incrc1, c2+=incrc2) {
+        if (_beams(c1,p1) != that._beams(c2,p2)) {
+          return False;  // mismatch in a beam
+        }
+      }
+      c1 = c2 = 0;
+      p1 += incrp1;
+      p2 += incrp2;
+    }
+    return True;
+  }
+  
 } // end namespace

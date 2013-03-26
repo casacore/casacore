@@ -37,6 +37,7 @@
 #include <casa/BasicMath/Math.h>
 #include <tables/Tables/TableRecord.h>
 #include <casa/System/Aipsrc.h>
+#include <casa/OS/Path.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -138,6 +139,7 @@ Bool MeasComet::get(MVPosition &returnValue, Double date) const {
   returnValue = getRelPosition(0);
   const MVPosition deltaX(getRelPosition(1) - returnValue);
   returnValue += f * deltaX;
+
   return True;
 }
 
@@ -323,6 +325,11 @@ Double MeasComet::get_Quantity_keyword(const TableRecord& ks,
     success = false;
     return 0.0;
   }
+}
+
+String MeasComet::getTablePath()
+{
+  return Path(tab_p.tableName()).absoluteName();
 }
 
 Bool MeasComet::getExtras() {

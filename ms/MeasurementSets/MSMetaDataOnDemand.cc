@@ -264,7 +264,6 @@ Double MSMetaDataOnDemand::nUnflaggedRows() {
 	return nACRows + nXCRows;
 }
 Double MSMetaDataOnDemand::nUnflaggedRows(CorrelationType cType) {
-
 	if (cType == BOTH) {
 		return nUnflaggedRows();
 	}
@@ -593,6 +592,15 @@ std::set<String> MSMetaDataOnDemand::getIntentsForSpw(const uInt spw) {
 	}
 	return _getSpwToIntentsMap()[spw];
 }
+
+std::set<String> MSMetaDataOnDemand::getIntentsForField(uInt fieldID) {
+	_checkFieldID(fieldID);
+	if (! _fieldToIntentsMap.empty()) {
+		return _fieldToIntentsMap[fieldID];
+	}
+	return _getFieldToIntentsMap()[fieldID];
+}
+
 
 uInt MSMetaDataOnDemand::nFields() {
 	if (_nFields > 0) {
@@ -1558,7 +1566,6 @@ void MSMetaDataOnDemand::_getUnflaggedRowStats(
 	std::tr1::shared_ptr<Vector<Int> > ant1, ant2;
 	_getAntennas(ant1, ant2);
 	std::set<uInt> a, b, c, d;
-
 	MSMetaData::_getUnflaggedRowStats(
 		nACRows, nXCRows, fieldNACRows,
 		fieldNXCRows, scanNACRows, scanNXCRows, *ant1,
@@ -1629,6 +1636,41 @@ vector<std::set<String> > MSMetaDataOnDemand::_getSpwToIntentsMap() {
 		_spwToIntentsMap = spwToIntentsMap;
 	}
 	return spwToIntentsMap;
+}
+
+vector<std::set<String> > MSMetaDataOnDemand::_getFieldToIntentsMap() {
+	if (! _fieldToIntentsMap.empty()) {
+		return _fieldToIntentsMap;
+	}
+	std::set<String> emptySet;
+	vector<std::set<String> > fieldToIntentsMap;
+	fieldToIntentsMap.assign(nFields(), emptySet);
+	std::set<String> uniqueIntents = getIntents();
+
+	if (uniqueIntents.empty()) {
+		_fieldToIntentsMap = fieldToIntentsMap;
+		return fieldToIntentsMap;
+	}
+	std::set<String>::const_iterator end = uniqueIntents.end();
+	uInt mysize = 0;
+	for (
+		std::set<String>::const_iterator iter=uniqueIntents.begin();
+		iter!=end; iter++
+	) {
+		std::set<uInt> fieldIDs = getFieldsForIntent(*iter);
+		std::set<uInt>::const_iterator fEnd = fieldIDs.end();
+		for (
+			std::set<uInt>::const_iterator fiter=fieldIDs.begin();
+			fiter!=fEnd; fiter++
+		) {
+			fieldToIntentsMap[*fiter].insert(*iter);
+			mysize += iter->size();
+		}
+	}
+	if (_cacheUpdated(mysize)) {
+		_fieldToIntentsMap = fieldToIntentsMap;
+	}
+	return fieldToIntentsMap;
 }
 
 vector<uInt> MSMetaDataOnDemand::_getDataDescIDToSpwMap() {

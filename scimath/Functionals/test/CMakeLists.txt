@@ -15,6 +15,7 @@ tGaussian3D
 tGaussianND
 tHyperPlane
 tInterpolate1D
+tPoisson
 tPolynomial
 tSampledFunctional
 tSimButterworthBandpass

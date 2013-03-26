@@ -34,6 +34,7 @@
 #include <ms/MeasurementSets/MSArrayGram.h>
 #include <ms/MeasurementSets/MSStateGram.h>
 #include <ms/MeasurementSets/MSScanGram.h>
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 #include <ms/MeasurementSets/MSObservationGram.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ExprUnitNode.h>
@@ -307,9 +308,12 @@ namespace casa {
       break;
     case TIME:
       {
+        MeasurementSet ms(table);
         TableExprNode node (table.col("TIME"));
         Matrix<Double> times;
-        if (msTimeGramParseCommand (selStr, TableExprNode(),
+	MSMainColInterface tmp;
+        if (msTimeGramParseCommand (&ms,selStr, TableExprNode(),
+				    tmp,
                                     node, times) == 0) {
           itsDataNode = *(msTimeGramParseNode());
         }

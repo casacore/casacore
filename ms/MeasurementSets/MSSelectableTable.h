@@ -41,7 +41,51 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSMainEnums.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+// <summary> 
+//
+// MSSelectableTable: An interface class used by MSSelection module to
+// access the sub-tables and main-table columns of MS-like tables.
+//
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+
+// <prerequisite>
+// </prerequisite>
+//
+// <etymology>
+// From "msselection" and "table".
+// </etymology>
+//
+//<synopsis> 
+//
+// This is a pure virtual base-class to provide a table-type agnostic
+// interface to the MSSelection module to access sub-tables and
+// main-table columns of MS-like tables.
+//
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+//
+// To allow use of the MSSelection module for selection on any table
+// that follows the genral structure of a the MS database.  Via this
+// class, minor differences in the database layout can be hidden from
+// the MSSelection module.
+//
+// </motivation>
+//
+// <todo asof="19/03/13">
+// </todo>
 
   class MSSelectableTable
   {
@@ -63,16 +107,89 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) = 0;
     virtual const MeasurementSet* asMS() = 0;
+    
+    virtual MSSelectableMainColumn* mainColumns() = 0;
+
   protected:
     const Table *table_p;
   };
 
+// <summary> 
+//
+// MSInterface: A specialization of MSSelectableTable for accessing
+// MS.
+//
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+
+// <prerequisite>
+// </prerequisite>
+//
+// <etymology>
+//
+// From "ms" and "interface".
+//
+// </etymology>
+//
+//<synopsis> 
+//
+// A class that can be passed around as MSSelectableTable, with most of
+// the methods overloaded to work with the underlaying MS.
+//
+//</synopsis>
+//
+// <example>
+// <srcblock>
+//
+// //
+// // Fill in the expression in the various strings that are passed for
+// // parsing to the MSSelection object later.
+// //
+// String fieldStr,timeStr,spwStr,baselineStr,
+//   uvdistStr,taqlStr,scanStr,arrayStr, polnStr,stateObsModeStr,
+//   observationStr;
+// baselineStr="1&2";
+// timeStr="*+0:10:0";
+// fieldStr="CygA*";
+// //
+// // Instantiate the MS and the MSInterface objects.
+// //
+// MS ms(MSName),selectedMS(ms);
+// MSInterface msInterface(ms);
+// //
+// // Setup the MSSelection thingi
+// //
+// MSSelection msSelection;
+//
+// msSelection.reset(msInterface,MSSelection::PARSE_NOW,
+// 		    timeStr,baselineStr,fieldStr,spwStr,
+// 		    uvdistStr,taqlStr,polnStr,scanStr,arrayStr,
+// 		    stateObsModeStr,observationStr);
+// if (msSelection.getSelectedMS(selectedMS))
+//   cerr << "Got the selected MS!" << endl;
+// else
+//   cerr << "The set of expressions resulted into null-selection";
+// </srcblock>
+// </example>
+//
+// <motivation>
+//
+// To generalize the implementation of the MSSelection parsers.
+//
+// </motivation>
+//
+// <todo asof="19/03/13">
+// </todo>
+
   class MSInterface: public MSSelectableTable
   {
   public:
-    MSInterface()                                      {}
+    MSInterface():msMainCols_p(0)                   {}
     MSInterface(const Table& table);
-    virtual ~MSInterface()                             {}
+    virtual ~MSInterface()                             {if (msMainCols_p) delete msMainCols_p;}
     virtual const MSAntenna& antenna()                 {return asMS()->antenna();}
     virtual const MSField& field()                     {return asMS()->field();}
     virtual const MSSpectralWindow& spectralWindow()   {return asMS()->spectralWindow();}
@@ -82,6 +199,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual Bool isMS()                                {return True;}
 
     virtual const MeasurementSet *asMS(){return static_cast<const MeasurementSet *>(table());}
+    virtual MSSelectableMainColumn* mainColumns()
+    {msMainCols_p = new MSMainColInterface(*table_p); return msMainCols_p;}
+  private:
+    MSMainColInterface *msMainCols_p;
   };
 } //# NAMESPACE CASA - END
 

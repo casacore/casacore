@@ -92,6 +92,10 @@ public:
 	// get a set of intents corresponding to the specified spectral window
 	std::set<String> getIntentsForSpw(const uInt spw);
 
+
+	// get a set of intents corresponding to a specified field
+	virtual std::set<String> getIntentsForField(uInt fieldID);
+
 	// get the number of fields.
 	uInt nFields();
 
@@ -288,7 +292,7 @@ private:
 	AOSFMapI _scanToNACRowsMap, _scanToNXCRowsMap;
 	vector<uInt> _fieldToNACRowsMap, _fieldToNXCRowsMap, _dataDescIDToSpwMap;
 	std::map<uInt, std::set<String> > _scanToIntentsMap;
-	vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap;
+	vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
 	vector<SpwProperties> _spwInfo;
 	vector<std::set<uInt> > _fieldToSpwMap, _spwToFieldIDsMap, _spwToScansMap,
 		_fieldToScansMap;
@@ -339,11 +343,7 @@ private:
 
 	vector<std::set<String> > _getSpwToIntentsMap();
 
-	//vector<std::set<uInt> > _getSpwToFieldMap();
-
-	//vector<std::set<uInt> > _getSpwToScansMap();
-
-	//static std::set<uInt> _getUnique(const vector<uInt>& v);
+	vector<std::set<String> > _getFieldToIntentsMap();
 
 	void _getAntennas(
 		std::tr1::shared_ptr<Vector<Int> >& ant1,

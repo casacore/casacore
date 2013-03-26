@@ -328,6 +328,10 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 		) {
 			ImageFITSConverter::readBeamsTable(imageInfo, fitsFilename, dataType);
 		}
+		else{
+		        os << LogIO::NORMAL << "No usable restoring beam information found." << LogIO::POST;
+		        imageInfo.removeRestoringBeam();
+		}
 	}
 	pNewImage->setImageInfo(imageInfo);
 	return;

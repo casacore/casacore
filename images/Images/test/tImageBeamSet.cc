@@ -33,7 +33,7 @@
 int main() {
   try {
     {
-      cout << "*** Test constructors, operator=" << endl;
+      cout << "*** test constructors, operator=" << endl;
       // empty beam set
       ImageBeamSet x;
       AlwaysAssert(x.empty(), AipsError);
@@ -321,6 +321,66 @@ int main() {
           AlwaysAssert(gotBeam == beam0, AipsError);
           AlwaysAssert(gotPos == IPosition(2, 2, i), AipsError);
         }
+      }
+    }
+    {
+      cout << "*** test equivalent()" << endl;
+      GaussianBeam beam(Quantity(4, "arcsec"), Quantity(3, "arcsec"),
+                        Quantity(40, "deg"));
+      GaussianBeam beam2(Quantity(4, "arcsec"), Quantity(3, "arcsec"),
+                         Quantity(40, "deg"));
+      GaussianBeam beam3(Quantity(5, "arcsec"), Quantity(3, "arcsec"),
+                         Quantity(40, "deg"));
+      {
+        ImageBeamSet set1;
+        ImageBeamSet set2;
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1;
+        ImageBeamSet set2(1,1,beam);
+        AlwaysAssert(! set1.equivalent(set2), AipsError);
+        AlwaysAssert(! set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(4,3,beam);
+        ImageBeamSet set2(3,4,beam);
+        AlwaysAssert(! set1.equivalent(set2), AipsError);
+        AlwaysAssert(! set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(1,3,beam);
+        ImageBeamSet set2(3,1,beam);
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(1,1,beam);
+        ImageBeamSet set2(3,1,beam);
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(1,1,beam);
+        ImageBeamSet set2(3,4,beam);
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(1,4,beam);
+        ImageBeamSet set2(3,4,beam);
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+      }
+      {
+        ImageBeamSet set1(3,1,beam);
+        ImageBeamSet set2(3,4,beam2);
+        AlwaysAssert(set1.equivalent(set2), AipsError);
+        AlwaysAssert(set2.equivalent(set1), AipsError);
+        set2.setBeam (2,3,beam3);
+        AlwaysAssert(! set1.equivalent(set2), AipsError);
+        AlwaysAssert(! set2.equivalent(set1), AipsError);
       }
     }
     // End of test program. 

@@ -61,8 +61,9 @@ template <class T> class Vector;
 // This abstract base class defines the interface for classes which
 // define the shape of a component. The most fundamental derived class is the
 // <linkto class=PointShape>point</linkto> shape class but the 
-// <linkto class=GaussianShape>Gaussian</linkto> shape and
-// <linkto class=DiskShape>disk</linkto> shape classes are also
+// <linkto class=GaussianShape>Gaussian</linkto> shape,
+// <linkto class=DiskShape>disk</linkto> shape and 
+// <linkto class=LimbDarkenedDiskShape>limbdarkeneddisk classes are also
 // available. These classes model the spatial distribution of emission from the
 // sky. 
 
@@ -235,6 +236,8 @@ public:
   virtual Vector<Double> parameters() const = 0;
   virtual void setErrors(const Vector<Double>& newErrs) = 0;
   virtual Vector<Double> errors() const = 0;
+  virtual Vector<Double> optParameters() const = 0;
+  virtual void setOptParameters(const Vector<Double>& newOptParms) = 0;
   // </group>
 
   // These functions convert between a record and a ComponentShape. This way

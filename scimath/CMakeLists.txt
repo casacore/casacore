@@ -168,6 +168,11 @@ Functionals/OddPolynomial.tcc
 Functionals/OddPolynomial2.tcc
 Functionals/OddPolynomialParam.h
 Functionals/OddPolynomialParam.tcc
+Functionals/PoissonFunction.h
+Functionals/PoissonFunction.tcc
+Functionals/PoissonFunction2.tcc
+Functionals/PoissonParam.h
+Functionals/PoissonParam.tcc
 Functionals/Polynomial.h
 Functionals/Polynomial.tcc
 Functionals/Polynomial2.tcc

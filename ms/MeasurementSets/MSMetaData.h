@@ -111,6 +111,9 @@ public:
 	// get a set of intents corresponding to the specified spectral window
 	virtual std::set<String> getIntentsForSpw(const uInt spw) = 0;
 
+	// get a set of intents corresponding to a specified field
+	virtual std::set<String> getIntentsForField(uInt fieldID) = 0;
+
 	// get the number of fields.
 	virtual uInt nFields() = 0;
 

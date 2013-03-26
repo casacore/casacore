@@ -33,6 +33,7 @@
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSTimeDefinitions.h>
 #include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Forward Declarations
@@ -73,8 +74,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens);
   int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens,
 			      Matrix<Double>& timeList);
-  int msTimeGramParseCommand (const String& command, const TableExprNode& colAsTEN, const TableExprNode& otherTens,
-			      Matrix<Double>& timeList);
+  int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& colAsTEN, 
+			      MSSelectableMainColumn& msMainColInterface, const TableExprNode& otherTens, Matrix<Double>& timeList);
   int baseMSTimeGramParseCommand (MSTimeParse* parser, const String& command, 
 				  Matrix<Double>& selectedTimeList);
     

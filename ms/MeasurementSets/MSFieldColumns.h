@@ -33,12 +33,15 @@
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MCEpoch.h>
+#include <measures/Measures/MRadialVelocity.h>
+#include <measures/Measures/MeasComet.h>
 #include <measures/TableMeasures/ArrayMeasColumn.h>
 #include <measures/TableMeasures/ScalarMeasColumn.h>
 #include <measures/TableMeasures/ScalarQuantColumn.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Containers/SimOrdMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -115,12 +118,27 @@ public:
   const ROScalarColumn<Int>& ephemerisId() const {return ephemerisId_p;}
   // </group>
 
-  // Access to interpolated directions, the default time of zero will
-  // return the 0th order element of the polynomial.
+  // Access to interpolated directions from polynomials or ephemerides, 
+  // the default time of zero will return the 0th order element of the polynomial.
+  // or, if there is an ephemeris, the position at the time origin of the ephemeris.
+  // 
+  // In addtion to the directions, if there is an ephemeris available,
+  // also the radial velocity and the distance rho can be accessed.
+  //
+  // The method needInterTime returns True if there is a polynomial or ephemeris
+  // connected to this field table row, and an interpolation time value should
+  // be provided.
+  // The method ephemPath returns the absolute path to the ephemeris table connected to 
+  // the field table row, an empty string if there is none.  
   // <group>
   MDirection delayDirMeas(Int row, Double time = 0) const;
   MDirection phaseDirMeas(Int row, Double time = 0) const;
   MDirection referenceDirMeas(Int row, Double time = 0) const;
+  MRadialVelocity radVelMeas(Int row, Double time = 0) const;
+  Quantity rho(Int row, Double time = 0) const;
+  Bool needInterTime(Int row) const;
+  String ephemPath(Int row) const;
+
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -141,6 +159,11 @@ public:
 		     const MDirection& phaseDirection,
 		     const Quantum<Double>& maxSeparation, Int tryRow=-1);
 
+  // Update the MeasComets objects belonging to this FIELD table.
+  // Needed when the entries in the EPHEMERIS_ID column have changed.
+  void updateMeasComets();
+
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -149,6 +172,22 @@ protected:
   //# attach this object to the supplied table.
   void attach(const MSField& msField);
 
+  Int measCometIndex(int row) const;
+  String measCometsPath_p;
+  Vector<MeasComet*> measCometsV_p;
+  SimpleOrderedMap <Int, Int> ephIdToMeasComet_p;
+
+  // Extract the direction Measure from the corresponding ephemeris
+  // using the nominal position as an offset.
+  // Note that interTime is assumed to use the same time reference frame
+  // as originEpoch.
+  MDirection extractDirMeas(const MDirection& offsetDir, 
+			    Int index, Double& interTime, 
+			    MEpoch originEpoch) const;
+
+  void getMJDs(Double& originMJD, Double& interMJD, 
+	       const Double interTime, const MEpoch originEpoch) const;
+
 private:
   //# Make the assignment operator and the copy constructor private to prevent
   //# any compiler generated one from being used.
@@ -156,6 +195,7 @@ private:
   ROMSFieldColumns& operator=(const ROMSFieldColumns&);
 
   //# Check if any optional columns exist and if so attach them.
+  //# Initialise the necessary MeasComet objects if the EPHEMERIS_ID column is present.
   void attachOptionalCols(const MSField& msField);
   
   //# Functions which check the supplied values against the relevant column and
@@ -314,6 +354,7 @@ public:
 				       Int numPoly, Double interTime, 
 				       Double timeOrigin);
 
+
   // set the epoch reference type for the TIME column. 
   // <note role=tip>
   // In principle this function can only be used if the table is empty,
@@ -330,11 +371,6 @@ public:
   // rows. Trying to do so at other times will throw an exception.
   void setDirectionRef(MDirection::Types ref);
 
-  // set the direction offset for the REFERENCE_DIR, DELAY_DIR &
-  // PHASE_DIR columns. This can only be done when the table has no
-  // rows. Trying to do so at other times will throw an exception.
-  void setDirectionOffset(const MDirection& offset);
-
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -350,6 +386,7 @@ private:
   MSFieldColumns& operator=(const MSFieldColumns&);
 
   //# Check if any optional columns exist and if so attach them.
+  //# Initialise the necessary MeasComet objects if the EPHEMERIS_ID column is present.
   void attachOptionalCols(MSField& msField);
   
   //# required columns

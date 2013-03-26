@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Constructor
   MSObservationParse::MSObservationParse ()
-    : MSParse(), colName(MS::columnName(MS::SCAN_NUMBER)),
+    : MSParse(), colName(MS::columnName(MS::OBSERVATION_ID)),
       //      maxObs_p(std::numeric_limits<Int>::max())
       maxObs_p(1000)
   {

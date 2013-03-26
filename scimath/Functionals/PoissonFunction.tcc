@@ -1,6 +1,4 @@
-// -*- C++ -*-
-//# MSSelectableTable.cc:  Implementation of the the generic MSSeletableTable interface
-//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
+//# Copyright (C) 2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,22 +22,26 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
 
-#include <ms/MeasurementSets/MSSelectableTable.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/ostream.h>
+#include <scimath/Functionals/PoissonFunction.h>
+#include <casa/BasicSL/Constants.h>
+#include <casa/BasicMath/Math.h>
+#include <scimath/Mathematics/Combinatorics.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-  MSInterface::MSInterface(const Table& table)
-    :MSSelectableTable(table), msMainCols_p(NULL)
-  {}
+//# Constructors
 
-  // MSInterface::MSInterface(const MeasurementSet& ms)
-  //   :MSSelectableTable(ms) 
-  // {}
+//# Operators
+template<class T> 
+T PoissonFunction<T>::eval(typename Function<T>::FunctionArg x) const {
+	int xVal = static_cast<int>(x[0]);
+	return param_p[HEIGHT]*(pow( param_p[LAMBDA], xVal ) * exp(-1 * param_p[LAMBDA] ) /
+			Combinatorics::factorial( xVal ));
+
+}
+
+//# Member functions
 
 } //# NAMESPACE CASA - END
 

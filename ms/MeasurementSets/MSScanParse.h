@@ -92,7 +92,9 @@ public:
   
   // Associate the ms and the shorthand.
   MSScanParse (const MeasurementSet* ms);
-  //  ~MSScanParse() {if (node_p) delete node_p;node_p=0x0;}
+  MSScanParse (const MeasurementSet* ms, const TableExprNode& colAsTEN);
+  ~MSScanParse() {columnAsTEN_p=TableExprNode();}
+
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectScanIds(const Vector<Int>& scanids);
@@ -121,6 +123,7 @@ private:
   const String colName;
   void appendToIDList(const Vector<Int>& v);
   Int maxScans_p;
+  static TableExprNode columnAsTEN_p;
 };
 
 } //# NAMESPACE CASA - END

@@ -647,7 +647,6 @@ void MSMetaData::_getUnflaggedRowStats(
 			}
 		}
 	}
-
 	Vector<Int>::const_iterator aEnd = ant1.end();
 	Vector<Int>::const_iterator a1Iter = ant1.begin();
 	Vector<Int>::const_iterator a2Iter = ant2.begin();
@@ -659,8 +658,9 @@ void MSMetaData::_getUnflaggedRowStats(
 	Vector<Bool>::const_iterator flagIter = flagRow.begin();
 	uInt i = 0;
     uInt64 count = 0;
+    // a flag value of True means the datum is bad (flagged), so False => unflagged
 	while (a1Iter!=aEnd) {
-		if (*flagIter) {
+		if (! *flagIter) {
 			SpwProperties spwProp = spwInfo[dataDescIDToSpwMap[*dIter]];
 			Vector<Double> channelWidths(
 				Vector<Double>(spwProp.chanwidths)
@@ -668,13 +668,14 @@ void MSMetaData::_getUnflaggedRowStats(
 			const Matrix<Bool>& flagsMatrix(flags.get(i));
             count += flagsMatrix.size();
             Double x = 0;
-            if (allTrue(flagsMatrix)) {
+            if (! anyTrue(flagsMatrix)) {
                 // all channels are unflagged
                 x = 1;
             }
-            else if (! anyTrue(flagsMatrix)) {
+            else if (allTrue(flagsMatrix)) {
                 // do nothing. All channels are flagged for this row
-                continue;
+            	// do not put a continue though, because counters still must
+            	// incremented below
             }
             else {
                 // some channels are flagged, some aren't
@@ -683,7 +684,10 @@ void MSMetaData::_getUnflaggedRowStats(
 			    Double bwSum = 0;
 
 			    for (uInt corr=0; corr<nCorrelations; corr++) {
-                    Vector<Bool> corrRow = flagsMatrix.row(corr);
+			    	// invert the meaning here, so that a True value
+			    	// in corrRow means the datum is good (unflagged)
+			    	// it will make the masked sum below more obvious
+                    Vector<Bool> corrRow = ! flagsMatrix.row(corr);
                     if (allTrue(corrRow)) {
                         // all channels for this correlation are unflagged
                         bwSum += spwProp.bandwidth;
@@ -691,7 +695,7 @@ void MSMetaData::_getUnflaggedRowStats(
                     else if (! anyTrue(corrRow)) {
                         // do nothing, all channels for this correlation
                         // have been flagged
-                        continue;
+                        // but allow fall through to iterator increments
                     }
                     else {
                         // some channels are flagged for this correlation, some aren't
@@ -724,7 +728,6 @@ void MSMetaData::_getUnflaggedRowStats(
 	}
 	nACRows = sum(Vector<Double>(fieldNACRows));
 	nXCRows = sum(Vector<Double>(fieldNXCRows));
-
 }
 
 void MSMetaData::_getUnflaggedRowStats(
@@ -738,6 +741,7 @@ void MSMetaData::_getUnflaggedRowStats(
 ) {
 	String taql = "select FLAG, ARRAY_ID, OBSERVATION_ID, DATA_DESC_ID, ANTENNA1, ANTENNA2, SCAN_NUMBER, FIELD_ID, FLAG_ROW from "
 		+ ms.tableName() + " where FLAG_ROW==True";
+
 	Table result(tableCommand(taql));
 	std::auto_ptr<ArrayColumn<Bool> > flags(
 		new ArrayColumn<Bool>(result, "FLAG")

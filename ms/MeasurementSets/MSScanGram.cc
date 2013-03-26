@@ -47,114 +47,151 @@
 // Define the yywrap function for flex.
 int MSScanGramwrap()
 {
-    return 1;
+  return 1;
 }
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSScanGram = 0;
-static Int                   posMSScanGram = 0;
-
-
-//# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  
+  //# Declare a file global pointer to a char* for the input string.
+  static const char*           strpMSScanGram = 0;
+  static Int                   posMSScanGram = 0;
+  
+  
+  //# Parse the command.
+  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  TableExprNode baseMSScanGramParseCommand (MSScanParse* parser, const String& command, 
+					    Vector<Int>& selectedIDs, Int maxScans) 
+  {
+    try
+      {
+	MSScanGramrestart (MSScanGramin);
+	yy_start = 1;
+	strpMSScanGram = command.chars();     // get pointer to command string
+	posMSScanGram  = 0;                   // initialize string position
+	//MSScanParse parser(ms);               // setup measurement set
+	MSScanParse::thisMSSParser = parser; // The global pointer to the parser
+	parser->reset();
+	parser->setMaxScan(maxScans);
+	MSScanGramparse();                // parse command string
+	
+	selectedIDs=parser->selectedIDs();
+	return parser->node();
+      }
+    catch (MSSelectionScanError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msScanGramPosition(), command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }
+  
   TableExprNode msScanGramParseCommand (const MeasurementSet* ms, const String& command, 
 					Vector<Int>& selectedIDs, Int maxScans) 
-{
-  try
-    {
-      MSScanGramrestart (MSScanGramin);
-      yy_start = 1;
-      strpMSScanGram = command.chars();     // get pointer to command string
-      posMSScanGram  = 0;                   // initialize string position
-      MSScanParse parser(ms);               // setup measurement set
-      MSScanParse::thisMSSParser = &parser; // The global pointer to the parser
-      parser.reset();
-      parser.setMaxScan(maxScans);
-      MSScanGramparse();                // parse command string
+  {
+    TableExprNode ret;
+    MSScanParse *thisParser = new MSScanParse(ms);
+    try
+      {
+	ret = baseMSScanGramParseCommand(thisParser, command, selectedIDs, maxScans);
+      }
+    catch (MSSelectionScanError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
 
-      selectedIDs=parser.selectedIDs();
-      return parser.node();
-    }
-  catch (MSSelectionScanError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msScanGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
-
-//# Give the table expression node
-// const TableExprNode* msScanGramParseNode()
-// {
-//   //    return MSScanParse::node();
-//     return &MSScanParse::thisMSSParser->node();
-// }
-void msScanGramParseDeleteNode()
-{
-  //    return MSScanParse::cleanup();
+  TableExprNode msScanGramParseCommand (const MeasurementSet* ms,
+					const TableExprNode& colAsTEN,
+					const String& command, 
+					Vector<Int>& selectedIDs, Int maxScans) 
+  {
+    TableExprNode ret;
+    MSScanParse *thisParser = new MSScanParse(ms,colAsTEN);
+    try
+      {
+	ret = baseMSScanGramParseCommand(thisParser, command, selectedIDs, maxScans);
+      }
+    catch (MSSelectionScanError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
+  //# Give the table expression node
+  // const TableExprNode* msScanGramParseNode()
+  // {
+  //   //    return MSScanParse::node();
+  //     return &MSScanParse::thisMSSParser->node();
+  // }
+  void msScanGramParseDeleteNode()
+  {
+    //    return MSScanParse::cleanup();
     return MSScanParse::thisMSSParser->cleanup();
-}
-
-//# Give the string position.
-Int& msScanGramPosition()
-{
+  }
+  
+  //# Give the string position.
+  Int& msScanGramPosition()
+  {
     return posMSScanGram;
-}
-
-//# Get the next input characters for flex.
-int msScanGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msScanGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSScanGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSScanGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSScanGram++;
     }
     return nr;
-}
-
-void MSScanGramerror (const char*)
-{
-  throw (MSSelectionScanError ("Scan Expression: Parse error at or near '" +
-			       String(MSScanGramtext) + "'"));
-}
-
-// String msScanGramRemoveEscapes (const String& in)
-// {
-//     String out;
-//     int leng = in.length();
-//     for (int i=0; i<leng; i++) {
-// 	if (in[i] == '\\') {
-// 	    i++;
-// 	}
-// 	out += in[i];
-//     }
-//     return out;
-// }
-
-// String msScanGramRemoveQuotes (const String& in)
-// {
-//     //# A string is formed as "..."'...''...' etc.
-//     //# All ... parts will be extracted and concatenated into an output string.
-//     String out;
-//     String str = in;
-//     int leng = str.length();
-//     int pos = 0;
-//     while (pos < leng) {
-// 	//# Find next occurrence of leading ' or ""
-// 	int inx = str.index (str[pos], pos+1);
-// 	if (inx < 0) {
-// 	    throw (AipsError ("MSScanParse - Ill-formed quoted string: " +
-// 			      str));
-// 	}
-// 	out += str.at (pos+1, inx-pos-1);             // add substring
-// 	pos = inx+1;
-//     }
-//     return out;
-// }
-
+  }
+  
+  void MSScanGramerror (const char*)
+  {
+    throw (MSSelectionScanError ("Scan Expression: Parse error at or near '" +
+				 String(MSScanGramtext) + "'"));
+  }
+  
+  // String msScanGramRemoveEscapes (const String& in)
+  // {
+  //     String out;
+  //     int leng = in.length();
+  //     for (int i=0; i<leng; i++) {
+  // 	if (in[i] == '\\') {
+  // 	    i++;
+  // 	}
+  // 	out += in[i];
+  //     }
+  //     return out;
+  // }
+  
+  // String msScanGramRemoveQuotes (const String& in)
+  // {
+  //     //# A string is formed as "..."'...''...' etc.
+  //     //# All ... parts will be extracted and concatenated into an output string.
+  //     String out;
+  //     String str = in;
+  //     int leng = str.length();
+  //     int pos = 0;
+  //     while (pos < leng) {
+  // 	//# Find next occurrence of leading ' or ""
+  // 	int inx = str.index (str[pos], pos+1);
+  // 	if (inx < 0) {
+  // 	    throw (AipsError ("MSScanParse - Ill-formed quoted string: " +
+  // 			      str));
+  // 	}
+  // 	out += str.at (pos+1, inx-pos-1);             // add substring
+  // 	pos = inx+1;
+  //     }
+  //     return out;
+  // }
+  
 } //# NAMESPACE CASA - END

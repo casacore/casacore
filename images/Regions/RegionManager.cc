@@ -56,6 +56,8 @@
 #include <images/Regions/WCLELMask.h>
 #include <images/Regions/WCPolygon.h>
 #include <images/Regions/WCUnion.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/SubImage.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/Table.h>
 #include <casa/namespace.h>
@@ -800,14 +802,36 @@ namespace casa { //# name space casa begins
   }
 
 	
-  String RegionManager::imageRegionToTable(const String& tabName, const ImageRegion& imreg, const String& regName){
+  String RegionManager::imageRegionToTable(const String& tabName, const ImageRegion& imreg, const String& regName, Bool asmask){
     tab_p=Table(tabName, Table::Update);
     RegionHandlerTable regtab (getTable, this);
     String newName=regName;
     Bool retval=False;
     if(regtab.hasRegion(newName) || newName=="")
       newName=regtab.makeUniqueRegionName(regName, 0);
-    retval=regtab.defineRegion (newName, imreg, RegionHandler::Regions);
+    if(asmask){
+      try{
+	PagedImage<Float> myimage(tabName);
+	SubImage<Float> subim(myimage, imreg, True);
+	ImageRegion outreg=myimage.makeMask(newName, False, False);
+	LCRegion& mask=outreg.asMask();
+	LatticeRegion latReg=imreg.toLatticeRegion(myimage.coordinates(), myimage.shape());
+	SubLattice<Bool> subMask(mask, latReg, True);
+	subMask.set(True);
+	myimage.defineRegion (newName, mask, RegionHandler::Masks);
+	retval=myimage.hasRegion(newName);
+      }
+      catch(AipsError x){
+	throw(AipsError("Could not write mask in image "+tabName+" because "+x.getMesg()));
+      }
+      catch(...){
+	throw(AipsError("Could not write mask in image "+tabName));
+      }
+
+    }
+    else{
+      retval=regtab.defineRegion (newName, imreg, RegionHandler::Regions);
+    }
     tab_p.relinquishAutoLocks();
     tab_p=Table();
 
@@ -817,7 +841,7 @@ namespace casa { //# name space casa begins
       return String("");
 
  }
-  String RegionManager::recordToTable(const String& tabName, const RecordInterface& rec, const String& regName){
+  String RegionManager::recordToTable(const String& tabName, const RecordInterface& rec, const String& regName, Bool asmask){
 
     if(!Table::isWritable(tabName)){
     
@@ -828,7 +852,7 @@ namespace casa { //# name space casa begins
     }
     TableRecord lerec(rec);
     ImageRegion* imreg=ImageRegion::fromRecord(lerec, "") ;
-    String newName=imageRegionToTable(tabName, *imreg, regName);
+    String newName=imageRegionToTable(tabName, *imreg, regName, asmask);
     
     delete imreg;
     return newName;

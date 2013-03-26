@@ -404,15 +404,27 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 	    Bool found = False;
 	    String mdir;
 	    if (Aipsrc::find(mdir, "measures.directory")) {
-	      mdir.trim();
-	      Path mpath = Path(mdir);
-	      mpath.append(udir);
-	      ldir = mpath.absoluteName()+"/";
-	      searched.resize(searched.nelements()+1, True);
-	      searched[searched.nelements()-1] = ldir;                        
-	      if  (Table::isReadable(ldir+name)) {
-		found = True;
-	      }
+              mdir.trim();
+              Path mpath = Path(mdir);
+              mpath.append(udir);
+              ldir = mpath.absoluteName()+"/";
+              searched.resize(searched.nelements()+1, True);
+              searched[searched.nelements()-1] = ldir;
+              if  (Table::isReadable(ldir+name)) {
+                found = True;
+              }
+              if (!found) {
+                for (Int i=0; i<2; i++) {
+                  Path mpath = Path(mdir +"/" + path[i]);
+                  ldir = mpath.absoluteName()+"/";
+                  searched.resize(searched.nelements()+1, True);
+                  searched[searched.nelements()-1] = ldir;
+                  if  (Table::isReadable(ldir+name)) {
+                    found = True;
+                    break;
+                  }
+                }
+              }
 	    }
 	    if (!found) {
 	      for (Int i=0; i<2; i++) {

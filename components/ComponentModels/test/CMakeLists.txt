@@ -7,6 +7,7 @@ tComponentList
 tComponentType
 tConstantSpectrum
 tDiskShape
+tLimbDarkenedDiskShape
 tFluxStandard
 tFluxStandard2
 tFluxStandard3

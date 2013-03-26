@@ -595,12 +595,6 @@ void ImageInfo::setBeam(
 	_beams.setBeam(channel, stokes, beam);
 }
 
-GaussianBeam ImageInfo::_getBeam(
-	const Int channel, const Int stokes
-) const {
-	return _beams.getBeam(channel, stokes);
-}
-
 void ImageInfo::setBeams(const ImageBeamSet& beams) {
 	_beams = beams;
 }
@@ -658,7 +652,7 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 void ImageInfo::checkBeamSet (const CoordinateSystem& coords,
                               const IPosition& shape,
                               const String& imageName,
-                              LogIO& logSink)
+                              LogIO& logSink) const
 {
   if (!hasBeam()) {
     return;
@@ -705,22 +699,24 @@ void ImageInfo::checkBeamShape (uInt& nchan, uInt& npol,
   if (csys.hasSpectralAxis()) {
     nchan = shape[csys.spectralAxisNumber()];
   }
-  AlwaysAssert (nchan <= 1  ||  nchan == info.getBeamSet().nchan(), AipsError);
+  AlwaysAssert (info.getBeamSet().nchan() == nchan  ||
+                info.getBeamSet().nchan() == 1, AipsError);
   npol = 0;
   if (csys.hasPolarizationCoordinate()) {
     npol = shape[csys.polarizationAxisNumber()];
   }
-  AlwaysAssert (npol <= 1  ||  npol == info.getBeamSet().nstokes(), AipsError);
+  AlwaysAssert (info.getBeamSet().nstokes() == npol  ||
+                info.getBeamSet().nstokes() == 1, AipsError);
 }
 
-ImageBeamSet ImageInfo::combineBeams (const ImageInfo& infoThat,
-                                      const IPosition& shapeThis,
-                                      const IPosition& shapeThat,
-                                      const CoordinateSystem& csysThis,
-                                      const CoordinateSystem& csysThat,
-                                      Int axis,
-                                      Bool relax,
-                                      LogIO& os) const
+void ImageInfo::combineBeams (const ImageInfo& infoThat,
+                              const IPosition& shapeThis,
+                              const IPosition& shapeThat,
+                              const CoordinateSystem& csysThis,
+                              const CoordinateSystem& csysThat,
+                              Int axis,
+                              Bool relax,
+                              LogIO& os)
 {
   ImageBeamSet beamSet;
   // Check if coord shape and beam shape match.
@@ -748,15 +744,15 @@ ImageBeamSet ImageInfo::combineBeams (const ImageInfo& infoThat,
       mergeBeams (beamSet, infoThat, relax, os);
     }
   }
-  return beamSet;
+  _beams = beamSet;
 }
 
 void ImageInfo::concatFreqBeams (ImageBeamSet& beamsOut,
                                  const ImageInfo& infoThat,
                                  Int nchanThis,
                                  Int nchanThat,
-                                 Bool relax,
-                                 LogIO& os) const
+                                 Bool,
+                                 LogIO&) const
 {
   // Determine the number of beams for the axes in both sets.
   Int nc1 = _beams.nchan();
@@ -766,33 +762,29 @@ void ImageInfo::concatFreqBeams (ImageBeamSet& beamsOut,
   AlwaysAssert (nc1 == nchanThis  ||  nc1 == 1, AipsError);
   AlwaysAssert (nc2 == nchanThat  ||  nc2 == 1, AipsError);
   AlwaysAssert (np1 == np2  ||  np1 == 1  ||  np2 == 1, AipsError);
+  // If the first beam axis has size 1 and the beamsets are equivalent,
+  // a first beamset can be used.
+  // Note: in principle the same test could be done if nc2==1, but chances
+  // are very low such a test is true, thus it is a waste of time.
+  if (nc1 == 1  &&  _beams.equivalent(infoThat.getBeamSet())) {
+    beamsOut = _beams;
+    return;
+  }
   // Determine nr of output beams in both axes.
   // The concat axis is the sum of the image axes.
-  // Only if both beam axes have size 1, the resulting size is 1.
-  // NOTE: if beams are not equivalent the resulting size should not be 1.
   Int nc = nchanThis+nchanThat;
-  if (nc == 2) nc = 1;
   Int np = max(np1,np2);
-  // Determine step size when combining.
-  Int incrc1 = (nc1==nchanThis ? 1:0);
-  Int incrc2 = (nc2==nchanThat ? 1:0);
-  Int incrp1 = (np1==np ? 1:0);
-  Int incrp2 = (np2==np ? 1:0);
   // Now concatenate the beams.
   beamsOut.resize (nc,np);
-  Int ic1 = 0;
-  Int ip1 = 0;
-  for (Int ip=0; ip<np; ++ip, ip1+=incrp1) {
-    for (Int ic=0; ic<nchanThis; ++ic, ic1+=incrc1) {
-      beamsOut.setBeam (ic, ip, _beams.getBeams()(ic1,ip1));
+  for (Int ip=0; ip<np; ++ip) {
+    for (Int ic=0; ic<nchanThis; ++ic) {
+      beamsOut.setBeam (ic, ip, _beams.getBeam(ic,ip));
     }
   }
-  Int ic2 = 0;
-  Int ip2 = 0;
-  for (Int ip=0; ip<np; ++ip, ip2+=incrp2) {
-    for (Int ic=0; ic<nchanThat; ++ic, ic2+=incrc2) {
+  for (Int ip=0; ip<np; ++ip) {
+    for (Int ic=0; ic<nchanThat; ++ic) {
       beamsOut.setBeam (ic+nchanThis, ip,
-                        infoThat.getBeamSet().getBeams()(ic2,ip2));
+                        infoThat.getBeamSet().getBeam(ic,ip));
     }
   }
 }
@@ -801,8 +793,8 @@ void ImageInfo::concatPolBeams (ImageBeamSet& beamsOut,
                                 const ImageInfo& infoThat,
                                 Int npolThis,
                                 Int npolThat,
-                                Bool relax,
-                                LogIO& os) const
+                                Bool,
+                                LogIO&) const
 {
   // Determine the number of beams for the axes in both sets.
   Int nc1 = _beams.nchan();
@@ -812,33 +804,29 @@ void ImageInfo::concatPolBeams (ImageBeamSet& beamsOut,
   AlwaysAssert (np1 == npolThis  ||  np1 == 1, AipsError);
   AlwaysAssert (np2 == npolThat  ||  np2 == 1, AipsError);
   AlwaysAssert (nc1 == nc2  ||  nc1 == 1  ||  nc2 == 1, AipsError);
+  // If the first beam axis has size 1 and the beamsets are equivalent,
+  // a first beamset can be used.
+  // Note: in principle the same test could be done for np2==1, but chances
+  // are very low such a test is true, thus it is a waste of time.
+  if (np1 == 1  &&  _beams.equivalent(infoThat.getBeamSet())) {
+    beamsOut = _beams;
+    return;
+  }
   // Determine nr of output beams in both axes.
   // The concat axis is the sum of the image axes.
-  // Only if both beam axes have size 1, the resulting size is 1.
-  // NOTE: if beams are not equivalent the resulting size should not be 1.
   Int np = npolThis+npolThat;
-  if (np1+np2 == 2) np = 1;
   Int nc = max(nc1,nc2);
-  // Determine step size when combining.
-  Int incrp1 = (np1==npolThis ? 1:0);
-  Int incrp2 = (np2==npolThat ? 1:0);
-  Int incrc1 = (nc1==nc ? 1:0);
-  Int incrc2 = (nc2==nc ? 1:0);
   // Now concatenate the beams.
   beamsOut.resize (nc,np);
-  Int ip1 = 0;
-  Int ic1 = 0;
-  for (Int ip=0; ip<npolThis; ++ip, ip1+=incrp1) {
-    for (Int ic=0; ic<nc; ++ic, ic1+=incrc1) {
-      beamsOut.setBeam (ic, ip, _beams.getBeams()(ic1,ip1));
+  for (Int ip=0; ip<npolThis; ++ip) {
+    for (Int ic=0; ic<nc; ++ic) {
+      beamsOut.setBeam (ic, ip, _beams.getBeam(ic,ip));
     }
   }
-  Int ip2 = 0;
-  Int ic2 = 0;
-  for (Int ip=0; ip<npolThat; ++ip, ip2+=incrp2) {
-    for (Int ic=0; ic<nc; ++ic, ic2+=incrc2) {
+  for (Int ip=0; ip<npolThat; ++ip) {
+    for (Int ic=0; ic<nc; ++ic) {
       beamsOut.setBeam (ic, ip+npolThis,
-                        infoThat.getBeamSet().getBeams()(ic2,ip2));
+                        infoThat.getBeamSet().getBeam(ic,ip));
     }
   }
 }
@@ -859,8 +847,18 @@ void ImageInfo::mergeBeams (ImageBeamSet& beamsOut,
   Int nc = max(nc1,nc2);
   Int np = max(np1,np2);
   if (nc1 == nc  &&  np1 == np) {
+    if (! _beams.equivalent (infoThat.getBeamSet())) {
+      logMessage (_warnBeam, os, relax,
+                  "Beams of images are not equivalent",
+                  "The resulting image will have the first image's beams.");
+    }
     beamsOut = _beams;
   } else if (nc2 == nc  &&  np2 == np){
+    if (! _beams.equivalent (infoThat.getBeamSet())) {
+      logMessage (_warnBeam, os, relax,
+                  "Beams of images are not equivalent",
+                  "The resulting image will have the second image's beams.");
+    }
     beamsOut = infoThat.getBeamSet();
   } else {
     logMessage (_warnBeam, os, relax,
@@ -887,31 +885,5 @@ void ImageInfo::logMessage (Bool& warn, LogIO& os, Bool relax,
   }
 }
 
-/*
-Bool ImageInfo::_areBeamsEquivalent (const ImageInfo& infoThat) const
-{
-  if (! hasBeam()  &&  ! infoThat.hasBeam()) {
-    return True;
-  }
-  if (hasBeam()) {
-    if (hasSingleBeam()) {
-      if (infoThat.hasSingleBeam()) {
-        return restoringBeam() == infoThat.restoringBeam();
-      } else if (infoThat.hasMultipleBeams()) {
-        return _areBeamsEqual(restoringBeam(), infoThat.getBeamSet());
-      } else {
-        return False;
-      }
-    } else {
-      if (infoThat.hasSingleBeam()) {
-        return _areBeamsEqual(infoThat.restoringBeam(), getBeamSet());
-      } else if (infoThat.hasMultipleBeams()) {
-        return getBeamSet() == infoThat.getBeamSet();
-      }
-    }
-  }
-  return False;
-}
-*/
 
 } //# NAMESPACE CASA - END
