@@ -165,7 +165,7 @@ namespace casa {
     Vector<MDirection>              itsConstants;
     MDirection::Types               itsRefType;
     TableExprNode                   itsExprNode;
-    ROArrayMeasColumn<MDirection>   itsMeasCol;
+    ArrayMeasColumn<MDirection>     itsMeasCol;
     EpochEngine*                    itsEpochEngine;
     PositionEngine*                 itsPositionEngine;
   };

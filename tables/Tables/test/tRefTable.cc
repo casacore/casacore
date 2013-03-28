@@ -47,10 +47,10 @@ void readTab (const String& tabName, uInt nrow, uInt ncol)
   Table tab(tabName);
   AlwaysAssertExit (tab.tableDesc().ncolumn() == ncol);
   AlwaysAssertExit (tab.nrow() == nrow);
-  ROScalarColumn<Int> ab(tab,"ab");
-  ROScalarColumn<Int> ac(tab,"ac");
-  ROScalarColumn<uInt> ad(tab,"ad");
-  ROScalarColumn<Int> ax(tab,"ax");
+  ScalarColumn<Int> ab(tab,"ab");
+  ScalarColumn<Int> ac(tab,"ac");
+  ScalarColumn<uInt> ad(tab,"ad");
+  ScalarColumn<Int> ax(tab,"ax");
   for (uInt i=0; i<tab.nrow(); ++i) {
     AlwaysAssertExit (ab(i) == Int(i));
     AlwaysAssertExit (ac(i) == Int(i+1));

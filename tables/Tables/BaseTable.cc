@@ -1042,7 +1042,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
         }
       }
       Bool extra = False;
-      for (uint j=0; j<spec.nfields(); j++) {
+      for (uInt j=0; j<spec.nfields(); j++) {
         const String& name = spec.name(j);
         if (name != "SEQNR" && name != "BUCKETSIZE" && name != "HYPERCUBES") {
           if (!extra) {

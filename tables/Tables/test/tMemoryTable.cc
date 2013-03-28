@@ -206,55 +206,55 @@ void info (const Table& aTable)
     switch (cdesc.dataType()) {
     case TpInt:
       if (cdesc.isArray()) {
-	ROArrayColumn<Int> ad(aTable,cdesc.name());
+	ArrayColumn<Int> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<Int> aa(aTable,cdesc.name());
+	ScalarColumn<Int> aa(aTable,cdesc.name());
 	cout << aa.getColumn() << endl;
       }
       break;
     case TpBool:
       if (cdesc.isArray()) {
-	ROArrayColumn<Bool> ad(aTable,cdesc.name());
+	ArrayColumn<Bool> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<Bool> ab(aTable,cdesc.name());
+	ScalarColumn<Bool> ab(aTable,cdesc.name());
 	cout << ab.getColumn() << endl;
       }
       break;
     case TpDComplex:
       if (cdesc.isArray()) {
-	ROArrayColumn<DComplex> ad(aTable,cdesc.name());
+	ArrayColumn<DComplex> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<DComplex> ac(aTable,cdesc.name());
+	ScalarColumn<DComplex> ac(aTable,cdesc.name());
 	cout << ac.getColumn() << endl;
       }
       break;
     case TpFloat:
       if (cdesc.isArray()) {
-	ROArrayColumn<float> ad(aTable,cdesc.name());
+	ArrayColumn<float> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<float> ad(aTable,cdesc.name());
+	ScalarColumn<float> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       }
       break;
     case TpDouble:
       if (cdesc.isArray()) {
-	ROArrayColumn<double> ad(aTable,cdesc.name());
+	ArrayColumn<double> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<double> ad(aTable,cdesc.name());
+	ScalarColumn<double> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       }
       break;
     case TpString:
       if (cdesc.isArray()) {
-	ROArrayColumn<String> ad(aTable,cdesc.name());
+	ArrayColumn<String> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ROScalarColumn<String> ad(aTable,cdesc.name());
+	ScalarColumn<String> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       }
       break;

@@ -139,12 +139,12 @@ void b()
 {
     // Read back the table.
     Table tab("tScaledArrayEngine_tmp.data");
-    ROArrayColumn<double> source1 (tab, "source1");
-    ROArrayColumn<float> source2 (tab, "source2");
-    ROArrayColumn<double> source3 (tab, "source3");
-    ROArrayColumn<Int> target1 (tab, "target1");
-    ROArrayColumn<uChar> target2 (tab, "target2");
-    ROArrayColumn<Int> target3 (tab, "target3");
+    ArrayColumn<double> source1 (tab, "source1");
+    ArrayColumn<float> source2 (tab, "source2");
+    ArrayColumn<double> source3 (tab, "source3");
+    ArrayColumn<Int> target1 (tab, "target1");
+    ArrayColumn<uChar> target2 (tab, "target2");
+    ArrayColumn<Int> target3 (tab, "target3");
     Cube<Int> arri1(IPosition(3,2,3,4));
     Cube<Int> arri3(IPosition(3,2,3,4));
     Cube<Int> arrvali(IPosition(3,2,3,4));

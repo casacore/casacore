@@ -636,7 +636,7 @@ Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
 	else {
                 for (uInt i=0; i<nChannels(); i++) {
 			Record chanRec;
-			for (uint j=0; j<nStokes(); j++) {
+			for (uInt j=0; j<nStokes(); j++) {
 				chanRec.defineRecord(
 					"*" + String::toString(j),
 					_beams(i, j).toRecord()

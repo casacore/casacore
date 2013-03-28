@@ -758,7 +758,7 @@ void checkRCDVec (const Vector<Int>& v1, const Vector<Int>& v2)
   AlwaysAssertExit (allEQ(v1,v2));
   Array<Int>::const_iterator iter1 = v1.begin();
   Array<Int>::const_iterator iter2 = v2.begin();
-  for (uint i=0; i<v1.size(); ++i, ++iter1, ++iter2) {
+  for (uInt i=0; i<v1.size(); ++i, ++iter1, ++iter2) {
     AlwaysAssertExit (v1[i] == v2[i]);
     AlwaysAssertExit (iter1 != v1.end());
     AlwaysAssertExit (iter2 != v2.end());

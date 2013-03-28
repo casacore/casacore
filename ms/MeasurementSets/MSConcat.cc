@@ -273,7 +273,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   const Block<uInt> newAntIndices = copyAntennaAndFeed(otherMS.antenna(), 
 						       otherMS.feed()); 
   Bool antIndexTrivial = True;
-  for(uint ii=0; ii<newAntIndices.size(); ii++){
+  for(uInt ii=0; ii<newAntIndices.size(); ii++){
     //cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
     if(newAntIndices[ii]!=ii){
       antIndexTrivial=False;
@@ -937,7 +937,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	<< " rows to the feed subtable" << endl;
   }
 
-  //for(uint ii=0; ii<newAntIndices.size(); ii++){
+  //for(uInt ii=0; ii<newAntIndices.size(); ii++){
   //  cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
   //}
 
@@ -1637,7 +1637,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
   if(remRedunObsId){ // remove redundant rows
     MSObservationColumns& obsCol = observation();
     Vector<Bool> rowToBeRemoved(obs.nrow(), False);
-    vector<uint> rowsToBeRemoved;
+    vector<uInt> rowsToBeRemoved;
     for(uInt j=0; j<obs.nrow(); j++){ // loop over OBS table rows
       for (uInt k=j+1; k<obs.nrow(); k++){ // loop over remaining OBS table rows
 	if(obsRowsEquivalent(obsCol, j, k)){ // rows equivalent?

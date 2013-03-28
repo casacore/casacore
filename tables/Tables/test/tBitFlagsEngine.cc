@@ -136,12 +136,12 @@ void readTable()
 {
   // Read back the table.
   Table tab("tBitFlagsEngine_tmp.data");
-  ROArrayColumn<Int> storedcol1 (tab, "storedcol1");
-  ROArrayColumn<Short> storedcol2 (tab, "storedcol2");
-  ROArrayColumn<uChar> storedcol3 (tab, "storedcol3");
-  ROArrayColumn<Bool> virtualcol1 (tab, "virtualcol1");
-  ROArrayColumn<Bool> virtualcol2 (tab, "virtualcol2");
-  ROArrayColumn<Bool> virtualcol3 (tab, "virtualcol3");
+  ArrayColumn<Int> storedcol1 (tab, "storedcol1");
+  ArrayColumn<Short> storedcol2 (tab, "storedcol2");
+  ArrayColumn<uChar> storedcol3 (tab, "storedcol3");
+  ArrayColumn<Bool> virtualcol1 (tab, "virtualcol1");
+  ArrayColumn<Bool> virtualcol2 (tab, "virtualcol2");
+  ArrayColumn<Bool> virtualcol3 (tab, "virtualcol3");
   Matrix<Bool> arrd1(IPosition(2,3,4));
   Matrix<Bool> arrd2(IPosition(2,3,4));
   Matrix<Bool> arrd3(IPosition(2,3,4));

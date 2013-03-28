@@ -225,13 +225,13 @@ inline void arrayContTransform (const Array<L>& left, R right,
   if (left.contiguousStorage()) {
     myrtransform (left.cbegin(), left.cend(),
                  result.cbegin(), right, op);
-    ///    std::transform (left.cbegin(), left.cend(),
-    ///                    result.cbegin(), bind2nd(op, right));
+    ////    std::transform (left.cbegin(), left.cend(),
+    ////                    result.cbegin(), bind2nd(op, right));
   } else {
     myrtransform (left.begin(), left.end(),
                  result.cbegin(), right, op);
-    ///    std::transform (left.begin(), left.end(),
-    ///                    result.cbegin(), bind2nd(op, right));
+    ////    std::transform (left.begin(), left.end(),
+    ////                    result.cbegin(), bind2nd(op, right));
   }
 }
 
@@ -245,13 +245,13 @@ inline void arrayContTransform (L left, const Array<R>& right,
   if (right.contiguousStorage()) {
     myltransform (right.cbegin(), right.cend(),
                   result.cbegin(), left, op);
-    ///    std::transform (right.cbegin(), right.cend(),
-    ///                    result.cbegin(), bind1st(op, left));
+    ////    std::transform (right.cbegin(), right.cend(),
+    ////                    result.cbegin(), bind1st(op, left));
   } else {
     myltransform (right.begin(), right.end(),
                   result.cbegin(), left, op);
-    ///    std::transform (right.begin(), right.end(),
-    ///                    result.cbegin(), bind1st(op, left));
+    ////    std::transform (right.begin(), right.end(),
+    ////                    result.cbegin(), bind1st(op, left));
   }
 }
 
@@ -334,10 +334,10 @@ inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
     myiptransform (left.cbegin(), left.cend(), right, op);
-    ///    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
+    ////    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
   } else {
     myiptransform (left.begin(), left.end(), right, op);
-    ///    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
+    ////    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
   }
 }
 

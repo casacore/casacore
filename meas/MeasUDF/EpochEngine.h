@@ -145,7 +145,7 @@ namespace casa {
     Vector<MEpoch>              itsConstants;
     MEpoch::Types               itsRefType;
     TableExprNode               itsExprNode;
-    ROArrayMeasColumn<MEpoch>   itsMeasCol;
+    ArrayMeasColumn<MEpoch>     itsMeasCol;
     PositionEngine*             itsPositionEngine;
   };
 

@@ -107,7 +107,7 @@ void doiter1() {
     Int nr = 0;
     while (!iter0.pastEnd()) {
 	t = iter0.table();
-	ROScalarColumn<Int> col1(t, "col1");
+	ScalarColumn<Int> col1(t, "col1");
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";
@@ -124,7 +124,7 @@ void doiter1() {
     nr = 0;
     while (!iter0.pastEnd()) {
 	t = iter0.table();
-	ROScalarColumn<Int> col1(t, "col1");
+	ScalarColumn<Int> col1(t, "col1");
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";

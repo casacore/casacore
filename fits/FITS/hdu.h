@@ -992,21 +992,6 @@ class FitsArray : public FitsField<TYPE> {
 
 //<summary> FITS array of FitsBit type </summary>
 
-//<templating>
-//#until cxx2html can handle this, duplicate:
-// <li> typedef FitsArray<FitsLogical> LogicalFitsArray;
-// <li> typedef FitsArray<FitsBit> BitFitsArray;
-// <li> typedef FitsArray<char> CharFitsArray;
-// <li> typedef FitsArray<unsigned char> ByteFitsArray;
-// <li> typedef FitsArray<short> ShortFitsArray;
-// <li> typedef FitsArray<FitsLong> LongFitsArray;
-// <li> typedef FitsArray<float> FloatFitsArray;
-// <li> typedef FitsArray<double> DoubleFitsArray;
-// <li> typedef FitsArray<Complex> ComplexFitsArray;
-// <li> typedef FitsArray<IComplex> IComplexFitsArray;
-// <li> typedef FitsArray<DComplex> DComplexFitsArray;
-// <li> typedef FitsArray<FitsVADesc> VADescFitsArray;
-//</templating>
 //<note>
 // We must specify a FitsArray<FitsBit> as a specialization.
 //</note>

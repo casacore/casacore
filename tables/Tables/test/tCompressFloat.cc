@@ -128,9 +128,9 @@ Bool checkData (Bool autoScale)
   Bool ok = True;
   // Read back the table.
   Table tab("tCompressFloat_tmp.data");
-  ROArrayColumn<Float> source1 (tab, "source1");
-  ROArrayColumn<Float> source2 (tab, "source2");
-  ROArrayColumn<Short> target1 (tab, "target1");
+  ArrayColumn<Float> source1 (tab, "source1");
+  ArrayColumn<Float> source2 (tab, "source2");
+  ArrayColumn<Short> target1 (tab, "target1");
   Cube<Short> arri1(IPosition(3,2,3,4));
   Cube<Short> arrvali(IPosition(3,2,3,4));
   Cube<Float> arrf1(IPosition(3,2,3,4));
@@ -239,7 +239,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source1");
+      ArrayColumn<Float> source (tab, "source1");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -251,7 +251,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source2");
+      ArrayColumn<Float> source (tab, "source2");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -263,7 +263,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source3");
+      ArrayColumn<Float> source (tab, "source3");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -275,7 +275,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source1");
+      ArrayColumn<Float> source (tab, "source1");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -283,7 +283,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source2");
+      ArrayColumn<Float> source (tab, "source2");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -291,7 +291,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source3");
+      ArrayColumn<Float> source (tab, "source3");
       Timer timer;
       source.getColumn();
       timer.show();

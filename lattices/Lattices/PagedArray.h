@@ -580,11 +580,9 @@ private:
   void makeTable (const String& filename, Table::TableOption option);
   // The default comment for PagedArray Colums
   static String defaultComment();
-  // Get the writable ArrayColumn object. It is created when needed.
+  // Get the writable ArrayColumn object.
+  // It reopens the table for write if needed.
   ArrayColumn<T>& getRWArray();
-  // Create the writable ArrayColumn object.
-  // It reopens the table for write when needed.
-  void makeRWArray();
   // Do the reopen of the table (if not open already).
   // <group>
   void doReopen() const;
@@ -598,8 +596,7 @@ private:
           String    itsTableName;
           Bool      itsWritable;
           TableLock itsLockOpt;
-  mutable ArrayColumn<T>       itsRWArray;
-  mutable ROArrayColumn<T>     itsROArray;
+  mutable ArrayColumn<T>       itsArray;
   mutable ROTiledStManAccessor itsAccessor;
 };
 
@@ -607,10 +604,12 @@ private:
 template<class T>
 inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 {
-  if (itsRWArray.isNull()) {
-    makeRWArray();
+  if (!itsWritable) {
+    doReopen();
+    itsTable.reopenRW();
+    itsWritable = True;
   }
-  return itsRWArray;
+  return itsArray;
 }
 
 template<class T>

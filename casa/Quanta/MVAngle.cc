@@ -219,10 +219,15 @@ void MVAngle::print(ostream &oss,
     uInt intyp = form.typ;
     uInt i1 = intyp & ~MVAngle::MOD_MASK;
     Double t, t1;
-    Char sep;
+    Char sep1, sep2='m';
     if (i1 == MVAngle::ANGLE) {
-	t = val/C::degree;
-	sep = '.';
+      t = val/C::degree;
+      if ((intyp & MVAngle::ALPHA) == MVAngle::ALPHA) {
+        sep1 = 'd';
+        } else {
+        sep1 = '.';
+        sep2 = '.';
+      }
     } else {
       if (loc) {
 	t = MVAngle::timeZone() * 24.0;
@@ -233,7 +238,12 @@ void MVAngle::print(ostream &oss,
 	  t -= 24.0;
 	}
       }
-      sep = ':';
+      if ((intyp & MVAngle::ALPHA) == MVAngle::ALPHA) {
+        sep1 = 'h';
+      } else {
+        sep1 = ':';
+        sep2 = ':';
+      }
     }
     if (inprec == 0) inprec = oss.precision();
     Char sfill = oss.fill();
@@ -282,10 +292,10 @@ void MVAngle::print(ostream &oss,
 	  }
 	}
 	if ((inprec > 2) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
-	    oss << sep;
+	    oss << sep1;
 	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	oss << sep;
+	oss << sep1;
     }
     if (inprec > 2) {
 	t = std::fmod(t,1.0) *60.;
@@ -293,13 +303,13 @@ void MVAngle::print(ostream &oss,
 	if ((intyp & MVAngle::NO_DM) != MVAngle::NO_DM) {
 	    oss << setfill('0') << setw(2) << h;
 	    if ((inprec > 4) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
-		oss << sep;
+		oss << sep2;
 	    }
 	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	    oss << sep;
+	    oss << sep2;
 	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	oss << sep;
+	oss << sep2;
     }
     if (inprec > 4 && inprec < 7) {
 	t = std::fmod(t,1.0) *60.;

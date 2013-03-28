@@ -200,12 +200,12 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
     Bool userLocking =  (lockMode.option() == TableLock::UserLocking);
     // Open the table for read.
     Table tab ("tTableLockSync_2_tmp.tab", lockMode);
-    ROScalarColumn<uInt> seq (tab, "seq");
-    ROScalarColumn<Int> col1 (tab, "col1");
-    ROScalarColumn<Int> col2 (tab, "col2");
-    ROArrayColumn<float> freq (tab, "Freq");
-    ROArrayColumn<float> pol (tab, "Pol");
-    ROArrayColumn<float> data (tab, "Data");
+    ScalarColumn<uInt> seq (tab, "seq");
+    ScalarColumn<Int> col1 (tab, "col1");
+    ScalarColumn<Int> col2 (tab, "col2");
+    ArrayColumn<float> freq (tab, "Freq");
+    ArrayColumn<float> pol (tab, "Pol");
+    ArrayColumn<float> data (tab, "Data");
     Block<uInt> count;
     Time* lastTime = 0;
 

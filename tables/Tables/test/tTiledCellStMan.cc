@@ -147,10 +147,10 @@ void writeFixed(const TSMOption& tsmOpt)
 void readTable(const TSMOption& tsmOpt)
 {
     Table table("tTiledCellStMan_tmp.data", Table::Old, tsmOpt);
-    ROArrayColumn<float> freq (table, "Freq");
-    ROArrayColumn<float> pol (table, "Pol");
-    ROArrayColumn<float> data (table, "Data");
-    ROArrayColumn<float> weight (table, "Weight");
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ArrayColumn<float> data (table, "Data");
+    ArrayColumn<float> weight (table, "Weight");
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
     indgen (freqValues, float(200));

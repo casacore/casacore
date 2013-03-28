@@ -282,26 +282,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // You can read data from a table column with the "get" functions
 // in the classes
-// <linkto class="ROScalarColumn:description">ROScalarColumn&lt;T&gt;</linkto>
+// <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
 // and
-// <linkto class="ROArrayColumn:description">ROArrayColumn&lt;T&gt;</linkto>.
+// <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>.
 // For scalars of a standard data type (i.e. Bool, uChar, Int, Short,
 // uShort, uInt, float, double, Complex, DComplex and String) you could
 // instead use 
-// <linkto class="ROTableColumn">ROTableColumn::getScalar(...)</linkto> or
-// <linkto class="ROTableColumn">ROTableColumn::asXXX(...)</linkto>.
+// <linkto class="TableColumn">TableColumn::getScalar(...)</linkto> or
+// <linkto class="TableColumn">TableColumn::asXXX(...)</linkto>.
 // These functions offer an extra: they do automatic data type promotion;
 // so that you can, for example, get a double value from a float column.
 //
-// These "get" functions are used in the same way as the simple"put"
+// These "get" functions are used in the same way as the simple "put"
 // functions described in the previous section.
 // <p>
 // <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
-// is derived from ROScalarColumn&lt;T&gt;, and
-// therefore has the same "get" functions. However, if a
-// ScalarColumn&lt;T&gt; object is constructed for a non-writable column,
-// an exception is thrown. Only ROScalarColumn&lt;T&gt; objects can be
-// constructed for nonwritable columns.
+// can be constructed for a non-writable column. However, an exception
+// is thrown if the put function is used for it.
 // The same is true for
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto> and
 // <linkto class="TableColumn:description">TableColumn</linkto>.
@@ -323,8 +320,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the table description.
-//     ROScalarColumn<Int> acCol (tab, "ac");
-//     ROArrayColumn<Float> arr2Col (tab, "arr2");
+//     ScalarColumn<Int> acCol (tab, "ac");
+//     ArrayColumn<Float> arr2Col (tab, "arr2");
 //
 //     // Loop through all rows in the table.
 //     uInt nrrow = tab.nrow();
@@ -570,7 +567,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   Copy values from another column to this column.<BR>
 //   These functions have the advantage that the
 //   data type of the input and/or output column can be unknown.
-//   The generic (RO)TableColumn objects can be used for this purpose.
+//   The generic TableColumn objects can be used for this purpose.
 //   The put(Column) function checks the data types and, if possible,
 //   converts them. If the conversion is not possible, it throws an
 //   exception.
@@ -598,7 +595,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     <linkto class="ArrayColumn">ArrayColumn::putColumn(...)</linkto>
 //     are less generic and therefore potentially more efficient.
 //     The most efficient variants are the ones taking a
-//     ROScalar/ArrayColumn&lt;T&gt;, because they require no data type
+//     Scalar/ArrayColumn&lt;T&gt;, because they require no data type
 //     conversion.
 //   </ul>
 // </ol>
@@ -853,12 +850,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // possible to add a constant to a table vector. This has the effect
 // that the underlying column gets changed.
 //
-// You can use the templated classes
-// <linkto class="ROTableVector:description">ROTableVector</linkto> and
-// <linkto class="TableVector:description">TableVector</linkto> and
-// to define a table vector (readonly and read/write, respectively) for
-// a scalar column. Columns containing arrays or tables are not supported.
-// The data type of the (RO)TableVector object must match the
+// You can use the templated class
+// <linkto class="TableVector:description">TableVector</linkto>
+// to make a scalar column appear as a (table) vector.
+// Columns containing arrays or tables are not supported.
+// The data type of the TableVector object must match the
 // data type of the column.
 // A table vector can also hold a normal vector so that (temporary)
 // results of table vector operations can be handled.
@@ -867,13 +863,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // store the result in a temporary table vector.
 // <srcblock>
 //    // Create a table vector for column COL1.
-//    // It has to be a ROTableVector, because the table is opened
-//    // as readonly.
+//    // Note that if the table is readonly, putting data in the table vector
+//    // results in an exception.
 //    Table tab ("Table.data");
-//    ROTableVector<Int> tabvec(tab, "COL1");
-//    // Multiply it by a constant.
-//    // The result has to be stored in a TableVector,
-//    // since a ROTableVector cannot be written to.
+//    TableVector<Int> tabvec(tab, "COL1");
+//    // Multiply it by a constant. Result is kept in a Vector in memory.
 //    TableVector<Int> temp = 2 * tabvec;
 // </srcblock>
 //

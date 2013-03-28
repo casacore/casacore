@@ -99,12 +99,17 @@ public:
 		     const Bool checkShapeAndCateg=True,
 		     const String& obsidAndScanTableName="");
 
+  // Concatenate the given MS to the current one.
+  // @param otherMS     MS to be concatenated to the MS given by destMSName
+  // @param handling    - 0 (default): complete concat of all tables
+  //                    - 1 : don't concatenate the MAIN table
+  //                    - 2 : don't concatenate the POINTING table
+  //                    - 3 : neither concat MAIN nor POINTING table
+  // @param destMSName  name of destination MS. If empty, the MS in this object
+  //                    will be used.
   void concatenate(const MeasurementSet& otherMS,
-		   const uInt handling=0,   // 0 (default): complete concat of all tables
-                                            // 1 : don't concatenate the MAIN table
-                                            // 2 : don't concatenate the POINTING table
-                                            // 3 : neither concat MAIN nor POINTING table
-                   const String& destMSName=""); // support for virtual concat
+		   const uInt handling=0,
+                   const String& destMSName="");
 
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
   void setWeightScale(const Float weightScale); 

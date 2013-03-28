@@ -47,9 +47,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 # else
     typedef Long FitsLong;
 # endif 
-// recovered by GYL
+//# recovered by GYL
 
-class ReservedFitsKeywordCollection; // Forward declarations
+//# Forward declarations
+class ReservedFitsKeywordCollection;
 class FitsNameResult;
 class FitsValueResult;
 class FitsKeyword;

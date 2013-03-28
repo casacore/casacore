@@ -175,19 +175,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
   // </group> 
   
-  //# To support a container of const void*.
-  //# I think that nowadays handled ok
-  ///  inline void objmove(const void** to, const void*const *from, size_t n)
-  ///    { memmove(to, from, n*sizeof(void*)); }
-  ///  inline void objmove(const char** to, const char*const *from, size_t n)
-  ///    { memmove(to, from, n*sizeof(char*)); }
-  
-  //# To support a container of void*.
-  ///  inline void objmove(void** to, void*const *from, size_t n)
-  ///    { memmove(to, from, n*sizeof(void*)); }
-  ///  inline void objmove(char** to, char*const *from, size_t n)
-  ///    { memmove(to, from, n*sizeof(char*)); }
-  
   // The non-general function to copy <src>n</src> objects from one place
   // to another. Strides may be specified, i.e. you may copy from every
   // <src>fromStride</src>-th position into every <src>toStride</src>-th
@@ -210,19 +197,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     objthrowcp2(to,from,n,toStride,fromStride); while (n--) {
       *to = *from; to += toStride; from += fromStride; } }
   // </group> 
-  
-  //# To support a container of const void*.
-  //# Not necessary I think wnb
-  ///  inline void objcopy(const void** to, const void*const *from, size_t n)
-  ///    { memcpy(to, from, n*sizeof(void*)); }
-  ///  inline void objcopy(const char** to, const char*const *from, size_t n)
-  ///    { memcpy(to, from, n*sizeof(char*)); }
-  
-  //# To support a container of void*.
-  ///  inline void objcopy(void** to, void*const *from, size_t n)
-  ///    { memcpy(to, from, n*sizeof(void*)); }
-  ///  inline void objcopy(char** to, char*const *from, size_t n)
-  ///    { memcpy(to, from, n*sizeof(char*)); }
   
   // Fill <src>n</src> elements of an array of objects with the given
   // value, optionally with a stride. Note that the fillValue is passed

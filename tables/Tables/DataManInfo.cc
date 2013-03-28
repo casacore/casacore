@@ -228,7 +228,7 @@ Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
             // Add it to the vector of removed columns.
             remCols[ncols++] = col;
             --ndmcol;
-            for (uint k=j; k<ndmcol; ++k) {
+            for (uInt k=j; k<ndmcol; ++k) {
               dmcols[k] = dmcols[k+1];
             }
           }

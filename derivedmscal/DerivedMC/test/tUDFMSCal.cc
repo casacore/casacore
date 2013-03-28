@@ -70,8 +70,8 @@ void testUDF()
 {
   Table tab = tableCommand("select from tUDFMSCal_tmp.tab "
                            "where mscal.baseline('RT[2-4]')").table();
-  Vector<Int> a1 (ROScalarColumn<Int>(tab, "ANTENNA1").getColumn());
-  Vector<Int> a2 (ROScalarColumn<Int>(tab, "ANTENNA2").getColumn());
+  Vector<Int> a1 (ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
+  Vector<Int> a2 (ScalarColumn<Int>(tab, "ANTENNA2").getColumn());
   for (uInt i=0; i<tab.nrow(); ++i) {
     cout << a1[i] << ' '<< a2[i] << endl;
   }

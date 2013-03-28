@@ -50,7 +50,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <module>
 //
-// <summary> Classes and global functions for system use </summary>
+// <summary>
+// Classes and global functions for system use
+// </summary>
 
 // <reviewed reviewer="" date="" demos="">
 // </reviewed>
@@ -61,7 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // global functions.
 //
 // The following functionality is available:
-// <ul>
+// <ol>
 //  <li> Class <linkto class=FITSFieldCopier:description>
 //       FITSFieldCopier</linkto>
 //       A FITSFieldCopier for copying Array RecordFields to FitsFields.
@@ -419,7 +421,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=VariableArrayFITSFieldCopier:description>
 //       VariableArrayFITSFieldCopier</linkto>
 //       Copy the current contents of the input RORecordFieldPtr to the output FitsField.
-// </ul>
+// </ol>
 //
 // <note role=tip> You may want to look at the individual header files
 // to see whether you might not prefer to include only the header

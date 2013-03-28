@@ -217,16 +217,16 @@ void a()
 void b()
 {
     Table table("tTiledDataStMan_tmp.data");
-    ROScalarColumn<float> time (table, "Time");
-    ROScalarColumn<float> baseline (table, "Baseline");
-    ROArrayColumn<float> freq (table, "Freq");
-    ROArrayColumn<float> pol (table, "Pol");
-    ROScalarColumn<float> id (table, "Id");
-    ROArrayColumn<float> data (table, "Data");
-    ROArrayColumn<float> weight (table, "Weight");
-    ROArrayColumn<Complex> odata (table, "OData");
-    ROArrayColumn<Bool> flag (table, "Flag");
-    ROScalarColumn<float> data1 (table, "Data1");
+    ScalarColumn<float> time (table, "Time");
+    ScalarColumn<float> baseline (table, "Baseline");
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ScalarColumn<float> id (table, "Id");
+    ArrayColumn<float> data (table, "Data");
+    ArrayColumn<float> weight (table, "Weight");
+    ArrayColumn<Complex> odata (table, "OData");
+    ArrayColumn<Bool> flag (table, "Flag");
+    ScalarColumn<float> data1 (table, "Data1");
     Matrix<float> array(IPosition(2,12,20));
     Matrix<float> result;
     Matrix<Bool> arrayb(IPosition(2,12,20));

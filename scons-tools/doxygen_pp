@@ -40,7 +40,7 @@ $FIRST_SUMMARY     = 1;
 
 # If the caller supplied precisely one command line argument, then this script
 # can proceed.
-###open OUT, ">> xyz";
+###open OUT, ">> doc/doxygen.done";
 
 $arguments = @ARGV;
 if ($arguments == 1)
@@ -93,6 +93,7 @@ if ($arguments == 1)
 
   # Open the file.
   $status = open(FILEHANDLE, $filename);
+###  open DOXOUT, ">> doc/" . $hdrnm . $isModHdr . ".dout";
 
   # If the file could be opened then read the contents.
   if ($status)
@@ -257,11 +258,16 @@ sub change_comment_style
     $comment = $line;
     # If this line contains only a slash-slash comment, then
     # the comment block might need to be converted.
-    if ($line =~ m|(^\s*)(//)(.*)|)
+    if ($line =~ m|(^\s*)(//)(\s*)(.*)|)
     {
-      # Keep track of how far the comment block is indented.
+      # Remove indentation, because doxygen treats a line with 4 leading spaces
+      # (after an empty line) as an example code block.
       $indent = $1;
-      $comment = $3;
+      $indent2 = $3;
+      $comment = $4;
+      if ($indent2 =~ m|\s.*|) {
+        $comment = " $comment";
+      }
       # slash-slash-slash/hash are kept as such (is doxygen already).
       # Four slashes is comment in code examples, thus is normal comment.
       if ($comment !~ m|^[/#][^/]|  &&  $comment !~ m|^[/#]$|)
@@ -320,7 +326,7 @@ sub change_comment_style
 	  $grpnm =~ s|\s*['".]\s*||g;
 	  $grpnm =~ s|\s+|_|g;
 	  $grpnm =~ s|:|_|g;
-	  $comment = "$indent \\anchor ${hdrnm}_$grpnm ";
+	  $comment = "\\anchor ${hdrnm}_$grpnm ";
 	  # Only a named group at the highest level is turned into a struct.
 	  # Do this only if it has a summary, which indicates it describes
 	  # a group of functions outside a class.
@@ -330,7 +336,7 @@ sub change_comment_style
 	    $nadded += 1;
 	  } else {
 	    # Otherwise open a doxygen group.
-	    $extraline = "$indent//@\{\n";
+	    $extraline = "//@\{\n";
 	    $nadded += 1;
 	  }
 	  $grouplevel += 1;
@@ -632,7 +638,7 @@ sub change_comment_style
       # doxygen group tags need slashes.
       if ($comment =~ /^\s*@[\{\}]\s*$/) {
         $comment =~ s/\s+//g;
-        $line = "$indent//$comment\n";
+        $line = "//$comment\n";
         $newstate = $NON_COMMENT_BLOCK;
       }
     }
@@ -653,10 +659,10 @@ sub change_comment_style
       if ($newstate == $COMMENT_BLOCK) {
         if ($state == $COMMENT_BLOCK) {
 	  # Add comment to block.
-	  push @spanning_comment, "\n$indent   $comment";
+	  push @spanning_comment, "\n$comment";
         } else {
 	  # Begin the spanning comment block with given indentation.
-	  push @spanning_comment, "$indent/**$comment";
+	  push @spanning_comment, "/**$comment";
         }
 	if ($extraline ne "") {
 	  $line = $extraline;
@@ -670,13 +676,16 @@ sub change_comment_style
 	  # End comment block and write the block.
 	  push @spanning_comment, " */\n";
 	  print @spanning_comment;
+###          print DOXOUT @spanning_comment;
 	  @spanning_comment = ();
 	  $summinx = -1;
         }
         # Write the line.
         print $line;
+###        print DOXOUT $line;
 	if ($extraline ne "") {
 	  print $extraline;
+###	  print DOXOUT $extraline;
 	  $extraline = "";
 	}
       }
@@ -689,5 +698,6 @@ sub change_comment_style
   {
     push @spanning_comment, " */\n";
     print @spanning_comment;
+###    print DOXOUT @spanning_comment;
   }
 }

@@ -160,12 +160,12 @@ void b()
 {
     // Read back the table.
     Table tab("tScaledComplexData_tmp.data");
-    ROArrayColumn<DComplex> source1 (tab, "source1");
-    ROArrayColumn<Complex> source2 (tab, "source2");
-    ROArrayColumn<DComplex> source3 (tab, "source3");
-    ROArrayColumn<Int> target1 (tab, "target1");
-    ROArrayColumn<Short> target2 (tab, "target2");
-    ROArrayColumn<Int> target3 (tab, "target3");
+    ArrayColumn<DComplex> source1 (tab, "source1");
+    ArrayColumn<Complex> source2 (tab, "source2");
+    ArrayColumn<DComplex> source3 (tab, "source3");
+    ArrayColumn<Int> target1 (tab, "target1");
+    ArrayColumn<Short> target2 (tab, "target2");
+    ArrayColumn<Int> target3 (tab, "target3");
     Cube<Int> arri1(IPosition(3,2,3,4));
     Cube<Int> arri3(IPosition(3,2,3,4));
     Cube<Int> arrvali(IPosition(3,2,3,4));

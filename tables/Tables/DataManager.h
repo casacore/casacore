@@ -56,9 +56,11 @@ class AipsIO;
 
 
 // <summary>
-// Define the type of the static "constructor" function.
+// Define the type of the static construction function.
 // </summary>
+
 // <use visibility=local>
+
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 

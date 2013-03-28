@@ -231,8 +231,8 @@ public:
     // By default it is if the value is constant.
     virtual Bool isSingleValue() const;
 
-    // Is the expression a column aggregate function?
-    /// virtual Bool isAggregate() const;
+    //# Is the expression a column aggregate function?
+    //#/ virtual Bool isAggregate() const;
 
     // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and

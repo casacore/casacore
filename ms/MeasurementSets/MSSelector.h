@@ -218,7 +218,7 @@ public:
   // (Re)Set the iterator to the first iteration, call this after iterInit.
   Bool iterOrigin();
 
-  /// End the iteration (before reaching the last iteration)
+  // End the iteration (before reaching the last iteration)
   // and set the selection back to the state before iteration started.
   Bool iterEnd();
 

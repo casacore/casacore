@@ -73,12 +73,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <p>
 // Once defined, Measure and Quantum column objects are used to access a
 // column for reading and writing of Measures and Quanta.  For Quantum
-// column objects see the classes 
-// <linkto><class=ROScalarQuantColumn>ScalarQuantColumn</linkto> and
-// <linkto><class=ROArrayQuantColumn>ArrayQuantColumn</linkto>.  For
+// column objects see the class
+// <linkto><class=ScalarQuantColumn>ScalarQuantColumn</linkto> and
+// <linkto><class=ArrayQuantColumn>ArrayQuantColumn</linkto>.  For
 // Measure column objects see 
-// <linkto><class=ROScalarMeasColumn>ScalarMeasColumn</linkto> and
-// <linkto><class=ROArrayMeasColumn>ArrayMeasColumn</linkto>.
+// <linkto><class=ScalarMeasColumn>ScalarMeasColumn</linkto> and
+// <linkto><class=ArrayMeasColumn>ArrayMeasColumn</linkto>.
 //
 // <h3>Conversions</h3>
 // The classes accessing the data use the underlying

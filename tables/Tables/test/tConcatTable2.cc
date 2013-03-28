@@ -134,16 +134,16 @@ void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
   if (nkey == 3) {
     AlwaysAssertExit (tab.keywordSet().asTable("keysub").nrow() == nsubrow);
   }
-  ROScalarColumn<Bool> abool(tab, "abool");
-  ROScalarColumn<uChar> auchar(tab, "auchar");
-  ROScalarColumn<Short> ashort(tab, "ashort");
-  ROScalarColumn<Int> aint(tab, "aint");
-  ROScalarColumn<uInt> auint(tab, "auint");
-  ROScalarColumn<Float> afloat(tab,  "afloat");
-  ROScalarColumn<Double> adouble(tab,"adouble");
-  ROScalarColumn<Complex> acomplex(tab, "acomplex");
-  ROScalarColumn<DComplex> adcomplex(tab, "adcomplex");
-  ROScalarColumn<String> astring(tab, "astring");
+  ScalarColumn<Bool> abool(tab, "abool");
+  ScalarColumn<uChar> auchar(tab, "auchar");
+  ScalarColumn<Short> ashort(tab, "ashort");
+  ScalarColumn<Int> aint(tab, "aint");
+  ScalarColumn<uInt> auint(tab, "auint");
+  ScalarColumn<Float> afloat(tab,  "afloat");
+  ScalarColumn<Double> adouble(tab,"adouble");
+  ScalarColumn<Complex> acomplex(tab, "acomplex");
+  ScalarColumn<DComplex> adcomplex(tab, "adcomplex");
+  ScalarColumn<String> astring(tab, "astring");
   char str[8];
   // Values are stored as: 0 1 2 5 6 7 8 9 3 4
   for (uInt i=0; i<tab.nrow(); i++) {

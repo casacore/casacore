@@ -47,7 +47,7 @@ void readTable(const TSMOption&, bool written);
 
 int main() {
   try {
-    for (uint i=0; i<2; ++i) {
+    for (uInt i=0; i<2; ++i) {
       writeTable(TSMOption::Cache, i==0);
       readTable(TSMOption::Cache, i==0);
       readTable(TSMOption::Buffer, i==0);
@@ -94,7 +94,7 @@ void writeTable (const TSMOption& tsmOpt, bool write)
 void readTable(const TSMOption& tsmOpt, bool written)
 {
   Table table("tTiledEmpty_tmp.data", Table::Old, tsmOpt);
-  ROArrayColumn<float> col(table, "Data");
+  ArrayColumn<float> col(table, "Data");
   Array<float> arr;
   col.getColumn (arr);
   AlwaysAssertExit (arr.shape() == IPosition(3,256,256,1));

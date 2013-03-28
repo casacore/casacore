@@ -134,7 +134,7 @@ void readFromOtherDir()
     AlwaysAssertExit (tab.keywordSet().isDefined ("SubTab2"));
     Table subtab3 = tab.keywordSet().asTable ("SubTab2");
     AlwaysAssertExit (subtab3.nrow() == 3);
-    ROScalarColumn<Int> col(tab, "RowNr");
+    ScalarColumn<Int> col(tab, "RowNr");
     Table subtab2 = col.keywordSet().asTable ("SubTab3");
     AlwaysAssertExit (subtab2.nrow() == 2);
     Table subtab4 = subtab3.keywordSet().asTable ("SubTab4");

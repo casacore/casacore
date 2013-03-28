@@ -138,11 +138,11 @@ Bool checkData (Bool autoScale)
   Bool ok = True;
   // Read back the table.
   Table tab("tCompressComplex_tmp.data");
-  ROArrayColumn<Complex> source1 (tab, "source1");
-  ROArrayColumn<Complex> source2 (tab, "source2");
-  ROArrayColumn<Int> target1 (tab, "target1");
-  ROScalarColumn<Float> scale1 (tab, "scale1");
-  ROScalarColumn<Float> offset1 (tab,"offset1");
+  ArrayColumn<Complex> source1 (tab, "source1");
+  ArrayColumn<Complex> source2 (tab, "source2");
+  ArrayColumn<Int> target1 (tab, "target1");
+  ScalarColumn<Float> scale1 (tab, "scale1");
+  ScalarColumn<Float> offset1 (tab,"offset1");
   Cube<Int> arri1(IPosition(3,2,3,4));
   Cube<Int> arrvali(IPosition(3,2,3,4));
   Cube<Complex> arrf1(IPosition(3,2,3,4));
@@ -211,11 +211,11 @@ Bool checkDataSD (bool autoScale)
   Bool ok = True;
   // Read back the table.
   Table tab("tCompressComplex_tmp.data");
-  ROArrayColumn<Complex> source1 (tab, "source1");
-  ROArrayColumn<Complex> source2 (tab, "source2");
-  ROArrayColumn<Int> target1 (tab, "target1");
-  ROScalarColumn<Float> scale1 (tab, "scale1");
-  ROScalarColumn<Float> offset1 (tab,"offset1");
+  ArrayColumn<Complex> source1 (tab, "source1");
+  ArrayColumn<Complex> source2 (tab, "source2");
+  ArrayColumn<Int> target1 (tab, "target1");
+  ScalarColumn<Float> scale1 (tab, "scale1");
+  ScalarColumn<Float> offset1 (tab,"offset1");
   Cube<Int> arri1(IPosition(3,2,3,4));
   Cube<Int> arrvali(IPosition(3,2,3,4));
   Cube<Complex> arrf1(IPosition(3,2,3,4));
@@ -383,7 +383,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source1");
+      ArrayColumn<Complex> source (tab, "source1");
       Cube<Complex> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -395,7 +395,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source2");
+      ArrayColumn<Complex> source (tab, "source2");
       Cube<Complex> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -407,7 +407,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source3");
+      ArrayColumn<Complex> source (tab, "source3");
       Cube<Complex> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -419,7 +419,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source1");
+      ArrayColumn<Complex> source (tab, "source1");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -427,7 +427,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source2");
+      ArrayColumn<Complex> source (tab, "source2");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -435,7 +435,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressComplex_tmp.data");
-      ROArrayColumn<Complex> source (tab, "source3");
+      ArrayColumn<Complex> source (tab, "source3");
       Timer timer;
       source.getColumn();
       timer.show();

@@ -54,10 +54,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <etymology> 
 // A Lorentzian1D functional is designed exclusively for calculating a
-// Lorentzian (or Normal) distribution in one dimension. Other classes exist
-// for calculating these functions in two
-// (<linkto class=Lorentzian2D>Lorentzian2D</linkto>) and N 
-// (<linkto class=LorentzianND>LorentzianND</linkto>) dimensions.
+// Lorentzian (or Normal) distribution in one dimension.
+//# Other classes exist (not yet!)
+//# for calculating these functions in two
+//# (<linkto class=Lorentzian2D>Lorentzian2D</linkto>) and N 
+//# (<linkto class=LorentzianND>LorentzianND</linkto>) dimensions.
 // </etymology>
 
 // <synopsis> 

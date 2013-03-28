@@ -90,7 +90,7 @@ void calc(Table& tab, const String& name)
 	cout << "Column " << name << " does not exist" << endl;
 	return;
     }
-    ROTableColumn tabcol (tab, name);
+    TableColumn tabcol (tab, name);
     const ColumnDesc& cd = tabcol.columnDesc();
     if (cd.dataType() == TpBool    || cd.dataType() == TpString
     ||  cd.dataType() == TpComplex || cd.dataType() == TpDComplex

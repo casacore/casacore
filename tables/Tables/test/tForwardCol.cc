@@ -111,13 +111,13 @@ void a (const TableDesc& td)
     Table tab(newtab, 10);
 
     ScalarColumn<Int> ab1(tab,"ab");
-    ROScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ab2(tab,"ab");
     ScalarColumn<Int> ac (tab,"ac");
     ScalarColumn<uInt> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     TableColumn ag1(tab,"ag");
-    ROScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
@@ -201,15 +201,15 @@ void check(const String& tableName, Int abOffset, Int acOffset)
     cout << "Checking table " << tableName << endl;
     // Read back the table and check the data.
     Table tab(tableName);
-    ROScalarColumn<Int> ab2(tab,"ab");
-    ROScalarColumn<Int> ac (tab,"ac");
-    ROScalarColumn<uInt> ad(tab,"ad");
-    ROScalarColumn<float> ae(tab,"ae");
-    ROScalarColumn<String> af(tab,"af");
-    ROScalarColumn<DComplex> ag(tab,"ag");
-    ROArrayColumn<float> arr1(tab,"arr1");
-    ROArrayColumn<float> arr2(tab,"arr2");
-    ROArrayColumn<float> arr3(tab,"arr3");
+    ScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ac (tab,"ac");
+    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<float> ae(tab,"ae");
+    ScalarColumn<String> af(tab,"af");
+    ScalarColumn<DComplex> ag(tab,"ag");
+    ArrayColumn<float> arr1(tab,"arr1");
+    ArrayColumn<float> arr2(tab,"arr2");
+    ArrayColumn<float> arr3(tab,"arr3");
     Int i;
     Int abval, acval;
     uInt adval;
@@ -308,7 +308,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	if (iter.table().nrow() != 1) {
 	    cout << "More than 1 row in TableIterator " << i << endl;
 	}
-	ROScalarColumn<Int> ab (iter.table(), "ab");
+	ScalarColumn<Int> ab (iter.table(), "ab");
 	if (ab(0) != 9-i+abOffset) {
 	    cout << "Invalid value " << ab(0) << " in TableIterator "
 		 << i << endl;

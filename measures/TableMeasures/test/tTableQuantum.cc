@@ -192,25 +192,25 @@ int main (int argc, const char* argv[])
 
     // Check that columns contain quanta.
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ScaQuantDouble")));
+		             ( TableColumn (qtab, "ScaQuantDouble")));
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ScaQuantComplex")));
+		             ( TableColumn (qtab, "ScaQuantComplex")));
     AlwaysAssertExit (! TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "varUnitsColumn")));
+		             ( TableColumn (qtab, "varUnitsColumn")));
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ArrQuantDouble")));
+		             ( TableColumn (qtab, "ArrQuantDouble")));
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ArrQuantDoubleNonVar")));
+		             ( TableColumn (qtab, "ArrQuantDoubleNonVar")));
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ArrQuantDoubleNonVar2")));
+		             ( TableColumn (qtab, "ArrQuantDoubleNonVar2")));
     AlwaysAssertExit (TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "ArrQuantScaUnits")));
+		             ( TableColumn (qtab, "ArrQuantScaUnits")));
     AlwaysAssertExit (! TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "varArrUnitsColumn")));
+		             ( TableColumn (qtab, "varArrUnitsColumn")));
     AlwaysAssertExit (! TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "varArrScaUnitsColumn")));
+		             ( TableColumn (qtab, "varArrScaUnitsColumn")));
     AlwaysAssertExit (! TableQuantumDesc::hasQuanta
-		             ( ROTableColumn (qtab, "BogusQuantCol")));
+		             ( TableColumn (qtab, "BogusQuantCol")));
     {
       // Play with a null object first
       cout << "Creating a null ScaQuantumCol()\n";
@@ -254,11 +254,11 @@ int main (int argc, const char* argv[])
       sq2Col.throwIfNull();
     }
     {
-      // Could also read values from sqCol but instead a ROScalarQuantCol
+      // Could also read values from sqCol but instead a ScalarQuantCol
       // is created here to do that.
       // test attach member for this first
-      ROScalarQuantColumn<Double> rosq1Col;
-      ROScalarQuantColumn<Double> rosqCol(rosq1Col);
+      ScalarQuantColumn<Double> rosq1Col;
+      ScalarQuantColumn<Double> rosqCol(rosq1Col);
       if (rosqCol.isNull()) {
 	rosqCol.attach(qtab, "ScaQuantDouble");
       }
@@ -285,7 +285,7 @@ int main (int argc, const char* argv[])
 	cout << "Quantum arcmin " << i << ": "
 	     << rosqCol(i, "arcmin") << endl;
       }
-      ROScalarQuantColumn<Double> rosq2Col(rosqCol);
+      ScalarQuantColumn<Double> rosq2Col(rosqCol);
       rosq2Col.throwIfNull();
     }
     {
@@ -317,7 +317,7 @@ int main (int argc, const char* argv[])
     }
     {
       // Lets have a look at them
-      ROScalarQuantColumn<Complex> rosqCol(qtab, "ScaQuantComplex");
+      ScalarQuantColumn<Complex> rosqCol(qtab, "ScaQuantComplex");
       uInt i;
       for (i=0; i<qtab.nrow(); i++) {
 	cout << "Complex quantum (var unit) " << i << ": " << rosqCol(i)
@@ -400,8 +400,8 @@ int main (int argc, const char* argv[])
       aqCol.put(0, quantArr);
     }
     {
-      ROArrayQuantColumn<Double> roaqColx(qtab, "ArrQuantDouble");
-      ROArrayQuantColumn<Double> roaqCol(roaqColx);
+      ArrayQuantColumn<Double> roaqColx(qtab, "ArrQuantDouble");
+      ArrayQuantColumn<Double> roaqCol(roaqColx);
 
       // test array conformance error exception on get()
       if (doExcep) {
@@ -424,18 +424,18 @@ int main (int argc, const char* argv[])
       cout << roaqCol(0) << endl;
       cout << roaqCol(0, "Hz") << endl;
 
-      ROArrayQuantColumn<Double> roaqCol1(qtab, "ArrQuantDouble", "kHz");
+      ArrayQuantColumn<Double> roaqCol1(qtab, "ArrQuantDouble", "kHz");
       cout << roaqCol1(0) << endl;
       cout << roaqCol1(0, "Hz") << endl;
       cout << roaqCol1(0, un2) << endl;
 
-      ROArrayQuantColumn<Double> roaqCol2;
+      ArrayQuantColumn<Double> roaqCol2;
       roaqCol2.attach (qtab, "ArrQuantDouble");
       roaqCol2.attach (qtab, "ArrQuantDouble", "MHz");
       roaqCol2.attach (qtab, "ArrQuantDouble", un2);
       roaqCol2.reference (roaqCol1);
 
-      ROArrayQuantColumn<Double> roaqCol3(qtab, "ArrQuantDouble", un2);
+      ArrayQuantColumn<Double> roaqCol3(qtab, "ArrQuantDouble", un2);
       cout << roaqCol3(0) << endl;
       cout << roaqCol3(0, "Hz") << endl;
     }
@@ -466,7 +466,7 @@ int main (int argc, const char* argv[])
     }
     {
       // another way of creating the object
-      ROArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantScaUnits");
+      ArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantScaUnits");
       cout << roaqCol(0) << endl;
       cout << roaqCol(0, "Hz") << endl;
       cout << roaqCol(1) << endl;
@@ -496,10 +496,10 @@ int main (int argc, const char* argv[])
       aqc4.put(0, emptyArr);
       aqc4.put(0, quantArr);
 
-      ROArrayQuantColumn<Double> aqc3a(qtab, "ArrQuantDoubleNonVar");
+      ArrayQuantColumn<Double> aqc3a(qtab, "ArrQuantDoubleNonVar");
       cout << aqc3a.getUnits() << endl;
       cout << aqc3a(0) << endl;
-      ROArrayQuantColumn<Double> aqc4a(qtab, "ArrQuantDoubleNonVar2");
+      ArrayQuantColumn<Double> aqc4a(qtab, "ArrQuantDoubleNonVar2");
       cout << aqc4a.getUnits() << endl;
       cout << aqc4a(0) << endl;
     }
@@ -512,10 +512,10 @@ int main (int argc, const char* argv[])
   // Try it with a readonly table.
   try {
     Table qtab ("tTableQuantum_tmp.tab");
-    // Could also read values from sqCol but instead a ROScalarQuantCol
+    // Could also read values from sqCol but instead a ScalarQuantCol
     // is created here to do that.
     // test attach member for this first
-    ROScalarQuantColumn<Double> rosqCol;
+    ScalarQuantColumn<Double> rosqCol;
     if (rosqCol.isNull()) {
       rosqCol.attach(qtab, "ScaQuantDouble");
     }

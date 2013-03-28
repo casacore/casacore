@@ -56,15 +56,15 @@ void doIt (const Table& tab)
   cout << "partNamesF " << tab.getPartNames() << endl;
   cout << "partNamesT " << tab.getPartNames(True) << endl;
   cout << "<<<" << endl;
-  ROScalarColumn<Int> ab2(tab,"ab");
-  ROScalarColumn<Int> ac (tab,"ac");
-  ROScalarColumn<uInt> ad(tab,"ad");
-  ROScalarColumn<float> ae(tab,"ae");
-  ROScalarColumn<String> af(tab,"af");
-  ROScalarColumn<DComplex> ag(tab,"ag");
-  ROArrayColumn<float> arr1(tab,"arr1");
-  ROArrayColumn<float> arr2(tab,"arr2");
-  ROArrayColumn<float> arr3(tab,"arr3");
+  ScalarColumn<Int> ab2(tab,"ab");
+  ScalarColumn<Int> ac (tab,"ac");
+  ScalarColumn<uInt> ad(tab,"ad");
+  ScalarColumn<float> ae(tab,"ae");
+  ScalarColumn<String> af(tab,"af");
+  ScalarColumn<DComplex> ag(tab,"ag");
+  ArrayColumn<float> arr1(tab,"arr1");
+  ArrayColumn<float> arr2(tab,"arr2");
+  ArrayColumn<float> arr3(tab,"arr3");
   uInt i;
   Vector<String> names = tab.tableDesc().columnNames();
   for (i=0; i<names.nelements(); i++) {
@@ -165,7 +165,7 @@ void doIt (const Table& tab)
   if (sortab.nrow() != 10) {
     cout << "sortab does not contain 10 rows" << endl;
   }
-  ROScalarColumn<float> sorae(sortab, "ae");
+  ScalarColumn<float> sorae(sortab, "ae");
   cout << sorae.getColumn() << endl;
   cout << "#columns in sortab: " << sortab.tableDesc().ncolumn() << endl;
 
@@ -173,7 +173,7 @@ void doIt (const Table& tab)
   if (sortab2.nrow() != 10) {
     cout << "sortab2 does not contain 10 rows" << endl;
   }
-  ROScalarColumn<uInt> sorad(sortab2, "ad");
+  ScalarColumn<uInt> sorad(sortab2, "ad");
   cout << sorad.getColumn() << endl;
   cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
 
@@ -187,7 +187,7 @@ void doIt (const Table& tab)
   if (seltab1.nrow() != 4) {
     cout << "seltab1 does not contain 4 rows" << endl;
   }
-  ROScalarColumn<Int> sel1ab(seltab1, "ab");
+  ScalarColumn<Int> sel1ab(seltab1, "ab");
   cout << sel1ab.getColumn() << endl;
   cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
@@ -200,7 +200,7 @@ void doIt (const Table& tab)
   if (seltab2.nrow() != 4) {
     cout << "seltab2 does not contain 4 rows" << endl;
   }
-  ROScalarColumn<Int> sel2ab(seltab2, "ab");
+  ScalarColumn<Int> sel2ab(seltab2, "ab");
   cout << sel2ab.getColumn() << endl;
   cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
@@ -212,7 +212,7 @@ void doIt (const Table& tab)
   if (seltab3.nrow() != 2) {
     cout << "seltab3 does not contain 2 rows" << endl;
   }
-  ROScalarColumn<Int> sel3ab(seltab3, "ab");
+  ScalarColumn<Int> sel3ab(seltab3, "ab");
   cout << sel3ab.getColumn() << endl;
   cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
   cout << seltab3.tableDesc().columnNames() << endl;
@@ -221,7 +221,7 @@ void doIt (const Table& tab)
   if (xortab.nrow() != 6) {
     cout << "xortab does not contain 6 rows" << endl;
   }
-  ROScalarColumn<Int> xorab(xortab, "ab");
+  ScalarColumn<Int> xorab(xortab, "ab");
   cout << xorab.getColumn() << endl;
   cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
@@ -229,7 +229,7 @@ void doIt (const Table& tab)
   if (or1tab.nrow() != 8) {
     cout << "or1tab does not contain 8 rows" << endl;
   }
-  ROScalarColumn<Int> or1ab(or1tab, "ab");
+  ScalarColumn<Int> or1ab(or1tab, "ab");
   cout << or1ab.getColumn() << endl;
   cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
@@ -237,7 +237,7 @@ void doIt (const Table& tab)
   if (or2tab.nrow() != 8) {
     cout << "or2tab does not contain 8 rows" << endl;
   }
-  ROScalarColumn<Int> or2ab(or2tab, "ab");
+  ScalarColumn<Int> or2ab(or2tab, "ab");
   cout << or2ab.getColumn() << endl;
   cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
@@ -245,7 +245,7 @@ void doIt (const Table& tab)
   if (exprtab.nrow() != 5) {
     cout << "exprtab does not contain 5 rows" << endl;
   }
-  ROScalarColumn<Int> exprab(exprtab, "ab");
+  ScalarColumn<Int> exprab(exprtab, "ab");
   cout << exprab.getColumn() << endl;
 
   Table expr2tab = tab(tab.col("af") == "V3"  ||
@@ -253,7 +253,7 @@ void doIt (const Table& tab)
   if (expr2tab.nrow() != 4) {
     cout << "expr2tab does not contain 4 rows" << endl;
   }
-  ROScalarColumn<Int> expr2ab(expr2tab, "ab");
+  ScalarColumn<Int> expr2ab(expr2tab, "ab");
   cout << expr2ab.getColumn() << endl;
   // Add a column.
   Table tabrw(tab);

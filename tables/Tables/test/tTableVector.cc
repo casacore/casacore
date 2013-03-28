@@ -169,7 +169,7 @@ void dovec (Int nr) {
     tim.show ("Adding TVec to ColVec   ");
     tvec4 = tvec4 + tvec2;
     Vector<Int> vec2;
-    ROScalarColumn<Int> col1 (tab, "col1");
+    ScalarColumn<Int> col1 (tab, "col1");
     tim.mark();
     col1.getColumn (vec2);
     tim.show ("Getting a table column  ");

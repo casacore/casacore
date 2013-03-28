@@ -151,8 +151,8 @@ void b()
 {
     // Open the table.
     Table tab("tScalarRecordColumn_tmp.data");
-    ROScalarColumn<TableRecord> ab1(tab,"ab1");
-    ROScalarColumn<TableRecord> ab3(tab,"ab3");
+    ScalarColumn<TableRecord> ab1(tab,"ab1");
+    ScalarColumn<TableRecord> ab3(tab,"ab3");
     Vector<TableRecord> vec = ab1.getColumn();
     TableRecord rec;
     uInt i;

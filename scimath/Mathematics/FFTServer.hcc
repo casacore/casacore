@@ -105,7 +105,7 @@ resize(const IPosition & fftSize,
     itsWorkOut.resize (nelem / itsSize[0] * (itsSize[0]/2+1));
     itsWorkC2C.resize (nelem);
     IPosition transpose(ndim);
-    for (uint i=0; i<ndim; ++i) {
+    for (uInt i=0; i<ndim; ++i) {
       transpose[i] = itsSize[ndim-1-i];
     }
     switch (itsTransformType) {

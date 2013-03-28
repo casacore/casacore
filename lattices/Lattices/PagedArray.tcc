@@ -115,7 +115,8 @@ PagedArray<T>::PagedArray (const String& filename)
   itsColumnName (defaultColumn()), 
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False),
-  itsROArray    (itsTable, itsColumnName),
+  itsWritable   (False),
+  itsArray      (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
   DebugAssert (ok(), AipsError);
@@ -126,7 +127,8 @@ template<class T> PagedArray<T>::PagedArray (Table& file)
   itsColumnName (defaultColumn()), 
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False),
-  itsROArray    (itsTable, itsColumnName),
+  itsWritable   (False),
+  itsArray      (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
   DebugAssert (ok(), AipsError);
@@ -139,7 +141,8 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
   itsColumnName (columnName), 
   itsRowNumber  (rowNumber),
   itsIsClosed   (False),
-  itsROArray    (itsTable, itsColumnName),
+  itsWritable   (False),
+  itsArray      (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
   DebugAssert (ok(), AipsError);
@@ -155,8 +158,7 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
   itsTableName  (other.itsTableName),
   itsWritable   (other.itsWritable),
   itsLockOpt    (other.itsLockOpt),
-  itsRWArray    (other.itsRWArray),
-  itsROArray    (other.itsROArray),
+  itsArray      (other.itsArray),
   itsAccessor   (other.itsAccessor)
 {
   DebugAssert (ok(), AipsError);
@@ -187,8 +189,7 @@ PagedArray<T>& PagedArray<T>::operator= (const PagedArray<T>& other)
     itsTableName  = other.itsTableName;
     itsWritable   = other.itsWritable;
     itsLockOpt    = other.itsLockOpt;
-    itsROArray.reference(other.itsROArray);
-    itsRWArray.reference(other.itsRWArray);
+    itsArray.reference(other.itsArray);
     itsAccessor   = other.itsAccessor;
   }
   DebugAssert (ok(), AipsError);
@@ -249,7 +250,7 @@ IPosition PagedArray<T>::shape() const
 {
   DebugAssert (ok(), AipsError);
   doReopen();
-  return itsROArray.shape (itsRowNumber);
+  return itsArray.shape (itsRowNumber);
 }
 
 template<class T>
@@ -263,7 +264,7 @@ template<class T>
 Bool PagedArray<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
   doReopen();
-  itsROArray.getSlice (itsRowNumber, section, buffer, True);
+  itsArray.getSlice (itsRowNumber, section, buffer, True);
   return False;
 }
 
@@ -272,18 +273,18 @@ void PagedArray<T>::doPutSlice (const Array<T>& sourceArray,
 				const IPosition& where,
 				const IPosition& stride)
 {
-  // Create a writable column object when not existing yet.
+  // Create a writable column object in case not existing yet.
   getRWArray();
   const uInt arrDim = sourceArray.ndim();
   const uInt latDim = ndim();
   AlwaysAssert(arrDim <= latDim, AipsError);
   if (arrDim == latDim) {
     Slicer section(where, sourceArray.shape(), stride, Slicer::endIsLength); 
-    itsRWArray.putSlice (itsRowNumber, section, sourceArray);
+    itsArray.putSlice (itsRowNumber, section, sourceArray);
   } else {
     Array<T> degenerateArr(sourceArray.addDegenerate(latDim-arrDim));
     Slicer section(where, degenerateArr.shape(), stride, Slicer::endIsLength); 
-    itsRWArray.putSlice (itsRowNumber, section, degenerateArr);
+    itsArray.putSlice (itsRowNumber, section, degenerateArr);
   } 
 }
 
@@ -365,7 +366,7 @@ T PagedArray<T>::getAt(const IPosition& where) const
   const IPosition shape(where.nelements(),1);
   T value;
   Array<T> buffer (shape, &value, SHARE);
-  itsROArray.getSlice (itsRowNumber, Slicer(where,shape), buffer);
+  itsArray.getSlice (itsRowNumber, Slicer(where,shape), buffer);
   return value;
 }
 
@@ -393,7 +394,7 @@ Bool PagedArray<T>::ok() const
              "No Table associated with the PagedArray");
       return False;
     }
-    if (itsROArray.isNull() == True) {
+    if (itsArray.isNull() == True) {
       throw AipsError ("PagedArray::ok - "
 		       "No Array associated with the PagedArray");
       return False;
@@ -447,8 +448,7 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
   }
 
   // Attach the default constructed ArrayColumn to the Table
-  itsROArray.attach (itsTable, itsColumnName);
-  itsRWArray.attach (itsTable, itsColumnName);
+  itsArray.attach (itsTable, itsColumnName);
 
   // if table doesn't have enough rows to match our row number
   // then add rows and fill them with empty arrays
@@ -457,18 +457,18 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
   if (rows <= itsRowNumber) {
     itsTable.addRow (itsRowNumber-rows+1);
     for (uInt r = rows; r < itsRowNumber; r++) {
-      itsRWArray.setShape(r, emptyShape);
+      itsArray.setShape(r, emptyShape);
     }
   }
   if (newColumn) {
     for (uInt r = 0; r < rows; r++) {
       if (r != itsRowNumber) {
-	itsRWArray.setShape(r, emptyShape);
+	itsArray.setShape(r, emptyShape);
       }
     }
   }
   // set a shape of the PagedArray
-  itsRWArray.setShape(itsRowNumber, latShape);
+  itsArray.setShape(itsRowNumber, latShape);
   // create the accessor object
   itsAccessor = ROTiledStManAccessor (itsTable, itsColumnName);
 }
@@ -506,14 +506,6 @@ template<class T>
 String PagedArray<T>::defaultComment()
 {
   return String("version 4.0");
-}
-
-template<class T>
-void PagedArray<T>::makeRWArray()
-{
-  doReopen();
-  itsTable.reopenRW();
-  itsRWArray.attach (itsTable, itsColumnName);
 }
 
 template<class T>
@@ -557,8 +549,7 @@ void PagedArray<T>::tempClose()
     itsWritable  = itsTable.isWritable();
     itsLockOpt   = itsTable.lockOptions();
     itsTable     = Table();
-    itsROArray.reference (ROArrayColumn<T>());
-    itsRWArray.reference (ArrayColumn<T>());
+    itsArray.reference (ArrayColumn<T>());
     itsIsClosed = True;
   }
 }
@@ -575,15 +566,13 @@ void PagedArray<T>::tempReopen() const
   if (itsIsClosed) {
     if (itsWritable) {
       itsTable = Table (itsTableName, itsLockOpt, Table::Update);
-      itsRWArray.attach (itsTable, itsColumnName);
     } else {
       itsTable = Table (itsTableName, itsLockOpt);
     }
-    itsROArray.attach (itsTable, itsColumnName);
+    itsArray.attach (itsTable, itsColumnName);
     itsAccessor = ROTiledStManAccessor (itsTable, itsColumnName);
     itsIsClosed = False;
   }
 }
 
 } //# NAMESPACE CASA - END
-

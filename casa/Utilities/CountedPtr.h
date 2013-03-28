@@ -213,9 +213,8 @@ public:
     // pointer to the value being protected, and then its dereferencing
     // operator will be invoked as appropriate. If the pointer is
     // un-initialized (null), an exception will be thrown. The member
-    // function
-    // <linkto class="SimpleCountedPtr:null()const">null</linkto>()
-    // can be used to catch such a condition in time.
+    // function <src>null()</src> can be used to catch such a condition
+    // in time.
     //
     // <thrown>
     // <li> ExcpError
@@ -282,20 +281,16 @@ void throw_Null_CountedPtr_dereference_error();
 // </group>
 
 
-// <summary>Simple referenced counted pointer for constant data</summary>
+// <summary>Referenced counted pointer for constant data</summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/15" tests="tCountedPtr" demos="">
 
 // <etymology>
-// This class is <em>Simple</em> because it does not have the
-// <src>operator->()</src> operator. This means that it puts less demands
-// on the underlying type. It is <em>Counted</em> because it is reference
-// counted, and it is <em>Const</em> because the underlying value is
-// non-modifiable.
+// This class is <em>Counted</em> because it is reference counted.
 // </etymology>
 
 // <synopsis>
-// This class implements a  reference counting mechanism. It
+// This class implements a reference counting mechanism. It
 // allows <src>CountedConstPtr</src>s to be passed around freely,
 // incrementing or decrementing the reference count as needed when one
 // <src>CountedConstPtr</src> is assigned to another. When the

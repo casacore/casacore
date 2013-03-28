@@ -143,15 +143,15 @@ public:
   // <group>
   const Table& table() const;
   Table& table();
-  const ROScalarColumn<Double>& roTime() const;
+  const ScalarColumn<Double>& roTime() const;
   ScalarColumn<Double>& time();
-  const ROScalarColumn<String>& roPriority() const;
+  const ScalarColumn<String>& roPriority() const;
   ScalarColumn<String>& priority();
-  const ROScalarColumn<String>& roMessage() const;
+  const ScalarColumn<String>& roMessage() const;
   ScalarColumn<String>& message();
-  const ROScalarColumn<String>& roLocation() const;
+  const ScalarColumn<String>& roLocation() const;
   ScalarColumn<String>& location();
-  const ROScalarColumn<String>& roObjectID() const;
+  const ScalarColumn<String>& roObjectID() const;
   ScalarColumn<String>& objectID();
   // </group>
   
@@ -222,14 +222,6 @@ private:
 
 
   Table log_table_p;
-  // Message
-  ROScalarColumn<Double>  roTime_p;
-  ROScalarColumn<String>  roPriority_p;
-  ROScalarColumn<String>  roMessage_p;
-  // Origin
-  ROScalarColumn<String>  roLocation_p;
-  // ObjectID
-  ROScalarColumn<String>  roId_p;
   ScalarColumn<Double>  time_p;
   ScalarColumn<String>  priority_p;
   ScalarColumn<String>  message_p;
@@ -243,26 +235,26 @@ private:
 inline const Table& TableLogSink::table() const {return log_table_p;}
 inline Table& TableLogSink::table() {return log_table_p;}
 
-inline const ROScalarColumn<Double>& TableLogSink::roTime() const
-  {return roTime_p;}
+inline const ScalarColumn<Double>& TableLogSink::roTime() const
+  {return time_p;}
 inline ScalarColumn<Double>& TableLogSink::time()
-  {DebugAssert(!time_p.isNull(),AipsError); return time_p;}
-inline const ROScalarColumn<String>& TableLogSink::roPriority() const 
-   {return roPriority_p;}
+  {return time_p;}
+inline const ScalarColumn<String>& TableLogSink::roPriority() const 
+  {return priority_p;}
 inline ScalarColumn<String>& TableLogSink::priority()
-  {DebugAssert(!priority_p.isNull(),AipsError); return priority_p;}
-inline const ROScalarColumn<String>& TableLogSink::roLocation() const 
-  {return roLocation_p;}
+  {return priority_p;}
+inline const ScalarColumn<String>& TableLogSink::roLocation() const 
+  {return location_p;}
 inline ScalarColumn<String>& TableLogSink::location()
-  {DebugAssert(!location_p.isNull(),AipsError); return location_p;}
-inline const ROScalarColumn<String>& TableLogSink::roObjectID() const 
-  {return roId_p;}
+  {return location_p;}
+inline const ScalarColumn<String>& TableLogSink::roObjectID() const 
+  {return id_p;}
 inline ScalarColumn<String>& TableLogSink::objectID()
-  {DebugAssert(!id_p.isNull(),AipsError); return id_p;}
-inline const ROScalarColumn<String>& TableLogSink::roMessage() const
-  {return roMessage_p;}
+  {return id_p;}
+inline const ScalarColumn<String>& TableLogSink::roMessage() const
+  {return message_p;}
 inline ScalarColumn<String>& TableLogSink::message()
-  {DebugAssert(!message_p.isNull(),AipsError); return message_p;}
+  {return message_p;}
 
 inline LogSink TableLogSink::makeSink (const String& fileName)
   { return makeSink (LogFilter(), fileName); }
