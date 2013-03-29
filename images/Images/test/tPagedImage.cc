@@ -89,6 +89,55 @@ Table makeNewTable(const String& name)
    return table;
 }
 
+void testTempCloseDelete()
+{
+  IPosition shape(2,32,64);
+  CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
+  // Check image gets deleted if marked for delete.
+  {
+    TiledShape tiledShape(shape);
+    PagedImage<Float> img (tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(Float(1.0), IPosition(2,1,1));
+    img.table().markForDelete();
+  }
+  // Check image gets deleted if marked for delete,
+  // even after tempClose.
+  AlwaysAssertExit (! File("tPagedImage_tmp.imgtc").exists());
+  {
+    IPosition shape(2,32,64);
+    TiledShape tiledShape(shape);
+    PagedImage<Float> img (tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(Float(1.0), IPosition(2,1,1));
+    img.table().markForDelete();
+    img.tempClose();
+  }
+  AlwaysAssertExit (! File("tPagedImage_tmp.imgtc").exists());
+  // Check image gets deleted if marked for delete,
+  // even after tempClose and reopen.
+  {
+    IPosition shape(2,32,64);
+    TiledShape tiledShape(shape);
+    PagedImage<Float> img (tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(Float(1.0), IPosition(2,1,1));
+    img.table().markForDelete();
+    img.tempClose();
+    img.putAt(Float(1.0), IPosition(2,0,0));
+  }
+  AlwaysAssertExit (! File("tPagedImage_tmp.imgtc").exists());
+  // Check image does not get deleted if first marked for delete,
+  // but after tempClose and reopen is unmarked for delete.
+  {
+    IPosition shape(2,32,64);
+    TiledShape tiledShape(shape);
+    PagedImage<Float> img (tiledShape, cSys, "tPagedImage_tmp.imgtc");
+    img.putAt(Float(1.0), IPosition(2,1,1));
+    img.table().markForDelete();
+    img.tempClose();
+    img.putAt(Float(1.0), IPosition(2,0,0));
+    img.table().unmarkForDelete();
+  }
+  AlwaysAssertExit (File("tPagedImage_tmp.imgtc").exists());
+}
 
 int main()
 {
@@ -502,7 +551,6 @@ int main()
              cout << "Exception thrown as expected: " << x.getMesg() << endl;
 	   }
 	   AlwaysAssert(ok, AipsError);
-
 	   // AlwaysAssert(beam.size() == 0, AipsError);
 	   AlwaysAssert(temp.imageInfo().hasMultipleBeams(), AipsError);
 	   min = Quantity(min.getValue() + 0.1, min.getUnit());
@@ -514,7 +562,11 @@ int main()
 	   AlwaysAssert(beam.getMinor() == min, AipsError);
 	   AlwaysAssert(beam.getPA() == pa, AipsError);
    }
-    cout<< "ok"<< endl;
+
+   // Test the temporary close if marked for delete.
+   testTempCloseDelete();
+
+   cout<< "ok"<< endl;
   } catch (AipsError& x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
     return 1;

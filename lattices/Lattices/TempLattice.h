@@ -31,14 +31,10 @@
 
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/TiledShape.h>
+#include <lattices/Lattices/TempLatticeImpl.h>
 #include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward Declarations
-class Table;
 
 
 // <summary>
@@ -96,6 +92,9 @@ class Table;
 // <p>
 // You can force the TempLattice to be disk based by setting the memory
 // argument in the constructors to 0
+// <p>
+// TempLattice is implemented using TempLatticeImpl for reasons explained
+// in that class.
 // </synopsis>
 
 // <example>
@@ -134,7 +133,8 @@ template<class T> class TempLattice : public Lattice<T>
 public:
   // The default constructor creates a TempLattice containing a
   // default ArrayLattice object.
-  TempLattice();
+  TempLattice()
+    : itsImpl (new TempLatticeImpl<T>()) {}
 
   // Create a TempLattice of the specified shape. You can specify how much
   // memory the Lattice can consume before it becomes disk based by giving a
@@ -143,22 +143,26 @@ public:
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
-  TempLattice (const TiledShape& shape, Double maxMemoryInMB);
+  explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1)
+    : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
+  TempLattice (const TiledShape& shape, Double maxMemoryInMB)
+    : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
   // </group>
   
   // The copy constructor uses reference semantics. ie modifying data in the
   // copied TempLattice also modifies the data in the original TempLattice.
   // Passing by value doesn't make sense, because it may require the creation
   // of a temporary (but possibly huge) file on disk.
-  TempLattice (const TempLattice<T>& other) ;
+  TempLattice (const TempLattice<T>& other)
+    : itsImpl (other.itsImpl) {}
     
   // The destructor removes the Lattice from memory and if necessary disk.
   virtual ~TempLattice();
 
   // The assignment operator with reference semantics. As with the copy
   // constructor assigning by value does not make sense.
-  TempLattice<T>& operator= (const TempLattice<T>& other);
+  TempLattice<T>& operator= (const TempLattice<T>& other)
+    { itsImpl = other.itsImpl; }
 
   // Make a copy of the object (reference semantics).
   virtual Lattice<T>* clone() const;
@@ -265,23 +269,7 @@ public:
 			   const IPosition& stride);
   
 private:
-
-  void init (const TiledShape& shape, Double maxMemoryInMB=-1);
-  // Do the reopen of the table (if not open already).
-  // <group>
-  void doReopen() const
-    { if (itsIsClosed) tempReopen(); }
-  void tempReopen() const;
-  // </group>
-
-  // Make sure that the temporary table gets deleted.
-  void deleteTable();
-
-
-  mutable Table*                  itsTablePtr;
-  mutable CountedPtr<Lattice<T> > itsLatticePtr;
-          String                  itsTableName;
-  mutable Bool                    itsIsClosed;
+  CountedPtr<TempLatticeImpl<T> > itsImpl;
 };
 
 

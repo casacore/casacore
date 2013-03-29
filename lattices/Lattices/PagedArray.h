@@ -593,6 +593,7 @@ private:
           String    itsColumnName;
           uInt      itsRowNumber;
   mutable Bool      itsIsClosed;
+  mutable Bool      itsMarkDelete;
           String    itsTableName;
           Bool      itsWritable;
           TableLock itsLockOpt;
@@ -604,8 +605,10 @@ private:
 template<class T>
 inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 {
-  if (!itsWritable) {
+  if (itsIsClosed) {
     doReopen();
+  }
+  if (!itsWritable) {
     itsTable.reopenRW();
     itsWritable = True;
   }

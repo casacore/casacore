@@ -412,14 +412,7 @@ private:
   void restoreAll (const TableRecord& rec);
 
   void check_conformance (const Lattice<T>& other);
-  void reopenRW()
-  {
-    //# Open for write if not done yet and if writable.
-    if (!table().isWritable()  &&  isWritable()) {
-      doReopenRW();
-    }
-  }
-  void doReopenRW();
+  void reopenRW();
   void setTableType();
   void applyMaskSpecifier (const MaskSpecifier&);
   void applyMask (const String& maskName);
