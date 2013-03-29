@@ -1,4 +1,4 @@
-//# TableLogSink.h: save log messages in an AIPS++ Table
+//# TableLogSink.h: save log messages in a Casacore Table
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -61,7 +61,7 @@ class Unit;
 // </prerequisite>
 //
 // <etymology> 
-// CoordinateUtils follows the AIPS++ naming convention for static functions
+// CoordinateUtils follows the Casacore naming convention for static functions
 // that are associated with a class.
 // </etymology>
 //
@@ -340,8 +340,13 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 // Physically (nont just virtually) drop coordinates from the CoordinateSystem
 // if all axes are fully removed. For coordinates with axes partially removed
 // (world/pixel) preserve that removal state in the output CS.  No effort
-// is made to deal in any way with transposed systems.
-static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& cSysIn);
+// is made to deal in any way with transposed systems, unless
+// <src>perserveAxesOrder</src> is True. In that case the ordering of the
+// axes of the output coordinate system will be the same as the input
+// cSysIn (sans dropped axes of course).
+static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
+                             const CoordinateSystem& cSysIn,
+                             Bool preserveAxesOrder=False);
 
 // Setup Measures conversion machine for MDirections.
 // Returns True if the machine was needed and set.  Returns False

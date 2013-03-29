@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <etymology>
 // The MeasurementSet is where all data are ultimately to be found
-// in AIPS++.  Since, this is a collection of 
+// in Casacore.  Since, this is a collection of 
 // measurements (either actual or simulated), the term MeasurementSet
 // seems appropriate. Often we use the abbreviation (and typedef) MS for
 // MeasurementSet.
@@ -124,7 +124,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // return this unit string, it can be used to construct a 
 // <linkto class=Unit>Unit</linkto> object for a particular column.
 //
-// The MEASURE_TYPE keyword gives the AIPS++ Measure that applies to the
+// The MEASURE_TYPE keyword gives the Casacore Measure that applies to the
 // column (if any). See the 
 //  <linkto module="Measures:description">Measures</linkto> module for a 
 // list of available Measures and their use.

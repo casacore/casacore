@@ -746,7 +746,8 @@ namespace casa { //# name space casa begins
   ImageProxy ImageProxy::subImage (const IPosition& blc,
                                    const IPosition& trc, 
                                    const IPosition& inc,
-                                   Bool dropDegenerate)
+                                   Bool dropDegenerate,
+                                   Bool preserveAxesOrder)
   {
     AxesSpecifier axesSpec(!dropDegenerate);
     IPosition shp = shape();
@@ -756,16 +757,20 @@ namespace casa { //# name space casa begins
                   Slicer::endIsLast);
     if (itsImageFloat) {
       return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer,
-                                            True, axesSpec));
+                                            True, axesSpec,
+                                            preserveAxesOrder));
     } else if (itsImageDouble) {
       return ImageProxy(new SubImage<Double>(*itsImageDouble, slicer,
-                                             True, axesSpec));
+                                             True, axesSpec,
+                                             preserveAxesOrder));
     } else if (itsImageComplex) {
       return ImageProxy(new SubImage<Complex>(*itsImageComplex, slicer,
-                                              True, axesSpec));
+                                              True, axesSpec,
+                                              preserveAxesOrder));
     } else if (itsImageDComplex) {
       return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer,
-                                               True, axesSpec));
+                                               True, axesSpec,
+                                               preserveAxesOrder));
     }
     throw AipsError ("ImageProxy does not contain an image object");
   }

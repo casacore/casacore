@@ -299,7 +299,7 @@ uInt FITSHistoryUtil::toHISTORY(vector<String>& history, Bool& aipsppFormat,
           id = iter->objectID();
           timeInSec = iter->time();
 // In  each call  to toHistory, we process a group of contiguous records
-// all in the fsame format (aips++ 2 [lines per logical line] or standard fits)
+// all in the fsame format (Casacore 2 [lines per logical line] or standard fits)
 
           thisLineFormat = (timeInSec>0.0 && priority!="");
           if (line == firstLine) {

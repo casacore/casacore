@@ -1641,7 +1641,8 @@ Coordinate::Type CoordinateUtil::findWorldAxis (const CoordinateSystem& cSys, In
 
 
 Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
-                                      const CoordinateSystem& cSysIn)
+                                      const CoordinateSystem& cSysIn,
+                                      Bool preserveAxesOrder)
 
 
 {
@@ -1660,16 +1661,28 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
 //
    uInt k = 0;
    uInt l = 0;
-   for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
+   vector<Int> worldAxesOrder;
+   vector<Int> pixelAxesOrder;
+    for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
       const Vector<Int>& pixelAxesIn = cSysIn.pixelAxes(i);
       const Vector<Int>& worldAxesIn = cSysIn.worldAxes(i);
-      AlwaysAssert(pixelAxesIn.nelements()==worldAxesIn.nelements(), AipsError);
-//
+      AlwaysAssert(pixelAxesIn.nelements()==worldAxesIn.nelements(),
+                   AipsError);
       Bool allRemoved = allEQ(pixelAxesIn, -1) && allEQ(worldAxesIn,-1);
       if (allRemoved) {
         dropped = True;
       } else {
         cSysOut.addCoordinate(cSysIn.coordinate(i));
+        if (preserveAxesOrder) {
+          for (uInt m=0; m<pixelAxesIn.size(); m++) {
+            if (worldAxesIn[m] >= 0) {
+              worldAxesOrder.push_back(worldAxesIn[m]);
+            }
+            if (pixelAxesIn[m] >= 0) {
+              pixelAxesOrder.push_back(pixelAxesIn[m]);
+            }
+          }
+        }
 
 // Maintain a list of axes to do virtual removal of
 
@@ -1716,7 +1729,11 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
          ok = cSysOut.removePixelAxis(removePixel[i], replacement);
       }
    }
-//
+// Set preserved axes order if needed.
+   if (preserveAxesOrder) {
+     cSysOut.transpose(Vector<Int>(worldAxesOrder),
+                       Vector<Int>(pixelAxesOrder));
+   }
    return dropped;
 }
 

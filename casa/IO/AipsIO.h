@@ -1,4 +1,4 @@
-//# AipsIO.h: AipsIO is the object persistency mechanism of AIPS++
+//# AipsIO.h: AipsIO is the object persistency mechanism of Casacore
 //# Copyright (C) 1993,1994,1995,1996,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,7 +46,7 @@ class RegularFileIO;
 
 
 // <summary> 
-// AipsIO is the object persistency mechanism of AIPS++.
+// AipsIO is the object persistency mechanism of Casacore
 // </summary>
 
 // <use visibility=export>
@@ -54,7 +54,8 @@ class RegularFileIO;
 // <reviewed reviewer="ghunt" date="95Feb21" tests="" demos="">
 
 // <etymology>
-//  AipsIO is simply the conventional shorthand for "aips++ input/output".
+// AipsIO is simply the conventional shorthand for "AIPS++ input/output".
+// Note that Casacore is the successor of the old AIPS++ project.
 // </etymology>
 
 // <synopsis> 

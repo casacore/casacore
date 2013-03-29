@@ -1,4 +1,4 @@
-//# FITSIDItoMS.cc: Convert a FITS-IDI binary table to an AIPS++ Table.
+//# FITSIDItoMS.cc: Convert a FITS-IDI binary table to a Casacore Table.
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -1405,7 +1405,7 @@ void FITSIDItoMS1::getAxisInfo()
     // note: 1-based ref pix
     corrType_p(i) = ifloor(refVal_p(iPol) +
 			   (i+1-refPix_p(iPol))*delta_p(iPol)+0.5);
-    // convert AIPS-convention Stokes description to aips++ enum
+    // convert AIPS-convention Stokes description to Casacore enum
 //    cout << "corrType_p="<< corrType_p(i) <<endl;
     switch (corrType_p(i)) {
     case -8:

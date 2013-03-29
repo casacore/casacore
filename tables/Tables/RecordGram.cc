@@ -29,8 +29,6 @@
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on records.
-// This is a preliminary version; eventually it has to be incorporated
-// in the AIPS++ command language.
 
 
 #include <tables/Tables/ExprNode.h>

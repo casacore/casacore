@@ -54,10 +54,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // It is only used by the <src>FITS</src> classes.
 //
 // <src>lDComplex</src> has not been defined: <src>long double</src> is not
-// part of the standard aips++ data suite (yet)
+// part of the standard Casacore data suite (yet)
 //
 // A set of global functions are added for historic reasons (they were present
-// in the original aips++/gcc complex implementation).
+// in the original Casacore/gcc complex implementation).
 //
 // See the standard library documentation for the expected behaviour of 
 // the <src>Complex</src> and <src>DComplex</src> classes.

@@ -54,7 +54,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <motivation>
 // To ease the interface to Fitting (and probably other) classes, by producing
-// a framework that can be used with aips++ containers.
+// a framework that can be used with Casacore containers.
 // </motivation>
 
 // <todo asof="2004/04/01">

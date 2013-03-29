@@ -1,4 +1,4 @@
-//# AipsIO.cc: AipsIO is the object persistency mechanism of AIPS++
+//# AipsIO.cc: AipsIO is the object persistency mechanism of Casacore
 //# Copyright (C) 1993,1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 

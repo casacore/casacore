@@ -189,7 +189,7 @@ public:
     static Vector<String> keywordNamesFITS();
 
 // Convert the Miriad 'btype' strings to the ImageType.  Some 
-// Miriad 'btype's are dealt with in aips++ via the Stokes
+// Miriad 'btype's are dealt with in Casacore via the Stokes
 // axis (fractional_polarization, polarized_intensity, position_angle)
 // and so these will return Undefined.
    static ImageInfo::ImageTypes MiriadImageType (const String& type);

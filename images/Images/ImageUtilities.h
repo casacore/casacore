@@ -87,7 +87,7 @@ class ImageUtilities
 public:
   // Open disk image (can be any registered image).  Exception
   // if fileName empty or file does not exist or file is not
-  // of legal image type.   For aips++ images, the default mask is
+  // of legal image type.   For Casacore images, the default mask is
   // applied.
   //  <group>
   static void openImage (PtrHolder<ImageInterface<Float> >& image,

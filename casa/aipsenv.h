@@ -1,4 +1,4 @@
-//# aipsenv.h: Global initialization for special aips++ macros
+//# aipsenv.h: Global initialization for special Casacore macros
 //# Copyright (C) 2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// AIPS++ project compiler
+// Set if GCC compiler is used.
 #if defined(AIPS_GCC)
 #undef AIPS_GCC
 #endif

@@ -131,7 +131,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <motivation>
-// We needed a way of creating Lattices but with AIPS++ Array characteristics.
+// We needed a way of creating Lattices but with Casacore Array characteristics.
 // </motivation>
 
 //# <todo asof="1997/05/31">

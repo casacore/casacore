@@ -31,13 +31,13 @@
 //# Define compiler specific flags
 #include <casa/aipsenv.h>
 
-//# Define the standard types used by AIPS++.
+//# Define the standard types used by Casacore.
 #include <casa/aipstype.h>
 
-//# Define the extra non-standard types used by aips++
+//# Define the extra non-standard types used by Casacore
 #include <casa/aipsxtype.h>
 
-//# Define the special aips++ macros
+//# Define the special Casacore macros
 #include <casa/aipsdef.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

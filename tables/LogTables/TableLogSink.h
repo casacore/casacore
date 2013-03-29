@@ -1,4 +1,4 @@
-//# TableLogSink.h: Save log messages in an AIPS++ Table
+//# TableLogSink.h: Save log messages in a Casacore Table
 //# Copyright (C) 1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,7 +46,7 @@ class TableDesc;
 class SetupNewTable;
 
 // <summary>
-// Save log messages in an AIPS++ Table
+// Save log messages in a Casacore Table
 // </summary>
 
 // <use visibility=export>
@@ -60,7 +60,7 @@ class SetupNewTable;
 // </prerequisite>
 //
 // <etymology>
-// Log to an AIPS++ Table.
+// Log to a Casacore Table.
 // </etymology>
 //
 // <synopsis>
@@ -70,7 +70,7 @@ class SetupNewTable;
 // particular, the member functions which define the structure of the table
 // and define the column names might be of interest.
 //
-// This class posts messages which pass the filter to an AIPS++
+// This class posts messages which pass the filter to a Casacore
 // <linkto class=Table>Table</linkto>. It puts every field of the
 // <linkto class=LogMessage>LogMessage</linkto> into its own column.
 // </synopsis>

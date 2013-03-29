@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // exceptions (but all exceptions from the MSSelection line of
   // classes).  To catch more specific MSSelection exceptions, catch
   // the derived classes.  Note that you have to catch AipsError to
-  // catch all possible exceptions thrown by all of AIPS++ modules! 
+  // catch all possible exceptions thrown by all of Casacore modules! 
   //</synopsis>
   
   class MSSelectionError : public AipsError {

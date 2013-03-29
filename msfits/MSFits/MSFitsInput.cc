@@ -723,7 +723,7 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
         // note: 1-based ref pix
         corrType_p(i) = ifloor(refVal_p(iPol) + (i + 1 - refPix_p(iPol))
                 * delta_p(iPol) + 0.5);
-        // convert AIPS-convention Stokes description to aips++ enum
+        // convert AIPS-convention Stokes description to Casacore enum
         switch (corrType_p(i)) {
         case -8:
             corrType_p(i) = Stokes::YX;
@@ -2702,7 +2702,7 @@ void MSFitsInput::sortPolarizations() {
         // note: 1-based ref pix
         corrType_p(i) = ifloor(refVal_p(iPol) + (i + 1 - refPix_p(iPol))
                 * delta_p(iPol) + 0.5);
-        // convert AIPS-convention Stokes description to aips++ enum
+        // convert AIPS-convention Stokes description to Casacore enum
         switch (corrType_p(i)) {
         case -8:
             corrType_p(i) = Stokes::YX;

@@ -304,7 +304,7 @@ private:
 //    <li>
 //    <li> Declare two data (storage) managers. AipsIO keeps a whole column
 //           in memory, Karma does I/O to keep a subsection in memory at once.
-//           A powerful feature of AIPS++ tables is that different columns
+//           A powerful feature of Casacore tables is that different columns
 //           may be bound to different data managers, which have different
 //           properties.
 //    <li> Define the default data manager. AipsIO in this case.

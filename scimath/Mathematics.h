@@ -53,7 +53,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <etymology> 
 // Mathematicians may argue that everything is mathematics, and hence all of
-// AIPS++ should be in this module. However this module will only contain
+// Casacore should be in this module. However this module will only contain
 // core mathematical operations that are independent of astronomical
 // applications. 
 // </etymology>

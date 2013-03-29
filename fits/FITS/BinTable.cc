@@ -1,4 +1,4 @@
-//# Bintable.cc:  this defines BinaryTable, which converts FITS binary tables to aips++ Tables
+//# Bintable.cc:  this defines BinaryTable, which converts FITS binary tables to Casacore Tables
 //# Copyright (C) 1994-1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -707,7 +707,7 @@ void BinaryTable::fillRow()
 		// its a pity so many copies seem to be necessary
 		// one to copy the heap into the local version of the
 		// desired type
-		// the second to hold and scale the values in an aips++ type
+		// the second to hold and scale the values in a Casacore type
 		// and finally the copy actually placed in the table
 		switch (vatypes_p[j]) {
 		case FITS::LOGICAL:

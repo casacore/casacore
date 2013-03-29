@@ -730,13 +730,16 @@ public:
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
     // Use oneRelative=True to convert one-relative FITS pixel coordinates to
-    // zero-relative aips++ coordinates.  On output, <src>stokesFITSValue</src>
+    // zero-relative Casacore coordinates.
+    // On output, <src>stokesFITSValue</src>
     // holds the FITS value of any unofficial Stokes (beam, optical depth,
     // spectral index) for the last unofficial value accessed (-1 if none).
-    // The idea is that if the Stokes axis is of length one and holds an unofficial value,
-    // you should drop the STokes axis and convert that value to <src>ImageInfo::ImageTypes</src>
-    // with <src>ImageInfo::imageTypeFromFITSValue</src>. If on input, <src>stokesFITSValue</src>
-    // is positive, then a warning is issued if any unofficial values are encountered.
+    // The idea is that if the Stokes axis is of length one and holds an
+    // unofficial value, you should drop the STokes axis and convert that
+    // value to <src>ImageInfo::ImageTypes</src> with
+    // <src>ImageInfo::imageTypeFromFITSValue</src>.
+    // If on input, <src>stokesFITSValue</src> is positive, then a warning
+    // is issued if any unofficial values are encountered.
     // Otherwise no warning is issued.
     //# cf comment in toFITS.
     static Bool fromFITSHeader(Int& stokesFITSValue, 

@@ -90,9 +90,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <note role=warning> 
-// These functions assume that it is possible to convert between AIPS++ numeric
-// types and those used by Fortran. That it is possible to convert between
-// Float & float, Double & double and Int & int.
+// These functions assume that it is possible to convert between Casacore
+// numeric types and those used by Fortran. That it is possible to convert
+// between Float & float, Double & double and Int & int.
 // </note>
 
 // <note role=warning> 

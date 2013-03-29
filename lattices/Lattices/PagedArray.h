@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class=Lattice>Lattice</linkto> class as well as below. 
 // <p>
 // In nearly all cases you access the PagedArray by reading a "slice" of the
-// PagedArray into an AIPS++ <linkto class=Array>Array</linkto>. Because the
+// PagedArray into a Casacore <linkto class=Array>Array</linkto>. Because the
 // slice is stored in memory it is important that the slice you read is not
 // too big compared to the physical memory on your computer. Otherwise your
 // computer will page excessively and performance will be poor.
@@ -355,7 +355,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <templating arg=T>
 //  <li> Due to storage in Tables, the templated type must be able to be 
-// stored in an AIPS++ Table.  This restricts the template argument to all
+// stored in a Casacore Table.  This restricts the template argument to all
 // the common types Bool, Float, Double, Complex, String etc.) More details
 // can be found in the RetypedArrayEngine class.
 // </templating>

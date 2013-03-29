@@ -1,4 +1,4 @@
-//# aipsdef.h: Global initialization for special aips++ macros
+//# aipsdef.h: Global initialization for special Casacore macros
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,7 +28,7 @@
 #ifndef CASA_AIPSDEF_H
 #define CASA_AIPSDEF_H
 
-//# Define the aips++ global macros
+//# Define the Casacore global macros
 
 //# Defined the "aips_name2" macro which is used to join two tokens.
 

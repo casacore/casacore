@@ -467,10 +467,10 @@ Bool ImageInfo::fromFITS(
 			String type;
 			subRec.get(0, type);
 
-			// We are going to cope with aips++ values and Miriad values
+			// We are going to cope with Casacore values and Miriad values
 			// For Miriad there are a few extra ones (which we put on the Stokes
-			// axis in aips++ - e.g. position angle).  For the ones that are common
-			// the Miriad ones have underscores and the aips++ ones have spaces
+			// axis in Casacore - e.g. position angle).  For the ones that are common
+			// the Miriad ones have underscores and the Casacore ones have spaces
 
 			ImageInfo::ImageTypes imageType = ImageInfo::imageType(type);
 			if (imageType != ImageInfo::Undefined) {
@@ -539,7 +539,7 @@ ImageInfo::ImageTypes ImageInfo::MiriadImageType (
 	const String& type
 ) {
 	// We don't fully handle all the Miriad values because
-	// some of them  (see below) are dealt with in aips++ by
+	// some of them  (see below) are dealt with in Casacore by
 	// the Stokes axis.
 	String typeUp = upcase(type);
 	if (typeUp==String("INTENSITY")) {

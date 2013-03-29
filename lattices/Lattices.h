@@ -80,7 +80,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // This definition matches our own: an N-dimensional arrangement of data
 // on regular orthogonal axes.
 // <p>
-// In AIPS++, we have used the ability to call many things by one generic
+// In Casacore, we have used the ability to call many things by one generic
 // name (Lattice) to create a number of classes which have different storage
 // techniques (e.g. core memory, disk, etc...).  The name Lattice should
 // make the user think of a class interface (or member functions) which all
@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // called for.
 //  <ul>
 //   <li>The <linkto class="ArrayLattice">ArrayLattice</linkto> class adds
-//   the interface requirements of a Lattice to an AIPS++ 
+//   the interface requirements of a Lattice to a Casacore 
 //   <linkto class="Array">Array</linkto>. The data inside an ArrayLattice
 //   are not stored on disk.  This n-dimensional array class is the simplest
 //   of the Lattices.  Users construct the ArrayLattice with an argument

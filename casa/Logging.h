@@ -44,7 +44,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </summary>
 
 // <prerequisite>
-//   <li> General AIPS++ utility classes, such as String.
+//   <li> General Casacore utility classes, such as String.
 // </prerequisite>
 
 // <reviewed reviewer="wbrouw" date="1996/08/21" demos="dLogging.cc" tests="tLogging.cc">

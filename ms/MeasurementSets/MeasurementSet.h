@@ -128,7 +128,7 @@ typedef MeasurementSet MS;
 //
 // <etymology>
 // The MeasurementSet is where all data are ultimately to be found
-// in AIPS++.  Since, this is a collection of 
+// in Casacore.  Since, this is a collection of 
 // measurements (either actual or simulated), the term MeasurementSet
 // seems appropriate.
 // </etymology>

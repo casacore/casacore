@@ -1,4 +1,4 @@
-//# aipstype.h: Global initialization for standard aips++ types
+//# complex.h: import std complex functions into namespace casa
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#

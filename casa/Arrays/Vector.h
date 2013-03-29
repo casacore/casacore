@@ -47,9 +47,7 @@ namespace casa { //#Begin namespace casa
 //
 // Vector objects are one-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
-// to look at the Array documentation to see inherited functionality. A
-// tutorial on using the array classes in general is available in the
-// "AIPS++ Programming Manual".
+// to look at the Array documentation to see inherited functionality.
 //
 // Generally the member functions of Array are also available in
 // Vector versions

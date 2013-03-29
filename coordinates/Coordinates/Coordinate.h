@@ -66,7 +66,7 @@ class Projection;
 //        (Mark Calabretta's implementation of these conventions) will be
 //        revised for the new designs.  At that time, the Coordinate classes
 //        may also be revised.
-//   <li> Generic AIPS++ classes; especially those in the 
+//   <li> Generic Casacore classes; especially those in the 
 //        <linkto module=Arrays>Arrays</linkto> module.
 //   <li> Perhaps some of the information in the
 //        <linkto module=Measures>Measures</linkto> module.

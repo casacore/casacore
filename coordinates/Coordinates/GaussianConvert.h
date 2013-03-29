@@ -66,7 +66,7 @@ template<class T> class Quantum;
 // </example>
 
 // <todo asof="1998/12/11">
-//  <li> Position angle signs require more thinking in aips++
+//  <li> Position angle signs require more thinking in Casacore
 // </todo>
 
 class GaussianConvert

@@ -1,4 +1,4 @@
-//# Error.h: Base class for all AIPS++ errors
+//# Error.h: Base class for all Casacore errors
 //# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -51,7 +51,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   } while (0)
 
 
-// <summary>Base class for all AIPS++ library errors</summary>
+// <summary>Base class for all Casacore library errors</summary>
 // <use visibility=export>
 //
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -62,7 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 //
 // <synopsis>
-//  This is the base class for all of the AIPS++ error classes. Because
+//  This is the base class for all of the Casacore error classes. Because
 //  all of the errors have a common base class, any error can be caught
 //  with a single catch statement.
 //

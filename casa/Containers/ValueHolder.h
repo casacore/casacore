@@ -1,4 +1,4 @@
-//# ValueHolder.h: A holder object for the standard AIPS++ data types
+//# ValueHolder.h: A holder object for the standard Casacore data types
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
-// A holder for a value of any basic AIPS++ data type.
+// A holder for a value of any basic Casacore data type.
 // </summary>
 
 // <use visibility=export>
@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <synopsis>
-// Class ValueHolder is meant to be used for holding a single AIPS++ value.
+// Class ValueHolder is meant to be used for holding a single Casacore value.
 // The value can be  scalar or an array of any basic type (including complex
 // and string). Also a Record value is possible.
 // In this way varying typed data (e.g. the result of getCell in the table DO)

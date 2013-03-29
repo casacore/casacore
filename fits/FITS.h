@@ -72,19 +72,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       (ascii) TABLE extension.
 //  <li> Class <linkto class=BinaryTable:description>
 //       BinaryTable</linkto>
-//       BinaryTable is used to translate a FITS binary table to an aips++ Table.
+//       BinaryTable is used to translate a FITS binary table to a Casacore Table.
 //       BinaryTable inherits from the FITS BinaryTableExtension class and its
-//       primary use is to convert that class to an aips++ Table.
+//       primary use is to convert that class to a Casacore Table.
 //       The class starts with an already existing FitsInput object, which should
 //       be set at a BinaryTableExtension HDU.   Member functions provide a TableDesc 
-//       appropriate for the FITS data (to help in constructing an aips++ Table
+//       appropriate for the FITS data (to help in constructing a Casacore Table
 //       compatible with the BinaryTableExtension), a Table containing the
 //       current row of FITS data and a Table containing the next row of FITS data
 //       (which can be used to step through the FitsInput, copying each row
 //       using the RowCopier class), and a Table containin the entire FITS binary 
 //       table from the current row to the end of the table.
 //       <motivation>
-//       We need a way to get FITS data into aips++ Tables.
+//       We need a way to get FITS data into Casacore Tables.
 //       </motivation>
 //  <li> Class <linkto class=BinaryTableExtension:description>
 //       BinaryTableExtension</linkto>
@@ -145,7 +145,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       The strings that make up the value of FITS dates have a 
 //       precise format.  This class encompasses knowlege of the formats
 //       used and hopefully simplifies their creation and conversion
-//       to and from aips++ MVTimes.
+//       to and from Casacore MVTimes.
 //       </motivation>
 //  <li> Class <linkto class=FITSError:description>
 //       FITSError</linkto>
@@ -155,7 +155,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       for the FITS classes. 
 //       <motivation>
 //       Originally, FITS error message were simply sent to an ostream.  In
-//       order to have these error messages go to the AIPS++ logger by default,
+//       order to have these error messages go to the Casacore logger by default,
 //       this class was added.  This was made a separate class because both
 //       BlockIo and FITS need to use this class.  The anticipated replacements 
 //       for the current FITS classes use a somewhat similar scheme.
@@ -190,9 +190,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=FITSKeywordUtil:description>
 //       FITSKeywordUtil</linkto>
 //       A class with static functions to help deal with FITS Keywords.
-//       This class provides functions to conveniently interconvert between AIPS++
+//       This class provides functions to conveniently interconvert between Casacore
 //       types and a FitsKeywordList which is needed by the native FITS classes.
-//       It is more convenient to maintain the list within AIPS++
+//       It is more convenient to maintain the list within Casacore
 //       as a Record, so we only need methods to turn a FitsKeywordList into a 
 //       Record, and vice versa.
 //       Note that it is not necessary to construct a FITSKeywordUtil object
@@ -200,7 +200,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       <motivation>
 //       The FitsKeywordList class can be somewhat tedious to use, as it deals with,
 //       e.g., char* pointers rather than Strings. This class makes it easy to
-//       interconvert between FITS keywords and AIPS++ types.
+//       interconvert between FITS keywords and Casacore types.
 //       </motivation>
 //  <li> Class <linkto class=FITSMultiTable:description>
 //       FITSMultiTable</linkto>
@@ -235,7 +235,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       Simplified interface to create and write to a FITS Binary Table.
 //  <li> Class <linkto class=FITSTabular:description>
 //       FITSTabular</linkto>
-//       Simplified interface to FITS tables with AIPS++ Look and Feel.
+//       Simplified interface to FITS tables with Casacore Look and Feel.
 //       FITSTablular is an obstract base class which is used for read-only access to
 //       tabular FITS-like data structures.
 //  <li> Class <linkto class=FITSTimedTable:description>

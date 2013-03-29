@@ -115,7 +115,7 @@ namespace casa {
     // Open an image in the file/table with the given name.
     // The specified mask will be applied (default is default mask).
     // A null pointer is returned for an unknown image type.
-    // Non-AIPS++ image types must have been registered to be known.
+    // Non-Casacore image types must have been registered to be known.
     // If not successful, try to open it as an image expression.
     static LatticeBase* openImageOrExpr (const String& str,
                                          const MaskSpecifier&,
@@ -218,7 +218,8 @@ namespace casa {
     ImageProxy subImage (const IPosition& blc,
                          const IPosition& trc, 
                          const IPosition& inc,
-                         Bool dropDegenerate=True);
+                         Bool dropDegenerate=True,
+                         Bool preserveAxesOrder=False);
 
     // Get the brightness unit.
     String unit() const;

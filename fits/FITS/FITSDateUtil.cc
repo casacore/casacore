@@ -176,7 +176,7 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
 	    system = MEpoch::TCG;
 	} else if (timesys == "TCB") { 
 	    system = MEpoch::TCB;
-	} else if (timesys == "LAST") {   // AIPS++ extensions here
+	} else if (timesys == "LAST") {   // Casacore extensions here
 	    system = MEpoch::LAST;
 	} else if (timesys == "LMST") { 
 	    system = MEpoch::LMST;

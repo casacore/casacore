@@ -144,10 +144,10 @@ public:
     // It is intended that these functions will only be used by the functions in
     // classes like ImageFITSConverter.
     // 
-    // Table rows are in AIPS++ format if they have a valid time and priority,
+    // Table rows are in Casacore format if they have a valid time and priority,
     // otherwise they are in the standard FITS HISTORY format. The history lines
     // are processed by contiguous groups where all lines in that group are
-    // either in AIPS++ or HISTORY format. Note that history.nelements() might
+    // either in Casacore or HISTORY format. Note that history.nelements() might
     // be greater than nstrings for efficiency (i.e.  the history vector will
     // not be shrunk unnecessarily).
     //
@@ -159,7 +159,7 @@ public:
     // functions, i.e. strings that span multiple lines are joined, 
     // AIPS++ START/END cards are stripped, etc.
     //
-    // The AIPS++ format is: the first line DATE PRIORITY [SRCCODE='xxx']
+    // The Casacore format is: the first line DATE PRIORITY [SRCCODE='xxx']
     // [OBJID='xxx'] and the second lins is the message.  These entries are in
     // an AIPS++ START LOGTABLE history sequence.
     // <group>

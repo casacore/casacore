@@ -78,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <motivation> 
-// Make it possible to use the AIPS++ IO functionality on any file.
+// Make it possible to use the Casacore IO functionality on any file.
 // In this way any device can be hooked to the IO framework.
 // </motivation>
 

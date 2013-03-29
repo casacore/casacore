@@ -1,4 +1,4 @@
-//# ImageFITSConverter.h: Interconvert between AIPS++ Images and FITS files
+//# ImageFITSConverter.h: Interconvert between Casacore Images and FITS files
 //# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -57,7 +57,7 @@ class ConstFitsKeywordList;
 class FitsInput;
 
 // <summary>
-// Interconvert between AIPS++ Images and FITS files.
+// Interconvert between Casacore Images and FITS files.
 // </summary>
 
 // <use visibility=export>
@@ -72,13 +72,13 @@ class FitsInput;
 // </prerequisite>
 //
 // <synopsis>
-// This class is a helper class that is used to interconvert between AIPS++
+// This class is a helper class that is used to interconvert between Casacore
 // images and FITS files. This adds no functionality over the general abilities
 // available in the underlying FITS classes, however it is a useful higher-level
 // packaging.
 //
 // There are two fundamental member functions in this class.
-// <src>FITSToImage</src> which turns a FITS file into an AIPS++ image, and
+// <src>FITSToImage</src> which turns a FITS file into a Casacore image, and
 // <src>ImageToFITS</src> which does the opposite.
 //
 // We can read images from any HDU inside the FITS file (although this isn't
@@ -145,7 +145,7 @@ class ImageFITSConverter
 public:
 	const static String CASAMBM;
 
-    // Convert a FITS file to an AIPS++ image.
+    // Convert a FITS file to a Casacore image.
     // <ul>
     //   <li> <src>newImage</src> will be zero if the conversion fail. If the 
     //        conversion succeeds, the caller is responsible for deleting this
@@ -189,7 +189,7 @@ public:
 //			    Bool allowOverwrite=False,
 //                            Bool zeroBlanks=False);
 
-    // Convert an AIPS++ image to a FITS file.
+    // Convert a Casacore image to a FITS file.
     // <ul>
     //   <li> <src>return</src> True if the conversion succeeds, False 
     //        otherwise.

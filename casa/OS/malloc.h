@@ -39,8 +39,8 @@
 * VERSION 2.6.5  Wed Jun 17 15:55:16 1998  Doug Lea  (dl at gee)
 */
 
-/* The only AIPS++ changes from the distribution are:
-   1. Added AIPS++ copyright notice and guard.
+/* The only changes from the distribution are:
+   1. Added Casacore copyright notice and guard.
    2. Compile to nothing for linux since we already get GNU malloc there.
    3. If AIPS_DEBUG is set compile this malloc with DEBUG on.
 */

@@ -1,4 +1,4 @@
-//# TableDesc.h:  specify structure of aips++ tables
+//# TableDesc.h:  specify structure of Casacore tables
 //# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -44,7 +44,7 @@ class TabPath;
 template<class T> class Vector;
 
 // <summary>
-// Define the structure of an AIPS++ table
+// Define the structure of a Casacore table
 // </summary>
 
 // <use visibility=export>
@@ -173,7 +173,7 @@ template<class T> class Vector;
 
 // <motivation>
 // A table description specifies the structure, but not the contents,
-// of an aips++ table.  Since many tables will have identical structure
+// of a Casacore table.  Since many tables will have identical structure
 // and different content, it makes good sense to separate structure 
 // ("description") from content.
 // </motivation>

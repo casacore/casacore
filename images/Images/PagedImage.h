@@ -63,11 +63,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <etymology>
 // The PagedImage name comes from its role as the Image class with paging 
 // from persistent memory.  Users are thus invited to treat the 
-// PagedImage instances like AIPS++ Lattices  
+// PagedImage instances like Casacore Lattices  
 // </etymology>
 
 // <synopsis> 
-// All AIPS++ Images are Lattices.  They may be treated like any other Lattice;
+// All Casacore Images are Lattices.  They may be treated like any other Lattice;
 // getSlice(...), putSlice(...), LatticeIterator for iterating, etc.
 // ArrayImages contain a map, a mask for that map, and coordinate 
 // information.  This provides a Lattice interface for images and their 

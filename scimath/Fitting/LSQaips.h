@@ -1,4 +1,4 @@
-//# LSQaips.h: Interface for aips++ Vectors in least squares fitting
+//# LSQaips.h: Interface for Casacore Vectors in least squares fitting
 //# Copyright (C) 1999,2000,2001,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 
 // <summary>
-// Interface for aips++ Vectors in least squares fitting
+// Interface for Casacore Vectors in least squares fitting
 // </summary>
 // <reviewed reviewer="" date="2004/04/01" tests=""
 //	 demos="">
@@ -51,12 +51,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// From Least SQuares and aips++
+// From Least SQuares and aips++ (now Casacore)
 // </etymology>
 //
 // <synopsis>
 // The interface used in the <src>LSQaips</src> class is in terms of
-// aips++ Vectors directly, rather than an STL iterator (like 
+// Casacore Vectors directly, rather than an STL iterator (like 
 // <linkto class=VectorSTLIterator>VectorSTLIterator</linkto>) based
 // on it.
 //

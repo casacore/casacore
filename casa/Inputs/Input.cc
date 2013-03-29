@@ -427,7 +427,7 @@ void Input::pane()
   String value, type;
 
   cout << "-F 4.2 1 0 170x7+10+20 +35+1 'CANTATA for KHOROS' cantata\n";
-  cout << "-M 1 0 100x40+10+20 +23+1 'An AIPS++ program' aips++\n";
+  cout << "-M 1 0 100x40+10+20 +23+1 'A Casacore program' casacore\n";
   
   ConstListIter<Param> parlist(parList_p);       
   parlist.toStart();

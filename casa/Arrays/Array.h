@@ -152,9 +152,6 @@ template<class Domain, class Range> class Functional;
 // functions, and indexing will be range-checked. This should not be
 // defined for production runs.
 //
-// A tutorial for the ArrayClasses is available in the "AIPS++ Programming
-// Manual."
-//
 // <note role=tip>
 // Most of the data members and functions which are "protected" should
 // likely become "private".

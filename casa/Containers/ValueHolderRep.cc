@@ -1,4 +1,4 @@
-//# ValueHolderRep.cc: A holder object for the standard AIPS++ data
+//# ValueHolderRep.cc: A holder object for the standard Casacore data
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -40,7 +40,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
-// PABLO_IO is used to profile the IO performance of the AIPS++ (in
+// PABLO_IO is used to profile the IO performance of the Casacore (in
 // particular to help us locate bottlenecks associated with parallel
 // processing)
 //

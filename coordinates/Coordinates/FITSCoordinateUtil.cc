@@ -1748,7 +1748,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (header.isDefined("pc")) {
 
 // Unlikely to encounter this, as the current WCS papers
-// use the CD rather than PC matrix. The aips++ user binding
+// use the CD rather than PC matrix. The Casacore user binding
 // (Image tool) does not allow the WCS definition to be written
 // so probably we could remove this
 
@@ -1816,7 +1816,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     void FITSCoordinateUtil::cardsToRecord (LogIO& os, RecordInterface& rec, char* pHeader) const
     //
-    // Convert the fitshdr struct to an aips++ Record for ease of later use
+    // Convert the fitshdr struct to a Casacore Record for ease of later use
     //
     {
 

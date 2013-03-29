@@ -29,8 +29,6 @@
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
-// This is a preliminary version; eventually it has to be incorporated
-// in the AIPS++ command language.
 
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <casa/Arrays/Slice.h>

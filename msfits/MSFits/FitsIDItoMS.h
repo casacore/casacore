@@ -1,4 +1,4 @@
-//# FITSIDItoMS.h: Convert a FITS-IDI binary table to an AIPS++ Table.
+//# FITSIDItoMS.h: Convert a FITS-IDI binary table to a Casacore Table
 //# Copyright (C) 1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -540,7 +540,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // well.<br>
 // Before implementing, however, I think it would be worthwhile to look at
 // the whole area of error handling. The easiest way would be to introduce
-// for each of the defined aips++ standard values a corresponding E class
+// for each of the defined Casacore standard values a corresponding E class
 // (EDouble, EInt, EComplex, EuInt etc), and have all mathematical and
 // logical operators that are defined for the standard classes be defined
 // for the E-classes as well. It would then be easy to introduce errors

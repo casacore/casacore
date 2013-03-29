@@ -1,4 +1,4 @@
-//# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
+//# ImageFITSConverter.cc: this defines templated conversion from FITS to a Casacore Float image
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -139,7 +139,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 	// BLANK Find out if we are blanked.  This is only relevant to
 	// BITPIX > 0  For 32 bit floating point is is not required
-	// by FITS (illegal ?) and aips++ does not write it out.
+	// by FITS (illegal ?) and Casacore does not write it out.
 	// Other packages may write it out, so a bit of code below
 	// to handle it.
 

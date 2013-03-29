@@ -1,4 +1,4 @@
-//# ImageFITS2Converter.cc : non-templated FITS<->aips++ image conversion 
+//# ImageFITS2Converter.cc : non-templated FITS<->Casacore image conversion 
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -555,7 +555,7 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
 
          UnitMap::addFITS();
          if (UnitVal::check(unitString)) {
-	     // Translate units from FITS units to true aips++ units
+	     // Translate units from FITS units to true Casacore units
 	     // There is no scale factor in this translation.
              u = UnitMap::fromFITS(Unit(unitString));
          } 
