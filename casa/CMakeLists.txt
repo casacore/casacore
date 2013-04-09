@@ -174,6 +174,7 @@ System/Casarc.cc
 Utilities/cregex.cc
 Utilities/RecordTransformable.cc
 Utilities/DynBuffer.cc
+Utilities/Compare.cc
 Utilities/SortError.cc
 Utilities/DataType.cc
 Utilities/Sequence2.cc

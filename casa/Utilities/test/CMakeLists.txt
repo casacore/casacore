@@ -3,6 +3,7 @@ dCOWptr
 dMUString
 tBinarySearch
 tBitVector
+tCompare
 tCompositeNumber
 tCopy
 tCountedPtr

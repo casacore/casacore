@@ -95,7 +95,7 @@ protected:
     uInt              incr_p;
     // comparison object; use CountedPtr for memory management
     CountedPtr<BaseCompare> ccmpObj_p;
-    // comparison object; use raw ponter for performance
+    // comparison object; use raw pointer for performance
     BaseCompare* cmpObj_p;
 };
 
@@ -324,7 +324,7 @@ public:
     // <br> By default it'll try if the faster GenSortIndirect can be used
     // if a sort on a single key is used.
     uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-	       int options = QuickSort, Bool tryGenSort = True) const;
+	       int options = ParSort, Bool tryGenSort = True) const;
 
     // Get all unique records in a sorted array. The array order is
     // given in the indexVector (as possibly returned by the sort function).
