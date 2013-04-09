@@ -149,6 +149,9 @@ void comparetest() {
   AlwaysAssertExit(common_prefix(x, "Help") == "Hel");
   AlwaysAssertExit(common_suffix(x, "to") == "o");
   
+  AlwaysAssertExit(fcompare(x, "hello") == 0);
+  AlwaysAssertExit(fcompare(x, "hellox") < 0);
+  AlwaysAssertExit(fcompare(x, "hell") > 0);
   AlwaysAssertExit(fcompare(x, "hELlo") == 0);
   AlwaysAssertExit(fcompare(x, "hElp") < 0);
 }

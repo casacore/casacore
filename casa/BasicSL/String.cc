@@ -565,10 +565,30 @@ String join(string src[], Int n, const string& sep) {
   return x;
 }
 
-Int fcompare(String x, String y) {
-  x.downcase();
-  y.downcase();
-  return x.compare(y);
+Int fcompare(const String& x, const String& y) {
+  // Determine minimum size and result in case characters compare equal.
+  Int res = 0;
+  string::size_type sz = x.size();
+  if (x.size() < y.size()) {
+    res = -1;
+  } else if (x.size() > y.size()) {
+    res = 1;
+    sz  = y.size();
+  }
+  for (string::size_type i=0; i<sz; ++i) {
+    // Maybe it makes no sense to first test x[i] != y[i].
+    char xc = tolower(x[i]);
+    char yc = tolower(y[i]);
+    if (xc < yc) {
+      return -1;
+    } else if (xc > yc) {
+      return 1;
+    }
+  }
+  return res;
+  ///  x.downcase();
+  ///  y.downcase();
+  ///  return x.compare(y);
 }
 
 // SubString

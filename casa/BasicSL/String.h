@@ -931,7 +931,7 @@ inline Int compare(const string &x, const Char y) {
   return x.compare(String(y)); }
 // this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
-Int fcompare(String x, String y);
+Int fcompare(const String& x, const String& y);
 // </group>
 // </group>
 
