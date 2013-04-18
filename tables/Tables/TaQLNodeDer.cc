@@ -779,23 +779,25 @@ TaQLGivingNodeRep::TaQLGivingNodeRep (const String& name, const String& type)
     typel.downcase();
     if (typel == "memory") {
       itsType = 1;
-    } else if (typel == "plain") {
+    } else if (typel == "scratch") {
       itsType = 2;
-    } else if (typel == "plain_big") {
+    } else if (typel == "plain") {
       itsType = 3;
-    } else if (typel == "plain_little") {
+    } else if (typel == "plain_big") {
       itsType = 4;
-    } else if (typel == "plain_local") {
+    } else if (typel == "plain_little") {
       itsType = 5;
+    } else if (typel == "plain_local") {
+      itsType = 6;
     } else {
       throw TableParseError ("AS " + type + " in GIVING table " + name +
 			     " is invalid; "
 			     "use MEMORY or PLAIN[_BIG,LITTLE,LOCAL]");
     }
   }
-  if (itsType != 1  &&  itsName.empty()) {
+  if (itsName.empty()  &&  itsType > 2) {
     throw TableParseError ("table name in GIVING can only be omitted if "
-			   "AS MEMORY is given");
+                           "AS MEMORY or AS SCRATCH is given");
   }
 }
 TaQLGivingNodeRep::~TaQLGivingNodeRep()
@@ -818,15 +820,18 @@ void TaQLGivingNodeRep::show (std::ostream& os) const
 	os << "memory";
 	break;
       case 2:
-	os << "plain";
+	os << "scratch";
 	break;
       case 3:
-	os << "plain_big";
+	os << "plain";
 	break;
       case 4:
-	os << "plain_little";
+	os << "plain_big";
 	break;
       case 5:
+	os << "plain_little";
+	break;
+      case 6:
 	os << "plain_local";
 	break;
       default:

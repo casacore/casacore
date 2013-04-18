@@ -333,7 +333,9 @@ public:
     // It will flush if the destructor is called due to an exception,
     // because the Table object may not be correct.
     // Of course, in that case the flush function could be called explicitly.
-    ~Table();
+    // <br>It is virtual, so an object of a derived class like MeasurementSet
+    // is destructed correctly through a Table pointer.
+    virtual ~Table();
 
     // Assignment (reference semantics).
     Table& operator= (const Table&);
@@ -838,23 +840,23 @@ public:
     // Per column a compare function can be provided. By default
     // the standard compare function defined in Compare.h will be used.
     // Default sort order is ascending.
-    // Default sorting algorithm is the heapsort.
+    // Default sorting algorithm is the parallel sort.
     // <group>
     // Sort on one column.
     Table sort (const String& columnName,
 		int = Sort::Ascending,
-		int = Sort::HeapSort) const;
+		int = Sort::ParSort) const;
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     Table sort (const Block<String>& columnNames,
 		int = Sort::Ascending,
-		int = Sort::HeapSort) const;
+		int = Sort::ParSort) const;
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     // The order can be given per column.
     Table sort (const Block<String>& columnNames,
 		const Block<Int>& sortOrders,
-		int = Sort::HeapSort) const;
+		int = Sort::ParSort) const;
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     // The order can be given per column.
@@ -864,7 +866,7 @@ public:
     Table sort (const Block<String>& columnNames,
 		const Block<CountedPtr<BaseCompare> >& compareObjects,
 		const Block<Int>& sortOrders,
-		int = Sort::HeapSort) const;
+		int = Sort::ParSort) const;
     // </group>
 
     // Get a vector of row numbers in the root table of rows in this table.

@@ -715,8 +715,9 @@ public:
       itsType     (type) {}
 
   String        itsName;
-  Int           itsType;    // -1=exprlist 0=undefined, 1=memory, 2=plain
-                            //  3=plain_big, 4=plain_little, 5=plain_local
+  Int           itsType;    // -1=exprlist 0=undefined, 1=memory, 2=scratch
+                            //  3=plain, 4=plain_big, 5=plain_little,
+                            //  6=plain_local
   TaQLMultiNode itsExprList;
 };
 

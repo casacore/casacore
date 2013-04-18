@@ -2227,18 +2227,20 @@ Table TableParseSelect::doProjectExpr()
   // The types are defined in class TaQLGivingNodeRep.
   Table::TableType    ttype = Table::Plain;
   Table::TableOption  topt  = Table::New;
-  if (resultName_p.empty()) {
-    topt = Table::Scratch;
-  }
   Table::EndianFormat tendf = Table::AipsrcEndian;
-  if (resultType_p == 1) {
+  // Use default Memory if nothing or 'memory' has been given.
+  if (resultType_p == 0  ||  resultType_p == 1) {
     ttype = Table::Memory;
-  } else if (resultType_p == 3) {
-    tendf = Table::BigEndian;
+  } else if (resultType_p == 2) {
+    topt  = Table::Scratch;
   } else if (resultType_p == 4) {
-    tendf = Table::LittleEndian;
+    tendf = Table::BigEndian;
   } else if (resultType_p == 5) {
+    tendf = Table::LittleEndian;
+  } else if (resultType_p == 6) {
     tendf = Table::LocalEndian;
+  } else if (resultName_p.empty()) {
+    ttype = Table::Memory;
   }
   SetupNewTable newtab(resultName_p, td, topt);
   Table tabp(newtab, ttype, rownrs_p.size(), False, tendf);
@@ -2261,7 +2263,11 @@ Table TableParseSelect::doFinish (Bool showTimings, Table& table)
   Timer timer;
   Table result;
   if (resultType_p == 1) {
-    result = table.copyToMemoryTable (resultName_p);
+    if (table.tableType() == Table::Memory) {
+      result = table;
+    } else {
+      result = table.copyToMemoryTable (resultName_p);
+    }
   } else if (resultType_p > 0){
     Table::EndianFormat tendf = Table::AipsrcEndian;
     if (resultType_p == 3) {
@@ -2509,6 +2515,9 @@ void TableParseSelect::handleGiving (const String& name, Int type)
 {
   resultName_p = name;
   resultType_p = type;
+  if (resultType_p == 0  &&  !resultName_p.empty()) {
+    resultType_p = 3;     // default type is PLAIN if a name is given
+  }
 }
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
@@ -2561,7 +2570,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   //#  - apply limit/offset
   //# Note:
   //# - if only COUNT(*) and no GROUPBY given, shortcut (result is nrows)
-  //#     there can be a HAVING though
+  //#     there can be a HAVING and/or SELECT though
   //# - error if non-aggregate in SELECT if GROUPBY given
 
   //# Set limit if not given.

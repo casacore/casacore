@@ -427,10 +427,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitGivingNode (const TaQLGivingNodeRep& node)
   {
     if (node.itsType < 0) {
+      // Expressions in Giving clause.
       TaQLNodeResult result = visitNode (node.itsExprList);
       const TaQLNodeHRValue& res = getHR(result);
       topStack()->handleGiving (res.getExprSet());
     } else {
+      // Table in Giving clause.
       topStack()->handleGiving (node.itsName, node.itsType);
     }
     return TaQLNodeResult();
