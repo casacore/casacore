@@ -337,10 +337,8 @@ class MVAngle {
   // Make res angle Quantity from string in angle/time-like format. In the
   // case of String input, also quantities are recognised. chk checks eos
   // <group> 
-  static Bool read(Quantity &res, const String &in);
-  static Bool read(Quantity &res, MUString &in);
-  static Bool read(Quantity &res, const String &in, Bool chk);
-  static Bool read(Quantity &res, MUString &in, Bool chk);
+  static Bool read(Quantity &res, const String &in, Bool chk=True);
+  static Bool read(Quantity &res, MUString &in, Bool chk=True);
   // </group>
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;

@@ -1,4 +1,5 @@
 set (tests
+tMVAngle
 tMVTime
 tQuantum
 tQuantumHolder

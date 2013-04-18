@@ -363,10 +363,8 @@ class MVTime {
   // Make res time Quantity from string. The String version will accept
   // a time/angle Quantity as well. The chk checks for eos
   // <group>
-  static Bool read(Quantity &res, const String &in);
-  static Bool read(Quantity &res, MUString &in);
-  static Bool read(Quantity &res, const String &in, Bool chk);
-  static Bool read(Quantity &res, MUString &in, Bool chk);
+  static Bool read(Quantity &res, const String &in, Bool chk=True);
+  static Bool read(Quantity &res, MUString &in, Bool chk=True);
   // </group>
 // Get value of date/time (MJD) in given units
 // <group>

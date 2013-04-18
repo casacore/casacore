@@ -399,9 +399,6 @@ void MVTime::print(ostream &oss,
     }
 }
 
-Bool MVTime::read(Quantity &res, MUString &in) {
-  return read(res, in, True);
-}
 
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   static const String mon[12] = {
@@ -502,7 +499,11 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	  r += Double(in.getuInt())/60.0;
 	}
 	res -= Quantity(s*r/24.0,"d");	// Time zone
-      } else if (in.tSkipChar('Z')) {	// FITS UTC (old format)
+      } else if (! in.tSkipChar('Z')) {	// FITS UTC (old format)
+        if (chk) {
+          in.skipBlank();
+          if (!in.eos()) return False;	     // incorrect
+        }
       }
     } else {
       in.pop(); return False;
@@ -515,10 +516,6 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   }
   res *= s;			// Sign
   in.unpush(); return True;
-}
-
-Bool MVTime::read(Quantity &res, const String &in) {
-  return read(res, in, True);
 }
 
 Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
