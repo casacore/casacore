@@ -27,6 +27,8 @@
 
 #include <tables/Tables/TableIterProxy.h>
 #include <tables/Tables/TableProxy.h>
+#include <tables/Tables/ScalarColumn.h>
+#include <tables/Tables/TableError.h>
 #include <casa/Containers/IterError.h>
 #include <casa/Arrays/Vector.h>
 
@@ -38,7 +40,8 @@ TableIterProxy::TableIterProxy()
 
 TableIterProxy::TableIterProxy (const TableProxy& tab,
 				const Vector<String>& columns,
-				const String& order, const String& sortType)
+				const String& order, const String& sortType,
+                                const Vector<Double>& iterSteps)
 : firstTime_p (True)
 {
   Block<String> names(columns.nelements());
@@ -49,25 +52,130 @@ TableIterProxy::TableIterProxy (const TableProxy& tab,
   corder.downcase();
   TableIterator::Order taborder = TableIterator::Ascending;
   if (! corder.empty()) {
-    if (corder[0] == 'a') {
-      taborder = TableIterator::Ascending;
-    } else if (corder[0] == 'd') {
+    if (corder[0] == 'd'  ||  corder[0] == 'D') {
       taborder = TableIterator::Descending;
     }
   }
   String csort(sortType);
   csort.downcase();
-  TableIterator::Option tabsort = TableIterator::HeapSort;
+  TableIterator::Option tabsort = TableIterator::ParSort;
   if (! csort.empty()) {
     if (csort[0] == 'q') {
       tabsort = TableIterator::QuickSort;
+    } else if (csort[0] == 'h') {
+      tabsort = TableIterator::HeapSort;
     } else if (csort[0] == 'i') {
       tabsort = TableIterator::InsSort;
+    } else if (csort[0] == 'p') {
+      tabsort = TableIterator::ParSort;
     } else if (csort[0] == 'n') {
       tabsort = TableIterator::NoSort;
     }
   }
-  iter_p = TableIterator(tab.table(), names, taborder, tabsort);
+  if (iterSteps.empty()  ||  tab.table().nrow() == 0) {
+    iter_p = TableIterator(tab.table(), names, taborder, tabsort);
+  } else {
+    makeStepIter (tab.table(), names, iterSteps, taborder, tabsort);
+  }
+}
+
+void TableIterProxy::makeStepIter (const Table& tab,
+                                   const Block<String>& columns,
+                                   const Vector<Double>& iterSteps,
+                                   TableIterator::Order order,
+                                   TableIterator::Option option)
+{
+  // First determine if all columns are scalar and have a valid data type.
+  // Also find out if a case-insenstive string comparison is needed.
+  Block<CountedPtr<BaseCompare> > comps(columns.size());
+  Block<Int> orders (columns.size(), order);
+  for (uInt i=0; i<iterSteps.size(); ++i) {
+    if (i < columns.size()  &&  iterSteps[i] > 0) {
+      const ColumnDesc& colDesc = tab.tableDesc()[columns[i]];
+      if (! colDesc.isScalar()) {
+        throw TableError ("Only scalar columns can be used in table "
+                          "iteration");
+      }
+      DataType dtype = colDesc.dataType();
+      switch (dtype) {
+        // The following data types are valid.
+      case TpUChar:
+      case TpShort:
+      case TpUShort:
+      case TpInt:
+      case TpUInt:
+      case TpFloat:
+      case TpDouble:
+        break;
+      case TpString:
+        comps[i] = new CompareNoCase();
+        break;
+      default:
+        throw TableError ("No iteration step can be given for column " +
+                          columns[i]);
+      }
+    }
+  }
+  // First sort the table to fully order the columns with an interval.
+  Table sortab(tab);
+  if (option != TableIterator::NoSort) {
+    Table sortab = tab.sort (columns, comps, orders, option);
+  }
+  // Now see if an interval comparison has to be done when iterating.
+  for (uInt i=0; i<iterSteps.size(); ++i) {
+    if (i < columns.size()  &&  iterSteps[i] > 0) {
+      DataType dtype = sortab.tableDesc()[columns[i]].dataType();
+      switch (dtype) {
+      case TpUChar:
+        {
+          uChar start = ScalarColumn<uChar>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<uChar>(iterSteps[i], start);
+        }
+        break;
+      case TpShort:
+        {
+          Short start = ScalarColumn<Short>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<Short>(iterSteps[i], start);
+        }
+        break;
+      case TpUShort:
+        {
+          uShort start = ScalarColumn<uShort>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<uShort>(iterSteps[i], start);
+        }
+        break;
+      case TpInt:
+        {
+          Int start = ScalarColumn<Int>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<Int>(iterSteps[i], start);
+        }
+        break;
+      case TpUInt:
+        {
+          uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<uInt>(iterSteps[i], start);
+        }
+        break;
+      case TpFloat:
+        {
+          Float start = ScalarColumn<Float>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalReal<Float>(iterSteps[i], start);
+        }
+        break;
+      case TpDouble:
+        {
+          Double start = ScalarColumn<Double>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalReal<Double>(iterSteps[i], start);
+        }
+        break;
+      default:
+        break;
+      }
+    }
+  }
+  // Iterate over the sorted table (and don't sort again).
+  iter_p = TableIterator(sortab, columns, comps, orders,
+                         TableIterator::NoSort);
 }
 
 TableIterProxy::TableIterProxy (const TableIterProxy& that)
