@@ -56,106 +56,153 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 static const char*           strpMSObservationGram = 0;
 static Int                   posMSObservationGram = 0;
 
-
-//# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  
+  //# Parse the command.
+  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  TableExprNode baseMSObservationGramParseCommand (MSObservationParse* parser, 
+						   const String& command, 
+						   Vector<Int>& selectedIDs)
+  {
+    try
+      {
+	MSObservationGramrestart (MSObservationGramin);
+	yy_start = 1;
+	strpMSObservationGram = command.chars();       // get pointer to command string
+	posMSObservationGram  = 0;                     // initialize string position
+	//MSObservationParse parser(ms,obsSubTable);     // setup measurement set
+	MSObservationParse::thisMSObsParser = parser; // The global pointer to the parser
+	parser->reset();
+	//	parser->setMaxObs(maxObsIDs);
+	MSObservationGramparse();                      // parse command string
+	
+	selectedIDs=parser->selectedIDs();
+	return parser->node();
+      }
+    catch (MSSelectionObservationError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msObservationGramPosition(), command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }
   TableExprNode msObservationGramParseCommand (const MeasurementSet* ms, const MSObservation& obsSubTable,
+					       const TableExprNode& colAsTEN,
 					       const String& command, 
-					       Vector<Int>& selectedIDs, Int maxObsIDs) 
-{
-  try
-    {
-      MSObservationGramrestart (MSObservationGramin);
-      yy_start = 1;
-      strpMSObservationGram = command.chars();       // get pointer to command string
-      posMSObservationGram  = 0;                     // initialize string position
-      MSObservationParse parser(ms,obsSubTable);     // setup measurement set
-      MSObservationParse::thisMSObsParser = &parser; // The global pointer to the parser
-      parser.reset();
-      parser.setMaxObs(maxObsIDs);
-      MSObservationGramparse();                      // parse command string
+					       Vector<Int>& selectedIDs)
+  {
+    TableExprNode ret;
+    MSObservationParse *thisParser = new MSObservationParse(ms, obsSubTable, colAsTEN);
+    try
+      {
+	ret = baseMSObservationGramParseCommand(thisParser, command, selectedIDs);
+      }
+    catch (MSSelectionObservationError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
 
-      selectedIDs=parser.selectedIDs();
-      return parser.node();
-    }
-  catch (MSSelectionObservationError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msObservationGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
-
-//# Give the table expression node
-// const TableExprNode* msObservationGramParseNode()
-// {
-//   //    return MSObservationParse::node();
-//     return &MSObservationParse::thisMSObsParser->node();
-// }
-void msObservationGramParseDeleteNode()
-{
-  //    return MSObservationParse::cleanup();
+  // TableExprNode msObservationGramParseCommand (const MeasurementSet* ms, const MSObservation& obsSubTable,
+  // 					       const String& command, 
+  // 					       Vector<Int>& selectedIDs, Int maxObsIDs) 
+  // {
+  //   try
+  //     {
+  // 	MSObservationGramrestart (MSObservationGramin);
+  // 	yy_start = 1;
+  // 	strpMSObservationGram = command.chars();       // get pointer to command string
+  // 	posMSObservationGram  = 0;                     // initialize string position
+  // 	MSObservationParse parser(ms,obsSubTable);     // setup measurement set
+  // 	MSObservationParse::thisMSObsParser = &parser; // The global pointer to the parser
+  // 	parser.reset();
+  // 	parser.setMaxObs(maxObsIDs);
+  // 	MSObservationGramparse();                      // parse command string
+	
+  // 	selectedIDs=parser.selectedIDs();
+  // 	return parser.node();
+  //     }
+  //   catch (MSSelectionObservationError &x)
+  //     {
+  // 	String newMesgs;
+  // 	newMesgs = constructMessage(msObservationGramPosition(), command);
+  // 	x.addMessage(newMesgs);
+  // 	throw;
+  //     }
+  // }
+  
+  //# Give the table expression node
+  // const TableExprNode* msObservationGramParseNode()
+  // {
+  //   //    return MSObservationParse::node();
+  //     return &MSObservationParse::thisMSObsParser->node();
+  // }
+  void msObservationGramParseDeleteNode()
+  {
+    //    return MSObservationParse::cleanup();
     return MSObservationParse::thisMSObsParser->cleanup();
-}
-
-//# Give the string position.
-Int& msObservationGramPosition()
-{
+  }
+  
+  //# Give the string position.
+  Int& msObservationGramPosition()
+  {
     return posMSObservationGram;
-}
-
-//# Get the next input characters for flex.
-int msObservationGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msObservationGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSObservationGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSObservationGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSObservationGram++;
     }
     return nr;
-}
-
-void MSObservationGramerror (const char*)
-{
-  throw (MSSelectionObservationError ("Scan Expression: Parse error at or near '" +
-				      String(MSObservationGramtext) + "'"));
-}
-
-// String msObservationGramRemoveEscapes (const String& in)
-// {
-//     String out;
-//     int leng = in.length();
-//     for (int i=0; i<leng; i++) {
-// 	if (in[i] == '\\') {
-// 	    i++;
-// 	}
-// 	out += in[i];
-//     }
-//     return out;
-// }
-
-// String msObservationGramRemoveQuotes (const String& in)
-// {
-//     //# A string is formed as "..."'...''...' etc.
-//     //# All ... parts will be extracted and concatenated into an output string.
-//     String out;
-//     String str = in;
-//     int leng = str.length();
-//     int pos = 0;
-//     while (pos < leng) {
-// 	//# Find next occurrence of leading ' or ""
-// 	int inx = str.index (str[pos], pos+1);
-// 	if (inx < 0) {
-// 	    throw (AipsError ("MSObservationParse - Ill-formed quoted string: " +
-// 			      str));
-// 	}
-// 	out += str.at (pos+1, inx-pos-1);             // add substring
-// 	pos = inx+1;
-//     }
-//     return out;
-// }
-
+  }
+  
+  void MSObservationGramerror (const char*)
+  {
+    throw (MSSelectionObservationError ("Scan Expression: Parse error at or near '" +
+					String(MSObservationGramtext) + "'"));
+  }
+  
+  // String msObservationGramRemoveEscapes (const String& in)
+  // {
+  //     String out;
+  //     int leng = in.length();
+  //     for (int i=0; i<leng; i++) {
+  // 	if (in[i] == '\\') {
+  // 	    i++;
+  // 	}
+  // 	out += in[i];
+  //     }
+  //     return out;
+  // }
+  
+  // String msObservationGramRemoveQuotes (const String& in)
+  // {
+  //     //# A string is formed as "..."'...''...' etc.
+  //     //# All ... parts will be extracted and concatenated into an output string.
+  //     String out;
+  //     String str = in;
+  //     int leng = str.length();
+  //     int pos = 0;
+  //     while (pos < leng) {
+  // 	//# Find next occurrence of leading ' or ""
+  // 	int inx = str.index (str[pos], pos+1);
+  // 	if (inx < 0) {
+  // 	    throw (AipsError ("MSObservationParse - Ill-formed quoted string: " +
+  // 			      str));
+  // 	}
+  // 	out += str.at (pos+1, inx-pos-1);             // add substring
+  // 	pos = inx+1;
+  //     }
+  //     return out;
+  // }
+  
 } //# NAMESPACE CASA - END

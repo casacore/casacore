@@ -64,9 +64,10 @@ typedef int ObjCompareFunc (const void*, const void*);
 class BaseCompare
 {
 public:
-    virtual ~BaseCompare() {}
+    virtual ~BaseCompare()
+      {}
 
-    // Compare two objects, and return
+    // Compare two objects, and return.
     // <ul>
     //  <li> -1  if obj1 < obj2;
     //  <li>  0  if obj1 == obj2;
@@ -74,7 +75,7 @@ public:
     // </ul>
     virtual int comp (const void* obj1, const void* obj2) const = 0;
 
-    // Get the data type of a straight-forward comparison in ObjCompare.
+    // Get the data type of a straight-forward sort comparison in ObjCompare.
     // It is used to test if a the faster GenSortIndirect can be used.
     // By default it returns TpOther.
     virtual DataType dataType() const
@@ -113,7 +114,7 @@ public:
     static int compare (const void* obj1, const void* obj2);
     virtual int comp (const void* obj1, const void* obj2) const;
 
-    // Get the data type of the comparison.
+    // Get the data type of the sort comparison.
     virtual DataType dataType() const;
 };
 

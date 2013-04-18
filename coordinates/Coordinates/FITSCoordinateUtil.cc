@@ -522,18 +522,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		all = all.append(tmp);
 		os << LogIO::NORMAL
 		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
-	    } else if (hsize >= 19 &&	  // change 'GLON    ' to 'GLON-CAR', etc.
-		       header[i][0]=='C' && header[i][1]=='T' && header[i][2]=='Y' &&
-		       header[i][3]=='P' && header[i][4]=='E' &&
-		       (header[i][5]=='1'|| header[i][5]=='2') &&
-		       header[i][15]==' ' && header[i][16]==' ' &&
-		       header[i][17]==' ' && header[i][18]==' ') {
-		strncpy(tmp,header[i].c_str(),hsize+1);
-		tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
-		all = all.append(tmp);
-		os << LogIO::NORMAL
-		   << "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
-	    } else if (hsize >= 19 &&	  // change 'OBSFREQ' to 'RESTFRQ'
+	    }
+	    else if (
+            // adding the first condition (FEEQ, VRAD, VOPT) is necessary to avoid incorrect munging
+            // of position-velocity image axes.
+	    	! (header[i].contains("FREQ") || header[i].contains("VRAD") || header[i].contains("VOPT"))
+            && hsize >= 19 && (
+	    		header[i].startsWith("CTYPE1")
+	    		|| header[i].startsWith("CTYPE2")
+	    	)
+		    && header[i][15]==' ' && header[i][16]==' '
+		    && header[i][17]==' ' && header[i][18]==' '
+		) {
+	    	// change 'GLON    ' to 'GLON-CAR', etc.
+	    	strncpy(tmp,header[i].c_str(),hsize+1);
+	    	tmp[15]='-'; tmp[16]='C'; tmp[17]='A'; tmp[18]='R';
+	    	all = all.append(tmp);
+	    	os << LogIO::NORMAL
+	    		<< "Header\n"<< header[i] << "\nwas interpreted as\n" << tmp << LogIO::POST;
+	    }
+	    else if (hsize >= 19 &&	  // change 'OBSFREQ' to 'RESTFRQ'
 		       header[i][0]=='O' && header[i][1]=='B' && header[i][2]=='S' &&
 		       header[i][3]=='F' && header[i][4]=='R' &&
 		       header[i][5]=='E' && header[i][6]=='Q' &&
@@ -1756,12 +1764,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		os << "Ignoring redundant " << sprefix << "rota in favour of "
 		    "pc matrix." << LogIO::NORMAL << LogIO::POST;
 	    }
-            pc.reference (header.toArrayDouble("pc"));
+	    header.get("pc", pc);
 	    if (pc.ncolumn() != pc.nrow()) {
 		os << "The PC matrix must be square" << LogIO::EXCEPTION;
 	    }
 	} else if (header.isDefined(sprefix + "rota")) {
-            Vector<Double> crota(header.toArrayDouble(sprefix + "rota"));
+	    Vector<Double> crota;
+	    header.get(sprefix + "rota", crota);
 
 // Turn crota into PC matrix
 

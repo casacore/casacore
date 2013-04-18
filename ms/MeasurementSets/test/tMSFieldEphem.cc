@@ -319,6 +319,36 @@ int main() {
 	AlwaysAssertExit(expDir.separation(MVDirection(rDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
 	AlwaysAssertExit(rDir.getRef().getType() == expected.getRef().getType() );
 
+	// test error handling
+
+	Bool didThrow = False;
+
+	try{
+	  MDirection xDir = msfc.delayDirMeas(row, 12345.); // time outside validity range
+	} catch (AipsError x) {
+	  //cout <<  x.getMesg() <<endl;
+	  didThrow = True;
+	}
+	AlwaysAssertExit(didThrow);
+
+	didThrow = False;
+	try{
+	  MRadialVelocity xmradvel = msfc.radVelMeas(row, 12345.); // time outside validity range
+	} catch (AipsError x) {
+	  //cout <<  x.getMesg() <<endl;
+	  didThrow = True;
+	}
+	AlwaysAssertExit(didThrow);
+
+	didThrow = False;
+	try{
+	  MRadialVelocity xrho = msfc.rho(row, 12345.); // time outside validity range
+	} catch (AipsError x) {
+	  //cout <<  x.getMesg() <<endl;
+	  didThrow = True;
+	}
+	AlwaysAssertExit(didThrow);
+
 	// Finally test radial velocity and rho access
 
 	MRadialVelocity mradvel = msfc.radVelMeas(row, mjds);

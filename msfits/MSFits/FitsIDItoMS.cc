@@ -1,4 +1,4 @@
-//# FITSIDItoMS.cc: Convert a FITS-IDI binary table to a Casacore Table.
+//# FITSIDItoMS.cc: Convert a FITS-IDI binary table to an AIPS++ Table.
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -151,6 +151,7 @@ static Int getIndexContains(Vector<String>& map, const String& key,
 
 Bool FITSIDItoMS1::firstMain = True; // initialize the class variable firstMain
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
+String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class variable antIdFromNo
 
 //	
@@ -844,6 +845,8 @@ void FITSIDItoMS1::describeColumns()
         uInt ctr=0;
 
 	weightKwPresent_p = False;
+	weightypKwPresent_p = False;
+	weightyp_p = "";
 
         while((kw = kwl.next())){
 	    kwname = kw->name();
@@ -851,6 +854,17 @@ void FITSIDItoMS1::describeColumns()
 		maxis.resize(++ctr,True);
 		maxis(ctr-1)=kw->asInt();
 //		cout << "**maxis=" << maxis << endl;
+	    }
+	    else if(kwname.at(0,8)=="WEIGHTYP"){
+	        weightypKwPresent_p = True;
+		weightyp_p = kw->asString();
+		weightyp_p.upcase();
+		weightyp_p.trim();
+		if(weightyp_p!="NORMAL"){
+		  *itsLog << LogIO::WARN << "Found WEIGHTYP keyword with value \"" << weightyp_p
+			  << "\" in UV_DATA table. Presently this keyword is ignored."
+			  << LogIO::POST;
+		}
 	    }
 	    else if(kwname.at(0,6)=="WEIGHT"){
 	        weightKwPresent_p = True;
@@ -1405,7 +1419,7 @@ void FITSIDItoMS1::getAxisInfo()
     // note: 1-based ref pix
     corrType_p(i) = ifloor(refVal_p(iPol) +
 			   (i+1-refPix_p(iPol))*delta_p(iPol)+0.5);
-    // convert AIPS-convention Stokes description to Casacore enum
+    // convert AIPS-convention Stokes description to aips++ enum
 //    cout << "corrType_p="<< corrType_p(i) <<endl;
     switch (corrType_p(i)) {
     case -8:
@@ -1481,8 +1495,14 @@ void FITSIDItoMS1::getAxisInfo()
   object_p = (kwp=kw(FITS::OBJECT)) ? kwp->asString() : "unknown";
   object_p=object_p.before(trailing);
   // Save the array name
-  array_p = (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
-  array_p=array_p.before(trailing);
+  if(array_p=="" || array_p=="unknown"){
+    array_p = (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
+    array_p=array_p.before(trailing);
+  }
+  if(array_p=="" || array_p=="unknown"){
+    array_p = (kwp=kw("ARRNAM")) ? kwp->asString() : "unknown";
+    array_p=array_p.before(trailing);
+  }
 
   // Save the RA/DEC epoch (for ss fits)
   epoch_p = (kwp=kw(FITS::EPOCH)) ? kwp->asFloat() : 2000.0;
@@ -1519,7 +1539,7 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   
   Int nCorr = 0;
   Int nChan = 0;
-  nIF_p = 0;
+  Int nIF_p = 0;
 
   String telescop;
 
@@ -1938,6 +1958,16 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     nAnt_p = max(nAnt_p,ant1+1);
     nAnt_p = max(nAnt_p,ant2+1);
 
+    Bool doConjugateVis = False;
+
+    if(ant1>ant2){ // swap indices and multiply UVW by -1
+      Int tant = ant1;
+      ant1 = ant2;
+      ant2 = tant;
+      uvw *= -1.;
+      doConjugateVis = True;
+    }
+
     // Convert U,V,W from units of seconds to meters
     uvw *= C::c;
 
@@ -1959,7 +1989,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     Float visImag = 0.;
     Float visWeight = 1.;
 
-    nIF_p = 0;
+    Int nIF_p = 0;
     nIF_p = getIndex(coordType_p,"BAND");
     if (nIF_p>=0) {
       nIF_p=nPixel_p(nIF_p);
@@ -2008,9 +2038,13 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	    flag(p, chan) = False;
 	  }
 
-	  vis(p, chan) = Complex(visReal, -visImag); // NOTE: conjugation of visibility!
-                                                     // FITS-IDI convention is conjugate of AIPS and CASA convention!
-
+	  if(doConjugateVis){ // need a conjugation to follow the ant1<=ant2 rule
+	    vis(p, chan) = Complex(visReal, visImag); // NOTE: this means no conjugation of visibility because of FITS-IDI convention!
+	  }
+	  else{
+	    vis(p, chan) = Complex(visReal, -visImag); // NOTE: conjugation of visibility!
+	                                               // FITS-IDI convention is conjugate of AIPS and CASA convention!
+	  }
  	}
       }
 
@@ -2113,8 +2147,12 @@ void FITSIDItoMS1::fillObsTables() {
     obscode = (kwp=kw("OBSCODE")) ? kwp->asString() : "";
     obscode=obscode.before(trailing);
     msObsCol.project().put(0,obscode);
-    String telescope= (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : "unknown";
+    String telescope= (kwp=kw(FITS::TELESCOP)) ? kwp->asString() : array_p;
     telescope=telescope.before(trailing);  
+    if(telescope=="" || telescope=="unknown"){
+      telescope= (kwp=kw("ARRNAM")) ? kwp->asString() : "unknown";
+      telescope=telescope.before(trailing);  
+    } 
     msObsCol.telescopeName().put(0,telescope);
     msObsCol.scheduleType().put(0, "");
    
@@ -2219,21 +2257,17 @@ void FITSIDItoMS1::fillAntennaTable()
      }
    }
 
-
-   cout << "srdate=" << srdate <<endl;
-   //cout << "gst="<< gst << endl;
-
    MVTime timeVal;
    MEpoch::Types epochRef;
    FITSDateUtil::fromFITS(timeVal,epochRef,srdate,timsys);
    // convert to canonical form
    timsys=MEpoch::showType(epochRef);
    rdate=timeVal.second(); // MJD seconds
-   String arrnam="Unknown";
+   String arrnam="unknown";
    if (btKeywords.isDefined("ARRNAM")) {
      arrnam=btKeywords.asString("ARRNAM");
      arrnam=arrnam.before(trailing);
-     if(array_p==""){
+     if(array_p=="" || array_p=="unknown"){
        array_p = arrnam;
      }
      else{
@@ -2242,6 +2276,11 @@ void FITSIDItoMS1::fillAntennaTable()
 		 << arrnam << " and " << array_p << LogIO::POST;
        }
      }
+   }
+   if ((array_p=="" || array_p=="unknown") && btKeywords.isDefined("TELESCOP")) {
+     arrnam=btKeywords.asString("TELESCOP");
+     arrnam=arrnam.before(trailing);
+     array_p = arrnam;
    }
 
    // store the time and frame keywords 
@@ -2536,7 +2575,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   String kwname;
   Int nCorr = 1;
   Int firstSTK = 0;
-  nIF_p = 0;
+  Int nIF_p = 0;
   Int nChan = 0;
   Double zeroRefFreq = 0.0;
   Double refChan = 0.0;

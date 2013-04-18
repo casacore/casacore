@@ -71,6 +71,7 @@
 #include <tables/Tables/ColDescSet.h>
 #include <tables/Tables/TableLock.h>
 #include <tables/Tables/TableRecord.h>
+#include <tables/Tables/TiledCellStMan.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/GenSort.h>
 #include <casa/Utilities/Sort.h>
@@ -507,10 +508,10 @@ void ComponentList::setOptParms(const Vector<Int>& which,
     SkyComponent& comp = component(c);
     component(c).setShape(newShape);
     if (comp.shape().type()==ComponentType::LDISK) {
-      optparms=comp.shape().optParameters(); 
-      comp.shape().setOptParameters(optparms);
+      optparms = comp.shape().optParameters(); 
+      //comp.shape().setOptParameters(optparms);
+      component(c).optionalParameters()=optparms;
       itsAddOptCol=True;
-      //cerr<<"ComponentList::setOptParms optparms(0)="<<optparms[0]<<endl;
     }
   }
   DebugAssert(ok(), AipsError);
@@ -874,10 +875,16 @@ void ComponentList::createTable(const Path& fileName,
   }
   if (itsAddOptCol) {
     const ArrayColumnDesc<Double>
-      optParCol(optParColName,"optional parameter column",1);
+      optParCol(optParColName,"optional parameter column",1,ColumnDesc::Undefined);
     td.addColumn (optParCol);
+    td.defineHypercolumn("TiledOptParms",1,stringToVector(optParColName));
   } 
   SetupNewTable newTable(fileName.absoluteName(), td, option);
+
+  if (itsAddOptCol) {
+    TiledCellStMan optcolsm("TiledOptParms",IPosition(1,1));
+    newTable.bindColumn(optParColName,optcolsm);
+  }
   itsTable = Table(newTable, TableLock::AutoLocking, nelements(), False);
   {
     TableInfo& info(itsTable.tableInfo());
@@ -1027,7 +1034,10 @@ void ComponentList::writeTable() {
     }
     if (itsAddOptCol) {
       const ComponentShape& compShape2 = component(i).shape();
-      optParCol.put(i,compShape2.optParameters());
+      if (compShape2.type()==ComponentType::LDISK) { 
+        //optParCol.put(i,compShape2.optParameters());
+        optParCol.put(i,component(i).optionalParameters());
+      }
     }
   }
 }
@@ -1161,7 +1171,12 @@ void ComponentList::readTable(const Path& fileName, const Bool readOnly) {
     }
     {
       if (!optParmCol.isNull()) {
-        optParmCol.get(i,optParms);
+        if (optParmCol.isDefined(i)) {
+          ComponentShape& compShape2 = currentComp.shape();
+          optParmCol.get(i,optParms,True);
+          compShape2.setOptParameters(optParms); 
+          currentComp.optionalParameters()=optParms;
+        }
       }
     }
   

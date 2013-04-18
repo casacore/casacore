@@ -32,6 +32,7 @@
 #include <components/ComponentModels/GaussianBeam.h>
 #include <components/ComponentModels/GaussianShape.h>
 #include <components/ComponentModels/DiskShape.h>
+#include <components/ComponentModels/LimbDarkenedDiskShape.h>
 #include <components/ComponentModels/SkyCompRep.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Cube.h>
@@ -67,7 +68,9 @@ SkyCompRep::SkyCompRep()
   :itsShapePtr(new PointShape),
    itsSpectrumPtr(new ConstantSpectrum),
    itsFlux(),
-   itsLabel()
+   itsLabel(),
+   itsOptParms()
+
 {
 	AlwaysAssert(ok(), AipsError);
 
@@ -77,7 +80,8 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape& shape)
   :itsShapePtr(ComponentType::construct(shape)),
    itsSpectrumPtr(new ConstantSpectrum),
    itsFlux(),
-   itsLabel()
+   itsLabel(),
+   itsOptParms()
 {
 	AlwaysAssert(ok(), AipsError);
 }
@@ -87,7 +91,8 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape& shape,
   :itsShapePtr(ComponentType::construct(shape)),
    itsSpectrumPtr(ComponentType::construct(spectrum)),
    itsFlux(),
-   itsLabel()
+   itsLabel(),
+   itsOptParms()
 {
 	AlwaysAssert(ok(), AipsError);
 }
@@ -98,7 +103,8 @@ SkyCompRep::SkyCompRep(const Flux<Double>& flux,
   :itsShapePtr(shape.clone()),
    itsSpectrumPtr(spectrum.clone()),
    itsFlux(flux.copy()),
-   itsLabel()
+   itsLabel(),
+   itsOptParms()
 {
   AlwaysAssert(ok(), AipsError);
 }
@@ -108,7 +114,8 @@ SkyCompRep::SkyCompRep(const SkyCompRep& other)
    itsShapePtr(other.itsShapePtr->clone()),
    itsSpectrumPtr(other.itsSpectrumPtr->clone()),
    itsFlux(other.itsFlux.copy()),
-   itsLabel(other.itsLabel)
+   itsLabel(other.itsLabel),
+   itsOptParms(other.itsOptParms)
 {
   AlwaysAssert(ok(), AipsError);
 }
@@ -121,6 +128,7 @@ SkyCompRep& SkyCompRep::operator=(const SkyCompRep& other) {
     itsSpectrumPtr = other.itsSpectrumPtr->clone();
     itsFlux = other.itsFlux.copy();
     itsLabel = other.itsLabel;
+    itsOptParms = other.itsOptParms;
   }
   AlwaysAssert(ok(), AipsError);
   return *this;
@@ -165,6 +173,14 @@ String& SkyCompRep::label() {
 
 const String& SkyCompRep::label() const {
   return itsLabel;
+}
+
+Vector<Double>& SkyCompRep::optionalParameters() {
+  return itsOptParms;
+}
+
+const Vector<Double>& SkyCompRep::optionalParameters() const {
+  return itsOptParms;
 }
 
 Bool SkyCompRep::isPhysical() const {
@@ -417,6 +433,17 @@ Bool SkyCompRep::fromRecord(String& errorMessage,
       itsLabel = record.asString(label);
     }
   }
+  { 
+    const String optParmString("optionalParameters");
+    if (record.isDefined(optParmString)) {
+      const RecordFieldId optionalParameters(optParmString);
+      if (record.dataType(optionalParameters) != TpArrayDouble) {
+        errorMessage += "\nThe 'optionalParameters' field must be a Double Array";
+        return False;
+      } 
+      itsOptParms = record.asArrayDouble(optionalParameters);
+    }
+  }
   return True;
 }
 
@@ -442,6 +469,12 @@ Bool SkyCompRep::toRecord(String& errorMessage,
       return False;
     }
     record.defineRecord(RecordFieldId("spectrum"), spectrumRec);
+  }
+  {
+    Record optParmRec;
+    if (!itsOptParms.empty()) {
+      record.define(RecordFieldId("optionalParameters"), itsOptParms);
+    }
   }
   record.define(RecordFieldId("label"), itsLabel);
   return True;

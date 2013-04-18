@@ -2092,8 +2092,12 @@ void ImageRegrid<T>::checkAxes(IPosition& outPixelAxes,
 // is in the input image
 
       if (!foundIt && outShape(i) != inShape(pixelAxisMap1[i])) {
-           os << "Any axis not being regridded must have the same "
-              << "input and output shapes" << LogIO::EXCEPTION;
+        os << "Any axis not being regridded must have the same "
+           << "input and output shapes. Output axis " << i
+           << ", which corresponds to input axis "
+           << pixelAxisMap1[i] << ", has a length of " << outShape(i)
+           << ", whereas the corresponding input axis has length "
+           << inShape(pixelAxisMap1[i]) << LogIO::EXCEPTION;
       }  
    }
 }

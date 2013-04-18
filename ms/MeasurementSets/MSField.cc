@@ -201,7 +201,9 @@ MSField MSField::referenceCopy(const String& newTableName,
 Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
 			   const String& comment){
   Bool rval=False;
-  if(Table::isReadable(inputEphemTableName)){
+  if( (inputEphemTableName.empty() && comment.empty()) 
+      || Table::isReadable(inputEphemTableName) 
+      ){
     // add the eph id column if it doesn't exist alreay
     const String& ephemerisId = MSField::columnName(MSField::EPHEMERIS_ID);
     if(!this->actualTableDesc().isColumn(ephemerisId)){
@@ -217,18 +219,21 @@ Bool MSField::addEphemeris(const uInt id, const String& inputEphemTableName,
 	for(uInt i=0; i<this->nrow(); i++){
 	  fld.put(i,-1);
 	}
+	rval = True;
       }
       else{
 	return False;
       }
     }
-    Directory inputDir(inputEphemTableName);
-    stringstream ss;
-    ss << "/EPHEM" << id << "_" << comment << ".tab";
-    String destTableName = Path(this->tableName()).absoluteName() + String(ss.str());
-    removeEphemeris(id); // remove preexisting ephemerides with the same id
-    inputDir.copy(destTableName);
-    rval = True;
+    if(Table::isReadable(inputEphemTableName)){
+      Directory inputDir(inputEphemTableName);
+      stringstream ss;
+      ss << "/EPHEM" << id << "_" << comment << ".tab";
+      String destTableName = Path(this->tableName()).absoluteName() + String(ss.str());
+      removeEphemeris(id); // remove preexisting ephemerides with the same id
+      inputDir.copy(destTableName);
+      rval = True;
+    }
   }
   return rval;
 }

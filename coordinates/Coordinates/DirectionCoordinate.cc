@@ -782,6 +782,74 @@ void DirectionCoordinate::checkFormat(Coordinate::formatType& format,
 }
 
 
+DirectionCoordinate DirectionCoordinate::convert(
+	Quantity& angle, MDirection::Types directionType
+) const {
+	DirectionCoordinate converted(
+		directionType, wcs_p, False
+	);
+ 
+	Vector<Double> myRefVal = referenceValue();
+	Vector<String> units = worldAxisUnits();
+	MDirection myRefDir(
+		Quantity(myRefVal[0], units[0]),
+		Quantity(myRefVal[1], units[1]),
+		conversionType_p
+	);
+ 
+	Quantum<Vector<Double> > newRefDir = MDirection::Convert(
+		myRefDir, directionType
+	)().getAngle();
+
+	Vector<Double> newRefDirVec(2);
+	newRefDirVec[0] = newRefDir.getValue(units[0])[0];
+	newRefDirVec[1] = newRefDir.getValue(units[1])[1];
+	converted.setReferenceValue(newRefDirVec);
+
+	// get the angle for the linear transformation matrix. Need another world coordinate point.
+	Vector<Double> myRefPix = referencePixel();
+	Vector<Double> pixVal2 = myRefPix.copy();
+	pixVal2[0] = myRefPix[0] + 1;
+
+	// Figure out this coordinate's rotation angle
+	Vector<Double> origWorldVal2;
+	toWorld(origWorldVal2, pixVal2);
+	Double diffx = origWorldVal2[0] - myRefVal[0];
+	Double diffy = origWorldVal2[1] - myRefVal[1];
+	Double hyp = sqrt(diffx*diffx + diffy*diffy);
+	Double origAngle = (fabs(diffy/increment()[1]) < 1e-8)
+		? 0 : asin(diffy/hyp);
+	if (diffx < 0) {
+		origAngle = C::pi - origAngle;
+	}
+	MDirection origWorldDir2(
+			Quantity(origWorldVal2[0], units[0]),
+			Quantity(origWorldVal2[1], units[1]),
+			conversionType_p
+		);
+
+	Quantum<Vector<Double> > newWorlVal2 = MDirection::Convert(
+		origWorldDir2, directionType
+	)().getAngle();
+	diffx = (newWorlVal2.getValue(units[0])[0] - newRefDirVec[0])
+		*cos(newRefDir.getValue("rad")[1]);
+	diffy = newWorlVal2.getValue(units[1])[1] - newRefDirVec[1];
+	hyp = sqrt(diffx*diffx + diffy*diffy);
+	Double newAngle = (fabs(diffy/increment()[1]) < 1e-8)
+		? 0 : asin(diffy/hyp);
+	if (diffx < 0) {
+		newAngle = C::pi - newAngle;
+	}
+	angle = Quantity(newAngle - origAngle, "rad");
+	std::auto_ptr<Coordinate> rotated(converted.rotate(angle));
+	converted = *dynamic_cast<DirectionCoordinate* >(rotated.get());
+	Matrix<Double> xform(2, 2, 0);
+	xform(0, 0) = 1;
+	xform(1, 1) = 1;
+	converted.setLinearTransform(xform);
+	return converted;
+}
+
 
 void DirectionCoordinate::getPrecision (Int& precision,
                                         Coordinate::formatType& format,

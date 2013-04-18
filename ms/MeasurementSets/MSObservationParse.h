@@ -91,8 +91,10 @@ public:
   MSObservationParse ();
   
   // Associate the ms and the shorthand.
-  MSObservationParse (const MeasurementSet* ms, const MSObservation& obsSubtable);
-  //  ~MSObservationParse() {if (node_p) delete node_p;node_p=0x0;}
+  MSObservationParse (const MeasurementSet* ms, const MSObservation& obsSubtable,
+		      const TableExprNode& colAsTEN);
+  ~MSObservationParse() {columnAsTEN_p=TableExprNode();}
+
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectObservationIds(const Vector<Int>& scanids);
@@ -122,6 +124,7 @@ private:
   const String colName;
   void appendToIDList(const Vector<Int>& v);
   Int maxObs_p;
+  static TableExprNode columnAsTEN_p;
 };
 
 } //# NAMESPACE CASA - END

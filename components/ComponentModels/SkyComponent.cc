@@ -123,6 +123,14 @@ const String& SkyComponent::label() const {
   return itsCompPtr->label();
 }
 
+Vector<Double>& SkyComponent::optionalParameters() {
+   return itsCompPtr->optionalParameters();
+}
+
+const Vector<Double>& SkyComponent::optionalParameters() const {
+   return itsCompPtr->optionalParameters();
+}
+
 Bool SkyComponent::isPhysical() const {
   return itsCompPtr->isPhysical();
 }
@@ -171,6 +179,7 @@ Bool SkyComponent::toRecord(String& errorMessage,
 SkyComponent SkyComponent::copy() const {
   SkyComponent newComp(flux().copy(), shape(), spectrum());
   newComp.label() = label();
+  newComp.optionalParameters() = optionalParameters();
   return newComp;
 }
 
@@ -214,9 +223,13 @@ Bool SkyComponent::ok() const {
 }
 
 String SkyComponent::summarize(const CoordinateSystem *const &coordinates) const {
+        ostringstream ldpar; 
+        if (shape().type()==ComponentType::LDISK) {
+          ldpar << " (limb-darkening exponent: "<<optionalParameters()(0) <<" )"<<endl; 
+        }
 	ostringstream summary;
 	summary << "SUMMARY OF COMPONENT " << label() << endl;
-	summary << "Shape: " << shape().ident() << endl;
+	summary << "Shape: " << shape().ident() << ldpar.str() <<endl;
 	const Flux<Double> myFlux = flux();
 	Quantum<Vector<std::complex<double> > > fluxValue;
 	myFlux.value(fluxValue);

@@ -199,20 +199,19 @@ private:
   void attachOptionalCols(const MSField& msField);
   
   //# Functions which check the supplied values against the relevant column and
-  //# the specified row. The row must have a numpoly value of zero and the
-  //# specified mdir arguments must have a shape of [1,2]. It and the mvdir
-  //# argument are temporaries that are passed in to prevent them being
+  //# the specified row. The row must have a numpoly value of zero. The mvdir
+  //# argument is a temporary that is passed in to prevent it from being
   //# created inside these small functions.
   // <group>
   Bool matchReferenceDir(uInt row, const MVDirection& dirVal,
 			 const Double& sepInRad, 
-			 Matrix<Double>& mdir, MVDirection& mvdir) const;
+			 MVDirection& mvdir) const;
   Bool matchDelayDir(uInt row, const MVDirection& dirVal, 
 		     const Double& sepInRad,
-		     Matrix<Double>& mdir, MVDirection& mvdir) const;
+		     MVDirection& mvdir) const;
   Bool matchPhaseDir(uInt row, const MVDirection& dirVal,
 		     const Double& sepInRad,
-		     Matrix<Double>& mdir, MVDirection& mvdir) const;
+		     MVDirection& mvdir) const;
   // </group>
 
   //# required columns

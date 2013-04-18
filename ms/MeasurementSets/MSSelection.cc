@@ -410,7 +410,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 // (timeExpr_p != "") ||         // Will be opened-up for CalTables in the future
 	 // (spwExpr_p != "")  ||         // Will be opened-up for CalTables in the future
 	 //(scanExpr_p != "")  ||
-	 (observationExpr_p != "") || 
+	 //(observationExpr_p != "") || 
 	 (arrayExpr_p != "") || (uvDistExpr_p != "")      ||
 	 (taqlExpr_p != "")  || (polnExpr_p != "")        || 
 	 (stateExpr_p != "")
@@ -525,11 +525,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	      case OBSERVATION_EXPR:
 		{
+		  TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::OBSERVATION_ID));
 		  observationIDs_p.resize(0);
 		  if(observationExpr_p != "")
 		    node = msObservationGramParseCommand(ms, msLike->observation(),
+							 colAsTEN,
 							 observationExpr_p, 
-							 observationIDs_p, maxObs_p);
+							 observationIDs_p);
 		  break;
 		}
 	      case ARRAY_EXPR:

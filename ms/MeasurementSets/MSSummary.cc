@@ -68,20 +68,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 MSSummary::MSSummary (const MeasurementSet& ms)
 : pMS(&ms), _msmd(new MSMetaDataOnDemand(&ms, 50.0)),
   dashlin1(replicate("-",80)),
-  dashlin2(replicate("=",80))
+  dashlin2(replicate("=",80)),
+  _listUnflaggedRowCount(False)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms)
 : pMS(ms), _msmd(new MSMetaDataOnDemand(ms, 50.0)),
   dashlin1(replicate("-",80)),
-  dashlin2(replicate("=",80))
+  dashlin2(replicate("=",80)),
+  _listUnflaggedRowCount(False)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms, const String msname)
 : pMS(ms), _msmd(new MSMetaDataOnDemand(ms, 50)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
-  msname_p(msname)
+  msname_p(msname),
+  _listUnflaggedRowCount(False)
 {}
 //
 // Destructor does nothing
@@ -339,7 +342,11 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			datetime.replace(25+timeref.length(),1,")");
 			os << datetime;
 			os << "Scan  FldId FieldName "
-					<<"            nRows     nUnflRows   SpwIds   Average Interval(s)    ScanIntent" << endl;
+                           << "            nRows     ";
+                        if (_listUnflaggedRowCount) {
+                          os << "nUnflRows   ";
+                        }
+                        os << "SpwIds   Average Interval(s)    ScanIntent" << endl;
 		}
 
 		/* CAS-2751. Sort the table by scan then field (not timestamp)
@@ -497,13 +504,15 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						os.output().width(widthnrow);
 						os.output().setf(ios::right, ios::adjustfield);
 						os <<  _msmd->nRows(MSMetaData::BOTH, arrid, obsid, lastscan, lastfldids(0));
-						ostringstream xx;
-						xx << std::fixed << setprecision(2)
-							<< _msmd->nUnflaggedRows(
+                                                if (_listUnflaggedRowCount) {
+                                                  ostringstream xx;
+                                                  xx << std::fixed << setprecision(2)
+                                                     << _msmd->nUnflaggedRows(
 								MSMetaData::BOTH, arrid, obsid, lastscan, lastfldids(0)
 							);
-						os.output().width(widthNUnflaggedRow);
-						os << xx.str();
+                                                  os.output().width(widthNUnflaggedRow);
+                                                  os << xx.str();
+                                                }
 
 						//os.output().width(widthInttim); os << meanIntTim;
 						os.output().width(widthLead); os << "  ";
@@ -529,12 +538,17 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						}
 						os << "] ";
 						// The Obsmode column can be empty only report them if it is not
-						String obsMode = "";
-						if (obsModes.size() > (unsigned int) 0) {
-							obsMode=obsModes(laststids(0));
-						}
-						os << obsMode;
+						//String obsMode = "";
+						//if (obsModes.size() > (unsigned int) 0) {
+						//	obsMode=obsModes(laststids(0));
+						//}
+						//os << obsMode;
 
+						//os << endl;
+						std::set<String> intents = _msmd->getIntentsForScan(lastscan);
+						if (intents.size() > 0) {
+							os << intents;
+						}
 						os << endl;
 					}
 					if(fillRecord && (recLength < maxRecLength))  {
@@ -652,11 +666,13 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			os.output().width(widthnrow);
 			os.output().setf(ios::right, ios::adjustfield);
 			os << _msmd->nRows(MSMetaData::BOTH, arrid, obsid, lastscan, lastfldids(0));
-			ostringstream xx;
-			xx << std::fixed << setprecision(2)
-				<< _msmd->nUnflaggedRows(MSMetaData::BOTH, arrid, obsid, lastscan, lastfldids(0));
-			os.output().width(widthNUnflaggedRow);
-			os << xx.str();
+			if (_listUnflaggedRowCount) {
+                          ostringstream xx;
+                          xx << std::fixed << setprecision(2)
+                             << _msmd->nUnflaggedRows(MSMetaData::BOTH, arrid, obsid, lastscan, lastfldids(0));
+                          os.output().width(widthNUnflaggedRow);
+                          os << xx.str();
+                        }
 //			os.output().width(widthInttim); os << meanIntTim;
 			os.output().width(widthLead);  os << "  ";
                         os << spw;
@@ -680,11 +696,16 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			}
 			os << "] ";
 			// The Obsmode column can be empty only report them if it is not
-			String obsMode = "";
-			if (obsModes.size() > (unsigned int) 0) {
-				obsMode=obsModes(laststids(0));
+			//String obsMode = "";
+			//if (obsModes.size() > (unsigned int) 0) {
+			//	obsMode=obsModes(laststids(0));
+			//}
+			//os << obsMode;
+			//os << endl;
+			set<String> intents = _msmd->getIntentsForScan(lastscan);
+			if (intents.size() > 0) {
+				os << intents;
 			}
-			os << obsMode;
 			os << endl;
 		}
 		if(fillRecord  && (recLength < maxRecLength)){
@@ -1292,8 +1313,10 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
 			os.output().setf(ios::right, ios::adjustfield);
 			os.output().width(widthnVis);
 			os << "nRows";
-			os.output().width(widthNUnflaggedRows);
-			os << "nUnflRows";
+			if (_listUnflaggedRowCount) {
+                          os.output().width(widthNUnflaggedRows);
+                          os << "nUnflRows";
+                        }
 		}
 		os << endl;
 		// loop through fields
@@ -1319,11 +1342,13 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
 					os.output().setf(ios::right, ios::adjustfield);
 					os.output().width(widthnVis);
 					os << _msmd->nRows(MSMetaData::BOTH, fld);
-					os.output().width(widthNUnflaggedRows);
-					ostringstream xx;
-					xx << std::fixed << setprecision(2) << std::right
-						<< _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
-					os << xx.str();
+					if (_listUnflaggedRowCount) {
+                                          os.output().width(widthNUnflaggedRows);
+                                          ostringstream xx;
+                                          xx << std::fixed << setprecision(2) << std::right
+                                             << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
+                                          os << xx.str();
+                                        }
 				}
 				os << endl;
 				if(fillRecord){

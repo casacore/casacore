@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <ms/MeasurementSets/MSObservationParse.h> 
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -65,39 +66,44 @@ class TableExprNode;
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 // </todo>
-
-
+  
+  
 // <group name=MSObservationGramFunctions>
-
+  
 // Declare the bison parser (is implemented by bison command).
   TableExprNode msObservationGramParseCommand (const MeasurementSet *ms, 
 					       const MSObservation& obsSubTable,
+					       const TableExprNode& colAsTEN,
 					       const String& command, 
-					       Vector<Int>& idList, Int maxScans=1000);
-
-// The yyerror function for the parser.
-// It throws an exception with the current token.
-void MSObservationGramerror (const char*);
-
-// Give the table expression node.
-//const TableExprNode *msObservationGramParseNode();
-void msObservationGramParseDeleteNode();
-
-// Give the current position in the string.
-// This can be used when parse errors occur.
-Int& msObservationGramPosition();
-
-// Declare the input routine for flex/bison.
-int msObservationGramInput (char* buf, int max_size);
-
-// A function to remove escaped characters.
-//String msObservationGramRemoveEscapes (const String& in);
-
-// A function to remove quotes from a quoted string.
-//String msObservationGramRemoveQuotes (const String& in);
-
-// </group>
-
+					       Vector<Int>& idList);
+  
+  TableExprNode baseMSObservationGramParseCommand (MSObservationParse* parser, 
+						   const TableExprNode& colAsTEN,
+						   const String& command, 
+						   Vector<Int>& selectedIDs);
+  // The yyerror function for the parser.
+  // It throws an exception with the current token.
+  void MSObservationGramerror (const char*);
+  
+  // Give the table expression node.
+  //const TableExprNode *msObservationGramParseNode();
+  void msObservationGramParseDeleteNode();
+  
+  // Give the current position in the string.
+  // This can be used when parse errors occur.
+  Int& msObservationGramPosition();
+  
+  // Declare the input routine for flex/bison.
+  int msObservationGramInput (char* buf, int max_size);
+  
+  // A function to remove escaped characters.
+  //String msObservationGramRemoveEscapes (const String& in);
+  
+  // A function to remove quotes from a quoted string.
+  //String msObservationGramRemoveQuotes (const String& in);
+  
+  // </group>
+  
 } //# NAMESPACE CASA - END
 
 #endif

@@ -34,6 +34,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   MSObservationParse* MSObservationParse::thisMSObsParser = 0x0; // Global pointer to the parser object
+  TableExprNode MSObservationParse::columnAsTEN_p;
   // TableExprNode* MSObservationParse::node_p = 0x0;
   // Vector<Int> MSObservationParse::idList;
   //  std::vector<Int> MSObservationParse::parsedIDList_p;
@@ -41,11 +42,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Constructor
   MSObservationParse::MSObservationParse ()
     : MSParse(), colName(MS::columnName(MS::OBSERVATION_ID)),
-      //      maxObs_p(std::numeric_limits<Int>::max())
       maxObs_p(1000)
   {
+    columnAsTEN_p=TableExprNode();
   }
   
+  //# Constructor with given ms name.
+  MSObservationParse::MSObservationParse (const MeasurementSet* ms, const MSObservation& obsSubTable,
+					  const TableExprNode& colAsTEN)
+    : MSParse(ms, "Observation"), colName(MS::columnName(MS::OBSERVATION_ID)),
+      maxObs_p(1000)
+  {
+    idList.resize(0);
+    parsedIDList_p.resize(0);
+    Int nrows = obsSubTable.nrow();
+    obsIDList_p.resize(nrows);
+    indgen(obsIDList_p);
+    columnAsTEN_p=colAsTEN;
+    maxObs_p=nrows;
+  }
+
   std::vector<Int>& MSObservationParse::accumulateIDs(const Int id0, const Int id1)
   {
     Vector<Int> theIDs;
@@ -67,18 +83,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return parsedIDList_p;
   }
 
-  //# Constructor with given ms name.
-  MSObservationParse::MSObservationParse (const MeasurementSet* ms, const MSObservation& obsSubTable)
-    : MSParse(ms, "Observation"), colName(MS::columnName(MS::OBSERVATION_ID)),
-      maxObs_p(1000)
-  {
-    idList.resize(0);
-    parsedIDList_p.resize(0);
-    Int nrows = obsSubTable.nrow();
-    obsIDList_p.resize(nrows);
-    indgen(obsIDList_p);
-  }
-  
   void MSObservationParse::appendToIDList(const Vector<Int>& v)
   {
     Int currentSize = idList.nelements();
@@ -91,8 +95,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   const TableExprNode* MSObservationParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
   {
-    TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
-					     (ms()->col(colName) < n1));
+    // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
+    // 					     (ms()->col(colName) < n1));
+    TableExprNode condition = TableExprNode( (columnAsTEN_p > n0) &&
+					     (columnAsTEN_p < n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
@@ -111,8 +117,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSObservationParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
   {
-    TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
-					     (ms()->col(colName) <= n1));
+    // TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
+    // 					     (ms()->col(colName) <= n1));
+    TableExprNode condition = TableExprNode( (columnAsTEN_p >= n0) &&
+     					     (columnAsTEN_p <= n1));
     if ((n0 < 0) || (n1 < 0) || (n1 <= n0))
       {
 	ostringstream os;
@@ -134,7 +142,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (scanids.size() > 0)
       {
 	//	cerr << "Selecting disjoint list: " << scanids << endl;
-	TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
+	//TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
+	TableExprNode condition = TableExprNode(columnAsTEN_p.in(scanids));
 	appendToIDList(scanids);
 	addCondition(node_p,condition);
       }
@@ -143,7 +152,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSObservationParse::selectObservationIdsGT(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
     
     Int n=maxObs_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
@@ -157,7 +167,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSObservationParse::selectObservationIdsLT(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
     Vector<Int> tmp(scanids[0]);
     for(Int i=0;i<scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
@@ -168,7 +179,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   const TableExprNode* MSObservationParse::selectObservationIdsGTEQ(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
     
     Int n=maxObs_p-scanids[0]+1,j;
     Vector<Int> tmp(n);
@@ -182,7 +194,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   const TableExprNode* MSObservationParse::selectObservationIdsLTEQ(const Vector<Int>& scanids)
   {
-    TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
+    //TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
+    TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
     Vector<Int> tmp(scanids[0]+1);
     for(Int i=0;i<=scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);

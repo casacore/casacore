@@ -99,17 +99,12 @@ public:
 		     const Bool checkShapeAndCateg=True,
 		     const String& obsidAndScanTableName="");
 
-  // Concatenate the given MS to the current one.
-  // @param otherMS     MS to be concatenated to the MS given by destMSName
-  // @param handling    - 0 (default): complete concat of all tables
-  //                    - 1 : don't concatenate the MAIN table
-  //                    - 2 : don't concatenate the POINTING table
-  //                    - 3 : neither concat MAIN nor POINTING table
-  // @param destMSName  name of destination MS. If empty, the MS in this object
-  //                    will be used.
   void concatenate(const MeasurementSet& otherMS,
-		   const uInt handling=0,
-                   const String& destMSName="");
+		   const uInt handling=0,   // 0 (default): complete concat of all tables
+                                            // 1 : don't concatenate the MAIN table
+                                            // 2 : don't concatenate the POINTING table
+                                            // 3 : neither concat MAIN nor POINTING table
+                   const String& destMSName=""); // support for virtual concat
 
   void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
   void setWeightScale(const Float weightScale); 
@@ -125,6 +120,7 @@ private:
 			    uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const ROMSMainColumns& otherCols) const;
+  Bool checkEphIdInField(const ROMSFieldColumns& otherFldCol) const;
   Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
@@ -132,7 +128,7 @@ private:
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
 				 const MSFeed& otherFeed);
   Block<uInt> copyState(const MSState& otherState);
-  Block<uInt> copyField(const MSField& otherFld);
+  Block<uInt> copyField(const MeasurementSet& otherms);
   Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
 			    const MSPolarization& otherPol,
 			    const MSDataDescription& otherDD);

@@ -243,7 +243,7 @@ namespace casa {
       throw AipsError("POLARIZATION subtable of " + table.tableName() +
                       " is empty");
     }
-    Vector<Int> inTypes (ArrayColumn<Int>(polTable, "CORR_TYPE")(0));
+    Vector<Int> inTypes (ROArrayColumn<Int>(polTable, "CORR_TYPE")(0));
     // Convert the output string types to ints.
     // First convert abbrevs.
     if (type == "IQUV"  ||  type == "STOKES") {
@@ -384,9 +384,11 @@ namespace casa {
       {
         MeasurementSet ms(table);
         Vector<Int> obsid;
-        Int maxObs=1000;
+	//        Int maxObs=1000;
+        TableExprNode colAsTEN = table.col("OBSERVATION_ID");
         itsDataNode = msObservationGramParseCommand(&ms, ms.observation(),
-                                                    selStr, obsid, maxObs);
+						    colAsTEN,
+                                                    selStr, obsid);
       }
       break;
     default:

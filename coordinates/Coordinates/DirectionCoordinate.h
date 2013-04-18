@@ -573,6 +573,20 @@ public:
     // get the pixel area.
     Quantity getPixelArea() const;
 
+    // Convert this coordinate to another reference frame by rotating it
+    // about the reference pixel so the the axes of the new reference frame
+    // are aligned along the cardinal directions (left-right, up-down).
+    // The reference pixel remains the same and the conversion is
+    // exact for the reference pixel and in general becomes less accurate
+    // as distance from reference pixel increases. The latitude like and
+    // the longitude like pixel increments are preserved.  Conversions for which require extra
+    // information such as epoch and position are not supported. The <src>angle</src>
+    // parameter is the angle through which this coordinate had to be rotated clockwise
+    // to produce the new coordinate.
+
+    DirectionCoordinate convert(
+    	Quantity& angle, MDirection::Types directionType
+    ) const;
 
 private:
     // Direction type

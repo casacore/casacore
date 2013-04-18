@@ -29,7 +29,6 @@
 #include <casa/aips.h>
 
 #include <ms/MeasurementSets/MSMetaDataOnDemand.h>
-#include <ms/MeasurementSets/MSMetaDataPreload.h>
 
 #include <casa/BasicMath/StdLogical.h>
 #include <casa/OS/Directory.h>
@@ -45,6 +44,20 @@ void _printSet(const std::set<uInt>& set) {
 	const std::set<uInt>::const_iterator end = set.end();
 	for (
 		std::set<uInt>::const_iterator iter = set.begin();
+		iter!=end; iter++
+	) {
+		if (iter!=set.begin()) {
+			cout << ", ";
+		}
+		cout << *iter;
+	}
+	cout << endl;
+}
+
+void _printSet(const std::set<String>& set) {
+	const std::set<String>::const_iterator end = set.end();
+	for (
+		std::set<String>::const_iterator iter = set.begin();
 		iter!=end; iter++
 	) {
 		if (iter!=set.begin()) {
@@ -1040,6 +1053,75 @@ void testIt(MSMetaData& md) {
 		}
 		*/
 		{
+			cout << "*** Test getIntentsForField()" << endl;
+			uInt nFields = md.nFields();
+			for (uInt i=0; i<nFields; i++) {
+				std::set<String> expec;
+				switch (i) {
+				case 0: {
+					String mine[] = {
+						"CALIBRATE_ATMOSPHERE#OFF_SOURCE", "CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_BANDPASS#ON_SOURCE", "CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+						"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE", "CALIBRATE_WVR#OFF_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+					};
+					expec.insert(mine, mine+9);
+					break;
+				}
+				case 1: {
+					String mine[] = {
+						"CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+					};
+					expec.insert(mine, mine+2);
+					break;
+				}
+				case 2: {
+					String mine[] = {
+						"CALIBRATE_AMPLI#ON_SOURCE", "CALIBRATE_ATMOSPHERE#OFF_SOURCE",
+						"CALIBRATE_ATMOSPHERE#ON_SOURCE", "CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				case 3: {
+					String mine[] = {
+						"CALIBRATE_ATMOSPHERE#OFF_SOURCE", "CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_PHASE#ON_SOURCE", "CALIBRATE_POINTING#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				case 4: {
+					String mine[] = {
+						"CALIBRATE_ATMOSPHERE#OFF_SOURCE", "CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE", "CALIBRATE_WVR#ON_SOURCE",
+						"OBSERVE_TARGET#ON_SOURCE"
+					};
+					expec.insert(mine, mine+5);
+					break;
+				}
+				case 5: {
+					String mine[] = {
+						"CALIBRATE_ATMOSPHERE#OFF_SOURCE", "CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE", "CALIBRATE_WVR#ON_SOURCE",
+						"OBSERVE_TARGET#ON_SOURCE"
+					};
+					expec.insert(mine, mine+5);
+					break;
+				}
+				default:
+					break;
+				}
+				cout << "*** i " << i << endl;
+				_printSet(md.getIntentsForField(i));
+
+				AlwaysAssert(md.getIntentsForField(i) == expec, AipsError);
+			}
+		}
+		{
 			cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
 			cout << md.getUniqueBaselines() << endl;
 			AlwaysAssert(md.nBaselines() == 21, AipsError);
@@ -1060,10 +1142,9 @@ int main() {
     	split(EnvironmentVariable::get("CASAPATH"), parts, 2, String(" "));
     	String datadir = parts[0] + "/data/";
     	casa::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
-    	cout << "*** test preload constructor" << endl;
-    	MSMetaDataPreload md(ms);
-    	testIt(md);
-
+    	//cout << "*** test preload constructor" << endl;
+    	//MSMetaDataPreload md(ms);
+    	//testIt(md);
     	cout << "*** test on-demand constructor" << endl;
     	MSMetaDataOnDemand md1(&ms, 100);
 		cout << "*** cache size " << md1.getCache() << endl;

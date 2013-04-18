@@ -1,4 +1,4 @@
-//# FITSIDItoMS.h: Convert a FITS-IDI binary table to a Casacore Table
+//# FITSIDItoMS.h: Convert a FITS-IDI binary table to a Casacore Table.
 //# Copyright (C) 1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -254,7 +254,8 @@ protected:
   Matrix<Int> corrProduct_p;
   Vector<String> coordType_p;
   Vector<Double> refVal_p, refPix_p, delta_p; 
-  String array_p,object_p,timsys_p;
+  static String array_p;
+  String object_p,timsys_p;
   Double epoch_p;
   static Double rdate;
   Int nAnt_p;
@@ -262,7 +263,6 @@ protected:
   MFrequency::Types freqsys_p;
   Double restfreq_p;
   LogIO* itsLog;
-  Int nIF_p;
   Double startTime_p;
   Double lastTime_p;
   Int itsObsType;
@@ -271,6 +271,8 @@ protected:
   static Bool firstMain;
   Bool uv_data_hasWeights_p;
   Bool weightKwPresent_p;
+  Bool weightypKwPresent_p;
+  String weightyp_p;
   Matrix<Float> weightsFromKW_p;
   static SimpleOrderedMap<Int,Int> antIdFromNo;
 

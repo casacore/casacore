@@ -34,6 +34,9 @@
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
+#include <casa/Containers/Record.h>
+#include <measures/Measures/MCDirection.h>
+
 #include <measures/Measures/MDirection.h>
 #include <casa/OS/Timer.h>
 #include <casa/Quanta/Quantum.h>
@@ -48,6 +51,7 @@
 #include <wcslib/wcs.h>
 #include <casa/iostream.h>
 #include <casa/namespace.h>
+#include <iomanip>
 
 DirectionCoordinate makeCoordinate(MDirection::Types type,
                                    Projection& proj,
@@ -319,6 +323,86 @@ int main()
     	  exp[0] = 72.05771366;
     	  exp[1] = -11.60254038;
     	  AlwaysAssert(allNear(got, exp, 1e-8), AipsError);
+      }
+      {
+    	  cout << "*** Test convert()" << endl;
+    	  Projection p(Projection::SIN, Vector<Double>(2, 0));
+    	  Matrix<Double> xform(2, 2, 0);
+    	  xform.diagonal() = 1;
+    	  DirectionCoordinate origGalactic(
+    	      MDirection::GALACTIC, p,
+    	      Quantity(0.15064170309942734, "rad"),
+    	      Quantity(-0.0027706408478612907, "rad"),
+    	      Quantity(-6, "arcsec"), Quantity(6, "arcsec"),
+    	      xform, 1573.5, -6.5
+    	  );
+
+    	  Record r;
+    	  origGalactic.save(r, "coords");
+    	  cout << "*** original " << r << endl;
+    	  Quantity angle;
+    	  DirectionCoordinate converted = origGalactic.convert(angle, MDirection::J2000);
+    	  Record s;
+    	  converted.save(s, "coords");
+    	  cout << "*** converted " << s << endl;
+
+    	  Vector<Double> origRefVal = origGalactic.referenceValue();
+    	  Vector<String> units = origGalactic.worldAxisUnits();
+    	  MDirection origRefDir(
+    		  Quantity(origRefVal[0], units[0]),
+    	      Quantity(origRefVal[1], units[1]),
+    	  	  MDirection::GALACTIC
+    	  );
+    	  Quantum<Vector<Double> > expRefDir = MDirection::Convert(
+    	      origRefDir, MDirection::J2000
+    	  )().getAngle();
+    	  Vector<Double> gotRefDir = converted.referenceValue();
+    	  AlwaysAssert(
+    	      near(
+    	          gotRefDir[0], expRefDir.getValue(units[0])[0],
+    	          1e-8
+    	      ),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    	      near(
+    	          gotRefDir[1],
+    	          expRefDir.getValue(units[1])[1],
+    	          1e-8
+    	      ),
+    	      AipsError
+    	  );
+    	  Vector<Double> origWorld;
+    	  Vector<Double> pixel(2, 20);
+    	  origGalactic.toWorld(origWorld, pixel);
+    	  MDirection origDir2(
+    	      Quantity(origWorld[0], units[0]),
+    	      Quantity(origWorld[1], units[1]),
+    	      MDirection::GALACTIC
+    	  );
+    	  Quantum<Vector<Double> > expDir = MDirection::Convert(
+    	      origDir2, MDirection::J2000
+    	  )().getAngle();
+    	  Vector<Double> gotDir;
+    	  converted.toWorld(gotDir, pixel);
+    	  Vector<Double> pixela(2, -6.5);
+    	  pixela[0] = 1573.5;
+    	  Vector<Double> pixelb = pixela.copy();
+    	  pixelb[0] = 1574.5;
+    	  //Vector<Double> pixelc = pixela.copy();
+    	  //pixelc[0] = 1500;
+    	  Vector<Double> worlda, worldb, worldc;
+    	  converted.toWorld(worlda, pixela);
+    	  converted.toWorld(worldb, pixelb);
+    	  //converted.toWorld(worldc, pixelc);
+
+    	  cout << "*** a " << worlda << endl;
+    	  cout << "*** b " << worldb << endl;
+    	  //cout << "*** c " << worldc << endl;
+    	  cout << "*** inc " << converted.increment() << endl;
+
+
+
       }
   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;

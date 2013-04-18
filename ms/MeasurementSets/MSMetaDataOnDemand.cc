@@ -523,10 +523,16 @@ std::set<String> MSMetaDataOnDemand::getIntentsForScan(const uInt scan) {
 		return _scanToIntentsMap.find(scan)->second;
 	}
 	_checkScan(scan, getScanNumbers());
-	String taql = "select OBS_MODE from " + _ms->tableName() + "/STATE where "
+	String stateTable = _ms->tableName() + "/STATE";
+	vector<const Table *> tempTables = _taqlTempTable;
+	if (_taqlTempTable.size() > 0) {
+		stateTable = "$2";
+		tempTables.push_back(&_ms->state());
+	}
+	String taql = "select OBS_MODE from " + stateTable + " where "
 		+ "ROWID() in [select unique(STATE_ID) from " + _taqlTableName
 		+ " where SCAN_NUMBER==" + String::toString(scan) + "]";
-	Table result(tableCommand(taql, _taqlTempTable));
+	Table result(tableCommand(taql, tempTables));
 	ROScalarColumn<String> intentsCol(result, "OBS_MODE");
 	Vector<String> intents = intentsCol.getColumn();
 	Vector<String>::const_iterator end = intents.end();

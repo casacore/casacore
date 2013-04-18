@@ -63,11 +63,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </etymology>
 //
 //<synopsis> 
-//
 // This is a pure virtual base-class to provide a table-type agnostic
-// interface to the MSSelection module to access sub-tables and
+// interface to the MSSelection class to access sub-tables and
 // main-table columns of MS-like tables.
-//
 // </synopsis>
 //
 // <example>
@@ -76,12 +74,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 //
 // <motivation>
-//
-// To allow use of the MSSelection module for selection on any table
-// that follows the genral structure of a the MS database.  Via this
-// class, minor differences in the database layout can be hidden from
-// the MSSelection module.
-//
+// To allow use of the <linkto class=MSSelection>MSSelection<linkto> class
+// for selection on any table that follows the general structure of the
+// MS dataset.  Via this class, minor differences in the data
+// layout can be hidden from the MSSelection module.  This also keeps
+// MeasurementSet module from depending on other MS-like database
+// implemention which may use the MSSelection module.  Such usage will
+// need to implement a specialization of
+// <linkto class=MSSelectableTable>MSSelectableTable</linkto> and
+// use it to instantiate the
+// <linkto class=MSSelection>MSSelection</linkto> object.
 // </motivation>
 //
 // <todo asof="19/03/13">
