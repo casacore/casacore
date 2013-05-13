@@ -51,7 +51,7 @@ class TableRecord;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LCBox>LCBox</linkto>
+//   <li> <linkto class=Slicer>Slicer</linkto>
 // </prerequisite>
 
 // <synopsis> 
@@ -62,8 +62,8 @@ class TableRecord;
 // The reason is that strides make it impossible to use a region
 // in a compound.
 // <br>
-// The slicer region has to be defined from an
-// <linkto class=LCBox>LCBox</linkto> object defining the blc/trc
+// The slicer region can be defined from an
+// <linkto class=Slicer>Slicer</linkto> object defining the blc/trc
 // and a vector (of the same length) containing the strides.
 // The LCSlicer can be of any type (thus relative, fractional, unspecified),
 // while the strides can be defined as a number or a fraction.
@@ -89,6 +89,15 @@ public:
     // The vectors can be different in lengths. The longest determines
     // the dimensionality of the region. The shorter ones get padded
     // with default values.
+    // <br> For each axis (or all axes) it can be defined if the blc/trc are
+    // given as pixel coordinates or as fractional values between 0 and 1. In the
+    // latter case the true pixel coordinate is derived from the image shape.
+    // <br> Also the region type can be given, if needed per axis.
+    // <ul>
+    // <li> RegionType::Abs is absolute
+    // <li> RegionType::RelRef is relative to reference pixel given in toSlice().
+    // <li> RegionType::RelCen is relative to image center.
+    // </ul>
     // <group>
     LCSlicer (const Vector<Float>& blc, const Vector<Float>& trc,
 	      Bool fractionalBlcTrc = False,
