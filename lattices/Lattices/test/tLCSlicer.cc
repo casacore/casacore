@@ -200,6 +200,21 @@ void doIt()
 	cout << sl.start() << sl.end() << sl.stride() << endl;
 	delete lc;
     }
+    {
+        Vector<Float> blc(4, 0), trc(4,0), refPix(4, 0);
+        blc[3] = 23;
+        trc[0] = 399;
+        trc[1] = 399;
+        trc[3] = 23;
+        refPix[0] = 100;
+        refPix[1] = 100;
+        refPix[3] = -23;
+        IPosition newLatticeShape(4, 400, 400, 1, 1);
+        LCSlicer lcslicer(blc, trc, False, RegionType::RelRef);
+        Slicer sl = lcslicer.toSlicer(refPix, newLatticeShape);
+        AlwaysAssert(sl.start() == IPosition(4, 100, 100, 0, 0), AipsError);
+        AlwaysAssert(sl.end() == IPosition(4, 399, 399, 0, 0), AipsError);
+    }
 }
 
 
