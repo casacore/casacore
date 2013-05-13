@@ -39,9 +39,10 @@ int main(int argc, const char* argv[])
 {
   try 
     {
-      if(argc < 3) 
+      if(argc < 3)  {
 	cout << "Please input ms file and selection string on command line " << endl;
-      
+        return 3;
+      }
       const String msName = argv[1];
       cout << "ms file is  " << msName << endl;
       MeasurementSet ms(msName);
@@ -75,7 +76,7 @@ int main(int argc, const char* argv[])
 	}
       delete mssel;
     } 
-  catch (AipsError x) 
+  catch (AipsError& x) 
     {
       cout << "ERROR: " << x.getMesg() << endl;
       return 1;

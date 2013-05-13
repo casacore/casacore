@@ -48,7 +48,7 @@ FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
 STRING    ({QSTRING}|{ASTRING})+
-REGEX     "/"[^/\n]*"/"
+REGEX     "^"?"/"[^/\n]*"/"
 
 ALPHA     [a-zA-Z]
 UNIT      {ALPHA}+
@@ -80,6 +80,7 @@ PATTERN   {PATT1}|{PATT2}
              int lenstr = strlen(MSAntennaGramtext) - 2;
              lvalp->str = (char*)malloc(lenstr+1);
              strncpy(lvalp->str, MSAntennaGramtext+1, lenstr);
+             if (MSAntennaGramtext[0] == '^') lvalp->str[0] = '^';
              lvalp->str[lenstr] = '\0';
              return REGEX;
           }

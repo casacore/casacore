@@ -32,6 +32,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -85,10 +86,18 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
 //    matchAntennaName   Vector<Int>              Matching antenna id's
 //
   Int pos=0;
+  Bool negate = False;
+  String patt = pattern;
+  if (patt[0] == '^') {
+    negate = True;
+    patt = patt.from(1);
+  }
   Regex reg;
-  if (regex) reg=pattern;
-  else       reg=reg.fromPattern(pattern);
-
+  if (regex) {
+    reg=patt;
+  } else {
+    reg=reg.fromPattern(patt);
+  }
   //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
   IPosition sh(msAntennaCols_p.name().getColumn().shape());
   LogicalArray maskArray(sh,False);
@@ -100,7 +109,7 @@ Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
       if (ret <= 0)
 	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
       //      cerr << i << " " << ret << endl;
-      maskArray(i) = ( (ret>0) );
+      maskArray(i) = ( (ret>0) != negate );
       //		       && !msAntennaCols_p.flagRow().getColumn()(i));
     }
   
@@ -182,10 +191,18 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
 //    matchStationName   Vector<Int>              Matching station id's
 //
   Int pos=0;
+  Bool negate = False;
+  String patt = pattern;
+  if (patt[0] == '^') {
+    negate = True;
+    patt = patt.from(1);
+  }
   Regex reg;
-  if (regex) reg=pattern;
-  else       reg=reg.fromPattern(pattern);
-
+  if (regex) {
+    reg=patt;
+  } else {
+    reg=reg.fromPattern(patt);
+  }
   //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
   IPosition sh(msAntennaCols_p.station().getColumn().shape());
   LogicalArray maskArray(sh,False);
@@ -197,7 +214,7 @@ Vector<Int> MSAntennaIndex::matchStationRegexOrPattern(const String& pattern,
       // if (ret <= 0)
       // 	ret = (msAntennaCols_p.station().getColumn()(i).matches(reg,pos));
       //      cerr << i << " " << ret << endl;
-      maskArray(i) = ( (ret>0) );
+      maskArray(i) = ( (ret>0) != negate );
       //		       && !msAntennaCols_p.flagRow().getColumn()(i));
     }
   

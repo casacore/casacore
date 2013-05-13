@@ -107,6 +107,9 @@ void selMS()
   doSel (ms, "\\RT1 & RT0");
   doSel (ms, "/A.*/&", True);
   doSel (ms, "/A.*/&&", True);
+  doSel (ms, "^A*&&", True);
+  doSel (ms, "^/A.*/&&", True);
+  doSel (ms, "!/A.*/&&", True);
   doSel (ms, "<3", True);
   doSel (ms, "1~5");
   doSel (ms, "1m~5m", True);
