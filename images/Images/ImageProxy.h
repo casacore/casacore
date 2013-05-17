@@ -46,6 +46,29 @@ namespace casa {
   class ImageAttrHandler;
 
   // <synopsis>
+  // ImageProxy is a proxy to an image having data type Float, Double,
+  // Complex, or DComplex. Its primary purpose is to be bind the images
+  // module to Python through pyrap.images. However, it can also be used
+  // directly in C++.
+  //
+  // An ImageProxy object can be constructed for an image stored on disk in
+  // Casacore, FITS, HDF5, or Miriad format. It can also be constructed given
+  // a shape or an N-dim array with values.
+  // Furthermore it can be constructed from a LEL expression (see class ImageExpr)
+  // or a vector of images to be concatenated (see class ImageConcat).
+  //
+  // Many functions exist to operate on an ImageProxy object. For example:
+  // <ul>
+  //  <li> get meta info (shape, data type, coordinates, etc.)
+  //  <li> save in Casacore, HDF5, or FITS format.
+  //  <li> regrid.
+  //  <li> get statistics.
+  //  <li> form a subimage (which is done in a virtual way).
+  // </ul>
+  // Functions regrid and statistics can only be used for Float images.
+  // They throw an exception for images with other data types.
+  // Note that using a LEL expression it is possible to (virtually) convert an
+  // image with another type to a Float image.
   // </synopsis>
 
   class ImageProxy
