@@ -248,6 +248,16 @@ private:
   // This will scale and offset to the underlying array.
   virtual void putArrayColumn (const Array<Complex>& array);
 
+  // Get some array values in the column.
+  // This will scale and offset from the underlying array.
+  virtual void getArrayColumnCells (const RefRows& rownrs,
+                                    Array<Complex>& data);
+
+  // Put some array values in the column.
+  // This will scale and offset to the underlying array.
+  virtual void putArrayColumnCells (const RefRows& rownrs,
+                                    const Array<Complex>& data);
+
   // Get a section of all arrays in the column.
   // This will scale and offset from the underlying array.
   virtual void getColumnSlice (const Slicer& slicer, Array<Complex>& array);
@@ -256,6 +266,18 @@ private:
   // This will scale and offset to the underlying array.
   virtual void putColumnSlice (const Slicer& slicer, 
 			       const Array<Complex>& array);
+
+  // Get a section of some arrays in the column.
+  // This will scale and offset from the underlying array.
+  virtual void getColumnSliceCells (const RefRows& rownrs,
+                                    const Slicer& slicer,
+                                    Array<Complex>& data);
+
+  // Put into a section of some arrays in the column.
+  // This will scale and offset to the underlying array.
+  virtual void putColumnSliceCells (const RefRows& rownrs,
+                                    const Slicer& slicer,
+                                    const Array<Complex>& data);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.

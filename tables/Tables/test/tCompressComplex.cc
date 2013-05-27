@@ -147,6 +147,28 @@ Bool checkData (Bool autoScale)
   Cube<Int> arrvali(IPosition(3,2,3,4));
   Cube<Complex> arrf1(IPosition(3,2,3,4));
   Cube<Complex> arrvalf(IPosition(3,2,3,4));
+  RefRows refrows(1,9,2);
+  Slicer slicer(IPosition(3,0,1,0), IPosition(3,2,2,2), IPosition(3,1,1,2));
+  Array<Complex> arrCol1 (source1.getColumn());
+  Array<Complex> arrColSlice1 (source1.getColumn(slicer));
+  Array<Complex> arrCells1 (source1.getColumnCells(refrows));
+  Array<Complex> arrCellsSlice1 (source1.getColumnCells(refrows,slicer));
+  Array<Complex> arrCol2 (source2.getColumn());
+  Array<Complex> arrColSlice2 (source2.getColumn(slicer));
+  Array<Complex> arrCells2 (source2.getColumnCells(refrows));
+  Array<Complex> arrCellsSlice2 (source2.getColumnCells(refrows,slicer));
+  Slicer slicercol(IPosition(4,0,1,0,0), IPosition(4,2,2,2,10),
+                   IPosition(4,1,1,2,1));
+  Slicer slicercells(IPosition(4,0,0,0,1), IPosition(4,2,3,4,5),
+                     IPosition(4,1,1,1,2));
+  Slicer slicercsl (IPosition(4,0,1,0,1), IPosition(4,2,2,2,5),
+                    IPosition(4,1,1,2,2));
+  AlwaysAssertExit (allEQ(arrColSlice1,   arrCol1(slicercol)));
+  AlwaysAssertExit (allEQ(arrCells1,      arrCol1(slicercells)));
+  AlwaysAssertExit (allEQ(arrCellsSlice1, arrCol1(slicercsl)));
+  AlwaysAssertExit (allEQ(arrColSlice2,   arrCol2(slicercol)));
+  AlwaysAssertExit (allEQ(arrCells2,      arrCol2(slicercells)));
+  AlwaysAssertExit (allEQ(arrCellsSlice2, arrCol2(slicercsl)));
   uInt i=0;
   for (uInt i2=0; i2<4; i2++) {
     for (uInt i1=0; i1<3; i1++) {
@@ -158,6 +180,8 @@ Bool checkData (Bool autoScale)
       i++;
     }
   }
+  ArrayIterator<Complex> iter1(arrCol1, 3);
+  ArrayIterator<Complex> iter2(arrCol2, 3);
   for (i=0; i<10; i++) {
     cout << "get row " << i << endl;
     source1.get (i, arrvalf);
@@ -167,6 +191,8 @@ Bool checkData (Bool autoScale)
       cout << "Expected: " << arrf1 << endl;
       ok = False;
     }
+    AlwaysAssertExit (allEQ(arrvalf, iter1.array()));
+    AlwaysAssertExit (allEQ(arrvalf(slicer), source1.getSlice(i, slicer)));
     if (!autoScale) {
       target1.get (i, arrvali);
       if (!allEQ (arrvali, arri1)) {
@@ -200,8 +226,12 @@ Bool checkData (Bool autoScale)
       cout << "Expected: " << arrf1 << endl;
       ok = False;
     }
+    AlwaysAssertExit (allEQ(arrvalf, iter2.array()));
+    AlwaysAssertExit (allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
     arrf1 += Complex(12*arrf1.nelements(), 12*arrf1.nelements());
     arri1 += Int(65536 * 6*arri1.nelements() + 6*arri1.nelements());
+    iter1.next();
+    iter2.next();
   }
   return ok;
 }

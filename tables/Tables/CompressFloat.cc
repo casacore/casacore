@@ -477,6 +477,41 @@ void CompressFloat::putArrayColumn (const Array<Float>& array)
   }
 }
 
+void CompressFloat::getArrayColumnCells (const RefRows& rownrs,
+                                         Array<Float>& array)
+{
+  ArrayIterator<Float> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressFloat::getArray (rownr, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+void CompressFloat::putArrayColumnCells (const RefRows& rownrs,
+                                         const Array<Float>& array)
+{
+  ReadOnlyArrayIterator<Float> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressFloat::putArray (rownr, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+
 void CompressFloat::getColumnSlice (const Slicer& slicer,
 				    Array<Float>& array)
 {
@@ -499,6 +534,43 @@ void CompressFloat::putColumnSlice (const Slicer& slicer,
       CompressFloat::putSlice (rownr, slicer, iter.array());
       iter.next();
     }
+  }
+}
+
+void CompressFloat::getColumnSliceCells (const RefRows& rownrs,
+                                         const Slicer& slicer,
+                                         Array<Float>& array)
+{
+  ArrayIterator<Float> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressFloat::getSlice (rownr, slicer, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+void CompressFloat::putColumnSliceCells (const RefRows& rownrs,
+                                         const Slicer& slicer,
+                                         const Array<Float>& array)
+{
+  ReadOnlyArrayIterator<Float> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressFloat::putSlice (rownr, slicer, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
   }
 }
 

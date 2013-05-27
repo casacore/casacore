@@ -613,9 +613,33 @@ void ArrayColumn<T>::getColumnCells (const RefRows& rownrs,
     arrshp.append (IPosition(1,nrrow));
     // Check array conformance and resize if needed and possible.
     checkShape (arrshp, arr, resize, "ArrayColumn::getColumnCells");
-    baseColPtr_p->getColumnSliceCells (rownrs, Slicer(arrblc, arrtrc, arrinc,
-						      Slicer::endIsLast),
-				       &arr);
+    if (!arr.empty()) {
+      //# Ask if we can access the column slice (if that is not known yet).
+      if (reaskAccessColumnSlice_p) {
+	canAccessColumnSlice_p = baseColPtr_p->canAccessColumnSlice
+	                                       (reaskAccessColumnSlice_p);
+      }
+      //# Access the column slice if possible.
+      //# Otherwise fill the entire array by looping through all cells.
+      Slicer defSlicer (arrblc, arrtrc, arrinc, Slicer::endIsLast);
+      if (canAccessColumnSlice_p) {
+        baseColPtr_p->getColumnSliceCells (rownrs, defSlicer, &arr);
+      } else {
+        ArrayIterator<T> iter(arr, arr.ndim()-1);
+        RefRowsSliceIter rowsIter(rownrs);
+        while (! rowsIter.pastEnd()) {
+          uInt rownr = rowsIter.sliceStart();
+          uInt end   = rowsIter.sliceEnd();
+          uInt incr  = rowsIter.sliceIncr();
+          while (rownr <= end) {
+            getSlice (rownr, defSlicer, iter.array());
+            iter.next();
+            rownr += incr;
+          }
+          rowsIter++;
+        }
+      }
+    }
 }
 
 

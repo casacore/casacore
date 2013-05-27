@@ -445,8 +445,8 @@ protected:
     virtual IPosition getStoredShape (uInt rownr,
                                       const IPosition& virtualShape);
 
-    // Map the slicerfor a virtual shape to a stored shape.
-    // By default it returns the virtualinput slicer.
+    // Map the slicer for a virtual shape to a stored shape.
+    // By default it returns the virtual input slicer.
     virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
 
     // Map StoredType array to VirtualType array.

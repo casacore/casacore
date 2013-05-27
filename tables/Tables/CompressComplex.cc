@@ -524,6 +524,41 @@ void CompressComplex::putArrayColumn (const Array<Complex>& array)
   }
 }
 
+void CompressComplex::getArrayColumnCells (const RefRows& rownrs,
+                                           Array<Complex>& array)
+{
+  ArrayIterator<Complex> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressComplex::getArray (rownr, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+void CompressComplex::putArrayColumnCells (const RefRows& rownrs,
+                                           const Array<Complex>& array)
+{
+  ReadOnlyArrayIterator<Complex> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressComplex::putArray (rownr, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+
 void CompressComplex::getColumnSlice (const Slicer& slicer,
 				      Array<Complex>& array)
 {
@@ -546,6 +581,43 @@ void CompressComplex::putColumnSlice (const Slicer& slicer,
       CompressComplex::putSlice (rownr, slicer, iter.array());
       iter.next();
     }
+  }
+}
+
+void CompressComplex::getColumnSliceCells (const RefRows& rownrs,
+                                           const Slicer& slicer,
+                                           Array<Complex>& array)
+{
+  ArrayIterator<Complex> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressComplex::getSlice (rownr, slicer, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
+  }
+}
+void CompressComplex::putColumnSliceCells (const RefRows& rownrs,
+                                           const Slicer& slicer,
+                                           const Array<Complex>& array)
+{
+  ReadOnlyArrayIterator<Complex> arrIter(array, array.ndim()-1);
+  RefRowsSliceIter rowsIter(rownrs);
+  while (! rowsIter.pastEnd()) {
+    uInt rownr = rowsIter.sliceStart();
+    uInt end   = rowsIter.sliceEnd();
+    uInt incr  = rowsIter.sliceIncr();
+    while (rownr <= end) {
+      CompressComplex::putSlice (rownr, slicer, arrIter.array());
+      arrIter.next();
+      rownr += incr;
+    }
+    rowsIter++;
   }
 }
 
