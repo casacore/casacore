@@ -92,6 +92,12 @@ Images/FITSQualityImage.h
 Images/FITSQualityMask.h
 Images/HDF5Image.h
 Images/HDF5Image.tcc
+Images/ImageAttrGroup.h
+Images/ImageAttrGroupCasa.h
+Images/ImageAttrGroupHDF5.h
+Images/ImageAttrHandler.h
+Images/ImageAttrHandlerCasa.h
+Images/ImageAttrHandlerHDF5.h
 Images/ImageBeamSet.h
 Images/ImageConcat.h
 Images/ImageConcat.tcc
