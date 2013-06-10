@@ -193,6 +193,7 @@ void TapeIO::mark(uInt howMany) {
 		      + strerror(errno)));
     }
   }
+}
 #else
 void TapeIO::mark(uInt) {
 }
