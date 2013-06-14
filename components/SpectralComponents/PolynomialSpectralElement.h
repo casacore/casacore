@@ -43,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto module=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -66,6 +66,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class PolynomialSpectralElement: public SpectralElement {
 public:
 
+	// Useless constructor for anythong but allocating memory in a Vector etc
+	PolynomialSpectralElement();
+
+
 	// Construct an n-degree polynomial
 	explicit PolynomialSpectralElement(const uInt n);
 
@@ -85,11 +89,12 @@ public:
 
 	SpectralElement* clone() const;
 
-	PolynomialSpectralElement &operator=(const PolynomialSpectralElement& other);
+	//PolynomialSpectralElement &operator=(const PolynomialSpectralElement& other);
 
+	/*
 	// Evaluate the value of the element at x
 	Double operator()(const Double x) const;
-
+*/
 	// Get the degree of polynomial
 	uInt getDegree() const;
 
@@ -99,7 +104,7 @@ public:
 // <summary> Global functions </summary>
 // <group name=Output>
 // Output declaration
-ostream &operator<<(ostream &os, const SpectralElement &elem);
+ostream &operator<<(ostream &os, const PolynomialSpectralElement &elem);
 // </group>
 
 

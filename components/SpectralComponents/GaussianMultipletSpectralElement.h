@@ -31,9 +31,10 @@
 
 #include <casa/Arrays/Matrix.h>
 #include <components/SpectralComponents/CompiledSpectralElement.h>
-#include <components/SpectralComponents/GaussianSpectralElement.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+	class GaussianSpectralElement;
 
 // <summary>
 // Describes a multiplet of Gaussian shaped spectral lines
@@ -45,9 +46,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
-//   <li> <linkto class=GaussianSpectralElement>CompiledSpectralElement</linkto> class
-//   <li> <linkto class=CompiledSpectralElement>CompiledSpectralElement</linkto> class
+//   <li> <linkto module=SpectralElement>SpectralElement</linkto> module
+//   <li> <linkto module=GaussianSpectralElement>CompiledSpectralElement</linkto> module
+//   <li> <linkto module=CompiledSpectralElement>CompiledSpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -124,7 +125,7 @@ public:
 	// between a non-reference Gaussian parameter and the corresponding reference
 	// Gaussian parameter.
 	GaussianMultipletSpectralElement(
-		const Vector<GaussianSpectralElement>& estimates,
+		const vector<GaussianSpectralElement>& estimates,
 		const Matrix<Double>& fixedRelationships
 	);
 
@@ -147,7 +148,7 @@ public:
 	) const;
 
 	// get the gaussians
-	const Vector<GaussianSpectralElement>& getGaussians() const;
+	const vector<GaussianSpectralElement>& getGaussians() const;
 
 	// get the constraints matrix
 	const Matrix<Double>& getConstraints() const;
@@ -170,7 +171,7 @@ public:
 	Bool toRecord(RecordInterface& out) const;
 
 private:
-	Vector<GaussianSpectralElement> _gaussians;
+	vector<GaussianSpectralElement> _gaussians;
 	Matrix<Double> _constraints;
 	Matrix<uInt> _paramIndices;
 };

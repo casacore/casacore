@@ -437,6 +437,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		      stop  = stop >= numChans(spw(i)) ? numChans(spw(i)) - 1 : stop;
 		    }
 		  if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
+
+		  step = (((Int)step <= 0) ? 1 : step);
+
 		  localFreqList(pos++)=start;
 		  localFreqList(pos++)=stop;
 		  localFreqList(pos++)=step;
@@ -447,51 +450,44 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  Vector<Double> cf,cw;
 		  chanFreq.get(spw(i),cf,True);
 		  chanWidth.get(spw(i),cw,True);
+		  if (abs(cw(0) == 0))
+		    throw(MSSelectionSpwError("Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
+		      
+		  Int cwDir = (Int)(cw(0)/abs(cw(0)));
 		  //
 		  // Do a brain-dead linear search for the channel
 		  // number (linear search is *probably* OK - unless
 		  // there are channels worth GBytes of RAM!)
 		  //
-		  Int n=cf.nelements(),ii;
-		  // ostringstream Mesg;
-		  // Mesg << "Range for SPW " << spw(i) << ": ["
-		  //      << cf[0] << "," << cf(n-1) << "] Hz.";
 
-		  Bool found=False;
-		  if (start <= cf(0)) start=0;
-		  else
-		    {
-		      for(ii=0;ii<n;ii++)
-			if (cf(ii) >= start) {start=ii;found=True;break;}
-		      // if (!found)
-		      // 	{
-		      // 	  ostringstream m;
-		      // 	  m << "Start channel not found for frequency " 
-		      // 	    << start << " Hz." << Mesg.str();
-		      // 	  throw(MSSelectionSpwError(m.str()));
-		      // 	}
-		      if (!found)
-			{someMatchFailed=True;start = -1;}
-		    }
+		  // Obfuscated code alert (but it was fun :))!
+		  someMatchFailed |= ((start = findChanIndex_p(start, cf, True,  (cwDir>0)))==-1);
+		  someMatchFailed |= ((stop  = findChanIndex_p(stop,  cf, False, (cwDir>0)))==-1);
 
-		  found=False;
-		  if (stop >= cf(n-1)) stop = n-1;
-		  //		  if (stop >= cf(n-1)) stop = -1;
-		  else
-		    {
-		      for(ii=n-1;ii>=0;ii--)
-			if (cf(ii) <= stop) {stop=ii;found=True;break;}
-		      // if (!found)
-		      // 	{
-		      // 	  ostringstream m;
-		      // 	  m << "Stop channel not found for frequency " 
-		      // 	    << stop << " Hz. " <<  Mesg.str();
-		      // 	  throw(MSSelectionSpwError(m.str()));
-		      // 	}
-		      if (!found)
-			{someMatchFailed=True; stop=-1;}
-		    }
-
+		  // Bool found=False;
+		  // Int n=cf.nelements();
+		  // {
+		  //   if (start <= cf(0)) start=0;
+		  //   else
+		  //     {
+		  // 	for(Int ii=0;ii<n;ii++)
+		  // 	  if (cf(ii) >= start) {start=ii;found=True;break;}
+			
+		  // 	if (!found)
+		  // 	  {someMatchFailed=True;start = -1;}
+		  //     }
+		    
+		  //   found=False;
+		  //   if (stop >= cf(n-1)) stop = n-1;
+		  //   else
+		  //     {
+		  // 	for(Int ii=n-1;ii>=0;ii--)
+		  // 	  if (cf(ii) <= stop) {stop=ii;found=True;break;}
+			
+		  // 	if (!found)
+		  // 	  {someMatchFailed=True; stop=-1;}
+		  //     }
+		  // }
 		  Double maxCW=max(cw), minCW=min(cw);
 		  if (minCW != maxCW)
 		    {
@@ -499,13 +495,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			    << "Using the maximum of the channel width range." 
 			    << LogIO::WARN;
 		    }
-		  step=(freqList(i+2)/maxCW);
+		  step=fabs(freqList(i+2)/maxCW);
+		  // 
+		  // Enforce start < stop and step > 0.  
+		  //
+		  // In case it is ever required to support the case
+		  // where start > step (e.g., when the frequency in
+		  // the database is in descending order) the variable
+		  // cwDir carries the direction in which
+		  // freq. increases with increase channel index.
+		  //
+		  step = (((Int)step <= 0) ? 1 : step);//*cwDir;
+		  if (start > stop)
+		    {
+		      Float tmp=start;
+		      start=stop;stop=tmp;
+		    }
 
 		  if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
 		  localFreqList(pos++)=(Int)start;
 		  localFreqList(pos++)=(Int)stop;
 		  localFreqList(pos++)=(Int)step;
-		  //		  cout << "LocalFreqList " << localFreqList << endl;
 		}
 	      else  // If the spec is XXKm/s
 		{
@@ -520,7 +530,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
  		  // MDoppler mdoppler(vstart.getValue().get(), MDoppler::RADIO);
  		  // MSDopplerUtil msdoppler(*ms_p);
  		  // msdoppler.dopplerInfo(restFreq ,spw(i), fieldid);
-
+		  
  		  // cout << MFrequency::fromDoppler(mdoppler, 
  		  // 				  restFreq).getValue().getValue() << endl;
 		}
@@ -535,11 +545,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
  	  {
  	    localFreqList(j++)=0;
  	    localFreqList(j++)=numChans(spw(i))-1;
- 	    localFreqList(j++)=-1;
+ 	    localFreqList(j++)=1;
  	  }
-       }
-
-
+      }
+    
+    
     // if (localFoundSpwList.size() == 0)
     //   log_l << "No match found for SPW and CHAN combination" << LogIO::WARN << LogIO::POST;
     // else 
@@ -551,14 +561,62 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	//       << LogIO::WARN << LogIO::POST;
 	;
       } else {
-	ostringstream m;
-	log_l << "Found no matching SPW(s) " << spw << LogIO::WARN << LogIO::POST;
-	//	  log_l << m.str() << LogIO::WARN << LogIO::POST;
+        ostringstream m;
+        log_l << "Found no matching SPW(s) " << spw << LogIO::WARN << LogIO::POST;
+        //	  log_l << m.str() << LogIO::WARN << LogIO::POST;
       }
     }
-	
+    
     
     return localFreqList;
+  }
+  //
+  //------------------------------------------------------------------
+  //
+  Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
+				  const Bool& greaterThan,
+				  const Bool& ascendingOrder)
+  {
+    Int chanIndex=-1, n=chanFreqList.nelements();
+    if (ascendingOrder)
+      {
+	if (greaterThan)
+	  {
+	    if (freq <= chanFreqList(0)) 
+	      chanIndex=0;
+	    else
+	      for(Int ii=0;ii<n;ii++)
+		if (chanFreqList(ii) >= freq) {chanIndex=ii;break;}
+	  }
+	else
+	  {
+	    if (freq >= chanFreqList(n-1))
+	      chanIndex=n-1;
+	    else
+	      for(Int ii=n-1;ii>=0;ii--)
+		if (chanFreqList(ii) <= freq) {chanIndex=ii;break;}
+	  }
+      }
+    else
+      {
+	if (greaterThan)
+	  {
+	    if (freq <= chanFreqList(n-1)) 
+	      chanIndex=n-1;
+	    else
+	      for(Int ii=n-1;ii>=0;ii--)
+		if (chanFreqList(ii) >= freq) {chanIndex=ii;break;}
+	  }
+	else
+	  {
+	    if (freq >= chanFreqList(0))
+	      chanIndex=0;
+	    else
+	      for(Int ii=0;ii<n;ii++)
+		if (chanFreqList(ii) <= freq) {chanIndex=ii;break;}
+	  }
+      }
+    return chanIndex;
   }
   //
   //------------------------------------------------------------------
@@ -569,45 +627,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Vector<Int> localFreqList;
     Int nFList=freqList.nelements();
     nFSpec = nFList/4;  // 4 integers per channel specification
-
+    
     if (nFList > 0)
       {
 	//	localFreqList.resize(nFSpec);
 	Int pos=0;
-
+	
 	for(Int j=0;j<nFList;j+=4)
 	  {
 	    if ((freqList(j+3) == MSSpwIndex::MSSPW_INDEX) ||
 		(freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
-		{
-		  Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
-		  //		  if (step==0) step=1;
-		  step = step <= 0? 1 : step;
-		  Int n=0;
-		  for(Int ii=start;ii<=stop;ii+=step) n++;
-		  localFreqList.resize(n+localFreqList.nelements(),True);
+	      {
+		Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
+		//		  if (step==0) step=1;
+		step = (step <= 0? 1 : step);
 
-		  for(Int ii=start;ii<=stop;ii+=step)
-		    localFreqList(pos++)=ii;
-		  //		  localFreqList(pos++)=stop;
-		  //		  localFreqList(pos++)=step;
-		}
-	      else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)
-		{
-		  Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
-		  
-		  localFreqList = matchFrequencyRange(start, stop, False, step);
-		  //		  cout << "Freq SPW List  = " << start << " " << stop << " " << step << " " 
-		  //		       << localFreqList;
-		}
-	    }
+		Int n=0;
+		for(Int ii=start;ii<=stop;ii+=step) n++;
+		localFreqList.resize(n+localFreqList.nelements(),True);
+		
+		for(Int ii=start;ii<=stop;ii+=step)
+		  localFreqList(pos++)=ii;
+		//		  localFreqList(pos++)=stop;
+		//		  localFreqList(pos++)=step;
+	      }
+	    else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)
+	      {
+		Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
+		
+		localFreqList = matchFrequencyRange(start, stop, False, step);
+		//		  cout << "Freq SPW List  = " << start << " " << stop << " " << step << " " 
+		//		       << localFreqList;
+	      }
+	  }
       }
     else
       {
 	throw(MSSelectionSpwError("Internal error. Contact CASA manager.\n"
 				  "nFList in MSSpwIndex::convertToSpwIndex() is <= 0."));
       }
-
+    
     return localFreqList;
   }
   //-------------------------------------------------------------------------

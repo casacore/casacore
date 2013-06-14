@@ -59,8 +59,8 @@ namespace casa {
 {}
 
   ImageBeamSet::ImageBeamSet(uInt nchan, uInt nstokes)
-    : _beams      (nchan, nstokes),
-      _areas      (nchan, nstokes, 0.),
+    : _beams      (max(1u,nchan), max(1u,nstokes)),
+      _areas      (max(1u,nchan), max(1u,nstokes), 0.),
       _areaUnit   (_DEFAULT_AREA_UNIT),
       _minBeam    (GaussianBeam::NULL_BEAM),
       _maxBeam    (GaussianBeam::NULL_BEAM),
@@ -83,8 +83,8 @@ namespace casa {
   ImageBeamSet::ImageBeamSet(uInt nchan, uInt nstokes,
                              const GaussianBeam& beam)
 
-    : _beams      (nchan, nstokes, beam),
-      _areas      (nchan, nstokes, beam.getArea(_DEFAULT_AREA_UNIT)),
+    : _beams      (max(1u,nchan), max(1u,nstokes), beam),
+      _areas      (max(1u,nchan), max(1u,nstokes), beam.getArea(_DEFAULT_AREA_UNIT)),
       _areaUnit   (_DEFAULT_AREA_UNIT),
       _minBeam    (beam),
       _maxBeam    (beam),
@@ -157,7 +157,7 @@ namespace casa {
 
   void ImageBeamSet::resize(uInt nchan, uInt nstokes)
   {
-    _beams.resize(nchan, nstokes);
+    _beams.resize(max(1u,nchan), max(1u,nstokes));
     _calculateAreas();
   }
 

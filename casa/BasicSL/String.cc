@@ -467,24 +467,34 @@ Int String::gsub(const RegexBase &pat, const string &repl) {
 }
 
 // Global functions
-String reverse(string str) {
-  std::reverse(str.begin(), str.end());
-  return str;
+String reverse(const string& str) {
+  String s(str);
+  std::reverse(s.begin(), s.end());
+  return s;
 }
 
-String upcase(string str) {
-  std::transform(str.begin(), str.end(), str.begin(), ToUpper);
-  return str;
+String upcase(const string& str) {
+  String s(str);
+  std::transform(s.begin(), s.end(), s.begin(), ToUpper);
+  return s;
 }
 
-String downcase(string str) {
-  std::transform(str.begin(), str.end(), str.begin(), ToLower);
-  return str;
+String downcase(const string& str) {
+  String s(str);
+  std::transform(s.begin(), s.end(), s.begin(), ToLower);
+  return s;
 }
 
-String capitalize(string str) {
-  static_cast<String>(str).capitalize();
-  return str;
+String capitalize(const string& str) {
+  String s(str);
+  s.capitalize();
+  return s;
+}
+
+String trim(const string& str) {
+  String s(str);
+  s.trim();
+  return s;
 }
 
 String replicate(Char c, String::size_type n) {

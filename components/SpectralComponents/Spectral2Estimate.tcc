@@ -173,7 +173,7 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
 	Int nmax = 0;
 	GaussianSpectralElement tspel;
 	while (++i < windowEnd_p) {
-		if (deriv_p[i] > 0.0) {
+        if (deriv_p[i] > 0.0) {
 			// At edge?
 			if (i > windowLow_p && i < windowEnd_p-1) {
 				// Peak in 2nd derivative
@@ -238,7 +238,7 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
 						tspel.setAmpl(pg);
 						tspel.setCenter(xm);
 						tspel.setSigma(sg);
-						slist_p.insert(tspel);
+                        slist_p.insert(tspel);
 					};
 				};
 			};

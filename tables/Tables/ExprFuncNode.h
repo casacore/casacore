@@ -202,54 +202,55 @@ public:
 	strlengthFUNC,    //# 101          returning Int
 	upcaseFUNC,       //# 102          returning String
 	downcaseFUNC,     //# 103          returning String
-	trimFUNC,         //# 104          returning String
-	ltrimFUNC,        //# 105          returning String
-	rtrimFUNC,        //# 106          returning String
-	substrFUNC,       //# 107          returning String
-        replaceFUNC,      //# 108          returning String
-	regexFUNC,        //# 109          returning TaqlRegex
-	patternFUNC,      //# 110          returning TaqlRegex
-	sqlpatternFUNC,   //# 111          returning TaqlRegex
+	capitalizeFUNC,   //# 104          returning String
+	trimFUNC,         //# 105          returning String
+	ltrimFUNC,        //# 106          returning String
+	rtrimFUNC,        //# 107          returning String
+	substrFUNC,       //# 108          returning String
+        replaceFUNC,      //# 109          returning String
+	regexFUNC,        //# 110          returning TaqlRegex
+	patternFUNC,      //# 111          returning TaqlRegex
+	sqlpatternFUNC,   //# 112          returning TaqlRegex
             // for Date
-	datetimeFUNC,     //# 112          returning Date
-	mjdtodateFUNC,    //# 113          returning Date
-	mjdFUNC,          //# 114          returning Double
-	dateFUNC,         //# 115          returning Date
-	timeFUNC,         //# 116          returning Double (in radians)
-	yearFUNC,         //# 117          returning Int
-	monthFUNC,        //# 118          returning Int
-	dayFUNC,          //# 119          returning Int
-	cmonthFUNC,       //# 120          returning String
-	weekdayFUNC,      //# 121          returning Int
-	cdowFUNC,         //# 122          returning String
-	weekFUNC,         //# 123          returning Int
-        ctodFUNC,         //# 124          returning String
-        cdateFUNC,        //# 125          returning String
-        ctimeFUNC,        //# 126          returning String
+	datetimeFUNC,     //# 113          returning Date
+	mjdtodateFUNC,    //# 114          returning Date
+	mjdFUNC,          //# 115          returning Double
+	dateFUNC,         //# 116          returning Date
+	timeFUNC,         //# 117          returning Double (in radians)
+	yearFUNC,         //# 118          returning Int
+	monthFUNC,        //# 119          returning Int
+	dayFUNC,          //# 120          returning Int
+	cmonthFUNC,       //# 121          returning String
+	weekdayFUNC,      //# 122          returning Int
+	cdowFUNC,         //# 123          returning String
+	weekFUNC,         //# 124          returning Int
+        ctodFUNC,         //# 125          returning String
+        cdateFUNC,        //# 126          returning String
+        ctimeFUNC,        //# 127          returning String
             // return angles as hms strings
-        hmsFUNC,          //# 127
+        hmsFUNC,          //# 128
             // return angles as dms strings
-        dmsFUNC,          //# 128
+        dmsFUNC,          //# 129
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 129
+        hdmsFUNC,         //# 130
 	    // special function returning a random Double number
-	randFUNC,         //# 130
+	randFUNC,         //# 131
             // special function returning Int row number
-	rownrFUNC,        //# 131
+	rownrFUNC,        //# 132
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 132
+	rowidFUNC,        //# 133
             // special function resembling if statement
-	iifFUNC,          //# 133
+	iifFUNC,          //# 134
             // angular distance returning radians
-        angdistFUNC,      //# 134
-        angdistxFUNC,     //# 135
+        angdistFUNC,      //# 135
+        angdistxFUNC,     //# 136
 	    // other functions, implemented in derived class
-	conesFUNC,        //# 136
-	cones3FUNC,       //# 137
-	anyconeFUNC,      //# 138
-	anycone3FUNC,     //# 139
-	findconeFUNC,     //# 140
-	findcone3FUNC,    //# 141
+	conesFUNC,        //# 137
+	cones3FUNC,       //# 138
+	anyconeFUNC,      //# 139
+	anycone3FUNC,     //# 140
+	findconeFUNC,     //# 141
+	findcone3FUNC,    //# 142
 	NRFUNC      //# should be last
 	};
 

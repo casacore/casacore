@@ -323,14 +323,13 @@ int main()
     cout << "\nBEGIN.  Testing makeIterator.  1 dim. ......\n";
     Array<Int> arr(IPosition(2,4,5));
     indgen (arr);
-    ArrayPositionIterator* iter = arr.makeIterator(1);
+    CountedPtr<ArrayPositionIterator> iter = arr.makeIterator(1);
     while (!iter->pastEnd()) {
       ArrayBase& subarrb = iter->getArray();
       Array<Int>& subarr = dynamic_cast<Array<Int>&>(subarrb);
       cout << subarr << endl;
       iter->next();
     }
-    delete iter;
     cout << "END.  Testing makeIterator.  1 dim. ......\n";
   }
 

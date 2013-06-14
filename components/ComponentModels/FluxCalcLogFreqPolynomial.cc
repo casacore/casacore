@@ -36,10 +36,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 Bool FluxCalcLogFreqPolynomial::operator()(Flux<Double>& value,
                                            Flux<Double>& error,
-                                           const MFrequency& mfreq)
+                                           const MFrequency& mfreq,
+                                           const Bool updatecoeffs)
 {
   Double dt = log10(mfreq.get(freqUnit_p).getValue());
 
+  if (updatecoeffs) {
+    coeffs_p(0).resize();
+    coeffs_p(1).resize();
+    coeffs_p=getCurrentCoeffs();
+    //cerr<<"Updated coeffs_p(0)[0]="<<coeffs_p(0)[0]<<endl;
+  }
   Double fluxCoeff = coeffs_p(0)[coeffs_p(0).nelements() - 1];
   for(Int order = coeffs_p(0).nelements() - 2; order >= 0; --order)
     fluxCoeff = fluxCoeff * dt + coeffs_p(0)[order];
@@ -54,6 +61,7 @@ Bool FluxCalcLogFreqPolynomial::operator()(Flux<Double>& value,
   Double fluxDensity = pow(10.0, fluxCoeff);
   Double fluxError = coeffErr > 0.0 ? C::ln10 * fluxDensity * sqrt(coeffErr) : 0.0;
 
+  //cerr<<"FluxDensity=="<<fluxDensity<<endl;
   value.setValue(fluxDensity);
   error.setValue(fluxError);
 
@@ -63,7 +71,7 @@ Bool FluxCalcLogFreqPolynomial::operator()(Flux<Double>& value,
 
 Bool FluxCalcLogFreqPolynomial::setSource(const String& sourceName)
 {
-  Bool success = FluxCalcQS::setSource(sourceName);
+  Bool success = FluxCalcVQS::setSource(sourceName);
 
   if(success)
     success = setSourceCoeffs();
@@ -89,9 +97,13 @@ FluxCalcLogFreqBrokenPolynomial::FluxCalcLogFreqBrokenPolynomial() :
 
 Bool FluxCalcLogFreqBrokenPolynomial::operator()(Flux<Double>& value,
                                                  Flux<Double>& error,
-                                                 const MFrequency& mfreq)
+                                                 const MFrequency& mfreq,
+                                                 const Bool updatecoeffs)
 {
-  // Make sure coeffs_p has the right values for mfreq.
+  if (updatecoeffs) {
+    //do nothing for now
+    ;
+  }
   Double break_freq_in_Hz = break_freq_p.get("Hz").getValue();
   
   if(break_freq_in_Hz > 0.0){

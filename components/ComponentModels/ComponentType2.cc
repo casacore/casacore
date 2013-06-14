@@ -54,7 +54,7 @@ construct(ComponentType::Shape shapeEnum) {
   case ComponentType::LDISK:
     return new LimbDarkenedDiskShape;
   default:
-    return 0;
+    return reinterpret_cast<ComponentShape*>(0);
   };
 }
 
@@ -68,7 +68,7 @@ construct(ComponentType::SpectralShape spectralEnum) {
   case ComponentType::TABULAR_SPECTRUM:
     return new TabularSpectrum;
   default:
-    return 0;
+    return reinterpret_cast<SpectralModel*>(0);
   };
 }
 // Local Variables: 

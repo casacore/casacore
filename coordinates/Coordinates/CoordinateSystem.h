@@ -825,7 +825,8 @@ public:
    // Get the 0 based order of the minimal match strings specified in <src>order</src>.
    // If <src>requireAll</src> is True, checks are done to ensure that all axes in
    // the coordinate system are uniquely specified in <src>order</src>.
-   Vector<Int> getWorldAxesOrder(Vector<String>& myNames, const Bool requireAll) const;
+  Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
+                                Bool allowFriendlyNames=False) const;
 
 
 private:
@@ -860,6 +861,9 @@ private:
     ObsInfo obsinfo_p;
 
     const static String _class;
+    static map<String, String> _friendlyAxisMap;
+
+    static void _initFriendlyAxisMap();
 
     // Helper functions to group common code.
     Bool mapOne(Vector<Int>& worldAxisMap, 
@@ -872,18 +876,6 @@ private:
     void copy(const CoordinateSystem &other);
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
-
-/*
-    // Check world replacement axis is legal and find it
-    Bool checkWorldReplacementAxis(Int& coordinate,
-                                   Int& axisInCoordinate,
-                                   uInt axis) const;
-
-    // Check pixel replacement axis is legal and find it
-    Bool checkPixelReplacementAxis(Int& coordinate,
-                                   Int& axisInCoordinate,
-                                   uInt axis) const;
-*/
 
    // Delete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
@@ -949,7 +941,8 @@ private:
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
 
-    void _downcase(Vector<String>& vec) const;
+    void _downcase(Vector<String>& vec) const
+  { for (uInt i=0; i<vec.size(); ++i) vec[i].downcase(); }
 
 };
 

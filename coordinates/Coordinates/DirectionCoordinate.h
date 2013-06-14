@@ -701,6 +701,10 @@ private:
     
     // Return unit conversion vector for converting to current units
     const Vector<Double> toCurrentFactors () const;
+
+    static Double _longitudeDifference(const Quantity& longAngleDifference,
+                                       const Quantity& latitude,
+                                       const Quantity& longitudePixelIncrement);
 };
 
 } //# NAMESPACE CASA - END

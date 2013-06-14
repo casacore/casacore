@@ -281,9 +281,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // was supplied as part of the expression, the value of Step is
     // replaced with the value of the defaultStep parameter. Multiple
     // channel specifications for the same Spectral Window selection,
-    // results in multiple rows in the Matrix. If sorted==True, the
+    // results in multiple rows in the Matrix. If sorted is True, the
     // rows of the output Matrix will be sorted by the SPW IDs (the
-    // entires in the first column).
+    // entries in the first column).
     Matrix<Int> getChanList(const MeasurementSet* ms=NULL, 
 			    const Int defaultStep=1,
 			    const Bool sorted=False);
@@ -333,12 +333,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Convey to the various parsers to delete the TENs they hold
     void deleteNodes();
 
-    // Delete error hanlders (mostly the internally allocated ones).
+    // Delete error handlers (mostly the internally allocated ones).
     void deleteErrorHandlers();
 
-    // Convert to TableExprNode format (C++ interface to TaQL)
+    // Convert to TableExprNode format (C++ interface to TaQL).  This
+    // is now for purely backwards compatibility and ease of use.  It
+    // internally constructs the MSSelectableTable from the supplied
+    // MS and calls the generic version of toTableExprNode below
+    // (which works with MSSelectableTable object).
     TableExprNode toTableExprNode(const MeasurementSet* ms);
-    // Convert to TableExprNode format (C++ interface to TaQL)
+
+    // Convert to TableExprNode format (C++ interface to TaQL).  The
+    // MSSelectableTable is a pure-virtual base class which provides a
+    // generic interface both to MeasurementSet and CalTable (in the
+    // synthesis module) services used in MSSelection.  The actual
+    // objects used for supplying MeasurementSet or CalTable to
+    // MSSelection are MSInterface and CTInterface classes
+    // respectively.  With this, MSSelection module can be used for
+    // selection on MeasurementSet or CalTable.
     TableExprNode toTableExprNode(MSSelectableTable* msLike);
     
     // Return the selected MS.  The selected MS reflects only row

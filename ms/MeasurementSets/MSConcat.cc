@@ -1991,14 +1991,16 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
   Int maxThisEphId = -2; // meaning there is no EPHEMERIS_ID column in the field table
   Vector<Double> validityRange;
 
-  for(uInt i=0; i<fieldCols.nrow(); i++){
-    if(!fieldCols.ephemPath(i).empty() && fieldCols.ephemerisId()(i)>maxThisEphId){
-      maxThisEphId = fieldCols.ephemerisId()(i);
+  if(itsMS.field().actualTableDesc().isColumn(MSField::columnName(MSField::EPHEMERIS_ID))){
+    for(uInt i=0; i<fieldCols.nrow(); i++){
+      if(fieldCols.ephemerisId()(i)>maxThisEphId){
+	maxThisEphId = fieldCols.ephemerisId()(i);
+      }
     }
   }
   if(maxThisEphId>-1){ // this MS has at least one field using an ephemeris.
                        // maxThisEphId==-1 would mean there is an EPHEMERIS_ID column but there are no entries
-    // find first and last obs time
+    // find first and last obs time of other MS
     Vector<uInt> sortedI(otherms.nrow());
     ROMSMainColumns msmc(otherms);
     Vector<Double> mainTimesV = msmc.time().getColumn();
@@ -2013,6 +2015,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
   for (uInt f = 0; f < nFlds; f++) {
 
     String ephPath = otherFieldCols.ephemPath(f);
+    Double otherOrigTime = otherFieldCols.time()(f);
 
     try{
       delayDir = otherFieldCols.delayDirMeas(f);
@@ -2023,7 +2026,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
       if(!ephPath.empty()){
 	LogIO os(LogOrigin("MSConcat", "copyField"));
 	os << LogIO::SEVERE << "Field " << f << " (" << otherFieldCols.name()(f) << ", to be appended)"
-	   << " is using an ephemeris with incorrect time origin setup: the time origin (" << otherFieldCols.time()(f)
+	   << " is using an ephemeris with incorrect time origin setup: the time origin (" << otherOrigTime
 	   << " s) in the FIELD table is outside the validity range of the ephemeris." << LogIO::POST;
       }
       throw(x);
@@ -2035,7 +2038,7 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
       refDir = dirCtr(refDir.getValue());
     }
     
-    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance);
+    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance, otherOrigTime);
 
     Bool canUseThisEntry = (newFld>=0);
     if(canUseThisEntry){
@@ -2564,7 +2567,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
 		otherDDCols.spectralWindowId()(d) < static_cast<Int>(otherSpw.nrow()), 
 		AipsError);
-    const uInt otherSpwId = static_cast<uInt>(otherDDCols.spectralWindowId()(d));
+    const Int otherSpwId = otherDDCols.spectralWindowId()(d);
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
 
     foundInDD(otherSpwId) = True;
@@ -2597,7 +2600,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
       // cout << "counterpart found for other spw " << otherSpwId 
       //     << " found in this spw " << *newSpwPtr << endl;
       matchedSPW = True;
-      if(*newSpwPtr != Int(otherSpwId)){
+      if(*newSpwPtr != otherSpwId){
 	newSPWIndex_p.define(otherSpwId, *newSpwPtr);
       }
     }      

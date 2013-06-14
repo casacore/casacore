@@ -165,7 +165,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Output:
     //    matchFieldName   Vector<Int>              Matching field id's
     //
-    LogicalArray maskArray = (msFieldCols_p.name().getColumn()==name &&
+    Vector<String> strippedNames = msFieldCols_p.name().getColumn();
+    IPosition sh=strippedNames.shape();
+    for(Int i=0;i<sh(0);i++)
+	strippedNames(i) = stripWhite(msFieldCols_p.name().getColumn()(i));
+
+    LogicalArray maskArray = (strippedNames==name &&
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
 
@@ -182,7 +187,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Output:
     //    matchFieldCode   Vector<Int>              Matching field id's
     //
-    LogicalArray maskArray = (msFieldCols_p.code().getColumn()==code &&
+    Vector<String> strippedCodes = msFieldCols_p.code().getColumn();
+    IPosition sh=strippedCodes.shape();
+    for(Int i=0;i<sh(0);i++)
+	strippedCodes(i) = stripWhite(msFieldCols_p.code().getColumn()(i));
+
+    LogicalArray maskArray = (strippedCodes==code &&
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
@@ -203,7 +213,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     uInt len = fieldnames.nelements();
     Vector<Bool> matchfieldnames(len, False);
     for(uInt j = 0; j < len; j++) {
-      if(fieldnames[j].contains(name))
+      if(stripWhite(fieldnames[j]).contains(name))
 	matchfieldnames(j) = True;
     }
     LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());

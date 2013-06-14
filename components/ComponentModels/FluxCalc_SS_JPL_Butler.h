@@ -32,14 +32,16 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MEpoch.h>
+//#include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDirection.h>
 #include <components/ComponentModels/Flux.h>
+#include <tables/Tables/ScalarColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//# Forward Declarations
 class MFrequency;
-template<typename T> class ScalarColumn;
+//class ROScalarColumn<Double>;  There doesn't seem to be a way to forward
+//declare a template.
 
 // <summary> 
 // FluxCalc_SS_JPL_Butler: Compute flux densities and get angular diameters 
@@ -228,7 +230,7 @@ class FluxCalc_SS_JPL_Butler
   // Find the row in mjd closest to time_p, and the rows just before and after
   // it, taking boundaries into account.
   Bool get_row_numbers(uInt& rowbef, uInt& rowclosest, uInt& rowaft,
-		       const ScalarColumn<Double>& mjd);
+		       const ROScalarColumn<Double>& mjd);
 
   // Put a quadratic, linear, or nearest neighbor interpolation of colname into
   // val.  Returns whether or not it did it.

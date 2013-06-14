@@ -191,9 +191,15 @@ public:
     // Frees up storage only if this array was the last reference to it.
     virtual ~Array();
 
+    // Make an mepty array of the same template type.
+    virtual CountedPtr<ArrayBase> makeArray() const;
+
     // Assign the other array to this array.
     // If the shapes mismatch, this array is resized.
+    // <group>
     virtual void assign (const Array<T>& other);
+    virtual void assign (const ArrayBase& other, Bool checkType=True);
+    // </group>
 
     // Set every element of the array to "value." Also could use the
     // assignment operator which assigns an array from a scalar.
@@ -433,8 +439,8 @@ public:
     // </group>
 
     // Get a reference to a section of an array.
-    // This is the same as operator().
-    virtual ArrayBase* getSection (const Slicer&);
+    // This is the same as operator(), but can be used in a type-agnostic way.
+    virtual CountedPtr<ArrayBase> getSection (const Slicer&) const;
 
     // Get the subset given by the i-th value of the last axis. So for a cube
     // it returns the i-th xy plane. For a Matrix it returns the i-th row.
@@ -511,18 +517,26 @@ public:
     // Note that deleteIt is set in this function.
     // <group>
     T *getStorage(Bool &deleteIt);
-    const T *getStorage(Bool &deleteIt) const;
+    const T *getStorage(Bool &deleteIt) const
+    {
+      // The cast is OK because the return pointer will be cast to const
+      return const_cast<Array<T>*>(this)->getStorage(deleteIt);
+    }
+    virtual void *getVStorage(Bool &deleteIt);
+    virtual const void *getVStorage(Bool &deleteIt) const;
     // </group>
 
     // putStorage() is normally called after a call to getStorage() (cf).
     // The "storage" pointer is set to zero.
     void putStorage(T *&storage, Bool deleteAndCopy);
+    virtual void putVStorage(void *&storage, Bool deleteAndCopy);
 
     // If deleteIt is set, delete "storage". Normally freeStorage calls
     // will follow calls to getStorage. The reason the pointer is "const"
     // is because only const pointers are released from const arrays.
     // The "storage" pointer is set to zero.
     void freeStorage(const T *&storage, Bool deleteIt) const;
+    void freeVStorage(const void *&storage, Bool deleteIt) const;
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
@@ -541,7 +555,7 @@ public:
     friend class ArrayIterator<T>;
 
     // Create an ArrayIterator object of the correct type.
-    virtual ArrayPositionIterator* makeIterator (uInt byDim);
+    virtual CountedPtr<ArrayPositionIterator> makeIterator (uInt byDim) const;
 
     // Needed to be a friend for Matrix<T>::reference()
     friend class Matrix<T>;

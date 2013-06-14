@@ -1064,8 +1064,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  chanIDList = chanIDs_p;
 	
 	for(uInt targetRow=0; targetRow<nrows; targetRow++)
-	  if (chanIDList(targetRow,ncols-1) < 1) 
-	    chanIDList(targetRow,ncols-1)=defaultStep;
+	  {
+	    if (chanIDList(targetRow,ncols-1) == 0)
+	      chanIDList(targetRow,ncols-1)=defaultStep;
+	    // if (chanIDList(targetRow,ncols-2) == chanIDList(targetRow,ncols-3)) // Stop == Step
+	    //   chanIDList(targetRow,ncols-1)=0;
+	  }
       }
     
     
@@ -1097,7 +1101,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       {
 	spwID = chanList_l(i,0); // First column has the SPW ID
 	Array<Double> chanFreq(msSpwSubTable.chanFreq()(spwID));
-	Double avgChanWidth = sum(msSpwSubTable.chanWidth()(spwID))
+	Double avgChanWidth = chanList_l(i,3)*sum(msSpwSubTable.chanWidth()(spwID))
 	  /msSpwSubTable.chanWidth()(spwID).nelements();
 	
 	freqList_l(i,0) = (Double)chanList_l(i,0);
@@ -1131,7 +1135,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       Int islice=currspwsl.nelements();
       currspwsl.resize(islice+1,True);
       currspwsl(islice)=Slice(chanmat(i,1),
-			      chanmat(i,2)-chanmat(i,1)+1,
+			      (chanmat(i,2)-chanmat(i,1)+chanmat(i,3))/chanmat(i,3),
+			      // chanmat(i,2)-chanmat(i,1)+1,
 			      chanmat(i,3));
     }
     

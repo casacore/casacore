@@ -223,11 +223,13 @@ private:
                         const Double cpa, const Double spa);
 
   //# The parameters of the limb-darkened disk
+  // <group>
   Double itsMajValue;
   Double itsMinValue;
   Double itsPaValue;
   Double itsHeight;
   Float  itsAttnFactor;  
+  // </group>
 };
 
 } //# NAMESPACE CASA - END

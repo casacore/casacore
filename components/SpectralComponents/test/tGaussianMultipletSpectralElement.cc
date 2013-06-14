@@ -27,6 +27,9 @@
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Containers/Record.h>
+#include <components/SpectralComponents/PolynomialSpectralElement.h>
+
+#include <components/SpectralComponents/GaussianSpectralElement.h>
 #include <components/SpectralComponents/GaussianMultipletSpectralElement.h>
 #include <components/SpectralComponents/SpectralElementFactory.h>
 
@@ -39,61 +42,17 @@
 
 #include <casa/namespace.h>
 
+#include <vector>
 
 int main() {
-	/*
-	{
 
-		cout << "Test setting/getting" << endl;
-		GaussianSpectralElement g1(4.6, 4.5, 4.4);
-		GaussianSpectralElement g2(5.6, 5.2, 5.5);
-		GaussianSpectralElement g3(6.6, 6.2, 6.5);
-		//GaussianSpectralElement g4(6.6, 6.2, 6.5);
-
-		Vector<GaussianSpectralElement> gaussians(3);
-		gaussians[0] = g1;
-		gaussians[1] = g2;
-		gaussians[2] = g3;
-		//gaussians[3] = g4;
-
-		Matrix<Double> relations(2, 3, 0);
-		relations(0, 2) = 4;
-		relations(1, 1) = 10;
-		//relations(2, 0) = 10;
-
-		cout << __FILE__ << " " << __LINE__ << endl;
-		GaussianMultipletSpectralElement triplet(gaussians, relations);
-		cout << __FILE__ << " " << __LINE__ << endl;
-
-		Vector<GaussianSpectralElement> got = triplet.getGaussians();
-		cout << __FILE__ << " " << __LINE__ << endl;
-
-		for (uInt i=0; i<got.size(); i++) {
-			cout << got[i] << endl;
-		}
-		AlwaysAssert(got[0] == g1, AipsError);
-		AlwaysAssert(got[1] == g2, AipsError);
-		AlwaysAssert(got[2] == g3, AipsError);
-
-		cout << &triplet.getFixedRelationships() << " " << &relations << endl;
-		AlwaysAssert(
-			allNear(
-				triplet.getFixedRelationships(), relations, 1e-8
-			), AipsError
-		);
-
-		cout << __FILE__ << " " << __LINE__ << endl;
-		return 0;
-
-	}
-	*/
 	{
 		cout << "Test that exception is thrown if there is "
 			<< "a mismatch between number of Gaussians and "
 			<< "number of relationships between them" << endl;
 		GaussianSpectralElement g1(4,4,4);
 		GaussianSpectralElement g2(5,5,5);
-		Vector<GaussianSpectralElement> doublet(2);
+		vector<GaussianSpectralElement> doublet(2);
 		doublet[0] = g1;
 		doublet[1] = g2;
 		Matrix<Double> relations(2, 3, 0);
@@ -111,7 +70,7 @@ int main() {
 			<< "does not have three columns" << endl;
 		GaussianSpectralElement g1(4, 4, 4);
 		GaussianSpectralElement g2(5, 5, 5);
-		Vector<GaussianSpectralElement> doublet(2);
+		vector<GaussianSpectralElement> doublet(2);
 		doublet[0] = g1;
 		doublet[1] = g2;
 		Matrix<Double> relations(1, 4, 0);
@@ -130,9 +89,18 @@ int main() {
 		GaussianSpectralElement g1(4, 4, 4);
 		GaussianSpectralElement g2(5, 5, 5);
 		g2.fixAmpl();
-		Vector<GaussianSpectralElement> doublet(2);
+		cout << "g1 " << g1 << endl;
+		cout << "g2 " << g2 << endl;
+		std::vector<GaussianSpectralElement> doublet(2);
 		doublet[0] = g1;
+		cout << "doub 0 " << doublet[0] << " " << &doublet[0]  << endl;
+		cout << "doub 1 " << doublet[1] << " " << &doublet[1] << endl;
+
 		doublet[1] = g2;
+		cout << "doub 0 " << doublet[0] << " " << &doublet[0]  << endl;
+		cout << "doub 1 " << doublet[1] << " " << &doublet[1] << endl;
+		cout << "g1 " << g1 << endl;
+				cout << "g2 " << g2 << endl;
 		Matrix<Double> relations(1, 3, 0);
 		relations(0,0) = 4;
 		Bool result = True;
@@ -149,7 +117,7 @@ int main() {
 		GaussianSpectralElement g1(4, 4, 4);
 		GaussianSpectralElement g2(5, 5, 5);
 		g2.fixCenter();
-		Vector<GaussianSpectralElement> doublet(2);
+		vector<GaussianSpectralElement> doublet(2);
 		doublet[0] = g1;
 		doublet[1] = g2;
 		Matrix<Double> relations(1, 3, 0);
@@ -168,7 +136,7 @@ int main() {
 		GaussianSpectralElement g1(4, 4, 4);
 		GaussianSpectralElement g2(5, 5, 5);
 		g2.fixFWHM();
-		Vector<GaussianSpectralElement> doublet(2);
+		vector<GaussianSpectralElement> doublet(2);
 		doublet[0] = g1;
 		doublet[1] = g2;
 		Matrix<Double> relations(1, 3, 0);
@@ -185,7 +153,7 @@ int main() {
 		cout << "Test gaussians were correctly constructed " << endl;
 		GaussianSpectralElement g1(4, 4.4, 4.6);
 		GaussianSpectralElement g2(5, 5.2, 5.8);
-		Vector<GaussianSpectralElement> gaussians(2);
+		vector<GaussianSpectralElement> gaussians(2);
 		gaussians[0] = g1;
 		gaussians[1] = g2;
 		Matrix<Double> relations(1, 3, 0);
@@ -233,18 +201,22 @@ int main() {
 		cout << "Test toRecord()/fromRecord()" << endl;
 		GaussianSpectralElement g1(4.6, 4.5, 4.4);
 		GaussianSpectralElement g2(5.6, 5.2, 5.5);
-		Vector<GaussianSpectralElement> gaussians(2);
+		vector<GaussianSpectralElement> gaussians(2);
 		gaussians[0] = g1;
 		gaussians[1] = g2;
 		Matrix<Double> relations(1, 3, 0);
 		relations(0, 2) = 4;
 		GaussianMultipletSpectralElement doublet(gaussians, relations);
 		Record myRec;
+		cout << "doublet real " << doublet << endl;
 		doublet.toRecord(myRec);
+		cout << "myrec " << myRec << endl;
 		std::auto_ptr<SpectralElement> ptr = SpectralElementFactory::fromRecord(myRec);
 		GaussianMultipletSpectralElement out = *dynamic_cast<GaussianMultipletSpectralElement*>(
 			ptr.get()
 		);
+		cout << "out " << out << endl;
+		cout << "doublet " << doublet << endl;
 		AlwaysAssert(out == doublet, AipsError);
 	}
 	{
@@ -263,7 +235,7 @@ int main() {
 		g1.fix(fixed);
 
 
-		Vector<GaussianSpectralElement> gaussians(3);
+		vector<GaussianSpectralElement> gaussians(3);
 		gaussians[0] = g1;
 		gaussians[1] = g2;
 		gaussians[2] = g3;

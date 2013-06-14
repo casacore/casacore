@@ -93,7 +93,7 @@ public:
   MSSpwIndex(const MSSpectralWindow& msSpw);
 
   // Null destructor
-  virtual ~MSSpwIndex() {}
+  virtual ~MSSpwIndex() {};
 
   // Look up FIELD_ID's for a given field name, or set of field names
   Vector<Int> matchName(const String& name);
@@ -126,6 +126,9 @@ public:
   Vector<Int> convertToSpwIndex(const Vector<Float>& freqList,
 				Int &nFSpec);
 private:
+  Int findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
+		      const Bool& greaterThan,
+		      const Bool& ascendingOrder);
   // Construct from an MS FIELD subtable
   MSSpwIndex();
   // FIELD subtable column accessor

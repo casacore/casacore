@@ -900,11 +900,16 @@ String TableExprFuncNode::getString (const TableExprId& id)
 	str.downcase();
 	return str;
       }
+    case capitalizeFUNC:
+      {
+	String str = operands_p[0]->getString (id);
+	str.capitalize();
+	return str;
+      }
     case trimFUNC:
       {
 	String str = operands_p[0]->getString (id);
-        str.gsub (leadingWS, string());
-        str.gsub (trailingWS, string());
+        str.trim();
 	return str;
       }
     case ltrimFUNC:
@@ -1285,6 +1290,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return checkDT (dtypeOper, NTString, NTInt, nodes);
     case upcaseFUNC:
     case downcaseFUNC:
+    case capitalizeFUNC:
     case trimFUNC:
     case ltrimFUNC:
     case rtrimFUNC:

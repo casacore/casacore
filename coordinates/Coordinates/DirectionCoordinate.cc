@@ -781,75 +781,128 @@ void DirectionCoordinate::checkFormat(Coordinate::formatType& format,
    }
 }
 
-
 DirectionCoordinate DirectionCoordinate::convert(
 	Quantity& angle, MDirection::Types directionType
 ) const {
-	DirectionCoordinate converted(
-		directionType, wcs_p, False
-	);
- 
-	Vector<Double> myRefVal = referenceValue();
-	Vector<String> units = worldAxisUnits();
+	DirectionCoordinate myClone;
+	if (conversionType_p == type_p) {
+		myClone = *this;
+	}
+	else {
+		myClone = DirectionCoordinate(*this);
+		myClone.setReferenceConversion(type_p);
+	}
+	Vector<String> units = myClone.worldAxisUnits();
+
+	Vector<Double> x = myClone.referenceValue();
+	Vector<Quantity> myRefVal(2);
+	myRefVal[0] = Quantity(x[0], units[0]);
+	myRefVal[1] = Quantity(x[1], units[1]);
+
 	MDirection myRefDir(
-		Quantity(myRefVal[0], units[0]),
-		Quantity(myRefVal[1], units[1]),
-		conversionType_p
+		myRefVal[0], myRefVal[1],
+		type_p
 	);
- 
-	Quantum<Vector<Double> > newRefDir = MDirection::Convert(
-		myRefDir, directionType
-	)().getAngle();
 
-	Vector<Double> newRefDirVec(2);
-	newRefDirVec[0] = newRefDir.getValue(units[0])[0];
-	newRefDirVec[1] = newRefDir.getValue(units[1])[1];
-	converted.setReferenceValue(newRefDirVec);
 
-	// get the angle for the linear transformation matrix. Need another world coordinate point.
-	Vector<Double> myRefPix = referencePixel();
+    x = increment();
+    Vector<Quantity> inc(2);
+    inc[0] = Quantity(x[0], units[0]);
+    inc[1] = Quantity(x[1], units[1]);
+
+    Vector<Double> myRefPix = myClone.referencePixel();
+
+	// get the angle for the linear transformation matrix. Need two world coordinate points.
+
 	Vector<Double> pixVal2 = myRefPix.copy();
 	pixVal2[0] = myRefPix[0] + 1;
-
-	// Figure out this coordinate's rotation angle
-	Vector<Double> origWorldVal2;
-	toWorld(origWorldVal2, pixVal2);
-	Double diffx = origWorldVal2[0] - myRefVal[0];
-	Double diffy = origWorldVal2[1] - myRefVal[1];
-	Double hyp = sqrt(diffx*diffx + diffy*diffy);
-	Double origAngle = (fabs(diffy/increment()[1]) < 1e-8)
-		? 0 : asin(diffy/hyp);
-	if (diffx < 0) {
+	// Figure out this coordinate's rotation angle wrt the cardinal directions.
+	// Normally, its 180 degrees (longitude decreases to the right)
+	myClone.toWorld(x, pixVal2);
+	Vector<Quantity> origWorldVal2(2);
+	origWorldVal2[0] = Quantity(x[0], units[0]);
+	origWorldVal2[1] = Quantity(x[1], units[1]);
+	Quantity diffx = origWorldVal2[0] - myRefVal[0];
+	Double diffXVal = _longitudeDifference(
+		diffx, myRefVal[1], inc[0]
+	);
+	Quantity diffy = origWorldVal2[1] - myRefVal[1];
+	Double diffYVal = diffy.getValue("arcsec");
+	Double hypVal = sqrt(diffXVal*diffXVal + diffYVal*diffYVal);
+	Double origAngle = (fabs(diffYVal/inc[1].getValue("arcsec")) < 1e-8)
+		? 0 : asin(diffYVal/hypVal);
+	if (diffXVal > 0) {
+		// This is assuming a normal astronomer world where
+		// longitude values decrease to the right.
 		origAngle = C::pi - origAngle;
 	}
 	MDirection origWorldDir2(
-			Quantity(origWorldVal2[0], units[0]),
-			Quantity(origWorldVal2[1], units[1]),
-			conversionType_p
-		);
+		origWorldVal2[0], origWorldVal2[1],
+		type_p
+	);
 
-	Quantum<Vector<Double> > newWorlVal2 = MDirection::Convert(
+	// newRefDir is in the the requested directionType frame
+	Quantum<Vector<Double> > newRefDir = MDirection::Convert(
+		myRefDir, directionType
+	)().getAngle();
+	Vector<Quantity> newRefDirVec(2);
+	newRefDirVec[0] = Quantity(newRefDir.getValue(units[0])[0], units[0]);
+	newRefDirVec[1] = Quantity(newRefDir.getValue(units[1])[1], units[1]);
+	Quantum<Vector<Double> > newWorld2Dir = MDirection::Convert(
 		origWorldDir2, directionType
 	)().getAngle();
-	diffx = (newWorlVal2.getValue(units[0])[0] - newRefDirVec[0])
-		*cos(newRefDir.getValue("rad")[1]);
-	diffy = newWorlVal2.getValue(units[1])[1] - newRefDirVec[1];
-	hyp = sqrt(diffx*diffx + diffy*diffy);
-	Double newAngle = (fabs(diffy/increment()[1]) < 1e-8)
-		? 0 : asin(diffy/hyp);
-	if (diffx < 0) {
+	Vector<Quantity> newWorld2Vec(2);
+
+	newWorld2Vec[0] = Quantity(newWorld2Dir.getValue(units[0])[0], units[0]);
+	newWorld2Vec[1] = Quantity(newWorld2Dir.getValue(units[1])[1], units[1]);
+	// correct for cos(latitude)
+	diffx = (newWorld2Vec[0] - newRefDirVec[0]);
+	diffXVal = _longitudeDifference(
+		diffx, newRefDirVec[1], inc[0]
+	);
+	//diffXVal = diffx.getValue("arcsec")*cos(newRefDir.getValue("rad")[1]);
+	diffy = newWorld2Vec[1] - newRefDirVec[1];
+	diffYVal = diffy.getValue("arcsec");
+	hypVal = sqrt(diffXVal*diffXVal+diffYVal*diffYVal);
+	Double newAngle = (fabs(diffYVal/inc[1].getValue("arcsec")) < 1e-8)
+		? 0 : asin(diffYVal/hypVal);
+	if (diffXVal > 0) {
 		newAngle = C::pi - newAngle;
 	}
 	angle = Quantity(newAngle - origAngle, "rad");
-	std::auto_ptr<Coordinate> rotated(converted.rotate(angle));
-	converted = *dynamic_cast<DirectionCoordinate* >(rotated.get());
-	Matrix<Double> xform(2, 2, 0);
-	xform(0, 0) = 1;
-	xform(1, 1) = 1;
-	converted.setLinearTransform(xform);
+
+    Matrix<Double> xform(2, 2, 0);
+
+	xform.diagonal() = 1.0;
+    DirectionCoordinate converted(
+    	directionType, projection_p, newRefDirVec[0],
+    	newRefDirVec[1], inc[0],
+    	inc[1], xform, myRefPix[0],
+    	myRefPix[1]
+    );
 	return converted;
 }
 
+Double DirectionCoordinate::_longitudeDifference(
+    const Quantity& longAngleDifference, const Quantity& latitude,
+    const Quantity& longitudePixelIncrement
+) {
+	Double latInRad = latitude.getValue("rad");
+	Double diffXVal = longAngleDifference.getValue("arcsec")*cos(latInRad);
+	Double incXVal = longitudePixelIncrement.getValue("arcsec");
+	if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+		// There may be a 2*pi ambiguity somewhere
+
+		diffXVal = (longAngleDifference - Quantity(360, "deg")).getValue("arcsec")*cos(latInRad);
+		if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+			diffXVal = (longAngleDifference + Quantity(360, "deg")).getValue("arcsec")*cos(latInRad);
+			if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+				throw AipsError("DirectionCoordinate::_longitudeDifference: Cannot determine diffx");
+			}
+		}
+	}
+	return diffXVal;
+}
 
 void DirectionCoordinate::getPrecision (Int& precision,
                                         Coordinate::formatType& format,
@@ -1727,12 +1780,12 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
     return x;
 }
 
-Quantity DirectionCoordinate::getPixelArea() const
-{
-    Vector<Double> cdelt = increment();
-    Quantity forUnit = Quantity(1, units_p[0]) * Quantity(1, units_p[1]);
-    return Quantity(fabs(cdelt[0]*cdelt[1]), forUnit.getUnit());
+Quantity DirectionCoordinate::getPixelArea() const {
+	Vector<Double> cdelt = increment();
+	Quantity forUnit = Quantity(1, units_p[0]) * Quantity(1, units_p[1]);
+	return Quantity(fabs(cdelt[0]*cdelt[1]), forUnit.getUnit());
 }
+
 
 // These world abs/rel functions are independent of the conversion direction type.
 

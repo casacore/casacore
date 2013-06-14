@@ -704,6 +704,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   } else if (funcName == "downcase"  ||  funcName == "lower"  ||
 	     funcName == "tolower"   ||  funcName == "to_lower") {
     ftype = TableExprFuncNode::downcaseFUNC;
+  } else if (funcName == "capitalize") {
+    ftype = TableExprFuncNode::capitalizeFUNC;
   } else if (funcName == "trim") {
     ftype = TableExprFuncNode::trimFUNC;
   } else if (funcName == "ltrim") {

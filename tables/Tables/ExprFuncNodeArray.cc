@@ -1575,6 +1575,7 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     switch (funcType()) {
     case TableExprFuncNode::upcaseFUNC:
     case TableExprFuncNode::downcaseFUNC:
+    case TableExprFuncNode::capitalizeFUNC:
     case TableExprFuncNode::trimFUNC:
     case TableExprFuncNode::ltrimFUNC:
     case TableExprFuncNode::rtrimFUNC:
@@ -1599,10 +1600,14 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 		str[i].downcase();
 	    }
 	    break;
+	case TableExprFuncNode::capitalizeFUNC:
+	    for (i=0; i<n; i++) {
+		str[i].capitalize();
+	    }
+	    break;
 	case TableExprFuncNode::trimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (leadingWS, string());
-                str[i].gsub (trailingWS, string());
+                str[i].trim();
 	    }
 	    break;
 	case TableExprFuncNode::ltrimFUNC:

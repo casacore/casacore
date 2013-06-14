@@ -43,6 +43,7 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/Block.h>
+#include <casa/Containers/ContainerIO.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
@@ -61,10 +62,12 @@
 #include <casa/iomanip.h>
 #include <casa/iostream.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 const String CoordinateSystem::_class = "CoordinateSystem";
+
+map<String, String> CoordinateSystem::_friendlyAxisMap = map<String, String>();
+
 
 CoordinateSystem::CoordinateSystem()
 : coordinates_p(0), 
@@ -1031,7 +1034,7 @@ Vector<Double> CoordinateSystem::toWorld(const IPosition& pixel) const {
 	}
 	return world;
 }
- 
+
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
@@ -1092,25 +1095,25 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
     return ok;
 }
 
-
-
-Bool CoordinateSystem::toWorld(Vector<Double> &world, 
-			       const IPosition &pixel) const
-{
-    const uInt n = pixel.nelements();
-    Vector<Double> pixel_tmp(n);
-    for (uInt i=0; i<n; i++) {
-	pixel_tmp(i) = pixel(i);
-    }
-    return toWorld(world, pixel_tmp);
-}
-
 Vector<Double> CoordinateSystem::toPixel(const Vector<Double> &world) const {
 	Vector<Double> pixel;
 	if (! toPixel(pixel, world)) {
 		throw AipsError("Cannot convert world to pixel coordinates");
 	}
 	return pixel;
+}
+
+Bool CoordinateSystem::toWorld(Vector<Double> &world, 
+			       const IPosition &pixel) const
+{
+    static Vector<Double> pixel_tmp;
+    if (pixel_tmp.nelements()!=pixel.nelements()) pixel_tmp.resize(pixel.nelements());
+//
+    const uInt& n = pixel.nelements();
+    for (uInt i=0; i<n; i++) {
+	pixel_tmp(i) = pixel(i);
+    }
+    return toWorld(world, pixel_tmp);
 }
 
 Bool CoordinateSystem::toPixel(Vector<Double> &pixel, 
@@ -2630,7 +2633,6 @@ Bool CoordinateSystem::save(RecordInterface &container,
        return True;
     }
 
-//
     for (uInt i=0; i<nc; i++)
     {
 	// Write each string into a field it's type plus coordinate
@@ -2743,21 +2745,20 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 //
 // Copy values
 //
-        ostringstream onum;
+	ostringstream onum;
 	onum << i;
 	Vector<Int> dummy;
 	String num(onum), name;
 	name = String("worldmap") + num;
-        // Get values from record and convert as needed (for python).
-        Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->world_maps_p[i]));
+	subrec.get(name, dummy);
+	dummy.toBlock(*(retval->world_maps_p[i]));
 	name = String("worldreplace") + num;
-	retval->world_replacement_values_p[i]->reference
-          (subrec.toArrayDouble(name));
+	subrec.get(name, *(retval->world_replacement_values_p[i]));
 	name = String("pixelmap") + num;
-        Vector<Int>(subrec.toArrayInt(name)).toBlock(*(retval->pixel_maps_p[i]));
+	subrec.get(name, dummy);
+	dummy.toBlock(*(retval->pixel_maps_p[i]));
 	name = String("pixelreplace") + num;
-        retval->pixel_replacement_values_p[i]->reference
-          (subrec.toArrayDouble(name));
+	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
     }
 //
 // Get the obsinfo
@@ -4607,8 +4608,22 @@ Vector<Int> CoordinateSystem::linearAxesNumbers() const {
     return pixelAxes(linearCoordinateNumber());
 }
 
-Vector<Int> CoordinateSystem::getWorldAxesOrder(Vector<String>& myNames, const Bool requireAll) const {
+void CoordinateSystem::_initFriendlyAxisMap() {
+	if (_friendlyAxisMap.size() == 0) {
+		_friendlyAxisMap["velocity"] = "spectral";
+		_friendlyAxisMap["frequency"] = "spectral";
+		_friendlyAxisMap["right ascension"] = "ra";
+	}
+}
+
+Vector<Int> CoordinateSystem::getWorldAxesOrder(
+	Vector<String>& myNames, Bool requireAll,
+	Bool allowFriendlyNames
+) const {
 	LogIO os(LogOrigin(_class, __FUNCTION__, WHERE));
+	if (allowFriendlyNames) {
+		_initFriendlyAxisMap();
+	}
 	uInt naxes = nWorldAxes();
 	uInt raxes = myNames.size();
 	if (requireAll && raxes != naxes) {
@@ -4621,49 +4636,45 @@ Vector<Int> CoordinateSystem::getWorldAxesOrder(Vector<String>& myNames, const B
 	_downcase(myNames);
 	Vector<Int> myorder(raxes);
 
-	Vector<String> matchMap(naxes,"");
+	Vector<String> matchMap(naxes, "");
 	for (uInt i=0; i<myNames.size(); i++) {
-		String spec = myNames[i];
-		Regex orderRE("^" + spec + ".*");
-		Vector<String> matchedNames(0);
-		Vector<uInt> matchedNumbers(0);
+		String name = myNames[i];
+		vector<String> matchedNames(0);
+		vector<uInt> matchedNumbers(0);
 		for (uInt j=0; j<axisNames.size(); j++) {
-			if (axisNames[j].matches(orderRE)) {
-				uInt oldSize = matchedNames.size();
-				matchedNames.resize(oldSize + 1, True);
-				matchedNames[oldSize] = axisNames[j];
-				matchedNumbers.resize(oldSize + 1, True);
-				matchedNumbers[oldSize] = j;
+			if (
+				axisNames[j].startsWith(name)
+				|| (
+					allowFriendlyNames
+					&& _friendlyAxisMap.find(axisNames[j]) != _friendlyAxisMap.end()
+					&& _friendlyAxisMap[axisNames[j]].startsWith(name)
+				)
+			) {
+				matchedNames.push_back(axisNames[j]);
+				matchedNumbers.push_back(j);
 			}
 		}
 		if(matchedNames.size() == 0) {
-			os << "No axis matches requested axis " << spec
+			os << "No axis matches requested axis " << name
 				<< ". Image axis names are " << axisNames
 				<< LogIO::EXCEPTION;
 		}
 		else if (matchedNames.size() > 1) {
 			os << "Multiple axes " << matchedNames << " match requested axis "
-				<< spec << LogIO::EXCEPTION;
+				<< name << LogIO::EXCEPTION;
 		}
 		uInt axisIndex = matchedNumbers[0];
 		if (matchMap[axisIndex].empty()) {
 			myorder[i] = axisIndex;
-			matchMap[axisIndex] = spec;
+			matchMap[axisIndex] = name;
 		}
 		else {
 			os << "Ambiguous axis specification. Both " << matchMap[axisIndex]
-			    << " and " << spec << " match image axis name "
+			    << " and " << name << " match image axis name "
 			    << matchedNames[0] << LogIO::EXCEPTION;
 		}
 	}
 	return myorder;
 }
 
-void CoordinateSystem::_downcase(Vector<String>& vec) const {
-	for (Vector<String>::iterator iter = vec.begin(); iter != vec.end(); iter++) {
-		iter->downcase();
-	}
-}
-
 } //# NAMESPACE CASA - END
-

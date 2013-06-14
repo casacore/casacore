@@ -210,27 +210,27 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
   }
 //
   {
-    Vector<Double> errorVals(1, 0.0);
-    if (record.isDefined("error")) {
-      const RecordFieldId error("error");
-      const IPosition shape(1,1);
-      if (record.shape(error) != shape) {
-        errorMessage += "The 'error' field must be a scalar\n";
-        return False;
-      }
-      switch (record.dataType(error)) {
-      case TpDouble:
-      case TpFloat:
-      case TpInt:
-        errorVals[0] = record.asDouble(error);
-        break;
-      default:
-        errorMessage += "The 'error' field must be a real number\n";
-        return False;
-      }
-    }
-    //
-    setErrors(errorVals);
+      Vector<Double> errorVals(1, 0.0);
+      if (record.isDefined("error")) {
+        const RecordFieldId error("error");
+        const IPosition shape(1,1);
+        if (record.shape(error) != shape) {
+          errorMessage += "The 'error' field must be a scalar\n";
+          return False;
+        }
+        switch (record.dataType(error)) {
+        case TpDouble:
+        case TpFloat:
+        case TpInt:
+            errorVals[0] = record.asDouble(error);
+          break;
+        default:
+          errorMessage += "The 'error' field must be a real number\n";
+          return False;
+        }
+     }
+//
+     setErrors(errorVals);
   }
 //
   DebugAssert(ok(), AipsError);

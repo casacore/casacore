@@ -4,11 +4,13 @@
 
 add_library (casa_components
 SpectralComponents/CompiledSpectralElement.cc
-SpectralComponents/GaussianSpectralElement.cc
-SpectralComponents/LorentzianSpectralElement.cc
 SpectralComponents/GaussianMultipletSpectralElement.cc
+SpectralComponents/GaussianSpectralElement.cc
+SpectralComponents/LogTransformedPolynomialSpectralElement.cc
+SpectralComponents/LorentzianSpectralElement.cc
 SpectralComponents/PCFSpectralElement.cc
 SpectralComponents/PolynomialSpectralElement.cc
+SpectralComponents/PowerLogPolynomialSpectralElement.cc
 SpectralComponents/SpectralFit.cc
 SpectralComponents/SpectralEstimate.cc
 SpectralComponents/SpectralList.cc
@@ -30,7 +32,10 @@ ComponentModels/ComponentShape.cc
 ComponentModels/FluxStandard.cc
 ComponentModels/FluxCalcLogFreqPolynomial.cc
 ComponentModels/FluxCalcQS.cc
-ComponentModels/FluxStdsQS.cc
+#ComponentModels/FluxStdsQS.cc
+ComponentModels/FluxStdsQS2.cc
+ComponentModels/FluxStdSrcs.cc
+ComponentModels/FluxCalcVQS.cc
 ComponentModels/FluxCalc_SS_JPL_Butler.cc
 ComponentModels/SkyCompBase.cc
 ComponentModels/ComponentList.cc
@@ -39,10 +44,7 @@ ComponentModels/TabularSpectrum.cc
 ComponentModels/ComponentType2.cc
 )
 
-target_link_libraries (
-casa_components casa_coordinates
-${GSL_LIBRARIES}
-)
+target_link_libraries (casa_components casa_coordinates ${GSL_LIBRARIES})
 
 install (
 TARGETS casa_components
@@ -73,8 +75,11 @@ ComponentModels/FluxStandard.h
 ComponentModels/FluxCalcLogFreqPolynomial.h
 ComponentModels/FluxCalcLogFreqPolynomial.tcc
 ComponentModels/FluxCalcQS.h
+ComponentModels/FluxCalcVQS.h
 ComponentModels/FluxCalc_SS_JPL_Butler.h
-ComponentModels/FluxStdsQS.h
+#ComponentModels/FluxStdsQS.h
+ComponentModels/FluxStdsQS2.h
+ComponentModels/FluxStdSrcs.h
 ComponentModels/Flux.h
 ComponentModels/Flux.tcc
 DESTINATION include/casacore/components/ComponentModels
@@ -82,13 +87,15 @@ DESTINATION include/casacore/components/ComponentModels
 
 install (FILES
 SpectralComponents/CompiledSpectralElement.h
-SpectralComponents/GaussianSpectralElement.h
 SpectralComponents/GaussianMultipletSpectralElement.h
+SpectralComponents/GaussianSpectralElement.h
+SpectralComponents/LogTransformedPolynomialSpectralElement.h
 SpectralComponents/LorentzianSpectralElement.h
 SpectralComponents/PCFSpectralElement.h
 SpectralComponents/ProfileFit1D.h
 SpectralComponents/ProfileFit1D.tcc
 SpectralComponents/PolynomialSpectralElement.h
+SpectralComponents/PowerLogPolynomialSpectralElement.h
 SpectralComponents/SpectralEstimate.h
 SpectralComponents/Spectral2Estimate.tcc
 SpectralComponents/SpectralElement.h

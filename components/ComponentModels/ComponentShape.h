@@ -63,9 +63,9 @@ template <class T> class Vector;
 // <linkto class=PointShape>point</linkto> shape class but the 
 // <linkto class=GaussianShape>Gaussian</linkto> shape,
 // <linkto class=DiskShape>disk</linkto> shape and 
-// <linkto class=LimbDarkenedDiskShape>limbdarkeneddisk</linkto> classes are
-// also available. These classes model the spatial distribution of emission
-// from the sky. 
+// <linkto class=LimbDarkenedDiskShape>limbdarkeneddisk classes are also
+// available. These classes model the spatial distribution of emission from the
+// sky. 
 
 // Classes derived from the <linkto class=SpectralModel>SpectralModel</linkto>
 // class are used to model the spectral characteristics and the 

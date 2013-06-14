@@ -304,6 +304,21 @@ int main()
       {
     	  verifyCAS3264();
       }
+      {
+    	  cout << "*** Test getWorldAxisOrder" << endl;
+    	  CoordinateSystem csys = CoordinateUtil::defaultCoords(4);
+    	  Vector<String> myNames(1, "spectral");
+    	  Bool ok = True;
+    	  try {
+    		  Vector<Int> axes = csys.getWorldAxesOrder(myNames, False, False);
+    		  ok = False;
+    	  }
+    	  catch (const AipsError& e) {}
+    	  AlwaysAssert(ok, AipsError);
+		  Vector<Int> axes = csys.getWorldAxesOrder(myNames, False, True);
+		  AlwaysAssert(axes[0] == 3, AipsError);
+
+      }
 
 
    } catch (AipsError x) {

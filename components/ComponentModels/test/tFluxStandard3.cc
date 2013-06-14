@@ -39,6 +39,7 @@
 #include <casa/BasicSL/Constants.h>
 //#include <casa/BasicMath/Math.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
@@ -55,19 +56,27 @@ int main() {
     qsScNames[0] = "Perley-Butler 2013";  qsScEnums[0] = FluxStandard::PERLEY_BUTLER_2013;
 
     //Vector<String> srcNames(2);
-    Vector<String> srcNames(3);
+    //Vector<String> srcNames(3);
+    Vector<String> srcNames(4);
     srcNames[0] = "3C196"; // model with 5th order
     srcNames[1] = "3C286";    
     srcNames[2] = "3C123";    
+    srcNames[3] = "3C48";  //time variable  
 
     Vector<MFrequency> freqs(2);
     freqs[0] = MFrequency(Quantity(2.0, "GHz"));
     freqs[1] = MFrequency(Quantity(20.0, "GHz"));
+
+
+    //MEpoch mtime(Quantity(56293.0,"d"));
+    // 2009.01.01
+    MEpoch mtime(Quantity(54832.0,"d"));
     
     // Expected flux densities for qsScNames with srcNames at freqs.
     Vector<Vector<Vector<Float> > > expfds(1);
     for(Int scNum = qsScNames.nelements(); scNum--;){
-      expfds[scNum].resize(3);
+      //expfds[scNum].resize(3);
+      expfds[scNum].resize(4);
       for(Int srcInd = srcNames.nelements(); srcInd--;)
         expfds[scNum][srcInd].resize(2);
     }
@@ -81,7 +90,10 @@ int main() {
     expfds[0][1][1] = 2.72945558;       // Perley-Butler 2013, 3C286, 20.0 GHz(Oct1st,2012)
     expfds[0][2][0] = 35.9624710;       // Perley-Butler 2013, 3C123, 2.0 GHz(Oct4st,2012)
     expfds[0][2][1] = 3.70417233;       // Perley-Butler 2013, 3C123, 20.0 GHz(Oct4st,2012)
-
+    //expfds[0][3][0] = 12.1212626;       // Perley-Butler 2013, 3C48, 2.0 GHz(Oct4st,2012)
+    expfds[0][3][0] = 12.21949673;       // Perley-Butler 2013, 3C48, 2.0 GHz(Oct4st,2012)
+    //expfds[0][3][1] = 1.325679183;       // Perley-Butler 2013, 3C48, 20.0 GHz(Oct4st,2012)
+    expfds[0][3][1] = 1.392722368;       // Perley-Butler 2013, 3C48, 20.0 GHz(at epoch 2009.01.01)
     Vector<Double> fluxUsed(4);
 
     for(Int scNum = qsScNames.nelements(); scNum--;){
@@ -96,17 +108,20 @@ int main() {
 
       FluxStandard fluxStd(fluxScaleEnum);
       Flux<Double> returnFlux, returnFluxErr;
-      
+     
+      fluxStd.setInterpMethod("spline"); 
       for(Int srcInd = srcNames.nelements(); srcInd--;){
         for(Int freqInd = freqs.nelements(); freqInd--;){
           Bool foundStd = fluxStd.compute(srcNames[srcInd], freqs[freqInd],
-                                          returnFlux, returnFluxErr);
+                                          mtime, returnFlux, returnFluxErr);
           AlwaysAssert(foundStd, AipsError);
           cout << "Passed foundStd for " << qsScNames[scNum]
                << ", " << srcNames[srcInd]
                << ", " << (freqInd ? 20.0 : 2.0) << " GHz." << endl;
 
           returnFlux.value(fluxUsed); // Read this as fluxUsed = returnFlux.value();
+          cerr.precision(10);
+          cerr<<"fluxUsed[0]="<<fluxUsed[0]<<endl;
           AlwaysAssert(fabs(fluxUsed[0] - expfds[scNum][srcInd][freqInd]) < 0.001,
                        AipsError);          
           cout << "Passed flux density test for " << qsScNames[scNum]

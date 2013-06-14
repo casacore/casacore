@@ -178,6 +178,11 @@ Functionals/Polynomial.tcc
 Functionals/Polynomial2.tcc
 Functionals/PolynomialParam.h
 Functionals/PolynomialParam.tcc
+Functionals/PowerLogarithmicPolynomial.h
+Functionals/PowerLogarithmicPolynomial.tcc
+Functionals/PowerLogarithmicPolynomial2.tcc
+Functionals/PowerLogarithmicPolynomialParam.h
+Functionals/PowerLogarithmicPolynomialParam.tcc
 Functionals/SPolynomial.h
 Functionals/SPolynomial.tcc
 Functionals/SPolynomialParam.h

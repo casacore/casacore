@@ -33,15 +33,29 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/MUString.h>
 #include <scimath/Mathematics/AutoDiffMath.h>
+#include <scimath/Functionals/Function.h>
+
+//debug only
 #include <scimath/Functionals/CompiledFunction.h>
+#include <casa/Arrays/ArrayIO.h>
 
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+SpectralElement::SpectralElement(SpectralElement::Types type, const Vector<Double>& parms)
+	: _type(type), _params(parms), _errors(parms.size(), 0),
+	  _fixed(parms.size(), False) {}
+
+
 SpectralElement::SpectralElement(const SpectralElement &other)
-: tp_p(other.tp_p), par_p(other.par_p.copy()), err_p(other.err_p.copy()),
-  fix_p(other.fix_p.copy()) {}
+: _type(other._type), _params(other._params.copy()), _errors(other._errors.copy()),
+  _fixed(other._fixed.copy()),
+  _function(
+		std::tr1::shared_ptr<Function<Double, Double> >(
+			other._function->clone()
+		)
+	) {}
 
 SpectralElement::~SpectralElement() {}
 
@@ -49,22 +63,26 @@ SpectralElement &SpectralElement::operator=(
 	const SpectralElement &other
 ) {
 	if (this != &other) {
-		tp_p = other.tp_p;
-		par_p.resize(other.par_p.size());
-		par_p = other.par_p.copy();
-		err_p.resize(other.err_p.size());
-		err_p = other.err_p.copy();
-		fix_p.resize(other.fix_p.size());
-		fix_p = other.fix_p.copy();
+		_type = other._type;
+		uInt n = other._params.size();
+		_params.resize(n);
+		_params = other._params.copy();
+		_errors.resize(n);
+		_errors = other._errors.copy();
+		_fixed.resize(n);
+		_fixed = other._fixed.copy();
+		_function = std::tr1::shared_ptr<Function<Double, Double> >(
+			other._function->clone()
+		);
 	}
 	return *this;
 }
 
 Double SpectralElement::operator[](const uInt n) const {
-	if (n >= par_p.nelements()) {
+	if (n >= _params.size()) {
 		throw(AipsError("SpectralElement: Illegal index for parameter"));
 	}
-	return par_p(n);
+	return _params[n];
 }
 
 Bool SpectralElement::operator==(
@@ -74,9 +92,9 @@ Bool SpectralElement::operator==(
 		return True;
 	}
 	return (
-		tp_p == other.tp_p && allNear(par_p, other.par_p, 1e-8)
-		&& allNear(err_p, other.err_p, 1e-8)
-		&& allTrue(fix_p == other.fix_p)
+		_type == other._type && allNear(_params, other._params, 1e-8)
+		&& allNear(_errors, other._errors, 1e-8)
+		&& allTrue(_fixed == other._fixed)
 	);
 }
 
@@ -88,7 +106,9 @@ const String* SpectralElement::allTypes(
 		String("POLYNOMIAL"),
 		String("COMPILED"),
 		String("GAUSSIAN MULTIPLET"),
-		String("LORENTZIAN")
+		String("LORENTZIAN"),
+		String("POWER LOGARITHMIC POLYNOMIAL"),
+		String("LOGARITHMIC TRANSFORMED POLYNOMIAL")
 
 	};
 
@@ -97,7 +117,10 @@ const String* SpectralElement::allTypes(
 		SpectralElement::POLYNOMIAL,
 		SpectralElement::COMPILED,
 		SpectralElement::GMULTIPLET,
-		SpectralElement::LORENTZIAN
+		SpectralElement::LORENTZIAN,
+		SpectralElement::POWERLOGPOLY,
+		SpectralElement::LOGTRANSPOLY
+
 	};
 
 	nall = SpectralElement::N_Types;
@@ -106,11 +129,14 @@ const String* SpectralElement::allTypes(
 }
 
 void SpectralElement::_set(const Vector<Double>& params) {
-	par_p = params.copy();
+	_params = params.copy();
+	for (uInt i=0; i<params.size(); i++) {
+		(*_function)[i] = params[i];
+	}
 }
 
 void SpectralElement::_setType(const SpectralElement::Types type) {
-	tp_p = type;
+	_type = type;
 }
 
 const String &SpectralElement::fromType(SpectralElement::Types tp) {
@@ -137,26 +163,34 @@ Bool SpectralElement::toType(
 	return True;
 }
 
+void SpectralElement::_setFunction(
+	const std::tr1::shared_ptr<Function<Double, Double> >& f
+) {
+	_function = f;
+}
+
+Double SpectralElement::operator()(const Double x) const {
+	return (*_function)(x);
+}
+
 void SpectralElement::get(Vector<Double> &param) const {
-  param.resize(par_p.nelements());
-  param = par_p.copy();
+	param = _params.copy();
 }
 
 Vector<Double> SpectralElement::get() const {
-	return par_p.copy();
+	return _params.copy();
 }
 
 void SpectralElement::getError(Vector<Double> &err) const {
-	err.resize(err_p.nelements());
-	err = err_p.copy();
+	err = _errors.copy();
 }
 
 Vector<Double> SpectralElement::getError() const {
-	return err_p.copy();
+	return _errors.copy();
 }
 
 void SpectralElement::setError(const Vector<Double> &err) {
-	if (err.nelements() != par_p.nelements()) {
+	if (err.nelements() != _params.nelements()) {
 		throw(
 			AipsError(
 				"SpectralElement: setting incorrect "
@@ -164,11 +198,11 @@ void SpectralElement::setError(const Vector<Double> &err) {
 			)
 		);
 	}
-	err_p = err.copy();
+	_errors = err.copy();
 }
 
 void SpectralElement::fix(const Vector<Bool> &fix) {
-	if (fix.nelements() != par_p.nelements()) {
+	if (fix.nelements() != _params.nelements()) {
 		throw(
 			AipsError(
 				"SpectralElement: setting incorrect number of fixed "
@@ -176,19 +210,23 @@ void SpectralElement::fix(const Vector<Bool> &fix) {
 			)
 		);
 	}
-	fix_p = fix.copy();
+	_fixed = fix.copy();
+	for (uInt i=0; i<_fixed.size(); i++) {
+		_function->mask(i) = fix[i];
+	}
 }
 
 const Vector<Bool>& SpectralElement::fixed() const {
-	return fix_p;
+	return _fixed;
 }
 
 Bool SpectralElement::toRecord(RecordInterface &out) const {
-	out.define(RecordFieldId("type"), fromType(tp_p));
-	Vector<Double> ptmp(par_p.copy());
-	Vector<Double> etmp(err_p.copy());
-	out.define(RecordFieldId("parameters"), ptmp);
-	out.define(RecordFieldId("errors"), etmp);
+	out.define(RecordFieldId("type"), fromType(_type));
+	Vector<Double> ptmp(_params);
+	Vector<Double> etmp(_params);
+	out.define(RecordFieldId("parameters"), _params);
+	out.define(RecordFieldId("errors"), _errors);
+	out.define(RecordFieldId("fixed"), _fixed);
 	return True;
 }
 
@@ -200,15 +238,6 @@ void SpectralElement::set(const Vector<Double>& params) {
 		);
 	}
 	_set(params);
-}
-
-void SpectralElement::_construct(
-	const Types type, const Vector<Double>& params
-) {
-	tp_p = type;
-	par_p = params.copy();
-	err_p = Vector<Double>(params.size(), 0);
-	fix_p = Vector<Bool>(params.size(), 0);
 }
 
 } //# NAMESPACE CASA - END

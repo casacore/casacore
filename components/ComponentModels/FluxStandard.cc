@@ -27,7 +27,8 @@
 //----------------------------------------------------------------------------
 
 #include <components/ComponentModels/FluxStandard.h>
-#include <components/ComponentModels/FluxStdsQS.h>
+//#include <components/ComponentModels/FluxStdsQS.h>
+#include <components/ComponentModels/FluxStdsQS2.h>
 #include <components/ComponentModels/FluxCalc_SS_JPL_Butler.h>
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/ComponentList.h>
@@ -55,7 +56,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 FluxStandard::FluxStandard(const FluxStandard::FluxScale scale) : 
   itsFluxScale(scale),
-  has_direction_p(False)
+  has_direction_p(False),
+  interpmethod_p("")
 {
 // Default constructor
 // Output to private data:
@@ -74,6 +76,7 @@ FluxStandard::~FluxStandard()
 //----------------------------------------------------------------------------
 
 Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
+                            const MEpoch& mtime,
 			    Flux <Double>& value, Flux <Double>& error)
 {
   // I refuse to duplicate the monstrosity below to skip a short for loop.
@@ -82,7 +85,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
   Vector<MFrequency> mfreqs(1);
   
   mfreqs[0] = mfreq;
-  Bool success = compute(sourceName, mfreqs, fluxes, errors);
+  Bool success = compute(sourceName, mfreqs, mtime, fluxes, errors);
   
   value = fluxes[0];
   error = errors[0];
@@ -91,6 +94,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 
 Bool FluxStandard::compute(const String& sourceName, 
                            const Vector<Vector<MFrequency> >& mfreqs,
+                           const MEpoch& mtime,
                            Vector<Vector<Flux<Double> > >& values,
                            Vector<Vector<Flux<Double> > >& errors)
 {
@@ -98,7 +102,7 @@ Bool FluxStandard::compute(const String& sourceName,
   uInt nspws = mfreqs.nelements();
 
   for(uInt spw = 0; spw < nspws; ++spw)
-    success &= compute(sourceName, mfreqs[spw], values[spw], errors[spw],
+    success &= compute(sourceName, mfreqs[spw], mtime, values[spw], errors[spw],
                        spw == 0);
 
   return success;
@@ -106,6 +110,7 @@ Bool FluxStandard::compute(const String& sourceName,
 
 Bool FluxStandard::compute(const String& sourceName, 
                            const Vector<MFrequency>& mfreqs,
+                           const MEpoch& mtime,
                            Vector<Flux<Double> >& values,
                            Vector<Flux<Double> >& errors,
                            const Bool verbose)
@@ -115,6 +120,7 @@ Bool FluxStandard::compute(const String& sourceName,
 // Inputs:
 //    sourceName  Source name
 //    mfreqs      Desired frequencies
+//    mtime       Desired time 
 // Output:
 //    values      Computed total flux densities
 //    errors      Flux density uncertainties; 0 => not known.
@@ -150,20 +156,28 @@ Bool FluxStandard::compute(const String& sourceName,
   // (std, src) state?  It is more convenient than adding a loop over
   // log10(frequency) inside each switch case.
 
-  CountedPtr<FluxCalcQS> fluxStdPtr;
-
+  //CountedPtr<FluxCalcQS> fluxStdPtr;
+  CountedPtr<FluxCalcVQS> fluxStdPtr;
+  Bool timeVariable(false);
   if(itsFluxScale == BAARS)
-    fluxStdPtr = new FluxStdBaars;
+    fluxStdPtr = new NSTDS::FluxStdBaars;
   else if(itsFluxScale == PERLEY_90)
-    fluxStdPtr = new FluxStdPerley90;
+    fluxStdPtr = new NSTDS::FluxStdPerley90;
   else if(itsFluxScale == PERLEY_TAYLOR_95)
-    fluxStdPtr = new FluxStdPerleyTaylor95;
+    fluxStdPtr = new NSTDS::FluxStdPerleyTaylor95;
   else if(itsFluxScale == PERLEY_TAYLOR_99)
-    fluxStdPtr = new FluxStdPerleyTaylor99;
+    fluxStdPtr = new NSTDS::FluxStdPerleyTaylor99;
   else if(itsFluxScale == PERLEY_BUTLER_2010)
-    fluxStdPtr = new FluxStdPerleyButler2010;
-  else if(itsFluxScale == PERLEY_BUTLER_2013)
-    fluxStdPtr = new FluxStdPerleyButler2013;
+    fluxStdPtr = new NSTDS::FluxStdPerleyButler2010;
+  else if(itsFluxScale == PERLEY_BUTLER_2013) {
+    fluxStdPtr = new NSTDS::FluxStdPerleyButler2013;
+    timeVariable=true; // to read from the table 
+    if (interpmethod_p=="") {
+      ostringstream oss;
+      oss << "Unset interpmethod. Please set the method first";
+      throw(AipsError(String(oss)));
+    }
+  }
   else{
     if(verbose)
       os << LogIO::SEVERE
@@ -186,9 +200,9 @@ Bool FluxStandard::compute(const String& sourceName,
     direction_p = fluxStdPtr->getDirection();
     has_direction_p = True;
   }
-
   // Compute the flux density values and their uncertainties, returning whether
   // or not it worked.
+  if (timeVariable) return (*fluxStdPtr)(values,errors,mfreqs,mtime,interpmethod_p);
   return (*fluxStdPtr)(values, errors, mfreqs);
 }
 
@@ -225,7 +239,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
   Bool success = False;
 
   if(itsFluxScale < FluxStandard::HAS_RESOLUTION_INFO){
-    if(this->compute(sourceName, mfreqs, values, errors)){
+    if(this->compute(sourceName, mfreqs, mtime, values, errors)){
       // Create a point component with the specified flux density.
       MDirection dummy;
       PointShape point(position.getValue().separation(dummy.getValue()) < 1e-7 &&
@@ -278,6 +292,30 @@ Bool FluxStandard::computeCL(const String& sourceName,
   }
   return success;
 }
+
+void FluxStandard::setInterpMethod(const String& interpmethod)
+{
+  LogIO os(LogOrigin("FluxStandard", "setInterpMode"));
+  if(interpmethod.contains("nearest")) {
+    interpmethod_p = "nearestNeighbour";
+  }
+  else if(interpmethod.contains("linear")) {
+    interpmethod_p = "linear";
+  }
+  else if(interpmethod.contains("cubic")) {
+    interpmethod_p = "cubic"; 
+  }
+  else if(interpmethod.contains("spline")) {
+    interpmethod_p = "spline";
+  }
+  else {
+    ostringstream oss;
+    oss << interpmethod << " is not a supported interpolation method";
+    throw(AipsError(String(oss)));
+  }  
+}
+
+
 
 String FluxStandard::makeComponentList(const String& sourceName,
                                        const Vector<MFrequency>& mfreqs,
@@ -406,9 +444,6 @@ Bool FluxStandard::matchStandard (const String& name,
     stdEnum = FluxStandard::PERLEY_BUTLER_2013;
   }
   // Baars
-  else if (lname.contains("baars")) {
-    stdEnum = FluxStandard::BAARS;
-  }
   else if (lname.contains("baars")) {
     stdEnum = FluxStandard::BAARS;
   }

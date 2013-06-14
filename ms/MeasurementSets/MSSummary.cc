@@ -69,14 +69,16 @@ MSSummary::MSSummary (const MeasurementSet& ms)
 : pMS(&ms), _msmd(new MSMetaDataOnDemand(&ms, 50.0)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
-  _listUnflaggedRowCount(False)
+  _listUnflaggedRowCount(False),
+  _cacheSizeMB(50)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms)
 : pMS(ms), _msmd(new MSMetaDataOnDemand(ms, 50.0)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
-  _listUnflaggedRowCount(False)
+  _listUnflaggedRowCount(False),
+  _cacheSizeMB(50)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms, const String msname)
@@ -84,7 +86,8 @@ MSSummary::MSSummary (const MeasurementSet* ms, const String msname)
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   msname_p(msname),
-  _listUnflaggedRowCount(False)
+  _listUnflaggedRowCount(False),
+  _cacheSizeMB(50)
 {}
 //
 // Destructor does nothing
@@ -125,7 +128,7 @@ Bool MSSummary::setMS (const MeasurementSet& ms)
 		return False;
 	} else {
 		pMS = pTemp;
-		_msmd.reset(new MSMetaDataOnDemand(&ms, 50));
+		_msmd.reset(new MSMetaDataOnDemand(&ms, _cacheSizeMB));
 		return True;
 	}
 }

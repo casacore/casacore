@@ -1,6 +1,7 @@
 set (tests
 dArrayAccessor
 tArrayAccessor
+tArrayBase
 tArray
 tArrayIO2
 tArrayIO3

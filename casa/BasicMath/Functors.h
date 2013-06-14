@@ -30,6 +30,7 @@
 
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Complex.h>
+#include <casa/BasicSL/String.h>
 #include <functional>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -611,6 +612,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   private:
     Accum itsBase;    // store as Accum, so subtracttion results in Accum
   };
+
+  // Functor to downcase a std::string. The result is a casa::String.
+  struct Downcase : public std::unary_function<std::string,String>
+  {
+    String operator() (const std::string& value) const
+      { return downcase(value); }
+  };
+
+  // Functor to upcase a std::string. The result is a casa::String.
+  struct Upcase : public std::unary_function<std::string,String>
+  {
+    String operator() (const std::string& value) const
+      { return upcase(value); }
+  };
+
+  // Functor to capitalize a std::string. The result is a casa::String.
+  struct Capitalize : public std::unary_function<std::string,String>
+  {
+    String operator() (const std::string& value) const
+      { return capitalize(value); }
+  };
+
+  // Functor to trim a std::string. The result is a casa::String.
+  // Leading and trailing whitespace is removed.
+  struct Trim : public std::unary_function<std::string,String>
+  {
+    String operator() (const std::string& value) const
+      { return trim(value); }
+  };
+
 
 } //# NAMESPACE CASA - END
 

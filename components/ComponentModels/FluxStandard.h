@@ -59,7 +59,7 @@ class SpectralModel; //#include <components/ComponentModels/SpectralModel.h>
 //
 // <synopsis>
 // The FluxStandard class provides a means to compute total flux
-// densities for specified non-variable sources on a standard
+// densities for specified sources on a standard
 // flux density scale, such as that established by Baars or
 // Perley and Taylor.
 // </synopsis>
@@ -102,7 +102,7 @@ class FluxStandard
     // Perley-Butler 2010 Scale (using VLA [not EVLA!] data)
     PERLEY_BUTLER_2010,
 
-    // Perley-Butler 2013 
+    // Perley-Butler 2013 (include time variable sources)
     PERLEY_BUTLER_2013,
 
     HAS_RESOLUTION_INFO,
@@ -121,12 +121,13 @@ class FluxStandard
   ~FluxStandard();
 
   // Compute the flux density for a specified source at a specified frequency
-  Bool compute (const String& sourceName, const MFrequency& mfreq,
+  Bool compute (const String& sourceName, const MFrequency& mfreq, const MEpoch& mtime,
 		Flux<Double>& value, Flux<Double>& error);
 
   // Compute the flux densities and their uncertainties for a specified source
   // at a set of specified frequencies.
   Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
+               const MEpoch& mtime,
 	       Vector<Flux<Double> >& values,
                Vector<Flux<Double> >& errors,
                const Bool verbose=True);
@@ -137,6 +138,7 @@ class FluxStandard
   // arranged the same way.
   Bool compute(const String& sourceName,
                const Vector<Vector<MFrequency> >& mfreqs,
+               const MEpoch& mtime,
                Vector<Vector<Flux<Double> > >& values,
                Vector<Vector<Flux<Double> > >& errors);
 
@@ -152,6 +154,10 @@ class FluxStandard
                  Vector<Vector<Flux<Double> > >& values,
                  Vector<Vector<Flux<Double> > >& errors,
                  Vector<String>& clnames, const String& prefix="");
+
+  // set interpolation method for a time-variable source
+  void setInterpMethod(const String& interpmethod);
+  
 
   // Take a component cmp and save it to a ComponentList on disk, returning the
   // pathname.  ("" if unsuccessful, sourceName_mfreqGHzDateTime.cl otherwise)
@@ -191,6 +197,8 @@ class FluxStandard
   Bool has_direction_p;
 
   MDirection direction_p;
+
+  String interpmethod_p;
 };
 
 } //# NAMESPACE CASA - END

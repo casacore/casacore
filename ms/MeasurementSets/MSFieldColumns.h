@@ -157,7 +157,9 @@ public:
   Int matchDirection(const MDirection& referenceDirection, 
 		     const MDirection& delayDirection,
 		     const MDirection& phaseDirection,
-		     const Quantum<Double>& maxSeparation, Int tryRow=-1);
+		     const Quantum<Double>& maxSeparation, 
+		     Int tryRow=-1,
+		     Double time=0);
 
   // Update the MeasComets objects belonging to this FIELD table.
   // Needed when the entries in the EPHEMERIS_ID column have changed.
@@ -205,13 +207,13 @@ private:
   // <group>
   Bool matchReferenceDir(uInt row, const MVDirection& dirVal,
 			 const Double& sepInRad, 
-			 MVDirection& mvdir) const;
+			 MVDirection& mvdir, Double time=0) const;
   Bool matchDelayDir(uInt row, const MVDirection& dirVal, 
 		     const Double& sepInRad,
-		     MVDirection& mvdir) const;
+		     MVDirection& mvdir, Double time=0) const;
   Bool matchPhaseDir(uInt row, const MVDirection& dirVal,
 		     const Double& sepInRad,
-		     MVDirection& mvdir) const;
+		     MVDirection& mvdir, Double time=0) const;
   // </group>
 
   //# required columns

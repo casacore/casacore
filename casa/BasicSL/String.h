@@ -963,14 +963,16 @@ String join(string src[], Int n, const string &sep);
 // Case conversion and rearrangement functions
 // <group name=case>
 // Global function which returns a transformation to reverse order of String.
-String reverse(string str);
+String reverse(const string& str);
 // Global function  which returns a transformation to uppercase of String.
-String upcase(string str);
+String upcase(const string& str);
 // Global function  which returns a transformation to lowercase of String.
-String downcase(string str);
+String downcase(const string& str);
 // Global function  which returns a transformation to capitalization of 
 // String.
-String capitalize(string str);
+String capitalize(const string& str);
+// Global function  which removes leading and trailing whitespace.
+String trim(const string& str);
 // </group>
 
 // <summary> IO </summary>

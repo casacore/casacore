@@ -30,6 +30,7 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Containers/Record.h>
+#include <components/SpectralComponents/GaussianSpectralElement.h>
 
 #include <casa/iostream.h>
 
@@ -38,9 +39,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define _ORIGIN  String("GaussianMultipletSpectralElement::") + __FUNCTION__ + ":" + String::toString(__LINE__) + ": "
 
 GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
-	const Vector<GaussianSpectralElement>& estimates,
+	const vector<GaussianSpectralElement>& estimates,
 	const Matrix<Double>& constraints
-) : _gaussians(estimates.copy()) ,_constraints(constraints),
+) : CompiledSpectralElement(SpectralElement::GMULTIPLET),
+	_gaussians(estimates),_constraints(constraints),
 	_paramIndices(estimates.size(), 3, 0) {
 	if(estimates.size() != constraints.nrow()+1) {
 		throw AipsError(
@@ -72,8 +74,8 @@ GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 				"is a relationship between the two centers."
 			);
 		}
-		if (! estimates[0].fixedFWHM()
-			&& estimates[i].fixedFWHM()
+		if (! estimates[0].fixedWidth()
+			&& estimates[i].fixedWidth()
 			&& fixed(i-1, 2)
 		) {
 			throw AipsError(_ORIGIN +  "You cannot fix the width of a non-reference "
@@ -82,7 +84,6 @@ GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 			);
 		}
 	}
-
 	ostringstream myfunc;
 	myfunc << "p0*exp(-0.5 * (x-p1)*(x-p1) / p2/p2)";
 	Vector<Double> parm(3 + nfalse(fixed), 0);
@@ -93,17 +94,14 @@ GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 	errs[0] = _gaussians[0].getAmplErr();
 	errs[1] = _gaussians[0].getCenterErr();
 	errs[2] = _gaussians[0].getSigmaErr();
-
 	Vector<Bool> f(parm.size(), True);
 	f[0] = _gaussians[0].fixedAmpl();
 	f[1] = _gaussians[0].fixedCenter();
 	f[2] = _gaussians[0].fixedSigma();
-
 	_paramIndices(0, 0) = 0;
 	_paramIndices(0, 1) = 1;
 	_paramIndices(0, 2) = 2;
 	uInt p = 3;
-
 	for (uInt i=0; i<constraints.nrow(); i++) {
 		String amp;
 		if (constraints(i, 0) != 0) {
@@ -146,7 +144,6 @@ GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 			<< center << ") / (" << sigma << ") / (" << sigma << "))";
 	}
 	_setFunction(myfunc.str());
-	_construct(SpectralElement::GMULTIPLET, parm);
 	// have to set the GaussianSpectralElement parameters
 	set(parm);
 	setError(errs);
@@ -155,14 +152,10 @@ GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 
 GaussianMultipletSpectralElement::GaussianMultipletSpectralElement(
 	const GaussianMultipletSpectralElement& other
-) : CompiledSpectralElement(other) {
-	_gaussians.resize(other._gaussians.size());
-	_gaussians = other._gaussians.copy();
-	_constraints.resize(other._constraints.shape());
-	_constraints = other._constraints.copy();
-	_paramIndices.resize(other._paramIndices.shape());
-	_paramIndices = other._paramIndices.copy();
-}
+) : CompiledSpectralElement(other), _gaussians(other._gaussians),
+	_constraints(other._constraints),
+	_paramIndices(other._paramIndices) {}
+
 
 GaussianMultipletSpectralElement::~GaussianMultipletSpectralElement() {}
 
@@ -175,8 +168,7 @@ GaussianMultipletSpectralElement& GaussianMultipletSpectralElement::operator=(
 ) {
 	if (this != &other) {
 		CompiledSpectralElement::operator=(other);
-		_gaussians.resize(other._gaussians.size());
-		_gaussians = other._gaussians.copy();
+		_gaussians = other._gaussians;
 		_constraints.resize(other._constraints.shape());
 		_constraints = other._constraints.copy();
 		_paramIndices.resize(other._paramIndices.shape());
@@ -190,12 +182,12 @@ Bool GaussianMultipletSpectralElement::operator==(
 ) const {
 	return(
 		CompiledSpectralElement::operator==(other)
-		&& allTrue(_gaussians == other._gaussians)
+		&& allTrue(Vector<GaussianSpectralElement>(_gaussians) == Vector<GaussianSpectralElement>(other._gaussians))
 		&& allTrue(_constraints == other._constraints)
 	);
 }
 
-const Vector<GaussianSpectralElement>&
+const vector<GaussianSpectralElement>&
 GaussianMultipletSpectralElement::getGaussians() const {
 	return _gaussians;
 }
@@ -220,12 +212,13 @@ Bool GaussianMultipletSpectralElement::toRecord(RecordInterface& out) const {
 }
 
 void GaussianMultipletSpectralElement::set(const Vector<Double>& param) {
-	if (param.size() != get().size()) {
-		throw AipsError(
-			_ORIGIN + "Inconsistent number of parameters"
-		);
+	if (get().size() > 0 && param.size() != get().size()) {
+		ostringstream x;
+		x << _ORIGIN << "Inconsistent number of parameters. Got "
+			<< param.size() << ". Must be " << get().size();
+		throw AipsError(x.str());
 	}
-	SpectralElement::set(param);
+	SpectralElement::_set(param);
 	Double amp0 = param[0];
 	Double center0 = param[1];
 	Double sigma0 = param[2];

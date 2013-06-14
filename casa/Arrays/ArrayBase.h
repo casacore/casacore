@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -136,16 +137,41 @@ public:
   static uInt arrayVersion()
     {return 3;}
 
+  // Make an empty array of the same type.
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual CountedPtr<ArrayBase> makeArray() const;
+
+  // Resize the array and optionally copy the values.
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual void resize(const IPosition &newShape, Bool copyValues=False);
+
   // Create an ArrayIterator object of the correct type.
   // This is implemented in the derived Array classes.
-  // <br>ArrayBase throws an exception.
-  virtual ArrayPositionIterator* makeIterator (uInt byDim);
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual CountedPtr<ArrayPositionIterator> makeIterator (uInt byDim) const;
 
   // Get a reference to a section of an array.
   // This is the same as Array<T>::operator(), but without having to know
   // the exact template type.
-  // <br>ArrayBase throws an exception.
-  virtual ArrayBase* getSection (const Slicer&);
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual CountedPtr<ArrayBase> getSection (const Slicer&) const;
+
+  // Assign the source array to this array.
+  // If <src>checkType==True</src>, it is checked if the underlying template
+  // types match. Otherwise, it is only checked in debug mode (for performance).
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual void assign (const ArrayBase& source, Bool checkType=True);
+
+  // The following functions behave the same as the corresponding getStorage
+  // functions in the derived templated Array class.
+  // They handle a pointer to a contiguous block of array data.
+  // If the array is not contiguous, a copy is used to make it contiguous.
+  // <group>
+  virtual void* getVStorage (Bool& deleteIt);
+  virtual const void* getVStorage (Bool& deleteIt) const;
+  virtual void putVStorage(void*& storage, Bool deleteAndCopy);
+  virtual void freeVStorage(const void*& storage, Bool deleteIt) const;
+  // <group>
 
 protected:
   void baseCopy (const ArrayBase& that)

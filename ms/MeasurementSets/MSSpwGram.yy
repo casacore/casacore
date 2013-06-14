@@ -144,7 +144,7 @@ PhyRange: Physical DASH Physical
 	     $$[0] = $1[0];
 	     $$[1] = $3[0];
 	     //	     $$[2] = 0;     // The Step
-	     $$[2] = -1;     // The Step
+	     $$[2] = 0;     // The Step
 	     if ($1[1] != $3[1])
 	       throw(MSSelectionSpwParseError(String("Spw expression: Start and stop specification"
 						     " not in the same units.")));
@@ -161,7 +161,7 @@ PhyRange: Physical DASH Physical
 
 	     $$[0] = $1*$4[1];
 	     $$[1] = $3*$4[1];
-	     $$[2] = -1;       // The Step
+	     $$[2] = 0;       // The Step
 	     $$[3] = $4[0];
     	   }
         | PhyRange CARET Physical
@@ -184,7 +184,7 @@ IndexRange: PhyVal DASH PhyVal
 						       "range greater than end of range")));
 	       $$[0] = (Int)$1;
 	       $$[1] = (Int)$3;
-	       $$[2] = -1;       // The Step
+	       $$[2] = 0;       // The Step
 	       $$[3] = MSSpwIndex::MSSPW_INDEX;
 	     }
           | IndexRange CARET PhyVal
