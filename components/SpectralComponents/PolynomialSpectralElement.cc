@@ -44,7 +44,7 @@ PolynomialSpectralElement::PolynomialSpectralElement()
 }
 
 PolynomialSpectralElement::PolynomialSpectralElement(const uInt n)
-: SpectralElement(SpectralElement::POLYNOMIAL, Vector<Double>(n+1)) {
+  : SpectralElement(SpectralElement::POLYNOMIAL, Vector<Double>(n+1, 0.)) {
 	_setFunction(
 		std::tr1::shared_ptr<Polynomial<Double> >(
 			new Polynomial<Double>(n)
