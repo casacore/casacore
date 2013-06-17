@@ -31,6 +31,7 @@
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
@@ -96,8 +97,9 @@ public:
     // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
-  static Vector<Int> selectedIDs() {return idList;}
-  static void reset(){idList.resize(0);}
+  static MSSelectionErrorHandler* thisMSSErrorHandler;
+  static Vector<Int> selectedIDs() {return idList;};
+  static void reset(){idList.resize(0);};
   static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 private:
   static TableExprNode* node_p;

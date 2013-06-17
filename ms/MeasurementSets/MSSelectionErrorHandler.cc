@@ -41,7 +41,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   void MSSelectionErrorHandler::reportError(const char *token,const String message)
   {
-    tokenList.push_back(token);
+    if (token!=NULL) tokenList.push_back(token);
     messageList.push_back(message);
   }
 
@@ -51,10 +51,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (messageList.size() > 0)
       {
 	Mesg << messageList[0];
-	for (uInt i=0;i<tokenList.size();i++)
-	  {
-	    Mesg << tokenList[i] << " ";
-	  }
+	if (tokenList.size() > 0)
+	  for (uInt i=0;i<tokenList.size();i++) Mesg << tokenList[i] << " ";
+	else
+	  for (uInt i=1;i<messageList.size(); i++) Mesg << endl << messageList[i];
       }
     String casaMesg(Mesg.str());
     return casaMesg;

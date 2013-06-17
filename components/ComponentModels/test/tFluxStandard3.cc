@@ -30,6 +30,7 @@
 //#
 
 #include <casa/aips.h>
+#include <casa/System/Aipsrc.h>
 //#include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/FluxStandard.h>
 //#include <components/ComponentModels/FluxCalcQS.h>
@@ -46,7 +47,39 @@
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
+int main(int argc, char* argv[])
+{
+  // Parse argument(s), if any.
+  Bool require_ephems = true;
+  if(argc > 1){
+    const String arg(argv[1]);
+
+    if(arg == "y"){
+      require_ephems = true;
+    }
+    else if(arg == "n"){
+      require_ephems = false;
+    }
+    else{
+      Int retval = 1;    // Exit with fail val unless user _asked_ for help.
+
+      cout << argv[0] << ": Test program for Perley-Butler 2013 FluxStandard.\n"
+           << "\nUse:\n\t" << argv[0] << " [[-h|--help]|y|n]\n"
+           << "\n\t-h|--help: Print this help message and exit with 0.\n"
+           << "\n\ty: (Default) Make not finding the FluxStandard table an error."
+           << "\n\tn: Allow the data/nrao/VLA/standards directory to be absent.\n"
+           << "\n\t   The directory must be found to run the complete set of tests."
+           << endl;
+
+      if(arg == "-h" || arg == "--help"){
+        retval = 0;
+      }
+      return retval;
+    }
+  }
+/***
 int main() {
+***/
   try {
     String fluxScaleName;
     Bool matchedScale=False;
@@ -95,6 +128,28 @@ int main() {
     //expfds[0][3][1] = 1.325679183;       // Perley-Butler 2013, 3C48, 20.0 GHz(Oct4st,2012)
     expfds[0][3][1] = 1.392722368;       // Perley-Butler 2013, 3C48, 20.0 GHz(at epoch 2009.01.01)
     Vector<Double> fluxUsed(4);
+
+// test if the standard table exist
+    cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
+    String horpath;
+    Bool foundStd = Aipsrc::findDir(horpath, "data/nrao/VLA/standards/PerleyButler2013Coeffs");
+    if(foundStd){
+      cout << "Aipsrc found an ephemeris directory: " << horpath << endl;
+    }
+    else{
+      cout << "Aipsrc did not find the VLA standard directory.  horpath = "
+           << horpath << endl;
+      if(require_ephems){
+        cout << "data/nrao/VLA/standards is required (see --help)."
+             << endl;
+        AlwaysAssert(foundStd, AipsError);
+      }
+      else{
+        cout << "Exiting without raising an error (see --help)." << endl;
+        return 0;
+      }
+    }
+
 
     for(Int scNum = qsScNames.nelements(); scNum--;){
       FluxStandard::FluxScale fluxScaleEnum;

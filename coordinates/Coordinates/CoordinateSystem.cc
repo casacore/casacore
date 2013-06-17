@@ -66,6 +66,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 const String CoordinateSystem::_class = "CoordinateSystem";
 
+Mutex CoordinateSystem::_mapInitMutex;
 map<String, String> CoordinateSystem::_friendlyAxisMap = map<String, String>();
 
 
@@ -4609,6 +4610,7 @@ Vector<Int> CoordinateSystem::linearAxesNumbers() const {
 }
 
 void CoordinateSystem::_initFriendlyAxisMap() {
+        ScopedMutexLock lock(_mapInitMutex);
 	if (_friendlyAxisMap.size() == 0) {
 		_friendlyAxisMap["velocity"] = "spectral";
 		_friendlyAxisMap["frequency"] = "spectral";

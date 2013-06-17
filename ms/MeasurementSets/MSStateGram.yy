@@ -89,7 +89,9 @@
 	Mesg << "State Expression: " << msg.str().c_str();
 	
 	errorMesg = String(Mesg.str().c_str());
-	throw(MSSelectionStateParseError(errorMesg));
+	
+	MSStateParse::thisMSSErrorHandler->reportError(NULL,Mesg.str());
+	//throw(MSSelectionStateParseError(errorMesg));
       }
   }
 %}
@@ -174,7 +176,7 @@ stateid: IDENTIFIER
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
-	  String s(m.str());
+	  //	  String s(m.str());
 
 	  free($1);
 	}

@@ -861,6 +861,7 @@ private:
     ObsInfo obsinfo_p;
 
     const static String _class;
+    static Mutex _mapInitMutex;
     static map<String, String> _friendlyAxisMap;
 
     static void _initFriendlyAxisMap();

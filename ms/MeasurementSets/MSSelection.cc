@@ -56,6 +56,7 @@
 #include <ms/MeasurementSets/MSSelectableTable.h>
 #include <ms/MeasurementSets/MSSelectableMainColumn.h>
 #include <ms/MeasurementSets/MSAntennaParse.h>
+#include <ms/MeasurementSets/MSStateParse.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/GenSort.h>
@@ -369,8 +370,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       {
 	delete mssErrHandler_p;
 	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
+	mssErrHandler_p=MSStateParse::thisMSSErrorHandler=NULL;
       }
     mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
+    mssErrHandler_p=MSStateParse::thisMSSErrorHandler=NULL;
     //    mssErrHandler_p=NULL;
   }
   
@@ -420,6 +423,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return ms;
   }
   //----------------------------------------------------------------------------
+  void MSSelection::initErrorHandler(const MSExprType type)
+  {
+    switch (type)
+      {
+      case ANTENNA_EXPR:
+	{
+	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
+	    {
+	      if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
+	      setErrorHandler(ANTENNA_EXPR, mssErrHandler_p);
+	    }
+	  else
+	    {
+	      //mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
+	      MSAntennaParse::thisMSAErrorHandler->reset();
+	      //	mssErrHandler_p->reset();
+	    }
+	  break;
+	}
+      case STATE_EXPR:
+	{
+	  if (MSStateParse::thisMSSErrorHandler == NULL)
+	    {
+	      if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
+	      setErrorHandler(STATE_EXPR, mssErrHandler_p);
+	    }
+	  else
+	    {
+	      //mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
+	      MSStateParse::thisMSSErrorHandler->reset();
+	      //	mssErrHandler_p->reset();
+	    }
+	  break;
+	}
+      default:  
+	throw(MSSelectionError(String("Wrong MSExprType in MSSelection::initErrorHandler()")));
+	break;
+      };
+  }
+  //----------------------------------------------------------------------------
   
   TableExprNode MSSelection::toTableExprNode(MSSelectableTable* msLike)
   {
@@ -442,18 +485,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
     TableExprNode condition;
-
-    if (MSAntennaParse::thisMSAErrorHandler == NULL)
-      {
-	if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
-	setErrorHandler(ANTENNA_EXPR, mssErrHandler_p);
-      }
-    else
-      {
-	//mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
-	MSAntennaParse::thisMSAErrorHandler->reset();
-	//	mssErrHandler_p->reset();
-      }
+    
+    initErrorHandler(ANTENNA_EXPR);
+    initErrorHandler(STATE_EXPR);
 
     try
       {
@@ -589,7 +623,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  stateObsModeIDs_p.resize(0);
 		  if(stateExpr_p != "" &&
 		     msStateGramParseCommand(ms, stateExpr_p,stateObsModeIDs_p) == 0)
-		    node = *(msStateGramParseNode());
+		    {
+		      node = *(msStateGramParseNode());
+		      if (stateObsModeIDs_p.nelements()==0)
+			throw(MSSelectionStateError(String("No match found for state expression: ")+stateExpr_p));
+		    }
 		  break;
 		}
 	      case NO_EXPR:break;
@@ -681,8 +719,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    MSAntennaParse::thisMSAErrorHandler = mssEH;
 	  break;
 	}
+      case STATE_EXPR:
+	{
+	  if (overRide)
+	    MSStateParse::thisMSSErrorHandler = mssEH;
+	  else if (MSStateParse::thisMSSErrorHandler == NULL)
+	    MSStateParse::thisMSSErrorHandler = mssEH;
+	  break;
+	}
       default: throw(MSSelectionError(String("Wrong MSExprType in MSSelection::setErrorHandler()")));
-      }
+      };
   }
 
   //----------------------------------------------------------------------------
@@ -690,6 +736,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     MSSelectionAntennaParseError msAntException(String(""));
     MSAntennaParse::thisMSAErrorHandler->handleError(msAntException);
+
+    MSSelectionStateParseError msStateException(String(""));
+    MSStateParse::thisMSSErrorHandler->handleError(msStateException);
   }
 
   //----------------------------------------------------------------------------
@@ -741,7 +790,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	  case STATE_EXPR:       exprIsNull = (stateExpr_p   == "");break;
 	  case OBSERVATION_EXPR: exprIsNull = (observationExpr_p    == "");break;
 	  default:;
-	  }
+	  };
       }
     return exprIsNull;
   }
@@ -785,7 +834,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		case STATE_EXPR:   stateExpr_p   = "";break;
 		case OBSERVATION_EXPR:    observationExpr_p    = "";break;
 		default:;
-		}
+		};
 	    }
 	if (!fullTEN_p.isNull()) resetTEN();
       }
@@ -1065,8 +1114,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	
 	for(uInt targetRow=0; targetRow<nrows; targetRow++)
 	  {
-	    if (chanIDList(targetRow,ncols-1) == 0)
+	    if (chanIDList(targetRow,ncols-1) == 0) {
 	      chanIDList(targetRow,ncols-1)=defaultStep;
+            }
 	    // if (chanIDList(targetRow,ncols-2) == chanIDList(targetRow,ncols-3)) // Stop == Step
 	    //   chanIDList(targetRow,ncols-1)=0;
 	  }
@@ -1248,23 +1298,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
   {
-    // Check if a record field is defined and not Casacore unset
+    // Check if a record field is defined and not AIPS++ unset
     // Input:
     //    inpRec          const Record&     Input Record
     //    fieldName       const String&     Field name
     // Ouput:
     //    definedAndSet   Bool              True if field defined and
-    //                                      not Casacore unset
+    //                                      not AIPS++ unset
     //
     Bool retval = False;
     // Check if record field is defined
     if (inpRec.isDefined(fieldName)) {
       retval = True;
-      // Now check if Casacore unset
+      // Now check if AIPS++ unset
       //    if (inpRec.dataType(fieldName) == TpRecord) {
       //      retval = !Unset::isUnset(inpRec.subRecord(fieldName));
-      //    }
-    }
+      //    };
+    };
     return retval;
   }
   
