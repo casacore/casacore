@@ -31,6 +31,8 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <memory>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MeasurementSet;

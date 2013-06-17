@@ -46,7 +46,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
-
+#include <memory>
 
 #include <casa/namespace.h>
 void testVectorROIter (const Lattice<Float>& sublat,
