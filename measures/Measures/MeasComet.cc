@@ -46,7 +46,7 @@ MeasComet::MeasComet() :
   tab_p(), measFlag_p(True), measured_p(False),
   row_p(),
   mjd0_p(0), mjdl_p(0), dmjd_p(0), nrow_p(0), name_p(), topo_p(),
-  mtype_p(MDirection::APP),
+  mtype_p(MDirection::APP), // default, if the keyword obsloc is not defined, is apparent geocentric
   msgDone_p(False), tp_p(),
   haveDiskLongLat_p(false),
   ncols_p(5)
@@ -250,7 +250,29 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
       topo_p = MVPosition(Quantity(kws.asDouble("GeoDist"), "km"),
 			  Quantity(kws.asDouble("GeoLong"), "deg"),
 			  Quantity(kws.asDouble("GeoLat"), "deg"));
-      if (kws.asDouble("GeoDist") != 0.0) mtype_p = MDirection::TOPO;
+      if (kws.isDefined("posrefsys")) {
+	String prs = kws.asString("posrefsys");
+	prs.upcase();
+	if(prs.contains("J2000")){
+	  mtype_p = MDirection::J2000;
+	}else if(prs.contains("B1950")){
+	  mtype_p = MDirection::B1950;	
+	}else if(prs.contains("APP")){
+	  mtype_p = MDirection::APP;
+	}else if(prs.contains("ICRS")){
+	  mtype_p = MDirection::ICRS;
+	}else if(prs.contains("TOPO")){
+	  mtype_p = MDirection::TOPO;
+	}else{
+	  os << LogIO::SEVERE
+             << "Unrecognized position reference frame (posrefsys): "
+	     << kws.asString("posrefsys")
+             << " - possible are J2000, B1950, APP, ICRS, TOPO" << LogIO::POST;
+	}
+      } else if (kws.asDouble("GeoDist") != 0.0){
+	mtype_p = MDirection::TOPO;
+      }
+	  
       mjd0_p = kws.asDouble("MJD0");
       dmjd_p = kws.asDouble("dMJD");
       nrow_p = tab_p.nrow();

@@ -85,25 +85,47 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
 {
     name = "";
 
-    // We assume that 1/2 the characters belong to each of the two
-    // numbers.
-    Int where = fullName.length();// Where to split the number and base name
-    while (--where >= 0 && isdigit(fullName[where])) {
+    if(fullName.contains("_")){ // assume new matrix syntax  ii_jj
+      Int where = 0;// Where the frst number starts
+      while (where++ < Int(fullName.length()) && !isdigit(fullName[where])) {
 	; // Nothing
+      }
+      name = fullName(0, where);
+      // found first non-digit
+      String::size_type where2 = fullName.find('_');
+      if(where2==String::npos || where2==fullName.length()-1){
+	return False;
+      }
+      String snum1 = fullName(where, where2-where);
+      Int nc = 2; // don't use the last digit if there are three
+      if(fullName.length()-where2<2){ 
+	nc = 1;
+      }
+      String snum2 = fullName(where2+1, nc);
+      nrow = atol(snum1.chars());
+      ncol = atol(snum2.chars());
     }
-    where++;
-    // where now points to the start of the numerical part - its
-    // also the length of the number of characters before that
-    name = fullName(0, where);
-    Int numlen = fullName.length() - where;
-    if (numlen != 6) {
+    else { // old matrix syntax
+      // We assume that 1/2 the characters belong to each of the two
+      // numbers.
+      Int where = fullName.length();// Where to split the number and base name
+      while (--where >= 0 && isdigit(fullName[where])) {
+	; // Nothing
+      }
+      where++;
+      // where now points to the start of the numerical part - its
+      // also the length of the number of characters before that
+      name = fullName(0, where);
+      Int numlen = fullName.length() - where;
+      if (numlen != 6) {
 	// 2D arrays must be xxxyyy and so there must be 6 digits
 	return False;
+      }
+      String snum1 = fullName(where, 3);
+      String snum2 = fullName(where+3, 3);
+      nrow = atol(snum1.chars());
+      ncol = atol(snum2.chars());
     }
-    String snum1 = fullName(where, 3);
-    String snum2 = fullName(where+3, 3);
-    nrow = atol(snum1.chars());
-    ncol = atol(snum2.chars());
 
     return True;
 }
@@ -272,18 +294,18 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    // Note that we emit a SEVERE error but go on any way.
 	    for (uInt j=start; j<end; j++) {
 		if (ndim == 2) {
-		    // need iiijjj for this one, only 2 characters left for name
+		    // need ii_jja for this one, only 2 characters left for name
 		    if (in.name(j).length() > 2) {
 			os << LogIO::SEVERE 
 			   << "Name is too long for array field " << in.name(j) 
 			   << " - name will be truncated to first 2 characters." << LogIO::POST;
 			ok = False;
 		    }
-		    // at most, 999 elements per dimension
-		    if (in.shape(i)(0) > 999 || in.shape(i)(1) > 999) {
+		    // at most, 99 elements per dimension
+		    if (in.shape(i)(0) > 99 || in.shape(i)(1) > 99) {
 			os << LogIO::SEVERE 
 			   << "Too many rows or columns for array field " << in.name(j) 
-			   << " - the first 999 rows and the first 999 columns will be used." << LogIO::POST;
+			   << " - the first 99 rows and the first 99 columns will be used." << LogIO::POST;
 			ok = False;		    }
 		} else {
 		    // at most 999 elements
@@ -313,13 +335,14 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 		    String num;
  		    if (ndim == 2) {
 			if (name.length() > 2) name = name.before(2);
- 			// Form iiijjj name
+ 			// Form ii_jj name
 			Int nrow = in.shape(i)(0);
- 			Int iii = k % nrow + 1;
- 			Int jjj = k / nrow + 1;
+ 			Int ii = k % nrow + 1;
+ 			Int jj = k / nrow + 1;
  			ostringstream ostr;
- 			ostr << setfill('0') << setw(3) << iii << 
-			    setfill('0') << setw(3) << jjj;
+ 			ostr << setfill('0') << setw(2) << ii
+			     << "_"
+			     << setfill('0') << setw(2) << jj;
  			name += String(ostr);
  		    } else {
 			ostringstream ostr;
@@ -468,19 +491,20 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     const Regex kw1D("^[a-z0-9]*[a-z][1-9]+"); // We can have X3F, but not XF3
     // This fails with more than 99 axes.
     const Regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
+    const Regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
     const Regex crota("crota");
     const Regex trailing(" *$");
-    const Regex cd("^cd[0-9]+_[0-9]+");
+    const Regex cd("^cd[0-9]+[_][0-9]+");
     const String empty;
 
     // The complication in this function springs from the fact that we want to
-    // combine all the indexed and matrix (i.e. PCiiijjj) keywords together into
-    // array fields in the output record.
+    // combine all the indexed and matrix (i.e. PCiiijjj or PCii_jja) keywords 
+    // together into array fields in the output record.
     //
     // First we take a pass through the keywords noting the array keywords and
     // their minimum and maximum indexes. Unfortunately we have to ignore the
     // FITS keyword functions isindexed() etc. because they do not know about
-    // all indexed keywords, e.g. PC, ..., i.e. user-defined or "new"
+    // all indexed keywords, e.g. user-defined or "new"
     // indexed keywords.
     //
     // In addition, CROTA is a special case.  It is only found on the latitude
@@ -537,7 +561,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    }
 	    if (num < min1D(base)) {min1D(base) = num;}
 	    if (num > max1D(base)) {max1D(base) = num;}
-	} else if (name.contains(kw2D)) {
+	} else if ((name.contains(kw2D) || name.contains(kw2Dmodern)) && !name.contains(cd)) {
 	    Int nrow, ncol;
 	    String base;
 	    if (!splitKW2D(base, nrow, ncol, name)) {
@@ -797,7 +821,8 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		os << LogIO::SEVERE << "Unknown type for keyword '" 
 		   << fullName << "'. Continuing." << LogIO::POST;
 	    }
-	} else if (fullName.contains(kw2D)) {
+	} else if ((fullName.contains(kw2D) || fullName.contains(kw2Dmodern))
+                   && !fullName.contains(cd)) {
 	    Int thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);

@@ -137,6 +137,7 @@ try {
                             GaussianBeam(Quantity(4, "arcsec"),
                                          Quantity(2, "arcsec"),
                                          Quantity(0, "deg")));
+ 	   cout << "has multip beams " << info.hasMultipleBeams() << endl;
 	   image.setImageInfo(info);
 
 	   // rebin non spectral axes should work

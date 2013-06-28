@@ -1428,8 +1428,8 @@ void ImageFITSConverter::_writeBeamsTable(
 	extraKeywords.define("EXTVER", 1);
 	extraKeywords.define("XTENSION", "BINTABLE");
 	extraKeywords.setComment("XTENSION", "Binary extension");
-	extraKeywords.define("NCHAN", (Int)info.nChannels());
-	extraKeywords.define("NPOL", (Int)info.nStokes());
+	extraKeywords.define("NCHAN", (Int)info.getBeamSet().nchan());
+	extraKeywords.define("NPOL", (Int)info.getBeamSet().nstokes());
 	FITSTableWriter writer(
 		outfile, desc, stringLengths, info.getBeamSet().nelements(),
 		extraKeywords, units, False
@@ -1440,7 +1440,7 @@ void ImageFITSConverter::_writeBeamsTable(
 	RecordFieldPtr<Int> chan(writer.row(), "CHAN");
 	RecordFieldPtr<Int> pol(writer.row(), "POL");
 	const ImageBeamSet& beamSet = info.getBeamSet();
-	IPosition axisPath = IPosition::makeAxisPath(beamSet.ndim());
+	IPosition axisPath(2, 0, 1);
         ArrayPositionIterator iter(beamSet.shape(), axisPath, False);
         while (! iter.pastEnd()) {
           const IPosition& pos = iter.pos();

@@ -32,6 +32,7 @@
 //# Includes
 #include <images/Images/ImageInterface.h>
 #include <casa/Arrays/AxesSpecifier.h>
+#include <memory>    // for auto_ptr
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -265,16 +266,6 @@ private:
 
   // Helper
    void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
-
-  // Given an original image shape and coordinate system and a subimage shape
-  // and coordinate system, get the corresponding per plane beam array.
-  // The subimage coordinate system must have been made with
-  // origCoords.subimage() and both must have the same types of axes in the
-  // same order. The shapes must have the same number of dimensions and all
-  // members of <src>subShape</src> must be greater or equal to 1 and less
-  // than the corresponding members of <src>origShape</src>.
-   ImageBeamSet _beamsForSubImage(const IPosition& subShape,
-                                  const CoordinateSystem& subCoords);
 
 
   //# itsImagePtr points to the parent image.

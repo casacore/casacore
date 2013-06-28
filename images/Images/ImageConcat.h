@@ -253,7 +253,7 @@ private:
    LatticeConcat<T> latticeConcat_p;
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
    Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
-   Bool isContig_p, _warnBeam;
+   Bool isContig_p;
    Vector<Bool> isImage_p;
    Vector<Double> pixelValues_p;
    Vector<Double> worldValues_p;
@@ -262,14 +262,16 @@ private:
    Double coordConvert(Int& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
                        uInt axis, Double pixelCoord) const;
+
    void _checkContiguous(const IPosition& shape1,
-                         const CoordinateSystem& cSys1,
-                         const CoordinateSystem& cSys2,
-                         LogIO& os, uInt axis, Bool relax);
+                            const CoordinateSystem& cSys1,
+                            const CoordinateSystem& cSys2,
+                            LogIO& os, uInt axis, Bool relax);
 
    void checkNonConcatAxisCoordinates (LogIO& os,
                                        const ImageInterface<T>& image,
                                        Bool relax);
+
    Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
                              const Vector<Int>& stokes2);
    void setCoordinates();

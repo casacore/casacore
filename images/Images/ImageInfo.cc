@@ -84,9 +84,9 @@ String ImageInfo::defaultObjectName() {
 }
 
 GaussianBeam ImageInfo::defaultRestoringBeam() {
-  return GaussianBeam();
+	static const GaussianBeam x;
+	return x;
 }
-
 
 GaussianBeam ImageInfo::restoringBeam(
     const Int channel, const Int polarization
@@ -94,14 +94,15 @@ GaussianBeam ImageInfo::restoringBeam(
 	if (_beams.empty()) {
 		// return a null beam
 		return defaultRestoringBeam();
-	}
+    }
 	else if (_beams.nelements() == 1) {
 		return _beams.getBeam();
-	}
-	else {
-		return _beams.getBeam(channel, polarization);
-	}
+    }
+    else {
+    	return _beams.getBeam(channel, polarization);
+    }
 }
+
 
 void ImageInfo::setRestoringBeam(const GaussianBeam& beam) {
 	if (_beams.hasMultiBeam()) {
@@ -126,8 +127,7 @@ void ImageInfo::_setRestoringBeam(const Record& inRecord) {
 	if (! inRecord.isDefined("restoringbeam")) {
 		throw (AipsError("Input record must have a 'restoringbeam' field"));
 	}
-	GaussianBeam restoringBeam =
-          GaussianBeam::fromRecord(inRecord.asRecord("restoringbeam"));
+	GaussianBeam restoringBeam = GaussianBeam::fromRecord(inRecord.asRecord("restoringbeam"));
 	setRestoringBeam(restoringBeam);
 }
 
@@ -135,51 +135,56 @@ void ImageInfo::removeRestoringBeam() {
    _beams = ImageBeamSet();
 }
 
-
 Bool ImageInfo::getRestoringBeam (LoggerHolder& logger) {
-  for (LoggerHolder::const_iterator iter = logger.begin();
-       iter != logger.end(); iter++) {
-    String line = iter->message();
-    if (line.contains(String("BMAJ"))
-        && line.contains(String("BMIN"))
-        && line.contains(String("BPA"))) {
-      Quantity major, minor, pa;
-      String s[20];
-      int n = split(line, s, 20, RXwhite);
-      for (Int i=0; i<n; i++) {
-        if (s[i].contains("BMAJ")) {
-          istringstream oss(s[i+1].chars());
-          Double x;
-          oss >> x;
-          if (x <= 0) {
-            return False;
-          }
-          major = Quantity(x, Unit(String("deg")));
-        }
-        else if (s[i].contains("BMIN")) {
-          istringstream oss(s[i+1].chars());
-          Double x;
-          oss >> x;
-          if (x <= 0) {
-            return False;
-          }
-          minor = Quantity(x, Unit(String("deg")));
-        }
-        else if (s[i].contains("BPA")) {
-          istringstream oss(s[i+1].chars());
-          Double x;
-          oss >> x;
-          pa = Quantity(x, Unit(String("deg")));
-        }
-      }
-      if (minor.getValue() > major.getValue()) {
-        return False;
-      }
-      _beams = ImageBeamSet(GaussianBeam(major, minor, pa));
-      return True;
-    }
-  }
-  return False;
+	for (
+		LoggerHolder::const_iterator iter = logger.begin();
+		iter != logger.end(); iter++
+	) {
+		String line = iter->message();
+		if (
+			line.contains(String("BMAJ"))
+			&& line.contains(String("BMIN"))
+			&& line.contains(String("BPA"))
+		) {
+			Quantity major, minor, pa;
+			String s[20];
+			int n = split(line, s, 20, RXwhite);
+			for (Int i=0; i<n; i++) {
+				if (s[i].contains("BMAJ")) {
+					istringstream oss(s[i+1].chars());
+					Double x;
+					oss >> x;
+					if (x <= 0) {
+						return False;
+					}
+					major = Quantity(x, Unit(String("deg")));
+				}
+				else if (s[i].contains("BMIN")) {
+					istringstream oss(s[i+1].chars());
+					Double x;
+					oss >> x;
+					if (x <= 0) {
+						return False;
+					}
+					minor = Quantity(x, Unit(String("deg")));
+				}
+				else if (s[i].contains("BPA")) {
+					istringstream oss(s[i+1].chars());
+					Double x;
+					oss >> x;
+					pa = Quantity(x, Unit(String("deg")));
+				}
+			}
+			if (!(minor.isConform("rad") && major.isConform("rad") && pa.isConform("rad"))
+			    || (minor.getValue() > major.getValue())
+			    ) {
+			        return False;
+			}
+			_beams = ImageBeamSet(GaussianBeam(major, minor, pa));
+			return True;
+		}
+	}
+	return False;
 }
 
 ImageInfo::ImageTypes ImageInfo::imageType() const {
@@ -277,7 +282,7 @@ ImageInfo& ImageInfo::setObjectName (const String& objectName) {
 }
 
 Bool ImageInfo::toRecord(
-	String & error, RecordInterface & outRecord
+    String & error, RecordInterface & outRecord
 ) const {
     error = "";
     Bool ok = True;
@@ -290,14 +295,14 @@ Bool ImageInfo::toRecord(
     outRecord.define("imagetype", ImageInfo::imageType(itsImageType));
     outRecord.define("objectname", itsObjectName);
     if (_beams.hasMultiBeam()) {
-    	Record perPlaneBeams;
-    	perPlaneBeams.define("nChannels", nChannels());
-    	perPlaneBeams.define("nStokes", nStokes());
-    	Record rec;
-    	uInt count = 0;
-    	const Array<GaussianBeam>& beams = _beams.getBeams();
+        Record perPlaneBeams;
+        perPlaneBeams.define("nChannels", _beams.nchan());
+        perPlaneBeams.define("nStokes", _beams.nstokes());
+        Record rec;
+        uInt count = 0;
+        const Array<GaussianBeam>& beams = _beams.getBeams();
         Array<GaussianBeam>::const_iterator iterEnd = beams.end();
-    	for (Array<GaussianBeam>::const_iterator iter=beams.begin();
+        for (Array<GaussianBeam>::const_iterator iter=beams.begin();
              iter!=iterEnd; ++iter, ++count) {
           if (iter->isNull()) {
             error = "Invalid per plane beam found";
@@ -305,71 +310,73 @@ Bool ImageInfo::toRecord(
           }
           Record rec = iter->toRecord();
           perPlaneBeams.defineRecord("*" + String::toString(count), rec);
-    	}
-    	outRecord.defineRecord("perplanebeams", perPlaneBeams);
+        }
+        outRecord.defineRecord("perplanebeams", perPlaneBeams);
     }
     return ok;
 }
 
 Bool ImageInfo::fromRecord(String& error, const RecordInterface& inRecord) {
-	// Returns default object if none in record
+    // Returns default object if none in record
 
-	// Make sure we are "empty" first
+    // Make sure we are "empty" first
 
-	ImageInfo tmp;
-	(*this) = tmp;
+    ImageInfo tmp;
+    (*this) = tmp;
 
-	error = "";
-	QuantumHolder qh;
+    error = "";
+    QuantumHolder qh;
 
 	if (inRecord.isDefined("restoringbeam")) {
 		_setRestoringBeam(inRecord);
 	}
 	if (inRecord.isDefined("imagetype")) {
 		String type = inRecord.asString("imagetype");
-		setImageType (ImageInfo::imageType(type));
+		setImageType(ImageInfo::imageType(type));
 	}
 	if (inRecord.isDefined("objectname")) {
 		String objectName = inRecord.asString("objectname");
-		setObjectName (objectName);
+		setObjectName(objectName);
 	}
 	if (inRecord.isDefined("perplanebeams")) {
 		Record hpBeams = inRecord.asRecord("perplanebeams");
-		if (! hpBeams.isDefined("nChannels")) {
+		if (!hpBeams.isDefined("nChannels")) {
 			error = "perplanebeams subrecord has no nChannels field";
 			return False;
 		}
-		if (! hpBeams.isDefined("nStokes")) {
+		if (!hpBeams.isDefined("nStokes")) {
 			error = "perplanebeams subrecord has no nStokes field";
 			return False;
 		}
-                uInt nchan = hpBeams.asuInt("nChannels");
-                _beams.resize (nchan, hpBeams.asuInt("nStokes"));
+		uInt nchan = hpBeams.asuInt("nChannels");
+		_beams.resize(nchan, hpBeams.asuInt("nStokes"));
 		Record rec;
 		uInt count = 0;
-                uInt chan   = 0;
-                uInt stokes = 0;
-                Array<GaussianBeam>::const_iterator iterend=_beams.getBeams().end();
-                for (
-                     Array<GaussianBeam>::const_iterator iter=_beams.getBeams().begin();
-			iter!=iterend; ++iter, ++count
+		uInt chan = 0;
+		uInt stokes = 0;
+		Array<GaussianBeam>::const_iterator iterend = _beams.getBeams().end();
+		for (
+			Array<GaussianBeam>::const_iterator iter =
+			_beams.getBeams().begin(); iter != iterend; ++iter, ++count
 		) {
 			String field = "*" + String::toString(count);
-			if (! hpBeams.isDefined(field)) {
-				error = "Field " + field + " is not defined in the per plane beams subrecord";
+			if (!hpBeams.isDefined(field)) {
+				error = "Field " + field
+					+ " is not defined in the per plane beams subrecord";
 				return False;
 			}
-                        _beams.setBeam (chan, stokes,
-                                        GaussianBeam::fromRecord(hpBeams.asRecord(field)));
-                        if (++chan == nchan) {
-                          chan = 0;
-                          stokes++;
-                        }
+			_beams.setBeam(
+				chan, stokes,
+				GaussianBeam::fromRecord(hpBeams.asRecord(field))
+			);
+			if (++chan == nchan) {
+				chan = 0;
+				stokes++;
+			}
 		}
 	}
 	return True;
 }
-
 
 Bool ImageInfo::toFITS(String & error, RecordInterface & outRecord) const {
 	error = "";
@@ -590,64 +597,51 @@ void ImageInfo::setBeam(
 }
 
 void ImageInfo::setBeam(
-	const Int channel, const Int stokes, const GaussianBeam& beam
+    const Int channel, const Int stokes, const GaussianBeam& beam
 ) {
-	_beams.setBeam(channel, stokes, beam);
+    _beams.setBeam(channel, stokes, beam);
 }
 
 void ImageInfo::setBeams(const ImageBeamSet& beams) {
-	_beams = beams;
+    _beams = beams;
 }
 
 void ImageInfo::setAllBeams(
-	const uInt nChannels, const uInt nPolarizations,
-	const GaussianBeam& beam
+    const uInt nChannels, const uInt nPolarizations,
+    const GaussianBeam& beam
 ) {
-        _beams.resize (nChannels, nPolarizations);
-	_beams.set(beam);
+	_beams.resize (nChannels, nPolarizations);
+    _beams.set(beam);
 }
 
 Record ImageInfo::beamToRecord(const Int channel, const Int stokes) const {
-	if (_beams.nelements() == 0) {
-		return Record();
-	}
-	if (_beams.nelements() == 1 || channel >= 0 || stokes >= 0) {
-		return this->restoringBeam(channel, stokes).toRecord();
-	}
-	Record rstat;
+    if (_beams.nelements() == 0) {
+        return Record();
+    }
+    if (_beams.nelements() == 1 || channel >= 0 || stokes >= 0) {
+        return this->restoringBeam(channel, stokes).toRecord();
+    }
+    Record rstat;
 
 	// return all multi beams in a record
 	Record myRec;
-	rstat.define("nChannels", nChannels());
-	rstat.define("nStokes", nStokes());
+	uInt nchan =  _beams.nchan();
+	uInt nstokes = _beams.nstokes();
+	rstat.define("nChannels", nchan);
+	rstat.define("nStokes", nstokes);
 	Record beamRec;
-	const Array<GaussianBeam>& beams = _beams.getBeams();
-	if (_beams.ndim() == 1) {
-		uInt i = 0;
-		for (
-			Array<GaussianBeam>::const_iterator iter=beams.begin();
-			iter!=beams.end(); iter++, i++
-		) {
-			beamRec.defineRecord(
-				"*" + String::toString(i), iter->toRecord()
-			);
+	for (uInt i = 0; i < nchan; i++) {
+		Record chanRec;
+		for (uInt j = 0; j < nstokes; j++) {
+			chanRec.defineRecord("*" + String::toString(j),
+					_beams(i, j).toRecord());
 		}
-	}
-	else {
-                for (uInt i=0; i<nChannels(); i++) {
-			Record chanRec;
-			for (uInt j=0; j<nStokes(); j++) {
-				chanRec.defineRecord(
-					"*" + String::toString(j),
-					_beams(i, j).toRecord()
-				);
-			}
-			beamRec.defineRecord("*" + String::toString(i), chanRec);
-		}
+		beamRec.defineRecord("*" + String::toString(i), chanRec);
 	}
 	rstat.defineRecord("beams", beamRec);
 	return rstat;
 }
+
 
 void ImageInfo::checkBeamSet (const CoordinateSystem& coords,
                               const IPosition& shape,
@@ -659,17 +653,21 @@ void ImageInfo::checkBeamSet (const CoordinateSystem& coords,
   }
   // Adapt the info as needed.
   logSink << LogOrigin("ImageInfo", __FUNCTION__);
+  /*
+   // removing this constraint because PV images do not have a direction coordinate
+   // but users still want to carry beam information along.
   if (! coords.hasDirectionCoordinate()) {
     logSink << "Image " << imageName << " has no direction coordinate so "
             << "cannot have per plane beams." << LogIO::EXCEPTION;
   }
-  uInt beamChannels = nChannels();
+  */
+  uInt beamChannels = _beams.nchan();
   uInt crdChannels = 1;
   if (coords.hasSpectralAxis()) {
     Int specAxisNum = coords.spectralAxisNumber();
     crdChannels = shape[specAxisNum];
   }
-  uInt beamStokes = nStokes();
+  uInt beamStokes = _beams.nstokes();
   uInt crdStokes = 1;
   if (coords.hasPolarizationCoordinate()) {
     Int polAxisNum = coords.polarizationAxisNumber();
@@ -688,7 +686,7 @@ void ImageInfo::checkBeamSet (const CoordinateSystem& coords,
               << imageName << " is null and thus invalid" << LogIO::EXCEPTION;
     }
   }
-}    
+}
 
 void ImageInfo::checkBeamShape (uInt& nchan, uInt& npol,
                                 const ImageInfo& info,
@@ -718,7 +716,7 @@ void ImageInfo::combineBeams (const ImageInfo& infoThat,
                               Bool relax,
                               LogIO& os)
 {
-  ImageBeamSet beamSet;
+	ImageBeamSet beamSet;
   // Check if coord shape and beam shape match.
   uInt nchan1, npol1, nchan2, npol2;
   if (hasBeam()) {
@@ -782,6 +780,7 @@ void ImageInfo::concatFreqBeams (ImageBeamSet& beamsOut,
     }
   }
   for (Int ip=0; ip<np; ++ip) {
+
     for (Int ic=0; ic<nchanThat; ++ic) {
       beamsOut.setBeam (ic+nchanThis, ip,
                         infoThat.getBeamSet().getBeam(ic,ip));
@@ -887,3 +886,4 @@ void ImageInfo::logMessage (Bool& warn, LogIO& os, Bool relax,
 
 
 } //# NAMESPACE CASA - END
+

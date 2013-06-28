@@ -89,12 +89,6 @@ public:
 
 	SpectralElement* clone() const;
 
-	//PolynomialSpectralElement &operator=(const PolynomialSpectralElement& other);
-
-	/*
-	// Evaluate the value of the element at x
-	Double operator()(const Double x) const;
-*/
 	// Get the degree of polynomial
 	uInt getDegree() const;
 

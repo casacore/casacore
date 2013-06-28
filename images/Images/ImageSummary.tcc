@@ -427,7 +427,8 @@ template <class T>
 void ImageSummary<T>::_listMultiBeam(
 	LogIO& os, const Bool verbose
 ) const {
-	const Array<GaussianBeam>& beams = imageInfo_p.getBeamSet().getBeams();
+	const ImageBeamSet beamSet = imageInfo_p.getBeamSet();
+	const Array<GaussianBeam>& beams = beamSet.getBeams();
 	Unit u("deg");
 	for (
 		Array<GaussianBeam>::const_iterator iter = beams.begin();
@@ -447,8 +448,8 @@ void ImageSummary<T>::_listMultiBeam(
 			u = Unit("arcsec");
 		}
 	}
-	Bool hasSpectral = imageInfo_p.nChannels();
-	Bool hasStokes = imageInfo_p.nStokes();
+	Bool hasSpectral = cSys_p.hasSpectralAxis();
+	Bool hasStokes = cSys_p.hasPolarizationCoordinate();
 	os.output() << "Restoring Beams " << endl;
 	const SpectralCoordinate *spCoord = 0;
 	IPosition beamsShape = beams.shape();
@@ -544,8 +545,7 @@ void ImageSummary<T>::_listMultiBeam(
 		}
 	}
 	else {
-		const ImageBeamSet beamSet =  imageInfo_p.getBeamSet();
-		uInt mymax = hasStokes ? imageInfo_p.nStokes() : 1;
+		uInt mymax = hasStokes ? beamSet.nstokes() : 1;
 		for (uInt i=0; i<mymax; i++) {
 			String stokesString;
 			if (hasStokes) {

@@ -186,7 +186,7 @@ try {
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (AipsError x) {}
+    	catch (AipsError& x) {}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
     	myinfo.setAllBeams(2, 1, GaussianBeam());
@@ -195,7 +195,7 @@ try {
     		myinfo.setBeam(2, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (AipsError x) {
+    	catch (AipsError& x) {
     		cout << "Exception thrown as expected: "
     			<< x.getMesg() << endl;
     	}
@@ -207,7 +207,7 @@ try {
     		myinfo.setBeam(0, 0, minAx, majAx, pa);
     		ok = False;
     	}
-    	catch (AipsError x) {
+    	catch (AipsError& x) {
     		cout << "Exception thrown as expected: "
     			<< x.getMesg() << endl;
     	}

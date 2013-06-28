@@ -56,13 +56,26 @@ class Slicer;
 
 // <synopsis>
 // This class represents a set of restoring beams associated with
-// a deconvolved image.
+// a deconvolved image. Internally, the beams are stored in a Matrix in
+// which the first dimension represents the spectral axis and the second
+// dimension represents the polarization axis. Methods which take the number
+// of channels and stokes as the input parameters will accept 0 for either of
+// these, in the cases where the corresponding axis is absent, but internally,
+// the associated axis of the storage Matrix will be set to one since a Matrix
+// with one dimension of length 0 must be empty. If one (or both) of the axes is
+// of length 1, the beam associated with that position is valid for all channels
+// or stokes at the position.
+// For example, if one has an image with 10 spectral channels and 4 stokes,
+// and one has a beam set of dimensions (1, 4) associated with that image,
+// all channels for a given stokes will have the same beam.
+// Similarly, if the beam set is of shape (10, 1) in this case, all stokes
+// will have the same beam for a given channel.
+// If the axis lengths of the beam set are greater than one, they must be exactly
+// the same length of the corresponding axes in the associated image.
 // </synopsis>
 //
 // <example>
-
 // </example>
-
 
 // <motivation>
 // Restoring beams are used many places in image analysis tasks.
@@ -80,6 +93,8 @@ class Slicer;
     // Construct a beam set from an 2-D array of beams representing
     // the frequency and stokes axis.
     // Axis length 1 means it is valid for all channels cq. stokes.
+    // If the image has 0 spectral channels or stokes, the corresponding
+    // length of the axis in the provided matrix should be 1.
     ImageBeamSet(const Matrix<GaussianBeam>& beams);
 
     // Construct an ImageBeamSet representing a single beam wich is
@@ -87,13 +102,9 @@ class Slicer;
     ImageBeamSet(const GaussianBeam& beam);
 
     // Create an ImageBeamSet of the specified shape with all
-    // GaussianBeams initialized to null beams.
-    ImageBeamSet(uInt nchan, uInt nstokes);
-    ImageBeamSet(const IPosition& shape2D);
-
-    // Create an ImageBeamSet of the specified shape with all
     // GaussianBeams initialized to <src>beam</src>.
-    ImageBeamSet(uInt nchan, uInt nstokes, const GaussianBeam& beam);
+    ImageBeamSet(uInt nchan, uInt nstokes,
+                 const GaussianBeam& beam = GaussianBeam::NULL_BEAM);
 
     // The copy constructor (reference semantics).
     ImageBeamSet(const ImageBeamSet& other);
@@ -141,11 +152,11 @@ class Slicer;
     uInt ndim() const
       { return _beams.ndim(); }
 
-    // Get the number of channels in the beam array.
+    // Get the number of channels in the beam array (which is 1 or more).
     uInt nchan() const
       { return _beams.shape()[0]; }
 
-    // Get the number of stokes in the beam array.
+    // Get the number of stokes in the beam array (which is 1 or more).
     uInt nstokes() const
       { return _beams.shape()[1]; }
 
@@ -162,16 +173,12 @@ class Slicer;
       { return getBeam (chan, stokes); }
     // </group>
 
-    // Get a beam at the given 2-dim IPosition. It should match exactly,
-    // thus a single channel or stokes in the beam set is not valid for all.
-    const GaussianBeam& getBeam(const IPosition& pos) const
-      { return _beams(pos); }
-
     // Set the beam at the given location.
     // The location must be within the beam set shape.
-    void setBeam(uInt chan, uInt stokes, const GaussianBeam& beam);
+    void setBeam(Int chan, Int stokes, const GaussianBeam& beam);
 
     // Resize the beam array.
+    // A value 0 is silently changted to 1.
     void resize(uInt nchan, uInt nstokes);
 
     // Return a subset of the beam array.
@@ -210,29 +217,42 @@ class Slicer;
     IPosition getMaxAreaBeamPosition() const
       { return _maxBeamPos; }
 
-    // Get the minimal area beam and its position in the beam set for
-    // the given stokes. If the stokes axis has length 1,
-    // it is valid for all stokes.
+    // Get the minimal, maximal, or median area beam for the given stokes
+    // along the channel axis and set <src>pos</src> to its position in the
+    // beam set.
+    // If the stokes axis in the beam set has length 1, the same beam is
+    // used for all stokes and no checking on stokes is done.
+    // If the number of stokes in the beam matrix is >1, it is checked that
+    // the given <src>stokes</src> stokes value is valid; if not,
+    // an exception is thrown.
+    // <group>
     const GaussianBeam& getMinAreaBeamForPol(IPosition& pos,
                                              uInt stokes) const;
-
-    // Get the maximal area beam and its position in the beam set for
-    // the given stokes. If the stokes axis has length 1,
-    // it is valid for all stokes.
     const GaussianBeam& getMaxAreaBeamForPol(IPosition& pos,
                                              uInt stokes) const;
-
-    // Get the median area beam and its position in the beam set for
-    // the given stokes. If the stokes axis has length 1,
-    // it is valid for all stokes.
     const GaussianBeam& getMedianAreaBeamForPol(IPosition& pos,
                                                 uInt stokes) const;
+    // </group>
+
+    // Get a beam to which all other beams in the set can be convolved.
+    // If all other beams can be convolved to the maximum area beam in the set,
+    // that beam will be returned. If not, this is guaranteed to be the minimum
+    // area beam to which all beams in the set can be convolved if all but one
+    // of the beams in the set can be convolved to the beam in the set with the
+    // largest area. Otherwise, the returned beam may or may not be the smallest
+    // possible beam to which all the beams in the set can be convolved.
+    GaussianBeam getCommonBeam() const;
 
     static const String& className();
 
   private:
     // Calculate and store the areas 0f all beams.
     void _calculateAreas();
+
+    static void _transformEllipseByScaling
+    (Double& transformedMajor, Double& transformedMinor,
+     Double& transformedPa, Double major, Double minor,
+     Double pa, Double xScaleFactor, Double yScaleFactor);
 
     //# Data members
     Matrix<GaussianBeam> _beams;
