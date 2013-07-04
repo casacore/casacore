@@ -48,8 +48,14 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # By default build shared libraries
 option (ENABLE_SHARED "" YES)
+option (ENABLE_RPATH "" YES)
 if (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" YES)
+    if (ENABLE_RPATH)
+        # Set RPATH to use for installed targets; append linker search path
+        set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+        set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    endif (ENABLE_RPATH)
 else (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
@@ -198,6 +204,7 @@ if(USE_OPENMP)
 endif(USE_OPENMP)
 
 # Add the modules to be built.
+add_subdirectory (scons-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
     set_target_properties(
