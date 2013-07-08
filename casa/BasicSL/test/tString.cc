@@ -325,9 +325,9 @@ void identitytest(String a, String b) {
   AlwaysAssertExit((a + b) == y);
   AlwaysAssertExit(x == y);
   AlwaysAssertExit(x.after(a) == b);
-  AlwaysAssertExit(x.before(b, -1) == a);
+  AlwaysAssertExit(x.before(b, 4) == a);
   AlwaysAssertExit(x.from(a) == x);
-  AlwaysAssertExit(x.through(b, -1) == x);
+  AlwaysAssertExit(x.through(b, x.size()) == x);
   AlwaysAssertExit(x.at(a) == a);
   AlwaysAssertExit(x.at(b) == b);
 
@@ -339,7 +339,7 @@ void identitytest(String a, String b) {
   x.del(b);
   AlwaysAssertExit(x == a);
 
-  y.before(b, -1) = b;
+  y.before(b, 2) = b;
   AlwaysAssertExit(y == (b + b));
   y.at(b) = a;
   AlwaysAssertExit(y == (a + b));

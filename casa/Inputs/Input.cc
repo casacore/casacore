@@ -309,11 +309,12 @@ Bool Input::put (const String& key, const String& value)
 Bool Input::put (const String& key)
 {
   String k = key;                  // Need non-const string
-  if (!key.index("=")) {
+  String::size_type inx = key.index("=");
+  if (inx == String::npos) {
     String msg = "Input::Put: " + key + " is not a valid parameter.";
     throw (AipsError(msg));
   }
-  return put (k.before("="), k.after("="));
+  return put (k.before(inx), k.after(inx));
 }
 
 Int Input::count() const
@@ -546,16 +547,16 @@ void Input::readArguments (int ac, char const* const* av)
 			"-keyword not followed by value"));
       }
       i++;  // Advance
-      keyandval = thisarg.after("-") + "=" + av[i];
+      keyandval = thisarg.after(0) + "=" + av[i];
     } else {
       keyandval = thisarg;
     }
     //	cout << "putting " << keyandval << endl;
     put (keyandval);   // Insert command line parameters
-    if (keyandval.before("=") == "debug") {
-      debug_level = atoi(keyandval.after("=").chars());
-    } else if (keyandval.before("=")=="help") {
-      help_mode = keyandval.after("=");
+    if (keyandval.size() > 5  &&  keyandval.before(6) == "debug=") {
+      debug_level = atoi(keyandval.after(6).chars());
+    } else if (keyandval.size() > 4  &&  keyandval.before(5) == "help=") {
+      help_mode = keyandval.after(4);
     }
   }
   announce();          // Announce and possibly die here
@@ -584,9 +585,10 @@ Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
 			      "invalid range:") + expressions[i]));
     }
     Int left, right;
-    if (expressions[i].contains("-")) {
-      left = atoi(expressions[i].before("-").chars());
-      right = atoi(expressions[i].after("-").chars());
+    String::size_type inx = expressions[i].index('-');
+    if (inx != String::npos) {
+      left = atoi(expressions[i].before(inx).chars());
+      right = atoi(expressions[i].after(inx).chars());
     } else {
       left = right = atoi(expressions[i].chars());
     }

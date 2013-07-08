@@ -586,6 +586,34 @@ class String : public string {
   // Create a formatted string using the given printf format string.
   static String format (const char* picture, ...);
 
+  // Convert a String to a value.
+  // It uses a shift from an ostringstream, so that operator must be
+  // defined for the data type used.
+  template<typename T>
+  void fromString(T& value) const
+  {
+    std::ostringstream os(*this);
+    os >> value;
+  }
+  template<typename T>
+  T fromString() const
+  {
+    T value;
+    fromString(value);
+    return value;
+  }
+
+// Convert a value to a String.
+  // It uses a shift into an ostringstream, so that operator must be
+  // defined for the data type used.
+  template<typename T>
+  static String toString(const T& value)
+  {
+    std::ostringstream os;
+    os << value;
+    return os.str();
+  }
+
   // Remove beginning and ending whitespace.
   void trim();
 
@@ -618,15 +646,15 @@ class String : public string {
   size_type find(Char c, size_type pos=0) const {
     return string::find(c, pos); }
   size_type find(const RegexBase &r, size_type pos=0) const;
-  size_type rfind(const string &str, size_type pos=0) const {
-    return string::find(str, pos); }
-  size_type rfind(const Char *s, size_type pos=0) const {
+  size_type rfind(const string &str, size_type pos=npos) const {
+    return string::rfind(str, pos); }
+  size_type rfind(const Char *s, size_type pos=npos) const {
     return string::rfind(s, pos); }
   size_type rfind(const Char *s, size_type pos, size_type n) const {
     return string::rfind(s, pos, n); }
-  size_type rfind(Char c, size_type pos=0) const {
+  size_type rfind(Char c, size_type pos=npos) const {
     return string::rfind(c, pos); }
-  size_type rfind(const RegexBase &r, size_type pos=0) const;
+  size_type rfind(const RegexBase &r, size_type pos=npos) const;
   size_type find_first_of(const string &str, size_type pos=0) const {
     return string::find_first_of(str, pos); }
   size_type find_first_of(const Char *s, size_type pos=0) const {
@@ -671,7 +699,9 @@ class String : public string {
     return (find(s) != npos); }
   Bool contains(const RegexBase &r) const;
   // </group>
-  // Containment after (or before if pos negative) pos. ** Casacore addition
+  // Does the string starting at the given position contain the given substring?
+  // If the position is negative, it is counted from the end.
+  // ** Casacore addition
   // <group name=contains_pos>
   Bool contains(Char c, Int pos) const;
   Bool contains(const string &str, Int pos) const;
@@ -755,10 +785,10 @@ class String : public string {
   // position, exclusive. ** Casacore addition
   // <group name=before>
   SubString before(size_type pos);
-  SubString before(const string &str, Int startpos = 0);
-  SubString before(const Char *s, Int startpos = 0);
-  SubString before(Char c, Int startpos = 0);
-  SubString before(const RegexBase &r, Int startpos = 0);
+  SubString before(const string &str, size_type startpos = 0);
+  SubString before(const Char *s, size_type startpos = 0);
+  SubString before(Char c, size_type startpos = 0);
+  SubString before(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString before(Int pos) {
     return before(static_cast<size_type>(pos)); };    
@@ -768,10 +798,10 @@ class String : public string {
   // position, inclusive. ** Casacore addition
   // <group name=through>
   SubString through(size_type pos);
-  SubString through(const string &str, Int startpos = 0);
-  SubString through(const Char *s, Int startpos = 0);
-  SubString through(Char c, Int startpos = 0);
-  SubString through(const RegexBase &r, Int startpos = 0);
+  SubString through(const string &str, size_type startpos = 0);
+  SubString through(const Char *s, size_type startpos = 0);
+  SubString through(Char c, size_type startpos = 0);
+  SubString through(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString through(Int pos) {
     return through(static_cast<size_type>(pos)); }
@@ -781,10 +811,10 @@ class String : public string {
   // position, inclusive, to the String's end. ** Casacore addition
   // <group name=from>
   SubString from(size_type pos);
-  SubString from(const string &str, Int startpos = 0);
-  SubString from(const Char *s, Int startpos = 0);
-  SubString from(Char c, Int startpos = 0);
-  SubString from(const RegexBase &r, Int startpos = 0);
+  SubString from(const string &str, size_type startpos = 0);
+  SubString from(const Char *s, size_type startpos = 0);
+  SubString from(Char c, size_type startpos = 0);
+  SubString from(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString from(Int pos) {
     return from(static_cast<size_type>(pos));
@@ -795,10 +825,10 @@ class String : public string {
   // position, exclusive, to the String's end. ** Casacore addition
   // <group name=after>
   SubString after(size_type pos);
-  SubString after(const string &str, Int startpos = 0);
-  SubString after(const Char *s, Int startpos = 0);
-  SubString after(Char c, Int startpos = 0);
-  SubString after(const RegexBase &r, Int startpos = 0);
+  SubString after(const string &str, size_type startpos = 0);
+  SubString after(const Char *s, size_type startpos = 0);
+  SubString after(Char c, size_type startpos = 0);
+  SubString after(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString after(Int pos) {
     return after(static_cast<size_type>(pos));
@@ -840,17 +870,6 @@ class String : public string {
   Int gsub(const Char *pat, const Char *repl);
   Int gsub(const RegexBase &pat, const string &repl);
   //</group>
-
-  // Convert a value to a String.
-  // It uses a shift into an ostringstream, so that operator must be
-  // defined for the data type used.
-  template<typename T>
-  static String toString(const T& value)
-  {
-    std::ostringstream os;
-    os << value;
-    return os.str();
-  }
 
 private:
   // Helper functions for at, before etc
