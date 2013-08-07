@@ -53,7 +53,7 @@ int main (int argc, char* argv[])
     // Make the selection and write the resulting RefTable.
     Table mssel = ms(node);
     if (mssel.nrow() == ms.nrow()) {
-      throw AipsError(" no selection has been made");
+      cout << "warning: all rows have been selected" << endl;
     }
     if (deep == 0) {
       mssel.rename (out, Table::New);
