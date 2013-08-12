@@ -29,8 +29,9 @@
 
 namespace casa {
 
-  DirectionUDF::DirectionUDF (FuncType type)
-    : itsType  (type)
+  DirectionUDF::DirectionUDF (FuncType type, Bool riseSet)
+    : itsType    (type),
+      itsRiseSet (riseSet)
   {}
 
   UDFBase* DirectionUDF::makeDIR (const String&)
@@ -51,6 +52,8 @@ namespace casa {
     { return new DirectionUDF (GALACTIC); }
   UDFBase* DirectionUDF::makeSGAL (const String&)
     { return new DirectionUDF (SUPERGALACTIC); }
+  UDFBase* DirectionUDF::makeRISESET (const String&)
+    { return new DirectionUDF (HADEC, True); }
 
   void DirectionUDF::setup (const Table&, const TaQLStyle&)
   {
@@ -85,7 +88,7 @@ namespace casa {
     if (operands().size() <= argnr) {
       throw AipsError ("No direction given in a MEAS function");
     }
-    itsEngine.handleDirection (operands(), argnr);
+    itsEngine.handleDirection (operands(), argnr, itsRiseSet);
     // Handle possible Epoch arguments.
     if (operands().size() > argnr) {
       itsEpochEngine.handleEpoch (operands(), argnr);
@@ -101,7 +104,11 @@ namespace casa {
     }
     itsEngine.setConverter (itsRefType);
     // Set datatype, shape, unit, etc.
-    setDataType (TableExprNodeRep::NTDouble);
+    if (itsRiseSet) {
+      setDataType (TableExprNodeRep::NTDate);
+    } else {
+      setDataType (TableExprNodeRep::NTDouble);
+    }
     const IPosition& shape = itsEngine.shape();
     if (shape.size() > 0) {
       if (shape.product() == 1) {
@@ -118,12 +125,12 @@ namespace casa {
 
   Double DirectionUDF::getDouble (const TableExprId& id)
   {
-    return itsEngine.getArrayDouble (id).data()[0];
+    return getArrayDouble (id).data()[0];
   }
 
   Array<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
   {
-    return itsEngine.getArrayDouble (id);
+    return itsEngine.getArrayDouble (id, itsRiseSet);
   }
 
 } //end namespace
