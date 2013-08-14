@@ -212,6 +212,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
       }
       if (!ok) {
         // Close table if open.
+        row[which] = ROTableRow();
         t[which] = Table();
         LogIO os(LogOrigin("MeasJPL",
                            String("initMeas(MeasJPL::Files)"),
@@ -243,6 +244,7 @@ void MeasJPL::closeMeas() {
           nv = 3;
           twot = 0.0;
           vfac = 0.0;
+          row[i] = ROTableRow();
           t[i] = Table();
         }
         measFlag[i] = True;

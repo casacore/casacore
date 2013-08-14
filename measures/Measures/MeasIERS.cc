@@ -207,7 +207,7 @@ void MeasIERS::closeMeas() {
           mjd0[i] = 0;
           mjdl[i] = 0;
           msgDone = False;
-	  row[i] = TableRow();
+	  row[i] = ROTableRow();
           t[i] = Table();
         }
         measFlag[i] = True;
