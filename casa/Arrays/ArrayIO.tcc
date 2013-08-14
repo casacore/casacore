@@ -151,6 +151,9 @@ AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
 template<class T>
 void putArray (AipsIO &ios, const Array<T> &a, const Char* name)
 {
+    if (a.size() * sizeof(T) > 2147483647) {
+      throw AipsError("AipsIO putArray too large (exceeds 2**31 bytes)");
+    }
     ios.putstart(name, Array<T>::arrayVersion());
     // Write out dimensionality
     ios << a.ndim();
