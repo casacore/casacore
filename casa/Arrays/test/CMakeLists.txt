@@ -1,5 +1,4 @@
 set (tests
-tuvw
 dArrayAccessor
 tArrayAccessor
 tArrayBase
