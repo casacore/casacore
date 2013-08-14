@@ -91,11 +91,13 @@ MeasComet::MeasComet(const MeasComet &other) :
   ncols_p(other.ncols_p)
 {
   initMeas(other.tp_p);
+  for (uInt i=0; i<2; i++) lnr_p[i] = -1;
 }
 
 MeasComet &MeasComet::operator=(const MeasComet &other) {
   if (this != &other) {
     initMeas(other.tp_p);
+    for (uInt i=0; i<2; i++) lnr_p[i] = -1;
   }
   return *this;
 }
