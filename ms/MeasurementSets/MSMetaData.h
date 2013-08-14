@@ -296,6 +296,8 @@ public:
 
 	virtual vector<uInt> getBBCNos() = 0;
 
+	virtual std::map<uInt, std::set<uInt> > getBBCNosToSpwMap() = 0;
+
 	virtual vector<String> getSpwNames() = 0;
 
 	// the returned map are the average intervals for each spectral window for the
@@ -362,7 +364,7 @@ protected:
 
 	static Vector<Double> _getIntervals(const MeasurementSet& ms);
 
-	static Vector<Bool> _getFlagRows(const MeasurementSet& ms);
+	//static Vector<Bool> _getFlagRows(const MeasurementSet& ms);
 
 	static ArrayColumn<Bool>* _getFlags(const MeasurementSet& ms);
 
@@ -436,7 +438,7 @@ protected:
 		AOSFMapD*& scanNACRows,
 		AOSFMapD*& scanNXCRows,
 		const Vector<Int>& ant1, const Vector<Int>& ant2,
-		const Vector<Bool>& flagRow, const Vector<Int>& dataDescIDs,
+		/*const Vector<Bool>& flagRow, */const Vector<Int>& dataDescIDs,
 		const std::map<Int, uInt>& dataDescIDToSpwMap,
 		const vector<SpwProperties>& spwInfo,
 		const ArrayColumn<Bool>& flags,

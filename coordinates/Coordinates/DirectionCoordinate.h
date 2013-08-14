@@ -584,9 +584,15 @@ public:
     // parameter is the angle through which this coordinate had to be rotated clockwise
     // to produce the new coordinate.
 
-    DirectionCoordinate convert(
-    	Quantity& angle, MDirection::Types directionType
-    ) const;
+    // Set the projection.
+    void setProjection(const Projection&);
+
+    // Set the base (as opposed to conversion) reference frame.
+    void setReferenceFrame(const MDirection::Types rf);
+
+    // Convert the coordinate to another reference frame.
+    DirectionCoordinate convert(Quantity& angle,
+                                MDirection::Types directionType) const;
 
 private:
     // Direction type

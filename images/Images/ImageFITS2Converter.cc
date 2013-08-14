@@ -442,11 +442,13 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
 
 // Remove unwanted left-over Coordinate-related keywords
 
-    Vector<String> ignore(4);
+    Vector<String> ignore(6);
     ignore(0) = "^date-map$";
     ignore(1) = "date";
     ignore(2) = "^naxis";
     ignore(3) = "^naxis$";
+    ignore(4) = "^pc.....";
+    ignore(5) = "^pc.....$";
     FITSKeywordUtil::removeKeywords(headerRec, ignore);
 //
     return cSys;

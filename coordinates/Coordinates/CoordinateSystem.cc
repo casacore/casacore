@@ -2186,14 +2186,18 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 
 Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 {
-    Bool ok = (units.nelements()==nWorldAxes());
-    if (!ok) {
-      set_error("units vector must be of length nWorldAxes()");
-      return False;
-    }
-//
-    const uInt nc = nCoordinates();
-    for (uInt i=0; i<nc; i++) {
+    return setWorldAxisUnits (units, False);
+}
+
+Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units,
+                                         Bool throwException)
+{
+    String error;
+    if (units.nelements() != nWorldAxes()) {
+      error = "units vector must be of length nWorldAxes()";
+    } else {
+      const uInt nc = nCoordinates();
+      for (uInt i=0; i<nc; i++) {
         Vector<String> tmp(coordinates_p[i]->worldAxisUnits().copy());
         uInt na = tmp.nelements(); 
         for (uInt j=0; j<na; j++) {
@@ -2201,13 +2205,20 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
            if (which >= 0) tmp[j] = units[which];
         }
 
-// Set new units
-
-        ok = (coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
-        if (!ok) set_error (coordinates_p[i]->errorMessage());
+        // Set new units
+        if  (! coordinates_p[i]->setWorldAxisUnits(tmp)) {
+          error = coordinates_p[i]->errorMessage();
+        }
+      }
     }
-//    
-    return ok;
+    // Check if an error has occurred. If so, throw if needed.
+    if (error.empty()) {
+      return True;   // no error
+    } else if (throwException) {
+      throw AipsError (error);
+    }
+    set_error (error);
+    return False;
 }
 
 Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
@@ -4470,11 +4481,14 @@ Int CoordinateSystem::spectralCoordinateNumber() const {
     return findCoordinate(Coordinate::SPECTRAL);
 }
 
-Int CoordinateSystem::spectralAxisNumber() const {
+Int CoordinateSystem::spectralAxisNumber(Bool doWorld) const {
     if (! hasSpectralAxis()) {
         return -1;
     }
     Int specIndex = findCoordinate(Coordinate::SPECTRAL);
+    if (doWorld) {
+      return worldAxes(specIndex)[0];
+    }
     return pixelAxes(specIndex)[0];
 }
 
@@ -4492,9 +4506,12 @@ Int CoordinateSystem::polarizationCoordinateNumber() const {
     return findCoordinate(Coordinate::STOKES);
 }
 
-Int CoordinateSystem::polarizationAxisNumber() const {
+Int CoordinateSystem::polarizationAxisNumber(Bool doWorld) const {
     if (! hasPolarizationCoordinate()) {
         return -1;
+    }
+    if (doWorld) {
+      return worldAxes(polarizationCoordinateNumber())[0];
     }
     return pixelAxes(polarizationCoordinateNumber())[0];
 }

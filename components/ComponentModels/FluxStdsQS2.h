@@ -266,6 +266,44 @@ private:
   virtual Bool setSourceCoeffs();
 };
 
+// <summary>
+// FluxStdScaifeHeald2012: The Scaife & Heald (2012) flux standard.
+// </summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="" tests="" demos="">
+//
+// <prerequisite>
+// <li><linkto class="FluxStandard">FluxStandard</linkto> module
+// <li><linkto class="FluxCalcLogFreqPolynomialSH">FluxCalcLogFreqPolynomialSH</linkto> module
+// </prerequisite>
+//
+// <etymology>
+// From "flux density", "standard", "Scaife", "Heald", and "2012".
+// </etymology>
+//
+// <synopsis>
+// This specializes FluxCalcLogFreqPolynomialSH with the Scaife & Heald (2012)
+// coefficients and list of recognized sources.
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+// Support flux density calibration.
+// </motivation>
+class FluxStdScaifeHeald2012 : public virtual FluxCalcVQS,
+                               private FluxCalcLogFreqPolynomialSH
+{
+private:
+  virtual Bool setSourceCoeffs();
+};
+
+
 } //# NAMESPACE NSTDS -END
 } //# NAMESPACE CASA - END
 

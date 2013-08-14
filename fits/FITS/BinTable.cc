@@ -167,7 +167,6 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    ConstFitsKeywordList &kwl = kwlist();
    kwl.first();
    const FitsKeyword *kw;
-   Regex trailing(" *$"); // trailing blanks
    String kwname;
    // will hold the index portion for indexed keywords, this should be
    // more than enough space
@@ -176,7 +175,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        if (!kw->isreserved() || (sdfits && isSDFitsColumn(kw->kw().name()))) {
 	   // Get the kw name and remove the trailing spaces
            kwname = kw->name();
-	   kwname = kwname.before(trailing);
+	   kwname.rtrim(' ');
 	   // if it is indexed, add the index to the keyword
 	   if (kw->isindexed()) {
 	       sprintf(index,"%i",kw->index());
@@ -231,7 +230,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        //		check if the column name exists
        String colname(ttype(i));
        //               remove trailing spaces
-       colname  = colname.before(trailing);
+       colname.rtrim(' ');
        if (td.isColumn(colname)) {
 	   //		issue a warning, append column number to this name
 	   ostringstream newname;

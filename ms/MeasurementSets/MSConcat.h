@@ -156,6 +156,7 @@ private:
   SimpleOrderedMap <Int, Int> newSPWIndex_p;
   SimpleOrderedMap <Int, Int> newObsIndexA_p;
   SimpleOrderedMap <Int, Int> newObsIndexB_p;
+  SimpleOrderedMap <Int, Int> otherObsIdsWithCounterpart_p;
   SimpleOrderedMap <Int, Int> solSystObjects_p;
 
   Bool doSource_p;

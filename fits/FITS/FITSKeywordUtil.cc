@@ -561,7 +561,8 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    }
 	    if (num < min1D(base)) {min1D(base) = num;}
 	    if (num > max1D(base)) {max1D(base) = num;}
-	} else if (name.contains(kw2D) || (name.contains(kw2Dmodern) && !name.contains(cd))) {
+	} else if ((name.contains(kw2D) || name.contains(kw2Dmodern))
+                   && !name.contains(cd)) {
 	    Int nrow, ncol;
 	    String base;
 	    if (!splitKW2D(base, nrow, ncol, name)) {
@@ -821,8 +822,8 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		os << LogIO::SEVERE << "Unknown type for keyword '" 
 		   << fullName << "'. Continuing." << LogIO::POST;
 	    }
-	} else if ((fullName.contains(kw2D) || fullName.contains(kw2Dmodern))
-                   && !fullName.contains(cd)) {
+	} else if (fullName.contains(kw2D) || (fullName.contains(kw2Dmodern)
+                                               && !fullName.contains(cd))) {
 	    Int thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);

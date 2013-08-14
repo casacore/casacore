@@ -1198,6 +1198,20 @@ vector<uInt> MSMetaDataOnDemand::getBBCNos() {
 	return out;
 }
 
+std::map<uInt, std::set<uInt> > MSMetaDataOnDemand::getBBCNosToSpwMap() {
+	vector<uInt> mymap = getBBCNos();
+	std::map<uInt, std::set<uInt> > out;
+	vector<uInt>::const_iterator end = mymap.end();
+	uInt i = 0;
+	for (
+		vector<uInt>::const_iterator iter=mymap.begin();
+		iter!=end; iter++, i++
+	) {
+		out[*iter].insert(i);
+	}
+	return out;
+}
+
 vector<String> MSMetaDataOnDemand::getSpwNames() {
 	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw;
 	vector<MSMetaData::SpwProperties> props = _getSpwInfo(
@@ -1808,7 +1822,7 @@ void MSMetaDataOnDemand::_getUnflaggedRowStats(
 	MSMetaData::_getUnflaggedRowStats(
 		nACRows, nXCRows, myFieldNACRows,
 		myFieldNXCRows, myScanNACRows, myScanNXCRows, *ant1,
-		*ant2, _getFlagRows(*_ms), *_getDataDescIDs(),
+		*ant2, /*_getFlagRows(*_ms),*/ *_getDataDescIDs(),
 		_getDataDescIDToSpwMap(),
 		_getSpwInfo(a, b, c, d), *MSMetaData::_getFlags(*_ms), *_getFieldIDs(),
 		*_getScans(), *_getObservationIDs(), *_getArrayIDs()

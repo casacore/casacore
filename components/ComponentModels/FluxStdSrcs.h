@@ -70,7 +70,7 @@ class FluxStdSrcs
 public:
 
   typedef FluxStdSrcs FSS;
-  typedef RigidVector<String, 4> RVS4;
+  typedef RigidVector<String, 6> RVS6;
 
   // Source identifiers.
   enum Source {
@@ -82,6 +82,7 @@ public:
     THREEC295,
     THREEC196,
     THREEC123,
+    THREEC380,
     // The number of standards in this enumerator.
     NUMBER_SOURCES,
     UNKNOWN_SOURCE = NUMBER_SOURCES

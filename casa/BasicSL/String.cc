@@ -28,6 +28,8 @@
 #include <casa/BasicSL/String.h>
 
 #include <casa/BasicSL/RegexBase.h>
+#include <casa/Exceptions/Error.h>
+#include <casa/iostream.h>
 #include <algorithm>
 #include <casa/string.h>
 #include <casa/sstream.h>
@@ -75,36 +77,16 @@ Int String::freq(const Char *s) const {
   return found;
 }
 
-Double String::toDouble(const String& string) {
-    istringstream instr(string);
-    Double var;
-    instr >> var;
-    if (instr.fail()) {
-      var = 0.0;
-    }
-    return var;
-}
+Int String::toInt (const String& s, Bool chk)
+  { Int v=0; s.fromString(v, chk); return v; }
+Float String::toFloat (const String& s, Bool chk)
+  { Float v=0; s.fromString(v, chk); return v; }
+Double String::toDouble (const String& s, Bool chk)
+  { Double v=0; s.fromString(v, chk); return v; }
 
-Float String::toFloat(const String& string) {
-    istringstream instr(string);
-    Float var;
-    // Initialize in case the string is empty or non-numeric.
-    instr >> var;
-    if (instr.fail()) {
-      var = 0.0;
-    }
-    return var;
-}
-
-Int String::toInt(const String& string) {
-    istringstream instr(string);
-    Int var;
-    // Initialize in case the string is empty or non-numeric.
-    instr >> var;
-    if (instr.fail()) {
-      var = 0.0;
-    }
-    return var;
+void String::throwFromStringError() const
+{
+  throw AipsError ("fromString failure for string '" + *this + "'");
 }
 
 String String::format (const char* picture, ...)

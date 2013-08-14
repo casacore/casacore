@@ -272,11 +272,12 @@ Vector<Double> MSMetaData::_getIntervals(const MeasurementSet& ms) {
 	return ScalarColumn<Double>(ms, intervalColName).getColumn();
 }
 
+/*
 Vector<Bool> MSMetaData::_getFlagRows(const MeasurementSet& ms) {
 	String flagRowColName = MeasurementSet::columnName(MSMainEnums::FLAG_ROW);
 	return ScalarColumn<Bool>(ms, flagRowColName).getColumn();
 }
-
+*/
 
 ArrayColumn<Bool>* MSMetaData::_getFlags(const MeasurementSet& ms) {
 	String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);
@@ -431,7 +432,7 @@ Quantity MSMetaData::_getTotalExposureTime(
 	uInt maxNBaselines = nAnts*(nAnts-1)/2;
 	Double totalExposure = 0;
 	String taql = "select FLAG, DATA_DESC_ID, EXPOSURE, TIME from "
-		+ ms.tableName() + " where ANTENNA1 != ANTENNA2 and FLAG_ROW==False";
+		+ ms.tableName() + " where ANTENNA1 != ANTENNA2";
 	Table result(tableCommand(taql));
 	Vector<Int> ddIDs = ScalarColumn<Int>(result, "DATA_DESC_ID").getColumn();
 	Vector<Double> exposures = ScalarColumn<Double>(result, "EXPOSURE").getColumn();
@@ -448,11 +449,14 @@ Quantity MSMetaData::_getTotalExposureTime(
 		uInt nCorrelations = flagsMatrix.nrow();
 		Double denom = (timeToBWMap.find(times[i])->second)*maxNBaselines*nCorrelations;
 		for (uInt corr=0; corr<nCorrelations; corr++) {
-			MaskedArray<Double> flaggedChannelWidths(
-				channelWidths, ! flagsMatrix.row(corr), True
-			);
-			Double effectiveBW = sum(flaggedChannelWidths);
-			totalExposure += exposures[i]*effectiveBW/denom;
+			Vector<Bool> goodData = ! flagsMatrix.row(corr);
+			if (anyTrue(goodData)) {
+				MaskedArray<Double> flaggedChannelWidths(
+					channelWidths, goodData, True
+				);
+				Double effectiveBW = sum(flaggedChannelWidths);
+				totalExposure += exposures[i]*effectiveBW/denom;
+			}
 		}
 	}
 	String unit = ScalarColumn<Double>(ms, "EXPOSURE").keywordSet().asArrayString("QuantumUnits").tovector()[0];
@@ -651,7 +655,7 @@ void MSMetaData::_getUnflaggedRowStats(
 	AOSFMapD*& scanNACRows,
 	AOSFMapD*& scanNXCRows,
 	const Vector<Int>& ant1, const Vector<Int>& ant2,
-	const Vector<Bool>& flagRow, const Vector<Int>& dataDescIDs,
+	/*const Vector<Bool>& flagRow,*/ const Vector<Int>& dataDescIDs,
 	const std::map<Int, uInt>& dataDescIDToSpwMap,
 	const vector<SpwProperties>& spwInfo,
 	const ArrayColumn<Bool>& flags,
@@ -716,12 +720,12 @@ void MSMetaData::_getUnflaggedRowStats(
 	Vector<Int>::const_iterator oIter = obsIDs.begin();
 	Vector<Int>::const_iterator arIter = arrIDs.begin();
 	Vector<Int>::const_iterator dIter = dataDescIDs.begin();
-	Vector<Bool>::const_iterator flagIter = flagRow.begin();
+	//Vector<Bool>::const_iterator flagIter = flagRow.begin();
 	uInt i = 0;
     uInt64 count = 0;
     // a flag value of True means the datum is bad (flagged), so False => unflagged
 	while (a1Iter!=aEnd) {
-		if (! *flagIter) {
+		//if (! *flagIter) {
 			SpwProperties spwProp = spwInfo[dataDescIDToSpwMap.find(*dIter)->second];
 			Vector<Double> channelWidths(
 				Vector<Double>(spwProp.chanwidths)
@@ -776,14 +780,14 @@ void MSMetaData::_getUnflaggedRowStats(
 				(*fieldNXCRows)[*fIter]+= x;
 				(*scanNXCRows)[*arIter][*oIter][*sIter][*fIter] += x;
 			}
-		}
+		//}
 		a1Iter++;
 		a2Iter++;
 		sIter++;
 		fIter++;
 		arIter++;
 		oIter++;
-		flagIter++;
+		//flagIter++;
 		dIter++;
 		i++;
 	}

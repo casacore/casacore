@@ -71,7 +71,8 @@ MSConcat::MSConcat(MeasurementSet& ms):
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc())), 
   newSourceIndex_p(-1), newSourceIndex2_p(-1), newSPWIndex_p(-1),
-  newObsIndexA_p(-1), newObsIndexB_p(-1), solSystObjects_p(-1)
+  newObsIndexA_p(-1), newObsIndexB_p(-1), otherObsIdsWithCounterpart_p(-1),
+  solSystObjects_p(-1)
 {
   itsDirTol=Quantum<Double>(1.0, "mas");
   itsFreqTol=Quantum<Double>(1.0, "Hz");
@@ -410,6 +411,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   SimpleOrderedMap <Int, Int> encountered(-1);
   vector<Int> distinctObsIdSet;
   vector<Int> minScan;
+  vector<Int> maxScan;
 
   if(reindexObsidAndScan){
 
@@ -438,12 +440,13 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     if (ifs.good()) {
       log << LogIO::NORMAL << "Reading from " << obsidAndScanTableName << LogIO::POST;
       uInt n;
-      Int tobsid, tminscan; 
+      Int tobsid, tminscan, tmaxscan; 
       ifs >> n;
       for(uInt i=0; i<n; i++){
 	if(ifs.good()){
 	  ifs >> tobsid; distinctObsIdSet.push_back(tobsid);
 	  ifs >> tminscan; minScan.push_back(tminscan);
+	  ifs >> tmaxscan; maxScan.push_back(tmaxscan);
 	}
 	else{
 	  log << LogIO::WARN << "Error reading file " << obsidAndScanTableName << LogIO::POST;
@@ -458,10 +461,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	log << LogIO::WARN << "Will continue with uninitialized obsid and scans information" << LogIO::POST;
 	distinctObsIdSet.resize(0);
 	minScan.resize(0);
+	maxScan.resize(0);
 	maxScanThis=0;
       }
       //cout << "distinctObsIdSet " << Vector<Int>(distinctObsIdSet) << endl;
       //cout << "minScan " << Vector<Int>(minScan) << endl;
+      //cout << "maxScan " << Vector<Int>(maxScan) << endl;
       //cout << "maxScanThis " << maxScanThis << endl;
     }
     else{
@@ -483,10 +488,14 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	  if(scanid<minScan[i]){
 	    minScan[i] = scanid;
 	  }
+	  if(scanid>maxScan[i]){
+	    maxScan[i] = scanid;
+	  }
 	}
 	else {
 	  distinctObsIdSet.push_back(oid);
 	  minScan.push_back(scanid); 
+	  maxScan.push_back(scanid); 
 	}
 	if(scanid>maxScanThis){
 	  maxScanThis = scanid;
@@ -498,9 +507,24 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     
         
     // set the offset added to scan numbers in each observation
+    Int minScanOther = min(otherScan);
+    {
+      defaultScanOffset = maxScanThis + 1 - minScanOther;
+      if(defaultScanOffset<0){
+	defaultScanOffset=0;
+      }
+    }
+
     for(uInt i=0; i<distinctObsIdSet.size(); i++){
       Int scanOffset;
-      scanOffset = minScan[i] - 1; // assume scan numbers originally start at 1
+      if(otherObsIdsWithCounterpart_p.isDefined(distinctObsIdSet[i]) && i!=0){
+	// This observation is present in both this and the other MS.
+	// Need to set the scanOffset based on previous observation
+	scanOffset = maxScan[i-1] + 1 - minScanOther;
+      }
+      else{
+	scanOffset = minScan[i] - 1; // assume scan numbers originally start at 1
+      }
       if(scanOffset<0){
 	log << LogIO::WARN << "Zero or negative scan numbers in MS. May lead to duplicate scan numbers in concatenated MS." 
 	    << LogIO::POST;
@@ -512,13 +536,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       scanOffsetForOid.define(distinctObsIdSet[i], scanOffset); 
     }
     
-    {
-      Int minScanOther = min(otherScan);
-      defaultScanOffset = maxScanThis + 1 - minScanOther;
-      if(defaultScanOffset<0){
-	defaultScanOffset=0;
-      }
-    }
     
   } // end if reindexObsidAndScan
   
@@ -586,10 +603,14 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	if(scanid<minScan[i]){
 	  minScan[i] = scanid;
 	}
+	if(scanid>maxScan[i]){
+	  maxScan[i] = scanid;
+	}
       }
       else {
 	distinctObsIdSet.push_back(oid);
 	minScan.push_back(scanid); 
+	maxScan.push_back(scanid); 
       }
       if(scanid>maxScanOther){
 	maxScanOther = scanid;
@@ -603,7 +624,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	  << "will continue but the next virtual concat will lack this information:" << LogIO::POST;
       log << "distinctObsIdSet " << Vector<Int>(distinctObsIdSet) << endl;
       log << "minScan " << Vector<Int>(minScan) << endl;
-      log << "maxScan " << maxScanOther << LogIO::POST;
+      log << "maxScan " << Vector<Int>(maxScan) << endl;
+      log << "maxScanOther " << maxScanOther << LogIO::POST;
     }
     else{
       log << LogIO::NORMAL << "Writing to " << obsidAndScanTableName << LogIO::POST;
@@ -612,6 +634,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       for(uInt i=0; i<n; i++){
 	ofs << distinctObsIdSet[i] << endl;
 	ofs << minScan[i] << endl;
+	ofs << maxScan[i] << endl;
       }
       ofs << maxScanOther << endl; // note: this max is determined after the modification of scanOther 
     }
@@ -1152,11 +1175,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   
   // SCAN NUMBER
   // find the distinct ObsIds in use in this MS
-  // and the maximum scan ID in each of them
+  // and the maximum scan and minimum scan ID in each of them
   SimpleOrderedMap <Int, Int> scanOffsetForOid(-1);
   SimpleOrderedMap <Int, Int> encountered(-1);
   vector<Int> distinctObsIdSet;
   vector<Int> minScan;
+  vector<Int> maxScan;
   Int maxScanThis=0;
   for(uInt r = 0; r < curRow; r++) {
     Int oid = thisObsId(r);
@@ -1173,19 +1197,42 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       if(scanid<minScan[i]){
 	minScan[i] = scanid;
       }
+      if(scanid>maxScan[i]){
+	maxScan[i] = scanid;
+      }
     }
     else {
       distinctObsIdSet.push_back(oid);
       minScan.push_back(scanid); 
+      maxScan.push_back(scanid); 
     }
     if(scanid>maxScanThis){
       maxScanThis = scanid;
     }
   }
   // set the offset added to scan numbers in each observation
+
+  Int defaultScanOffset=0;
+  Int minScanOther = 0;
+  {
+    ROTableVector<Int> ScanTabVectOther(otherScan);
+    minScanOther = min(ScanTabVectOther);
+    defaultScanOffset = maxScanThis + 1 - minScanOther;
+    if(defaultScanOffset<0){
+      defaultScanOffset=0;
+    }
+  }
+
   for(uInt i=0; i<distinctObsIdSet.size(); i++){
     Int scanOffset;
-    scanOffset = minScan[i] - 1; // assume scan numbers originally start at 1
+    if(otherObsIdsWithCounterpart_p.isDefined(distinctObsIdSet[i]) && i!=0){
+      // This observation is present in both this and the other MS.
+      // Need to set the scanOffset based on previous observation
+      scanOffset = maxScan[i-1] + 1 - minScanOther;
+    }
+    else{
+      scanOffset = minScan[i] - 1; // assume scan numbers originally start at 1
+    }
     if(scanOffset<0){
       log << LogIO::WARN << "Zero or negative scan numbers in MS. May lead to duplicate scan numbers in concatenated MS." 
 	  << LogIO::POST;
@@ -1197,15 +1244,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     scanOffsetForOid.define(distinctObsIdSet[i], scanOffset); 
   }
   
-  Int defaultScanOffset=0;
-  {
-    ROTableVector<Int> ScanTabVectOther(otherScan);
-    Int minScanOther = min(ScanTabVectOther);
-    defaultScanOffset = maxScanThis + 1 - minScanOther;
-    if(defaultScanOffset<0){
-      defaultScanOffset=0;
-    }
-  }
   
   // finished all modifications of the MS Main table going to the first part 
   
@@ -1655,6 +1693,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
   newObsIndexA_p.clear();
   newObsIndexB_p.clear();
   SimpleOrderedMap <Int, Int> tempObsIndex(-1);
+  SimpleOrderedMap <Int, Int> tempObsIndexReverse(-1);
   SimpleOrderedMap <Int, Int> tempObsIndex2(-1);
   doObsA_p = False; 
   doObsB_p = True;
@@ -1668,6 +1707,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
     ++actualRow;
     obsRow.put(actualRow, otherObsRow.get(k, True));
     tempObsIndex.define(k, actualRow);
+    tempObsIndexReverse.define(actualRow, k);
   }
   if(remRedunObsId){ // remove redundant rows
     MSObservationColumns& obsCol = observation();
@@ -1678,6 +1718,9 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
 	if(obsRowsEquivalent(obsCol, j, k)){ // rows equivalent?
 	  // make entry in map for (k,j) and mark k for deletion
 	  tempObsIndex2.define(k, j);
+	  if(tempObsIndexReverse.isDefined(k)){ // remember that the observation was already in the obs table
+	    otherObsIdsWithCounterpart_p.define(j, k);
+	  }
 	  rowToBeRemoved(k) = True;
 	  rowsToBeRemoved.push_back(k);
 	}
@@ -2038,7 +2081,10 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
       refDir = dirCtr(refDir.getValue());
     }
     
-    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance, otherOrigTime);
+    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance, 
+						-1, // don't specify a tryrow 
+						otherOrigTime); // compare at the start time of the other field
+    // cout << "other field, newFld " << f << ", " << newFld << endl;
 
     Bool canUseThisEntry = (newFld>=0);
     if(canUseThisEntry){
@@ -2567,7 +2613,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
 		otherDDCols.spectralWindowId()(d) < static_cast<Int>(otherSpw.nrow()), 
 		AipsError);
-    const Int otherSpwId = otherDDCols.spectralWindowId()(d);
+    const Int otherSpwId = static_cast<uInt>(otherDDCols.spectralWindowId()(d));
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
 
     foundInDD(otherSpwId) = True;

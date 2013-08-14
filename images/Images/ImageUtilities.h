@@ -122,7 +122,8 @@ public:
 		   const ImageInterface<Float>& inImage,
 		   const String& outFile, Bool direction,
 		   Bool spectral, const String& stokes,
-		   Bool linear, Bool tabular, Bool overwrite
+		   Bool linear, Bool tabular, Bool overwrite,
+                   Bool silent=False
    );
 
 // Function to bin up (average data) one axis of an N-D MaskedArray. The interface

@@ -1506,6 +1506,27 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
 }
 
 
+void DirectionCoordinate::setProjection(const Projection& p)
+{
+  Matrix<Double> xform;
+  pcToXform(xform, wcs_p);
+  projection_p = p;
+  makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
+           wcs_p.crval[0], wcs_p.crval[1], wcs_p.cdelt[0], wcs_p.cdelt[1],
+           wcs_p.lonpole, wcs_p.latpole);
+}
+
+void DirectionCoordinate::setReferenceFrame(const MDirection::Types rf)
+{
+  Matrix<Double> xform;
+  pcToXform(xform, wcs_p);
+  type_p = rf;
+  makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
+           wcs_p.crval[0], wcs_p.crval[1], wcs_p.cdelt[0], wcs_p.cdelt[1],
+           wcs_p.lonpole, wcs_p.latpole);
+}
+
+
 void DirectionCoordinate::toCurrent(Vector<Double>& value) const
 {
     value[0] /= to_degrees_p[0];

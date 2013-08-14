@@ -178,6 +178,8 @@ Bool FluxStandard::compute(const String& sourceName,
       throw(AipsError(String(oss)));
     }
   }
+  else if(itsFluxScale == SCAIFE_HEALD_2012)
+    fluxStdPtr = new NSTDS::FluxStdScaifeHeald2012;
   else{
     if(verbose)
       os << LogIO::SEVERE
@@ -186,6 +188,9 @@ Bool FluxStandard::compute(const String& sourceName,
          << LogIO::POST;
     return false;
   }
+  os << LogIO::DEBUG1
+     << "Using flux standard: " << standardName(itsFluxScale)
+     << LogIO::POST;
 
   // Set the source or fail.
   if(!fluxStdPtr->setSource(sourceName)){
@@ -443,6 +448,11 @@ Bool FluxStandard::matchStandard (const String& name,
       (lname.contains("13") || lname.contains("2013"))) {
     stdEnum = FluxStandard::PERLEY_BUTLER_2013;
   }
+  // Scaife & Heald (2012)
+  else if (lname.contains("scaife") && lname.contains("heald") &&
+      (lname.contains("12") || lname.contains("2012"))) {
+    stdEnum = FluxStandard::SCAIFE_HEALD_2012;
+  }
   // Baars
   else if (lname.contains("baars")) {
     stdEnum = FluxStandard::BAARS;
@@ -495,6 +505,10 @@ String FluxStandard::standardName (const FluxStandard::FluxScale& stdEnum)
   }
   case PERLEY_BUTLER_2013: {
     stdName = "Perley-Butler 2013";
+    break;
+  }
+    case SCAIFE_HEALD_2012: {
+    stdName = "Scaife-Heald 2012";
     break;
   }
   case SS_JPL_BUTLER: 

@@ -119,4 +119,47 @@ Bool FluxCalcLogFreqBrokenPolynomial::operator()(Flux<Double>& value,
   return FluxCalcLogFreqPolynomial::operator()(value, error, mfreq);
 }
 
+Bool FluxCalcLogFreqPolynomialSH :: operator()( Flux<Double>& value,
+                                                Flux<Double>& error,
+                                                const MFrequency& mfreq,
+                                                const Bool /* updatecoeffs */)
+{
+  Double S = 0.;
+  Double dS2 = 0.;
+  coeffs_p(0).resize();
+  coeffs_p(1).resize();
+  coeffs_p=getCurrentCoeffs();
+  if ( coeffs_p( 0 ).nelements() > 0 ) {
+    Double logF = log10( mfreq.get( freqUnit_p ).getValue() / 0.150 );
+    Double logS = 0.;
+    for ( uInt order = coeffs_p( 0 ).nelements() - 1; order >= 1; --order)
+      logS = ( logS + coeffs_p( 0 )[ order ] ) * logF;
+    S = coeffs_p( 0 )[ 0 ] * pow( 10.0, logS );
+    if ( coeffs_p( 1 ).nelements() > 0 ) {
+      for ( uInt order = coeffs_p( 1 ).nelements() - 1; order >= 1; --order)
+        dS2 = ( dS2 + square( coeffs_p( 1 )[ order ] ) ) * square( logF );
+      dS2 = square( S * coeffs_p( 1 )[ 0 ] / coeffs_p( 0 )[ 0 ] ) +
+            square( C::ln10 * S ) * dS2;
+    }
+  }
+
+  Double dS = ( dS2 > 0.0 ) ? sqrt( dS2 ) : 0.0;
+  value.setValue( S );
+  error.setValue( dS );
+
+  return true;
+}
+Bool FluxCalcLogFreqPolynomialSH::setSource(const String& sourceName)
+{
+  Bool success = FluxCalcVQS::setSource(sourceName);
+
+  if(success)
+    success = setSourceCoeffs();
+  return success;
+}
+
+void FluxCalcLogFreqPolynomialSH::setFreqUnit(const String& freqUnit)
+{
+  freqUnit_p = freqUnit;
+}
 } //# NAMESPACE CASA - END

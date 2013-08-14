@@ -237,5 +237,76 @@ Bool FluxStdPerleyButler2013::setSourceCoeffs()
   return found;
 }
 
+Bool FluxStdScaifeHeald2012::setSourceCoeffs()
+{
+  Bool found = true;
+
+  setFreqUnit( "GHz" );
+  FSS::Source srcEnum = FCVQS::getSrcEnum();
+  //FCQS::Source srcEnum = getSrcEnum();
+
+  String stddatapath;
+  String stdTabName("ScaifeHeald2012Coeffs");
+
+  if(!Aipsrc::findDir(stddatapath,"./"+stdTabName)) {
+    if(!Aipsrc::findDir(stddatapath, Aipsrc::aipsRoot()+"/data/nrao/VLA/standards/"+stdTabName)) {
+      ostringstream oss;
+      oss << "The coefficient data for Scaife-Heald 2012, " <<  stdTabName
+          << " is not found in ./ or in ~/data/nrao/VLA/standards/";
+      throw(AipsError(String(oss)));
+    }
+  }
+  //cerr<<"use stddatapath="<<stddatapath<<endl;
+  LogIO os(LogOrigin("FluxStdScaifeHeald2012", "setSourceCoeffs", WHERE));
+   os << LogIO::NORMAL2
+      << "Use the coefficent data table: " << stddatapath
+      << LogIO::POST;
+
+
+  Path stdTablePath(stddatapath);
+  //cerr<<"stddatapath="<<stddatapath<<endl;
+  FCVQS::readQSCoeffsTable(stdTablePath);
+  if (srcEnum != FSS::THREEC48 && 
+      srcEnum != FSS::THREEC147 &&
+      srcEnum != FSS::THREEC196 &&
+      srcEnum != FSS::THREEC286 &&
+      srcEnum != FSS::THREEC295 &&
+      srcEnum != FSS::THREEC380) 
+    found=false;
+/****
+  // Needed before the coeffs. are stored in an external table
+  //if ( srcEnum == FCQS::THREEC48 )
+  if ( srcEnum == FSS::THREEC48 )
+    fill_coeffs( RVF4( 64.768, -0.387, -0.420,  0.181 ),
+                 RVF4(  1.761,  0.039,  0.031,  0.060 ) );
+  //else if ( srcEnum == FCQS::THREEC147 )
+  else if ( srcEnum == FSS::THREEC147 )
+    fill_coeffs( RVF4( 66.738, -0.022, -1.012,  0.549 ),
+                 RVF4(  2.490,  0.030,  0.167,  0.170 ) );
+  //else if ( srcEnum == FCQS::THREEC196 )
+  else if ( srcEnum == FSS::THREEC196 )
+    fill_coeffs( RVF3( 83.084, -0.699, -0.110 ),
+                 RVF3(  1.862,  0.014,  0.024 ) );
+  //else if ( srcEnum == FCQS::THREEC286 )
+  else if ( srcEnum == FSS::THREEC286 )
+    fill_coeffs( RVF4( 27.477, -0.158,  0.032, -0.180 ),
+                 RVF4(  0.746,  0.033,  0.043,  0.052 ) );
+  //else if ( srcEnum == FCQS::THREEC295 )
+  else if ( srcEnum == FSS::THREEC295 )
+    fill_coeffs( RVF5( 97.763, -0.582, -0.298,  0.583, -0.363 ),
+                 RVF5(  2.787,  0.045,  0.085,  0.116,  0.137 ) );
+  //else if ( srcEnum == FCQS::THREEC380 )
+  else if ( srcEnum == FSS::THREEC380 )
+    fill_coeffs( RVF2( 77.352, -0.767 ),
+                 RVF2(  1.164,  0.013 ) );
+  else
+    found = false;
+  cerr<<"FluxStdSaifeHeald2012::setSourceCoeffs() ok?"<<found<<endl;
+****/
+  FCVQS::isTimeVar(false);
+
+  return found;
+}
+
 } //# NAMESPACE NSTD - END 
 } //# NAMESPACE CASA - END

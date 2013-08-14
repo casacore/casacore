@@ -570,40 +570,44 @@ class String : public string {
   String substr(size_type pos=0, size_type n=npos) const {
     return String(*this, pos, n); }
 
-
-  // Convert a string to a Double. If the specified string does not represent
-  // a Double, 0 is returned.
-  static Double toDouble(const String& string);
-
-  // Convert a string to a Float. If the specified string does not represent
-  // a Float, 0 is returned.
-  static Float toFloat(const String& string);
-
-  // Convert a string to an Int. If the specified string does not represent
-  // an Int, 0 is returned.
-  static Int toInt(const String& string);
-
   // Create a formatted string using the given printf format string.
   static String format (const char* picture, ...);
 
-  // Convert a String to a value.
-  // It uses a shift from an ostringstream, so that operator must be
-  // defined for the data type used.
-  template<typename T>
-  void fromString(T& value) const
+  // Convert a String to a value. All characters in the string must be used.
+  // It uses a shift from an ostringstream, so that operator must exist
+  // for the data type used.
+  // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
+  // Otherwise it returns False and <src>value</src> contains the value read
+  // so far.
+  // <group>
+  template<typename T> inline Bool fromString (T& value, Bool chk=True) const
   {
-    std::ostringstream os(*this);
+    std::istringstream os(*this);
     os >> value;
+    if (os.fail()  ||  !os.eof()) {
+      if (chk) throwFromStringError();
+      return False;
+    }
+    return True;
   }
-  template<typename T>
-  T fromString() const
+  template<typename T> inline T fromString() const
   {
     T value;
     fromString(value);
     return value;
   }
+  // </group>
 
-// Convert a value to a String.
+  // Convert a string to an Int, Float or Double.
+  // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
+  // Otherwise the value read so far is returned (0 if nothing read).
+  // <group>
+  static Int toInt (const String& s, Bool chk=False);
+  static Float toFloat (const String& s, Bool chk=False);
+  static Double toDouble (const String& s, Bool chk=False);
+  // </group>
+
+  // Convert a value to a String.
   // It uses a shift into an ostringstream, so that operator must be
   // defined for the data type used.
   template<typename T>
@@ -877,6 +881,9 @@ private:
   SubString _substr(size_type first, size_type l) {
     return SubString(*this, first, l); }
   // </group>
+
+  // Helper function for fromString.
+  void throwFromStringError() const;
 };
 
 // <summary>

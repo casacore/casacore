@@ -415,7 +415,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 //(scanExpr_p != "")  ||
 	 //(observationExpr_p != "") || 
 	 (arrayExpr_p != "") || (uvDistExpr_p != "")      ||
-	 (taqlExpr_p != "")  || (polnExpr_p != "")        || 
+	 //(taqlExpr_p != "")  || 
+	 (polnExpr_p != "")        || 
 	 (stateExpr_p != "")
 	 ))
       throw(MSSelectionError(String("MSSelection::toTableExprNode(MSSelectableTable*): "
@@ -598,7 +599,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  if(taqlExpr_p != "")
 		    {
 		      //	      taql = tableCommand(taqlExpr_p).node();
-		      node = RecordGram::parse(*ms,taqlExpr_p);
+		      node = RecordGram::parse(*msLike->table(),taqlExpr_p);
 		    }
 		  break;
 		}

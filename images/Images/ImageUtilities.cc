@@ -603,7 +603,8 @@ void ImageUtilities::addDegenerateAxes(
 	LogIO& os, PtrHolder<ImageInterface<Float> >& outImage,
 	const ImageInterface<Float>& inImage, const String& outFile,
 	Bool direction, Bool spectral, const String& stokes,
-	Bool linear, Bool tabular, Bool overwrite
+	Bool linear, Bool tabular, Bool overwrite,
+        Bool silent
 ) {
 	// Verify output file
 	if (!overwrite && !outFile.empty()) {
@@ -622,7 +623,7 @@ void ImageUtilities::addDegenerateAxes(
 			CoordinateUtil::addDirAxes(cSys);
 			nExtra += 2;
 		}
-		else {
+		else if (!silent) {
 			os << "Image already contains a DirectionCoordinate" << LogIO::EXCEPTION;
 		}
 	}
@@ -631,7 +632,7 @@ void ImageUtilities::addDegenerateAxes(
 			CoordinateUtil::addFreqAxis(cSys);
 			nExtra++;
 		}
-		else {
+		else if (!silent) {
 			os << "Image already contains a SpectralCoordinate" << LogIO::EXCEPTION;
 		}
 	}
@@ -644,7 +645,7 @@ void ImageUtilities::addDegenerateAxes(
 			cSys.addCoordinate(sc);
 			nExtra++;
 		}
-		else {
+		else if (!silent) {
 			os << "Image already contains a StokesCoordinate" << LogIO::EXCEPTION;
 		}
 	}
@@ -667,7 +668,7 @@ void ImageUtilities::addDegenerateAxes(
 			cSys.addCoordinate(lc);
 			nExtra++;
 		}
-		else {
+		else if (!silent) {
 			os << "Image already contains a LinearCoordinate" << LogIO::EXCEPTION;
 		}
 	}
@@ -679,7 +680,7 @@ void ImageUtilities::addDegenerateAxes(
 			cSys.addCoordinate(tc);
 			nExtra++;
 		}
-		else {
+		else if (!silent) {
 			os << "Image already contains a TabularCoordinate" << LogIO::EXCEPTION;
 		}
 	}
@@ -690,7 +691,7 @@ void ImageUtilities::addDegenerateAxes(
 			shape(n+i) = 1;
 		}
 	}
-	else {
+	else if (!silent){
 		os << "No degenerate axes specified" << LogIO::EXCEPTION;
 	}
 	if (outFile.empty()) {

@@ -269,6 +269,9 @@ public:
 
 	vector<uInt> getBBCNos();
 
+	std::map<uInt, std::set<uInt> > getBBCNosToSpwMap();
+
+
 	vector<String> getSpwNames();
 
 	std::map<uInt, Double> getAverageIntervalsForScan(Int scan);

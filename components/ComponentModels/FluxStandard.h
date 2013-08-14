@@ -105,6 +105,10 @@ class FluxStandard
     // Perley-Butler 2013 (include time variable sources)
     PERLEY_BUTLER_2013,
 
+    // Scaife & Heald 2012MNRAS.423L..30S
+    // broadband low-frequency flux scale for frequencies <~500 MHz
+    SCAIFE_HEALD_2012,
+
     HAS_RESOLUTION_INFO,
 
     // Estimate the flux density for a Solar System object using a JPL Horizons

@@ -59,6 +59,12 @@ Bool FluxCalcVQS::operator()(Vector<Flux<Double> >& values,
   
   values.resize(nfreqs);
   errors.resize(nfreqs);
+  
+  if (coeffsmat_p.nelements()) {
+      // coeffs have been read from a table.
+      uInt nep=0; // should be a single epoch (single row)
+      setSourceCoeffsfromVec(nep);    
+  }
 
   Bool success = true;
   for(uInt f = 0; f < nfreqs; ++f)
@@ -159,7 +165,7 @@ void FluxCalcVQS::readQSCoeffsTable(const Path& fileName)
   //check the source data exist in the table
   const ColumnDescSet& cds=Table_p.tableDesc().columnDescSet();
   if (!cds.isDefined(srcCoeffColName)) 
-    throw(AipsError(srcName+" does not appears to be in the Perley-Butler 2013 standard"));
+    throw(AipsError(srcName+" does not appears to be in "+fullName));
   const ROScalarColumn<Double> epochCol(Table_p, "Epoch");
   const ROArrayColumn<Float> CoeffCol(Table_p, srcCoeffColName);
   const ROArrayColumn<Float> CoeffErrorCol(Table_p, srcCoeffErrorColName);
@@ -173,8 +179,6 @@ void FluxCalcVQS::readQSCoeffsTable(const Path& fileName)
      << "nepoch="<<epochvec_p.nelements()
      << "coeff_0 for the first epoch (coeffsmat_p(0,0))="<<coeffsmat_p(0,0) 
      << LogIO::POST;
-  //cerr<<"epochvec_p.nelement()="<<epochvec_p.nelements()<<endl;
-  //cerr<<"coeffsmat_p(0)(0)="<<coeffsmat_p(0,0)<<endl;
 }
 
 void FluxCalcVQS::interpolate(const String& interpmethod)

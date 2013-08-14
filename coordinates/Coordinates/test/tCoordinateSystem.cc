@@ -99,6 +99,8 @@ void doit5 ();
 void doit6 ();
 void doit7 ();
 void verifyCAS3264 ();
+void spectralAxisNumber();
+void polarizationAxisNumber();
 
 
 
@@ -317,6 +319,11 @@ int main()
     	  AlwaysAssert(ok, AipsError);
 		  Vector<Int> axes = csys.getWorldAxesOrder(myNames, False, True);
 		  AlwaysAssert(axes[0] == 3, AipsError);
+
+      }
+      {
+    	  spectralAxisNumber();
+    	  polarizationAxisNumber();
 
       }
 
@@ -683,6 +690,16 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         throw(AipsError("Failed axis units set/recovery test"));
      }
    }
+   Vector<String> bogus = worldAxisUnits.copy();
+   bogus.resize(worldAxisUnits.size() - 1);
+   AlwaysAssert(! cSys.setWorldAxisUnits(bogus), AipsError);
+   try {
+	   cSys.setWorldAxisUnits(bogus, True);
+	   // this should have thrown an exception, if not, its a failure
+	   AlwaysAssert(False, AipsError);
+   }
+   catch (const AipsError& x) {}
+
 //
 //
 // Now check the pixel axis descriptors
@@ -2379,4 +2396,63 @@ void doit6 ()
 	   cSys.setReferencePixel(ref);
 	   cerr << "Utils coords.refpix: " << cSys.referencePixel() << endl;
    }
+
+   void spectralAxisNumber() {
+	   cout << "*** test spectralAxisNumber()" << endl;
+	   CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+	   AlwaysAssert(csys.spectralAxisNumber(False) == 3, AipsError);
+	   AlwaysAssert(csys.spectralAxisNumber(True) == 3, AipsError);
+	   Vector<Int> worldOrder(4);
+	   worldOrder[0] = 3;
+	   worldOrder[1] = 2;
+	   worldOrder[2] = 1;
+	   worldOrder[3] = 0;
+	   Vector<Int> pixelOrder(4);
+	   pixelOrder[0] = 1;
+	   pixelOrder[1] = 2;
+	   pixelOrder[2] = 3;
+	   pixelOrder[3] = 0;
+	   csys.transpose(worldOrder, pixelOrder);
+	   AlwaysAssert(csys.spectralAxisNumber(False) == 2, AipsError);
+	   AlwaysAssert(csys.spectralAxisNumber(True) == 0, AipsError);
+
+	   csys.removePixelAxis(2, 0);
+	   AlwaysAssert(csys.spectralAxisNumber(False) == -1, AipsError);
+	   AlwaysAssert(csys.spectralAxisNumber(True) == 0, AipsError);
+
+	   csys.replaceCoordinate(LinearCoordinate(), 2);
+	   AlwaysAssert(csys.spectralAxisNumber(False) == -1, AipsError);
+	   AlwaysAssert(csys.spectralAxisNumber(True) == -1, AipsError);
+
+   }
+
+   void polarizationAxisNumber() {
+	   cout << "*** test polarizationAxisNumber()" << endl;
+
+  	   CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+  	   AlwaysAssert(csys.polarizationAxisNumber(False) == 2, AipsError);
+  	   AlwaysAssert(csys.polarizationAxisNumber(True) == 2, AipsError);
+  	   Vector<Int> worldOrder(4);
+  	   worldOrder[0] = 3;
+  	   worldOrder[1] = 2;
+  	   worldOrder[2] = 1;
+  	   worldOrder[3] = 0;
+  	   Vector<Int> pixelOrder(4);
+  	   pixelOrder[0] = 1;
+  	   pixelOrder[1] = 0;
+  	   pixelOrder[2] = 3;
+  	   pixelOrder[3] = 2;
+  	   csys.transpose(worldOrder, pixelOrder);
+  	   AlwaysAssert(csys.polarizationAxisNumber(False) == 3, AipsError);
+  	   AlwaysAssert(csys.polarizationAxisNumber(True) == 1, AipsError);
+
+  	   csys.removePixelAxis(3, 0);
+  	   AlwaysAssert(csys.polarizationAxisNumber(False) == -1, AipsError);
+  	   AlwaysAssert(csys.polarizationAxisNumber(True) == 1, AipsError);
+
+  	   csys.replaceCoordinate(LinearCoordinate(), 1);
+  	   AlwaysAssert(csys.polarizationAxisNumber(False) == -1, AipsError);
+  	   AlwaysAssert(csys.polarizationAxisNumber(True) == -1, AipsError);
+
+     }
 

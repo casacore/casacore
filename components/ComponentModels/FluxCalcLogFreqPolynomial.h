@@ -188,6 +188,65 @@ private:
   Vector<Float> high_coeffs_p;
 };
 
+// <summary>
+// FluxCalcLogFreqPolynomialSH: Implementation base class for flux standards
+// which are polynomials of log10(frequency) following Scaife & Heald (2012).
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+
+// <prerequisite>
+// <li><linkto class="FluxCalcLogFreqPolynomial">FluxCalcLogFreqPolynomial</linkto> module
+// </prerequisite>
+//
+// <etymology>
+// From FluxCalcLogFreqPolynomial  and Scaife-Heald (SH).
+// </etymology>
+//
+// <synopsis>
+// The FluxCalcLogFreqPolynomial class extends FluxCalcLogFreqPolynomial
+// to enable the use of polynomial coefficients a la Scaife & Heald (2012).
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+// The Scaife & Heald (2012) models can used to calibrate broadband
+// low-frequency radio observations (<~500 MHz).
+// </motivation>
+class FluxCalcLogFreqPolynomialSH : public virtual FluxCalcVQS {
+public:
+  typedef RigidVector<Float, 2> RVF2;
+  typedef RigidVector<Float, 3> RVF3;
+  typedef RigidVector<Float, 4> RVF4;
+  typedef RigidVector<Float, 5> RVF5;
+
+  //virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
+  //                        const MFrequency& mfreq);
+
+  virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
+                          const MFrequency& mfreq, const Bool /* updatecoeffs */);
+
+  virtual Bool setSource(const String& sourceName);
+
+  void setFreqUnit(const String& freqUnit);
+
+  template<Int lford, Int errord>
+  void fill_coeffs(const RigidVector<Float, lford>& lfrv,
+                   const RigidVector<Float, errord>& errrv);
+
+private:
+  virtual Bool setSourceCoeffs() = 0;
+  RigidVector<Vector<Float>, 2> coeffs_p;
+  String freqUnit_p;
+};
+
+
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC

@@ -31,11 +31,11 @@
 #include <ms/MeasurementSets/MSMetaDataOnDemand.h>
 
 #include <casa/BasicMath/StdLogical.h>
-#include <casa/Containers/ContainerIO.h>
 #include <casa/OS/Directory.h>
 #include <casa/OS/EnvVar.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
+#include <casa/Containers/ContainerIO.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <iomanip>
 
@@ -339,7 +339,7 @@ void testIt(MSMetaData& md) {
 				};
 				exp.insert(myints, myints+17);
 			}
-                        cout << "*** i " << i << " " << md.getSpwsForField(i) << endl;
+            cout << "*** i " << i << " " << md.getSpwsForField(i) << endl;
 			AlwaysAssert(md.getSpwsForField(i) == exp, AipsError);
 			AlwaysAssert(md.getSpwsForField(names[i]) == exp, AipsError);
 			cout << "*** cache size " << md.getCache() << endl;
@@ -1023,8 +1023,8 @@ void testIt(MSMetaData& md) {
 			cout << "*** test getObservatoryPosition()" << endl;
 			MPosition tPos = md.getObservatoryPosition(0);
 			Vector<Double> angles = tPos.getAngle("deg").getValue();
-			AlwaysAssert(near(angles[0], -67.7549, 1e-6), AipsError);
-			AlwaysAssert(near(angles[1], -23.0229, 1e-6), AipsError);
+			AlwaysAssert(near(angles[0], -67.7547, 1e-4), AipsError);
+			AlwaysAssert(near(angles[1], -23.0292, 1e-4), AipsError);
 			cout << "*** cache size " << md.getCache() << endl;
 
 		}
@@ -1131,6 +1131,61 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getEffectiveTotalExposureTime()" << endl;
 			cout << "effective exposure time is " << md.getEffectiveTotalExposureTime() << endl;
+		}
+		{
+			cout << "*** test BBCNosToSpwMap()" << endl;
+			std::map<uInt, std::set<uInt> > got = md.getBBCNosToSpwMap();
+			std::map<uInt, std::set<uInt> >::const_iterator end = got.end();
+			for (
+				std::map<uInt, std::set<uInt> >::const_iterator iter=got.begin();
+				iter!=end; iter++
+			) {
+				std::set<uInt> expec;
+				switch(iter->first) {
+				case 0: {
+					uInt mine[] = {
+						0, 25, 26, 27, 28, 29,
+						30, 31, 32, 33, 34, 35,
+						36, 37, 38, 39
+					};
+					expec.insert(mine, mine+16);
+					break;
+				}
+				case 1: {
+					uInt mine[] = {
+						1, 2, 9, 10, 17, 18
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				case 2: {
+					uInt mine[] = {
+						3, 4, 11, 12, 19, 20
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				case 3: {
+					uInt mine[] = {
+						5, 6, 13, 14, 21, 22
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				case 4: {
+					uInt mine[] = {
+						7, 8, 15, 16, 23, 24
+					};
+					expec.insert(mine, mine+6);
+					break;
+				}
+				default:
+					throw AipsError();
+				}
+				cout << "number " << iter->first << endl;
+				AlwaysAssert(iter->second == expec, AipsError);
+			}
+
 		}
 		{
 			cout << "*** cache size " << md.getCache() << endl;

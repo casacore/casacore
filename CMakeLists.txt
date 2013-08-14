@@ -235,6 +235,7 @@ if(USE_LUSTRE)
 endif(USE_LUSTRE)
 
 # Add the modules to be built.
+add_subdirectory (scons-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
     set_target_properties(

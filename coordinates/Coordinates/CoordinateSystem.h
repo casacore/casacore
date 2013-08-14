@@ -620,9 +620,12 @@ public:
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
-    // length.
+    // length. If <src>throwException=True</src>, throw an exception rather than
+    // returning False on failure.
     // <group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    Bool setWorldAxisUnits(const Vector<String> &units,
+                           Bool throwException);
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
@@ -768,10 +771,14 @@ public:
    // Does this coordinate system have a spectral axis?
    Bool hasSpectralAxis() const;
 
-   // what number is the spectral axis? Returns -1 if no spectral axis exists.
-   Int spectralAxisNumber() const;
+   // What number is the spectral axis?
+   // If doWorld=True, the world axis number is returned.
+   // Otherwise, the pixel axis number is returned.
+   // Returns -1 if the spectral axis (world c.q. pixel) does not exist.
+   Int spectralAxisNumber(Bool doWorld=False) const;
 
-   // what number is the spectral coordinate? Returns -1 if no spectral coordinate exists.
+   // what number is the spectral coordinate?
+    // Returns -1 if no spectral coordinate exists.
    Int spectralCoordinateNumber() const;
 
 
@@ -787,9 +794,11 @@ public:
    // Returns -1 if no stokes coordinate exists.
    Int polarizationCoordinateNumber() const;
 
-   // what is the number of the polarization/stokes axis?
-   // Returns -1 if no stokes axis exists.
-   Int polarizationAxisNumber() const;
+   // What is the number of the polarization/stokes axis?
+   // If doWorld=True, the world axis number is returned.
+   // Otherwise, the pixel axis number is returned.
+   // Returns -1 if the stokes axis (world c.q. pixel) does not exist.
+   Int polarizationAxisNumber(Bool doWorld=False) const;
 
    // Does this coordinate system have a quality axis?
    Bool hasQualityAxis() const;
