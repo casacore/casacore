@@ -76,7 +76,7 @@ template<class T, class S> FFTServer<T,S> & FFTServer<T,S>::
 operator=(const FFTServer<T,S> & other)
 {
   if (this != &other) {
-    for (uInt i=0; i<itsSize.nelements(); ++i) {
+    for (uInt i=0; i<itsWork.nelements(); ++i) {
       delete itsWork[i];
       itsWork[i] = 0;
     }
