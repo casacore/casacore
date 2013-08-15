@@ -132,5 +132,14 @@ namespace casa {
   {
     return itsEngine.getArrayDouble (id, itsRiseSet);
   }
+  Array<MVTime> DirectionUDF::getArrayDate (const TableExprId& id)
+  {
+    Array<Double> res = itsEngine.getArrayDouble (id, itsRiseSet);
+    Array<MVTime> dates(res.shape());
+    for (uInt i=0; i<res.size(); ++i) {
+      dates.data()[i] = MVTime(res.data()[i]);
+    }
+    return dates;
+  }
 
 } //end namespace

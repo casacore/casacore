@@ -405,11 +405,9 @@ namespace casa {
                                      double ra, double epoch,
                                      double& rise, double& set) const
   {
-    std::cout << dec <<' '<<el<<' '<<lat<<' '<<ra<<' '<<epoch<<std::endl;
     MEpoch off(Quantity(epoch+0.5, "d"),
                MEpoch::Types(MEpoch::UTC | MEpoch::RAZE));   // truncate to days
     double ct = (sin(el) - sin(dec)*sin(lat)) / (cos(dec)*cos(lat));
-    cout<<ct<<endl;
     if (ct >= 1) {
       // Always below
       set  = off.getValue().get();
@@ -420,7 +418,7 @@ namespace casa {
       set  = rise + 1;
     } else {
       ct = acos(ct);
-      double normra = MVAngle(ra)(0.5).radian();
+      double normra = MVAngle(ra)(0).radian();
       rise = normra - ct;
       set  = normra + ct;
       MEpoch::Ref ref(MEpoch::LAST, itsFrame, off);
