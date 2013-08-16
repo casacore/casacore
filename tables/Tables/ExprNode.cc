@@ -1336,7 +1336,7 @@ TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
     TableExprNodeBinary* anode = new TableExprNodeArrayPart (arrayNode.node_p,
 							     inode);
     return TableExprNodeBinary::fillNode (anode, arrayNode.node_p,
-					  inode, False);
+					  inode, False, False);
 }
 
 void TableExprNode::adaptUnit (const Unit& unit)

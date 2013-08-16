@@ -846,13 +846,16 @@ TableExprNodeRep TableExprNodeBinary::getTypes (const TableExprNodeRep& left,
 TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
 						 TableExprNodeRep* left,
 						 TableExprNodeRep* right,
-						 Bool convertConstType)
+						 Bool convertConstType,
+                                                 Bool adaptDataType)
 {
     // Fill the children and link to them.
     // If needed, change the children to get matching data types.
     thisNode->lnode_p = left->link();
     if (right != 0) {
-	thisNode->rnode_p = right->link();
+      thisNode->rnode_p = right->link();
+      if (adaptDataType) {
+        // Adapt data types as needed.
 
 	// NTRegex will always be placed in the right node 
 	if (left->dataType() == NTRegex) {
@@ -898,6 +901,7 @@ TableExprNodeRep* TableExprNodeBinary::fillNode (TableExprNodeBinary* thisNode,
                 thisNode->rnode_p = getRep(dNode)->link();
             }
         }
+      }
     }
     // Check and adapt units.
     thisNode->handleUnits();

@@ -528,10 +528,12 @@ public:
     // Link the children to the node and convert the children
     // to constants if needed and possible. Also convert the node to
     // constant if possible.
+    // The operand data types can be adapted as needed.
     static TableExprNodeRep* fillNode (TableExprNodeBinary* thisNode,
 				       TableExprNodeRep* left,
 				       TableExprNodeRep* right,
-				       Bool convertConstType);
+				       Bool convertConstType,
+                                       Bool adaptDataType=True);
 
     // Handle the units of the children and possibly set the parent's unit.
     // The default implementation make the units of the children equal and
