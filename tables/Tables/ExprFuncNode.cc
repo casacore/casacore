@@ -42,7 +42,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
-
+#include <iomanip>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -770,7 +770,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
         Array<double> a2 = operands_p[1]->getArrayDouble(id);
         if (!(a1.size() == 2  &&  a1.contiguousStorage()  &&
               a2.size() == 2  &&  a2.contiguousStorage())) {
-          throw TableInvExpr ("Arguments of angdist(x) function must have a "
+          throw TableInvExpr ("Arguments of function ANGDIST[x] must have a "
                               "multiple of 2 values");
         }
         const double* d1 = a1.data();
@@ -958,6 +958,26 @@ String TableExprFuncNode::getString (const TableExprId& id)
         return stringDate (operands_p[0]->getDate(id));
     case ctimeFUNC:
         return stringTime (operands_p[0]->getDate(id), 9);
+    case stringFUNC:
+      {
+        String fmt;
+        Int width, prec;
+        getPrintFormat (fmt, width, prec, operands_p, id);
+        if (operands_p[0]->dataType() == NTBool) {
+          return stringValue (operands_p[0]->getBool(id), fmt, width);
+        } else if (operands_p[0]->dataType() == NTInt) {
+          return stringValue (operands_p[0]->getInt(id), fmt, width);
+        } else if (operands_p[0]->dataType() == NTDouble) {
+          return stringValue (operands_p[0]->getDouble(id), fmt, width, prec,
+                              getMVFormat(fmt), operands_p[0]->unit());
+        } else if (operands_p[0]->dataType() == NTComplex) {
+          return stringValue (operands_p[0]->getDComplex(id), fmt, width, prec);
+        } else if (operands_p[0]->dataType() == NTDate) {
+          return stringValue (operands_p[0]->getDate(id), fmt, width,
+                              getMVFormat(fmt));
+        }
+        return stringValue (operands_p[0]->getString(id), fmt, width);
+      }
     case hmsFUNC:
         return stringHMS (operands_p[0]->getDouble(id), 9);
     case dmsFUNC:
@@ -1020,6 +1040,65 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
     return MVTime();
 }
 
+void TableExprFuncNode::getPrintFormat (String& fmt, Int& width, Int& prec,
+                                        const PtrBlock<TableExprNodeRep*>& operands,
+                                        const TableExprId& id)
+{
+  width = 0;
+  prec  = 0;
+  if (operands.size() > 1) {
+    if (operands[1]->dataType() == NTString) {
+      fmt = operands[1]->getString(id);
+    } else {
+      // Format can be given as a double like w.p (e.g. 10.5).
+      // Add small value for numerical inaccuracy
+      double w = operands[1]->getDouble(id) + 1e-10;
+      width = w;
+      w -= width;
+      w *= 10;
+      if (w - int(w) > 1e-5) {
+        w *= 10;
+      }
+      prec = w;
+    }
+  }
+}
+std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
+{
+  int mvFormat = 0;
+  int prec = 6;
+  if (! fmt.empty()) {
+    // The format can consist of the various MVTime/Angle format specifiers
+    // (separated by vertical bars with optional spaces).
+    Vector<String> fmts = stringToVector(fmt, '|');
+    Bool ok = True;
+    for (uInt i=0; i<fmts.size(); ++i) {
+      fmts[i].trim();
+      fmts[i].upcase();
+      // Alas giveMe returns 0 for an invalid value, but that is also
+      // the value of ANGLE (or abbrev). So treat that separately.
+      if (fmts[i] != String("ANGLE").substr(0, fmts[i].size())) {
+        int f = MVTime::giveMe (fmts[i]);
+        if (f != 0) {
+          mvFormat |= f;
+        } else {
+          // Unknown format. See if it is an integer (giving the precision).
+          Int p;
+          if (fmts[i].fromString (p, False)) {
+            prec = p;
+          } else {
+            // No integer, so it must be a printf format.
+            ok = False;
+          }
+        }
+      }
+    }
+    if (!ok) {
+      mvFormat = -1;
+    }
+  }
+  return std::make_pair(mvFormat, prec);
+}
 String TableExprFuncNode::stringDT (const MVTime& dt, Int prec,
                                     MVTime::formatTypes type)
 {
@@ -1047,6 +1126,91 @@ String TableExprFuncNode::stringDate (const MVTime& dt)
 String TableExprFuncNode::stringTime (const MVTime& dt, Int prec)
 {
   return stringDT (dt, prec, MVTime::TIME);
+}
+String TableExprFuncNode::stringValue (Bool val, const String& fmt, Int width)
+{
+  if (fmt.empty()) {
+    return stringValue (String(val ? "True ":"False"), fmt, width);
+  }
+  return String::format (fmt.c_str(), val);
+}
+String TableExprFuncNode::stringValue (Int64 val, const String& fmt, Int width)
+{
+  if (fmt.empty()) {
+    ostringstream os;
+    if (width > 0) os << std::setw(width);
+    os << val;
+    return os.str();
+  }
+  return String::format (fmt.c_str(), val);
+}
+String TableExprFuncNode::stringValue (Double val, const String& fmt,
+                                       Int width, Int prec,
+                                       const std::pair<int,int>& mvFormat,
+                                       const Unit& unit)
+{
+  if (fmt.empty()) {
+    ostringstream os;
+    if (width > 0) os << std::setw(width);
+    if (prec > 0)  os << std::setprecision(prec);
+    os << val;
+    return os.str();
+  }
+  if (mvFormat.first >= 0) {
+    // If formatted as angle, convert to radians if possible.
+    if (! (unit.empty()  ||  unit.getName() == "rad")) {
+      val = Quantity(val, unit).getValue("rad");
+    }
+    return stringAngle (val, mvFormat.second,
+                        MVAngle::formatTypes(mvFormat.first));
+  }
+  return String::format (fmt.c_str(), val);
+}
+String TableExprFuncNode::stringValue (const DComplex& val, const String& fmt,
+                                       Int width, Int prec)
+{
+  if (fmt.empty()) {
+    ostringstream os;
+    if (width <=0  &&  prec <= 0) {
+      os << val;
+    } else {
+      os << '(';
+      if (width > 0) os << std::setw(width);
+      if (prec > 0)  os << std::setprecision(prec);
+      os << val.real() << ',';
+      if (width > 0) os << std::setw(width);
+      if (prec > 0)  os << std::setprecision(prec);
+      os << val.imag() << ')';
+    }
+    return os.str();
+  }
+  return String::format (fmt.c_str(), val.real(), val.imag());
+}
+String TableExprFuncNode::stringValue (const String& val, const String& fmt,
+                                       Int width)
+{
+  if (fmt.empty()) {
+    if (width <= 0) return val;
+    ostringstream os;
+    // Take substr because operator<< does not truncate value if > width.
+    os << std::setw(width) << val.substr(0,width);
+    return os.str();
+  }
+  return String::format (fmt.c_str(), val.c_str());
+}
+String TableExprFuncNode::stringValue (const MVTime& val, const String& fmt,
+                                       Int width,
+                                       const std::pair<int,int>& mvFormat)
+{
+  if (fmt.empty()) {
+    if (width <= 0) width = 6;
+    return stringDateTime (val, width);
+  }
+  if (mvFormat.first >= 0) {
+    return stringDT (val, mvFormat.second,
+                     MVTime::formatTypes(mvFormat.first));
+  }
+  return String::format (fmt.c_str(), val.day());
 }
 String TableExprFuncNode::stringHMS (double val, Int prec)
 {
@@ -1108,7 +1272,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrfractileFUNC:
 	checkNumOfArg (2, 2, nodes);
 	if (nodes[1]->valueType() != VTScalar) {
-	    throw TableInvExpr ("2nd argument of FRACTILE function "
+	    throw TableInvExpr ("2nd argument of function FRACTILE "
 				"has to be a scalar");
 	}
 	return checkDT (dtypeOper, NTReal, NTDouble, nodes);
@@ -1141,7 +1305,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         checkNumOfArg (2, 2, nodes);
         if (nodes[0]->valueType() != VTArray  ||
             nodes[1]->valueType() != VTArray) {
-          throw TableInvExpr ("Arguments of angdist(x) function "
+          throw TableInvExpr ("Arguments of function ANGDIST[x] "
                               "have to be arrays");
         }
         if (nodes[0]->shape().product() != 2  ||
@@ -1237,7 +1401,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	// Check if first argument is array.
 	if (fType != arrayFUNC) {
 	    if (nodes[0]->valueType() != VTArray) {
-	        throw TableInvExpr ("1st argument of function " +
+	        throw TableInvExpr ("1st argument of function nr " +
                                     String::toString(fType) +
 				    " has to be an array");
 	    }
@@ -1254,14 +1418,14 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    if (nodes[i]->valueType() != VTScalar  ||
                 (nodes[i]->dataType() != NTInt  &&
                  nodes[i]->dataType() != NTDouble)) {
-	      throw TableInvExpr ("2nd argument of fractile function "
+	      throw TableInvExpr ("2nd argument of function FRACTILE "
 				  "has to be an real scalar");
 	    }
 	  }
 	}
         if (nodes[axarg]->dataType() != NTInt) {
-          throw TableInvExpr ("The axes arguments of runningXXX, boxedXXX, or "
-                              "XXXs function " +
+          throw TableInvExpr ("The axes arguments of RUNNINGxxx, BOXEDxxx, "
+                              "or XXXs function " +
                               String::toString(fType) +
                               " have to be integers");
         }
@@ -1280,7 +1444,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	if (vt == VTArray) {
 	    resVT = vt;
 	} else if (vt != VTScalar) {
-	    throw TableInvExpr ("Function " + String::toString(fType) +
+	    throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar or array argument");
 	}
     }
@@ -1299,14 +1463,14 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case substrFUNC:
 	checkNumOfArg (2, 3, nodes);
         if (nodes[0]->dataType() != NTString) {
-          throw TableInvExpr ("1st argument of substr "
-                              "function has to be a string");
+          throw TableInvExpr ("1st argument of function SUBSTR "
+                              "has to be a string");
         }
         for (uInt i=1; i<nodes.size(); i++) {
           if (nodes[i]->valueType() != VTScalar
               ||  nodes[i]->dataType() != NTInt) {
-            throw TableInvExpr ("2nd and optional 3rd argument of substr "
-                                "function has to be an integer scalar");
+            throw TableInvExpr ("2nd and optional 3rd argument of function "
+                                " SUBSTR have to be integer scalars");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1316,20 +1480,20 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case replaceFUNC:
 	checkNumOfArg (2, 3, nodes);
         if (nodes[0]->dataType() != NTString) {
-          throw TableInvExpr ("1st argument of replace "
-                              "function has to be a string");
+          throw TableInvExpr ("1st argument of function REPLACE "
+                              "has to be a string");
         }
         if (nodes[1]->valueType() != VTScalar
             ||  (nodes[1]->dataType() != NTString  &&
                  nodes[1]->dataType() != NTRegex)) {
-          throw TableInvExpr ("2nd argument of replace "
-                              "function has to be a string or regex scalar");
+          throw TableInvExpr ("2nd argument of function REPLACE "
+                              "has to be a string or regex scalar");
         }
         if (nodes.size() == 3) {
           if (nodes[2]->valueType() != VTScalar
               ||  nodes[2]->dataType() != NTString) {
-            throw TableInvExpr ("Optional 3rd argument of replace "
-                                "function has to be a string scalar");
+            throw TableInvExpr ("Optional 3rd argument of function REPLACE "
+                                "has to be a string scalar");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1386,6 +1550,22 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	nodes.resize (1);
 	nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
 	return NTString;
+    case stringFUNC:
+	if (checkNumOfArg (1, 2, nodes) == 2) {
+          if ((nodes[1]->dataType() != NTString  &&
+               nodes[1]->dataType() != NTDouble  &&
+               nodes[1]->dataType() != NTInt)  ||
+              nodes[1]->valueType() != VTScalar) {
+            throw TableInvExpr ("2nd argument of function STRING "
+                                "has to be a scalar string or int value");
+          }
+        }
+	dtypeOper.resize (nodes.size());
+	dtypeOper[0] = nodes[0]->dataType();
+        if (nodes.size() > 1) {
+          dtypeOper[1] = nodes[1]->dataType();
+        }
+        return NTString;
     case hmsFUNC:
     case dmsFUNC:
     case hdmsFUNC:
@@ -1492,7 +1672,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars only (or no arguments).
     for (i=0; i< nodes.nelements(); i++) {
 	if (nodes[i]->valueType() != VTScalar) {
-	    throw TableInvExpr ("Function " + String::toString(fType) +
+	    throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar argument");
 	}
     }
@@ -1514,7 +1694,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return checkDT (dtypeOper, NTString, NTRegex, nodes);
     default:
 	throw (TableInvExpr ("TableExprFuncNode::checkOperands, "
-			     "function " + String::toString(fType) +
+			     "function nr " + String::toString(fType) +
                              " not contained in switch statement"));
     }
     return NTNumeric;

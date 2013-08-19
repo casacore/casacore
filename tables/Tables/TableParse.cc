@@ -690,6 +690,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::cdateFUNC;
   } else if (funcName == "ctime") {
     ftype = TableExprFuncNode::ctimeFUNC;
+  } else if (funcName == "string"  ||  funcName == "str") {
+    ftype = TableExprFuncNode::stringFUNC;
   } else if (funcName == "hms") {
     ftype = TableExprFuncNode::hmsFUNC;
   } else if (funcName == "dms") {

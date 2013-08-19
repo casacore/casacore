@@ -1709,6 +1709,75 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	return strings;
         break;
       }
+    case TableExprFuncNode::stringFUNC:
+      {
+        String fmt;
+        Int width, prec;
+        TableExprFuncNode::getPrintFormat (fmt, width, prec, operands(), id);
+        Array<String> res;
+        if (operands()[0]->dataType() == NTBool) {
+          Array<Bool> arr (operands()[0]->getArrayBool(id));
+          res.resize (arr.shape());
+          Array<Bool>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        } else if (operands()[0]->dataType() == NTInt) {
+          Array<Int64> arr (operands()[0]->getArrayInt(id));
+          res.resize (arr.shape());
+          Array<Int64>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        } else if (operands()[0]->dataType() == NTDouble) {
+          std::pair<int,int> mvFormat = TableExprFuncNode::getMVFormat(fmt);
+          Array<Double> arr (operands()[0]->getArrayDouble(id));
+          res.resize (arr.shape());
+          Array<Double>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+           *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                      width, prec, mvFormat,
+                                                      operands()[0]->unit());
+          }
+        } else if (operands()[0]->dataType() == NTComplex) {
+          Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          res.resize (arr.shape());
+          Array<DComplex>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+           *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                      width, prec);
+          }
+        } else if (operands()[0]->dataType() == NTDate) {
+          std::pair<int,int> mvFormat = TableExprFuncNode::getMVFormat(fmt);
+          Array<MVTime> arr (operands()[0]->getArrayDate(id));
+          res.resize (arr.shape());
+          Array<MVTime>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                       width, mvFormat);
+          }
+        } else {
+          Array<String> arr (operands()[0]->getArrayString(id));
+          Array<String> res(arr.shape());
+          Array<String>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+         for (Array<String>::iterator resIter = res.begin();
+              resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        }
+        return res;
+      }
     case TableExprFuncNode::hmsFUNC:
     case TableExprFuncNode::dmsFUNC:
     case TableExprFuncNode::hdmsFUNC:

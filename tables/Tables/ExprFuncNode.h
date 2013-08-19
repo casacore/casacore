@@ -227,30 +227,32 @@ public:
         ctodFUNC,         //# 125          returning String
         cdateFUNC,        //# 126          returning String
         ctimeFUNC,        //# 127          returning String
+            // return values as strings
+        stringFUNC,       //# 128
             // return angles as hms strings
-        hmsFUNC,          //# 128
+        hmsFUNC,          //# 129
             // return angles as dms strings
-        dmsFUNC,          //# 129
+        dmsFUNC,          //# 130
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 130
+        hdmsFUNC,         //# 131
 	    // special function returning a random Double number
-	randFUNC,         //# 131
+	randFUNC,         //# 132
             // special function returning Int row number
-	rownrFUNC,        //# 132
+	rownrFUNC,        //# 133
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 133
+	rowidFUNC,        //# 134
             // special function resembling if statement
-	iifFUNC,          //# 134
+	iifFUNC,          //# 135
             // angular distance returning radians
-        angdistFUNC,      //# 135
-        angdistxFUNC,     //# 136
+        angdistFUNC,      //# 136
+        angdistxFUNC,     //# 137
 	    // other functions, implemented in derived class
-	conesFUNC,        //# 137
-	cones3FUNC,       //# 138
-	anyconeFUNC,      //# 139
-	anycone3FUNC,     //# 140
-	findconeFUNC,     //# 141
-	findcone3FUNC,    //# 142
+	conesFUNC,        //# 138
+	cones3FUNC,       //# 139
+	anyconeFUNC,      //# 140
+	anycone3FUNC,     //# 141
+	findconeFUNC,     //# 142
+	findcone3FUNC,    //# 143
 	NRFUNC      //# should be last
 	};
 
@@ -326,6 +328,11 @@ public:
         { return argDataType_p; }
     // </group>
 
+    // Get the possible print format, width, and/or precision.
+   static void getPrintFormat (String& fmt, Int& width, Int& prec,
+                               const PtrBlock<TableExprNodeRep*>& operands,
+                               const TableExprId& id);
+
     // Convert the date and/or time to a string.
     // <group>
     static String stringDT (const MVTime& dt, Int prec, MVTime::formatTypes);
@@ -334,6 +341,25 @@ public:
     static String stringTime (const MVTime& dt, Int prec);
     // </group>
 
+    // Convert a value to a string.
+    // If <src>fmt</src> is empty, ostringstream is used.
+    // Otherwise the printf-like format is used.
+    // If possible, a double value is converted to radians if formatted as angle.
+    // <group>
+    static String stringValue (Bool val, const String& fmt, Int width);
+    static String stringValue (Int64 val, const String& fmt, Int width);
+    static String stringValue (Double val, const String& fmt,
+                               Int width, Int prec,
+                               const std::pair<int,int>& mvFormat,
+                               const Unit& unit);
+    static String stringValue (const DComplex& val, const String& fmt,
+                               Int width, Int prec);
+    static String stringValue (const String& val, const String& fmt,
+                               Int width);
+    static String stringValue (const MVTime& val, const String& fmt,
+                               Int width,
+                               const std::pair<int,int>& mvFormat);
+
     // Convert angle to a string (hms or dms).
     // <group>
     static String stringAngle (double val, Int prec,
@@ -341,6 +367,10 @@ public:
     static String stringHMS (double val, Int prec);
     static String stringDMS (double val, Int prec);
     // </group>
+
+    // Get the MVTime/Angle format and optional precision.
+    // 0,0 is returned if empty or unknown format.
+    static std::pair<int,int> getMVFormat (const String& fmt);
 
     // Get the angular distance between two positions on a sphere.
     static double angdist (double ra1, double dec1, double ra2, double dec2)
@@ -356,7 +386,7 @@ private:
     static const Unit& makeEqualUnits (PtrBlock<TableExprNodeRep*>& nodes,
 				       uInt starg, uInt endarg);
 
-
+    //# Data members.
     FunctionType funcType_p;        // which function
     NodeDataType argDataType_p;     // common argument data type
     Double       scale_p;           // possible scaling for unit conversion
