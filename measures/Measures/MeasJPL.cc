@@ -156,7 +156,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
         ok = False;
       }
       if (ok) {
-        MeasIERS::openNote(&MeasIERS::closeMeas);
+        MeasIERS::openNote(&MeasJPL::closeMeas);
         if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
             !kws.isDefined("dMJD") || kws.asDouble("dMJD") < 8 ||
             !kws.isDefined("AU") || kws.asDouble("AU") < 1e8 ||

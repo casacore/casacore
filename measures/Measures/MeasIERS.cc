@@ -217,18 +217,14 @@ void MeasIERS::closeMeas() {
 }
 
 void MeasIERS::openNote(CLOSEFUN fun) {
-  if (nNote <= sizeNote) {
-    CLOSEFUN *tmp = 0;
-    if (sizeNote > 0) {
-      tmp = new CLOSEFUN[sizeNote];
-      for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
-      delete [] toclose; toclose = 0;
-    }
-    toclose = new CLOSEFUN[sizeNote+10];
-    for (uInt i=0; i<sizeNote; ++i) toclose[i] = tmp[i];
-    for (uInt i=sizeNote; i<sizeNote+10; ++i) toclose[i] = 0;
+  // Resize if too small.
+  if (nNote >= sizeNote) {
+    CLOSEFUN *tmp = new CLOSEFUN[sizeNote+10];
+    for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
+    for (uInt i=sizeNote; i<sizeNote+10; ++i) tmp[i] = 0;
+    delete [] toclose;
+    toclose = tmp;
     sizeNote += 10;
-    delete [] tmp; tmp = 0;
   }
   toclose[nNote++] = fun;
 }
