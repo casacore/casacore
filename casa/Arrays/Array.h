@@ -198,7 +198,7 @@ public:
     // If the shapes mismatch, this array is resized.
     // <group>
     virtual void assign (const Array<T>& other);
-    virtual void assign (const ArrayBase& other, Bool checkType=True);
+    virtual void assignBase (const ArrayBase& other, Bool checkType=True);
     // </group>
 
     // Set every element of the array to "value." Also could use the

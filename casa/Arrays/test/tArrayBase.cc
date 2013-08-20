@@ -97,7 +97,7 @@ void checkBaseVF (const ArrayBase& arr)
   }
   AlwaysAssertExit (ok);
   try {
-    arr2.assign(arr);
+    arr2.assignBase(arr);
     ok = False;
   } catch (const std::exception&) {
   }
@@ -171,7 +171,7 @@ void testArr()
   // Check resize and assign.
   arr2->resize (IPosition());
   checkEmpty  (*arr2);
-  arr2->assign (*arr1);
+  arr2->assignBase (*arr1);
   checkFilled (*arr2);
   checkValues (*arr2, 0, 300);
   // Check if getting a section is fine.
@@ -181,9 +181,9 @@ void testArr()
   checkValues (*arr2->getSection(Slicer(IPosition(3,0,0,2), IPosition(3,5,6,4))),
                60, 120);
   // Check assign in various ways.
-  arr1->assign (Array<Int>());
+  arr1->assignBase (Array<Int>());
   checkEmpty (*arr1);
-  arr1->assign (*arr2);
+  arr1->assignBase (*arr2);
   checkFilled (*arr1);
   // Make sure that after the assign arr1 and arr2 reference different data.
   dynamic_cast<Array<Int>&>(*arr1) += 100;
@@ -201,7 +201,7 @@ void testArr()
   // Check that assign of a different array type fails.
   Bool ok = True;
   try {
-    arr2->assign (Array<uInt>());
+    arr2->assignBase (Array<uInt>());
     ok = False;
   } catch (const std::exception&) {
   }

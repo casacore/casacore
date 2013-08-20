@@ -609,7 +609,7 @@ CountedPtr<ArrayBase> ArrayBase::getSection (const Slicer&) const
 {
   throw ArrayError ("ArrayBase::getSection cannot be used");
 }
-void ArrayBase::assign (const ArrayBase&, Bool)
+void ArrayBase::assignBase (const ArrayBase&, Bool)
 {
   throw ArrayError ("ArrayBase::assign cannot be used");
 }

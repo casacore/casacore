@@ -122,7 +122,7 @@ template<class T> void Array<T>::assign (const Array<T>& other)
     operator= (other);
 }
 
-template<class T> void Array<T>::assign (const ArrayBase& other, Bool checkType)
+template<class T> void Array<T>::assignBase (const ArrayBase& other, Bool checkType)
 {
     DebugAssert(ok(), ArrayError);
     // Checking the type can be expensive, so only do if needed or in debug mode.

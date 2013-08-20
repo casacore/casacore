@@ -720,6 +720,7 @@ class PrimaryTable : public PrimaryArray<TYPE> {
             int bitpix, int naxis, long *naxes);     
 
 	int read();
+	int read(int) { return -1; }
 	int write(FitsOutput &){ return -1; }
 
 	char* object() const 	   { return object_x; }

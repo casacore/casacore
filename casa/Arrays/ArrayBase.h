@@ -160,7 +160,7 @@ public:
   // If <src>checkType==True</src>, it is checked if the underlying template
   // types match. Otherwise, it is only checked in debug mode (for performance).
   // <br>The default implementation in ArrayBase throws an exception.
-  virtual void assign (const ArrayBase& source, Bool checkType=True);
+  virtual void assignBase (const ArrayBase& source, Bool checkType=True);
 
   // The following functions behave the same as the corresponding getStorage
   // functions in the derived templated Array class.

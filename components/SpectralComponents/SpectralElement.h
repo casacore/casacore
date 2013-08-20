@@ -106,7 +106,7 @@ public:
 	// Evaluate the value of the element at x
 	virtual Double operator()(const Double x) const;
 
-	virtual Bool operator==(const SpectralElement& other) const;
+	Bool operator==(const SpectralElement& other) const;
 
 	// Get parameter n
 	// <thrown>
