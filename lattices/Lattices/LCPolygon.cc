@@ -213,12 +213,10 @@ void LCPolygon::defineBox()
     uInt nrp = itsX.nelements();
     // First make sure basic things are right.
     if (itsY.nelements() != nrp) {
-	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "x and y vectors must have equal length"));
+	throw AipsError ("LCPolygon - x and y vectors must have equal length");
     }
     if (shape.nelements() != 2) {
-	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "can only be used as a 2-dim region"));
+	throw AipsError ("LCPolygon - can only be used as a 2-dim region");
     }
     // If the last point is not equal to the first one, add it.
     if (!near (itsX[nrp-1], itsX[0])  ||  !near(itsY[nrp-1], itsY[0])) {
@@ -229,8 +227,8 @@ void LCPolygon::defineBox()
     itsX[nrp-1] = itsX[0];        // Make sure they are always equal.
     itsY[nrp-1] = itsY[0];
     if (nrp < 3) {
-	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "at least 3 different points have to be specified"));
+	throw AipsError ("LCPolygon - "
+			  "at least 3 different points have to be specified");
     }
     // Determine the maximum and minimum x,y.
     // They form the bounding box.
@@ -239,20 +237,11 @@ void LCPolygon::defineBox()
     Float maxx = itsX[0];
     Float miny = itsY[0];
     Float maxy = itsY[0];
-    Bool inside = False;
     for (i=1; i<nrp; i++) {
 	if (itsX[i] < minx) minx = itsX[i];
 	if (itsX[i] > maxx) maxx = itsX[i];
 	if (itsY[i] < miny) miny = itsY[i];
 	if (itsY[i] > maxy) maxy = itsY[i];
-	if (itsX[i] >= 0  &&  itsX[i] <= shape[0]-1
-        &&  itsY[i] >= 0  &&  itsY[i] <= shape[1]-1) {
-	    inside = True;
-	}
-    }
-    if (!inside) {
-	throw (AipsError ("LCPolygon::LCPolygon - "
-			  "all x,y points are outside the lattice"));
     }
     // Get boundingbox; truncate values in the right way.
     IPosition blc(2, 0);
@@ -261,6 +250,9 @@ void LCPolygon::defineBox()
     blc[1] = truncateStart(miny);
     trc[0] = truncateEnd(maxx, shape[0]-1);
     trc[1] = truncateEnd(maxy, shape[1]-1);
+    if (trc[0] < blc[0]  ||  trc[1] < blc[1]) {
+      throw AipsError ("LCPolygon - entire polygon is outside the lattice");
+    }
     setBoundingBox (Slicer(blc, trc, Slicer::endIsLast));
 }
 
@@ -296,8 +288,8 @@ void LCPolygon::defineMask()
     for (; sty<endy && allEQ(mask.column(sty), False); ++sty) {}
     for (; endy-1>sty && allEQ(mask.column(endy-1), False); --endy) {}
     if (stx>0 || sty>0 || endx<shape[0] || endy<shape[1]) {
-      if (stx >= endx  ||  sty >> endy) {
-        throw AipsError ("polygon does not contain any pixel");
+      if (stx >= endx  ||  sty >= endy) {
+        throw AipsError ("LCPolygon - polygon does not contain any pixel");
       }
       Matrix<Bool> mask2;
       mask2 = mask(Slice(stx,endx-stx), Slice(sty,endy-sty));
@@ -325,8 +317,8 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
     if (near (ptrY[i], ptrY[i+1])) {
       dir[i] = 0;                         // vertical line
       // Fill vertical line if on pixel.
-      Int y = truncateStart (ptrY[i]);
-      if (near(Float(y), ptrY[i])) {
+      Int y = ptrY[i];
+      if (y >= blcy  &&  y < ny+blcy  &&  near(Float(y), ptrY[i])) {
         Int xs, xe;
         if (ptrX[i] < ptrX[i+1]) {
           xs = truncateStart (ptrX[i] - blcx);

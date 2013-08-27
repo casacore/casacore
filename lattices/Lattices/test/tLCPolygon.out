@@ -155,4 +155,26 @@
 1 Axis Lengths: [1, 1]  (NB: Matrix in Row/Column order)
 [1]
 
+[0, 1][4, 5][5, 5][11, 6]
+[-13, 4, 4, -13, -13][1, 1, 6, 6, 1]
+1 Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1]
+
+[0, 0][6, 6][7, 7][7, 7]
+[-2, 3, 8, 3, -2][3, -1, 3, 7, 3]
+1 Axis Lengths: [7, 7]  (NB: Matrix in Row/Column order)
+[0, 0, 1, 1, 1, 0, 0
+ 0, 1, 1, 1, 1, 1, 0
+ 1, 1, 1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1, 1, 1
+ 1, 1, 1, 1, 1, 1, 1
+ 0, 1, 1, 1, 1, 1, 0
+ 0, 0, 1, 1, 1, 0, 0]
+
+LCPolygon - entire polygon is outside the lattice
+LCPolygon - polygon does not contain any pixel
 OK
