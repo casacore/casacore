@@ -1009,8 +1009,10 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
     }
   }
   if (!showDataMans) {
-    os << endl;
-    showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+    if (showColumns) {
+      os << endl;
+      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+    }
   } else {
     for (uInt i=0; i<dminfo.nfields(); ++i) {
       os << endl << " ";
