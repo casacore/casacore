@@ -101,7 +101,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Use 8 byte offets and blocks of 32768 bytes.
     HDF5HidProperty create_plist (H5Pcreate(H5P_FILE_CREATE));
     H5Pset_sizes(create_plist, 8, 8);
-    H5Pset_userblock(create_plist, 32768);
     // Use unbuffered IO.
     HDF5HidProperty access_plist (H5Pcreate(H5P_FILE_ACCESS));
     H5Pset_fapl_sec2(access_plist);
