@@ -2641,7 +2641,8 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
       resultTable = doLimOff (showTimings, resultTable);
     }
     //# Finally rename or copy using the given name (and flush it).
-    if (resultType_p != 0  ||  ! resultName_p.empty()) {
+    //    if (resultType_p != 0  ||  ! resultName_p.empty()) {
+    if (! resultName_p.empty()) {
       resultTable = doFinish (showTimings, resultTable);
     }
   }
