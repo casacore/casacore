@@ -659,24 +659,31 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
     { return True; }
 
-BaseTable* BaseTable::select (uInt maxRow)
+BaseTable* BaseTable::select (uInt maxRow, uInt offset)
 {
-    if (maxRow == 0  ||  maxRow >= nrow()) {
+    if (offset > nrow()) {
+        offset = nrow();
+    }
+    if (maxRow == 0  ||  maxRow > nrow()  ) {
+        maxRow = nrow() - offset;
+    }
+    if (offset == 0  &&  maxRow == nrow()) {
         return this;
     }
     Vector<uInt> rownrs(maxRow);
-    indgen(rownrs);
+    indgen(rownrs, offset);
     return select(rownrs);
 }
 
 // Do the row selection.
-BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
+BaseTable* BaseTable::select (const TableExprNode& node,
+                              uInt maxRow, uInt offset)
 {
     // Check we don't deal with a null table.
     AlwaysAssert (!isNull(), AipsError);
     // If it is a null expression, return maxrows.
     if (node.isNull()) {
-        return select (maxRow);
+      return select (maxRow, offset);
     }
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool  ||  !node.isScalar()) {
@@ -687,7 +694,7 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     if (node.getNodeRep()->isConstant()) {
         if (node.getBool(0)) {
             // Select maxRow rows.
-            return select (maxRow);
+            return select (maxRow, offset);
         }
         // Select no rows.
         return select(Vector<uInt>());
@@ -710,11 +717,16 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     for (uInt i=0; i<nrrow; i++) {
       node.get (i, val);
       if (val) {
-	resultTable->addRownr (i);                  // add row
-	// Stop if max #rows reached (note that maxRow==0 means no limit).
-	if (resultTable->nrow() == maxRow) {
-	  break;
-	}
+        if (offset == 0) {
+          resultTable->addRownr (i);                  // add row
+          // Stop if max #rows reached (note that maxRow==0 means no limit).
+          if (resultTable->nrow() == maxRow) {
+            break;
+          }
+        } else {
+          // Skip first offset matching rows.
+          offset--;
+        }
       }
     }
     adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);

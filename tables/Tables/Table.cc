@@ -899,8 +899,9 @@ TableExprNode Table::nodeRandom () const
 
 
 //# Select rows based on an expression.
-Table Table::operator() (const TableExprNode& expr, uInt maxRow) const
-    { return Table (baseTabPtr_p->select (expr, maxRow)); }
+Table Table::operator() (const TableExprNode& expr,
+                         uInt maxRow, uInt offset) const
+    { return Table (baseTabPtr_p->select (expr, maxRow, offset)); }
 //# Select rows based on row numbers.
 Table Table::operator() (const Vector<uInt>& rownrs) const
     { return Table (baseTabPtr_p->select (rownrs)); }

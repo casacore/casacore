@@ -332,11 +332,13 @@ public:
     virtual DataManager* findDataManager (const String& name,
                                           Bool byColumn) const = 0;
 
-    // Select rows using the given expression.
-    BaseTable* select (const TableExprNode&, uInt maxRow);
+    // Select rows using the given expression (which can be null).
+    // Skip first <src>offset</src> matching rows.
+    // Return at most <src>maxRow</src> matching rows.
+    BaseTable* select (const TableExprNode&, uInt maxRow, uInt offset);
 
-    // Select maxRow rows. maxRow=0 means all.
-    BaseTable* select (uInt maxRow);
+    // Select maxRow rows and skip first offset rows. maxRow=0 means all.
+    BaseTable* select (uInt maxRow, uInt offset);
 
     // Select rows using a vector of row numbers.
     BaseTable* select (const Vector<uInt>& rownrs);
