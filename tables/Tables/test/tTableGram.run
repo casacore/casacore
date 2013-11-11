@@ -232,6 +232,7 @@ echo ""
 echo "testing units ..."
 $casa_checktool ./tTableGram 'calc sum([select ab d as ABDAY from tTableGram_tmp.tab])'
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab \in]])'
+$casa_checktool ./tTableGram 'select ab s AS ab1, ac mm AS ac1 INTO AS MEMORY from tTableGram_tmp.tab where rownumber() < 4'
 $casa_checktool ./tTableGram 'select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4'
 $casa_checktool ./tTableGram 'update tTableGram_tmp.tab_abac set ab1=1min+ab1, ac1=1.5cm+ac1'
 $casa_checktool ./tTableGram 'select ab1,ac1 from tTableGram_tmp.tab_abac'
