@@ -558,6 +558,10 @@ private:
     // Creating an empty TableDesc in the NullTable takes too much time.
     // Furthermore it causes static initialization order problems.
     const TableDesc& makeTableDesc() const;
+
+    // Make the name absolute.
+    // It first checks if the name contains valid characters (not only . and /).
+    String makeAbsoluteName (const String& name) const;
 };
 
 
