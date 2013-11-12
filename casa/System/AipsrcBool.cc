@@ -28,7 +28,6 @@
 //# Includes
 
 #include <casa/System/AipsrcValue.h>
-#include <casa/Utilities/Regex.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/sstream.h>
 
@@ -46,10 +45,10 @@ AipsrcValue<Bool>::AipsrcValue() :
 AipsrcValue<Bool>::~AipsrcValue() {}
 
 Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword) {
-  const Regex tTrue("^([tT]|[yY]|[1-9])");
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
-  if (x) value = (res.contains(tTrue));
+  if (x) value = (res.size() > 0  &&  (res[0]=='t' || res[0]=='T' || res[0]=='y' ||
+				       res[0]=='Y' || (res[0]>='1' && res[0]<='9')));
   return x;
 }
 

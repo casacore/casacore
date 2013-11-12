@@ -735,6 +735,17 @@ TableProxy TableProxy::selectRows (const Vector<Int>& rownrs,
   return ntable;
 }
 
+void TableProxy::stillSameShape (Int& same, IPosition& shape,
+                                 const IPosition& newShape)
+{
+  if (same == 0) {
+    same = 1;           // not first time anymore
+    shape = newShape;
+  } else if (! newShape.isEqual(shape)) {
+    same = 2;           // varying shape
+  }
+}
+
 void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 {
   if (expr.isScalar()) {
@@ -769,6 +780,9 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       rec.define ("values", vi);
       break;
     }
+    ///    case TpInt64:
+    ///      rec.define ("values", expr.getColumnInt (rownrs));
+    ///      break;
     case TpFloat:
       rec.define ("values", expr.getColumnFloat (rownrs));
       break;
@@ -788,6 +802,9 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
       throw AipsError("Unknown calc expression scalar type");
     }
   } else {
+    // Array result. Check if shape is always the same.
+    Int sameShape = 0;
+    IPosition resShape;
     Record res;
     switch (expr.dataType()) {
     case TpBool:
@@ -795,6 +812,15 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 	MArray<Bool> arr;
 	expr.get (i, arr);
 	res.define (String::toString(i), arr.array());
+        stillSameShape (sameShape, resShape, arr.shape());
+      }
+      break;
+    case TpInt64:
+      for (uInt i=0; i<expr.nrow(); i++) {
+	MArray<Int64> arr;
+	expr.get (i, arr);
+	res.define (String::toString(i), arr.array());
+        stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpDouble:
@@ -802,6 +828,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 	MArray<Double> arr;
 	expr.get (i, arr);
 	res.define (String::toString(i), arr.array());
+        stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpDComplex:
@@ -809,6 +836,7 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 	MArray<DComplex> arr;
 	expr.get (i, arr);
 	res.define (String::toString(i), arr.array());
+        stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpString:
@@ -816,12 +844,37 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
 	MArray<String> arr;
 	expr.get (i, arr);
 	res.define (String::toString(i), arr.array());
+        stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     default:
       throw AipsError("Unknown calc expression array type");
     }
-    rec.defineRecord ("values", res);
+    if (sameShape == 2) {
+      // Varying shape, so define as Records.
+      rec.defineRecord ("values", res);
+      // All the same shape, so define as a single array.
+    } else {
+      switch (expr.dataType()) {
+      case TpBool:
+        rec.define ("values", record2Array<Bool>(res));
+        break;
+      case TpInt64:
+        rec.define ("values", record2Array<Int64>(res));
+        break;
+      case TpDouble:
+        rec.define ("values", record2Array<Double>(res));
+        break;
+      case TpDComplex:
+        rec.define ("values", record2Array<DComplex>(res));
+        break;
+      case TpString:
+        rec.define ("values", record2Array<String>(res));
+        break;
+      default:
+        throw AipsError("Unknown calc expression array type");
+      }
+    }
   }
 }
 

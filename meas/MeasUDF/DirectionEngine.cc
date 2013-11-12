@@ -150,7 +150,7 @@ namespace casa {
       throw AipsError ("Object names given as directions in a MEAS function "
                        "must be constant values");
     }
-    Array<String> names = operand->getStringAS(0);
+    Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
     for (uInt i=0; i<names.size(); ++i) {
       itsConstants.data()[i] = MDirection::makeMDirection (names.data()[i]);
@@ -249,7 +249,7 @@ namespace casa {
                                       const TableExprId& id,
                                       Array<MDirection>& directions)
   {
-    Array<Double> values = operand.getArrayDouble(id);
+    Array<Double> values = operand.getArrayDouble(id).array();
     IPosition shape = values.shape();
     if (shape[0] % 2 != 0) {
       throw AipsError ("Number of values in a direction in a MEAS function "

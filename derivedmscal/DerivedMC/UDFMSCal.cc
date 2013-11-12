@@ -129,7 +129,7 @@ namespace casa {
       // Make sure the unit is rad.
       // Turn the array into a vector.
       TableExprNodeUnit::adaptUnit (operand, "rad");
-      Array<Double> dirs(operand->getArrayDouble(0));
+      Array<Double> dirs(operand->getArrayDouble(0).array());
       if (dirs.size() != 2) {
         throw AipsError ("Argument to DERIVEDMSCAL function is not an array "
                          "of 2 values");
@@ -257,30 +257,31 @@ namespace casa {
     }
   }
 
-  Array<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
+  MArray<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
   {
     if (itsType != STOKES) {
       throw AipsError ("UDFMSCal: unexpected getArrayBool function");
     }
     Array<Bool> out;
     // Combine the flags.
-    itsStokesConv.convert (out, itsDataNode.getArrayBool (id));
-    return out;
+    MArray<Bool> data (itsDataNode.getArrayBool(id));
+    itsStokesConv.convert (out, data.array());
+    return MArray<Bool> (out, data.mask());
   }
 
-  Array<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
+  MArray<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case HADEC:
       itsEngine.getHaDec (itsAntNr, id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      break;
     case AZEL:
       itsEngine.getAzEl (itsAntNr, id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      break;
     case UVW:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      break;
     case STOKES:
       {
         // Unfortunately stokes weight conversion is only defined for Float,
@@ -288,21 +289,23 @@ namespace casa {
         // So conversions are necessary for the time being.
         // In the future we can add Double support to StokesConverter.
         Array<Float> outf, dataf;
-        Array<Double> outd, datad;
+        Array<Double> outd;
+        MArray<Double> datad;
         itsDataNode.get (id, datad);
         dataf.resize (datad.shape());
-        convertArray (dataf, datad);
+        convertArray (dataf, datad.array());
         itsStokesConv.convert (outf, dataf);
         outd.resize (outf.shape());
         convertArray (outd, outf);
-        return outd;
+        return MArray<Double> (outd, datad.mask());
       }
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayDouble function");
     }
+    return MArray<Double> (itsTmpVector);
   }
 
-  Array<DComplex> UDFMSCal::getArrayDComplex (const TableExprId& id)
+  MArray<DComplex> UDFMSCal::getArrayDComplex (const TableExprId& id)
   {
     if (itsType != STOKES) {
       throw AipsError ("UDFMSCal: unexpected getArrayComplex function");
@@ -313,14 +316,15 @@ namespace casa {
     // In the future we can add DComplex support to StokesConverter
     // or Complex support to TableExprNode.
     Array<Complex> outf, dataf;
-    Array<DComplex> outd, datad;
+    Array<DComplex> outd;
+    MArray<DComplex> datad;
     itsDataNode.get (id, datad);
     dataf.resize (datad.shape());
-    convertArray (dataf, datad);
+    convertArray (dataf, datad.array());
     itsStokesConv.convert (outf, dataf);
     outd.resize (outf.shape());
     convertArray (outd, outf);
-    return outd;
+    return MArray<DComplex> (outd, datad.mask());
   }
 
 } //end namespace

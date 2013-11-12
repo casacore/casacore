@@ -121,9 +121,9 @@ namespace casa {
     return itsEngine.getArrayDouble (id).data()[0];
   }
 
-  Array<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
+  MArray<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
   {
-    return itsEngine.getArrayDouble (id);
+    return MArray<Double> (itsEngine.getArrayDouble (id));
   }
 
 } //end namespace

@@ -88,9 +88,9 @@ namespace casa {
     return itsEngine.getArrayDouble (id).data()[0];
   }
 
-  Array<Double> EpochUDF::getArrayDouble (const TableExprId& id)
+  MArray<Double> EpochUDF::getArrayDouble (const TableExprId& id)
   {
-    return itsEngine.getArrayDouble (id);
+    return MArray<Double> (itsEngine.getArrayDouble (id));
   }
 
 } //end namespace

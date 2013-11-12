@@ -60,13 +60,13 @@ friend class HostInfo;
     int valid;
     int cpus;
 
-    ssize_t memory_total;
-    ssize_t memory_used;
-    ssize_t memory_free;
+    ptrdiff_t memory_total;
+    ptrdiff_t memory_used;
+    ptrdiff_t memory_free;
 
-    ssize_t swap_total;
-    ssize_t swap_used;
-    ssize_t swap_free;
+    ptrdiff_t swap_total;
+    ptrdiff_t swap_used;
+    ptrdiff_t swap_free;
 };
 
 // </group>

@@ -51,7 +51,11 @@ Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
     itsFuncPtrFloat = &Interpolate2D::interpNearest<Float>;
     itsFuncPtrDouble = &Interpolate2D::interpNearest<Double>;
     itsFuncPtrBool = &Interpolate2D::interpNearestBool;
-  }  
+  } else if (method==Interpolate2D::LANCZOS) {
+    itsFuncPtrFloat = &Interpolate2D::interpLanczos<Float>;
+    itsFuncPtrDouble = &Interpolate2D::interpLanczos<Double>;
+    itsFuncPtrBool = &Interpolate2D::interpLanczosBool;
+  }
 }
 
 Interpolate2D::Interpolate2D(const Interpolate2D &other)
@@ -211,6 +215,12 @@ Bool Interpolate2D::interpCubicBool(Bool &result,
   return True;
 }
 
+Bool Interpolate2D::interpLanczosBool(Bool &/*result*/,
+        const Vector<Double> &/*where*/, 
+        const Matrix<Bool> &/*data*/) const {
+    throw(AipsError("Interpolate2D::interpLanczosBool() is not implemented"));
+}
+
 void Interpolate2D::bcucof (Double c[4][4], const Double y[4],
 			    const Double y1[4], 
                             const Double y2[4],
@@ -271,6 +281,8 @@ Interpolate2D::Method Interpolate2D::stringToMethod (const String &method) {
     method2 = Interpolate2D::LINEAR;
   } else if (tmp==String("C")) {
     method2 = Interpolate2D::CUBIC;
+  } else if (tmp==String("Z")) {
+      method2 = Interpolate2D::LANCZOS;
   } else {
     throw(AipsError("Illegal method"));
   }

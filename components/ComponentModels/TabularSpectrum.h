@@ -171,7 +171,7 @@ public:
 
   // set/get the Tabular values
   // <group>
-  const void values(Vector<MFrequency::MVType>& freq, Vector<Flux<Double> >& flux) const;
+  void values(Vector<MFrequency::MVType>& freq, Vector<Flux<Double> >& flux) const;
   void setValues(const Vector<MFrequency::MVType>& frequencies, const Vector<Flux<Double> >& flux, const MFrequency::Ref& refFrame);
   // </group>
 

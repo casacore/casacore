@@ -52,8 +52,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T>
 PagedArray<T>::PagedArray()
-: itsIsClosed (True),
-  itsWritable (False)
+: itsIsClosed   (True),
+  itsMarkDelete (False),
+  itsWritable   (False)
 {
   // Initializes all private data using their default consructor
 }
@@ -89,6 +90,7 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
   itsColumnName (defaultColumn()),
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False),
+  itsMarkDelete (False),
   itsWritable   (file.isWritable())
 {
   makeArray (shape);
@@ -102,7 +104,8 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file,
 : itsTable      (file),
   itsColumnName (columnName),
   itsRowNumber  (rowNumber),
-  itsIsClosed   (False)
+  itsIsClosed   (False),
+  itsMarkDelete (False)
 {
   makeArray (shape);
   setTableType();
@@ -115,6 +118,7 @@ PagedArray<T>::PagedArray (const String& filename)
   itsColumnName (defaultColumn()), 
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False),
+  itsMarkDelete (False),
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
@@ -126,6 +130,7 @@ template<class T> PagedArray<T>::PagedArray (Table& file)
   itsColumnName (defaultColumn()), 
   itsRowNumber  (defaultRow()),
   itsIsClosed   (False),
+  itsMarkDelete (False),
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
@@ -139,6 +144,7 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
   itsColumnName (columnName), 
   itsRowNumber  (rowNumber),
   itsIsClosed   (False),
+  itsMarkDelete (False),
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
@@ -152,6 +158,7 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
   itsColumnName (other.itsColumnName), 
   itsRowNumber  (other.itsRowNumber),
   itsIsClosed   (other.itsIsClosed),
+  itsMarkDelete (other.itsMarkDelete),
   itsTableName  (other.itsTableName),
   itsWritable   (other.itsWritable),
   itsLockOpt    (other.itsLockOpt),
@@ -165,6 +172,10 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
 template<class T>
 PagedArray<T>::~PagedArray()
 {
+  // Reopen if marked for delete to force that the table files get removed.
+  if (itsMarkDelete) {
+    tempReopen();
+  }
   // Only need to do something if really constructed.
   if (! itsTable.isNull()) {
     // Table may not be written if ref count > 1 - here we force a write.
@@ -184,6 +195,7 @@ PagedArray<T>& PagedArray<T>::operator= (const PagedArray<T>& other)
     itsColumnName = other.itsColumnName;
     itsRowNumber  = other.itsRowNumber;
     itsIsClosed   = other.itsIsClosed;
+    itsMarkDelete = other.itsMarkDelete;
     itsTableName  = other.itsTableName;
     itsWritable   = other.itsWritable;
     itsLockOpt    = other.itsLockOpt;
@@ -498,8 +510,9 @@ void PagedArray<T>::makeTable (const String& filename,
 {
   SetupNewTable setupTable(filename, TableDesc(), option);
   itsTable = Table(setupTable);
-  itsIsClosed = False;
-  itsWritable = True;
+  itsIsClosed   = False;
+  itsMarkDelete = False;
+  itsWritable   = True;
 }
 
 template<class T>
@@ -556,7 +569,12 @@ void PagedArray<T>::tempClose()
     itsTableName = itsTable.tableName();
     itsWritable  = itsTable.isWritable();
     itsLockOpt   = itsTable.lockOptions();
-    itsTable     = Table();
+    // Take care that table does not get deleted on temporary close.
+    if (itsTable.isMarkedForDelete()) {
+      itsMarkDelete = True;
+      itsTable.unmarkForDelete();
+    }
+    itsTable = Table();
     itsROArray.reference (ROArrayColumn<T>());
     itsRWArray.reference (ArrayColumn<T>());
     itsIsClosed = True;
@@ -582,6 +600,11 @@ void PagedArray<T>::tempReopen() const
     itsROArray.attach (itsTable, itsColumnName);
     itsAccessor = ROTiledStManAccessor (itsTable, itsColumnName);
     itsIsClosed = False;
+    // Mark the table for delete if needed.
+    if (itsMarkDelete) {
+      itsTable.markForDelete();
+      itsMarkDelete = False;
+    }
   }
 }
 

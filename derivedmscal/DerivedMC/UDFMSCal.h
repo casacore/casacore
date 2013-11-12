@@ -126,9 +126,9 @@ namespace casa {
 
     // Get the value.
     virtual Double getDouble (const TableExprId& id);
-    virtual Array<Bool> getArrayBool (const TableExprId& id);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
 
   private:
     // Setup the Stokes conversion.

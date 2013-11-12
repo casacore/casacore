@@ -715,6 +715,31 @@ private:
   // Optionally reverse the axes.
   static IPosition fillAxes (const IPosition&, Bool cOrder);
 
+  // Check if the new shape is still the same.
+  // <br> same:   0=first time;   1=still the same;   2=different
+  static void stillSameShape (Int& same, IPosition& shape,
+                              const IPosition& newShape);
+
+  // Copy the array contents of the record fields to a single array.
+  // This can only be done if the shape is constant.
+  template<typename T>
+  static Array<T> record2Array (const Record& rec)
+  {
+    if (rec.empty()) {
+      return Array<T>();
+    }
+    Array<T> tmp;
+    rec.get (0, tmp);
+    IPosition shp(tmp.shape());
+    shp.append (IPosition(1, rec.size()));
+    Array<T> arr(shp);
+    ArrayIterator<T> iter(arr, tmp.ndim());
+    for (uInt i=0; i<rec.size(); ++i, iter.next()) {
+      rec.get (i, iter.array());
+    }
+    return arr;
+  }
+
 
   //# The data members.
   Table  table_p;

@@ -116,9 +116,9 @@ namespace casa {
     }
     //    std::cerr << "will use " << nthreads << " threads " << std::endl;
 
-    //flags = FFTW_ESTIMATE;  
+    flags = FFTW_ESTIMATE;  
     
-    flags = FFTW_MEASURE;  // std::cerr << "Will FFTW_MEASURE..." << std::endl;
+    //flags = FFTW_MEASURE;  // std::cerr << "Will FFTW_MEASURE..." << std::endl;
     //flags = FFTW_PATIENT;   std::cerr << "Will FFTW_PATIENT..." << std::endl;
     //flags = FFTW_EXHAUSTIVE;   std::cerr << "Will FFTW_EXHAUSTIVE..." << std::endl;
   }

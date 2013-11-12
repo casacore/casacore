@@ -135,7 +135,7 @@ Int HostInfo::numCPUs(bool use_aipsrc)				\
     return info->valid ? info->cpus : 0;			\
 }								\
 								\
-ssize_t HostInfo::memoryTotal(bool use_aipsrc) 			\
+ptrdiff_t HostInfo::memoryTotal(bool use_aipsrc) 		\
 {								\
     static const String memory("system.resources.memory");	\
     static const String fraction("system.resources.memfrac");	\
@@ -147,7 +147,7 @@ ssize_t HostInfo::memoryTotal(bool use_aipsrc) 			\
 	if ( Aipsrc::find(value, memory) ) {			\
 	    int result;						\
 	    if ( sscanf( value.c_str( ), "%d", &result ) == 1 )	\
-		return (ssize_t) result * 1024;			\
+		return (ptrdiff_t) result * 1024;		\
 	} else if ( Aipsrc::find(value,	fraction) ) {		\
 	    int result;						\
 	    if ( sscanf( value.c_str( ), "%d", &result ) == 1 )	\
@@ -163,39 +163,39 @@ ssize_t HostInfo::memoryTotal(bool use_aipsrc) 			\
 	return info->memory_total;				\
     else {							\
 	double f = ((double) frac / 100.0);			\
-	return (ssize_t) ((double ) info->memory_total * f);	\
+	return (ptrdiff_t) ((double ) info->memory_total * f);	\
     }								\
 }								\
 								\
-ssize_t HostInfo::memoryUsed( )					\
+ptrdiff_t HostInfo::memoryUsed( )				\
 {								\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
     return info->valid ? info->memory_used : -1;		\
 }								\
 								\
-ssize_t HostInfo::memoryFree( )					\
+ptrdiff_t HostInfo::memoryFree( )				\
 {								\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
     return info->valid ? info->memory_free : -1;		\
 }								\
 								\
-ssize_t HostInfo::swapTotal( )					\
+ptrdiff_t HostInfo::swapTotal( )				\
 {								\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
     return info->valid ? info->swap_total : -1;			\
 }								\
 								\
-ssize_t HostInfo::swapUsed( )					\
+ptrdiff_t HostInfo::swapUsed( )					\
 {								\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
     return info->valid ? info->swap_used : -1;			\
 }								\
 								\
-ssize_t HostInfo::swapFree( )					\
+ptrdiff_t HostInfo::swapFree( )					\
 {								\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
@@ -257,12 +257,12 @@ HOSTINFO_IMPLEMENT_MEMBERS
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 Int HostInfo::numCPUs( ) { return 0; }
-ssize_t HostInfo::memoryTotal( ) { return -1; }
-ssize_t HostInfo::memoryUsed( )  { return -1; }
-ssize_t HostInfo::memoryFree( )  { return -1; }
-ssize_t HostInfo::swapTotal( )   { return -1; }
-ssize_t HostInfo::swapUsed( )    { return -1; }
-ssize_t HostInfo::swapFree( )    { return -1; }
+ptrdiff_t HostInfo::memoryTotal( ) { return -1; }
+ptrdiff_t HostInfo::memoryUsed( )  { return -1; }
+ptrdiff_t HostInfo::memoryFree( )  { return -1; }
+ptrdiff_t HostInfo::swapTotal( )   { return -1; }
+ptrdiff_t HostInfo::swapUsed( )    { return -1; }
+ptrdiff_t HostInfo::swapFree( )    { return -1; }
 
 } //# NAMESPACE CASA - END
 

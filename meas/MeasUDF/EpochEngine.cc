@@ -204,10 +204,10 @@ namespace casa {
     // Get values (as doubles or dates).
     Array<Double> epochs;
     if (operand->dataType() == TableExprNodeRep::NTDouble) {
-      epochs.reference (operand->getDoubleAS(0));
+      epochs.reference (operand->getDoubleAS(0).array());
     } else {
       unit = "s";
-      Array<MVTime> dates = operand->getDateAS(0);
+      Array<MVTime> dates = operand->getDateAS(0).array();
       epochs.resize (dates.shape());
       for (uInt i=0; i<dates.size(); ++i) {
         epochs.data()[i] = dates.data()[i].second();
@@ -254,7 +254,7 @@ namespace casa {
     if (!itsMeasCol.isNull()) {
       return itsMeasCol(id.rownr());
     }
-    Array<Double> values = itsExprNode.getDoubleAS(id);
+    Array<Double> values = itsExprNode.getDoubleAS(id).array();
     Array<MEpoch> epochs(values.shape());
     Unit unit = itsExprNode.unit();
     if (unit.empty()) {

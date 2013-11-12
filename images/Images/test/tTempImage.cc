@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <images/Images/TempImage.h>
+#include <images/Images/SubImage.h>
 #include <images/Images/ImageInfo.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <lattices/Lattices/TempLattice.h>
@@ -129,6 +130,37 @@ void doIt (TempImage<Int>& scratch)
   AlwaysAssertExit (info.restoringBeam()(2)==a3);
 }
 
+void testTempCloseDelete()
+{
+  Int nchan= 10;
+  Int nx=1000;
+  Int ny=1000;
+
+  TempImage<Float> tIm((TiledShape(IPosition(4,nx,ny,1,nchan))),
+                       CoordinateUtil::defaultCoords4D(),
+                       0);
+  cerr <<"isPaged " << tIm.isPaged() << endl;
+  tIm.set(0.0);
+  /////////Comment the tempClose it works fine
+  tIm.tempClose();
+  IPosition blc(4,0 , 0, 0, nchan);
+  IPosition trc(4, nx-1, ny-1, 0, nchan);
+  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0);
+  for (Int k=0; k < nchan ; ++k){
+    blc(3)=k; trc(3)=k;
+    Slicer sl(blc, trc, Slicer::endIsLast);
+    cout<<'a'<<endl;
+    SubImage<Float> imSub(tIm, sl, True);
+    cout<<'b'<<endl;
+    goodplane += Float(k);
+    imSub.put(goodplane);
+    cout<<'c'<<endl;
+  }
+
+  LatticeExprNode LEN = max( tIm );
+  cerr << "max " << LEN.getFloat() << endl;
+}
+
 int main()
 {
   try {
@@ -147,6 +179,7 @@ int main()
       AlwaysAssertExit (! small.isPaged());
       doIt (small);
     }
+    testTempCloseDelete();
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;

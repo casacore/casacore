@@ -109,7 +109,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Array<Bool>& mask()
       { return itsMask; }
 
-    // Return the number of valid mask values, thus unflagged elements.
+    // Return the number of valid array values, thus unflagged elements.
     Int64 nvalid() const
     {
       if (itsNValid < 0) fillNValid();

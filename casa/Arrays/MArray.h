@@ -46,16 +46,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <prerequisite>
   //# Classes you should understand before using this one.
   //   <li> <linkto class=Array>Array</linkto>
+  //   <li> <linkto class=MArrayBase>MArrayBase</linkto>
   // </prerequisite>
 
   // <synopsis> 
   // This class makes it easier to handle arrays with ot without mask.
-  // The array is always present, but the mask is optional.
-  // MArrayMath contains functions to operate on such arrays.
-  // A mask value True means that the corresponding value is masked off, thus
-  // not taken into account in reduction functions like <src>sum</src>.
+  // The array is always present, but the mask is optional. The mask is
+  // contained in the non-templated base class MArrayBase and functions
+  // to operate on the mask are defined there.
   //
-  // Note that several functions are present in the base class MArrayBase.
+  // A mask value True means that the corresponding value is masked off, thus
+  // not taken into account in reduction functions like <src>sum</src>. This
+  // is the same as the numpy masked array.
+  //
+  // MArrayMath.h contains many functions to operate on MArray objects
+  // (addition, sin, etc.).
   // </synopsis> 
 
   template <typename T>
@@ -73,7 +78,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     {}
 
     // Construct from an array with mask.
-    // Tell which mask value defines a valid array value.
     MArray (const Array<T>& array, const Array<Bool>& mask)
       : MArrayBase (mask, array.size()),
         itsArray   (array)
@@ -84,6 +88,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       itsArray.reference (other.itsArray);
       referenceBase (other);
     }
+
     // Fill the array data and mask from another one.
     template <typename U>
     void fill (const MArray<U>& from)
@@ -120,11 +125,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     const IPosition& shape() const
       { return itsArray.shape(); }
 
-    // Get the array.
+    // Get access to the array.
+    // <group>
     const Array<T>& array() const
       { return itsArray; }
     Array<T>& array()
       { return itsArray; }
+    // </group>
 
     // Flatten the unmasked elements of the array to a vector.
     Vector<T> flatten() const;

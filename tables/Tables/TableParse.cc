@@ -206,7 +206,7 @@ void TableParseSelect::addTable (Int tabnr, const String& name,
 	}
       }
       if (!foundSH) {
-	table = Table(name);
+	table = Table::openTable(name);
       }
     }
   }
@@ -952,7 +952,7 @@ void TableParseSelect::handleColumn (Int stringType,
         if (!newDtype.empty()  ||  inx >= 0) {
           nrSelExprUsed_p++;
         } else {
-          for (Int i=0; i<nrcol-1; ++i) {
+          for (Int i=0; i<nrcol; ++i) {
             if (str == columnOldNames_p[i]) {
               nrSelExprUsed_p++;
               break;
@@ -2300,6 +2300,7 @@ Table TableParseSelect::doProjectExpr()
   tabp.flush();
   // Indicate that no table needs to be created anymore.
   resultName_p = "";
+  resultType_p = 0;
   return tabp;
 }
 
@@ -2694,7 +2695,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
       resultTable = doLimOff (showTimings, resultTable);
     }
     //# Finally rename or copy using the given name (and flush it).
-    if (! resultName_p.empty()) {
+    if (resultType_p != 0  ||  ! resultName_p.empty()) {
       resultTable = doFinish (showTimings, resultTable);
     }
   }
