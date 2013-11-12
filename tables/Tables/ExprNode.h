@@ -144,6 +144,11 @@ class TableExprNode;
     TableExprNode angdist (const TableExprNode& pos1,
                            const TableExprNode& pos2);
 
+  // Angular distance as above, but only pair-wise enties are used if
+  // both arguments are arrays.
+    TableExprNode angdistx (const TableExprNode& pos1,
+                            const TableExprNode& pos2);
+
   // Cone search; test if the position of a source is inside a cone.
   // <br>Argument <src>sourcePos</src> must be a double array
   // containing two values (ra and dec of source) in radians.
@@ -226,6 +231,7 @@ class TableExprNode;
     TableExprNode strlength (const TableExprNode& node);
     TableExprNode upcase    (const TableExprNode& node);
     TableExprNode downcase  (const TableExprNode& node);
+    TableExprNode capitalize(const TableExprNode& node);
     TableExprNode trim      (const TableExprNode& node);
     TableExprNode ltrim     (const TableExprNode& node);
     TableExprNode rtrim     (const TableExprNode& node);
@@ -278,6 +284,14 @@ class TableExprNode;
     TableExprNode hms  (const TableExprNode& node);
     TableExprNode dms  (const TableExprNode& node);
     TableExprNode hdms (const TableExprNode& node);
+  // </group>
+
+  // Function to convert any value to a string.
+  // See TaQL note 199 for possible format values.
+  // <group>
+    TableExprNode toString (const TableExprNode& node);
+    TableExprNode toString (const TableExprNode& node,
+                            const TableExprNode& format);
   // </group>
 
   // Function to test if a scalar or array is NaN (not-a-number).
@@ -430,6 +444,12 @@ class TableExprNode;
   // The <src>values</src> array is rewound as needed.
     TableExprNode array (const TableExprNode& values,
 			 const TableExprNodeSet& shape);
+
+  // Transpose all axes of an array.
+    TableExprNode transpose (const TableExprNode& array);
+  // Transpose an array by making the given axes the first axes.
+    TableExprNode transpose (const TableExprNode& array,
+                             const TableExprNode& axes);
 
   // Function operating on a field resulting in a bool scalar.
   // It can be used to test if a column has an array in the current row.
@@ -660,6 +680,7 @@ class TableExprNode
     friend TableExprNode strlength (const TableExprNode& node);
     friend TableExprNode upcase    (const TableExprNode& node);
     friend TableExprNode downcase  (const TableExprNode& node);
+    friend TableExprNode capitalize(const TableExprNode& node);
     friend TableExprNode trim      (const TableExprNode& node);
     friend TableExprNode ltrim     (const TableExprNode& node);
     friend TableExprNode rtrim     (const TableExprNode& node);
@@ -765,6 +786,9 @@ class TableExprNode
     friend TableExprNode runningAll (const TableExprNode& array);
     friend TableExprNode array (const TableExprNode& values,
 				const TableExprNodeSet& shape);
+    friend TableExprNode transpose (const TableExprNode& array);
+    friend TableExprNode transpose (const TableExprNode& array,
+                                    const TableExprNode& axes);
     friend TableExprNode isdefined (const TableExprNode& array);
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
@@ -1299,6 +1323,12 @@ inline TableExprNode angdist (const TableExprNode& pos1,
     return TableExprNode::newFunctionNode (TableExprFuncNode::angdistFUNC,
 					   pos1, pos2);
 }
+inline TableExprNode angdistx (const TableExprNode& pos1,
+                               const TableExprNode& pos2)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::angdistxFUNC,
+					   pos1, pos2);
+}
 inline TableExprNode cones (const TableExprNode& sourcePos,
 			    const TableExprNode& cones)
 {
@@ -1493,6 +1523,11 @@ inline TableExprNode downcase (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::downcaseFUNC,
 					   node);
 }
+inline TableExprNode capitalize (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::capitalizeFUNC,
+					   node);
+}
 inline TableExprNode regex (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::regexFUNC, node);
@@ -1574,6 +1609,17 @@ inline TableExprNode dms (const TableExprNode& node)
 inline TableExprNode hdms (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::hdmsFUNC, node);
+}
+inline TableExprNode toString (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::stringFUNC,
+                                           node);
+}
+inline TableExprNode toString (const TableExprNode& node,
+                               const TableExprNode& format)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::stringFUNC,
+                                           node, format);
 }
 inline TableExprNode week (const TableExprNode& node)
 {
@@ -1933,6 +1979,17 @@ inline TableExprNode array (const TableExprNode& values,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrayFUNC,
 					   values, shape);
+}
+inline TableExprNode transpose (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
+					   array);
+}
+inline TableExprNode transpose (const TableExprNode& array,
+                                const TableExprNodeSet& axes)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
+					   array, axes);
 }
 inline TableExprNode isdefined (const TableExprNode& node)
 {

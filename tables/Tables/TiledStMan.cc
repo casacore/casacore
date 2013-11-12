@@ -1083,8 +1083,11 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
     headerFile >> nrrow;
     headerFile >> nrcol;
     if (seqnr != sequenceNr()  ||  nrcol != ncolumn()) {
+      //# Temporary hack to fix a corrupted table.
+      //#if (sequenceNr() != 7) {
 	throw (DataManInternalError
 	          ("TiledStMan::headerFileGet: mismatch in seqnr,#col"));
+      //#}
     }
     if (nrrow != nrrow_p) {
 #if defined(TABLEREPAIR)

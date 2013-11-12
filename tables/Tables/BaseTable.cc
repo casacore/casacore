@@ -73,7 +73,7 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
 	name_p = File::newUniqueName ("", "tab").originalName();
     }
     // Make name absolute in case a chdir is done in e.g. Python.
-    name_p = Path(name_p).absoluteName();
+    name_p = makeAbsoluteName (name_p);
     if (option_p == Table::Scratch) {
 	option_p = Table::New;
     }
@@ -360,7 +360,7 @@ void BaseTable::rename (const String& newName, int tableOption)
 {
     AlwaysAssert (!isNull(), AipsError);
     // Make the name absolute.
-    String absNewName = Path(newName).absoluteName();
+    String absNewName = makeAbsoluteName (newName);
     // The table can be renamed if:
     // - it is not created yet
     // - it exists and its file is writable
@@ -423,7 +423,7 @@ void BaseTable::trueDeepCopy (const String& newName,
 {
     AlwaysAssert (!isNull(), AipsError);
     // Make the name absolute.
-    String absNewName = Path(newName).absoluteName();
+    String absNewName = makeAbsoluteName (newName);
     // Throw exception if new name is same as old one.
     if (absNewName == name_p) {
         throw TableError
@@ -451,7 +451,7 @@ void BaseTable::copy (const String& newName, int tableOption) const
 {
     AlwaysAssert (!isNull(), AipsError);
     // Make the name absolute.
-    String absNewName = Path(newName).absoluteName();
+    String absNewName = makeAbsoluteName (newName);
     // Do not copy when the new name is the same as the old name.
     if (absNewName != name_p) {
 	//# Throw an exception when directories do not exist yet.
@@ -1021,8 +1021,10 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
     }
   }
   if (!showDataMans) {
-    os << endl;
-    showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+    if (showColumns) {
+      os << endl;
+      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+    }
   } else {
     for (uInt i=0; i<dminfo.nfields(); ++i) {
       os << endl << " ";
@@ -1150,6 +1152,23 @@ void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
     }
     os << endl;
   }
+}
+
+String BaseTable::makeAbsoluteName (const String& name) const
+{
+    // Make sure the name contains a character not equal to . or /.
+    Bool ok = False;
+    for (uInt i=0; i<name.size(); ++i) {
+      if (name[i] != '.'  &&  name[i] != '/') {
+        ok = True;
+        break;
+      }
+    }
+    if (!ok) {
+      throw TableError ("BaseTable::makeAbsoluteName - "
+                        "table name '" + name + "' is invalid");
+    }
+    return Path(name).absoluteName();
 }
 
 } //# NAMESPACE CASA - END

@@ -1612,12 +1612,12 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	    break;
 	case TableExprFuncNode::ltrimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (leadingWS, string());
+                str[i].gsub (leadingWS, String());
 	    }
 	    break;
 	case TableExprFuncNode::rtrimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (trailingWS, string());
+                str[i].gsub (trailingWS, String());
 	    }
 	    break;
         case TableExprFuncNode::substrFUNC:

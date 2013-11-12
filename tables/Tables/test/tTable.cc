@@ -259,7 +259,7 @@ void b (Bool doExcp)
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
 	} catch (AipsError& x) {
             // table not writable
-          cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
+            cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
     }
     ScalarColumn<Int> ab2(tab,"ab");

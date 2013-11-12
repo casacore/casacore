@@ -937,6 +937,13 @@ calc sum([select from tTableGram_tmp.tab giving [ab \in]])
     has been executed
 Unit: in
 [28]
+select ab s AS ab1, ac mm AS ac1 INTO AS MEMORY from tTableGram_tmp.tab where rownumber() < 4
+    has been executed
+    select result of 3 rows
+2 selected columns:  ab1 ac1
+ 1 2
+ 3 4
+ 5 6
 select ab s AS ab1, ac mm AS ac1 INTO tTableGram_tmp.tab_abac AS PLAIN from tTableGram_tmp.tab where rownumber() < 4
     has been executed
     select result of 3 rows

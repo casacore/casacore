@@ -71,41 +71,42 @@ void showKeys (const Table& table, Bool showtabkey, Bool showcolkey,
 
 int main (int argc, char* argv[])
 {
-  // Read the input parameters.
-  Input inputs(1);
-  inputs.version("2012Dec14GvD");
-  inputs.create("in", "", "Input table", "string");
-  inputs.create("dm", "T", "Show data manager info?", "bool");
-  inputs.create("col", "T", "Show column info?", "bool");
-  inputs.create("tabkey", "F", "Show table keywords?", "bool");
-  inputs.create("colkey", "F", "Show column keywords?", "bool");
-  inputs.create("maxval", "25", "Max nr of array values to show", "int");
-  inputs.create("sub", "F", "Show info for all subtables?", "bool");
-  inputs.create("sort", "F", "Sort columns in alphabetical order?", "bool");
-  inputs.create("browse", "F", "Browse contents of table?", "bool");
-  inputs.create("selcol", "", "TaQL column selection string", "string");
-  inputs.create("selrow", "", "TaQL row selection string", "string");
-  inputs.create("selsort", "", "TaQL sort string", "string");
-  inputs.readArguments(argc, argv);
-
-  // Get and check the input specification.
-  String in (inputs.getString("in"));
-  if (in.empty()) {
-    throw AipsError(" an input table name must be given");
-  }
-  Bool showdm     = inputs.getBool("dm");
-  Bool showcol    = inputs.getBool("col");
-  Bool showtabkey = inputs.getBool("tabkey");
-  Bool showcolkey = inputs.getBool("colkey");
-  Int  maxval     = inputs.getInt ("maxval");
-  Bool showsub    = inputs.getBool("sub");
-  Bool sortcol    = inputs.getBool("sort");
-  Bool browse     = inputs.getBool("browse");
-  String selcol  (inputs.getString("selcol"));
-  String selrow  (inputs.getString("selrow"));
-  String selsort (inputs.getString("selsort"));
-
   try {
+    // Read the input parameters.
+    Input inputs(1);
+    inputs.version("2013Oct16GvD");
+    inputs.create("in", "", "Input table", "string");
+    inputs.create("dm", "T", "Show data manager info?", "bool");
+    inputs.create("col", "T", "Show column info?", "bool");
+    inputs.create("tabkey", "F", "Show table keywords?", "bool");
+    inputs.create("colkey", "F", "Show column keywords?", "bool");
+    inputs.create("maxval", "25", "Max nr of array values to show", "int");
+    inputs.create("sub", "F", "Show info for all subtables?", "bool");
+    inputs.create("sort", "F", "Sort columns in alphabetical order?", "bool");
+    inputs.create("browse", "F", "Browse contents of table?", "bool");
+    inputs.create("selcol", "", "TaQL column selection string", "string");
+    inputs.create("selrow", "", "TaQL row selection string", "string");
+    inputs.create("selsort", "", "TaQL sort string", "string");
+    inputs.readArguments(argc, argv);
+
+    // Get and check the input specification.
+    String in (inputs.getString("in"));
+    if (in.empty()) {
+      throw AipsError(" an input table name must be given");
+    }
+    Bool showdm     = inputs.getBool("dm");
+    Bool showcol    = inputs.getBool("col");
+    Bool showtabkey = inputs.getBool("tabkey");
+    Bool showcolkey = inputs.getBool("colkey");
+    Int  maxval     = inputs.getInt ("maxval");
+    Bool showsub    = inputs.getBool("sub");
+    Bool sortcol    = inputs.getBool("sort");
+    Bool browse     = inputs.getBool("browse");
+    String selcol  (inputs.getString("selcol"));
+    String selrow  (inputs.getString("selrow"));
+    String selsort (inputs.getString("selsort"));
+
+    // Do the selection if needed.
     String tmpName;
     Table table(in);
     Table seltab(table);

@@ -915,13 +915,13 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case ltrimFUNC:
       {
 	String str = operands_p[0]->getString (id);
-        str.gsub (leadingWS, string());
+        str.gsub (leadingWS, String());
 	return str;
       }
     case rtrimFUNC:
       {
 	String str = operands_p[0]->getString (id);
-        str.gsub (trailingWS, string());
+        str.gsub (trailingWS, String());
 	return str;
       }
     case substrFUNC:
