@@ -31,7 +31,7 @@
 #include <casa/aips.h>
 
 
-#if ! defined (HAVE_BOOST)
+#if ! defined (USE_CASACORE_BOOST)
 
 //#====================================================================
 //#====================================================================
@@ -262,7 +262,7 @@ inline Bool countedPtrBoost()
 
 //# Keep the include definitions local
 
-#else //# when defined (HAVE_BOOST) is true
+#else //# when defined (USE_CASACORE_BOOST) is true
 
 
 #include <boost/shared_ptr.hpp>
@@ -466,13 +466,13 @@ protected:
     }
 };
 
-} //#End casa namespace
-
 inline Bool countedPtrBoost()
   { return True; }
 
+} //#End casa namespace
 
-#endif  //# defined (HAVE_BOOST)
+
+#endif  //# defined (USE_CASACORE_BOOST)
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES

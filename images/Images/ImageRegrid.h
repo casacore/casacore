@@ -209,7 +209,8 @@ public:
 		  const CoordinateSystem& cSysTo,
 		  const CoordinateSystem& cSysFrom,
 		  const IPosition& axes,
-		  const IPosition& inShape=IPosition()
+		  const IPosition& inShape=IPosition(),
+		  Bool giveStokesWarning=True
   );
 
  private:

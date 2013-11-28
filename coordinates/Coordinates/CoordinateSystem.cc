@@ -674,9 +674,21 @@ void CoordinateSystem::subImageInSitu(const Vector<Float> &originShift,
         	if (! newCoord.setNativeType(nativeType)) {
         		throw AipsError("Unable to set native type of tabular spectral coordinate.");
         	}
+
+		// adding the conversion layer if one exists
+		MFrequency::Types refConvType;
+		MEpoch refConvEpoch;
+		MPosition refConvPos;
+		MDirection refConvDir;
+		spCoord.getReferenceConversion(refConvType, refConvEpoch, refConvPos, refConvDir);
+		if(!newCoord.setReferenceConversion(refConvType, refConvEpoch, refConvPos, refConvDir)){
+		  throw AipsError("Unable to set reference conversion layer of tabular spectral coordinate.");
+		}
+
+         	crpix(i) = 0;
+         	cdelt[i] = newCoord.increment()[0];
+
         	replaceCoordinate(newCoord, coordinate);
-        	crpix(i) = 0;
-        	cdelt[i] = newCoord.increment()[0];
         }
         else {
            AlwaysAssert(pixincFac(i) > 0, AipsError);

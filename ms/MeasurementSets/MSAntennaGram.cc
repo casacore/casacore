@@ -29,6 +29,8 @@
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
+// This is a preliminary version; eventually it has to be incorporated
+// in the AIPS++ command language.
 
 #include <tables/Tables/ExprNode.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
@@ -86,16 +88,71 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
   }					      
 
-  TableExprNode msAntennaGramParseCommand (const MSAntenna& msSubTable,
-					   const TableExprNode& col1TEN,
-					   const TableExprNode& col2TEN,
+  TableExprNode msAntennaGramParseCommand (MSSelectableTable& msLike,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
+  {
+    TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
+      col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
+
+    TableExprNode antennaTEN;
+    //    MSAntennaParse *thisParser = new MSAntennaParse(msLike.antenna(), col1TEN, col2TEN);
+    MSAntennaParse thisParser(msLike.antenna(), col1TEN, col2TEN);
+    try
+      {
+	antennaTEN = baseMSAntennaGramParseCommand(&thisParser, command, 
+						   selectedAnts1, selectedAnts2,
+						   selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	//	delete thisParser;
+	throw;
+      }
+    
+    //delete thisParser;
+    return antennaTEN;
+  }
+
+  TableExprNode msAntennaGramParseCommand (Table& subTable,
+					   TableExprNode& col1TEN,
+					   TableExprNode& col2TEN,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
+  {
+    // TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
+    //   col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
+
+    TableExprNode antennaTEN;
+    //    MSAntennaParse *thisParser = new MSAntennaParse(msLike.antenna(), col1TEN, col2TEN);
+    MSAntennaParse thisParser(subTable, col1TEN, col2TEN);
+    try
+      {
+	antennaTEN = baseMSAntennaGramParseCommand(&thisParser, command, 
+						   selectedAnts1, selectedAnts2,
+						   selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	//	delete thisParser;
+	throw;
+      }
+    
+    //delete thisParser;
+    return antennaTEN;
+  }
+
+  TableExprNode msAntennaGramParseCommand (MSAntennaParse* thisParser,
                                            const String& command, 
                                            Vector<Int>& selectedAnts1,
                                            Vector<Int>& selectedAnts2,
                                            Matrix<Int>& selectedBaselines) 
   {
     TableExprNode antennaTEN;
-    MSAntennaParse *thisParser = new MSAntennaParse(msSubTable, col1TEN, col2TEN);
     try
       {
 	antennaTEN=baseMSAntennaGramParseCommand(thisParser, command, 

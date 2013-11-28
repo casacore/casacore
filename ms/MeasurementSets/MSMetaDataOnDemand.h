@@ -126,6 +126,9 @@ public:
 	// get the number of arrays (from the ARRAY table) in the dataset
 	uInt nArrays();
 
+	// get the number of data description IDs (from the DATA_DESCRIPTION table)
+	uInt nDataDescriptions();
+
 	// get the set of spectral windows for the specified scan number.
 	std::set<uInt> getSpwsForScan(const Int scan);
 
@@ -150,6 +153,8 @@ public:
 	// get the antenna stations for the specified antenna names
 	vector<String> getAntennaStations(const vector<String>& antennaNames);
 
+	// get the antenna diameters
+	Quantum<Vector<Double> > getAntennaDiameters();
 
 	// ALMA-specific. get set of spectral windows used for TDM. These are windows that have
 	// 64, 128, or 256 channels
@@ -297,13 +302,16 @@ public:
 
 	uInt nPol();
 
+	// get a map of data desc ID, scan number pair to exposure time for the first time
+	// for that data desc ID, scan number pair
+	vector<std::map<Int, Quantity	> > getFirstExposureTimeMap();
 
 private:
 	const MeasurementSet* _ms;
 	Float _cacheMB;
 	const Float _maxCacheMB;
 	uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
-		_nObservations, _nScans, _nArrays, _nrows, _nPol;
+		_nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
 	std::set<String> _uniqueIntents;
 	std::map<Int, std::set<uInt> > _scanToSpwsMap;
 	std::set<Int> _uniqueScanNumbers, _uniqueFieldIDs, _uniqueStateIDs;
@@ -324,6 +332,7 @@ private:
 	vector<String> _fieldNames, _antennaNames, _observatoryNames, _stationNames;
 	std::map<String, uInt> _antennaNameToIDMap;
 	std::tr1::shared_ptr<Vector<Double> > _times;
+	std::tr1::shared_ptr<Quantum<Vector<Double> > > _exposures;
 	std::tr1::shared_ptr<std::map<Int, std::set<Double> > > _scanToTimesMap;
 	std::map<String, std::set<Int> > _intentToFieldIDMap, _intentToScansMap;
 	std::map<String, std::set<uInt> > _intentToSpwsMap;
@@ -333,6 +342,7 @@ private:
 
 	vector<MPosition> _observatoryPositions, _antennaPositions;
 	vector<Quantum<Vector<Double> > > _antennaOffsets;
+	Quantum<Vector<Double> > _antennaDiameters;
 	Matrix<Bool> _uniqueBaselines;
 	Quantity _exposureTime;
 	Double _nUnflaggedACRows, _nUnflaggedXCRows;
@@ -344,6 +354,7 @@ private:
 	std::map<Int, vector<Double> > _scanToTimeRangeMap;
 	std::map<Int, std::map<uInt, Double> > _scanSpwToIntervalMap;
 	Bool _spwInfoStored;
+	vector<std::map<Int, Quantity> > _firstExposureTimeMap;
 
 	// disallow copy constructor and = operator
 	MSMetaDataOnDemand(const MSMetaDataOnDemand&);
@@ -396,6 +407,8 @@ private:
 
 	std::tr1::shared_ptr<Vector<Double> > _getTimes();
 
+	std::tr1::shared_ptr<Quantum<Vector<Double> > > _getExposureTimes();
+
 	std::tr1::shared_ptr<ArrayColumn<Bool> > _getFlags();
 
 	std::set<Int> _getUniqueFiedIDs();
@@ -423,6 +436,7 @@ private:
 
 	static uInt _sizeof(const std::map<String, std::set<uInt> >& map);
 
+	static uInt _sizeof(const vector<std::map<Int, Quantity> >& map);
 
 	void _getFieldsAndSpwMaps(
 		std::map<Int, std::set<uInt> >& fieldToSpwMap,
@@ -446,6 +460,8 @@ private:
 	static uInt _sizeof(const vector<std::set<String> >& m);
 
 	static uInt _sizeof(const vector<String>& m);
+
+	static uInt _sizeof(const Quantum<Vector<Double> >& m);
 
 
 	static uInt _sizeof(const std::map<Int, std::set<Double> >& m);

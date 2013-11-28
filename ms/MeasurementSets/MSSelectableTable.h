@@ -63,9 +63,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </etymology>
 //
 //<synopsis> 
+//
 // This is a pure virtual base-class to provide a table-type agnostic
-// interface to the MSSelection class to access sub-tables and
-// main-table columns of MS-like tables.
+// interface to the <linkto
+// module="MeasurementSets:description">MSSelection</linkto> module to
+// access sub-tables and main-table columns of MS-like tables.
+//
 // </synopsis>
 //
 // <example>
@@ -74,16 +77,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 //
 // <motivation>
-// To allow use of the <linkto class=MSSelection>MSSelection<linkto> class
+//
+// To allow use of the <linkto
+// module="MeasurementSets:description">MSSelection</linkto> module
 // for selection on any table that follows the general structure of the
-// MS dataset.  Via this class, minor differences in the data
+// MS database.  Via this class, minor differences in the database
 // layout can be hidden from the MSSelection module.  This also keeps
 // MeasurementSet module from depending on other MS-like database
 // implemention which may use the MSSelection module.  Such usage will
-// need to implement a specialization of
-// <linkto class=MSSelectableTable>MSSelectableTable</linkto> and
-// use it to instantiate the
-// <linkto class=MSSelection>MSSelection</linkto> object.
+// need to implement a specialization of <linkto
+// module="MeasurementSets:description">MSSelectableTable</linkto> and
+// use it to instantiate the <linkto
+// module="MeasurementSets:description">MSSelection</linkto> object.
+//
 // </motivation>
 //
 // <todo asof="19/03/13">
@@ -92,15 +98,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class MSSelectableTable
   {
   public:
+    enum MSSDataType {BASELINE_BASED=0, PURE_ANTENNA_BASED, REF_ANTENNA_BASED};
+
     MSSelectableTable()                       {}
     MSSelectableTable(const Table& table)     {table_p = &table;}
     virtual ~MSSelectableTable()              {}
 
     virtual void setTable(const Table& table) {table_p = &table;}
     const Table* table()                      {return table_p;}
-    virtual Bool isMS()                       = 0;
     TableExprNode col(const String& colName)  {return table()->col(colName);}
 
+    virtual Bool isMS()                       = 0;
+    virtual MSSDataType dataType()            = 0;
     virtual const MSAntenna& antenna()        = 0;
     virtual const MSField& field()            = 0;
     virtual const MSSpectralWindow& spectralWindow() = 0;
@@ -189,7 +198,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class MSInterface: public MSSelectableTable
   {
   public:
-    MSInterface():msMainCols_p(0)                   {}
+    MSInterface():msMainCols_p(NULL)                   {}
     MSInterface(const Table& table);
     virtual ~MSInterface()                             {if (msMainCols_p) delete msMainCols_p;}
     virtual const MSAntenna& antenna()                 {return asMS()->antenna();}
@@ -199,6 +208,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     virtual const MSObservation& observation()         {return asMS()->observation();}
     virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) {return MS::columnName(nameEnum);}
     virtual Bool isMS()                                {return True;}
+    virtual MSSDataType dataType()                     {return MSSelectableTable::BASELINE_BASED;}
 
     virtual const MeasurementSet *asMS(){return static_cast<const MeasurementSet *>(table());}
     virtual MSSelectableMainColumn* mainColumns()

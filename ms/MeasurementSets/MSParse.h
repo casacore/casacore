@@ -127,6 +127,7 @@ public:
     MSSelectableTable* msInterface();
 
   void setMS(MeasurementSet* ms) {ms_p=ms;}
+  void setMSInterface(MSSelectableTable* msI) {msInterface_p = msI;}
   static MeasurementSet *ms_p;
   static MSSelectableTable *msInterface_p;
   void addCondition(TableExprNode& target, TableExprNode& source);

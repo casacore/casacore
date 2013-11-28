@@ -178,10 +178,15 @@ baseline: antlist AMPERSAND antlist  // Two non-identical lists for the '&' oper
         | antlist AMPERSAND  // Implicit same list on the RHS of '&' operator
            {
 	     //	     MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->ms()->antenna()); 
-	     MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
-	     Vector<Int> a1 = myMSAI.matchId(*($1)); 
-	     $$ = MSAntennaParse::thisMSAParser->selectAntennaIds
-	       (a1,a1,MSAntennaParse::CrossOnly, MSAntennaGramNegate); 
+	     //	     cerr << "### ANTLIST&" << endl;
+	     // if (!MSAntennaParse::thisMSAParser->msInterface()->isMS()) reportError("& opertor invalid","");
+	     // else
+	       {
+		 MSAntennaIndex myMSAI(MSAntennaParse::thisMSAParser->subTable());
+		 Vector<Int> a1 = myMSAI.matchId(*($1)); 
+		 $$ = MSAntennaParse::thisMSAParser->selectAntennaIds
+		   (a1,a1,MSAntennaParse::CrossOnly, MSAntennaGramNegate); 
+	       }
 	     delete $1;
 	   }
         | antlist           //Match ANTLIST & ALLANTENNAS (implicit "&*")
