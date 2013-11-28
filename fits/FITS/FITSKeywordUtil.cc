@@ -86,14 +86,14 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
     name = "";
 
     if(fullName.contains("_")){ // assume new matrix syntax  ii_jj
-      Int where = 0;// Where the frst number starts
-      while (where++ < Int(fullName.length()) && !isdigit(fullName[where])) {
+      uInt where = 0;// Where the frst number starts
+      while (where++ < fullName.length() && !isdigit(fullName[where])) {
 	; // Nothing
       }
       name = fullName(0, where);
       // found first non-digit
       String::size_type where2 = fullName.find('_');
-      if(where2==String::npos || where2==fullName.length()-1){
+      if (where2 == String::npos || where2 == fullName.length()-1){
 	return False;
       }
       String snum1 = fullName(where, where2-where);
@@ -822,8 +822,8 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		os << LogIO::SEVERE << "Unknown type for keyword '" 
 		   << fullName << "'. Continuing." << LogIO::POST;
 	    }
-	} else if (fullName.contains(kw2D) || (fullName.contains(kw2Dmodern)
-                                               && !fullName.contains(cd))) {
+	} else if (fullName.contains(kw2D) ||
+                   (fullName.contains(kw2Dmodern) && !fullName.contains(cd))) {
 	    Int thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);

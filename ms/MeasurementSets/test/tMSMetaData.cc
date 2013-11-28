@@ -719,6 +719,7 @@ void testIt(MSMetaData& md) {
 				}
 				std::set<Int> got = md.getScansForIntent(*intent);
 				AlwaysAssert(md.getScansForIntent(*intent) == expec, AipsError);
+				AlwaysAssert(md.getIntentToScansMap()[*intent] == expec, AipsError);
 			}
 		}
 		{
@@ -897,29 +898,30 @@ void testIt(MSMetaData& md) {
 			}
 		}
 		{
-			cout << "*** test getFieldsForIntent()" << endl;
+			cout << "*** test getFieldsForIntent() and getIntentToFieldsMap()" << endl;
+			std::map<String, std::set<Int> > mymap = md.getIntentToFieldsMap();
 			std::set<String> intents = md.getIntents();
 			for (
-					std::set<String>::const_iterator intent=intents.begin();
-					intent!=intents.end(); intent++
+				std::set<String>::const_iterator intent=intents.begin();
+				intent!=intents.end(); intent++
 			) {
 				std::set<Int> expec;
 				if (
-						*intent=="CALIBRATE_AMPLI#ON_SOURCE"
+					*intent=="CALIBRATE_AMPLI#ON_SOURCE"
 				) {
 					expec.insert(2);
 				}
 				else if (
-						*intent=="CALIBRATE_BANDPASS#ON_SOURCE"
-								|| *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
-										|| *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
+					*intent=="CALIBRATE_BANDPASS#ON_SOURCE"
+						|| *intent=="CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
+						|| *intent=="CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
 				) {
 					expec.insert(0);
 				}
 				else if (
-						*intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
-								|| *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
-										|| *intent=="CALIBRATE_WVR#OFF_SOURCE"
+					*intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
+						|| *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
+							|| *intent=="CALIBRATE_WVR#OFF_SOURCE"
 				) {
 					Int mine[] = {0, 2, 3, 4, 5};
 					expec.insert(mine, mine+5);
@@ -948,6 +950,7 @@ void testIt(MSMetaData& md) {
 					md.getFieldsForIntent(*intent) == expec,
 					AipsError
 				);
+				AlwaysAssert(mymap[*intent] == expec, AipsError);
 			}
 		}
 		{
@@ -1023,8 +1026,9 @@ void testIt(MSMetaData& md) {
 			cout << "*** test getObservatoryPosition()" << endl;
 			MPosition tPos = md.getObservatoryPosition(0);
 			Vector<Double> angles = tPos.getAngle("deg").getValue();
-			AlwaysAssert(near(angles[0], -67.7547, 1e-4), AipsError);
-			AlwaysAssert(near(angles[1], -23.0292, 1e-4), AipsError);
+            cout << angles << endl;
+			AlwaysAssert(near(angles[0], -67.7547, 1e-6), AipsError);
+			AlwaysAssert(near(angles[1], -23.0292, 1e-6), AipsError);
 			cout << "*** cache size " << md.getCache() << endl;
 
 		}
@@ -1039,6 +1043,27 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getAntennaOffset()" << endl;
 			cout << md.getAntennaOffset(2) << endl;
+		}
+		{
+			cout << "*** test getAntennaStations()" << endl;
+			vector<uInt> ids(3);
+			ids[0] = 2;
+			ids[1] = 4;
+			ids[2] = 3;
+			vector<String> stations = md.getAntennaStations(ids);
+			AlwaysAssert(
+				stations[0] == "A077" && stations[1] == "A082"
+				&& stations[2] == "A137", AipsError
+			);
+			vector<String> names(3);
+			names[0] = "DV02";
+			names[1] = "DV05";
+			names[2] = "DV03";
+			stations = md.getAntennaStations(names);
+			AlwaysAssert(
+				stations[0] == "A077" && stations[1] == "A082"
+				&& stations[2] == "A137", AipsError
+			);
 		}
 		/*
 		{
@@ -1134,59 +1159,107 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test BBCNosToSpwMap()" << endl;
-			std::map<uInt, std::set<uInt> > got = md.getBBCNosToSpwMap();
-			std::map<uInt, std::set<uInt> >::const_iterator end = got.end();
-			for (
-				std::map<uInt, std::set<uInt> >::const_iterator iter=got.begin();
-				iter!=end; iter++
-			) {
-				std::set<uInt> expec;
-				switch(iter->first) {
-				case 0: {
-					uInt mine[] = {
-						0, 25, 26, 27, 28, 29,
-						30, 31, 32, 33, 34, 35,
-						36, 37, 38, 39
-					};
-					expec.insert(mine, mine+16);
-					break;
+			for (uInt i=0; i<3; i++) {
+				MSMetaData::SQLDSwitch sqldSwitch = i == 0 ? MSMetaData::SQLD_INCLUDE
+					: i == 1 ? MSMetaData::SQLD_EXCLUDE : MSMetaData::SQLD_ONLY;
+				std::map<uInt, std::set<uInt> > got = md.getBBCNosToSpwMap(sqldSwitch);
+				std::map<uInt, std::set<uInt> >::const_iterator end = got.end();
+				for (
+					std::map<uInt, std::set<uInt> >::const_iterator iter=got.begin();
+						iter!=end; iter++
+				) {
+					std::set<uInt> expec;
+					switch(iter->first) {
+					case 0: {
+						if (sqldSwitch != MSMetaData::SQLD_ONLY) {
+							uInt mine[] = {
+								0, 25, 26, 27, 28, 29,
+								30, 31, 32, 33, 34, 35,
+								36, 37, 38, 39
+							};
+							expec.insert(mine, mine+16);
+						}
+						break;
+					}
+					case 1: {
+						if (sqldSwitch != MSMetaData::SQLD_ONLY) {
+							uInt mine[] = {
+								1, 2, 9, 10, 17, 18
+							};
+							expec.insert(mine, mine+6);
+						}
+						break;
+					}
+					case 2: {
+						if (sqldSwitch == MSMetaData::SQLD_INCLUDE) {
+							uInt mine[] = {
+								3, 4, 11, 12, 19, 20
+							};
+							expec.insert(mine, mine+6);
+						}
+						else if (sqldSwitch == MSMetaData::SQLD_EXCLUDE) {
+							uInt mine[] = {
+								4, 11, 12, 19, 20
+							};
+							expec.insert(mine, mine+5);
+						}
+						else {
+							// SQLD_ONLY
+							uInt mine[] = {3};
+							expec.insert(mine, mine+1);
+						}
+						break;
+					}
+					case 3: {
+						if (sqldSwitch != MSMetaData::SQLD_ONLY) {
+							uInt mine[] = {
+								5, 6, 13, 14, 21, 22
+							};
+							expec.insert(mine, mine+6);
+						}
+						break;
 				}
-				case 1: {
-					uInt mine[] = {
-						1, 2, 9, 10, 17, 18
-					};
-					expec.insert(mine, mine+6);
-					break;
+					case 4: {
+						if (sqldSwitch != MSMetaData::SQLD_ONLY) {
+							uInt mine[] = {
+								7, 8, 15, 16, 23, 24
+							};
+							expec.insert(mine, mine+6);
+						}
+						break;
+					}
+					default:
+						throw AipsError();
+					}
+					cout << "number " << iter->first << endl;
+					AlwaysAssert(iter->second == expec, AipsError);
 				}
-				case 2: {
-					uInt mine[] = {
-						3, 4, 11, 12, 19, 20
-					};
-					expec.insert(mine, mine+6);
-					break;
-				}
-				case 3: {
-					uInt mine[] = {
-						5, 6, 13, 14, 21, 22
-					};
-					expec.insert(mine, mine+6);
-					break;
-				}
-				case 4: {
-					uInt mine[] = {
-						7, 8, 15, 16, 23, 24
-					};
-					expec.insert(mine, mine+6);
-					break;
-				}
-				default:
-					throw AipsError();
-				}
-				cout << "number " << iter->first << endl;
-				AlwaysAssert(iter->second == expec, AipsError);
 			}
-
+			{
+				cout << "*** test getSpwIDPolIDToDataDescIDMap()" << endl;
+				std::map<std::pair<uInt, uInt>, Int> dataDescToPolID = md.getSpwIDPolIDToDataDescIDMap();
+				std::map<std::pair<uInt, uInt>, Int>::const_iterator iter;
+				std::map<std::pair<uInt, uInt>, Int>::const_iterator begin = dataDescToPolID.begin();
+				std::map<std::pair<uInt, uInt>, Int>::const_iterator end = dataDescToPolID.end();
+				for(
+					iter=begin; iter!=end; iter++
+				) {
+					std::pair<uInt, uInt> mypair = iter->first;
+					uInt spw = mypair.first;
+					uInt pol = mypair.second;
+					Int dataDesc = iter->second;
+					AlwaysAssert((Int)spw == dataDesc, AipsError);
+					AlwaysAssert(pol == (spw == 0 ? 1 : 0), AipsError);
+				}
+			}
 		}
+		{
+			cout << "*** test nPol()" << endl;
+			AlwaysAssert(md.nPol() == 2, AipsError);
+		}
+			cout << "*** test getSQLDSpw()" << endl;
+			std::set<uInt> res = md.getSQLDSpw();
+			AlwaysAssert(res.size() == 1 && *res.begin() == 3, AipsError);
 		{
 			cout << "*** cache size " << md.getCache() << endl;
 		}

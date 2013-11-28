@@ -204,6 +204,11 @@ public:
   // Construct the object from the value in a record.
   static ValueHolder fromRecord (const Record&, const RecordFieldId&);
 
+  // Compare two ValueHolder objects.
+  // They must have the same data type.
+  bool operator< (const ValueHolder& right) const
+    { return itsRep->operator< (*right.itsRep); }
+
   // Write the ValueHolder to an output stream.
   // Arrays are written as normal arrays using ArrayIO.h. 
   friend std::ostream& operator<< (std::ostream& os, const ValueHolder& vh)

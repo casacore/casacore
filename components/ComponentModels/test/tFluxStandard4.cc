@@ -131,6 +131,9 @@ int main() {
     expfds[0][5][1] = 45.454987278;       // SH 2012, 3C380, 300MHz
     Vector<Double> fluxUsed(4);
 
+    //dummy source direction
+    MDirection srcDir(MVDirection(Quantity(0.0, "rad"), Quantity(0.0, "rad")), MDirection::J2000);
+
 // test if the standard table exist
 /***
     cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
@@ -169,7 +172,7 @@ int main() {
      
       for(Int srcInd = srcNames.nelements(); srcInd--;){
         for(Int freqInd = freqs.nelements(); freqInd--;){
-          Bool foundStd = fluxStd.compute(srcNames[srcInd], freqs[freqInd],
+          Bool foundStd = fluxStd.compute(srcNames[srcInd], srcDir, freqs[freqInd],
                                           mtime, returnFlux, returnFluxErr);
           AlwaysAssert(foundStd, AipsError);
           cout << "Passed foundStd for " << qsScNames[scNum]

@@ -75,8 +75,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			     Vector<Int>& selectedIDs, Matrix<Int>& selectedChanIDs);
   int msSpwGramParseCommand (const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable, 
 			     const TableExprNode& colAsTEN,
-			     const String& command,Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans) ;
+			     const String& command,
+			     Vector<Int>& selectedIDs,
+			     Matrix<Int>& selectedChans,
+			     Vector<Int>& selectedDDIDs) ;
   
   // The yyerror function for the parser.
   // It throws an exception with the current token.

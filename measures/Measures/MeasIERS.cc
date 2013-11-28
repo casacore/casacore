@@ -230,15 +230,15 @@ void MeasIERS::openNote(CLOSEFUN fun) {
 }
 
 void MeasIERS::closeTables() {
-  if (sizeNote > 0) {
-    for (uInt i=sizeNote; i-1 != 0; --i) {
-      if (toclose[i-1] != 0) toclose[i-1]();
+  for (uInt i=nNote; i>0; --i) {
+    if (toclose[i-1] != 0) {
+      toclose[i-1]();
       toclose[i-1] = 0;
     }
-    delete [] toclose; toclose = 0;
-    sizeNote = 0;
-    nNote = 0;
   }
+  delete [] toclose; toclose = 0;
+  sizeNote = 0;
+  nNote = 0;
 }
 
 // Table handling

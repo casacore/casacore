@@ -61,6 +61,12 @@ public:
 		BOTH
 	};
 
+	enum SQLDSwitch {
+		SQLD_INCLUDE,
+		SQLD_EXCLUDE,
+		SQLD_ONLY
+	};
+
 	virtual ~MSMetaData();
 
 	// construct an object which loads metadata from the specified MS. If onDemand=False,
@@ -95,6 +101,9 @@ public:
 
 	// get number of spectral windows
 	virtual uInt nSpw(Bool includewvr) = 0;
+
+	// get number of polarization configurations
+	virtual uInt nPol() = 0;
 
 	// get the number of rows
 	virtual uInt nRows()  = 0;
@@ -156,19 +165,28 @@ public:
 	// get the antenna ID for the antenna with the specified name.
 	virtual vector<uInt> getAntennaIDs(const vector<String>& antennaName) = 0;
 
-	// get set of spectral windows used for TDM. These are windows that have
+	// get the antenna stations for the specified antenna IDs
+	virtual vector<String> getAntennaStations(const vector<uInt>& antennaIDs) = 0;
+
+	// get the antenna stations for the specified antenna names
+	virtual vector<String> getAntennaStations(const vector<String>& antennaNames) = 0;
+
+	// ALMA-specific. Get set of spectral windows used for TDM. These are windows that have
 	// 64, 128, or 256 channels
 	virtual std::set<uInt> getTDMSpw() = 0;
 
-	// get set of spectral windows used for FDM. These are windows that do not
+	// ALMA-specific. Get set of spectral windows used for FDM. These are windows that do not
 	// have 1, 4, 64, 128, or 256 channels.
 	virtual std::set<uInt> getFDMSpw() = 0;
 
-	// get spectral windows that have been averaged. These are windows with 1 channel.
+	// ALMA-specific. Get spectral windows that have been averaged. These are windows with 1 channel.
 	virtual std::set<uInt> getChannelAvgSpw() = 0;
 
-	// Get the spectral window set used for WVR measurements. These have 4 channels each.
+	// ALMA-specific. Get the spectral window set used for WVR measurements. These have 4 channels each.
 	virtual std::set<uInt> getWVRSpw() = 0;
+
+	// ALMA-specific. Get the square law detector (total power) spectral windows.
+	virtual std::set<uInt> getSQLDSpw() = 0;
 
 	// Get the scans which fail into the specified time range (center-tol to center+tol)
 	virtual std::set<Int> getScansForTimes(const Double center, const Double tol) = 0;
@@ -212,6 +230,12 @@ public:
 	// get the field names associated with the specified field IDs. If <src>fieldIDs</src>
 	// is empty, a list of all field names will be returned.
 	virtual vector<String> getFieldNamesForFieldIDs(const vector<uInt>& fieldIDs) = 0;
+
+	virtual std::map<String, std::set<Int> > getIntentToFieldsMap() = 0;
+
+	virtual std::map<String, std::set<Int> > getIntentToScansMap() = 0;
+
+	virtual std::map<String, std::set<uInt> > getIntentToSpwsMap() = 0;
 
 	// Get the fields which fail into the specified time range (center-tol to center+tol)
 	virtual std::set<Int> getFieldsForTimes(Double center, Double tol) = 0;
@@ -284,7 +308,7 @@ public:
 
 	virtual vector<Quantum<Vector<Double> > > getChanFreqs() = 0;
 
-	virtual vector<vector<Double> > getChanWidths() = 0;
+	virtual vector<Quantum<Vector<Double> > > getChanWidths() = 0;
 
 	virtual vector<Int> getNetSidebands() = 0;
 
@@ -296,13 +320,15 @@ public:
 
 	virtual vector<uInt> getBBCNos() = 0;
 
-	virtual std::map<uInt, std::set<uInt> > getBBCNosToSpwMap() = 0;
+	virtual std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch) = 0;
 
 	virtual vector<String> getSpwNames() = 0;
 
 	// the returned map are the average intervals for each spectral window for the
 	// specified scan
 	virtual std::map<uInt, Double> getAverageIntervalsForScan(Int scan) = 0;
+
+	virtual std::map<std::pair<uInt, uInt>, Int> getSpwIDPolIDToDataDescIDMap() = 0;
 
 protected:
 
@@ -313,7 +339,7 @@ protected:
 	struct SpwProperties {
 		Double bandwidth;
 		Quantum<Vector<Double> > chanfreqs;
-		vector<Double> chanwidths;
+		Quantum<Vector<Double> > chanwidths;
 		Int netsideband;
 		Quantity meanfreq;
 		uInt nchans;
@@ -339,7 +365,7 @@ protected:
 
 	static vector<SpwProperties>  _getSpwInfo(
 		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
-		std::set<uInt>& wvrSpw, const MeasurementSet& ms
+		std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw, const MeasurementSet& ms
 	);
 
 	static Vector<Int> _getDataDescIDs(const MeasurementSet& ms);
@@ -351,6 +377,14 @@ protected:
 	static Vector<Int> _getArrayIDs(const MeasurementSet& ms);
 
 	static std::map<Int, uInt> _getDataDescIDToSpwMap(const MeasurementSet& ms);
+
+	static std::map<Int, uInt> _getDataDescIDToPolIDMap(const MeasurementSet& ms);
+
+	// The first member of the pair is spwID, the second is polID.
+	static std::map<std::pair<uInt, uInt>, Int> _getSpwIDPolIDToDataDescIDMap(
+		const std::map<Int, uInt>& dataDescIDToSpwMap,
+		const std::map<Int, uInt>& dataDescIDToPolIDMap
+	);
 
 	static Vector<Int> _getFieldIDs(const MeasurementSet& ms);
 
@@ -392,6 +426,10 @@ protected:
 	static vector<Quantum<Vector<Double> > > _getAntennaOffsets(
 		const vector<MPosition>& antennaPositions,
 		const MPosition& observatoryPosition
+	);
+
+	static vector<String> _getAntennaStationNames(
+		const MeasurementSet& ms
 	);
 
 	static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);

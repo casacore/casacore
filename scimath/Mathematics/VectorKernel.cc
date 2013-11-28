@@ -103,7 +103,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 
 // kernel always shape 3
 
-      nPixels = 3;
+      /*nPixels = 3;
       kernel.resize(nPixels);
       if (peakIsUnity)  {
          kernel(0) = 0.5;
@@ -113,7 +113,26 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
          kernel(0) = 0.25;
          kernel(1) = 0.5;
          kernel(2) = 0.25;
-      }
+      }*/
+	   nPixels = shape;
+	   kernel.resize( nPixels );
+	   int nextIndex = shape + 1;
+	   Double normalizer = 1.0 / ( nextIndex );
+	   if ( peakIsUnity ){
+		   normalizer = 0.5;
+	   }
+
+	   double piValue = 4 * atan( 1 );
+	   int middle = (shape-1)/2;
+	   int endIndex = nextIndex / 2;
+	   for ( int i = 0; i < endIndex; i++ ){
+		   Double xValue = endIndex - i;
+		   Double angleValue = ( 2 * piValue * xValue) / nextIndex;
+		   double value = 1-cos( angleValue);
+		   value = value * normalizer;
+		   kernel[middle - i] = value;
+		   kernel[middle + i] = value;
+	   }
    }
 //
    return kernel;

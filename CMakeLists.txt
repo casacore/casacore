@@ -74,16 +74,16 @@ option (USE_STACKTRACE"" NO)
 # Casacore uses longlong, so no warnings for it.
 # Clang gives warning on bison generated code; disable unneeded-internal-declaration.
 if (NOT CMAKE_CXX_FLAGS)
-    set (CMAKE_CXX_FLAGS "-W -Wall -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long")
-#SET(CMAKE_CXX_FLAGS="-g -O0 -Wall -W -Wshadow -Wunused-variable
+    set (CMAKE_CXX_FLAGS "-Wextra -Wall -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long")
+#SET(CMAKE_CXX_FLAGS="-g -O0 -Wall -Wextra -Wshadow -Wunused-variable
 # -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers
 # -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs
-# -ftest-coverage -Wold-style-cast -Weffc++")
+# -ftest-coverage -Wold-style-cast -Weffc++ -Wconversion")
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unneeded-internal-declaration")
     endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
-##    set (CMAKE_CXX_FLAGS "-W -Wall")
+##    set (CMAKE_CXX_FLAGS "-Wextra -Wall")
 endif (NOT CMAKE_CXX_FLAGS)
 
 # Set build type if not given.

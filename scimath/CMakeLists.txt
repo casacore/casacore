@@ -19,6 +19,7 @@ Mathematics/Interpolate2D.cc
 Mathematics/FFTPack.cc
 Mathematics/FFTW.cc
 Mathematics/FFTServer.cc
+Mathematics/Geometry.cc
 Mathematics/NNLSMatrixSolver.cc
 Mathematics/MatrixSolver.cc
 Mathematics/SquareMatrix2.cc
@@ -235,6 +236,7 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
+Mathematics/Geometry.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc
 Mathematics/HistAcc.h

@@ -1093,55 +1093,129 @@ Double velInc (Double dF, Double f0, MDoppler::Types velType)
 
 void refConv ()
 //
-// Test conversion with reference change
+// Test conversion with reference change 
 //
 {
-   Double f0, finc, refchan, restFreq;
-   SpectralCoordinate lc = makeLinearCoordinate(MFrequency::LSRK, f0, finc, refchan, restFreq);
-//
+  { // on a linear coordinate
+
+    Double f0, finc, refchan, restFreq;
+    SpectralCoordinate lc = makeLinearCoordinate(MFrequency::LSRK, f0, finc, refchan, restFreq);
+    //
+    Vector<Double> pixel = lc.referencePixel().copy();
+    Vector<Double> world;
+    //
+    if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
+    }
+    //
+    Quantum<Double> t(50237.29, Unit(String("d")));
+    MVEpoch t2(t);
+    MEpoch epoch(t2);
+    //
+    MPosition pos;
+    MeasTable::Observatory(pos, String("ATCA"));
+    //
+    Quantum<Double> lon(0.0,Unit(String("rad")));
+    Quantum<Double> lat(-35.0,Unit(String("deg")));
+    MDirection dir(lon, lat, MDirection::J2000);
+    MFrequency::Types type = MFrequency::BARY;
+    if (!lc.setReferenceConversion(type, epoch, pos, dir)) {
+      throw(AipsError("setReferenceConversion failed"));
+    }
+    //
+    if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld + reference conversion (1) failed because ") + lc.errorMessage()));
+    }
+    //
+    Vector<Double> pixel2;
+    if (!lc.toPixel(pixel2, world)) {
+      throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
+    }
+    //
+    if (!casa::allNear(pixel2, pixel, 1e-6)) {
+      throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
+    }                                       
+    //
+    MFrequency::Types type2;
+    MEpoch epoch2;
+    MPosition pos2;
+    MDirection dir2;
+    lc.getReferenceConversion(type2, epoch2, pos2, dir2);
+    //
+    AlwaysAssert(type2==MFrequency::BARY, AipsError);
+    AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
+    AlwaysAssert(casa::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
+    AlwaysAssert(casa::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
+    
+    Vector<Double> baryFreq;
+    lc.toWorld(baryFreq, pixel);
+    
+    AlwaysAssert(lc.transformFrequencySystem(MFrequency::BARY, epoch, pos, dir), AipsError);
+    
+    AlwaysAssert(casa::allNear(baryFreq, lc.referenceValue(), 1e-6), AipsError);
+    
+  }
+  { // on a non-linear coordinate
+
+   Double restFreq;
+   Vector<Double> freqs;
+   SpectralCoordinate lc = makeNonLinearCoordinate(MFrequency::LSRK, freqs, restFreq);
+   //
    Vector<Double> pixel = lc.referencePixel().copy();
    Vector<Double> world;
-//
+   //
    if (!lc.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
+     throw(AipsError(String("toWorld conversion (2) failed because ") + lc.errorMessage()));
    }
-//
+   //
    Quantum<Double> t(50237.29, Unit(String("d")));
    MVEpoch t2(t);
    MEpoch epoch(t2);
-//
+   //
    MPosition pos;
    MeasTable::Observatory(pos, String("ATCA"));
-//
+   //
    Quantum<Double> lon(0.0,Unit(String("rad")));
    Quantum<Double> lat(-35.0,Unit(String("deg")));
    MDirection dir(lon, lat, MDirection::J2000);
-   MFrequency::Types type = MFrequency::BARY;
+   MFrequency::Types type = MFrequency::CMB;
    if (!lc.setReferenceConversion(type, epoch, pos, dir)) {
-      throw(AipsError("setReferenceConversion failed"));
+     throw(AipsError("setReferenceConversion failed in nonlinear coordinate"));
    }
-//
+   //
    if (!lc.toWorld(world, pixel)) {
-      throw(AipsError(String("toWorld + reference conversion (1) failed because ") + lc.errorMessage()));
+     throw(AipsError(String("toWorld + reference conversion (2) failed because ") + lc.errorMessage()));
    }
-//
+   //
    Vector<Double> pixel2;
    if (!lc.toPixel(pixel2, world)) {
-      throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
+     throw(AipsError(String("toPixel + reference conversion (2) failed because ") + lc.errorMessage()));
    }
-//
-   if (!casa::allNear(pixel2, pixel, 1e-6)) {
-      throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
+   //
+   if (!(fabs(pixel2[0]-pixel[0])<1e-6)) {
+     throw(AipsError("Coordinate + reference conversion reflection 2 failed"));
    }                                       
-//
+   //
    MFrequency::Types type2;
    MEpoch epoch2;
    MPosition pos2;
    MDirection dir2;
    lc.getReferenceConversion(type2, epoch2, pos2, dir2);
-//
-   AlwaysAssert(type2==MFrequency::BARY, AipsError);
+   //
+   AlwaysAssert(type2==MFrequency::CMB, AipsError);
    AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
    AlwaysAssert(casa::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
    AlwaysAssert(casa::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
+
+   Vector<Double> cmbFreq;
+   lc.toWorld(cmbFreq, pixel);
+
+   AlwaysAssert(lc.transformFrequencySystem(MFrequency::CMB, epoch, pos, dir), AipsError);
+
+   Vector<Double> cmbFreq2;
+   lc.toWorld(cmbFreq2, pixel);
+
+   AlwaysAssert(casa::allNear(cmbFreq, lc.referenceValue(), 1e-6), AipsError);
+
+  }
 }

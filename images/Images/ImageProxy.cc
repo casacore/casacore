@@ -1228,8 +1228,10 @@ namespace casa { //# name space casa begins
     // axes to be regridded and the input image Coordinate for axes not
     // to be regridded
     LogIO log;
+    set<Coordinate::Type> regridCoords;
     CoordinateSystem cSys =
-      ImageRegrid<T>::makeCoordinateSystem (log, cSysTo, cSysFrom, axes2);
+      ImageRegrid<T>::makeCoordinateSystem (log, regridCoords,
+                                            cSysTo, cSysFrom, axes2);
     if (cSys.nPixelAxes() != outShape.nelements()) {
       throw AipsError("The number of pixel axes in the output shape and "
                       "Coordinate System must be the same");

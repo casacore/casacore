@@ -579,10 +579,13 @@ public:
     // The reference pixel remains the same and the conversion is
     // exact for the reference pixel and in general becomes less accurate
     // as distance from reference pixel increases. The latitude like and
-    // the longitude like pixel increments are preserved.  Conversions for which require extra
-    // information such as epoch and position are not supported. The <src>angle</src>
-    // parameter is the angle through which this coordinate had to be rotated clockwise
-    // to produce the new coordinate.
+    // the longitude like pixel increments are preserved.
+    // Conversions for which require extra information such as epoch and
+    // position are not supported. The <src>angle</src> parameter is the angle
+    // through which this coordinate had to be rotated clockwise to produce
+    // the new coordinate.
+    DirectionCoordinate convert(Quantity& angle,
+                                MDirection::Types directionType) const;
 
     // Set the projection.
     void setProjection(const Projection&);
@@ -590,9 +593,8 @@ public:
     // Set the base (as opposed to conversion) reference frame.
     void setReferenceFrame(const MDirection::Types rf);
 
-    // Convert the coordinate to another reference frame.
-    DirectionCoordinate convert(Quantity& angle,
-                                MDirection::Types directionType) const;
+    // Are the pixels square?
+    Bool hasSquarePixels() const;
 
 private:
     // Direction type

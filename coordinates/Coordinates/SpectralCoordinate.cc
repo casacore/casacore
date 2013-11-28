@@ -1028,7 +1028,8 @@ MFrequency::Types SpectralCoordinate::frequencySystem(Bool showConversion) const
     }         
 }
 
-void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
+void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type,
+                                             Bool verbose)
 {
     if (type==type_p) return;
 //   
@@ -1050,7 +1051,7 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 // the current conversion, and demand the user re-issues the
 // setReferenceConversion function
 
-   if (oldType != conversionType_p) {
+    if (verbose  &&  oldType != conversionType_p) {
       LogIO os(LogOrigin("SpectralCoordinate", "setFrequencySystem"));
       os << LogIO::WARN << "Resetting the conversion frequency system " << MFrequency::showType(conversionType_p) << endl;
       os << "to the new native frequency system " << MFrequency::showType(type_p) << endl;
@@ -1059,6 +1060,63 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 //
    deleteConversionMachines();
    conversionType_p = type_p;
+}
+
+Bool SpectralCoordinate::transformFrequencySystem(MFrequency::Types type,
+                                                  const MEpoch& epoch,
+                                                  const MPosition& position,
+                                                  const MDirection& direction)
+{
+  Bool rval=True;
+
+  MFrequency::Types nativeCtype = frequencySystem(False);
+
+  if (type != nativeCtype) {
+
+    MFrequency::Types origType; // original type of the conversion layer
+    MEpoch origEpoch;
+    MPosition origPosition;
+    MDirection origDirection;
+    getReferenceConversion(origType, origEpoch, origPosition, origDirection);
+    // use the reference conversion layer to do the transformation 
+    if(origType!=type){
+      if(!setReferenceConversion(type, epoch, position, direction)){
+	setReferenceConversion(origType, origEpoch, origPosition, origDirection);
+	return False;
+      }
+    }
+
+    if(_tabular.get()){ // we have a tabular spectral coordinate
+      
+      Vector<String> oldunits(worldAxisUnits());
+      Vector<String> tmpunits(1,"Hz"); // need freqs in Hz for setTabulatedFrequencies
+      setWorldAxisUnits(tmpunits);
+      Vector<Double> tpixels  = _tabular->pixelValues();
+      Vector<Double> newFreqs(tpixels.size());
+      toWorld(newFreqs, tpixels);
+      _setTabulatedFrequencies(newFreqs);
+      setWorldAxisUnits(oldunits);
+
+    }
+    else{ // not tabular: only need to change ctype, crval, cdelt
+      Vector<Double> newCrval(1,0.);
+      toWorld(newCrval[0], referencePixel()[0]);
+      
+      Double tmpWorld=0.; 
+      toWorld(tmpWorld, referencePixel()[0]+1);
+      Vector<Double> newCdelt(1, tmpWorld-newCrval[0]);
+      
+      setReferenceValue(newCrval);
+      setIncrement(newCdelt); 
+    }
+
+    setFrequencySystem(type, False);  
+    if(origType!=type){
+      rval = setReferenceConversion(origType, origEpoch, origPosition, origDirection);
+    }
+  }
+
+  return rval;
 }
 
 

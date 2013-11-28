@@ -89,7 +89,7 @@ public:
   };
 
   // Returns an enum of srcName
-  FSS::Source srcNameToEnum(const String& srcName) const;
+  FSS::Source srcNameToEnum(const String& srcName, const MDirection& dir) const;
 
   // Returns srcName string of the srcEnum
   String EnumToSrcName(const FSS::Source srcEnum) const;

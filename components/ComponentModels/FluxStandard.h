@@ -125,12 +125,14 @@ class FluxStandard
   ~FluxStandard();
 
   // Compute the flux density for a specified source at a specified frequency
-  Bool compute (const String& sourceName, const MFrequency& mfreq, const MEpoch& mtime,
+  Bool compute (const String& sourceName, const MDirection& sourceDir, const MFrequency& mfreq, const MEpoch& mtime,
 		Flux<Double>& value, Flux<Double>& error);
 
   // Compute the flux densities and their uncertainties for a specified source
   // at a set of specified frequencies.
-  Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
+  Bool compute(const String& sourceName, 
+               const MDirection& sourceDir,
+               const Vector<MFrequency>& mfreqs,
                const MEpoch& mtime,
 	       Vector<Flux<Double> >& values,
                Vector<Flux<Double> >& errors,
@@ -141,6 +143,7 @@ class FluxStandard
   // frequencies for channels in spectral window spw, and values and errors are
   // arranged the same way.
   Bool compute(const String& sourceName,
+               const MDirection& sourceDir,
                const Vector<Vector<MFrequency> >& mfreqs,
                const MEpoch& mtime,
                Vector<Vector<Flux<Double> > >& values,

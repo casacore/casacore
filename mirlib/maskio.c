@@ -17,6 +17,9 @@
 /*    rjs  19apr97   Handle FORTRAN LOGICALs better. Some tidying.      */
 /************************************************************************/
 
+void bug_c(char s,char * m);
+void bugno_c(char s, int m);
+
 #define BUG(sev,a)   bug_c(sev,a)
 #define ERROR(sev,a) bug_c(sev,((void)sprintf a,message))
 #define CHECK(x) if(x) bugno_c('f',x)
@@ -66,9 +69,7 @@ typedef struct {int item;
 		} MASK_INFO;
 
 /************************************************************************/
-char *mkopen_c(tno,name,status)
-char *name,*status;
-int tno;
+char *mkopen_c(int tno, char * name, char * status)
 /*
   This opens a mask item, and readies it for access.
 
@@ -235,7 +236,7 @@ int offset,n,*flags,nsize,mode;
 /************************************************************************/
 void mkwrite_c(handle,mode,flags,offset,n,nsize)
 char *handle;
-int offset,n,*flags,nsize;
+int offset,n,*flags,mode, nsize;
 /*
 ------------------------------------------------------------------------*/
 {

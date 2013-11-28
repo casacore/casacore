@@ -39,10 +39,10 @@
 #include <tables/Tables/TableProxy.h>
 #include <tables/Tables/TableRecord.h>
 
-#include <iomanip>
+#include <casa/Utilities/Regex.h>
 
-// DEBUG ONLY
 /*
+// DEBUG ONLY
 #include <casa/Arrays/ArrayIO.h>
 #include <iomanip>
 #include <casa/OS/PrecTimer.h>
@@ -154,6 +154,15 @@ vector<Quantum<Vector<Double> > > MSMetaData::_getAntennaOffsets(
 	return antennaOffsets;
 }
 
+vector<String> MSMetaData::_getAntennaStationNames(
+	const MeasurementSet& ms
+) {
+	String antStationColName = MSAntenna::columnName(MSAntennaEnums::STATION);
+	return ROScalarColumn<String>(
+		ms.antenna(), antStationColName
+	).getColumn().tovector();
+}
+
 vector<String> MSMetaData::_getAntennaNames(
 	map<String, uInt>& namesToIDs, const MeasurementSet& ms
 ) {
@@ -237,6 +246,29 @@ std::map<Int, uInt> MSMetaData::_getDataDescIDToSpwMap(const MeasurementSet& ms)
 	return _toUIntMap(spwCol.getColumn());
 }
 
+std::map<Int, uInt> MSMetaData::_getDataDescIDToPolIDMap(const MeasurementSet& ms) {
+	String spwColName = MSDataDescription::columnName(MSDataDescriptionEnums::POLARIZATION_ID);
+	ROScalarColumn<Int> spwCol(ms.dataDescription(), spwColName);
+	return _toUIntMap(spwCol.getColumn());
+}
+
+std::map<std::pair<uInt, uInt>, Int> MSMetaData::_getSpwIDPolIDToDataDescIDMap(
+	const std::map<Int, uInt>& dataDescIDToSpwMap,
+	const std::map<Int, uInt>& dataDescIDToPolIDMap
+) {
+	std::map<Int, uInt>::const_iterator i1 = dataDescIDToSpwMap.begin();
+	std::map<Int, uInt>::const_iterator end = dataDescIDToSpwMap.end();
+	std::map<std::pair<uInt, uInt>, Int> ret;
+	while (i1 != end) {
+		Int dataDesc = i1->first;
+		uInt spw = i1->second;
+		uInt polID = dataDescIDToPolIDMap.at(dataDesc);
+		ret[std::make_pair(spw, polID)] = dataDesc;
+		i1++;
+	}
+	return ret;
+}
+
 Vector<Int> MSMetaData::_getFieldIDs(const MeasurementSet& ms) {
 	String fieldIdColName = MeasurementSet::columnName(MSMainEnums::FIELD_ID);
 	return ROScalarColumn<Int>(ms, fieldIdColName).getColumn();
@@ -286,14 +318,18 @@ ArrayColumn<Bool>* MSMetaData::_getFlags(const MeasurementSet& ms) {
 
 vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo(
 	std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
-	std::set<uInt>& wvrSpw, const MeasurementSet& ms
+	std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw, const MeasurementSet& ms
 ) {
+	static const Regex rxSqld("BB_[0-9]#SQLD");
 	ROMSSpWindowColumns spwCols(ms.spectralWindow());
 	Vector<Double> bws = spwCols.totalBandwidth().getColumn();
 	ArrayColumn<Double> cfCol = spwCols.chanFreq();
 	Array<String> cfUnits;
 	cfCol.keywordSet().get("QuantumUnits", cfUnits);
 	ArrayColumn<Double> cwCol = spwCols.chanWidth();
+	Array<String> cwUnits;
+	cwCol.keywordSet().get("QuantumUnits", cwUnits);
+
 	Vector<Int> nss  = spwCols.netSideband().getColumn();
 	Vector<String> name = spwCols.name().getColumn();
 	Bool myHasBBCNo = hasBBCNo(ms);
@@ -312,13 +348,16 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo(
 		spwInfo[i].edgechans = freqLimits;
 		tmp.resize(0);
 		cwCol.get(i, tmp);
-		spwInfo[i].chanwidths = tmp.tovector();
+		spwInfo[i].chanwidths = Quantum<Vector<Double> >(tmp, *cwUnits.begin());
 		// coded this way in ValueMapping
 		spwInfo[i].netsideband = nss[i] == 2 ? 1 : -1;
 		spwInfo[i].nchans = tmp.size();
 		spwInfo[i].name = name[i];
 		if (myHasBBCNo) {
 			spwInfo[i].bbcno = bbcno[i];
+		    if(name[i].contains(rxSqld)) {
+		    	sqldSpw.insert(i);
+		    }
 		}
 		if (spwInfo[i].nchans==64 || spwInfo[i].nchans==128 || spwInfo[i].nchans==256) {
 			tdmSpw.insert(i);
@@ -440,11 +479,7 @@ Quantity MSMetaData::_getTotalExposureTime(
 	// each row represents a unique baseline, data description ID, and time combination
 	uInt nrows = result.nrow();
 	for (uInt i=0; i<nrows; i++) {
-		Vector<Double> channelWidths(
-			Vector<Double>(
-				spwProperties[dataDescToSpwIdMap.find(ddIDs[i])->second].chanwidths
-			)
-		);
+		Quantum<Vector<Double> > channelWidths = spwProperties[dataDescToSpwIdMap.find(ddIDs[i])->second].chanwidths;
 		Matrix<Bool> flagsMatrix(ArrayColumn<Bool>(result, "FLAG").get(i));
 		uInt nCorrelations = flagsMatrix.nrow();
 		Double denom = (timeToBWMap.find(times[i])->second)*maxNBaselines*nCorrelations;
@@ -452,7 +487,7 @@ Quantity MSMetaData::_getTotalExposureTime(
 			Vector<Bool> goodData = ! flagsMatrix.row(corr);
 			if (anyTrue(goodData)) {
 				MaskedArray<Double> flaggedChannelWidths(
-					channelWidths, goodData, True
+					channelWidths.getValue("Hz"), goodData, True
 				);
 				Double effectiveBW = sum(flaggedChannelWidths);
 				totalExposure += exposures[i]*effectiveBW/denom;
@@ -728,7 +763,7 @@ void MSMetaData::_getUnflaggedRowStats(
 		//if (! *flagIter) {
 			SpwProperties spwProp = spwInfo[dataDescIDToSpwMap.find(*dIter)->second];
 			Vector<Double> channelWidths(
-				Vector<Double>(spwProp.chanwidths)
+				Vector<Double>(spwProp.chanwidths.getValue("Hz"))
 			);
 			const Matrix<Bool>& flagsMatrix(flags.get(i));
             count += flagsMatrix.size();

@@ -220,10 +220,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Matrix<Int> chanlist=thisSelection.getChanList();
     Matrix<Int> baselinelist=thisSelection.getBaselineList();
     Vector<Int> ddIDList=thisSelection.getDDIDList();
+    Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
     Vector<Int> stateIDList=thisSelection.getStateObsModeList();
     Vector<Int> observationIDList=thisSelection.getObservationList();
     OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
     OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+    Vector<Int> allDDIDList;
+    if (ddIDList.nelements() == 0) allDDIDList = spwDDIDList;
+    else if (spwDDIDList.nelements() == 0) allDDIDList = ddIDList;
+    else allDDIDList = set_intersection(ddIDList, spwDDIDList);
 
     retval.define("spw", spwlist);
     retval.define("field", fieldlist);
@@ -232,7 +237,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     retval.define("antenna2", antenna2list);
     retval.define("baselines",baselinelist);
     retval.define("channel", chanlist);
-    retval.define("dd",ddIDList);
+    retval.define("poldd",ddIDList);
+    retval.define("spwdd",spwDDIDList);
+    retval.define("dd",allDDIDList);
     retval.define("stateid",stateIDList);
     retval.define("observationid",observationIDList);
 

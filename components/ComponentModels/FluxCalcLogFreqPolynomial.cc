@@ -69,9 +69,9 @@ Bool FluxCalcLogFreqPolynomial::operator()(Flux<Double>& value,
   return true;
 }
 
-Bool FluxCalcLogFreqPolynomial::setSource(const String& sourceName)
+Bool FluxCalcLogFreqPolynomial::setSource(const String& sourceName, const MDirection& sourceDir)
 {
-  Bool success = FluxCalcVQS::setSource(sourceName);
+  Bool success = FluxCalcVQS::setSource(sourceName, sourceDir);
 
   if(success)
     success = setSourceCoeffs();
@@ -149,9 +149,9 @@ Bool FluxCalcLogFreqPolynomialSH :: operator()( Flux<Double>& value,
 
   return true;
 }
-Bool FluxCalcLogFreqPolynomialSH::setSource(const String& sourceName)
+Bool FluxCalcLogFreqPolynomialSH::setSource(const String& sourceName, const MDirection& sourceDir)
 {
-  Bool success = FluxCalcVQS::setSource(sourceName);
+  Bool success = FluxCalcVQS::setSource(sourceName, sourceDir);
 
   if(success)
     success = setSourceCoeffs();

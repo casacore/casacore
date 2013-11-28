@@ -396,9 +396,9 @@ Int64 ValueHolderRep::asInt64() const
   case TpInt64:
     return itsInt64;
   case TpFloat:
-    return itsFloat;
+    return static_cast<Int64> (itsFloat);
   case TpDouble:
-    return itsDouble;
+    return static_cast<Int64> (itsDouble);
   default:
     ;
   }
@@ -1188,6 +1188,30 @@ ostream& ValueHolderRep::write (ostream& os) const
     break;
   }
   return os;
+}
+
+bool ValueHolderRep::operator< (const ValueHolderRep& right) const
+{
+  AlwaysAssert (itsType == right.itsType, AipsError);
+  switch (itsType) {
+  case TpBool:
+    return itsBool < right.itsBool;
+  case TpUChar:
+  case TpShort:
+  case TpUShort:
+  case TpInt:
+  case TpUInt:
+  case TpInt64:
+    return itsInt64 < right.itsInt64;
+  case TpFloat:
+    return itsFloat < right.itsFloat;
+  case TpDouble:
+    return itsDouble < right.itsDouble;
+  case TpString:
+    return *static_cast<String*>(itsPtr) < *static_cast<String*>(right.itsPtr);
+  default:
+    throw AipsError ("ValueHolder::operator< - unsupported data type");
+  }
 }
 
 } //# NAMESPACE CASA - END

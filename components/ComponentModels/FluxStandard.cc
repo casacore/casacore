@@ -47,8 +47,11 @@
 #include <casa/sstream.h>
 #include <casa/iomanip.h>
 #include <measures/Measures/MDirection.h>
+#include <measures/Measures/MCDirection.h>
+#include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasTable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -75,7 +78,9 @@ FluxStandard::~FluxStandard()
 
 //----------------------------------------------------------------------------
 
-Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
+Bool FluxStandard::compute (const String& sourceName, 
+                            const MDirection& sourceDir,
+                            const MFrequency& mfreq,
                             const MEpoch& mtime,
 			    Flux <Double>& value, Flux <Double>& error)
 {
@@ -85,7 +90,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
   Vector<MFrequency> mfreqs(1);
   
   mfreqs[0] = mfreq;
-  Bool success = compute(sourceName, mfreqs, mtime, fluxes, errors);
+  Bool success = compute(sourceName, sourceDir, mfreqs, mtime, fluxes, errors);
   
   value = fluxes[0];
   error = errors[0];
@@ -93,6 +98,7 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
 }
 
 Bool FluxStandard::compute(const String& sourceName, 
+                           const MDirection& sourceDir,
                            const Vector<Vector<MFrequency> >& mfreqs,
                            const MEpoch& mtime,
                            Vector<Vector<Flux<Double> > >& values,
@@ -102,13 +108,14 @@ Bool FluxStandard::compute(const String& sourceName,
   uInt nspws = mfreqs.nelements();
 
   for(uInt spw = 0; spw < nspws; ++spw)
-    success &= compute(sourceName, mfreqs[spw], mtime, values[spw], errors[spw],
+    success &= compute(sourceName, sourceDir, mfreqs[spw], mtime, values[spw], errors[spw],
                        spw == 0);
 
   return success;
 }
 
 Bool FluxStandard::compute(const String& sourceName, 
+                           const MDirection& sourceDir,
                            const Vector<MFrequency>& mfreqs,
                            const MEpoch& mtime,
                            Vector<Flux<Double> >& values,
@@ -193,7 +200,17 @@ Bool FluxStandard::compute(const String& sourceName,
      << LogIO::POST;
 
   // Set the source or fail.
-  if(!fluxStdPtr->setSource(sourceName)){
+  // setSource needs J2000 coordinates for source matching by position
+  MDirection sourceDirJ2000;
+  if (sourceDir.getRefString()!="J2000") {
+    MeasFrame frame(mtime);
+    MDirection::Ref outref(MDirection::J2000, frame);
+    sourceDirJ2000 = MDirection::Convert(sourceDir, outref)(); 
+  }
+  else {
+    sourceDirJ2000 = sourceDir;
+  }   
+  if(!fluxStdPtr->setSource(sourceName,sourceDirJ2000)){
     if(verbose)
       os << LogIO::SEVERE
          << sourceName << " is not recognized by " << standardName(itsFluxScale)
@@ -244,7 +261,7 @@ Bool FluxStandard::computeCL(const String& sourceName,
   Bool success = False;
 
   if(itsFluxScale < FluxStandard::HAS_RESOLUTION_INFO){
-    if(this->compute(sourceName, mfreqs, mtime, values, errors)){
+    if(this->compute(sourceName, position, mfreqs, mtime, values, errors)){
       // Create a point component with the specified flux density.
       MDirection dummy;
       PointShape point(position.getValue().separation(dummy.getValue()) < 1e-7 &&

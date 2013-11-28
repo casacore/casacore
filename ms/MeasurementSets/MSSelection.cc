@@ -543,7 +543,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		      if (msSpwGramParseCommand(msLike->spectralWindow(), 
 						msLike->dataDescription(),
 						colAsTEN, spwExpr_p,
-						spwIDs_p, chanIDs_p) == 0)
+						spwIDs_p, chanIDs_p,spwDDIDs_p) == 0)
 			node = *(msSpwGramParseNode());
 		    }
 		  break;
@@ -1115,9 +1115,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	
 	for(uInt targetRow=0; targetRow<nrows; targetRow++)
 	  {
-	    if (chanIDList(targetRow,ncols-1) == 0) {
+	    if (chanIDList(targetRow,ncols-1) == 0)
 	      chanIDList(targetRow,ncols-1)=defaultStep;
-            }
 	    // if (chanIDList(targetRow,ncols-2) == chanIDList(targetRow,ncols-3)) // Stop == Step
 	    //   chanIDList(targetRow,ncols-1)=0;
 	  }

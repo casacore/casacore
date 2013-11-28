@@ -26,7 +26,10 @@
 #include <components/ComponentModels/FluxStdSrcs.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/String.h>
+#include <casa/System/Aipsrc.h>
 #include <measures/Measures/MDirection.h>
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/ScalarColumn.h>
 
 // Handy for passing anonymous arrays to functions.
 #include <scimath/Mathematics/RigidVector.h>
@@ -78,7 +81,7 @@ FluxStdSrcs::FluxStdSrcs()
 
 FluxStdSrcs::~FluxStdSrcs(){ }
 
-FluxStdSrcs::Source FluxStdSrcs::srcNameToEnum(const String& srcName) const
+FluxStdSrcs::Source FluxStdSrcs::srcNameToEnum(const String& srcName, const MDirection& dir) const
 {
   FSS::Source srcEnum = FSS::UNKNOWN_SOURCE;  
   String tmpSrcName(srcName);
@@ -93,6 +96,57 @@ FluxStdSrcs::Source FluxStdSrcs::srcNameToEnum(const String& srcName) const
     }
     if(srcEnum != FSS::UNKNOWN_SOURCE)
       break;
+  }
+  // now try cone search usng the flux calibrator table
+  if(srcEnum == FSS::UNKNOWN_SOURCE) {
+      LogIO os(LogOrigin("FluxStdSrcs", "srcNameToEnum"));
+      String fcaldatapath;
+      String tabName("fluxcalibrator.data");
+      if(!Aipsrc::findDir(fcaldatapath,"./"+tabName)) {
+          if(!Aipsrc::findDir(fcaldatapath, Aipsrc::aipsRoot()+"/data/nrao/VLA/standards/"+tabName)) {
+              //LogIO os(LogOrigin("FluxStdSrcs", "srcNameToEnum", WHERE));
+               os << LogIO::NORMAL
+                  << "No flux calibrator table: " <<  tabName
+                  << " ./ or in ~/data/nrao/VLA/standards/. Skip a cone search "
+                  << LogIO::POST;
+               return srcEnum;
+          }
+      }
+      // input source coordinates (input dir must be in J2000)
+      Quantum<Vector<Double> > radec = dir.getAngle();
+      String srcRA = String::toString(radec.getValue("rad")[0])+"rad";
+      String srcDec = String::toString(radec.getValue("rad")[1])+"rad";
+      //String radius("0.0001454441rad"); //search radius is set to 30arcsec
+      String radius("4.8481367e-06rad"); //search radius is set to 1arcsec
+      String taql="select Name, RA_J2000, Dec_J2000 from "+fcaldatapath+
+		 " where anycone([RA_J2000,Dec_J2000]"+",["+srcRA+","+srcDec+"],"+radius+")";
+      //cerr<<"taql command="<<taql<<endl;
+      os << LogIO::NORMAL
+	 << "Trying to determine source match by position..."
+	 << LogIO::POST;
+      Table tmpsubtab = tableCommand(taql);
+      if(tmpsubtab.nrow()) {
+	  ROScalarColumn<String> srcNameCol(tmpsubtab,"Name");
+	  String srcNameInTable = srcNameCol.getColumnCells(RefRows(0,0))[0];
+	  //cerr<<"srcNameInTable="<<srcNameInTable<<endl;
+	  for (std::map<FSS::Source, Vector<String> >::const_iterator it2 = names_p.begin(); 
+	       it2 != names_p.end(); ++it2) {
+	      if (srcNameInTable.contains(it2->second[0])) {
+		  srcEnum = it2->first;
+		  os << LogIO::NORMAL
+		     << "Found "<<srcNameInTable
+		     <<" as a match for the input field, "
+		     <<srcName<<" in the cone search within radius of "<<radius
+		     << LogIO::POST;
+		  break;
+	      }
+	  }
+     }
+     else {
+     os << LogIO::NORMAL
+	<< " no match was found"
+	<< LogIO::POST;
+     }
   }
   return srcEnum;
 }

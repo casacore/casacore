@@ -171,6 +171,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (stokesAxis >= 0) units(stokesAxis) = "";
 	coordsys.setWorldAxisUnits(units);
 
+// If there is a spectral conversion layer, make it permanent here
+	if(specCoord>=0){
+	  SpectralCoordinate sCoord(coordsys.spectralCoordinate(specCoord));
+	  MFrequency::Types nativeCtype = sCoord.frequencySystem(False); // native type
+	  MFrequency::Types convCtype = sCoord.frequencySystem(True); // converted type
+
+	  if (convCtype != nativeCtype) {
+	    MEpoch convEpoch;
+	    MPosition convPosition;
+	    MDirection convDirection;
+	    sCoord.getReferenceConversion(convCtype, convEpoch, convPosition, convDirection);
+	    // modify the spec coordsys corresponding to the conversion layer
+	    sCoord.transformFrequencySystem(convCtype, convEpoch, convPosition, convDirection);
+	    // replace the spec-coordsys in coordsys by the new one
+	    coordsys.replaceCoordinate(sCoord, specCoord);
+	  }
+	}
+
 // Generate keywords.  If we find we have a DC with one of the
 // axes removed, it will be linearized here.
 
@@ -1756,7 +1774,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (header.isDefined("pc")) {
 
 // Unlikely to encounter this, as the current WCS papers
-// use the CD rather than PC matrix. The Casacore user binding
+// use the CD rather than PC matrix. The aips++ user binding
 // (Image tool) does not allow the WCS definition to be written
 // so probably we could remove this
 
@@ -1825,7 +1843,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     void FITSCoordinateUtil::cardsToRecord (LogIO& os, RecordInterface& rec, char* pHeader) const
     //
-    // Convert the fitshdr struct to a Casacore Record for ease of later use
+    // Convert the fitshdr struct to an aips++ Record for ease of later use
     //
     {
 

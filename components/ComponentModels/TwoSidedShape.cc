@@ -244,7 +244,7 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
 //   // near function was added here and in the setMinorAxis function to fix
 //   // defect AOCso00071
   if (majorAxisInRad < minorAxisInRad && 
-      !near(minorAxisInRad, minorAxisInRad, C::dbl_epsilon)) {
+      !near(minorAxisInRad, minorAxisInRad, 2*C::dbl_epsilon)) {
     errorMessage += "The major axis cannot be smaller than the minor axis\n";
     return False;
   }

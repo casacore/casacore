@@ -33,7 +33,8 @@ C
               H(L) = H(L) - A(J-1,L)**2
               IF (H(L).GT.H(LMAX)) LMAX = L
    10       CONTINUE
-          IF (DIFF(HMAX+FACTOR*H(LMAX),HMAX)) 20,20,50
+C          IF (DIFF(HMAX+FACTOR*H(LMAX),HMAX)) 20,20,50
+          IF (DIFF(HMAX+FACTOR*H(LMAX),HMAX) .GT. 0) GOTO 50
 C
 C     COMPUTE SQUARED COLUMN LENGTHS AND FIND LMAX
 C
@@ -198,7 +199,8 @@ c      write (20,*) (W(IY+I-1), I=1,N+1)
 
 C                      USE THE FOLLOWING RETURN IF UNSUCCESSFUL IN NNLS.
       IF (MODE.NE.1) RETURN
-      IF (RNORM) 130,130,50
+C      IF (RNORM) 130, 130, 50
+      IF (RNORM .LE. 0) GOTO 130
    50 FAC=ONE
       IW=IY-1
           DO 60 I=1,M
@@ -206,7 +208,8 @@ C                      USE THE FOLLOWING RETURN IF UNSUCCESSFUL IN NNLS.
 C                               HERE WE ARE USING THE SOLUTION VECTOR Y.
    60     FAC=FAC-H(I)*W(IW)
 C
-      IF (DIFF(ONE+FAC,ONE)) 130,130,70
+C      IF (DIFF(ONE+FAC,ONE)) 130,130,70
+      IF (DIFF(ONE+FAC,ONE) .LE. 0) GOTO 130
    70 FAC=ONE/FAC
           DO 90 J=1,N
           IW=IY-1
@@ -342,7 +345,8 @@ C
 C             IF WMAX .LE. 0. GO TO TERMINATION.
 C             THIS INDICATES SATISFACTION OF THE KUHN-TUCKER CONDITIONS.
 C
-      IF (WMAX) 350,350,80
+C      IF (WMAX) 350,350,80
+      IF (WMAX .LE. 0) GOTO 350
    80 IZ=IZMAX
       J=INDEX(IZ)
 C
@@ -357,7 +361,8 @@ C
           DO 90 L=1,NSETP
    90     UNORM=UNORM+A(L,J)**2
   100 UNORM=SQRT(UNORM)
-      IF (DIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM)) 130,130,110
+C      IF (DIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM)) 130,130,110
+      IF (DIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM) .LE. 0) GOTO 130
 C
 C     COL J IS SUFFICIENTLY INDEPENDENT.  COPY B INTO ZZ, UPDATE ZZ AND
 C   > SOLVE FOR ZTEST ( = PROPOSED NEW VALUE FOR X(J) ).
@@ -371,7 +376,8 @@ C                                     SEE IF ZTEST IS POSITIVE
 C     REJECT J AS A CANDIDATE TO BE MOVED FROM SET Z TO SET P.
 C     RESTORE A(NPP1,J), SET W(J)=0., AND LOOP BACK TO TEST DUAL
 C
-      IF (ZTEST) 130,130,140
+C      IF (ZTEST) 130,130,140
+      IF (ZTEST .GT. 0) GOTO 140
 C
 C     COEFFS AGAIN.
 C
@@ -407,7 +413,9 @@ C
       W(J)=ZERO
 C                                SOLVE THE TRIANGULAR SYSTEM.
 C                                STORE THE SOLUTION TEMPORARILY IN ZZ().
-      ASSIGN 200 TO NEXT
+C      ASSIGN 200 TO NEXT
+       NEXT = 1
+
       GO TO 400
   200 CONTINUE
 C
@@ -428,7 +436,8 @@ C
       ALPHA=TWO
           DO 240 IP=1,NSETP
           L=INDEX(IP)
-          IF (ZZ(IP)) 230,230,240
+C          IF (ZZ(IP)) 230,230,240
+          IF (ZZ(IP) .GT. 0) GOTO 240
 C
   230     T=-X(L)/(ZZ(IP)-X(L))
           IF (ALPHA.LE.T) GO TO 240
@@ -478,7 +487,8 @@ C        AND MOVED FROM SET P TO SET Z.
 C
           DO 300 JJ=1,NSETP
           I=INDEX(JJ)
-          IF (X(I)) 260,260,300
+C          IF (X(I)) 260,260,300
+          IF (X(I) .LE. 0) GOTO 260
   300     CONTINUE
 C
 C         COPY B( ) INTO ZZ( ).  THEN SOLVE AGAIN AND LOOP BACK.
@@ -486,7 +496,8 @@ C
 
           DO 310 I=1,M
   310     ZZ(I)=B(I)
-      ASSIGN 320 TO NEXT
+C      ASSIGN 320 TO NEXT
+      NEXT = 2
       GO TO 400
   320 CONTINUE
       GO TO 210
@@ -523,7 +534,8 @@ C
   410         ZZ(II)=ZZ(II)-A(II,JJ)*ZZ(IP+1)
   420     JJ=INDEX(IP)
   430     ZZ(IP)=ZZ(IP)/A(IP,JJ)
-      GO TO NEXT, (200,320)
+C      GO TO NEXT, (200,320)
+      GOTO (200, 320), NEXT
   440 FORMAT (35H0 NNLS QUITTING ON ITERATION COUNT.)
       END
 C
@@ -566,7 +578,9 @@ C
 C                            ****** CONSTRUCT THE TRANSFORMATION. ******
           DO 10 J=L1,M
    10     CL=AMAX1(ABS(U(1,J)),CL)
-      IF (CL) 130,130,20
+C      IF (CL) 130,130,20
+      IF (CL .LE. 0) GOTO 130
+
    20 CLINV=ONE/CL
       SM=(DBLE(U(1,LPIVOT))*CLINV)**2
           DO 30 J=L1,M
@@ -574,19 +588,22 @@ C                            ****** CONSTRUCT THE TRANSFORMATION. ******
 C                              CONVERT DBLE. PREC. SM TO SNGL. PREC. SM1
       SM1=SM
       CL=CL*SQRT(SM1)
-      IF (U(1,LPIVOT)) 50,50,40
+C      IF (U(1,LPIVOT)) 50,50,40
+      IF (U(1,LPIVOT) .LE. 0) GOTO 50
    40 CL=-CL
    50 UP=U(1,LPIVOT)-CL
       U(1,LPIVOT)=CL
       GO TO 70
 C            ****** APPLY THE TRANSFORMATION  I+U*(U**T)/B  TO C. ******
 C
-   60 IF (CL) 130,130,70
+C   60 IF (CL) 130,130,70
+   60 IF (CL .LE. 0) GOTO 130
    70 IF (NCV.LE.0) RETURN
       B=DBLE(UP)*U(1,LPIVOT)
 C                       B  MUST BE NONPOSITIVE HERE.  IF B = 0., RETURN.
 C
-      IF (B) 80,130,130
+C      IF (B) 80,130,130
+      IF (B .GE. 0) GOTO 130
    80 B=ONE/B
       I2=1-ICV+ICE*(LPIVOT-1)
       INCR=ICE*(L1-LPIVOT)
@@ -598,7 +615,8 @@ C
               DO 90 I=L1,M
               SM=SM+C(I3)*DBLE(U(1,I))
    90         I3=I3+ICE
-          IF (SM) 100,120,100
+C          IF (SM) 100,120,100
+          IF (SM .EQ. 0) GOTO 120
   100     SM=SM*B
           C(I2)=C(I2)+SM*DBLE(UP)
               DO 110 I=L1,M
@@ -629,7 +647,8 @@ C
       SIN=COS*XR
       SIG=ABS(A)*YR
       RETURN
-   10 IF (B) 20,30,20
+C   10 IF (B) 20,30,20
+   10 IF (B .EQ. 0) GOTO 30
    20 XR=A/B
       YR=SQRT(ONE+XR**2)
       SIN=SIGN(ONE/YR,B)
@@ -715,7 +734,8 @@ c      write (20,*) (W(IY+I-1), I=1,N+1)
 
 C                      USE THE FOLLOWING RETURN IF UNSUCCESSFUL IN NNLS.
       IF (MODE.NE.1) RETURN
-      IF (RNORM) 130,130,50
+C      IF (RNORM) 130,130,50
+      IF (RNORM .LE. 0) GOTO 130
    50 FAC=ONE
       IW=IY-1
           DO 60 I=1,M
@@ -723,7 +743,8 @@ C                      USE THE FOLLOWING RETURN IF UNSUCCESSFUL IN NNLS.
 C                               HERE WE ARE USING THE SOLUTION VECTOR Y.
    60     FAC=FAC-H(I)*W(IW)
 C
-      IF (DDIFF(ONE+FAC,ONE)) 130,130,70
+C      IF (DDIFF(ONE+FAC,ONE)) 130,130,70
+      IF (DDIFF(ONE+FAC,ONE) .LE. 0) GOTO 130
    70 FAC=ONE/FAC
           DO 90 J=1,N
           IW=IY-1
@@ -852,7 +873,8 @@ C
 C             IF WMAX .LE. 0. GO TO TERMINATION.
 C             THIS INDICATES SATISFACTION OF THE KUHN-TUCKER CONDITIONS.
 C
-      IF (WMAX) 350,350,80
+C      IF (WMAX) 350,350,80
+      IF (WMAX .LE. 0) GOTO 350
    80 IZ=IZMAX
       J=INDEX(IZ)
 C
@@ -867,7 +889,8 @@ C
           DO 90 L=1,NSETP
    90     UNORM=UNORM+A(L,J)**2
   100 UNORM=SQRT(UNORM)
-      IF (DDIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM)) 130,130,110
+C      IF (DDIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM)) 130,130,110
+      IF (DDIFF(UNORM+ABS(A(NPP1,J))*FACTOR,UNORM) .LE. 0) GOTO 130
 C
 C     COL J IS SUFFICIENTLY INDEPENDENT.  COPY B INTO ZZ, UPDATE ZZ AND
 C   > SOLVE FOR ZTEST ( = PROPOSED NEW VALUE FOR X(J) ).
@@ -881,7 +904,8 @@ C                                     SEE IF ZTEST IS POSITIVE
 C     REJECT J AS A CANDIDATE TO BE MOVED FROM SET Z TO SET P.
 C     RESTORE A(NPP1,J), SET W(J)=0., AND LOOP BACK TO TEST DUAL
 C
-      IF (ZTEST) 130,130,140
+C      IF (ZTEST) 130,130,140
+      IF (ZTEST .GT. 0) GOTO 140
 C
 C     COEFFS AGAIN.
 C
@@ -917,7 +941,8 @@ C
       W(J)=ZERO
 C                                SOLVE THE TRIANGULAR SYSTEM.
 C                                STORE THE SOLUTION TEMPORARILY IN ZZ().
-      ASSIGN 200 TO NEXT
+C      ASSIGN 200 TO NEXT
+      NEXT = 1
       GO TO 400
   200 CONTINUE
 C
@@ -939,7 +964,8 @@ C
       ALPHA=TWO
           DO 240 IP=1,NSETP
           L=INDEX(IP)
-          IF (ZZ(IP)) 230,230,240
+C          IF (ZZ(IP)) 230,230,240
+          IF (ZZ(IP) .GT. 0) GOTO 240
 C
   230     T=-X(L)/(ZZ(IP)-X(L))
           IF (ALPHA.LE.T) GO TO 240
@@ -989,7 +1015,8 @@ C        AND MOVED FROM SET P TO SET Z.
 C
           DO 300 JJ=1,NSETP
           I=INDEX(JJ)
-          IF (X(I)) 260,260,300
+C          IF (X(I)) 260,260,300
+          IF (X(I) .LE. 0) GOTO 260
   300     CONTINUE
 C
 C         COPY B( ) INTO ZZ( ).  THEN SOLVE AGAIN AND LOOP BACK.
@@ -997,7 +1024,8 @@ C
 
           DO 310 I=1,M
   310     ZZ(I)=B(I)
-      ASSIGN 320 TO NEXT
+C      ASSIGN 320 TO NEXT
+      NEXT = 2
       GO TO 400
   320 CONTINUE
       GO TO 210
@@ -1034,7 +1062,8 @@ C
   410         ZZ(II)=ZZ(II)-A(II,JJ)*ZZ(IP+1)
   420     JJ=INDEX(IP)
   430     ZZ(IP)=ZZ(IP)/A(IP,JJ)
-      GO TO NEXT, (200,320)
+C      GO TO NEXT, (200,320)
+      GOTO (200, 320), NEXT
   440 FORMAT (35H0 NNLS QUITTING ON ITERATION COUNT.)
       END
 C
@@ -1078,7 +1107,8 @@ C
 C                            ****** CONSTRUCT THE TRANSFORMATION. ******
           DO 10 J=L1,M
    10     CL=DMAX1(ABS(U(1,J)),CL)
-      IF (CL) 130,130,20
+C      IF (CL) 130,130,20
+      IF (CL .LE. 0) GOTO 130
    20 CLINV=ONE/CL
       SM=(DBLE(U(1,LPIVOT))*CLINV)**2
           DO 30 J=L1,M
@@ -1086,19 +1116,22 @@ C                            ****** CONSTRUCT THE TRANSFORMATION. ******
 C                              CONVERT DBLE. PREC. SM TO SNGL. PREC. SM1
       SM1=SM
       CL=CL*SQRT(SM1)
-      IF (U(1,LPIVOT)) 50,50,40
+C      IF (U(1,LPIVOT)) 50,50,40
+      IF (U(1,LPIVOT) .LE. 0) GOTO 50
    40 CL=-CL
    50 UP=U(1,LPIVOT)-CL
       U(1,LPIVOT)=CL
       GO TO 70
 C            ****** APPLY THE TRANSFORMATION  I+U*(U**T)/B  TO C. ******
 C
-   60 IF (CL) 130,130,70
+C   60 IF (CL) 130,130,70
+   60 IF (CL .LE. 0) GOTO 130
    70 IF (NCV.LE.0) RETURN
       B=DBLE(UP)*U(1,LPIVOT)
 C                       B  MUST BE NONPOSITIVE HERE.  IF B = 0., RETURN.
 C
-      IF (B) 80,130,130
+C      IF (B) 80,130,130
+      IF (B .GE. 0) GOTO 130
    80 B=ONE/B
       I2=1-ICV+ICE*(LPIVOT-1)
       INCR=ICE*(L1-LPIVOT)
@@ -1110,7 +1143,8 @@ C
               DO 90 I=L1,M
               SM=SM+C(I3)*DBLE(U(1,I))
    90         I3=I3+ICE
-          IF (SM) 100,120,100
+C          IF (SM) 100,120,100
+          IF (SM .EQ. 0) GOTO 120
   100     SM=SM*B
           C(I2)=C(I2)+SM*DBLE(UP)
               DO 110 I=L1,M
@@ -1142,7 +1176,8 @@ C
       SIN=COS*XR
       SIG=ABS(A)*YR
       RETURN
-   10 IF (B) 20,30,20
+C   10 IF (B) 20,30,20
+   10 IF (B .EQ. 0) GOTO 30
    20 XR=A/B
       YR=SQRT(ONE+XR**2)
       SIN=SIGN(ONE/YR,B)

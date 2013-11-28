@@ -39,6 +39,15 @@
 
 #include "hio.h"
 
+#define ITEM_HDR_SIZE           4
+char     binary_item[ITEM_HDR_SIZE]      = {0,0,0,0},
+                real_item[ITEM_HDR_SIZE]        = {0,0,0,H_REAL},
+                int_item[ITEM_HDR_SIZE]         = {0,0,0,H_INT},
+                int2_item[ITEM_HDR_SIZE]        = {0,0,0,H_INT2},
+                char_item[ITEM_HDR_SIZE]        = {0,0,0,H_BYTE},
+                dble_item[ITEM_HDR_SIZE]        = {0,0,0,H_DBLE},
+                cmplx_item[ITEM_HDR_SIZE]       = {0,0,0,H_CMPLX};
+
 #define private static
 #if !defined(NULL)
 #  define NULL 0
@@ -496,7 +505,7 @@ char *keyword;
 
   if(first)hinit_c();
 
-  if(tno != 0) if(*iostat = hname_check(keyword)) return;
+  if(tno != 0) if((*iostat = hname_check(keyword))) return;
 
 /* Check if the item is aleady here abouts. */
 
@@ -577,7 +586,7 @@ char *keyword,*status;
      !strcmp("history",keyword)|| tno == 0 	       ||
      (mode & ITEM_SCRATCH)		)mode |= ITEM_NOCACHE;
 
-  if(tno != 0) if(*iostat = hname_check(keyword))return;
+  if(tno != 0) if((*iostat = hname_check(keyword)))return;
   t = hget_tree(tno);
 
 /* If we are writing, check whether we have write permission. */
@@ -812,6 +821,14 @@ int *iostat;
     item->io[0].state = IO_VALID;
   }
 }
+
+void pack32_c (int *, char *, int);
+void packr_c (float *, char *, int);
+void packd_c (double *, char *, int);
+void unpack32_c (char *, int *, int);
+void unpackr_c (char *, float *, int);
+void unpackd_c (char *, double *, int);
+
 /************************************************************************/
 int hsize_c(ihandle)
 int ihandle;
@@ -841,6 +858,7 @@ void hio_c(ihandle,dowrite,type,buf,offset,length,iostat)
 int ihandle;
 int dowrite,type,offset,length,*iostat;
 char *buf;
+
 /**hread,hwrite -- Read and write items.	 			*/
 /*&mjs									*/
 /*:low-level-i/o							*/

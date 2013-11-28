@@ -92,6 +92,8 @@ int main() {
     expfds[4][1][0] = 12.9502663;       // Perley 90, 1934-638, 2.0 GHz
     expfds[4][1][1] =  1.0828228;       // Perley 90, 1934-638, 20.0 GHz
 
+    // dummy direction  
+    MDirection srcDir(MVDirection(Quantity(0.0,"rad"),Quantity(0.0,"rad")), MDirection::J2000);
     Vector<Double> fluxUsed(4);
 
     for(Int scNum = qsScNames.nelements(); scNum--;){
@@ -109,7 +111,7 @@ int main() {
       
       for(Int srcInd = srcNames.nelements(); srcInd--;){
         for(Int freqInd = freqs.nelements(); freqInd--;){
-          Bool foundStd = fluxStd.compute(srcNames[srcInd], freqs[freqInd],
+          Bool foundStd = fluxStd.compute(srcNames[srcInd], srcDir, freqs[freqInd],
                                           mtime,
                                           returnFlux, returnFluxErr);
           AlwaysAssert(foundStd, AipsError);

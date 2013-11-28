@@ -133,9 +133,9 @@ Bool FluxCalcVQS::operator()(Vector<Flux<Double> >& values,
   return success;
 }
 
-Bool FluxCalcVQS::setSource(const String& sourceName)
+Bool FluxCalcVQS::setSource(const String& sourceName, const MDirection& sourceDir)
 {
-  srcEnum_p = srcNameToEnum(sourceName);
+  srcEnum_p = srcNameToEnum(sourceName,sourceDir);
   //return srcEnum_p != FCQS::UNKNOWN_SOURCE;
   return srcEnum_p != FSS::UNKNOWN_SOURCE;
 }

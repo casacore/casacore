@@ -36,6 +36,7 @@
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MFrequency.h>
 #include <ms/MeasurementSets/MSSelection.h>
+#include <ms/MeasurementSets/MSSelectionTools.h>
 #include <tables/Tables/TableInfo.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/SetupNewTab.h>
@@ -61,9 +62,6 @@
             LogIO logIo (LogOrigin ("MS")); logIo << (message) << endl; logIo.post();\
           }\
         }
-
-#define ThrowIf(c,m) { if (c) { throw AipsError ((m), __FILE__, __LINE__); }}
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -358,9 +356,6 @@ void MeasurementSet::init()
 	// FLOAT_DATA
 	colMapDef(FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
 		  "Floating point data - for single dish","","");
-	// IMAGING_WEIGHT
-	colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
-		  "Imaging weight - for the imager","","");
 	// INTERVAL
 	colMapDef(INTERVAL, "INTERVAL", TpDouble, 
 		  "The sampling interval","s","");
@@ -421,6 +416,10 @@ void MeasurementSet::init()
 	// WEIGHT_SPECTRUM
 	colMapDef(WEIGHT_SPECTRUM, "WEIGHT_SPECTRUM", TpArrayFloat,
 		  "Weight for each data point","","");
+	// CORRECTED_WEIGHT_SPECTRUM
+	colMapDef(CORRECTED_WEIGHT_SPECTRUM, "CORRECTED_WEIGHT_SPECTRUM", TpArrayFloat,
+		  "Weight for each corrected data point","","");
+
 
 	// PredefinedKeywords
 
@@ -982,7 +981,8 @@ void MeasurementSet::checkVersion()
 Record MeasurementSet::msseltoindex(const String& spw, const String& field, 
                                     const String& baseline, const String& time, 
                                     const String& scan, const String& uvrange, 
-                                    const String& observation, const String& taql)
+                                    const String& observation, const String& poln,
+				    const String& taql)
 {
   Record retval;
   MSSelection thisSelection;
@@ -993,6 +993,7 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   thisSelection.setScanExpr(scan);
   thisSelection.setUvDistExpr(uvrange);
   thisSelection.setObservationExpr(observation);
+  thisSelection.setPolnExpr(poln);
   thisSelection.setTaQLExpr(taql);
   TableExprNode exprNode=thisSelection.toTableExprNode(this);
   Vector<Int> fieldlist=thisSelection.getFieldList();
@@ -1004,8 +1005,16 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   Matrix<Int> chanlist=thisSelection.getChanList();
   Matrix<Int> baselinelist=thisSelection.getBaselineList();
   Vector<Int> ddIDList=thisSelection.getDDIDList();
+  Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
   OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
   OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
+  Vector<Int> allDDIDList;
+  if (ddIDList.nelements() == 0) allDDIDList = spwDDIDList;
+  else if (spwDDIDList.nelements() == 0) allDDIDList = ddIDList;
+  else allDDIDList = set_intersection(ddIDList, spwDDIDList);
+
+
+  //  cerr << ddIDList << endl << spwDDIDList << endl << allDDIDList << endl;
 
   retval.define("spw", spwlist);
   retval.define("field", fieldlist);
@@ -1015,7 +1024,10 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
   retval.define("antenna2", antenna2list);
   retval.define("baselines", baselinelist);
   retval.define("channel", chanlist);
-  retval.define("dd", ddIDList);
+  
+  retval.define("poldd", ddIDList);
+  retval.define("spwdd", spwDDIDList);
+  retval.define("dd", allDDIDList);
   //  retval.define("polmap",polMap);
   // retrval.define("corrmap",corrMap);
 

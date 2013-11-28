@@ -821,6 +821,9 @@ public:
 
    Bool hasDirectionCoordinate() const;
 
+   // Get the pixel axis numbers of the direction coordinate in this object.
+   // The order of the returned axis numbers is always longitude axis first,
+   // latitude axis second.
    Vector<Int> directionAxesNumbers() const;
 
    String stokesAtPixel(const uInt pixel) const;
@@ -837,6 +840,11 @@ public:
   Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
                                 Bool allowFriendlyNames=False) const;
 
+   // is the abscissa in the DirectionCoordinate the longitude axis?
+   // Throws exception if there is no DirectionCoordinate or if either of
+   // the direction pixel axes have been removed.
+   // For a normal direction coordinate, this will return True.
+   Bool isDirectionAbscissaLongitude() const;
 
 private:
     // Where we store copies of the coordinates we are created with.

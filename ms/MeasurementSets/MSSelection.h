@@ -76,8 +76,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // form, reducing the knowledge necessary to perform powerful query
 // operations directly in TaQL.  It is also possible to supply pure
 // TaQL expression(s) as sub-expressions if required. For a complete
-// list of the STaQL interface refer to: <a
-// href="http://casa.nrao.edu/Memos/msselection/index.html">Data
+// list of the STaQL interface refer to the MeasurementSet Selection Syntax document at: <a
+// href="http://casa.nrao.edu/other_doc.shtml">Data
 // Selection</a>
 //
 // The sub-expressions are interpreted in the order which they were
@@ -294,15 +294,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Matrix<Double> getChanFreqList(const MeasurementSet* ms=NULL, 
 				   const Bool sorted=False);
 
-    // Accessor for the list of the selected Data Description IDs.
+    // Accessor for the list of the selected Data Description IDs
+    // (DDID) from the polarization expression parsing.  The actual
+    // selected DDIDs would be an intersection of the DDIDs selected
+    // from polarization and SPW expressions parsing (see
+    // getSPWDDIDList() below).
     inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
     {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p;}
 
+    // Accessor for the list of the selected Data Description IDs from
+    // the SPW expression parsing.  The actual
+    // selected DDIDs would be an intersection of the DDIDs selected
+    // from polarization and SPW expressions parsing (see
+    // getDDIDList() above).
+    inline Vector<Int> getSPWDDIDList(const MeasurementSet* ms=NULL) 
+    {if (spwDDIDs_p.nelements() <= 0) getTEN(ms); return spwDDIDs_p;}
+
     //
-    // The key in the ordered map returned by getPolMap() is the
-    // pol. ID. The value is a vector containing the list of in-row
-    // indices to pick out the selected polarizations (or
-    // equivalently, the list of indices for the vector in the
+    // The key in the ordered map returned by getPolMap() is the Data
+    // Description ID (DDID). The value is a vector containing the
+    // list of in-row indices to pick out the selected polarizations
+    // (or equivalently, the list of indices for the vector in the
     // corrType column of the POLARIZATION sub-table). These are also
     // what the user intended (i.e., e.g. not all DD IDs due to user
     // POL expression might be selected due to SPW expressions).
@@ -310,6 +322,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedPolMap_p;};
 
+    //
+    // The key in the ordered map returned by getCorrMap() is the
+    // pol. is the Data Description ID (DDID).  The value is a set of
+    // two vectors.  The first vector is the list of the in-row
+    // indices to pick out the selected polarizations (or
+    // equivalently, the list of indices for the vector in the
+    // corrType column of the POLARIZATION sub-table).
+    //
     inline OrderedMap<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedSetupMap_p;};
 
@@ -435,7 +455,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Priority
     Vector<Int> exprOrder_p;
     Vector<Int> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p,
-      ddIDs_p,stateObsModeIDs_p, observationIDs_p;
+      ddIDs_p,stateObsModeIDs_p, observationIDs_p, spwDDIDs_p;
     Matrix<Int> chanIDs_p;
     Matrix<Int> baselineIDs_p;
     Matrix<Double> selectedTimesList_p;

@@ -400,8 +400,43 @@ int main()
     	  cout << "*** b " << worldb << endl;
     	  //cout << "*** c " << worldc << endl;
     	  cout << "*** inc " << converted.increment() << endl;
-
-
+      }
+      {
+    	  cout << "*** test hasSquarePixels()" << endl;
+    	  DirectionCoordinate dc(
+    	      MDirection::J2000, Projection::SIN,
+    	      Quantity(1, "rad"), Quantity(1, "rad"),
+    	      Quantity(-6, "arcsec"), Quantity(6, "arcsec"),
+    	      xform, 1573.5, -6.5
+    	  );
+    	  AlwaysAssert(dc.hasSquarePixels(), AipsError);
+    	  dc = DirectionCoordinate(
+    		  MDirection::J2000, Projection::SIN,
+    		  Quantity(1, "rad"), Quantity(1, "rad"),
+    		  Quantity(-6, "arcsec"), Quantity(-6, "arcsec"),
+    		  xform, 1573.5, -6.5
+    	  );
+    	  dc = DirectionCoordinate(
+    		  MDirection::J2000, Projection::SIN,
+    		  Quantity(1, "rad"), Quantity(1, "rad"),
+    		  Quantity(6, "arcsec"), Quantity(-6, "arcsec"),
+    		  xform, 1573.5, -6.5
+    	  );
+    	  AlwaysAssert(dc.hasSquarePixels(), AipsError);
+    	  dc = DirectionCoordinate(
+    		  MDirection::J2000, Projection::SIN,
+    		  Quantity(1, "rad"), Quantity(1, "rad"),
+    		  Quantity(6, "arcsec"), Quantity(6, "arcsec"),
+    		  xform, 1573.5, -6.5
+    	  );
+    	  AlwaysAssert(dc.hasSquarePixels(), AipsError);
+    	  dc = DirectionCoordinate(
+    		  MDirection::J2000, Projection::SIN,
+    		  Quantity(1, "rad"), Quantity(1, "rad"),
+    		  Quantity(7, "arcsec"), Quantity(6, "arcsec"),
+    		  xform, 1573.5, -6.5
+    	  );
+    	  AlwaysAssert(! dc.hasSquarePixels(), AipsError);
 
       }
   } catch (const AipsError& x) {

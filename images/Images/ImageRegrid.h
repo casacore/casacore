@@ -35,6 +35,7 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MFrequency.h>
 #include <scimath/Mathematics/Interpolate2D.h>
+#include <set>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -200,8 +201,11 @@ public:
   // are unity (ie the axes are degenerate), and the corresponding axis in <src>csysFrom</src> is the only
   // axis in its corresponding coordinate, this coordinate will not be replaced
   // even if the axis is specified in <src>axes</src>.
+  // Upon return, <src>coordsToBeRegridded</src> will contain a list of the coordinates that will
+  // be regridded.
   static CoordinateSystem makeCoordinateSystem(
 		  LogIO& os,
+                  std::set<Coordinate::Type>& coordsToBeRegridded,
 		  const CoordinateSystem& cSysTo,
 		  const CoordinateSystem& cSysFrom,
 		  const IPosition& axes,
@@ -222,11 +226,11 @@ public:
 //  
   // Check shape and axes.  Exception if no good.  If pixelAxes
   // of length 0, set to all axes according to shape
-  void checkAxes(IPosition& outPixelAxes,
-                 const IPosition& inShape,
-                 const IPosition& outShape,
-                 const Vector<Int>& pixelAxisMap,
-                 const CoordinateSystem& outCoords);
+  void _checkAxes(IPosition& outPixelAxes,
+                  const IPosition& inShape,
+                  const IPosition& outShape,
+                  const Vector<Int>& pixelAxisMap,
+                  const CoordinateSystem& outCoords);
 
   // Find maps between coordinate systems
   void findMaps (uInt nDim, 
@@ -358,7 +362,7 @@ public:
                       Double& minInX, Double& minInY,
                       Double& maxInX, Double& maxInY,
                       Cube<Double>& in2DPos,
-                      Matrix<Bool>& succeed,
+                      const Matrix<Bool>& succeed,
                       uInt xInAxis, uInt yInAxis,
                       uInt xOutAxis, uInt yOutAxis,
                       const IPosition& outPos,

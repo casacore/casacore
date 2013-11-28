@@ -39,6 +39,7 @@
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MEpoch.h>
+#include <tables/Tables/PlainTable.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
@@ -79,6 +80,13 @@ int main()
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::PLUTO, dat);
     cout << "Pluto:      " << val << endl;
     MeasIERS::closeTables();
+    const TableCache& cache = PlainTable::tableCache();
+    if(cache.ntable()>0){
+      cout << "ERROR: cache not empty!" << endl;
+      for (uInt i=0; i<cache.ntable(); ++i) {
+	cout << "    " << i << ": \"" <<  cache(i)->tableName() << "\"" << endl;
+      }
+    }
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
     cout << "Moon:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SUN, dat);

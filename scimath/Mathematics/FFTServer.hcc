@@ -818,8 +818,8 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
 
   const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
 
-  Int numToFlag = ceil(vsize*fabs(relshift));
-  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
+  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
   Bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
@@ -918,8 +918,8 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
 
   const Complex exponent =  -2.*C::pi*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case  
 
-  Int numToFlag = ceil(vsize*fabs(relshift));
-  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
+  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
   Bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  

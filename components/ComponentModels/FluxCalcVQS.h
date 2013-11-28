@@ -130,7 +130,7 @@ public:
 
   // Sets srcEnum_p = srcNameToEnum(sourceName), and returns
   // srcEnum_p != FCQS::UNKNOWN_SOURCE
-  virtual Bool setSource(const String& sourceName);
+  virtual Bool setSource(const String& sourceName, const MDirection& sourceDir);
 
   FCVQS::Source getSrcEnum();
 

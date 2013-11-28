@@ -1153,12 +1153,12 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 			MPosition mLongLat=antCol.positionMeas()(ant);
 			MVAngle mvLong= mLongLat.getAngle().getValue()(0);
 			MVAngle mvLat= mLongLat.getAngle().getValue()(1);
-			Vector<Double> antOff = offsets[i].getValue("m");
+			Vector<Double> antOff = offsets[ant].getValue("m");
 			if (posIsITRF) {
-				MeasConvert<MPosition> toItrf(antPos[i], MPosition::ITRF);
-				antPos[i] = toItrf(antPos[i]);
+				MeasConvert<MPosition> toItrf(antPos[ant], MPosition::ITRF);
+				antPos[i] = toItrf(antPos[ant]);
 			}
-			Vector<Double> xyz = antPos[i].get("m").getValue();
+			Vector<Double> xyz = antPos[ant].get("m").getValue();
 			// write the row
 			os << indent;
 			os.output().width(indwidth);  os << ant;
@@ -1862,7 +1862,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 
 		vector<uInt> nChans = _msmd->nChans();
 		vector<Quantum<Vector<Double> > > chanFreqs = _msmd->getChanFreqs();
-		vector<vector<Double> > chanWidths = _msmd->getChanWidths();
+		vector<Quantum<Vector<Double> > > chanWidths = _msmd->getChanWidths();
 		vector<Double> bandwidths = _msmd->getBandWidths();
 		vector<uInt> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<uInt>();
 
@@ -1895,7 +1895,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 			os<< chanFreqs[spw].getValue("MHz")[0];
 			// 6th column: channel resolution
 			os.output().width(widthFrqNum+2);
-			os << chanWidths[spw][0]/1000;
+			os << chanWidths[spw].getValue("kHz")[0];
 			// 7th column: total bandwidth of the spectral window
 			os.output().width(widthFrqNum);
 			os.output().precision(1);

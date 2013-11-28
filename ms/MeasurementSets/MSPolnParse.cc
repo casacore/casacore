@@ -372,7 +372,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for(Int i=0;i<nSpecList;i++)
       {
 	Vector<String> tokens,tmp;
-	Vector<Int> spwIDs;
+	Vector<Int> spwIDs, spwDDIDs;
 	Matrix<Int> chanIDs;
 	Vector<Int> polnIDs;
 
@@ -418,7 +418,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    msSpwGramParseCommand(ms()->spectralWindow(), 
 				  ms()->dataDescription(),
 				  colAsTEN, spwExpr,
-				  spwIDs, chanIDs);
+				  spwIDs, chanIDs, spwDDIDs);
 	    //	    msSpwGramParseCommand(ms(), spwExpr,spwIDs, chanIDs);
 	  }
 	catch (MSSelectionSpwError &x)

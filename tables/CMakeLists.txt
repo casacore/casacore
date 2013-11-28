@@ -26,6 +26,9 @@ endif (APPLE)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_tables
+#Tables/ExprAggrNode.cc
+#Tables/ExprGroupAggrFunc.cc
+#Tables/ExprGroup.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
 Tables/BaseTabIter.cc

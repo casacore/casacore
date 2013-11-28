@@ -199,9 +199,7 @@ public:
     // necessary and used if and only if the ImageBeamSet
     // has multiple beams for such an axis. If just a single beam, that beam
     // is returned. If no (or a null) beam, a null beam is returned.
-    GaussianBeam restoringBeam(
-    	const Int channel=-1, const Int stokes=-1
-    ) const;
+    GaussianBeam restoringBeam(Int channel=-1, Int stokes=-1) const;
 
     // Set the single global restoring beam. An exception will be
     // thrown if this object already has multiple beams. In that case,
@@ -223,14 +221,10 @@ public:
     // Additional consistency checks are done when this object is added via
     // ImageInterface<T>::setImageInfo().
     // <group>
-    void setBeam(
-    	const Int channel, const Int stokes, const Quantity& major,
-    	const Quantity& minor, const Quantity& pa
-    );
+    void setBeam(Int channel, Int stokes, const Quantity& major,
+                 const Quantity& minor, const Quantity& pa);
 
-    void setBeam(
-    	const Int channel, const Int stokes, const GaussianBeam& beam
-    );
+    void setBeam(Int channel, Int stokes, const GaussianBeam& beam);
     // </group>
 
     // does this object contain multiple beams?
@@ -272,7 +266,7 @@ public:
     Bool getRestoringBeam (LoggerHolder& logger);
 
     // Convert the given beam to a Record.
-    Record beamToRecord(const Int channel, const Int stokes) const;
+    Record beamToRecord(Int channel, Int stokes) const;
 
     // Check if the beam set matches the coordinate axes sizes.
     void checkBeamSet (const CoordinateSystem& coords,
@@ -336,6 +330,11 @@ public:
     static void logMessage(Bool& warn, LogIO& os, Bool relax,
                            const String& msg1, const String msg2=String());
 
+  // Get the beam area in terms of pixel size of the specified
+  // DirectionCoordinate
+  Double getBeamAreaInPixels(Int channel, Int stokes,
+                             const DirectionCoordinate&) const;
+ 
 private:
   // Common copy ctor/assignment operator code.
   void copy_other(const ImageInfo &other);

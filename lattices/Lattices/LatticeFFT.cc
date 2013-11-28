@@ -127,6 +127,26 @@ void LatticeFFT::cfft(Lattice<Complex>& cLattice,
   }
 }
 
+void LatticeFFT::cfft0(Lattice<Complex>& cLattice,
+		       const Vector<Bool>& whichAxes, const Bool toFrequency) {
+  const uInt ndim = cLattice.ndim();
+  DebugAssert(ndim > 0, AipsError);
+  DebugAssert(ndim == whichAxes.nelements(), AipsError);
+  FFTServer<Float,Complex> ffts;
+  const IPosition latticeShape = cLattice.shape();
+  const IPosition tileShape = cLattice.niceCursorShape();
+
+  for (uInt dim = 0; dim < ndim; dim++) {
+    if (whichAxes(dim) == True) {
+      TiledLineStepper ts(latticeShape, tileShape, dim);
+      LatticeIterator<Complex> li(cLattice, ts);
+      for (li.reset(); !li.atEnd(); li++) {
+	ffts.fft0(li.rwVectorCursor(), toFrequency);
+      }
+    }
+  }
+}
+
 void LatticeFFT::cfft(Lattice<DComplex>& cLattice,
 		     const Vector<Bool>& whichAxes, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();

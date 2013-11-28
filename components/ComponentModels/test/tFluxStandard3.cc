@@ -129,6 +129,8 @@ int main() {
     expfds[0][3][1] = 1.392722368;       // Perley-Butler 2013, 3C48, 20.0 GHz(at epoch 2009.01.01)
     Vector<Double> fluxUsed(4);
 
+    MDirection srcDir(MVDirection(Quantity(0.0,"rad"),Quantity(0.0,"rad")),MDirection::J2000);
+
 // test if the standard table exist
     cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
     String horpath;
@@ -167,7 +169,7 @@ int main() {
       fluxStd.setInterpMethod("spline"); 
       for(Int srcInd = srcNames.nelements(); srcInd--;){
         for(Int freqInd = freqs.nelements(); freqInd--;){
-          Bool foundStd = fluxStd.compute(srcNames[srcInd], freqs[freqInd],
+          Bool foundStd = fluxStd.compute(srcNames[srcInd], srcDir, freqs[freqInd],
                                           mtime, returnFlux, returnFluxErr);
           AlwaysAssert(foundStd, AipsError);
           cout << "Passed foundStd for " << qsScNames[scNum]

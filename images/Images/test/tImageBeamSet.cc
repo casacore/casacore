@@ -675,11 +675,6 @@ int main() {
         	ImageBeamSet beamSet(beams);
         	GaussianBeam myBeam = beamSet.getCommonBeam();
         	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	/*
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 17.232049) < 1e-5, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 8.369, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 1.626, AipsError);
-        	*/
         }
         {
         	cout << "*** test getCommonBeam 9" << endl;
@@ -707,11 +702,6 @@ int main() {
         	ImageBeamSet beamSet(beams);
         	GaussianBeam myBeam = beamSet.getCommonBeam();
         	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	/*
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 17.232049) < 1e-5, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 8.369, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 1.626, AipsError);
-        	*/
         }
         {
         	cout << "*** test getCommonBeam 10" << endl;
@@ -732,6 +722,43 @@ int main() {
         	AlwaysAssert(myBeam.getPA("deg", True) == 0, AipsError);
         	AlwaysAssert(myBeam.getMajor("arcsec") == 4, AipsError);
             AlwaysAssert(myBeam.getMinor("arcsec") == 2, AipsError);
+        }
+        {
+        	cout << "*** test getSmallestMinorAxis" << endl;
+        	Matrix<GaussianBeam> beams(1, 4);
+        	GaussianBeam beam1(
+        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
+        		Quantity(0, "deg")
+        	);
+        	GaussianBeam beam2(
+        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
+        		Quantity(20, "deg")
+        	);
+        	GaussianBeam beam3(
+        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
+        		Quantity(40, "deg")
+        	);
+        	GaussianBeam beam4(
+        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
+        		Quantity(60, "deg")
+        	);
+        	beams(0, 0) = beam1;
+        	beams(0, 1) = beam2;
+        	beams(0, 2) = beam3;
+        	beams(0, 3) = beam4;
+        	// all equal
+        	ImageBeamSet beamSet(beams);
+        	AlwaysAssert(beamSet.getSmallestMinorAxisBeam() == beam1, AipsError);
+        	beam3.setMajorMinor(Quantity(4, "arcsec"), Quantity(1, "arcsec"));
+        	beams(0, 2) = beam3;
+        	beamSet = ImageBeamSet(beams);
+        	GaussianBeam got = beamSet.getSmallestMinorAxisBeam();
+        	AlwaysAssert(got == beam3, AipsError);
+        	beam3.setMajorMinor(Quantity(3, "arcsec"), Quantity(2, "arcsec"));
+        	beams(0, 2) = beam3;
+        	beamSet = ImageBeamSet(beams);
+        	got = beamSet.getSmallestMinorAxisBeam();
+        	AlwaysAssert(got == beam3, AipsError);
         }
 	}
 	catch (const AipsError& x) {

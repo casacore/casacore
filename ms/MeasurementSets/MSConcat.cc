@@ -103,6 +103,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	  dataColName == MS::columnName(MS::FLAG) || 
 	  dataColName == MS::columnName(MS::SIGMA_SPECTRUM) ||
 	  dataColName == MS::columnName(MS::WEIGHT_SPECTRUM) ||
+	  dataColName == MS::columnName(MS::CORRECTED_WEIGHT_SPECTRUM) ||
 	  dataColName == MS::columnName(MS::FLOAT_DATA) ||
 	  dataColName == MS::columnName(MS::CORRECTED_DATA) || 
 	  dataColName == MS::columnName(MS::MODEL_DATA) || 
@@ -301,7 +302,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   const Block<uInt> newAntIndices = copyAntennaAndFeed(otherMS.antenna(), 
 						       otherMS.feed()); 
   Bool antIndexTrivial = True;
-  for(uint ii=0; ii<newAntIndices.size(); ii++){
+  for(uInt ii=0; ii<newAntIndices.size(); ii++){
     //cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
     if(newAntIndices[ii]!=ii){
       antIndexTrivial=False;
@@ -995,7 +996,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 	<< " rows to the feed subtable" << endl;
   }
 
-  //for(uint ii=0; ii<newAntIndices.size(); ii++){
+  //for(uInt ii=0; ii<newAntIndices.size(); ii++){
   //  cout << "i, newAntIndices(i) " << ii << " " << newAntIndices[ii] << endl;
   //}
 
@@ -1578,7 +1579,7 @@ Bool MSConcat::copyPointing(const MSPointing& otherPoint,const
     // check antenna IDs
     Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
     Bool idsOK = True;
-    Int maxID = newAntIndices.nelements()-1;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k=origNRow; k <  (origNRow+rowToBeAdded); ++k){
       if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
 	idsOK = False;
@@ -1649,7 +1650,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
     // check antenna IDs
     Vector<Int> antennaIDs=pointCol.antennaId().getColumn();
     Bool idsOK = True;
-    Int maxID = newAntIndices.nelements()-1;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
     for (Int k=0; k < rowToBeAdded; k++){
       if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
 	idsOK = False;
@@ -1712,7 +1713,7 @@ Int MSConcat::copyObservation(const MSObservation& otherObs,
   if(remRedunObsId){ // remove redundant rows
     MSObservationColumns& obsCol = observation();
     Vector<Bool> rowToBeRemoved(obs.nrow(), False);
-    vector<uint> rowsToBeRemoved;
+    vector<uInt> rowsToBeRemoved;
     for(uInt j=0; j<obs.nrow(); j++){ // loop over OBS table rows
       for (uInt k=j+1; k<obs.nrow(); k++){ // loop over remaining OBS table rows
 	if(obsRowsEquivalent(obsCol, j, k)){ // rows equivalent?
@@ -2241,11 +2242,17 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
       if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
 	solSystObjects_p.define(fieldCols.sourceId()(i), (Int) refType);
       }
+      if(!fieldCols.ephemPath(i).empty()){ // this is an ephemeris object
+        solSystObjects_p.define(fieldCols.sourceId()(i), -2); // mark as -2
+      }	
     }
     for(uInt i=0; i<otherms.field().nrow(); i++){
       MDirection::Types refType = MDirection::castType(otherFieldCols.phaseDirMeas(i).getRef().getType());
       if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
 	solSystObjects_p.define(otherFieldCols.sourceId()(i)+maxSrcId+1, (Int) refType);
+      }
+      if(!fieldCols.ephemPath(i).empty()){ // this is an ephemeris object
+	solSystObjects_p.define(otherFieldCols.sourceId()(i)+maxSrcId+1, -2); // mark as -2
       }
     }
 
@@ -2323,7 +2330,8 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 	  if (!rowToBeRemoved(k)){
 	    if(thisSPWIdB(j)==thisSPWIdB(k)){ // the SPW id is the same
 	      Int reftypek = solSystObjects_p(thisId(k));
-	      Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
+ 	      Bool sameSolSystObjects = ((reftypek==reftypej) && (reftypek>-1)) // object with solar syst ref frame
+ 		|| ((reftypek==reftypej) && (reftypek==-2)); // ephemeris object
 	      if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects) ){ // and all columns are the same (not testing source, spw id, time, and interval)
 		//cout << "Found SOURCE rows " << j << " and " << k << " to be identical." << endl;
 
@@ -2388,7 +2396,8 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 	for (Int k=j+1 ; k < newNumrows_this ; ++k){
 	  if(thisSourceId(j)!=thisSourceId(k)){
 	    Int reftypek = solSystObjects_p(thisId(k));
-	    Bool sameSolSystObjects = (reftypek==reftypej) && (reftypek!=-1);
+ 	    Bool sameSolSystObjects = ((reftypek==reftypej) && (reftypek>-1)) // object with solar syst ref frame
+ 	      || ((reftypek==reftypej) && (reftypek==-2)); // ephemeris object;
 	    if( sourceRowsEquivalent(sourceCol, j, k, sameSolSystObjects)){ 
 	                                          // all columns are the same except source id (not testing spw id),
 	                                          // spw id must be different, otherwise row would have been deleted above

@@ -37,6 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MSSpwParse* MSSpwParse::thisMSSParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSSpwParse::node_p = 0x0;
   Vector<Int> MSSpwParse::idList;
+  Vector<Int> MSSpwParse::ddidList;
   Matrix<Int> MSSpwParse::chanList; 
   TableExprNode MSSpwParse::columnAsTEN_p;
   //# Constructor
@@ -58,6 +59,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     : MSParse(ms, "Spw")
   {
     idList.resize(0);
+    ddidList.resize(0);
     if(MSSpwParse::node_p) delete MSSpwParse::node_p;
     node_p = new TableExprNode();
   }
@@ -70,6 +72,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MSParse(), spwSubTable_p(spwSubTable), ddSubTable_p(ddSubTable)
   {
     idList.resize(0);
+    ddidList.resize(0);
     if(MSSpwParse::node_p) delete MSSpwParse::node_p;
     node_p = new TableExprNode();
     columnAsTEN_p = columnAsTEN;
@@ -105,6 +108,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       {
 	Found = False;
 	for(Int i=0;i<nDDIDRows;i++)
+	  {
+	    //	    cerr << "DDID->SPWID: " << i << " " <<  mapDDID2SpwID(i) << endl;
 	  if ((SpwIds(n) == mapDDID2SpwID(i)) && 
 	      (!msDataDescSubTable.flagRow()(i)) && 
 	      (!msSpwSubTable.flagRow()(SpwIds(n)))
@@ -125,9 +130,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		{
 		  idList.resize(idList.nelements()+1,True);
 		  idList(idList.nelements()-1) = mapDDID2SpwID(i);
+
+		  ddidList.resize(ddidList.nelements()+1, True);
+		  ddidList(ddidList.nelements()-1)=i;
 		}
-	      break;
+	      //	      break;
 	    }
+	  }
 	if ((!Found) && (addIDs))
 	  {
 	    //
@@ -140,6 +149,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
 
     if (addTen) addCondition(*node_p, condition);
+
+    //    cerr << "DDID = " << ddidList << endl;
 
     return node_p;
   }

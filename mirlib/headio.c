@@ -542,7 +542,7 @@ char *value,*defval;
     hdaccess_c(item,&iostat);					check(iostat);
   }
   if( dodef ) {
-    length = min(strlen(defval),len-1);
+    length = min((int) strlen(defval),len-1);
     memcpy(value,defval,length);
   }
   *(value+length) = 0;
@@ -579,7 +579,7 @@ char *keyword;
   size = hsize_c(item_in);
   offset = 0;
   while(offset < size){
-    length = min(size - offset, sizeof(buf));
+    length = min(size - offset, (int) sizeof(buf));
     hreadb_c(item_in,buf,offset,length,&iostat);	check(iostat);
     hwriteb_c(item_out,buf,offset,length,&iostat);	check(iostat);
     offset += length;
@@ -747,7 +747,7 @@ int *n,length;
     Strcpy(type,"unknown");
     *n = size + ITEM_HDR_SIZE;
   } else if(bufit){
-    if(strlen(buf) > length - 1)bug_c('f',"Descr buffer overflow in hdprobe");
+    if((int) strlen(buf) > length - 1)bug_c('f',"Descr buffer overflow in hdprobe");
     strcpy(descr,buf);
   }
 }

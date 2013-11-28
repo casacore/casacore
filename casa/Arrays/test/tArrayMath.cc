@@ -96,7 +96,7 @@ void NAME()\
   T* ap = a.data();\
   T* ep = e.data();\
   for (uInt i=0; i<a.size(); ++i) {\
-    ap[i] = (i+1)/120.;\
+    ap[i] = static_cast<T> ((i+1)/120.);      \
     ep[i] = OPER ap[i];\
   }\
   AlwaysAssertExit (allEQ(OPER a, e));\

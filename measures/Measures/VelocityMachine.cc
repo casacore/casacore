@@ -127,9 +127,20 @@ const Quantum<Double> &VelocityMachine::operator()(const Quantum<Double> &in) {
 }
 
 const Quantum<Double> &VelocityMachine::makeVelocity(Double in) {
-  resv_p.setValue(cvvo_p(cvfv_p(in).
-			 toDoppler(rest_p).getValue()).
-		  getValue().get().getValue() / vfac_p);
+	Double rfreqValue = rest_p.get().getValue();
+	ThrowIf(
+		rfreqValue == 0,
+		"Rest frequency is 0 so cannot convert to velocity"
+	);
+	ThrowIf(
+		rfreqValue < 0,
+		"Rest frequency is " + String::toString(rest_p)
+		+ " which is invalid because it is less than 0 so cannot "
+		" convert to velocity"
+	);
+        resv_p.setValue(cvvo_p(cvfv_p(in).
+                               toDoppler(rest_p).getValue()).
+                        getValue().get().getValue() / vfac_p);
   return resv_p;
 }
 

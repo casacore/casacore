@@ -663,7 +663,7 @@ void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
     {
       Int h;
       Int nxout=xout.nelements();
-      for (uInt j=0; j<nxout; j++) {
+      for (Int j=0; j<nxout; j++) {
         x_req=xout[j];
         Bool found;
         uInt where = binarySearchBrackets(found, xin, x_req, nElements);

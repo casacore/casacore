@@ -144,6 +144,15 @@ public:
   // Arrays are written as normal arrays using ArrayIO.h. 
   std::ostream& write (std::ostream& os) const;
 
+  // Compare two ValueHolder objects.
+  // They must have the same data type.
+  bool operator< (const ValueHolderRep& right) const;
+  /*
+  bool operator== (const ValueHolderRep& right) const;
+  bool near (const ValueHolderRep& right, tolerance=1e-5) const;
+  bool nearAbs (const ValueHolderRep& right, double tolerance=1e-5) const;
+  */
+
 private:
   // Forbid copy ctor and assignment.
   //# There is no fundamental reason to forbid them, but it saves

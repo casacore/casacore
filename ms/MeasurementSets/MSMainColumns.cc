@@ -76,8 +76,8 @@ ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   uvw2_p(),
   videoPoint_p(),
   weightSpectrum_p(),
+  weightSpectrumCorrected_p(),
   correctedData_p(),
-  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(ms, MS::columnName(MS::TIME)),
   timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
@@ -143,8 +143,8 @@ ROMSMainColumns::ROMSMainColumns():
   uvw2_p(),
   videoPoint_p(),
   weightSpectrum_p(),
+  weightSpectrumCorrected_p(),
   correctedData_p(),
-  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(),
   timeCentroidMeas_p(),
@@ -234,11 +234,11 @@ void ROMSMainColumns::attachOptionalCols(const MeasurementSet& ms)
   if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) {
     weightSpectrum_p.attach(ms,MS::columnName(MS::WEIGHT_SPECTRUM));
   }
+    if (cds.isDefined(MS::columnName(MS::CORRECTED_WEIGHT_SPECTRUM))) {
+    weightSpectrumCorrected_p.attach(ms,MS::columnName(MS::CORRECTED_WEIGHT_SPECTRUM));
+  }
   if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
     correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
-  }
-  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
-    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
   }
   if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
     modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));
@@ -282,8 +282,8 @@ MSMainColumns::MSMainColumns(MeasurementSet& ms):
   uvw2_p(),
   videoPoint_p(),
   weightSpectrum_p(),
+  weightSpectrumCorrected_p(),
   correctedData_p(),
-  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(ms, MS::columnName(MS::TIME)),
   timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
@@ -361,8 +361,8 @@ MSMainColumns::MSMainColumns():
   uvw2_p(),
   videoPoint_p(),
   weightSpectrum_p(),
+  weightSpectrumCorrected_p(),
   correctedData_p(),
-  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(),
   timeCentroidMeas_p(),
@@ -453,11 +453,11 @@ void MSMainColumns::attachOptionalCols(MeasurementSet& ms)
   if (cds.isDefined(MS::columnName(MS::WEIGHT_SPECTRUM))) {
     weightSpectrum_p.attach(ms,MS::columnName(MS::WEIGHT_SPECTRUM));
   }
+  if (cds.isDefined(MS::columnName(MS::CORRECTED_WEIGHT_SPECTRUM))) {
+    weightSpectrumCorrected_p.attach(ms,MS::columnName(MS::CORRECTED_WEIGHT_SPECTRUM));
+  }
   if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
     correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
-  }
-  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
-    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
   }
   if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
     modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));

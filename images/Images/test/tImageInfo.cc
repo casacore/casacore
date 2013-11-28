@@ -37,10 +37,9 @@
 #include <casa/Quanta/QLogical.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/iostream.h>
-
+#include <coordinates/Coordinates/DirectionCoordinate.h>
 
 #include <casa/namespace.h>
-
 
 void equal (const ImageInfo& ii1, const ImageInfo& ii2)
 {
@@ -186,7 +185,7 @@ try {
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (AipsError& x) {}
+    	catch (const AipsError& x) {}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
     	myinfo.setAllBeams(2, 1, GaussianBeam());
@@ -195,7 +194,7 @@ try {
     		myinfo.setBeam(2, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (AipsError& x) {
+    	catch (AipsError x) {
     		cout << "Exception thrown as expected: "
     			<< x.getMesg() << endl;
     	}
@@ -207,7 +206,7 @@ try {
     		myinfo.setBeam(0, 0, minAx, majAx, pa);
     		ok = False;
     	}
-    	catch (AipsError& x) {
+    	catch (AipsError x) {
     		cout << "Exception thrown as expected: "
     			<< x.getMesg() << endl;
     	}
@@ -237,20 +236,50 @@ try {
     {
     	ImageBeamSet bset(IPosition(2, 10, 4));
     	ImageInfo myinfo = ImageInfo();
-        myinfo.setBeams(bset);
+    	myinfo.setBeams(bset);
     	ImageBeamSet bset2(IPosition(2, 10, 4));
     	myinfo.setBeams(bset2);
     	AlwaysAssert(myinfo.getBeamSet() == bset2, AipsError);
     	// check that we can set a different size beam set
     	ImageBeamSet bset3(IPosition(2, 11, 4));
-        myinfo.setBeams(bset3);
+		myinfo.setBeams(bset3);
     	AlwaysAssert(myinfo.getBeamSet() == bset3, AipsError);
+
     }
- } catch (AipsError& x) {
+    {
+    	cout << "*** Test getBeamAreaInPixels" << endl;
+    	ImageInfo myinfo;
+    	GaussianBeam beam(
+    		Quantity(4, "arcsec"), Quantity(2, "arcsec"), Quantity(30, "deg")
+    	);
+    	ImageBeamSet bset(10, 4, beam);
+    	bset.setBeam(2, 2,
+    		GaussianBeam(
+    			Quantity(5, "arcsec"), Quantity(3, "arcsec"),
+    			Quantity(30, "deg")
+    		)
+    	);
+    	myinfo.setBeams(bset);
+    	DirectionCoordinate dc;
+    	dc.setWorldAxisUnits(Vector<String>(2, "arcsec"));
+    	dc.setIncrement(Vector<Double>(2, 0.7));
+    	for (uInt i=0; i<10; i++) {
+    		for (uInt j=0; j<4; j++) {
+    			Double expec = (i == 2 && j == 2)
+    				? 34.686429656840772 : 18.499429150315081;
+    	    	AlwaysAssert(
+    	    		near(myinfo.getBeamAreaInPixels(i, j, dc), expec),
+    	    		AipsError
+    	    	);
+
+    		}
+    	}
+    }
+} catch (const AipsError& x) {
   cout << "Caught error " << x.getMesg() << endl;
   return 1;
- } 
+} 
   
- cout << "OK" << endl;
- return 0;
+    cout << "OK" << endl;
+    return 0;
 }

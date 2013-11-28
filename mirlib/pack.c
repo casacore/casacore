@@ -61,7 +61,7 @@ void	unpack16_c(from,to,n)
 
 #ifndef WORDS_BIGENDIAN 
 #ifndef unicos
-static int words_littleendian = 1;
+/*//static int words_littleendian = 1;*/
 /************************************************************************/
 /*									*/
 /*  The pack routines -- these convert between the host format and	*/
@@ -109,8 +109,8 @@ char *in;
     *s++ = *(in+1);
     *s++ = *in;
     if(0x80 & *in){
-      *s++ = 0xFF;
-      *s++ = 0xFF;
+      *s++ = '\xFF';
+      *s++ = '\xFF';
     } else {
       *s++ = 0;
       *s++ = 0;

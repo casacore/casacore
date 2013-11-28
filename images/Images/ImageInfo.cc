@@ -37,6 +37,7 @@
 #include <casa/Utilities/Regex.h>
 #include <tables/LogTables/LoggerHolder.h>
 #include <casa/sstream.h>
+#include <coordinates/Coordinates/DirectionCoordinate.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 
 
@@ -884,6 +885,16 @@ void ImageInfo::logMessage (Bool& warn, LogIO& os, Bool relax,
   }
 }
 
+Double ImageInfo::getBeamAreaInPixels(
+    Int channel, Int stokes, const DirectionCoordinate& dc
+) const {
+	ThrowIf(
+		! hasBeam(),
+		"There is no beam set associated with this ImageInfo object"
+	);
+	Quantity pixelArea = dc.getPixelArea();
+	return restoringBeam(channel, stokes).getArea(pixelArea.getUnit())/pixelArea.getValue();
+}
 
 } //# NAMESPACE CASA - END
 

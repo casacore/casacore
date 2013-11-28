@@ -28,6 +28,7 @@
 //# Includes
 #include <casa/Exceptions/Error.h>
 #include <casa/Quanta/QMath.h>
+#include <casa/Quanta/QLogical.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/sstream.h>

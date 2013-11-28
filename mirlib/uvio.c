@@ -950,7 +950,7 @@ SELECT *sel;
   }
 }
 /************************************************************************/
-private UV *uv_getuv(tno)
+private UV *uv_getuv(int tno)
 /*
   Allocate a structure describing a uv file.
 ------------------------------------------------------------------------*/
@@ -1832,7 +1832,7 @@ VARIABLE *vt;
 
     changed = FALSE;
     if(*(s+2) != VAR_EOR){
-      v = &uv->variable[*s];
+      v = &uv->variable[(int) *s];
       intsize = internal_size[v->type];
       extsize = external_size[v->type];
     }

@@ -4696,4 +4696,14 @@ Vector<Int> CoordinateSystem::getWorldAxesOrder(
 	return myorder;
 }
 
+Bool CoordinateSystem::isDirectionAbscissaLongitude() const {
+	Vector<Int> dirPixelAxes = directionAxesNumbers();
+	ThrowIf(
+		dirPixelAxes(0) == -1 || dirPixelAxes(1) == -1,
+		"The pixel axes for the DirectionCoordinate have been removed"
+	);
+	return dirPixelAxes(0) < dirPixelAxes(1);
+}
+
+
 } //# NAMESPACE CASA - END

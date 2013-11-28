@@ -334,11 +334,12 @@ namespace casa {
         Table ddtab (table.keywordSet().asTable("DATA_DESCRIPTION"));
         Table spwtab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
         TableExprNode colAsTEN = table.col("DATA_DESC_ID");
-        Vector<Int> spwid;
+        Vector<Int> spwid, spwDDID;
         Matrix<Int> chanid;
         if (msSpwGramParseCommand(MSSpectralWindow(spwtab),
                                   MSDataDescription(ddtab),
-                                  colAsTEN, selStr, spwid, chanid) == 0) {
+                                  colAsTEN, selStr,
+                                  spwid, chanid, spwDDID) == 0) {
           itsDataNode = *(msSpwGramParseNode());
         }
         msSpwGramParseDeleteNode();

@@ -99,7 +99,7 @@ public:
   virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
                           const MFrequency& mfreq, const Bool updatecoeffs=False);
 
-  virtual Bool setSource(const String& sourceName);
+  virtual Bool setSource(const String& sourceName, const MDirection& sourceDir);
   void setFreqUnit(const String& freqUnit);
 
   // Functions for setting up coeffs_p by taking a bunch of numbers
@@ -232,7 +232,7 @@ public:
   virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
                           const MFrequency& mfreq, const Bool /* updatecoeffs */);
 
-  virtual Bool setSource(const String& sourceName);
+  virtual Bool setSource(const String& sourceName, const MDirection& sourceDir);
 
   void setFreqUnit(const String& freqUnit);
 

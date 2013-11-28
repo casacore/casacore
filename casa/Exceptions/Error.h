@@ -39,16 +39,28 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// Throw an exception with a string composed of various arguments.
+// If the condition is true, it throws an AipsError exception with a string.
 // E.g.
 // <srcblock>
-//    CASATHROW (AipsError, "integer=" << myint << ", float=" << myfloat);
+//    ThrowIf (myint<0, "invalid value");
 // </srcblock>
-#define CASATHROW(exc, arg) do {     \
-    std::ostringstream casa_log_oss; \
-    casa_log_oss << arg;             \
-    throw exc(casa_log_oss.str());   \
-  } while (0)
+#define ThrowIf(cond, str)   \
+  if (cond) {                \
+    throw AipsError(str);    \
+  }
+
+// If the condition is true, it throws an AipsError exception with a string.
+// The string can be composed of various arguments for which operator<< is
+// defined. E.g.
+// <srcblock>
+//    ThrowIf (myint<0, "integer=" << myint << ", float=" << myfloat);
+// </srcblock>
+#define ThrowIfStr(cond, arg)             \
+  if (cond) {                             \
+    std::ostringstream casa_log_oss;      \
+    casa_log_oss << arg;                  \
+    throw AipsError(casa_log_oss.str());  \
+  }
 
 
 // <summary>Base class for all Casacore library errors</summary>
