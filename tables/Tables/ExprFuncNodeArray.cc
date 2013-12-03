@@ -59,6 +59,11 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
 TableExprFuncNodeArray::~TableExprFuncNodeArray()
 {}
 
+void TableExprFuncNodeArray::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+{
+    node_p.getAggrNodes (aggr);
+}
+
 // Fill the children pointers of a node.
 // Also reduce the tree if possible by combining constants.
 // When one of the nodes is a constant, convert its type if
@@ -224,7 +229,6 @@ const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
 IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
 {
   IPosition order = getAxes(id, ndim, 1, False);
-  cout <<"order="<< order<<endl;
   if (order.empty()) {
     // Default is to transpose the full array.
     order.resize (ndim);
@@ -1410,6 +1414,21 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr*arr, getAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::arrmeansFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return partialMeans (arr, getAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::runmeanFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingArrayMath (arr, getArrayShape(id), MeanFunc<DComplex>());
+      }
+    case TableExprFuncNode::boxmeanFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedArrayMath (arr, getArrayShape(id), MeanFunc<DComplex>());
       }
     case TableExprFuncNode::arrayFUNC:
       {

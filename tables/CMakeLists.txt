@@ -26,9 +26,6 @@ endif (APPLE)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_tables
-#Tables/ExprAggrNode.cc
-#Tables/ExprGroupAggrFunc.cc
-#Tables/ExprGroup.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
 Tables/BaseTabIter.cc
@@ -49,11 +46,15 @@ Tables/DataManAccessor.cc
 Tables/DataManError.cc
 Tables/DataManInfo.cc
 Tables/DataManager.cc
+Tables/ExprAggrNode.cc
 Tables/ExprConeNode.cc
 Tables/ExprDerNode.cc
 Tables/ExprDerNodeArray.cc
 Tables/ExprFuncNode.cc
 Tables/ExprFuncNodeArray.cc
+Tables/ExprGroup.cc
+Tables/ExprGroupAggrFunc.cc
+Tables/ExprGroupAggrFuncArray.cc
 Tables/ExprLogicNode.cc
 Tables/ExprLogicNodeArray.cc
 Tables/ExprMathNode.cc
@@ -223,11 +224,15 @@ Tables/DataManAccessor.h
 Tables/DataManError.h
 Tables/DataManInfo.h
 Tables/DataManager.h
+Tables/ExprAggrNode.h
 Tables/ExprConeNode.h
 Tables/ExprDerNode.h
 Tables/ExprDerNodeArray.h
 Tables/ExprFuncNode.h
 Tables/ExprFuncNodeArray.h
+Tables/ExprGroup.h
+Tables/ExprGroupAggrFunc.h
+Tables/ExprGroupAggrFuncArray.h
 Tables/ExprLogicNode.h
 Tables/ExprLogicNodeArray.h
 Tables/ExprMathNode.h

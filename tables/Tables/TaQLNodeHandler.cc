@@ -374,6 +374,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return TaQLNodeResult();
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitGroupNode (const TaQLGroupNodeRep& node)
+  {
+    const TaQLMultiNodeRep* keys = node.itsNodes.getMultiRep();
+    const std::vector<TaQLNode>& nodes = keys->itsNodes;
+    std::vector<TableExprNode> outnodes(nodes.size());
+    for (uInt i=0; i<nodes.size(); ++i) {
+      TaQLNodeResult result = visitNode (nodes[i]);
+      outnodes[i] = getHR(result).getExpr();
+    }
+    topStack()->handleGroupby (outnodes,
+                               node.itsType==TaQLGroupNodeRep::Rollup);
+    return TaQLNodeResult();
+  }
+
   TaQLNodeResult TaQLNodeHandler::visitSortKeyNode (const TaQLSortKeyNodeRep&)
   {
     // This function cannot be called, because visitSortNode handles
@@ -471,7 +485,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeResult res(hrval);
     if (! node.getNoExecute()) {
       if (outer) {
-	curSel->execute (node.style().doTiming(), False, True, 0);
+	curSel->execute (node.style().doTiming(), False, False, 0);
 	hrval->setTable (curSel->getTable());
 	hrval->setNames (new Vector<String>(curSel->getColumnNames()));
 	hrval->setString ("select");
@@ -825,7 +839,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (node.isValid()) {
       TaQLNodeResult result = visitNode (node);
       const TaQLNodeHRValue& res = getHR(result);
-      topStack()->handleSelect (res.getExpr());
+      topStack()->handleWhere (res.getExpr());
+    }
+  }
+
+  void TaQLNodeHandler::handleHaving (const TaQLNode& node)
+  {
+    if (node.isValid()) {
+      TaQLNodeResult result = visitNode (node);
+      const TaQLNodeHRValue& res = getHR(result);
+      topStack()->handleHaving (res.getExpr());
     }
   }
 

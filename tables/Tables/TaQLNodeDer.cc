@@ -675,6 +675,34 @@ TaQLColumnsNodeRep* TaQLColumnsNodeRep::restore (AipsIO& aio)
   return new TaQLColumnsNodeRep (distinct, TaQLNode::restoreMultiNode(aio));
 }
 
+TaQLGroupNodeRep::~TaQLGroupNodeRep()
+{}
+TaQLNodeResult TaQLGroupNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitGroupNode (*this);
+}
+void TaQLGroupNodeRep::show (std::ostream& os) const
+{
+  os << " GROUPBY";
+  if (itsType == Rollup) {
+    os << " ROLLUP";
+  }
+  os << ' ';
+  itsNodes.show (os);
+}
+void TaQLGroupNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType);
+  itsNodes.saveNode (aio);
+}
+TaQLGroupNodeRep* TaQLGroupNodeRep::restore (AipsIO& aio)
+{
+  char ctype;
+  aio >> ctype;
+  TaQLGroupNodeRep::Type type = (TaQLGroupNodeRep::Type)ctype;
+  return new TaQLGroupNodeRep (type, TaQLNode::restoreMultiNode(aio));
+}
+
 TaQLSortKeyNodeRep::~TaQLSortKeyNodeRep()
 {}
 TaQLNodeResult TaQLSortKeyNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -929,14 +957,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
     itsColumns(columns), itsTables(tables), itsJoin(join),
     itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving)
-{
-  if (itsHaving.isValid()  &&  !itsGroupby.isValid()) {
-    throw TableInvExpr ("HAVING can only be used if GROUPBY is used");
-  }
-  if (itsGroupby.isValid()) {
-    throw TableInvExpr ("GROUPBY is not supported yet");
-  }
-}
+{}
 TaQLSelectNodeRep::~TaQLSelectNodeRep()
 {}
 TaQLNodeResult TaQLSelectNodeRep::visit (TaQLNodeVisitor& visitor) const

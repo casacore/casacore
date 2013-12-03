@@ -58,53 +58,6 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 TableExprFuncNode::~TableExprFuncNode()
 {}
 
-Bool TableExprFuncNode::isSingleValue() const
-{
-  // Constant and group reduction functions result in a single value.
-  // Note that in the column-list something like max(column) is ambiguous
-  // because for arrays it could mean take the max of each array (resulting in
-  // a scalar per row) or take the max of the corresponding elements of all
-  // arrays in the column (resulting in a single array).
-  // For now max(column) means the first for arrays, but for scalars it is the
-  // max of the entire column (to be SQL compliant).
-  // If needed, we can later introduce maxc for the meaning max(column),
-  // thus a result as an array with the meaning max(row1, row2, ...).
-  // This is true for all reduction functions below.
-  switch (funcType_p) {
-  case piFUNC:
-  case eFUNC:
-  case cFUNC:
-  case randFUNC:
-    return True;
-  case arrsumFUNC:
-  case arrproductFUNC:
-  case arrsumsqrFUNC:
-  case arrminFUNC:
-  case arrmaxFUNC:
-  case arrmeanFUNC:
-  case arrvarianceFUNC:
-  case arrstddevFUNC:
-  case arravdevFUNC:
-  case arrrmsFUNC:
-  case arrmedianFUNC:
-  case arrfractileFUNC:
-  case anyFUNC:
-  case allFUNC:
-  case ntrueFUNC:
-  case nfalseFUNC:
-    return operands_p[0]->valueType() == VTScalar;
-  default:
-    break;
-  }
-  // Otherwise all children have to be such.
-  for (uInt i=0; i<operands_p.size(); ++i) {
-    if (! operands_p[0]->isSingleValue()) {
-      return False;
-    }
-  }
-  return True;
-}
-
 // Fill the children pointers of a node.
 // Also reduce the tree if possible by combining constants.
 // If one of the nodes is a constant, convert its type if
@@ -114,7 +67,7 @@ TableExprNodeRep* TableExprFuncNode::fillNode
 				    PtrBlock<TableExprNodeRep*>& nodes,
 				    const Block<Int>& dtypeOper)
 {
-    // Fill child nodes as needed. It also fills ooperands_p.
+    // Fill child nodes as needed. It also fills operands_p.
     fillChildNodes (thisNode, nodes, dtypeOper);
     // Set the unit for some functions.
     Double scale = fillUnits (thisNode, thisNode->operands_p,
@@ -155,7 +108,7 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case mjdtodateFUNC:
       // These functions require days.
       if (! childUnit.empty()) {
-	TableExprNodeUnit::adaptUnit (nodes[0], "d");
+        TableExprNodeUnit::adaptUnit (nodes[0], "d");
       }
       break;
     case absFUNC:
@@ -198,6 +151,14 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case boxavdevFUNC:
     case boxrmsFUNC:
     case boxmedianFUNC:
+    case gsumFUNC:
+    case gminFUNC:
+    case gmaxFUNC:
+    case gmeanFUNC:
+    case gstddevFUNC:
+    case grmsFUNC:
+    case gmedianFUNC:
+    case gfractileFUNC:
       // These functions return the same unit as their child.
       node->setUnit (childUnit);
       break;
@@ -205,30 +166,32 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case squareFUNC:
     case arrsumsqrFUNC:
     case arrsumsqrsFUNC:
+    case gsumsqrFUNC:
     case arrvarianceFUNC:
     case arrvariancesFUNC:
     case runvarianceFUNC:
-    case boxvarianceFUNC:
-      // These functions return the square of their child.
-     if (! childUnit.empty()) {
-       Quantity q(1., childUnit);
-       node->setUnit (pow(q,2).getFullUnit());
-     }
-     break;
+    case boxvarianceFUNC: 
+    case gvarianceFUNC:
+     // These functions return the square of their child.
+      if (! childUnit.empty()) {
+        Quantity q(1., childUnit);
+        node->setUnit (pow(q,2).getFullUnit());
+      }
+      break;
     case cubeFUNC:
-     if (! childUnit.empty()) {
-       Quantity q(1., childUnit);
-       node->setUnit (pow(q,3).getFullUnit());
-     }
-     break;
+      if (! childUnit.empty()) {
+        Quantity q(1., childUnit);
+        node->setUnit (pow(q,3).getFullUnit());
+      }
+      break;
     case sqrtFUNC:
       // These functions return the sqrt of their child.
       if (! childUnit.empty()) {
-	Quantity q(1., childUnit);
+        Quantity q(1., childUnit);
         Quantity qs(sqrt(q));
         // sqrt result is always in SI units, so scaling might be involved.
         scale = qs.getValue();
-	node->setUnit (qs.getFullUnit());
+        node->setUnit (qs.getFullUnit());
       }
       break;
     case sinFUNC:
@@ -239,7 +202,7 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case hdmsFUNC:
       // These functions return no unit, but their child must be in radians.
       if (! childUnit.empty()) {
-	TableExprNodeUnit::adaptUnit (nodes[0], "rad");
+        TableExprNodeUnit::adaptUnit (nodes[0], "rad");
       }
       break;
     case iifFUNC:
@@ -269,7 +232,7 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case findconeFUNC:
     case findcone3FUNC:
       for (uInt i=0; i<nodes.nelements(); ++i) {
-	TableExprNodeUnit::adaptUnit (nodes[i], "rad");
+        TableExprNodeUnit::adaptUnit (nodes[i], "rad");
       }
       break;
     default:
@@ -872,6 +835,11 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	    DComplex val = operands_p[0]->getDComplex (id);
 	    return val * val;
 	}
+    case arrmeanFUNC:
+        if (operands_p[0]->valueType() == VTArray) {
+	    return mean (operands_p[0]->getArrayDComplex (id));
+	}
+	return operands_p[0]->getDComplex (id);
     case iifFUNC:
         return operands_p[0]->getBool(id)  ?
 	       operands_p[1]->getDComplex(id) : operands_p[2]->getDComplex(id);
@@ -1262,6 +1230,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTReal, NTReal, nodes);
     case arrmeanFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
     case arrvarianceFUNC:
     case arrstddevFUNC:
     case arravdevFUNC:
@@ -1369,6 +1339,12 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	case arrsumsqrsFUNC:
 	    dtin = dtout = NTNumeric;
 	    break;
+        case arrmeansFUNC:
+        case runmeanFUNC:
+        case boxmeanFUNC:
+            dtin = NTNumeric;
+            dtout = NTDouCom;
+            break;
 	case arrfractilesFUNC:
 	    axarg = 2;
 	    break;

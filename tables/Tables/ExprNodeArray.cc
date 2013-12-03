@@ -1062,13 +1062,15 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
 	}
 	j++;
     }
-    // Check if all indices have data type Int and are scalars.
+    // Check if all indices have data type Int, are scalars, and don't
+    // use aggregate functions.
     for (uInt i=0; i<j; i++) {
 	if (operands_p[i] != 0) {
 	    if (operands_p[i]->dataType()  != NTInt
 	    ||  operands_p[i]->valueType() != VTScalar) {
 		throw (TableInvExpr ("Index value must an integer scalar"));
 	    }
+            TableExprNodeRep::checkAggrFuncs (operands_p[i]);
 	}
     }
     convertConstIndex();

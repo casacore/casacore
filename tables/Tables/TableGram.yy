@@ -47,11 +47,13 @@ using namespace casa;
 %token VALUES
 %token DELETE
 %token COUNT
+%token COUNTALL
 %token CALC
 %token CREATETAB
 %token FROM
 %token WHERE
 %token GROUPBY
+%token GROUPROLL
 %token HAVING
 %token ORDERBY
 %token NODUPL
@@ -448,15 +450,6 @@ dminfo:    {      /* no datamans */
            }
          ;
 
-groupby:   {          /* no groupby */
-	       $$ = new TaQLNode();
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | GROUPBY exprlist {
-	       $$ = $2;
-	   }
-         ;
-
 exprlist:  exprlist COMMA orexpr {
                $$ = $1;
 	       $$->add (*$3);
@@ -466,6 +459,22 @@ exprlist:  exprlist COMMA orexpr {
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	       $$->add (*$1);
            }
+         ;
+
+groupby:   {          /* no groupby */
+	       $$ = new TaQLNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GROUPBY exprlist {
+	       $$ = new TaQLNode(
+                    new TaQLGroupNodeRep (TaQLGroupNodeRep::Normal, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GROUPROLL exprlist {
+	       $$ = new TaQLNode(
+                    new TaQLGroupNodeRep (TaQLGroupNodeRep::Rollup, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          ;
 
 having:    {          /* no having */
@@ -1053,6 +1062,11 @@ simbexpr:  LPAREN orexpr RPAREN
          | COUNT LPAREN elemlist RPAREN {
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ("COUNT", *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | COUNTALL {
+	       $$ = new TaQLNode(
+                    new TaQLFuncNodeRep ("COUNTALL"));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME {

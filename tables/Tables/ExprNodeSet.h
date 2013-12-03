@@ -124,6 +124,9 @@ public:
     // Show the node.
     void show (ostream& os, uInt indent) const;
 
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+  
     // Is it a discrete set element.
     Bool isDiscrete() const;
 
@@ -329,6 +332,9 @@ public:
     // Show the node.
     void show (ostream& os, uInt indent) const;
 
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+  
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.
     //# Note that if itsCheckTypes is set, the data types are already

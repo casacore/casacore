@@ -216,6 +216,10 @@ public:
     Bool orderGiven() const;
 
 private:
+    // Check if the node results in a scalar and does not contain
+    // aggregate functions.
+    void checkNode() const;
+
     TableExprNode node_p;
     Sort::Order   order_p;
     Bool          given_p;
@@ -257,9 +261,12 @@ public:
     : indexPtr_p(0) {}
 
   // Construct from a column name and expression.
-  TableParseUpdate (const String& columnName, const TableExprNode&);
+  // By default it checks if no aggregate functions are used.
+  TableParseUpdate (const String& columnName, const TableExprNode&,
+                    Bool checkAggr=True);
 
   // Construct from a column name, subscripts, and expression.
+  // It checks if no aggregate functions are used.
   TableParseUpdate (const String& columnName,
 		    const TableExprNodeSet& indices,
 		    const TableExprNode&,
@@ -345,6 +352,12 @@ public:
     PCRETAB
   };
 
+  enum GroupAggrType {
+    GROUPBY=1,
+    AGGR_FUNCS=2,
+    ONLY_COUNTALL=4
+  };
+
   // Construct.
   TableParseSelect (CommandType type);
 
@@ -359,7 +372,7 @@ public:
   TableExprNode getNode() const
     { return node_p; }
 
-  // Execute the select command (select/sort/projection/giving).
+  // Execute the select command (select/sort/projection/groupby/having/giving).
   // The setInGiving flag tells if a set in the GIVING part is allowed.
   // The mustSelect flag tells if a SELECT command must do something.
   // Usually that is required, but not for a SELECT in an INSERT command.
@@ -384,7 +397,14 @@ public:
   void show (ostream& os) const;
 
   // Keep the selection expression.
-  void handleSelect (const TableExprNode&);
+  void handleWhere (const TableExprNode&);
+
+  // Keep the groupby expressions.
+  // It checks if they are all scalar expressions.
+  void handleGroupby (const vector<TableExprNode>&, Bool rollup);
+
+  // Keep the having expression.
+  void handleHaving (const TableExprNode&);
 
   // Keep the expression of a calculate command.
   void handleCalcComm (const TableExprNode&);
@@ -474,8 +494,19 @@ public:
   // Get the resulting table.
   const Table& getTable() const;
 
+  // An exception is thrown if the node uses an aggregate function.
+  static void checkAggrFuncs (const TableExprNode& node);
 
 private:
+  // Test if groupby or aggregate functions are given.
+  // <br> bit 0:  on = groupby is given
+  // <br> bit 1:  on = aggregate functions are given
+  // <br> bit 2:  on = only select count(*) aggregate function is given
+  Int testGroupAggr (vector<TableExprAggrNode*>& aggr) const;
+
+  // Get the aggregate functions used in SELECT and HAVING.
+  vector<TableExprAggrNode*> getAggrNodes() const;
+
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).
   // If the function name is unknown, NRFUNC is returned.
@@ -506,6 +537,18 @@ private:
   // Do the projection containing column expressions.
   // Projection is done for the selected rownrs.
   Table doProjectExpr();
+
+  // Do the groupby/aggregate step.
+  Table doGroupby (bool showTimings,
+                   vector<TableExprAggrNode*> aggrNodes,
+                   Int groupAggrUsed);
+
+  // Do a groupby/aggregate step that only does a 'select count(*)'.
+  Table doOnlyCountAll (TableExprAggrNode* aggrNode,
+                        Int64 nrrow);
+
+  // Do a full groupby/aggregate step.
+  Table doGroupByAggr (const vector<TableExprAggrNode*>& aggrNodes);
 
   // Do the sort step.
   void doSort (Bool showTimings, const Table& origTable);
@@ -627,6 +670,11 @@ private:
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.
   TableExprNode node_p;
+  //# The GROUPBY expressions.
+  vector<TableExprNode> groupbyNodes_p;
+  Bool groupbyRollup_p;   //# use ROLLUP in GROUPBY? 
+  //# The HAVING expression.
+  TableExprNode havingNode_p;
   //# The possible limit (= max nr of selected rows) (0 means no limit).
   Int64 limit_p;
   //# The possible offset (= nr of selected rows to skip).

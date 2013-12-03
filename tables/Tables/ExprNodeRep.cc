@@ -114,6 +114,21 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
        << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
 }
 
+void TableExprNodeRep::getAggrNodes (vector<TableExprAggrNode*>&)
+{}
+
+void TableExprNodeRep::checkAggrFuncs (const TableExprNodeRep* node)
+{
+  vector<TableExprAggrNode*> aggr;
+  if (node) {
+    const_cast<TableExprNodeRep*>(node)->getAggrNodes (aggr);
+    if (! aggr.empty()) {
+      throw TableInvExpr("Invalid use of an aggregate function "
+                         "(only use in SELECT or HAVING clause)");
+    }
+  }
+}
+
 void TableExprNodeRep::setUnit (const Unit& unit)
 {
     unit_p = unit;
@@ -125,11 +140,6 @@ void TableExprNodeRep::setUnit (const Unit& unit)
 Double TableExprNodeRep::getUnitFactor() const
 {
     return 1.;
-}
-
-Bool TableExprNodeRep::isSingleValue() const
-{
-  return isConstant();
 }
 
 void TableExprNodeRep::adaptSetUnits (const Unit&)
@@ -674,17 +684,14 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
     }
 }
 
-Bool TableExprNodeBinary::isSingleValue() const
+void TableExprNodeBinary::getAggrNodes (vector<TableExprAggrNode*>& aggr)
 {
-  // If no children, it is a constant single value.
-  if (! lnode_p) {
-    return True;
-  } else if (! rnode_p) {
-    // Unary node, thus return child value.
-    return lnode_p->isSingleValue();
+  if (lnode_p) {
+    lnode_p->getAggrNodes (aggr);
   }
-  // Binary; both children must be single.
-  return rnode_p->isSingleValue() && rnode_p->isSingleValue();
+  if (rnode_p) {
+    rnode_p->getAggrNodes (aggr);
+  }
 }
 
 // Check the datatypes and get the common one.
@@ -1027,6 +1034,15 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     for (uInt j=0; j<operands_p.nelements(); j++) {
 	if (operands_p[j] != 0) {
 	    operands_p[j]->show (os, indent+2);
+	}
+    }
+}
+
+void TableExprNodeMulti::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+{
+    for (uInt j=0; j<operands_p.nelements(); j++) {
+	if (operands_p[j] != 0) {
+            operands_p[j]->getAggrNodes (aggr);
 	}
     }
 }

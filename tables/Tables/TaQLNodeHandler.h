@@ -115,6 +115,7 @@ public:
   virtual TaQLNodeResult visitColNode      (const TaQLColNodeRep& node);
   virtual TaQLNodeResult visitColumnsNode  (const TaQLColumnsNodeRep& node);
   virtual TaQLNodeResult visitJoinNode     (const TaQLJoinNodeRep& node);
+  virtual TaQLNodeResult visitGroupNode    (const TaQLGroupNodeRep& node);
   virtual TaQLNodeResult visitSortKeyNode  (const TaQLSortKeyNodeRep& node);
   virtual TaQLNodeResult visitSortNode     (const TaQLSortNodeRep& node);
   virtual TaQLNodeResult visitLimitOffNode (const TaQLLimitOffNodeRep& node);
@@ -157,6 +158,9 @@ private:
 
   // Handle the WHERE clause.
   void handleWhere (const TaQLNode&);
+
+  // Handle the HAVING clause.
+  void handleHaving (const TaQLNode&);
 
   // Handle the UPDATE SET clause.
   void handleUpdate (const TaQLMultiNode&);

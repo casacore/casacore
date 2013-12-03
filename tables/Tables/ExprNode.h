@@ -1077,14 +1077,14 @@ public:
 					   const TableExprNodeSet& indices,
 					   const TaQLStyle& = TaQLStyle(0));
  
-    // returns pointer to the representation-object of it
+    // returns const pointer to the representation-object of it
     const TableExprNodeRep* getNodeRep() const;
 
     // Adapt the unit of the expression to the given unit (if not empty).
     void adaptUnit (const Unit&);
 
 private:
-    // returns pointer to the representation-object of it
+    // returns non-const pointer to the representation-object of it
     TableExprNodeRep* getRep();
 
     // convert Block of TableExprNode to PtrBlock of TableExprNodeRep*.

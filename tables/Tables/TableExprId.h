@@ -59,6 +59,8 @@ class TableExprData;
 // Three types are available:
 // <ol>
 //  <li> A row number giving the row to test in a table.
+//       It also contains a sequence number (0..n) which is used to get the
+//       result calculated by aggregate functions.
 //  <li> A <linkto class=RecordInterface>RecordInterface</linkto>
 //       object giving the record to test.
 //  <li> A <linkto class=TableExprData>TableExprData</linkto>
@@ -116,6 +118,9 @@ public:
     // Get the row number.
     uInt rownr() const;
 
+    // Get the sequence number.
+    uInt seqnr() const;
+
     // Get the Record reference.
     const RecordInterface& record() const;
 
@@ -125,11 +130,15 @@ public:
     // Set the row number.
     void setRownr (uInt rownr);
 
+    // Set the sequence number.
+    void setSeqnr (uInt seqnr);
+
     // Set the record.
     void setRecord (const RecordInterface&);
 
 private:
     uInt                   row_p;
+    uInt                   seqnr_p;
     const RecordInterface* record_p;
     const TableExprData*   data_p;
 };
@@ -138,18 +147,21 @@ private:
 
 inline TableExprId::TableExprId (uInt rowNumber)
 : row_p    (rowNumber),
+  seqnr_p  (0),
   record_p (0),
   data_p   (0)
 {}
 
 inline TableExprId::TableExprId (const RecordInterface& record)
 : row_p    (32768*32768),
+  seqnr_p  (0),
   record_p (&record),
   data_p   (0)
 {}
 
 inline TableExprId::TableExprId (const TableExprData& data)
 : row_p    (32768*32768),
+  seqnr_p  (0),
   record_p (0),
   data_p   (&data)
 {}
@@ -157,6 +169,11 @@ inline TableExprId::TableExprId (const TableExprData& data)
 inline uInt TableExprId::rownr() const
 {
     return row_p;
+}
+
+inline uInt TableExprId::seqnr() const
+{
+    return seqnr_p;
 }
 
 inline const RecordInterface& TableExprId::record() const
@@ -172,6 +189,11 @@ inline const TableExprData& TableExprId::data() const
 inline void TableExprId::setRownr (uInt rownr)
 {
     row_p = rownr;
+}
+
+inline void TableExprId::setSeqnr (uInt seqnr)
+{
+    seqnr_p = seqnr;
 }
 
 inline void TableExprId::setRecord (const RecordInterface& record)

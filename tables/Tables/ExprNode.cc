@@ -31,6 +31,7 @@
 #include <tables/Tables/ExprMathNode.h>
 #include <tables/Tables/ExprLogicNode.h>
 #include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprAggrNode.h>
 #include <tables/Tables/ExprUDFNode.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
@@ -1217,10 +1218,16 @@ TableExprNode TableExprNode::newFunctionNode
     // Check all the operands and get the resulting data type and value type
     // of the function.
     // It also fills the expected data and value type of the operands.
-    Block<Int> dtypeOper;
-    Block<Int> vtypeOper;
     TableExprNodeRep::ValueType resVT;
     TableExprNodeRep::NodeDataType resDT;
+    Block<Int> dtypeOper;
+    Block<Int> vtypeOper;
+    if (ftype >= TableExprFuncNode::FirstAggrFunc) {
+        resDT = TableExprAggrNode::checkOperands (dtypeOper, resVT, ftype, par);
+        TableExprFuncNode* fnode = new TableExprAggrNode (ftype, resDT,
+                                                          resVT, set);
+	return TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+    }
     resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
 					      ftype, par);
     // Create new function node and fill it.

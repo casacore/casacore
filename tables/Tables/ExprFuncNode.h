@@ -181,78 +181,97 @@ public:
 	    // for Bool array returning Int scalar
 	ntrueFUNC,        //# 87
 	ntruesFUNC,       //# 88
-	gnfalseFUNC,      //# 89
-	nfalseFUNC,       //# 90
-	nfalsesFUNC,      //# 91
+	nfalseFUNC,       //# 89
+	nfalsesFUNC,      //# 90
 	    // for any type returning array of that type
-	arrayFUNC,        //# 92
-	transposeFUNC,    //# 93
+	arrayFUNC,        //# 91
+	transposeFUNC,    //# 92
 	    // for Int, Double or DComplex array returning Bool
-	isnanFUNC,        //# 94
-	isinfFUNC,        //# 95
-        isfiniteFUNC,     //# 96
+	isnanFUNC,        //# 93
+	isinfFUNC,        //# 94
+        isfiniteFUNC,     //# 95
 	    // for any array returning Bool scalar
-	isdefFUNC,        //# 97
+	isdefFUNC,        //# 96
 	    // for any array returning Int scalar
-	ndimFUNC,         //# 98
-	nelemFUNC,        //# 99
+	ndimFUNC,         //# 97
+	nelemFUNC,        //# 98
 	    // for any array returning Int array
-	shapeFUNC,        //# 100
+	shapeFUNC,        //# 99
             // for String
-	strlengthFUNC,    //# 101          returning Int
-	upcaseFUNC,       //# 102          returning String
-	downcaseFUNC,     //# 103          returning String
-	capitalizeFUNC,   //# 104          returning String
-	trimFUNC,         //# 105          returning String
-	ltrimFUNC,        //# 106          returning String
-	rtrimFUNC,        //# 107          returning String
-	substrFUNC,       //# 108          returning String
-        replaceFUNC,      //# 109          returning String
-	regexFUNC,        //# 110          returning TaqlRegex
-	patternFUNC,      //# 111          returning TaqlRegex
-	sqlpatternFUNC,   //# 112          returning TaqlRegex
+	strlengthFUNC,    //# 100          returning Int
+	upcaseFUNC,       //# 101          returning String
+	downcaseFUNC,     //# 102          returning String
+	capitalizeFUNC,   //# 103          returning String
+	trimFUNC,         //# 104          returning String
+	ltrimFUNC,        //# 105          returning String
+	rtrimFUNC,        //# 106          returning String
+	substrFUNC,       //# 107          returning String
+        replaceFUNC,      //# 108          returning String
+	regexFUNC,        //# 109          returning TaqlRegex
+	patternFUNC,      //# 110          returning TaqlRegex
+	sqlpatternFUNC,   //# 111          returning TaqlRegex
             // for Date
-	datetimeFUNC,     //# 113          returning Date
-	mjdtodateFUNC,    //# 114          returning Date
-	mjdFUNC,          //# 115          returning Double
-	dateFUNC,         //# 116          returning Date
-	timeFUNC,         //# 117          returning Double (in radians)
-	yearFUNC,         //# 118          returning Int
-	monthFUNC,        //# 119          returning Int
-	dayFUNC,          //# 120          returning Int
-	cmonthFUNC,       //# 121          returning String
-	weekdayFUNC,      //# 122          returning Int
-	cdowFUNC,         //# 123          returning String
-	weekFUNC,         //# 124          returning Int
-        ctodFUNC,         //# 125          returning String
-        cdateFUNC,        //# 126          returning String
-        ctimeFUNC,        //# 127          returning String
+	datetimeFUNC,     //# 112          returning Date
+	mjdtodateFUNC,    //# 113          returning Date
+	mjdFUNC,          //# 114          returning Double
+	dateFUNC,         //# 115          returning Date
+	timeFUNC,         //# 116          returning Double (in radians)
+	yearFUNC,         //# 117          returning Int
+	monthFUNC,        //# 118          returning Int
+	dayFUNC,          //# 119          returning Int
+	cmonthFUNC,       //# 120          returning String
+	weekdayFUNC,      //# 121          returning Int
+	cdowFUNC,         //# 122          returning String
+	weekFUNC,         //# 123          returning Int
+        ctodFUNC,         //# 124          returning String
+        cdateFUNC,        //# 125          returning String
+        ctimeFUNC,        //# 126          returning String
             // return values as strings
-        stringFUNC,       //# 128
+        stringFUNC,       //# 127
             // return angles as hms strings
-        hmsFUNC,          //# 129
+        hmsFUNC,          //# 128
             // return angles as dms strings
-        dmsFUNC,          //# 130
+        dmsFUNC,          //# 129
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 131
+        hdmsFUNC,         //# 130
 	    // special function returning a random Double number
-	randFUNC,         //# 132
+	randFUNC,         //# 131
             // special function returning Int row number
-	rownrFUNC,        //# 133
+	rownrFUNC,        //# 132
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 134
+	rowidFUNC,        //# 133
             // special function resembling if statement
-	iifFUNC,          //# 135
+	iifFUNC,          //# 134
             // angular distance returning radians
-        angdistFUNC,      //# 136
-        angdistxFUNC,     //# 137
+        angdistFUNC,      //# 135
+        angdistxFUNC,     //# 136
 	    // other functions, implemented in derived class
-	conesFUNC,        //# 138
-	cones3FUNC,       //# 139
-	anyconeFUNC,      //# 140
-	anycone3FUNC,     //# 141
-	findconeFUNC,     //# 142
-	findcone3FUNC,    //# 143
+	conesFUNC,        //# 137
+	cones3FUNC,       //# 138
+	anyconeFUNC,      //# 139
+	anycone3FUNC,     //# 140
+	findconeFUNC,     //# 141
+	findcone3FUNC,    //# 142
+        //# Aggregate functions must be the last ones.
+        FirstAggrFunc,    //# 143
+        countallFUNC = FirstAggrFunc,
+        gcountFUNC,
+        gminFUNC,
+        gmaxFUNC,
+        gsumFUNC,
+        gproductFUNC,
+        gsumsqrFUNC,
+        gmeanFUNC,
+        gvarianceFUNC,
+        gstddevFUNC,
+        grmsFUNC,
+        gmedianFUNC,
+        gfractileFUNC,
+        ganyFUNC,
+        gallFUNC,
+        gntrueFUNC,
+        gnfalseFUNC,      //# 159
+        /// Probably, have agmax, etc. for a maximum of an array per element
 	NRFUNC      //# should be last
 	};
 
@@ -262,10 +281,6 @@ public:
 
     // Destructor
     ~TableExprFuncNode ();
-
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    // This is the case for reduction functions and constant functions.
-    virtual Bool isSingleValue() const;
 
     // 'get' Functions to get the desired result of a function
     // <group>

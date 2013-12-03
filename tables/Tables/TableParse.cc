@@ -34,7 +34,10 @@
 #include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprDerNodeArray.h>
 #include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprAggrNode.h>
 #include <tables/Tables/ExprUnitNode.h>
+#include <tables/Tables/ExprGroup.h>
+#include <tables/Tables/ExprGroupAggrFunc.h>
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/TableColumn.h>
 #include <tables/Tables/ScalarColumn.h>
@@ -61,6 +64,7 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/OS/Timer.h>
 #include <casa/ostream.h>
+#include <casa/stdmap.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -93,11 +97,16 @@ TableParse& TableParse::operator= (const TableParse& that)
 
 
 TableParseUpdate::TableParseUpdate (const String& columnName,
-				    const TableExprNode& node)
+				    const TableExprNode& node,
+                                    Bool checkAggr)
   : columnName_p (columnName),
     indexPtr_p   (0),
     node_p       (node)
-{}
+{
+  if (checkAggr) {
+    TableParseSelect::checkAggrFuncs (node);
+  }
+}
 TableParseUpdate::TableParseUpdate (const String& columnName,
 				    const TableExprNodeSet& indices,
 				    const TableExprNode& node,
@@ -106,6 +115,7 @@ TableParseUpdate::TableParseUpdate (const String& columnName,
     indexPtr_p   (0),
     node_p       (node)
 {
+  TableParseSelect::checkAggrFuncs (node);
   indexPtr_p  = new TableExprNodeIndex (indices, style);
   indexNode_p = TableExprNode(indexPtr_p);
 }
@@ -124,14 +134,25 @@ TableParseSort::TableParseSort (const TableExprNode& node)
   : node_p  (node),
     order_p (Sort::Ascending),
     given_p (False)
-{}
+{
+  checkNode();
+}
 TableParseSort::TableParseSort (const TableExprNode& node, Sort::Order order)
   : node_p  (node),
     order_p (order),
     given_p (True)
-{}
+{
+  checkNode();
+}
 TableParseSort::~TableParseSort()
 {}
+void TableParseSort::checkNode() const
+{
+  if (! node_p.isScalar()) {
+    throw TableInvExpr("ORDERBY column/expression must be a scalar");
+  }
+  TableParseSelect::checkAggrFuncs (node_p);
+}
 
 
 
@@ -141,6 +162,7 @@ TableParseSelect::TableParseSelect (CommandType commandType)
     distinct_p      (False),
     resultType_p    (0),
     resultSet_p     (0),
+    groupbyRollup_p (False),
     limit_p         (0),
     offset_p        (0),
     insSel_p        (0),
@@ -437,7 +459,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 {
   //# Determine the function type.
   //# Use the function name in lower case.
-  //# Error if name in ingoreNames.
+  //# Error if functype in ignoreFuncs or if ignoreFuncs is not empty and
+  //# the function is an aggregate one.
   TableExprFuncNode::FunctionType ftype = TableExprFuncNode::piFUNC;
   String funcName (name);
   funcName.downcase();
@@ -736,6 +759,36 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::angdistFUNC;
   } else if (funcName == "angdistx"  ||  funcName == "angulardistancex") {
     ftype = TableExprFuncNode::angdistxFUNC;
+  } else if (funcName == "countall") {
+    ftype = TableExprFuncNode::countallFUNC;
+  } else if (funcName == "gcount") {
+    ftype = TableExprFuncNode::gcountFUNC;
+  } else if (funcName == "gmin") {
+    ftype = TableExprFuncNode::gminFUNC;
+  } else if (funcName == "gmax") {
+    ftype = TableExprFuncNode::gmaxFUNC;
+  } else if (funcName == "gsum") {
+    ftype = TableExprFuncNode::gsumFUNC;
+  } else if (funcName == "gproduct") {
+    ftype = TableExprFuncNode::gproductFUNC;
+  } else if (funcName == "gsumsqr") {
+    ftype = TableExprFuncNode::gsumsqrFUNC;
+  } else if (funcName == "gmean") {
+    ftype = TableExprFuncNode::gmeanFUNC;
+  } else if (funcName == "gvariance") {
+    ftype = TableExprFuncNode::gvarianceFUNC;
+  } else if (funcName == "gstddev") {
+    ftype = TableExprFuncNode::gstddevFUNC;
+  } else if (funcName == "grms") {
+    ftype = TableExprFuncNode::grmsFUNC;
+  } else if (funcName == "gmedian") {
+    ftype = TableExprFuncNode::gmedianFUNC;
+  } else if (funcName == "gfractile") {
+    ftype = TableExprFuncNode::gfractileFUNC;
+  } else if (funcName == "gntrue") {
+    ftype = TableExprFuncNode::gntrueFUNC;
+  } else if (funcName == "gnfalse") {
+    ftype = TableExprFuncNode::gnfalseFUNC;
   } else {
     // unknown name can be a user-defined function.
     ftype = TableExprFuncNode::NRFUNC;
@@ -743,7 +796,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
   // Functions to be ignored are incorrect.
   Bool found;
   linearSearch (found, ignoreFuncs, Int(ftype), ignoreFuncs.nelements());
-  if (found) {
+  if (found  ||  (!ignoreFuncs.empty()  &&
+                  ftype >= TableExprFuncNode::FirstAggrFunc)) {
     throw (TableInvExpr ("Function '" + funcName +
                          "' can only be used in TaQL"));
   }
@@ -785,7 +839,7 @@ TableExprNode TableParseSelect::makeFuncNode
     // The function can be a user defined one (or unknown).
     return TableExprNode::newUDFNode (name, arguments, table, style);
   }
-  // The axes of functions like SUMS can be given as a set or as
+  // The axes of reduction functions like SUMS can be given as a set or as
   // individual values. Turn it into an Array object.
   uInt axarg = 1;
   switch (ftype) {
@@ -1089,6 +1143,10 @@ void TableParseSelect::handleColumnFinish (Bool distinct)
     columnExpr_p     = exprs;
     columnDtypes_p   = dtypes;
   }
+  if (distinct_p  &&  columnNames_p.nelements() == 0) {
+    throw TableInvExpr ("SELECT DISTINCT can only be given with at least "
+			"one column name");
+  }
 }
 
 //# Add a column specification.
@@ -1147,6 +1205,24 @@ void TableParseSelect::handleColSpec (const String& colName,
   columnNames_p[nrcol] = colName;
 }
 
+void TableParseSelect::handleGroupby (const vector<TableExprNode>& nodes,
+                                      Bool rollup)
+{
+  groupbyNodes_p  = nodes;
+  groupbyRollup_p = rollup;
+  for (uInt i=0; i<nodes.size(); ++i) {
+    checkAggrFuncs (nodes[i]);
+    if (! nodes[i].isScalar()) {
+      throw TableInvExpr("GROUPBY column/expression must be a scalar");
+    }
+  }
+}
+
+void TableParseSelect::handleHaving (const TableExprNode& node)
+{
+  havingNode_p = node;
+}
+
 void TableParseSelect::handleCreTab (const String& tableName,
 				     const Record& dmInfo)
 {
@@ -1155,13 +1231,10 @@ void TableParseSelect::handleCreTab (const String& tableName,
   table_p = Table(newtab);
 }
 
-void TableParseSelect::handleSelect (const TableExprNode& node)
+void TableParseSelect::handleWhere (const TableExprNode& node)
 {
+  checkAggrFuncs (node);
   node_p = node;
-  if (distinct_p  &&  columnNames_p.nelements() == 0) {
-    throw TableInvExpr ("SELECT DISTINCT can only be given with at least "
-			"one column name");
-  }
 }
 
 void TableParseSelect::handleSort (const std::vector<TableParseSort>& sort,
@@ -1175,6 +1248,7 @@ void TableParseSelect::handleSort (const std::vector<TableParseSort>& sort,
 
 void TableParseSelect::handleCalcComm (const TableExprNode& node)
 {
+  checkAggrFuncs (node);
   node_p = node;
 }
 
@@ -1387,6 +1461,7 @@ void TableParseSelect::handleOffset (const TableExprNode& expr)
 
 Int64 TableParseSelect::evalIntScaExpr (const TableExprNode& expr) const
 {
+  checkAggrFuncs (expr);
   if (!expr.table().isNull()) {
     throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
   }
@@ -1436,6 +1511,7 @@ void TableParseSelect::handleCount()
     throw TableInvExpr ("No COUNT columns given");
   }
   for (uInt i=0; i<columnExpr_p.size(); i++) {
+    checkAggrFuncs (columnExpr_p[i]);
     if (!columnExpr_p[i].isScalar()) {
       throw TableInvExpr ("COUNT column " + columnNames_p[i] + " is not scalar");
     }
@@ -1526,6 +1602,7 @@ void TableParseSelect::doUpdate (Bool showTimings, const Table& origTable,
   TableExprId rowid(0);
   for (uInt row=0; row<rownrs.size(); ++row) {
     rowid.setRownr (rownrs[row]);
+    rowid.setSeqnr (row);
     for (uInt i=0; i<nrkey; i++) {
       TableColumn& col = cols[i];
       const TableParseUpdate& key = *(update_p[i]);
@@ -1925,6 +2002,100 @@ Table TableParseSelect::doCount (Bool showTimings, const Table& table)
 }
 
 
+//# Execute the groupby.
+Table TableParseSelect::doGroupby (bool showTimings,
+                                   vector<TableExprAggrNode*> aggrNodes,
+                                   Int groupAggrUsed)
+{
+  Timer timer;
+  // If only 'select count(*)' was given, get the size of the WHERE,
+  // thus the size of rownrs_p.
+  Table tab;
+  if ((groupAggrUsed & ONLY_COUNTALL) != 0  &&
+      (groupAggrUsed & GROUPBY) == 0) {
+    tab = doOnlyCountAll (aggrNodes[0], rownrs_p.size());
+  } else {
+    tab = doGroupByAggr (aggrNodes);
+  }
+  if (showTimings) {
+    timer.show ("  Groupby     ");
+  }
+  return tab;
+}
+
+Table TableParseSelect::doOnlyCountAll (TableExprAggrNode* aggrNode,
+                                        Int64 nrrow)
+{
+  // This function is a special case because it does not need to
+  // step though the table. Only its size is of interest. Furthermore,
+  // some other columns can also be listed which will be those of the
+  // first row.
+  // Make a set containing the count(*) aggregate function object.
+  vector<CountedPtr<TableExprGroupFuncSet> > funcSets
+    (1, new TableExprGroupFuncSet());
+  TableExprGroupCountAll* func = new TableExprGroupCountAll();
+  // Note: add turns it into a CountedPtr, so it will be deleted automatically.
+  funcSets[0]->add (func);
+  // The nr of rows is the result of count(*), so simply set it.
+  // But first do an apply for completeness.
+  funcSets[0]->apply (vector<TableExprAggrNode*>(1, aggrNode), rownrs_p[0]);
+  func->setResult (nrrow);
+  aggrNode->setResult (funcSets, 0);
+  // The resulting table has only 1 row, so use the first one.
+  rownrs_p.reference (Vector<uInt>(1, rownrs_p[0]));
+  // Project the table.
+  return doProjectExpr();
+}
+
+Table TableParseSelect::doGroupByAggr
+(const vector<TableExprAggrNode*>& aggrNodes)
+{
+  // We have to group the data according to the (possible empty) groupby.
+  // We step through the table in the normal order which may not be the
+  // groupby order.
+  // A map<key,int> is used to keep track of the results where the int
+  // is the index in a vector of a set of aggregate function objects.
+  vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+  map<TableExprGroupKeySet, int> keyFuncMap;
+  // Create the set of groupby key objects.
+  TableExprGroupKeySet keySet(groupbyNodes_p);
+  // Loop through all rows.
+  // For each row generate the key to get the right entry.
+  TableExprId rowid(0);
+  for (uInt i=0; i<rownrs_p.size(); ++i) {
+    rowid.setRownr (rownrs_p[i]);
+    keySet.fill (groupbyNodes_p, rowid);
+    int groupnr = funcSets.size();
+    map<TableExprGroupKeySet, int>::iterator iter = keyFuncMap.find (keySet);
+    if (iter == keyFuncMap.end()) {
+      keyFuncMap[keySet] = groupnr;
+      funcSets.push_back (new TableExprGroupFuncSet (aggrNodes));
+    } else {
+      groupnr = iter->second;
+    }
+    rowid.setRownr (rownrs_p[i]);
+    funcSets[groupnr]->apply (aggrNodes, rowid);
+  }
+  // Let the function nodes finish their operation.
+  // Form the rownr vector from the rows kept in the aggregate objects.
+  Vector<uInt> rownrs(keyFuncMap.size());
+  uInt n=0;
+  for (uInt i=0; i<funcSets.size(); ++i) {
+    const vector<CountedPtr<TableExprGroupFunc> >& funcs
+      = funcSets[i]->getFuncs();
+    for (uInt j=0; j<funcs.size(); ++j) {
+      funcs[j]->finish();
+    }
+    rownrs[n++] = funcSets[i]->getId().rownr();
+  }
+  rownrs_p.reference (rownrs);
+  for (uInt i=0; i<aggrNodes.size(); ++i) {
+    aggrNodes[i]->setResult (funcSets, i);
+  }
+  // Project the table.
+  return doProjectExpr();
+}
+
 //# Execute the sort.
 void TableParseSelect::doSort (Bool showTimings, const Table& origTable)
 {
@@ -2251,7 +2422,8 @@ Table TableParseSelect::doProjectExpr()
   // Turn the expressions into update objects.
   for (uInt i=0; i<columnExpr_p.nelements(); i++) {
     if (! columnExpr_p[i].isNull()) {
-      addUpdate (new TableParseUpdate (columnNames_p[i], columnExpr_p[i]));
+      addUpdate (new TableParseUpdate (columnNames_p[i], columnExpr_p[i],
+                                       False));
     }
   }
   // Fill the columns in the table.
@@ -2527,6 +2699,7 @@ void TableParseSelect::handleGiving (const String& name, Int type)
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 {
+  TableExprNodeRep::checkAggrFuncs (&set);
   resultSet_p = new TableExprNodeSet (set);
 }
 
@@ -2537,14 +2710,14 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
 {
   //# A selection query consists of:
   //#  - SELECT to do projection
-  //#     can only refer to columns in FROM
+  //#     can only refer to columns in FROM or can be constants
   //#     can contain aggregate functions
   //#  - FROM to tell the tables to use
   //#  - WHERE to select rows from tables
   //#     can only refer to columns in FROM
   //#  - GROUPBY to group result of WHERE
-  //#     can refer to columns in SELECT, FROM or expressions of FROM
-  //#     (in SQL92 only to columns in FROM), thus look in FROM first
+  //#     can refer to columns in FROM or expressions of FROM
+  //#     (in SQL92 only to columns in FROM)
   //#  - HAVING to select groups
   //#     aggregate functions of FROM
   //#     or aggregate column in SELECT
@@ -2558,13 +2731,18 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   //#  - LIMIT to skip latest results of ORDERBY
   //#  - OFFSET to ignore first results of ORDERBY
   //# If GROUPBY is given, SELECT can only contain aggregate or GROUPBY columns
+  //#    can also contain other columns and the first one of a group is picked
+  //#    (reason: other columns can also be unique per group, and even if not..)
+  //#    Thus resulting table from groupby should contain all input columns
   //# Plan:
   //#  - make columnlist of SELECT columns to make them known for parser
   //#     thus there is a FROM and a SELECT columnlist (as TableDesc?)
   //#  - execute WHERE and make reftable
   //#  - if aggregates
   //#      make temptable if GROUPBY or HAVING has non-FROM columns
-  //#      tableiter over GROUPBY columns (if any) and
+  //#      have map<key,val> where key is the set of grouping columns
+  //#      and val is the value to determine. Probably have a Functor object
+  //#      with it to do the calculation.
   //#       make temptable of aggregates in SELECT and possibly HAVING
   //#        get expressions underneath the aggregate
   //#      apply HAVING if needed
@@ -2596,13 +2774,22 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
     throw TableInvExpr ("A query in a FROM can only have "
 			"'GIVING tablename'");
   }
+  //# Get nodes representing aggregate functions.
+  //# Test if aggregate, groupby, or having is used.
+  vector<TableExprAggrNode*> aggrNodes;
+  Int groupAggrUsed = testGroupAggr (aggrNodes);
+  // Select distinct makes no sense if aggregate, but no groupby given.
+  if (groupAggrUsed != 0  &&  (groupAggrUsed & 1) == 0) {
+    distinct_p = False;
+  }
   //# The first table in the list is the source table.
   Table table = fromTables_p[0].table();
   //# Determine if we can pre-empt the selection loop.
   //# That is possible if a positive limit and offset are given
-  //# without sorting or select distinct.
+  //# without sorting or select distinct or groupby.
   uInt nrmax=0;
-  if (sort_p.size() == 0  &&  limit_p > 0  &&  offset_p > 0  &&  !distinct_p) {
+  if (sort_p.size() == 0  &&  limit_p > 0  &&  offset_p > 0  &&
+      !distinct_p  &&  groupbyNodes_p.empty()) {
     nrmax = limit_p + offset_p;
   }
   //# First do the where selection.
@@ -2623,11 +2810,17 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   // Get the row numbers of the result of the possible first step.
   rownrs_p.reference (resultTable.rowNumbers(table));
+  // Execute possible groupby/aggregate.
+  if (groupAggrUsed != 0) {
+    table_p = doGroupby (showTimings, aggrNodes, groupAggrUsed);
+    return;
+  }
   //# Then do the sort.
   if (sort_p.size() > 0) {
     doSort (showTimings, table);
   }
-  // If select distinct is given, limit/offset can only be done thereafter.
+  // If select distinct is given, limit/offset can only be done thereafter
+  // because duplicate rows will be removed.
   if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
     doLimOff (showTimings);
   }
@@ -2662,6 +2855,56 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   //# Keep the table for later.
   table_p = resultTable;
 }    
+
+void TableParseSelect::checkAggrFuncs (const TableExprNode& node)
+{
+  if (! node.isNull()) {
+    TableExprNodeRep::checkAggrFuncs (node.getNodeRep());
+  }
+}
+//# Get aggregate functions used and check if used at correct places.
+//# Also check that HAVING is not solely used.
+Int TableParseSelect::testGroupAggr (vector<TableExprAggrNode*>& aggr) const
+{
+  // Make sure main node does not have aggregate functions.
+  // This has been checked before, but use defensive programming.
+  if (! node_p.isNull()) {
+    const_cast<TableExprNodeRep*>(node_p.getNodeRep())->getAggrNodes (aggr);
+    AlwaysAssert (aggr.empty(), AipsError);
+  }
+  // Get possible aggregate functions used in SELECT and HAVING.
+  for (uInt i=0; i<columnExpr_p.size(); ++i) {
+    const_cast<TableExprNodeRep*>(columnExpr_p[i].getNodeRep())->getAggrNodes (aggr);
+  }
+  uInt nselAggr = aggr.size();
+  if (! havingNode_p.isNull()) {
+    const_cast<TableExprNodeRep*>(havingNode_p.getNodeRep())->getAggrNodes (aggr);
+  }
+  // Make sure aggregate functions are only used in a SELECT command.
+  // Again, this cannot happen but use defensive programming.
+  if (commandType_p != PSELECT) {
+    AlwaysAssert (aggr.empty(), AipsError);
+    return 0;
+  }
+  // Make sure HAVING is only used if SELECT has an aggregate function
+  // or if GROUPBY is used.
+  if (! havingNode_p.isNull()) {
+    if (nselAggr == 0  &&  groupbyNodes_p.empty()) {
+      throw TableInvExpr ("HAVING can only be used if GROUPBY is used or "
+                          "an aggregate function is used in SELECT");
+    }
+  }
+  // Test if any group/aggr is given or if only
+  // 'SELECT COUNT(*)' is given without GROUPBY.
+  Int res = 0;
+  if (! groupbyNodes_p.empty()) res += GROUPBY;
+  if (! aggr.empty())           res += AGGR_FUNCS;
+  if (nselAggr == 1  &&  aggr.size() == 1  &&
+      aggr[0]->funcType() == TableExprFuncNode::countallFUNC) {
+    res += ONLY_COUNTALL;
+  }
+  return res;
+}
 
 void TableParseSelect::show (ostream& os) const
 {

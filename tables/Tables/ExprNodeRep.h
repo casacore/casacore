@@ -46,6 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class TableExprNode;
 class TableExprNodeColumn;
+class TableExprAggrNode;
 template<class T> class Block;
 
 
@@ -226,14 +227,13 @@ public:
     // Default 1 is returned.
     virtual Double getUnitFactor() const;
 
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    // It is the case for a reduction value or constant value.
-    // By default it is if the value is constant.
-    virtual Bool isSingleValue() const;
+    // Throw an exception if an aggregate function is used in
+    // the expression node.
+    static void checkAggrFuncs (const TableExprNodeRep* node);
 
-    //# Is the expression a column aggregate function?
-    //#/ virtual Bool isAggregate() const;
-
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+  
     // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
@@ -512,9 +512,9 @@ public:
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
 
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    virtual Bool isSingleValue() const;
-
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+  
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,
 			       NodeDataType rightDype,
@@ -615,6 +615,9 @@ public:
 
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
+
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
 
     // Check number of arguments
     // low <= number_of_args <= high

@@ -319,6 +319,9 @@ public:
 class TaQLFuncNodeRep: public TaQLNodeRep
 {
 public:
+  TaQLFuncNodeRep (const String& name)
+    : TaQLNodeRep (TaQLNode_Func),
+      itsName(name), itsArgs(False) {}
   TaQLFuncNodeRep (const String& name, const TaQLMultiNode& args)
     : TaQLNodeRep (TaQLNode_Func),
       itsName(name), itsArgs(args) {}
@@ -572,6 +575,41 @@ public:
   static TaQLColumnsNodeRep* restore (AipsIO& aio);
 
   Bool          itsDistinct;
+  TaQLMultiNode itsNodes;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a groupby list.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding a groupby list with the optional
+// ROLLUP qualifier.
+// </synopsis> 
+
+class TaQLGroupNodeRep: public TaQLNodeRep
+{
+public:
+  // Do not change the values of this enum, as objects might be persistent.
+  enum Type {Normal=0,
+	     Rollup=1};  //# in the future type Cube could be added
+  TaQLGroupNodeRep (Type type, const TaQLMultiNode& nodes)
+    : TaQLNodeRep (TaQLNode_Groupby),
+      itsType(type), itsNodes(nodes) {}
+  virtual ~TaQLGroupNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLGroupNodeRep* restore (AipsIO& aio);
+
+  Type          itsType;
   TaQLMultiNode itsNodes;
 };
 

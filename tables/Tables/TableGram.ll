@@ -103,7 +103,7 @@ UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
 COUNT     [Cc][Oo][Uu][Nn][Tt]
-GCOUNT    [Cc][Oo][Uu][Nn][Tt]{WHITE}"("{WHITE}"*"?{WHITE}")"
+COUNTALL  [Gg]{COUNT}{WHITE}"("{WHITE}"*"?{WHITE}")"
 CALC      [Cc][Aa][Ll][Cc]
 CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
 DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
@@ -121,6 +121,7 @@ SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]{WHITE1}
 GIVING    {GIVING1}|{SAVETO}
 INTO      [Ii][Nn][Tt][Oo]
 GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]{WHITE1}
+GROUPROLL {GROUPBY}[Rr][Oo][Ll][Ll][Uu][Pp]{WHITE1}
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 JOIN      [Jj][Oo][Ii][Nn]
 ON        [Oo][Nn]
@@ -235,6 +236,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    BEGIN(EXPRstate);
 	    return COUNT;
 	  }
+{COUNTALL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return COUNTALL;
+	  }
 {CALC}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
@@ -301,6 +307,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return GROUPBY;
+          }
+{GROUPROLL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return GROUPROLL;
           }
 {HAVING}  {
             tableGramPosition() += yyleng;
@@ -521,6 +532,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     in the SELECT clause (note that ALL is also a function name).
  */
 {ALLFUNC} {
+  /* will not work for e.g. select all (1+2)*3, but nothing to do about it */
             yyless(3);     /* unput everything but ALL */
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(

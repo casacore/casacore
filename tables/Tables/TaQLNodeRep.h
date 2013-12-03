@@ -109,6 +109,7 @@ public:
   #define TaQLNode_Unit     char(26)
   #define TaQLNode_Regex    char(27)
   #define TaQLNode_Count    char(28)
+  #define TaQLNode_Groupby  char(29)
   // </group>
 
   // Constructor for derived classes specifying the type.
