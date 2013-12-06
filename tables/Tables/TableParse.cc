@@ -1465,10 +1465,15 @@ Int64 TableParseSelect::evalIntScaExpr (const TableExprNode& expr) const
   if (!expr.table().isNull()) {
     throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
   }
+  // Get the value as a double, because some expressions result in double.
+  // Round it to an integer.
   TableExprId rowid(0);
-  Int64 val;
+  Double val;
   expr.get (rowid, val);
-  return val;
+  if (val >= 0) {
+    return static_cast<Int64>(val+0.5);
+  }
+  return -static_cast<Int64>(-val+0.5);
 }
 
 void TableParseSelect::handleUpdate()

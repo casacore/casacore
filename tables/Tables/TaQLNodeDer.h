@@ -288,7 +288,7 @@ public:
     { itsPrefix = prefix; itsPostfix = postfix; }
   void add (const TaQLNode& node)
     { itsNodes.push_back (node); }
-  const std::vector<TaQLNode>& getNodes()
+  const std::vector<TaQLNode>& getNodes() const
     { return itsNodes; }
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;
@@ -979,6 +979,7 @@ public:
 		     const TaQLNode& values)
     : TaQLNodeRep (TaQLNode_Insert),
       itsTables(tables), itsColumns(columns), itsValues(values) {}
+  TaQLInsertNodeRep (const TaQLMultiNode& tables, const TaQLMultiNode& insert);
   virtual ~TaQLInsertNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;

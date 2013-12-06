@@ -83,10 +83,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case gmedianFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTReal, NTDouble, nodes);
-    case gntrueFUNC:
-    case gnfalseFUNC:
-      checkNumOfArg (1, 1, nodes);
-      return checkDT (dtypeOper, NTBool, NTBool, nodes);
     case gfractileFUNC:
       checkNumOfArg (2, 2, nodes);
       if (nodes[1]->valueType() != VTScalar  ||
@@ -95,6 +91,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                             "has to be a constant scalar");
       }
       return checkDT (dtypeOper, NTReal, NTDouble, nodes);
+    case ganyFUNC:
+    case gallFUNC:
+      checkNumOfArg (1, 1, nodes);
+      return checkDT (dtypeOper, NTBool, NTBool, nodes);
+    case gntrueFUNC:
+    case gnfalseFUNC:
+      checkNumOfArg (1, 1, nodes);
+      return checkDT (dtypeOper, NTBool, NTInt, nodes);
     default:
       throw TableInvExpr ("Unhandled aggregate function " +
                           String::toString(ftype));
@@ -177,7 +181,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         case gmedianFUNC:
           return new TableExprGroupFractileDouble(0.5);
         case gfractileFUNC:
-          return new TableExprGroupFractileDouble(operand()->getDouble(0));
+          return new TableExprGroupFractileDouble(operands()[1]->getDouble(0));
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
@@ -209,14 +213,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     switch (operands()[0]->dataType()) {
     case NTBool:
       switch (funcType()) {
-        ///      case ganyFUNC:
-        ///        return new TableExprGroupArrAny();
-        ///      case gallFUNC:
-        ///        return new TableExprGroupArrAll();
-        ///      case gntrueFUNC:
-        ///        return new TableExprGroupArrNTrue();
-        ///      case gnfalseFUNC:
-        ///        return new TableExprGroupArrNFalse();
+      case ganyFUNC:
+        return new TableExprGroupArrAny();
+      case gallFUNC:
+        return new TableExprGroupArrAll();
+      case gntrueFUNC:
+        return new TableExprGroupArrNTrue();
+      case gnfalseFUNC:
+        return new TableExprGroupArrNFalse();
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -261,7 +265,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       case gmedianFUNC:
         return new TableExprGroupFractileArrDouble(0.5);
       case gfractileFUNC:
-        return new TableExprGroupFractileArrDouble(operand()->getDouble(0));
+        return new TableExprGroupFractileArrDouble(operands()[1]->getDouble(0));
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +

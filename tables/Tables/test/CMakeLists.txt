@@ -34,6 +34,7 @@ tConcatRows
 tConcatTable
 tConcatTable2
 tConcatTable3
+tExprGroup
 tExprNode
 tExprNodeSet
 tExprUnitNode

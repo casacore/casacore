@@ -320,7 +320,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (! itsValues.empty()) {
       itsValue = GenSort<Double>::kthLargest
         (&(itsValues[0]), itsValues.size(),
-         static_cast<Int>(itsValues.size()*itsFrac + 0.5));
+         static_cast<Int>((itsValues.size() - 1)*itsFrac));
     }
   }
 

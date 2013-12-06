@@ -47,8 +47,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupArrAny::apply (TableExprAggrNode& node,
                                     const TableExprId& id)
   {
-    Bool v = anyTrue (node.operand()->getArrayBool(id));
-    if (v) itsValue = True;
+    if (!itsValue) {
+      Bool v = anyTrue (node.operand()->getArrayBool(id));
+      if (v) itsValue = True;
+    }
   }
 
   TableExprGroupArrAll::TableExprGroupArrAll()
@@ -59,8 +61,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupArrAll::apply (TableExprAggrNode& node,
                                     const TableExprId& id)
   {
-    Bool v = allTrue (node.operand()->getArrayBool(id));
-    if (!v) itsValue = False;
+    if (itsValue) {
+      Bool v = allTrue (node.operand()->getArrayBool(id));
+      if (!v) itsValue = False;
+    }
   }
 
   TableExprGroupArrNTrue::TableExprGroupArrNTrue()
@@ -91,8 +95,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupMinArrInt::apply (TableExprAggrNode& node,
                                        const TableExprId& id)
   {
-    Int64 v = min(node.operand()->getArrayInt(id));
-    if (v<itsValue) itsValue = v;
+    Array<Int64> arr = node.operand()->getArrayInt(id);
+    if (! arr.empty()) {
+      Int64 v = min(arr);
+      if (v<itsValue) itsValue = v;
+    }
   }
 
   TableExprGroupMaxArrInt::TableExprGroupMaxArrInt()
@@ -103,8 +110,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupMaxArrInt::apply (TableExprAggrNode& node,
                                     const TableExprId& id)
   {
-    Int64 v = max(node.operand()->getArrayInt(id));
-    if (v>itsValue) itsValue = v;
+    Array<Int64> arr = node.operand()->getArrayInt(id);
+    if (! arr.empty()) {
+      Int64 v = max(arr);
+      if (v>itsValue) itsValue = v;
+    }
   }
 
   TableExprGroupSumArrInt::TableExprGroupSumArrInt()
@@ -125,7 +135,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupProductArrInt::apply (TableExprAggrNode& node,
                                         const TableExprId& id)
   {
-    itsValue *= product(node.operand()->getArrayInt(id));
+    Array<Int64> arr = node.operand()->getArrayInt(id);
+    if (! arr.empty()) {
+      itsValue *= product(arr);
+    }
   }
 
   TableExprGroupSumSqrArrInt::TableExprGroupSumSqrArrInt()
@@ -148,8 +161,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupMinArrDouble::apply (TableExprAggrNode& node,
                                           const TableExprId& id)
   {
-    Double v = min(node.operand()->getArrayDouble(id));
-    if (v<itsValue) itsValue = v;
+    Array<Double> arr = node.operand()->getArrayDouble(id);
+    if (! arr.empty()) {
+      Double v = min(arr);
+      if (v<itsValue) itsValue = v;
+    }
   }
 
   TableExprGroupMaxArrDouble::TableExprGroupMaxArrDouble()
@@ -160,8 +176,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupMaxArrDouble::apply (TableExprAggrNode& node,
                                           const TableExprId& id)
   {
-    Double v = max(node.operand()->getArrayDouble(id));
-    if (v>itsValue) itsValue = v;
+    Array<Double> arr = node.operand()->getArrayDouble(id);
+    if (! arr.empty()) {
+      Double v = max(arr);
+      if (v>itsValue) itsValue = v;
+    }
   }
 
   TableExprGroupSumArrDouble::TableExprGroupSumArrDouble()
@@ -182,7 +201,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupProductArrDouble::apply (TableExprAggrNode& node,
                                               const TableExprId& id)
   {
-    itsValue *= product(node.operand()->getArrayDouble(id));
+    Array<Double> arr = node.operand()->getArrayDouble(id);
+    if (! arr.empty()) {
+      itsValue *= product(arr);
+    }
   }
 
   TableExprGroupSumSqrArrDouble::TableExprGroupSumSqrArrDouble()
@@ -228,11 +250,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // numerically stable algorithm
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
     Array<Double> arr = node.operand()->getArrayDouble(id);
-    Double meanv = mean(arr);
-    Double stddv = stddev(arr, meanv);
-    Double delta = meanv - itsValue;   // itsValue contains the overall mean
-    itsValue = (itsNr*itsValue + arr.size()*meanv) / (itsNr + arr.size());
-    itsM2   += stddv + delta*delta*itsNr*arr.size() / (itsNr + arr.size());
+    if (! arr.empty()) {
+      Double meanv = mean(arr);
+      Double m2    = 0;
+      if (arr.size() > 1) {
+        m2 = variance(arr, meanv) * (arr.size()-1);
+      }
+      Double delta = meanv - itsValue;   // itsValue contains the overall mean
+      itsValue = (itsNr*itsValue + arr.size()*meanv) / (itsNr + arr.size());
+      itsM2   += (m2 + delta*delta*itsNr*arr.size() / (itsNr + arr.size()));
+      itsNr += arr.size();
+    }
   }
   void TableExprGroupVarianceArrDouble::finish()
   {
@@ -310,7 +338,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
           data += iter->size();
         }
         itsValue = GenSort<Double>::kthLargest
-          (vec.data(), size, static_cast<Int>(size*itsFrac + 0.5));
+          (vec.data(), size, static_cast<Int>((size-1)*itsFrac));
         // Remove all Arrays and keep the combined one (for possible ROLLUP).
         itsValues.resize (1);
         itsValues[0].reference (vec);
@@ -340,7 +368,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void TableExprGroupProductArrDComplex::apply (TableExprAggrNode& node,
                                              const TableExprId& id)
   {
-    itsValue *= product(node.operand()->getArrayDComplex(id));
+    Array<DComplex> arr = node.operand()->getArrayDComplex(id);
+    if (! arr.empty()) {
+      itsValue *= product(arr);
+    }
   }
 
   TableExprGroupSumSqrArrDComplex::TableExprGroupSumSqrArrDComplex()

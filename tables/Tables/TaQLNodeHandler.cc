@@ -477,7 +477,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     visitNode     (node.itsJoin);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsGroupby);
-    visitNode     (node.itsHaving);
+    handleHaving  (node.itsHaving);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
     visitNode     (node.itsGiving);

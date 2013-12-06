@@ -360,6 +360,11 @@ insrow:    INTO tables insclist inspart {
                     new TaQLInsertNodeRep (*$2, *$3, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         | INTO tables UPDSET updlist {
+	       $$ = new TaQLNode(
+                    new TaQLInsertNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
          ;
 
 insclist:  {         /* no column-list */   

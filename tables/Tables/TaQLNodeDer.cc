@@ -1101,6 +1101,34 @@ TaQLUpdateNodeRep* TaQLUpdateNodeRep::restore (AipsIO& aio)
   return new TaQLUpdateNodeRep (tables, update, from, where, sort, limitoff);
 }
 
+TaQLInsertNodeRep::TaQLInsertNodeRep (const TaQLMultiNode& tables,
+                                      const TaQLMultiNode& insert)
+  : TaQLNodeRep (TaQLNode_Insert),
+    itsTables   (tables),
+    itsColumns  (False)
+{
+  // Convert the list of column=value expressions like
+  //        SET col1=val1, col2=val2
+  // to a list of columns and a list of values like
+  //        [col1,col2] VALUES [val1,val2].
+  TaQLMultiNode values(False);
+  values.setPPFix ("VALUES [", "]");
+  // The nodes in the list are of type TaQLUpdExprNodeRep.
+  const std::vector<TaQLNode>& nodes = insert.getMultiRep()->getNodes();
+  for (uInt i=0; i<nodes.size(); ++i) {
+    const TaQLUpdExprNodeRep* rep = dynamic_cast<const TaQLUpdExprNodeRep*>
+      (nodes[i].getRep());
+    AlwaysAssert (rep, AipsError);
+    if (rep->itsIndices.isValid()) {
+      throw TableInvExpr ("Column indices cannot be given in an "
+                          "INSERT command");
+    }
+    // Add the column name and value expression.
+    itsColumns.add (new TaQLKeyColNodeRep (rep->itsName));
+    values.add (rep->itsExpr);
+  }
+  itsValues = values;
+}
 TaQLInsertNodeRep::~TaQLInsertNodeRep()
 {}
 TaQLNodeResult TaQLInsertNodeRep::visit (TaQLNodeVisitor& visitor) const
