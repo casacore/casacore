@@ -34,9 +34,11 @@
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/TaQLResult.h>
+#include <tables/Tables/ExprGroup.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Sort.h>
 #include <casa/Containers/Block.h>
+#include <map>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -543,12 +545,14 @@ private:
                    vector<TableExprAggrNode*> aggrNodes,
                    Int groupAggrUsed);
 
+  // Do the HAVING step.
+  Table doHaving (const Table& tab);
+
   // Do a groupby/aggregate step that only does a 'select count(*)'.
-  Table doOnlyCountAll (TableExprAggrNode* aggrNode,
-                        Int64 nrrow);
+  void doOnlyCountAll (TableExprAggrNode* aggrNode, Int64 nrrow);
 
   // Do a full groupby/aggregate step.
-  Table doGroupByAggr (const vector<TableExprAggrNode*>& aggrNodes);
+  void doGroupByAggr (const vector<TableExprAggrNode*>& aggrNodes);
 
   // Do the sort step.
   void doSort (Bool showTimings, const Table& origTable);
@@ -642,6 +646,49 @@ private:
   static Table findTableKey (const Table& table, const String& columnName,
 			     const Vector<String>& keyNames);
 
+  // Create the set of aggregate functions and groupby keys in case
+  // a single groupby key is given.
+  // This offers much faster map access then doGroupByAggrMultiple.
+  template<typename T>
+  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrSingleKey
+  (const vector<TableExprAggrNode*>& aggrNodes)
+  {
+    // We have to group the data according to the (possibly empty) groupby.
+    // We step through the table in the normal order which may not be the
+    // groupby order.
+    // A map<key,int> is used to keep track of the results where the int
+    // is the index in a vector of a set of aggregate function objects.
+    vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+    std::map<T, int> keyFuncMap;
+    T lastKey = std::numeric_limits<Double>::max();
+    int groupnr = -1;
+    // Loop through all rows.
+    // For each row generate the key to get the right entry.
+    TableExprId rowid(0);
+    T key;
+    for (uInt i=0; i<rownrs_p.size(); ++i) {
+      rowid.setRownr (rownrs_p[i]);
+      groupbyNodes_p[0].get (rowid, key);
+      if (key != lastKey) {
+        typename std::map<T, int>::iterator iter = keyFuncMap.find (key);
+        if (iter == keyFuncMap.end()) {
+          groupnr = funcSets.size();
+          keyFuncMap[key] = groupnr;
+          funcSets.push_back (new TableExprGroupFuncSet (aggrNodes));
+        } else {
+          groupnr = iter->second;
+        }
+      }
+      rowid.setRownr (rownrs_p[i]);
+      funcSets[groupnr]->apply (aggrNodes, rowid);
+    }
+    return funcSets;
+  }
+
+  // Create the set of aggregate functions and groupby keys in case
+  // multiple keys are given.
+  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrMultipleKeys
+  (const vector<TableExprAggrNode*>& aggrNodes);
 
   //# Command type.
   CommandType commandType_p;

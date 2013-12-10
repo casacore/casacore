@@ -111,7 +111,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   private:
     uInt itsFuncNr;
-    const vector<CountedPtr<TableExprGroupFuncSet> >* itsResult;
+    vector<CountedPtr<TableExprGroupFuncSet> > itsResult;
   };
 
 

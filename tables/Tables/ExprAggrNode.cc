@@ -51,12 +51,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   (Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
    PtrBlock<TableExprNodeRep*>& nodes)
   {
-    ///    if (ftype != gcountFUNC  &&  !nodes.empty()) {
-    ///      if (nodes[0]->valueType() != VTScalar) {
-    ///        throw TableInvExpr ("Currently aggregate functions only support "
-    ///                            "scalar values");
-    ///      }
-    ///    }
     resVT = VTScalar;
     switch (ftype) {
     case countallFUNC:
@@ -299,22 +293,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   (const vector<CountedPtr<TableExprGroupFuncSet> >& funcs,
    uInt funcnr)
   {
-    itsResult = &funcs;
+    itsResult = funcs;
     itsFuncNr = funcnr;
   }
 
   Bool      TableExprAggrNode::getBool (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getBool(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getBool(); }
   Int64     TableExprAggrNode::getInt      (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getInt(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getInt(); }
   Double    TableExprAggrNode::getDouble   (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getDouble(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDouble(); }
   DComplex  TableExprAggrNode::getDComplex (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getDComplex(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDComplex(); }
   String    TableExprAggrNode::getString   (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getString(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getString(); }
   MVTime    TableExprAggrNode::getDate     (const TableExprId& id)
-    { return (*itsResult)[id.seqnr()]->getFuncs()[itsFuncNr]->getDate(); }
+    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDate(); }
 
 } //# NAMESPACE CASA - END
 

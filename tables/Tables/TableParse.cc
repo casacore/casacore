@@ -36,7 +36,6 @@
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/ExprAggrNode.h>
 #include <tables/Tables/ExprUnitNode.h>
-#include <tables/Tables/ExprGroup.h>
 #include <tables/Tables/ExprGroupAggrFunc.h>
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/TableColumn.h>
@@ -64,7 +63,6 @@
 #include <casa/IO/AipsIO.h>
 #include <casa/OS/Timer.h>
 #include <casa/ostream.h>
-#include <casa/stdmap.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -267,7 +265,7 @@ Table TableParseSelect::findTableKey (const Table& table,
 {
   //# Pick the table or column keyword set.
   if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
-    const TableRecord* keyset =  columnName.empty()  ?
+    const TableRecord* keyset = columnName.empty()  ?
       &(table.keywordSet()) :
       &(TableColumn (table, columnName).keywordSet());
     // All fieldnames, except last one, should be records.
@@ -1221,6 +1219,9 @@ void TableParseSelect::handleGroupby (const vector<TableExprNode>& nodes,
 void TableParseSelect::handleHaving (const TableExprNode& node)
 {
   havingNode_p = node;
+  if (node.dataType() != TpBool  ||  !node.isScalar()) {
+    throw TableInvExpr ("HAVING expression must result in a bool scalar value");
+  }
 }
 
 void TableParseSelect::handleCreTab (const String& tableName,
@@ -2015,12 +2016,17 @@ Table TableParseSelect::doGroupby (bool showTimings,
   Timer timer;
   // If only 'select count(*)' was given, get the size of the WHERE,
   // thus the size of rownrs_p.
-  Table tab;
   if ((groupAggrUsed & ONLY_COUNTALL) != 0  &&
       (groupAggrUsed & GROUPBY) == 0) {
-    tab = doOnlyCountAll (aggrNodes[0], rownrs_p.size());
+    doOnlyCountAll (aggrNodes[0], rownrs_p.size());
   } else {
-    tab = doGroupByAggr (aggrNodes);
+    doGroupByAggr (aggrNodes);
+  }
+  // Project the table.
+  Table tab = doProjectExpr();
+  // Do the possible HAVING step.
+  if (! havingNode_p.isNull()) {
+    tab = doHaving (tab);
   }
   if (showTimings) {
     timer.show ("  Groupby     ");
@@ -2028,8 +2034,25 @@ Table TableParseSelect::doGroupby (bool showTimings,
   return tab;
 }
 
-Table TableParseSelect::doOnlyCountAll (TableExprAggrNode* aggrNode,
-                                        Int64 nrrow)
+Table TableParseSelect::doHaving (const Table& tab)
+{
+  Vector<uInt> rownrs(rownrs_p.size());
+  uInt nr = 0;
+  TableExprId rowid(0);
+  for (uInt i=0; i<rownrs_p.size(); ++i) {
+    rowid.setRownr (rownrs_p[i]);
+    rowid.setSeqnr (i);
+    if (havingNode_p.getBool (rowid)) {
+      rownrs[nr++] = i;
+    }
+  }
+  rownrs.resize (nr, True);
+  rownrs_p.reference (rownrs);
+  return tab(rownrs_p);
+}
+
+void TableParseSelect::doOnlyCountAll (TableExprAggrNode* aggrNode,
+                                       Int64 nrrow)
 {
   // This function is a special case because it does not need to
   // step though the table. Only its size is of interest. Furthermore,
@@ -2048,11 +2071,10 @@ Table TableParseSelect::doOnlyCountAll (TableExprAggrNode* aggrNode,
   aggrNode->setResult (funcSets, 0);
   // The resulting table has only 1 row, so use the first one.
   rownrs_p.reference (Vector<uInt>(1, rownrs_p[0]));
-  // Project the table.
-  return doProjectExpr();
 }
 
-Table TableParseSelect::doGroupByAggr
+vector<CountedPtr<TableExprGroupFuncSet> >
+TableParseSelect::doGroupByAggrMultipleKeys
 (const vector<TableExprAggrNode*>& aggrNodes)
 {
   // We have to group the data according to the (possible empty) groupby.
@@ -2061,7 +2083,7 @@ Table TableParseSelect::doGroupByAggr
   // A map<key,int> is used to keep track of the results where the int
   // is the index in a vector of a set of aggregate function objects.
   vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
-  map<TableExprGroupKeySet, int> keyFuncMap;
+  std::map<TableExprGroupKeySet, int> keyFuncMap;
   // Create the set of groupby key objects.
   TableExprGroupKeySet keySet(groupbyNodes_p);
   // Loop through all rows.
@@ -2071,7 +2093,7 @@ Table TableParseSelect::doGroupByAggr
     rowid.setRownr (rownrs_p[i]);
     keySet.fill (groupbyNodes_p, rowid);
     int groupnr = funcSets.size();
-    map<TableExprGroupKeySet, int>::iterator iter = keyFuncMap.find (keySet);
+    std::map<TableExprGroupKeySet, int>::iterator iter=keyFuncMap.find (keySet);
     if (iter == keyFuncMap.end()) {
       keyFuncMap[keySet] = groupnr;
       funcSets.push_back (new TableExprGroupFuncSet (aggrNodes));
@@ -2081,9 +2103,26 @@ Table TableParseSelect::doGroupByAggr
     rowid.setRownr (rownrs_p[i]);
     funcSets[groupnr]->apply (aggrNodes, rowid);
   }
+  return funcSets;
+}
+
+void TableParseSelect::doGroupByAggr
+(const vector<TableExprAggrNode*>& aggrNodes)
+{
+  vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+  // Use faster way for single groupby key.
+  if (groupbyNodes_p.size() == 2  &&
+      groupbyNodes_p[0].dataType() == TpDouble) {
+    funcSets = doGroupByAggrSingleKey<Double> (aggrNodes);
+  } else if (groupbyNodes_p.size() == 1  &&
+             groupbyNodes_p[0].dataType() == TpInt) {
+    funcSets = doGroupByAggrSingleKey<Int64> (aggrNodes);
+  } else {
+    funcSets = doGroupByAggrMultipleKeys (aggrNodes);
+  }
   // Let the function nodes finish their operation.
   // Form the rownr vector from the rows kept in the aggregate objects.
-  Vector<uInt> rownrs(keyFuncMap.size());
+  Vector<uInt> rownrs(funcSets.size());
   uInt n=0;
   for (uInt i=0; i<funcSets.size(); ++i) {
     const vector<CountedPtr<TableExprGroupFunc> >& funcs
@@ -2097,8 +2136,6 @@ Table TableParseSelect::doGroupByAggr
   for (uInt i=0; i<aggrNodes.size(); ++i) {
     aggrNodes[i]->setResult (funcSets, i);
   }
-  // Project the table.
-  return doProjectExpr();
 }
 
 //# Execute the sort.

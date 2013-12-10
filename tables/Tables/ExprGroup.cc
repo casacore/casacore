@@ -193,7 +193,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TableExprGroupFuncSet::TableExprGroupFuncSet
   (const vector<TableExprAggrNode*>& aggrNodes)
-    : itsId (-1)
+    : itsId (0)
   {
     itsFuncs.reserve (aggrNodes.size());
     for (uInt i=0; i<aggrNodes.size(); ++i) {
