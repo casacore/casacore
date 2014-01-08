@@ -319,7 +319,7 @@ void doIt (Bool doExcp)
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;           // invalid type
 	} 
-	RecordDesc rd1(rd);
+	RecordDesc rd1;
 	rd1.addField ("TpTable", TpTable);
 	try {
 	    Record rec(rd1);

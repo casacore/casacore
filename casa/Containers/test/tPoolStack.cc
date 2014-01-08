@@ -77,21 +77,23 @@ int main() {
     
     if (pool3.nelements() != 16) {
       cout << pool3.nelements() << " elements in pool3" << endl;
-      ok =False;
+      ok = False;
     }
     pool5.addElements(2);
-    if (pool5.get()->nelements() != 5) {
+    list5[0] = pool5.get();
+    if (list5[0]->nelements() != 5) {
       cout << "Incorrectly added elements" << endl;
       ok = False;
     }
+    pool5.release(list5[0]);
     if (pool5.nelements() != pool3.nelements() + 2) {
       cout << pool5.nelements() << " elements in pool5" << endl;
-      ok =False;
+      ok = False;
     }
     pool5.clear();
     if (pool5.nelements() != 1) {
       cout << pool5.nelements() << " elements in pool5 after clearing" << endl;
-      ok =False;
+      ok = False;
     }
     pool3.clear();
     if (!pool5.empty() || !pool3.empty()) {
