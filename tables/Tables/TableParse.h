@@ -40,6 +40,7 @@
 #include <casa/Containers/Block.h>
 #include <map>
 #include <vector>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
