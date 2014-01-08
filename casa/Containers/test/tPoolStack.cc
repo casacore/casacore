@@ -91,7 +91,7 @@ int main() {
       ok = False;
     }
     pool5.clear();
-    if (pool5.nelements() != 1) {
+    if (pool5.nelements() != 0) {
       cout << pool5.nelements() << " elements in pool5 after clearing" << endl;
       ok = False;
     }
