@@ -114,6 +114,7 @@ int main (int argc, const char* argv[])
 	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     write");
+      LargeFiledesIO::close (fd);
     }
     if (mode <= 0) {
       Timer timer;
@@ -146,6 +147,7 @@ int main (int argc, const char* argv[])
 	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     read ");
+      LargeFiledesIO::close (fd);
     }
 
     delete [] buf;

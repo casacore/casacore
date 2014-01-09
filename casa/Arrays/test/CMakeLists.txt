@@ -17,6 +17,7 @@ tArrayMathTransform
 tArrayOpsDiffShapes
 tArrayPosIter
 tArrayUtil
+tArrayUtilPerf
 tAxesSpecifier
 tBoxedArrayMath
 tCompareBoxedPartial

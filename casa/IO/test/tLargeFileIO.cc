@@ -88,10 +88,12 @@ int main (int argc, const char* argv[])
       }
       ::fsync(fd);
       timer.show ("LargeFiledesIO     write");
+      LargeFiledesIO::close (fd);
     }
     if (mode <= 0) {
       Timer timer;
-      LargeFiledesIO file2 (LargeFiledesIO::open ("tLargeFileIO_tmp.dat2"), "");
+      int fd2 = LargeFiledesIO::open ("tLargeFileIO_tmp.dat2");
+      LargeFiledesIO file2 (fd2, "");
       timer.mark();
       for (i=0; i<nr; i++) {
 	file2.read (tleng, buf);
@@ -103,6 +105,7 @@ int main (int argc, const char* argv[])
 	}
       }
       timer.show ("LargeFiledesIO     read ");
+      LargeFiledesIO::close (fd2);
     }
 
     delete [] buf;
