@@ -29,6 +29,7 @@
 #include <tables/Tables/ExprAggrNode.h>
 #include <tables/Tables/ExprGroupAggrFunc.h>
 #include <tables/Tables/ExprGroupAggrFuncArray.h>
+#include <tables/Tables/TableExprIdAggr.h>
 #include <tables/Tables/TableError.h>
 
 
@@ -58,6 +59,22 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       return NTInt;
     case gcountFUNC:
       checkNumOfArg (1, 1, nodes);
+      return checkDT (dtypeOper, NTAny, NTInt, nodes);
+    case gfirstFUNC:
+    case glastFUNC:
+      checkNumOfArg (1, 1, nodes);
+      resVT = nodes[0]->valueType();
+      return checkDT (dtypeOper, NTAny, NTAny, nodes);
+    case gexpridFUNC:
+      checkNumOfArg (0, 0, nodes);
+      return NTInt;
+    case gaggrFUNC:
+      checkNumOfArg (1, 1, nodes);
+      resVT = VTArray;
+      return checkDT (dtypeOper, NTAny, NTAny, nodes);
+    case growidFUNC:
+      checkNumOfArg (0, 0, nodes);
+      resVT = VTArray;
       return checkDT (dtypeOper, NTAny, NTInt, nodes);
     case gminFUNC:
     case gmaxFUNC:
@@ -94,12 +111,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTBool, NTInt, nodes);
     default:
-      throw TableInvExpr ("Unhandled aggregate function " +
-                          String::toString(ftype));
+        throw TableInvExpr ("Unhandled aggregate function " +
+                            String::toString(ftype));
     }
   }
 
-  void TableExprAggrNode::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+  void TableExprAggrNode::getAggrNodes (vector<TableExprNodeRep*>& aggr)
   {
     aggr.push_back (this);
     uInt naggr = aggr.size();
@@ -112,25 +129,47 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-  TableExprGroupFunc* TableExprAggrNode::makeGroupFunc()
+  CountedPtr<TableExprGroupFuncBase> TableExprAggrNode::makeGroupAggrFunc()
   {
-    if (funcType() == gcountFUNC) {
-      return new TableExprGroupCount(*this);
-    } else if (funcType() == countallFUNC) {
-      return new TableExprGroupCountAll();
+    // Create a new function object because each FuncSet needs its own one.
+    itsFunc = doMakeGroupAggrFunc();
+    return itsFunc;
+  }
+
+  Bool TableExprAggrNode::isLazyAggregate() const
+  {
+    return itsFunc->isLazy();
+  }
+
+  TableExprGroupFuncBase* TableExprAggrNode::doMakeGroupAggrFunc()
+  {
+    if (funcType() == countallFUNC) {
+      return new TableExprGroupCountAll(this);
+    } else if (funcType() == gcountFUNC) {
+      return new TableExprGroupCount(this);
+    } else if (funcType() == gfirstFUNC) {
+      return new TableExprGroupFirst(this);
+    } else if (funcType() == glastFUNC) {
+      return new TableExprGroupLast(this);
+    } else if (funcType() == gexpridFUNC) {
+      return new TableExprGroupExprId(this);
+    } else if (funcType() == gaggrFUNC) {
+      return new TableExprGroupAggr(this);
+    } else if (funcType() == growidFUNC) {
+      return new TableExprGroupRowid(this);
     }
     if (operands()[0]->valueType() == VTScalar) {
       switch (operands()[0]->dataType()) {
       case NTBool:
         switch (funcType()) {
         case ganyFUNC:
-          return new TableExprGroupAny();
+          return new TableExprGroupAny(this);
         case gallFUNC:
-          return new TableExprGroupAll();
+          return new TableExprGroupAll(this);
         case gntrueFUNC:
-          return new TableExprGroupNTrue();
+          return new TableExprGroupNTrue(this);
         case gnfalseFUNC:
-          return new TableExprGroupNFalse();
+          return new TableExprGroupNFalse(this);
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
@@ -139,15 +178,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       case NTInt:
         switch (funcType()) {
         case gminFUNC:
-          return new TableExprGroupMinInt();
+          return new TableExprGroupMinInt(this);
         case gmaxFUNC:
-          return new TableExprGroupMaxInt();
+          return new TableExprGroupMaxInt(this);
         case gsumFUNC:
-          return new TableExprGroupSumInt();
+          return new TableExprGroupSumInt(this);
         case gproductFUNC:
-          return new TableExprGroupProductInt();
+          return new TableExprGroupProductInt(this);
         case gsumsqrFUNC:
-          return new TableExprGroupSumSqrInt();
+          return new TableExprGroupSumSqrInt(this);
         default:
           break;
         }
@@ -155,42 +194,44 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       case NTDouble:
         switch (funcType()) {
         case gminFUNC:
-          return new TableExprGroupMinDouble();
+          return new TableExprGroupMinDouble(this);
         case gmaxFUNC:
-          return new TableExprGroupMaxDouble();
+          return new TableExprGroupMaxDouble(this);
         case gsumFUNC:
-          return new TableExprGroupSumDouble();
+          return new TableExprGroupSumDouble(this);
         case gproductFUNC:
-          return new TableExprGroupProductDouble();
+          return new TableExprGroupProductDouble(this);
         case gsumsqrFUNC:
-          return new TableExprGroupSumSqrDouble();
+          return new TableExprGroupSumSqrDouble(this);
         case gmeanFUNC:
-          return new TableExprGroupMeanDouble();
+          return new TableExprGroupMeanDouble(this);
         case gvarianceFUNC:
-          return new TableExprGroupVarianceDouble();
+          return new TableExprGroupVarianceDouble(this);
         case gstddevFUNC:
-          return new TableExprGroupStdDevDouble();
+          return new TableExprGroupStdDevDouble(this);
         case grmsFUNC:
-          return new TableExprGroupRmsDouble();
+          return new TableExprGroupRmsDouble(this);
         case gmedianFUNC:
-          return new TableExprGroupFractileDouble(0.5);
+          return new TableExprGroupFractileDouble(this, 0.5);
         case gfractileFUNC:
-          return new TableExprGroupFractileDouble(operands()[1]->getDouble(0));
+          return new TableExprGroupFractileDouble
+            (this, operands()[1]->getDouble(0));
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
-                              " cannot be used with an integer/double argument");
+                              " cannot be used with an integer/double"
+                              " argument");
         }
       case NTComplex:
         switch (funcType()) {
         case gsumFUNC:
-          return new TableExprGroupSumDComplex();
+          return new TableExprGroupSumDComplex(this);
         case gproductFUNC:
-          return new TableExprGroupProductDComplex();
+          return new TableExprGroupProductDComplex(this);
         case gsumsqrFUNC:
-          return new TableExprGroupSumSqrDComplex();
+          return new TableExprGroupSumSqrDComplex(this);
         case gmeanFUNC:
-          return new TableExprGroupMeanDComplex();
+          return new TableExprGroupMeanDComplex(this);
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
@@ -201,20 +242,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
       throw TableInvExpr ("Aggregate function " +
                           String::toString(funcType()) +
-                          " is unknown for data type " + 
+                          " is unknown for scalar data type " + 
                           String::toString(operands()[0]->dataType()));
     }
+    // The operand is an array.
     switch (operands()[0]->dataType()) {
     case NTBool:
       switch (funcType()) {
       case ganyFUNC:
-        return new TableExprGroupArrAny();
+        return new TableExprGroupArrayAny(this);
       case gallFUNC:
-        return new TableExprGroupArrAll();
+        return new TableExprGroupArrayAll(this);
       case gntrueFUNC:
-        return new TableExprGroupArrNTrue();
+        return new TableExprGroupArrayNTrue(this);
       case gnfalseFUNC:
-        return new TableExprGroupArrNFalse();
+        return new TableExprGroupArrayNFalse(this);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -223,15 +265,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case NTInt:
       switch (funcType()) {
       case gminFUNC:
-        return new TableExprGroupMinArrInt();
+        return new TableExprGroupMinArrayInt(this);
       case gmaxFUNC:
-        return new TableExprGroupMaxArrInt();
+        return new TableExprGroupMaxArrayInt(this);
       case gsumFUNC:
-        return new TableExprGroupSumArrInt();
+        return new TableExprGroupSumArrayInt(this);
       case gproductFUNC:
-        return new TableExprGroupProductArrInt();
+        return new TableExprGroupProductArrayInt(this);
       case gsumsqrFUNC:
-        return new TableExprGroupSumSqrArrInt();
+        return new TableExprGroupSumSqrArrayInt(this);
       default:
         break;
       }
@@ -239,27 +281,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case NTDouble:
       switch (funcType()) {
       case gminFUNC:
-        return new TableExprGroupMinArrDouble();
+        return new TableExprGroupMinArrayDouble(this);
       case gmaxFUNC:
-        return new TableExprGroupMaxArrDouble();
+        return new TableExprGroupMaxArrayDouble(this);
       case gsumFUNC:
-        return new TableExprGroupSumArrDouble();
+        return new TableExprGroupSumArrayDouble(this);
       case gproductFUNC:
-        return new TableExprGroupProductArrDouble();
+        return new TableExprGroupProductArrayDouble(this);
       case gsumsqrFUNC:
-        return new TableExprGroupSumSqrArrDouble();
+        return new TableExprGroupSumSqrArrayDouble(this);
       case gmeanFUNC:
-        return new TableExprGroupMeanArrDouble();
+        return new TableExprGroupMeanArrayDouble(this);
       case gvarianceFUNC:
-        return new TableExprGroupVarianceArrDouble();
+        return new TableExprGroupVarianceArrayDouble(this);
       case gstddevFUNC:
-        return new TableExprGroupStdDevArrDouble();
+        return new TableExprGroupStdDevArrayDouble(this);
       case grmsFUNC:
-        return new TableExprGroupRmsArrDouble();
+        return new TableExprGroupRmsArrayDouble(this);
       case gmedianFUNC:
-        return new TableExprGroupFractileArrDouble(0.5);
+        return new TableExprGroupFractileArrayDouble(this, 0.5);
       case gfractileFUNC:
-        return new TableExprGroupFractileArrDouble(operands()[1]->getDouble(0));
+        return new TableExprGroupFractileArrayDouble
+          (this, operands()[1]->getDouble(0));
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -268,13 +311,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     case NTComplex:
       switch (funcType()) {
       case gsumFUNC:
-        return new TableExprGroupSumArrDComplex();
+        return new TableExprGroupSumArrayDComplex(this);
       case gproductFUNC:
-        return new TableExprGroupProductArrDComplex();
+        return new TableExprGroupProductArrayDComplex(this);
       case gsumsqrFUNC:
-        return new TableExprGroupSumSqrArrDComplex();
+        return new TableExprGroupSumSqrArrayDComplex(this);
       case gmeanFUNC:
-        return new TableExprGroupMeanArrDComplex();
+        return new TableExprGroupMeanArrayDComplex(this);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -285,30 +328,63 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
     throw TableInvExpr ("Aggregate function " +
                         String::toString(funcType()) +
-                        " is unknown for data type " + 
+                        " is unknown for array data type " + 
                         String::toString(operands()[0]->dataType()));
   }
 
-  void TableExprAggrNode::setResult
-  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcs,
-   uInt funcnr)
+  Bool TableExprAggrNode::getBool (const TableExprId& id)
   {
-    itsResult = funcs;
-    itsFuncNr = funcnr;
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getBool (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getBool();
+  }
+  Int64 TableExprAggrNode::getInt (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getInt (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getInt();
+  }
+  Double TableExprAggrNode::getDouble (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getDouble (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getDouble();
+  }
+  DComplex TableExprAggrNode::getDComplex (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getDComplex (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getDComplex();
+  }
+  String TableExprAggrNode::getString (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getString (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getString();
+  }
+  MVTime TableExprAggrNode::getDate (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    if (itsFunc->isLazy()) {
+      return itsFunc->getDate (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getDate();
   }
 
-  Bool      TableExprAggrNode::getBool (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getBool(); }
-  Int64     TableExprAggrNode::getInt      (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getInt(); }
-  Double    TableExprAggrNode::getDouble   (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDouble(); }
-  DComplex  TableExprAggrNode::getDComplex (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDComplex(); }
-  String    TableExprAggrNode::getString   (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getString(); }
-  MVTime    TableExprAggrNode::getDate     (const TableExprId& id)
-    { return itsResult[id.seqnr()]->getFuncs()[itsFuncNr]->getDate(); }
-
 } //# NAMESPACE CASA - END
-

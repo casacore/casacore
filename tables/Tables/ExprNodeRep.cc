@@ -114,12 +114,21 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
        << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
 }
 
-void TableExprNodeRep::getAggrNodes (vector<TableExprAggrNode*>&)
+void TableExprNodeRep::disableApplySelection()
+{}
+
+void TableExprNodeRep::applySelection (const Vector<uInt>&)
+{}
+
+void TableExprNodeRep::getAggrNodes (vector<TableExprNodeRep*>&)
+{}
+
+void TableExprNodeRep::getColumnNodes (vector<TableExprNodeRep*>&)
 {}
 
 void TableExprNodeRep::checkAggrFuncs (const TableExprNodeRep* node)
 {
-  vector<TableExprAggrNode*> aggr;
+  vector<TableExprNodeRep*> aggr;
   if (node) {
     const_cast<TableExprNodeRep*>(node)->getAggrNodes (aggr);
     if (! aggr.empty()) {
@@ -164,10 +173,10 @@ void TableExprNodeRep::checkTablePtr (Table& table,
 				      const TableExprNodeRep* node)
 {
     if (node != 0) {
-	if (table.isNull()) {
+      if (table.isNull()  ||  table.nrow() == 0) {
 	    table = node->table();
 	}else{
-	    if (!node->table().isNull()
+        if (!(node->table().isNull()  ||  node->table().nrow() == 0)
             &&  node->table().nrow() != table.nrow()) {
 		throw (TableInvExpr
                        ("expression uses differently sized tables"));
@@ -412,87 +421,111 @@ Array<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
 }
 
 
-Array<Bool>     TableExprNodeRep::getColumnBool (const Vector<uInt>& rownrs)
+Array<Bool>     TableExprNodeRep::getColumnBool
+(const Vector<uInt>& rownrs)
 {
+    TableExprId id;
     uInt nrrow = rownrs.size();
     Vector<Bool> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec[i] = getBool (rownrs[i]);
+      id.setRownr   (rownrs[i]);
+      vec[i] = getBool (id);
     }
     return vec;
 }
-Array<uChar>    TableExprNodeRep::getColumnuChar (const Vector<uInt>&)
+Array<uChar>    TableExprNodeRep::getColumnuChar
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuChar not implemented)");
     return Array<uChar>();
 }
-Array<Short>    TableExprNodeRep::getColumnShort (const Vector<uInt>&)
+Array<Short>    TableExprNodeRep::getColumnShort
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnShort not implemented)");
     return Array<Short>();
 }
-Array<uShort>   TableExprNodeRep::getColumnuShort (const Vector<uInt>&)
+Array<uShort>   TableExprNodeRep::getColumnuShort
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuShort not implemented)");
     return Array<uShort>();
 }
-Array<Int>      TableExprNodeRep::getColumnInt (const Vector<uInt>& rownrs)
+Array<Int>      TableExprNodeRep::getColumnInt
+(const Vector<uInt>& rownrs)
 {
+    TableExprId id;
     uInt nrrow = rownrs.size();
     Vector<Int> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-      vec[i] = getInt (rownrs[i]);
+      id.setRownr   (rownrs[i]);
+      vec[i] = getInt (id);
     }
     return vec;
 }
-Array<uInt>     TableExprNodeRep::getColumnuInt (const Vector<uInt>&)
+Array<uInt>     TableExprNodeRep::getColumnuInt
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnuInt not implemented)");
     return Array<uInt>();
 }
-// Array<Int64>    TableExprNodeRep::getColumnInt64 (const Vector<uInt>& rownrs)
+// Array<Int64>    TableExprNodeRep::getColumnInt64
+// (const Vector<uInt>& rownrs)
 // {
+//     TableExprId id;
 //     uInt nrrow = rownrs.size();
 //     Vector<Int64> vec (nrrow);
 //     for (uInt i=0; i<nrrow; i++) {
-// 	vec[i] = getInt (rownrs[i]);
+//       id.setRownr   (rownrs[i]);
+//       vec[i] = getInt (id);
 //     }
 //     return vec;
 // }
-Array<Float>    TableExprNodeRep::getColumnFloat (const Vector<uInt>&)
+Array<Float>    TableExprNodeRep::getColumnFloat
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnFloat not implemented)");
     return Array<Float>();
 }
-Array<Double>   TableExprNodeRep::getColumnDouble (const Vector<uInt>& rownrs)
+Array<Double>   TableExprNodeRep::getColumnDouble
+(const Vector<uInt>& rownrs)
 {
+    TableExprId id;
     uInt nrrow = rownrs.size();
     Vector<Double> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec[i] = getDouble (rownrs[i]);
+      id.setRownr   (rownrs[i]);
+      vec[i] = getDouble (id);
     }
     return vec;
 }
-Array<Complex>  TableExprNodeRep::getColumnComplex (const Vector<uInt>&)
+Array<Complex>  TableExprNodeRep::getColumnComplex
+(const Vector<uInt>&)
 {
     TableExprNode::throwInvDT ("(getColumnComplex not implemented)");
     return Array<Complex>();
 }
-Array<DComplex> TableExprNodeRep::getColumnDComplex (const Vector<uInt>& rownrs)
+Array<DComplex> TableExprNodeRep::getColumnDComplex
+(const Vector<uInt>& rownrs)
 {
+    TableExprId id;
     uInt nrrow = rownrs.size();
     Vector<DComplex> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec[i] = getDComplex (rownrs[i]);
+      id.setRownr   (rownrs[i]);
+      vec[i] = getDComplex (id);
     }
     return vec;
 }
-Array<String>   TableExprNodeRep::getColumnString (const Vector<uInt>& rownrs)
+Array<String>   TableExprNodeRep::getColumnString
+(const Vector<uInt>& rownrs)
 {
+    TableExprId id;
     uInt nrrow = rownrs.size();
     Vector<String> vec (nrrow);
     for (uInt i=0; i<nrrow; i++) {
-	vec[i] = getString (rownrs[i]);
+      id.setRownr   (rownrs[i]);
+      vec[i] = getString (id);
     }
     return vec;
 }
@@ -684,13 +717,23 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeBinary::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+void TableExprNodeBinary::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
   if (lnode_p) {
     lnode_p->getAggrNodes (aggr);
   }
   if (rnode_p) {
     rnode_p->getAggrNodes (aggr);
+  }
+}
+
+void TableExprNodeBinary::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+  if (lnode_p) {
+    lnode_p->getColumnNodes (cols);
+  }
+  if (rnode_p) {
+    rnode_p->getColumnNodes (cols);
   }
 }
 
@@ -1038,7 +1081,7 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeMulti::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+void TableExprNodeMulti::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
     for (uInt j=0; j<operands_p.nelements(); j++) {
 	if (operands_p[j] != 0) {
@@ -1046,6 +1089,27 @@ void TableExprNodeMulti::getAggrNodes (vector<TableExprAggrNode*>& aggr)
 	}
     }
 }
+
+void TableExprNodeMulti::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    for (uInt j=0; j<operands_p.nelements(); j++) {
+	if (operands_p[j] != 0) {
+            operands_p[j]->getColumnNodes (cols);
+	}
+    }
+}
+
+CountedPtr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()
+{
+  throw AipsError ("TableExprNodeRep::makeGroupAggrFunc should not be called");
+}
+
+Bool TableExprNodeRep::isLazyAggregate() const
+{
+  return True;
+}
+
+
 
 uInt TableExprNodeMulti::checkNumOfArg
                                     (uInt low, uInt high,

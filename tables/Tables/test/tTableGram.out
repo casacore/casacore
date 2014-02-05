@@ -150,7 +150,7 @@ select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d0m)*sin(-ab/180*p
  1 2
  2 3
  3 4
-select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
+select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-1960) + year("31Dec60") + month(1990/05/12) + day(date(1990/01/30/12h14m33.3)) - 3910
     has been executed
     select result of 2 rows
 6 selected columns:  ab ac ad ae af ag

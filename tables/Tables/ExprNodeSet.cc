@@ -259,7 +259,7 @@ void TableExprNodeSetElem::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeSetElem::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+void TableExprNodeSetElem::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
     if (itsStart != 0) {
         itsStart->getAggrNodes (aggr);
@@ -269,6 +269,19 @@ void TableExprNodeSetElem::getAggrNodes (vector<TableExprAggrNode*>& aggr)
     }
     if (itsIncr != 0) {
         itsIncr->getAggrNodes (aggr);
+    }
+}
+  
+void TableExprNodeSetElem::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    if (itsStart != 0) {
+        itsStart->getColumnNodes (cols);
+    }
+    if (itsEnd != 0) {
+        itsEnd->getColumnNodes (cols);
+    }
+    if (itsIncr != 0) {
+        itsIncr->getColumnNodes (cols);
     }
 }
   
@@ -1131,10 +1144,17 @@ void TableExprNodeSet::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeSet::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+void TableExprNodeSet::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
     for (uInt j=0; j<itsElems.nelements(); j++) {
         itsElems[j]->getAggrNodes (aggr);
+    }
+}
+
+void TableExprNodeSet::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    for (uInt j=0; j<itsElems.nelements(); j++) {
+        itsElems[j]->getColumnNodes (cols);
     }
 }
 

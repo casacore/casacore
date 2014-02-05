@@ -202,6 +202,15 @@ public:
 
     ~TableExprNodeArrayColumn();
 
+    // This node represents a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
+    // Do not apply the selection.
+    virtual void disableApplySelection();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     // Get the TableColumn object.
     const TableColumn& getColumn() const;
 
@@ -216,7 +225,9 @@ public:
     virtual Bool getColumnDataType (DataType&) const;
 
 protected:
+    Table       selTable_p;
     TableColumn tabCol_p;
+    Bool        applySelection_p;
 };
 
 
@@ -245,6 +256,9 @@ public:
     TableExprNodeArrayColumnBool (const TableColumn&,
 				  const Table&);
     ~TableExprNodeArrayColumnBool();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual Bool getElemBool (const TableExprId& id, const Slicer& index);
     virtual Array<Bool>  getArrayBool (const TableExprId& id);
@@ -280,6 +294,9 @@ public:
     TableExprNodeArrayColumnuChar (const TableColumn&,
 				   const Table&);
     ~TableExprNodeArrayColumnuChar();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual Array<Int64> getArrayInt (const TableExprId& id);
@@ -317,6 +334,9 @@ public:
 				   const Table&);
     ~TableExprNodeArrayColumnShort();
 
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual Array<Int64> getArrayInt (const TableExprId& id);
     virtual Array<Int64> getSliceInt (const TableExprId& id,
@@ -352,6 +372,9 @@ public:
     TableExprNodeArrayColumnuShort (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnuShort();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual Array<Int64> getArrayInt (const TableExprId& id);
@@ -389,6 +412,9 @@ public:
 				 const Table&);
     ~TableExprNodeArrayColumnInt();
 
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual Array<Int64> getArrayInt (const TableExprId& id);
     virtual Array<Int64> getSliceInt (const TableExprId& id,
@@ -424,6 +450,9 @@ public:
     TableExprNodeArrayColumnuInt (const TableColumn&,
 				  const Table&);
     ~TableExprNodeArrayColumnuInt();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual Int64 getElemInt (const TableExprId& id, const Slicer& index);
     virtual Array<Int64> getArrayInt (const TableExprId& id);
@@ -461,6 +490,9 @@ public:
 				   const Table&);
     ~TableExprNodeArrayColumnFloat();
 
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
     virtual Array<Double> getSliceDouble (const TableExprId& id,
@@ -496,6 +528,9 @@ public:
     TableExprNodeArrayColumnDouble (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnDouble();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual Double getElemDouble (const TableExprId& id, const Slicer& index);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
@@ -533,6 +568,9 @@ public:
 				     const Table&);
     ~TableExprNodeArrayColumnComplex();
 
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
     virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
@@ -569,6 +607,9 @@ public:
 				      const Table&);
     ~TableExprNodeArrayColumnDComplex();
 
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     virtual DComplex getElemDComplex (const TableExprId& id, const Slicer& index);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
     virtual Array<DComplex> getSliceDComplex (const TableExprId& id,
@@ -604,6 +645,9 @@ public:
     TableExprNodeArrayColumnString (const TableColumn&,
 				    const Table&);
     ~TableExprNodeArrayColumnString();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
 
     virtual String getElemString (const TableExprId& id, const Slicer& index);
     virtual Array<String> getArrayString (const TableExprId& id);

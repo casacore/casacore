@@ -714,8 +714,10 @@ BaseTable* BaseTable::select (const TableExprNode& node,
     SPtrHolder<RefTable> resultTable (makeRefTable (True, 0));
     Bool val;
     uInt nrrow = nrow();
+    TableExprId id;
     for (uInt i=0; i<nrrow; i++) {
-      node.get (i, val);
+      id.setRownr (i);
+      node.get (id, val);
       if (val) {
         if (offset == 0) {
           resultTable->addRownr (i);                  // add row

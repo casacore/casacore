@@ -28,6 +28,8 @@
 //# Includes
 #include <tables/Tables/ExprGroup.h>
 #include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprAggrNode.h>
+#include <tables/Tables/ExprAggrNodeArray.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Utilities/Sort.h>
 #include <limits>
@@ -111,17 +113,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       case TableExprNodeRep::NTDouble:
         itsKeys[i].set (nodes[i].getDouble(id));
         break;
-        ///      case TableExprNodeRep::NTDComplex:
-        ///        itsKeys[i].set (nodes[i].getComplex(id));
-        ///        break;
       case TableExprNodeRep::NTString:
         itsKeys[i].set (nodes[i].getString(id));
         break;
-        ///      case TableExprNodeRep::NTDate:
-        ///        itsKeys[i].set (nodes[i].getDate(id));
-        ///        break;
+      case TableExprNodeRep::NTDate:
+        // Handle a date/time as a double.
+        itsKeys[i].set (nodes[i].getDouble(id));
+        break;
       default:
-        throw TableInvExpr ("TableExprGroupKeySet: unknown data type");
+        throw TableInvExpr ("A GROUPBY key cannot have data type dcomplex");
       }
     }
   }
@@ -146,89 +146,360 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-  TableExprGroupFunc::~TableExprGroupFunc()
+  TableExprGroupResult::TableExprGroupResult
+  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets)
+  {
+    itsFuncSets = funcSets;
+  }
+  TableExprGroupResult::TableExprGroupResult
+  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets,
+   const vector<CountedPtr<vector<TableExprId> > >& ids)
+  {
+    AlwaysAssert (ids.size() == funcSets.size()  ||  ids.empty(), AipsError);
+    itsFuncSets = funcSets;
+    itsIds      = ids;
+  }
+
+
+  TableExprGroupFuncBase::TableExprGroupFuncBase (TableExprNodeRep* node)
+    : itsNode  (node),
+      itsSeqnr (0)
+  {
+    if (node) {
+      TableExprAggrNode* snode = dynamic_cast<TableExprAggrNode*>(node);
+      if (snode) {
+        itsOperand = snode->operand();
+      } else {
+        TableExprAggrNodeArray* anode = dynamic_cast<TableExprAggrNodeArray*>(node);
+        AlwaysAssert (anode, AipsError);
+        itsOperand = anode->operand();
+      }
+    }
+  }
+  TableExprGroupFuncBase::~TableExprGroupFuncBase()
   {}
-  void TableExprGroupFunc::finish()
+  Bool TableExprGroupFuncBase::isLazy() const
+    { return False; }
+  void TableExprGroupFuncBase::finish()
   {}
-  Bool TableExprGroupFunc::getBool()
-  { throw TableInvExpr ("TableExprGroupFunc::getBool not implemented"); }
-  Int64 TableExprGroupFunc::getInt()
-  { throw TableInvExpr ("TableExprGroupFunc::getInt not implemented"); }
-  Double TableExprGroupFunc::getDouble()
-  { throw TableInvExpr ("TableExprGroupFunc::getDouble not implemented"); }
-  DComplex TableExprGroupFunc::getDComplex()
-  { throw TableInvExpr ("TableExprGroupFunc::getDComplex not implemented"); }
-  MVTime TableExprGroupFunc::getDate()
-  { throw TableInvExpr ("TableExprGroupFunc::getDate not implemented"); }
-  String TableExprGroupFunc::getString()
-  { throw TableInvExpr ("TableExprGroupFunc::getString not implemented"); }
+  CountedPtr<vector<TableExprId> > TableExprGroupFuncBase::getIds() const
+  { throw TableInvExpr ("TableExprGroupFuncBase::getIds not implemented"); }
+  Bool TableExprGroupFuncBase::getBool (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getBool not implemented"); }
+  Int64 TableExprGroupFuncBase::getInt (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getInt not implemented"); }
+  Double TableExprGroupFuncBase::getDouble (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getDouble not implemented"); }
+  DComplex TableExprGroupFuncBase::getDComplex (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getDComplex not implemented"); }
+  MVTime TableExprGroupFuncBase::getDate (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getDate not implemented"); }
+  String TableExprGroupFuncBase::getString (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getString not implemented"); }
+  Array<Bool> TableExprGroupFuncBase::getArrayBool (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayBool not implemented"); }
+  Array<Int64> TableExprGroupFuncBase::getArrayInt (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayInt not implemented"); }
+  Array<Double> TableExprGroupFuncBase::getArrayDouble (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDouble not implemented"); }
+  Array<DComplex> TableExprGroupFuncBase::getArrayDComplex (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDComplex not implemented"); }
+  Array<MVTime> TableExprGroupFuncBase::getArrayDate (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDate not implemented"); }
+  Array<String> TableExprGroupFuncBase::getArrayString (const vector<TableExprId>&)
+  { throw TableInvExpr ("TableExprGroupFuncBase::getArrayString not implemented"); }
+
+
+  TableExprGroupNull::TableExprGroupNull (TableExprNodeRep* node)
+    : TableExprGroupFuncBase (node)
+  {}
+  TableExprGroupNull::~TableExprGroupNull()
+  {}
+  Bool TableExprGroupNull::isLazy() const
+    { return True; }
+  void TableExprGroupNull::apply (const TableExprId&)
+  {
+    throw AipsError ("TableExprGroupFunc::apply should not be called for "
+                     " lazy aggregation");
+  }
+
+  TableExprGroupFirst::TableExprGroupFirst (TableExprNodeRep* node)
+    : TableExprGroupFuncBase (node)
+  {}
+  TableExprGroupFirst::~TableExprGroupFirst()
+  {}
+  void TableExprGroupFirst::apply (const TableExprId& id)
+  {
+    // Keep first one.
+    if (itsId.rownr() < 0) {
+      itsId = id;
+    }
+  }
+  Bool TableExprGroupFirst::getBool (const vector<TableExprId>&)
+    { return itsOperand->getBool (itsId); }
+  Int64 TableExprGroupFirst::getInt (const vector<TableExprId>&)
+    { return itsOperand->getInt (itsId); }
+  Double TableExprGroupFirst::getDouble (const vector<TableExprId>&)
+    { return itsOperand->getDouble (itsId); }
+  DComplex TableExprGroupFirst::getDComplex (const vector<TableExprId>&)
+    { return itsOperand->getDComplex (itsId); }
+  MVTime TableExprGroupFirst::getDate (const vector<TableExprId>&)
+    { return itsOperand->getDate (itsId); }
+  String TableExprGroupFirst::getString (const vector<TableExprId>&)
+    { return itsOperand->getString (itsId); }
+  Array<Bool> TableExprGroupFirst::getArrayBool (const vector<TableExprId>&)
+    { return itsOperand->getArrayBool (itsId); }
+  Array<Int64> TableExprGroupFirst::getArrayInt (const vector<TableExprId>&)
+    { return itsOperand->getArrayInt (itsId); }
+  Array<Double> TableExprGroupFirst::getArrayDouble (const vector<TableExprId>&)
+    { return itsOperand->getArrayDouble (itsId); }
+  Array<DComplex> TableExprGroupFirst:: getArrayDComplex (const vector<TableExprId>&)
+    { return itsOperand->getArrayDComplex (itsId); }
+  Array<MVTime> TableExprGroupFirst::getArrayDate (const vector<TableExprId>&)
+    { return itsOperand->getArrayDate (itsId); }
+  Array<String> TableExprGroupFirst::getArrayString (const vector<TableExprId>&)
+    { return itsOperand->getArrayString (itsId); }
+
+  TableExprGroupLast::TableExprGroupLast (TableExprNodeRep* node)
+    : TableExprGroupFirst (node)
+  {}
+  TableExprGroupLast::~TableExprGroupLast()
+  {}
+  void TableExprGroupLast::apply (const TableExprId& id)
+  {
+    itsId = id;
+  }
+
+  TableExprGroupExprId::TableExprGroupExprId (TableExprNodeRep* node)
+    : TableExprGroupFuncBase (node)
+  {
+    itsIds = new vector<TableExprId>();
+  }
+  TableExprGroupExprId::~TableExprGroupExprId()
+  {}
+  Bool TableExprGroupExprId::isLazy() const
+  {
+    return True;
+  }
+  void TableExprGroupExprId::apply (const TableExprId& id)
+  {
+    itsIds->push_back (id);
+  }
+  CountedPtr<vector<TableExprId> > TableExprGroupExprId::getIds() const
+  {
+    return itsIds;
+  }
+
+  TableExprGroupRowid::TableExprGroupRowid (TableExprNodeRep* node)
+    : TableExprGroupFuncBase (node)
+  {}
+  TableExprGroupRowid::~TableExprGroupRowid()
+  {}
+  Bool TableExprGroupRowid::isLazy() const
+  {
+    return True;
+  }
+  void TableExprGroupRowid::apply (const TableExprId&)
+  {
+    throw TableInvExpr ("TableExprGroupRowid::apply should not be called");
+  }
+  Array<Int64> TableExprGroupRowid::getArrayInt (const vector<TableExprId>& ids)
+  {
+    Vector<Int64> rowIds(ids.size());
+    for (size_t i=0; i<ids.size(); ++ i) {
+      rowIds[i] = ids[i].rownr();
+    }
+    return rowIds;
+  }
+
+  TableExprGroupAggr::TableExprGroupAggr (TableExprNodeRep* node)
+    : TableExprGroupFuncBase (node)
+  {}
+  TableExprGroupAggr::~TableExprGroupAggr()
+  {}
+  Bool TableExprGroupAggr::isLazy() const
+  {
+    return True;
+  }
+  void TableExprGroupAggr::apply (const TableExprId&)
+  {
+    throw TableInvExpr ("TableExprGroupAggr::apply should not be called");
+  }
+  Array<Bool> TableExprGroupAggr::getArrayBool (const vector<TableExprId>& ids)
+    { return getArray<Bool>(ids); }
+  Array<Int64> TableExprGroupAggr::getArrayInt (const vector<TableExprId>& ids)
+    { return getArray<Int64>(ids); }
+  Array<Double> TableExprGroupAggr::getArrayDouble (const vector<TableExprId>& ids)
+    { return getArray<Double>(ids); }
+  Array<DComplex> TableExprGroupAggr::getArrayDComplex (const vector<TableExprId>& ids)
+    { return getArray<DComplex>(ids); }
+  Array<MVTime> TableExprGroupAggr::getArrayDate (const vector<TableExprId>& ids)
+    { return getArray<MVTime>(ids); }
+  Array<String> TableExprGroupAggr::getArrayString (const vector<TableExprId>& ids)
+    { return getArray<String>(ids); }
+
 
   TableExprGroupFuncBool::~TableExprGroupFuncBool()
   {}
-  Bool TableExprGroupFuncBool::getBool()
+  Bool TableExprGroupFuncBool::getBool (const vector<TableExprId>&)
     { return itsValue; }
 
   TableExprGroupFuncInt::~TableExprGroupFuncInt()
   {}
-  Int64 TableExprGroupFuncInt::getInt()
+  Int64 TableExprGroupFuncInt::getInt (const vector<TableExprId>&)
     { return itsValue; }
-  Double TableExprGroupFuncInt::getDouble()
+  Double TableExprGroupFuncInt::getDouble (const vector<TableExprId>&)
     { return itsValue; }
 
   TableExprGroupFuncDouble::~TableExprGroupFuncDouble()
   {}
-  Double TableExprGroupFuncDouble::getDouble()
+  Double TableExprGroupFuncDouble::getDouble (const vector<TableExprId>&)
     { return itsValue; }
 
   TableExprGroupFuncDComplex::~TableExprGroupFuncDComplex()
   {}
-  DComplex TableExprGroupFuncDComplex::getDComplex()
+  DComplex TableExprGroupFuncDComplex::getDComplex (const vector<TableExprId>&)
     { return itsValue; }
 
   TableExprGroupFuncString::~TableExprGroupFuncString()
   {}
-  String TableExprGroupFuncString::getString()
+  String TableExprGroupFuncString::getString (const vector<TableExprId>&)
     { return itsValue; }
 
 
+  TableExprGroupFuncArrayBool::~TableExprGroupFuncArrayBool()
+  {}
+  Array<Bool> TableExprGroupFuncArrayBool::getArrayBool (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayBool::checkShape (const ArrayBase& arr,
+                                                const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+  TableExprGroupFuncArrayInt::~TableExprGroupFuncArrayInt()
+  {}
+  Array<Int64> TableExprGroupFuncArrayInt::getArrayInt (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayInt::checkShape (const ArrayBase& arr,
+                                               const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+  TableExprGroupFuncArrayDouble::~TableExprGroupFuncArrayDouble()
+  {}
+  Array<Double> TableExprGroupFuncArrayDouble::getArrayDouble (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayDouble::checkShape (const ArrayBase& arr,
+                                                  const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+  TableExprGroupFuncArrayDComplex::~TableExprGroupFuncArrayDComplex()
+  {}
+  Array<DComplex> TableExprGroupFuncArrayDComplex::getArrayDComplex (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayDComplex::checkShape (const ArrayBase& arr,
+                                                    const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+  TableExprGroupFuncArrayDate::~TableExprGroupFuncArrayDate()
+  {}
+  Array<MVTime> TableExprGroupFuncArrayDate::getArrayDate (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayDate::checkShape (const ArrayBase& arr,
+                                                const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+  TableExprGroupFuncArrayString::~TableExprGroupFuncArrayString()
+  {}
+  Array<String> TableExprGroupFuncArrayString::getArrayString (const vector<TableExprId>&)
+    { return itsValue; }
+  Bool TableExprGroupFuncArrayString::checkShape (const ArrayBase& arr,
+                                                  const String& func)
+  {
+    if (itsValue.empty()) {
+      itsValue.resize (arr.shape());
+      return True;    // first time itsValue is used
+    }
+    if (! itsValue.shape().isEqual (arr.shape())) {
+      throw TableInvExpr ("Mismatching array shapes in aggregate function " +
+                          func);
+    }
+    return False;
+  }
+
+
   TableExprGroupFuncSet::TableExprGroupFuncSet
-  (const vector<TableExprAggrNode*>& aggrNodes)
+  (const vector<TableExprNodeRep*>& aggrNodes)
     : itsId (0)
   {
     itsFuncs.reserve (aggrNodes.size());
     for (uInt i=0; i<aggrNodes.size(); ++i) {
-      itsFuncs.push_back (aggrNodes[i]->makeGroupFunc());
+      itsFuncs.push_back (aggrNodes[i]->makeGroupAggrFunc());
+      itsFuncs[i]->setSeqnr (i);
     }
   }
 
-  /*
-  TableExprGroupFuncSet::TableExprGroupFuncSet
-  (const TableExprGroupFuncSet& that)
-    : itsId (-1)
+  void TableExprGroupFuncSet::add
+  (const CountedPtr<TableExprGroupFuncBase>& func)
   {
-    operator= (that);
+    size_t seqnr = itsFuncs.size();
+    itsFuncs.push_back (func);
+    itsFuncs[seqnr]->setSeqnr (seqnr);
   }
 
-  TableExprGroupFuncSet& TableExprGroupFuncSet::operator=
-  (const TableExprGroupFuncSet& that)
-  {
-    if (this != &that) {
-      itsId = that.itsId;
-      itsFuncs.resize (that.itsFuncs.size());
-      for (uInt i=0; i<itsFuncs.size(); ++i) {
-        itsFuncs[i] = that.itsFuncs[i]->clone();
-      }
-    }
-    return *this;
-  }
-  */
-
-  void TableExprGroupFuncSet::apply (const vector<TableExprAggrNode*>& nodes,
-                                     const TableExprId& id)
+  void TableExprGroupFuncSet::apply (const TableExprId& id)
   {
     itsId = id;
-    for (uInt i=0; i<nodes.size(); ++i) {
-      itsFuncs[i]->apply (*nodes[i], id);
+    for (uInt i=0; i<itsFuncs.size(); ++i) {
+      itsFuncs[i]->apply (id);
     }
   }
 

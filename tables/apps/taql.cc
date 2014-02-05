@@ -478,7 +478,7 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
       s.downcase();
       addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
                   s=="delete" || s=="create" || s=="createtable" ||
-                  s=="count"  || s=="using"  || s=="usingstyle" || s=="time");
+                  s=="count"  || s=="using"  || s=="usingstyle"  || s=="time");
       showResult = (s=="select");
       if (s=="count") {
         doCount    = True;

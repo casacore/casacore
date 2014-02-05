@@ -425,7 +425,9 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
                                            (const TableColumn& tablecol,
 					    const Table& table)
 : TableExprNodeArray (NTNumeric, OtColumn),
-  tabCol_p           (tablecol)
+  selTable_p         (table),
+  tabCol_p           (tablecol),
+  applySelection_p   (True)
 {
     //# Fill in the real data type and the base table pointer.
     switch (tabCol_p.columnDesc().dataType()) {
@@ -469,6 +471,26 @@ TableExprNodeArrayColumn::TableExprNodeArrayColumn
 TableExprNodeArrayColumn::~TableExprNodeArrayColumn()
 {}
 
+void TableExprNodeArrayColumn::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    cols.push_back (this);
+}
+
+void TableExprNodeArrayColumn::disableApplySelection()
+{
+    applySelection_p = False;
+}
+  
+void TableExprNodeArrayColumn::applySelection (const Vector<uInt>& rownrs)
+{
+    if (applySelection_p) {
+        // Attach the column to the selection of the table.
+        selTable_p = selTable_p(rownrs);
+        String name = tabCol_p.columnDesc().name();
+        tabCol_p = TableColumn(selTable_p, name);
+    }
+}
+
 const IPosition& TableExprNodeArrayColumn::getShape (const TableExprId& id)
 {
     varShape_p.resize (0);
@@ -497,15 +519,17 @@ TableExprNodeArrayColumnBool::TableExprNodeArrayColumnBool
 TableExprNodeArrayColumnBool::~TableExprNodeArrayColumnBool()
 {}
 
+void TableExprNodeArrayColumnBool::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Bool>(tabCol_p);
+}
+
 Bool TableExprNodeArrayColumnBool::getElemBool (const TableExprId& id,
 						const Slicer& index)
 {
     Array<Bool> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Bool* f = arr.getStorage (deleteIt);
-    Bool val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Bool> TableExprNodeArrayColumnBool::getArrayBool (const TableExprId& id)
 {
@@ -531,15 +555,17 @@ TableExprNodeArrayColumnuChar::TableExprNodeArrayColumnuChar
 TableExprNodeArrayColumnuChar::~TableExprNodeArrayColumnuChar()
 {}
 
+void TableExprNodeArrayColumnuChar::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<uChar>(tabCol_p);
+}
+
 Int64 TableExprNodeArrayColumnuChar::getElemInt (const TableExprId& id,
                                                  const Slicer& index)
 {
     Array<uChar> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const uChar* f = arr.getStorage (deleteIt);
-    uChar val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Int64> TableExprNodeArrayColumnuChar::getArrayInt
                                                     (const TableExprId& id)
@@ -573,15 +599,17 @@ TableExprNodeArrayColumnShort::TableExprNodeArrayColumnShort
 TableExprNodeArrayColumnShort::~TableExprNodeArrayColumnShort()
 {}
 
+void TableExprNodeArrayColumnShort::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Short>(tabCol_p);
+}
+
 Int64 TableExprNodeArrayColumnShort::getElemInt (const TableExprId& id,
                                                  const Slicer& index)
 {
     Array<Short> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Short* f = arr.getStorage (deleteIt);
-    Short val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Int64> TableExprNodeArrayColumnShort::getArrayInt
                                                     (const TableExprId& id)
@@ -615,15 +643,17 @@ TableExprNodeArrayColumnuShort::TableExprNodeArrayColumnuShort
 TableExprNodeArrayColumnuShort::~TableExprNodeArrayColumnuShort()
 {}
 
+void TableExprNodeArrayColumnuShort::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<uShort>(tabCol_p);
+}
+
 Int64 TableExprNodeArrayColumnuShort::getElemInt (const TableExprId& id,
                                                   const Slicer& index)
 {
     Array<uShort> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const uShort* f = arr.getStorage (deleteIt);
-    uShort val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Int64> TableExprNodeArrayColumnuShort::getArrayInt
                                                      (const TableExprId& id)
@@ -657,15 +687,17 @@ TableExprNodeArrayColumnInt::TableExprNodeArrayColumnInt
 TableExprNodeArrayColumnInt::~TableExprNodeArrayColumnInt()
 {}
 
+void TableExprNodeArrayColumnInt::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Int>(tabCol_p);
+}
+
 Int64 TableExprNodeArrayColumnInt::getElemInt (const TableExprId& id,
                                                const Slicer& index)
 {
     Array<Int> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Int* f = arr.getStorage (deleteIt);
-    Int val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Int64> TableExprNodeArrayColumnInt::getArrayInt
                                                   (const TableExprId& id)
@@ -699,15 +731,17 @@ TableExprNodeArrayColumnuInt::TableExprNodeArrayColumnuInt
 TableExprNodeArrayColumnuInt::~TableExprNodeArrayColumnuInt()
 {}
 
+void TableExprNodeArrayColumnuInt::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<uInt>(tabCol_p);
+}
+
 Int64 TableExprNodeArrayColumnuInt::getElemInt (const TableExprId& id,
                                                 const Slicer& index)
 {
     Array<uInt> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const uInt* f = arr.getStorage (deleteIt);
-    uInt val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Int64> TableExprNodeArrayColumnuInt::getArrayInt
                                                    (const TableExprId& id)
@@ -741,15 +775,17 @@ TableExprNodeArrayColumnFloat::TableExprNodeArrayColumnFloat
 TableExprNodeArrayColumnFloat::~TableExprNodeArrayColumnFloat()
 {}
 
+void TableExprNodeArrayColumnFloat::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Float>(tabCol_p);
+}
+
 Double TableExprNodeArrayColumnFloat::getElemDouble (const TableExprId& id,
 						     const Slicer& index)
 {
     Array<Float> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Float* f = arr.getStorage (deleteIt);
-    Float val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Double> TableExprNodeArrayColumnFloat::getArrayDouble
                                                     (const TableExprId& id)
@@ -783,15 +819,17 @@ TableExprNodeArrayColumnDouble::TableExprNodeArrayColumnDouble
 TableExprNodeArrayColumnDouble::~TableExprNodeArrayColumnDouble()
 {}
 
+void TableExprNodeArrayColumnDouble::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Double>(tabCol_p);
+}
+
 Double TableExprNodeArrayColumnDouble::getElemDouble (const TableExprId& id,
 						      const Slicer& index)
 {
     Array<Double> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Double* f = arr.getStorage (deleteIt);
-    Double val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<Double> TableExprNodeArrayColumnDouble::getArrayDouble
                                                      (const TableExprId& id)
@@ -819,17 +857,18 @@ TableExprNodeArrayColumnComplex::TableExprNodeArrayColumnComplex
 TableExprNodeArrayColumnComplex::~TableExprNodeArrayColumnComplex()
 {}
 
+void TableExprNodeArrayColumnComplex::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<Complex>(tabCol_p);
+}
+
 DComplex TableExprNodeArrayColumnComplex::getElemDComplex
                                                      (const TableExprId& id,
 						      const Slicer& index)
 {
     Array<Complex> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const Complex* f = arr.getStorage (deleteIt);
-    DComplex val;
-    val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<DComplex> TableExprNodeArrayColumnComplex::getArrayDComplex
                                                      (const TableExprId& id)
@@ -863,16 +902,18 @@ TableExprNodeArrayColumnDComplex::TableExprNodeArrayColumnDComplex
 TableExprNodeArrayColumnDComplex::~TableExprNodeArrayColumnDComplex()
 {}
 
+void TableExprNodeArrayColumnDComplex::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<DComplex>(tabCol_p);
+}
+
 DComplex TableExprNodeArrayColumnDComplex::getElemDComplex
                                                      (const TableExprId& id,
 						      const Slicer& index)
 {
     Array<DComplex> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const DComplex* f = arr.getStorage (deleteIt);
-    DComplex val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<DComplex> TableExprNodeArrayColumnDComplex::getArrayDComplex
                                                      (const TableExprId& id)
@@ -900,15 +941,17 @@ TableExprNodeArrayColumnString::TableExprNodeArrayColumnString
 TableExprNodeArrayColumnString::~TableExprNodeArrayColumnString()
 {}
 
+void TableExprNodeArrayColumnString::applySelection (const Vector<uInt>& rownrs)
+{
+    TableExprNodeArray::applySelection (rownrs);
+    col_p = ArrayColumn<String>(tabCol_p);
+}
+
 String TableExprNodeArrayColumnString::getElemString (const TableExprId& id,
 						      const Slicer& index)
 {
     Array<String> arr = col_p.getSlice (id.rownr(), index);
-    Bool deleteIt;
-    const String* f = arr.getStorage (deleteIt);
-    String val = *f;
-    arr.freeStorage (f, deleteIt);
-    return val;
+    return *arr.data();
 }
 Array<String> TableExprNodeArrayColumnString::getArrayString
                                                      (const TableExprId& id)

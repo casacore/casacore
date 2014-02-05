@@ -53,8 +53,9 @@ ColumnDesc::ColumnDesc (const ColumnDesc& that)
 : colPtr_p   (that.colPtr_p),
   allocated_p(True)
 {
-    if (colPtr_p != 0)
-	colPtr_p = colPtr_p->clone();
+  if (colPtr_p != 0) {
+      colPtr_p = colPtr_p->clone();
+  }
 }
 
 ColumnDesc::ColumnDesc (BaseColumnDesc* bcdp)
@@ -216,9 +217,13 @@ void ColumnDesc::show() const
 }
 void ColumnDesc::show (ostream& os) const
 {
-    colPtr_p->show (os);
-    os << "   #keywords=" << keywordSet().nfields() << endl;
-    os << keywordSet().description();
+    if (colPtr_p) {
+        colPtr_p->show (os);
+        os << "   #keywords=" << keywordSet().nfields() << endl;
+        os << keywordSet().description();
+    } else {
+        os << "ColumnDesc is empty" << endl;
+    }
 }
 
 

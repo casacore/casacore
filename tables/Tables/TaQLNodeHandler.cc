@@ -303,7 +303,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
-    hrval->setExpr (topStack()->handleKeyCol (node.itsName));
+    hrval->setExpr (topStack()->handleKeyCol (node.itsName, True));
     return res;
   }
 
@@ -470,22 +470,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitSelectNode (const TaQLSelectNodeRep& node)
   {
+    // Handle WHERE before SELECT because WHERE cannot use columns in a
+    // table resulting from SELECT, while the other clauses can.
+    // The reason is that selection has to be done before projection.
+    // Furthermore, handle GIVING first, because projection needs to known
+    // the resulting table name.
     Bool outer = itsStack.empty();
     TableParseSelect* curSel = pushStack (TableParseSelect::PSELECT);
     handleTables  (node.itsTables);
-    visitNode     (node.itsColumns);
+    visitNode     (node.itsGiving);
     visitNode     (node.itsJoin);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsGroupby);
+    visitNode     (node.itsColumns);
     handleHaving  (node.itsHaving);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
-    visitNode     (node.itsGiving);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     if (! node.getNoExecute()) {
       if (outer) {
-	curSel->execute (node.style().doTiming(), False, False, 0);
+	curSel->execute (node.style().doTiming(), False, False, 0,
+                         node.style().doTracing());
 	hrval->setTable (curSel->getTable());
 	hrval->setNames (new Vector<String>(curSel->getColumnNames()));
 	hrval->setString ("select");

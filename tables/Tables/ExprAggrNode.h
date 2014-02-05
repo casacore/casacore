@@ -1,4 +1,4 @@
-//# ExprAggrNode.h: TaQL node representing an aggregate function
+//# ExprAggrNode.h: TaQL node representing a scalar aggregate function
 //# Copyright (C) 2013
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,40 +35,49 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   //# Forward Declarations.
-  class TableExprGroupFunc;
+  class TableExprGroupFuncBase;
   class TableExprGroupFuncSet;
 
 // <summary>
-// Envelope class for a node in the raw TaQL parse tree.
+// TaQL node representing a scalar aggregate function
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tTaQLNode">
+// <reviewed reviewer="" date="" tests="tTableGram">
 // </reviewed>
 
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> <linkto group=TableGram.h#TableGramFunctions>TableGram</linkto>
-//   <li> Note 199 describing
-//        <a href="../notes/199.html">
-//        TaQL</a>
-// </prerequisite>
-
 // <synopsis>
-// The result of parsing a TaQL command is stored in TaQLNode objects.
-// Each part of the command can have its own specialized
-// <linkto class=TaQLNodeRep>TaQLNodeRep</linkto> object, which forms
-// the letter in the TaQLNode envelope.
-// <br>The actual scanning/parsing of the command is done using flex/bison
-// as defined in the TableGram files.
+// A TableExprAggrNode object is a special TableExprFuncNode object.
+// Instead of operating on a single row, it operates on a group of table
+// rows, usually formed by means of the GROUPBY clause.
+// It aggregates the values in the rows in the group by means of an
+// aggregation function derived from TableExprGroupFuncBase.
+// Several standard aggregation functions (e.g., gmean, gmin, gsum) are
+// defined in TaQL and implemented this way.
+//
+// There are two types of aggregate function implementations:
+// <ul>
+//  <li> Immediate aggregate functions calculate the results while the
+//       groups are being formed. In this way they step sequentially through
+//       the data.
+//       This is only possible for functions that do not have to keep
+//       to many data in memory.
+//  <li> Lazy aggregate functions calculate the results after the groups are
+//       formed using the vector of TableExprIds they get per group.
+//       In this way only data for a single group might need to be kept in
+//       memory. It is used, for instance, to calculate the median.
+// </ul>
+// Note that this class handles operands that are a scalar or array.
+// If array, all values in the array are used as individual values.
+// Class TableExprAggrNodeArray handles aggregate functions giving an
+// array result (e.g., function <src>gaggr</src>).
+//
+// It is also possible to define an aggregate function in a UDF derived
+// from class UDFBase. Such an aggregate function is instantiated as a
+// TableExprUDFNode(Array) object, not as TabeExprAggrNode(Array).
+// These functions are always lazy.
 // </synopsis> 
-
-// <motivation>
-// The letter-envelope idiom (counted pointer) makes if much easier
-// to keep track of memory, especially in the case of exceptions.
-// </motivation>
-
 
   class TableExprAggrNode: public TableExprFuncNode
   {
@@ -84,34 +93,35 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                        PtrBlock<TableExprNodeRep*>& nodes);
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
     // Get the operand node.
     TableExprNodeRep* operand()
-      { return operands()[0]; }
+      { return (operands().empty()  ?  0 : operands()[0]); }
 
     // Create the correct aggregate function object.
-    TableExprGroupFunc* makeGroupFunc();
+    // It is also kept in case it is a lazy aggregate function.
+    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
-    // Set the result of the aggregation.
-    // The vector represents the rows in the resulting table.
-    // The seqnr-th entry in each TableExprGroupFuncSet represents this node.
-    void setResult (const vector<CountedPtr<TableExprGroupFuncSet> >&,
-                    uInt funcnr);
+    // Is the aggregate function a lazy or an immediate one?
+    virtual Bool isLazyAggregate() const;
 
     // Functions to get the result of an aggregate function.
     // <group>
-    Bool      getBool     (const TableExprId& id);
-    Int64     getInt      (const TableExprId& id);
-    Double    getDouble   (const TableExprId& id);
-    DComplex  getDComplex (const TableExprId& id);
-    String    getString   (const TableExprId& id);
-    MVTime    getDate     (const TableExprId& id);
+    virtual Bool      getBool     (const TableExprId& id);
+    virtual Int64     getInt      (const TableExprId& id);
+    virtual Double    getDouble   (const TableExprId& id);
+    virtual DComplex  getDComplex (const TableExprId& id);
+    virtual String    getString   (const TableExprId& id);
+    virtual MVTime    getDate     (const TableExprId& id);
     // </group>
 
   private:
-    uInt itsFuncNr;
-    vector<CountedPtr<TableExprGroupFuncSet> > itsResult;
+    // Do the actual creation of the correct aggregate function object.
+    TableExprGroupFuncBase* doMakeGroupAggrFunc();
+
+    //# Data members.
+    CountedPtr<TableExprGroupFuncBase> itsFunc;
   };
 
 

@@ -252,11 +252,14 @@ public:
 	anycone3FUNC,     //# 140
 	findconeFUNC,     //# 141
 	findcone3FUNC,    //# 142
-        //# Aggregate functions must be the last ones.
+        //# AGGREGATE functions must be the last ones.
         FirstAggrFunc,    //# 143
         countallFUNC = FirstAggrFunc,
         gcountFUNC,
-        gminFUNC,
+        gfirstFUNC,
+        glastFUNC,
+        //# Grouping doing aggregation on the fly; reducing to a scalar per group
+        gminFUNC,         //# 147
         gmaxFUNC,
         gsumFUNC,
         gproductFUNC,
@@ -265,14 +268,17 @@ public:
         gvarianceFUNC,
         gstddevFUNC,
         grmsFUNC,
-        gmedianFUNC,
-        gfractileFUNC,
         ganyFUNC,
         gallFUNC,
         gntrueFUNC,
-        gnfalseFUNC,      //# 159
-        /// Probably, have agmax, etc. for a maximum of an array per element
-	NRFUNC      //# should be last
+        gnfalseFUNC,
+        //# Grouping requiring aggregation of rows when getting result
+        gaggrFUNC,        //# 160
+        growidFUNC,
+        gmedianFUNC,
+        gfractileFUNC,
+        gexpridFUNC,      //# special function (can be inserted by TableParse)
+	NRFUNC            //# should be last
 	};
 
     // Constructor
@@ -344,9 +350,9 @@ public:
     // </group>
 
     // Get the possible print format, width, and/or precision.
-   static void getPrintFormat (String& fmt, Int& width, Int& prec,
-                               const PtrBlock<TableExprNodeRep*>& operands,
-                               const TableExprId& id);
+    static void getPrintFormat (String& fmt, Int& width, Int& prec,
+                                const PtrBlock<TableExprNodeRep*>& operands,
+                                const TableExprId& id);
 
     // Convert the date and/or time to a string.
     // <group>

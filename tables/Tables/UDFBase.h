@@ -45,8 +45,11 @@ namespace casa {
   //
   // <synopsis>
   // This class makes it possible to add user-defined functions (UDF) to TaQL.
-  // A UDF has to be implemented in a class derived from this class. A few
-  // functions have to be implemented in the class as described below.
+  // A UDF has to be implemented in a class derived from this class and can
+  // contain one or more user-defined functions.
+  // <br>A few functions have to be implemented in the class as described below.
+  // In this way TaQL can be extended with arbitrary functions, which can be
+  // normal functions as well as aggregate functions (often used with GROUPBY).
   //
   // A UDF is a class derived from this base class. It must contain the
   // following member functions. See also the example below.
@@ -73,6 +76,9 @@ namespace casa {
   //        Function 'checkDT' in class TableExprNodeMulti can be used to
   //        check the data types of the operands and determine the result
   //        data type.
+  //    <li>Define if the function is an aggregate function calculating
+  //        an aggregated value in a group (e.g., minimum or mean).
+  //        <src>setAggregate</src> can be used to tell so.
   //    <li>Define the dimensionality of the result using <src>setNDim</src>.
   //        A value of 0 means a scalar. A value of -1 means an array with
   //        a dimensionality that can vary from row to row.
@@ -95,7 +101,7 @@ namespace casa {
   //          unit and will set its result unit to it. It can be done like:
   //          <src>setUnit (TableExprFuncNode::makeEqualUnits
   //                        (operands(), 0, operands().size()));</src>
-  //      <li>Optionally define if the result is a constant value using
+  //         <li>Optionally define if the result is a constant value using
   //          <src>setConstant</src>. It means that the function is not
   //          dependent on the row number in the table being queried.
   //          This is usually the case if all UDF arguments are constant.
@@ -106,9 +112,19 @@ namespace casa {
   // </tr>
   // <tr>
   //  <td><src>getXXX</src></td>
-  //  <td>there are virtual get functions for each possible data type. The
-  //      get functions matching the data types that can be set by the setup
+  //  <td>these are virtual get functions for each possible data type. The
+  //      get functions matching the data types that set by the setup
   //      function need to be implemented.
+  //      The <src>get</src> functions have an argument TableExprId
+  //      defining the table row (or record) for which the function has
+  //      to be evaluated. 
+  //      If the UDF is an aggregate functions the TableExprId has to be
+  //      upcasted to an TableExprIdAggr object from which all TableExprId
+  //      objects in an aggregation group can be retrieved.
+  //      <srcblock>
+  //        const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+  //        const vector<TableExprId>& ids = aid.result().ids(id.groupnr());
+  //      </srcblock>
   //  </td>
   // </tr>
   // </table>
@@ -119,10 +135,13 @@ namespace casa {
   // TaQL will load a UDF in the following way:
   // <ul>
   //  <li> The UDF name used in TaQL consists of two parts: a library name
-  //       and function name separated by a dot. Both parts need to be given.
+  //       and a function name separated by a dot. Both parts need to be given.
   //       Note that the library name can also be seen as a UDF scope, so
   //       different UDFs with equal names can be used from different libraries.
   //       A UDF should be registered with this full name.
+  //       <br>The "USING STYLE" clause can be used to define a synonym for
+  //       a (long) library name in the TaQLStyle object. The library part
+  //       of the UDF will always be looked up in this synonym map.
   //  <li> If a UDF is not found in the registry, it will be tried to load
   //       a shared library using the library name part. The libraries tried
   //       to be loaded are lib<library>.so and libcasa_<library>.so.
@@ -133,13 +152,19 @@ namespace casa {
   // </synopsis>
   //
   // <example>
+  // The following examples show a normal UDF function.
+  // <br>It returns True if the function argument matches 1.
+  // It can be seen that it checks if the argument is an integer scalar.
   // <srcblock>
   // class TestUDF: public UDFBase
   // {
   // public:
   //   TestUDF() {}
+  //   // Registered function to create the UDF object.
+  //   // The name of the function is not important here.
   //   static UDFBase* makeObject (const String&)
   //     { return new TestUDF(); }
+  //   // Setup and check the details; result is a bool scalar value.
   //   virtual void setup (const Table&, const TaQLStyle&)
   //   {
   //     AlwaysAssert (operands().size() == 1, AipsError);
@@ -150,15 +175,59 @@ namespace casa {
   //     setDataType (TableExprNodeRep::NTBool);
   //     setNDim (0);                                 // scalar result
   //     setConstant (operands()[0].isConstant());    // constant result?
-  //        
   //   }
+  //   // Get the value for the given id.
+  //   // It gets the value of the operand and checks if it is 1.
   //   Bool getBool (const TableExprId& id)
   //     { return operands()[0]->getInt(id) == 1; }
   // };
   // </srcblock>
-  // This example returns True if the function argument matches 1.
-  // It can be seen that it checks if the argument is an integer scalar.
   // </example>
+
+  // <example>
+  // The following example shows an aggregate UDF function.
+  // It calculates the sum of the cubes of the values in a group.
+  // <srcblock>
+  // class TestUDFAggr: public UDFBase
+  // {
+  // public:
+  //   TestUDFAggr() {}
+  //   // Registered function to create the UDF object.
+  //   // The name of the function is not important here.
+  //   static UDFBase* makeObject (const String&) { return new TestUDFAggr(); }
+  //   // Setup and check the details; result is an integer scalar value.
+  //   // It aggregates the values of multiple rows.
+  //   virtual void setup (const Table&, const TaQLStyle&)
+  //   {
+  //     AlwaysAssert (operands().size() == 1, AipsError);
+  //     AlwaysAssert (operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
+  //     AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
+  //     setDataType (TableExprNodeRep::NTInt);
+  //     setNDim (0);           // scalar
+  //     setAggregate (True);   // aggregate function
+  //   }
+  //   // Get the value of a group.
+  //   // It aggregates the values of multiple rows.
+  //   Int64 getInt (const TableExprId& id)
+  //   {
+  //     // Cast the id to a TableExprIdAggr object.
+  //     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+  //     // Get the vector of ids for this group.
+  //     const vector<TableExprId>& ids = aid.result().ids(id.groupnr());
+  //     // Get the values for all ids and accumulate them.
+  //     Int64 sum3 = 0;
+  //     for (vector<TableExprId>::const_iterator it=ids.begin();
+  //          it!=ids.end(); ++it){
+  //       Int64 v = operands()[0]->getInt(*it);
+  //         sum3 += v*v*v;
+  //     }
+  //     return sum3;
+  //   }
+  // };
+  // </srcblock>
+  // </example>
+  // More examples of UDF functions can be found in classes UDFMSCal
+  // and DirectionUDF.
 
   class UDFBase
   {
@@ -195,6 +264,12 @@ namespace casa {
     const String& getUnit() const
       { return itsUnit; }
 
+    // Get the nodes representing an aggregate function.
+    void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+
+    // Get the nodes representing a table column.
+    void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
   private:
     // Set up the function object.
     virtual void setup (const Table& table,
@@ -229,6 +304,9 @@ namespace casa {
     // class, the result is not constant.
     void setConstant (Bool isConstant);
 
+    // Define if the UDF is an aggregate function (usually used in GROUPBY).
+    void setAggregate (Bool isAggregate);
+
   public:
     // Register a the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
@@ -256,8 +334,12 @@ namespace casa {
     Bool isConstant() const
       { return itsIsConstant; }
 
+    // Tell if the UDF is an aggregate function.
+    Bool isAggregate() const
+      { return itsIsAggregate; }
+
     // Create a UDF object (thread-safe).
-    static UDFBase* createUDF (const String& name);
+    static UDFBase* createUDF (const String& name, const TaQLStyle& style);
 
   private:
     //# Data members.
@@ -267,6 +349,7 @@ namespace casa {
     IPosition                      itsShape;
     String                         itsUnit;
     Bool                           itsIsConstant;
+    Bool                           itsIsAggregate;
     static map<String, MakeUDFObject*> theirRegistry;
     static Mutex                       theirMutex;
   };

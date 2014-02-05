@@ -79,8 +79,11 @@ public:
     ~TableExprFuncNodeArray();
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprAggrNode*>& aggr);
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
+    // Get the nodes representing a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
     // 'get' Functions to get the desired result of a function
     // <group>
     virtual Array<Bool> getArrayBool (const TableExprId& id);

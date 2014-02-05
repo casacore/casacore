@@ -59,9 +59,14 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
 TableExprFuncNodeArray::~TableExprFuncNodeArray()
 {}
 
-void TableExprFuncNodeArray::getAggrNodes (vector<TableExprAggrNode*>& aggr)
+void TableExprFuncNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
 {
     node_p.getAggrNodes (aggr);
+}
+
+void TableExprFuncNodeArray::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    node_p.getColumnNodes (cols);
 }
 
 // Fill the children pointers of a node.

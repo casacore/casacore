@@ -1,4 +1,4 @@
-//# ExprGroupAggrFunc.h: The various aggregation functions
+//# ExprGroupAggrFunc.h: The various scalar aggregation functions
 //# Copyright (C) 2013
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,262 +35,462 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//# Forward Declaration
-class TableExprNodeArrayColumn;
+  //# Forward Declaration
+  class TableExprNodeArrayColumn;
 
 
-// <summary>
-// Envelope class for a node in the raw TaQL parse tree.
-// </summary>
-
-// <use visibility=local>
-
-// <reviewed reviewer="" date="" tests="tTaQLNode">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> <linkto group=TableGram.h#TableGramFunctions>TableGram</linkto>
-//   <li> Note 199 describing
-//        <a href="../notes/199.html">
-//        TaQL</a>
-// </prerequisite>
-
-// <synopsis>
-// The result of parsing a TaQL command is stored in TaQLNode objects.
-// Each part of the command can have its own specialized
-// <linkto class=TaQLNodeRep>TaQLNodeRep</linkto> object, which forms
-// the letter in the TaQLNode envelope.
-// <br>The actual scanning/parsing of the command is done using flex/bison
-// as defined in the TableGram files.
-// </synopsis> 
-
-// <motivation>
-// The letter-envelope idiom (counted pointer) makes if much easier
-// to keep track of memory, especially in the case of exceptions.
-// </motivation>
-
-
-  // min,max,sum,sumsqr,product,count,mean,variance,stddev,rms,median,fractile,any,all
+  // <summary>
+  // Aggregate class counting number of rows in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting number of rows in a group.
+  // </synopsis>
   class TableExprGroupCountAll: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupCountAll();
+    explicit TableExprGroupCountAll (TableExprNodeRep* node);
     virtual ~TableExprGroupCountAll();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
     // Set result in case it is known directly.
     void setResult (Int64 cnt)
       { itsValue = cnt; }
   };
 
+  // <summary>
+  // Aggregate class counting number of rows in a group containing a value
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting number of rows in a group containing a value.
+  // </synopsis>
   class TableExprGroupCount: public TableExprGroupFuncInt
   {
   public:
-    explicit TableExprGroupCount (TableExprAggrNode& node);
+    explicit TableExprGroupCount (TableExprNodeRep* node);
     virtual ~TableExprGroupCount();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   private:
     TableExprNodeArrayColumn* itsColumn;
   };
 
+  // <summary>
+  // Aggregate class counting if any value in a group is true
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting if any value in a group is true.
+  // </synopsis>
   class TableExprGroupAny: public TableExprGroupFuncBool
   {
   public:
-    TableExprGroupAny();
+    explicit TableExprGroupAny (TableExprNodeRep* node);
     virtual ~TableExprGroupAny();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class counting if all values in a group are true
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting if all values in a group are true.
+  // </synopsis>
   class TableExprGroupAll: public TableExprGroupFuncBool
   {
   public:
-    TableExprGroupAll();
+    explicit TableExprGroupAll (TableExprNodeRep* node);
     virtual ~TableExprGroupAll();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class counting the number of true values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting the number of true values in a group.
+  // </synopsis>
   class TableExprGroupNTrue: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupNTrue();
+    explicit TableExprGroupNTrue (TableExprNodeRep* node);
     virtual ~TableExprGroupNTrue();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class counting the number of false values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting the number of false values in a group.
+  // </synopsis>
   class TableExprGroupNFalse: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupNFalse();
+    explicit TableExprGroupNFalse (TableExprNodeRep* node);
     virtual ~TableExprGroupNFalse();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the minimum integer value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the minimum integer value in a group.
+  // </synopsis>
   class TableExprGroupMinInt: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupMinInt();
+    explicit TableExprGroupMinInt (TableExprNodeRep* node);
     virtual ~TableExprGroupMinInt();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the maximum integer value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the maximum integer value in a group.
+  // </synopsis>
   class TableExprGroupMaxInt: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupMaxInt();
+    explicit TableExprGroupMaxInt (TableExprNodeRep* node);
     virtual ~TableExprGroupMaxInt();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the sum of integer values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of integer values in a group.
+  // </synopsis>
   class TableExprGroupSumInt: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupSumInt();
+    explicit TableExprGroupSumInt (TableExprNodeRep* node);
     virtual ~TableExprGroupSumInt();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the product of integer values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the product of integer values in a group.
+  // </synopsis>
   class TableExprGroupProductInt: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupProductInt();
+    explicit TableExprGroupProductInt (TableExprNodeRep* node);
     virtual ~TableExprGroupProductInt();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the sum of squares of integer values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of squares of integer values in a group.
+  // </synopsis>
   class TableExprGroupSumSqrInt: public TableExprGroupFuncInt
   {
   public:
-    TableExprGroupSumSqrInt();
+    explicit TableExprGroupSumSqrInt (TableExprNodeRep* node);
     virtual ~TableExprGroupSumSqrInt();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
 
+  // <summary>
+  // Aggregate class determining the minimum double value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the minimum double value in a group.
+  // </synopsis>
   class TableExprGroupMinDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupMinDouble();
+    explicit TableExprGroupMinDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupMinDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the maximum double value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the maximum double value in a group.
+  // </synopsis>
   class TableExprGroupMaxDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupMaxDouble();
+    explicit TableExprGroupMaxDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupMaxDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the sum of double values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of double values in a group.
+  // </synopsis>
   class TableExprGroupSumDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupSumDouble();
+    explicit TableExprGroupSumDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupSumDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the product of double values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the product of double values in a group.
+  // </synopsis>
   class TableExprGroupProductDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupProductDouble();
+    explicit TableExprGroupProductDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupProductDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the sum of squares of double values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of squares of double values in a group.
+  // </synopsis>
   class TableExprGroupSumSqrDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupSumSqrDouble();
+    explicit TableExprGroupSumSqrDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupSumSqrDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the mean of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the mean of values in a group.
+  // </synopsis>
   class TableExprGroupMeanDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupMeanDouble();
+    explicit TableExprGroupMeanDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupMeanDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
     Int64 itsNr;
   };
 
+  // <summary>
+  // Aggregate class determining the variance of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the variance of values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
   class TableExprGroupVarianceDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupVarianceDouble();
+    explicit TableExprGroupVarianceDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupVarianceDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
     Int64  itsNr;
     Double itsM2;
   };
 
+  // <summary>
+  // Aggregate class determining the standard deviation of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the standard deviation of values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
   class TableExprGroupStdDevDouble: public TableExprGroupVarianceDouble
   {
   public:
-    TableExprGroupStdDevDouble();
+    explicit TableExprGroupStdDevDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupStdDevDouble();
     virtual void finish();
   };
 
+  // <summary>
+  // Aggregate class determining the RMS of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the RMS of values in a group.
+  // </synopsis>
   class TableExprGroupRmsDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupRmsDouble();
+    explicit TableExprGroupRmsDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupRmsDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
     Int64 itsNr;
   };
 
+  // <summary>
+  // Aggregate class determining the fractile of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the fractile of values in a group.
+  // <br>It is a lazy aggregate class, thus <src>apply</src> does nothing.
+  // Instead, <src>getDouble</src> assembles the values and determines the
+  // fractile.
+  // </synopsis>
   class TableExprGroupFractileDouble: public TableExprGroupFuncDouble
   {
   public:
-    explicit TableExprGroupFractileDouble (Double fractile);
+    explicit TableExprGroupFractileDouble (TableExprNodeRep* node,
+                                           Double fractile);
     virtual ~TableExprGroupFractileDouble();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
-    virtual void finish();
+    virtual Bool isLazy() const;
+    virtual void apply (const TableExprId& id);
+    virtual Double getDouble (const vector<TableExprId>& ids);
   private:
-    Double         itsFrac;
-    vector<Double> itsValues;
+    Double itsFrac;
   };
 
 
+  // <summary>
+  // Aggregate class determining the sum of complex values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of complex values in a group.
+  // </synopsis>
   class TableExprGroupSumDComplex: public TableExprGroupFuncDComplex
   {
   public:
-    TableExprGroupSumDComplex();
+    explicit TableExprGroupSumDComplex (TableExprNodeRep* node);
     virtual ~TableExprGroupSumDComplex();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the product of complex values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the product of complex values in a group.
+  // </synopsis>
   class TableExprGroupProductDComplex: public TableExprGroupFuncDComplex
   {
   public:
-    TableExprGroupProductDComplex();
+    explicit TableExprGroupProductDComplex (TableExprNodeRep* node);
     virtual ~TableExprGroupProductDComplex();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the sum of squares of complex values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of squares of complex values in a group.
+  // </synopsis>
   class TableExprGroupSumSqrDComplex: public TableExprGroupFuncDComplex
   {
   public:
-    TableExprGroupSumSqrDComplex();
+    explicit TableExprGroupSumSqrDComplex (TableExprNodeRep* node);
     virtual ~TableExprGroupSumSqrDComplex();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
   };
 
+  // <summary>
+  // Aggregate class determining the mean of complex values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the mean of complex values in a group.
+  // </synopsis>
   class TableExprGroupMeanDComplex: public TableExprGroupFuncDComplex
   {
   public:
-    TableExprGroupMeanDComplex();
+    explicit TableExprGroupMeanDComplex (TableExprNodeRep* node);
     virtual ~TableExprGroupMeanDComplex();
-    virtual void apply (TableExprAggrNode& node, const TableExprId& id);
+    virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
     Int64 itsNr;

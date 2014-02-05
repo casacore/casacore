@@ -47,6 +47,7 @@ Tables/DataManError.cc
 Tables/DataManInfo.cc
 Tables/DataManager.cc
 Tables/ExprAggrNode.cc
+Tables/ExprAggrNodeArray.cc
 Tables/ExprConeNode.cc
 Tables/ExprDerNode.cc
 Tables/ExprDerNodeArray.cc
@@ -225,6 +226,7 @@ Tables/DataManError.h
 Tables/DataManInfo.h
 Tables/DataManager.h
 Tables/ExprAggrNode.h
+Tables/ExprAggrNodeArray.h
 Tables/ExprConeNode.h
 Tables/ExprDerNode.h
 Tables/ExprDerNodeArray.h

@@ -886,6 +886,11 @@ public:
     Bool isNull() const
       { return node_p == 0; }
 
+    // Re-create the column object for a selection of rows.
+    // Nothing is done if the node does not represent a column object.
+    void applySelection (const Vector<uInt>& rownrs)
+      { node_p->applySelection (rownrs); }
+
     // Get the unit of the expression.
     const Unit& unit() const
       { return node_p->unit(); }

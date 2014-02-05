@@ -337,7 +337,7 @@ void seltab (const String& str)
       s.downcase();
       addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
                   s=="delete" || s=="create" || s=="createtable" ||
-                  s=="count"  || s=="using"  || s=="usingstyle");
+                  s=="count"  || s=="using"  || s=="usingstyle"  || s=="time");
     }
   } 
   String strc(str);

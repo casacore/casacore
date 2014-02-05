@@ -67,6 +67,7 @@ using namespace casa;
 %token DMINFO
 %token ALL                  /* ALL (in SELECT ALL) */
 %token <val> NAME           /* name of function, field, table, or alias */
+%token <val> UDFLIBSYN      /* UDF library name synonym definition */
 %token <val> FLDNAME        /* name of field or table */
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
@@ -209,6 +210,10 @@ sttimcoms: TIMING
          | stylecoms
          | stylecoms TIMING
              { TaQLNode::theirStyle.setTiming (True); }
+         | TIMING stylecoms
+             { TaQLNode::theirStyle.setTiming (True); }
+         | stylecoms TIMING stylecoms
+             { TaQLNode::theirStyle.setTiming (True); }
          ;
 
 stylecoms: stylecoms stylecomm
@@ -222,6 +227,10 @@ stylelist: stylelist COMMA NAME
              { TaQLNode::theirStyle.set ($3->getString()); }
          | NAME
              { TaQLNode::theirStyle.set ($1->getString()); }
+         | stylelist COMMA UDFLIBSYN
+             { TaQLNode::theirStyle.defineSynonym ($3->getString()); }
+         | UDFLIBSYN
+             { TaQLNode::theirStyle.defineSynonym ($1->getString()); }
          ;
 
 command:   selcomm
