@@ -30,6 +30,7 @@
 #include <casa/HDF5/HDF5Group.h>
 #include <casa/HDF5/HDF5HidMeta.h>
 #include <casa/HDF5/HDF5Error.h>
+#include <casa/Logging/LogIO.h>
 #include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -489,8 +490,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 ++aiter, ++viter) {
       *viter = (char*)(aiter->c_str());
     }
+    // It appears that HDF5 cannot write an attribute with more than 4000 values.
+    // So cut off if needed. 
+    IPosition shape = value.shape();
+    if (shape[0] > 4000) {
+      LogIO os;
+      os << "HDF5Record: Cut off size of attribute " + name + " from " +
+        String::toString(shape[0]) + " to 4000 values"
+         << LogIO::NORMAL << LogIO::POST;
+      shape[0] = 4000;
+    }
     // Create the data space for the array.
-    const IPosition& shape = value.shape();
     int rank = shape.nelements();
     Block<hsize_t> ls = HDF5DataSet::fromShape (shape);
     HDF5HidDataSpace dsid (H5Screate_simple(rank, ls.storage(), NULL));
