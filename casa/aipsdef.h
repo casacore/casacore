@@ -91,7 +91,7 @@ namespace std {};
 #else
 #define WHATEVER_SUN_TYPEDEF(X)
 #define WHATEVER_TYPENAME typename
-#if defined(AIPS_CRAY_PGI)
+#if defined(AIPS_CRAY_PGI) || defined(AIPS_GCC4)
 #define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
 #else
 #define WHATEVER_SUN_EXCEPTSPEC(X)
