@@ -37,6 +37,7 @@
 #include <measures/Measures/MFrequency.h>
 #include <scimath/Functionals/Polynomial.h>
 #include <casa/OS/Mutex.h>
+#include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -270,11 +271,11 @@ public:
   static Bool Line(MFrequency &obs, const String &nam);
   // </group>
 
+  // Initialise list of IGRF data
+  static void initIGRF();
   // Earth magnetic field (IGRF) data
-  // <group>
   // Get the harmonic terms for specified time (mjd)
-  static const Vector<Double> &IGRF(Double t);
-  // </group>
+  static Vector<Double> IGRF(Double t);
 
   // Aberration related data
   // <group>
@@ -427,6 +428,7 @@ private:
   static void doInitObservatories (void*);
   static void doInitLines (void*);
   static void doInitSources (void*);
+  static void doInitIGRF (void*);
 
   // Calculate precessionCoef
   // <group>
@@ -495,14 +497,14 @@ private:
   // </group>
   // IGRF data
   // <group>
-  static Double timeIGRF;
+  static MutexedInit igrfMutexedInit;
   static Double dtimeIGRF;
-  static Double time0IGRF;
   static Double firstIGRF;
   static Double lastIGRF;
-  static Vector<Double> coefIGRF;
-  static Vector<Double> dIGRF;
-  static Vector<Double> resIGRF;
+  static Double time0IGRF;
+  static Double timeIGRF;
+  static std::vector<Vector<Double> > coefIGRF;
+  static std::vector<Vector<Double> > dIGRF;
   // </group>
   // Aipsrc registration (for speed) of use of iau2000 and if so
   // the 2000a version

@@ -47,6 +47,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableRow.h>
+#include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/System/Aipsrc.h>
 #include <casa/System/AipsrcValue.h>
@@ -63,23 +64,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Static class Data
 MutexedInit MeasTable::obsMutexedInit (MeasTable::doInitObservatories);
-Vector<String> MeasTable::obsNams(0);
-Vector<MPosition> MeasTable::obsPos(0);
-Vector<String> MeasTable::antResponsesPath(0);
+Vector<String> MeasTable::obsNams;
+Vector<MPosition> MeasTable::obsPos;
+Vector<String> MeasTable::antResponsesPath;
 MutexedInit MeasTable::lineMutexedInit (MeasTable::doInitLines);
-Vector<String> MeasTable::lineNams(0);
-Vector<MFrequency> MeasTable::linePos(0);
+Vector<String> MeasTable::lineNams;
+Vector<MFrequency> MeasTable::linePos;
 MutexedInit MeasTable::srcMutexedInit (MeasTable::doInitSources);
-Vector<String> MeasTable::srcNams(0);
-Vector<MDirection> MeasTable::srcPos(0);
-Double MeasTable::timeIGRF = -1e6;
+Vector<String> MeasTable::srcNams;
+Vector<MDirection> MeasTable::srcPos;
+MutexedInit MeasTable::igrfMutexedInit (MeasTable::doInitIGRF);
 Double MeasTable::dtimeIGRF = 0;
-Double MeasTable::time0IGRF = -1e6;
 Double MeasTable::firstIGRF = 0;
-Double MeasTable::lastIGRF = 0;
-Vector<Double> MeasTable::coefIGRF(0);
-Vector<Double> MeasTable::dIGRF(0);
-Vector<Double> MeasTable::resIGRF(0);
+std::vector<Vector<Double> > MeasTable::coefIGRF;
+std::vector<Vector<Double> > MeasTable::dIGRF;
 uInt MeasTable::iau2000_reg = 0;
 uInt MeasTable::iau2000a_reg = 0;
 Mutex MeasTable::theirMutex;
@@ -2058,12 +2056,12 @@ const Vector<Char> &MeasTable::mulArg1950(uInt which) {
 }
 
 void MeasTable::calcMulArg(volatile Bool &need, Vector<Char> result[],
-			   const Char coeff[][5], Int row){
+			   const Char coeff[][5], Int nrow){
   if (need) {
     ScopedMutexLock locker(theirMutex);
     if (need) {
       Int i,j;
-      for (i=0; i<row; i++) {
+      for (i=0; i<nrow; i++) {
         result[i].resize(5);
         for (j=0; j<5; j++) {
           result[i](j) = coeff[i][j];
@@ -2075,12 +2073,12 @@ void MeasTable::calcMulArg(volatile Bool &need, Vector<Char> result[],
 }
 
 void MeasTable::calcMulPlanArg(volatile Bool &need, Vector<Char> result[],
-			       const Char coeff[][14], Int row){
+			       const Char coeff[][14], Int nrow){
   if (need) {
     ScopedMutexLock locker(theirMutex);
     if (need) {
       Int i,j;
-      for (i=0; i<row; i++) {
+      for (i=0; i<nrow; i++) {
         result[i].resize(14);
         for (j=0; j<14; j++) {
           result[i](j) = coeff[i][j];
@@ -4027,6 +4025,7 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
     }
     break;
   }
+  ///  cout << "psieps " << r << endl;
   return (r * C::arcsec);
 }
 
@@ -4339,53 +4338,68 @@ Bool MeasTable::Source(MDirection &obs, const String &nam) {
 }
 
 // Magnetic field (IGRF) function
-const Vector<Double> &MeasTable::IGRF(Double tm) {
-  if (time0IGRF < 0 || (tm-time0IGRF > 1830 && time0IGRF < lastIGRF) ||
-      (tm-time0IGRF < 0 && time0IGRF >= firstIGRF)) {
-    Table t;
-    TableRecord kws;
-    ROTableRow row;
-    String rfn[1] = {"MJD"};
-    RORecordFieldPtr<Double> rfp[1];
-    Double dt;
-    String vs;	
-    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
-			    "measures.igrf.directory",
-			    "geodetic")) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("IGRF(Double)"),
-			 WHERE));
-      os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
-    }
-    Int N = t.nrow();
-    if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
-	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("IGRF(Double)"),
-			 WHERE));
-      os << "Incorrect entries in table of IGRF models" << LogIO::EXCEPTION;
-    }
-    Double m0 = kws.asDouble("MJD0");
-    dtimeIGRF= kws.asDouble("dMJD");
-    Int indx = Int((tm-m0)/dtimeIGRF);
-    indx = max(1, min(indx, N)) - 1;
-    row.get(0);
-    firstIGRF = *(rfp[0]);
-    row.get(N-1);
-    lastIGRF = *(rfp[0]);
-    row.get(indx);
-    time0IGRF = *(rfp[0]);
-    ArrayColumn<Double> acc, accd;
-    acc.attach(t, "COEF");
-    accd.attach(t, "dCOEF");
-    coefIGRF = acc(indx);
-    dIGRF = accd(indx);
+Vector<Double> MeasTable::IGRF(Double tm) {
+  MeasTable::initIGRF();
+  // Look up closest MJD interval. Note that each interval has same width.
+  Int indx = Int((tm-firstIGRF) / dtimeIGRF) - 1;
+  if (indx >= Int(coefIGRF.size())) {
+    indx = coefIGRF.size() - 1;
+  } else if (indx < 0) {
+    indx = 0;
   }
-  if (abs(tm-timeIGRF) > 5) {
-    resIGRF = coefIGRF + dIGRF * (5*(tm-time0IGRF)/dtimeIGRF);
-    timeIGRF = tm;
+  // Interpolate using the d value.
+  /// What is factor 5 meaning?
+  double mjd = tm - (firstIGRF + (indx+1)*dtimeIGRF);
+  return coefIGRF[indx] + dIGRF[indx] * (5*mjd/dtimeIGRF);
+}
+
+void MeasTable::initIGRF() {
+  igrfMutexedInit.exec();
+}
+void MeasTable::doInitIGRF (void*)
+{
+  Table t;
+  TableRecord kws;
+  ROTableRow row;
+  String rfn[1] = {"MJD"};
+  RORecordFieldPtr<Double> rfp[1];
+  Double dt;
+  String vs;	
+  if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
+                          "measures.igrf.directory",
+                          "geodetic")) {
+    LogIO os(LogOrigin("MeasTable",
+                       String("IGRF(Double)"),
+                       WHERE));
+    os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
   }
-  return resIGRF;
+  Int N = t.nrow();
+  if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
+      !kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
+    LogIO os(LogOrigin("MeasTable",
+                       String("doInitIGRF()"),
+                       WHERE));
+    os << "Incorrect entries in table of IGRF models" << LogIO::EXCEPTION;
+  }
+  firstIGRF = kws.asDouble("MJD0");
+  dtimeIGRF = kws.asDouble("dMJD");
+  coefIGRF.reserve (N);
+  dIGRF.reserve (N);
+  ScalarColumn<Double> accmjd(t, "MJD");
+  ArrayColumn<Double> acc(t, "COEF");
+  ArrayColumn<Double> accd(t, "dCOEF");
+  for (Int i=0; i<N; ++i) {
+    double igrfmjd = accmjd(i);
+    if (! near(igrfmjd, firstIGRF+(i+1)*dtimeIGRF)) {
+      LogIO os(LogOrigin("MeasTable",
+                         String("doInitIGRF()"),
+                         WHERE));
+      os << "Non-constant MJD increment in IGRF models table"
+         << LogIO::EXCEPTION;
+    }
+    coefIGRF.push_back (acc(i));
+    dIGRF.push_back (accd(i));
+  }
 }
 
 // Aberration function
@@ -6615,6 +6629,7 @@ const Euler &MeasTable::polarMotion(Double ut) {
 	  LogIO::POST;
       }
     }
+    ///    cout << "polarmotion " << res(0) << ' ' << res(1) << endl;
     res(0) *= -C::arcsec;
     res(1) *= -C::arcsec;
   }
@@ -6808,6 +6823,7 @@ Double MeasTable::dUT1(Double utc) {
       }
     }
   }
+  ///  cout << "dutc1 " << res << endl;
   return res;
 }
 

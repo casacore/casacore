@@ -57,8 +57,8 @@ class String;
 // </etymology>
 //
 // <synopsis>
-// MeasIERS is the interface class to the IERS data.
-// It has only static memebers.<br>
+// MeasIERS is the interface class to the global IERS data.
+// It has only static members.<br>
 // It has a member (<src>getTable()</src>) to open and check IERS
 // (and other Measures related Tables) type tables.
 // Tables are found using the aipsrc 
@@ -252,9 +252,7 @@ private:
   
   //# General member functions
   // Initialise tables
-  static Bool initMeas(MeasIERS::Files which);
-  // Fill Table lines
-  static Bool fillMeas(MeasIERS::Files which, Double utf);
+  static void initMeas();
 
   // A helper function for getTable() which is not likely usable outside it.
   // Sets dt and vs (the table version), and checks that 
@@ -265,22 +263,11 @@ private:
 			      const TableRecord& ks, const Table& tab);
 
   //# Data members
-  // Measured data read
-  static volatile Bool measFlag[N_Files];
+  static volatile Bool needInit;
   // Current date
   static Double dateNow;
-  // Open tables
-  static Table t[N_Files];
-  // Row descriptions
-  static ROTableRow row[N_Files];
-  // Field pointers
-  static RORecordFieldPtr<Double> rfp[N_Files][MeasIERS::N_Types];
-  // First (-1) MJD in list
-  static Int mjd0[N_Files];
-  // Last MJD in list
-  static Int mjdl[N_Files];
-  // Last read data (measlow - predictlow - meashigh - predicthigh)
-  static Double ldat[2*N_Files][N_Types];
+  // Read data (meas - predict)
+  static Vector<Double> ldat[N_Files][N_Types];
   // Message given
   static Bool msgDone;
   // File names
