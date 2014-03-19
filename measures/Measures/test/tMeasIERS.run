@@ -5,7 +5,8 @@ cwd=`pwd`
 CASARCFILES=$cwd/tMeasIERS_tmp-casarc
 export CASARCFILES
 cat > $CASARCFILES << eof
-measures.directory: $cwd/tMeasIERS_tmp-data
+measures.ierseop97.directory: $cwd/tMeasIERS_tmp-data/geodetic
+measures.ierspredict.directory: $cwd/tMeasIERS_tmp-data/geodetic
 eof
 
 # Untar the IERS tables

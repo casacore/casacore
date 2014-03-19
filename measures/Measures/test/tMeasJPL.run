@@ -1,0 +1,10 @@
+#!/bin/sh
+
+rm -rf tMeasJPL_tmp.out_*
+$casa_checktool ./tMeasJPL > tMeasJPL_tmp.out_x
+for nm in a0 a1 a2 a3 b0 b1 b2 b3 x
+do
+  echo ''
+  echo " *** tMeasJPL_tmp.out_$nm"
+  cat tMeasJPL_tmp.out_$nm
+done
