@@ -211,13 +211,13 @@ void SolarPos::calcEarth(Double t) {
 	switch (method) {
 	    default:
 	      if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-		const Vector<Double> &mypl =
+		Vector<Double> mypl =
 		  MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
 		for (i=0; i<3; i++) {
 		  eval[i] = mypl(i);
 		  deval[i] = mypl(i+3);
 		}
-                const Vector<Double> &mypl1 =
+                Vector<Double> mypl1 =
 		  MeasTable::Planetary(MeasTable::SUN, checkEpoch);
 		for (i=0; i<3; i++) {
 		  eval[i] -= mypl1(i);
@@ -290,7 +290,7 @@ void SolarPos::calcSun(Double t) {
 	switch (method) {
 	    default:
               if (AipsrcValue<Bool>::get(SolarPos::usejpl_reg)) {
-                const Vector<Double> &mypl =
+                Vector<Double> mypl =
                   MeasTable::Planetary(MeasTable::SUN, checkEpoch);
                 for (i=0; i<3; i++) {
                   sval[i] = -mypl(i);

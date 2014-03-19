@@ -3992,6 +3992,8 @@ void MeasTable::calcMulSCPlan(volatile Bool &need,
 }
 
 Double MeasTable::dPsiEps(uInt which, Double T) {
+  // Note that use of msgDone is not thread-safe, but it is harmless if
+  // the message accidently appears multiple times.
   static Bool msgDone = False;
   DebugAssert(which < 2, AipsError);
   Double r = 0;
@@ -4030,9 +4032,9 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 }
 
 // Planetary data
-const Vector<Double> &MeasTable::Planetary(MeasTable::Types which, 
-					   Double T) {
-  static Vector<Double> res(6);
+Vector<Double> MeasTable::Planetary(MeasTable::Types which, 
+                                    Double T) {
+  Vector<Double> res(6);
   static volatile Bool needInit = True;
   static MeasJPL::Files fil(MeasJPL::DE200);
   static String tnam[2] = { "DE200", "DE405"};
@@ -4046,24 +4048,21 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
       needInit = False;
     }
   }
-  {
-    ScopedMutexLock locker(theirMutex);
-    if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
-		      MVEpoch(T))) {
-      LogIO os(LogOrigin("MeasTable",
-			 String("Planetary(MeasTable::Types, Double)"),
-			 WHERE));
-      os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
-	 << " at UT day " << T << " in table "
-	 << tnam[fil] << LogIO::WARN;
-      res = 0.;
-    }
+  if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
+                    MVEpoch(T))) {
+    LogIO os(LogOrigin("MeasTable",
+                       String("Planetary(MeasTable::Types, Double)"),
+                       WHERE));
+    os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
+       << " at UT day " << T << " in table "
+       << tnam[fil] << LogIO::WARN;
+    res = 0.;
   }
   return res;
 }
 
 // Planetary constants
-const Double &MeasTable::Planetary(MeasTable::JPLconst what) {
+Double MeasTable::Planetary(MeasTable::JPLconst what) {
   static volatile Bool needInit = True;
   static Double cn[MeasTable::N_JPLconst];
   static MeasJPL::Files fil(MeasJPL::DE200);

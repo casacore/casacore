@@ -229,10 +229,10 @@ public:
   // Get the position (AU or rad) and velocity (AU/d or rad/d) for specified
   // code at TDB T. The ephemeris to use (now DE200 or DE405) can be selected
   // with the 'measures.jpl.ephemeris' aipsrc resource (default DE200).
-  static const Vector<Double> &Planetary(MeasTable::Types which, 
-					 Double T); 
+  static Vector<Double> Planetary(MeasTable::Types which, 
+                                  Double T); 
   // Get the JPL DE constant indicated
-  static const Double &Planetary(MeasTable::JPLconst what);
+  static Double Planetary(MeasTable::JPLconst what);
   // </group>
 
   // Observatory positions

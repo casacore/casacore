@@ -203,7 +203,7 @@ void Aberration::calcAber(Double t) {
       
     default:
       if (AipsrcValue<Bool>::get(Aberration::usejpl_reg)) {
-	const Vector<Double> &mypl =
+	Vector<Double> mypl =
 	  MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
 	for (i=0; i<3; i++) {
 	  aval[i] = mypl[i + 3];

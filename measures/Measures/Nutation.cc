@@ -274,7 +274,7 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     default:
       nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
       if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
-	const Vector<Double> &mypl =
+	Vector<Double> mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
 	nval_p[1] = mypl[0];
 	nval_p[2] = mypl[1];
@@ -431,7 +431,7 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     default:
       dval_p[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
       if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
-	const Vector<Double> &mypl =
+	Vector<Double> mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
 	dval_p[1] = mypl[2]*MeasData::JDCEN;
 	dval_p[2] = mypl[3]*MeasData::JDCEN;
