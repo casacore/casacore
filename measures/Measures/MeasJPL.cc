@@ -157,12 +157,6 @@ Bool MeasJPL::doInitMeas(MeasJPL::Files which) {
   static const String tplc[N_Files] = {"measures.DE200.directory",
                                        "measures.DE405.directory"};
 
-  // Take care that a single thread opens the table.
-  // Make sure it is still needed.
-  ScopedMutexLock locker(theirMutex);
-  if (!needInit[which]) {
-    return True;
-  }
   TableRecord kws;
   TableRow row;
   RORecordFieldPtr<Double> rfp[MeasJPL::N_Types];
@@ -238,8 +232,6 @@ Bool MeasJPL::doInitMeas(MeasJPL::Files which) {
                        String("initMeas(MeasJPL::Files)"),
                        WHERE));
     os << String("Corrupted JPL table ") + tp[which] << LogIO::EXCEPTION;
-  } else {
-    needInit[which] = False;
   }
   return (! t[which].isNull());
 }
