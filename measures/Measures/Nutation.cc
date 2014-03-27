@@ -176,13 +176,16 @@ Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
   return Quantity(eqox(epoch),"rad").get(unit);
 }
 
-void Nutation::calcNut(Double t, Bool calcDer) {
+void Nutation::calcNut(Double time, Bool calcDer) {
   // Calculate the nutation value at epoch
-  Bool renew(False);
-  if ((calcDer && t != checkEpoch_p) ||	
-      !nearAbs(t, checkEpoch_p,
-	       AipsrcValue<Double>::get(Nutation::myInterval_reg))) {
-    checkEpoch_p = t;
+  Double t = time;
+  Double epsilon = 1e-6;
+  if (!calcDer) {
+    epsilon = AipsrcValue<Double>::get(Nutation::myInterval_reg);
+  }
+  Bool renew = False;
+  if (!nearAbs(time, checkEpoch_p, epsilon)) {
+    checkEpoch_p = time;
     renew = True;
     Double dEps = 0;
     Double dPsi = 0;
@@ -210,65 +213,76 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     neval_p = 0;
     switch (method_p) {
     case B1950:
-      nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg1950(i+1)(t);
-      }
-      for (uInt i=0; i<69; i++) {
-	dtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
-	}
-	nval_p[1] += MeasTable::mulSC1950(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC1950(i,t)[1] * cos(dtmp);
+      {
+        nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg1950(i+1)(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        for (uInt i=0; i<69; i++) {
+          dtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
+          }
+          nval_p[1] += (*mul)(0,i) * sin(dtmp);
+          nval_p[2] += (*mul)(1,i) * cos(dtmp);
+        }
       }
       break;
     case IAU2000B:
-      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg2000(i+1)(t);
+      {
+        nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg2000(i+1)(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        for (Int i=76; i>=0; --i) {
+          dtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
+          }
+          nval_p[1] += (*mul)(0,i) * sin(dtmp);
+          nval_p[2] += (*mul)(1,i) * cos(dtmp);
+          nval_p[1] += (*mul)(4,i) * cos(dtmp);
+          nval_p[2] += (*mul)(5,i) * sin(dtmp);
+        }
+        // Add an average for missing planetary precession terms
+        nval_p[2] += 0.388e0 * C::arcsec*1e-3;
+        nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
       }
-      for (Int i=76; i>=0; --i) {
-	dtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
-	}
-	nval_p[1] += MeasTable::mulSC2000B(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)[1] * cos(dtmp);
-	nval_p[1] += MeasTable::mulSC2000B(i,t)[4] * cos(dtmp);
-	nval_p[2] += MeasTable::mulSC2000B(i,t)[5] * sin(dtmp);
-      }
-      // Add an average for missing planetary precession terms
-      nval_p[2] += 0.388e0 * C::arcsec*1e-3;
-      nval_p[1] -= 0.135e0 * C::arcsec*1e-3;
       break;
     case IAU2000A:
-      nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg2000(i+1)(t);
-      }
-      for (Int i=677; i>=0; --i) {
-	dtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
-	}
-	nval_p[1] += MeasTable::mulSC2000A(i,t)[0] * sin(dtmp);
-	nval_p[2] += MeasTable::mulSC2000A(i,t)[1] * cos(dtmp);
-	nval_p[1] += MeasTable::mulSC2000A(i,t)[4] * cos(dtmp);
-	nval_p[2] += MeasTable::mulSC2000A(i,t)[5] * sin(dtmp);
-      }
-      for (uInt i=0; i<14; i++) {
-	pfa(i) = MeasTable::planetaryArg2000(i)(t);
-      }
-      for (Int i=686; i>=0; --i) {
-	dtmp = 0;
-	for (uInt j=0; j<14; j++) {
-	  dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
-	}
-	nval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * sin(dtmp);
-	nval_p[1] += MeasTable::mulPlanSC2000A(i)[1] * cos(dtmp);
-	nval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * sin(dtmp);
-	nval_p[2] += MeasTable::mulPlanSC2000A(i)[3] * cos(dtmp);
+      {
+        nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg2000(i+1)(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        for (Int i=677; i>=0; --i) {
+          dtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
+          }
+          nval_p[1] += (*mul)(0,i) * sin(dtmp);
+          nval_p[2] += (*mul)(1,i) * cos(dtmp);
+          nval_p[1] += (*mul)(4,i) * cos(dtmp);
+          nval_p[2] += (*mul)(5,i) * sin(dtmp);
+        }
+        for (uInt i=0; i<14; i++) {
+          pfa(i) = MeasTable::planetaryArg2000(i)(t);
+        }
+        for (Int i=686; i>=0; --i) {
+          dtmp = 0;
+          for (uInt j=0; j<14; j++) {
+            dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
+          }
+          nval_p[1] += C::arcsec*1e-7 *
+            (MeasTable::mulPlanSC2000A(i)[0] * sin(dtmp) + 
+             MeasTable::mulPlanSC2000A(i)[1] * cos(dtmp));
+          nval_p[2] += C::arcsec*1e-7 *
+            (MeasTable::mulPlanSC2000A(i)[2] * sin(dtmp) +
+             MeasTable::mulPlanSC2000A(i)[3] * cos(dtmp));
+        }
       }
       break;
     default:
@@ -282,15 +296,17 @@ void Nutation::calcNut(Double t, Bool calcDer) {
 	for (uInt i=0; i<5; i++) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	}
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
 	for (uInt i=0; i<106; i++) {
 	  dtmp = 0;
 	  for (uInt j=0; j<5; j++) {
 	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
 	  }
-	  nval_p[1] += MeasTable::mulSC(i,t)[0] * sin(dtmp);
-	  nval_p[2] += MeasTable::mulSC(i,t)[1] * cos(dtmp);
+	  nval_p[1] += (*mul)(0,i) * sin(dtmp);
+	  nval_p[2] += (*mul)(1,i) * cos(dtmp);
 	}
       }
+      ///      cout <<"nval_p="<< nval_p[0]<<' '<<nval_p[1] << ' '<<nval_p[2]<<' '<<nval_p[3]<<endl;
       nval_p[2] += dEps;
       nval_p[1] += dPsi;
       break;
@@ -359,73 +375,78 @@ void Nutation::calcNut(Double t, Bool calcDer) {
     deval_p = 0;
     switch (method_p) {
     case B1950:
-      dval_p[0] = (MeasTable::fundArg1950(0).derivative())(t);
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg1950(i+1)(t);
-	dfa(i) = (MeasTable::fundArg1950(i+1).derivative())(t);
-      }
-      for (uInt i=0; i<69; i++) {
-	dtmp = ddtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
-	  ddtmp += MeasTable::mulArg1950(i)[j] * dfa[j];
-	}
-	dval_p[1] += MeasTable::mulSC1950(i,t)[2] * sin(dtmp) +
-	  MeasTable::mulSC1950(i,t)[0] * cos(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulSC1950(i,t)[3] * cos(dtmp) -
-	  MeasTable::mulSC1950(i,t)[1] * sin(dtmp) * ddtmp;
+      {
+        dval_p[0] = (MeasTable::fundArg1950(0).derivative())(t);
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg1950(i+1)(t);
+          dfa(i) = (MeasTable::fundArg1950(i+1).derivative())(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        for (uInt i=0; i<69; i++) {
+          dtmp = ddtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
+            ddtmp += MeasTable::mulArg1950(i)[j] * dfa[j];
+          }
+          dval_p[1] += (*mul)(2,i) * sin(dtmp) + (*mul)(0,i) * cos(dtmp) * ddtmp;
+          dval_p[2] += (*mul)(3,i) * cos(dtmp) - (*mul)(1,i) * sin(dtmp) * ddtmp;
+        }
       }
       break;
     case IAU2000B:
-      dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg2000(i+1)(t);
-	dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
-      }
-      for (Int i=76; i>=0; --i) {
-	dtmp = ddtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
-	  ddtmp += MeasTable::mulArg2000B(i)[j] * dfa[j];
-	}
-	dval_p[1] += MeasTable::mulSC2000B(i,t)[2] * sin(dtmp) +
-	  MeasTable::mulSC2000B(i,t)[0] * cos(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulSC2000B(i,t)[3] * cos(dtmp) -
-	  MeasTable::mulSC2000B(i,t)[1] * sin(dtmp) * ddtmp;
+      {
+        dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg2000(i+1)(t);
+          dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        for (Int i=76; i>=0; --i) {
+          dtmp = ddtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
+            ddtmp += MeasTable::mulArg2000B(i)[j] * dfa[j];
+          }
+          dval_p[1] += (*mul)(2,i) * sin(dtmp) + (*mul)(0,i) * cos(dtmp) * ddtmp;
+          dval_p[2] += (*mul)(3,i) * cos(dtmp) - (*mul)(1,i) * sin(dtmp) * ddtmp;
+        }
       }
       // Add an average for missing planetary precession terms
       break;
     case IAU2000A:
-      dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
-      for (uInt i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg2000(i+1)(t);
-	dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
-      }
-      for (Int i=677; i>=0; --i) {
-	dtmp = ddtmp = 0;
-	for (uInt j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
-	  ddtmp += MeasTable::mulArg2000A(i)[j] * dfa[j];
-	}
-	dval_p[1] += MeasTable::mulSC2000A(i,t)[2] * sin(dtmp) +
-	  MeasTable::mulSC2000A(i,t)[0] * cos(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulSC2000A(i,t)[3] * cos(dtmp) -
-	  MeasTable::mulSC2000A(i,t)[1] * sin(dtmp) * ddtmp;
-      }
-      for (uInt i=0; i<14; i++) {
-	pfa(i) = MeasTable::planetaryArg2000(i)(t);
-	pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
-      }
-      for (Int i=686; i>=0; --i) {
-	dtmp = ddtmp = 0;
-	for (uInt j=0; j<14; j++) {
-	  dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
-	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
-	}
-	dval_p[1] += MeasTable::mulPlanSC2000A(i)[0] * cos(dtmp) -
-	  MeasTable::mulPlanSC2000A(i)[1] * sin(dtmp) * ddtmp;
-	dval_p[2] += MeasTable::mulPlanSC2000A(i)[2] * cos(dtmp) -
-	  MeasTable::mulPlanSC2000A(i)[3] * sin(dtmp) * ddtmp;
+      {
+        dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
+        for (uInt i=0; i<5; i++) {
+          fa(i) = MeasTable::fundArg2000(i+1)(t);
+          dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
+        }
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        for (Int i=677; i>=0; --i) {
+          dtmp = ddtmp = 0;
+          for (uInt j=0; j<5; j++) {
+            dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
+            ddtmp += MeasTable::mulArg2000A(i)[j] * dfa[j];
+          }
+          dval_p[1] += (*mul)(2,i) * sin(dtmp) + (*mul)(0,i) * cos(dtmp) * ddtmp;
+          dval_p[2] += (*mul)(3,i) * cos(dtmp) - (*mul)(1,i) * sin(dtmp) * ddtmp;
+        }
+        for (uInt i=0; i<14; i++) {
+          pfa(i) = MeasTable::planetaryArg2000(i)(t);
+          pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
+        }
+        for (Int i=686; i>=0; --i) {
+          dtmp = ddtmp = 0;
+          for (uInt j=0; j<14; j++) {
+            dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
+            ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
+          }
+          dval_p[1] += C::arcsec*1e-7 *
+            (MeasTable::mulPlanSC2000A(i)[0] * cos(dtmp) -
+             MeasTable::mulPlanSC2000A(i)[1] * sin(dtmp) * ddtmp);
+          dval_p[2] += C::arcsec*1e-7 *
+            (MeasTable::mulPlanSC2000A(i)[2] * cos(dtmp) -
+             MeasTable::mulPlanSC2000A(i)[3] * sin(dtmp) * ddtmp);
+        }
       }
       break;
     default:
@@ -440,18 +461,18 @@ void Nutation::calcNut(Double t, Bool calcDer) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	  dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
 	}
+        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
 	for (uInt i=0; i<106; i++) {
 	  dtmp = ddtmp = 0;
 	  for (uInt j=0; j<5; j++) {
 	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
 	    ddtmp += MeasTable::mulArg(i)[j] * dfa[j];
 	  }
-	  dval_p[1] += MeasTable::mulSC(i,t)[2] * sin(dtmp) +
-	    MeasTable::mulSC(i,t)[0] * cos(dtmp) * ddtmp;
-	  dval_p[2] += MeasTable::mulSC(i,t)[3] * cos(dtmp) -
-	    MeasTable::mulSC(i,t)[1] * sin(dtmp) * ddtmp;
+	  dval_p[1] += (*mul)(2,i) * sin(dtmp) + (*mul)(0,i) * cos(dtmp) * ddtmp;
+	  dval_p[2] += (*mul)(3,i) * cos(dtmp) - (*mul)(1,i) * sin(dtmp) * ddtmp;
 	}
       }
+      ///      cout <<"dval_p="<< dval_p[0]<<' '<<dval_p[1] << ' '<<dval_p[2]<<' '<<dval_p[3]<<endl;
       break;
     }
     dval_p[1] = -dval_p[1]/MeasData::JDCEN;

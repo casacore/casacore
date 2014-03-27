@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <measures/Measures/MeasTableMul.h>
 #include <measures/Measures/MeasData.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MDirection.h>
@@ -192,31 +193,31 @@ public:
 
   // Generate the which' vector of the nutation series arguments
   // <group>
-  static const Vector<Char> &mulArg(uInt which);
-  static const Vector<Char> &mulArg1950(uInt which);
-  static const Vector<Char> &mulArg2000A(uInt which);
-  static const Vector<Char> &mulArg2000B(uInt which);
-  static const Vector<Char> &mulPlanArg2000A(uInt which);
+  static const Double* mulArg(uInt which);
+  static const Double* mulArg1950(uInt which);
+  static const Double* mulArg2000A(uInt which);
+  static const Double* mulArg2000B(uInt which);
+  static const Double* mulPlanArg2000A(uInt which);
   // </group>
 
   // Generate the which' vector of the equation of equinoxes (IAU2000)
   // complementary terms series arguments
-  static const Vector<Char> &mulArgEqEqCT2000(uInt which);
+  static const Double* mulArgEqEqCT2000(uInt which);
 
   // Generate the which' vector of the nutation series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
   // <group>
-  static const Vector<Double> &mulSC(uInt which, Double T);
-  static const Vector<Double> &mulSC1950(uInt which, Double T);
-  static const Vector<Double> &mulSC2000A(uInt which, Double T);
-  static const Vector<Double> &mulSC2000B(uInt which, Double T);
-  static const Vector<Double> &mulPlanSC2000A(uInt which);
+  static CountedPtr<Matrix<Double> > mulSC(Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulSC1950(Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulSC2000A(Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulSC2000B(Double time, Double epsilon);
+  static const Double* mulPlanSC2000A(uInt which);
   // </group>
 
   // Generate the which' vector of the equation of equinoxes (IAU2000)
   // complementary terms series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
-  static const Vector<Double> &mulSCEqEqCT2000(uInt which);
+  static const Double* mulSCEqEqCT2000(uInt which);
 
   // Get nutation angles corrections for UTC T in rad.
   // which = 0 : dPsi as given by IERS for IAU nutation theory;
@@ -243,11 +244,14 @@ public:
   static const Vector<String> &Observatories();
   // Get position of observatory nam (False if not present)
   static Bool Observatory(MPosition &obs, const String &nam);
-  // Get _absolute_ path to AntennaResponses table of observatory nam (False if no _valid_ path
-  // can be found or the observatory is unknown; if the observatory is known, antRespPath will 
-  // be set to the entry in the AntennaResponses column of the Observatories table even
-  // if it doesn't describe a valid path; if the entry is not an absolute path, the
-  // data directory name will be prepended and validity verified)  
+
+  // Get _absolute_ path to AntennaResponses table of observatory
+  // <src>nam</src>. It returns False if no _valid_ path can be found or the
+  // observatory is unknown. If the observatory is known, antRespPath will 
+  // be set to the entry in the AntennaResponses column of the
+  // Observatories table even if it doesn't describe a valid path; if the
+  // entry is not an absolute path, the data directory name will be
+  // prepended and validity verified.
   static Bool AntennaResponsesPath(String &antRespPath, const String &nam);
   // </group>
 
@@ -257,7 +261,7 @@ public:
   static void initSources();
   // Get list of all sources
   static const Vector<String> &Sources();
-  // get position of source nam (False if not present)
+  // Get position of source <src>nam</src> (False if not present)
   static Bool Source(MDirection &obs, const String &nam);
   // </group>
   
@@ -290,18 +294,18 @@ public:
   
   // Generate the 'which' vector of the aberration series arguments
   // <group>
-  static const Vector<Char> &mulAberArg(uInt which);
-  static const Vector<Char> &mulAber1950Arg(uInt which);
-  static const Vector<Char> &mulAberSunArg(uInt which);
-  static const Vector<Char> &mulAberEarthArg(uInt which);
+  static const Double* mulAberArg(uInt which);
+  static const Double* mulAber1950Arg(uInt which);
+  static const Double* mulAberSunArg(uInt which);
+  static const Double* mulAberEarthArg(uInt which);
   // </group>
   
   // Generate the 'which' vector of the aberration series multipliers
   // at T, measured in Julian centuries since J2000.0 (or J1900.0, yes,
   // J1900.0, for B1950).
   // <group>
-  static const Vector<Double> &mulAber(uInt which, Double T);
-  static const Vector<Double> &mulAber1950(uInt which, Double T);
+  static CountedPtr<Matrix<Double> > mulAber(Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulAber1950(Double time, Double epsilon);
   static const Vector<Double> &mulSunAber(uInt which);
   static const Vector<Double> &mulEarthAber(uInt which);
   // </group>
@@ -343,19 +347,19 @@ public:
   // </group>
   // Generate the which' vector of the position series arguments
   // <group>
-  static const Vector<Char> &mulPosEarthXYArg(uInt which);
-  static const Vector<Char> &mulPosEarthZArg(uInt which);
-  static const Vector<Char> &mulPosSunXYArg(uInt which);
-  static const Vector<Char> &mulPosSunZArg(uInt which);
+  static const Double* mulPosEarthXYArg(uInt which);
+  static const Double* mulPosEarthZArg(uInt which);
+  static const Double* mulPosSunXYArg(uInt which);
+  static const Double* mulPosSunZArg(uInt which);
   // </group>
   
   // Generate the which' vector of the position series multipliers
   // at T, measured in Julian centuries since J2000.0
   // <group>
-  static const Vector<Double> &mulPosEarthXY(uInt which, Double T);
-  static const Vector<Double> &mulPosEarthZ(uInt which, Double T);
-  static const Vector<Double> &mulPosSunXY(uInt which, Double T);
-  static const Vector<Double> &mulPosSunZ(uInt which, Double T);
+  static CountedPtr<Matrix<Double> > mulPosEarthXY(Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulPosEarthZ (Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulPosSunXY  (Double time, Double epsilon);
+  static CountedPtr<Matrix<Double> > mulPosSunZ   (Double time, Double epsilon);
   // </group>
   // Get the rotation matrix to change position from ecliptic to rectangular
   // for Soma et al. analytical expression
@@ -380,8 +384,8 @@ public:
   
   // Polar motion related routines
   // <group>
-  // Get the polar motion (-x,-y,0)(2,1,3) angles
-  static const Euler &polarMotion(Double ut);
+  // Get the polar motion (-x,-y,0)(2,1,3) angles at the given epoch
+  static Euler polarMotion(Double ut);
   // </group>
   
   // Time related routines
@@ -449,33 +453,21 @@ private:
 			    const Double coeff[8][2]);
   // </group>
 
-  // Calculate mulArg
-  // <group>
-  static void calcMulArg(volatile Bool &need, Vector<Char> result[],
-			 const Char coeff[][5], Int row); 
-  static void calcMulPlanArg(volatile Bool &need, Vector<Char> result[],
-			     const Char coeff[][14], Int row); 
-  // </group>
 
-  // Calculate mulSC
-  // <group>
-  static void calcMulSC(volatile Bool &need, Double &check, Double T,
-			Vector<Double> result[], Int resrow,
-			Polynomial<Double> poly[],
-			const Long coeffTD[][5], Int TDrow,
-			const Short coeffSC[][2]);
-  static void calcMulSC2000(volatile Bool &need, Double &check, Double T,
-			    Vector<Double> result[], uInt resrow,
-			    Polynomial<Double> poly[],
-			    const Long coeffSC[][6]);
-  static void calcMulSCPlan(volatile Bool &need,
-			    Vector<Double> result[], uInt resrow,
-			    const Short coeffSC[][4]);
-  static void calcMulSCPlan(volatile Bool &need,
-			    Vector<Double> result[], uInt resrow,
-			    const Double coeffSC[][2]);
-  // </group>
   //# Data
+  // Multipliers for nutation, etc.
+  // <group>
+  static MeasTableMulSC         theirMulSC;
+  static MeasTableMulSC1950     theirMulSC1950;
+  static MeasTableMulSC2000A    theirMulSC2000A;
+  static MeasTableMulSC2000B    theirMulSC2000B;
+  static MeasTableMulAber       theirMulAber;
+  static MeasTableMulAber1950   theirMulAber1950;
+  static MeasTableMulPosSunXY   theirMulPosSunXY;
+  static MeasTableMulPosSunZ    theirMulPosSunZ;
+  static MeasTableMulPosEarthXY theirMulPosEarthXY;
+  static MeasTableMulPosEarthZ  theirMulPosEarthZ;
+  // </group>
   // Observatories table data
   // <group>
   static MutexedInit obsMutexedInit;

@@ -165,39 +165,41 @@ void Aberration::calcAber(Double t) {
     Double dtmp, ddtmp, sdtmp, cdtmp;
     switch (method) {
     case B1950:
-      for (i=0; i<12; i++) {
-	const Polynomial<Double>& aberArgP = MeasTable::aber1950Arg(i);
+      {
+        for (i=0; i<12; i++) {
+          const Polynomial<Double>& aberArgP = MeasTable::aber1950Arg(i);
+          fa(i) = aberArgP(t);
+          dfa(i) = (aberArgP.derivative())(t);
+        }
+	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber1950(t, 1e-6);
+        DebugAssert (mul->contiguousStorage(), AipsError);
+        const Double* mulAberV = mul->data();
 
-	fa(i) = aberArgP(t);
-	dfa(i) = (aberArgP.derivative())(t);
-      }
-      for (i=0; i<132; i++) {
-	const Vector<Char>& mulAberArgV = MeasTable::mulAber1950Arg(i);
+        for (i=0; i<132; i++) {
+          const Double* mulAberArgV = MeasTable::mulAber1950Arg(i);
+          dtmp = ddtmp = 0; 
+          for (j=0; j<12; j++) {
+            dtmp += mulAberArgV[j] * fa(j);
+            ddtmp += mulAberArgV[j] * dfa(j);
+          }
+          sdtmp = sin(dtmp);
+          cdtmp = cos(dtmp);
 
-	dtmp = ddtmp = 0; 
-	for (j=0; j<12; j++) {
-	  dtmp += mulAberArgV[j] * fa(j);
-	  ddtmp += mulAberArgV[j] * dfa(j);
-	}
-
-	sdtmp = sin(dtmp);
-	cdtmp = cos(dtmp);
-
-	const Vector<Double>& mulAberV = MeasTable::mulAber1950(i, t);
-
-	aval[0] += mulAberV[0] * sdtmp + mulAberV[1] * cdtmp;
-	aval[1] += mulAberV[2] * sdtmp + mulAberV[3] * cdtmp;
-	aval[2] += mulAberV[4] * sdtmp + mulAberV[5] * cdtmp;
-	dval[0] += mulAberV[6] * sdtmp + mulAberV[7] * cdtmp +
-	  (mulAberV[0] * cdtmp - mulAberV[1] * sdtmp) * ddtmp;
-	dval[1] += mulAberV[8] * sdtmp + mulAberV[9] * cdtmp +
-	  (mulAberV[2] * cdtmp - mulAberV[3] * sdtmp) * ddtmp;
-	dval[2] += mulAberV[10] * sdtmp + mulAberV[11] * cdtmp +
-	  (mulAberV[4] * cdtmp - mulAberV[5] * sdtmp) * ddtmp;
-      }
-      for (i=0; i<3; i++) {
-	aval[i] /= C::c;
-	dval[i] /= (C::c * MeasData::JDCEN);
+          aval[0] += mulAberV[0] * sdtmp + mulAberV[1] * cdtmp;
+          aval[1] += mulAberV[2] * sdtmp + mulAberV[3] * cdtmp;
+          aval[2] += mulAberV[4] * sdtmp + mulAberV[5] * cdtmp;
+          dval[0] += mulAberV[6] * sdtmp + mulAberV[7] * cdtmp +
+            (mulAberV[0] * cdtmp - mulAberV[1] * sdtmp) * ddtmp;
+          dval[1] += mulAberV[8] * sdtmp + mulAberV[9] * cdtmp +
+            (mulAberV[2] * cdtmp - mulAberV[3] * sdtmp) * ddtmp;
+          dval[2] += mulAberV[10] * sdtmp + mulAberV[11] * cdtmp +
+            (mulAberV[4] * cdtmp - mulAberV[5] * sdtmp) * ddtmp;
+          mulAberV += 12;
+        }
+        for (i=0; i<3; i++) {
+          aval[i] /= C::c;
+          dval[i] /= (C::c * MeasData::JDCEN);
+        }
       }
       break;
       
@@ -216,20 +218,19 @@ void Aberration::calcAber(Double t) {
 	  fa(i) = aberArgP(t);
 	  dfa(i) = (aberArgP.derivative())(t);
 	}
+	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber(t, 1e-6);
+        DebugAssert (mul->contiguousStorage(), AipsError);
+        const Double* mulAberV = mul->data();
 	for (i=0; i<80; i++) {
-	  const Vector<Char>& mulAberArgV = MeasTable::mulAberArg(i);
-
+	  const Double* mulAberArgV = MeasTable::mulAberArg(i);
 	  dtmp = ddtmp = 0; 
 	  for (j=0; j<6; j++) {
 	    dtmp  += mulAberArgV[j] * fa[j];
 	    ddtmp += mulAberArgV[j] * dfa[j];
 	  }
-
 	  sdtmp = sin(dtmp);
 	  cdtmp = cos(dtmp);
 	  
-	  const Vector<Double>& mulAberV = MeasTable::mulAber(i, t);
-
 	  aval[0] += mulAberV[0] * sdtmp + mulAberV[1] * cdtmp;
 	  aval[1] += mulAberV[2] * sdtmp + mulAberV[3] * cdtmp;
 	  aval[2] += mulAberV[4] * sdtmp + mulAberV[5] * cdtmp;
@@ -239,9 +240,10 @@ void Aberration::calcAber(Double t) {
 	    (mulAberV[2] * cdtmp - mulAberV[3] * sdtmp) * ddtmp;
 	  dval[2] += mulAberV[10] * sdtmp + mulAberV[11] * cdtmp +
 	    (mulAberV[4] * cdtmp - mulAberV[5] * sdtmp) * ddtmp;
+          mulAberV += 12;
 	}
 	for (i=0; i<17; i++) {
-	  const Vector<Char>& mulAberArgV = MeasTable::mulAberSunArg(i);
+	  const Double* mulAberArgV = MeasTable::mulAberSunArg(i);
 
 	  dtmp = ddtmp = 0;
 	  for (j=0; j<7; j++) {
@@ -262,7 +264,7 @@ void Aberration::calcAber(Double t) {
 	  dval[2] += (mulAberV[4] * cdtmp - mulAberV[5] * sdtmp) * ddtmp;
 	}
 	for (i=0; i<17; i++) {
-	  const Vector<Char>& mulAberArgV = MeasTable::mulAberEarthArg(i);
+	  const Double* mulAberArgV = MeasTable::mulAberEarthArg(i);
 
 	  dtmp = ddtmp = 0;
 	  for (j=0; j<5; j++) {

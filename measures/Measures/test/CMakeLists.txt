@@ -13,6 +13,7 @@ tMeasMath
 tMeasure
 tMeasureHolder
 tMuvw
+tNutation
 tParAngleMachine
 tQuality
 tRecordTransformable
