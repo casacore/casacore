@@ -36,6 +36,7 @@ Measures/MeasIERS.cc
 Measures/MeasJPL.cc
 Measures/MeasMath.cc
 Measures/MeasTable.cc
+Measures/MeasTableMul.cc
 Measures/Measure.cc
 Measures/MeasureHolder.cc
 Measures/MeasuresProxy.cc
@@ -70,8 +71,8 @@ add_subdirectory (apps)
 install (
 TARGETS casa_measures
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -108,6 +109,7 @@ Measures/MeasMath.h
 Measures/MeasRef.h
 Measures/MeasRef.tcc
 Measures/MeasTable.h
+Measures/MeasTableMul.h
 Measures/Measure.h
 Measures/MeasureHolder.h
 Measures/MeasuresProxy.h
