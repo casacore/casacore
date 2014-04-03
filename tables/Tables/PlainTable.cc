@@ -496,11 +496,12 @@ Bool PlainTable::putFile (Bool always)
 #ifdef AIPS_TRACE
     cout << "PlainTable::putFile on " << tableName() << endl;
 #endif
-    AipsIO ios;
     Bool writeTab = always || tableChanged_p;
     Bool written = writeTab;
-    TableAttr attr(tableName());
-    if (writeTab) {
+    {  // use scope to ensure AipsIO is closed (thus flushed) before lockfile
+      AipsIO ios;
+      TableAttr attr(tableName());
+      if (writeTab) {
 #ifdef AIPS_TRACE
         cout << "  full PlainTable::putFile" << endl;
 #endif
@@ -511,7 +512,7 @@ Bool PlainTable::putFile (Bool always)
 	writeEnd (ios);
 	//# Write the TableInfo.
 	flushTableInfo();
-    } else {
+      } else {
         //# Tell the data managers to write their data only.
         if (colSetPtr_p->putFile (False, ios, attr, False)) {
 	    written = True;
@@ -519,6 +520,7 @@ Bool PlainTable::putFile (Bool always)
 	    cout << "  data PlainTable::putFile on " << tableName() << endl;
 #endif
 	}
+      }
     }
 
     // Write the change info if anything has been written.
