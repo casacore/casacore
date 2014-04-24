@@ -20,11 +20,18 @@
 
 # Casacore's IO sometimes uses uninitialized fill characters.
 {
-   Casacore-write-not-fully-initialized-buffer
+   Casacore-write-not-fully-initialized-buffer-LargeFilebufIO
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
    fun:_ZN4casa14LargeFilebufIO11writeBufferExPKci
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FilebufIO
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   fun:_ZN4casa9FilebufIO11writeBufferExPKci
 }
 
 # The function strlen is optimized by testing multiple byte simultaneously.
