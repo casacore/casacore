@@ -41,7 +41,7 @@
 // The results are written to stdout. A script executing this program,
 // compares the output with a reference output file.
 
-// Test case-insenstive sort.
+// Test case-insensitive sort.
 void sort1 (Int option)
 {
   String arr[10];

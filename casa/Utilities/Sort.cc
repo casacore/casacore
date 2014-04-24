@@ -33,6 +33,7 @@
 #include <casa/Utilities/SortError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/BlockIO.h>
 
 #include <casa/stdlib.h>                 // for rand
 #ifdef _OPENMP
@@ -265,6 +266,9 @@ uInt Sort::unique (Vector<uInt>& uniqueVector,
 uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt,
                  Bool doTryGenSort) const
 {
+    if (nrrec == 0) {
+        return nrrec;
+    }
     //# Try if we can use the faster GenSort when we have one key only.
     if (doTryGenSort  &&  nrkey_p == 1) {
 	uInt n = keys_p[0]->tryGenSort (indexVector, nrrec, opt);
@@ -281,6 +285,16 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt,
     // Choose the sort required.
     int nodup = opt & NoDuplicates;
     int type  = opt - nodup;
+    // Determine default sort to use.
+    int nthr = 1;
+#ifdef _OPENMP
+    nthr = omp_get_max_threads();
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nrrec) nthr = nrrec;
+#endif
+    if (type == DefaultSort) {
+      type = (nrrec<1000 || nthr==1  ?  QuickSort : ParSort);
+    }
     uInt n = 0;
     switch (type) {
     case QuickSort:
@@ -305,7 +319,7 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt,
 	}
 	break;
     case ParSort:
-        n = parSort (nrrec, inx);
+        n = parSort (nthr, nrrec, inx);
         if (nodup) {
             n = insSortNoDup (nrrec, inx);
         }
@@ -322,12 +336,8 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt,
     return n;
 }
 
-uInt Sort::parSort (uInt nrrec, uInt* inx) const
+uInt Sort::parSort (int nthr, uInt nrrec, uInt* inx) const
 {
-  int nthr = 1;
-#ifdef _OPENMP
-  nthr = omp_get_max_threads();
-#endif
   Block<uInt> index(nrrec+1);
   Block<uInt> tinx(nthr+1);
   Block<uInt> np(nthr);
@@ -355,7 +365,7 @@ uInt Sort::parSort (uInt nrrec, uInt* inx) const
   // See if last and next part can be combined.
   uInt nparts = np[0];
   for (int i=1; i<nthr; ++i) {
-    if (compare (tinx[i]-1, tinx[i]) > 0) {
+    if (compare (tinx[i]-1, tinx[i]) <= 0) {
       index[nparts++] = index[tinx[i]];
     }
     if (nparts == tinx[i]+1) {

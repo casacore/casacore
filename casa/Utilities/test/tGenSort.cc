@@ -71,7 +71,7 @@ uInt doSort (Int* arr, uInt nr, Sort::Order ord, int type)
 int main(int argc, const char* argv[])
 {
     uInt nr=4000;
-    int type=Sort::ParSort;
+    int type=Sort::DefaultSort;
     Sort::Order ord = Sort::Ascending;
     if (argc > 1) {
 	istringstream istr(argv[1]);
@@ -91,8 +91,10 @@ int main(int argc, const char* argv[])
 	cout << "insSort  ";
     } else if ((type & Sort::HeapSort) != 0) {
         cout << "heapSort ";
-    } else {
+    } else if ((type & Sort::ParSort) != 0) {
         cout << "parSort  ";
+    } else {
+        cout << "defSort  ";
     }
     if (ord == Sort::Ascending) {
 	cout << "   Ascending";

@@ -41,7 +41,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
 template<class T>
-void GenSort<T>::quickSortAsc (T* data, Int nr)
+void GenSort<T>::quickSortAsc (T* data, Int nr, Bool multiThread)
 {
     // QuickSorting small sets makes no sense.
     // It will be finished with an insertion sort.
@@ -73,8 +73,18 @@ void GenSort<T>::quickSortAsc (T* data, Int nr)
     }
     swap (*sf, data[nr-1]);
     i = sf-data;
-    quickSortAsc (data, i);                  // sort left part
-    quickSortAsc (sf+1, nr-i-1);             // sort right part
+    if (multiThread) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (int thr=0; thr<2; ++thr) {
+        if (thr==0) quickSortAsc (data, i);             // sort left part
+        if (thr==1) quickSortAsc (sf+1, nr-i-1);        // sort right part
+      }
+    } else {
+      quickSortAsc (data, i);                  // sort left part
+      quickSortAsc (sf+1, nr-i-1);             // sort right part
+    }
 }
 
 // Find the k-th largest element using a partial quicksort.
@@ -227,9 +237,12 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
 #ifdef _OPENMP
   if (nthread > 0) {
     nthr = nthread;
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nr) nthr = nr;
     omp_set_num_threads (nthr);
   } else {
     nthr = omp_get_max_threads();
+    if (uInt(nthr) > nr) nthr = nr;
   }
 #else
   nthr = 1;
@@ -387,7 +400,7 @@ template<class T>
 uInt GenSort<T>::quickSort (T* data, uInt nr, Sort::Order ord, int opt)
 {
   // Use quicksort to do rough sorting.
-  quickSortAsc (data, nr);
+  quickSortAsc (data, nr, True);
   // Finish with an insertion sort (which also skips duplicates if needed).
   // Note: if quicksort keeps track of its boundaries, the insSort of all
   // parts could be done in parallel.
@@ -410,15 +423,28 @@ uInt GenSort<T>::heapSort (T* data, uInt nr, Sort::Order ord, int opt)
 
 
 
-// Use parSort as the default sort because in general it is fastest.
-// Only for a random array in a single thread quickSort is about twice as fast.
 template<class T>
 uInt GenSort<T>::sort (T* data, uInt nr, Sort::Order ord, int opt)
 {
-  if (nr <= 32) {
-    return insSort (data, nr, ord, opt);
+  // Determine the default sort to use.
+  if (opt - (opt&Sort::NoDuplicates) == Sort::DefaultSort) {
+    int nthr = 1;
+#ifdef _OPENMP
+    nthr = omp_get_max_threads();
+#endif
+    int type = (nr<1000 || nthr==1  ?  Sort::QuickSort : Sort::ParSort);
+    opt = opt - Sort::DefaultSort + type;
   }
-  return parSort (data, nr, ord, opt);
+  // Do the sort.
+  if ((opt & Sort::HeapSort) != 0) {
+    return heapSort (data, nr, ord, opt);
+  } else if ((opt & Sort::InsSort) != 0) {
+    return insSort (data, nr, ord, opt);
+  } else if ((opt & Sort::QuickSort) != 0) {
+    return quickSort (data, nr, ord, opt);
+  } else {
+    return parSort (data, nr, ord, opt);
+  }
 }
 
 template<class T>
@@ -474,8 +500,22 @@ uInt GenSortIndirect<T>::sort (Vector<uInt>& indexVector, const T* data,
     uInt* inx = indexVector.getStorage (del);
     // Choose the sort required.
     uInt n;
-    if (nr <= 32) {
+    // Determine the default sort to use.
+    if (opt - (opt&Sort::NoDuplicates) == Sort::DefaultSort) {
+        int nthr = 1;
+#ifdef _OPENMP
+        nthr = omp_get_max_threads();
+#endif
+        int type = (nr<1000 || nthr==1  ?  Sort::QuickSort : Sort::ParSort);
+        opt = opt - Sort::DefaultSort + type;
+    }
+    // Do the sort.
+    if ((opt & Sort::HeapSort) != 0) {
+      n = heapSort (inx, data, nr, ord, opt);
+    } else if ((opt & Sort::InsSort) != 0) {
       n = insSort (inx, data, nr, ord, opt);
+    } else if ((opt & Sort::QuickSort) != 0) {
+      n = quickSort (inx, data, nr, ord, opt);
     } else {
       n = parSort (inx, data, nr, ord, opt);
     }
@@ -506,7 +546,7 @@ uInt GenSortIndirect<T>::quickSort (uInt* inx, const T* data, uInt nr,
 				    Sort::Order ord, int opt)
 {
   // Use quicksort to do rough sorting.
-  quickSortAsc (inx, data, nr);
+  quickSortAsc (inx, data, nr, True);
   // Finish with an insertion sort (which also skips duplicates if needed).
   // Note: if quicksort keeps track of its boundaries, the insSort of all
   // parts could be done in parallel.
@@ -536,9 +576,12 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
 #ifdef _OPENMP
   if (nthread > 0) {
     nthr = nthread;
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nr) nthr = nr;
     omp_set_num_threads (nthr);
   } else {
     nthr = omp_get_max_threads();
+    if (uInt(nthr) > nr) nthr = nr;
   }
 #else
   nthr = 1;
@@ -570,7 +613,7 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
   // See if last and next part can be combined.
   uInt nparts = np[0];
   for (int i=1; i<nthr; ++i) {
-    if (data[tinx[i]-1] < data[tinx[i]]) {
+    if (data[tinx[i]-1] > data[tinx[i]]) {
       index[nparts++] = index[tinx[i]];
     }
     if (nparts == tinx[i]+1) {
@@ -671,7 +714,8 @@ uInt* GenSortIndirect<T>::merge (const T* data, uInt* inx, uInt* tmp, uInt nr,
 
 
 template<class T>
-void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr)
+void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr,
+                                       Bool multiThread)
 {
     if (nr <= 32) {
 	return;                    // finish it off with insertion sort
@@ -699,8 +743,18 @@ void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr)
     }
     swapInx (*sf, inx[nr-1]);
     Int n = sf-inx;
-    quickSortAsc (inx, data, n);
-    quickSortAsc (sf+1, data, nr-n-1);
+    if (multiThread) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (int thr=0; thr<2; ++thr) {
+        if (thr==0) quickSortAsc (inx, data, n);
+        if (thr==1) quickSortAsc (sf+1, data, nr-n-1);
+      }
+    } else {
+      quickSortAsc (inx, data, n);
+      quickSortAsc (sf+1, data, nr-n-1);
+    }
 }
 
 // Find the k-th largest element using a partial quicksort.

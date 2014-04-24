@@ -171,7 +171,7 @@ private:
                      uInt nparts);
 
     // Quicksort in ascending order.
-    static void quickSortAsc (T*, Int);
+    static void quickSortAsc (T*, Int, Bool multiThread=False);
 
     // Heapsort in ascending order.
     static void heapSortAsc (T*, Int);
@@ -267,7 +267,8 @@ private:
 
 
     // Quicksort in ascending order.
-    static void quickSortAsc (uInt* inx, const T*, Int nr);
+    static void quickSortAsc (uInt* inx, const T*, Int nr,
+                              Bool multiThread=False);
 
     // Heapsort in ascending order.
     static void heapSortAsc (uInt* inx, const T*, Int nr);
