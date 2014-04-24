@@ -55,6 +55,7 @@ const RotMatrix &MeasData::GALtoB1950() {
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
@@ -75,6 +76,7 @@ const RotMatrix &MeasData::B1950toGAL() {
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
@@ -98,6 +100,7 @@ const RotMatrix &MeasData::GALtoJ2000() {
     { -0.4838350026, +0.7469822433, +0.4559837919}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
@@ -121,6 +124,7 @@ const RotMatrix &MeasData::J2000toGAL() {
     { -0.4838350026, +0.7469822433, +0.4559837919}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
@@ -159,6 +163,7 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
       {-0.0048579477,	-0.0000271765,	+0.9999881998}}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j,k;
     for (i=0; i<5; i++) {
       for (j=0; j<3; j++) {
@@ -195,6 +200,7 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
       {+0.00485767,	-0.00002714,	+1.00000956}}
   };
   if (needInit) {
+    // Multiple threads could execute this, but that is harmless.
     Int i,j,k;
     for (i=0; i<4; i++) {
       for (j=0; j<3; j++) {

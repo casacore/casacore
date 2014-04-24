@@ -153,6 +153,7 @@ void MDoppler::checkTypes() const {
 }
 
 void MDoppler::checkMyTypes() {
+  // Multiple threads could execute this, but that is harmless.
   static Bool first(True);
   if (first) {
     first = False;
