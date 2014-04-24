@@ -4235,16 +4235,8 @@ CountedPtr<Matrix<Double> > MeasTable::mulPosSunZ(Double time, Double epsilon)
 }
 
 const RotMatrix &MeasTable::posToRect() {
-  static volatile Bool needInit = True;
-  static RotMatrix rot;
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Euler ang(+84381.4091 * C::arcsec, 1, -0.0930 * C::arcsec, 3);
-      rot = RotMatrix(ang);
-      needInit = False;
-    }
-  }
+  static RotMatrix rot(Euler(+84381.4091 * C::arcsec, 1,
+                             -0.0930 * C::arcsec, 3));
   return rot;
 }
 
@@ -4263,16 +4255,8 @@ const RotMatrix &MeasTable::rectToPos() {
 }
 
 const RotMatrix &MeasTable::galToSupergal() {
-  static volatile Bool needInit = True;
-  static RotMatrix rot;
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Euler ang( -90*C::degree, 3, -83.68*C::degree, 2, -47.37*C::degree, 3);
-      rot = RotMatrix(ang);
-      needInit = False;
-    }
-  }
+  static RotMatrix rot(Euler( -90*C::degree, 3, -83.68*C::degree,
+                              2, -47.37*C::degree, 3));
   return rot;
 }
 
