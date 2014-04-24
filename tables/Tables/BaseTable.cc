@@ -67,7 +67,8 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
   option_p    (option),
   noWrite_p   (False),
   delete_p    (False),
-  madeDir_p   (True)
+  madeDir_p   (True),
+  itsTraceId  (-1)
 {
     if (name_p.empty()) {
 	name_p = File::newUniqueName ("", "tab").originalName();

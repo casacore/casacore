@@ -158,6 +158,7 @@ Tables/TableRecordRep.cc
 Tables/TableRow.cc
 Tables/TableRowProxy.cc
 Tables/TableSyncData.cc
+Tables/TableTrace.cc
 Tables/TiledCellStMan.cc
 Tables/TiledColumnStMan.cc
 Tables/TiledDataStMan.cc
@@ -187,8 +188,8 @@ add_subdirectory (apps)
 
 install (TARGETS casa_tables
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -367,6 +368,7 @@ Tables/TableRecordRep.h
 Tables/TableRow.h
 Tables/TableRowProxy.h
 Tables/TableSyncData.h
+Tables/TableTrace.h
 Tables/TableVector.h
 Tables/TableVector.tcc
 Tables/TiledCellStMan.h

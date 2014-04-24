@@ -1465,7 +1465,7 @@ TableExprNode TableParseSelect::doSubQuery (Bool showTimings)
   TableExprNode result;
   if (resultSet_p != 0) {
     // A set specification was given, so make the set.
-    result = makeSubSet (fromTables_p[0].table());
+    result = makeSubSet();
   } else {
     // A single column was given, so get its data.
     result = getColSet();
@@ -1593,7 +1593,7 @@ TableExprNode TableParseSelect::getColSet()
 }
 
 
-TableExprNode TableParseSelect::makeSubSet (const Table& origTable) const
+TableExprNode TableParseSelect::makeSubSet() const
 {
   // Perform some checks on the given set.
   if (resultSet_p->hasArrays()) {

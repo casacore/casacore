@@ -618,7 +618,7 @@ private:
   TableExprNode getColSet();
 
   // Make a set from the results of the subquery.
-  TableExprNode makeSubSet (const Table& origTable) const;
+  TableExprNode makeSubSet() const;
 
   // Evaluate an int scalar expression.
   Int64 evalIntScaExpr (const TableExprNode& expr) const;

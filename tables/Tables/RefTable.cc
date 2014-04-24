@@ -30,6 +30,7 @@
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableTrace.h>
 #include <casa/Containers/SimOrdMapIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Slice.h>
@@ -58,6 +59,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
     noWrite_p = True;
     getRef (ios, opt, lockOptions, tsmOption);
     noWrite_p = False;
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'o');
 }
 
 
@@ -77,6 +79,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
     //# Get root table (will be parent if btp is an reference table).
     //# Link to root table (ie. increase its reference count).
     baseTabPtr_p->link();
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
@@ -104,6 +107,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
     //# Link to the root table.
     rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
     baseTabPtr_p->link();
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
@@ -129,6 +133,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
     //# Link to the root table.
     rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
     baseTabPtr_p->link();
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
 RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
@@ -155,6 +160,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     rows_p = getStorage (rowStorage_p);
     //# Link to the root table.
     baseTabPtr_p->link();
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'p');
 }
 
 
@@ -166,6 +172,7 @@ RefTable::~RefTable()
 	    writeRefTable (True);
 	}
     }
+    TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'c');
     //# Delete all RefColumn objects.
     for (uInt i=0; i<colMap_p.ndefined(); i++) {
 	delete colMap_p.getVal(i);
@@ -280,6 +287,7 @@ void RefTable::writeRefTable (Bool)
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.
     if (changed_p) {
+        TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'w');
 	AipsIO ios;
 	writeStart (ios, True);
 	ios << "RefTable";

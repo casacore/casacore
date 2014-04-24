@@ -464,6 +464,10 @@ public:
     void checkRowNumber (uInt rownr) const
         { if (rownr >= nrrow_p + nrrowToAdd_p) checkRowNumberThrow (rownr); }
 
+    // Get the table's trace-id.
+    int traceId() const
+        { return itsTraceId; }
+
 
 protected:
     uInt           nrlink_p;            //# #references to this table
@@ -476,6 +480,7 @@ protected:
     Bool           delete_p;            //# True = delete when destructed
     TableInfo      info_p;              //# Table information (type, etc.)
     Bool           madeDir_p;           //# True = table dir has been created
+    int            itsTraceId;          //# table-id for TableTrace tracing
 
 
     // Do the callback for scratch tables (if callback is set).
