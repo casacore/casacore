@@ -27,6 +27,7 @@
 #include <ms/MeasurementSets/MSMetaDataOnDemand.h>
 
 #include <casa/OS/File.h>
+#include <ms/MeasurementSets/MSSpWindowColumns.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/TableParse.h>
@@ -85,7 +86,7 @@ MSMetaDataOnDemand::~MSMetaDataOnDemand() {}
 
 uInt MSMetaDataOnDemand::nStates() {
 	if (_nStates == 0) {
-		_nStates = _getNStates(*_ms);
+		_nStates = _ms->state().nrow();
 	}
 	return _nStates;
 }
@@ -112,10 +113,29 @@ void MSMetaDataOnDemand::_getStateToIntentsMap(
 		stateToIntentsMap = _stateToIntentsMap;
 		return;
 	}
-	MSMetaData::_getStateToIntentsMap(
+
+	String intentsColName = MSState::columnName(MSStateEnums::OBS_MODE);
+	ROScalarColumn<String> intentsCol(_ms->state(), intentsColName);
+	Vector<String> intentSets = intentsCol.getColumn();
+	stateToIntentsMap.resize(nStates());
+
+	Vector<String>::const_iterator end = intentSets.end();
+	vector<std::set<String> >::iterator sIter = stateToIntentsMap.begin();
+	for(
+		Vector<String>::const_iterator curIntentSet=intentSets.begin();
+		curIntentSet!=end; curIntentSet++, sIter++
+	) {
+		Vector<String> intents = casa::stringToVector(*curIntentSet, ',');
+		*sIter = std::set <String>(intents.begin(), intents.end());
+		uniqueIntents.insert(intents.begin(), intents.end());
+	}
+
+	/*
+	_getStateToIntentsMap2(
 		stateToIntentsMap,
-		uniqueIntents, *_ms
+		uniqueIntents
 	);
+	*/
 
 	std::set<String>::const_iterator lastIntent = uniqueIntents.end();
 	uInt mysize = 0;
@@ -409,7 +429,8 @@ std::tr1::shared_ptr<Vector<Int> > MSMetaDataOnDemand::_getScans() {
 	if (_scans && _scans->size() > 0) {
 		return _scans;
 	}
-	std::tr1::shared_ptr<Vector<Int> > scans(new Vector<Int>(MSMetaData::_getScans(*_ms)));
+	String scanColName = MeasurementSet::columnName(MSMainEnums::SCAN_NUMBER);
+	std::tr1::shared_ptr<Vector<Int> > scans(new Vector<Int>(ROScalarColumn<Int>(*_ms, scanColName).getColumn()));
 	if (_cacheUpdated(sizeof(Int)*scans->size())) {
 		_scans = scans;
 	}
@@ -420,8 +441,9 @@ std::tr1::shared_ptr<Vector<Int> > MSMetaDataOnDemand::_getObservationIDs() {
 	if (_observationIDs && _observationIDs->size() > 0) {
 		return _observationIDs;
 	}
+	static const String obsColName = MeasurementSet::columnName(MSMainEnums::OBSERVATION_ID);
 	std::tr1::shared_ptr<Vector<Int> > obsIDs(
-		new Vector<Int>(MSMetaData::_getObservationIDs(*_ms))
+		new Vector<Int>(ROScalarColumn<Int>(*_ms, obsColName).getColumn())
 	);
 	if (_cacheUpdated(sizeof(Int)*obsIDs->size())) {
 		_observationIDs = obsIDs;
@@ -433,8 +455,9 @@ std::tr1::shared_ptr<Vector<Int> > MSMetaDataOnDemand::_getArrayIDs() {
 	if (_arrayIDs && _arrayIDs->size() > 0) {
 		return _arrayIDs;
 	}
+	static const String arrColName = MeasurementSet::columnName(MSMainEnums::ARRAY_ID);
 	std::tr1::shared_ptr<Vector<Int> > arrIDs(
-		new Vector<Int>(MSMetaData::_getArrayIDs(*_ms))
+		new Vector<Int>(ROScalarColumn<Int>(*_ms, arrColName).getColumn())
 	);
 	if (_cacheUpdated(sizeof(Int)*arrIDs->size())) {
 		_arrayIDs = arrIDs;
@@ -459,18 +482,18 @@ std::tr1::shared_ptr<Vector<Int> > MSMetaDataOnDemand::_getStateIDs() {
 	if (_stateIDs && _stateIDs->size() > 0) {
 		return _stateIDs;
 	}
+	static const String stateColName = MeasurementSet::columnName(MSMainEnums::STATE_ID);
 	std::tr1::shared_ptr<Vector<Int> > states(
-		new Vector<Int>(MSMetaData::_getStates(*_ms))
+		new Vector<Int>(ROScalarColumn<Int>(*_ms, stateColName).getColumn())
 	);
     Int maxState = max(*states);
     Int nstates = (Int)nStates();
-    if (maxState >= nstates) {
-        ostringstream oss;
-        oss << "MSMetaDataOnDemand::_getStateIDs(): Error: MS only has " << nstates
-             << " rows in its STATE table, but references STATE_ID "
-             << maxState << " in its main table.";
-        throw AipsError(oss.str());
-    }
+    ThrowIf(
+    	maxState >= nstates,
+        "MS only has " + String::toString(nstates)
+        + " rows in its STATE table, but references STATE_ID "
+        + String::toString(maxState) + " in its main table."
+    );
     if (_cacheUpdated(sizeof(Int)*states->size())) {
 		_stateIDs = states;
 	}
@@ -481,8 +504,10 @@ std::tr1::shared_ptr<Vector<Int> > MSMetaDataOnDemand::_getDataDescIDs() {
 	if (_dataDescIDs && ! _dataDescIDs->empty()) {
 		return _dataDescIDs;
 	}
+	static const String ddColName = MeasurementSet::columnName(MSMainEnums::DATA_DESC_ID);
+	ROScalarColumn<Int> ddCol(*_ms, ddColName);
 	std::tr1::shared_ptr<Vector<Int> > dataDescIDs(
-		new Vector<Int>(MSMetaData::_getDataDescIDs(*_ms))
+		new Vector<Int>(ddCol.getColumn())
 	);
 	if (_cacheUpdated(sizeof(Int)*dataDescIDs->size())) {
 		_dataDescIDs = dataDescIDs;
@@ -519,7 +544,7 @@ std::map<Int, std::set<Int> > MSMetaDataOnDemand::_getScanToStatesMap() {
 	std::map<Int, std::set<Int> > myScanToStatesMap;
 	uInt mySize = 0;
 
-	if (_ms->state().nrow() == 0) {
+	if (nStates() == 0) {
 		std::set<Int> empty;
 		std::set<Int> uniqueScans = getScanNumbers();
 		std::set<Int>::const_iterator end = uniqueScans.end();
@@ -531,9 +556,17 @@ std::map<Int, std::set<Int> > MSMetaDataOnDemand::_getScanToStatesMap() {
 		}
 	}
 	else {
-		myScanToStatesMap = MSMetaData::_getScanToStatesMap(
-			*(_getScans()), *(_getStateIDs())
-		);
+		const Vector<Int> scans = *(_getScans());
+		const Vector<Int> states = *(_getStateIDs());
+		Vector<Int>::const_iterator curScan = scans.begin();
+		Vector<Int>::const_iterator lastScan = scans.end();
+		Vector<Int>::const_iterator curStateID = states.begin();
+		//std::map<Int, std::set<Int> > myScanToStatesMap;
+		while (curScan != lastScan) {
+			myScanToStatesMap[*curScan].insert(*curStateID);
+			curScan++;
+			curStateID++;
+		}
 	}
 	std::map<Int, std::set<Int> >::const_iterator end = myScanToStatesMap.end();
 	for (
@@ -2254,8 +2287,8 @@ vector<MSMetaData::SpwProperties> MSMetaDataOnDemand::_getSpwInfo(
 		sqldSpw = _sqldSpw;
 		return _spwInfo;
 	}
-	vector<SpwProperties> spwInfo = MSMetaData::_getSpwInfo(
-		avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw, *_ms
+	vector<SpwProperties> spwInfo = _getSpwInfo2(
+		avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
 	);
 	uInt mysize = sizeof(uInt)*(
 			avgSpw.size() + tdmSpw.size() + fdmSpw.size()
@@ -2342,6 +2375,63 @@ void MSMetaDataOnDemand::_hasAntennaID(Int antennaID) {
 	);
 }
 
+vector<MSMetaData::SpwProperties>  MSMetaDataOnDemand::_getSpwInfo2(
+	std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
+	std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
+) {
+	static const Regex rxSqld("BB_[0-9]#SQLD");
+	ROMSSpWindowColumns spwCols(_ms->spectralWindow());
+	Vector<Double> bws = spwCols.totalBandwidth().getColumn();
+	ArrayColumn<Double> cfCol = spwCols.chanFreq();
+	Array<String> cfUnits;
+	cfCol.keywordSet().get("QuantumUnits", cfUnits);
+	ArrayColumn<Double> cwCol = spwCols.chanWidth();
+	Array<String> cwUnits;
+	cwCol.keywordSet().get("QuantumUnits", cwUnits);
 
+	Vector<Int> nss  = spwCols.netSideband().getColumn();
+	Vector<String> name = spwCols.name().getColumn();
+	Bool myHasBBCNo = hasBBCNo(*_ms);
+	Vector<Int> bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
+	vector<Double> freqLimits(2);
+	Vector<Double> tmp;
+	vector<SpwProperties> spwInfo(bws.size());
+	for (uInt i=0; i<bws.size(); i++) {
+		spwInfo[i].bandwidth = bws[i];
+		tmp.resize(0);
+		cfCol.get(i, tmp);
+		spwInfo[i].chanfreqs = Quantum<Vector<Double> >(tmp, *cfUnits.begin());
+		spwInfo[i].meanfreq = Quantity(mean(tmp), *cfUnits.begin());
+		freqLimits[0] = min(tmp);
+		freqLimits[1] = max(tmp);
+		spwInfo[i].edgechans = freqLimits;
+		tmp.resize(0);
+		cwCol.get(i, tmp);
+		spwInfo[i].chanwidths = Quantum<Vector<Double> >(tmp, *cwUnits.begin());
+		// coded this way in ValueMapping
+		spwInfo[i].netsideband = nss[i] == 2 ? 1 : -1;
+		spwInfo[i].nchans = tmp.size();
+		spwInfo[i].name = name[i];
+		if (myHasBBCNo) {
+			spwInfo[i].bbcno = bbcno[i];
+		    if(name[i].contains(rxSqld)) {
+		    	sqldSpw.insert(i);
+		    }
+		}
+		if (spwInfo[i].nchans==64 || spwInfo[i].nchans==128 || spwInfo[i].nchans==256) {
+			tdmSpw.insert(i);
+		}
+		else if (spwInfo[i].nchans==1) {
+			avgSpw.insert(i);
+		}
+		else if (spwInfo[i].nchans==4) {
+			wvrSpw.insert(i);
+		}
+		else {
+			fdmSpw.insert(i);
+		}
+	}
+	return spwInfo;
+}
 }
 

@@ -359,22 +359,21 @@ Int SpectralCoordinate::makeConversionMachines (MFrequency::Types type,
 
 void SpectralCoordinate::convertTo (Vector<Double>& world) const
 {
-
-// SC always has world vector of length 1
-
-   if (pConversionMachineTo_p) {
-      world[0]  = (*pConversionMachineTo_p)(world[0]).get(unit_p).getValue();
-   }
+  if (pConversionMachineTo_p) {
+    for(uInt i=0; i<world.size(); i++){
+      world[i]  = (*pConversionMachineTo_p)(world[i]).get(unit_p).getValue();
+    }
+  }
 }
 
 void SpectralCoordinate::convertFrom (Vector<Double>& world) const
 {
 
-// SC always has world vector of length 1
-
-   if (pConversionMachineFrom_p) {
-      world[0] = (*pConversionMachineFrom_p)(world[0]).get(unit_p).getValue();
-   }
+  if (pConversionMachineFrom_p) {
+    for(uInt i=0; i<world.size(); i++){
+      world[i]  = (*pConversionMachineFrom_p)(world[i]).get(unit_p).getValue();
+    }
+  }
 }
 
 } //# NAMESPACE CASA - END

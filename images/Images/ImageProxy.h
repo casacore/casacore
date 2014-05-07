@@ -144,6 +144,9 @@ namespace casa {
                                          const MaskSpecifier&,
                                          const Block<LatticeExprNode>& nodes);
 
+    // Close the image by setting all pointers to 0.
+    void close();
+
     // Turn the ImageProxy into a LatticeExprNode.
     LatticeExprNode makeNode() const;
 
@@ -286,8 +289,8 @@ namespace casa {
                  const IPosition& newTileShape=IPosition()) const;
 
     // Return the statistics for the given axes.
-    // E.g. fn axes 0,1 is given in a 3-dim image, the statistics are calculated
-    // for each plane along the 3rd axis.
+    // E.g., if axes 0,1 is given in a 3-dim image, the statistics are
+    // calculated for each plane along the 3rd axis.
     // MinMaxValues can be given to include or exclude (4th argument) pixels
     // with values in the given range. If only one value is given, min=-abs(val)
     // and max=abs(val).
@@ -360,6 +363,9 @@ namespace casa {
  private:
     // Form an ImageProxy object from an existing image object.
     explicit ImageProxy (LatticeBase*);
+
+    // Throw an exception if the object is null.
+    void checkNull() const;
 
     // Open the image (which can also be an expression.
     // Throw an exception if not succeeded.

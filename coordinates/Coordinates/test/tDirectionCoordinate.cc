@@ -439,6 +439,7 @@ int main()
     	  AlwaysAssert(! dc.hasSquarePixels(), AipsError);
 
       }
+
   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
@@ -681,7 +682,10 @@ void doit3 (DirectionCoordinate& lc)
    if (!allNear(dirV.get(), world, 1e-6)) {
          throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
    }
-//
+   Vector<Double> pix2;
+   pix2 = lc.toPixel(dirV);
+   AlwaysAssert(allNear(pix2, pixel, 1e-6), AipsError);
+
    axisUnits.set("deg");
    if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to degrees because ") + lc.errorMessage())); 

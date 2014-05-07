@@ -331,6 +331,10 @@ public:
 			 const Vector<Double> &pixel) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
+
+    // Convert a world position to pixel position and throw an exception
+    // if it fails.
+    Vector<Double> toPixel(const MVDirection &world) const;
     // </group>
 
     // Mixed pixel/world coordinate conversion.

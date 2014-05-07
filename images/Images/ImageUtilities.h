@@ -181,7 +181,7 @@ public:
 // On input, pa is N->E (at ref pix) for celestial planes.
 // Otherwise pa is in pixel coordinate system +x -> +y
 // On output, pa (radians) is positive +x -> +y in pixel frame
-   static void worldWidthsToPixel (LogIO& os, Vector<Double>& dParameters,
+   static void worldWidthsToPixel (Vector<Double>& dParameters,
                                    const Vector<Quantum<Double> >& parameters,
                                    const CoordinateSystem& cSys,
                                    const IPosition& pixelAxes,
@@ -198,8 +198,7 @@ public:
 // On input pa is positive for +x -> +y in pixel frame
 // On output pa is positive N->E
 // Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool pixelWidthsToWorld (LogIO& os,
-                                   GaussianBeam& wParameters,
+   static Bool pixelWidthsToWorld (GaussianBeam& wParameters,
                                    const Vector<Double>& pParameters,
                                    const CoordinateSystem& cSys,
                                    const IPosition& pixelAxes,
@@ -234,26 +233,25 @@ private:
 // On input pa is positive for +x -> +y in pixel frame
 // On output pa is positive N->E
 // Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool skyPixelWidthsToWorld (LogIO& os,
-                                      GaussianBeam& wParameters,
-                                      const CoordinateSystem& cSys,
-                                      const Vector<Double>& pParameters,
-                                      const IPosition& pixelAxes, Bool doRef);
+   static Bool _skyPixelWidthsToWorld (GaussianBeam& wParameters,
+                                       const CoordinateSystem& cSys,
+                                       const Vector<Double>& pParameters,
+                                       const IPosition& pixelAxes, Bool doRef);
 
 // Convert a length and position angle in world units (for a non-coupled 
 // coordinate) to pixels. The length is in some 2D plane in the 
 // CoordinateSystem specified  by pixelAxes.
-   static Double worldWidthToPixel (LogIO& os, Double positionAngle,
-                                    const Quantum<Double>& length,
-                                    const CoordinateSystem& cSys,
-                                    const IPosition& pixelAxes);
+   static Double _worldWidthToPixel (Double positionAngle,
+                                     const Quantum<Double>& length,
+                                     const CoordinateSystem& cSys,
+                                     const IPosition& pixelAxes);
 
 
 
-   static Quantum<Double> pixelWidthToWorld (LogIO& os, Double positionAngle,
-                                             Double length,
-                                             const CoordinateSystem& cSys,
-                                             const IPosition& pixelAxes);
+   static Quantum<Double> _pixelWidthToWorld (Double positionAngle,
+                                              Double length,
+                                              const CoordinateSystem& cSys,
+                                              const IPosition& pixelAxes);
 };
 
 

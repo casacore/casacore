@@ -1028,8 +1028,7 @@ MFrequency::Types SpectralCoordinate::frequencySystem(Bool showConversion) const
     }         
 }
 
-void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type,
-                                             Bool verbose)
+void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type, Bool verbose)
 {
     if (type==type_p) return;
 //   
@@ -1051,7 +1050,7 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type,
 // the current conversion, and demand the user re-issues the
 // setReferenceConversion function
 
-    if (verbose  &&  oldType != conversionType_p) {
+   if (verbose && oldType != conversionType_p) {
       LogIO os(LogOrigin("SpectralCoordinate", "setFrequencySystem"));
       os << LogIO::WARN << "Resetting the conversion frequency system " << MFrequency::showType(conversionType_p) << endl;
       os << "to the new native frequency system " << MFrequency::showType(type_p) << endl;
@@ -1062,11 +1061,10 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type,
    conversionType_p = type_p;
 }
 
-Bool SpectralCoordinate::transformFrequencySystem(MFrequency::Types type,
-                                                  const MEpoch& epoch,
-                                                  const MPosition& position,
-                                                  const MDirection& direction)
-{
+  Bool SpectralCoordinate::transformFrequencySystem(MFrequency::Types type,
+						    const MEpoch& epoch, const MPosition& position,
+						    const MDirection& direction){
+
   Bool rval=True;
 
   MFrequency::Types nativeCtype = frequencySystem(False);
@@ -1086,17 +1084,25 @@ Bool SpectralCoordinate::transformFrequencySystem(MFrequency::Types type,
       }
     }
 
-    if(_tabular.get()){ // we have a tabular spectral coordinate
+    if(pixelValues().nelements() > 1){ // we have a tabular spectral coordinate
       
       Vector<String> oldunits(worldAxisUnits());
       Vector<String> tmpunits(1,"Hz"); // need freqs in Hz for setTabulatedFrequencies
       setWorldAxisUnits(tmpunits);
-      Vector<Double> tpixels  = _tabular->pixelValues();
+      Vector<Double> tpixels = _tabular->pixelValues();
       Vector<Double> newFreqs(tpixels.size());
       toWorld(newFreqs, tpixels);
       _setTabulatedFrequencies(newFreqs);
       setWorldAxisUnits(oldunits);
 
+      Vector<Double> newCrval(1, newFreqs[0]);
+      setReferenceValue(newCrval);
+      if(tpixels[tpixels.size()-1]-tpixels[0] != 0.){
+	Vector<Double> newCdelt(1, (newFreqs[tpixels.size()-1]-newFreqs[0])/(tpixels[tpixels.size()-1]-tpixels[0]));
+	setIncrement(newCdelt); 
+      }
+      Vector<Double> newRefPix(1, tpixels[0]);
+      setReferencePixel(newRefPix);
     }
     else{ // not tabular: only need to change ctype, crval, cdelt
       Vector<Double> newCrval(1,0.);
@@ -1704,7 +1710,7 @@ void SpectralCoordinate::restoreRestFrequencies (SpectralCoordinate*& pSpectral,
 // Multiple rest frequencies were added after initial deployment
 
     if (subrec.isDefined("restfreqs")) {                   // optional
-       Vector<Double> restFreqs(subrec.toArrayDouble("restfreqs"));
+      Vector<Double> restFreqs(subrec.toArrayDouble("restfreqs"));
 
 // Old images might have a negative restfreq. Don't propagate that
 
@@ -1808,10 +1814,11 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 		 header.shape("cdelt")(0) > Int(whichAxis), AipsError);
 
     Vector<String> ctype, cunit;
+
+    header.get("ctype", ctype);
     Vector<Double> crval(header.toArrayDouble("crval"));
     Vector<Double> crpix(header.toArrayDouble("crpix"));
     Vector<Double> cdelt(header.toArrayDouble("cdelt"));
-    header.get("ctype", ctype);
 
     if (header.isDefined("cunit")) {
 	AlwaysAssert(header.dataType("cunit") == TpArrayString &&
@@ -1859,7 +1866,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	 header.dataType("naxis") == TpArrayInt &&
 	 header.shape("naxis").nelements() == 1 &&
 	 header.shape("naxis")(0) > Int(whichAxis)){
-	Vector<Int> naxis(header.toArrayInt("naxis"));
+ 	Vector<Int> naxis(header.toArrayInt("naxis"));
 	nEl = naxis(whichAxis);
       }
       pixel.resize(nEl);
@@ -2493,8 +2500,8 @@ void SpectralCoordinate::_setTabulatedFrequencies(const Vector<Double>& freqs) {
 }
 
 ostream& SpectralCoordinate::print(ostream& os) const {
-	os << "tabular " << _tabular.get() << endl;
-	os << "to_hz_p " <<  to_hz_p << endl;
+    os << "tabular " << _tabular.get() << endl;
+    os << "to_hz_p " <<  to_hz_p << endl;
     os << "to_m_p " << to_m_p << endl;
     os << "type_p " << MFrequency::showType(type_p) << endl;
     os << "conversionType_p " << MFrequency::showType(conversionType_p) << endl;

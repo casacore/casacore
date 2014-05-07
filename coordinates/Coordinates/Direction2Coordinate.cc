@@ -85,5 +85,12 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
    return toPixel(pixel, world_tmp);
 }
 
+Vector<Double> DirectionCoordinate::toPixel(const MVDirection &world) const
+{
+  Vector<Double> x;
+  ThrowIf (! toPixel(x, world),	errorMessage());
+  return x;
+}
+
 } //# NAMESPACE CASA - END
 

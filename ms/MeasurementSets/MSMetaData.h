@@ -355,34 +355,6 @@ protected:
 		String name;
 	};
 
-	static uInt _getNStates(const MeasurementSet& ms);
-
-	static void _getStateToIntentsMap(
-		vector<std::set<String> >& statesToIntentsMap,
-		std::set<String>& uniqueIntents,
-		const MeasurementSet& ms
-	);
-
-	static Vector<Int> _getScans(const MeasurementSet& ms);
-
-	// state IDs can be < 0
-	static std::map<Int, std::set<Int> > _getScanToStatesMap(
-		const Vector<Int>& scans, const Vector<Int>& states
-	);
-
-	static vector<SpwProperties>  _getSpwInfo(
-		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
-		std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw, const MeasurementSet& ms
-	);
-
-	static Vector<Int> _getDataDescIDs(const MeasurementSet& ms);
-
-	static Vector<Int> _getStates(const MeasurementSet& ms);
-
-	static Vector<Int> _getObservationIDs(const MeasurementSet& ms);
-
-	static Vector<Int> _getArrayIDs(const MeasurementSet& ms);
-
 	static std::map<Int, uInt> _getDataDescIDToSpwMap(const MeasurementSet& ms);
 
 	static std::map<Int, uInt> _getDataDescIDToPolIDMap(const MeasurementSet& ms);

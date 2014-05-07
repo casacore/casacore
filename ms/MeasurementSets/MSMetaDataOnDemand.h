@@ -524,7 +524,12 @@ private:
 		std::map<Int, std::map<uInt, Double> >& scanSpwToIntervalMap
 	);
 
+	vector<SpwProperties>  _getSpwInfo2(
+		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
+		std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
+	);
+
 };
 }
 
-#endif /* MSMETADATA_H_ */
+#endif

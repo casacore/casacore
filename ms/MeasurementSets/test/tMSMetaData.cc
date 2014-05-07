@@ -36,7 +36,6 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 
 #include <casa/Containers/ContainerIO.h>
-#include <casa/Arrays/ArrayIO.h>
 #include <iomanip>
 
 #include <casa/namespace.h>
@@ -77,37 +76,37 @@ void testIt(MSMetaData& md) {
 	cout << "*** test getScansForState()" << endl;
 	for (uInt stateID=0; stateID<md.nStates(); stateID++) {
 		std::set<Int> scans = md.getScansForState(stateID);
-		std::set<Int> exp;
+		std::set<Int> expec;
 		if (stateID < 5) {
 			uInt myints[]= {1, 5, 8};
-			exp.insert(myints, myints + 3);
+			expec.insert(myints, myints + 3);
 		}
 		else if (stateID < 7) {
-			exp.insert(2);
+			expec.insert(2);
 		}
 		else if (stateID < 10) {
 			uInt myints[]= {3, 6, 9, 11, 13, 15, 17, 19, 22, 24, 26, 29, 31};
-			exp.insert(myints, myints + 13);
+			expec.insert(myints, myints + 13);
 		}
 		else if (stateID < 26) {
-			exp.insert(4);
+			expec.insert(4);
 		}
 		else if (stateID < 32) {
-			exp.insert(7);
+			expec.insert(7);
 		}
 		else if (stateID < 33) {
 			uInt myints[] = {10, 14, 18, 21, 25, 28, 32};
-			exp.insert(myints, myints + 7);
+			expec.insert(myints, myints + 7);
 		}
 		else if (stateID < 37) {
 			uInt myints[] = {12, 16, 20, 23, 27, 30};
-			exp.insert(myints, myints + 6);
+			expec.insert(myints, myints + 6);
 		}
 		else {
 			uInt myints[] = {12, 16, 20, 23};
-			exp.insert(myints, myints + 4);
+			expec.insert(myints, myints + 4);
 		}
-		AlwaysAssert(scans == exp, AipsError);
+		AlwaysAssert(scans == expec, AipsError);
 	}
 	cout << "*** cache size " << md.getCache() << endl;
 

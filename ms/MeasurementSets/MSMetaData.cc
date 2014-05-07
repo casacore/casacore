@@ -180,7 +180,6 @@ vector<String> MSMetaData::_getAntennaNames(
 	return names.tovector();
 }
 
-
 Quantum<Vector<Double> > MSMetaData::_getAntennaDiameters(
 	const MeasurementSet& ms
 ) {
@@ -189,66 +188,6 @@ Quantum<Vector<Double> > MSMetaData::_getAntennaDiameters(
 	Vector<Double> diams = diamCol.getColumn();
 	String unit = *diamCol.keywordSet().asArrayString("QuantumUnits").begin();
 	return Quantum<Vector<Double> >(diams, unit);
-}
-
-std::map<Int, std::set<Int> > MSMetaData::_getScanToStatesMap(
-	const Vector<Int>& scans, const Vector<Int>& states
-) {
-	Vector<Int>::const_iterator curScan = scans.begin();
-	Vector<Int>::const_iterator lastScan = scans.end();
-	Vector<Int>::const_iterator curStateID = states.begin();
-	std::map<Int, std::set<Int> > scanToStatesMap;
-	while (curScan != lastScan) {
-		scanToStatesMap[*curScan].insert(*curStateID);
-		curScan++;
-		curStateID++;
-	}
-	return scanToStatesMap;
-}
-
-Vector<Int> MSMetaData::_getStates(const MeasurementSet& ms) {
-	String stateColName = MeasurementSet::columnName(MSMainEnums::STATE_ID);
-	return ROScalarColumn<Int>(ms, stateColName).getColumn();
-}
-
-Vector<Int> MSMetaData::_getObservationIDs(const MeasurementSet& ms) {
-	String obsColName = MeasurementSet::columnName(MSMainEnums::OBSERVATION_ID);
-	return ROScalarColumn<Int>(ms, obsColName).getColumn();
-}
-
-Vector<Int> MSMetaData::_getArrayIDs(const MeasurementSet& ms) {
-	String arrColName = MeasurementSet::columnName(MSMainEnums::ARRAY_ID);
-	return ROScalarColumn<Int>(ms, arrColName).getColumn();
-}
-
-void MSMetaData::_getStateToIntentsMap(
-	vector<std::set<String> >& stateToIntentsMap,
-	std::set<String>& uniqueIntents, const MeasurementSet& ms
-) {
-	String intentsColName = MSState::columnName(MSStateEnums::OBS_MODE);
-	ROScalarColumn<String> intentsCol(ms.state(), intentsColName);
-	Vector<String> intentSets = intentsCol.getColumn();
-	stateToIntentsMap.resize(_getNStates(ms));
-	Vector<String>::const_iterator end = intentSets.end();
-	vector<std::set<String> >::iterator sIter = stateToIntentsMap.begin();
-	for(
-		Vector<String>::const_iterator curIntentSet=intentSets.begin();
-		curIntentSet!=end; curIntentSet++, sIter++
-	) {
-		Vector<String> intents = casa::stringToVector(*curIntentSet, ',');
-		*sIter = std::set <String>(intents.begin(), intents.end());
-		uniqueIntents.insert(intents.begin(), intents.end());
-	}
-}
-
-uInt MSMetaData::_getNStates(const MeasurementSet& ms) {
-	return ms.state().nrow();
-}
-
-Vector<Int> MSMetaData::_getDataDescIDs(const MeasurementSet& ms) {
-	String ddColName = MeasurementSet::columnName(MSMainEnums::DATA_DESC_ID);
-	ROScalarColumn<Int> ddCol(ms, ddColName);
-	return ddCol.getColumn();
 }
 
 std::map<Int, uInt> MSMetaData::_getDataDescIDToSpwMap(const MeasurementSet& ms) {
@@ -323,84 +262,13 @@ Vector<Double> MSMetaData::_getIntervals(const MeasurementSet& ms) {
 	return ScalarColumn<Double>(ms, intervalColName).getColumn();
 }
 
-/*
-Vector<Bool> MSMetaData::_getFlagRows(const MeasurementSet& ms) {
-	String flagRowColName = MeasurementSet::columnName(MSMainEnums::FLAG_ROW);
-	return ScalarColumn<Bool>(ms, flagRowColName).getColumn();
-}
-*/
-
 ArrayColumn<Bool>* MSMetaData::_getFlags(const MeasurementSet& ms) {
 	String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);
 	return new ArrayColumn<Bool>(ms, flagColName);
 }
 
-vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo(
-	std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
-	std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw, const MeasurementSet& ms
-) {
-	static const Regex rxSqld("BB_[0-9]#SQLD");
-	ROMSSpWindowColumns spwCols(ms.spectralWindow());
-	Vector<Double> bws = spwCols.totalBandwidth().getColumn();
-	ArrayColumn<Double> cfCol = spwCols.chanFreq();
-	Array<String> cfUnits;
-	cfCol.keywordSet().get("QuantumUnits", cfUnits);
-	ArrayColumn<Double> cwCol = spwCols.chanWidth();
-	Array<String> cwUnits;
-	cwCol.keywordSet().get("QuantumUnits", cwUnits);
-
-	Vector<Int> nss  = spwCols.netSideband().getColumn();
-	Vector<String> name = spwCols.name().getColumn();
-	Bool myHasBBCNo = hasBBCNo(ms);
-	Vector<Int> bbcno = myHasBBCNo ? spwCols.bbcNo().getColumn() : Vector<Int>();
-	vector<Double> freqLimits(2);
-	Vector<Double> tmp;
-	vector<SpwProperties> spwInfo(bws.size());
-	for (uInt i=0; i<bws.size(); i++) {
-		spwInfo[i].bandwidth = bws[i];
-		tmp.resize(0);
-		cfCol.get(i, tmp);
-		spwInfo[i].chanfreqs = Quantum<Vector<Double> >(tmp, *cfUnits.begin());
-		spwInfo[i].meanfreq = Quantity(mean(tmp), *cfUnits.begin());
-		freqLimits[0] = min(tmp);
-		freqLimits[1] = max(tmp);
-		spwInfo[i].edgechans = freqLimits;
-		tmp.resize(0);
-		cwCol.get(i, tmp);
-		spwInfo[i].chanwidths = Quantum<Vector<Double> >(tmp, *cwUnits.begin());
-		// coded this way in ValueMapping
-		spwInfo[i].netsideband = nss[i] == 2 ? 1 : -1;
-		spwInfo[i].nchans = tmp.size();
-		spwInfo[i].name = name[i];
-		if (myHasBBCNo) {
-			spwInfo[i].bbcno = bbcno[i];
-		    if(name[i].contains(rxSqld)) {
-		    	sqldSpw.insert(i);
-		    }
-		}
-		if (spwInfo[i].nchans==64 || spwInfo[i].nchans==128 || spwInfo[i].nchans==256) {
-			tdmSpw.insert(i);
-		}
-		else if (spwInfo[i].nchans==1) {
-			avgSpw.insert(i);
-		}
-		else if (spwInfo[i].nchans==4) {
-			wvrSpw.insert(i);
-		}
-		else {
-			fdmSpw.insert(i);
-		}
-	}
-	return spwInfo;
-}
-
 Bool MSMetaData::hasBBCNo(const MeasurementSet& ms) {
 	return ms.spectralWindow().isColumn(MSSpectralWindowEnums::BBC_NO);
-}
-
-Vector<Int> MSMetaData::_getScans(const MeasurementSet& ms) {
-	String scanColName = MeasurementSet::columnName(MSMainEnums::SCAN_NUMBER);
-	return ROScalarColumn<Int>(ms, scanColName).getColumn();
 }
 
 vector<MPosition> MSMetaData::_getObservatoryPositions(
