@@ -148,7 +148,7 @@ ValueHolderRep::ValueHolderRep (const Array<Int>& value)
 
 ValueHolderRep::ValueHolderRep (const Array<uInt>& value)
   : itsNdim (value.ndim()),
-    itsType (TpArrayInt),
+    itsType (TpArrayUInt),
     itsPtr  (new Array<uInt>(value))
 {}
 
