@@ -30,6 +30,7 @@
 #include <images/Images/HDF5Image.h>
 #include <images/Images/FITSImage.h>
 #include <images/Images/MIRIADImage.h>
+#include <images/Images/ImageProxy.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/ImageExprParse.h>
 
@@ -82,74 +83,8 @@ int main(int argc, const char* argv[])
       }
     } else {
       cout << "Copying '" << imgin << "' to '" << outName << "'" << endl;
-      if (node.dataType() == TpFloat) {
-        LatticeExpr<Float> lat (node);
-        ImageExpr<Float> img (lat, imgin);
-        // Copy the expression result to the image.
-        if (hdf5) {
-          HDF5Image<Float> res(TiledShape(img.shape(),
-                                          img.niceCursorShape()),
-                               img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        } else {
-          PagedImage<Float> res(TiledShape(img.shape(),
-                                           img.niceCursorShape()),
-                                img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        }
-      } else if (node.dataType() == TpDouble) {
-        LatticeExpr<Double> lat (node);
-        ImageExpr<Double> img (lat, imgin);
-        // Copy the expression result to the image.
-        if (hdf5) {
-          HDF5Image<Double> res(TiledShape(img.shape(),
-                                           img.niceCursorShape()),
-                                img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        } else {
-          PagedImage<Double> res(TiledShape(img.shape(), img.niceCursorShape()),
-                                 img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        }
-      } else if (node.dataType() == TpComplex) {
-        LatticeExpr<Complex> lat (node);
-        ImageExpr<Complex> img (lat, imgin);
-        // Copy the expression result to the image.
-        if (hdf5) {
-          HDF5Image<Complex> res(TiledShape(img.shape(),
-                                            img.niceCursorShape()),
-                                 img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        } else {
-          PagedImage<Complex> res(TiledShape(img.shape(), img.niceCursorShape()),
-                                  img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        }
-      } else if (node.dataType() == TpDComplex) {
-        LatticeExpr<DComplex> lat (node);
-        ImageExpr<DComplex> img (lat, imgin);
-        // Copy the expression result to the image.
-        if (hdf5) {
-          HDF5Image<DComplex> res(TiledShape(img.shape(),
-                                             img.niceCursorShape()),
-                                  img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        } else {
-          PagedImage<DComplex> res(TiledShape(img.shape(), img.niceCursorShape()),
-                                   img.coordinates(), outName);
-          res.copyData (img);
-          res.flush();
-        }
-      } else {
-	throw AipsError("Expression has an invalid data type (probably bool)");
-      }
+      ImageProxy img(imgin, String(), vector<ImageProxy>());
+      img.saveAs (outName, True, hdf5, True);
     }
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
