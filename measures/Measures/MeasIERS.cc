@@ -502,6 +502,7 @@ Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
 }
 
 Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
+  ScopedMutexLock locker(theirMutex);
   Int ut = ifloor(utf);
   if (ut < mjd0[which] + 1 || ut >= mjdl[which]) {
     return False;
