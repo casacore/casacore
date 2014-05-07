@@ -42,9 +42,13 @@
 
 // <group name=Complexfwd>
 
+#ifdef AIPS_CXX11
+#include <complex>
+#else
 namespace std {
   template<typename T> struct complex;
 }
+#endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -41,7 +41,7 @@ const char *prt(CountedPtr<myobj> &obj) {
 int main() {
 
   cout << ">>>" << endl;
-  if (countedPtrBoost()) {
+  if (countedPtrShared()) {
     cout << "Using boost::shared_ptr" << endl;
   } else {
     cout << "Not using boost::shared_ptr" << endl;

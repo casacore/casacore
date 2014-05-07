@@ -32,6 +32,9 @@
 
 //# Includes
 #include <casa/OS/DynLib.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
@@ -49,14 +52,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     : itsHandle  (0),
       itsDoClose (closeOnDestruction)
   {
-    string pref("lib");
-    string ext;
-    for (int i=0; i<4; ++i) {
-      ext = (i%2==0 ? ".so" : ".dylib");
-      if (i == 2) pref = prefix;
-      open (pref + library + ext);
-      if (itsHandle) {
-        break;
+    std::string fullName = tryCasacorePath (library, prefix);
+    if (fullName.empty()) {
+      string pref("lib");
+      string ext;
+      for (int i=0; i<4; ++i) {
+        ext = (i%2==0 ? ".so" : ".dylib");
+        if (i == 2) pref = prefix;
+        fullName = pref + library + ext;
+        open (fullName);
+        if (itsHandle) {
+          break;
+        }
       }
     }
     if (itsHandle  &&  !funcName.empty()) {
@@ -75,7 +82,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       ptrCast.ptr = getFunc (funcName.c_str());
       if (! ptrCast.ptr) {
         close();
-        throw AipsError("Found dynamic library " + pref + library + ext +
+        throw AipsError("Found dynamic library " + fullName +
                         ", but not its " + funcName + " function");
       }
 /// Note: the following is a g++ specific way to avoid the warning.
@@ -128,6 +135,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
       itsHandle= 0;
     }
+  }
+
+  std::string DynLib::tryCasacorePath (const std::string& library,
+                                       const std::string& prefix)
+  {
+    // Check if CASACORE_LDPATH is defined.
+    String casapath("CASACORE_LDPATH");
+    String path = EnvironmentVariable::get(casapath);
+    if (! path.empty()) {
+      // Split using : as delimiter.
+      Vector<String> parts = stringToVector (path, ':');
+      for (uInt j=0; j<parts.size(); ++j) {
+        if (! parts[j].empty()) {
+          string libDir = parts[j];
+          // Check if shared library can be found there.
+          std::string pref("lib");
+          std::string ext;
+          for (int i=0; i<4; ++i) {
+            ext = (i%2==0 ? ".so" : ".dylib");
+            if (i == 2) pref = prefix;
+            std::string fullName(libDir + pref + library + ext);
+            open (fullName);
+            if (itsHandle) {
+              return fullName;
+            }
+          }
+        }
+      }
+    }
+    return std::string();
   }
 
 } //# NAMESPACE CASA - END

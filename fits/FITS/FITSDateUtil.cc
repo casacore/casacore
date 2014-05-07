@@ -60,7 +60,7 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
 	    ostringstream out;
 	    out << setfill('0') << setw(2) << day << "/" << setw(2) << month <<
 		"/" << setw(2) << year;
-	    date = out;
+	    date = out.str();
 	}
 	break;
     case NEW_DATEONLY:

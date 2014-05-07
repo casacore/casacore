@@ -34,7 +34,7 @@
 using namespace casa;
 
 // <summary>
-// Test program for class File.
+// Test program for class Mutex.
 // </summary>
 
 void testErrorCheck()

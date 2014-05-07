@@ -974,7 +974,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
       }
 //
       os << "No. binned = ";
-      os.output() << setw(oWidth) << Int(real(stats(LatticeStatsBase::NPTS))+0.1) << endl;
+      os.output() << setw(oWidth) << Int64(std::real(stats(LatticeStatsBase::NPTS))+0.1) << endl;
 
       os << "Sum        = ";
       os0 << stats(LatticeStatsBase::SUM);

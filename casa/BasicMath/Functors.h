@@ -168,7 +168,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
 
 
-  // Functor to add variables of possible different types.
+  // Functor to add variables of possibly different types.
   // This is unlike std::plus which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Plus : public std::binary_function<L,R,RES>
@@ -177,7 +177,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return RES(x)+y; }
   };
 
-  // Functor to subtract variables of possible different types.
+  // Functor to subtract variables of possibly different types.
   // This is unlike std::minus which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Minus : public std::binary_function<L,R,RES>
@@ -186,7 +186,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return RES(x)-y; }
   };
 
-  // Functor to multiply variables of possible different types.
+  // Functor to multiply variables of possibly different types.
   // This is unlike std::multiplies which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Multiplies : public std::binary_function<L,R,RES>
@@ -195,7 +195,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return RES(x)*y; }
   };
 
-  // Functor to divide variables of possible different types.
+  // Functor to divide variables of possibly different types.
   // This is unlike std::divides which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Divides : public std::binary_function<L,R,RES>
@@ -204,7 +204,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       { return RES(x)/y; }
   };
 
-  // Functor to take modulo of (integer) variables of possible different types.
+  // Functor to take modulo of (integer) variables of possibly different types.
   // This is unlike std::divides which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Modulo : public std::binary_function<L,R,RES>

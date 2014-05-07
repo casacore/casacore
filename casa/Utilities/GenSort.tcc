@@ -155,10 +155,11 @@ uInt GenSort<T>::insSortAscDup (T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = i;
 	cur = data[i];
-	while (--j>=0  &&  data[j] > cur) {
-	    data[j+1] = data[j];
+	while (j>0  &&  data[j-1] > cur) {
+	    data[j] = data[j-1];
+            j--;
 	}
-	data[j+1] = cur;
+	data[j] = cur;
     }
     return nr;
 }
@@ -177,13 +178,14 @@ uInt GenSort<T>::insSortAscNoDup (T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = n;
 	cur = data[i];
-	while (--j>=0  &&  data[j] > cur) {
-	}
-	if (j < 0  ||  !(data[j] == cur)) {       // no equal key
-	    for (k=n-1; k>j; k--) {
+	while (j>0  &&  data[j-1] > cur) {
+            j--;
+        }
+	if (j <= 0  ||  !(data[j-1] == cur)) {    // no equal key
+	    for (k=n-1; k>=j; k--) {
 		data[k+1] = data[k];              // now shift to right
 	    }
-	    data[j+1] = cur;                      // insert in right place
+	    data[j] = cur;                        // insert in right place
 	    n++;
 	}
     }
@@ -733,11 +735,17 @@ void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr,
     uInt partInx = *sl;
     // Compare indices in case the keys are equal.
     // This ensures that the sort is stable.
+    sf++;
+    sl--;
     for (;;) {
-	while (data[*++sf] < partVal
-	       ||  (partVal == data[*sf]  &&  *sf < partInx)) ;
-	while (data[*--sl] > partVal
-	       ||  (partVal == data[*sl]  &&  *sl > partInx)) ;
+	while (data[*sf] < partVal
+	       ||  (partVal == data[*sf]  &&  *sf < partInx)) {
+          sf++;
+        }
+	while (data[*sl] > partVal
+	       ||  (partVal == data[*sl]  &&  *sl > partInx)) {
+          sl--;
+        }
 	if (sf >= sl) break;
 	swapInx (*sf, *sl);
     }
@@ -831,10 +839,11 @@ uInt GenSortIndirect<T>::insSortAscDup (uInt* inx, const T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = i;
 	cur = inx[i];
-	while (--j>=0  &&  isAscending (data, inx[j], cur)) {
-	    inx[j+1] = inx[j];
+	while (j>0  &&  isAscending (data, inx[j-1], cur)) {
+	    inx[j] = inx[j-1];
+            j--;
 	}
-	inx[j+1] = cur;
+	inx[j] = cur;
     }
     return nr;
 }
@@ -853,13 +862,14 @@ uInt GenSortIndirect<T>::insSortAscNoDup (uInt* inx, const T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = n;
 	cur = inx[i];
-	while (--j>=0  &&  data[inx[j]] > data[cur]) {
+	while (j>0  &&  data[inx[j-1]] > data[cur]) {
+            j--;
 	}
-	if (j < 0  ||  !(data[inx[j]] == data[cur])) {   // no equal key
-	    for (k=n-1; k>j; k--) {
+	if (j <= 0  ||  !(data[inx[j-1]] == data[cur])) {   // no equal key
+	    for (k=n-1; k>=j; k--) {
 		inx[k+1] = inx[k];               // now shift to right
 	    }
-	    inx[j+1] = cur;                      // insert in right place
+	    inx[j] = cur;                        // insert in right place
 	    n++;
 	}
     }

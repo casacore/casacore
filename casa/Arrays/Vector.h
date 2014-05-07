@@ -131,11 +131,7 @@ public:
     // Create a Vector from an STL vector (see <src>tovector()</src> in
     // <linkto class=Array>Array</linkto>  for the reverse operation).
     // <note role=tip> Both this constructor and the tovector() are
-    // defined in <src>Vector2.cc</src>. In case of DIY template instantiation
-    // the appropriate templates are instantiated using the macro
-    // <src>AIPS_VECTOR2_AUX_TEMPLATES(X)</src>
-    // defined in <src>Vector2.cc</src> (<src>X</src> is the template
-    // argument needed). </note>
+    // defined in <src>Vector2.cc</src>. </note>
     template <class U>
     Vector(const vector<T, U> &other);
 

@@ -340,14 +340,16 @@ Complex erfc(const Complex &in);
 
 // Define real & complex conjugation for non-complex types
 // and put comparisons into std namespace.
+// The new C++11 standard library already defines real and imag.
 namespace std { 
   inline float  conj(float  x) { return x; }
   inline double conj(double x) { return x; }
+#ifndef AIPS_CXX11
   inline float  real(float  x) { return x; }
   inline double real(double x) { return x; }
   inline float  imag(float   ) { return 0; }
   inline double imag(double  ) { return 0; }
-  
+#endif  
   using casa::operator>;
   using casa::operator>=;
   using casa::operator<;

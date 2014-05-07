@@ -139,7 +139,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       for concurrent access,
 //  <LI> <A HREF="#Tables:KeyLookup">indexing</A> a table for faster lookup,
 //  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
-//  <LI> <A HREF="#Tables:performance">performance and robustness</A> considerations.
+//  <LI> <A HREF="#Tables:performance">performance and robustness</A>
+//       considerations with some information on
+//       <A HREF="#Tables:iotracing">IO tracing</A>.
 // </UL>
 
 
@@ -1683,6 +1685,68 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       to separate them, otherwise tiles containing FLAG also contain DATA making the
 //       tiles much bigger, thus more expensive to access.
 // </ol>
+//
+// <ANCHOR NAME="Tables:iotracing">
+// <h4>IO Tracing</h4></ANCHOR>
+//
+// Several forms of tracing can be done to see how the Table I/O performs.
+// <ul>
+//  <li> On Linux/UNIX systems the <src>strace</src> command can be used to
+//       collect trace information about the physical IO.
+//  <li> The function <src>showCacheStatistics</src> in class
+//       TiledStManAccessor can be used to show the number of actual reads
+//       and writes and the percentage of cache hits.
+//  <li> The software has some options to trace the operations done on
+//       tables. It is possible to specify the columns and/or the operations
+//       to be traced. The following <src>aipsrc</src> variables can be used.
+//   <ul>
+//    <li> <src>table.trace.filename</src> specifies the file to write the
+//         trace output to. If not given or empty, no tracing will be done.
+//         The file name can contain environment variables or a tilde.
+//    <li> <src>table.trace.operation</src> specifies the operations to be
+//         traced. It is a string containing s, r, and/or w where
+//         s means tracing RefTable construction (selection/sort),
+//         r means column reads, and w means column writes.
+//         If empty, only the high level table operations (open, create, close)
+//         will be traced.
+//    <li> <src>table.trace.columntype</src> specifies the types of columns to
+//         be traced. It is a string containing the characters s, a, and/or r.
+//         s means all scalar columns, a all array columns, and r all record
+//         columns. If empty and if <src>table.trace.column</src> is empty,
+//         its default value is a.
+//    <li> <src>table.trace.column</src> specifies names of columns to be
+//         traced. Its value can be one or more glob-like patterns separated
+//         by commas without any whitespace. The default is empty.
+//         For example:
+// <srcblock>
+//    table.trace.column: *DATA,FLAG,WEIGHT*
+// </srcblock>
+//         to trace all DATA, the FLAG, and all WEIGHT columns.
+//   </ul>
+//       The trace output is a text file with the following columns
+//       separated by a space.
+//   <ul>
+//    <li> The UTC time the trace line was written (with msec accuracy).
+//    <li> The operation: n(ew), o(pen), c(lose), t(able), r(ead), w(rite),
+//         s(election/sort/iter), p(rojection).
+//         t means an arbitrary table operation as given in the name column.
+//    <li> The table-id (as t=i) given at table creation (new) or open.
+//    <li> The table name, column name, or table operation
+//         (as <src>*oper*</src>).
+//         <src>*reftable*</src> means that the operation is on a RefTable
+//         (thus result of selection, sort, projection, or iteration).
+//    <li> The row or rows to access (* means all rows).
+//         Multiple rows are given as a series of ranges like s:e:i,s:e:i,...
+//         where e and i are only given if applicable (default i is 1).
+//         Note that e is inclusive and defaults to s.
+//    <li> The optional array shape to access (none means scalar).
+//         In case multiple rows are accessed, the last shape value is the
+//         number of rows.
+//    <li> The optional slice of the array in each row as [start][end][stride].
+//   </ul>
+//       Shape, start, end, and stride are given in Fortran-order as
+//       [n1,n2,...].
+// </ul>
 
 // </synopsis>
 // </module>

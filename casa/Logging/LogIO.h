@@ -70,7 +70,7 @@ class LogOrigin;
 // When you use the "<<" operator on a LogIO, you are building up a log message
 // inside the LogIO object. The message is posted when:
 // <ol>
-//    <li> <src>LogIO::post()</src> is called
+//    <li> <src>LogIO::POST()</src> is called
 //    <li> You send the <src>LogIO::POST</src> or <src>LogIO::EXCEPTION</src>
 //         commands to the LogIO with the shift (<src> << </src>) command.
 //    <li> The LogIO object is destructed.

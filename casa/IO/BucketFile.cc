@@ -183,16 +183,10 @@ uInt BucketFile::read (void* buffer, uInt length) const
 
 uInt BucketFile::write (const void* buffer, uInt length)
 {
-#ifdef HAVE_LUSTRE
-  try {
-#endif
     if (::traceWRITE (fd_p, (Char *)buffer, length)  !=  Int(length)) {
 	throw (AipsError ("BucketFile: write error on file " + name_p +
 	                  ": " + strerror(errno)));
     }
-#ifdef HAVE_LUSTRE
-  } catch (...) {throw;}
-#endif
     return length;
 }
 

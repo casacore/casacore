@@ -161,6 +161,14 @@ SystemCallError::SystemCallError(const String& funcName, int error, Category c)
   : AipsError("Error in " + funcName + ": " + errorMessage(error), c),
     itsError (error)
 {}
+SystemCallError::SystemCallError (int error, const String &msg,
+                                  const String &filename,
+                                  uInt lineNumber, Category c)
+  : AipsError (msg + String::format (": errno=%d: %s", error,
+				     errorMessage (error).c_str()),
+               filename, lineNumber, c),
+    itsError (error)
+{}
 SystemCallError::~SystemCallError() throw()
 {}
 String SystemCallError::errorMessage(int error)
