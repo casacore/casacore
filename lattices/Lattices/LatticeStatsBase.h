@@ -70,7 +70,7 @@ class Regex;
 // <motivation>
 // My sensibilities were offended at having to say
 //
-//    <src>Vector<Int> statsToPlot = LatticeStatistics<Float>::toStatisticTypes("mean,rms,sigma");</src>
+//    <src>Vector<Int> statsToPlot = LatticeStatistics<Float>\::toStatisticTypes("mean,rms,sigma");</src>
 //
 // when the <src><Float></src> was meaningless.
 // </motivation>
@@ -84,7 +84,7 @@ class LatticeStatsBase
 public:
 
 // This <src>enum StatisticTypes</src> is provided for use with the
-// <src>LatticeStatistics<T>::setPlotting</src> function.  It gives the allowed 
+// <src>LatticeStatistics<T>\::setPlotting</src> function.  It gives the allowed 
 // statistics types that you can ask for.
    
 enum StatisticsTypes {
@@ -137,7 +137,7 @@ enum StatisticsTypes {
 };
 
 // Helper function to convert a String containing a list of desired statistics to
-// the correct Vector<Int> required for the LatticeStatistics<T>::setPlotting
+// the correct Vector<Int> required for the LatticeStatistics<T>\::setPlotting
 // function.  This may be usful if your user interface involves strings rather than integers.
 // A new value is added to the output vector (which is resized appropriately) if any of the
 // substrings "npts", "min", "max", "sum", "sumsq", "mean", "sigma", "rms", 

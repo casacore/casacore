@@ -155,8 +155,8 @@ public:
     // <src>where</src> will be defined with the <src>WHERE</src> macro.
     LogOrigin &sourceLocation(const SourceLocation *where);
 
-    // Returns <src>class::function</src> for a member function, or
-    // <src>::function</src> for a global function.
+    // Returns <src>class\::function</src> for a member function, or
+    // <src>\::function</src> for a global function.
     String fullName() const;
 
     // Turn the entire origin into a String.

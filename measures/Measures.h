@@ -190,7 +190,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> <linkto class=MVTime>MVTime</linkto> (same for time-like values)
 // </ul>
 // <em>References</em> are measure specific. Each specific reference class is
-// called <em>Measure</em>::Ref (e.g. <src>MEpoch::Ref</src>). It specifies
+// called <em>Measure</em>\::Ref (e.g. <src>MEpoch::Ref</src>). It specifies
 // the full reference frame of the specific measure, i.e. its type, an optional
 // frame of measures (a MeasFrame, consisting of say a time and position), and
 // an optional offset.
@@ -310,7 +310,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Conversion of a measure of a certain kind from one reference to another
 // is done with the aid of special, measure specific,
 // <linkto class=MeasConvert>MeasConvert</linkto> classes. Each conversion
-// class is called <em>Measure</em>::Convert (e.g. MDirection::Convert).
+// class is called <em>Measure</em>\::Convert (e.g. MDirection::Convert).
 // A conversion generates from an input reference (or an input measure) and
 // an output reference a conversion functional, that can be used to convert
 // specific values.<br>

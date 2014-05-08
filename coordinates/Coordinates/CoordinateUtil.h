@@ -89,7 +89,7 @@ class Unit;
 // <li> <src>addFreqAxis</src> this adds a spectral axis with a reference
 // frequency of 1.415GHz on channel 0. The channel bandwidth (pixel
 // increment) is 1kHz, and the reference frame is the kinematical Local Standard of
-// rest (<linkto class="MFrequency">MFrequency</linkto>::LSRK). 
+// rest (<linkto class="MFrequency">MFrequency</linkto>\::LSRK). 
 // </ul>
 //
 // The <src>defaultCoords</src> functions, create from scratch a
@@ -137,7 +137,7 @@ class Unit;
 // remove one axis, all the rest shuffle down one, so it is
 // provided here.  Generally, one only needs to remove one axis
 // (in which case you should use the CoordinateSystem::removeWorldAxis and
-// CoordinateSystem::removcePixelAxis functions), but on occaision,
+// CoordinateSystem::removePixelAxis functions), but on occasion,
 // the multiple need is there.
 // </synopsis>
 //
