@@ -50,7 +50,6 @@ class String;
 
 // <prerequisite>
 //   <li> <linkto class="Vector">Vector</linkto>
-//   <li> <linkto class="SepImageConvolver">SepImageConvolver</linkto>
 // </prerequisite>
 
 // <etymology>

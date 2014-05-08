@@ -45,7 +45,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto module=SpectralElement>SpectralElement</linkto> module
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -55,7 +55,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <synopsis>
 // Describes a function that can be used to fit for spectral index and higher order terms.
 // The implementation simply subclasses PolynomialSpectralElement since that's all this function
-// really is, whicht the exception the the lhs is ln(y) not y. This means it's the fitter
+// really is, with the exception that the lhs is ln(y), not y. This means it's the fitter
 // configurator's responsibility to pass in the ln of the actual ordinate values and the ln
 // of the abscissa values, not the ordinate and abscissa values themselves. Essentially, this
 // class differs from PolynomialSpectralElement in its type and its stream operator.
@@ -75,7 +75,7 @@ public:
 
 	// Constructor. The n coefficients c_i to be solved for are
 	// ln(c_0) + c_1 * ln(x) + c_2 * ln(x)**2 + c_3 * ln(x)**3 + ... c_(n-1)*ln(x)**(n-1)
-	// where x = nu/nu0. <src> order</order> is the polynomial, so the actual
+	// where x = nu/nu0. <src> order</src> is the polynomial, so the actual
 	// function will have order+1 coefficients
 	explicit LogTransformedPolynomialSpectralElement(uInt order);
 

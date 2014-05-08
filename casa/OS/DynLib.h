@@ -56,7 +56,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  <li> If the environment library CASACORE_LDPATH is defined, it is tried to
   //       find the library using that path.
   //  <li> If not defined or not found, the system's (DY)LD_LIBRARY_PATH is used.
-  //  <li> The library looked for has the name <prefix><lib><suffix>.
+  //  <li> The library looked for has the name 'prefix'libname'suffix'.
   //       <br>As prefix first "lib" is used, thereafter the given one
   //       (e.g., "libcasa_").
   //       <br>As suffix first ".so" is used, thereafter ".dylib" (for OS-X).

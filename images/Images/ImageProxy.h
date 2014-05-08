@@ -244,8 +244,9 @@ namespace casa {
     ImageProxy subImage (const IPosition& blc,
                          const IPosition& trc, 
                          const IPosition& inc,
-                         Bool dropDegenerate=True,
-                         Bool preserveAxesOrder=False);
+                         Bool dropDegenerate=True);
+                         ///Bool dropDegenerate=True,
+                         ///Bool preserveAxesOrder=False);
 
     // Get the brightness unit.
     String unit() const;
