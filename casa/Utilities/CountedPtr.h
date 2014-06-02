@@ -30,242 +30,11 @@
 
 #include <casa/aips.h>
 
-
-#if ! defined (HAVE_BOOST)
-
-//#====================================================================
-//#====================================================================
-//#
-//# This is the original, thread-hostile implementation.
-//# For non-threaded applications it's fine, though and as a bonus
-//# it does not incur dependencies on boost.
-//#
-//#====================================================================
-//#====================================================================
-
-#include <casa/aips.h>
-
-namespace casa { //#Begin casa namespace
-
-//# Forward Declarations
-template<class t> class CountedPtr;
-
-// <summary> act on dereference error </summary>
-// <synopsis>
-// Global function that throws an exception. It is called by the
-// member functions of the counted pointer classes when an
-// un-initialized (null) pointer is followed.
-// </synopsis>
-// <group name=dereference_error>
-void throw_Null_CountedPtr_dereference_error();
-// </group>
-
-// <summary>Internal representation for <src>CountedPtr</src></summary>
-// <use visibility=local>
-// <reviewed reviewer="Friso Olnon" date="1995/03/15" tests="tCountedPtr" demos="">
-
-// <prerequisite>
-// </prerequisite>
-
-// <synopsis>
-// This class is a utility class for
-// <linkto class="CountedPtr:description">CountedPtr</linkto>
-// and <linkto class="CountedPtr:description">CountedPtr</linkto>.
-// It stores the reference count and the pointer to the real data.
-//
-// <note role=tip> It is currently a template and is used such that
-// <src>t</src> is the <em>true</em> type of the stored pointer. This
-// means, however, that when it is used, a template instantiation must be
-// done for each type which <src>t</src> assumes. This makes debugging
-// easier, but in the future all of these pointers could be declared with
-// <src>void</src> type to avoid template instantiations.
-// </note>
-// </synopsis>
-
-// <motivation>
-// This class isolates all of the low level management of the reference.
-// </motivation>
-
-template<class t> class PtrRep
-{
-
-public:
-    friend class CountedPtr<t>;
-
-protected:
-    // This constructor sets up the reference count to one and
-    // initializes the pointer to the real data. The
-    // <src>delit</src> flag can be passed in to indicate whether
-    // the real data should be freed or not when the
-    // reference count reaches zero.
-    // <group>
-    PtrRep(t *v) : val(v), count(1), deletable(True) {}
-    PtrRep(t *v, Bool delit) : val(v), count(1), deletable(delit) {}
-    // </group>
-
-    // This deletes the real data if indeed it can be deleted.
-    void freeVal();
-
-    // This destructor uses the <src>deletable</src> flag to indicate if the
-    // real data should be freed or not.
-    //
-    ~PtrRep() {
-	freeVal();
-    }
-
-private:
-    t *val;
-    unsigned int count;
-    Bool deletable;
-};
-
-
-// <summary>Referenced counted pointer</summary>
-// <use visibility=export>
-// <reviewed reviewer="Friso Olnon" date="1995/03/15" tests="tCountedPtr" demos="">
-
-// <synopsis>
-// This class implements a reference counting mechanism. It
-// allows <src>CountedPtr</src>s to be passed around freely,
-// incrementing or decrementing the reference count as needed when one
-// <src>CountedPtr</src> is assigned to another. When the
-// reference count reaches zero the internal storage is deleted by
-// default, but this behavior can be overridden.
-// </synopsis>
-
-template<class t> class CountedPtr
-{
-public:
-
-    // This constructor allows for the creation of a null
-    // <src>CountedPtr</src>. The assignment operator can be used
-    // to assign a null <src>CountedPtr</src> from another
-    // pointer.
-    //
-    CountedPtr() : ref(0) {}
-
-    // This constructor sets up a reference count for the <src>val</src>
-    // pointer.  By default, the data pointed to by <src>val</src>
-    // will be deleted when it is no longer referenced. Passing in
-    // <src>False</src> for <src>delit</src> will prevent the data
-    // from being deleted when the reference count reaches zero.
-    //
-    // <note role=warning> After the counted pointer is initialized
-    // the value should no longer be manipulated by the raw pointer of
-    // type <src>t*</src>.
-    // </note>
-    //
-    CountedPtr(t *val, Bool delit = True) {
-	ref = new PtrRep<t>(val,delit);
-    }
-
-    // This copy constructor allows <src>CountedPtr</src>s to be
-    // initialized from other <src>CountedPtr</src>s.
-    //
-    CountedPtr(const CountedPtr<t> &val) : ref(val.ref) {
-	if (ref) (*ref).count++;
-    }
-
-    // This destructor only deletes the really stored data when it was
-    // initialized as deletable and the reference count is zero.
-    //
-    ~CountedPtr();
-
-    // This assignment operator allows <src>CountedPtr</src>s
-    // to be freely assigned to each other.
-    //
-    CountedPtr<t> &operator=(const CountedPtr<t> &val) {
-	if (ref && --(*ref).count == 0){
-	    delete ref;
-            ref = 0;
-        }
-	if ((ref = val.ref) != 0)
-	    (*ref).count++;
-	return *this;
-    }
-
-    // This assignment operator allows the object to which the current
-    // <src>CountedPtr</src> points to be changed.
-    //
-    CountedPtr<t> &operator=(t *v);
-
-    // The <src>CountedPtr</src> indirection operator simply
-    // returns a reference to the value being protected. If the pointer
-    // is un-initialized (null), an exception will be thrown. The member
-    // function
-    // <linkto class="CountedPtr:null()const">null</linkto>()
-    // can be used to catch such a condition in time.
-    //
-    // <thrown>
-    // <li> ExcpError
-    // </thrown>
-    //
-    // <note role=tip> The address of the reference returned should
-    // not be stored for later use.
-    // </note>
-    //
-    t &operator*() const {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return(*(*ref).val);
-    }
-
-    // This dereferencing operator behaves as expected; it returns the
-    // pointer to the value being protected, and then its dereferencing
-    // operator will be invoked as appropriate. If the pointer is
-    // un-initialized (null), an exception will be thrown. The member
-    // function <src>null()</src> can be used to catch such a condition
-    // in time.
-    //
-    // <thrown>
-    // <li> ExcpError
-    // </thrown>
-    //
-    t *operator->() const {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return ((*ref).val);
-    }
-
-    // Equality operator which checks to see if two
-    // <src>CountedPtr</src>s are pointing at the same thing.
-    //
-    Bool operator==(const CountedPtr<t> &other) const {
-	return (ref == other.ref ? True : False);
-    }
-
-    // Non-equality operator which checks to see if two
-    // <src>CountedPtr</src>s are not pointing at the same thing.
-    //
-    Bool operator!=(const CountedPtr<t> &other) const {
-	return (ref != other.ref ? True : False);
-    }
-
-    // Sometimes it is useful to know if there is more than one
-    // reference made. This is a way of getting that. Of course the point
-    // of these classes is that this information is normally not required.
-    //
-    uInt nrefs() const {return ref->count;}
-
-    // Check to see if this <src>CountedPtr</src> is
-    // un-initialized, null.
-    //
-    Bool null() const { return (ref==0 || (ref->val == 0));}
-
-protected:
-    PtrRep<t> *ref;
-};
-
-inline Bool countedPtrShared()
-  { return False; }
-
-} //#End casa namespace
-
-
-//# Keep the include definitions local
-
-#else //# when defined (HAVE_BOOST) is true
-
-
+#ifdef AIPS_CXX11
+#include <memory>
+#else
 #include <boost/shared_ptr.hpp>
+#endif
 
 namespace casa { //#Begin casa namespace
 
@@ -388,7 +157,7 @@ public:
     // not be stored for later use.
     // </note>
     //
-    const t &operator*() const {
+    t &operator*() const {
 	if (null()){
 	    throw_Null_CountedPtr_dereference_error();
 	}
@@ -407,8 +176,7 @@ public:
     // <li> ExcpError
     // </thrown>
     //
-    const t
-    *operator->() const {
+    t *operator->() const {
 
 	if (null()){
 	    throw_Null_CountedPtr_dereference_error();
@@ -455,7 +223,11 @@ public:
 
 protected:
 
+#ifdef AIPS_CXX11
+    typedef std::shared_ptr<t> PointerRep;
+#else
     typedef boost::shared_ptr<t> PointerRep;
+#endif
 
     PointerRep pointerRep_p;
 
@@ -472,12 +244,8 @@ inline Bool countedPtrShared()
 } //#End casa namespace
 
 
-#endif  //# defined (HAVE_BOOST)
-
-
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casa/Utilities/CountedPtr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
-
 
 #endif

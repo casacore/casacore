@@ -28,38 +28,5 @@
 #include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-#if ! defined (HAVE_BOOST)
-
-template<class t> 
-void PtrRep<t>::freeVal() {
-  if (val && deletable)
-    {
-    delete val;
-    val = 0;
-    }
-}
-
-template<class t>
-CountedPtr<t> &CountedPtr<t>::operator=(t * const v) {
-  if (ref && --(*ref).count == 0){
-    delete ref;
-  }
-  ref = new PtrRep<t>(v);
-
-  return *this;
-}
-
-template<class t>
-CountedPtr<t>::~CountedPtr() {
-  if (ref && --(*ref).count == 0){
-    delete ref;
-    ref = 0;
-  }
-}
-
-#endif
-
-
 } //# NAMESPACE CASA - END
 

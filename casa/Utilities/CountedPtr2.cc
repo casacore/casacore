@@ -34,19 +34,5 @@ void throw_Null_CountedPtr_dereference_error() {
   throw (AipsError("CountedPtr: null dereference error"));
 }
 
-// Leave a tag to allow manual verification of build setting
-
-#if defined (CASA_THREAD_NEUTRAL)
-    String CasaThreadNeutral = "CasaThreadNeutral:YES";
-#else
-    String CasaThreadNeutral = "CasaThreadNeutral:NO";
-#endif // defined (CASA_THREAD_NEUTRAL)
-
-#if defined (USE_SHARED_PTR)
-
-#warning "****** Using shared pointer implementation in CountedPtr."
-
-#endif
-
 } //# NAMESPACE CASA - END
 
