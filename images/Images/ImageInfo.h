@@ -205,6 +205,11 @@ public:
     // thrown if this object already has multiple beams. In that case,
     // the caller must call removeRestoringBeam() first.
     void setRestoringBeam(const GaussianBeam& beam);
+  //#/// Added to build casarest with nrao-nov12
+    void setRestoringBeam(const Quantum<Double>& major,
+                          const Quantum<Double>& minor,
+                          const Quantum<Double>& pa)
+      { setRestoringBeam (GaussianBeam (major, minor, pa)); }
 
     // Remove all beams (global or per plane) associated with this object.
     void removeRestoringBeam();

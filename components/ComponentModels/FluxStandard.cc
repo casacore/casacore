@@ -97,6 +97,78 @@ Bool FluxStandard::compute (const String& sourceName,
   return success;
 }
 
+Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
+                            Flux<Double>& value, Flux<Double>& error)
+{
+  Vector<Flux<Double> > fluxes(1);
+  Vector<Flux<Double> > errors(1);
+  Vector<MFrequency> mfreqs(1);
+  mfreqs[0] = mfreq;
+  Bool success = compute(sourceName, mfreqs, fluxes, errors);
+  value = fluxes[0];
+  error = errors[0];
+  return success;
+}
+Bool FluxStandard::compute(const String& sourceName, 
+                           const Vector<Vector<MFrequency> >& mfreqs,
+                           Vector<Vector<Flux<Double> > >& values,
+                           Vector<Vector<Flux<Double> > >& errors)
+{
+  Bool success = True;
+  for(uInt spw = 0; spw < mfreqs.size(); ++spw) {
+    success &= compute(sourceName, mfreqs[spw], values[spw], errors[spw]);
+  }
+  return success;
+}
+Bool FluxStandard::compute(const String& sourceName, 
+                           const Vector<MFrequency>& mfreqs,
+                           Vector<Flux<Double> >& values,
+                           Vector<Flux<Double> >& errors)
+{
+  MDirection dir;
+  if (sourceName == "3C286"  ||
+      sourceName == "1328+307"  ||
+      sourceName == "1331+305"  ||
+      sourceName == "J1331+3030") {
+    dir = MDirection(MVDirection(3.539257626070549, 0.5324850225220917),
+                     MDirection::J2000);
+  } else if (sourceName == "3C48"  ||
+             sourceName == "0134+329"  ||
+             sourceName == "0137+331"  ||
+             sourceName == "J0137+3309") {
+    dir = MDirection(MVDirection(0.4262457643630985, 0.5787463318245085),
+                     MDirection::J2000);
+  } else if (sourceName == "3C147"  ||
+             sourceName == "0538+498"  ||
+             sourceName == "0542+498"  ||
+             sourceName == "J0542+4951") {
+    dir = MDirection(MVDirection(1.4948817765383597, 0.8700805690768509),
+                     MDirection::J2000);
+  } else if (sourceName == "3C138"  ||
+             sourceName == "0518+165"  ||
+             sourceName == "0521+166"  ||
+             sourceName == "J0521+1638") {
+    dir = MDirection(MVDirection(1.401346673041897, 0.2904130912582342),
+                     MDirection::J2000);
+  } else if (sourceName == "1934-638") {
+    dir = MDirection(MVDirection(5.146176021557448, -1.1119977478136984),
+                     MDirection::J2000);
+  } else if (sourceName == "3C295"  ||
+             sourceName == "1409+524"  ||
+             sourceName == "1411+522"  ||
+             sourceName == "J1411+5212") {
+    dir = MDirection(MVDirection(3.7146787856873478, 0.9111103509091509),
+                     MDirection::J2000);
+  } else if (sourceName == "3C196"  ||
+             sourceName == "0809+483"  ||
+             sourceName == "0813+482"  ||
+             sourceName == "J0813+4813") {
+    dir = MDirection(MVDirection(2.1537362969610023, 0.8415541320803659),
+                     MDirection::J2000);
+  }
+  return compute (sourceName, dir, mfreqs, MEpoch(), values, errors);
+}
+
 Bool FluxStandard::compute(const String& sourceName, 
                            const MDirection& sourceDir,
                            const Vector<Vector<MFrequency> >& mfreqs,

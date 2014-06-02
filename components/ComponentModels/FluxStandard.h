@@ -128,6 +128,19 @@ class FluxStandard
   Bool compute (const String& sourceName, const MDirection& sourceDir, const MFrequency& mfreq, const MEpoch& mtime,
 		Flux<Double>& value, Flux<Double>& error);
 
+  // Compute the flux density for a specified source at a specified frequency
+  //#/// Added to build casarest with nrao-nov12
+  Bool compute (const String& sourceName, const MFrequency& mfreq,
+		Flux<Double>& value, Flux<Double>& error);
+  Bool compute(const String& sourceName, 
+               const Vector<MFrequency>& mfreqs,
+	       Vector<Flux<Double> >& values,
+               Vector<Flux<Double> >& errors);
+  Bool compute(const String& sourceName, 
+               const Vector<Vector<MFrequency> >& mfreqs,
+               Vector<Vector<Flux<Double> > >& values,
+               Vector<Vector<Flux<Double> > >& errors);
+
   // Compute the flux densities and their uncertainties for a specified source
   // at a set of specified frequencies.
   Bool compute(const String& sourceName, 
