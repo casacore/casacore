@@ -39,7 +39,6 @@ PGPlotter::CreateFunction* PGPlotter::creator_p = 0;
 
 
 PGPlotter::PGPlotter()
-  : worker_p(0)
 {
     // Nothing
 }
@@ -53,7 +52,6 @@ PGPlotter::PGPlotter(PGPlotterInterface* worker)
 PGPlotter::PGPlotter (const String &device,
 		      uInt mincolors, uInt maxcolors,
 		      uInt sizex, uInt sizey)
-  : worker_p(0)
 {
     *this = create (device, mincolors, maxcolors, sizex, sizey);
 }

@@ -49,8 +49,7 @@ template<class T> Array<T>::Array()
 //   <item> ArrayShapeError
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape)
-: ArrayBase (Shape),
-  data_p    (0)
+: ArrayBase (Shape)
 {
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
@@ -63,8 +62,7 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape,
 				  const T &initialValue)
-: ArrayBase (Shape),
-  data_p    (0)
+: ArrayBase (Shape)
 {
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
@@ -86,8 +84,7 @@ template<class T> Array<T>::Array(const Array<T> &other)
 template<class T>
 Array<T>::Array(const IPosition &shape, T *storage, 
 		StorageInitPolicy policy)
-: ArrayBase (shape),
-  data_p    (0)
+: ArrayBase (shape)
 {
     takeStorage(shape, storage, policy);
     DebugAssert(ok(), ArrayError);
@@ -95,8 +92,7 @@ Array<T>::Array(const IPosition &shape, T *storage,
 
 template<class T>
 Array<T>::Array (const IPosition &shape, const T *storage)
-: ArrayBase (shape),
-  data_p    (0)
+: ArrayBase (shape)
 {
     takeStorage(shape, storage);
     DebugAssert(ok(), ArrayError);

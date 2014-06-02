@@ -68,7 +68,6 @@ class ValueHolder
 public:
   // Construct a null object.
   ValueHolder()
-    : itsRep(0)
     {}
 
   // Create the object for the given value.

@@ -503,7 +503,7 @@ CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
     default:
 	break;
     }
-    return 0;
+    return CountedPtr<BaseCompare>();
 }
 
 } //# NAMESPACE CASA - END

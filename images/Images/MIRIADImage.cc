@@ -75,7 +75,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 MIRIADImage::MIRIADImage (const String& name)
 : ImageInterface<Float>(),
   name_p      (name),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
@@ -89,7 +88,6 @@ MIRIADImage::MIRIADImage (const String& name, const MaskSpecifier& maskSpec)
 : ImageInterface<Float>(),
   name_p      (name),
   maskSpec_p  (maskSpec),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
