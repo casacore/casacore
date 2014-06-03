@@ -1,4 +1,4 @@
-//# PycExcp.cc: Functions to convert a C++ exception to Python
+//# PycExcp.h: Functions to convert a C++ exception to Python
 //# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -23,38 +23,21 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: PycExcp.cc,v 1.1 2006/10/17 03:33:50 gvandiep Exp $
+//# $Id: PycExcp.h,v 1.3 2006/10/17 03:33:50 gvandiep Exp $
 
-#include <pyrap/Converters/PycExcp.h>
+#ifndef PYRAP_PYCEXCP_H
+#define PYRAP_PYCEXCP_H
+
 #include <casa/Containers/IterError.h>
-//# The following include is necessary to work around a Boost-Python problem.
-#ifndef PYRAP_NO_BOOSTPYTHON_FIX
-# include <boost/type_traits/add_reference.hpp>
-#endif
-#include <boost/python/exception_translator.hpp>
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
-  void translate_iterexcp (const casa::IterError& e)
-  {
-    // Use the Python 'C' API to set up an exception object
-    PyErr_SetString(PyExc_StopIteration, e.what());
-  }
+  void translate_iterexcp (const casa::IterError& e);
+  void translate_stdexcp (const std::exception& e);
 
-  void translate_stdexcp (const std::exception& e)
-  {
-    // Use the Python 'C' API to set up an exception object
-    PyErr_SetString(PyExc_RuntimeError, e.what());
-  }
-
-
-  //# Note that the most general exception must be registered first.
-  void register_convert_excp()
-  {
-    boost::python::register_exception_translator<std::exception>
-      (&translate_stdexcp);
-    boost::python::register_exception_translator<casa::IterError>
-      (&translate_iterexcp);
-  }
+  // Register exception translators for std::exception and casa::IterError.
+  void register_convert_excp();
 
 }}
+
+#endif

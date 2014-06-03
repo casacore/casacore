@@ -36,7 +36,7 @@
 #include <casa/Containers/ValueHolder.h>
 #include <casa/Utilities/DataType.h>
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
 
   // <summary>

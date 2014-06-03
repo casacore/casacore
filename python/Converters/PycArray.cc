@@ -25,17 +25,17 @@
 //#
 //# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
-#include <pyrap/Converters/PycArray.tcc>
-#include <pyrap/Converters/PycArrayNA.h>
-#include <pyrap/Converters/PycArrayNP.h>
-#include <pyrap/Converters/PycBasicData.h>
+#include <python/Converters/PycArray.tcc>
+#include <python/Converters/PycArrayNA.h>
+#include <python/Converters/PycArrayNP.h>
+#include <python/Converters/PycBasicData.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <boost/python/dict.hpp>
 #include <sysmodule.h>
 
 using namespace boost::python;
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   Bool PycArrayCheck (PyObject* obj_ptr)
   {

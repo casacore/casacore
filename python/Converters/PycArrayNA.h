@@ -1,4 +1,4 @@
-//# PycArray.h: Class to convert an Array to/from Python
+//# PycArrayNA.h: Class to convert an Array to/from a Python numarray array
 //# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -23,30 +23,27 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: PycArray.tcc,v 1.2 2006/11/06 00:14:44 gvandiep Exp $
+//# $Id: PycArrayNA.h,v 1.1 2006/11/06 00:14:44 gvandiep Exp $
 
-#ifndef PYRAP_PYCARRAY_TCC
-#define PYRAP_PYCARRAY_TCC
 
-#include <pyrap/Converters/PycArray.h>
-#include <pyrap/Converters/PycArrayNA.h>
-#include <pyrap/Converters/PycArrayNP.h>
+#ifndef PYRAP_PYCARRAYNA_H
+#define PYRAP_PYCARRAYNA_H
+
+// include first to avoid _POSIX_C_SOURCE redefined warnings
+#include <boost/python.hpp>
 #include <boost/python/object.hpp>
+#include <casa/Containers/ValueHolder.h>
+#include <casa/Arrays/Array.h>
 
-namespace casa { namespace pyrap {
-  
-  template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr)
-  {
-    // The default is to create a numpy object.
-    // However, if the user is only using numarray, a numarray is returned.
-    if (numpy::isImported()
-    || (!numarray::isImported() && numpy::canImport())) {
-      return numpy::makePyArrayObject (arr);
-    }
-    return numarray::makePyArrayObject (arr);
-  }
+namespace casa { namespace python { namespace numarray {
 
-}}
+//# Define the common functions if numarray is used.
+#if defined(AIPS_USENUMARRAY)
+#define PYC_USE_PYARRAY "numarray"
+#endif
+#include <python/Converters/PycArrayComH.h>
+#undef PYC_USE_PYARRAY
+
+}}}
 
 #endif

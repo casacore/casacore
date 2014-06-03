@@ -25,13 +25,13 @@
 //#
 //# $Id: PycBasicData.cc,v 1.4 2007/01/29 04:23:01 mmarquar Exp $
 
-#include <pyrap/Converters/PycBasicData.h>
-#include <pyrap/Converters/PycArrayNP.h>
+#include <python/Converters/PycBasicData.h>
+#include <python/Converters/PycArrayNP.h>
 
 using namespace boost::python;
 
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   std::map<std::string,bool> pyregistry::_registry;
   bool pyregistry::get (const std::string& name)
@@ -68,15 +68,15 @@ namespace casa { namespace pyrap {
 
   void register_convert_basicdata()
   {
-    casa::pyrap::numpy::register_convert_arrayscalars();
-    casa::pyrap::register_convert_casa_string();
-    casa::pyrap::register_convert_casa_iposition();
-    casa::pyrap::register_convert_casa_vector<casa::Bool>();
-    casa::pyrap::register_convert_casa_vector<casa::Int>();
-    casa::pyrap::register_convert_casa_vector<casa::Double>();
-    casa::pyrap::register_convert_casa_vector<casa::Float>();
-    casa::pyrap::register_convert_casa_vector<casa::DComplex>();
-    casa::pyrap::register_convert_casa_vector<casa::String>();
+    casa::python::numpy::register_convert_arrayscalars();
+    casa::python::register_convert_casa_string();
+    casa::python::register_convert_casa_iposition();
+    casa::python::register_convert_casa_vector<casa::Bool>();
+    casa::python::register_convert_casa_vector<casa::Int>();
+    casa::python::register_convert_casa_vector<casa::Double>();
+    casa::python::register_convert_casa_vector<casa::Float>();
+    casa::python::register_convert_casa_vector<casa::DComplex>();
+    casa::python::register_convert_casa_vector<casa::String>();
   }
 
 

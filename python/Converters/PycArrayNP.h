@@ -39,13 +39,13 @@
 #include <numpy/arrayobject.h>
 #endif
 
-namespace casa { namespace pyrap { namespace numpy {
+namespace casa { namespace python { namespace numpy {
 
 //# Define the common functions if numpy is used.
 #if defined(AIPS_USENUMPY)
 #define PYC_USE_PYARRAY "numpy"
 #endif
-#include <pyrap/Converters/PycArrayComH.h>
+#include <python/Converters/PycArrayComH.h>
 #undef PYC_USE_PYARRAY
 
 

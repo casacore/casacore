@@ -1,4 +1,4 @@
-//# tConvert.cc: Test program for libpyrap's C++/Python converters
+//# tConvert.cc: Test program for libpython's C++/Python converters
 //# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,18 +25,18 @@
 //#
 //# $Id: tConvert.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
-#include <pyrap/Converters/PycExcp.h>
-#include <pyrap/Converters/PycBasicData.h>
-#include <pyrap/Converters/PycValueHolder.h>
-#include <pyrap/Converters/PycRecord.h>
-#include <pyrap/Converters/PycArray.h>
+#include <python/Converters/PycExcp.h>
+#include <python/Converters/PycBasicData.h>
+#include <python/Converters/PycValueHolder.h>
+#include <python/Converters/PycRecord.h>
+#include <python/Converters/PycArray.h>
 #include <casa/Arrays/ArrayIO.h>
 
 #include <boost/python.hpp>
 
 using namespace boost::python;
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   template<typename T>
   std::ostream& operator<< (std::ostream& os, const std::vector<T>& vec)
@@ -126,13 +126,13 @@ namespace casa { namespace pyrap {
 BOOST_PYTHON_MODULE(_tConvert)
 {
   // Register the required converters.
-  casa::pyrap::register_convert_excp();
-  casa::pyrap::register_convert_basicdata();
-  casa::pyrap::register_convert_casa_valueholder();
-  casa::pyrap::register_convert_casa_record();
-  casa::pyrap::register_convert_std_vector<casa::uInt>();
-  casa::pyrap::register_convert_std_vector<std::vector<casa::uInt> >();
+  casa::python::register_convert_excp();
+  casa::python::register_convert_basicdata();
+  casa::python::register_convert_casa_valueholder();
+  casa::python::register_convert_casa_record();
+  casa::python::register_convert_std_vector<casa::uInt>();
+  casa::python::register_convert_std_vector<std::vector<casa::uInt> >();
 
   // Execute the test.
-  casa::pyrap::testConvert();
+  casa::python::testConvert();
 }

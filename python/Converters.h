@@ -29,10 +29,10 @@
 #define PYRAP_CONVERTERS_H
 
 //# Includes
-#include <pyrap/Converters/PycBasicData.h>
-#include <pyrap/Converters/PycRecord.h>
-#include <pyrap/Converters/PycValueHolder.h>
-#include <pyrap/Converters/PycExcp.h>
+#include <python/Converters/PycBasicData.h>
+#include <python/Converters/PycRecord.h>
+#include <python/Converters/PycValueHolder.h>
+#include <python/Converters/PycExcp.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

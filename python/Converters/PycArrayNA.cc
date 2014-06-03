@@ -27,7 +27,7 @@
 
 #if defined(AIPS_USENUMARRAY)
 
-#include <pyrap/Converters/PycArrayNA.h>
+#include <python/Converters/PycArrayNA.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
@@ -68,7 +68,7 @@ typedef Complex32 npy_complex64;
 typedef Complex64 npy_complex128;
 
 #define PYC_USE_PYARRAY "numarray"
-namespace casa { namespace pyrap { namespace numarray {
+namespace casa { namespace python { namespace numarray {
 
   Bool importArray()
   {
@@ -82,7 +82,7 @@ namespace casa { namespace pyrap { namespace numarray {
     throw AipsError ("PycArray: numarray string arrays are not supported");
   }
 
-#include <pyrap/Converters/PycArrayComCC.h>
+#include <python/Converters/PycArrayComCC.h>
 
   template <typename T>
   boost::python::object makePyArrayObject (casa::Array<T> const& arr)

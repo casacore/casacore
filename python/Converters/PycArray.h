@@ -39,7 +39,7 @@
 #include <casa/Exceptions/Error.h>
 #include <iostream>
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
 
   // <summary>

@@ -27,7 +27,7 @@
 
 #if defined(AIPS_USENUMPY)
 
-#include <pyrap/Converters/PycArrayNP.h>
+#include <python/Converters/PycArrayNP.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
@@ -36,7 +36,7 @@
 
 
 #define PYC_USE_PYARRAY "numpy"
-namespace casa { namespace pyrap { namespace numpy {
+namespace casa { namespace python { namespace numpy {
 
   Bool importArray()
   {
@@ -257,7 +257,7 @@ namespace casa { namespace pyrap { namespace numpy {
   }
 
 
-#include <pyrap/Converters/PycArrayComCC.h>
+#include <python/Converters/PycArrayComCC.h>
 
   template <typename T>
   boost::python::object makePyArrayObject (casa::Array<T> const& arr)

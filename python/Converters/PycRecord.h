@@ -35,7 +35,7 @@
 #include <boost/python/dict.hpp>
 #include <casa/Containers/Record.h>
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   // <summary>
   // A class to convert a (Table)Record to/from Python objects.

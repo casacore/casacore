@@ -25,12 +25,12 @@
 //#
 //# $Id: PycRecord.cc,v 1.2 2006/10/17 03:33:50 gvandiep Exp $
 
-#include <pyrap/Converters/PycRecord.h>
-#include <pyrap/Converters/PycValueHolder.h>
+#include <python/Converters/PycRecord.h>
+#include <python/Converters/PycValueHolder.h>
 #include <casa/Utilities/Assert.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   boost::python::dict casa_record_to_python::makeobject
   (Record const& rec)

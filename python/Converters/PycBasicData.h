@@ -31,7 +31,7 @@
 // include python first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <pyrap/Converters/PycArray.h>
+#include <python/Converters/PycArray.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Vector.h>
@@ -41,7 +41,7 @@
 // Define classes and functions to convert the basic data types and
 // containers to and from Python.
 
-namespace casa { namespace pyrap {
+namespace casa { namespace python {
 
   // Prevent a converter from being registered multiple times.
   class pyregistry
