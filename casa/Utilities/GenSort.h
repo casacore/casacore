@@ -499,7 +499,7 @@ uInt genSort (Vector<uInt>& indexVector, const T* data, uInt nr,
 				       order, options); }
 template<class T>
 inline
-uInt genSort (Vector<uInt>& indexVector, Array<T>& data,
+uInt genSort (Vector<uInt>& indexVector, const Array<T>& data,
 	      Sort::Order order, int options)
     { return GenSortIndirect<T>::sort (indexVector, data, order, options); }
 template<class T>
