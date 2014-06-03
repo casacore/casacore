@@ -26,7 +26,6 @@
 //# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
 #include <python/Converters/PycArray.tcc>
-#include <python/Converters/PycArrayNA.h>
 #include <python/Converters/PycArrayNP.h>
 #include <python/Converters/PycBasicData.h>
 #include <casa/Arrays/ArrayMath.h>
@@ -39,7 +38,7 @@ namespace casa { namespace python {
 
   Bool PycArrayCheck (PyObject* obj_ptr)
   {
-    return numpy::PycArrayCheck(obj_ptr) || numarray::PycArrayCheck(obj_ptr);
+    return numpy::PycArrayCheck(obj_ptr);
   }
 
   Bool PycArrayScalarCheck (PyObject* obj_ptr)
@@ -53,21 +52,13 @@ namespace casa { namespace python {
     return numpy::PycArrayScalarType(obj_ptr);
   }
 
-  Bool PycCanUseNumpy()
-    { return numpy::canImport(); }
-  Bool PycCanUseNumarray()
-    { return numarray::canImport(); }
-
   ValueHolder casa_array_from_python::makeArray (PyObject* obj_ptr,
 						 Bool copyData)
   {
-    if (numpy::PycArrayCheck(obj_ptr)) {
-      return numpy::makeArray (obj_ptr, copyData);
+    if (! numpy::PycArrayCheck(obj_ptr)) {
+      throw AipsError ("PycArray: python object is not a numpy array");
     }
-    if (! numarray::PycArrayCheck(obj_ptr)) {
-      throw AipsError ("PycArray: python object is numpy nor numarray array");
-    }
-    return numarray::makeArray (obj_ptr, copyData);
+    return numpy::makeArray (obj_ptr, copyData);
   }
 
   ValueHolder casa_array_from_python::makeScalar (PyObject* obj_ptr)

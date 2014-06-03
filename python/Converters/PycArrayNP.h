@@ -35,22 +35,16 @@
 #include <casa/Containers/ValueHolder.h>
 #include <casa/Arrays/Array.h>
 
-#if defined(AIPS_USENUMPY)
 #include <numpy/arrayobject.h>
-#endif
 
 namespace casa { namespace python { namespace numpy {
 
-//# Define the common functions if numpy is used.
-#if defined(AIPS_USENUMPY)
 #define PYC_USE_PYARRAY "numpy"
-#endif
 #include <python/Converters/PycArrayComH.h>
 #undef PYC_USE_PYARRAY
 
 
       //# Define functions to deal with numpy array scalars.
-#if defined(AIPS_USENUMPY)
 
       // Check if it is an array scalar object.
       bool PycArrayScalarCheck (PyObject* obj, int& type);
@@ -141,21 +135,6 @@ namespace casa { namespace python { namespace numpy {
 	}
       };
 
-#else
-
-      bool PycArrayScalarCheck (PyObject*, int&)
-        { return False; }
-
-      DataType PycArrayScalarType (PyObject*)
-        { return TpOther; }
-
-      ValueHolder makeScalar (PyObject*, int)
-        { return ValueHolder(); }
-
-      void register_convert_arrayscalars()
-      {}
-
-#endif
 
 
 }}}

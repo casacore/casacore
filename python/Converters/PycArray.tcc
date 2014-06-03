@@ -29,7 +29,6 @@
 #define PYRAP_PYCARRAY_TCC
 
 #include <python/Converters/PycArray.h>
-#include <python/Converters/PycArrayNA.h>
 #include <python/Converters/PycArrayNP.h>
 #include <boost/python/object.hpp>
 
@@ -38,13 +37,7 @@ namespace casa { namespace python {
   template <typename T>
   boost::python::object makePyArrayObject (casa::Array<T> const& arr)
   {
-    // The default is to create a numpy object.
-    // However, if the user is only using numarray, a numarray is returned.
-    if (numpy::isImported()
-    || (!numarray::isImported() && numpy::canImport())) {
-      return numpy::makePyArrayObject (arr);
-    }
-    return numarray::makePyArrayObject (arr);
+    return numpy::makePyArrayObject (arr);
   }
 
 }}

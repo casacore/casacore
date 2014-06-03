@@ -25,24 +25,6 @@
 //#
 //# $Id: PycArrayComH.h,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
-#ifndef PYC_USE_PYARRAY
-
-  inline Bool PycArrayCheck (PyObject*)
-    { return False; }
-  inline Bool isImported()
-    { return False; }
-  inline Bool canImport()
-    { return False; }
-  inline void loadAPI()
-    {}
-  inline ValueHolder makeArray (PyObject*, Bool)
-    { return ValueHolder(); }
-  template <typename T>
-  inline boost::python::object makePyArrayObject (casa::Array<T> const&)
-    { return boost::python::object(); }
-
-#else
-
   // Check if the PyObject is an array object.
   Bool PycArrayCheck (PyObject* obj_ptr);
 
@@ -103,4 +85,4 @@
   template <typename T>
   boost::python::object makePyArrayObject (casa::Array<T> const& arr);
 
-#endif
+

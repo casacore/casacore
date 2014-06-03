@@ -2,12 +2,10 @@
 # casacore python bindings
 #
 include_directories (${Boost_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-add_definitions ("-DAIPS_USENUMPY=1")
 
 add_library (casa_python
 Converters/PycArray.cc
 Converters/PycArrayNP.cc
-Converters/PycArrayNA.cc
 Converters/PycBasicData.cc
 Converters/PycExcp.cc
 Converters/PycRecord.cc
@@ -28,7 +26,6 @@ Converters/PycArray.h
 Converters/PycArrayComCC.h
 Converters/PycArrayComH.h
 Converters/PycArrayNP.h
-Converters/PycArrayNA.h
 Converters/PycBasicData.h
 Converters/PycExcp.h
 Converters/PycRecord.h

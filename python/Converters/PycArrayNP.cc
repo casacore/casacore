@@ -25,8 +25,6 @@
 //#
 //# $Id: PycArrayNP.cc,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
-#if defined(AIPS_USENUMPY)
-
 #include <python/Converters/PycArrayNP.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Utilities/Assert.h>
@@ -297,4 +295,3 @@ namespace casa { namespace python { namespace numpy {
 
 }}}
 
-#endif

@@ -53,12 +53,6 @@ namespace casa { namespace python {
   // <synopsis>
   // </synopsis>
 
-  // Check if numpy or numarray can be used.
-  // <group>
-  Bool PycCanUseNumpy();
-  Bool PycCanUseNumarray();
-  // </group>
-
   // Check if the PyObject is an array object.
   Bool PycArrayCheck (PyObject* obj_ptr);
 
