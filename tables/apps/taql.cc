@@ -40,6 +40,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
+#include <casa/OS/EnvVar.h>
 #include <casa/Exceptions/Error.h>
 #include <map>
 #include <vector>
@@ -63,17 +64,16 @@ typedef map<String, pair<Table,String> > TableMap;
 
 
 #ifdef HAVE_READLINE
-bool readLine (string& line, const string& prompt, bool addToHistory)
+bool readLine (string& line, const string& prompt)
 {
   char* str = readline(prompt.c_str());
   if (!str) return false;
   line = string(str);
   free(str);
-  if (addToHistory) add_history (line.c_str());
   return true;
 }
 #else
-bool readLine (String& line, const String& prompt, bool)
+bool readLine (String& line, const String& prompt)
 {
   if (!prompt.empty()) cerr << prompt;
   getline (cin, line);
@@ -87,7 +87,7 @@ bool readLineSkip (String& line, const String& prompt,
   Regex lwhiteRE("^[ \t]*");
   Regex rwhiteRE("[ \t]*$");
   bool fnd = false;
-  while (!fnd  &&  readLine (line, prompt, false)) {
+  while (!fnd  &&  readLine (line, prompt)) {
     // Skip leading and trailing whitespace.
     line.del (lwhiteRE);
     line.del (rwhiteRE);
@@ -110,7 +110,7 @@ bool readLineSkip (String& line, const String& prompt,
     }
   }
 #ifdef HAVE_READLINE
-  add_history (line.c_str());
+  if (fnd) add_history (line.c_str());
 #endif
   return fnd;
 }
@@ -541,7 +541,8 @@ void showHelp()
        << endl;
   cerr << "taql can be started with multiple arguments containing options and" << endl;
   cerr << "an optional TaQL command as the last argument." << endl;
-  cerr << "It will run interactively if no TaQL command is given." << endl;
+  cerr << "It will run interactively if no TaQL command is given. `If possible," << endl;
+  cerr << "interactive commands are kept in $HOME/.taql_history for later reuse." << endl;
   cerr << "Use q, quit, exit, or ^D to exit." << endl;
   cerr << endl;
   cerr << "Any TaQL command can be used. If no command name is given, CALC is assumed." << endl;
@@ -719,6 +720,14 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
 void askCommands (bool printCommand, bool printSelect, bool printMeas,
                   bool printRows, const String& prefix)
 {
+#ifdef HAVE_READLINE
+  string histFile;
+  String homeDir = EnvironmentVariable::get("HOME");
+  if (! homeDir.empty()) {
+    histFile = homeDir + "/.taql_history";
+    read_history(histFile.c_str());
+  }
+#endif
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
   Regex assRE("[ \t]*=");
   Regex lwhiteRE("^[ \t]*");
@@ -787,6 +796,11 @@ void askCommands (bool printCommand, bool printSelect, bool printMeas,
       }
     }
   }
+#ifdef HAVE_READLINE
+  if (! histFile.empty()) {
+    write_history(histFile.c_str());
+  }
+#endif
 }
 
 

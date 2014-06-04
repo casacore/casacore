@@ -107,6 +107,7 @@ void Unit::setName(const String &in) {
 //#  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 //#  The following functions are designed to replace (in two passes)
 //#  the following regular expression operations...
+//#  (written by Darrell Schiebel)
 //#  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 //#  static Regex f1("\\*\\*"); static String sf1("");
 //#  static Regex f2("\\^"); static String sf2("");

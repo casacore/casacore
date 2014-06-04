@@ -1,5 +1,5 @@
 //# measuresdata.cc: Program to read IERS and other data for Measure conversion
-//# Copyright (C) 2007-2008,2011
+//# Copyright (C) 2007-2008,2011,2013
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -507,7 +507,7 @@ const tableProperties allProperties[] = {
     &DE405,			DE405Col,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
     "JPL Planetary ephemeris DE405",			"DE405",
-    True,			"header405 ascp****.405", vector<String>(),
+    True,			"header.405 ascp****.405", vector<String>(),
     0,				vector<formatDescr>(),
     { "ssd.jpl.nasa.gov", "pub/eph/planets/ascii/de405", "" } },
 
