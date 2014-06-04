@@ -135,6 +135,15 @@ public:
     template <class U>
     Vector(const vector<T, U> &other);
 
+    // Create a Vector from a container iterator and its length.
+    // <note> The length is used instead of last, because the distance
+    // function needed to calculate the length can be expensive.
+    // <br>A third dummy argument is unfortunately needed to avoid ambiguity
+    // with another Vector constructor (taking two uInts).
+    // </note>
+    template<typename Iterator>
+    Vector(Iterator first, size_t size, int dummy);
+
     // Define a destructor, otherwise the compiler makes a static one.
     virtual ~Vector();
 

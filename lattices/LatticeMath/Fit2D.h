@@ -206,10 +206,18 @@ public:
                           const Array<Float>& sigma);
     //</group>
 
-    // Find the residuals to the fit.   
+    // Find the residuals to the fit. xOffset and yOffset allow one to provide a data
+    // array that is offset in space from the grid that was fit. In this way, one
+    // can fill out a larger image than the subimage that was fit, for example. A negative
+    // value of xOffset means the supplied data array represents a grid that has a y axis left
+    // of the grid of pixels that was fit. A negative yOffset value means the supplied data
+    // array represents a grid that has an x axis that is below the x axis of the grid of pixels
+    // that was fit.
     //<group>
-    Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
-                               const Array<Float>& data);
+    Fit2D::ErrorTypes residual(
+    	Array<Float>& resid, Array<Float>& model,
+    	const Array<Float>& data, Int xOffset=0, int yOffset=0
+    ) const;
     Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
                                const MaskedLattice<Float>& data);
     Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,

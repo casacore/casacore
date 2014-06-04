@@ -43,7 +43,7 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/Block.h>
-#include <casa/Containers/ContainerIO.h>
+#include <casa/BasicSL/STLIO.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>

@@ -131,7 +131,7 @@ public:
 
     // Some static convenience functions for file create/open/close.
     // <group>
-    static int create (const Char* name, int mode = 0644);
+    static int create (const Char* name, int mode = 0666);
     static int open   (const Char* name, Bool writable = False,
 		       Bool throwExcp = True);
     static void close (int fd);

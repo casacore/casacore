@@ -27,6 +27,7 @@
 
 //# Includes
 #include <casa/Exceptions/Error.h>
+#include <casa/Logging/LogIO.h>
 #include <casa/Quanta/QBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -68,6 +69,11 @@ Bool QBase::isConform(const QBase &other) const {
 //# Global functions
 ostream &operator<<(ostream &os, const QBase &meas) {
   meas.print(os);
+  return os;
+}
+
+LogIO &operator<<(LogIO& os, const QBase &meas) {
+  os.output() << meas;
   return os;
 }
 

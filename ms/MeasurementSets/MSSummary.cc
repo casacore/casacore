@@ -43,7 +43,7 @@
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/RefRows.h>
 #include <casa/Utilities/GenSort.h>
-#include <casa/Containers/ContainerIO.h>
+#include <casa/BasicSL/STLIO.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableIter.h>
 #include <tables/Tables/TableVector.h>

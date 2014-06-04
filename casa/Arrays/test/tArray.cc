@@ -1038,6 +1038,41 @@ int main()
 
         	}
         }
+        {
+          cout << "*** Test std::vector constructor" << endl;
+          // Make sure compiler does not find ambiguous constructor.
+          Vector<size_t> vs1(3, 2);
+          AlwaysAssertExit (allEQ(vs1, size_t(2)));
+          Vector<uInt> vs2(3, 2);
+          AlwaysAssertExit (allEQ(vs2, uInt(2)));
+          // Construct from iterator.
+          std::vector<size_t> v(5);
+          v[0] = 2;
+          v[1] = 3;
+          v[2] = 4;
+          v[3] = 5;
+          v[4] = 6;
+          Vector<size_t> myvec(v.begin(), v.size(), 0);
+          AlwaysAssertExit(v.size() == myvec.size());
+          for (uInt i=0; i<5; i++) {
+            AlwaysAssertExit(v[i] == myvec[i]);
+          }
+          // Construct from std::vector.
+          std::vector<int> v2(2);
+          v2[0] = 5;
+          v2[1] = -2;
+          Vector<Int> myvec2(v2);
+          AlwaysAssertExit(v2.size() == myvec2.size());
+          for (uInt i=0; i<2; i++) {
+            AlwaysAssertExit(v2[i] == myvec2[i]);
+          }
+          // Construct and convert type.
+          Vector<Double> myvec3(v2.begin(), v2.size(), 0);
+          AlwaysAssertExit(v2.size() == myvec3.size());
+          for (uInt i=0; i<2; i++) {
+            AlwaysAssertExit(v2[i] == myvec3[i]);
+          }
+        }
     } catch (const AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;

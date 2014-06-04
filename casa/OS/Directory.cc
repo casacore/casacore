@@ -206,7 +206,7 @@ void Directory::create (Bool overwrite)
 	// Keep the directory, so special allocation on Lustre is preserved.
 	Directory(itsFile).removeRecursive(True);
     } else {
-        if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
+        if (mkdir (itsFile.path().expandedName().chars(), 0777) < 0) {
 	    throw (AipsError ("Directory::create error on " +
 			      itsFile.path().expandedName() +
 			      ": " + strerror(errno)));

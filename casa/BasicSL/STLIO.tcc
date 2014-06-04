@@ -1,21 +1,21 @@
-//# Vector2.cc: Definitions for STL vector related methods
-//# Copyright (C) 2002
+//# STLIO.tcc: text output IO for any STL-like container
+//# Copyright (C) 2011
 //# Associated Universities, Inc. Washington DC, USA.
-//#
+//# 
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
 //# the Free Software Foundation; either version 2 of the License, or (at your
 //# option) any later version.
-//#
+//# 
 //# This library is distributed in the hope that it will be useful, but WITHOUT
 //# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 //# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
 //# License for more details.
-//#
+//# 
 //# You should have received a copy of the GNU Library General Public License
 //# along with this library; if not, write to the Free Software Foundation,
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-//#
+//# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
 //#        Internet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
@@ -23,39 +23,28 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: STLIO.tcc 21315 2013-02-13 12:24:02Z gervandiepen $
 
-#include <casa/Arrays/Vector.h>
-#include <casa/stdvector.h>
+//# Includes
+#include <casa/BasicSL/STLIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template<class T>
-template<class U>
-Vector<T>::Vector(const vector<T, U> &other)
-  : Array<T>(IPosition(1, other.size())) {
-  uInt i=0;
-  for (typename vector<T, U>::const_iterator pos=other.begin();
-       pos != other.end(); pos++) (*this)[i++] = *pos;
-}
-
-template<class T>
-template<class Iterator>
-Vector<T>::Vector(Iterator first, size_t size, int)
-  : Array<T>(IPosition(1, size)) {
-  for (size_t i=0; i<size; ++i, ++first) {
-    (*this)[i] = *first;
+  template<class ITER>
+  void showDataIter (ostream& os, ITER begin, const ITER& end, const char* sep,
+                     const char* prefix, const char* postfix)
+  {
+    // Note that the begin iterator is passed by value, so it can be used
+    // directly.
+    os << prefix;
+    if (begin != end) {
+      os << *begin;
+      ++begin;
+    }
+    for (; begin!=end; ++begin) {
+      os << sep << *begin;
+    }
+    os << postfix;
   }
-}
-
-template<class T>
-template<class U>
-void Array<T>::tovector(vector<T, U> &out) const {
-  Bool deleteIt;
-  const T *stor = this->getStorage(deleteIt);
-  out.assign(stor, stor+nelements());
-  this->freeStorage(stor, deleteIt);
-}  
 
 } //# NAMESPACE CASA - END
-

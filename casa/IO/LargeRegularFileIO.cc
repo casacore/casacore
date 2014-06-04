@@ -93,7 +93,7 @@ int LargeRegularFileIO::openCreate (const RegularFile& file,
     // Open the file.
     int fd;
     if (create) {
-      fd = trace3OPEN ((char*)name.chars(), stropt, 0644);
+      fd = trace3OPEN ((char*)name.chars(), stropt, 0666);
     } else {
       fd = trace2OPEN ((char*)name.chars(), stropt);
     }

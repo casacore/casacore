@@ -30,10 +30,12 @@
 
 #include <casa/aips.h>
 
-#ifdef AIPS_CXX11
+#if defined AIPS_CXX11
 #include <memory>
+///#elif defined HAVE_BOOST
+///#include <boost/shared_ptr.hpp>
 #else
-#include <boost/shared_ptr.hpp>
+#include <tr1/memory>
 #endif
 
 namespace casa { //#Begin casa namespace
@@ -225,8 +227,10 @@ protected:
 
 #ifdef AIPS_CXX11
     typedef std::shared_ptr<t> PointerRep;
+  ///#elif HAVE_BOOST
+  ///    typedef boost::shared_ptr<t> PointerRep;
 #else
-    typedef boost::shared_ptr<t> PointerRep;
+    typedef std::tr1::shared_ptr<t> PointerRep;
 #endif
 
     PointerRep pointerRep_p;

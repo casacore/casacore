@@ -30,7 +30,7 @@
 #include <tables/Tables/RefRows.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/IPosition.h>
-#include <casa/Containers/ContainerIO.h>
+#include <casa/BasicSL/STLIO.h>
 #include <casa/Quanta/MVTime.h>
 #include <casa/System/AipsrcValue.h>
 #include <casa/OS/Path.h>

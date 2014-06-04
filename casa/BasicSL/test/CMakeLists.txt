@@ -1,6 +1,8 @@
 set (tests
 tComplex
 tConstants
+tSTLIO
+tSTLMath
 tString
 )
 

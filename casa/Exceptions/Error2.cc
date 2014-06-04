@@ -144,6 +144,47 @@ AipsError::~AipsError() throw()
 #endif
 
 
+void AipsError::throwIf (bool condition, const String& message,
+                         const char* file, Int line, const char* func)
+{
+  // If the condition is met then throw an AipsError
+  if (condition) {
+    String m = String::format ("Exception: %s.\n... thrown by %s",
+                               message.c_str(), func);
+    AipsError e (m.c_str(), file, line);
+    throw e;
+  }
+}
+
+void AipsError::throwIfError (int errorCode, const String& prefix,
+                              const char* file, Int line, const char* func)
+{
+  // If the provided error code is not equal to success (0) then
+  // throw an AipsError using the provided prefix and then details
+  // of the error.
+  if (errorCode != 0) {
+    AipsError e (String::format ("Exception: %s.\n...Thrown by %s\n...(errno=%d): %s",
+                                 prefix.c_str(), func,
+                                 errorCode, strerror (errorCode)),
+                 file, line);
+    throw e;
+  }
+}
+
+AipsError AipsError::repackageAipsError (AipsError& error,
+                                         const String& message,
+                                         const char* file,
+                                         Int line, const char* func)
+{
+  ostringstream os;
+  AipsError tmp (message, file, line);
+  os << "+++Exception: " << tmp.getMesg() << ".\n...Thrown by " << func << ": "
+     << "\n...Lower level exception: " << error.getMesg()
+     << "\n--- end exception\n";
+  return AipsError (os.str());
+}
+
+
 
 AllocError::~AllocError() throw()
 {}

@@ -39,7 +39,7 @@
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/ContainerIO.h>
+#include <casa/BasicSL/STLIO.h>
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/ValueHolder.h>

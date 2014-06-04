@@ -39,28 +39,26 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// If the condition is true, it throws an AipsError exception with a string.
+// Throw the given exception with a string composed of various arguments.
 // E.g.
 // <srcblock>
-//    ThrowIf (myint<0, "invalid value");
+//    CASATHROW (AipsError, "integer=" << myint << ", float=" << myfloat);
 // </srcblock>
-#define ThrowIf(cond, str)   \
-  if (cond) {                \
-    throw AipsError(str);    \
-  }
+#define CASATHROW(exc, arg) do {     \
+    std::ostringstream casa_log_oss; \
+    casa_log_oss << arg;             \
+    throw exc(casa_log_oss.str());   \
+  } while (0)
 
-// If the condition is true, it throws an AipsError exception with a string.
-// The string can be composed of various arguments for which operator<< is
-// defined. E.g.
-// <srcblock>
-//    ThrowIf (myint<0, "integer=" << myint << ", float=" << myfloat);
-// </srcblock>
-#define ThrowIfStr(cond, arg)             \
-  if (cond) {                             \
-    std::ostringstream casa_log_oss;      \
-    casa_log_oss << arg;                  \
-    throw AipsError(casa_log_oss.str());  \
-  }
+// Throw an AipsError exception if the condition is true.
+#define ThrowIf(c,m) {if (c) {casa::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+
+// Throw an AipsError exception if the system error code is not 0.
+// It adds the message for that error code to the exception text.
+#define ThrowIfError(c,m) {if (c) {casa::AipsError::throwIfError (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+
+// Repackage and rethrow an AipsError exception.
+#define Rethrow(e,m) {throw casa::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
 
 
 // <summary>Base class for all Casacore library errors</summary>
@@ -145,6 +143,23 @@ public:
   static String getLastStackTrace ();
   static void clearLastInfo ();
   // </group>
+
+  // Repackage an exception.
+  static AipsError repackageAipsError (AipsError& error, 
+                                       const String& message,
+                                       const char* file,
+                                       Int line,
+                                       const char* func);
+
+  // Throw if the condition is true.
+  static void throwIf (Bool condition, const String& message,
+                       const char* file, Int line,
+                       const char* func = "");
+
+  // Throw if the system error code is not 0.
+  static void throwIfError (Int errorCode, const String& prefix,
+                            const char* file, Int line,
+                            const char* func = "");
 
 protected:
   // Add the stack trace to the message (if USE_STACKTRACE is set).

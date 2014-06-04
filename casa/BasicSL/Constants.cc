@@ -150,6 +150,7 @@ const Double C::second		= 1.0;
 const Double C::minute		= 60.0;
 const Double C::hour		= 3600.0;
 const Double C::day		= 86400.0;
+const Double C::MJD0 = 2400000.5;
 
 
 } //# NAMESPACE CASA - END

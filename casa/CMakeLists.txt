@@ -27,6 +27,7 @@ BasicSL/RegexBase.cc
 BasicSL/Complex.cc
 BasicSL/String.cc
 BasicSL/IComplex.cc
+BasicSL/STLMath.cc
 Containers/RecordInterface.cc
 Containers/Record.cc
 Containers/IterError.cc
@@ -204,7 +205,6 @@ endif (READLINE_FOUND)
 
 target_link_libraries (
 casa_casa
-${BOOST_LIBRARIES}
 ${de_libraries}
 ${libm}
 dl
@@ -295,6 +295,9 @@ BasicSL/Constants.h
 BasicSL/IComplex.h
 BasicSL/RegexBase.h
 BasicSL/String.h
+BasicSL/STLMath.h
+BasicSL/STLIO.h
+BasicSL/STLIO.tcc
 DESTINATION include/casacore/casa/BasicSL
 )
 
@@ -302,8 +305,6 @@ install (FILES
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
-Containers/ContainerIO.h
-Containers/ContainerIO.tcc
 Containers/HashMap.h
 Containers/HashMap.tcc
 Containers/HashMapIO.h
@@ -498,6 +499,8 @@ Quanta/QMath.h
 Quanta/QMath.tcc
 Quanta/Quantum.h
 Quanta/Quantum.tcc
+Quanta/QVector.h
+Quanta/QVector.tcc
 Quanta/QuantumHolder.h
 Quanta/QuantumType.h
 Quanta/RotMatrix.h
@@ -619,7 +622,7 @@ DESTINATION include/casacore/casa
 if (BUILD_TESTING)
 	add_subdirectory (test)
 	foreach (casa_module Arrays BasicMath BasicSL Containers
-             HDF5 Inputs IO Logging OS Quanta System Utilities)
+             Exceptions HDF5 Inputs IO Logging OS Quanta System Utilities)
     	add_subdirectory (${casa_module}/test)
 	endforeach (casa_module)
 endif (BUILD_TESTING)

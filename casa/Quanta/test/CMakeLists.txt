@@ -3,6 +3,7 @@ tMVAngle
 tMVTime
 tQuantum
 tQuantumHolder
+tQVector
 tUnit
 )
 

@@ -64,7 +64,7 @@ BucketFile::BucketFile (const String& fileName,
   bufferedFile_p (0)
 {
     // Create the file.
-    fd_p = ::trace3OPEN ((Char *)name_p.chars(), O_RDWR | O_CREAT | O_TRUNC, 0644);
+    fd_p = ::trace3OPEN ((Char *)name_p.chars(), O_RDWR | O_CREAT | O_TRUNC, 0666);
     if (fd_p < 0) {
 	throw (AipsError ("BucketFile: create error on file " + name_p +
 			  ": " + strerror(errno)));

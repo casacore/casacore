@@ -125,7 +125,7 @@ void RegularFile::create (Bool overwrite)
 			      " already exists"));
 	}
     }
-    int fd = ::creat (itsFile.path().expandedName().chars(), 0644);
+    int fd = ::creat (itsFile.path().expandedName().chars(), 0666);
     if (fd < 0) {
 	throw (AipsError ("RegularFile::create error on " +
 			  itsFile.path().expandedName() +
