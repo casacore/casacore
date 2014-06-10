@@ -655,18 +655,29 @@ template<class T> T rms(const Array<T> &a);
 // <note>The function kthLargest in class GenSortIndirect can be used to
 // obtain the index of the median in an array. </note>
 // <group>
-template<class T> inline T median(const Array<T> &a)
-    { return median (a, False, (a.nelements() <= 100), False); }
-template<class T> inline T median(const Array<T> &a, Bool sorted)
-    { return median (a, sorted, (a.nelements() <= 100), False); }
-template<class T> inline T medianInPlace(const Array<T> &a,
-					 Bool sorted = False)
-    { return median (a, sorted, (a.nelements() <= 100), True); }
-template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
-			   Bool inPlace = False)
-    { Block<T> tmp; return median (a, tmp, sorted, takeEvenMean, inPlace); }
 template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
-			   Bool takeEvenMean, Bool inPlace = False);
+			   Bool takeEvenMean, Bool inPlace=False);
+template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
+			   Bool inPlace=False)
+    { Block<T> tmp; return median (a, tmp, sorted, takeEvenMean, inPlace); }
+template<class T> inline T median(const Array<T> &a, Bool sorted=False)
+    { return median (a, sorted, (a.nelements() <= 100), False); }
+template<class T> inline T medianInPlace(const Array<T> &a, Bool sorted=False)
+    { return median (a, sorted, (a.nelements() <= 100), True); }
+// </group>
+
+// The median absolute deviation from the median. Interface is as for
+// the median functions
+// <group>
+template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted, 
+                         Bool takeEvenMean, Bool inPlace = False);
+template<class T> T madfm(const Array<T> &a, Bool sorted, Bool takeEvenMean,
+                          Bool inPlace=False)
+    { Block<T> tmp; return madfm(a, tmp, sorted, takeEvenMean, inPlace); }
+template<class T> inline T madfm(const Array<T> &a, Bool sorted=False)
+    { return madfm(a, sorted, (a.nelements() <= 100), False); }
+template<class T> inline T madfmInPlace(const Array<T> &a, Bool sorted=False)
+    { return madfm(a, sorted, (a.nelements() <= 100), True); }
 // </group>
 
 // Return the fractile of an array.
@@ -676,11 +687,49 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 // It uses kthLargest if the array is not sorted yet.
 // <note>The function kthLargest in class GenSortIndirect can be used to
 // obtain the index of the fractile in an array. </note>
-template<class T> T fractile(const Array<T> &a, Float fraction,
-			     Bool sorted = False, Bool inPlace = False)
-  { Block<T> tmp; return fractile (a, tmp, fraction, sorted, inPlace); }
 template<class T> T fractile(const Array<T> &a, Block<T> &tmp, Float fraction,
-			     Bool sorted = False, Bool inPlace = False);
+			     Bool sorted=False, Bool inPlace=False);
+template<class T> T fractile(const Array<T> &a, Float fraction,
+			     Bool sorted=False, Bool inPlace=False)
+  { Block<T> tmp; return fractile (a, tmp, fraction, sorted, inPlace); }
+
+// Return the inter-fractile range of an array.  
+// This is the full range between the bottom and the top fraction.
+// <group>
+template<class T> T interFractileRange(const Array<T> &a, Block<T> &tmp,
+                                       Float fraction,
+                                       Bool sorted=False, Bool inPlace=False);
+template<class T> T interFractileRange(const Array<T> &a, Float fraction,
+                                       Bool sorted=False, Bool inPlace=False)
+  { Block<T> tmp; return interFractileRange(a, tmp, fraction, sorted, inPlace); }
+// </group>
+
+// Return the inter-hexile range of an array.  
+// This is the full range between the bottom sixth and the top sixth
+// of ordered array values. "The semi-interhexile range is very nearly
+// equal to the rms for a Gaussian distribution, but it is much less
+// sensitive to the tails of extended distributions." (Condon et al
+// 1998)
+// <group>
+template<class T> T interHexileRange(const Array<T> &a, Block<T> &tmp,
+                                     Bool sorted=False, Bool inPlace=False)
+  { return interFractileRange(a, tmp, 1./6., sorted, inPlace); }
+template<class T> T interHexileRange(const Array<T> &a, Bool sorted=False,
+                                     Bool inPlace=False)
+  { return interFractileRange(a, 1./6., sorted, inPlace); }
+// </group>
+
+// Return the inter-quartile range of an array.  
+// This is the full range between the bottom quarter and the top
+// quarter of ordered array values.
+// <group>
+template<class T> T interQuartileRange(const Array<T> &a, Block<T> &tmp,
+                                       Bool sorted=False, Bool inPlace=False)
+  { return interFractileRange(a, tmp, 0.25, sorted, inPlace); }
+template<class T> T interQuartileRange(const Array<T> &a, Bool sorted=False,
+                                       Bool inPlace=False)
+  { return interFractileRange(a, 0.25, sorted, inPlace); }
+// </group>
 
 
 // Methods for element-by-element scaling of complex and real.
