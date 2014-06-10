@@ -292,7 +292,7 @@ void MSCalEngine::init()
   Bool fndObs = False;
   if (! obsTab.isNull()) {
     if (obsTab.nrow() > 0) {
-      String telescope = ROScalarColumn<String>(obsTab, "TELESCOPE_NAME")(0);
+      String telescope = ScalarColumn<String>(obsTab, "TELESCOPE_NAME")(0);
       fndObs = MeasTable::Observatory (itsArrayPos, telescope);
     }
   }
@@ -334,8 +334,8 @@ void MSCalEngine::fillAntPos (Int calDescId, Int calInx)
   } else {
     tab = getSubTable (calDescId, "ANTENNA");
   }
-  ROScalarMeasColumn<MPosition> posCol(tab, "POSITION");
-  ROScalarColumn<String>      mountCol(tab, "MOUNT");
+  ScalarMeasColumn<MPosition> posCol(tab, "POSITION");
+  ScalarColumn<String>      mountCol(tab, "MOUNT");
   vector<MPosition>& antPos = itsAntPos[calInx];
   vector<Int>& mounts = itsMount[calInx];
   vector<MBaseline>& antMB = itsAntMB[calInx];
@@ -381,7 +381,7 @@ void MSCalEngine::fillFieldDir (Int calDescId, Int calInx)
     } else {
       tab = getSubTable (calDescId, "FIELD");
     }
-    ROArrayMeasColumn<MDirection> dirCol(tab, itsDirColName);
+    ArrayMeasColumn<MDirection> dirCol(tab, itsDirColName);
     vector<MDirection>& fieldDir = itsFieldDir[calInx];
     fieldDir.reserve (tab.nrow());
     for (uInt i=fieldDir.size(); i<tab.nrow(); ++i) {
@@ -398,7 +398,7 @@ void MSCalEngine::fillCalDesc()
   // occur multiple times (for different spwid).
   // Each MS has its own subtables (ANTENNA, FIELD, etc.).
   Table tab (itsTable.keywordSet().asTable("CAL_DESC"));
-  ROScalarColumn<String> nameCol(tab, "MS_NAME");
+  ScalarColumn<String> nameCol(tab, "MS_NAME");
   // Handle CAL_DESC_IDs not seen so far.
   itsCalIdMap.reserve (tab.nrow());
   for (uInt i=itsCalIdMap.size(); i<tab.nrow(); ++i) {
@@ -429,7 +429,7 @@ Table MSCalEngine::getSubTable (Int calDescId, const String& subTabName,
   // If defined, open a subtable in the MS referred to by the name in the
   // MS_NAME column of the CAL_DESC subtable.
   Table calDescTab (itsTable.keywordSet().asTable("CAL_DESC"));
-  ROScalarColumn<String> nameCol(calDescTab, "MS_NAME");
+  ScalarColumn<String> nameCol(calDescTab, "MS_NAME");
   // If the path is relative, use the CalTable's directory.
   String msName = nameCol(calDescId);
   if (msName.empty()) {

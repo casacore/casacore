@@ -49,6 +49,9 @@ Quantum<Double> QC::re(2.8179e-15,"m");
 Quantum<Double> QC::a0(5.2918e-11,"m");
 Quantum<Double> QC::R0(6.9599e+08,"m");
 Quantum<Double> QC::k2(IAU_k*IAU_k,"AU3/d2/S0");
+Quantum<Double> QC::qTurn(90.0, "deg");
+Quantum<Double> QC::hTurn(180.0, "deg");
+Quantum<Double> QC::fTurn(360.0, "deg");
 
 uShort QC_init::count;
 

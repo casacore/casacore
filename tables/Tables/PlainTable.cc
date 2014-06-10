@@ -33,6 +33,7 @@
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableLockData.h>
 #include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/TableTrace.h>
 #include <tables/Tables/PlainColumn.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Containers/Block.h>
@@ -137,6 +138,8 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     noWrite_p = False;
     //# Add it to the table cache.
     tableCache().define (name_p, this);
+    //# Trace if needed.
+    itsTraceId = TableTrace::traceTable (name_p, 'n');
   } catch (AipsError&) {
     delete lockPtr_p;
     lockPtr_p = 0;
@@ -247,6 +250,8 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     if (addToCache) {
       tableCache().define (name_p, this);
     }
+    //# Trace if needed.
+    itsTraceId = TableTrace::traceTable (name_p, 'o');
 }
 
 
@@ -291,6 +296,8 @@ void PlainTable::closeObject()
     if (addToCache_p) {
       tableCache().remove (name_p);
     }
+    //# Trace if needed.
+    TableTrace::traceClose (name_p);
     //# Delete everything.
     delete colSetPtr_p;
     delete lockPtr_p;
@@ -322,6 +329,7 @@ void PlainTable::reopenRW()
     // Reopen the storage managers and the subtables in all keyword sets.
     colSetPtr_p->reopenRW();
     keywordSet().reopenRW();
+    TableTrace::traceFile (itsTraceId, "reopenrw");
 }
 
 void PlainTable::renameSubTables (const String& newName,
@@ -468,6 +476,7 @@ void PlainTable::flush (Bool fsync, Bool recursive)
 
 void PlainTable::resync()
 {
+    TableTrace::traceFile (itsTraceId, "resync");
     Bool tableChanged = True;
     lockPtr_p->getInfo (lockSync_p.memoryIO());
     // Older readonly table files may have empty locksync data.
@@ -493,9 +502,7 @@ void PlainTable::resync()
 
 Bool PlainTable::putFile (Bool always)
 {
-#ifdef AIPS_TRACE
-    cout << "PlainTable::putFile on " << tableName() << endl;
-#endif
+    TableTrace::traceFile (itsTraceId, "flush");
     Bool writeTab = always || tableChanged_p;
     Bool written = writeTab;
     {  // use scope to ensure AipsIO is closed (thus flushed) before lockfile
@@ -522,7 +529,6 @@ Bool PlainTable::putFile (Bool always)
 	}
       }
     }
-
     // Write the change info if anything has been written.
     if (written) {
         lockSync_p.write (nrrow_p, tdescPtr_p->ncolumn(), tableChanged_p,
@@ -740,7 +746,7 @@ void PlainTable::setEndian (int endianFormat)
     int endOpt = endianFormat;
     if (endOpt == Table::AipsrcEndian) {
         String opt;
-	// Default "big" was used until AIPS++ version 10.1203.00.
+	// Default "big" was used until version 10.1203.00.
 	////AipsrcValue<String>::find (opt, "table.endianformat", "big");
 	AipsrcValue<String>::find (opt, "table.endianformat", "local");
 	opt.downcase();

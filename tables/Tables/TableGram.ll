@@ -40,6 +40,7 @@
 %}
 
 /* states */
+%s STYLEstate
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
@@ -58,6 +59,8 @@ WHITE1    [ \t\n]
 WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
+INT2      {DIGIT}{DIGIT}
+INT4      {INT2}{INT2}
 HEXINT    0[xX][0-9a-fA-F]+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
@@ -67,10 +70,11 @@ TRUE      T|([Tt][Rr][Uu][Ee])
 FALSE     F|([Ff][Aa][Ll][Ss][Ee])
 FLINTUNIT {FLINT}[a-zA-Z]+
 
-MONTH     ("-"{INT}?"-")|("-"?[A-Za-z]+"-"?)
-DATEH     {INT}{MONTH}{INT}
-DATES     {INT}"/"{INT}"/"{INT}
-DATE      {DATEH}|{DATES}
+MONTH     [A-Za-z]+
+DATEA     {INT}{MONTH}{INT}|{INT}"-"{MONTH}"-"{INT}
+DATEH     ({INT2}"-"{INT2}"-"{INT4})|({INT4}"-"{INT2}"-"{INT2})
+DATES     {INT4}"/"{INT2}"/"{INT2}
+DATE      {DATEA}|{DATEH}|{DATES}
 DTIMEHM   {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEHM}|{DTIMEC}
@@ -103,7 +107,7 @@ UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
 COUNT     [Cc][Oo][Uu][Nn][Tt]
-GCOUNT    [Cc][Oo][Uu][Nn][Tt]{WHITE}"("{WHITE}"*"?{WHITE}")"
+COUNTALL  [Gg]{COUNT}{WHITE}"("{WHITE}"*"?{WHITE}")"
 CALC      [Cc][Aa][Ll][Cc]
 CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
 DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
@@ -121,6 +125,7 @@ SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]{WHITE1}
 GIVING    {GIVING1}|{SAVETO}
 INTO      [Ii][Nn][Tt][Oo]
 GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]{WHITE1}
+GROUPROLL {GROUPBY}{WHITE}[Rr][Oo][Ll][Ll][Uu][Pp]{WHITE1}
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 JOIN      [Jj][Oo][Ii][Nn]
 ON        [Oo][Nn]
@@ -144,6 +149,7 @@ NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
 NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
+UDFLIBSYN {NAME}{WHITE}"="{WHITE}{NAME}
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
 REGEX3    m#[^#]+#
@@ -199,6 +205,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 {STYLE}   {
             tableGramPosition() += yyleng;
+            BEGIN(STYLEstate);
 	    return STYLE;
 	  }
 {SELECT}  {
@@ -234,6 +241,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return COUNT;
+	  }
+{COUNTALL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return COUNTALL;
 	  }
 {CALC}  {
             tableGramPosition() += yyleng;
@@ -302,6 +314,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    BEGIN(EXPRstate);
 	    return GROUPBY;
           }
+{GROUPROLL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return GROUPROLL;
+          }
 {HAVING}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
@@ -348,6 +365,15 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             BEGIN(EXPRstate);
             return RPAREN;
           }
+
+ /* UDF libname synonym definition */
+<STYLEstate>{UDFLIBSYN} {
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return UDFLIBSYN;
+	  }
 
  /* regular expression and pattern handling */
 <EXPRstate>{PATTREX} {
@@ -521,6 +547,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     in the SELECT clause (note that ALL is also a function name).
  */
 {ALLFUNC} {
+  /* will not work for e.g. select all (1+2)*3, but nothing to do about it */
             yyless(3);     /* unput everything but ALL */
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(

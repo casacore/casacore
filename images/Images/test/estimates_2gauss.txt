@@ -1,4 +1,0 @@
-# peak intensity must be in map units
-120, 150, 110, 23.5arcsec, 18.9arcsec, 120deg  
-90, 60, 200, 46arcsec, 23arcsec, 140deg,   
-  

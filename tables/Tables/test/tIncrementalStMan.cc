@@ -284,16 +284,16 @@ void b (const Vector<Bool>& removedRows)
     Table tab ("tIncrementalStMan_tmp.data");
     ROIncrementalStManAccessor accessor (tab, "ISM"); 
     accessor.setCacheSize (2);
-    ROScalarColumn<Complex> ac(tab, "ac");
-    ROScalarColumn<Int> ad(tab, "ad");
-    ROScalarColumn<float> ae(tab, "ae");
-    ROScalarColumn<String> af(tab, "af");
-    ROArrayColumn<float> arr1(tab,"arr1");
-    ROArrayColumn<float> arr2(tab,"arr2");
-    ROArrayColumn<float> arr3(tab,"arr3");
-    ROArrayColumn<DComplex> arr5(tab,"arr5");
-    ROArrayColumn<Bool> arr6(tab,"arr6");
-    ROArrayColumn<Bool> arr7(tab,"arr7");
+    ScalarColumn<Complex> ac(tab, "ac");
+    ScalarColumn<Int> ad(tab, "ad");
+    ScalarColumn<float> ae(tab, "ae");
+    ScalarColumn<String> af(tab, "af");
+    ArrayColumn<float> arr1(tab,"arr1");
+    ArrayColumn<float> arr2(tab,"arr2");
+    ArrayColumn<float> arr3(tab,"arr3");
+    ArrayColumn<DComplex> arr5(tab,"arr5");
+    ArrayColumn<Bool> arr6(tab,"arr6");
+    ArrayColumn<Bool> arr7(tab,"arr7");
     cout << "#Rows " << tab.nrow() << endl;
     uInt i;
     if (tab.nrow() == 20) {

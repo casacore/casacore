@@ -225,13 +225,13 @@ inline void arrayContTransform (const Array<L>& left, R right,
   if (left.contiguousStorage()) {
     myrtransform (left.cbegin(), left.cend(),
                  result.cbegin(), right, op);
-    ///    std::transform (left.cbegin(), left.cend(),
-    ///                    result.cbegin(), bind2nd(op, right));
+    ////    std::transform (left.cbegin(), left.cend(),
+    ////                    result.cbegin(), bind2nd(op, right));
   } else {
     myrtransform (left.begin(), left.end(),
                  result.cbegin(), right, op);
-    ///    std::transform (left.begin(), left.end(),
-    ///                    result.cbegin(), bind2nd(op, right));
+    ////    std::transform (left.begin(), left.end(),
+    ////                    result.cbegin(), bind2nd(op, right));
   }
 }
 
@@ -245,13 +245,13 @@ inline void arrayContTransform (L left, const Array<R>& right,
   if (right.contiguousStorage()) {
     myltransform (right.cbegin(), right.cend(),
                   result.cbegin(), left, op);
-    ///    std::transform (right.cbegin(), right.cend(),
-    ///                    result.cbegin(), bind1st(op, left));
+    ////    std::transform (right.cbegin(), right.cend(),
+    ////                    result.cbegin(), bind1st(op, left));
   } else {
     myltransform (right.begin(), right.end(),
                   result.cbegin(), left, op);
-    ///    std::transform (right.begin(), right.end(),
-    ///                    result.cbegin(), bind1st(op, left));
+    ////    std::transform (right.begin(), right.end(),
+    ////                    result.cbegin(), bind1st(op, left));
   }
 }
 
@@ -334,10 +334,10 @@ inline void arrayTransformInPlace (Array<L>& left, R right, BinaryOperator op)
 {
   if (left.contiguousStorage()) {
     myiptransform (left.cbegin(), left.cend(), right, op);
-    ///    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
+    ////    transformInPlace (left.cbegin(), left.cend(), bind2nd(op, right));
   } else {
     myiptransform (left.begin(), left.end(), right, op);
-    ///    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
+    ////    transformInPlace (left.begin(), left.end(), bind2nd(op, right));
   }
 }
 
@@ -652,6 +652,8 @@ template<class T> T rms(const Array<T> &a);
 // sorted. By default a copy will be made, but if "inPlace" is in effect,
 // the data themselves will be sorted. That should only be used if the
 // data are used not thereafter.
+// <note>The function kthLargest in class GenSortIndirect can be used to
+// obtain the index of the median in an array. </note>
 // <group>
 template<class T> inline T median(const Array<T> &a)
     { return median (a, False, (a.nelements() <= 100), False); }
@@ -672,6 +674,8 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 // A fraction of 0.5 is the same as the median, be it that no mean of
 // the two middle elements is taken if the array has an even nr of elements.
 // It uses kthLargest if the array is not sorted yet.
+// <note>The function kthLargest in class GenSortIndirect can be used to
+// obtain the index of the fractile in an array. </note>
 template<class T> T fractile(const Array<T> &a, Float fraction,
 			     Bool sorted = False, Bool inPlace = False)
   { Block<T> tmp; return fractile (a, tmp, fraction, sorted, inPlace); }

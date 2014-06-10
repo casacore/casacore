@@ -77,7 +77,9 @@ FilebufIO::FilebufIO (int fd, uInt bufferSize)
 
 FilebufIO::~FilebufIO()
 {
-  detach();
+  try {
+    detach();
+  } catch (...) {}
 }
 
 

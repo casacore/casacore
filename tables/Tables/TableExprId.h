@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/stdvector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -59,6 +60,8 @@ class TableExprData;
 // Three types are available:
 // <ol>
 //  <li> A row number giving the row to test in a table.
+//       It also contains a sequence number (0..n) which is used to get the
+//       result calculated by aggregate functions.
 //  <li> A <linkto class=RecordInterface>RecordInterface</linkto>
 //       object giving the record to test.
 //  <li> A <linkto class=TableExprData>TableExprData</linkto>
@@ -95,6 +98,9 @@ class TableExprData;
 class TableExprId
 {
 public:
+    // Default constructor sets rownr to -1.
+    TableExprId();
+
     // Construct it from a row number.
     TableExprId (uInt rowNumber);
 
@@ -103,6 +109,9 @@ public:
 
     // Construct it from pointers to data.
     TableExprId (const TableExprData& data);
+
+    ~TableExprId()
+    {}
 
     // Is the id given by row number?
     Bool byRow() const;
@@ -114,47 +123,52 @@ public:
     Bool byData() const;
 
     // Get the row number.
-    uInt rownr() const;
+    Int64 rownr() const;
 
     // Get the Record reference.
     const RecordInterface& record() const;
 
     // Get the data reference.
     const TableExprData& data() const;
-
     // Set the row number.
+
     void setRownr (uInt rownr);
 
     // Set the record.
     void setRecord (const RecordInterface&);
 
 private:
-    uInt                   row_p;
-    const RecordInterface* record_p;
-    const TableExprData*   data_p;
+    Int                          type_p;
+    union {
+      Int64                      row_p;
+      const RecordInterface*     record_p;
+      const TableExprData*       data_p;
+    };
 };
 
 
 
+inline TableExprId::TableExprId()
+  : type_p (0),
+    row_p  (-1)
+{}
+
 inline TableExprId::TableExprId (uInt rowNumber)
-: row_p    (rowNumber),
-  record_p (0),
-  data_p   (0)
+  : type_p (0),
+    row_p  (rowNumber)
 {}
 
 inline TableExprId::TableExprId (const RecordInterface& record)
-: row_p    (32768*32768),
-  record_p (&record),
-  data_p   (0)
+  : type_p   (-1),
+    record_p (&record)
 {}
 
 inline TableExprId::TableExprId (const TableExprData& data)
-: row_p    (32768*32768),
-  record_p (0),
-  data_p   (&data)
+  : type_p (-2),
+    data_p (&data)
 {}
 
-inline uInt TableExprId::rownr() const
+inline Int64 TableExprId::rownr() const
 {
     return row_p;
 }
@@ -181,20 +195,18 @@ inline void TableExprId::setRecord (const RecordInterface& record)
 
 inline Bool TableExprId::byRow() const
 {
-    return record_p == 0  &&  data_p == 0;
+    return type_p >= 0;
 }
 
 inline Bool TableExprId::byRecord() const
 {
-    return record_p != 0;
+    return type_p == -1;
 }
 
 inline Bool TableExprId::byData() const
 {
-    return data_p != 0;
+    return type_p == -2;
 }
-
-
 
 
 } //# NAMESPACE CASA - END

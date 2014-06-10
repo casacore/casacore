@@ -103,7 +103,7 @@ int main()
     {
       //get the values now
       Table tab("dVarRefMdirCol_tmp.tab");
-      MDirection::ROScalarColumn tmpCol(tab, "PHASE_CENTER");
+      MDirection::ScalarColumn tmpCol(tab, "PHASE_CENTER");
       for(uInt k =0 ; k < 4; ++k){
 	String Ref = tmpCol(k).getRefString();
 	MVAngle mvRA=tmpCol(k).getAngle().getValue()(0);

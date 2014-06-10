@@ -4,23 +4,28 @@
 # be deleted on exit.
 #=============================================================================
 
-# One argument can be given to this script, which will preceed the tTableGram
-# command. This can be used to run e.g. valgrind on it.
+# If the first argument given to the script is 1, it will only create the
+# tTableGram_tmp.tab tables and not execute the tTableGram commands.
+
 
 # Set default testsrcdir if undefined.
 if test "$testsrcdir" = ""; then
   testsrcdir=../../../../../casacore/tables/Tables/test
 fi
 
-# Use table tTable_2.data_v0 as the input bycopying it (twice).
+# Use table tTable_2.data_v0 as the input by copying it (twice).
 rm -rf tTableGram_tmp.tab*
 mkdir tTableGram_tmp.tab
 cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
 chmod 644 tTableGram_tmp.tab/*
 cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
 
+if test "$1" = 1; then
+  exit 0;
+fi
 
-# Whitespace around * had to be removed to avoid file name expansion by shell.
+
+# Whitespace around * cannot be used to avoid file name expansion by shell.
 
 # First do the tests of unit handling.
 $casa_checktool ./tTableGram 0
@@ -59,7 +64,7 @@ $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where arr1[1,
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where cos(2d0m) <= sin(-2d0m)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d0m - ac/180*pi())'
 
-$casa_checktool ./tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910'
+$casa_checktool ./tTableGram 'select ab,ac,ad,ae,af,ag from tTableGram_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-1960) + year("31Dec60") + month(1990/05/12) + day(date(1990/01/30/12h14m33.3)) - 3910'
 
 $casa_checktool ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where ab>5 orderby af desc, ac'
 

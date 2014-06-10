@@ -123,13 +123,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </ul>
 // This class should not be used with other template types and does nothing
 // except return its template type if it is used. ie. <br>
-// <src>NumericTraits<ArbitraryType>::ConjugateType</src> returns 
+// <src>NumericTraits<ArbitraryType>\::ConjugateType</src> returns 
 //   <src>Char</src> and <br>
-// <src>NumericTraits<ArbitraryType>::PrecisionType</src> returns 
+// <src>NumericTraits<ArbitraryType>\::PrecisionType</src> returns 
 //   <src>Char</src><br>
-// <src>NumericTraits<ArbitraryType>::epsilon</src> is undefined<br>
-// <src>NumericTraits<ArbitraryType>::minimum</src> is undefined<br>
-// <src>NumericTraits<ArbitraryType>::maximum</src> is undefined
+// <src>NumericTraits<ArbitraryType>\::epsilon</src> is undefined<br>
+// <src>NumericTraits<ArbitraryType>\::minimum</src> is undefined<br>
+// <src>NumericTraits<ArbitraryType>\::maximum</src> is undefined
 // </synopsis>
 //
 // <example>
@@ -192,13 +192,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </srcblock>
 
 // <dl>
-// <dt><src>NumericTraits<T>::epsilon</src> 
+// <dt><src>NumericTraits<T>\::epsilon</src> 
 // <dd> is FLT_EPSILON for Float and Complex types and DBL_EPSILON for Double
 // and DComplex data types.
-// <dt><src>NumericTraits<T>::minimum</src>
+// <dt><src>NumericTraits<T>\::minimum</src>
 // <dd>is FLT_MIN for Float and complex Types and DBL_MIN for Double and
 // DComplex data types.
-// <dt><src>NumericTraits<T>::maximum</src>
+// <dt><src>NumericTraits<T>\::maximum</src>
 // <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
 // DComplex data types.
 // </dl>

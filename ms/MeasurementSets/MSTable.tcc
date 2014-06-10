@@ -51,7 +51,7 @@ SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther);
 template <class ColEnum, class KeyEnum> 
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p("");
 template <class ColEnum, class KeyEnum> 
-SimpleCountedConstPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
+CountedPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
 #endif
 
 

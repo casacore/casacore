@@ -63,7 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <example>
 // <srcblock>
 //    // Create a file (which should not exist yet).
-//    LargeRegularFileIO regio (RegularFile("file.name"), ByeIO::NewNoReplace);
+//    LargeRegularFileIO regio (RegularFile("file.name"), ByteIO::NewNoReplace);
 //    // Use that as the sink of AipsIO.
 //    AipsIO stream (&regio);
 //    // Write values.

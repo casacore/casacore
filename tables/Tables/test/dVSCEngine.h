@@ -144,10 +144,8 @@ private:
     String xTargetName_p;
     String yTargetName_p;
     // Objects for the target columns.
-    ScalarColumn<Int>     colx;
-    ROScalarColumn<Int>   rocolx;
-    ScalarColumn<float>   coly;
-    ROScalarColumn<float> rocoly;
+    ScalarColumn<Int>   colx;
+    ScalarColumn<float> coly;
 
 public:
     //*display 4

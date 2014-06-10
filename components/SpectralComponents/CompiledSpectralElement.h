@@ -43,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -80,9 +80,16 @@ public:
 	CompiledSpectralElement &operator=(
 		const CompiledSpectralElement& other
 	);
+
+	/*
+	Bool operator==(
+		const CompiledSpectralElement& other
+	) const;
+*/
+	/*
 	// Evaluate the value of the element at x
 	virtual Double operator()(const Double x) const;
-
+*/
 
 	// Get the string of a compiled functional
 	const String& getFunction() const;
@@ -95,12 +102,24 @@ protected:
 
 	CompiledSpectralElement();
 
+	// For subclasses. Parameters and function must be set after construction.
+	explicit CompiledSpectralElement(
+		SpectralElement::Types type, const Vector<Double>& param=Vector<Double>(0)
+	);
+
+	CompiledSpectralElement(
+		SpectralElement::Types type, uInt nParam
+	);
+
 	virtual void _setFunction(const String& function);
 
+	/*
 private:
 	// The string value for compiled functional
 	String _function;
+	*/
 };
+
 
 //# Global functions
 // <summary> Global functions </summary>

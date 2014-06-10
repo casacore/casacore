@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
+#include <casa/Utilities/Sort.h>
 #include <casa/Utilities/Compare.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -68,12 +69,13 @@ template<class T> class Block;
 // by iterating over columns time and baseline (as shown in the example).
 // The main iteration column must be given first.
 // It is possible to define an iteration order per column.
-// It is also possible to define a compare object per column.
-// This can, for example, be used to iterate in intervals by treating
-// a range of values as equal (e.g. iterate in 60 seconds time intervals).
+// <br>It is also possible to define a compare object per column.
+// For example, CompareIntervalReal can be used to iterate in intervals
+// over, say, the TIME column by treating a range of values as equal
+// (e.g. iterate in 60 seconds time intervals).
 //
-// Currently the table is sorted before doing the iteration.
-// This may change in the future when, for example, indices are supported.
+// The table is sorted before doing the iteration unless TableIterator::NoSort
+// is given.
 // </synopsis> 
 
 // <example>
@@ -117,9 +119,13 @@ class TableIterator
 public:
 
     // Define the possible iteration orders.
-    enum Order {Ascending=-1, Descending=1};
+    enum Order {Ascending=Sort::Ascending, Descending=Sort::Descending};
     // Define the possible sorts.
-    enum Option {QuickSort, HeapSort, InsSort, NoSort};
+    enum Option {QuickSort= Sort::QuickSort,
+                 HeapSort = Sort::HeapSort,
+                 InsSort  = Sort::InsSort,
+                 ParSort  = Sort::ParSort,
+                 NoSort   = 64};
 
     // Create a null TableIterator object (i.e. no iterator is attached yet).
     // The sole purpose of this constructor is to allow construction
@@ -140,27 +146,31 @@ public:
     // functions than the standard ones defined in Compare.h.
     // The compare functions are used for both the sort and the iteration.
     // The option argument makes it possible to choose from various
-    // sorting algorithms. Usually QuickSort is the fastest, but for
-    // some ill-conditioned input HeapSort performs much better.
-    // InsSort (insertion sort) should only be used when the input
+    // sorting algorithms. Usually ParSort is the fastest, but for
+    // a single core machine QuickSort usually performs better.
+    // InsSort (insertion sort) should only be used if the input
     // is almost in order.
-    // When the table is already in order, the sort step can be bypassed
-    // by giving the option TableIterator::NoSort.
-    // The default option is HeapSort.
+    // If it is known that the table is already in order, the sort step can be
+    // bypassed by giving the option TableIterator::NoSort.
+    // The default option is ParSort.
     // <group>
     TableIterator (const Table&, const String& columnName,
-		   Order = Ascending, Option = HeapSort);
+		   Order = Ascending, Option = ParSort);
     TableIterator (const Table&, const Block<String>& columnNames,
-		   Order = Ascending, Option = HeapSort);
+		   Order = Ascending, Option = ParSort);
     // Give the iteration order per column.
+    // <note>If an interval comparison object like CompareIntervalReal
+    // is used, the data are sorted on the interval, not on the value.
+    // One should consider to do an explicitsort on value and no iteration sort.
+    // </note>
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const Block<Int>& orders, Option = HeapSort);
+		   const Block<Int>& orders, Option = ParSort);
     // Give the iteration order per column.
     // Give an optional compare object per column.
     // A zero pointer means that the default compare function will be used.
     TableIterator (const Table&, const Block<String>& columnNames,
 		   const Block<CountedPtr<BaseCompare> >&,
-		   const Block<Int>& orders, Option = HeapSort);
+		   const Block<Int>& orders, Option = ParSort);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -215,6 +225,7 @@ inline void TableIterator::operator++()
 
 inline void TableIterator::operator++(int)
     { next(); }
+
 
 
 

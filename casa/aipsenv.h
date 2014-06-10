@@ -1,4 +1,4 @@
-//# aipsenv.h: Global initialization for special aips++ macros
+//# aipsenv.h: Global initialization for special Casacore macros
 //# Copyright (C) 2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,12 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// AIPS++ project compiler
+// Set if compiler supports C++11.
+#if _cplusplus == 201103L
+#define AIPS_CXX11
+#endif
+
+// Set if GCC compiler is used.
 #if defined(AIPS_GCC)
 #undef AIPS_GCC
 #endif
@@ -214,22 +219,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 # endif
 #endif
 
-// Add other platforms here
-#if (defined(AIPS_LINUX) || defined(AIPS_DARWIN) || defined(AIPS_BSD))
-#if !defined(AIPS_AUTO_STL)
-#define AIPS_AUTO_STL
-#endif
-#if !defined(AIPS_STDLIB)
-#define AIPS_STDLIB
-#endif
-#endif
-
-// Only use multi-threading if USE_THREADS is defined.
-#ifndef USE_THREADS
-# ifdef USE_MULTI_THREADING
-#  undef USE_MULTI_THREADING
-# endif
-#endif
 
 } //# NAMESPACE CASA - END
 #endif

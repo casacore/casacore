@@ -61,7 +61,7 @@ class Unit;
 // </prerequisite>
 //
 // <etymology> 
-// CoordinateUtils follows the AIPS++ naming convention for static functions
+// CoordinateUtils follows the Casacore naming convention for static functions
 // that are associated with a class.
 // </etymology>
 //
@@ -89,7 +89,7 @@ class Unit;
 // <li> <src>addFreqAxis</src> this adds a spectral axis with a reference
 // frequency of 1.415GHz on channel 0. The channel bandwidth (pixel
 // increment) is 1kHz, and the reference frame is the kinematical Local Standard of
-// rest (<linkto class="MFrequency">MFrequency</linkto>::LSRK). 
+// rest (<linkto class="MFrequency">MFrequency</linkto>\::LSRK). 
 // </ul>
 //
 // The <src>defaultCoords</src> functions, create from scratch a
@@ -137,7 +137,7 @@ class Unit;
 // remove one axis, all the rest shuffle down one, so it is
 // provided here.  Generally, one only needs to remove one axis
 // (in which case you should use the CoordinateSystem::removeWorldAxis and
-// CoordinateSystem::removcePixelAxis functions), but on occaision,
+// CoordinateSystem::removePixelAxis functions), but on occasion,
 // the multiple need is there.
 // </synopsis>
 //
@@ -340,8 +340,13 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 // Physically (nont just virtually) drop coordinates from the CoordinateSystem
 // if all axes are fully removed. For coordinates with axes partially removed
 // (world/pixel) preserve that removal state in the output CS.  No effort
-// is made to deal in any way with transposed systems.
-static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& cSysIn);
+// is made to deal in any way with transposed systems, unless
+// <src>perserveAxesOrder</src> is True. In that case the ordering of the
+// axes of the output coordinate system will be the same as the input
+// cSysIn (sans dropped axes of course).
+static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
+                             const CoordinateSystem& cSysIn,
+                             Bool preserveAxesOrder=False);
 
 // Setup Measures conversion machine for MDirections.
 // Returns True if the machine was needed and set.  Returns False
@@ -424,15 +429,21 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 // For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
-                                 const String& unit, const String& doppler);
+                                 const String& unit, const String& spcquant);
 
+// Set rest frequency of SpectralCoordinate in CoordinateSystem.
+// Unit must be consistent with Hz or m.
+// Returns False if invalid inputs (and CS not changed) and an error message.
+   static Bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+   		                        const String& unit,
+   		                        const Double& value);
 
 // Set velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent m/s and the doppler a valid MDoppler string.
 // For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
-                                 const String& unit, const String& doppler);
+                                 const String& unit, const String& spcquant);
 
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
@@ -445,7 +456,7 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 // Unit can be consistent with Hz or m/s
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setSpectralFormatting (String& errorMsg, CoordinateSystem& cSys, 
-                                      const String& unit, const String& doppler);
+                                      const String& unit, const String& spcquant);
 
 // Convert an absolute pixel coordinate to world and format with 
 // default Coordinate formatting

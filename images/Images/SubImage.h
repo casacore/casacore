@@ -32,6 +32,7 @@
 //# Includes
 #include <images/Images/ImageInterface.h>
 #include <casa/Arrays/AxesSpecifier.h>
+#include <memory>    // for auto_ptr
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -94,10 +95,16 @@ public:
   // while for the non-const version one has to specify if the SubImage
   // should be writable (if the original image is non-writable, the
   // SubImage is always set to non-writable).
+  // <br>If preserveAxesOrder is True, the axes order will be preserved. This
+  // is only important in cases where pixel axes are to be dropped, if not
+  // the axes order will be preserved. If False and pixel axes are dropped,
+  // the order of the coordinates will be preserved, but not necessarily
+  // the axes.
   // <group>
-  SubImage (const ImageInterface<T>& image, AxesSpecifier=AxesSpecifier());
+  SubImage (const ImageInterface<T>& image,
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   SubImage (ImageInterface<T>& image, Bool writableIfPossible,
-	    AxesSpecifier=AxesSpecifier());
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   // </group>
 
   // Create a SubImage from the given Image and region.
@@ -105,9 +112,10 @@ public:
   // differs from the shape of the image.
   // <group>
   SubImage (const ImageInterface<T>& image, const LattRegionHolder& region,
-	    AxesSpecifier=AxesSpecifier());
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   SubImage (ImageInterface<T>& image, const LattRegionHolder& region,
-	    Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+	    Bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   // </group>
   
   // Create a SubImage from the given Image and slicer.
@@ -115,32 +123,15 @@ public:
   // <br>An exception is thrown if the slicer exceeds the image shape.
   // <group>
   SubImage (const ImageInterface<T>& image, const Slicer& slicer,
-	    AxesSpecifier=AxesSpecifier());
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   SubImage (ImageInterface<T>& image, const Slicer& slicer,
-	    Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+	    Bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
   // </group>
   
   // Copy constructor (reference semantics).
   SubImage (const SubImage<T>& other);
     
-  // Factory method to create a SubImage from a region and a WCLELMask string.
-  // <br><src>outRegion</src> Pointer to the corresponding region. Pointer is
-  // created internally by new(); it's the caller's responsibility to delete it.  // <br><src>outMask</src> Pointer to corresponding mask. Pointer is created
-  // internally via new(); it is the caller's responsibility to delete it.
-  // <br><src>inImage</src> input image for which a subimage is desired.
-  // <br><src>region</src> Input region record from which to make the subimage.
-  // <br><src>mask</src> LEL mask description.
-  // <br><src>os</src> Pointer to logger to which to log messages.
-  // If 0, no logging (except exceptions).
-  // <br><src>writableIfPossible</src> make the subimage writable.
-  // If input image is not writable, this will always be False.
-  // <br><src>axesSpecifier</src> Specifier for output axes (duh).
-  static SubImage<T>
-  createSubImage (ImageRegion*& outRegion, ImageRegion*& outMask,
-                  ImageInterface<T>& inImage, const Record& region,
-                  const String& mask, LogIO *os, Bool writableIfPossible,
-                  const AxesSpecifier& axesSpecifier=casa::AxesSpecifier());
-
   virtual ~SubImage();
 
   // Assignment (reference semantics).
@@ -262,13 +253,20 @@ public:
 private:
   // Set the coordinates.
   // It removes world axes if the subimage has axes removed.
+  // <br>If preserveAxesOrder is True and axes are dropped, it will preserve
+  // the order of the axes as well as the order of the coordinates.
+  void setCoords (const CoordinateSystem& coords, Bool preserveAxesOrder);
   void setCoords (const CoordinateSystem& coords);
 
-  // Set the other members in the parent.
-  void setMembers (const ImageInterface<T>& image);
+  // Set the other members to the one in itsImagePtr.
+  void setMembers();
+
+  // Set the members to the subset (in particular, the beamset).
+  void setMembers (const Slicer& slicer);
 
   // Helper
    void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
+
 
   //# itsImagePtr points to the parent image.
   ImageInterface<T>* itsImagePtr;

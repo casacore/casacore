@@ -124,7 +124,7 @@ String removeDir (const String& msg)
 template<typename T>
 void readSca (const Table& tab)
 {
-  ROScalarColumn<T> col(tab, "scacol");
+  ScalarColumn<T> col(tab, "scacol");
   uInt nrow = tab.nrow();
   for (uInt i=0; i<nrow; ++i) {
     cout << col.get(i) << " ";
@@ -137,7 +137,7 @@ void readSca (const Table& tab)
 template<typename T>
 void readArr (const Table& tab)
 {
-  ROArrayColumn<T> col(tab, "arrcol");
+  ArrayColumn<T> col(tab, "arrcol");
   uInt nrow = tab.nrow();
   for (uInt i=0; i<nrow; ++i) {
     cout << col.get(i) << endl;

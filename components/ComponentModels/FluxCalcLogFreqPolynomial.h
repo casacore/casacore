@@ -28,7 +28,8 @@
 #define COMPONENTS_FLUXCALCLOGFREQPOLYNOMIAL_H
 
 #include <components/ComponentModels/FluxStandard.h>
-#include <components/ComponentModels/FluxCalcQS.h>
+//#include <components/ComponentModels/FluxCalcQS.h>
+#include <components/ComponentModels/FluxCalcVQS.h>
 #include <casa/BasicSL/String.h>
 #include <measures/Measures/MFrequency.h>
 
@@ -57,7 +58,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <synopsis>
 // The FluxCalcLogFreqPolynomial class provides machinery to compute total flux
-// densities for specified non-variable sources where the flux density is well
+// densities for specified (variable or non-variable) sources where the flux density is well
 // described by a low order polynomial of log(frequency).
 // </synopsis>
 //
@@ -76,12 +77,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 //
 
-class FluxCalcLogFreqPolynomial : public virtual FluxCalcQS {
+class FluxCalcLogFreqPolynomial : public virtual FluxCalcVQS {
 public:
   // Some abbreviations, since the classes derived from this have to
   // define many polynomial coefficients.
   typedef RigidVector<Float, 3> RVF3;
   typedef RigidVector<Float, 4> RVF4;
+  typedef RigidVector<Float, 5> RVF5;
   
   // Set the log10(frequency) polynomial coefficients for calculating the flux
   // density and its uncertainty, and the unit (typically "MHz" or "GHz") that
@@ -92,11 +94,12 @@ public:
   //                          const Vector<Double>& errcoeffs);
 
   // Set value and error with the expected flux density and its uncertainty
-  // (0.0 if unknown) at mfreq.
+  // (0.0 if unknown) at mfreq. Set updatecoeffs = True if the source considered to be
+  //  time variable.
   virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
-                          const MFrequency& mfreq);
+                          const MFrequency& mfreq, const Bool updatecoeffs=False);
 
-  virtual Bool setSource(const String& sourceName);
+  virtual Bool setSource(const String& sourceName, const MDirection& sourceDir);
   void setFreqUnit(const String& freqUnit);
 
   // Functions for setting up coeffs_p by taking a bunch of numbers
@@ -128,6 +131,7 @@ private:
 
   // The frequency unit (e.g. "MHz" or "GHz") assumed by coeffs_p.
   String freqUnit_p;
+
 };
 
 // <summary> 
@@ -176,13 +180,72 @@ public:
                         const RigidVector<Float, lford>& hirv);
 
   virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
-                          const MFrequency& mfreq);
+                          const MFrequency& mfreq, const Bool updatecoeffs);
 private:
   MFrequency    break_freq_p;
   Bool          in_low_state_p;
   Vector<Float> low_coeffs_p;
   Vector<Float> high_coeffs_p;
 };
+
+// <summary>
+// FluxCalcLogFreqPolynomialSH: Implementation base class for flux standards
+// which are polynomials of log10(frequency) following Scaife & Heald (2012).
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+
+// <prerequisite>
+// <li><linkto class="FluxCalcLogFreqPolynomial">FluxCalcLogFreqPolynomial</linkto> module
+// </prerequisite>
+//
+// <etymology>
+// From FluxCalcLogFreqPolynomial  and Scaife-Heald (SH).
+// </etymology>
+//
+// <synopsis>
+// The FluxCalcLogFreqPolynomial class extends FluxCalcLogFreqPolynomial
+// to enable the use of polynomial coefficients a la Scaife & Heald (2012).
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+// The Scaife & Heald (2012) models can used to calibrate broadband
+// low-frequency radio observations (<~500 MHz).
+// </motivation>
+class FluxCalcLogFreqPolynomialSH : public virtual FluxCalcVQS {
+public:
+  typedef RigidVector<Float, 2> RVF2;
+  typedef RigidVector<Float, 3> RVF3;
+  typedef RigidVector<Float, 4> RVF4;
+  typedef RigidVector<Float, 5> RVF5;
+
+  //virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
+  //                        const MFrequency& mfreq);
+
+  virtual Bool operator()(Flux<Double>& value, Flux<Double>& error,
+                          const MFrequency& mfreq, const Bool /* updatecoeffs */);
+
+  virtual Bool setSource(const String& sourceName, const MDirection& sourceDir);
+
+  void setFreqUnit(const String& freqUnit);
+
+  template<Int lford, Int errord>
+  void fill_coeffs(const RigidVector<Float, lford>& lfrv,
+                   const RigidVector<Float, errord>& errrv);
+
+private:
+  virtual Bool setSourceCoeffs() = 0;
+  RigidVector<Vector<Float>, 2> coeffs_p;
+  String freqUnit_p;
+};
+
 
 } //# NAMESPACE CASA - END
 

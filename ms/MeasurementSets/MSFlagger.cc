@@ -735,7 +735,7 @@ Bool MSFlagger::createFlagHistory(Int nHis)
       // get the hypercube ids, sort them, remove the duplicate values
       ROScalarColumn<Int> hypercubeId(tab,flagHypercubeId);
       Vector<Int> ids=hypercubeId.getColumn();
-      Int nId=genSort(ids,Sort::QuickSort+Sort::NoDuplicates);
+      Int nId=genSort(ids,Sort::Ascending,Sort::QuickSort+Sort::NoDuplicates);
       ids.resize(nId,True); // resize and copy values
       Vector<Bool> cubeAdded(nId,False);
       Record values1; 

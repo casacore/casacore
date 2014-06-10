@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class String;
 class FitsOutput;
 class MeasurementSet;
-template<class T> class ROScalarColumn;
+template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
 template<class T> class Vector;
@@ -50,31 +50,32 @@ template<class T> class Vector;
 class MSFitsOutput
 {
 public:
-  /** Convert a MeasurementSet to random group UVFITS.
-      @param fitsfile      Output filename
-      @param ms            input
-      @param column        specifies which "data" column to write
-                           ("observed", "calibrated", "model")
-      @param startchan     1st channel
-      @param nchan         # of channels
-      @param stepchan      # of channels to stride by
-      @param writeSysCal   whether to write the system calibration table
-      @param asMultiSource If true a multi-source UVFits file is written.
-      @param combineSpw    If true it attempts to write the spectral windows as
-                           IFs.  This is necessary for many aips tasks, and difmap.
-      @param writeStation  If true uses pad instead of antenna names.
-      @param sensitivity   
-      @param padWithFlags  If true and combineSpw==true, fill spws with flags
-                           as needed to fit the IF structure.  Does not yet
-                           support spws with different shapes.
-  */
+  // Convert a MeasurementSet to random group UVFITS.
+  //  @param fitsfile      Output filename
+  //  @param ms            input
+  //  @param column        specifies which "data" column to write
+  //                       ("observed", "calibrated", "model")
+  //  @param startchan     1st channel
+  //  @param nchan         # of channels
+  //  @param stepchan      # of channels to stride by
+  //  @param writeSysCal   whether to write the system calibration table
+  //  @param asMultiSource If true a multi-source UVFits file is written.
+  //  @param combineSpw    If true it attempts to write the spectral windows as
+  //                       IFs.  This is necessary for many aips tasks, and
+  //                       for difmap.
+  //  @param writeStation  If true uses pad instead of antenna names.
+  //  @param sensitivity   
+  //  @param padWithFlags  If true and combineSpw==true, fill spws with flags
+  //                       as needed to fit the IF structure.  Does not yet
+  //                       support spws with different shapes.
+  //  @param avgchan       average every N channels
   static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
-			    const String& column, Int startchan=-1, 
-			    Int nchan=-1, Int stepchan=-1, 
+			    const String& column, Int startchan=0, 
+			    Int nchan=1, Int stepchan=1, 
 			    Bool writeSysCal = False,
 			    Bool asMultiSource = False, Bool combineSpw=False,
 			    Bool writeStation=False, Double sensitivity = 1.0,
-                            const Bool padWithFlags=false);
+                            const Bool padWithFlags=false, Int avgchan = 1);
 
 private:
   // Write the main table.
@@ -96,6 +97,7 @@ private:
   //    @param combineSpw     If true, export the spectral window(s) as IF(s).
   //    @param padWithFlags   If true && combineSpw==true, pad the spws with
   //                          flags as necessary to fit the IF structure.
+  //    @param avgchan        average every N channels
   static FitsOutput *writeMain(Int& refPixelFreq, Double& refFreq,
 			       Double& chanbw,
 			       const String& outFITSFile,
@@ -107,7 +109,8 @@ private:
 			       const Block<Int>& fieldidMap,
 			       Bool asMultiSource,
 			       const Bool combineSpw,
-                               const Bool padWithFlags=true);
+                               const Bool padWithFlags=true,
+                               Int avgchan=1);
 
   // Write the FQ table.
   // If combineSpw is True, all spectral-windows are written in one
@@ -115,7 +118,9 @@ private:
   static Bool writeFQ(FitsOutput *output, const MeasurementSet& ms, 
 		      const Block<Int>& spwidMap, Int nrspw,
 		      Double refFreq, Int refPixelFreq, 
-		      Double chanbw, Bool combineSpw);
+		      Double chanbw, Bool combineSpw, 
+                      Int chanstart = 0, Int nchan = -1, Int chanstep = 1, 
+                      Int avgchan = 1);
 
   // Write the AN table.
   static Bool writeAN(FitsOutput *output, const MeasurementSet& ms,
@@ -187,12 +192,12 @@ private:
   //    @warning Assumes that the columns are sorted by time(_centroid), ant1,
   //             ant2 (, field, DDID).
   static uInt get_tbf_end(const uInt rownr, const uInt nrow, const uInt nif,
-                          const ROScalarColumn<Double>& timec,
-                          const ROScalarColumn<Double>& ininterval,
-                          const ROScalarColumn<Int>& ant1,
-                          const ROScalarColumn<Int>& ant2,
+                          const ScalarColumn<Double>& timec,
+                          const ScalarColumn<Double>& ininterval,
+                          const ScalarColumn<Int>& ant1,
+                          const ScalarColumn<Int>& ant2,
                           const Bool asMultiSource,
-                          const ROScalarColumn<Int>& fieldid);
+                          const ScalarColumn<Int>& fieldid);
 };
 
 

@@ -33,6 +33,7 @@
 #include <casa/IO/LargeFilebufIO.h>
 #include <casa/OS/Path.h>
 #include <casa/OS/DOos.h>
+#include <casa/Logging/LogIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <sys/types.h>
@@ -63,7 +64,7 @@ BucketFile::BucketFile (const String& fileName,
   bufferedFile_p (0)
 {
     // Create the file.
-    fd_p = ::trace3OPEN ((Char *)name_p.chars(), O_RDWR | O_CREAT | O_TRUNC, 0644);
+    fd_p = ::trace3OPEN ((Char *)name_p.chars(), O_RDWR | O_CREAT | O_TRUNC, 0666);
     if (fd_p < 0) {
 	throw (AipsError ("BucketFile: create error on file " + name_p +
 			  ": " + strerror(errno)));
@@ -199,10 +200,20 @@ Int64 BucketFile::fileSize () const
 {
     // If a buffered file is used, seek in there. Otherwise its internal
     // offset is wrong.
+    Int64 size;
     if (bufferedFile_p != 0) {
-        return bufferedFile_p->seek (0, ByteIO::End);
+        size = bufferedFile_p->seek (0, ByteIO::End);
+    } else {
+        size = ::traceLSEEK (fd_p, 0, SEEK_END);
     }
-    return ::traceLSEEK (fd_p, 0, SEEK_END);
+    if (size < 0){
+        LogIO logIo (LogOrigin ("BucketFile", "fileSize"));
+        logIo << LogIO::WARN;
+        logIo << "lseek failed for " << name() << ": errno=" << errno
+              << "'" << strerror(errno) << "'\n";
+        logIo << LogIO::POST;
+    }
+    return size;
 }
 
 } //# NAMESPACE CASA - END

@@ -132,7 +132,7 @@ RefRows& RefRows::operator= (const RefRows& other)
 	itsRows.resize (other.itsRows.nelements());
 	itsRows   = other.itsRows;
 	itsNrows  = other.itsNrows;
-	itsSliced = itsSliced;
+	itsSliced = other.itsSliced;
     }
     return *this;
 }

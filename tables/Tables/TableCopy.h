@@ -125,17 +125,22 @@ public:
 
   // Copy all subtables (in table and column keywords) from input to
   // output table.
+  // Subtables of which the keyword name matches an omit value are skipped.
   // Optionally the row contents are not copied.
-  static void copySubTables (Table& out, const Table& in, Bool noRows=False);
+  static void copySubTables (Table& out, const Table& in, Bool noRows=False,
+			     const Block<String>& omit=Block<String>());
 
   // Copy the subtables in the given keywordset to the output keywordset
   // in the table with the given name.
+  // Subtables of which the keyword name matches an omit value are skipped.
+  // Optionally the row contents are not copied.
   static void copySubTables (TableRecord& outKeys,
 			     const TableRecord& inKeys,
 			     const String& outName,
 			     Table::TableType outType,
 			     const Table& in,
-			     Bool noRows=False);
+			     Bool noRows=False,
+			     const Block<String>& omit=Block<String>());
 
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
   // Since TiledShapeStMan does not support ID columns, they are

@@ -180,6 +180,11 @@ class MeasComet {
   // success.
   static Double get_Quantity_keyword(const TableRecord& ks, const String& kw,
 				     const Unit& unit, Bool& success);
+
+  // Convenience function that returns the absolute path to the ephemeris table
+  // connected to the MeasComet object
+  String getTablePath();
+
  private:
   
   //# General member functions

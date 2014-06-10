@@ -111,7 +111,7 @@ void ObjectID::toString(String &out) const
     ostringstream os;
     os << "sequence=" << sequence() << " host=" << hostName() <<
 	" pid=" << pid() << " time=" << creationTime();
-    out = os;
+    out = os.str();
 }
 
 static Bool toInt(Int &val, String &error, const String &in)

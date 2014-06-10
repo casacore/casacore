@@ -63,16 +63,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <reviewed reviewer="" date="yyyy/mm/dd" demos="">
 // </reviewed>
 
-// <etymology>
+//# <etymology>
 //#! Except when it is obvious (e.g., "Arrays") explain how the module name
 //#! expresses the role of this module.  Example: IPosition is short for
 //#! "Integral Position" - a specialized integer vector for specifying
 //#! array dimensions and indices.
-// </etymology>
+//# </etymology>
 //
 // <synopsis>
 
-// This module contains classes which parameterise emmision from the sky using
+// This module contains classes which parameterise emission from the sky using
 // relatively simple functions. 
 
 //#! What does the module do?  How?  For whom?   This should include code
@@ -81,28 +81,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //#! usually be dozens of lines long.
 // </synopsis>
 //
-// <example>
+//# <example>
 //#! One to many concise (~10-40 lines) examples, with a modest amount of
 //#! text to support code fragments.   Use <srcblock> and </srcblock> to
 //#! delimit example code.
-// </example>
+//# </example>
 //
-// <motivation>
+//# <motivation>
 //#! Insight into a module is often provided by a description of the
 //#! circumstances that led to its conception and design.  Describe
 //#! them here.
-// </motivation>
+//# </motivation>
 
-// <todo asof="yyyy/mm/dd">
+//# <todo asof="yyyy/mm/dd">
 //#! A List of bugs, limitations, extensions or planned refinements.
 //#! The programmer should fill in a date in the "asof" field, which
 //#! will usually be the date at which the class is submitted for review.
 //#! If, during the review, new "todo" items come up, then the "asof"
 //#! date should be changed to the end of the review period.
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> discuss possible extension
-// </todo>
+//#   <li> add this feature
+//#   <li> fix this bug
+//#   <li> discuss possible extension
+//# </todo>
 
 //#! The module header file can be a big convenience to client programmers,
 //#! because it allows them to use classes without studying them closely.

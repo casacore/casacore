@@ -364,21 +364,6 @@ public:
    // Return region type.  Returns the class name 
    virtual String type() const;
 
-   // Convert from/to boxit format string
-   String toBoxString() const;
-   static WCBox* fromBoxString(const String&, 
-                               const CoordinateSystem& cSys, String& err);
-
-   // FIXME: refactor to someplace more appropriate
-   // get/set chan extension
-   void setChanExt(const Double, const Double);
-   Bool getChanExt(Double&, Double&);
-
-   // FIXME: refactor to someplace more appropriate
-   // get/set pol extension
-   void setPolExt(const Double, const Double);
-   Bool getPolExt(Double&, Double&);
-
 private:
    Vector<Quantum<Double> > itsBlc;
    Vector<Quantum<Double> > itsTrc;
@@ -401,7 +386,6 @@ private:
                      const Int shape,
                      const Bool isBlc) const;
 
-   static void unitInit();
 };
 
 

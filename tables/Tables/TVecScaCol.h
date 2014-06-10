@@ -35,9 +35,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class ROTableColumn;
 class TableColumn;
-template<class T> class ROScalarColumn;
 template<class T> class ScalarColumn;
 class String;
 
@@ -94,11 +92,6 @@ protected:
 
 public:
     // Create a table vector from the given table column.
-    // This constructor is for ROTableVector and does not allow
-    // elements to be changed.
-    TabVecScaCol (const ROTableColumn& column);
-
-    // Create a table vector from the given table column.
     // This constructor is for TableVector and allows elements to be changed.
     TabVecScaCol (const TableColumn& column);
 
@@ -121,8 +114,7 @@ public:
     void set (const T&);
 
 protected:
-    ROScalarColumn<T>*  colPtr_p;
-    ScalarColumn<T>*    colPtrPut_p;
+    ScalarColumn<T>*  colPtr_p;
 };
 
 

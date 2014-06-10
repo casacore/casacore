@@ -40,7 +40,7 @@
 #include <casa/iostream.h>
 #include <casa/sstream.h>
 
-// PABLO_IO is used to profile the IO performance of the AIPS++ (in
+// PABLO_IO is used to profile the IO performance of the Casacore (in
 // particular to help us locate bottlenecks associated with parallel
 // processing)
 //
@@ -266,7 +266,8 @@ void LockFile::getInfo (MemoryIO& info)
     if (infoLeng > leng) {
 	infoLeng -= leng;
 	uChar* buf = new uChar[infoLeng];
-	read (itsLocker.fd(), buf, infoLeng);
+	AlwaysAssert (read (itsLocker.fd(), buf, infoLeng) == Int(infoLeng),
+                      AipsError);
 	info.write (infoLeng, buf);
 	delete [] buf;
     }
@@ -283,11 +284,14 @@ void LockFile::putInfo (const MemoryIO& info) const
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
     traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
     if (infoLeng > 1024 - leng) {
-	traceWRITE (itsLocker.fd(), (Char *)buffer, leng);
-	traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(), infoLeng);
+      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng) ==
+                    Int(leng), AipsError);
+      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(),
+                                infoLeng) == Int(infoLeng), AipsError);
     }else{
-	memcpy (buffer+leng, info.getBuffer(), infoLeng);
-	traceWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng);
+      memcpy (buffer+leng, info.getBuffer(), infoLeng);
+      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng)
+                    == Int(leng+infoLeng), AipsError);
     }
     fsync (itsLocker.fd());
 }
@@ -362,7 +366,8 @@ void LockFile::putReqId (int fd) const
 						    itsReqId.storage(),
 						    itsReqId.nelements());
 	traceLSEEK (fd, 0, SEEK_SET);
-	traceWRITE (fd, (Char *)buffer, leng);
+	AlwaysAssert (traceWRITE (fd, (Char *)buffer, leng) == Int(leng),
+                      AipsError);
 	fsync (fd);
     }
 }

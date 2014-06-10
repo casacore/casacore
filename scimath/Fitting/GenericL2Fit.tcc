@@ -347,8 +347,8 @@ fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
 
 template<class T>
 Bool GenericL2Fit<T>::
-fit(Vector<typename FunctionTraits<T>::BaseType> &sol,
-    const Vector<Bool> *const mask) {
+fit(Vector<typename FunctionTraits<T>::BaseType> &,
+    const Vector<Bool> *const) {
   throw(AipsError("GenericL2: A001: not implemented yet; ask Wim Brouw"));
   return False;
 }

@@ -94,7 +94,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // The destructor closes the HDF5 data type object.
     ~HDF5DataType();
 
-    // Get the AIPS++ data type for the given HDF5 data type.
+    // Get the Casacore data type for the given HDF5 data type.
     static DataType getDataType (hid_t);
 
     // Get the HID for the data type in memory.

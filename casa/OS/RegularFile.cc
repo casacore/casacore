@@ -125,7 +125,7 @@ void RegularFile::create (Bool overwrite)
 			      " already exists"));
 	}
     }
-    int fd = ::creat (itsFile.path().expandedName().chars(), 0644);
+    int fd = ::creat (itsFile.path().expandedName().chars(), 0666);
     if (fd < 0) {
 	throw (AipsError ("RegularFile::create error on " +
 			  itsFile.path().expandedName() +
@@ -154,7 +154,7 @@ void RegularFile::copy (const Path& target, Bool overwrite,
     String call("cp '");
     call += itsFile.path().expandedName() + "' '" +
             targetName.expandedName() + "'";
-    system (call.chars());
+    AlwaysAssert (system(call.chars()) == 0, AipsError);
     if (setUserWritePermission) {
 	File result(targetName.expandedName());
 	if (! result.isWritable()) {

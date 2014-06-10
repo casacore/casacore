@@ -61,7 +61,7 @@ void createTab()
 void readCellSlices()
 {
   Table tab("tArrayColumnSlices_tmp.data");
-  ROArrayColumn<float> arr1(tab, "arr1");
+  ArrayColumn<float> arr1(tab, "arr1");
   {
     // No axes, thus all entire axes.
     Vector<Vector<Slice> > slices;
@@ -114,7 +114,7 @@ void readCellSlices()
 void readColumnSlices()
 {
   Table tab("tArrayColumnSlices_tmp.data");
-  ROArrayColumn<float> arr1(tab, "arr1");
+  ArrayColumn<float> arr1(tab, "arr1");
   {
     // No axes, thus all entire axes.
     Vector<Vector<Slice> > slices;

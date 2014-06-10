@@ -27,8 +27,21 @@
 
 #include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/TableError.h>
+#include <casa/Utilities/Assert.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+TaQLStyle::TaQLStyle (uInt origin)
+  : itsOrigin    (origin),
+    itsEndExcl   (False),
+    itsCOrder    (False),
+    itsDoTiming  (False),
+    itsDoTracing (False)
+{
+  // Define mscal as a synonym for derivedmscal.
+  defineSynonym ("mscal", "derivedmscal");
+}
 
 void TaQLStyle::set (const String& value)
 {
@@ -53,6 +66,14 @@ void TaQLStyle::set (const String& value)
     itsEndExcl = False;
   } else if (val == "ENDEXCL") {
     itsEndExcl = True;
+  } else if (val == "TIME") {
+    itsDoTiming = True;
+  } else if (val == "NOTIME") {
+    itsDoTiming = False;
+  } else if (val == "TRACE") {
+    itsDoTracing = True;
+  } else if (val == "NOTRACE") {
+    itsDoTracing = False;
   } else {
     throw TableError(value + " is an invalid TaQL STYLE value");
   }
@@ -61,7 +82,32 @@ void TaQLStyle::set (const String& value)
 void TaQLStyle::reset()
 {
   set ("GLISH"); 
-  itsDoTiming = False;
+  itsDoTiming  = False;
+  itsDoTracing = False;
 }
+
+void TaQLStyle::defineSynonym (const String& synonym, const String& udfLibName)
+{
+  itsUDFLibNameMap[downcase(synonym)] = udfLibName;
+}
+
+void TaQLStyle::defineSynonym (const String& command)
+{
+  String cmd(command);  // to make it non-const
+  String::size_type pos = cmd.find ('=');
+  AlwaysAssert (pos != String::npos, AipsError);
+  defineSynonym (trim(String(cmd.before(pos))),
+                 trim(String(cmd.after(pos))));
+}
+
+String TaQLStyle::findSynonym (const String& synonym) const
+{
+  map<String,String>::const_iterator it = itsUDFLibNameMap.find (synonym);
+  if (it == itsUDFLibNameMap.end()) {
+    return synonym;
+  }
+  return it->second;
+}
+
 
 } //# NAMESPACE CASA - END

@@ -77,7 +77,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <motivation>
 // Originally, FITS error message were simply sent to an ostream.  In
-// order to have these error messages go to the AIPS++ logger by default,
+// order to have these error messages go to the Casacore logger by default,
 // this class was added.  This was made a separate class because both
 // BlockIo and FITS need to use this class.  The anticipated replacements 
 // for the current FITS classes use a somewhat similar scheme.

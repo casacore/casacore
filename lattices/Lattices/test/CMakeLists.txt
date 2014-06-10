@@ -34,6 +34,7 @@ tLatticeUtilities
 tLattStatsSpecialize
 tLCComplement
 tLCConcatenation
+tLCEllipsoid
 tLCDifference
 tLCExtension
 tLCIntersection

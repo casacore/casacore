@@ -66,7 +66,7 @@ const uInt N_FITS = 19;
 // </prerequisite>
 //
 // <etymology>
-// Based on Units and the Aips++ container classes called 'Map'
+// Based on Units and the Casacore container classes called 'Map'
 // </etymology>
 //
 // <synopsis> 

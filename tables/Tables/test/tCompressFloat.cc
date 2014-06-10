@@ -128,13 +128,35 @@ Bool checkData (Bool autoScale)
   Bool ok = True;
   // Read back the table.
   Table tab("tCompressFloat_tmp.data");
-  ROArrayColumn<Float> source1 (tab, "source1");
-  ROArrayColumn<Float> source2 (tab, "source2");
-  ROArrayColumn<Short> target1 (tab, "target1");
+  ArrayColumn<Float> source1 (tab, "source1");
+  ArrayColumn<Float> source2 (tab, "source2");
+  ArrayColumn<Short> target1 (tab, "target1");
   Cube<Short> arri1(IPosition(3,2,3,4));
   Cube<Short> arrvali(IPosition(3,2,3,4));
   Cube<Float> arrf1(IPosition(3,2,3,4));
   Cube<Float> arrvalf(IPosition(3,2,3,4));
+  RefRows refrows(1,9,2);
+  Slicer slicer(IPosition(3,0,1,0), IPosition(3,2,2,2), IPosition(3,1,1,2));
+  Array<Float> arrCol1 (source1.getColumn());
+  Array<Float> arrColSlice1 (source1.getColumn(slicer));
+  Array<Float> arrCells1 (source1.getColumnCells(refrows));
+  Array<Float> arrCellsSlice1 (source1.getColumnCells(refrows,slicer));
+  Array<Float> arrCol2 (source2.getColumn());
+  Array<Float> arrColSlice2 (source2.getColumn(slicer));
+  Array<Float> arrCells2 (source2.getColumnCells(refrows));
+  Array<Float> arrCellsSlice2 (source2.getColumnCells(refrows,slicer));
+  Slicer slicercol(IPosition(4,0,1,0,0), IPosition(4,2,2,2,10),
+                   IPosition(4,1,1,2,1));
+  Slicer slicercells(IPosition(4,0,0,0,1), IPosition(4,2,3,4,5),
+                     IPosition(4,1,1,1,2));
+  Slicer slicercsl (IPosition(4,0,1,0,1), IPosition(4,2,2,2,5),
+                    IPosition(4,1,1,2,2));
+  AlwaysAssertExit (allEQ(arrColSlice1,   arrCol1(slicercol)));
+  AlwaysAssertExit (allEQ(arrCells1,      arrCol1(slicercells)));
+  AlwaysAssertExit (allEQ(arrCellsSlice1, arrCol1(slicercsl)));
+  AlwaysAssertExit (allEQ(arrColSlice2,   arrCol2(slicercol)));
+  AlwaysAssertExit (allEQ(arrCells2,      arrCol2(slicercells)));
+  AlwaysAssertExit (allEQ(arrCellsSlice2, arrCol2(slicercsl)));
   uInt i=0;
   for (uInt i2=0; i2<4; i2++) {
     for (uInt i1=0; i1<3; i1++) {
@@ -145,6 +167,8 @@ Bool checkData (Bool autoScale)
       }
     }
   }
+  ArrayIterator<Float> iter1(arrCol1, 3);
+  ArrayIterator<Float> iter2(arrCol2, 3);
   for (i=0; i<10; i++) {
     cout << "get row " << i << endl;
     source1.get (i, arrvalf);
@@ -154,6 +178,8 @@ Bool checkData (Bool autoScale)
       cout << "Expected: " << arrf1 << endl;
       ok = False;
     }
+    AlwaysAssertExit (allEQ(arrvalf, iter1.array()));
+    AlwaysAssertExit (allEQ(arrvalf(slicer), source1.getSlice(i, slicer)));
     if (!autoScale) {
       target1.get (i, arrvali);
       if (!allEQ (arrvali, arri1)) {
@@ -170,8 +196,12 @@ Bool checkData (Bool autoScale)
       cout << "Expected: " << arrf1 << endl;
       ok = False;
     }
+    AlwaysAssertExit (allEQ(arrvalf, iter2.array()));
+    AlwaysAssertExit (allEQ(arrvalf(slicer), source2.getSlice(i, slicer)));
     arrf1 += (Float)(6*arrf1.nelements());
     arri1 += (Short)(3*arri1.nelements());
+    iter1.next();
+    iter2.next();
   }
   return ok;
 }
@@ -239,7 +269,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source1");
+      ArrayColumn<Float> source (tab, "source1");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -251,7 +281,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source2");
+      ArrayColumn<Float> source (tab, "source2");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -263,7 +293,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source3");
+      ArrayColumn<Float> source (tab, "source3");
       Cube<Float> arrvalf(IPosition(3,2,3,4));
       Timer timer;
       uInt nrow = tab.nrow();
@@ -275,7 +305,7 @@ void testSpeed()
     {
       // Time reading back column source1.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source1");
+      ArrayColumn<Float> source (tab, "source1");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -283,7 +313,7 @@ void testSpeed()
     {
       // Time reading back column source2.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source2");
+      ArrayColumn<Float> source (tab, "source2");
       Timer timer;
       source.getColumn();
       timer.show();
@@ -291,7 +321,7 @@ void testSpeed()
     {
       // Time reading back column source3.
       Table tab("tCompressFloat_tmp.data");
-      ROArrayColumn<Float> source (tab, "source3");
+      ArrayColumn<Float> source (tab, "source3");
       Timer timer;
       source.getColumn();
       timer.show();

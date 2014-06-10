@@ -27,6 +27,7 @@
 
 //# Includes
 #include <measures/Measures/MeasIERS.h>
+#include <tables/Tables/ScalarColumn.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Logging/LogIO.h>
@@ -52,6 +53,16 @@ const Double MeasIERS::INTV = 5;
 uInt MeasIERS::predicttime_reg = 0;
 uInt MeasIERS::notable_reg = 0;
 uInt MeasIERS::forcepredict_reg = 0;
+volatile Bool MeasIERS::needInit = True;
+Double MeasIERS::dateNow = 0.0;
+Vector<Double> MeasIERS::ldat[MeasIERS::N_Files][MeasIERS::N_Types];
+Bool MeasIERS::msgDone = False;
+const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
+uInt MeasIERS::sizeNote = 0;
+uInt MeasIERS::nNote = 0;
+MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
+Mutex MeasIERS::theirMutex;
+
 
 //# Member functions
 Bool MeasIERS::get(Double &returnValue,
@@ -59,46 +70,40 @@ Bool MeasIERS::get(Double &returnValue,
 		   MeasIERS::Types type, 
 		   Double date) {
   returnValue = 0.0;
-  if (!MeasIERS::predicttime_reg) {
-    predicttime_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.measiers.d_predicttime"),
-				      Unit("d"), Unit("d"),
-				      MeasIERS::INTV);
-    notable_reg = 
-      AipsrcValue<Bool>::registerRC(String("measures.measiers.b_notable"),
-				    False);
-    forcepredict_reg = 
-      AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
-				    False);
-  }
-  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) return True;
-  Bool res = True;
-  Double f;
-  if (!dateNow) dateNow = Time().modifiedJulianDay();
-  if (file == PREDICTED ||
-      AipsrcValue<Bool>::get(MeasIERS::forcepredict_reg) ||
-      (dateNow - date) <= 
-      AipsrcValue<Double>::get(MeasIERS::predicttime_reg)) {
-    res = False;			// do predict
-  }
-  MeasIERS::Files which = MeasIERS::MEASURED;
-  if (res) {
-    res = initMeas(which);
-    if (res) {
-      res = fillMeas(which, date);
+  if (needInit) {
+    ScopedMutexLock locker(theirMutex);
+    if (needInit) {
+      initMeas();
+      needInit = False;
     }
   }
-  if (!res) {				// Retry for predicted
-    which = MeasIERS::PREDICTED;
-    if (!initMeas(which)) return False;
-    if (!fillMeas(which, date)) {
+  // Exit if no table has to be used.
+  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) return True;
+  // Test if PREDICTED has to be used.
+  Int which = MEASURED;
+  if (file == PREDICTED ||
+      ldat[MEASURED][0].empty() ||
+      AipsrcValue<Bool>::get(MeasIERS::forcepredict_reg) ||
+      (dateNow-date) <= AipsrcValue<Double>::get(MeasIERS::predicttime_reg)) {
+    which = PREDICTED;
+  }
+
+  Int ut = ifloor(date);
+  if (which == MEASURED) {
+    const Vector<Double>& mjds = ldat[which][0];
+    if (ut < mjds[0]  ||  ut >= mjds[mjds.size()-1]) {
+      which = PREDICTED;
+    }
+  }
+  if (which == PREDICTED) {
+    const Vector<Double>& mjds = ldat[which][0];
+    if (mjds.empty()  ||  ut < mjds[0]  ||  ut >= mjds[mjds.size()-1]) {
       if (!msgDone) {
-	LogIO os(LogOrigin("MeasIERS",
-			   String("fillMeas(MeasIERS::Files, Double)"),
-			   WHERE));
+        LogIO os(LogOrigin("MeasIERS",
+                           String("fillMeas(MeasIERS::Files, Double)"),
+                           WHERE));
         Time now;       // current time
-        
-        if(date > now.modifiedJulianDay()){
+        if (date > now.modifiedJulianDay()){
           // People using times from the future are almost certainly simulating
           // data, and, even if they would be upset by the IERS table not being
           // available, there is not much they can do about it.
@@ -106,26 +111,29 @@ Bool MeasIERS::get(Double &returnValue,
              << "High precision Earth axis data is not yet available for requested JD "
              << date
              << LogIO::POST;
-        }
-        else{
+        } else {
           os << LogIO::NORMAL
              << "Requested JD " << date
              << " is outside the range of the IERS (Earth axis data) table." 	 
              << "\nCalculations will proceed with less precision"
              << LogIO::POST;
         }
-	msgDone = True;
+        msgDone = True;
       }
       return False;
     }
   }
   // Interpolation fraction
-  f = date - ldat[which][0];
-  returnValue = ldat[which+N_Files][type]*f - ldat[which][type]*(f-1.0);
-  return True;
+  Int indx = Int(date - ldat[which][0][0]);
+  if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
+    Double f = date - ldat[which][0][indx];
+    returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
+    return True;
+  }
+  return False;
 }
 
-Bool MeasIERS::initMeas(MeasIERS::Files which) {
+void MeasIERS::initMeas() {
   static const String names[MeasIERS::N_Types] = {
     "MJD",
     "x",
@@ -143,105 +151,94 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
   static const String tplc[N_Files] = {"measures.ierseop97.directory",
                                        "measures.ierspredict.directory"};
 
-  if (measFlag[which]) {
-    ScopedMutexLock locker(theirMutex);
-    if (measFlag[which]) {
-      TableRecord kws;
-      Double dt;
-      String vs;
-      Bool ok = True;
-      if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
-                              rfp[Int(which)], vs, dt, 
-                              N_Types, names, tp[which],
-                              tplc[which],
-                              "geodetic")) {
+  predicttime_reg = 
+    AipsrcValue<Double>::registerRC(String("measures.measiers.d_predicttime"),
+                                    Unit("d"), Unit("d"),
+                                    MeasIERS::INTV);
+  notable_reg = 
+    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_notable"),
+                                  False);
+  forcepredict_reg = 
+    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
+                                  False);
+  dateNow = Time().modifiedJulianDay();
+
+  TableRecord kws;
+  Table tab;
+  TableRow row;
+  RORecordFieldPtr<Double> rfp[N_Types];
+  Double dt;
+  String vs;
+  Bool ok = True;
+  for (Int which=0; which<N_Files; ++which) {
+    if (!MeasIERS::getTable(tab, kws, row,
+                            rfp, vs, dt, 
+                            N_Types, names, tp[which],
+                            tplc[which],
+                            "geodetic")) {
+      LogIO os(LogOrigin("MeasIERS",
+                         String("initMeas(MeasIERS::Files)"),
+                         WHERE));
+      os << LogIO::NORMAL1
+         << "Cannot read IERS (Earth axis data) table " << tp[which]
+         << "\nCalculations will proceed with lower precision"
+         << LogIO::POST;
+      ok = False;
+    } else {
+      MeasIERS::openNote(&MeasIERS::closeMeas);
+      // Read the entire file.
+      for (Int i=0; i<MeasIERS::N_Types; ++i) {
+        ScalarColumn<Double>(tab, names[i]).getColumn (ldat[which][i]);
+      }
+      // Check if MJD in first and last row match and have step 1.
+      const Vector<Double>& mjds = ldat[which][0];
+      if (mjds[mjds.size()-1] != mjds[0] + mjds.size()-1) {
+        ok = False;
         LogIO os(LogOrigin("MeasIERS",
                            String("initMeas(MeasIERS::Files)"),
                            WHERE));
-        os << LogIO::NORMAL1
-           << "Cannot read IERS (Earth axis data) table " << tp[which]
-           << "\nCalculations will proceed with lower precision"
-           << LogIO::POST;
-        return False;
+        os << String("IERS table ") + tp[which] +
+          " seems to be corrupted (time step not 1)"
+           << LogIO::EXCEPTION;
       }
-      if (ok) {
-        MeasIERS::openNote(&MeasIERS::closeMeas);
-        if (!kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000) {
-          ok = False;
-        }
-      }
-      if (ok) {
-        mjd0[which] = Int(kws.asDouble("MJD0"));
-        Int n = t[which].nrow();
-        row[which].get(n-1);
-        if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
-          ok = False;
-        } else {
-          mjdl[which] = mjd0[which] + n;
-        }
-      }
-      if (!ok) {
-        LogIO os(LogOrigin("MeasIERS",
-                           String("initMeas(MeasIERS::Files)"),
-                           WHERE));
-        os << String("Corrupted IERS table ") + tp[which] << LogIO::EXCEPTION;
-      }
-      for (Int i = 0; i < MeasIERS::N_Types; i++) {
-        for (Int j = 0; j < 2*MeasIERS::N_Files; j++) {
-          ldat[j][i] = 0;
-        }
-      }
-      measFlag[which] = False;
     }
   }
-  return (! t[which].isNull());
 }
 
 void MeasIERS::closeMeas() {
+  ScopedMutexLock locker(theirMutex);
+  needInit = True;
+  dateNow = 0.0;
   for (uInt i=0; i<N_Files; ++i) {
-    if (!measFlag[i]) {
-      ScopedMutexLock locker(theirMutex);
-      if (!measFlag[i]) {
-        if (! t[i].isNull()) {
-          dateNow = 0.0;
-          mjd0[i] = 0;
-          mjdl[i] = 0;
-          msgDone = False;
-          t[i] = Table();
-        }
-        measFlag[i] = True;
-      }
+    for (uInt j=0; j<N_Types; ++j) {
+      ldat[i][j].resize();
     }
   }
 }
 
 void MeasIERS::openNote(CLOSEFUN fun) {
-  if (nNote <= sizeNote) {
-    CLOSEFUN *tmp = 0;
-    if (sizeNote > 0) {
-      tmp = new CLOSEFUN[sizeNote];
-      for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
-      delete [] toclose; toclose = 0;
-    }
-    toclose = new CLOSEFUN[sizeNote+10];
-    for (uInt i=0; i<sizeNote; ++i) toclose[i] = tmp[i];
-    for (uInt i=sizeNote; i<sizeNote+10; ++i) toclose[i] = 0;
+  // Resize if too small.
+  if (nNote >= sizeNote) {
+    CLOSEFUN *tmp = new CLOSEFUN[sizeNote+10];
+    for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
+    for (uInt i=sizeNote; i<sizeNote+10; ++i) tmp[i] = 0;
+    delete [] toclose;
+    toclose = tmp;
     sizeNote += 10;
-    delete [] tmp; tmp = 0;
   }
   toclose[nNote++] = fun;
 }
 
 void MeasIERS::closeTables() {
-  if (sizeNote > 0) {
-    for (uInt i=sizeNote; i-1 != 0; --i) {
-      if (toclose[i-1] != 0) toclose[i-1]();
+  for (uInt i=nNote; i>0; --i) {
+    if (toclose[i-1] != 0) {
+      toclose[i-1]();
       toclose[i-1] = 0;
     }
-    delete [] toclose; toclose = 0;
-    sizeNote = 0;
-    nNote = 0;
   }
+  delete [] toclose; toclose = 0;
+  sizeNote = 0;
+  nNote = 0;
 }
 
 // Table handling
@@ -404,15 +401,27 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 	    Bool found = False;
 	    String mdir;
 	    if (Aipsrc::find(mdir, "measures.directory")) {
-	      mdir.trim();
-	      Path mpath = Path(mdir);
-	      mpath.append(udir);
-	      ldir = mpath.absoluteName()+"/";
-	      searched.resize(searched.nelements()+1, True);
-	      searched[searched.nelements()-1] = ldir;                        
-	      if  (Table::isReadable(ldir+name)) {
-		found = True;
-	      }
+              mdir.trim();
+              Path mpath = Path(mdir);
+              mpath.append(udir);
+              ldir = mpath.absoluteName()+"/";
+              searched.resize(searched.nelements()+1, True);
+              searched[searched.nelements()-1] = ldir;
+              if  (Table::isReadable(ldir+name)) {
+                found = True;
+              }
+              if (!found) {
+                for (Int i=0; i<2; i++) {
+                  Path mpath = Path(mdir +"/" + path[i]);
+                  ldir = mpath.absoluteName()+"/";
+                  searched.resize(searched.nelements()+1, True);
+                  searched[searched.nelements()-1] = ldir;
+                  if  (Table::isReadable(ldir+name)) {
+                    found = True;
+                    break;
+                  }
+                }
+              }
 	    }
 	    if (!found) {
 	      for (Int i=0; i<2; i++) {
@@ -501,62 +510,5 @@ Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
   return ok;
 }
 
-Bool MeasIERS::fillMeas(MeasIERS::Files which, Double utf) {
-  ScopedMutexLock locker(theirMutex);
-  Int ut = ifloor(utf);
-  if (ut < mjd0[which] + 1 || ut >= mjdl[which]) {
-    return False;
-  }
-  if (utf >= ldat[which][0] &&
-      utf <= ldat[which+N_Files][0]) {
-    // Already there
-  } else {
-    if (utf >= ldat[which+N_Files][0] && 
-	utf <= ldat[which+N_Files][0] + 1) {
-      // Shift one
-      for (Int i=0; i<MeasIERS::N_Types; i++) {
-	ldat[which][i] = ldat[which+N_Files][i];
-      }
-      // For end points
-      ut = Int(ldat[which][0]);
-    } else {
-      // Read first line
-      row[which].get(ut-mjd0[which]-1);
-      for (Int i=0; i<MeasIERS::N_Types; i++) {
-	ldat[which][i] = *(rfp[which][i]);
-      }
-    }
-    // Read second line
-    row[which].get(Int(ldat[which][0])-mjd0[which]);
-    for (Int i=0; i<MeasIERS::N_Types; i++) {
-      ldat[which+N_Files][i] = *(rfp[which][i]);
-    }
-    if (ldat[which][0] != ut || ldat[which+N_Files][0] != ut+1) {
-      LogIO os(LogOrigin("MeasIERS",
-			 String("fillMeas(MeasIERS::Files, Double)"),
-			 WHERE));
-      os <<
-	String("The IERS table ") + tp[which] +
-	" has been corrupted: regenerate" <<
-	LogIO::EXCEPTION;
-    }
-  }
-  return True;
-}
   
-volatile Bool MeasIERS::measFlag[MeasIERS::N_Files] = {True, True};
-Double MeasIERS::dateNow = 0.0;
-Table MeasIERS::t[MeasIERS::N_Files];
-ROTableRow MeasIERS::row[MeasIERS::N_Files];
-RORecordFieldPtr<Double> MeasIERS::rfp[MeasIERS::N_Files][MeasIERS::N_Types];
-Int MeasIERS::mjd0[MeasIERS::N_Files] = {0, 0};
-Int MeasIERS::mjdl[MeasIERS::N_Files] = {0, 0};
-Double MeasIERS::ldat[2*MeasIERS::N_Files][MeasIERS::N_Types];
-Bool MeasIERS::msgDone = False;
-const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
-uInt MeasIERS::sizeNote = 0;
-uInt MeasIERS::nNote = 0;
-MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
-Mutex MeasIERS::theirMutex;
-
 } //# NAMESPACE CASA - END

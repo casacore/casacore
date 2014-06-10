@@ -43,9 +43,7 @@ class MBaseline;
 class MCBaseline;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -138,10 +136,8 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
   typedef MeasRef<MBaseline> Ref;
   // Measure Convert (i.e. MBaseline::Convert)
   typedef MeasConvert<MBaseline> Convert;
-  // Measure table Columns (e.g., MBaseline::ROScalarColumn)
-  typedef ROScalarMeasColumn<MBaseline> ROScalarColumn;
+  // Measure table Columns (e.g., MBaseline::ScalarColumn)
   typedef ScalarMeasColumn<MBaseline> ScalarColumn;
-  typedef ROArrayMeasColumn<MBaseline> ROArrayColumn;
   typedef ArrayMeasColumn<MBaseline> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MBaseline) Types Types;

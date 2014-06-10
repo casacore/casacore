@@ -78,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Of course, in this case we do not have an independent estimate of
 // chi<sup>2</sup>.
 //
-// The methods used in the Fitting module are described in aips++ 
+// The methods used in the Fitting module are described in 
 // <a href="../notes/224.html">Note 224</a>.
 // The methods (both standard and
 // SVD) are based on a Cholesky decomposition of the normal equations.
@@ -147,7 +147,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The <em>LSQFit</em> class uses a native C++ interface (pointers and 
 // iterators). They handle real data and complex data.
 // The <em>LSQaips</em> class offers the functionality of <em>LSQFit</em>,
-// but with an additional aips++ Array interface.<br>
+// but with an additional Casacore Array interface.<br>
 //
 // Functionality is
 // <ol>

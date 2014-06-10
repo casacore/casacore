@@ -218,6 +218,13 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left);
 // </group>
 
 
+// min and max
+template <class Qtype>
+Quantum<Qtype> min(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+template <class Qtype>
+Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
+
+
 // Functions to implement integer ceil/floor and others
 // <group name="foreign">
 Int ceil(const Int &val);

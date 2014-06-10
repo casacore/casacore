@@ -44,9 +44,7 @@ template<class T> class Vector;
 //
 // Matrix objects are two-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
-// to look at the Array documentation to see inherited functionality. A
-// tutorial on using the array classes in general is available in the
-// "AIPS++ Programming Manual".
+// to look at the Array documentation to see inherited functionality.
 //
 // Generally the member functions of Array are also available in
 // Matrix versions which take a pair of integers where the array 

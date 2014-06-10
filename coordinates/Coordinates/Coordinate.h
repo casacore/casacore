@@ -44,8 +44,6 @@ class IPosition;
 class RecordInterface;
 class Projection;
 
-
-
 // <summary>
 // Interface for converting between world and pixel coordinates.
 // </summary>
@@ -68,7 +66,7 @@ class Projection;
 //        (Mark Calabretta's implementation of these conventions) will be
 //        revised for the new designs.  At that time, the Coordinate classes
 //        may also be revised.
-//   <li> Generic AIPS++ classes; especially those in the 
+//   <li> Generic Casacore classes; especially those in the 
 //        <linkto module=Arrays>Arrays</linkto> module.
 //   <li> Perhaps some of the information in the
 //        <linkto module=Measures>Measures</linkto> module.
@@ -130,6 +128,7 @@ class Projection;
 //
 // <thrown>
 //   <li>  AipsError
+//   <li>  AllocError
 // </thrown>
 //
 // <todo asof="1997/1/13">
@@ -154,6 +153,8 @@ public:
 	// A one-dimensional Cooordinate system, usually created from a table
         // although it can also be purely linear.
 	TABULAR,
+	// to mark DATA and ERROR values
+	QUALITY,
 	// A CoordinateSystem (a collection of Coordinates).
 	COORDSYS };
 
@@ -430,13 +431,17 @@ public:
                               Int defPrecScientific,
                               Int defPrecFixed,
                               Int defPrecTime) const;
-    virtual String format(String& units,
-                          Coordinate::formatType format, 
-                          Double worldValue, 
-                          uInt axis, 
-                          Bool isAbsolute=True,
-                          Bool showAsAbsolute=True,
- 			  Int precision=-1) const;
+    virtual String format(
+    	String& units,
+    	Coordinate::formatType format,
+    	Double worldValue,
+    	uInt axis,
+    	Bool isAbsolute=True,
+    	Bool showAsAbsolute=True,
+    	Int precision=-1,
+    	Bool usePrecForMixed=False
+    ) const;
+
     String formatQuantity(String& units,
                           Coordinate::formatType format, 
                           const Quantum<Double>& worldValue, 
@@ -458,11 +463,19 @@ public:
 
     // Comparison only made for specified axes in this and other Coordinate 
     // The default implementation should be ok for all Coordinate types
-    // except Stokes...
+    // except Stokes and Quality...
     virtual Bool doNearPixel (const Coordinate& other, 
                               const Vector<Bool>&  thisAxes,
                               const Vector<Bool>& otherAxes,
                               Double tol=1.0e-6) const;
+
+    // return the result of rotating the coordinate clockwise through the specified angle.
+    // Rotation occurs about the reference pixel.
+    // Coordinate must have exactly two pixel axes. The return type is the same
+    // as the input type. It is the caller's responsibility to delete the returned pointer
+    // when done with it to prevent a memory leak.
+    // This method ultimately just changes the input coordinate's linear transform matrix.
+    virtual Coordinate* rotate(const Quantum<Double>& angle) const;
 
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.

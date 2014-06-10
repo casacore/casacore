@@ -154,7 +154,7 @@ void VirtualTaQLColumn::create (uInt)
 void VirtualTaQLColumn::prepare()
 {
   // Get the expression.
-  ROTableColumn tabcol (table(), itsColumnName);
+  TableColumn tabcol (table(), itsColumnName);
   itsExpr = tabcol.keywordSet().asString ("_VirtualTaQLEngine_CalcExpr");
   // Compile the expression.
   TaQLResult res = tableCommand ("calc from $1 calc " + itsExpr, table());

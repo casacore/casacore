@@ -29,7 +29,7 @@
 #include <components/SpectralComponents/PCFSpectralElement.h>
 
 #include <casa/BasicSL/Constants.h>
-
+#include <scimath/Functionals/Gaussian1D.h>
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -38,6 +38,42 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Constructors
 PCFSpectralElement::PCFSpectralElement()
 : SpectralElement() {
+	_initFunction();
+}
+
+PCFSpectralElement::PCFSpectralElement(
+	SpectralElement::Types type
+) : SpectralElement(type, Vector<Double>(3, 1)) {
+	_initFunction();
+	setCenter(0);
+}
+
+PCFSpectralElement::PCFSpectralElement(
+	SpectralElement::Types type, const Vector<Double>& param
+) : SpectralElement(type, param) {
+	if (param.size() != 3) {
+		throw AipsError(
+			"PCFSpectralElement: PCF function must have "
+			"3 parameters"
+	    );
+	}
+	if (param[0] == 0) {
+		throw AipsError(
+			"PCFSpectralElement: PCF amplitude cannot equal 0"
+		);
+	}
+	_initFunction();
+
+}
+
+PCFSpectralElement::PCFSpectralElement(
+	SpectralElement::Types type, Double amp,
+	Double center, Double width
+) : SpectralElement(type, vector<Double>(3)) {
+	_initFunction();
+	setAmpl(amp);
+	setCenter(center);
+	setWidth(width);
 }
 
 PCFSpectralElement::PCFSpectralElement(const PCFSpectralElement& other)
@@ -45,46 +81,28 @@ PCFSpectralElement::PCFSpectralElement(const PCFSpectralElement& other)
 
 PCFSpectralElement::~PCFSpectralElement() {}
 
-
-/*
-SpectralElement* PCFSpectralElement::clone() const {
-	return new PCFSpectralElement(*this);
-}
-*/
-
-/*
-PCFSpectralElement& PCFSpectralElement::operator=(
-	const PCFSpectralElement &other
-) {
-	if (this != &other) {
-		SpectralElement::operator=(other);
-	}
-	return *this;
-}
-*/
-
 Double PCFSpectralElement::getAmpl() const {
-  return get()[0];
+  return get()[AMP];
 }
 
 Double PCFSpectralElement::getCenter() const {
-  return get()[1];
+  return get()[CENTER];
 }
 
-Double PCFSpectralElement::getFWHM() const {
-	return get()[2];
+Double PCFSpectralElement::getWidth() const {
+	return get()[WIDTH];
 }
 
 Double PCFSpectralElement::getAmplErr() const {
-	return getError()[0];
+	return getError()[AMP];
 }
 
 Double PCFSpectralElement::getCenterErr() const {
-	return getError()[1];
+	return getError()[CENTER];
 }
 
-Double PCFSpectralElement::getFWHMErr() const {
-	return getError()[2];
+Double PCFSpectralElement::getWidthErr() const {
+	return getError()[WIDTH];
 }
 
 void PCFSpectralElement::setAmpl(const Double ampl) {
@@ -95,7 +113,7 @@ void PCFSpectralElement::setAmpl(const Double ampl) {
 	p(0) = ampl;
 	_set(p);
 	Vector<Double> err = getError();
-	err[0] = 0;
+	err[AMP] = 0;
 	setError(err);
 } 
 
@@ -104,34 +122,34 @@ void PCFSpectralElement::setCenter(const Double center) {
 	p[1] = center;
 	_set(p);
 	Vector<Double> err = getError();
-	err[1] = 0;
+	err[CENTER] = 0;
 	setError(err);
 }
 
-void PCFSpectralElement::setFWHM(const Double fwhm) {
+void PCFSpectralElement::setWidth(const Double width) {
 
 	Vector<Double> p = get();
-	p[2] = fwhm > 0 ? fwhm : -fwhm;
+	p[2] = width > 0 ? width : -width;
 	_set(p);
 	Vector<Double> err = getError();
-	err[2] = 0;
+	err[WIDTH] = 0;
 	setError(err);
 }
 void PCFSpectralElement::fixAmpl(const Bool isFixed) {
 	Vector<Bool> myFixed = fixed();
-	myFixed[0] = isFixed;
+	myFixed[AMP] = isFixed;
 	fix(myFixed);
 }
 
 void PCFSpectralElement::fixCenter(const Bool isFixed) {
 	Vector<Bool> myFixed = fixed();
-	myFixed[1] = isFixed;
+	myFixed[CENTER] = isFixed;
 	fix(myFixed);
 }
 
-void PCFSpectralElement::fixFWHM(const Bool isFixed) {
+void PCFSpectralElement::fixWidth(const Bool isFixed) {
 	Vector<Bool> myFixed = fixed();
-	myFixed[2] = isFixed;
+	myFixed[WIDTH] = isFixed;
 	fix(myFixed);
 }
 
@@ -145,20 +163,20 @@ void PCFSpectralElement::fixByString(const String& s) {
 		fixCenter(True);
 	}
 	if (fix.contains("f")) {
-		fixFWHM(True);
+		fixWidth(True);
 	}
 }
 
 Bool PCFSpectralElement::fixedAmpl() const {
-	return fixed()[0];
+	return fixed()[AMP];
 }
 
 Bool PCFSpectralElement::fixedCenter() const {
-	return fixed()[1];
+	return fixed()[CENTER];
 }
 
-Bool PCFSpectralElement::fixedFWHM() const {
-	return fixed()[2];
+Bool PCFSpectralElement::fixedWidth() const {
+	return fixed()[WIDTH];
 }
 
 void PCFSpectralElement::set(const Vector<Double>& params) {
@@ -168,23 +186,32 @@ void PCFSpectralElement::set(const Vector<Double>& params) {
 			"3 parameters"
 		);
 	}
-	if (params[0] == 0) {
+	if (params[AMP] == 0) {
 		throw AipsError("PCF amplitude cannot equal 0");
 	}
 	Vector<Double> p = params.copy();
-	if (p[2] < 0) {
-		p[2] = -p[2];
+	if (p[WIDTH] < 0) {
+		p[WIDTH] *= -1;
 	}
  	_set(p);
 }
 
 Double PCFSpectralElement::getIntegralErr() const {
-	Double amp = getAmpl();
-	Double ampErr = getAmplErr();
-	Double fwhm = getFWHM();
-	Double fwhmErr = getFWHMErr();
-	return sqrt(ampErr*ampErr/amp/amp + fwhmErr*fwhmErr/fwhm/fwhm) * getIntegral();
+	Double damp = getAmplErr()/getAmpl();
+	Double dwidth = getWidthErr()/getWidth();
+	return sqrt(damp*damp + dwidth*dwidth) * getIntegral();
 }
+
+void PCFSpectralElement::_initFunction() {
+	// Just need something we can instantiate, subclasses should set their
+	// own functions in their constructors
+	_setFunction(
+		std::tr1::shared_ptr<Function<Double> >(
+			new Gaussian1D<Double>()
+		)
+	);
+}
+
 
 
 } //# NAMESPACE CASA - END

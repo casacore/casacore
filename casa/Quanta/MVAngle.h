@@ -131,13 +131,13 @@ class MUString;
 //	the provided <src>ANGLE[_CLEAN][_NO_D[M]]</src> and
 //	<src>TIME[_CLEAN][_NO_H[M]].</src>
 //	</note>
+//
 //	The modifiers can be:
 //	<ul>
 //	 <li> <src>MVAngle::CLEAN</src> to suppress leading or trailing
-//		periods (or colons for TIME). + and leading zeroes in degree
+//		periods (or colons for TIME), + and leading zeroes in degree
 //		field for angle representation will be replaced with a space.
-//		Note that he result can not be
-//		read automatically.
+//		Note that the result can not be read automatically.
 //	 <li> <src>MVAngle::NO_D</src> (or <src>NO_H</src>) to suppress
 //		the output of degrees (or hours): useful for offsets
 //	 <li> <src>MVAngle::NO_DM</src> (or <src>NO_HM</src>), to
@@ -150,6 +150,8 @@ class MUString;
 //		LOCAL set, the time zone (note that if local set
 //		here, as opposed to in MVTime) the angle is supposed
 //		to be in local time already).
+//        <li> <src>MVAngle::ALPHA</src> to use d (or h) and m instead of
+//              periods or colons.
 //	</ul>
 //	Output in formats like <src>20'</src> can be done via the standard
 //	Quantum output (e.g. <src> stream << angle.get("'") </src>).
@@ -244,7 +246,7 @@ class MVAngle {
 
  public:
 
-  //# Enumerations
+  //# Enumerations (should mimic those in MVTime)
   // Format types
   enum formatTypes {
     ANGLE,
@@ -255,6 +257,8 @@ class MVAngle {
     DIG2			= 1024,
     FITS			= TIME+2048,
     LOCAL			= 4096,
+    USE_SPACE                   = 8192,   //# Only for MVTIme compatibility
+    ALPHA                       = 16384,
     NO_H 			= NO_D,
     NO_HM 			= NO_DM,
     ANGLE_CLEAN 		= ANGLE + CLEAN,
@@ -267,7 +271,7 @@ class MVAngle {
     TIME_NO_HM 			= TIME + NO_HM,
     TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
     TIME_CLEAN_NO_HM		= TIME + CLEAN + NO_HM ,
-    MOD_MASK			= NO_DM + CLEAN + DIG2 + LOCAL};
+    MOD_MASK			= CLEAN + NO_DM + DIG2 + LOCAL + USE_SPACE + ALPHA};
   
   //# Local structure
   // Format structure
@@ -333,10 +337,8 @@ class MVAngle {
   // Make res angle Quantity from string in angle/time-like format. In the
   // case of String input, also quantities are recognised. chk checks eos
   // <group> 
-  static Bool read(Quantity &res, const String &in);
-  static Bool read(Quantity &res, MUString &in);
-  static Bool read(Quantity &res, const String &in, Bool chk);
-  static Bool read(Quantity &res, MUString &in, Bool chk);
+  static Bool read(Quantity &res, const String &in, Bool chk=True);
+  static Bool read(Quantity &res, MUString &in, Bool chk=True);
   // </group>
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;

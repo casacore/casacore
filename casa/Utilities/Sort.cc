@@ -33,9 +33,12 @@
 #include <casa/Utilities/SortError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/BlockIO.h>
 
 #include <casa/stdlib.h>                 // for rand
-
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -120,19 +123,22 @@ uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 Sort::Sort()
 : nrkey_p (0),
   data_p  (0),
-  size_p  (0)
+  size_p  (0),
+  order_p (0)
 {}
 
 Sort::Sort (const void* dat, uInt sz)
 : nrkey_p (0),
   data_p  (dat),
-  size_p  (sz)
+  size_p  (sz),
+  order_p (0)
 {}
 
 Sort::Sort (const Sort& that)
 : nrkey_p (0),
   data_p  (0),
-  size_p  (0)
+  size_p  (0),
+  order_p (0)
 {
     copy (that);
 }
@@ -163,8 +169,9 @@ void Sort::copy (const Sort& that)
     for (i=0; i<nrkey_p; i++) {
 	keys_p = new SortKey (*(that.keys_p[i]));
     }
-    data_p = that.data_p;
-    size_p = that.size_p;
+    data_p  = that.data_p;
+    size_p  = that.size_p;
+    order_p = that.order_p;
 }
 
 void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
@@ -207,6 +214,11 @@ void Sort::addKey (const void* dat, DataType dt, uInt inc, int ord)
 
 void Sort::addKey (SortKey* key)
 {
+    if (nrkey_p == 0) {
+        order_p = key->order();
+    } else if (order_p != key->order()) {
+      order_p = 0;    // mixed order
+    }
     if (nrkey_p >= keys_p.nelements()) {
 	keys_p.resize (keys_p.nelements() + 32);
     }
@@ -251,10 +263,14 @@ uInt Sort::unique (Vector<uInt>& uniqueVector,
 }
 
 
-uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
+uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt,
+                 Bool doTryGenSort) const
 {
+    if (nrrec == 0) {
+        return nrrec;
+    }
     //# Try if we can use the faster GenSort when we have one key only.
-    if (nrkey_p == 1) {
+    if (doTryGenSort  &&  nrkey_p == 1) {
 	uInt n = keys_p[0]->tryGenSort (indexVector, nrrec, opt);
 	if (n > 0) {
 	    return n;
@@ -269,6 +285,16 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
     // Choose the sort required.
     int nodup = opt & NoDuplicates;
     int type  = opt - nodup;
+    // Determine default sort to use.
+    int nthr = 1;
+#ifdef _OPENMP
+    nthr = omp_get_max_threads();
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nrrec) nthr = nrrec;
+#endif
+    if (type == DefaultSort) {
+      type = (nrrec<1000 || nthr==1  ?  QuickSort : ParSort);
+    }
     uInt n = 0;
     switch (type) {
     case QuickSort:
@@ -292,6 +318,12 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
 	    n = insSort (nrrec, inx);
 	}
 	break;
+    case ParSort:
+        n = parSort (nthr, nrrec, inx);
+        if (nodup) {
+            n = insSortNoDup (nrrec, inx);
+        }
+        break;
     default:
 	throw SortInvOpt();
     }
@@ -304,6 +336,119 @@ uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
     return n;
 }
 
+uInt Sort::parSort (int nthr, uInt nrrec, uInt* inx) const
+{
+  Block<uInt> index(nrrec+1);
+  Block<uInt> tinx(nthr+1);
+  Block<uInt> np(nthr);
+  // Determine ordered parts in the array.
+  // It is done in parallel, whereafter the parts are combined.
+  int step = nrrec/nthr;
+  for (int i=0; i<nthr; ++i) tinx[i] = i*step;
+  tinx[nthr] = nrrec;
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+  for (int i=0; i<nthr; ++i) {
+    int nparts = 1;
+    index[tinx[i]] = tinx[i];
+    for (uInt j=tinx[i]+1; j<tinx[i+1]; ++j) {
+      if (compare (inx[j-1], inx[j]) <= 0) {
+        index[tinx[i]+nparts] = j;    // out of order, thus new part
+        nparts++;
+      }
+    }
+    np[i] = nparts;
+  }
+  // Make index parts consecutive by shifting to the left.
+  // See if last and next part can be combined.
+  uInt nparts = np[0];
+  for (int i=1; i<nthr; ++i) {
+    if (compare (tinx[i]-1, tinx[i]) <= 0) {
+      index[nparts++] = index[tinx[i]];
+    }
+    if (nparts == tinx[i]+1) {
+      nparts += np[i]-1;
+    } else {
+      for (uInt j=1; j<np[i]; ++j) {
+	index[nparts++] = index[tinx[i]+j];
+      }
+    }
+  }
+  index[nparts] = nrrec;
+  //cout<<"nparts="<<nparts<<endl;
+  // Merge the array parts. Each part is ordered.
+  if (nparts < nrrec) {
+    Block<uInt> inxtmp(nrrec);
+    merge (inx, inxtmp.storage(), nrrec, index.storage(), nparts);
+  } else {
+    // Each part has length 1, so the array is in reversed order.
+    for (uInt i=0; i<nrrec; ++i) inx[i] = nrrec-1-i;
+  }
+  return nrrec;
+}  
+
+void Sort::merge (uInt* inx, uInt* tmp, uInt nrrec, uInt* index,
+                  uInt nparts) const
+{
+  uInt* a = inx;
+  uInt* b = tmp;
+  int np = nparts;
+  // If the nr of parts is odd, the last part is not merged. To avoid having
+  // to copy it to the other array, a pointer 'last' is kept.
+  // Note that merging the previous part with the last part works fine, even
+  // if the last part is in the same buffer.
+  uInt* last = inx + index[np-1];
+  while (np > 1) {
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
+    for (int i=0; i<np; i+=2) {
+      if (i < np-1) {
+        // Merge 2 subsequent parts of the array.
+	uInt* f1 = a+index[i];
+	uInt* f2 = a+index[i+1];
+	uInt* to = b+index[i];
+	uInt na = index[i+1]-index[i];
+	uInt nb = index[i+2]-index[i+1];
+        if (i == np-2) {
+          //cout<<"swap last np=" <<np<<endl;
+          f2 = last;
+          last = to;
+        }
+	uInt ia=0, ib=0, k=0;
+	while (ia < na && ib < nb) {
+	  if (compare(f1[ia], f2[ib]) > 0) {
+	    to[k] = f1[ia++];
+	  } else {
+	    to[k] = f2[ib++];
+	  }
+	  k++;
+	}
+	if (ia < na) {
+	  for (uInt p=ia; p<na; p++,k++) to[k] = f1[p];
+	} else {
+	  for (uInt p=ib; p<nb; p++,k++) to[k] = f2[p];
+	}
+      }
+    }
+    // Collapse the index.
+    int k=0;
+    for (int i=0; i<np; i+=2) index[k++] = index[i];
+    index[k] = nrrec;
+    np = k;
+    // Swap the index target and destination.
+    uInt* c = a;
+    a = b;
+    b = c;
+  }
+  // If final result happens to be in incorrect array, copy it over.
+  if (a != inx) {
+    objcopy (inx, a, nrrec);
+  }
+}
 
 uInt Sort::insSort (uInt nrrec, uInt* inx) const
 {
@@ -469,9 +614,12 @@ int Sort::compare (uInt i1, uInt i2) const
 	}
     }
     // Equal keys, so return i1<i2 to maintain stability.
-    if (i1<i2)
-	return 1;                           // equal keys; in order
-    return -1;                              // equal keys; out-of-order
+    if (i1<i2) {
+        if (order_p == 1) return -1;          // desc, thus out-of-order
+	return 1;                             // equal keys; in order
+    }
+    if (order_p == 1) return 1;
+    return -1;                                // equal keys; out-of-order
 }
 
 } //# NAMESPACE CASA - END

@@ -1,4 +1,4 @@
-//# LSQaips.cc: Interface for aips++ Vectors in least squares fitting
+//# LSQaips.cc: Interface for Casacore Vectors in least squares fitting
 //# Copyright (C) 1998,1999,2000,2001,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#

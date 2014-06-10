@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/Matrix.h>
+#include <ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -42,23 +43,23 @@ class TableExprNode;
 // <summary>
 // Global functions for flex/bison scanner/parser for MSAntennaGram
 // </summary>
-
+  
 // <use visibility=local>
-
+  
 // <reviewed reviewer="" date="" tests="">
 // </reviewed>
-
+  
 // <prerequisite>
 //# Classes you should understand before using this one.
 //  <li> MSAntennaGram.l and .y  (flex and bison grammar)
 // </prerequisite>
-
+  
 // <synopsis> 
 // Global functions are needed to define the input of the flex scanner
 // and to start the bison parser.
 // The input is taken from a string.
 // </synopsis> 
-
+  
 // <motivation>
 // It is necessary to be able to give an image expression in ASCII.
 // This can be used in glish.
@@ -66,37 +67,60 @@ class TableExprNode;
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 // </todo>
-
-
+  
+  
 // <group name=MSAntennaGramFunctions>
-
+  
 // Declare the bison parser (is implemented by bison command).
 // It returns a TaQL expression tree.
-TableExprNode msAntennaGramParseCommand (const MeasurementSet *ms,
-                                         const String& command,
-                                         Vector<Int>& selectedAnt1,
-                                         Vector<Int>& selectedAnt2,
-                                         Matrix<Int>& selectedBaselines);
-
-// The yyerror function for the parser.
-// It throws an exception with the current token.
-void MSAntennaGramerror (const char*);
-
-// Give the current position in the string.
-// This can be used when parse errors occur.
-Int& msAntennaGramPosition();
-
-// Declare the input routine for flex/bison.
-int msAntennaGramInput (char* buf, int max_size);
-
-// A function to remove escaped characters.
-//String msAntennaGramRemoveEscapes (const String& in);
-
-// A function to remove quotes from a quoted string.
-//String msAntennaGramRemoveQuotes (const String& in);
-
-// </group>
-
+  TableExprNode msAntennaGramParseCommand (MSSelectableTable& msLike,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) ;
+  TableExprNode msAntennaGramParseCommand (MSAntennaParse* thisParser,
+					   const TableExprNode& col1TEN,
+					   const TableExprNode& col2TEN,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) ;
+  TableExprNode msAntennaGramParseCommand (Table& subTable,
+					   TableExprNode& col1TEN,
+					   TableExprNode& col2TEN,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) ;
+  TableExprNode msAntennaGramParseCommand (const MeasurementSet *ms,
+					   const String& command,
+					   Vector<Int>& selectedAnt1,
+					   Vector<Int>& selectedAnt2,
+					   Matrix<Int>& selectedBaselines);
+  
+  TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String& command,
+					      Vector<Int>& selectedAnts1,
+					      Vector<Int>& selectedAnts2,
+					      Matrix<Int>& selectedBaselines);
+  // The yyerror function for the parser.
+  // It throws an exception with the current token.
+    void MSAntennaGramerror (const char*);
+  
+  // Give the current position in the string.
+  // This can be used when parse errors occur.
+  Int& msAntennaGramPosition();
+  
+  // Declare the input routine for flex/bison.
+  int msAntennaGramInput (char* buf, int max_size);
+  
+  // A function to remove escaped characters.
+  //String msAntennaGramRemoveEscapes (const String& in);
+  
+  // A function to remove quotes from a quoted string.
+  //String msAntennaGramRemoveQuotes (const String& in);
+  
+  // </group>
+  
 } //# NAMESPACE CASA - END
 
 #endif

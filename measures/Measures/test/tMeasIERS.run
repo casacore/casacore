@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Define the casarc file and create it.
+cwd=`pwd`
+CASARCFILES=$cwd/tMeasIERS_tmp-casarc
+export CASARCFILES
+cat > $CASARCFILES << eof
+measures.ierseop97.directory: $cwd/tMeasIERS_tmp-data/geodetic
+measures.ierspredict.directory: $cwd/tMeasIERS_tmp-data/geodetic
+eof
+
+# Untar the IERS tables
+rm -rf tMeasIERS_tmp-data
+tar zxf tMeasIERS.in_tgz
+
+# Run the test program
+$casa_checktool ./tMeasIERS

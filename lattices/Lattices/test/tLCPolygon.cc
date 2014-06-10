@@ -157,6 +157,53 @@ int main()
             Vector<Float> yv(IPosition(1,sizeof(y)/sizeof(Float)), y, SHARE);
             doIt (shape, xv, yv);
         }
+        {
+            // A box with a negative start.
+            Vector<Float> x(4), y(4);
+            x[0] = -13;  y[0] = 1;
+            x[1] = 4;    y[1] = 1;
+            x[2] = 4;    y[2] = 6;
+            x[3] = -13;  y[3] = 6;
+            IPosition shape(2, 11, 6);
+            doIt(shape, x, y);
+        }
+        {
+            // A tilted box with all points outside lattice.
+            Vector<Float> x(4), y(4);
+            x[0] = -2;  y[0] = 3;
+            x[1] = 3;   y[1] = -1;
+            x[2] = 8;   y[2] = 3;
+            x[3] = 3;   y[3] = 7;
+            IPosition shape(2, 7, 7);
+            doIt(shape, x, y);
+        }
+        {
+            // A box entirely outside lattice.
+            Vector<Float> x(4), y(4);
+            x[0] = 12;  y[0] = 12;
+            x[1] = 14;  y[1] = 12;
+            x[2] = 14;  y[2] = 14;
+            x[3] = 12;  y[3] = 14;
+            IPosition shape(2, 7, 7);
+            try {
+              doIt(shape, x, y);
+            } catch (AipsError& x) {
+              cout << x.what() << endl;
+            }
+        }
+        {
+            // A polygon just inside lattice, but no points matching.
+            Vector<Float> x(3), y(3);
+            x[0] = 2.5;  y[0] = 1.1;
+            x[1] = 3;    y[1] = 5;
+            x[2] = 2;    y[2] = 5;
+            IPosition shape(2, 5, 3);
+            try {
+              doIt(shape, x, y);
+            } catch (AipsError& x) {
+              cout << x.what() << endl;
+            }
+        }
 
 	{
 	    // Test some other functions

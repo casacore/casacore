@@ -34,6 +34,7 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/BinarySearch.h>
 #include <casa/Utilities/GenSort.h>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -158,9 +159,8 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
                                                    const Cube<Range>& yin,
                                                    Int method)
 {
-  const uInt ndim = yin.ndim();
   DebugAssert(ndim==3,AipsError);
-  Int nxin=xin.nelements(), nxout=xout.nelements();
+  Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
   //check the number of elements in y
   DebugAssert(nxin==yinShape(2),AipsError);
@@ -201,8 +201,7 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
                                                    Bool goodIsTrue,
 						   Bool extrapolate)
 {
-  const uInt ndim = yin.ndim();
-  Int nxin=xin.nelements(), nxout=xout.nelements();
+  Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
   DebugAssert(nxin==yinShape(ndim-1),AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
@@ -266,12 +265,17 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	else if (where == 0) {
 	  for (Int j=0; j<ny; j++) yout[i][j]=yin[0][j];
 	}
-	else if (xin[where] - x_req < static_cast<Domain>(.5)) {
-            //static_cast required to get .5 coerced for SGI compiler
-	  for (Int j=0; j<ny; j++) yout[i][j]=yin[where][j];
-	}
 	else {
-	  for (Int j=0; j<ny; j++) yout[i][j]=yin[where-1][j];
+	  Domain diff=(xin[where]-x_req);
+	  //static_cast required to get .5 coerced for SGI compiler:
+	  if (diff < static_cast<Domain>(.5)*(xin[where]-xin[where-1])) { 
+            // closer to next
+	    for (Int j=0; j<ny; j++) yout[i][j]=yin[where][j];
+	  }
+	  else {
+            // closer to previous
+	    for (Int j=0; j<ny; j++) yout[i][j]=yin[where-1][j];
+	  }
 	}
       }
       return;
@@ -425,17 +429,22 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	    youtFlags[i][j]=((x_req==xin[0])||extrapolate ? yinFlags[0][j] : flag);
 	  } 
 	}
-	else if (xin[where] - x_req < static_cast<Domain>(.5)) {
-            //static_cast required to get .5 coerced for SGI compiler
-	  for (Int j=0; j<ny; j++) {
-	    yout[i][j]=yin[where][j];
-	    youtFlags[i][j]=yinFlags[where][j];
-	  }
-	}
 	else {
-	  for (Int j=0; j<ny; j++) {
-	    yout[i][j]=yin[where-1][j];
-	    youtFlags[i][j]=yinFlags[where-1][j];
+	  Domain diff=(xin[where] - x_req);
+	  //static_cast required to get .5 coerced for SGI compiler:
+	  if (diff < static_cast<Domain>(.5)*(xin[where]-xin[where-1])) { 
+            // closer to next
+	    for (Int j=0; j<ny; j++) {
+	      yout[i][j]=yin[where][j];
+	      youtFlags[i][j]=yinFlags[where][j];
+	    }
+	  }
+	  else {
+            // closer to previous
+	    for (Int j=0; j<ny; j++) {
+	      yout[i][j]=yin[where-1][j];
+	      youtFlags[i][j]=yinFlags[where-1][j];
+	    }
 	  }
 	}
       }
@@ -463,9 +472,10 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	  throw(AipsError("Interpolate1D::operator()"
 			  " data has repeated x values"));
 	Domain frac=(x_req-x1)/(x2-x1);
+	Domain limit = std::numeric_limits<Domain>::epsilon();
 
 //    y1 + ((x_req-x1)/(x2-x1)) * (y2-y1);
-        if (frac>1e-6 && frac<1.-1e-6) {
+        if (frac>limit && frac<1.-limit) {
 	  //cout << "two: frac "  << setprecision(12) << xfrac << endl;
           if (goodIsTrue) {
             for (Int j=0; j<ny; j++) {
@@ -483,12 +493,12 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
         } else {
           // only one of the channels is involved
 	  //cout << "one: frac "  << setprecision(12) << xfrac << endl;
-	  if (frac<=1E-6) {
+	  if (frac<=limit) {
 	    for (Int j=0; j<ny; j++) {
 	      yout[i][j] = yin[ind1][j];
 	      youtFlags[i][j] = (discard ? flag : yinFlags[ind1][j]);
 	    }
-	  } else { // frac >= 1.-1E-6
+	  } else { // frac >= 1.-limit
 	    for (Int j=0; j<ny; j++) {
 	      yout[i][j] = yin[ind2][j];
 	      youtFlags[i][j] = (discard ? flag :  yinFlags[ind2][j]);
@@ -653,7 +663,7 @@ void InterpolateArray1D<Domain,Range>::interpolateyPtr(PtrBlock<Range*>& yout,
     {
       Int h;
       Int nxout=xout.nelements();
-      for (uInt j=0; j<nxout; j++) {
+      for (Int j=0; j<nxout; j++) {
         x_req=xout[j];
         Bool found;
         uInt where = binarySearchBrackets(found, xin, x_req, nElements);

@@ -40,9 +40,10 @@ namespace casa {
 
 
   UDFBase::UDFBase()
-    : itsDataType   (TableExprNodeRep::NTAny),
-      itsNDim       (-2),
-      itsIsConstant (False)
+    : itsDataType    (TableExprNodeRep::NTAny),
+      itsNDim        (-2),
+      itsIsConstant  (False),
+      itsIsAggregate (False)
   {}
 
   UDFBase::~UDFBase()
@@ -66,6 +67,20 @@ namespace casa {
     }
     if (itsNDim < -1) {
       throw TableInvExpr ("UDFBase: ndim not set by derived UDF class");
+    }
+  }
+
+  void UDFBase::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  {
+    for (uInt i=0; i<itsOperands.size(); ++i) {
+      itsOperands[i]->getAggrNodes (aggr);
+    }
+  }
+
+  void UDFBase::getColumnNodes (vector<TableExprNodeRep*>& cols)
+  {
+    for (uInt i=0; i<itsOperands.size(); ++i) {
+      itsOperands[i]->getColumnNodes (cols);
     }
   }
 
@@ -100,6 +115,11 @@ namespace casa {
   void UDFBase::setConstant (Bool isConstant)
   {
     itsIsConstant = isConstant;
+  }
+
+  void UDFBase::setAggregate (Bool isAggregate)
+  {
+    itsIsAggregate = isAggregate;
   }
 
   Bool      UDFBase::getBool     (const TableExprId&)
@@ -146,34 +166,44 @@ namespace casa {
     }
   }
 
-  UDFBase* UDFBase::createUDF (const String& name)
+  UDFBase* UDFBase::createUDF (const String& name, const TaQLStyle& style)
   {
     String fname(name);
     fname.downcase();
-    ScopedMutexLock lock(theirMutex);
-    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
-    if (iter != theirRegistry.end()) {
-      return iter->second (fname);
-    }
-    // Not found. See if it can be loaded dynamically.
-    // The library name should be the first part of the function name.
+    // Split name in library and function name.
+    // Require that a . is found and is not the first or last character.
     Int j = fname.index('.');
     if (j > 0  &&  j < Int(fname.size())-1) {
+      // Replace a possible synonym for the library name.
       String libname(fname.substr(0,j));
-      // derivedmscal UDFs are used often, so allow alias mscal.
-      if (libname == "mscal") {
-        libname = "derivedmscal";
+      libname = style.findSynonym (libname);
+      fname   = libname + fname.substr(j);
+      ScopedMutexLock lock(theirMutex);
+      map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+      if (iter != theirRegistry.end()) {
+        return iter->second (fname);
       }
-      // Try to load the dynamic library and see if registered now.
-      DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
-      if (dl.getHandle()) {
-        map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
-        if (iter != theirRegistry.end()) {
-          return iter->second (fname);
+      // Not found. See if library is already loaded.
+      // If so, it is an unknown function in the UDF library.
+      map<String,MakeUDFObject*>::iterator sit = theirRegistry.find (libname);
+      if (sit == theirRegistry.end()) {
+        // Try to load the dynamic library.
+        DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
+        if (dl.getHandle()) {
+          // Add to map to indicate library has been loaded.
+          // Note that a libname is different from a function name because
+          // it does not contain dots.
+          theirRegistry[libname] = 0;
+          // See if function is registered now.
+          map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+          if (iter != theirRegistry.end()) {
+            return iter->second (fname);
+          }
         }
       }
     }
-    throw TableInvExpr ("TaQL function " + name + " is unknown");
+    throw TableInvExpr ("TaQL function " + name + " (=" + fname +
+                        ") is unknown");
   }
 
 } // end namespace

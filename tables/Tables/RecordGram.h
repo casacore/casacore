@@ -152,7 +152,7 @@ public:
 // An expression can be given as a string and parsed by the <src>parse</src>
 // function.
 // The grammar used is as much as possible the same as that for the
-// WHERE clause in TaQL (see AIPS++ note 199).
+// WHERE clause in TaQL (see Note 199).
 // It is possible to set the TaQL style to use by setting
 // <src>theirTaQLStyle</src> before calling the parse functions.
 // A better way is to define the style with the 'USING STYLE' part of

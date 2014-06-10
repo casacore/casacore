@@ -1,6 +1,7 @@
 set (tests
 dArrayAccessor
 tArrayAccessor
+tArrayBase
 tArray
 tArrayIO2
 tArrayIO3
@@ -16,6 +17,7 @@ tArrayMathTransform
 tArrayOpsDiffShapes
 tArrayPosIter
 tArrayUtil
+tArrayUtilPerf
 tAxesSpecifier
 tBoxedArrayMath
 tCompareBoxedPartial

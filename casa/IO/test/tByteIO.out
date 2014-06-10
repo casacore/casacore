@@ -1,4 +1,5 @@
-MemoryIO::read - incorrect number of bytes read
+MemoryIO::read - incorrect number of bytes read:
+  size=1, used=61, pos=61, left=0
 MemoryIO::seek - cannot seek before start of object
 MemoryIO::write - buffer cannot be expanded
 MemoryIO::seek - buffer cannot be expanded

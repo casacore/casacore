@@ -80,7 +80,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Methods to obtain additional information about the fitting process are
 // available.
 //
-// This class can  be used as a stand-alone class outside of the aips++
+// This class can  be used as a stand-alone class outside of the Casacore
 // environment.  In that case the aips.h include file
 // can be replaced if necessary by appropriate typedefs for Double, Float and 
 // uInt.<br> 
@@ -88,7 +88,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // arguments only. They can be used with any container having an STL
 // random-access iterator interface. Especially they can be used with
 // <src>carrays</src> (necessary templates provided),
-// aips++ Vectors (necessary templates
+// Casacore Vectors (necessary templates
 // provided in <src>LSQaips</src>),
 // standard random access STL containers (like <src>std::vector</src>).
 //

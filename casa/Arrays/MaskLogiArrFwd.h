@@ -51,8 +51,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <etymology>
 // MaskLogiArrayFwd is short for MaskedLogicalArrayForwards, which is
-// too long by AIPS++ file naming conventions.  It contains forwards
-// for MaskedLogicalArrays.
+// too long by the old AIPS++ file naming conventions.
+// It contains forwards for MaskedLogicalArrays.
 // </etymology>
 //
 // <synopsis>

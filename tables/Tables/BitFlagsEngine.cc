@@ -48,7 +48,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {}
 
   void BFEngineMask::fromRecord (const RecordInterface& spec,
-                                 const ROTableColumn& column,
+                                 const TableColumn& column,
                                  const String& prefix)
   {
     String keyName = prefix + "Mask";
@@ -69,7 +69,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     spec.define (prefix + "MaskKeys", itsMaskKeys);
   }
 
-  void BFEngineMask::makeMask (const ROTableColumn& column)
+  void BFEngineMask::makeMask (const TableColumn& column)
   {
     if (! itsMaskKeys.empty()) {
       if (column.keywordSet().isDefined("FLAGSETS")) {

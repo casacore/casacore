@@ -1,4 +1,4 @@
-//# FITS2.cc: Transform an AIPS++ Array to or from a FITS disk file (helper functions)
+//# FITS2.cc: Transform a Casacore Array to or from a FITS disk file (helper functions)
 //# Copyright (C) 1994,1995,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -52,7 +52,6 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 
     IPosition shape;
     Bool deleteIt;
-    Regex trailing(" *$"); // trailing blanks
 	
     shape.resize(fitsdata.dims());
     for (uInt i=0; i < shape.nelements(); i++) shape(i) = fitsdata.dim(i);
@@ -70,13 +69,13 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
     if (unitName) {
 	(*unitName) = fitsdata.bunit();
 	// Get rid of trailing blanks
-	(*unitName) = (*unitName).before(trailing);
+	(*unitName).rtrim(' ');
     }
     if (axisNames) {
 	(*axisNames).resize(fitsdata.dims());
 	for (Int i=0; i<fitsdata.dims(); i++) {
 	    (*axisNames)(i) = fitsdata.ctype(i);
-	    (*axisNames)(i) = (*axisNames)(i).before(trailing);
+	    (*axisNames)(i).rtrim(' ');
 	}
     }
     if (refPixel) {
@@ -135,7 +134,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
            (*objectName) = "";
        }
        // Get rid of trailing blanks
-       (*objectName) = (*objectName).before(trailing);
+       (*objectName).rtrim(' ');
     }
 }
 

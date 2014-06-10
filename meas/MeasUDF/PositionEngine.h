@@ -170,7 +170,7 @@ namespace casa {
     Int                            itsValueType;
                                    //# 0=default, 1=xyz, 2=angles, 3=height
     TableExprNode                  itsExprNode;
-    ROArrayMeasColumn<MPosition>   itsMeasCol;
+    ArrayMeasColumn<MPosition>     itsMeasCol;
   };
 
 } //end namespace

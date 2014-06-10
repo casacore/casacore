@@ -56,17 +56,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <use visibility=export>
 
-// <reviewed reviewer="Paul Shannon" date="1995/09/15" tests="tgtable.g" demos="">
+// <reviewed reviewer="Paul Shannon" date="1995/09/15" tests="ttable.py" demos="">
 // </reviewed>
 
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> class Table
-//   <li> class GlishTableHolder
-//   <li> class GlishTableIteratorHolder
-//   <li> class GlishTableRowHolder
-//   <li> program gtable
-//   <li> script gtable.g
+//   <li> python script table.py
 // </prerequisite>
 
 // <etymology>

@@ -38,7 +38,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class ROTableColumn;
+class TableColumn;
 template<class T> class Vector;
 
 
@@ -151,13 +151,13 @@ public:
     // Its TableRecord will contain all columns except columns with
     // datatype TpOther (i.e. non-standard data types).
     // <br>
-    // When the flag <src>storedColumnsOnly</src> is True, only the
+    // If the flag <src>storedColumnsOnly</src> is True, only the
     // columns actually stored by a storage manager will be selected.
-    // This is useful when the contents of an entire row has to be copied.
+    // This is useful when the contents of an entire row have to be copied.
     // Virtual columns are calculated on-the-fly (often using stored columns),
     // thus it makes no sense to copy their data.
     // <note role=caution>
-    //  When the table contains columns with large arrays, it may
+    //  If the table contains columns with large arrays, it may
     //  be better not to use this constructor. Each get will read in
     //  all data in the row, thus also the large data array(s).
     //  In that case it is better to use the constructor which
@@ -217,7 +217,7 @@ protected:
     // Copy that object to this object.
     // The writable flag determines if writable or readonly
     // TableColumn objects will be created.
-    void copy (const ROTableRow& that, Bool writable);
+    void copy (const ROTableRow& that);
 
     // Create the record, column, and field objects
     // for all columns in the table.
@@ -248,11 +248,11 @@ protected:
     TableRecord* itsRecord;
     //# The table used.
     Table        itsTable;
-    //# The following block is actually a Block<ROTableColumn*>.
+    //# The following block is actually a Block<TableColumn*>.
     //# However, using void* (and appropriate casts) saves on template
     //# instantiations.
     Block<void*> itsTabCols;
-    //# The following block is actually a Block<(RO)Scalar/ArrayColumn<T>>.
+    //# The following block is actually a Block<Scalar/ArrayColumn<T>>.
     Block<void*> itsColumns;
     //# The following block is actually a block of RecordFieldPtr<T>*.
     //# These are used for fast access to the record.
@@ -281,11 +281,11 @@ private:
     // When skipOther is True, columns with a non-standard data type
     // will be silently skipped.
     void addColumnToDesc (RecordDesc& description,
-			  const ROTableColumn& column, Bool skipOther);
+			  const TableColumn& column, Bool skipOther);
 
     // Make the required objects. These are the TableRecord and for
     // each column a TableColumn and RecordFieldPtr.
-    void makeObjects (const RecordDesc& description, Bool writable);
+    void makeObjects (const RecordDesc& description);
 
     // Delete all objects.
     void deleteObjects();
@@ -404,13 +404,13 @@ public:
     // Its TableRecord will contain all columns except columns with
     // datatype TpOther and columns which are not writable.
     // <br>
-    // When the flag <src>storedColumnsOnly</src> is True, only the
+    // If the flag <src>storedColumnsOnly</src> is True, only the
     // columns actually stored by a storage manager will be selected.
-    // This is useful when the contents of an entire row has to be copied.
+    // This is useful when the contents of an entire row have to be copied.
     // Virtual columns are calculated on-the-fly (often using stored columns),
     // thus it makes no sense to copy their data.
     // <note role=caution>
-    //  When the table contains columns with large arrays, it may
+    //  If the table contains columns with large arrays, it may
     //  be better not to use this constructor. Each get will read in
     //  all data in the row, thus also the large data array(s).
     //  In that case it is better to use the next constructor which

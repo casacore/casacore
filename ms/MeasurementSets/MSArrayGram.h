@@ -70,15 +70,16 @@ class TableExprNode;
 // <group name=MSArrayGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-  int msArrayGramParseCommand (const MeasurementSet *ms, const String& command, Vector<Int>& idList, Int maxArrays=1000);
+  TableExprNode msArrayGramParseCommand (const MeasurementSet *ms, const String& command, 
+					 Vector<Int>& idList, Int maxArrays=1000);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
 void MSArrayGramerror (const char*);
 
 // Give the table expression node.
-const TableExprNode *msArrayGramParseNode();
-void msArrayGramParseDeleteNode();
+// const TableExprNode *msArrayGramParseNode();
+// void msArrayGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.

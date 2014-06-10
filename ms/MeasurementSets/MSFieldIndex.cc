@@ -33,6 +33,7 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Utilities/Regex.h>
 #include <ms/MeasurementSets/MSSelectionTools.h>
+//#include <casa/Logging/LogIO.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   //-------------------------------------------------------------------------
@@ -91,7 +92,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	Mesg << "Field Expression: Invalid regular expression \"" << pattern << "\"";
 	throw(MSSelectionFieldParseError(Mesg.str().c_str()));
       }
-    //cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
+    //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
     IPosition sh(msFieldCols_p.name().getColumn().shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
@@ -164,7 +165,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Output:
     //    matchFieldName   Vector<Int>              Matching field id's
     //
-    LogicalArray maskArray = (msFieldCols_p.name().getColumn()==name &&
+    Vector<String> strippedNames = msFieldCols_p.name().getColumn();
+    IPosition sh=strippedNames.shape();
+    for(Int i=0;i<sh(0);i++)
+	strippedNames(i) = stripWhite(msFieldCols_p.name().getColumn()(i));
+
+    LogicalArray maskArray = (strippedNames==name &&
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
 
@@ -181,7 +187,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Output:
     //    matchFieldCode   Vector<Int>              Matching field id's
     //
-    LogicalArray maskArray = (msFieldCols_p.code().getColumn()==code &&
+    Vector<String> strippedCodes = msFieldCols_p.code().getColumn();
+    IPosition sh=strippedCodes.shape();
+    for(Int i=0;i<sh(0);i++)
+	strippedCodes(i) = stripWhite(msFieldCols_p.code().getColumn()(i));
+
+    LogicalArray maskArray = (strippedCodes==code &&
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
@@ -202,7 +213,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     uInt len = fieldnames.nelements();
     Vector<Bool> matchfieldnames(len, False);
     for(uInt j = 0; j < len; j++) {
-      if(fieldnames[j].contains(name))
+      if(stripWhite(fieldnames[j]).contains(name))
 	matchfieldnames(j) = True;
     }
     LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());
@@ -313,6 +324,54 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return maskFieldId.getCompressedArray();
   }
   //-------------------------------------------------------------------------
+  Vector<Int> MSFieldIndex::validateIndices(const Vector<Int>& ids)
+  {
+    //
+    // If any of the IDs is out of range, produce a warning message (and
+    // a tip for more reasonable behaviour), and attempt the
+    // integar-as-name parsing (yuck) and produce a warning based on
+    // the result.
+    //
+    Vector<Int> modifiedIds(ids);  // Make a writeable copy
+    vector<Int> outOfRangeIdList, intAsNameIdList;
+    for (uInt i=0;i<ids.nelements();i++)
+      if ((ids[i] < 0) || (ids[i] > (Int)fieldIds_p.nelements()-1))
+	{
+	  ostringstream intAsName;
+	  outOfRangeIdList.push_back(ids[i]);
+	  //	  throw(MSSelectionFieldParseError(Mesg.str()));
+	  //	  logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
+	  //
+	  // Integar-as-name parsing
+	  //
+	  intAsName << ids[i];
+	  Vector<Int> intAsNameID=matchFieldNameOrCode(intAsName.str());
+	  if (intAsNameID.nelements() > 0)
+	    {
+	      modifiedIds[i]=intAsNameID[0];
+	      intAsNameIdList.push_back(ids[i]);
+	    }
+	}
+    LogIO logIO;
+    if (outOfRangeIdList.size()) 
+      {
+	ostringstream Mesg;
+	Mesg << "Field Expression: Found out-of-range index(s) in the list (";
+	for (uInt i=0;i<outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " " ;
+	Mesg << ")" << " [TIP: Double-quoted strings forces name matching]";
+	logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
+      }
+    if (intAsNameIdList.size())
+      {
+	ostringstream Mesg;
+	Mesg << "Field Expression: Successfully parsed \"";
+	for (uInt i=0;i<intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " " ;
+	Mesg << "\" as name(s) and failed for the rest (please ensure this is what you intended).";
+	logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
+      }
+    //    throw(MSSelectionFieldWarning(Mesg.str()));
+    return modifiedIds;
+  }
   
 } //# NAMESPACE CASA - END
 

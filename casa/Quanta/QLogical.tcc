@@ -135,6 +135,18 @@ Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 }
 
 template <class Qtype>
+Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
+	  const Quantum<Qtype>& tol) {
+	if (left.getFullUnit().getValue() == tol.getFullUnit().getValue()) {
+		return nearAbs(
+			left.get(tol.getUnit()), other.get(tol.getUnit()),
+			tol.getValue()
+		);
+	}
+    return False;
+}
+
+template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other) {
     Quantum<Qtype> loc; loc = other;
     return QMakeBool(nearAbs(left, loc));

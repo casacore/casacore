@@ -82,10 +82,5 @@ void ROIncrementalStManAccessor::clearCache()
     dataManPtr_p->clearCache();
 }
 
-void ROIncrementalStManAccessor::showCacheStatistics (ostream& os) const
-{
-    dataManPtr_p->showCacheStatistics (os);
-}
-
 } //# NAMESPACE CASA - END
 

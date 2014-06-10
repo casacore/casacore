@@ -108,7 +108,7 @@ public:
     ROIncrementalStManAccessor (const Table& table, const String& name,
                                 Bool byColumn=False);
 
-    ~ROIncrementalStManAccessor();
+    virtual ~ROIncrementalStManAccessor();
 
     // Copy constructor (reference semantics).
     ROIncrementalStManAccessor (const ROIncrementalStManAccessor& that);
@@ -136,9 +136,6 @@ public:
     // It will flush the caches as needed and remove all buckets from them
     // resulting in a possibly large drop in memory used.
     void clearCache();
-
-    // Show the statistics for each cache used by this storage manager.
-    void showCacheStatistics (ostream& os) const;
 
 
 private:

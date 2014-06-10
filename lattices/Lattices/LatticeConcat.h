@@ -172,7 +172,7 @@ public:
    MaskedLattice<T>* lattice(uInt i) const
      { return lattices_p[i]; }
 
-// Handle the (un)locking and syncing, etc..  
+// Handle the (un)locking and syncing, etc.
 // <group>
    virtual Bool lock (FileLocker::LockType, uInt nattempts);
    virtual void unlock();

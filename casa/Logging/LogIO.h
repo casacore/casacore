@@ -70,7 +70,7 @@ class LogOrigin;
 // When you use the "<<" operator on a LogIO, you are building up a log message
 // inside the LogIO object. The message is posted when:
 // <ol>
-//    <li> <src>LogIO::post()</src> is called
+//    <li> <src>LogIO::POST()</src> is called
 //    <li> You send the <src>LogIO::POST</src> or <src>LogIO::EXCEPTION</src>
 //         commands to the LogIO with the shift (<src> << </src>) command.
 //    <li> The LogIO object is destructed.
@@ -113,7 +113,7 @@ class LogOrigin;
 // <srcblock>
 //   os << "Every good boy deserves" << 5 << " pieces of fudge!";
 // </srcblock>
-// </example>
+//
 // This accumulates the message but does not send it. If you want to force it
 // to be sent you can do so with either of the following methods:
 // <srcblock>
@@ -138,6 +138,15 @@ class LogOrigin;
 //    os << LogOrigin("class", "func(args)");
 //    os << WHERE;
 // </srcblock>
+//
+// A class which has an operator<< to std::ostream but not LogIO can be handled
+// as follows:
+// <srcblock>
+//   os << LogIO::SEVERE << " at ";
+//   os.output() << MEpoch::Convert(time_p, MEpoch::Ref(MEpoch::UTC))();
+//   os << LogIO::POST;
+// </srcblock>
+// </example>
 //
 // <motivation>
 // The earlier method of creating log messages solely through LogSink and

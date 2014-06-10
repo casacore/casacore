@@ -98,7 +98,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <p>
 // To be sure that different table types have unique names, it can be
 // useful to use enum's and to define them in one common file. For
-// AIPS++ tables this enum is defined in this file.
+// Casacore tables this enum is defined in this file.
 
 // <example>
 // <srcblock>
@@ -161,7 +161,7 @@ public:
 	WEATHER,
 	// Measurement Equation Calibration table
 	ME_CALIBRATION,
-	// AIPS++ Log table
+	// Casacore Log table
 	LOG,
 	// A ComponentList table contains parameterised representations of the
 	// sky brightness.

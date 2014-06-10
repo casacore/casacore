@@ -34,6 +34,7 @@
 #include <casa/BasicSL/Constants.h>
 //#include <casa/BasicMath/Math.h>
 #include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
@@ -54,12 +55,15 @@ int main() {
 
     Vector<String> srcNames(2);
     srcNames[0] = "3C147";
-    srcNames[1] = "1934-638";    
+    //srcNames[1] = "1934-638";    
+    srcNames[1] = "PKS J1939-6342";    
 
     Vector<MFrequency> freqs(2);
     freqs[0] = MFrequency(Quantity(2.0, "GHz"));
     freqs[1] = MFrequency(Quantity(20.0, "GHz"));
     
+    MEpoch mtime(Quantity(56293.0,"d"));
+
     // Expected flux densities for qsScNames with srcNames at freqs.
     Vector<Vector<Vector<Float> > > expfds(5);
     for(Int scNum = qsScNames.nelements(); scNum--;){
@@ -88,6 +92,8 @@ int main() {
     expfds[4][1][0] = 12.9502663;       // Perley 90, 1934-638, 2.0 GHz
     expfds[4][1][1] =  1.0828228;       // Perley 90, 1934-638, 20.0 GHz
 
+    // dummy direction  
+    MDirection srcDir(MVDirection(Quantity(0.0,"rad"),Quantity(0.0,"rad")), MDirection::J2000);
     Vector<Double> fluxUsed(4);
 
     for(Int scNum = qsScNames.nelements(); scNum--;){
@@ -105,7 +111,8 @@ int main() {
       
       for(Int srcInd = srcNames.nelements(); srcInd--;){
         for(Int freqInd = freqs.nelements(); freqInd--;){
-          Bool foundStd = fluxStd.compute(srcNames[srcInd], freqs[freqInd],
+          Bool foundStd = fluxStd.compute(srcNames[srcInd], srcDir, freqs[freqInd],
+                                          mtime,
                                           returnFlux, returnFluxErr);
           AlwaysAssert(foundStd, AipsError);
           cout << "Passed foundStd for " << qsScNames[scNum]
@@ -113,6 +120,9 @@ int main() {
                << ", " << (freqInd ? 20.0 : 2.0) << " GHz." << endl;
 
           returnFlux.value(fluxUsed); // Read this as fluxUsed = returnFlux.value();
+          cout.precision(10);
+          cout<< " fluxUsed[0] ="<< fluxUsed[0]<< endl;
+          cout<< " expected ="<< expfds[scNum][srcInd][freqInd]<< endl;
           AlwaysAssert(fabs(fluxUsed[0] - expfds[scNum][srcInd][freqInd]) < 0.001,
                        AipsError);          
           cout << "Passed flux density test for " << qsScNames[scNum]

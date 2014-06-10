@@ -52,6 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& scanExpr="",
 		  const String& arrayExpr="",
 		  const String& stateExpr="",
+		  const String& obsExpr="",
 		  MSSelection *mss=NULL
 		  );
   // Collective selection also returning in-row (corr/chan) slices
@@ -70,10 +71,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		  const String& scanExpr="",
 		  const String& arrayExpr="",
 		  const String& stateExpr="",
+		  const String& obsExpr="",
 		  const Int defaultChanStep=1,
 		  MSSelection *mss=NULL
 		  );
   
+  Bool getSelectedTable(Table& selectedTab,     const Table& baseTab,
+			TableExprNode& fullTEN,	const String& outName);
+
   Record mssSelectedIndices(MSSelection& mss, const MeasurementSet *ms);
 
   String stripWhite(const String& str, Bool onlyends=True);

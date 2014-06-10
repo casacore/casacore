@@ -41,6 +41,8 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Static data
+// Note: this static is not mutexed, because it does not harm if accidently
+// two threads fill it at the same time.
 uInt MeasMath::b1950_reg_p = 0;
 
 //# Constructors
@@ -606,7 +608,7 @@ void MeasMath::applyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
   in(1) = -in(1);
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR];
   in = RotMatrix(EULER1) * in;
 }
@@ -614,7 +616,7 @@ void MeasMath::applyPolarMotion(MVPosition &in) {
 void MeasMath::deapplyPolarMotion(MVPosition &in) {
   getInfo(TDB);
   getInfo(LASTR);
-  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  Euler EULER1 = MeasTable::polarMotion(info_p[TDB]);
   EULER1(2) = info_p[LASTR];
   in *= RotMatrix(EULER1);
   in(1) = -in(1);

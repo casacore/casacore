@@ -17,7 +17,7 @@ Code Organization
 
 *** Classes: header, implementation, test files present?
 
-*** Data types: only AIPS++ fundamental types used?
+*** Data types: only Casacore fundamental types used?
 
 *** Modules: necessary and present?
 

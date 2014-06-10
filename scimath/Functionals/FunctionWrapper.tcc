@@ -46,7 +46,7 @@ FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&), const Bool) :
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const Vector<T>&),
-					const Bool isPar) :
+                                    const Bool) :
   WrapperParam<T>(0),
   doit_p(new WrapperData<T,T,Vector<T>,False,True>(f)) {}
 

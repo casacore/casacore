@@ -1,4 +1,4 @@
-//# Template.cc: Canonicalise, format etc. aips++ template definitions
+//# Template.cc: Canonicalise, format etc. Casacore template definitions
 //# Copyright (C) 2001-2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#

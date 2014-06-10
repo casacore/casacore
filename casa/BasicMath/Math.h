@@ -1,4 +1,4 @@
-//# Math.h: AIPS++ interface to <math.h> and other scalar math functions
+//# Math.h: Casacore interface to <math.h> and other scalar math functions
 //# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -42,15 +42,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
-// AIPS++ interface to math.h and other scalar math functions
+// Casacore interface to math.h and other scalar math functions
 // </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 
 // <synopsis> 
 
-// AIPS++ interface to <src><math.h></src>. You should include this file rather
-// than <src><math.h></src> directly.  It will be used to cover up any
+// Casacore interface to <src><math.h></src>. You should include this file
+// rather than <src><math.h></src> directly.  It will be used to cover up any
 // deficiencies in the system <src><math.h></src>.
 
 // This file does not include things like element-by-element

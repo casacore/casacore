@@ -55,6 +55,7 @@ Lattices/LCStretch.cc
 Lattices/LELAttribute.cc
 Lattices/LCPagedMask.cc
 Lattices/LatticeProgress.cc
+Lattices/RegionType.cc
 LatticeMath/Fit2D.cc
 LatticeMath/LatticeFit.cc
 )
@@ -67,8 +68,8 @@ casa_scimath
 
 install (TARGETS casa_lattices
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 

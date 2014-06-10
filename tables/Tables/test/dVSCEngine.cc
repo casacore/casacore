@@ -85,21 +85,17 @@ void VSCExampleVSCEngine::create (uInt)
 // Get their names from the keywords of this column.
 void VSCExampleVSCEngine::prepare()
 {
-    ROTableColumn src (table(), sourceColumnName());
+    TableColumn src (table(), sourceColumnName());
     xTargetName_p = src.keywordSet().asString ("_xTargetName");
     yTargetName_p = src.keywordSet().asString ("_yTargetName");
-    rocolx.attach (table(), xTargetName_p);
-    rocoly.attach (table(), yTargetName_p);
-    if (table().isWritable()) {
-	colx.attach (table(), xTargetName_p);
-	coly.attach (table(), yTargetName_p);
-    }
+    colx.attach (table(), xTargetName_p);
+    coly.attach (table(), yTargetName_p);
 }
 
 void VSCExampleVSCEngine::get (uInt rownr, VSCExample& value)
 {
-    rocolx.get (rownr, value.x());
-    rocoly.get (rownr, value.y());
+    colx.get (rownr, value.x());
+    coly.get (rownr, value.y());
 }
 void VSCExampleVSCEngine::put (uInt rownr, const VSCExample& value)
 {
@@ -151,7 +147,6 @@ template class Vector<VSCExample>;
 template class Block<VSCExample>;
 template class ScalarColumnData<VSCExample>;
 template class ScalarColumnDesc<VSCExample>;
-template class ROScalarColumn<VSCExample>;
 template class ScalarColumn<VSCExample>;
 template class VSCEngine<VSCExample>;
 template class VirtualScalarColumn<VSCExample>;
@@ -161,11 +156,8 @@ template void objcopy<VSCExample>(VSCExample *, VSCExample const *, uInt, uInt, 
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt);
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt, uInt);
 template void objmove<VSCExample>(VSCExample *, VSCExample const *, uInt);
-template class CountedConstPtr<Block<VSCExample> >;
 template class CountedPtr<Block<VSCExample> >;
 template class PtrRep<Block<VSCExample> >;
-template class SimpleCountedConstPtr<Block<VSCExample> >;
-template class SimpleCountedPtr<Block<VSCExample> >;
 template String valDataTypeId(VSCExample const *);
 
 }

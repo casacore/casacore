@@ -330,16 +330,16 @@ protected:
 
 // some built in regular expressions
 
-extern const Regex RXwhite;          // = "[ \n\t\r\v\f]+"
-extern const Regex RXint;            // = "-?[0-9]+"
-extern const Regex RXdouble;         // = "-?(([0-9]+\\.[0-9]*)|
-                                     //    ([0-9]+)|(\\.[0-9]+))
-                                     //    ([eE][+-]?[0-9]+)?"
-extern const Regex RXalpha;          // = "[A-Za-z]+"
-extern const Regex RXlowercase;      // = "[a-z]+"
-extern const Regex RXuppercase;      // = "[A-Z]+"
-extern const Regex RXalphanum;       // = "[0-9A-Za-z]+"
-extern const Regex RXidentifier;     // = "[A-Za-z_][A-Za-z0-9_]*"
+extern const Regex RXwhite;          //# = "[ \n\t\r\v\f]+"
+extern const Regex RXint;            //# = "-?[0-9]+"
+extern const Regex RXdouble;         //# = "-?(([0-9]+\\.[0-9]*)|
+                                     //#    ([0-9]+)|(\\.[0-9]+))
+                                     //#    ([eE][+-]?[0-9]+)?"
+extern const Regex RXalpha;          //# = "[A-Za-z]+"
+extern const Regex RXlowercase;      //# = "[a-z]+"
+extern const Regex RXuppercase;      //# = "[A-Z]+"
+extern const Regex RXalphanum;       //# = "[0-9A-Za-z]+"
+extern const Regex RXidentifier;     //# = "[A-Za-z_][A-Za-z0-9_]*"
 
 
 } //# NAMESPACE CASA - END

@@ -31,29 +31,58 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/sstream.h>
+#include <casa/stdmap.h>
 
 using namespace casa;
 
 int main()
 {
-    Vector<Int> vec2(3);
-    indgen(vec2, 1);
-    {
-      ostringstream oss;
-      showContainer (oss, vec2);
-      AlwaysAssertExit (oss.str() == "[1,2,3]");
-    }
-    {
-      ostringstream oss;
-      showContainer (oss, vec2, ", ");
-      AlwaysAssertExit (oss.str() == "[1, 2, 3]");
-    }
-    {
-      ostringstream oss;
-      showDataIter (oss, vec2.data(), vec2.data()+vec2.size(), " ", "(", ")");
-      AlwaysAssertExit (oss.str() == "(1 2 3)");
-    }
+  // Test with various delimiters.
+  Vector<Int> vec2(3);
+  indgen(vec2, 1);
+  {
+    ostringstream oss;
+    showContainer (oss, vec2);
+    AlwaysAssertExit (oss.str() == "[1,2,3]");
+  }
+  {
+    ostringstream oss;
+    showContainer (oss, vec2, ", ");
+    AlwaysAssertExit (oss.str() == "[1, 2, 3]");
+  }
+  {
+    ostringstream oss;
+    showDataIter (oss, vec2.data(), vec2.data()+vec2.size(), " ", "(", ")");
+    AlwaysAssertExit (oss.str() == "(1 2 3)");
+  }
 
-    cout << "OK\n";
-    return 0;
+  // Test a map (and pair).
+  map<Int,String> map1;
+  map1[-1] = "str-1";
+  map1[3] = "str3";
+  {
+    ostringstream oss;
+    oss << map1;
+    AlwaysAssertExit (oss.str() == "{<-1,str-1>, <3,str3>}");
+  }
+
+  // Test empty container and vector.
+  {
+    ostringstream oss;
+    oss << vector<int>();
+    AlwaysAssertExit (oss.str() == "[]");
+  }
+  {
+    ostringstream oss;
+    oss << vector<int>(1,3);
+    AlwaysAssertExit (oss.str() == "[3]");
+  }
+  {
+    ostringstream oss;
+    oss << vector<int>(3,4);
+    AlwaysAssertExit (oss.str() == "[4,4,4]");
+  }
+
+  cout << "OK\n";
+  return 0;
 }

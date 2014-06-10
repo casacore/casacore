@@ -56,7 +56,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <synopsis>
-// This module provides the basic IO functionality for the AIPS++ classes.
+// This module provides the basic IO functionality for the Casacore classes.
 // There are two IO mechanisms:
 // <ol>
 // <li> Class <linkto class=AipsIO:description>AipsIO</linkto>

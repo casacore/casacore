@@ -75,7 +75,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 MIRIADImage::MIRIADImage (const String& name)
 : ImageInterface<Float>(),
   name_p      (name),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
@@ -89,7 +88,6 @@ MIRIADImage::MIRIADImage (const String& name, const MaskSpecifier& maskSpec)
 : ImageInterface<Float>(),
   name_p      (name),
   maskSpec_p  (maskSpec),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   hasBlanks_p (False),
   dataType_p  (TpOther),
@@ -1088,10 +1086,10 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
    rdhdd_c(tno_p, "bmin", &bmin, 0.0);
    rdhdd_c(tno_p, "bpa", &bpa, 0.0);
    if (bmaj>0.0 && bmin>0.0 && abs(bpa)>0.0) {
-      Quantum<Double> qbmaj(bmaj,Unit("rad"));
-      Quantum<Double> qbmin(bmin,Unit("rad"));
-      Quantum<Double> qbpa(bpa,Unit("deg"));
-      imageInfo.setRestoringBeam(qbmaj, qbmin, qbpa);
+      Quantity qbmaj(bmaj,Unit("rad"));
+      Quantity qbmin(bmin,Unit("rad"));
+      Quantity qbpa(bpa,Unit("deg"));
+      imageInfo.setRestoringBeam(GaussianBeam(qbmaj, qbmin, qbpa));
    }
 
 // ObsInfo

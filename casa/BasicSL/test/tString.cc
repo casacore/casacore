@@ -149,6 +149,9 @@ void comparetest() {
   AlwaysAssertExit(common_prefix(x, "Help") == "Hel");
   AlwaysAssertExit(common_suffix(x, "to") == "o");
   
+  AlwaysAssertExit(fcompare(x, "hello") == 0);
+  AlwaysAssertExit(fcompare(x, "hellox") < 0);
+  AlwaysAssertExit(fcompare(x, "hell") > 0);
   AlwaysAssertExit(fcompare(x, "hELlo") == 0);
   AlwaysAssertExit(fcompare(x, "hElp") < 0);
 }
@@ -322,9 +325,9 @@ void identitytest(String a, String b) {
   AlwaysAssertExit((a + b) == y);
   AlwaysAssertExit(x == y);
   AlwaysAssertExit(x.after(a) == b);
-  AlwaysAssertExit(x.before(b, -1) == a);
+  AlwaysAssertExit(x.before(b, 4) == a);
   AlwaysAssertExit(x.from(a) == x);
-  AlwaysAssertExit(x.through(b, -1) == x);
+  AlwaysAssertExit(x.through(b, x.size()) == x);
   AlwaysAssertExit(x.at(a) == a);
   AlwaysAssertExit(x.at(b) == b);
 
@@ -336,7 +339,7 @@ void identitytest(String a, String b) {
   x.del(b);
   AlwaysAssertExit(x == a);
 
-  y.before(b, -1) = b;
+  y.before(b, 2) = b;
   AlwaysAssertExit(y == (b + b));
   y.at(b) = a;
   AlwaysAssertExit(y == (a + b));
@@ -365,19 +368,29 @@ void toDouble() {
     Double y = String::toDouble(x);
     AlwaysAssertExit(y == 1.5);
     x = "frodo";
-    y = String::toDouble(x);
-    // should be 0, but account for finite machine precision
-    AlwaysAssertExit(y < 1e-316 && y > -1e-316);
+    AlwaysAssertExit (String::toDouble(x) == 0);
+    bool ok = false;
+    try {
+      y = String::toDouble(x, True);
+    } catch (const AipsError&) {
+      ok = true;
+    }
+    AlwaysAssertExit(ok);
 }
 
 void toFloat() {
     String x = "1.5";
     Float y = String::toFloat(x);
     AlwaysAssertExit(y == 1.5);
-    x = "frodo";
-    y = String::toFloat(x);
-    // should be 0, but account for finite machine precision
-    AlwaysAssertExit(y < 1e-316 && y > -1e-316);
+    x = "1.5 aa";
+    AlwaysAssertExit(String::toFloat(x) == 1.5);
+    bool ok = false;
+    try {
+      y = String::toFloat(x, True);
+    } catch (const AipsError&) {
+      ok = true;
+    }
+    AlwaysAssertExit(ok);
 }
 
 void toInt() {
@@ -388,14 +401,14 @@ void toInt() {
     y = String::toInt(x);
     AlwaysAssertExit(y == -12);
     x = "6.9999";
-    y = String::toInt(x);
-    AlwaysAssertExit(y == 6);
-    x = "-8.9999";
-    y = String::toInt(x);
-    AlwaysAssertExit(y == -8);
-    x = "elrond";
-    y = String::toInt(x);
-    AlwaysAssertExit(y == 0);
+    AlwaysAssertExit (String::toInt(x) == 6);
+    bool ok = false;
+    try {
+      y = String::toInt(x, True);
+    } catch (const AipsError&) {
+      ok = true;
+    }
+    AlwaysAssertExit(ok);
 }
 
 void trim() {

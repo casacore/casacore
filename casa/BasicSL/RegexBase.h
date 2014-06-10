@@ -70,7 +70,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // position <src>pos</src>. The string may contain null characters.
 // </dl>
 // The base class provides also default implementations of a few other methods
-// used in the String classes' aips++ extensions. These implementations
+// used in the String classes' Casacore extensions. These implementations
 // can, of course, be overwritten with more efficient specialised ones if
 // necessary:
 // <dl>
@@ -105,7 +105,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The length of that substring is returned in <src>matchlen</src>.
 // The string has <src>len</src> characters and the test starts at
 // position <src>pos</src>. The string may contain null characters.
-// Following the special rule for aips++ string methods extensions:
+// Following the special rule for Casacore string methods extensions:
 // a negative position will indicate a reverse find. The default implementation
 // checks for the sign of <src>pos</src> and calls either <src>find</src>
 // or <src>rfind</src>.

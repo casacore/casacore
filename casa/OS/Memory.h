@@ -80,8 +80,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <src>releaseMemory()</src> might be a no-op on many systems, and that
 // calling it might be expensive so it should not be called in tight-loops.
 //
-// Note that this class does not use any AIPS++ facilities and does not cause
-// any AIPS++ code to be linked in to your executable.
+// Note that this class does not use any Casacore facilities and does not cause
+// any Casacore code to be linked in to your executable.
 // </synopsis>
 //
 // <example>

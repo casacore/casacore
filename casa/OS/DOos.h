@@ -178,7 +178,7 @@ public:
   // Tell if a table is used or locked by another process.
   // It returns a vector containing 3 integers.
   // The first one tells if the table is in use or locked.
-  // See <linkto class=LockFile>LockFile</linkto>::showLock for details.
+  // See <linkto class=LockFile>LockFile</linkto>\::showLock for details.
   // The second one gives the pid of the process using/locking the table.
   // The third one tells if the table is permanently locked (0 = not).
   static Vector<Int> lockInfo (const String& tableName);

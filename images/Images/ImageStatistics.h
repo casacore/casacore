@@ -142,6 +142,14 @@ public:
 
    Int getPrecision() const;
 
+   // list robust statistics? Should be called before display()
+   void showRobust(const Bool show);
+
+   inline void recordMessages(const Bool rm) { _recordMessages = rm; }
+
+   inline vector<String> getMessages() { return _messages; }
+
+   inline void clearMessages() { _messages.resize(0); }
 private:
 
 // Data
@@ -150,6 +158,8 @@ private:
    const ImageInterface<T>* pInImage_p;
    IPosition blc_;
    Int precision_;
+   Bool _showRobust, _recordMessages;
+   vector<String> _messages;
 
 // Virtual functions.  See LatticeStatistics for more information
 // about these, or see the implementation.
@@ -157,8 +167,11 @@ private:
 // Get label for higher order axes
    virtual void getLabels(String& higherOrder, String& xAxis, const IPosition& dPos) const;
 
-// Get beam volume if possible
-   virtual Bool getBeamArea (Double& beamArea) const;
+    // Get beam volume if possible. Return False if the beam area could not be
+    // calculated.
+    virtual Bool _getBeamArea(
+    	Array<Double>& beamArea
+    ) const;
 
 // List min and max with world coordinates
    virtual void listMinMax (ostringstream& osMin,

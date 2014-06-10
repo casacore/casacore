@@ -82,6 +82,18 @@ Vector<T> crossProduct (const Vector<T> &A, const Vector<T> &B) {
   return result;
 }
 
+template <class T>
+T crossProduct2D (const Vector<T> &A, const Vector<T> &B) {
+                                      // check for correct dimensions
+  if (!A.conform(B)){
+    throw (ArrayConformanceError("crossProduct2D - conform() error."));
+  } else {
+    if (A.nelements() != 2) 
+      throw (ArrayConformanceError("crossProduct2D - Vector not in 2-space"));
+  }
+  return A[0]* B[1] - A[1]*B[0];
+}
+
                                  // matrix multiplication or cayley product
 template <class T>
 Vector<T> product (const Matrix<T> &A, const Vector<T> &x) {

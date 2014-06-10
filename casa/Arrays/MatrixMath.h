@@ -76,6 +76,8 @@ Double norm (const Vector<DComplex> &x);
 template <class T> 
    Vector<T> crossProduct (const Vector<T> &x, const Vector<T> &y);
 
+// Magnitude of cross product of two 2-space vectors, x[0]*y[1] - x[1]*y[0]. 
+template <class T> T crossProduct2D(const Vector<T> &x, const Vector<T> &y);
 //
 // The matrix/outer product of a vector and a transposed vector. 
 // <note> The function's second argument is actually a transposed vector

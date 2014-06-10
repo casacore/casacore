@@ -39,97 +39,130 @@
 #include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MEpoch.h>
+#include <tables/Tables/PlainTable.h>
 #include <casa/iostream.h>
+#include <casa/sstream.h>
+#include <casa/fstream.h>
 
 #include <casa/namespace.h>
 int main()
 {
-  const MVEpoch dat = 51116;
   try {
-    MVDirection mvd1;
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for (int dd=0; dd<4; ++dd) {
+      const MVEpoch dat = 51116 + dd*33;
+      ostringstream ostr;
+      ostr << dd;
+      ofstream os(("tMeasJPL_tmp.out_a" + ostr.str()).c_str());
+      
+      MVDirection mvd1;
 
-    cout << "Test measure class MeasJPL" << endl;
-    cout << "---------------------------" << endl;
+      os << "Test measure class MeasJPL" << endl;
+      os << "---------------------------" << endl;
 
-    cout << setprecision(9);
-    Vector<Double> val(6);
+      os << setprecision(9);
+      Vector<Double> val(6);
 
-    cout << "DE200: " << dat << endl;
-    cout << "---------------------------" << endl;
-    cout << "Mercury0:   " <<
-      MeasTable::Planetary(MeasTable::MERCURY, dat.get()) << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MERCURY, dat);
-    cout << "Mercury:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
-    cout << "Venus:      " << val << endl;
-    for (uInt i=0; i<3; i++) mvd1(i) = val(i); mvd1.adjust();
-    cout << "Venus:      " << mvd1 << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::EARTH, dat);
-    cout << "Earth:      " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MARS, dat);
-    cout << "Mars:       " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::JUPITER, dat);
-    cout << "Jupiter:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SATURN, dat);
-    cout << "Saturn:     " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::URANUS, dat);
-    cout << "Uranus:     " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NEPTUNE, dat);
-    cout << "Neptune:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::PLUTO, dat);
-    cout << "Pluto:      " << val << endl;
+      os << "DE200: " << dat << endl;
+      os << "---------------------------" << endl;
+      os << "Mercury0:   " <<
+        MeasTable::Planetary(MeasTable::MERCURY, dat.get()) << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MERCURY, dat);
+      os << "Mercury:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
+      os << "Venus:      " << val << endl;
+      for (uInt i=0; i<3; i++) mvd1(i) = val(i); mvd1.adjust();
+      os << "Venus:      " << mvd1 << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::EARTH, dat);
+      os << "Earth:      " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MARS, dat);
+      os << "Mars:       " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::JUPITER, dat);
+      os << "Jupiter:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SATURN, dat);
+      os << "Saturn:     " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::URANUS, dat);
+      os << "Uranus:     " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NEPTUNE, dat);
+      os << "Neptune:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::PLUTO, dat);
+      os << "Pluto:      " << val << endl;
+    }
     MeasIERS::closeTables();
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
-    cout << "Moon:       " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SUN, dat);
-    cout << "SUN:        " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYSOLAR, dat);
-    cout << "Barycentre: " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYEARTH, dat);
-    cout << "Earth/Moon: " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NUTATION, dat);
-    cout << "Nutation:   " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE200, MeasJPL::LIBRATION, dat);
-    cout << "Libration:  " << val << endl;
+    const TableCache& cache = PlainTable::tableCache();
+    if(cache.ntable()>0){
+      cout << "ERROR: cache not empty!" << endl;
+      for (uInt i=0; i<cache.ntable(); ++i) {
+	cout << "    " << i << ": \"" <<  cache(i)->tableName() << "\"" << endl;
+      }
+    }
 
-    cout << "DE405: " << dat << endl;
-    cout << "---------------------------" << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MERCURY, dat);
-    cout << "Mercury:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::VENUS, dat);
-    cout << "Venus:      " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::EARTH, dat);
-    cout << "Earth:      " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MARS, dat);
-    cout << "Mars:       " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::JUPITER, dat);
-    cout << "Jupiter:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SATURN, dat);
-    cout << "Saturn:     " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::URANUS, dat);
-    cout << "Uranus:     " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NEPTUNE, dat);
-    cout << "Neptune:    " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::PLUTO, dat);
-    cout << "Pluto:      " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MOON, dat);
-    cout << "Moon:       " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SUN, dat);
-    cout << "SUN:        " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYSOLAR, dat);
-    cout << "Barycentre: " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYEARTH, dat);
-    cout << "Earth/Moon: " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NUTATION, dat);
-    cout << "Nutation:   " << val << endl;
-    MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
-    cout << "Libration:  " << val << endl;
+    // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for (int dd=0; dd<4; ++dd) {
+      const MVEpoch dat = 51116 + dd*33;
+      ostringstream ostr;
+      ostr << dd;
+      ofstream os(("tMeasJPL_tmp.out_b" + ostr.str()).c_str());
+      os << setprecision(9);
+      Vector<Double> val(6);
 
-  } catch (AipsError x) {
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
+      os << "Moon:       " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SUN, dat);
+      os << "SUN:        " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYSOLAR, dat);
+      os << "Barycentre: " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::BARYEARTH, dat);
+      os << "Earth/Moon: " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::NUTATION, dat);
+      os << "Nutation:   " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE200, MeasJPL::LIBRATION, dat);
+      os << "Libration:  " << val << endl;
+      
+      os << "DE405: " << dat << endl;
+      os << "---------------------------" << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MERCURY, dat);
+      os << "Mercury:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::VENUS, dat);
+      os << "Venus:      " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::EARTH, dat);
+      os << "Earth:      " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MARS, dat);
+      os << "Mars:       " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::JUPITER, dat);
+      os << "Jupiter:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SATURN, dat);
+      os << "Saturn:     " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::URANUS, dat);
+      os << "Uranus:     " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NEPTUNE, dat);
+      os << "Neptune:    " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::PLUTO, dat);
+      os << "Pluto:      " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::MOON, dat);
+      os << "Moon:       " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::SUN, dat);
+      os << "SUN:        " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYSOLAR, dat);
+      os << "Barycentre: " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::BARYEARTH, dat);
+      os << "Earth/Moon: " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::NUTATION, dat);
+      os << "Nutation:   " << val << endl;
+      MeasJPL::get(val, MeasJPL::DE405, MeasJPL::LIBRATION, dat);
+      os << "Libration:  " << val << endl;
+    }
+  } catch (const AipsError& x) {
     cout << x.getMesg() << endl;
   } 
   
   try {
+    const MVEpoch dat = 51116;
     const MEpoch mdat(dat, MEpoch::Ref(MEpoch::TDB));
     MeasFrame frame(mdat);
     MDirection::Ref venr(MDirection::VENUS, frame);
@@ -154,7 +187,7 @@ int main()
     cout << "Moon  APP:  " << mc2() << endl;
     cout << "Moon  APP:  " << mc2().getValue().getAngle("deg") << endl;
 
-  } catch (AipsError x) {
+  } catch (const AipsError& x) {
     cout << x.getMesg() << endl;
   } 
   

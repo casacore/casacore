@@ -50,7 +50,7 @@ template<class T> class MaskedArray;
 // </prerequisite>
 //
 // <etymology>
-// MaskArrIO is short for MaskedArrayIO, which is too long by
+// MaskArrIO is short for MaskedArrayIO, which is too long by the old
 // AIPS++ file naming conventions.  This file contains global functions
 // for writing out ascii representations of masked arrays.
 // </etymology>

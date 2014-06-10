@@ -142,6 +142,12 @@ protected:
     DataManagerColumn*  dataColPtr_p;    //# Pointer to column in data manager.
     ColumnSet*          colSetPtr_p;
     String              originalName_p;  //# Column name before any rename
+    Bool                rtraceColumn_p;  //# trace reads of the column?
+    Bool                wtraceColumn_p;  //# trace writes of the column?
+
+    // Get the trace-id of the table.
+    int traceId() const
+      { return colSetPtr_p->traceId(); }
 
     // Write the column.
     // The control information is written into the given AipsIO object,

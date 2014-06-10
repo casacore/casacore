@@ -55,7 +55,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <etymology>
 // MaskLogiArr is short for MaskedLogicalArray, which is too long by
-// AIPS++ file naming conventions.  This file contains typedefs
+// the old AIPS++ file naming conventions.  This file contains typedefs
 // for MaskedLogicalArrays.
 // </etymology>
 //

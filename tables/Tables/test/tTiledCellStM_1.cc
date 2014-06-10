@@ -251,7 +251,7 @@ void getCube (Bool trav, Bool ask)
 	Table table("tTiledCellStM_1_tmp.data2");
 	timer.show ("reopen   ");
 	ROTiledStManAccessor accessor(table, "TSMExample");
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	cubeShape = data.shape (0);
 	sizeMb *= cubeShape.product();
 	sizeMb /= 1024*1024;
@@ -269,7 +269,7 @@ void getCube (Bool trav, Bool ask)
     if (nrdim == 3) {
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	cubeShape = data.shape (0);
 	tileShape = accessor.tileShape (0);
 	nrdim = cubeShape.nelements();
@@ -291,7 +291,7 @@ void getCube (Bool trav, Bool ask)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, tileShape, IPosition());
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -409,7 +409,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,2,1));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -432,7 +432,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(1,2));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -455,7 +455,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -478,7 +478,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(1,1));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -501,7 +501,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(2,0,2));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -524,7 +524,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -547,7 +547,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -568,7 +568,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,0,2,1));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -589,7 +589,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Table table("tTiledCellStM_1_tmp.data2");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	accessor.setCacheSize (0, length, IPosition(3,1,2,0));
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
@@ -610,7 +610,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	IPosition length (3, cubeShape(0), cubeShape(1), tileShape(2));
 	accessor.setCacheSize (0, length, IPosition());
-	ROArrayColumn<Float> data (table, "Data");
+	ArrayColumn<Float> data (table, "Data");
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();

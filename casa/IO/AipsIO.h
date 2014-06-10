@@ -1,4 +1,4 @@
-//# AipsIO.h: AipsIO is the object persistency mechanism of AIPS++
+//# AipsIO.h: AipsIO is the object persistency mechanism of Casacore
 //# Copyright (C) 1993,1994,1995,1996,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,6 +35,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/IO/ByteIO.h>
+#include <casa/vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -45,7 +46,7 @@ class RegularFileIO;
 
 
 // <summary> 
-// AipsIO is the object persistency mechanism of AIPS++.
+// AipsIO is the object persistency mechanism of Casacore
 // </summary>
 
 // <use visibility=export>
@@ -53,7 +54,8 @@ class RegularFileIO;
 // <reviewed reviewer="ghunt" date="95Feb21" tests="" demos="">
 
 // <etymology>
-//  AipsIO is simply the conventional shorthand for "aips++ input/output".
+// AipsIO is simply the conventional shorthand for "AIPS++ input/output".
+// Note that Casacore is the successor of the old AIPS++ project.
 // </etymology>
 
 // <synopsis> 
@@ -270,6 +272,22 @@ public:
     AipsIO& put (uInt nrval, const String* values, Bool putNR = True);
     // </group>
 
+    // Put a vector as an array of values
+    // For standard types it has the same result as put with putNR=True.
+    template<typename T>
+    AipsIO& put (const vector<T>& vec)
+      { *this << uInt(vec.size());
+        for (typename vector<T>::const_iterator iter=vec.begin();
+             iter!=vec.end(); ++iter) {
+          *this << *iter;
+        }
+        return *this;
+      }
+    //# Possibly specialize for standard types to make it faster.
+    //# Specialize for a bool vector.
+    AipsIO& put (const vector<Bool>& vec);
+
+
     // End putting an object. It returns the object length (including
     // possible nested objects).
     uInt putend();
@@ -331,6 +349,23 @@ public:
     AipsIO& get (uInt nrval, DComplex* values);
     AipsIO& get (uInt nrval, String* values);
     // </group>
+
+    // Get a vector as an array of values (similar to getnew).
+    // It resizes the vector as needed.
+    template<typename T>
+    AipsIO& get (vector<T>& vec)
+      { uInt sz;
+        *this >> sz;
+        vec.resize(sz);
+        for (typename vector<T>::iterator iter=vec.begin();
+             iter!=vec.end(); ++iter) {
+          *this >> *iter;
+        }
+        return *this;
+      }
+    //# Specialize for a bool vector.
+    AipsIO& get (vector<Bool>& vec);
+
 
     // Read in values as written by the function put.
     // It will read the number of values (into nrval), allocate a

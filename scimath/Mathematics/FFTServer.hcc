@@ -76,7 +76,7 @@ template<class T, class S> FFTServer<T,S> & FFTServer<T,S>::
 operator=(const FFTServer<T,S> & other)
 {
   if (this != &other) {
-    for (uInt i=0; i<itsSize.nelements(); ++i) {
+    for (uInt i=0; i<itsWork.nelements(); ++i) {
       delete itsWork[i];
       itsWork[i] = 0;
     }
@@ -105,7 +105,7 @@ resize(const IPosition & fftSize,
     itsWorkOut.resize (nelem / itsSize[0] * (itsSize[0]/2+1));
     itsWorkC2C.resize (nelem);
     IPosition transpose(ndim);
-    for (uint i=0; i<ndim; ++i) {
+    for (uInt i=0; i<ndim; ++i) {
       transpose[i] = itsSize[ndim-1-i];
     }
     switch (itsTransformType) {
@@ -769,6 +769,11 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
   DebugAssert(vsize > 0, AipsError);
       
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
       
   ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), True); // axes are the cursor  
@@ -776,7 +781,7 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
     Array<S> cv = ait.array(); // reference
     fft0(cv, toFrequency);
     for(uInt i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= exp(Double(i)*exponent);
+      cv(IPosition(1,i)) *= (S)exp(Double(i)*exponent);
     }
     fft0(cv, !toFrequency);
     ait.next();
@@ -806,10 +811,15 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
   outFlags.assign(inFlags);
     
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
 
-  Int numToFlag = ceil(vsize*fabs(relshift));
-  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
+  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
   Bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<S> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
@@ -834,7 +844,7 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
     // apply shift
     fft0(cv, toFrequency);
     for(Int i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= exp(Double(i)*exponent);
+      cv(IPosition(1,i)) *= (S)exp(Double(i)*exponent);
     }
     fft0(cv, !toFrequency);
 
@@ -901,10 +911,15 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
   outFlags.assign(inFlags);
     
   // relshift is the freq shift normalised to the bandwidth
+
+  if(relshift==0.){
+    return;
+  }
+
   const Complex exponent =  -2.*C::pi*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case  
 
-  Int numToFlag = ceil(vsize*fabs(relshift));
-  Int numToFlag2 = floor(vsize*fabs(relshift));
+  Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
+  Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
   Bool flagNeighbour = (numToFlag2<numToFlag);
       
   ArrayIterator<T> ait(outValues, IPosition(1,whichAxis), True); // axes are the cursor  
@@ -930,7 +945,7 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
     Array<S> cResult;
     fft0(cResult, rv);
     for(uInt i=0; i<cResult.size(); i++){
-      cResult(IPosition(1,i)) *= exp(Double(i)*exponent);
+      cResult(IPosition(1,i)) *= (S)exp(Double(i)*exponent);
     }
     fft0(rv, cResult);
 

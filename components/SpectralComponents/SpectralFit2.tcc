@@ -30,8 +30,10 @@
 
 #include <components/SpectralComponents/CompiledSpectralElement.h>
 #include <components/SpectralComponents/GaussianSpectralElement.h>
+#include <components/SpectralComponents/LogTransformedPolynomialSpectralElement.h>
 #include <components/SpectralComponents/LorentzianSpectralElement.h>
 #include <components/SpectralComponents/PolynomialSpectralElement.h>
+#include <components/SpectralComponents/PowerLogPolynomialSpectralElement.h>
 #include <scimath/Fitting/NonLinearFitLM.h>
 #include <scimath/Functionals/CompiledFunction.h>
 #include <scimath/Functionals/CompoundFunction.h>
@@ -39,6 +41,7 @@
 #include <scimath/Functionals/Gaussian1D.h>
 #include <scimath/Functionals/Lorentzian1D.h>
 #include <scimath/Functionals/Polynomial.h>
+#include <scimath/Functionals/PowerLogarithmicPolynomial.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -54,79 +57,75 @@ Bool SpectralFit::fit(const Vector<MT> &y,
 }
 
 template <class MT>
-Bool SpectralFit::fit(const Vector<MT> &sigma,
-		const Vector<MT> &y,
-		const Vector<MT> &x,
-		const Vector<Bool> *mask) {
-	// The fitter
+Bool SpectralFit::fit(
+	const Vector<MT> &sigma, const Vector<MT> &y,
+	const Vector<MT> &x, const Vector<Bool> *mask
+) {
 	NonLinearFitLM<MT> fitter;
 	iter_p = 0;
 	// The functions to fit
 	CompoundFunction<AutoDiff<MT> > func;
-	// Initial guess
-	uInt npar(0);
-	for (uInt i=0; i<slist_p.nelements(); i++) {
-		switch(slist_p[i]->getType()) {
+	uInt ncomps = slist_p.nelements();
+	std::auto_ptr<Function<AutoDiff<MT> > > autodiff;
+	for (uInt i=0; i<ncomps; i++) {
+		SpectralElement *elem = slist_p[i];
+		uInt nparms = elem->getOrder();
+		SpectralElement::Types type = slist_p[i]->getType();
+		switch(type) {
 		case SpectralElement::GAUSSIAN: {
-			Gaussian1D<AutoDiff<MT> > gauss;
-			GaussianSpectralElement *x = dynamic_cast<GaussianSpectralElement *>(slist_p[i]);
-			gauss[0] = AutoDiff<MT>(x->getAmpl(), gauss.nparameters(), 0);
-			gauss[1] = AutoDiff<MT>(x->getCenter(), gauss.nparameters(), 1);
-			gauss[2] = AutoDiff<MT>(x->getFWHM(), gauss.nparameters(), 2);
-			gauss.mask(0) = ! x->fixedAmpl();
-			gauss.mask(1) = ! x->fixedCenter();
-			gauss.mask(2) = ! x->fixedFWHM();
-			func.addFunction(gauss);
-			npar += gauss.nparameters();
+			autodiff.reset(new Gaussian1D<AutoDiff<MT> >());
 		}
 		break;
 		case SpectralElement::POLYNOMIAL: {
-			PolynomialSpectralElement *x = dynamic_cast<PolynomialSpectralElement *>(slist_p[i]);
-
-			npar += x->getDegree()+1;
-			Polynomial<AutoDiff<MT> > poly(x->getDegree());
-			for (uInt j=0; j<poly.nparameters(); ++j) {
-				poly[j] = AutoDiff<MT>(0, poly.nparameters(), j);
-				poly.mask(j) = ! x->fixed()(j);
-			};
-			func.addFunction(poly);
+			PolynomialSpectralElement *x = dynamic_cast<PolynomialSpectralElement *>(elem);
+			autodiff.reset(new Polynomial<AutoDiff<MT> >(x->getDegree()));
 		}
 		break;
 		case SpectralElement::COMPILED:
 			// Allow fall through; these use the same code
 		case SpectralElement::GMULTIPLET: {
-			CompiledSpectralElement *x = dynamic_cast<CompiledSpectralElement *>(slist_p[i]);
-			CompiledFunction<AutoDiff<MT> > comp;
-			comp.setFunction(x->getFunction());
-			Vector<Double> param;
-			x->get(param);
-			for (uInt j=0; j<comp.nparameters(); ++j) {
-				comp[j] = AutoDiff<MT>(param[j], comp.nparameters(), j);
-				comp.mask(j) = ! x->fixed()(j);
-			}
-			func.addFunction(comp);
+			CompiledSpectralElement *x = dynamic_cast<CompiledSpectralElement *>(elem);
+			autodiff.reset(new CompiledFunction<AutoDiff<MT> >());
+			dynamic_cast<CompiledFunction<AutoDiff<MT> > *>(
+				autodiff.get()
+			)->setFunction(x->getFunction());
 		}
 		break;
 		case SpectralElement::LORENTZIAN: {
-			LorentzianSpectralElement *x = dynamic_cast<LorentzianSpectralElement *>(slist_p[i]);
-			Lorentzian1D<AutoDiff<MT> > lor;
-			lor[0] = AutoDiff<MT>(x->getAmpl(), lor.nparameters(), 0);
-			lor[1] = AutoDiff<MT>(x->getCenter(), lor.nparameters(), 1);
-			lor[2] = AutoDiff<MT>(x->getFWHM(), lor.nparameters(), 2);
-			lor.mask(0) = ! x->fixedAmpl();
-			lor.mask(1) = ! x->fixedCenter();
-			lor.mask(2) = ! x->fixedFWHM();
-			func.addFunction(lor);
-			npar += lor.nparameters();
+			autodiff.reset(new Lorentzian1D<AutoDiff<MT> >());
+		}
+		break;
+		case SpectralElement::POWERLOGPOLY: {
+			Vector<Double> parms = elem->get();
+			autodiff.reset(new PowerLogarithmicPolynomial<AutoDiff<MT> > (nparms));
+		}
+		break;
+		case SpectralElement::LOGTRANSPOLY: {
+			LogTransformedPolynomialSpectralElement *x = dynamic_cast<
+				LogTransformedPolynomialSpectralElement*
+			>(elem);
+			// treated as a polynomial for fitting purposes. The caller is responsible for passing the ln's of
+			// the ordinate and obscissa values to the fitter.
+			autodiff.reset(new Polynomial<AutoDiff<MT> > (x->getDegree()));
 		}
 		break;
 		default:
-			throw AipsError("Unhandled SpectralElement type");
+			throw AipsError("SpectralFit::fit(): Logic Error: Unhandled SpectralElement type");
 		}
+		Vector<Double> parms = elem->get();
+		Vector<Bool> fixed = elem->fixed();
+		for (uInt j=0; j<nparms; j++) {
+			(*autodiff)[j] = AutoDiff<MT>(parms[j], nparms, j);
+			if (j == PCFSpectralElement::WIDTH && type == SpectralElement::GAUSSIAN) {
+				(*autodiff)[j] *= GaussianSpectralElement::SigmaToFWHM;
+			}
+			autodiff->mask(j) = ! fixed[j];
+		}
+		func.addFunction(*autodiff);
 	}
 	fitter.setFunction(func);
 	// Max. number of iterations
-	fitter.setMaxIter(50+ slist_p.nelements()*10);
+	fitter.setMaxIter(50+ ncomps*10);
 	// Convergence criterium
 	fitter.setCriteria(0.001);
 	// Fit
@@ -139,20 +138,24 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
 	chiSq_p = fitter.getChi2();
 	uInt j = 0;
 	Vector<Double> tmp, terr;
-	for (uInt i=0; i<slist_p.nelements(); i++) {
-		tmp.resize(slist_p[i]->getOrder());
-		terr.resize(slist_p[i]->getOrder());
-		for (uInt k=0; k<slist_p[i]->getOrder(); k++) {
-			if (k==2 && slist_p[i]->getType() == SpectralElement::GAUSSIAN) {
-				tmp(k) = sol(j) / GaussianSpectralElement::SigmaToFWHM;
-				terr(k) = err(j++)  / GaussianSpectralElement::SigmaToFWHM;
-			} else { /// Get rid of / above after changing element contents
-				tmp(k) = sol(j);
-				terr(k) = err(j++);
-			};
+	for (uInt i=0; i<ncomps; i++) {
+		SpectralElement *element = slist_p[i];
+		uInt nparms = element->getOrder();
+		tmp.resize(nparms);
+		terr.resize(nparms);
+		SpectralElement::Types type = element->getType();
+		for (uInt k=0; k<nparms; k++) {
+			Bool convertGaussWidth = k==PCFSpectralElement::WIDTH && type == SpectralElement::GAUSSIAN;
+			tmp(k) = convertGaussWidth
+				? sol(j) / GaussianSpectralElement::SigmaToFWHM
+				: sol(j);
+			terr(k) = convertGaussWidth
+				? err(j) / GaussianSpectralElement::SigmaToFWHM
+				: err(j);
+			j++;
 		};
-		slist_p[i]->set(tmp);
-		slist_p[i]->setError(terr);
+		element->set(tmp);
+		element->setError(terr);
 	}
 	return fitter.converged();
 }

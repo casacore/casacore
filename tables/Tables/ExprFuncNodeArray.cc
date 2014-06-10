@@ -59,6 +59,16 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
 TableExprFuncNodeArray::~TableExprFuncNodeArray()
 {}
 
+void TableExprFuncNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+{
+    node_p.getAggrNodes (aggr);
+}
+
+void TableExprFuncNodeArray::getColumnNodes (vector<TableExprNodeRep*>& cols)
+{
+    node_p.getColumnNodes (cols);
+}
+
 // Fill the children pointers of a node.
 // Also reduce the tree if possible by combining constants.
 // When one of the nodes is a constant, convert its type if
@@ -69,7 +79,7 @@ TableExprNodeRep* TableExprFuncNodeArray::fillNode
 				    const Block<Int>& dtypeOper)
 {
     // Fill child nodes as needed.
-    TableExprFuncNode::fillChildNodes (&(thisNode->node_p), nodes, dtypeOper);
+  TableExprFuncNode::fillChildNodes (thisNode->getChild(), nodes, dtypeOper);
     // Set the resulting unit.
     Double scale = TableExprFuncNode::fillUnits (thisNode, thisNode->rwOperands(),
                                                  thisNode->funcType());
@@ -224,7 +234,6 @@ const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
 IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
 {
   IPosition order = getAxes(id, ndim, 1, False);
-  cout <<"order="<< order<<endl;
   if (order.empty()) {
     // Default is to transpose the full array.
     order.resize (ndim);
@@ -1411,6 +1420,21 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr*arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::arrmeansFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return partialMeans (arr, getAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::runmeanFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingArrayMath (arr, getArrayShape(id), MeanFunc<DComplex>());
+      }
+    case TableExprFuncNode::boxmeanFUNC:
+      {
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedArrayMath (arr, getArrayShape(id), MeanFunc<DComplex>());
+      }
     case TableExprFuncNode::arrayFUNC:
       {
 	Array<DComplex> res(getArrayShape(id));
@@ -1575,6 +1599,7 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
     switch (funcType()) {
     case TableExprFuncNode::upcaseFUNC:
     case TableExprFuncNode::downcaseFUNC:
+    case TableExprFuncNode::capitalizeFUNC:
     case TableExprFuncNode::trimFUNC:
     case TableExprFuncNode::ltrimFUNC:
     case TableExprFuncNode::rtrimFUNC:
@@ -1599,20 +1624,24 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 		str[i].downcase();
 	    }
 	    break;
+	case TableExprFuncNode::capitalizeFUNC:
+	    for (i=0; i<n; i++) {
+		str[i].capitalize();
+	    }
+	    break;
 	case TableExprFuncNode::trimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (leadingWS, string());
-                str[i].gsub (trailingWS, string());
+                str[i].trim();
 	    }
 	    break;
 	case TableExprFuncNode::ltrimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (leadingWS, string());
+                str[i].gsub (leadingWS, String());
 	    }
 	    break;
 	case TableExprFuncNode::rtrimFUNC:
 	    for (i=0; i<n; i++) {
-                str[i].gsub (trailingWS, string());
+                str[i].gsub (trailingWS, String());
 	    }
 	    break;
         case TableExprFuncNode::substrFUNC:
@@ -1703,6 +1732,75 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	strings.putStorage (str, deleteStr);
 	return strings;
         break;
+      }
+    case TableExprFuncNode::stringFUNC:
+      {
+        String fmt;
+        Int width, prec;
+        TableExprFuncNode::getPrintFormat (fmt, width, prec, operands(), id);
+        Array<String> res;
+        if (operands()[0]->dataType() == NTBool) {
+          Array<Bool> arr (operands()[0]->getArrayBool(id));
+          res.resize (arr.shape());
+          Array<Bool>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        } else if (operands()[0]->dataType() == NTInt) {
+          Array<Int64> arr (operands()[0]->getArrayInt(id));
+          res.resize (arr.shape());
+          Array<Int64>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        } else if (operands()[0]->dataType() == NTDouble) {
+          std::pair<int,int> mvFormat = TableExprFuncNode::getMVFormat(fmt);
+          Array<Double> arr (operands()[0]->getArrayDouble(id));
+          res.resize (arr.shape());
+          Array<Double>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+           *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                      width, prec, mvFormat,
+                                                      operands()[0]->unit());
+          }
+        } else if (operands()[0]->dataType() == NTComplex) {
+          Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+          res.resize (arr.shape());
+          Array<DComplex>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+           *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                      width, prec);
+          }
+        } else if (operands()[0]->dataType() == NTDate) {
+          std::pair<int,int> mvFormat = TableExprFuncNode::getMVFormat(fmt);
+          Array<MVTime> arr (operands()[0]->getArrayDate(id));
+          res.resize (arr.shape());
+          Array<MVTime>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+          for (Array<String>::iterator resIter = res.begin();
+               resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt,
+                                                       width, mvFormat);
+          }
+        } else {
+          Array<String> arr (operands()[0]->getArrayString(id));
+          Array<String> res(arr.shape());
+          Array<String>::const_iterator arrIter = arr.begin();
+          Array<String>::iterator iterEnd = res.end();
+         for (Array<String>::iterator resIter = res.begin();
+              resIter != iterEnd; ++resIter, ++arrIter) {
+            *resIter = TableExprFuncNode::stringValue (*arrIter, fmt, width);
+          }
+        }
+        return res;
       }
     case TableExprFuncNode::hmsFUNC:
     case TableExprFuncNode::dmsFUNC:

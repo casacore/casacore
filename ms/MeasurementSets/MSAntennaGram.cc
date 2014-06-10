@@ -59,90 +59,223 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String& command,
+					      Vector<Int>& selectedAnts1,
+					      Vector<Int>& selectedAnts2,
+					      Matrix<Int>& selectedBaselines)
+  {
+    try 
+      {
+	MSAntennaGramrestart (MSAntennaGramin);
+	yy_start = 1;
+	strpMSAntennaGram = command.chars();     // get pointer to command string
+	posMSAntennaGram  = 0;                   // initialize string position
+	parser->setComplexity();
+	MSAntennaParse::thisMSAParser = parser; // The global pointer to the parser
+	MSAntennaGramparse();                    // parse command string
+	
+	selectedAnts1.reference (parser->selectedAnt1());
+	selectedAnts2.reference (parser->selectedAnt2());
+	selectedBaselines.reference (parser->selectedBaselines());
+	return parser->node();
+      } 
+    catch (MSSelectionAntennaError& x) 
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msAntennaGramPosition(),command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }					      
+
+  TableExprNode msAntennaGramParseCommand (MSSelectableTable& msLike,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
+  {
+    TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
+      col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
+
+    TableExprNode antennaTEN;
+    //    MSAntennaParse *thisParser = new MSAntennaParse(msLike.antenna(), col1TEN, col2TEN);
+    MSAntennaParse thisParser(msLike.antenna(), col1TEN, col2TEN);
+    try
+      {
+	antennaTEN = baseMSAntennaGramParseCommand(&thisParser, command, 
+						   selectedAnts1, selectedAnts2,
+						   selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	//	delete thisParser;
+	throw;
+      }
+    
+    //delete thisParser;
+    return antennaTEN;
+  }
+
+  TableExprNode msAntennaGramParseCommand (Table& subTable,
+					   TableExprNode& col1TEN,
+					   TableExprNode& col2TEN,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
+  {
+    // TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
+    //   col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
+
+    TableExprNode antennaTEN;
+    //    MSAntennaParse *thisParser = new MSAntennaParse(msLike.antenna(), col1TEN, col2TEN);
+    MSAntennaParse thisParser(subTable, col1TEN, col2TEN);
+    try
+      {
+	antennaTEN = baseMSAntennaGramParseCommand(&thisParser, command, 
+						   selectedAnts1, selectedAnts2,
+						   selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	//	delete thisParser;
+	throw;
+      }
+    
+    //delete thisParser;
+    return antennaTEN;
+  }
+
+  TableExprNode msAntennaGramParseCommand (MSAntennaParse* thisParser,
+                                           const String& command, 
+                                           Vector<Int>& selectedAnts1,
+                                           Vector<Int>& selectedAnts2,
+                                           Matrix<Int>& selectedBaselines) 
+  {
+    TableExprNode antennaTEN;
+    try
+      {
+	antennaTEN=baseMSAntennaGramParseCommand(thisParser, command, 
+						 selectedAnts1, selectedAnts2,
+						 selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return antennaTEN;
+  }
+
   TableExprNode msAntennaGramParseCommand (const MeasurementSet* ms,
                                            const String& command, 
                                            Vector<Int>& selectedAnts1,
                                            Vector<Int>& selectedAnts2,
                                            Matrix<Int>& selectedBaselines) 
-{
-  try {
-    MSAntennaGramrestart (MSAntennaGramin);
-    yy_start = 1;
-    strpMSAntennaGram = command.chars();     // get pointer to command string
-    posMSAntennaGram  = 0;                   // initialize string position
-    MSAntennaParse parser(ms);               // setup measurement set
-    MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
-    MSAntennaGramparse();                    // parse command string
-    
-    selectedAnts1.reference (parser.selectedAnt1());
-    selectedAnts2.reference (parser.selectedAnt2());
-    selectedBaselines.reference (parser.selectedBaselines());
-    return parser.node();
-  } catch (MSSelectionAntennaError& x) {
-    String newMesgs;
-    newMesgs = constructMessage(msAntennaGramPosition(),command);
-    x.addMessage(newMesgs);
-    throw;
+  {
+    TableExprNode antennaTEN;
+    TableExprNode col1AsTEN = ms->col(ms->columnName(MS::ANTENNA1)),
+    col2AsTEN = ms->col(ms->columnName(MS::ANTENNA2));
+    MSAntennaParse *thisParser = new MSAntennaParse(ms->antenna(),col1AsTEN, col2AsTEN);
+    try
+      {
+	antennaTEN=baseMSAntennaGramParseCommand(thisParser, command, 
+						 selectedAnts1, selectedAnts2,
+						 selectedBaselines);
+      }
+    catch(MSSelectionAntennaError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return antennaTEN;
+
+
+
+    // try 
+    //   {
+    // 	MSAntennaGramrestart (MSAntennaGramin);
+    // 	yy_start = 1;
+    // 	strpMSAntennaGram = command.chars();     // get pointer to command string
+    // 	posMSAntennaGram  = 0;                   // initialize string position
+    // 	MSAntennaParse parser(ms);               // setup measurement set
+    // 	parser.setComplexity();
+    // 	MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
+    // 	MSAntennaGramparse();                    // parse command string
+	
+    // 	selectedAnts1.reference (parser.selectedAnt1());
+    // 	selectedAnts2.reference (parser.selectedAnt2());
+    // 	selectedBaselines.reference (parser.selectedBaselines());
+    // 	return parser.node();
+    //   } 
+    // catch (MSSelectionAntennaError& x) 
+    //   {
+    // 	String newMesgs;
+    // 	newMesgs = constructMessage(msAntennaGramPosition(),command);
+    // 	x.addMessage(newMesgs);
+    // 	throw;
+    //   }
   }
-}
-
-//# Give the string position.
-Int& msAntennaGramPosition()
-{
+  
+  //# Give the string position.
+  Int& msAntennaGramPosition()
+  {
     return posMSAntennaGram;
-}
-
-//# Get the next input characters for flex.
-int msAntennaGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msAntennaGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSAntennaGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSAntennaGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSAntennaGram++;
     }
     return nr;
-}
-
-void MSAntennaGramerror (const char*)
-{
+  }
+  
+  void MSAntennaGramerror (const char*)
+  {
     throw (MSSelectionAntennaParseError ("Antenna Expression: Parse error at or near '" +
 					 String(MSAntennaGramtext) + "'"));
-}
-
-// String msAntennaGramRemoveEscapes (const String& in)
-// {
-//     String out;
-//     int leng = in.length();
-//     for (int i=0; i<leng; i++) {
-// 	if (in[i] == '\\') {
-// 	    i++;
-// 	}
-// 	out += in[i];
-//     }
-//     return out;
-// }
-
-// String msAntennaGramRemoveQuotes (const String& in)
-// {
-//     //# A string is formed as "..."'...''...' etc.
-//     //# All ... parts will be extracted and concatenated into an output string.
-//     String out;
-//     String str = in;
-//     int leng = str.length();
-//     int pos = 0;
-//     while (pos < leng) {
-// 	//# Find next occurrence of leading ' or ""
-// 	int inx = str.index (str[pos], pos+1);
-// 	if (inx < 0) {
-// 	    throw (AipsError ("MSAntennaParse - Ill-formed quoted string: " +
-// 			      str));
-// 	}
-// 	out += str.at (pos+1, inx-pos-1);             // add substring
-// 	pos = inx+1;
-//     }
-//     return out;
-// }
-
+  }
+  
+  // String msAntennaGramRemoveEscapes (const String& in)
+  // {
+  //     String out;
+  //     int leng = in.length();
+  //     for (int i=0; i<leng; i++) {
+  // 	if (in[i] == '\\') {
+  // 	    i++;
+  // 	}
+  // 	out += in[i];
+  //     }
+  //     return out;
+  // }
+  
+  // String msAntennaGramRemoveQuotes (const String& in)
+  // {
+  //     //# A string is formed as "..."'...''...' etc.
+  //     //# All ... parts will be extracted and concatenated into an output string.
+  //     String out;
+  //     String str = in;
+  //     int leng = str.length();
+  //     int pos = 0;
+  //     while (pos < leng) {
+  // 	//# Find next occurrence of leading ' or ""
+  // 	int inx = str.index (str[pos], pos+1);
+  // 	if (inx < 0) {
+  // 	    throw (AipsError ("MSAntennaParse - Ill-formed quoted string: " +
+  // 			      str));
+  // 	}
+  // 	out += str.at (pos+1, inx-pos-1);             // add substring
+  // 	pos = inx+1;
+  //     }
+  //     return out;
+  // }
+  
 } //# NAMESPACE CASA - END

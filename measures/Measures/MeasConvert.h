@@ -37,8 +37,6 @@
 #include <measures/Measures/Measure.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-/// #include <measures/Measures/MeasRef.h>
-
 //# Forward Declarations
 class MCBase;
 class MeasVal;

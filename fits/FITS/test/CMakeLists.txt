@@ -21,6 +21,7 @@ tfitsskip
 tfitsskip_hdu
 tFITSSpectralUtil
 t_priArr_imgExt
+tfitsreader
 )
 
 foreach (test ${tests})

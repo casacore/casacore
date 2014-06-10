@@ -1,4 +1,4 @@
-//# VectorSTLIterator.h: Random access iterator for aips++ Vectors
+//# VectorSTLIterator.h: Random access iterator for Casacore Vectors
 //# Copyright (C) 2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -37,11 +37,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 
-// <summary> AIPS++ Vector iterator </summary>
+// <summary> Casacore Vector iterator </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <synopsis>
-// This class creates a random access STL iterator for an aips++ Vector. All
+// This class creates a random access STL iterator for an Casacore Vector. All
 // the STL functionality is present (or if something missing can be easily
 // added). <br>
 // The following comments hold:

@@ -1347,9 +1347,9 @@ a2_re_compile_fastmap (struct re_pattern_buffer *bufp)
 
 	case endline:
 	  if (translate)
-	    fastmap[translate['\n']] = 1;
+	    fastmap[translate[int('\n')]] = 1;
 	  else
-	    fastmap['\n'] = 1;
+	    fastmap[int('\n')] = 1;
             
 	  if (bufp->can_be_null != 1)
 	    bufp->can_be_null = 2;
@@ -1413,7 +1413,7 @@ a2_re_compile_fastmap (struct re_pattern_buffer *bufp)
 
 	case duplicate:
 	  bufp->can_be_null = 1;
-	  fastmap['\n'] = 1;
+	  fastmap[int('\n')] = 1;
 	case anychar:
 	  for (j = 0; j < (1 << BYTEWIDTH); j++)
 	    if (j != '\n')

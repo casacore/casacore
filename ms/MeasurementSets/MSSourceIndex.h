@@ -102,6 +102,10 @@ public:
   //add for source code selection
   Vector<Int> matchSourceCode(const String& code);
 
+  //Return rows matching a SourceID
+  Vector<uInt> getRowNumbersOfSourceID(const Int sid);
+
+
 protected:
   // the specialized compare function to pass to the
   // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1

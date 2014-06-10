@@ -2227,7 +2227,6 @@ CountedPtr<LELInterface<Float> > LatticeExprNode::makeFloat() const
 	throw (AipsError ("LatticeExprNode::makeFloat - "
 			  "conversion to Float not possible"));
     }
-    return 0;
 }
 
 CountedPtr<LELInterface<Double> > LatticeExprNode::makeDouble() const
@@ -2241,7 +2240,6 @@ CountedPtr<LELInterface<Double> > LatticeExprNode::makeDouble() const
 	throw (AipsError ("LatticeExprNode::makeDouble - "
 			  "conversion to Double not possible"));
     }
-    return 0;
 }
 
 CountedPtr<LELInterface<Complex> > LatticeExprNode::makeComplex() const
@@ -2259,7 +2257,6 @@ CountedPtr<LELInterface<Complex> > LatticeExprNode::makeComplex() const
 	throw (AipsError ("LatticeExprNode::makeComplex - "
 			  "conversion to Complex not possible"));
     }
-    return 0;
 }
 
 CountedPtr<LELInterface<DComplex> > LatticeExprNode::makeDComplex() const
@@ -2277,7 +2274,6 @@ CountedPtr<LELInterface<DComplex> > LatticeExprNode::makeDComplex() const
 	throw (AipsError ("LatticeExprNode::makeDComplex - "
 			  "conversion to DComplex not possible"));
     }
-    return 0;
 }
 
 CountedPtr<LELInterface<Bool> > LatticeExprNode::makeBool() const

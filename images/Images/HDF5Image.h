@@ -61,7 +61,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </etymology>
 
   // <synopsis> 
-  // All AIPS++ Images are Lattices.  They may be treated like any other Lattice;
+  // All Casacore Images are Lattices.  They may be treated like any other Lattice;
   // getSlice(...), putSlice(...), LatticeIterator for iterating, etc...
   // ArrayImages contain a map, a mask for that map, and coordinate 
   // information.  This provides a Lattice interface for images and their 

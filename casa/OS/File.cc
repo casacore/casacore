@@ -31,7 +31,7 @@
 #include <casa/OS/SymLink.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions.h>
-
+#include <casa/Logging/LogIO.h>
 #include <unistd.h>                 // needed for access, etc.
 #include <sys/stat.h>               // needed for lstat or lstat64
 #include <utime.h>                  // needed for utimbuf
@@ -53,13 +53,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #if defined(AIPS_DARWIN) || defined(AIPS_BSD)
 # define fileLSTAT lstat
 # define fileSTAT  stat
+# define fileSTATFS  statfs
 #else
 # define fileLSTAT lstat64
 # define fileSTAT  stat64
+# define fileSTATFS  statfs64
 #endif
 #else
 # define fileLSTAT lstat
 # define fileSTAT  stat
+# define fileSTATFS  statfs
 #endif
 
 
@@ -183,7 +186,16 @@ Bool File::exists() const
     // The function access always substitutes symlinks.
     // Therefore use lstat instead.
     struct fileSTAT buf;
-    return  (mylstat((itsPath.expandedName()).chars(), &buf) == 0);
+    int status = mylstat((itsPath.expandedName()).chars(), &buf);
+    if (status != 0 && errno != ENOENT){
+        LogIO logIo (LogOrigin ("File", "exists"));
+        logIo << LogIO::WARN;
+        logIo << "lstat failed for " << itsPath.expandedName()
+              << ": errno=" << errno << "'" << strerror (errno)
+              << "'\n";
+        logIo << LogIO::POST;
+    }
+    return status == 0;
 }
 
 Bool File::isReadable() const
@@ -432,6 +444,29 @@ void File::checkTarget (Path& targetName, Bool overwrite,
 			      " already exists and is not writable"));
 	}
     }
+}
+
+
+#ifdef AIPS_DARWIN
+#include <sys/param.h>
+#include <sys/mount.h>
+#else
+#include <sys/vfs.h>
+#endif
+
+
+String File::getFSType() const
+{
+	String rstat("Normal");
+	struct fileSTATFS  statbuf;
+        fileSTATFS(itsPath.dirName().chars(), &statbuf);
+#ifdef AIPS_DARWIN
+	rstat = String(statbuf.f_fstypename);
+#else
+	if(statbuf.f_type == 0x0BD00BD0)
+	   rstat = "Lustre";
+#endif
+	return rstat;
 }
 
 } //# NAMESPACE CASA - END

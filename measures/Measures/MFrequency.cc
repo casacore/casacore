@@ -172,6 +172,7 @@ void MFrequency::checkTypes() const {
 }
 
 void MFrequency::checkMyTypes() {
+  // Multiple threads could execute this, but that is harmless.
   static Bool first(True);
   if (first) {
     first = False;

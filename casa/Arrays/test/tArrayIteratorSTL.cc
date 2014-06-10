@@ -35,6 +35,8 @@
 #include <vector>
 #include <iterator>
 
+// If an argument is given, some performance tests will also be done.
+
 using namespace casa;
 
 void testSub (Array<Int>& arr1, const IPosition& blc,
@@ -132,9 +134,13 @@ void testIt()
   }
 }
 
-int main()
+int main (int argc, char* [])
 {
   testIt();
+  if (argc < 2) {
+    return 0;
+  }
+  // Do performance tests.
   const Int nelem = 1000000;
   const Int nstep = 100;
   //const Int nstep = 1;
@@ -500,4 +506,5 @@ int main()
     }
     tim.show("write small enditer   ");
   }
+  return 0;
 }

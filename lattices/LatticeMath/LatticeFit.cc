@@ -193,25 +193,30 @@ uInt LatticeFit::fitProfiles (MaskedLattice<Float>* pFit,
       inMask = inIter.getMask(True);
 //
       ok = True;
+      Vector<Float> sol;
       if (pSigma) {
          inSigma = pSigma->getSlice(inIter.position(),
                                     inIter.cursorShape(), True);
          try {
-            Vector<Float> sol = fitter.fit(x, data, inSigma, &inMask);
+            sol.assign(fitter.fit(x, data, inSigma, &inMask));
          } catch (AipsError x) {
             ok = False;
          }
 
       } else {
          try {
-            Vector<Float> sol = fitter.fit(x, data, &inMask);
+            sol.assign(fitter.fit(x, data, &inMask));
          } catch (AipsError x) {
             ok = False;
          }
       }
+      for (Vector<Float>::const_iterator iter=sol.begin(); iter!=sol.end(); iter++) {
+    	  if (isNaN(*iter)) {
+    		  ok = False;
+    	  }
+      }
 
 // Evaluate
-
       if (ok) {
          if (pFit) {
             for (uInt i=0; i<n;  i++) {

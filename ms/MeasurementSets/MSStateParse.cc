@@ -29,6 +29,7 @@
 #include <ms/MeasurementSets/MSStateIndex.h>
 #include <ms/MeasurementSets/MSSourceIndex.h>
 #include <ms/MeasurementSets/MSSelectionTools.h>
+#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
 #include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -36,6 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MSStateParse* MSStateParse::thisMSSIParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSStateParse::node_p = 0x0;
   Vector<Int> MSStateParse::idList;
+  MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler = 0;
 
   //# Constructor
   MSStateParse::MSStateParse ()

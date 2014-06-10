@@ -251,6 +251,11 @@ public:
     // NOT_CREATABLE - file does not exist and cannot be created.
     FileWriteStatus getWriteStatus() const;
 
+    // Return the filesystem type.
+    // If the file doesn't exsist crawl up the directory tree to
+    // find one that does.
+    String getFSType() const; 
+
 protected:
     // This function is used by <linkto class=RegularFile>RegularFile</linkto> 
     // and <linkto class=Directory>Directory</linkto> to remove all the links

@@ -34,6 +34,7 @@
 #include <tables/Tables/ExprNodeSet.h>
 
 #include <ms/MeasurementSets/MeasurementSet.h>
+#include <ms/MeasurementSets/MSSelectableTable.h>
 #include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -104,11 +105,15 @@ public:
     // Copy constructor (copy semantics).
     MSParse (const MSParse&);
 
+    ~MSParse ();
+
     // Assignment (copy semantics).
     MSParse& operator= (const MSParse&);
 
     // Associate the ms and the shorthand.
     MSParse (const MeasurementSet* ms, const String& shorthand);
+    // Associate the ms and the shorthand.
+    MSParse (const MSSelectableTable* ms, const String& shorthand);
 
     // Test if shorthand matches.
     Bool test (const String& shortHand) const;
@@ -118,11 +123,21 @@ public:
 
     // Get ms object.
     MeasurementSet* ms();
+    // Get ms object.
+    MSSelectableTable* msInterface();
 
   void setMS(MeasurementSet* ms) {ms_p=ms;}
+  void setMSInterface(MSSelectableTable* msI) {msInterface_p = msI;}
   static MeasurementSet *ms_p;
+  static MSSelectableTable *msInterface_p;
+  void addCondition(TableExprNode& target, TableExprNode& source);
+
 private:
-    String shorthand_p;
+  String shorthand_p;
+  // The following exists for the period we make the transition from
+  // using MS to using MSSelectableTable.  Till then, both interfaces
+  // have to be supported.
+  MSSelectableTable *tempMSInterface_p;
 };
 
 } //# NAMESPACE CASA - END

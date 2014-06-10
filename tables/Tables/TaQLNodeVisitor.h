@@ -89,6 +89,7 @@ public:
   virtual TaQLNodeResult visitColNode      (const TaQLColNodeRep& node) = 0;
   virtual TaQLNodeResult visitColumnsNode  (const TaQLColumnsNodeRep& node) = 0;
   virtual TaQLNodeResult visitJoinNode     (const TaQLJoinNodeRep& node) = 0;
+  virtual TaQLNodeResult visitGroupNode    (const TaQLGroupNodeRep& node) = 0;
   virtual TaQLNodeResult visitSortKeyNode  (const TaQLSortKeyNodeRep& node) = 0;
   virtual TaQLNodeResult visitSortNode     (const TaQLSortNodeRep& node) = 0;
   virtual TaQLNodeResult visitLimitOffNode (const TaQLLimitOffNodeRep& node) = 0;

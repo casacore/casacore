@@ -31,13 +31,14 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/TableColumn.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicMath/Random.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class ROTableColumn;
+class TableColumn;
 class Table;
 
 //# This file defines classes derived from TableExprNode representing
@@ -301,16 +302,27 @@ public:
     TableExprNodeColumn (const Table&, const String& columnName);
     ~TableExprNodeColumn();
 
+    // This node represents a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
+    // Do not apply the selection.
+    virtual void disableApplySelection();
+
+    // Re-create the column object for a selection of rows.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
+    // Get the data type of this scalar column.
+    Bool getColumnDataType (DataType&) const;
+
+    // Get the data for the given id.
     Bool     getBool     (const TableExprId& id);
     Int64    getInt      (const TableExprId& id);
     Double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
     String   getString   (const TableExprId& id);
-    const ROTableColumn& getColumn() const;
+    const TableColumn& getColumn() const;
 
-    // Get the data type of this scalar column.
-    Bool getColumnDataType (DataType&) const;
-
+    // Get the data for the given rows.
     Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
     Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
     Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
@@ -324,10 +336,12 @@ public:
     Array<String>   getColumnString (const Vector<uInt>& rownrs);
 
     // Get the column unit (can be empty).
-    static Unit getColumnUnit (const ROTableColumn&);
+    static Unit getColumnUnit (const TableColumn&);
 
 protected:
-    ROTableColumn* tabColPtr_p;                //# pointer to table column
+    Table       selTable_p;
+    TableColumn tabCol_p;
+    Bool        applySelection_p;
 };
 
 
@@ -392,6 +406,7 @@ class TableExprNodeRowid : public TableExprNodeBinary
 public:
     TableExprNodeRowid (const Table&);
     ~TableExprNodeRowid();
+    virtual void applySelection (const Vector<uInt>& rownrs);
     Int64 getInt (const TableExprId& id);
 private:
     Vector<uInt> rownrs_p;

@@ -68,11 +68,11 @@ RQUOTE    (\/)
 NQ        [^\\\n\"]+
 NRQ       [^\\\n\/]+
 
-NAME       ([a-zA-Z_'{''}''+''-']+[a-zA-Z0-9_{}]*) 
+NAME       ([a-zA-Z_'{''}''+''-'#]+[a-zA-Z0-9_{}#]*) 
 /*NAME ([A-za-z0-9_'{''}''+''-'])*/
 /*IDENTIFIER  ({NAME}+|STRING)*/
 IDENTIFIER  ({NAME}+)
-SIDENTIFIER  ([A-Za-z_*?{}'+''-'][A-Za-z0-9_'{''}''+''-''*''?']*)
+SIDENTIFIER  ([A-Za-z_*?{}'+''-'#][A-Za-z0-9_'{''}''+''-''*''?'#]*)
 /*
 SIDENTIFIER  ([A-Za-z_*?{}'+''-']+[A-Za-z0-9_'{''}''+''-''*''?':]*)
 SIDENTIFIER  ({NAME}+['{''}''+''-''*''?']+)
@@ -151,6 +151,9 @@ SIDENTIFIER  ({NAMES}+"*")
           }
 "^"       { msSpwGramPosition() += yyleng;
             return CARET;
+          }
+"<>"      { msSpwGramPosition() += yyleng;
+            return GTNLT;
           }
   /* Literals */
 

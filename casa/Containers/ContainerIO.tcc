@@ -37,14 +37,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Note that the begin iterator is passed by value, so it can be used
     // directly.
     os << prefix;
-    Bool first = True;
-    for (; begin!=end; ++begin) {
-      if (first) {
-        first = False;
-      } else {
-        os << sep;
-      }
+    if (begin != end) {
       os << *begin;
+      ++begin;
+    }
+    for (; begin!=end; ++begin) {
+      os << sep << *begin;
     }
     os << postfix;
   }

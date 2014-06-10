@@ -1,4 +1,4 @@
-//# FITS.cc: Transform an AIPS++ Array to or from a FITS disk file.
+//# FITS.cc: Transform a Casacore Array to or from a FITS disk file.
 //# Copyright (C) 1993,1994,1995,1996,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 

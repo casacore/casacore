@@ -46,6 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class TableExprNode;
 class TableExprNodeColumn;
+class TableExprGroupFuncBase;
 template<class T> class Block;
 
 
@@ -222,17 +223,36 @@ public:
     // If its reference count is zero, delete it.
     static void unlink (TableExprNodeRep*);
 
+    // Do not apply the selection.
+    virtual void disableApplySelection();
+
+    // Re-create the column object for a selection of rows.
+    // The default implementation does nothing.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     // Get the unit conversion factor.
     // Default 1 is returned.
     virtual Double getUnitFactor() const;
 
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    // It is the case for a reduction value or constant value.
-    // By default it is if the value is constant.
-    virtual Bool isSingleValue() const;
+    // Throw an exception if an aggregate function is used in
+    // the expression node.
+    static void checkAggrFuncs (const TableExprNodeRep* node);
 
-    // Is the expression a column aggregate function?
-    /// virtual Bool isAggregate() const;
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+  
+    // Get the nodes representing a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
+    // Create the correct immediate aggregate function object.
+    // The default implementation throws an exception, because it should
+    // only be called for TableExprAggrNode(Array).
+    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+
+    // Is the aggregate function a lazy or an immediate one?
+    // The default implementation returns True
+    // (because all UDF aggregate functions have to be lazy).
+    virtual Bool isLazyAggregate() const;
 
     // Get a scalar value for this node in the given row.
     // The appropriate functions are implemented in the derived classes and
@@ -259,6 +279,34 @@ public:
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
     virtual Array<String> getArrayString     (const TableExprId& id);
     virtual Array<MVTime> getArrayDate       (const TableExprId& id);
+    // </group>
+
+    // General get functions for template purposes.
+    // <group>
+    void get (const TableExprId& id, Bool& value)
+      { value = getBool (id); }
+    void get (const TableExprId& id, Int64& value)
+      { value = getInt (id); }
+    void get (const TableExprId& id, Double& value)
+      { value = getDouble (id); }
+    void get (const TableExprId& id, DComplex& value)
+      { value = getDComplex (id); }
+    void get (const TableExprId& id, MVTime& value)
+      { value = getDate (id); }
+    void get (const TableExprId& id, String& value)
+      { value = getString (id); }
+    void get (const TableExprId& id, Array<Bool>& value)
+      { value = getArrayBool (id); }
+    void get (const TableExprId& id, Array<Int64>& value)
+      { value = getArrayInt (id); }
+    void get (const TableExprId& id, Array<Double>& value)
+      { value = getArrayDouble (id); }
+    void get (const TableExprId& id, Array<DComplex>& value)
+      { value = getArrayDComplex (id); }
+    void get (const TableExprId& id, Array<MVTime>& value)
+      { value = getArrayDate (id); }
+    void get (const TableExprId& id, Array<String>& value)
+      { value = getArrayString (id); }
     // </group>
 
     // Get a value as an array, even it it is a scalar.
@@ -383,8 +431,7 @@ public:
 
     // Get table. This gets the Table object to which a
     // TableExprNode belongs. A TableExprNode belongs to the Table to
-    // which the column(s) used in an expression belong. Note that
-    // all columns in an expression have to belong to the same table.
+    // which the first column used in an expression belongs.
     // <group>
     Table& table();
     const Table& table() const;
@@ -512,9 +559,12 @@ public:
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
 
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    virtual Bool isSingleValue() const;
-
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+  
+    // Get the nodes representing a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,
 			       NodeDataType rightDype,
@@ -528,10 +578,12 @@ public:
     // Link the children to the node and convert the children
     // to constants if needed and possible. Also convert the node to
     // constant if possible.
+    // The operand data types can be adapted as needed.
     static TableExprNodeRep* fillNode (TableExprNodeBinary* thisNode,
 				       TableExprNodeRep* left,
 				       TableExprNodeRep* right,
-				       Bool convertConstType);
+				       Bool convertConstType,
+                                       Bool adaptDataType=True);
 
     // Handle the units of the children and possibly set the parent's unit.
     // The default implementation make the units of the children equal and
@@ -614,6 +666,12 @@ public:
     // Show the expression tree.
     virtual void show (ostream&, uInt indent) const;
 
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+
+    // Get the nodes representing a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
     // Check number of arguments
     // low <= number_of_args <= high
     // It throws an exception if wrong number of arguments.

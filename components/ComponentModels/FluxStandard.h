@@ -59,7 +59,7 @@ class SpectralModel; //#include <components/ComponentModels/SpectralModel.h>
 //
 // <synopsis>
 // The FluxStandard class provides a means to compute total flux
-// densities for specified non-variable sources on a standard
+// densities for specified sources on a standard
 // flux density scale, such as that established by Baars or
 // Perley and Taylor.
 // </synopsis>
@@ -102,6 +102,13 @@ class FluxStandard
     // Perley-Butler 2010 Scale (using VLA [not EVLA!] data)
     PERLEY_BUTLER_2010,
 
+    // Perley-Butler 2013 (include time variable sources)
+    PERLEY_BUTLER_2013,
+
+    // Scaife & Heald 2012MNRAS.423L..30S
+    // broadband low-frequency flux scale for frequencies <~500 MHz
+    SCAIFE_HEALD_2012,
+
     HAS_RESOLUTION_INFO,
 
     // Estimate the flux density for a Solar System object using a JPL Horizons
@@ -118,12 +125,28 @@ class FluxStandard
   ~FluxStandard();
 
   // Compute the flux density for a specified source at a specified frequency
+  Bool compute (const String& sourceName, const MDirection& sourceDir, const MFrequency& mfreq, const MEpoch& mtime,
+		Flux<Double>& value, Flux<Double>& error);
+
+  // Compute the flux density for a specified source at a specified frequency
+  //#/// Added to build casarest with nrao-nov12
   Bool compute (const String& sourceName, const MFrequency& mfreq,
 		Flux<Double>& value, Flux<Double>& error);
+  Bool compute(const String& sourceName, 
+               const Vector<MFrequency>& mfreqs,
+	       Vector<Flux<Double> >& values,
+               Vector<Flux<Double> >& errors);
+  Bool compute(const String& sourceName, 
+               const Vector<Vector<MFrequency> >& mfreqs,
+               Vector<Vector<Flux<Double> > >& values,
+               Vector<Vector<Flux<Double> > >& errors);
 
   // Compute the flux densities and their uncertainties for a specified source
   // at a set of specified frequencies.
-  Bool compute(const String& sourceName, const Vector<MFrequency>& mfreqs,
+  Bool compute(const String& sourceName, 
+               const MDirection& sourceDir,
+               const Vector<MFrequency>& mfreqs,
+               const MEpoch& mtime,
 	       Vector<Flux<Double> >& values,
                Vector<Flux<Double> >& errors,
                const Bool verbose=True);
@@ -133,7 +156,9 @@ class FluxStandard
   // frequencies for channels in spectral window spw, and values and errors are
   // arranged the same way.
   Bool compute(const String& sourceName,
+               const MDirection& sourceDir,
                const Vector<Vector<MFrequency> >& mfreqs,
+               const MEpoch& mtime,
                Vector<Vector<Flux<Double> > >& values,
                Vector<Vector<Flux<Double> > >& errors);
 
@@ -149,6 +174,10 @@ class FluxStandard
                  Vector<Vector<Flux<Double> > >& values,
                  Vector<Vector<Flux<Double> > >& errors,
                  Vector<String>& clnames, const String& prefix="");
+
+  // set interpolation method for a time-variable source
+  void setInterpMethod(const String& interpmethod);
+  
 
   // Take a component cmp and save it to a ComponentList on disk, returning the
   // pathname.  ("" if unsuccessful, sourceName_mfreqGHzDateTime.cl otherwise)
@@ -188,6 +217,8 @@ class FluxStandard
   Bool has_direction_p;
 
   MDirection direction_p;
+
+  String interpmethod_p;
 };
 
 } //# NAMESPACE CASA - END

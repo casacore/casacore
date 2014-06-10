@@ -30,27 +30,24 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a, uInt byDim)
+template<class T> ArrayIterator<T>::ArrayIterator(const Array<T> &a, uInt byDim)
 : ArrayPositionIterator(a.shape(), byDim),
-  ap_p(0),
-  readOnly_p(False)
+  ap_p(0)
 {
     init(a);
 }
 
-template<class T> ArrayIterator<T>::ArrayIterator(Array<T> &a,
+template<class T> ArrayIterator<T>::ArrayIterator(const Array<T> &a,
 						  const IPosition &axes,
 						  Bool axesAreCursor)
 : ArrayPositionIterator(a.shape(), axes, axesAreCursor),
-  ap_p(0),
-  readOnly_p(False)
+  ap_p(0)
 {
     init(a);
 }
 
 template<class T> ArrayIterator<T>::~ArrayIterator()
 {
-    delete pOriginalArray_p;
     delete ap_p;
 }
 
@@ -58,20 +55,16 @@ template<class T> ArrayIterator<T>::~ArrayIterator()
 // <thrown>
 //     <item> ArrayIteratorError
 // </thrown>
-template<class T> void ArrayIterator<T>::init(Array<T> &a)
+template<class T> void ArrayIterator<T>::init(const Array<T> &a)
 {
-    pOriginalArray_p = new Array<T>(a);
-    if (!pOriginalArray_p) {
-	throw(ArrayIteratorError("ArrayIterator<T>::init(a) - "
-              " failed to make new Array<t>(a) for pOriginalArray_p"));
-    }
-    dataPtr_p = pOriginalArray_p->begin_p;
+    pOriginalArray_p.reference (a);
+    dataPtr_p = pOriginalArray_p.begin_p;
 
     if (dimIter() < 1)
 	throw(ArrayIteratorError("ArrayIterator<T>::ArrayIterator<T> - "
 				 " at the moment cannot iterate by scalars"));
-    IPosition blc(pOriginalArray_p->ndim(), 0);
-    IPosition trc(pOriginalArray_p->endPosition());
+    IPosition blc(pOriginalArray_p.ndim(), 0);
+    IPosition trc(pOriginalArray_p.endPosition());
 
     // Calculate what the offset for ap_p->begin is for each step.
     // The offset is the value that has to be added to dataPtr_p to go
@@ -79,8 +72,8 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
     // The offset calculation must match the way nextStep is iterating.
     // The iteration is such that shape(i)-1 steps are made for axis i.
     const IPosition& iAxes = iterAxes();
-    const IPosition& steps = pOriginalArray_p->steps();
-    const IPosition& shape = pOriginalArray_p->shape();
+    const IPosition& steps = pOriginalArray_p.steps();
+    const IPosition& shape = pOriginalArray_p.shape();
     offset_p.resize (a.ndim());
     offset_p = 0;
     Int lastoff = 0;
@@ -93,11 +86,11 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
     // Now diddle with the internal array to ensure that it is the
     // correct shape. We only want to remove the iteration axes, not the
     // possible degenerate axes in the cursor).
-    if (dimIter() < pOriginalArray_p->ndim()) {
-        ap_p = new Array<T>((*pOriginalArray_p)(blc,trc).nonDegenerate(cursorAxes()));
+    if (dimIter() < pOriginalArray_p.ndim()) {
+        ap_p = new Array<T>(pOriginalArray_p(blc,trc).nonDegenerate(cursorAxes()));
     } else {
         // Same dimensionality, so no degenerate axes
-        ap_p = new Array<T>(*pOriginalArray_p);
+        ap_p = new Array<T>(pOriginalArray_p);
     }
 }
 
@@ -113,7 +106,7 @@ template<class T> void ArrayIterator<T>::apSetPointer(Int stepDim)
 	ap_p->begin_p = 0;  // Mark it "invalid"
     } else {
         if (stepDim < 0) {
-	    dataPtr_p = pOriginalArray_p->begin_p;
+	    dataPtr_p = pOriginalArray_p.begin_p;
 	} else {
 	    dataPtr_p += offset_p(stepDim);
 	}
@@ -144,7 +137,7 @@ template<class T> void ArrayIterator<T>::set (const IPosition& cursorPos)
     if (pastEnd()) {
 	ap_p->begin_p = 0;  // Mark it "invalid"
     } else {
-        dataPtr_p = &((*pOriginalArray_p)(pos()));
+        dataPtr_p = &(pOriginalArray_p(pos()));
 	ap_p->begin_p = dataPtr_p;
 	ap_p->setEndIter();
     }  

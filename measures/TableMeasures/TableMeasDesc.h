@@ -57,7 +57,7 @@ class TableMeasValueDesc;
 
 // <synopsis>
 // The TableMeasures system was created to add support for Measure
-// columns to the AIPS++ Table system.
+// columns to the Casacore Table system.
 // Measures are not a fundamental type of the Tables system and hence
 // cannot be represented directly.  Instead a Measure column can be created
 // with the aid of

@@ -41,12 +41,103 @@
 #include <measures/Measures/MFrequency.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
+#include <tables/Tables/BaseTable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class FitsInput;
 class BinaryTable;
 class MSColumns;
+
+// <summary>
+// A helper class for MSFitsInput
+// </summary>
+// <use visibility=local>
+// <etymology>
+// This class can hold a primary array of several datatypes
+// </etymology>
+// <synopsis>
+// This is a helper class to avoid cumbersome switch statements on the
+// template type of the primary array 
+// It forwards all the PrimaryArray member functions we need in the filler.
+// </synopsis>
+class MSPrimaryTableHolder
+{
+  // This is a helper class to avoid cumbersome switch statements on the
+  // template type of the primary array
+  // It forwards all the PrimaryTable member function we need in the filler.
+public:
+  // Construct an empty holder, used to attach to later
+  MSPrimaryTableHolder();
+
+  // Construct from an input file containing a FITS primary group hdu.
+  // Throws an exception if the datatype is not Short, FitsLong or Float
+  MSPrimaryTableHolder(FitsInput& infile);
+
+  ~MSPrimaryTableHolder();
+
+  // Attach to the input file, create the appropriate PrimaryArray.
+  // Throws an exception if the datatype is not Short, FitsLong or Float
+  void attach(FitsInput& infile);
+
+  // Detach from the input file
+  void detach();
+
+  //# forwarding functions
+
+  // Number of dimensions
+  Int dims()
+  {return hdu_p->dims();}
+
+  // Length of i'th axis
+  Int dim(Int i)
+  {return hdu_p->dim(i);}
+
+  // Coordinate type
+  Char* ctype(Int i)
+  { return pf ? pf->ctype(i) : (pl ? pl->ctype(i) : ps->ctype(i));}
+
+  // Coordinate reference value
+  Double crval(Int i)
+  { return pf ? pf->crval(i) : (pl ? pl->crval(i) : ps->crval(i));}
+
+  // Coordinate reference pixel
+  Double crpix(Int i)
+  { return pf ? pf->crpix(i) : (pl ? pl->crpix(i) : ps->crpix(i));}
+
+  // Coordinate delta
+  Double cdelt(Int i)
+  { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i));}
+
+  // Keyword of given type
+  const FitsKeyword* kw(const FITS::ReservedName& n)
+  { return hdu_p->kw(n);}
+
+  // All keywords
+  ConstFitsKeywordList& kwlist()
+  { return hdu_p->kwlist();}
+
+  // Advance to next keyword
+  const FitsKeyword* nextkw()
+  { return hdu_p->nextkw();}
+
+  // Read the next group
+  Int read() {
+     if (pf) return pf->read(); 
+     else if (pl) return pl->read(); 
+     else if (ps) return ps->read(); 
+     else if (pb) return pb->read(); 
+     else cout << "can not read the table" << endl;
+     return 0;
+  }
+
+private:
+  HeaderDataUnit* hdu_p;
+  PrimaryTable<Short>* ps;
+  PrimaryTable<FitsLong>* pl;
+  PrimaryTable<Float>* pf;
+  PrimaryTable<uChar>* pb;
+};
 
 // <summary>
 // A helper class for MSFitsInput
@@ -173,10 +264,6 @@ private:
 // introduced by DBCON.
 // </synopsis>
 
-// <todo asof="1999/08/16">
-//   <li> So far we interpret AN, FQ and SU tables only
-// </todo>
-
 class MSFitsInput
 {
   // This is an implementation helper class used to store 'local' data
@@ -209,8 +296,45 @@ protected:
   // DATA, FLAG and WEIGHT_SPECTRUM. Use obsType to choose the tiling
   // scheme.
   void setupMeasurementSet(const String& MSFileName, Bool useTSM=True,
-			   Int obsType = MSTileLayout::Standard);
+               Int obsType = MSTileLayout::Standard);
 
+  ///////////////fillers for primary table form uvfits//////////////////////
+  // Read a binary table extension of type AIPS AN and create an antenna table
+  void fillAntennaTable(BinaryTable& bt);
+
+  // Read a binary table extension and update history table
+  void fillHistoryTable(ConstFitsKeywordList& kwl);
+
+  // Read a binary table extension and update history table
+  void fillObservationTable(ConstFitsKeywordList& kwl);
+
+  //extract axis information
+  void getAxisInfo(ConstFitsKeywordList&);
+
+  //extract axis information
+  void sortPolarizations();
+
+  void fillPolarizationTable();
+
+  //verify that the fits contains visibility data
+  void checkRequiredAxis();
+
+  void fillSpectralWindowTable(BinaryTable& bt);
+
+  // fill Field table 
+  void fillFieldTable(BinaryTable& bt);
+  void fillFieldTable(double, double, String);
+
+  void fillMSMainTable(BinaryTable& bt);
+
+  void fillPointingTable();
+
+  void fillSourceTable();
+
+  // fill the Feed table with minimal info needed for synthesis processing
+  void fillFeedTable();
+
+  ///////////////fillers for primary table form uvfits//////////////////////
   // Fill the Observation and ObsLog tables
   void fillObsTables();
 
@@ -219,9 +343,6 @@ protected:
   void fillMSMainTableColWise(Int& nField, Int& nSpW);
   //else do it row by row
   void fillMSMainTable(Int& nField, Int& nSpW);
-
-  // Read a binary table extension of type AIPS AN and create an antenna table
-  void fillAntennaTable(BinaryTable& bt);
 
   // fill spectralwindow table from FITS FQ table + header info
   void fillSpectralWindowTable(BinaryTable& bt, Int nSpW);
@@ -234,9 +355,6 @@ protected:
 
   // fill Field table from header (single source fits)
   void fillFieldTable(Int nField);
-
-  // fill the Feed table with minimal info needed for synthesis processing
-  void fillFeedTable();
 
   // fill the Pointing table (from Field table, all antennas are assumed
   // to point in the field direction) and possibly the Source table.
@@ -255,6 +373,8 @@ protected:
   // update a the Spectral window post filling if necessary
   void updateSpectralWindowTable();
 
+  void readRandomGroupUVFits(Int obsType);
+  void readPrimaryTableUVFits(Int obsType);
 
 
 private:
@@ -269,6 +389,7 @@ private:
   FitsInput* infile_p;
   String msFile_p;
   MSPrimaryGroupHolder priGroup_p;
+  MSPrimaryTableHolder priTable_p;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   Int nIF_p;
@@ -293,6 +414,7 @@ private:
   Bool useAltrval;
   Vector<Double> chanFreq_p;
   Bool newNameStyle;
+  Vector<Double> obsTime;
 };
 
 

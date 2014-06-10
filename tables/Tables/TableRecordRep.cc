@@ -390,7 +390,8 @@ void TableRecordRep::print (std::ostream& os, Int maxNrValues,
 	    os << indent << '}' << endl;
 	} else if (desc_p.type(i) == TpTable) {
 	    os << "Table "
-	       << static_cast<const TableKeyword*>(data_p[i])->tableName();
+	       << static_cast<const TableKeyword*>(data_p[i])->tableName()
+               << endl;
         } else {
 	    printDataField (os, desc_p.type(i),
 			    indent, maxNrValues, data_p[i]);

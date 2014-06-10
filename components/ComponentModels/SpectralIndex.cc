@@ -210,8 +210,8 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
   }
 //
   {
-    Vector<Double> errorVals(1, 0.0);
-     if (record.isDefined("error")) {
+      Vector<Double> errorVals(1, 0.0);
+      if (record.isDefined("error")) {
         const RecordFieldId error("error");
         const IPosition shape(1,1);
         if (record.shape(error) != shape) {

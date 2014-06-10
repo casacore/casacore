@@ -46,11 +46,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     BFEngineMask (const Array<String>& keys, uInt defaultMask);
 
     // Make the mask from the given keywords defining the bits.
-    void makeMask (const ROTableColumn& column);
+    void makeMask (const TableColumn& column);
 
     // Form the read mask from the specification.
     // If keywords are given, the mask is formed from them.
-    void fromRecord (const RecordInterface& spec, const ROTableColumn& column,
+    void fromRecord (const RecordInterface& spec, const TableColumn& column,
                      const String& prefix);
 
     // Store the info in a Record.
@@ -174,8 +174,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   protected:
     using BaseMappedArrayEngine<Bool,StoredType>::storedName;
     using BaseMappedArrayEngine<Bool,StoredType>::table;
-    using BaseMappedArrayEngine<Bool,StoredType>::roColumn;
-    using BaseMappedArrayEngine<Bool,StoredType>::rwColumn;
+    using BaseMappedArrayEngine<Bool,StoredType>::column;
     using BaseMappedArrayEngine<Bool,StoredType>::setNames;
 
   public:

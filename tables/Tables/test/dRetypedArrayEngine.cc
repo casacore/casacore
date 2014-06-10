@@ -265,8 +265,8 @@ void b()
 {
     // Read back the table.
     Table tab("dRetypedArrayEngine_tmp.data");
-    ROArrayColumn<float> colD (tab, "Data");
-    ROArrayColumn<RetypedArrayEx1> colA(tab, "colA");
+    ArrayColumn<float> colD (tab, "Data");
+    ArrayColumn<RetypedArrayEx1> colA(tab, "colA");
     Matrix<float> valD;
     Vector<RetypedArrayEx1> valA, valA1;
     Matrix<float> resD(2,10);
@@ -340,8 +340,8 @@ void c()
   {
     // Read back the table.
     Table tab("dRetypedArrayEngine_tmp.data");
-    ROArrayColumn<DComplex> colD (tab, "Data");
-    ROArrayColumn<RetypedArrayEx2> colA(tab, "Stokes");
+    ArrayColumn<DComplex> colD (tab, "Data");
+    ArrayColumn<RetypedArrayEx2> colA(tab, "Stokes");
     Matrix<DComplex> valD;
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(4,10);
@@ -404,8 +404,8 @@ void c()
   {
     // Read back the table.
     Table tab("dRetypedArrayEngine_tmp.data");
-    ROArrayColumn<DComplex> colD (tab, "Data");
-    ROArrayColumn<RetypedArrayEx2> colA(tab, "Stokes");
+    ArrayColumn<DComplex> colD (tab, "Data");
+    ArrayColumn<RetypedArrayEx2> colA(tab, "Stokes");
     Matrix<DComplex> valD;
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(2,10);

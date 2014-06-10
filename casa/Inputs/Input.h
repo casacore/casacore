@@ -52,7 +52,7 @@ template<class T> class Vector;
 //
 // <etymology>
 // The Input class name is a reflection of it's role as the early command 
-// line user interface for AIPS++ applications.  This class provides "inputs"
+// line user interface for Casacore applications. This class provides "inputs"
 // in the form "key=value" or "-key value."
 // </etymology>
 //
@@ -198,17 +198,17 @@ template<class T> class Vector;
 // </example>
 //
 // <motivation>
-// In the earliest days of the AIPS++ project, the desire to start coding 
+// In the earliest days of the old AIPS++ project, the desire to start coding 
 // right away led to the need for a user interface.  The preexistant C language
 // method of argc/argv was enclosed in an object for easier use.  This also
 // provided a means to output a pane file.  Pane files are used by the 
 // Cantata desktop within the Khoros system to build quick graphic user 
-// interfaces.  The AIPS++ code has moved on to greater heights and left the
+// interfaces.  The Casacore code has moved on to greater heights and left the
 // Input class mostly unchanged.
 // </motivation>
 //
 // <todo asof="Thu 1995/04/06 21:26:43 GMT">
-//   <li> major cleanup needed - this is the oldest code in AIPS++.
+//   <li> major cleanup needed - this is the oldest code in Casacore.
 //   <li> replace List<Param> with keywords
 // </todo>
 

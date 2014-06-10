@@ -1,4 +1,4 @@
-//# FITS.h: Transform an AIPS++ Array to or from a FITS disk file.
+//# FITS.h: Transform a Casacore Array to or from a FITS disk file.
 //# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -37,21 +37,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 class String;        // Forward declarations
 
-//<summary>  read a FITS file from an AIPS++ array</summary>
+//<summary>  read a FITS file from a Casacore array</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //<linkfrom anchor=ReadFITS classes=FitsInput>
-// <here>ReadFITS</here> AIPS++ interface routines.
+// <here>ReadFITS</here> Casacore interface routines.
 //</linkfrom>
 
 //<motivation>
-// Quick and dirty interface to the FITS classes for turning aips++
+// Quick and dirty interface to the FITS classes for turning Casacore
 // arrays into FITS files and back. N.B. this will have many more features
 // in the future, also some files should be renamed since we now have
 // FITS.h and fits.h. 
 //</motivation>
 //<synopsis>
-// Read FITS from a file into an aips++ Array. Sets "ok" to False if there 
+// Read FITS from a file into a Casacore Array. Sets "ok" to False if there 
 // is any problem. We only deal with data in the primary data array.
 // If ReadFITS fails, the state of array is undefined. Trailing
 // degenerate (length==1) axes are NOT removed. If desired, you may do
@@ -67,7 +67,7 @@ class String;        // Forward declarations
 // (image coordinates) of the reference pixel (CRVALn) and delta is 
 // set to the increment along each axis (CDELTn). All
 // the vectors are resized if necessary. Note that FITS pixel indexing is
-// one-based, AIPS++ is 0-based, this correction is made. unitName and
+// one-based, Casacore is 0-based, this correction is made. unitName and
 // axisNames have trailing blanks (a FITS "feature") removed.
 //
 // If "keywords" is non-null, the integral and floating point keywords
@@ -95,14 +95,14 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
                       String *objectName = 0);
 //</group>
 
-//<summary> write a FITS file to an AIPS++ array</summary>
+//<summary> write a FITS file to a Casacore array</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //<linkfrom anchor=WriteFITS classes=FitsOutput>
-// <here>WriteFITS</here> AIPS++ interface routines.
+// <here>WriteFITS</here> Casacore interface routines.
 //</linkfrom>
 //<synopsis>
-// Write a FITS file from an aips++ Array. Returns False if there is any
+// Write a FITS file from a Casacore Array. Returns False if there is any
 // proglem. The data is written into the primary data array, and the data
 // is written in floating point (BITPIX=-32). If the operation fails, 
 // ErrorMessage will contain an informative error. At the moment this
@@ -111,7 +111,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 // If any of unitName, axisNames, refPixel, refLocation, or delta are
 // non-null, the corresponding FITS keywords (BUNIT, CTYPEn, CRPIXn,
 // CRVALn, CDELTn) are set. CRVALn is corrected for the difference in
-// addressing between FITS and AIPS++ (1 vs. 0). If a Vector pointer
+// addressing between FITS and Casacore (1 vs. 0). If a Vector pointer
 // is non-null, then that vector must be the correct length.
 //
 // If keywords is non-null, the contents are written out as FITS keywords.

@@ -1,4 +1,4 @@
-//# AipsIO.cc: AipsIO is the object persistency mechanism of AIPS++
+//# AipsIO.cc: AipsIO is the object persistency mechanism of Casacore
 //# Copyright (C) 1993,1994,1995,1996,1997,1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
@@ -90,7 +90,9 @@ AipsIO::AipsIO (TypeIO* file)
 
 AipsIO::~AipsIO()
 {
-    close();
+    try {
+       close();
+    } catch (...) {}
 }
 
 
@@ -459,6 +461,16 @@ AipsIO& AipsIO::put (uInt nrv, const String* var, Bool putNR)
 }
 
 
+AipsIO& AipsIO::put (const vector<Bool>& vec)
+{
+    // std::vector<bool> uses bits instead of bytes. So copy first.
+    Block<Bool> var(vec.size());
+    std::copy (vec.begin(), vec.end(), var.begin());
+    put (var.size(), var.storage(), True);
+    return *this;
+}
+
+
 // putstart starts writing an object.
 // This is not possible if there is no file, if the file is not opened
 // for output or if there is a get in operation.
@@ -757,6 +769,17 @@ AipsIO& AipsIO::get (uInt nrv, String* var)
     objlen_p[level_p] += io_p->read (nrv, var);
     testgetLength();
     return (*this);
+}
+
+AipsIO& AipsIO::get (vector<Bool>& vec)
+{
+    uInt nrv;
+    Bool* var;
+    getnew (nrv, var);
+    vec.resize (nrv);
+    std::copy (var, var+nrv, vec.begin());
+    delete [] var;
+    return *this;
 }
 
 

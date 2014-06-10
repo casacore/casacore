@@ -45,18 +45,15 @@
 
 #include <casa/OS/Timer.h>
 
-
 #include <casa/iomanip.h>  
 #include <casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-
 Coordinate::Coordinate()
 : worldMin_p(0),
   worldMax_p(0)
 {}
-
 
 Coordinate::Coordinate(const Coordinate& other)
 : worldMin_p(0),
@@ -331,13 +328,12 @@ void Coordinate::getPrecision(Int &precision,
 }
    
 
-String Coordinate::format(String& units,
-                          Coordinate::formatType format, 
-                          Double worldValue, 
-                          uInt worldAxis, 
-                          Bool isAbsolute, 
-                          Bool showAsAbsolute,
-                          Int precision) const
+String Coordinate::format(
+	String& units, Coordinate::formatType format,
+	Double worldValue, uInt worldAxis,
+	Bool isAbsolute, Bool showAsAbsolute,
+	Int precision, Bool usePrecForMixed
+) const
 //
 // isAbsolute
 //    T means the worldValue is given as absolute
@@ -429,7 +425,10 @@ String Coordinate::format(String& units,
 // Format and get units.
   
    if (form == Coordinate::MIXED) {
-      oss << worldValue;
+	   if (usePrecForMixed) {
+		   oss << setprecision(prec);
+	   }
+	   oss << worldValue;
    } else if (form == Coordinate::SCIENTIFIC) {
       oss.setf(ios::scientific, ios::floatfield);
       if ( precision_set == false ) oss.precision(prec);
@@ -511,6 +510,8 @@ String Coordinate::typeToString (Coordinate::Type type)
       return String("Spectral");
    } else if (type==Coordinate::STOKES) {
       return String("Stokes");
+   } else if (type==Coordinate::QUALITY) {
+      return String("Quality");
    } else if (type==Coordinate::TABULAR) {
       return String("Tabular");
    } else if (type==Coordinate::COORDSYS) {      
@@ -586,6 +587,8 @@ void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInC
       }
    } else if (type==Coordinate::STOKES) {
       throw (AipsError("Cannot provide Fourier coordinate name for Stokes coordinate"));
+   } else if (type==Coordinate::QUALITY) {
+      throw (AipsError("Cannot provide Fourier coordinate name for Quality coordinate"));
    } else if (type==Coordinate::COORDSYS) {
       throw (AipsError("Cannot provide Fourier coordinate name for CoordinateSystem coordinate"));
    } else {
@@ -921,7 +924,36 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 }
 
 
+Coordinate* Coordinate::rotate(const Quantity& angle) const {
+	if (nPixelAxes() != 2) {
+		throw AipsError(
+			"Coordinate::rotate: This coordinate does not have exactly two pixel axes. Rotation is not possible."
+		);
+	}
+	Matrix<Double> xf = linearTransform();
 
+	// Generate rotation matrix components
+	Double angleRad = angle.getValue(Unit("rad"));
+	Matrix<Double> rotm(2, 2);
+	Double s = sin(-angleRad);
+	Double c = cos(-angleRad);
+	rotm(0, 0) = c;
+	rotm(0, 1) = s;
+	rotm(1, 0) = -s;
+	rotm(1, 1) = c;
+
+	// Create new linear transform matrix
+	Matrix<Double> xform(2, 2);
+	xform(0, 0) = rotm(0, 0) * xf(0, 0) + rotm(0, 1) * xf(1, 0);
+	xform(0, 1) = rotm(0, 0) * xf(0, 1) + rotm(0, 1) * xf(1, 1);
+	xform(1, 0) = rotm(1, 0) * xf(0, 0) + rotm(1, 1) * xf(1, 0);
+	xform(1, 1) = rotm(1, 0) * xf(0, 1) + rotm(1, 1) * xf(1, 1);
+
+	// Apply new linear transform matrix
+	Coordinate* result = clone();
+	result->setLinearTransform(xform);
+	return result;
+}
 
 Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
                              ::wcsprm& wcs) const

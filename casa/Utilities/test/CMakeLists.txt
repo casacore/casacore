@@ -3,6 +3,7 @@ dCOWptr
 dMUString
 tBinarySearch
 tBitVector
+tCompare
 tCompositeNumber
 tCopy
 tCountedPtr
@@ -13,6 +14,7 @@ tDynBuffer
 tFallible
 tGenSort
 tLinearSearch
+tPrecision
 tPtrHolder
 tRegex_1
 tRegex2

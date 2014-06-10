@@ -40,9 +40,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template <class T> class ROArrayColumn;
 template <class T> class ArrayColumn;
-template <class T> class ROScalarColumn;
 class Record;
 class MSIter;
 
@@ -220,7 +218,7 @@ public:
   // (Re)Set the iterator to the first iteration, call this after iterInit.
   Bool iterOrigin();
 
-  /// End the iteration (before reaching the last iteration)
+  // End the iteration (before reaching the last iteration)
   // and set the selection back to the state before iteration started.
   Bool iterEnd();
 
@@ -236,30 +234,30 @@ public:
 protected:
   // average and convert data
   void getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
-		       const ROArrayColumn<Complex>& col) const;
+		       const ArrayColumn<Complex>& col) const;
 
   // average and convert float data
   void getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		       const ROArrayColumn<Float>& col) const;
+		       const ArrayColumn<Float>& col) const;
 
   // average and convert data, with row Slicer
   void getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
-		       const ROArrayColumn<Complex>& col,
+		       const ArrayColumn<Complex>& col,
 		       const Slicer & rowSlicer) const;
 
   // average and convert float data, with row Slicer
   void getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		       const ROArrayColumn<Float>& col,
+		       const ArrayColumn<Float>& col,
 		       const Slicer & rowSlicer) const;
 
   // "average" flag, at present all output which has a flagged input is flagged
   Array<Bool> getAveragedFlag(Array<Bool>& avFlag, 
-		       const ROArrayColumn<Bool>& col) const;
+		       const ArrayColumn<Bool>& col) const;
 
   // "average" flag, at present all output which has a flagged input is flagged,
   // with row Slicer
   Array<Bool> getAveragedFlag(Array<Bool>& avFlag, 
-		       const ROArrayColumn<Bool>& col,
+		       const ArrayColumn<Bool>& col,
 		       const Slicer& rowSlicer) const;
 
   // "unaverage" flag, distribute the flags back to the channels that went
@@ -268,7 +266,7 @@ protected:
 		       ArrayColumn<Bool>& col);
 
   // get the weight, set sigma=True when retrieving sigma's
-  Array<Float> getWeight(const ROArrayColumn<Float>& wtCol,
+  Array<Float> getWeight(const ArrayColumn<Float>& wtCol,
 			 Bool sigma=False) const;
 
   // make the data slicer, pass in the first and the number of correlations

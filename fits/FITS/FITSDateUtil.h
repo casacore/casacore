@@ -66,7 +66,7 @@ class MVTime;
 // The strings that make up the value of FITS dates have a 
 // precise format.  This class encompasses knowlege of the formats
 // used and hopefully simplifies their creation and conversion
-// to and from aips++ MVTimes.
+// to and from Casacore MVTimes.
 // </motivation>
 //
 

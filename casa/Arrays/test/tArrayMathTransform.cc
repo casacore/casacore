@@ -44,7 +44,7 @@ void doIt()
   Array<int> res(shape);
   indgen (arr1, -100);
   indgen (arr2);
-  for (uint i=0; i<arr1.nelements(); ++i) {
+  for (uInt i=0; i<arr1.nelements(); ++i) {
     exp1.data()[i] = arr1.data()[i] + arr2.data()[i];
     exp2.data()[i] = arr1.data()[i] + 20;
     expa.data()[i] = std::abs(arr1.data()[i]);

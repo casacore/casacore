@@ -33,6 +33,7 @@
 #include <casa/Arrays/Vector.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class Quantum;
@@ -65,7 +66,7 @@ template<class T> class Quantum;
 // </example>
 
 // <todo asof="1998/12/11">
-//  <li> Position angle signs require more thinking in aips++
+//  <li> Position angle signs require more thinking in Casacore
 // </todo>
 
 class GaussianConvert
@@ -123,21 +124,6 @@ public:
     Bool toWorld(Vector<Quantum<Double> >& world,
                  const Vector<Double>& pixel);
     // </group>
-
-    // Deconvolve the parameters of a source Gaussian from a beam Gaussian 
-    // to give a model Gaussian.  The return is True if the model appears
-    // to be a point source and the output model will be set to
-    // the parameters of the beam.  If the units of the model are not given,
-    // they will be set to the units of the source.
-    static Bool deconvolve(Quantum<Double>& majorAxisModel, 
-                           Quantum<Double>& minorAxisModel,
-                           Quantum<Double>& positionAngleModel, 
-                           const Quantum<Double>& majorAxisSource,
-                           const Quantum<Double>& minorAxisSource,
-                           const Quantum<Double>& positionAngleSource,
-                           const Quantum<Double>& majorAxisBeam,
-                           const Quantum<Double>& minorAxisBeam,
-                           const Quantum<Double>& positionAngleBeam);
 
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}

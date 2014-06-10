@@ -111,7 +111,7 @@ public:
     ROStandardStManAccessor (const Table& table, const String& name,
                              Bool byColumn=False);
 
-    ~ROStandardStManAccessor();
+    virtual ~ROStandardStManAccessor();
 
     // Copy constructor (reference semantics).
     ROStandardStManAccessor (const ROStandardStManAccessor& that);
@@ -127,7 +127,7 @@ public:
     // storage managers, is persistent.
     // If <src>canExceedNrBuckets=True</src>, the given cache size can be
     // larger than the nr of buckets in the file. In this way the cache can
-    // be made large enough for a future file extnsion.
+    // be made large enough for a future file extension.
     // Otherwise, it is limited to the actual number of buckets. This is useful
     // if one wants the entire file to be cached.
     void setCacheSize (uInt aSize, Bool canExceedNrBuckets=True);
@@ -139,9 +139,6 @@ public:
     // It will flush the cache as needed and remove all buckets from it
     // resulting in a drop in memory used.
     void clearCache();
-
-    // Show the statistics for the cache used by this storage manager.
-    void showCacheStatistics (ostream& anOs) const;
 
     // Show the statistics for the base class.
     void showBaseStatistics (ostream& anOs) const;

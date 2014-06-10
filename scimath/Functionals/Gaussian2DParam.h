@@ -279,7 +279,6 @@ public:
 
 protected:
   // Constant to scale halfwidth at 1/e to FWHM
-  ///  static const T fwhm2int;
   T fwhm2int;
   // cached vale of the PA
   mutable T thePA;

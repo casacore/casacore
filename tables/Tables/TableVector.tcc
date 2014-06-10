@@ -37,21 +37,29 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Construct an empty table vector.
 template<class T>
-ROTableVector<T>::ROTableVector()
+TableVector<T>::TableVector()
 : tabVecPtr_p(0)
 {}
 
 //# Construct from a vector (reference semantics).
 template<class T>
-ROTableVector<T>::ROTableVector (const Vector<T>& vec)
+TableVector<T>::TableVector (const Vector<T>& vec)
 {
     tabVecPtr_p = new TabVecTemp<T>(vec);
     tabVecPtr_p->link();
 }
 
+//# Construct a vector with a given length.
+template<class T>
+TableVector<T>::TableVector (uInt leng)
+{
+    tabVecPtr_p = new TabVecTemp<T>(leng);
+    tabVecPtr_p->link();
+}
+
 //# Copy constructor (reference semantics).
 template<class T>
-ROTableVector<T>::ROTableVector (const ROTableVector<T>& that)
+TableVector<T>::TableVector (const TableVector<T>& that)
 : tabVecPtr_p (that.tabVecPtr_p)
 {
     if (tabVecPtr_p != 0) {
@@ -61,26 +69,26 @@ ROTableVector<T>::ROTableVector (const ROTableVector<T>& that)
 
 //# Construct a readonly table column vector.
 template<class T>
-ROTableVector<T>::ROTableVector (const Table& tab,
-				 const String& columnName)
+TableVector<T>::TableVector (const Table& tab,
+                             const String& columnName)
 {
-    tabVecPtr_p = new TabVecScaCol<T> (ROTableColumn (tab, columnName));
+    tabVecPtr_p = new TabVecScaCol<T> (TableColumn (tab, columnName));
     tabVecPtr_p->link();
 }
 
 template<class T>
-ROTableVector<T>::ROTableVector (const ROTableColumn& column)
+TableVector<T>::TableVector (const TableColumn& column)
 {
     tabVecPtr_p = new TabVecScaCol<T> (column);
     tabVecPtr_p->link();
 }
 
 template<class T>
-ROTableVector<T>::~ROTableVector()
+TableVector<T>::~TableVector()
     { destruct(); }
 
 template<class T>
-void ROTableVector<T>::destruct ()
+void TableVector<T>::destruct ()
 {
     if (tabVecPtr_p->unlink() == 0) {
 	delete tabVecPtr_p;
@@ -88,7 +96,7 @@ void ROTableVector<T>::destruct ()
 }
 
 template<class T>
-void ROTableVector<T>::throwIfNull() const
+void TableVector<T>::throwIfNull() const
 {
     if (isNull()) {
 	throw (TableInvOper ("TableVector is null"));
@@ -96,7 +104,7 @@ void ROTableVector<T>::throwIfNull() const
 }
 
 template<class T>
-void ROTableVector<T>::reference (const ROTableVector<T>& that)
+void TableVector<T>::reference (const TableVector<T>& that)
 {
     //# First destruct current vector.
     destruct();
@@ -109,7 +117,7 @@ void ROTableVector<T>::reference (const ROTableVector<T>& that)
 
 //# Make a Vector from the (RO)TableVector.
 template<class T>
-Vector<T> ROTableVector<T>::makeVector() const
+Vector<T> TableVector<T>::makeVector() const
 {
     Vector<T> vect(nelements());
     TableVector<T> tvec(vect);
@@ -117,63 +125,6 @@ Vector<T> ROTableVector<T>::makeVector() const
     return vect;
 }
 
-
-
-
-
-//# Construct an empty table vector.
-template<class T>
-TableVector<T>::TableVector()
-: ROTableVector<T>()
-{}
-
-//# Construct from a vector (reference semantics).
-template<class T>
-TableVector<T>::TableVector (const Vector<T>& vec)
-: ROTableVector<T> (vec)
-{}
-
-//# Construct a vector with a given length.
-template<class T>
-TableVector<T>::TableVector (uInt leng)
-: ROTableVector<T>()
-{
-    tabVecPtr_p = new TabVecTemp<T>(leng);
-    tabVecPtr_p->link();
-}
-
-//# Copy constructor (reference semantics).
-template<class T>
-TableVector<T>::TableVector (const TableVector<T>& that)
-: ROTableVector<T> (that)
-{}
-
-//# Construct a read/write table column vector.
-template<class T>
-TableVector<T>::TableVector (const Table& tab, const String& columnName)
-: ROTableVector<T>()
-{
-    tabVecPtr_p = new TabVecScaCol<T> (TableColumn (tab, columnName));
-    tabVecPtr_p->link();
-}
-
-template<class T>
-TableVector<T>::TableVector (const TableColumn& column)
-: ROTableVector<T>()
-{
-    tabVecPtr_p = new TabVecScaCol<T> (column);
-    tabVecPtr_p->link();
-}
-
-template<class T>
-TableVector<T>::~TableVector()
-{}
-
-
-//# Referencing another vector.
-template<class T>
-void TableVector<T>::reference (const TableVector<T>& that)
-    { ROTableVector<T>::reference (that); }
 
 } //# NAMESPACE CASA - END
 

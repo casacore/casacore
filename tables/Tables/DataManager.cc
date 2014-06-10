@@ -109,6 +109,9 @@ void DataManager::reopenRW()
 void DataManager::setMaximumCacheSize (uInt)
 {}
 
+void DataManager::showCacheStatistics (ostream&) const
+{}
+
 //# Create a column object for a scalar.
 //# Check its data type.
 DataManagerColumn* DataManager::createScalarColumn (const String& columnName,
@@ -206,6 +209,8 @@ String DataManager::fileName() const
 ByteIO::OpenOption DataManager::fileOption() const
     { return PlainTable::toAipsIOFoption (table_p->tableOption()); }
 
+Bool DataManager::isRegular() const
+    { return True; }
 
 void DataManager::linkToTable (Table& tab)
 {

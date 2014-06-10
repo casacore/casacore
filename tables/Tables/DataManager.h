@@ -38,6 +38,7 @@
 #include <casa/Containers/SimOrdMap.h>
 #include <casa/IO/ByteIO.h>
 #include <casa/OS/Mutex.h>
+#include<iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -55,9 +56,11 @@ class AipsIO;
 
 
 // <summary>
-// Define the type of the static "constructor" function.
+// Define the type of the static construction function.
 // </summary>
+
 // <use visibility=local>
+
 // <reviewed reviewer="Gareth Hunt" date="94Nov17" tests="">
 // </reviewed>
 
@@ -303,6 +306,11 @@ public:
     // Get the AipsIO option of the underlying file.
     ByteIO::OpenOption fileOption() const;
 
+    // Is this a regular storage manager?
+    // It is regular if it allows addition of rows and writing data in them.
+    // <br>The default implementation returns True.
+    virtual Bool isRegular() const;
+
     // Get the table this object is associated with.
     Table& table() const
 	{ return *table_p; }
@@ -327,7 +335,10 @@ public:
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
     virtual void setMaximumCacheSize (uInt nbytes);
-    
+
+    // Show the data manager's IO statistics. By default it does nothing.
+    virtual void showCacheStatistics (std::ostream&) const;
+
     // Create a column in the data manager on behalf of a table column.
     // It calls makeXColumn and checks the data type.
     // <group>

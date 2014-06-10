@@ -183,12 +183,12 @@ private:
   Int                         itsLastFieldId;  //# id of the field last used
   Int                         itsLastAntId;    //# -1 is array position used
   Double                      itsLastTime;
-  ROScalarColumn<Int>         itsAntCol[2];    //# ANTENNA1 and ANTENNA2
-  ROScalarColumn<Int>         itsFeedCol[2];   //# FEED1 and FEED2
-  ROScalarColumn<Int>         itsFieldCol;     //# FIELD_ID
-  ROScalarColumn<Double>      itsTimeCol;      //# TIME
-  ROScalarMeasColumn<MEpoch>  itsTimeMeasCol;  //# TIME as Measure
-  ROScalarColumn<Int>         itsCalCol;       //# CAL_DESC_ID
+  ScalarColumn<Int>           itsAntCol[2];    //# ANTENNA1 and ANTENNA2
+  ScalarColumn<Int>           itsFeedCol[2];   //# FEED1 and FEED2
+  ScalarColumn<Int>           itsFieldCol;     //# FIELD_ID
+  ScalarColumn<Double>        itsTimeCol;      //# TIME
+  ScalarMeasColumn<MEpoch>    itsTimeMeasCol;  //# TIME as Measure
+  ScalarColumn<Int>           itsCalCol;       //# CAL_DESC_ID
   map<string,int>             itsCalMap;       //# map of MS name to index
   vector<Int>                 itsCalIdMap;     //# map of calId to index
   MPosition                   itsArrayPos;

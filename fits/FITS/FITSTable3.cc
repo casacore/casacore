@@ -1,4 +1,4 @@
-//# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
+//# FITSTable.h: Simplified interface to FITS tables with Casacore Look and Feel.
 //# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#

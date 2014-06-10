@@ -154,7 +154,7 @@ public:
   // Passing by value doesn't make sense, because it may require the creation
   // of a temporary (but possibly huge) file on disk.
   TempLattice (const TempLattice<T>& other)
-    : itsImpl (other.itsImpl) {}
+    : Lattice<T>(other), itsImpl (other.itsImpl) {}
     
   // The destructor removes the Lattice from memory and if necessary disk.
   virtual ~TempLattice();

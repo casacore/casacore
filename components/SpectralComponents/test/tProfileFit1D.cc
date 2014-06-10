@@ -35,8 +35,6 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Utilities/Assert.h>
 #include <components/SpectralComponents/GaussianMultipletSpectralElement.h>
-#include <components/SpectralComponents/LorentzianSpectralElement.h>
-#include <components/SpectralComponents/PolynomialSpectralElement.h>
 
 #include <casa/iostream.h>
 
@@ -55,18 +53,24 @@ GaussianMultipletSpectralElement makeMultiplet (
 	const Vector<Double>& sigma
 );
 
-Vector<LorentzianSpectralElement> makeLorentzians (
+vector<LorentzianSpectralElement> makeLorentzians (
 	Vector<Double>& x, Vector<Double>& y,
 	const Vector<Double>& amp, const Vector<Double>& cen,
 	const Vector<Double>& fwhm
 );
 
+PowerLogPolynomialSpectralElement makePowerLogPoly(
+	Vector<Double>&x, Vector<Double>& y, const Vector<Double>& coeffs
+);
+
+PolynomialSpectralElement makePoly(
+	Vector<Double>&x, Vector<Double>& y, const Vector<Double>& coeffs
+);
+
 int main() {
 
 	try {
-
 		{
-
 			// Data
 			Vector<Double> x,y;
 			Vector<Bool> m;
@@ -77,10 +81,7 @@ int main() {
 			// Make fitter, set data and fit
 			ProfileFit1D<Double> fitter;
 			fitter.setData (x,y,m);
-			cout << __FILE__ << " " << __LINE__ << endl;
 			fitter.setGaussianElements (1);
-			cout << __FILE__ << " " << __LINE__ << endl;
-
 			const SpectralElement *firstEl = fitter.getList(False)[0];
 			AlwaysAssert(
 				firstEl->getType() == SpectralElement::GAUSSIAN, AipsError
@@ -95,12 +96,10 @@ int main() {
 			AlwaysAssert(fitter.getRangeMask().nelements()==0, AipsError);
 			AlwaysAssert(fitter.getTotalMask().nelements()==n, AipsError);
 			AlwaysAssert(allEQ(fitter.getTotalMask(), True), AipsError);
-
 			{
 				const SpectralList& fitList = fitter.getList(True);
 				check (amp, cen, sig, p0, p1, fitList);
 			}
-			//
 			{
 				ProfileFit1D<Double> fitter2(fitter);
 				const SpectralList& fitList = fitter2.getList(True);
@@ -112,7 +111,6 @@ int main() {
 				const SpectralList& fitList = fitter2.getList(True);
 				check (amp, cen, sig, p0, p1, fitList);
 			}
-
 			// Set a range mask via indices
 
 			{
@@ -144,10 +142,7 @@ int main() {
 			cen[1] = 60;
 			sigma[0] = 6;
 			sigma[1] = 6;
-
-
 			GaussianMultipletSpectralElement gm0 = makeMultiplet (x, y, amp, cen, sigma);
-
 			ProfileFit1D<Double> fitter;
 			Vector<Bool> m (x.size(), True);
 			fitter.setData (x,y,m);
@@ -175,7 +170,6 @@ int main() {
 					),
 				AipsError
 			);
-
 			Matrix<Double> r(1, 3);
 			GaussianMultipletSpectralElement gm = gm0;
 
@@ -250,7 +244,7 @@ int main() {
 			cen[1] = 60;
 			fwhm[0] = 6;
 			fwhm[1] = 6.5;
-			Vector<LorentzianSpectralElement> lse = makeLorentzians (x, y, amp, cen, fwhm);
+			vector<LorentzianSpectralElement> lse = makeLorentzians (x, y, amp, cen, fwhm);
 
 			ProfileFit1D<Double> fitter;
 			Vector<Bool> m (x.size(), True);
@@ -290,12 +284,112 @@ int main() {
 			cout << "niter " << fitter.getNumberIterations() << endl;
 			cout << endl;
 		}
+		cout << "*** Fit a power log polynomial" << endl;
+		{
+			ProfileFit1D<Double> fitter;
+			Vector<Double> x, y;
+			Vector<Double> estimates(2);
+			estimates[0] = 0.5;
+			estimates[1] = 2;
+			makePowerLogPoly(x, y, estimates);
+			Vector<Bool> mask(x.size(), True);
+			fitter.setData(x, y, mask);
+			SpectralList list;
+			estimates[1] = 1;
+			estimates[0] = 1;
+			list.add(PowerLogPolynomialSpectralElement(estimates));
+			fitter.setElements(list);
+			AlwaysAssert(fitter.fit(), AipsError);
+			Vector<Double> parms = fitter.getList(True)[0]->get();
+			cout << "parms " << parms << endl;
+			AlwaysAssert(near(parms[0], 0.5) && near(parms[1], 2.0), AipsError);
+		}
+		{
+			ProfileFit1D<Double> fitter;
+			Vector<Double> x, y;
+			Vector<Double> estimates(3);
+			estimates[0] = 0.5;
+			estimates[1] = 2;
+			estimates[2] = 0;
+			makePowerLogPoly(x, y, estimates);
+			Vector<Bool> mask(x.size(), True);
+			fitter.setData(x, y, mask);
+			SpectralList list;
+			estimates[0] = 0.55;
+			estimates[1] = 1.93;
+			estimates[2] = 0.4;
+			list.add(PowerLogPolynomialSpectralElement(estimates));
+			fitter.setElements(list);
+			AlwaysAssert(fitter.fit(), AipsError);
+			Vector<Double> parms = fitter.getList(True)[0]->get();
+			cout << "parms " << parms << endl;
+			AlwaysAssert(near(parms[0], 0.5) && near(parms[1], 2.0), AipsError);
+		}
+		{
+			ProfileFit1D<Double> fitter;
+			Vector<Double> x, y;
+			Vector<Bool> mask(x.size(), True);
+			Vector<Double> estimates(3);
+			estimates[0] = 0.5;
+			estimates[1] = 2;
+			estimates[2] = 1;
+			makePowerLogPoly(x, y, estimates);
+			fitter.setData(x, y, mask);
+			estimates[1] = 1.99;
+			estimates[2] = 0.999;
+			SpectralList list;
+			list.add(PowerLogPolynomialSpectralElement(estimates));
+			fitter.setElements(list);
+			AlwaysAssert(fitter.fit(), AipsError);
+			Vector<Double> parms = fitter.getList()[0]->get();
+			cout << "parms " << parms << endl;
+			AlwaysAssert(
+				near(parms[0], 0.5, 1e-4)
+				&& near(parms[1], 2.0, 1e-4)
+				&& nearAbs(parms[2], 1.0, 1e-4),
+				AipsError
+			);
+		}
+		{
+			cout << "*** Fit a polynomial" << endl;
+			ProfileFit1D<Double> fitter;
+			Vector<Double> x, y;
+			Vector<Bool> mask(x.size(), True);
+			Vector<Double> estimates(3);
+			estimates[0] = 0.5;
+			estimates[1] = 2;
+			estimates[2] = 1;
+			makePoly(x, y, estimates);
+			fitter.setData(x, y, mask);
+			SpectralList list;
+			list.add(PolynomialSpectralElement(estimates));
+			fitter.setElements(list);
+			AlwaysAssert(fitter.fit(), AipsError);
+			Vector<Double> parms = fitter.getList()[0]->get();
+			cout << "parms " << parms << endl;
+			cout << "niter " << fitter.getNumberIterations() << endl;
+			AlwaysAssert(allNear(parms, estimates, 1e-5), AipsError);
+			Vector<Double> bad(3);
+			bad[0] = 2;
+			bad[1] = 5;
+			bad[2] = 3;
+			list.clear();
+			list.add(PolynomialSpectralElement(bad));
+			fitter.clearList();
+			fitter.setElements(list);
+			AlwaysAssert(fitter.fit(), AipsError);
+			parms = fitter.getList()[0]->get();
+			cout << "niter " << fitter.getNumberIterations() << endl;
+			cout << "parms " << parms << endl;
+			AlwaysAssert(allNear(parms, estimates, 1e-5), AipsError);
 
+		}
 		cout << "OK" << endl;
 		return 0;
-	} catch (AipsError err) {
+	} catch (const AipsError& err) {
 		cerr << err.getMesg() << endl;
 	}
+	return 1;
 }
 
 void makeData (Vector<Double>& x, Vector<Double>& y, Vector<Bool>& m,
@@ -342,7 +436,7 @@ void check (Double amp, Double cen, Double sig, Double p0, Double p1,
 	AlwaysAssert(near(amp, p[0], tol), AipsError);
 	AlwaysAssert(near(cen, p[1], tol), AipsError);
 	AlwaysAssert(near(sig, p[2], tol), AipsError);
-
+	p.resize(0);
 	elP->get(p);
 	AlwaysAssert(near(p0, p[0], tol), AipsError);
 	AlwaysAssert(near(p1, p[1], tol), AipsError);
@@ -397,7 +491,7 @@ GaussianMultipletSpectralElement makeMultiplet (
 	indgen(x);
 	x += minx;
 	y.resize(x.size());
-	Vector<GaussianSpectralElement> g(amp.size());
+	vector<GaussianSpectralElement> g(amp.size());
 	Matrix<Double> r(g.size() - 1, 3, 0);
 	for (uInt i=0; i<amp.size(); i++) {
 		g[i] = GaussianSpectralElement(amp[i], cen[i], sigma[i]);
@@ -412,7 +506,7 @@ GaussianMultipletSpectralElement makeMultiplet (
 	return gm;
 }
 
-Vector<LorentzianSpectralElement> makeLorentzians (
+vector<LorentzianSpectralElement> makeLorentzians (
 	Vector<Double>& x, Vector<Double>& y,
 	const Vector<Double>& amp, const Vector<Double>& cen,
 	const Vector<Double>& fwhm
@@ -429,9 +523,9 @@ Vector<LorentzianSpectralElement> makeLorentzians (
 	indgen(x);
 	x += minx;
 	y.resize(x.size());
-	Vector<LorentzianSpectralElement> lse(amp.size());
+	vector<LorentzianSpectralElement> lse;
 	for (uInt i=0; i<amp.size(); i++) {
-		lse[i] = LorentzianSpectralElement(amp[i], cen[i], fwhm[i]);
+		lse.push_back(LorentzianSpectralElement(amp[i], cen[i], fwhm[i]));
 	}
 	for (uInt i=0; i<x.size(); i++) {
 		y[i] = 0;
@@ -441,4 +535,52 @@ Vector<LorentzianSpectralElement> makeLorentzians (
 	}
 	return lse;
 }
+
+
+PowerLogPolynomialSpectralElement makePowerLogPoly(
+	Vector<Double>&x, Vector<Double>& y, const Vector<Double>& coeffs
+) {
+	x.resize(10);
+	x[0] = 1;
+	x[1] = 3;
+	x[2] = 5;
+	x[3] = 6;
+	x[4] = 8;
+	x[5] = 10;
+	x[6] = 12;
+	x[7] = 15;
+	x[8] = 20;
+	x[9] = 25;
+	y.resize(x.size());
+	PowerLogPolynomialSpectralElement plp(coeffs);
+	for (uInt i=0; i<x.size(); i++) {
+		y[i] = plp(x[i]);
+	}
+	return plp;
+
+}
+
+PolynomialSpectralElement makePoly(
+	Vector<Double>&x, Vector<Double>& y, const Vector<Double>& coeffs
+) {
+	x.resize(10);
+	x[0] = 1;
+	x[1] = 3;
+	x[2] = 5;
+	x[3] = 6;
+	x[4] = 8;
+	x[5] = 10;
+	x[6] = 12;
+	x[7] = 15;
+	x[8] = 20;
+	x[9] = 25;
+	y.resize(x.size());
+	PolynomialSpectralElement poly(coeffs);
+	for (uInt i=0; i<x.size(); i++) {
+		y[i] = poly(x[i]);
+	}
+	return poly;
+
+}
+
 

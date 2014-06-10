@@ -51,6 +51,8 @@ void check (int fd, int bufSize, const char* buf)
   for (int i=0; i<rem; i++) {
     AlwaysAssertExit (buf1[i] == *buf++);
   }
+
+  delete [] buf1;
 }
 
 

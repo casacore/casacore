@@ -38,28 +38,35 @@ CompiledSpectralElement::CompiledSpectralElement() {}
 CompiledSpectralElement::CompiledSpectralElement(
 		const String& function,
 		const Vector<Double>& param
-) : SpectralElement(), _function(function) {
-	CompiledFunction<Double> comp;
-	if (! comp.setFunction(_function)) {
+) : SpectralElement(SpectralElement::COMPILED, param)/*, _function(function)*/ {
+	_setFunction(function);
+	/*
+	if (! comp->setFunction(_function)) {
 		throw AipsError(
 			"CompiledSpectralElement: An illegal functional string "
 			"was specified for a compiled SpectralElement"
 		);
 	}
-	if(comp.nparameters() != param.size()) {
+	if(comp->nparameters() != param.size()) {
 		throw AipsError(
 			"CompiledSpectralElement: Number of parameters in the "
 			"compiled function does not match number of input parameters"
 		);
 	}
-	_construct(SpectralElement::COMPILED, param);
+	*/
 }
 
+CompiledSpectralElement::CompiledSpectralElement(
+	SpectralElement::Types type, const Vector<Double>& param
+) : SpectralElement(type, param)/*, _function("")*/ {}
 
+CompiledSpectralElement::CompiledSpectralElement(
+	SpectralElement::Types type, uInt nParam
+) : SpectralElement(type, Vector<Double>(nParam))/*, _function("")*/ {}
 
 CompiledSpectralElement::CompiledSpectralElement(
 	const CompiledSpectralElement& other
-) : SpectralElement(other), _function(other._function) {}
+) : SpectralElement(other)/*, _function(other._function)*/ {}
 
 CompiledSpectralElement::~CompiledSpectralElement() {}
 
@@ -72,39 +79,75 @@ CompiledSpectralElement& CompiledSpectralElement::operator=(
 ) {
 	if (this != &other) {
 		SpectralElement::operator=(other);
-		_function = other._function;
+		//_function = other._function;
 	}
 	return *this;
 }
 
+/*
+Bool CompiledSpectralElement::operator==(
+	const CompiledSpectralElement& other
+) const {
+	return SpectralElement::operator==(other);// && _function == other._function;
+
+}
+*/
+
+/*
 Double CompiledSpectralElement::operator()(const Double x) const {
 	CompiledFunction<Double> comp;
 	comp.setFunction(_function);
 	comp.parameters().setParameters(get());
 	return comp(x);
 }
+*/
 
 const String& CompiledSpectralElement::getFunction() const {
-	return _function;
+	// return _function;
+	std::tr1::shared_ptr<Function<Double, Double> >  f = _getFunction();
+	return dynamic_cast<CompiledFunction<Double> *>(SpectralElement::_getFunction().get())->getText();
 }
+
 
 void CompiledSpectralElement::_setFunction(const String& function) {
-	_function = function;
+	//_function = function;
+	std::tr1::shared_ptr<Function<Double, Double> > f = _getFunction();
+	CompiledFunction<Double> *cf = f == 0
+		? new CompiledFunction<Double>()
+		: dynamic_cast<CompiledFunction<Double> *>(f.get());
+	if (! cf->setFunction(function)) {
+		throw AipsError(
+			"CompiledSpectralElement: An illegal functional string "
+			"was specified for a compiled SpectralElement"
+		);
+	}
+	if (f == 0) {
+		f.reset(cf);
+	}
+	uInt n = get().size();
+	if(n > 0 && cf->nparameters() != n) {
+		throw AipsError(
+			"CompiledSpectralElement: Number of parameters in the "
+			"compiled function does not match number of input parameters"
+		);
+	}
+	SpectralElement::_setFunction(f);
 }
 
+
 Bool CompiledSpectralElement::toRecord(RecordInterface& out) const {
-	out.define(RecordFieldId("type"), fromType(getType()));
-	Vector<Double> ptmp(get().copy());
-	Vector<Double> etmp(getError().copy());
-	out.define(RecordFieldId("parameters"), ptmp);
-	out.define(RecordFieldId("errors"), etmp);
-	out.define(RecordFieldId("compiled"), _function);
+	SpectralElement::toRecord(out);
+	out.define(RecordFieldId("compiled"), getFunction());
 	return True;
 }
 
 ostream &operator<<(ostream& os, const CompiledSpectralElement& elem) {
 	os << SpectralElement::fromType((elem.getType())) << " element: " << endl;
 	os << "  Function:    " << elem.getFunction() << endl;
+	const Vector<Double> p = elem.get();
+	for (uInt i=0; i<p.size(); i++) {
+		os << "p" << i << ": " << p[i] << endl;
+	}
 	return os;
 }
 

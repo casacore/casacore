@@ -206,7 +206,7 @@ void Directory::create (Bool overwrite)
 	// Keep the directory, so special allocation on Lustre is preserved.
 	Directory(itsFile).removeRecursive(True);
     } else {
-        if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
+        if (mkdir (itsFile.path().expandedName().chars(), 0777) < 0) {
 	    throw (AipsError ("Directory::create error on " +
 			      itsFile.path().expandedName() +
 			      ": " + strerror(errno)));
@@ -296,7 +296,7 @@ void Directory::copy (const Path& target, Bool overwrite,
     String command("cp -r '");
     command += itsFile.path().expandedName() + "' '" +
                targetName.expandedName() + "'";
-    system (command.chars());
+    AlwaysAssert (system(command.chars()) == 0, AipsError);
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
@@ -305,7 +305,7 @@ void Directory::copy (const Path& target, Bool overwrite,
 	command = "chmod -Rf u+w '";
 #endif
 	command += targetName.expandedName() + "'";
-	system (command.chars());
+	AlwaysAssert (system(command.chars()) == 0, AipsError);
     }
 #endif
 }
@@ -483,6 +483,30 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
    return expInNames;
 }
 
+#ifndef __APPLE__
+#include <sys/vfs.h>
+#include <linux//nfs_fs.h>
+#else
+#include <sys/param.h>
+#include <sys/mount.h>
+#include <sys/vnode.h>
+#endif
+
+Bool Directory::isNFSMounted() const
+{
+   struct statfs buf;
+   if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
+      throw (AipsError ("Directory::isNFSMounted error on " +
+            itsFile.path().expandedName() +
+            ": " + strerror(errno)));
+   }
+#ifndef __APPLE__
+   return buf.f_type == NFS_SUPER_MAGIC;
+#else
+   return buf.f_type == VT_NFS;
+#endif
+
+}
 
 } //# NAMESPACE CASA - END
 

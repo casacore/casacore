@@ -498,7 +498,7 @@ String StokesCoordinate::format(String& units,
                                 Coordinate::formatType,
                                 Double worldValue,
                                 uInt worldAxis,
-                                Bool, Bool, Int) const
+                                Bool, Bool, Int, Bool) const
 //
 // world  abs=rel for Stokes
 //

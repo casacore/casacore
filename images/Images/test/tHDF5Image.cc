@@ -194,16 +194,16 @@ int main()
       AlwaysAssert(cSys2.near(cSys3,1e-6), AipsError);
 
       ImageInfo info = pIm.imageInfo();
-      AlwaysAssert(info.restoringBeam().nelements()==0, AipsError);
-      Quantum<Double> a1(10.0,Unit("arcsec"));
-      Quantum<Double> a2(8.0,Unit("arcsec"));
-      Quantum<Double> a3(-45.0,Unit("deg"));
-      info.setRestoringBeam(a1, a2, a3);
+      AlwaysAssert(info.restoringBeam().isNull(), AipsError);
+      Quantity a1(10.0,Unit("arcsec"));
+      Quantity a2(8.0,Unit("arcsec"));
+      Quantity a3(-45.0,Unit("deg"));
+      info.setRestoringBeam(GaussianBeam(a1, a2, a3));
       pIm.setImageInfo(info);
       info = pIm.imageInfo();
-      AlwaysAssert(info.restoringBeam()(0)==a1, AipsError);
-      AlwaysAssert(info.restoringBeam()(1)==a2, AipsError);
-      AlwaysAssert(info.restoringBeam()(2)==a3, AipsError);
+      AlwaysAssert(info.restoringBeam().getMajor()==a1, AipsError);
+      AlwaysAssert(info.restoringBeam().getMinor()==a2, AipsError);
+      AlwaysAssert(info.restoringBeam().getPA()==a3, AipsError);
     }
 
     // do{Put,Get}Slice tests

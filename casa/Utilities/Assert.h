@@ -98,7 +98,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // In your class, write an <src>ok()</src> member function that
 // returns a <src>Bool</src>.  Allow for inheritance and make it a
 // virtual function (in fact, the derived class's <src>ok()</src> would
-// probably call the <src>ok()</src> from it's parent, as well as doing
+// probably call the <src>ok()</src> from its parent, as well as doing
 // specific stuff for the derived class).
 //
 // Then in every member function, place a call to <src>ok()</src> in

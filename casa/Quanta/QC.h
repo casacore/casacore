@@ -142,6 +142,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    // IAU Gaussian grav. const **2
 //    static Quantum<Double> k2;
 //
+//    // quarter turn = 90 degrees = pi/2 radians
+//    static Quantum<Double> qTurn;
+//
+//    // half turn = 180 degrees = pi radians
+//    static Quantum<Double> hTurn;
+//
+//    // full turn = 360 degrees = 2pi radians
+//    static Quantum<Double> fTurn;
+//
 // </srcblock>
 
 // <motivation>
@@ -211,6 +220,16 @@ public:
 
     // IAU Gaussian grav. const **2
     static Quantum<Double> k2;
+
+    // quarter turn = 90 degrees = pi/2 radians
+    static Quantum<Double> qTurn;
+
+    // half turn = 180 degrees = pi radians
+    static Quantum<Double> hTurn;
+
+    // full turn = 360 degrees = 2pi radians
+    static Quantum<Double> fTurn;
+
 private:
 // This function is used, in conjunction with the
 // <linkto class=QC_init>QC_init</linkto>

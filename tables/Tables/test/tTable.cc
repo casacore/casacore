@@ -115,8 +115,9 @@ void a (Bool doExcp)
     if (doExcp) {
 	try {
 	    newtab.setShapeColumn("arr2",IPosition(3,2,3,4));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // not FixedShape
+	} catch (AipsError& x) {
+            // not FixedShape
+	    cout << "Expected exception: "<< x.getMesg() << endl;
 	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
@@ -137,10 +138,10 @@ void a (Bool doExcp)
     cout << endl;
 
     ScalarColumn<Int> ab1(tab,"ab");
-    ROScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ab2(tab,"ab");
     ScalarColumn<uInt> ad(tab,"ad");
     TableColumn ag1(tab,"ag");
-    ROScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
@@ -208,13 +209,15 @@ void a (Bool doExcp)
     if (doExcp) {
 	try {
 	    af.put (0, "12345678901");
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;         // value too long
+	} catch (AipsError& x) {
+            // value too long
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
 	try {
 	    arr1.put (0, vec2);
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;         // shape cannot change
+	} catch (AipsError& x) {
+            // shape cannot change
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
     }
 }
@@ -254,19 +257,20 @@ void b (Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError x) {
-	  cout << removeDir(x.getMesg()) << endl;             // table not writable
+	} catch (AipsError& x) {
+            // table not writable
+            cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
     }
-    ROScalarColumn<Int> ab2(tab,"ab");
-    ROScalarColumn<Int> ac (tab,"ac");
-    ROScalarColumn<uInt> ad(tab,"ad");
-    ROScalarColumn<float> ae(tab,"ae");
-    ROScalarColumn<String> af(tab,"af");
-    ROScalarColumn<DComplex> ag(tab,"ag");
-    ROArrayColumn<float> arr1(tab,"arr1");
-    ROArrayColumn<float> arr2(tab,"arr2");
-    ROArrayColumn<float> arr3(tab,"arr3");
+    ScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ac (tab,"ac");
+    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<float> ae(tab,"ae");
+    ScalarColumn<String> af(tab,"af");
+    ScalarColumn<DComplex> ag(tab,"ag");
+    ArrayColumn<float> arr1(tab,"arr1");
+    ArrayColumn<float> arr2(tab,"arr2");
+    ArrayColumn<float> arr3(tab,"arr3");
     cout << arr1.columnDesc().isFixedShape() << " arr1.shapeColumn() = "
 	 << arr1.shapeColumn() << endl;
     cout << arr2.columnDesc().isFixedShape() << " arr2.shapeColumn() = "
@@ -389,7 +393,7 @@ void b (Bool doExcp)
     if (sortab.nrow() != 10) {
 	cout << "sortab does not contain 10 rows" << endl;
     }
-    ROScalarColumn<float> sorae(sortab, "ae");
+    ScalarColumn<float> sorae(sortab, "ae");
     cout << sorae.getColumn() << endl;
     cout << "#columns in sortab: " << sortab.tableDesc().ncolumn() << endl;
 
@@ -397,7 +401,7 @@ void b (Bool doExcp)
     if (sortab2.nrow() != 10) {
 	cout << "sortab2 does not contain 10 rows" << endl;
     }
-    ROScalarColumn<uInt> sorad(sortab2, "ad");
+    ScalarColumn<uInt> sorad(sortab2, "ad");
     cout << sorad.getColumn() << endl;
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
     cout << "sortab2 type = " << sortab2.tableInfo().type() << endl;
@@ -470,7 +474,7 @@ void b (Bool doExcp)
     if (seltab1.nrow() != 4) {
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
-    ROScalarColumn<Int> sel1ab(seltab1, "ab");
+    ScalarColumn<Int> sel1ab(seltab1, "ab");
     cout << sel1ab.getColumn() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
@@ -483,7 +487,7 @@ void b (Bool doExcp)
     if (seltab2.nrow() != 4) {
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
-    ROScalarColumn<Int> sel2ab(seltab2, "ab");
+    ScalarColumn<Int> sel2ab(seltab2, "ab");
     cout << sel2ab.getColumn() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
@@ -495,7 +499,7 @@ void b (Bool doExcp)
     if (seltab3.nrow() != 2) {
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
-    ROScalarColumn<Int> sel3ab(seltab3, "ab");
+    ScalarColumn<Int> sel3ab(seltab3, "ab");
     cout << sel3ab.getColumn() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
     seltab3.tableDesc().show();
@@ -504,7 +508,7 @@ void b (Bool doExcp)
     if (xortab.nrow() != 6) {
 	cout << "xortab does not contain 6 rows" << endl;
     }
-    ROScalarColumn<Int> xorab(xortab, "ab");
+    ScalarColumn<Int> xorab(xortab, "ab");
     cout << xorab.getColumn() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
@@ -512,7 +516,7 @@ void b (Bool doExcp)
     if (or1tab.nrow() != 8) {
 	cout << "or1tab does not contain 8 rows" << endl;
     }
-    ROScalarColumn<Int> or1ab(or1tab, "ab");
+    ScalarColumn<Int> or1ab(or1tab, "ab");
     cout << or1ab.getColumn() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
@@ -520,7 +524,7 @@ void b (Bool doExcp)
     if (or2tab.nrow() != 8) {
 	cout << "or2tab does not contain 8 rows" << endl;
     }
-    ROScalarColumn<Int> or2ab(or2tab, "ab");
+    ScalarColumn<Int> or2ab(or2tab, "ab");
     cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
@@ -528,7 +532,7 @@ void b (Bool doExcp)
     if (exprtab.nrow() != 5) {
 	cout << "exprtab does not contain 5 rows" << endl;
     }
-    ROScalarColumn<Int> exprab(exprtab, "ab");
+    ScalarColumn<Int> exprab(exprtab, "ab");
     cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
@@ -536,7 +540,7 @@ void b (Bool doExcp)
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
-    ROScalarColumn<Int> expr2ab(expr2tab, "ab");
+    ScalarColumn<Int> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
 
     // Test persistency of reference tables.
@@ -547,7 +551,7 @@ void b (Bool doExcp)
 	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
 	AlwaysAssertExit (tab.tableDesc().isColumn ("ab"));
 	AlwaysAssertExit (! tab.tableDesc().isColumn ("abnew"));
-	ROScalarColumn<Int> abcol(ex1tab, "abnew");
+	ScalarColumn<Int> abcol(ex1tab, "abnew");
 	cout << abcol.getColumn() << endl;
 	cout << ">>>" << endl;
 	ex1tab.rename ("tTable_tmp.ex1", Table::New);
@@ -556,10 +560,10 @@ void b (Bool doExcp)
     {
         Table ex1tab ("tTable_tmp.ex1");
 	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
-	ROScalarColumn<Int> abcol(ex1tab, "abnew");
+	ScalarColumn<Int> abcol(ex1tab, "abnew");
 	Table ex2tab = ex1tab (ex1tab.col("abnew") > 6);
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("ab"));
-	ROScalarColumn<Int> abcol2(ex2tab, "abnew");
+	ScalarColumn<Int> abcol2(ex2tab, "abnew");
 	ex1tab.renameColumn ("abnew1", "abnew");
 	ex2tab.renameColumn ("abnew2", "abnew");
 	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("abnew1"));
@@ -568,8 +572,8 @@ void b (Bool doExcp)
 	AlwaysAssertExit (ex2tab.tableDesc().isColumn ("abnew2"));
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew"));
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew1"));
-	ROScalarColumn<Int> abcola(ex1tab, "abnew1");
-	ROScalarColumn<Int> abcol2a(ex2tab, "abnew2");
+	ScalarColumn<Int> abcola(ex1tab, "abnew1");
+	ScalarColumn<Int> abcol2a(ex2tab, "abnew2");
     }
 }
 
@@ -612,23 +616,27 @@ void c (Bool doExcp)
 	    RegularFile file("tTable_tmp.file");
 	    file.create();
 	    tab.rename ("tTable_tmp.file", Table::NewNoReplace);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // exists as file
+	} catch (AipsError& x) {
+            // exists as file
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable_tmp.data", Table::NewNoReplace);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // already exists
+	} catch (AipsError& x) {
+            // already exists
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.rename ("tTable.datx", Table::Update);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;        // does not exist
+	} catch (AipsError& x) {
+            // does not exist
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
-	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // column already exists
+	} catch (AipsError& x) {
+            // column already exists
+	    cout << "Expected exception: " << x.getMesg() << endl;
 	} 
     }
 
@@ -636,13 +644,13 @@ void c (Bool doExcp)
     tab.renameColumn ("acnew", "ac");
 
     ScalarColumn<Int> ab1(tab,"ab");
-    ROScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ab2(tab,"ab");
     ScalarColumn<Int> ac (tab,"acnew");
     ScalarColumn<uInt> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     TableColumn ag1(tab,"ag");
-    ROScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<String> arr3(tab,"arr3");
@@ -677,7 +685,7 @@ void c (Bool doExcp)
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
-    ROScalarColumn<Int> expr2ab(expr2tab, "ab");
+    ScalarColumn<Int> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
     if (!allEQ (expr2tab.rowNumbers(), expr2tab.rowNumbers(tab))) {
         cout << "error in expr2tab.rowNumbers()" << endl;
@@ -704,8 +712,9 @@ void c (Bool doExcp)
     if (doExcp) {
 	try {
 	    tab.removeRow (7);
-	} catch (AipsError x) {
-	    cout << removeDir(x.getMesg()) << endl;   // row does not exist
+	} catch (AipsError& x) {
+            // row does not exist
+	    cout << "Expected exception: " << removeDir(x.getMesg()) << endl;
 	} 
     }
     cout << ab2.getColumn() << endl;
@@ -791,12 +800,12 @@ void d()
     }
     {
 	Table tab ("tTable_tmp.data3");
-	ROScalarColumn<Int>     ab(tab,"ab");
-	ROScalarColumn<uInt>    ad(tab,"ad");
-	ROScalarColumn<Complex> ag(tab,"ag");
-	ROArrayColumn<String>  arr1(tab,"arr1");
-	ROArrayColumn<Complex> arr2(tab,"arr2");
-	ROArrayColumn<Int>     arr3(tab,"arr3");
+	ScalarColumn<Int>     ab(tab,"ab");
+	ScalarColumn<uInt>    ad(tab,"ad");
+	ScalarColumn<Complex> ag(tab,"ag");
+	ArrayColumn<String>  arr1(tab,"arr1");
+	ArrayColumn<Complex> arr2(tab,"arr2");
+	ArrayColumn<Int>     arr3(tab,"arr3");
 	Int abval;
 	uInt adval;
 	Complex agval;
@@ -847,12 +856,12 @@ void d()
     }
     {
 	Table tab ("tTable_tmp.data3");
-	ROScalarColumn<Int>     ab(tab,"ab");
-	ROScalarColumn<uInt>    ad(tab,"ad");
-	ROScalarColumn<Complex> ag(tab,"ag");
-	ROArrayColumn<String>  arr1(tab,"arr1");
-	ROArrayColumn<Complex> arr2(tab,"arr2");
-	ROArrayColumn<Int>     arr3(tab,"arr3");
+	ScalarColumn<Int>     ab(tab,"ab");
+	ScalarColumn<uInt>    ad(tab,"ad");
+	ScalarColumn<Complex> ag(tab,"ag");
+	ArrayColumn<String>  arr1(tab,"arr1");
+	ArrayColumn<Complex> arr2(tab,"arr2");
+	ArrayColumn<Int>     arr3(tab,"arr3");
 	Int abval;
 	uInt adval;
 	Complex agval;
@@ -908,7 +917,7 @@ int main (int argc,const char*[])
 	b ( (argc<2));
 	c ( (argc<2));
         d ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

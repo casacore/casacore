@@ -204,11 +204,6 @@ private:
   Lattice<Bool>* pBool_p;  
   Record rec_p;
   String name_p;
-
-  //# Make members of parent class known.
-protected:
-  using ImageInterface<T>::setCoordsMember;
-  using ImageInterface<T>::setImageInfoMember;
 };
 
 

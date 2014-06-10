@@ -53,103 +53,162 @@
 // Define the yywrap function for flex.
 int MSSpwGramwrap()
 {
-    return 1;
+  return 1;
 }
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSSpwGram = 0;
-static Int                   posMSSpwGram = 0;
+  
+  //# Declare a file global pointer to a char* for the input string.
+  static const char*           strpMSSpwGram = 0;
+  static Int                   posMSSpwGram = 0;
   // MSSpwGramwrap out of namespace
+  
+  //# Parse the command.
+  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  int msSpwGramParseCommand (const MeasurementSet* ms, const String& command) 
+  {
+    try 
+      {
+	Int ret;
+	MSSpwGramrestart (MSSpwGramin);
+	yy_start = 1;
+	strpMSSpwGram = command.chars();     // get pointer to command string
+	posMSSpwGram  = 0;                   // initialize string position
+	MSSpwParse parser(ms);               // setup measurement set
+	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
+	parser.reset();
+	ret=MSSpwGramparse();                // parse command string
+	return ret;
+      }
+    catch (MSSelectionSpwError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msSpwGramPosition(), command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }
+  
+  int baseMSSpwGramParseCommand (MSSpwParse* parser, const String& command,
+				 Vector<Int>& selectedIDs, Matrix<Int>&selectedChans,
+				 Vector<Int>& selectedDDIDs) 
+  {
+    try 
+      {
+	Int ret;
+	MSSpwGramrestart (MSSpwGramin);
+	yy_start = 1;
+	strpMSSpwGram = command.chars();     // get pointer to command string
+	posMSSpwGram  = 0;                   // initialize string position
+	MSSpwParse::thisMSSParser = parser; // The global pointer to the parser
+	parser->reset();
+	ret=MSSpwGramparse();                // parse command string
+	selectedIDs = parser->selectedIDs();
+	selectedChans = parser->selectedChanIDs();
+	selectedDDIDs = parser->selectedDDIDs();
+	if ((selectedIDs.size() == 0) ||
+	    (selectedChans.size() == 0))
+	  throw(MSSelectionSpwParseError("No valid SPW & Chan combination found"));
+	return ret;
+      }
+    catch (MSSelectionSpwError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msSpwGramPosition(), command);
+	x.addMessage(newMesgs);
+	throw;
+      }
+  }
+  
+  int msSpwGramParseCommand (const MSSpectralWindow& spwSubTable, 
+			     const MSDataDescription& ddSubTable, 
+			     const TableExprNode& colAsTEN,
+			     const String& command,
+			     Vector<Int>& selectedIDs,
+			     Matrix<Int>& selectedChans,
+			     Vector<Int>& selectedDDIDs) 
+  {
+    Int ret;
+    //    MSSpwParse *thisParser = new MSSpwParse(ms);
+    MSSpwParse *thisParser = new MSSpwParse(spwSubTable, ddSubTable, colAsTEN);
+    try
+      {
+	ret=baseMSSpwGramParseCommand(thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
+      }
+    catch(MSSelectionSpwError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
 
-//# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msSpwGramParseCommand (const MeasurementSet* ms, const String& command) 
-{
-  try 
-    {
-      Int ret;
-      MSSpwGramrestart (MSSpwGramin);
-      yy_start = 1;
-      strpMSSpwGram = command.chars();     // get pointer to command string
-      posMSSpwGram  = 0;                   // initialize string position
-      MSSpwParse parser(ms);               // setup measurement set
-      MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
-      parser.reset();
-      ret=MSSpwGramparse();                // parse command string
-      return ret;
-    }
-  catch (MSSelectionSpwError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msSpwGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
-
-int msSpwGramParseCommand (const MeasurementSet* ms, const String& command,Vector<Int>& selectedIDs,
-			   Matrix<Int>& selectedChans) 
-{
-  try 
-    {
-      Int ret;
-      MSSpwGramrestart (MSSpwGramin);
-      yy_start = 1;
-      strpMSSpwGram = command.chars();     // get pointer to command string
-      posMSSpwGram  = 0;                   // initialize string position
-      MSSpwParse parser(ms);               // setup measurement set
-      MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
-      parser.reset();
-      ret=MSSpwGramparse();                // parse command string
-      selectedIDs = parser.selectedIDs();
-      selectedChans = parser.selectedChanIDs();
-      return ret;
-    }
-  catch (MSSelectionSpwError &x)
-    {
-      String newMesgs;
-      newMesgs = constructMessage(msSpwGramPosition(), command);
-      x.addMessage(newMesgs);
-      throw;
-    }
-}
-
-//# Give the table expression node
-const TableExprNode* msSpwGramParseNode()
-{
-  return MSSpwParse::node();
-}
-
-void msSpwGramParseDeleteNode()
-{
-  MSSpwParse::cleanup();
-}
-
-//# Give the string position.
-Int& msSpwGramPosition()
-{
+  int msSpwGramParseCommand (const MeasurementSet *ms, 
+			     const String& command,Vector<Int>& selectedIDs,
+			     Matrix<Int>& selectedChans) 
+  {
+    try 
+      {
+    	Int ret;
+    	MSSpwGramrestart (MSSpwGramin);
+    	yy_start = 1;
+    	strpMSSpwGram = command.chars();     // get pointer to command string
+    	posMSSpwGram  = 0;                   // initialize string position
+    	MSSpwParse parser(ms);               // setup measurement set
+    	MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
+    	parser.reset();
+    	ret=MSSpwGramparse();                // parse command string
+    	selectedIDs = parser.selectedIDs();
+    	selectedChans = parser.selectedChanIDs();
+	if ((selectedIDs.size() == 0) ||
+	    (selectedChans.size() == 0))
+	  throw(MSSelectionSpwParseError("No valie SPW & Chan combination found"));
+    	return ret;
+      }
+    catch (MSSelectionSpwError &x)
+      {
+    	String newMesgs;
+    	newMesgs = constructMessage(msSpwGramPosition(), command);
+    	x.addMessage(newMesgs);
+    	throw;
+      }
+  }
+  
+  //# Give the table expression node
+  const TableExprNode* msSpwGramParseNode()
+  {
+    return MSSpwParse::node();
+  }
+  
+  void msSpwGramParseDeleteNode()
+  {
+    MSSpwParse::cleanup();
+  }
+  
+  //# Give the string position.
+  Int& msSpwGramPosition()
+  {
     return posMSSpwGram;
-}
-
-//# Get the next input characters for flex.
-int msSpwGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msSpwGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSSpwGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSSpwGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSSpwGram++;
     }
     return nr;
-}
-
-void MSSpwGramerror (const char*)
-{
-  throw (MSSelectionSpwParseError("Spw Expression: Parse error at or near '" +
-				  String(MSSpwGramtext) + "'"));
-}
-
+  }
+  
+  void MSSpwGramerror (const char*)
+  {
+    throw (MSSelectionSpwParseError("Spw Expression: Parse error at or near '" +
+				    String(MSSpwGramtext) + "'"));
+  }
+  
 } //# NAMESPACE CASA - END

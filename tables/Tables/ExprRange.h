@@ -35,7 +35,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class ROTableColumn;
+class TableColumn;
 
 
 // <summary>
@@ -91,7 +91,7 @@ public:
     TableExprRange();
 
     // Construct from a column and a single constant range.
-    TableExprRange (const ROTableColumn&, double stval, double endval);
+    TableExprRange (const TableColumn&, double stval, double endval);
 
     // Copy constructor.
     TableExprRange (const TableExprRange&);
@@ -112,7 +112,7 @@ public:
     const Vector<double>& end() const;
 
     // Return the column object.
-    const ROTableColumn& getColumn() const;
+    const TableColumn& getColumn() const;
 
     //*display 4
     // Mix with another range for an AND expression.
@@ -125,7 +125,7 @@ public:
 private:
     Vector<double>    sval_p;                 //# start values
     Vector<double>    eval_p;                 //# end values
-    ROTableColumn*    tabColPtr_p;            //# pointer to column
+    TableColumn*      tabColPtr_p;            //# pointer to column
 };
 
 

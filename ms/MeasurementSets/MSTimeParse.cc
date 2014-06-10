@@ -32,6 +32,8 @@
 #include <measures/Measures/MEpoch.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 #include <casa/BasicSL/String.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/RecordGram.h>
 #include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -45,6 +47,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TableExprNode*   MSTimeParse::otherTens_p = 0x0;
   Bool             MSTimeParse::defaultTimeComputed=False;
   Matrix<Double>   MSTimeParse::timeList(2,0);
+  TableExprNode MSTimeParse::columnAsTEN_p;
+  MSSelectableMainColumn *MSTimeParse::mainColumn_p=0x0;
 
   //-------------------------------------------------------------------  
   // Constructor
@@ -55,11 +59,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     defaultYear = defaultMonth = defaultDay = defaultHour 
       = defaultMinute = defaultSeconds = defaultFractionalSec 
       = -1;
-    defaultExposure = -100;
+    defaultExposure = 1.0;
     if(node_p) delete node_p;
     node_p = new TableExprNode();
     ms_p= 0x0;
     otherTens_p=0x0;
+    defaultTimeComputed=False;
   }
   //-------------------------------------------------------------------
   // Constructor with given ms name.
@@ -73,27 +78,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ms_p= (MeasurementSet*)ms;
     node_p = new TableExprNode();
     otherTens_p=(TableExprNode *)&otherTens;
-    /*
-    MVTime time(msCols.timeQuant()(i));
-    Time t0(time.getTime());
-
-    defaultYear = time.year();
-    defaultMonth = time.month();
-    defaultDay = time.monthday();
-    defaultHour = t0.hours();
-    defaultMinute = t0.minutes();
-    defaultSeconds = t0.seconds();
-    Time t1(defaultYear,defaultMonth,defaultDay,defaultHour,defaultMinute,defaultSeconds);
-    defaultFractionalSec = (Int)((t0-t1)*1E3);
-    */
+    defaultTimeComputed=False;
   }
+
+  MSTimeParse::MSTimeParse (const MeasurementSet* ms, 
+			    const TableExprNode& colAsTEN,
+			    MSSelectableMainColumn& msMainColInterface,
+			    const TableExprNode& otherTens,
+			    const Bool honourRowFlags)
+    : MSParse(ms,"Time"), colName(MS::columnName(MS::TIME)), 
+      honourRowFlags_p(honourRowFlags)
+  {
+    // throw(MSSelectionTimeError("THIS INTERFACE IS NOT YET USABLE.  THE MS_P POINTER IS NOT SET!!"
+    // 			       " THAT IS REQUIRED in MSTimeParse::getDefaults()"));
+    if(node_p) delete node_p;
+    ms_p= (MeasurementSet*)ms;
+    node_p = new TableExprNode();
+    otherTens_p=(TableExprNode *)&otherTens;
+    columnAsTEN_p=colAsTEN;
+    mainColumn_p=&msMainColInterface;
+    defaultTimeComputed=False;
+  }
+
+  //
+  // MSMainColInterface objects is a generalization of
+  // ROMSMainColumns.  This is constructed with a Table, which can be
+  // MS or CalTable (or any other table with interface methods like
+  // those in MSMainColumns.  The access methods of MSMainColumns
+  // allowed via MSMacinColInterface are flag(), flagRow(),
+  // exposureQuant() and timeQuant().
+  //
+  // The MSMainColInterface::flagRow(int &) is slightly slower than
+  // ROMSMainColumns::flagRow()(int &) interface.  However since this
+  // is used only to determine the first unflagged row, the loss in
+  // effciency should not be an issue.
+  //
   void  MSTimeParse::getDefaults()
   {
     uInt firstLogicalRow=0; // This is the logical first row
-    ROMSMainColumns msCols(*ms_p);
+    //ROMSMainColumns mainColumns_l(*ms_p);
+    //    MSMainColInterface mainColumns_l(*ms_p);
+
     if (!defaultTimeComputed)
       {
-	uInt i=0,nrow=msCols.flagRow().nrow();
+	uInt i=0,nrow=(mainColumn_p->flag()).nrow();
 	if (!otherTens_p->isNull())
 	  {
 	    Bool selected=False;
@@ -102,7 +130,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		// Use the otherTens_p to get to the first logical row
 		if (honourRowFlags_p)
 		  {
-		    if (!msCols.flagRow()(i))
+		    //if (!mainColumns_l.flagRow()(i))
+		    if (!mainColumn_p->flagRow(i))
 		      otherTens_p->get(i,selected); 
 		  }
 		else
@@ -116,20 +145,32 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    //
 	    // Find the first row which is not flagged.
 	    //
-	    for (i=0;i<nrow;i++) if (!msCols.flagRow()(i)) {firstLogicalRow=i;break;}
+	    for (i=0;i<nrow;i++) 
+	      //if (!mainColumns_l.flagRow()(i)) 
+	      if (!mainColumn_p->flagRow(i)) 
+		{firstLogicalRow=i;break;}
 	  }
 	if ( firstLogicalRow >= nrow)
 	  throw(MSSelectionTimeError("MSTimeParse: No logical \"row zero\" found for time selection"));
       }
     //
     // Extract the values from the first valid timestamp in the MS to
-    // be used as defaults
+    // be used for defaults
     //
     //
     // Get the exposure in seconds.
     //
-    defaultExposure=msCols.exposureQuant()(firstLogicalRow,"s").getValue();
-    firstRowTime = msCols.timeQuant()(firstLogicalRow);
+    ROScalarQuantColumn<Double> exposure;
+    exposure.reference(mainColumn_p->exposureQuant());
+    if (ms_p == NULL) // This instance is not attached to an MS (which
+		      // means, for now, it must be attached to a
+		      // CalTable)
+      defaultExposure=0.1; // For now, arbitrarily set it a small value
+			   // for CalTables
+    else
+      defaultExposure=exposure(firstLogicalRow,"s").getValue();
+      
+    firstRowTime = mainColumn_p->timeQuant()(firstLogicalRow);
 
     //    cout << firstRowTime.string(MVTime::DMY,7) << endl;
 
@@ -167,7 +208,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Double timeInSec= toTAIInSec(time);
     Double dT= MSTimeParse::thisMSTParser->defaultExposure/2.0;
 
-    TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= dT);
+    //    TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= dT);
+    TableExprNode condition = (abs(columnAsTEN_p - timeInSec) <= dT);
+
+    //    TableExprNode condition = (abs(columnAsTEN_p - timeInSec) <= dT);
     accumulateTimeList(timeInSec,timeInSec);
 
     return addCondition(condition);
@@ -179,7 +223,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						 bool)
   {
     Double timeInSec = toTAIInSec(lowboundTime);
-    TableExprNode condition = (ms()->col(colName) >= timeInSec);
+    //    TableExprNode condition = (ms()->col(colName) >= timeInSec);
+    TableExprNode condition = (columnAsTEN_p >= timeInSec);
+
+    //    TableExprNode condition = (columnAsTEN_p >= timeInSec);
     accumulateTimeList(timeInSec,std::numeric_limits<Double>::max());
 
     return addCondition(condition);
@@ -191,7 +238,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 						 bool)
   {
     Double timeInSec = toTAIInSec(upboundTime);
-    TableExprNode condition = (ms()->col(colName) <= timeInSec);
+    //    TableExprNode condition = (ms()->col(colName) <= timeInSec);
+    TableExprNode condition = (columnAsTEN_p <= timeInSec);
+
+    //    TableExprNode condition = (columnAsTEN_p <= timeInSec);
     accumulateTimeList(0.0, timeInSec);
 
 
@@ -207,11 +257,30 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Double upperBound = toTAIInSec(upboundTime);
     Double lowerBound = toTAIInSec(lowboundTime);
 
+    //    ROMSMainColumns mainColumns_p(*ms_p);
+
+    // TableExprRange range(mainColumns_p.time(), lowerBound, upperBound);
+    // TableExprNode tens(range);
+    // Block<TableExprRange> brange;
+    // TableExprNodeColumn tenc(*ms(), "TIME");
+    // TableExprNodeRep::createRange(brange, &tenc, lowerBound, upperBound);
+    // TableExprNodeSet tens(brange);
+    // TableExprNode condition = (ms()->col(colName).in(brange[0]));
+
     if (lowerBound > upperBound)
       throw(MSSelectionTimeError("lower bound > upper bound"));
 
-    TableExprNode condition = (ms()->col(colName) >= lowerBound &&
- 			       (ms()->col(colName) <= upperBound));
+    // ostringstream exprString;
+    // exprString << colName << " >= " << lowerBound << " && " << colName << " <= " << upperBound;
+    // TableExprNode condition = RecordGram::parse(*ms(), exprString);
+
+    // TableExprNode condition = (ms()->col(colName) >= lowerBound &&
+    //  			       (ms()->col(colName) <= upperBound));
+    TableExprNode condition = (columnAsTEN_p >= lowerBound &&
+     			       (columnAsTEN_p <= upperBound));
+
+    // TableExprNode condition = (columnAsTEN_p >= lowerBound &&
+    //  			       (columnAsTEN_p <= upperBound));
     accumulateTimeList(lowerBound, upperBound);
 
     return addCondition(condition);

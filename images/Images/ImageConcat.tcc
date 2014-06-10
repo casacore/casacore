@@ -150,127 +150,112 @@ String ImageConcat<T>::imageType() const
 template<class T>
 void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
 {
-   LogIO os(LogOrigin("ImageConcat", "setImage(...)", WHERE));
+  LogIO os(LogOrigin("ImageConcat", __FUNCTION__, WHERE));
 
-// How many images have we set so far ?
+  // How many images have we set so far ?
+  const uInt nIm = latticeConcat_p.nlattices();
+  IPosition oldShape = nIm > 0 ? this->shape() : IPosition();
 
-   const uInt nIm = latticeConcat_p.nlattices();
+  // LatticeConcat allows the dimensionality to increase by
+  // one, but ImageConcat can't do that yet - so an extra
+  // test here.
+  if (latticeConcat_p.axis() >= image.ndim()) {
+    throw(AipsError("Axis number and image dimension are inconsistent"));
+  }
 
-// LatticeConcat allows the dimensionality to increase by
-// one, but ImageConcat can't do that yet - so an extra
-// test here.
+  // Do Lattice relevant things. This does shape checks and
+  // sets the lattice pointers
+  latticeConcat_p.setLattice(image);
 
-   if (latticeConcat_p.axis() >= image.ndim()) {
-      throw(AipsError("Axis number and image dimension are inconsistent"));
-   }
+  // Do the extra image stuff.  Most of it is coordinate rubbish.
+  // The ImageInfo comes from the first image only.
+  // The miscInfo is merged from all images.
+  isImage_p.resize(nIm+1,True);
+  isImage_p(nIm) = True;
+  if (nIm==0) {
+    ImageInterface<T>::setCoordinateInfo(image.coordinates());
+    this->setUnitMember (image.units());
+    this->setImageInfo (image.imageInfo());
+    this->setMiscInfoMember (image.miscInfo());
+    this->setCoordinates();
+  } else {
+    TableRecord rec = miscInfo();
+    rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
+    this->setMiscInfoMember (rec);
 
-// Do Lattice relevant things. This makes shape checks and
-// sets the lattice pointers
+    // Combine the beams if possible.
+    // Should be done before the coordinates are merged.
+    this->rwImageInfo().combineBeams (image.imageInfo(),
+                                      oldShape, image.shape(),
+                                      this->coordinates(), image.coordinates(),
+                                      latticeConcat_p.axis(), relax, os);
+    
+    // Compare the coordinates of this image with the current private
+    // coordinates
+    const CoordinateSystem& cSys0 = coordinates();
+    const CoordinateSystem& cSys = image.coordinates();
+    if (cSys.nCoordinates() != cSys0.nCoordinates()) {
+      os << "Images have inconsistent numbers of coordinates"
+         << LogIO::EXCEPTION;
+    }
+    Int coord0, axisInCoordinate0;
+    Int coord, axisInCoordinate;
+    cSys0.findPixelAxis (coord0, axisInCoordinate0,
+                         latticeConcat_p.axis());
+    cSys.findPixelAxis(coord, axisInCoordinate, latticeConcat_p.axis());
+    if (coord0<0 || coord<0) {
+      os << "Pixel axis has been removed for concatenation axis"
+         << LogIO::EXCEPTION;
+    }
+    if (cSys.pixelAxisToWorldAxis(latticeConcat_p.axis())<0 ||
+        coordinates().pixelAxisToWorldAxis(latticeConcat_p.axis())<0) {
+      os << "World axis has been removed for concatenation axis"
+         << LogIO::EXCEPTION;
+    }
 
-   latticeConcat_p.setLattice(image);
+    // This could be cleverer.  E.g. allow some mixed types (Tabular/Linear)
+    // Because the CoordinateSystem may change (e.g. -> Tabular) we hang onto
+    // the Coordinate type of the original coordinate system for the first image
+    if (cSys.type(coord0)!=originalAxisType_p) {
+      os << "Coordinate types for concatenation axis are inconsistent"
+         << LogIO::EXCEPTION;
+    }
+    if (!allEQ(cSys.worldAxisNames(), cSys0.worldAxisNames())) {
+      ImageInfo::logMessage (warnAxisNames_p, os, relax,
+                             "Image axis names differ");
+    }
+    if (!allEQ(cSys.worldAxisUnits(),cSys0.worldAxisUnits())) {
+      ImageInfo::logMessage (warnAxisUnits_p, os, relax,
+                             "Image axis units differ");
+    }
+    if (image.units().getName() != this->units().getName()) {
+      ImageInfo::logMessage (warnAxisUnits_p, os, True,
+                             "Image units differ. "
+                             "Image units of the first image (" +
+                             this->units().getName() +
+                             ") will be used for the output image");
+    }
 
-// Do the extra image stuff.  Most of it is coordinate rubbish.
-// The ImageInfo comes from the first image only. 
-// The miscInfo is merged from all images.
+    // Compare coordinates at end of last image and start of new image
+    if (latticeConcat_p.isTempClose()) latticeConcat_p.reopen(nIm-1);
+    const ImageInterface<T>* pImLast =
+      dynamic_cast<const ImageInterface<T>*>(latticeConcat_p.lattice(nIm-1));
+    const CoordinateSystem& cSysLast = pImLast->coordinates();
+    if (latticeConcat_p.isTempClose()) latticeConcat_p.tempClose(nIm-1);
+    _checkContiguous (pImLast->shape(), cSysLast, cSys,
+                      os, latticeConcat_p.axis(), relax);
 
-   isImage_p.resize(nIm+1,True);
-   isImage_p(nIm) = True;
-   if (nIm==0) {
-      ImageInterface<T>::setCoordinateInfo(image.coordinates());
-      this->setUnitMember (image.units());
-      this->setImageInfoMember (image.imageInfo());
-      setMiscInfoMember (image.miscInfo());
-      setCoordinates();
-   } else {
-      TableRecord rec = miscInfo();
-      rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
-      setMiscInfoMember (rec);
+    // Compare coordinate descriptors not on concatenation axis
+    checkNonConcatAxisCoordinates (os, image, relax);
 
-// Compare the coordinates of this image with the current private coordinates
+    // Update the coordinates in the ImageConcat object now we are happy
+    // all is well
+    this->setCoordinates();
+  }
 
-      const CoordinateSystem& cSys0 = coordinates();
-      const CoordinateSystem& cSys = image.coordinates();
-      if (cSys.nCoordinates() != cSys0.nCoordinates()) {
-         os << "Images have inconsistent numbers of coordinates" 
-            << LogIO::EXCEPTION;
-      }
-//
-      Int coord0, axisInCoordinate0;
-      Int coord, axisInCoordinate;
-      cSys0.findPixelAxis (coord0, axisInCoordinate0,
-                           latticeConcat_p.axis());
-      cSys.findPixelAxis(coord, axisInCoordinate, latticeConcat_p.axis());
-      if (coord0<0 || coord<0) {
-         os << "Pixel axis has been removed for concatenation axis" << LogIO::EXCEPTION;
-      }
-      if (cSys.pixelAxisToWorldAxis(latticeConcat_p.axis())<0 ||
-          coordinates().pixelAxisToWorldAxis(latticeConcat_p.axis())<0) {
-         os << "World axis has been removed for concatenation axis" << LogIO::EXCEPTION;
-      }
-
-// This could be cleverer.  E.g. allow some mixed types (Tabular/Linear)
-// Because the CoordinateSystem may change (e.g. -> Tabular) we hang onto
-// the Coordinate type of the original coordinate system for the first image
-
-      if (cSys.type(coord0)!=originalAxisType_p) {
-         os << "Coordinate types for concatenation axis are inconsistent" << LogIO::EXCEPTION;
-      }
-//
-      if (!allEQ(cSys.worldAxisNames(), cSys0.worldAxisNames())) {
-         if (relax) {
-            if (warnAxisNames_p) {
-               os << LogIO::WARN
-                  << "Image axis names differ" << LogIO::POST;
-               warnAxisNames_p = False;
-            }
-         } else {
-           os <<  "Image axis names differ" << LogIO::EXCEPTION;
-         }  
-      }
-//
-      if (!allEQ(cSys.worldAxisUnits(),cSys0.worldAxisUnits())) {
-         if (relax) {
-            if (warnAxisUnits_p) {
-               os << LogIO::WARN
-                  << "Image axis units differ" << LogIO::POST;
-               warnAxisUnits_p = False;
-            }
-         } else {
-
-            os <<  "Image axis units differ" << LogIO::EXCEPTION;
-         }  
-      }
-//
-      if (image.units() != units() && warnImageUnits_p) {
-         os << LogIO::WARN
-            << "Image units differ" << LogIO::POST;
-         warnImageUnits_p = False;
-      }
-
-// Compare coordinates at end of last image and start of new image
-
-      if (latticeConcat_p.isTempClose()) latticeConcat_p.reopen(nIm-1);
-      const ImageInterface<T>* pImLast = dynamic_cast<const ImageInterface<T>*>(latticeConcat_p.lattice(nIm-1));
-      const CoordinateSystem& cSysLast = pImLast->coordinates();
-      if (latticeConcat_p.isTempClose()) latticeConcat_p.tempClose(nIm-1);
-      checkContiguous (isContig_p, warnContig_p, pImLast->shape(), cSysLast, cSys, 
-                       os, latticeConcat_p.axis(), relax);
-
-// Compare coordinate descriptors not on concatenation axis
-
-      checkNonConcatAxisCoordinates (warnRefPix_p, warnRefVal_p, warnInc_p, 
-                                     os, image, relax);
-
-// Update the coordinates in the ImageCOncat object now we are happy all is well
-
-      setCoordinates();
-   }
-
-// Add parent history
-
-   logger().addParent (image.logger());
-} 
-
+  // Add parent history
+  logger().addParent (image.logger());
+}
 
 template<class T>
 void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice)
@@ -310,7 +295,7 @@ void ImageConcat<T>::setLattice(MaskedLattice<T>& lattice)
    isImage_p(nIm) = False;
    isContig_p = False;
 //
-   setCoordinates();
+   this->setCoordinates();
 } 
 
 
@@ -376,10 +361,10 @@ LatticeIterInterface<T>* ImageConcat<T>::makeIter (const LatticeNavigator& nav,
 // Private functions
 
 template<class T>
-void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IPosition& shape1,
-                                      const CoordinateSystem& cSys1,
-                                      const CoordinateSystem& cSys2,
-                                      LogIO& os, uInt axis, Bool relax) 
+void ImageConcat<T>::_checkContiguous (const IPosition& shape1,
+                                       const CoordinateSystem& cSys1,
+                                       const CoordinateSystem& cSys2,
+                                       LogIO& os, uInt axis, Bool relax) 
 //
 // cSys1 from last image
 // cSys2 from current image
@@ -404,19 +389,14 @@ void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IP
                                          cSys2.stokesCoordinate(coord).stokes());
 //
       if (stokes.nelements()==0) {
-         if (relax) {
-            if (warnContig) {
-               os << LogIO::WARN
-                  << "Images are not contiguous along the concatenation axis" << endl;
-               os << "For this axis, a non-regular TabularCoordinate will be made"
-                  << LogIO::POST;
-               warnContig = False;
-            }
-         } else {
-           os << "Images are not contiguous along the concatenation axis - consider relax=T" 
-              << LogIO::EXCEPTION;
-         }
-         isContig = False;
+        String coordType = cSys1.spectralAxisNumber() == (Int)axis
+          ? "Spectral" : "Tabular";
+        ImageInfo::logMessage (warnContig_p, os, relax,
+                               "Images are not contiguous along the "
+                               "concatenation axis",
+                               "For this axis, a non-regular " +
+                               coordType + " coordinate will be made");
+        isContig_p = False;
       }
    } else {
       Int worldAxis;
@@ -425,19 +405,14 @@ void ImageConcat<T>::checkContiguous (Bool& isContig, Bool& warnContig, const IP
 //
       Double inc = cSys1.increment()(worldAxis);
       if (abs(axisVal2-axisVal1) > 0.01*abs(inc)) {
-         if (relax) {
-            if (warnContig) {
-               os << LogIO::WARN
-                  << "Images are not contiguous along the concatenation axis" << endl;
-               os << "For this axis, a non-regular TabularCoordinate will be made"
-                  << LogIO::POST;
-               warnContig = False;
-            }
-         } else {
-           os << "Images are not contiguous along the concatenation axis - consider relax=T" 
-              << LogIO::EXCEPTION;
-         }
-         isContig = False;
+        String coordType = cSys1.spectralAxisNumber() == (Int)axis
+          ? "Spectral" : "Tabular";
+        ImageInfo::logMessage (warnContig_p, os, relax,
+                               "Images are not contiguous along the "
+                               "concatenation axis",
+                               "For this axis, a non-regular " +
+                               coordType + " coordinate will be made");
+        isContig_p = False;
       }
    }
 }
@@ -466,8 +441,7 @@ Double ImageConcat<T>::coordConvert(Int& worldAxis, LogIO& os,
 
 
 template<class T>
-void ImageConcat<T>::checkNonConcatAxisCoordinates (Bool& warnRefPix, Bool& warnRefVal,
-                                                    Bool& warnInc, LogIO& os, 
+void ImageConcat<T>::checkNonConcatAxisCoordinates (LogIO& os, 
                                                     const ImageInterface<T>& imageIn,
                                                     Bool relax)
 //  
@@ -497,45 +471,22 @@ void ImageConcat<T>::checkNonConcatAxisCoordinates (Bool& warnRefPix, Bool& warn
    for (uInt j=0; j<dim; j++) {
       if (j!= axis) {
          if (!near(refPix(j), refPix0(j))) {
-            if (relax) {
-               if (warnRefPix) {
-                   os << LogIO::WARN
-                      << "Image reference pixels are different on non-concatenation axis "
-                      << j+1 << LogIO::POST;
-                   warnRefPix = False;
-               }
-            } else {
-               os << "Image reference pixels are different on non-concatenation axis "
-                  << j+1 << LogIO::EXCEPTION;
-            }
+           ImageInfo::logMessage (warnRefPix_p, os, relax,
+                                  "Image reference pixels are different on "
+                                  "non-concatenation axis " +
+                                  String::toString(j+1));
          }
-//
          if (!near(refVal(j), refVal0(j))) {
-            if (relax) {
-               if (warnRefVal) {
-                  os << LogIO::WARN
-                     << "Image reference values are different on non-concatenation axis "
-                     << j+1 << LogIO::POST;
-                  warnRefVal = False;
-               }
-            } else {
-               os << "Image reference values are different on non-concatenation axis "
-                  << j+1 << LogIO::EXCEPTION;
-            }
+           ImageInfo::logMessage (warnRefVal_p, os, relax,
+                                  "Image reference values are different on "
+                                  "non-concatenation axis " +
+                                  String::toString(j+1));
          }
-//
          if (!near(inc(j), inc0(j))) {
-            if (relax) {
-               if (warnInc) {
-                  os << LogIO::WARN
-                     << "Image increments are different on non-concatenation axis "
-                     << j+1 << LogIO::POST;
-                  warnInc = False;
-               }
-            } else {
-               os << "Image increments are different on non-concatenation axis "
-                  << j+1 << LogIO::EXCEPTION;
-            }
+           ImageInfo::logMessage (warnInc_p, os, relax,
+                                  "Image increments are different on "
+                                  "non-concatenation axis " +
+                                  String::toString(j+1));
          }
       }
    }
@@ -551,7 +502,7 @@ void ImageConcat<T>::setCoordinates()
 // 
 // 
 {
-    LogIO os(LogOrigin("ImageConcat", "setCoordinates(...)", WHERE));
+    LogIO os(LogOrigin("ImageConcat", __FUNCTION__, WHERE));
 
 // If the images are not contiguous along the concatenation axis,
 // make an irregular TabularCoordinate.  As usual Stokes demands
@@ -693,21 +644,35 @@ void ImageConcat<T>::setCoordinates()
       Bool ok = True;
       String msg;
       try {
-         TabularCoordinate tc(pixelValues_p, worldValues_p, unit, name);
-         cSys.replaceCoordinate(tc, uInt(coord));
-         if (!ImageInterface<T>::setCoordinateInfo(cSys)) {
-            throw(AipsError("Failed to save new CoordinateSystem with TabularCoordinate"));        
-         }
-      } catch (AipsError x) {
+    	  if (originalAxisType_p == Coordinate::SPECTRAL) {
+    		  SpectralCoordinate origSpCoord = cSys.spectralCoordinate();
+    		  SpectralCoordinate newSp(
+    				  origSpCoord.frequencySystem(False), worldValues_p,
+    				  origSpCoord.restFrequency()
+    		  );
+    		  cSys.replaceCoordinate(newSp, uInt(coord));
+    	  }
+    	  else {
+    		  TabularCoordinate tc(pixelValues_p, worldValues_p, unit, name);
+    		  cSys.replaceCoordinate(tc, uInt(coord));
+
+    	  }
+    	  if (!ImageInterface<T>::setCoordinateInfo(cSys)) {
+    		  String ctype = originalAxisType_p == Coordinate::SPECTRAL
+    				  ? "Spectral" : "Tabular";
+    		  os << "Failed to save new CoordinateSystem with "
+    				  << ctype << "Coordinate" << LogIO::EXCEPTION;
+    	  }
+      }
+      catch (AipsError x) {
          ok = False;
          msg = x.getMesg();
       } 
       if (!ok) {
-         if (warnTab_p) {
-            os << LogIO::WARN << "Could not create TabularCoordinate because " << msg << LogIO::POST;
-            os << LogIO::WARN << "CoordinateSystem set to that of first image instead" << LogIO::POST;
-            warnTab_p = False;
-         }
+        ImageInfo::logMessage (warnTab_p, os, True,
+                               "Could not create Coordinate because " + msg,
+                               "CoordinateSystem set to that of first image "
+                               "instead");
       }
    }
 } 

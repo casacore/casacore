@@ -42,7 +42,7 @@ class String;
 class Table;
 class TableDesc;
 class TableRecord;
-class ROTableColumn;
+class TableColumn;
 class Measure;
 template<class T> class Quantum;
 
@@ -196,7 +196,7 @@ public:
 					 const String& columnName);
 
   // Does this column contain table measures?
-  static Bool hasMeasures (const ROTableColumn& column);
+  static Bool hasMeasures (const TableColumn& column);
 
 protected:
   // Set the initial reference codes and types in the table.

@@ -330,9 +330,9 @@ void testLogSink()
     
     Table logTable(tableNames[0]);
     Table logTable2(tableNames[1]);
-    ROScalarColumn<String> messageColumn(logTable,
+    ScalarColumn<String> messageColumn(logTable,
 			 TableLogSink::columnName(TableLogSink::MESSAGE));
-    ROScalarColumn<String> messageColumn2(logTable2,
+    ScalarColumn<String> messageColumn2(logTable2,
 			  TableLogSink::columnName(TableLogSink::MESSAGE));
     AlwaysAssertExit(messageColumn(0) == "test");
     // LogSink(const LogSink &other);

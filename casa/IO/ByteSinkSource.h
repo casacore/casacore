@@ -55,7 +55,7 @@ class TypeIO;
 
 // <synopsis> 
 // ByteSinkSource provides read/write access to a typed byte stream in the
-// AIPS++ IO framework. It is derived from the classes <src>ByteSink</src>
+// Casacore IO framework. It is derived from the classes <src>ByteSink</src>
 // and <src>ByteSource</src>, so it combines their functionality.
 // <p>
 // The object is constructed using a typed byte stream. This stream

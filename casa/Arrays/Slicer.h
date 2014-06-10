@@ -46,7 +46,7 @@ class Slice;
 // <reviewed reviewer="Paul Shannon" date="1994/07/07" tests="tSlicer">
 //  The review and modification of this class were undertaken, in part,
 //  with the aim of making this class header an example -- this is what
-//  the aips++ project thinks a class header should look like.
+//  the Casacore project thinks a class header should look like.
 // </reviewed>
 
 // <prerequisite>

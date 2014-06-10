@@ -42,9 +42,7 @@ class MPosition;
 class MCPosition;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -108,10 +106,8 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   typedef MeasRef<MPosition> Ref;
   // Measure Convert (i.e. MPosition::Convert)
   typedef MeasConvert<MPosition> Convert;
-  // Measure table Columns (e.g., MPosition::ROScalarColumn)
-  typedef ROScalarMeasColumn<MPosition> ROScalarColumn;
+  // Measure table Columns (e.g., MPosition::ScalarColumn)
   typedef ScalarMeasColumn<MPosition> ScalarColumn;
-  typedef ROArrayMeasColumn<MPosition> ROArrayColumn;
   typedef ArrayMeasColumn<MPosition> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MPosition) Types Types;
@@ -172,6 +168,9 @@ class MPosition : public MeasBase<MVPosition, MeasRef<MPosition> > {
   // Translate string to reference code
   // <group>
   static Bool getType(MPosition::Types &tp, const String &in);
+  // this one throws an exception for an unrecognized String
+  static MPosition::Types getType(const String& in);
+
   Bool giveMe(MPosition::Ref &mr, const String &in);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)

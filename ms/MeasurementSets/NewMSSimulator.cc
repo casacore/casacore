@@ -1,4 +1,4 @@
-//# NewMSSimulator.cc:  this defines NewMSSimulator, which simulates a MeasurementSet
+ //# NewMSSimulator.cc:  this defines NewMSSimulator, which simulates a MeasurementSet
 //# Copyright (C) 1995-2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -69,6 +69,7 @@
 #include <measures/Measures/MDirection.h>
 #include <measures/Measures/MeasConvert.h>
 #include <measures/Measures/MeasData.h>
+#include <measures/Measures/MFrequency.h>
 #include <measures/Measures.h>
 #include <casa/Utilities/CountedPtr.h>
 #include <casa/Utilities/Assert.h>
@@ -693,6 +694,11 @@ void NewMSSimulator::initFields(const String& sourceName,
 
 }
 
+MeasurementSet *
+NewMSSimulator::getMs () const
+{
+    return ms_p;
+}
 
 
 void NewMSSimulator::initSpWindows(const String& spWindowName,
@@ -700,6 +706,7 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
 				   const Quantity& startFreq,
 				   const Quantity& freqInc,
 				   const Quantity&,
+				   const MFrequency::Types& freqType,
 				   const String& stokesString)
 {
   
@@ -742,7 +749,8 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   spwc.freqGroup().fillColumn(0);
   spwc.freqGroupName().fillColumn("Group 1");
   spwc.flagRow().fillColumn(False);
-  spwc.measFreqRef().fillColumn(MFrequency::TOPO);
+  //  spwc.measFreqRef().fillColumn(MFrequency::TOPO);
+  spwc.measFreqRef().fillColumn(freqType);
   polc.flagRow().fillColumn(False);
   ddc.flagRow().fillColumn(False);
   polc.numCorr().put(baseSpWID, nCorr);
@@ -880,10 +888,12 @@ void NewMSSimulator::initFeeds(const String& mode,
   }
   
   Int nFeed=x.nelements();
+
+  //  cout << "nFeed = " << nFeed << endl;
   
   String feedPol0="R", feedPol1="L";
   Bool isList=False;
-  if(nFeed>0) {
+  if(nFeed>1) {
     isList=True;
     if(x.nelements()!=y.nelements()) {
       os << "Feed x and y must be the same length" << LogIO::EXCEPTION;
@@ -901,6 +911,9 @@ void NewMSSimulator::initFeeds(const String& mode,
       feedPol1 = "Y";
     }
   }
+
+  //cout << "Mode in initFeeds = " << mode << endl;
+  //cout << "feedPol0,1 = " << feedPol0 << " " << feedPol1 << endl;
   
   Int nRow=nFeed*nAnt;
   Vector<Int> feedAntId(nRow);
@@ -1077,17 +1090,15 @@ void NewMSSimulator::observe(const String& sourceName,
 			     const String& spWindowName,
 			     const Quantity& qStartTime, 
 			     const Quantity& qStopTime,
-			     const Bool add_observation=True,
-// from int ASDM2MSFiller::addUniqueState(
-// defaults for ALMA as known on 20100831
-			     const Bool state_sig=True,
-			     const Bool state_ref=True,
-			     const double& state_cal=0.,
-			     const double& state_load=0.,
-			     const unsigned int state_sub_scan=0,
-			     const String& state_obs_mode="OBSERVE_TARGET.ON_SOURCE",
-			     const String& observername="CASA simulator",
-			     const String& projectname="CASA simulation")
+			     const Bool add_observation,
+			     const Bool state_sig,
+			     const Bool state_ref,
+			     const double& state_cal,
+			     const double& state_load,
+			     const unsigned int state_sub_scan,
+			     const String& state_obs_mode,
+			     const String& observername,
+			     const String& projectname)
 {
   Vector<String> sourceNames(1,sourceName);  
   Vector<Quantity> qStartTimes(1,qStartTime);
@@ -1106,17 +1117,15 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 			     const Vector<Quantity>& qStartTimes, 
 			     const Vector<Quantity>& qStopTimes,
 			     const Vector<MDirection>& directions,
-			     const Bool add_observation=True,
-// from int ASDM2MSFiller::addUniqueState(
-// defaults for ALMA as known on 20100831
-			     const Bool state_sig=True,
-			     const Bool state_ref=True,
-			     const double& state_cal=0.,
-			     const double& state_load=0.,
-			     const unsigned int state_sub_scan=0,
-			     const String& state_obs_mode="OBSERVE_TARGET.ON_SOURCE",
-			     const String& observername="CASA simulator",
-			     const String& projectname="CASA simulation")
+			     const Bool add_observation,
+			     const Bool state_sig,
+			     const Bool state_ref,
+			     const double& state_cal,
+			     const double& state_load,
+			     const unsigned int state_sub_scan,
+			     const String& state_obs_mode,
+			     const String& observername,
+			     const String& projectname)
 {  
 
   // It is assumed that if there are multiple pointings, that they 
@@ -1253,9 +1262,9 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 
   Double Tstart, Tend, Tint;
   // number of pointings:
-  uInt nPts=qStartTimes.shape()(0);
-  AlwaysAssert(Int(nPts)==qStopTimes.shape()(0),AipsError);
-  AlwaysAssert(Int(nPts)==sourceNames.shape()(0),AipsError);
+  Int nPts=qStartTimes.shape()(0);
+  AlwaysAssert(nPts==qStopTimes.shape()(0),AipsError);
+  AlwaysAssert(nPts==sourceNames.shape()(0),AipsError);
 
   
   Tint = qIntegrationTime_p.getValue("s");
@@ -1281,7 +1290,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     taiRefTime.get("s").getValue("s") + t_offset_p;
   os << "Full time range: " 
      << formatTime(Tstart) << " -- "
-     << formatTime(Tend) << " with int = " << Tint << endl;
+     << formatTime(Tend) << " TAI with int = " << Tint << LogIO::POST;
   
 
 
@@ -1371,7 +1380,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Int nMSRows=ms_p->nrow();
 
   // init counters past end
-  Int scan=-1;
+  Int scan=0;
   
   if(nMSRows>0) {
     msc.scanNumber().get(nMSRows-1,scan);
@@ -1390,7 +1399,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   //Int nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
   Int nIntegrations=0; 
   Double Tstarti, Tendi;
-  for(uInt i=0;i<nPts;i++) {
+  for(Int i=0;i<nPts;i++) {
     Tstarti = qStartTimes(i).getValue("s");  
     // don't need to add RefTime and offset since we're just using the diff in this loop:   
     Tendi = qStopTimes(i).getValue("s"); 
@@ -1460,7 +1469,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     // antenna frame for all antennas
     RigidVector<Double, 2> beamOffset=beam_offsets(0,0,feed);
 
-    for(uInt pointing=0; pointing<nPts; pointing++) {
+    for(Int pointing=0; pointing<nPts; pointing++) {
 
       Tstart = qStartTimes(pointing).getValue("s") + 
 	taiRefTime.get("s").getValue("s") + t_offset_p;

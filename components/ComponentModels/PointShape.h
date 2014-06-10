@@ -235,6 +235,8 @@ public:
   virtual Vector<Double> parameters() const;
   virtual void setErrors(const Vector<Double>& newParms);
   virtual Vector<Double> errors() const;
+  virtual Vector<Double> optParameters() const;
+  virtual void setOptParameters(const Vector<Double>& newOptParms);
   // </group>
 
   // This functions convert between a Record and a PointShape. These functions

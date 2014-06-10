@@ -216,7 +216,7 @@ template<class S, class T>
 void ScaledComplexData<S,T>::prepare()
 {
     BaseMappedArrayEngine<S,T>::prepare();
-    ROTableColumn thisCol (table(), virtualName());
+    TableColumn thisCol (table(), virtualName());
     thisCol.keywordSet().get ("_ScaledComplexData_Scale",       scale_p);
     thisCol.keywordSet().get ("_ScaledComplexData_Offset",      offset_p);
     thisCol.keywordSet().get ("_ScaledComplexData_ScaleName",   scaleName_p);
@@ -225,10 +225,10 @@ void ScaledComplexData<S,T>::prepare()
     thisCol.keywordSet().get ("_ScaledComplexData_FixedOffset", fixedOffset_p);
     //# Allocate column objects to get scale and offset.
     if (! fixedScale_p) {
-	scaleColumn_p = new ROScalarColumn<S> (table(), scaleName_p);
+	scaleColumn_p = new ScalarColumn<S> (table(), scaleName_p);
     }
     if (! fixedOffset_p) {
-	offsetColumn_p = new ROScalarColumn<S> (table(), offsetName_p);
+	offsetColumn_p = new ScalarColumn<S> (table(), offsetName_p);
     }
 }
 
@@ -256,14 +256,14 @@ void ScaledComplexData<S,T>::setShape (uInt rownr, const IPosition& shape)
 template<class S, class T>
 uInt ScaledComplexData<S,T>::ndim (uInt rownr)
 {
-    return roColumn().ndim (rownr) - 1;
+    return column().ndim (rownr) - 1;
 }
 
 template<class S, class T>
 IPosition ScaledComplexData<S,T>::shape (uInt rownr)
 {
     // The virtual shape is the stored shape minus the first dimensions.
-    IPosition storedShape = roColumn().shape (rownr);
+    IPosition storedShape = column().shape (rownr);
     return storedShape.getLast (storedShape.nelements() - 1);
 }
 
@@ -484,7 +484,7 @@ template<class S, class T>
 void ScaledComplexData<S,T>::getArray (uInt rownr, Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().get (rownr, target);
+    column().get (rownr, target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
@@ -492,7 +492,7 @@ void ScaledComplexData<S,T>::putArray (uInt rownr, const Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
-    rwColumn().put (rownr, target);
+    column().put (rownr, target);
 }
 
 template<class S, class T>
@@ -500,7 +500,7 @@ void ScaledComplexData<S,T>::getSlice (uInt rownr, const Slicer& slicer,
 				       Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().getSlice (rownr, storedSlicer(slicer), target);
+    column().getSlice (rownr, storedSlicer(slicer), target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
@@ -509,14 +509,14 @@ void ScaledComplexData<S,T>::putSlice (uInt rownr, const Slicer& slicer,
 {
     Array<T> target(storedShape(array.shape()));
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
-    rwColumn().putSlice (rownr, storedSlicer(slicer), target);
+    column().putSlice (rownr, storedSlicer(slicer), target);
 }
 
 template<class S, class T>
 void ScaledComplexData<S,T>::getArrayColumn (Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().getColumn (target);
+    column().getColumn (target);
     scaleColumnOnGet (array, target);
 }
 template<class S, class T>
@@ -524,7 +524,7 @@ void ScaledComplexData<S,T>::putArrayColumn (const Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (target);
+    column().putColumn (target);
 }
 
 template<class S, class T>
@@ -532,7 +532,7 @@ void ScaledComplexData<S,T>::getArrayColumnCells (const RefRows& rownrs,
 						  Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().getColumnCells (rownrs, target);
+    column().getColumnCells (rownrs, target);
     scaleCellsOnGet (array, target, rownrs);
 }
 template<class S, class T>
@@ -541,7 +541,7 @@ void ScaledComplexData<S,T>::putArrayColumnCells (const RefRows& rownrs,
 {
     Array<T> target(storedShape(array.shape()));
     scaleCellsOnPut (array, target, rownrs);
-    rwColumn().putColumnCells (rownrs, target);
+    column().putColumnCells (rownrs, target);
 }
 
 template<class S, class T>
@@ -549,7 +549,7 @@ void ScaledComplexData<S,T>::getColumnSlice (const Slicer& slicer,
 					     Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().getColumn (storedSlicer(slicer), target);
+    column().getColumn (storedSlicer(slicer), target);
     scaleColumnOnGet (array, target);
 }
 template<class S, class T>
@@ -558,7 +558,7 @@ void ScaledComplexData<S,T>::putColumnSlice (const Slicer& slicer,
 {
     Array<T> target(storedShape(array.shape()));
     scaleColumnOnPut (array, target);
-    rwColumn().putColumn (storedSlicer(slicer), target);
+    column().putColumn (storedSlicer(slicer), target);
 }
 
 template<class S, class T>
@@ -567,7 +567,7 @@ void ScaledComplexData<S,T>::getColumnSliceCells (const RefRows& rownrs,
 						  Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
-    roColumn().getColumnCells (rownrs, storedSlicer(slicer), target);
+    column().getColumnCells (rownrs, storedSlicer(slicer), target);
     scaleCellsOnGet (array, target, rownrs);
 }
 template<class S, class T>
@@ -577,7 +577,7 @@ void ScaledComplexData<S,T>::putColumnSliceCells (const RefRows& rownrs,
 {
     Array<T> target(storedShape(array.shape()));
     scaleCellsOnPut (array, target, rownrs);
-    rwColumn().putColumnCells (rownrs, storedSlicer(slicer), target);
+    column().putColumnCells (rownrs, storedSlicer(slicer), target);
 }
 
 

@@ -219,10 +219,15 @@ void MVAngle::print(ostream &oss,
     uInt intyp = form.typ;
     uInt i1 = intyp & ~MVAngle::MOD_MASK;
     Double t, t1;
-    Char sep;
+    Char sep1, sep2='m';
     if (i1 == MVAngle::ANGLE) {
-	t = val/C::degree;
-	sep = '.';
+      t = val/C::degree;
+      if ((intyp & MVAngle::ALPHA) == MVAngle::ALPHA) {
+        sep1 = 'd';
+        } else {
+        sep1 = '.';
+        sep2 = '.';
+      }
     } else {
       if (loc) {
 	t = MVAngle::timeZone() * 24.0;
@@ -233,7 +238,12 @@ void MVAngle::print(ostream &oss,
 	  t -= 24.0;
 	}
       }
-      sep = ':';
+      if ((intyp & MVAngle::ALPHA) == MVAngle::ALPHA) {
+        sep1 = 'h';
+      } else {
+        sep1 = ':';
+        sep2 = ':';
+      }
     }
     if (inprec == 0) inprec = oss.precision();
     Char sfill = oss.fill();
@@ -282,10 +292,10 @@ void MVAngle::print(ostream &oss,
 	  }
 	}
 	if ((inprec > 2) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
-	    oss << sep;
+	    oss << sep1;
 	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	oss << sep;
+	oss << sep1;
     }
     if (inprec > 2) {
 	t = std::fmod(t,1.0) *60.;
@@ -293,13 +303,13 @@ void MVAngle::print(ostream &oss,
 	if ((intyp & MVAngle::NO_DM) != MVAngle::NO_DM) {
 	    oss << setfill('0') << setw(2) << h;
 	    if ((inprec > 4) || ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN)) {
-		oss << sep;
+		oss << sep2;
 	    }
 	} else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	    oss << sep;
+	    oss << sep2;
 	}
     } else if ((intyp & MVAngle::CLEAN) != MVAngle::CLEAN) {
-	oss << sep;
+	oss << sep2;
     }
     if (inprec > 4 && inprec < 7) {
 	t = std::fmod(t,1.0) *60.;
@@ -341,10 +351,6 @@ Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
   return UnitVal::check(in.get(),uv);
 }
 
-Bool MVAngle::read(Quantity &res, MUString &in) {
-  return read(res, in, True);
-}
-
 Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
   LogIO os(LogOrigin("MVAngle", "read()", WHERE));
   res = Quantity(0.0, "rad");
@@ -381,14 +387,28 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       if (tp == 3) tc = ':';
       in.push();
       Double r1 = in.getuInt();
+      // Test if : or m is given.
+      // If not, something like 11:23 was given which cannot be followed by
+      // a dot (otherwise decimal minutes would be given).
+      // Also a slash and alpha are not possible after 11:23.
+      // However, Z is accepted because it is the UTC time zone designator.
+      // The reason is that Quantum::read first tries to read a string as an
+      // MVAngle, thereafter as MVTime, and finally as value+unit.
+      // So MVAngle::read has to be very strict in what it accepts to avoid
+      // that it does not accept something that is meant to be something else.
       if (in.tSkipOneCharNC(tc)) {
 	r += r1/60.0 + in.getDouble()/3600.;
 	if (tp != 3) in.tSkipOneCharNC('s');
-      } else if (tp == 3 && !in.testCharNC('.') &&
-		 !in.testCharNC('/') && !in.testAlpha()) {
+      } else if (tp == 3 && (in.testChar('Z') ||
+                             (!in.testChar('.') &&
+                              !in.testChar('/') && !in.testAlpha()))) {
 	r += r1/60.0;
-      } else if ( !(tp == 1 && r1 == 0 && !in.testCharNC('.') &&
-                    !in.testCharNC('/'))) {
+      } else if ( !(tp == 1 && r1 == 0 && !in.testChar('.') &&
+                    !in.testChar('/'))) {
+        // Accept something like 10d (meaning 10deg).
+        // Normally the d in 10d would be a unit (day), but in this way
+        // it is accepted as 10deg (which is what people wanted).
+        // Note: 10.d is 10 days.
 	tp = 0;
       }
       in.unpush();
@@ -426,10 +446,6 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
   in.unpush();
   return True;
 
-}
-
-Bool MVAngle::read(Quantity &res, const String &in) {
-  return read(res, in, True);
 }
 
 Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {

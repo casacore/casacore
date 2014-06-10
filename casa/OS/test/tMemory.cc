@@ -38,7 +38,7 @@ int main()
     // Not much testing is possible.
     char *ptrs[1000];
     size_t alloc = 0;
-    uint i;
+    uInt i;
     for (i=0; i<sizeof(ptrs)/sizeof(char*); i++) {
 	ptrs[i] = new char[100];
 	alloc += 100;

@@ -216,6 +216,43 @@ class FluxStdPerleyButler2010 : public virtual FluxCalcQS,
 private:
   virtual Bool setSourceCoeffs();
 };
+// <summary>
+// FluxStdPerleyButler2013: The PerleyButler2013 flux standard.
+// </summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="" tests="" demos="">
+//
+// <prerequisite>
+// <li><linkto class="FluxStandard">FluxStandard</linkto> module
+// <li><linkto class="FluxCalcLogFreqBrokenPolynomial">FluxCalcLogFreqBrokenPolynomial</linkto> module
+// </prerequisite>
+//
+// <etymology>
+// From "flux density", "standard", "Perley", "Butler", and "2013".
+// </etymology>
+//
+// <synopsis>
+// This specializes FluxCalcLogFreqBrokenPolynomial with the PerleyButler2013 coefficients and
+// list of recognized sources.
+// </synopsis>
+//
+// <example>
+// <srcblock>
+// </srcblock>
+// </example>
+//
+// <motivation>
+// Support flux density calibration.
+// </motivation>
+class FluxStdPerleyButler2013 : public virtual FluxCalcQS,
+                                private FluxCalcLogFreqBrokenPolynomial
+{
+private:
+  virtual Bool setSourceCoeffs();
+};
+
 
 } //# NAMESPACE CASA - END
 

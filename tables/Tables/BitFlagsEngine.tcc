@@ -142,8 +142,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template<typename T>
   void BitFlagsEngine<T>::setProperties (const Record& spec)
   {
-    itsBFEReadMask.fromRecord  (spec, roColumn(), "Read");
-    itsBFEWriteMask.fromRecord (spec, roColumn(), "Write");
+    itsBFEReadMask.fromRecord  (spec, column(), "Read");
+    itsBFEWriteMask.fromRecord (spec, column(), "Write");
     itsReadMask  = T(itsBFEReadMask.getMask());
     itsWriteMask = T(itsBFEWriteMask.getMask());
   }
@@ -177,18 +177,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // This cannot be done in create, because the other column may not
     // be created yet.
     if (itsIsNew) {
-      itsBFEReadMask.makeMask (roColumn());
-      itsBFEWriteMask.makeMask(roColumn());
+      itsBFEReadMask.makeMask (column());
+      itsBFEWriteMask.makeMask(column());
       // Store the various parameters as keywords in this column.
       TableColumn thisCol (table(), virtualName());
       itsBFEReadMask.toRecord (thisCol.rwKeywordSet(), "_BitFlagsEngine_Read");
       itsBFEWriteMask.toRecord(thisCol.rwKeywordSet(), "_BitFlagsEngine_Write");
     } else {
       // Existing table, get masks from the keywords.
-      ROTableColumn thisCol (table(), virtualName());
-      itsBFEReadMask.fromRecord (thisCol.keywordSet(), roColumn(),
+      TableColumn thisCol (table(), virtualName());
+      itsBFEReadMask.fromRecord (thisCol.keywordSet(), column(),
                                  "_BitFlagsEngine_Read");
-      itsBFEWriteMask.fromRecord(thisCol.keywordSet(), roColumn(),
+      itsBFEWriteMask.fromRecord(thisCol.keywordSet(), column(),
                                  "_BitFlagsEngine_Write");
     }
     itsReadMask  = T(itsBFEReadMask.getMask());
@@ -200,7 +200,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void BitFlagsEngine<T>::getArray (uInt rownr, Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().get (rownr, target);
+    column().get (rownr, target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -208,7 +208,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().put (rownr, target);
+    column().put (rownr, target);
   }
 
   template<typename T>
@@ -216,7 +216,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                     Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().getSlice (rownr, slicer, target);
+    column().getSlice (rownr, slicer, target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -225,14 +225,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().putSlice (rownr, slicer, target);
+    column().putSlice (rownr, slicer, target);
   }
 
   template<typename T>
   void BitFlagsEngine<T>::getArrayColumn (Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().getColumn (target);
+    column().getColumn (target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -240,7 +240,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().putColumn (target);
+    column().putColumn (target);
   }
 
   template<typename T>
@@ -248,7 +248,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                                Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().getColumnCells (rownrs, target);
+    column().getColumnCells (rownrs, target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -257,7 +257,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().putColumnCells (rownrs, target);
+    column().putColumnCells (rownrs, target);
   }
 
   template<typename T>
@@ -265,7 +265,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                           Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().getColumn (slicer, target);
+    column().getColumn (slicer, target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -274,7 +274,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().putColumn (slicer, target);
+    column().putColumn (slicer, target);
   }
 
   template<typename T>
@@ -283,7 +283,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                                                Array<Bool>& array)
   {
     Array<T> target(array.shape());
-    roColumn().getColumnCells (rownrs, slicer, target);
+    column().getColumnCells (rownrs, slicer, target);
     mapOnGet (array, target);
   }
   template<typename T>
@@ -293,7 +293,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
-    rwColumn().putColumnCells (rownrs, slicer, target);
+    column().putColumnCells (rownrs, slicer, target);
   }
 
   template<typename T>

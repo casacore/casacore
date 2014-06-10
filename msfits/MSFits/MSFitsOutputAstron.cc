@@ -382,7 +382,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
 	  sel = tmsParm (tmsParm.col("NAME") == "FW1.GeoSkyFreq");
 	  if (sel.nrow() == 0){
 	    cout << "ERROR - FW1.GeoSkyFreq not found - cannot process this MS.\n";
-	    return false;
+	    return 0;
 	  } else {
 	    String aValue;
 	    aValue = ROScalarColumn<String>(sel, "VALUE")(0);

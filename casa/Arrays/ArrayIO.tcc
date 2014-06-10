@@ -538,11 +538,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	       IPosition &p,
 	       Block<T> &x, const IPosition *ip, Bool it) {
 
-#if defined(AIPS_STDLIB)
   if (!s.good()) {
-#else
-  if (!s.ipfx(0)) { 			// Copied from Complex.h
-#endif
     s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
     return False;
   }
@@ -608,11 +604,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   if (how && ch != '[') {
     s.putback(ch);
     s >> r;
-#if defined(AIPS_STDLIB)
     if (!s.good()) {
-#else
-    if (!s.ipfx(0)) {
-#endif
       s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
       how = False;
     } else {
@@ -678,21 +670,13 @@ Bool readArrayBlock(istream &s, Bool &trans,
 	  x[cnt] = r;
 	  cnt++;
 	}
-#if defined(AIPS_STDLIB)
 	if (!s.good()) {
-#else
-	if (!s.ipfx(0)) {
-#endif
 	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
 	  how = False;
 	}
       } else {
 	s >> r;
-#if defined(AIPS_STDLIB)
 	if (!s.good()) {
-#else
-	if (!s.ipfx(0)) {
-#endif
 	  s.clear(ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
 	  how = False;
 	} else {

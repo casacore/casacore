@@ -32,7 +32,7 @@
 // <module>
 //
 // <summary>
-// Logging in AIPS++ tables
+// Logging in Casacore tables
 // </summary>
 
 // <prerequisite>

@@ -27,61 +27,6 @@
 
 #include <casa/Utilities/CountedPtr.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-template<class t> 
-void PtrRep<t>::freeVal() {
-  if (val && deletable)
-    {
-    delete val;
-    val = 0;
-    }
-}
-
-template<class t>
-SimpleCountedConstPtr<t> &SimpleCountedConstPtr<t>::operator=(t *v) {
-  if (ref && --(*ref).count == 0){
-    delete ref;
-  }
-  ref = new PtrRep<t>(v);
-  return *this;
-}
-
-template<class t>
-SimpleCountedConstPtr<t>::~SimpleCountedConstPtr() {
-  if (ref && --(*ref).count == 0){
-    delete ref;
-    ref = 0;
-  }
-}
-
-//
-// All of these CountedPtr<t> ctors were moved out-of-line because
-// the Sun Cfront compiler on Solaris generated statics for them.
-// At some point, these should be moved back in line and tried with
-// newer compilers.            (Tue Jan  3 15:30:07 EST 1995)
-//
-template<class t>
-CountedPtr<t>::CountedPtr()
-: SimpleCountedConstPtr<t>(),
-  SimpleCountedPtr<t>(),
-  CountedConstPtr<t>()
-{}
-
-template<class t>
-CountedPtr<t>::CountedPtr(t *val, Bool delit)
-: SimpleCountedConstPtr<t>(val,delit),
-  SimpleCountedPtr<t>(val,delit),
-  CountedConstPtr<t>(val,delit)
-{}
-
-template<class t>
-CountedPtr<t>::CountedPtr(const CountedPtr<t> &val)
-: SimpleCountedConstPtr<t>(val),
-  SimpleCountedPtr<t>(val),
-  CountedConstPtr<t>(val)
-{}
-
 } //# NAMESPACE CASA - END
 

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Do not use $casa_checktool, because valgrind takes far too long.
+# Valgrinding is not needed because tArrayAccessor is the real test program.
+./dArrayAccessor

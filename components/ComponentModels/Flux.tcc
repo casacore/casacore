@@ -669,21 +669,16 @@ template<class T> Bool FluxRep<T>::ok() const {
 	if (itsUnit == Unit("Jy")) {
 		return True;
 	}
-	Bool found = False;
 	for (Vector<String>::const_iterator iter=_allowedUnits.begin(); iter!=_allowedUnits.end(); iter++) {
 		if (itsUnit == Unit(*iter)) {
-			found = True;
-			break;
+			return True;
 		}
 	}
-	if (! found) {
-		LogIO logErr(LogOrigin("FluxRep", "ok()"));
-		logErr << LogIO::SEVERE << "The flux units have dimensions that are "
-				<< "different from 'Jy'"
+	LogIO logErr(LogOrigin("FluxRep", "ok()"));
+	logErr << LogIO::SEVERE << "The flux units " << itsUnit.getName()
+     << " have dimensions that are different from 'Jy'"
 				<< LogIO::POST;
 		return False;
-	}
-	return True;
 }
 
 template<class T> void FluxRep<T>::setAllowedUnits(const Vector<String>& allowedUnits) {

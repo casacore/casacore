@@ -251,7 +251,7 @@ public:
 
     // Get the value from the row and convert it to the required type.
     // This can only be used for scalar columns with a standard data type.
-    // Note that an unsigned integer caanot be converted to a signed integer
+    // Note that an unsigned integer cannot be converted to a signed integer
     // with the same length. So only Int64 can handle all integer values.
     // <group>
     void getScalar (uInt rownr, Bool& value) const;

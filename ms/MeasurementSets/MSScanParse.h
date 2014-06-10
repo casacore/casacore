@@ -92,30 +92,38 @@ public:
   
   // Associate the ms and the shorthand.
   MSScanParse (const MeasurementSet* ms);
-  //  ~MSScanParse() {if (node_p) delete node_p;node_p=0x0;}
+  MSScanParse (const MeasurementSet* ms, const TableExprNode& colAsTEN);
+  ~MSScanParse() {columnAsTEN_p=TableExprNode();}
+
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
   const TableExprNode *selectScanIds(const Vector<Int>& scanids);
+  inline const TableExprNode *selectScanIds() {return selectScanIds(parsedIDList_p);}
   const TableExprNode *selectScanIdsGT(const Vector<Int>& scanids);
   const TableExprNode *selectScanIdsLT(const Vector<Int>& scanids);
   const TableExprNode *selectScanIdsGTEQ(const Vector<Int>& scanids);
   const TableExprNode *selectScanIdsLTEQ(const Vector<Int>& scanids);
+  std::vector<Int>& accumulateIDs(const Int id0, const Int id1=-1);
 
     // Get table expression node object.
-  static const TableExprNode* node();
+  const TableExprNode node();
 
-  static MSScanParse* thisMSSParser;
-  static Vector<Int> selectedIDs() {return idList;}
-  static void reset(){idList.resize(0);}
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
+  Vector<Int> selectedIDs() {return idList;}
+  void reset(){idList.resize(0);parsedIDList_p.resize(0);}
+  void cleanup() {}
 
   void setMaxScan(const Int& n) {maxScans_p=n;}
+
+  static MSScanParse* thisMSSParser;
+
 private:
-  static TableExprNode* node_p;
-  static Vector<Int> idList;
+  TableExprNode node_p;
+  Vector<Int> idList;
+  std::vector<Int> parsedIDList_p;
   const String colName;
   void appendToIDList(const Vector<Int>& v);
   Int maxScans_p;
+  static TableExprNode columnAsTEN_p;
 };
 
 } //# NAMESPACE CASA - END

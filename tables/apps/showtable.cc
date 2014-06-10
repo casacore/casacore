@@ -32,6 +32,8 @@
 #include <casa/Inputs/Input.h>
 #include <stdexcept>
 #include <iostream>
+#include <casa/string.h>    // for strerror
+#include <errno.h>
 
 using namespace casa;
 using namespace std;
@@ -52,7 +54,7 @@ void showKeys (const Table& table, Bool showtabkey, Bool showcolkey,
   if (showcolkey) {
     Vector<String> colNames (table.tableDesc().columnNames());
     for (uInt i=0; i<colNames.size(); ++i) {
-      TableRecord keys (ROTableColumn(table, colNames[i]).keywordSet());
+      TableRecord keys (TableColumn(table, colNames[i]).keywordSet());
       if (keys.size() > 0) {
         cout << "  Column " << colNames[i] << endl;
         keys.print (cout, maxval, "    ");
@@ -123,7 +125,9 @@ int main (int argc, char* argv[])
       clog << "TaQL command = " << command << endl;
       seltab = tableCommand (command);
       if (seltab.tableName() != table.tableName()) {
-        char* tmpnm = tempnam("/tmp", "showtable_");
+	// g++ gives a deprecated warning for the following function. Ignore it.
+        // Note second argument can be at most 5 char long.
+        char* tmpnm = tempnam("/tmp", "shtab");
         tmpName = tmpnm;
         free (tmpnm);
       }
@@ -158,7 +162,9 @@ int main (int argc, char* argv[])
         seltab.rename (tmpName, Table::New);
       }
       clog << "Starting casabrowser " << seltab.tableName() << " ..." << endl;
-      system (("casabrowser " + in).chars());
+      if (! system (("casabrowser " + in).chars())) {
+	clog << "Could not start casabrowser; " << strerror(errno) << endl;
+      }
       if (!tmpName.empty()) {
         clog << "Removing temporary table " << seltab.tableName() << endl;
         Table::deleteTable(tmpName);

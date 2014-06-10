@@ -28,6 +28,7 @@
 #ifndef LATTICES_LATTICEUTILITIES_H
 #define LATTICES_LATTICEUTILITIES_H
 
+#include <lattices/Lattices/LatticeStatsBase.h>
 
 #include <casa/aips.h>
 
@@ -83,11 +84,14 @@ class LatticeUtilities
 // all of the lattice (i.e. no collapse)
 // but dropDegenerateAxes is stil honoured
    template <class T>
-   static void collapse (Array<T>& data, Array<Bool>& mask,
-                         const IPosition& axes, 
-                         const MaskedLattice<T>& lat,
-                         Bool dropDegenerateAxes,
-                         Bool getPixels=True, Bool getMask=True);
+   static void collapse (
+	Array<T>& data, Array<Bool>& mask,
+    const IPosition& axes,
+    const MaskedLattice<T>& lat,
+    Bool dropDegenerateAxes,
+    Bool getPixels=True, Bool getMask=True,
+    const LatticeStatsBase::StatisticsTypes stat=LatticeStatsBase::MEAN
+   );
 
 // Copy data and mask from input to output.  If the input has no mask,
 // that means all True (good), and these values will be transferred

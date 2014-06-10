@@ -108,9 +108,9 @@ void b()
 {
     // Read back the table.
     Table tab("tVSCEngine_tmp.data");
-    ROScalarColumn<Int> colx (tab, "x");
-    ROScalarColumn<float> coly (tab, "y");
-    ROScalarColumn<VSCExample> colA(tab, "colA");
+    ScalarColumn<Int> colx (tab, "x");
+    ScalarColumn<float> coly (tab, "y");
+    ScalarColumn<VSCExample> colA(tab, "colA");
     Int valx;
     float valy;
     VSCExample valA;

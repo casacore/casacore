@@ -243,10 +243,15 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
   	                        const Vector<Double> &pixel) const
 {
-   DebugAssert(pixel.nelements()==1,AipsError);
-//
-   world.resize(1);
-   return toWorld(world(0), pixel(0));
+   Bool rval = True;
+   world.resize(pixel.nelements());
+   for(uInt i=0; i<pixel.nelements(); i++){
+     rval = toWorld(world(i), pixel(i));
+     if(!rval){
+       break;
+     }
+   }
+   return rval;
 }
 
 Bool TabularCoordinate::toPixel(Vector<Double> &pixel, 

@@ -99,6 +99,7 @@ void Record::defineFromValueHolder (const RecordFieldId& id,
   case TpShort:
     define (id, value.asShort());
     break;
+  case TpUShort:
   case TpInt:
     define (id, value.asInt());
     break;
@@ -132,6 +133,7 @@ void Record::defineFromValueHolder (const RecordFieldId& id,
   case TpArrayShort:
     define (id, value.asArrayShort());
     break;
+  case TpArrayUShort:
   case TpArrayInt:
     define (id, value.asArrayInt());
     break;

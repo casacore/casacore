@@ -132,8 +132,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //# Get the data as a column.
     //# Save the pointer to the vector for deletion by freeSortKey().
     dataSave = 0;
-    ROScalarColumn<T> col(refTabPtr_p->asTable(),
-			  this->columnDesc().name());
+    ScalarColumn<T> col(refTabPtr_p->asTable(),
+                        this->columnDesc().name());
     Vector<T>* vecPtr = new Vector<T>;
     col.getColumn (*vecPtr);
     dataSave = vecPtr;
@@ -149,8 +149,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     //# Get the data as a column.
     dataSave = 0;
-    ROScalarColumn<T> col(refTabPtr_p->asTable(),
-			  this->columnDesc().name());
+    ScalarColumn<T> col(refTabPtr_p->asTable(),
+                        this->columnDesc().name());
     Vector<T>* vecPtr = new Vector<T>;
     col.getColumnCells (RefRows(rownrs), *vecPtr);
     dataSave = vecPtr;

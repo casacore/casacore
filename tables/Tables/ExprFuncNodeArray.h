@@ -78,6 +78,12 @@ public:
     // Destructor
     ~TableExprFuncNodeArray();
 
+    // Get the nodes representing an aggregate function.
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+
+    // Get the nodes representing a table column.
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+  
     // 'get' Functions to get the desired result of a function
     // <group>
     virtual Array<Bool> getArrayBool (const TableExprId& id);
@@ -89,7 +95,7 @@ public:
     // </group>
 
     // Get the function node.
-    const TableExprFuncNode* getChild() const
+    TableExprFuncNode* getChild()
       { return &node_p; }
 
     // Link the children to the node and convert the children
@@ -99,7 +105,7 @@ public:
 				       PtrBlock<TableExprNodeRep*>& nodes,
 				       const Block<Int>& dtypeOper);
 
-private:
+protected:
     // Try if the function gives a constant result.
     // If so, set the expression type to Constant.
     void tryToConst();
@@ -116,6 +122,7 @@ private:
         { return node_p.argDataType(); }
     // </group>
 
+private:
     // Set unit scale factor (needed for sqrt).
     void setScale (Double scale)
         { node_p.setScale (scale); }

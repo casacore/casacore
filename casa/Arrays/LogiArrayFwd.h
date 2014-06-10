@@ -44,8 +44,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// LogiArrayFwd is short for LogicalArrayForwards, which is too long by
-// AIPS++ file naming conventions.  It contains forwards for LogicalArrays.
+// LogiArrayFwd is short for LogicalArrayForwards, which was too long by
+// the old AIPS++ file naming conventions.
+// It contains forwards for LogicalArrays.
 // </etymology>
 //
 // <synopsis>

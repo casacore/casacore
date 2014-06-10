@@ -1,4 +1,4 @@
-//# ImageFITSConverter.h: Interconvert between AIPS++ Images and FITS files
+//# ImageFITSConverter.h: Interconvert between Casacore Images and FITS files
 //# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,6 +32,7 @@
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/DataType.h>
 
 #ifndef WCSLIB_GETWCSTAB
  #define WCSLIB_GETWCSTAB
@@ -42,18 +43,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class T> class PagedImage;
 template<class T> class ImageInterface;
 template<class T> class Vector;
+class FitsOutput;
 class IPosition;
 class File;
 class ImageInfo;
 class CoordinateSystem;
 class RecordInterface;
+class TableRecord;
 class LogIO;
 class Unit;
 class LoggerHolder;
 class ConstFitsKeywordList;
+class FitsInput;
 
 // <summary>
-// Interconvert between AIPS++ Images and FITS files.
+// Interconvert between Casacore Images and FITS files.
 // </summary>
 
 // <use visibility=export>
@@ -68,18 +72,19 @@ class ConstFitsKeywordList;
 // </prerequisite>
 //
 // <synopsis>
-// This class is a helper class that is used to interconvert between AIPS++
+// This class is a helper class that is used to interconvert between Casacore
 // images and FITS files. This adds no functionality over the general abilities
 // available in the underlying FITS classes, however it is a useful higher-level
 // packaging.
 //
 // There are two fundamental member functions in this class.
-// <src>FITSToImage</src> which turns a FITS file into an AIPS++ image, and
+// <src>FITSToImage</src> which turns a FITS file into a Casacore image, and
 // <src>ImageToFITS</src> which does the opposite.
 //
 // We can read images from any HDU inside the FITS file (although this isn't
-// well tested). However at the moment we always write to the first HDU, i.e.
-// to the primary array, not an image extension.
+// well tested). Images with a quality axis (i.e. contain data and error values)
+// are stored in the primary HDU (data) and an extension HDU (error). Other
+// images are always written to the primary HDU.
 //
 // Pixels in the FITS file which are blanked are masked out (the mask
 // is set to False) in the output image.   On conversion to FITS,
@@ -138,7 +143,9 @@ class ConstFitsKeywordList;
 class ImageFITSConverter
 {
 public:
-    // Convert a FITS file to an AIPS++ image.
+	const static String CASAMBM;
+
+    // Convert a FITS file to a Casacore image.
     // <ul>
     //   <li> <src>newImage</src> will be zero if the conversion fail. If the 
     //        conversion succeeds, the caller is responsible for deleting this
@@ -182,7 +189,7 @@ public:
 //			    Bool allowOverwrite=False,
 //                            Bool zeroBlanks=False);
 
-    // Convert an AIPS++ image to a FITS file.
+    // Convert a Casacore image to a FITS file.
     // <ul>
     //   <li> <src>return</src> True if the conversion succeeds, False 
     //        otherwise.
@@ -209,23 +216,28 @@ public:
     //        overwritten if it already exists.
     //   <li> <src>degenerateLast</src> If True, axes of length 1 will be written
     //        last to the header.
+    //   <li> <src>preferWavelength</src> If True, write a wavelength primary axis.
+    //   <li> <src>airWavelength</src> If True and <src>preferWavelength</src> is True write
+    //        an air wavelength primary axis.
     //   <li> <src>origin</src> gives the origin, i.e., the name of the package.
     //        If empty, it defaults to "casacore-"getVersion().
     //   </ul>
     static Bool ImageToFITS(String &error,
-			    ImageInterface<Float> &image,
-			    const String &fitsName, 
-			    uInt memoryInMB = 64,
-			    Bool preferVelocity = True,
-			    Bool opticalVelocity = True,
-			    Int BITPIX=-32,
-			    Float minPix = 1.0, Float maxPix = -1.0,
-			    Bool allowOverwrite=False,
-                            Bool degenerateLast=False,
-                            Bool verbose=True,
-			    Bool stokesLast=False,
-			    Bool preferWavelength=False,
-                            const String& origin = String());
+    		ImageInterface<Float> &image,
+    		const String &fitsName,
+    		uInt memoryInMB = 64,
+    		Bool preferVelocity = True,
+    		Bool opticalVelocity = True,
+    		Int BITPIX=-32,
+    		Float minPix = 1.0, Float maxPix = -1.0,
+    		Bool allowOverwrite=False,
+    		Bool degenerateLast=False,
+    		Bool verbose=True,
+    		Bool stokesLast=False,
+    		Bool preferWavelength=False,
+    		Bool airWavelength=False,
+		const String& origin = String(),
+		Bool history=True);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but
@@ -266,9 +278,71 @@ public:
 // Parse header record and set MiscInfo
    static Bool extractMiscInfo (RecordInterface& miscInfo, const RecordInterface& header);
 
+   // read the BEAMS table if present and add the restoring beams to <src>info</src>
+   static void readBeamsTable(
+		   ImageInfo& info, const String& filename,
+		   const DataType type
+   );
+
 private:
+
+// Put a CASA image to an opened FITS image
+// Parameters as in "ImageToFITS". In addition:
+// <ul>
+//   <li> <src>output</src> The FITS output to write to.
+//   <li> <src>primHead</src> Write to a primary HDU.
+//   <li> <src>allowAppend</src> Allow to append extension HDU's.
+// </ul>
+   static Bool ImageToFITSOut(
+		   String &error, LogIO &os,
+		   const ImageInterface<Float> &image,
+		   FitsOutput *output, uInt memoryInMB = 64,
+  		 Bool preferVelocity = True,
+  		 Bool opticalVelocity = True,
+  		 Int BITPIX=-32,
+  		 Float minPix = 1.0, Float maxPix = -1.0,
+  		 Bool degenerateLast=False,
+  		 Bool verbose=True,
+  		 Bool stokesLast=False,
+  		 Bool preferWavelength=False,
+  		 Bool airWavelength=False,
+  		 Bool primHead=True,
+  		 Bool allowAppend=False,
+		 const String& origin = String(),
+		 Bool history=True  
+   );
+
+// Put a CASA image with quality coordinate
+// to an opened FITS file
+// Parameters as in "ImageToFITS". In addition:
+// <ul>
+//   <li> <src>output</src> The FITS output to write to.
+// </ul>
+   static Bool QualImgToFITSOut(String &error,
+      		LogIO &os,
+      		ImageInterface<Float> &image,
+      		FitsOutput *outfile,
+      		uInt memoryInMB,
+      		Bool preferVelocity,
+      		Bool opticalVelocity,
+      		Int BITPIX, Float minPix, Float maxPix,
+      		Bool degenerateLast,
+      		Bool verbose, Bool stokesLast,
+      		Bool preferWavelength,
+      		Bool airWavelength,
+		const String& origin,
+		Bool history
+   );
+
    static Bool removeFile (String& error, const File& outFile,
                            const String& outName, Bool allowOverwrite);
+
+// Create an open FITS file with the name given
+   static Bool openFitsOutput(String &error, FitsOutput *(&openFitsOutput), const String &fitsName,
+   		                            const Bool &allowOverwrite);
+
+
+     static void _writeBeamsTable(FitsOutput *const &outfile, const ImageInfo& info);
 
 };
 
@@ -287,22 +361,17 @@ private:
 template<class HDUType> class ImageFITSConverterImpl
 {
 public:
-    static void FITSToImage(ImageInterface<Float> *&newImage,
-			    String &error,
-			    const String &imageName,
-			    uInt whichRep,
-			    HDUType &fitsImage,
-			    uInt memoryInMB = 64,
-                            Bool zeroBlanks=False);
-
-
-// Old version
-//    static void FITSToImageOld(ImageInterface<Float> *&newImage,
-//			    String &error,
-//			    const String &imageName,
-//			    HDUType &fitsImage,
-//			    uInt memoryInMB = 64,
-//                           Bool zeroBlanks=False);
+    static void FITSToImage(
+    	ImageInterface<Float> *&newImage,
+    	String &error,
+    	const String &newImageName,
+    	const uInt whichRep,
+    	HDUType &fitsImage,
+    	const String& fitsFilename,
+    	const DataType dataType,
+    	const uInt memoryInMB = 64,
+    	const Bool zeroBlanks=False
+    	);
 
 };
 

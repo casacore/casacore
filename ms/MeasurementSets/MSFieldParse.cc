@@ -32,23 +32,32 @@
 #include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-  
+
   MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSFieldParse::node_p = 0x0;
+  TableExprNode MSFieldParse::columnAsTEN_p;
   Vector<Int> MSFieldParse::idList;
 
   //# Constructor
   MSFieldParse::MSFieldParse ()
     : MSParse(), colName(MS::columnName(MS::FIELD_ID))
-  {
-    if (MSFieldParse::node_p!=0x0) delete MSFieldParse::node_p;
-    MSFieldParse::node_p=0x0;
-    node_p = new TableExprNode();
-  }
+  {reset();}
   
   //# Constructor with given ms name.
   MSFieldParse::MSFieldParse (const MeasurementSet* ms)
-    : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
+    : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID)), 
+      msFieldSubTable_p(ms->field())
+  {reset();}
+  
+  MSFieldParse::MSFieldParse (const MSField& msFieldSubTable,const TableExprNode& colAsTEN)
+    : MSParse(), colName(MS::columnName(MS::FIELD_ID)), 
+      msFieldSubTable_p(msFieldSubTable)
+  {
+    reset(); 
+    columnAsTEN_p=colAsTEN;
+  }
+
+  void MSFieldParse::reset()
   {
     if (MSFieldParse::node_p!=0x0) delete MSFieldParse::node_p;
     MSFieldParse::node_p=0x0;
@@ -57,7 +66,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     idList.resize(0);
     //    setMS(ms);
   }
-  
+
   const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
   {
     {
@@ -65,12 +74,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       idList.resize(tmp.nelements());
       idList = tmp;
     }
-    TableExprNode condition = (ms()->col(colName).in(fieldIds));
+    TableExprNode condition;
+    //    TableExprNode condition = (msInterface()->asMS()->col(colName).in(fieldIds));
+    //    condition = (msInterface()->col(colName).in(fieldIds));
+    //    condition = ms()->col(colName).in(fieldIds);
+    condition = columnAsTEN_p.in(fieldIds);
+    //condition = ms()->col(colName);
+
+    addCondition(*node_p, condition);
     
-    if(node_p->isNull())
-      *node_p = condition;
-    else
-      *node_p = *node_p || condition;
+    // if(node_p->isNull())
+    //   *node_p = condition.in(fieldIds);
+    // else
+    //   *node_p = *node_p || condition.in(fieldIds);
     
     return node_p;
   }
@@ -79,6 +95,63 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     return node_p;
   }
+
+} //# NAMESPACE CASA - END
+
+// ---------------OLD CODE START (Feb. 2012)-----------------------
+// #include <ms/MeasurementSets/MSFieldParse.h>
+// #include <ms/MeasurementSets/MSFieldIndex.h>
+// #include <ms/MeasurementSets/MSSourceIndex.h>
+// #include <ms/MeasurementSets/MSSelectionTools.h>
+// #include <casa/Logging/LogIO.h>
+
+// namespace casa { //# NAMESPACE CASA - BEGIN
+  
+//   MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
+//   TableExprNode* MSFieldParse::node_p = 0x0;
+//   Vector<Int> MSFieldParse::idList;
+
+//   //# Constructor
+//   MSFieldParse::MSFieldParse ()
+//     : MSParse(), colName(MS::columnName(MS::FIELD_ID))  {reset();}
+  
+//   //# Constructor with given ms name.
+//   MSFieldParse::MSFieldParse (const MeasurementSet* ms)
+//     : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))  {reset();}
+  
+//   void MSFieldParse::reset()
+//   {
+//     if (MSFieldParse::node_p!=0x0) delete MSFieldParse::node_p;
+//     MSFieldParse::node_p=0x0;
+//     if(node_p) delete node_p;
+//     node_p = new TableExprNode();
+//     idList.resize(0);
+//     //    setMS(ms);
+//   }
+//   const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
+//   {
+//     {
+//       Vector<Int> tmp(set_union(fieldIds,idList));
+//       idList.resize(tmp.nelements());
+//       idList = tmp;
+//     }
+//     //    TableExprNode condition = (ms()->col(colName).in(fieldIds));
+//     //    TableExprNode condition = (msInterface()->asMS()->col(colName).in(fieldIds));
+//     TableExprNode condition = (msInterface()->col(colName).in(fieldIds));
+    
+//     if(node_p->isNull())
+//       *node_p = condition;
+//     else
+//       *node_p = *node_p || condition;
+    
+//     return node_p;
+//   }
+  
+//   const TableExprNode* MSFieldParse::node()
+//   {
+//     return node_p;
+//   }
+// ---------------OLD CODE END (Feb.2012)-----------------------
   /*
     const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
     {
@@ -147,4 +220,3 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
     }
   */
-} //# NAMESPACE CASA - END

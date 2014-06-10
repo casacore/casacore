@@ -70,7 +70,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // <group name=MSPolnGramFunctions>
   
   // The top level interface to the parser.
-  int msPolnGramParseCommand (const MeasurementSet *ms, const String& command);
   int msPolnGramParseCommand (const MeasurementSet *ms, const String& command,
 			      TableExprNode& node,
 			      Vector<Int>& selectedDDIDs, 

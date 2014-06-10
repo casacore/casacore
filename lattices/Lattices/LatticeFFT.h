@@ -79,6 +79,10 @@ public:
   static void cfft(Lattice<Complex> & cLattice,
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
+  // Non-folded version
+  static void cfft0(Lattice<Complex> & cLattice,
+  		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
+
   // N-D in-place complex->complex FFT. Transform over all axes.
   static void cfft(Lattice<DComplex> & cLattice, const Bool toFrequency=True);
   static void cfft(Lattice<Complex> & cLattice, const Bool toFrequency=True);

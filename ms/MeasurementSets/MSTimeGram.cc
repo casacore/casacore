@@ -29,8 +29,6 @@
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
-// This is a preliminary version; eventually it has to be incorporated
-// in the AIPS++ command language.
 
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
@@ -39,6 +37,7 @@
 #include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <casa/Arrays/Matrix.h>
+#include <ms/MeasurementSets/MSSelectableMainColumn.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
@@ -65,8 +64,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   //----------------------------------------------------------------------------
 
-  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens,
-			      Matrix<Double>& selectedTimeList)
+  int baseMSTimeGramParseCommand (MSTimeParse* parser, const String& command, 
+				  Matrix<Double>& selectedTimeList)
   {
     Int ret;
     try
@@ -75,11 +74,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	yy_start = 1;
 	strpMSTimeGram = command.chars();     // get pointer to command string
 	posMSTimeGram  = 0;                   // initialize string position
-	MSTimeParse parser(ms,otherTens);     // setup the parser and
-	parser.reset();  		      // global pointer to it
-	MSTimeParse::thisMSTParser = &parser;
+	parser->reset();  		      // global pointer to it
+	MSTimeParse::thisMSTParser = parser;
 	ret=MSTimeGramparse();                // parse command string
-	selectedTimeList = parser.selectedTimes();
+	selectedTimeList = parser->selectedTimes();
       } 
     catch (MSSelectionTimeError &x)
       {
@@ -89,6 +87,68 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	throw;
       }
     return ret;
+    
+  }
+
+  int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, 
+			      const TableExprNode& colAsTEN,
+			      MSSelectableMainColumn& msMainColInterface,
+			      const TableExprNode& otherTens,
+			      Matrix<Double>& selectedTimeList)
+  {
+    MSTimeParse *thisParser = new MSTimeParse(ms,colAsTEN,msMainColInterface, otherTens);
+    int ret;
+    try
+      {
+       ret = baseMSTimeGramParseCommand(thisParser, command, selectedTimeList);
+      }
+    catch (MSSelectionTimeError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+  }
+
+  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, 
+			      const TableExprNode& otherTens,
+			      Matrix<Double>& selectedTimeList)
+  {
+    MSTimeParse *thisParser = new MSTimeParse(ms,otherTens);
+    int ret;
+    try
+      {
+       ret = baseMSTimeGramParseCommand(thisParser, command, selectedTimeList);
+      }
+    catch (MSSelectionTimeError &x)
+      {
+	delete thisParser;
+	throw;
+      }
+    delete thisParser;
+    return ret;
+    // Int ret;
+    // try
+    //   {
+    // 	MSTimeGramrestart (MSTimeGramin);
+    // 	yy_start = 1;
+    // 	strpMSTimeGram = command.chars();     // get pointer to command string
+    // 	posMSTimeGram  = 0;                   // initialize string position
+    // 	MSTimeParse parser(ms,otherTens);     // setup the parser and
+    // 	parser.reset();  		      // global pointer to it
+    // 	MSTimeParse::thisMSTParser = &parser;
+    // 	ret=MSTimeGramparse();                // parse command string
+    // 	selectedTimeList = parser.selectedTimes();
+    //   } 
+    // catch (MSSelectionTimeError &x)
+    //   {
+    // 	String newMesgs;
+    // 	newMesgs = constructMessage(msTimeGramPosition()+1, command);
+    // 	x.addMessage(newMesgs);
+    // 	throw;
+    //   }
+    // return ret;
   }
   int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens) 
   {

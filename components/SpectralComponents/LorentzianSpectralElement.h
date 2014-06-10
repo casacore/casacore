@@ -42,7 +42,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -63,8 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class LorentzianSpectralElement : public PCFSpectralElement {
 public:
 
-	// has amp = 1, center = 0, and fwhm = 1
-	LorentzianSpectralElement();
+
 
 	// Construct with given type and values
 	// <thrown>
@@ -87,13 +86,18 @@ public:
 	// Assignment (copy semantics)
 	LorentzianSpectralElement& operator=(const LorentzianSpectralElement& other);
 
-	// Evaluate the value of the profile at x
-	Double operator()(const Double x) const;
+	void setFWHM(Double fwhm) { setWidth(fwhm); }
 
+	Double getFWHM() const { return getWidth(); }
+
+	Double getFWHMErr() const { return getWidthErr(); }
 
 	// get the integral of the function
 	Double getIntegral() const;
 
+private:
+	// has amp = 1, center = 0, and fwhm = 1
+		LorentzianSpectralElement();
 
 };
 

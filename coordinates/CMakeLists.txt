@@ -17,6 +17,7 @@ Coordinates/ObsInfo.cc
 Coordinates/Projection.cc
 Coordinates/Spectral2Coordinate.cc
 Coordinates/SpectralCoordinate.cc
+Coordinates/QualityCoordinate.cc
 Coordinates/StokesCoordinate.cc
 Coordinates/TabularCoordinate.cc
 )
@@ -25,8 +26,8 @@ target_link_libraries (casa_coordinates casa_fits ${WCSLIB_LIBRARIES})
 
 install (TARGETS casa_coordinates
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -36,6 +37,7 @@ Coordinates/LinearXform.h
 Coordinates/SpectralCoordinate.h
 Coordinates/Coordinate.h
 Coordinates/StokesCoordinate.h
+Coordinates/QualityCoordinate.h
 Coordinates/FITSCoordinateUtil.h
 Coordinates/CoordinateSystem.h
 Coordinates/FrequencyAligner.h

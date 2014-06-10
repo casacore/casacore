@@ -126,7 +126,7 @@ private:
 
     // fields possibly mined from the SDFITS row
     // floating point fields that we can't be certain of their type
-    Int restfreq_p, rvsys_p, vframe_p;
+    Int restfreq_p, vframe_p;
     // String fields
     RORecordFieldPtr<String> transiti_p, molecule_p, object_p, obsmode_p;
 

@@ -74,7 +74,7 @@ template<class T> class ArrayIterator : public ArrayPositionIterator
 public:
     // Step through array "arr" over the first byDim axes
     // (using a cursor of dimensionality "byDim").
-    explicit ArrayIterator(Array<T> &arr, uInt byDim=1);
+    explicit ArrayIterator(const Array<T> &arr, uInt byDim=1);
 
     // Step through an array using the given axes.
     // The axes can be given in two ways:
@@ -89,7 +89,7 @@ public:
     // iteration step returns a cursor (containing the data of axis 1).
     // During the iteration axis 2 will vary most rapidly (as it was
     // given first).
-    ArrayIterator(Array<T> &arr, const IPosition &axes,
+    ArrayIterator(const Array<T> &arr, const IPosition &axes,
 		  Bool axesAreCursor = True);
 
     virtual ~ArrayIterator();
@@ -122,17 +122,16 @@ public:
 
 protected:
     // A pointer to the cursor.
-    Array<T> *ap_p;
+    Array<T>* ap_p;
 
 private:
     // helper function to centralize construction work
-    void init(Array<T> &);
+    void init(const Array<T> &);
     // helper function to set the pointer to the new data position in ap
     // after a step in the given dimension. -1 resets it to the beginning.
     void apSetPointer(Int stepDim);
 
-    Array<T> *pOriginalArray_p;
-    Bool readOnly_p;
+    Array<T> pOriginalArray_p;
     IPosition offset_p;
     T* dataPtr_p;
 

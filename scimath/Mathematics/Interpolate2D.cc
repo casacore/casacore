@@ -282,9 +282,9 @@ Interpolate2D::Method Interpolate2D::stringToMethod (const String &method) {
   } else if (tmp==String("C")) {
     method2 = Interpolate2D::CUBIC;
   } else if (tmp==String("Z")) {
-      method2 = Interpolate2D::LANCZOS;
+    method2 = Interpolate2D::LANCZOS;
   } else {
-    throw(AipsError("Illegal method"));
+    throw AipsError("Unknown interpolation method " + method);
   }
   return method2;
 }

@@ -86,7 +86,7 @@ Bool readTable (int acc, Bool chk, const IPosition& shape, uInt nrrow)
 	 << nrrow << endl;
     return False;
   }
-  ROArrayColumn<Type> data (table, "Data");
+  ArrayColumn<Type> data (table, "Data");
   Array<Type> result;
   Array<Type> array(shape);
   ARRINIT;
@@ -118,7 +118,7 @@ Bool readSlices (int acc, Bool chk, const IPosition& shape, const IPosition& blc
 	 << nrrow << endl;
     return False;
   }
-  ROArrayColumn<Type> data (table, "Data");
+  ArrayColumn<Type> data (table, "Data");
   Array<Type> result;
   Array<Type> array(shape);
   ARRINIT;
@@ -152,7 +152,7 @@ Bool readColX (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	 << nrrow << endl;
     return False;
   }
-  ROArrayColumn<Type> data (table, "Data");
+  ArrayColumn<Type> data (table, "Data");
   Array<Type> result;
   uInt lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate (IPosition(1,1));
@@ -207,7 +207,7 @@ Bool readColY (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	 << nrrow << endl;
     return False;
   }
-  ROArrayColumn<Type> data (table, "Data");
+  ArrayColumn<Type> data (table, "Data");
   Array<Type> result;
   uInt lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate (IPosition(1,1));
@@ -262,7 +262,7 @@ Bool readCol (int acc, Bool chk, const IPosition& shape, const IPosition& blc,
 	 << nrrow << endl;
     return False;
   }
-  ROArrayColumn<Type> data (table, "Data");
+  ArrayColumn<Type> data (table, "Data");
   Array<Type> result;
   uInt lastAxis = shape.nelements();
   IPosition shpa = shape.concatenate (IPosition(1,1));

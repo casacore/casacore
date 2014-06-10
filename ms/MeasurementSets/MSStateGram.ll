@@ -56,8 +56,8 @@ NRQ       [^\\\n\/]+
 /*
 NAME        ([A-za-z0-0_'{''}''+''-'])
 */
-IDENTIFIER  ([A-Za-z0-9_\{\}\+\-\.\= ]+|STRING)
-SIDENTIFIER ({WHITE}[A-Za-z0-9_'+''-''{''}''*''?']+{WHITE})
+IDENTIFIER  ([A-Za-z0-9_\{\}\+\-\.\=;@#%:! ]+|STRING)
+SIDENTIFIER ({WHITE}[A-Za-z0-9_\+\-\{\}=;@#$%:!'*''?' ]+{WHITE})
 
 %x QS RS ESC
 /* rules */

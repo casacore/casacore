@@ -47,11 +47,13 @@ using namespace casa;
 %token VALUES
 %token DELETE
 %token COUNT
+%token COUNTALL
 %token CALC
 %token CREATETAB
 %token FROM
 %token WHERE
 %token GROUPBY
+%token GROUPROLL
 %token HAVING
 %token ORDERBY
 %token NODUPL
@@ -65,6 +67,7 @@ using namespace casa;
 %token DMINFO
 %token ALL                  /* ALL (in SELECT ALL) */
 %token <val> NAME           /* name of function, field, table, or alias */
+%token <val> UDFLIBSYN      /* UDF library name synonym definition */
 %token <val> FLDNAME        /* name of field or table */
 %token <val> TABNAME        /* table name */
 %token <val> LITERAL
@@ -207,6 +210,10 @@ sttimcoms: TIMING
          | stylecoms
          | stylecoms TIMING
              { TaQLNode::theirStyle.setTiming (True); }
+         | TIMING stylecoms
+             { TaQLNode::theirStyle.setTiming (True); }
+         | stylecoms TIMING stylecoms
+             { TaQLNode::theirStyle.setTiming (True); }
          ;
 
 stylecoms: stylecoms stylecomm
@@ -220,6 +227,10 @@ stylelist: stylelist COMMA NAME
              { TaQLNode::theirStyle.set ($3->getString()); }
          | NAME
              { TaQLNode::theirStyle.set ($1->getString()); }
+         | stylelist COMMA UDFLIBSYN
+             { TaQLNode::theirStyle.defineSynonym ($3->getString()); }
+         | UDFLIBSYN
+             { TaQLNode::theirStyle.defineSynonym ($1->getString()); }
          ;
 
 command:   selcomm
@@ -358,6 +369,11 @@ insrow:    INTO tables insclist inspart {
                     new TaQLInsertNodeRep (*$2, *$3, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         | INTO tables UPDSET updlist {
+	       $$ = new TaQLNode(
+                    new TaQLInsertNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
          ;
 
 insclist:  {         /* no column-list */   
@@ -448,15 +464,6 @@ dminfo:    {      /* no datamans */
            }
          ;
 
-groupby:   {          /* no groupby */
-	       $$ = new TaQLNode();
-	       TaQLNode::theirNodesCreated.push_back ($$);
-	   }
-         | GROUPBY exprlist {
-	       $$ = $2;
-	   }
-         ;
-
 exprlist:  exprlist COMMA orexpr {
                $$ = $1;
 	       $$->add (*$3);
@@ -466,6 +473,22 @@ exprlist:  exprlist COMMA orexpr {
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	       $$->add (*$1);
            }
+         ;
+
+groupby:   {          /* no groupby */
+	       $$ = new TaQLNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GROUPBY exprlist {
+	       $$ = new TaQLNode(
+                    new TaQLGroupNodeRep (TaQLGroupNodeRep::Normal, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GROUPROLL exprlist {
+	       $$ = new TaQLNode(
+                    new TaQLGroupNodeRep (TaQLGroupNodeRep::Rollup, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          ;
 
 having:    {          /* no having */
@@ -1053,6 +1076,11 @@ simbexpr:  LPAREN orexpr RPAREN
          | COUNT LPAREN elemlist RPAREN {
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ("COUNT", *$3));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | COUNTALL {
+	       $$ = new TaQLNode(
+                    new TaQLFuncNodeRep ("COUNTALL"));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | NAME {

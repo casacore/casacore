@@ -41,6 +41,12 @@ int main ()
 {
   try {
     Quantity q;
+    AlwaysAssertExit (! MVTime::read (q, "20Nov96-5h20"));
+    AlwaysAssertExit (! MVTime::read (q, "20Nov96-5hm"));
+    AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5.20"));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20,", False));
+    AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5:20,", True));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T..20."));
     AlwaysAssertExit (MVTime::read (q, "today"));
     AlwaysAssertExit (MVTime::read (q, "today/12:00:00"));
     AlwaysAssertExit (MVTime::read (q, "today 12:00:00"));
@@ -52,10 +58,35 @@ int main ()
     AlwaysAssertExit (MVTime::read (q, "1996/11/20/5:20"));
     AlwaysAssertExit (MVTime::read (q, "20Nov96-5h20m"));
     AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20"));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20:"));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20:19.378Z"));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20Z"));
     AlwaysAssertExit (MVTime::read (q, "25-Jan-2012/13:45:32.8187"));
     MVTime time(q);
     showTime (q, MVTime::ANGLE, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_D, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_DM, 9);
+    showTime (q, MVTime::ANGLE+MVTime::ALPHA, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_D+MVTime::ALPHA, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_DM+MVTime::ALPHA, 9);
+    showTime (q, MVTime::ANGLE+MVTime::CLEAN, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_D+MVTime::CLEAN, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_DM+MVTime::CLEAN, 9);
+    showTime (q, MVTime::ANGLE+MVTime::ALPHA+MVTime::CLEAN, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_D+MVTime::ALPHA+MVTime::CLEAN, 9);
+    showTime (q, MVTime::ANGLE+MVTime::NO_DM+MVTime::ALPHA+MVTime::CLEAN, 9);
     showTime (q, MVTime::TIME, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_D, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_DM, 9);
+    showTime (q, MVTime::TIME+MVTime::ALPHA, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_D+MVTime::ALPHA, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_DM+MVTime::ALPHA, 9);
+    showTime (q, MVTime::TIME+MVTime::CLEAN, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_D+MVTime::CLEAN, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_DM+MVTime::CLEAN, 9);
+    showTime (q, MVTime::TIME+MVTime::ALPHA+MVTime::CLEAN, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_D+MVTime::ALPHA+MVTime::CLEAN, 9);
+    showTime (q, MVTime::TIME+MVTime::NO_DM+MVTime::ALPHA+MVTime::CLEAN, 9);
     showTime (q, MVTime::BOOST, 0);
     showTime (q, MVTime::FITS, 10);
     showTime (q, MVTime::YMD, 5);

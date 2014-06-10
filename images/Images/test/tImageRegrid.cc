@@ -48,6 +48,7 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
+#include <set>
 
 
 
@@ -196,9 +197,124 @@ try {
 //
       delete pImOut;
     }
+
+      {
+    	  cout << "*** Test makeCoordinateSystem" << endl;
+    	  CoordinateSystem cIn = CoordinateUtil::defaultCoords2D();
+    	  CoordinateSystem cTo = CoordinateUtil::defaultCoords3D();
+    	  LogIO os;
+    	  cout << "1" << endl;
+    	  std::set<Coordinate::Type> coordsToRegrid;
+    	  CoordinateSystem cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(2, 0, 1));
+    	  AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::SPECTRAL) == coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  cIn = CoordinateUtil::defaultCoords3D();
+    	  cTo = CoordinateUtil::defaultCoords2D();
+    	  cout << "2" << endl;
+
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(2, 0, 1));
+    	  AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::SPECTRAL) == coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  cIn = CoordinateUtil::defaultCoords3D();
+    	  cTo = CoordinateUtil::defaultCoords3D();
+    	  cout << "3" << endl;
+
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(2, 0, 1));
+    	  AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::SPECTRAL) == coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  cout << "4" << endl;
+
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(1, 2));
+    	  AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) == coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  cout << "5" << endl;
+
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
+    	  AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  cout << "6" << endl;
+
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(3, 0, 1, 2));
+    	  AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  cout << "7" << endl;
+    	  cIn = CoordinateUtil::defaultCoords4D();
+    	  cTo = CoordinateUtil::defaultCoords4D();
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition());
+    	  AlwaysAssert(coordsToRegrid.size() == 2, AipsError);
+    	  AlwaysAssert(
+    	      coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    	      AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::SPECTRAL) != coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::STOKES) == coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  cout << "8" << endl;
+    	  cOut = ImageRegrid<Float>::makeCoordinateSystem(os, coordsToRegrid, cTo, cIn, IPosition(3, 0, 1, 2));
+    	  AlwaysAssert(coordsToRegrid.size() == 1, AipsError);
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::DIRECTION) != coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::SPECTRAL) == coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    	  AlwaysAssert(
+    		  coordsToRegrid.find(Coordinate::STOKES) == coordsToRegrid.end(),
+    		  AipsError
+    	  );
+    }
 //
     delete pIm;
-
+    cout << "OK" << endl;
 } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;

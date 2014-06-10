@@ -43,7 +43,7 @@ int main() {
 			Double sumSq = 0;
 			Float dataMin, dataMax;
 			Int minPos, maxPos;
-			Bool minMaxInit;
+			Bool minMaxInit = True;
 			Bool fixedMinMax = False;
 			uInt pos = 0;
 			Bool useIt = True;
@@ -109,6 +109,16 @@ int main() {
 			AlwaysAssert(sumSq == DComplex(1140, 285), AipsError);
 			AlwaysAssert(dataMin == Complex(0, 0), AipsError);
 			AlwaysAssert(dataMax == Complex(18, 9), AipsError);
+
+
+			/*
+
+			AlwaysAssert(sumSq == 1140, AipsError);
+			AlwaysAssert(dataMin == 0, AipsError);
+			AlwaysAssert(dataMax == 18, AipsError);
+			AlwaysAssert(minPos == 0, AipsError);
+			AlwaysAssert(maxPos == 9, AipsError);
+			*/
 		}
 	}
 	catch (AipsError x) {

@@ -34,7 +34,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
 // Abstract base class that describes a spectral profile that can be parameterized
-// by a peak value (amplitude), center, and FWHM.
+// by a peak value (amplitude), center, and width.
 // </summary>
 
 // <use visibility=export>
@@ -43,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <synopsis>
 // Abstract base class that describes a spectral profile that can be parameterized
-// by a peak value (amplitude), center, and FWHM.
+// by a peak value (amplitude), center, and width.
 // </synopsis>
 //
 // <example>
@@ -66,9 +66,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class PCFSpectralElement : public SpectralElement {
 public:
 
-
-
-
+	// to help avoid having to hard code parameter indices
+	enum ParamType {
+		AMP,
+		CENTER,
+		WIDTH
+	};
 
 	//#Destructor
 	// Destructor
@@ -82,7 +85,10 @@ public:
 	Double getCenter() const;
 	// Get the width
 	// <group>
-	virtual Double getFWHM() const;
+	virtual Double getWidth() const;
+
+	virtual Double getFWHM() const = 0;
+
 	// get the integral from -inf to inf
 	virtual Double getIntegral() const = 0;
 	// </group>
@@ -92,7 +98,10 @@ public:
 	Double getCenterErr() const;
 	// Get the width error estimate
 	// <group>
-	virtual Double getFWHMErr() const;
+	virtual Double getWidthErr() const;
+	virtual Double getFWHMErr() const = 0;
+
+
 	virtual Double getIntegralErr() const;
 	// </group>
 	// Get error estimates of parameters
@@ -104,13 +113,15 @@ public:
 
 	void setCenter(const Double center);
 
-	virtual void setFWHM(const Double fwhm);
+	virtual void setWidth(const Double width);
 
 
 	void fixAmpl(const Bool fix=True);
 	void fixCenter(const Bool fix=True);
-	void fixFWHM(const Bool fix=True);
-	// fix parameters via encoded string. If s contains a, fix amplitude. If s contains f, fix fwhm.
+	void fixWidth(const Bool fix=True);
+	void fixFWHM(const Bool fix=True) { fixWidth(fix); }
+
+	// fix parameters via encoded string. If s contains a, fix amplitude. If s contains f, fix width.
 	// If s contains c, fix center.
 	void fixByString(const String& s);
 	// </group>
@@ -118,11 +129,32 @@ public:
 
 	Bool fixedAmpl() const;
 	Bool fixedCenter() const;
-	Bool fixedFWHM() const;
+	Bool fixedWidth() const;
+
+	Bool fixedFWHM() const { return fixedWidth(); }
 
 protected:
-	PCFSpectralElement();
+	PCFSpectralElement(
+		SpectralElement::Types type
+	);
+
+	// param should have three elements: amplitude, center, and width
+	PCFSpectralElement(
+		SpectralElement::Types type, const Vector<Double>& param
+	);
+
+	PCFSpectralElement(
+		SpectralElement::Types type, Double amp,
+		Double center, Double width
+	);
+
 	PCFSpectralElement(const PCFSpectralElement& other);
+
+
+private:
+	PCFSpectralElement();
+
+	void _initFunction();
 
 };
 

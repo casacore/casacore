@@ -28,6 +28,7 @@
 //# Includes
 #include <casa/Exceptions/Error.h>
 #include <casa/Quanta/QMath.h>
+#include <casa/Quanta/QLogical.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/sstream.h>
@@ -317,6 +318,16 @@ Quantum<Qtype> exp(const Quantum<Qtype> &left) {
     res.setValue(exp((res.getValue())));
     res.setUnit("");
     return (res);
+}
+
+template <class Qtype>
+Quantum<Qtype> min(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
+	return left < other ? left : other;
+}
+
+template <class Qtype>
+Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
+	return left > other ? left : other;
 }
 
 } //# NAMESPACE CASA - END

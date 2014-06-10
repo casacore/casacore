@@ -38,7 +38,9 @@
 #include <casa/Quanta/Quantum.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDirection.h>
+
 #include <tables/Tables/TiledDataStManAccessor.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -153,6 +155,7 @@ public:
 		     const Quantity& startFreq,
 		     const Quantity& freqInc,
 		     const Quantity& freqRes,
+		     const MFrequency::Types& freqType,
 		     const String& stokesString);
 
   bool getSpWindows(Int& nSpw,
@@ -179,15 +182,17 @@ public:
 	       const String& spWindowName,
 	       const Quantity& qStartTime, 
 	       const Quantity& qStopTime,
-	       const Bool add_observation,
-	       const Bool state_sig,
-	       const Bool state_ref,
-	       const double& state_cal,
-	       const double& state_load,
-	       const unsigned int state_sub_scan,
-	       const String& state_obs_mode,
-	       const String& observername,
-	       const String& projectname);
+               const Bool add_observation=True,
+//# from int ASDM2MSFiller::addUniqueState(
+//# defaults for ALMA as known on 20100831
+               const Bool state_sig=True,
+               const Bool state_ref=True,
+               const double& state_cal=0.,
+               const double& state_load=0.,
+               const unsigned int state_sub_scan=1,
+               const String& state_obs_mode="OBSERVE_TARGET.ON_SOURCE",
+               const String& observername="CASA simulator",
+               const String& projectname="CASA simulation");
 
 
   void observe(const Vector<String>& sourceNames,
@@ -195,15 +200,19 @@ public:
 	       const Vector<Quantity>& qStartTimes, 
 	       const Vector<Quantity>& qStopTimes,
 	       const Vector<MDirection>& directions,
-	       const Bool add_observation,
-	       const Bool state_sig,
-	       const Bool state_ref,
-	       const double& state_cal,
-	       const double& state_load,
-	       const unsigned int state_sub_scan,
-	       const String& state_obs_mode,
-	       const String& observername,
-	       const String& projectname);
+               const Bool add_observation=True,
+//# from int ASDM2MSFiller::addUniqueState(
+//# defaults for ALMA as known on 20100831
+               const Bool state_sig=True,
+               const Bool state_ref=True,
+               const double& state_cal=0.,
+               const double& state_load=0.,
+               const unsigned int state_sub_scan=1,
+               const String& state_obs_mode="OBSERVE_TARGET.ON_SOURCE",
+               const String& observername="CASA simulator",
+               const String& projectname="CASA simulation");
+
+  MeasurementSet * getMs () const;
 
 
 private:

@@ -198,6 +198,16 @@ Vector<Double> PointShape::errors() const {
   return Vector<Double>(0);
 }
 
+Vector<Double> PointShape::optParameters() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(0);
+}
+
+void PointShape::setOptParameters(const Vector<Double>& newOptParms) {
+  DebugAssert(ok(), AipsError);
+  if (&newOptParms == 0 ) {};
+}
+
 Bool PointShape::fromRecord(String& errorMessage,
 			    const RecordInterface& record) {
   DebugAssert(ok(), AipsError);

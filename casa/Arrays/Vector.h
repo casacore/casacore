@@ -47,9 +47,7 @@ namespace casa { //#Begin namespace casa
 //
 // Vector objects are one-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
-// to look at the Array documentation to see inherited functionality. A
-// tutorial on using the array classes in general is available in the
-// "AIPS++ Programming Manual".
+// to look at the Array documentation to see inherited functionality.
 //
 // Generally the member functions of Array are also available in
 // Vector versions
@@ -133,13 +131,18 @@ public:
     // Create a Vector from an STL vector (see <src>tovector()</src> in
     // <linkto class=Array>Array</linkto>  for the reverse operation).
     // <note role=tip> Both this constructor and the tovector() are
-    // defined in <src>Vector2.cc</src>. In case of DIY template instantiation
-    // the appropriate templates are instantiated using the macro
-    // <src>AIPS_VECTOR2_AUX_TEMPLATES(X)</src>
-    // defined in <src>Vector2.cc</src> (<src>X</src> is the template
-    // argument needed). </note>
+    // defined in <src>Vector2.cc</src>. </note>
     template <class U>
     Vector(const vector<T, U> &other);
+
+    // Create a Vector from a container iterator and its length.
+    // <note> The length is used instead of last, because the distance
+    // function needed to calculate the length can be expensive.
+    // <br>A third dummy argument is unfortunately needed to avoid ambiguity
+    // with another Vector constructor (taking two uInts).
+    // </note>
+    template<typename Iterator>
+    Vector(Iterator first, size_t size, int dummy);
 
     // Define a destructor, otherwise the compiler makes a static one.
     virtual ~Vector();

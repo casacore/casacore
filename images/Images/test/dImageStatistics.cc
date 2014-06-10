@@ -31,7 +31,7 @@
 //    are displayed as a function of location of the display axes
 //    (the axes not specified by keyword axes) with line plots.
 //
-//   in       The name on the input aips++ image.  Currently must be of 
+//   in       The name on the input Casacore image.  Currently must be of 
 //            type <Float> and can be of any dimension.
 //
 //            There is no default.

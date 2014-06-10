@@ -50,7 +50,7 @@ int main(int argc, const char* argv[])
 		      "String");
 	inputs.create("output",
 		      "",
-		      "The ouput aips++ Table name",
+		      "The ouput Casacore Table name",
 		      "String");
 	inputs.create("which_hdu",
 		      "1",

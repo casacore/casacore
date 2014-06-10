@@ -34,15 +34,24 @@
 #include <casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
-const char *prt(CountedConstPtr<myobj> &obj) {
+const char *prt(CountedPtr<myobj> &obj) {
   return obj->name();
 }
 
 int main() {
+
+  cout << ">>>" << endl;
+  if (countedPtrShared()) {
+    cout << "Using boost::shared_ptr" << endl;
+  } else {
+    cout << "Not using boost::shared_ptr" << endl;
+  }
+  cout << "<<<" << endl;
+
   CountedPtr<myobj> var = new myobj("fred");
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
-  CountedConstPtr<myobj> var4 (var);
+  CountedPtr<myobj> var4 (var);
 
   cout << (*var).name() << ".." <<
     (*var2).name() << ".." <<
@@ -56,12 +65,32 @@ int main() {
     (*var3).name() << ".." <<
     (*var4).name() << ".." << endl;
 
-  var2.replace(new myobj("betty"));
+  // Check to see if the no-delete feature is honored
+  // by the copy constructor and the assignment operator
 
-  cout << var->name() << ".." <<
-    var2->name() << ".." << 
-    prt(var3) << ".." << 
-    var4->name() << ".." << endl;
+  myobj * doNotDelete = new myobj ("Don't delete me!");
+
+  {
+      CountedPtr<myobj> p1 (doNotDelete, False);
+      CountedPtr<myobj> p2 (p1);
+      CountedPtr<myobj> p3;
+
+      p3 = p1;
+  }
+
+  cout << "Now explicitly delete object" << endl;
+
+  delete doNotDelete;
+
+// Replace is deprecated and not possible when
+// using a boost or c++0x smart pointer implementation
+//
+//  var2.replace(new myobj("betty"));
+//
+//  cout << var->name() << ".." <<
+//    var2->name() << ".." <<
+//    prt(var3) << ".." <<
+//    var4->name() << ".." << endl;
 
   return 0;
 }

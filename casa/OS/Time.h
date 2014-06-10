@@ -157,11 +157,13 @@ class Time {
      // or reset
    double age ();
 
+   // Return the seconds, minutes or hour part of the time.
+   // <group>
    uInt seconds ();
-
+   double dseconds ();
    uInt minutes ();
-
    uInt hours ();
+   // </group>
 
    uInt dayOfMonth ();
    uInt month ();
