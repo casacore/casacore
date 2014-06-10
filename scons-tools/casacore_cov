@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Get directory of module or package to test.
+# It can be run in something like build, build/<module> or
+# build/<module>/<part>/test.
+# If run in the test directory, the directory containing the object files
+# should be included. Its name is ../../CMakeFiles/casa_<module>.dir/<part>.
+cwd=`pwd`
+cwd1=`echo "$cwd" | sed -e "s%/test$"%%`
+srcdir=
+if [ "$cwd" != "$cwd1" ]; then
+  part=`echo $cwd1 | sed -e "s%.*/%%"`    # remove till last slash
+  module=`echo $cwd1 | sed -e "s%/${part}$%%" -e "s%.*/%%"`
+  srcdir="--directory ../../CMakeFiles/casa_${module}.dir/${part}"
+fi
+mod=`pwd | sed -e "s%.*/build/[^/]*/%/%" -e "s%.*/build/[^/]*$%%" -e "s%/test$%%"`
+
+# Clear coverage counters.
+echo "Initializing coverage info for module $mod ..."
+lcov --zerocounters --directory . $srcdir > testcov.log 2>&1
+# Create baseline coverage data.
+lcov --rc lcov_function_coverage=0 --capture --initial --directory . $srcdir --output-file testcov.bl >> testcov.log 2>&1
+#lcov --capture --initial --directory $cwd --output-file testcov
+
+# Run the tests and extract line and branch coverage information.
+echo "Running tests ..."
+ctest >> testcov.log 2>&1
+echo "Collecting coverage info ..."
+lcov --rc lcov_function_coverage=0 --rc lcov_branch_coverage=1 --no-checksum --capture --directory . $srcdir --output-file testcov.data >> testcov.log 2>&1
+#lcov --no-checksum --capture --directory $cwd --output-file testcov.info
+# Combine with baseline.
+lcov --rc lcov_function_coverage=0 --rc lcov_branch_coverage=1 -a testcov.bl -a testcov.data -o testcov.info >> testcov.log 2>&1
+
+# Get information for this module only.
+echo "Filtering coverage info ..."
+lcov --rc lcov_function_coverage=0 --rc lcov_branch_coverage=1 --output-file testcov.full --extract testcov.info "*casacore$mod/*" >> testcov.log 2>&1
+# Get it without the test programs.
+lcov --rc lcov_function_coverage=0 --rc lcov_branch_coverage=1 --output-file testcov.module --remove testcov.full "*/test/*" >> testcov.log 2>&1
+
+# Convert to html.
+echo "Converting coverage info to ./cov/index.html ..."
+rm -rf cov
+genhtml --rc lcov_function_coverage=0 --rc lcov_branch_coverage=1 --output-directory=cov testcov.module >> testcov.log 2>&1
+echo "Ready; log output in ./testcov.log"

@@ -147,6 +147,7 @@ void MPosition::checkTypes() const {
 }
 
 void MPosition::checkMyTypes() {
+  // Multiple threads could execute this, but that is harmless.
   static Bool first(True);
   if (first) {
     first = False;
@@ -196,6 +197,14 @@ Bool MPosition::getType(MPosition::Types &tp, const String &in) {
   if (i>=nall) return False;
   else tp = static_cast<MPosition::Types>(oname[i]);
   return True;
+}
+
+MPosition::Types MPosition::getType(const String& in) {
+	Types myType;
+	if (! getType(myType, in)) {
+		throw AipsError("MPosition::Types: Unrecognized type string " + in);
+	}
+	return myType;
 }
 
 Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {

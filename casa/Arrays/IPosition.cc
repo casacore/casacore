@@ -230,6 +230,21 @@ IPosition& IPosition::operator= (ssize_t value)
     return *this;
 }
 
+IPosition IPosition::operator() (const IPosition& axes) const
+{
+  IPosition ipos(axes.nelements());
+  uInt i = 0;
+  for (IPosition::const_iterator iter=axes.begin();
+       iter!=axes.end(); ++iter, ++i) {
+    if (*iter >= Int(size_p)) {
+      throw AipsError("IPosition::operator()(const IPosition&): "
+                      "Axis number must be less than size of current object");
+    }
+    ipos[i] = data_p[*iter];
+  }
+  return ipos;
+}
+
 void IPosition::append (const IPosition& other)
 {
     uInt j = size_p;

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
+#include <casa/stdmap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -52,27 +53,40 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The default style is Glish.
 //
 // The class is also used to tell the TaQL execution engine if timings
-// of the various parts of the TaQL command need to be done.
+// or tracing of the various parts of the TaQL command need to be done.
+//
+// Finally it is possible to define synonyms for UDF library names.
+// For example, 'derivedmscal' is a lot to type, so a synonym 'mscal'
+// (or even 'mc') can be defined for it.
 // </synopsis> 
 
 class TaQLStyle
 {
 public:
-  // Default style is Glish and no timings.
-  explicit TaQLStyle (uInt origin=1)
-    : itsOrigin  (origin),
-      itsEndExcl (False),
-      itsCOrder  (False),
-      itsDoTiming(False)
-    {}
+  // Default style is Glish and no timing/tracing.
+  explicit TaQLStyle (uInt origin=1);
 
-  // Reset to the default Glish style and no timings.
+  // Reset to the default Glish style and no timing/tracing.
   void reset();
 
   // Set the style according to the (case-insensitive) value.
   // Possible values are Glish, Python, Base0, Base1, FortranOrder, Corder,
   // InclEnd, and ExclEnd.
   void set (const String& value);
+
+  // Define a UDF library name synonym.
+  // The synonym name is always converted to lowercase because TaQL always
+  // uses lowercase to lookup functions. The library name kept as is making
+  // it possible to use a library containing uppercase characters.
+  // If the synonym already exists, it is redefined.
+  void defineSynonym (const String& synonym, const String& udfLibName);
+
+  // Set a synonym using a command like 'synonym = udflibname'.
+  void defineSynonym (const String& command);
+
+  // Find the UDF library name belonging to a synonym.
+  // If undefined, the synonym itself is returned.
+  String findSynonym (const String& synonym) const;
 
   // Get the various style values.
   // <group>
@@ -92,11 +106,21 @@ public:
   Bool doTiming() const
     { return itsDoTiming; }
 
+  // Set if tracing needs to be done.
+  void setTracing (Bool doTracing)
+    { itsDoTracing = doTracing; }
+
+  // Should tracing be done?
+  Bool doTracing() const
+    { return itsDoTracing; }
+
 private:
   uInt itsOrigin;
   Bool itsEndExcl;
   Bool itsCOrder;
   Bool itsDoTiming;
+  Bool itsDoTracing;
+  std::map<String,String> itsUDFLibNameMap;
 };
 
 

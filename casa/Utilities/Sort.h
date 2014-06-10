@@ -82,6 +82,10 @@ public:
     // Otherwise it returns 0.
     uInt tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const;
 
+    // Get the sort order.
+    int order() const
+      { return order_p; }
+
 protected:
     // sort order; -1 = ascending, 1 = descending
     int               order_p;
@@ -91,7 +95,7 @@ protected:
     uInt              incr_p;
     // comparison object; use CountedPtr for memory management
     CountedPtr<BaseCompare> ccmpObj_p;
-    // comparison object; use raw ponter for performance
+    // comparison object; use raw pointer for performance
     BaseCompare* cmpObj_p;
 };
 
@@ -119,12 +123,17 @@ protected:
 // If sorting on a single key with a standard data type is done,
 // Sort will use GenSortIndirect to speed up the sort.
 // <br>
-// Three sort algorithms are provided:
+// Four sort algorithms are provided:
 // <DL>
+//  <DT> <src>Sort::ParSort</src>
+//  <DD> The parallel merge sort is the fastest if it can use multiple threads.
+//       For a single thread it has O(n*log(n)) behaviour, but is slower
+//       than quicksort.
+//       A drawback is that it needs an extra index array to do the merge.
 //  <DT> <src>Sort::InsSort</src>
-//  <DD> Insertion sort has O(n*n) behaviour, thus is very slow.  It
-//       will only be very fast if the array is already (almost) in the
-//       right order.
+//  <DD> Insertion sort has O(n*n) behaviour, thus is very slow for large
+//       arrays. However, it is the fastest method for small arrays
+//       (< 50 elements) and for arrays already (almost) in the right order.
 //  <DT> <src>Sort::QuickSort</src>
 //  <DD> Care has been taken to solve the well-known quicksort problems
 //       like "array already in order" or "many equal elements".  The
@@ -134,6 +143,9 @@ protected:
 //  <DD> Heapsort has O(n*log(n)) behaviour. Its speed is lower than
 //       that of QuickSort, so QuickSort is the default algorithm.
 // </DL>
+// The default is to use QuickSort for small arrays or if only a single
+// thread can be used. Otherwise ParSort is the default.
+// 
 // All sort algorithms are <em>stable</em>, which means that the original
 // order is kept when keys are equal.
 //
@@ -237,10 +249,12 @@ class Sort
 {
 public:
     // Enumerate the sort options:
-    enum Option {HeapSort=1,               // use Heapsort algorithm
-                 InsSort=2,                // use insertion sort algorithm
-                 QuickSort=4,              // use Quicksort algorithm
-                 NoDuplicates=8};          // skip data with equal sort keys
+    enum Option {DefaultSort=0,     // ParSort, but QuickSort for small array
+                 HeapSort=1,        // use Heapsort algorithm
+                 InsSort=2,         // use insertion sort algorithm
+                 QuickSort=4,       // use Quicksort algorithm
+                 ParSort=8,         // use parallel merge sort algorithm
+                 NoDuplicates=16};  // skip data with equal sort keys
 
     // Enumerate the sort order:
     enum Order {Ascending=-1,
@@ -311,8 +325,10 @@ public:
     // The result is an array of indices giving the requested order.
     // It returns the number of resulting records. The indices array
     // is resized to that number.
+    // <br> By default it'll try if the faster GenSortIndirect can be used
+    // if a sort on a single key is used.
     uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-	       int options = QuickSort) const;
+	       int options = DefaultSort, Bool tryGenSort = True) const;
 
     // Get all unique records in a sorted array. The array order is
     // given in the indexVector (as possibly returned by the sort function).
@@ -348,6 +364,13 @@ private:
     uInt insSortNoDup (uInt nr, uInt* indices) const;
     // </group>
 
+    // Do a merge sort, if possible in parallel using OpenMP.
+    // Note that the env.var. OMP_NUM_TRHEADS sets the maximum nr of threads
+    // to use. It defaults to the number of cores.
+    uInt parSort (int nthr, uInt nrrec, uInt* inx) const;
+    void merge (uInt* inx, uInt* tmp, uInt size, uInt* index,
+                uInt nparts) const;
+
     // Do a quicksort, optionally skipping duplicates
     // (qkSort is the actual quicksort function).
     // <group>
@@ -376,6 +399,7 @@ private:
     uInt               nrkey_p;                   //# #sort-keys
     const void*        data_p;                    //# pointer to data records
     uInt               size_p;                    //# size of data record
+    int                order_p;                   //# -1=asc 0=mixed 1=desc
 };
 
 

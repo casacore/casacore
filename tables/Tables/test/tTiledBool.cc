@@ -91,7 +91,7 @@ void readTable (const TSMOption& tsmOpt)
   Array<Bool> farray, fresult;
   Table table("tTiledBool_tmp.data", Table::Old, tsmOpt);
   cout << "Checking " << table.nrow() << " rows" << endl;
-  ROArrayColumn<Bool> flag (table, "Flag");
+  ArrayColumn<Bool> flag (table, "Flag");
   for (uInt i=0; i<table.nrow(); i++) {
     flag.get (i, fresult);
     farray.resize (fresult.shape());

@@ -59,8 +59,8 @@ static Int                   posMSArrayGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-  int msArrayGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs,
-			      Int maxArrays) 
+  TableExprNode msArrayGramParseCommand (const MeasurementSet* ms, const String& command, 
+					 Vector<Int>& selectedIDs, Int maxArrays) 
 {
   try
     {
@@ -69,13 +69,13 @@ static Int                   posMSArrayGram = 0;
       strpMSArrayGram = command.chars();     // get pointer to command string
       posMSArrayGram  = 0;                   // initialize string position
       MSArrayParse parser(ms);               // setup measurement set
-      MSArrayParse::thisMSSParser = &parser; // The global pointer to the parser
+      MSArrayParse::thisMSAParser = &parser; // The global pointer to the parser
       parser.reset();
       parser.setMaxArray(maxArrays);
-      int ret=MSArrayGramparse();                // parse command string
+      MSArrayGramparse();                // parse command string
 
       selectedIDs=parser.selectedIDs();
-      return ret;
+      return parser.node();
     }
   catch (MSSelectionArrayError &x)
     {
@@ -87,14 +87,14 @@ static Int                   posMSArrayGram = 0;
 }
 
 //# Give the table expression node
-const TableExprNode* msArrayGramParseNode()
-{
-    return MSArrayParse::node();
-}
-void msArrayGramParseDeleteNode()
-{
-    return MSArrayParse::cleanup();
-}
+// const TableExprNode* msArrayGramParseNode()
+// {
+//     return MSArrayParse::thisMSAParser->node();
+// }
+// void msArrayGramParseDeleteNode()
+// {
+//     return MSArrayParse::cleanup();
+// }
 
 //# Give the string position.
 Int& msArrayGramPosition()

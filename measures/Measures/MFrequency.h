@@ -44,9 +44,7 @@ class MDoppler;
 class MVDoppler;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -190,10 +188,8 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   typedef MeasRef<MFrequency> Ref;
   // Measure conversion use (i.e. MFrequency::Convert)
   typedef MeasConvert<MFrequency> Convert;
-  // Measure table Columns (e.g., MFrequency::ROScalarColumn)
-  typedef ROScalarMeasColumn<MFrequency> ROScalarColumn;
+  // Measure table Columns (e.g., MFrequency::ScalarColumn)
   typedef ScalarMeasColumn<MFrequency> ScalarColumn;
-  typedef ROArrayMeasColumn<MFrequency> ROArrayColumn;
   typedef ArrayMeasColumn<MFrequency> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MFrequency) Types Types;

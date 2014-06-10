@@ -68,8 +68,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> A <i>global</i> destination, which is shared by all LogSinks. The global
 //      destination will typically be a GUI window or standard output.
 // <li> A <i>local</i> destination which is intended to log changes to
-//      particular dataset(s). The local destination will typically be an
-//      AIPS++ <linkto class="Table">Table</linkto>, but there is also
+//      particular dataset(s). The local destination will typically be a
+//      Casacore <linkto class="Table">Table</linkto>, but there is also
 //      a local sink for temporary storage in memory.
 // </ol>
 // Normally the <src>post()</src> member function will be called which
@@ -86,7 +86,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> a <linkto class="StreamLogSink">StreamLogSink</linkto> which sends
 //      the log messages to an <src>ostream</src> (typically <src>cerr</src>)
 // <li> a <linkto class="TableLogSink">TableLogSink</linkto> which sends
-//      the messages to an AIPS++ <linkto class=Table>Table</linkto>.
+//      the messages to a Casacore <linkto class=Table>Table</linkto>.
 // </ol>
 //
 // Every <src>LogSink</src> has an attached 
@@ -262,6 +262,40 @@ public:
   String id( ) const;
 
 private:
+
+  // LsiIntermediate is a helper class to allow LogSinkInterface to implement
+  // semantics that allow causing all classes accessing the log sink to be
+  // aimed at a different sink object.  This used to be done by using an
+  // odd "replace" method in CountedPtr; however, this is functionality is
+  // being removed to CountedPtr as it is modernized so this class was
+  // created to serve this narrow purpose.
+
+  class LsiIntermediate {
+
+  public:
+
+
+      LsiIntermediate () : logSinkInterface_p (0) {}
+      LsiIntermediate (LogSinkInterface * lsi) : logSinkInterface_p (lsi) {}
+      ~LsiIntermediate () { delete logSinkInterface_p;}
+
+      LogSinkInterface & operator* () { return * logSinkInterface_p;}
+      LogSinkInterface * operator-> () { return logSinkInterface_p;}
+      Bool operator! () const { return ! logSinkInterface_p;}
+
+      void replace (LogSinkInterface * newLsi) { delete logSinkInterface_p; logSinkInterface_p = newLsi;}
+
+  private:
+
+      // Copy ctor and op= are private and not defined to prevent double-delete.
+
+      LsiIntermediate (const LsiIntermediate &);
+      LsiIntermediate & operator= (const LsiIntermediate &);
+
+      LogSinkInterface * logSinkInterface_p;
+
+  };
+
   // Prepare for postThenThrow function.
   void preparePostThenThrow(const LogMessage &message, const AipsError& x) ;
 
@@ -270,14 +304,14 @@ private:
 
   //# Data members.
   CountedPtr<LogSinkInterface> local_sink_p;
-  static CountedPtr<LogSinkInterface> *global_sink_p;
+  static CountedPtr<LsiIntermediate> * global_sink_p;
   static Mutex theirMutex;
 
   // The following is a reference to the global sink. It is created to
   // ensure that the global sink is not destroyed before the last local
   // reference to it is destroyed. This can happen if you have a static
   // LogSink (or LogIO).
-  CountedPtr<LogSinkInterface> local_ref_to_global_p;
+  CountedPtr<LsiIntermediate> local_ref_to_global_p;
   Bool useGlobalSink_p;
 };
 

@@ -305,7 +305,7 @@ void ForwardColumn::prepare (const Table& thisTable)
 
 void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
 {
-    ROTableColumn thisCol (thisTable, colName_p);
+    TableColumn thisCol (thisTable, colName_p);
     // Open the original table as stored in the special keyword.
     // Open it for read/write if this table is writable and if the
     // original table file is writable.
@@ -323,7 +323,7 @@ void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
     }else{
 	origTable_p = Table (name);
     }
-    ROTableColumn origCol (origTable_p, colName_p);
+    TableColumn origCol (origTable_p, colName_p);
     // Check if the column descriptions match.
     // If so, get the pointer to the original column.
     if (origCol.columnDesc() != thisCol.columnDesc()) {

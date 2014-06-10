@@ -127,11 +127,12 @@ void HeaderDataUnit::errmsg(HDUErrs e, const char *s) {
 // This function determines the HDU type and the data type
 Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype, 
 	FITS::ValueType &dtype, FITSErrorHandler errhandler, HDUErrs &errstat) {
-
+        //cout << "HeaderDataUnit::determine_type        kw=\n" << kw << endl;
 	errstat = OK;
 	// Get SIMPLE or XTENSION, BITPIX, NAXIS, and NAXIS1
 	kw.first();
 	FitsKeyword *word1 = kw.next();
+        //cout << "word1=" << *word1 << endl;
 	if (!word1) {
 	    errstat = MISSKEY; 
 	    errhandler("There are no keywords", FITSError::SEVERE);
@@ -141,6 +142,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	FitsKeyword *p_bitpix = kw.next();
       	FitsKeyword *naxis = kw.next();
 	FitsKeyword *naxis1 = kw.next();
+	FitsKeyword *naxis2 = kw.next();
 	if (!p_bitpix || (p_bitpix->kw().name() != FITS::BITPIX)) {
 	    p_bitpix = kw(FITS::BITPIX); // look for BITPIX elsewhere
 	    if (!p_bitpix || (p_bitpix->kw().name() != FITS::BITPIX)) {
@@ -209,11 +211,22 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 		return False;
 	}
 	if (word1->kw().name() == FITS::SIMPLE) {
-	    if (naxis->asInt() == 0)
+            //cout << "naxis=" << naxis->asInt() << " naxis2=" << naxis2->asInt()
+            //     << " naxis1=" << naxis1->asInt() << endl;
+	    if (naxis->asInt() > 0) {
 	        htype = FITS::PrimaryArrayHDU;
-	    else
-	    	htype = (naxis1->asInt() == 0) ? 
-	    	        FITS::PrimaryGroupHDU : FITS::PrimaryArrayHDU;
+                if (naxis1->asInt() == 0)
+	    	   htype = FITS::PrimaryGroupHDU;
+	        else if (naxis->asInt() == 2 && 
+                         (naxis2->asInt() == 0 && naxis1->asInt() == 777777701))
+	    	   htype = FITS::PrimaryTableHDU;
+                else
+	           htype = FITS::PrimaryArrayHDU;
+                //cout << "htype=" << htype << endl;
+            } 
+	    else 
+	    	htype = FITS::PrimaryArrayHDU;
+            //cout << "<<HeaderDataUnit::determine_type - simple - htype=" << htype << endl; 
 	} else { // word1 is XTENSION
  	    if (strcmp(word1->asString(),"TABLE   ") == 0)
 	    	htype = FITS::AsciiTableHDU;
@@ -227,6 +240,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    	htype = FITS::ImageExtensionHDU;
 	    else
 	    	htype = FITS::UnknownExtensionHDU;
+            //cout << "<<HeaderDataUnit::determine_type - extension- htype=" << htype << endl; 
 	}
 	return True;
 }
@@ -265,7 +279,6 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 	    return True;
 	int n;
 	FitsKeyword *naxisn;
-
 	// Primary Array HDU
 	if (htype == FITS::PrimaryArrayHDU) {
 	    datasize = 1;
@@ -292,6 +305,12 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 	    datasize *= FITS::fitssize(dtype);
 	    return True;
 	}// end of if( htype == ...).
+	// Primary Table HDU
+	else if (htype == FITS::PrimaryTableHDU) {
+	    //NAXIS1 = 777777701 and NAXIS2 = 0
+	    datasize = 0; //by definition
+	    return True;
+	}
 	// Primary Group HDU 
 	else if ( htype == FITS::PrimaryGroupHDU) {
 	    datasize = 1;
@@ -556,9 +575,13 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 	double_null(FITS::mindouble), char_null('\0'), Int_null(FITS::minInt) {
 	
 	if (fin->hdutype() != t) {
-	    errmsg(BADTYPE,"Input does not contain an HDU of this type.");
+	    errmsg(BADTYPE,"[HeaderDataUnit::HeaderDataUnit] "
+                           "Input does not contain an HDU of this type.");
 	    return;
 	}
+        //cout << ">>HeaderDataUnit::HeaderDataUnit - hdu_type=" << hdu_type 
+        //     << " f.hdutype()=" << f.hdutype() 
+        //     << " fin->hdutype()=" << fin->hdutype() << endl;
 	hdu_type = fin->hdutype();
 	data_type = fin->datatype();
 	if (get_hdr(t,kwlist_) == -1) { // process the header records
@@ -566,15 +589,28 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 	    err_status = BADSIZE;
 	    return;
 	}
+        //cout << "<<HeaderDataUnit::HeaderDataUnit + hdu_type=" << hdu_type 
+        //     << " f.hdutype()=" << f.hdutype() 
+        //     << " fin->hdutype()=" << fin->hdutype() << endl;
+        //cout << "[HeaderDataUnit::HeaderDataUnit] kwlist_:\n" << kwlist_ << endl;
+        if (hdu_type==FITS::PrimaryTableHDU) { 
+            //cout << "[HeaderDataUnit::HeaderDataUnit] kwlist_:\n" << kwlist_ << endl;
+            return;
+        }
 	fits_data_size = fin->datasize(); // assign values	
 	fits_item_size = FITS::fitssize(data_type);
 	local_item_size = FITS::localsize(data_type);
 
+        //cout << "fits_data_size=" << fits_data_size 
+        //     << "fits_item_size=" << fits_item_size 
+        //     << "local_item_size=" << local_item_size 
+        //     << endl;
 	no_dims = kwlist_(FITS::NAXIS)->asInt();
-	
+        //cout << "[HeaderDataUnit::HeaderDataUnit] no_dims=" << no_dims << endl;
+
 	if (no_dims > 0) {
 	    if ((dimn = new Int [no_dims]) == 0) {
-		errmsg(NOMEM,"Cannot allocate memory.");
+		errmsg(NOMEM,"[HeaderDataUnit::HeaderDataUnit] Cannot allocate memory.");
 		no_dims = 0;
 		return;
 	    }
@@ -583,6 +619,9 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 		    dimn[i] = kwlist_(FITS::NAXIS,(i + 1))->asInt();
 	    }
 	}
+        //cout << "<<HeaderDataUnit::HeaderDataUnit ~ hdu_type=" << hdu_type 
+        //     << " f.hdutype()=" << f.hdutype() 
+        //     << " fin->hdutype()=" << fin->hdutype() << endl;
 }
 //=================================================================================================
 HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, 
@@ -1640,7 +1679,6 @@ void BinaryTableExtension::bt_assign() {
 
 	for (i = 0; i < tfields(); ++i)
 	    fld[i]->setaddr(&data_addr[i]); // set field addresses
-
 
 	// compute FITS rowsize and tablerowsize
 	fitsrowsize = 0;

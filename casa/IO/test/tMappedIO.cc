@@ -29,6 +29,7 @@
 #include <casa/IO/LargeIOFuncDef.h>
 #include <casa/OS/Timer.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
 #include <casa/sstream.h>
@@ -86,7 +87,7 @@ int main (int argc, const char* argv[])
       int fd = LargeFiledesIO::create("tMappedIO_tmp.dat2");
       timer.mark();
       ::traceLSEEK(fd, size*nrch-1, SEEK_SET);
-      ::traceWRITE (fd, buf, 1);
+      AlwaysAssert (::traceWRITE (fd, buf, 1) == 1, AipsError);
       timer.show("write");
       // Map chunk by chunk.
       for (int k=0; k<nrch; k++) {
@@ -113,6 +114,7 @@ int main (int argc, const char* argv[])
 	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     write");
+      LargeFiledesIO::close (fd);
     }
     if (mode <= 0) {
       Timer timer;
@@ -145,6 +147,7 @@ int main (int argc, const char* argv[])
 	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     read ");
+      LargeFiledesIO::close (fd);
     }
 
     delete [] buf;

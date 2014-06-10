@@ -224,7 +224,9 @@ C
          CH(IDO,2,K) = CC(1,K,1)-CC(1,K,2)
  101  CONTINUE
 C
-      IF (IDO-2) 107,105,102
+C      IF (IDO-2) 107,105,102
+      IF (IDO-2 .LT. 0) GOTO 107
+      IF (IDO-2 .EQ. 0) GOTO 105
  102  IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -302,7 +304,9 @@ C
          CH(1,3,K) = CC(1,K,4)-CC(1,K,2)
  101  CONTINUE
 C
-      IF (IDO-2) 107,105,102
+C      IF (IDO-2) 107,105,102
+      IF (IDO-2 .LT. 0) GOTO 107
+      IF (IDO-2 .EQ. 0) GOTO 105
  102  IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -738,7 +742,9 @@ C
          CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)
  101  CONTINUE
 C
-      IF (IDO-2) 107,105,102
+C      IF (IDO-2) 107,105,102
+      IF (IDO-2 .LT. 0) GOTO 107
+      IF (IDO-2 .EQ. 0) GOTO 105
  102  IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -820,7 +826,9 @@ C
          CH(1,K,4) = TR1+TR4
  101  CONTINUE
 C
-      IF (IDO-2) 107,105,102
+C      IF (IDO-2) 107,105,102
+      IF (IDO-2 .LT. 0) GOTO 107
+      IF (IDO-2 .EQ. 0) GOTO 105
  102  IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -1232,7 +1240,9 @@ C                       VERSION 3  JUNE 1979
 C
       DOUBLE PRECISION R(*), AZERO, A(*), B(*), WSAVE(*), CF, CFM
 C
-      IF (N-2) 101,102,103
+C      IF (N-2) 101,102,103
+      IF (N-2 .EQ. 0) GOTO 102
+      IF (N-2 .GT. 0) GOTO 103
  101  AZERO = R(1)
       RETURN
 C
@@ -1432,7 +1442,9 @@ C
       SUBROUTINE DEFFTB (N,R,AZERO,A,B,WSAVE)
       DOUBLE PRECISION R(*), AZERO, A(*), B(*), WSAVE(*)
 C
-      IF (N-2) 101,102,103
+C      IF (N-2) 101,102,103
+      IF (N-2 .EQ. 0) GOTO 102
+      IF (N-2 .GT. 0) GOTO 103
  101  R(1) = AZERO
       RETURN
 C
@@ -1557,7 +1569,9 @@ C
       DOUBLE PRECISION X(*), WSAVE(*), SQRT3, T1, T2, X1, XH, XIM1
       DATA SQRT3 /  1.7320508075 6887729352 7446341505 87237D0/
 C
-      IF (N-2) 101,102,103
+C      IF (N-2) 101,102,103
+      IF (N-2 .EQ. 0) GOTO 102
+      IF (N-2 .GT. 0) GOTO 103
  101  X(1) = X(1)+X(1)
       RETURN
 C
@@ -1698,7 +1712,9 @@ C
       NM1 = N-1
       NP1 = N+1
       NS2 = N/2
-      IF (N-2) 106,101,102
+C    IF (N-2) 106,101,102
+      IF (N-2 .LT. 0) GOTO 106
+      IF (N-2 .GT. 0) GOTO 102
  101  X1H = X(1)+X(2)
       X(2) = X(1)-X(2)
       X(1) = X1H
@@ -2017,7 +2033,9 @@ C
       DOUBLE PRECISION X(*), WSAVE(*), SQRT2, TSQX
       DATA SQRT2 /  1.414213562 3730950488 0168872420 970 D0 /
 C
-      IF (N-2) 102,101,103
+C      IF (N-2) 102,101,103
+      IF (N-2 .LT. 0) GOTO 102
+      IF (N-2 .GT. 0) GOTO 103
  101  TSQX = SQRT2*X(2)
       X(2) = X(1)-TSQX
       X(1) = X(1)+TSQX
@@ -2113,7 +2131,9 @@ C
       DOUBLE PRECISION X(*), WSAVE(*), TSQRT2, X1
       DATA TSQRT2 /  2.828427124 7461900976 0337744841 94 D0 /
 C
-      IF (N-2) 101,102,103
+C      IF (N-2) 101,102,103
+      IF (N-2 .EQ. 0) GOTO 102
+      IF (N-2 .GT. 0) GOTO 103
  101  X(1) = 4.D0*X(1)
       RETURN
 C

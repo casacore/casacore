@@ -30,7 +30,7 @@
 
 #include <components/SpectralComponents/PCFSpectralElement.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa {
 
 // <summary>
 // Describes a Gaussian spectral line
@@ -42,7 +42,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=SpectralElement>SpectralElement</linkto> class
+//   <li> <linkto class=SpectralElement>SpectralElement</linkto> module
 // </prerequisite>
 //
 // <etymology>
@@ -62,17 +62,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 
 class GaussianSpectralElement : public PCFSpectralElement {
+
 public:
+
+	// Default constructor creates a default Gaussian element with an amplitude
+	// of 1; an integral <src>(sigma=2sqrt(ln2)/pi)</src> of 1;
+	// a central frequency of zero. It's necessary for this to be public because
+	// Arrays of this class require access to the default constructor. It should never
+	// be used in code developers write though.
+	GaussianSpectralElement();
+
 
 	//# Constants
 	// Sigma to FWHM conversion factor
 	static const Double SigmaToFWHM;
 
 	//# Constructors
-	// Default constructor creates a default Gaussian element with an amplitude
-	// of 1; an integral <src>(sigma=2sqrt(ln2)/pi)</src> of 1;
-	// a central frequency of zero.
-	GaussianSpectralElement();
+
 	// Construct with given type and values
 	// <thrown>
 	//   <li> AipsError if sigma == 0.0
@@ -105,9 +111,9 @@ public:
 	// <thrown>
 	//   <li> AipsError if sigma == 0.0
 	// </thrown>
-	GaussianSpectralElement& operator=(const GaussianSpectralElement &other);
+//	GaussianSpectralElement& operator=(const GaussianSpectralElement &other);
 	// Evaluate the value of the element at x
-	Double operator()(const Double x) const;
+	//Double operator()(const Double x) const;
 
 	Double getSigma() const;
 	Double getFWHM() const;
@@ -136,6 +142,14 @@ public:
 
 	static Double sigmaToFWHM (const Double sigma);
 	// </group>
+
+	void set(const Vector<Double>& v);
+
+private:
+	// need to overrride SpectralElement::_set() because _param[2] is sigma
+	// but the second param of the corresponding Gaussian1D function is the
+	// FWHM :(
+	void _set(const Vector<Double>& v);
 
 };
 

@@ -208,6 +208,13 @@ public:
   virtual const String& label() const = 0;
   // </group>
 
+  // return a reference to the label associated with this component. The label
+  // is a text string for general use.
+  // <group>
+  virtual Vector<Double>& optionalParameters() = 0;
+  virtual const Vector<Double>& optionalParameters() const = 0;
+  // </group>
+ 
   // Return True if the component parameters are physically plausable. This
   // checks that I, Q, U, & V are all real numbers and if 
   // I^2 >= Q^2 + U^2 + U^2

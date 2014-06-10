@@ -84,7 +84,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
     // Open the file.
     int file;
     if (create) {
-      file = trace3OPEN ((char*)name.chars(), stropt, 0644);
+      file = trace3OPEN ((char*)name.chars(), stropt, 0666);
     } else {
       file = trace2OPEN ((char*)name.chars(), stropt);
     }

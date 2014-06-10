@@ -77,7 +77,7 @@ public:
   //# Operators    
   // Evaluate the function at <src>x</src>.
   // <group>
-  virtual T eval(typename Function<T>::FunctionArg x, const V &par) const {}
+  virtual T eval(typename Function<T>::FunctionArg, const V&) const {}
   // </group>
 
   //# Member functions
@@ -290,7 +290,7 @@ public:
   explicit WrapperData_FT(T(*f)(const T&)) :
     WrapperBase<T>(0), pf_p(f) {}
   virtual ~WrapperData_FT() {}
-  virtual T eval(typename Function<T>::FunctionArg x,
+  virtual T eval(typename Function<T>::FunctionArg,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par[0]);
     return T(0); }
@@ -329,7 +329,7 @@ public:
   explicit WrapperData_FV(T(*f)(const Vector<T>&)) :
     WrapperBase<T>(0), pf_p(f) {}
   virtual ~WrapperData_FV() {}
-  virtual T eval(typename Function<T>::FunctionArg x,
+  virtual T eval(typename Function<T>::FunctionArg,
 		 const Vector<T> &par) const {
     if (pf_p) return pf_p(par);
     return T(0); }
@@ -369,7 +369,7 @@ public:
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_TF() {}
   virtual T eval(typename Function<T>::FunctionArg x, 
-		 const Vector<T> &par) const {
+		 const Vector<T>&) const {
     if (pf_p) {
       return pf_p((*static_cast<const typename Function<T>::FunctionArg>(x)));
     }
@@ -450,8 +450,8 @@ public:
   explicit WrapperData_FF(T(*f)()) :
     WrapperBase<T>(0), pf_p(f) {}
   virtual ~WrapperData_FF() {}
-  virtual T eval(typename Function<T>::FunctionArg x,
-		 const Vector<T> &par) const {
+  virtual T eval(typename Function<T>::FunctionArg,
+		 const Vector<T>&) const {
     if (pf_p) return pf_p();
     return T(0); }
 

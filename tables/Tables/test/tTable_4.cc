@@ -172,12 +172,12 @@ void checkData (const Table& tab, const TableDesc& td,
   for (uInt i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td.columnDesc(i);
     if (cdesc.isScalar()) {
-      ROScalarColumn<uInt> col (tab, cdesc.name());
+      ScalarColumn<uInt> col (tab, cdesc.name());
       for (uInt i=0; i<nrow; i++) {
 	AlwaysAssert (col(startrow+i) == startrow+i, AipsError);
       }
     } else {
-      ROArrayColumn<uInt> col (tab, cdesc.name());
+      ArrayColumn<uInt> col (tab, cdesc.name());
       Vector<uInt> vec(10);
       for (uInt i=0; i<nrow; i++) {
 	vec = startrow+i;

@@ -117,7 +117,7 @@ public:
   FITSImage(const FITSImage& other);
 
   // Destructor does nothing
-  ~FITSImage();
+  virtual ~FITSImage();
 
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);
@@ -252,6 +252,10 @@ public:
   // Report on cache success.
   virtual void showCacheStatistics (ostream& os) const;
 
+protected:
+  // Set the masking of values 0.0
+  void setMaskZero(Bool filterZero);
+
 private:  
   String         name_p;
   String         fullname_p;
@@ -268,8 +272,10 @@ private:
   DataType       dataType_p;
   Int64          fileOffset_p;
   Bool           isClosed_p;
+  Bool           filterZeroMask_p;
   uInt           whichRep_p;
   uInt           whichHDU_p;
+  Bool           _hasBeamsTable;
 
 // Reopen the image if needed.
    void reopenIfNeeded() const

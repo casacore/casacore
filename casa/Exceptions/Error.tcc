@@ -1,4 +1,4 @@
-//# Error.cc: Base class for all AIPS++ errors (templated classes)
+//# Error.cc: Base class for all Casacore errors (templated classes)
 //# Copyright (C) 1993,1994,1995,1996,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#

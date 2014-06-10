@@ -1,4 +1,4 @@
-//# aipsxtype.h: Global initialization for special aips++ types
+//# aipsxtype.h: Global initialization for special Casacore types
 //# Copyright (C) 2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,7 +30,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// Define the extra non-standard types used by aips++
+// Define the extra non-standard types used by Casacore
 // (like proposed uSize, Size)
 
 // A guaranteed 64-bit long integer (for a.o. large file systems).

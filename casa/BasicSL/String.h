@@ -48,8 +48,8 @@ class RegexBase;
 // <summary> SubString help class to be used in at, before, ... </summary>
 // <synopsis>
 // The SubString class can only be used by the String class to be able to
-// operate the aips++ defined replacement operators at, before, after, through,
-// from. The class is used transparently in operations like:
+// operate the Casacore defined replacement operators at, before, after,
+// through, from. The class is used transparently in operations like:
 // <srcblock>
 //	string.at(2,3) = "five";
 // </srcblock> 
@@ -110,11 +110,11 @@ private:
 // </etymology>
 //
 // <synopsis> 
-// The String class is the aips++ implementation of a string class. It is
-// closely based on the standard library string class, and all operations
+// The String class is the Casacore implementation of a string class. It is
+// from the standard library string class, and all operations
 // and behaviour of strings as defined in the standard are available for
 // a String. The only difference is the extension with additional functions
-// in the aips++ String class as compared to the standard string class.
+// in the Casacore String class as compared to the standard string class.
 // 
 // The String class may be instantiated in many ways:
 // <ol>
@@ -168,7 +168,7 @@ private:
 // <li> Typedef: All relevant typedefs for standard containers and iterator
 // 		handling
 // </ol>
-// The aips++ addition are:
+// The Casacore additions are:
 // <ol>
 // <li> To standard: some Char function arguments where appropriate; RegexBase
 //		arguments in search like methods.
@@ -211,7 +211,7 @@ private:
 // </example>
 //
 // <motivation>
-// The String class eases the handling of characters within the AIPS++ 
+// The String class eases the handling of characters within the Casacore 
 // environment.
 // </motivation>
 //
@@ -268,7 +268,7 @@ class String : public string {
   // Construct from iterator
   template<class InputIterator>
     String(InputIterator begin, InputIterator end) : string(begin, end) {}
-  // From single char (** aips++ addition).
+  // From single char (** Casacore addition).
   // <note role=warning> Note that there is no automatic Char-to-String
   // conversion available. This stops inadvertent conversions of
   // integer to string. </note>
@@ -294,7 +294,7 @@ class String : public string {
   String& operator=(Char c) {
     return static_cast<String&>(string::operator=(c)); }
   // </group>
-  // ** aips++ addition: synonym for at(pos, len)
+  // ** Casacore addition: synonym for at(pos, len)
   SubString operator()(size_type pos, size_type len);
   // Concatenate
   // <group>
@@ -315,7 +315,7 @@ class String : public string {
     return string::at(pos); }
   reference operator[](size_type pos) {
     return string::operator[](pos); }
-  // *** aips++ addition
+  // *** Casacore addition
   // <group>
   const_reference elem(size_type pos) const {
     return string::at(pos); }
@@ -343,7 +343,7 @@ class String : public string {
   size_type length() const { return string::length(); }
   size_type max_size() const { return string::max_size(); }
   size_type capacity() const { return string::capacity(); }
-  // ** aips++ addition -- works as a capacity(n) -- Note Int
+  // ** Casacore addition -- works as a capacity(n) -- Note Int
   Int allocation() const { return string::capacity(); } 
   // </group>
 
@@ -362,7 +362,7 @@ class String : public string {
     string::resize(n, c); return *this; }
   String& reserve(size_type res_arg = 0) {
     string::reserve(res_arg); return *this; }
-  // ** aips++ addition -- works as a resize(n)
+  // ** Casacore addition -- works as a resize(n)
   void alloc(size_type n) { string::resize(n); }
   // </group>
 
@@ -406,7 +406,7 @@ class String : public string {
   template<class InputIterator>
     String& append(InputIterator first, InputIterator last) {
     return static_cast<String&>(string::append(first, last)); }
-  // ** aips++ addition
+  // ** Casacore addition
   String& append(Char c) {
     return static_cast<String&>(string::append(1, c)); }
   // </group>
@@ -429,7 +429,7 @@ class String : public string {
   template<class InputIterator>
     String& assign(InputIterator first, InputIterator last) {
     return static_cast<String&>(string::assign(first, last)); }
-  // ** aips++ addition
+  // ** Casacore addition
   String& assign(Char c)  {
     return static_cast<String&>(string::assign(1, c)); }
   // </group>
@@ -451,7 +451,7 @@ class String : public string {
     return static_cast<String&>(string::insert(pos, s)); }
   String& insert(size_type pos, size_type n, Char c) {
     return static_cast<String&>(string::insert(pos, n, c)); }
-  // ** aips++ addition
+  // ** Casacore addition
   String& insert(size_type pos, Char c) {
     return static_cast<String&>(string::insert(pos, 1, c)); }
 
@@ -462,7 +462,7 @@ class String : public string {
   template<class InputIterator>
     void insert(iterator p, InputIterator first, InputIterator last) {
     string::insert(p, first, last); }
-  // ** aips++ additions
+  // ** Casacore additions
   // <group>
   String& insert(iterator p, const string& str) {
     return static_cast<String&>(string::insert(p-begin(), str)); }
@@ -519,7 +519,7 @@ class String : public string {
     return static_cast<String&>(string::replace(pos, n1, s)); }
   String& replace(size_type pos, size_type n1, size_type n2, Char c) {
     return static_cast<String&>(string::replace(pos, n1, n2, c)); }
-  // ** aips++ addition
+  // ** Casacore addition
   String& replace(size_type pos, size_type n1, Char c) {
     return static_cast<String&>(string::replace(pos, n1, 1, c)); }
   String& replace(iterator i1, iterator i2, const string& str) {
@@ -530,7 +530,7 @@ class String : public string {
     return static_cast<String&>(string::replace(i1, i2, s)); }
   String& replace(iterator i1, iterator i2, size_type n, Char c) {
     return static_cast<String&>(string::replace(i1, i2, n, c)); }
-  // ** aips++ addition
+  // ** Casacore addition
   String& replace(iterator i1, iterator i2, Char c) {
     return static_cast<String&>(string::replace(i1, i2, 1, c)); }
   template<class InputIterator>
@@ -555,7 +555,7 @@ class String : public string {
   const Char *c_str() const { return string::c_str(); }
   // As pointer to char array 
   const Char *data() const { return string::data(); }
-  // ** aips++ synonym
+  // ** Casacore synonym
   const Char *chars() const { return string::c_str(); }
   // </group>
 
@@ -570,28 +570,76 @@ class String : public string {
   String substr(size_type pos=0, size_type n=npos) const {
     return String(*this, pos, n); }
 
+  // Create a formatted string using the given printf format string.
+  static String format (const char* picture, ...);
 
-  // Convert a string to a Double. If the specified string does not represent
-  // a Double, 0 is returned.
-  static Double toDouble(const String& string);
+  // Convert a String to a value. All characters in the string must be used.
+  // It uses a shift from an ostringstream, so that operator must exist
+  // for the data type used.
+  // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
+  // Otherwise it returns False and <src>value</src> contains the value read
+  // so far.
+  // <group>
+  template<typename T> inline Bool fromString (T& value, Bool chk=True) const
+  {
+    std::istringstream os(*this);
+    os >> value;
+    if (os.fail()  ||  !os.eof()) {
+      if (chk) throwFromStringError();
+      return False;
+    }
+    return True;
+  }
+  template<typename T> inline T fromString() const
+  {
+    T value;
+    fromString(value);
+    return value;
+  }
+  // </group>
 
-  // Convert a string to a Float. If the specified string does not represent
-  // a Float, 0 is returned.
-  static Float toFloat(const String& string);
+  // Convert a string to an Int, Float or Double.
+  // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
+  // Otherwise the value read so far is returned (0 if nothing read).
+  // <group>
+  static Int toInt (const String& s, Bool chk=False);
+  static Float toFloat (const String& s, Bool chk=False);
+  static Double toDouble (const String& s, Bool chk=False);
+  // </group>
 
-  // Convert a string to an Int. If the specified string does not represent
-  // an Int, 0 is returned.
-  static Int toInt(const String& string);
+  // Convert a value to a String.
+  // It uses a shift into an ostringstream, so that operator must be
+  // defined for the data type used.
+  template<typename T>
+  static String toString(const T& value)
+  {
+    std::ostringstream os;
+    os << value;
+    return os.str();
+  }
 
   // Remove beginning and ending whitespace.
   void trim();
+
+  // Remove specified chars from beginning and end of string.
+  void trim(char c[], uInt n);
+
+  // Remove specified character from beginning of string.
+  // If the character is repeated more than once on the left, all instances
+  // will be removed; e.g. ltrim(',') results in ",,xy" becoming "xy".
+  void ltrim(char c);
+
+  // Remove specified character from end of string.
+  // If the character is repeated more than once on the right, all instances
+  // will be removed; e.g. rtrim(',') results in "xy,," becoming "xy".
+  void rtrim(char c);
 
   // Does the string start with the specified string?
   Bool startsWith(const string& beginString) const
     { return find(beginString) == 0; }
 
   // Search functions. Returns either npos (if not found); else position.
-  // <note role=warning> The RegexBase ones are ** aips++ additions</note>
+  // <note role=warning> The RegexBase ones are ** Casacore additions</note>
   // <group>
   size_type find(const string &str, size_type pos=0) const {
     return string::find(str, pos); }
@@ -602,15 +650,15 @@ class String : public string {
   size_type find(Char c, size_type pos=0) const {
     return string::find(c, pos); }
   size_type find(const RegexBase &r, size_type pos=0) const;
-  size_type rfind(const string &str, size_type pos=0) const {
-    return string::find(str, pos); }
-  size_type rfind(const Char *s, size_type pos=0) const {
+  size_type rfind(const string &str, size_type pos=npos) const {
+    return string::rfind(str, pos); }
+  size_type rfind(const Char *s, size_type pos=npos) const {
     return string::rfind(s, pos); }
   size_type rfind(const Char *s, size_type pos, size_type n) const {
     return string::rfind(s, pos, n); }
-  size_type rfind(Char c, size_type pos=0) const {
+  size_type rfind(Char c, size_type pos=npos) const {
     return string::rfind(c, pos); }
-  size_type rfind(const RegexBase &r, size_type pos=0) const;
+  size_type rfind(const RegexBase &r, size_type pos=npos) const;
   size_type find_first_of(const string &str, size_type pos=0) const {
     return string::find_first_of(str, pos); }
   size_type find_first_of(const Char *s, size_type pos=0) const {
@@ -645,7 +693,7 @@ class String : public string {
     return string::find_last_not_of(c, pos); }
   // </group>
   
-  // Containment. ** aips++ addition
+  // Containment. ** Casacore addition
   // <group name=contains>
   Bool contains(Char c) const {
     return (find(c) != npos); }
@@ -655,7 +703,9 @@ class String : public string {
     return (find(s) != npos); }
   Bool contains(const RegexBase &r) const;
   // </group>
-  // Containment after (or before if pos negative) pos. ** aips++ addition
+  // Does the string starting at the given position contain the given substring?
+  // If the position is negative, it is counted from the end.
+  // ** Casacore addition
   // <group name=contains_pos>
   Bool contains(Char c, Int pos) const;
   Bool contains(const string &str, Int pos) const;
@@ -664,7 +714,7 @@ class String : public string {
   // </group>
 
   // Matches entire string from pos
-  // (or till pos if negative pos). ** aips++ addition
+  // (or till pos if negative pos). ** Casacore addition
   // <group name=matches>
   Bool matches(const string &str, Int pos = 0) const;
   Bool matches(Char c, Int pos = 0) const {
@@ -674,7 +724,7 @@ class String : public string {
   Bool matches(const RegexBase &r, Int pos = 0) const;
   // </group>
 
-  // Concatenate by prepending the argument onto String. ** aips++ addition
+  // Concatenate by prepending the argument onto String. ** Casacore addition
   // <group name=concatenation_method>
   void prepend(const string &str); 
   void prepend(const Char *s);
@@ -682,7 +732,7 @@ class String : public string {
   // </group> 
 
   // Return the position of the target in the string or npos for failure.
-  // ** aips++ addition
+  // ** Casacore addition
   // <group name=index>
   size_type index(Char c, Int startpos = 0) const {
     return ((startpos >= 0) ? find(c, startpos) :
@@ -696,14 +746,14 @@ class String : public string {
   size_type index(const RegexBase &r, Int startpos = 0) const;
   // </group>
 
-  //  Return the number of occurences of target in String. ** aips++ addition
+  //  Return the number of occurences of target in String. ** Casacore addition
   // <group name=freq>
   Int freq(Char c) const; 
   Int freq(const string &str) const;
   Int freq(const Char *s) const;
   // </group>
 
-  // Extract the string "at" the argument's position. ** aips++ addition
+  // Extract the string "at" the argument's position. ** Casacore addition
   // <group name=at>
   SubString at(size_type pos, size_type len);
   String at(size_type pos, size_type len) const {
@@ -736,39 +786,39 @@ class String : public string {
   // </group>
 
   // Start at startpos and extract the string "before" the argument's 
-  // position, exclusive. ** aips++ addition
+  // position, exclusive. ** Casacore addition
   // <group name=before>
   SubString before(size_type pos);
-  SubString before(const string &str, Int startpos = 0);
-  SubString before(const Char *s, Int startpos = 0);
-  SubString before(Char c, Int startpos = 0);
-  SubString before(const RegexBase &r, Int startpos = 0);
+  SubString before(const string &str, size_type startpos = 0);
+  SubString before(const Char *s, size_type startpos = 0);
+  SubString before(Char c, size_type startpos = 0);
+  SubString before(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString before(Int pos) {
     return before(static_cast<size_type>(pos)); };    
   // </group>
 
   // Start at startpos and extract the SubString "through" to the argument's 
-  // position, inclusive. ** aips++ addition
+  // position, inclusive. ** Casacore addition
   // <group name=through>
   SubString through(size_type pos);
-  SubString through(const string &str, Int startpos = 0);
-  SubString through(const Char *s, Int startpos = 0);
-  SubString through(Char c, Int startpos = 0);
-  SubString through(const RegexBase &r, Int startpos = 0);
+  SubString through(const string &str, size_type startpos = 0);
+  SubString through(const Char *s, size_type startpos = 0);
+  SubString through(Char c, size_type startpos = 0);
+  SubString through(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString through(Int pos) {
     return through(static_cast<size_type>(pos)); }
   // </group>
 
   // Start at startpos and extract the SubString "from" the argument's 
-  // position, inclusive, to the String's end. ** aips++ addition
+  // position, inclusive, to the String's end. ** Casacore addition
   // <group name=from>
   SubString from(size_type pos);
-  SubString from(const string &str, Int startpos = 0);
-  SubString from(const Char *s, Int startpos = 0);
-  SubString from(Char c, Int startpos = 0);
-  SubString from(const RegexBase &r, Int startpos = 0);
+  SubString from(const string &str, size_type startpos = 0);
+  SubString from(const Char *s, size_type startpos = 0);
+  SubString from(Char c, size_type startpos = 0);
+  SubString from(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString from(Int pos) {
     return from(static_cast<size_type>(pos));
@@ -776,20 +826,20 @@ class String : public string {
   // </group>
 
   // Start at startpos and extract the SubString "after" the argument's 
-  // position, exclusive, to the String's end. ** aips++ addition
+  // position, exclusive, to the String's end. ** Casacore addition
   // <group name=after>
   SubString after(size_type pos);
-  SubString after(const string &str, Int startpos = 0);
-  SubString after(const Char *s, Int startpos = 0);
-  SubString after(Char c, Int startpos = 0);
-  SubString after(const RegexBase &r, Int startpos = 0);
+  SubString after(const string &str, size_type startpos = 0);
+  SubString after(const Char *s, size_type startpos = 0);
+  SubString after(Char c, size_type startpos = 0);
+  SubString after(const RegexBase &r, size_type startpos = 0);
   // Next one for overloading reasons
   SubString after(Int pos) {
     return after(static_cast<size_type>(pos));
   };
   // </group>
 
-  // Maybe forget some. ** aips++ addition
+  // Maybe forget some. ** Casacore addition
   // <group>
   // internal transformation to reverse order of String.
   void reverse();
@@ -801,10 +851,10 @@ class String : public string {
   void downcase();
   // </group>
 
-  // Delete len chars starting at pos. ** aips++ addition
+  // Delete len chars starting at pos. ** Casacore addition
   void del(size_type pos, size_type len);
 
-  // Delete the first occurrence of target after startpos. ** aips++ addition
+  // Delete the first occurrence of target after startpos. ** Casacore addition
   //<group name=del_after>
   void del(const string &str, size_type startpos = 0);
   void del(const Char *s, size_type startpos = 0);
@@ -817,7 +867,7 @@ class String : public string {
 
   // Global substitution: substitute all occurrences of pat with repl, and
   // return the number of replacements.
-  // ** aips++ addition
+  // ** Casacore addition
   //<group name=gsub>
   Int gsub(const string &pat, const string &repl);
   Int gsub(const Char *pat, const string &repl);
@@ -825,23 +875,15 @@ class String : public string {
   Int gsub(const RegexBase &pat, const string &repl);
   //</group>
 
-  // Convert a value to a String.
-  // It uses a shift into an ostringstream, so that operator must be
-  // defined for the data type used.
-  template<typename T>
-  static String toString(const T& value)
-  {
-    std::ostringstream os;
-    os << value;
-    return os.str();
-  }
-
 private:
   // Helper functions for at, before etc
   // <group>
   SubString _substr(size_type first, size_type l) {
     return SubString(*this, first, l); }
   // </group>
+
+  // Helper function for fromString.
+  void throwFromStringError() const;
 };
 
 // <summary>
@@ -904,7 +946,7 @@ inline Bool operator<(const String &x, const Char t) {
   return x.compare(String(t)) < 0; }
 inline Bool operator<=(const String &x, const Char t) {
   return x.compare(String(t)) <= 0; }
-// ** aips++ additions of global compares. Returns 0 if equal; lt or gt 0 if
+// ** Casacore additions of global compares. Returns 0 if equal; lt or gt 0 if
 // strings unequal or of unequal lengths.
 // <group>
 inline Int compare(const string &x, const string &y) {
@@ -913,15 +955,15 @@ inline Int compare(const string &x, const Char *y) {
   return x.compare(y); }
 inline Int compare(const string &x, const Char y) {
   return x.compare(String(y)); }
-// this version ignores case. ** aips++ addition. Result is 0 if equal
+// this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
-Int fcompare(String x, String y);
+Int fcompare(const String& x, const String& y);
 // </group>
 // </group>
 
 // <summary> Splitting </summary>
 // Global function which splits the String into string array res at separator
-// and returns the number of elements.  ** aips++ addition
+// and returns the number of elements.  ** Casacore addition
 // <group name=split>
 Int split(const string &str, string res[], Int maxn,
 	  const string &sep);
@@ -947,14 +989,16 @@ String join(string src[], Int n, const string &sep);
 // Case conversion and rearrangement functions
 // <group name=case>
 // Global function which returns a transformation to reverse order of String.
-String reverse(string str);
+String reverse(const string& str);
 // Global function  which returns a transformation to uppercase of String.
-String upcase(string str);
+String upcase(const string& str);
 // Global function  which returns a transformation to lowercase of String.
-String downcase(string str);
+String downcase(const string& str);
 // Global function  which returns a transformation to capitalization of 
 // String.
-String capitalize(string str);
+String capitalize(const string& str);
+// Global function  which removes leading and trailing whitespace.
+String trim(const string& str);
 // </group>
 
 // <summary> IO </summary>

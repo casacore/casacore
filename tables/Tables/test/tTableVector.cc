@@ -147,7 +147,7 @@ void dovec (Int nr) {
 
     Table tab ("tTableVector_tmp.data",Table::Update);
     TableVector<Int> tvec4(tab,"col1");
-    ROTableVector<float> tvecFloat(tab,"col3");
+    TableVector<float> tvecFloat(tab,"col3");
 //#    tvecFloat = 3;                            // Should fail when compiling
     cout << "got tvec4" << endl;
     cout << tvec4(1) << " (must be 99999)" << endl;
@@ -169,7 +169,7 @@ void dovec (Int nr) {
     tim.show ("Adding TVec to ColVec   ");
     tvec4 = tvec4 + tvec2;
     Vector<Int> vec2;
-    ROScalarColumn<Int> col1 (tab, "col1");
+    ScalarColumn<Int> col1 (tab, "col1");
     tim.mark();
     col1.getColumn (vec2);
     tim.show ("Getting a table column  ");

@@ -47,13 +47,14 @@
 // It reads back the table, sorts it and selects rows.
 // The data read is written to stdout to be checked.
 // The standard output file tTableIter.out is checked in as a reference.
-// The script tTableIter.exec is checked in. This script executes
-// tTableIter and compares its output with tTableIter.out.
+// The script tTableIter.run executes tTableIter and compares its output
+// with tTableIter.out.
 
 void credes();
 void cretab(uInt);
 void doiter1();
 void doiter2();
+void doiter3();
 
 int main (int argc, const char* argv[])
 {
@@ -64,8 +65,9 @@ int main (int argc, const char* argv[])
     }
     credes();          // make description
     cretab(nr);        // create table (and write it)
-    doiter1();         // do table iteration operations
-    doiter2();         // do table iteration operations
+    doiter1();         // do single column iteration
+    doiter2();         // do two column iteration
+    doiter3();         // do interval iteration
     return 0;          // successfully executed
 }
 
@@ -98,7 +100,8 @@ void cretab(uInt nr) {
     cout << "Filling done" << endl;
 }
 
-void doiter1() {
+void doiter1()
+{
     Table t;
     Table tab ("tTableIter_tmp.data");
     Block<String> iv0(1);
@@ -107,7 +110,7 @@ void doiter1() {
     Int nr = 0;
     while (!iter0.pastEnd()) {
 	t = iter0.table();
-	ROScalarColumn<Int> col1(t, "col1");
+	ScalarColumn<Int> col1(t, "col1");
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";
@@ -124,7 +127,7 @@ void doiter1() {
     nr = 0;
     while (!iter0.pastEnd()) {
 	t = iter0.table();
-	ROScalarColumn<Int> col1(t, "col1");
+	ScalarColumn<Int> col1(t, "col1");
 	Vector<Int> vec;
 	col1.getColumn (vec);
 	cout << t.nrow() << " ";
@@ -135,10 +138,11 @@ void doiter1() {
 	nr++;
 	iter0.next();
     }
-    cout << "   #iter=" << nr << endl;
+    cout << "   #iter1=" << nr << endl;
 }
 
-void doiter2() {
+void doiter2()
+{
     Table tab1 ("tTableIter_tmp.data", Table::Update);
     Table t1;
     Block<String> iv1(2);
@@ -170,5 +174,39 @@ void doiter2() {
 	nr++;
 	iter1.next();
     }
-    cout << "   #iter=" << nr << endl;
+    cout << "   #iter2=" << nr << endl;
+}
+
+void doiter3()
+{
+    Table tab1 ("tTableIter_tmp.data");
+    Table t1;
+    Block<String> iv1(1);
+    iv1[0] = "col3";
+    Block<CountedPtr<BaseCompare> > compObj(1);
+    CompareIntervalReal<Float> xx(10., 0.);
+    CountedPtr<BaseCompare> xxx (new CompareIntervalReal<Float>(10., 0.));
+    compObj[0] = xxx;
+    Block<Int> orders(1);
+    orders[0] = TableIterator::Ascending;
+    TableIterator iter1(tab1, iv1, compObj, orders);
+    Int nr = 0;
+    float l3 = -1;
+    while (!iter1.pastEnd()) {
+	t1 = iter1.table();
+        cout << t1.nrow() << " ";
+	ScalarColumn<Float> col3(t1, "col3");
+	Vector<Float> vec3;
+        col3.getColumn (vec3);
+        if (max(vec3) - min(vec3) > 9.5) {
+          cout << "Interval order error" << endl;
+        }
+	if (vec3(0) < l3) {
+          cout << "order error " << vec3(0) << " " << l3 << endl;
+	}
+	l3 = vec3(0);
+	nr++;
+	iter1.next();
+    }
+    cout << "   #iter3=" << nr << endl;
 }

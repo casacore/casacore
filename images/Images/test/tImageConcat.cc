@@ -40,6 +40,8 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <images/Images/ImageConcat.h>
 #include <images/Images/PagedImage.h>
+#include <images/Images/TempImage.h>
+
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageInterface.h>
 #include <images/Regions/ImageRegion.h>
@@ -363,6 +365,119 @@ int main() {
       // Check if the LoggerHolder works fine for concatenated images.
       testLogger();
 
+    {
+    	  cout << "Noncontiguous spectral axis test - CAS-4317" << endl;
+    	  CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
+    	  Vector<Double> freqs(4);
+    	  freqs[0] = 1.41e9;
+    	  freqs[1] = 1.42e9;
+    	  freqs[2] = 1.44e9;
+    	  freqs[3] = 1.47e9;
+    	  Double restfreq1 = 1.40e9;
+    	  SpectralCoordinate sp1(MFrequency::LSRK, freqs, restfreq1);
+    	  csys.replaceCoordinate(sp1, 1);
+    	  TempImage<Float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
+    	  ImageInfo info1 = t1.imageInfo();
+    	  GaussianBeam beam1(Quantity(2, "arcsec"), Quantity(1, "arcsec"), Quantity(2, "deg"));
+    	  info1.setRestoringBeam(beam1);
+    	  t1.setImageInfo(info1);
+    	  Vector<Double> gfreqs(3);
+    	  gfreqs[0] = 1.52e9;
+    	  gfreqs[1] = 1.53e9;
+    	  gfreqs[2] = 1.54e9;
+    	  Double restfreq2 = 1.5e9;
+    	  SpectralCoordinate sp2(MFrequency::LSRK, gfreqs, restfreq2);
+    	  csys.replaceCoordinate(sp2, 1);
+    	  TempImage<Float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
+    	  ImageInfo info2 = t2.imageInfo();
+    	  GaussianBeam beam2(Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(20, "deg"));
+    	  info2.setRestoringBeam(beam2);
+    	  t2.setImageInfo(info2);
+    	  ImageConcat<Float> concat(2);
+    	  concat.setImage(t1, True);
+    	  concat.setImage(t2, True);
+    	  SpectralCoordinate newsp = concat.coordinates().spectralCoordinate();
+    	  Double world;
+    	  for (uInt i=0; i<7; i++) {
+			  newsp.toWorld(world, i);
+			  GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
+    		  if (i < 4) {
+    			  AlwaysAssert(world == freqs[i], AipsError);
+    			  AlwaysAssert(beam == beam1, AipsError);
+    		  }
+    		  else {
+    			  cout << beam<<endl;
+    			  cout <<beam2<<endl;
+    			  AlwaysAssert(world == gfreqs[i-4], AipsError);
+    			  AlwaysAssert(beam == beam2, AipsError);
+    		  }
+    	  }
+		  AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+
+
+    	  cout << "Noncontiguous spectral axis test concating 3 images - CAS-4319" << endl;
+		  Vector<Double> hfreqs(3);
+		  hfreqs[0] = 1.61e9;
+		  hfreqs[1] = 1.62e9;
+		  hfreqs[2] = 1.64e9;
+		  Double restfreq3 = 1.6e9;
+		  SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
+		  csys.replaceCoordinate(sp3, 1);
+    	  TempImage<Float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
+    	  ImageInfo info3 = t3.imageInfo();
+    	  GaussianBeam beam3(Quantity(10, "arcsec"), Quantity(7, "arcsec"), Quantity(80, "deg"));
+    	  info3.setRestoringBeam(beam3);
+    	  t3.setImageInfo(info3);
+    	  concat.setImage(t3, True);
+    	  newsp = concat.coordinates().spectralCoordinate();
+    	  for (uInt i=0; i<10; i++) {
+    		  newsp.toWorld(world, i);
+    		  GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
+    		  if (i < 4) {
+    			  AlwaysAssert(world == freqs[i], AipsError);
+    			  AlwaysAssert(beam == beam1, AipsError);
+    		  }
+    		  else if (i < 7) {
+    			  AlwaysAssert(world == gfreqs[i-4], AipsError);
+    			  AlwaysAssert(beam == beam2, AipsError);
+    		  }
+    		  else {
+    			  AlwaysAssert(world == hfreqs[i-7], AipsError);
+    			  AlwaysAssert(beam == beam3, AipsError);
+    		  }
+    	  }
+    	  AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+    }
+    {
+    	cout << "*** single beams concat test with stokes, CAS-4423" << endl;
+    	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+    	TempImage<Float> i0(TiledShape(IPosition(4, 10, 10, 1, 8)), csys);
+    	ImageInfo ii = i0.imageInfo();
+    	ii.setAllBeams(
+    		8, 1, GaussianBeam(
+    			Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(0, "deg")
+    		)
+    	);
+    	i0.setImageInfo(ii);
+
+    	Vector<Double> refVal = csys.referenceValue();
+    	refVal[3] += 1e9;
+    	csys.setReferenceValue(refVal);
+    	TempImage<Float> i1(TiledShape(IPosition(4, 10, 10, 1, 27)), csys);
+    	ii = i1.imageInfo();
+    	ii.setAllBeams(
+    		27, 1, GaussianBeam(
+    			Quantity(8, "arcsec"), Quantity(6, "arcsec"), Quantity(0, "deg")
+    		)
+  	    );
+    	i1.setImageInfo(ii);
+    	ImageConcat<Float> concat(3, False);
+    	concat.setImage(i0, True);
+    	concat.setImage(i1, True);
+
+
+
+    }
   } catch(AipsError x) {
     cerr << x.getMesg() << endl;
     return 1;
@@ -511,4 +626,85 @@ void testLogger()
        AlwaysAssertExit (nmsg == 4);
      }
    }
+   {
+         cout << "Noncontiguous spectral axis test - CAS-4317" << endl;
+         CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
+         Vector<Double> freqs(4);
+         freqs[0] = 1.41e9;
+         freqs[1] = 1.42e9;
+         freqs[2] = 1.44e9;
+         freqs[3] = 1.47e9;
+         Double restfreq1 = 1.40e9;
+         SpectralCoordinate sp1(MFrequency::LSRK, freqs, restfreq1);
+         csys.replaceCoordinate(sp1, 1);
+         TempImage<Float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
+         ImageInfo info1 = t1.imageInfo();
+         GaussianBeam beam1(Quantity(2, "arcsec"), Quantity(1, "arcsec"), Quantity(2, "deg"));
+         info1.setRestoringBeam(beam1);
+         t1.setImageInfo(info1);
+         Vector<Double> gfreqs(3);
+         gfreqs[0] = 1.52e9;
+         gfreqs[1] = 1.53e9;
+         gfreqs[2] = 1.54e9;
+         Double restfreq2 = 1.5e9;
+         SpectralCoordinate sp2(MFrequency::LSRK, gfreqs, restfreq2);
+         csys.replaceCoordinate(sp2, 1);
+         TempImage<Float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
+         ImageInfo info2 = t2.imageInfo();
+         GaussianBeam beam2(Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(20, "deg"));
+         info2.setRestoringBeam(beam2);
+         t2.setImageInfo(info2);
+         ImageConcat<Float> concat(2);
+         concat.setImage(t1, True);
+         AlwaysAssert(concat.shape() == t1.shape(), AipsError);
+         concat.setImage(t2, True);
+         SpectralCoordinate newsp = concat.coordinates().spectralCoordinate();
+         Double world;
+         for (uInt i=0; i<7; i++) {
+             newsp.toWorld(world, i);
+             GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
+             if (i < 4) {
+                 AlwaysAssert(world == freqs[i], AipsError);
+                 AlwaysAssert(beam == beam1, AipsError);
+             }
+             else {
+                 AlwaysAssert(world == gfreqs[i-4], AipsError);
+                 AlwaysAssert(beam == beam2, AipsError);
+             }
+         }
+         AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+         cout << "Noncontiguous spectral axis test concating 3 images - CAS-4319" << endl;
+         Vector<Double> hfreqs(3);
+         hfreqs[0] = 1.61e9;
+         hfreqs[1] = 1.62e9;
+         hfreqs[2] = 1.64e9;
+         Double restfreq3 = 1.6e9;
+         SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
+         csys.replaceCoordinate(sp3, 1);
+         TempImage<Float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
+         ImageInfo info3 = t3.imageInfo();
+         GaussianBeam beam3(Quantity(10, "arcsec"), Quantity(7, "arcsec"), Quantity(80, "deg"));
+         info3.setRestoringBeam(beam3);
+         t3.setImageInfo(info3);
+         concat.setImage(t3, True);
+         newsp = concat.coordinates().spectralCoordinate();
+         for (uInt i=0; i<10; i++) {
+             newsp.toWorld(world, i);
+             GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
+             if (i < 4) {
+                 AlwaysAssert(world == freqs[i], AipsError);
+                 AlwaysAssert(beam == beam1, AipsError);
+             }
+             else if (i < 7) {
+                 AlwaysAssert(world == gfreqs[i-4], AipsError);
+                 AlwaysAssert(beam == beam2, AipsError);
+             }
+             else {
+                 AlwaysAssert(world == hfreqs[i-7], AipsError);
+                 AlwaysAssert(beam == beam3, AipsError);
+             }
+         }
+         AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+   }
+
 }

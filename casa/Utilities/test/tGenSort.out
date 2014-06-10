@@ -106,6 +106,42 @@ quickSort   Ascending
     2500
 >>> Timing:            0 real           0 user           0 system
 <<<
+parSort     Ascending
+  ordered array :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.02 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  reversed array:  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  random array  :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  equal array   :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  10 diff. array:  Indirect / direct
+    2500
+>>> Timing:         0.15 real        0.03 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
 heapSort    Ascending   (no duplicates)
   ordered array :  Indirect / direct
     2500
@@ -187,6 +223,46 @@ insSort     Ascending   (no duplicates)
 >>> Timing:            0 real           0 user           0 system
 <<<
 quickSort   Ascending   (no duplicates)
+  ordered array :  Indirect / direct
+    2500
+>>> Timing:          0.1 real        0.01 user        0.01 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  reversed array:  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  random array  :  Indirect / direct
+>>> Resulting number may vary
+    2411
+<<<
+>>> Timing:         0.13 real        0.02 user           0 system
+<<<
+>>>
+    2411
+>>> Resulting number may vary
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  equal array   :  Indirect / direct
+       1
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+       1
+>>> Timing:            0 real           0 user           0 system
+<<<
+  10 diff. array:  Indirect / direct
+      10
+>>> Timing:         0.02 real        0.02 user           0 system
+<<<
+      10
+>>> Timing:            0 real           0 user           0 system
+<<<
+parSort     Ascending   (no duplicates)
   ordered array :  Indirect / direct
     2500
 >>> Timing:          0.1 real        0.01 user        0.01 system
@@ -334,6 +410,42 @@ quickSort   Descending
     2500
 >>> Timing:         0.01 real        0.01 user           0 system
 <<<
+parSort     Descending
+  ordered array :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  reversed array:  Indirect / direct
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  random array  :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  equal array   :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  10 diff. array:  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
 heapSort    Descending   (no duplicates)
   ordered array :  Indirect / direct
     2500
@@ -415,6 +527,46 @@ insSort     Descending   (no duplicates)
 >>> Timing:         0.01 real        0.01 user           0 system
 <<<
 quickSort   Descending   (no duplicates)
+  ordered array :  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.02 user           0 system
+<<<
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  reversed array:  Indirect / direct
+    2500
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+    2500
+>>> Timing:            0 real           0 user           0 system
+<<<
+  random array  :  Indirect / direct
+>>> Resulting number may vary
+    2411
+<<<
+>>> Timing:         0.02 real        0.02 user           0 system
+<<<
+>>>
+    2411
+>>> Resulting number may vary
+>>> Timing:            0 real           0 user           0 system
+<<<
+  equal array   :  Indirect / direct
+       1
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+       1
+>>> Timing:         0.01 real        0.01 user           0 system
+<<<
+  10 diff. array:  Indirect / direct
+      10
+>>> Timing:         0.01 real        0.02 user           0 system
+<<<
+      10
+>>> Timing:            0 real           0 user           0 system
+<<<
+parSort     Descending   (no duplicates)
   ordered array :  Indirect / direct
     2500
 >>> Timing:         0.01 real        0.02 user           0 system

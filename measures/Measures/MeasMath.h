@@ -274,7 +274,6 @@ private:
   // </group>
   // Workspace
   // <group>
-  Euler EULER1;
   RotMatrix ROTMAT1;
   MVPosition MVPOS1, MVPOS2, MVPOS3, MVPOS4;
   Double g1, g2, g3, lengthE;

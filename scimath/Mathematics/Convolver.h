@@ -306,6 +306,7 @@ private:
   Array<typename NumericTraits<FType>::ConjugateType> theXfr;
   Array<FType> thePsf;
   FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theFFT;
+  FFTServer<FType, typename NumericTraits<FType>::ConjugateType> theIFFT;
 
   void makeXfr(const Array<FType>& psf, const IPosition& imageSize,
 	       Bool linear, Bool fullSize);

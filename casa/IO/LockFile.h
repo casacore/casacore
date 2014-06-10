@@ -63,7 +63,7 @@ class CanonicalIO;
 // This class handles file locking by means of a special lock file
 // which serves as the locking mechanism for another file or
 // group of files. It is for instance used to lock a table in
-// the AIPS++ table system.
+// the Casacore Table System.
 // <p>
 // The lock file has in principle world read/write access, so every
 // process accessing the main file can write information in it.

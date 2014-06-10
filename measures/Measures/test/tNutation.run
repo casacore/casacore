@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rm -rf tNutation_tmp.out_*
+# For time being use 1 thread until build with Boost is always done.
+# Otherwise CountedPtr may not be thread-safe.
+OMP_NUM_THREADS=1
+export OMP_NUM_THREADS
+$casa_checktool ./tNutation 4 32
+for nm in a0 a1 a2 a3
+do
+  echo ''
+  echo " *** tNutation_tmp.out_$nm"
+  cat tNutation_tmp.out_$nm
+done

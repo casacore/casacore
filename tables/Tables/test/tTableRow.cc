@@ -120,13 +120,13 @@ void a (Bool)
     row.putMatchingFields (9, rec);
     AlwaysAssertExit (row.rowNumber() == -1);
 
-    ROScalarColumn<Int> colab (tab, "ab");
-    ROScalarColumn<uInt> colad (tab, "ad");
-    ROScalarColumn<DComplex> colag (tab, "ag");
-    ROScalarColumn<TableRecord> colrec (tab, "rec");
-    ROArrayColumn<float> colarr1 (tab, "arr1");
-    ROArrayColumn<String> colarr2 (tab, "arr2");
-    ROArrayColumn<float> colarr3 (tab, "arr3");
+    ScalarColumn<Int> colab (tab, "ab");
+    ScalarColumn<uInt> colad (tab, "ad");
+    ScalarColumn<DComplex> colag (tab, "ag");
+    ScalarColumn<TableRecord> colrec (tab, "rec");
+    ArrayColumn<float> colarr1 (tab, "arr1");
+    ArrayColumn<String> colarr2 (tab, "arr2");
+    ArrayColumn<float> colarr3 (tab, "arr3");
     Int abval;
     uInt adval;
     DComplex agval;
@@ -303,9 +303,9 @@ void c (Int nrow)
     // Now time how long it takes to read it back as columns and
     // as rows.
     timer.mark();
-    ROScalarColumn<Int> colab (tab, "ab");
-    ROScalarColumn<uInt> colad (tab, "ad");
-    ROScalarColumn<DComplex> colag (tab, "ag");
+    ScalarColumn<Int> colab (tab, "ab");
+    ScalarColumn<uInt> colad (tab, "ad");
+    ScalarColumn<DComplex> colag (tab, "ag");
     Int abval;
     uInt adval;
     DComplex agval;
@@ -317,7 +317,7 @@ void c (Int nrow)
     timer.show ("scalar column");
     
     timer.mark();
-    ROArrayColumn<float> colarr1 (tab, "arr1");
+    ArrayColumn<float> colarr1 (tab, "arr1");
     Cube<float> arrval(IPosition(3,2,3,4));
     for (i=0; i<nrow; i++) {
 	colarr1.get (i, arrval, True);

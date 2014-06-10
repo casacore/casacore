@@ -144,10 +144,10 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
    }
 
 // Initialize other things
-
-    initializeFactors();
-    setDefaultWorldMixRanges();
-    setRotationMatrix();
+   normalizePCMatrix();
+   initializeFactors();
+   setDefaultWorldMixRanges();
+   setRotationMatrix();
 }
 
 
@@ -359,15 +359,13 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    static Vector<Double> in_tmp;
    static Vector<Double> out_tmp;
 //
-   const uInt nWorld = worldAxes.nelements();
    const uInt nPixel = pixelAxes.nelements();
-   if(nWorld == nWorld) {}	// (turn off compiler warning...).
-   DebugAssert(nWorld==nWorldAxes(), AipsError);
-   DebugAssert(nPixel==nPixelAxes(), AipsError);
-   DebugAssert(worldIn.nelements()==nWorld, AipsError);
-   DebugAssert(pixelIn.nelements()==nPixel, AipsError);
-   DebugAssert(worldMin.nelements()==nWorld, AipsError);
-   DebugAssert(worldMax.nelements()==nWorld, AipsError);
+   DebugAssert(worldAxes.nelements()==nWorldAxes(), AipsError);
+   DebugAssert(pixelAxes.nelements()==nPixelAxes(), AipsError);
+   DebugAssert(worldIn.nelements()==worldAxes.nelements(), AipsError);
+   DebugAssert(pixelIn.nelements()==pixelAxes.nelements(), AipsError);
+   DebugAssert(worldMin.nelements()==worldAxes.nelements(), AipsError);
+   DebugAssert(worldMax.nelements()==worldAxes.nelements(), AipsError);
 //
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {
@@ -626,6 +624,7 @@ Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
   
     xFormToPC (wcs_p, xform);
     set_wcs(wcs_p);
+    normalizePCMatrix();
 //      
     return True;
 }
@@ -782,7 +781,128 @@ void DirectionCoordinate::checkFormat(Coordinate::formatType& format,
    }
 }
 
+DirectionCoordinate DirectionCoordinate::convert(
+	Quantity& angle, MDirection::Types directionType
+) const {
+	DirectionCoordinate myClone;
+	if (conversionType_p == type_p) {
+		myClone = *this;
+	}
+	else {
+		myClone = DirectionCoordinate(*this);
+		myClone.setReferenceConversion(type_p);
+	}
+	Vector<String> units = myClone.worldAxisUnits();
 
+	Vector<Double> x = myClone.referenceValue();
+	Vector<Quantity> myRefVal(2);
+	myRefVal[0] = Quantity(x[0], units[0]);
+	myRefVal[1] = Quantity(x[1], units[1]);
+
+	MDirection myRefDir(
+		myRefVal[0], myRefVal[1],
+		type_p
+	);
+
+
+    x = increment();
+    Vector<Quantity> inc(2);
+    inc[0] = Quantity(x[0], units[0]);
+    inc[1] = Quantity(x[1], units[1]);
+
+    Vector<Double> myRefPix = myClone.referencePixel();
+
+	// get the angle for the linear transformation matrix. Need two world coordinate points.
+
+	Vector<Double> pixVal2 = myRefPix.copy();
+	pixVal2[0] = myRefPix[0] + 1;
+	// Figure out this coordinate's rotation angle wrt the cardinal directions.
+	// Normally, its 180 degrees (longitude decreases to the right)
+	myClone.toWorld(x, pixVal2);
+	Vector<Quantity> origWorldVal2(2);
+	origWorldVal2[0] = Quantity(x[0], units[0]);
+	origWorldVal2[1] = Quantity(x[1], units[1]);
+	Quantity diffx = origWorldVal2[0] - myRefVal[0];
+	Double diffXVal = _longitudeDifference(
+		diffx, myRefVal[1], inc[0]
+	);
+	Quantity diffy = origWorldVal2[1] - myRefVal[1];
+	Double diffYVal = diffy.getValue("arcsec");
+	Double hypVal = sqrt(diffXVal*diffXVal + diffYVal*diffYVal);
+	Double origAngle = (fabs(diffYVal/inc[1].getValue("arcsec")) < 1e-8)
+		? 0 : asin(diffYVal/hypVal);
+	if (diffXVal > 0) {
+		// This is assuming a normal astronomer world where
+		// longitude values decrease to the right.
+		origAngle = C::pi - origAngle;
+	}
+	MDirection origWorldDir2(
+		origWorldVal2[0], origWorldVal2[1],
+		type_p
+	);
+
+	// newRefDir is in the the requested directionType frame
+	Quantum<Vector<Double> > newRefDir = MDirection::Convert(
+		myRefDir, directionType
+	)().getAngle();
+	Vector<Quantity> newRefDirVec(2);
+	newRefDirVec[0] = Quantity(newRefDir.getValue(units[0])[0], units[0]);
+	newRefDirVec[1] = Quantity(newRefDir.getValue(units[1])[1], units[1]);
+	Quantum<Vector<Double> > newWorld2Dir = MDirection::Convert(
+		origWorldDir2, directionType
+	)().getAngle();
+	Vector<Quantity> newWorld2Vec(2);
+
+	newWorld2Vec[0] = Quantity(newWorld2Dir.getValue(units[0])[0], units[0]);
+	newWorld2Vec[1] = Quantity(newWorld2Dir.getValue(units[1])[1], units[1]);
+	// correct for cos(latitude)
+	diffx = (newWorld2Vec[0] - newRefDirVec[0]);
+	diffXVal = _longitudeDifference(
+		diffx, newRefDirVec[1], inc[0]
+	);
+	//diffXVal = diffx.getValue("arcsec")*cos(newRefDir.getValue("rad")[1]);
+	diffy = newWorld2Vec[1] - newRefDirVec[1];
+	diffYVal = diffy.getValue("arcsec");
+	hypVal = sqrt(diffXVal*diffXVal+diffYVal*diffYVal);
+	Double newAngle = (fabs(diffYVal/inc[1].getValue("arcsec")) < 1e-8)
+		? 0 : asin(diffYVal/hypVal);
+	if (diffXVal > 0) {
+		newAngle = C::pi - newAngle;
+	}
+	angle = Quantity(newAngle - origAngle, "rad");
+
+    Matrix<Double> xform(2, 2, 0);
+
+	xform.diagonal() = 1.0;
+    DirectionCoordinate converted(
+    	directionType, projection_p, newRefDirVec[0],
+    	newRefDirVec[1], inc[0],
+    	inc[1], xform, myRefPix[0],
+    	myRefPix[1]
+    );
+	return converted;
+}
+
+Double DirectionCoordinate::_longitudeDifference(
+    const Quantity& longAngleDifference, const Quantity& latitude,
+    const Quantity& longitudePixelIncrement
+) {
+	Double latInRad = latitude.getValue("rad");
+	Double diffXVal = longAngleDifference.getValue("arcsec")*cos(latInRad);
+	Double incXVal = longitudePixelIncrement.getValue("arcsec");
+	if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+		// There may be a 2*pi ambiguity somewhere
+
+		diffXVal = (longAngleDifference - Quantity(360, "deg")).getValue("arcsec")*cos(latInRad);
+		if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+			diffXVal = (longAngleDifference + Quantity(360, "deg")).getValue("arcsec")*cos(latInRad);
+			if ((abs(diffXVal) - abs(incXVal))/abs(incXVal) > 1 + 1e-6) {
+				throw AipsError("DirectionCoordinate::_longitudeDifference: Cannot determine diffx");
+			}
+		}
+	}
+	return diffXVal;
+}
 
 void DirectionCoordinate::getPrecision (Int& precision,
                                         Coordinate::formatType& format,
@@ -826,7 +946,7 @@ String DirectionCoordinate::format(String& units,
                                    uInt worldAxis,
                                    Bool isAbsolute,
                                    Bool showAsAbsolute,
-                                   Int precision) const
+                                   Int precision, Bool) const
 {
    DebugAssert(worldAxis< nWorldAxes(), AipsError);
    DebugAssert(nWorldAxes()==2, AipsError);
@@ -1248,26 +1368,38 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
 						  const String &fieldName)
 {
     if (!container.isDefined(fieldName)) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "field " << fieldName << " is not defined.";
+    	throw AipsError(oss.str());
     }
     Record subrec(container.asRecord(fieldName));
     
     // We should probably do more type-checking as well as checking
     // for existence of the fields.
     if (! subrec.isDefined("system")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "system is not defined.";
+    	throw AipsError(oss.str());
     }
     String system;
     subrec.get("system", system);
     MDirection::Types sys;
-    Bool ok = MDirection::getType(sys, system);
-    if (!ok) {
-	return 0;
+    if (! MDirection::getType(sys, system)) {
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "Unknown reference frame ID " << system;
+    	throw AipsError(oss.str());
     }
+
     
     if (!subrec.isDefined("projection") || 
 	!subrec.isDefined("projection_parameters")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "Projection parameters are not defined.";
+    	throw AipsError(oss.str());
     }
     String projname;
     subrec.get("projection", projname);
@@ -1275,22 +1407,34 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     Projection proj(Projection::type(projname), projparms);
 //
     if (!subrec.isDefined("crval")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "crval is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> crval(subrec.toArrayDouble("crval"));
 //
     if (!subrec.isDefined("crpix")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "crpix is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> crpix(subrec.toArrayDouble("crpix"));
 //
     if (!subrec.isDefined("cdelt")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "cdelt is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
 //
     if (!subrec.isDefined("pc")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "pc is not defined.";
+    	throw AipsError(oss.str());
     }
     Matrix<Double> pc(subrec.toArrayDouble("pc"));
 //
@@ -1306,13 +1450,19 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     }
 //    
     if (!subrec.isDefined("axes")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "axes is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<String> axes;
     subrec.get("axes", axes);
 //
     if (!subrec.isDefined("units")) {
-	return 0;
+    	ostringstream oss;
+    	oss << "DirectionCoordinate::restore: "
+    		<< "units is not defined.";
+    	throw AipsError(oss.str());
     }
     Vector<String> units;
     subrec.get("units", units);
@@ -1355,6 +1505,32 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     return pDirection;
 }
 
+
+void DirectionCoordinate::setProjection(const Projection& p)
+{
+  Matrix<Double> xform;
+  pcToXform(xform, wcs_p);
+  projection_p = p;
+  makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
+           wcs_p.crval[0], wcs_p.crval[1], wcs_p.cdelt[0], wcs_p.cdelt[1],
+           wcs_p.lonpole, wcs_p.latpole);
+}
+
+void DirectionCoordinate::setReferenceFrame(const MDirection::Types rf)
+{
+  Matrix<Double> xform;
+  pcToXform(xform, wcs_p);
+  type_p = rf;
+  makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
+           wcs_p.crval[0], wcs_p.crval[1], wcs_p.cdelt[0], wcs_p.cdelt[1],
+           wcs_p.lonpole, wcs_p.latpole);
+}
+
+Bool DirectionCoordinate::hasSquarePixels() const
+{
+	Vector<Double> inc = increment();
+	return casa::near(fabs(inc[0]), fabs(inc[1]));
+}
 
 void DirectionCoordinate::toCurrent(Vector<Double>& value) const
 {
@@ -1563,6 +1739,7 @@ void DirectionCoordinate::makeDirectionCoordinate(MDirection::Types directionTyp
             refLong*to_degrees_p[0], refLat*to_degrees_p[1],
             incLong*to_degrees_p[0], incLat*to_degrees_p[1],
             longPole2, latPole2);
+
 }
 
 
@@ -1628,6 +1805,13 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
     x[3] = wcs_p.latpole;           // latPole
     return x;
 }
+
+Quantity DirectionCoordinate::getPixelArea() const {
+	Vector<Double> cdelt = increment();
+	Quantity forUnit = Quantity(1, units_p[0]) * Quantity(1, units_p[1]);
+	return Quantity(fabs(cdelt[0]*cdelt[1]), forUnit.getUnit());
+}
+
 
 // These world abs/rel functions are independent of the conversion direction type.
 
@@ -1966,6 +2150,53 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
 // Fill in the wcs structure
 
     set_wcs(wcs);
+
+// normalize the PC Matrix
+
+    normalizePCMatrix();    
+
+}
+
+
+void DirectionCoordinate::normalizePCMatrix()
+{
+    Bool changed(False);
+
+    // go over each of the two rows 
+    for (uInt i=0; i<2; i++) {
+       Double pcNorm = 0;
+       
+       // compute the factor
+       uInt jStart = i*2;
+       uInt jEnd   = jStart + 2;
+       uInt idiag =  jStart + i;
+       Double rowSign = wcs_p.pc[idiag]/fabs(wcs_p.pc[idiag]);
+
+       for (uInt j=jStart; j < jEnd; j++){
+	  pcNorm += wcs_p.pc[j]*wcs_p.pc[j];
+       }
+	
+       if (pcNorm != 0.0 && pcNorm != 1.0){
+	  changed=True;
+	  pcNorm = sqrt(pcNorm);
+	  // make diagonal element positive
+	  pcNorm *=rowSign; 
+	  
+	  // normalize all elements
+	  for (uInt j=jStart; j < jEnd; j++){
+	     wcs_p.pc[j] /= pcNorm;
+	  }
+	    
+	  // adjust the increment correspondingly
+	  wcs_p.cdelt[i] *= pcNorm;
+       }
+   }
+
+   // mark the changes in the wcs struct
+   if (changed){
+      wcs_p.altlin |= 1;
+      set_wcs(wcs_p);
+   }
 }
 
 

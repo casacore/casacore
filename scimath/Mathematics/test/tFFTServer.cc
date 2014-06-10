@@ -1769,11 +1769,29 @@ public:
 #endif
     for (int it = 0; it < iterations; it++) {
 
-      cout << "--- right-shift by 1 channel in second axis -----------------------" << endl;
+      cout << "--- zero shift ----------------------------------------------------" << endl;
       
       uInt whichAxis = 1;
-      Double relshift = 1./10.;
+      Double relshift = 0.;
       Array<S> inVal;
+      inVal.assign(a);
+
+      server.fftshift(inVal, whichAxis, relshift, False);
+
+      {
+	for(uInt i=0; i<2; i++){
+	  for(uInt j=0; j<10; j++){
+	    DComplex diff = inVal(IPosition(2,i,j))-a(IPosition(2,i,j));
+	    cout << i << " " << j << " " << inVal(IPosition(2,i,j)) << " " << a(IPosition(2,i,j)) << endl;
+	    AlwaysAssert( (diff.real()==0. && diff.imag()==0.), AipsError);
+	  }
+	}
+      }
+
+      cout << "--- right-shift by 1 channel in second axis -----------------------" << endl;
+      
+      whichAxis = 1;
+      relshift = 1./10.;
       inVal.assign(a);
 
       server.fftshift(inVal, whichAxis, relshift, False);
@@ -1863,6 +1881,25 @@ public:
 	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << expflags(IPosition(2,i,j)) << endl;
 	    AlwaysAssert((abs(diff.real())<2E-5) && (abs(diff.imag())<2E-5), AipsError);
 	    AlwaysAssert(outFlag(IPosition(2,i,j)) == expflags(IPosition(2,i,j)), AipsError);
+	  }
+	}
+      }
+
+      cout << "--- zero shift with flags partially set -----------------------" << endl;
+
+      whichAxis = 1;
+      relshift = 0.;
+
+      server.fftshift(outVal, outFlag, a, aflags, whichAxis, relshift, True, False);
+
+      {
+	for(uInt i=0; i<2; i++){
+	  for(uInt j=0; j<10; j++){
+	    DComplex diff = outVal(IPosition(2,i,j))-a(IPosition(2,i,j));
+	    cout << i << " " << j << " " << outVal(IPosition(2,i,j)) << " " << a(IPosition(2,i,j)) << endl;
+	    cout << "flag " << i << " " << j << " " << outFlag(IPosition(2,i,j)) << " " << aflags(IPosition(2,i,j)) << endl;
+	    AlwaysAssert((diff.real()==0. && diff.imag()==0.), AipsError);
+	    AlwaysAssert(outFlag(IPosition(2,i,j)) == aflags(IPosition(2,i,j)), AipsError);
 	  }
 	}
       }
@@ -2047,8 +2084,8 @@ class TestR2C   // real->complex and complex->real
         {
             Array<T> input          = P<T,S>::input();
             Array<S> expectedResult = P<T,S>::expectedResult();
-            Test<T, S, TServer, SServer> t1(server, False, epsilon, input, expectedResult);
-            Test<T, S, TServer, SServer> t2(server, True , epsilon, 
+            Test<T, S, TServer, SServer> (server, False, epsilon, input, expectedResult);
+            Test<T, S, TServer, SServer> (server, True , epsilon, 
                           shift<T>(input,          input.shape(), expectedResult.shape()), 
                           shift<S>(expectedResult, input.shape(), expectedResult.shape()));
 
@@ -2084,7 +2121,7 @@ class TestC2C
             const Array<T> &input,
             const Array<T> &expected) 
         {
-            Test<T, T, TServer, SServer> t1(server, shifted, epsilon1, input, expected);
+            Test<T, T, TServer, SServer> (server, shifted, epsilon1, input, expected);
 
 	    // For complex arrays, excersize in-place transform
 	    {
@@ -2143,7 +2180,7 @@ class TestC2C
                 server.fft0(p2, p1, False);
             }
             // Now input should be the forward transform of p2
-            Test<T, T, TServer, SServer> t2(server, shifted, epsilon2, p2, input);
+            Test<T, T, TServer, SServer> (server, shifted, epsilon2, p2, input);
         }
             
   public:
@@ -2179,7 +2216,7 @@ void run_tests()
     TestR2C<T, S, R2C1Dodd3, T, S> t7(server0);
     TestR2C<T, S, R2C2Deveneven1, T, S> t8(server0);
     TestR2C<T, S, R2C2Deveneven2, T, S> t9(server0);
-#if USE_FFTW
+#ifdef HAVE_FFTW3
     FFTServer<T, S> server(IPosition(1,8));
     server = server0;              // test assignment
 #else

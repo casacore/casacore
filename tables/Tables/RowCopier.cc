@@ -57,7 +57,7 @@ private:
     Table out;
 
     // Blocks of pointers to the TableColumns that will be involved in copying
-    PtrBlock<ROTableColumn *> inTabCol;
+    PtrBlock<TableColumn *> inTabCol;
     PtrBlock<TableColumn *> outTabCol;
 
 };
@@ -99,7 +99,7 @@ void ColumnHolder::attach(const String &outCol, const String &inCol)
 
 	  inTabCol.resize(inTabCol.nelements() + 1);
   	  outTabCol.resize(outTabCol.nelements() + 1);
-	  inTabCol[inTabCol.nelements() - 1] = new ROTableColumn(in,inCol);
+	  inTabCol[inTabCol.nelements() - 1] = new TableColumn(in,inCol);
 	  outTabCol[outTabCol.nelements() - 1] = new TableColumn(out,outCol);
     } else {
 	throw(TableError("RowCopier: " + inCol + " and " +
@@ -132,7 +132,7 @@ RowCopier::RowCopier(Table &out, const Table &in)
     for (uInt i=0; i < out.tableDesc().ncolumn(); i++) {
 	TableColumn outCol(out, i);
 	if (in.tableDesc().isColumn(outCol.columnDesc().name())) {
-	    ROTableColumn inCol(in, outCol.columnDesc().name());
+	    TableColumn inCol(in, outCol.columnDesc().name());
 	    columns_p->attach(outCol.columnDesc().name(),
 			      inCol.columnDesc().name());
 	}

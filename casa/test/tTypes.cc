@@ -1,4 +1,4 @@
-//# tTypes.cc: Test that fundamental types are valid for AIPS++
+//# tTypes.cc: Test that fundamental types are valid for Casacore
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#

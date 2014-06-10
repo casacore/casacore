@@ -303,7 +303,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
-    hrval->setExpr (topStack()->handleKeyCol (node.itsName));
+    hrval->setExpr (topStack()->handleKeyCol (node.itsName, True));
     return res;
   }
 
@@ -374,6 +374,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return TaQLNodeResult();
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitGroupNode (const TaQLGroupNodeRep& node)
+  {
+    const TaQLMultiNodeRep* keys = node.itsNodes.getMultiRep();
+    const std::vector<TaQLNode>& nodes = keys->itsNodes;
+    std::vector<TableExprNode> outnodes(nodes.size());
+    for (uInt i=0; i<nodes.size(); ++i) {
+      TaQLNodeResult result = visitNode (nodes[i]);
+      outnodes[i] = getHR(result).getExpr();
+    }
+    topStack()->handleGroupby (outnodes,
+                               node.itsType==TaQLGroupNodeRep::Rollup);
+    return TaQLNodeResult();
+  }
+
   TaQLNodeResult TaQLNodeHandler::visitSortKeyNode (const TaQLSortKeyNodeRep&)
   {
     // This function cannot be called, because visitSortNode handles
@@ -427,10 +441,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitGivingNode (const TaQLGivingNodeRep& node)
   {
     if (node.itsType < 0) {
+      // Expressions in Giving clause.
       TaQLNodeResult result = visitNode (node.itsExprList);
       const TaQLNodeHRValue& res = getHR(result);
       topStack()->handleGiving (res.getExprSet());
     } else {
+      // Table in Giving clause.
       topStack()->handleGiving (node.itsName, node.itsType);
     }
     return TaQLNodeResult();
@@ -454,22 +470,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitSelectNode (const TaQLSelectNodeRep& node)
   {
+    // Handle WHERE before SELECT because WHERE cannot use columns in a
+    // table resulting from SELECT, while the other clauses can.
+    // The reason is that selection has to be done before projection.
+    // Furthermore, handle GIVING first, because projection needs to known
+    // the resulting table name.
     Bool outer = itsStack.empty();
     TableParseSelect* curSel = pushStack (TableParseSelect::PSELECT);
     handleTables  (node.itsTables);
-    visitNode     (node.itsColumns);
+    visitNode     (node.itsGiving);
     visitNode     (node.itsJoin);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsGroupby);
-    visitNode     (node.itsHaving);
+    visitNode     (node.itsColumns);
+    handleHaving  (node.itsHaving);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
-    visitNode     (node.itsGiving);
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     if (! node.getNoExecute()) {
       if (outer) {
-	curSel->execute (node.style().doTiming(), False, True, 0);
+	curSel->execute (node.style().doTiming(), False, False, 0,
+                         node.style().doTracing());
 	hrval->setTable (curSel->getTable());
 	hrval->setNames (new Vector<String>(curSel->getColumnNames()));
 	hrval->setString ("select");
@@ -823,7 +845,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     if (node.isValid()) {
       TaQLNodeResult result = visitNode (node);
       const TaQLNodeHRValue& res = getHR(result);
-      topStack()->handleSelect (res.getExpr());
+      topStack()->handleWhere (res.getExpr());
+    }
+  }
+
+  void TaQLNodeHandler::handleHaving (const TaQLNode& node)
+  {
+    if (node.isValid()) {
+      TaQLNodeResult result = visitNode (node);
+      const TaQLNodeHRValue& res = getHR(result);
+      topStack()->handleHaving (res.getExpr());
     }
   }
 

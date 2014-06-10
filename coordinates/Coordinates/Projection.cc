@@ -304,9 +304,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    throw(AipsError("Projection::validate() - there are missing"
 			    "obligatory parameters"));
 	}
- 	else if (requiredSize < actualSize && verbose){
- 	    cerr << "Projection::validate() - too many projection parameters supplied, will try to continue ..."
- 		 << endl;
+ 	else if (requiredSize < actualSize && verbose){ 
+	  if(name(which_p)=="SFL" and actualSize==3){
+	    cerr << "Note: The GLS projection is deprecated. Use SFL instead." << endl;
+	  }
+	  else{
+	    cerr << "Projection::validate() - " << actualSize << " projection parameters provided, at most "
+		 << requiredSize << " expected. Will try to continue ..."
+		 << endl;
+	  }
  	}
 	else if (actualSize < requiredSize){ // take care of default values 
 	    parameters_p.resize(requiredSize);

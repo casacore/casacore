@@ -96,18 +96,21 @@ namespace casa {
     enum FuncType {DIRECTION, HADEC, AZEL, APP, J2000, B1950,
                    ECLIPTIC, GALACTIC, SUPERGALACTIC};
 
-    explicit DirectionUDF (FuncType);
+    // Create for the given function type.
+    // The Bools tell if rise/set times have to be calculated.
+    explicit DirectionUDF (FuncType, Bool riseSet=False);
 
     // Function to create an object.
-    static UDFBase* makeDIR   (const String&);
-    static UDFBase* makeHADEC (const String&);
-    static UDFBase* makeAZEL  (const String&);
-    static UDFBase* makeAPP   (const String&);
-    static UDFBase* makeJ2000 (const String&);
-    static UDFBase* makeB1950 (const String&);
-    static UDFBase* makeECL   (const String&);
-    static UDFBase* makeGAL   (const String&);
-    static UDFBase* makeSGAL  (const String&);
+    static UDFBase* makeDIR     (const String&);
+    static UDFBase* makeHADEC   (const String&);
+    static UDFBase* makeAZEL    (const String&);
+    static UDFBase* makeAPP     (const String&);
+    static UDFBase* makeJ2000   (const String&);
+    static UDFBase* makeB1950   (const String&);
+    static UDFBase* makeECL     (const String&);
+    static UDFBase* makeGAL     (const String&);
+    static UDFBase* makeSGAL    (const String&);
+    static UDFBase* makeRISESET (const String&);
 
     // Setup the object.
     virtual void setup (const Table&, const TaQLStyle&);
@@ -115,6 +118,7 @@ namespace casa {
     // Get the value.
     virtual Double getDouble (const TableExprId& id);
     virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Array<MVTime> getArrayDate (const TableExprId& id);
 
   private:
     //# Data members.
@@ -123,6 +127,7 @@ namespace casa {
     PositionEngine    itsPositionEngine;
     FuncType          itsType;
     MDirection::Types itsRefType;
+    Bool              itsRiseSet;   //# True = calculate rise/set time
   };
 
 } //end namespace

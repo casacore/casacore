@@ -37,14 +37,18 @@
 // </reviewed>
 // <synopsis>
 // The Complexfwd.h include file can be used where a forward declaration
-// of the aips++ complex classes could suffice (cf the system's iosfwd).
+// of the Casacore complex classes could suffice (cf the system's iosfwd).
 // </synopsis>
 
 // <group name=Complexfwd>
 
+#ifdef AIPS_CXX11
+#include <complex>
+#else
 namespace std {
-  template<class T> class complex;
+  template<typename T> struct complex;
 }
+#endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

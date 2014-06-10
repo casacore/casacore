@@ -139,6 +139,9 @@ int *iostat;
   *iostat = 0;
   if(rmdir(Path) < 0) *iostat = errno;
 }
+
+void bug_c(char s, char * m);
+
 /************************************************************************/
 void dopen_c(fd,name,status,size,iostat)
 int *fd,*size,*iostat;
@@ -224,13 +227,13 @@ char *buffer;
 }
 /************************************************************************/
 /*ARGSUSED*/
-void dwait_c(fd,iostat)
-int fd,*iostat;
+void dwait_c(int fd, int * iostat)
 /*
   This nominally waits for i/o to a file to finish. Things work synchronously
   in UNIX.
 ------------------------------------------------------------------------*/
 {
+  *iostat = fd; /* humoring gcc */
   *iostat = 0;
 }
 /************************************************************************/
@@ -296,9 +299,7 @@ char *contxt;
 }
 /************************************************************************/
 /*ARGSUSED*/
-void dreaddir_c(contxt,path,length)
-char *contxt,*path;
-int length;
+void dreaddir_c(char * contxt, char * path, int length)
 /*
   Read a directory entry.
 ------------------------------------------------------------------------*/
@@ -308,6 +309,7 @@ int length;
   struct stat buf;
   char npath[MAXPATH];
 
+  length ++; /* humoring gcc */
   d = (struct dent *)contxt;
 
   do dp = readdir(d->dir);

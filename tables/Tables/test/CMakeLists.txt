@@ -34,6 +34,8 @@ tConcatRows
 tConcatTable
 tConcatTable2
 tConcatTable3
+tExprGroup
+tExprGroupArray
 tExprNode
 tExprNodeSet
 tExprUnitNode
@@ -99,11 +101,20 @@ tVirtualTaQLColumn
 tVSCEngine
 )
 
+# Only test scripts, no test programs.
+set (testscripts
+tTableGramGroupAggr
+)
+
 # Some test sources include a test .h file.
 include_directories ( . )
 
 foreach (test ${tests})
     add_executable (${test} ${test}.cc)
     target_link_libraries (${test} casa_tables)
+    add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
+endforeach (test)
+
+foreach (test ${testscripts})
     add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
 endforeach (test)

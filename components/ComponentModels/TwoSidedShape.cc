@@ -214,6 +214,16 @@ Vector<Double> TwoSidedShape::errors() const {
   return compErrors;
 }
 
+Vector<Double> TwoSidedShape::optParameters() const {
+  DebugAssert(ok(), AipsError);
+  return Vector<Double>(0);
+}
+
+void TwoSidedShape::setOptParameters(const Vector<Double>& newOptParms){
+  DebugAssert(ok(), AipsError);
+  if (&newOptParms == 0) {};
+}
+
 Bool TwoSidedShape::fromRecord(String& errorMessage,
 			       const RecordInterface& record) {
   if (!ComponentShape::fromRecord(errorMessage, record)) return False;
@@ -234,7 +244,7 @@ Bool TwoSidedShape::fromRecord(String& errorMessage,
 //   // near function was added here and in the setMinorAxis function to fix
 //   // defect AOCso00071
   if (majorAxisInRad < minorAxisInRad && 
-      !near(minorAxisInRad, minorAxisInRad, C::dbl_epsilon)) {
+      !near(minorAxisInRad, minorAxisInRad, 2*C::dbl_epsilon)) {
     errorMessage += "The major axis cannot be smaller than the minor axis\n";
     return False;
   }
@@ -699,20 +709,43 @@ String TwoSidedShape::sizeToString(
 	summary << std::fixed << setprecision(precision1);
 	summary << "       --- major axis FWHM:     " << major.getValue();
 	if (includeUncertainties) {
-		summary << " +/- " << majorErr.getValue();
+		if (majorErr.getValue() == 0) {
+			summary << " " << prefUnits << " (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << majorErr.getValue()
+				<< " " << prefUnits << endl;
+		}
 	}
-	summary << " " << prefUnits << endl;
+	else {
+		summary << " " << prefUnits << endl;
+	}
 	summary << "       --- minor axis FWHM:     " << minor.getValue();
 	if (includeUncertainties) {
-		summary << " +/- " << minorErr.getValue();
+		if (minorErr.getValue() == 0) {
+			summary << " " << prefUnits << " (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << minorErr.getValue()
+				<< " " << prefUnits << endl;
+		}
 	}
-	summary << " "<< prefUnits << endl;
+	else {
+		summary << " " << prefUnits << endl;
+	}
 	summary << setprecision(precision2);
 	summary << "       --- position angle: " << pa;
 	if (includeUncertainties) {
-		summary << " +/- " << dpa;
+		if (dpa == 0) {
+			summary << "deg (fixed)" << endl;
+		}
+		else {
+			summary << " +/- " << dpa << " deg" << endl;
+		}
 	}
-	summary << " deg" << endl;
+	else {
+		summary << " deg" << endl;
+	}
 	return summary.str();
 }
 

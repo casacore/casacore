@@ -30,14 +30,14 @@
 
 //# Includes
 #include <casa/Containers/Record.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <tables/Tables/TableRecord.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class LCRegion;
-class CoordinateSystem;
 class RecordInterface;
-class TableRecord;
 class IPosition;
 class String;
 
@@ -222,6 +222,22 @@ protected:
                             const CoordinateSystem& cSys,
                             const IPosition& shape) const;
 
+    static void unitInit();
+
+    void checkAxes (
+    	const IPosition& pixelAxes,
+        const CoordinateSystem& cSys,
+        const Vector<String>& quantityUnits
+    ) const;
+
+	static void convertPixel(
+		Double& pixel,
+	    const Double& value,
+	    const String& unit,
+	    const Int absRel,
+	    const Double refPix,
+	    const Int shape
+	);
 private:
     String itsComment;
     Record itsAxesDesc;

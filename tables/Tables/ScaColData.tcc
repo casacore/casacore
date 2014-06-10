@@ -28,7 +28,7 @@
 #include <tables/Tables/ScaColData.h>
 #include <tables/Tables/ScaColDesc.h>
 #include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableTrace.h>
 #include <tables/Tables/RefRows.h>
 #include <casa/Arrays/Vector.h>
 #include <tables/Tables/DataManager.h>
@@ -108,6 +108,9 @@ Bool ScalarColumnData<T>::isDefined (uInt rownr) const
 template<class T>
 void ScalarColumnData<T>::get (uInt rownr, void* val) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr);
+    }
     checkReadLock (True);
     dataColPtr_p->get (rownr, (T*)val);
     autoReleaseLock();
@@ -117,6 +120,9 @@ void ScalarColumnData<T>::get (uInt rownr, void* val) const
 template<class T>
 void ScalarColumnData<T>::getScalarColumn (void* val) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r');
+    }
     Vector<T>* vecPtr = (Vector<T>*)val;
     if (vecPtr->nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
@@ -130,6 +136,9 @@ template<class T>
 void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
 						void* val) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs);
+    }
     Vector<T>& vec = *(Vector<T>*)val;
     uInt nr = rownrs.nrow();
     if (vec.nelements() != nr) {
@@ -144,6 +153,9 @@ void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
 template<class T>
 void ScalarColumnData<T>::put (uInt rownr, const void* val)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr);
+    }
     checkValueLength ((const T*)val);
     checkWriteLock (True);
     dataColPtr_p->put (rownr, (const T*)val);
@@ -153,6 +165,9 @@ void ScalarColumnData<T>::put (uInt rownr, const void* val)
 template<class T>
 void ScalarColumnData<T>::putScalarColumn (const void* val)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w');
+    }
     const Vector<T>* vecPtr = (const Vector<T>*)val;
     if (vecPtr->nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
@@ -167,6 +182,9 @@ template<class T>
 void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 						const void* val)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs);
+    }
     const Vector<T>& vec = *(const Vector<T>*)val;
     if (vec.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));

@@ -65,7 +65,7 @@ class ImageOpener
 public:
 // Define the possible image types.
   enum ImageTypes {
-    // AIPS++
+    // Casacore (former AIPS++)
     AIPSPP,
     // FITS
     FITS,
@@ -103,13 +103,13 @@ public:
   // Open an image in the file/table with the given name.
   // The specified mask will be applied (default is default mask).
   // A null pointer is returned for an unknown image type.
-  // Non-AIPS++ image types must have been registered to be known.
+  // Non-Casacore image types must have been registered to be known.
   // Note that class ImageProxy has a function to open an image from a file
   // or from an image expression.
   static LatticeBase* openImage (const String& fileName,
 				 const MaskSpecifier& = MaskSpecifier());
 
-  // Open an AIPS++ paged image of any data type.
+  // Open a Casacore paged image of any data type.
   static LatticeBase* openPagedImage (const String& fileName,
 				      const MaskSpecifier& = MaskSpecifier());
 

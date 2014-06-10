@@ -139,7 +139,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       for concurrent access,
 //  <LI> <A HREF="#Tables:KeyLookup">indexing</A> a table for faster lookup,
 //  <LI> <A HREF="#Tables:vectors">vector operations</A> on a column.
-//  <LI> <A HREF="#Tables:performance">performance and robustness</A> considerations.
+//  <LI> <A HREF="#Tables:performance">performance and robustness</A>
+//       considerations with some information on
+//       <A HREF="#Tables:iotracing">IO tracing</A>.
 // </UL>
 
 
@@ -282,26 +284,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // You can read data from a table column with the "get" functions
 // in the classes
-// <linkto class="ROScalarColumn:description">ROScalarColumn&lt;T&gt;</linkto>
+// <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
 // and
-// <linkto class="ROArrayColumn:description">ROArrayColumn&lt;T&gt;</linkto>.
+// <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>.
 // For scalars of a standard data type (i.e. Bool, uChar, Int, Short,
 // uShort, uInt, float, double, Complex, DComplex and String) you could
 // instead use 
-// <linkto class="ROTableColumn">ROTableColumn::getScalar(...)</linkto> or
-// <linkto class="ROTableColumn">ROTableColumn::asXXX(...)</linkto>.
+// <linkto class="TableColumn">TableColumn::getScalar(...)</linkto> or
+// <linkto class="TableColumn">TableColumn::asXXX(...)</linkto>.
 // These functions offer an extra: they do automatic data type promotion;
 // so that you can, for example, get a double value from a float column.
 //
-// These "get" functions are used in the same way as the simple"put"
+// These "get" functions are used in the same way as the simple "put"
 // functions described in the previous section.
 // <p>
 // <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
-// is derived from ROScalarColumn&lt;T&gt;, and
-// therefore has the same "get" functions. However, if a
-// ScalarColumn&lt;T&gt; object is constructed for a non-writable column,
-// an exception is thrown. Only ROScalarColumn&lt;T&gt; objects can be
-// constructed for nonwritable columns.
+// can be constructed for a non-writable column. However, an exception
+// is thrown if the put function is used for it.
 // The same is true for
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto> and
 // <linkto class="TableColumn:description">TableColumn</linkto>.
@@ -323,8 +322,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the table description.
-//     ROScalarColumn<Int> acCol (tab, "ac");
-//     ROArrayColumn<Float> arr2Col (tab, "arr2");
+//     ScalarColumn<Int> acCol (tab, "ac");
+//     ArrayColumn<Float> arr2Col (tab, "arr2");
 //
 //     // Loop through all rows in the table.
 //     uInt nrrow = tab.nrow();
@@ -570,7 +569,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   Copy values from another column to this column.<BR>
 //   These functions have the advantage that the
 //   data type of the input and/or output column can be unknown.
-//   The generic (RO)TableColumn objects can be used for this purpose.
+//   The generic TableColumn objects can be used for this purpose.
 //   The put(Column) function checks the data types and, if possible,
 //   converts them. If the conversion is not possible, it throws an
 //   exception.
@@ -598,7 +597,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     <linkto class="ArrayColumn">ArrayColumn::putColumn(...)</linkto>
 //     are less generic and therefore potentially more efficient.
 //     The most efficient variants are the ones taking a
-//     ROScalar/ArrayColumn&lt;T&gt;, because they require no data type
+//     Scalar/ArrayColumn&lt;T&gt;, because they require no data type
 //     conversion.
 //   </ul>
 // </ol>
@@ -853,12 +852,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // possible to add a constant to a table vector. This has the effect
 // that the underlying column gets changed.
 //
-// You can use the templated classes
-// <linkto class="ROTableVector:description">ROTableVector</linkto> and
-// <linkto class="TableVector:description">TableVector</linkto> and
-// to define a table vector (readonly and read/write, respectively) for
-// a scalar column. Columns containing arrays or tables are not supported.
-// The data type of the (RO)TableVector object must match the
+// You can use the templated class
+// <linkto class="TableVector:description">TableVector</linkto>
+// to make a scalar column appear as a (table) vector.
+// Columns containing arrays or tables are not supported.
+// The data type of the TableVector object must match the
 // data type of the column.
 // A table vector can also hold a normal vector so that (temporary)
 // results of table vector operations can be handled.
@@ -867,13 +865,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // store the result in a temporary table vector.
 // <srcblock>
 //    // Create a table vector for column COL1.
-//    // It has to be a ROTableVector, because the table is opened
-//    // as readonly.
+//    // Note that if the table is readonly, putting data in the table vector
+//    // results in an exception.
 //    Table tab ("Table.data");
-//    ROTableVector<Int> tabvec(tab, "COL1");
-//    // Multiply it by a constant.
-//    // The result has to be stored in a TableVector,
-//    // since a ROTableVector cannot be written to.
+//    TableVector<Int> tabvec(tab, "COL1");
+//    // Multiply it by a constant. Result is kept in a Vector in memory.
 //    TableVector<Int> temp = 2 * tabvec;
 // </srcblock>
 //
@@ -1689,6 +1685,68 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       to separate them, otherwise tiles containing FLAG also contain DATA making the
 //       tiles much bigger, thus more expensive to access.
 // </ol>
+//
+// <ANCHOR NAME="Tables:iotracing">
+// <h4>IO Tracing</h4></ANCHOR>
+//
+// Several forms of tracing can be done to see how the Table I/O performs.
+// <ul>
+//  <li> On Linux/UNIX systems the <src>strace</src> command can be used to
+//       collect trace information about the physical IO.
+//  <li> The function <src>showCacheStatistics</src> in class
+//       TiledStManAccessor can be used to show the number of actual reads
+//       and writes and the percentage of cache hits.
+//  <li> The software has some options to trace the operations done on
+//       tables. It is possible to specify the columns and/or the operations
+//       to be traced. The following <src>aipsrc</src> variables can be used.
+//   <ul>
+//    <li> <src>table.trace.filename</src> specifies the file to write the
+//         trace output to. If not given or empty, no tracing will be done.
+//         The file name can contain environment variables or a tilde.
+//    <li> <src>table.trace.operation</src> specifies the operations to be
+//         traced. It is a string containing s, r, and/or w where
+//         s means tracing RefTable construction (selection/sort),
+//         r means column reads, and w means column writes.
+//         If empty, only the high level table operations (open, create, close)
+//         will be traced.
+//    <li> <src>table.trace.columntype</src> specifies the types of columns to
+//         be traced. It is a string containing the characters s, a, and/or r.
+//         s means all scalar columns, a all array columns, and r all record
+//         columns. If empty and if <src>table.trace.column</src> is empty,
+//         its default value is a.
+//    <li> <src>table.trace.column</src> specifies names of columns to be
+//         traced. Its value can be one or more glob-like patterns separated
+//         by commas without any whitespace. The default is empty.
+//         For example:
+// <srcblock>
+//    table.trace.column: *DATA,FLAG,WEIGHT*
+// </srcblock>
+//         to trace all DATA, the FLAG, and all WEIGHT columns.
+//   </ul>
+//       The trace output is a text file with the following columns
+//       separated by a space.
+//   <ul>
+//    <li> The UTC time the trace line was written (with msec accuracy).
+//    <li> The operation: n(ew), o(pen), c(lose), t(able), r(ead), w(rite),
+//         s(election/sort/iter), p(rojection).
+//         t means an arbitrary table operation as given in the name column.
+//    <li> The table-id (as t=i) given at table creation (new) or open.
+//    <li> The table name, column name, or table operation
+//         (as <src>*oper*</src>).
+//         <src>*reftable*</src> means that the operation is on a RefTable
+//         (thus result of selection, sort, projection, or iteration).
+//    <li> The row or rows to access (* means all rows).
+//         Multiple rows are given as a series of ranges like s:e:i,s:e:i,...
+//         where e and i are only given if applicable (default i is 1).
+//         Note that e is inclusive and defaults to s.
+//    <li> The optional array shape to access (none means scalar).
+//         In case multiple rows are accessed, the last shape value is the
+//         number of rows.
+//    <li> The optional slice of the array in each row as [start][end][stride].
+//   </ul>
+//       Shape, start, end, and stride are given in Fortran-order as
+//       [n1,n2,...].
+// </ul>
 
 // </synopsis>
 // </module>

@@ -84,7 +84,7 @@ class ColumnHolder; //# Only in the .cc file
 // In the FITS Binary Table extension to Table conversion class, BinTable,
 // the input FITS file is a stream that must be read sequentially, so the
 // input arrives row-by-row.  Internally, there is a single row table that
-// is used to hold the values for the current row.  To fill an aips++ table
+// is used to hold the values for the current row.  To fill a Casacore table
 // with the data from each row, one creates the output table using the
 // table descriptor from the input, single-row table and uses RowCopier to
 // copy the single-row table to the appropriate row of the full table, 

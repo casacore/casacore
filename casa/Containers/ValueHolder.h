@@ -1,4 +1,4 @@
-//# ValueHolder.h: A holder object for the standard AIPS++ data types
+//# ValueHolder.h: A holder object for the standard Casacore data types
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
-// A holder for a value of any basic AIPS++ data type.
+// A holder for a value of any basic Casacore data type.
 // </summary>
 
 // <use visibility=export>
@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <synopsis>
-// Class ValueHolder is meant to be used for holding a single AIPS++ value.
+// Class ValueHolder is meant to be used for holding a single Casacore value.
 // The value can be  scalar or an array of any basic type (including complex
 // and string). Also a Record value is possible.
 // In this way varying typed data (e.g. the result of getCell in the table DO)
@@ -68,7 +68,6 @@ class ValueHolder
 public:
   // Construct a null object.
   ValueHolder()
-    : itsRep(0)
     {}
 
   // Create the object for the given value.
@@ -108,27 +107,27 @@ public:
   // It takes over the pointer and deletes it in the destructor.
   explicit ValueHolder (ValueHolderRep* rep)
     : itsRep (rep)
-    { if (itsRep) itsRep->link(); }
+    {}
 
   // Copy constructor (reference semantics).
   ValueHolder (const ValueHolder&);
 
   // Destructor.
   ~ValueHolder()
-    { ValueHolderRep::unlink (itsRep); }
+  {}
 
   // Assignment (reference semantics).
   ValueHolder& operator= (const ValueHolder&);
 
   // Is this a null object?
   Bool isNull() const
-    { return itsRep == 0; }
+    { return itsRep.null(); }
 
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
     
   // Get the value.
-  // It throws an exception if the data type is incorrect.
+  // If possible, it converts the the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -158,6 +157,7 @@ public:
   // </group>
 
   // Get the data in a way useful for templates.
+  // If possible, it converts the the data as needed.
   // <group>
   void getValue (Bool& value) const            { value = asBool(); }
   void getValue (uChar& value) const           { value = asuChar(); }
@@ -203,13 +203,19 @@ public:
   // Construct the object from the value in a record.
   static ValueHolder fromRecord (const Record&, const RecordFieldId&);
 
+  // Compare two ValueHolder objects.
+  // They must have the same data type.
+  bool operator< (const ValueHolder& right) const
+    { return itsRep->operator< (*right.itsRep); }
+
   // Write the ValueHolder to an output stream.
   // Arrays are written as normal arrays using ArrayIO.h. 
   friend std::ostream& operator<< (std::ostream& os, const ValueHolder& vh)
     { return vh.itsRep->write (os); }
 
 private:
-  ValueHolderRep* itsRep;
+
+  CountedPtr<ValueHolderRep> itsRep;
 };
 
 

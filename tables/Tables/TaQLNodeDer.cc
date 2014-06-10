@@ -675,6 +675,34 @@ TaQLColumnsNodeRep* TaQLColumnsNodeRep::restore (AipsIO& aio)
   return new TaQLColumnsNodeRep (distinct, TaQLNode::restoreMultiNode(aio));
 }
 
+TaQLGroupNodeRep::~TaQLGroupNodeRep()
+{}
+TaQLNodeResult TaQLGroupNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitGroupNode (*this);
+}
+void TaQLGroupNodeRep::show (std::ostream& os) const
+{
+  os << " GROUPBY";
+  if (itsType == Rollup) {
+    os << " ROLLUP";
+  }
+  os << ' ';
+  itsNodes.show (os);
+}
+void TaQLGroupNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType);
+  itsNodes.saveNode (aio);
+}
+TaQLGroupNodeRep* TaQLGroupNodeRep::restore (AipsIO& aio)
+{
+  char ctype;
+  aio >> ctype;
+  TaQLGroupNodeRep::Type type = (TaQLGroupNodeRep::Type)ctype;
+  return new TaQLGroupNodeRep (type, TaQLNode::restoreMultiNode(aio));
+}
+
 TaQLSortKeyNodeRep::~TaQLSortKeyNodeRep()
 {}
 TaQLNodeResult TaQLSortKeyNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -779,23 +807,25 @@ TaQLGivingNodeRep::TaQLGivingNodeRep (const String& name, const String& type)
     typel.downcase();
     if (typel == "memory") {
       itsType = 1;
-    } else if (typel == "plain") {
+    } else if (typel == "scratch") {
       itsType = 2;
-    } else if (typel == "plain_big") {
+    } else if (typel == "plain") {
       itsType = 3;
-    } else if (typel == "plain_little") {
+    } else if (typel == "plain_big") {
       itsType = 4;
-    } else if (typel == "plain_local") {
+    } else if (typel == "plain_little") {
       itsType = 5;
+    } else if (typel == "plain_local") {
+      itsType = 6;
     } else {
       throw TableParseError ("AS " + type + " in GIVING table " + name +
 			     " is invalid; "
 			     "use MEMORY or PLAIN[_BIG,LITTLE,LOCAL]");
     }
   }
-  if (itsType != 1  &&  itsName.empty()) {
+  if (itsName.empty()  &&  itsType > 2) {
     throw TableParseError ("table name in GIVING can only be omitted if "
-			   "AS MEMORY is given");
+                           "AS MEMORY or AS SCRATCH is given");
   }
 }
 TaQLGivingNodeRep::~TaQLGivingNodeRep()
@@ -818,15 +848,18 @@ void TaQLGivingNodeRep::show (std::ostream& os) const
 	os << "memory";
 	break;
       case 2:
-	os << "plain";
+	os << "scratch";
 	break;
       case 3:
-	os << "plain_big";
+	os << "plain";
 	break;
       case 4:
-	os << "plain_little";
+	os << "plain_big";
 	break;
       case 5:
+	os << "plain_little";
+	break;
+      case 6:
 	os << "plain_local";
 	break;
       default:
@@ -924,14 +957,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
     itsColumns(columns), itsTables(tables), itsJoin(join),
     itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving)
-{
-  if (itsHaving.isValid()  &&  !itsGroupby.isValid()) {
-    throw TableInvExpr ("HAVING can only be used if GROUPBY is used");
-  }
-  if (itsGroupby.isValid()) {
-    throw TableInvExpr ("GROUPBY is not supported yet");
-  }
-}
+{}
 TaQLSelectNodeRep::~TaQLSelectNodeRep()
 {}
 TaQLNodeResult TaQLSelectNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -1075,6 +1101,34 @@ TaQLUpdateNodeRep* TaQLUpdateNodeRep::restore (AipsIO& aio)
   return new TaQLUpdateNodeRep (tables, update, from, where, sort, limitoff);
 }
 
+TaQLInsertNodeRep::TaQLInsertNodeRep (const TaQLMultiNode& tables,
+                                      const TaQLMultiNode& insert)
+  : TaQLNodeRep (TaQLNode_Insert),
+    itsTables   (tables),
+    itsColumns  (False)
+{
+  // Convert the list of column=value expressions like
+  //        SET col1=val1, col2=val2
+  // to a list of columns and a list of values like
+  //        [col1,col2] VALUES [val1,val2].
+  TaQLMultiNode values(False);
+  values.setPPFix ("VALUES [", "]");
+  // The nodes in the list are of type TaQLUpdExprNodeRep.
+  const std::vector<TaQLNode>& nodes = insert.getMultiRep()->getNodes();
+  for (uInt i=0; i<nodes.size(); ++i) {
+    const TaQLUpdExprNodeRep* rep = dynamic_cast<const TaQLUpdExprNodeRep*>
+      (nodes[i].getRep());
+    AlwaysAssert (rep, AipsError);
+    if (rep->itsIndices.isValid()) {
+      throw TableInvExpr ("Column indices cannot be given in an "
+                          "INSERT command");
+    }
+    // Add the column name and value expression.
+    itsColumns.add (new TaQLKeyColNodeRep (rep->itsName));
+    values.add (rep->itsExpr);
+  }
+  itsValues = values;
+}
 TaQLInsertNodeRep::~TaQLInsertNodeRep()
 {}
 TaQLNodeResult TaQLInsertNodeRep::visit (TaQLNodeVisitor& visitor) const

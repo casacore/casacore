@@ -223,6 +223,9 @@ public:
     // Return the total size  of everything in the Directory. If the Directory
     // does not exist, an exception will be thrown.
     virtual Int64 size() const;
+
+    //Check if a directory is mounted via NFS or not.
+    Bool isNFSMounted() const;
     
 private:
     // Check if the path defines a directory.

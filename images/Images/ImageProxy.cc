@@ -66,14 +66,18 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {}
 
   ImageProxy::ImageProxy (LatticeBase* lattice)
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     setup (lattice);
   }
@@ -83,7 +87,9 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     // Register the functions to create a FITSImage or MIRIADImage object.
     FITSImage::registerOpenFunction();
@@ -99,7 +105,9 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     if (!overwrite) {
       File file(fileName);
@@ -146,7 +154,9 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     if (!overwrite) {
       File file(fileName);
@@ -186,7 +196,9 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     vector<ImageProxy> images;
     images.reserve (names.size());
@@ -201,7 +213,9 @@ namespace casa { //# name space casa begins
     : itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     concatImages (images, axis);
   }
@@ -211,7 +225,9 @@ namespace casa { //# name space casa begins
       itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     if (! itsLattice.null()) {
       setup();
@@ -223,7 +239,9 @@ namespace casa { //# name space casa begins
       itsImageFloat    (0),
       itsImageDouble   (0),
       itsImageComplex  (0),
-      itsImageDComplex (0)
+      itsImageDComplex (0),
+      itsCoordSys      (0),
+      itsAttrHandler   (0)
   {
     if (! itsLattice.null()) {
       setup();
@@ -233,11 +251,8 @@ namespace casa { //# name space casa begins
   ImageProxy& ImageProxy::operator= (const ImageProxy& that)
   {
     if (this != &that) {
-      itsLattice       = that.itsLattice;
-      itsImageFloat    = 0;
-      itsImageDouble   = 0;
-      itsImageComplex  = 0;
-      itsImageDComplex = 0;
+      close();
+      itsLattice = that.itsLattice;
       if (! itsLattice.null()) {
         setup();
       }
@@ -296,6 +311,24 @@ namespace casa { //# name space casa begins
       }
     }
     return lattice;
+  }
+
+  void ImageProxy::close()
+  {
+    itsLattice       = CountedPtr<LatticeBase>();
+    itsImageFloat    = 0;
+    itsImageDouble   = 0;
+    itsImageComplex  = 0;
+    itsImageDComplex = 0;
+    itsCoordSys      = 0;
+    itsAttrHandler   = 0;
+  }
+
+  void ImageProxy::checkNull() const
+  {
+    if (itsLattice.null()) {
+      throw AipsError ("ImageProxy does not contain an image object");
+    }
   }
 
   LatticeExprNode ImageProxy::makeNode() const
@@ -517,31 +550,37 @@ namespace casa { //# name space casa begins
 
   Bool ImageProxy::isPersistent() const
   {
+    checkNull();
     return itsLattice->isPersistent();
   }
 
   String ImageProxy::name (Bool stripPath) const
   {
+    checkNull();
     return itsLattice->name (stripPath);
   }
 
   IPosition ImageProxy::shape() const
   {
+    checkNull();
     return itsLattice->shape();
   }
 
   uInt ImageProxy::ndim() const
   {
+    checkNull();
     return itsLattice->shape().size();
   }
 
   uInt ImageProxy::size() const
   {
+    checkNull();
     return itsLattice->shape().product();
   }
 
   String ImageProxy::dataType() const
   {
+    checkNull();
     ostringstream ostr;
     ostr << itsLattice->dataType();
     return ostr.str();
@@ -565,21 +604,25 @@ namespace casa { //# name space casa begins
 
   Vector<String> ImageProxy::attrGroupNames() const
   {
+    checkNull();
     return itsAttrHandler->groupNames();
   }
 
   void ImageProxy::createAttrGroup (const String& groupName)
   {
+    checkNull();
     itsAttrHandler->createGroup (groupName);
   }
 
   Vector<String> ImageProxy::attrNames (const String& groupName) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).attrNames();
   }
 
   uInt ImageProxy::attrNrows (const String& groupName) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).nrows();
   }
 
@@ -587,24 +630,28 @@ namespace casa { //# name space casa begins
                                    const String& attrName,
                                    uInt rownr) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).getData (attrName, rownr);
   }
 
   Record ImageProxy::getAttrRow (const String& groupName,
                                  uInt rownr) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).getDataRow (rownr);
   }
 
   Vector<String> ImageProxy::getAttrUnit(const String& groupName,
                                          const String& attrName) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).getUnit (attrName);
   }
 
   Vector<String> ImageProxy::getAttrMeas(const String& groupName,
                                          const String& attrName) const
   {
+    checkNull();
     return itsAttrHandler->openGroup(groupName).getMeasInfo (attrName);
   }
 
@@ -615,6 +662,7 @@ namespace casa { //# name space casa begins
                             const Vector<String>& units,
                             const Vector<String>& measInfo)
   {
+    checkNull();
     itsAttrHandler->openGroup(groupName).putData (attrName, rownr, value,
                                                   units, measInfo);
   }
@@ -707,6 +755,7 @@ namespace casa { //# name space casa begins
                               const IPosition& blc,
                               const IPosition& inc)
   {
+    checkNull();
     Array<Bool> maskArr = value.asArrayBool();
     if (! image.hasPixelMask()) {
       // No mask yet.
@@ -728,18 +777,21 @@ namespace casa { //# name space casa begins
 
   Bool ImageProxy::hasLock (Bool writeLock)
   {
+    checkNull();
     return itsLattice->hasLock (writeLock ?
                                 FileLocker::Write : FileLocker::Read);
   }
   
   void ImageProxy::lock (Bool writeLock, Int nattempts)
   {
+    checkNull();
     itsLattice->lock (writeLock ? FileLocker::Write : FileLocker::Read,
                       nattempts);
   }
 
   void ImageProxy::unlock()
   {
+    checkNull();
     itsLattice->unlock();
   }
 
@@ -747,7 +799,10 @@ namespace casa { //# name space casa begins
                                    const IPosition& trc, 
                                    const IPosition& inc,
                                    Bool dropDegenerate)
+                                   ///Bool dropDegenerate,
+                                   ///Bool preserveAxesOrder)
   {
+    Bool preserveAxesOrder=False; ///
     AxesSpecifier axesSpec(!dropDegenerate);
     IPosition shp = shape();
     Slicer slicer(adjustBlc(blc, shp),
@@ -756,16 +811,20 @@ namespace casa { //# name space casa begins
                   Slicer::endIsLast);
     if (itsImageFloat) {
       return ImageProxy(new SubImage<Float>(*itsImageFloat, slicer,
-                                            True, axesSpec));
+                                            True, axesSpec,
+                                            preserveAxesOrder));
     } else if (itsImageDouble) {
       return ImageProxy(new SubImage<Double>(*itsImageDouble, slicer,
-                                             True, axesSpec));
+                                             True, axesSpec,
+                                             preserveAxesOrder));
     } else if (itsImageComplex) {
       return ImageProxy(new SubImage<Complex>(*itsImageComplex, slicer,
-                                              True, axesSpec));
+                                              True, axesSpec,
+                                              preserveAxesOrder));
     } else if (itsImageDComplex) {
       return ImageProxy(new SubImage<DComplex>(*itsImageDComplex, slicer,
-                                               True, axesSpec));
+                                               True, axesSpec,
+                                               preserveAxesOrder));
     }
     throw AipsError ("ImageProxy does not contain an image object");
   }
@@ -833,6 +892,7 @@ namespace casa { //# name space casa begins
 
   Record ImageProxy::coordSys() const
   {
+    checkNull();
     Record rec;
     itsCoordSys->save (rec, "x");
     Record& coord = rec.rwSubRecord("x");
@@ -858,6 +918,7 @@ namespace casa { //# name space casa begins
   Vector<Double> ImageProxy::toWorld (const Vector<Double>& pixel,
                                       Bool reverseAxes)
   {
+    checkNull();
     Vector<Double> coord(pixel.size());
     if (!reverseAxes) {
       coord = pixel;
@@ -882,6 +943,7 @@ namespace casa { //# name space casa begins
   Vector<Double> ImageProxy::toPixel (const Vector<Double>& world,
                                       Bool reverseAxes)           
   {                                                               
+    checkNull();
     Vector<Double> coord(world.size());                           
     if (!reverseAxes) {                                           
       coord = world;                                              
@@ -942,6 +1004,7 @@ namespace casa { //# name space casa begins
                            Bool velocity, Bool optical, Int bitpix,
                            Double minpix, Double maxpix) const
   {
+    checkNull();
     Bool ok = False;
     String error ("Currently only float images can be converted to FITS");
     if (itsImageFloat) {
@@ -1033,6 +1096,7 @@ namespace casa { //# name space casa begins
                               const IPosition& newTileShape,
                               const ImageInterface<T>& image) const
   {
+    checkNull();
     ImageInterface<T>* newImage;
     TiledShape tiledShape (makeTiledShape (newTileShape,
                                            image.shape(),
@@ -1072,6 +1136,7 @@ namespace casa { //# name space casa begins
                                  Bool exclude,
                                  Bool robust) const
   {
+    checkNull();
     // Default for cursor is all axes.
     Vector<Int> axesc(axes);
     if (axesc.empty()) {
@@ -1100,6 +1165,7 @@ namespace casa { //# name space casa begins
                                      Bool exclude,
                                      Bool robust) const
   {
+    checkNull();
     ImageStatistics<T> stats(image, False, False);
     // Set cursor axes.
     if (!stats.setAxes(axes)) {
@@ -1223,8 +1289,10 @@ namespace casa { //# name space casa begins
     // axes to be regridded and the input image Coordinate for axes not
     // to be regridded
     LogIO log;
+    set<Coordinate::Type> regridCoords;
     CoordinateSystem cSys =
-      ImageRegrid<T>::makeCoordinateSystem (log, cSysTo, cSysFrom, axes2);
+      ImageRegrid<T>::makeCoordinateSystem (log, regridCoords,
+                                            cSysTo, cSysFrom, axes2);
     if (cSys.nPixelAxes() != outShape.nelements()) {
       throw AipsError("The number of pixel axes in the output shape and "
                       "Coordinate System must be the same");

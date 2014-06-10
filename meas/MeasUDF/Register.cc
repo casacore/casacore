@@ -67,4 +67,5 @@ void register_meas()
   UDFBase::registerUDF ("meas.SUPERGALACTIC", DirectionUDF::makeSGAL);
   UDFBase::registerUDF ("meas.SUPERGAL",      DirectionUDF::makeSGAL);
   UDFBase::registerUDF ("meas.SGAL",          DirectionUDF::makeSGAL);
+  UDFBase::registerUDF ("meas.RISESET",       DirectionUDF::makeRISESET);
 }

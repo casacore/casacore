@@ -67,7 +67,7 @@ ROTableRow::ROTableRow (const ROTableRow& that)
 : itsRecord (0)
 {
     init();
-    copy (that, False);
+    copy (that);
 }
 
 void ROTableRow::init()
@@ -87,11 +87,11 @@ ROTableRow::~ROTableRow()
 
 ROTableRow& ROTableRow::operator= (const ROTableRow& that)
 {
-    copy (that, False);
+    copy (that);
     return *this;
 }
 
-void ROTableRow::copy (const ROTableRow& that, Bool writable)
+void ROTableRow::copy (const ROTableRow& that)
 {
     if (this != &that) {
 	deleteObjects();
@@ -100,7 +100,7 @@ void ROTableRow::copy (const ROTableRow& that, Bool writable)
         *itsLastRow = *that.itsLastRow;
         *itsReread  = *that.itsReread;
 	if (that.itsRecord != 0) {
-	    makeObjects (that.itsRecord->description(), writable);
+	    makeObjects (that.itsRecord->description());
 	}
     }
 }
@@ -123,90 +123,90 @@ void ROTableRow::deleteObjects()
     }
     const RecordDesc& description = itsRecord->description();
     for (uInt i=0; i<itsNrused; i++) {
-	delete (ROTableColumn*)(itsTabCols[i]);
+	delete (TableColumn*)(itsTabCols[i]);
 	switch (description.type(i)) {
 	case TpBool:
-	    delete (ROScalarColumn<Bool>*)(itsColumns[i]);
+	    delete (ScalarColumn<Bool>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Bool>*)(itsFields[i]);
 	    break;
 	case TpArrayBool:
-	    delete (ROArrayColumn<Bool>*)(itsColumns[i]);
+	    delete (ArrayColumn<Bool>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<Bool> >*)(itsFields[i]);
 	    break;
 	case TpUChar:
-	    delete (ROScalarColumn<uChar>*)(itsColumns[i]);
+	    delete (ScalarColumn<uChar>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<uChar>*)(itsFields[i]);
 	    break;
 	case TpArrayUChar:
-	    delete (ROArrayColumn<uChar>*)(itsColumns[i]);
+	    delete (ArrayColumn<uChar>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<uChar> >*)(itsFields[i]);
 	    break;
 	case TpShort:
-	    delete (ROScalarColumn<Short>*)(itsColumns[i]);
+	    delete (ScalarColumn<Short>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Short>*)(itsFields[i]);
 	    break;
 	case TpArrayShort:
-	    delete (ROArrayColumn<Short>*)(itsColumns[i]);
+	    delete (ArrayColumn<Short>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<Short> >*)(itsFields[i]);
 	    break;
 	case TpInt:
-	    delete (ROScalarColumn<Int>*)(itsColumns[i]);
+	    delete (ScalarColumn<Int>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Int>*)(itsFields[i]);
 	    break;
 	case TpArrayInt:
-	    delete (ROArrayColumn<Int>*)(itsColumns[i]);
+	    delete (ArrayColumn<Int>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<Int> >*)(itsFields[i]);
 	    break;
 	case TpUInt:
-	    delete (ROScalarColumn<uInt>*)(itsColumns[i]);
+	    delete (ScalarColumn<uInt>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<uInt>*)(itsFields[i]);
 	    break;
 	case TpArrayUInt:
-	    delete (ROArrayColumn<uInt>*)(itsColumns[i]);
+	    delete (ArrayColumn<uInt>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<uInt> >*)(itsFields[i]);
 	    break;
 	case TpFloat:
-	    delete (ROScalarColumn<float>*)(itsColumns[i]);
+	    delete (ScalarColumn<float>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<float>*)(itsFields[i]);
 	    break;
 	case TpArrayFloat:
-	    delete (ROArrayColumn<float>*)(itsColumns[i]);
+	    delete (ArrayColumn<float>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<float> >*)(itsFields[i]);
 	    break;
 	case TpDouble:
-	    delete (ROScalarColumn<double>*)(itsColumns[i]);
+	    delete (ScalarColumn<double>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<double>*)(itsFields[i]);
 	    break;
 	case TpArrayDouble:
-	    delete (ROArrayColumn<double>*)(itsColumns[i]);
+	    delete (ArrayColumn<double>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<double> >*)(itsFields[i]);
 	    break;
 	case TpComplex:
-	    delete (ROScalarColumn<Complex>*)(itsColumns[i]);
+	    delete (ScalarColumn<Complex>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Complex>*)(itsFields[i]);
 	    break;
 	case TpArrayComplex:
-	    delete (ROArrayColumn<Complex>*)(itsColumns[i]);
+	    delete (ArrayColumn<Complex>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<Complex> >*)(itsFields[i]);
 	    break;
 	case TpDComplex:
-	    delete (ROScalarColumn<DComplex>*)(itsColumns[i]);
+	    delete (ScalarColumn<DComplex>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<DComplex>*)(itsFields[i]);
 	    break;
 	case TpArrayDComplex:
-	    delete (ROArrayColumn<DComplex>*)(itsColumns[i]);
+	    delete (ArrayColumn<DComplex>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<DComplex> >*)(itsFields[i]);
 	    break;
 	case TpString:
-	    delete (ROScalarColumn<String>*)(itsColumns[i]);
+	    delete (ScalarColumn<String>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<String>*)(itsFields[i]);
 	    break;
 	case TpArrayString:
-	    delete (ROArrayColumn<String>*)(itsColumns[i]);
+	    delete (ArrayColumn<String>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<Array<String> >*)(itsFields[i]);
 	    break;
 	case TpRecord:
-	    delete (ROScalarColumn<TableRecord>*)(itsColumns[i]);
+	    delete (ScalarColumn<TableRecord>*)(itsColumns[i]);
 	    delete (RecordFieldPtr<TableRecord>*)(itsFields[i]);
 	    break;
 	default:
@@ -221,7 +221,7 @@ void ROTableRow::deleteObjects()
 }
 
 void ROTableRow::addColumnToDesc (RecordDesc& description,
-				  const ROTableColumn& column,
+				  const TableColumn& column,
 				  Bool skipOther)
 {
     const ColumnDesc& columnDesc = column.columnDesc();
@@ -254,10 +254,10 @@ void ROTableRow::create (const Table& table, Bool storedColumnsOnly,
     for (uInt i=0; i<nrcol; i++) {
 	if ((!storedColumnsOnly  ||  itsTable.isColumnStored (i))
 	&&  (!writable  ||  itsTable.isColumnWritable (i))) {
-	    addColumnToDesc (description, ROTableColumn (itsTable, i), True);
+	    addColumnToDesc (description, TableColumn (itsTable, i), True);
 	}
     }
-    makeObjects (description, writable);
+    makeObjects (description);
 }
 	    
 void ROTableRow::create (const Table& table, const Vector<String>& columnNames,
@@ -274,11 +274,11 @@ void ROTableRow::create (const Table& table, const Vector<String>& columnNames,
 	uInt nrcol = columnNames.nelements();
 	for (uInt i=0; i<nrcol; i++) {
 	    addColumnToDesc (description,
-			     ROTableColumn (itsTable, columnNames(i)),
+			     TableColumn (itsTable, columnNames(i)),
 			     True);
 	}
     }
-    makeObjects (description, writable);
+    makeObjects (description);
 }
 	    
 void ROTableRow::makeDescExclude (RecordDesc& description,
@@ -302,7 +302,7 @@ void ROTableRow::makeDescExclude (RecordDesc& description,
 		}
 	    }
 	    if (!found) {
-		addColumnToDesc (description, ROTableColumn (itsTable, i),
+		addColumnToDesc (description, TableColumn (itsTable, i),
 				 True);
 	    }
 	}
@@ -310,8 +310,7 @@ void ROTableRow::makeDescExclude (RecordDesc& description,
 }
 	    
 
-void ROTableRow::makeObjects (const RecordDesc& description,
-			      Bool writable)
+void ROTableRow::makeObjects (const RecordDesc& description)
 {
     // Create the TableRecord from the description.
     itsRecord = new TableRecord (description);
@@ -331,175 +330,91 @@ void ROTableRow::makeObjects (const RecordDesc& description,
     uInt nrfield = description.nfields();
     for (uInt i=0; i<nrfield; i++) {
 	const String& name = description.name(i);
-	ROTableColumn* tabColPtr = new ROTableColumn (itsTable, name);
+	TableColumn* tabColPtr = new TableColumn (itsTable, name);
 	itsTabCols[i] = tabColPtr;
 	switch (description.type(i)) {
 	case TpBool:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<Bool> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<Bool> (itsTable, name);
-	    }
+            itsColumns[i] = new ScalarColumn<Bool> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Bool>(*itsRecord, i);
 	    break;
 	case TpUChar:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<uChar> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<uChar> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<uChar> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<uChar>(*itsRecord, i);
 	    break;
 	case TpShort:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<Short> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<Short> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<Short> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Short>(*itsRecord, i);
 	    break;
 	case TpInt:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<Int> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<Int> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<Int> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Int>(*itsRecord, i);
 	    break;
 	case TpUInt:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<uInt> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<uInt> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<uInt> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<uInt>(*itsRecord, i);
 	    break;
 	case TpFloat:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<float> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<float> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<float> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<float>(*itsRecord, i);
 	    break;
 	case TpDouble:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<double> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<double> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<double> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<double>(*itsRecord, i);
 	    break;
 	case TpComplex:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<Complex> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<Complex> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<Complex> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Complex>(*itsRecord, i);
 	    break;
 	case TpDComplex:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<DComplex> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<DComplex> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<DComplex> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<DComplex>(*itsRecord, i);
 	    break;
 	case TpString:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<String> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<String> (itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<String> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<String>(*itsRecord, i);
 	    break;
 	case TpRecord:
-	    if (writable) {
-		itsColumns[i] = new ScalarColumn<TableRecord> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROScalarColumn<TableRecord>(itsTable, name);
-	    }
+	    itsColumns[i] = new ScalarColumn<TableRecord> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<TableRecord>(*itsRecord, i);
 	    break;
 	case TpArrayBool:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<Bool> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<Bool> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<Bool> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<Bool> >(*itsRecord, i);
 	    break;
 	case TpArrayUChar:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<uChar> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<uChar> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<uChar> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<uChar> >(*itsRecord, i);
 	    break;
 	case TpArrayShort:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<Short> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<Short> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<Short> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<Short> >(*itsRecord, i);
 	    break;
 	case TpArrayInt:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<Int> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<Int> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<Int> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<Int> >(*itsRecord, i);
 	    break;
 	case TpArrayUInt:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<uInt> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<uInt> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<uInt> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<uInt> >(*itsRecord, i);
 	    break;
 	case TpArrayFloat:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<float> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<float> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<float> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<float> >(*itsRecord, i);
 	    break;
 	case TpArrayDouble:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<double> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<double> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<double> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<double> >(*itsRecord, i);
 	    break;
 	case TpArrayComplex:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<Complex> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<Complex> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<Complex> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<Complex> >(*itsRecord, i);
 	    break;
 	case TpArrayDComplex:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<DComplex> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<DComplex> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<DComplex> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<DComplex> >(*itsRecord, i);
 	    break;
 	case TpArrayString:
-	    if (writable) {
-		itsColumns[i] = new ArrayColumn<String> (itsTable, name);
-	    }else{
-		itsColumns[i] = new ROArrayColumn<String> (itsTable, name);
-	    }
+	    itsColumns[i] = new ArrayColumn<String> (itsTable, name);
 	    itsFields[i] = new RecordFieldPtr<Array<String> >(*itsRecord, i);
 	    break;
 	default:
@@ -522,9 +437,9 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	//# First determine if an array value is defined.
 	//# If not, get its default dimensionality.
 	Bool isDefined = True;
-	if (! (*(ROTableColumn*)(itsTabCols[i])).isDefined (rownr)) {
+	if (! (*(TableColumn*)(itsTabCols[i])).isDefined (rownr)) {
 	    isDefined = False;
-	    ndim = (*(ROTableColumn*)(itsTabCols[i])).columnDesc().ndim();
+	    ndim = (*(TableColumn*)(itsTabCols[i])).columnDesc().ndim();
 	    if (ndim < 0) {
 		ndim = 0;
 	    }
@@ -534,12 +449,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	//# with the correct dimensionality.
 	switch (desc.type(i)) {
 	case TpBool:
-	    (*(const ROScalarColumn<Bool>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<Bool>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<Bool>*) itsFields[i]));
 	    break;
 	case TpArrayBool:
 	    if (isDefined) {
-		(*(const ROArrayColumn<Bool>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<Bool>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<Bool> >*) itsFields[i]),
 		       True);
@@ -549,12 +464,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpUChar:
-	    (*(const ROScalarColumn<uChar>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<uChar>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<uChar>*) itsFields[i]));
 	    break;
 	case TpArrayUChar:
 	    if (isDefined) {
-		(*(const ROArrayColumn<uChar>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<uChar>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<uChar> >*) itsFields[i]),
 		       True);
@@ -564,12 +479,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpShort:
-	    (*(const ROScalarColumn<Short>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<Short>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<Short>*) itsFields[i]));
 	    break;
 	case TpArrayShort:
 	    if (isDefined) {
-		(*(const ROArrayColumn<Short>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<Short>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<Short> >*) itsFields[i]),
 		       True);
@@ -579,12 +494,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpInt:
-	    (*(const ROScalarColumn<Int>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<Int>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<Int>*) itsFields[i]));
 	    break;
 	case TpArrayInt:
 	    if (isDefined) {
-		(*(const ROArrayColumn<Int>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<Int>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<Int> >*) itsFields[i]),
 		       True);
@@ -594,12 +509,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpUInt:
-	    (*(const ROScalarColumn<uInt>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<uInt>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<uInt>*) itsFields[i]));
 	    break;
 	case TpArrayUInt:
 	    if (isDefined) {
-		(*(const ROArrayColumn<uInt>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<uInt>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<uInt> >*) itsFields[i]),
 		       True);
@@ -609,12 +524,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpFloat:
-	    (*(const ROScalarColumn<float>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<float>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<float>*) itsFields[i]));
 	    break;
 	case TpArrayFloat:
 	    if (isDefined) {
-		(*(const ROArrayColumn<float>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<float>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<float> >*) itsFields[i]),
 		       True);
@@ -624,12 +539,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpDouble:
-	    (*(const ROScalarColumn<double>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<double>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<double>*) itsFields[i]));
 	    break;
 	case TpArrayDouble:
 	    if (isDefined) {
-		(*(const ROArrayColumn<double>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<double>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<double> >*) itsFields[i]),
 		       True);
@@ -639,12 +554,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpComplex:
-	    (*(const ROScalarColumn<Complex>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<Complex>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<Complex>*) itsFields[i]));
 	    break;
 	case TpArrayComplex:
 	    if (isDefined) {
-		(*(const ROArrayColumn<Complex>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<Complex>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<Complex> >*) itsFields[i]),
 		       True);
@@ -654,12 +569,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpDComplex:
-	    (*(const ROScalarColumn<DComplex>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<DComplex>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<DComplex>*) itsFields[i]));
 	    break;
 	case TpArrayDComplex:
 	    if (isDefined) {
-		(*(const ROArrayColumn<DComplex>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<DComplex>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<DComplex> >*) itsFields[i]),
 		       True);
@@ -669,12 +584,12 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpString:
-	    (*(const ROScalarColumn<String>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<String>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<String>*) itsFields[i]));
 	    break;
 	case TpArrayString:
 	    if (isDefined) {
-		(*(const ROArrayColumn<String>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<String>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<String> >*) itsFields[i]),
 		       True);
@@ -684,7 +599,7 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    }
 	    break;
 	case TpRecord:
-	    (*(const ROScalarColumn<TableRecord>*)(itsColumns[i])).get (
+	    (*(const ScalarColumn<TableRecord>*)(itsColumns[i])).get (
 		       rownr, *(*(RecordFieldPtr<TableRecord>*) itsFields[i]));
 	    break;
 	default:
@@ -925,7 +840,7 @@ TableRow::TableRow (const Table& table, const Vector<String>& columnNames,
 TableRow::TableRow (const TableRow& that)
 : ROTableRow()
 {
-    copy (that, True);
+    copy (that);
 }
 
 TableRow::~TableRow()
@@ -933,7 +848,7 @@ TableRow::~TableRow()
 
 TableRow& TableRow::operator= (const TableRow& that)
 {
-    copy (that, True);
+    copy (that);
     return *this;
 }
 

@@ -60,7 +60,7 @@ template<class t> void List<t>::removed(Link<t> *oldl, Link<t> *prev, Link<t> *c
   if (oldl == tail) tail = prev;
 }
 
-template<class t> List<t>::List(const List<t> &other) : head(0), tail(0), length(0) {
+template<class t> List<t>::List(const List<t> &other) : NoticeSource(), head(0), tail(0), length(0) {
     ConstListIter<t> iter(other);
     Link<t> *cur = 0;
     iter.toStart();

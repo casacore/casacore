@@ -25,6 +25,8 @@
 //#
 
 #include <casa/System/Casarc.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -154,11 +156,14 @@ namespace casa {
 	    } else {
 		strftime( buf, 512, "# added %F %T\n", localtime(&tv.tv_sec) );
 	    }
-	    write(fd, buf, strlen(buf) );
-	    write(fd, keyword.c_str( ), keyword.length( ));
-	    write(fd, ": ", 2);
-	    write(fd, value.c_str( ), value.length( ));
-	    write(fd, "\n", 1);
+            Int lng = strlen(buf);
+	    AlwaysAssert (write(fd, buf, lng) == lng, AipsError);
+	    AlwaysAssert (write(fd, keyword.c_str(), keyword.length()) ==
+                          Int(keyword.length()), AipsError);
+	    AlwaysAssert (write(fd, ": ", 2) == 2, AipsError);
+	    AlwaysAssert (write(fd, value.c_str(), value.length()) ==
+                          Int(value.length()), AipsError);
+            AlwaysAssert (write(fd, "\n", 1) == 1, AipsError);
 	    unlock( fd );
 	} else {
 	    mapping->second = value;
@@ -224,7 +229,7 @@ namespace casa {
 	    mapped_file_size = 0;
 
 	    int fd = lock( WRITE );
-	    write( fd, copy, off );
+	    AlwaysAssert (write( fd, copy, off) == off, AipsError);
 	    free( copy );
 	    unlock( fd );
 	}
@@ -473,7 +478,7 @@ namespace casa {
 	// --   Wed Nov 17 21:32:45 UTC 2010
 	//
 	if ( buf.st_size == 0 ) {
-	    write( fd, "\n", 1 );
+            AlwaysAssert (write( fd, "\n", 1) == 1, AipsError);
 	    lseek( fd, 0, SEEK_SET );
 	    if ( fstat( fd, &buf ) < 0 )
 		throw( "Casarc::read_file, internal error" );
@@ -523,7 +528,7 @@ namespace casa {
 
 	    off_t keystart = off;
 	    int keylen = 0;
-	    for ( ; ! isspace(mapped_file[keystart+keylen]) && mapped_file[keystart+keylen] != ':' && (keystart+keylen) < mapped_file_size; ++keylen );
+	    for ( ; ! isspace(mapped_file[keystart+keylen]) && mapped_file[keystart+keylen] != ':' && (keystart+keylen) < mapped_file_size; ++keylen ) {}
 
 	    if ( keylen == 0 || mapped_file[keystart+keylen] == '\n' ) {
 		char obuf[21];

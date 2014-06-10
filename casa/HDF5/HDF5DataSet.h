@@ -70,7 +70,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // appropriate Slicer object. Note that the Slicer object must be fully
   // filled; it does not infer missing info from the array shape.
   // <p>
-  // AIPS++ arrays are in Fortran order, while HDF5 uses C order.
+  // Casacore arrays are in Fortran order, while HDF5 uses C order.
   // Therefore array axes are reversed, thus axes in shapes, slicers, etc.
   // </synopsis> 
 

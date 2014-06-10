@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 
 // <synopsis>
-// The MeasurementSets module handles storage of telescope data in AIPS++
+// The MeasurementSets module handles storage of telescope data in Casacore
 // tables and defines functions to access the data.
 // The MSFits module is an extra layer on top of MeasurementSets to convert
 // a MeasurementSet to and from FITS.

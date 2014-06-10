@@ -95,7 +95,9 @@ public:
   Vector<Int> matchAntennaName(const Vector<String>& names);
 
   // Look up ANTENNA_ID's for a given antenna station
-  Vector<Int> matchAntennaStation(const String& station);
+  Vector<Int> matchStationRegexOrPattern(const String& pattern, const Bool regex=False);
+  Vector<Int> matchStationName(const String& station);
+  Vector<Int> matchStationName(const Vector<String>& station);
 
   // Look up ANTENNA_ID's for a given antenna and station name pair
   Vector<Int> matchAntennaNameAndStation(const String& name,
@@ -109,7 +111,7 @@ private:
   ROMSAntennaColumns msAntennaCols_p;
 
   // Vector cache of antenna id's
-  Vector<Int> antennaIds_p;
+  Vector<Int> antennaIds_p, stationIds_p;
   Int nrows_p;
 };
 

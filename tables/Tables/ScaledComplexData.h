@@ -35,7 +35,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-template<class T> class ROScalarColumn;
+template<class T> class ScalarColumn;
 
 
 // <summary>
@@ -152,8 +152,7 @@ public:
 protected:
   using BaseMappedArrayEngine<VirtualType,StoredType>::storedName;
   using BaseMappedArrayEngine<VirtualType,StoredType>::table;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::roColumn;
-  using BaseMappedArrayEngine<VirtualType,StoredType>::rwColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::column;
   using BaseMappedArrayEngine<VirtualType,StoredType>::setNames;
 
 public:
@@ -382,8 +381,8 @@ private:
     VirtualType    offset_p;             //# offset value
     Bool           fixedScale_p;         //# scale is a fixed column
     Bool           fixedOffset_p;        //# offset is a fixed column
-    ROScalarColumn<VirtualType>* scaleColumn_p;  //# column with scale value
-    ROScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
+    ScalarColumn<VirtualType>* scaleColumn_p;  //# column with scale value
+    ScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 
     // Get the scale value for this row.
     VirtualType getScale (uInt rownr);

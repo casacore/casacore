@@ -35,43 +35,44 @@
 
 int main(int argc, const char* argv[])
 {
-  try {
-    if(argc < 3) {
-      cout << "Please input selection string on command line " << endl;
-      return 0;
-    } 
+  try 
+    {
+      if(argc < 3) 
+      {
+	cout << "Please input selection string on command line " << endl;
+	return 0;
+      } 
     
     const String msName = argv[1];
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
     Vector<Int> selectedIDs;
-    if(msFieldGramParseCommand(&ms, argv[2],selectedIDs)==0) {
-      const TableExprNode *node = msFieldGramParseNode();
-      if(node->isNull()) {
+    TableExprNode colAsTen=ms.col(MS::columnName(MS::FIELD_ID));
+    const TableExprNode node = msFieldGramParseCommand(ms.field(), colAsTen, argv[2],selectedIDs);
+    if(node.isNull()) 
+      {
 	cout << "NULL node " << endl;
 	return 0;
       }
-      cout << "TableExprNode has rows = " << node->nrow() << endl;
-      Table tablesel(ms.tableName(), Table::Update);
-      mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
-      mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
-      mssel->flush();
-      if(mssel->nrow()==0){
-        cout << "Check your input, No data selected" << endl;
-      }
-      else {
-        cout << "selected table has rows " << mssel->nrow() << endl;
+    cout << "TableExprNode has rows = " << node.nrow() << endl;
+    Table tablesel(ms.tableName(), Table::Update);
+    mssel = new MeasurementSet(tablesel(node, node.nrow() ));
+    mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+    mssel->flush();
+    if(mssel->nrow()==0)
+      cout << "Check your input, No data selected" << endl;
+    else 
+      {
+	cout << "selected table has rows " << mssel->nrow() << endl;
 	cout << "Field IDs selected = " << selectedIDs << endl;
       }
-      delete mssel;
-    }
-    else {
-      cout << "failed to parse expression" << endl;
-    }
-  } catch (AipsError x) {
-    cout << "ERROR: " << x.getMesg() << endl;
-    return 1;
-  } 
+    delete mssel;
+  }
+  catch (AipsError x) 
+    {
+      cout << "ERROR: " << x.getMesg() << endl;
+      return 1;
+    } 
   return 0;
 }

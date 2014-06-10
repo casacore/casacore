@@ -66,7 +66,6 @@ FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
 : ImageInterface<Float>(),
   name_p      (name),
   fullname_p  (name),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
@@ -77,8 +76,10 @@ FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
+  filterZeroMask_p(False),
   whichRep_p(whichRep),
-  whichHDU_p(whichHDU)
+  whichHDU_p(whichHDU),
+  _hasBeamsTable(False)
 {
    setup();
 }
@@ -88,7 +89,6 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   name_p      (name),
   fullname_p  (name),
   maskSpec_p  (maskSpec),
-  pTiledFile_p(0),
   pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
@@ -99,8 +99,10 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   dataType_p  (TpOther),
   fileOffset_p(0),
   isClosed_p  (True),
+  filterZeroMask_p(False),
   whichRep_p(whichRep),
-  whichHDU_p(whichHDU)
+  whichHDU_p(whichHDU),
+  _hasBeamsTable(False)
 {
    setup();
 }
@@ -122,8 +124,11 @@ FITSImage::FITSImage (const FITSImage& other)
   dataType_p  (other.dataType_p),
   fileOffset_p(other.fileOffset_p),
   isClosed_p  (other.isClosed_p),
+  filterZeroMask_p(other.filterZeroMask_p),
   whichRep_p(other.whichRep_p),
-  whichHDU_p(other.whichHDU_p)
+  whichHDU_p(other.whichHDU_p),
+  _hasBeamsTable(other._hasBeamsTable)
+
 {
    if (other.pPixelMask_p != 0) {
       pPixelMask_p = other.pPixelMask_p->clone();
@@ -159,8 +164,10 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       dataType_p  = other.dataType_p;
       fileOffset_p= other.fileOffset_p;
       isClosed_p  = other.isClosed_p;
+      filterZeroMask_p = other.filterZeroMask_p;
       whichRep_p = other.whichRep_p;
       whichHDU_p = other.whichHDU_p;
+      _hasBeamsTable = other._hasBeamsTable;
    }
    return *this;
 } 
@@ -590,12 +597,13 @@ void FITSImage::setup()
                       recsize, recno, dataType, scale_p, offset_p, 
 		      uCharMagic_p, shortMagic_p,
                       longMagic_p, hasBlanks_p, fullName,  whichRep_p, whichHDU_p);
+   // shape must be set before image info in cases of multiple beams
+   shape_p = TiledShape (shape, TiledFileAccess::makeTileShape(shape));
    setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
 
    setCoordsMember (cSys);
-   setImageInfoMember (imageInfo);
 
 // Set FITSImage data
 
@@ -640,12 +648,14 @@ void FITSImage::setup()
       hasBlanks_p = False;
    }
 
-// Form the tile shape.
-
-   shape_p = TiledShape (shape, TiledFileAccess::makeTileShape(shape));
-
 // Open the image.
    open();
+
+   // Finally, read any supported extensions, like a BEAMS table
+   if (_hasBeamsTable) {
+     ImageFITSConverter::readBeamsTable(imageInfo, fullName, dataType_p);
+   }
+   setImageInfoMember (imageInfo);
 }
 
 
@@ -661,22 +671,27 @@ void FITSImage::open()
                                       dataType_p, TSMOption(),
 				      writable, canonical);
 
-// Shares the pTiledFile_p pointer. Scale factors for 16bit and 32 bit integers
+// Shares the pTiledFile_p pointer. Scale factors for integers
 
+   FITSMask* fitsMask=0;
    if (hasBlanks_p) {
       if (dataType_p == TpFloat) {
-         pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+         fitsMask = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpDouble) {
-         pPixelMask_p = new FITSMask(&(*pTiledFile_p));
+         fitsMask = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpUChar) {
-         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
-   				      uCharMagic_p, hasBlanks_p);
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+                                 uCharMagic_p, hasBlanks_p);
       } else if (dataType_p == TpShort) {
-         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
-   				      shortMagic_p, hasBlanks_p);
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+                                 shortMagic_p, hasBlanks_p);
       } else if (dataType_p == TpInt) {
-         pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
-   				      longMagic_p, hasBlanks_p);
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
+                                 longMagic_p, hasBlanks_p);
+      }
+      if (fitsMask) {
+        fitsMask->setFilterZero(filterZeroMask_p);
+        pPixelMask_p = fitsMask;
       }
    }
 
@@ -697,8 +712,6 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     Int& longMagic, Bool& hasBlanks, const String& name,
                                     uInt whichRep, uInt whichHDU)
 {
-// Open sesame
-
     LogIO os(LogOrigin("FITSImage", "getImageAttributes", WHERE));
     File fitsfile(name);
     if (!fitsfile.exists() || !fitsfile.isReadable() || !fitsfile.isRegular()) {
@@ -812,6 +825,19 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 // Get recordnumber 
    
     recordnumber = infile.recno();
+}
+
+void FITSImage::setMaskZero(Bool filterZero)
+{
+	// set the zero masking on the
+	// current mask
+	if (pPixelMask_p)
+		dynamic_cast<FITSMask *>(pPixelMask_p)->setFilterZero(True);
+
+	// set the flag, such that an later
+	// mask created in 'open()' will be OK
+	// as well
+	filterZeroMask_p = filterZero;
 }
 
 } //# NAMESPACE CASA - END

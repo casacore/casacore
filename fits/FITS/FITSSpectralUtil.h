@@ -47,7 +47,7 @@ class LogIO;
 
 // <use visibility=export>
 
-// <reviewed reviewer="Eric Sessoms" date="2002/08/19" tests="tFITSKeywordUtil.cc">
+// <reviewed reviewer="Eric Sessoms" date="2002/08/19" tests="tFITSSpectralUtil.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -67,7 +67,7 @@ class LogIO;
 // This class provides functions to extract information from a FITS
 // header about the spectral axis, to setup a FITS header with
 // appropriate information for the spectral axis, and to translate
-// to and from the MFrequency refrence frame codes and their FITS
+// to and from the MFrequency reference frame codes and their FITS
 // equivalents.
 // It is never necessary to construct a FITSSpectralUtil, just use the 
 // static functions to help handle FITS Spectral axes.
@@ -95,6 +95,10 @@ class LogIO;
 // knowledge of FITS conventions that this class strives to encapsulize.
 // </motivation>
 //
+// <todo asof="2011/11/30">
+//   <li> General usage of units for frequency and velocity in "fromFITSHeader"
+//        (currently only implemented for wavelength)
+// </todo>
 
 class FITSSpectralUtil
 {
@@ -149,12 +153,17 @@ public:
     // axis description parameters will be set to those appropriate for
     // a wavelength axis given the referenceFrame if possible.
     // The two preferences cannot be True at the same time.
+    // If airWavelength is True, the
+    // axis description parameters will be set to those appropriate for
+    // an air wavelength axis given the referenceFrame if possible.
+    // This parameter has an effect only if preferWavelength is True.
 
     // This method always returns True.
     static Bool toFITSHeader(String &ctype, 
 			     Double &crval, 
 			     Double &cdelt,
 			     Double &crpix, 
+			     String &cunit,
 			     Bool &haveAlt, 
 			     Double &altrval,
 			     Double &altrpix,
@@ -169,6 +178,7 @@ public:
 			     Bool preferVelocity = True,
 			     MDoppler::Types velocityPreference = MDoppler::OPTICAL,
 			     Bool preferWavelength = False,
+			     Bool airWavelength = False,
 			     Bool useDeprecatedCtypes = False);
 
     // Convert a reference frame tag (typically found as the characters
@@ -204,7 +214,12 @@ public:
 				 MFrequency::Types referenceFrame);
 
     static Bool frameFromSpecsys(MFrequency::Types& refFrame, String& specsys);
-			  
+
+    // The refractive index of air (argument can be vacuum wavelength or airwavelength)
+    // according to Greisen et al., 2006, A&A, 464, 746.
+    // If vacuum wavelength is used there is an error of the order of 1E-9.
+    // Argument must be in micrometers!
+    static Double refractiveIndex(const Double& lambda_um);
 };
 
 

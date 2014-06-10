@@ -67,7 +67,7 @@ template<class T> class Matrix;
 //        handle this.
 //   <li> The leading "pg" is removed from the name since by being in a class
 //        there are no namespace issues.
-//   <li> AIPS++ array classes are used in place of raw pointers. This also
+//   <li> Casacore array classes are used in place of raw pointers. This also
 //        obviates the need for passing in array dimensions. Similarly the
 //        subregion arguments (I1, I2, J1, J2) are left out since the array
 //        classes have their own subsectioning methods.

@@ -1,4 +1,4 @@
-//# aipstype.h: Global initialization for standard aips++ types
+//# aipstype.h: Global initialization for standard Casacore types
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,7 +30,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// Define the standard types used by aips++
+// Define the standard types used by Casacore
 
 typedef bool Bool;
 const Bool True = true;

@@ -38,6 +38,7 @@
 #include <tables/Tables/DataManInfo.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/SimOrdMap.h>
+#include <casa/Utilities/LinearSearch.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/OS/Path.h>
 #include <casa/BasicSL/String.h>
@@ -130,10 +131,11 @@ void TableCopy::copyInfo (Table& out, const Table& in)
   out.flushTableInfo();
 }
 
-void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows)
+void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows,
+                               const Block<String>& omit)
 {
   copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(),
-		 out.tableType(), in, noRows);
+		 out.tableType(), in, noRows, omit);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {
@@ -142,9 +144,9 @@ void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows)
       const String& name = outDesc[i].name();
       if (inDesc.isColumn(name)) {
 	TableColumn outCol(out, name);
-	ROTableColumn inCol(in, name);
+	TableColumn inCol(in, name);
 	copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
-		       out.tableName(), out.tableType(), in, noRows);
+		       out.tableName(), out.tableType(), in, noRows, omit);
       }
     }
   }
@@ -156,11 +158,16 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 			       const String& outName,
 			       Table::TableType outType,
 			       const Table& in,
-			       Bool noRows)
+			       Bool noRows,
+                               const Block<String>& omit)
 {
   for (uInt i=0; i<inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
+      // Skip a subtable that has to be omitted.
+      if (linearSearchBrackets1 (omit, inKeys.name(i)) >= 0) {
+        continue;
+      }
       // Lock the subtable in case not locked yet.
       // Note it will keep the lock if already locked.
       TableLocker locker(inTab, FileLocker::Read);

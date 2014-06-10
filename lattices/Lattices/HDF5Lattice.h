@@ -55,9 +55,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   // <synopsis> 
   // Astronomical data arrays (like images) have to be persistent.
-  // A Lattice is a templated abstract base class to hold any AIPS++ array.
+  // A Lattice is a templated abstract base class to hold any Casacore array.
   // The PagedArray class is a Lattice specialization which stores the data
-  // in an AIPS++ table.
+  // in a Casacore table.
   // <br>
   // HDF5Lattice ia another Lattice specialization making it possible to store
   // an array as a dataset in a group in an HDF5 file.

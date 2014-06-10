@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MSFieldParse.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -70,8 +71,12 @@ class TableExprNode;
 // <group name=MSFieldGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-  int msFieldGramParseCommand (const MeasurementSet *ms, const String& command);
-  int msFieldGramParseCommand (const MeasurementSet *ms, const String& command,Vector<Int>&);
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet *ms, const String& command);
+  // TableExprNode msFieldGramParseCommand (MSSelectableTable *ms, const String& command,Vector<Int>&);
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet *ms, const String& command,Vector<Int>&);
+  TableExprNode msFieldGramParseCommand (const MSField& fieldSubTable, const TableExprNode& colAsTEN, 
+					 const String& command,Vector<Int>&);
+  TableExprNode baseMSFieldGramParseCommand (MSFieldParse *parser, const String& command,Vector<Int>&);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.

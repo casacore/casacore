@@ -36,7 +36,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-template<class T> class ROArrayColumn;
 template<class T> class ArrayColumn;
 class TableColumn;
 
@@ -303,13 +302,9 @@ protected:
     // Set the virtual and stored column name.
     void setNames (const String& virtualName, const String& storedName);
 
-    // Give readonly access to the stored column.
-    // This can be used by the derived classes to get data.
-    inline ROArrayColumn<StoredType>& roColumn();
-
-    // Give read/write access to the stored column.
-    // This can be used by the derived classes to put data.
-    inline ArrayColumn<StoredType>& rwColumn();
+    // Give access to the stored column.
+    // This can be used by the derived classes to get/put data.
+    inline ArrayColumn<StoredType>& column();
 
     // Create the column object for the array column in this engine.
     // It will check if the given column name matches the virtual
@@ -338,10 +333,6 @@ protected:
     void prepare1();
     void prepare2();
     // </group>
-
-    // Reopen the engine for read/write access.
-    // It makes the column writable if the underlying column is writable.
-    virtual void reopenRW();
 
     // Rows are added to the end of the table.
     // If the virtual column has FixedShape arrays and the stored not,
@@ -454,8 +445,8 @@ protected:
     virtual IPosition getStoredShape (uInt rownr,
                                       const IPosition& virtualShape);
 
-    // Map the slicerfor a virtual shape to a stored shape.
-    // By default it returns the virtualinput slicer.
+    // Map the slicer for a virtual shape to a stored shape.
+    // By default it returns the virtual input slicer.
     virtual Slicer getStoredSlicer (const Slicer& virtualSlicer) const;
 
     // Map StoredType array to VirtualType array.
@@ -488,8 +479,7 @@ private:
     uInt           initialNrrow_p;       //# initial #rows in case of create
     Bool           arrayIsFixed_p;       //# True = virtual is FixedShape array
     IPosition      shapeFixed_p;         //# shape in case FixedShape array
-    ROArrayColumn<StoredType>*  roColumn_p;    //# the stored column (for get)
-    ArrayColumn<StoredType>*    column_p;      //# the stored column (for put)
+    ArrayColumn<StoredType>* column_p;   //# the stored column
 };
 
 
@@ -519,13 +509,8 @@ BaseMappedArrayEngine<VirtualType, StoredType>::setWritable (Bool isWritable)
     { isWritable_p = isWritable; }
 
 template<class VirtualType, class StoredType>
-inline ROArrayColumn<StoredType>&
-BaseMappedArrayEngine<VirtualType, StoredType>::roColumn()
-    { return *roColumn_p; }
-
-template<class VirtualType, class StoredType>
 inline ArrayColumn<StoredType>&
-BaseMappedArrayEngine<VirtualType, StoredType>::rwColumn()
+BaseMappedArrayEngine<VirtualType, StoredType>::column()
     { return *column_p; }
 
 

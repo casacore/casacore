@@ -371,7 +371,7 @@ private:
 
     // Define the column with the row numbers (must have data type uInt).
     String                          rowColumnName_p;
-    ROScalarColumn<uInt>            rowColumn_p;
+    ScalarColumn<uInt>              rowColumn_p;
     // Define the various engine column objects.
     PtrBlock<ForwardColumnIndexedRow*> refColumns_p;
     // Cache of last row used to get row number.

@@ -1,4 +1,4 @@
-//# MSArrayParse.h: Classes to hold results from scan grammar parser
+//# MSArrayParse.h: Classes to hold results from array grammar parser
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 
 // <summary>
-// Class to hold values from scan grammar parser
+// Class to hold values from array grammar parser
 // </summary>
 
 // <use visibility=local>
@@ -50,11 +50,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <etymology>
-// MSArrayParse is the class used to parse a scan command.
+// MSArrayParse is the class used to parse a array command.
 // </etymology>
 
 // <synopsis>
-// MSArrayParse is used by the parser of scan sub-expression statements.
+// MSArrayParse is used by the parser of array sub-expression statements.
 // The parser is written in Bison and Flex in files MSArrayGram.y and .l.
 // The statements in there use the routines in this file to act
 // upon a reduced rule.
@@ -97,24 +97,29 @@ public:
 
   const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
   const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
-  const TableExprNode *selectArrayIds(const Vector<Int>& scanids);
-  const TableExprNode *selectArrayIdsGT(const Vector<Int>& scanids);
-  const TableExprNode *selectArrayIdsLT(const Vector<Int>& scanids);
-  const TableExprNode *selectArrayIdsGTEQ(const Vector<Int>& scanids);
-  const TableExprNode *selectArrayIdsLTEQ(const Vector<Int>& scanids);
+  const TableExprNode *selectArrayIds(const Vector<Int>& arrayids);
+  inline const TableExprNode *selectArrayIds() {return selectArrayIds(parsedIDList_p);}
+  const TableExprNode *selectArrayIdsGT(const Vector<Int>& arrayids);
+  const TableExprNode *selectArrayIdsLT(const Vector<Int>& arrayids);
+  const TableExprNode *selectArrayIdsGTEQ(const Vector<Int>& arrayids);
+  const TableExprNode *selectArrayIdsLTEQ(const Vector<Int>& arrayids);
+  std::vector<Int>& accumulateIDs(const Int id0, const Int id1=-1);
 
     // Get table expression node object.
-  static const TableExprNode* node();
+  const TableExprNode node();
 
-  static MSArrayParse* thisMSSParser;
-  static Vector<Int> selectedIDs() {return idList;}
-  static void reset(){idList.resize(0);}
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
+  Vector<Int> selectedIDs() {return idList;}
+  void reset(){idList.resize(0);parsedIDList_p.resize(0);}
+  void cleanup() {}
 
   void setMaxArray(const Int& n) {maxArrays_p=n;}
+
+  static MSArrayParse* thisMSAParser;
+
 private:
-  static TableExprNode* node_p;
-  static Vector<Int> idList;
+  TableExprNode node_p;
+  Vector<Int> idList;
+  std::vector<Int> parsedIDList_p;
   const String colName;
   void appendToIDList(const Vector<Int>& v);
   Int maxArrays_p;

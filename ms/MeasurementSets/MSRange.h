@@ -35,8 +35,8 @@
 #include <ms/MeasurementSets/MSSelectionKeywords.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-template <class T> class ROArrayColumn;
-template <class T> class ROScalarColumn;
+template <class T> class ArrayColumn;
+template <class T> class ScalarColumn;
 class Record;
 class MSSelector;
 // <summary>
@@ -168,10 +168,10 @@ protected:
   // get the range of a ScalarColumn<Int>, correct for 1-based 
   // indexing if oneBased is True, and add to out record.
   void scalarRange(Record& out, const String& item, 
-		   const ROScalarColumn<Int>& id, Bool oneBased);
+		   const ScalarColumn<Int>& id, Bool oneBased);
 
   // get the range of a ScalarColumn<Int>
-  Vector<Int> scalarRange(const ROScalarColumn<Int>& id);
+  Vector<Int> scalarRange(const ScalarColumn<Int>& id);
 
   // get the minimum and maximum of a Complex data column, after
   // application of some function to convert to Float (e.g., real,
@@ -179,9 +179,9 @@ protected:
   // size blockSize, as set by the setBlockSize function.
   void minMax(Matrix<Float>& minmax, 
 	      const Vector<Bool>& funcSel,
-	      const ROArrayColumn<Complex>& data1,
-	      const ROArrayColumn<Complex>& data2,
-	      const ROArrayColumn<Bool>& flag,
+	      const ArrayColumn<Complex>& data1,
+	      const ArrayColumn<Complex>& data2,
+	      const ArrayColumn<Bool>& flag,
 	      Int dataType,
 	      Bool useFlags);
 
@@ -189,14 +189,14 @@ protected:
   // This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
   void minMax(Float& mini, Float& maxi, 
-	      const ROArrayColumn<Float>& data,
-	      const ROArrayColumn<Bool>& flag,
+	      const ArrayColumn<Float>& data,
+	      const ArrayColumn<Bool>& flag,
 	      Bool useFlags);
 
   // Get the range of interferometer numbers given the antenna1 and antenna2
   // columns.
-  Vector<Int> ifrNumbers(const ROScalarColumn<Int>& ant1,
-			 const ROScalarColumn<Int>& ant2);
+  Vector<Int> ifrNumbers(const ScalarColumn<Int>& ant1,
+			 const ScalarColumn<Int>& ant2);
 
 private:
   // The function types

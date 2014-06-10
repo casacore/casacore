@@ -166,22 +166,23 @@ public:
 
   // List the visibilities, with optional data selection and output 
   // specification.
-  void list (const String options="",
-             const String datacolumn="",
-             const String field="", 
-             const String spw="", 
-             const String antenna="", 
-             const String timerange="", 
-             const String correlation="",
-             const String scan="",
-             const String feed="",
-             const String array="",
-             const String uvrange="", 
-             const String average="",
-             const bool   showflags=False,
-             const String msSelect="",
-             const long   pagerows=50,
-             const String listfile="");
+  void list (const String& options="",
+             const String& datacolumn="",
+             const String& field="", 
+             const String& spw="", 
+             const String& antenna="", 
+             const String& timerange="", 
+             const String& correlation="",
+             const String& scan="",
+             const String& feed="",
+             const String& array="",
+             const String& observation="",
+             const String& uvrange="", 
+             const String& average="",
+             const bool    showflags=False,
+             const String& msSelect="",
+             const long    pagerows=50,
+             const String& listfile="");
 
   // Set uv-data selection via MSSelection
   void selectvis(const String& timerange="",
@@ -198,6 +199,7 @@ public:
                  const MRadialVelocity& mStep=MRadialVelocity(),
                  const String& correlation="",
                  const String& array="",
+		 const String& observation="",
                  const String& msSelect="");
 
 private:
@@ -224,8 +226,8 @@ private:
   // pols_p holds the polarization names contained in the MS
   // in the same order that the polarization data are listed in the 
   // main table.
-  void polarizationSetup(MeasurementSet *pMS);
-  
+  void _polarizationSetup(const uInt selPolID);
+
   // Parse the correlation parameter value; fill indexPols_p to output
   // selected polarizations.  If correlation is empty, all polarizations
   // are selected.

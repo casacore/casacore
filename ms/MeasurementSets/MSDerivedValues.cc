@@ -60,6 +60,7 @@ MSDerivedValues::operator=(const MSDerivedValues& other)
   // should copy all data here, for now, just init
   init();
 
+  mount_p = other.mount_p;
   radialVelocityType_p = other.radialVelocityType_p;
 
   return *this;

@@ -28,6 +28,7 @@
 #include <ms/MeasurementSets/MSUvDistParse.h>
 #include <ms/MeasurementSets/MSColumns.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <tables/Tables/RecordGram.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -99,7 +100,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
     {
       String Mesg="Unrecognized units " + 
 	units + 
-	" found.  Possible units are [Kk][LAMBDA or lambda] for wavelengths or [Kk][Mm] for distance.";
+	" found.  Possible (case insensitive) units are [KM]LAMBDA for wavelengths or [K]M for distance.";
       throw(MSSelectionUvDistParseError(Mesg));
     }
   
@@ -120,11 +121,18 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       // baseline on the uv-plane).  It's certainly more expensive to
       // compute in TaQL and probably scientifically incorrect too.
       //
-      String colName = MS::columnName(MS::UVW);
-      TableExprNode uvw = ms()->col(colName);
-      TableExprNodeSet su = TableExprNodeSet(IPosition(1,0));
-      TableExprNodeSet sv = TableExprNodeSet(IPosition(1,1));
-      TableExprNode uvwDist = sqrt(uvw(su)*uvw(su) + uvw(sv)*uvw(sv));
+      // String colName = MS::columnName(MS::UVW);
+      // TableExprNode uvw = ms()->col(colName);
+      // TableExprNodeSet su = TableExprNodeSet(IPosition(1,0));
+      // TableExprNodeSet sv = TableExprNodeSet(IPosition(1,1));
+      // TableExprNode uvwDist = (uvw(su)*uvw(su) + uvw(sv)*uvw(sv));
+
+      //
+      // Turns out that the above style of building the TEN is about
+      // 2x slower than the one below.  It is also simpler to build a
+      // const TEN via the parser below.
+      //
+      TableExprNode uvwDist = RecordGram::parse(*ms_p,"SQUARE(UVW[1]) + SQUARE(UVW[2])");
       //
       // Build a map from DDID (which is a MainTable column) to SpwID
       // (which then indexes into the SpectralWindow sub-table from
@@ -153,6 +161,8 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 	      scaledStartPoint = startPoint * Lambda;
 	      scaledEndPoint = endPoint * Lambda;
 
+	      scaledStartPoint *= scaledStartPoint;
+	      scaledEndPoint *= scaledEndPoint;
 	      TableExprNode pickUVWDist= ((ms()->col(DATA_DESC_ID)==i)  && 
 					  ((uvwDist >= scaledStartPoint) && 
 					   (uvwDist <= scaledEndPoint)));
@@ -161,10 +171,14 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
 	    }
 	}
       else
-	if (condition.isNull())
-	  condition = ((uvwDist >= startPoint) && (uvwDist <= endPoint));
-	else 
-	  condition = condition || ((uvwDist >= startPoint) && (uvwDist <= endPoint));
+	{
+	  startPoint *= startPoint;
+	  endPoint *= endPoint;
+	  if (condition.isNull())
+	    condition = ((uvwDist >= startPoint) && (uvwDist <= endPoint));
+	  else 
+	    condition = condition || ((uvwDist >= startPoint) && (uvwDist <= endPoint));
+	}
     }
   else
     {

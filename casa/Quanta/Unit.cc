@@ -31,8 +31,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/OS/malloc.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -45,7 +45,7 @@ Unit::Unit(const Unit &other)
     uVal = other.uVal;
 }
 
-Unit::Unit(const String &other) 
+Unit::Unit(const std::string &other) 
 : uName(other), uVal() {
     check();
 }

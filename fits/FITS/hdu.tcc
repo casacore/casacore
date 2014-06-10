@@ -391,11 +391,15 @@ OFF_T PrimaryArray<TYPE>::set_next(OFF_T ne) {
 //=========================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
-    if (npixels < 0 || npixels > Int(nelements())) {
-	errmsg(BADSIZE, "npixels < 0 or > nelements()");
+
+    if (npixels < 0) {
+        errmsg(BADSIZE, "npixels < 0");
+        return -1;
+    }
+    if ((OFF_T) npixels > nelements()) {
+	errmsg(BADSIZE, "npixels > nelements()");
 	return -1;
     }
-
     if (set_next(npixels) == -1) {
 	errmsg(BADSIZE, "set_next fails");
 	return -1;
@@ -1126,6 +1130,163 @@ int PrimaryGroup<TYPE>::write(FitsOutput &fout) {
 	}
 	++current_group;
 	return 0;
+}
+//====================================================================================
+
+template <class TYPE>
+PrimaryTable<TYPE>::PrimaryTable(FitsInput &f, 
+				     FITSErrorHandler errhandler) : 
+	PrimaryArray<TYPE>(f,FITS::PrimaryTableHDU,errhandler) {
+	pt_assign();
+}
+//====================================================================================
+template <class TYPE>
+PrimaryTable<TYPE>::PrimaryTable(FitsKeywordList &k, 
+				     FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(k,FITS::PrimaryTableHDU,errhandler) {
+	pt_assign();
+}
+//====================================================================================
+// constructor that does not require a FitsKeywordList object as parameter
+template <class TYPE>
+PrimaryTable<TYPE>::PrimaryTable(FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(FITS::PrimaryTableHDU,errhandler) {
+	// pt_assign();
+	// in the case when user is not required to provide a kerword list object,
+	// it must be called from write_priTable_hdr().
+}
+//====================================================================================
+template <class TYPE>
+PrimaryTable<TYPE>::~PrimaryTable() {
+	if (object_x != &char_null)
+	    delete [] object_x;
+	if (telescop_x != &char_null)
+	    delete telescop_x;
+}
+//====================================================================================
+template <class TYPE>
+void PrimaryTable<TYPE>::pt_assign() {
+        object_x = assign(FITS::OBJECT);
+        telescop_x = assign(FITS::TELESCOP);
+        instrume_x = assign(FITS::INSTRUME);
+        dateobs_x = assign(FITS::DATE_OBS);
+        datemap_x = assign(FITS::DATE_MAP);
+        //bscale_x = kwlist_(FITS::BSCALE)->asFloat();
+        //bzero_x = kwlist_(FITS::BZERO)->asFloat();
+        //bunit_x = assign(FITS::BUNIT);
+        //equinox_x = kwlist_(FITS::EQUINOX)->asFloat();
+        //altrpix_x = kwlist_(FITS::ALTRPIX)->asFloat();
+}
+template <class TYPE>
+int PrimaryTable<TYPE>::read() {
+	//return PrimaryArray<TYPE>::read();
+        return 0;
+}
+//====================================================================================================
+// write required keywords for PrimaryTable
+template <class TYPE>
+int PrimaryTable<TYPE>::write_priTable_hdr( FitsOutput &fout, // I - FITS output object
+            int bitpix,          /* I - bits per pixel              */
+            int naxis,           /* I - number of axes in the array */
+            long *naxes)         /* I - size of each axis           */
+                            
+                      
+{
+	// flush m_buffer first
+	fout.getfout().flush_buffer();
+
+   int  l_status = 0;     // IO - error status 
+	if ( fout.rectype() == FITS::InitialState) {
+		errmsg(BADOPER,"A Primary Header must be written first[PrimaryTable::write_priTable_hdr].");
+	   return -1;
+	}
+	if (!fout.hdu_complete()) {
+	   errmsg(BADOPER,"Previous HDU incomplete -- cannot write header[PrimaryTable::write_priTable_hdr].");
+	   return -1;
+	}
+	if( !fout.isextend() ) {
+	   errmsg(BADOPER,"Extensions are not allowed for this FITS file![PrimaryTable::write_priTable_hdr].");
+	   return -1;
+	}
+	if( !fout.required_keys_only() ){
+	   cerr << "\n[PrimaryTable::write_priTable_hdr()] write_priTable_hdr() " 
+                << "works with other write_***_hdr()" << endl;
+	   cerr << " methods only. It will not work with write_hdr()." << endl;
+		errmsg(BADOPER,"Used wrong header-writting function." );
+		return -1;
+	}
+	// Since the original file pointer does not have the hdu info about the hdu created by
+	// write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
+	// This may cause some loss of efficiency. But so far I have not found a better way. 
+	fitsfile* l_newfptr = 0;
+	l_status = 0;
+	//(fout.getfout()).close_file( fout.getfptr(), &l_status);
+	//file_close( (fout.getfptr()->Fptr)->filehandle);
+	
+	const char * l_filename = (fout.getfout()).fname();
+	if (ffopen( &l_newfptr, l_filename, READWRITE, &l_status )){
+	//if(ffreopen( fout.getfptr(), &l_newfptr, &l_status )){
+	   errmsg(BADOPER,"[PrimaryTable<TYPE>::write_priTable_hdr()] ffopen() CHDU failed!");
+           fits_report_error(stderr, l_status); // print error report
+           return -1;
+	}
+	//ffmahd(l_newfptr, 1, 0, &l_status);
+	// write the required keywords for PrimaryTable to fitsfile. 
+	l_status = 0; 
+	if(ffcrim(l_newfptr, bitpix, naxis, naxes, &l_status)){
+	   errmsg(BADOPER,"Write Image header failed![PrimaryTable::write_priTable_hdr]");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// flush the buffer of CFITSIO so that the contents will be actually written to disk.
+	// oopes, if we call ffflsh() in this case, the fits file is damaged! why?
+	//if(ffflsh(l_newfptr, TRUE, &l_status)){ errmsg(BADOPER,"[PrimaryArray::write_priArr_hdr()] Error flushing buffer!"); }
+
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(l_newfptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(l_newfptr, l_headstart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[l_datastart - l_headstart + 1];
+	if(ffgbyt(l_newfptr, l_datastart - l_headstart, l_headerbytes, &l_status)){                   
+		fits_report_error(stderr, l_status); // print error report
+           return -1;
+	}
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(l_newfptr->Fptr)->bytepos = l_datastart;   
+	// update the file pointer in FitsOutput. Always do this before updating the file pointer in BlockOutpu.
+	fout.setfptr( l_newfptr );           
+	// update the file pointer in BlockOutput.	
+	fout.getfout().setfptr( l_newfptr ); 
+
+        // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	// init the info for the data unit
+	init_data_unit( FITS::PrimaryTableHDU );
+	// Call the parent pa_assign() method to assign the binary table. This is done in the 
+	// parent constructor for the case when user is required to provide a FitsKeywordList object.
+	pa_assign();
+
+	// assign the binary table. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	pt_assign();
+
+	// set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+   
+   return 0;
 }
 //==================================================================================
 template <class TYPE>

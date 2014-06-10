@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/DataManager.h>
+#include <iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -87,6 +88,8 @@ public:
     RODataManAccessor (const Table& table, const String& name,
                        Bool byColumn);
 
+    virtual ~RODataManAccessor();
+
     // Set data manager properties using the fields in the record.
     // Each data manager has its specific set of properties.
     void setProperties (const Record&) const;
@@ -101,6 +104,14 @@ public:
     // Get the data manager name.
     String dataManagerName() const
       { return itsDataManager->dataManagerName(); } 
+
+    // Get the data manager sequence nr.
+    uInt dataManagerSeqNr() const
+      { return itsDataManager->sequenceNr(); } 
+
+    // Show IO statistics.
+    void showCacheStatistics (ostream& os) const
+      { itsDataManager->showCacheStatistics (os); }
 
 protected:
     // Get the data manager for the given data manager or column name.

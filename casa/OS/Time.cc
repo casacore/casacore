@@ -398,13 +398,18 @@ double Time::age() {
 }
 
 uInt Time::seconds() {
+  // return integral seconds after the minute [0,59]
+  return (uInt)(dseconds());
+}
+
+double Time::dseconds() {
   // return seconds after the minute [0,59]
   double hour,min;
 
   hour= mJulianDayfrac*24.0;
   min= (hour-(int)hour)*60.0;
 
-  return (uInt)((min-(int)min)*60.0);
+  return ((min-(int)min)*60.0);
 }
 
 uInt Time::minutes() {

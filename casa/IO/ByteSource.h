@@ -58,7 +58,7 @@ class String;
 
 // <synopsis> 
 // ByteSource provides read-only access to a typed byte stream in the
-// AIPS++ IO framework. The base class <src>BaseSinkSource</src>
+// Casacore IO framework. The base class <src>BaseSinkSource</src>
 // contains common functions like <src>seek</src>.
 // <p>
 // The object is constructed using a typed byte stream. This stream

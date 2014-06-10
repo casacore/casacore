@@ -35,10 +35,10 @@ void writeTestString(const String& test) {
 }
 
 int main() {
-    String test;
+	String test;
     FITSImage image("imageStats.fits");
     try {
-       {
+    	{
             writeTestString(
                 "test normal and copy constructors"
             );
@@ -50,8 +50,102 @@ int main() {
             ImageStatistics<Float> stats3(stats);
             AlwaysAssert(stats.getBlc() == stats3.getBlc(), AipsError);
 
-        }
+    	}
 
+    	{
+			writeTestString(
+				"test multi-beam images"
+			);
+			CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+			IPosition shape(4, 10, 15, 4, 20);
+			TempImage<Float> tim(TiledShape(shape), csys);
+			Array<Float> arr(IPosition(4, shape[0], shape[1], 1, 1));
+			indgen(arr);
+			for (uInt i=0; i<shape[2]; i++) {
+				for (uInt j=0; j<shape[3]; j++) {
+					tim.putSlice(arr, IPosition(4, 0, 0, i, j));
+				}
+			}
+			tim.setUnits("Jy/pixel");
+			ImageStatistics<Float> stats(tim);
+			Vector<Int> axes(2, 0);
+			axes[1] = 1;
+			stats.setAxes(axes);
+			Vector<LatticeStatistics<Float>::AccumType> myStats;
+			Vector<LatticeStatistics<Float>::AccumType> exp;
+			for (uInt i=0; i<shape[2]; i++) {
+				for (uInt j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), False);
+					if (i == 0 && j == 0) {
+						exp = myStats;
+					}
+					AlwaysAssert(allTrue(myStats == exp), AipsError);
+				}
+			}
+			tim.setUnits("Jy/beam");
+			GaussianBeam beam (
+				Quantity(3, "arcmin"),
+				Quantity(2.5, "arcmin"),
+				Quantity(30, "deg")
+			);
+			ImageInfo info = tim.imageInfo();
+			info.setRestoringBeam(beam);
+			tim.setImageInfo(info);
+			stats = ImageStatistics<Float>(tim);
+			stats.setAxes(axes);
+			for (uInt i=0; i<shape[2]; i++) {
+				for (uInt j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), False);
+					if (i == 0 && j == 0) {
+						exp = myStats;
+					}
+					AlwaysAssert(allTrue(myStats == exp), AipsError);
+				}
+			}
+			info.removeRestoringBeam();
+			info.setAllBeams(shape[3], shape[2], beam);
+			tim.setImageInfo(info);
+			stats = ImageStatistics<Float>(tim);
+			stats.setAxes(axes);
+			for (uInt i=0; i<shape[2]; i++) {
+				for (uInt j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), False);
+					if (i == 0 && j == 0) {
+						exp = myStats;
+					}
+					AlwaysAssert(allTrue(myStats == exp), AipsError);
+				}
+			}
+			info.setBeam(
+				1, 1, beam.getMajor() + Quantity(0.2, "arcmin"),
+				beam.getMinor(), beam.getPA()
+			);
+
+			tim.setImageInfo(info);
+			stats = ImageStatistics<Float>(tim);
+			stats.setAxes(axes);
+			for (uInt i=0; i<shape[2]; i++) {
+				for (uInt j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), False);
+					if (i == 0 && j == 0) {
+						exp = myStats;
+					}
+					if (i == 1 && j == 1) {
+						Slice s(0, myStats.size() - 2);
+						AlwaysAssert(allTrue(myStats(s) == exp(s)), AipsError);
+						Quantity ratio = beam.getMajor()/info.restoringBeam(1, 1).getMajor();
+						Double gotFlux = myStats[myStats.size() - 1];
+						Double expFlux = ratio.getValue() * exp[exp.size() - 1];
+						AlwaysAssert(fabs(gotFlux - expFlux)/expFlux < 1e-7, AipsError)
+					}
+					else {
+						AlwaysAssert(allTrue(myStats == exp), AipsError);
+					}
+
+
+				}
+			}
+    	}
         cout << "ok" << endl;
     }
     catch (AipsError x) {

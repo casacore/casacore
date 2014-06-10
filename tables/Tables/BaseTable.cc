@@ -39,7 +39,7 @@
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/ContainerIO.h>
+#include <casa/BasicSL/STLIO.h>
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Record.h>
 #include <casa/Containers/ValueHolder.h>
@@ -67,7 +67,8 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
   option_p    (option),
   noWrite_p   (False),
   delete_p    (False),
-  madeDir_p   (True)
+  madeDir_p   (True),
+  itsTraceId  (-1)
 {
     if (name_p.empty()) {
 	name_p = File::newUniqueName ("", "tab").originalName();
@@ -659,24 +660,31 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
     { return True; }
 
-BaseTable* BaseTable::select (uInt maxRow)
+BaseTable* BaseTable::select (uInt maxRow, uInt offset)
 {
-    if (maxRow == 0  ||  maxRow >= nrow()) {
+    if (offset > nrow()) {
+        offset = nrow();
+    }
+    if (maxRow == 0  ||  maxRow > nrow()  ) {
+        maxRow = nrow() - offset;
+    }
+    if (offset == 0  &&  maxRow == nrow()) {
         return this;
     }
     Vector<uInt> rownrs(maxRow);
-    indgen(rownrs);
+    indgen(rownrs, offset);
     return select(rownrs);
 }
 
 // Do the row selection.
-BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
+BaseTable* BaseTable::select (const TableExprNode& node,
+                              uInt maxRow, uInt offset)
 {
     // Check we don't deal with a null table.
     AlwaysAssert (!isNull(), AipsError);
     // If it is a null expression, return maxrows.
     if (node.isNull()) {
-        return select (maxRow);
+      return select (maxRow, offset);
     }
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool  ||  !node.isScalar()) {
@@ -687,7 +695,7 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     if (node.getNodeRep()->isConstant()) {
         if (node.getBool(0)) {
             // Select maxRow rows.
-            return select (maxRow);
+            return select (maxRow, offset);
         }
         // Select no rows.
         return select(Vector<uInt>());
@@ -707,14 +715,21 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     SPtrHolder<RefTable> resultTable (makeRefTable (True, 0));
     Bool val;
     uInt nrrow = nrow();
+    TableExprId id;
     for (uInt i=0; i<nrrow; i++) {
-      node.get (i, val);
+      id.setRownr (i);
+      node.get (id, val);
       if (val) {
-	resultTable->addRownr (i);                  // add row
-	// Stop if max #rows reached (note that maxRow==0 means no limit).
-	if (resultTable->nrow() == maxRow) {
-	  break;
-	}
+        if (offset == 0) {
+          resultTable->addRownr (i);                  // add row
+          // Stop if max #rows reached (note that maxRow==0 means no limit).
+          if (resultTable->nrow() == maxRow) {
+            break;
+          }
+        } else {
+          // Skip first offset matching rows.
+          offset--;
+        }
       }
     }
     adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);
@@ -1044,7 +1059,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
         }
       }
       Bool extra = False;
-      for (uint j=0; j<spec.nfields(); j++) {
+      for (uInt j=0; j<spec.nfields(); j++) {
         const String& name = spec.name(j);
         if (name != "SEQNR" && name != "BUCKETSIZE" && name != "HYPERCUBES") {
           if (!extra) {
@@ -1081,7 +1096,10 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
         // Do not show if the subtable has the same root as this table.
         // This is needed to avoid endless recursion in case of SORTED_TABLE
         // in a MeasurementSet.
-        if (! tab.isSameRoot (Table(this, False))) {
+        if (tab.isSameRoot (Table(this, False))) {
+          os << endl << "Subtable " << keywords.name(i)
+             << " references the parent table!!" << endl;
+        } else {
           tab.showStructure (os, showDataMans, showColumns,
                              showSubTables, sortColumns);
         }

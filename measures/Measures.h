@@ -190,7 +190,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <li> <linkto class=MVTime>MVTime</linkto> (same for time-like values)
 // </ul>
 // <em>References</em> are measure specific. Each specific reference class is
-// called <em>Measure</em>::Ref (e.g. <src>MEpoch::Ref</src>). It specifies
+// called <em>Measure</em>\::Ref (e.g. <src>MEpoch::Ref</src>). It specifies
 // the full reference frame of the specific measure, i.e. its type, an optional
 // frame of measures (a MeasFrame, consisting of say a time and position), and
 // an optional offset.
@@ -310,7 +310,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Conversion of a measure of a certain kind from one reference to another
 // is done with the aid of special, measure specific,
 // <linkto class=MeasConvert>MeasConvert</linkto> classes. Each conversion
-// class is called <em>Measure</em>::Convert (e.g. MDirection::Convert).
+// class is called <em>Measure</em>\::Convert (e.g. MDirection::Convert).
 // A conversion generates from an input reference (or an input measure) and
 // an output reference a conversion functional, that can be used to convert
 // specific values.<br>
@@ -540,7 +540,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // well.<br>
 // Before implementing, however, I think it would be worthwhile to look at
 // the whole area of error handling. The easiest way would be to introduce
-// for each of the defined aips++ standard values a corresponding E class
+// for each of the defined Casacore standard values a corresponding E class
 // (EDouble, EInt, EComplex, EuInt etc), and have all mathematical and
 // logical operators that are defined for the standard classes be defined
 // for the E-classes as well. It would then be easy to introduce errors

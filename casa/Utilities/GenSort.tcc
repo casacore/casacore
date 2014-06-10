@@ -32,19 +32,21 @@
 #include <casa/Arrays/Slice.h>
 #include <casa/Containers/Block.h>
 #include <casa/Exceptions/Error.h>
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
 template<class T>
-void GenSort<T>::quickSortAsc (T* data, Int nr)
+void GenSort<T>::quickSortAsc (T* data, Int nr, Bool multiThread)
 {
     // QuickSorting small sets makes no sense.
     // It will be finished with an insertion sort.
-    // The number 15 is experimentally determined on a SUN IPC.
-    // It is not very critical.
-    if (nr <= 15) {
+    // The number 32 is determined experimentally. It is not very critical.
+    if (nr <= 32) {
 	return;
     }
     // Choose a partition element by taking the median of the
@@ -71,38 +73,18 @@ void GenSort<T>::quickSortAsc (T* data, Int nr)
     }
     swap (*sf, data[nr-1]);
     i = sf-data;
-    quickSortAsc (data, i);                  // sort left part
-    quickSortAsc (sf+1, nr-i-1);             // sort right part
-}
-
-// Do a quicksort in descending order.
-template<class T>
-void GenSort<T>::quickSortDesc (T* data, Int nr)
-{
-    if (nr <= 15) {
-	return;
+    if (multiThread) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (int thr=0; thr<2; ++thr) {
+        if (thr==0) quickSortAsc (data, i);             // sort left part
+        if (thr==1) quickSortAsc (sf+1, nr-i-1);        // sort right part
+      }
+    } else {
+      quickSortAsc (data, i);                  // sort left part
+      quickSortAsc (sf+1, nr-i-1);             // sort right part
     }
-    Int i = (nr-1)/2;                        // middle element
-    T* sf = data;                            // first element
-    T* sl = data+nr-1;                       // last element
-    if (data[i] > *sf)
-	swap (data[i], *sf);
-    if (*sl > *sf)
-	swap (*sl, *sf);
-    if (data[i] > *sl)
-	swap (data[i], *sl);
-    T par = *sl;                             // partition element
-    // Now partition until the pointers cross.
-    for (;;) {
-	while (*++sf > par) ;
-	while (*--sl < par) ;
-	if (sf >= sl) break;
-	swap (*sf, *sl);
-    }
-    swap (*sf, data[nr-1]);
-    i = sf-data;
-    quickSortDesc (data, i);                  // sort left part
-    quickSortDesc (sf+1, nr-i-1);             // sort right part
 }
 
 // Find the k-th largest element using a partial quicksort.
@@ -157,11 +139,10 @@ T GenSort<T>::kthLargest (T* data, uInt nr, uInt k)
 template<class T>
 uInt GenSort<T>::insSortAsc (T* data, Int nr, int opt)
 {
-    if ((opt & Sort::NoDuplicates) == 0) {
-	return insSortAscDup (data, nr);
-    }else{
-	return insSortAscNoDup (data, nr);
-    }
+  if ((opt & Sort::NoDuplicates) == 0) {
+    return insSortAscDup (data, nr);
+  }
+  return insSortAscNoDup (data, nr);
 }
 
 // Do an insertion sort in ascending order.
@@ -174,10 +155,11 @@ uInt GenSort<T>::insSortAscDup (T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = i;
 	cur = data[i];
-	while (--j>=0  &&  data[j] > cur) {
-	    data[j+1] = data[j];
+	while (j>0  &&  data[j-1] > cur) {
+	    data[j] = data[j-1];
+            j--;
 	}
-	data[j+1] = cur;
+	data[j] = cur;
     }
     return nr;
 }
@@ -196,69 +178,14 @@ uInt GenSort<T>::insSortAscNoDup (T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = n;
 	cur = data[i];
-	while (--j>=0  &&  data[j] > cur) {
-	}
-	if (j < 0  ||  !(data[j] == cur)) {       // no equal key
-	    for (k=n-1; k>j; k--) {
+	while (j>0  &&  data[j-1] > cur) {
+            j--;
+        }
+	if (j <= 0  ||  !(data[j-1] == cur)) {    // no equal key
+	    for (k=n-1; k>=j; k--) {
 		data[k+1] = data[k];              // now shift to right
 	    }
-	    data[j+1] = cur;                      // insert in right place
-	    n++;
-	}
-    }
-    return n;
-}
-
-// Do an insertion sort in descending order.
-template<class T>
-uInt GenSort<T>::insSortDesc (T* data, Int nr, int opt)
-{
-    if ((opt & Sort::NoDuplicates) == 0) {
-	return insSortDescDup (data, nr);
-    }else{
-	return insSortDescNoDup (data, nr);
-    }
-}
-
-// Do an insertion sort in descending order.
-// Keep duplicate elements.
-template<class T>
-uInt GenSort<T>::insSortDescDup (T* data, Int nr)
-{
-    Int  j;
-    T cur;
-    for (Int i=1; i<nr; i++) {
-	j   = i;
-	cur = data[i];
-	while (--j>=0  &&  data[j] < cur) {
-	    data[j+1] = data[j];
-	}
-	data[j+1] = cur;
-    }
-    return nr;
-}
-
-// Do an insertion sort in descending order.
-// Skip duplicate elements.
-template<class T>
-uInt GenSort<T>::insSortDescNoDup (T* data, Int nr)
-{
-    if (nr < 2) {
-	return nr;                                // nothing to sort
-    }
-    Int  j, k;
-    T cur;
-    Int n = 1;
-    for (Int i=1; i<nr; i++) {
-	j   = n;
-	cur = data[i];
-	while (--j>=0  &&  data[j] < cur) {
-	}
-	if (j < 0  ||  !(data[j] == cur)) {       // no equal key
-	    for (k=n-1; k>j; k--) {
-		data[k+1] = data[k];              // now shift to right
-	    }
-	    data[j+1] = cur;                      // insert in right place
+	    data[j] = cur;                        // insert in right place
 	    n++;
 	}
     }
@@ -303,118 +230,239 @@ void GenSort<T>::heapAscSiftDown (Int low, Int up, T* data)
     }
 }
 
-// Do a heapsort in descending order.
+
 template<class T>
-void GenSort<T>::heapSortDesc (T* data, Int nr)
+uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
+                          int nthread)
 {
-    // Use the heapsort algorithm described by Jon Bentley in
-    // UNIX Review, August 1992.
-    data--;
-    Int j;
-    for (j=nr/2; j>=1; j--) {
-	heapDescSiftDown (j, nr, data);
+  int nthr = nthread;    // to avoid compiler warning
+#ifdef _OPENMP
+  if (nthread > 0) {
+    nthr = nthread;
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nr) nthr = nr;
+    omp_set_num_threads (nthr);
+  } else {
+    nthr = omp_get_max_threads();
+    if (uInt(nthr) > nr) nthr = nr;
+  }
+#else
+  nthr = 1;
+#endif
+  Block<uInt> index(nr+1);
+  Block<uInt> tinx(nthr+1);
+  Block<uInt> np(nthr);
+  // Determine ordered parts in the array.
+  // It is done in parallel, whereafter the parts are combined.
+  int step = nr/nthr;
+  for (int i=0; i<nthr; ++i) tinx[i] = i*step;
+  tinx[nthr] = nr;
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+  for (int i=0; i<nthr; ++i) {
+    int nparts = 1;
+    index[tinx[i]] = tinx[i];
+    for (uInt j=tinx[i]+1; j<tinx[i+1]; ++j) {
+      if (data[j-1] > data[j]) {
+        index[tinx[i]+nparts] = j;    // out of order, thus new part
+        nparts++;
+      }
     }
-    for (j=nr; j>=2; j--) {
-	swap (data[1], data[j]);
-	heapDescSiftDown (1, j-1, data);
+    np[i] = nparts;
+  }
+  // Make index parts consecutive by shifting to the left.
+  // See if last and next part can be combined.
+  uInt nparts = np[0];
+  for (int i=1; i<nthr; ++i) {
+    if (data[tinx[i]-1] > data[tinx[i]]) {
+      index[nparts++] = index[tinx[i]];
     }
+    if (nparts == tinx[i]+1) {
+      nparts += np[i]-1;
+    } else {
+      for (uInt j=1; j<np[i]; ++j) {
+	index[nparts++] = index[tinx[i]+j];
+      }
+    }
+  }
+  index[nparts] = nr;
+  //cout<<"nparts="<<nparts<<endl;
+  // Merge the array parts. Each part is ordered.
+  if (nparts < nr) {
+    Block<T> tmp(nr);
+    T* res = merge (data, tmp.storage(), nr, index.storage(), nparts);
+    // Skip duplicates if needed.
+    if ((opt & Sort::NoDuplicates) != 0) {
+      nr = insSortAscNoDup (res, nr);
+    }
+    // Result is in ascending order; reverse if descending is needed.
+    if (ord == Sort::Descending) {
+      reverse (data, res, nr);
+    } else if (res != data) {
+      // The final result must end up in data.
+      objcopy (data, res, nr);
+    }
+  } else {
+    // Each part has length 1, so the array is in descending order and unique.
+    // Reverse if ascending is needed.
+    if (ord == Sort::Ascending) {
+      reverse (data, data, nr);
+    }
+  }
+  return nr;
+}  
+
+template<class T>
+void GenSort<T>::reverse (T* data, const T* res, uInt nr)
+{
+  // The result must end up in data.
+  if (res == data) {
+    for (uInt i=0; i<nr/2; ++i) {
+      T tmp(data[i]);
+      data[i] = data[nr-1-i];
+      data[nr-i-1] = tmp;
+    }
+  } else {
+    for (uInt i=0; i<nr; ++i) data[i] = res[nr-1-i];
+  }
 }
 
 template<class T>
-void GenSort<T>::heapDescSiftDown (Int low, Int up, T* data)
+T* GenSort<T>::merge (T* data, T* tmp, uInt nr, uInt* index,
+                      uInt nparts)
 {
-    T sav = data[low];
-    Int c;
-    Int i;
-    for (i=low; (c=2*i)<=up; i=c) {
-	if (c < up  &&  data[c+1] < data[c]) {
-	    c++;
+  T* a = data;
+  T* b = tmp;
+  int np = nparts;
+  // If the nr of parts is odd, the last part is not merged. To avoid having
+  // to copy it to the other array, a pointer 'last' is kept.
+  // Note that merging the previous part with the last part works fine, even
+  // if the last part is in the same buffer.
+  T* last = data + index[np-1];
+  while (np > 1) {
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
+    for (int i=0; i<np; i+=2) {
+      if (i < np-1) {
+        // Merge 2 subsequent parts of the array.
+	T* f1 = a+index[i];
+	T* f2 = a+index[i+1];
+	T* to = b+index[i];
+	uInt na = index[i+1]-index[i];
+	uInt nb = index[i+2]-index[i+1];
+        if (i == np-2) {
+          //cout<<"swap last np=" <<np<<endl;
+          f2 = last;
+          last = to;
+        }
+	uInt ia=0, ib=0, k=0;
+	while (ia < na && ib < nb) {
+	  if (f1[ia] < f2[ib]) {
+	    to[k] = f1[ia++];
+	  } else {
+	    to[k] = f2[ib++];
+	  }
+	  k++;
 	}
-	data[i] = data[c];
-    }
-    data[i] = sav;
-    for ( ; (c=i/2)>= low; i=c) {
-	if (!(data[i] < data[c])) {
-	    break;
+	if (ia < na) {
+	  for (uInt p=ia; p<na; p++,k++) to[k] = f1[p];
+	} else {
+	  for (uInt p=ib; p<nb; p++,k++) to[k] = f2[p];
 	}
-	swap (data[c], data[i]);
+      }
     }
+    // Collapse the index.
+    int k=0;
+    for (int i=0; i<np; i+=2) index[k++] = index[i];
+    index[k] = nr;
+    np = k;
+    // Swap the index target and destination.
+    T* c = a;
+    a = b;
+    b = c;
+  }
+  return a;
 }
-
 
 template<class T>
 uInt GenSort<T>::insSort (T* data, uInt nr, Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	return insSortDesc (data, n, opt);
-    }else{
-	return insSortAsc (data, n, opt);
-    }
+  uInt n = insSortAsc (data, nr, opt);
+  if (ord == Sort::Descending) {
+    reverse (data, data, n);
+  }
+  return n;
 }
 
 template<class T>
 uInt GenSort<T>::quickSort (T* data, uInt nr, Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	quickSortDesc (data, n);
-	return insSortDesc (data, n, opt);
-    }else{
-	quickSortAsc (data, n);
-	return insSortAsc (data, n, opt);
-    }
+  // Use quicksort to do rough sorting.
+  quickSortAsc (data, nr, True);
+  // Finish with an insertion sort (which also skips duplicates if needed).
+  // Note: if quicksort keeps track of its boundaries, the insSort of all
+  // parts could be done in parallel.
+  return insSort (data, nr, ord, opt);
 }
 
 template<class T>
 uInt GenSort<T>::heapSort (T* data, uInt nr, Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	heapSortDesc (data, n);
-	if ((opt & Sort::NoDuplicates) != 0) {
-	    return insSortDesc (data, n, opt);
-	}
-    }else{
-	heapSortAsc (data, n);
-	if ((opt & Sort::NoDuplicates) != 0) {
-	    return insSortAsc (data, n, opt);
-	}
-    }
-    return nr;
+  uInt n = nr;
+  heapSortAsc (data, nr);
+  if ((opt & Sort::NoDuplicates) != 0) {
+    n = insSortAscNoDup (data, nr);
+  }
+  if (ord == Sort::Descending) {
+    reverse (data, data, n);
+  }
+  return n;
 }
 
 
 
-// Use quicksort if nothing given.
 template<class T>
 uInt GenSort<T>::sort (T* data, uInt nr, Sort::Order ord, int opt)
 {
-    if ((opt & Sort::HeapSort) != 0) {
-	return heapSort (data, nr, ord, opt);
-    }else{
-	if ((opt & Sort::InsSort) != 0) {
-	    return insSort (data, nr, ord, opt);
-	}else{
-	    return quickSort (data, nr, ord, opt);
-	}
-    }
+  // Determine the default sort to use.
+  if (opt - (opt&Sort::NoDuplicates) == Sort::DefaultSort) {
+    int nthr = 1;
+#ifdef _OPENMP
+    nthr = omp_get_max_threads();
+#endif
+    int type = (nr<1000 || nthr==1  ?  Sort::QuickSort : Sort::ParSort);
+    opt = opt - Sort::DefaultSort + type;
+  }
+  // Do the sort.
+  if ((opt & Sort::HeapSort) != 0) {
+    return heapSort (data, nr, ord, opt);
+  } else if ((opt & Sort::InsSort) != 0) {
+    return insSort (data, nr, ord, opt);
+  } else if ((opt & Sort::QuickSort) != 0) {
+    return quickSort (data, nr, ord, opt);
+  } else {
+    return parSort (data, nr, ord, opt);
+  }
 }
 
 template<class T>
 uInt GenSort<T>::sort (Array<T>& data, Sort::Order ord, int opt)
 {
-    Bool del;
-    T* dptr = data.getStorage(del);
-    uInt nr = sort (dptr, data.nelements(), ord, opt);
-    data.putStorage (dptr, del);
-    return nr;
+  Bool del;
+  T* dptr = data.getStorage(del);
+  uInt nr = sort (dptr, data.nelements(), ord, opt);
+  data.putStorage (dptr, del);
+  return nr;
 }
 
 template<class T>
 uInt GenSort<T>::sort (Block<T>& data, uInt nr, Sort::Order ord, int opt)
 {
-    return sort (data.storage(), min(nr, data.nelements()), ord, opt);
+  return sort (data.storage(), min(nr, data.nelements()), ord, opt);
 }
 
 
@@ -454,14 +502,24 @@ uInt GenSortIndirect<T>::sort (Vector<uInt>& indexVector, const T* data,
     uInt* inx = indexVector.getStorage (del);
     // Choose the sort required.
     uInt n;
+    // Determine the default sort to use.
+    if (opt - (opt&Sort::NoDuplicates) == Sort::DefaultSort) {
+        int nthr = 1;
+#ifdef _OPENMP
+        nthr = omp_get_max_threads();
+#endif
+        int type = (nr<1000 || nthr==1  ?  Sort::QuickSort : Sort::ParSort);
+        opt = opt - Sort::DefaultSort + type;
+    }
+    // Do the sort.
     if ((opt & Sort::HeapSort) != 0) {
-	n = heapSort (inx, data, nr, ord, opt);
-    }else{
-	if ((opt & Sort::InsSort) != 0) {
-	    n = insSort (inx, data, nr, ord, opt);
-	}else{
-	    n = quickSort (inx, data, nr, ord, opt);
-	}
+      n = heapSort (inx, data, nr, ord, opt);
+    } else if ((opt & Sort::InsSort) != 0) {
+      n = insSort (inx, data, nr, ord, opt);
+    } else if ((opt & Sort::QuickSort) != 0) {
+      n = quickSort (inx, data, nr, ord, opt);
+    } else {
+      n = parSort (inx, data, nr, ord, opt);
     }
     indexVector.putStorage (inx, del);
     // If n < nr, some duplicates have been deleted.
@@ -478,53 +536,190 @@ template<class T>
 uInt GenSortIndirect<T>::insSort (uInt* inx, const T* data, uInt nr,
 				  Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	return insSortDesc (inx, data, n, opt);
-    }else{
-	return insSortAsc (inx, data, n, opt);
-    }
+  uInt n = insSortAsc (inx, data, nr, opt);
+  if (ord == Sort::Descending) {
+    GenSort<uInt>::reverse (inx, inx, n);
+  }
+  return n;
 }
 
 template<class T>
 uInt GenSortIndirect<T>::quickSort (uInt* inx, const T* data, uInt nr,
 				    Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	quickSortDesc (inx, data, n);
-	return insSortDesc (inx, data, n, opt);
-    }else{
-	quickSortAsc (inx, data, n);
-	return insSortAsc (inx, data, n, opt);
-    }
+  // Use quicksort to do rough sorting.
+  quickSortAsc (inx, data, nr, True);
+  // Finish with an insertion sort (which also skips duplicates if needed).
+  // Note: if quicksort keeps track of its boundaries, the insSort of all
+  // parts could be done in parallel.
+  return insSort (inx, data, nr, ord, opt);
 }
 
 template<class T>
 uInt GenSortIndirect<T>::heapSort (uInt* inx, const T* data, uInt nr,
 				   Sort::Order ord, int opt)
 {
-    Int n = nr;
-    if (ord == Sort::Descending) {
-	heapSortDesc (inx, data, n);
-	if ((opt & Sort::NoDuplicates) != 0) {
-	    return insSortDesc (inx, data, n, opt);
-	}
-    }else{
-	heapSortAsc (inx, data, n);
-	if ((opt & Sort::NoDuplicates) != 0) {
-	    return insSortAsc (inx, data, n, opt);
-	}
+  uInt n = nr;
+  heapSortAsc (inx, data, nr);
+  if ((opt & Sort::NoDuplicates) != 0) {
+    n = insSortAscNoDup (inx, data, nr);
+  }
+  if (ord == Sort::Descending) {
+    GenSort<uInt>::reverse (inx, inx, n);
+  }
+  return n;
+}
+
+template<class T>
+uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
+                                  Sort::Order ord, int opt, int nthread)
+{
+  int nthr = nthread;    // to avoid compiler warning
+#ifdef _OPENMP
+  if (nthread > 0) {
+    nthr = nthread;
+    // Do not use more threads than there are values.
+    if (uInt(nthr) > nr) nthr = nr;
+    omp_set_num_threads (nthr);
+  } else {
+    nthr = omp_get_max_threads();
+    if (uInt(nthr) > nr) nthr = nr;
+  }
+#else
+  nthr = 1;
+#endif
+  Block<uInt> index(nr+1);
+  Block<uInt> tinx(nthr+1);
+  Block<uInt> np(nthr);
+  // Determine ordered parts in the array.
+  // It is done in parallel, whereafter the parts are combined.
+  int step = nr/nthr;
+  for (int i=0; i<nthr; ++i) tinx[i] = i*step;
+  tinx[nthr] = nr;
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+  for (int i=0; i<nthr; ++i) {
+    int nparts = 1;
+    index[tinx[i]] = tinx[i];
+    for (uInt j=tinx[i]+1; j<tinx[i+1]; ++j) {
+      if (data[inx[j-1]] > data[inx[j]]) {
+        index[tinx[i]+nparts] = j;    // out of order, thus new part
+        nparts++;
+      }
     }
-    return nr;
+    np[i] = nparts;
+  }
+  // Make index parts consecutive by shifting to the left.
+  // See if last and next part can be combined.
+  uInt nparts = np[0];
+  for (int i=1; i<nthr; ++i) {
+    if (data[tinx[i]-1] > data[tinx[i]]) {
+      index[nparts++] = index[tinx[i]];
+    }
+    if (nparts == tinx[i]+1) {
+      nparts += np[i]-1;
+    } else {
+      for (uInt j=1; j<np[i]; ++j) {
+	index[nparts++] = index[tinx[i]+j];
+      }
+    }
+  }
+  index[nparts] = nr;
+  //cout<<"nparts="<<nparts<<endl;
+  // Merge the array parts. Each part is ordered.
+  if (nparts < nr) {
+    Block<uInt> inxtmp(nr);
+    uInt* res = merge (data, inx, inxtmp.storage(), nr,
+                       index.storage(), nparts);
+    // Skip duplicates if needed.
+    if ((opt & Sort::NoDuplicates) != 0) {
+      nr = insSortAscNoDup (res, data, nr);
+    }
+    // Result is in ascending order; reverse if descending is needed.
+    if (ord == Sort::Descending) {
+      GenSort<uInt>::reverse (inx, res, nr);
+    } else if (res != inx) {
+      // The final result must end up in inx.
+      objcopy (inx, res, nr);
+    }
+  } else {
+    // Each part has length 1, so the array is in reversed order and unique.
+    // Reverse if ascending is needed.
+    if (ord == Sort::Ascending) {
+      GenSort<uInt>::reverse (inx, inx, nr);
+    }
+  }
+  return nr;
+}  
+
+template<class T>
+uInt* GenSortIndirect<T>::merge (const T* data, uInt* inx, uInt* tmp, uInt nr,
+                                 uInt* index, uInt nparts)
+{
+  uInt* a = inx;
+  uInt* b = tmp;
+  int np = nparts;
+  // If the nr of parts is odd, the last part is not merged. To avoid having
+  // to copy it to the other array, a pointer 'last' is kept.
+  // Note that merging the previous part with the last part works fine, even
+  // if the last part is in the same buffer.
+  uInt* last = inx + index[np-1];
+  while (np > 1) {
+  // Use ifdef to avoid compiler warning.
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
+    for (int i=0; i<np; i+=2) {
+      if (i < np-1) {
+        // Merge 2 subsequent parts of the array.
+	uInt* f1 = a+index[i];
+	uInt* f2 = a+index[i+1];
+	uInt* to = b+index[i];
+	uInt na = index[i+1]-index[i];
+	uInt nb = index[i+2]-index[i+1];
+        if (i == np-2) {
+          //cout<<"swap last np=" <<np<<endl;
+          f2 = last;
+          last = to;
+        }
+	uInt ia=0, ib=0, k=0;
+	while (ia < na && ib < nb) {
+	  if (data[f1[ia]] <= data[f2[ib]]) {
+	    to[k] = f1[ia++];
+	  } else {
+	    to[k] = f2[ib++];
+	  }
+	  k++;
+	}
+	if (ia < na) {
+	  for (uInt p=ia; p<na; p++,k++) to[k] = f1[p];
+	} else {
+	  for (uInt p=ib; p<nb; p++,k++) to[k] = f2[p];
+	}
+      }
+    }
+    // Collapse the index.
+    int k=0;
+    for (int i=0; i<np; i+=2) index[k++] = index[i];
+    index[k] = nr;
+    np = k;
+    // Swap the index target and destination.
+    uInt* c = a;
+    a = b;
+    b = c;
+  }
+  return a;
 }
 
 
 
 template<class T>
-void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr)
+void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr,
+                                       Bool multiThread)
 {
-    if (nr <= 15) {
+    if (nr <= 32) {
 	return;                    // finish it off with insertion sort
     }
     uInt* mid= inx + (nr-1)/2;
@@ -540,52 +735,86 @@ void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr)
     uInt partInx = *sl;
     // Compare indices in case the keys are equal.
     // This ensures that the sort is stable.
+    sf++;
+    sl--;
     for (;;) {
-	while (data[*++sf] < partVal
-	       ||  (partVal == data[*sf]  &&  *sf < partInx)) ;
-	while (data[*--sl] > partVal
-	       ||  (partVal == data[*sl]  &&  *sl > partInx)) ;
+	while (data[*sf] < partVal
+	       ||  (partVal == data[*sf]  &&  *sf < partInx)) {
+          sf++;
+        }
+	while (data[*sl] > partVal
+	       ||  (partVal == data[*sl]  &&  *sl > partInx)) {
+          sl--;
+        }
 	if (sf >= sl) break;
 	swapInx (*sf, *sl);
     }
     swapInx (*sf, inx[nr-1]);
     Int n = sf-inx;
-    quickSortAsc (inx, data, n);
-    quickSortAsc (sf+1, data, nr-n-1);
+    if (multiThread) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (int thr=0; thr<2; ++thr) {
+        if (thr==0) quickSortAsc (inx, data, n);
+        if (thr==1) quickSortAsc (sf+1, data, nr-n-1);
+      }
+    } else {
+      quickSortAsc (inx, data, n);
+      quickSortAsc (sf+1, data, nr-n-1);
+    }
 }
 
-// Do a quicksort in descending order.
+// Find the k-th largest element using a partial quicksort.
 template<class T>
-void GenSortIndirect<T>::quickSortDesc (uInt* inx, const T* data, Int nr)
+uInt GenSortIndirect<T>::kthLargest (T* data, uInt nr, uInt k)
 {
-    if (nr <= 15) {
-	return;                    // finish it off with insertion sort
+    if (k >= nr) {
+	throw (AipsError ("kthLargest(data, nr, k): k must be < nr"));
     }
-    uInt* mid= inx + (nr-1)/2;
-    uInt* sf = inx;
-    uInt* sl = inx+nr-1;
-    if (isDescending (data, *sf, *mid))
-	swapInx (*sf, *mid);
-    if (isDescending (data, *sf, *sl))
-	swapInx (*sf, *sl);
-    if (isDescending (data, *sl, *mid))
-	swapInx (*sl, *mid);
-    T partVal = data[*sl];
-    uInt partInx = *sl;
-    // Compare indices in case the keys are equal.
-    // This ensures that the sort is stable.
-    for (;;) {
-	while (data[*++sf] > partVal
-	       ||  (partVal == data[*sf]  &&  *sf < partInx)) ;
-	while (data[*--sl] < partVal
-	       ||  (partVal == data[*sl]  &&  *sl > partInx)) ;
-	if (sf >= sl) break;
-	swapInx (*sf, *sl);
+    // Create and fill an index vector.
+    Vector<uInt> indexVector(nr);
+    indgen(indexVector);
+    uInt* inx = indexVector.data();
+    Int st = 0;
+    Int end = Int(nr) - 1;
+    // Partition until a set of 1 or 2 elements is left.
+    while (end > st+1) {
+	// Choose a partition element by taking the median of the
+	// first, middle and last element.
+	// Store the partition element at the end.
+	// Do not use Sedgewick\'s advise to store the partition element in
+	// data[nr-2]. This has dramatic results for reversed ordered arrays.
+	Int i = (st+end)/2;                      // middle element
+	uInt* sf = inx+st;                       // first element
+	uInt* sl = inx+end;                      // last element
+	if (data[inx[i]] < data[*sf])
+	    swapInx (inx[i], *sf);
+	if (data[*sl] < data[*sf])
+	    swapInx (*sl, *sf);
+	if (data[inx[i]] < data[*sl])
+	    swapInx (inx[i], *sl);
+        T partVal = data[*sl];                   // partition element
+	// Now partition until the pointers cross.
+	for (;;) {
+	    while (data[*++sf] < partVal) ;
+	    while (data[*--sl] > partVal) ;
+	    if (sf >= sl) break;
+	    swapInx (*sf, *sl);
+	}
+	swapInx (*sf, inx[end]);
+	// Determine index of partitioning and update the start and end
+	// to take left or right part.
+	i = sf-inx;
+	if (i <= Int(k)) st = i;
+	if (i >= Int(k)) end = i;
     }
-    swapInx (*sf, inx[nr-1]);
-    Int n = sf-inx;
-    quickSortDesc (inx, data, n);
-    quickSortDesc (sf+1, data, nr-n-1);
+    if (end == st+1) {
+      if (data[inx[st]] > data[inx[end]]) {
+	swapInx (inx[st], inx[end]);
+      }
+    }
+    return inx[k];
 }
 
 // Do an insertion sort in ascending order.
@@ -610,10 +839,11 @@ uInt GenSortIndirect<T>::insSortAscDup (uInt* inx, const T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = i;
 	cur = inx[i];
-	while (--j>=0  &&  isAscending (data, inx[j], cur)) {
-	    inx[j+1] = inx[j];
+	while (j>0  &&  isAscending (data, inx[j-1], cur)) {
+	    inx[j] = inx[j-1];
+            j--;
 	}
-	inx[j+1] = cur;
+	inx[j] = cur;
     }
     return nr;
 }
@@ -632,70 +862,14 @@ uInt GenSortIndirect<T>::insSortAscNoDup (uInt* inx, const T* data, Int nr)
     for (Int i=1; i<nr; i++) {
 	j   = n;
 	cur = inx[i];
-	while (--j>=0  &&  data[inx[j]] > data[cur]) {
+	while (j>0  &&  data[inx[j-1]] > data[cur]) {
+            j--;
 	}
-	if (j < 0  ||  !(data[inx[j]] == data[cur])) {   // no equal key
-	    for (k=n-1; k>j; k--) {
+	if (j <= 0  ||  !(data[inx[j-1]] == data[cur])) {   // no equal key
+	    for (k=n-1; k>=j; k--) {
 		inx[k+1] = inx[k];               // now shift to right
 	    }
-	    inx[j+1] = cur;                      // insert in right place
-	    n++;
-	}
-    }
-    return n;
-}
-
-// Do an insertion sort in descending order.
-template<class T>
-uInt GenSortIndirect<T>::insSortDesc (uInt* inx, const T* data,
-				      Int nr, int opt)
-{
-    if ((opt & Sort::NoDuplicates) == 0) {
-	return insSortDescDup (inx, data, nr);
-    }else{
-	return insSortDescNoDup (inx, data, nr);
-    }
-}
-
-// Do an insertion sort in descending order.
-// Keep duplicate elements.
-template<class T>
-uInt GenSortIndirect<T>::insSortDescDup (uInt* inx, const T* data, Int nr)
-{
-    Int  j;
-    uInt cur;
-    for (Int i=1; i<nr; i++) {
-	j   = i;
-	cur = inx[i];
-	while (--j>=0  &&  isDescending (data, inx[j], cur)) {
-	    inx[j+1] = inx[j];
-	}
-	inx[j+1] = cur;
-    }
-    return nr;
-}
-
-// Do an insertion sort in descending order.
-// Skip duplicate elements.
-template<class T>
-uInt GenSortIndirect<T>::insSortDescNoDup (uInt* inx, const T* data, Int nr)
-{
-    if (nr < 2) {
-	return nr;                                // nothing to sort
-    }
-    Int  j, k;
-    uInt cur;
-    Int n = 1;
-    for (Int i=1; i<nr; i++) {
-	j   = n;
-	cur = inx[i];
-	while (--j>=0  &&  data[inx[j]] < data[cur]) {
-	}
-	if (j < 0  ||  !(data[inx[j]] == data[cur])) {   // no equal key
-	    for (k=n-1; k>j; k--) {
-		inx[k+1] = inx[k];               // now shift to right
-	    }
-	    inx[j+1] = cur;                      // insert in right place
+	    inx[j] = cur;                        // insert in right place
 	    n++;
 	}
     }
@@ -741,44 +915,4 @@ void GenSortIndirect<T>::heapAscSiftDown (uInt* inx, Int low, Int up,
     }
 }
 
-// Do a heapsort in descending order.
-template<class T>
-void GenSortIndirect<T>::heapSortDesc (uInt* inx, const T* data, Int nr)
-{
-    // Use the heapsort algorithm described by Jon Bentley in
-    // UNIX Review, August 1992.
-    inx--;
-    Int j;
-    for (j=nr/2; j>=1; j--) {
-	heapDescSiftDown (inx, j, nr, data);
-    }
-    for (j=nr; j>=2; j--) {
-	swapInx (inx[1], inx[j]);
-	heapDescSiftDown (inx, 1, j-1, data);
-    }
-}
-
-template<class T>
-void GenSortIndirect<T>::heapDescSiftDown (uInt* inx, Int low, Int up,
-					   const T* data)
-{
-    uInt sav = inx[low];
-    Int c;
-    Int i;
-    for (i=low; (c=2*i)<=up; i=c) {
-	if (c < up  &&  isDescending (data, inx[c+1], inx[c])) {
-	    c++;
-	}
-	inx[i] = inx[c];
-    }
-    inx[i] = sav;
-    for ( ; (c=i/2)>= low; i=c) {
-	if (isDescending (data, inx[c], inx[i])) {
-	    break;
-	}
-	swapInx (inx[c], inx[i]);
-    }
-}
-
 } //# NAMESPACE CASA - END
-

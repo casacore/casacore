@@ -79,8 +79,8 @@ void checkTable (Int stval, uInt nrow)
     AlwaysAssertExit (tab.keywordSet().asTable("keysub").nrow() == nsubrow);
   }
   */
-  ROScalarColumn<Int> aint(tab, "aint");
-  ROScalarColumn<Float> afloat(tab,  "afloat");
+  ScalarColumn<Int> aint(tab, "aint");
+  ScalarColumn<Float> afloat(tab,  "afloat");
   for (uInt i=0; i<tab.nrow(); i++) {
     AlwaysAssertExit (aint(i) == stval);
     AlwaysAssertExit (afloat(i) == stval+1.);

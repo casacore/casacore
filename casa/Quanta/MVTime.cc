@@ -262,7 +262,7 @@ MVTime::Format MVTime::getFormat() {
 }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
-  const Int N_name = 14;
+  const Int N_name = 30;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -277,7 +277,23 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     "DIG2",
     "FITS",
     "LOCAL",
-    "USE_SPACE"
+    "USE_SPACE",
+    "ALPHA",
+    "BOOST",
+    "NO_H",
+    "NO_HM",
+    "ANGLE_CLEAN",
+    "ANGLE_NO_D",
+    "ANGLE_NO_DM",
+    "ANGLE_CLEAN_NO_D",
+    "ANGLE_CLEAN_NO_DM",
+    "TIME_CLEAN",
+    "TIME_NO_H",
+    "TIME_NO_HM",
+    "TIME_CLEAN_NO_H",
+    "TIME_CLEAN_NO_HM",
+    "YMD_ONLY",
+    "MOD_MASK"
   };
   static MVTime::formatTypes nam[N_name] = {
     MVTime::ANGLE,
@@ -293,7 +309,23 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     MVTime::DIG2,
     MVTime::FITS,
     MVTime::LOCAL,
-    MVTime::USE_SPACE
+    MVTime::USE_SPACE,
+    MVTime::ALPHA,
+    MVTime::BOOST,
+    MVTime::NO_H,
+    MVTime::NO_HM,
+    MVTime::ANGLE_CLEAN,
+    MVTime::ANGLE_NO_D,
+    MVTime::ANGLE_NO_DM,
+    MVTime::ANGLE_CLEAN_NO_D,
+    MVTime::ANGLE_CLEAN_NO_DM,
+    MVTime::TIME_CLEAN,
+    MVTime::TIME_NO_H,
+    MVTime::TIME_NO_HM,
+    MVTime::TIME_CLEAN_NO_H,
+    MVTime::TIME_CLEAN_NO_HM,
+    MVTime::YMD_ONLY,
+    MVTime::MOD_MASK
   };
   Int t = MUString::minimaxNC(in, N_name, tab);
   return (t<N_name ? nam[t] : (MVTime::formatTypes) 0);
@@ -399,9 +431,6 @@ void MVTime::print(ostream &oss,
     }
 }
 
-Bool MVTime::read(Quantity &res, MUString &in) {
-  return read(res, in, True);
-}
 
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   static const String mon[12] = {
@@ -502,7 +531,11 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	  r += Double(in.getuInt())/60.0;
 	}
 	res -= Quantity(s*r/24.0,"d");	// Time zone
-      } else if (in.tSkipChar('Z')) {	// FITS UTC (old format)
+      } else if (! in.tSkipChar('Z')) {	// FITS UTC (old format)
+        if (chk) {
+          in.skipBlank();
+          if (!in.eos()) return False;	     // incorrect
+        }
       }
     } else {
       in.pop(); return False;
@@ -515,10 +548,6 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   }
   res *= s;			// Sign
   in.unpush(); return True;
-}
-
-Bool MVTime::read(Quantity &res, const String &in) {
-  return read(res, in, True);
 }
 
 Bool MVTime::read(Quantity &res, const String &in, Bool chk) {

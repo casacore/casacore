@@ -99,14 +99,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </srcblock></example>
 //
 // <motivation>
-// The Param class was an early attempt at keywords within AIPS++.  They have 
+// The Param class was an early attempt at keywords within Casacore. They have 
 // become obsolete but hang on due to their relationship with the Input class.
 // </motivation>
 //
 // <todo asof="Thu 1995/04/06 21:26:43 GMT">
 //   <li> fix the GetStringArray() function
 //   <li> convert from Block<T> to Array<T> as return values.
-//   <li> replace entirely with AIPS++ Keywords?
+//   <li> replace entirely with Casacore Keywords?
 // </todo>
 
 

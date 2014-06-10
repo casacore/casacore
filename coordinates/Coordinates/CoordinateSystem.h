@@ -45,6 +45,7 @@ class DirectionCoordinate;
 class LinearCoordinate;
 class SpectralCoordinate;
 class StokesCoordinate;
+class QualityCoordinate;
 class TabularCoordinate;
 class IPosition;
 class LogIO;
@@ -290,32 +291,6 @@ public:
     Bool removePixelAxis(uInt axis, Double replacement);
     // </group>
 
-/*
-    // You can recover the replacement values with these functions.
-    // Use the same axis number as in the <src>removePixelAxis</src> and 
-    // <src>removeWorldAxis</src> calls.
-    //
-    // False is returned (an error in <src>errorMessage()</src> will be set)
-    // if the axis is illegal, else returns True.
-    // <group>
-    Bool worldReplacementValue (Double& replacement, uInt axis) const;
-    Bool pixelReplacementValue (Double& replacement, uInt axis) const;
-    // </group>
-
-    // You can set the replacement values with these functions.  You 
-    // can only do this after you have removed an axis or False will
-    // be returned (and an error in <src>errorMessage()</src>) will be set.
-    // Use the same axis number as in the <src>removePixelAxis</src> and 
-    // <src>removeWorldAxis</src> calls.
-    //
-    // False is returned (an error in <src>errorMessage()</src> will be set)
-    // if the axis is illegal, else returns True.
-    // <group>
-    Bool setWorldReplacementValue (uInt axis, Double replacement);
-    Bool setPixelReplacementValue(uInt axis, Double replacement);
-    // </group>
-*/
-
     // Return a CoordinateSystem appropriate for a shift of origin
     // (the shift is subtracted from the reference pixel)
     // and change of increment (the increments are multipled
@@ -370,11 +345,20 @@ public:
 
     // Return the given Coordinate.
     // Throws an exception if retrieved as the wrong type.
+    // The versions which take no parameters will return the
+    // first (or in most cases only) coordinate of the requested type.
+    // If no such coordinate exists, an exception is thrown.
     // <group>
-    const LinearCoordinate &linearCoordinate(uInt which) const;
+    const LinearCoordinate    &linearCoordinate(uInt which) const;
+    const DirectionCoordinate &directionCoordinate() const;
     const DirectionCoordinate &directionCoordinate(uInt which) const;
+
     const SpectralCoordinate &spectralCoordinate(uInt which) const;
-    const StokesCoordinate &stokesCoordinate(uInt which) const;
+    const SpectralCoordinate &spectralCoordinate() const;
+    const StokesCoordinate  &stokesCoordinate() const;
+
+    const StokesCoordinate  &stokesCoordinate(uInt which) const;
+    const QualityCoordinate &qualityCoordinate(uInt which) const;
     const TabularCoordinate &tabularCoordinate(uInt which) const;
     // </group>
 
@@ -443,13 +427,25 @@ public:
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
+    // This one throws an exception rather than returning False. After all, that's
+    // what exceptions are for.
+    virtual Vector<Double> toWorld(const Vector<Double> &pixel) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
+    // This one throws an exception rather than returning False.
+    virtual Vector<Double> toPixel(const Vector<Double> &world) const;
     // </group>
+
+    // convert a pixel "length" to a world "length"
+    virtual Quantity toWorldLength(
+    	const Double nPixels,
+    	const uInt pixelAxis
+    ) const;
 
     // This is provided as a convenience since it is a very commonly desired
     // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
+    Vector<Double> toWorld(const IPosition& pixel) const;
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Returns False if any conversion
@@ -624,9 +620,12 @@ public:
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
-    // length.
+    // length. If <src>throwException=True</src>, throw an exception rather than
+    // returning False on failure.
     // <group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    Bool setWorldAxisUnits(const Vector<String> &units,
+                           Bool throwException);
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
@@ -661,13 +660,15 @@ public:
     // function are then passed on to the formatter for that Coordinate. So
     // refer to the other derived Coordinate classes for specifics on the
     // formatting.
-    virtual String format(String& units,
-                          Coordinate::formatType format,
-                          Double worldValue,
-                          uInt worldAxis,
-                          Bool isAbsolute=True,
-                          Bool showAsAbsolute=True,
-                          Int precision=-1) const;
+    virtual String format(
+    	String& units,
+    	Coordinate::formatType format,
+    	Double worldValue,
+    	uInt worldAxis,
+    	Bool isAbsolute=True,
+    	Bool showAsAbsolute=True,
+    	Int precision=-1, Bool usePrecForMixed=False
+    ) const;
 
     // Miscellaneous information related to an observation, for example the
     // observation date.
@@ -726,27 +727,30 @@ public:
 		      Char prefix = 'c', Bool writeWCS=True,
 		      Bool preferVelocity=True, 
 		      Bool opticalVelocity=True,
-		      Bool preferWavelength=False) const;
+		      Bool preferWavelength=False,
+		      Bool airWavelength=False) const;
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
     // Use oneRelative=True to convert one-relative FITS pixel coordinates to
-    // zero-relative aips++ coordinates.  On output, <src>stokesFITSValue</src>
+    // zero-relative Casacore coordinates.
+    // On output, <src>stokesFITSValue</src>
     // holds the FITS value of any unofficial Stokes (beam, optical depth,
     // spectral index) for the last unofficial value accessed (-1 if none).
-    // The idea is that if the Stokes axis is of length one and holds an unofficial value,
-    // you should drop the STokes axis and convert that value to <src>ImageInfo::ImageTypes</src>
-    // with <src>ImageInfo::imageTypeFromFITSValue</src>. If on input, <src>stokesFITSValue</src>
-    // is positive, then a warning is issued if any unofficial values are encountered.
+    // The idea is that if the Stokes axis is of length one and holds an
+    // unofficial value, you should drop the STokes axis and convert that
+    // value to <src>ImageInfo::ImageTypes</src> with
+    // <src>ImageInfo::imageTypeFromFITSValue</src>.
+    // If on input, <src>stokesFITSValue</src> is positive, then a warning
+    // is issued if any unofficial values are encountered.
     // Otherwise no warning is issued.
     //# cf comment in toFITS.
     static Bool fromFITSHeader(Int& stokesFITSValue, 
                                CoordinateSystem &coordsys, 
-			       RecordInterface& recHeader,
-			       const Vector<String>& header,
+                               RecordInterface& recHeader,
+                               const Vector<String>& header,
                                const IPosition& shape,
                                uInt which=0);
-			       
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
@@ -767,11 +771,19 @@ public:
    // Does this coordinate system have a spectral axis?
    Bool hasSpectralAxis() const;
 
-   // what number is the spectral axis? Returns -1 if no spectral axis exists.
-   Int spectralAxisNumber() const;
+   // What number is the spectral axis?
+   // If doWorld=True, the world axis number is returned.
+   // Otherwise, the pixel axis number is returned.
+   // Returns -1 if the spectral axis (world c.q. pixel) does not exist.
+   Int spectralAxisNumber(Bool doWorld=False) const;
 
-   // does this coordinate system have a polarizaion/stokes axis?
-   Bool hasPolarizationAxis() const;
+   // what number is the spectral coordinate?
+    // Returns -1 if no spectral coordinate exists.
+   Int spectralCoordinateNumber() const;
+
+
+   // does this coordinate system have a polarizaion/stokes coordinate?
+   Bool hasPolarizationCoordinate() const;
 
    // Given a stokes or polarization parameter, find the pixel location.
    // Note the client is responsible for any boundedness checks
@@ -782,14 +794,36 @@ public:
    // Returns -1 if no stokes coordinate exists.
    Int polarizationCoordinateNumber() const;
 
-   // what is the number of the polarization/stokes axis?
-   // Returns -1 if no stokes axis exists.
-   Int polarizationAxisNumber() const;
+   // What is the number of the polarization/stokes axis?
+   // If doWorld=True, the world axis number is returned.
+   // Otherwise, the pixel axis number is returned.
+   // Returns -1 if the stokes axis (world c.q. pixel) does not exist.
+   Int polarizationAxisNumber(Bool doWorld=False) const;
+
+   // Does this coordinate system have a quality axis?
+   Bool hasQualityAxis() const;
+
+   // what number is the quality axis? Returns -1 if no quality axis exists.
+   Int qualityAxisNumber() const;
+
+   // what is the number of the quality coordinate?
+   // Returns -1 if no quality coordinate exists.
+   Int qualityCoordinateNumber() const;
+
+   // Given a quality parameter, find the pixel location.
+   // Note the client is responsible for any boundedness checks
+   // (eg finite number of quality in an image).
+   Int qualityPixelNumber(const String& qualityString) const;
+
+   String qualityAtPixel(const uInt pixel) const;
 
    Int directionCoordinateNumber() const;
 
    Bool hasDirectionCoordinate() const;
 
+   // Get the pixel axis numbers of the direction coordinate in this object.
+   // The order of the returned axis numbers is always longitude axis first,
+   // latitude axis second.
    Vector<Int> directionAxesNumbers() const;
 
    String stokesAtPixel(const uInt pixel) const;
@@ -803,8 +837,14 @@ public:
    // Get the 0 based order of the minimal match strings specified in <src>order</src>.
    // If <src>requireAll</src> is True, checks are done to ensure that all axes in
    // the coordinate system are uniquely specified in <src>order</src>.
-   Vector<Int> getWorldAxisOrder(Vector<String>& myNames, const Bool requireAll) const;
+  Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
+                                Bool allowFriendlyNames=False) const;
 
+   // is the abscissa in the DirectionCoordinate the longitude axis?
+   // Throws exception if there is no DirectionCoordinate or if either of
+   // the direction pixel axes have been removed.
+   // For a normal direction coordinate, this will return True.
+   Bool isDirectionAbscissaLongitude() const;
 
 private:
     // Where we store copies of the coordinates we are created with.
@@ -837,6 +877,12 @@ private:
     // Coordinate System.
     ObsInfo obsinfo_p;
 
+    const static String _class;
+    static Mutex _mapInitMutex;
+    static map<String, String> _friendlyAxisMap;
+
+    static void _initFriendlyAxisMap();
+
     // Helper functions to group common code.
     Bool mapOne(Vector<Int>& worldAxisMap, 
                 Vector<Int>& worldAxisTranspose, 
@@ -848,18 +894,6 @@ private:
     void copy(const CoordinateSystem &other);
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
-
-/*
-    // Check world replacement axis is legal and find it
-    Bool checkWorldReplacementAxis(Int& coordinate,
-                                   Int& axisInCoordinate,
-                                   uInt axis) const;
-
-    // Check pixel replacement axis is legal and find it
-    Bool checkPixelReplacementAxis(Int& coordinate,
-                                   Int& axisInCoordinate,
-                                   uInt axis) const;
-*/
 
    // Delete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
@@ -877,6 +911,10 @@ private:
     // Do subImage for Stokes
     StokesCoordinate stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,
                                     Int newShape) const;
+
+    // Do subImage for Quality
+    QualityCoordinate qualitySubImage(const QualityCoordinate& qc, Int originShift, Int pixincFac,
+    		                        Int newShape) const;
 
     // Strip out coordinates with all world and pixel axes removed
     CoordinateSystem stripRemovedAxes (const CoordinateSystem& cSys) const;
@@ -921,7 +959,8 @@ private:
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
 
-    void _downcase(Vector<String>& vec) const;
+    void _downcase(Vector<String>& vec) const
+  { for (uInt i=0; i<vec.size(); ++i) vec[i].downcase(); }
 
 };
 

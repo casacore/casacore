@@ -136,10 +136,16 @@ Int MemoryIO::read (uInt size, void* buf, Bool throwException)
       memcpy (buf, itsBuffer + itsPosition, bytesRead);
       itsPosition += bytesLeft;
       if (throwException) {
-	throw (AipsError ("MemoryIO::read - incorrect number of bytes read"));
+        String m = String::format ("MemoryIO::read - incorrect number of bytes read:\n"
+                                   "  size=%u, used=%lld, pos=%lld, left=%lld",
+                                   size, itsUsed, itsPosition, bytesLeft);
+	throw (AipsError (m));
       }
     } else {
-      throw (AipsError ("MemoryIO::read - buffer position is invalid"));
+      String m = String::format ("MemoryIO::read - buffer position is invalid:\n"
+                                 "  size=%u, used=%lld, pos=%lld, left=%lld",
+                                 size, itsUsed, itsPosition, bytesLeft);
+      throw (AipsError (m));
     }
   }
   return bytesRead;

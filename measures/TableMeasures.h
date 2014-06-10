@@ -62,7 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // The TableMeasures system exists to provide a way of creating (defining)
 // Measure and Quantum Table columns thus enabling the direct storage of 
-// Quanta and Measures in Aips++ Tables. 
+// Quanta and Measures in Casacore Tables. 
 // <p>
 // Defining Quantum and Measure columns is a once only operation (for each
 // column).  It can be seen as an extension to the existing Column Descriptor 
@@ -73,12 +73,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <p>
 // Once defined, Measure and Quantum column objects are used to access a
 // column for reading and writing of Measures and Quanta.  For Quantum
-// column objects see the classes 
-// <linkto><class=ROScalarQuantColumn>ScalarQuantColumn</linkto> and
-// <linkto><class=ROArrayQuantColumn>ArrayQuantColumn</linkto>.  For
+// column objects see the class
+// <linkto><class=ScalarQuantColumn>ScalarQuantColumn</linkto> and
+// <linkto><class=ArrayQuantColumn>ArrayQuantColumn</linkto>.  For
 // Measure column objects see 
-// <linkto><class=ROScalarMeasColumn>ScalarMeasColumn</linkto> and
-// <linkto><class=ROArrayMeasColumn>ArrayMeasColumn</linkto>.
+// <linkto><class=ScalarMeasColumn>ScalarMeasColumn</linkto> and
+// <linkto><class=ArrayMeasColumn>ArrayMeasColumn</linkto>.
 //
 // <h3>Conversions</h3>
 // The classes accessing the data use the underlying
@@ -130,7 +130,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </synopsis>
 
 // <motivation>
-// The standard Aips++ Table system does not directly support Quantum and
+// The standard Casacore Table system does not directly support Quantum and
 // Measure columns.  These classes overcome this limitation.
 // </motivation>
 

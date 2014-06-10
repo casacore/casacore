@@ -1,4 +1,4 @@
-//# Template.h: Canonicalise, format etc. aips++ template definitions
+//# Template.h: Canonicalise, format etc. Casacore template definitions
 //# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,7 +41,7 @@ class Regex;
 template <class T> class Vector;
 
 // <summary>
-// Canonicalise, format and other actions on aips++ template definitions
+// Canonicalise, format and other actions on Casacore template definitions
 // </summary>
 
 // <use visibility=local>
@@ -50,7 +50,7 @@ template <class T> class Vector;
 // </reviewed>
 
 // <prerequisite>
-//  <li> Knowledge about the aips++ DYO template system
+//  <li> Knowledge about the Casacore DYO template system
 // </prerequisite>
 
 // <synopsis>

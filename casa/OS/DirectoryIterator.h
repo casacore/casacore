@@ -167,11 +167,13 @@ private:
     // to compare files with regular expression.
     Regex itsExpression;
 
+#if defined(AIPS_CRAY_PGI)
     // Cray XT3 does not support readdir on compute nodes.
     // Use scandir instead.
     dirent** itsNameList;
     int      itsNrNames;
     int      itsNameInx;
+#endif
 };
 
 

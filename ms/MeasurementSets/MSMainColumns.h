@@ -156,7 +156,6 @@ public:
   const ROArrayColumn<Complex>& data() const {return data_p;}
   const ROScalarColumn<Int>& feed3() const {return feed3_p;}
   const ROArrayColumn<Float>& floatData() const {return floatData_p;}
-  const ROArrayColumn<Float>& imagingWeight() const {return imagingWeight_p;}
   const ROArrayColumn<Complex>& lagData() const {return lagData_p;}
   const ROArrayColumn<Complex>& modelData() const {return modelData_p;}
   const ROScalarColumn<Int>& phaseId() const {return phaseId_p;}
@@ -173,6 +172,7 @@ public:
     return uvw2Quant_p;}
   const ROArrayColumn<Complex>& videoPoint() const {return videoPoint_p;}
   const ROArrayColumn<Float>& weightSpectrum() const {return weightSpectrum_p;}
+  const ROArrayColumn<Float>& weightSpectrumCorrected() const {return weightSpectrumCorrected_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -235,10 +235,10 @@ private:
   ROArrayColumn<Double> uvw2_p;
   ROArrayColumn<Complex> videoPoint_p;
   ROArrayColumn<Float> weightSpectrum_p;
+  ROArrayColumn<Float> weightSpectrumCorrected_p;
 
   //# columns required for synthesis applications - all optional
   ROArrayColumn<Complex> correctedData_p;
-  ROArrayColumn<Float> imagingWeight_p;
   ROArrayColumn<Complex> modelData_p;
 
   //# Access to Measure columns
@@ -376,7 +376,6 @@ public:
   ArrayColumn<Complex>& data() {return data_p;}
   ScalarColumn<Int>& feed3() {return feed3_p;}
   ArrayColumn<Float>& floatData() {return floatData_p;}
-  ArrayColumn<Float>& imagingWeight() {return imagingWeight_p;}
   ArrayColumn<Complex>& lagData() {return lagData_p;}
   ArrayColumn<Complex>& modelData() {return modelData_p;}
   ScalarColumn<Int>& phaseId() {return phaseId_p;}
@@ -393,6 +392,7 @@ public:
     return uvw2Quant_p;}
   ArrayColumn<Complex>& videoPoint() {return videoPoint_p;}
   ArrayColumn<Float>& weightSpectrum() {return weightSpectrum_p;}
+  ArrayColumn<Float>& weightSpectrumCorrected() {return weightSpectrumCorrected_p;}
   // </group>
 
   // Read-only access to required columns
@@ -471,8 +471,6 @@ public:
     return ROMSMainColumns::feed3();}
   const ROArrayColumn<Float>& floatData() const {
     return ROMSMainColumns::floatData();}
-  const ROArrayColumn<Float>& imagingWeight() const {
-    return ROMSMainColumns::imagingWeight();}
   const ROArrayColumn<Complex>& lagData() const {
     return ROMSMainColumns::lagData();}
   const ROArrayColumn<Complex>& modelData() const {
@@ -499,6 +497,8 @@ public:
     return ROMSMainColumns::videoPoint();}
   const ROArrayColumn<Float>& weightSpectrum() const {
     return ROMSMainColumns::weightSpectrum();}
+  const ROArrayColumn<Float>& weightSpectrumCorrected() const {
+    return ROMSMainColumns::weightSpectrumCorrected();}
   // </group>
 
   // set the epoch type for the TIME and TIME_CENTROID columns. 
@@ -577,10 +577,10 @@ private:
   ArrayColumn<Double> uvw2_p;
   ArrayColumn<Complex> videoPoint_p;
   ArrayColumn<Float> weightSpectrum_p;
+  ArrayColumn<Float> weightSpectrumCorrected_p;
 
   //# columns required for synthesis applications - all optional
   ArrayColumn<Complex> correctedData_p;
-  ArrayColumn<Float> imagingWeight_p;
   ArrayColumn<Complex> modelData_p;
 
   //# Access to Measure columns

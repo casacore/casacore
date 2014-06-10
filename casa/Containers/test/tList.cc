@@ -417,7 +417,8 @@ int main() {
   oth.addRight(6);
   show(oth);
 
-  ListIter<int> last_a(new List<int>(oth.container()));
+  List<int> oth1(oth.container());
+  ListIter<int> last_a(&oth1);
   show( last_a );
 		  
 

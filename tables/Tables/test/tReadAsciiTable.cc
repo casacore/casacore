@@ -113,14 +113,14 @@ void a (const String& dir)
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Int>     coli (tab,"COLI");
-    ROScalarColumn<float>   colf (tab,"COLF");
-    ROScalarColumn<double>  cold (tab,"COLD");
-    ROScalarColumn<Complex> colx (tab,"COLX");
-    ROScalarColumn<Complex> colz (tab,"COLZ");
-    ROScalarColumn<String>  cols (tab,"COLS");
-    ROScalarColumn<Double>  colra (tab,"COLRA");
-    ROScalarColumn<Double>  coldec (tab,"COLDEC");
+    ScalarColumn<Int>     coli (tab,"COLI");
+    ScalarColumn<float>   colf (tab,"COLF");
+    ScalarColumn<double>  cold (tab,"COLD");
+    ScalarColumn<Complex> colx (tab,"COLX");
+    ScalarColumn<Complex> colz (tab,"COLZ");
+    ScalarColumn<String>  cols (tab,"COLS");
+    ScalarColumn<Double>  colra (tab,"COLRA");
+    ScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
 	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
@@ -141,14 +141,14 @@ void aa (const String& dir)
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Int>     coli (tab,"COLI");
-    ROScalarColumn<float>   colf (tab,"COLF");
-    ROScalarColumn<double>  cold (tab,"COLD");
-    ROScalarColumn<Complex> colx (tab,"COLX");
-    ROScalarColumn<Complex> colz (tab,"COLZ");
-    ROScalarColumn<String>  cols (tab,"COLS");
-    ROScalarColumn<Double>  colra (tab,"COLRA");
-    ROScalarColumn<Double>  coldec (tab,"COLDEC");
+    ScalarColumn<Int>     coli (tab,"COLI");
+    ScalarColumn<float>   colf (tab,"COLF");
+    ScalarColumn<double>  cold (tab,"COLD");
+    ScalarColumn<Complex> colx (tab,"COLX");
+    ScalarColumn<Complex> colz (tab,"COLZ");
+    ScalarColumn<String>  cols (tab,"COLS");
+    ScalarColumn<Double>  colra (tab,"COLRA");
+    ScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
 	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
@@ -169,14 +169,14 @@ void ab (const String& dir)
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Int>     coli (tab,"COLI");
-    ROScalarColumn<float>   colf (tab,"COLF");
-    ROScalarColumn<double>  cold (tab,"COLD");
-    ROScalarColumn<Complex> colx (tab,"COLX");
-    ROScalarColumn<Complex> colz (tab,"COLZ");
-    ROScalarColumn<String>  cols (tab,"COLS");
-    ROScalarColumn<Double>  colra (tab,"COLRA");
-    ROScalarColumn<Double>  coldec (tab,"COLDEC");
+    ScalarColumn<Int>     coli (tab,"COLI");
+    ScalarColumn<float>   colf (tab,"COLF");
+    ScalarColumn<double>  cold (tab,"COLD");
+    ScalarColumn<Complex> colx (tab,"COLX");
+    ScalarColumn<Complex> colz (tab,"COLZ");
+    ScalarColumn<String>  cols (tab,"COLS");
+    ScalarColumn<Double>  colra (tab,"COLRA");
+    ScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
 	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
@@ -197,14 +197,14 @@ void a1 (const String& dir, const String& commentMarker,
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Int>      col1 (tab,"Column1");
-    ROScalarColumn<double>   col2 (tab,"Column2");
-    ROScalarColumn<double>   col3 (tab,"Column3");
-    ROScalarColumn<double>   col4 (tab,"Column4");
-    ROScalarColumn<double>   col5 (tab,"Column5");
-    ROScalarColumn<double>   col6 (tab,"Column6");
-    ROScalarColumn<double>   col7 (tab,"Column7");
-    ROScalarColumn<String>   col8 (tab,"Column8");
+    ScalarColumn<Int>      col1 (tab,"Column1");
+    ScalarColumn<double>   col2 (tab,"Column2");
+    ScalarColumn<double>   col3 (tab,"Column3");
+    ScalarColumn<double>   col4 (tab,"Column4");
+    ScalarColumn<double>   col5 (tab,"Column5");
+    ScalarColumn<double>   col6 (tab,"Column6");
+    ScalarColumn<double>   col7 (tab,"Column7");
+    ScalarColumn<String>   col8 (tab,"Column8");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << col1(i) << " " << col2(i) << " " << col3(i) << " "
 	     << col4(i) << " " << col5(i) << " " << col6(i) << " "
@@ -242,13 +242,13 @@ void a2 (const String& dir, const String& commentMarker,
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Int>     coli (tab,"COLI");
-    ROScalarColumn<float>   colf (tab,"COLF");
-    ROScalarColumn<double>  cold (tab,"COLD");
-    ROScalarColumn<Complex> colx (tab,"COLX");
-    ROScalarColumn<float>  colz1 (tab,"COLZ1");
-    ROScalarColumn<double> colz2 (tab,"COLZ2");
-    ROScalarColumn<String>  cols (tab,"COLS");
+    ScalarColumn<Int>     coli (tab,"COLI");
+    ScalarColumn<float>   colf (tab,"COLF");
+    ScalarColumn<double>  cold (tab,"COLD");
+    ScalarColumn<Complex> colx (tab,"COLX");
+    ScalarColumn<float>  colz1 (tab,"COLZ1");
+    ScalarColumn<double> colz2 (tab,"COLZ2");
+    ScalarColumn<String>  cols (tab,"COLS");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
 	     << colx(i) << " " << colz1(i) << " " << colz2(i) << " "
@@ -299,13 +299,13 @@ void b (const String& dir, const String& suffix, Char separator,
       cout << endl;
     }
     {
-      ROTableColumn tabcol (tab, "COLI");
+      TableColumn tabcol (tab, "COLI");
       const TableRecord& keycol = tabcol.keywordSet();
       cout << keycol.description();
       cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
     }
     {
-      ROTableColumn tabcol (tab, "COLDX");
+      TableColumn tabcol (tab, "COLDX");
       const TableRecord& keycol = tabcol.keywordSet();
       cout << keycol.description();
       cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
@@ -313,16 +313,16 @@ void b (const String& dir, const String& suffix, Char separator,
     }
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Short>    cols (tab,"COLS");
-    ROScalarColumn<Int>      coli (tab,"COLI");
-    ROScalarColumn<float>    colf (tab,"COLF");
-    ROScalarColumn<double>   cold (tab,"COLD");
-    ROScalarColumn<Complex>  colx (tab,"COLX");
-    ROScalarColumn<Complex>  colz (tab,"COLZ");
-    ROScalarColumn<DComplex> coldx (tab,"COLDX");
-    ROScalarColumn<DComplex> coldz (tab,"COLDZ");
-    ROScalarColumn<String>   cola (tab,"COLA");
-    ROScalarColumn<Bool>     colb (tab,"COLB");
+    ScalarColumn<Short>    cols (tab,"COLS");
+    ScalarColumn<Int>      coli (tab,"COLI");
+    ScalarColumn<float>    colf (tab,"COLF");
+    ScalarColumn<double>   cold (tab,"COLD");
+    ScalarColumn<Complex>  colx (tab,"COLX");
+    ScalarColumn<Complex>  colz (tab,"COLZ");
+    ScalarColumn<DComplex> coldx (tab,"COLDX");
+    ScalarColumn<DComplex> coldz (tab,"COLDZ");
+    ScalarColumn<String>   cola (tab,"COLA");
+    ScalarColumn<Bool>     colb (tab,"COLB");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << cols(i) << " " << coli(i) << " " << colf(i) << " "
 	     << cold(i) << " " << colx(i) << " " << coldx(i) << " "
@@ -365,13 +365,13 @@ void b1 (const String& dir)
     cout << "KEYBV " << keys.asArrayBool ("KEYBV") << endl;
     cout << endl;
     {
-      ROTableColumn tabcol (tab, "COLI");
+      TableColumn tabcol (tab, "COLI");
       const TableRecord& keycol = tabcol.keywordSet();
       cout << keycol.description();
       cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
     }
     {
-      ROTableColumn tabcol (tab, "COLDX");
+      TableColumn tabcol (tab, "COLDX");
       const TableRecord& keycol = tabcol.keywordSet();
       cout << keycol.description();
       cout << "IKEYS " << keycol.asString ("IKEYS") << endl;
@@ -379,16 +379,16 @@ void b1 (const String& dir)
     }
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<Short>    cols (tab,"COLS");
-    ROScalarColumn<Int>      coli (tab,"COLI");
-    ROScalarColumn<float>    colf (tab,"COLF");
-    ROScalarColumn<double>   cold (tab,"COLD");
-    ROScalarColumn<Complex>  colx (tab,"COLX");
-    ROScalarColumn<Complex>  colz (tab,"COLZ");
-    ROScalarColumn<DComplex> coldx (tab,"COLDX");
-    ROScalarColumn<DComplex> coldz (tab,"COLDZ");
-    ROScalarColumn<String>   cola (tab,"COLA");
-    ROScalarColumn<Bool>     colb (tab,"COLB");
+    ScalarColumn<Short>    cols (tab,"COLS");
+    ScalarColumn<Int>      coli (tab,"COLI");
+    ScalarColumn<float>    colf (tab,"COLF");
+    ScalarColumn<double>   cold (tab,"COLD");
+    ScalarColumn<Complex>  colx (tab,"COLX");
+    ScalarColumn<Complex>  colz (tab,"COLZ");
+    ScalarColumn<DComplex> coldx (tab,"COLDX");
+    ScalarColumn<DComplex> coldz (tab,"COLDZ");
+    ScalarColumn<String>   cola (tab,"COLA");
+    ScalarColumn<Bool>     colb (tab,"COLB");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << cols(i) << " " << coli(i) << " " << colf(i) << " "
 	     << cold(i) << " " << colx(i) << " " << colz(i) << " "
@@ -432,16 +432,16 @@ void b2 (const String& dir)
     cout << endl;
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROScalarColumn<String> col1 (tab,"Column1");
-    ROScalarColumn<String> col2 (tab,"Column2");
-    ROScalarColumn<String> col3 (tab,"Column3");
-    ROScalarColumn<String> col4 (tab,"Column4");
-    ROScalarColumn<String> col5 (tab,"Column5");
-    ROScalarColumn<String> col6 (tab,"Column6");
-    ROScalarColumn<String> col7 (tab,"Column7");
-    ROScalarColumn<String> col8 (tab,"Column8");
-    ROScalarColumn<String> col9 (tab,"Column9");
-    ROScalarColumn<String> col10 (tab,"Column10");
+    ScalarColumn<String> col1 (tab,"Column1");
+    ScalarColumn<String> col2 (tab,"Column2");
+    ScalarColumn<String> col3 (tab,"Column3");
+    ScalarColumn<String> col4 (tab,"Column4");
+    ScalarColumn<String> col5 (tab,"Column5");
+    ScalarColumn<String> col6 (tab,"Column6");
+    ScalarColumn<String> col7 (tab,"Column7");
+    ScalarColumn<String> col8 (tab,"Column8");
+    ScalarColumn<String> col9 (tab,"Column9");
+    ScalarColumn<String> col10 (tab,"Column10");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << col1(i) << " " << col2(i) << " " << col3(i) << " "
 	     << col4(i) << " " << col5(i) << " " << col6(i) << " "
@@ -462,7 +462,7 @@ void b3 (const String& dir, const IPosition& autoShape)
     Table tab("tReadAsciiTable_tmp.data_tk");
     cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
 	 << " columns" << endl;
-    ROArrayColumn<String> col1 (tab,"Column1");
+    ArrayColumn<String> col1 (tab,"Column1");
     for (uInt i=0; i<tab.nrow(); i++) {
         cout << col1(i) << endl;
     }

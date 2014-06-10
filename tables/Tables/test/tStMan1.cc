@@ -123,7 +123,7 @@ void readtab()
     Table tab("tStMan1_tmp.data");
     uInt nrrow = tab.nrow();
     timer.show ("table open          ");
-    ROScalarColumn<uInt> int1 (tab, "int1");
+    ScalarColumn<uInt> int1 (tab, "int1");
     for (uInt i=0; i<nrrow; i++) {
       AlwaysAssertExit (int1(i) == i);
     }

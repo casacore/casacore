@@ -60,7 +60,7 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
 	    ostringstream out;
 	    out << setfill('0') << setw(2) << day << "/" << setw(2) << month <<
 		"/" << setw(2) << year;
-	    date = out;
+	    date = out.str();
 	}
 	break;
     case NEW_DATEONLY:
@@ -176,7 +176,7 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
 	    system = MEpoch::TCG;
 	} else if (timesys == "TCB") { 
 	    system = MEpoch::TCB;
-	} else if (timesys == "LAST") {   // AIPS++ extensions here
+	} else if (timesys == "LAST") {   // Casacore extensions here
 	    system = MEpoch::LAST;
 	} else if (timesys == "LMST") { 
 	    system = MEpoch::LMST;

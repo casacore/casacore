@@ -67,9 +67,9 @@ template<class T> class Vector;
 // </etymology>
 //
 // <synopsis>
-// This class provides functions to conveniently interconvert between AIPS++
+// This class provides functions to conveniently interconvert between Casacore
 // types and a FitsKeywordList which is needed by the native FITS classes.
-// It is more convenient to maintain the list within AIPS++
+// It is more convenient to maintain the list within Casacore
 // as a Record, so we only need methods to turn a FitsKeywordList into a 
 // Record, and vice versa.
 //
@@ -117,7 +117,7 @@ template<class T> class Vector;
 // <motivation>
 // The FitsKeywordList class can be somewhat tedious to use, as it deals with,
 // e.g., char* pointers rather than Strings. This class makes it easy to
-// interconvert between FITS keywords and AIPS++ types.
+// interconvert between FITS keywords and Casacore types.
 // </motivation>
 //
 // <todo asof="2000/06/21">
@@ -128,11 +128,14 @@ template<class T> class Vector;
 class FITSKeywordUtil
 {
 public:
-    // Make an initial FitsKeywordList containing only "SIMPLE = T" which
-    // is required of any FITS keyword list. This is provided as a convenience
-    // so that you do not have to know anything about the class
+    // Make an initial FitsKeywordList for either a FITS primary header
+	 // or a FITS extension header (image or table). A primary header
+	 // requires "SIMPLE = T", an extension header "XTENSION = IMAGE "
+	 // or "XTENSION = BINTABLE " for image or table, respectively.
+    // This is required of any FITS keyword list. This is provided as
+	 // a convenience so that you do not have to know anything about the class
     // <linkto class=FitsKeywordList>FitsKeywordList</linkto>.
-    static FitsKeywordList makeKeywordList(); 
+    static FitsKeywordList makeKeywordList(Bool primHead=True, Bool binImage=True);
 
     // Add the fields from in to the out FitsKeywordList as keywords.
     // Upcases field names, turns arrays into indexed keywords, tries to interleave

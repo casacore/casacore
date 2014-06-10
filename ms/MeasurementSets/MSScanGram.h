@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
+#include <ms/MeasurementSets/MSScanParse.h> // routines used by bison actions
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -70,14 +71,21 @@ class TableExprNode;
 // <group name=MSScanGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-  int msScanGramParseCommand (const MeasurementSet *ms, const String& command, Vector<Int>& idList, Int maxScans=1000);
+  TableExprNode baseMSScanGramParseCommand (MSScanParse* parser, const String& command, 
+					    Vector<Int>& idList, Int maxScans=1000);
+  TableExprNode msScanGramParseCommand (const MeasurementSet *ms, const String& command, 
+					Vector<Int>& idList, Int maxScans=1000);
+  TableExprNode msScanGramParseCommand (const MeasurementSet* ms,
+					const TableExprNode& colAsTEN,
+					const String& command, 
+					Vector<Int>& selectedIDs, Int maxScans) ;
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
 void MSScanGramerror (const char*);
 
 // Give the table expression node.
-const TableExprNode *msScanGramParseNode();
+//const TableExprNode *msScanGramParseNode();
 void msScanGramParseDeleteNode();
 
 // Give the current position in the string.

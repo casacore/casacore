@@ -172,7 +172,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      // for the target columns.
 //      virtual void prepare()
 //      {
-//          ROTableColumn src (table(), sourceColumnName());
+//          TableColumn src (table(), sourceColumnName());
 //          xTargetName_p = src.keywordSet().asString ("_xTargetName");
 //          yTargetName_p = src.keywordSet().asString ("_yTargetName");
 //          rocolx.attach (table(), xTargetName_p);
@@ -223,9 +223,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      String yTargetName_p;
 //      // Objects for the target columns.
 //      ScalarColumn<Int>     colx;       // used by put
-//      ROScalarColumn<Int>   rocolx;     // used by get
+//      ScalarColumn<Int>   rocolx;     // used by get
 //      ScalarColumn<float>   coly;       // used by put
-//      ROScalarColumn<float> rocoly;     // used by get
+//      ScalarColumn<float> rocoly;     // used by get
 //
 //  public:
 //      // Define the "constructor" to construct this engine when a

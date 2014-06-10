@@ -477,16 +477,16 @@ uInt Aipsrc::genParse(Block<String> &keywordPattern,
 	String keyword;
 	String value;
 	const Regex comm("^[ 	]*#");	// Comment line
-	const Regex defin(":[ 	]*");	// Line with value
-	const Regex lspace("^[ 	]*");	// Leading spaces
 	while (fileAipsrc.getline(buf, 8192)) {
 	  buffer = buf;
 	  if (buffer.empty() || buffer.contains(comm))	// Ignore comments
 	    continue;
-	  buffer = buffer.after(lspace);
-	  if (buffer.contains(defin)) {		// value defined
-	    keyword = buffer.before(defin);
-	    value = buffer.after(defin);
+          String::size_type inx = buffer.find(':');
+          if (inx != String::npos) {
+	    keyword = buffer.before(inx);
+	    value = buffer.after(inx);
+            keyword.trim();
+            value.trim();
 	    if (keyword.length() < 1)
 	      continue;
 	    while (nkw >= keywordPattern.nelements()) {

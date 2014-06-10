@@ -515,19 +515,19 @@ Bool LinearCoordinate::near(const Coordinate& other,
       if (!exclude(i)) {
          if (!casa::near(crval1[i],crval2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
-                << i;
+                << i << ", " << crval1[i] << " vs. " << crval2[i];
             set_error(String(oss));
             return False;
          }
          if (!casa::near(cdelt1[i],cdelt2[i],tol)) {
             oss << "The LinearCoordinates have differing increments for axis "
-                << i;
+                << i << ", " << cdelt1[i] << " vs. " << cdelt2[i];
             set_error(String(oss));
             return False;
          }
          if (!casa::near(crpix1[i],crpix2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
-                << i;
+                << i << ", " << crpix1[i] << " vs. " << crpix2[i];
             set_error(String(oss));
             return False;
          }

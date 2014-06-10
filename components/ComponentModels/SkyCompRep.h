@@ -52,6 +52,7 @@ class RecordInterface;
 class SpectralModel;
 class TwoSidedShape;
 class Unit;
+class GaussianBeam;
 template <class Ms> class MeasRef;
 template <class T> class Cube;
 template <class T> class Vector;
@@ -202,6 +203,14 @@ public:
   virtual const String& label() const;
   // </group>
 
+  // See the corresponding functions in the
+  // <linkto class="SkyCompBase">SkyCompBase</linkto>
+  // class for a description of these functions.
+  // <group>
+  virtual Vector<Double>& optionalParameters();
+  virtual const Vector<Double>& optionalParameters() const;
+  // </group>
+
   // See the corresponding function in the
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
@@ -265,7 +274,7 @@ public:
   // the component is lost.
   Vector<Double> toPixel (
 		  const Unit& brightnessUnitOut,
-          const Vector<Quantum<Double> >& restoringBeam,
+          const GaussianBeam& restoringBeam,
           const CoordinateSystem& cSys,
           Stokes::StokesTypes stokes
   ) const;
@@ -286,7 +295,7 @@ public:
   // The SkyComponent is given a  constant spectrum.
   void fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
-                  const Vector<Quantum<Double> >& restoringBeam,
+                  const GaussianBeam& restoringBeam,
                   const CoordinateSystem& cSys,
                   ComponentType::Shape componentShape,
                   Stokes::StokesTypes stokes);
@@ -301,43 +310,46 @@ public:
 // to Jy per whatevers (e.g. Jy per beam)
    static Double convertToJy (const Unit& brightnessUnit);
 
-// Convert a peak flux density to integral flux density
-   static Quantity peakToIntegralFlux (const DirectionCoordinate& dirCoord,
-                                              ComponentType::Shape componentShape,
-                                              const Quantum<Double>& peakFlux,
-                                              const Quantum<Double>& majorAxis,
-                                              const Quantum<Double>& minorAxis,
-                                              const Vector<Quantum<Double> >& restoringBeam);
+   // Convert a peak flux density to integral flux density
+	static Quantity peakToIntegralFlux (
+		const DirectionCoordinate& dirCoord,
+		const ComponentType::Shape componentShape,
+		const Quantum<Double>& peakFlux,
+		const Quantum<Double>& majorAxis,
+		const Quantum<Double>& minorAxis,
+		const GaussianBeam& restoringBeam
+	);
 
-   // Convert an integral flux density to peak flux density.  The brightness unit
-   // of the output quantum (e.g. mJy/beam) is specified by <src>brightnessUnit</src>
-   // Throws an exception if the units of <src>integralFlux</src> do not conform to Jy.
-   static Quantity integralToPeakFlux (
-		   const DirectionCoordinate& dirCoord,
-		   ComponentType::Shape componentShape,
-		   const Quantity& integralFlux,
-		   const Unit& brightnessUnit,
-		   const Quantity& majorAxis,
-		   const Quantity& minorAxis,
-		   const Vector<Quantity>& restoringBeam
-   );
+	// Convert an integral flux density to peak flux density.  The brightness unit
+	// of the output quantum (e.g. mJy/beam) is specified by <src>brightnessUnit</src>
+	// Throws an exception if the units of <src>integralFlux</src> do not conform to Jy.
+	static Quantity integralToPeakFlux (
+		const DirectionCoordinate& dirCoord,
+		const ComponentType::Shape componentShape,
+		const Quantity& integralFlux,
+		const Unit& brightnessUnit,
+		const Quantity& majorAxis,
+		const Quantity& minorAxis,
+		const GaussianBeam& restoringBeam
+	);
 
 private:
   CountedPtr<ComponentShape> itsShapePtr;
   CountedPtr<SpectralModel> itsSpectrumPtr;
   Flux<Double> itsFlux;
   String itsLabel;
+  Vector<Double> itsOptParms;
 
 
   // Make definitions to handle "/beam" and "/pixel" units.   The restoring beam
   // is provided in a vector of quanta (major, minor, position angle).  Should
   // be length 0 or 3. It can be obtained from class ImageInfo
-     static Unit defineBrightnessUnits (
-  		   LogIO& os, const Unit& brightnessUnitIn,
-             const DirectionCoordinate& dirCoord,
-             const Vector<Quantum<Double> >& restoringBeam,
-             Bool integralIsJy
-     );
+  static Unit defineBrightnessUnits (
+		  LogIO& os, const Unit& brightnessUnitIn,
+		  const DirectionCoordinate& dirCoord,
+		  const GaussianBeam& restoringBeam,
+		  const Bool integralIsJy
+  );
 
   // Remove the user defined "/beam" and "/pixel" definitions
      static void undefineBrightnessUnits();

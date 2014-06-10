@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class=Lattice>Lattice</linkto> class as well as below. 
 // <p>
 // In nearly all cases you access the PagedArray by reading a "slice" of the
-// PagedArray into an AIPS++ <linkto class=Array>Array</linkto>. Because the
+// PagedArray into a Casacore <linkto class=Array>Array</linkto>. Because the
 // slice is stored in memory it is important that the slice you read is not
 // too big compared to the physical memory on your computer. Otherwise your
 // computer will page excessively and performance will be poor.
@@ -355,7 +355,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <templating arg=T>
 //  <li> Due to storage in Tables, the templated type must be able to be 
-// stored in an AIPS++ Table.  This restricts the template argument to all
+// stored in a Casacore Table.  This restricts the template argument to all
 // the common types Bool, Float, Double, Complex, String etc.) More details
 // can be found in the RetypedArrayEngine class.
 // </templating>
@@ -580,11 +580,9 @@ private:
   void makeTable (const String& filename, Table::TableOption option);
   // The default comment for PagedArray Colums
   static String defaultComment();
-  // Get the writable ArrayColumn object. It is created when needed.
+  // Get the writable ArrayColumn object.
+  // It reopens the table for write if needed.
   ArrayColumn<T>& getRWArray();
-  // Create the writable ArrayColumn object.
-  // It reopens the table for write when needed.
-  void makeRWArray();
   // Do the reopen of the table (if not open already).
   // <group>
   void doReopen() const;
@@ -599,8 +597,7 @@ private:
           String    itsTableName;
           Bool      itsWritable;
           TableLock itsLockOpt;
-  mutable ArrayColumn<T>       itsRWArray;
-  mutable ROArrayColumn<T>     itsROArray;
+  mutable ArrayColumn<T>       itsArray;
   mutable ROTiledStManAccessor itsAccessor;
 };
 
@@ -608,10 +605,14 @@ private:
 template<class T>
 inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 {
-  if (itsRWArray.isNull()) {
-    makeRWArray();
+  if (itsIsClosed) {
+    doReopen();
   }
-  return itsRWArray;
+  if (!itsWritable) {
+    itsTable.reopenRW();
+    itsWritable = True;
+  }
+  return itsArray;
 }
 
 template<class T>

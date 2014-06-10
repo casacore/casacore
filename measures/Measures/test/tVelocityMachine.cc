@@ -122,6 +122,29 @@ int main() {
     cout << "List to RADIO: " << vm.makeVelocity(fx) << endl;
     vm.set(frame);
     cout << "List to RADIO: " << vm.makeVelocity(fx) << endl;
+    {
+    	// test restfreq <= 0 throws exception
+    	MVFrequency restfrq2(0);
+        VelocityMachine bogus(frqref, Unit("GHz"), restfrq2, velref, Unit("km/s"));
+        try {
+        	bogus.makeVelocity(20);
+        	// exception should be thrown before we get here
+        	AlwaysAssert(False, AipsError);
+        }
+        catch (const AipsError& x) {}
+        MVFrequency restfrq3(-1);
+        VelocityMachine bogus2(
+        	frqref, Unit("GHz"), restfrq3, velref, Unit("km/s")
+        );
+        try {
+        	bogus2.makeVelocity(20);
+        	AlwaysAssert(False, AipsError);
+        }
+        catch (const AipsError& x) {}
+
+
+
+    }
 
   } catch (AipsError x) {
     cout << x.getMesg() << endl;

@@ -50,6 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 static Block<Double> stderr_min, stderr_max, stderr_last;
 static Block<String> stderr_title;
 static Block<Int> stderr_time;
+static Block<Bool> stderr_startflag;
 const char* ProgressMeter::PROGRESSFILE = "/tmp/xidjapdfs";
 static Int stderr_creation_function(Double min, Double max,
 				    const String &t, const String &,
@@ -62,11 +63,13 @@ static Int stderr_creation_function(Double min, Double max,
     stderr_last.resize(n);
     stderr_title.resize(n);
     stderr_time.resize(n);
+    stderr_startflag.resize(n);
     stderr_min[n-1] = min;
     stderr_max[n-1] = max;
     stderr_last[n-1] = min;
     stderr_title[n-1] = t;
     stderr_time[n-1] = time(0);
+    stderr_startflag[n-1] = False;
     //cerr << "\n0%";
     return n;
 }
@@ -130,7 +133,11 @@ static void stderr_update_function(Int id, Double value)
 			  (stderr_max[id] - stderr_min[id]) * 100.0);
     Int lastpercent = Int((stderr_last[id] - stderr_min[id]) / 
 			  (stderr_max[id] - stderr_min[id]) * 100.0);
-    if (::fabs((stderr_last[id] - stderr_min[id])/stderr_min[id]) <  0.001) cerr << "\n0%";
+    //    if (::fabs((stderr_last[id] - stderr_min[id])/stderr_min[id]) <  0.001) cerr << "\n0%";
+    if (!stderr_startflag[id] && ::fabs((stderr_last[id] - stderr_min[id])/stderr_min[id]) <  0.001) {
+      cerr << "\n0%";
+      stderr_startflag[id] = True;
+    }
     if (percent > lastpercent) {
 	stderr_last[id] = value;
 	// Probably we could do this more efficiently. We need to get all the

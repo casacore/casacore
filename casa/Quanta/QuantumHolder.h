@@ -40,6 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class QBase;
 class String;
 class RecordInterface;
+class Record;
 template <class Qtype> class Quantum;
 template <class T> class Vector;
 template <class T> class Array;
@@ -216,6 +217,12 @@ public:
   // Create a record from a Quantum. A False return and an error message is
   // only generated if there is no valid Quantum in the holder.
   virtual Bool toRecord(String &error, RecordInterface &out) const;
+  // this version throws an exception rather than returning false
+  virtual void toRecord(RecordInterface &out) const;
+  // this version throws an exception or returns the result Record.
+  virtual Record toRecord() const;
+
+
   // Return identification
   virtual const String &ident() const;
 

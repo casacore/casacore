@@ -100,6 +100,8 @@ public:
     GAUSSIAN,
     // A elliptical disk component
     DISK,
+    // A elliptical disk component with limb-darkening effect
+    LDISK,
     // An unknown Component
     UNKNOWN_SHAPE,
     // The number of types in this enumerator

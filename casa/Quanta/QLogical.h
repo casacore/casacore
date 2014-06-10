@@ -154,6 +154,9 @@ template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
 	  Double tol);
 template <class Qtype>
+Bool nearAbs(const Quantum<Qtype> &left, const Quantum<Qtype> &other,
+	  const Quantum<Qtype>& tol);
+template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other);
 template <class Qtype>
 Bool nearAbs(const Quantum<Qtype> &left, const Qtype &other,

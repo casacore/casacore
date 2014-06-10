@@ -58,12 +58,6 @@ namespace casa {
       
       
     public:
-	  const static String ALL;
-
-		enum StokesControl {
-			USE_FIRST_STOKES,
-			USE_ALL_STOKES
-		};
 
       //blank constructor
       RegionManager();
@@ -121,6 +115,82 @@ namespace casa {
 			    const Vector<Int>& pixelaxes,  
 			    const String& absrel);
       
+     static ImageRegion* wellipse(
+    		  const Quantity& xc,
+    		  const Quantity& yc,
+    		  const Quantity& a,
+    		  const Quantity& b,
+    		  const Quantity& pa,
+    		  const uInt pixelAxis0,
+    		  const uInt pixelAxis1,
+    		  const CoordinateSystem& csys,
+    		  const String& absrel
+      );
+
+      //wellipse version without csys...throws an exception if
+      //setcoordsys is not run
+      ImageRegion* wellipse(
+    		  const Quantity& xc,
+    		  const Quantity& yc,
+    		  const Quantity& a,
+    		  const Quantity& b,
+    		  const Quantity& pa,
+    		  const uInt pixelAxis0,
+    		  const uInt pixelAxis1,
+    		  const String& absrel
+      ) const;
+
+      static ImageRegion* wsphere(
+    		  const Vector<Quantity>& center,
+    		  const Quantity& radius,
+    		  const Vector<Int>& pixelaxes,
+    		  const CoordinateSystem& csys,
+    		  const String& absrel
+      );
+      //wsphere version without csys...throws an exception if
+      //setcoordsys is not run
+      ImageRegion* wsphere(
+    		  const Vector<Quantity>& center,
+    		  const Quantity& radius,
+    		  const Vector<Int>& pixelaxes,
+    		  const String& absrel
+      ) const;
+
+      static ImageRegion* wellipsoid(
+    		  const Vector<Quantity>& center,
+    		  const Vector<Quantity>& radii,
+    		  const Vector<Int>& pixelaxes,
+    		  const CoordinateSystem& csys,
+    		  const String& absrel
+      );
+
+      ImageRegion* wellipsoid(
+    		  const Vector<Quantity>& center,
+    		  const Vector<Quantity>& radii,
+    		  const Vector<Int>& pixelaxes,
+    		  const String& absrel
+      ) const;
+
+      static ImageRegion* wshell(
+    		  const Vector<Quantity>& center,
+    		  const Vector<Quantity>& innerRadii,
+    		  const Vector<Quantity>& outerRadii,
+    		  const Vector<Int>& pixelaxes,
+    		  const CoordinateSystem& csys,
+    		  const String& absrel
+      );
+
+      ImageRegion* wshell(
+    		  const Vector<Quantity>& center,
+    		  const Vector<Quantity>& innerRadii,
+    		  const Vector<Quantity>& outerRadii,
+    		  const Vector<Int>& pixelaxes,
+    		  const String& absrel
+      ) const;
+
+      static ImageRegion* wmask(const String& command);
+
+
       /**************************************************************
        ** Routines for combining regions                           **
        **                                                          **
@@ -170,10 +240,10 @@ namespace casa {
       //save region into a table (image, blank table or any other such)
       String imageRegionToTable(const String& tabName, 
 				const ImageRegion& imreg,
-				const String& regName); 
+				const String& regName, Bool asmask=False); 
 
       String recordToTable(const String& tabName, const RecordInterface& rec, 
-			 const String& regName="");
+			   const String& regName="", Bool asmask=False);
       //recover region from table
       Record* tableToRecord(const String& tabName,   const String& regname);
 
@@ -183,72 +253,18 @@ namespace casa {
       //Remove a region from table...refuse is regionname is ""
       Bool removeRegionInTable(const String& tabName, const String& regName);
 
-      /*
-       * regionName should be of the form imagename:regionname if the region
-       * is a TableDescriptor in an image
-       */
-      Record fromBCS(
-      		  String& diagnostics, uInt& nSelectedChannels, String& stokes,
-      		  const Record  * const regionPtr, const String& regionName,
-      		  const String& chans, const StokesControl stokesControl,
-      		  const String& box, const IPosition& imShape, const String& imageName=""
-        );
+
+    protected:
+      inline LogIO* _getLog() const { return itsLog; }
 
     private:
-
-      // Function to return the internal Table object to the RegionHandler.
-      static Table& getTable (void* ptr, Bool writable);
-      RegionType::AbsRelType regionTypeFromString(const String& absreltype);
-      //Convert a string to Quantity
-      void toQuantity(Quantity& out, const String& in);
       LogIO *itsLog;
       CoordinateSystem* itsCSys;
+      // Function to return the internal Table object to the RegionHandler.
+      static Table& getTable (void* ptr, Bool writable);
+      //Convert a string to Quantity
+      void toQuantity(Quantity& out, const String& in);
       Table tab_p;
-
-
-      Vector<uInt> _consolidateAndOrderRanges(
-      	const Vector<uInt>& ranges
-      ) const;
-
-      String _pairsToString(const Vector<uInt>& pairs) const;
-
-      Vector<uInt> _setSpectralRanges(
-    		  String specification, uInt& nSelectedChannels, const uInt nChannels
-      ) const;
-
-      Vector<uInt> _setPolarizationRanges(
-        	String& specification, const String& firstStokes, const uInt nStokes,
-        	const StokesControl stokesControl
-      ) const;
-
-      Vector<Double> _setBoxCorners(const String& box) const;
-
-      ImageRegion _fromBCS(
-    		  String& diagnostics, uInt& nSelectedChannels, String& stokes,
-      		  const String& chans, const StokesControl stokesControl,
-      		  const String& box, const IPosition& imShape
-      ) const;
-
-      ImageRegion _fromBCS(
-    		  String& diagnostics,
-    		  const Vector<Double>& boxCorners, const Vector<uInt>& chanEndPts,
-    		  const Vector<uInt>& polEndPts, const IPosition imShape
-      ) const;
-
-      static void _setRegion(
-        	Record& regionRecord, String& diagnostics,
-        	const Record* regionPtr
-        );
-
-      String _stokesFromRecord(
-    		  const Record& region, const StokesControl stokesControl, const IPosition& shape
-      ) const;
-
-      void _setRegion(
-      	Record& regionRecord, String& diagnostics,
-      	const String& regionName, const String& imageName
-      );
-
 
     };
 

@@ -111,11 +111,14 @@ void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
 }
 
 template <class T>
-void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
-                                const IPosition& axes, 
-                                const MaskedLattice<T>& in,
-                                Bool dropDegenerateAxes,
-                                Bool getPixels, Bool getMask)
+void LatticeUtilities::collapse(
+	Array<T>& data, Array<Bool>& mask,
+    const IPosition& axes,
+    const MaskedLattice<T>& in,
+    Bool dropDegenerateAxes,
+    Bool getPixels, Bool getMask,
+    const LatticeStatsBase::StatisticsTypes stat
+)
 { 
    data.resize();
    mask.resize();
@@ -135,7 +138,7 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
    stats.setAxes(axes.asVector());
 //
    if (getPixels) {
-      stats.getConvertedStatistic(data, LatticeStatsBase::MEAN, dropDegenerateAxes);
+      stats.getConvertedStatistic(data, stat, dropDegenerateAxes);
    } else {
       data.resize(IPosition(0,0));
    }
@@ -147,13 +150,15 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
       stats.getConvertedStatistic(n, LatticeStatsBase::NPTS, dropDegenerateAxes);
       mask.resize(n.shape());
 //
-      T lim(0.5);
+      T lim = (
+    	stat == LatticeStatsBase::SIGMA
+    	|| stat == LatticeStatsBase::VARIANCE
+      ) ? 1.5 : 0.5;
       typename Array<T>::const_iterator itend = n.end();
       typename Array<T>::const_iterator it;
       typename Array<Bool>::iterator mIt;
       for (it=n.begin(),mIt=mask.begin(); it!=itend; ++it,++mIt) {
-         *mIt = True;
-         if (*it < lim) *mIt = False;
+         *mIt = *it >= lim;
       }
    } else {
       mask.resize();

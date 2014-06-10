@@ -3,7 +3,7 @@ Record field  cannot be added: length<1
 Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
 RecordRep::defineDataField - incorrect data type used for field TpShort
-RecordRep::createDataField: unknown data type
+RecordRep::createDataField: unknown data type 12
 ArrayBase::validateConformance shape [3] differs from [1]
 ArrayBase::validateConformance shape [3] differs from [1]
 ArrayBase::validateConformance shape [3] differs from [1]

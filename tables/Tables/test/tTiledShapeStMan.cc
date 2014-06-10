@@ -157,12 +157,12 @@ void readTable (const IPosition& dwShape, const TSMOption& tsmOpt)
 {
   Table table("tTiledShapeStMan_tmp.data", Table::Old, tsmOpt);
     cout << "Checking " << table.nrow() << " rows" << endl;
-    ROArrayColumn<float> freq (table, "Freq");
-    ROArrayColumn<float> pol (table, "Pol");
-    ROArrayColumn<Complex> data (table, "Data");
-    ROArrayColumn<Bool> flag (table, "Flag");
-    ROArrayColumn<float> weight (table, "Weight");
-    ROScalarColumn<float> time (table, "Time");
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ArrayColumn<Complex> data (table, "Data");
+    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<float> weight (table, "Weight");
+    ScalarColumn<float> time (table, "Time");
     float timeValue;
     timeValue = 34;
     for (uInt i=0; i<table.nrow(); i++) {

@@ -1,4 +1,4 @@
-//# Matrix2Math.cc: The AIPS++ linear algebra functions (non-templated)
+//# Matrix2Math.cc: The Casacore linear algebra functions (non-templated)
 //# Copyright (C) 1993,1994,1995,1996,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#

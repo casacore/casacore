@@ -27,6 +27,7 @@
 
 #include <tables/Tables/PlainColumn.h>
 #include <tables/Tables/ColumnSet.h>
+#include <tables/Tables/TableTrace.h>
 #include <tables/Tables/BaseColDesc.h>
 #include <tables/Tables/ColumnDesc.h>
 #include <tables/Tables/DataManager.h>
@@ -44,7 +45,11 @@ PlainColumn::PlainColumn (const BaseColumnDesc* cdp, ColumnSet* csp)
   dataColPtr_p  (0),
   colSetPtr_p   (csp),
   originalName_p(cdp->name())
-{}
+{
+  int trace = TableTrace::traceColumn (colDesc_p);
+  rtraceColumn_p = (trace&TableTrace::READ)  != 0;
+  wtraceColumn_p = (trace&TableTrace::WRITE) != 0;
+}
 
 PlainColumn::~PlainColumn()
 {}

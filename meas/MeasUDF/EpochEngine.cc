@@ -143,12 +143,12 @@ namespace casa {
     }
     if (colNode) {
       // Try if the column contains measures.
-      const ROTableColumn& tabCol = colNode->getColumn();
+      const TableColumn& tabCol = colNode->getColumn();
       itsShape = tabCol.shapeColumn();
       itsNDim  = tabCol.ndimColumn();
       if (TableMeasDescBase::hasMeasures (tabCol)) {
-        ROArrayMeasColumn<MEpoch> measTmp(tabCol.table(),
-                                          tabCol.columnDesc().name());
+        ArrayMeasColumn<MEpoch> measTmp(tabCol.table(),
+                                        tabCol.columnDesc().name());
         // Get and check the node's refType if it is fixed.
         MEpoch::Types nodeRefType = MEpoch::N_Types;
         if (! (measTmp.measDesc().isRefCodeVariable()  ||

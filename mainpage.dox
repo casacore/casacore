@@ -189,7 +189,7 @@ namespace casa {
 ///   <td>tables scimath casa</td>
 ///   </tr>
 ///   <tr>
-///   <td><a href="group_fits.html">fits</a></td>
+///   <td><a href="group__fits.html">fits</a></td>
 ///   <td>measures tables scimath casa cfitsio</td>
 ///   </tr>
 ///   <tr>

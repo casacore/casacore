@@ -168,7 +168,7 @@ public:
     ROTiledStManAccessor (const Table& table, const String& name,
                           Bool byColumn=False);
 
-    ~ROTiledStManAccessor();
+    virtual ~ROTiledStManAccessor();
 
     // Copy constructor (reference semantics).
     ROTiledStManAccessor (const ROTiledStManAccessor& that);
@@ -276,9 +276,6 @@ public:
     // It will flush the caches as needed and remove all buckets from them
     // resulting in a possibly large drop in memory used.
     void clearCaches();
-
-    // Show the statistics for each cache used by this storage manager.
-    void showCacheStatistics (ostream& os) const;
 
 
 protected:

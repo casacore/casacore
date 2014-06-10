@@ -49,8 +49,7 @@ template<class T> Array<T>::Array()
 //   <item> ArrayShapeError
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape)
-: ArrayBase (Shape),
-  data_p    (0)
+: ArrayBase (Shape)
 {
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
@@ -63,8 +62,7 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape,
 				  const T &initialValue)
-: ArrayBase (Shape),
-  data_p    (0)
+: ArrayBase (Shape)
 {
     data_p = new Block<T>(nelements());
     begin_p = data_p->storage();
@@ -86,8 +84,7 @@ template<class T> Array<T>::Array(const Array<T> &other)
 template<class T>
 Array<T>::Array(const IPosition &shape, T *storage, 
 		StorageInitPolicy policy)
-: ArrayBase (shape),
-  data_p    (0)
+: ArrayBase (shape)
 {
     takeStorage(shape, storage, policy);
     DebugAssert(ok(), ArrayError);
@@ -95,8 +92,7 @@ Array<T>::Array(const IPosition &shape, T *storage,
 
 template<class T>
 Array<T>::Array (const IPosition &shape, const T *storage)
-: ArrayBase (shape),
-  data_p    (0)
+: ArrayBase (shape)
 {
     takeStorage(shape, storage);
     DebugAssert(ok(), ArrayError);
@@ -108,6 +104,10 @@ template<class T> Array<T>::~Array()
 {
 }
 
+template<class T> CountedPtr<ArrayBase> Array<T>::makeArray() const
+{
+  return new Array<T>();
+}
 
 template<class T> void Array<T>::assign (const Array<T>& other)
 {
@@ -116,6 +116,19 @@ template<class T> void Array<T>::assign (const Array<T>& other)
         resize (other.shape());
     }
     operator= (other);
+}
+
+template<class T> void Array<T>::assignBase (const ArrayBase& other, Bool checkType)
+{
+    DebugAssert(ok(), ArrayError);
+    // Checking the type can be expensive, so only do if needed or in debug mode.
+    if (checkType  ||  aips_debug) {
+      const Array<T>* pa = dynamic_cast<const Array<T>*>(&other);
+      if (pa == 0) {
+        throw ArrayError("assign(ArrayBase&) has incorrect template type");
+      }
+    }
+    assign (static_cast<const Array<T>&>(other));
 }
 
 template<class T> void Array<T>::reference(const Array<T> &other)
@@ -664,7 +677,8 @@ template<class T> const Array<T> Array<T>::operator()(const Slicer& slicer) cons
     return const_cast<Array<T>*>(this)->operator() (slicer);
 }
 
-template<class T> ArrayBase* Array<T>::getSection(const Slicer& slicer)
+template<class T>
+CountedPtr<ArrayBase> Array<T>::getSection(const Slicer& slicer) const
 {
     return new Array<T>(operator()(slicer));
 }
@@ -793,15 +807,6 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     return storage;
 }
 
-template<class T> const T *Array<T>::getStorage(Bool &deleteIt) const
-{
-    DebugAssert(ok(), ArrayError);
-
-    // The cast is OK because the return pointer will be cast to const
-    Array<T> *This = const_cast<Array<T>*>(this);
-    return This->getStorage(deleteIt);
-}
-
 template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
 {
     DebugAssert(ok(), ArrayError);
@@ -856,6 +861,32 @@ void Array<T>::freeStorage(const T*&storage, Bool deleteIt) const
 }
 
 template<class T>
+void *Array<T>::getVStorage(Bool &deleteIt)
+{
+    return getStorage (deleteIt);
+}
+template<class T>
+const void *Array<T>::getVStorage(Bool &deleteIt) const
+{
+    return getStorage (deleteIt);
+}
+template<class T>
+void Array<T>::putVStorage(void *&storage, Bool deleteAndCopy)
+{
+  T* ptr = static_cast<T*>(storage);
+  putStorage (ptr, deleteAndCopy);
+  storage = 0;
+}
+template<class T>
+void Array<T>::freeVStorage(const void *&storage, Bool deleteAndCopy) const
+{
+  const T* ptr = static_cast<const T*>(storage);
+  freeStorage (ptr, deleteAndCopy);
+  storage = 0;
+}
+
+
+template<class T>
 void Array<T>::takeStorage(const IPosition &shape, T *storage,
 			   StorageInitPolicy policy)
 {
@@ -897,7 +928,7 @@ void Array<T>::takeStorage(const IPosition &shape, const T *storage)
 
 
 template<class T>
-ArrayPositionIterator* Array<T>::makeIterator (uInt byDim)
+CountedPtr<ArrayPositionIterator> Array<T>::makeIterator (uInt byDim) const
 {
     return new ArrayIterator<T> (*this, byDim);
 }
@@ -958,5 +989,17 @@ void Array<T>::BaseIteratorSTL::increment()
     itsPos = itsLineEnd - itsLastPos(itsLineAxis) * (itsLineIncr+1);
   }
 }
+
+
+template<class T>
+vector<T> Array<T>::tovector() const {
+  Bool deleteIt;
+  const T *stor = this->getStorage(deleteIt);
+  vector<T> out;
+  out.assign(stor, stor+nelements());
+  this->freeStorage(stor, deleteIt);
+  return out;
+}
+
 
 } //#End casa namespace

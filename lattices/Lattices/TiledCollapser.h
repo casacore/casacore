@@ -129,7 +129,7 @@ public:
     virtual void initAccumulator (uInt n1, uInt n3) = 0;
 
 // Collapse the given input data containing (<src>nrval</src> values
-// with an increment of <src>inIncr</src> elements).
+// with an increment of <src>inDataIncr</src> elements).
 // <src>inMask</src> is a Bool block representing a mask with the
 // same nr of values and increment as the input data. If a mask
 // value is False, the corresponding input value is masked off.
@@ -144,7 +144,8 @@ public:
 // <linkto class=IPosition>IPosition</linkto>.
     virtual void process (uInt accumIndex1, uInt accumIndex3,
 			  const T* inData, const Bool* inMask,
-			  uInt inIncr, uInt nrval,
+                          uInt inDataIncr, uInt inMaskIncr,
+                          uInt nrval,
 			  const IPosition& startPos,
 			  const IPosition& shape) = 0;
 

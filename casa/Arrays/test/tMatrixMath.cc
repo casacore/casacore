@@ -64,6 +64,17 @@ int main()
     convertArray(indc, ind); convertArray(outdc, outd);
     AlwaysAssertExit(allNearAbs(transpose(indc), outdc, 0.00001));
 
+
+    Vector<Double> a(2, 2);
+    Vector<Double> b(2, 3);
+    AlwaysAssertExit(crossProduct2D(a, b) == 0);
+    a[0] = -2;
+    AlwaysAssertExit(crossProduct2D(a, b) == -12);
+    b[1] = -5;
+    AlwaysAssertExit(crossProduct2D(a, b) == 4);
+
+
+
   } catch(AipsError x) {
     cout << "Caught exception : " << x.getMesg() << endl;
     return 1;

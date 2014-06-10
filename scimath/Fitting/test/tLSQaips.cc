@@ -1,4 +1,4 @@
-//# tLSQaips.cc -- test LSQFit for AIPS++ Vectors
+//# tLSQaips.cc -- test LSQFit for Casacore Vectors
 //# Copyright (C) 1999-2002,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#

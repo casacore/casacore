@@ -34,10 +34,13 @@
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/TaQLResult.h>
+#include <tables/Tables/ExprGroup.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Sort.h>
 #include <casa/Containers/Block.h>
+#include <map>
 #include <vector>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -216,6 +219,10 @@ public:
     Bool orderGiven() const;
 
 private:
+    // Check if the node results in a scalar and does not contain
+    // aggregate functions.
+    void checkNode() const;
+
     TableExprNode node_p;
     Sort::Order   order_p;
     Bool          given_p;
@@ -257,9 +264,12 @@ public:
     : indexPtr_p(0) {}
 
   // Construct from a column name and expression.
-  TableParseUpdate (const String& columnName, const TableExprNode&);
+  // By default it checks if no aggregate functions are used.
+  TableParseUpdate (const String& columnName, const TableExprNode&,
+                    Bool checkAggr=True);
 
   // Construct from a column name, subscripts, and expression.
+  // It checks if no aggregate functions are used.
   TableParseUpdate (const String& columnName,
 		    const TableExprNodeSet& indices,
 		    const TableExprNode&,
@@ -345,6 +355,12 @@ public:
     PCRETAB
   };
 
+  enum GroupAggrType {
+    GROUPBY=1,
+    AGGR_FUNCS=2,
+    ONLY_COUNTALL=4
+  };
+
   // Construct.
   TableParseSelect (CommandType type);
 
@@ -359,7 +375,7 @@ public:
   TableExprNode getNode() const
     { return node_p; }
 
-  // Execute the select command (select/sort/projection/giving).
+  // Execute the select command (select/sort/projection/groupby/having/giving).
   // The setInGiving flag tells if a set in the GIVING part is allowed.
   // The mustSelect flag tells if a SELECT command must do something.
   // Usually that is required, but not for a SELECT in an INSERT command.
@@ -367,7 +383,7 @@ public:
   // It will be used as the default value for the LIMIT clause.
   // 0 = no maximum.
   void execute (Bool showTimings, Bool setInGiving,
-                Bool mustSelect, uInt maxRow);
+                Bool mustSelect, uInt maxRow, Bool doTracing=False);
 
   // Execute a query in a from clause resulting in a Table.
   Table doFromQuery (Bool showTimings);
@@ -384,7 +400,14 @@ public:
   void show (ostream& os) const;
 
   // Keep the selection expression.
-  void handleSelect (const TableExprNode&);
+  void handleWhere (const TableExprNode&);
+
+  // Keep the groupby expressions.
+  // It checks if they are all scalar expressions.
+  void handleGroupby (const vector<TableExprNode>&, Bool rollup);
+
+  // Keep the having expression.
+  void handleHaving (const TableExprNode&);
 
   // Keep the expression of a calculate command.
   void handleCalcComm (const TableExprNode&);
@@ -435,7 +458,9 @@ public:
   void replaceTable (const Table& table);
 
   // Find the keyword or column name and create a TableExprNode from it.
-  TableExprNode handleKeyCol (const String& name);
+  // If <src>tryProj=True</src> it is first tried if the column is a coluymn
+  // in the projected table (i.e., result from the SELECT part).
+  TableExprNode handleKeyCol (const String& name, Bool tryProj);
 
   // Handle a slice operator.
   static TableExprNode handleSlice (const TableExprNode& array,
@@ -474,8 +499,19 @@ public:
   // Get the resulting table.
   const Table& getTable() const;
 
+  // An exception is thrown if the node uses an aggregate function.
+  static void checkAggrFuncs (const TableExprNode& node);
 
 private:
+  // Test if groupby or aggregate functions are given.
+  // <br> bit 0:  on = groupby is given
+  // <br> bit 1:  on = aggregate functions are given
+  // <br> bit 2:  on = only select count(*) aggregate function is given
+  Int testGroupAggr (vector<TableExprNodeRep*>& aggr) const;
+
+  // Get the aggregate functions used in SELECT and HAVING.
+  vector<TableExprNodeRep*> getAggrNodes() const;
+
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).
   // If the function name is unknown, NRFUNC is returned.
@@ -488,7 +524,9 @@ private:
   // Rows 0,1,2,.. in UpdTable are updated from the expression result
   // for the rows in the given rownrs vector.
   void doUpdate (Bool showTimings, const Table& origTable,
-                 Table& updTable, const Vector<uInt>& rownrs);
+                 Table& updTable, const Vector<uInt>& rownrs,
+                 const CountedPtr<TableExprGroupResult>& groups =
+                 CountedPtr<TableExprGroupResult>());
 
   // Do the insert step and return a selection containing the new rows.
   Table doInsert (Bool showTimings, Table& table);
@@ -501,14 +539,47 @@ private:
   Table doCount (Bool showTimings, const Table&);
 
   // Do the projection step returning a table containing the projection.
-  Table doProject (Bool showTimings, const Table&);
+  Table doProject (Bool showTimings, const Table&,
+                   const CountedPtr<TableExprGroupResult>& groups =
+                   CountedPtr<TableExprGroupResult>());
 
   // Do the projection containing column expressions.
-  // Projection is done for the selected rownrs.
-  Table doProjectExpr();
+  // Use the selected or unselected columns depending on <src>useSel</src>.
+  Table doProjectExpr (Bool useSel,
+                       const CountedPtr<TableExprGroupResult>& groups);
+
+  // Make the (empty) table for the epxression in the SELECT clause.
+  void makeProjectExprTable();
+
+  // Fill projectExprSelColumn_p telling the columns to be projected
+  // at the first stage.
+  void makeProjectExprSel();
+
+  // Set the selected rows for the column objects in applySelNodes_p.
+  // These nodes refer the original table. They requires different row
+  // numbers than the selected groups and projected columns.
+  // rownrs_p is changed to use row 0..n.
+  // It returns the Table containing the subset of rows in the input Table.
+  Table adjustApplySelNodes (const Table&);
+
+  // Do the groupby/aggregate step and return its result.
+  CountedPtr<TableExprGroupResult> doGroupby
+  (bool showTimings, vector<TableExprNodeRep*> aggrNodes,
+   Int groupAggrUsed);
+
+  // Do the HAVING step.
+  void doHaving (Bool showTimings,
+                 const CountedPtr<TableExprGroupResult>& groups);
+
+  // Do a groupby/aggregate step that only does a 'select count(*)'.
+  CountedPtr<TableExprGroupResult> doOnlyCountAll (TableExprNodeRep* aggrNode);
+
+  // Do a full groupby/aggregate step.
+  CountedPtr<TableExprGroupResult> doGroupByAggr
+  (const vector<TableExprNodeRep*>& aggrNodes);
 
   // Do the sort step.
-  void doSort (Bool showTimings, const Table& origTable);
+  void doSort (Bool showTimings);
 
   // Do the limit/offset step.
   void  doLimOff (Bool showTimings);
@@ -547,7 +618,7 @@ private:
   TableExprNode getColSet();
 
   // Make a set from the results of the subquery.
-  TableExprNode makeSubSet (const Table& origTable) const;
+  TableExprNode makeSubSet() const;
 
   // Evaluate an int scalar expression.
   Int64 evalIntScaExpr (const TableExprNode& expr) const;
@@ -599,6 +670,49 @@ private:
   static Table findTableKey (const Table& table, const String& columnName,
 			     const Vector<String>& keyNames);
 
+  // Create the set of aggregate functions and groupby keys in case
+  // a single groupby key is given.
+  // This offers much faster map access then doGroupByAggrMultiple.
+  template<typename T>
+  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrSingleKey
+  (const vector<TableExprNodeRep*>& aggrNodes)
+  {
+    // We have to group the data according to the (possibly empty) groupby.
+    // We step through the table in the normal order which may not be the
+    // groupby order.
+    // A map<key,int> is used to keep track of the results where the int
+    // is the index in a vector of a set of aggregate function objects.
+    vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+    std::map<T, int> keyFuncMap;
+    T lastKey = std::numeric_limits<Double>::max();
+    int groupnr = -1;
+    // Loop through all rows.
+    // For each row generate the key to get the right entry.
+    TableExprId rowid(0);
+    T key;
+    for (uInt i=0; i<rownrs_p.size(); ++i) {
+      rowid.setRownr (rownrs_p[i]);
+      groupbyNodes_p[0].get (rowid, key);
+      if (key != lastKey) {
+        typename std::map<T, int>::iterator iter = keyFuncMap.find (key);
+        if (iter == keyFuncMap.end()) {
+          groupnr = funcSets.size();
+          keyFuncMap[key] = groupnr;
+          funcSets.push_back (new TableExprGroupFuncSet (aggrNodes));
+        } else {
+          groupnr = iter->second;
+        }
+      }
+      rowid.setRownr (rownrs_p[i]);
+      funcSets[groupnr]->apply (rowid);
+    }
+    return funcSets;
+  }
+
+  // Create the set of aggregate functions and groupby keys in case
+  // multiple keys are given.
+  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrMultipleKeys
+  (const vector<TableExprNodeRep*>& aggrNodes);
 
   //# Command type.
   CommandType commandType_p;
@@ -616,7 +730,7 @@ private:
   Block<String> columnOldNames_p;
   //# The new data type for a column.
   Block<String> columnDtypes_p;
-  //# Number of expressions used in selected columns.
+  //# Number of real expressions used in selected columns.
   uInt nrSelExprUsed_p;
   //# Distinct values in output?
   Bool distinct_p;
@@ -627,6 +741,11 @@ private:
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.
   TableExprNode node_p;
+  //# The GROUPBY expressions.
+  vector<TableExprNode> groupbyNodes_p;
+  Bool groupbyRollup_p;   //# use ROLLUP in GROUPBY? 
+  //# The HAVING expression.
+  TableExprNode havingNode_p;
   //# The possible limit (= max nr of selected rows) (0 means no limit).
   Int64 limit_p;
   //# The possible offset (= nr of selected rows to skip).
@@ -641,8 +760,21 @@ private:
   Bool  noDupl_p;
   //# The default sort order.
   Sort::Order order_p;
+  //# All nodes that need to be adjusted for a selection of rownrs.
+  //# It can consist of column nodes and the rowid function node.
+  //# Some nodes (in aggregate functions) can later be disabled for adjustment.
+  vector<TableExprNode> applySelNodes_p;
   //# The resulting table.
   Table table_p;
+  //# The first table used when creating a column object.
+  //# All other tables used for them should have the same size.
+  Table  firstColTable_p;
+  String firstColName_p;
+  //# The table resulting from a projection with expressions.
+  Table projectExprTable_p;
+  //# The projected columns used in the HAVING and ORDERBY clauses.
+  Block<uInt>  projectExprSubset_p;
+  Block<Bool>  projectExprSelColumn_p;
   //# The resulting row numbers.
   Vector<uInt> rownrs_p;
 };

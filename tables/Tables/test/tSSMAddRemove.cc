@@ -56,7 +56,7 @@ int main()
   addRemove();
   try {
     Table tab ("tSSMAddRemove_tmp.tab");
-    ROScalarColumn<Int> idcol(tab, "SOURCE_ID");
+    ScalarColumn<Int> idcol(tab, "SOURCE_ID");
     idcol(27);
   } catch (std::exception& x) {
     cout << x.what() << endl;

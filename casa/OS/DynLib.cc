@@ -32,6 +32,10 @@
 
 //# Includes
 #include <casa/OS/DynLib.h>
+#include <casa/OS/EnvVar.h>
+#include <casa/BasicSL/String.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
@@ -48,34 +52,44 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     : itsHandle  (0),
       itsDoClose (closeOnDestruction)
   {
-    string pref("lib");
-    string ext;
-    for (int i=0; i<4; ++i) {
-      ext = (i%2==0 ? ".so" : ".dylib");
-      if (i == 2) pref = prefix;
-      open (pref + library + ext);
-      if (itsHandle) {
-        break;
+    std::string fullName = tryCasacorePath (library, prefix);
+    if (fullName.empty()) {
+      string pref("lib");
+      string ext;
+      for (int i=0; i<4; ++i) {
+        ext = (i%2==0 ? ".so" : ".dylib");
+        if (i == 2) pref = prefix;
+        fullName = pref + library + ext;
+        open (fullName);
+        if (itsHandle) {
+          break;
+        }
       }
     }
     if (itsHandle  &&  !funcName.empty()) {
       // Found the dynamic library.
       // Now find and execute the given function.
-      void* initfunc = getFunc (funcName.c_str());
-      if (!initfunc) {
+      // Because a compiler like g++ gives a warning when casting a pointer to a
+      // function pointer, a union is used to achieve this.
+      // Ensure the pointer sizes are the same.
+      typedef void (*func_ptr)();
+      AlwaysAssert (sizeof(func_ptr) == sizeof(void*), AipsError);
+      typedef union {
+	func_ptr funcPtr;
+	void* ptr;
+      } ptrCastUnion;
+      ptrCastUnion ptrCast;
+      ptrCast.ptr = getFunc (funcName.c_str());
+      if (! ptrCast.ptr) {
         close();
-        throw AipsError("Found dynamic library " + pref + library + ext +
+        throw AipsError("Found dynamic library " + fullName +
                         ", but not its " + funcName + " function");
       }
-      // Execute the register function.
-      // We need to cast the void* from dlsym to a function pointer,
-      // a function without arguments returning void.
-      // This is not permitted as they are different kind of pointers,
-      // so the compiler might issue a warning.
-      // On RHEL4 gcc-3.4.6 gave an error for a reinterpret_cast,
-      // so we have to use a C-style cast.
-      ///      reinterpret_cast<void(*)()>(initfunc)();
-      ((void(*)())initfunc)();
+/// Note: the following is a g++ specific way to avoid the warning.
+///#ifdef __GNUC__
+///__extension__
+///#endif
+      ptrCast.funcPtr();
     }
   }
 
@@ -121,6 +135,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
       itsHandle= 0;
     }
+  }
+
+  std::string DynLib::tryCasacorePath (const std::string& library,
+                                       const std::string& prefix)
+  {
+    // Check if CASACORE_LDPATH is defined.
+    String casapath("CASACORE_LDPATH");
+    String path = EnvironmentVariable::get(casapath);
+    if (! path.empty()) {
+      // Split using : as delimiter.
+      Vector<String> parts = stringToVector (path, ':');
+      for (uInt j=0; j<parts.size(); ++j) {
+        if (! parts[j].empty()) {
+          string libDir = parts[j];
+          // Check if shared library can be found there.
+          std::string pref("lib");
+          std::string ext;
+          for (int i=0; i<4; ++i) {
+            ext = (i%2==0 ? ".so" : ".dylib");
+            if (i == 2) pref = prefix;
+            std::string fullName(libDir + pref + library + ext);
+            open (fullName);
+            if (itsHandle) {
+              return fullName;
+            }
+          }
+        }
+      }
+    }
+    return std::string();
   }
 
 } //# NAMESPACE CASA - END

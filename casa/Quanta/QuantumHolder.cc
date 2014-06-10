@@ -630,6 +630,20 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
   return False;
 }
 
+void QuantumHolder::toRecord(RecordInterface &out) const {
+	String error;
+	if (! toRecord(error, out)) {
+		throw AipsError(error);
+	}
+}
+
+Record QuantumHolder::toRecord() const {
+	Record r;
+	toRecord(r);
+	return r;
+}
+
+
 void QuantumHolder::toReal(const uInt &tp) {
   Double d1=0;
   if (isArray()) {

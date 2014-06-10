@@ -43,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </reviewed>
 //
 // <synopsis>
-// This module provides the exception handling mechanism used in AIPS++.
+// This module provides the exception handling mechanism used in Casacore.
 // It allows the user to define new exception types and to <src>throw</src>,
 // <src>catch</src>, and <src>rethrow</src> these exceptions. The interface
 // to this exception handling mechanism is very similary to the ANSI standard

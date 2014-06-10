@@ -48,21 +48,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //</reviewed>
 
 // <etymology> 
-// The Inputs module name reflects the AIPS++convention of pluralizing 
+// The Inputs module name reflects the Casacore convention of pluralizing 
 // the name of the major class it contains.
 // The Input class name is a reflection of it's role as the early command 
-// line user interface for AIPS++ applications.  This class provides "inputs" 
+// line user interface for Casacore applications. This class provides "inputs" 
 // in the form "key=value" or "-key value."  
 //</etymology> 
 //
 // <synopsis> 
 
-// During the AIPS++ prototyping stage a basic command line user
+// During the old AIPS++ prototyping stage a basic command line user
 // interface was developed. This attempt at easing the trouble of passing
 // information to an executable program resulted in a set of C++ classes
 // called Param and Input.  The programmer may simply include the Input
 // class into their code and have immediate Command Line User Interface
-// (CLUI) capabilities.  The programmer's AIPS++ application is run from
+// (CLUI) capabilities.  The programmer's Casacore application is run from
 // the unix level prompt by invoking its name and listing linearly on the
 // same command line the "keyword=values" or "-keyword values" associated
 // with proper execution.  The Input and Param classes will successfully
@@ -73,17 +73,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Interface through the use of the Khoros Cantata environment. The user
 // starts up Cantata from the unix prompt and, by utilizing a series of
 // pull down windows, invisibly creates an X-based window for visual
-// display of all parameters associated with the AIPS++ application's
+// display of all parameters associated with the Casacore application's
 // need for external input.
 
-// The Input and Param classes and their associated user interfaces
-// should be viewed as AIPS++ development tools only.  The limitations
-// imposed by the current Khoros GUI techniques dictate the need for a
-// more flexible system.  It is believed that as the C++ environment
-// matures an obvious candidate for the final AIPS++ Graphic User
-// Interface will emerge.  Until that time, the methods outlined here
-// will, hopefully, reduce the programmer's worry list.
-// 
 // The basic command line user interface is an ordered series of
 // "keyword=value" pairs, which we call parameters. The names parameter
 // and keyword may correctly be used to refer to each other.

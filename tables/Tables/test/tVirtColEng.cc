@@ -124,10 +124,10 @@ void b()
 {
     // Read back the table.
     Table tab("tVirtColEng_tmp.data");
-    ROScalarColumn<double> doub1(tab,"DOUB1");
-    ROArrayColumn<double> doub2(tab,"DOUB2");
-    ROScalarColumn<Int> data1(tab,"DATA1");
-    ROArrayColumn<Int> data2(tab,"DATA2");
+    ScalarColumn<double> doub1(tab,"DOUB1");
+    ArrayColumn<double> doub2(tab,"DOUB2");
+    ScalarColumn<Int> data1(tab,"DATA1");
+    ArrayColumn<Int> data2(tab,"DATA2");
     uInt i;
     double dval;
     Int ival;

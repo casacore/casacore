@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // exceptions (but all exceptions from the MSSelection line of
   // classes).  To catch more specific MSSelection exceptions, catch
   // the derived classes.  Note that you have to catch AipsError to
-  // catch all possible exceptions thrown by all of AIPS++ modules! 
+  // catch all possible exceptions thrown by all of Casacore modules! 
   //</synopsis>
   
   class MSSelectionError : public AipsError {
@@ -66,6 +66,30 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MSSelectionError (const String& message,Category c=GENERAL);
     ~MSSelectionError () throw();
     Bool hasMessage;
+  };
+  //
+  //-------------------------------------------------------------------
+  //  
+  class MSSelectionNullSelection : public MSSelectionError {
+  public:
+    MSSelectionNullSelection (const String& message, Category c=GENERAL);
+    ~MSSelectionNullSelection () throw();
+  };
+  //
+  //-------------------------------------------------------------------
+  //  
+  class MSSelectionNullExpr : public MSSelectionError {
+  public:
+    MSSelectionNullExpr (const String& message, Category c=GENERAL);
+    ~MSSelectionNullExpr () throw();
+  };
+  //
+  //-------------------------------------------------------------------
+  //  
+  class MSSelectionNullTEN : public MSSelectionError {
+  public:
+    MSSelectionNullTEN (const String& message, Category c=GENERAL);
+    ~MSSelectionNullTEN () throw();
   };
   //
   //-------------------------------------------------------------------
@@ -117,6 +141,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   public:
     MSSelectionFieldParseError (const String& message,Category c=GENERAL);
     ~MSSelectionFieldParseError () throw();
+  };
+  //
+  //-------------------------------------------------------------------
+  //  
+  class MSSelectionFieldWarning: public MSSelectionFieldError {
+  public:
+    MSSelectionFieldWarning (const String& message,Category c=GENERAL);
+    ~MSSelectionFieldWarning () throw();
   };
   //
   //-------------------------------------------------------------------
@@ -238,6 +270,27 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   public:
     MSSelectionStateWarning (const String& message,Category c=GENERAL);
     ~MSSelectionStateWarning () throw();
+  };
+  //
+  //-------------------------------------------------------------------
+  //  
+  class MSSelectionObservationError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionObservationError (const String& message,Category c=GENERAL);
+    ~MSSelectionObservationError () throw();
+  };
+  
+  class MSSelectionObservationParseError: public MSSelectionObservationError {
+  public:
+    MSSelectionObservationParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionObservationParseError () throw();
+  };
+
+  class MSSelectionObservationWarning: public MSSelectionObservationError {
+  public:
+    MSSelectionObservationWarning (const String& message,Category c=GENERAL);
+    ~MSSelectionObservationWarning () throw();
   };
   //
   //-------------------------------------------------------------------

@@ -974,7 +974,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
       }
 //
       os << "No. binned = ";
-      os.output() << setw(oWidth) << Int(real(stats(LatticeStatsBase::NPTS))+0.1) << endl;
+      os.output() << setw(oWidth) << Int64(std::real(stats(LatticeStatsBase::NPTS))+0.1) << endl;
 
       os << "Sum        = ";
       os0 << stats(LatticeStatsBase::SUM);
@@ -1244,7 +1244,9 @@ HistTiledCollapser<T>::HistTiledCollapser(LatticeStatistics<T>* pStats, uInt nBi
   nBins_p(nBins)
 {;}
    
-   
+template <class T>
+HistTiledCollapser<T>::~HistTiledCollapser<T>() {}
+
 template <class T>
 void HistTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
 {
@@ -1266,20 +1268,16 @@ void HistTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
 
 
 template <class T>
-void HistTiledCollapser<T>::process (uInt index1,
-                                     uInt index3,
-                                     const T* pInData,
-                                     const Bool* pInMask,
-                                     uInt inIncr,
-                                     uInt nrval,
-                                     const IPosition& startPos,
-                                     const IPosition&)
+void HistTiledCollapser<T>::process (
+	uInt index1, uInt index3, const T* pInData,
+	const Bool* pInMask, uInt dataIncr, uInt maskIncr,
+	uInt nrval, const IPosition& startPos, const IPosition&
+) {
 //
 // Process the data in the current chunk.   Everything in this
 // chunk belongs in one output location in the accumulation
 // lattices
 //
-{   
 
 // Fish out the min and max for this chunk of the data 
 // from the statistics object
@@ -1301,9 +1299,11 @@ void HistTiledCollapser<T>::process (uInt index1,
 // Fill histograms.  
 
    uInt offset = (nBins_p*index1) + (nBins_p*n1_p*index3);
-   LatticeHistSpecialize::process(pInData, pInMask, pHist_p, clip,
-                                  binWidth, offset, nrval, 
-                                  nBins_p, inIncr);
+   LatticeHistSpecialize::process(
+		   pInData, pInMask, pHist_p, clip,
+		   binWidth, offset, nrval,
+		   nBins_p, dataIncr, maskIncr
+   );
 }
 
 

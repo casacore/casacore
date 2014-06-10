@@ -72,7 +72,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class=SubLattice>SubLattice</linkto> class to know how
 // to map the axes form the original lattice to the sublattice.
 // <note role=caution>
-// Reordering axes is not supported (yet) by the other AIPS++ classes
+// Reordering axes is not supported (yet) by the other Casacore classes
 // like Lattices and Images.
 // </note>
 // </synopsis>

@@ -31,10 +31,13 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <memory>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MeasurementSet;
 class LogIO;
+class MSMetaData;
 
 // <summary>Provides and lists information about the header of an image</summary>
 // <use visibility=export>
@@ -94,6 +97,7 @@ public:
 // Constructor
    MSSummary (const MeasurementSet&);
    MSSummary (const MeasurementSet*);
+   MSSummary (const MeasurementSet* ms, const String msname);
 
 // Destructor
   ~MSSummary();
@@ -108,7 +112,7 @@ public:
    Bool setMS (const MeasurementSet& ms);
 
 // List all header information.
-  void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
+   void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
 //Return some useful info in a record too along with os
    void list (LogIO& os, Record& outRec,  Bool verbose=False,
               Bool fillRecord=True, Bool oneBased=True) const;
@@ -122,14 +126,16 @@ public:
 
 // List what was observed (Field and Main tables)
    void listWhat (LogIO& os, Bool verbose=False) const;
-   void listWhat (LogIO& os, Record& outRec,  Bool verbose=False, Bool fillRecord=True) const;
+   void listWhat (LogIO& os, Record& outRec,  Bool verbose=False,
+                  Bool fillRecord=True) const;
 // List how data were obtained (SpectralWindow, Feed, and Antenna tables)
-  void listHow (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
+   void listHow (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
 
 // List main table
    void listMain (LogIO& os, Bool verbose=False) const;
 //Return some useful info in a record too along with os
-   void listMain (LogIO& os, Record& outRec, Bool verbose=False, Bool fillRecord=True) const;
+   void listMain (LogIO& os, Record& outRec, Bool verbose=False,
+                  Bool fillRecord=True) const;
    // Return a Record with information derived from the main table
    void getScanSummary (Record& outRec) const;
 
@@ -145,8 +151,9 @@ public:
    void listPolarization (LogIO& os, Bool verbose=False) const;
    void listSource (LogIO& os, Bool verbose=False) const;
    void listSpectralWindow (LogIO& os, Bool verbose=False) const;
-  void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
-                               Bool oneBased=True) const;
+   void getSpectralWindowInfo(Record& outRec) const;
+   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
+                                Bool oneBased=True) const;
    void listSysCal (LogIO& os, Bool verbose=False) const;
    void listWeather (LogIO& os, Bool verbose=False) const;
 // </group>
@@ -154,21 +161,31 @@ public:
 // List table size summary
    void listTables (LogIO& os, Bool verbose=False) const;
 
-private:
-// Clear formatting flags
-   void clearFlags (LogIO& os) const;
+   void setListUnflaggedRowCount(Bool v) { _listUnflaggedRowCount = v; }
 
-//# Data members.
+   // set the cache size, in MB, for the MSMetaData object.
+   void setMetaDataCacheSizeInMB(Float cacheSize) { _cacheSizeMB = cacheSize; }
+
+private:
 // Pointer to MS
    const MeasurementSet* pMS;
+   std::auto_ptr<MSMetaData> _msmd;
 
 // Formatting strings
    const String dashlin1, dashlin2;
 
+// Clear formatting flags
+   void clearFlags (LogIO& os) const;
+
 // For keeping track of the number of vis per field
    mutable Vector<Int> nVisPerField_;
 
+   // Name of the MS used in the constructor
+   String msname_p;
 
+   Bool _listUnflaggedRowCount;
+
+   Float _cacheSizeMB;
 };
 
 

@@ -66,7 +66,10 @@ ROTiledStManAccessor::ROTiledStManAccessor
 ROTiledStManAccessor& ROTiledStManAccessor::operator=
 	                       (const ROTiledStManAccessor& that)
 {
-    dataManPtr_p = that.dataManPtr_p;
+    if (this != &that) {
+        RODataManAccessor::operator= (that);
+        dataManPtr_p = that.dataManPtr_p;
+    }
     return *this;
 }
 
@@ -187,11 +190,6 @@ void ROTiledStManAccessor::setCacheSize (uInt rownr, uInt nbuckets,
 void ROTiledStManAccessor::clearCaches()
 {
     dataManPtr_p->emptyCaches();
-}
-
-void ROTiledStManAccessor::showCacheStatistics (ostream& os) const
-{
-    dataManPtr_p->showCacheStatistics (os);
 }
 
 } //# NAMESPACE CASA - END

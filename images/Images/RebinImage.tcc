@@ -46,6 +46,12 @@ RebinImage<T>::RebinImage (const ImageInterface<T>& image,
                            const IPosition& factors)
 : itsImagePtr (image.cloneII())
 {
+  ThrowIf (
+           image.imageInfo().hasMultipleBeams()
+           && image.coordinates().hasSpectralAxis()
+           && factors[image.coordinates().spectralAxisNumber()] != 1,
+           "This image has multiple beams. The spectral axis cannot be rebinned"
+           );
   itsRebinPtr = new RebinLattice<T>(image, factors);
 //
   CoordinateSystem cSys = 

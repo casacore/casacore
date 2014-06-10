@@ -166,11 +166,11 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 {
   Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
     ROTiledStManAccessor accessor (table, "TSMExample");
-    ROArrayColumn<float> freq (table, "Freq");
-    ROArrayColumn<float> pol (table, "Pol");
-    ROArrayColumn<float> data (table, "Data");
-    ROArrayColumn<float> weight (table, "Weight");
-    ROScalarColumn<float> time (table, "Time");
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ArrayColumn<float> data (table, "Data");
+    ArrayColumn<float> weight (table, "Weight");
+    ScalarColumn<float> time (table, "Time");
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
     indgen (freqValues, float(200));

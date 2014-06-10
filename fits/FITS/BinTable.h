@@ -1,4 +1,4 @@
-//# BinTable.h: The class BinaryTable converts a FITS binary table into an aips++ Table.
+//# BinTable.h: The class BinaryTable converts a FITS binary table into a Casacore Table.
 //# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,7 +40,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> 
-// BinaryTable is used to translate a FITS binary table to an aips++ Table.
+// BinaryTable is used to translate a FITS binary table to a Casacore Table.
 // </summary>
 
 // <use visibility=export>
@@ -57,14 +57,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <etymology>
 // BinaryTable inherits from the FITS BinaryTableExtension class and its
-// primary use is to convert that class to an aips++ Table.  This explains
+// primary use is to convert that class to a Casacore Table.  This explains
 // it's use but not its name.  A better name should be found.
 // </etymology>
 //
 // <synopsis> 
 // The class starts with an already existing FitsInput object, which should
 // be set at a BinaryTableExtension HDU.   Member functions provide a TableDesc 
-// appropriate for the FITS data (to help in constructing an aips++ Table
+// appropriate for the FITS data (to help in constructing a Casacore Table
 // compatible with the BinaryTableExtension), a Table containing the
 // current row of FITS data and a Table containing the next row of FITS data
 // (which can be used to step through the FitsInput, copying each row
@@ -73,7 +73,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </synopsis> 
 //
 // <motivation>
-// We need a way to get FITS data into aips++ Tables.
+// We need a way to get FITS data into Casacore Tables.
 // </motivation>
 //
 // <example>
@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# A List of bugs, limitations, extensions or planned refinements.
 //   <li> It would be nice to construct this directly from the BinaryTableExtension.
 //   <li> When random access FITS becomes available, this needs to be able to deal with that.
-//   <li> A corresponding class is needed for conversion from aips++ Tables to FITS.
+//   <li> A corresponding class is needed for conversion from Casacore Tables to FITS.
 //   <li> Throw exceptions rather than send messages to cout : however the entire FITS
 //        module behaves this way, so it should all remain consistent.
 //   <li> The following types of columns are not dealt with very well or at all

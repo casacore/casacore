@@ -89,7 +89,7 @@ SI unit table (50):
     s         (second)                     1 s
     sr        (steradian)                  1 sr
     t         (tonne)                      1000 kg
-Customary unit table (76):
+Customary unit table (78):
     "         (arcsec)                     4.8481368111e-06 rad
     "_2       (square arcsec)              2.35044305391e-11 sr
     '         (arcmin)                     0.000290888208666 rad
@@ -123,6 +123,7 @@ Customary unit table (76):
     abOhm     (abohm)                      1e-09 m2.kg.s-3.A-2
     abV       (abvolt)                     1e-08 m2.kg.s-3.A-1
     ac        (acre)                       4046.8564224 m2
+    adu       (dimensionless ADC unit)     1 _
     arcmin_2  (square arcmin)              8.46159499408e-08 sr
     arcsec_2  (square arcsec)              2.35044305391e-11 sr
     ata       (technical atmosphere)       98066.5 m-1.kg.s-2
@@ -132,6 +133,7 @@ Customary unit table (76):
     cal       (calorie (Int))              4.1868 m2.kg.s-2
     count     (count)                      1 _
     cwt       (hundredweight)              50.80234544 kg
+    debye     (statvolt)                   3.33564095198e-29 m.s.A
     deg_2     (square degree)              0.000304617419787 sr
     dyn       (dyne)                       1e-05 m.kg.s-2
     eV        (electron volt)              1.60217733e-19 m2.kg.s-2

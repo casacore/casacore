@@ -40,6 +40,15 @@ Vector<T>::Vector(const vector<T, U> &other)
 }
 
 template<class T>
+template<class Iterator>
+Vector<T>::Vector(Iterator first, size_t size, int)
+  : Array<T>(IPosition(1, size)) {
+  for (size_t i=0; i<size; ++i, ++first) {
+    (*this)[i] = *first;
+  }
+}
+
+template<class T>
 template<class U>
 void Array<T>::tovector(vector<T, U> &out) const {
   Bool deleteIt;
@@ -47,14 +56,6 @@ void Array<T>::tovector(vector<T, U> &out) const {
   out.assign(stor, stor+nelements());
   this->freeStorage(stor, deleteIt);
 }  
-
-// MACRO to generate the proper templates for the above versions.
-// Use as e.g. AIPS_VECTOR2_AUX_TEMPLATES(Double)
-// If 'X' contains commas, use a 'typedef template X'
-#define AIPS_VECTOR2_AUX_TEMPLATES(X) \
-template Vector<X>::Vector(const vector<X> &); \
-template void Array<X>::tovector(vector<X> &) const;
-
 
 } //# NAMESPACE CASA - END
 

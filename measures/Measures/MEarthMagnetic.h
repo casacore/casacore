@@ -42,9 +42,7 @@ class MEarthMagnetic;
 class MCEarthMagnetic;
 template <class M> class MeasConvert;
 template <class M> class ArrayMeasColumn;
-template <class M> class ROArrayMeasColumn;
 template <class M> class ScalarMeasColumn;
-template <class M> class ROScalarMeasColumn;
 
 //# Typedefs
 
@@ -176,10 +174,8 @@ class MEarthMagnetic : public MeasBase<MVEarthMagnetic, MeasRef<MEarthMagnetic> 
   typedef MeasRef<MEarthMagnetic> Ref;
   // Measure Convert (i.e. MEarthMagnetic::Convert)
   typedef MeasConvert<MEarthMagnetic> Convert;
-  // Measure table Columns (e.g., MEarthMagnetic::ROScalarColumn)
-  typedef ROScalarMeasColumn<MEarthMagnetic> ROScalarColumn;
+  // Measure table Columns (e.g., MEarthMagnetic::ScalarColumn)
   typedef ScalarMeasColumn<MEarthMagnetic> ScalarColumn;
-  typedef ROArrayMeasColumn<MEarthMagnetic> ROArrayColumn;
   typedef ArrayMeasColumn<MEarthMagnetic> ArrayColumn;
   // Reference enum Types (included originally for gcc 2.95)  
   typedef WHATEVER_SUN_TYPEDEF(MEarthMagnetic) Types Types;

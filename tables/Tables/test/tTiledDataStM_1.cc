@@ -205,7 +205,7 @@ void b()
 	timer.show ("reopen   ");
 	ROTiledStManAccessor accessor(table, "TSMExample");
 	nrrow = table.nrow();
-	ROArrayColumn<float> data (table, "Data");
+	ArrayColumn<float> data (table, "Data");
 	cellShape = data.shape (0);
 	Array<float> result;
 	timer.mark();
@@ -223,7 +223,7 @@ void b()
     {
 	Table table("tTiledDataStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
-	ROArrayColumn<float> data (table, "Data");
+	ArrayColumn<float> data (table, "Data");
 	Array<float> result;
 	ArrayPositionIterator iter (cellShape, origin, 1u);
 	timer.mark();
@@ -241,7 +241,7 @@ void b()
     {
 	Table table("tTiledDataStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");
-	ROArrayColumn<float> data (table, "Data");
+	ArrayColumn<float> data (table, "Data");
 	Array<float> result;
 	ArrayPositionIterator iter (cellShape, origin, 0u);
 	length(0) = 1;

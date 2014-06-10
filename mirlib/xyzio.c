@@ -54,7 +54,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-void    bug_c();
+void    bug_c(char, char *);
 #define check(x) if(x)bugno_c('f',x)
 
 
@@ -100,7 +100,7 @@ int     MODE;
    newbuffer: to allow a check if xyzsetup is called more often for a dataset
    ntno: number of datasets currently opened
 */
-static  struct { int itno; char *mask; int number;
+static  struct Img { int itno; char *mask; int number;
                  int naxis, axlen[ARRSIZ], cubesize[ARRSIZ];
                  int blc[ARRSIZ], trc[ARRSIZ];
                  int lower[ARRSIZ], upper[ARRSIZ];
@@ -130,7 +130,8 @@ int     axnumr[ARRSIZ],    inv_axnumr[ARRSIZ],   reverses[ARRSIZ];
 /* Some variables not used, but left in for the (hopefully never occuring)
    case that an error occurred and debugging is needed.
    Most if(.test) statements have been left active. Some, the ones in inner
-   loops, are disabled. They can be found by searching for /*$$ */
+   loops, are disabled. They can be found by searching for */
+   /*$$ */
 
 int     itest = 0; /* Information on buffers and datasets */
 int     otest = 0; /* Information on subcubes */
@@ -149,7 +150,7 @@ int interactive;
     if(interactive)printf("oTest >"); scanf("%d",&otest);
     if(interactive)printf("vTest >"); scanf("%d",&vtest);
 }
-int putnio(x) int x; {return nio;}
+int putnio(x) int x; {x++; return nio;}
 
 
 /******************************************************************************/
@@ -187,6 +188,10 @@ used to define the dataset.
 
 int first=TRUE;
 
+char * mkopen_c (int, char *, char *);
+void bug_c (char, char *);
+void bugno_c (char, int);
+
 void xyzopen_c( handle, name, status, naxis, axlen )
 int  *handle;
 char *name;
@@ -220,7 +225,7 @@ int  *naxis, axlen[];
 
     hopen_c(  &tno, name, status, &iostat );                   check(iostat);
     haccess_c( tno, &imgs[tno].itno, "image", mode, &iostat ); check(iostat);
-    imgs[tno].mask = (char *)mkopen_c( tno, "mask", status );
+    imgs[tno].mask = mkopen_c( tno, "mask", status );
 
     strcpy( axes, "naxis0" );
     if( access == OLD ) {
@@ -262,7 +267,7 @@ int  *naxis, axlen[];
     dimsub[tno] = -1;
 }
 
-
+void mkclose_c (char *);
 
 /** xyzclose - Close an image file                                            */
 /*& bpw                                                                       */
@@ -385,6 +390,8 @@ should be done before working on the data.
                     vircubesize(d) = Prod(i=1->d) viraxlen(i)                 */
 /*--*/
 
+int ferr (char *, char);
+
 void xyzsetup_c( tno, subcube, blc, trc, viraxlen, vircubesize )
 int   tno;
 char *subcube;
@@ -502,15 +509,15 @@ int   viraxlen[], vircubesize[];
 
 }
 
-int ferr( string, arg )
-char *string;
-char  arg;
+int ferr( char * string, char arg )
 {
     char message[80]; char *msg;
     msg = &message[0];
     while( *string != '\0' ) *msg++ = *string++;
     *msg++ = ':'; *msg++ = ' '; *msg++ = arg; *msg = '\0';
     bug_c( 'f', message );
+
+    return 0;
 }
 
 
@@ -1377,7 +1384,7 @@ int get_buflen()
     int  try, maxsize, size;
     int *mbufpt, cnt;
     int  bufferallocation();
-    if(itest)printf("# bytes per real %d\n",sizeof(float));
+    if(itest)printf("# bytes per real %d\n",(int) sizeof(float));
 
     maxsize = 0;
     for( tno=1; tno<=MAXOPEN; tno++ ) {
@@ -1403,6 +1410,8 @@ int get_buflen()
        is read in */
     mbufpt = mbuffr; cnt=0;
     while( cnt++ < try ) *mbufpt++ = FORT_TRUE;
+
+    return 0;
 }
 
 int bufferallocation( n )
@@ -1427,8 +1436,8 @@ int n;
     }
     if( n == 1 ) bug_c( 'f', "xyzsetup: Failed to allocate any memory" );
 
-    if(itest)printf("Allocated %d reals at %d\n",n,buffer);
-    if(itest)printf("Allocated %d ints  at %d\n",n,mbuffr);
+    if(itest)printf("Allocated %d reals at %p\n",n,(void *) buffer);
+    if(itest)printf("Allocated %d ints  at %p\n",n, (void *) mbuffr);
 
     currentallocation = n;
     return( n );
@@ -1457,6 +1466,8 @@ int tno;
     }
     for( d=1; d<=naxes; d++ ) inv_axnumr[ axnumr[d] ] = d;
 }
+
+int limprint( char * string, int lower [], int upper []);
 
 void set_bufs_limits( tno, virpix_off )
 int tno;
@@ -1618,6 +1629,8 @@ int coords[];
     for( d=1; d<=naxis; d++ ) coords[d] = ( pix_off/cubesize[d-1] ) % axlen[d];
 }
 
+int mkread_c(char * handle, int mode, int *flags, int offset,int n,int nsize);
+
 /******************************************************************************/
 /*                                                                            */
 /* The routines that do the i-o                                               */
@@ -1655,6 +1668,8 @@ int start, last;
         p2c( i+start, imgsaxlen, imgscubesize, naxes, tcoo );
         *(buffer+i) = (float)( tcoo[1] + 1000*tcoo[2] + 1000000*tcoo[3] ); }}
 }
+
+void mkwrite_c(char * handle,int mode,int * flags,int offset,int n, int nsize);
 
 void empty_buffer( tno, start, last )
 int tno;
@@ -1867,6 +1882,8 @@ int tno, virpix_off, virpix_lst;
         printf( "%s copied %d elements starting at %d\n", words[MODE],
                  virpix_lst-virpix_off+1, virpix_off+bufs[tno].bufstart );
     }
+
+    return 0;
 }
 
 int limprint( string, lower, upper )
@@ -1876,6 +1893,8 @@ char *string; int lower[], upper[];
     printf( "  lower" ); for( d=1; d<=naxes; d++ ) printf( " %d", lower[d] );
     printf( ": upper" ); for( d=1; d<=naxes; d++ ) printf( " %d", upper[d] );
     printf( "\n");
+
+    return 0;
 }
 
 int testsearch( callnr, coords, filoff, viroff )
@@ -1887,6 +1906,8 @@ int filoff, viroff;
     for( d=1; d<=naxes; d++ ) printf("%d ", coords[d] );
     if( callnr == 1 ) printf( "  filoff %d viroff %d", filoff, viroff );
     if( callnr == 2 ) printf( "\n" );
+
+    return 0;
 }
 
 

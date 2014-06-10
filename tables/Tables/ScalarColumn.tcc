@@ -39,16 +39,16 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T>
-ROScalarColumn<T>::ROScalarColumn()
-: ROTableColumn(),
+ScalarColumn<T>::ScalarColumn()
+: TableColumn(),
   canAccessColumn_p   (False),
   reaskAccessColumn_p (True)
 {}
 
 template<class T>
-ROScalarColumn<T>::ROScalarColumn (const Table& tab,
-				   const String& columnName)
-: ROTableColumn (tab, columnName),
+ScalarColumn<T>::ScalarColumn (const Table& tab,
+                               const String& columnName)
+: TableColumn (tab, columnName),
   canAccessColumn_p   (False),
   reaskAccessColumn_p (True)
 {
@@ -56,8 +56,8 @@ ROScalarColumn<T>::ROScalarColumn (const Table& tab,
 }
 
 template<class T>
-ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
-: ROTableColumn (column),
+ScalarColumn<T>::ScalarColumn (const TableColumn& column)
+: TableColumn (column),
   canAccessColumn_p   (False),
   reaskAccessColumn_p (True)
 {
@@ -65,42 +65,51 @@ ROScalarColumn<T>::ROScalarColumn (const ROTableColumn& column)
 }
 
 template<class T>
-ROScalarColumn<T>::ROScalarColumn (const ROScalarColumn<T>& that)
-: ROTableColumn (that),
+ScalarColumn<T>::ScalarColumn (const ScalarColumn<T>& that)
+: TableColumn (that),
   canAccessColumn_p   (that.canAccessColumn_p),
   reaskAccessColumn_p (that.reaskAccessColumn_p)
 {}
 
 template<class T>
-ROTableColumn* ROScalarColumn<T>::clone() const
+TableColumn* ScalarColumn<T>::clone() const
 {
-    return new ROScalarColumn<T> (*this);
+    return new ScalarColumn<T> (*this);
 }
 
 template<class T>
-void ROScalarColumn<T>::reference (const ROScalarColumn<T>& that)
+ScalarColumn<T>& ScalarColumn<T>::operator= (const ScalarColumn<T>& that)
 {
-    ROTableColumn::reference (that);
-    canAccessColumn_p   = that.canAccessColumn_p;
-    reaskAccessColumn_p = that.reaskAccessColumn_p;
+  reference (that);
+  return (*this);
 }
 
 template<class T>
-ROScalarColumn<T>::~ROScalarColumn()
+void ScalarColumn<T>::reference (const ScalarColumn<T>& that)
+{
+    if (this != &that) {
+        TableColumn::reference (that);
+        canAccessColumn_p   = that.canAccessColumn_p;
+        reaskAccessColumn_p = that.reaskAccessColumn_p;
+    }
+}
+
+template<class T>
+ScalarColumn<T>::~ScalarColumn()
 {}
 
 template<class T>
-void ROScalarColumn<T>::checkDataType() const
+void ScalarColumn<T>::checkDataType() const
 {
     //# Check if the data type matches.
     const ColumnDesc& cd = baseColPtr_p->columnDesc();
     DataType dtype = cd.dataType();
     if (dtype != ValType::getType(static_cast<T*>(0))  ||  !cd.isScalar()) {
-	throw (TableInvDT (" in ROScalarColumn ctor for column " + cd.name()));
+	throw (TableInvDT (" in ScalarColumn ctor for column " + cd.name()));
     }
     if (dtype == TpOther) {
 	if (cd.dataTypeId() != valDataTypeId(static_cast<T*>(0))) {
-	    throw (TableInvDT (" in ROScalarColumn ctor for column "
+	    throw (TableInvDT (" in ScalarColumn ctor for column "
 			       + cd.name() + "; using data type id "
 			       + valDataTypeId(static_cast<T*>(0))
 			       + ", expected " + cd.dataTypeId()));
@@ -110,7 +119,7 @@ void ROScalarColumn<T>::checkDataType() const
 
 
 template<class T>
-Vector<T> ROScalarColumn<T>::getColumn() const
+Vector<T> ScalarColumn<T>::getColumn() const
 {
     Vector<T> vec;
     getColumn (vec);
@@ -118,7 +127,7 @@ Vector<T> ROScalarColumn<T>::getColumn() const
 }
 
 template<class T>
-void ROScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
+void ScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
 {
     uInt nrrow = nrow();
     //# Resize the vector if empty; otherwise check its length.
@@ -147,7 +156,7 @@ void ROScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
 
 
 template<class T>
-Vector<T> ROScalarColumn<T>::getColumnRange (const Slicer& rowRange) const
+Vector<T> ScalarColumn<T>::getColumnRange (const Slicer& rowRange) const
 {
     Vector<T> vec;
     getColumnRange (rowRange, vec);
@@ -155,8 +164,8 @@ Vector<T> ROScalarColumn<T>::getColumnRange (const Slicer& rowRange) const
 }
 
 template<class T>
-void ROScalarColumn<T>::getColumnRange (const Slicer& rowRange,
-					Vector<T>& vec, Bool resize) const
+void ScalarColumn<T>::getColumnRange (const Slicer& rowRange,
+                                      Vector<T>& vec, Bool resize) const
 {
     uInt nrrow = nrow();
     IPosition shp, blc, trc, inc;
@@ -170,7 +179,7 @@ void ROScalarColumn<T>::getColumnRange (const Slicer& rowRange,
 }
 
 template<class T>
-Vector<T> ROScalarColumn<T>::getColumnCells (const RefRows& rownrs) const
+Vector<T> ScalarColumn<T>::getColumnCells (const RefRows& rownrs) const
 {
     Vector<T> vec;
     getColumnCells (rownrs, vec);
@@ -178,8 +187,8 @@ Vector<T> ROScalarColumn<T>::getColumnCells (const RefRows& rownrs) const
 }
 
 template<class T>
-void ROScalarColumn<T>::getColumnCells (const RefRows& rownrs,
-					Vector<T>& vec, Bool resize) const
+void ScalarColumn<T>::getColumnCells (const RefRows& rownrs,
+                                      Vector<T>& vec, Bool resize) const
 {
     //# Resize the vector if needed; otherwise check its length.
     uInt nrrow = rownrs.nrow();
@@ -194,58 +203,15 @@ void ROScalarColumn<T>::getColumnCells (const RefRows& rownrs,
 }
 
 
-
 template<class T>
-ScalarColumn<T>::ScalarColumn()
-: ROTableColumn     (),
-  ROScalarColumn<T> (),
-  TableColumn       ()
-{}
-
-template<class T>
-ScalarColumn<T>::ScalarColumn (const Table& tab, const String& columnName)
-: ROTableColumn     (tab, columnName),
-  ROScalarColumn<T> (tab, columnName),
-  TableColumn       (tab, columnName)
-{}
-
-template<class T>
-ScalarColumn<T>::ScalarColumn (const TableColumn& column)
-: ROTableColumn     (column),
-  ROScalarColumn<T> (column),
-  TableColumn       (column)
-{}
-
-template<class T>
-ScalarColumn<T>::ScalarColumn (const ScalarColumn<T>& that)
-: ROTableColumn     (that),
-  ROScalarColumn<T> (that),
-  TableColumn       (that)
-{}
-
-template<class T>
-ROTableColumn* ScalarColumn<T>::clone() const
-{
-    return new ScalarColumn<T> (*this);
-}
-
-template<class T>
-void ScalarColumn<T>::reference (const ScalarColumn<T>& that)
-    { ROScalarColumn<T>::reference (that); }
-
-template<class T>
-ScalarColumn<T>::~ScalarColumn()
-{}
-
-template<class T>
-void ScalarColumn<T>::put (uInt thisRownr, const ROScalarColumn<T>& that,
+void ScalarColumn<T>::put (uInt thisRownr, const ScalarColumn<T>& that,
 			   uInt thatRownr)
 {
     put (thisRownr, that(thatRownr));
 }
 
 template<class T>
-void ScalarColumn<T>::put (uInt thisRownr, const ROTableColumn& that,
+void ScalarColumn<T>::put (uInt thisRownr, const TableColumn& that,
 			   uInt thatRownr)
 {
     T value;
@@ -256,6 +222,7 @@ void ScalarColumn<T>::put (uInt thisRownr, const ROTableColumn& that,
 template<class T>
 void ScalarColumn<T>::putColumn (const Vector<T>& vec)
 {
+    checkWritable();
     uInt nrrow = nrow();
     //# Check the vector length.
     if (vec.nelements() != nrrow) {
@@ -296,6 +263,7 @@ template<class T>
 void ScalarColumn<T>::putColumnCells (const RefRows& rownrs,
 				      const Vector<T>& vec)
 {
+    checkWritable();
     //# Check the vector length.
     uInt nrrow = rownrs.nrow();
     if (vec.nelements() != nrrow) {
@@ -317,7 +285,7 @@ void ScalarColumn<T>::fillColumn (const T& value)
 }
 
 template<class T>
-void ScalarColumn<T>::putColumn (const ROScalarColumn<T>& that)
+void ScalarColumn<T>::putColumn (const ScalarColumn<T>& that)
 {
     //# Check the column lengths.
     uInt nrrow = nrow();
@@ -330,4 +298,3 @@ void ScalarColumn<T>::putColumn (const ROScalarColumn<T>& that)
 }
 
 } //# NAMESPACE CASA - END
-

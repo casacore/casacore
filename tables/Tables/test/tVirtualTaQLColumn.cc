@@ -124,13 +124,13 @@ void a (const TableDesc& td)
     Table tab(newtab, 10);
 
     ScalarColumn<Int> ab1(tab,"ab");
-    ROScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ab2(tab,"ab");
     ScalarColumn<Int> ac (tab,"ac");
     ScalarColumn<uInt> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     TableColumn ag1(tab,"ag");
-    ROScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
@@ -160,20 +160,20 @@ void check(const Table& tab, Bool showname)
     if (!showname) cout << ">>>" << endl;
     cout << "Checking table " << tab.tableName() << endl;
     if (!showname) cout << "<<<" << endl;
-    ROScalarColumn<Int> ab2(tab,"ab");
-    ROScalarColumn<Int> ac (tab,"ac");
-    ROScalarColumn<uInt> ad(tab,"ad");
-    ROScalarColumn<float> ae(tab,"ae");
-    ROScalarColumn<String> af(tab,"af");
-    ROScalarColumn<DComplex> ag(tab,"ag");
-    ROScalarColumn<float> acalc(tab,"acalc");
-    ROScalarColumn<Complex> acalc2(tab,"acalc2");
-    ROScalarColumn<short> acalc3(tab,"acalc3");
-    ROScalarColumn<float> acalc4(tab,"acalc4");
-    ROArrayColumn<float> arr1(tab,"arr1");
-    ROArrayColumn<float> arr2(tab,"arr2");
-    ROArrayColumn<float> arr3(tab,"arr3");
-    ROArrayColumn<float> arrcalc(tab,"arrcalc");
+    ScalarColumn<Int> ab2(tab,"ab");
+    ScalarColumn<Int> ac (tab,"ac");
+    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<float> ae(tab,"ae");
+    ScalarColumn<String> af(tab,"af");
+    ScalarColumn<DComplex> ag(tab,"ag");
+    ScalarColumn<float> acalc(tab,"acalc");
+    ScalarColumn<Complex> acalc2(tab,"acalc2");
+    ScalarColumn<short> acalc3(tab,"acalc3");
+    ScalarColumn<float> acalc4(tab,"acalc4");
+    ArrayColumn<float> arr1(tab,"arr1");
+    ArrayColumn<float> arr2(tab,"arr2");
+    ArrayColumn<float> arr3(tab,"arr3");
+    ArrayColumn<float> arrcalc(tab,"arrcalc");
     Int i;
     Short acalc3val;
     Int abval, acval;
@@ -297,7 +297,7 @@ void check(const Table& tab, Bool showname)
 	if (iter.table().nrow() != 1) {
 	    cout << "More than 1 row in ad TableIterator " << i << endl;
 	}
-	ROScalarColumn<Int> ab (iter.table(), "ab");
+	ScalarColumn<Int> ab (iter.table(), "ab");
 	if (ab(0) != 9-i) {
 	    cout << "Invalid value " << ab(0) << " in ad TableIterator "
 		 << i << endl;
@@ -313,7 +313,7 @@ void check(const Table& tab, Bool showname)
 	if (iter.table().nrow() != 1) {
 	    cout << "More than 1 row in acalc TableIterator " << i << endl;
 	}
-	ROScalarColumn<Int> ab (iter.table(), "ab");
+	ScalarColumn<Int> ab (iter.table(), "ab");
 	if (ab(0) != 9-i) {
 	    cout << "Invalid value " << ab(0) << " in acalc TableIterator "
 		 << i << endl;

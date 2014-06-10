@@ -181,27 +181,27 @@ public:
 	    // for Bool array returning Int scalar
 	ntrueFUNC,        //# 87
 	ntruesFUNC,       //# 88
-	gnfalseFUNC,      //# 89
-	nfalseFUNC,       //# 90
-	nfalsesFUNC,      //# 91
+	nfalseFUNC,       //# 89
+	nfalsesFUNC,      //# 90
 	    // for any type returning array of that type
-	arrayFUNC,        //# 92
-	transposeFUNC,    //# 93
+	arrayFUNC,        //# 91
+	transposeFUNC,    //# 92
 	    // for Int, Double or DComplex array returning Bool
-	isnanFUNC,        //# 94
-	isinfFUNC,        //# 95
-        isfiniteFUNC,     //# 96
+	isnanFUNC,        //# 93
+	isinfFUNC,        //# 94
+        isfiniteFUNC,     //# 95
 	    // for any array returning Bool scalar
-	isdefFUNC,        //# 97
+	isdefFUNC,        //# 96
 	    // for any array returning Int scalar
-	ndimFUNC,         //# 98
-	nelemFUNC,        //# 99
+	ndimFUNC,         //# 97
+	nelemFUNC,        //# 98
 	    // for any array returning Int array
-	shapeFUNC,        //# 100
+	shapeFUNC,        //# 99
             // for String
-	strlengthFUNC,    //# 101          returning Int
-	upcaseFUNC,       //# 102          returning String
-	downcaseFUNC,     //# 103          returning String
+	strlengthFUNC,    //# 100          returning Int
+	upcaseFUNC,       //# 101          returning String
+	downcaseFUNC,     //# 102          returning String
+	capitalizeFUNC,   //# 103          returning String
 	trimFUNC,         //# 104          returning String
 	ltrimFUNC,        //# 105          returning String
 	rtrimFUNC,        //# 106          returning String
@@ -226,31 +226,59 @@ public:
         ctodFUNC,         //# 124          returning String
         cdateFUNC,        //# 125          returning String
         ctimeFUNC,        //# 126          returning String
+            // return values as strings
+        stringFUNC,       //# 127
             // return angles as hms strings
-        hmsFUNC,          //# 127
+        hmsFUNC,          //# 128
             // return angles as dms strings
-        dmsFUNC,          //# 128
+        dmsFUNC,          //# 129
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 129
+        hdmsFUNC,         //# 130
 	    // special function returning a random Double number
-	randFUNC,         //# 130
+	randFUNC,         //# 131
             // special function returning Int row number
-	rownrFUNC,        //# 131
+	rownrFUNC,        //# 132
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 132
+	rowidFUNC,        //# 133
             // special function resembling if statement
-	iifFUNC,          //# 133
+	iifFUNC,          //# 134
             // angular distance returning radians
-        angdistFUNC,      //# 134
-        angdistxFUNC,     //# 135
+        angdistFUNC,      //# 135
+        angdistxFUNC,     //# 136
 	    // other functions, implemented in derived class
-	conesFUNC,        //# 136
-	cones3FUNC,       //# 137
-	anyconeFUNC,      //# 138
-	anycone3FUNC,     //# 139
-	findconeFUNC,     //# 140
-	findcone3FUNC,    //# 141
-	NRFUNC      //# should be last
+	conesFUNC,        //# 137
+	cones3FUNC,       //# 138
+	anyconeFUNC,      //# 139
+	anycone3FUNC,     //# 140
+	findconeFUNC,     //# 141
+	findcone3FUNC,    //# 142
+        //# AGGREGATE functions must be the last ones.
+        FirstAggrFunc,    //# 143
+        countallFUNC = FirstAggrFunc,
+        gcountFUNC,
+        gfirstFUNC,
+        glastFUNC,
+        //# Grouping doing aggregation on the fly; reducing to a scalar per group
+        gminFUNC,         //# 147
+        gmaxFUNC,
+        gsumFUNC,
+        gproductFUNC,
+        gsumsqrFUNC,
+        gmeanFUNC,
+        gvarianceFUNC,
+        gstddevFUNC,
+        grmsFUNC,
+        ganyFUNC,
+        gallFUNC,
+        gntrueFUNC,
+        gnfalseFUNC,
+        //# Grouping requiring aggregation of rows when getting result
+        gaggrFUNC,        //# 160
+        growidFUNC,
+        gmedianFUNC,
+        gfractileFUNC,
+        gexpridFUNC,      //# special function (can be inserted by TableParse)
+	NRFUNC            //# should be last
 	};
 
     // Constructor
@@ -259,10 +287,6 @@ public:
 
     // Destructor
     ~TableExprFuncNode ();
-
-    // Does the node result in a single value (for e.g. GROUPBY)?
-    // This is the case for reduction functions and constant functions.
-    virtual Bool isSingleValue() const;
 
     // 'get' Functions to get the desired result of a function
     // <group>
@@ -325,6 +349,11 @@ public:
         { return argDataType_p; }
     // </group>
 
+    // Get the possible print format, width, and/or precision.
+    static void getPrintFormat (String& fmt, Int& width, Int& prec,
+                                const PtrBlock<TableExprNodeRep*>& operands,
+                                const TableExprId& id);
+
     // Convert the date and/or time to a string.
     // <group>
     static String stringDT (const MVTime& dt, Int prec, MVTime::formatTypes);
@@ -333,6 +362,25 @@ public:
     static String stringTime (const MVTime& dt, Int prec);
     // </group>
 
+    // Convert a value to a string.
+    // If <src>fmt</src> is empty, ostringstream is used.
+    // Otherwise the printf-like format is used.
+    // If possible, a double value is converted to radians if formatted as angle.
+    // <group>
+    static String stringValue (Bool val, const String& fmt, Int width);
+    static String stringValue (Int64 val, const String& fmt, Int width);
+    static String stringValue (Double val, const String& fmt,
+                               Int width, Int prec,
+                               const std::pair<int,int>& mvFormat,
+                               const Unit& unit);
+    static String stringValue (const DComplex& val, const String& fmt,
+                               Int width, Int prec);
+    static String stringValue (const String& val, const String& fmt,
+                               Int width);
+    static String stringValue (const MVTime& val, const String& fmt,
+                               Int width,
+                               const std::pair<int,int>& mvFormat);
+
     // Convert angle to a string (hms or dms).
     // <group>
     static String stringAngle (double val, Int prec,
@@ -340,6 +388,10 @@ public:
     static String stringHMS (double val, Int prec);
     static String stringDMS (double val, Int prec);
     // </group>
+
+    // Get the MVTime/Angle format and optional precision.
+    // 0,0 is returned if empty or unknown format.
+    static std::pair<int,int> getMVFormat (const String& fmt);
 
     // Get the angular distance between two positions on a sphere.
     static double angdist (double ra1, double dec1, double ra2, double dec2)
@@ -355,7 +407,7 @@ private:
     static const Unit& makeEqualUnits (PtrBlock<TableExprNodeRep*>& nodes,
 				       uInt starg, uInt endarg);
 
-
+    //# Data members.
     FunctionType funcType_p;        // which function
     NodeDataType argDataType_p;     // common argument data type
     Double       scale_p;           // possible scaling for unit conversion

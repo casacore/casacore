@@ -60,7 +60,9 @@ public:
   explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
     virtual ~MSInterval() {}
     virtual int comp(const void * obj1, const void * obj2) const;
+    Double getOffset() {return offset_p;}
     void setOffset(Double offset) {offset_p=offset;}
+    Double getInterval() {return interval_p;}
     void setInterval(Double interval) {interval_p=interval;}
 private:
     Double interval_p;
@@ -407,6 +409,9 @@ protected:
   MFrequency frequency0_p;
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
+
+  MSInterval *timeComp_p;          // Points to the time comparator.
+                                   // NULL if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}

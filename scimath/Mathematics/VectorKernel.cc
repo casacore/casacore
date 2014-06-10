@@ -103,7 +103,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 
 // kernel always shape 3
 
-      nPixels = 3;
+      /*nPixels = 3;
       kernel.resize(nPixels);
       if (peakIsUnity)  {
          kernel(0) = 0.5;
@@ -113,7 +113,26 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
          kernel(0) = 0.25;
          kernel(1) = 0.5;
          kernel(2) = 0.25;
-      }
+      }*/
+	   nPixels = shape;
+	   kernel.resize( nPixels );
+	   int nextIndex = shape + 1;
+	   Double normalizer = 1.0 / ( nextIndex );
+	   if ( peakIsUnity ){
+		   normalizer = 0.5;
+	   }
+
+	   double piValue = 4 * atan( 1 );
+	   int middle = (shape-1)/2;
+	   int endIndex = nextIndex / 2;
+	   for ( int i = 0; i < endIndex; i++ ){
+		   Double xValue = endIndex - i;
+		   Double angleValue = ( 2 * piValue * xValue) / nextIndex;
+		   double value = 1-cos( angleValue);
+		   value = value * normalizer;
+		   kernel[middle - i] = value;
+		   kernel[middle + i] = value;
+	   }
    }
 //
    return kernel;
@@ -154,21 +173,20 @@ Vector<Int> VectorKernel::toKernelTypes (const Vector<String>& kernels)
 
 
 VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
-
 {
    String kernel2 = upcase(kernel);
    String kernel3(kernel2.at(0,1));
-//               
+
    if (kernel3==String("B")) {
       return VectorKernel::BOXCAR;
    } else if (kernel3==String("G")) {
       return VectorKernel::GAUSSIAN;
    } else if (kernel3==String("H")) {
       return VectorKernel::HANNING;
+   } else {
+     ThrowIf (True, "Illegal kernel type " + kernel);
    }
-   LogIO os(LogOrigin("VectorKernel", "toKernelType"));
-   os << "Illegal kernel type" << LogIO::EXCEPTION;
-   return VectorKernel::BOXCAR;
+   return VectorKernel::BOXCAR;    //# to satisfy compiler
 }
 
 String VectorKernel::fromKernelType (KernelTypes kernelType)

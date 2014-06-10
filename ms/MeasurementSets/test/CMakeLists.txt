@@ -20,13 +20,14 @@ tMSCorrGram
 tMSDataDescBuffer
 tMSDerivedValues
 tMSFieldBuffer
+tMSFieldEphem
 tMSFieldGram
 tMSIter
 tMSMainBuffer
+tMSMetaData
 tMSPolBuffer
 tMSReader
 tMSScanGram
-tMSSimulator
 tMSSpwGram
 tMSSummary
 tMSTimeGram

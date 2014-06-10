@@ -34,6 +34,7 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/UDFBase.h>
+#include <tables/Tables/TableExprIdAggr.h>
 #include <casa/Utilities/Assert.h>
 
 using namespace casa;
@@ -51,9 +52,35 @@ public:
     setDataType (TableExprNodeRep::NTBool);
     setNDim (0);   //scalar
   }
-  virtual void replaceTable (const Table&)
-  {}
   Bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
+};
+
+class TestUDFAggr: public UDFBase
+{
+public:
+  TestUDFAggr() {}
+  static UDFBase* makeObject (const String&) { return new TestUDFAggr(); }
+  virtual void setup (const Table&, const TaQLStyle&)
+  {
+    AlwaysAssert (operands().size() == 1, AipsError);
+    AlwaysAssert (operands()[0]->dataType() == TableExprNodeRep::NTInt, AipsError);
+    AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
+    setDataType (TableExprNodeRep::NTInt);
+    setNDim (0);           // scalar
+    setAggregate (True);   // aggregate function
+  }
+  Int64 getInt (const TableExprId& id)
+  {
+    const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
+    const vector<TableExprId>& ids = aid.result().ids(id.rownr());
+    Int64 sum3 = 0;
+    for (vector<TableExprId>::const_iterator it=ids.begin();
+         it!=ids.end(); ++it){
+      Int64 v = operands()[0]->getInt(*it);
+        sum3 += v*v*v;
+    }
+    return sum3;
+  }
 };
 
 void makeTable()
@@ -72,21 +99,51 @@ void makeTable()
 int main()
 {
   try {
-    UDFBase::registerUDF ("TestUDF", TestUDF::makeObject);
+    UDFBase::registerUDF ("Test.UDF", TestUDF::makeObject);
+    UDFBase::registerUDF ("Test.UDFAggr", TestUDFAggr::makeObject);
     makeTable();
     Table tab("tExprNodeUDF_tmp.tab");
-    TableExprNode node1(tab.col("ANTENNA1"));
-    TableExprNodeSet set;
-    set.add (TableExprNodeSetElem(node1));
-    TableExprNode node2(TableExprNode::newUDFNode ("TestUDF", set, tab));
-    Table seltab(tab(node2));
-    cout << "selected " << seltab.nrow() << " rows" << endl; 
-    AlwaysAssertExit (seltab.nrow() == 3);
-    Table seltab2 = tab(tab.col("ANTENNA1")==1);
-    Table seltab3 = seltab(seltab.col("ANTENNA1")==1);
-    cout << "selected " << seltab2.nrow() <<' '<<seltab3.nrow()<< " rows" << endl;
-    AlwaysAssertExit (seltab2.nrow() == 3);
-    AlwaysAssertExit (seltab3.nrow() == 3);
+    {
+      // Test a normal user defined function.
+      TableExprNode node1(tab.col("ANTENNA1"));
+      TableExprNodeSet set;
+      set.add (TableExprNodeSetElem(node1));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tab));
+      Table seltab(tab(node2));
+      cout << "selected " << seltab.nrow() << " rows" << endl; 
+      AlwaysAssertExit (seltab.nrow() == 3);
+      Table seltab2 = tab(tab.col("ANTENNA1")==1);
+      Table seltab3 = seltab(seltab.col("ANTENNA1")==1);
+      cout << "selected " << seltab2.nrow() <<' '<<seltab3.nrow()<< " rows" << endl;
+      AlwaysAssertExit (seltab2.nrow() == 3);
+      AlwaysAssertExit (seltab3.nrow() == 3);
+    }
+    {
+      // Test an aggregate user defined function.
+      TableExprNode node1(tab.col("ANTENNA1"));
+      TableExprNodeSet set;
+      set.add (TableExprNodeSetElem(node1));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tab));
+      TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getNodeRep());
+      vector<TableExprNodeRep*> aggrNodes;
+      rep->getAggrNodes (aggrNodes);
+      AlwaysAssertExit (aggrNodes.size() == 1);
+      AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
+      CountedPtr<vector<TableExprId> > ids(new vector<TableExprId>());
+      for (uInt i=0; i<tab.nrow(); ++i) {
+        ids->push_back (TableExprId(i));
+      }
+      vector<CountedPtr<vector<TableExprId> > > idVec(1, ids);
+      vector<CountedPtr<TableExprGroupFuncSet> > funcVec(1);
+      CountedPtr<TableExprGroupResult> res
+        (new TableExprGroupResult(funcVec, idVec));
+      TableExprIdAggr aid(res);
+      aid.setRownr (0);
+      Int64 val = node2.getInt(aid);
+      cout << "aggregated value=" << val << endl;
+      Vector<Int> colval (ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
+      AlwaysAssertExit (val == sum(colval*colval*colval));
+    }
   } catch (std::exception& x) {
     cout << "Unexpected exception " << x.what() << endl;
     return 1;

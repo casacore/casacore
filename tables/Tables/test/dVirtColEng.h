@@ -37,9 +37,7 @@
 //# Forward Declarations
 class DummyVirtualEngine;
 namespace casa {
-template<class T> class ROScalarColumn;
 template<class T> class ScalarColumn;
-template<class T> class ROArrayColumn;
 template<class T> class ArrayColumn;
 }
 
@@ -90,11 +88,7 @@ public:
 	{ return scale_p; }
 
     // Let the engine initialize the object for a new table.
-    // It constructs the (RO)ScalarColumn objects.
-    // <note> The ROScalarColumn object is always constructed and is
-    // used by all get functions.
-    // The ScalarColumn object is only constructed when the column (in fact
-    // the underlying column) is writable (otherwise an exception is thrown).
+    // It constructs the ScalarColumn object.
     void prepare (const Table& theTable);
 
     // Let the engine initialize the object for an existing table.
@@ -142,8 +136,7 @@ private:
     Int    writable_p;                  // 1 = column is writable
     //                                    -1 = column is not writable
     //                                     0 = not known yet
-    ROScalarColumn<Int>* roColumn_p;    // the unscaled table column (for get)
-    ScalarColumn<Int>*   column_p;      // the unscaled table column (for put)
+    ScalarColumn<Int>*   column_p;      // the unscaled table column
 };
 
 
@@ -197,11 +190,7 @@ public:
     void open (AipsIO& ios);
 
     // Let the engine initialize the object for a new table.
-    // It constructs the (RO)ArrayColumn objects and sets the writable switch.
-    // <note> The ROArrayColumn object is always constructed and is
-    // used by all get functions.
-    // The ArrayColumn object is only constructed when the column (in fact
-    // the underlying column) is writable (otherwise an exception is thrown).
+    // It constructs the ArrayColumn object and sets the writable switch.
     void prepare (const Table& theTable);
 
     // Let the engine flush the object.
@@ -245,7 +234,6 @@ private:
     Int    writable_p;                 // 1 = column is writable
     //                                   -1 = column is not writable
     //                                    0 = not known yet
-    ROArrayColumn<Int>* roColumn_p;    // the unscaled table column (for get)
     ArrayColumn<Int>*   column_p;      // the unscaled table column (for put)
 };
 

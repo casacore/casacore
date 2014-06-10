@@ -146,9 +146,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </example>
 
 // <motivation>
-// AIPS++ data will be stored in a canonical format.
+// Casacore data will often be stored in a canonical format.
 // To read these data conversion functions are needed.
-// However, these functions do not use any other AIPS++ classes,
+// However, these functions do not use any other Casacore classes,
 // so they can easily be used in any other software system.
 // </motivation>
 

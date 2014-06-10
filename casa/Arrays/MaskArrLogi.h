@@ -48,8 +48,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// MaskArrLogi is short for MaskedArrayLogical, which is too long by
-// AIPS++ file naming conventions.  This file contains global functions
+// MaskArrLogi is short for MaskedArrayLogical, which is too long by the
+// old AIPS++ file naming conventions.  This file contains global functions
 // which perform element by element logical operations on masked arrays.
 // </etymology>
 //

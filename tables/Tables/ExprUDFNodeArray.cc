@@ -27,6 +27,7 @@
 
 //# Includes
 #include <tables/Tables/ExprUDFNodeArray.h>
+#include <tables/Tables/ExprGroup.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   
@@ -51,6 +52,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TableExprUDFNodeArray::~TableExprUDFNodeArray()
   {
     delete itsUDF;
+  }
+
+  void TableExprUDFNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  {
+    uInt naggr = aggr.size();
+    itsUDF->getAggrNodes (aggr);
+    if (itsUDF->isAggregate()) {
+      // If the UDF itself is an aggregate function, its operands should not
+      // contain aggregate functions.
+      if (naggr != aggr.size()) {
+        throw TableInvExpr ("The argument of an aggregate function cannot use "
+                            "an aggregate function");
+      }
+      aggr.push_back (this);
+    }
+  }
+
+  void TableExprUDFNodeArray::getColumnNodes (vector<TableExprNodeRep*>& cols)
+  {
+    itsUDF->getColumnNodes (cols);
+  }
+
+  CountedPtr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc()
+  {
+    return new TableExprGroupNull(this);
   }
 
   Array<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)

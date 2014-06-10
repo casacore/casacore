@@ -8,12 +8,20 @@ RecordGram
 TableGram
 )
 
-
-foreach (src ${parser_inputs})
-    BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
-    FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
-endforeach (src)
-
+ 
+if (APPLE)
+    foreach (src ${parser_inputs})
+        BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src} COMPILE_FLAGS "-y -p${src}")
+        execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${src} ${src}.ycc WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+    endforeach (src)
+else (APPLE)
+    foreach (src ${parser_inputs})
+        BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+        FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+    endforeach (src)
+endif (APPLE)
+ 
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
@@ -38,11 +46,16 @@ Tables/DataManAccessor.cc
 Tables/DataManError.cc
 Tables/DataManInfo.cc
 Tables/DataManager.cc
+Tables/ExprAggrNode.cc
+Tables/ExprAggrNodeArray.cc
 Tables/ExprConeNode.cc
 Tables/ExprDerNode.cc
 Tables/ExprDerNodeArray.cc
 Tables/ExprFuncNode.cc
 Tables/ExprFuncNodeArray.cc
+Tables/ExprGroup.cc
+Tables/ExprGroupAggrFunc.cc
+Tables/ExprGroupAggrFuncArray.cc
 Tables/ExprLogicNode.cc
 Tables/ExprLogicNodeArray.cc
 Tables/ExprMathNode.cc
@@ -145,6 +158,7 @@ Tables/TableRecordRep.cc
 Tables/TableRow.cc
 Tables/TableRowProxy.cc
 Tables/TableSyncData.cc
+Tables/TableTrace.cc
 Tables/TiledCellStMan.cc
 Tables/TiledColumnStMan.cc
 Tables/TiledDataStMan.cc
@@ -174,8 +188,8 @@ add_subdirectory (apps)
 
 install (TARGETS casa_tables
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -212,11 +226,16 @@ Tables/DataManAccessor.h
 Tables/DataManError.h
 Tables/DataManInfo.h
 Tables/DataManager.h
+Tables/ExprAggrNode.h
+Tables/ExprAggrNodeArray.h
 Tables/ExprConeNode.h
 Tables/ExprDerNode.h
 Tables/ExprDerNodeArray.h
 Tables/ExprFuncNode.h
 Tables/ExprFuncNodeArray.h
+Tables/ExprGroup.h
+Tables/ExprGroupAggrFunc.h
+Tables/ExprGroupAggrFuncArray.h
 Tables/ExprLogicNode.h
 Tables/ExprLogicNodeArray.h
 Tables/ExprMathNode.h
@@ -349,6 +368,7 @@ Tables/TableRecordRep.h
 Tables/TableRow.h
 Tables/TableRowProxy.h
 Tables/TableSyncData.h
+Tables/TableTrace.h
 Tables/TableVector.h
 Tables/TableVector.tcc
 Tables/TiledCellStMan.h

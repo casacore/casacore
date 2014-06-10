@@ -54,16 +54,12 @@ namespace casa {
 // </prerequisite>
 
 // <synopsis>
-// DirectionEngine defines Engines (user defined functions) that can be used in TaQL
-// to convert Measures for directions.
+// DirectionEngine defines Engines (user defined functions) that can be used
+// in TaQL to convert Measures for directions.
 // In this way such derived values appear to be ordinary TaQL functions.
 //
 // In TaQL these functions can be called like:
 // <srcblock>
-//   meas.pos (toref, pos, fromref)
-//   meas.itrf (pos, fromref)
-//   meas.wgs84 (pos, fromref)
-// For example,
 //   meas.dir ('APP', 'MOON', date(), [1e6m,1e6m,1e6m], 'WGS84')
 // </srcblock>
 // <ul>
@@ -76,7 +72,15 @@ namespace casa {
 // be strings (indicating planetary objects) or value pairs giving lon,lat.
 // The default reference type is J2000. 
 // </ul>
-// All functions have data type double and unit radian.
+// All such functions return data with type double and unit radian.
+//
+// Futhermore, it is possible to get the rise/set date/time of a source given
+// the source direction, position on earth, and date. These functions
+// return data with type double and unit d (day).
+// If the source is visible all day, the rise time is 0 and set time is 1.
+// If the source is not visible at all, the rise time is 1 and set time is 0.
+// For example:
+//   meas.riseset ('SUN', date(), 'WSRT')
 
 // Directions can be given like:
 //    [x1,y1,z1,x2,y2,z2,...], fromRef
@@ -123,7 +127,8 @@ namespace casa {
       { return itsUnit; }  
 
     // Get the values.
-    Array<Double> getArrayDouble (const TableExprId& id);
+    // The Bools tell if rise/set times have to be calculated.
+    Array<Double> getArrayDouble (const TableExprId& id, Bool riseSet);
 
     // Get the directions.
     Array<MDirection> getDirections (const TableExprId& id);
@@ -131,7 +136,7 @@ namespace casa {
     // Handle the argument(s) giving the input directions and reference type.
     // The direction can be a column in a table.
     void handleDirection (PtrBlock<TableExprNodeRep*>& args,
-                          uInt& argnr);
+                          uInt& argnr, Bool riseSet);
 
     // Handle a direction reference type.
     void handleDirType (TableExprNodeRep* operand);
@@ -156,6 +161,13 @@ namespace casa {
                        const TableExprId& id,
                        Array<MDirection>& directions);
 
+    // Calucate the rise and set time of a source for a given elevation,
+    // latitude, and epoch.
+    void calcRiseSet (double dec,
+                      double el, double lat,
+                      double ra, double epoch,
+                      double& rise, double& set) const;
+
     //# Data members.
     IPosition                       itsShape;
     Int                             itsNDim;
@@ -165,7 +177,7 @@ namespace casa {
     Vector<MDirection>              itsConstants;
     MDirection::Types               itsRefType;
     TableExprNode                   itsExprNode;
-    ROArrayMeasColumn<MDirection>   itsMeasCol;
+    ArrayMeasColumn<MDirection>     itsMeasCol;
     EpochEngine*                    itsEpochEngine;
     PositionEngine*                 itsPositionEngine;
   };

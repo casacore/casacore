@@ -61,21 +61,38 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
   }
   // Shortcut if values are equal.
   if (v1 == v2) return 0;
+
+  // Avoid dividing by interval_p if it is very small.
+  // It only takes a few / DBL_MIN to get inf,
+  // and inf == inf, even if "few" differs.
+  // (Specifying timeInterval = 0 leads to DBL_MAX, which might be the opposite
+  //  of what is wanted!  Avoiding underflow allows those who want no chunking
+  //  by TIME to use an interval_p which is guaranteed to be small enough
+  //  without having to read the INTERVAL column.)
+  //
+  // The 2.0 is a fudge factor.  The result of the comparison should probably
+  // be cached.
+  if(abs(interval_p) < 2.0 * DBL_MIN)
+    return v1 < v2 ? -1 : 1;
+
   // The times are binned in bins with a width of interval_p.
   double t1 = floor((v1 - offset_p) / interval_p);
   double t2 = floor((v2 - offset_p) / interval_p);
+
   return (t1==t2 ? 0 : (t1<t2 ? -1 : 1));
 }
- 
 
-MSIter::MSIter():nMS_p(0),msc_p(0),allBeamOffsetsZero_p(True) {}
+
+MSIter::MSIter():nMS_p(0),msc_p(0),allBeamOffsetsZero_p(True),
+  timeComp_p(NULL) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns)
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
-  allBeamOffsetsZero_p(True)
+  allBeamOffsetsZero_p(True),
+  timeComp_p(NULL)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
@@ -86,7 +103,8 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns)
-: bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
+: bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
+  timeComp_p(NULL)
 {
   construct(sortColumns,addDefaultSortColumns);
 }
@@ -198,9 +216,13 @@ void MSIter::construct(const Block<Int>& sortColumns,
   
   // now find the time column and set the compare function
   Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
+  timeComp_p = NULL;
   for (uInt i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
       objComp[i] = new MSInterval(interval_p);
+
+      // The &(*()) is needed because CountedPtr is not exactly a pointer.
+      timeComp_p = dynamic_cast<MSInterval *>(&(*(objComp[i])));
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
@@ -357,7 +379,7 @@ void MSIter::advance()
     newDataDescId_p=newField_p=checkFeed_p=False;
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
-
+  
   if (tabIter_p[curMS_p]->pastEnd()) {
     if (++curMS_p >= nMS_p) {
       curMS_p--;
@@ -383,6 +405,44 @@ void MSIter::setState()
   setArrayInfo();
   setFeedInfo();
   setFieldInfo();
+
+  // If time binning, update the MSInterval's offset to account for glitches.
+  // For example, if averaging to 5s and the input is
+  //   TIME  STATE_ID  INTERVAL
+  //    0      0         1
+  //    1      0         1
+  //    2      1         1
+  //    3      1         1
+  //    4      1         1
+  //    5      1         1
+  //    6      1         1
+  //    7      0         1
+  //    8      0         1
+  //    9      0         1
+  //   10      0         1
+  //   11      0         1
+  //  we want the output to be
+  //   TIME  STATE_ID  INTERVAL
+  //    0.5    0         2
+  //    4      1         5
+  //    9      0         5
+  //  not what we'd get without the glitch fix:
+  //   TIME  STATE_ID  INTERVAL
+  //    0.5    0         2
+  //    3      1         3
+  //    5.5    1         2
+  //    8      0         3
+  //   10.5    0         2
+  //
+  // Resetting the offset with each advance() might be too often, i.e. we might
+  // need different spws to share the same offset.  But in testing resetting
+  // with each advance produces results more consistent with expectations than
+  // either not resetting at all or resetting only
+  // if(colTime_p(0) - 0.02 > timeComp_p->getOffset()).
+  //
+  if(timeComp_p != NULL){
+      timeComp_p->setOffset(0.0);
+  }
 }
 
 const Vector<Double>& MSIter::frequency() const

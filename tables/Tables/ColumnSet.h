@@ -203,6 +203,10 @@ public:
     // Optionally only the virtual engines are retrieved.
     Record dataManagerInfo (Bool virtualOnly=False) const;
 
+    // Get the trace-id of the table.
+    int traceId() const
+      { return baseTablePtr_p->traceId(); }
+
     // Initialize rows startRownr till endRownr (inclusive).
     void initialize (uInt startRownr, uInt endRownr);
 

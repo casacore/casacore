@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/TableIter.h>
+#include <casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -89,14 +90,21 @@ public:
   // This constructor is only needed for the Block container.
   TableIterProxy();
 
-  // Construct for the given table column(s).
+  // Construct iterator for the given table column(s).
   // Order and sortType are case-insentive strings and only the first
   // character in it is important.
-  // order[0]=a means ascending; d means descending.
-  // sortType[0]=q means quicksort, i means insertion sort,
-  //             n means nosort, otherwise heapsort.
+  // <br>order[0]=a means ascending; d means descending.
+  // <br>sortType[0]=q means quicksort, i means insertion sort,
+  //                 n means nosort, h means heapsort, otherwise parsort
+  // <br>For each column an iteration interval can be given making it possible
+  // to iterate in e.g. time chunks of 1 minute. Not given or zero means
+  // no interval is given for that column, thus a normal comparison is done.
+  // It can only be used for numerical columns (not complex).
+  // However, if for a string column the interbval is set to non-zero, it
+  // means that case-insensitive comparison will be used.
   TableIterProxy (const TableProxy& tab, const Vector<String>& columns,
-		  const String& order, const String& sortType);
+		  const String& order, const String& sortType,
+                  const Vector<Double>& intervals = Vector<Double>());
 
   // Copy constructor (copy semantics).
   TableIterProxy (const TableIterProxy&);
@@ -127,6 +135,14 @@ public:
 
 
 private:
+  // Make an iterator where iteration intervals may have been given.
+  void makeStepIter (const Table& tab,
+                     const Block<String>& columns,
+                     const Vector<Double>& iterSteps,
+                     TableIterator::Order order,
+                     TableIterator::Option sortType);
+
+  //# Data members
   TableIterator iter_p;
   Bool          firstTime_p;           //# True = first time
 };

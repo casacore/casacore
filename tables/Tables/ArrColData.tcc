@@ -29,6 +29,7 @@
 #include <tables/Tables/ArrColDesc.h>
 #include <tables/Tables/ColumnSet.h>
 #include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/TableTrace.h>
 #include <tables/Tables/DataManager.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayIter.h>
@@ -195,6 +196,10 @@ Bool ArrayColumnData<T>::canAccessColumnSlice (Bool& reask) const
 template<class T>
 void ArrayColumnData<T>::get (uInt rownr, void* arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkReadLock (True);
     dataColPtr_p->getArrayV (rownr, (Array<T>*)arrayPtr);
     autoReleaseLock();
@@ -204,6 +209,11 @@ template<class T>
 void ArrayColumnData<T>::getSlice (uInt rownr, const Slicer& ns,
 				   void* arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkReadLock (True);
     dataColPtr_p->getSliceV (rownr, ns, (Array<T>*)arrayPtr);
     autoReleaseLock();
@@ -213,6 +223,10 @@ void ArrayColumnData<T>::getSlice (uInt rownr, const Slicer& ns,
 template<class T>
 void ArrayColumnData<T>::put (uInt rownr, const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr,
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putArrayV (rownr, (const Array<T>*)arrayPtr);
@@ -223,6 +237,11 @@ template<class T>
 void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 				   const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr,
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putSliceV (rownr, ns, (const Array<T>*)arrayPtr);
@@ -237,6 +256,10 @@ void ArrayColumnData<T>::putSlice (uInt rownr, const Slicer& ns,
 template<class T>
 void ArrayColumnData<T>::getArrayColumn (void* arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r',
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkReadLock (True);
     dataColPtr_p->getArrayColumnV ((Array<T>*)arrayPtr);
     autoReleaseLock();
@@ -247,6 +270,10 @@ template<class T>
 void ArrayColumnData<T>::getArrayColumnCells (const RefRows& rownrs,
 					      void *arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs,
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkReadLock (True);
     dataColPtr_p->getArrayColumnCellsV (rownrs, arrayPtr);
     autoReleaseLock();
@@ -256,6 +283,11 @@ template<class T>
 void ArrayColumnData<T>::getColumnSlice (const Slicer& ns,
 					 void* arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r',
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkReadLock (True);
     dataColPtr_p->getColumnSliceV (ns, (Array<T>*)arrayPtr);
     autoReleaseLock();
@@ -266,6 +298,11 @@ void ArrayColumnData<T>::getColumnSliceCells (const RefRows& rownrs,
 					      const Slicer& ns,
 					      void* arrayPtr) const
 {
+    if (rtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs,
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkReadLock (True);
     dataColPtr_p->getColumnSliceCellsV (rownrs, ns, arrayPtr);
     autoReleaseLock();
@@ -274,6 +311,10 @@ void ArrayColumnData<T>::getColumnSliceCells (const RefRows& rownrs,
 template<class T>
 void ArrayColumnData<T>::putArrayColumn (const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w',
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putArrayColumnV ((const Array<T>*)arrayPtr);
@@ -284,6 +325,10 @@ template<class T>
 void ArrayColumnData<T>::putArrayColumnCells (const RefRows& rownrs,
 					      const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs,
+                         static_cast<const Array<T>*>(arrayPtr)->shape());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putArrayColumnCellsV (rownrs, arrayPtr);
@@ -294,6 +339,11 @@ template<class T>
 void ArrayColumnData<T>::putColumnSlice (const Slicer& ns,
 					 const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w',
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putColumnSliceV (ns, (const Array<T>*)arrayPtr);
@@ -305,6 +355,11 @@ void ArrayColumnData<T>::putColumnSliceCells (const RefRows& rownrs,
 					      const Slicer& ns,
 					      const void* arrayPtr)
 {
+    if (wtraceColumn_p) {
+      TableTrace::trace (traceId(), columnDesc().name(), 'w', rownrs,
+                         static_cast<const Array<T>*>(arrayPtr)->shape(),
+                         ns.start(), ns.end(), ns.stride());
+    }
     checkValueLength ((const Array<T>*)arrayPtr);
     checkWriteLock (True);
     dataColPtr_p->putColumnSliceCellsV (rownrs, ns, arrayPtr);

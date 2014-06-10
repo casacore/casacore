@@ -53,7 +53,7 @@ class BaseTable;
 
 
 // <summary>
-// Readonly access to a table column
+// Read/write access to a table column
 // </summary>
 
 // <use visibility=export>
@@ -66,37 +66,28 @@ class BaseTable;
 //   <li> ColumnDesc
 // </prerequisite>
 
-// <etymology>
-// ROTableColumn gives readonly access to an arbitrary column in a table.
-// </etymology>
-
 // <synopsis>
-// The class ROTableColumn gives readonly access to a column
+// The class TableColumn gives read and write access to a column
 // in a table. In particular access to the column description
 // (for name, data type, etc.) and to the column keyword set
 // can be obtained. 
 // Another important function is isDefined, which tests if a
 // cell (i.e. table row) in a column contains a value.
 //
-// The classes ROScalarColumn<T> and ROArrayColumn<T> have to be
-// used to get the data in the column cells.
-// However, ROTableColumn has get functions for the basic data types
+// The classes ScalarColumn<T> and ArrayColumn<T> have to be
+// used to get/put the data in the column cells.
+// However, TableColumn has get functions for the basic data types
 // (Bool, uChar, Short, uSort, Int, uInt, float, double,
 //  Complex, DComplex and String).
-// Opposite to the get functions in ROScalarColumn<T>, the
-// ROTableColumn get functions support data type promotion.
+// Opposite to the get functions in ScalarColumn<T>, the
+// TableColumn get functions support data type promotion.
 //
 // A default constructor is defined to allow construction of an array
-// of ROTableColumn objects. However, this constructs an object not
+// of TableColumn objects. However, this constructs an object not
 // referencing a column. Functions like get, etc. will fail (i.e. result
 // in a segmentation fault) when used on such objects. The functions
 // isNull and throwIfNull can be used to test on this.
 // The functions attach and reference can fill in the object.
-//
-// The assignment operator is not defined for this class, because it was
-// felt it would be too confusing. Instead the function reference can
-// be used to do assignment with reference semantics. An assignment
-// with copy semantics makes no sense for a readonly column.
 // </synopsis>
 
 // <example>
@@ -104,7 +95,7 @@ class BaseTable;
 // </example>
 
 
-class ROTableColumn
+class TableColumn
 {
 friend class ForwardColumn;      //# for function baseColPtr()
 
@@ -113,50 +104,56 @@ public:
     // The default constructor creates a null object, i.e. it
     // does not reference a table column.
     // The sole purpose of this constructor is to allow construction
-    // of an array of ROTableColumn objects.
+    // of an array of TableColumn objects.
     // The functions reference and attach can be used to make a null object
     // reference a column.
     // Note that get functions, etc. will cause a segmentation fault
     // when operating on a null object. It was felt it was too expensive
     // to test on null over and over again. The user should use the isNull
     // or throwIfNull function in case of doubt.
-    ROTableColumn();
+    TableColumn();
 
     // Construct the object for a column in the table using its name.
-    ROTableColumn (const Table&, const String& columnName);
+    TableColumn (const Table&, const String& columnName);
 
     // Construct the object for a column in the table using its index.
     // This allows to loop through all columns in a table as:
     // <srcblock>
     //    for (uInt=0; i<tab.ncolumn(); i++) {
-    //        ROTableColumn tabcol(tab,i);
+    //        TableColumn tabcol(tab,i);
     //    }
     // </srcblock>
-    ROTableColumn (const Table&, uInt columnIndex);
+    TableColumn (const Table&, uInt columnIndex);
 
     // Copy constructor (reference semantics).
-    ROTableColumn (const ROTableColumn&);
+    TableColumn (const TableColumn&);
 
-    virtual ~ROTableColumn();
+    virtual ~TableColumn();
+
+    // Assignment has reference semantics.
+    // It copies the object, not the data of that column to this column.
+    // Function <src>putColumn</src> can be used to copy the data of a column.
+    // <br>It does the same as the reference function.
+    TableColumn& operator= (const TableColumn&);	
 
     // Clone the object.
-    virtual ROTableColumn* clone() const;
+    virtual TableColumn* clone() const;
 
     // Change the reference to another column.
     // This is in fact an assignment operator with reference semantics.
     // It removes the reference to the current column and creates
     // a reference to the column referenced in the other object.
     // It will handle null objects correctly.
-    void reference (const ROTableColumn&);
+    void reference (const TableColumn&);
 
     // Attach a column to the object.
     // This is in fact only a shorthand for 
-    // <<br><src> reference (ROTableColumn (table, columnName)); </src>
+    // <<br><src> reference (TableColumn (table, columnName)); </src>
     // <group>
     void attach (const Table& table, const String& columnName)
-	{ reference (ROTableColumn (table, columnName)); }
+	{ reference (TableColumn (table, columnName)); }
     void attach (const Table& table, uInt columnIndex)
-	{ reference (ROTableColumn (table, columnIndex)); }
+	{ reference (TableColumn (table, columnIndex)); }
     // </group>
 
     // Test if the object is null, i.e. does not reference a column.
@@ -166,6 +163,20 @@ public:
     // Throw an exception if the object is null, i.e.
     // if function isNull() is True.
     void throwIfNull() const;
+
+    // Test if the column can be written to, thus if the column and
+    // the underlying table can be written to.
+    Bool isWritable() const
+        { return baseTabPtr_p->isWritable()  &&  isColWritable_p; }
+
+    // Test if the column is writable at all (virtual columns might not be).
+    // Note that keywords can always be written, even for virtual columns.
+    Bool isWritableAtAll() const
+        { return isColWritable_p; }
+
+    // Check if the column is writable and throw an exception if not.
+    void checkWritable() const
+        { if (!isWritable()) throwNotWritable(); }
 
     // Get readonly access to the column keyword set.
     const TableRecord& keywordSet() const
@@ -295,146 +306,18 @@ public:
 	  baseColPtr_p->getScalar (rownr,value,dataTypeId); }
     // </group>
 
-    // Check if the row number is valid.
-    // It throws an exception if out of range.
-    void checkRowNumber (uInt rownr) const
-        { baseTabPtr_p->checkRowNumber (rownr); }
-
-    // Set the maximum cache size (in bytes) to be used by a storage manager.
-    void setMaximumCacheSize (uInt nbytes) const
-        { baseColPtr_p->setMaximumCacheSize (nbytes); }
-
-
-protected:
-    BaseTable*  baseTabPtr_p;
-    BaseColumn* baseColPtr_p;                //# pointer to real column object
-    const ColumnCache* colCachePtr_p;
-    Bool canChangeShape_p;
-
-
-    // Get the baseColPtr_p of this ROTableColumn object.
-    BaseColumn* baseColPtr () const
-	{ return baseColPtr_p; }
-
-    // Get the baseColPtr_p of another ROTableColumn object.
-    // This is needed for function put, because baseColPtr_p is a
-    // protected member of ROTableColumn. Another TableColumn has
-    // no access to that.
-    BaseColumn* baseColPtr (const ROTableColumn& that) const
-	{ return that.baseColPtr_p; }
-	    
-
-private:
-    // Assignment makes no sense for a readonly class.
-    // Declaring this operator private, makes it unusable.
-    ROTableColumn& operator= (const ROTableColumn&);	
-};
-
-
-
-// <summary>
-// Non-const access to a table column
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="dschieb" date="1994/08/10" tests="none">
-// </reviewed>
-
-// <prerequisite>
-//   <li> Table
-//   <li> ROTableColumn
-// </prerequisite>
-
-// <synopsis>
-// The class TableColumn augments the class ROTableColumn
-// with write access to a table column.
-//
-// The classes ScalarColumn<T> and ArrayColumn<T> can be
-// used to put typed data in the column cells.
-//
-// A default constructor is defined to allow construction of an array
-// of TableColumn objects. However, this constructs an object not
-// referencing a column. Functions like get, etc. will fail (i.e. result
-// in a segmentation fault) is used on such objects. The functions
-// isNull and throwIfNull can be used to test on this.
-// The functions attach and reference can fill in the object.
-//
-// The assignment operator is not defined for this class, because it was
-// felt it would be too confusing. Instead the function reference can
-// be used to do assignment with reference semantics. An assignment
-// with copy semantics can be done with a putColumn function.
-// </synopsis>
-
-// <example>
-// See module <linkto module="Tables#open">Tables</linkto>.
-// </example>
-
-
-class TableColumn : virtual public ROTableColumn
-{
-public:
-
-    // The default constructor creates a null object, i.e. it
-    // does not reference a table column.
-    // The sole purpose of this constructor is to allow construction
-    // of an array of TableColumn objects.
-    // The functions reference and attach can be used to make a null object
-    // reference a column.
-    // Note that get functions, etc. will cause a segmentation fault
-    // when operating on a null object. It was felt it was too expensive
-    // to test on null over and over again. The user should use the isNull
-    // function in case of doubt.
-    TableColumn();
-
-    // Construct the object for a column in the table using its name.
-    TableColumn (const Table&, const String& columnName);
-
-    // Construct the object for a column in the table using its index.
-    // This allows to loop through all columns in a table as:
-    // <srcblock>
-    //    for (uInt=0; i<tab.ncolumn(); i++) {
-    //        TableColumn tabcol(tab,i);
-    //    }
-    // </srcblock>
-    TableColumn (const Table&, uInt columnIndex);
-
-    // Copy constructor (reference semantics).
-    TableColumn (const TableColumn&);
-
-    ~TableColumn();
-
-    // Clone the object.
-    virtual ROTableColumn* clone() const;
-
-    // Change the reference to another column.
-    // This is in fact an assignment operator with reference semantics.
-    // It removes the reference to the current column and creates
-    // a reference to the column referenced in the other object.
-    // It will handle null objects correctly.
-    void reference (const TableColumn&);
-
-    // Attach a column to the object.
-    // This is in fact only a shorthand for 
-    // <br><src> reference (TableColumn (table, columnName)); </src>
-    // <group>
-    void attach (const Table& table, const String& columnName)
-	{ reference (TableColumn (table, columnName)); }
-    void attach (const Table& table, uInt columnIndex)
-	{ reference (TableColumn (table, columnIndex)); }
-    // </group>
-
     // Copy the value of a cell of that column to a cell of this column.
     // This function only works for the standard data types.
     // Data type promotion will be done if needed.
-    // An exception is thrown if the data cannot be converted.
+    // An exception is thrown if this column is not writable or if
+    // the data cannot be converted.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const ROTableColumn& that)
+    void put (uInt rownr, const TableColumn& that)
 	{ TABLECOLUMNCHECKROW(rownr); put (rownr, that, rownr); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    virtual void put (uInt thisRownr, const ROTableColumn& that,
+    virtual void put (uInt thisRownr, const TableColumn& that,
 		      uInt thatRownr);
     // </group>
 
@@ -445,7 +328,7 @@ public:
     // This function is useful to copy one column to another without
     // knowing their data types.
     // In fact, this function is an assignment operator with copy semantics.
-    void putColumn (const ROTableColumn& that);
+    void putColumn (const TableColumn& that);
 
     // Put the value of a scalar in the given row.
     // Data type promotion is possible.
@@ -477,36 +360,42 @@ public:
 	{ putScalar (rownr, String(value)); }
     // </group>
 
-    //# The following routines add/remove/rename columns for the
-    //# tables in all cells of the column.
-    //# They are meant to add/rename/remove a keyword or column in a
-    //# column containing tables without the flag VarDesc set; i.e. tables
-    //# which should be the same in all rows.
-    //# They are not allowed for a column with the VarDesc flag set.
-    //# See ColumnDesc.h for more information on the VarDesc flag.
-    //# <group>
+    // Check if the row number is valid.
+    // It throws an exception if out of range.
+    void checkRowNumber (uInt rownr) const
+        { baseTabPtr_p->checkRowNumber (rownr); }
 
-    //# Add a column to all tables.
-//#    virtual void addColumn (const ColumnDesc&);
+    // Set the maximum cache size (in bytes) to be used by a storage manager.
+    void setMaximumCacheSize (uInt nbytes) const
+        { baseColPtr_p->setMaximumCacheSize (nbytes); }
 
-    //# Rename a column in all tables.
-//#    virtual void renameColumn (const String& newname, const String& oldname);
+protected:
+    BaseTable*  baseTabPtr_p;
+    BaseColumn* baseColPtr_p;                //# pointer to real column object
+    const ColumnCache* colCachePtr_p;
+    Bool canChangeShape_p;
+    Bool isColWritable_p;                    //# is the column writable at all?
 
-    //# Remove a column from all tables.
-//#    virtual void removeColumn (const String& name);
-    //# </group>
+
+    // Get the baseColPtr_p of this TableColumn object.
+    BaseColumn* baseColPtr () const
+	{ return baseColPtr_p; }
+
+    // Get the baseColPtr_p of another TableColumn object.
+    // This is needed for function put, because baseColPtr_p is a
+    // protected member of TableColumn. Another TableColumn has
+    // no access to that.
+    BaseColumn* baseColPtr (const TableColumn& that) const
+	{ return that.baseColPtr_p; }
 
 private:
-    // Assigning one column to another suggests a deep copy.
-    // Because the copy constructor has reference semantics, it was
-    // felt it would be too confusing to allow assignment.
-    // Instead the function reference (with reference semantics) and
-    // putColumn (with copy semantics) exist.
-    // Declaring this operator private, makes it unusable.
-    TableColumn& operator= (const TableColumn&);
+    // Throw the exception that the column is not writable.
+    void throwNotWritable() const;
 };
 
 
+// Define ROTableColumn for backward compatibility.
+typedef TableColumn ROTableColumn;
 
 
 } //# NAMESPACE CASA - END

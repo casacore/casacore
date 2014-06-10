@@ -38,6 +38,8 @@ String ComponentType::name(ComponentType::Shape shapeEnum) {
     return "Gaussian";
   case ComponentType::DISK:
     return "Disk";
+  case ComponentType::LDISK:
+    return "Limbdarkeneddisk";
   default:
     return "Unknown";
   };

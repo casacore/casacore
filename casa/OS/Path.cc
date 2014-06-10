@@ -415,15 +415,15 @@ String Path::makeAbsoluteName (const String& inString) const
 	}
     }
     // Get the working directory and prepend it.
-    // Insert a / when needed.
+    // getcwd returns a null pointer if it fails.
     char temp[1024];
-    getcwd (temp, 1024);
+    AlwaysAssert (getcwd(temp, 1024), AipsError);
     String tempString (temp);
     // Return the working directory when no input string left.
     if (workString.empty()) {
 	return tempString;
     }
-    // Insert a / when needed.
+    // Append a / if needed.
     if (tempString.lastchar() != '/') {
 	tempString += '/';
     }

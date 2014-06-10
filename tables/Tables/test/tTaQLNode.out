@@ -69,7 +69,7 @@ SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE ((arr1)[1,1,(1)+((ab)%(1))])>=(192) OR
 select ab,ac from tTaQLNode_tmp.tab where cos(0.01rad) <= sin(-0.02rad)*sin(-ab/180*pi()) + cos(-0.5rad)*cos(-ab/180*pi())*cos(0.02rad - ac/180*pi())
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos((0.01)'rad'))<=(((sin(-((0.02)'rad')))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-((0.5)'rad')))*(cos(((-(ab))/(180))*(pi()))))*(cos(((0.02)'rad')-(((ac)/(180))*(pi()))))))
 
-select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
+select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-1960) + year("31Dec60") + month(1990/05/12) + day(date(1990/01/30/12h14m33.3)) - 3910
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(1960/12/31/00:00:00.0000))+(year('31Dec60')))+(month(1990/05/12/00:00:00.0000)))+(day(date(1990/01/30/12:14:33.3000))))-(3910))
 
 select ab,ac,af from tTaQLNode_tmp.tab where ab>5 orderby af desc, ac

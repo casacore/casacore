@@ -39,6 +39,8 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Cube.h>
 #include <ms/MeasurementSets/MSSelectionError.h>
+#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <ms/MeasurementSets/MSSelectableTable.h>
 #include <casa/Containers/OrderedMap.h>
 #include <casa/Containers/MapIO.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -74,8 +76,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // form, reducing the knowledge necessary to perform powerful query
 // operations directly in TaQL.  It is also possible to supply pure
 // TaQL expression(s) as sub-expressions if required. For a complete
-// list of the STaQL interface refer to: <a
-// href="http://casa.nrao.edu/Memos/msselection/index.html">Data
+// list of the STaQL interface refer to the MeasurementSet Selection Syntax document at: <a
+// href="http://casa.nrao.edu/other_doc.shtml">Data
 // Selection</a>
 //
 // The sub-expressions are interpreted in the order which they were
@@ -126,8 +128,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		     TIME_EXPR,
 		     UVDIST_EXPR,
 		     POLN_EXPR,
-		     TAQL_EXPR,
 		     STATE_EXPR,
+		     OBSERVATION_EXPR,
+		     TAQL_EXPR,
 		     MAX_EXPR = TAQL_EXPR};
     enum MSSMode {PARSE_NOW=0, PARSE_LATE};
 
@@ -150,7 +153,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		const String& polnExpr="",
 		const String& scanExpr="",
 		const String& arrayExpr="",
-		const String& stateExpr="");
+		const String& stateExpr="",
+		const String& observationExpr="");
     
     // Construct from a record representing a selection item at the
     // CLI or user interface level.  This is functionally same as the
@@ -182,6 +186,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool setTaQLExpr(const String& taqlExpr);
     Bool setPolnExpr(const String& polnExpr);
     Bool setStateExpr(const String& stateExpr);
+    Bool setObservationExpr(const String& obervationExpr);
     
     // Accessor for result of parsing all of the selection
     // expressions.  The final TableExprNode (TEN) is the result of
@@ -190,23 +195,29 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Accessor for the list of the selected scan IDs.
     inline Vector<Int> getScanList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return scanIDs_p.copy();}
+    {getTEN(ms); return scanIDs_p;}
+
+    // Accessor for the list of the selected observation IDs.
+    inline Vector<Int> getObservationList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return observationIDs_p;}
 
     // Accessor for the list of selected sub-array IDs.
     inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return arrayIDs_p.copy();}
+    {getTEN(ms); return arrayIDs_p;}
     
     // Accessor for the list of antenna-1 of the selected baselines.
     // Antennas affected by the baseline negation operator have the
     // antenna IDs multiplied by -1.
     inline Vector<Int> getAntenna1List(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return antenna1IDs_p.copy();}
+    {// if (antenna1IDs_p.nelements() <= 0) 
+	getTEN(ms); return antenna1IDs_p;}
     
     // Accessor for the list of antenna-2 of the selected baselines.
     // Antennas affected by the baseline negation operator have the
     // antenna IDs multiplied by -1.
     inline Vector<Int> getAntenna2List(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return antenna2IDs_p.copy();}
+    {// if (antenna2IDs_p.nelements() <= 0) 
+	getTEN(ms); return antenna2IDs_p;}
     
     // Accessor for the list of selected baselines.  The list is a Nx2
     // Matrix with one row per baseline containing the antenna IDs of
@@ -226,36 +237,38 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // -10].  Etc...
     //
     inline Matrix<Int> getBaselineList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return baselineIDs_p.copy();}
+    {getTEN(ms); return baselineIDs_p;}
     
     // Accessor for the list of selected field IDs.
     inline Vector<Int> getFieldList(const MeasurementSet* ms=NULL) 
-    {if (fieldIDs_p.nelements() <= 0) getTEN(ms); return fieldIDs_p.copy();}
+    {// if (fieldIDs_p.nelements() <= 0) 
+	getTEN(ms); return fieldIDs_p;}
 
     // Accessor for the list of selected state Obs_Modes.
     inline Vector<Int> getStateObsModeList(const MeasurementSet* ms=NULL) 
-    {if (stateObsModeIDs_p.nelements() <= 0) getTEN(ms); return stateObsModeIDs_p.copy();}
+    {if (stateObsModeIDs_p.nelements() <= 0) getTEN(ms); return stateObsModeIDs_p;}
     
     // Accessor for the list of the specified time range(s) as the
     // start and end MJD values.  The time ranges are stored as columns,
     // i.e. the output Matrix is 2 x n_ranges.
     inline Matrix<Double> getTimeList(const MeasurementSet* ms=NULL)
-    {getTEN(ms); return selectedTimesList_p.copy();}
+    {getTEN(ms); return selectedTimesList_p;}
     
     // Accessor for the list of the specified uv-range(s) as the start
     // and end values in units used in the MS.
     inline Matrix<Double> getUVList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedUVRange_p.copy();}
+    {getTEN(ms); return selectedUVRange_p;}
     
     // Accessor for the list of user defined units for the
     // uv-range(s).  The uv-range(s) return by getUVList is always in
     // the units used in the MS.
     inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedUVUnits_p.copy();}
+    {getTEN(ms); return selectedUVUnits_p;}
 
     // Accessor for the list of the selected Spectral Window IDs.
     inline Vector<Int> getSpwList(const MeasurementSet* ms=NULL) 
-    {if (spwIDs_p.nelements() <= 0) getTEN(ms); return spwIDs_p.copy();}
+    {// if (spwIDs_p.nelements() <= 0) 
+	getTEN(ms); return spwIDs_p;}
     
     // Accessor for the table (as a nx4 Matrix) of the selected
     // Spectral Windows and associated ranges of selected channels.
@@ -268,22 +281,57 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // was supplied as part of the expression, the value of Step is
     // replaced with the value of the defaultStep parameter. Multiple
     // channel specifications for the same Spectral Window selection,
-    // results in multiple rows in the Matrix. If sorted==True, the
+    // results in multiple rows in the Matrix. If sorted is True, the
     // rows of the output Matrix will be sorted by the SPW IDs (the
-    // entires in the first column).
+    // entries in the first column).
     Matrix<Int> getChanList(const MeasurementSet* ms=NULL, 
 			    const Int defaultStep=1,
 			    const Bool sorted=False);
 
-    // Accessor for the list of the selected Data Description IDs.
-    inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
-    {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p.copy();}
-    
-    inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedPolMap_p;}
+    //
+    // Same as getChanList, except that the channels and steps are in Hz.
+    //    
+    Matrix<Double> getChanFreqList(const MeasurementSet* ms=NULL, 
+				   const Bool sorted=False);
 
+    // Accessor for the list of the selected Data Description IDs
+    // (DDID) from the polarization expression parsing.  The actual
+    // selected DDIDs would be an intersection of the DDIDs selected
+    // from polarization and SPW expressions parsing (see
+    // getSPWDDIDList() below).
+    inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
+    {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p;}
+
+    // Accessor for the list of the selected Data Description IDs from
+    // the SPW expression parsing.  The actual
+    // selected DDIDs would be an intersection of the DDIDs selected
+    // from polarization and SPW expressions parsing (see
+    // getDDIDList() above).
+    inline Vector<Int> getSPWDDIDList(const MeasurementSet* ms=NULL) 
+    {if (spwDDIDs_p.nelements() <= 0) getTEN(ms); return spwDDIDs_p;}
+
+    //
+    // The key in the ordered map returned by getPolMap() is the Data
+    // Description ID (DDID). The value is a vector containing the
+    // list of in-row indices to pick out the selected polarizations
+    // (or equivalently, the list of indices for the vector in the
+    // corrType column of the POLARIZATION sub-table). These are also
+    // what the user intended (i.e., e.g. not all DD IDs due to user
+    // POL expression might be selected due to SPW expressions).
+    //
+    inline OrderedMap<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return selectedPolMap_p;};
+
+    //
+    // The key in the ordered map returned by getCorrMap() is the
+    // pol. is the Data Description ID (DDID).  The value is a set of
+    // two vectors.  The first vector is the list of the in-row
+    // indices to pick out the selected polarizations (or
+    // equivalently, the list of indices for the vector in the
+    // corrType column of the POLARIZATION sub-table).
+    //
     inline OrderedMap<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
-    {getTEN(ms); return selectedSetupMap_p;}
+    {getTEN(ms); return selectedSetupMap_p;};
 
     // Methods to convert the maps return by getChanList and
     // getCorrMap to a list of Slice which can be directly used by
@@ -300,9 +348,30 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Clear sub-expression and reset priority.  Default behavior is to
     // reset all sub-expressions.
     void clear(const MSExprType type=NO_EXPR);
+    Bool exprIsNull(const MSExprType type=NO_EXPR);
     
-    // Convert to TableExprNode format (C++ interface to TaQL)
+    // Convey to the various parsers to delete the TENs they hold
+    void deleteNodes();
+
+    // Delete error handlers (mostly the internally allocated ones).
+    void deleteErrorHandlers();
+
+    // Convert to TableExprNode format (C++ interface to TaQL).  This
+    // is now for purely backwards compatibility and ease of use.  It
+    // internally constructs the MSSelectableTable from the supplied
+    // MS and calls the generic version of toTableExprNode below
+    // (which works with MSSelectableTable object).
     TableExprNode toTableExprNode(const MeasurementSet* ms);
+
+    // Convert to TableExprNode format (C++ interface to TaQL).  The
+    // MSSelectableTable is a pure-virtual base class which provides a
+    // generic interface both to MeasurementSet and CalTable (in the
+    // synthesis module) services used in MSSelection.  The actual
+    // objects used for supplying MeasurementSet or CalTable to
+    // MSSelection are MSInterface and CTInterface classes
+    // respectively.  With this, MSSelection module can be used for
+    // selection on MeasurementSet or CalTable.
+    TableExprNode toTableExprNode(MSSelectableTable* msLike);
     
     // Return the selected MS.  The selected MS reflects only row
     // selections (as against in-row selections).  If outMSName != "",
@@ -315,24 +384,46 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool getSelectedMS(MeasurementSet& selectedMS,
 		       const String& outMSName="");
     
-    void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;}
-    void resetTEN() {fullTEN_p=TableExprNode();}
+    void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;};
+    void resetTEN() {fullTEN_p=TableExprNode();};
     
     void reset(const MeasurementSet& ms,
-	       const MSSMode& mode=PARSE_NOW,
-	       const String& timeExpr="",
-	       const String& antennaExpr="",
-	       const String& fieldExpr="",
-	       const String& spwExpr="",
-	       const String& uvDistExpr="",
-	       const String& taqlExpr="",
-	       const String& polnExpr="",
-	       const String& scanExpr="",
-	       const String& arrayExpr="",
-	       const String& stateExpr="");
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
+	       const String& observationExpr = "");
+    void reset(MSSelectableTable& msLike,
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
+	       const String& observationExpr = "");
     
-    void setMaxScan(const Int& n) {maxScans_p=n;}
+    void setMaxScans(const Int& n) {maxScans_p=n;};
+    void setMaxObs(const Int& n) {maxObs_p=n;};
     
+    void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
+			 const Bool overRide=False);
+    
+    void initErrorHandler(const MSExprType tye=NO_EXPR);
+
+    void runErrorHandler();
+    const MeasurementSet* getMS(MSSelectableTable* msLike);
   private:
     // Set into the order of the selection expression
     Bool setOrder(MSSelection::MSExprType type);
@@ -345,7 +436,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool definedAndSet(const Record& inpRec, const String& fieldName);
     
     // Convert an MS select string to TaQL
-    //   const String msToTaQL(const String& msSelect) {}
+    //   const String msToTaQL(const String& msSelect) {};
     
     TableExprNode fullTEN_p;
     const MeasurementSet *ms_p;
@@ -360,10 +451,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     String polnExpr_p;
     String taqlExpr_p;
     String stateExpr_p;
+    String observationExpr_p;
     // Priority
     Vector<Int> exprOrder_p;
     Vector<Int> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p,
-      ddIDs_p,stateObsModeIDs_p;
+      ddIDs_p,stateObsModeIDs_p, observationIDs_p, spwDDIDs_p;
     Matrix<Int> chanIDs_p;
     Matrix<Int> baselineIDs_p;
     Matrix<Double> selectedTimesList_p;
@@ -371,7 +463,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Vector<Bool> selectedUVUnits_p;
     OrderedMap<Int, Vector<Int> > selectedPolMap_p;
     OrderedMap<Int, Vector<Vector<Int> > > selectedSetupMap_p;
-    Int maxScans_p, maxArray_p;
+    Int maxScans_p, maxObs_p, maxArray_p;
+    MSSelectionErrorHandler* mssErrHandler_p;
+    Bool isMS_p,toTENCalled_p;
   };
   
 } //# NAMESPACE CASA - END

@@ -291,7 +291,7 @@ Bool DiskShape::ok() const {
            << LogIO::POST;
     return False;
   }
-  if (!near(itsHeight, 1.0/(C::pi*itsMajValue*itsMinValue), C::dbl_epsilon)) {
+  if (!near(itsHeight, 1.0/(C::pi*itsMajValue*itsMinValue), 2*C::dbl_epsilon)) {
     LogIO logErr(LogOrigin("DiskCompRep", "ok()"));
     logErr << LogIO::SEVERE << "The disk shape does not have"
 	   << " unit area"

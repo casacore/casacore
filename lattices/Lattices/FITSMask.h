@@ -150,9 +150,17 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
   
+  // Set the switch for also filtering 0.0 (besides NaNs).
+  virtual void setFilterZero (Bool filterZero);
+ 
 private:
 
-  FITSMask();
+  // Mask out ONLY NaN's
+  void filterNaN (Bool* pMask, const float* pData, uInt nelems);
+
+  // Mask out NaN's and values 0.0
+  void filterZeroNaN (Bool* pMask, const Float* pData, uInt nelems);
+ 
 //
   TiledFileAccess* itsTiledFilePtr;
   Array<Float> itsBuffer;
@@ -161,6 +169,7 @@ private:
   Short itsShortMagic;
   Int itsLongMagic;
   Bool itsHasIntBlanks;
+  Bool itsFilterZero;
 };
 
 

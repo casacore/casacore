@@ -60,7 +60,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The class makes the connection between the
 // <linkto module=Fitting>Fitting</linkto> module and 
 // other object system. It provides a series of proxy callable
-// methods. See Aips++ Note 197 for details. <br>
+// methods. See Note 197 for details. <br>
 // Operations supported
 // are all the fitting methods supported in the Fitting module
 // </synopsis>

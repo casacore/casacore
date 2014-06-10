@@ -93,6 +93,19 @@ int main()
     }
 
     {
+        IPosition ip1(1, 5);
+        AlwaysAssertExit(binarySearchBrackets(found, ip1, 1, ip1.nelements()) == 0 &&
+                 !found);
+        AlwaysAssertExit(binarySearchBrackets(found, ip1, 5, ip1.nelements()) == 0 &&
+                 found);
+        AlwaysAssertExit(binarySearchBrackets(found, ip1, 10, ip1.nelements()) == 1 &&
+                 !found);
+
+        AlwaysAssertExit(binarySearchBrackets(found, ip1, 10, 0u) == 0 && !found);
+    }
+
+
+    {
 	int ia[4];  // int ia[] = {22,9,5,1}; isn't available on all compilers
 	ia[0] = 22; ia[1] = 9; ia[2] = 5; ia[3] = 1;
 	int *ip = &ia[0];

@@ -263,28 +263,13 @@ public:
    virtual String type() const;    
 
 
-private:
+protected:
    Quantum<Vector<Double> > itsX;
    Quantum<Vector<Double> > itsY;
    IPosition itsPixelAxes;   
    CoordinateSystem itsCSys;
    RegionType::AbsRelType itsAbsRel;
    Bool itsNull;
-
-   void checkAxes (const IPosition& pixelAxes,
-                   const CoordinateSystem& cSys,
-                   const String& xUnit,
-                   const String& yUnit) const;
-
-
-   void convertPixel(Double& pixel,
-                     const Double& value,
-                     const String& unit,
-                     const Int absRel,
-                     const Double refPix,   
-                     const Int shape) const;
-
-   static void unitInit();
 
 };
 

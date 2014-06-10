@@ -126,7 +126,6 @@ DummyVirtualScalar::DummyVirtualScalar (DummyVirtualEngine* dve, double scale)
 : enginePtr_p(dve),
   scale_p    (scale),
   writable_p (0),
-  roColumn_p (0),
   column_p   (0)
 {}
 
@@ -138,10 +137,9 @@ DummyVirtualScalar::DummyVirtualScalar (const DummyVirtualScalar& that)
   enginePtr_p(that.enginePtr_p),
   scale_p    (that.scale_p),
   writable_p (0),
-  roColumn_p (0),
   column_p   (0)
 {
-    if (that.writable_p  ||  that.roColumn_p  ||  that.column_p) {
+    if (that.writable_p  ||  that.column_p) {
 	throw (DataManInternalError ("DummyVirtualScalar copy ctor"));
     }
 }
@@ -149,7 +147,6 @@ DummyVirtualScalar::DummyVirtualScalar (const DummyVirtualScalar& that)
 
 DummyVirtualScalar::~DummyVirtualScalar()
 {
-    delete roColumn_p;
     delete column_p;
 }
 
@@ -157,16 +154,7 @@ void DummyVirtualScalar::prepare (const Table& table)
 {
     //# Determine if the column is writable.
     writable_p = (table.isColumnWritable ("DATA1")  ?  1 : -1);
-    roColumn_p = new ROScalarColumn<Int> (table, "DATA1");
-    if (roColumn_p == 0) {
-	throw (AllocError ("DummyVirtualScalar::create", 1));
-    }
-    if (writable_p > 0) {
-	column_p = new ScalarColumn<Int> (table, "DATA1");
-	if (column_p == 0) {
-	    throw (AllocError ("DummyVirtualScalar::create", 1));
-	}
-    }
+    column_p = new ScalarColumn<Int> (table, "DATA1");
 }
 void DummyVirtualScalar::open (AipsIO& ios)
 {
@@ -200,11 +188,11 @@ Bool DummyVirtualScalar::isWritable() const
 
 void DummyVirtualScalar::get (uInt rownr, double& data)
 {
-    data = scale_p * (*roColumn_p)(rownr);
+    data = scale_p * (*column_p)(rownr);
 }
 void DummyVirtualScalar::getdoubleV (uInt rownr, double* dataPtr)
 {
-    *dataPtr = scale_p * (*roColumn_p)(rownr);
+    *dataPtr = scale_p * (*column_p)(rownr);
 }    
 
 void DummyVirtualScalar::put (uInt rownr, const double& data)
@@ -223,7 +211,6 @@ DummyVirtualArray::DummyVirtualArray (DummyVirtualEngine* dve, double scale)
 : enginePtr_p(dve),
   scale_p    (scale),
   writable_p (0),
-  roColumn_p (0),
   column_p   (0)
 {}
 
@@ -235,17 +222,15 @@ DummyVirtualArray::DummyVirtualArray (const DummyVirtualArray& that)
   enginePtr_p(that.enginePtr_p),
   scale_p    (that.scale_p),
   writable_p (0),
-  roColumn_p (0),
   column_p   (0)
 {
-    if (that.writable_p  ||  that.roColumn_p  ||  that.column_p) {
+    if (that.writable_p  ||  that.column_p) {
 	throw (DataManInternalError ("DummyVirtualArray copy ctor"));
     }
 }
 
 DummyVirtualArray::~DummyVirtualArray()
 {
-    delete roColumn_p;
     delete column_p;
 }
 
@@ -253,16 +238,7 @@ void DummyVirtualArray::prepare (const Table& table)
 {
     //# Determine if the column is writable.
     writable_p = (table.isColumnWritable ("DATA2")  ?  1 : -1);
-    roColumn_p = new ROArrayColumn<Int> (table, "DATA2");
-    if (roColumn_p == 0) {
-	throw (AllocError ("DummyVirtualArray::create", 1));
-    }
-    if (writable_p > 0) {
-	column_p = new ArrayColumn<Int> (table, "DATA2");
-	if (column_p == 0) {
-	    throw (AllocError ("DummyVirtualArray::create", 1));
-	}
-    }
+    column_p = new ArrayColumn<Int> (table, "DATA2");
 }
 void DummyVirtualArray::open (AipsIO& ios)
 {
@@ -291,21 +267,21 @@ void DummyVirtualArray::setShape (uInt rownr, const IPosition& shape)
 }
 Bool DummyVirtualArray::isShapeDefined (uInt rownr)
 {
-    return roColumn_p->isDefined (rownr);
+    return column_p->isDefined (rownr);
 }
 uInt DummyVirtualArray::ndim (uInt rownr)
 {
-    return roColumn_p->ndim (rownr);
+    return column_p->ndim (rownr);
 }
 IPosition DummyVirtualArray::shape (uInt rownr)
 {
-    return roColumn_p->shape (rownr);
+    return column_p->shape (rownr);
 }
 
 void DummyVirtualArray::getArray (uInt rownr, Array<double>& array)
 {
     Array<Int> intern(array.shape());
-    roColumn_p->get (rownr, intern);
+    column_p->get (rownr, intern);
     Bool deleteIn, deleteOut;
     double* out = array.getStorage (deleteOut);
     double* op  = out;

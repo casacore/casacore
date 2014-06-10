@@ -38,7 +38,7 @@ static struct { char *mask;
 void bug_c(),bugno_c();
 void rdhdi_c(),wrhdi_c();
 void mkclose_c(),mkwrite_c();
-char *mkopen_c();
+char *mkopen_c(int tno, char * name, char * status);
 int mkread_c();
 static void xymkopen_c();
 /************************************************************************/
@@ -155,6 +155,9 @@ char *name,*status;
   images[tno].mask_exists = TRUE;
   *thandle = tno;
 }
+
+void mkflush_c(char *handle);
+
 /************************************************************************/
 void xyflush_c(thandle)
 int thandle;

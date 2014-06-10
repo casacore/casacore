@@ -13,7 +13,7 @@ tPath_Env_Username=`whoami`
 export tPath_Env_Username
 tPath_Env_User="~`whoami`"
 export tPath_Env_User
-tPath_Env_Curr=`pwd`
+tPath_Env_Curr=`pwd -P`    # remove possible symlinks
 export tPath_Env_Curr
 tPath_Env_Test1='$HOME'
 export tPath_Env_Test1

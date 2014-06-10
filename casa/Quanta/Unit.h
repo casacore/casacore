@@ -198,7 +198,7 @@ class Unit {
 //   <li> AipsError if illegal unit string
 // </thrown>
 // <group name="constructor">
-    Unit(const String &other);
+    Unit(const std::string &other);
     Unit(const Char *other);
     explicit Unit(Char other);
     Unit(const Char *other, Int len);

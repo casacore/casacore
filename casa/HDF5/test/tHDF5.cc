@@ -126,7 +126,7 @@ void createDataSet (int nx, int ny, int nz, int ntx, int nty, int ntz)
   H5Pset_chunk (plId, rank, chunkShp);
   // Create the data set.
   setId = H5Dcreate2 (fileId, "dataset", typeIdFile,
-		      dsId, NULL, plId, NULL);
+		      dsId, 0, plId, 0);
   check (setId, "Failed to create dataset");
 }
 
@@ -136,7 +136,7 @@ void openDataSet()
   typeIdFile = H5Tcopy (H5T_NATIVE_FLOAT);
   typeIdMem  = H5Tcopy (typeIdFile);
   // Open the dataset.
-  setId = H5Dopen2 (fileId, "dataset", NULL);
+  setId = H5Dopen2 (fileId, "dataset", 0);
   check (setId, "Failed to open dataset");
   // Get the data space (for the shape).
   dsId = H5Dget_space(setId);

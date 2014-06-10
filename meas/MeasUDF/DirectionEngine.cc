@@ -29,6 +29,7 @@
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/ExprUnitNode.h>
 #include <tables/Tables/ExprNodeSet.h>
+//#include <measures/Measures/MCEpoch.h>
 #include <casa/Arrays/ArrayUtil.h>
 
 namespace casa {
@@ -53,7 +54,7 @@ namespace casa {
   }
 
   void DirectionEngine::handleDirection (PtrBlock<TableExprNodeRep*>& args,
-                                         uInt& argnr)
+                                         uInt& argnr, Bool riseSet)
   {
     // Initialize to unknown reference type.
     itsRefType = MDirection::N_Types;
@@ -66,7 +67,7 @@ namespace casa {
       handleNames (args[argnr]);
     } else {
       if (args[argnr]->dataType() != TableExprNodeRep::NTDouble) {
-        throw AipsError ("Invalid or integer direction given in a MEAS function");
+        throw AipsError("Invalid or integer direction given in a MEAS function");
       }
       if (args.size() > nargnr  &&
           args[argnr]->dataType() == TableExprNodeRep::NTDouble  &&
@@ -99,7 +100,11 @@ namespace casa {
       itsShape.prepend (IPosition(1,2));
     }
     // Determine the output unit, shape, and ndim.
-    itsUnit = "rad";
+    if (riseSet) {
+      itsUnit = "d";
+    } else {
+      itsUnit = "rad";
+    }
     // Fill ndim if unknown and if shape is known.
     if (itsNDim < 0  &&  itsShape.size() > 0) {
       itsNDim = itsShape.size();
@@ -126,7 +131,7 @@ namespace casa {
                                        TableExprNodeRep* e2)
   {
     if (! (e1->isConstant()  &&  e2->isConstant())) {
-      throw AipsError ("Scalar values given as direction a MEAS function "
+      throw AipsError ("Scalar values given as direction in a MEAS function "
                        "must be constant values");
     }
     double v1 = e1->getDouble(0);
@@ -164,7 +169,7 @@ namespace casa {
       throw AipsError ("A single double argument given as direction in a "
                        "MEAS function must be a double array of values");
     }
-    // Set or convert the operands's unit to radian.
+    // Set or convert the operand's unit to radian.
     TableExprNodeUnit::adaptUnit (operand, "rad") ;
     // Handle possibly given constants.
     if (operand->isConstant()) {
@@ -188,11 +193,11 @@ namespace casa {
     }
     if (colNode) {
       // Try if the column contains measures.
-      const ROTableColumn& tabCol = colNode->getColumn();
+      const TableColumn& tabCol = colNode->getColumn();
       itsShape = tabCol.shapeColumn();
       itsNDim  = tabCol.ndimColumn();
       if (TableMeasDescBase::hasMeasures (tabCol)) {
-        ROArrayMeasColumn<MDirection> measTmp(tabCol.table(),
+        ArrayMeasColumn<MDirection> measTmp(tabCol.table(),
                                               tabCol.columnDesc().name());
         // Get and check the node's refType if it is fixed.
         MDirection::Types nodeRefType = MDirection::N_Types;
@@ -325,7 +330,8 @@ namespace casa {
     return directions;
   }
 
-  Array<Double> DirectionEngine::getArrayDouble (const TableExprId& id)
+  Array<Double> DirectionEngine::getArrayDouble (const TableExprId& id,
+                                                 Bool riseSet)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MDirection> res (getDirections(id));
@@ -371,8 +377,20 @@ namespace casa {
               itsFrame.resetPosition (*posIter);
             }
             MDirection mdir = itsConverter();
-            // Get as radians.
+            // Get angles as radians.
             Vector<Double> md (mdir.getValue().get());
+            if (riseSet) {
+              MDirection::Ref ref(MDirection::APP, itsFrame);
+              MDirection app = MDirection::Convert(MDirection::APP,
+                                                   ref)(*resIter);
+              // Calculate rise/set time and store in md.
+              calcRiseSet (md[1],
+                           5*C::pi/180,    // default elev 5 deg
+                           posIter->getValue().get()[2],  // latitude
+                           app.getValue().get()[0],       // ra
+                           epsIter->getValue().get(),     // epoch
+                           md[0], md[1]);
+            }
             *outPtr++ = md[0];
             *outPtr++ = md[1];
           }
@@ -381,5 +399,95 @@ namespace casa {
     }
     return out;
   }
+
+  void DirectionEngine::calcRiseSet (double dec,
+                                     double el, double lat,
+                                     double ra, double epoch,
+                                     double& rise, double& set) const
+  {
+    MEpoch off(Quantity(epoch+0.5, "d"),
+               MEpoch::Types(MEpoch::UTC | MEpoch::RAZE));   // truncate to days
+    double ct = (sin(el) - sin(dec)*sin(lat)) / (cos(dec)*cos(lat));
+    if (ct >= 1) {
+      // Always below
+      set  = off.getValue().get();
+      rise = set + 1;
+    } else if (ct <= -1) {
+      // Always above
+      rise = off.getValue().get();
+      set  = rise + 1;
+    } else {
+      ct = acos(ct);
+      double normra = MVAngle(ra)(0).radian();
+      rise = normra - ct;
+      set  = normra + ct;
+      MEpoch::Ref ref(MEpoch::LAST, itsFrame, off);
+      Quantity timeRise = MVTime(Quantity(rise, "rad")).get();
+      Quantity timeSet  = MVTime(Quantity(set,  "rad")).get();
+      MEpoch tr = MEpoch::Convert (MEpoch(timeRise, ref), MEpoch::UTC)();
+      MEpoch ts = MEpoch::Convert (MEpoch(timeSet,  ref), MEpoch::UTC)();
+      rise = tr.getValue().get();
+      set  = ts.getValue().get();
+    }
+  }
+
+  /*
+# From old measures.g:
+
+# Rise/set sidereal time(coord, elev)
+#
+ct = (sin(el=5deg) - sin(dec)*sin(lat)) / (cos(dec) * cos(lat))
+rise = ra - acos(ct)
+set  = ra + acos(ct)
+    const public.rise := function(crd, ev='5deg') {
+      if (!is_measure(crd)) fail('No rise/set coordinates specified');
+      if (!is_measure(private.getwhere())) {
+        dq.errorgui('Specify where you are in Frame');
+        fail('No rise/set Frame->Where specified');
+      };
+      private.fillnow();
+      hd := public.measure(crd, 'hadec');
+      c := public.measure(crd, 'app');
+      if (!is_measure(hd) || !is_measure(c)) fail('Cannot get HA for rise/set')\
+;
+      ps := private.getwhere();
+      ct := dq.div(dq.sub(dq.sin(ev),
+                          dq.mul(dq.sin(hd.m1),
+                                 dq.sin(ps.m1))),
+                   dq.mul(dq.cos(hd.m1), dq.cos(ps.m1)));
+      if (ct.value >= 1) return "below below";
+      if (ct.value <= -1) return "above above";
+      a := dq.acos(ct);
+      return [rise=dq.sub(dq.norm(c.m0, 0), a),
+              set=dq.add(dq.norm(c.m0, 0), a)]
+    }
+#
+# Rise/set times(coord, elev)
+#
+    const public.riseset := function(crd, ev='5deg') {
+        a := public.rise(crd, ev);
+        if (is_fail(a)) fail;
+        if (is_string(a)) {
+          return [solved=F,
+                 rise=[last=a[1], utc=a[1]],        };
+        x := a;
+        ofe := public.measure(private.framestack['epoch'], 'utc');
+        if (!is_measure(ofe)) ofe := public.epoch('utc', 'today');
+        for (i in 1:2) {
+          x[i] :=
+              public.measure(public.epoch('last',
+                                          dq.totime(a[i]),
+                                          off=public.epoch('r_utc',
+                                                           dq.add(ofe.m0,
+                                                                  '0.5d'))),
+                             'utc');
+        };
+        return [solved=T,
+               rise=[last=public.epoch('last', dq.totime(a[1])),
+                    utc=x[1]],
+               set=[last=public.epoch('last', dq.totime(a[2])),
+                   utc=x[2]]];
+    }
+   */
 
 } //end namespace

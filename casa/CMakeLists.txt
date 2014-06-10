@@ -27,6 +27,7 @@ BasicSL/RegexBase.cc
 BasicSL/Complex.cc
 BasicSL/String.cc
 BasicSL/IComplex.cc
+BasicSL/STLMath.cc
 Containers/RecordInterface.cc
 Containers/Record.cc
 Containers/IterError.cc
@@ -44,6 +45,7 @@ Containers/StackError.cc
 Containers/ValueHolder.cc
 Containers/Record2Interface.cc
 Containers/Stack2.cc
+Exceptions/CasaErrorTools.cc
 Exceptions/Error2.cc
 HDF5/HDF5Record.cc
 HDF5/HDF5Error.cc
@@ -173,6 +175,7 @@ System/Casarc.cc
 Utilities/cregex.cc
 Utilities/RecordTransformable.cc
 Utilities/DynBuffer.cc
+Utilities/Compare.cc
 Utilities/SortError.cc
 Utilities/DataType.cc
 Utilities/Sequence2.cc
@@ -209,8 +212,8 @@ dl
 
 install (
 TARGETS casa_casa
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -281,6 +284,7 @@ BasicMath/Functors.h
 BasicMath/Math.h
 BasicMath/Primes.h
 BasicMath/Random.h
+BasicMath/StdLogical.h
 DESTINATION include/casacore/casa/BasicMath
 )
 
@@ -291,6 +295,9 @@ BasicSL/Constants.h
 BasicSL/IComplex.h
 BasicSL/RegexBase.h
 BasicSL/String.h
+BasicSL/STLMath.h
+BasicSL/STLIO.h
+BasicSL/STLIO.tcc
 DESTINATION include/casacore/casa/BasicSL
 )
 
@@ -298,8 +305,6 @@ install (FILES
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
-Containers/ContainerIO.h
-Containers/ContainerIO.tcc
 Containers/HashMap.h
 Containers/HashMap.tcc
 Containers/HashMapIO.h
@@ -356,6 +361,7 @@ DESTINATION include/casacore/casa/Containers
 )
 
 install (FILES
+Exceptions/CasaErrorTools.h
 Exceptions/Error.h
 Exceptions/Error.tcc
 DESTINATION include/casacore/casa/Exceptions
@@ -493,6 +499,8 @@ Quanta/QMath.h
 Quanta/QMath.tcc
 Quanta/Quantum.h
 Quanta/Quantum.tcc
+Quanta/QVector.h
+Quanta/QVector.tcc
 Quanta/QuantumHolder.h
 Quanta/QuantumType.h
 Quanta/RotMatrix.h
@@ -614,7 +622,7 @@ DESTINATION include/casacore/casa
 if (BUILD_TESTING)
 	add_subdirectory (test)
 	foreach (casa_module Arrays BasicMath BasicSL Containers
-             HDF5 Inputs IO Logging OS Quanta System Utilities)
+             Exceptions HDF5 Inputs IO Logging OS Quanta System Utilities)
     	add_subdirectory (${casa_module}/test)
 	endforeach (casa_module)
 endif (BUILD_TESTING)

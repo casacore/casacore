@@ -6,12 +6,16 @@
   $casa_checktool ./tGenSort 2500 1
   $casa_checktool ./tGenSort 2500 2
   $casa_checktool ./tGenSort 2500 4
-  $casa_checktool ./tGenSort 2500 9
-  $casa_checktool ./tGenSort 2500 10
-  $casa_checktool ./tGenSort 2500 12
+  $casa_checktool ./tGenSort 2500 8
+  $casa_checktool ./tGenSort 2500 17
+  $casa_checktool ./tGenSort 2500 18
+  $casa_checktool ./tGenSort 2500 20
+  $casa_checktool ./tGenSort 2500 24
   $casa_checktool ./tGenSort 2500 1 desc
   $casa_checktool ./tGenSort 2500 2 desc
   $casa_checktool ./tGenSort 2500 4 desc
-  $casa_checktool ./tGenSort 2500 9 desc
-  $casa_checktool ./tGenSort 2500 10 desc
-  $casa_checktool ./tGenSort 2500 12 desc
+  $casa_checktool ./tGenSort 2500 8 desc
+  $casa_checktool ./tGenSort 2500 17 desc
+  $casa_checktool ./tGenSort 2500 18 desc
+  $casa_checktool ./tGenSort 2500 20 desc
+  $casa_checktool ./tGenSort 2500 24 desc

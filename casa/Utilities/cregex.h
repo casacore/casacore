@@ -59,7 +59,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* This defines the various regexp syntaxes.
    It can be set using the function a2_re_set_syntax.  */
-///extern int obscure_syntax;
+////extern int obscure_syntax;
 
 
 /* The following bits are used in the obscure_syntax variable to choose among
@@ -293,11 +293,11 @@ extern int re_exec ();
 
 
 #ifdef SYNTAX_TABLE
-  ///extern char *re_syntax_table;
+  ////extern char *re_syntax_table;
 #endif
 
 #ifdef __cplusplus
-  ///extern int re_max_failures;
+  ////extern int re_max_failures;
 }
 #endif
 

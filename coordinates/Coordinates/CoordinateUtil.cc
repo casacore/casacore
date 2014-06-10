@@ -458,8 +458,8 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
 // with this have something sensible
 
    ObsInfo obsInfo;
-   obsInfo.setObserver(String("NoY2K"));
-   obsInfo.setTelescope(String("ATCA"));
+   obsInfo.setObserver(String("Karl Jansky"));
+   obsInfo.setTelescope(String("ALMA"));
 
 // It must be easier than this...  USe 0.0001
 // so that roundoff does not tick the 0 to 24
@@ -1156,7 +1156,7 @@ Bool CoordinateUtil::cylindricalFix (CoordinateSystem& cSys, String& errorMessag
 
 Bool CoordinateUtil::setVelocityState (String& errorMsg, CoordinateSystem& cSys,
                                        const String& unit,
-                                       const String& doppler)
+                                       const String& spcquant)
 {
    static Unit kms(String("km/s"));
 //
@@ -1166,20 +1166,23 @@ Bool CoordinateUtil::setVelocityState (String& errorMsg, CoordinateSystem& cSys,
       SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
 
 // Get current state
-
+      //cout << "setVelocityState unit: " << unit << " spcquant: " << spcquant << endl;
       MDoppler::Types oldDoppler = sCoord.velocityDoppler();
       String oldVelUnit = sCoord.velocityUnit();
+      SpectralCoordinate::SpecType oldspcType = sCoord.nativeType();
 
 // Prepare new state
 
       MDoppler::Types newDoppler(oldDoppler);
       String newVelUnit(oldVelUnit);
+      SpectralCoordinate::SpecType newspcType(oldspcType);
 
-// Find new Doppler, if any
+// Find new Doppler or spectral state, if any
 
-      if (!doppler.empty()) {
-         if (!MDoppler::getType(newDoppler, doppler)) {
-            errorMsg = String("Illegal velocity Doppler");
+      if (!spcquant.empty()) {
+      	if (!MDoppler::getType(newDoppler, spcquant)
+      	&& !SpectralCoordinate::stringtoSpecType(newspcType, spcquant)) {
+      		errorMsg = String("Illegal velocity Doppler/spectral type");
             return False;
          }
       }
@@ -1190,11 +1193,18 @@ Bool CoordinateUtil::setVelocityState (String& errorMsg, CoordinateSystem& cSys,
         newVelUnit = unit;
      }
 
-// Set new state.  
+// Set new doppler.
 
      if (!sCoord.setVelocity (newVelUnit, newDoppler)) {
         errorMsg = sCoord.errorMessage();
         return False;
+     }
+
+// Set new spectral type.
+
+     if (!sCoord.setNativeType(newspcType)) {
+   	  errorMsg = sCoord.errorMessage();
+   	  return False;
      }
 
 // Replace in CS
@@ -1207,14 +1217,14 @@ Bool CoordinateUtil::setVelocityState (String& errorMsg, CoordinateSystem& cSys,
 
 Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
                                        const String& unit,
-                                       const String& doppler)
+                                       const String& spcquant)
 {
    static Unit KMS(String("km/s"));
    static Unit HZ(String("GHz"));
    static Unit M(String("m"));
 //
 
-   //cout << "SpecState: " << unit << " new doppler: " << doppler << endl;
+   //cout << "setSpectralState unit: " << unit << " spcype: " << spcquant << endl;
 
    Int after = -1;
    Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
@@ -1226,13 +1236,15 @@ Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
       MDoppler::Types newDoppler(sCoord.velocityDoppler());
       String newVelUnit(sCoord.velocityUnit());
       String newWaveUnit(sCoord.wavelengthUnit());
+      SpectralCoordinate::SpecType newspcType = sCoord.nativeType();
       Vector<String> newWorldAxisUnits(sCoord.worldAxisUnits().copy());
 
 // Find new Doppler, if any
 
-      if (!doppler.empty()) {
-         if (!MDoppler::getType(newDoppler, doppler)) {
-            errorMsg = String("Illegal velocity Doppler");
+      if (!spcquant.empty()) {
+         if (!MDoppler::getType(newDoppler, spcquant)
+         && !SpectralCoordinate::stringtoSpecType(newspcType, spcquant)) {
+            errorMsg = String("Illegal velocity Doppler/spectral type");
             return False;
          }
       }
@@ -1244,9 +1256,6 @@ Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
 
      if (!unit.empty()) {
         Unit t(unit);
-        //cout << "Unit name: " << t.getName() << endl;
-        //cout << "Unit value: " << t.getValue() << endl;
-
         if (t == HZ) {
         	//cout << "New HZ" << endl;
            newWorldAxisUnits[0] = unit;         
@@ -1262,8 +1271,6 @@ Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
            return False;
         }
      }
-     //cout << "New world axis Units: " << newWorldAxisUnits << endl;
-     //cout << "New vel unit        : " << newVelUnit << endl;
 
 // Set new state.  
 
@@ -1278,12 +1285,93 @@ Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
      }
 
 //
-     //cout << "Old wavelength unit: "<< sCoord.wavelengthUnit() << " set to: "<<newWaveUnit<< endl;
      if (!sCoord.setWavelengthUnit(newWaveUnit)) {
     	 errorMsg = sCoord.errorMessage();
     	 return False;
      }
-     //cout << "New wavelength unit: "<< sCoord.wavelengthUnit() <<endl;
+
+// Set spectral type.
+     if (!sCoord.setNativeType(newspcType)) {
+   	  errorMsg = sCoord.errorMessage();
+   	  return False;
+     }
+
+// Replace in CS
+
+      cSys.replaceCoordinate(sCoord, iS);
+   }
+   return True;
+}
+
+Bool CoordinateUtil::setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+                                       const String& unit,
+                                       const Double& value)
+{
+   static Unit HZ(String("GHz"));
+   static Unit M(String("m"));
+//
+
+
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+   if (iS>=0) {
+      SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
+
+// Check for weird value
+
+      if (value < 0.0){
+      	errorMsg = String("The rest frequency/wavelength is below zero!");
+      	return False;
+      }
+      else if (isNaN(value)){
+      	errorMsg = String("The rest frequency/wavelength is NaN!");
+      	return False;
+      }
+      else if (isInf(value)){
+      	errorMsg = String("The rest frequency/wavelength is InF!");
+      	return False;
+      }
+
+// Get the old rest frequency and unit
+
+      Double oldValue = sCoord.restFrequency();
+      Unit   oldUnit  = Unit(sCoord.worldAxisUnits()(0));
+
+// Check whether something has to be done
+
+      if (!unit.empty() && (value != oldValue) && (value>0 || oldValue>0)){
+
+// Make sure the unit conforms with m or Hz
+      	Unit t(unit);
+         if (t != HZ && t!= M) {
+            errorMsg = String("Illegal spectral unit");
+            return False;
+         }
+
+// Compute the rest frequency in the given units from the input
+
+      	Quantity newQuant=Quantity(value, Unit(unit));
+			MVFrequency newFreq = MVFrequency(newQuant);
+			Double newValue = newFreq.get(oldUnit).getValue();
+
+// Exclude weird numbers
+
+	      if (isNaN(newValue)){
+	      	errorMsg = String("The new rest frequency/wavelength is NaN!");
+	      	return False;
+	      }
+	      else if (isInf(newValue)){
+	      	errorMsg = String("The new rest frequency/wavelength is InF!");
+	      	return False;
+	      }
+
+// Set the new rest frequency
+
+	      if (!sCoord.setRestFrequency(newValue)) {
+				errorMsg = sCoord.errorMessage();
+				return False;
+			}
+      }
 
 // Replace in CS
 
@@ -1296,7 +1384,7 @@ Bool CoordinateUtil::setSpectralState (String& errorMsg, CoordinateSystem& cSys,
 Bool CoordinateUtil::setSpectralFormatting (String& errorMsg, 
                                             CoordinateSystem& cSys,
                                             const String& unit,
-                                            const String& doppler)
+                                            const String& spcquant)
 //
 // This function sets the default formatting unit of the SpectralCoordinate in a
 // CoordinateSystem to that given.  It also updates the internal state
@@ -1313,7 +1401,7 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
       SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
      
 // Set format Unit
-      //cout << "SpectralFormatting unit: " << unit << " doppler: " << doppler << endl;
+      //cout << "setSpectralFormatting unit: " << unit << " spcquant: " << spcquant << endl;
            
       sCoord.setFormatUnit (unit);
       
@@ -1321,16 +1409,20 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
 
       MDoppler::Types oldDoppler = sCoord.velocityDoppler();
       String oldVelUnit = sCoord.velocityUnit();
+      SpectralCoordinate::SpecType oldspcType = sCoord.nativeType();
 //  
       MDoppler::Types newDoppler(oldDoppler);
       String newVelUnit(oldVelUnit);
+      SpectralCoordinate::SpecType newspcType(oldspcType);
 
 // Find new Doppler, if any
                                         
-      if (!doppler.empty()) {
-         if (!MDoppler::getType(newDoppler, doppler)) {
-            errorMsg = String("Illegal velocity Doppler - nochange");
+      if (!spcquant.empty()) {
+         if (!MDoppler::getType(newDoppler, spcquant)
+         && !SpectralCoordinate::stringtoSpecType(newspcType, spcquant)){
+            errorMsg = String("Illegal velocity Doppler/spectral state - no change");
             newDoppler = oldDoppler;
+            newspcType = oldspcType;
             return False;
          }
       }
@@ -1341,7 +1433,15 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
            return False;
         }
      }
- 
+
+// Set spectral type.
+     if (newspcType != oldspcType){
+   	  if (!sCoord.setNativeType(newspcType)) {
+   		  errorMsg = sCoord.errorMessage();
+   		  return False;
+   	  }
+     }
+
 // Replace in CS
   
       cSys.replaceCoordinate(sCoord, iS);
@@ -1541,7 +1641,8 @@ Coordinate::Type CoordinateUtil::findWorldAxis (const CoordinateSystem& cSys, In
 
 
 Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
-                                      const CoordinateSystem& cSysIn)
+                                      const CoordinateSystem& cSysIn,
+                                      Bool preserveAxesOrder)
 
 
 {
@@ -1560,16 +1661,28 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
 //
    uInt k = 0;
    uInt l = 0;
-   for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
+   vector<Int> worldAxesOrder;
+   vector<Int> pixelAxesOrder;
+    for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
       const Vector<Int>& pixelAxesIn = cSysIn.pixelAxes(i);
       const Vector<Int>& worldAxesIn = cSysIn.worldAxes(i);
-      AlwaysAssert(pixelAxesIn.nelements()==worldAxesIn.nelements(), AipsError);
-//
+      AlwaysAssert(pixelAxesIn.nelements()==worldAxesIn.nelements(),
+                   AipsError);
       Bool allRemoved = allEQ(pixelAxesIn, -1) && allEQ(worldAxesIn,-1);
       if (allRemoved) {
         dropped = True;
       } else {
         cSysOut.addCoordinate(cSysIn.coordinate(i));
+        if (preserveAxesOrder) {
+          for (uInt m=0; m<pixelAxesIn.size(); m++) {
+            if (worldAxesIn[m] >= 0) {
+              worldAxesOrder.push_back(worldAxesIn[m]);
+            }
+            if (pixelAxesIn[m] >= 0) {
+              pixelAxesOrder.push_back(pixelAxesIn[m]);
+            }
+          }
+        }
 
 // Maintain a list of axes to do virtual removal of
 
@@ -1616,7 +1729,11 @@ Bool CoordinateUtil::dropRemovedAxes (CoordinateSystem& cSysOut,
          ok = cSysOut.removePixelAxis(removePixel[i], replacement);
       }
    }
-//
+// Set preserved axes order if needed.
+   if (preserveAxesOrder) {
+     cSysOut.transpose(Vector<Int>(worldAxesOrder),
+                       Vector<Int>(pixelAxesOrder));
+   }
    return dropped;
 }
 

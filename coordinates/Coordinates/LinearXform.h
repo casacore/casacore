@@ -48,7 +48,7 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> General knowledge of AIPS++ Arrays
+//   <li> General knowledge of Casacore Arrays
 //   <li> Knowledge of FITS terminology in coordinate transformations
 // </prerequisite>
 //

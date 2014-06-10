@@ -13,6 +13,9 @@
 /* char *sprintf(); */
 #include <stdio.h>
 
+void bug_c (char, char *);
+void bugno_c (char, int);
+
 static int number=0;
 /************************************************************************/
 void scropen_c(handle)

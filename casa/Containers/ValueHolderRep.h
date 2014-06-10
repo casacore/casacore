@@ -1,4 +1,4 @@
-//# ValueHolderRep.h: A holder object for the standard AIPS++ data
+//# ValueHolderRep.h: A holder object for the standard CASACORE data
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -101,17 +101,11 @@ public:
   // Destructor.
   ~ValueHolderRep();
 
-  void link()
-    { itsCount++; }
-
-  static void unlink (ValueHolderRep* rep)
-    { if (rep != 0 && --rep->itsCount == 0) delete rep; }
-
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
     
   // Get the value.
-  // It throws an exception if the data type is incorrect.
+  // If possible, it converts the the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -150,6 +144,15 @@ public:
   // Arrays are written as normal arrays using ArrayIO.h. 
   std::ostream& write (std::ostream& os) const;
 
+  // Compare two ValueHolder objects.
+  // They must have the same data type.
+  bool operator< (const ValueHolderRep& right) const;
+  /*
+  bool operator== (const ValueHolderRep& right) const;
+  bool near (const ValueHolderRep& right, tolerance=1e-5) const;
+  bool nearAbs (const ValueHolderRep& right, double tolerance=1e-5) const;
+  */
+
 private:
   // Forbid copy ctor and assignment.
   //# There is no fundamental reason to forbid them, but it saves
@@ -160,14 +163,10 @@ private:
   // </group>
 
 
-  Int      itsCount;
   uInt     itsNdim;
   DataType itsType;
   union {
     Bool   itsBool;
-    uChar  itsUChar;
-    Short  itsShort;
-    Int    itsInt;
     Int64  itsInt64;
     Float  itsFloat;
     Double itsDouble;

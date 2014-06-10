@@ -158,7 +158,7 @@ public:
   // Copy constructor (copy semantics).
   ImageInterface (const ImageInterface& other);
 
-  ~ImageInterface();
+  virtual ~ImageInterface();
 
   // Make a copy of the derived object (reference semantics).
   // <group>
@@ -360,8 +360,7 @@ protected:
     { log_p = logger; }
 
   // Set the image info variable.
-  void setImageInfoMember (const ImageInfo& imageInfo)
-    { imageInfo_p = imageInfo; }
+  void setImageInfoMember (const ImageInfo& imageInfo);
 
   // Set the coordinate system variable.
   void setCoordsMember (const CoordinateSystem& coords)
@@ -378,6 +377,10 @@ protected:
   // Get access to the region handler.
   RegionHandler* getRegionHandler()
     { return regHandPtr_p; }
+
+  // Get non-const access to the ImageInfo.
+  ImageInfo& rwImageInfo()
+    { return imageInfo_p; }
 
 private:
   // It is the job of the derived class to make these variables valid.

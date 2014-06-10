@@ -19,6 +19,7 @@ Mathematics/Interpolate2D.cc
 Mathematics/FFTPack.cc
 Mathematics/FFTW.cc
 Mathematics/FFTServer.cc
+Mathematics/Geometry.cc
 Mathematics/NNLSMatrixSolver.cc
 Mathematics/MatrixSolver.cc
 Mathematics/SquareMatrix2.cc
@@ -38,8 +39,8 @@ endif (FFTW3_FOUND)
 
 install (TARGETS casa_scimath
 RUNTIME DESTINATION bin
-LIBRARY DESTINATION lib
-ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib${LIB_SUFFIX}
+ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
@@ -168,11 +169,21 @@ Functionals/OddPolynomial.tcc
 Functionals/OddPolynomial2.tcc
 Functionals/OddPolynomialParam.h
 Functionals/OddPolynomialParam.tcc
+Functionals/PoissonFunction.h
+Functionals/PoissonFunction.tcc
+Functionals/PoissonFunction2.tcc
+Functionals/PoissonParam.h
+Functionals/PoissonParam.tcc
 Functionals/Polynomial.h
 Functionals/Polynomial.tcc
 Functionals/Polynomial2.tcc
 Functionals/PolynomialParam.h
 Functionals/PolynomialParam.tcc
+Functionals/PowerLogarithmicPolynomial.h
+Functionals/PowerLogarithmicPolynomial.tcc
+Functionals/PowerLogarithmicPolynomial2.tcc
+Functionals/PowerLogarithmicPolynomialParam.h
+Functionals/PowerLogarithmicPolynomialParam.tcc
 Functionals/SPolynomial.h
 Functionals/SPolynomial.tcc
 Functionals/SPolynomialParam.h
@@ -225,6 +236,7 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
+Mathematics/Geometry.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc
 Mathematics/HistAcc.h

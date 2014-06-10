@@ -67,6 +67,8 @@ int n;
   if (n == -1)bug_c(s,"End of file detected");
   else bug_c(s,errmsg_c(n));
 }
+
+void habort_c();
 /************************************************************************/
 void bug_c(s,m)
 char s,*m;
@@ -118,10 +120,11 @@ int n;
   Return the error message associated with some error number.
 ------------------------------------------------------------------------*/
 {
-  static char string[128];
 
 #ifdef vms
+
 #include <descrip.h>
+  static char string[128];
   $DESCRIPTOR(string_descriptor,string);
   short int len0;
   int one;

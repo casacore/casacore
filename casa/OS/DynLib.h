@@ -35,7 +35,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
   // <summary> 
-  // Class to handle loadig of dynamic libraries
+  // Class to handle loading of dynamic libraries
   // </summary>
   // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
   // </reviewed>
@@ -48,22 +48,33 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   // <synopsis> 
   // This class makes it possible to load a dynamic library and execute an
-  // initialization function. Furthermore one can get a pointer to any function
+  // initialization function. Furthermore, one can get a pointer to any function
   // in the dynamic library and close the library.
   //
-  // It is a wrapper around functions dlopen, dlsym, and dlclose.
+  // The search path of the shared library is as follows:
+  // <ul>
+  //  <li> If the environment library CASACORE_LDPATH is defined, it is tried to
+  //       find the library using that path.
+  //  <li> If not defined or not found, the system's (DY)LD_LIBRARY_PATH is used.
+  //  <li> The library looked for has the name 'prefix'libname'suffix'.
+  //       <br>As prefix first "lib" is used, thereafter the given one
+  //       (e.g., "libcasa_").
+  //       <br>As suffix first ".so" is used, thereafter ".dylib" (for OS-X).
+  // </ul>
   //
-  // If dlopen and so is not supported on a platform, the class acts as if
+  // It is a wrapper around functions dlopen, dlsym, and dlclose.
+  // If dlopen and so are not supported on a platform, the class acts as if
   // the shared library could not be found.
   // </synopsis>
 
   // <example>
   // <srcblock>
-  //    DynLib dl("bitflagsengine", "register_bitflagsengine");
+  //    DynLib dl("derivedmscal", "libcasa_", "register_derivedmscal");
   //    AlwaysAssert (dl.getHandle());
   // </srcblock>
-  //  loads the executes library <src>bitflagsengine</src> and executes
-  //  the given register initialization function.
+  // Using this 
+  //  loads the shared library <src>libcasa_derivedmscal.so</src> and
+  //  executes the given register initialization function.
   // </example>
 
   // <motivation> 
@@ -137,6 +148,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
     // Close (unload) the dynamic library (if opened).
     void close();
+
+    // Try if the library can be opened using CASACORE_LDPATH.
+    std::string tryCasacorePath (const std::string& library,
+                                 const std::string& prefix);
 
     //# Handle to dynamic library; note that the pointer is not owned, so the
     //# generated copy ctor and assignment are fine.

@@ -137,12 +137,12 @@ void b()
 {
   // Read back the table.
   Table tab("tMappedArrayEngine_tmp.data");
-  ROArrayColumn<Complex> source1 (tab, "source1");
-  ROArrayColumn<float> source2 (tab, "source2");
-  ROArrayColumn<Complex> source3 (tab, "source3");
-  ROArrayColumn<DComplex> target1 (tab, "target1");
-  ROArrayColumn<uShort> target2 (tab, "target2");
-  ROArrayColumn<DComplex> target3 (tab, "target3");
+  ArrayColumn<Complex> source1 (tab, "source1");
+  ArrayColumn<float> source2 (tab, "source2");
+  ArrayColumn<Complex> source3 (tab, "source3");
+  ArrayColumn<DComplex> target1 (tab, "target1");
+  ArrayColumn<uShort> target2 (tab, "target2");
+  ArrayColumn<DComplex> target3 (tab, "target3");
   Cube<DComplex> arri1(IPosition(3,2,3,4));
   Cube<DComplex> arri3(IPosition(3,2,3,4));
   Cube<DComplex> arrvali(IPosition(3,2,3,4));

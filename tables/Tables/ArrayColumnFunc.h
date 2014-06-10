@@ -55,14 +55,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class GetCellSlices : public BaseSlicesFunctor<T>
   {
   public:
-    GetCellSlices (const ROArrayColumn<T>& col, uInt rownr)
+    GetCellSlices (const ArrayColumn<T>& col, uInt rownr)
       : itsCol(col), itsRow(rownr)
     {}
     virtual void apply (const Slicer& slicer, Array<T>& arr)
       { itsCol.getSlice (itsRow, slicer, arr); }
   private:
-    const ROArrayColumn<T>& itsCol;
-    uInt                   itsRow;
+    const ArrayColumn<T>& itsCol;
+    uInt                  itsRow;
   };
 
   // <summary> Functor to get irregular array slices from a column</summary>
@@ -70,13 +70,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class GetColumnSlices : public BaseSlicesFunctor<T>
   {
   public:
-    GetColumnSlices (const ROArrayColumn<T>& col)
+    GetColumnSlices (const ArrayColumn<T>& col)
       : itsCol(col)
     {}
     virtual void apply (const Slicer& slicer, Array<T>& arr)
       { itsCol.getColumn (slicer, arr); }
   private:
-    const ROArrayColumn<T>& itsCol;
+    const ArrayColumn<T>& itsCol;
   };
 
   // <summary> Functor to put irregular array slices into a cell </summary>

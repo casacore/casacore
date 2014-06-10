@@ -164,7 +164,7 @@ template<class S, class T>
 void RetypedArrayEngine<S,T>::prepare()
 {
     // Get the various parameters from keywords in this column.
-    ROTableColumn thisCol (table(), virtualName());
+    TableColumn thisCol (table(), virtualName());
     Vector<Int> vector;
     thisCol.keywordSet().get ("_RetypedArrayEngine_Shape", vector);
     shape_p.resize (vector.nelements());
@@ -209,28 +209,28 @@ void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
 {
     //# Do not define the shape in the stored column when it has
     //# already been defined and matches the virtual shape.
-    if (rwColumn().isDefined (rownr)) {
-	IPosition storedShape = rwColumn().shape (rownr);
+    if (column().isDefined (rownr)) {
+	IPosition storedShape = column().shape (rownr);
 	IPosition virtualShape = storedShape.getLast (shape.nelements());
 	if (shape.isEqual (virtualShape)) {
 	    return;
 	}
     }
     //# Set the stored shape to the default element shape plus virtual shape.
-    rwColumn().setShape (rownr, shape_p.concatenate (shape));
+    column().setShape (rownr, shape_p.concatenate (shape));
 }
 
 template<class S, class T>
 uInt RetypedArrayEngine<S,T>::ndim (uInt rownr)
 {
-    return roColumn().ndim (rownr) - shape_p.nelements();
+    return column().ndim (rownr) - shape_p.nelements();
 }
 
 template<class S, class T>
 IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
 {
     // The virtual shape is the stored shape minus the first dimensions.
-    IPosition storedShape = roColumn().shape (rownr);
+    IPosition storedShape = column().shape (rownr);
     return storedShape.getLast (storedShape.nelements() - shape_p.nelements());
 }
 
@@ -242,8 +242,8 @@ IPosition RetypedArrayEngine<S,T>::getStoredShape
     //# Determine the element shape.
     //# If the stored is defined, take it from there.
     IPosition elemShape(shape_p);
-    if (rownr < table().nrow()  &&  roColumn().isDefined (rownr)) {
-        elemShape = (roColumn().shape(rownr)).getFirst (elemShape.nelements());
+    if (rownr < table().nrow()  &&  column().isDefined (rownr)) {
+        elemShape = (column().shape(rownr)).getFirst (elemShape.nelements());
     }
     //# The stored shape is element shape plus virtual shape.
     return elemShape.concatenate (virtualShape);
