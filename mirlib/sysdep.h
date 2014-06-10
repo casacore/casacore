@@ -29,6 +29,9 @@
  *    pjt 24jun01 PPC/powerpc is a BIGENDIAN (linux) machine
  */
 
+#ifndef MIRIAD_SYSDEP_H
+#define MIRIAD_SYSDEP_H
+
 #ifndef Null
 #define Null '\0'
 #endif
@@ -133,3 +136,5 @@ typedef int int2;
 #  define unpack32_c(a,b,c) memcpy((char *)(b),(a),sizeof(int)*(c))
 #endif
 #endif
+
+#endif /* MIRIAD_SYSDEP_H */
