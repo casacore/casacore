@@ -492,6 +492,13 @@ void oldArrayTest()
 	AlwaysAssertExit (median(x4) == 50.);
 	AlwaysAssertExit (median(x4, True) == 50.);
 	AlwaysAssertExit (median(x4, True, False, False) == 50.);
+
+        cout << endl<<madfm(x1)<<endl;
+	AlwaysAssertExit (madfm(x1) == 1.);
+	AlwaysAssertExit (madfm(x1, True) == 1.);
+	AlwaysAssertExit (madfm(x1, True, False, False) == 1.);
+	AlwaysAssertExit (madfm(x1(Slice(0,2,2))) == 1.);
+	AlwaysAssertExit (madfm(x4) == 25.);
 	// Make sure x4 is not sorted itself.
 	AlwaysAssertExit (allEQ (x4, x5));
 
