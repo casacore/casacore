@@ -1230,6 +1230,24 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 // <thrown>
 //    </item> ArrayError
 // </thrown>
+template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted, Bool takeEvenMean, Bool inPlace)
+{
+    T med = median(a, tmp, sorted, takeEvenMean, inPlace);
+    if (inPlace  &&  a.contiguousStorage()) {
+      a -= med;
+      return median(a, tmp, False, takeEvenMean, inPlace);
+    }
+    // In this case a copy of a has been made to tmp.
+    // Using it saves making another copy.
+    AlwaysAssert (a.size() == tmp.size(), AipsError);
+    Array<T> atmp(a.shape(), tmp.storage(), SHARE);
+    atmp -= med;
+    return median(atmp, tmp, False, takeEvenMean, True);
+}
+
+// <thrown>
+//    </item> ArrayError
+// </thrown>
 template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
 			     Bool sorted, Bool inPlace)
 {
@@ -1271,6 +1289,29 @@ template<class T> T fractile(const Array<T> &a, Block<T>& tmp, Float fraction,
     }
     return fracval;
 }
+
+// <thrown>
+//    </item> ArrayError
+// </thrown>
+template<class T> T interFractileRange(const Array<T> &a, Block<T> &tmp,
+                                       Float fraction,
+                                       Bool sorted, Bool inPlace)
+{
+  AlwaysAssert (fraction>0  &&  fraction<0.5, AipsError);
+  T hex1, hex2;
+  hex1 = fractile(a, tmp, fraction, sorted, inPlace);
+  if (inPlace  &&  a.contiguousStorage()) {  
+    hex2 = fractile(a, tmp, 1-fraction, sorted, inPlace);
+  } else {
+    // In this case a copy of a has been made to tmp.
+    // Using it saves making another copy.
+    AlwaysAssert (a.size() == tmp.size(), AipsError);
+    Array<T> atmp(a.shape(), tmp.storage(), SHARE);
+    hex2 = fractile(atmp, tmp, 1-fraction, sorted, inPlace);
+  }
+  return (hex2 - hex1);
+}
+
 
 template<typename T>
 Array<std::complex<T> > makeComplex(const Array<T> &left, const Array<T>& right)

@@ -1574,6 +1574,14 @@ template<class T> T median(const MaskedArray<T> &left, Bool sorted,
     return medval;
 }
 
+template<class T> T madfm(const MaskedArray<T> &a, Bool sorted,
+                          Bool takeEvenMean)
+{
+    T med = median(a, sorted, takeEvenMean);
+    MaskedArray<T> absdiff = abs(a - med);
+    return median(absdiff, False, takeEvenMean);
+}
+
 
 template<class T> MaskedArray<T> square(const MaskedArray<T> &left)
 {

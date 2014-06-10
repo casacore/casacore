@@ -415,14 +415,21 @@ template<class T> T rms(const MaskedArray<T> &a);
 // is used to find the median (kthLargest is about 6 times faster
 // than a full quicksort).
 // <group>
-template<class T> inline T median(const MaskedArray<T> &a)
-    { return median (a, False, (a.nelements() <= 100)); }
-template<class T> inline T median(const MaskedArray<T> &a, Bool sorted)
+template<class T> inline T median(const MaskedArray<T> &a, Bool sorted=False)
     { return median (a, sorted, (a.nelements() <= 100)); }
 template<class T> T median(const MaskedArray<T> &a, Bool sorted,
 			   Bool takeEvenMean);
 // </group>
 
+// The median absolute deviation from the median. Interface is as for
+// the median functions
+// <group>
+template<class T> inline T madfm(const MaskedArray<T> &a, Bool sorted=False)
+    { return madfm (a, sorted, (a.nelements() <= 100)); }
+template<class T> T madfm(const MaskedArray<T> &a, Bool sorted,
+                          Bool takeEvenMean);
+// </group>
+ 
 
 // Returns a MaskedArray where every element is squared.
 template<class T> MaskedArray<T> square(const MaskedArray<T> &val);
@@ -475,6 +482,17 @@ public:
     : itsSorted(sorted), itsTakeEvenMean(takeEvenMean) {}
   T operator() (const MaskedArray<T>& arr) const
     { return median(arr, itsSorted, itsTakeEvenMean); }
+private:
+  Bool     itsSorted;
+  Bool     itsTakeEvenMean;
+  Bool     itsInPlace;
+};
+template<typename T> class MaskedMadfmFunc {
+public:
+  explicit MaskedMadfmFunc(Bool sorted=False, Bool takeEvenMean=True)
+    : itsSorted(sorted), itsTakeEvenMean(takeEvenMean) {}
+  Float operator()(const MaskedArray<Float>& arr) const
+    { return madfm(arr, itsSorted, itsTakeEvenMean); }
 private:
   Bool     itsSorted;
   Bool     itsTakeEvenMean;
