@@ -1230,18 +1230,23 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 // <thrown>
 //    </item> ArrayError
 // </thrown>
-template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted, Bool takeEvenMean, Bool inPlace)
+template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted,
+                          Bool takeEvenMean, Bool inPlace)
 {
     T med = median(a, tmp, sorted, takeEvenMean, inPlace);
+    Array<T> atmp;
     if (inPlace  &&  a.contiguousStorage()) {
-      a -= med;
-      return median(a, tmp, False, takeEvenMean, inPlace);
+      atmp.reference (a);   // remove constness
+    } else {
+      // A copy of a has been made to tmp.
+      // Using it saves making another copy.
+      AlwaysAssert (a.size() == tmp.size(), AipsError);
+      atmp.reference (Array<T>(a.shape(), tmp.storage(), SHARE));
     }
-    // In this case a copy of a has been made to tmp.
-    // Using it saves making another copy.
-    AlwaysAssert (a.size() == tmp.size(), AipsError);
-    Array<T> atmp(a.shape(), tmp.storage(), SHARE);
-    atmp -= med;
+    T* aptr = atmp.data();
+    for (size_t i=0; i<atmp.size(); ++i) {
+      aptr[i] = std::abs(aptr[i] - med);
+    }
     return median(atmp, tmp, False, takeEvenMean, True);
 }
 
