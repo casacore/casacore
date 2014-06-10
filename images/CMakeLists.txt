@@ -1,14 +1,9 @@
 #
 # CASA Images
 #
-if (APPLE)
-    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram COMPILE_FLAGS "-p ImageExprGram")
-    execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ImageExprGram ImageExprGram.ycc WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
-else (APPLE)
-    BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
-    FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
-endif (APPLE)
+
+BISON_TARGET (ImageExprGram Images/ImageExprGram.yy ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.ycc COMPILE_FLAGS "-p ImageExprGram")
+FLEX_TARGET (ImageExprGram Images/ImageExprGram.ll ${CMAKE_CURRENT_BINARY_DIR}/ImageExprGram.lcc COMPILE_FLAGS "-PImageExprGram")
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
