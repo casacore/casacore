@@ -9,18 +9,10 @@ TableGram
 )
 
  
-if (APPLE)
-    foreach (src ${parser_inputs})
-        BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src} COMPILE_FLAGS "-y -p${src}")
-        execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${src} ${src}.ycc WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-        FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
-    endforeach (src)
-else (APPLE)
-    foreach (src ${parser_inputs})
-        BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
-        FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
-    endforeach (src)
-endif (APPLE)
+foreach (src ${parser_inputs})
+    BISON_TARGET (${src} Tables/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    FLEX_TARGET (${src} Tables/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+endforeach (src)
  
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
