@@ -15,23 +15,24 @@
 /*    rjs  23dec93   Do not open in read/write mode unless necessary.	*/
 /*    rjs   6nov94   Change item handle to an integer.			*/
 /*    rjs  19apr97   Handle FORTRAN LOGICALs better. Some tidying.      */
+/*    rjs  03jan05   Tidying.						*/
+/*    pjt   7jan10   yes, and fixed 64bit offsets (not lengths!!!)      */
+/*    pjt    feb12   added masking support, getmaski,setmaski           */
 /************************************************************************/
 
-void bug_c(char s,char * m);
-void bugno_c(char s, int m);
-
-#define BUG(sev,a)   bug_c(sev,a)
-#define ERROR(sev,a) bug_c(sev,((void)sprintf a,message))
-#define CHECK(x) if(x) bugno_c('f',x)
-#define private static
+#if defined(HAVE_CONFIG_H) && HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "miriad.h"
+/* #include "io.h" */
 
-
-private void mkfill();
-void mkflush_c();
+#define BUG(sev,a)   bug_c(sev,a)
+#define ERROR(sev,a) bug_c(sev,((void)sprintf a,message))
+#define CHECK(x) if(x) bugno_c('f',x)
 
 static char message[128];
 
@@ -63,13 +64,21 @@ static int masks[BITS_PER_INT+1]={
 #define MK_RUNS 2
 #define BUFFERSIZE 128
 #define OFFSET (((ITEM_HDR_SIZE-1)/H_INT_SIZE + 1)*BITS_PER_INT)
-typedef struct {int item;
-		int buf[BUFFERSIZE],offset,length,size,modified,rdonly,tno;
-		char name[32];
-		} MASK_INFO;
+/* off_t is used for size and length as well because mixed arithmetic with */
+/* size_t and off_t gives no end of trouble                                */
+typedef struct {
+  int item;
+  int buf[BUFFERSIZE];
+  off_t offset,length,size;
+  int modified,rdonly,tno;
+  char name[32];
+} MASK_INFO;
+
+
+private void mkfill(MASK_INFO *mask,off_t offset);
 
 /************************************************************************/
-char *mkopen_c(int tno, char * name, char * status)
+char *mkopen_c(int tno,char *name,char *status)
 /*
   This opens a mask item, and readies it for access.
 
@@ -126,8 +135,7 @@ char *mkopen_c(int tno, char * name, char * status)
   return((char *)mask);
 }
 /************************************************************************/
-void mkclose_c(handle)
-char *handle;
+void mkclose_c(char *handle)
 /*
   This writes out any stuff that we have buffered up, and then closes
   the mask file.
@@ -145,9 +153,7 @@ char *handle;
   free((char *)mask);
 }
 /************************************************************************/
-int mkread_c(handle,mode,flags,offset,n,nsize)
-char *handle;
-int offset,n,*flags,nsize,mode;
+int mkread_c(char *handle,int mode,int *flags,off_t offset,int n,int nsize)
 /*
 ------------------------------------------------------------------------*/
 {
@@ -155,7 +161,8 @@ int offset,n,*flags,nsize,mode;
 		     t = state; state = otherstate; otherstate = t
 
   MASK_INFO *mask;
-  int i,len,boff,blen,bitmask,*buf,iostat,t,state,otherstate,runs;
+  off_t i,boff,t,len,blen;
+  int bitmask,*buf,iostat,state,otherstate,runs;
   int *flags0;
 
   flags0 = flags;
@@ -234,14 +241,14 @@ int offset,n,*flags,nsize,mode;
   return(flags - flags0);
 }
 /************************************************************************/
-void mkwrite_c(handle,mode,flags,offset,n,nsize)
-char *handle;
-int offset,n,*flags,mode, nsize;
+void mkwrite_c(char *handle,int mode,Const int *flags,off_t offset,
+               int n,int nsize)
 /*
 ------------------------------------------------------------------------*/
 {
   MASK_INFO *mask;
-  int i,len,boff,blen,bitmask,*buf,t;
+  off_t i,boff,t,len,blen;
+  int bitmask,*buf;
   int run,curr,state,iostat;
 
   curr = 0;
@@ -335,8 +342,7 @@ int offset,n,*flags,mode, nsize;
   }
 }
 /************************************************************************/
-void mkflush_c(handle)
-char *handle;
+void mkflush_c(char *handle)
 /*
   Flush out the data in the buffer. A complication is that the last
   integer in the buffer may not be completely filled. In this case we
@@ -348,7 +354,9 @@ char *handle;
 ------------------------------------------------------------------------*/
 {
   MASK_INFO *mask;
-  int i,t,*buf,offset,iostat;
+  off_t offset;
+  int i;
+  int t,*buf,iostat;
 
   mask = (MASK_INFO *)handle;
 
@@ -380,9 +388,43 @@ char *handle;
   mask->modified = FALSE;
 }
 /************************************************************************/
-private void mkfill(mask,offset)
-MASK_INFO *mask;
-int offset;
+void getmaski_c(Const int mask, int *masks)
+/*
+  Decode an integer into an array of integers representing each bit.
+  Due to lack of support for masking operations in Fortran-77.
+  User is responsible for properly allocating enough space in masks[]
+  The sign bit is not used.
+
+------------------------------------------------------------------------*/
+{
+  int i,n, m;
+
+  n = 8*sizeof(int) - 1;    /* skip the sign bit */
+  for (i=0, m=1; i<n; i++, m=m<<1){
+    // printf("i=%d m=0x%x n=%d\n",i,m,n);
+    masks[i] = mask & m;
+  }
+}
+/************************************************************************/
+void setmaski_c(int *mask, Const int *masks)
+/*
+  Decode an integer into an array of integers representing each bit.
+  Due to lack of support for masking operations in Fortran-77.
+  User is responsible for properly allocating enough space in masks[]
+  The sign bit is not used.
+
+------------------------------------------------------------------------*/
+{
+  int i, n, m, mm;
+
+  n = 8*sizeof(int) - 1;    /* skip the sign bit */
+  for (i=0, mm=0, m=1; i<n; i++, m=m<<1){
+    if (masks[i]) mm |= m;
+  }
+  *mask = mm;
+}
+/************************************************************************/
+private void mkfill(MASK_INFO *mask, off_t offset)
 /*
   We have to fill in some bits in the current buffer.
 
@@ -391,7 +433,8 @@ int offset;
     offset	The first location that we want to write at.
 ------------------------------------------------------------------------*/
 {
-  int off,len,t,*buf,iostat,i;
+  off_t off,len;
+  int i,t,*buf,iostat;
 
   if(mask->offset+mask->length < mask->size) {
     buf = mask->buf + mask->length/BITS_PER_INT;

@@ -18,14 +18,15 @@
         rjs  23feb93  Merged maxdimc.h and xyzio.h. Include MAXNAX.
 	rjs   9sep94  Add MAXWIN
         pjt  30apr01  re-aligned maxdimc and maxdim
+        mhw  07may14  Increase limits to 64 bit values
 	-------------------------------------------------------------
 */
 
-#define		MAXBUF		4194304
-#define		MAXDIM		2048
-#define		MAXANT		30
+#define		MAXBUF		16777216
+#define		MAXDIM		32768
+#define		MAXANT		64
 #define		MAXBASE		((MAXANT * (MAXANT + 1)) / 2)
-#define		MAXCHAN		2048
+#define		MAXCHAN		70000
 #define		MAXNAX		7
-#define		MAXWIN		16
+#define		MAXWIN		48
 #define		MAXWIDE		18

@@ -21,34 +21,41 @@
 /*  pjt 27mar99   make history a static, so nobody can see it :-)	*/
 /*  rjs 29apr99   Get hdprobe to check for string buffer overflow.	*/
 /*  dpr 11may01   Descriptive error for hisopen_c                       */
+/*  pjt 22jun02   MIR4 prototypes and using int8 for long integers      */
+/*  pjt/rjs 1jan05 replaced shortcut rdhdd code with their own readers  */
+/*                 this fixes a serious bug in rdhdl for large values   */
+/*                Also adding in some bugv_c() called to replace bug_c  */
+/*  pjt 12jan05   Fixed up type conversion for int8's in rhhdl          */
+/*  pjt  6feb05   rdhdd_c() : no more type check (see comment in code)  */
+/*  pjt 17feb05   fixed bug in reading int8's from old MIR3 files       */
+/*  pjt  6sep06   read integers via rdhdi                               */
 /************************************************************************/
+
+#if defined(HAVE_CONFIG_H) && HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
-
+#include "miriad.h"
 #include "io.h"
+
 #define check(iostat) if(iostat)bugno_c('f',iostat)
 #define MAXSIZE 1024
 #define MAXLINE 80
 
+
 static int history[MAXOPEN];
 
-void bugno_c(),bug_c();
 #define Sprintf (void)sprintf
 #define Strcpy  (void)strcpy
-void hisopen_c(),hiswrite_c(),hisclose_c(),hdcopy_c(),hdprobe_c();
-void rdhdr_c(),rdhdi_c(),rdhdd_c(),rdhda_c(),rdhdc_c();
-void wrhdr_c(),wrhdd_c(),wrhdi_c(),wrhda_c(),wrhdc_c();
-int hdprsnt_c();
 
 /************************************************************************/
-void hisopen_c(tno,status)
-int tno;
-char *status;
+void hisopen_c(int tno,Const char *status)
 /** hisopen -- Open the history file.					*/
-/*& mjs									*/
+/*& pjt									*/
 /*: header-i/o								*/
 /*+ FORTRAN call sequence:
 
@@ -70,11 +77,9 @@ char *status;
   check(iostat);
 }
 /************************************************************************/
-void hiswrite_c(tno,text)
-int tno;
-char *text;
+void hiswrite_c(int tno,Const char *text)
 /** hiswrite -- Write a line of text to the history file.		*/
-/*& mjs									*/
+/*& pjt									*/
 /*: header-i/o								*/
 /*+ FORTRAN call sequence:
 
@@ -95,11 +100,9 @@ char *text;
   hwritea_c(history[tno],text,strlen(text)+1,&iostat);		check(iostat);
 }
 /************************************************************************/
-void hisread_c(tno,text,length,eof)
-int tno,length,*eof;
-char *text;
+void hisread_c(int tno,char *text,size_t length,int *eof)
 /** hisread -- Read a line of text from the history file.		*/
-/*& mjs									*/
+/*& pjt									*/
 /*: header-i/o								*/
 /*+ FORTRAN call sequence:
 
@@ -126,10 +129,9 @@ char *text;
   else bugno_c('f',iostat);
 }
 /************************************************************************/
-void hisclose_c(tno)
-int tno;
+void hisclose_c(int tno)
 /** hisclose -- This closes the history file.				*/
-/*& mjs									*/
+/*& pjt								        */
 /*: header-i/o								*/
 /*+ FORTRAN call sequence:
 
@@ -146,12 +148,9 @@ int tno;
   hdaccess_c(history[tno],&iostat);				check(iostat);
 }
 /************************************************************************/
-void wrhdr_c(thandle,keyword,value)
-int thandle;
-char *keyword;
-double value;
+void wrhdr_c(int thandle,Const char *keyword,double value)
 /** wrhdr -- Write a real valued header variable.			*/
-/*& mjs									*/
+/*& pjt									*/
 /*: header-i/o								*/
 /*+ FORTRAN call sequence:
 
@@ -180,10 +179,7 @@ double value;
   hdaccess_c(item,&iostat);					check(iostat);
 }
 /************************************************************************/
-void wrhdd_c(thandle,keyword,value)
-int thandle;
-char *keyword;
-double value;
+void wrhdd_c(int thandle,Const char *keyword,double value)
 /** wrhdd -- Write a double precision valued header variable.		*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -213,10 +209,7 @@ double value;
   hdaccess_c(item,&iostat);					check(iostat);
 }
 /************************************************************************/
-void wrhdi_c(thandle,keyword,value)
-int thandle;
-char *keyword;
-int value;
+void wrhdi_c(int thandle,Const char *keyword,int value)
 /** wrhdi -- Write an integer valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -246,10 +239,42 @@ int value;
   hdaccess_c(item,&iostat);					check(iostat);
 }
 /************************************************************************/
-void wrhdc_c(thandle,keyword,value)
-int thandle;
-char *keyword;
-float *value;
+void wrhdl_c(int thandle,Const char *keyword,int8 value)
+/** wrhdl -- Write an integer*8 valued header variable.			*/
+/*& pjt									*/
+/*: header-i/o								*/
+/*+ FORTRAN call sequence:
+
+	subroutine wrhdl(tno,keyword,value)
+	integer tno
+	character keyword*(*)
+	integer*8 value
+
+  Write an integer*8 valued header variable. This is only supported
+  on compilers that know how to handle integer*8 (e.g. gnu, intel).
+  Without this support, some files in miriad will be limited to
+  8 GB.
+
+  Input:
+    tno		The handle of the data set.
+    keyword	The name of the header variable.
+    value	The integer*8 value of the header variable.		*/
+/*--									*/
+/*----------------------------------------------------------------------*/
+{
+  int item;
+  int iostat,offset;
+
+  /* Sault proposes to write an INT if below 2^31, else INT8 */
+
+  haccess_c(thandle,&item,keyword,"write",&iostat);		check(iostat);
+  hwriteb_c(item,int8_item,0,ITEM_HDR_SIZE,&iostat);		check(iostat);
+  offset = mroundup(ITEM_HDR_SIZE,H_INT8_SIZE);
+  hwritel_c(item,&value,offset,H_INT8_SIZE,&iostat);		check(iostat);
+  hdaccess_c(item,&iostat);					check(iostat);
+}
+/************************************************************************/
+void wrhdc_c(int thandle,Const char *keyword,Const float *value)
 /** wrhdc -- Write a complex-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -278,10 +303,7 @@ float *value;
   hdaccess_c(item,&iostat);					check(iostat);
 }
 /************************************************************************/
-void wrhda_c(thandle,keyword,value)
-int thandle;
-char *keyword;
-char *value;
+void wrhda_c(int thandle,Const char *keyword,Const char *value)
 /** wrhda -- Write a string-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -306,15 +328,12 @@ char *value;
 
   haccess_c(thandle,&item,keyword,"write",&iostat);		check(iostat);
   hwriteb_c(item,char_item,0,ITEM_HDR_SIZE,&iostat);		check(iostat);
-  hwriteb_c(item,value,ITEM_HDR_SIZE,strlen(value),&iostat);	check(iostat);
+  hwriteb_c(item,(char *)value,ITEM_HDR_SIZE,
+	    strlen(value),&iostat);                             check(iostat);
   hdaccess_c(item,&iostat);					check(iostat);
 }
 /************************************************************************/
-void rdhdr_c(thandle,keyword,value,defval)
-int thandle;
-char *keyword;
-float *value;
-double defval;
+void rdhdr_c(int thandle,Const char *keyword,float *value,double defval)
 /** rdhdr -- Read a real-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -344,10 +363,7 @@ double defval;
   *value = dvalue;
 }
 /************************************************************************/
-void rdhdi_c(thandle,keyword,value,defval)
-int thandle;
-char *keyword;
-int *value,defval;
+void rdhdi_c(int thandle,Const char *keyword,int *value,int defval)
 /** rdhdi -- Read an integer-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -371,16 +387,77 @@ int *value,defval;
 /*--									*/
 /*----------------------------------------------------------------------*/
 {
-  double dvalue,ddefval;
-  ddefval = defval;
-  rdhdd_c(thandle,keyword,&dvalue,ddefval);
-  *value = dvalue;
+  int8 lvalue,ldefval;
+  ldefval = defval;
+  rdhdl_c(thandle,keyword,&lvalue,ldefval);
+
+  if(lvalue > 0x7FFFFFFF)
+    bugv_c('f',"Item %s too large for rdhdi: %ld",keyword,lvalue);
+  *value = lvalue;
 }
 /************************************************************************/
-void rdhdd_c(thandle,keyword,value,defval)
-int thandle;
-char *keyword;
-double *value,defval;
+void rdhdl_c(int thandle,Const char *keyword,int8 *value,int8 defval)
+/** rdhdl -- Read an integer*8-valued header variable.			*/
+/*& mjs									*/
+/*: header-i/o								*/
+/*+ FORTRAN call sequence:
+
+	subroutine rdhdl(tno,keyword,value,default)
+	integer tno
+	character keyword*(*)
+	integer*8 value,default
+
+  Read an integer*8 valued header variable. Only supported on some
+  compilers. See comments in wrhdl
+
+  Input:
+    tno		The file handle of the data set.
+    keyword	The name of the header variable.
+    default	The default value to return, if the header variable
+		is not found.
+  Output:
+    value	The value of the header variable. This will be the default
+		value, if the variable is missing from the header.	*/
+/*--									*/
+/*----------------------------------------------------------------------*/
+{
+  int item;
+  char s[ITEM_HDR_SIZE];
+  int iostat,length,offset,itemp;
+
+/* Firstly assume the variable is missing. Try to get it. If successful
+   read it. */
+
+  *value = defval;
+  haccess_c(thandle,&item,keyword,"read",&iostat);	if(iostat)return;
+  length = hsize_c(item);
+  if(length >= 0){
+
+/* Determine the type of the value, and convert it to double precision. */
+
+    hreadb_c(item,s,0,ITEM_HDR_SIZE,&iostat);		check(iostat);
+    iostat = 0;
+    if(      !memcmp(s,int8_item, ITEM_HDR_SIZE)){
+      offset = mroundup(ITEM_HDR_SIZE, H_INT8_SIZE);
+      if(offset + H_INT8_SIZE == length)
+	hreadl_c(item,value,offset,H_INT8_SIZE,&iostat);
+    } else if ( !memcmp(s,int_item, ITEM_HDR_SIZE)){
+      /* this is to cover old style MIR3 files that were using int4's */
+      offset = mroundup(ITEM_HDR_SIZE, H_INT_SIZE);
+      if(offset + H_INT_SIZE == length) {
+	hreadi_c(item,&itemp,offset,H_INT_SIZE,&iostat);
+        *value = itemp;
+      }
+    } else
+      bugv_c('f',"rdhdl_c: item %s not an int8 or small enough int4",keyword);
+      
+    check(iostat);
+  }
+  hdaccess_c(item,&iostat);				check(iostat);
+
+}
+/************************************************************************/
+void rdhdd_c(int thandle,Const char *keyword,double *value,double defval)
 /** rdhdd -- Read a double precision-valued header variable.		*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -438,16 +515,21 @@ double *value,defval;
       if(offset + H_DBLE_SIZE == length){
 	hreadd_c(item,value, offset,H_DBLE_SIZE,&iostat);
       }
-    }
+    } 
+#if 0
+    /* can't do this: some routines, e.g. imhead, actually depend
+     *  on it falling through. Sick, but true 
+     */
+    else
+      bugv_c('f',"rdhdd_c: keyword %s not covered here",keyword);
+#endif
+      
     check(iostat);
   }
   hdaccess_c(item,&iostat);				check(iostat);
 }
 /************************************************************************/
-void rdhdc_c(thandle,keyword,value,defval)
-int thandle;
-char *keyword;
-float *value,*defval;
+void rdhdc_c(int thandle,Const char *keyword,float *value,Const float *defval)
 /** rdhdc -- Read a complex-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -494,10 +576,7 @@ float *value,*defval;
   hdaccess_c(item,&iostat);				check(iostat);
 }
 /************************************************************************/
-void rdhda_c(thandle,keyword,value,defval,len)
-int thandle,len;
-char *keyword;
-char *value,*defval;
+void rdhda_c(int thandle,Const char *keyword,char *value,Const char *defval,int len)
 /** rdhda -- Read a string-valued header variable.			*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -523,7 +602,7 @@ char *value,*defval;
 {
   int item;
   char s[ITEM_HDR_SIZE];
-  int iostat,dodef,length;
+  int iostat,dodef,length=0;
 
 /* Firstly assume the variable is missing. Try to get it. If successful
    read it. */
@@ -542,15 +621,13 @@ char *value,*defval;
     hdaccess_c(item,&iostat);					check(iostat);
   }
   if( dodef ) {
-    length = min((int) strlen(defval),len-1);
+    length = min((int)strlen(defval),len-1);
     memcpy(value,defval,length);
   }
   *(value+length) = 0;
 }
 /************************************************************************/
-void hdcopy_c(tin,tout,keyword)
-int tin,tout;
-char *keyword;
+void hdcopy_c(int tin,int tout,Const char *keyword)
 /** hdcopy -- Copy a headfer variable from one data set to another.	*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -579,7 +656,7 @@ char *keyword;
   size = hsize_c(item_in);
   offset = 0;
   while(offset < size){
-    length = min(size - offset, (int) sizeof(buf));
+    length = min(size - offset, (int)sizeof(buf));
     hreadb_c(item_in,buf,offset,length,&iostat);	check(iostat);
     hwriteb_c(item_out,buf,offset,length,&iostat);	check(iostat);
     offset += length;
@@ -588,9 +665,7 @@ char *keyword;
   hdaccess_c(item_out,&iostat);				check(iostat);
 }
 /************************************************************************/
-int hdprsnt_c(tno,keyword)
-int tno;
-char *keyword;
+int hdprsnt_c(int tno,Const char *keyword)
 /** hdprsnt -- Determine if a header variable is present.		*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -612,10 +687,7 @@ char *keyword;
   else			    return(FORT_FALSE);
 }
 /************************************************************************/
-void hdprobe_c(tno,keyword,descr,length,type,n)
-int tno;
-char *keyword,*descr,*type;
-int *n,length;
+void hdprobe_c(int tno,Const char *keyword,char *descr,size_t length,char *type,int *n)
 /** hdprobe -- Determine characteristics of a header variable.		*/
 /*& mjs									*/
 /*: header-i/o								*/
@@ -638,6 +710,7 @@ int *n,length;
     type	One of:
 		  'nonexistent'
 		  'integer*2'
+		  'integer*8'
 		  'integer'
 		  'real'
 		  'double'
@@ -656,6 +729,7 @@ int *n,length;
   int iostat,unknown,size,i,itemp,offset,bufit;
   double dtemp;
   int2 jtemp;
+  int8 ltemp;
 
   haccess_c(tno,&item,keyword,"read",&iostat);
   *n = 0;
@@ -699,6 +773,17 @@ int *n,length;
       else if(size == H_INT2_SIZE){
 	hreadj_c(item,&jtemp,offset,H_INT2_SIZE,&iostat);	check(iostat);
 	Sprintf(buf,"%d",jtemp);
+	bufit = 1;
+      }
+    } else if(!memcmp(s,int8_item,ITEM_HDR_SIZE)){
+      offset = mroundup(ITEM_HDR_SIZE,H_INT8_SIZE);
+      size -= offset;
+      Strcpy(type,"integer*8");
+      *n = size / H_INT8_SIZE;
+      if(size % H_INT8_SIZE) unknown = TRUE;
+      else if(size == H_INT8_SIZE){
+	hreadl_c(item,&ltemp,offset,H_INT8_SIZE,&iostat);	check(iostat);
+	Sprintf(buf,"%lld",ltemp);
 	bufit = 1;
       }
     } else if(!memcmp(s,dble_item,ITEM_HDR_SIZE)){
@@ -747,7 +832,8 @@ int *n,length;
     Strcpy(type,"unknown");
     *n = size + ITEM_HDR_SIZE;
   } else if(bufit){
-    if((int) strlen(buf) > length - 1)bug_c('f',"Descr buffer overflow in hdprobe");
+    if(strlen(buf) > length - 1)
+      bugv_c('f',"Descr buffer overflow in hdprobe for %s",keyword);
     strcpy(descr,buf);
   }
 }

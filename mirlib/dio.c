@@ -26,39 +26,50 @@
 /*	 5-nov-94  rjs Improve POSIX compliance.			*/
 /*	26-Oct-95  rjs Honour TMPDIR environment variable, if set.	*/
 /*	10-Jan-96  rjs Make sure scratch file names are unique.		*/
+/*      17-jun-02  pjt MIR4 changes, and proper prototypes              */
+/*	 5-nov-04  jwr Changed a few size_t to ssize_t or off_t		*/
+/*       3-jan-05  pjt ssize casting to appease the compiler            */
+/*                     use SSIZE_MAX to protect from bad casting ?      */
+/*       2-mar-05  pjt template->templat for C++, just in case          */
+/*      02-dec-11 pkgw Fix semantics of I/O syscalls in dread, dwrite   */
 /************************************************************************/
 
-#include <sys/types.h>
-#include <sys/stat.h>
+#if defined(HAVE_CONFIG_H) && HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <limits.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <dirent.h>
 #define direct dirent
+#include <stdio.h>
+#include <errno.h>
+
+#include "miriad.h"
+
+#define MAXPATH 128
+
 #ifndef NULL
 #  define NULL 0
 #endif
-#include <stdio.h>
-#if defined(_trace_)
-  extern int errno;
-#endif
-#include <errno.h>
-
-#define MAXPATH 128
 
 #define Malloc(x) malloc((unsigned)(x))
 #define Strcat (void)strcat
 #define Strcpy (void)strcpy
-#define Lseek(a,b,c) (int)lseek(a,(off_t)(b),c)
+#define Lseek(a,b,c) (off_t)lseek(a,(off_t)(b),c)
 
-struct dent { char path[MAXPATH];
-		DIR *dir;};
+struct dent { 
+  char path[MAXPATH];
+  DIR *dir;
+};
 /************************************************************************/
-void ddelete_c(path,iostat)
-char *path;
-int *iostat;
+void ddelete_c(char *path,int *iostat)
 /*
   This deletes a file, and returns an i/o status.
 ------------------------------------------------------------------------*/
@@ -66,9 +77,7 @@ int *iostat;
   *iostat = ( unlink(path) ? errno : 0 );
 }
 /************************************************************************/
-void dtrans_c(inpath,outpath,iostat)
-char *inpath,*outpath;
-int *iostat;
+void dtrans_c(char *inpath,char *outpath,int *iostat)
 /*
   Translate a directory spec into the local format. On a UNIX machine,
   this merely involves adding a slash to the end of the name.
@@ -88,9 +97,7 @@ int *iostat;
   if(*s != '/')Strcat(outpath,"/");
 }
 /************************************************************************/
-void dmkdir_c(path,iostat)
-char *path;
-int *iostat;
+void dmkdir_c(char *path,int *iostat)
 /*
   Create a directory. This might be a privileged operation on some systems,
   in which case dmkdir_c will have to work by using popen(3) and mkdir(1).
@@ -114,9 +121,7 @@ int *iostat;
   if(mkdir(Path,0777) < 0) *iostat = errno;
 }
 /************************************************************************/
-void drmdir_c(path,iostat)
-char *path;
-int *iostat;
+void drmdir_c(char *path,int *iostat)
 /*
   Delete a directory. This might be a privileged operation on some systems,
   in which case drmdir_c will have to work by using popen(3) and rmdir(1).
@@ -139,18 +144,14 @@ int *iostat;
   *iostat = 0;
   if(rmdir(Path) < 0) *iostat = errno;
 }
-
-void bug_c(char s, char * m);
-
 /************************************************************************/
-void dopen_c(fd,name,status,size,iostat)
-int *fd,*size,*iostat;
-char *name,*status;
+void dopen_c(int *fd,char *name,char *status,off_t *size,int *iostat)
 /*
   Open a file.
   Input:
     name	Name of file to create (in host format).
     status	Either "read", "write", "append" or "scratch".
+                "scratch" files are using $TMPDIR, if present, else current.
 
   Output:
     fd		File descriptor.
@@ -159,7 +160,7 @@ char *name,*status;
 
 ------------------------------------------------------------------------*/
 {
-  int flags,is_scratch,pid;
+  int is_scratch,pid,flags=0;
   char *s,sname[MAXPATH];
 
   is_scratch = *iostat = 0;
@@ -177,7 +178,9 @@ char *name,*status;
     else         sprintf(sname,"%s.%d",name,pid);
     s = sname;
   } else bug_c('f',"dopen_c: Unrecognised status");
-
+#ifdef O_LARGEFILE
+  flags |= O_LARGEFILE;
+#endif
   if((*fd = open(s,flags,0644)) < 0){*iostat = errno; return;}
   *size = Lseek(*fd,0,SEEK_END);
 
@@ -187,8 +190,7 @@ char *name,*status;
   if(is_scratch)(void)unlink(s);
 }
 /************************************************************************/
-void dclose_c(fd,iostat)
-int fd,*iostat;
+void dclose_c(int fd,int *iostat)
 /*
   This subroutine does unbelievably complex stuff.
 ------------------------------------------------------------------------*/
@@ -196,55 +198,76 @@ int fd,*iostat;
   *iostat = ( close(fd) < 0 ? errno : 0 );
 }
 /************************************************************************/
-void dread_c(fd,buffer,offset,length,iostat)
-int fd,offset,length,*iostat;
-char *buffer;
+void dread_c(int fd, char *buffer,off_t offset,size_t length,int *iostat)
 /*
   Read from a file.
 ------------------------------------------------------------------------*/
 {
-  int nread;
-
+  ssize_t nread;
+#ifdef debug
+  if (length >= SSIZE_MAX) bugv_c('f',"dread_c: possible incomplete read");
+#endif
   if(Lseek(fd,offset,SEEK_SET) < 0) { *iostat = errno; return; }
-  nread = read(fd,buffer,length);
-  if(nread < 0) *iostat = errno; 
-  else if(nread != length) *iostat = EIO;
+
+  while (length) {
+    nread = read(fd,buffer,length);
+    if(nread < 0) {
+      if(errno == EINTR)
+	nread = 0; /* should reattempt the system call identically */
+      else {
+	*iostat = errno;
+	return;
+      }
+    } else if(nread == 0) {
+      /* unexpected EOF -- no good errno code for this */
+      *iostat = EIO;
+      return;
+    }
+    length -= nread;
+  }
 }
 /************************************************************************/
-void dwrite_c(fd,buffer,offset,length,iostat)
-int fd,offset,length,*iostat;
-char *buffer;
+void dwrite_c(int fd, char *buffer,off_t offset,size_t length,int *iostat)
 /*
   Write to a file.
 ------------------------------------------------------------------------*/
 {
-  int nwrite;
-
+  ssize_t nwrite;
+#ifdef debug
+  if (length >= SSIZE_MAX) bugv_c('f',"dwrite_c: possible incomplete write");
+#endif
   if(Lseek(fd,offset,SEEK_SET) < 0) { *iostat = errno; return; }
-  nwrite = write(fd,buffer,length);
-  if(nwrite < 0) *iostat = errno; 
-  else if(nwrite != length) *iostat = EIO;
+
+  while (length) {
+    nwrite = write(fd,buffer,length);
+    if(nwrite < 0) {
+      if(errno == EINTR)
+	nwrite = 0; /* should reattempt the system call identically */
+      else {
+	*iostat = errno;
+	return;
+      }
+    }
+    length -= nwrite;
+  }
 }
 /************************************************************************/
 /*ARGSUSED*/
-void dwait_c(int fd, int * iostat)
+void dwait_c(int fd,int *iostat)
 /*
   This nominally waits for i/o to a file to finish. Things work synchronously
   in UNIX.
 ------------------------------------------------------------------------*/
 {
-  *iostat = fd; /* humoring gcc */
   *iostat = 0;
 }
 /************************************************************************/
-int dexpand_c(template,output,length)
-char *template,*output;
-int length;
+int dexpand_c(char *templat,char *output,int length)
 /*
   This expands wildcards, matching them with files.
 
   Input:
-    template	The input character string, containing the wildcards.
+    templat	The input character string, containing the wildcards.
     length	The length of the output buffer.
   Output:
     output	All the files matching "template". Filenames are separated
@@ -256,7 +279,7 @@ int length;
   int l;
 
   Strcpy(line,"echo ");
-  Strcat(line,template);
+  Strcat(line,templat);
   fd = popen(line,"r");
   if(fd == NULL) return(-1);
   s = output;
@@ -272,8 +295,7 @@ int length;
   return(s-output);
 }
 /************************************************************************/
-void dopendir_c(contxt,path)
-char **contxt,*path;
+void dopendir_c(char **contxt,char *path)
 /*
   Open a directory, and prepare to read from it.
 ------------------------------------------------------------------------*/
@@ -286,8 +308,7 @@ char **contxt,*path;
   d->dir = opendir(path);
 }
 /************************************************************************/
-void dclosedir_c(contxt)
-char *contxt;
+void dclosedir_c(char *contxt)
 /*
   Close a directory.
 ------------------------------------------------------------------------*/
@@ -299,7 +320,7 @@ char *contxt;
 }
 /************************************************************************/
 /*ARGSUSED*/
-void dreaddir_c(char * contxt, char * path, int length)
+void dreaddir_c(char *contxt,char *path,int length)
 /*
   Read a directory entry.
 ------------------------------------------------------------------------*/
@@ -309,7 +330,6 @@ void dreaddir_c(char * contxt, char * path, int length)
   struct stat buf;
   char npath[MAXPATH];
 
-  length ++; /* humoring gcc */
   d = (struct dent *)contxt;
 
   do dp = readdir(d->dir);
