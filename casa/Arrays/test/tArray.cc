@@ -514,6 +514,11 @@ void oldArrayTest()
 	AlwaysAssertExit (fractile(x4, 0.5) == 50.);
 	AlwaysAssertExit (fractile(x4, 0.05) == 5.);
 	AlwaysAssertExit (fractile(x4, 0.951) == 95.);
+
+        AlwaysAssertExit (interQuartileRange(x1) == 2.);
+        AlwaysAssertExit (interFractileRange(x1, 0.25) == 2.);
+        AlwaysAssertExit (interHexileRange(x4) ==
+                          fractile(x4, 5./6.) - fractile(x4, 1./6.));
 	// Make sure x4 is not sorted itself.
 	AlwaysAssertExit (allEQ (x4, x5));
 	cout << "OK\n";

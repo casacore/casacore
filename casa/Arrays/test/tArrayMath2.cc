@@ -59,6 +59,24 @@ Double myNomeanMedian (const Array<Double>& array)
 {
   return median (array, False, False, False);
 }
+Array<Double> myMeanPartialMadfms (const Array<Double>& array,
+                                   const IPosition& axes)
+{
+  return partialMadfms (array, axes, True, False);
+}
+Double myMeanMadfm (const Array<Double>& array)
+{
+  return madfm (array, False, True, False);
+}
+Array<Double> myNomeanPartialMadfms (const Array<Double>& array,
+				      const IPosition& axes)
+{
+  return partialMadfms (array, axes, False, False);
+}
+Double myNomeanMadfm (const Array<Double>& array)
+{
+  return madfm (array, False, False, False);
+}
 Array<Double> myPartialFractiles (const Array<Double>& array,
 				  const IPosition& axes)
 {
@@ -67,6 +85,24 @@ Array<Double> myPartialFractiles (const Array<Double>& array,
 Double myFractile (const Array<Double>& array)
 {
   return fractile (array, 0.3, False, False);
+}
+Array<Double> myPartialHexiles (const Array<Double>& array,
+                                const IPosition& axes)
+{
+  return partialInterHexileRanges (array, axes, False);
+}
+Double myHexile (const Array<Double>& array)
+{
+  return interHexileRange (array, False, False);
+}
+Array<Double> myPartialQuartiles (const Array<Double>& array,
+                                  const IPosition& axes)
+{
+  return partialInterQuartileRanges (array, axes, False);
+}
+Double myQuartile (const Array<Double>& array)
+{
+  return interQuartileRange (array, False, False);
 }
 
 
@@ -598,8 +634,28 @@ int main (int argc, char* [])
       cout << "  erronous" << endl;
       errFlag = True;
     }
+    cout << "Testing partialMadfms (takeEvenMean=True) ..." << endl;
+    if (! doIt (&myMeanPartialMadfms, &myMeanMadfm, True)) {
+      cout << "  erronous" << endl;
+      errFlag = True;
+    }
+    cout << "Testing partialMadfms (takeEvenMean=False)..." << endl;
+    if (! doIt (&myNomeanPartialMadfms, &myNomeanMadfm, True)) {
+      cout << "  erronous" << endl;
+      errFlag = True;
+    }
     cout << "Testing partialFractiles ..." << endl;
     if (! doIt (&myPartialFractiles, &myFractile, True)) {
+      cout << "  erronous" << endl;
+      errFlag = True;
+    }
+    cout << "Testing partialHexile ..." << endl;
+    if (! doIt (&myPartialHexiles, &myHexile, True)) {
+      cout << "  erronous" << endl;
+      errFlag = True;
+    }
+    cout << "Testing partialQuartile ..." << endl;
+    if (! doIt (&myPartialQuartiles, &myQuartile, True)) {
       cout << "  erronous" << endl;
       errFlag = True;
     }
