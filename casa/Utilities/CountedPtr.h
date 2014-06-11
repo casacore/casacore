@@ -144,6 +144,10 @@ public:
     //
     ~CountedPtr() {}
 
+    // Reset the pointer.
+    void reset (t *val, Bool delit=True)
+      { pointerRep_p = PointerRep (val, Deleter<t>(delit)); }
+
     // The <src>CountedPtr</src> indirection operator simply
     // returns a reference to the value being protected. If the pointer
     // is un-initialized (null), an exception will be thrown. The member
@@ -179,11 +183,6 @@ public:
     // </thrown>
     //
     t *operator->() const {
-
-	if (null()){
-	    throw_Null_CountedPtr_dereference_error();
-	}
-
 	return get ();
     }
 
@@ -208,7 +207,6 @@ public:
     operator=(t *v)
     {
         pointerRep_p = PointerRep (v);
-
         return * this;
     }
 
@@ -222,6 +220,9 @@ public:
     // un-initialized, null.
     //
     Bool null() const { return get() == 0;}
+
+    // Test if it contains a valid pointer.
+    operator bool() const { return get() != 0; }
 
 protected:
 

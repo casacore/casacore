@@ -5,5 +5,8 @@ barney..fred..fred..fred..
 myobj(Don't delete me!) ctor
 Now explicitly delete object
 myobj(Don't delete me!) dtor
+myobj(betty) ctor
+barney..betty..fred..fred..
 myobj(fred) dtor
+myobj(betty) dtor
 myobj(barney) dtor
