@@ -28,11 +28,12 @@
 //# Includes
 #include <casa/aips.h>
 
-#include <ms/MeasurementSets/MSMetaDataOnDemand.h>
+#include <ms/MeasurementSets/MSMetaData.h>
 
 #include <casa/BasicMath/StdLogical.h>
 #include <casa/OS/Directory.h>
 #include <casa/OS/EnvVar.h>
+#include <casa/Quanta/QLogical.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 
 #include <casa/BasicSL/STLIO.h>
@@ -387,7 +388,7 @@ void testIt(MSMetaData& md) {
 		cout << "*** test nScans()" << endl;
 		AlwaysAssert(md.nScans() == 32, AipsError);
 		std::set<Int> scanNumbers = md.getScanNumbers();
-		cout << "*** test getSpwsForScan()" << endl;
+		cout << "*** test getSpwsForScan() and getPolarizationIDs()" << endl;
 		for (
 				std::set<Int>::const_iterator scan=scanNumbers.begin();
 				scan!=scanNumbers.end(); scan++
@@ -395,7 +396,7 @@ void testIt(MSMetaData& md) {
 			std::set<uInt> exp;
 			if (*scan == 1 || *scan==5 || *scan==8) {
 				uInt myints[] = {
-						0, 1, 2, 3, 4, 5, 6, 7, 8
+					0, 1, 2, 3, 4, 5, 6, 7, 8
 				};
 				exp.insert(myints, myints+9);
 			}
@@ -406,7 +407,7 @@ void testIt(MSMetaData& md) {
 					|| *scan==29 || *scan==31
 			) {
 				uInt myints[] = {
-						0, 9, 10, 11, 12, 13, 14, 15, 16
+					0, 9, 10, 11, 12, 13, 14, 15, 16
 				};
 				exp.insert(myints, myints+9);
 			}
@@ -417,11 +418,25 @@ void testIt(MSMetaData& md) {
 					|| *scan==28 || *scan==30 || *scan==32
 			) {
 				uInt myints[] = {
-						0, 17, 18, 19, 20, 21, 22, 23, 24
+					0, 17, 18, 19, 20, 21, 22, 23, 24
 				};
 				exp.insert(myints, myints+9);
 			}
 			AlwaysAssert(md.getSpwsForScan(*scan) == exp, AipsError);
+			for (
+				std::set<uInt>::const_iterator spw=exp.begin();
+				spw!=exp.end(); spw++
+			) {
+				std::set<uInt> exppols;
+				std::set<uInt> pols = md.getPolarizationIDs(*scan, *spw);
+				if (*spw == 0) {
+					exppols.insert(1);
+				}
+				else {
+					exppols.insert(0);
+				}
+				AlwaysAssert(pols == exppols, AipsError);
+			}
 		}
 		cout << "*** test getScansForSpw()" << endl;
 		for (uInt i=0; i<md.nSpw(True); i++) {
@@ -986,7 +1001,6 @@ void testIt(MSMetaData& md) {
 				);
 			}
 			cout << "*** cache size " << md.getCache() << endl;
-
 		}
 		{
 			cout << "*** test getFieldsForTime()" << endl;
@@ -1277,7 +1291,45 @@ void testIt(MSMetaData& md) {
 			cout << "mymap " << mymap[10][17] << endl;
 		}
 		{
-
+			cout << "*** test getUniqueFiedIDs()" << endl;
+			std::set<Int> expec;
+			for (Int i=0; i<6; i++) {
+				expec.insert(i);
+			}
+			AlwaysAssert(md.getUniqueFiedIDs() == expec, AipsError);
+		}
+		{
+			cout << "*** test getCenterFreqs()" << endl;
+			vector<Quantity> centers = md.getCenterFreqs();
+			cout << "centers " << centers << endl;
+			Double mine[] = {
+				187550000000.0,	214250000000.0,
+				214234375000.0,	216250000000.0,
+				216234375000.0,	230250000000.0,
+				230234375000.0,	232250000000.0,
+				232234375000.0,	231471730000.0,
+				231456105000.0,	233352270000.0,
+				233336645000.0,	219465062500.0,
+				219449437500.0,	218610562500.0,
+				218594937500.0,	230534230000.0,
+				230534214741.0,	232414770000.0,
+				232414754741.0,	220402562500.0,
+				220402547241.0,	219548062500.0,
+				219548047241.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0,
+				187550000000.0,	187550000000.0
+			};
+			vector<Double> expec(mine, mine + 39);
+			for (uInt i=0; i<40; i++) {
+				AlwaysAssert(abs(centers[i].getValue("Hz")/mine[i] - 1) < 1e-8, AipsError);
+			}
+		}
+		{
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
@@ -1295,14 +1347,14 @@ int main() {
     	testIt(md);
     	*/
     	cout << "*** test on-demand constructor" << endl;
-    	MSMetaDataOnDemand md1(&ms, 100);
+    	MSMetaData md1(&ms, 100);
 		cout << "*** cache size " << md1.getCache() << endl;
 
     	testIt(md1);
     	// test after everything is cached
     	testIt(md1);
     	// test using no cache
-    	MSMetaDataOnDemand md2(&ms, 0);
+    	MSMetaData md2(&ms, 0);
     	testIt(md2);
     	AlwaysAssert(md2.getCache() == 0, AipsError);
 
