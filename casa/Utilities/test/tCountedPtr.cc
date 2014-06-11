@@ -42,9 +42,9 @@ int main() {
 
   cout << ">>>" << endl;
   if (countedPtrShared()) {
-    cout << "Using boost::shared_ptr" << endl;
+    cout << "Using shared_ptr" << endl;
   } else {
-    cout << "Not using boost::shared_ptr" << endl;
+    cout << "Not using shared_ptr" << endl;
   }
   cout << "<<<" << endl;
 
@@ -82,15 +82,12 @@ int main() {
 
   delete doNotDelete;
 
-// Replace is deprecated and not possible when
-// using a boost or c++0x smart pointer implementation
-//
-//  var2.replace(new myobj("betty"));
-//
-//  cout << var->name() << ".." <<
-//    var2->name() << ".." <<
-//    prt(var3) << ".." <<
-//    var4->name() << ".." << endl;
+  // Test reset.
+  var2.reset(new myobj("betty"));
+  cout << var->name() << ".." <<
+    var2->name() << ".." <<
+    prt(var3) << ".." <<
+    var4->name() << ".." << endl;
 
   return 0;
 }
