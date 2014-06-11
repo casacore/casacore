@@ -50,7 +50,7 @@
 #include <ms/MeasurementSets.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSMetaDataOnDemand.h>
+#include <ms/MeasurementSets/MSMetaData.h>
 #include <ms/MeasurementSets/MSSummary.h>
 #include <ms/MeasurementSets/MSRange.h>
 #include <ms/MeasurementSets/MSSelector.h>
@@ -66,7 +66,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // will get rubbish.  Also sets string to separate subtable output.
 //
 MSSummary::MSSummary (const MeasurementSet& ms)
-: pMS(&ms), _msmd(new MSMetaDataOnDemand(&ms, 50.0)),
+: pMS(&ms), _msmd(new MSMetaData(&ms, 50.0)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   _listUnflaggedRowCount(False),
@@ -74,7 +74,7 @@ MSSummary::MSSummary (const MeasurementSet& ms)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms)
-: pMS(ms), _msmd(new MSMetaDataOnDemand(ms, 50.0)),
+: pMS(ms), _msmd(new MSMetaData(ms, 50.0)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   _listUnflaggedRowCount(False),
@@ -82,7 +82,7 @@ MSSummary::MSSummary (const MeasurementSet* ms)
 {}
 
 MSSummary::MSSummary (const MeasurementSet* ms, const String msname)
-: pMS(ms), _msmd(new MSMetaDataOnDemand(ms, 50)),
+: pMS(ms), _msmd(new MSMetaData(ms, 50)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   msname_p(msname),
@@ -128,7 +128,7 @@ Bool MSSummary::setMS (const MeasurementSet& ms)
 		return False;
 	} else {
 		pMS = pTemp;
-		_msmd.reset(new MSMetaDataOnDemand(&ms, _cacheSizeMB));
+		_msmd.reset(new MSMetaData(&ms, _cacheSizeMB));
 		return True;
 	}
 }
@@ -571,11 +571,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						subScanRecord.define("StateId", laststids(0));
 						subScanRecord.define("nRow", thisnrow);
 						subScanRecord.define("IntegrationTime", meanIntTim);
-                                                Vector<Int> spwVec(spw.size());
-                                                std::copy (spw.begin(),
-                                                           spw.end(),
-                                                           spwVec.cbegin());
-						subScanRecord.define("SpwIds", spwVec);
+						subScanRecord.define("SpwIds", Vector<Int>(spw.begin(), spw.size(), 0));
 						scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
 						if(!outRec.isDefined(scanrecid)){
 							outRec.defineRecord(scanrecid, scanRecord);
@@ -678,7 +674,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                         }
 //			os.output().width(widthInttim); os << meanIntTim;
 			os.output().width(widthLead);  os << "  ";
-                        os << spw;
+                        showContainer (os.output(), spw, ", ", "[", "]");
 			/*
 			if (spw.size() <= 9) {
 				os.output().width(28 - (3*spw.size())); os << " ";
@@ -727,9 +723,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			subScanRecord.define("FieldName", name);
 			subScanRecord.define("nRow", thisnrow);
 			subScanRecord.define("IntegrationTime", meanIntTim);
-                        Vector<Int> spwVec(spw.size());
-                        std::copy (spw.begin(), spw.end(), spwVec.cbegin());
-			subScanRecord.define("SpwIds", Vector<Int>(spwVec));
+			subScanRecord.define("SpwIds", Vector<Int>(spw.begin(), spw.size(), 0));
 			scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
 			if(!outRec.isDefined(scanrecid)){
 				outRec.defineRecord(scanrecid, scanRecord);
@@ -1138,7 +1132,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
 		vector<MPosition> antPos = _msmd->getAntennaPositions();
 		Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
-		vector<Quantum<Vector<Double> > > offsets = _msmd->getAntennaOffsets(antPos);
+		vector<Quantum<Vector<Double> > > offsets = _msmd->getAntennaOffsets();
 
 		// For each ant
 		for (Int i=0; i<nAnt; i++) {
@@ -1851,8 +1845,9 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
                 }
 		os.output().width(widthFreq);	os << " ChanWid(kHz) ";
 		os.output().width(widthFreq);	os << " TotBW(kHz)";
+		os.output().width(widthFreq);	os << "CtrFreq(MHz) ";
 		//		os.output().width(widthFreq);	os << "Ref(MHz)";
-		Bool hasBBCNo = MSMetaData::hasBBCNo(*pMS);
+		Bool hasBBCNo = _msmd->hasBBCNo();
 		if (hasBBCNo) {
 			os.output().width(widthBBCNo);
 			os << "BBC Num ";
@@ -1861,8 +1856,9 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		os << endl;
 
 		vector<uInt> nChans = _msmd->nChans();
-		vector<Quantum<Vector<Double> > > chanFreqs = _msmd->getChanFreqs();
-		vector<Quantum<Vector<Double> > > chanWidths = _msmd->getChanWidths();
+		vector<QVD> chanFreqs = _msmd->getChanFreqs();
+		vector<QVD> chanWidths = _msmd->getChanWidths();
+ 		vector<Quantity> centerFreqs = _msmd->getCenterFreqs();
 		vector<Double> bandwidths = _msmd->getBandWidths();
 		vector<uInt> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<uInt>();
 
@@ -1900,6 +1896,9 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 			os.output().width(widthFrqNum);
 			os.output().precision(1);
 			os<< bandwidths[spw]/1000;
+			os.output().width(widthFrqNum);
+			os.output().precision(4);
+			os << centerFreqs[spw].getValue("MHz") << " ";
 			if (hasBBCNo) {
 				os.output().width(widthBBCNo);
 				os<< bbcNo[spw];

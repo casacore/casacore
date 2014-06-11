@@ -27,31 +27,25 @@
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
 
-#include <casa/Quanta/Quantum.h>
-#include <tables/Tables/ArrayColumn.h>
-
+#include <casa/Quanta/QVector.h>
+#include <measures/Measures/MPosition.h>
+#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casa/Utilities/CountedPtr.h>
 #include <map>
-#include <set>
 
 namespace casa {
 
-class MeasurementSet;
-class MPosition;
+template <class T> class ArrayColumn;
 
-template <class T> class Matrix;
-template <class T> class Vector;
 
 // <summary>
-// Abstract base class to hold metadata pertaining to a measurement set.
+// Class to interrogate  an MS for metadata. Interrogation happens on demand
+// and resulting metadata are stored if the cache has not exceeded the specified
+// limit.
 // </summary>
-// <todo>
-// This initial implementation mostly parallels the implementation
-// in ValueMapping to minimize differences between the two. A second
-// implementation iteration should be done to improve performance and/or
-// minimize memory usage.
-// </todo>
 
 class MSMetaData {
+
 public:
 
 	// for retrieving stats
@@ -67,277 +61,281 @@ public:
 		SQLD_ONLY
 	};
 
+	// construct an object which stores a pointer to the MS and queries the MS
+	// only as necessary. The MeasurementSet pointer passed in should not go out
+	// of scope in the calling code until the caller has finished with this object,
+	// or else subsequent method calls on this object will result in a segmentation
+	// fault; the pointer is not copied.
+	// <src>maxCacheSizeMB</src> is the maximum cache size in megabytes. <=0 means
+	// do not use a cache.
+	MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSizeMB);
+
 	virtual ~MSMetaData();
 
-	// construct an object which loads metadata from the specified MS. If onDemand=False,
-	// the MS is
-	// interrogated at construction time, so this operation can take some time
-	// for a large MS, the benefit being that all metadata are immediately accessible.
-	// If onDemand=True, a pointer to the MS is maintained internally, and portions of
-	// the MS are queried only when necessary. The benefit being that construction time
-	// is short. However, queries may take longer than if onDemand=False and because the
-	// MS is interrogated only when the query is run and the query results are not stored
-	// (which allows query methods to be const). The MS object cannot go out of scope in the calling code while
-	// the MSMetaData object exists or seg faults will likely occur.
-	// Use onDemand=True if MS is large and/or only a small number of queries are needed.
-	// MSMetaData(const MeasurementSet& ms, Bool onDemand);
-
 	// number of unique states (number of rows from the STATE table)
-	virtual uInt nStates() = 0;
+	uInt nStates();
 
 	// get unique scan numbers
-	virtual std::set<Int> getScanNumbers() = 0;
+	std::set<Int> getScanNumbers();
 
-	virtual std::set<Int> getScansForState(const Int stateID) = 0;
+	std::set<Int> getScansForState(const Int stateID);
 
-	virtual std::set<String> getIntentsForScan(const Int scan) = 0;
+	std::set<String> getIntentsForScan(const Int scan);
 
 	// get all intents, in no particular (nor guaranteed) order.
-	virtual std::set<String> getIntents() = 0;
+	std::set<String> getIntents();
 
 	// get a set of spectral windows for which the specified <src>intent</src>
 	// applies.
-	virtual std::set<uInt> getSpwsForIntent(const String& intent) = 0;
+	virtual std::set<uInt> getSpwsForIntent(const String& intent);
 
 	// get number of spectral windows
-	virtual uInt nSpw(Bool includewvr) = 0;
+	uInt nSpw(Bool includewvr);
 
-	// get number of polarization configurations
-	virtual uInt nPol() = 0;
+	// get the number of visibilities
+	uInt nRows();
 
-	// get the number of rows
-	virtual uInt nRows()  = 0;
+	uInt nRows(CorrelationType cType);
 
-	virtual uInt nRows(CorrelationType cType) = 0;
-
-	virtual uInt nRows(
+	uInt nRows(
 		CorrelationType cType, Int arrayID, Int observationID,
 		Int scanNumber, Int fieldID
-	) = 0;
+	);
 
-	virtual uInt nRows(CorrelationType cType, Int fieldID) = 0;
+	uInt nRows(CorrelationType cType, Int fieldID);
 
 	// get a set of intents corresponding to the specified spectral window
-	virtual std::set<String> getIntentsForSpw(const uInt spw) = 0;
+	std::set<String> getIntentsForSpw(const uInt spw);
 
 	// get a set of intents corresponding to a specified field
-	virtual std::set<String> getIntentsForField(Int fieldID) = 0;
+	std::set<String> getIntentsForField(Int fieldID);
+
+	std::map<String, std::set<Int> > getIntentToFieldsMap();
+
+	std::map<String, std::set<Int> > getIntentToScansMap();
+
+	std::map<String, std::set<uInt> > getIntentToSpwsMap();
 
 	// get the number of fields.
-	virtual uInt nFields() = 0;
+	uInt nFields();
 
 	// get a set of spectral windows corresponding to the specified fieldID
-	virtual std::set<uInt> getSpwsForField(const Int fieldID) = 0;
+	std::set<uInt> getSpwsForField(const Int fieldID);
 
 	// get a set of spectral windows corresponding to the specified field name
-	virtual std::set<uInt> getSpwsForField(const String& fieldName) = 0;
+	std::set<uInt> getSpwsForField(const String& fieldName);
 
 	// get the set of field IDs corresponding to the specified spectral window.
-	virtual std::set<Int> getFieldIDsForSpw(const uInt spw) = 0;
+	std::set<Int> getFieldIDsForSpw(const uInt spw);
 
 	// get the set of field names corresponding to the specified spectral window.
-	virtual std::set<String> getFieldNamesForSpw(const uInt spw) = 0;
+	std::set<String> getFieldNamesForSpw(const uInt spw);
 
 	// get the number of scans in the dataset
-	virtual uInt nScans() = 0;
+	uInt nScans();
 
 	// get the number of observations (from the OBSERVATIONS table) in the dataset
-	virtual uInt nObservations() = 0;
+	uInt nObservations();
 
 	// get the number of arrays (from the ARRAY table) in the dataset
-	virtual uInt nArrays() = 0;
+	uInt nArrays();
+
+	// get the number of data description IDs (from the DATA_DESCRIPTION table)
+	uInt nDataDescriptions();
 
 	// get the set of spectral windows for the specified scan number.
-	virtual std::set<uInt> getSpwsForScan(const Int scan) = 0;
+	std::set<uInt> getSpwsForScan(const Int scan);
 
 	// get the set of scan numbers for the specified spectral window.
-	virtual std::set<Int> getScansForSpw(const uInt spw) = 0;
+	std::set<Int> getScansForSpw(const uInt spw);
 
 	// get the number of antennas in the ANTENNA table
-	virtual uInt nAntennas() = 0;
+	uInt nAntennas();
 
 	// get the name of the antenna for the specified antenna ID
-	virtual vector<String> getAntennaNames(
+	vector<String> getAntennaNames(
 		std::map<String, uInt>& namesToIDsMap,
 		const vector<uInt>& antennaIDs=vector<uInt>(0)
-	) = 0;
+	);
 
 	// get the antenna ID for the antenna with the specified name.
-	virtual vector<uInt> getAntennaIDs(const vector<String>& antennaName) = 0;
+	vector<uInt> getAntennaIDs(	const vector<String>& antennaNames);
 
 	// get the antenna stations for the specified antenna IDs
-	virtual vector<String> getAntennaStations(const vector<uInt>& antennaIDs) = 0;
+	vector<String> getAntennaStations(const vector<uInt>& antennaIDs);
 
 	// get the antenna stations for the specified antenna names
-	virtual vector<String> getAntennaStations(const vector<String>& antennaNames) = 0;
+	vector<String> getAntennaStations(const vector<String>& antennaNames);
 
 	// get the antenna diameters
-	virtual Quantum<Vector<Double> > getAntennaDiameters() = 0;
+	Quantum<Vector<Double> > getAntennaDiameters();
 
-	// ALMA-specific. Get set of spectral windows used for TDM. These are windows that have
+	// ALMA-specific. get set of spectral windows used for TDM. These are windows that have
 	// 64, 128, or 256 channels
-	virtual std::set<uInt> getTDMSpw() = 0;
+	std::set<uInt> getTDMSpw();
 
-	// ALMA-specific. Get set of spectral windows used for FDM. These are windows that do not
+	// ALMA-specific. get set of spectral windows used for FDM. These are windows that do not
 	// have 1, 4, 64, 128, or 256 channels.
-	virtual std::set<uInt> getFDMSpw() = 0;
+	std::set<uInt> getFDMSpw();
 
-	// ALMA-specific. Get spectral windows that have been averaged. These are windows with 1 channel.
-	virtual std::set<uInt> getChannelAvgSpw() = 0;
+	// ALMA-specific. get spectral windows that have been averaged. These are windows with 1 channel.
+	std::set<uInt> getChannelAvgSpw();
 
 	// ALMA-specific. Get the spectral window set used for WVR measurements. These have 4 channels each.
-	virtual std::set<uInt> getWVRSpw() = 0;
+	std::set<uInt> getWVRSpw();
 
 	// ALMA-specific. Get the square law detector (total power) spectral windows.
-	virtual std::set<uInt> getSQLDSpw() = 0;
+	std::set<uInt> getSQLDSpw();
 
 	// Get the scans which fail into the specified time range (center-tol to center+tol)
-	virtual std::set<Int> getScansForTimes(const Double center, const Double tol) = 0;
+	std::set<Int> getScansForTimes(const Double center, const Double tol);
 
 	// Get the times for the specified scans
-	virtual std::set<Double> getTimesForScans(const std::set<Int>& scans) = 0;
+	std::set<Double> getTimesForScans(const std::set<Int>& scans);
 
-	// get the times for the specified scan. No need to be implemented or overridden in subclasses.
+	// get the times for the specified scan.
 	// The return values come from the TIME column.
 	std::set<Double> getTimesForScan(const Int scan);
 
 	// get the time range for the specified scan. The vector returned will contain two elements,
 	// the start and stop time of the scan, determined from min(TIME_CENTROID(x)-0.5*INTERVAL(x)) and
 	// max(TIME_CENTROID(x)-0.5*INTERVAL(x))
-	virtual std::vector<Double> getTimeRangeForScan(Int scan) = 0;
+	std::vector<Double> getTimeRangeForScan(Int scan);
+
+	// get the times for the specified scan
+	// std::set<Double> getTimesForScan(const uInt scan) const;
 
 	// get the stateIDs associated with the specified scan number.
-	virtual std::set<Int> getStatesForScan(const Int scan) = 0;
+	std::set<Int> getStatesForScan(const Int scan);
 
 	// get the scans associated with the specified intent
-	virtual std::set<Int> getScansForIntent(const String& intent) = 0;
+	std::set<Int> getScansForIntent(const String& intent);
 
 	// get the scan numbers associated with the specified field ID.
-	virtual std::set<Int> getScansForFieldID(const Int fieldID) = 0;
-
-	// get the field IDs for the specified field name. Case insensitive.
-	virtual std::set<Int> getFieldIDsForField(const String& field) = 0;
+	std::set<Int> getScansForFieldID(const Int fieldID);
 
 	// get the scan numbers associated with the specified field. Subclasses should not implement or override.
 	std::set<Int> getScansForField(const String& field);
 
+	// get the field IDs for the specified field name. Case insensitive.
+	std::set<Int> getFieldIDsForField(const String& field);
+
 	// get field IDs associated with the specified scan number.
-	virtual std::set<Int> getFieldsForScan(const Int scan) = 0;
+	std::set<Int> getFieldsForScan(const Int scan);
 
 	// get the field IDs associated with the specified scans
-	virtual std::set<Int> getFieldsForScans(const std::set<Int>& scans) = 0;
+	std::set<Int> getFieldsForScans(const std::set<Int>& scans);
 
 	// get the field IDs associated with the specified intent.
-	virtual std::set<Int> getFieldsForIntent(const String& intent) = 0;
+	std::set<Int> getFieldsForIntent(const String& intent);
 
 	// get the field names associated with the specified field IDs. If <src>fieldIDs</src>
-	// is empty, a list of all field names will be returned.
-	virtual vector<String> getFieldNamesForFieldIDs(const vector<uInt>& fieldIDs) = 0;
-
-	virtual std::map<String, std::set<Int> > getIntentToFieldsMap() = 0;
-
-	virtual std::map<String, std::set<Int> > getIntentToScansMap() = 0;
-
-	virtual std::map<String, std::set<uInt> > getIntentToSpwsMap() = 0;
+	// is empty, a vector of all the field names is returned.
+	vector<String> getFieldNamesForFieldIDs(const vector<uInt>& fieldIDs);
 
 	// Get the fields which fail into the specified time range (center-tol to center+tol)
-	virtual std::set<Int> getFieldsForTimes(Double center, Double tol) = 0;
+	std::set<Int> getFieldsForTimes(Double center, Double tol);
 
 	// get the times for which the specified field was observed
-	virtual std::set<Double> getTimesForField(Int fieldID) = 0;
+	std::set<Double> getTimesForField(Int fieldID);
 
 	// get telescope names in the order they are listed in the OBSERVATION table. These are
 	// the telescopes (observatories), not the antenna names.
-	virtual vector<String> getObservatoryNames() = 0;
+	vector<String> getObservatoryNames();
 
 	// get the position of the specified telescope (observatory).
-	virtual MPosition getObservatoryPosition(uInt which) = 0;
+	MPosition getObservatoryPosition(uInt which);
 
-	// get the position of the specified antennas. If <src>which</src> is empty,
-	// all antenna positions will be returned.
-	virtual vector<MPosition> getAntennaPositions(const vector<uInt>& which=vector<uInt>(0)) = 0;
+	// get the positions of the specified antennas. If <src>which</src> is empty, return
+	// all antenna positions.
+	vector<MPosition> getAntennaPositions(const vector<uInt>& which=std::vector<uInt>(0));
 
 	// <src>names</src> cannot be empty.
-	virtual vector<MPosition> getAntennaPositions(const vector<String>& names) = 0;
+	vector<MPosition> getAntennaPositions(const vector<String>& names);
 
 	// get the position of the specified antenna relative to the observatory position.
 	// the three vector returned represents the longitudinal, latitudinal, and elevation
 	// offsets (elements 0, 1, and 2 respectively). The longitude and latitude offsets are
 	// measured along the surface of a sphere centered at the earth's center and whose surface
 	// intersects the position of the observatory.
-	virtual Quantum<Vector<Double> > getAntennaOffset(uInt which) = 0;
+	Quantum<Vector<Double> > getAntennaOffset(uInt which);
 
-	virtual Quantum<Vector<Double> > getAntennaOffset(const String& name) = 0;
+	Quantum<Vector<Double> > getAntennaOffset(const String& name);
 
-	virtual vector<Quantum<Vector<Double> > > getAntennaOffsets(
-		const vector<MPosition>& positions
-	) = 0;
+	vector<Quantum<Vector<Double> > > getAntennaOffsets();
 
-	// get a map relating time stamps to exposure times. An exception is thrown if there
-	// are different exposure lengths for records with the same time stamp
-	//virtual std::map<Double, Double> getExposuresForTimes() const = 0;
+	Bool hasBBCNo();
+
+	//std::map<Double, Double> getExposuresForTimes() const;
 
 	// get the unique baselines in the MS. These are not necessarily every combination of the
 	// n(n-1)/2 possible antenna pairs, but rather the number of unique baselines represented in
 	// the main MS table, which in theory can be less than n(n-1)/2 (for example if samples for
 	// certain antenna pairs are not recorded. The returned Matrix is nAnts x nAnts in size. Pairs
 	// that are true represent baselines represented in the main MS table.
-	virtual Matrix<Bool> getUniqueBaselines() = 0;
+	Matrix<Bool> getUniqueBaselines();
 
 	// get the number of unique baselines represented in the main MS table which in theory can be
 	// less than n*(n-1)/2
 	virtual uInt nBaselines();
 
 	// get the effective total exposure time. This is the effective time spent collecting unflagged data.
-	virtual Quantity getEffectiveTotalExposureTime() = 0;
+	Quantity getEffectiveTotalExposureTime();
 
 	// get the number of unflagged rows
-	virtual Double nUnflaggedRows() = 0;
+	Double nUnflaggedRows();
 
-	virtual Double nUnflaggedRows(CorrelationType cType) = 0;
+	Double nUnflaggedRows(CorrelationType cType);
 
-	virtual Double nUnflaggedRows(
+	Double nUnflaggedRows(
 		CorrelationType cType, Int arrayID, Int observationID,
 		Int scanNumber, Int fieldID
-	) = 0;
+	);
 
-	virtual Double nUnflaggedRows(CorrelationType cType, Int fieldID) = 0;
+	Double nUnflaggedRows(CorrelationType cType, Int fieldID);
 
-	inline virtual Float getCache() const { return 0;}
+	inline Float getCache() const { return _cacheMB;}
 
-	static Bool hasBBCNo(const MeasurementSet& ms);
+	vector<Double> getBandWidths();
 
-	virtual vector<Double> getBandWidths() = 0;
+	vector<QVD> getChanFreqs();
 
-	virtual vector<Quantum<Vector<Double> > > getChanFreqs() = 0;
+	vector<QVD> getChanWidths();
 
-	virtual vector<Quantum<Vector<Double> > > getChanWidths() = 0;
+	vector<Int> getNetSidebands();
 
-	virtual vector<Int> getNetSidebands() = 0;
+	vector<Quantity> getMeanFreqs();
 
-	virtual vector<Quantity> getMeanFreqs() = 0;
+	vector<Quantity> getCenterFreqs();
 
-	virtual vector<uInt> nChans() = 0;
+	vector<uInt> nChans();
 
-	virtual vector<vector<Double> > getEdgeChans() = 0;
+	vector<vector<Double> > getEdgeChans();
 
-	virtual vector<uInt> getBBCNos() = 0;
+	vector<uInt> getBBCNos();
 
-	virtual std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch) = 0;
+	std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch);
 
-	virtual vector<String> getSpwNames() = 0;
+	vector<String> getSpwNames();
 
-	// the returned map are the average intervals for each spectral window for the
-	// specified scan
-	virtual std::map<uInt, Double> getAverageIntervalsForScan(Int scan) = 0;
+	std::map<uInt, Double> getAverageIntervalsForScan(Int scan);
 
-	virtual std::map<std::pair<uInt, uInt>, Int> getSpwIDPolIDToDataDescIDMap() = 0;
+	// The first value of the pair is spw, the second is polarization ID.
+	std::map<std::pair<uInt, uInt>, Int> getSpwIDPolIDToDataDescIDMap();
+
+	uInt nPol();
 
 	// get a map of data desc ID, scan number pair to exposure time for the first time
 	// for that data desc ID, scan number pair
-	virtual vector<std::map<Int, Quantity> > getFirstExposureTimeMap() = 0;
+	vector<std::map<Int, Quantity> > getFirstExposureTimeMap();
 
-protected:
+	// get polarization IDs for the specified scan and spwid
+	std::set<uInt> getPolarizationIDs(Int scan, uInt spwid);
+
+	// get unique field IDs that exist in the main table.
+	std::set<Int> getUniqueFiedIDs();
+
+private:
 
 	// (array_id, observation_id, scan_number, field_id) -> stuff mappings
 	typedef std::map<Int, std::map<Int, std::map<Int, std::map<Int, uInt> > > > AOSFMapI;
@@ -345,147 +343,75 @@ protected:
 
 	struct SpwProperties {
 		Double bandwidth;
-		Quantum<Vector<Double> > chanfreqs;
-		Quantum<Vector<Double> > chanwidths;
+		QVD chanfreqs;
+		QVD chanwidths;
 		Int netsideband;
+		// The sum of all channel frequencies divided by the number of channels
 		Quantity meanfreq;
+		// The mean of the low frequency extent of the lowest frequency channel and
+		// the high frequency extend of the highest frequency channel. Often, but not
+		// necessarily, the same as meanfreq
+		Quantity centerfreq;
 		uInt nchans;
+		// The center frequencies of the two channels at the edges of the window
 		vector<Double> edgechans;
 		uInt bbcno;
 		String name;
 	};
 
-	static std::map<Int, uInt> _getDataDescIDToSpwMap(const MeasurementSet& ms);
+	const MeasurementSet* _ms;
+	Float _cacheMB;
+	const Float _maxCacheMB;
+	uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
+		_nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
+	std::set<String> _uniqueIntents;
+	std::map<Int, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
+	std::set<Int> _uniqueScanNumbers, _uniqueFieldIDs, _uniqueStateIDs;
+	std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw;
+	CountedPtr<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
+		_stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
+	CountedPtr<AOSFMapI> _scanToNACRowsMap, _scanToNXCRowsMap;
+	CountedPtr<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
+	std::map<Int, uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
+	std::map<std::pair<uInt, uInt>, Int> _spwPolIDToDataDescIDMap;
+ 	std::map<Int, std::set<String> > _scanToIntentsMap;
+	vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
+	vector<SpwProperties> _spwInfo;
+	std::map<Int, std::set<uInt> > _fieldToSpwMap;
+	vector<std::set<Int> > _spwToFieldIDsMap, _spwToScansMap, _ddidToScansMap;
+	std::map<Int, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _fieldToScansMap,
+		_fieldToStatesMap, _stateToFieldsMap;
+	vector<String> _fieldNames, _antennaNames, _observatoryNames, _stationNames;
+	std::map<String, uInt> _antennaNameToIDMap;
+	CountedPtr<Vector<Double> > _times;
+	CountedPtr<Quantum<Vector<Double> > > _exposures;
+	CountedPtr<std::map<Int, std::set<Double> > > _scanToTimesMap;
+	std::map<String, std::set<Int> > _intentToFieldIDMap, _intentToScansMap;
+	std::map<String, std::set<uInt> > _intentToSpwsMap;
 
-	static std::map<Int, uInt> _getDataDescIDToPolIDMap(const MeasurementSet& ms);
+	CountedPtr<std::map<Int, std::set<Double> > > _fieldToTimesMap;
+	CountedPtr<std::map<Double, std::set<Int> > > _timeToFieldsMap;
 
-	// The first member of the pair is spwID, the second is polID.
-	static std::map<std::pair<uInt, uInt>, Int> _getSpwIDPolIDToDataDescIDMap(
-		const std::map<Int, uInt>& dataDescIDToSpwMap,
-		const std::map<Int, uInt>& dataDescIDToPolIDMap
-	);
+	vector<MPosition> _observatoryPositions, _antennaPositions;
+	vector<Quantum<Vector<Double> > > _antennaOffsets;
+	Quantum<Vector<Double> > _antennaDiameters;
+	Matrix<Bool> _uniqueBaselines;
+	Quantity _exposureTime;
+	Double _nUnflaggedACRows, _nUnflaggedXCRows;
+	CountedPtr<std::map<Int, Double> > _unflaggedFieldNACRows, _unflaggedFieldNXCRows;
+	CountedPtr<AOSFMapD> _unflaggedScanNACRows, _unflaggedScanNXCRows;
+	const String _taqlTableName;
+	const vector<const Table*> _taqlTempTable;
+	CountedPtr<ArrayColumn<Bool> > _flagsColumn;
+	std::map<Int, vector<Double> > _scanToTimeRangeMap;
+	std::map<Int, std::map<uInt, Double> > _scanSpwToIntervalMap;
+	Bool _spwInfoStored;
+	vector<std::map<Int, Quantity> > _firstExposureTimeMap;
+	std::map<std::pair<Int, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
 
-	static Vector<Int> _getFieldIDs(const MeasurementSet& ms);
-
-	static vector<String> _getFieldNames(const MeasurementSet& ms);
-
-	static void _checkTolerance(const Double tol);
-
-	static Quantum<Vector<Double> > _getExposures(const MeasurementSet& ms);
-
-	static Vector<Double> _getTimes(const MeasurementSet& ms);
-
-	static Vector<Double> _getTimeCentroids(const MeasurementSet& ms);
-
-	static Vector<Double> _getIntervals(const MeasurementSet& ms);
-
-	//static Vector<Bool> _getFlagRows(const MeasurementSet& ms);
-
-	static ArrayColumn<Bool>* _getFlags(const MeasurementSet& ms);
-
-	static std::map<Int, std::set<Double> > _getScanToTimesMap(
-		const Vector<Int>& scans, const Vector<Double>& times
-	);
-
-	static vector<MPosition> _getObservatoryPositions(
-		vector<String>& names, const MeasurementSet& ms
-	);
-
-	static vector<String> _getAntennaNames(
-		std::map<String, uInt>& namesToIDs, const MeasurementSet& ms
-	);
-
-	// get all antenna positions. A vector of antenna names is also returned.
-	static vector<MPosition> _getAntennaPositions(
-		vector<String>& antennaNames, const MeasurementSet& ms
-	);
-
-	static vector<MPosition> _getAntennaPositions(
-		const MeasurementSet& ms
-	);
-
-	static vector<Quantum<Vector<Double> > > _getAntennaOffsets(
-		const vector<MPosition>& antennaPositions,
-		const MPosition& observatoryPosition
-	);
-
-	static vector<String> _getAntennaStationNames(
-		const MeasurementSet& ms
-	);
-
-	static Quantum<Vector<Double> > _getAntennaDiameters(
-		const MeasurementSet& ms
-	);
-
-	static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);
-
-
-	static std::map<Double, Double> _getTimeToAggregateExposureMap(
-		const vector<Double>& times, const vector<Double>& exposures
-	);
-
-	Matrix<Bool> _getUniqueBaselines(
-		const Vector<Int>& antanna1, const Vector<Int>& antenna2
-	);
-
-	Quantity _getTotalExposureTime(
-		const MeasurementSet& ms, const std::map<Double, Double>& timeToBWMap,
-		const vector<SpwProperties>& spwProperties,
-		const std::map<Int, uInt>& dataDescToSpwIdMap
-	);
-
-	static std::map<Double, Double> _getTimeToTotalBWMap(
-		const Vector<Double>& times, const Vector<Int>& ddIDs,
-		const std::map<Int, uInt>& dataDescIDToSpwMap,
-		const vector<MSMetaData::SpwProperties>& spwInfo
-	);
-
-	static void _getAntennas(
-		Vector<Int>& ant1, Vector<Int>& ant2, const MeasurementSet& ms
-	);
-
-	void _getRowStats(
-		uInt& nACRows, uInt& nXCRows,
-		AOSFMapI*& scanToNACRowsMap,
-		AOSFMapI*& scanToNXCRowsMap,
-		std::map<Int, uInt>*& fieldToNACRowsMap,
-		std::map<Int, uInt>*& fieldToNXCRowsMap,
-		const Vector<Int>& ant1, const Vector<Int>& ant2,
-		const Vector<Int>& scans, const Vector<Int>& fieldIDs,
-		const Vector<Int>& obsIDs, const Vector<Int>& arIDs
-	);
-
-	void _getUnflaggedRowStats(
-		Double& nACRows, Double& nXCRows,
-		std::map<Int, Double>*& fieldNACRows, std::map<Int, Double>*& fieldNXCRows,
-		AOSFMapD*& scanNACRows,
-		AOSFMapD*& scanNXCRows,
-		const Vector<Int>& ant1, const Vector<Int>& ant2,
-		/*const Vector<Bool>& flagRow, */const Vector<Int>& dataDescIDs,
-		const std::map<Int, uInt>& dataDescIDToSpwMap,
-		const vector<SpwProperties>& spwInfo,
-		const ArrayColumn<Bool>& flags,
-		const Vector<Int>& fieldIDs, const Vector<Int>& scan,
-		const Vector<Int>& obsIDs, const Vector<Int>& arIDs
-	);
-
-	static std::map<Int, vector<Double> > _getScanToTimeRangeMap(
-		std::map<Int, std::map<uInt, Double> >& scanSpwToAverageIntervalMap,
-		const Vector<Int>& scans, const Vector<Double>& timeCentroids,
-		const Vector<Double>& intervals, const Vector<Int>& dataDescIDs,
-		const std::map<Int, uInt>& dataDesIDToSpwMap,
-		const std::set<Int>& uniqueScans
-	);
-
-	// The structure has the data description ID as the vector index and the scan number as
-	// the map index
-	static vector<std::map<Int, Quantity> > _getFirstExposureTimeMap(
-		uInt nDataDescIDs, const Vector<Int>& scans,
-		const Vector<Int>& dataDescIDs, const Vector<Double>& times,
-		const Quantum<Vector<Double> >& exposureTimes
-	);
-
-private:
+	// disallow copy constructor and = operator
+	MSMetaData(const MSMetaData&);
+	MSMetaData operator =(const MSMetaData&);
 
 	// This comment from thunter in the original ValueMapping python class
 	// # Determine the number of polarizations for the first OBSERVE_TARGET intent.
@@ -494,12 +420,205 @@ private:
     // # it may be a pointing scan which may have different number of polarizations than what
     // # the TARGET and BANDPASS calibrator will have.
     // # -- T. Hunter
-	void _setNumberOfPolarizations(const MeasurementSet& ms);
+	// uInt _getNumberOfPolarizations();
+
+	void _setSpwInfo(const MeasurementSet& ms);
 
 	// set metadata from OBSERVATION table
 	void _setObservation(const MeasurementSet& ms);
 
+	// static vector<uInt> _toUIntVector(const Vector<Int>& v);
+
+	static void _checkScan(const Int scan, const std::set<Int> allScans);
+
+	Bool _hasIntent(const String& intent);
+
+	Bool _hasFieldID(Int fieldID);
+
+	Bool _hasStateID(Int stateID);
+
+	void _hasAntennaID(Int antennaID);
+
+	vector<std::set<String> > _getSpwToIntentsMap();
+
+	void _getAntennas(
+		CountedPtr<Vector<Int> >& ant1,
+		CountedPtr<Vector<Int> >& ant2
+	);
+
+	CountedPtr<Vector<Int> > _getScans();
+
+	CountedPtr<Vector<Int> > _getObservationIDs();
+
+	CountedPtr<Vector<Int> > _getArrayIDs();
+
+	CountedPtr<Vector<Int> > _getFieldIDs();
+
+	CountedPtr<Vector<Int> > _getStateIDs();
+
+	CountedPtr<Vector<Int> > _getDataDescIDs();
+
+	CountedPtr<Vector<Double> > _getTimes();
+
+	CountedPtr<Quantum<Vector<Double> > > _getExposureTimes();
+
+	CountedPtr<ArrayColumn<Bool> > _getFlags();
+
+	std::map<Int, std::set<Int> > _getScanToStatesMap();
+
+	Bool _cacheUpdated(const Float incrementInBytes);
+
+	void _getStateToIntentsMap(
+		vector<std::set<String> >& statesToIntentsMap,
+		std::set<String>& uniqueIntents
+	);
+
+	vector<SpwProperties> _getSpwInfo(
+		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw,
+		std::set<uInt>& fdmSpw, std::set<uInt>& wvrSpw,
+		std::set<uInt>& sqldSpw
+	);
+
+	static uInt _sizeof(const std::map<Int, std::set<uInt> >& map);
+
+	static uInt _sizeof(const std::map<Int, std::set<Int> >& map);
+
+	static uInt _sizeof(const vector<std::set<Int> >& v);
+
+	static uInt _sizeof(const std::map<String, std::set<uInt> >& map);
+
+	static uInt _sizeof(const vector<std::map<Int, Quantity> >& map);
+
+	static uInt _sizeof(const std::map<std::pair<Int, uInt>, std::set<uInt> >& map);
+
+	void _getFieldsAndSpwMaps(
+		std::map<Int, std::set<uInt> >& fieldToSpwMap,
+		vector<std::set<Int> >& spwToFieldMap
+	);
+
+	void _getScansAndDDIDMaps(
+		std::map<Int, std::set<uInt> >& scanToDDIDMap,
+		vector<std::set<Int> >& ddIDToScanMap
+	);
+
+	void _getScansAndSpwMaps(
+		std::map<Int, std::set<uInt> >& scanToSpwMap,
+		vector<std::set<Int> >& spwToScanMap
+	);
+
+	void _getFieldsAndIntentsMaps(
+		vector<std::set<String> >& fieldToIntentsMap,
+		std::map<String, std::set<Int> >& intentToFieldsMap
+	);
+
+	static uInt _sizeof(const std::map<Int, std::set<String> >& m);
+
+	static uInt _sizeof(const std::map<String, std::set<Int> >& m);
+
+	static uInt _sizeof(const vector<std::set<String> >& m);
+
+	static uInt _sizeof(const vector<String>& m);
+
+	static uInt _sizeof(const Quantum<Vector<Double> >& m);
+
+
+	static uInt _sizeof(const std::map<Int, std::set<Double> >& m);
+
+	static uInt _sizeof(const std::map<Double, std::set<Int> >& m);
+
+	void _getScansAndIntentsMaps(
+		std::map<Int, std::set<String> >& scanToIntentsMap,
+		std::map<String, std::set<Int> >& intentToScansMap
+	);
+
+	void _getSpwsAndIntentsMaps(
+		vector<std::set<String> >& spwToIntentsMap,
+		std::map<String, std::set<uInt> >& intentToSpwsMap
+	);
+
+	void _getFieldsAndScansMaps(
+		std::map<Int, std::set<Int> >& fieldToScansMap,
+		std::map<Int, std::set<Int> >& scanToFieldsMap
+	);
+
+	void _getFieldsAndStatesMaps(
+		std::map<Int, std::set<Int> >& fieldToStatesMap,
+		std::map<Int, std::set<Int> >& stateToFieldsMap
+	);
+
+	void _getFieldsAndTimesMaps(
+		CountedPtr<std::map<Int, std::set<Double> > >& fieldToTimesMap,
+		CountedPtr<std::map<Double, std::set<Int> > >& timesToFieldMap
+	);
+
+	std::map<Int, uInt> _getDataDescIDToSpwMap();
+
+	std::map<Int, uInt> _getDataDescIDToPolIDMap();
+
+	vector<String> _getFieldNames();
+
+	vector<String> _getStationNames();
+
+	CountedPtr<std::map<Int, std::set<Double> > > _getScanToTimesMap();
+
+	void _getRowStats(
+		uInt& nACRows, uInt& nXCRows,
+		CountedPtr<AOSFMapI>& scanToNACRowsMap,
+		CountedPtr<AOSFMapI>& scanToNXCRowsMap,
+		CountedPtr<std::map<Int, uInt> >& fieldToNACRowsMap,
+		CountedPtr<std::map<Int, uInt> >& fieldToNXCRowsMap
+	);
+
+	void _getUnflaggedRowStats(
+		Double& nACRows, Double& nXCRows,
+		CountedPtr<AOSFMapD>& scanToNACRowsMap,
+		CountedPtr<AOSFMapD>& scanToNXCRowsMap,
+		CountedPtr<std::map<Int, Double> >& fieldToNACRowsMap,
+		CountedPtr<std::map<Int, Double> >& fieldToNXCRowsMap
+	);
+
+	void _getTimesAndInvervals(
+		std::map<Int, vector<Double> >& scanToTimeRangeMap,
+		std::map<Int, std::map<uInt, Double> >& scanSpwToIntervalMap
+	);
+
+	vector<SpwProperties>  _getSpwInfo2(
+		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
+		std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
+	);
+
+	static void _checkTolerance(const Double tol);
+
+	vector<MPosition> _getObservatoryPositions();
+
+	vector<String> _getAntennaNames(
+		std::map<String, uInt>& namesToIDsMap
+	);
+
+	vector<MPosition> _getAntennaPositions();
+
+	static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);
+
+	std::map<Double, Double> _getTimeToTotalBWMap(
+		const Vector<Double>& times, const Vector<Int>& ddIDs
+	);
+
+	void _getRowStats(
+		uInt& nACRows, uInt& nXCRows,
+		AOSFMapI*& scanToNACRowsMap,
+		AOSFMapI*& scanToNXCRowsMap,
+		std::map<Int, uInt>*& fieldToNACRowsMap,
+		std::map<Int, uInt>*& fieldToNXCRowsMap
+	);
+
+	void _getUnflaggedRowStats(
+		Double& nACRows, Double& nXCRows,
+		std::map<Int, Double>*& fieldNACRows, std::map<Int, Double>*& fieldNXCRows,
+		AOSFMapD*& scanNACRows,
+		AOSFMapD*& scanNXCRows
+	);
+
 };
 }
 
-#endif /* MSMETADATA_H_ */
+#endif
