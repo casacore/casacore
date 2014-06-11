@@ -1,6 +1,6 @@
 /*******************************************************************************
 
- Routines to read and write an image dataset
+ Routines to read and write an image dataset in arbitrary XYZ mode
 
  History:
 
@@ -39,7 +39,16 @@
                      (note xyzio writes a mask, even if full mask ok)
      pjt  11-jun-01  added rjs' 10-jan-96 code changes that seemed lost
 		     "Correct comparision bug in bufferallocation routine." 
-
+     pjt  20-jun-02  prototypes for MIR4, made most local stuff now static,
+                     largely thanks to Amtrak for a long boring ride NYC-NCR
+     pjt  14-jan-03  cleared up some more prototypes, fixed bug in
+                     *s[ITEM_HDR_SIZE] declaration (no pointer, just char)
+     jwr  18-may-05  print address using %p instead of %d
+     rjs  18-sep-05  Added routine xyzdim_.
+     mhw  09-mar-12  Replace a lot of int's with long's to cope with
+                     large cubes (>8GB)
+     pjt  28-jun-12  Fixed get_buflen() , fix (?) usage of MAXBUF
+     pjt  22-jan-13  bufferallocation() : another forgotten 64bit allocation 
 
 *******************************************************************************/
 
@@ -49,30 +58,32 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include "maxdimc.h"
-#include "io.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-void    bug_c(char, char *);
-#define check(x) if(x)bugno_c('f',x)
+#include "miriad.h"
+#include "io.h"
+#include "maxdimc.h"
 
+#define check(x) if(x)bugno_c('f',x)
 
 /* There is only one buffer array, of a length determined at run-time by
    get_buflen.
    buffersize is size of the virtual buffer for a particular image,
-   which varies with the number of images handled */
-int     get_buflen(), buffersize;
-int     allocatebuffer, currentallocation=0, neverfree=FALSE;
-float  *buffer = NULL;
-int    *mbuffr = NULL;
+   which varies with the number of images handled (ntno) */
+static long   buffersize;
+static int    allocatebuffer, neverfree=FALSE;
+static long   currentallocation=0;
+static float  *buffer = NULL;   /* data */
+static int    *mbuffr = NULL;   /* mask */
 
 
 /* Most of the code for reading and writing is exactly the same. Where a
    difference exists MODE (values GET and PUT) is used to discriminate.
    UP and DOWN are used for copying or reverse copying.
    ALL is used to see if all axes are reversed. */
-int     MODE;
+static int     MODE;
+
 #define GET   0
 #define PUT   1
 #define UP    1
@@ -100,57 +111,89 @@ int     MODE;
    newbuffer: to allow a check if xyzsetup is called more often for a dataset
    ntno: number of datasets currently opened
 */
-static  struct Img { int itno; char *mask; int number;
-                 int naxis, axlen[ARRSIZ], cubesize[ARRSIZ];
+static  struct { int itno; char *mask; int number;
+                 int naxis, axlen[ARRSIZ];
+                 long cubesize[ARRSIZ];
                  int blc[ARRSIZ], trc[ARRSIZ];
                  int lower[ARRSIZ], upper[ARRSIZ];
-                 int filfir, fillas, bufstart;
-                 int lastwritten, nocopy; }
-        imgs[MAXOPEN], bufs[MAXOPEN];
-int     axnum[MAXOPEN][ARRSIZ];
-int     reverse[MAXOPEN][ARRSIZ];
-int     written[MAXOPEN];
-int     ntno = 0;
+                 long filfir, fillas, bufstart;
+                 long lastwritten;
+                 int nocopy; 
+}       imgs[MAXOPEN], bufs[MAXOPEN];
+static int     axnum[MAXOPEN][ARRSIZ];
+static int     reverse[MAXOPEN][ARRSIZ];
+static int     written[MAXOPEN];
+static int     ntno = 0;
 
 /* loop variables (dim and d) and dimension of subcube */
-int     dim, d, dimsub[MAXOPEN];
+static int     dim, d, dimsub[MAXOPEN];
 
 /* arrays used to limit number of pointer calculations inside big loop
    in loop_inpbuffer (i.e. remove index [tno]) and to improve readability
    of the code */
-int     naxes;
-int     imgsblc[ARRSIZ],   imgstrc[ARRSIZ];
-int     imgslower[ARRSIZ], imgsupper[ARRSIZ];
-int     imgsaxlen[ARRSIZ], imgscubesize[ARRSIZ], imgscsz[ARRSIZ];
-int     bufsblc[ARRSIZ],   bufstrc[ARRSIZ];
-int     bufsaxlen[ARRSIZ], bufscubesize[ARRSIZ], bufscsz[ARRSIZ];
-int     axnumr[ARRSIZ],    inv_axnumr[ARRSIZ],   reverses[ARRSIZ];
+static int     naxes;
+static int     imgsblc[ARRSIZ],   imgstrc[ARRSIZ];
+static int     imgslower[ARRSIZ], imgsupper[ARRSIZ];
+static int     imgsaxlen[ARRSIZ];
+static long    imgscubesize[ARRSIZ], imgscsz[ARRSIZ];
+static int     bufsblc[ARRSIZ],   bufstrc[ARRSIZ];
+static int     bufsaxlen[ARRSIZ];
+static long    bufscubesize[ARRSIZ], bufscsz[ARRSIZ];
+static int     axnumr[ARRSIZ],    inv_axnumr[ARRSIZ],   reverses[ARRSIZ];
 
 
 /* Some variables not used, but left in for the (hopefully never occuring)
    case that an error occurred and debugging is needed.
    Most if(.test) statements have been left active. Some, the ones in inner
-   loops, are disabled. They can be found by searching for */
-   /*$$ */
+   loops, are disabled. They can be found by searching for '/ * $ $' (without spaces) */
 
-int     itest = 0; /* Information on buffers and datasets */
-int     otest = 0; /* Information on subcubes */
-int     rtest = 0; /* Information on each array element */
-int     vtest = 0; /* Puts numbers in buffer without reading a dataset */
-int     tcoo[ARRSIZ];
-int     nfound, i;
-char   *words[4] = { "get", "put", "filled", "emptied" };
-int     nio=0;
+static int     itest = 0; /* Information on buffers and datasets */
+static int     otest = 0; /* Information on subcubes */
+static int     rtest = 0; /* Information on each array element */
+static int     vtest = 0; /* Puts numbers in buffer without reading a dataset */
+static int     tcoo[ARRSIZ];
+static int     nfound, i;
+static char   *words[4] = { "get", "put", "filled", "emptied" };
+static int     nio=0;
 
-void get_test(interactive)
-int interactive;
+/* static functions */
+static void get_test(int interactive);
+static int putnio(int x);
+static void ferr(char *string, int arg);
+static void get_put_data(int tno, long virpix_off, float *data, int *mask, int *ndata, int dim_sub);
+static void do_copy(float *bufptr, float *bufend, int DIR, float *data, int *mask);
+static void manage_buffer(int tno, long virpix_off);
+static void manage_the_buffer(int tno, long virpix_off);
+static void get_buflen(void);
+static long bufferallocation(long n);
+static void copy_to_one_d(int tno);
+static void set_bufs_limits(int tno, long virpix_off);
+static long get_last(long start, long finis);
+static int check_do_io(int tno, long start, long last);
+static void find_block(long start, long last, int lower[], int upper[], int axlen[], long cubesize[], int blc[], int trc[], int naxis);
+static long transform_back(long pix_off);
+static long c2p(int coords[], long cubesize[], int naxis);
+static void p2c(long pix_off, int axlen[], long cubesize[], int naxis, int coords[]);
+static void fill_buffer(int tno, long start, long last);
+static void empty_buffer(int tno, long start, long last);
+static void loop_buffer(int tno, long start, long last, long *newstart);
+static void zero(int bl_tr, int tno);
+static void testprint(int tno, long virpix_off, long virpix_lst);
+static void limprint(char *string, int lower[], int upper[]);
+static void testsearch(int callnr, int coords[], long filoff, long viroff);
+
+ static void get_test(int interactive)
 {
     if(interactive)printf("iTest >"); scanf("%d",&itest);
     if(interactive)printf("rTest >"); scanf("%d",&rtest);
     if(interactive)printf("oTest >"); scanf("%d",&otest);
     if(interactive)printf("vTest >"); scanf("%d",&vtest);
 }
-int putnio(x) int x; {x++; return nio;}
+
+static int putnio(int x) 
+{
+  return nio;
+}
 
 
 /******************************************************************************/
@@ -174,29 +217,20 @@ This opens an image file. For an old file, the number of axes is returned in
 naxis and the size of each axis in axlen. For a new file, this information is
 used to define the dataset.
     Input:
-       name        The name of the file to be opened
-       status      Either 'old' or 'new'
+	name        The name of the file to be opened
+	status      Either 'old' or 'new'
     Output:
-       tno         The image-file handle
+	tno         The image-file handle
     Input or Output:
-       naxis       For 'old' datasets: in input dimension of array axlen, on
-                   output dimension of datacube; for 'new' datasets: dimension
-                   of new dataset
-       axlen       The length of the axes, output for 'old' datasets, 'input'
-                   for 'new' datasets                                         */
+	naxis       For 'old' datasets: in input dimension of array axlen, on
+		    output dimension of datacube; for 'new' datasets: dimension
+		    of new dataset
+	axlen       The length of the axes, output for 'old' datasets, 'input'
+		    for 'new' datasets                                        */
 /*-- */
 
-int first=TRUE;
-
-char * mkopen_c (int, char *, char *);
-void bug_c (char, char *);
-void bugno_c (char, int);
-
-void xyzopen_c( handle, name, status, naxis, axlen )
-int  *handle;
-char *name;
-char *status;
-int  *naxis, axlen[];
+void xyzopen_c( int *handle, Const char *name, Const char *status, 
+		 int *naxis, int *axlen )
 {
 /* This accesses the image data (hopen and haccess). Then it checks whether
    this was an OLD dataset. If so, the naxis. items are read from the header
@@ -207,13 +241,10 @@ int  *naxis, axlen[];
 */
 #define OLD 1
 #define NEW 2
-    void rdhdi_c(), wrhdi_c();
-    int  iostat;
-    int  tno;
-    int  access; char *mode;
-    int  cubesize; char axes[8];
-    char *s[ITEM_HDR_SIZE];
-    int  n_axis;
+    int  access, n_axis, tno, iostat;
+    long cubesize;
+    char s[ITEM_HDR_SIZE], axes[8], *mode;
+    static int first=TRUE;
 
     if(first) { for(tno=0;tno<MAXOPEN;tno++) imgs[tno].itno=0;  first=FALSE; }
 
@@ -225,38 +256,39 @@ int  *naxis, axlen[];
 
     hopen_c(  &tno, name, status, &iostat );                   check(iostat);
     haccess_c( tno, &imgs[tno].itno, "image", mode, &iostat ); check(iostat);
-    imgs[tno].mask = mkopen_c( tno, "mask", status );
+    imgs[tno].mask = (char *)mkopen_c( tno, "mask", (char *) status );
 
     strcpy( axes, "naxis0" );
     if( access == OLD ) {
-        rdhdi_c( tno, "naxis", naxis, 0 );
-        if( *naxis > n_axis ) bug_c('f',"xyzopen: Too many axes for this task");
-        if( *naxis<=0||*naxis>MAXNAX ) bug_c('f',"xyzopen: Bad number of axes");
-        for( cubesize=1, d=0; d<*naxis; d++ ) {
-            axes[5]++; rdhdi_c( tno, axes, &axlen[d], 0 );
-            if( axlen[d] <= 0 ) bug_c( 'f', "xyzopen: Bad image dimension" );
-            cubesize = cubesize * axlen[d];
-        }
-        if( hsize_c( imgs[tno].itno ) < H_REAL_SIZE*cubesize+ITEM_HDR_SIZE )
-            bug_c( 'f', "xyzopen: Image file appears too small" );
-        hreadb_c( imgs[tno].itno, s,0,ITEM_HDR_SIZE, &iostat ); check(iostat);
-        if( memcmp( s, real_item, ITEM_HDR_SIZE ) )
-            bug_c( 'f', "xyzopen: Bad image file" );
+	 rdhdi_c( tno, "naxis", naxis, 0 );
+	 if( *naxis > n_axis ) bug_c('f',"xyzopen: Too many axes for this task");
+	 if( *naxis<=0||*naxis>MAXNAX ) bug_c('f',"xyzopen: Bad number of axes");
+	 for( cubesize=1, d=0; d<*naxis; d++ ) {
+	     axes[5]++; rdhdi_c( tno, axes, &axlen[d], 0 );
+	     if( axlen[d] <= 0 ) bug_c( 'f', "xyzopen: Bad image dimension" );
+	     cubesize = cubesize * axlen[d];
+	 }
+	 if( hsize_c( imgs[tno].itno ) < H_REAL_SIZE*cubesize+ITEM_HDR_SIZE )
+	     bug_c( 'f', "xyzopen: Image file appears too small" );
+	 hreadb_c( imgs[tno].itno, s,0,ITEM_HDR_SIZE, &iostat ); 
+	 check(iostat);
+	 if( memcmp( s, real_item, ITEM_HDR_SIZE ) )
+	     bug_c( 'f', "xyzopen: Bad image file" );
     } else {
-        wrhdi_c( tno, "naxis", *naxis );
-        for( d=0; d<*naxis; d++ ) {
-            axes[5]++; wrhdi_c( tno, axes, axlen[d] );
-        }
-        hwriteb_c( imgs[tno].itno, real_item,0,ITEM_HDR_SIZE, &iostat );
-        check(iostat);
+	 wrhdi_c( tno, "naxis", *naxis );
+	 for( d=0; d<*naxis; d++ ) {
+	     axes[5]++; wrhdi_c( tno, axes, axlen[d] );
+	 }
+	 hwriteb_c( imgs[tno].itno, real_item,0,ITEM_HDR_SIZE, &iostat );
+	 check(iostat);
     }
 
     imgs[tno].naxis       = *naxis;
     imgs[tno].cubesize[0] = 1;
     imgs[tno].axlen[0]    = 1;
     for( d=1; d<=*naxis; d++ ) {
-        imgs[tno].axlen[d]    = axlen[d-1];
-        imgs[tno].cubesize[d] = imgs[tno].cubesize[d-1] * imgs[tno].axlen[d];
+	 imgs[tno].axlen[d]    = axlen[d-1];
+	 imgs[tno].cubesize[d] = imgs[tno].cubesize[d-1] * imgs[tno].axlen[d];
     }
     if( access == OLD ) imgs[tno].lastwritten = imgs[tno].cubesize[*naxis];
     else                imgs[tno].lastwritten = -1;
@@ -266,9 +298,51 @@ int  *naxis, axlen[];
     imgs[tno].number = ntno;
     dimsub[tno] = -1;
 }
+/******************************************************************************/
+/** xyzdim - Return dimension information.				      */
+/*& rjs									      */
+/*: image-i/o								      */
+/*+
+      subroutine xyzdim(tno,naxis,dimsub
+      integer tno,naxis,dimsub
 
-void mkclose_c (char *);
+This returns dimension information.
 
+   Input:
+      tno	The image file handle.
+   Output:
+      naxis	Number of dimensions.
+      dimsub    Number of skipped subdimensions.                              */
+/*--*/
+
+void xyzdim_c(int tno,int *naxis,int *subdim)
+{
+    *naxis = imgs[tno].naxis;
+    *subdim = dimsub[tno];
+}
+/******************************************************************************/
+/** xyzpix - Return information on number of pixels.			      */
+/*& rjs									      */
+/*: image-i/o								      */
+/*+
+      integer function xyzpix(tno,dims)
+      integer tno,dim
+
+This returns dimension information.
+
+   Input:
+      tno	The image file handle.
+      dim       Dimension information.                                        */
+/*--*/
+
+int xyzpix_c(int tno,int dims)
+{
+    int dim_sub;
+    dim_sub = dims;
+    if(dim_sub == 0)dim_sub = dimsub[tno];
+    return(bufs[tno].cubesize[dim_sub]);
+}
+/******************************************************************************/
 /** xyzclose - Close an image file                                            */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -282,22 +356,20 @@ This closes an image file.
       tno:     The image-file handle                                          */
 /*--*/
 
-void xyzclose_c( tno )
-int tno;
+void xyzclose_c( int tno )
 {
     int  iostat;
-    void xyzflush_c();
     xyzflush_c( tno );
     hdaccess_c( imgs[tno].itno, &iostat ); check(iostat);
     if( imgs[tno].mask ) mkclose_c( imgs[tno].mask );
     hclose_c( tno );
     ntno--;
     if( ntno == 0 && !neverfree ) {
-        free( buffer ); buffer = NULL;
-        free( mbuffr ); mbuffr = NULL;
+	 free( buffer ); buffer = NULL;
+	 free( mbuffr ); mbuffr = NULL;
     }
 }
-
+/******************************************************************************/
 /** xyzflush - Force output buffer to be written to disk                      */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -314,20 +386,13 @@ open all at the same time, and then do all setups once.
       tno:     The image-file handle                                          */
 /*--*/
 
-void xyzflush_c( tno )
-int tno;
+void xyzflush_c( int tno )
 {
-    void manage_buffer(), zero();
     if( written[tno] ) { MODE=PUT; manage_buffer( tno, -1 ); }
     written[tno] = FALSE;
     if( imgs[tno].lastwritten<imgs[tno].cubesize[imgs[tno].naxis] ) zero(2,tno);
 }
-
-
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /** xyzsetup - Set up arbitrary subcube                                       */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -336,7 +401,8 @@ int tno;
       integer       tno
       character*(*) subcube
       integer       blc(*), trc(*)
-      integer       viraxlen(*), vircubesize(*)
+      integer       viraxlen(*)
+      ptrdiff       vircubesize(*)
 
 This routine does the definitions necessary to allow reading or writing
 an arbitrary subcube in a n-dimensional datacube. It is used to define
@@ -381,22 +447,17 @@ should be done before working on the data.
       tno           image file handle
       subcube       a character variable defining the subcube type
       blc, trc      arrays giving the bottom left and top right corner
-                    of the region in the input/output cube to work on/
-                    write; the number of elements used equals the
-                    dimension of the input/output cube
+		     of the region in the input/output cube to work on/
+		     write; the number of elements used equals the
+		     dimension of the input/output cube
     Output:
       viraxlen:     length of axes of virtual cube
       vircubesize:  size of subcubes:
-                    vircubesize(d) = Prod(i=1->d) viraxlen(i)                 */
+		     vircubesize(d) = Prod(i=1->d) viraxlen(i)                 */
 /*--*/
 
-int ferr (char *, char);
-
-void xyzsetup_c( tno, subcube, blc, trc, viraxlen, vircubesize )
-int   tno;
-char *subcube;
-int   blc[], trc[];
-int   viraxlen[], vircubesize[];
+void xyzsetup_c( int tno, Const char *subcube, Const int *blc, Const int *trc, 
+		  int *viraxlen, long *vircubesize )
 {
 /* This initializes some information needed later. It keeps separate values
    for each tno that was opened.
@@ -408,17 +469,16 @@ int   viraxlen[], vircubesize[];
    imgs/bufs.cubesize:    cs(i) = (Prod)(d<i) axlen(d): # pix in line/plane etc
    viraxlen, vircubesize: info returned to caller
 */
-   
+
     int  axisuse[ARRSIZ]; char *axisnames = { "xyzabcdefghij" };
     char *sub_cube; int reversal;
     int  naxes;
 
 /* Because a new call to xyzsetup redefines all buffers, they are flushed
    before the redefinition is done */
-    void manage_buffer();
     for( i=0; i<MAXOPEN; i++ ) {
-       if( written[i] ) { MODE=PUT; manage_buffer( i, -1 ); }
-       written[i] = FALSE;
+	if( written[i] ) { MODE=PUT; manage_buffer( i, -1 ); }
+	written[i] = FALSE;
     }
 
 /* Intermediate variable for easier reading */
@@ -426,39 +486,41 @@ int   viraxlen[], vircubesize[];
 
 /* Decode subcube argument into dimsub, and axnum and reverse arrays */
     dim=0;
-    for( d=1;d<=MAXNAX;d++ ) axisuse[d]=FALSE; reversal=FALSE; sub_cube=subcube;
+    for( d=1;d<=MAXNAX;d++ ) axisuse[d]=FALSE; 
+    reversal=FALSE; 
+    sub_cube=(char *)subcube;
     while( *subcube ) {
-        if(        *subcube == ' ' ) { ;
-        } else if( *subcube == '-' ) {
-            if( reversal ) bug_c( 'f', "xyzsetup: Bad syntax for subcube arg" );
-            reversal=TRUE; if(itest)printf("reversal");
-        } else {
-            d=1;
-            while( *subcube != *(axisnames+d-1) && d<=naxes && *axisnames ) d++;
-            if( d>naxes || !*axisnames )
-                ferr( "xyzsetup: Axis outside cube", *subcube );
-            if(axisuse[d])ferr("xyzsetup: Axis given more than once",*subcube);
-            dim++;
-            axisuse[d]=TRUE; reverse[tno][dim]=reversal; axnum[tno][dim]=d;
-            reversal=FALSE;
-        }
-        subcube++;
+	 if(        *subcube == ' ' ) { ;
+	 } else if( *subcube == '-' ) {
+	     if( reversal ) bug_c( 'f', "xyzsetup: Bad syntax for subcube arg" );
+	     reversal=TRUE; if(itest)printf("reversal");
+	 } else {
+	     d=1;
+	     while( *subcube != *(axisnames+d-1) && d<=naxes && *axisnames ) d++;
+	     if( d>naxes || !*axisnames )
+		 ferr( "xyzsetup: Axis outside cube", *subcube );
+	     if(axisuse[d])ferr("xyzsetup: Axis given more than once",*subcube);
+	     dim++;
+	     axisuse[d]=TRUE; reverse[tno][dim]=reversal; axnum[tno][dim]=d;
+	     reversal=FALSE;
+	 }
+	 subcube++;
     }
     dimsub[tno] = dim;
     subcube = sub_cube;
 /* Fill out the arrays axnum and reverse, so that all elements are defined */
     for( reverse[tno][0]=FALSE, d=0, dim=1; dim<=dimsub[tno]; dim++ ) {
-        if( reverse[tno][dim] ) { reverse[tno][0]=TRUE; d++; } }
+	 if( reverse[tno][dim] ) { reverse[tno][0]=TRUE; d++; } }
     if( d == dimsub[tno] ) reverse[tno][0]=ALL;
     for( d=1; d<=MAXNAX; d++ ) { if( !axisuse[d] ) {
-        axnum[tno][dim]=d; reverse[tno][dim]=FALSE; dim++; } }
+	 axnum[tno][dim]=d; reverse[tno][dim]=FALSE; dim++; } }
 
 /* Save blc and trc */
     for( dim=1; dim<=naxes; dim++ ) {
-        if( ( blc[dim-1] < 1 ) || ( trc[dim-1] > imgs[tno].axlen[dim] ) )
-            bug_c( 'f', "xyzsetup: Subcube blc and/or trc outside range" );
-        imgs[tno].blc[dim] = blc[dim-1]-1;
-        imgs[tno].trc[dim] = trc[dim-1]-1;
+	 if( ( blc[dim-1] < 1 ) || ( trc[dim-1] > imgs[tno].axlen[dim] ) )
+	     bug_c( 'f', "xyzsetup: Subcube blc and/or trc outside range" );
+	 imgs[tno].blc[dim] = blc[dim-1]-1;
+	 imgs[tno].trc[dim] = trc[dim-1]-1;
     }
 
 /* Save axislengths and cubesizes */
@@ -466,11 +528,11 @@ int   viraxlen[], vircubesize[];
     bufs[tno].axlen[0]    = 1;
     bufs[tno].cubesize[0] = 1;
     for( dim=1; dim<=naxes; dim++ ) {
-        bufs[tno].axlen[dim] = imgs[tno].trc[ axnum[tno][dim] ] - 
-                               imgs[tno].blc[ axnum[tno][dim] ] + 1;
+	 bufs[tno].axlen[dim] = imgs[tno].trc[ axnum[tno][dim] ] - 
+				imgs[tno].blc[ axnum[tno][dim] ] + 1;
     }
     for( dim=1; dim<=naxes; dim++ ) {
-        bufs[tno].cubesize[dim]=bufs[tno].cubesize[dim-1]*bufs[tno].axlen[dim];
+	 bufs[tno].cubesize[dim]=bufs[tno].cubesize[dim-1]*bufs[tno].axlen[dim];
     }
 
 /* More initializations:
@@ -481,50 +543,42 @@ int   viraxlen[], vircubesize[];
     written[tno] = FALSE;
     imgs[tno].nocopy = TRUE;
     for( dim=1; dim<=naxes; dim++ )
-        if( dim != axnum[tno][dim] ) imgs[tno].nocopy = FALSE;
+	 if( dim != axnum[tno][dim] ) imgs[tno].nocopy = FALSE;
     for( dim=1; dim<=naxes; dim++ ) {
-        if( blc[dim-1] != 1 || trc[dim-1] != imgs[tno].axlen[dim] )
-            imgs[tno].nocopy = FALSE;
+	 if( blc[dim-1] != 1 || trc[dim-1] != imgs[tno].axlen[dim] )
+	     imgs[tno].nocopy = FALSE;
     }
 
 /* Some info for the caller */
     for( dim=1; dim<=naxes; dim++ ) {
-        viraxlen[dim-1]    = bufs[tno].axlen[dim];
-        vircubesize[dim-1] = bufs[tno].cubesize[dim];
+	 viraxlen[dim-1]    = bufs[tno].axlen[dim];
+	 vircubesize[dim-1] = bufs[tno].cubesize[dim];
     }
 
-/* Set flag so that manage_buffer knows it has to (re)calculate the
-   buffersize */
+/* Set flag so that manage_buffer knows it has to (re)calculate the buffersize */
    allocatebuffer = TRUE;
 
 /* Testoutput only */
     if(itest){
-        printf("tno %d\n",tno);
-        printf("d      incsz     vircsz    inaxlen   viraxlen        axnum\n");
-        for( dim=1; dim<=naxes; dim++ )
-            printf("%d %10d %10d %10d %10d %10d\n",
-            dim, imgs[tno].cubesize[dim],bufs[tno].cubesize[dim],
-            imgs[tno].axlen[dim], viraxlen[dim-1], axnum[tno][dim]);
+	 printf("tno %d\n",tno);
+	 printf("d      incsz     vircsz    inaxlen   viraxlen        axnum\n");
+	 for( dim=1; dim<=naxes; dim++ )
+	     printf("%d %10ld %10ld %10d %10d %10d\n",
+	     dim, imgs[tno].cubesize[dim],bufs[tno].cubesize[dim],
+	     imgs[tno].axlen[dim], viraxlen[dim-1], axnum[tno][dim]);
     }
 
 }
 
-int ferr( char * string, char arg )
+static void ferr( char *string, int arg )
 {
     char message[80]; char *msg;
     msg = &message[0];
     while( *string != '\0' ) *msg++ = *string++;
     *msg++ = ':'; *msg++ = ' '; *msg++ = arg; *msg = '\0';
     bug_c( 'f', message );
-
-    return 0;
 }
-
-
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /** xyzmkbuf - create the i/o buffer (only once)                              */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -542,15 +596,10 @@ sure it is never deallocated.                                                 */
 
 void xyzmkbuf_c()
 {
-   int bufferallocation(), i;
-   i = bufferallocation( MAXBUF );
-   neverfree = TRUE;
+  (void) bufferallocation( MAXBUF );
+  neverfree = TRUE;
 }
-
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /** xyzs2c - Get the fixed coordinates for a given subcube                    */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -578,10 +627,7 @@ or xyzwrite.
       coords        Coordinates of the blc of the subcube                     */
 /*--*/
 
-void xyzs2c_c( tno, subcubenr, coords )
-int tno;
-int subcubenr;
-int coords[];
+void xyzs2c_c( int tno, long subcubenr, int *coords )
 {
 /* Calculates fixed coordinates of subcubenr:
    first calculate pixeloffset of lower left of subcube; convert to
@@ -589,34 +635,31 @@ int coords[];
    lower left offset of input and shift so that first element is first
    fixed axis.
 */
-    int  dim_sub, naxes, offset;
-    void p2c();
+    int  dim_sub, naxes;
+    long offset;
     int  coo[ARRSIZ];
-
+    
     dim_sub = dimsub[tno];
     naxes   = bufs[tno].naxis;
     offset  = subcubenr * bufs[tno].cubesize[dim_sub];
     if( offset < 0 || offset >= bufs[tno].cubesize[naxes] )
-        bug_c( 'f', "xyzs2c: Subcube lies outside cube" );
+	 bug_c( 'f', "xyzs2c: Subcube lies outside cube" );
     p2c( offset, bufs[tno].axlen, bufs[tno].cubesize, naxes, coo );
     dim = dim_sub+1;
     while( dim<=naxes ) {
-         coords[dim-dim_sub-1] = coo[dim] + imgs[tno].blc[axnum[tno][dim]] + 1;
-         dim++; }
+	  coords[dim-dim_sub-1] = coo[dim] + imgs[tno].blc[axnum[tno][dim]] + 1;
+	  dim++; }
 
     if(otest) {
-        printf( "\nsubcubenr %d starts at vircube coords:", subcubenr );
-        for( dim=1; dim<=naxes; dim++ ) printf(" %d",coo[dim]);
-        printf( ";  orig. cube coords:" );
-        for( dim=0; dim<naxes-dim_sub; dim++ ) printf( " %d", coords[dim]-1 );
-        printf( "\nvir filfir %d fillas %d virpix_off %d\n",
-                  bufs[tno].filfir, bufs[tno].fillas, offset );
+	 printf( "\nsubcubenr %ld starts at vircube coords:", subcubenr );
+	 for( dim=1; dim<=naxes; dim++ ) printf(" %d",coo[dim]);
+	 printf( ";  orig. cube coords:" );
+	 for( dim=0; dim<naxes-dim_sub; dim++ ) printf( " %d", coords[dim]-1 );
+	 printf( "\nvir filfir %ld fillas %ld virpix_off %ld\n",
+		   bufs[tno].filfir, bufs[tno].fillas, offset );
     }
 }
-
-
 /******************************************************************************/
-
 /** xyzc2s - Get the subcubenr at a fixed coordinate                          */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -637,17 +680,14 @@ call to xyzsetup to define a particular type of subcube in a datacube.
       subcubenr     Identification of the subcube                             */
 /*--*/
 
-void xyzc2s_c( tno, coords, subcubenr )
-int  tno;
-int  coords[];
-int *subcubenr;
+void xyzc2s_c(int tno, Const int *coords, long *subcubenr )
 {
 /* Calculates subcubenr at fixed coordinates:
    Convert coordinates to virtual-cube coordinates, then calculate
    virtual-cube offset and divide by subcubelength.
 */
-    int  dim_sub, naxes, offset;
-    int  c2p();
+    int  dim_sub, naxes;
+    long offset;
     int  coo[ARRSIZ];
 
     dim_sub = dimsub[tno];
@@ -655,29 +695,24 @@ int *subcubenr;
     for( dim=1; dim<=dim_sub; dim++ ) coo[dim] = 0;
     dim = 0;
     while( dim < naxes-dim_sub ) {
-         coo[axnum[tno][dim+dim_sub+1]] = coords[dim] - imgs[tno].blc[dim] - 1;
-         dim++; }
+	  coo[axnum[tno][dim+dim_sub+1]] = coords[dim] - imgs[tno].blc[dim] - 1;
+	  dim++; }
     offset = c2p( coo, bufs[tno].cubesize, naxes );
     if( offset < 0 || offset >= bufs[tno].cubesize[naxes] )
-        bug_c( 'f', "xyzc2s: Coordinates lie outside cube" );
+	 bug_c( 'f', "xyzc2s: Coordinates lie outside cube" );
     *subcubenr = offset / bufs[tno].cubesize[dim_sub];
 
     if(itest) {
-        printf( "\ncoords" );
-        for( dim=1; dim<=naxes; dim++ ) printf(" %d",coo[dim]);
-        printf( " are for subcubenr %d:", *subcubenr );
-        printf( ";  orig. cube coords:" );
-        for( dim=0; dim<naxes-dim_sub; dim++ ) printf( " %d", coords[dim]-1 );
-        printf( "\nvir filfir %d fillas %d virpix_off %d\n",
-                  bufs[tno].filfir, bufs[tno].fillas, offset );
+	 printf( "\ncoords" );
+	 for( dim=1; dim<=naxes; dim++ ) printf(" %d",coo[dim]);
+	 printf( " are for subcubenr %ld:", *subcubenr );
+	 printf( ";  orig. cube coords:" );
+	 for( dim=0; dim<naxes-dim_sub; dim++ ) printf( " %d", coords[dim]-1 );
+	 printf( "\nvir filfir %ld fillas %ld virpix_off %ld\n",
+		   bufs[tno].filfir, bufs[tno].fillas, offset );
     }
 }
-
-
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /** xyzread - Read arbitrary subcube                                          */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -723,20 +758,15 @@ time-consuming.
     Input:
       tno           image file handle
       coords        array of which the first (dim cube)-(dim subcube)
-                    elements are used, giving the coordinate values
-                    along the complementary axes
+		     elements are used, giving the coordinate values
+		     along the complementary axes
     Output:
       data          array containing data read in
       mask          FALSE values indicate undefined pixels
       ndata         number of elements read                                   */
 /*--*/
 
-void xyzread_c( tno, coords, data, mask, ndata )
-int    tno;
-int    coords[];
-float *data;
-int   *mask;
-int   *ndata;
+void xyzread_c(int tno, Const int *coords, float *data, int *mask, int *ndata )
 {
 /* The calculation first needs the pixeloffset of the input coordinate.
    For the varying axes the pixelnumber is 0, for the fixed axes of the
@@ -745,22 +775,19 @@ int   *ndata;
    shift of -1 is necessary. After finding the pixelnumber in the virtual
    cube get_put_data is used.
 */
-    int  virpix_off;
+    long  virpix_off;
     int  dim_sub, naxes;
-    void get_put_data();
     dim_sub    = dimsub[tno];
     naxes      = bufs[tno].naxis;
     virpix_off = 0;
     dim = dim_sub+1;
     while( dim <= naxes ) {
-        virpix_off += bufs[tno].cubesize[dim-1] *
-            ( coords[dim-dim_sub-1]-1 - imgs[tno].blc[ axnum[tno][dim] ] );
-        dim++; }
+	 virpix_off += bufs[tno].cubesize[dim-1] *
+	     ( coords[dim-dim_sub-1]-1 - imgs[tno].blc[ axnum[tno][dim] ] );
+	 dim++; }
     MODE=GET; get_put_data( tno, virpix_off, data, mask, ndata, dim_sub );
 }
-
-
-
+/******************************************************************************/
 /** xyzpixrd - Get a pixel from a dataset                                     */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -782,32 +809,29 @@ by more than a factor 10.
     Input:
       tno           image file handle
       pixelnr       pixelnr to be read from virtual cube
-      
+
     Output:
       value         pixel value
       mask          FALSE if pixel was undefined                              */
 /*--*/
 
-void xyzpixrd_c( tno, pixelnr, data, mask )
-int    tno;
-int    pixelnr;
-float *data;
-int   *mask;
+void xyzpixrd_c(int tno, long pixelnr, float *data, int *mask)
 {
-    int  virpix_off;
-    void manage_buffer();
-    /*$$if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );
+#endif
     virpix_off = pixelnr - 1;
     if( virpix_off < bufs[tno].filfir || virpix_off > bufs[tno].fillas ) {
-        MODE=GET; manage_buffer( tno, virpix_off );
+	 MODE=GET; manage_buffer( tno, virpix_off );
     }
     *data = *( buffer + bufs[tno].bufstart + virpix_off );
     *mask = *( mbuffr + bufs[tno].bufstart + virpix_off );
-    /*$$if(otest) testprint( tno, virpix_off, virpix_off );$$*/
+#ifdef XYZ_DEBUG
+    if(otest) testprint( tno, virpix_off, virpix_off );
+#endif
 }
-
-
-
+/******************************************************************************/
 /** xyzprfrd - Get a profile from a dataset                                   */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -836,22 +860,16 @@ overhead by 10% (for 256-long profiles) to 30% (for 64-long profiles).
       ndata         number of elements read                                   */
 /*--*/
 
-void xyzprfrd_c( tno, profilenr, data, mask, ndata )
-int    tno;
-int    profilenr;
-float *data;
-int   *mask;
-int   *ndata;
+void xyzprfrd_c(int tno, int profilenr, float *data, int *mask, int *ndata )
 {
-    int  virpix_off;
-    void get_put_data();
-    /*$$if(otest) xyzs2c_c( tno, profilenr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, profilenr-1, tcoo );
+#endif
     virpix_off = (profilenr-1) * bufs[tno].cubesize[1];
     MODE=GET; get_put_data( tno, virpix_off, data, mask, ndata, 1 );
 }
-
-
-
+/******************************************************************************/
 /** xyzplnrd - Get a plane from a dataset                                     */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -882,24 +900,16 @@ by 1% (for 64**2 cubes) or less.
       ndata         number of elements read                                   */
 /*--*/
 
-void xyzplnrd_c( tno, planenr, data, mask, ndata )
-int    tno;
-int    planenr;
-float *data;
-int   *mask;
-int   *ndata;
+void xyzplnrd_c(int tno, int planenr, float *data, int *mask, int *ndata)
 {
-    int  virpix_off;
-    void get_put_data();
-    /*$$if(otest) xyzs2c_c( tno, planenr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, planenr-1, tcoo );
+#endif
     virpix_off = (planenr-1) * bufs[tno].cubesize[2];
     MODE=GET; get_put_data( tno, virpix_off, data, mask, ndata, 2 );
 }
-
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /** xyzwrite - Write arbitrary subcube                                        */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -945,19 +955,15 @@ superfluous and time-consuming.
     Input:
       tno           image file handle
       coords        array of which the first (dim cube)-(dim subcube)
-                    elements are used, giving the coordinate values
-                    along the complementary axes
+		     elements are used, giving the coordinate values
+		     along the complementary axes
       data          array containing data to be written
       mask          FALSE values indicate undefined pixel
       ndata         number of elements to write                               */
 /*--*/
 
-void xyzwrite_c( tno, coords, data, mask, ndata )
-int    tno;
-int    coords[];
-float *data;
-int   *mask;
-int   *ndata;
+void xyzwrite_c(int tno, Const int *coords, Const float *data, 
+		 Const int *mask, Const int *ndata )
 {
 /* The calculation first needs the pixeloffset of the input coordinate.
    For the varying axes the pixelnumber is 0, for the fixed axes of the
@@ -966,22 +972,20 @@ int   *ndata;
    shift of -1 is necessary. After finding the pixelnumber in the
    virtual cube get_put_data is used.
 */
-    int  virpix_off;
+    long  virpix_off;
     int  dim_sub, naxes;
-    void get_put_data();
     dim_sub    = dimsub[tno];
     naxes      = bufs[tno].naxis;
     virpix_off = 0;
     dim = dim_sub+1;
     while( dim <= naxes ) {
-        virpix_off += bufs[tno].cubesize[dim-1] *
-            ( coords[dim-dim_sub-1]-1 - imgs[tno].blc[ axnum[tno][dim] ] );
-        dim++; }
-    MODE=PUT; get_put_data( tno, virpix_off, data, mask, ndata, dim_sub );
+	 virpix_off += bufs[tno].cubesize[dim-1] *
+	     ( coords[dim-dim_sub-1]-1 - imgs[tno].blc[ axnum[tno][dim] ] );
+	 dim++; }
+    MODE=PUT; 
+    get_put_data( tno, virpix_off, (float *)data, (int *)mask, (int *)ndata, dim_sub );
 }
-
-
-
+/******************************************************************************/
 /** xyzpixwr - Write a pixel to a dataset                                     */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -1007,27 +1011,24 @@ by more than a factor 10.
       mask          FALSE indicates pixel is undefined                        */
 /*--*/
 
-void xyzpixwr_c( tno, pixelnr, data, mask )
-int    tno;
-int    pixelnr;
-float *data;
-int   *mask;
+void xyzpixwr_c(int tno, long pixelnr, Const float *data, Const int *mask )
 {
-    int  virpix_off;
-    void manage_buffer();
-    /*$$if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, pixelnr-1, tcoo );
+#endif
     virpix_off = pixelnr - 1;
     if( virpix_off < bufs[tno].filfir || virpix_off > bufs[tno].fillas ) {
-        MODE=PUT; manage_buffer( tno, virpix_off );
+	 MODE=PUT; manage_buffer( tno, virpix_off );
     }
     *( buffer + bufs[tno].bufstart + virpix_off ) = *data;
     *( mbuffr + bufs[tno].bufstart + virpix_off ) = *mask;
     written[tno] = TRUE;
-    /*$$if(otest) testprint( tno, virpix_off, virpix_off );$$*/
+#ifdef XYZ_DEBUG
+    if(otest) testprint( tno, virpix_off, virpix_off );
+#endif
 }
-
-
-
+/******************************************************************************/
 /** xyzprfwr - Write a profile to a dataset                                   */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -1055,23 +1056,19 @@ overhead by 10% (for 256-long profiles) to 30% (for 64-long profiles).
       ndata         number of elements to write                               */
 /*--*/
 
-void xyzprfwr_c( tno, profilenr, data, mask, ndata )
-int    tno;
-int    profilenr;
-float *data;
-int   *mask;
-int   *ndata;
+void xyzprfwr_c(int tno, int profilenr, Const float *data, 
+		 Const int *mask, Const int *ndata )
 {
-    int  virpix_off;
-    void get_put_data();
-    /*$$if(otest) xyzs2c_c( tno, profilenr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, profilenr-1, tcoo );
+#endif
     virpix_off = (profilenr-1) * bufs[tno].cubesize[1];
-    MODE=PUT; get_put_data( tno, virpix_off, data, mask, ndata, 1 );
+    MODE=PUT; 
+    get_put_data( tno, virpix_off, (float *)data, (int *)mask, (int *)ndata, 1 );
     written[tno] = TRUE;
 }
-
-
-
+/******************************************************************************/
 /** xyzplnwr - Write a plane to a dataset                                     */
 /*& bpw                                                                       */
 /*: image-i/o                                                                 */
@@ -1101,117 +1098,99 @@ by 1% (for 64**2 cubes) or less.
       ndata         number of elements to write                               */
 /*--*/
 
-void xyzplnwr_c( tno, planenr, data, mask, ndata )
-int    tno;
-int    planenr;
-float *data;
-int   *mask;
-int   *ndata;
+void xyzplnwr_c(int tno, int planenr, Const float *data, 
+		 Const int *mask, Const int *ndata )
 {
-    int  virpix_off;
-    void get_put_data();
-    /*$$if(otest) xyzs2c_c( tno, planenr-1, tcoo );$$*/
+    long  virpix_off;
+#ifdef XYZ_DEBUG
+    if(otest) xyzs2c_c( tno, planenr-1, tcoo );
+#endif
     virpix_off = (planenr-1) * bufs[tno].cubesize[2];
-    MODE=PUT; get_put_data( tno, virpix_off, data, mask, ndata, 2 );
+    MODE=PUT; 
+    get_put_data( tno, virpix_off, (float *)data, (int *)mask, (int *)ndata, 2 );
     written[tno] = TRUE;
 }
-
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /******************************************************************************/
 /*                                                                            */
 /* The routine that figures out if i-o must be done                           */
 /*                                                                            */
 /******************************************************************************/
 
-void get_put_data( tno, virpix_off, data, mask, ndata, dim_sub )
-int    tno;
-int    virpix_off;
-float *data;
-int   *mask;
-int   *ndata;
-int    dim_sub;
+static void get_put_data( int tno, long virpix_off, float *data, int *mask, int *ndata, int dim_sub )
 {
 /* This checks if the needed subcube is in the buffer. If so, a piece
    of the buffer is copied. If not, manage_buffer is called to fill or
    empty the buffer and then the copy is done.
 */
-    int    virpix_lst;
-    void   manage_buffer();
-    void   do_copy();
+    long    virpix_lst;
     float *bufptr, *bufend, *bufsta;
-    void   copy_to_one_d();
     int    i, coo[ARRSIZ], next;
 
 
     virpix_lst = virpix_off + bufs[tno].cubesize[dim_sub] - 1;
     if( MODE==GET ) *ndata = bufs[tno].cubesize[dim_sub];
-    if( MODE==PUT && *ndata < bufs[tno].cubesize[dim_sub] )
-        bug_c( 'f', "xyzio: Input array too small to hold subcube" );
+    if( MODE==PUT && *ndata < bufs[tno].cubesize[dim_sub] ) {
+	 bug_c( 'f', "xyzio: Input array too small to hold subcube" );
+    }
     if( virpix_off < bufs[tno].filfir || virpix_lst > bufs[tno].fillas ) {
-        if(itest)printf("\nNew buffer starts at %d MODE %d\n",virpix_off,MODE);
-        if( virpix_off >= bufs[tno].cubesize[bufs[tno].naxis] )   bug_c( 'f',
-           "xyzio: Caller tries to access pixel outside datacube");
-        if( dimsub[tno] == -1 )                                   bug_c( 'f',
-           "xyzio: xyzsetup was never called for dataset" );
-        manage_buffer( tno, virpix_off );
+	 if(itest)printf("\nNew buffer starts at %ld MODE %d\n",virpix_off,MODE);
+	 if( virpix_off >= bufs[tno].cubesize[bufs[tno].naxis] )   bug_c( 'f',
+	    "xyzio: Caller tries to access pixel outside datacube");
+	 if( dimsub[tno] == -1 )                                   bug_c( 'f',
+	    "xyzio: xyzsetup was never called for dataset" );
+	 manage_buffer( tno, virpix_off );
     }
 
 /* Plain copy */
     if( !reverse[tno][0] ) {
-        bufptr = buffer + bufs[tno].bufstart + virpix_off;
-        bufend = buffer + bufs[tno].bufstart + virpix_lst;
-        do_copy( bufptr, bufend, UP,   data, mask );
+	 bufptr = buffer + bufs[tno].bufstart + virpix_off;
+	 bufend = buffer + bufs[tno].bufstart + virpix_lst;
+	 do_copy( bufptr, bufend, UP,   data, mask );
 /* Reverse copy */
     } else if( reverse[tno][0] == ALL ) {
-        bufptr = buffer + bufs[tno].bufstart + virpix_lst;
-        bufend = buffer + bufs[tno].bufstart + virpix_off;
-        do_copy( bufptr, bufend, DOWN, data, mask );
+	 bufptr = buffer + bufs[tno].bufstart + virpix_lst;
+	 bufend = buffer + bufs[tno].bufstart + virpix_off;
+	 do_copy( bufptr, bufend, DOWN, data, mask );
 /* Some axes reversed */
     } else {
-        copy_to_one_d( tno );
+	 copy_to_one_d( tno );
 /* Apply a trick to avoid a very strange error on the Cray */
 /*      bufsta = buffer + bufs[tno].bufstart + virpix_off; */
-        i = bufs[tno].bufstart + virpix_off;
-        for( d=1; d<=dim_sub; d++ ) {
-            if( !reverses[d] ) coo[d] = 0; else coo[d] = bufsaxlen[d] - 1;
+	 i = bufs[tno].bufstart + virpix_off;
+	 for( d=1; d<=dim_sub; d++ ) {
+	     if( !reverses[d] ) coo[d] = 0; else coo[d] = bufsaxlen[d] - 1;
 /*          bufsta += coo[d] * bufscubesize[d-1]; } */
-            i += coo[d] * bufscubesize[d-1]; } bufsta = buffer + i;
-        for( i=1; i<=bufscubesize[dim_sub]/bufscubesize[1]; i++ ) {
-            if( !reverses[1] ) {
-                bufptr = bufsta;
-                bufend = bufsta + bufsaxlen[1] - 1;
-                do_copy( bufptr, bufend, UP,   data, mask );
-            } else {
-                bufptr = bufsta;
-                bufend = bufsta - bufsaxlen[1] + 1;
-                do_copy( bufptr, bufend, DOWN, data, mask );
-            }
-            data += bufsaxlen[1]; mask += bufsaxlen[1];
-            next=TRUE; d=2; while( d<=dim_sub && next ) {
-                if( !reverses[d] ) {
-                    coo[d]++; bufsta += bufscubesize[d-1];
-                    next = ( coo[d] == bufsaxlen[d] );
-                    if(next) {coo[d]=0;              bufsta -= bufscubesize[d];}
-                } else {
-                    coo[d]--; bufsta -= bufscubesize[d-1];
-                    next = ( coo[d] == -1 );
-                    if(next) {coo[d]=bufsaxlen[d]-1; bufsta += bufscubesize[d];}
-                }
-            }
-        }
+	     i += coo[d] * bufscubesize[d-1]; } bufsta = buffer + i;
+	 for( i=1; i<=bufscubesize[dim_sub]/bufscubesize[1]; i++ ) {
+	     if( !reverses[1] ) {
+		 bufptr = bufsta;
+		 bufend = bufsta + bufsaxlen[1] - 1;
+		 do_copy( bufptr, bufend, UP,   data, mask );
+	     } else {
+		 bufptr = bufsta;
+		 bufend = bufsta - bufsaxlen[1] + 1;
+		 do_copy( bufptr, bufend, DOWN, data, mask );
+	     }
+	     data += bufsaxlen[1]; mask += bufsaxlen[1];
+	     next=TRUE; d=2; while( d<=dim_sub && next ) {
+		 if( !reverses[d] ) {
+		     coo[d]++; bufsta += bufscubesize[d-1];
+		     next = ( coo[d] == bufsaxlen[d] );
+		     if(next) {coo[d]=0;              bufsta -= bufscubesize[d];}
+		 } else {
+		     coo[d]--; bufsta -= bufscubesize[d-1];
+		     next = ( coo[d] == -1 );
+		     if(next) {coo[d]=bufsaxlen[d]-1; bufsta += bufscubesize[d];}
+		 }
+	     }
+	 }
     }
-    /*$$if(otest) testprint( tno, virpix_off, virpix_lst );$$*/
+#ifdef XYZ_DEBUG
+    if(otest) testprint( tno, virpix_off, virpix_lst );
+#endif
 }
-
-
-void do_copy( bufptr, bufend, DIR, data, mask )
-float *bufptr, *bufend;
-int    DIR;
-float *data;
-int   *mask;
+/******************************************************************************/
+static void do_copy( float *bufptr, float *bufend, int DIR, float *data, int *mask )
 {
     int *mbufpt;
 
@@ -1219,30 +1198,22 @@ int   *mask;
 
     if(        DIR == UP ) {
       if( MODE==GET ) {
-        while( bufptr<=bufend ) { *data++ = *bufptr++; *mask++ = *mbufpt++; }}
+	 while( bufptr<=bufend ) { *data++ = *bufptr++; *mask++ = *mbufpt++; }}
       if( MODE==PUT ) {
-        while( bufptr<=bufend ) { *bufptr++ = *data++; *mbufpt++ = *mask++; }}
+	 while( bufptr<=bufend ) { *bufptr++ = *data++; *mbufpt++ = *mask++; }}
     } else if( DIR == DOWN ) {
       if( MODE==GET ) {
-        while( bufptr>=bufend ) { *data++ = *bufptr--; *mask++ = *mbufpt--; }}
+	 while( bufptr>=bufend ) { *data++ = *bufptr--; *mask++ = *mbufpt--; }}
       if( MODE==PUT ) {
-        while( bufptr>=bufend ) { *bufptr-- = *data++; *mbufpt-- = *mask++; }}
+	 while( bufptr>=bufend ) { *bufptr-- = *data++; *mbufpt-- = *mask++; }}
     }
 }
-
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
 /******************************************************************************/
 /*                                                                            */
 /* Buffer control, figures out how to call loop_buffer                        */
 /*                                                                            */
 /******************************************************************************/
-
-void manage_buffer( tno, virpix_off )
-int tno;
-int virpix_off;
+static void manage_buffer( int tno, long virpix_off )
 {
 /* This controls the buffer. It tries to do the absolute minimum number
    of disk-i/o's, using the array buffer, whose total length is determined
@@ -1303,26 +1274,17 @@ int virpix_off;
    searched, until the finish is reached. Sometimes it is not necessary
    to really do the i/o, so then it is skipped.
 */
-    void manage_the_buffer();
     if( MODE==GET && written[tno] ) {
-        if(itest) printf("Flush previous output buffer\n"); 
-        MODE=PUT; manage_the_buffer( tno, -1 ); MODE=GET;
-        if(itest) printf("Set up new input buffer\n");
+	 if(itest) printf("Flush previous output buffer\n"); 
+	 MODE=PUT; manage_the_buffer( tno, -1 ); MODE=GET;
+	 if(itest) printf("Set up new input buffer\n");
     }
     manage_the_buffer( tno, virpix_off );
 }
-void manage_the_buffer( tno, virpix_off )
-int tno;
-int virpix_off;
+
+static void manage_the_buffer( int tno, long virpix_off )
 {
-    void copy_to_one_d(), zero();
-    void set_bufs_limits();
-    int  transform_back(), c2p(), start, finis;
-    int  get_last(), last;
-    int  check_do_io();
-    void loop_buffer();
-    void fill_buffer(), empty_buffer();
-    int  newstart;
+    long  start, finis, newstart, last;
 
     if( allocatebuffer ) get_buflen();
 
@@ -1331,69 +1293,69 @@ int virpix_off;
     if( imgs[tno].lastwritten == -1 ) zero( 1, tno );
 
     if( MODE==GET ) {
-        set_bufs_limits( tno, virpix_off );
-        written[tno] = FALSE;
+	 set_bufs_limits( tno, virpix_off );
+	 written[tno] = FALSE;
     }
     if( MODE==PUT ) {
-        if( bufs[tno].filfir == -1 ) {
-            set_bufs_limits( tno, virpix_off );
-            bufs[tno].bufstart = - bufs[tno].filfir + bufs[tno].bufstart;
-            return;
-        }
-        bufs[tno].bufstart = bufs[tno].bufstart + bufs[tno].filfir;
-        if(otest) printf("\n");
+	 if( bufs[tno].filfir == -1 ) {
+	     set_bufs_limits( tno, virpix_off );
+	     bufs[tno].bufstart = - bufs[tno].filfir + bufs[tno].bufstart;
+	     return;
+	 }
+	 bufs[tno].bufstart = bufs[tno].bufstart + bufs[tno].filfir;
+	 if(otest) printf("\n");
     }
 
     start = transform_back( bufs[tno].filfir );
     finis = transform_back( bufs[tno].fillas );
-    if(itest) printf( "%s %d values: from %d to %d\n", 
-              words[MODE], finis-start+1, start, finis );
+    if(itest) printf( "%s %ld values: from %ld to %ld\n", 
+	       words[MODE], finis-start+1, start, finis );
 
     if(itest||rtest){nfound=0;if(imgs[tno].nocopy)nfound=finis-start+1;}
     while( start <= finis ) {
-        last = get_last( start, finis );
-        if( check_do_io( tno, start, last ) ) {
-            if( MODE==GET ) {
-                fill_buffer(  tno, start, last );
-                loop_buffer(  tno, start, last, &newstart );
-            }
-            if( MODE==PUT ) {
-                loop_buffer(  tno, start, last, &newstart );
-                empty_buffer( tno, start, last );
-            }
-        } else {
-            if(itest) printf( "Did not %s %d values: from %d to %d\n",
-                      words[MODE], last-start+1, start, last );
-        }
-        start = newstart;
+	 last = get_last( start, finis );
+	 if( check_do_io( tno, start, last ) ) {
+	     if( MODE==GET ) {
+		 fill_buffer(  tno, start, last );
+		 loop_buffer(  tno, start, last, &newstart );
+	     }
+	     if( MODE==PUT ) {
+		 loop_buffer(  tno, start, last, &newstart );
+		 empty_buffer( tno, start, last );
+	     }
+	 } else {
+	     if(itest) printf( "Did not %s %ld values: from %ld to %ld\n",
+		       words[MODE], last-start+1, start, last );
+	 }
+	 start = newstart;
     }
     if(itest) printf( "virbuffer %s\n", words[MODE+2] );
     if( MODE==PUT ) set_bufs_limits( tno, virpix_off );
     bufs[tno].bufstart = - bufs[tno].filfir + bufs[tno].bufstart;
 }
-
 /******************************************************************************/
 /*                                                                            */
 /* Find the length of a buffer that fits in memory                            */
 /*                                                                            */
 /******************************************************************************/
-
-int get_buflen()
+static void get_buflen(void)
 {
     int  tno;
-    int  try, maxsize, size;
-    int *mbufpt, cnt;
-    int  bufferallocation();
-    if(itest)printf("# bytes per real %d\n",(int) sizeof(float));
+    long try, maxsize, size, cnt;
+    int *mbufpt;
+    if(itest)printf("# bytes per real: %ld\n",sizeof(float));
 
     maxsize = 0;
-    for( tno=1; tno<=MAXOPEN; tno++ ) {
+    for( tno=0; tno<MAXOPEN; tno++ ) {
       if( imgs[tno].itno != 0 ) {
-        size    = bufs[tno].cubesize[bufs[tno].naxis];
-        maxsize = ( (maxsize<size) ? size : maxsize );
+	 size    = bufs[tno].cubesize[bufs[tno].naxis];
+	 maxsize = ( (maxsize<size) ? size : maxsize );
+	 if(itest)bugv_c( 'i', "xyzsetup: tno=%d         naxis=%d size=%d maxsize=%d",
+		                 tno, bufs[tno].naxis,   size,   maxsize);
       }
     }
     try = (ntno+1) * maxsize;
+    if(itest)bugv_c( 'i', "xyzsetup: try=%ld ntno=%d maxsize=%ld",try,ntno,maxsize);
     if( (buffer==NULL) || (try>currentallocation) ) try = bufferallocation(try);
     allocatebuffer = FALSE;
 
@@ -1401,52 +1363,53 @@ int get_buflen()
 
     for( tno=0; tno<MAXOPEN; tno++ ) {
       if( imgs[tno].itno != 0 ) {
-        if( bufs[tno].cubesize[dimsub[tno]] > buffersize )
-        bug_c( 'f', "xyzsetup: Requested subcube too big for buffer" );
+	if( bufs[tno].cubesize[dimsub[tno]] > buffersize ) {
+	  bugv_c( 'i', "xyzsetup: tno=%d itno=%d dimsub[tno]=%d",tno,imgs[tno].itno,dimsub[tno]);
+	  bugv_c( 'f', "xyzsetup: Requested subcube too big for buffer (%ld > %ld)",
+		  bufs[tno].cubesize[dimsub[tno]] ,buffersize);
+	}
       }
     }
 
-    /* set combined masking buffer to true, just in case no real mask
-       is read in */
+    /* set combined masking buffer to true, just in case no real mask is read in */
     mbufpt = mbuffr; cnt=0;
     while( cnt++ < try ) *mbufpt++ = FORT_TRUE;
-
-    return 0;
 }
 
-int bufferallocation( n )
-int n;
+static long bufferallocation( long n )
 {
-  /*
-    char *malloc();
-    int   free();
-  */
+    long n0 = n;
+#if 0
+    long maxbuf = MAXBUF;
+#else
+    long maxbuf = n;
+#endif
+    if (n > MAXBUF) bugv_c( 'i',"xyzsetup: Trying to allocate %ld pixels but MAXBUF=%d", n,MAXBUF);
+    if(itest)printf("Trying to allocate %ld (maxbuf=%ld MAXBUF=%d)\n",n,maxbuf,MAXBUF);
+
     if( buffer != NULL ) { free( buffer ); buffer = NULL; }
     if( mbuffr != NULL ) { free( mbuffr ); mbuffr = NULL; }
 
-    n  = ( (n < MAXBUF) ? n : MAXBUF );
+    n  = ( (n < maxbuf) ? n : maxbuf );
     n *= 2;
     while( ( (buffer == NULL) || (mbuffr == NULL) ) && (n>1) ) {
-	if( buffer != NULL ) { free( buffer ); buffer = NULL; }
-        if( mbuffr != NULL ) { free( mbuffr ); mbuffr = NULL; }
-        n /= 2;
-        if(itest)printf("try %d\n",n);
-        buffer = (float *)malloc((unsigned)(n*sizeof(float)));
-        mbuffr = (int   *)malloc((unsigned)(n*sizeof(int)  ));
+	 if( buffer != NULL ) { free( buffer ); buffer = NULL; }
+	 if( mbuffr != NULL ) { free( mbuffr ); mbuffr = NULL; }
+	 n /= 2;
+	 if(itest)printf("try %ld\n",n);
+	 buffer = (float *)malloc(n*sizeof(float));
+	 mbuffr = (int   *)malloc(n*sizeof(int));
     }
-    if( n == 1 ) bug_c( 'f', "xyzsetup: Failed to allocate any memory" );
+    if( n == 1 ) bugv_c( 'f', "xyzsetup: Failed to allocate memory for %ld pixels", n0 );
 
-    if(itest)printf("Allocated %d reals at %p\n",n,(void *) buffer);
-    if(itest)printf("Allocated %d ints  at %p\n",n, (void *) mbuffr);
+    if(itest)printf("Allocated %ld reals @ %p\n",n,(Void *)buffer);
+    if(itest)printf("Allocated %ld ints  @ %p\n",n,(Void *)mbuffr);
 
     currentallocation = n;
-    return( n );
+    return n;
 }
-
 /******************************************************************************/
-
-void copy_to_one_d( tno )
-int tno;
+static void copy_to_one_d( int tno )
 {
 /* All this does is make one-d arrays of some 2-d arrays, so that the
    number of pointer calculations is reduced. And also it makes the
@@ -1467,11 +1430,7 @@ int tno;
     for( d=1; d<=naxes; d++ ) inv_axnumr[ axnumr[d] ] = d;
 }
 
-int limprint( char * string, int lower [], int upper []);
-
-void set_bufs_limits( tno, virpix_off )
-int tno;
-int virpix_off;
+static void set_bufs_limits( int tno, long virpix_off )
 {
 /* This gets some information about the virtual-cube buffer and the ranges
    of coordinates.
@@ -1488,51 +1447,46 @@ int virpix_off;
    pixels will be found. Its main use is to be able to take shortcuts, to
    reduce the overhead.
 */
-    void find_block();
-
     if( virpix_off == -1 ) return;
 
     bufs[tno].filfir   = virpix_off;
     bufs[tno].bufstart = imgs[tno].number*buffersize;
     bufs[tno].fillas   =
-        (int)( (bufs[tno].filfir+buffersize) / bufscubesize[dimsub[tno]] )
-                                             * bufscubesize[dimsub[tno]] - 1;
+	 (long)( (bufs[tno].filfir+buffersize) / bufscubesize[dimsub[tno]] )
+					      * bufscubesize[dimsub[tno]] - 1;
     if( bufs[tno].fillas > bufscubesize[ naxes ] - 1 )
-        bufs[tno].fillas = bufscubesize[ naxes ] - 1;
+	 bufs[tno].fillas = bufscubesize[ naxes ] - 1;
 
     find_block( bufs[tno].filfir, bufs[tno].fillas,
-                bufs[tno].lower, bufs[tno].upper,
-                bufsaxlen, bufscubesize, bufsblc, bufstrc, naxes );
+		 bufs[tno].lower, bufs[tno].upper,
+		 bufsaxlen, bufscubesize, bufsblc, bufstrc, naxes );
     for( dim=1; dim<=naxes; dim++ ) {
-        imgs[tno].lower[axnumr[dim]]=bufs[tno].lower[dim]+imgsblc[axnumr[dim]];
-        imgs[tno].upper[axnumr[dim]]=bufs[tno].upper[dim]+imgsblc[axnumr[dim]];
+	 imgs[tno].lower[axnumr[dim]]=bufs[tno].lower[dim]+imgsblc[axnumr[dim]];
+	 imgs[tno].upper[axnumr[dim]]=bufs[tno].upper[dim]+imgsblc[axnumr[dim]];
     }
     for( dim=1; dim<=naxes; dim++ ) {
-        imgslower[dim] = imgs[tno].lower[dim];
-        imgsupper[dim] = imgs[tno].upper[dim];
+	 imgslower[dim] = imgs[tno].lower[dim];
+	 imgsupper[dim] = imgs[tno].upper[dim];
     }
 
-    if(itest) { printf( "fill %s buffer; will be full after %d pixels\n",
-                         words[MODE], bufs[tno].fillas - bufs[tno].filfir + 1 );
-                limprint( "vircub", bufs[tno].lower, bufs[tno].upper ); }
+    if(itest) { printf( "fill %s buffer; will be full after %ld pixels\n",
+			  words[MODE], bufs[tno].fillas - bufs[tno].filfir + 1 );
+		 limprint( "vircub", bufs[tno].lower, bufs[tno].upper ); }
 }
 
-int get_last( start, finis )
-int  start, finis;
+static long get_last( long start, long finis )
 {
 /* This routine figures out how many elements will fit into the buffer:
    the lower of the amount needed and the size of the buffer. It returns
    the fileoffset of the last element that fits.
 */
-    int allocate;
+    long allocate;
     if( finis-start+1 > buffersize ) { allocate = buffersize;    }
     else                             { allocate = finis-start+1; }
     return( start + allocate - 1 );
 }
 
-int check_do_io( tno, start, last )
-int  tno;
-int  start, last;
+static int check_do_io( int tno, long start, long last )
 {
 /*
    This routine checks if it is really necessary to read or write data
@@ -1546,25 +1500,22 @@ int  start, last;
    mainly comes into play when the buffer is smaller than an image plane
    and z-profiles must be read/written.
 */
-    void find_block();
     int  imgslow[ARRSIZ], imgsupp[ARRSIZ];
     int  do_io;
 
     find_block( start, last, imgslow, imgsupp,
-                imgsaxlen, imgscubesize, imgsblc, imgstrc, naxes );
+		 imgsaxlen, imgscubesize, imgsblc, imgstrc, naxes );
     do_io = FALSE;
     for( dim=1; dim<=naxes && !do_io; dim++ ) {
-        do_io = (  bufs[tno].lower[ dim ] <= imgsupp[ axnumr[dim] ]  )  ||
-                (  bufs[tno].upper[ dim ] >= imgslow[ axnumr[dim] ]  );
+	 do_io = (  bufs[tno].lower[ dim ] <= imgsupp[ axnumr[dim] ]  )  ||
+		 (  bufs[tno].upper[ dim ] >= imgslow[ axnumr[dim] ]  );
     }
     if(itest) limprint( "i-ocub", imgslow, imgsupp );
     return do_io;
 }
 
-void find_block( start, last, lower, upper, axlen, cubesize, blc, trc, naxis )
-int start, last;
-int lower[], upper[];
-int axlen[], cubesize[], blc[], trc[], naxis;
+static void find_block( long start, long last, int *lower, int *upper, 
+			 int *axlen, long *cubesize, int *blc, int *trc, int naxis )
 {
 /* Figures out from the first and last pixeloffset what the lowest and
    highest coordinate value are that could possibly be encountered. To do
@@ -1575,61 +1526,50 @@ int axlen[], cubesize[], blc[], trc[], naxis;
    limits are determined by the coordinate values themselves, else they
    are the lower/upper ends of the ranges.
 */
-    void p2c();
     int  bot, top;
     int  strcoo[ARRSIZ], fincoo[ARRSIZ];
     p2c( start, axlen, cubesize, naxis, strcoo );
     p2c( last,  axlen, cubesize, naxis, fincoo );
     for( dim=1; dim<=naxis; dim++ ) {
-        bot = (int)( start / cubesize[dim] ) * axlen[dim];
-        top = (int)( last  / cubesize[dim-1] ) - bot;
-        ( ( top >  trc[dim] ) ? (  lower[dim] = blc[dim]  )
-                              : (  lower[dim] = strcoo[dim]   ) );
-        ( ( top >= trc[dim] ) ? (  upper[dim] = trc[dim]  )
-                              : (  upper[dim] = fincoo[dim]   ) );
+	 bot = (int)( start / cubesize[dim] ) * axlen[dim];
+	 top = (int)( last  / cubesize[dim-1] ) - bot;
+	 ( ( top >  trc[dim] ) ? (  lower[dim] = blc[dim]  )
+			       : (  lower[dim] = strcoo[dim]   ) );
+	 ( ( top >= trc[dim] ) ? (  upper[dim] = trc[dim]  )
+			       : (  upper[dim] = fincoo[dim]   ) );
     }
 }
 
-int transform_back( pix_off )
-int pix_off;
+static long transform_back( long pix_off )
 {
 /* Transforms an virtual-cube pixeloffset into an input pixeloffset.
 */
-    int  inpcoo, vircoo;
-    int  result, axnr;
+    int  inpcoo, vircoo, axnr;
+    long  result;
     result = 0;
     for( dim=1; dim<=naxes; dim++ ) {
-        axnr   = axnumr[dim];
-        vircoo = ( pix_off / bufscubesize[ dim-1 ] ) % bufsaxlen[ dim ];
-        inpcoo = vircoo + imgsblc[ axnr ];
-        result += imgscubesize[axnr-1] * inpcoo;
+	 axnr   = axnumr[dim];
+	 vircoo = ( pix_off / bufscubesize[ dim-1 ] ) % bufsaxlen[ dim ];
+	 inpcoo = vircoo + imgsblc[ axnr ];
+	 result += imgscubesize[axnr-1] * inpcoo;
     }
     return ( result );
 }
 
-int c2p( coords, cubesize, naxis )
-int coords[];
-int cubesize[];
-int naxis;
-{
-/* Converts a pixeloffset into a list of coordinates
-*/
-    int pix_off; pix_off=0;
-    for( d=1; d<=naxis; d++ ) pix_off += cubesize[d-1] * coords[d];
-    return ( pix_off );
-}
-void p2c( pix_off, axlen, cubesize, naxis, coords )
-int pix_off;
-int axlen[], cubesize[];
-int naxis;
-int coords[];
+static long c2p( int *coords, long *cubesize, int naxis )
 {
 /* Converts a list of coordinates into a pixeloffset
 */
+    long pix_off; pix_off=0;
+    for( d=1; d<=naxis; d++ ) pix_off += cubesize[d-1] * coords[d];
+    return ( pix_off );
+}
+static void p2c( long pix_off, int *axlen, long *cubesize, int naxis, int *coords )
+{
+/* Converts a pixeloffset into a list of coordinates
+*/
     for( d=1; d<=naxis; d++ ) coords[d] = ( pix_off/cubesize[d-1] ) % axlen[d];
 }
-
-int mkread_c(char * handle, int mode, int *flags, int offset,int n,int nsize);
 
 /******************************************************************************/
 /*                                                                            */
@@ -1637,16 +1577,15 @@ int mkread_c(char * handle, int mode, int *flags, int offset,int n,int nsize);
 /*                                                                            */
 /******************************************************************************/
 
-void fill_buffer( tno, start, last )
-int tno;
-int start, last;
+static void fill_buffer( int tno, long start, long last )
 {
-    int length, begin;
+    long length;
+    long begin,i;
     int bufstart, *buf;
-    int i,iostat;
+    int iostat;
 
     nio++;
-    if(itest) printf( "Read %d values: %d to %d\n", last-start+1, start, last );
+    if(itest) printf( "Read %ld values: %ld to %ld\n", last-start+1, start, last );
 
     if( !imgs[tno].nocopy ) bufstart=0; else bufstart=bufs[tno].bufstart;
     length = H_REAL_SIZE * ( last - start + 1 );
@@ -1657,30 +1596,27 @@ int start, last;
     length = last - start + 1;
     begin  = start;
     if( imgs[tno].mask ) {
-       mkread_c( imgs[tno].mask,1,mbuffr+bufstart,begin,length,length );
+	mkread_c( imgs[tno].mask,1,mbuffr+bufstart,begin,length,length );
     } else {
-       buf = mbuffr+bufstart;
-       for (i=0; i<length; i++)
-	 buf[i] = FORT_TRUE;
+	buf = mbuffr+bufstart;
+	for (i=0; i<length; i++)
+	  buf[i] = FORT_TRUE;
     }
 
     if(vtest){ for( i=0; i<last-start+1; i++ ) {
-        p2c( i+start, imgsaxlen, imgscubesize, naxes, tcoo );
-        *(buffer+i) = (float)( tcoo[1] + 1000*tcoo[2] + 1000000*tcoo[3] ); }}
+	 p2c( i+start, imgsaxlen, imgscubesize, naxes, tcoo );
+	 *(buffer+i) = (float)( tcoo[1] + 1000*tcoo[2] + 1000000*tcoo[3] ); }}
 }
 
-void mkwrite_c(char * handle,int mode,int * flags,int offset,int n, int nsize);
-
-void empty_buffer( tno, start, last )
-int tno;
-int start, last;
+static void empty_buffer( int tno, long start, long last )
 {
-    int length, begin;
+    long length;
+    long begin;
     int bufstart;
     int iostat;
 
     nio++;
-    if(itest) printf( "Write %d values: %d to %d\n", last-start+1,start,last );
+    if(itest) printf( "Write %ld values: %ld to %ld\n", last-start+1,start,last );
 
     if( !imgs[tno].nocopy ) bufstart=0; else bufstart=bufs[tno].bufstart;
     length = H_REAL_SIZE * ( last - start + 1 );
@@ -1690,23 +1626,18 @@ int start, last;
     if( imgs[tno].lastwritten < last ) imgs[tno].lastwritten = last;
     check(iostat);
     if( imgs[tno].mask ) {
-       length = last - start + 1;
-       begin  = start;
-       mkwrite_c( imgs[tno].mask,1,mbuffr+bufstart,begin,length,length);
+	length = last - start + 1;
+	begin  = start;
+	mkwrite_c( imgs[tno].mask,1,mbuffr+bufstart,begin,length,length);
     }
-    
-}
 
+}
 /******************************************************************************/
 /*                                                                            */
 /* Copy from the i-o buffer to the xyzio-buffer, the core of the routine      */
 /*                                                                            */
 /******************************************************************************/
-
-void loop_buffer( tno, start, last, newstart )
-int  tno;
-int  start, last;
-int *newstart;
+static void loop_buffer( int tno, long start, long last, long *newstart )
 {
 /* This routine checks all pixels in the in/out buffer and puts them at
    the appropriate place in the virtual-cube buffer, or it takes them out
@@ -1740,10 +1671,9 @@ int *newstart;
     int    buffir, buflas, bufoff;
     float *bufptr, *bufend;
     int   *mbufpt;
-    void   fill_buffer();
     int    to_in;
-    int    filoff, coords[ARRSIZ];
-    void   p2c();
+    long    filoff;
+    int    coords[ARRSIZ];
 
     *newstart = last + 1;
     if( imgs[tno].nocopy ) return;
@@ -1756,64 +1686,75 @@ int *newstart;
     mbufpt = mbuffr;
 
     if( MODE==PUT ) {
-        if( imgs[tno].lastwritten <= last ) {
-            if( imgs[tno].lastwritten >= start ) {
-                fill_buffer( tno, start, imgs[tno].lastwritten );
-                bufptr = buffer + imgs[tno].lastwritten - start + 1;
-                mbufpt = mbuffr + imgs[tno].lastwritten - start + 1;
-            }
-            if(itest) printf("zero buffer 0\n");
-            while( bufptr <= bufend ) { *bufptr++ = 0; *mbufpt++ = FORT_TRUE; }
-        } else {
-            fill_buffer( tno, start, last );
-        }
-        bufptr = buffer;
-        mbufpt = mbuffr;
+	 if( imgs[tno].lastwritten <= last ) {
+	     if( imgs[tno].lastwritten >= start ) {
+		 fill_buffer( tno, start, imgs[tno].lastwritten );
+		 bufptr = buffer + imgs[tno].lastwritten - start + 1;
+		 mbufpt = mbuffr + imgs[tno].lastwritten - start + 1;
+	     }
+	     if(itest) printf("zero buffer 0\n");
+	     while( bufptr <= bufend ) { *bufptr++ = 0; *mbufpt++ = FORT_TRUE; }
+	 } else {
+	     fill_buffer( tno, start, last );
+	 }
+	 bufptr = buffer;
+	 mbufpt = mbuffr;
     }
 
     p2c( start, imgsaxlen, imgscubesize, naxes, coords );
     bufoff = -bufs[tno].filfir + bufs[tno].bufstart;
     for( d=1; d<=naxes; d++ )
-        bufoff += bufscsz[inv_axnumr[d]] * ( coords[d] - imgsblc[d] );
+	 bufoff += bufscsz[inv_axnumr[d]] * ( coords[d] - imgsblc[d] );
 
     to_in = ( MODE==GET );
 
     while( bufptr <= bufend ) {
-        if( coords[1] <= imgsupper[1] ) {
-    /*$$if(rtest)testsearch(1,coords,start+bufptr-buffer,bufoff-buffir);$$*/
-            if( buffir <= bufoff && bufoff <= buflas ) {
-                if( to_in ) { *(buffer+bufoff) = *bufptr;
-                              *(mbuffr+bufoff) = *mbufpt; }
-                else        { *bufptr = *(buffer+bufoff);
-                              *mbufpt = *(mbuffr+bufoff); }
-        /*$$if(itest||rtest)nfound++; if(rtest)$$*/
-        /*$$printf(" found element %d; value %f %d",bufoff,*bufptr,*mbufpt);$$*/
-            }
-            /*$$if(rtest) printf("\n");$$*/
-            coords[1]++;
-            bufoff += bufscsz[inv_axnumr[1]];
-            bufptr++; mbufpt++;
-        } 
-        if( coords[1] > imgsupper[1] ) {
-            /*$$if(rtest) testsearch(0,coords,0,0);$$*/
-            coords[1] = imgslower[1];
-            d=2; while( d<=naxes ) {
-                if( coords[d] == imgsupper[d] || coords[d] == imgstrc[d] )
-                     { coords[d] = imgslower[d]; }
-                else { coords[d]++; break;       }
-                d++;
-            }
-            if( d > naxes ) break;
-            /*$$if(rtest) testsearch(2,coords,0,0);$$*/
-            filoff = -start;
-            bufoff = -bufs[tno].filfir + bufs[tno].bufstart;
-            for( d=1; d<=naxes; d++ ) {
-                filoff += imgscsz[d]             *   coords[d];
-                bufoff += bufscsz[inv_axnumr[d]] * ( coords[d] - imgsblc[d] );
-            }
-            bufptr = buffer + filoff;
-            mbufpt = mbuffr + filoff;
-        }
+	 if( coords[1] <= imgsupper[1] ) {
+#ifdef XYZ_DEBUG
+        if(rtest)testsearch(1,coords,start+bufptr-buffer,bufoff-buffir);
+#endif
+	     if( buffir <= bufoff && bufoff <= buflas ) {
+		 if( to_in ) { *(buffer+bufoff) = *bufptr;
+			       *(mbuffr+bufoff) = *mbufpt; }
+		 else        { *bufptr = *(buffer+bufoff);
+			       *mbufpt = *(mbuffr+bufoff); }
+#ifdef XYZ_DEBUG
+	     if(itest||rtest)nfound++; 
+            if(rtest)
+	         printf(" found element %d; value %f %d",bufoff,*bufptr,*mbufpt);
+#endif
+	     }
+#ifdef XYZ_DEBUG
+	     if(rtest) printf("\n");
+#endif
+	     coords[1]++;
+	     bufoff += bufscsz[inv_axnumr[1]];
+	     bufptr++; mbufpt++;
+	 } 
+	 if( coords[1] > imgsupper[1] ) {
+#ifdef XYZ_DEBUG
+	     if(rtest) testsearch(0,coords,0,0);
+#endif
+	     coords[1] = imgslower[1];
+	     d=2; while( d<=naxes ) {
+		 if( coords[d] == imgsupper[d] || coords[d] == imgstrc[d] )
+		      { coords[d] = imgslower[d]; }
+		 else { coords[d]++; break;       }
+		 d++;
+	     }
+	     if( d > naxes ) break;
+#ifdef XYZ_DEBUG
+	     if(rtest) testsearch(2,coords,0,0);
+#endif
+	     filoff = -start;
+	     bufoff = -bufs[tno].filfir + bufs[tno].bufstart;
+	     for( d=1; d<=naxes; d++ ) {
+		 filoff += imgscsz[d]             *   coords[d];
+		 bufoff += bufscsz[inv_axnumr[d]] * ( coords[d] - imgsblc[d] );
+	     }
+	     bufptr = buffer + filoff;
+	     mbufpt = mbuffr + filoff;
+	 }
     }
     if(itest||rtest) printf( "found %d elements\n", nfound );
     *newstart = bufptr - buffer + start;
@@ -1821,93 +1762,79 @@ int *newstart;
 
 /******************************************************************************/
 
-void zero( bl_tr, tno )
-int bl_tr;
-int tno;
+static void zero( int bl_tr, int tno )
 {
 /* This initializes parts of an output datacube that were not accessed
    because the new dataset has a blc and trc inside the full cube.
    It is called with bl_tr==1 just before the put buffer is first set up,
    and with bl_tr==2 just before the close.
 */
-    int    start, last, finis;
-    int    c2p(), get_last();
+    long    start, last, finis;
     float *bufptr, *bufend;
     int   *mbufpt;
-    void   empty_buffer();
 
     if(        bl_tr == 1 ) {
-        start = 0;
-        finis = c2p( imgsblc, imgscubesize, naxes ) - 1;
-        finis = imgscubesize[naxes] - 1;
+	 start = 0;
+	 finis = c2p( imgsblc, imgscubesize, naxes ) - 1;
+	 finis = imgscubesize[naxes] - 1;
     } else if( bl_tr == 2 ) {
-        start = c2p( imgstrc, imgscubesize, naxes ) + 1;
-        finis = imgscubesize[naxes] - 1;
+	 start = c2p( imgstrc, imgscubesize, naxes ) + 1;
+	 finis = imgscubesize[naxes] - 1;
     }
     while( start <= finis ) {
-        last = get_last( start, finis );
-        bufptr = buffer;
-        bufend = buffer + last - start;
-        mbufpt = mbuffr;
-        if(itest) printf("zero part of buffer 0\n");
-        while( bufptr <= bufend ) { *bufptr++ = 0.; *mbufpt++ = FORT_FALSE; }
-        empty_buffer( tno, start, last );
-        start = bufptr - buffer + start;
+	 last = get_last( start, finis );
+	 bufptr = buffer;
+	 bufend = buffer + last - start;
+	 mbufpt = mbuffr;
+	 if(itest) printf("zero part of buffer 0\n");
+	 while( bufptr <= bufend ) { *bufptr++ = 0.; *mbufpt++ = FORT_FALSE; }
+	 empty_buffer( tno, start, last );
+	 start = bufptr - buffer + start;
     }
 }
 
 /******************************************************************************/
 /******************************************************************************/
 
-int testprint( tno, virpix_off, virpix_lst )
-int tno, virpix_off, virpix_lst;
-{   int vircoo[ARRSIZ];
-    int inpix_off, c2p(); void p2c();
+static void testprint( int tno, long virpix_off, long virpix_lst )
+{   
+    int vircoo[ARRSIZ];
+    long inpix_off;
     int naxes;
     naxes=imgs[tno].naxis;
     p2c( virpix_off, bufs[tno].axlen, bufs[tno].cubesize, naxes, vircoo );
     for( dim=1; dim<=naxes; dim++ )
-         tcoo[dim] = vircoo[ inv_axnumr[dim] ] + imgs[tno].blc[dim];
+	  tcoo[dim] = vircoo[ inv_axnumr[dim] ] + imgs[tno].blc[dim];
     inpix_off = c2p( tcoo, imgs[tno].cubesize, naxes );
     printf( "coo:    " );
-            for( dim=1; dim<=naxes; dim++) printf( "%4d ", tcoo[dim] );
-    printf( "  offset: %10d\n", inpix_off );
+	     for( dim=1; dim<=naxes; dim++) printf( "%4d ", tcoo[dim] );
+    printf( "  offset: %10ld\n", inpix_off );
     printf( "vircoo: " );
-            for( dim=1; dim<=naxes; dim++) printf( "%4d ", vircoo[dim] );
-    printf( "  offset: %20d\n", virpix_off );
+	     for( dim=1; dim<=naxes; dim++) printf( "%4d ", vircoo[dim] );
+    printf( "  offset: %20ld\n", virpix_off );
     if( virpix_off == virpix_lst ) {
-        printf( "%s copied element %d\n", words[MODE],
-                 virpix_off+bufs[tno].bufstart );
+	 printf( "%s copied element %ld\n", words[MODE],
+		  virpix_off+bufs[tno].bufstart );
     } else {
-        printf( "%s copied %d elements starting at %d\n", words[MODE],
-                 virpix_lst-virpix_off+1, virpix_off+bufs[tno].bufstart );
+	 printf( "%s copied %ld elements starting at %ld\n", words[MODE],
+		  virpix_lst-virpix_off+1, virpix_off+bufs[tno].bufstart );
     }
-
-    return 0;
 }
 
-int limprint( string, lower, upper )
-char *string; int lower[], upper[];
+static void limprint( char *string, int *lower, int *upper )
 {
     printf( "%s:", string );
     printf( "  lower" ); for( d=1; d<=naxes; d++ ) printf( " %d", lower[d] );
     printf( ": upper" ); for( d=1; d<=naxes; d++ ) printf( " %d", upper[d] );
     printf( "\n");
-
-    return 0;
 }
 
-int testsearch( callnr, coords, filoff, viroff )
-int callnr; 
-int coords[];
-int filoff, viroff;
+static void testsearch( int callnr, int *coords, long filoff, long viroff )
 {
     if( callnr == 2 ) printf( " -> " );
     for( d=1; d<=naxes; d++ ) printf("%d ", coords[d] );
-    if( callnr == 1 ) printf( "  filoff %d viroff %d", filoff, viroff );
+    if( callnr == 1 ) printf( "  filoff %ld viroff %ld", filoff, viroff );
     if( callnr == 2 ) printf( "\n" );
-
-    return 0;
 }
 
 
@@ -2024,9 +1951,9 @@ z-direction would be:
       call xyzsetup( tno2, 'z', blc, trc, viraxlen, vircubesize )
       nprofiles = = vircubesize(naxis) / viraxlen(1)
       do profile = 1, nprofiles
-          call xyzprfrd( tno1, profile, data, mask, dimdata )
-          call work_on_profile( data, mask, dimdata )
-          call xyzprfwr( tno2, profile, data, mask, dimdata )
+	   call xyzprfrd( tno1, profile, data, mask, dimdata )
+	   call work_on_profile( data, mask, dimdata )
+	   call xyzprfwr( tno2, profile, data, mask, dimdata )
       enddo
 
 A warning is in order: each call to xyzsetup causes all internal buffers to be
@@ -2045,31 +1972,31 @@ file using these routines, and 80s with a unix cp. With a 2Mb buffer the copy
 took 120s too, even though the number of i-o's increased from 12 to 22.
 
 buffer of 524288 (2Mb): 1/2th of 128^3 cube; 1/16th of 256^3 cube
-           cubesize     32^3         64^3        128^3        256^3
+	    cubesize     32^3         64^3        128^3        256^3
 pixels      time(s)   0.3(  2.6)   1.6( 20.6)  12.4(170.2)  98.2(1396.6)
-             n_i/o       1            2           13           97
+	      n_i/o       1            2           13           97
 x profiles  time(s)   0.1(  0.2)   0.6(  0.9)   4.2(  5.2)  31.2( 35.5)
-             n_i/o       1            1            2           16
+	      n_i/o       1            1            2           16
 y profiles  time(s)   0.4(  0.4)   2.2(  2.5)  16.8( 17.9) 129.8(134.0)
-             n_i/o       1            1            2           16
+	      n_i/o       1            1            2           16
 z profiles  time(s)   0.4(  0.4)   2.4(  2.5)  16.7( 17.7) 129.5(133.7)
-             n_i/o       1            1            4          256
+	      n_i/o       1            1            4          256
 xy planes   time(s)   0.2(  0.1)   0.6(  0.5)   3.9(  4.0)  30.1( 30.1)
-             n_i/o       1            1            2           16
+	      n_i/o       1            1            2           16
 yx planes   time(s)   0.4(  0.4)   2.2(  2.2)  16.4( 16.5) 128.6(128.7)
-             n_i/o       1            1            2           16
+	      n_i/o       1            1            2           16
 xz planes   time(s)   0.3(  0.3)   2.2(  2.1)  16.4( 16.4) 128.4(128.4)
-             n_i/o       1            1            4          256
+	      n_i/o       1            1            4          256
 zx planes   time(s)   0.3(  0.4)   2.2(  2.2)  16.5( 16.4) 128.2(128.3)
-             n_i/o       1            1            4          256
+	      n_i/o       1            1            4          256
 yz planes   time(s)   0.4(  0.3)   2.1(  2.2)  16.9( 16.8) 157.4(157.4)
-             n_i/o       1            1            4          256
+	      n_i/o       1            1            4          256
 zy planes   time(s)   0.4(  0.4)   2.2(  2.1)  16.9( 16.8) 157.4(157.3)
-             n_i/o       1            1            4          256
+	      n_i/o       1            1            4          256
 
-           cubesize   128*128*112  256*256*64
+          cubesize   128*128*112  256*256*64
 z profiles  time(s)     15.1         34.5
-             n_i/o         8           32
+            n_i/o         8           32
 
 */
 
@@ -2083,12 +2010,12 @@ xyzpix:  15
 xyzprf:  36+3n
 xyzpln:  36+3n
 
-          pix/prf/pln    xyzs2c & read     ratio
+         pix/prf/pln    xyzs2c & read     ratio
 pixels    (15)N^3        (164)N^3          15/164
 profiles  (36+3N)N^2     (164+3N)N^2       (36+3N)/(164+3N)
 planes    (36+3N^2)N     (164+3N^2)N       (36+3N^2)/(164+3N^2)
 
-             32^3    64^3   128^3   256^3   512^3
+            32^3    64^3   128^3   256^3   512^3
 pixels      0.091
 profiles    0.508   0.640   0.766   0.863   0.925
 planes      0.960   0.990   0.997   0.999   1.000
