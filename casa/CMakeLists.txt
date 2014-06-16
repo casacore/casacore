@@ -305,6 +305,7 @@ install (FILES
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
+Containers/ContainerIO.h
 Containers/HashMap.h
 Containers/HashMap.tcc
 Containers/HashMapIO.h
