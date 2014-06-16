@@ -248,7 +248,7 @@ if(USE_STACKTRACE)
 endif(USE_STACKTRACE)
 
 # Add the modules to be built.
-add_subdirectory (scons-tools)
+add_subdirectory (build-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
     set_target_properties(

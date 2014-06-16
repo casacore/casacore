@@ -32,7 +32,7 @@ done > /dev/null 2>&1       # avoid error message if no such files
 #done > /dev/null 2>&1       # avoid error message if no such files
 
 # Execute the test.
-$rootdir/scons-tools/casacore_assay "$@"
+$rootdir/build-tools/casacore_assay "$@"
 status=$?
 
 # Remove the possibly copied files.
