@@ -156,6 +156,7 @@ public:
   const ROArrayColumn<Complex>& data() const {return data_p;}
   const ROScalarColumn<Int>& feed3() const {return feed3_p;}
   const ROArrayColumn<Float>& floatData() const {return floatData_p;}
+  const ROArrayColumn<Float>& imagingWeight() const {return imagingWeight_p;}
   const ROArrayColumn<Complex>& lagData() const {return lagData_p;}
   const ROArrayColumn<Complex>& modelData() const {return modelData_p;}
   const ROScalarColumn<Int>& phaseId() const {return phaseId_p;}
@@ -239,6 +240,7 @@ private:
 
   //# columns required for synthesis applications - all optional
   ROArrayColumn<Complex> correctedData_p;
+  ROArrayColumn<Float> imagingWeight_p;
   ROArrayColumn<Complex> modelData_p;
 
   //# Access to Measure columns
@@ -376,6 +378,7 @@ public:
   ArrayColumn<Complex>& data() {return data_p;}
   ScalarColumn<Int>& feed3() {return feed3_p;}
   ArrayColumn<Float>& floatData() {return floatData_p;}
+  ArrayColumn<Float>& imagingWeight() {return imagingWeight_p;}
   ArrayColumn<Complex>& lagData() {return lagData_p;}
   ArrayColumn<Complex>& modelData() {return modelData_p;}
   ScalarColumn<Int>& phaseId() {return phaseId_p;}
@@ -471,6 +474,8 @@ public:
     return ROMSMainColumns::feed3();}
   const ROArrayColumn<Float>& floatData() const {
     return ROMSMainColumns::floatData();}
+  const ROArrayColumn<Float>& imagingWeight() const {
+    return ROMSMainColumns::imagingWeight();}
   const ROArrayColumn<Complex>& lagData() const {
     return ROMSMainColumns::lagData();}
   const ROArrayColumn<Complex>& modelData() const {
@@ -581,6 +586,7 @@ private:
 
   //# columns required for synthesis applications - all optional
   ArrayColumn<Complex> correctedData_p;
+  ArrayColumn<Float> imagingWeight_p;
   ArrayColumn<Complex> modelData_p;
 
   //# Access to Measure columns

@@ -216,21 +216,9 @@ private:
    ObsInfo obsInfo_p;
    ImageInfo imageInfo_p;
    const ImageInterface<T>* pImage_p;
-//
+
     String makeMasksString() const;
     String makeRegionsString() const;
-
-    void _listMultiBeam(LogIO& os, const Bool verbose) const;
-
-    void _chanInfoToStream(
-    	ostream& os, const SpectralCoordinate *const &spCoord,
-    	const uInt chan, const uInt chanWidth, const uInt freqPrec,
-    	const uInt velWidth, const uInt velPrec
-    ) const;
-
-    void _beamToStream(
-    	ostream& os, const GaussianBeam& beam, const Unit& unit
-    ) const;
 };
 
 

@@ -23,13 +23,16 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Quanta/QLogical.h>
 #include <images/Images/ImageBeamSet.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
 
-// debug only
-//#include <casa/Arrays/ArrayIO.h>
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Containers/Record.h>
+#include <casa/Quanta/QLogical.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <coordinates/Coordinates/StokesCoordinate.h>
+
+#include <iomanip>
 
 namespace casa {
 
@@ -616,4 +619,262 @@ Bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
 	}
 	return True;
 }
+
+ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
+	ThrowIf(
+		! rec.isDefined("nChannels"),
+		"no nChannels field found"
+	);
+	ThrowIf(
+		! rec.isDefined("nStokes"),
+		"no nStokes field found"
+	);
+	uInt nchan = rec.asuInt("nChannels");
+	ImageBeamSet beams(nchan, rec.asuInt("nStokes"));
+	uInt count = 0;
+	uInt chan = 0;
+	uInt stokes = 0;
+	Array<GaussianBeam>::const_iterator iterend = beams.getBeams().end();
+	for (
+		Array<GaussianBeam>::const_iterator iter =
+		beams.getBeams().begin(); iter != iterend; ++iter, ++count
+	) {
+		String field = "*" + String::toString(count);
+		ThrowIf(
+			! rec.isDefined(field),
+			"Field " + field + " is not defined"
+		);
+		beams.setBeam(
+			chan, stokes,
+			GaussianBeam::fromRecord(rec.asRecord(field))
+		);
+		if (++chan == nchan) {
+			chan = 0;
+			stokes++;
+		}
+	}
+	return beams;
+}
+
+Record ImageBeamSet::toRecord() const {
+	Record perPlaneBeams;
+	perPlaneBeams.define("nChannels", nchan());
+	perPlaneBeams.define("nStokes", nstokes());
+	Record rec;
+	uInt count = 0;
+	const Array<GaussianBeam>& beams = getBeams();
+	Array<GaussianBeam>::const_iterator iterEnd = beams.end();
+	for (
+		Array<GaussianBeam>::const_iterator iter=beams.begin();
+		iter!=iterEnd; ++iter, ++count
+	) {
+		ThrowIf(
+			iter->isNull(),
+            "Invalid per plane beam found"
+        );
+		Record rec = iter->toRecord();
+		perPlaneBeams.defineRecord("*" + String::toString(count), rec);
+	}
+	return perPlaneBeams;
+}
+
+void ImageBeamSet::summarize(
+	LogIO& log, Bool verbose, const CoordinateSystem& csys
+) const {
+	ostream& os = log.output();
+	Unit u("deg");
+	for (
+		Matrix<GaussianBeam>::const_iterator iter = _beams.begin();
+		iter != _beams.end(); iter++
+	) {
+		if (
+			iter->getMajor("deg") < 1/3600
+			|| iter->getMinor("deg") < 1/3600
+		) {
+			u = Unit("mas");
+			break;
+		}
+		if (
+			iter->getMajor("deg") < 1.0
+			|| iter->getMinor("deg") < 1.0
+		) {
+			u = Unit("arcsec");
+		}
+	}
+	Bool hasSpectral = csys.hasSpectralAxis();
+	Bool hasStokes = csys.hasPolarizationCoordinate();
+	log.output() << "Restoring Beams " << endl;
+	const SpectralCoordinate *spCoord = 0;
+	IPosition beamsShape = _beams.shape();
+	uInt chanWidth = 0;
+	uInt freqWidth = 0;
+	uInt freqPrec = 0;
+	uInt velPrec = 0;
+	uInt velWidth = 0;
+	uInt polWidth = 3;
+	uInt typeWidth = 6;
+	Bool myverbose = verbose || ! hasSpectral || (hasSpectral && beamsShape[0] <= 3);
+	const StokesCoordinate *polCoord = hasStokes
+		? &csys.stokesCoordinate()
+		: 0;
+	if (hasSpectral) {
+		spCoord = &csys.spectralCoordinate();
+		chanWidth = max(4, Int(log10(beamsShape[0])) + 1);
+		// yes these really should be separated because width applies only to the first.
+		ostringstream x;
+		Double freq;
+		spCoord->toWorld(freq, 0);
+		if (spCoord->pixelValues().size() > 0) {
+			freqPrec = 6;
+			velPrec = 3;
+		}
+		else {
+			Double inc = spCoord->increment()[0];
+			freqPrec = Int(abs(log10(inc/freq))) + 1;
+			Double vel0, vel1;
+			spCoord->pixelToVelocity(vel0, 0);
+			spCoord->pixelToVelocity(vel1, 1);
+			if (abs(vel0-vel1) > 10) {
+				velPrec = 0;
+			}
+			else {
+				velPrec = Int(abs(log10(abs(vel0-vel1)))) + 2;
+			}
+		}
+		x << scientific << std::setprecision(freqPrec) << freq;
+		freqWidth = x.str().length();
+		velWidth = velPrec + 5;
+		if (myverbose) {
+			os << std::setw(chanWidth) << "Chan" << " ";
+			os << std::setw(freqWidth)
+				<< "Freq" << " ";
+			os << std::setw(velWidth)
+				<< "Vel";
+		}
+		else {
+			if (hasStokes) {
+				os << std::setw(polWidth) << "Pol" << " ";
+			}
+			os << std::setw(typeWidth) << "Type" << " ";
+			os << std::setw(chanWidth) << "Chan" << " ";
+			os << std::setw(freqWidth)
+				<< "Freq" << " ";
+			os << std::setw(velWidth)
+				<< "Vel" << endl;
+		}
+	}
+	if (myverbose) {
+		if (hasStokes) {
+			os << " ";
+			os << std::setw(polWidth) << "Pol";
+		}
+		os << endl;
+		Int stokesPos = hasStokes
+			? hasSpectral
+				? 1 : 0
+				: -1;
+		IPosition axisPath = hasSpectral && hasStokes
+				? IPosition(2, 1, 0)
+						: IPosition(1, 0);
+        ArrayPositionIterator iter(beamsShape, axisPath, False);
+        while (! iter.pastEnd()) {
+            const IPosition pos = iter.pos();
+			if (hasSpectral) {
+				_chanInfoToStream(
+					os, spCoord, pos[0], chanWidth,
+					freqPrec, velWidth, velPrec
+				);
+			}
+			if (hasStokes) {
+				Stokes::StokesTypes stokes;
+				polCoord->toWorld(stokes, pos[stokesPos]);
+				os << std::setw(polWidth) << Stokes::name(stokes)
+				<< " ";
+			}
+			_beamToStream(os, _beams(pos), u);
+			os << endl;
+            iter.next();
+		}
+	}
+	else {
+		uInt mymax = hasStokes ? nstokes() : 1;
+		for (uInt i=0; i<mymax; i++) {
+			String stokesString;
+			if (hasStokes) {
+				Stokes::StokesTypes stokes;
+				polCoord->toWorld(stokes, i);
+				stokesString = Stokes::name(stokes);
+			}
+			for (uInt j=0; j<3; j++) {
+				String aggType;
+				GaussianBeam beam;
+				IPosition pos;
+				switch (j) {
+					case 0: {
+						aggType = "Max";
+						beam = getMaxAreaBeamForPol(pos, hasStokes? i : -1);
+						break;
+					}
+					case 1: {
+						aggType = "Min";
+						beam = getMinAreaBeamForPol(pos, hasStokes ? i : -1);
+						break;
+					}
+					case 2: {
+						aggType = "Median";
+						beam = getMedianAreaBeamForPol(
+							pos, hasStokes ? i : -1
+						);
+						break;
+					}
+					default: {
+						ThrowCc("Logic error: Unhandled aggregate type");
+					}
+				}
+				if (hasStokes) {
+					os << std::setw(polWidth) << stokesString << " ";
+				}
+				os << std::setw(typeWidth) << aggType << " ";
+				_chanInfoToStream(
+					os, spCoord, pos[0], chanWidth, freqPrec,
+					velWidth, velPrec
+				);
+				_beamToStream(os, beam, u);
+				os << endl;
+			}
+		}
+	}
+}
+
+void ImageBeamSet::_chanInfoToStream(
+	ostream& os, const SpectralCoordinate *spCoord,
+	const uInt chan, const uInt chanWidth, const uInt freqPrec,
+	const uInt velWidth, const uInt velPrec
+) {
+	os << std::fixed << std::setw(chanWidth)
+		<< chan << " ";
+	Double freq;
+	spCoord->toWorld(freq, chan);
+	os << scientific << std::setprecision(freqPrec)
+		<< freq << " ";
+	Double vel;
+	spCoord->pixelToVelocity(vel, chan);
+	os << std::setw(velWidth) << fixed
+		<< std::setprecision(velPrec) << vel << " ";
+}
+
+void ImageBeamSet::_beamToStream(
+	ostream& os, const GaussianBeam& beam,
+	const Unit& unit
+) {
+	Quantity majAx = beam.getMajor();
+	majAx.convert(unit);
+	Quantity minAx = beam.getMinor();
+	minAx.convert(unit);
+	Quantity pa = beam.getPA(True);
+	pa.convert("deg");
+	os << fixed << std::setprecision(2) << std::setw(7) <<  majAx
+		<< " x " << std::setw(7) << minAx << " pa=" << std::setw(6) << pa;
+}
+
 }

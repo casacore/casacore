@@ -225,6 +225,7 @@ public:
     // <src>stokes</src> are consistent with the size of the beam array.
     // Additional consistency checks are done when this object is added via
     // ImageInterface<T>::setImageInfo().
+    // <br>This function cannot be used if no beams have been set via set(All)Beams.
     // <group>
     void setBeam(Int channel, Int stokes, const Quantity& major,
                  const Quantity& minor, const Quantity& pa);
@@ -276,8 +277,7 @@ public:
     // Check if the beam set matches the coordinate axes sizes.
     void checkBeamSet (const CoordinateSystem& coords,
                        const IPosition& shape,
-                       const String& imageName,
-                       LogIO& logSink) const;
+                       const String& imageName) const;
 
     // Append the other beamset to this one.
     void appendBeams (ImageInfo& infoThat,
@@ -335,11 +335,15 @@ public:
     static void logMessage(Bool& warn, LogIO& os, Bool relax,
                            const String& msg1, const String msg2=String());
 
-  // Get the beam area in terms of pixel size of the specified
-  // DirectionCoordinate
-  Double getBeamAreaInPixels(Int channel, Int stokes,
-                             const DirectionCoordinate&) const;
+    // Get the beam area in terms of pixel size of the specified
+    // DirectionCoordinate
+    Double getBeamAreaInPixels(Int channel, Int stokes,
+                               const DirectionCoordinate&) const;
  
+    static Double getBeamAreaInPixels(
+    	const GaussianBeam& beam, const DirectionCoordinate& dc
+    );
+
 private:
   // Common copy ctor/assignment operator code.
   void copy_other(const ImageInfo &other);

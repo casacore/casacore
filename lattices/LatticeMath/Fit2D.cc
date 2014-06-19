@@ -43,6 +43,7 @@
 #include <casa/Quanta/MVAngle.h>
 #include <scimath/Mathematics/AutoDiff.h>
 #include <scimath/Mathematics/AutoDiffIO.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <casa/Utilities/Assert.h>
 
 #include <casa/iostream.h>
@@ -427,7 +428,7 @@ Fit2D::ErrorTypes Fit2D::residual(
 // Create a functional with the solution (no axis conversion
 // necessary because functional interface takes axial ratio)
 
-   std::auto_ptr<Function<AutoDiff<Double> > > sumFunction(itsFunction.clone());
+   PtrHolder<Function<AutoDiff<Double> > > sumFunction(itsFunction.clone());
    for (uInt i=0; i<itsSolution.nelements(); i++) {
 	   (*sumFunction)[i] = itsSolution[i];
    }

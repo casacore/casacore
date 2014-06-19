@@ -67,6 +67,14 @@ Double ConstantSpectrum::sample(const MFrequency&) const {
   return 1.0;
 }
 
+void ConstantSpectrum::sampleStokes(const MFrequency&, Vector<Double>& iquv) const {
+  DebugAssert(ok(), AipsError);
+  if(iquv.nelements() != 4 ){//keeps compiler happy
+    };
+    
+    
+}
+
 void ConstantSpectrum::sample(Vector<Double>& scale, 
 			      const Vector<MFrequency::MVType>&, 
 			      const MFrequency::Ref&) const {
@@ -74,6 +82,15 @@ void ConstantSpectrum::sample(Vector<Double>& scale,
   scale = 1.0;
 }
 
+  void ConstantSpectrum::sampleStokes(Vector<Vector<Double> >& iquv, 
+			      const Vector<MFrequency::MVType>& freq, 
+			      const MFrequency::Ref&) const {
+  DebugAssert(ok(), AipsError);
+  if(freq.nelements() != iquv.nelements()){
+    throw(AipsError("ConstSpectrum: frequency length does not match stokes val"));
+  }
+  
+}
 SpectralModel* ConstantSpectrum::clone() const {
   DebugAssert(ok(), AipsError);
   SpectralModel* tmpPtr = new ConstantSpectrum(*this);

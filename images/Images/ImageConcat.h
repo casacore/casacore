@@ -274,6 +274,11 @@ private:
 
    Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
                              const Vector<Int>& stokes2);
+
+   // Updates the CoordinateSystem in the ImageConcat image. The first lattice must
+   // be an image.  The first lattice is contiguous by definition.  The Coordinate
+   // System for the first image must be set before calling this function. For
+   // the first image, this function just sets up worldValues and pixelValues
    void setCoordinates();
 
   //# Make members of parent class known.

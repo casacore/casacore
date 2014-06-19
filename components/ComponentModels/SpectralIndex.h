@@ -1,5 +1,5 @@
 //# SpectralIndex.h: Models the spectral variation with a spectral index
-//# Copyright (C) 1998,1999,2000,2003
+//# Copyright (C) 1998-2014
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -84,6 +84,15 @@ template <class T> class Vector;
 // <src>parameters</src> functions or the class specific <src>index</src>
 // functions.
 
+//<Dec-2013> Have added a full stokes spectral variation ...
+// This is done via setting setStokesIndex. 
+// If setIndex is used then only the first element of  4 parameters is set
+// The 4 elements are 
+// 0) alpha for stokes I ..such that 
+// 1) alpha for linear pol fraction i.e make sure that Q and U is such that  sqrt(Q_0^2+U_0^2)/I_0 * (nu/nu_0)^alpha(1)) is obeyed.
+// 2) Rot measure (RM=alpha(2)) value to rotate linear pol by angle RM*(lambda^2- lambda_0^2)
+// 3) alpha for circular pol fraction i.e to make V such that V/I=V_0/I_0 *(nu/nu_0)^alpha(3) 
+//</Dec-2013> 
 // This class also contains functions (<src>toRecord</src> &
 // <src>fromRecord</src>) which perform the conversion between Records and
 // SpectralIndex objects. These functions define how a SpectralIndex
@@ -112,6 +121,12 @@ template <class T> class Vector;
 // In this example a SpectralIndex object is created and used to calculate the
 // flux at a number of frequencies.
 // <srcblock>
+//<Dec-2013> The  example below was NEVER implemented... 
+// Could well have written the following and call it documentation:
+// Sous un arbre, vos laitues naissent-elles ?
+// Si vos laitues naissent, vos navets aussi naissent !
+// Leaving it as is for archeological purposes
+// </Dec-2013>
 //  SpectralIndex siModel;
 //  siModel.setRefFrequency(MFrequency(Quantity(1.0, "GHz")));
 //  siModel.setIndex(1.0, Stokes::I);  
@@ -137,6 +152,25 @@ template <class T> class Vector;
 //         << " " << sampleFlux.unit().getName() << endl;
 //    sampleFreq += step;
 //  }
+//<Dec-2013>
+// Now for an example
+/////////////////////////////////////////////
+// const MFrequency f1(Quantity(1.0, "GHz"), MFrequency::LSRK);
+// const MFrequency f2(Quantity(2.0, "GHz"), MFrequency::LSRK);
+// SpectralIndex siModel;
+//  siModel.setIndex(1.0);
+// cout << "scale value at 1 GHz for setIndex 1.0 " << siModel.sample(f1) << endl;
+// Vector<Double> indices(4);
+// indices(0)=1.0; indices(1)=0.2; indices(2)=0.0005; indices(3)=0.1;     
+// siModel.setStokesIndex(indices);
+// Vector<Double> iquv(4);
+// iquv(0)=10.0; iquv(1)=0.2; iquv(2)=0.4; iquv(3)=0.1;
+// cerr << "iquv in " << iquv << "  indices " << indices << endl;
+// siModel.sampleStokes(f1, iquv);
+// cerr << "scale value of I at 1.0 GHz " << siModel.sample(f1) << " iquv out " << iquv << endl;
+// siModel.sampleStokes(f2, iquv);
+// cerr << "scale value of I at 2.0 GHz " << siModel.sample(f2) << " iquv out " << iquv << endl;
+//</Dec-2013>
 // </srcblock>
 // </example>
 //
@@ -181,6 +215,8 @@ public:
   // <group>
   const Double& index() const;
   void setIndex(const Double& newIndex);
+  const Vector<Double>& stokesIndex() const;
+  void setStokesIndex(const Vector<Double>& newIndex);
   // </group>
 
   // Return the scaling factor that indicates what proportion of the flux is at
@@ -189,6 +225,7 @@ public:
   // frequencies it will return a non-negative number.
   virtual Double sample(const MFrequency& centerFrequency) const;
 
+  virtual void sampleStokes(const MFrequency& centerFrequency, Vector<Double>& iquv) const;
   // Same as the previous function except that many frequencies can be sampled
   // at once. The reference frame must be the same for all the specified
   // frequencies. Uses a customised implementation for improved speed.
@@ -196,13 +233,18 @@ public:
                       const Vector<MFrequency::MVType>& frequencies, 
                       const MFrequency::Ref& refFrame) const;
 
+  virtual void sampleStokes(Vector<Vector<Double> >& scale, 
+			    const Vector<MFrequency::MVType>& frequencies, 
+			    const MFrequency::Ref& refFrame) const;
+
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
   virtual SpectralModel* clone() const;
 
-  // return the number of parameters. There is one parameter for this spectral
-  // model, namely the spectral index. So you supply a unit length vector when
+  // return the number of parameters. There is one parameter  or 4 for this spectral
+  // model, namely the spectral index for I or I,Q,U,V. So you supply a unit length vector 
+  // or one 4 element long when
   // using these functions. Otherwise an exception (AipsError) may be thrown.
   // <group>
   virtual uInt nParameters() const;
@@ -237,6 +279,7 @@ public:
 
 private:
   Double itsIndex;
+  Vector<Double> itsStokesIndex;
   Double itsError;
 };
 

@@ -273,16 +273,32 @@ public:
 
   // </group>
 
-  // Get a nicely formatted string summarizing the component.
-  virtual String summarize(const CoordinateSystem *const &coordinates = 0) const;
+  // Get a nicely formatted string summarizing the component. If longErrOnGreatCircle is
+  // true, the longitude error is interpreted as lying
+  // along the great circle that is tangent to the center position, rather than along the
+  // circle of constant longitude. In this case, the longitude error presented as a time has
+  // been multiplied by 1/cos(latitude), but the associated angle reported as an angular measure
+  // will not have this factor applied to it, nor will the error reported in pixels.
+  virtual String summarize(
+		 const DirectionCoordinate *const &dc = 0, Bool longErrOnGreatCircle=False
+  ) const;
 
-  // If the <src>coordinates</src> parameter is specified, also return the corresponding world
-  // coordinates.
-  String positionToString(const CoordinateSystem *const &coordinates = 0) const;
-
+  // If the <src>dc</src> parameter is specified, also return the corresponding world
+  // coordinates. If longErrOnGreatCircle is true, the longitude error is interpreted as lying
+  // along the great circle that is tangent to the center position, rather than along the
+  // circle of constant longitude. In this case, the longitude error presented as a time has
+  // been multiplied by 1/cos(latitude), but the associated angle reported as an angular measure
+  // will not have this factor applied to it, nor will the error reported in pixels.
+  String positionToString(
+		  const DirectionCoordinate *const &dc = 0, Bool longErrOnGreatCircle=False
+  ) const;
 
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
+
+  static std::pair<String, String> _axisLabels(
+		const DirectionCoordinate *const &dc
+  );
 
 };
 

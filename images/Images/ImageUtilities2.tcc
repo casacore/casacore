@@ -1,4 +1,4 @@
-//# ImageUtilities2.cc:  Implement templates functions
+//# ImageUtilities2.tcc:  Implement templates functions
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,14 +35,90 @@
 #include <coordinates/Coordinates/TabularCoordinate.h>
 #include <casa/Exceptions/Error.h>
 #include <images/Images/ImageInterface.h>
+#include <images/Images/ImageOpener.h>
+#include <images/Images/PagedImage.h>
+#include <images/Images/SubImage.h>
 #include <images/Images/TempImage.h>
 #include <images/Images/RebinImage.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <lattices/Lattices/TempLattice.h>
 #include <casa/Utilities/Assert.h>
+#include <tables/LogTables/NewFile.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+template <typename T> void ImageUtilities::addDegenerateAxes(
+	LogIO& os, PtrHolder<ImageInterface<T> >& outImage,
+	const ImageInterface<T>& inImage, const String& outFile,
+	Bool direction, Bool spectral, const String& stokes,
+	Bool linear, Bool tabular, Bool overwrite,
+	Bool silent
+) {
+	// Verify output file
+	if (!overwrite && !outFile.empty()) {
+		NewFile validfile;
+		String errmsg;
+		if (!validfile.valueOK(outFile, errmsg)) {
+			ThrowCc(errmsg);
+		}
+	}
+	IPosition shape = inImage.shape();
+	CoordinateSystem cSys = inImage.coordinates();
+	IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
+
+	uInt nExtra = CoordinateUtil::addAxes (
+		cSys, direction, spectral, stokes,
+		linear, tabular, silent
+	);
+
+	if (nExtra > 0) {
+		uInt n = shape.nelements();
+		shape.resize(n+nExtra,True);
+		for (uInt i=0; i<nExtra; i++) {
+			shape(n+i) = 1;
+		}
+	}
+
+	if (outFile.empty()) {
+		os << LogIO::NORMAL << "Creating (temp)image of shape "
+			<< shape << LogIO::POST;
+		outImage.set(new TempImage<T>(shape, cSys));
+	}
+	else {
+		os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
+			<< shape << LogIO::POST;
+		outImage.set(new PagedImage<T>(shape, cSys, outFile));
+	}
+	ImageInterface<T>* pOutImage = outImage.ptr();
+
+	// Generate output masks
+
+	Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
+	const uInt nMasks = maskNames.nelements();
+	if (nMasks > 0) {
+		for (uInt i=0; i<nMasks; i++) {
+			pOutImage->makeMask(maskNames(i), True, False, True);
+		}
+	}
+	pOutImage->setDefaultMask(inImage.getDefaultMask());
+
+	// Generate SubImage to copy the data into
+
+	AxesSpecifier axesSpecifier(keepAxes);
+	SubImage<T> subImage(*pOutImage, True, axesSpecifier);
+
+	// Copy masks (directly, can't do via SubImage)
+	if (nMasks > 0) {
+		for (uInt i=0; i<nMasks; i++) {
+			ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i),
+					axesSpecifier);
+		}
+	}
+	subImage.copyData(inImage);
+	ImageUtilities::copyMiscellaneous(*pOutImage, inImage);
+}
+
 
 template <typename T, typename U> 
 void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
@@ -131,6 +207,77 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
       TabularCoordinate& cOut = dynamic_cast<TabularCoordinate&>(coordOut);
       cOut = cIn;
    }
+}
+
+template <typename T, typename U> void ImageUtilities::copyMask (
+	ImageInterface<T>& out,
+	const ImageInterface<U>& in,
+	const String& maskOut, const String& maskIn,
+	const AxesSpecifier outSpec
+) {
+//
+// Because you can't write to the mask of a SubImage, we pass
+// in an AxesSpecifier to be applied to the output mask.
+// In this way the dimensionality of in and out can be made
+// the same.
+//
+// Get masks
+
+   ImageRegion iRIn = in.getRegion(maskIn, RegionHandler::Masks);
+   const LCRegion& regionIn = iRIn.asMask();
+
+   ImageRegion iROut = out.getRegion(maskOut, RegionHandler::Masks);
+   LCRegion& regionOut = iROut.asMask();
+   SubLattice<Bool> subRegionOut(regionOut, True, outSpec);
+
+// Copy
+
+   LatticeIterator<Bool> maskIter(subRegionOut);
+   for (maskIter.reset(); !maskIter.atEnd(); maskIter++) {
+      subRegionOut.putSlice(regionIn.getSlice(maskIter.position(),
+                            maskIter.cursorShape()),  maskIter.position());
+   }
+}
+
+template <typename T> void ImageUtilities::openImage(
+	ImageInterface<T>*& pImage,
+	const String& fileName
+) {
+    ThrowIf(
+		fileName.empty(),
+		"The image filename is empty"
+	);
+	File file(fileName);
+	ThrowIf(
+		! file.exists(),
+		"File '" + fileName + "' does not exist"
+	);
+	LatticeBase* lattPtr = ImageOpener::openImage (fileName);
+    ThrowIf(
+		lattPtr == 0,
+		"Image " + fileName + " cannot be opened; its type is unknown"
+	);
+    T x = 0;
+    ThrowIf(
+        lattPtr->dataType() != whatType(&x),
+        "Logic Error: " + fileName
+        + " has a different data type than the data type of the requested object"
+    );
+	pImage = dynamic_cast<ImageInterface<T> *>(lattPtr);
+	ThrowIf(
+		pImage == 0,
+		"Unrecognized image data type, "
+	    "presently only Float and Complex images are supported"
+	);
+}
+
+template <typename T> void ImageUtilities::openImage(
+	PtrHolder<ImageInterface<T> >& image,
+	const String& fileName
+) {
+   ImageInterface<T>* p = 0;
+   ImageUtilities::openImage(p, fileName);
+   image.set(p);
 }
 
 } //# NAMESPACE CASA - END

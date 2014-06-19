@@ -60,7 +60,18 @@ int main() {
       AlwaysAssert(near(siModel.sample(f1), 1.0), AipsError);
       AlwaysAssert(near(siModel.sample(f2), 1.0), AipsError);
        
-      siModel.setIndex(1.0);  
+      siModel.setIndex(1.0);
+      cout << "scale value at 1 GHz for setIndex 1.0 " << siModel.sample(f1) << endl;
+      Vector<Double> indices(4);
+      indices(0)=1.0; indices(1)=0.2; indices(2)=0.0005; indices(3)=0.1;
+      siModel.setStokesIndex(indices);
+      Vector<Double> iquv(4);
+      iquv(0)=10.0; iquv(1)=0.2; iquv(2)=0.4; iquv(3)=0.1;
+      cerr << "iquv in " << iquv << "  indices " << indices << endl;
+      siModel.sampleStokes(f1, iquv);
+      cerr << "scale value of I at 1.0 GHz " << siModel.sample(f1) << " iquv out " << iquv << endl;
+      siModel.sampleStokes(f2, iquv);
+      cerr << "scale value of I at 2.0 GHz " << siModel.sample(f2) << " iquv out " << iquv << endl;
       AlwaysAssert(near(siModel.sample(f1), 1.0), AipsError);
       AlwaysAssert(near(siModel.sample(f2), 2.0), AipsError);
       siModel.setRefFrequency(f2);

@@ -185,7 +185,9 @@ try {
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
     		ok = False;
     	}
-    	catch (const AipsError& x) {}
+    	catch (const AipsError& x) {
+    		cout << x.getMesg() << endl;
+    	}
     	AlwaysAssert(ok, AipsError);
     	myinfo = ImageInfo();
     	myinfo.setAllBeams(2, 1, GaussianBeam());

@@ -61,7 +61,7 @@ class Unit;
 // </prerequisite>
 //
 // <etymology> 
-// CoordinateUtils follows the Casacore naming convention for static functions
+// CoordinateUtils follows the AIPS++ naming convention for static functions
 // that are associated with a class.
 // </etymology>
 //
@@ -89,7 +89,7 @@ class Unit;
 // <li> <src>addFreqAxis</src> this adds a spectral axis with a reference
 // frequency of 1.415GHz on channel 0. The channel bandwidth (pixel
 // increment) is 1kHz, and the reference frame is the kinematical Local Standard of
-// rest (<linkto class="MFrequency">MFrequency</linkto>\::LSRK). 
+// rest (<linkto class="MFrequency">MFrequency</linkto>::LSRK). 
 // </ul>
 //
 // The <src>defaultCoords</src> functions, create from scratch a
@@ -137,7 +137,7 @@ class Unit;
 // remove one axis, all the rest shuffle down one, so it is
 // provided here.  Generally, one only needs to remove one axis
 // (in which case you should use the CoordinateSystem::removeWorldAxis and
-// CoordinateSystem::removePixelAxis functions), but on occasion,
+// CoordinateSystem::removcePixelAxis functions), but on occaision,
 // the multiple need is there.
 // </synopsis>
 //
@@ -186,7 +186,13 @@ class Unit;
 // </thrown>
 //
 // <todo asof="1997/01/23">
-//   <li> This code does all I want at the moment
+//   Many of these methods belong in the CoordinateSystem class,
+//   eg all the add* methods, and in fact CoordinateSystem already has analogs
+//   for many of them. The factory methods which create a CoordinateSystem
+//   could also arguably go in CoordinateSystem as static methods. Having a separate
+//   utility class that really just has methods that operate on or create CoordinateSystem
+//   objects makes no sense. CoordinateUtil is the antithesis of object oriented design,
+//   and we need to endeavor to expunge it from our system.
 // </todo>
 
 //  <linkfrom anchor=defaultAxes classes="CoordinateSystem">
@@ -226,6 +232,21 @@ static void addLinearAxes (CoordinateSystem & coords,
 // Add a spectral axis to the user supplied CoordinateSystem. See the
 // synopsis above for the current default values.
 static void addFreqAxis(CoordinateSystem& coords);
+
+
+// Add one axis for each of the specified coordinate types.
+// Returns the number of axes added.
+// If silent==True, existing axes are silently ignored.
+// This should really be a method of CoordinateSystem, but the
+// code was moved from ImageUtilities which makes heavy use
+// of CoordUtil methods (which aren't available to CoordinateSystem)
+static uInt addAxes (
+	CoordinateSystem& csys,
+	Bool direction,
+	Bool spectral, const String& stokes,
+	Bool linear, Bool tabular,
+	Bool silent=False
+);
 
 // Return a 2-dimensional coordinate system with RA/DEC axes only. 
 static CoordinateSystem defaultCoords2D();
@@ -340,13 +361,13 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 // Physically (nont just virtually) drop coordinates from the CoordinateSystem
 // if all axes are fully removed. For coordinates with axes partially removed
 // (world/pixel) preserve that removal state in the output CS.  No effort
-// is made to deal in any way with transposed systems, unless
-// <src>perserveAxesOrder</src> is True. In that case the ordering of the
-// axes of the output coordinate system will be the same as the input
-// cSysIn (sans dropped axes of course).
-static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
-                             const CoordinateSystem& cSysIn,
-                             Bool preserveAxesOrder=False);
+// is made to deal in any way with transposed systems, unless perserveAxesOrder
+// is True, and then the ordering of the axes of the output coordinate system
+// will be the same as the input cSysIn (sans dropped axes of course).
+static Bool dropRemovedAxes (
+	CoordinateSystem& cSysOut, const CoordinateSystem& cSysIn,
+	Bool preserveAxesOrder=False
+);
 
 // Setup Measures conversion machine for MDirections.
 // Returns True if the machine was needed and set.  Returns False
@@ -383,12 +404,6 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
 // Returns False and an error message if it can't find the sky.
    static Bool findSky(String& errorMessage, Int& dirCoord, Vector<Int>& pixelAxes,
                        Vector<Int>& worldAxes, const CoordinateSystem& cSys);
-//
-
-// Does the CoordinateSystem hold just the sky ?  Exception if not.
-// Returns True if CS pixel axis 0 is the longitude and 1 latitude  
-// else returns False
-   static Bool isSky (LogIO& os, const CoordinateSystem& cSys);
 
 // Do the specified axes hold the sky ?  Returns False if no DirectionCoordinate
 // or if only one axis of the DirectionCoordinate is held or the specified
@@ -431,13 +446,6 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
    static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& spcquant);
 
-// Set rest frequency of SpectralCoordinate in CoordinateSystem.
-// Unit must be consistent with Hz or m.
-// Returns False if invalid inputs (and CS not changed) and an error message.
-   static Bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
-   		                        const String& unit,
-   		                        const Double& value);
-
 // Set velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent m/s and the doppler a valid MDoppler string.
 // For no change, leave either String empty.
@@ -445,6 +453,7 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut,
    static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& spcquant);
 
+  //#/// Kept setSpectralConversion for old casarest
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
 // MFrequency::Types string).  Returns False if frequency system invalid

@@ -47,6 +47,7 @@
 #include <casa/Logging/LogIO.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MeasTable.h>
 #include <measures/Measures/MDoppler.h>
 #include <measures/Measures/MEpoch.h>
 #include <casa/Utilities/Assert.h>
@@ -4716,6 +4717,10 @@ Vector<Int> CoordinateSystem::getWorldAxesOrder(
 }
 
 Bool CoordinateSystem::isDirectionAbscissaLongitude() const {
+	ThrowIf(
+		! hasDirectionCoordinate(),
+		"Coordinate system has no direction coordinate"
+	);
 	Vector<Int> dirPixelAxes = directionAxesNumbers();
 	ThrowIf(
 		dirPixelAxes(0) == -1 || dirPixelAxes(1) == -1,
@@ -4724,5 +4729,112 @@ Bool CoordinateSystem::isDirectionAbscissaLongitude() const {
 	return dirPixelAxes(0) < dirPixelAxes(1);
 }
 
+void CoordinateSystem::setSpectralConversion (
+	const String frequencySystem
+) {
+	String err;
+	ThrowIf(
+		! setSpectralConversion(err, frequencySystem),
+		err
+	);
+}
+
+Bool CoordinateSystem::setSpectralConversion (
+	String& errorMsg, const String frequencySystem
+) {
+	if (! hasSpectralAxis()) {
+		return True;
+	}
+	if (! hasDirectionCoordinate()) {
+		errorMsg = String("No DirectionCoordinate; cannot set Spectral conversion layer");
+		return False;
+	}
+	MFrequency::Types ctype;
+	if (!MFrequency::getType(ctype, frequencySystem)) {
+		errorMsg = String("invalid frequency system " + frequencySystem);
+		return False;
+	}
+
+	SpectralCoordinate coord = spectralCoordinate();
+	MFrequency::Types oldctype;
+	MEpoch epoch;
+	MPosition position;
+	MDirection direction;
+	coord.getReferenceConversion(oldctype, epoch, position, direction);
+	if (ctype == oldctype) {
+		return True;
+	}
+	const DirectionCoordinate& dCoord = directionCoordinate();
+	const Vector<Double>& rp = dCoord.referencePixel();
+	if (!dCoord.toWorld(direction, rp)) {
+		errorMsg = dCoord.errorMessage();
+		return False;
+	}
+
+	const ObsInfo& oi = obsInfo();
+	String telescope = oi.telescope();
+	if (! MeasTable::Observatory(position, telescope)) {
+		errorMsg = String("Cannot find observatory; cannot set Spectral conversion layer");
+		return False;
+	}
+	epoch = oi.obsDate();
+	Double t = epoch.getValue().get();
+	if (t <= 0.0) {
+		errorMsg = String("Epoch not valid; cannot set Spectral conversion layer");
+		return False;
+	}
+	coord.setReferenceConversion(ctype, epoch, position, direction);
+	replaceCoordinate(coord, this->spectralCoordinateNumber());
+	return True;
+}
+
+Bool CoordinateSystem::setRestFrequency (
+	String& errorMsg, const Quantity& freq
+) {
+	Double value = freq.getValue();
+	if (value < 0.0) {
+		errorMsg = "The rest frequency/wavelength is below zero!";
+		return False;
+	}
+	else if (isNaN(value)) {
+		errorMsg = "The rest frequency/wavelength is NaN!";
+		return False;
+	}
+	else if (isInf(value)) {
+		errorMsg = "The rest frequency/wavelength is InF!";
+		return False;
+	}
+	static Unit HZ(String("GHz"));
+	static Unit M(String("m"));
+	Unit t(freq.getUnit());
+	if (t != HZ && t!= M) {
+		errorMsg = "Illegal spectral unit " + freq.getUnit();
+		return False;
+	}
+	if (! hasSpectralAxis()) {
+		return True;
+	}
+	SpectralCoordinate sCoord = spectralCoordinate();
+	Unit oldUnit(sCoord.worldAxisUnits()[0]);
+
+	MVFrequency newFreq = MVFrequency(freq);
+	Double newValue = newFreq.get(oldUnit).getValue();
+
+	if (isNaN(newValue)) {
+		errorMsg = "The new rest frequency/wavelength is NaN!";
+		return False;
+	}
+	else if (isInf(newValue)) {
+		errorMsg = "The new rest frequency/wavelength is InF!";
+		return False;
+	}
+
+	if (!sCoord.setRestFrequency(newValue)) {
+		errorMsg = sCoord.errorMessage();
+		return False;
+	}
+	this->replaceCoordinate(sCoord, spectralCoordinateNumber());
+	return True;
+}
 
 } //# NAMESPACE CASA - END

@@ -41,7 +41,6 @@ void test1();
 void test2();
 void test3();
 void test4();
-void test5();
 
 int main()
 {
@@ -51,7 +50,6 @@ try {
    test2();
    test3();
    test4();
-   test5();
 }
 catch (const AipsError& x) {
 	cerr << "aipserror: error " << x.getMesg() << endl;
@@ -695,86 +693,3 @@ void test4 ()
     cerr << endl;
 }
 
-void test5()
-//
-// test the change of the reference frequency
-//
-{
-	Bool   ok=False;
-   Double inVal; //outVal;
-	String uStr="GHz";
-	String errorMsg;
-
-	// get the default 3D system
-	CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-
-   // isolate the spectral coordinate
-	// make it as reference, thus re-usable
-   Int pixelAxis, worldAxis, coordinate;
-   CoordinateUtil::findSpectralAxis(pixelAxis, worldAxis, coordinate, cSys);
-   const SpectralCoordinate &sCoo = cSys.spectralCoordinate(coordinate);
-
-	// make sure negative rest frequency is refused
-	inVal =  -100.0;
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (!ok);
-   cerr << "Frequency correctly NOT set with message = " <<  errorMsg << endl;
-
-	// make sure NaN rest frequency is refused
-   setNaN(inVal);
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (!ok);
-   cerr << "Frequency correctly NOT set with message = " <<  errorMsg << endl;
-
-	// make sure Inf rest frequency is refused
-   setInf(inVal);
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (!ok);
-   cerr << "Frequency correctly NOT set with message = " <<  errorMsg << endl;
-
-   // make sure 0.0 rest wavelength is refused
-   inVal = 0.0;
-   uStr  = "nm";
-   ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit(!ok);
-   cerr << "Frequency correctly NOT set with message = " <<  errorMsg << endl;
-
-   // make sure the unit "km/s" is refused
-   inVal = 100.0;
-   uStr  = "km/s";
-   ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit(!ok);
-   cerr << "Frequency correctly NOT set with message = " <<  errorMsg << endl;
-
-	// check the basic call
-   inVal = 100.0;
-   uStr  = "GHz";
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (ok);
-   cerr << "Frequency set to: " << inVal <<  uStr << endl;
-
-   // check the inserted value
-   AlwaysAssertExit(near(1.0e+11, sCoo.restFrequency(), 1.0e-8));
-
-	// check the basic call
-   inVal = 90.0;
-   uStr  = "GHz";
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (ok);
-   cerr << "Frequency set to: " << inVal <<  uStr << endl;
-
-   // check the inserted value
-   AlwaysAssertExit(near(0.9e+11, sCoo.restFrequency(), 1.0e-8));
-   cerr << "The input was verified" << endl;
-
-	// check the wavelength input
-   inVal = 1.0;
-   uStr  = "mm";
-	ok = CoordinateUtil::setRestFrequency (errorMsg, cSys, uStr, inVal);
-   AlwaysAssertExit (ok);
-   cerr << "Frequency set to: " << inVal <<  uStr << endl;
-
-   // check the inserted value
-   AlwaysAssertExit(near(QC::c.getValue()/1.0e-03, sCoo.restFrequency(), 1.0e-8));
-   cerr << "The input was verified" << endl;
-}

@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
     MSTimeGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
@@ -106,6 +106,8 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 "*"       { msTimeGramPosition() += yyleng;
             return STAR;
           }
+"["       { msTimeGramPosition() += yyleng; return LSQBRACKET;}
+"]"       { msTimeGramPosition() += yyleng; return RSQBRACKET;}
 
  /* Literals */
 {NUMBER}        { msTimeGramPosition() += yyleng;

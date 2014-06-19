@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 TabularSpectrum::TabularSpectrum()
   :SpectralModel(),
    tabFreqVal_p(0),
-   flux_p(0), ival_p(0), referenceFreq_p(0.0), maxFreq_p(0.0), minFreq_p(0.0)
+   flux_p(0), ival_p(0),qval_p(0), uval_p(0), vval_p(0), referenceFreq_p(0.0), maxFreq_p(0.0), minFreq_p(0.0)
 {
   freqRef_p=MFrequency::Ref(MFrequency::LSRK);
 
@@ -98,6 +98,9 @@ TabularSpectrum& TabularSpectrum::operator=(const TabularSpectrum& other) {
     maxFreq_p=other.maxFreq_p;
     minFreq_p=other.minFreq_p;
     ival_p=other.ival_p;
+    qval_p=other.qval_p;
+    uval_p=other.uval_p;
+    vval_p=other.vval_p;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -121,27 +124,51 @@ void TabularSpectrum::setValues(const Vector<MFrequency::MVType>& frequencies, c
     throw(AipsError("frequencies length is not equal to flux length in TabularSpectrum::setValues"));
   }
 
-  Bool stupidTransform = (refFrame.getType() == MFrequency::REST) ||  (refFrame.getType() == MFrequency::N_Types) || (refFrequency().getRef().getType() == MFrequency::REST) ||  (refFrequency().getRef().getType() == MFrequency::N_Types);
-
-  if (refFrame.getType() != refFrequency().getRef().getType() && !stupidTransform) {
-    referenceFreq_p = MFrequency::Convert(refFrequency(), refFrame)().getValue().get("Hz").getValue();
-  } else {
-    referenceFreq_p = refFrequency().getValue().get("Hz").getValue();
-  }
+  referenceFreq_p=refFreqInFrame(refFrame);
 
   freqRef_p=refFrame;
   tabFreqVal_p.resize(frequencies.nelements());
   flux_p.resize();
   flux_p=flux;
   ival_p.resize(frequencies.nelements());
+  qval_p.resize(frequencies.nelements());
+  uval_p.resize(frequencies.nelements());
+  vval_p.resize(frequencies.nelements());
+
   for (uInt k=0; k < frequencies.nelements(); ++k){
     tabFreqVal_p(k)=frequencies(k).get("Hz").getValue();
     //IQUV
     flux_p(k).convertPol(ComponentType::STOKES);
     ival_p(k)=flux_p(k).value(Stokes::I).getValue();
+    qval_p(k)=flux_p(k).value(Stokes::Q).getValue();
+    uval_p(k)=flux_p(k).value(Stokes::U).getValue();
+    vval_p(k)=flux_p(k).value(Stokes::V).getValue();
   }
   maxFreq_p=max(tabFreqVal_p);
   minFreq_p=min(tabFreqVal_p);
+  //Just make sure the refVal_p is calculated
+  this->setRefFrequency(refFrequency());
+ 
+}
+void TabularSpectrum::setRefFrequency(const MFrequency& newRefFreq) {
+  SpectralModel::setRefFrequency(newRefFreq);
+  referenceFreq_p=refFreqInFrame(freqRef_p);
+  Vector<Double> xout(1, referenceFreq_p);
+  Vector<Double> scale(1,0.0);
+  refVal_p.resize(4);
+  refVal_p=0.0;
+  Vector<Vector<Double> > iquv(4);
+  iquv[0].reference(ival_p);
+  iquv[1].reference(qval_p);
+  iquv[2].reference(uval_p);
+  iquv[3].reference(vval_p);
+  if(ival_p.nelements() < 1 || tabFreqVal_p.nelements() != ival_p.nelements())
+    throw(AipsError("Values have to be set before referenceFrequency in TabularSpectrum"));
+  for (uInt k=0; k < 4; ++k){
+    InterpolateArray1D<Double, Double>::interpolate(scale, xout, tabFreqVal_p, iquv[k], InterpolateArray1D<Double, Double>::linear);
+    refVal_p[k]=scale[0] != 0.0 ? scale[0] : max(iquv[k]);
+    
+  }
 }
 
 Double TabularSpectrum::sample(const MFrequency& centerFreq) const {
@@ -162,8 +189,7 @@ Double TabularSpectrum::sample(const MFrequency& centerFreq) const {
 
   Vector<Double> xout(1, referenceFreq_p);
   Vector<Double> scale(1,0.0);
-  InterpolateArray1D<Double, Double>::interpolate(scale, xout, tabFreqVal_p, ival_p, InterpolateArray1D<Double, Double>::linear);
-  Double refy=scale[0];
+  Double refy=refVal_p[0];
   xout[0]=nu;
   InterpolateArray1D<Double, Double>::interpolate(scale, xout, tabFreqVal_p, ival_p, InterpolateArray1D<Double, Double>::linear);
   
@@ -171,10 +197,40 @@ Double TabularSpectrum::sample(const MFrequency& centerFreq) const {
   if(refy !=0.0){
     return scale[0]/refy;
   }
-  else if(max(ival_p) !=0.0)
-    return scale[0]/max(ival_p);
   
   return 0.0 ;
+}
+
+void TabularSpectrum::sampleStokes(const MFrequency& centerFreq, Vector<Double>& retval) const {
+  const MFrequency& refFreq(refFrequency());
+  const MFrequency::Ref& centerFreqFrame(centerFreq.getRef());
+  Double nu;
+  retval.resize(4);
+  retval.set(0.0);
+  Bool stupidTransform = (centerFreqFrame.getType() == MFrequency::REST) ||  (centerFreqFrame.getType() == MFrequency::N_Types) || (freqRef_p.getType() == MFrequency::REST) ||  (freqRef_p.getType() == MFrequency::N_Types);
+  if (centerFreqFrame.getType() != freqRef_p.getType() && !stupidTransform) {
+    nu = MFrequency::Convert(centerFreq, freqRef_p)().getValue().get("Hz").getValue();
+  } else {
+    nu = refFreq.getValue().get("Hz").getValue();
+  }
+  if (nu < minFreq_p || nu > maxFreq_p) {
+    throw(AipsError("TabularSpectrun::sample(...) - "
+		    "the frequency requested out of range"));
+  }
+
+  Vector<Double> xout(1, referenceFreq_p);
+  Vector<Double> scale(1,0.0);
+  xout[0]=nu;
+  Vector<Vector<Double> > iquv(4);
+  iquv[0].reference(ival_p);
+  iquv[1].reference(qval_p);
+  iquv[2].reference(uval_p);
+  iquv[3].reference(vval_p);
+  for (uInt k=0; k < 4; ++k){
+    InterpolateArray1D<Double, Double>::interpolate(scale, xout, tabFreqVal_p, iquv[k], InterpolateArray1D<Double, Double>::linear);
+    retval(k)=scale(0);
+  }
+  
 }
 
 void TabularSpectrum::sample(Vector<Double>& scale, 
@@ -197,14 +253,15 @@ void TabularSpectrum::sample(Vector<Double>& scale,
       nu(k) = frequencies(k).getValue();
     }
   }
-  Vector<Double> xout(1, referenceFreq_p);
+  /*  Vector<Double> xout(1, referenceFreq_p);
   Vector<Double> refVal(1,0.0);
   InterpolateArray1D<Double, Double>::interpolate(refVal, xout, tabFreqVal_p, ival_p, InterpolateArray1D<Double, Double>::linear);
   scale.resize(nSamples);
+  */
   InterpolateArray1D<Double, Double>::interpolate(scale, nu, tabFreqVal_p, ival_p, InterpolateArray1D<Double, Double>::linear);
-  if(refVal(0) !=0.0){
+  if(refVal_p(0) !=0.0){
     for (uInt i = 0; i < nSamples; i++) {
-      scale(i) = scale(i)/refVal(0);
+      scale(i) = scale(i)/refVal_p(0);
     }
   }
   else{
@@ -213,6 +270,51 @@ void TabularSpectrum::sample(Vector<Double>& scale,
   }
 
 }
+
+  void TabularSpectrum::sampleStokes(Vector<Vector<Double> >& retvals, 
+			   const Vector<MFrequency::MVType>& frequencies, 
+			   const MFrequency::Ref& refFrame) const {
+  const uInt nSamples = frequencies.nelements();
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+  retvals.resize(nSamples);
+
+  for (uInt i = 0; i < nSamples; i++){ 
+    retvals(i).resize(4);
+    retvals(i).set(0.0);
+  }
+  MFrequency::Convert toThisFrame(refFrame, freqRef_p);
+  Vector<Double> nu(frequencies.nelements());
+  //try frame conversion only if it is not something stupid...
+  //if it is then assume the frequencies are fine as is.
+  Bool stupidTransform = (refFrame.getType() == MFrequency::REST) ||  (refFrame.getType() == MFrequency::N_Types) || (freqRef_p.getType() == MFrequency::REST) ||  (freqRef_p.getType() == MFrequency::N_Types);
+  if ((refFrame.getType() != freqRef_p.getType()) && !stupidTransform) {
+    for(uInt k=0; k < nSamples; ++k){
+      nu(k) = toThisFrame(frequencies(k).getValue()).getValue().getValue();
+    }
+  } else {
+    for(uInt k=0; k< nSamples; ++k){
+      nu(k) = frequencies(k).getValue();
+    }
+  }
+  /*  Vector<Double> xout(1, referenceFreq_p);
+  Vector<Double> refVal(1,0.0);
+  InterpolateArray1D<Double, Double>::interpolate(refVal, xout, tabFreqVal_p, ival_p, InterpolateArray1D<Double, Double>::linear);
+  scale.resize(nSamples);
+  */
+  Vector<Double> scaleone(nSamples);
+  Vector<Vector<Double> > iquv(4);
+  iquv[0].reference(ival_p);
+  iquv[1].reference(qval_p);
+  iquv[2].reference(uval_p);
+  iquv[3].reference(vval_p);
+  for (uInt k=0; k < 4; ++k){
+    InterpolateArray1D<Double, Double>::interpolate(scaleone, nu, tabFreqVal_p, iquv[k], InterpolateArray1D<Double, Double>::linear);
+    for (uInt i = 0; i < nSamples; ++i){
+	 retvals(i)(k) = scaleone(i);  
+    }
+  }
+}
+
 
 SpectralModel* TabularSpectrum::clone() const {
   DebugAssert(ok(), AipsError);
@@ -278,6 +380,10 @@ if (!record.isDefined(String("tabFreqVal"))) {
  else{
     ival_p.resize();
     ival_p=Vector<Double> (record.asArrayDouble("ival"));
+    
+    qval_p=record.isDefined(String("qval")) ? Vector<Double> (record.asArrayDouble("qval")) : Vector<Double>(ival_p.nelements(), 0.0);
+    uval_p=record.isDefined(String("uval")) ? Vector<Double> (record.asArrayDouble("uval")) : Vector<Double>(ival_p.nelements(), 0.0);
+    vval_p=record.isDefined(String("vval")) ? Vector<Double> (record.asArrayDouble("vval")) : Vector<Double>(ival_p.nelements(), 0.0);
   }
 
 //referenceFreq
@@ -315,6 +421,9 @@ Bool TabularSpectrum::toRecord(String& errorMessage,
   record.defineRecord("freqRef",outRec);
   record.define("tabFreqVal", tabFreqVal_p);
   record.define("ival", ival_p);
+  record.define("qval", qval_p);
+  record.define("uval", uval_p);
+  record.define("vval", vval_p);
   record.define("referenceFreq", referenceFreq_p);
   record.define("maxFreq", maxFreq_p);
   record.define("minFreq", minFreq_p);

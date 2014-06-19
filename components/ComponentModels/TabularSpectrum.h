@@ -169,6 +169,7 @@ public:
   // return the actual spectral type ie., ComponentType::TABULAR_SPECTRUM
   virtual ComponentType::SpectralShape type() const;
 
+  virtual void setRefFrequency(const MFrequency& newRefFreq);
   // set/get the Tabular values
   // <group>
   void values(Vector<MFrequency::MVType>& freq, Vector<Flux<Double> >& flux) const;
@@ -180,13 +181,17 @@ public:
   // reference frequency then this function will always return one. At other
   // frequencies it will return a non-negative number.
   virtual Double sample(const MFrequency& centerFrequency) const;
-
+  virtual void  sampleStokes(const MFrequency& centerFrequency, Vector<Double>& iquv) const;
   // Same as the previous function except that many frequencies can be sampled
   // at once. The reference frame must be the same for all the specified
   // frequencies. Uses a customised implementation for improved speed.
   virtual void sample(Vector<Double>& scale, 
                       const Vector<MFrequency::MVType>& frequencies, 
                       const MFrequency::Ref& refFrame) const;
+
+  virtual void sampleStokes(Vector<Vector<Double> >& iquv, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+			    const MFrequency::Ref& refFrame) const;
 
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
@@ -232,7 +237,8 @@ private:
   MFrequency::Ref freqRef_p;
   Vector<Double> tabFreqVal_p;
   Vector<Flux<Double> > flux_p;
-  Vector<Double> ival_p;
+  Vector<Double> ival_p, qval_p, uval_p, vval_p;
+  Vector<Double> refVal_p;
   Double referenceFreq_p;
   Double maxFreq_p;
   Double minFreq_p;

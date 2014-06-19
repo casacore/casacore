@@ -32,6 +32,9 @@
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/IPosition.h>
 #include <measures/Measures/MeasureHolder.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MCFrequency.h>
+#include <measures/Measures/MeasConvert.h>
 #include <casa/Quanta/QuantumHolder.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Utilities/Assert.h>
@@ -91,6 +94,24 @@ const String& SpectralModel::ident() const {
 const MFrequency& SpectralModel::refFrequency() const {
   DebugAssert(SpectralModel::ok(), AipsError);
   return itsRefFreq;
+}
+
+Double SpectralModel::refFreqInFrame(const MFrequency::Ref& elframe) const {
+    const MFrequency& refFreq(refFrequency());
+    Double nu0;
+    Bool stupidTransform = (elframe.getType() == MFrequency::REST) ||  (elframe.getType() == MFrequency::N_Types) || (refFreq.getRef().getType() == MFrequency::REST) ||  (refFreq.getRef().getType() == MFrequency::N_Types);
+  if (elframe != refFreq.getRef() && !stupidTransform) {
+    try{
+      nu0 = (MFrequency::Convert(refFreq, elframe))().getValue().getValue();
+    }
+    catch(...){
+      throw(AipsError(String("Cannot transform frequency from ") +  MFrequency::showType(elframe.getType()) + String(" to ") + MFrequency::showType(refFreq.getRef().getType())));
+    }
+  } else {
+    nu0 = refFreq.getValue().getValue();
+  }
+
+  return nu0;
 }
 
 void SpectralModel::setRefFrequency(const MFrequency& newRefFreq) {
@@ -163,7 +184,7 @@ Bool SpectralModel::fromRecord(String& errorMessage,
     errorMessage += "The reference frequency is not a frequency measure\n";
     return False;
   }
-  setRefFrequency(mh.asMFrequency());
+  SpectralModel::setRefFrequency(mh.asMFrequency());
   return True;
 }
 

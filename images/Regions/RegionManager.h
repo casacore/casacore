@@ -76,8 +76,8 @@ namespace casa {
 	          const Vector<Double>& inc, const String& absrel,
 	          const Bool frac, const String& comment="");
       //LCBox box
-      Record* box(const Vector<Double>& blc, const Vector<Double>& trc, 
-		  const Vector<Int>& shape, const String& comment="");
+      static Record* box(const Vector<Double>& blc, const Vector<Double>& trc, 
+                         const Vector<Int>& shape, const String& comment="");
       Record* wbox(const Vector<Quantity>& blc, 
 			const Vector<Quantity>& trc, 
 			const Vector<Int>& pixelaxes, 

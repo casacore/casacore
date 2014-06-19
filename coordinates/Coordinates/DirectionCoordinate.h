@@ -324,17 +324,13 @@ public:
 
     // Convert a pixel position to a world position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
-    // errorMessage returns an error message.   The output 
-    // vectors are appropriately resized.
+    // errorMessage returns its error message.
+    // The output vectors are appropriately resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
-
-    // Convert a world position to pixel position and throw an exception
-    // if it fails.
-    Vector<Double> toPixel(const MVDirection &world) const;
     // </group>
 
     // Mixed pixel/world coordinate conversion.
@@ -412,15 +408,19 @@ public:
 
     // A convenient way to turn the world vector into an MDirection or MVDirection 
     // for further processing in the Measures system.  
-    //
-    // We could improve the performance of this if it would be useful, however I
-    // expect that normally you would just call this once to get a template
-    // MDirection, and then call the vector versions. 
+    // <br>We could improve the performance of this if it would be useful. However it is
+    // expected that normally one would just call this once to get a template
+    // MDirection, and then call the vector versions.
+    // <br>In case of a failure, the versions with a Bool return value will return
+    // False. The other versions will throw an exception.
     // <group>
     Bool toWorld(MDirection &world, const Vector<Double> &pixel) const;
     Bool toPixel(Vector<Double> &pixel, const MDirection &world) const;
     Bool toWorld(MVDirection &world, const Vector<Double> &pixel) const;
     Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
+    MVDirection    toWorld(const Vector<Double> &pixel) const;
+    Vector<Double> toPixel(const MVDirection &world) const;
+    Vector<Double> toPixel(const MDirection &world) const;
      //</group>
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis

@@ -103,8 +103,23 @@ int main()
       {
          doit5();
       }
+      {
+    	  Vector<Int> stokesInts(4);
+    	  stokesInts[0] = (Int)Stokes::V;
+    	  stokesInts[1] = (Int)Stokes::LL;
+    	  stokesInts[2] = (Int)Stokes::XY;
+    	  stokesInts[3] = (Int)Stokes::Q;
+    	  StokesCoordinate coord(stokesInts);
+    	  Vector<String> stokesStrings = coord.stokesStrings();
+    	  Vector<String> expec(4);
+    	  expec[0] = "V";
+    	  expec[1] = "LL";
+    	  expec[2] = "XY";
+    	  expec[3] = "Q";
+    	  AlwaysAssert(allTrue(stokesStrings == expec), AipsError);
+      }
 
-   } catch (AipsError x) {
+   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }

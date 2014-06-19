@@ -64,7 +64,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
   pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
-  precision_(-1), _showRobust(False), _recordMessages(False), _messages(vector<String>(0))
+  precision_(-1), _showRobust(False), _recordMessages(False), _messages()
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -80,7 +80,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
   pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
-  precision_(-1), _showRobust(False), _recordMessages(False), _messages(vector<String>(0))
+  precision_(-1), _showRobust(False), _recordMessages(False), _messages()
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -158,98 +158,110 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
 	Bool hasMultiBeams = ii.hasMultipleBeams();
 	Bool hasSingleBeam = !hasMultiBeams && ii.hasBeam();
 	const CoordinateSystem& cSys = pInImage_p->coordinates();
-	String imageUnits = pInImage_p->units().getName();
-	imageUnits.upcase();
+
 	// use contains() not == so moment maps are dealt with nicely
-	if (
-		(hasMultiBeams || hasSingleBeam) && cSys.hasDirectionCoordinate()
-		&& imageUnits.contains("JY/BEAM")
-	) {
-		DirectionCoordinate dCoord = cSys.directionCoordinate();
-		Vector<String> units(2, "rad");
-		dCoord.setWorldAxisUnits(units);
-		Vector<Double> deltas = dCoord.increment();
-		IPosition beamAreaShape;
-		if (this->_storageLatticeShape().size() == 1) {
-			beamAreaShape.resize(1);
-			beamAreaShape[0] = 1;
-		} else {
-			beamAreaShape.resize(this->_storageLatticeShape().size() - 1);
-			for (uInt i = 0; i < beamAreaShape.size(); i++) {
-				beamAreaShape[i] = this->_storageLatticeShape()[i];
-			}
+	if (! hasMultiBeams && ! hasSingleBeam ) {
+		_messages.push_back(String("Image has no beam, cannot compute flux"));
+		return False;
+	}
+	else if (! cSys.hasDirectionCoordinate()) {
+		_messages.push_back(String("Image does not have a direction coordinate, cannot computer flux"));
+		return False;
+	}
+	else {
+		String imageUnits = pInImage_p->units().getName();
+		imageUnits.upcase();
+		if (! imageUnits.contains("JY/BEAM")) {
+		_messages.push_back(String("Image brightness units not conformant with Jy/beam, cannot compute flux"));
+		return False;
 		}
-		beamArea.resize(beamAreaShape);
-		beamArea.set(-1.0);
-		Double coeff = 1 / abs(deltas(0) * deltas(1));
-		if (hasSingleBeam) {
-			beamArea.set(ii.restoringBeam(-1, -1).getArea("rad2") * coeff);
-			return True;
+	}
+	DirectionCoordinate dCoord = cSys.directionCoordinate();
+	IPosition beamAreaShape;
+	if (this->_storageLatticeShape().size() == 1) {
+		beamAreaShape.resize(1);
+		beamAreaShape[0] = 1;
+	}
+	else {
+		beamAreaShape.resize(this->_storageLatticeShape().size() - 1);
+		for (uInt i = 0; i < beamAreaShape.size(); i++) {
+			beamAreaShape[i] = this->_storageLatticeShape()[i];
 		}
-		// per plane beams
-		// ensure both the spectral and polarization axes are display axes
-		Bool foundSpec = !cSys.hasSpectralAxis() || False;
-		Bool foundPol = !cSys.hasPolarizationCoordinate() || False;
-		Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
-		Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
-		Bool found = False;
-		const ImageBeamSet& beams = ii.getBeamSet();
-		Int storageSpecAxis = -1;
-		Int storagePolAxis = -1;
-		for (uInt i = 0; i < displayAxes_p.size(); i++) {
-			if (displayAxes_p[i] == specAxis) {
-				foundSpec = True;
-				storageSpecAxis = i;
-			}
-			else if (displayAxes_p[i] == polAxis) {
-				foundPol = True;
-				storagePolAxis = i;
-			}
-			found = foundSpec && foundPol;
-			if (found) {
-				break;
-			}
+	}
+	beamArea.resize(beamAreaShape);
+	beamArea.set(-1.0);
+	if (hasSingleBeam) {
+		beamArea.set(
+			ii.getBeamAreaInPixels(-1, -1, dCoord)
+		);
+		return True;
+	}
+	// per plane beams
+	// ensure both the spectral and polarization axes are display axes
+	Bool foundSpec = !cSys.hasSpectralAxis() || False;
+	Bool foundPol = !cSys.hasPolarizationCoordinate() || False;
+	Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
+	Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
+	Bool found = False;
+	const ImageBeamSet& beams = ii.getBeamSet();
+	Int storageSpecAxis = -1;
+	Int storagePolAxis = -1;
+
+	for (uInt i = 0; i < displayAxes_p.size(); i++) {
+		if (displayAxes_p[i] == specAxis) {
+			foundSpec = True;
+			storageSpecAxis = i;
 		}
+		else if (displayAxes_p[i] == polAxis) {
+			foundPol = True;
+			storagePolAxis = i;
+		}
+		found = foundSpec && foundPol;
 		if (found) {
-			IPosition beamsShape = beams.shape();
-			if (cSys.hasSpectralAxis()) {
-				AlwaysAssert(
-					beamsShape[0] == beamAreaShape[storageSpecAxis],
-					AipsError
-				);
-			}
-			Int beamPolAxis = -1;
-			if (cSys.hasPolarizationCoordinate()) {
-				beamPolAxis = specAxis < 0 ? 0 : 1;
-				AlwaysAssert(
-					beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
-					AipsError
-				);
-			}
-			IPosition curPos(beamAreaShape.nelements(), 0);
-			GaussianBeam curBeam;
-			IPosition curBeamPos(beams.shape().nelements(), 0);
-			IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
-			ArrayPositionIterator iter(beamAreaShape, axisPath, False);
-			while (!iter.pastEnd()) {
-				const IPosition curPos = iter.pos();
-				if (storageSpecAxis >= 0) {
-					curBeamPos[0] = curPos[storageSpecAxis];
-				}
-				if (storagePolAxis >= 0) {
-					curBeamPos[beamPolAxis] = curPos[storagePolAxis];
-				}
-				curBeam = beams(curBeamPos[0], curBeamPos[1]);
-				beamArea(curPos) = coeff * curBeam.getArea("rad2");
-				iter.next();
-			}
-			return True;
-        }
-    }
-    // if per-plane beams, either the spectral axis and/or the
-    // polarization axis is not a display axis
-    // or else the image has no beam
-    return False;
+			break;
+		}
+	}
+	if (! found) {
+		// if per-plane beams, either the spectral axis and/or the
+		// polarization axis is not a display axis
+		// or else the image has no beam
+		return False;
+	}
+
+	IPosition beamsShape = beams.shape();
+	if (cSys.hasSpectralAxis()) {
+		AlwaysAssert(
+			beamsShape[0] == beamAreaShape[storageSpecAxis],
+			AipsError
+		);
+	}
+	Int beamPolAxis = -1;
+	if (cSys.hasPolarizationCoordinate()) {
+		beamPolAxis = specAxis < 0 ? 0 : 1;
+		AlwaysAssert(
+			beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
+			AipsError
+		);
+	}
+	IPosition curPos(beamAreaShape.nelements(), 0);
+	GaussianBeam curBeam;
+	IPosition curBeamPos(beams.shape().nelements(), 0);
+	IPosition axisPath = IPosition::makeAxisPath(beamAreaShape.size());
+	ArrayPositionIterator iter(beamAreaShape, axisPath, False);
+	Double pixAreaRad2 = dCoord.getPixelArea().getValue("rad2");
+	while (!iter.pastEnd()) {
+		const IPosition curPos = iter.pos();
+		if (storageSpecAxis >= 0) {
+			curBeamPos[0] = curPos[storageSpecAxis];
+		}
+		if (storagePolAxis >= 0) {
+			curBeamPos[beamPolAxis] = curPos[storagePolAxis];
+		}
+		curBeam = beams(curBeamPos[0], curBeamPos[1]);
+		beamArea(curPos) = curBeam.getArea("rad2")/pixAreaRad2;
+		iter.next();
+	}
+	return True;
 }
 
 template <class T>
@@ -459,23 +471,19 @@ void ImageStatistics<T>::displayStats(
 	///////////////////////////////////////////////////////////////////////
 	vector<String> messages;
 	messages.push_back("Values --- ");
-	// os_p << "Values --- " << LogIO::POST;
 	ostringstream oss;
-	Array<Double> beamArea;
-	Bool hasBeam = _getBeamArea(beamArea);
-	if ( hasBeam ) {
-		// beamArea guaranteed to only have one value in this method.
-
-		// normalisation of units with "beam" in them is not (well) implemented, so brute force it
-		Int iBeam = sbunit.find("/beam");
-		String fUnit = (iBeam >= 0)
-			? sbunit.substr(0, iBeam) + sbunit.substr(iBeam+5)
-			: "Jy";
-		oss << "         -- flux density [flux]:     " << sum/(*(beamArea.begin()))
-			<< " " << fUnit;
+	if (_canDoFlux()) {
+		Array<Double> beamArea;
+		Bool hasBeam = _getBeamArea(beamArea);
+		Quantum<AccumType> qFlux = _flux(
+			sum, hasBeam ? *(beamArea.begin()) : 0
+		);
+		AccumType val = qFlux.getValue();
+		String unit = qFlux.getFullUnit().getName();
+		oss << "         -- flux density [flux]:                    "
+			<< val << " " << unit;
 		messages.push_back(oss.str());
 		oss.str("");
-
 	}
 
 	IPosition myMaxPos = maxPos_p;
@@ -571,6 +579,40 @@ void ImageStatistics<T>::displayStats(
 	}
 }
 
+template <class T> Quantum<typename casa::NumericTraits<T>::PrecisionType> ImageStatistics<T>::_flux(
+	AccumType sum, Double beamAreaInPixels
+) const {
+	ThrowIf(
+		! _canDoFlux(),
+		"This object cannot be used to determine flux densities"
+	);
+	AccumType flux = 0;
+	String fUnit;
+	String sbunit = pInImage_p->units().getName();
+	if (sbunit.contains("K")) {
+		String areaUnit = "arcsec2";
+		fUnit = sbunit + "." + areaUnit;
+		flux = sum * pInImage_p->coordinates().directionCoordinate().getPixelArea().getValue(areaUnit);
+	}
+	else {
+		fUnit = "Jy";
+		if (sbunit.contains("/beam")) {
+			uInt iBeam = sbunit.find("/beam");
+			flux = sum/beamAreaInPixels;
+			fUnit = sbunit.substr(0, iBeam) + sbunit.substr(iBeam+5);
+		}
+	}
+	return Quantum<AccumType>(flux, fUnit);
+}
+
+template <class T> Bool ImageStatistics<T>::_canDoFlux() const {
+	String unit = pInImage_p->units().getName();
+	return unit.contains("K")
+		|| (
+			pInImage_p->imageInfo().hasBeam()
+			&& unit.contains("/beam")
+		);
+}
 
 template <class T>
 void ImageStatistics<T>::setPrecision(Int precision) {

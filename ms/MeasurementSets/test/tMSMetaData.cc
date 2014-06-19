@@ -1329,9 +1329,26 @@ void testIt(MSMetaData& md) {
 				AlwaysAssert(abs(centers[i].getValue("Hz")/mine[i] - 1) < 1e-8, AipsError);
 			}
 		}
-		{
+                {
+ 			cout << "*** Test getFieldsForSourceMap" << endl;
+ 			std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
+ 			std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
+ 
+ 			String names[] = {
+ 				"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"
+ 			};
+ 			AlwaysAssert(res.size() == 6, AipsError);
+ 			AlwaysAssert(res2.size() == 6, AipsError);
+ 			for (Int i=0; i<6; i++) {
+ 				AlwaysAssert(res[i].size() == 1 && *(res[i].begin()) == i, AipsError);
+ 				AlwaysAssert(
+ 					res2[i].size() == 1 && *(res2[i].begin()) == names[i], AipsError
+ 				);
+ 			}
+ 		}
+ 		{
 			cout << "*** cache size " << md.getCache() << endl;
-		}
+                }
 	}
 }
 

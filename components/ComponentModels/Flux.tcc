@@ -611,12 +611,12 @@ fromRecord(String& errorMessage, const RecordInterface& record) {
       setErrors(err(0), err(1), err(2), err(3));
     }
   }
-  if (unit() != Unit("Jy")) {
+  if (unit() != Unit("Jy") && unit() != Unit("K.rad.rad")) {
     errorMessage += "The dimensions of the units must be same as the Jy\n";
     return False;
   }
   if (!ok()) {
-    errorMessage += "Inconsistancies in the FluxRep object\n";
+    errorMessage += "Inconsistencies in the FluxRep object\n";
     return False;
   }
   return True;
@@ -666,7 +666,7 @@ template<class T> Bool FluxRep<T>::ok() const {
 				<< LogIO::POST;
 		return False;
 	}
-	if (itsUnit == Unit("Jy")) {
+	if (itsUnit == Unit("Jy") || itsUnit == Unit("K.rad.rad")) {
 		return True;
 	}
 	for (Vector<String>::const_iterator iter=_allowedUnits.begin(); iter!=_allowedUnits.end(); iter++) {

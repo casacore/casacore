@@ -146,13 +146,21 @@ public:
   // function always returns one, as the spectrum is constant.
   virtual Double sample(const MFrequency& centerFrequency) const;
 
+  //Original values returned
+  virtual void sampleStokes(const MFrequency& centerFrequency, 
+			    Vector<Double>& iquv) const;
+  
   // Same as the previous function except that many frequencies can be sampled
   // at once. The reference frame must be the same for all the specified
   // frequencies. Uses a customised implementation.
   virtual void sample(Vector<Double>& scale, 
                       const Vector<MFrequency::MVType>& frequencies, 
                       const MFrequency::Ref& refFrame) const;
-
+ 
+  //original values are returned
+  virtual void sampleStokes(Vector<Vector<Double> >& scale, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+			    const MFrequency::Ref& refFrame) const;
   // Return a pointer to a copy of this object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.

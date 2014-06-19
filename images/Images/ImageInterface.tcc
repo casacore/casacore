@@ -275,7 +275,7 @@ template<class T>
 void ImageInterface<T>::setImageInfoMember(const ImageInfo& info)
 {
   imageInfo_p = info;
-  imageInfo_p.checkBeamSet (coords_p, shape(), name(), logSink());
+  imageInfo_p.checkBeamSet (coords_p, shape(), name());
 }    
 
 template<class T>

@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+#include <casa/Quanta/QMath.h>
 #include <components/ComponentModels/SkyComponent.h>
 #include <components/ComponentModels/ComponentShape.h>
 #include <components/ComponentModels/Flux.h>
@@ -222,11 +223,13 @@ Bool SkyComponent::ok() const {
   return True;
 }
 
-String SkyComponent::summarize(const CoordinateSystem *const &coordinates) const {
-        ostringstream ldpar; 
-        if (shape().type()==ComponentType::LDISK) {
-          ldpar << " (limb-darkening exponent: "<<optionalParameters()(0) <<" )"<<endl; 
-        }
+String SkyComponent::summarize(
+	const DirectionCoordinate *const &dc, Bool longErrOnGreatCircle
+) const {
+	ostringstream ldpar;
+	if (shape().type()==ComponentType::LDISK) {
+		ldpar << " (limb-darkening exponent: "<<optionalParameters()(0) <<" )"<<endl;
+	}
 	ostringstream summary;
 	summary << "SUMMARY OF COMPONENT " << label() << endl;
 	summary << "Shape: " << shape().ident() << ldpar.str() <<endl;
@@ -235,119 +238,158 @@ String SkyComponent::summarize(const CoordinateSystem *const &coordinates) const
 	myFlux.value(fluxValue);
 	summary << "Flux density: " << fluxValue << " +/- " << myFlux.errors() << endl;
 	summary << "Spectral model: " << spectrum().ident() << endl;
-	summary << "Position: " <<  positionToString(coordinates) << endl;
+	summary << "Position: " <<  positionToString(dc, longErrOnGreatCircle) << endl;
 	summary << "Size: " << endl << shape().sizeToString() << endl;
 	return summary.str();
 }
 
-String SkyComponent::positionToString(const CoordinateSystem *const &coordinates) const {
+String SkyComponent::positionToString(
+	const DirectionCoordinate *const &dc ,Bool longErrOnGreatCircle
+) const {
 	// FIXME essentially cut and paste of Gareth's python code. Needs work.
 	ostringstream position;
 	MDirection mdir = shape().refDirection();
 
 	Quantity lat = mdir.getValue().getLat("rad");
-	String dec = MVAngle(lat).string(MVAngle::ANGLE_CLEAN, 8);
+	String latString = MVAngle(lat).string(MVAngle::ANGLE_CLEAN, 8);
 
 	Quantity longitude = mdir.getValue().getLong("rad");
-	String ra = MVTime(longitude).string(MVTime::TIME, 9);
+	String longString = MVTime(longitude).string(MVTime::TIME, 9);
 
-	Quantity ddec = shape().refDirectionErrorLat();
-	ddec.convert("rad");
+	Quantity dLat = shape().refDirectionErrorLat();
+	dLat.convert("rad");
 
-	Quantity dra = shape().refDirectionErrorLong();
-	dra.convert("rad");
-
-	// choose a unified error for both axes
-	Double delta = 0;
-	if ( dra.getValue() == 0 && ddec.getValue() == 0 ) {
-		delta = 0;
-	}
-	else if ( dra.getValue() == 0 ) {
-		delta = fabs(ddec.getValue());
-	}
-	else if ( ddec.getValue() == 0 ) {
-		delta = fabs(dra.getValue());
-	}
-	else {
-		delta = sqrt(
-			dra.getValue()*dra.getValue()
-			+ ddec.getValue()*ddec.getValue()
-		);
-	}
+	Quantity dLong = shape().refDirectionErrorLong();
+	dLong.convert("rad");
 
 	// Add error estimates to ra/dec strings if an error is given (either >0)
 
 	uInt precision = 1;
-	if ( delta != 0 ) {
-		dra.convert("s");
-		ddec.convert("arcsec");
-		Double drasec  = roundDouble(dra.getValue());
-		Double ddecarcsec = roundDouble(ddec.getValue());
+	if ( dLong.getValue() != 0 || dLat.getValue() != 0 ) {
+		dLong.convert("s");
+		dLat.convert("arcsec");
+		Double drasec  = roundDouble(dLong.getValue());
+		Double ddecarcsec = roundDouble(dLat.getValue());
 		Vector<Double> dravec(2), ddecvec(2);
 		dravec.set(drasec);
 		ddecvec.set(ddecarcsec);
 		precision = precisionForValueErrorPairs(dravec,ddecvec);
-		ra = MVTime(longitude).string(MVTime::TIME, 6+precision);
-		dec =  MVAngle(lat).string(MVAngle::ANGLE, 6+precision);
+		longString = MVTime(longitude).string(MVTime::TIME, 6+precision);
+		latString =  MVAngle(lat).string(MVAngle::ANGLE, 6+precision);
 	}
+	std::pair<String, String> labels = _axisLabels(dc);
 	position << "Position ---" << endl;
-	position << "       --- ra:    " << ra;
-	if (dra.getValue() == 0) {
+	position << "       --- " << labels.first << "   " << longString;
+	if (dLong.getValue() == 0) {
 		position << " (fixed)" << endl;
 	}
 	else {
+		Quantity timeError = longErrOnGreatCircle ? dLong/cos(lat) : dLong;
 		position << " +/- " << std::fixed
-			<< setprecision(precision) << dra << " ("
-			<< dra.getValue("arcsec") << " arcsec)" << endl;
+			<< setprecision(precision) << timeError << " ("
+			<< dLong.getValue("arcsec") << " arcsec"
+			<< (longErrOnGreatCircle ? " along great circle" : "")
+			<< ")" << endl;
 	}
-	position << "       --- dec: " << dec;
-	if (ddec.getValue() == 0) {
+	position << "       --- " << labels.second << " " << latString;
+	if (dLat.getValue() == 0) {
 		position << " (fixed)" << endl;
 	}
 	else {
-		position << " +/- " << ddec << endl;
+		position << " +/- " << dLat << endl;
 	}
-
-	if (coordinates && coordinates->hasDirectionCoordinate()) {
-		const DirectionCoordinate dirCoord = coordinates->directionCoordinate();
-		const Vector<Int> dirAxes = coordinates->directionAxesNumbers();
-		const Vector<String> units = coordinates->worldAxisUnits();
-		Vector<Double> world(dirCoord.nWorldAxes(), 0), pixel(dirCoord.nPixelAxes(), 0);
-		world[0] = longitude.getValue(units[dirAxes[0]]);
-		world[1] = lat.getValue(units[dirAxes[1]]);
+	if (dc) {
+		const Vector<String> units = dc->worldAxisUnits();
+		Vector<Double> world(dc->nWorldAxes(), 0), pixel(dc->nPixelAxes(), 0);
+		world[0] = longitude.getValue(units[0]);
+		world[1] = lat.getValue(units[1]);
 		// TODO do the pixel computations in another method
-		if (dirCoord.toPixel(pixel, world)) {
-			Vector<Double> increment = dirCoord.increment();
-			Double raPixErr = dra.getValue() == 0
-				? 0 :abs(dra.getValue("rad")/increment[0]);
-			Double decPixErr = ddec.getValue() == 0
-				? 0 :abs(ddec.getValue("rad")/increment[1]);
-			Vector<Double> raPix(2), decPix(2);
-			raPix.set(roundDouble(raPixErr));
-			decPix.set(roundDouble(decPixErr));
-			precision = precisionForValueErrorPairs(raPix, decPix);
+		if (dc->toPixel(pixel, world)) {
+			Vector<Double> increment = dc->increment();
+			Double longPixErr = dLong.getValue() == 0
+				? 0 : abs(dLong.getValue(units[0])/increment[0]);
+			Double latPixErr = dLat.getValue() == 0
+				? 0 : abs(dLat.getValue(units[1])/increment[1]);
+			Vector<Double> longPix(2), latPix(2);
+			longPix.set(roundDouble(longPixErr));
+			latPix.set(roundDouble(latPixErr));
+			precision = precisionForValueErrorPairs(longPix, latPix);
 			position << std::fixed <<  setprecision(precision);
-			position << "       --- ra:   " << pixel[0];
-			if (dra.getValue() == 0) {
+			position << "       --- " << labels.first << " " << pixel[0];
+			if (dLong.getValue() == 0) {
 				position << " (fixed)" << endl;
 			}
 			else {
-				position << " +/- " << raPixErr << " pixels" << endl;
+				position << " +/- " << longPixErr << " pixels" << endl;
 			}
-			position << "       --- dec:  " << pixel[1];
-			if (ddec.getValue() == 0) {
+			position << "       --- " << labels.second << " " << pixel[1];
+			if (dLat.getValue() == 0) {
 				position << " (fixed)" << endl;
 			}
 			else {
-				position << " +/- " << decPixErr << " pixels" << endl;
+				position << " +/- " << latPixErr << " pixels" << endl;
 			}
 		}
 		else {
-			position << "unable to determine position in pixels:" << coordinates->errorMessage() << endl;
+			position << "unable to determine position in pixels:" << dc->errorMessage() << endl;
 		}
 	}
 	return position.str();
 }
 
-} //# NAMESPACE CASA - END
+std::pair<String, String> SkyComponent::_axisLabels(
+	const DirectionCoordinate *const &dc
+) {
+	std::pair<String, String> labels;
+	if (dc) {
+		Vector<String> names = dc->worldAxisNames();
+		for (uInt i=0; i<2; i++) {
+			String label;
+			names[i].downcase();
+			if (names[i] == "right ascension") {
+				label = "ra:";
+			}
+			else if (names[i] == "declination") {
+				label = "dec:";
+			}
+			else if (names[i] == "longitude") {
+				label = "long:";
+			}
+			else if (names[i] == "latitude") {
+				label = "lat:";
+			}
+			else {
+				label = names[i] + ":";
+			}
+			if (i == 0) {
+				labels.first = label;
+			}
+			else {
+				labels.second = label;
+			}
+		}
+	}
+	else {
+		labels.first  = "long:";
+		labels.second = "lat: ";
+	}
+	typedef std::string::size_type size_type;
+	size_type f = labels.first.size();
+	size_type s = labels.second.size();
+	if (f > s) {
+		size_type d = f - s;
+		for (size_type i=0; i<d ;i++) {
+			labels.second += " ";
+		}
+	}
+	else if (f < s) {
+		size_type d = s - f;
+		for (size_type i=0; i<d ;i++) {
+			labels.first += " ";
+		}
+	}
+	return labels;
+}
+
+}
 

@@ -196,12 +196,6 @@ uInt MSMetaData::nArrays() {
 
 uInt MSMetaData::nRows() {
 	return _ms->nrow();
-	/*
-    if (_nrows == 0) {
-        _nrows = _ms->nrow();
-    }
-	return _nrows;
-	*/
 }
 uInt MSMetaData::nRows(CorrelationType cType) {
 
@@ -1746,11 +1740,16 @@ std::set<Double> MSMetaData::getTimesForScans(
 	const std::set<Int>& scans
 ) {
 	std::set<Double> times;
+        if (scans.empty()) {
+                Vector<Double> allTimes = *_getTimes();
+                times.insert(allTimes.begin(), allTimes.end());
+                return times;
+        }
 	CountedPtr<std::map<Int, std::set<Double> > > scanToTimesMap = _getScanToTimesMap();
 	std::set<Int> scanNumbers = getScanNumbers();
 	for (
 		std::set<Int>::const_iterator scan=scans.begin();
-		scan!=scans.end(); scan++
+		scan!=scans.end(); ++scan
 	) {
 		_checkScan(*scan, scanNumbers);
 		times.insert(
@@ -2265,6 +2264,7 @@ vector<MPosition> MSMetaData::getAntennaPositions(
 }
 
 Quantum<Vector<Double> > MSMetaData::getAntennaOffset(uInt which) {
+        // This method is responsble for setting _antennaOffsets
 	if (which >= nAntennas()) {
 		throw AipsError(_ORIGIN + "Out of range exception.");
 	}
@@ -2763,6 +2763,58 @@ void MSMetaData::_getFieldsAndStatesMaps(
 		_stateToFieldsMap = stateToFieldsMap;
 	}
 }
+
+map<Int, std::set<String> > MSMetaData::getFieldNamesForSourceMap() {
+	map<Int, std::set<Int> > idsToSource = getFieldsForSourceMap();
+	map<Int, std::set<Int> >::const_iterator iter = idsToSource.begin();
+	map<Int, std::set<Int> >::const_iterator end = idsToSource.end();
+	map<Int, std::set<String> > namesMap;
+	vector<String> names = _getFieldNames();
+	while (iter != end) {
+		Int sourceID = iter->first;
+		namesMap[sourceID] = std::set<String>();
+		std::set<Int> fieldIDs = idsToSource[sourceID];
+		std::set<Int>::const_iterator siter = fieldIDs.begin();
+		std::set<Int>::const_iterator send = fieldIDs.end();
+		while (siter != send) {
+			namesMap[sourceID].insert(names[*siter]);
+			siter++;
+		}
+		iter++;
+	}
+	return namesMap;
+}
+
+map<Int, std::set<Int> > MSMetaData::getFieldsForSourceMap() {
+	// This method sets _sourceToFieldsMap
+	if (! _sourceToFieldsMap.empty()) {
+		return _sourceToFieldsMap;
+	}
+	String sourceIDName = MSField::columnName(MSFieldEnums::SOURCE_ID);
+	Vector<Int> sourceIDs = ROScalarColumn<Int>(_ms->field(), sourceIDName).getColumn();
+	map<Int, std::set<Int> > mymap;
+	std::set<Int> uSourceIDs(sourceIDs.begin(), sourceIDs.end());
+	std::set<Int>::const_iterator iter = uSourceIDs.begin();
+	std::set<Int>::const_iterator  end = uSourceIDs.end();
+	while (iter != end) {
+		mymap[*iter] = std::set<Int>();
+		iter++;
+	}
+	Vector<Int>::const_iterator miter = sourceIDs.begin();
+	Vector<Int>::const_iterator mend = sourceIDs.end();
+	Int rowNumber = 0;
+	while (miter != mend) {
+		mymap[*miter].insert(rowNumber);
+		miter++;
+		rowNumber++;
+	}
+	uInt mysize = _sizeof(mymap);
+	if (_cacheUpdated(mysize)) {
+		_sourceToFieldsMap = mymap;
+	}
+	return mymap;
+}
+
 
 void MSMetaData::_getFieldsAndIntentsMaps(
 	vector<std::set<String> >& fieldToIntentsMap,

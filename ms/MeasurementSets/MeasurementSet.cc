@@ -356,6 +356,9 @@ void MeasurementSet::init()
 	// FLOAT_DATA
 	colMapDef(FLOAT_DATA,"FLOAT_DATA",TpArrayFloat,
 		  "Floating point data - for single dish","","");
+        // IMAGING_WEIGHT
+        colMapDef(IMAGING_WEIGHT,"IMAGING_WEIGHT",TpArrayFloat,
+                  "Weight set by imaging task (e.g. uniform weighting)","","");
 	// INTERVAL
 	colMapDef(INTERVAL, "INTERVAL", TpDouble, 
 		  "The sampling interval","s","");

@@ -34,6 +34,8 @@
 
 namespace casa {
 
+class SpectralCoordinate;
+
 class CoordinateSystem;
 
 // <summary>
@@ -256,6 +258,16 @@ public:
 	// the beam in this subset with the smallest area will be returned.
 	const GaussianBeam getSmallestMinorAxisBeam() const;
 
+	// <group>
+	// convert ImageBeamSet to and from record
+	static ImageBeamSet fromRecord(const Record& rec);
+
+	Record toRecord() const;
+	//</group>
+
+	// If verbose, log all beams, if not just summarize beam stats.
+	void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
+
 private:
 
 	static const String _DEFAULT_AREA_UNIT;
@@ -274,6 +286,16 @@ private:
 		Double pa, Double xScaleFactor, Double yScaleFactor
 	);
 
+	static void _chanInfoToStream(
+		ostream& os, const SpectralCoordinate *spCoord,
+		const uInt chan, const uInt chanWidth, const uInt freqPrec,
+		const uInt velWidth, const uInt velPrec
+	);
+
+	static void _beamToStream(
+		ostream& os, const GaussianBeam& beam,
+		const Unit& unit
+	);
 };
 
 ostream &operator<<(ostream &os, const ImageBeamSet& beamSet);

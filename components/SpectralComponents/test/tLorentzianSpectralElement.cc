@@ -27,6 +27,7 @@
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Containers/Record.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <components/SpectralComponents/LorentzianSpectralElement.h>
 #include <components/SpectralComponents/SpectralElementFactory.h>
 
@@ -53,8 +54,8 @@ int main() {
 		cout << "Test to/from record" << endl;
 		Record rec;
 		lse.toRecord(rec);
-		std::auto_ptr<SpectralElement> el = SpectralElementFactory::fromRecord(rec);
-		lse = *dynamic_cast<LorentzianSpectralElement *>(el.get());
+		PtrHolder<SpectralElement> el(SpectralElementFactory::fromRecord(rec));
+		lse = *dynamic_cast<LorentzianSpectralElement *>(el.ptr());
 		AlwaysAssert(lse.getAmpl() == amp, AipsError);
 		AlwaysAssert(lse.getCenter() == center, AipsError);
 		AlwaysAssert(lse.getFWHM() == fwhm, AipsError);

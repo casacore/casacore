@@ -1,5 +1,5 @@
 //# tTabularSpectrum.cc: tests the TabularSpectrum class
-//# Copyright (C) 2010
+//# Copyright (C) 2010-2013
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,14 +46,14 @@
 #include <casa/namespace.h>
 int main() {
   try {
-    SpectralModel* siPtr = 0;;
+    SpectralModel* siPtr = 0;
     MVFrequency f1(Quantity(1.0, "GHz"));
     MVFrequency f2(Quantity(2.0, "GHz"));
     MVFrequency f4(Quantity(4.0, "GHz"));
     MFrequency::Ref frame(MFrequency::LSRK);
-    Flux<Double> j1(1.0, 0.0, 0.0, 0.0);
-    Flux<Double> j2(2.0, 0.0, 0.0, 0.0);
-    Flux<Double> j4(4.0, 0.0, 0.0, 0.0);
+    Flux<Double> j1(1.0, 0.1, 0.2, 0.1);
+    Flux<Double> j2(2.0, 0.15, 0.25, 0.05);
+    Flux<Double> j4(4.0, 0.1, 0.1, 0.1);
     Vector<Flux<Double> >js(3);
     js[0]=j1; js[1]=j2; js[2]=j4;
     Vector<MVFrequency> fs(3);
@@ -65,9 +65,8 @@ int main() {
     AlwaysAssert(siModel.type() == ComponentType::TABULAR_SPECTRUM, 
 		 AipsError);
     cout << "Passed the default constructor test" << endl;
-    
-    siModel.setRefFrequency(MFrequency(Quantity(1.5, "GHz"), MFrequency::LSRK));
     siModel.setValues(fs, js, frame);
+    siModel.setRefFrequency(MFrequency(Quantity(1.5, "GHz"), MFrequency::LSRK));
     cout << siModel.sample(MFrequency(f1, MFrequency::LSRK)) << "  " << siModel.sample(MFrequency(f2, MFrequency::LSRK)) << endl;
       //AlwaysAssert(near(siModel.sample(MFrequency(f1, MFrequency::LSRK)), 0.666667), AipsError);
       //AlwaysAssert(near(siModel.sample(MFrequency(f2, MFrequency::LSRK)), 1.33333), AipsError);
@@ -75,7 +74,22 @@ int main() {
     Vector<Double> scale;
     siModel.sample(scale, fs, frame);
     cout << "Scale " << scale << endl;
+
+    Vector<Vector<Double> > vals(5);
     
+    siModel.setRefFrequency(MFrequency(Quantity(1.0, "GHz"), MFrequency::LSRK));
+   
+    siModel.sampleStokes(f2, vals(0));
+    cout << "value at f2 " << vals(0) << endl;
+    Vector<MVFrequency> freqs(5);
+    for (Int K=0; K< 5; ++K){
+      Double ff=1.0+ Double(K)*0.1;
+      freqs[K]=MVFrequency(Quantity(ff, "GHz"));
+    }
+    siModel.sampleStokes(vals, freqs, frame);
+    cout << "values are " << vals << endl;
+
+
     siModel.setRefFrequency(f2);
     siPtr = siModel.clone();
     cout << "Passed the index test" << endl;

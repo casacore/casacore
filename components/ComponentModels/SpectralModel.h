@@ -168,7 +168,7 @@ public:
 
   // set/get the reference frequency
   // <group>
-  void setRefFrequency(const MFrequency& newRefFreq);
+  virtual void setRefFrequency(const MFrequency& newRefFreq);
   const MFrequency& refFrequency() const;
   // </group>
 
@@ -196,6 +196,12 @@ public:
   // frequencies it will return a non-negative number.
   virtual Double sample(const MFrequency& centerFrequency) const = 0;
 
+  // return full Stokes version especially for models which have different 
+  // frequency dependence for the Stokes param (1 or 4 elements)
+  // So as allow for fractional pol change and angle change of linear pol w.r.t frequency
+  // A a four Vector of original IQUV should be passed in and it will hold the return values 
+
+  virtual void sampleStokes(const MFrequency& centerFrequency, Vector<Double>& stokesval ) const = 0;
   // Same as the previous function except that many frequencies can be sampled
   // at once. The reference frame must be the same for all the specified
   // frequencies. A default implementation of this function is available that
@@ -206,6 +212,13 @@ public:
                       const Vector<MFrequency::MVType>& frequencies, 
                       const MFrequency::Ref& refFrame) const = 0;
 
+// So as allow for fractional pol change and angle change of linear pol w.r.t frequency
+// Vector of   four Vectors of original IQUV should be passed in and it will hold the return values
+// Uitimately this math should really go in Flux and FluxRep to where a rotation of linear pol is allowed
+   
+  virtual void sampleStokes(Vector<Vector<Double> >& stokesval, 
+                      const Vector<MFrequency::MVType>& frequencies, 
+                      const MFrequency::Ref& refFrame) const = 0;
   // Return a pointer to a copy of the derived object upcast to a SpectralModel
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
@@ -277,6 +290,11 @@ protected:
   SpectralModel& operator=(const SpectralModel& other);
   // </group>
 
+  // Return the value  refFrequency in the requested frame...
+  //exception is thrown if convert does not work.
+  //No direction or epoch is available..so better ask for  a frame 
+  // that works or better convert to the frame of the refFrequency .
+  Double refFreqInFrame(const MFrequency::Ref& frame) const;
   // returns True if the quantum is not a non-negative quantity with units
   // dimensionally identical to the Hz
   static Bool badError(const Quantum<Double>& quantum);
