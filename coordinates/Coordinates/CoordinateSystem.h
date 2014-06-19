@@ -784,6 +784,8 @@ public:
 
    // does this coordinate system have a polarizaion/stokes coordinate?
    Bool hasPolarizationCoordinate() const;
+   Bool hasPolarizationAxis() const
+     { return hasPolarizationCoordinate(); }
 
    // Given a stokes or polarization parameter, find the pixel location.
    // Note the client is responsible for any boundedness checks
