@@ -38,8 +38,6 @@
 #include <coordinates/Coordinates/LinearCoordinate.h>
 #include <coordinates/Coordinates/TabularCoordinate.h>
 #include <components/ComponentModels/GaussianBeam.h>
-#include <components/ComponentModels/ComponentType.h>
-#include <components/ComponentModels/SkyComponent.h>
 #include <components/ComponentModels/GaussianShape.h>
 #include <images/Images/ImageInfo.h>
 #include <images/Images/PagedImage.h>
@@ -56,54 +54,16 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/OS/File.h>
-#include <tables/LogTables/NewFile.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/LinearSearch.h>
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/iostream.h>
 
-#include <memory>
-
-// debug
-#include <components/ComponentModels/Flux.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 
-void ImageUtilities::openImage(
-	ImageInterface<Float>*& pImage,
-	const String& fileName, LogIO& os
-) {
-   if (fileName.empty()) {
-      os << "The image filename is empty" << LogIO::EXCEPTION;   
-   }
-   File file(fileName);
-   if (!file.exists()) {
-      os << "File '" << fileName << "' does not exist" << LogIO::EXCEPTION;
-   }
-   LatticeBase* lattPtr = ImageOpener::openImage (fileName);
-   if (lattPtr == 0) {
-     os << "Image " << fileName << " cannot be opened; its type is unknown"
-	<< LogIO::EXCEPTION;
-   } 
-   pImage = dynamic_cast<ImageInterface<Float>*>(lattPtr);
-   if (pImage == 0) {
-      os << "Unrecognized image data type, "
-	    "presently only Float images are supported" 
-         << LogIO::EXCEPTION;
-   }
-}
-
-void ImageUtilities::openImage(
-	PtrHolder<ImageInterface<Float> >& image,
-	const String& fileName, LogIO& os
-) {
-   ImageInterface<Float>* p = 0;
-   ImageUtilities::openImage(p, fileName, os);
-   image.set(p);
-}
-
 Bool ImageUtilities::pixToWorld (
-	Vector<String>& sWorld,	CoordinateSystem& cSysIn,
+	Vector<String>& sWorld,	const CoordinateSystem& cSysIn,
 	const Int& pixelAxis, const Vector<Int>& cursorAxes,
 	const IPosition& blc, const IPosition& trc,
 	const Vector<Double>& pixels,
@@ -445,7 +405,7 @@ Bool ImageUtilities::pixelWidthsToWorld(
 }
 
 Bool ImageUtilities::_skyPixelWidthsToWorld (
-	GaussianBeam& wParameters,
+        Angular2DGaussian& gauss2d,
 	const CoordinateSystem& cSys,
 	const Vector<Double>& pParameters,
 	const IPosition& pixelAxes, Bool doRef
@@ -455,13 +415,11 @@ Bool ImageUtilities::_skyPixelWidthsToWorld (
 // world parameters: major, minor, pa
 //
 {
-
 	// What coordinates are these axes ?
 
 	Int c0, c1, axisInCoordinate0, axisInCoordinate1;
 	cSys.findPixelAxis(c0, axisInCoordinate0, pixelAxes(0));
 	cSys.findPixelAxis(c1, axisInCoordinate1, pixelAxes(1));
-
 	// See what sort of coordinates we have. Make sure it is called
 	// only for the Sky.  More development needed otherwise.
 
@@ -476,7 +434,6 @@ Bool ImageUtilities::_skyPixelWidthsToWorld (
 		"The given axes do not come from the same Direction coordinate. "
 		"This situation requires further code development"
 	);
-
 	// Is the 'x' (first axis) the Longitude or Latitude ?
 
 	Vector<Int> dirPixelAxes = cSys.pixelAxes(c0);
@@ -494,7 +451,6 @@ Bool ImageUtilities::_skyPixelWidthsToWorld (
 	const DirectionCoordinate& dCoord = cSys.directionCoordinate(c0);
 	GaussianShape gaussShape;
 	Vector<Double> cParameters(pParameters.copy());
-	//
 	if (doRef) {
 		cParameters(0) = dCoord.referencePixel()(whereIsX);     // x centre
 		cParameters(1) = dCoord.referencePixel()(whereIsY);     // y centre
@@ -509,7 +465,7 @@ Bool ImageUtilities::_skyPixelWidthsToWorld (
 		}
 	}
 	Bool flipped = gaussShape.fromPixel (cParameters, dCoord);
-	wParameters = GaussianBeam(
+	gauss2d = Angular2DGaussian(
 			gaussShape.majorAxis(), gaussShape.minorAxis(),
 			gaussShape.positionAngle()
 	);
@@ -614,170 +570,6 @@ Quantum<Double> ImageUtilities::_pixelWidthToWorld (
 	Double lengthInWorld = hypot(world(worldAxis0), world(worldAxis1));
 	return Quantum<Double>(lengthInWorld, Unit(units(worldAxis0)));
 }
-
-void ImageUtilities::addDegenerateAxes(
-	LogIO& os, PtrHolder<ImageInterface<Float> >& outImage,
-	const ImageInterface<Float>& inImage, const String& outFile,
-	Bool direction, Bool spectral, const String& stokes,
-	Bool linear, Bool tabular, Bool overwrite,
-	Bool silent
-) {
-	// Verify output file
-	if (!overwrite && !outFile.empty()) {
-		NewFile validfile;
-		String errmsg;
-		if (!validfile.valueOK(outFile, errmsg)) {
-			os << errmsg << LogIO::EXCEPTION;
-		}
-	}
-	IPosition shape = inImage.shape();
-	CoordinateSystem cSys = inImage.coordinates();
-	IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
-	uInt nExtra = 0;
-	if (direction) {
-		if (! cSys.hasDirectionCoordinate()) {
-			CoordinateUtil::addDirAxes(cSys);
-			nExtra += 2;
-		}
-		else if(!silent){
-			os << "Image already contains a DirectionCoordinate" << LogIO::EXCEPTION;
-		}
-	}
-	if (spectral) {
-		if (! cSys.hasSpectralAxis()) {
-			CoordinateUtil::addFreqAxis(cSys);
-			nExtra++;
-		}
-		else if(!silent){
-			os << "Image already contains a SpectralCoordinate" << LogIO::EXCEPTION;
-		}
-	}
-	if (! stokes.empty()) {
-		if (! cSys.hasPolarizationCoordinate()) {
-			Vector<Int> which(1);
-			String tmp = upcase(stokes);
-			which(0) = Stokes::type(tmp);
-			StokesCoordinate sc(which);
-			cSys.addCoordinate(sc);
-			nExtra++;
-		}
-		else if(!silent){
-			os << "Image already contains a StokesCoordinate" << LogIO::EXCEPTION;
-		}
-	}
-	if (linear) {
-		if (! cSys.hasLinearCoordinate()) {
-			Vector<String> names(1);
-			Vector<String> units(1);
-			Vector<Double> refVal(1);
-			Vector<Double> refPix(1);
-			Vector<Double> incr(1);
-			names(0) = "Axis1";
-			units(0) = "km";
-			refVal(0) = 0.0;
-			refPix(0) = 0.0;
-			incr(0) = 1.0;
-			Matrix<Double> pc(1,1);
-			pc.set(0.0);
-			pc.diagonal() = 1.0;
-			LinearCoordinate lc(names, units, refVal, incr, pc, refPix);
-			cSys.addCoordinate(lc);
-			nExtra++;
-		}
-		else if(!silent){
-			os << "Image already contains a LinearCoordinate" << LogIO::EXCEPTION;
-		}
-	}
-	if (tabular) {
-		Int afterCoord = -1;
-		Int iC = cSys.findCoordinate(Coordinate::TABULAR, afterCoord);
-		if (iC<0) {
-			TabularCoordinate tc;
-			cSys.addCoordinate(tc);
-			nExtra++;
-		}
-		else if(!silent){
-			os << "Image already contains a TabularCoordinate" << LogIO::EXCEPTION;
-		}
-	}
-	if (nExtra > 0) {
-		uInt n = shape.nelements();
-		shape.resize(n+nExtra,True);
-		for (uInt i=0; i<nExtra; i++) {
-			shape(n+i) = 1;
-		}
-	}
-	else if(!silent){
-	    os << "No degenerate axes specified" << LogIO::EXCEPTION;
-	}
-
-	if (outFile.empty()) {
-		os << LogIO::NORMAL << "Creating (temp)image of shape "
-			<< shape << LogIO::POST;
-		outImage.set(new TempImage<Float>(shape, cSys));
-	}
-	else {
-		os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
-			<< shape << LogIO::POST;
-		outImage.set(new PagedImage<Float>(shape, cSys, outFile));
-	}
-	ImageInterface<Float>* pOutImage = outImage.ptr();
-
-	// Generate output masks
-
-	Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
-	const uInt nMasks = maskNames.nelements();
-	if (nMasks > 0) {
-		for (uInt i=0; i<nMasks; i++) {
-			pOutImage->makeMask(maskNames(i), True, False, True);
-		}
-	}
-	pOutImage->setDefaultMask(inImage.getDefaultMask());
-
-	// Generate SubImage to copy the data into
-
-	AxesSpecifier axesSpecifier(keepAxes);
-	SubImage<Float> subImage(*pOutImage, True, axesSpecifier);
-
-	// Copy masks (directly, can't do via SubImage)
-	if (nMasks > 0) {
-		for (uInt i=0; i<nMasks; i++) {
-			ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i),
-					axesSpecifier);
-		}
-	}
-	subImage.copyData(inImage);
-	ImageUtilities::copyMiscellaneous(*pOutImage, inImage);
-}
-
-void ImageUtilities::copyMask (ImageInterface<Float>& out,
-                               const ImageInterface<Float>& in,
-                               const String& maskOut, const String& maskIn,
-                               const AxesSpecifier outSpec)
-//
-// Because you can't write to the mask of a SubImage, we pass
-// in an AxesSpecifier to be applied to the output mask.
-// In this way the dimensionality of in and out can be made
-// the same.
-//
-{     
-// Get masks
-   
-   ImageRegion iRIn = in.getRegion(maskIn, RegionHandler::Masks);
-   const LCRegion& regionIn = iRIn.asMask();
-
-   ImageRegion iROut = out.getRegion(maskOut, RegionHandler::Masks);
-   LCRegion& regionOut = iROut.asMask();
-   SubLattice<Bool> subRegionOut(regionOut, True, outSpec);
-         
-// Copy
-               
-   LatticeIterator<Bool> maskIter(subRegionOut);
-   for (maskIter.reset(); !maskIter.atEnd(); maskIter++) {
-      subRegionOut.putSlice(regionIn.getSlice(maskIter.position(),
-                            maskIter.cursorShape()),  maskIter.position());
-   }   
-}  
 
 void ImageUtilities::writeImage(
 		const TiledShape& mapShape,

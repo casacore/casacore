@@ -47,6 +47,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 SpectralIndex::SpectralIndex()
   :SpectralModel(),
    itsIndex(0.0),
+   itsStokesIndex(Vector<Double>(1, 0.0)),
    itsError(0.0)
 {
   DebugAssert(ok(), AipsError);
@@ -55,6 +56,7 @@ SpectralIndex::SpectralIndex()
 SpectralIndex::SpectralIndex(const MFrequency& refFreq, Double exponent)
   :SpectralModel(refFreq),
    itsIndex(exponent),
+   itsStokesIndex(Vector<Double>(1, exponent)),
    itsError(0.0)
 {
   DebugAssert(ok(), AipsError);
@@ -63,6 +65,7 @@ SpectralIndex::SpectralIndex(const MFrequency& refFreq, Double exponent)
 SpectralIndex::SpectralIndex(const SpectralIndex& other) 
   :SpectralModel(other),
    itsIndex(other.itsIndex),
+   itsStokesIndex(other.itsStokesIndex),
    itsError(other.itsError)
 {
   DebugAssert(ok(), AipsError);
@@ -76,6 +79,8 @@ SpectralIndex& SpectralIndex::operator=(const SpectralIndex& other) {
   if (this != &other) {
     SpectralModel::operator=(other);
     itsIndex = other.itsIndex;
+    itsStokesIndex.resize(other.itsStokesIndex.nelements());
+    itsStokesIndex=other.itsStokesIndex;
     itsError = other.itsError;
   }
   DebugAssert(ok(), AipsError);
@@ -91,9 +96,23 @@ const Double& SpectralIndex::index() const {
    DebugAssert(ok(), AipsError);
    return itsIndex;
 }
+const Vector<Double>& SpectralIndex::stokesIndex() const {
+  DebugAssert(ok(), AipsError);
+  return itsStokesIndex;
 
-void SpectralIndex::setIndex(const Double& newIndex) { 
+}
+  void SpectralIndex::setIndex(const Double& newIndex) { 
   itsIndex = newIndex;
+  itsStokesIndex.resize(1);
+  itsStokesIndex[0]=newIndex;
+  DebugAssert(ok(), AipsError);
+}
+
+
+  void SpectralIndex::setStokesIndex(const Vector<Double>& newIndex) { 
+  itsIndex = newIndex[0];
+  itsStokesIndex.resize();
+  itsStokesIndex=newIndex;
   DebugAssert(ok(), AipsError);
 }
 
@@ -115,6 +134,54 @@ Double SpectralIndex::sample(const MFrequency& centerFreq) const {
   return pow(nu/nu0, itsIndex);
 }
 
+void SpectralIndex::sampleStokes(const MFrequency& centerFreq, Vector<Double>& iquv) const {
+    DebugAssert(ok(), AipsError);
+    Vector<Double> scale(4);
+    if(itsStokesIndex.nelements()==1){
+      scale.resize(1);
+      scale(0)=sample(centerFreq);
+      iquv(0) *= scale(0);
+      return;
+    }
+    if(iquv.nelements() != 4)
+      throw(AipsError("SpectralIndex::sampleStokes(...) 4 stokes parameters expected"));
+    Double nu0=refFreqInFrame(centerFreq.getRef());
+    
+    if (nu0 <= 0.0) {
+      throw(AipsError("SpectralIndex::sampleStokes(...) - "
+		    "the reference frequency is zero or negative"));
+    }
+    const Double nu = centerFreq.getValue().getValue();
+    iquv[0] *= pow(nu/nu0, itsStokesIndex[0]);
+    //u and v get scaled so that fractional linear pol 
+    // is scaled by pow(nu/nu0, alpha[1]);
+    // as I is scaled by alpha[0]
+    //easily shown then that u and q are scaled by pow(nu/nu0, alpha[0]+alpha[1])
+    //similarly for scaling of fractional  circular pol
+    
+
+    for (uInt k=1; k < 3; ++k){
+      iquv[k]*=pow(nu/nu0, itsStokesIndex[0]+itsStokesIndex[1]);
+    }
+    ///RM type rotation of linear pol. 
+    if(itsStokesIndex[2] != 0.0){
+      //angle= RM x lambda^2 : itsStokesIndex[2]=RM
+      //if
+      // Q'= cos(2*angle)*Q - sin(2*angle)*U
+      // U'= sin(2*angle) *Q + cos(2*angle)*U
+      // Q' and U' preserves fractional linear pol..and rotates it by angle
+      Double twoalpha=2*itsStokesIndex[2]*C::c*C::c*(nu0*nu0-nu*nu)/(nu*nu*nu0*nu0);
+      Double cos2alph=cos(twoalpha); 
+      Double sin2alph=sin(twoalpha);
+      //Q'
+      Double tempQ=cos2alph*iquv[1]-sin2alph*iquv[2];
+      //U'
+      iquv[2]=sin2alph*iquv[1]+cos2alph*iquv[2];
+      iquv[1]=tempQ;
+    }
+    iquv[3]*=pow(nu/nu0, itsStokesIndex[0]+itsStokesIndex[3]);
+    
+}
 void SpectralIndex::sample(Vector<Double>& scale, 
 			   const Vector<MFrequency::MVType>& frequencies, 
 			   const MFrequency::Ref& refFrame) const {
@@ -141,6 +208,66 @@ void SpectralIndex::sample(Vector<Double>& scale,
   }
 }
 
+void SpectralIndex::sampleStokes(Vector<Vector<Double> >& iquv, 
+			   const Vector<MFrequency::MVType>& frequencies, 
+			   const MFrequency::Ref& refFrame) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = frequencies.nelements();
+  if(iquv.nelements() != nSamples)
+    throw(AipsError("SpectralIndex: number of Stokes does not  match frequency length"));
+  //scale.resize(nSamples);
+ 
+  Double nu0=refFreqInFrame(refFrame); 
+  if (nu0 <= 0.0) {
+    throw(AipsError("SpectralIndex::sample(...) - "
+		    "the reference frequency is zero or negative"));
+  }
+
+  Double nu;
+  for (uInt i = 0; i < nSamples; i++) {
+    nu = frequencies(i).getValue();
+    //scale(i).resize(itsStokesIndex.nelements());
+    iquv(i)(0) *= pow(nu/nu0, itsStokesIndex(0));
+  }
+  //fractional linear and circular pol variation
+  //u and v get scaled so that fractional linear pol 
+    // is scaled by pow(nu/nu0, alpha[1]);
+    // as I is scaled by alpha[0]
+    //easily shown then that u and q are scaled by pow(nu/nu0, alpha[0]+alpha[1])
+    //similarly for scaling of fractional  circular pol
+  if(itsStokesIndex.nelements()==4 && iquv(0).nelements()==4){
+    for (uInt i = 0; i < nSamples; i++) {
+      nu = frequencies(i).getValue();
+      iquv(i)(3) *= pow(nu/nu0, itsStokesIndex(0)+itsStokesIndex(3));
+      iquv(i)(1)*=pow(nu/nu0, itsStokesIndex[0]+itsStokesIndex[1]);
+      iquv(i)(2)*=pow(nu/nu0, itsStokesIndex[0]+itsStokesIndex[1]);
+    }
+  }
+  
+  
+  ///RM type rotation of linear pol. 
+  if(itsStokesIndex[2] != 0.0){
+      //angle= RM x lambda^2 : itsStokesIndex[2]=RM
+      //if
+      // Q'= cos(2*angle)*Q - sin(2*angle)*U
+      // U'= sin(2*angle) *Q + cos(2*angle)*U
+      // Q' and U' preserves fractional linear pol..and rotates it by angle
+    for (uInt i = 0; i < nSamples; i++) {
+      nu = frequencies(i).getValue();
+      Double twoalpha=2*itsStokesIndex[2]*C::c*C::c*(nu0*nu0-nu*nu)/(nu*nu*nu0*nu0);
+      Double cos2alph=cos(twoalpha); 
+      Double sin2alph=sin(twoalpha);
+      //Q'
+      Double tempQ=cos2alph*iquv(i)[1]-sin2alph*iquv(i)[2];
+      //U'
+      iquv(i)[2]=sin2alph*iquv(i)[1]+cos2alph*iquv(i)[2];
+      iquv(i)[1]=tempQ;
+    }
+  }
+   
+   
+
+}
 SpectralModel* SpectralIndex::clone() const {
   DebugAssert(ok(), AipsError);
   SpectralModel* tmpPtr = new SpectralIndex(*this);
@@ -208,6 +335,15 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
      }
      setIndex(indexVal);
   }
+  if(record.isDefined("stokesindex")){
+    Vector<Double> tempstokes=record.asArrayDouble("stokesindex");
+    if((tempstokes.nelements() != 4) && (tempstokes.nelements() != 1) ){
+      errorMessage += "Stokes indices is not of length 1 or 4\n";
+      return False;
+    }
+    itsStokesIndex.resize();
+    itsStokesIndex=tempstokes;
+  }
 //
   {
       Vector<Double> errorVals(1, 0.0);
@@ -222,7 +358,7 @@ Bool SpectralIndex::fromRecord(String& errorMessage,
         case TpDouble:
         case TpFloat:
         case TpInt:
-          errorVals[0] = record.asDouble(error);
+            errorVals[0] = record.asDouble(error);
           break;
         default:
           errorMessage += "The 'error' field must be a real number\n";
@@ -242,6 +378,8 @@ Bool SpectralIndex::toRecord(String& errorMessage,
   DebugAssert(ok(), AipsError);
   if (!SpectralModel::toRecord(errorMessage, record)) return False;
   record.define("index", index());
+  if(itsStokesIndex.nelements() != 0)
+    record.define("stokesindex", itsStokesIndex);
   record.define("error", errors()(0));
   return True;
 }

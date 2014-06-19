@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/RecordInterface.h>
+///#include <casa/Utilities/CountedPtr.h>
 #include <tr1/memory>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

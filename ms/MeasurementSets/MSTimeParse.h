@@ -115,7 +115,8 @@ public:
 				    bool daytime = false);
   const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
 				       const MEpoch& upboundTime,
-				       bool daytime = false);
+				       bool daytime = false,
+                                       Float edgeWidth=-1.0);
   Matrix<Double> selectedTimes() {return timeList;}
   const TableExprNode *addCondition(TableExprNode& condition);
 

@@ -222,17 +222,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       {
 	Float totalBandWidth, refFreq;
 	
-	Vector<Double> cw;
-	chanWidth.get(n,cw,True);
-	Double maxChanWidth = max(cw);
-	if (f3 < 0) localStep=min(cw);
-	else localStep = f3;
+	Double maxChanWidth;
+	{
+	  Vector<Double> shouldNotBeRequired;
+	  chanWidth.get(n,shouldNotBeRequired,True);
+	  maxChanWidth = max(shouldNotBeRequired);
+	  if (f3 < 0) localStep=min(shouldNotBeRequired);
+	  else localStep = f3;
+	}
 
 	Found = False;
 	if (approx) totalBandWidth = msSpwSubTable_p.totalBandwidth()(n);
 	else totalBandWidth = 0;
-	refFreq = msSpwSubTable_p.refFrequency()(n);
-	//	cout << refFreq << " " << f0 << " " << maxChanWidth << " " << fabs(refFreq-f0) << endl;
+	//	refFreq = msSpwSubTable_p.refFrequency()(n);
+	Vector<Double> chanFreqList;
+	chanFreq.get(n,chanFreqList,True);
+	Int nChan=chanFreqList.nelements();
+	refFreq = (chanFreqList(nChan-1)+chanFreqList(0))/2.0;;
+
+	//cout << chanFreqList[0] << " " << chanFreqList[nChan-1] << " " << f0 << " " << f1 << " " << f3 << " " << maxChanWidth << endl;
+
 	switch (mode)
 	  {
 	  case EXACT:
@@ -253,7 +262,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	      if (f3 == 0)
 		{
 		  if ((refFreq >= f0) && 
-		      (refFreq <= f1) 
+		      (refFreq <= f1)
 		      //		  && (!msSpwSubTable_p.flagRow()(n))
 		      )
 		    Found = True;
@@ -261,10 +270,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		}
 	      else
 		{
-		  for(Float freq=f0;freq <=f1; freq+=localStep)
+		  for(Float freq=f0;freq <=f1; freq+=localStep) {
 		    if (fabs(freq - refFreq) < maxChanWidth) {Found = True;break;}
+                  }
 		  break;
 		}
+	    }
+	  default:
+	    {
+	      throw(MSSelectionSpwError("Internal error: Unknown mode in MSSpwIndex::matchFrequencyRange()"));
 	    }
 	  }
 	if (Found)

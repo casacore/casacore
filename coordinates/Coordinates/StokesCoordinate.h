@@ -177,6 +177,9 @@ public:
     // with into a vector
     Vector<Int> stokes() const;
 
+    // Get the stokes string representations
+    Vector<String> stokesStrings() const;
+
     // Set a new vector of Stokes values (a vector of Stokes::StokesType) 
     void setStokes (const Vector<Int> &whichStokes);
    

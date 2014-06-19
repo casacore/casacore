@@ -960,7 +960,7 @@ Bool ImageFITSConverter::ImageToFITSOut(
 	header.define("COMMENT1", ""); // inserts spaces
 	// I should FITS-ize the units
 
-	header.define("BUNIT", upcase(image.units().getName()).chars());
+	header.define("BUNIT", image.units().getName().chars());
 	header.setComment("BUNIT", "Brightness (pixel) unit");
 	//
 	IPosition shapeCopy = newShape;

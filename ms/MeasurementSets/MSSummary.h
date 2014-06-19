@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <ms/MeasurementSets/MSColumns.h>
 #include <memory>
 
@@ -169,7 +170,7 @@ public:
 private:
 // Pointer to MS
    const MeasurementSet* pMS;
-   std::auto_ptr<MSMetaData> _msmd;
+   SPtrHolder<MSMetaData> _msmd;
 
 // Formatting strings
    const String dashlin1, dashlin2;

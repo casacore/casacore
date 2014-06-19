@@ -28,6 +28,7 @@
 //# Includes
 
 #include <casa/Containers/Record.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <components/SpectralComponents/CompiledSpectralElement.h>
 #include <components/SpectralComponents/GaussianSpectralElement.h>
 #include <components/SpectralComponents/GaussianMultipletSpectralElement.h>
@@ -39,10 +40,10 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
+SpectralElement* SpectralElementFactory::fromRecord(
 	const RecordInterface &in
 ) {
-	std::auto_ptr<SpectralElement> specEl(0);
+	PtrHolder<SpectralElement> specEl;
 	String origin = "SpectralElementFactory::fromRecord: ";
 	if (
 		! in.isDefined("type")
@@ -140,7 +141,7 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 		}
 		param(2) = GaussianSpectralElement::sigmaFromFWHM (param(2));
 		errs(2) = GaussianSpectralElement::sigmaFromFWHM (errs(2));
-		specEl.reset(new GaussianSpectralElement(param(0), param(1), param(2)));
+		specEl.set(new GaussianSpectralElement(param(0), param(1), param(2)));
 		specEl->setError(errs);
 		break;
 	case SpectralElement::LORENTZIAN:
@@ -154,7 +155,7 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 				"The width of a Lorentzian element must be positive"
 			);
 		}
-		specEl.reset(new LorentzianSpectralElement(param(0), param(1), param(2)));
+		specEl.set(new LorentzianSpectralElement(param(0), param(1), param(2)));
 		specEl->setError(errs);
 		break;
 	case SpectralElement::POLYNOMIAL:
@@ -164,7 +165,7 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 				"of at least zero"
 			);
 		}
-		specEl.reset(new PolynomialSpectralElement(param.nelements() - 1));
+		specEl.set(new PolynomialSpectralElement(param.nelements() - 1));
 		specEl->set(param);
 		specEl->setError(errs);
 		break;
@@ -175,7 +176,7 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 		) {
 			String function;
 			in.get(RecordFieldId("compiled"), function);
-			specEl.reset(new CompiledSpectralElement(function, param));
+			specEl.set(new CompiledSpectralElement(function, param));
 			specEl->setError(errs);
 		}
 		else {
@@ -199,10 +200,10 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 		while(True) {
 			String id = "*" + String::toString(i);
 			if (gaussians.isDefined(id)) {
-				std::auto_ptr<SpectralElement> gauss = fromRecord(gaussians.asRecord(id));
+				PtrHolder<SpectralElement> gauss(fromRecord(gaussians.asRecord(id)));
 				comps.push_back(
 					*dynamic_cast<GaussianSpectralElement*>(
-						gauss.get()
+						gauss.ptr()
 					)
 				);
 				i++;
@@ -213,19 +214,19 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 		}
 		Matrix<Double> fixedMatrix = in.asArrayDouble("fixedMatrix");
 		fixedMatrix.reform(IPosition(2, comps.size()-1, 3));
-		specEl.reset(new GaussianMultipletSpectralElement(comps, fixedMatrix));
+		specEl.set(new GaussianMultipletSpectralElement(comps, fixedMatrix));
 	}
 	break;
 
     case SpectralElement::POWERLOGPOLY: {
-		specEl.reset(new PowerLogPolynomialSpectralElement(param));
+		specEl.set(new PowerLogPolynomialSpectralElement(param));
 		specEl->set(param);
 		specEl->setError(errs);
 	}
 	break;
 
     case SpectralElement::LOGTRANSPOLY: {
-    		specEl.reset(new LogTransformedPolynomialSpectralElement(param));
+    		specEl.set(new LogTransformedPolynomialSpectralElement(param));
     		specEl->set(param);
     		specEl->setError(errs);
     	}
@@ -241,7 +242,10 @@ std::auto_ptr<SpectralElement> SpectralElementFactory::fromRecord(
 	if (in.isDefined("fixed")) {
 		specEl->fix(in.asArrayBool("fixed"));
 	}
-	return specEl;
+    // ready to return, fish out the pointer and return it without deleting it
+    SpectralElement *sp = specEl.ptr();
+    specEl.clear(False);
+	return sp;
 }
 
 

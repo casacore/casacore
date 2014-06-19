@@ -40,10 +40,10 @@
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/Utilities/PtrHolder.h>
 
 #include <wcslib/wcs.h>
 
-#include <memory>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -588,8 +588,8 @@ public:
 
 private:
 
-    std::auto_ptr<TabularCoordinate> _tabular;                     // Tabular coordinate OR
-    mutable ::wcsprm wcs_p;                              // wcs structure is used 
+    SPtrHolder<TabularCoordinate> _tabular;            // Tabular coordinate OR
+    mutable ::wcsprm wcs_p;                            // wcs structure is used 
     Double to_hz_p;                                    // Convert from current world units to Hz
     Double to_m_p;                                     // Convert from current wavelength units to m
 //

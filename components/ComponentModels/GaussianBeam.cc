@@ -26,6 +26,7 @@
 #include <components/ComponentModels/GaussianBeam.h>
 
 #include <casa/Containers/Record.h>
+#include <casa/Quanta/QC.h>
 #include <casa/Quanta/QuantumHolder.h>
 #include <casa/Quanta/QLogical.h>
 
@@ -107,13 +108,12 @@ Quantity GaussianBeam::getPA(const Bool unwrap) const {
 	if (
 		unwrap
 		&& (
-			_pa.getValue("deg") > 90
-			|| _pa.getValue("deg") <= -90
+			_pa > QC::qTurn || _pa <= -QC::qTurn
 		)
 	) {
 		Quantity pa((fmod(_pa.getValue("deg"), 180)), "deg");
-		if (pa.getValue() > 90) {
-			pa -= 180;
+		if (pa > QC::qTurn) {
+			pa -= QC::hTurn;
 			pa.convert(_pa.getUnit());
 			return pa;
 		}
@@ -128,25 +128,31 @@ Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
 void GaussianBeam::setMajorMinor(
 	const Quantity& majAx, const Quantity& minAx
 ) {
-  if (majAx.getValue() < 0) {
-    throw AipsError ("Major axis cannot be less than zero.");
-  }
-  if (minAx.getValue() < 0) {
-    throw AipsError ("Minor axis cannot be less than zero.");
-  }
-  if (! majAx.isConform("rad")) {
-    throw AipsError ("Major axis must have angular units ("
-                     + majAx.getUnit() + " is not).");
-  }
-  if (! minAx.isConform("rad")) {
-    throw AipsError ("Major axis must have angular units ("
-                     + minAx.getUnit() + " is not).");
-  }
-  if (majAx < minAx) {
-    throw AipsError ("Major axis must be greater or equal to minor axis");
-  }
-  _major = majAx;
-  _minor = minAx;
+	static ostringstream oss;
+	ThrowIf(
+		majAx.getValue() < 0,
+		"Major axis cannot be less than zero."
+	);
+	ThrowIf(
+		minAx.getValue() < 0,
+		"Minor axis cannot be less than zero."
+	);
+	ThrowIf (
+		! majAx.isConform("rad"),
+		"Major axis must have angular units ("
+		+ majAx.getUnit() + " is not)."
+	);
+	ThrowIf (
+		! minAx.isConform("rad"),
+		"Major axis must have angular units ("
+		+ minAx.getUnit() + " is not)."
+	);
+	ThrowIf(
+		majAx < minAx,
+		"Major axis must be greater or equal to minor axis"
+	);
+	_major = majAx;
+	_minor = minAx;
 }
 
 void GaussianBeam::setPA(const Quantity& pa) {
@@ -159,8 +165,6 @@ void GaussianBeam::setPA(const Quantity& pa) {
 	}
 	_pa = pa;
 }
-
-
 
 Bool GaussianBeam::isNull() const {
 	return _major.getValue() == 0 || _minor.getValue() == 0;
@@ -300,6 +304,8 @@ Bool GaussianBeam::deconvolve(
 				Quantity(_minor.get(minorAxisModelUnit)),
 				Quantity(_pa.get(positionAngleModelUnit))
 			);
+			// unwrap
+			deconvolvedSize.setPA(deconvolvedSize.getPA(True));
 			return True;
 		}
 		else {
@@ -317,6 +323,8 @@ Bool GaussianBeam::deconvolve(
 		radians);
 	pa.convert(positionAngleModelUnit);
 	deconvolvedSize = GaussianBeam(majax, minax, pa);
+	// unwrap
+	deconvolvedSize.setPA(deconvolvedSize.getPA(True));
 	return False;
 }
 

@@ -837,14 +837,33 @@ public:
    // Get the 0 based order of the minimal match strings specified in <src>order</src>.
    // If <src>requireAll</src> is True, checks are done to ensure that all axes in
    // the coordinate system are uniquely specified in <src>order</src>.
-  Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
-                                Bool allowFriendlyNames=False) const;
+   // If <src>allowFriendlyNames</src> is True, the following (fully specified) strings
+   // will match the specified axes:
+   // "spectral" matches both "frequency" and "velocity".
+   // "ra" matches "right ascension".
+   Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
+                                 Bool allowFriendlyNames=False) const;
 
-   // is the abscissa in the DirectionCoordinate the longitude axis?
+   // Is the abscissa in the DirectionCoordinate the longitude axis?
    // Throws exception if there is no DirectionCoordinate or if either of
    // the direction pixel axes have been removed.
    // For a normal direction coordinate, this will return True.
    Bool isDirectionAbscissaLongitude() const;
+
+    // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
+    // so that pixel<->world go to the specified frequency system (a valid
+    // MFrequency::Types string).  Returns False if frequency system invalid
+    // or if no DirectionCoordinate or if cant get Date/Epoch.
+    // <group>
+    Bool setSpectralConversion (String& errorMsg, const String frequencySystem);
+    // This version throws an exception rather than returning False.
+    void setSpectralConversion (const String frequencySystem);
+    //</group>
+ 
+    // Set rest frequency of SpectralCoordinate in CoordinateSystem.
+    // Unit must be consistent with Hz or m.
+    // Returns False if invalid inputs (and CS not changed) and an error message.
+    Bool setRestFrequency (String& errorMsg, const Quantity& freq);
 
 private:
     // Where we store copies of the coordinates we are created with.
@@ -960,7 +979,7 @@ private:
     // </group>
 
     void _downcase(Vector<String>& vec) const
-  { for (uInt i=0; i<vec.size(); ++i) vec[i].downcase(); }
+      { for (uInt i=0; i<vec.size(); ++i) vec[i].downcase(); }
 
 };
 

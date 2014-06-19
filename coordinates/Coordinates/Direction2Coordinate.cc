@@ -30,10 +30,13 @@
 #include <coordinates/Coordinates/DirectionCoordinate.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/BasicSL/Constants.h>
+#include <measures/Measures/MCDirection.h>
 #include <measures/Measures/MDirection.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MVDirection.h>
 #include <casa/Quanta/Unit.h>
+
+#include <iomanip>
 
 // A different file so that apps which don't need measures don't link them all
 // in (measures bring in tables and lots of other stuff)
@@ -65,10 +68,31 @@ Bool DirectionCoordinate::toWorld(MVDirection &world,
     return False;
 }
 
-Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
-                                  const MDirection &world) const
-{
-    return toPixel(pixel, world.getValue());
+MVDirection DirectionCoordinate::toWorld(
+	const Vector<Double> &pixel
+) const {
+	MVDirection x;
+	ThrowIf(
+		! toWorld(x, pixel), errorMessage()
+	);
+	return x;
+}
+
+Bool DirectionCoordinate::toPixel(
+	Vector<Double> &pixel,
+	const MDirection &world
+) const {
+	if (type_p == MDirection::castType(world.getRef().getType())) {
+		return toPixel(pixel, world.getValue());
+	}
+	else {
+		cout << std::setprecision(10) << "*** got long lat " << world.getValue().getLong("deg")
+			<< " " << world.getValue().getLat() << endl;
+		MDirection converted = MDirection::Convert(world, type_p)();
+		cout << "converted long lat " << std::setprecision(10) << converted.getValue().getLong("deg")
+			<< " " << converted.getValue().getLat() << endl;
+		return toPixel(pixel, converted.getValue());
+	}
 }
 
 
@@ -85,12 +109,22 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
    return toPixel(pixel, world_tmp);
 }
 
-Vector<Double> DirectionCoordinate::toPixel(const MVDirection &world) const
-{
-  Vector<Double> x;
-  ThrowIf (! toPixel(x, world),	errorMessage());
-  return x;
+Vector<Double> DirectionCoordinate::toPixel(const MVDirection &world) const {
+	Vector<Double> x;
+	ThrowIf(
+		! toPixel(x, world),
+		errorMessage()
+	);
+	return x;
 }
 
+Vector<Double> DirectionCoordinate::toPixel(const MDirection &world) const {
+	Vector<Double> x;
+	ThrowIf(
+		! toPixel(x, world),
+		errorMessage()
+	);
+	return x;
+}
 } //# NAMESPACE CASA - END
 

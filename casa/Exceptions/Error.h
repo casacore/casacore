@@ -50,6 +50,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     throw exc(casa_log_oss.str());   \
   } while (0)
 
+// Throw an AipsError exception containing the file and line.
+#define ThrowCc(m) throw AipsError ((m), __FILE__, __LINE__)
+
 // Throw an AipsError exception if the condition is true.
 #define ThrowIf(c,m) {if (c) {casa::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 

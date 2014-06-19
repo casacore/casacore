@@ -161,10 +161,8 @@ namespace casa { //# name space casa begins
 			     const Vector<Int>& shape, 
 			     const String& comment){
   
-
-    *itsLog << LogOrigin("RegionManager", "box");
-    if(blc.nelements() != trc.nelements())
-      throw(AipsError("blc and trc do not have the shape"));
+    ThrowIf(blc.nelements() != trc.nelements(),
+            "blc and trc do not have the same shape");
     IPosition latShape(shape);
     LCBox lcbox(blc, trc, latShape);
 
@@ -172,9 +170,7 @@ namespace casa { //# name space casa begins
     Record *leRecord= new Record();
     leRecord->assign(lcbox.toRecord(String("")));
     leRecord->define("comment", comment);
-
     return leRecord;
-
   }
 
   ImageRegion* RegionManager::wbox(const Vector<Quantity>& blc, 
@@ -188,7 +184,6 @@ namespace casa { //# name space casa begins
     Vector<Int> absRel(blc.nelements(), leType);
     WCBox worldbox;
 
- 
     if(pixelaxes.nelements() > 0 && pixelaxes[0] <0){
       worldbox=WCBox(blc, trc, csys, absRel);
     }
@@ -197,7 +192,6 @@ namespace casa { //# name space casa begins
     }
     ImageRegion *leRegion = new ImageRegion(worldbox);
     return leRegion;
-
   } 
 
   Record* RegionManager::wbox(const Vector<Quantity>& blc, 

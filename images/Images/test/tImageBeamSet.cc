@@ -759,6 +759,16 @@ int main() {
         	beamSet = ImageBeamSet(beams);
         	got = beamSet.getSmallestMinorAxisBeam();
         	AlwaysAssert(got == beam3, AipsError);
+
+        	cout << "*** test to/fromRecord()" << endl;
+        	Record yy = beamSet.toRecord();
+        	ImageBeamSet gotSet = ImageBeamSet::fromRecord(yy);
+        	AlwaysAssert(
+        		gotSet.nchan() == beamSet.nchan() && gotSet.nstokes() == beamSet.nstokes()
+        		&& gotSet.equivalent(beamSet),
+        		AipsError
+        	);
+
         }
 	}
 	catch (const AipsError& x) {

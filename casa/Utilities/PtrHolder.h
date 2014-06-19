@@ -121,10 +121,13 @@ public:
     // Attempt to automatically release a pointer when required. If the
     // compiler can't figure it out, you can use the <src>ptr()</src>
     // member function directly.
-    // <group>
     operator T *() { return ptr_p; }
-    operator const T *() const { return ptr_p; }
+    operator T *() const { return ptr_p; }
     // </group>
+
+    // Make it possible to use -> on the pointer object.
+    T* operator->() const
+      { return ptr_p; }
 
     // See if the pointer points to a C-array.
     Bool isCArray() const {return isCarray_p;}
@@ -183,7 +186,7 @@ private:
 // </example>
 
 // <motivation>
-// <src>std::autoptr</src> is harder to use and its future is unclear.
+// <src>std::auto_ptr</src> is harder to use and its future is unclear.
 // <br>
 // <src>PtrHolder</src> is not fully inlined and has C-array overhead.
 // Furthermore the automatic conversion to a T* is dangerous, because the
@@ -228,12 +231,8 @@ public:
   // </group>
 
   // Make it possible to use -> on the pointer object.
-  // <group>
-  T* operator->()
+  T* operator->() const
     { return itsPtr; }
-  const T* operator->() const
-    { return itsPtr; }
-  // </group>
 
   // Get the pointer for use.
   // <group>

@@ -33,9 +33,6 @@
 #include <casa/Containers/RecordInterface.h>
 #include <components/SpectralComponents/SpectralElement.h>
 
-#include <memory>
-
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // FIXME fix documentation
@@ -75,7 +72,7 @@ public:
  	// "parameters" (Vector<Double>).  For type=GAUSSIAN, parameters
 	// holds amplitude, center and sigma. For type=POLYNOMIAL,
 	// parameters(0) holds the degree.
-	static std::auto_ptr<SpectralElement> fromRecord(
+	static SpectralElement* fromRecord(
 		const RecordInterface &container
 	);
 

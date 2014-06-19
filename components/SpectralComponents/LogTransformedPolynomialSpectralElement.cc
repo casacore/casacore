@@ -38,15 +38,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 LogTransformedPolynomialSpectralElement::LogTransformedPolynomialSpectralElement(
 	uInt order
 ) : PolynomialSpectralElement(order) {
-if (order == 0) {
-		throw AipsError(_ORIGIN + "order must be greater than zero.");
-	}
+	ThrowIf(
+		order == 0,
+		"order must be greater than zero."
+	);
 	_setType(SpectralElement::LOGTRANSPOLY);
 }
 
 LogTransformedPolynomialSpectralElement::LogTransformedPolynomialSpectralElement(
 	const Vector<Double>& param
 ) : PolynomialSpectralElement(param) {
+	set(param);
 	_setType(SpectralElement::LOGTRANSPOLY);
 }
 
@@ -90,5 +92,5 @@ ostream &operator<<(
     os << ss.str();
     return os;
 }
-} //# NAMESPACE CASA - END
+}
 

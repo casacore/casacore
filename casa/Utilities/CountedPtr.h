@@ -62,16 +62,14 @@ void throw_Null_CountedPtr_dereference_error();
 
 // <synopsis>
 // This class implements a reference counting mechanism. It
-// allows <src>CountedConstPtr</src>s to be passed around freely,
+// allows <src>CountedPtr</src>s to be passed around freely,
 // incrementing or decrementing the reference count as needed when one
-// <src>CountedConstPtr</src> is assigned to another. When the
+// <src>CountedPtr</src> is assigned to another. When the
 // reference count reaches zero the internal storage is deleted by
 // default, but this behavior can be overridden.
 //
-// This class is used as a pointer to constant data. As such, it only
-// has the subset of the
-// <linkto class="CountedConstPtr:description">CountedConstPtr</linkto>
-// functions which are relevant for constant data.
+// Internally the class uses std::shared_ptr to be thread-safe. Note that
+// tr1 is used if the compiler does not support C++11 yet.
 // </synopsis>
 
 // <motivation>
@@ -186,6 +184,13 @@ public:
 	return get ();
     }
 
+    // Get the underlying pointer.
+    t *
+    get () const
+    {
+        return pointerRep_p.get();
+    }
+
     // Equality operator which checks to see if two
     // <src>CountedPtr</src>s are pointing at the same thing.
     //
@@ -235,12 +240,6 @@ protected:
 #endif
 
     PointerRep pointerRep_p;
-
-    t *
-    get () const
-    {
-        return pointerRep_p.get();
-    }
 };
 
 inline Bool countedPtrShared()

@@ -41,6 +41,7 @@ template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class Quantum;
 template <class T> class MaskedArray;
+template <class T> class PtrHolder;
 class CoordinateSystem;
 class Coordinate;
 class String;
@@ -90,11 +91,13 @@ public:
   // of legal image type.   For Casacore images, the default mask is
   // applied.
   //  <group>
-  static void openImage (PtrHolder<ImageInterface<Float> >& image,
-                         const String& fileName, LogIO& os);
+  template<class T>
+  static void openImage (PtrHolder<ImageInterface<T> >& image,
+                         const String& fileName);
 
-  static void openImage (ImageInterface<Float>*& image,
-                         const String& fileName, LogIO& os);
+  template<class T>
+  static void openImage (ImageInterface<T>*& image,
+                         const String& fileName);
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
@@ -104,8 +107,9 @@ public:
                                   Bool copyImageInfo = True);
 
 // Copy a mask from one image to another
-   static void copyMask (ImageInterface<Float>& out,
-                         const ImageInterface<Float>& in,
+   template <typename T, typename U>
+   static void copyMask (ImageInterface<T>& out,
+                         const ImageInterface<U>& in,
                          const String& maskOut, const String& maskIn,
                          AxesSpecifier axesSpecifier);
 
@@ -116,10 +120,11 @@ public:
 // Add one degenerate axis for each of the specified coordinate types.
 // If the outfile string is given the new image is a PagedImage.
 // If the outfile string is empty, the new image is a TempImage.
+   template <typename T>
    static void addDegenerateAxes (
 		   LogIO& os,
-		   PtrHolder<ImageInterface<Float> >& outImage,
-		   const ImageInterface<Float>& inImage,
+		   PtrHolder<ImageInterface<T> >& outImage,
+		   const ImageInterface<T>& inImage,
 		   const String& outFile, Bool direction,
 		   Bool spectral, const String& stokes,
 		   Bool linear, Bool tabular, Bool overwrite,
@@ -153,7 +158,7 @@ public:
 // in the coordinate system.
    static Bool pixToWorld (
 		   Vector<String>& sWorld,
-		   CoordinateSystem& cSys,
+		   const CoordinateSystem& cSys,
 		   const Int& pixelAxis,
 		   const Vector<Int>& cursorAxes,
 		   const IPosition& blc,
@@ -233,7 +238,7 @@ private:
 // On input pa is positive for +x -> +y in pixel frame
 // On output pa is positive N->E
 // Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool _skyPixelWidthsToWorld (GaussianBeam& wParameters,
+   static Bool _skyPixelWidthsToWorld (Angular2DGaussian& gauss2d,
                                        const CoordinateSystem& cSys,
                                        const Vector<Double>& pParameters,
                                        const IPosition& pixelAxes, Bool doRef);

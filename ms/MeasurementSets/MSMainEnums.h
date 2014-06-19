@@ -191,6 +191,10 @@ public:
     // Float(Nc, Nf)
     FLOAT_DATA,
     //
+    // The imaging weights (optional). <BR>
+    // Float(Nf)
+    IMAGING_WEIGHT,
+    //
     // Complex correlation function or lag spectrum for each correlation 
     // product <BR>
     // Complex(Nc, Nl)

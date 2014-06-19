@@ -296,7 +296,7 @@ public:
 
 // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
 // has been called, or if one of the active "display" or "get*" methods has been called. 
-   const Vector<Int>& displayAxes() const {return displayAxes_p;} 
+   Vector<Int> displayAxes() const {return displayAxes_p;} 
 
 // Recover the desired Statistic into an array.  If you choose to use
 // the T version, be aware that the values in the AccumType version of the
@@ -345,7 +345,7 @@ public:
    Bool getFullMinMax (T& dataMin, T& dataMax);
 
 // Recover last error message
-   const String& errorMessage() const {return error_p;};
+   String errorMessage() const {return error_p;};
 
 // Set a new MaskedLattice object.  A return value of <src>False</src> indicates the 
 // lattice had an invalid type or that the internal state of the class is bad.
@@ -376,14 +376,25 @@ protected:
 // See for example, class ImageStatistics.  When you provide
 // the beam, then the Flux statistic, if requested, can be
 // computed.  Returns False if beam not available, else True.
-// The implementation here returns False. Callers are responsible
-   // for deleting the <src>beamArea</src> pointer which is created
+// The implementation here returns False.
 
    virtual Bool _getBeamArea (Array<Double>& beamArea) const;
+
+   // FIXME The indirect dependence of this class on ImageInterface related
+   // issues (eg flux density) breaks encapsulation. All the ImageInterface related code should be
+   // encapsulated in ImageStatistics. Unfortunately, that requires significantly
+   // more time than I have atm. A return value of False means that the object in
+   // question cannot compute flux density values. The default implementation returns False.
+   virtual Bool _canDoFlux() const { return False; }
+   virtual Quantum<AccumType> _flux(AccumType, Double) const {
+     throw AipsError ("Logic Error: LatticeStatistics base class cannot compute flux density");
+   }
 
    virtual void listMinMax (ostringstream& osMin,
                             ostringstream& osMax,
                             Int oWidth, DataType type);
+
+   //
 
 // List the statistics to the logger.   The implementation here
 // is adequate for all lattices.  See ImageStatistics for an
@@ -397,8 +408,8 @@ protected:
 // Have a look at the implementation to see what you really
 // have to do.
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
-                           const Matrix<AccumType>& ord);
-   virtual Bool listLayerStats (Double hasBeam, 
+                          const Matrix<AccumType>& ord);
+   virtual Bool listLayerStats (
              const Matrix<AccumType>& ord,
              ostringstream& rslt, Int zLayer); 
 
@@ -419,9 +430,8 @@ protected:
 // set stream manipulators
    void setStream (ostream& os, Int oPrec);
 
-// Get the storage lattice shape
-   IPosition _storageLatticeShape() const
-      { return pStoreLattice_p->shape(); }
+   // get the storage lattice shape
+   inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
 
 private:
    const MaskedLattice<T>* pInLattice_p;
@@ -507,7 +517,7 @@ private:
    Int niceColour         (Bool& initColours) const; 
 
 // Plot the statistics
-   Bool plotStats         (Bool hasBeam, const IPosition& dPos, 
+   Bool plotStats         (const IPosition& dPos,
                            const Matrix<AccumType>& ord,
                            PGPlotter& plotter);
 
@@ -634,14 +644,13 @@ public:
     virtual void initAccumulator (uInt n1, uInt n3);
 
 // Process the data in the current chunk. 
-    virtual void process (uInt accumIndex1, 
-                          uInt accumIndex3, 
-                          const T* inData, 
-                          const Bool* inMask,
-                          uInt dataIncr, uInt maskIncr,
-                          uInt nrval,
-                          const IPosition& startPos, 
-                          const IPosition& shape);
+    virtual void process (
+    	uInt accumIndex1, uInt accumIndex3,
+    	const T* inData, const Bool* inMask,
+    	uInt dataIncr, uInt maskIncr,
+    	uInt nrval,	const IPosition& startPos,
+    	const IPosition& shape
+    );
 
 // End the accumulation process and return the result arrays
     virtual void endAccumulator(Array<U>& result,

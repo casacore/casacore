@@ -119,40 +119,37 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //ROMSMainColumns mainColumns_l(*ms_p);
     //    MSMainColInterface mainColumns_l(*ms_p);
 
-    if (!defaultTimeComputed)
-      {
-	uInt i=0,nrow=(mainColumn_p->flag()).nrow();
-	if (!otherTens_p->isNull())
-	  {
-	    Bool selected=False;
-	    for(i=0;i<nrow;i++)
-	      {
-		// Use the otherTens_p to get to the first logical row
-		if (honourRowFlags_p)
-		  {
-		    //if (!mainColumns_l.flagRow()(i))
-		    if (!mainColumn_p->flagRow(i))
-		      otherTens_p->get(i,selected); 
-		  }
-		else
-		  otherTens_p->get(i,selected);
-		  
-		if (selected) {firstLogicalRow=i;break;}
-	      }
-	  }
-	else if (honourRowFlags_p)
-	  {
-	    //
-	    // Find the first row which is not flagged.
-	    //
-	    for (i=0;i<nrow;i++) 
+    if (!defaultTimeComputed) {
+      uInt i=0,nrow=(mainColumn_p->flag()).nrow();
+      if (!otherTens_p->isNull()) {
+        Bool selected=False;
+        for(i=0;i<nrow;i++) {
+          // Use the otherTens_p to get to the first logical row
+          if (honourRowFlags_p) {
+            //if (!mainColumns_l.flagRow()(i))
+            if (!mainColumn_p->flagRow(i)) {
+              otherTens_p->get(i,selected); 
+            } else {
+              otherTens_p->get(i,selected);
+            }
+            if (selected) {firstLogicalRow=i;break;}
+          }
+        }
+      } else if (honourRowFlags_p) {
+      //
+      // Find the first row which is not flagged.
+      //
+        for (i=0;i<nrow;i++) {
 	      //if (!mainColumns_l.flagRow()(i)) 
-	      if (!mainColumn_p->flagRow(i)) 
-		{firstLogicalRow=i;break;}
-	  }
-	if ( firstLogicalRow >= nrow)
-	  throw(MSSelectionTimeError("MSTimeParse: No logical \"row zero\" found for time selection"));
+          if (!mainColumn_p->flagRow(i)) {
+            firstLogicalRow=i;break;
+          }
+        }
       }
+      if ( firstLogicalRow >= nrow) {
+        throw(MSSelectionTimeError("MSTimeParse: No logical \"row zero\" found for time selection"));
+      }
+    }
     //
     // Extract the values from the first valid timestamp in the MS to
     // be used for defaults
@@ -162,14 +159,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     ROScalarQuantColumn<Double> exposure;
     exposure.reference(mainColumn_p->exposureQuant());
-    if (ms_p == NULL) // This instance is not attached to an MS (which
-		      // means, for now, it must be attached to a
-		      // CalTable)
+    if (ms_p == NULL) {
+      // This instance is not attached to an MS (which
+      // means, for now, it must be attached to a CalTable)
       defaultExposure=0.1; // For now, arbitrarily set it a small value
 			   // for CalTables
-    else
+    } else {
       defaultExposure=exposure(firstLogicalRow,"s").getValue();
-      
+    }
     firstRowTime = mainColumn_p->timeQuant()(firstLogicalRow);
 
     //    cout << firstRowTime.string(MVTime::DMY,7) << endl;
@@ -192,11 +189,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const TableExprNode *MSTimeParse::addCondition(TableExprNode& condition)
   {
-    if(node_p->isNull())
+    if(node_p->isNull()) {
       *node_p = condition;
-    else
+    } else {
       *node_p = *node_p || condition;
-    
+    }
     return node_p;
   }
   //
@@ -252,35 +249,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
 						    const MEpoch& upboundTime,
-						    bool)
+						    bool edgeInclusive,
+                                                    Float edgeWidth)
   {
     Double upperBound = toTAIInSec(upboundTime);
     Double lowerBound = toTAIInSec(lowboundTime);
 
-    //    ROMSMainColumns mainColumns_p(*ms_p);
-
-    // TableExprRange range(mainColumns_p.time(), lowerBound, upperBound);
-    // TableExprNode tens(range);
-    // Block<TableExprRange> brange;
-    // TableExprNodeColumn tenc(*ms(), "TIME");
-    // TableExprNodeRep::createRange(brange, &tenc, lowerBound, upperBound);
-    // TableExprNodeSet tens(brange);
-    // TableExprNode condition = (ms()->col(colName).in(brange[0]));
-
-    if (lowerBound > upperBound)
+    if (lowerBound > upperBound) {
       throw(MSSelectionTimeError("lower bound > upper bound"));
-
-    // ostringstream exprString;
-    // exprString << colName << " >= " << lowerBound << " && " << colName << " <= " << upperBound;
-    // TableExprNode condition = RecordGram::parse(*ms(), exprString);
-
-    // TableExprNode condition = (ms()->col(colName) >= lowerBound &&
-    //  			       (ms()->col(colName) <= upperBound));
-    TableExprNode condition = (columnAsTEN_p >= lowerBound &&
-     			       (columnAsTEN_p <= upperBound));
-
-    // TableExprNode condition = (columnAsTEN_p >= lowerBound &&
-    //  			       (columnAsTEN_p <= upperBound));
+    }
+    TableExprNode condition;
+    if (!edgeInclusive) {
+      condition = (columnAsTEN_p >= lowerBound &&
+		   (columnAsTEN_p <= upperBound));
+    } else {
+      Float edgeWidth_l = (edgeWidth < 0.0) ? defaultExposure/2.0 : edgeWidth;
+      condition = (((columnAsTEN_p > lowerBound) || (abs(columnAsTEN_p - lowerBound) < edgeWidth_l)) &&
+		   ((columnAsTEN_p < upperBound) || (abs(columnAsTEN_p - upperBound) < edgeWidth_l)));
+    }
     accumulateTimeList(lowerBound, upperBound);
 
     return addCondition(condition);

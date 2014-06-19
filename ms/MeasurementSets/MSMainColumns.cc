@@ -78,6 +78,7 @@ ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   weightSpectrum_p(),
   weightSpectrumCorrected_p(),
   correctedData_p(),
+  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(ms, MS::columnName(MS::TIME)),
   timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
@@ -145,6 +146,7 @@ ROMSMainColumns::ROMSMainColumns():
   weightSpectrum_p(),
   weightSpectrumCorrected_p(),
   correctedData_p(),
+  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(),
   timeCentroidMeas_p(),
@@ -240,6 +242,9 @@ void ROMSMainColumns::attachOptionalCols(const MeasurementSet& ms)
   if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
     correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
   }
+  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
+    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
+  }
   if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
     modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));
   }
@@ -284,6 +289,7 @@ MSMainColumns::MSMainColumns(MeasurementSet& ms):
   weightSpectrum_p(),
   weightSpectrumCorrected_p(),
   correctedData_p(),
+  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(ms, MS::columnName(MS::TIME)),
   timeCentroidMeas_p(ms, MS::columnName(MS::TIME_CENTROID)),
@@ -363,6 +369,7 @@ MSMainColumns::MSMainColumns():
   weightSpectrum_p(),
   weightSpectrumCorrected_p(),
   correctedData_p(),
+  imagingWeight_p(),
   modelData_p(),
   timeMeas_p(),
   timeCentroidMeas_p(),
@@ -458,6 +465,9 @@ void MSMainColumns::attachOptionalCols(MeasurementSet& ms)
   }
   if (cds.isDefined(MS::columnName(MS::CORRECTED_DATA))) {
     correctedData_p.attach(ms,MS::columnName(MS::CORRECTED_DATA));
+  }
+  if (cds.isDefined(MS::columnName(MS::IMAGING_WEIGHT))) {
+    imagingWeight_p.attach(ms,MS::columnName(MS::IMAGING_WEIGHT));
   }
   if (cds.isDefined(MS::columnName(MS::MODEL_DATA))) {
     modelData_p.attach(ms,MS::columnName(MS::MODEL_DATA));

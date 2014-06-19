@@ -31,10 +31,6 @@
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/MaskedArray.h>
 #include <casa/Quanta/QLogical.h>
-#include <components/ComponentModels/Flux.h>
-#include <components/ComponentModels/GaussianShape.h>
-#include <components/ComponentModels/SkyComponent.h>
-#include <components/ComponentModels/ConstantSpectrum.h>
 
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/LinearCoordinate.h>
@@ -57,8 +53,6 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
-#include <memory>
-
 #include <casa/namespace.h>
 void doOpens()
 {
@@ -80,7 +74,7 @@ void doOpens()
 
       {
          PtrHolder<ImageInterface<Float> > im;
-         ImageUtilities::openImage(im, name1, os);
+         ImageUtilities::openImage(im, name1);
       }
       {
          PtrHolder<ImageInterface<Float> > im;

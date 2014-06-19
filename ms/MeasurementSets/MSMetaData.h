@@ -229,6 +229,13 @@ public:
 	// get the field IDs associated with the specified intent.
 	std::set<Int> getFieldsForIntent(const String& intent);
 
+	// get the field IDs associated with the specified source.
+	std::set<Int> getFieldsForIntent(uInt sourceID);
+
+	std::map<Int, std::set<Int> > getFieldsForSourceMap();
+
+	std::map<Int, std::set<String> > getFieldNamesForSourceMap();
+
 	// get the field names associated with the specified field IDs. If <src>fieldIDs</src>
 	// is empty, a vector of all the field names is returned.
 	vector<String> getFieldNamesForFieldIDs(const vector<uInt>& fieldIDs);
@@ -380,7 +387,7 @@ private:
 	std::map<Int, std::set<uInt> > _fieldToSpwMap;
 	vector<std::set<Int> > _spwToFieldIDsMap, _spwToScansMap, _ddidToScansMap;
 	std::map<Int, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _fieldToScansMap,
-		_fieldToStatesMap, _stateToFieldsMap;
+          _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
 	vector<String> _fieldNames, _antennaNames, _observatoryNames, _stationNames;
 	std::map<String, uInt> _antennaNameToIDMap;
 	CountedPtr<Vector<Double> > _times;

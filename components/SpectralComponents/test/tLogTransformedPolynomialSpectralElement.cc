@@ -27,6 +27,7 @@
 #include <casa/aips.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Containers/Record.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <components/SpectralComponents/LogTransformedPolynomialSpectralElement.h>
 #include <components/SpectralComponents/SpectralElementFactory.h>
 
@@ -56,8 +57,8 @@ int main() {
 			cout << "Test to/from record" << endl;
 			Record rec;
 			ltp.toRecord(rec);
-			std::auto_ptr<SpectralElement> el = SpectralElementFactory::fromRecord(rec);
-			LogTransformedPolynomialSpectralElement ltp2 = *dynamic_cast<LogTransformedPolynomialSpectralElement *>(el.get());
+			PtrHolder<SpectralElement> el(SpectralElementFactory::fromRecord(rec));
+			LogTransformedPolynomialSpectralElement ltp2 = *dynamic_cast<LogTransformedPolynomialSpectralElement *>(el.ptr());
 			AlwaysAssert(ltp == ltp2, AipsError);
 		}
 		catch (const AipsError& x) {

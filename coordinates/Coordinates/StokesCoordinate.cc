@@ -186,6 +186,14 @@ Vector<Int> StokesCoordinate::stokes() const
     return Vector<Int>(values_p);
 }
 
+Vector<String> StokesCoordinate::stokesStrings() const {
+    uInt n = values_p.size();
+    Vector<String> ret(n);
+    for (uInt i=0; i<n; i++) {
+        ret[i] = Stokes::name(Stokes::type(values_p[i]));
+    }
+    return ret;
+}
 
 void StokesCoordinate::setStokes (const Vector<Int> &whichStokes)
 {

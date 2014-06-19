@@ -43,10 +43,11 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Arrays/IPosition.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
-#include <memory>
+
 
 #include <casa/namespace.h>
 void testVectorROIter (const Lattice<Float>& sublat,
@@ -315,10 +316,10 @@ void testBeams() {
 	trc[3] = 5.7;
 	LCBox box(blc, trc, shape);
     Record myboxRec = box.toRecord("");
-    std::auto_ptr<LogIO> log(new LogIO());
-    std::auto_ptr<ImageRegion> outRegionMgr(
+    PtrHolder<LogIO> log(new LogIO());
+    PtrHolder<ImageRegion> outRegionMgr(
         ImageRegion::fromRecord(
-            log.get(), x.coordinates(),
+            log.ptr(), x.coordinates(),
             x.shape(), myboxRec
         )
     );

@@ -50,7 +50,16 @@
 // 		  const SpectralModel & modelSpectrum);
 int main() {
   try {
+    const MFrequency f1(Quantity(1.0, "GHz"), MFrequency::LSRK);
+    const MFrequency f2(Quantity(2.0, "GHz"), MFrequency::LSRK);
     const ConstantSpectrum spModel;
+    Vector<Double> iquv(4);
+    iquv(0)=10.0; iquv(1)=0.2; iquv(2)=0.4; iquv(3)=0.1;
+    cerr << "iquv in " << iquv << endl;
+    spModel.sampleStokes(f1, iquv);
+    cerr << "scale value of I at 1.0 GHz " << spModel.sample(f1) << " iquv out " << iquv << endl;
+    spModel.sampleStokes(f2, iquv);
+    cerr << "scale value of I at 2.0 GHz " << spModel.sample(f2) << " iquv out " << iquv << endl;
     /*
     const Flux<Double> flux(1.0, 0.1, 0.0, 0.01);
     plotSpectrum(flux, siModel);

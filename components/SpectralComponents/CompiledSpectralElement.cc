@@ -112,7 +112,7 @@ const String& CompiledSpectralElement::getFunction() const {
 void CompiledSpectralElement::_setFunction(const String& function) {
 	//_function = function;
 	std::tr1::shared_ptr<Function<Double, Double> > f = _getFunction();
-	CompiledFunction<Double> *cf = f == 0
+	CompiledFunction<Double> *cf = f.get() == 0
 		? new CompiledFunction<Double>()
 		: dynamic_cast<CompiledFunction<Double> *>(f.get());
 	if (! cf->setFunction(function)) {
@@ -121,7 +121,7 @@ void CompiledSpectralElement::_setFunction(const String& function) {
 			"was specified for a compiled SpectralElement"
 		);
 	}
-	if (f == 0) {
+	if (f.get() == 0) {
 		f.reset(cf);
 	}
 	uInt n = get().size();
