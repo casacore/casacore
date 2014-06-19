@@ -1410,54 +1410,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     {
         if (wcs.specsys[0]=='\0') {
-	    os << LogIO::NORMAL << "SPECSYS keyword not given, spectral reference frame not defined ..." << LogIO::POST;
-	    if (wcs.velref==0) { // velref was also not given
-	        os << LogIO::NORMAL << "TopoCentric assumed" << LogIO::POST;
-	        type = MFrequency::TOPO;
-	        return True;
-	    }
-	    else { // velref was given
-	        Int vref = wcs.velref;
-	        os << LogIO::NORMAL << "Found (deprecated) VELREF keyword with value " << vref << LogIO::POST;
-	        if(vref>256){
-		  vref -= 256;
-		}
-		switch(vref){
-		case 1:
-		  type = MFrequency::LSRK;
-		  os << LogIO::NORMAL << "  => LSRK assumed" << LogIO::POST;
-		  break;
-		case 2:
-		  type = MFrequency::BARY;
-		  os << LogIO::NORMAL << "  => BARY assumed" << LogIO::POST;
-		  break;
-		case 3:
-		  type = MFrequency::TOPO;
-		  os << LogIO::NORMAL << "  => TOPO assumed" << LogIO::POST;
-		  break;
-		case 4:
-		  type = MFrequency::LSRD;
-		  os << LogIO::NORMAL << "  => LSRD assumed" << LogIO::POST;
-		  break;
-		case 5:
-		  type = MFrequency::GEO;
-		  os << LogIO::NORMAL << "  => GEO assumed" << LogIO::POST;
-		  break;
-		case 6:
-		  type = MFrequency::REST;
-		  os << LogIO::NORMAL << "  => REST assumed" << LogIO::POST;
-		  break;
-		case 7:
-		  type = MFrequency::GALACTO;
-		  os << LogIO::NORMAL << "  => GALACTO assumed" << LogIO::POST;
-		  break;
-		default:
-		  type = MFrequency::TOPO;
-		  os << LogIO::WARN << "Undefined by AIPS convention. TOPO assumed." << LogIO::POST;
-		  break;
-		}
-		return True;
-	    }
+	    os << LogIO::NORMAL << "No frequency system is defined - TopoCentric assumed" << LogIO::POST;
+	    type = MFrequency::TOPO;
+	    return True;
 	}
 	String specSys(wcs.specsys);
 	specSys.upcase();
