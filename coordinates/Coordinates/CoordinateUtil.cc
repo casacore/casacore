@@ -1426,6 +1426,83 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
 }
    
 
+Bool CoordinateUtil::setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+                                       const String& unit,
+                                       const Double& value)
+{
+   static Unit HZ(String("GHz"));
+   static Unit M(String("m"));
+//
+
+
+   Int after = -1;
+   Int iS = cSys.findCoordinate(Coordinate::SPECTRAL, after);
+   if (iS>=0) {
+      SpectralCoordinate sCoord = cSys.spectralCoordinate(iS);
+
+// Check for weird value
+
+      if (value < 0.0){
+      	errorMsg = String("The rest frequency/wavelength is below zero!");
+      	return False;
+      }
+      else if (isNaN(value)){
+      	errorMsg = String("The rest frequency/wavelength is NaN!");
+      	return False;
+      }
+      else if (isInf(value)){
+      	errorMsg = String("The rest frequency/wavelength is InF!");
+      	return False;
+      }
+
+// Get the old rest frequency and unit
+
+      Double oldValue = sCoord.restFrequency();
+      Unit   oldUnit  = Unit(sCoord.worldAxisUnits()(0));
+
+// Check whether something has to be done
+
+      if (!unit.empty() && (value != oldValue) && (value>0 || oldValue>0)){
+
+// Make sure the unit conforms with m or Hz
+      	Unit t(unit);
+         if (t != HZ && t!= M) {
+            errorMsg = String("Illegal spectral unit");
+            return False;
+         }
+
+// Compute the rest frequency in the given units from the input
+
+      	Quantity newQuant=Quantity(value, Unit(unit));
+			MVFrequency newFreq = MVFrequency(newQuant);
+			Double newValue = newFreq.get(oldUnit).getValue();
+
+// Exclude weird numbers
+
+	      if (isNaN(newValue)){
+	      	errorMsg = String("The new rest frequency/wavelength is NaN!");
+	      	return False;
+	      }
+	      else if (isInf(newValue)){
+	      	errorMsg = String("The new rest frequency/wavelength is InF!");
+	      	return False;
+	      }
+
+// Set the new rest frequency
+
+	      if (!sCoord.setRestFrequency(newValue)) {
+				errorMsg = sCoord.errorMessage();
+				return False;
+			}
+      }
+
+// Replace in CS
+
+      cSys.replaceCoordinate(sCoord, iS);
+   }
+   return True;
+}
+
 Bool CoordinateUtil::setSpectralConversion (String& errorMsg, 
                                             CoordinateSystem& cSys,
                                             const String frequencySystem)
