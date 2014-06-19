@@ -453,6 +453,14 @@ static Bool dropRemovedAxes (
    static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& spcquant);
 
+  //#/// Kept setRestFrequency for CASA-4.2
+// Set rest frequency of SpectralCoordinate in CoordinateSystem.
+// Unit must be consistent with Hz or m.
+// Returns False if invalid inputs (and CS not changed) and an error message.
+   static Bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+                                 const String& unit,
+                                 const Double& value);
+
   //#/// Kept setSpectralConversion for old casarest
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
